@@ -157,7 +157,7 @@
     <Compile Include="Support\Error.prg" />
     <Compile Include="Support\FileTypeHelpers.prg" />
     <Compile Include="Interfaces.prg" />
-    <Compile Include="MetaData\AssemblyInfo.prg" />
+    <Compile Include="MetaData\XAssembly.prg" />
     <Compile Include="MetaData\AssemblyReader.prg" />
     <Compile Include="MetaData\SystemTypeController.prg" />
     <Compile Include="Model\XParameterReference.prg" />
@@ -167,7 +167,6 @@
     <Compile Include="Model\XTypeExtensions.prg" />
     <Compile Include="Model\XTypeMemberExtensions.prg" />
     <Compile Include="Model\XLiterals.prg" />
-    <Compile Include="Model\XAssembly.prg" />
     <Compile Include="Model\XEntityReference.prg" />
     <Compile Include="Model\XMemberReference.prg" />
     <Compile Include="Model\XTypeReference.prg" />

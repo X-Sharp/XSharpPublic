@@ -23,7 +23,7 @@ namespace Microsoft.VisualStudio.Project.Automation
     /// <typeparam name="RefType"></typeparam>
     [SuppressMessage("Microsoft.Naming", "CA1715:IdentifiersShouldHaveCorrectPrefix", MessageId = "T")]
     [ComVisible(true), CLSCompliant(false)]
-    public abstract class OAReferenceBase<RT> : Reference3
+    public abstract class OAReferenceBase<RT> : Reference3, IDisposable
         where RT : ReferenceNode
     {
         #region fields
@@ -175,6 +175,11 @@ namespace Microsoft.VisualStudio.Project.Automation
         public virtual object get_Extender(string ExtenderName)
         {
             throw new NotImplementedException();
+        }
+
+        public void Dispose()
+        {
+            this.referenceNode = null;
         }
         #endregion
 

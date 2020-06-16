@@ -29,15 +29,15 @@ BEGIN NAMESPACE XSharpModel
         PRIVATE _project      AS XProject
         #endregion
         // Methods
-        CONSTRUCTOR(fullPath AS STRING)
+        CONSTRUCTOR(fullPath AS STRING, project AS XProject)
             SUPER()
             //
             SELF:FullPath := fullPath
+            SELF:LastChanged := System.DateTime.MinValue
             SELF:_type := GetFileType(fullPath)
-            SELF:InitTypeList()
             SELF:_parsed := ! SELF:HasCode
             SELF:_lock := OBJECT{}
-            SELF:LastChanged := System.DateTime.MinValue
+            SELF:_project := project
 
         PROPERTY EntityList AS 	List<XEntityDefinition> GET _entityList
         PROPERTY Dialect AS XSharpDialect GET _project:Dialect
@@ -239,7 +239,7 @@ BEGIN NAMESPACE XSharpModel
                     statics:AddRange(SELF:_usingStatics)
                     IF SELF:Project != NULL .AND. SELF:Project:ProjectNode != NULL .AND. SELF:Project:ProjectNode:ParseOptions:HasRuntime
 
-                        FOREACH asm AS AssemblyInfo IN SELF:Project:AssemblyReferences
+                        FOREACH asm AS XAssembly IN SELF:Project:AssemblyReferences
 
                             VAR globalclass := asm:GlobalClassName
                             IF (! String.IsNullOrEmpty(globalclass))
@@ -283,6 +283,12 @@ BEGIN NAMESPACE XSharpModel
         PROPERTY LastChanged        AS System.DateTime   AUTO GET INTERNAL SET 
         PROPERTY Size               AS INT64              AUTO GET INTERNAL SET 
         PROPERTY Name               AS STRING GET System.IO.Path.GetFileNameWithoutExtension(SELF:FullPath)
+        PROPERTY UpdatedOnDisk      AS LOGIC
+            GET
+               VAR fi                  := System.IO.FileInfo{SELF:FullPath}
+               RETURN SELF:LastChanged != fi:LastWriteTime .OR. SELF:Size != fi:Length
+            END GET
+        END PROPERTY
 
         PROPERTY Parsed AS LOGIC
             GET
@@ -305,9 +311,6 @@ BEGIN NAMESPACE XSharpModel
                 ENDIF
                 RETURN SELF:_project
             END GET
-            SET
-                SELF:_project := VALUE
-            END SET
         END PROPERTY
 
         PROPERTY SourcePath AS STRING

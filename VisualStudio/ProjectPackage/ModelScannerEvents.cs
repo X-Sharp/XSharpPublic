@@ -52,6 +52,7 @@ namespace XSharp.Project
         public override int OnAfterCloseSolution(object reserved)
         {
             XSharpModel.XSolution.Close();
+            XSharpXMLDocTools.Close();
             return VSConstants.S_OK;
         }
         #endregion

@@ -93,18 +93,16 @@ BEGIN NAMESPACE XSharpModel
          ModelWalker.GetWalker():StopThread()
          XDatabase.CloseDatabase(_sqldb)
          
-         FOREACH var pair in _projects
+         FOREACH VAR pair IN _projects:ToArray()
                var project := (XProject) pair:Value
-               project:Loaded := FALSE
+               project:UnLoad()
+               project:Close()
          NEXT
 			_projects:Clear()
 			SystemTypeController.Clear()
-			IF _orphanedFilesProject != NULL .AND. _projects:TryAdd(_orphanedFilesProject.Name, _orphanedFilesProject)
-				FOREACH VAR info IN _orphanedFilesProject:AssemblyReferences
-					SystemTypeController.LoadAssembly(info:FileName)
-				NEXT
-         ENDIF
+			_orphanedFilesProject := NULL
          _fileName  := NULL
+         GC.Collect()
 
 		STATIC METHOD FileClose(fileName AS STRING) AS VOID
 			IF FindFile(fileName):Project == _orphanedFilesProject
@@ -113,7 +111,7 @@ BEGIN NAMESPACE XSharpModel
 
 		STATIC METHOD FindFile(fileName AS STRING) AS XFile
 			FOREACH VAR project IN _projects
-				VAR file := project:Value:FindFullPath(fileName)
+				VAR file := project:Value:FindXFile(fileName)
 				IF file != NULL
 					RETURN file
 				ENDIF
@@ -122,7 +120,7 @@ BEGIN NAMESPACE XSharpModel
 
 		STATIC METHOD FindFullPath(fullPath AS STRING) AS XFile
 			FOREACH VAR project IN _projects
-				VAR file := project:Value:FindFullPath(fullPath)
+				VAR file := project:Value:FindXFile(fullPath)
 				IF file != NULL
 					RETURN file
 				ENDIF
@@ -143,6 +141,7 @@ BEGIN NAMESPACE XSharpModel
 			IF _projects:ContainsKey(projectName)
 				VAR project := _projects:Item[projectName]
 				project:UnLoad()
+            project:Close()
 				VAR result := _projects:TryRemove(projectName, OUT project)
 				SystemTypeController.UnloadUnusedAssemblies()
 				RETURN result
@@ -150,7 +149,7 @@ BEGIN NAMESPACE XSharpModel
 			RETURN FALSE
 
 		STATIC METHOD Remove(project AS XProject) AS LOGIC
-			IF project != NULL
+			IF project != NULL .AND. project:ProjectNode != NULL  .AND. _projects:Count > 0
 				RETURN @@Remove(project:Name)
 			ENDIF
 			RETURN FALSE

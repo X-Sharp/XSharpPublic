@@ -149,7 +149,21 @@ namespace Microsoft.VisualStudio.Project
             this.SetProjectItemsThatRelyOnReferencesToBeResolved(false);
             this.SetInstalledFilePath();
         }
-
+        protected override void Dispose(bool disposing)
+        {
+            try
+            {
+                if (this.comReference != null)
+                {
+                    this.comReference.Dispose();
+                }
+            }
+            finally
+            {
+                this.comReference = null;
+                base.Dispose(disposing);
+            }
+        }
         /// <summary>
         /// Overloaded constructor for creating a ComReferenceNode from selector data
         /// </summary>

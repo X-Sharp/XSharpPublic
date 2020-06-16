@@ -36,6 +36,19 @@ namespace XSharp.Project
             ResolveAssemblyReference();
 
         }
+        protected override void Dispose(bool disposing)
+        {
+            if (this.ProjectMgr is XSharpProjectNode)
+            {
+                XSharpProjectNode projectNode = (XSharpProjectNode)this.ProjectMgr;
+                if (projectNode != null)
+                    projectNode.RemoveURL(this);
+                ProjectMgr = null;
+            }
+ 
+            base.Dispose(disposing);
+        }
+
         protected override NodeProperties CreatePropertiesObject()
         {
             return new XSharpAssemblyReferenceNodeProperties(this);
@@ -141,7 +154,7 @@ namespace XSharp.Project
             }
 
         }
-
+  
 
         public override int ImageIndex
         {

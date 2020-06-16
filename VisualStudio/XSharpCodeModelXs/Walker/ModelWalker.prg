@@ -26,6 +26,7 @@ BEGIN NAMESPACE XSharpModel
 		// Fields
 		PRIVATE _projects := ConcurrentQueue<XProject>{} AS ConcurrentQueue<XProject>
 		PRIVATE _projectsForTypeResolution := ConcurrentQueue<XProject>{} AS ConcurrentQueue<XProject>
+      PRIVATE _currentProject AS XProject
 		STATIC PRIVATE _walker AS ModelWalker
 		PRIVATE _WalkerThread AS System.Threading.Thread
 		STATIC PRIVATE suspendLevel  AS LONG
@@ -47,7 +48,6 @@ BEGIN NAMESPACE XSharpModel
 					IF (String.Equals(project:Name, xProject:Name, StringComparison.OrdinalIgnoreCase))
 						lAdd2Queue := FALSE
 						EXIT
-
 					ENDIF
 				NEXT
 				IF (lAdd2Queue)
@@ -65,9 +65,7 @@ BEGIN NAMESPACE XSharpModel
          IF ! XSolution.IsOpen
                RETURN
          ENDIF
-			VAR fi := FileInfo{file:FullPath}
-         XDatabase.Read(file)
-			IF fi:LastWriteTime > file:LastChanged .or. fi:Length != file:Size
+			IF file:UpdatedOnDisk
             WriteOutputMessage("..."+file:FullPath)
 				BEGIN USING VAR walker := SourceWalker{file}
 					TRY
@@ -114,6 +112,7 @@ BEGIN NAMESPACE XSharpModel
 				XSolution.WriteException(exception)
 			END TRY
 			SELF:_WalkerThread := NULL
+         ModelWalker._walker := NULL
 
 		STATIC METHOD Suspend() AS VOID
 			ModelWalker.suspendLevel++
@@ -142,12 +141,11 @@ BEGIN NAMESPACE XSharpModel
 			ENDIF
 
 		INTERNAL iProcessed AS LONG
-		INTERNAL aFiles AS XFile[]
+		INTERNAL aFiles AS STRING[]
       
 		PRIVATE METHOD Walker() AS VOID
 			LOCAL project AS XProject
 			LOCAL parallelOptions AS System.Threading.Tasks.ParallelOptions
-
 			project := NULL
 			IF SELF:_projects:Count != 0 .AND. ! SELF:_projects:First():IsVsBuilding
 				DO WHILE TRUE
@@ -163,8 +161,8 @@ BEGIN NAMESPACE XSharpModel
 						ENDIF
 						project:ProjectNode:SetStatusBarText(String.Format("Start scanning project {0}", project:Name))
                END LOCK
+               _currentProject := project
 					WriteOutputMessage("-->> Walker("+project.Name+")")
-               project:BuildFileList()
 					aFiles := project:SourceFiles:ToArray()
 					iProcessed := 0
 					parallelOptions := ParallelOptions{}
@@ -186,9 +184,13 @@ BEGIN NAMESPACE XSharpModel
 					WriteOutputMessage("<<-- Walker("+project.Name+")")
                
                aFiles := project:OtherFiles:ToArray()
-               FOREACH var file in aFiles
-                  XDatabase.Update(file)
+               FOREACH VAR file IN aFiles
+                  VAR oFile := project:FindXFile(file)
+                  IF oFile:UpdatedOnDisk
+                     XDatabase.Update(oFile)
+                  ENDIF
                NEXT
+               _currentProject := NULL
                project:FileWalkCompleted := TRUE
 				ENDDO
 
@@ -215,8 +217,8 @@ BEGIN NAMESPACE XSharpModel
 
 			ENDIF
 
-		PRIVATE METHOD walkOneFile(file AS XFile) AS VOID
-			VAR project := file:Project
+		PRIVATE METHOD walkOneFile(fileName AS STRING) AS VOID
+			VAR project := _currentProject
 			IF project:Loaded .and. XSolution:IsOpen
 				iProcessed++
 				DO WHILE (project:ProjectNode:IsVsBuilding)
@@ -225,6 +227,7 @@ BEGIN NAMESPACE XSharpModel
             IF iProcessed % 10 == 0 .OR. iProcessed == aFiles:Length
 				   project:ProjectNode:SetStatusBarText(String.Format("Walking {0} : Processing File {1} of {2}", project:Name, iProcessed, aFiles:Length)) 
             ENDIF
+            VAR file := project:FindXFile(fileName)
 				SELF:FileWalk(file)
 			   DO WHILE ModelWalker.IsSuspended .AND. System.Threading.Thread.CurrentThread:IsBackground
 				    System.Threading.Thread.Sleep(100)

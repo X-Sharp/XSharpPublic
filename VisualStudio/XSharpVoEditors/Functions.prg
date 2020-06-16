@@ -15,7 +15,8 @@ STATIC METHOD FindItemsOfType(oProject AS XProject, xType AS XFileType, aProject
 	IF (aProjects == NULL)
 		aProjects := List<XProject>{}
 	ENDIF
-	FOREACH oOther AS XFile IN oProject:OtherFiles
+	FOREACH fileName AS STRING IN oProject:OtherFiles
+      VAR oOther := XFile{fileName, oProject}
 		IF oOther:XFileType == xType
 			aResult:Add(oOther)
 		ENDIF

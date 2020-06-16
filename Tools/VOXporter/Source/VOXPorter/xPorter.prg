@@ -1192,7 +1192,13 @@ CLASS ApplicationDescriptor
 							aDBServers:Add(cBinary, oDesigner:Bytes)
 						ELSEIF oDesigner:Type == BINARY_WED
 							IF xPorter.ExportWedToXml
-								BinaryEntity.SaveToXml(cBinary, oDesigner:Bytes)
+								BinaryEntity.SaveWindowToXml(cBinary, oDesigner:Bytes)
+							ELSE
+								File.WriteAllBytes(cBinary , oDesigner:Bytes)
+							END IF
+						ELSEIF oDesigner:Type == BINARY_MED
+							IF xPorter.ExportWedToXml
+								BinaryEntity.SaveMenuToXml(cBinary, oDesigner:Bytes)
 							ELSE
 								File.WriteAllBytes(cBinary , oDesigner:Bytes)
 							END IF
@@ -1204,9 +1210,11 @@ CLASS ApplicationDescriptor
 							TRY
 								DO CASE
 								CASE oDesigner:Type == BINARY_WED
-									BinaryEntity.SaveToWed(oDesigner:Bytes, cPrg , cBinary)
+//									VOWindowEditor.ProjectImportVNFrm(cPrg , cBinary)
+									BinaryEntity.SaveWindowToWed(oDesigner:Bytes, cPrg , cBinary)
 								CASE oDesigner:Type == BINARY_MED
-									VOMenuEditor.ProjectImportVNMnu(cPrg , cBinary)
+//									VOMenuEditor.ProjectImportVNMnu(cPrg , cBinary)
+									BinaryEntity.SaveMenuToWed(oDesigner:Bytes, cPrg , cBinary)
 								CASE oDesigner:Type == BINARY_FED
 									File.WriteAllBytes(cBinary , oDesigner:Bytes)
 									aXideFieldSpecs:Add(cBinary)
@@ -1225,7 +1233,7 @@ CLASS ApplicationDescriptor
 								LOCAL cWF AS STRING
 								cWf := SELF:Project:WinFormsFolder + "\tmp\" + SELF:Name + "." + oDesigner:Name
 								SafeFileDelete(cWf + ".wed")
-								BinaryEntity.SaveToWed(oDesigner:Bytes, cWf , cBinary)
+								BinaryEntity.SaveWindowToWed(oDesigner:Bytes, cWf , cBinary)
 							END IF
 						END IF
 						IF .not. xPorter.ExportToVS

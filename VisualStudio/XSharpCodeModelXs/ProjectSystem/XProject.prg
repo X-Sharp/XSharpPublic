@@ -853,22 +853,12 @@ BEGIN NAMESPACE XSharpModel
       
       PROPERTY Namespaces AS IList<STRING>
          GET
-            //            VAR types := List<XTypeDefinition>{}
-            //            VAR fileArray := SELF:SourceFiles:ToArray()
-            //            FOREACH file AS STRING IN fileArray
-            //               IF file:TypeList != NULL
-            //                  VAR values := file:TypeList:Values
-            //                  FOREACH elmt AS XTypeDefinition IN values
-            //                     IF elmt:Kind == Kind.Namespace
-            //                        IF types:Find( { x => x:Name:ToLowerInvariant() == elmt:Name:ToLowerInvariant() } ) == NULL
-            //                           types:Add(elmt)
-            //                        ENDIF
-            //                     ENDIF
-            //                  NEXT
-            //               ENDIF
-            //            NEXT
-            //            RETURN types
-            RETURN List<STRING>{}
+            VAR list := XDatabase.GetNamespaces(SELF:DependentProjectList)
+            VAR result := List<STRING>{}
+            FOREACH VAR db IN list
+               result:Add(db:Namespace)
+            NEXT
+            RETURN result
          END GET
       END PROPERTY
       

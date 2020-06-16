@@ -94,7 +94,7 @@ BEGIN NAMESPACE XSharpModel
               
           
       INTERNAL METHOD Resolve() AS VOID
-         IF ! SELF:_initialized
+         IF ! SELF:_initialized .AND. SELF:_typeDef != NULL
                VAR aMembers := List<XMemberReference>{}
              
                IF _typeDef:HasMethods
@@ -116,7 +116,7 @@ BEGIN NAMESPACE XSharpModel
                            kind := Kind.Constructor
                         endif
                      endif
-                     var xmember := XMethodReference{md,SELF:Assembly}
+                     VAR xmember := XMethodReference{md,SELF:Assembly}
                      if xmember:Kind == Kind.Method      // this could have changed from Method to Function
                         xmember:Kind := kind
                      endif
@@ -129,7 +129,7 @@ BEGIN NAMESPACE XSharpModel
                      if pd:GetMethod != null .and. pd:GetMethod:IsPrivate
                         loop
                      endif
-                     var xprop := XPropertyReference{pd,SELF:Assembly}
+                     VAR xprop := XPropertyReference{pd,SELF:Assembly}
                      aMembers:Add(xprop)
                      xprop:Parent := SELF
                   NEXT
@@ -139,7 +139,7 @@ BEGIN NAMESPACE XSharpModel
                      if fd:IsPrivate
                         loop
                      endif
-                     var xField := XFieldReference{fd,SELF:Assembly} 
+                     VAR xField := XFieldReference{fd,SELF:Assembly} 
                      aMembers:Add(xField)
                      xField:Parent := SELF
                   NEXT
@@ -149,7 +149,7 @@ BEGIN NAMESPACE XSharpModel
                     if ed:AddMethod != NULL .and. ed:AddMethod:IsPrivate
                         loop
                      endif
-                     var xEvent := XEventReference{ed,SELF:Assembly} 
+                     VAR xEvent := XEventReference{ed,SELF:Assembly} 
                      aMembers:Add(xEvent)
                      xEvent:Parent := SELF
                      
@@ -161,7 +161,7 @@ BEGIN NAMESPACE XSharpModel
                   _baseType := SystemTypeController.FindType(SELF:BaseType, SELF:Assembly:FullName)
                   if _baseType != NULL
                      _baseType:Resolve()
-                     var basemembers := _baseType:XMembers:Where( { m => m.Kind != Kind.Constructor .and. m.Visibility != Modifiers.Private })
+                     VAR basemembers := _baseType:XMembers:Where( { m => m.Kind != Kind.Constructor .AND. m.Visibility != Modifiers.Private })
                      aMembers:AddRange( basemembers )
                   ENDIF
                ENDIF
@@ -187,6 +187,7 @@ BEGIN NAMESPACE XSharpModel
                ENDIF
                
               SELF:_initialized := TRUE
+              SELF:_typeDef := NULL
          ENDIF
          RETURN
       

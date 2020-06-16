@@ -18,12 +18,12 @@ BEGIN NAMESPACE XSharpModel
 	/// </summary>
 	CLASS SystemTypeController
 		#region fields
-		STATIC PRIVATE assemblies  AS ConcurrentDictionary<STRING, XSharpModel.AssemblyInfo>
-		STATIC PRIVATE _mscorlib 	AS AssemblyInfo
+		STATIC PRIVATE assemblies  AS ConcurrentDictionary<STRING, XAssembly>
+		STATIC PRIVATE _mscorlib 	AS XAssembly
 		#endregion
 		
 		STATIC CONSTRUCTOR
-			assemblies := ConcurrentDictionary<STRING, AssemblyInfo>{StringComparer.OrdinalIgnoreCase}
+			assemblies := ConcurrentDictionary<STRING, XAssembly>{StringComparer.OrdinalIgnoreCase}
 			_mscorlib := NULL
 			RETURN
 			
@@ -34,13 +34,14 @@ BEGIN NAMESPACE XSharpModel
 					RETURN SystemTypeController.assemblies:Keys:ToArray()
 				END GET
 			END PROPERTY
-			STATIC PROPERTY mscorlib AS AssemblyInfo GET _mscorlib SET _mscorlib := VALUE
+			STATIC PROPERTY mscorlib AS XAssembly GET _mscorlib SET _mscorlib := VALUE
 		#endregion
 		
 		// Methods
 		STATIC METHOD Clear() AS VOID
 			assemblies:Clear()
 			_mscorlib := NULL
+         GC.Collect()
 		
 		STATIC METHOD FindAssemblyByLocation(location AS STRING) AS STRING
 			IF assemblies:ContainsKey(location)
@@ -48,7 +49,7 @@ BEGIN NAMESPACE XSharpModel
 			ENDIF
 			RETURN NULL
 
-		STATIC METHOD FindAssembly(fullName AS STRING) AS AssemblyInfo
+		STATIC METHOD FindAssembly(fullName AS STRING) AS XAssembly
 			FOREACH VAR item IN assemblies
 				VAR asm := item:Value
 				IF String.Compare(asm:FullName, fullName, StringComparison.OrdinalIgnoreCase) == 0
@@ -68,7 +69,7 @@ BEGIN NAMESPACE XSharpModel
 			RETURN NULL
 		
 		STATIC METHOD FindAssemblyLocation(fullName AS STRING) AS STRING
-			LOCAL info AS AssemblyInfo
+			LOCAL info AS XAssembly
 			FOREACH VAR pair IN assemblies
 				info := pair:Value
 				IF ! String.IsNullOrEmpty(info:FullName) .AND. (String.Compare(info:FullName, fullName, System.StringComparison.OrdinalIgnoreCase) == 0)
@@ -78,7 +79,7 @@ BEGIN NAMESPACE XSharpModel
 			RETURN NULL
 		
       STATIC METHOD FindType(typeName as STRING, assemblyName as STRING) AS XTypeReference
-         var assemblies := List<AssemblyInfo>{}
+         VAR assemblies := List<XAssembly>{}
          var asm := FindAssembly(assemblyName)
          IF asm != null
             assemblies:Add(asm)
@@ -95,7 +96,7 @@ BEGIN NAMESPACE XSharpModel
          return NULL
 
 
-		STATIC METHOD FindType(typeName AS STRING, usings AS IList<STRING>, assemblies AS IList<AssemblyInfo>) AS XTypeReference
+		STATIC METHOD FindType(typeName AS STRING, usings AS IList<STRING>, assemblies AS IList<XAssembly>) AS XTypeReference
 			LOCAL result := NULL AS XTypeReference
 			TRY
 				WriteOutputMessage("--> FindType() "+typeName)
@@ -154,7 +155,7 @@ BEGIN NAMESPACE XSharpModel
 			END TRY
 			RETURN result
 			
-		STATIC METHOD GetNamespaces(assemblies AS IList<AssemblyInfo>) AS IList<STRING>
+		STATIC METHOD GetNamespaces(assemblies AS IList<XAssembly>) AS IList<STRING>
 			VAR list := List<STRING>{}
 			FOREACH VAR info IN assemblies
 				FOREACH str AS STRING IN info:Namespaces
@@ -163,8 +164,8 @@ BEGIN NAMESPACE XSharpModel
 			NEXT
 			RETURN list:AsReadOnly()
 			
-		STATIC METHOD LoadAssembly(cFileName AS STRING) AS AssemblyInfo
-			LOCAL info AS AssemblyInfo
+		STATIC METHOD LoadAssembly(cFileName AS STRING) AS XAssembly
+			LOCAL info AS XAssembly
 			LOCAL lastWriteTime AS System.DateTime
 			LOCAL key AS STRING
 			//
@@ -174,11 +175,11 @@ BEGIN NAMESPACE XSharpModel
 				info := assemblies:Item[cFileName]
 				//WriteOutputMessage("     ... assembly "+cFileName+" found in cache")
 			ELSE
-				info := AssemblyInfo{cFileName, System.DateTime.MinValue}
+				info := XAssembly{cFileName, System.DateTime.MinValue}
 				assemblies:TryAdd(cFileName, info)
 			ENDIF
 			IF cFileName:EndsWith("mscorlib.dll", System.StringComparison.OrdinalIgnoreCase)
-				mscorlib := AssemblyInfo{cFileName, System.DateTime.MinValue}
+				mscorlib := XAssembly{cFileName, System.DateTime.MinValue}
 			ENDIF
 			IF Path.GetFileName(cFileName):ToLower() == "system.dll"
 				key := Path.Combine(Path.GetDirectoryName(cFileName), "mscorlib.dll")
@@ -191,7 +192,7 @@ BEGIN NAMESPACE XSharpModel
 			RETURN info
 		
 		
-		STATIC METHOD Lookup(typeName AS STRING, theirassemblies AS IList<AssemblyInfo>) AS XTypeReference
+		STATIC METHOD Lookup(typeName AS STRING, theirassemblies AS IList<XAssembly>) AS XTypeReference
 			FOREACH VAR assembly IN theirassemblies
 				assembly:Refresh()
             IF assembly:Types:ContainsKey(typeName)
@@ -209,7 +210,7 @@ BEGIN NAMESPACE XSharpModel
          RETURN NULL
          
 		STATIC METHOD RemoveAssembly(cFileName AS STRING) AS VOID
-			LOCAL info AS AssemblyInfo
+			LOCAL info AS XAssembly
 			IF assemblies:ContainsKey(cFileName)
 				assemblies:TryRemove(cFileName, OUT info)
 			ENDIF
@@ -224,7 +225,7 @@ BEGIN NAMESPACE XSharpModel
 				ENDIF
 			NEXT
 			FOREACH key AS STRING IN unused
-				LOCAL info AS AssemblyInfo
+				LOCAL info AS XAssembly
 				assemblies:TryRemove(key, OUT info)
 			NEXT
 			// when no assemblies left, then unload mscorlib
@@ -236,7 +237,7 @@ BEGIN NAMESPACE XSharpModel
 		STATIC METHOD WriteOutputMessage(message AS STRING) AS VOID
 			XSolution.WriteOutputMessage("XModel.Typecontroller "+message)
 		
-		STATIC METHOD LookForExtensions(typeName AS STRING, theirassemblies AS IList<AssemblyInfo>) AS List<IXMember>
+		STATIC METHOD LookForExtensions(typeName AS STRING, theirassemblies AS IList<XAssembly>) AS List<IXMember>
 			// First Search for a system Type
 			var ext := List<IXMember>{} 
 			var type := Lookup( typeName, theirassemblies )
@@ -245,12 +246,12 @@ BEGIN NAMESPACE XSharpModel
 			ENDIF
 			RETURN ext
 		
-		STATIC METHOD LookForExtensions( systemType AS IXType, theirassemblies AS IList<AssemblyInfo>) AS List<IXMember>
+		STATIC METHOD LookForExtensions( systemType AS IXType, theirassemblies AS IList<XAssembly>) AS List<IXMember>
 			var ext := List<IXMember>{} 
 			FOREACH VAR assembly IN theirassemblies
 				assembly:Refresh()
 				IF assembly:HasExtensions
-					FOREACH VAR extMet IN assembly:Extensions
+					FOREACH VAR extMet IN assembly:ExtensionMethods
 						var parms := extMet:Parameters:ToArray()
 						IF ( parms:Length > 0 )
 							VAR p := parms[__ARRAYBASE__]

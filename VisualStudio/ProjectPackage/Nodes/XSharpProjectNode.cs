@@ -84,6 +84,7 @@ namespace XSharp.Project
         IErrorList errorList = null;
         bool isLoading = false;
         private FileChangeManager filechangemanager = null;
+        XSharpModel.XProject projectModel;
 
 
         //private Microsoft.VisualStudio.Designer.Interfaces.IVSMDCodeDomProvider codeDomProvider;
@@ -123,7 +124,7 @@ namespace XSharp.Project
             XSharpProjectPackage.Instance.DisplayOutPutMessage("FileChangedOnDisk " + e.FileName);
             if (IsXamlFile(e.FileName) || IsCodeFile(e.FileName))
             {
-                XFile file = this.ProjectModel.FindFullPath(e.FileName);
+                XFile file = this.ProjectModel.FindXFile(e.FileName);
                 if (file != null)
                 {
                     this.ProjectModel.WalkFile(file);
@@ -1149,7 +1150,6 @@ namespace XSharp.Project
         #endregion
 
 
-        XSharpModel.XProject projectModel;
         public XSharpModel.XProject ProjectModel
         {
             get
@@ -1305,32 +1305,33 @@ namespace XSharp.Project
 
         public override void RemoveURL(String url)
         {
-            if (_closing)
-                return;
-            //
-            // We should remove the external projects entries
-            if (IsProjectFile(url))
+            if (!_closing)
             {
-                this.ProjectModel.RemoveProjectReference(url);
-            }
-            else if (IsStrangerProjectFile(url))
-            {
-                this.ProjectModel.RemoveStrangerProjectReference(url);
-            }
-            else
-            {
-                var node = this.FindChild(url) as XSharpFileNode;
-                if (node != null && !node.IsNonMemberItem)
+                //
+                // We should remove the external projects entries
+                if (IsProjectFile(url))
                 {
-                    if (filechangemanager != null)
+                    this.ProjectModel.RemoveProjectReference(url);
+                }
+                else if (IsStrangerProjectFile(url))
+                {
+                    this.ProjectModel.RemoveStrangerProjectReference(url);
+                }
+                else
+                {
+                    var node = this.FindChild(url) as XSharpFileNode;
+                    if (node != null && !node.IsNonMemberItem)
                     {
-                        if (IsXamlFile(url) ||
-                            node.IsDependent)
+                        if (filechangemanager != null)
+                        {
+                            if (IsXamlFile(url) ||
+                                node.IsDependent)
 
-                            filechangemanager.StopObservingItem(url);
+                                filechangemanager.StopObservingItem(url);
+                        }
+
+                        this.ProjectModel.RemoveFile(url);
                     }
-
-                    this.ProjectModel.RemoveFile(url);
                 }
             }
             base.RemoveURL(url);
@@ -1874,6 +1875,17 @@ namespace XSharp.Project
         public bool HasFileNode(string strFileName)
         {
             return this.FindChild(strFileName) != null;
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            projectModel = null;
+            if (filechangemanager != null)
+            {
+                filechangemanager.Dispose();
+                filechangemanager = null;
+            }
+            base.Dispose(disposing);
         }
 
         public XSharpDialect Dialect

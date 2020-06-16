@@ -202,6 +202,7 @@ BEGIN NAMESPACE XSharpModel
          _PPBlockStack  := Stack<XBlock>{}
          _file          := oFile
          _locals        := List<XVariable>{}
+         _file:InitTypeList()
          _globalType    := _file:GlobalType
          _globalType:ClearMembers()
          _EntityStack:Push(_globalType)

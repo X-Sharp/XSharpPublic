@@ -41,7 +41,7 @@ BEGIN NAMESPACE XSharpModel
       
         
   
-      CONSTRUCTOR(name AS STRING, kind AS Kind, attributes AS Modifiers, asm as XAssembly)
+      CONSTRUCTOR(name AS STRING, kind AS Kind, attributes AS Modifiers, asm AS XAssembly)
          SUPER(name, kind, attributes)
          SELF:Assembly     := asm
 

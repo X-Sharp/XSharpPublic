@@ -12,7 +12,7 @@ BEGIN NAMESPACE XSharpModel
    CLASS XPropertyReference INHERIT XMemberReference
         PRIVATE _propdef      as PropertyDefinition
          
-		CONSTRUCTOR(def AS PropertyDefinition, asm as XAssembly)
+		CONSTRUCTOR(def AS PropertyDefinition, asm AS XAssembly)
 			SUPER(def:Name, Kind.Property, Modifiers.Public,  asm)
 			SELF:Parent          := NULL
          SELF:DeclaringType   := def:DeclaringType:GetXSharpTypeName()
@@ -20,21 +20,24 @@ BEGIN NAMESPACE XSharpModel
 			SELF:OriginalTypeName   := def:PropertyType:FullName
          SELF:TypeName        := SELF:Signature:DataType := def:PropertyType:GetXSharpTypeName()
          if def:GetMethod != NULL
-            var xMethod := XMethodReference{def:GetMethod, asm}
+            VAR xMethod := XMethodReference{def:GetMethod, asm}
             SELF:Attributes := xMethod:Attributes
-         elseif def:SetMethod != null
-            var xMethod := XMethodReference{def:SetMethod, asm}
+         ELSEIF def:SetMethod != NULL
+            VAR xMethod := XMethodReference{def:SetMethod, asm}
             SELF:Attributes := xMethod:Attributes
          ENDIF
          IF _propdef:HasCustomAttributes
             SELF:_custatts       := _propdef:CustomAttributes
          ENDIF
          
-      OVERRIDE Method Resolve() AS VOID
-         IF _propdef:HasParameters
-            SELF:AddParameters(_propdef:Parameters)
+      OVERRIDE METHOD Resolve() AS VOID
+         IF SELF:_propdef != NULL
+            IF _propdef:HasParameters
+               SELF:AddParameters(_propdef:Parameters)
+            ENDIF
+            SUPER:Resolve()
          ENDIF
-         SUPER:Resolve()
+         SELF:_propdef := NULL
          RETURN
 
       
@@ -81,7 +84,7 @@ BEGIN NAMESPACE XSharpModel
          ENDIF         
           RETURN modifiers         
          
-		CONSTRUCTOR(def AS FieldDefinition, asm as XAssembly)
+		CONSTRUCTOR(def AS FieldDefinition, asm AS XAssembly)
 			SUPER(def:Name, Kind.Field, ConvertAttributes(def:Attributes),  asm)
          SELF:DeclaringType   := def:DeclaringType:GetXSharpTypeName()
          SELF:_fielddef       := def
@@ -96,6 +99,7 @@ BEGIN NAMESPACE XSharpModel
 
       OVERRIDE METHOD Resolve() AS VOID
          SUPER:Resolve()
+         SELF:_fielddef := NULL
          RETURN
       PROPERTY IsStatic AS LOGIC GET _fielddef:IsStatic
 
@@ -104,17 +108,17 @@ BEGIN NAMESPACE XSharpModel
    CLASS XEventReference INHERIT XMemberReference
         PRIVATE _eventdef     as EventDefinition
          
-		CONSTRUCTOR(def AS EventDefinition, asm as XAssembly)
+		CONSTRUCTOR(def AS EventDefinition, asm AS XAssembly)
 			SUPER(def:Name, Kind.Event, Modifiers.Public,  asm)
          SELF:DeclaringType         := def:DeclaringType:GetXSharpTypeName()
          SELF:_eventdef             := def
          SELF:OriginalTypeName      := def:EventType:FullName
          SELF:TypeName              := SELF:Signature:DataType    := def:EventType:GetXSharpTypeName()
          if def:AddMethod != NULL
-            var xMethod := XMethodReference{def:AddMethod, asm}
+            VAR xMethod := XMethodReference{def:AddMethod, asm}
             SELF:Attributes := xMethod:Attributes
          elseif def:RemoveMethod != null
-            var xMethod := XMethodReference{def:RemoveMethod, asm}
+            VAR xMethod := XMethodReference{def:RemoveMethod, asm}
             SELF:Attributes := xMethod:Attributes
          endif
          IF def:HasCustomAttributes
@@ -123,6 +127,7 @@ BEGIN NAMESPACE XSharpModel
         
       OVERRIDE Method Resolve() AS VOID
          SUPER:Resolve()
+         SELF:_eventdef := NULL
          RETURN
    END CLASS  
    
@@ -171,7 +176,7 @@ BEGIN NAMESPACE XSharpModel
          ENDIF         
          return modifiers         
          
-  		 CONSTRUCTOR(def AS MethodDefinition, asm as XAssembly)
+  		 CONSTRUCTOR(def AS MethodDefinition, asm AS XAssembly)
 			SUPER(def:Name, Kind.Method, ConvertAttributes(def:Attributes),  asm)
          SELF:DeclaringType   := def:DeclaringType:GetXSharpTypeName()
          IF DeclaringType:EndsWith("Functions")
@@ -194,18 +199,21 @@ BEGIN NAMESPACE XSharpModel
                END SWITCH
             NEXT
          ENDIF         
-         OVERRIDE Method Resolve() AS VOID         
-            IF _methoddef:HasParameters
-               IF SELF:CallingConvention = CallingConvention.Clipper
-                  SELF:AddParameters(_ccAttrib)
-               ELSE
-                  SELF:AddParameters(_methoddef:Parameters)
+         OVERRIDE METHOD Resolve() AS VOID         
+            IF SELF:_methoddef != NULL
+               IF _methoddef:HasParameters
+                  IF SELF:CallingConvention = CallingConvention.Clipper
+                     SELF:AddParameters(_ccAttrib)
+                  ELSE
+                     SELF:AddParameters(_methoddef:Parameters)
+                  ENDIF
                ENDIF
+               IF _methoddef:HasGenericParameters
+                  SELF:AddTypeParameters(_methoddef:GenericParameters)
+               ENDIF
+               SUPER:Resolve()
             ENDIF
-            IF _methoddef:HasGenericParameters
-               SELF:AddTypeParameters(_methoddef:GenericParameters)
-            ENDIF
-            SUPER:Resolve()
+            SELF:_methoddef := NULL
             RETURN
 
             
@@ -226,7 +234,7 @@ BEGIN NAMESPACE XSharpModel
 
 		#region constructors
 		
-      CONSTRUCTOR(name as STRING, kind as Kind, attributes as Modifiers, asm as XAssembly)
+      CONSTRUCTOR(name AS STRING, kind AS Kind, attributes AS Modifiers, asm AS XAssembly)
 			SUPER(name, kind, attributes,  asm)
          SELF:_signature      := XMemberSignature{}
          SELF:_resolved       := FALSE
@@ -252,6 +260,7 @@ BEGIN NAMESPACE XSharpModel
                END SWITCH               
             NEXT
          ENDIF
+         SELF:_custatts := NULL
          RETURN
          
       PRIVATE METHOD DoResolve() AS VOID

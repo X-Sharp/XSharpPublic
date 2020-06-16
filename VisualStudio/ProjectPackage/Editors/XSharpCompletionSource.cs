@@ -548,9 +548,9 @@ namespace XSharpLanguage
                 BuildCompletionList(compList, new CompletionType(staticType, file, ""), Modifiers.Public, true, filterText);
             }
             // And what about Global Types in referenced Assemblies ?
-            foreach (AssemblyInfo asm in file.Project.AssemblyReferences)
+            foreach (var asm in file.Project.AssemblyReferences)
             {
-                List<AssemblyInfo> oneAssembly = new List<AssemblyInfo>();
+                List<XAssembly> oneAssembly = new List<XAssembly>();
                 oneAssembly.Add(asm);
                 if (string.IsNullOrEmpty(asm.GlobalClassName))
                     continue;
@@ -765,9 +765,9 @@ namespace XSharpLanguage
                 startLen = dotPos + 1;
             // And our own Namespaces
             var xsNamespaces = project.Namespaces;
-            foreach (XTypeDefinition nameSpace in xsNamespaces.Where(ns => nameStartsWith(ns.Name, startWith)))
+            foreach (string nameSpace in xsNamespaces.Where(ns => nameStartsWith(ns, startWith)))
             {
-                string realNamespace = nameSpace.Name;
+                string realNamespace = nameSpace;
                 // remove the start
                 if (startLen > 0)
                     realNamespace = realNamespace.Substring(startLen);
@@ -776,7 +776,7 @@ namespace XSharpLanguage
                 // Then remove it
                 if (dotPos > 0)
                     realNamespace = realNamespace.Substring(0, dotPos);
-                if (!compList.Add(new XSCompletion(realNamespace, realNamespace, nameSpace.Prototype, icon, null, Kind.Namespace,"")))
+                if (!compList.Add(new XSCompletion(realNamespace, realNamespace, nameSpace, icon, null, Kind.Namespace,"")))
                     break;
             }
         }
@@ -3416,9 +3416,9 @@ namespace XSharpLanguage
             }
             CompletionType cType = null;
             List<string> emptyUsings = new List<string>();
-            foreach (AssemblyInfo asm in xFile.Project.AssemblyReferences)
+            foreach (XAssembly asm in xFile.Project.AssemblyReferences)
             {
-                List<AssemblyInfo> oneAssembly = new List<AssemblyInfo>();
+                List<XAssembly> oneAssembly = new List<XAssembly>();
                 oneAssembly.Add(asm);
                 if (string.IsNullOrEmpty(asm.GlobalClassName) )
                     continue;

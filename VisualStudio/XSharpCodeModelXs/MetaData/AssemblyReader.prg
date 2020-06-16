@@ -6,7 +6,7 @@ USING Mono.Cecil
 
 
 BEGIN NAMESPACE XSharpModel
-CLASS AssemblyReader
+INTERNAL CLASS AssemblyReader
    PROTECT reader             AS AssemblyDefinition
    PROTECT _extensionMethods  AS List<MethodDefinition>
    
@@ -15,7 +15,7 @@ CLASS AssemblyReader
          IF File.Exists(cFileName)
             var resolver := AssemblyResolver{}
             resolver:AddSearchDirectory(System.IO.Path.GetDirectoryName(cFileName))
-            var rdrparams := ReaderParameters{}{AssemblyResolver := resolver}
+            VAR rdrparams := ReaderParameters{}{AssemblyResolver := resolver, InMemory := TRUE}
             reader       := AssemblyDefinition.ReadAssembly(cFileName, rdrparams)
          ELSE
             SELF:reader  := NULL
@@ -38,6 +38,7 @@ CLASS AssemblyReader
                assembly:ReferencedAssemblies:Add(refasm:FullName)
             NEXT
          ENDIF
+         assembly:Types:Clear()
          assembly:RuntimeVersion := reader:MainModule:RuntimeVersion
          FOREACH VAR module in reader:Modules
             FOREACH var type in module:Types
@@ -89,7 +90,7 @@ CLASS AssemblyReader
                assembly:Namespaces:Add(ns)
             ENDIF
          ENDIF
-         assembly:TypeList:Add(name, typeref)      // FullName
+         assembly:Types:Add(name, typeref)      // FullName
          IF SELF:HasExtensionMethods(type)
             SELF:LoadExtensionMethods(type)
          endif

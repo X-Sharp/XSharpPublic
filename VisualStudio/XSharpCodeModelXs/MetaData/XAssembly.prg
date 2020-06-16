@@ -11,12 +11,24 @@ USING System.Diagnostics
 
 BEGIN NAMESPACE XSharpModel
    [DebuggerDisplay("{DisplayName,nq}")];
-   CLASS AssemblyInfo
+   CLASS XAssembly
       // Fields
-      PRIVATE _assembly             AS XAssembly
-      PRIVATE _modified             AS System.DateTime
       PRIVATE _projects             AS List<XProject>
       
+      PROPERTY Id                   AS INT64 AUTO GET INTERNAL SET
+      PROPERTY Types                AS Dictionary<STRING, XTypeReference> AUTO
+      PROPERTY ExtensionMethods     AS IList<XMemberReference> AUTO
+      PROPERTY ImplicitNamespaces   AS IList<STRING> AUTO
+      PROPERTY Namespaces           AS IList<STRING> AUTO
+      PROPERTY ReferencedAssemblies AS IList<STRING> AUTO
+      PROPERTY CustomAttributes     AS IList<STRING> AUTO
+      PROPERTY GlobalClassName      AS STRING AUTO
+      PROPERTY FullName             AS STRING AUTO
+      PROPERTY FileName             AS STRING AUTO
+      PROPERTY IsXSharp             AS LOGIC AUTO
+      PROPERTY Loaded               AS LOGIC AUTO
+      PROPERTY LastChanged          AS DateTime AUTO GET INTERNAL SET
+      PROPERTY Size                 AS INT64 AUTO GET INTERNAL SET      
       
       PUBLIC STATIC PROPERTY DisableAssemblyReferences AS LOGIC AUTO
       PUBLIC STATIC PROPERTY DisableForeignProjectReferences AS LOGIC AUTO
@@ -32,15 +44,35 @@ BEGIN NAMESPACE XSharpModel
       CONSTRUCTOR()
          SUPER()
          SELF:_projects := List<XProject>{}
-         SELF:_assembly := XAssembly{""}
          
          
-      CONSTRUCTOR(_cFileName AS STRING, _dModified AS System.DateTime)
+      CONSTRUCTOR(cFileName AS STRING, dModified AS System.DateTime)
          SELF()
-         SELF:FileName := _cFileName
-         SELF:Modified := _dModified
+         Id                   := -1
+         FileName             := cFileName
+         Types                := Dictionary<STRING, XTypeReference>{StringComparer.OrdinalIgnoreCase}
+         ImplicitNamespaces   := List<STRING>{}
+         Namespaces           := List<STRING>{}
+         ReferencedAssemblies := List<STRING>{}
+         CustomAttributes     := List<STRING>{}
+         GlobalClassName      := ""
+         ExtensionMethods     := List<XMemberReference>{}
+         LastChanged          := dModified
+         Size                 := 0
          SELF:UpdateAssembly()
-         
+ 
+      METHOD Read() AS LOGIC
+         VAR reader := AssemblyReader{FileName}
+         reader:Read(SELF)
+         XDatabase:Read(SELF)
+         VAR fi := FileInfo{FileName}
+         IF SELF:Size != fi:Length .OR. SELF:LastChanged != fi:LastWriteTime
+            XDatabase.Update(SELF)
+         ENDIF
+      
+         RETURN SELF:Loaded
+
+   
          
       METHOD AddProject(project AS XProject) AS VOID
          IF ! SELF:_projects:Contains(project)
@@ -48,11 +80,8 @@ BEGIN NAMESPACE XSharpModel
          ENDIF
          
       METHOD GetType(name AS STRING) AS XTypeReference
-          IF SELF:IsModifiedOnDisk
-            SELF:LoadAssembly()
-         ENDIF
-         IF SELF:_assembly != NULL .AND. SELF:Types:Count == 0
-            SELF:UpdateAssembly()
+         IF SELF:IsModifiedOnDisk .OR. SELF:Types:Count == 0
+            SELF:Read()
          ENDIF
          IF SELF:Types:ContainsKey(name)
             RETURN Types[name]
@@ -61,34 +90,20 @@ BEGIN NAMESPACE XSharpModel
 
             
         
-      INTERNAL METHOD LoadTypesAndNamespaces() AS VOID
-         SELF:_assembly := XAssembly{SELF:FileName}
-         SELF:_assembly:Read()
-         
          
       INTERNAL METHOD LoadAssembly()  AS VOID
-//         WriteOutputMessage("--> LoadAssembly : "+SELF:FileName)
-//         IF String.IsNullOrEmpty(SELF:FileName) .AND. SELF:_reference != NULL
-//            SELF:FileName := SELF:_reference:Path
-//         ENDIF
          IF SELF:Exists
-            SELF:LoadTypesAndNamespaces()
-            
-            SELF:Modified   := SELF:LastWriteTime
-            //				ENDIF
+            SELF:Read()
          ENDIF
-//         WriteOutputMessage("<-- LoadAssembly : "+SELF:FileName)
          
        METHOD RemoveProject(project AS XProject) AS VOID
-         //
          IF SELF:_projects:Contains(project)
             SELF:_projects:Remove(project)
          ENDIF
          
       METHOD Refresh() AS VOID
          IF SELF:Exists
-            VAR currentDT := SELF:LastWriteTime
-            IF currentDT != SELF:Modified
+            IF SELF:IsModifiedOnDisk
                //WriteOutputMessage("AssemblyInfo.Refresh() Assembly was changed: "+SELF:FileName )
                SELF:UpdateAssembly()
             ENDIF
@@ -103,7 +118,7 @@ BEGIN NAMESPACE XSharpModel
          RETURN ""
          
       INTERNAL METHOD UpdateAssembly() AS VOID
-         IF SELF:_assembly:Loaded
+         IF SELF:Loaded
             RETURN
          ENDIF
          IF ! SELF:Exists
@@ -112,7 +127,7 @@ BEGIN NAMESPACE XSharpModel
          ENDIF
          TRY
             //WriteOutputMessage("-->AssemblyInfo.UpdateAssembly load types from assembly "+SELF:FileName )
-            SELF:LoadTypesAndNamespaces()
+            SELF:Read()
          CATCH e as Exception
             WriteOutputMessage(" *** Exception")
             WriteOutputMessage(e:ToString())
@@ -143,65 +158,16 @@ BEGIN NAMESPACE XSharpModel
          RETURN lExists
          
       PROPERTY Exists               AS LOGIC GET _SafeExists(SELF:FileName)
-      PROPERTY FileName             AS STRING AUTO
-      PROPERTY FullName             AS STRING GET SELF:_assembly:FullName
-      PROPERTY Id                   AS Int64  GET SELF:_assembly:Id
-      PROPERTY GlobalClassName      AS STRING GET SELF:_assembly:GlobalClassName
       PROPERTY HasProjects          AS LOGIC GET SELF:_projects:Count > 0
-      PROPERTY ImplicitNamespaces   AS IList<STRING>    GET SELF:_assembly:ImplicitNamespaces
-      PROPERTY IsModifiedOnDisk     AS LOGIC GET SELF:LastWriteTime != SELF:Modified
-      PROPERTY LastWriteTime        AS DateTime GET IIF(SELF:Exists, File.GetLastWriteTime(SELF:FileName), DateTime.MinValue)
-      PROPERTY Modified             AS DateTime GET IIF(SELF:Exists, SELF:_modified, DateTime.MinValue) SET SELF:_modified := VALUE
-      PROPERTY Namespaces           AS IList<STRING> GET SELF:_assembly:Namespaces
-      PROPERTY ReferencedAssemblies AS IList<STRING> GET SELF:_assembly:ReferencedAssemblies
-      PROPERTY RuntimeVersion       AS STRING
-         GET
-            SELF:UpdateAssembly()
-            RETURN SELF:_assembly:RuntimeVersion
-         END GET
-      END PROPERTY
-      PROPERTY Types              AS Dictionary<STRING, XTypeReference> GET _assembly:TypeList
-      
-      PROPERTY HasExtensions      AS LOGIC GET SELF:_assembly:ExtensionMethods:Count > 0
-      PROPERTY Extensions         AS IList<XMemberReference> GET _assembly:ExtensionMethods
+      PROPERTY IsModifiedOnDisk     AS LOGIC GET SELF:LastWriteTimeOnDisk != SELF:LastChanged
+      PROPERTY LastWriteTimeOnDisk  AS DateTime GET IIF(SELF:Exists, File.GetLastWriteTime(SELF:FileName), DateTime.MinValue)
+      PROPERTY RuntimeVersion       AS STRING   AUTO GET INTERNAL SET
+      PROPERTY HasExtensions        AS LOGIC GET SELF:ExtensionMethods:Count > 0
       
       
       STATIC METHOD WriteOutputMessage(message AS STRING) AS VOID
-         XSolution.WriteOutputMessage("XModel.AssemblyInfo " +message )
-         
-      // Nested Types
-      INTERNAL CLASS NameSpaceContainer
-         // Fields
-         INTERNAL _NameSpace := "" AS STRING
-         INTERNAL _Types AS SortedList<STRING, AssemblyInfo.TypeTypes>
-         
-         CONSTRUCTOR(_cNameSpace AS STRING);SUPER()
-            //
-            SELF:_NameSpace := _cNameSpace
-            SELF:_Types := SortedList<STRING, AssemblyInfo.TypeTypes>{}
-            
-         METHOD AddType(typeName AS STRING, type AS AssemblyInfo.TypeTypes) AS VOID
-            //
-            IF ! SELF:_Types:ContainsKey(typeName)
-               //
-               SELF:_Types:Add(typeName, type)
-            ENDIF
-            
-         METHOD Clear() AS VOID
-            //
-            SELF:_Types:Clear()
-      END CLASS
-      
-      INTERNAL ENUM TypeTypes AS LONG
-         MEMBER @@All:=0xff
-         MEMBER @@Class:=1
-         MEMBER @@Delegate:=8
-         MEMBER @@Interface:=4
-         MEMBER @@None:=0
-         MEMBER @@Structure:=2
-      END ENUM
-      
-      
+         XSolution.WriteOutputMessage("XModel.XAssembly " +message )
+
    END CLASS
    
 END NAMESPACE

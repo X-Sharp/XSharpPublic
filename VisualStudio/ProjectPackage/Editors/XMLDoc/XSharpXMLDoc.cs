@@ -18,6 +18,8 @@ namespace XSharp.Project
     {
         static Dictionary<string, IVsXMLMemberIndex> _memberIndexes = new Dictionary<string, IVsXMLMemberIndex>();
         static IVsXMLMemberIndexService _XMLMemberIndexService;
+        static string coreLoc = "";
+        static IVsXMLMemberIndex coreIndex = null;
         static XSharpXMLDocTools()
         {
             _XMLMemberIndexService = (IVsXMLMemberIndexService)XSharpProjectPackage.GetGlobalService(typeof(SVsXMLMemberIndexService));
@@ -31,8 +33,20 @@ namespace XSharp.Project
             if (index != null)
             {
                 _memberIndexes.Add(location, index);
+                coreLoc = location;
+                coreIndex = index;
             }
         }
+
+        public static void Close()
+        {
+            _memberIndexes.Clear();
+            if (coreIndex != null)
+            {
+                _memberIndexes.Add(coreLoc, coreIndex);
+            }
+        }
+
         public static IVsXMLMemberIndex firstfile
         {
             get

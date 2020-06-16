@@ -197,9 +197,9 @@ BEGIN NAMESPACE XSharpModel
          VAR tempMembers := List<IXMember>{}
          SELF:Resolve()
          if ! String.IsNullOrEmpty(elementName)
-            tempMembers:AddRange(SELF:XMembers:Where ( {m => m.Name.StartsWith(elementName, StringComparison.OrdinalIgnoreCase) }))
+            tempMembers:AddRange(SELF:_members:Where ( {m => m.Name.StartsWith(elementName, StringComparison.OrdinalIgnoreCase) }))
          ELSE
-            tempMembers:AddRange(SELF:XMembers)      
+            tempMembers:AddRange(SELF:_members)      
          ENDIF
          RETURN tempMembers
          
@@ -207,9 +207,7 @@ BEGIN NAMESPACE XSharpModel
       IF lExact
          LOCAL result AS List<IXMember>
          result := List<IXMember>{}
-         FOREACH var xmember in SELF:GetMembers(elementName)
-            result:AddRange(SELF:XMembers:Where ( {m => m.Name.Equals(elementName, StringComparison.OrdinalIgnoreCase) }))
-         NEXT
+         result:AddRange(SELF:_members:Where ( {m => m.Name.Equals(elementName, StringComparison.OrdinalIgnoreCase) }))
          RETURN result
       ELSE
          RETURN SELF:GetMembers(elementName)
@@ -227,7 +225,7 @@ BEGIN NAMESPACE XSharpModel
       PROPERTY XMembers AS IList<XMemberReference>
          GET
             SELF:Resolve()
-            RETURN SELF:_members
+            RETURN SELF:_members:ToArray()
          END GET
       END PROPERTY
       

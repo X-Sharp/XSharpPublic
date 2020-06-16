@@ -97,7 +97,6 @@ BEGIN NAMESPACE XSharpModel
 
       PROPERTY Members AS IList<IXMember>  
          GET
-            
             BEGIN LOCK SELF:_members
                RETURN SELF:_members:ToArray()
             END LOCK
@@ -107,7 +106,7 @@ BEGIN NAMESPACE XSharpModel
       PROPERTY XMembers AS IList<XMemberDefinition>
          GET
             BEGIN LOCK SELF:_members
-               RETURN SELF:_members
+               RETURN SELF:_members:ToArray()
             END LOCK
          END GET
       END PROPERTY
@@ -115,16 +114,16 @@ BEGIN NAMESPACE XSharpModel
       METHOD GetMembers(elementName AS STRING) AS IList<IXMember>
          VAR tempMembers := List<IXMember>{}
          if ! String.IsNullOrEmpty(elementName)
-            tempMembers:AddRange(SELF:XMembers:Where({ m => m.Name:StartsWith(elementName, StringComparison.OrdinalIgnoreCase)} ))
+            tempMembers:AddRange(SELF:_members:Where({ m => m.Name:StartsWith(elementName, StringComparison.OrdinalIgnoreCase)} ))
          ELSE
-            tempMembers:AddRange(SELF:XMembers)      
+            tempMembers:AddRange(SELF:_members)      
          ENDIF
          RETURN tempMembers
 
       METHOD GetMembers(elementName AS STRING, lExact as LOGIC) AS IList<IXMember>
          IF lExact
             VAR result := List<IXMember>{}
-            result:AddRange(SELF:XMembers:Where ({ m => m.Name:Equals(elementName, StringComparison.OrdinalIgnoreCase)} ))
+            result:AddRange(SELF:_members:Where ({ m => m.Name:Equals(elementName, StringComparison.OrdinalIgnoreCase)} ))
             RETURN result
          ELSE
             RETURN SELF:GetMembers(elementName)

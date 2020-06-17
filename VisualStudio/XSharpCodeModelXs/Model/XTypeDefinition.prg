@@ -28,6 +28,7 @@ BEGIN NAMESPACE XSharpModel
          SELF:_members     := List<XMemberDefinition>{}
          SELF:_children    := List<XTypeDefinition>{}
          SELF:_signature   := XTypeSignature{""}
+         SELF:ClassType    := XSharpDialect.Core
          SELF:Namespace    := ""
          IF attributes:HasFlag(Modifiers.Static)
             SELF:IsStatic := TRUE
@@ -180,7 +181,7 @@ BEGIN NAMESPACE XSharpModel
       PROPERTY Description       AS STRING GET SELF:GetDescription()
       PROPERTY IsPartial         AS LOGIC  GET SELF:_isPartial SET SELF:_isPartial := VALUE
       PROPERTY IsNested          AS LOGIC  GET SELF:Parent IS XTypeDefinition
-      PROPERTY IsFoxClass        AS LOGIC AUTO
+      PROPERTY ClassType         AS XSharpDialect AUTO
       
       STATIC METHOD CreateGlobalType(xfile AS XFile) AS XTypeDefinition
          VAR globalType := XTypeDefinition{XLiterals.GlobalName, Kind.Class, Modifiers.Public+Modifiers.Static, TextRange{0, 0, 0, 0}, TextInterval{}, xfile}

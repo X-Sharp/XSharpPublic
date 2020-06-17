@@ -91,7 +91,15 @@ BEGIN NAMESPACE XSharpModel
       PROPERTY TypeParameterConstraints as IList<STRING> GET SELF:_signature:TypeParameterContraints:ToArray()
       PROPERTY TypeParameterConstraintsList AS STRING    GET SELF:_signature:TypeParameterConstraintsList
       PROPERTY Location       AS STRING GET SELF:File:FullPath
-       
+      PROPERTY Glyph                   AS LONG     
+         GET 
+            VAR glyph := SUPER:Glyph
+            IF SELF:Name:EndsWith(XLiterals.XppDeclaration)
+               glyph := glyph - (glyph % 6) + ImageListOverlay.ImageListOverlayArrow
+            ENDIF
+            RETURN glyph
+         END GET
+      END PROPERTY
          
       METHOD ToString() AS STRING
          VAR result := i"{Kind} {Name}"

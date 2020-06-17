@@ -555,19 +555,8 @@ namespace XSharpLanguage
                 BuildCompletionList(compList, new CompletionType(staticType, file, ""), Modifiers.Public, true, filterText);
             }
             // And what about Global Types in referenced Assemblies ?
-            foreach (var asm in file.Project.AssemblyReferences)
-            {
-                List<XAssembly> oneAssembly = new List<XAssembly>();
-                oneAssembly.Add(asm);
-                if (string.IsNullOrEmpty(asm.GlobalClassName))
-                    continue;
-                var globalType = SystemTypeController.Lookup(asm.GlobalClassName, oneAssembly);
-                //
-                if (globalType != null)
-                {
-                    BuildCompletionList(compList, new CompletionType(globalType), Modifiers.Public, true, filterText);
-                }
-            }
+            var found = file.Project.FindGlobalMembersInAssemblyReferences(filterText);
+            FillMembers(compList, found, Modifiers.Public, true);
         }
 
         private void AddTypeNames(CompletionList compList, XProject project, string startWith, HashSet<string> usings)
@@ -917,16 +906,9 @@ namespace XSharpLanguage
             return false;
         }
 
-        /// <summary>
-        /// Add Members for our Project Types
-        /// </summary>
-        /// <param name="compList"></param>
-        /// <param name="xType"></param>
-        /// <param name="minVisibility"></param>
-        private void FillMembers(CompletionList compList, IXType xType, Modifiers minVisibility, bool staticOnly, string startWith)
+        private void FillMembers(CompletionList compList, IEnumerable<IXMember> members, Modifiers minVisibility, bool staticOnly)
         {
-            // Add Members for our Project Types
-            foreach (var elt in xType.GetMembers(startWith))
+            foreach (var elt in members)
             {
                 bool add = true;
                 if (IsHiddenName(elt.Name))
@@ -959,78 +941,28 @@ namespace XSharpLanguage
                 {
                     toAdd = "(";
                 }
-                if (!compList.Add(new XSCompletion(elt.Name, elt.Name + toAdd, elt.Prototype, icon, null, elt.Kind,elt.Value)))
+                if (!compList.Add(new XSCompletion(elt.Name, elt.Name + toAdd, elt.Prototype, icon, null, elt.Kind, elt.Value)))
                     break;
             }
         }
-
-   
         /// <summary>
-        /// Fill the CompletionList with MethodInfo
+        /// Add Members for our Project Types
         /// </summary>
         /// <param name="compList"></param>
+        /// <param name="xType"></param>
         /// <param name="minVisibility"></param>
-        /// <param name="staticOnly"></param>
-        /// <param name="startWith"></param>
-        /// <param name="members"></param>
-        private void BuildCompletionListInfo(CompletionList compList, Modifiers minVisibility, bool staticOnly, string startWith, IEnumerable<IXMember> members)
+        private void FillMembers(CompletionList compList, IXType xType, Modifiers minVisibility, bool staticOnly, string startWith)
         {
-            foreach (var member in members.Where(x => nameStartsWith(x.Name, startWith)))
-            {
-                if (XSharpTokenTools.isGenerated(member))
-                    continue;
-                if (IsHiddenName(member.Name))
-                {
-                    continue;
-                }
-                try
-                {
-                    bool isExtension = member.IsExtension;
-                    MemberAnalysis analysis = new MemberAnalysis(member);
-                    
-                    if ((analysis.IsInitialized) && (minVisibility <= analysis.Visibility))
-                    {
-                        if (analysis.Kind == Kind.Constructor)
-                            continue;
-                        if (analysis.IsStatic != staticOnly)
-                        {
-                            continue;
-                        }
-                        if (IsHiddenName(analysis.Name))
-                            continue;
-                        string toAdd = "";
-                        if ((analysis.Kind == Kind.Method))
-                        {
-                            toAdd = "(";
-                        }
-                        //
-                        StandardGlyphItem imgI = analysis.GlyphItem;
-                        if (analysis.IsStatic)
-                        {
-                            imgI = StandardGlyphItem.GlyphItemShortcut;
-                        }
-                        // Remove the STATIC keyword in the Description
-                        if ( isExtension )
-                        {
-                            analysis.IsStatic = false;
-                        }
-                        ImageSource icon = _provider.GlyphService.GetGlyph(analysis.GlyphGroup, imgI);
-                        if (!compList.Add(new XSCompletion(analysis.Name, analysis.Name + toAdd, analysis.Prototype, icon, null, analysis.Kind, analysis.Value)))
-                            break;
-                    }
-                }
-                catch (Exception e)
-                {
-                    WriteOutputMessage("BuildCompletionListInfo failed: ");
-                    XSharpProjectPackage.Instance.DisplayException(e);
-                }
-            }
+            // Add Members for our Project Types
+            FillMembers(compList, xType.GetMembers(startWith), minVisibility, staticOnly);
         }
 
+   
         private void FillExtensions(CompletionList compList, IXType sType, string startWith)
         {
             var extensions = _file.Project.GetExtensions( sType);
-            BuildCompletionListInfo(compList, Modifiers.Public, true, startWith, extensions);
+            var selection = extensions.Where(x => nameStartsWith(x.Name, startWith));
+            FillMembers(compList, selection, Modifiers.Public, true);
         }
 
 
@@ -2980,7 +2912,7 @@ namespace XSharpLanguage
             string expr;
             CompletionElement foundElement = null;
             bool resolved = false;
-            if (tokens?.Count == 0)
+            if (tokens == null || tokens.Count == 0)
             {
                 xVar.TypeName = "OBJECT";
                 return;
@@ -3423,40 +3355,23 @@ namespace XSharpLanguage
             }
             CompletionType cType = null;
             List<string> emptyUsings = new List<string>();
-            foreach (XAssembly asm in xFile.Project.AssemblyReferences)
+            var found = xFile.Project.FindGlobalMembersInAssemblyReferences(currentToken).Where(m => m.Kind.IsField()).ToArray();
+            string declType = null;
+            IXMember field = null;
+            foreach (var member in found)
             {
-                List<XAssembly> oneAssembly = new List<XAssembly>();
-                oneAssembly.Add(asm);
-                if (string.IsNullOrEmpty(asm.GlobalClassName) )
-                    continue;
-                IXType globalType = SystemTypeController.Lookup(asm.GlobalClassName, oneAssembly);
-                //
-                if (globalType != null)
+                if (StringEquals(member.Name, currentToken))
                 {
-                    //  Now, search for the Field
-                    //  Get Public Members, we also get Instance vars, Static members...all that WITHOUT inheritance
-                    var members = globalType.GetFields();
-                    //
-                    string declType = null;
-                    IXMember field = null;
-                    foreach (var member in members)
-                    {
-                        if (StringEquals(member.Name, currentToken))
-                        {
-                            field = member ;
-                            declType = field.TypeName;
-                            break;
-                        }
-                    }
-                    if (declType != null)
-                    {
-                        foundElement = new CompletionElement(field);
-                        return new CompletionType(declType,xFile,xFile.Usings);
-                    }
+                    field = member;
+                    declType = field.TypeName;
+                    break;
                 }
-                //
             }
-            //
+            if (declType != null)
+            {
+                foundElement = new CompletionElement(field);
+                return new CompletionType(declType, xFile, xFile.Usings);
+            }
             return cType;
         }
 
@@ -3480,24 +3395,28 @@ namespace XSharpLanguage
             //
             if (xMethod == null)
             {
-                foreach (var asm in xFile.Project.AssemblyReferences)
+                var found = xFile.Project.FindGlobalMembersInAssemblyReferences(currentToken).Where ( m=> m.Kind.IsMethod() ).ToArray();
+                if (found.Length > 1)
                 {
-                    if (!string.IsNullOrEmpty(asm.GlobalClassName))
+                    foreach (var m in found)
                     {
-                        var type = asm.GetType(asm.GlobalClassName);
-                        if (type != null)
+                        // Find an exact match first
+                        if (string.Compare(m.Name, currentToken, true) == 0)
                         {
-                            var methods = type.GetMethod(currentToken);
-                            if (methods.Length > 0)
-                            {
-                                foundElement = new CompletionElement(methods[0]);
-                                return new CompletionType(type);
-                            }
+                            foundElement = new CompletionElement(m);
+                            return new CompletionType(m.ParentType);
+
                         }
                     }
                 }
+                if (found.Length > 0)
+                {
+                    // no exact match, return the first one
+                    foundElement = new CompletionElement(found[0]);
+                    return new CompletionType(found[0].ParentType);
+                }
             }
-            
+
             foundElement = new CompletionElement(xMethod);
             if (xMethod?.Parent != null)
             {
@@ -3530,21 +3449,25 @@ namespace XSharpLanguage
             {
                 if (xMethod == null)
                 {
-                    foreach (var asm in xFile.Project.AssemblyReferences)
+                    var found = xFile.Project.FindGlobalMembersInAssemblyReferences(currentToken).Where(m => m.Kind.IsField()).ToArray();
+                    if (found.Length > 1)
                     {
-                        if (!string.IsNullOrEmpty(asm.GlobalClassName))
+                        foreach (var m in found)
                         {
-                            var type = asm.GetType(asm.GlobalClassName);
-                            if (type != null)
+                            // Find an exact match first
+                            if (string.Compare(m.Name, currentToken, true) == 0)
                             {
-                                var methods = type.GetMember(currentToken);
-                                if (methods.Length > 0)
-                                {
-                                    foundElement = new CompletionElement(methods[0]);
-                                    return new CompletionType(type);
-                                }
+                                foundElement = new CompletionElement(m);
+                                return new CompletionType(m.ParentType);
+
                             }
                         }
+                    }
+                    if (found.Length > 0)
+                    {
+                        // no exact match, return the first one
+                        foundElement = new CompletionElement(found[0]);
+                        return new CompletionType(found[0].ParentType);
                     }
                 }
             }
@@ -3977,7 +3900,8 @@ namespace XSharpLanguage
             if (start + end > snapshot.Length)
                 end = snapshot.Length - start;
             var memberSource = snapshot.GetText(start, end);
-            var locals = walker.ParseLocals(memberSource, member.Range.StartLine, member.Interval.Start);
+            
+            var locals = walker.ParseLocals(memberSource, member);
             // Add the normal locals for class members
             foreach(var local in locals)
             {

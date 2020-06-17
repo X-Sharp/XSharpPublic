@@ -21,6 +21,7 @@ BEGIN NAMESPACE XSharpModel
       PROPERTY IsReference  AS LOGIC AUTO
       PROPERTY Kind         AS Kind AUTO
       PROPERTY Attributes   AS Modifiers AUTO
+      PROPERTY ClassType    AS INT AUTO
       PROPERTY FileName     AS STRING AUTO
       PROPERTY Project      AS STRING AUTO
       PROPERTY StartLine    AS INT AUTO 

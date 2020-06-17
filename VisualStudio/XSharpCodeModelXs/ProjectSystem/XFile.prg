@@ -209,7 +209,7 @@ BEGIN NAMESPACE XSharpModel
                     IF ! SELF:Parsed
                         BEGIN USING VAR walker := SourceWalker{SELF}
                             TRY
-                                walker:ParseNew(FALSE)
+                                walker:Parse(FALSE)
                                 
                             CATCH exception AS System.Exception
                                 XSolution.WriteException(exception)

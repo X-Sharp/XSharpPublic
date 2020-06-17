@@ -368,6 +368,7 @@ BEGIN NAMESPACE XSharpModel
 		PROPERTY FullName AS STRING GET SELF:GetFullName()
 		
       PROPERTY IsStatic AS LOGIC GET SELF:Modifiers:HasFlag(Modifiers.Static)
+      PROPERTY Location AS STRING GET SELF:Assembly:DisplayName
       
 		PROPERTY HasParameters     AS LOGIC 
          GET 

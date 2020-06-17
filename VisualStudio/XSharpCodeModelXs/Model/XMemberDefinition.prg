@@ -90,9 +90,11 @@ BEGIN NAMESPACE XSharpModel
       PROPERTY TypeParametersList AS STRING              GET SELF:_signature:TypeParametersList
       PROPERTY TypeParameterConstraints as IList<STRING> GET SELF:_signature:TypeParameterContraints:ToArray()
       PROPERTY TypeParameterConstraintsList AS STRING    GET SELF:_signature:TypeParameterConstraintsList
+      PROPERTY Location       AS STRING GET SELF:File:FullPath
+       
          
       METHOD ToString() AS STRING
-         var result := i"{Kind} {Name}"
+         VAR result := i"{Kind} {Name}"
          if SELF:_signature != NULL .and. SELF:_signature:TypeParameters:Count > 0
             result += self:_signature:ToString()
          ENDIF

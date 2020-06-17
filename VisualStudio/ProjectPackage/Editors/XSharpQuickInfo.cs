@@ -424,13 +424,9 @@ namespace XSharp.Project
                     temp.Foreground = txtBrush;
                     content.Add(temp);
 
-                    if (this._type is XTypeReference)
-                    {
-                        var typeref = (XTypeReference) _type;
-                        temp = new Run(" ( " + typeref.Assembly.DisplayName + " )");
-                        temp.Foreground = this.txtBrush;
-                        content.Add(temp);
-                    }
+                    temp = new Run(" ( " + _type.Location + " )");
+                    temp.Foreground = this.kwBrush;
+                    content.Add(temp);
                     //
                     string returns;
                     string remarks;
@@ -722,13 +718,11 @@ namespace XSharp.Project
                         temp.Foreground = this.txtBrush;
                         content.Add(temp);
                     }
-                    if (this.typeMember is XMemberReference)
-                    {
-                        var memref = (XMemberReference)typeMember;
-                        temp = new Run(" ( "+memref.Assembly.DisplayName+" )");
-                        temp.Foreground = this.txtBrush;
-                        content.Add(temp);
-                    }
+                    temp = new Run(" ( " + typeMember.Location + " )");
+                    temp.Foreground = this.kwBrush;
+                    content.Add(temp);
+
+
                     string returns;
                     string remarks;
                     var xmldesc = XSharpXMLDocMember.GetMemberSummary(this.typeMember, null, out returns, out remarks);

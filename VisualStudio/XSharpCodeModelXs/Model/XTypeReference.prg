@@ -238,6 +238,8 @@ BEGIN NAMESPACE XSharpModel
       PROPERTY IsNested  AS LOGIC GET SELF:Parent IS XTypeReference
       PROPERTY IsGeneric as LOGIC GET _typeDef:HasGenericParameters
       PROPERTY IsStatic  AS LOGIC GET _typeDef:Attributes:HasFlag(TypeAttributes.Abstract |TypeAttributes.Sealed)
+      PROPERTY Location AS STRING GET SELF:Assembly:DisplayName
+               
       PROPERTY Children   AS IList<IXType> 
          GET 
             return (IList<IXType> ) SELF:_children

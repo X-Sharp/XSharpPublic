@@ -159,7 +159,7 @@ BEGIN NAMESPACE XSharpModel
 						IF SELF:_projects:Count == 0 .OR. ! SELF:_projects:TryDequeue( OUT project)
 							EXIT
 						ENDIF
-						project:ProjectNode:SetStatusBarText(String.Format("Start scanning project {0}", project:Name))
+						XSolution.SetStatusBarText(String.Format("Start scanning project {0}", project:Name))
                END LOCK
                _currentProject := project
 					WriteOutputMessage("-->> Walker("+project.Name+")")
@@ -169,7 +169,7 @@ BEGIN NAMESPACE XSharpModel
 					IF (System.Environment.ProcessorCount > 1)
 						parallelOptions:MaxDegreeOfParallelism := (System.Environment.ProcessorCount*3)  /4
 					ENDIF
-					project:ProjectNode:SetStatusBarAnimation(TRUE, 0)
+					XSolution.SetStatusBarAnimation(TRUE, 3)
                TRY
 					    Parallel.ForEach(aFiles, parallelOptions, walkOneFile)
                CATCH e as Exception
@@ -179,8 +179,8 @@ BEGIN NAMESPACE XSharpModel
 					BEGIN LOCK SELF
 						_projectsForTypeResolution:Enqueue(project)
 					END LOCK
-					project:ProjectNode:SetStatusBarText("")
-					project:ProjectNode:SetStatusBarAnimation(FALSE, 0)
+					XSolution.SetStatusBarText("")
+					XSolution.SetStatusBarAnimation(FALSE, 3)
 					WriteOutputMessage("<<-- Walker("+project.Name+")")
                
                aFiles := project:OtherFiles:ToArray()
@@ -225,7 +225,7 @@ BEGIN NAMESPACE XSharpModel
 					System.Threading.Thread.Sleep(1000)
             ENDDO
             IF iProcessed % 10 == 0 .OR. iProcessed == aFiles:Length
-				   project:ProjectNode:SetStatusBarText(String.Format("Walking {0} : Processing File {1} of {2}", project:Name, iProcessed, aFiles:Length)) 
+				   XSolution.SetStatusBarText(String.Format("Walking {0} : Processing File {1} of {2}", project:Name, iProcessed, aFiles:Length)) 
             ENDIF
             VAR file := project:FindXFile(fileName)
 				SELF:FileWalk(file)

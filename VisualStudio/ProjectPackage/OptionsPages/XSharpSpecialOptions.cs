@@ -22,5 +22,7 @@ namespace XSharp.Project.OptionsPages
             this.DialogResult = DialogResult.OK;
             this.Close();
         }
+
+
     }
 }

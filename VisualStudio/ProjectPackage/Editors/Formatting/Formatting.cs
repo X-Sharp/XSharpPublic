@@ -284,10 +284,10 @@ namespace XSharp.Project
                 }
             }
         }
-
+  
         private void FormatDocument()
         {
-            XSharpProjectPackage.Instance.DisplayOutPutMessage("CommandFilter.FormatDocument() -->>");
+            WriteOutputMessage("CommandFilter.FormatDocument() -->>");
             if (!_buffer.CheckEditAccess())
             {
                 // can't edit !
@@ -447,13 +447,13 @@ namespace XSharp.Project
                     ts.Hours, ts.Minutes, ts.Seconds,
                     ts.Milliseconds / 10);
                 //
-                XSharpProjectPackage.Instance.DisplayOutPutMessage("FormatDocument : Done in " + elapsedTime);
+                WriteOutputMessage("FormatDocument : Done in " + elapsedTime);
 #endif
             }
             else
                 formatCaseForWholeBuffer();
             //
-            XSharpProjectPackage.Instance.DisplayOutPutMessage("CommandFilter.FormatDocument() <<--");
+            WriteOutputMessage("CommandFilter.FormatDocument() <<--");
         }
 
         /// <summary>
@@ -1196,7 +1196,7 @@ namespace XSharp.Project
         /// <returns></returns>
         private int getDesiredIndentation(ITextSnapshotLine line, ITextEdit editSession, bool alignOnPrev)
         {
-            XSharpProjectPackage.Instance.DisplayOutPutMessage($"CommandFilter.getDesiredIndentation({line.LineNumber + 1})");
+            WriteOutputMessage($"CommandFilter.getDesiredIndentation({line.LineNumber + 1})");
             try
             {
                 //
@@ -1260,7 +1260,7 @@ namespace XSharp.Project
                                 }
                                 catch (Exception ex)
                                 {
-                                    XSharpProjectPackage.Instance.DisplayOutPutMessage("Indentation of previous line failed");
+                                    WriteOutputMessage("Indentation of previous line failed");
                                     XSharpProjectPackage.Instance.DisplayException(ex);
                                 }
                             }
@@ -1313,7 +1313,7 @@ namespace XSharp.Project
                                 }
                                 catch (Exception ex)
                                 {
-                                    XSharpProjectPackage.Instance.DisplayOutPutMessage("Error indenting of current line ");
+                                    WriteOutputMessage("Error indenting of current line ");
                                     XSharpProjectPackage.Instance.DisplayException(ex);
                                 }
                             }
@@ -1329,7 +1329,7 @@ namespace XSharp.Project
             }
             catch (Exception ex)
             {
-                XSharpProjectPackage.Instance.DisplayOutPutMessage("SmartIndent.GetDesiredIndentation failed: ");
+                WriteOutputMessage("SmartIndent.GetDesiredIndentation failed: ");
                 XSharpProjectPackage.Instance.DisplayException(ex);
             }
             return _lastIndentValue;
@@ -1820,7 +1820,7 @@ namespace XSharp.Project
 
         private void FormatDocumentV2()
         {
-            XSharpProjectPackage.Instance.DisplayOutPutMessage("CommandFilter.FormatDocumentV2() -->>");
+            WriteOutputMessage("CommandFilter.FormatDocumentV2() -->>");
             if (!_buffer.CheckEditAccess())
             {
                 // can't edit !
@@ -2020,13 +2020,13 @@ namespace XSharp.Project
                     ts.Hours, ts.Minutes, ts.Seconds,
                     ts.Milliseconds / 10);
                 //
-                XSharpProjectPackage.Instance.DisplayOutPutMessage("FormatDocument : Done in " + elapsedTime);
+                WriteOutputMessage("FormatDocument : Done in " + elapsedTime);
 #endif
             }
             else
                 formatCaseForWholeBuffer();
             //
-            XSharpProjectPackage.Instance.DisplayOutPutMessage("CommandFilter.FormatDocument() <<--");
+            WriteOutputMessage("CommandFilter.FormatDocument() <<--");
         }
 
         private int getLineLengthV2(ITextSnapshot snapshot, int start)
@@ -2111,7 +2111,7 @@ namespace XSharp.Project
                     IToken openKeyword = context.GetFirstToken(true);
                     if (openKeyword == null)
                     {
-                        XSharpProjectPackage.Instance.DisplayOutPutMessage("FormatDocument : Error when moving in Tokens");
+                        WriteOutputMessage("FormatDocument : Error when moving in Tokens");
                         continue; // This should never happen
                     }
                     startTokenType = openKeyword.Type;
@@ -2142,7 +2142,7 @@ namespace XSharp.Project
                                 IToken openKeyword = context.GetFirstToken(true);
                                 if (openKeyword == null)
                                 {
-                                    XSharpProjectPackage.Instance.DisplayOutPutMessage("FormatDocument : Error when moving in Tokens");
+                                    WriteOutputMessage("FormatDocument : Error when moving in Tokens");
                                     continue; // This should never happen
                                 }
                                 context.MoveBack();
@@ -2201,7 +2201,7 @@ namespace XSharp.Project
                                 IToken openKeyword = context.GetFirstToken(true);
                                 if (openKeyword == null)
                                 {
-                                    XSharpProjectPackage.Instance.DisplayOutPutMessage("FormatDocument : Error when moving in Tokens");
+                                    WriteOutputMessage("FormatDocument : Error when moving in Tokens");
                                     continue; // This should never happen
                                 }
                                 context.MoveBack();
@@ -2326,7 +2326,7 @@ namespace XSharp.Project
             {
                 return;
             }
-            XSharpProjectPackage.Instance.DisplayOutPutMessage($"CommandFilter.formatLineCaseV2({line.LineNumber + 1})");
+            WriteOutputMessage($"CommandFilter.formatLineCaseV2({line.LineNumber + 1})");
             //
             context.MoveTo(line.Start);
             IToken token = context.GetToken(true);

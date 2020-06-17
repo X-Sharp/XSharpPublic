@@ -13,6 +13,7 @@ using Microsoft.VisualStudio.Utilities;
 using Microsoft.VisualStudio.Shell;
 using XSharpColorizer;
 using XSharp.Project;
+using XSharp.Project.OptionsPages;
 
 namespace XSharpLanguage
 {
@@ -40,6 +41,9 @@ namespace XSharpLanguage
         private bool _disposed = false;
         private XAMLCompletionSourceProvider _provider;
         private String _file;
+        IntellisenseOptionsPage optionsPage = null;
+        XSharpProjectPackage package;
+
 
         internal static bool StringEquals(string lhs, string rhs)
         {
@@ -53,11 +57,20 @@ namespace XSharpLanguage
             _provider = provider;
             _buffer = buffer;
             _file = buffer.GetXAMLFile();
-        }
+            package = XSharpProjectPackage.Instance;
+            optionsPage = package.GetIntellisenseOptionsPage();
 
+        }
+        internal void WriteOutputMessage(string strMessage)
+        {
+            if (optionsPage.EnableCodeCompletionLog && optionsPage.EnableOutputPane)
+            {
+                XSharpProjectPackage.Instance.DisplayOutPutMessage(strMessage);
+            }
+        }
         public void AugmentCompletionSession(ICompletionSession session, IList<CompletionSet> completionSets)
         {
-            XSharpProjectPackage.Instance.DisplayOutPutMessage("-->> XAML AugmentCompletionSessions");
+            WriteOutputMessage("-->> XAML AugmentCompletionSessions");
             try
             {
                 // Where does the StartSession has been triggered ?
@@ -90,13 +103,13 @@ namespace XSharpLanguage
             }
             catch (Exception ex)
             {
-                XSharpProjectPackage.Instance.DisplayOutPutMessage("XAML AugmentCompletionSessions failed " );
+                WriteOutputMessage("XAML AugmentCompletionSessions failed " );
                 XSharpProjectPackage.Instance.DisplayException(ex);
             }
             finally
             {
             }
-            XSharpProjectPackage.Instance.DisplayOutPutMessage("<<-- XAML AugmentCompletionSessions");
+            WriteOutputMessage("<<-- XAML AugmentCompletionSessions");
         }
 
         public void Dispose()

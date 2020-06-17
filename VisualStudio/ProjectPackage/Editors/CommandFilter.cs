@@ -32,6 +32,7 @@ using Microsoft.VisualStudio.Shell.Interop;
 using Microsoft.VisualStudio.Project;
 using LanguageService.CodeAnalysis.XSharp;
 using Microsoft;
+using XSharp.Project.OptionsPages;
 
 namespace XSharp.Project
 {
@@ -53,6 +54,7 @@ namespace XSharp.Project
         OptionsPages.IntellisenseOptionsPage _optionsPage;
         List<int> _linesToSync;
         bool _suspendSync = false;
+
 
 
         private bool getTagAggregator()
@@ -99,7 +101,7 @@ namespace XSharp.Project
         }
         private void _classifier_ClassificationChanged(object sender, ClassificationChangedEventArgs e)
         {
-            XSharpProjectPackage.Instance.DisplayOutPutMessage("CommandFilter.ClassificationChanged()");
+            WriteOutputMessage("CommandFilter.ClassificationChanged()");
             if (_suspendSync)
                 return;
             getEditorPreferences(TextView);
@@ -397,7 +399,7 @@ namespace XSharp.Project
             {
                 return;
             }
-            XSharpProjectPackage.Instance.DisplayOutPutMessage($"CommandFilter.formatLineCase({line.LineNumber + 1})");
+            WriteOutputMessage($"CommandFilter.formatLineCase({line.LineNumber + 1})");
             // get classification of the line.
             // when the line is part of a multi line comment then do nothing
             // to detect that we take the start of the line and check if it is in
@@ -477,6 +479,13 @@ namespace XSharp.Project
             }
 
         }
+        internal void WriteOutputMessage(string strMessage)
+        {
+            if (_optionsPage.EnableCodeCompletionLog && _optionsPage.EnableOutputPane)
+            {
+                XSharpProjectPackage.Instance.DisplayOutPutMessage(strMessage);
+            }
+        }
         private void formatCaseForWholeBuffer()
         {
             if (XSharpProjectPackage.Instance.DebuggerIsRunning)
@@ -486,7 +495,7 @@ namespace XSharp.Project
             getEditorPreferences(TextView);
             if (_optionsPage.KeywordCase != 0)
             {
-                XSharpProjectPackage.Instance.DisplayOutPutMessage("--> CommandFilter.formatCaseForBuffer()");
+                WriteOutputMessage("--> CommandFilter.formatCaseForBuffer()");
                 /*
                 bool changed = false;
                 // wait until we can work
@@ -523,7 +532,7 @@ namespace XSharp.Project
                     var classify = _buffer.Properties.GetProperty<XSharpClassifier>(typeof(XSharpClassifier));
                     classify.Classify();
                 }
-                XSharpProjectPackage.Instance.DisplayOutPutMessage("<-- CommandFilter.formatCaseForBuffer()");
+                WriteOutputMessage("<-- CommandFilter.formatCaseForBuffer()");
             }
             return;
         }
@@ -744,7 +753,7 @@ namespace XSharp.Project
             {
                 if (_noGotoDefinition)
                     return;
-                XSharpProjectPackage.Instance.DisplayOutPutMessage("CommandFilter.GotoDefn()");
+                WriteOutputMessage("CommandFilter.GotoDefn()");
                 XSharpModel.ModelWalker.Suspend();
                 // First, where are we ?
                 int caretPos = this.TextView.Caret.Position.BufferPosition.Position;
@@ -821,7 +830,7 @@ namespace XSharp.Project
             }
             catch (Exception ex)
             {
-                XSharpProjectPackage.Instance.DisplayOutPutMessage("Goto failed: ");
+                WriteOutputMessage("Goto failed: ");
                 XSharpProjectPackage.Instance.DisplayException(ex);
             }
             finally
@@ -880,14 +889,14 @@ namespace XSharp.Project
 
         private void FilterCompletionSession(char ch)
         {
-            XSharpProjectPackage.Instance.DisplayOutPutMessage("CommandFilter.FilterCompletionSession()");
+            WriteOutputMessage("CommandFilter.FilterCompletionSession()");
             if (_completionSession == null)
                 return;
 
-            XSharpProjectPackage.Instance.DisplayOutPutMessage(" --> in Filter");
+            WriteOutputMessage(" --> in Filter");
             if (_completionSession.SelectedCompletionSet != null)
             {
-                XSharpProjectPackage.Instance.DisplayOutPutMessage(" --> Filtering ?");
+                WriteOutputMessage(" --> Filtering ?");
                 _completionSession.SelectedCompletionSet.Filter();
                 if (_completionSession.SelectedCompletionSet.Completions.Count == 0)
                 {
@@ -895,7 +904,7 @@ namespace XSharp.Project
                 }
                 else
                 {
-                    XSharpProjectPackage.Instance.DisplayOutPutMessage(" --> Selecting ");
+                    WriteOutputMessage(" --> Selecting ");
                     _completionSession.SelectedCompletionSet.SelectBestMatch();
                     _completionSession.SelectedCompletionSet.Recalculate();
                 }
@@ -930,7 +939,7 @@ namespace XSharp.Project
             bool commit = false;
             bool moveBack = false;
             ITextCaret caret = null;
-            XSharpProjectPackage.Instance.DisplayOutPutMessage("CommandFilter.CompleteCompletionSession()");
+            WriteOutputMessage("CommandFilter.CompleteCompletionSession()");
             if (_completionSession.SelectedCompletionSet != null)
             {
                 if ((_completionSession.SelectedCompletionSet.Completions.Count > 0) && (_completionSession.SelectedCompletionSet.SelectionStatus.IsSelected))
@@ -948,7 +957,7 @@ namespace XSharp.Project
                         {
                             formatKeyword(completion);
                         }
-                        XSharpProjectPackage.Instance.DisplayOutPutMessage(" --> select " + completion.InsertionText);
+                        WriteOutputMessage(" --> select " + completion.InsertionText);
                         if (completion.InsertionText.EndsWith("("))
                         {
                             moveBack = true;
@@ -1028,7 +1037,7 @@ namespace XSharp.Project
             }
             if (commit)
             {
-                XSharpProjectPackage.Instance.DisplayOutPutMessage(" --> Commit");
+                WriteOutputMessage(" --> Commit");
                 _completionSession.Commit();
                 if (moveBack && (caret != null))
                 {
@@ -1038,7 +1047,7 @@ namespace XSharp.Project
                 return true;
             }
 
-            XSharpProjectPackage.Instance.DisplayOutPutMessage(" --> Dismiss");
+            WriteOutputMessage(" --> Dismiss");
             _completionSession.Dismiss();
             return false;
         }
@@ -1067,7 +1076,7 @@ namespace XSharp.Project
 
         bool StartCompletionSession(uint nCmdId, char typedChar)
         {
-            XSharpProjectPackage.Instance.DisplayOutPutMessage("CommandFilter.StartCompletionSession()");
+            WriteOutputMessage("CommandFilter.StartCompletionSession()");
 
             if (_completionSession != null)
             {
@@ -1103,7 +1112,7 @@ namespace XSharp.Project
             }
             catch (Exception e)
             {
-                XSharpProjectPackage.Instance.DisplayOutPutMessage("Startcompletion failed");
+                WriteOutputMessage("Startcompletion failed");
                 XSharpProjectPackage.Instance.DisplayException(e);
             }
             return true;
@@ -1121,7 +1130,7 @@ namespace XSharp.Project
         private void OnCompletionSessionCommitted(object sender, EventArgs e)
         {
             // it MUST be the case....
-            XSharpProjectPackage.Instance.DisplayOutPutMessage("CommandFilter.OnCompletionSessionCommitted()");
+            WriteOutputMessage("CommandFilter.OnCompletionSessionCommitted()");
 
             if (_completionSession.SelectedCompletionSet.SelectionStatus.Completion != null)
             {
@@ -1161,7 +1170,7 @@ namespace XSharp.Project
 
         bool StartSignatureSession(bool comma, XSharpModel.CompletionType cType = null, string methodName = null)
         {
-            XSharpProjectPackage.Instance.DisplayOutPutMessage("CommandFilter.StartSignatureSession()");
+            WriteOutputMessage("CommandFilter.StartSignatureSession()");
 
             if (_signatureSession != null)
                 return false;
@@ -1265,7 +1274,7 @@ namespace XSharp.Project
                 }
                 catch (Exception e)
                 {
-                    XSharpProjectPackage.Instance.DisplayOutPutMessage("Start Signature session failed:");
+                    WriteOutputMessage("Start Signature session failed:");
                     XSharpProjectPackage.Instance.DisplayException(e);
                 }
             }
@@ -1340,7 +1349,7 @@ namespace XSharp.Project
         /// <param name="line"></param>
         static public void FormatLineIndent(ITextView TextView, ITextEdit editSession, ITextSnapshotLine line, int desiredIndentation)
         {
-            XSharpProjectPackage.Instance.DisplayOutPutMessage($"CommandFilterHelper.FormatLineIndent({line.LineNumber + 1})");
+            //CommandFilter.WriteOutputMessage($"CommandFilterHelper.FormatLineIndent({line.LineNumber + 1})");
             int tabSize = TextView.Options.GetTabSize();
             int indentSize = TextView.Options.GetIndentSize();
             bool useSpaces = TextView.Options.IsConvertTabsToSpacesEnabled();

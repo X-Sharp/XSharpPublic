@@ -27,6 +27,7 @@ using System.Threading.Tasks;
 using System.Collections.Generic;
 using Microsoft;
 using Microsoft.VisualStudio.ComponentModelHost;
+using Microsoft.VisualStudio.Text.Adornments;
 /*
 Substitution strings
 String	Description
@@ -250,7 +251,14 @@ namespace XSharp.Project
         internal IntellisenseOptionsPage GetIntellisenseOptionsPage()
         {
             if (_intellisensePage == null)
+            {
                 _intellisensePage = (IntellisenseOptionsPage)GetDialogPage(typeof(IntellisenseOptionsPage));
+            }
+            XSharpModel.XSolution.EnableLogging = _intellisensePage.EnableOutputPane;
+            XSharpModel.XSolution.EnableDatabaseLog = _intellisensePage.EnableDatabaseLog;
+            XSharpModel.XSolution.EnableParseLog = _intellisensePage.EnableParserLog;
+            XSharpModel.XSolution.EnableReferenceInfoLog = _intellisensePage.EnableReferenceInfoLog;
+            XSharpModel.XSolution.EnableTypelookupLog = _intellisensePage.EnableTypelookupLog;
             return _intellisensePage;
         }
 

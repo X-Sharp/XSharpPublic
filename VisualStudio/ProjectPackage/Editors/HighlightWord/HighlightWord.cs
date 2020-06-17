@@ -203,7 +203,7 @@ namespace XSharp.Project.Editors.HighlightWord
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine("HighlightWordTag Exception: " + ex.Message);
+                XSharpProjectPackage.Instance.DisplayOutPutMessage("HighlightWordTag Exception: " + ex.Message);
             }
         }
         static bool WordExtentIsValid(SnapshotPoint currentRequest, TextExtent word)

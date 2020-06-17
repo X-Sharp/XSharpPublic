@@ -5,6 +5,7 @@ using Microsoft.VisualStudio.Language.Intellisense;
 using Microsoft.VisualStudio.Text;
 using System.Reflection;
 using XSharpModel;
+using XSharp.Project.OptionsPages;
 
 namespace XSharp.Project
 {
@@ -197,17 +198,27 @@ namespace XSharp.Project
         private ITextBuffer m_textBuffer;
         private ISignatureHelpSession m_session;
         private ITrackingSpan m_applicableToSpan;
+        IntellisenseOptionsPage optionsPage = null;
+        XSharpProjectPackage package;
 
         public XSharpSignatureHelpSource(ITextBuffer textBuffer)
         {
             m_textBuffer = textBuffer;
+            package = XSharpProjectPackage.Instance;
+            optionsPage = package.GetIntellisenseOptionsPage();
         }
-
+        internal void Debug(string strMessage)
+        {
+            if (optionsPage.EnableParameterLog && optionsPage.EnableOutputPane)
+            {
+                XSharpProjectPackage.Instance.DisplayOutPutMessage(strMessage);
+            }
+        }
         public void AugmentSignatureHelpSession(ISignatureHelpSession session, IList<ISignature> signatures)
         {
             try
             {
-                XSharpProjectPackage.Instance.DisplayOutPutMessage("XSharpSignatureHelpSource.AugmentSignatureHelpSession()");
+                Debug("XSharpSignatureHelpSource.AugmentSignatureHelpSession()");
                 XSharpModel.ModelWalker.Suspend();
                 ITextSnapshot snapshot = m_textBuffer.CurrentSnapshot;
                 int position = session.GetTriggerPoint(m_textBuffer).GetPosition(snapshot);
@@ -264,8 +275,8 @@ namespace XSharp.Project
             }
             catch (Exception ex)
             {
-                XSharpProjectPackage.Instance.DisplayOutPutMessage("XSharpSignatureHelpSource.AugmentSignatureHelpSession Exception failed " );
-                XSharpProjectPackage.Instance.DisplayException(ex);
+                package.DisplayOutPutMessage("XSharpSignatureHelpSource.AugmentSignatureHelpSession Exception failed " );
+                package.DisplayException(ex);
             }
             finally
             {
@@ -286,7 +297,7 @@ namespace XSharp.Project
                 doc = XSharpXMLDocMember.GetMemberSummary(member, file.Project, out returns, out remarks);
             }
 
-            XSharpProjectPackage.Instance.DisplayOutPutMessage("XSharpSignatureHelpSource.CreateSignature()");
+            Debug("XSharpSignatureHelpSource.CreateSignature()");
             var sig = new XSharpVsSignature(textBuffer, methodSig, doc, null);
             var names = new List<String>();
             var descriptions = new List<String>();
@@ -383,7 +394,6 @@ namespace XSharp.Project
 
         internal void OnSubjectBufferChanged(object sender, TextContentChangedEventArgs e)
         {
-            //
             this.ComputeCurrentParameter();
         }
 

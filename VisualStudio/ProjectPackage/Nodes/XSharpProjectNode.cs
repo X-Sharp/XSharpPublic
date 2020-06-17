@@ -1437,6 +1437,18 @@ namespace XSharp.Project
         {
             try
             {
+                /*
+                    SBAI_Index 	Value1 	Description
+                    SBAI_General 	0 	Standard animation icon.
+                    SBAI_Print 	1 	Animation when printing.
+                    SBAI_Save 	2 	Animation when saving files.
+                    SBAI_Deploy 	3 	Animation when deploying the solution.
+                    SBAI_Synch 	4 	Animation when synchronizing files over the network.
+                    SBAI_Build 	5 	Animation when building the solution.
+                    SBAI_Find 	6 	Animation when searching.
+
+                    The values of SBAI_Index are taken from vsshell.idl.
+                */
                 getStatusBar();
                 if (statusBar != null)
                 {

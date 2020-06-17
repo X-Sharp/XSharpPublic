@@ -124,16 +124,28 @@ namespace XSharp.Project
                 result = data.GetReturnsText(out returns);
                 result = data.GetRemarksText(out remarks);
             }
-            if (!string.IsNullOrEmpty(summary))
-                summary = summary.Replace(". ", ".\r");
-            if (!string.IsNullOrEmpty(returns))
-                returns = returns.Replace(". ", ".\r");
-            if (!string.IsNullOrEmpty(remarks))
-                remarks = remarks.Replace(". ", ".\r");
+            summary = CleanUpResult(summary);
+            returns = CleanUpResult(returns);
+            remarks = CleanUpResult(remarks);
             return summary;
         }
+        static string CleanUpResult(string source)
+        {
+            if (! string.IsNullOrEmpty(source))
+            {
+                if (source.Contains("\t"))
+                {
+                    source = source.Replace("\t", " ");
+                }
+                while (source.Contains("  "))
+                {
+                    source = source.Replace("  ", " ");
+                }
+                source = source.Replace(". ", ".\r");
+            }
+            return source;
+        }
 
-        
 
         /// <summary>
         /// Get the summary of the type
@@ -258,11 +270,7 @@ namespace XSharp.Project
                 {
                     result = data.GetParamTextAt(i, out paramName, out paramDesc);
                     names.Add(paramName);
-                    if (!string.IsNullOrEmpty(paramDesc))
-                    {
-                        paramDesc = paramDesc.Replace(". ", ".\r");
-                    }
-
+                    paramDesc = CleanUpResult(paramDesc);
                     descriptions.Add(paramDesc);
                 }
             }

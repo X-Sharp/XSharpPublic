@@ -226,6 +226,7 @@ BEGIN NAMESPACE XSharpModel
       METHOD Parse( tokenStream AS ITokenStream, lBlocks AS LOGIC, lLocals AS LOGIC) AS VOID
          LOCAL aAttribs        AS IList<IToken>
          LOCAL cXmlDoc   := "" AS STRING
+         Log(i"Start")
          _collectLocals := lLocals
          _collectBlocks := lBlocks
          _stream        := (BufferedTokenStream) tokenStream 
@@ -374,7 +375,7 @@ BEGIN NAMESPACE XSharpModel
             last:Range     := last:Range:WithEnd(token)
             last:Interval  := last:Interval:WithEnd(token)
          ENDIF
-            
+         Log(i"Completed, found {_EntityList.Count} entities and {typelist.Count} types")
          IF SELF:_EntityList:Count > 0
             VAR lastEntity          := SELF:_EntityList:Last()
             lastEntity:Range        := lastEntity:Range:WithEnd(lastToken)
@@ -3135,6 +3136,12 @@ callingconvention	: Convention=(CLIPPER | STRICT | PASCAL | ASPEN | WINCALL | CA
          NEXT
          RETURN sb:ToString()
          
+         
+      STATIC METHOD Log(cMessage AS STRING) AS VOID
+         IF XSolution.EnableParseLog .AND. XSolution.EnableLogging
+            XSolution.WriteOutputMessage("XParser: "+cMessage)
+         ENDIF
+         RETURN         
    END CLASS
    
    DELEGATE DelEndToken(iToken AS LONG) AS LOGIC

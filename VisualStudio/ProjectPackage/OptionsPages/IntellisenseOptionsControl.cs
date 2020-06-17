@@ -156,6 +156,15 @@ namespace XSharp.Project.OptionsPages
             form.chkDisableForeignProjectReferences.Checked = optionsPage.DisableForeignProjectReferences;
             form.chkDisableXSharpProjectReferences.Checked = optionsPage.DisableXSharpProjectReferences;
             form.chkEnableOutputPane.Checked = optionsPage.EnableOutputPane;
+            form.chkEnableDatabaseLog.Checked = optionsPage.EnableDatabaseLog;
+            form.chkEnableParserLog.Checked = optionsPage.EnableParserLog;
+            form.chkEnableParameterTipsLog.Checked = optionsPage.EnableParameterLog;
+            form.chkEnableBraceMatchLog.Checked = optionsPage.EnableBraceMatchLog;
+            form.chkEnableCodeCompletionLog.Checked = optionsPage.EnableCodeCompletionLog;
+            form.chkEnableQuickInfoLog.Checked = optionsPage.EnableQuickInfoLog;
+            form.chkEnableTypeLookupLog.Checked = optionsPage.EnableTypelookupLog;
+            form.chkEnableReferenceLog.Checked = optionsPage.EnableReferenceInfoLog;
+            
             form.ShowDialog();
             if (form.DialogResult == DialogResult.OK)
             {
@@ -177,8 +186,16 @@ namespace XSharp.Project.OptionsPages
                 optionsPage.DisableForeignProjectReferences = form.chkDisableForeignProjectReferences.Checked;
                 optionsPage.DisableXSharpProjectReferences = form.chkDisableXSharpProjectReferences.Checked;
                 optionsPage.EnableOutputPane = form.chkEnableOutputPane.Checked;
-            }
+                optionsPage.EnableDatabaseLog = form.chkEnableDatabaseLog.Checked;
+                optionsPage.EnableParserLog = form.chkEnableParserLog.Checked;
+                optionsPage.EnableParameterLog = form.chkEnableParameterTipsLog.Checked  ;
+                optionsPage.EnableBraceMatchLog = form.chkEnableBraceMatchLog.Checked  ;
+                optionsPage.EnableCodeCompletionLog = form.chkEnableCodeCompletionLog.Checked ;
+                optionsPage.EnableQuickInfoLog = form.chkEnableQuickInfoLog.Checked ;
+                optionsPage.EnableTypelookupLog = form.chkEnableTypeLookupLog.Checked  ;
+                optionsPage.EnableReferenceInfoLog = form.chkEnableReferenceLog.Checked ;
 
+            }
         }
 
         private void chkShowMembersOfCurrentType_CheckedChanged(object sender, EventArgs e)

@@ -46,9 +46,12 @@ namespace XSharp.Project
         private ITrackingSpan lastSpan = null;
         private int lastVersion = -1;
 
-        static void WriteOutputMessage(string message)
+        internal void WriteOutputMessage(string message)
         {
-            XSharpProjectPackage.Instance.DisplayOutPutMessage("XSharp.QuickInfoSource :" + message);
+            if (_optionsPage.EnableQuickInfoLog && _optionsPage.EnableOutputPane)
+            {
+                XSharpProjectPackage.Instance.DisplayOutPutMessage("XSharp.QuickInfoSource :" + message);
+            }
         }
 
         //static bool skipFirst = true;
@@ -140,7 +143,7 @@ namespace XSharp.Project
                 //}
                 // LookUp for the BaseType, reading the TokenList (From left to right)
                 XSharpLanguage.CompletionElement gotoElement;
-                String currentNS = "";
+                string currentNS = "";
                 if (currentNamespace != null)
                 {
                     currentNS = currentNamespace.Name;
@@ -420,6 +423,14 @@ namespace XSharp.Project
                     temp = new Run(this.Prototype);
                     temp.Foreground = txtBrush;
                     content.Add(temp);
+
+                    if (this._type is XTypeReference)
+                    {
+                        var typeref = (XTypeReference) _type;
+                        temp = new Run(" ( " + typeref.Assembly.DisplayName + " )");
+                        temp.Foreground = this.txtBrush;
+                        content.Add(temp);
+                    }
                     //
                     string returns;
                     string remarks;
@@ -434,6 +445,7 @@ namespace XSharp.Project
                             temp = new Run("\rReturns: ");
                             temp.Foreground = this.kwBrush;
                             content.Add(temp);
+
                             temp = new Run(" " + returns);
                             temp.Foreground = this.txtBrush;
                             content.Add(temp);
@@ -443,6 +455,7 @@ namespace XSharp.Project
                             temp = new Run("\rRemarks:");
                             temp.Foreground = this.kwBrush;
                             content.Add(temp);
+                            
                             temp = new Run(" " + remarks);
                             temp.Foreground = this.txtBrush;
                             content.Add(temp);
@@ -546,6 +559,12 @@ namespace XSharp.Project
                     content.Add(temp);
                     content.AddRange(vars);
                     //
+                    if (!String.IsNullOrEmpty(this.Value))
+                    {
+                        temp = new Run(" := " + this.Value);
+                        temp.Foreground = this.txtBrush;
+                        content.Add(temp);
+                    }
                     if (this.Kind.HasReturnType())
                     {
                         temp = new Run(" "+ _optionsPage.As());
@@ -555,13 +574,7 @@ namespace XSharp.Project
                         temp.Foreground = this.txtBrush;
                         content.Add(temp);
                     }
-                    if (!String.IsNullOrEmpty(this.Value))
-                    {
-                        temp = new Run(" := " + this.Value);
-                        temp.Foreground = this.txtBrush;
-                        content.Add(temp);
-                    }
-                    //
+                     //
                     return content;
                 }
             }
@@ -694,6 +707,12 @@ namespace XSharp.Project
                     content.Add(temp);
                     content.AddRange(vars);
                     //
+                    if (!String.IsNullOrEmpty(this.typeMember.Value))
+                    {
+                        temp = new Run(" := " + this.typeMember.Value);
+                        temp.Foreground = this.txtBrush;
+                        content.Add(temp);
+                    }
                     if (this.typeMember.Kind.HasReturnType() && !String.IsNullOrEmpty(this.typeMember.TypeName))
                     {
                         temp = new Run(" " + _optionsPage.As());
@@ -703,9 +722,10 @@ namespace XSharp.Project
                         temp.Foreground = this.txtBrush;
                         content.Add(temp);
                     }
-                    if (!String.IsNullOrEmpty(this.typeMember.Value))
+                    if (this.typeMember is XMemberReference)
                     {
-                        temp = new Run(" := " + this.typeMember.Value);
+                        var memref = (XMemberReference)typeMember;
+                        temp = new Run(" ( "+memref.Assembly.DisplayName+" )");
                         temp.Foreground = this.txtBrush;
                         content.Add(temp);
                     }

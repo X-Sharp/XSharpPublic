@@ -93,9 +93,16 @@ namespace XSharpLanguage
             _optionsPage = package.GetIntellisenseOptionsPage();
         }
 
+        internal static void WriteOutputMessage(string strMessage)
+        {
+            if (_optionsPage.EnableCodeCompletionLog && _optionsPage.EnableOutputPane)
+            {
+                XSharpProjectPackage.Instance.DisplayOutPutMessage(strMessage);
+            }
+        }
         public void AugmentCompletionSession(ICompletionSession session, IList<CompletionSet> completionSets)
         {
-            XSharpProjectPackage.Instance.DisplayOutPutMessage("-->> AugmentCompletionSessions");
+            WriteOutputMessage("-->> AugmentCompletionSessions");
             try
             {
                 if (_optionsPage.DisableCodeCompletion)
@@ -530,14 +537,14 @@ namespace XSharpLanguage
             }
             catch (Exception ex)
             {
-                XSharpProjectPackage.Instance.DisplayOutPutMessage("AugmentCompletionSessions failed: ");
+                WriteOutputMessage("AugmentCompletionSessions failed: ");
                 XSharpProjectPackage.Instance.DisplayException(ex);
             }
             finally
             {
                 XSharpModel.ModelWalker.Resume();
             }
-            XSharpProjectPackage.Instance.DisplayOutPutMessage("<<-- AugmentCompletionSessions");
+            WriteOutputMessage("<<-- AugmentCompletionSessions");
         }
 
         private void AddUsingStaticMembers(CompletionList compList, XFile file, string filterText)
@@ -1014,7 +1021,7 @@ namespace XSharpLanguage
                 }
                 catch (Exception e)
                 {
-                    XSharpProjectPackage.Instance.DisplayOutPutMessage("BuildCompletionListInfo failed: ");
+                    WriteOutputMessage("BuildCompletionListInfo failed: ");
                     XSharpProjectPackage.Instance.DisplayException(e);
                 }
             }
@@ -2331,7 +2338,7 @@ namespace XSharpLanguage
             {
                 return xType.Value.XMembers.LastOrDefault();
             }
-            XSharpProjectPackage.Instance.DisplayOutPutMessage(string.Format("Cannot find member at 0 based position {0} in file {0} .", nPosition, file.FullPath));
+            WriteOutputMessage(string.Format("Cannot find member at 0 based position {0} in file {0} .", nPosition, file.FullPath));
             return null;
 
         }
@@ -2380,7 +2387,7 @@ namespace XSharpLanguage
 
 
 #if DEBUG
-            XSharpProjectPackage.Instance.DisplayOutPutMessage(string.Format("Cannot find member at 0 based line {0} in file {0} .", nLine, file.FullPath));
+            WriteOutputMessage(string.Format("Cannot find member at 0 based line {0} in file {0} .", nLine, file.FullPath));
 #endif
             return null;
         }
@@ -2488,8 +2495,8 @@ namespace XSharpLanguage
                 if (currentMember == null)
                 {
 #if TRACE
-                        stopWatch.Stop();
-                        XSharpProjectPackage.Instance.DisplayOutPutMessage(string.Format("Retrieve current Type : Member cannot be null."));
+                    stopWatch.Stop();
+                    WriteOutputMessage(string.Format("Retrieve current Type : Member cannot be null."));
 #endif
                     return null;
                 }
@@ -2816,8 +2823,8 @@ namespace XSharpLanguage
                 string elapsedTime = string.Format("{0:00}h {1:00}m {2:00}.{3:00}s",
                     ts.Hours, ts.Minutes, ts.Seconds,
                     ts.Milliseconds / 10);
-                //
-                XSharpProjectPackage.Instance.DisplayOutPutMessage("XSharpTokenTools::RetrieveType : Done in " + elapsedTime);
+            //
+            WriteOutputMessage("XSharpTokenTools::RetrieveType : Done in " + elapsedTime);
 #endif
             return cType;
         }
@@ -3614,7 +3621,15 @@ namespace XSharpLanguage
 
         static void WriteOutputMessage(string message)
         {
-            XSharpProjectPackage.Instance.DisplayOutPutMessage("XSharp.Codecompletion :" + message);
+            if (XSharpCompletionSource._optionsPage == null)
+            {
+                var package = XSharpProjectPackage.Instance;
+                XSharpCompletionSource._optionsPage = package.GetIntellisenseOptionsPage();
+            }
+            if (XSharpCompletionSource._optionsPage.EnableCodeCompletionLog && XSharpCompletionSource._optionsPage.EnableOutputPane)
+            {
+                XSharpProjectPackage.Instance.DisplayOutPutMessage("XSharp.Codecompletion :" + message);
+            }
         }
 
 

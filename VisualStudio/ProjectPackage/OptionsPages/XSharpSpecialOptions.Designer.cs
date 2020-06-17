@@ -29,6 +29,7 @@
         private void InitializeComponent()
         {
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.chkDisableGotoDefinition = new System.Windows.Forms.CheckBox();
             this.chkDisableCodeCompletion = new System.Windows.Forms.CheckBox();
             this.label3 = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
@@ -45,15 +46,24 @@
             this.chkBraceMatching = new System.Windows.Forms.CheckBox();
             this.chkDisableParameters = new System.Windows.Forms.CheckBox();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
-            this.chkEnableOutputPane = new System.Windows.Forms.CheckBox();
             this.chkDisableXSharpProjectReferences = new System.Windows.Forms.CheckBox();
             this.chkDisableForeignProjectReferences = new System.Windows.Forms.CheckBox();
             this.chkDisableAssemblyReferences = new System.Windows.Forms.CheckBox();
+            this.chkEnableParserLog = new System.Windows.Forms.CheckBox();
+            this.chkEnableDatabaseLog = new System.Windows.Forms.CheckBox();
             this.btnOk = new System.Windows.Forms.Button();
             this.btnCancel = new System.Windows.Forms.Button();
-            this.chkDisableGotoDefinition = new System.Windows.Forms.CheckBox();
+            this.chkEnableBraceMatchLog = new System.Windows.Forms.CheckBox();
+            this.groupBox3 = new System.Windows.Forms.GroupBox();
+            this.chkEnableTypeLookupLog = new System.Windows.Forms.CheckBox();
+            this.chkEnableReferenceLog = new System.Windows.Forms.CheckBox();
+            this.chkEnableOutputPane = new System.Windows.Forms.CheckBox();
+            this.chkEnableQuickInfoLog = new System.Windows.Forms.CheckBox();
+            this.chkEnableParameterTipsLog = new System.Windows.Forms.CheckBox();
+            this.chkEnableCodeCompletionLog = new System.Windows.Forms.CheckBox();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
+            this.groupBox3.SuspendLayout();
             this.SuspendLayout();
             // 
             // groupBox1
@@ -80,6 +90,16 @@
             this.groupBox1.TabIndex = 4;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Enable/ Disable various intellisense options";
+            // 
+            // chkDisableGotoDefinition
+            // 
+            this.chkDisableGotoDefinition.AutoSize = true;
+            this.chkDisableGotoDefinition.Location = new System.Drawing.Point(177, 168);
+            this.chkDisableGotoDefinition.Name = "chkDisableGotoDefinition";
+            this.chkDisableGotoDefinition.Size = new System.Drawing.Size(134, 17);
+            this.chkDisableGotoDefinition.TabIndex = 16;
+            this.chkDisableGotoDefinition.Text = "Disable Goto Definition";
+            this.chkDisableGotoDefinition.UseVisualStyleBackColor = true;
             // 
             // chkDisableCodeCompletion
             // 
@@ -231,26 +251,15 @@
             // 
             // groupBox2
             // 
-            this.groupBox2.Controls.Add(this.chkEnableOutputPane);
             this.groupBox2.Controls.Add(this.chkDisableXSharpProjectReferences);
             this.groupBox2.Controls.Add(this.chkDisableForeignProjectReferences);
             this.groupBox2.Controls.Add(this.chkDisableAssemblyReferences);
             this.groupBox2.Location = new System.Drawing.Point(15, 263);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(370, 122);
+            this.groupBox2.Size = new System.Drawing.Size(370, 92);
             this.groupBox2.TabIndex = 5;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Code Model Options";
-            // 
-            // chkEnableOutputPane
-            // 
-            this.chkEnableOutputPane.AutoSize = true;
-            this.chkEnableOutputPane.Location = new System.Drawing.Point(10, 88);
-            this.chkEnableOutputPane.Name = "chkEnableOutputPane";
-            this.chkEnableOutputPane.Size = new System.Drawing.Size(295, 17);
-            this.chkEnableOutputPane.TabIndex = 4;
-            this.chkEnableOutputPane.Text = "ENable output pane in Visual Studio with load information";
-            this.chkEnableOutputPane.UseVisualStyleBackColor = true;
             // 
             // chkDisableXSharpProjectReferences
             // 
@@ -282,9 +291,29 @@
             this.chkDisableAssemblyReferences.Text = "Disable Loading Assembly Reference";
             this.chkDisableAssemblyReferences.UseVisualStyleBackColor = true;
             // 
+            // chkEnableParserLog
+            // 
+            this.chkEnableParserLog.AutoSize = true;
+            this.chkEnableParserLog.Location = new System.Drawing.Point(10, 60);
+            this.chkEnableParserLog.Name = "chkEnableParserLog";
+            this.chkEnableParserLog.Size = new System.Drawing.Size(136, 17);
+            this.chkEnableParserLog.TabIndex = 6;
+            this.chkEnableParserLog.Text = "Log background parser";
+            this.chkEnableParserLog.UseVisualStyleBackColor = true;
+            // 
+            // chkEnableDatabaseLog
+            // 
+            this.chkEnableDatabaseLog.AutoSize = true;
+            this.chkEnableDatabaseLog.Location = new System.Drawing.Point(10, 37);
+            this.chkEnableDatabaseLog.Name = "chkEnableDatabaseLog";
+            this.chkEnableDatabaseLog.Size = new System.Drawing.Size(143, 17);
+            this.chkEnableDatabaseLog.TabIndex = 5;
+            this.chkEnableDatabaseLog.Text = "Log database operations";
+            this.chkEnableDatabaseLog.UseVisualStyleBackColor = true;
+            // 
             // btnOk
             // 
-            this.btnOk.Location = new System.Drawing.Point(208, 415);
+            this.btnOk.Location = new System.Drawing.Point(450, 322);
             this.btnOk.Name = "btnOk";
             this.btnOk.Size = new System.Drawing.Size(75, 23);
             this.btnOk.TabIndex = 6;
@@ -295,22 +324,100 @@
             // btnCancel
             // 
             this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.btnCancel.Location = new System.Drawing.Point(310, 415);
+            this.btnCancel.Location = new System.Drawing.Point(552, 322);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(75, 23);
             this.btnCancel.TabIndex = 7;
             this.btnCancel.Text = "&Cancel";
             this.btnCancel.UseVisualStyleBackColor = true;
             // 
-            // chkDisableGotoDefinition
+            // chkEnableBraceMatchLog
             // 
-            this.chkDisableGotoDefinition.AutoSize = true;
-            this.chkDisableGotoDefinition.Location = new System.Drawing.Point(177, 168);
-            this.chkDisableGotoDefinition.Name = "chkDisableGotoDefinition";
-            this.chkDisableGotoDefinition.Size = new System.Drawing.Size(134, 17);
-            this.chkDisableGotoDefinition.TabIndex = 16;
-            this.chkDisableGotoDefinition.Text = "Disable Goto Definition";
-            this.chkDisableGotoDefinition.UseVisualStyleBackColor = true;
+            this.chkEnableBraceMatchLog.AutoSize = true;
+            this.chkEnableBraceMatchLog.Location = new System.Drawing.Point(10, 83);
+            this.chkEnableBraceMatchLog.Name = "chkEnableBraceMatchLog";
+            this.chkEnableBraceMatchLog.Size = new System.Drawing.Size(120, 17);
+            this.chkEnableBraceMatchLog.TabIndex = 7;
+            this.chkEnableBraceMatchLog.Text = "Log brace matching";
+            this.chkEnableBraceMatchLog.UseVisualStyleBackColor = true;
+            // 
+            // groupBox3
+            // 
+            this.groupBox3.Controls.Add(this.chkEnableTypeLookupLog);
+            this.groupBox3.Controls.Add(this.chkEnableReferenceLog);
+            this.groupBox3.Controls.Add(this.chkEnableOutputPane);
+            this.groupBox3.Controls.Add(this.chkEnableQuickInfoLog);
+            this.groupBox3.Controls.Add(this.chkEnableParameterTipsLog);
+            this.groupBox3.Controls.Add(this.chkEnableCodeCompletionLog);
+            this.groupBox3.Controls.Add(this.chkEnableBraceMatchLog);
+            this.groupBox3.Controls.Add(this.chkEnableDatabaseLog);
+            this.groupBox3.Controls.Add(this.chkEnableParserLog);
+            this.groupBox3.Location = new System.Drawing.Point(405, 25);
+            this.groupBox3.Name = "groupBox3";
+            this.groupBox3.Size = new System.Drawing.Size(222, 232);
+            this.groupBox3.TabIndex = 8;
+            this.groupBox3.TabStop = false;
+            this.groupBox3.Text = "Output pane Logging options";
+            // 
+            // chkEnableTypeLookupLog
+            // 
+            this.chkEnableTypeLookupLog.AutoSize = true;
+            this.chkEnableTypeLookupLog.Location = new System.Drawing.Point(10, 198);
+            this.chkEnableTypeLookupLog.Name = "chkEnableTypeLookupLog";
+            this.chkEnableTypeLookupLog.Size = new System.Drawing.Size(110, 17);
+            this.chkEnableTypeLookupLog.TabIndex = 13;
+            this.chkEnableTypeLookupLog.Text = "Log Type Lookup";
+            this.chkEnableTypeLookupLog.UseVisualStyleBackColor = true;
+            // 
+            // chkEnableReferenceLog
+            // 
+            this.chkEnableReferenceLog.AutoSize = true;
+            this.chkEnableReferenceLog.Location = new System.Drawing.Point(10, 175);
+            this.chkEnableReferenceLog.Name = "chkEnableReferenceLog";
+            this.chkEnableReferenceLog.Size = new System.Drawing.Size(154, 17);
+            this.chkEnableReferenceLog.TabIndex = 12;
+            this.chkEnableReferenceLog.Text = "Log Handling of references";
+            this.chkEnableReferenceLog.UseVisualStyleBackColor = true;
+            // 
+            // chkEnableOutputPane
+            // 
+            this.chkEnableOutputPane.AutoSize = true;
+            this.chkEnableOutputPane.Location = new System.Drawing.Point(10, 17);
+            this.chkEnableOutputPane.Name = "chkEnableOutputPane";
+            this.chkEnableOutputPane.Size = new System.Drawing.Size(196, 17);
+            this.chkEnableOutputPane.TabIndex = 11;
+            this.chkEnableOutputPane.Text = "ENable output pane in Visual Studio";
+            this.chkEnableOutputPane.UseVisualStyleBackColor = true;
+            // 
+            // chkEnableQuickInfoLog
+            // 
+            this.chkEnableQuickInfoLog.AutoSize = true;
+            this.chkEnableQuickInfoLog.Location = new System.Drawing.Point(10, 152);
+            this.chkEnableQuickInfoLog.Name = "chkEnableQuickInfoLog";
+            this.chkEnableQuickInfoLog.Size = new System.Drawing.Size(173, 17);
+            this.chkEnableQuickInfoLog.TabIndex = 10;
+            this.chkEnableQuickInfoLog.Text = "Log QuickInfo (tooltip) handling";
+            this.chkEnableQuickInfoLog.UseVisualStyleBackColor = true;
+            // 
+            // chkEnableParameterTipsLog
+            // 
+            this.chkEnableParameterTipsLog.AutoSize = true;
+            this.chkEnableParameterTipsLog.Location = new System.Drawing.Point(10, 129);
+            this.chkEnableParameterTipsLog.Name = "chkEnableParameterTipsLog";
+            this.chkEnableParameterTipsLog.Size = new System.Drawing.Size(137, 17);
+            this.chkEnableParameterTipsLog.TabIndex = 9;
+            this.chkEnableParameterTipsLog.Text = "Log parameter handling";
+            this.chkEnableParameterTipsLog.UseVisualStyleBackColor = true;
+            // 
+            // chkEnableCodeCompletionLog
+            // 
+            this.chkEnableCodeCompletionLog.AutoSize = true;
+            this.chkEnableCodeCompletionLog.Location = new System.Drawing.Point(10, 106);
+            this.chkEnableCodeCompletionLog.Name = "chkEnableCodeCompletionLog";
+            this.chkEnableCodeCompletionLog.Size = new System.Drawing.Size(125, 17);
+            this.chkEnableCodeCompletionLog.TabIndex = 8;
+            this.chkEnableCodeCompletionLog.Text = "Log code completion";
+            this.chkEnableCodeCompletionLog.UseVisualStyleBackColor = true;
             // 
             // XSharpSpecialOptions
             // 
@@ -318,7 +425,8 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.btnCancel;
-            this.ClientSize = new System.Drawing.Size(413, 453);
+            this.ClientSize = new System.Drawing.Size(682, 379);
+            this.Controls.Add(this.groupBox3);
             this.Controls.Add(this.btnCancel);
             this.Controls.Add(this.btnOk);
             this.Controls.Add(this.groupBox2);
@@ -331,6 +439,8 @@
             this.groupBox1.PerformLayout();
             this.groupBox2.ResumeLayout(false);
             this.groupBox2.PerformLayout();
+            this.groupBox3.ResumeLayout(false);
+            this.groupBox3.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -359,7 +469,16 @@
         internal System.Windows.Forms.CheckBox chkDisableAssemblyReferences;
         private System.Windows.Forms.Button btnOk;
         private System.Windows.Forms.Button btnCancel;
-        internal System.Windows.Forms.CheckBox chkEnableOutputPane;
         internal System.Windows.Forms.CheckBox chkDisableGotoDefinition;
+        internal System.Windows.Forms.CheckBox chkEnableDatabaseLog;
+        internal System.Windows.Forms.CheckBox chkEnableParserLog;
+        internal System.Windows.Forms.CheckBox chkEnableBraceMatchLog;
+        private System.Windows.Forms.GroupBox groupBox3;
+        internal System.Windows.Forms.CheckBox chkEnableParameterTipsLog;
+        internal System.Windows.Forms.CheckBox chkEnableCodeCompletionLog;
+        internal System.Windows.Forms.CheckBox chkEnableQuickInfoLog;
+        internal System.Windows.Forms.CheckBox chkEnableOutputPane;
+        internal System.Windows.Forms.CheckBox chkEnableTypeLookupLog;
+        internal System.Windows.Forms.CheckBox chkEnableReferenceLog;
     }
 }

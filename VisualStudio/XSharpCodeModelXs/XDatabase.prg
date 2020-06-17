@@ -62,6 +62,9 @@ BEGIN NAMESPACE XSharpModel
          RETURN FALSE
       
       STATIC METHOD SetPragmas(oConn AS SQLiteConnection) AS VOID
+         IF oConn == NULL
+            RETURN
+         ENDIF
          BEGIN LOCK oConn
             BEGIN USING VAR oCmd := SQLiteCommand{"PRAGMA foreign_keys = ON", oConn}
                oCmd:ExecuteNonQuery()
@@ -76,6 +79,9 @@ BEGIN NAMESPACE XSharpModel
          RETURN db
       
       STATIC METHOD SaveToDisk(oConn AS SQLiteConnection, cFile AS STRING) AS VOID
+         IF oConn == NULL
+            RETURN
+         ENDIF
          IF System.IO.File.Exists(cFile)
             System.IO.File.SetAttributes(cFile, FileAttributes.Normal)
             System.IO.File.Delete(cFile)
@@ -87,6 +93,9 @@ BEGIN NAMESPACE XSharpModel
          RETURN         
       
       STATIC METHOD RestoreFromDisk(oDiskDb AS SQLiteConnection, oConn AS SQLiteConnection) AS VOID
+         IF oConn == NULL
+            RETURN
+         ENDIF
          oDiskDb:BackupDatabase(oConn, "main", "main", -1, NULL, 0)
          lastWritten := DateTime.Now
          RETURN         
@@ -94,6 +103,7 @@ BEGIN NAMESPACE XSharpModel
       STATIC METHOD CommitWhenNeeded() AS VOID
          VAR ts := DateTime.Now - lastWritten
          // Save to disk every 5 minutes
+         Log(i"Time since last backup {ts}")
          IF ts:Minutes >= 5 .OR. ts:Hours > 0
             LOCAL oBW AS BackgroundWorker    
             oBW := BackgroundWorker{}
@@ -104,13 +114,21 @@ BEGIN NAMESPACE XSharpModel
          ENDIF
 
       STATIC METHOD BackupInBackground(sender AS OBJECT , args AS DoWorkEventArgs ) AS VOID
+         IF oConn == NULL
+            RETURN
+         ENDIF
          BEGIN LOCK oConn
             TRY
+               XSolution.SetStatusBarText("Backing up intellisense database...")
+               XSolution.SetStatusBarAnimation(TRUE, 2)
                Log("Starting backup to "+currentFile)
                SaveToDisk(oConn, currentFile )
                Log("Completed backup to "+currentFile)
             CATCH e AS Exception
                Log("Exception: "+e:ToString())
+            FINALLY
+               XSolution.SetStatusBarText("")
+               XSolution.SetStatusBarAnimation(FALSE, 2)
             END TRY
          END LOCK
          RETURN
@@ -367,25 +385,28 @@ BEGIN NAMESPACE XSharpModel
       
       STATIC METHOD GetProjectNames() AS List<STRING>
          VAR result := List<STRING>{}
-         BEGIN LOCK oConn
-            BEGIN USING VAR cmd := SQLiteCommand{"SELECT ProjectFileName from Projects", oConn}
-               BEGIN USING VAR rdr := cmd:ExecuteReader()
-                  DO WHILE rdr:Read()
-                     VAR name := rdr:GetString(0)
-                     result:Add(name)
-                  ENDDO
+         IF oConn != NULL 
+            BEGIN LOCK oConn
+               BEGIN USING VAR cmd := SQLiteCommand{"SELECT ProjectFileName from Projects", oConn}
+                  BEGIN USING VAR rdr := cmd:ExecuteReader()
+                     DO WHILE rdr:Read()
+                        VAR name := rdr:GetString(0)
+                        result:Add(name)
+                     ENDDO
+                  END USING
                END USING
-            END USING
-         END LOCK      
+            END LOCK  
+         ENDIF
          Log(i"GetProjectNames returned {result.Count} names")
          RETURN result
          
       #region CRUD projects      
       STATIC METHOD Read(oProject AS XProject) AS VOID
-         IF String.IsNullOrEmpty(oProject:FileName)
+         IF oConn == NULL .or. String.IsNullOrEmpty(oProject:FileName)
             RETURN
          ENDIF
          VAR file    := oProject:FileName
+         VAR lUpdated := FALSE
          Log(i"Read Project info for project {file}")
          BEGIN LOCK oConn
             BEGIN USING VAR cmd := SQLiteCommand{"", oConn}
@@ -402,14 +423,17 @@ BEGIN NAMESPACE XSharpModel
                   cmd:CommandText := "INSERT INTO Projects( ProjectFileName ) values ($file); SELECT last_insert_rowid() "
                   VAR id := (INT64) cmd:ExecuteScalar()
                   oProject:Id := id
+                  lUpdated := TRUE
                ENDIF
             END USING 
          END LOCK
-         CommitWhenNeeded()
+         IF lUpdated
+            CommitWhenNeeded()
+         ENDIF
          RETURN
       
       STATIC METHOD DeleteProject(cFileName AS STRING) AS VOID
-         IF String.IsNullOrEmpty(cFileName)
+         IF oConn == NULL .OR. String.IsNullOrEmpty(cFileName)
             RETURN
          ENDIF
          VAR file := cFileName
@@ -426,7 +450,7 @@ BEGIN NAMESPACE XSharpModel
       #region CRUD files
       
       STATIC METHOD DeleteFile(cFileName AS STRING) AS VOID
-         IF String.IsNullOrEmpty(cFileName)
+         IF oConn == NULL .OR. String.IsNullOrEmpty(cFileName)
             RETURN
          ENDIF
          VAR file    := cFileName
@@ -441,7 +465,7 @@ BEGIN NAMESPACE XSharpModel
          CommitWhenNeeded()
       
       STATIC METHOD Read(oFile AS XFile) AS VOID
-         IF String.IsNullOrEmpty(oFile:FullPath)
+         IF oConn == NULL .OR. String.IsNullOrEmpty(oFile:FullPath)
             RETURN
          ENDIF
          VAR file    := oFile:FullPath
@@ -461,7 +485,7 @@ BEGIN NAMESPACE XSharpModel
       
       
       */
-      
+      LOCAL lUpdated := FALSE AS LOGIC
       BEGIN LOCK oConn
          TRY
             BEGIN USING VAR cmd := SQLiteCommand{"", oConn}
@@ -485,6 +509,7 @@ BEGIN NAMESPACE XSharpModel
                   oFile:Id := id
                   oFile:LastChanged := DateTime.MinValue
                   oFile:Size        := 0
+                  lUpdated := TRUE
                ENDIF
                cmd:CommandText := "SELECT count(idFile) FROM FilesPerProject WHERE idFile = $idFile and idProject = $idProject"
                cmd:Parameters:Clear()
@@ -502,10 +527,15 @@ BEGIN NAMESPACE XSharpModel
             
          END TRY
       END LOCK
-      CommitWhenNeeded()
+      IF lUpdated
+         CommitWhenNeeded()
+      ENDIF
       RETURN
       
       STATIC PRIVATE METHOD UpdateFileData(oFile AS XFile) AS VOID
+         IF oConn == NULL 
+            RETURN
+         ENDIF
          BEGIN LOCK oConn
             TRY
                Log(i"Update File info for file {oFile.FullPath}")
@@ -527,7 +557,12 @@ BEGIN NAMESPACE XSharpModel
          RETURN
       
       STATIC METHOD Update(oFile AS XFile) AS VOID
-         // determine File ID
+         // No need to do this in the background.
+         // It is called on a background thread while editing
+         // and also called on a background thread when scanning at startup
+         IF oConn == NULL 
+            RETURN
+         ENDIF
          IF oFile:Id == -1
             XDatabase.Read(oFile)
          ENDIF
@@ -550,6 +585,9 @@ BEGIN NAMESPACE XSharpModel
          " FOREIGN KEY (idFile) REFERENCES Files (Id) ON DELETE CASCADE ON UPDATE CASCADE"
          ")"
          */
+         IF oConn == NULL 
+            RETURN
+         ENDIF
          BEGIN LOCK oConn
             TRY
                Log(i"Update File contents for file {oFile.FullPath}")
@@ -676,7 +714,7 @@ BEGIN NAMESPACE XSharpModel
       
       #region CRUD Assemblies
       STATIC METHOD Read(oAssembly AS XAssembly) AS VOID
-         IF String.IsNullOrEmpty(oAssembly:FullName) .OR. String.IsNullOrEmpty(oAssembly:FileName)
+         IF oConn == NULL .OR. String.IsNullOrEmpty(oAssembly:FullName) .OR. String.IsNullOrEmpty(oAssembly:FileName)
             RETURN
          ENDIF
       /*
@@ -688,6 +726,7 @@ BEGIN NAMESPACE XSharpModel
       Log(i"Read Assembly info for assembly {oAssembly.FileName}")
       VAR file    := oAssembly:FileName
       VAR name    := oAssembly:FullName
+      VAR lUpdated := FALSE
       BEGIN LOCK oConn
          TRY
             BEGIN USING VAR cmd := SQLiteCommand{"", oConn}
@@ -708,6 +747,7 @@ BEGIN NAMESPACE XSharpModel
                   cmd:Parameters:AddWithValue("$last", DateTime.MinValue)
                   VAR id := (INT64) cmd:ExecuteScalar()
                   oAssembly:Id := id
+                  lUpdated := TRUE
                ENDIF
             END USING 
          CATCH e AS Exception
@@ -716,11 +756,13 @@ BEGIN NAMESPACE XSharpModel
          END TRY
          
       END LOCK
-      CommitWhenNeeded()
+      IF lUpdated
+         CommitWhenNeeded()
+      ENDIF
       RETURN
       
       STATIC METHOD Update(oAssembly AS XAssembly) AS VOID
-         IF String.IsNullOrEmpty(oAssembly:FullName) .OR. String.IsNullOrEmpty(oAssembly:FileName)
+         IF oConn == NULL .OR. String.IsNullOrEmpty(oAssembly:FullName) .OR. String.IsNullOrEmpty(oAssembly:FileName)
             RETURN
          ENDIF   
          BEGIN LOCK oConn
@@ -776,95 +818,103 @@ BEGIN NAMESPACE XSharpModel
       STATIC METHOD FindFunction(sName AS STRING, sProjectIds AS STRING) AS IList<XDbResult>
          // search class members in the Types list
          VAR result := List<XDbResult>{}
-         BEGIN LOCK oConn
-            TRY
-               BEGIN USING VAR oCmd := SQLiteCommand{"SELECT 1", oConn}
-                  oCmd:CommandText := "SELECT * FROM ProjectMembers WHERE name = $name AND TypeName = $typename " + ;
-                  " AND Kind in ($kind1, $kind2, $kind3) AND IdProject in ("+sProjectIds+")"
-                  oCmd:Parameters:AddWithValue("$name", sName)
-                  oCmd:Parameters:AddWithValue("$kind1", (INT) Kind.Function)
-                  oCmd:Parameters:AddWithValue("$kind2", (INT) Kind.Procedure)
-                  oCmd:Parameters:AddWithValue("$kind3", (INT) Kind.Method)
-                  oCmd:Parameters:AddWithValue("$typename", XLiterals.GlobalName)
-                  BEGIN USING VAR rdr := oCmd:ExecuteReader()
-                     DO WHILE rdr:Read()
-                        result:Add(CreateMemberInfo(rdr))
-                     ENDDO
+         IF oConn != NULL
+            BEGIN LOCK oConn
+               TRY
+                  BEGIN USING VAR oCmd := SQLiteCommand{"SELECT 1", oConn}
+                     oCmd:CommandText := "SELECT * FROM ProjectMembers WHERE name = $name AND TypeName = $typename " + ;
+                     " AND Kind in ($kind1, $kind2, $kind3) AND IdProject in ("+sProjectIds+")"
+                     oCmd:Parameters:AddWithValue("$name", sName)
+                     oCmd:Parameters:AddWithValue("$kind1", (INT) Kind.Function)
+                     oCmd:Parameters:AddWithValue("$kind2", (INT) Kind.Procedure)
+                     oCmd:Parameters:AddWithValue("$kind3", (INT) Kind.Method)
+                     oCmd:Parameters:AddWithValue("$typename", XLiterals.GlobalName)
+                     BEGIN USING VAR rdr := oCmd:ExecuteReader()
+                        DO WHILE rdr:Read()
+                           result:Add(CreateMemberInfo(rdr))
+                        ENDDO
+                     END USING
                   END USING
-               END USING
-            CATCH e AS Exception
-               Log("Exception: "+e:ToString())
-            END TRY            
-         END LOCK
+               CATCH e AS Exception
+                  Log("Exception: "+e:ToString())
+               END TRY            
+            END LOCK
+         ENDIF
          Log(i"FindFunction '{sName}' returns {result:Count} matches")
          RETURN result
       
       STATIC METHOD FindGlobalOrDefine(sName AS STRING, sProjectIds AS STRING) AS IList<XDbResult>
          // search class members in the Types list
          VAR result := List<XDbResult>{}
-         BEGIN LOCK oConn
-            TRY
-               BEGIN USING VAR oCmd := SQLiteCommand{"SELECT 1", oConn}
-                  oCmd:CommandText := "SELECT * FROM ProjectMembers WHERE name = $name AND TypeName = $typename " + ;
-                  " AND Kind in ($kind1, $kind2) AND IdProject in ("+sProjectIds+")"
-                  oCmd:Parameters:AddWithValue("$name", sName)
-                  oCmd:Parameters:AddWithValue("$kind1", (INT) Kind.VOGlobal)
-                  oCmd:Parameters:AddWithValue("$kind2", (INT) Kind.VODefine)
-                  oCmd:Parameters:AddWithValue("$typename", XLiterals.GlobalName)
-                  BEGIN USING VAR rdr := oCmd:ExecuteReader()
-                     DO WHILE rdr:Read()
-                        result:Add(CreateMemberInfo(rdr))
-                     ENDDO
+         IF oConn != NULL
+            BEGIN LOCK oConn
+               TRY
+                  BEGIN USING VAR oCmd := SQLiteCommand{"SELECT 1", oConn}
+                     oCmd:CommandText := "SELECT * FROM ProjectMembers WHERE name = $name AND TypeName = $typename " + ;
+                     " AND Kind in ($kind1, $kind2) AND IdProject in ("+sProjectIds+")"
+                     oCmd:Parameters:AddWithValue("$name", sName)
+                     oCmd:Parameters:AddWithValue("$kind1", (INT) Kind.VOGlobal)
+                     oCmd:Parameters:AddWithValue("$kind2", (INT) Kind.VODefine)
+                     oCmd:Parameters:AddWithValue("$typename", XLiterals.GlobalName)
+                     BEGIN USING VAR rdr := oCmd:ExecuteReader()
+                        DO WHILE rdr:Read()
+                           result:Add(CreateMemberInfo(rdr))
+                        ENDDO
+                     END USING
                   END USING
-               END USING
-            CATCH e AS Exception
-               Log("Exception: "+e:ToString())
-            END TRY            
-         END LOCK
+               CATCH e AS Exception
+                  Log("Exception: "+e:ToString())
+               END TRY            
+            END LOCK
+         ENDIF
          Log(i"FindGlobalOrDefine '{sName}' returns {result:Count} matches")
          RETURN result      
       
       STATIC METHOD GetTypes(sName AS STRING, sProjectIds AS STRING) AS IList<XDbResult>
          VAR stmt := "Select * from ProjectTypes where name = $name AND IdProject in ("+sProjectIds+")"
          VAR result := List<XDbResult>{}
-         BEGIN LOCK oConn
-            TRY
-               BEGIN USING VAR oCmd := SQLiteCommand{stmt, oConn}
-                  oCmd:Parameters:AddWithValue("$name", sName)
-                  BEGIN USING VAR rdr := oCmd:ExecuteReader()
-                     DO WHILE rdr:Read()
-                        result:Add(CreateTypeInfo(rdr))
-                     ENDDO
+         IF oConn != NULL
+            BEGIN LOCK oConn
+               TRY
+                  BEGIN USING VAR oCmd := SQLiteCommand{stmt, oConn}
+                     oCmd:Parameters:AddWithValue("$name", sName)
+                     BEGIN USING VAR rdr := oCmd:ExecuteReader()
+                        DO WHILE rdr:Read()
+                           result:Add(CreateTypeInfo(rdr))
+                        ENDDO
+                     END USING
                   END USING
-               END USING
-            CATCH e AS Exception
-               Log("Exception: "+e:ToString())
-            END TRY            
-         END LOCK
+               CATCH e AS Exception
+                  Log("Exception: "+e:ToString())
+               END TRY            
+            END LOCK
+         ENDIF
          Log(i"GetTypes '{sName}' returns {result.Count} matches")
          RETURN result   
          
       STATIC METHOD GetNamespaces(sProjectIds AS STRING) AS IList<XDbResult>
          VAR stmt := "Select distinct Namespace from ProjectTypes where Namespace is not null and IdProject in ("+sProjectIds+")"
          VAR result := List<XDbResult>{}
-         BEGIN LOCK oConn
-            TRY
-               BEGIN USING VAR oCmd := SQLiteCommand{stmt, oConn}
-                  BEGIN USING VAR rdr := oCmd:ExecuteReader()
-                     DO WHILE rdr:Read()
-                        VAR res := XDbResult{}
-                        res:Namespace    := DbToString(rdr[0])
-                        res:TypeName     := res:Namespace
-                        IF ! String.IsNullOrEmpty(res:Namespace)
-                           result:Add(res)
-                        ENDIF
-                     ENDDO
+         IF oConn != NULL
+            BEGIN LOCK oConn
+               TRY
+                  BEGIN USING VAR oCmd := SQLiteCommand{stmt, oConn}
+                     BEGIN USING VAR rdr := oCmd:ExecuteReader()
+                        DO WHILE rdr:Read()
+                           VAR res := XDbResult{}
+                           res:Namespace    := DbToString(rdr[0])
+                           res:TypeName     := res:Namespace
+                           IF ! String.IsNullOrEmpty(res:Namespace)
+                              result:Add(res)
+                           ENDIF
+                        ENDDO
+                     END USING
                   END USING
-               END USING
-            CATCH e AS Exception
-               Log("Exception: "+e:ToString())
-            END TRY            
-         END LOCK
+               CATCH e AS Exception
+                  Log("Exception: "+e:ToString())
+               END TRY            
+            END LOCK
+         ENDIF
          Log(i"GetNameSpaces returns {result.Count} matches")
          RETURN result     
          
@@ -873,20 +923,22 @@ BEGIN NAMESPACE XSharpModel
       STATIC METHOD GetReferenceTypes(sName AS STRING, sAssemblyIds AS STRING) AS IList<XDbResult>
          VAR stmt := "Select * from AssemblyTypes where (name like $name or fullname like  $name) AND idAssembly in ("+sAssemblyIds+")"
          VAR result := List<XDbResult>{}
-         BEGIN LOCK oConn
-            TRY
-               BEGIN USING VAR oCmd := SQLiteCommand{stmt, oConn}
-                  oCmd:Parameters:AddWithValue("$name", sName+"%")
-                  BEGIN USING VAR rdr := oCmd:ExecuteReader()
-                     DO WHILE rdr:Read()
-                        result:Add(CreateRefTypeInfo(rdr))
-                     ENDDO
+         IF oConn != NULL
+            BEGIN LOCK oConn
+               TRY
+                  BEGIN USING VAR oCmd := SQLiteCommand{stmt, oConn}
+                     oCmd:Parameters:AddWithValue("$name", sName+"%")
+                     BEGIN USING VAR rdr := oCmd:ExecuteReader()
+                        DO WHILE rdr:Read()
+                           result:Add(CreateRefTypeInfo(rdr))
+                        ENDDO
+                     END USING
                   END USING
-               END USING
-            CATCH e AS Exception
-               Log("Exception: "+e:ToString())
-            END TRY            
-         END LOCK
+               CATCH e AS Exception
+                  Log("Exception: "+e:ToString())
+               END TRY            
+            END LOCK
+         ENDIF
          Log(i"GetReferenceTypes '{sName}' returns {result.Count} matches")
          RETURN result         
       
@@ -894,20 +946,22 @@ BEGIN NAMESPACE XSharpModel
          VAR stmt := "Select * from ProjectMembers where IdType ="+idType:ToString()
          stmt     += " order by idFile, idType" 
          VAR result := List<XDbResult>{}
-         BEGIN LOCK oConn
-            TRY
-               BEGIN USING VAR oCmd := SQLiteCommand{stmt, oConn}
-                  BEGIN USING VAR rdr := oCmd:ExecuteReader()
-                     DO WHILE rdr:Read()
-                        result:Add(CreateMemberInfo(rdr))
-                     ENDDO
+         IF oConn != NULL
+            BEGIN LOCK oConn
+               TRY
+                  BEGIN USING VAR oCmd := SQLiteCommand{stmt, oConn}
+                     BEGIN USING VAR rdr := oCmd:ExecuteReader()
+                        DO WHILE rdr:Read()
+                           result:Add(CreateMemberInfo(rdr))
+                        ENDDO
+                     END USING
                   END USING
-               END USING
-            CATCH e AS Exception
-               Log("Exception: "+e:ToString())
-            END TRY            
+               CATCH e AS Exception
+                  Log("Exception: "+e:ToString())
+               END TRY            
             
-         END LOCK
+            END LOCK
+         ENDIF
          Log(i"GetMembers '{idType}' returns {result.Count} matches")
          RETURN result  
       
@@ -985,7 +1039,9 @@ BEGIN NAMESPACE XSharpModel
          RETURN 0
       
       STATIC METHOD Log(cMessage AS STRING) AS VOID
-         XSolution.WriteOutputMessage("XDatabase: "+cMessage)
+         IF XSolution.EnableDatabaseLog .AND. XSolution.EnableLogging
+            XSolution.WriteOutputMessage("XDatabase: "+cMessage)
+         ENDIF
          RETURN
       
    END CLASS

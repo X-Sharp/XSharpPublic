@@ -24,11 +24,13 @@ namespace XSharp.Project
                 Assumes.Present(vsUiShell);
                 uint flags = (uint)__VSFINDTOOLWIN.FTW_fForceCreate;
                 vsUiShell.FindToolWindow(flags, VSConstants.StandardToolWindows.Output, out windowFrame);
-                windowFrame.Show();
-
-                outputWindow.CreatePane(XSharpOutputWindowPane, "XSharp - Debug Window", 1, 1);
-                outputWindow.GetPane(XSharpOutputWindowPane, out outputPane);
-                outputPane.Activate();
+                if (windowFrame != null)
+                {
+                    windowFrame.Show();
+                    outputWindow.CreatePane(XSharpOutputWindowPane, "XSharp - Debug Window", 1, 1);
+                    outputWindow.GetPane(XSharpOutputWindowPane, out outputPane);
+                    outputPane.Activate();
+                }
             }
             message = DateTime.Now.ToString("hh:mm:ss.fff") + " "+message + "\r\n";
             outputPane?.OutputStringThreadSafe(message);

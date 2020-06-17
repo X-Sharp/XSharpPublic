@@ -6,6 +6,7 @@
 USING System.Collections.Concurrent
 USING System.Collections.Generic
 USING System.IO
+USING System.Linq
 USING System
 BEGIN NAMESPACE XSharpModel
 	STATIC CLASS XSolution
@@ -15,6 +16,12 @@ BEGIN NAMESPACE XSharpModel
 		STATIC PRIVATE _projects AS ConcurrentDictionary<STRING, XProject>
       STATIC PRIVATE _fileName   AS STRING
       STATIC PRIVATE _sqldb      AS STRING
+      
+      PUBLIC STATIC PROPERTY EnableLogging      AS LOGIC AUTO
+      PUBLIC STATIC PROPERTY EnableDatabaseLog  AS LOGIC AUTO
+      PUBLIC STATIC PROPERTY EnableParseLog     AS LOGIC AUTO
+      PUBLIC STATIC PROPERTY EnableTypelookupLog  AS LOGIC AUTO
+      PUBLIC STATIC PROPERTY EnableReferenceInfoLog  AS LOGIC AUTO
       
       PUBLIC STATIC PROPERTY FileName as STRING get _fileName
 
@@ -28,7 +35,9 @@ BEGIN NAMESPACE XSharpModel
 
 
 		STATIC METHOD WriteOutputMessage(message AS STRING) AS VOID
-			OutputWindow:DisplayOutPutMessage(message)
+         IF EnableLogging
+			   OutputWindow:DisplayOutPutMessage(message)
+         ENDIF
 		STATIC METHOD WriteException(ex AS Exception) AS VOID
 			LOCAL space := "" AS STRING
 			DO WHILE ex != NULL
@@ -170,6 +179,20 @@ BEGIN NAMESPACE XSharpModel
 				projectNode:Project:AddAssemblyReference(TYPEOF(STRING):Assembly:Location)
 			ENDIF
 
+      STATIC METHOD SetStatusBarText(cText AS STRING) AS VOID
+         IF _projects:Count > 0
+            VAR project := _projects:First():Value
+            project:ProjectNode:SetStatusBarText(cText)
+         ENDIF
+
+      STATIC METHOD SetStatusBarAnimation(onOff AS LOGIC, id AS SHORT) AS VOID
+         IF _projects:Count > 0
+            VAR project := _projects:First():Value
+            project:ProjectNode:SetStatusBarAnimation(onOff, id)
+         ENDIF
+         
+         
+
 		// Properties
 		STATIC PROPERTY OrphanedFilesProject AS XProject
 			GET
@@ -179,7 +202,8 @@ BEGIN NAMESPACE XSharpModel
 				RETURN _orphanedFilesProject
 			END GET
 		END PROPERTY
-
+      
+         
 
 	END CLASS
 

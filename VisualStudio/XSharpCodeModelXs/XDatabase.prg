@@ -10,6 +10,7 @@ USING System.Data
 USING System.Linq
 USING System.Data.Common
 USING System.Collections.Generic
+USING System.ComponentModel
 
 BEGIN NAMESPACE XSharpModel
    STATIC CLASS XDatabase
@@ -92,30 +93,46 @@ BEGIN NAMESPACE XSharpModel
 
       STATIC METHOD CommitWhenNeeded() AS VOID
          VAR ts := DateTime.Now - lastWritten
-         // Save to disk after 5 minutes
-         IF ts:Minutes > 5 .OR. ts:Hours > 0
-            SaveToDisk(oConn, currentFile )
+         // Save to disk every 5 minutes
+         IF ts:Minutes >= 5 .OR. ts:Hours > 0
+            LOCAL oBW AS BackgroundWorker    
+            oBW := BackgroundWorker{}
+                       
+            oBW:DoWork += BackupInBackground
+            oBW:RunWorkerAsync()
+
          ENDIF
 
+      STATIC METHOD BackupInBackground(sender AS OBJECT , args AS DoWorkEventArgs ) AS VOID
+         BEGIN LOCK oConn
+            TRY
+               Log("Starting backup to "+currentFile)
+               SaveToDisk(oConn, currentFile )
+               Log("Completed backup to "+currentFile)
+            CATCH e AS Exception
+               Log("Exception: "+e:ToString())
+            END TRY
+         END LOCK
+         RETURN
       
       STATIC METHOD CreateSchema(connection AS SQLiteConnection) AS VOID
          BEGIN LOCK connection
             VAR cmd := SQLiteCommand{"SELECT 1",connection}
             Log("Creating new database schema")
             #region Drop Existing Tables
-            cmd:CommandText := "Drop table if exists Projects"
+            cmd:CommandText := "DROP TABLE IF EXISTS Projects"
             cmd:ExecuteNonQuery()		
-            cmd:CommandText := "Drop table if exists FilesPerProject"
+            cmd:CommandText := "DROP TABLE IF EXISTS FilesPerProject"
             cmd:ExecuteNonQuery()		
-            cmd:CommandText := "Drop table if exists Files"
+            cmd:CommandText := "DROP TABLE IF EXISTS Files"
             cmd:ExecuteNonQuery()		
-            cmd:CommandText := "Drop table if exists Types"
+            cmd:CommandText := "DROP TABLE IF EXISTS Types"
             cmd:ExecuteNonQuery()		
-            cmd:CommandText := "Drop table if exists Members"
+            cmd:CommandText := "DROP TABLE IF EXISTS Members"
             cmd:ExecuteNonQuery()		
-            cmd:CommandText := "Drop table if exists Assemblies"
+            cmd:CommandText := "DROP TABLE IF EXISTS Assemblies"
             cmd:ExecuteNonQuery()		
-            cmd:CommandText := "Drop table if exists ReferencedTypes"
+            cmd:CommandText := "DROP TABLE IF EXISTS ReferencedTypes"
             cmd:ExecuteNonQuery()		
             #endregion
             #region Table Projects
@@ -130,7 +147,7 @@ BEGIN NAMESPACE XSharpModel
             cmd:ExecuteNonQuery()				
             #endregion
             #region Table Files
-            stmt  		:= "Create Table Files ("
+            stmt  		:= "CREATE TABLE Files ("
             stmt     	+= " Id integer NOT NULL PRIMARY KEY, FileName text NOT NULL COLLATE NOCASE,  "
             stmt     	+= " FileType integer NOT NULL, LastChanged DateTime NOT NULL, Size integer"
             stmt		   += " )"
@@ -143,7 +160,7 @@ BEGIN NAMESPACE XSharpModel
             #endregion
             #region Table FilesPerProject
             
-            stmt  	:= 	"Create Table FilesPerProject ("
+            stmt  	:=  "CREATE TABLE FilesPerProject ("
             stmt	   +=  " idFile integer NOT NULL, idProject integer NOT NULL, " 
             stmt     +=  " PRIMARY KEY (idFile, idProject), " 
             stmt	   +=  " FOREIGN KEY (idFile) 	  REFERENCES Files (Id)    ON DELETE CASCADE ON UPDATE CASCADE, " 
@@ -164,7 +181,7 @@ BEGIN NAMESPACE XSharpModel
             #endregion
             #region Table Types
             
-            stmt  	:=  "Create Table Types ("
+            stmt  	:=  "CREATE TABLE Types ("
             stmt	   +=  " Id integer NOT NULL PRIMARY KEY, idFile integer NOT NULL, Name text NOT NULL COLLATE NOCASE, Namespace text NOT NULL COLLATE NOCASE, "
             stmt     +=  " Kind integer NOT NULL, BaseTypeName text COLLATE NOCASE, Attributes integer NOT NULL, "
             stmt     +=  " StartLine integer , StartColumn integer, EndLine integer , EndColumn integer, Start integer , Stop integer,  "
@@ -189,7 +206,7 @@ BEGIN NAMESPACE XSharpModel
             #endregion
             #region Table Members
             
-            stmt  	:=  "Create Table Members ("
+            stmt  	:=  "CREATE TABLE Members ("
             stmt	   +=  " Id integer NOT NULL PRIMARY KEY, IdType integer NOT NULL , IdFile integer NOT NULL, "
             stmt	   +=  " Name text COLLATE NOCASE, Kind integer, Attributes integer NOT NULL, StartLine integer , StartColumn integer ,  "
             stmt	   +=  " EndLine integer , EndColumn integer , Start integer , Stop integer , Sourcecode text , XmlComments text,"
@@ -221,7 +238,7 @@ BEGIN NAMESPACE XSharpModel
             
             
             #region Table Assemblies
-            stmt  	:=  "Create Table Assemblies ("
+            stmt  	:=  "CREATE TABLE Assemblies ("
             stmt	   +=  " Id integer NOT NULL PRIMARY KEY, Name text NOT NULL COLLATE NOCASE, AssemblyFileName text NOT NULL COLLATE NOCASE, "
             stmt     +=  " LastChanged DateTime NOT NULL, Size integer "
             stmt	   += ")"
@@ -238,7 +255,7 @@ BEGIN NAMESPACE XSharpModel
             
             #endregion
             #region Table ReferencedTypes
-            stmt  	:=  "Create Table ReferencedTypes ("
+            stmt  	:=  "CREATE TABLE ReferencedTypes ("
             stmt	   +=  " Id integer NOT NULL PRIMARY KEY, idAssembly integer NOT NULL, Name text NOT NULL COLLATE NOCASE, Namespace text NOT NULL COLLATE NOCASE, "
             stmt     +=  " FullName text NOT NULL, Kind integer NOT NULL, BaseTypeName text COLLATE NOCASE, Attributes integer NOT NULL, "
             stmt     +=  " FOREIGN KEY (idAssembly) REFERENCES Assemblies (Id) ON DELETE CASCADE ON UPDATE CASCADE"

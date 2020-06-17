@@ -592,6 +592,29 @@ BEGIN NAMESPACE XSharpModel
          #endregion
       
       #region Lookup Types and Functions
+      METHOD FindGlobalMembersInAssemblyReferences(name AS STRING) AS IList<IXMember>
+        IF XSolution.EnableTypelookupLog
+            WriteOutputMessage(i"FindGlobalMembersInAssemblyReferences {name} ")
+        ENDIF
+         VAR result := List<IXMember>{}
+         FOREACH VAR asm IN AssemblyReferences
+            IF !String.IsNullOrEmpty(asm:GlobalClassName)
+               VAR type := asm:GetType(asm.GlobalClassName)
+               IF type != NULL
+                  VAR methods := type:GetMember(name)
+                  IF methods.Length > 0
+                     result:AddRange(methods)
+                  ENDIF
+               ENDIF
+            ENDIF
+         NEXT
+         IF XSolution.EnableTypelookupLog
+            WriteOutputMessage(i"FindGlobalMembersInAssemblyReferences {name}, found {result.Count} occurences")
+         ENDIF
+         RETURN result
+         
+      
+      
       METHOD FindFunction(name AS STRING, lRecursive := TRUE AS LOGIC) AS IXMember
          // we look in the project references and assembly references
          // pass the list of ProjectIds and AssemblyIds to the database engine
@@ -636,7 +659,7 @@ BEGIN NAMESPACE XSharpModel
             VAR file       := XFile{element:FileName,SELF}
             file:Virtual   := TRUE
             VAR walker := SourceWalker{file}
-            walker:ParseNew(source, FALSE)
+            walker:Parse(source, FALSE)
             IF walker:EntityList:Count > 0
                VAR xElement      := walker:EntityList:First()
                IF xElement IS XMemberDefinition VAR xmember
@@ -794,17 +817,18 @@ BEGIN NAMESPACE XSharpModel
             
             VAR members := XDatabase.GetMembers(idType):ToArray()
             // now create a temporary source for the parser
-            VAR source  := GetTypeSource(element, members)
+            VAR source     := GetTypeSource(element, members)
             VAR file       := XFile{element:FileName,SELF}
             file:Virtual   := TRUE
             VAR walker := SourceWalker{file}
-            walker:ParseNew(source, FALSE)
+            walker:Parse(source, FALSE)
             IF walker:EntityList:Count > 0
                VAR xElement      := walker:EntityList:First()
                IF xElement IS XTypeDefinition VAR xtype
                   xtype:Range       := TextRange{element:StartLine, element:StartColumn, element:EndLine, element:EndColumn}
                   xtype:Interval    := TextInterval{element:Start, element:Stop}
                   xtype:XmlComments := element:XmlComments
+                  xtype:ClassType   := (XSharpDialect) element:ClassType
                   VAR xmembers := xtype:XMembers:ToArray()
                   IF xmembers:Length == members:Length
                      LOCAL i AS INT
@@ -865,7 +889,13 @@ BEGIN NAMESPACE XSharpModel
          NEXT
          SWITCH element:Kind
          CASE Kind.Class
-            sb:AppendLine("END CLASS")
+            IF element:ClassType == (INT) XSharpDialect.XPP
+               sb:AppendLine("ENDCLASS")
+            ELSEIF element:ClassType == (INT) XSharpDialect.FoxPro
+               sb:AppendLine("ENDDEFINE")
+            ELSE
+               sb:AppendLine("END CLASS")
+            ENDIF
          CASE Kind.Structure
             sb:AppendLine("END STRUCTURE")
          CASE Kind.Interface

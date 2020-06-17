@@ -27,6 +27,7 @@ BEGIN NAMESPACE XSharpModel
    CONST PUBLIC VarType := "$VAR$" AS STRING
    CONST PUBLIC UsualType := "USUAL" AS STRING
    CONST PUBLIC NoType := "$NOTYPE$" AS STRING
+   CONST PUBLIC XppDeclaration := "_declaration" AS STRING
 
 	STATIC PROPERTY KeywordsUpperCase AS LOGIC
 		GET 

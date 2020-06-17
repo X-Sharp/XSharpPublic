@@ -69,7 +69,7 @@ BEGIN NAMESPACE XSharpModel
             WriteOutputMessage("..."+file:FullPath)
 				BEGIN USING VAR walker := SourceWalker{file}
 					TRY
-                  walker:ParseNew(FALSE)
+                  walker:Parse(FALSE)
 						IF file:Project != NULL
 							IF file:Project:FileWalkComplete != NULL
 								file:Project:FileWalkComplete?:Invoke(file)

@@ -17,7 +17,7 @@ BEGIN NAMESPACE XSharpModel
       STATIC PRIVATE oConn   AS SQLiteConnection     // In memory database !
       STATIC PRIVATE lastWritten := DateTime.MinValue AS DateTime
       STATIC PRIVATE currentFile AS STRING
-      PRIVATE CONST CurrentDbVersion := 0.2 AS System.Double
+      PRIVATE CONST CurrentDbVersion := 0.3 AS System.Double
       
       STATIC METHOD CreateOrOpenDatabase(cFileName AS STRING) AS VOID
          LOCAL lValid := FALSE AS LOGIC
@@ -203,7 +203,7 @@ BEGIN NAMESPACE XSharpModel
             stmt	   +=  " Id integer NOT NULL PRIMARY KEY, idFile integer NOT NULL, Name text NOT NULL COLLATE NOCASE, Namespace text NOT NULL COLLATE NOCASE, "
             stmt     +=  " Kind integer NOT NULL, BaseTypeName text COLLATE NOCASE, Attributes integer NOT NULL, "
             stmt     +=  " StartLine integer , StartColumn integer, EndLine integer , EndColumn integer, Start integer , Stop integer,  "
-            stmt	   +=  " Sourcecode text , XmlComments text,"
+            stmt	   +=  " Sourcecode text , XmlComments text, ClassType integer NOT NULL, "
             stmt     +=  " FOREIGN KEY (idFile) REFERENCES Files (Id) ON DELETE CASCADE ON UPDATE CASCADE"
             stmt	   += ")"
             
@@ -307,7 +307,7 @@ BEGIN NAMESPACE XSharpModel
             cmd:ExecuteNonQuery()		
             
             
-            stmt := "CREATE VIEW TypeMembers AS SELECT m.*, t.Name AS TypeName, t.Namespace, t.BaseTypeName " + ;
+            stmt := "CREATE VIEW TypeMembers AS SELECT m.*, t.Name AS TypeName, t.Namespace, t.BaseTypeName, t.ClassType " + ;
             "FROM members m JOIN Types t ON m.IdType = t.Id"
             cmd:CommandText := stmt
             cmd:Parameters:Clear()
@@ -581,7 +581,7 @@ BEGIN NAMESPACE XSharpModel
          " Kind integer NOT NULL, BaseTypeName text COLLATE NOCASE, Attributes integer NOT NULL, "
          " Sourcecode text , XmlComments text"
          " StartLine integer , StartColumn integer, EndLine integer , EndColumn integer,   "
-         " Start integer , Stop integer,  "
+         " Start integer , Stop integer,  ClassType integer NOT NULL, "
          " FOREIGN KEY (idFile) REFERENCES Files (Id) ON DELETE CASCADE ON UPDATE CASCADE"
          ")"
          */
@@ -596,9 +596,9 @@ BEGIN NAMESPACE XSharpModel
                   oCmd:CommandText  := "DELETE FROM Types WHERE IdFile = "+oFile:Id:ToString()
                   oCmd:ExecuteNonQuery()
                   oCmd:CommandText := "INSERT INTO Types (Name, IdFile, Namespace, Kind,  BaseTypeName, Attributes,  Sourcecode, XmlComments, " + ;
-                  "                 StartLine,  StartColumn,  EndLine,  EndColumn,  Start,  Stop) " +;
+                  "                 StartLine,  StartColumn,  EndLine,  EndColumn,  Start,  Stop, ClassType) " +;
                   " VALUES ($name, $file, $namespace, $kind, $baseTypeName,  $attributes, $sourcecode, $xmlcomments, " +;
-                  "           $startline, $startcolumn, $endline, $endcolumn, $start, $stop) ;" +;
+                  "           $startline, $startcolumn, $endline, $endcolumn, $start, $stop, $classtype) ;" +;
                   " SELECT last_insert_rowid()"
                   VAR pars := List<SQLiteParameter>{} { ;
                   oCmd:Parameters:AddWithValue("$name", ""),;
@@ -614,7 +614,8 @@ BEGIN NAMESPACE XSharpModel
                   oCmd:Parameters:AddWithValue("$endline", 0),;
                   oCmd:Parameters:AddWithValue("$endcolumn", 0),;
                   oCmd:Parameters:AddWithValue("$start", 0),;
-                  oCmd:Parameters:AddWithValue("$stop", 0)}
+                  oCmd:Parameters:AddWithValue("$stop", 0),;
+                  oCmd:Parameters:AddWithValue("$classtype", 0)}
                   VAR types := oFile:TypeList:Values:Where({ t=> t.Kind != Kind.Namespace .AND. ;
                                     t:Name != XLiterals.GlobalName .OR. t:Members:Count > 0 })
                   FOREACH VAR typedef IN types
@@ -633,6 +634,7 @@ BEGIN NAMESPACE XSharpModel
                         pars[11]:Value := typedef:Range:EndColumn
                         pars[12]:Value := typedef:Interval:Start
                         pars[13]:Value := typedef:Interval:Stop
+                        pars[14]:Value := (INT) typedef:ClassType
                         VAR id := (INT64) oCmd:ExecuteScalar()
                         typedef:Id := id
                      CATCH e AS Exception
@@ -840,7 +842,7 @@ BEGIN NAMESPACE XSharpModel
                END TRY            
             END LOCK
          ENDIF
-         Log(i"FindFunction '{sName}' returns {result:Count} matches")
+         Log(i"FindFunction '{sName}' returns {result.Count} matches")
          RETURN result
       
       STATIC METHOD FindGlobalOrDefine(sName AS STRING, sProjectIds AS STRING) AS IList<XDbResult>
@@ -867,7 +869,7 @@ BEGIN NAMESPACE XSharpModel
                END TRY            
             END LOCK
          ENDIF
-         Log(i"FindGlobalOrDefine '{sName}' returns {result:Count} matches")
+         Log(i"FindGlobalOrDefine '{sName}' returns {result.Count} matches")
          RETURN result      
       
       STATIC METHOD GetTypes(sName AS STRING, sProjectIds AS STRING) AS IList<XDbResult>
@@ -970,6 +972,7 @@ BEGIN NAMESPACE XSharpModel
          res:TypeName     := DbToString(rdr["Name"])
          res:Namespace    := DbToString(rdr["NameSpace"])
          res:Kind         := (Kind) (INT64) rdr["Kind"]
+         res:ClassType    := DbToInt( rdr["ClassType"])
          res:Attributes   := (Modifiers) (INT64) rdr["Attributes"]
          res:FileName     := DbToString(rdr["FileName"])
          res:Project      := DbToString(rdr["ProjectFileName"])
@@ -1002,6 +1005,7 @@ BEGIN NAMESPACE XSharpModel
          VAR res := XDbResult{}
          res:TypeName     := DbToString(rdr["TypeName"])
          res:MemberName   := DbToString(rdr["Name"])
+         res:ClassType    := DbToInt( rdr["ClassType"])
          res:Kind         := (Kind) (INT64) rdr["Kind"]
          res:Attributes   := (Modifiers) (INT64) rdr["Attributes"]
          res:FileName     := DbToString(rdr["FileName"])

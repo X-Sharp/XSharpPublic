@@ -28,6 +28,7 @@ BEGIN NAMESPACE XSharpModel
          PRIVATE _entities AS IList<XEntityDefinition>
          PRIVATE _blocks   AS IList<XBlock>
          PRIVATE _locals   AS IList<XVariable>
+         PRIVATE _options  AS XSharpParseOptions
 
 		#endregion
 		#region Properties
@@ -55,20 +56,8 @@ BEGIN NAMESPACE XSharpModel
 			    SELF:StartPosition := 0
 			    //
 			    sourcePath := SELF:_file:SourcePath
+             _options   := SELF:_file:Project:ParseOptions
             ENDIF
-
-      /*
-		METHOD BuildModel(oInfo AS ParseResult) AS VOID
-			IF SELF:_prjNode != NULL .AND. SELF:_file:Project:Loaded
-				//
-				TRY
-					SELF:_file:BuildTypes(oInfo)
-				CATCH exception AS System.Exception
-					WriteOutputMessage("BuildModel failed: ")
-					XSolution.WriteException(exception)
-				END TRY
-			ENDIF
-      */
       
 		VIRTUAL METHOD Dispose() AS VOID 
 			SELF:Dispose(TRUE)
@@ -85,11 +74,11 @@ BEGIN NAMESPACE XSharpModel
 
 		METHOD Lex(cSource AS STRING) AS ITokenStream
 			LOCAL lOk := FALSE AS LOGIC
-			//WriteOutputMessage("-->> Lex() "+_file:FullPath)
+			WriteOutputMessage("-->> Lex() "+_file:FullPath)
 			SELF:_errors := List<XError>{}
 			LOCAL stream := NULL AS ITokenStream
             TRY
-			XSharp.Parser.VsParser.Lex(cSource, SELF:_file:SourcePath, SELF:_file:Project:ParseOptions, SELF, OUT stream)
+			XSharp.Parser.VsParser.Lex(cSource, SELF:_file:SourcePath, _options, SELF, OUT stream)
 			BEGIN LOCK SELF
 				SELF:_tokenStream := stream
 			END LOCK
@@ -98,14 +87,27 @@ BEGIN NAMESPACE XSharpModel
                 WriteOutputMessage(_file:FullPath)                  
                 WriteOutputMessage(e:ToString())
             END TRY
-			//WriteOutputMessage("<<-- Lex() "+_file:FullPath)
+			WriteOutputMessage("<<-- Lex() "+_file:FullPath)
 			RETURN stream
 
-      METHOD ParseLocals(source as STRING, startLine AS INT, startIndex AS INT) AS List<IXVariable>
+      METHOD ParseLocals(source AS STRING, xmember AS XMemberDefinition) AS List<IXVariable>
          // This is JUST the source of the method. The locations in the variables need to be adjusted
-         SELF:ParseNew(source, TRUE)         
+         
+         VAR owner := xmember:Parent
+         IF owner IS XTypeDefinition VAR td .AND. td:Name != XLiterals.GlobalName .AND. td:Kind == Kind.Class
+            source := td:SourceCode + e"\r\n" + source
+            IF td:ClassType == XSharpDialect.XPP
+               source += e"\r\nENDCLASS\r\n"
+            ELSEIF td:ClassType == XSharpDialect.FoxPro
+               source += "\r\nENDDEFINE\r\n"
+            ELSE
+               source += "\r\nEND CLASS\r\n"
+            ENDIF
+         ENDIF         
+         SELF:Parse(source, TRUE)         
          VAR result := List<IXVariable>{}
-         startLine += 1
+         VAR startLine := xmember:Range:StartLine
+         VAR startIndex := xmember:Interval:Start+1
          FOREACH VAR xVar IN SELF:_locals
             xVar:Range     := TextRange{startLine, xVar:Range:StartColumn, xVar:Range:EndLine+startLine, xVar:Range:EndColumn}
             xVar:Interval  := TextInterval{startIndex+xVar:Interval:Start, startIndex+xVar:Interval:Stop}
@@ -116,40 +118,38 @@ BEGIN NAMESPACE XSharpModel
 
 
       METHOD ParseTokens(tokens AS ITokenStream , lIncludeRegions AS LOGIC, lIncludeLocals AS LOGIC) AS VOID
-
-         //WriteOutputMessage("-->> ParseTokens() "+_file:FullPath+" locals "+lIncludeLocals:ToString()+" )")
+         WriteOutputMessage("-->> ParseTokens() "+_file:FullPath+" locals "+lIncludeLocals:ToString()+" )")
          TRY
-            VAR parser := XsParser{_file}
+            VAR parser := XsParser{_file, _options:Dialect}
             parser:Parse(tokens , lIncludeRegions, lIncludeLocals)
             SELF:_entities := parser:EntityList
             SELF:_blocks   := parser:BlockList
             SELF:_locals   := parser:Locals
             
          CATCH e AS Exception
-               WriteOutputMessage("ParseTokens() Failed:")
-               WriteOutputMessage(_file:FullPath)
-               WriteOutputMessage(e:ToString())
-            
+            WriteOutputMessage("ParseTokens() Failed:")
+            WriteOutputMessage(_file:FullPath)
+            WriteOutputMessage(e:ToString())
          END TRY
-         //WriteOutputMessage("<<-- ParseTokens() "+_file:FullPath)
+         WriteOutputMessage("<<-- ParseTokens() "+_file:FullPath)
 
 
-      METHOD ParseNew(lIncludeLocals AS LOGIC) AS VOID
+      METHOD Parse(lIncludeLocals AS LOGIC) AS VOID
          VAR cSource      := System.IO.File.ReadAllText(_file:FullPath)
-         SELF:ParseNew(cSource, lIncludeLocals)
+         SELF:Parse(cSource, lIncludeLocals)
 
-      METHOD ParseNew(cSource AS STRING, lIncludeLocals AS LOGIC) AS VOID
-         //WriteOutputMessage("-->> ParseNew() "+_file:FullPath+" locals "+lIncludeLocals:ToString()+" )")
+      METHOD Parse(cSource AS STRING, lIncludeLocals AS LOGIC) AS VOID
+         WriteOutputMessage("-->> Parse() "+_file:FullPath+" locals "+lIncludeLocals:ToString()+" )")
          TRY
             VAR tokens   := SELF:Lex(cSource)
             SELF:ParseTokens(tokens, FALSE, lIncludeLocals)
          CATCH e AS Exception
-            WriteOutputMessage("ParseNew() Failed:")
+            WriteOutputMessage("Parse() Failed:")
             WriteOutputMessage(_file:FullPath)
             WriteOutputMessage(e:ToString())
             
          END TRY
-         //WriteOutputMessage("<<-- ParseNew() "+_file:FullPath)
+         WriteOutputMessage("<<-- Parse() "+_file:FullPath)
 
 		#region Errors
 			VIRTUAL METHOD ReportError(fileName AS STRING, span AS LinePositionSpan, errorCode AS STRING, message AS STRING, args AS OBJECT[]) AS VOID
@@ -157,6 +157,8 @@ BEGIN NAMESPACE XSharpModel
 
 			VIRTUAL METHOD ReportWarning(fileName AS STRING, span AS LinePositionSpan, errorCode AS STRING, message AS STRING, args AS OBJECT[]) AS VOID
 				SELF:_errors:Add(XWarning{fileName, span, errorCode, message, args})
+            
+            
             /*
 			PRIVATE METHOD ShowErrorsAsync(syntaxRoot AS SyntaxNode) AS VOID
 				LOCAL list AS List<XError>
@@ -191,7 +193,9 @@ BEGIN NAMESPACE XSharpModel
 				ENDIF
             */
 		STATIC METHOD WriteOutputMessage(message AS STRING) AS VOID
-			XSolution.WriteOutputMessage("XModel.SourceWalker "+message)
+         IF XSolution.EnableParseLog .AND. XSolution.EnableLogging
+   			XSolution.WriteOutputMessage("XModel.SourceWalker "+message)
+         ENDIF
 
 		#endregion
 

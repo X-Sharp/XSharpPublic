@@ -22,13 +22,13 @@ BEGIN NAMESPACE XSharpModel
 		
 		CONSTRUCTOR(start AS LONG, stop AS LONG)
 			//
-			SELF:_StartIndex := start
-			SELF:_StopIndex := stop
+			SELF:_StartIndex := Math.Max(start,0)
+			SELF:_StopIndex := Math.Max(stop,0)
 		
 		CONSTRUCTOR(startToken AS IToken, endToken AS IToken)
 			//
-			SELF:_StartIndex := startToken:StartIndex
-			SELF:_StopIndex  := endToken:StopIndex
+			SELF:_StartIndex := Math.Max(startToken:StartIndex,0)
+			SELF:_StopIndex  := Math.Max(endToken:StopIndex,0)
 				
 		STATIC PROPERTY Empty AS TextInterval GET TextInterval{}
 

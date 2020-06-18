@@ -27,10 +27,6 @@ BEGIN NAMESPACE XSharpModel
 		PROPERTY Project AS XProject AUTO
 		PROPERTY RootNameSpace AS STRING GET ""
 		PROPERTY Url AS STRING GET ""
-		PROPERTY DisableRegions AS LOGIC GET false
-		PROPERTY DisableLexing AS LOGIC GET false
-		PROPERTY DisableParsing AS LOGIC GET false
-		PROPERTY KeywordsUppercase AS LOGIC GET TRUE
 		PROPERTY Dialect AS XSharpDialect GET XSharpDialect.Core
 		PROPERTY Name  as STRING GET "(OrphanedFiles)"
 	#endregion

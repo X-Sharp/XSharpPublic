@@ -6,12 +6,12 @@
 
 using System;
 
-namespace XSharp.Project
+namespace XSharp
 {
     /// <summary>
     /// The package GUID 
     /// </summary>
-    public static class GuidStrings
+    internal static class GuidStrings
     {
         public const string guidXSharpProjectPkgString = "e299fb7b-d273-4678-9acf-b37b4af04a12";
         public const string guidXSharpProjectCmdSetString =     "32a7b1cd-3663-4a70-b855-486671f5839c";

@@ -63,7 +63,7 @@ BEGIN NAMESPACE XSharpModel
       
       PROPERTY DependentProjectList              AS STRING
          GET
-            IF String.IsNullOrEmpty(_dependentProjectList)
+            IF String.IsNullOrEmpty(_dependentProjectList) .OR. _dependentProjectList == SELF:Id:ToString()
                VAR result := ""
                result := SELF:Id:ToString()
                FOREACH VAR dependent IN _ReferencedProjects
@@ -150,9 +150,6 @@ BEGIN NAMESPACE XSharpModel
          SELF:_OtherFilesDict    := XFileDictionary{}
          SELF:Loaded := TRUE
          SELF:FileWalkCompleted := FALSE
-         IF ! XLiterals.Initialized
-            XLiterals.SetKeywordCase(SELF:ProjectNode:KeywordsUppercase)
-         ENDIF
       INTERNAL METHOD Close() AS VOID
          _projectNode := NULL
          RETURN
@@ -164,7 +161,7 @@ BEGIN NAMESPACE XSharpModel
          
          METHOD AddAssemblyReference(path AS STRING) AS VOID
             IF ! String.IsNullOrEmpty(path)
-               IF XSolution.EnableReferenceInfoLog
+               IF XSettings.EnableReferenceInfoLog
                   SELF:WriteOutputMessage("AddAssemblyReference (string) "+path)
                ENDIF
                SELF:_clearTypeCache()
@@ -178,7 +175,7 @@ BEGIN NAMESPACE XSharpModel
          METHOD AddAssemblyReference(reference AS VSLangProj.Reference) AS VOID
             //LOCAL assemblyInfo AS AssemblyInfo
             IF reference != NULL
-               IF XSolution.EnableReferenceInfoLog
+               IF XSettings.EnableReferenceInfoLog
                   SELF:WriteOutputMessage("AddAssemblyReference (VSLangProj.Reference) "+reference:Path)
                ENDIF
                SELF:_clearTypeCache()
@@ -195,7 +192,7 @@ BEGIN NAMESPACE XSharpModel
             ENDIF
             
          METHOD ClearAssemblyReferences() AS VOID
-            IF XSolution.EnableReferenceInfoLog
+            IF XSettings.EnableReferenceInfoLog
                SELF:WriteOutputMessage("ClearAssemblyReferences() ")
             ENDIF
             SELF:_clearTypeCache()
@@ -207,7 +204,7 @@ BEGIN NAMESPACE XSharpModel
             
          METHOD RemoveAssemblyReference(fileName AS STRING) AS VOID
             IF ! String.IsNullOrEmpty(fileName)
-               IF XSolution.EnableReferenceInfoLog
+               IF XSettings.EnableReferenceInfoLog
                   SELF:WriteOutputMessage("RemoveAssemblyReference() "+fileName)
                ENDIF
                SELF:_clearTypeCache()
@@ -236,7 +233,7 @@ BEGIN NAMESPACE XSharpModel
             LOCAL loaded AS List<STRING>
             //
             IF SELF:_unprocessedAssemblyReferences:Count > 0 .AND. ! XAssembly.DisableAssemblyReferences
-               IF XSolution.EnableReferenceInfoLog
+               IF XSettings.EnableReferenceInfoLog
                   SELF:WriteOutputMessage("ResolveUnprocessedAssemblyReferences()")
                ENDIF
                loaded := List<STRING>{}
@@ -260,7 +257,7 @@ BEGIN NAMESPACE XSharpModel
          
          METHOD ResolveReferences() AS VOID
             IF SELF:hasUnprocessedReferences
-               IF XSolution.EnableReferenceInfoLog
+               IF XSettings.EnableReferenceInfoLog
                   SELF:WriteOutputMessage("<<-- ResolveReferences()")
                ENDIF
                SELF:ProjectNode:SetStatusBarText(String.Format("Loading referenced types for project {0}", SELF:Name))
@@ -277,7 +274,7 @@ BEGIN NAMESPACE XSharpModel
                   // repeat the assemblyreferences because we can have _projectOutputDLLs added to the list
                   SELF:ResolveUnprocessedAssemblyReferences()
                END TRY
-               IF XSolution.EnableReferenceInfoLog
+               IF XSettings.EnableReferenceInfoLog
                   SELF:WriteOutputMessage(">>-- ResolveReferences()")
                ENDIF
             ENDIF
@@ -297,7 +294,7 @@ BEGIN NAMESPACE XSharpModel
                SELF:_ImplicitNamespaces := NULL
                SELF:_dependentAssemblyList := NULL
                SELF:_dependentProjectList  := ""
-               IF XSolution.EnableReferenceInfoLog
+               IF XSettings.EnableReferenceInfoLog
                   SELF:WriteOutputMessage("Add XSharp ProjectReference "+url)
                ENDIF
                IF ! SELF:_unprocessedProjectReferences:Contains(url)
@@ -309,7 +306,7 @@ BEGIN NAMESPACE XSharpModel
             
          METHOD AddProjectOutput(sProjectURL AS STRING, sOutputDLL AS STRING) AS VOID
             IF ! String.IsNullOrEmpty(sProjectURL) .AND. ! String.IsNullOrEmpty(sOutputDLL)
-               IF XSolution.EnableReferenceInfoLog
+               IF XSettings.EnableReferenceInfoLog
                   SELF:WriteOutputMessage("AddProjectOutput "+sProjectURL+"("+sOutputDLL+")")
                ENDIF
                IF SELF:_projectOutputDLLs:ContainsKey(sProjectURL)
@@ -322,7 +319,7 @@ BEGIN NAMESPACE XSharpModel
             
          METHOD RemoveProjectOutput(sProjectURL AS STRING) AS VOID
             IF ! String.IsNullOrEmpty(sProjectURL)
-               IF XSolution.EnableReferenceInfoLog
+               IF XSettings.EnableReferenceInfoLog
                   WriteOutputMessage("RemoveProjectOutput() "+sProjectURL)
                ENDIF
                IF SELF:_projectOutputDLLs:ContainsKey(sProjectURL)
@@ -337,7 +334,7 @@ BEGIN NAMESPACE XSharpModel
                LOCAL prj AS XProject
                LOCAL outputname AS STRING
                SELF:_dependentProjectList  := ""
-               IF XSolution.EnableReferenceInfoLog
+               IF XSettings.EnableReferenceInfoLog
                   WriteOutputMessage("RemoveProjectReference() "+url)
                ENDIF
                SELF:_clearTypeCache()
@@ -360,7 +357,7 @@ BEGIN NAMESPACE XSharpModel
             
          METHOD RemoveProjectReferenceDLL(DLL AS STRING) AS VOID
             IF ! String.IsNullOrEmpty(DLL)
-               IF XSolution.EnableReferenceInfoLog
+               IF XSettings.EnableReferenceInfoLog
                   WriteOutputMessage("RemoveProjectReferenceDLL() "+DLL)
                ENDIF
                SELF:_clearTypeCache()
@@ -372,7 +369,7 @@ BEGIN NAMESPACE XSharpModel
             LOCAL p AS XProject
             LOCAL outputFile AS STRING
             IF SELF:_unprocessedProjectReferences:Count > 0  .AND. ! XAssembly.DisableXSharpProjectReferences
-               IF XSolution.EnableReferenceInfoLog
+               IF XSettings.EnableReferenceInfoLog
                   WriteOutputMessage("ResolveUnprocessedProjectReferences()")
                ENDIF
                existing := List<STRING>{}
@@ -396,7 +393,7 @@ BEGIN NAMESPACE XSharpModel
       #region References TO other project systems
       METHOD AddStrangerProjectReference(url AS STRING) AS LOGIC
          IF ! String.IsNullOrEmpty(url)
-            IF XSolution.EnableReferenceInfoLog
+            IF XSettings.EnableReferenceInfoLog
                WriteOutputMessage("Add Foreign ProjectReference"+url)
             ENDIF
             IF ! SELF:_unprocessedStrangerProjectReferences:Contains(url)
@@ -458,7 +455,7 @@ BEGIN NAMESPACE XSharpModel
       METHOD RemoveStrangerProjectReference(url AS STRING) AS LOGIC
          IF ! String.IsNullOrEmpty(url)
             LOCAL prj AS EnvDTE.Project
-            IF XSolution.EnableReferenceInfoLog
+            IF XSettings.EnableReferenceInfoLog
                WriteOutputMessage("RemoveStrangerProjectReference() "+url)
             ENDIF
             SELF:_clearTypeCache()
@@ -483,7 +480,7 @@ BEGIN NAMESPACE XSharpModel
       PRIVATE METHOD RefreshStrangerProjectDLLOutputFiles() AS VOID
          // Check if any DLL has changed
          IF SELF:_StrangerProjects:Count > 0 .AND. ! XAssembly.DisableForeignProjectReferences
-            IF XSolution.EnableReferenceInfoLog
+            IF XSettings.EnableReferenceInfoLog
                WriteOutputMessage("--> RefreshStrangerProjectDLLOutputFiles() "+SELF:_StrangerProjects:Count():ToString())
             ENDIF
             FOREACH p AS EnvDTE.Project IN SELF:_StrangerProjects
@@ -494,7 +491,7 @@ BEGIN NAMESPACE XSharpModel
                   // when the output file name of the referenced project has changed
                   // then remove the old name
                   IF outputFile:ToLower() != SELF:_projectOutputDLLs:Item[sProjectURL]:ToLower()
-                     IF XSolution.EnableReferenceInfoLog
+                     IF XSettings.EnableReferenceInfoLog
                         WriteOutputMessage(i"DLL has been renamed to {outputFile} so remove the old DLL {SELF:_projectOutputDLLs:Item[sProjectURL]}")
                      ENDIF
                      SELF:_projectOutputDLLs:TryRemove(sProjectURL, OUT VAR _)
@@ -507,7 +504,7 @@ BEGIN NAMESPACE XSharpModel
                   SELF:AddStrangerProjectReference(sProjectURL)
                ENDIF
             NEXT
-            IF XSolution.EnableReferenceInfoLog
+            IF XSettings.EnableReferenceInfoLog
                WriteOutputMessage("<-- RefreshStrangerProjectDLLOutputFiles()")
             ENDIF
          ENDIF
@@ -517,7 +514,7 @@ BEGIN NAMESPACE XSharpModel
          LOCAL p AS EnvDTE.Project
          LOCAL outputFile AS STRING
          IF SELF:_unprocessedStrangerProjectReferences:Count > 0 .AND. ! XAssembly.DisableForeignProjectReferences
-            IF XSolution.EnableReferenceInfoLog
+            IF XSettings.EnableReferenceInfoLog
                WriteOutputMessage("ResolveUnprocessedStrangerReferences()" +_unprocessedStrangerProjectReferences:Count:ToString())
             ENDIF
             existing := List<STRING>{}
@@ -593,7 +590,7 @@ BEGIN NAMESPACE XSharpModel
       
       #region Lookup Types and Functions
       METHOD FindGlobalMembersInAssemblyReferences(name AS STRING) AS IList<IXMember>
-        IF XSolution.EnableTypelookupLog
+        IF XSettings.EnableTypelookupLog
             WriteOutputMessage(i"FindGlobalMembersInAssemblyReferences {name} ")
         ENDIF
          VAR result := List<IXMember>{}
@@ -608,7 +605,7 @@ BEGIN NAMESPACE XSharpModel
                ENDIF
             ENDIF
          NEXT
-         IF XSolution.EnableTypelookupLog
+         IF XSettings.EnableTypelookupLog
             WriteOutputMessage(i"FindGlobalMembersInAssemblyReferences {name}, found {result.Count} occurences")
          ENDIF
          RETURN result
@@ -618,7 +615,7 @@ BEGIN NAMESPACE XSharpModel
       METHOD FindFunction(name AS STRING, lRecursive := TRUE AS LOGIC) AS IXMember
          // we look in the project references and assembly references
          // pass the list of ProjectIds and AssemblyIds to the database engine
-        IF XSolution.EnableTypelookupLog
+        IF XSettings.EnableTypelookupLog
             WriteOutputMessage(ie"FindFunction {name} ")
         ENDIF
          
@@ -628,7 +625,7 @@ BEGIN NAMESPACE XSharpModel
          ENDIF
          VAR result := XDatabase.FindFunction(name, projectIds)
          VAR xmember := GetGlobalMember(result)
-         IF XSolution.EnableTypelookupLog
+         IF XSettings.EnableTypelookupLog
                WriteOutputMessage(ie"FindFunction {name}, result {iif (xmember != NULL, xmember.FullName, \"not found\"} ")
          ENDIF
          RETURN xmember
@@ -636,7 +633,7 @@ BEGIN NAMESPACE XSharpModel
       METHOD FindGlobalOrDefine(name AS STRING, lRecursive := TRUE AS LOGIC) AS IXMember
          // we look in the project references and assembly references
          // pass the list of ProjectIds and AssemblyIds to the database engine
-         IF XSolution.EnableTypelookupLog
+         IF XSettings.EnableTypelookupLog
               WriteOutputMessage(ie"FindGlobalOrDefine {name}")
          ENDIF
           VAR projectIds    := SELF:Id:ToString()
@@ -645,7 +642,7 @@ BEGIN NAMESPACE XSharpModel
          ENDIF
          VAR result := XDatabase.FindGlobalOrDefine(name, projectIds)
          VAR xmember := GetGlobalMember(result)
-         IF XSolution.EnableTypelookupLog
+         IF XSettings.EnableTypelookupLog
                WriteOutputMessage(ie"FindGlobalOrDefine {name}, result {iif (xmember != NULL, xmember.FullName, \"not found\"} ")
          ENDIF
          RETURN xmember         
@@ -703,7 +700,7 @@ BEGIN NAMESPACE XSharpModel
          
       
       METHOD FindSystemType(name AS STRING, usings AS IList<STRING>) AS XTypeReference
-         IF XSolution.EnableTypelookupLog
+         IF XSettings.EnableTypelookupLog
             WriteOutputMessage("FindSystemType() "+name)
          ENDIF
          IF ! XAssembly.DisableForeignProjectReferences
@@ -711,7 +708,7 @@ BEGIN NAMESPACE XSharpModel
          ENDIF
          SELF:ResolveReferences()
          VAR type := SystemTypeController.FindType(name, usings, SELF:_AssemblyReferences)
-         IF XSolution.EnableTypelookupLog
+         IF XSettings.EnableTypelookupLog
             IF type != NULL
                WriteOutputMessage("FindSystemType() "+name+" found "+type:FullName)
             ELSE
@@ -744,7 +741,7 @@ BEGIN NAMESPACE XSharpModel
       PRIVATE _lastName  := NULL AS STRING
       
       METHOD Lookup(typeName AS STRING, usings AS IReadOnlyList<STRING>) AS XTypeDefinition
-         IF XSolution.EnableTypelookupLog
+         IF XSettings.EnableTypelookupLog
             WriteOutputMessage(i"Lookup {typeName}")
          ENDIF
          VAR originalName := typeName
@@ -756,7 +753,7 @@ BEGIN NAMESPACE XSharpModel
          result := FilterUsings(result,usings)
          _lastFound := GetType(result)
          _lastName  := originalName
-         IF XSolution.EnableTypelookupLog
+         IF XSettings.EnableTypelookupLog
             WriteOutputMessage(ie"Lookup {typeName}, result {iif(_lastFound != NULL, _lastFound.FullName, \"not found\" } ")
          ENDIF
          RETURN _lastFound
@@ -766,7 +763,7 @@ BEGIN NAMESPACE XSharpModel
          RETURN LookupReferenced(typeName, usings)
          
       METHOD LookupReferenced(typeName AS STRING, usings AS IReadOnlyList<STRING>) AS XTypeDefinition
-        IF XSolution.EnableTypelookupLog
+        IF XSettings.EnableTypelookupLog
             WriteOutputMessage(i"LookupReferenced {typeName}")
          ENDIF
          VAR originalName := typeName
@@ -778,7 +775,7 @@ BEGIN NAMESPACE XSharpModel
          result := FilterUsings(result,usings)
          _lastFound := GetType(result)
          _lastName  := originalName
-         IF XSolution.EnableTypelookupLog
+         IF XSettings.EnableTypelookupLog
             WriteOutputMessage(ie"LookupReferenced {typeName}, result {iif(_lastFound != NULL, _lastFound.FullName, \"not found\" } ")
          ENDIF
           
@@ -911,7 +908,7 @@ BEGIN NAMESPACE XSharpModel
       
       METHOD UnLoad() AS VOID
          SELF:Loaded := FALSE
-         IF XSolution.EnableReferenceInfoLog
+         IF XSettings.EnableReferenceInfoLog
             WriteOutputMessage("UnLoad() ")
          ENDIF
          FOREACH VAR asm IN SELF:_AssemblyReferences

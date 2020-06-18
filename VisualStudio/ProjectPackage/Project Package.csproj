@@ -253,6 +253,9 @@
     <Compile Include="..\..\Common\Constants.cs">
       <Link>Constants.cs</Link>
     </Compile>
+    <Compile Include="..\..\Common\GuidStrings.cs">
+      <Link>GuidStrings.cs</Link>
+    </Compile>
     <Compile Include="Automation\OAXSharpProjectItem.cs" />
     <Compile Include="CodeDomProvider\VSXsharpCodeDomProvider.cs">
       <SubType>Component</SubType>

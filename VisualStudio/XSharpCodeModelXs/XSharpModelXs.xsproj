@@ -151,6 +151,7 @@
     <Compile Include="CompletionType.prg" />
     <Compile Include="Model\XDbResult.prg" />
     <Compile Include="Model\XBaseSignature.prg" />
+    <Compile Include="ProjectSystem\XSettings.prg" />
     <Compile Include="Support\TextInterval.prg" />
     <Compile Include="Support\TextRange.prg" />
     <Compile Include="Support\TypeExtensions.prg" />

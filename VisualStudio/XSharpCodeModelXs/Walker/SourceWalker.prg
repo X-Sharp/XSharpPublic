@@ -94,8 +94,12 @@ BEGIN NAMESPACE XSharpModel
          // This is JUST the source of the method. The locations in the variables need to be adjusted
          
          VAR owner := xmember:Parent
+         VAR startLine := xmember:Range:StartLine 
+         VAR startIndex := xmember:Interval:Start+1
          IF owner IS XTypeDefinition VAR td .AND. td:Name != XLiterals.GlobalName .AND. td:Kind == Kind.Class
             source := td:SourceCode + e"\r\n" + source
+            startLine   -= 1        
+            startIndex  -= (td:SourceCode:Length +2)
             IF td:ClassType == XSharpDialect.XPP
                source += e"\r\nENDCLASS\r\n"
             ELSEIF td:ClassType == XSharpDialect.FoxPro
@@ -106,11 +110,9 @@ BEGIN NAMESPACE XSharpModel
          ENDIF         
          SELF:Parse(source, TRUE)         
          VAR result := List<IXVariable>{}
-         VAR startLine := xmember:Range:StartLine
-         VAR startIndex := xmember:Interval:Start+1
          FOREACH VAR xVar IN SELF:_locals
-            xVar:Range     := TextRange{startLine, xVar:Range:StartColumn, xVar:Range:EndLine+startLine, xVar:Range:EndColumn}
-            xVar:Interval  := TextInterval{startIndex+xVar:Interval:Start, startIndex+xVar:Interval:Stop}
+            xVar:Range     := xVar:Range:AddLine(startLine)
+            xVar:Interval  := xVar:Interval:AddPos(startIndex)
             result:Add(xVar)
          NEXT
          RETURN result
@@ -193,7 +195,7 @@ BEGIN NAMESPACE XSharpModel
 				ENDIF
             */
 		STATIC METHOD WriteOutputMessage(message AS STRING) AS VOID
-         IF XSolution.EnableParseLog .AND. XSolution.EnableLogging
+         IF XSettings.EnableParseLog .AND. XSettings.EnableLogging
    			XSolution.WriteOutputMessage("XModel.SourceWalker "+message)
          ENDIF
 

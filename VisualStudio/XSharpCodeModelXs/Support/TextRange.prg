@@ -44,7 +44,9 @@ BEGIN NAMESPACE XSharpModel
          
       METHOD WithEnd(endToken AS IToken) AS TextRange
          RETURN TextRange{_StartLine,_StartColumn,endToken:Line-1,endToken:Column+endToken:Text:Length}
-         
+      
+      METHOD AddLine(line AS INT) AS TextRange
+         RETURN TextRange{_StartLine+line,_StartColumn,_EndLine+line, _EndColumn}
          
       STATIC PROPERTY Empty AS TextRange GET TextRange{0, 0, 0, 0}
       

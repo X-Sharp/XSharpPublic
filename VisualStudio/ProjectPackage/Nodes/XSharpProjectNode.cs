@@ -1550,12 +1550,6 @@ namespace XSharp.Project
             }
         }
 
-        public bool DisableLexing => package.GetIntellisenseOptionsPage().DisableSyntaxColorization;
-        public bool DisableParsing => package.GetIntellisenseOptionsPage().DisableEntityParsing;
-        public bool DisableRegions => package.GetIntellisenseOptionsPage().DisableRegions;
-
-        public bool KeywordsUppercase => package.GetIntellisenseOptionsPage().KeywordCase == KeywordCase.Upper;
-
         #endregion
 
 

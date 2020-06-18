@@ -66,11 +66,8 @@ namespace XSharpColorizer
         #endregion
 
         #region Properties
-        public ITextSnapshot Snapshot => _snapshot;
+        internal ITextSnapshot Snapshot => _snapshot;
 
-        private bool disableEntityParsing => _file.Project.ProjectNode.DisableParsing;
-        private bool disableSyntaxHighlighting => _file.Project.ProjectNode.DisableLexing;
-        private bool disableRegions => _file.Project.ProjectNode.DisableRegions;
         #endregion
 
 
@@ -158,7 +155,7 @@ namespace XSharpColorizer
         }
         private void ClassifyBuffer(ITextSnapshot snapshot)
         {
-            if (disableSyntaxHighlighting)
+            if (XSettings.DisableSyntaxHighlighting)
                 return;
             // verify if someone else did not classify this already
             XSharpTokens xTokens = _buffer.GetTokens();
@@ -183,7 +180,7 @@ namespace XSharpColorizer
             // Note this runs in the background
             // Wait a little and then get the current snapshot. They may have typed fast or the buffer may have been updated by the formatter
             // wait a second before actually starting to lex the buffer
-            if (disableSyntaxHighlighting)
+            if (XSettings.DisableSyntaxHighlighting)
                 return;
             System.Threading.Thread.Sleep(1000);
             // and then take the current snapshot because it may have changed in the meantime
@@ -259,7 +256,7 @@ namespace XSharpColorizer
         #region Parser Methods
         private void BuildModelDoWork(object sender, DoWorkEventArgs e)
         {
-            if (disableEntityParsing)
+            if (XSettings.DisableEntityParsing)
                 return;
             Trace.WriteLine("-->> XSharpClassifier.BuildModelDoWork()");
             // Note this runs in the background
@@ -297,7 +294,7 @@ namespace XSharpColorizer
 
         public IList<ClassificationSpan> BuildRegionTags( IList<XEntityDefinition> entities, IList<XBlock> blocks, ITextSnapshot snapshot, IClassificationType start, IClassificationType stop)
         {
-            if (disableRegions)
+            if (XSettings.DisableRegions)
             {
                 return new List<ClassificationSpan>();
             }
@@ -807,7 +804,7 @@ namespace XSharpColorizer
                                 newtags.Add(item);
                         }
 
-                        if (!disableRegions)
+                        if (!XSettings.DisableRegions)
                         {
                             // now look for Regions of similar code lines
                             switch (token.Type)

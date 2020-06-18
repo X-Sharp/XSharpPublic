@@ -740,6 +740,14 @@ BEGIN NAMESPACE XSharpModel
       PRIVATE _lastFound := NULL AS XTypeDefinition
       PRIVATE _lastName  := NULL AS STRING
       
+      METHOD GetTypes( startWith AS STRING, usings AS IReadOnlyList<STRING>) AS IList<XTypeDefinition>
+         VAR result := XDatabase.GetTypesLike(startWith, SELF:DependentProjectList)
+         result := FilterUsings(result,usings)
+         VAR types := SELF:GetTypeList(result)
+         RETURN types
+                  
+         
+      
       METHOD Lookup(typeName AS STRING, usings AS IReadOnlyList<STRING>) AS XTypeDefinition
          IF XSettings.EnableTypelookupLog
             WriteOutputMessage(i"Lookup {typeName}")
@@ -811,12 +819,12 @@ BEGIN NAMESPACE XSharpModel
             idProject   := element:IdProject  
             VAR name    := element:TypeName
             VAR idType  := element:IdType
-            
+            VAR file       := XFile{element:FileName,SELF}
+            file:Virtual   := TRUE
+            file:Id        := element:IdFile
             VAR members := XDatabase.GetMembers(idType):ToArray()
             // now create a temporary source for the parser
             VAR source     := GetTypeSource(element, members)
-            VAR file       := XFile{element:FileName,SELF}
-            file:Virtual   := TRUE
             VAR walker := SourceWalker{file}
             walker:Parse(source, FALSE)
             IF walker:EntityList:Count > 0
@@ -857,6 +865,37 @@ BEGIN NAMESPACE XSharpModel
             NEXT
             RETURN xType
          ENDIF
+        
+         
+  PRIVATE METHOD GetTypeList(found AS IList<XDbResult>) AS IList<XTypeDefinition>
+         VAR result := List<XTypeDefinition>{}
+         LOCAL idProject := -1 AS INT64
+         LOCAL fullTypeName:= ""  AS STRING
+         FOREACH VAR element IN found
+            // Skip types found in another project
+            IF idProject != -1 .AND. element:IdProject != idProject
+               LOOP
+            ENDIF
+            // skip types from different namespaces
+            IF fullTypeName:Length > 0 .AND. fullTypeName != element:Namespace+"."+element:TypeName
+               LOOP
+            ENDIF
+            fullTypeName := element:Namespace+"."+element:TypeName
+            idProject   := element:IdProject  
+            VAR name    := element:TypeName
+            VAR idType  := element:IdType
+            VAR file       := XFile{element:FileName,SELF}
+            file:Virtual   := TRUE
+            file:Id        := element:IdFile
+            VAR range    := TextRange{element:StartLine, element:StartColumn, element:EndLine, element:EndColumn}
+            VAR interval := TextInterval{element:Start, element:Stop}
+            VAR xtype := XTypeDefinition{name, element:Kind,element:Attributes, range, interval, file}
+            xtype:Namespace := element:Namespace
+            xtype:Id  := element:IdType
+            result:Add(xtype)
+         NEXT
+         RETURN result
+         
          
       PRIVATE METHOD GetTypeSource(element AS XDbResult, members AS IList<XDbResult>) AS STRING
          VAR sb := StringBuilder{}

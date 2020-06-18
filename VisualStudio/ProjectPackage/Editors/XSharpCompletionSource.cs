@@ -338,7 +338,7 @@ namespace XSharpLanguage
                             // we should also walk all the USINGs, and the current Namespace if any, to search Types
                             AddTypeNames(compList, _file.Project, filterText, Usings);
                             //
-                            AddXSharpTypesTypeNames(kwdList, filterText);
+                            AddXSharpKeywordTypeNames(kwdList, filterText);
                             break;
                         case XSharpLexer.IMPLEMENTS:
                             // It can be a namespace
@@ -352,7 +352,7 @@ namespace XSharpLanguage
                             // we should also walk all the USINGs, and the current Namespace if any, to search Types
                             AddTypeNames(compList, _file.Project, filterText, Usings);
                             //
-                            AddXSharpTypesTypeNames(kwdList, filterText);
+                            AddXSharpKeywordTypeNames(kwdList, filterText);
                             // it can be a static Method/Property/Enum
                             if (cType != null)
                             {
@@ -440,7 +440,7 @@ namespace XSharpLanguage
                                 // we should also walk all the USINGs, and the current Namespace if any, to search Types
                                 AddTypeNames(compList, _file.Project, filterText, Usings);
                                 //
-                                AddXSharpTypesTypeNames(kwdList, filterText);
+                                AddXSharpKeywordTypeNames(kwdList, filterText);
                                 break;
                             case XSharpLexer.IMPLEMENTS:
                                 // It can be a namespace
@@ -473,7 +473,7 @@ namespace XSharpLanguage
                                 // and Types
                                 AddTypeNames(compList, _file.Project, filterText, Usings);
                                 //
-                                AddXSharpTypesTypeNames(kwdList, filterText);
+                                AddXSharpKeywordTypeNames(kwdList, filterText);
                                 //
                                 AddUsingStaticMembers(compList, _file, filterText);
                                 break;
@@ -583,7 +583,7 @@ namespace XSharpLanguage
                 if (XSharpTokenTools.isGenerated(type))
                    continue;
 
-                string realTypeName = type.Name;
+                string realTypeName = type.FullName;
                 if (IsHiddenName(realTypeName))
                 {
                     continue;
@@ -595,13 +595,13 @@ namespace XSharpLanguage
                     realTypeName = realTypeName.Replace('+', '.');
                 }
                 // remove the start
-                if (startLen > 0 && realTypeName.Length > startLen)
+                if (startLen > 0 && realTypeName.Length > startLen && realTypeName.StartsWith(startWith, StringComparison.OrdinalIgnoreCase))
                     realTypeName = realTypeName.Substring(startLen);
                 // Do we have another part file
                 dotPos = realTypeName.IndexOf('.');
                 // Then remove it
                 if (dotPos > 0)
-                    realTypeName = realTypeName.Substring(0, dotPos);
+                    realTypeName = realTypeName.Substring(dotPos+1);
                 if (IsHiddenName(realTypeName))
                     continue;
 
@@ -612,13 +612,8 @@ namespace XSharpLanguage
             }
             //
             // And our own Types
-            AddXSharpTypeNames(compList, project, startWith);
-            // We should also add the external TypeNames
-            foreach (var prj in project.ReferencedProjects)
-            {
-                AddXSharpTypeNames(compList, prj, startWith);
-            }
- 
+            AddXSharpTypeNames(compList, project, startWith, usings.ToArray());
+   
         }
 
         private bool IsHiddenName(string realTypeName)
@@ -655,34 +650,20 @@ namespace XSharpLanguage
             }
         }
 
-        private void AddXSharpTypeNames(CompletionList compList, XProject project, string startWith)
+        private void AddXSharpTypeNames(CompletionList compList, XProject project, string startWith, IReadOnlyList<string> usings)
         {
-            //
-            //int startLen = 0;
-            //int dotPos = startWith.LastIndexOf('.');
-            //if (dotPos != -1)
-            //    startLen = dotPos + 1;
-            //
-
-            //foreach (var typeName in project.TypeDict.FindMatching(startWith))
-            //{
-            //    var typeInfo = project.Lookup(typeName, true);
-            //    string realTypeName = typeInfo.FullName;
-            //    // remove the start
-            //    if (startLen > 0)
-            //        realTypeName = realTypeName.Substring(startLen);
-            //    // Do we have another part
-            //    dotPos = realTypeName.IndexOf('.');
-            //    // Then remove it
-            //    if (dotPos > 0)
-            //        realTypeName = realTypeName.Substring(0, dotPos);
-            //    ImageSource icon = _provider.GlyphService.GetGlyph(typeInfo.getGlyphGroup(), typeInfo.getGlyphItem());
-            //    if (!compList.Add(new XSCompletion(realTypeName, realTypeName, typeInfo.Prototype, icon, null, Kind.Class,"")))
-            //        break;
-            //}
+            var list = project.GetTypes(startWith, usings);
+            foreach (var typeInfo in list)
+            {
+                
+                // Then remove it
+                ImageSource icon = _provider.GlyphService.GetGlyph(typeInfo.getGlyphGroup(), typeInfo.getGlyphItem());
+                if (!compList.Add(new XSCompletion(typeInfo.Name, typeInfo.Name, typeInfo.FullName, icon, null, typeInfo.Kind,"")))
+                    break;
+            }
         }
 
-        private void AddXSharpTypesTypeNames(CompletionList compList, string startWith)
+        private void AddXSharpKeywordTypeNames(CompletionList compList, string startWith)
         {
             //
             int startLen = 0;
@@ -691,7 +672,7 @@ namespace XSharpLanguage
                 startLen = dotPos + 1;
             //
             // And our own Types
-            var xsharpTypes = XSharpTypes.Get();
+            var xsharpTypes = XSharpTypes.GetTypes();
             foreach (var typeInfo in xsharpTypes.Where(ti => nameStartsWith(ti.Name, startWith)))
             {
                 string realTypeName = typeInfo.FullName;
@@ -908,6 +889,7 @@ namespace XSharpLanguage
 
         private void FillMembers(CompletionList compList, IEnumerable<IXMember> members, Modifiers minVisibility, bool staticOnly)
         {
+            WriteOutputMessage($"FillMembers start, {members.Count()} members");
             foreach (var elt in members)
             {
                 bool add = true;
@@ -944,6 +926,7 @@ namespace XSharpLanguage
                 if (!compList.Add(new XSCompletion(elt.Name, elt.Name + toAdd, elt.Prototype, icon, null, elt.Kind, elt.Value)))
                     break;
             }
+            WriteOutputMessage($"FillMembers stop");
         }
         /// <summary>
         /// Add Members for our Project Types
@@ -954,15 +937,19 @@ namespace XSharpLanguage
         private void FillMembers(CompletionList compList, IXType xType, Modifiers minVisibility, bool staticOnly, string startWith)
         {
             // Add Members for our Project Types
+            //WriteOutputMessage($"FillMembers start for type {xType.FullName}");
             FillMembers(compList, xType.GetMembers(startWith), minVisibility, staticOnly);
+            //WriteOutputMessage($"FillMembers complete for type {xType.FullName}");
         }
 
-   
+
         private void FillExtensions(CompletionList compList, IXType sType, string startWith)
         {
+            //WriteOutputMessage($"FillExtensions for type {sType.FullName}");
             var extensions = _file.Project.GetExtensions( sType);
             var selection = extensions.Where(x => nameStartsWith(x.Name, startWith));
             FillMembers(compList, selection, Modifiers.Public, true);
+            //WriteOutputMessage($"FillExtensions complete for type {sType.FullName}");
         }
 
 
@@ -3842,6 +3829,7 @@ namespace XSharpLanguage
     internal static class XSharpTypes
     {
         static IList<IXEntity> _keywords;
+        static IList<IXEntity> _types;
 
         static XSharpTypes()
         {
@@ -3852,18 +3840,28 @@ namespace XSharpLanguage
             //
 
             var keywords = new List<IXEntity>();
+            var types = new List<IXEntity>();
             //
             foreach (var keyword in lexer.KwIds)
             {
                 keywords.Add(new XEntityDefinition(keyword.Key, Kind.Keyword));
+                if (XSharpLexer.IsType(keyword.Value))
+                {
+                    types.Add(new XEntityDefinition(keyword.Key, Kind.Keyword));
+                }
             }
             //
             _keywords = keywords.ToArray();
+            _types = types.ToArray();
         }
 
         internal static IList<IXEntity> Get()
         {
             return _keywords;
+        }
+        internal static IList<IXEntity> GetTypes()
+        {
+            return _types;
         }
     }
     public class ErrorIgnorer : IErrorListener

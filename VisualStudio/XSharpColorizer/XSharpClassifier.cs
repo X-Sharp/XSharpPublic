@@ -66,7 +66,7 @@ namespace XSharpColorizer
         #endregion
 
         #region Properties
-        internal ITextSnapshot Snapshot => _snapshot;
+        public ITextSnapshot Snapshot => _snapshot;
 
         #endregion
 

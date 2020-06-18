@@ -1356,7 +1356,7 @@ delegate_           : (Attributes=attributes)? (Modifiers=classModifiers)?
                               range, interval,_attributes:HasFlag(Modifiers.Static)} {SingleLine := TRUE}
                               xType:AddMember(xMember)
             xMember:SourceCode := source
-            xMember:Parent     := xType
+            xType:AddMember(xMember)
             xMember:File       := _file
             RETURN <XEntityDefinition>{xType}
             #endregion
@@ -1397,7 +1397,7 @@ methodtype          : Token=(METHOD | ACCESS | ASSIGN )
          SELF:ReadLine()
         
          VAR xMember := XMemberDefinition{sig, Kind.Method, _attributes, range, interval, _attributes:HasFlag(Modifiers.Static)}
-         xMember:Parent := SELF:CurrentType
+         SELF:CurrentType:AddMember(xMember)
          xMember:SourceCode := source          
          RETURN <XEntityDefinition>{xMember}
          
@@ -1464,7 +1464,7 @@ propertyAccessor    : Attributes=attributes? Modifiers=accessorModifiers?
          SELF:ReadLine()
          VAR xMember := XMemberDefinition{id, Kind.Property, _attributes, range, interval,sType} {SingleLine := lSingleLine}
          xMember:SourceCode := source          
-         xMember:Parent := SELF:CurrentType
+         CurrentType:AddMember(xMember)
          xMember:AddParameters(aParams)
          RETURN <XEntityDefinition>{xMember}
          
@@ -1507,7 +1507,7 @@ eventAccessor       : Attributes=attributes? Modifiers=accessorModifiers?
          SELF:ReadLine()
          VAR xMember := XMemberDefinition{id, Kind.Event, _attributes, range, interval,strType}  {SingleLine := lSingleLine}
          xMember:SourceCode := source          
-         xMember:Parent := SELF:CurrentType
+         CurrentType:AddMember(xMember)
          RETURN <XEntityDefinition>{xMember}
          
       PRIVATE METHOD ParseOperator() AS IList<XEntityDefinition>
@@ -1558,7 +1558,7 @@ operator_           : Attributes=attributes? Modifiers=operatorModifiers?
          SELF:ReadLine()
          VAR xMember := XMemberDefinition{id, Kind.Operator, _attributes, range, interval,sType}
          xMember:SourceCode := source          
-         xMember:Parent := SELF:CurrentType
+         CurrentType:AddMember(xMember)
          xMember:AddParameters(aParams)
          RETURN <XEntityDefinition>{xMember}
          
@@ -1587,8 +1587,9 @@ operator_           : Attributes=attributes? Modifiers=operatorModifiers?
          SELF:ReadLine()
          VAR xMember := XMemberDefinition{id, Kind.Constructor, _attributes, range, interval,""}
          xMember:SourceCode := source          
-         xMember:Parent := SELF:CurrentType
          xMember:AddParameters(aParams)
+         CurrentType:AddMember(xMember)
+
          RETURN <XEntityDefinition>{xMember}
          
       PRIVATE METHOD ParseDestructor() AS IList<XEntityDefinition>
@@ -1616,7 +1617,7 @@ destructor          : (Attributes=attributes)? (Modifiers=destructorModifiers)?
          SELF:ReadLine()
          VAR xMember := XMemberDefinition{id, Kind.Destructor, _attributes, range, interval,"VOID"}
          xMember:SourceCode := source          
-         xMember:Parent := SELF:CurrentType
+         SELF:CurrentType:AddMember(xMember)
          RETURN <XEntityDefinition>{xMember}
          
       PRIVATE METHOD ParseClassVars() AS IList<XEntityDefinition>
@@ -1630,7 +1631,7 @@ classvars           : (Attributes=attributes)? (Modifiers=classvarModifiers)?
          VAR result := List<XEntityDefinition>{}
          FOREACH VAR classvar IN classvars
             classvar:SourceCode := classvar:ModVis +" "+classvar:SourceCode
-            classvar:Parent := SELF:CurrentEntity
+            SELF:CurrentType:AddMember(classvar)
             result:Add(classvar)
          NEXT
          SELF:ReadLine()
@@ -3121,7 +3122,7 @@ xppclassMember      : Member=xppmethodvis                           #xppclsvisib
                   SELF:ReadLine()                
                   VAR xmember := XMemberDefinition{id+XLiterals.XppDeclaration, Kind.Property, _OR(_xppVisibility, _attributes), range, interval, type, isStatic}
                   xmember:SourceCode := source
-                  xmember:Parent := SELF:CurrentEntity
+                  SELF:CurrentType:AddMember(xmember)
                   xmember:SingleLine := TRUE
                   RETURN <XEntityDefinition> {xmember}
 
@@ -3322,7 +3323,7 @@ xppclassMember      : Member=xppmethodvis                           #xppclsvisib
                   ENDIF
                NEXT
             ELSE
-               xmethod:Parent := SELF:CurrentType
+               SELF:CurrentType:AddMember(xmethod)
             ENDIF
             
             

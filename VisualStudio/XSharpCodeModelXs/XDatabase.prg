@@ -17,7 +17,7 @@ BEGIN NAMESPACE XSharpModel
       STATIC PRIVATE oConn   AS SQLiteConnection     // In memory database !
       STATIC PRIVATE lastWritten := DateTime.MinValue AS DateTime
       STATIC PRIVATE currentFile AS STRING
-      PRIVATE CONST CurrentDbVersion := 0.3 AS System.Double
+      PRIVATE CONST CurrentDbVersion := 0.2 AS System.Double
       
       STATIC METHOD CreateOrOpenDatabase(cFileName AS STRING) AS VOID
          LOCAL lValid := FALSE AS LOGIC
@@ -155,7 +155,7 @@ BEGIN NAMESPACE XSharpModel
             #endregion
             #region Table Projects
             VAR stmt	:= "Create Table Projects ("
-            stmt     	+= " Id integer NOT NULL PRIMARY KEY, ProjectFileName text NOT NULL "
+            stmt     	+= " Id integer NOT NULL PRIMARY KEY, ProjectFileName text NOT NULL COLLATE NOCASE "
             stmt		+= " )"
             cmd:CommandText := stmt
             cmd:ExecuteNonQuery()				
@@ -617,7 +617,7 @@ BEGIN NAMESPACE XSharpModel
                   oCmd:Parameters:AddWithValue("$stop", 0),;
                   oCmd:Parameters:AddWithValue("$classtype", 0)}
                   VAR types := oFile:TypeList:Values:Where({ t=> t.Kind != Kind.Namespace .AND. ;
-                                    t:Name != XLiterals.GlobalName .OR. t:Members:Count > 0 })
+                                    (t:Name != XLiterals.GlobalName .OR. t:Members:Count > 0 )})
                   FOREACH VAR typedef IN types
                      TRY
                         pars[0]:Value := typedef:Name
@@ -893,7 +893,30 @@ BEGIN NAMESPACE XSharpModel
          ENDIF
          Log(i"GetTypes '{sName}' returns {result.Count} matches")
          RETURN result   
-         
+
+      STATIC METHOD GetTypesLike(sName AS STRING, sProjectIds AS STRING) AS IList<XDbResult>
+         VAR stmt := "Select * from ProjectTypes where name like $name AND IdProject in ("+sProjectIds+")"
+         VAR result := List<XDbResult>{}
+         sName += '%'
+         IF oConn != NULL
+            BEGIN LOCK oConn
+               TRY
+                  BEGIN USING VAR oCmd := SQLiteCommand{stmt, oConn}
+                     oCmd:Parameters:AddWithValue("$name", sName)
+                     BEGIN USING VAR rdr := oCmd:ExecuteReader()
+                        DO WHILE rdr:Read()
+                           result:Add(CreateTypeInfo(rdr))
+                        ENDDO
+                     END USING
+                  END USING
+               CATCH e AS Exception
+                  Log("Exception: "+e:ToString())
+               END TRY            
+            END LOCK
+         ENDIF
+         Log(i"GetTypesLike '{sName}' returns {result.Count} matches")
+         RETURN result   
+
       STATIC METHOD GetNamespaces(sProjectIds AS STRING) AS IList<XDbResult>
          VAR stmt := "Select distinct Namespace from ProjectTypes where Namespace is not null and IdProject in ("+sProjectIds+")"
          VAR result := List<XDbResult>{}

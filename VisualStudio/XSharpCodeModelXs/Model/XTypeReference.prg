@@ -38,6 +38,33 @@ BEGIN NAMESPACE XSharpModel
          ELSE
             SELF:BaseType     := ""
          ENDIF
+         IF typedef:HasGenericParameters
+            VAR cName := SELF:Name
+            VAR nsGeneric := FALSE
+            VAR pos := cName:IndexOf('`')
+            IF pos == -1
+               cName := SELF:Namespace
+               nsGeneric := TRUE
+               pos := cName:IndexOf('`')
+            ENDIF
+            IF pos > 0
+               cName := cName:Substring(0,pos)+"<"
+               LOCAL first := TRUE AS LOGIC
+               FOREACH VAR genparam IN typedef:GenericParameters
+                  IF ! first
+                    cName += ","
+                  ENDIF
+                  cName += genparam:Name
+                  first := FALSE
+               NEXT
+               cName += ">"
+               IF nsGeneric
+                  SELF:Namespace := cName
+               ELSE
+                  SELF:Name := cName
+               ENDIF
+            ENDIF
+         ENDIF
 
 
       

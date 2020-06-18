@@ -17,11 +17,6 @@ BEGIN NAMESPACE XSharpModel
       STATIC PRIVATE _fileName   AS STRING
       STATIC PRIVATE _sqldb      AS STRING
       
-      PUBLIC STATIC PROPERTY EnableLogging      AS LOGIC AUTO
-      PUBLIC STATIC PROPERTY EnableDatabaseLog  AS LOGIC AUTO
-      PUBLIC STATIC PROPERTY EnableParseLog     AS LOGIC AUTO
-      PUBLIC STATIC PROPERTY EnableTypelookupLog  AS LOGIC AUTO
-      PUBLIC STATIC PROPERTY EnableReferenceInfoLog  AS LOGIC AUTO
       
       PUBLIC STATIC PROPERTY FileName as STRING get _fileName
 
@@ -35,7 +30,7 @@ BEGIN NAMESPACE XSharpModel
 
 
 		STATIC METHOD WriteOutputMessage(message AS STRING) AS VOID
-         IF EnableLogging
+         IF XSettings.EnableLogging
 			   OutputWindow:DisplayOutPutMessage(message)
          ENDIF
 		STATIC METHOD WriteException(ex AS Exception) AS VOID

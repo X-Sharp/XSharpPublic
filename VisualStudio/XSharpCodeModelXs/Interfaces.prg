@@ -38,10 +38,6 @@ BEGIN NAMESPACE XSharpModel
       PROPERTY PrefixClassesWithDefaultNamespace AS LOGIC GET
       PROPERTY RootNameSpace AS STRING GET
       PROPERTY Url AS STRING GET
-      PROPERTY DisableLexing  AS LOGIC GET
-      PROPERTY DisableParsing  AS LOGIC GET
-      PROPERTY DisableRegions AS LOGIC GET
-      PROPERTY KeywordsUppercase AS LOGIC GET
       PROPERTY Dialect as XSharpDialect GET
       
    END INTERFACE

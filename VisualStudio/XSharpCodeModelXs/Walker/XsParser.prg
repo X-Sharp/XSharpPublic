@@ -3522,7 +3522,7 @@ xppclassMember      : Member=xppmethodvis                           #xppclsvisib
          
          
       STATIC METHOD Log(cMessage AS STRING) AS VOID
-         IF XSolution.EnableParseLog .AND. XSolution.EnableLogging
+         IF XSettings.EnableParseLog .AND. XSettings.EnableLogging
             XSolution.WriteOutputMessage("XParser: "+cMessage)
          ENDIF
          RETURN         

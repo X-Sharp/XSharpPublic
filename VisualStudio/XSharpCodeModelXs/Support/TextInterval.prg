@@ -32,8 +32,11 @@ BEGIN NAMESPACE XSharpModel
 				
 		STATIC PROPERTY Empty AS TextInterval GET TextInterval{}
 
-        METHOD WithEnd (endToken AS IToken) AS TextInterval
-            RETURN TextInterval{SELF:_StartIndex, endToken:StopIndex}
+      METHOD WithEnd (endToken AS IToken) AS TextInterval
+          RETURN TextInterval{SELF:_StartIndex, endToken:StopIndex}
+
+      METHOD AddPos(pos AS INT) AS TextInterval
+         RETURN TextInterval{SELF:_StartIndex+pos, SELF:_StopIndex+pos}
 
 		METHOD IsEmpty() AS LOGIC
 			RETURN ((SELF:_StartIndex == 0) .AND. (SELF:_StopIndex == 0))

@@ -1043,7 +1043,7 @@ BEGIN NAMESPACE XSharpModel
          RETURN 0
       
       STATIC METHOD Log(cMessage AS STRING) AS VOID
-         IF XSolution.EnableDatabaseLog .AND. XSolution.EnableLogging
+         IF XSettings.EnableDatabaseLog .AND. XSettings.EnableLogging
             XSolution.WriteOutputMessage("XDatabase: "+cMessage)
          ENDIF
          RETURN

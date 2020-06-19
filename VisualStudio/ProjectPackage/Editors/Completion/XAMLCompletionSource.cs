@@ -40,7 +40,8 @@ namespace XSharpLanguage
         private ITextBuffer _buffer;
         private bool _disposed = false;
         private XAMLCompletionSourceProvider _provider;
-        private String _file;
+        private string _fileName;
+        private XSharpModel.XFile _file;
         IntellisenseOptionsPage optionsPage = null;
         XSharpProjectPackage package;
 
@@ -56,7 +57,8 @@ namespace XSharpLanguage
         {
             _provider = provider;
             _buffer = buffer;
-            _file = buffer.GetXAMLFile();
+            _fileName = buffer.GetXAMLFile();
+            _file = buffer.GetFile();
             package = XSharpProjectPackage.Instance;
             optionsPage = package.GetIntellisenseOptionsPage();
 
@@ -90,7 +92,7 @@ namespace XSharpLanguage
                     return;
                 }
                 // The Completion list we are building
-                CompletionList compList = new CompletionList();
+                CompletionList compList = new CompletionList(_file);
                 ///
                 /// 
                 //compList.Add(new XSCompletion("XSDummy", "XSDummy", "XSDummy Description", null, null, Kind.Class));

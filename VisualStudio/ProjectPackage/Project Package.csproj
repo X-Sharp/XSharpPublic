@@ -277,7 +277,6 @@
     <Compile Include="Editors\SmartIndent\SmartIndent.cs" />
     <Compile Include="Editors\SmartIndent\SmartIndentProvider.cs" />
     <Compile Include="Editors\Completion\XAMLCompletionSource.cs" />
-    <Compile Include="Editors\Completion\XSharpCompletionSource_Partial.cs" />
     <Compile Include="Editors\Errors\XSharpErrorColorizer.cs" />
     <Compile Include="Editors\QuickInfo\XSharpQuickInfo.cs" />
     <Compile Include="Editors\XMLDoc\XSharpXMLDoc.cs" />

@@ -825,11 +825,12 @@ BEGIN NAMESPACE XSharpModel
                TRY
                   BEGIN USING VAR oCmd := SQLiteCommand{"SELECT 1", oConn}
                      oCmd:CommandText := "SELECT * FROM ProjectMembers WHERE name = $name AND TypeName = $typename " + ;
-                     " AND Kind in ($kind1, $kind2, $kind3) AND IdProject in ("+sProjectIds+")"
+                     " AND Kind in ($kind1, $kind2, $kind3, $kind4) AND IdProject in ("+sProjectIds+")"
                      oCmd:Parameters:AddWithValue("$name", sName)
                      oCmd:Parameters:AddWithValue("$kind1", (INT) Kind.Function)
                      oCmd:Parameters:AddWithValue("$kind2", (INT) Kind.Procedure)
                      oCmd:Parameters:AddWithValue("$kind3", (INT) Kind.Method)
+                     oCmd:Parameters:AddWithValue("$kind4", (INT) Kind.VODLL)
                      oCmd:Parameters:AddWithValue("$typename", XLiterals.GlobalName)
                      BEGIN USING VAR rdr := oCmd:ExecuteReader()
                         DO WHILE rdr:Read()

@@ -255,9 +255,6 @@ BEGIN NAMESPACE XSharpModel
          END GET
       END PROPERTY
       
-      PRIVATE METHOD nameEquals(name AS STRING, compareWith AS STRING) AS LOGIC
-         RETURN String.Compare(name, compareWith, StringComparison.OrdinalIgnoreCase) == 0
-      
       PROPERTY FullName AS STRING   GET SELF:GetFullName()
       
       PROPERTY Description AS STRING GET SELF:GetDescription()
@@ -297,16 +294,6 @@ BEGIN NAMESPACE XSharpModel
 
       PROPERTY XMLSignature   AS STRING GET SELF:GetXmlSignature() 
       
-   PRIVATE CLASS MemberNameComparer IMPLEMENTS IEqualityComparer<STRING>
-      METHOD Equals(x AS STRING, y AS STRING) AS LOGIC
-         IF x == NULL .OR. y == NULL
-            RETURN TRUE
-         ENDIF
-         RETURN String.Compare(x, 0, y, 0, y:Length, TRUE) == 0
-      METHOD GetHashCode(x AS STRING) AS LONG
-         RETURN x:GetHashCode()
-      END CLASS
-
    METHOD ToString() AS STRING
       var result := i"{Kind} {Name}"
       if SELF:_signature != NULL .and. SELF:_signature:TypeParameters:Count > 0

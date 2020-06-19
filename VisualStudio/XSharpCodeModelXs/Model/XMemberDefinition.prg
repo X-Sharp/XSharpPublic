@@ -108,41 +108,6 @@ BEGIN NAMESPACE XSharpModel
          ENDIF
          RETURN result
 
-
-      /*
-	         stmt  	:=  "Create Table Members ("
-	         stmt	   +=  " Id integer NOT NULL PRIMARY KEY, IdType integer NOT NULL , IdFile integer NOT NULL, "
-	         stmt	   +=  " Name text COLLATE NOCASE, Kind integer , Attributes integer , "
-	         stmt	   +=  " Value text, ReturnType text, StartLine integer , StartColumn integer ,  "
-	         stmt	   +=  " EndLine integer , EndColumn integer , Start integer , Stop integer , "
-	         stmt	   +=  " FOREIGN KEY (idType) REFERENCES Types (Id) ON DELETE CASCADE ON UPDATE CASCADE, " 
-	         stmt     +=  " FOREIGN KEY (idFile) REFERENCES Files (Id) ON DELETE CASCADE ON UPDATE CASCADE"
-	         stmt	   += ")"
-
-            stmt := "Create View TypeMembers as Select m.*, t.Name as TypeName, t.Namespace, t.BaseTypeName from members m join Types t on m.IdType = t.Id"
-
-            stmt := "Create View ProjectMembers as Select m.*, p.IdProject from TypeMembers m join ProjectFiles p on m.IdFile = p.IdFile"
-
-      */
-
-
-      STATIC PROPERTY DbSelectClause as STRING GET " SELECT Id, IdType, IdFile, Name, Kind, Attributes, Value, ReturnType,  "+;
-                                                   " StartLine, StartColumn, EndLine, EndColumn, Start, Stop " + ;
-                                                   " FROM ProjectMembers WHERE %whereclause%"
-
-      STATIC METHOD FromDb(aValues as object[]) AS XMemberDefinition
-//         var name       := XDatabase.DbToString(aValues[4])
-//         var kind       := (Kind)      XDatabase.DbToInt(aValues[5])
-//         var attributes := (Modifiers) XDatabase.DbToInt(aValues[6])
-//         var value      := XDatabase.DbToString(aValues[7])    // default value for fields
-//         var returntype := XDatabase.DbToString(aValues[8])
-//         var span       := TextRange{ XDatabase.DbToInt(aValues[9]), XDatabase.DbToInt(aValues[10]),XDatabase.DbToInt(aValues[11]),XDatabase.DbToInt(aValues[12])} 
-//         var position   := TextInterval{XDatabase.DbToInt(aValues[13]),XDatabase.DbToInt(aValues[14])}
-//         var xmember    := XMemberDefinition{name, kind, attributes, span, position, returntype, kind== Kind.Function .or. kind == Kind.Procedure}
-//         xmember:Id     := XDatabase.DbToInt(aValues[1])
-//         RETURN xmember
-         RETURN NULL
-
       #endregion
    END CLASS
    

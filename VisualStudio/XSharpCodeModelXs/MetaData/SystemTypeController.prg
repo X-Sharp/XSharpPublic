@@ -195,10 +195,7 @@ BEGIN NAMESPACE XSharpModel
 		STATIC METHOD Lookup(typeName AS STRING, theirassemblies AS IList<XAssembly>) AS XTypeReference
 			FOREACH VAR assembly IN theirassemblies
 				assembly:Refresh()
-            IF assembly:Types:ContainsKey(typeName)
-               RETURN assembly:Types[typeName]
-				ENDIF
-				VAR type := assembly:GetType(typeName)
+ 				VAR type := assembly:GetType(typeName)
 				IF type != NULL
                RETURN type
 				ENDIF
@@ -237,32 +234,22 @@ BEGIN NAMESPACE XSharpModel
 		STATIC METHOD WriteOutputMessage(message AS STRING) AS VOID
 			XSolution.WriteOutputMessage("XModel.Typecontroller "+message)
 		
-		STATIC METHOD LookForExtensions(typeName AS STRING, theirassemblies AS IList<XAssembly>) AS List<IXMember>
+		STATIC METHOD LookForExtensions(typeName AS STRING, theirassemblies AS IList<XAssembly>) AS IList<IXMember>
 			// First Search for a system Type
-			var ext := List<IXMember>{} 
-			var type := Lookup( typeName, theirassemblies )
-			IF type != NULL
-				ext := LookForExtensions( type, theirassemblies )
-			ENDIF
-			RETURN ext
-		
-		STATIC METHOD LookForExtensions( systemType AS IXType, theirassemblies AS IList<XAssembly>) AS List<IXMember>
-			var ext := List<IXMember>{} 
+         VAR pos := typeName:IndexOf('<')
+         IF pos > 0
+            typeName := typeName:Substring(0, pos)+"<>"
+
+         ENDIF
+         VAR result := List<IXMember>{} 
 			FOREACH VAR assembly IN theirassemblies
 				assembly:Refresh()
 				IF assembly:HasExtensions
-					FOREACH VAR extMet IN assembly:ExtensionMethods
-						var parms := extMet:Parameters:ToArray()
-						IF ( parms:Length > 0 )
-							VAR p := parms[__ARRAYBASE__]
-                     if systemType:MatchesTypeName(p.TypeName)
-								ext:Add( extMet )
-							ENDIF
-						ENDIF
-					NEXT
+               VAR ext := assembly:FindExtensionMethodsForType(typeName)
+               result:AddRange(ext)
 				ENDIF
 			NEXT
-			RETURN ext			
+			RETURN result
 		
 	END CLASS
 	

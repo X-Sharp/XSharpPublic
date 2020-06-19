@@ -208,15 +208,7 @@ BEGIN NAMESPACE XSharpModel
       END PROPERTY
       PROPERTY XMLSignature   AS STRING GET SELF:GetXmlSignature()
    
-   PRIVATE CLASS MemberNameComparer IMPLEMENTS IEqualityComparer<STRING>
-      METHOD Equals(x AS STRING, y AS STRING) AS LOGIC
-         if x == NULL .or. y == NULL
-            RETURN TRUE
-         ENDIF
-         RETURN String.Compare(x, 0, y, 0, y:Length, TRUE) == 0
-      METHOD GetHashCode(x AS STRING) AS LONG
-         RETURN x:GetHashCode()
-      END CLASS
+ 
       
    METHOD ToString() AS STRING
       var result := i"{Kind} {Name}"
@@ -225,12 +217,6 @@ BEGIN NAMESPACE XSharpModel
       ENDIF
       RETURN result
       
-   
-   STATIC PROPERTY DbSelectClause as STRING GET ""
-   
-   STATIC METHOD FromDb(aValues as object[]) AS XTypeDefinition
-      RETURN NULL
-       
 END CLASS
 
 END NAMESPACE

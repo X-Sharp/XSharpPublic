@@ -31,7 +31,7 @@ INTERNAL CLASS AssemblyReader
    METHOD Read(assembly as XAssembly) AS VOID
       IF SELF:reader != NULL
          _extensionMethods  := List<MethodDefinition>{}
-
+         
          assembly:FullName := reader:FullName
          IF reader:MainModule:HasAssemblyReferences
             FOREACH var refasm in reader:MainModule:AssemblyReferences
@@ -80,9 +80,6 @@ INTERNAL CLASS AssemblyReader
       VAR vis := _AND(type:Attributes, TypeAttributes.VisibilityMask )
       IF vis == TypeAttributes.Public .OR. vis == TypeAttributes.NestedPublic 
          VAR name := type:FullName
-         if name == "Control"
-            NOP
-         endif
          VAR typeref := XTypeReference{type, assembly}
          VAR ns := typeref:Namespace
          IF  ns:Length > 0

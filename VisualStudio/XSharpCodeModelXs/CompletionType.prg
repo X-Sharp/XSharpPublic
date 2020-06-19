@@ -98,6 +98,9 @@ BEGIN NAMESPACE XSharpModel
 
 		PRIVATE METHOD CheckProjectType(typeName AS STRING, xprj AS XProject, usings AS IList<STRING>) AS VOID
 			LOCAL xType AS XTypeDefinition
+         IF String.IsNullOrEmpty(typeName)
+            RETURN
+         ENDIF
 			xType := xprj:Lookup(typeName, usings:Expanded())
 			IF xType != NULL
 				SELF:_type := xType
@@ -105,6 +108,9 @@ BEGIN NAMESPACE XSharpModel
 
 		PRIVATE METHOD CheckSystemType(typeName AS STRING, usings AS IList<STRING>) AS VOID
 			LOCAL sType AS XTypeReference
+         IF String.IsNullOrEmpty(typeName)
+            RETURN
+         ENDIF
 			IF SELF:_file != NULL .AND. SELF:_file:Project != NULL
             VAR options := SELF:_file:Project:ParseOptions
 				typeName    := typeName:GetSystemTypeName(options:XSharpRuntime)
@@ -115,6 +121,9 @@ BEGIN NAMESPACE XSharpModel
 			ENDIF
 
 		PRIVATE METHOD CheckType(typeName AS STRING, usings AS IList<STRING>) AS VOID
+         IF String.IsNullOrEmpty(typeName)
+            RETURN
+         ENDIF
 			IF typeName.EndsWith("[]")
 				typeName := typeName.Substring(0, typeName.Length - 2)
             IsArray := TRUE
@@ -129,15 +138,17 @@ BEGIN NAMESPACE XSharpModel
 					SELF:CheckSystemType(typeName, usings)
 				ENDIF
 			ENDIF
-
 		PRIVATE METHOD CheckType(typeName AS STRING, defaultNS AS STRING) AS VOID
+         IF String.IsNullOrEmpty(typeName)
+            RETURN
+         ENDIF
 			LOCAL usings AS List<STRING>
          usings := List<STRING>{}
          IF SELF:_file != NULL
 			   usings:AddRange(SELF:_file:Usings)
             IF SELF:_file?:Project != NULL
                FOREACH VAR ns IN SELF:_file:Project:ImplicitNamespaces
-                   usings:AddUnique(ns)
+                     usings:AddUnique(ns)
                NEXT
             ENDIF
          ENDIF
@@ -146,10 +157,10 @@ BEGIN NAMESPACE XSharpModel
 			ENDIF
          // Now check all usings
 			SELF:CheckType(typeName, usings)
-
-		INTERNAL METHOD SimpleTypeToSystemType(kw AS STRING) AS XTypeReference
+         
+		INTERNAL METHOD SimpleTypeToSystemType(kw AS STRING) AS IXType
 			LOCAL typeName AS STRING
-			LOCAL sType := NULL AS XTypeReference
+			LOCAL sType := NULL AS IXType
 			//
 			IF (kw != NULL)
 				//
@@ -240,6 +251,10 @@ BEGIN NAMESPACE XSharpModel
 					VAR options := SELF:_file:Project:ParseOptions
 					typeName    := typeName:GetSystemTypeName(options:XSharpRuntime)
 					sType       := SELF:_file:Project:FindSystemType(typeName, List<STRING>{})
+               IF (sType == NULL)
+                  // This could happen if we're in the Runtime solution
+                  sType    := SELF:_file:Project:Lookup(typeName)
+               ENDIF
 				ENDIF
 			ENDIF
 			RETURN sType 

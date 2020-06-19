@@ -179,7 +179,7 @@ BEGIN NAMESPACE XSharpModel
                   SELF:WriteOutputMessage("AddAssemblyReference (VSLangProj.Reference) "+reference:Path)
                ENDIF
                SELF:_clearTypeCache()
-               IF ! XAssembly.DisableAssemblyReferences
+               IF ! XSettings.DisableAssemblyReferences
                   IF ! String.IsNullOrEmpty(reference:Path)
                      AddAssemblyReference(reference:Path)
                      //                        ELSE
@@ -232,7 +232,7 @@ BEGIN NAMESPACE XSharpModel
          PRIVATE METHOD ResolveUnprocessedAssemblyReferences() AS VOID
             LOCAL loaded AS List<STRING>
             //
-            IF SELF:_unprocessedAssemblyReferences:Count > 0 .AND. ! XAssembly.DisableAssemblyReferences
+            IF SELF:_unprocessedAssemblyReferences:Count > 0 .AND. ! XSettings.DisableAssemblyReferences
                IF XSettings.EnableReferenceInfoLog
                   SELF:WriteOutputMessage("ResolveUnprocessedAssemblyReferences()")
                ENDIF
@@ -281,7 +281,7 @@ BEGIN NAMESPACE XSharpModel
             RETURN
             
          METHOD UpdateAssemblyReference(fileName AS STRING) AS VOID
-            IF ! XAssembly.DisableAssemblyReferences .AND. ! String.IsNullOrEmpty(fileName)
+            IF ! XSettings.DisableAssemblyReferences .AND. ! String.IsNullOrEmpty(fileName)
                SystemTypeController.LoadAssembly(fileName):AddProject(SELF)
             ENDIF
             
@@ -368,7 +368,7 @@ BEGIN NAMESPACE XSharpModel
             LOCAL existing AS List<STRING>
             LOCAL p AS XProject
             LOCAL outputFile AS STRING
-            IF SELF:_unprocessedProjectReferences:Count > 0  .AND. ! XAssembly.DisableXSharpProjectReferences
+            IF SELF:_unprocessedProjectReferences:Count > 0  .AND. ! XSettings.DisableXSharpProjectReferences
                IF XSettings.EnableReferenceInfoLog
                   WriteOutputMessage("ResolveUnprocessedProjectReferences()")
                ENDIF
@@ -479,7 +479,7 @@ BEGIN NAMESPACE XSharpModel
          
       PRIVATE METHOD RefreshStrangerProjectDLLOutputFiles() AS VOID
          // Check if any DLL has changed
-         IF SELF:_StrangerProjects:Count > 0 .AND. ! XAssembly.DisableForeignProjectReferences
+         IF SELF:_StrangerProjects:Count > 0 .AND. ! XSettings.DisableForeignProjectReferences
             IF XSettings.EnableReferenceInfoLog
                WriteOutputMessage("--> RefreshStrangerProjectDLLOutputFiles() "+SELF:_StrangerProjects:Count():ToString())
             ENDIF
@@ -513,7 +513,7 @@ BEGIN NAMESPACE XSharpModel
          LOCAL existing AS List<STRING>
          LOCAL p AS EnvDTE.Project
          LOCAL outputFile AS STRING
-         IF SELF:_unprocessedStrangerProjectReferences:Count > 0 .AND. ! XAssembly.DisableForeignProjectReferences
+         IF SELF:_unprocessedStrangerProjectReferences:Count > 0 .AND. ! XSettings.DisableForeignProjectReferences
             IF XSettings.EnableReferenceInfoLog
                WriteOutputMessage("ResolveUnprocessedStrangerReferences()" +_unprocessedStrangerProjectReferences:Count:ToString())
             ENDIF
@@ -636,7 +636,7 @@ BEGIN NAMESPACE XSharpModel
          IF XSettings.EnableTypelookupLog
               WriteOutputMessage(ie"FindGlobalOrDefine {name}")
          ENDIF
-          VAR projectIds    := SELF:Id:ToString()
+         VAR projectIds    := SELF:Id:ToString()
          IF lRecursive
             projectIds    := SELF:DependentProjectList
          ENDIF
@@ -703,7 +703,7 @@ BEGIN NAMESPACE XSharpModel
          IF XSettings.EnableTypelookupLog
             WriteOutputMessage("FindSystemType() "+name)
          ENDIF
-         IF ! XAssembly.DisableForeignProjectReferences
+         IF ! XSettings.DisableForeignProjectReferences
             SELF:RefreshStrangerProjectDLLOutputFiles()
          ENDIF
          SELF:ResolveReferences()
@@ -729,6 +729,7 @@ BEGIN NAMESPACE XSharpModel
          VAR pos := typeName:LastIndexOf(".")
          VAR myusings := List<STRING>{}
          myusings:AddRange(usings)
+         myusings:AddRange(SELF:ImplicitNamespaces)
          IF pos > 0 .AND. ! typeName:EndsWith(".")
             VAR ns   := typeName:Substring(0,pos)
             typeName := typeName:Substring(pos+1)
@@ -757,7 +758,12 @@ BEGIN NAMESPACE XSharpModel
             RETURN _lastFound
          ENDIF
          usings := AdjustUsings(REF typeName, usings)
-         VAR result := XDatabase.GetTypes(typeName, SELF:Id:ToString())
+         VAR pos := typeName:IndexOf('<')
+         IF pos > 0
+            typeName := typeName:Substring(0, pos)
+         ENDIF
+         
+         VAR result := XDatabase.GetTypes(typeName, SELF:DependentProjectList) 
          result := FilterUsings(result,usings)
          _lastFound := GetType(result)
          _lastName  := originalName
@@ -940,9 +946,8 @@ BEGIN NAMESPACE XSharpModel
          END SWITCH         
          RETURN sb:ToString()
       
-      METHOD GetExtensions( systemType AS IXType ) AS List<IXMember>
-         RETURN SystemTypeController.LookForExtensions( systemType, SELF:_AssemblyReferences)
-         
+      METHOD GetExtensions( typeName AS STRING) AS IList<IXMember>
+         RETURN SystemTypeController.LookForExtensions( typeName, SELF:_AssemblyReferences)
          
          #endregion
       

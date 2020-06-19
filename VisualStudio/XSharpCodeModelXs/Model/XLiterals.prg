@@ -57,14 +57,14 @@ BEGIN NAMESPACE XSharpModel
 
 
    STATIC METHOD ToDisplayString(SELF mods AS Modifiers) AS STRING
+      VAR res := mods:ToString():Replace(",","")
       SWITCH _keywordCase
       CASE 2
-         RETURN mods:ToString():ToLower()
+         RETURN res:ToLower()
       CASE 3
-         VAR s := mods:ToString()
-         RETURN s:Substring(0,1):ToUpper()+s:Substring(2):ToLower()
+         RETURN res:Substring(0,1):ToUpper()+res:Substring(2):ToLower()
       OTHERWISE
-         RETURN mods:ToString():ToUpper()
+         RETURN res
       END SWITCH
    
    STATIC METHOD ToDisplayString(SELF kind as Kind) AS STRING

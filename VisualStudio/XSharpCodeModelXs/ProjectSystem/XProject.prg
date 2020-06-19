@@ -902,9 +902,9 @@ BEGIN NAMESPACE XSharpModel
          sb:AppendLine(element:SourceCode)
          FOREACH VAR xmember IN members
             sb:AppendLine(xmember:SourceCode)
-            VAR source := xmember:SourceCode:ToLower()
             SWITCH xmember:Kind
             CASE Kind.Property
+               VAR source := xmember:SourceCode:ToLower():Replace('\t',' ')
                IF source:Contains(" get") .OR. ;
                   source:Contains(" set") .OR. ;
                   source:Contains(" auto") 
@@ -914,6 +914,7 @@ BEGIN NAMESPACE XSharpModel
                    sb:AppendLine("END PROPERTY")
                ENDIF
             CASE Kind.Event
+               VAR source := xmember:SourceCode:ToLower():Replace('\t',' ')
                IF source:Contains(" add") .OR. ;
                   source:Contains(" remove") 
                   // single line

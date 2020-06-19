@@ -276,10 +276,10 @@
     <Compile Include="Editors\PeekDefinition\XSharpPeekItemProvider.cs" />
     <Compile Include="Editors\SmartIndent\SmartIndent.cs" />
     <Compile Include="Editors\SmartIndent\SmartIndentProvider.cs" />
-    <Compile Include="Editors\XAMLCompletionSource.cs" />
-    <Compile Include="Editors\XSharpCompletionSource_Partial.cs" />
-    <Compile Include="Editors\XSharpErrorColorizer.cs" />
-    <Compile Include="Editors\XSharpQuickInfo.cs" />
+    <Compile Include="Editors\Completion\XAMLCompletionSource.cs" />
+    <Compile Include="Editors\Completion\XSharpCompletionSource_Partial.cs" />
+    <Compile Include="Editors\Errors\XSharpErrorColorizer.cs" />
+    <Compile Include="Editors\QuickInfo\XSharpQuickInfo.cs" />
     <Compile Include="Editors\XMLDoc\XSharpXMLDoc.cs" />
     <Compile Include="ErrorList\ErrorListManager.cs" />
     <Compile Include="LanguageService\ExpansionFunctions.cs" />
@@ -354,8 +354,8 @@
     <Compile Include="Wix\XColorUserControl.Designer.cs">
       <DependentUpon>XColorUserControl.cs</DependentUpon>
     </Compile>
-    <Compile Include="Editors\CommandFilter.cs" />
-    <Compile Include="Editors\XSharpCompletionSource.cs" />
+    <Compile Include="Editors\CommandFilter\CommandFilter.cs" />
+    <Compile Include="Editors\Completion\XSharpCompletionSource.cs" />
     <Compile Include="ErrorList\ErrorListProvider.cs" />
     <Compile Include="ErrorList\ErrorListSinkManager.cs" />
     <Compile Include="ErrorList\ErrorMessageUtil.cs" />

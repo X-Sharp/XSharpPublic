@@ -18,6 +18,7 @@ BEGIN NAMESPACE XSharpModel
       PROPERTY Id                   AS INT64 AUTO GET INTERNAL SET
       PROPERTY Types                AS Dictionary<STRING, XTypeReference> AUTO
       PROPERTY ExtensionMethods     AS IList<XMemberReference> AUTO
+      PROPERTY ExtensionDict        AS Dictionary<STRING, IList<IXMember> > AUTO
       PROPERTY ImplicitNamespaces   AS IList<STRING> AUTO
       PROPERTY Namespaces           AS IList<STRING> AUTO
       PROPERTY ReferencedAssemblies AS IList<STRING> AUTO
@@ -30,13 +31,7 @@ BEGIN NAMESPACE XSharpModel
       PROPERTY LastChanged          AS DateTime AUTO GET INTERNAL SET
       PROPERTY Size                 AS INT64 AUTO GET INTERNAL SET      
       
-      PUBLIC STATIC PROPERTY DisableAssemblyReferences AS LOGIC AUTO
-      PUBLIC STATIC PROPERTY DisableForeignProjectReferences AS LOGIC AUTO
-      PUBLIC STATIC PROPERTY DisableXSharpProjectReferences AS LOGIC AUTO
       STATIC CONSTRUCTOR
-         DisableXSharpProjectReferences := FALSE
-         DisableAssemblyReferences := FALSE
-         DisableForeignProjectReferences := FALSE
          RETURN
          
          
@@ -50,19 +45,25 @@ BEGIN NAMESPACE XSharpModel
          SELF()
          Id                   := -1
          FileName             := cFileName
+         LastChanged          := dModified
+         Size                 := 0
+         SELF:Initialize()
+         SELF:UpdateAssembly()
+
+     METHOD Initialize() AS VOID
          Types                := Dictionary<STRING, XTypeReference>{StringComparer.OrdinalIgnoreCase}
          ImplicitNamespaces   := List<STRING>{}
          Namespaces           := List<STRING>{}
          ReferencedAssemblies := List<STRING>{}
          CustomAttributes     := List<STRING>{}
-         GlobalClassName      := ""
          ExtensionMethods     := List<XMemberReference>{}
-         LastChanged          := dModified
-         Size                 := 0
-         SELF:UpdateAssembly()
- 
+         ExtensionDict        := NULL
+         GlobalClassName      := ""
+         ExtensionDict        := NULL
+
       METHOD Read() AS LOGIC
          VAR reader := AssemblyReader{FileName}
+         SELF:Initialize()
          reader:Read(SELF)
          XDatabase:Read(SELF)
          VAR fi := FileInfo{FileName}
@@ -85,6 +86,13 @@ BEGIN NAMESPACE XSharpModel
          ENDIF
          IF SELF:Types:ContainsKey(name)
             RETURN Types[name]
+         ENDIF
+         IF !name:Contains(".")
+            FOREACH VAR ns IN SELF:Namespaces
+               IF SELF:Types:ContainsKey(ns+"."+name)
+                  RETURN Types[ns+"."+name]
+               ENDIF
+            NEXT
          ENDIF
          RETURN NULL
 
@@ -167,6 +175,34 @@ BEGIN NAMESPACE XSharpModel
       
       STATIC METHOD WriteOutputMessage(message AS STRING) AS VOID
          XSolution.WriteOutputMessage("XModel.XAssembly " +message )
+
+      METHOD FindExtensionMethodsForType(typeName AS STRING) AS IList<IXMember>
+         VAR result := List<IXMember>{}
+         IF SELF:HasExtensions
+            IF ExtensionDict == NULL
+               SELF:BuildExtensionDict()
+            ENDIF
+            IF ExtensionDict:ContainsKey(typeName)
+               result:AddRange(ExtensionDict[typeName])
+            ENDIF
+         ENDIF
+         
+         RETURN result
+         
+      METHOD BuildExtensionDict() AS VOID
+         ExtensionDict := Dictionary<STRING, IList<IXMember>> {StringComparer.OrdinalIgnoreCase}
+         FOREACH ext AS IXMember IN SELF:ExtensionMethods
+            IF ext:Parameters:Count > 0
+               VAR par  := ext:Parameters:First()
+               VAR type := par:TypeName
+               IF !ExtensionDict:ContainsKey(type)
+                  ExtensionDict:Add(type, List<IXMember>{})
+               ENDIF
+               ExtensionDict[type]:Add(ext)
+            ENDIF
+         NEXT
+         RETURN
+         
 
    END CLASS
    

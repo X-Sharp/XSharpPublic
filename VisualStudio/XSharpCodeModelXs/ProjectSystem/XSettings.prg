@@ -21,5 +21,9 @@ BEGIN NAMESPACE XSharpModel
       PUBLIC STATIC PROPERTY DisableEntityParsing AS LOGIC AUTO
       PUBLIC STATIC PROPERTY DisableSyntaxHighlighting AS LOGIC AUTO
       PUBLIC STATIC PROPERTY DisableRegions  AS LOGIC AUTO
+      PUBLIC STATIC PROPERTY DisableAssemblyReferences AS LOGIC AUTO
+      PUBLIC STATIC PROPERTY DisableForeignProjectReferences AS LOGIC AUTO
+      PUBLIC STATIC PROPERTY DisableXSharpProjectReferences AS LOGIC AUTO
+         
 END CLASS
 END NAMESPACE

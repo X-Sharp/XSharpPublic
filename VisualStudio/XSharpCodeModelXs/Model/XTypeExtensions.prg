@@ -38,7 +38,7 @@ BEGIN NAMESPACE XSharpModel
          return type:Members:Where( { m => m.Kind:IsProperty()}):ToArray()
          
       STATIC METHOD GetMember(SELF type as IXType, strName as STRING) AS IXMember[]
-         return type:GetMembers(strName):ToArray()
+         RETURN type:GetMembers(strName):ToArray()
          
       STATIC METHOD GetMethod(SELF type as IXType, strName as STRING) AS IXMember[]
          return type:GetMembers(strName):Where( { m=> m.Kind:IsMethod()}):ToArray()
@@ -52,20 +52,6 @@ BEGIN NAMESPACE XSharpModel
       STATIC METHOD GetXmlSignature(SELF tm as IXType) AS STRING
          // todo: need to handle type parameters !
          RETURN "T:"+tm:FullName
-         
-      STATIC METHOD MatchesTypeName(SELF tm as IXType, nameToMatch as STRING) AS LOGIC
-         IF tm:FullName == nameToMatch
-            return true
-         ENDIF
-         FOREACH var ifName in tm:Interfaces
-            IF ifName == nameToMatch
-               return true
-            ENDIF
-         NEXT      
-         RETURN FALSE
-         
-      STATIC METHOD NameEquals(n1 as string, n2 as string) as logic
-         return String.Compare(n1, n2, StringComparison.OrdinalIgnoreCase) == 0
          
    END CLASS
 END NAMESPACE 

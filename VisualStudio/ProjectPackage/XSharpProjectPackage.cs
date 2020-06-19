@@ -262,6 +262,10 @@ namespace XSharp.Project
             XSharpModel.XSettings.DisableEntityParsing = _intellisensePage.DisableEntityParsing;
             XSharpModel.XSettings.DisableRegions = _intellisensePage.DisableRegions;
             XSharpModel.XSettings.DisableSyntaxHighlighting = _intellisensePage.DisableSyntaxColorization;
+            XSharpModel.XSettings.DisableAssemblyReferences = _intellisensePage.DisableAssemblyReferences;
+            XSharpModel.XSettings.DisableForeignProjectReferences = _intellisensePage.DisableForeignProjectReferences;
+            XSharpModel.XSettings.DisableXSharpProjectReferences = _intellisensePage.DisableXSharpProjectReferences;
+
             return _intellisensePage;
         }
 

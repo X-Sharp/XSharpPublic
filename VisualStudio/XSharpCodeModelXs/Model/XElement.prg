@@ -23,7 +23,7 @@ BEGIN NAMESPACE XSharpModel
             IF SELF:Attributes == Modifiers.None
                RETURN ""      // prevent returning "none"
             ENDIF
-            return SELF:Attributes:ToDisplayString()+" "
+            RETURN SELF:Attributes:ToDisplayString():Replace(",","")+" "
       END GET
       
       END PROPERTY

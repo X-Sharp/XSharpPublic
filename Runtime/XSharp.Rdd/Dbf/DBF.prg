@@ -70,10 +70,10 @@ PARTIAL CLASS DBF INHERIT Workarea IMPLEMENTS IRddSortWriter
     PROTECT INTERNAL PROPERTY Header AS DbfHeader GET _Header
     PROTECT INTERNAL _Ansi          AS LOGIC
     PROTECT INTERNAL _Encoding      AS Encoding
-    PROTECT INTERNAL  _numformat AS NumberFormatInfo
+    PROTECT INTERNAL _numformat AS NumberFormatInfo
     PROTECT PROPERTY IsOpen AS LOGIC GET SELF:_hFile != F_ERROR
     PROTECT PROPERTY HasMemo AS LOGIC GET SELF:_HasMemo
-    PROTECT PROPERTY Memo AS BaseMemo GET (BaseMemo) SELF:_Memo
+    NEW PROTECT PROPERTY Memo AS BaseMemo GET (BaseMemo) SELF:_Memo
 
 
 PROTECTED METHOD ConvertToMemory() AS LOGIC
@@ -96,14 +96,14 @@ INTERNAL METHOD _CheckEofBof() AS VOID
 
 
 INTERNAL METHOD _SetBOF(lNewValue as LOGIC) AS VOID
-    IF lNewValue != SELF:_BoF
-        SELF:_BoF := lNewValue
+    IF lNewValue != SELF:BoF
+        SELF:BoF := lNewValue
     ENDIF
 
 
 INTERNAL METHOD _SetEOF(lNewValue as LOGIC) AS VOID
-    IF lNewValue != SELF:_EoF
-        SELF:_EoF := lNewValue
+    IF lNewValue != SELF:EoF
+        SELF:EoF := lNewValue
         IF lNewValue
             Array.Copy(SELF:_BlankBuffer, SELF:_RecordBuffer, SELF:_RecordLength)
         ENDIF
@@ -249,12 +249,12 @@ METHOD Skip(nToSkip AS INT) AS LOGIC
             // We reached the top ?
 			IF result .AND. ( nToSkip < 0 ) .AND. SELF:_BoF
 				SELF:GoTop()
-				SELF:_BoF := TRUE
+				SELF:BoF := TRUE
 			ENDIF
 			IF nToSkip < 0 
 				SELF:_SetEOF(FALSE)
 			ELSEIF nToSkip > 0 
-				SELF:_BoF := FALSE
+				SELF:BoF := FALSE
 			ENDIF
         ENDIF
 	ENDIF
@@ -269,8 +269,8 @@ METHOD SkipRaw(nToSkip AS INT) AS LOGIC
     //
 	IF nToSkip == 0 
         // Refresh current Recno
-		LOCAL currentBof := SELF:_BoF AS LOGIC
-		LOCAL currentEof := SELF:_EoF AS LOGIC
+		LOCAL currentBof := SELF:BoF AS LOGIC
+		LOCAL currentEof := SELF:EoF AS LOGIC
 		SELF:GoTo( SELF:_RecNo )
 		SELF:_SetBOF(currentBof)
         SELF:_SetEOF(currentEof)
@@ -324,7 +324,7 @@ METHOD Append(lReleaseLock AS LOGIC) AS LOGIC
                     SELF:_putEndOfFileMarker()
                     // Now, update state
 					SELF:_SetEOF(FALSE)
-					SELF:_BoF           := FALSE
+					SELF:BoF            := FALSE
 					SELF:_Deleted       := FALSE
 					SELF:_BufferValid   := TRUE
 					SELF:_isValid       := TRUE
@@ -1353,7 +1353,7 @@ RETURN oResult
 VIRTUAL PROTECTED METHOD _readRecord() AS LOGIC
 	LOCAL isOK AS LOGIC
     // Buffer is supposed to be correct
-	IF SELF:_BufferValid == TRUE .OR. SELF:_EoF
+	IF SELF:_BufferValid == TRUE .OR. SELF:EoF
 		RETURN TRUE
 	ENDIF
     // File Ok ?
@@ -1864,7 +1864,7 @@ METHOD ForceRel() AS LOGIC
 		SELF:_RelInfoPending := NULL
     //
 		isOK := SELF:RelEval( currentRelation )
-		IF isOK .AND. !((DBF)currentRelation:Parent):_EoF
+		IF isOK .AND. !((DBF)currentRelation:Parent):EoF
 			TRY
 				gotoRec := Convert.ToInt32( SELF:_EvalResult )
 			CATCH ex AS InvalidCastException
@@ -2209,7 +2209,7 @@ METHOD Sort(info AS DbSortInfo) AS LOGIC
 			ENDIF
 		ENDIF
 	ENDIF
-	WHILE isOK .AND. !SELF:_EoF .AND. readMore
+	WHILE isOK .AND. !SELF:EoF .AND. readMore
 		IF hasWhile
 			readMore := (LOGIC) SELF:EvalBlock(trInfo:Scope:WhileBlock)
 		ENDIF
@@ -2301,7 +2301,7 @@ INTERNAL METHOD Validate() AS VOID
 PROPERTY BoF 		AS LOGIC
 	GET 
 		SELF:ForceRel()
-		RETURN SELF:_BoF 
+		RETURN SUPER:BoF 
 	END GET
 END PROPERTY
 
@@ -2318,7 +2318,7 @@ END PROPERTY
 PROPERTY EoF 		AS LOGIC
 	GET 
 		SELF:ForceRel()
-		RETURN SELF:_EoF 
+		RETURN SUPER:EoF 
 	END GET
 END PROPERTY
 
@@ -2331,7 +2331,7 @@ PROPERTY FieldCount AS LONG GET SELF:_Fields:Length
 PROPERTY Found		AS LOGIC
 	GET 
 		SELF:ForceRel()
-		RETURN SELF:_Found
+		RETURN SUPER:Found
 	END GET
 END PROPERTY
 
@@ -2361,11 +2361,10 @@ RETURN reccount
 PROPERTY RecNo		AS INT
 	GET
 		SELF:ForceRel()
-		RETURN SELF:_RecNo
+		RETURN SUPER:RecNo
 	END GET
 END PROPERTY
 
-VIRTUAL PROPERTY Shared		AS LOGIC GET SELF:_Shared
 /// <inheritdoc />
 VIRTUAL PROPERTY Driver AS STRING GET "DBF"
 	

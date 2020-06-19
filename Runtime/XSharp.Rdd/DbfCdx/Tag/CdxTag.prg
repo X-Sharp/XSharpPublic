@@ -476,11 +476,11 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                         RETURN FALSE
                     ENDIF
                 ENDIF
-                IF SELF:HasScope .AND. ! XSharp.RuntimeState.Deleted .AND. ! SELF:_oRdd:_FilterInfo:Active
+                IF SELF:HasScope .AND. ! XSharp.RuntimeState.Deleted .AND. ! SELF:_oRdd:FilterInfo:Active
                     SELF:_ScopeSeek(DbOrder_Info.DBOI_SCOPEBOTTOM)
                     records := SELF:_getScopePos()
                 ELSE
-                    IF  XSharp.RuntimeState.Deleted  .OR. SELF:_oRdd:_FilterInfo:Active
+                    IF  XSharp.RuntimeState.Deleted  .OR. SELF:_oRdd:FilterInfo:Active
                         SELF:_oRdd:SkipFilter(1)
                         oldRec := SELF:_RecNo
                         records := 0
@@ -568,11 +568,11 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 IF SELF:HasScope
                     record := SELF:_getScopePos()
                 ELSE
-                    IF XSharp.RuntimeState.Deleted .OR. SELF:_oRdd:_FilterInfo:Active
+                    IF XSharp.RuntimeState.Deleted .OR. SELF:_oRdd:FilterInfo:Active
                         SELF:_oRdd:SkipFilter(1)
                         oldRec := SELF:_RecNo
                         record := 0
-                        IF !SELF:_oRdd:_EoF
+                        IF !SELF:_oRdd:EoF
                             SELF:GoTop()
                             recno := SELF:_RecNo
                             count := 1
@@ -768,7 +768,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         
         PRIVATE METHOD _getFieldValue(sourceIndex AS LONG, byteArray AS BYTE[]) AS LOGIC
             SELF:_oRdd:Validate()
-            Array.Copy(SELF:_oRdd:_RecordBuffer, sourceIndex, byteArray, 0, SELF:_keySize)
+            Array.Copy(SELF:_oRdd:RecordBuffer, sourceIndex, byteArray, 0, SELF:_keySize)
             RETURN TRUE
 
         PRIVATE METHOD _getFieldValueWithCollation(sourceIndex AS LONG, byteArray AS BYTE[]) AS LOGIC

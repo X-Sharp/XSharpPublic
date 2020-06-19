@@ -354,14 +354,14 @@ BEGIN NAMESPACE XSharp.RDD
                 // Save the current context
                 LOCAL currentRelation := SELF:_RelInfoPending AS DbRelInfo
                 SELF:_RelInfoPending := NULL
-                VAR oParent := (DBF) currentRelation:Parent 
-                IF oParent:_EoF
+                VAR oParent := (DBFCDX) currentRelation:Parent 
+                IF oParent:EoF
                     //
                     isOk := SELF:GoTo( 0 )
                 ELSE
                     isOk := SELF:RelEval( currentRelation )
                     
-                    IF isOk .AND. !((DBF)currentRelation:Parent):_EoF
+                    IF isOk .AND. !((DBFCDX)currentRelation:Parent):EoF
                         TRY
                             LOCAL seekInfo AS DbSeekInfo
                             seekInfo := DbSeekInfo{}

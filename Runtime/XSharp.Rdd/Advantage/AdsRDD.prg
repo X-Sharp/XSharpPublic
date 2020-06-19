@@ -34,6 +34,7 @@ CLASS XSharp.ADS.ADSRDD INHERIT Workarea
     INTERNAL _Ansi  AS LOGIC
     INTERNAL _HasMemo AS LOGIC
     INTERNAL _fieldCount AS LONG
+
     
   #endregion
     
@@ -51,6 +52,7 @@ CONSTRUCTOR()
     SELF:_FileName       := String.Empty
     
     #region Helper Methods that check for error conditions
+    
 INTERNAL STATIC METHOD _HasFlag(dw AS DWORD, flag AS DWORD) AS LOGIC
 RETURN _AND(dw, flag) == flag
 
@@ -99,7 +101,18 @@ INTERNAL METHOD ADSERROR(iSubCode AS DWORD, iGenCode AS DWORD, strFunction AS ST
     
     #endregion
   #region Helper Methods
-    
+
+INTERNAL METHOD _SetBOF(lNewValue AS LOGIC) AS VOID
+    IF lNewValue != SELF:BoF
+        SELF:BoF := lNewValue
+    ENDIF
+
+
+INTERNAL METHOD _SetEOF(lNewValue AS LOGIC) AS VOID
+    IF lNewValue != SELF:EoF
+        SELF:EoF := lNewValue
+    ENDIF
+
 INTERNAL METHOD _SynchronizeVODeletedFlag() AS DWORD
     RETURN ACE.AdsShowDeleted(IIF(RuntimeState.Deleted,(WORD)0 ,(WORD)1 ))
 
@@ -473,15 +486,15 @@ RETURN isOk
   #region Navigation
 METHOD RecordMovement() AS LOGIC
     SELF:_CheckError(ACE.AdsAtBOF(SELF:_Table, OUT VAR atBOF),EG_READ)
-    SUPER:_BoF := (atBOF == 1)
+    SUPER:BoF := (atBOF == 1)
     SELF:_CheckError(ACE.AdsAtEOF(SELF:_Table, OUT VAR atEOF),EG_READ)
-    SUPER:_EoF := (atEOF == 1)
+    SUPER:EoF := (atEOF == 1)
     SELF:_CheckError(ACE.AdsIsFound(SELF:_Table,  OUT VAR isFound),EG_READ)
     SUPER:_Found := (isFound == 1)
     IF atBOF == 1 .AND. atEOF == 0
         // Do not call self:GoTop() to avoid recursion
         SELF:_CheckError(ACE.AdsGotoTop(SELF:CurrentOrder),EG_READ)
-        SUPER:_BoF := TRUE
+        SUPER:BoF := TRUE
     ENDIF
     IF SUPER:_Relations != NULL
         FOREACH dbrelinfo AS DbRelInfo IN SUPER:_Relations
@@ -546,7 +559,7 @@ VIRTUAL METHOD Skip(lCount AS LONG) AS LOGIC
     ENDIF
     flag := SELF:RecordMovement()
     IF lCount > 0
-        SUPER:_BoF := FALSE
+        SUPER:BoF := FALSE
         RETURN flag
     ENDIF
     IF lCount < 0
@@ -639,7 +652,7 @@ VIRTUAL METHOD GoHot() AS LOGIC
                     IF result == 0
                         result := ACE.AdsGetRecordNum(SELF:_Table, ACE.ADS_IGNOREFILTERS, OUT dwRecNo)
                     ENDIF
-                    IF result == 0 .AND. numRecs < dwRecNo .AND. ! SUPER:_BoF .AND. ! SUPER:_EoF
+                    IF result == 0 .AND. numRecs < dwRecNo .AND. ! SUPER:BoF .AND. ! SUPER:EoF
                         result := ACE.AdsLockRecord(SELF:_Table, 0)
                         IF result == 0 .OR. result == ACE.AE_TABLE_NOT_SHARED
                             RETURN TRUE
@@ -755,7 +768,7 @@ PROPERTY Deleted AS LOGIC
         LOCAL result AS DWORD
         result := ACE.AdsIsRecordDeleted(SELF:_Table, OUT VAR isDeleted)
         IF result == ACE.AE_NO_CURRENT_RECORD 
-            IF SELF:_EoF
+            IF SELF:EoF
                 RETURN FALSE
             ELSE
                 RETURN TRUE

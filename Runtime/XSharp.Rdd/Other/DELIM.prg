@@ -49,7 +49,7 @@ BEGIN NAMESPACE XSharp.RDD
         OVERRIDE PROPERTY Driver AS STRING GET "DELIM" 
 
         PROTECTED METHOD _readRecord() AS LOGIC STRICT
-            IF _BufferValid .Or. SELF:_EoF
+            IF _BufferValid .OR. SELF:EoF
                 return true
             endif
             var cLine    := FReadLine(SELF:_hFile, 4096)
@@ -81,7 +81,7 @@ BEGIN NAMESPACE XSharp.RDD
             SELF:_fieldData [nIndex] := oValue
             nIndex += 1
             if nIndex < SELF:_Fields:Length
-                SELF:_EoF := TRUE
+                SELF:EoF := TRUE
                 RETURN FALSE
             ENDIF
             _BufferValid := TRUE

@@ -24,7 +24,7 @@ BEGIN NAMESPACE XSharp.RDD
             IF _BufferValid 
                 RETURN TRUE
             ENDIF
-            IF SELF:_EoF
+            IF SELF:EoF
                 RETURN FALSE
             ENDIF
             IF FRead3(SELF:_hFile, SELF:buffer, (DWORD) SELF:buffer:Length) == (DWORD) SELF:buffer:Length
@@ -41,7 +41,7 @@ BEGIN NAMESPACE XSharp.RDD
                 _BufferValid := TRUE
                 RETURN TRUE
             ENDIF
-            SELF:_EoF := TRUE
+            SELF:EoF := TRUE
             RETURN FALSE
             
 

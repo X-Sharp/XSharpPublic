@@ -188,7 +188,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             LOCAL cFullName AS STRING
             LOCAL cDbf      AS STRING
             cFullName := cBagName
-            cDbf      := SELF:_oRdd:_FileName
+            cDbf      := SELF:_oRdd:FileName
             VAR cExt  := GetIndexExtFromDbfExt(cDbf)
             IF String.IsNullOrEmpty(cFullName)
                 cFullName := Path.ChangeExtension(cDbf, cExt)
@@ -282,7 +282,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             ENDIF
             cPath := Path.GetDirectoryName(cFullName)
             IF String.IsNullOrEmpty(cPath)
-                cPath := SELF:_oRdd:_FileName
+                cPath := SELF:_oRdd:FileName
                 cPath := Path.GetDirectoryName(cPath)
                 cFullName := Path.Combine(cPath, cFileName)
             ENDIF

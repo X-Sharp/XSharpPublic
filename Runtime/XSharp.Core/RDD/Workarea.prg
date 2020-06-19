@@ -21,67 +21,57 @@ BEGIN NAMESPACE XSharp.RDD
 		#region Fields
 		PROTECTED _Disposed     AS LOGIC
 		/// <summary>Workarea Number (1 based) </summary>
-		PUBLIC _Area			AS DWORD		
+		PROTECTED _Area			AS DWORD		
 		/// <summary> Unique Alias </summary>
-		PUBLIC _Alias			AS STRING	
-		/// <summary>File name of the main file</summary>
-		PUBLIC _FileName		AS STRING
+		PROTECTED _Alias			AS STRING	
+		PROTECTED _FileName		AS STRING
 		/// <summary>List of Fields</summary>
 		PUBLIC _Fields		    AS RddFieldInfo[]
-        PROTECTED _fieldNames   AS Dictionary<STRING, INT>
-        PRIVATE _currentField   AS LONG
+		PROTECTED _fieldNames   AS Dictionary<STRING, INT>
+		PRIVATE _currentField   AS LONG
 		/// <summary>Is at BOF ?</summary>
-		PUBLIC _BoF			    AS LOGIC	
-		/// <summary>Is at bottom ?</summary>
-		PUBLIC _Bottom		    AS LOGIC	
-		/// <summary>Is at EOF ?</summary>
-		PUBLIC _EoF			    AS LOGIC	
-		/// <summary>Result of last SEEK operation</summary>
-		PUBLIC _Found			AS LOGIC	
-		/// <summary>Is at top?</summary>
-		PUBLIC _Top			    AS LOGIC	
+		PROTECTED _BoF			    AS LOGIC	
+		PROTECTED _Bottom		    AS LOGIC	
+		PROTECTED _EoF			    AS LOGIC	
+		PROTECTED _Found			AS LOGIC	
+		PROTECTED _Top			    AS LOGIC	
 		/// <summary>Result of last macro evaluation</summary>
-		PUBLIC _Result		    AS OBJECT                
+		PROTECTED _Result		    AS OBJECT                
 		/// <summary>Current Scope</summary>
-		PUBLIC _ScopeInfo		AS DbScopeInfo
-		/// <summary>Current Filter</summary>
-		PUBLIC _FilterInfo	    AS DbFilterInfo  
-		/// <summary>Current Order condition</summary>
-		PUBLIC _OrderCondInfo	AS DbOrderCondInfo
+		PROTECTED _ScopeInfo		AS DbScopeInfo
+		PROTECTED _FilterInfo	    AS DbFilterInfo  
+		PROTECTED _OrderCondInfo	AS DbOrderCondInfo
 		/// <summary>List of children</summary>
-		PUBLIC _Relations       AS List<DbRelInfo>
+		PROTECTED _Relations       AS List<DbRelInfo>
 		/// <summary># of parents</summary>
-		PUBLIC _Parents		    AS LONG		
+		PROTECTED _Parents		    AS LONG		
 		/// <summary>Maximum fieldname length (Advantage supports field names > 10 characters)</summary>
-		PUBLIC _MaxFieldNameLength AS LONG	// 
+		PROTECTED _MaxFieldNameLength AS LONG	// 
 		
 		// Some flags that are stored here but managed in subclasses
-		PUBLIC _TransRec		AS LOGIC
+		PROTECTED _TransRec		AS LOGIC
 		/// <summary>Size of record</summary>
-		PUBLIC _RecordLength	AS LONG   	
-		/// <summary>Current Record</summary>
-		PUBLIC _RecordBuffer	AS BYTE[]	
+		PROTECTED _RecordLength	AS LONG   	
+		PROTECTED _RecordBuffer	AS BYTE[]	
 		/// <summary>Field delimiter (for DELIM RDD)</summary>
-		PUBLIC _Delimiter	:= "," AS STRING	
+		PROTECTED _Delimiter	:= "," AS STRING	
 		/// <summary>String delimiter (for DELIM RDD)</summary>
-		PUBLIC _Separator	:= e"\""  AS STRING	        
-		/// <summary> Is the file opened ReadOnly ?</summary>
-		PUBLIC _ReadOnly		AS LOGIC	
+		PROTECTED _Separator	:= e"\""  AS STRING	        
+		PROTECTED _ReadOnly		AS LOGIC	
 		/// <summary> Is the file opened Shared ?</summary>
-		PUBLIC _Shared			AS LOGIC	
+		PROTECTED _Shared			AS LOGIC	
 		/// <summary>File handle of the current file</summary>
-		PUBLIC _hFile			AS IntPtr
+		PROTECTED _hFile			AS IntPtr
 		/// <summary>Should the file be flushed (it is dirty) ?</summary>
-		PUBLIC _Flush			AS LOGIC		
+		PROTECTED _Flush			AS LOGIC		
 		
 		// Memo and Order Implementation
-		/// <summary>Current memo implementation.</summary>
-		PUBLIC _Memo			AS IMemo
+		PROTECTED _Memo			AS IMemo
 		/// <summary>Current index implementation.</summary>
-		PUBLIC _Order			AS IOrder
+		PROTECTED _Order			AS IOrder
 		
 		/// <summary>Result of the last Block evaluation.</summary>
-		PUBLIC _EvalResult    AS OBJECT
+		PROTECTED _EvalResult    AS OBJECT
 		#endregion
 		
 		#region Static Properties that point to Runtime state ?
@@ -155,7 +145,7 @@ BEGIN NAMESPACE XSharp.RDD
                   isOk := SELF:GoTop()
                 ENDIF
             ENDIF
-            DO WHILE isOk .AND. ! SELF:_EoF 
+            DO WHILE isOk .AND. ! SELF:EoF 
                 IF cbWhile != NULL
                     IF ! (LOGIC) SELF:EvalBlock(cbWhile)
                         EXIT
@@ -223,14 +213,14 @@ BEGIN NAMESPACE XSharp.RDD
 				IF !SELF:SkipFilter(lToSkip)
 					RETURN FALSE
 				ENDIF              
-				IF SELF:_BoF .OR. SELF:_EoF
+				IF SELF:BoF .OR. SELF:EoF
 					EXIT
 				ENDIF
 			ENDDO
 			IF lToSkip < 0
-				SELF:_EoF := FALSE		
+				SELF:EoF := FALSE		
 			ELSE
-				SELF:_BoF := FALSE
+				SELF:BoF := FALSE
 			ENDIF
 			RETURN TRUE	
 			
@@ -259,7 +249,7 @@ BEGIN NAMESPACE XSharp.RDD
             recordHidden:= TRUE 
             result      := TRUE 
             
-            DO WHILE !SELF:_EoF .AND. ! SELF:_BoF
+            DO WHILE !SELF:EoF .AND. ! SELF:BoF
                 // Check deleted first, that is easier and has less overhead
                 IF fRtDeleted
                     recordHidden := SELF:Deleted
@@ -277,15 +267,15 @@ BEGIN NAMESPACE XSharp.RDD
                 ENDIF
              ENDDO
              IF result
-                IF fromTop .AND. SELF:_EoF
-                    SELF:_BoF := TRUE
-                ELSEIF fromBottom .AND. SELF:_BoF
-                    SELF:_EoF := TRUE
-                ELSEIF SELF:_BoF .AND. nToSkip < 0
+                IF fromTop .AND. SELF:EoF
+                    SELF:BoF := TRUE
+                ELSEIF fromBottom .AND. SELF:BoF
+                    SELF:EoF := TRUE
+                ELSEIF SELF:BoF .AND. nToSkip < 0
                     // note that this will recurse!
                     result := SELF:GoTop()
-                    SELF:_BoF := TRUE
-                    SELF:_EoF := FALSE
+                    SELF:BoF := TRUE
+                    SELF:EoF := FALSE
                 ENDIF
              ENDIF
             RETURN result
@@ -308,7 +298,7 @@ BEGIN NAMESPACE XSharp.RDD
             cbFor   := _ScopeInfo:ForBlock
             IF SELF:_ScopeInfo:RecId != NULL
                 result     := SELF:GoToId(SELF:_ScopeInfo:RecId)
-                lContinue  := ! SELF:_EoF
+                lContinue  := ! SELF:EoF
                 IF lContinue
                     IF cbWhile != NULL
                         lContinue := (LOGIC) SELF:EvalBlock(cbWhile)
@@ -320,7 +310,7 @@ BEGIN NAMESPACE XSharp.RDD
                     ENDIF
                 ENDIF
             ELSEIF nextCnt > 0
-                DO WHILE lContinue .AND. ! SELF:_EoF .AND. nToSkip != 0 .AND. result
+                DO WHILE lContinue .AND. ! SELF:EoF .AND. nToSkip != 0 .AND. result
                     result := SELF:Skip(1)
                      IF cbWhile != NULL
                         lContinue := (LOGIC) SELF:EvalBlock(cbWhile)
@@ -340,7 +330,7 @@ BEGIN NAMESPACE XSharp.RDD
                     lContinue := nextCnt > 0
                 ENDDO
             ELSEIF SELF:_ScopeInfo:Rest
-                DO WHILE ! SELF:_EoF .AND. nToSkip != 0 .AND. result
+                DO WHILE ! SELF:EoF .AND. nToSkip != 0 .AND. result
                     result := SELF:Skip(1)
                     IF cbWhile != NULL
                         lContinue := (LOGIC) SELF:EvalBlock(cbWhile)
@@ -363,7 +353,7 @@ BEGIN NAMESPACE XSharp.RDD
                 ENDDO
             ELSE
                 result := SELF:GoTop()
-                DO WHILE ! SELF:_EoF .AND. nToSkip != 0 .AND. result
+                DO WHILE ! SELF:EoF .AND. nToSkip != 0 .AND. result
                     IF cbFor != NULL
                         lFound := (LOGIC) SELF:EvalBlock(cbFor)
                     ELSE
@@ -377,7 +367,7 @@ BEGIN NAMESPACE XSharp.RDD
                     ENDIF
                 ENDDO
             ENDIF
-            SELF:_Found := lFound .AND. ! SELF:_EoF
+            SELF:_Found := lFound .AND. ! SELF:EoF
             RETURN result
             
 			/// <inheritdoc />
@@ -720,7 +710,9 @@ BEGIN NAMESPACE XSharp.RDD
 			RETURN SELF:_Memo:OpenMemFile(info )
 			
 			#region Orders Not implemented
-			
+
+
+
 			/// <inheritdoc />
 			VIRTUAL METHOD OrderCondition(info AS DbOrderCondInfo) AS LOGIC
 				RETURN SELF:_Order:OrderCondition(info)
@@ -880,7 +872,7 @@ BEGIN NAMESPACE XSharp.RDD
                         result := SELF:GoTop()
                     ENDIF
                 ENDIF
-                DO WHILE result .AND. ! SELF:_EoF 
+                DO WHILE result .AND. ! SELF:EoF 
                     IF cbWhile != NULL
                         IF ! (LOGIC) SELF:EvalBlock(cbWhile)
                             EXIT
@@ -1041,9 +1033,9 @@ BEGIN NAMESPACE XSharp.RDD
 				CASE DbInfo.DBI_GETLOCKARRAY
 					oResult := <DWORD>{}
 				CASE DbInfo.DBI_BOF           
-					oResult := SELF:_BoF
+					oResult := SELF:BoF
 				CASE DbInfo.DBI_EOF           
-					oResult := SELF:_EoF   
+					oResult := SELF:EoF   
 				CASE DbInfo.DBI_DBFILTER
                     IF SELF:_FilterInfo != NULL
 					    oResult := SELF:_FilterInfo:FilterText
@@ -1084,7 +1076,7 @@ BEGIN NAMESPACE XSharp.RDD
 		VIRTUAL PROPERTY Area AS DWORD GET _Area SET _Area := value 
 		
 		/// <inheritdoc />
-		VIRTUAL PROPERTY BoF AS LOGIC GET _BoF
+		VIRTUAL PROPERTY BoF AS LOGIC GET _BoF  PROTECTED SET _BoF := @@value
 		
 		/// <inheritdoc />
 		VIRTUAL PROPERTY Deleted AS LOGIC GET FALSE
@@ -1093,7 +1085,7 @@ BEGIN NAMESPACE XSharp.RDD
 		VIRTUAL PROPERTY Driver AS STRING GET "Workarea"
 		
 		/// <inheritdoc />
-		VIRTUAL PROPERTY EoF AS LOGIC GET _EoF
+		VIRTUAL PROPERTY EoF AS LOGIC GET _EoF  PROTECTED SET _EoF := @@value
 		
 		/// <inheritdoc />
 		VIRTUAL PROPERTY Exclusive AS LOGIC GET FALSE
@@ -1105,8 +1097,23 @@ BEGIN NAMESPACE XSharp.RDD
 		VIRTUAL PROPERTY FilterText AS STRING GET _FilterInfo?:FilterText
 		
 		/// <inheritdoc />
-		VIRTUAL PROPERTY Found AS LOGIC GET _Order:Found SET _Order:Found := value
+		VIRTUAL PROPERTY Found AS LOGIC GET _Found SET _Found := value
 		
+		/// <summary>Current memo implementation.</summary>
+		PROPERTY Memo  AS IMemo GET _Memo SET _Memo := @@value
+
+		/// <summary>Current Order condition</summary>
+		PROPERTY OrderCondInfo AS DbOrderCondInfo GET _OrderCondInfo SET _OrderCondInfo := @@value
+
+		/// <summary>File name of the main file</summary>
+		PROPERTY FileName AS STRING GET _FileName
+
+		/// <summary>Current Filter</summary>
+		PROPERTY FilterInfo AS DbFilterInfo GET _FilterInfo
+
+		/// <summary>Current Record</summary>
+		PROPERTY RecordBuffer AS BYTE[] GET _RecordBuffer
+
 		
 		/// <inheritdoc />
 		VIRTUAL PROPERTY RecCount AS INT GET 0
@@ -1117,11 +1124,21 @@ BEGIN NAMESPACE XSharp.RDD
 		VIRTUAL PROPERTY RecNo AS LONG GET   0	
 		
 		/// <inheritdoc />
-		VIRTUAL PROPERTY Shared AS LOGIC GET FALSE
+		VIRTUAL PROPERTY Shared AS LOGIC GET _Shared
+
+		/// <summary> Is the file opened ReadOnly ?</summary>
+		VIRTUAL PROPERTY ReadOnly AS LOGIC GET _ReadOnly
+
+		/// <summary>Is at top?</summary>
+		PROPERTY Top    AS LOGIC GET _Top       SET _Top    := @@value
+		
+		/// <summary>Is at bottom ?</summary>
+		PROPERTY Bottom AS LOGIC GET _Bottom    SET _Bottom := @@value
 		
 		
 	END CLASS
 
 END NAMESPACE
+
 
 

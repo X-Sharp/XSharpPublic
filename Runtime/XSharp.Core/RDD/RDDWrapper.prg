@@ -59,7 +59,7 @@ BEGIN NAMESPACE XSharp.RDD
         // If you are only interested in certain methods, then subclass this class and only write the methods that you are interested in
         // 
 
-        PROTECT oRdd AS IRdd
+        PROTECT oRdd AS IRdd 
 
         VIRTUAL METHOD DebuggerDisplay() AS STRING
             IF oRdd != NULL

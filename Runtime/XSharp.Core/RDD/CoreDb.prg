@@ -761,8 +761,8 @@ CLASS XSharp.CoreDb
                         VAR nBlock := oDBF:_getMemoBlockNumber( (LONG)nPos)
                         IF nBlock == 0
                             oRet := BYTE[]{0}
-                        ELSEIF oDBF:_Memo != NULL
-                            oRet := (BYTE[]) oDBF:_Memo:GetValue((LONG) nPos)
+                        ELSEIF oDBF:Memo != NULL
+                            oRet := (BYTE[]) oDBF:Memo:GetValue((LONG) nPos)
                         ELSE
                             oRet := BYTE[]{0}
                         ENDIF

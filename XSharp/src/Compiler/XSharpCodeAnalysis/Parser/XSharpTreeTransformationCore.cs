@@ -802,6 +802,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     case XP.CHAR_CONST:
                         type = _syntaxFactory.PredefinedType(SyntaxFactory.MakeToken(SyntaxKind.CharKeyword));
                         break;
+                    case XP.NULL_PTR:
+                        type = _ptrType;
+                        break;
                     default:
                         if (XSharpLexer.IsString(token.Type))
                         {
@@ -978,6 +981,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         break;
 
                 }
+            }
+            else if (type == _ptrType)
+            {
+                isConst = true;
             }
             else
             {

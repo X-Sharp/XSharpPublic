@@ -129,7 +129,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                         constantValue = boundValue.ConstantValue;
                     }
 
-                    if ((boundValue as BoundFieldAccess)?.FieldSymbol.Type.SpecialType == SpecialType.System_IntPtr && (boundValue as BoundFieldAccess)?.FieldSymbol.Name == "Zero")
+                    if ((boundValue as BoundFieldAccess)?.FieldSymbol.Type.SpecialType == SpecialType.System_IntPtr && 
+                        ((boundValue as BoundFieldAccess)?.FieldSymbol.Name == "Zero" || (boundValue as BoundFieldAccess)?.FieldSymbol.IsConst == true))
                     {
                         constantValue = ConstantValue.Create(0);
                     }

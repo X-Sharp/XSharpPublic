@@ -192,7 +192,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                     return Conversion.Boxing;
                 }
             }
-            else if (source.IsPointerType())
+            else if (source.IsPointerType() || source.IsPsz())
             {
                 if (destination.SpecialType == SpecialType.System_Object)
                 {
@@ -451,7 +451,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                         // except when converting to array of usuals
                         return Conversion.ImplicitReference;
                     }
-                    if (destination.IsPointerType() || destination.SpecialType == SpecialType.System_IntPtr)
+                    if (destination.IsPointerType() || destination.SpecialType == SpecialType.System_IntPtr || destination.IsPsz())
                     {
                         if (Compilation.Options.Dialect.AllowPointerMagic())
                         {

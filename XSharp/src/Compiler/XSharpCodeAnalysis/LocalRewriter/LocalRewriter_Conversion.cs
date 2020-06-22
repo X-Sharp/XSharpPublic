@@ -46,7 +46,8 @@ namespace Microsoft.CodeAnalysis.CSharp
         private ConversionKind UnBoxXSharpType(ref BoundExpression rewrittenOperand, ConversionKind conversionKind, TypeSymbol rewrittenType)
         {
 
-            if (rewrittenType.IsPointerType() && rewrittenOperand.Type.IsObjectType() && _compilation.Options.Dialect.AllowPointerMagic())
+            if ((rewrittenType.IsPointerType()  || rewrittenType.IsPsz() )
+                && rewrittenOperand.Type.IsObjectType() && _compilation.Options.Dialect.AllowPointerMagic())
             {
                 rewrittenOperand = new BoundConversion(rewrittenOperand.Syntax, rewrittenOperand,
                                         Conversion.Unboxing, false, false, null, _compilation.GetSpecialType(SpecialType.System_IntPtr));
@@ -197,7 +198,8 @@ namespace Microsoft.CodeAnalysis.CSharp
                     }
 
                 }
-                if (rewrittenOperand.Type.IsPointerType() && _compilation.Options.Dialect.AllowPointerMagic())
+                if ((rewrittenOperand.Type.IsPointerType() || rewrittenOperand.Type.IsPsz())
+                    && _compilation.Options.Dialect.AllowPointerMagic())
                 {
                     rewrittenOperand = new BoundConversion(rewrittenOperand.Syntax, rewrittenOperand,
                         Conversion.Identity, false, false, null, _compilation.GetSpecialType(SpecialType.System_IntPtr));

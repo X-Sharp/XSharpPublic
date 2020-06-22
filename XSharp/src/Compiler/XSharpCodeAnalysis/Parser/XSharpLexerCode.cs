@@ -1320,6 +1320,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                 case ASYNC:
                 case CONST:
                 case EXPORT:
+                case EXTERN:
                 case FIXED:
                 case HIDDEN:
                 case INITONLY:

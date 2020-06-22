@@ -46,7 +46,6 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             if (startindex >= 0) 
             {
                 startindex -= 1;
-                var endindex = startindex;
                 var sb = new System.Text.StringBuilder();
                 while (startindex >= 0)
                 {

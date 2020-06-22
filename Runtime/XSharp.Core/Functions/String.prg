@@ -796,14 +796,6 @@ INTERNAL FUNCTION _SoundExChar( c AS CHAR ) AS CHAR
 
 
 
-/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/strevaluate/*" />
-FUNCTION StrEvaluate(cString AS STRING) AS STRING
-	THROW NotImplementedException{}
-	//RETURN String.Empty   
-
-
-
-
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/stuff/*" />
 FUNCTION Stuff(cTarget AS STRING,dwStart AS DWORD,dwDelete AS DWORD,cInsert AS STRING) AS STRING
 	LOCAL result := cInsert AS STRING

@@ -123,7 +123,9 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 SELF:_tagList:Remove(oParam)
                 // We do not Delete the pages from the tag. Comix also does not do that
                 IF SELF:_tagList:Tags:Count == 0
+                    LOCAL cFileName := SELF:FullPath AS STRING
                     SELF:_oRdd:_indexList:_CloseBag(SELF)
+                    FErase(cFileName)
                 ENDIF
             ENDIF
             RETURN found

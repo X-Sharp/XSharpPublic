@@ -546,12 +546,20 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                         parseType(INCOMPLETE_STRING_CONST);
                         break;
                     default:
-                        if (La_1 == q && ! esc)
+                        bool eat2 = false;
+                        if (La_1 == q && !esc )
                         {
-                            eos = true;
+                            if (La_2 == q)              // allow 2 double quotes to be seen as a single double quote
+                                eat2 = true;
+                            else
+                                eos = true;
                         }
                         esc = allow_esc && !esc && La_1 == '\\';
                         parseOne();
+                        if (eat2)
+                        {
+                            InputStream.Consume();
+                        }
                         break;
                 }
             }

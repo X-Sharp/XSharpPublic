@@ -101,6 +101,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             SELF:_ordCondInfo:Compile(SELF:_oRdd)
             SELF:_ordCondInfo:Active := TRUE
             SELF:_ordCondInfo:Validate()
+            SELF:Stack:Clear()
             RETURN SELF:_Build()
 
         PRIVATE METHOD _Build() AS LOGIC

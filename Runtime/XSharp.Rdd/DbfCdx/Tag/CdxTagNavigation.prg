@@ -141,8 +141,6 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             LOCAL recno AS LONG
             LOCAL isBof AS LOGIC
             LOCAL isEof AS LOGIC
-            LOCAL changedBof AS LOGIC
-            LOCAL changedEof AS LOGIC
             LOCAL locked AS LOGIC
             LOCAL orgToSkip AS INT
             LOCAL result := FALSE AS LOGIC
@@ -156,8 +154,6 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             forward := nToSkip > 0
             isBof := FALSE
             isEof := FALSE
-            changedBof := FALSE
-            changedEof := FALSE
             locked := FALSE
             
             TRY
@@ -195,16 +191,10 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                             recno := newrec
                         endif
                         IF isBof != SELF:_oRdd:BoF
-                            changedBof := TRUE
                             isBof := SELF:_oRdd:BoF
-                        ELSE
-                            changedBof := FALSE
                         ENDIF
                         IF isEof != SELF:_oRdd:EoF
-                            changedEof := TRUE
                             isEof := SELF:_oRdd:EoF
-                        ELSE
-                            changedEof := FALSE
                         ENDIF
                     ELSE
                         IF nToSkip != 0
@@ -212,7 +202,6 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                             IF recno == -1
                                 recno := SELF:_locateFirst(SELF:_rootPage)
                                 isBof := TRUE
-                                changedBof := TRUE
                             ENDIF
                         ENDIF
                     ENDIF
@@ -225,10 +214,10 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                         SELF:_oRdd:_SetBOF(TRUE)
                     ENDIF
                 ELSE 
-                    IF changedBof
+                    IF isBof
                         SELF:_oRdd:_SetBOF(isBof)
                     ENDIF
-                    IF changedEof
+                    IF isEof
                         SELF:_oRdd:_SetEOF(isEof)
                     ENDIF
                 ENDIF

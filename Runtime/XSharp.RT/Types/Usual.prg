@@ -1608,16 +1608,34 @@ BEGIN NAMESPACE XSharp
                             NOP // error below
                     END SWITCH
 
-                CASE __UsualType.Float
-                    SWITCH rhs:_usualType
-                        CASE __UsualType.Long		; RETURN FLOAT{lhs:_r8Value / rhs:_intValue, lhs:_width, lhs:_decimals}
-                        CASE __UsualType.Int64		; RETURN FLOAT{lhs:_r8Value / rhs:_i64Value, lhs:_width, lhs:_decimals}
-                        CASE __UsualType.Float		; RETURN FLOAT{lhs:_r8Value / rhs:_r8Value, Math.Max(lhs:_width,rhs:_width), lhs:_decimals+ rhs:_decimals}
-                        CASE __UsualType.Currency	; RETURN FLOAT{lhs:_r8Value / (REAL8) rhs:_currencyValue, lhs:_width, lhs:_decimals}
-                        CASE __UsualType.Decimal	; RETURN FLOAT{lhs:_r8Value / (REAL8) rhs:_decimalValue, lhs:_width, lhs:_decimals}
-                        OTHERWISE					; NOP // error below
-                    END SWITCH
-
+                    CASE __UsualType.Float
+                        LOCAL res     := 0 AS System.Double
+                        LOCAL handled := TRUE AS LOGIC
+                        VAR width := lhs:_width
+                        VAR deci  := lhs:_decimals
+                        SWITCH rhs:_usualType
+                        CASE __UsualType.Long
+                            res := lhs:_r8Value / rhs:_intValue
+                        CASE __UsualType.Int64
+                            res := lhs:_r8Value / rhs:_i64Value
+                        CASE __UsualType.Float
+                            res := lhs:_r8Value / rhs:_r8Value
+                            width   := Math.Max(lhs:_width,rhs:_width)
+                            deci    := lhs:_decimals+ rhs:_decimals
+                        CASE __UsualType.Currency
+                            res := lhs:_r8Value / (REAL8) rhs:_currencyValue
+                        CASE __UsualType.Decimal
+                            res := lhs:_r8Value / (REAL8) rhs:_decimalValue
+                        OTHERWISE
+                            handled := FALSE
+                    
+                        END SWITCH
+                        IF handled
+                            IF System.Double.IsNaN(res)
+                                THROW DivideByZeroException{}
+                            ENDIF
+                            RETURN FLOAT{res, width, deci}
+                        ENDIF
                 CASE __UsualType.Decimal
                     SWITCH rhs:_usualType
                     CASE __UsualType.Long		; RETURN lhs:_decimalValue / rhs:_intValue

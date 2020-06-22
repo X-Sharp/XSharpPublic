@@ -229,10 +229,7 @@ STATIC FUNCTION _SplitDate(cDate AS STRING) AS STRING[]
 	LOCAL nCurrent := __ARRAYBASE__ AS INT
 	LOCAL lFirstCharFound := FALSE AS LOGIC
 	FOREACH cChar AS CHAR IN cDate
-        IF cChar == ' '
-            LOOP
-        ENDIF
-		IF cChar >= '0' .AND. cChar <= '9'
+ 		IF cChar >= '0' .AND. cChar <= '9'
 			lFirstCharFound := TRUE
 			cCurrent += cChar:ToString()
 		ELSEIF cChar == ' ' .and. .not. lFirstCharFound

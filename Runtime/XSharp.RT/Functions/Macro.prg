@@ -91,3 +91,75 @@ FUNCTION Type(cString AS STRING) AS STRING
 	
 	
 
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/strevaluate/*" />
+FUNCTION StrEvaluate( cString AS STRING ) AS STRING
+	IF cString:IndexOf("&") > 0
+        LOCAL cVariableName AS STRING
+        LOCAL lInVariable   AS LOGIC
+        LOCAL evalMacro     AS LOGIC
+        LOCAL lAddChar      AS LOGIC
+        lInVariable := evalMacro := FALSE
+        cVariableName := ""
+        VAR sb := System.Text.StringBuilder{cString:Length}
+        FOREACH VAR cChar IN cString
+            lAddChar := TRUE
+            SWITCH cChar
+            CASE '&'
+               lInVariable   := TRUE
+               cVariableName := ""
+                lAddChar     := FALSE
+            CASE ' '
+            CASE '\t'
+                IF lInVariable
+                    lInVariable := FALSE
+                    evalMacro   := TRUE
+                ENDIF
+            CASE '.'
+                IF lInVariable
+                    lInVariable := FALSE
+                    evalMacro   := TRUE
+                    lAddChar     := FALSE
+                ENDIF
+            OTHERWISE
+                IF lInVariable
+                    IF Char.IsLetterOrDigit(cChar)
+                        cVariableName += cChar:ToString()
+                        lAddChar     := FALSE
+                    ELSE
+                        lInVariable := FALSE
+                        evalMacro   := TRUE
+                    ENDIF
+                ENDIF
+            END SWITCH
+            IF evalMacro 
+               VAR result := StrEvaluateMemVarGet(cVariableName)
+               sb:Append(result)
+               evalMacro := FALSE
+            ENDIF
+            IF lAddChar
+                sb:Append(cChar)
+            ENDIF
+        NEXT
+        IF lInVariable
+            VAR result := StrEvaluateMemVarGet(cVariableName)
+            sb:Append(result)
+        ENDIF
+        cString := sb:ToString()
+    ENDIF
+    RETURN cString
+
+
+INTERNAL FUNCTION StrEvaluateMemVarGet(cVariableName AS STRING) AS STRING
+    TRY
+         VAR oMemVar := XSharp.MemVar.PrivateFind(cVariableName)
+         IF oMemVar == NULL
+            oMemVar := XSharp.MemVar.PublicFind(cVariableName)
+         ENDIF
+         IF oMemVar != NULL   
+            RETURN oMemVar:Value:ToString()
+         ENDIF
+    CATCH
+        // Memvar not found ?
+    END TRY
+    RETURN cVariableName
+

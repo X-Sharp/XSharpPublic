@@ -47,6 +47,9 @@
     <Compile Include="..\..\..\..\Roslyn\src\Compilers\Core\Portable\CommandLine\CommandLineSourceFile.cs">
       <Link>CommandLine\CommandLineSourceFile.cs</Link>
     </Compile>
+    <Compile Include="..\..\..\..\Roslyn\src\Compilers\Core\Portable\InternalUtilities\UnicodeCharacterUtilities.cs">
+      <Link>UnicodeCharacterUtilities.cs</Link>
+    </Compile>
     <Compile Include="..\..\..\..\Roslyn\src\Compilers\CSharp\Portable\CommandLine\CSharpCommandLineArguments.cs">
       <Link>CommandLine\CSharpCommandLineArguments.cs</Link>
     </Compile>

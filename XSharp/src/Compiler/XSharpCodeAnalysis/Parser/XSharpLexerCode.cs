@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using Microsoft.CodeAnalysis.CSharp;
 using System;
 using Antlr4.Runtime;
+using static Roslyn.Utilities.UnicodeCharacterUtilities;
 namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
 {
 
@@ -332,13 +333,8 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             }
             parseOne();
             var c = La_1;
-            while ((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || (c >= '0' && c <= '9') || c == '_'
-                    || (c >= '\u00C0' && c <= '\u00D6') || (c >= '\u00D8' && c <= '\u00F6')
-                    || (c >= '\u00F8' && c <= '\u02FF') || (c >= '\u0370' && c <= '\u037D')
-                    || (c >= '\u037F' && c <= '\u1FFF') || (c >= '\u200C' && c <= '\u200D')
-                    || c == '\u00B7' || (c >= '\u0300' && c <= '\u036F') || (c >= '\u203F' && c <= '\u2040')
-                    || (c == '.' && allowDot) 
-                    )
+
+            while ( c > 0 && (IsIdentifierPartCharacter( (char) c) || (c == '.' && allowDot) ))
             {
                 parseOne();
                 if (c == '.')
@@ -352,19 +348,11 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
         void parseSymbol()
         {
             var c = La_1;
-            if ((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || c == '_'
-                || (c >= '\u00C0' && c <= '\u00D6') || (c >= '\u00D8' && c <= '\u00F6')
-                || (c >= '\u00F8' && c <= '\u02FF') || (c >= '\u0370' && c <= '\u037D')
-                || (c >= '\u037F' && c <= '\u1FFF') || (c >= '\u200C' && c <= '\u200D'))
+            if (c > 0 && IsIdentifierStartCharacter((char) c))
             {
                 parseOne(SYMBOL_CONST);
                 c = La_1;
-                while ((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || (c >= '0' && c <= '9') || c == '_'
-                        || (c >= '\u00C0' && c <= '\u00D6') || (c >= '\u00D8' && c <= '\u00F6')
-                        || (c >= '\u00F8' && c <= '\u02FF') || (c >= '\u0370' && c <= '\u037D')
-                        || (c >= '\u037F' && c <= '\u1FFF') || (c >= '\u200C' && c <= '\u200D')
-                        || c == '\u00B7' || (c >= '\u0300' && c <= '\u036F') || (c >= '\u203F' && c <= '\u2040')
-                        )
+                while (c > 0 && IsIdentifierPartCharacter( (char) c))
                 {
                     parseOne();
                     c = La_1;
@@ -1112,10 +1100,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                             var c = La_1;
                             if (c == '@')
                                 c = La_3;
-                            if ((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || c == '_'
-                                    || (c >= '\u00C0' && c <= '\u00D6') || (c >= '\u00D8' && c <= '\u00F6')
-                                    || (c >= '\u00F8' && c <= '\u02FF') || (c >= '\u0370' && c <= '\u037D')
-                                    || (c >= '\u037F' && c <= '\u1FFF') || (c >= '\u200C' && c <= '\u200D'))
+                            if (c > 0 && IsIdentifierStartCharacter( (char) c))
                                 goto case 'a';
                         }
                         break;

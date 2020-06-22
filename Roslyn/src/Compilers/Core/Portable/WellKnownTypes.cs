@@ -309,6 +309,7 @@ namespace Microsoft.CodeAnalysis
         XSharp___Array,
         XSharp___ArrayBase_T1,
         XSharp___WinBool,
+        XSharp_Internal_DefaultParameterValueAttribute,
 #endif
 
         NextAvailable,
@@ -612,7 +613,8 @@ namespace Microsoft.CodeAnalysis
             "XSharp.__Usual",
             "XSharp.__Array",
             "XSharp.__ArrayBase`1",
-            "XSharp.__WinBool"
+            "XSharp.__WinBool",
+            "XSharp.Internal.DefaultParameterValueAttribute"
 #endif
         };
 

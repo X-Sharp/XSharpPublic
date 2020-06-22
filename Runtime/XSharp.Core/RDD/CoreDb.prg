@@ -1844,12 +1844,21 @@ CLASS XSharp.CoreDb
         AFTERMOVE 
         RETURN result
         })
+
+
+        /// <summary>Gets the locate condition.</summary>
+        /// <returns>An object containing the scope for the current area.</returns>
         
-        
+    STATIC METHOD GetScope() AS DbScopeInfo
+        RETURN CoreDb.Do ({ =>
+        LOCAL oRdd := CoreDb.CWA(__FUNCTION__) AS IRdd
+        RETURN oRdd:GetScope()
+        })
+
         /// <summary>Set the locate condition.</summary>
         /// <param name="scope">A Scope objhect describing the current scope.</param>
         /// <returns>TRUE if successful; otherwise, FALSE.</returns>
-        /// <remarks><note type="tip">VoDbSetFound() and CoreDb.SetFound() are aliases</note></remarks>
+        /// <remarks><note type="tip">VoDbSetScope() and CoreDb.SetScope() are aliases</note></remarks>
         
     STATIC METHOD SetScope(scope AS DbScopeInfo) AS LOGIC
         RETURN CoreDb.Do ({ =>

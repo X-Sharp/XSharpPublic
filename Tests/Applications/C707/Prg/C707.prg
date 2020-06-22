@@ -1,6 +1,7 @@
 // 707. Name conflict between memvar and class
 // slightly diffrnt case than #703
-FUNCTION Start() AS VOID
+FUNCTION Start() AS VOID    
+	MEMVAR PushButton
 	PushButton := PushButton{}
 	// error XS0120: An object reference is required for the non-static field, method, or property 'PushButton.HyperLabel'
 	? PushButton:HyperLabel

@@ -4,7 +4,8 @@ CLASS Test
 END CLASS
 
 FUNCTION Start() AS VOID
-	LOCAL cKey AS STRING
+	LOCAL cKey AS STRING               
+	PUBLIC Test
 	Test := "abc" // PUBLIC // error XS0118: 'Test' is a type but is used like a variable
 	cKey := "b"
 	? cKey $ Test // error XS0118

@@ -3961,30 +3961,6 @@
              <code language="X#">?ExecScript("oForm=CreateObject('Form')"+CHR(13)+"?oForm.AutoCenter")</code>
         </example>
     </execscript>
-    <filetostr>
-        <summary>
-            Returns the contents of a file as a character string.
-        </summary>
-        <param name="cFileName">
-            Specifies the name of the file whose contents are returned as a character string.
-            If the file is in a directory other than the current default directory, include a path with the file name.
-        </param>
-        <returns>
-            Character
-        </returns>
-        <remarks>
-            Note that the size of the character string FileToStr( ) returns can be very large. The amount of available memory or disk space determines if you can store
-            the character string to a memory variable, array element, or memo field. Also, character fields in X# are limited to 254 characters.
-            See X# System Capacities for more information about limitations on character type data.
-        </remarks>
-        <example>
-             <code language="X#">
-                CD HOME()
-                cRedist=FileToStr("REDIST.TXT")
-                ?OCCURS(".MSM",cRedist)
-            </code>
-        </example>
-    </filetostr>
     <fldlist>
         <summary>
             Included for compatibility with dBASE.
@@ -7826,72 +7802,6 @@
             </code>
         </example>
     </strextract>
-    <strtofile>
-        <summary>
-            Writes the contents of a character string to a file.
-            StrToFile( ) does not write to hidden files when running X# on Windows 2000 and later.
-        </summary>
-        <param name="cExpression">
-            Specifies the character string that is written to the file. cExpression can be a literal character string,
-            an expression that evaluates to a character string, or a character type variable, array element, or field.
-        </param>
-        <param name="cFileName">
-            Specifies the name of the file to which the character string is written. Include a path with the file name if the file is in a directory
-            other than the current default directory. If the file you specify does not exist, X# automatically creates it.<br/>
-            lAdditive (for backward compatibility)<br/>
-            Specifies whether the character string is appended to the end of the file.
-            If lAdditive is true (.T.), the character string is appended to the end of the file.<br/>
-            If lAdditive is false (.F.) (the default), the file is overwritten with the character string.
-            You are asked if you want to overwrite an existing file if Set SAFETY is set to ON. If Set SAFETY is set to OFF,
-            the file is overwritten without warning.
-        </param>
-        <param name="uFlag">
-            Beginning with X# 7, you can use the nFlag parameter instead of lAdditive which enables you to also chose to write UTF-8 and
-            Unicode Byte Order Marks. The table in the remarks section describes the valid nFlag values.
-        </param>
-        <returns>
-            Numeric; the number of bytes written to the file.
-        </returns>
-        <remarks>
-            An nFlag value of 3 or 5 is not valid. You cannot attempt to write a new Byte Order Mark if nFlag bit 1, Additive, is set.<br/>
-            Unlike earlier versions of X#, StrToFile( ) opens a file in Shared rather than Exclusive mode.
-            This is useful when multiple servers attempt to simultaneously write to the same file. Because of this change,
-            you might not need to check for StrToFile( ) to return 0 (failure to open a file).
-            <list type="table">
-                <listheader>
-                    <term>nFlag</term>
-                    <description>Bit</description>
-                    <description>Description</description>
-                </listheader>
-                <item>
-                    <term>0 (default)</term>
-                    <description>0000</description>
-                    <description>The file is overwritten with the character string (formerly lAdditive=.f.)</description>
-                </item>
-                <item>
-                    <term>1</term>
-                    <description>0001</description>
-                    <description>The string is appended to the end of the file (formerly lAdditive=.t.).</description>
-                </item>
-                <item>
-                    <term>2</term>
-                    <description>0010</description>
-                    <description>
-                        Write Unicode Byte Order Mark (BOM) FF FE at the beginning of file. cExpression is assumed to be UNICODE,
-                        therefore no translation is performed. The file is overwritten
-                    </description>
-                </item>
-                <item>
-                    <term>4</term>
-                    <description>0100</description>
-                    <description>
-                        Write UTF-8 Byte Order Mark (BOM) EF BB BF at the beginning of file. cExpression is assumed to be UTF-8,
-                        therefore no translation is performed. The file is overwritten.
-                    </description>
-                </item>
-            </list>
-        </remarks>
-    </strtofile>
     <sys>
         <summary>
             Returns system information or sets its behavior.

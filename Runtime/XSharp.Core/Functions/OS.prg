@@ -284,9 +284,11 @@ FUNCTION OS() AS STRING
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/os/*" />
 FUNCTION OS(lExtended AS LOGIC) AS STRING
-    LOCAL cOs AS STRING
-    VAR o := Environment.OSVersion
-	cOs := o:ToString()
+    IF IsRunningOnWindows()
+        RETURN ReadOsVersionFromRegistry(lExtended)
+    ENDIF
+    VAR o   := Environment.OSVersion
+    VAR cOs := o:ToString()
 	IF !lExtended
 		SWITCH o:Platform
 		CASE PlatformID.Win32NT
@@ -314,7 +316,32 @@ FUNCTION OS(lExtended AS LOGIC) AS STRING
 	ENDIF
     RETURN cOs
  
+ 
 
+FUNCTION ReadOsVersionFromRegistry(lExtended AS LOGIC) AS STRING
+    
+    VAR registryKey := Microsoft.Win32.Registry.LocalMachine:OpenSubKey("Software\\Microsoft\\Windows NT\\CurrentVersion")
+	VAR cOS := (STRING)registryKey:GetValue("productName")      
+    IF lExtended
+        VAR os := Environment.OSVersion
+	    VAR pa := Environment.GetEnvironmentVariable("PROCESSOR_ARCHITECTURE")
+	    VAR isx86 := pa:ToLower():Contains("x86")
+	    cOS += " (" + IIF(isx86, "x86","x64") + i") ( Version {os.Version.Major}.{os.Version.Minor}, Build {os.Version.Build} )"
+    ENDIF
+    RETURN cOS   
+
+FUNCTION IsRunningOnWindows() AS LOGIC
+    SWITCH System.Environment.OSVersion:Platform
+    CASE System.PlatformID.Win32NT
+    CASE System.PlatformID.Win32S               // No longer in use  
+    CASE System.PlatformID.Win32Windows         // No longer in use
+    CASE System.PlatformID.WinCE                // No longer in use
+        RETURN TRUE
+    CASE System.PlatformID.Xbox
+    CASE System.PlatformID.Unix
+        RETURN FALSE
+    END SWITCH
+    RETURN FALSE
 
 
 FUNCTION TruePath( cFile AS STRING ) AS STRING PASCAL

@@ -35,6 +35,13 @@ namespace XSharp.CodeDom
         internal XCodeTypeReferenceExpression(string type) : base(type)
         {
             Name = type;
+            if (Name.StartsWith("global::"))
+            {
+                var typeName= Name.Substring(8);
+                typeName = typeName.Replace(".Properties.Resources",".Resources");
+                this.Type.BaseType = typeName;
+                this.Type.Options = CodeTypeReferenceOptions.GlobalReference;
+            }
         }
         internal XCodeTypeReferenceExpression(CodeTypeReference type) : base(type)
         {

@@ -10,16 +10,11 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
-using LanguageService.SyntaxTree.Tree;
 using System.CodeDom;
 using System.Reflection;
-using Microsoft.VisualStudio.Shell.Design.Serialization.CodeDom;
 using System.Diagnostics;
 
 using XSharpModel;
-using System.Collections;
-using System.IO;
 namespace XSharp.CodeDom
 {
 
@@ -52,7 +47,7 @@ namespace XSharp.CodeDom
         internal string Name { get; private set; }
         internal MemberTypes MemberType { get; private set; }
         internal IXType Type { get; private set; }
-        internal String TypeName { get; private set; }
+        internal string TypeName { get; private set; }
         internal bool Inherited { get; private set; }
 
         public override string ToString()
@@ -102,20 +97,6 @@ namespace XSharp.CodeDom
             XCodeNamespace newNamespace = new XCodeNamespace(newNamespaceName);
             writeTrivia(newNamespace, context);
             this.NamespaceStack.Push(this.CurrentNamespace);
-            //
-            //if (string.IsNullOrEmpty(this.CurrentNamespace.Name))
-            //{
-            //    // We could just have the empty fake Namespace here, but
-            //    // if we have some Usings inside we must copy them
-            //    if ((this.CurrentNamespace.Types.Count == 0) && (this.CurrentNamespace.Imports.Count > 0))
-            //    {
-            //        // No Types means no Classes
-            //        // Ok, copy
-            //        foreach (CodeNamespaceImport import in this.CurrentNamespace.Imports)
-            //            newNamespace.Imports.Add(import);
-            //    }
-            //}
-            //
             this.CurrentNamespace = newNamespace;
         }
 
@@ -738,14 +719,6 @@ namespace XSharp.CodeDom
         {
             // comment ends with token before the start of the method/class etc.
             int pos = ((XSharpToken)context.Start).OriginalTokenIndex ;
-            int startline = tokens[pos].Line;
-            pos--;
-            // skip to end of previous line
-            while (pos >= 0 && tokens[pos].Line == startline)
-            {
-                pos--;
-            }
-            // skip CRLF
             pos--;
             var sb = new StringBuilder();
             while (pos >= 0 )
@@ -756,18 +729,26 @@ namespace XSharp.CodeDom
                     sb.Insert(0, token.Text);
                     pos--;
                 }
-                // only append EOS tokens when they are preceded with whitespace or comments
-                else if (token.Type == XSharpParser.EOS && pos > 0 && tokens[pos-1].Channel != 0)
+                else if (token.Type == XSharpParser.EOS)
                 {
-                    sb.Insert(0, token.Text);
-                    pos--;
+                    // when the EOS is the end of a normal line of code
+                    // then it is already included with that line
+                    if (pos > 0 && tokens[pos - 1].Channel != 0)
+                    {
+                        sb.Insert(0, token.Text);
+                        pos--;
+                    }
+                    else
+                    {
+                        break;
+                    }
                 }
                 else
                 {
                     break;
                 }
             }
-            var result = sb.ToString().TrimEnd();
+            var result = sb.ToString();
             if (! string.IsNullOrEmpty(result))
             {
                 result = removeGeneratedComment(result);
@@ -818,7 +799,7 @@ namespace XSharp.CodeDom
                     break;
                 }
             }
-            return sb.ToString().TrimEnd();
+            return sb.ToString();
         }
 
 

@@ -1,3 +1,4 @@
+#pragma warnings(165, off)
 CLASS DbFileSpec INHERIT FileSpec
 	PROTECT DBF AS ARRAY
 	PROTECT cMemFileName AS STRING
@@ -437,14 +438,14 @@ METHOD DBFSGetInfo( xRdds, aHidden )
 			ENDIF
 
 			IF DbInfo( DBI_ISDBF )
-				SELF:nFCount := ( cAlias ) -> ( DbInfo( DBI_FCOUNT ) )
-				SELF:nRecSize := ( cAlias ) -> (  DbInfo( DBI_GETRECSIZE ) )
-				SELF:nHeaderSize := ( cAlias ) -> ( DbInfo( DBI_GETHEADERSIZE ) )
-				SELF:lAnsi := ( cAlias ) -> ( DbInfo( DBI_ISANSI ) )
-				SELF:dLastUpDate := ( cAlias ) -> ( DbInfo( DBI_LASTUPDATE ) )
-				SELF:nRecCount := ( cAlias ) -> ( VoDbLastRec() )
-				SELF:nRLockCount := ( cAlias ) -> ( DbInfo( DBI_LOCKCOUNT ) )
-				SELF:aDbStruct := ( cAlias ) -> ( DbStruct() )
+				SELF:nFCount        := ( cAlias ) -> ( DbInfo( DBI_FCOUNT ) )
+				SELF:nRecSize       := ( cAlias ) -> (  DbInfo( DBI_GETRECSIZE ) )
+				SELF:nHeaderSize    := ( cAlias ) -> ( DbInfo( DBI_GETHEADERSIZE ) )
+				SELF:lAnsi          := ( cAlias ) -> ( DbInfo( DBI_ISANSI ) )
+				SELF:dLastUpDate    := ( cAlias ) -> ( DbInfo( DBI_LASTUPDATE ) )
+				SELF:nRecCount      := ( cAlias ) -> ( VoDbLastRec() )
+				SELF:nRLockCount    := ( cAlias ) -> ( DbInfo( DBI_LOCKCOUNT ) )
+				SELF:aDbStruct      := ( cAlias ) -> ( DbStruct() )
 			ENDIF
 
             // pMemoHandle := ( cAlias ) -> ( DbINFO( DBI_MEMOHANDLE ) )
@@ -504,7 +505,7 @@ METHOD DBFSGetInfo( xRdds, aHidden )
 	RETURN lRetCode
 
 ACCESS DbFSize AS LONG
-	LOCAL DW AS LONG
+	LOCAL DW := 0 AS LONG
 	IF ALen( SELF:DBF ) > 0
 		DW := SELF:DBF[1, F_SIZE]
 	ENDIF
@@ -556,10 +557,8 @@ METHOD Delete()  AS LOGIC STRICT
 		ENDIF
 
 		IF lRetCode .AND. ! Empty( SELF:aIndexNames )
-			// cPath := SubStr3( cFileFullPath, 1, RAt2( "\", cFileFullPath ) )  // dcaton 070439 never used
 
 			FOREACH cFame as STRING in SELF:aIndexNames
-				//cDBFTarget := cPath + SubStr2( cFileName, RAt2( "\", cFileName ) + 1 )  // dcaton 070430 never used
 				lRetCode := FErase( cFame ) 
 			NEXT
 

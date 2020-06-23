@@ -1,3 +1,4 @@
+#pragma warnings(165, off)
 CLASS OrderSpec
 	PROTECT oDBF            AS DbFileSpec
 
@@ -11,10 +12,10 @@ CLASS OrderSpec
 
 	// conditional index items
 	PROTECT lIsCond          AS LOGIC
-	PROTECT uForCond        AS STRING   // RvdH 070310 Was ForCond which is the same as an Access....
-	PROTECT uForBlock       AS USUAL		// RvdH 070310 Was ForBlock which is the same as an Access....
-	PROTECT uWhileBlock     AS USUAL		// RvdH 070310 Was WhileBlock which is the same as an Access....
-	PROTECT uEvalBlock      AS USUAL		// RvdH 070310 Was EvalBlock which is the same as an Access....
+	PROTECT uForCond        AS STRING   
+	PROTECT uForBlock       AS USUAL	
+	PROTECT uWhileBlock     AS USUAL	
+	PROTECT uEvalBlock      AS USUAL	
 	PROTECT nStep           AS DWORD
 	PROTECT nStart          AS DWORD
 	PROTECT nNext           AS DWORD
@@ -706,13 +707,11 @@ METHOD OrderDelete( uOrder )
 	LOCAL cFullPath AS STRING
 	LOCAL cRDD      AS STRING
 	LOCAL cAlias	AS STRING
-	// LOCAL oSelf     AS OrderSpec      dcaton 070430 never used
 	LOCAL i         AS DWORD
 	LOCAL nOrders, nFiles   AS DWORD
 	LOCAL nOrdCount, nHandle AS DWORD
 
 	cRDD := SELF:oDBF:RDD_Name
-	// oSelf := SELF         // dcaton 070430 never used
 
 	IF cRDD != "DBFNTX"
 		cAlias := Symbol2String( __ConstructUniqueAlias( SELF:oDBF:FileName ) )

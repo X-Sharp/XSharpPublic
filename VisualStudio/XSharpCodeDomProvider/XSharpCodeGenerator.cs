@@ -638,8 +638,11 @@ namespace XSharp.CodeDom
         {
             if (userData.Contains(XSharpCodeConstants.USERDATA_CODE))
             {
+                var saveindent = this.Indent;
+                this.Indent = 0;
                 string sourceCode = userData[XSharpCodeConstants.USERDATA_CODE] as string;
                 this.Output.Write(sourceCode);
+                this.Indent = saveindent;
                 return true;
             }
             return false;
@@ -664,7 +667,6 @@ namespace XSharp.CodeDom
             if ((this.IsCurrentClass || this.IsCurrentStruct) || this.IsCurrentInterface)
             {
                 writeTrivia(e.UserData);
-
                 // Do we have some Source Code pushed here by our Parser ??
                 // this code contains the method declaration line as well
                 if (!writeOriginalCode(e.UserData))
@@ -846,18 +848,20 @@ namespace XSharp.CodeDom
         }
 
 
-        private void writeTrivia(IDictionary userData, bool ending = false)
+        private bool writeTrivia(IDictionary userData, bool ending = false)
         {
             string key;
             key = ending ? XSharpCodeConstants.USERDATA_ENDINGTRIVIA : XSharpCodeConstants.USERDATA_LEADINGTRIVIA;
             if (userData.Contains(key))
             {
+                var saveIndent = this.Indent;
+                this.Indent = 0;
                 String trivia = userData[key] as string;
                 this.Output.Write(trivia);
-                if (!trivia.EndsWith("\r\n"))
-                    this.Output.WriteLine("");
+                this.Indent = saveIndent;
+                return true;
             }
-
+            return false;
         }
 
         private void writeCodeBefore(IDictionary userData)
@@ -1130,9 +1134,11 @@ namespace XSharp.CodeDom
             if (!this.IsCurrentDelegate)
             {
                 this.Indent--;
-                writeTrivia(e.UserData, true);
-
-                base.Output.WriteLine();
+                
+                if( ! writeTrivia(e.UserData, true))
+                {
+                    base.Output.WriteLine();
+                }
                 base.Output.Write(keywordEND);
                 if (e.IsClass)
                 {

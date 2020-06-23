@@ -232,6 +232,7 @@ BEGIN NAMESPACE XSharpModel
       METHOD GetMembers(elementName AS STRING, lExact as LOGIC) AS IList<IXMember>
       IF lExact
          LOCAL result AS List<IXMember>
+         SELF:Resolve()
          result := List<IXMember>{}
          result:AddRange(SELF:_members:Where ( {m => m.Name.Equals(elementName, StringComparison.OrdinalIgnoreCase) }))
          RETURN result

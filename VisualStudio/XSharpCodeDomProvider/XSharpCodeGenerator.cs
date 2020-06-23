@@ -369,14 +369,8 @@ namespace XSharp.CodeDom
                 // Do we have some Source Code pushed here by our Parser ??
                 // when so then that source code also includes the constructor line
                 writeTrivia(e.UserData);
-                if (e.UserData.Contains(XSharpCodeConstants.USERDATA_CODE))
+                if (!writeOriginalCode(e.UserData))
                 {
-                    String sourceCode = e.UserData[XSharpCodeConstants.USERDATA_CODE] as string;
-                    this.Output.Write(sourceCode);
-                }
-                else
-                {
-
                     if (e.CustomAttributes.Count > 0)
                     {
                         this.GenerateAttributes(e.CustomAttributes);
@@ -519,6 +513,12 @@ namespace XSharp.CodeDom
         {
             if (!this.IsCurrentDelegate && !this.IsCurrentInterface)
             {
+                bool fromDesigner = true;
+                if (e.UserData.Contains(XSharpCodeConstants.USERDATA_FROMDESIGNER))
+                {
+                    fromDesigner = (bool)e.UserData[XSharpCodeConstants.USERDATA_FROMDESIGNER];
+                }
+
                 writeTrivia(e.UserData);
                 if (this.IsCurrentEnum)
                 {
@@ -530,7 +530,16 @@ namespace XSharp.CodeDom
                     if (e.InitExpression != null)
                     {
                         base.Output.Write(" := ");
-                        this.GenerateExpression(e.InitExpression);
+                        bool hasCode = e.InitExpression.UserData.Contains(XSharpCodeConstants.USERDATA_CODE);
+                        if (fromDesigner || ! hasCode)
+                        {
+                            this.GenerateExpression(e.InitExpression);
+                        }
+                        else
+                        {
+                            writeOriginalCode(e.InitExpression.UserData);
+                        }
+                            
                     }
                     base.Output.WriteLine();
                 }
@@ -549,7 +558,15 @@ namespace XSharp.CodeDom
                     if (e.InitExpression != null)
                     {
                         base.Output.Write(" := ");
-                        this.GenerateExpression(e.InitExpression);
+                        bool hasCode = e.InitExpression.UserData.Contains(XSharpCodeConstants.USERDATA_CODE);
+                        if (fromDesigner || !hasCode)
+                        {
+                            this.GenerateExpression(e.InitExpression);
+                        }
+                        else
+                        {
+                            writeOriginalCode(e.InitExpression.UserData);
+                        }
                     }
                     base.Output.Write(" "+keywordAS);
                     this.OutputType(e.Type);
@@ -617,7 +634,16 @@ namespace XSharp.CodeDom
             this.Indent--;
             base.Output.WriteLine(keywordENDDO);
         }
-
+        protected bool writeOriginalCode(IDictionary userData)
+        {
+            if (userData.Contains(XSharpCodeConstants.USERDATA_CODE))
+            {
+                string sourceCode = userData[XSharpCodeConstants.USERDATA_CODE] as string;
+                this.Output.Write(sourceCode);
+                return true;
+            }
+            return false;
+        }
         protected override void GenerateLabeledStatement(CodeLabeledStatement e)
         {
             // Currently, nothing here
@@ -641,12 +667,7 @@ namespace XSharp.CodeDom
 
                 // Do we have some Source Code pushed here by our Parser ??
                 // this code contains the method declaration line as well
-                if (e.UserData.Contains(XSharpCodeConstants.USERDATA_CODE))
-                {
-                    String sourceCode = e.UserData[XSharpCodeConstants.USERDATA_CODE] as string;
-                    this.Output.Write(sourceCode);
-                }
-                else
+                if (!writeOriginalCode(e.UserData))
                 {
                     if (e.CustomAttributes.Count > 0)
                     {

@@ -98,19 +98,7 @@ namespace XSharp.CodeDom
                     field.Attributes = this.classVarModifiers;
                     if (varContext.Initializer != null)
                     {
-                        if (varContext.Initializer is XSharpParser.PrimaryExpressionContext)
-                        {
-                            XSharpParser.PrimaryContext ctx = ((XSharpParser.PrimaryExpressionContext)varContext.Initializer).Expr;
-                            if (ctx is XSharpParser.LiteralExpressionContext)
-                            {
-                                XSharpParser.LiteralExpressionContext lit = (XSharpParser.LiteralExpressionContext)ctx;
-                                field.InitExpression = BuildLiteralValue(lit.Literal);
-                            }
-                        }
-                        else
-                        {
-                            field.InitExpression = BuildSnippetExpression(varContext.Initializer.GetText());
-                        }
+                        field.InitExpression = BuildExpression(varContext.Initializer, false);
                     }
                     FillCodeDomDesignerData(field, varContext.Start.Line, varContext.Start.Column);
                     //

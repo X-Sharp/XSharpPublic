@@ -147,9 +147,16 @@ namespace XSharp.Project.Editors.BraceMatching
             SnapshotPoint lastChar = new SnapshotPoint();
             try
             {
-                currentText = ssp.GetChar();
-                lastChar = ssp == 0 ? ssp : ssp - 1; //if ssp is 0 (beginning of buffer), don't move it back
-                lastText = lastChar.GetChar();
+                if (ssp.Position < ssp.Snapshot.Length)
+                {
+                    currentText = ssp.GetChar();
+                    lastChar = ssp == 0 ? ssp : ssp - 1; //if ssp is 0 (beginning of buffer), don't move it back
+                    lastText = lastChar.GetChar();
+                }
+                else
+                {
+                    yield break;
+                }
             }
             catch (Exception)
             {

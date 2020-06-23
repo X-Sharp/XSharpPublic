@@ -4,7 +4,7 @@
 // See License.txt in the project root for license information.
 //
 
-PARTIAL CLASS SQLListColumnPrivileges INHERIT SQLCatalogQuery
+CLASS SQLListColumnPrivileges INHERIT SQLCatalogQuery
     CONSTRUCTOR( cQualifier, cOwner, cTableName, cColName, oSQLConnection ) 
         SUPER(oSQLConnection)
         SELF:_OpenTable("ColumnPrivileges", oSQLConnection, {cQualifier, cOwner, cTableName, cColName})
@@ -12,7 +12,7 @@ PARTIAL CLASS SQLListColumnPrivileges INHERIT SQLCatalogQuery
         
 END CLASS
 
-PARTIAL CLASS SQLListColumns INHERIT SQLCatalogQuery
+CLASS SQLListColumns INHERIT SQLCatalogQuery
     CONSTRUCTOR( cQualifier, cOwner, cTableName, cColName, oSQLConnection) 
         SUPER(oSQLConnection)
         SELF:_OpenTable("Columns", oSQLConnection, {cQualifier, cOwner, cTableName, cColName})
@@ -21,7 +21,7 @@ END CLASS
 
 
 
-PARTIAL CLASS SQLListDatabases INHERIT SQLCatalogQuery
+CLASS SQLListDatabases INHERIT SQLCatalogQuery
     CONSTRUCTOR( cQualifier, cDbName, oSQLConnection) 
         SUPER(oSQLConnection)
         SELF:_OpenTable("Databases", oSQLConnection, {cDbName})
@@ -30,14 +30,14 @@ END CLASS
 
 
 
-PARTIAL CLASS SQLListForeignKeys INHERIT SQLCatalogQuery
+CLASS SQLListForeignKeys INHERIT SQLCatalogQuery
     CONSTRUCTOR( cPQualifier, cpOwner, cPTableName, cFQualifier, cFOwner, cFTableName, oSQLConnection ) 
         SUPER(oSQLConnection)
         SELF:_OpenTable("ForeignKeys", oSQLConnection, {cPQualifier, cpOwner, cPTableName, cFQualifier, cFOwner, cFTableName})
         RETURN
 END CLASS
 
-PARTIAL CLASS SQLListIndexes INHERIT SQLCatalogQuery
+CLASS SQLListIndexes INHERIT SQLCatalogQuery
     CONSTRUCTOR(  cQualifier, cOwner, cTableName, oSQLConnection ) 
         SUPER(oSQLConnection)
         SELF:_OpenTable("Indexes", oSQLConnection, { cQualifier, cOwner, cTableName})
@@ -45,7 +45,7 @@ PARTIAL CLASS SQLListIndexes INHERIT SQLCatalogQuery
 END CLASS
 
 
-PARTIAL CLASS SQLListIndexColumns INHERIT SQLCatalogQuery
+CLASS SQLListIndexColumns INHERIT SQLCatalogQuery
     CONSTRUCTOR(  cQualifier, cOwner, cTableName, cConstraint, cColumn, oSQLConnection ) 
         SUPER(oSQLConnection)
         SELF:_OpenTable("IndexColumns", oSQLConnection, { cQualifier, cOwner, cTableName, cConstraint, cColumn})
@@ -56,7 +56,7 @@ END CLASS
 
 
 
-PARTIAL CLASS SQLListPrimaryKeys INHERIT SQLCatalogQuery
+CLASS SQLListPrimaryKeys INHERIT SQLCatalogQuery
     CONSTRUCTOR( cQualifier, cOwner, cTableName, oSQLConnection ) 
         SUPER(oSQLConnection)
         SELF:_OpenTable("PrimaryKeys", oSQLConnection, {cQualifier, cOwner, cTableName})
@@ -65,7 +65,7 @@ PARTIAL CLASS SQLListPrimaryKeys INHERIT SQLCatalogQuery
 END CLASS
 
 
-PARTIAL CLASS SQLListProcedures INHERIT SQLCatalogQuery
+CLASS SQLListProcedures INHERIT SQLCatalogQuery
     CONSTRUCTOR( cQualifier, cOwner, cProcName, cType, oSQLConnection ) 
         SUPER(oSQLConnection)
         SELF:_OpenTable("Procedures", oSQLConnection, {cQualifier, cOwner, cProcName, cType})
@@ -73,7 +73,7 @@ PARTIAL CLASS SQLListProcedures INHERIT SQLCatalogQuery
         
 END CLASS
 
-PARTIAL CLASS SQLListProcedureColumns INHERIT SQLCatalogQuery
+CLASS SQLListProcedureColumns INHERIT SQLCatalogQuery
     CONSTRUCTOR( cQualifier, cOwner, cProcName, cColName, oSQLConnection ) 
         SUPER(oSQLConnection)
         SELF:_OpenTable("ProcedureColumns", oSQLConnection, {cQualifier, cOwner, cProcName, cColName})
@@ -82,7 +82,7 @@ PARTIAL CLASS SQLListProcedureColumns INHERIT SQLCatalogQuery
 END CLASS
 
 
-PARTIAL CLASS SQLListProcedureParameters INHERIT SQLCatalogQuery
+CLASS SQLListProcedureParameters INHERIT SQLCatalogQuery
     CONSTRUCTOR( cQualifier, cOwner, cProcName, cParamName, oSQLConnection ) 
         SUPER(oSQLConnection)
         SELF:_OpenTable("ProcedureParameters", oSQLConnection, {cQualifier, cOwner, cProcName, cParamName})
@@ -90,7 +90,7 @@ PARTIAL CLASS SQLListProcedureParameters INHERIT SQLCatalogQuery
         
 END CLASS
 
-PARTIAL CLASS SQLListReservedWords INHERIT SQLCatalogQuery
+CLASS SQLListReservedWords INHERIT SQLCatalogQuery
     CONSTRUCTOR( oSQLConnection ) 
         SUPER(oSQLConnection)
         SELF:_OpenTable("ReservedWords", oSQLConnection, {})
@@ -98,7 +98,7 @@ PARTIAL CLASS SQLListReservedWords INHERIT SQLCatalogQuery
         
 END CLASS
 
-PARTIAL CLASS SQLListRestrictions INHERIT SQLCatalogQuery
+CLASS SQLListRestrictions INHERIT SQLCatalogQuery
     CONSTRUCTOR( oSQLConnection ) 
         SUPER(oSQLConnection)
         SELF:_OpenTable("Restrictions", oSQLConnection, {})
@@ -107,14 +107,14 @@ PARTIAL CLASS SQLListRestrictions INHERIT SQLCatalogQuery
 END CLASS
 
 
-PARTIAL CLASS SQLListSpecialColumns INHERIT SQLCatalogQuery
+CLASS SQLListSpecialColumns INHERIT SQLCatalogQuery
     CONSTRUCTOR( nColType, cQualifier, cOwner, cTableName, nScope, nNullable, oSQLConnection ) 
         SUPER(oSQLConnection)
         SELF:_OpenTable("SpecialColumns", oSQLConnection, {nColType, cQualifier, cOwner, cTableName, nScope, nNullable})
         RETURN
 END CLASS
 
-PARTIAL CLASS SQLListStatistics INHERIT SQLCatalogQuery
+CLASS SQLListStatistics INHERIT SQLCatalogQuery
     CONSTRUCTOR( cQualifier, cOwner, cTableName, nUnique, nAccuracy, oSQLConnection ) 
         SUPER(oSQLConnection)
         SELF:_OpenTable("Statistics", oSQLConnection, {cQualifier, cOwner, cTableName, nUnique, nAccuracy})
@@ -123,7 +123,7 @@ END CLASS
 
 
 
-PARTIAL CLASS SQLListTables INHERIT SQLCatalogQuery
+CLASS SQLListTables INHERIT SQLCatalogQuery
     CONSTRUCTOR( cQualifier, cOwner, cTableName, cTableType, oSQLConnection ) 
         SUPER(oSQLConnection)
         SELF:_OpenTable("Tables", oSQLConnection, {cQualifier, cOwner, cTableName, cTableType})
@@ -131,14 +131,14 @@ PARTIAL CLASS SQLListTables INHERIT SQLCatalogQuery
         
 END CLASS
 
-PARTIAL CLASS SQLListTablePrivileges INHERIT SQLCatalogQuery
+CLASS SQLListTablePrivileges INHERIT SQLCatalogQuery
     CONSTRUCTOR( cQualifier, cOwner, cTableName, oSQLConnection ) 
         SUPER(oSQLConnection)
         SELF:_OpenTable("TablePrivileges", oSQLConnection, {cQualifier, cOwner, cTableName})
         RETURN
 END CLASS
 
-PARTIAL CLASS SQLListTriggers INHERIT SQLCatalogQuery
+CLASS SQLListTriggers INHERIT SQLCatalogQuery
     CONSTRUCTOR( cQualifier, cOwner, cTableName, oSQLConnection) 
         SUPER(oSQLConnection)
         SELF:_OpenTable("Triggers", oSQLConnection, {cQualifier, cOwner, cTableName})
@@ -146,7 +146,7 @@ PARTIAL CLASS SQLListTriggers INHERIT SQLCatalogQuery
 END CLASS
 
 
-PARTIAL CLASS SQLListTypeInfo INHERIT SQLCatalogQuery
+CLASS SQLListTypeInfo INHERIT SQLCatalogQuery
     CONSTRUCTOR( nSqlType, oSQLConnection ) 
         SUPER(oSQLConnection)
         SELF:_OpenTable("DataTypes", oSQLConnection, {nSqlType})
@@ -154,7 +154,7 @@ PARTIAL CLASS SQLListTypeInfo INHERIT SQLCatalogQuery
         
 END CLASS
 
-PARTIAL CLASS SQLListUsers INHERIT SQLCatalogQuery
+CLASS SQLListUsers INHERIT SQLCatalogQuery
     CONSTRUCTOR( cUserName, oSQLConnection) 
         SUPER(oSQLConnection)
         SELF:_OpenTable("Users", oSQLConnection, {cUserName})
@@ -163,7 +163,7 @@ END CLASS
 
 
 
-PARTIAL CLASS SQLListViews INHERIT SQLCatalogQuery
+CLASS SQLListViews INHERIT SQLCatalogQuery
     CONSTRUCTOR( cQualifier, cOwner, cTableName, oSQLConnection) 
         SUPER(oSQLConnection)
         SELF:_OpenTable("Views", oSQLConnection, {cQualifier, cOwner, cTableName})
@@ -171,7 +171,7 @@ PARTIAL CLASS SQLListViews INHERIT SQLCatalogQuery
 END CLASS
 
 
-PARTIAL CLASS SQLListViewColumns INHERIT SQLCatalogQuery
+CLASS SQLListViewColumns INHERIT SQLCatalogQuery
     CONSTRUCTOR( cQualifier, cOwner, cTableName, cColumnName, oSQLConnection) 
         SELF:_OpenTable("ViewColumns", oSQLConnection, {cQualifier, cOwner, cTableName, cColumnName})
         SUPER(oSQLConnection)

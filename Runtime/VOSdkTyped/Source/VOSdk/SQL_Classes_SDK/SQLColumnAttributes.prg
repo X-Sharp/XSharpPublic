@@ -6,7 +6,7 @@
 
 using System.Diagnostics
 [DebuggerDisplay( "SqlColumnAttribute {ColName,nq}" )] ;
-PARTIAL CLASS SQLColumnAttributes INHERIT SQLColumn
+CLASS SQLColumnAttributes INHERIT SQLColumn
 	PROPERTY Unsigned      AS LOGIC   AUTO
 	PROPERTY Money         AS LOGIC   AUTO
 	PROPERTY Updatable     AS LOGIC   AUTO

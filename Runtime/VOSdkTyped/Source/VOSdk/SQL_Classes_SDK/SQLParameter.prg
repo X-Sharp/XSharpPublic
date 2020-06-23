@@ -9,7 +9,7 @@ USING System.Data.Common
 USING System.Diagnostics
 
 [DebuggerDisplay( "SqlParameter({Value})" )] ;
-PARTIAL CLASS SqlParameter
+CLASS SqlParameter
 	EXPORT IO				AS SHORTINT
 	EXPORT UsualType		AS DWORD
 	EXPORT CType			AS SHORTINT

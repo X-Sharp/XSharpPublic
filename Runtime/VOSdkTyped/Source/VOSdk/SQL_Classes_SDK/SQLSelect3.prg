@@ -23,7 +23,7 @@ PARTIAL CLASS SQLSelect INHERIT DataServer
 		ENDIF
 		RETURN oRet 
 
-	METHOD FieldInfo( kFieldInfoType, uFieldPos, uFieldVal )
+	METHOD FieldInfo( kFieldInfoType, uFieldPos, uFieldVal ) AS USUAL
 		//
 		//  Retrieves information about fields
 		//  uFieldPos is numeric, symbol or string
@@ -235,7 +235,7 @@ PARTIAL CLASS SQLSelect INHERIT DataServer
 		ENDIF
 		RETURN oStmt:FreeStmt( fOption )
 
-	METHOD GetData( uFieldID ) 
+	METHOD GetData( uFieldID AS USUAL )  AS USUAL
 		LOCAL wField AS LONG
 		LOCAL uValue AS USUAL
 		SELF:lErrorFlag := FALSE
@@ -267,7 +267,7 @@ PARTIAL CLASS SQLSelect INHERIT DataServer
 		END TRY
 		RETURN uValue
 
-	METHOD GetdateVal( uFieldPos )
+	METHOD GetdateVal( uFieldPos AS USUAL) AS DATE
 		LOCAL cVal AS STRING
 		LOCAL dVal AS DATE
 
@@ -277,7 +277,7 @@ PARTIAL CLASS SQLSelect INHERIT DataServer
 		ENDIF
 		RETURN dVal
 
-	METHOD GetLookupTable(nMaxRows,uField1,uField2)
+	METHOD GetLookupTable(nMaxRows,uField1,uField2) AS ARRAY
 		LOCAL aResult 	:= {}         AS ARRAY
 		LOCAL nRows 	:= 32767      AS DWORD
 		IF IsNil(nMaxRows)
@@ -292,7 +292,7 @@ PARTIAL CLASS SQLSelect INHERIT DataServer
 			uField2 := 2
 		ENDIF
 		DO WHILE nRows > 0 .AND. !SELF:lEof
-			AAdd( aResult, { SELF:FIELDGET( uField1 ), SELF:FIELDGET( uField2 ) } )
+			AAdd( aResult, { SELF:FieldGet( uField1 ), SELF:FieldGet( uField2 ) } )
 			--nRows
 			SELF:Skip(1)
 		ENDDO
@@ -305,7 +305,7 @@ PARTIAL CLASS SQLSelect INHERIT DataServer
 		//RETURN oStmt:GetStatementOption( fOption )
 		RETURN NIL
 
-	METHOD GetTimeStamp( uFieldPos )
+	METHOD GetTimeStamp( uFieldPos AS USUAL) AS STRING
 		LOCAL nIndex    AS DWORD
 		LOCAL oType     AS System.Type
 		LOCAL cVal      AS STRING
@@ -328,7 +328,7 @@ PARTIAL CLASS SQLSelect INHERIT DataServer
 		cVal := oDT:ToString("yyyy-MM-dd HH:mm:ss.fff")
 		RETURN cVal
 
-	METHOD GetTimeString( uFieldPos )
+	METHOD GetTimeString( uFieldPos AS USUAL ) AS STRING
 		LOCAL cVal AS STRING
 		cVal := SELF:GetTimeStamp( uFieldPos )
 		IF Slen(cVal) > 0

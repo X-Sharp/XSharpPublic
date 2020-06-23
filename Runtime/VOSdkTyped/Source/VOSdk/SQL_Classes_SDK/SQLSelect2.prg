@@ -82,7 +82,7 @@ PARTIAL CLASS SQLSelect INHERIT DataServer
 		RETURN SELF:Update(lForce)
 
 
-	METHOD Error( oError ) 
+	METHOD Error( oError ) AS USUAL
 	//  Method for handling error conditions raised during database processing
 	//
 	//  The standard Error handling method passes the problem to its clients
@@ -151,7 +151,7 @@ PARTIAL CLASS SQLSelect INHERIT DataServer
 */
 
 	[Obsolete];
-	METHOD BindColumn( i )
+	METHOD BindColumn( i ) AS LOGIC
 		RETURN TRUE
  
 	METHOD Close() AS LOGIC CLIPPER
@@ -179,9 +179,9 @@ PARTIAL CLASS SQLSelect INHERIT DataServer
 		RETURN lOk
 
 
-	METHOD Column( siCol )
+	METHOD Column( siCol AS USUAL ) AS SQLColumn
 		LOCAL nIndex    AS DWORD
-		LOCAL oColumn   AS OBJECT
+		LOCAL oColumn   AS SQLColumn
 		nIndex := SELF:__GetColIndex( siCol, TRUE )
 		IF nIndex = 0 .OR. nIndex > nNumCols
 			oStmt:__GenerateSQLError( __CavoStr( __CAVOSTR_SQLCLASS__BADCOL ), #Column )
@@ -191,7 +191,7 @@ PARTIAL CLASS SQLSelect INHERIT DataServer
 		ENDIF
 		RETURN oColumn
 
-	METHOD ColumnAttributes( siCol )
+	METHOD ColumnAttributes( siCol AS USUAL) AS SQLColumnAttributes
 		LOCAL nIndex            AS DWORD
 		LOCAL oSQLColAtt        AS SQLColumnAttributes
 		LOCAL oSqlCol			AS SQLColumn
@@ -277,7 +277,7 @@ PARTIAL CLASS SQLSelect INHERIT DataServer
 METHOD DirectSkip( nSkip )
 	RETURN SELF:Skip(nSkip)
 
-METHOD Execute( uParam )
+METHOD Execute( uParam ) AS LOGIC
 	LOCAL nCount        AS DWORD
 	LOCAL lRet          AS LOGIC
 	LOCAL i             AS DWORD
@@ -313,7 +313,7 @@ METHOD Execute( uParam )
 	RETURN lRet
 
 
-	METHOD ExtendedFetch( nFetchType, nRow ) 
+	METHOD ExtendedFetch( nFetchType, nRow ) AS LOGIC
 		LOCAL lResult AS LOGIC
 		EnforceType(REF nFetchType, LONG)
 		DEFAULT ( REF nRow, 0)
@@ -337,7 +337,7 @@ METHOD Execute( uParam )
 		RETURN lResult
 
 
-	METHOD Fetch( )
+	METHOD Fetch( ) AS LOGIC
 		IF SELF:lFetchFlag
 			SELF:Skip(1)
 		ELSE
@@ -345,7 +345,7 @@ METHOD Execute( uParam )
 		ENDIF
 		RETURN !SELF:EoF
 
-	METHOD FIELDGET( uFieldID  ) 
+	METHOD FieldGet( uFieldID AS USUAL ) AS USUAL
 		LOCAL uValue   AS USUAL
 		LOCAL cType    AS STRING
 		LOCAL wField   AS DWORD
@@ -392,7 +392,7 @@ METHOD Execute( uParam )
 			oStmt:__GenerateSQLError( __CavoStr( __CAVOSTR_SQLCLASS__BADFLD ), #FieldGetFormatted )
 			SELF:Error( oStmt:ErrInfo )
 		ELSE
-			xRet := SELF:FIELDGET( nIndex )
+			xRet := SELF:FieldGet( nIndex )
 			oStmt:ErrInfo:ErrorFlag := FALSE
 			oCol := aSQLColumns[nIndex]
 			oFs  := oCol:FieldSpec

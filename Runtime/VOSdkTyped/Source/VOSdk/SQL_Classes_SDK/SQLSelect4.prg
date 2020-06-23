@@ -35,13 +35,13 @@ PARTIAL CLASS SQLSelect INHERIT DataServer
 
 		RETURN
 
-	METHOD NoIVarGet(symVar)
-		RETURN SELF:FIELDGET(symVar)
+	METHOD NoIVarGet(symVar ) AS USUAL
+		RETURN SELF:FieldGet(symVar)
 
-	METHOD NoIVarPut(symVar, uValue)
+	METHOD NoIVarPut(symVar , uValue ) AS USUAL
 		RETURN SELF:FieldPut(symVar, uValue)
 
-	METHOD Notify( uNotification, uDescription )
+	METHOD Notify( uNotification, uDescription ) AS USUAL
 		LOCAL lRetValue AS LOGIC
 		LOCAL uRetValue	AS USUAL
 		LOCAL nClient	AS DWORD
@@ -87,7 +87,7 @@ PARTIAL CLASS SQLSelect INHERIT DataServer
 		ENDIF
 		RETURN lRetValue
 
-	METHOD NumResultCols()
+	METHOD NumResultCols() AS LONG
 		//  Make sure we have a stmt
 		IF ( oStmt:StatementHandle = NULL )
 			SELF:__AllocStmt()
@@ -98,21 +98,21 @@ PARTIAL CLASS SQLSelect INHERIT DataServer
 		ENDIF
 		RETURN nNumCols
 
-	METHOD PreExecute( cSQLString )
+	METHOD PreExecute( cSQLString AS STRING) AS STRING
 		RETURN cSQLString
 
-	METHOD Prepare()
+	METHOD Prepare() AS LOGIC
 		RETURN oStmt:Prepare()
 
 	METHOD Refresh() CLIPPER
 		RETURN SELF:Update( FALSE )
 
-	METHOD RejectChanges()
+	METHOD RejectChanges() AS LOGIC
 		oTable:RejectChanges()
 		SELF:lChanges := FALSE
 		RETURN TRUE
 
-	METHOD Requery()
+	METHOD Requery() AS LOGIC
 		LOCAL lOk		AS LOGIC
 		// ask the clients if they want to move
 		SELF:lErrorFlag := FALSE
@@ -127,13 +127,13 @@ PARTIAL CLASS SQLSelect INHERIT DataServer
 		END TRY
 		RETURN lOk
 
-	METHOD ReReadRow()
+	METHOD ReReadRow() AS LOGIC
 		IF oCurrentRow != NULL
 			oCurrentRow:RejectChanges()
 		ENDIF
 		RETURN TRUE
 
-	METHOD ResetCursor( nUpdateType )
+	METHOD ResetCursor( nUpdateType ) AS LOGIC
 		SELF:oTable:RejectChanges()
 		SELF:GoTo( SELF:RecNo )
 		RETURN TRUE
@@ -142,7 +142,7 @@ PARTIAL CLASS SQLSelect INHERIT DataServer
 		--nNotifyCount
 		RETURN nNotifyCount
 
-	METHOD RLOCK(nRecno) 
+	METHOD RLock(nRecno)  AS LOGIC
 		RETURN TRUE
 
 	METHOD RLockVerify() AS LOGIC STRICT
@@ -210,7 +210,7 @@ PARTIAL CLASS SQLSelect INHERIT DataServer
 
 
 
-	METHOD SetPrimaryKey( uFieldPos )
+	METHOD SetPrimaryKey( uFieldPos ) AS LOGIC
 		LOCAL nIndex    AS DWORD
 		LOCAL lRet      AS LOGIC
 
@@ -232,7 +232,7 @@ PARTIAL CLASS SQLSelect INHERIT DataServer
 
 
 	[Obsolete];
-	METHOD SetStatementOption( fOption, uValue )
+	METHOD SetStatementOption( fOption, uValue ) AS LOGIC
 		//RETURN oStmt:SetStatementOption( fOption, uValue, TRUE )
 		RETURN TRUE
 
@@ -339,13 +339,13 @@ PARTIAL CLASS SQLSelect INHERIT DataServer
 
 	#region Dummy Methods
 	[Obsolete];
-	METHOD UpdateCursor()
+	METHOD UpdateCursor() AS LOGIC
 		RETURN TRUE
 	[Obsolete];
-	METHOD UpdateKey()
+	METHOD UpdateKey() AS LOGIC
 		RETURN TRUE
 	[Obsolete];
-	METHOD UpdateVal()
+	METHOD UpdateVal() AS LOGIC
 		RETURN TRUE
 	#endregion
 

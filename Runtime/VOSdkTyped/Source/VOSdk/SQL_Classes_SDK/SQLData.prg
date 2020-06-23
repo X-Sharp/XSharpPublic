@@ -4,7 +4,7 @@
 // See License.txt in the project root for license information.
 //
 [Obsolete];
-PARTIAL CLASS SQLData
+CLASS SQLData
 	EXPORT @@Null 			AS LOGIC
 	EXPORT ValueChanged 	AS LOGIC
 	EXPORT Length			AS DWORD

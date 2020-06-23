@@ -7,7 +7,7 @@
 USING System.Data
 using System.Diagnostics
 [DebuggerDisplay( "SQLCatalog {Collection,nq}" )] ;
-PARTIAL CLASS SQLCatalogQuery INHERIT SQLSelect
+CLASS SQLCatalogQuery INHERIT SQLSelect
     PROTECT oCatalog    AS DataTable    
     PROTECT cCollection AS STRING
     CONSTRUCTOR( oSQLConnection ) 
@@ -26,13 +26,13 @@ PARTIAL CLASS SQLCatalogQuery INHERIT SQLSelect
         ENDIF
     
 
-    METHOD __GoCold AS LOGIC STRICT
+    METHOD __GoCold AS LOGIC STRICT 
         RETURN TRUE
     
     METHOD Append() AS LOGIC  CLIPPER
         RETURN FALSE
     
-    METHOD Execute()  CLIPPER
+    METHOD Execute()  AS LOGIC CLIPPER
         lBof := FALSE
         lEof := FALSE
         RETURN SELF:__Open(oCatalog, NULL)
@@ -40,7 +40,7 @@ PARTIAL CLASS SQLCatalogQuery INHERIT SQLSelect
     METHOD FIELDPUT( uFieldID , uValue ) AS USUAL CLIPPER
         RETURN uValue
     
-    METHOD Prepare() 
+    METHOD Prepare()  AS LOGIC
         RETURN TRUE
     
     PROTECTED METHOD _OpenTable(cCollectionName AS STRING, oSQLConnection AS SQLConnection, aFilters AS ARRAY) AS VOID

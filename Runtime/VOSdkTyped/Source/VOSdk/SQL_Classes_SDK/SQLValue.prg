@@ -7,7 +7,7 @@
 USING System.Data
 using System.Reflection
 
-PARTIAL CLASS SQLValue INHERIT DataField
+CLASS SQLValue INHERIT DataField
 	PROPERTY Type         AS System.Type       AUTO
 	PROPERTY Scale        AS SHORT             AUTO
 	PROPERTY Nullable     AS LOGIC             AUTO

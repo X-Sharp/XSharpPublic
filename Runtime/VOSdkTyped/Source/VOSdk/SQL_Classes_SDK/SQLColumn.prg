@@ -8,7 +8,7 @@ USING System.Data
 USING System.Diagnostics
 
 [DebuggerDisplay( "SqlColumn {ColName,nq}" )] ;
-PARTIAL CLASS SQLColumn    INHERIT SQLValue
+CLASS SQLColumn    INHERIT SQLValue
 	PROPERTY DisplaySize  AS DWORD       AUTO
 	PROPERTY Index        AS INT         AUTO
 	PROPERTY ColName      AS STRING      AUTO

@@ -7,7 +7,7 @@
 
 USING System.Data.Common
 USING System.Collections
-PARTIAL CLASS SQLErrorInfo  INHERIT Error
+CLASS SQLErrorInfo  INHERIT Error
 	PROPERTY SQLState           AS STRING AUTO
 	PROPERTY NativeError        AS LONG   AUTO
 	PROPERTY ErrorFlag          AS LOGIC  AUTO

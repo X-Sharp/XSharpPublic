@@ -15,57 +15,56 @@ CLASS FieldSpec
 	// Diagnostics  HyperLabels for each of the validation rules. Note that a HyperLabel contains not only
 	//                      a diagnostic message, but also a help context to provide for context sensitive help
 	//                      after a validation failure.
-	PROTECT oHyperLabel AS HyperLabel
-	PROTECT oHLStatus 	AS HyperLabel
+	PROTECT oHyperLabel     AS HyperLabel
+	PROTECT oHLStatus 	    AS HyperLabel
 	PROTECT wType 			AS DWORD        
 	PROTECT cType 			AS STRING
 	PROTECT lNumeric 		AS LOGIC
 	PROTECT oHLType 		AS HyperLabel
 	PROTECT wLength 		AS DWORD		
-	PROTECT oHLLength 	AS HyperLabel
-	PROTECT wDecimals 	AS DWORD         
-	PROTECT lRequired 	AS LOGIC
-	PROTECT oHLRequired AS HyperLabel
-	PROTECT wMinLength 	AS DWORD
-	PROTECT oHLMinLength AS HyperLabel
-	PROTECT uMin, uMax  AS USUAL
+	PROTECT oHLLength 	    AS HyperLabel
+	PROTECT wDecimals 	    AS DWORD         
+	PROTECT lRequired 	    AS LOGIC
+	PROTECT oHLRequired     AS HyperLabel
+	PROTECT wMinLength 	    AS DWORD
+	PROTECT oHLMinLength    AS HyperLabel
+	PROTECT uMin, uMax      AS USUAL
 	PROTECT oHLRange 		AS HyperLabel
-	PROTECT cbValidation AS USUAL // AS CODEBLOCK
-	PROTECT oHLValidation AS HyperLabel
+	PROTECT cbValidation    AS USUAL // AS CODEBLOCK
+	PROTECT oHLValidation   AS HyperLabel
 	PROTECT cPicture 		AS STRING
 	PROTECT lNullable AS LOGIC
 
 	METHOD __GetHLRange  AS VOID STRICT 
-	IF IsNil(oHLRange)
-		IF IsNil(uMin) .AND. IsNil(uMax)
-			RETURN
-		ENDIF
-		IF IsNil(uMin) .AND. !IsNil(uMax)
-			oHLRange := HyperLabel{ #FieldSpecRange, ,  ;
-				VO_Sprintf(__CAVOSTR_DBFCLASS_INVALIDMAX,oHyperLabel:Name,AsString( uMax ) ) }
-		ENDIF
-		IF !IsNil(uMin) .AND. IsNil(uMax)
-			oHLRange := HyperLabel{ #FieldSpecRange, ,  ;
-				VO_Sprintf(__CAVOSTR_DBFCLASS_INVALIDMIN,oHyperLabel:Name,AsString( uMin ) ) }
-		ENDIF
-		IF !IsNil(uMin) .AND. !IsNil(uMax)
-			oHLRange := HyperLabel{ #FieldSpecRange, ,  ;
-				VO_Sprintf(__CAVOSTR_DBFCLASS_INVALIDRANGE,oHyperLabel:Name,AsString(uMin),AsString( uMax )) } 
-		ENDIF
-	ENDIF
-	RETURN
-
+	    IF SELF:oHLRange == NULL_OBJECT
+		    IF IsNil(SELF:uMin) .AND. IsNil(SELF:uMax)
+			    RETURN
+		    ENDIF
+		    IF IsNil(SELF:uMin) .AND. !IsNil(SELF:uMax)
+			    SELF:oHLRange := HyperLabel{ #FieldSpecRange, ,  ;
+				    VO_Sprintf(__CAVOSTR_DBFCLASS_INVALIDMAX,oHyperLabel:Name,AsString( SELF:uMax ) ) }
+		    ENDIF
+		    IF !IsNil(SELF:uMin) .AND. IsNil(SELF:uMax)
+			    SELF:oHLRange := HyperLabel{ #FieldSpecRange, ,  ;
+				    VO_Sprintf(__CAVOSTR_DBFCLASS_INVALIDMIN,oHyperLabel:Name,AsString( SELF:uMin ) ) }
+		    ENDIF
+		    IF !IsNil(SELF:uMin) .AND. !IsNil(SELF:uMax)
+			    SELF:oHLRange := HyperLabel{ #FieldSpecRange, ,  ;
+				    VO_Sprintf(__CAVOSTR_DBFCLASS_INVALIDRANGE,oHyperLabel:Name,AsString(SELF:uMin),AsString( SELF:uMax )) } 
+		    ENDIF
+	    ENDIF
+	    RETURN
+    
 METHOD AsString( ) AS STRING STRICT                             
 	RETURN oHyperLabel:Caption
 
 ACCESS Decimals   AS DWORD                              
 	// Returns the number of decimals
-	RETURN wDecimals
+	RETURN SELF:wDecimals
 
 
 ASSIGN Decimals (uDecimals AS DWORD )                    
-
-	wDecimals := uDecimals
+	SELF:wDecimals := uDecimals
 	RETURN 
 
 ACCESS HyperLabel AS HyperLabel                            
@@ -113,7 +112,7 @@ CONSTRUCTOR( oHLName AS HyperLabel, uType:= NIL AS USUAL, uLength := 0 AS DWORD,
 			cType := ""
 			DbError{ SELF, #Init, EG_ARG, __CavoStr(__CAVOSTR_DBFCLASS_BADTYPE), uType, "uType" }:Throw()
 		END SWITCH
-	ELSE
+	ELSEIF IsNumeric(uType)
 		wType := uType
         SWITCH wType
         CASE __UsualType.String
@@ -141,25 +140,26 @@ CONSTRUCTOR( oHLName AS HyperLabel, uType:= NIL AS USUAL, uLength := 0 AS DWORD,
 			cType := "X"
 		OTHERWISE
 			wType := 0
-			//  UH 12/16/1999
 			DbError{ SELF, #Init, EG_ARG, __CavoStr(__CAVOSTR_DBFCLASS_BADTYPE), uType, "uType" }:Throw()
 		END SWITCH
-	ENDIF
+    ELSE
+       DbError{ SELF, #Init, EG_ARG, __CavoStr(__CAVOSTR_DBFCLASS_BADTYPE), uType, "uType" }:Throw()
+    ENDIF
 
-	wLength := uLength
-	wDecimals := uDecimals
+	SELF:wLength := uLength
+	SELF:wDecimals := uDecimals
 	RETURN 
 
 
 ACCESS Length AS DWORD                                  
 	// Returns the length of the field
-	RETURN wLength
+	RETURN SELF:wLength
 
 ACCESS Maximum   AS USUAL                               
-	RETURN uMax
+	RETURN SELF:uMax
 
 ACCESS Minimum   AS USUAL                               
-	RETURN uMin
+	RETURN SELF:uMin
 
 ACCESS MinLength AS DWORD                               
 	RETURN wMinLength
@@ -180,9 +180,8 @@ METHOD PerformValidations(uValue AS USUAL)  AS LOGIC
 	LOCAL wLen, wDecLen:=0, i  AS DWORD
 	LOCAL cDecSep, cTmp   AS STRING
 
-	oHLStatus := NULL_OBJECT
+	SELF:oHLStatus := NULL_OBJECT
 
-	//  UH 01/31/1997
 	IF SELF:lNullable .AND. IsNil(uValue)
 		RETURN .T. 
 	ENDIF
@@ -191,25 +190,24 @@ METHOD PerformValidations(uValue AS USUAL)  AS LOGIC
 		(IsDate(uValue) .AND. uValue == NULL_DATE)         
 		// Check required
 		IF lRequired
-			IF IsNil(oHLRequired)
-				oHLRequired := HyperLabel{ #FieldSpecRequired, , VO_Sprintf(__CAVOSTR_DBFCLASS_REQUIRED,oHyperLabel:Name) }
+			IF SELF:oHLRequired == NULL_OBJECT
+				SELF:oHLRequired := HyperLabel{ #FieldSpecRequired, , VO_Sprintf(__CAVOSTR_DBFCLASS_REQUIRED,oHyperLabel:Name) }
 			ENDIF
 
-			oHLStatus := oHLRequired
+			SELF:oHLStatus := SELF:oHLRequired
 			RETURN FALSE
 		ENDIF
 	ELSE
-		//  UH 01/06/2000
 		IF IsNil(uValue) .AND. SELF:wType == OBJECT
 			RETURN .T. 
 		ENDIF
 
 		// Check data type (no conversions here!)
 		IF !(UsualType(uValue) == wType .OR. (lNumeric .AND. IsNumeric(uValue)) .OR. ((wType == TYPE_MULTIMEDIA) .AND. IsString(uValue)))
-			IF oHLType == NULL_OBJECT
-				oHLType := HyperLabel{ #FieldSpecType, , VO_Sprintf(__CAVOSTR_DBFCLASS_INVALIDTYPE,oHyperLabel:Name,TypeAsString(wType)) }
+			IF SELF:oHLType == NULL_OBJECT
+				SELF:oHLType := HyperLabel{ #FieldSpecType, , VO_Sprintf(__CAVOSTR_DBFCLASS_INVALIDTYPE,oHyperLabel:Name,TypeAsString(wType)) }
 			ENDIF
-			oHLStatus := oHLType
+			SELF:oHLStatus := SELF:oHLType
 
 			RETURN FALSE
 		ENDIF
@@ -232,21 +230,13 @@ METHOD PerformValidations(uValue AS USUAL)  AS LOGIC
 					cTmp := SubStr2(SELF:cPicture, At2(".", SELF:cPicture) + 1)
 
 					wLen := SLen(cTmp)
-#ifdef __VULCAN__
-               i := 0
-               DO WHILE i < wLen
+                    i := 0
+                    DO WHILE i < wLen
 						IF Char.IsDigit( cTmp, (INT) i ) 
 							wDecLen++
 						ENDIF
 						i++
 					ENDDO	
-#else					
-					FOR i := 1 UPTO wLen
-						IF IsDigit(PSZ(_CAST, SubStr3(cTmp, i, 1)))
-							wDecLen++
-						ENDIF
-					NEXT
-#endif						
 
 					// substring cValue based on control panel's decimal sep.
 					cValue := SubStr3(cValue, 1, At2(cDecSep, cValue) + wDecLen)
@@ -259,38 +249,38 @@ METHOD PerformValidations(uValue AS USUAL)  AS LOGIC
 
 		wLen := SLen(cValue)
 
-		IF wLen > wLength .AND. !(cType == "M" ) 
+		IF wLen > SELF:wLength .AND. !(cType == "M" ) 
 
-			IF oHLLength == NULL_OBJECT
-				oHLLength := HyperLabel{ #FieldSpecLength, , VO_Sprintf(__CAVOSTR_DBFCLASS_INVALIDLENGTH,oHyperLabel:Name,Str( wLength ) ) }
+			IF SELF:oHLLength == NULL_OBJECT
+				SELF:oHLLength := HyperLabel{ #FieldSpecLength, , VO_Sprintf(__CAVOSTR_DBFCLASS_INVALIDLENGTH,oHyperLabel:Name,Str( SELF:wLength ) ) }
 			ENDIF
 
-			oHLStatus := oHLLength
+			SELF:oHLStatus := SELF:oHLLength
 			RETURN FALSE
 
 		ELSEIF wType == STRING .AND. wLen < wMinLength
-			IF  oHLMinLength = NULL_OBJECT
-				oHLMinLength := HyperLabel{ #FieldSpecMinLength, ,  ;
+			IF  SELF:oHLMinLength = NULL_OBJECT
+				SELF:oHLMinLength := HyperLabel{ #FieldSpecMinLength, ,  ;
 					VO_Sprintf(__CAVOSTR_DBFCLASS_INVALIDMINLENGTH,oHyperLabel:Name,Str( wMinLength ) ) }
 			ENDIF
-			oHLStatus := oHLMinLength
+			SELF:oHLStatus := SELF:oHLMinLength
 			RETURN FALSE
 		ENDIF
 
 		// Check range
-		IF !IsNil(uMin) .AND. uValue < uMin
-			IF IsNil(oHLRange)
+		IF !IsNil(SELF:uMin) .AND. uValue < SELF:uMin
+			IF SELF:oHLRange == NULL_OBJECT
 				SELF:__GetHLRange( )
 			ENDIF
-			oHLStatus := oHLRange
+			SELF:oHLStatus := SELF:oHLRange
 			RETURN FALSE
 		ENDIF
 
-		IF !IsNil(uMax) .AND. uValue > uMax
-			IF IsNil(oHLRange)
+		IF !IsNil(SELF:uMax) .AND. uValue > SELF:uMax
+			IF SELF:oHLRange == NULL_OBJECT
 				SELF:__GetHLRange( )
 			ENDIF
-			oHLStatus := oHLRange
+			SELF:oHLStatus := SELF:oHLRange
 
 			RETURN FALSE
 		ENDIF
@@ -298,11 +288,11 @@ METHOD PerformValidations(uValue AS USUAL)  AS LOGIC
 
 	// Check validation method or codeblock
 	IF !SELF:Validate(uValue)
-		IF IsNil(oHLStatus)
-			IF IsNil(oHLValidation)
-				oHLValidation := HyperLabel{ #FieldSpecValidate, , VO_Sprintf(__CAVOSTR_DBFCLASS_INVALIDVALUE,oHyperLabel:Name) }
+		IF SELF:oHLStatus == NULL_OBJECT
+			IF SELF:oHLValidation == NULL_OBJECT
+				SELF:oHLValidation := HyperLabel{ #FieldSpecValidate, , VO_Sprintf(__CAVOSTR_DBFCLASS_INVALIDVALUE,oHyperLabel:Name) }
 			ENDIF
-			oHLStatus := oHLValidation      // Fill in status if not done by client code
+			SELF:oHLStatus := SELF:oHLValidation      // Fill in status if not done by client code
 		ENDIF
 
 		RETURN FALSE
@@ -325,9 +315,9 @@ METHOD SetLength( w  AS DWORD, oHL := NULL AS HyperLabel )  AS VOID
 	// This method does allow changing the length and, more usefully,
 	// the HyperLabel diagnostic for the length check
 	// Both parameters are optional, if one is not provided the corresponding value is not changed
-    wLength := w
+    SELF:wLength := w
 	IF oHL # NULL_OBJECT
-		oHLLength := oHL
+		SELF:oHLLength := oHL
 	ENDIF
 	RETURN 
 
@@ -337,7 +327,7 @@ METHOD SetMinLength( w  AS DWORD, oHL := NULL AS HyperLabel) AS VOID
 	// Both parameters are optional, if one is not provided the corresponding value is not changed
 	wMinLength := w
 	IF oHL != NULL_OBJECT
-		oHLMinLength := oHL
+		SELF:oHLMinLength := oHL
 	ENDIF
 	RETURN 
 
@@ -345,13 +335,13 @@ METHOD SetRange( uMinimum AS USUAL, uMaximum AS USUAL, oHL := NULL AS HyperLabel
 	// Sets the range and the HyperLabel for the range check error message
 	// All parameters are optional, if one is not provided the corresponding value is not changed
 	IF !IsNil(uMinimum)
-		uMin := uMinimum
+		SELF:uMin := uMinimum
 	ENDIF
 	IF !IsNil(uMaximum)
-		uMax := uMaximum
+		SELF:uMax := uMaximum
 	ENDIF
 	IF oHL != NULL_OBJECT
-		oHLRange := oHL
+		SELF:oHLRange := oHL
 	ENDIF
 	RETURN 
 
@@ -362,7 +352,7 @@ METHOD SetRequired( lReq := TRUE AS LOGIC, oHL := NULL AS HyperLabel) AS VOID
 	// if the HyperLabel is not provided the current value is not changed
 	lRequired := lReq
 	IF oHL != NULL_OBJECT
-		oHLRequired := oHL
+		SELF:oHLRequired := oHL
 	ENDIF
 	RETURN 
 
@@ -425,7 +415,7 @@ METHOD SetType( uType AS USUAL, oHL := NULL AS HyperLabel) AS VOID
 		ENDIF
 	ENDIF
 	IF oHL != NULL_OBJECT
-		oHLType := oHL
+		SELF:oHLType := oHL
 	ENDIF
 	RETURN 
 
@@ -444,7 +434,7 @@ METHOD SetValidation( cb AS USUAL, oHL := NULL_OBJECT AS HyperLabel) AS VOID
 		ENDIF
 	ENDIF
 	IF oHL != NULL_OBJECT
-		oHLValidation := oHL
+		SELF:oHLValidation := oHL
 	ENDIF
 	RETURN 
 
@@ -452,10 +442,10 @@ METHOD SetValidation( cb AS USUAL, oHL := NULL_OBJECT AS HyperLabel) AS VOID
 ACCESS Status  AS HyperLabel                                 
 	// Returns the Status HyperLabel object; NIL if status is OK. Status reflects the
 	// most recently made validation ( see METHOD PerformValidations ).
-	RETURN oHLStatus
+	RETURN SELF:oHLStatus
 
 ASSIGN Status (oHL AS HyperLabel)
-    oHLStatus := oHL
+    SELF:oHLStatus := oHL
 	RETURN 
 
 METHOD Transform( uValue AS USUAL) AS STRING                     
@@ -469,29 +459,29 @@ METHOD Transform( uValue AS USUAL) AS STRING
 
 	IF cPicture == NULL_STRING
 		IF lNumeric
-			IF wDecimals=0
-				cResult := Transform(uValue,Replicate("9",wLength))
+			IF SELF:wDecimals=0
+				cResult := Transform(uValue,Replicate("9",SELF:wLength))
 			ELSE
-				cResult := Transform(uValue,Replicate("9",wLength-wDecimals-1)+"."+Replicate("9",wDecimals))
+				cResult := Transform(uValue,Replicate("9",SELF:wLength-SELF:wDecimals-1)+"."+Replicate("9",SELF:wDecimals))
 			ENDIF
 
 			IF SubStr3(cResult,1,1) == "*"
 				lScience := SetScience(TRUE)
 				cTemp := AsString(uValue)
 				SetScience(lScience)
-				IF SLen(cTemp)>wLength //if<overall length, trim it.
+				IF SLen(cTemp)>SELF:wLength //if<overall length, trim it.
 					cTemp:=AllTrim(StrTran(cTemp,Chr(0)))
-					IF SLen(cTemp)>wLength
+					IF SLen(cTemp)>SELF:wLength
 						IF lZero //Still too long
 							cResult:=StrTran(cResult,"0","*")
 						ENDIF
 					ELSE
 						// PadL() not available yet
 						//            cResult:=PadL(cTemp,wLength)
-						IF SLen(cTemp) <= wLength
-							cResult := Left(cTemp, wLength)
+						IF SLen(cTemp) <= SELF:wLength
+							cResult := Left(cTemp, SELF:wLength)
 						ELSE
-							cResult := Space(wLength - SLen(cTemp))+cTemp
+							cResult := Space(SELF:wLength - SLen(cTemp))+cTemp
 						ENDIF
 					ENDIF
 				ELSE
@@ -568,16 +558,16 @@ ACCESS ValType AS STRING
 
 
 ACCESS MinLengthHL AS HyperLabel
-	RETURN oHLMinLength
+	RETURN SELF:oHLMinLength
 
 ACCESS RangeHL AS HyperLabel
-	RETURN oHLRange
+	RETURN SELF:oHLRange
 
 ACCESS RequiredHL AS HyperLabel
-	RETURN oHLRequired
+	RETURN SELF:oHLRequired
 
 ACCESS ValidationHL AS HyperLabel
-	RETURN oHLValidation
+	RETURN SELF:oHLValidation
 
 END CLASS
 

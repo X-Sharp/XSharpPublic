@@ -635,7 +635,6 @@ ASSIGN FullPath(cFullPath  AS STRING)
 
 
 CONSTRUCTOR(cFullPath := "" AS STRING)              
-
 	IF !Empty(cFullPath)
 		SELF:FileName := cFullPath
 		SELF:Find()

@@ -1,7 +1,8 @@
 
 
 
-#USING System.Reflection
+USING System.Reflection
+USING VOSDK := XSharp.VO.SDK
 CLASS Menu INHERIT VObject
 	PROTECT oWindow			as Window
 	PROTECT oParent 		AS Menu
@@ -214,7 +215,7 @@ CLASS Menu INHERIT VObject
 		LOCAL dwIndex AS DWORD
 		LOCAL dwCount AS DWORD
 		LOCAL oHyperLabel AS HyperLabel
-		LOCAL oChildMenu AS XSharp.VO.Menu
+		LOCAL oChildMenu AS VOSDK.Menu
 		IF IsSymbol(nItemID)
 			nItemID := SELF:GetMenuID((SYMBOL) nItemID)
 		ENDIF

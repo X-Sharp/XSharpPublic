@@ -4,13 +4,14 @@
 // Created for   : 
 // WorkStation   : ARTEMIS
 
+USING VOSDK := XSharp.VO.SDK
 
 CLASS GuiFactory
     PUBLIC STATIC PROPERTY Instance AS GuiFactory AUTO
     STATIC CONSTRUCTOR()
         @@Instance := GuiFactory{}
 
-    METHOD CreateControl(type AS ControlType, owner AS XSharp.VO.Control, liStyle AS LONG, liExStyle AS LONG) AS OBJECT
+    METHOD CreateControl(type AS ControlType, owner AS VOSDK.Control, liStyle AS LONG, liExStyle AS LONG) AS OBJECT
         LOCAL oRes AS System.Windows.Forms.Control
         SWITCH type
         CASE ControlType.Control
@@ -119,7 +120,7 @@ CLASS GuiFactory
         METHOD CreateSurfacePanel(oWindow AS Window) AS VOSurfacePanel
             RETURN VOSurfacePanel{oWindow}
 
-        METHOD CreateSurfacePanel(Owner AS XSharp.VO.Control, dwStyle AS LONG, dwExStyle AS LONG) AS VOSurfacePanel
+        METHOD CreateSurfacePanel(Owner AS VOSDK.Control, dwStyle AS LONG, dwExStyle AS LONG) AS VOSurfacePanel
             RETURN VOSurfacePanel{Owner, dwStyle, dwExStyle}
 
 

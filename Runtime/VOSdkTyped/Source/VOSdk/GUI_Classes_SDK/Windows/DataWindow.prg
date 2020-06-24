@@ -1,6 +1,7 @@
 
 
-#USING System.Windows.Forms.VisualStyles
+USING System.Windows.Forms.VisualStyles
+USING VOSDK := XSharp.VO.SDK
 CLASS DataWindow INHERIT ChildAppWindow IMPLEMENTS ILastFocus
 	PROTECT sCurrentView AS SYMBOL
 	PROTECT nCCMode AS INT
@@ -1845,7 +1846,7 @@ CLASS DataWindow INHERIT ChildAppWindow IMPLEMENTS ILastFocus
 		SUPER:ListBoxSelect(oCE)
 		RETURN SELF
 	
-	ASSIGN Menu(oNewMenu AS XSharp.VO.Menu) 
+	ASSIGN Menu(oNewMenu AS VOSDK.Menu) 
 		SUPER:Menu := oNewMenu
 		IF oParent IS ShellWindow
 			// No need to resize. __DataForm handles this 

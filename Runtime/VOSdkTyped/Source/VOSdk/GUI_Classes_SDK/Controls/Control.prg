@@ -513,7 +513,7 @@ CLASS Control INHERIT VObject IMPLEMENTS IGuiObject, ITimer
 
 		RETURN 1L
 	
-	METHOD Destroy() AS USUAL CLIPPER
+	METHOD Destroy() AS USUAL 
 		
 		IF oCtrl != NULL_OBJECT
 			IF ! oCtrl:IsDisposed

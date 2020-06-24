@@ -5,7 +5,7 @@
   <!-- Please note that most important settings are read from VOSDK.Targets -->
   <PropertyGroup>
     <ProjectGuid>5AC3E55D-F2BD-45EB-9CC2-DD8BD36240EA</ProjectGuid>
-    <AssemblyName>XSharp.VO.SystemClasses</AssemblyName>
+    <AssemblyName>XSharp.VOSystemClasses</AssemblyName>
     <Name>XSharp.VO.SystemClasses</Name>
     <OutputName>XSharpSystemClasses</OutputName>
     <XSharpProjectExtensionsPath>$(MSBuildExtensionsPath)\XSharp\</XSharpProjectExtensionsPath>
@@ -23,7 +23,7 @@
     <NamedArgs>false</NamedArgs>
     <Unsafe>false</Unsafe>
     <InitLocals>false</InitLocals>
-    <RootNamespace>XSharp.VO</RootNamespace>
+    <RootNamespace>XSharp.VO.SDK</RootNamespace>
     <NoWin32Manifest>False</NoWin32Manifest>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">

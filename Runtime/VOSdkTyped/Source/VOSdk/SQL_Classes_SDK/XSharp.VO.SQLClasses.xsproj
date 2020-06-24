@@ -5,11 +5,11 @@
   <!-- Please note that many properties are read from VOSDK.Targets -->
   <PropertyGroup>
     <ProjectGuid>{91816960-eb2d-4e4a-ae67-4edc5bd38940}</ProjectGuid>
-    <AssemblyName>XSharp.VO.SQLClasses</AssemblyName>
+    <AssemblyName>XSharp.VOSQLClasses</AssemblyName>
     <Name>XSharp.VO.SQLClasses</Name>
     <OutputName>XSSQLClasses</OutputName>
     <XSharpProjectExtensionsPath>$(MSBuildExtensionsPath)\XSharp\</XSharpProjectExtensionsPath>
-    <XSharpProjectversion>2.4.1.0</XSharpProjectversion>
+    <XSharpProjectversion>2.5.0.0</XSharpProjectversion>
     <Includepaths>$(Solutiondir)Common</Includepaths>
     <Nostandarddefs>false</Nostandarddefs>
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -20,7 +20,7 @@
     <VO14>false</VO14>
     <VO7>false</VO7>
     <FOX1>false</FOX1>
-    <RootNamespace>XSharp.VO</RootNamespace>
+    <RootNamespace>XSharp.VO.SDK</RootNamespace>
     <NoWin32Manifest>False</NoWin32Manifest>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">

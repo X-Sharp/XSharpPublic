@@ -90,7 +90,7 @@ FUNCTION ErrorStack(wActivation := 1 AS DWORD) AS STRING
 	oStackTrace := System.Diagnostics.StackTrace{TRUE}
     RETURN ErrorStack(oStackTrace, wActivation)
 
-STATIC CLASS ErrorStackSettings
+INTERNAL STATIC CLASS XSharp.ErrorStackSettings
     STATIC PROPERTY ErrorStackVOFormat AS LOGIC AUTO
     STATIC CONSTRUCTOR
         IF XSharp.RuntimeState.Dialect == XSharp.XSharpDialect.VO .OR. ;

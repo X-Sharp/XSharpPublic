@@ -2,8 +2,8 @@
 
 
 
-#using System.Runtime.InteropServices
-
+USING System.Runtime.InteropServices
+USING VOSDK := XSharp.VO.SDK
 
 FUNCTION __SetAppObject(oNewApp AS App) AS App STRICT
 
@@ -208,7 +208,7 @@ STATIC CLASS WC
 	//	RETURN oObject
 
 	// This function now returns a Control
-	STATIC METHOD GetControlByHandle(hWnd AS IntPtr) AS XSharp.VO.Control STRICT
+	STATIC METHOD GetControlByHandle(hWnd AS IntPtr) AS VOSDK.Control STRICT
 		LOCAL oC AS System.Windows.Forms.Control
 		oC := System.Windows.Forms.Control.FromHandle(hWnd)
 		IF oC IS IVOControl VAR oVOC

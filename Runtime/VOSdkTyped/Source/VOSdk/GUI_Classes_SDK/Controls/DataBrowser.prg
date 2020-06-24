@@ -28,13 +28,14 @@
 
 
 
-#using System.Runtime.InteropServices
-#using System.Reflection
-#using System.Collections.Generic
-#using System.Drawing
-#using System.Windows.Forms
+USING System.Runtime.InteropServices
+USING System.Reflection
+USING System.Collections.Generic
+USING System.Drawing
+USING System.Windows.Forms
+USING VOSDK := XSharp.VO.SDK
 
-CLASS DataBrowser INHERIT XSharp.VO.Control
+CLASS DataBrowser INHERIT VOSDK.Control
 	PROTECT iBufferGranularity AS INT
 	PROTECT iBufferMaximum AS INT
 	PROTECT iDeferPaintCount   AS INT
@@ -1449,7 +1450,7 @@ CLASS DataBrowser INHERIT XSharp.VO.Control
 		NEXT
 		RETURN
         
-	METHOD __Unlink(oDS := NIL AS USUAL) AS XSharp.VO.Control STRICT 
+	METHOD __Unlink(oDS := NIL AS USUAL) AS VOSDK.Control STRICT 
 		SELF:__UnLinkColumns()
 		IF oDataServer != NULL_OBJECT
 			oDataServer:UnRegisterClient(SELF)
@@ -1544,7 +1545,7 @@ CLASS DataBrowser INHERIT XSharp.VO.Control
 
 	METHOD ChangeBackground ( oBrush AS USUAL, kWhere AS INT ) 
 		// Todo
-		LOCAL oNewBrush AS XSharp.VO.Brush
+		LOCAL oNewBrush AS VOSDK.Brush
 		IF ! SELF:__IsValid 
 			RETURN SELF
 		ENDIF
@@ -1578,7 +1579,7 @@ CLASS DataBrowser INHERIT XSharp.VO.Control
 		RETURN SELF
 
 	METHOD ChangeFont(oFont AS Font, kWhere AS INT) 
-		LOCAL oNewFont AS XSharp.VO.Font
+		LOCAL oNewFont AS VOSDK.Font
 
 		IF ! SELF:__IsValid 
 			RETURN SELF
@@ -1606,14 +1607,14 @@ CLASS DataBrowser INHERIT XSharp.VO.Control
 		RETURN SELF
 
 	METHOD ChangeTextColor(oColor AS USUAL , kWhere AS INT) 
-		LOCAL oNewColor AS XSharp.VO.Color
-		LOCAL oOldColor AS XSharp.VO.Color
+		LOCAL oNewColor AS VOSDK.Color
+		LOCAL oOldColor AS VOSDK.Color
 		IF ! SELF:__IsValid 
 			RETURN SELF
 		ENDIF
 		
 		IF IsNumeric(oColor)
-			oNewColor := XSharp.VO.Color{oColor}
+			oNewColor := VOSDK.Color{oColor}
 		ELSEIF !IsInstanceOfUsual(oColor,#Color)
 			WCError{#ChangeTextColor,#DataBrowser,__WCSTypeError,oColor,1}:@@Throw()
 		ELSE
@@ -1935,7 +1936,7 @@ CLASS DataBrowser INHERIT XSharp.VO.Control
 			IF oWin:ToolBar != NULL_OBJECT
 				nHeight := oWin:ToolBar:Size:Height
 			ENDIF
-			oPoint		:= XSharp.VO.Point{0,nHeight}
+			oPoint		:= VOSDK.Point{0,nHeight}
 			oDimension	:= Dimension{oBB:Width,oBB:Height-nHeight}
 		ENDIF
 
@@ -2624,10 +2625,10 @@ CLASS DataColumn INHERIT VObject
 
 		RETURN cString
 
-	ACCESS Background AS XSharp.VO.Brush
-		RETURN XSharp.VO.Brush{ (XSharp.VO.Color) SELF:oDataGridColumn:DefaultCellStyle:BackColor}
+	ACCESS Background AS VOSDK.Brush
+		RETURN VOSDK.Brush{ (VOSDK.Color) SELF:oDataGridColumn:DefaultCellStyle:BackColor}
 
-	ASSIGN Background(oBrush AS XSharp.VO.Brush) 
+	ASSIGN Background(oBrush AS VOSDK.Brush) 
 		SELF:ChangeBackground(oBrush, gblText)
 
 		RETURN 
@@ -2668,22 +2669,22 @@ CLASS DataColumn INHERIT VObject
 		SELF:SetCaption(cNewCaption)
 		RETURN 
 
-	ACCESS CellBackground  AS XSharp.VO.Brush
-		RETURN XSharp.VO.Brush{ (XSharp.VO.Color) SELF:oDataGridColumn:DefaultCellStyle:BackColor}
+	ACCESS CellBackground  AS VOSDK.Brush
+		RETURN SDK.Brush{ (VOSDK.Color) SELF:oDataGridColumn:DefaultCellStyle:BackColor}
 
-	ASSIGN CellBackground(oBrush AS XSharp.VO.Brush) 
+	ASSIGN CellBackground(oBrush AS VOSDK.Brush) 
 		SELF:oDataGridColumn:DefaultCellStyle:BackColor := oBrush:Color
 
-	ACCESS CellTextColor AS XSharp.VO.Color
+	ACCESS CellTextColor AS VOSDK.Color
 		RETURN SELF:oDataGridColumn:DefaultCellStyle:ForeColor
 
-	ASSIGN CellTextColor(oColor AS XSharp.VO.Color) 
+	ASSIGN CellTextColor(oColor AS VOSDK.Color) 
 		SELF:oDataGridColumn:DefaultCellStyle:ForeColor := oColor
 
 	METHOD ChangeBackground(oBrush AS Brush, kWhere AS LONG) AS Brush
-		LOCAL oOldBrush AS XSharp.VO.Brush
-		LOCAL oOldCol AS XSharp.VO.Color
-		LOCAL oNewBrush AS XSharp.VO.Brush
+		LOCAL oOldBrush AS SDK.Brush
+		LOCAL oOldCol   AS SDK.Color
+		LOCAL oNewBrush AS SDK.Brush
 
 		oNewBrush := oBrush
 
@@ -2691,12 +2692,12 @@ CLASS DataColumn INHERIT VObject
 		CASE gblCaption
         CASE gblColCaption
 			oOldCol := SELF:oDataGridColumn:HeaderCell:Style:BackColor
-			oOldBrush := XSharp.VO.Brush{oOldCol}
+			oOldBrush := VOSDK.Brush{oOldCol}
 			SELF:oDataGridColumn:HeaderCell:Style:BackColor := oNewBrush:Color
 
 		CASE gblText
 			oOldCol := SELF:oDataGridColumn:DefaultCellStyle:BackColor
-			oOldBrush := XSharp.VO.Brush{oOldCol}
+			oOldBrush := VOSDK.Brush{oOldCol}
 			SELF:oDataGridColumn:DefaultCellStyle:BackColor := oNewBrush:Color
 
 		CASE gblButton
@@ -2711,8 +2712,8 @@ CLASS DataColumn INHERIT VObject
         RETURN SELF:ChangeTextColor(Color{oColor}, kWhere)
 
 	METHOD ChangeTextColor(oColor AS COLOR, kWhere AS LONG) AS Color
-		LOCAL oOldColor AS XSharp.VO.Color
-		LOCAL oNewColor AS XSharp.VO.Color
+		LOCAL oOldColor AS VOSDK.Color
+		LOCAL oNewColor AS VOSDK.Color
 
 		SWITCH kWhere
 		CASE gblCaption
@@ -3119,10 +3120,10 @@ CLASS DataColumn INHERIT VObject
 	ACCESS Status AS HyperLabel
 		RETURN oHlStatus
 
-	ACCESS TextColor AS XSharp.VO.Color
-		RETURN (XSharp.VO.Color) SELF:oDataGridColumn:DefaultCellStyle:ForeColor
+	ACCESS TextColor AS VOSDK.Color
+		RETURN (VOSDK.Color) SELF:oDataGridColumn:DefaultCellStyle:ForeColor
 
-	ASSIGN TextColor(oColor AS XSharp.VO.Color) 
+	ASSIGN TextColor(oColor AS VOSDK.Color) 
 		SELF:ChangeTextColor(oColor, gblText)
 		RETURN 
 

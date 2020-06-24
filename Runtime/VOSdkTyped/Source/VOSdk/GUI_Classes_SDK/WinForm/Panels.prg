@@ -1,15 +1,15 @@
 // Panel.prg
 
-#USING System.Windows.Forms
-#USING System.ComponentModel
-#using System.Diagnostics
-#using System.Drawing
-#using System.Collections.Generic
-
+USING System.Windows.Forms
+USING System.ComponentModel
+USING System.Diagnostics
+USING System.Drawing
+USING System.Collections.Generic
+USING VOSDK := XSharp.VO.SDK
 
 [DebuggerDisplay("{Text}, {Size}")];
 CLASS VOPanel INHERIT System.Windows.Forms.Panel 
-	PROPERTY Window AS XSharp.VO.Window AUTO
+	PROPERTY Window AS VOSDK.Window AUTO
 	PROPERTY SuppressMovingControls AS LOGIC AUTO
 	PROPERTY ReturnAllKeys	AS LOGIC AUTO
 	PROTECT oToolTip AS VOToolTip
@@ -39,7 +39,7 @@ CLASS VOPanel INHERIT System.Windows.Forms.Panel
 		SELF:DragEnter += Panel_DragEnter
 		SELF:DragDrop += Panel_DragDrop
 
-	CONSTRUCTOR(Owner AS XSharp.VO.Control, dwStyle AS LONG, dwExStyle AS LONG)
+	CONSTRUCTOR(Owner AS VOSDK.Control, dwStyle AS LONG, dwExStyle AS LONG)
 		SUPER()
 		SELF:Window := Owner:Owner
 		SELF:Initialize()
@@ -312,7 +312,7 @@ CLASS VOSurfacePanel INHERIT VOPanel
 	CONSTRUCTOR(oWindow AS Window) STRICT
 		SUPER(oWindow)
 
-	CONSTRUCTOR(Owner AS XSharp.VO.Control, dwStyle AS LONG, dwExStyle AS LONG)
+	CONSTRUCTOR(Owner AS VOSDK.Control, dwStyle AS LONG, dwExStyle AS LONG)
 		SUPER(Owner, dwStyle, dwExStyle)
 		RETURN 
 
@@ -348,7 +348,7 @@ CLASS VOFramePanel INHERIT VOPanel
 		SUPER(oWindow)
 		oDwForm := oOwner
 
-	CONSTRUCTOR(Owner AS XSharp.VO.Control, dwStyle AS LONG, dwExStyle AS LONG)
+	CONSTRUCTOR(Owner AS VOSDK.Control, dwStyle AS LONG, dwExStyle AS LONG)
 		SUPER(Owner, dwStyle, dwExStyle)
 		RETURN 
 

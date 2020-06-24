@@ -46,9 +46,9 @@ METHOD PostShowDialog() AS USUAL
 	
 
 method Wait() 
-	local l := GetTickCount() as DWORD
+	LOCAL l := DateTime.Now:Ticks AS DWORD
 	
-	while ((GetTickCount() - l) < 25)
+	WHILE ((DateTime.Now:Ticks - l) < 25)
 	end	
 
 	return nil

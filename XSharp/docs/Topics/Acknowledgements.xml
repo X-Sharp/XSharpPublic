@@ -9,7 +9,7 @@
     <para styleclass="Normal">We could not have done this project without (source code) contributions from others.<br/>Below is a list of the contributions that we used for our compiler and Visual Studio integration</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"><table styleclass="Default" rowcount="9" colcount="2" style="width:auto;">
+    <para styleclass="Normal"><table styleclass="Default" rowcount="11" colcount="2" style="width:auto;">
       <tr style="vertical-align:top">
         <td>
           <para styleclass="Normal">Name</para>
@@ -81,6 +81,22 @@
         </td>
         <td>
           <para styleclass="Body Text">For his Hybrid classes that allow to mix VO GUI with Windows Forms</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Body Text">JB Evain</para>
+        </td>
+        <td>
+          <para styleclass="Body Text">We are using his Mono.Cecil library inside our project system to collect type information for external types</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Body Text">The SQLite team</para>
+        </td>
+        <td>
+          <para styleclass="Body Text">We are using their SQLite database inside our project system</para>
         </td>
       </tr>
     </table></para>

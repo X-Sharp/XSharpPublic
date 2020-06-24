@@ -26,14 +26,14 @@ CLASS ResourceMenu INHERIT ResourceReader
 		MenuItems :=List<ResourceMenuItem>{}
 		SELF:IsValid := FALSE
 		IF hResInfo != NULL
-			uiResSize := Win32.SizeOfResource(hDLL, hResInfo)
+			uiResSize := GuiWin32.SizeOfResource(hDLL, hResInfo)
 			IF uiResSize != 0
-				hResource := Win32.LoadResource(hDLL, hResInfo)
+				hResource := GuiWin32.LoadResource(hDLL, hResInfo)
 				IF hResource != NULL
-					lpBuffer := Win32.LockResource(hResource)
+					lpBuffer := GuiWin32.LockResource(hResource)
 					SELF:ReadData(lpBuffer)
 					SELF:IsValid := TRUE
-					Win32.FreeResource(hResource)
+					GuiWin32.FreeResource(hResource)
 				ENDIF
 			ENDIF	
 		ENDIF
@@ -42,7 +42,7 @@ CLASS ResourceMenu INHERIT ResourceReader
 	CONSTRUCTOR(hDLL AS IntPtr, cName AS STRING)
 		LOCAL hResInfo AS IntPtr
 		SUPER()
-		hResInfo := Win32.FindResource(hDLL, cName, 4)
+		hResInfo := GuiWin32.FindResource(hDLL, cName, 4)
 		SELF:__LoadFromResource(hDLL, hResInfo)
 		RETURN 
 

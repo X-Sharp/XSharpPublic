@@ -262,7 +262,7 @@ CLASS DataBrowser INHERIT XSharp.VO.Control
 
 	METHOD DataBrowserHandleCreated(o AS OBJECT, e AS EventArgs) AS VOID
 		IF SELF:__IsValid
-			Win32.SetWindowText(oCtrl:Handle, "DataBrowser")
+			GuiWin32.SetWindowText(oCtrl:Handle, "DataBrowser")
 		ENDIF
 
 	METHOD OnCellDoubleClick(sender AS OBJECT, e AS DataGridViewCellEventArgs) AS VOID
@@ -1969,15 +1969,15 @@ CLASS DataBrowser INHERIT XSharp.VO.Control
 		lUse3dLook := TRUE
 		// This appears to affect over all container
 
-		//CntColorSet( hWnd, CNTCOLOR_3DHIGH,		Win32.GetSysColor(COLOR_BTNHIGHLIGHT))
-		//CntColorSet( hWnd, CNTCOLOR_3DSHADOW,	Win32.GetSysColor(COLOR_BTNSHADOW))
+		//CntColorSet( hWnd, CNTCOLOR_3DHIGH,		GuiWin32.GetSysColor(COLOR_BTNHIGHLIGHT))
+		//CntColorSet( hWnd, CNTCOLOR_3DSHADOW,	GuiWin32.GetSysColor(COLOR_BTNSHADOW))
 		IF SELF:__IsValid
 			SELF:__DataGridView:DefaultCellStyle:SelectionBackColor := System.Drawing.SystemColors.Highlight
 			SELF:__DataGridView:DefaultCellStyle:SelectionForeColor := System.Drawing.SystemColors.HighlightText
 		
 
 			////Set title defaults for 3D appearance
-			//CntColorSet( hWnd, CNTCOLOR_TITLE, Win32.GetSysColor(COLOR_BTNTEXT))
+			//CntColorSet( hWnd, CNTCOLOR_TITLE, GuiWin32.GetSysColor(COLOR_BTNTEXT))
 			SELF:__DataGridView:ColumnHeadersBorderStyle := DataGridViewHeaderBorderStyle.Raised
 			SELF:__DataGridView:ColumnHeadersHeightSizeMode := DataGridViewColumnHeadersHeightSizeMode.AutoSize
 
@@ -1986,20 +1986,20 @@ CLASS DataBrowser INHERIT XSharp.VO.Control
 			SELF:__DataGridView:BackColor := System.Drawing.SystemColors.Window
 			SELF:__DataGridView:BackGroundColor := System.Drawing.SystemColors.Window
 			SELF:__DataGridView:CellBorderStyle := DataGridViewCellBorderStyle.Single
-			//CntColorSet( hWnd, CNTCOLOR_TTLBKGD, Win32.GetSysColor(COLOR_BTNFACE))
+			//CntColorSet( hWnd, CNTCOLOR_TTLBKGD, GuiWin32.GetSysColor(COLOR_BTNFACE))
 
 			//// Colors for buttons
-			//CntColorSet( hWnd, CNTCOLOR_TTLBTNTXT, Win32.GetSysColor(COLOR_BTNTEXT))
-			//CntColorSet( hWnd, CNTCOLOR_TTLBTNBKGD, Win32.GetSysColor(COLOR_BTNFACE))
-			//CntColorSet( hWnd, CNTCOLOR_FLDBTNTXT, Win32.GetSysColor(COLOR_BTNTEXT))
-			//CntColorSet( hWnd, CNTCOLOR_FLDBTNBKGD, Win32.GetSysColor(COLOR_BTNFACE))
+			//CntColorSet( hWnd, CNTCOLOR_TTLBTNTXT, GuiWin32.GetSysColor(COLOR_BTNTEXT))
+			//CntColorSet( hWnd, CNTCOLOR_TTLBTNBKGD, GuiWin32.GetSysColor(COLOR_BTNFACE))
+			//CntColorSet( hWnd, CNTCOLOR_FLDBTNTXT, GuiWin32.GetSysColor(COLOR_BTNTEXT))
+			//CntColorSet( hWnd, CNTCOLOR_FLDBTNBKGD, GuiWin32.GetSysColor(COLOR_BTNFACE))
 
 			//// Default line spacing - Quarter Line
 			//CntRowHtSet( hWnd, 1, CA_LS_MEDIUM)
 
 
 			// Set default font
-			//CntFontSet( hWnd, Win32.GetStockObject(DEFAULT_GUI_FONT), CF_GENERAL)
+			//CntFontSet( hWnd, GuiWin32.GetStockObject(DEFAULT_GUI_FONT), CF_GENERAL)
 
 			//CntAttribSet( hWnd, CA_APPSPLITABLE)
 			//CntRangeExSet( hWnd, 0, 0)
@@ -2307,7 +2307,7 @@ CLASS DataBrowser INHERIT XSharp.VO.Control
 					SELF:__Unlink()
 				ENDIF
 				oDataServer := oServer
-				Win32.SetWindowText(__DataGridView:Handle, "DataBrowser "+oDataServer:Name)
+				GuiWin32.SetWindowText(__DataGridView:Handle, "DataBrowser "+oDataServer:Name)
 				SELF:__RegisterFieldLinks(oServer)
 				SELF:__RefreshData()
 				IF lLinked

@@ -201,7 +201,7 @@ CLASS AppWindow INHERIT Window
 			IF IsLogic(lSendMsg) .AND. lSendMsg
 				oWnd:Close()	
 			ELSE
-				Win32.PostMessage(SELF:Handle(), WM_CLOSE, 0,0)
+				GuiWin32.PostMessage(SELF:Handle(), WM_CLOSE, 0,0)
 			ENDIF
 		ENDIF
 		RETURN NIL

@@ -336,16 +336,16 @@ CLASS VODataForm INHERIT VOChildAppForm
 
 	PUBLIC METHOD SuspendRedraw AS VOID
 		IF SELF:lInBrowseView
-	        Win32.SendMessage(SELF:Frame:Handle, WM_SETREDRAW, 0, 0)
+	        GuiWin32.SendMessage(SELF:Frame:Handle, WM_SETREDRAW, 0, 0)
 		ELSE
-	        Win32.SendMessage(SELF:Surface:Handle, WM_SETREDRAW, 0, 0)
+	        GuiWin32.SendMessage(SELF:Surface:Handle, WM_SETREDRAW, 0, 0)
 		ENDIF
 
 	PUBLIC METHOD ResumeRedraw AS VOID
 		IF SELF:lInBrowseView
-	        Win32.SendMessage(SELF:Frame:Handle, WM_SETREDRAW, 1, 0)
+	        GuiWin32.SendMessage(SELF:Frame:Handle, WM_SETREDRAW, 1, 0)
 		ELSE
-	        Win32.SendMessage(SELF:Surface:Handle, WM_SETREDRAW, 1, 0)
+	        GuiWin32.SendMessage(SELF:Surface:Handle, WM_SETREDRAW, 1, 0)
 		ENDIF
 		SELF:Refresh()
     

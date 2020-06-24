@@ -31,9 +31,9 @@ CLASS HelpDisplay INHERIT VObject
 			IF SLen(cTopic) > 0
 				cFName += "::/"+cTopic
 			ENDIF
-			RETURN Win32.HtmlHelp( hWnd, cFName, uCommand, dwData) == S_OK
+			RETURN GuiWin32.HtmlHelp( hWnd, cFName, uCommand, dwData) == S_OK
 		ELSE
-			RETURN Win32.WinHelp(hWnd, cFileName, uCommand, dwData)
+			RETURN GuiWin32.WinHelp(hWnd, cFileName, uCommand, dwData)
 		ENDIF
 
 
@@ -58,9 +58,9 @@ CLASS HelpDisplay INHERIT VObject
 
 		IF (oWnd != NULL_OBJECT)
 			IF !lHTMLHelp
-				Win32.WinHelp(oWnd:Handle, cFileName, HELP_QUIT, 0)
+				GuiWin32.WinHelp(oWnd:Handle, cFileName, HELP_QUIT, 0)
 			ELSE
-				Win32.HtmlHelp(IntPtr.Zero, NULL_STRING, HH_CLOSE_ALL, 0)
+				GuiWin32.HtmlHelp(IntPtr.Zero, NULL_STRING, HH_CLOSE_ALL, 0)
 			ENDIF
 		ENDIF
 

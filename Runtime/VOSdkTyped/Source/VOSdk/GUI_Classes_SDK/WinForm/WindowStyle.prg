@@ -9,7 +9,7 @@ INTERNAL CLASS WindowStyle
 		LOCAL dwStyle AS DWORD
 		
 		IF (hWnd != IntPtr.Zero)
-			dwStyle := DWORD(_CAST, Win32.GetWindowLong(hWnd, GWL_STYLE))
+			dwStyle := DWORD(_CAST, GuiWin32.GetWindowLong(hWnd, GWL_STYLE))
 			
 			IF lEnable
 				dwStyle := (DWORD)_OR(dwStyle, dwSetStyle)
@@ -17,8 +17,8 @@ INTERNAL CLASS WindowStyle
 				dwStyle := (DWORD)_AND(dwStyle, _NOT(dwSetStyle))
 			ENDIF
 			
-			Win32.SetWindowLong(hWnd, GWL_STYLE, LONG(_CAST, dwStyle))
-			Win32.UpdateWindow(hWnd)
+			GuiWin32.SetWindowLong(hWnd, GWL_STYLE, LONG(_CAST, dwStyle))
+			GuiWin32.UpdateWindow(hWnd)
 		ENDIF
 		
 		RETURN 
@@ -27,7 +27,7 @@ INTERNAL CLASS WindowStyle
 		LOCAL dwStyle AS DWORD
 		
 		IF (hWnd != IntPtr.Zero)
-			dwStyle := DWORD(_CAST, Win32.GetWindowLong(hWnd, GWL_EXSTYLE))
+			dwStyle := DWORD(_CAST, GuiWin32.GetWindowLong(hWnd, GWL_EXSTYLE))
 			
 			IF lEnable
 				dwStyle := (DWORD)_OR(dwStyle, dwSetStyle)
@@ -35,7 +35,7 @@ INTERNAL CLASS WindowStyle
 				dwStyle := (DWORD)_AND(dwStyle, _NOT(dwSetStyle))
 			ENDIF
 			
-			Win32.SetWindowLong(hWnd, GWL_EXSTYLE, LONG(_CAST, dwStyle))
+			GuiWin32.SetWindowLong(hWnd, GWL_EXSTYLE, LONG(_CAST, dwStyle))
 		ENDIF
 		
 		RETURN
@@ -44,7 +44,7 @@ INTERNAL CLASS WindowStyle
 	   LOCAL pszName 	AS StringBuilder
 		
 	   pszName := StringBuilder{128}
-	   Win32.GetClassName(hWnd,pszName,pszName:Capacity-1)
+	   GuiWin32.GetClassName(hWnd,pszName,pszName:Capacity-1)
 	   RETURN pszName:ToString()
 
 END CLASS

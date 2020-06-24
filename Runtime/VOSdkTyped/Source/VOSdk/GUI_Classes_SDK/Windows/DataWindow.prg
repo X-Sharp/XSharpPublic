@@ -1080,7 +1080,7 @@ CLASS DataWindow INHERIT ChildAppWindow IMPLEMENTS ILastFocus
 			SELF:__Unlink()
 		ENDIF
 		// Workaround for TreeView Control Loosing focus bug
-		//SetFocus(Win32.GetParent(SELF:Handle()))
+		//SetFocus(GuiWin32.GetParent(SELF:Handle()))
 		SUPER:Close(oEvent)
 		
 		RETURN TRUE

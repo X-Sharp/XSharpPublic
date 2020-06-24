@@ -243,30 +243,30 @@ CLASS SplitView INHERIT Control
 //		CASE kWhere == SPLTCOLOR_WINDOW
 //			oBackgroundBrush := oBrush
 //			IF oBackgroundBrush == NULL_OBJECT
-//				dwNewColor := Win32.GetSysColor(COLOR_APPWORKSPACE)
+//				dwNewColor := GuiWin32.GetSysColor(COLOR_APPWORKSPACE)
 //			ENDIF
 //
 //		CASE kWhere == SPLTCOLOR_BAR
 //			oBarBrush := oBrush
 //			IF oBarBrush == NULL_OBJECT
-//				IF _AND(Win32.GetVersion(), 0X80000000) != 0
+//				IF _AND(GuiWin32.GetVersion(), 0X80000000) != 0
 //					// Use Windows95 constants
-//					dwNewColor := Win32.GetSysColor(COLOR_3DFACE)
+//					dwNewColor := GuiWin32.GetSysColor(COLOR_3DFACE)
 //				ELSE
 //					// Use WindowsNT constants
-//					dwNewColor := Win32.GetSysColor(COLOR_BTNFACE)
+//					dwNewColor := GuiWin32.GetSysColor(COLOR_BTNFACE)
 //				ENDIF
 //			ENDIF
 //
 //		CASE kWhere == SPLTCOLOR_BARFRAME
 //			oBarFrameBrush := oBrush
 //			IF oBarFrameBrush == NULL_OBJECT
-//				IF _AND(Win32.GetVersion(), 0X80000000) != 0
+//				IF _AND(GuiWin32.GetVersion(), 0X80000000) != 0
 //					// Use Windows95 constants
-//					dwNewColor := Win32.GetSysColor(COLOR_3DFACE)
+//					dwNewColor := GuiWin32.GetSysColor(COLOR_3DFACE)
 //				ELSE
 //					// Use WindowsNT constants
-//					dwNewColor := Win32.GetSysColor(COLOR_BTNFACE)
+//					dwNewColor := GuiWin32.GetSysColor(COLOR_BTNFACE)
 //				ENDIF
 //			ENDIF
 //		END CASE

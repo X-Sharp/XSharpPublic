@@ -96,7 +96,7 @@ CLASS Point INHERIT Pair
 		sPoint:x := iInt1
 		sPoint:y := iInt2
 
-		Win32.ClientToScreen(hWnd, REF sPoint)
+		GuiWin32.ClientToScreen(hWnd, REF sPoint)
 
 		iInt1 := sPoint:x
 		iInt2 := sPoint:y

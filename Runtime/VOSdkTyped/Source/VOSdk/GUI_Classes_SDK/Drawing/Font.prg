@@ -96,11 +96,11 @@ CLASS Font INHERIT VObject
 		LOCAL hDC AS IntPtr
 		LOCAL wDim AS Dimension
 
-		IF (hDCConv == NULL_PTR) .AND. ((hDC := Win32.GetDC(NULL_PTR)) != NULL_PTR)
-			wDim := Dimension{0, -(Win32.MulDiv(nPntSize, Win32.GetDeviceCaps(hDC, LOGPIXELSY), 72))}
-			Win32.ReleaseDC(NULL_PTR, hDC)
+		IF (hDCConv == NULL_PTR) .AND. ((hDC := GuiWin32.GetDC(NULL_PTR)) != NULL_PTR)
+			wDim := Dimension{0, -(GuiWin32.MulDiv(nPntSize, GuiWin32.GetDeviceCaps(hDC, LOGPIXELSY), 72))}
+			GuiWin32.ReleaseDC(NULL_PTR, hDC)
 		ELSEIF (hDCConv != NULL_PTR)
-			wDim := Dimension{0, -(Win32.MulDiv(nPntSize, Win32.GetDeviceCaps(hDCConv, LOGPIXELSY), 72))}
+			wDim := Dimension{0, -(GuiWin32.MulDiv(nPntSize, GuiWin32.GetDeviceCaps(hDCConv, LOGPIXELSY), 72))}
 		ELSE
 			wDim := Dimension{nPntSize, nPntSize}
 		ENDIF
@@ -129,9 +129,9 @@ CLASS Font INHERIT VObject
 			ENDIF
 			IF lPrinter .AND. (hdc != NULL_PTR)
 				IF lStdFont
-					oLogFont:Height := -(((Win32.GetDeviceCaps(hdc, LOGPIXELSY) * StdFontPointSize[iStdFontType + 1]) + 36) / 72)
+					oLogFont:Height := -(((GuiWin32.GetDeviceCaps(hdc, LOGPIXELSY) * StdFontPointSize[iStdFontType + 1]) + 36) / 72)
 				ELSEIF (iPointSize > 0)
-					oLogFont:Height := -Win32.MulDiv(iPointSize, Win32.GetDeviceCaps(hdc, LOGPIXELSY), 72)
+					oLogFont:Height := -GuiWin32.MulDiv(iPointSize, GuiWin32.GetDeviceCaps(hdc, LOGPIXELSY), 72)
 				ENDIF
 			ENDIF
 			
@@ -470,9 +470,9 @@ CLASS Font INHERIT VObject
 		LOCAL hDC AS PTR
 		LOCAL iHeight AS INT
 
-		hDC		:= Win32.CreateIC("DISPLAY", NULL_STRING, NULL_STRING, IntPtr.Zero)
-		iHeight := -(((Win32.GetDeviceCaps(hDC, LOGPIXELSY) * StdFontPointSize[kStandardFont + 1]) + 36) / 72)
-		Win32.DeleteDC(hDC)
+		hDC		:= GuiWin32.CreateIC("DISPLAY", NULL_STRING, NULL_STRING, IntPtr.Zero)
+		iHeight := -(((GuiWin32.GetDeviceCaps(hDC, LOGPIXELSY) * StdFontPointSize[kStandardFont + 1]) + 36) / 72)
+		GuiWin32.DeleteDC(hDC)
 
 		RETURN iHeight
 	STATIC INITONLY PROTECT StdFontFamily 	:= {FF_MODERN, FF_MODERN, FF_MODERN, FF_ROMAN, FF_ROMAN, FF_ROMAN, FF_ROMAN, FF_ROMAN, FF_ROMAN, FF_SWISS, FF_SWISS, FF_SWISS, FF_SWISS, FF_SWISS, FF_SWISS, FF_DONTCARE} AS ARRAY

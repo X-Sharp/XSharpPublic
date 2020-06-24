@@ -46,7 +46,7 @@ CLASS ResourceString INHERIT VObject
 		ENDIF   
 
 		ptrBuffer 	:= StringBuilder{(INT) nMaxLen+1}
-		iLength 	:= Win32.LoadString(hInst, wID, ptrBuffer, nMaxLen)
+		iLength 	:= GuiWin32.LoadString(hInst, wID, ptrBuffer, nMaxLen)
 		IF iLength != 0
 			sBuffer := ptrBuffer:ToString()
 		ENDIF

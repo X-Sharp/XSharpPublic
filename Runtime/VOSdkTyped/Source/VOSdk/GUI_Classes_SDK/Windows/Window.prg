@@ -324,36 +324,36 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
 					IF IsPtr(uType) 
 						pB := (BYTE PTR) @dwType
 						IF (liMulDiv := pB[1]) > 0
-							iCtlX := Win32.MulDiv(iWinWidth , liMulDiv>>4, (LONG) _AND(liMulDiv, 0XF))
+							iCtlX := GuiWin32.MulDiv(iWinWidth , liMulDiv>>4, (LONG) _AND(liMulDiv, 0XF))
 						ENDIF
 						IF (liMulDiv := pB[2]) > 0
-							iCtlY := Win32.MulDiv(iWinHeight , liMulDiv>>4, (LONG)  _AND(liMulDiv, 0XF))
+							iCtlY := GuiWin32.MulDiv(iWinHeight , liMulDiv>>4, (LONG)  _AND(liMulDiv, 0XF))
 						ENDIF 
 						IF (liMulDiv := pB[3]) > 0
-							iCtlWidth := Win32.MulDiv(iWinWidth , liMulDiv>>4,  (LONG) _AND(liMulDiv, 0XF))
+							iCtlWidth := GuiWin32.MulDiv(iWinWidth , liMulDiv>>4,  (LONG) _AND(liMulDiv, 0XF))
 						ENDIF 
 						IF (liMulDiv := pB[4]) > 0
-							iCtlHeight := Win32.MulDiv(iWinHeight , liMulDiv>>4,  (LONG) _AND(liMulDiv, 0XF))
+							iCtlHeight := GuiWin32.MulDiv(iWinHeight , liMulDiv>>4,  (LONG) _AND(liMulDiv, 0XF))
 						ENDIF
 					ELSE        
 						// Width
 						IF _AND(dwType, OA_PWIDTH) = OA_PWIDTH
-							iCtlWidth := Win32.MulDiv(iWinWidth, iCtlRefWidth, iWinRefWidth)
+							iCtlWidth := GuiWin32.MulDiv(iWinWidth, iCtlRefWidth, iWinRefWidth)
 						ELSEIF _AND(dwType, OA_WIDTH) = OA_WIDTH
 							iCtlWidth += iWinWidth - iWinRefWidth
 						ENDIF
 						// Height
 						IF _AND(dwType, OA_PHEIGHT) = OA_PHEIGHT
-							iCtlHeight := Win32.MulDiv(iWinHeight, iCtlRefHeight, iWinRefHeight)
+							iCtlHeight := GuiWin32.MulDiv(iWinHeight, iCtlRefHeight, iWinRefHeight)
 						ELSEIF _AND(dwType, OA_HEIGHT) = OA_HEIGHT
 							iCtlHeight += iWinHeight - iWinRefHeight
 						ENDIF
 						// X-Position
 						IF _AND(dwType, OA_PX) = OA_PX
 							IF _AND(dwType, OA_PWIDTH) = OA_PWIDTH
-								iCtlX := Win32.MulDiv(iWinWidth, iCtlX, iWinRefWidth) 
+								iCtlX := GuiWin32.MulDiv(iWinWidth, iCtlX, iWinRefWidth) 
 							ELSE 
-								iCtlX := Win32.MulDiv(iWinWidth, iCtlX + iCtlRefWidth/2, iWinRefWidth) - iCtlWidth/2
+								iCtlX := GuiWin32.MulDiv(iWinWidth, iCtlX + iCtlRefWidth/2, iWinRefWidth) - iCtlWidth/2
 							ENDIF   
 						ELSEIF _AND(dwType, OA_X) = OA_X
 							iCtlX += iWinWidth - iWinRefWidth
@@ -361,9 +361,9 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
 						// Y- position
 						IF _AND(dwType, OA_PY) = OA_PY
 							IF _AND(dwType, OA_PHEIGHT) = OA_PHEIGHT
-								iCtlY := Win32.MulDiv(iWinHeight, iCtlY, iWinRefHeight)
+								iCtlY := GuiWin32.MulDiv(iWinHeight, iCtlY, iWinRefHeight)
 							ELSE
-								iCtlY := Win32.MulDiv(iWinHeight, iCtlY + iCtlRefHeight/2, iWinRefHeight) - iCtlHeight/2
+								iCtlY := GuiWin32.MulDiv(iWinHeight, iCtlY + iCtlRefHeight/2, iWinRefHeight) - iCtlHeight/2
 							ENDIF
 						ELSEIF _AND(dwType, OA_Y) = OA_Y
 							iCtlY += iWinHeight - iWinRefHeight
@@ -990,9 +990,9 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
 			OTHERWISE
 				RETURN FALSE
 			ENDCASE
-			Win32.PostMessage(hTemp, WM_WCHelp, HelpWindow, liTemp)
+			GuiWin32.PostMessage(hTemp, WM_WCHelp, HelpWindow, liTemp)
 		ELSE
-			Win32.PostMessage(hTemp, WM_WCHELP, HelpControl, LONGINT(_CAST,hTemp))
+			GuiWin32.PostMessage(hTemp, WM_WCHELP, HelpControl, LONGINT(_CAST,hTemp))
 		ENDIF
 		
 		RETURN TRUE
@@ -1057,7 +1057,7 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
 	METHOD __SetSelfMenu() AS VOID STRICT 
 		RETURN
 	
-	METHOD __Timer() AS OBJECT STRICT 
+	METHOD __Timer() AS VOID STRICT 
 		
 		dwTimerCount := dwTimerCount - 1
 		IF (dwTimerCount == 0)
@@ -1069,7 +1069,7 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
 			ENDIF
 		ENDIF
 		
-		RETURN SELF
+		RETURN 
 	
 
 	[Obsolete];
@@ -1113,7 +1113,7 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
 		// Determine Windows version
 		dwTime	:= nTime
 		dwFlags := nFlags
-		Win32.AnimateWindow(SELF:Handle(),dwTime,dwFlags)
+		GuiWin32.AnimateWindow(SELF:Handle(),dwTime,dwFlags)
 		RETURN TRUE
 	
 	ACCESS Automated AS LOGIC
@@ -1585,13 +1585,13 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
 	METHOD EnableCloseBox(lValue := TRUE AS LOGIC) 
 		LOCAL hBox AS IntPtr	
 		IF SELF:__IsValid 
-			hBox := Win32.GetSystemMenu(oWnd:Handle,FALSE) 
+			hBox := GuiWin32.GetSystemMenu(oWnd:Handle,FALSE) 
 		ENDIF
 		IF hBox != IntPtr.Zero
 			IF lValue 
-				RETURN Win32.EnableMenuItem(hBox,SC_CLOSE,MF_ENABLED)
+				RETURN GuiWin32.EnableMenuItem(hBox,SC_CLOSE,MF_ENABLED)
 			ELSE
-				RETURN Win32.EnableMenuItem(hBox,SC_CLOSE,_OR(MF_GRAYED,MF_BYCOMMAND))
+				RETURN GuiWin32.EnableMenuItem(hBox,SC_CLOSE,_OR(MF_GRAYED,MF_BYCOMMAND))
 			ENDIF
 		ENDIF
 
@@ -1642,7 +1642,7 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
 			oCurrentHelp := oHelpDisplay
 			IF oCurrentHelp = NULL_OBJECT .OR. ! oCurrentHelp:Win32Processing
 				lHelpOn := TRUE
-				//IF (Win32.GetActiveWindow() == oWnd:Handle) .AND. (oApp != NULL_OBJECT)
+				//IF (GuiWin32.GetActiveWindow() == oWnd:Handle) .AND. (oApp != NULL_OBJECT)
 				IF (oApp != NULL_OBJECT)
 					oApp:__SetHelpWind(oWnd, HM_GENERAL)
 				ENDIF
@@ -1665,7 +1665,7 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
 		IF lHelpOn
 			SELF:__EnableHelpCursor(TRUE)
 		ELSE
-			Win32.PostMessage(SELF:Handle(), WM_SYSCOMMAND, SC_CONTEXTHELP, 0)
+			GuiWin32.PostMessage(SELF:Handle(), WM_SYSCOMMAND, SC_CONTEXTHELP, 0)
 		ENDIF
 		
 		RETURN 
@@ -1772,13 +1772,13 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
 
 	METHOD GetStyle() AS LONG
 		IF SELF:__IsValid 
-			RETURN Win32.GetWindowLong(oWnd:Handle, GWL_STYLE)
+			RETURN GuiWin32.GetWindowLong(oWnd:Handle, GWL_STYLE)
 		ENDIF
 		RETURN SELF:dwStyle
 		
 	METHOD GetExStyle AS LONG
 		IF SELF:__IsValid 
-			RETURN Win32.GetWindowLong(oWnd:Handle, GWL_EXSTYLE)
+			RETURN GuiWin32.GetWindowLong(oWnd:Handle, GWL_EXSTYLE)
 		ENDIF
 		RETURN SELF:dwExStyle
 
@@ -2484,7 +2484,7 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
 		
 		IF (oWnd != NULL_OBJECT)
 			iWnd := (IVOForm) (OBJECT) oWnd
-			dwExStyle := Win32.GetWindowLong(oWnd:Handle, GWL_EXSTYLE)
+			dwExStyle := GuiWin32.GetWindowLong(oWnd:Handle, GWL_EXSTYLE)
 			
 			IF lEnable
 				dwExStyle := _OR(dwExStyle, LONG(_CAST, dwSetExStyle))
@@ -2494,7 +2494,7 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
 				iWnd:Properties:NotExStyle |= dwSetExStyle
 			ENDIF
 			
-			Win32.SetWindowLong(oWnd:Handle, GWL_EXSTYLE, dwExStyle)
+			GuiWin32.SetWindowLong(oWnd:Handle, GWL_EXSTYLE, dwExStyle)
 		ENDIF
 		
 		RETURN dwExStyle

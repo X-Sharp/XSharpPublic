@@ -1400,7 +1400,7 @@ methodtype          : Token=(METHOD | ACCESS | ASSIGN )
          SELF:GetSourceInfo(_start, LastToken, OUT VAR range, OUT VAR interval, OUT VAR source)  
          SELF:ReadLine()
         
-         VAR xMember := XMemberDefinition{sig, Kind.Method, _attributes, range, interval, _attributes:HasFlag(Modifiers.Static)}
+         VAR xMember := XMemberDefinition{sig, kind, _attributes, range, interval, _attributes:HasFlag(Modifiers.Static)}
          IF SELF:CurrentType != NULL
             SELF:CurrentType:AddMember(xMember)
          ENDIF

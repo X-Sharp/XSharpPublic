@@ -275,7 +275,7 @@ namespace XSharp.LanguageService
                                 hasPartial = true;
                                 foreach (var member in fullType.XMembers)
                                 {
-                                    if (!members.Contains(member))
+                                    if (string.Compare(member.File.FullPath, file.FullPath, true) != 0)
                                     {
                                         if (includeFields || (member.Kind != Kind.Field && member.Kind != Kind.VODefine))
                                         {
@@ -323,7 +323,7 @@ namespace XSharp.LanguageService
                         ft = DROPDOWNFONTATTR.FONTATTR_PLAIN;
                         if (hasPartial)
                         {
-                            otherFile = member.File != file;
+                            otherFile = string.Compare(member.File.FullPath, file.FullPath, true)!= 0;
                         }
 
                         string prototype = member.ComboPrototype;

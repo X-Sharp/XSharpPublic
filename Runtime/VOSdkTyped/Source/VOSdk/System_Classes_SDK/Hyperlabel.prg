@@ -7,7 +7,10 @@ CLASS HyperLabel
 METHOD AsString( )  AS STRING STRICT                            
 	RETURN SELF:Caption
 
-METHOD Error( oError AS Error, symMethod :=  #Unknown AS SYMBOL ) AS VOID
+METHOD Error( oError AS Error) AS VOID
+   SELF:Error(oError, #Unknown)
+   
+METHOD Error( oError AS Error, symMethod AS SYMBOL ) AS VOID
     LOCAL oErr AS Error
     oErr := oError
 	oErr:MethodSelf := SELF    

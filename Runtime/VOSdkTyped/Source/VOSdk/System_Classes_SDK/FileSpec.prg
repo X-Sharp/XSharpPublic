@@ -479,7 +479,9 @@ ASSIGN Drive(cDrive AS STRING)
 ACCESS ErrInfo AS Error 
 	RETURN SELF:oErrorInfo
 
-METHOD Error( oError AS Error, symMethod := #Unknown AS SYMBOL)  AS VOID   
+METHOD Error( oError AS Error)  AS VOID   
+   SELF:Error(oError, #Unknown)
+METHOD Error( oError AS Error, symMethod AS SYMBOL)  AS VOID   
     LOCAL oErr AS Error
 
     oErr := oError

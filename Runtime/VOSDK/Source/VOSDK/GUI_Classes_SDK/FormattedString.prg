@@ -598,7 +598,8 @@ METHOD ProcessChar(cChar AS STRING) AS LOGIC STRICT
 	ENDIF
 
 	RETURN TRUE
-
+#pragma warnings(219,off)
+// warning about assignment to iCurPos. We have to call oEditOwner:__CurPos for code inside that property
 METHOD ProcessKeyEvent(oKeyEvt AS KeyEvent) AS LOGIC STRICT 
 	LOCAL iCurPos AS INT
 	LOCAL uMsg AS DWORD
@@ -660,6 +661,8 @@ METHOD ProcessKeyEvent(oKeyEvt AS KeyEvent) AS LOGIC STRICT
 	END SWITCH
 
 	RETURN lRet
+
+#pragma warnings(219,on)
 
 METHOD PutChar(cChar AS STRING, iPos AS INT) AS VOID STRICT 
 #ifdef __VULCAN__

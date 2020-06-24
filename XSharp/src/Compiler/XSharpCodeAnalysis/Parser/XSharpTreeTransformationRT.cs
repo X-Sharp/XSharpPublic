@@ -808,8 +808,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         protected ExpressionSyntax GenerateNIL()
         {
-            if (_options.NoClipCall)
-                return MakeDefault(_usualType);
             if (_options.XSharpRuntime)
                 return GenerateQualifiedName(XSharpQualifiedFunctionNames.UsualNIL);
             else
@@ -2583,9 +2581,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         public override void ExitParameter([NotNull] XP.ParameterContext context)
         {
             base.ExitParameter(context);
-            // Only apply the vulcan default parameter attribute when there
+            // Only apply the default parameter attribute when there
             // are no Attributes on the parameter, such as [CallerMember]
-            if (context.Default != null && context.Attributes == null && !_options.NoClipCall)
+            if (context.Default != null && context.Attributes == null )
             {
                 if (CurrentEntity.Data.HasClipperCallingConvention)
                 {
@@ -3201,20 +3199,20 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             if (parameters.Parameters.Count > 0)
             {
                 // generate default parameter attribute to make sure that calling code will compile
-                var attr = MakeDefaultParameter(GenerateLiteral(0), GenerateLiteral(1));
-                var attrs = _pool.AllocateSeparated<AttributeSyntax>();
-                attrs.Add(attr);
+                //var attr = MakeDefaultParameter(GenerateLiteral(0), GenerateLiteral(1));
+                //var attrs = _pool.AllocateSeparated<AttributeSyntax>();
+                //attrs.Add(attr);
                 //var defExpr = _syntaxFactory.EqualsValueClause(
                 //    SyntaxFactory.MakeToken(SyntaxKind.EqualsToken),
                 //    MakeDefault(_usualType));
 
-                var attrlist = MakeList(MakeAttributeList(null, attrs));
+                //var attrlist = MakeList(MakeAttributeList(null, attrs));
                 var @params = new List<ParameterSyntax>();
                 for (int i = 0; i < parameters.Parameters.Count; i++)
                 {
                     ParameterSyntax parm = parameters.Parameters[i];
                     var par = _syntaxFactory.Parameter(
-                          attributeLists: attrlist,
+                          attributeLists: EmptyList<AttributeListSyntax>(), //attrlist,
                           modifiers: EmptyList<SyntaxToken>(),
                           type: _usualType,
                           identifier: parm.Identifier, @default: null);
@@ -3222,7 +3220,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     @params.Add(par);
                 }
                 parameters = MakeParameterList(@params);
-                _pool.Free(attrs);
+                //_pool.Free(attrs);
             }
         }
         protected override void ImplementClipperAndPSZ(XP.IEntityWithBodyContext context,
@@ -3246,36 +3244,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 return;
             }
             List<string> parameternames = new List<String>();
-            if (_options.NoClipCall && body != null && !(context is XP.PropertyAccessorContext))
-            {
-                // Bring body back to a simple return call. We are not interested in the 'real thing'
-                var stmts = new List<StatementSyntax>();
-                if (parameters != null)
-                {
-                    for (int i = 0; i < parameters.Parameters.Count; i++)
-                    {
-                        var param = parameters.Parameters[i];
-                        if (param.Modifiers.Any((int)SyntaxKind.OutKeyword))
-                        {
-                            var assign = _syntaxFactory.AssignmentExpression(SyntaxKind.SimpleAssignmentExpression,
-                                GenerateSimpleName(param.identifier.Text), SyntaxFactory.MakeToken(SyntaxKind.EqualsToken), MakeDefault(param.Type));
-                            stmts.Add(GenerateExpressionStatement(assign));
-                        }
-                    }
-                }
-
-
-                if (context.Data.MustBeVoid || dataType is null || isVoidType(dataType))
-                {
-                    stmts.Add(GenerateReturn(null));
-                }
-                else
-                {
-                    stmts.Add(GenerateReturn(MakeDefault(dataType)));
-                }
-                body = MakeBlock(stmts);
-                context.Data.UsesPSZ = false;
-            }
             if (context.Data.HasClipperCallingConvention || context.Data.UsesPSZ || context.Data.HasMemVars || _options.HasOption(CompilerOption.UndeclaredMemVars, prc, PragmaOptions))
             {
                 var stmts = _pool.Allocate<StatementSyntax>();

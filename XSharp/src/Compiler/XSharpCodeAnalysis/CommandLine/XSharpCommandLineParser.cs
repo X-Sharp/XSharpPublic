@@ -102,7 +102,10 @@ namespace Microsoft.CodeAnalysis.CSharp
                     break;
 
                 case "noclipcall":
-                    options.NoClipCall = positive; 
+                    options.NoClipCall = positive;
+                    // make sure we also compile with /refonly
+                    handled = false;
+                    name = "refonly";
                     break;
 
                 case "norun":

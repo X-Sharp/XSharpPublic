@@ -11,7 +11,7 @@
     </header>
     <para styleclass="Heading1 Black" style="text-align:center;">Welcome to X# (XSharp) <var>&lt;%TXTVERSION%&gt;</var></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal" style="text-align:center;"><image src="xsharplogo.jpg" scale="73.98%" width="436" height="343" styleclass="Image Caption"></image></para>
+    <para styleclass="Normal" style="text-align:center;"><image src="xsharplogo.jpg" scale="100.00%" styleclass="Image Caption"></image></para>
     <para styleclass="Normal"><line style="height:1px; color:#000000;" /></para>
     <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="VersionHistory">Click here for the version history</link></para>
     <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Known-Issues">Click here for the list of known issues</link></para>

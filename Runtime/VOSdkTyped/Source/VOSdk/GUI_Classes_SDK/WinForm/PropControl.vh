@@ -1,8 +1,9 @@
 // PropControl.vh
-	
+
+
 	PROTECTED oProperties AS VOControlProperties
 	PROPERTY ControlProperties AS VOControlProperties GET oProperties
-	PROPERTY Control AS XSharp.VO.Control 
+	PROPERTY Control AS VOSDK.Control 
 		GET 
 			IF oProperties=NULL
 				RETURN NULL
@@ -21,7 +22,7 @@
 			oIni:Initialize()
 		ENDIF
 
-	METHOD SetOwner(Owner AS XSharp.VO.Control) AS VOID 
+	METHOD SetOwner(Owner AS VOSDK.Control) AS VOID 
 		oProperties              := VOControlProperties{SELF, Owner}		
 		oProperties:StyleChanged += SetVisualStyle	
 		IF SELF:TabStop

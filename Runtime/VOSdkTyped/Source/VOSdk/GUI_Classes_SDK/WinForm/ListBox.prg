@@ -5,8 +5,8 @@
 // Also some On..() methods have been implemented that call the event handlers on the VO Window
 // class that owns the control
 
-#USING System.Windows.Forms
-
+USING System.Windows.Forms
+USING VOSDK := XSharp.VO.SDK
 
 CLASS VOListBox INHERIT System.Windows.Forms.ListBox IMPLEMENTS IVOControl, IVOControlInitialize
 
@@ -18,9 +18,9 @@ CLASS VOListBox INHERIT System.Windows.Forms.ListBox IMPLEMENTS IVOControl, IVOC
 #endregion
 
 #region properties
-	PROPERTY ListBox AS XSharp.VO.ListBox 
+	PROPERTY ListBox AS VOSDK.ListBox 
 		GET 
-    		RETURN (XSharp.VO.ListBox) SELF:Control 
+    		RETURN (VOSDK.ListBox) SELF:Control 
 		END GET
     END PROPERTY
 
@@ -62,10 +62,10 @@ CLASS VOListBox INHERIT System.Windows.Forms.ListBox IMPLEMENTS IVOControl, IVOC
 		ENDIF		
 
 
-	CONSTRUCTOR(Owner AS XSharp.VO.Control, dwStyle AS LONG, dwExStyle AS LONG)
+	CONSTRUCTOR(Owner AS VOSDK.Control, dwStyle AS LONG, dwExStyle AS LONG)
 		SELF(Owner, dwStyle, dwExStyle, FALSE)
 				
-	CONSTRUCTOR(Owner AS XSharp.VO.Control, dwStyle AS LONG, dwExStyle AS LONG, lHideVerticalScrollBars AS LOGIC)
+	CONSTRUCTOR(Owner AS VOSDK.Control, dwStyle AS LONG, dwExStyle AS LONG, lHideVerticalScrollBars AS LOGIC)
 		LOCAL lSorted AS LOGIC
 		IF _AND(dwStyle, LBS_SORT) == LBS_SORT
 			lSorted := TRUE
@@ -204,7 +204,7 @@ CLASS VOListBox INHERIT System.Windows.Forms.ListBox IMPLEMENTS IVOControl, IVOC
 END CLASS
 
 CLASS VOComboBox INHERIT System.Windows.Forms.ComboBox IMPLEMENTS IVOControl, IVOControlInitialize
-	PROPERTY ComboBox AS XSharp.VO.ComboBox GET (XSharp.VO.ComboBox) SELF:Control
+	PROPERTY ComboBox AS VOSDK.ComboBox GET (VOSDK.ComboBox) SELF:Control
 	PROTECTED searchString := STRING.Empty AS STRING
 	PROTECTED lastKeyPressTime := DateTime.MinValue AS DateTime
 	PROTECTED lBusy AS LOGIC
@@ -248,7 +248,7 @@ CLASS VOComboBox INHERIT System.Windows.Forms.ComboBox IMPLEMENTS IVOControl, IV
 		END SET
 	END PROPERTY
 
-	CONSTRUCTOR(Owner AS XSharp.VO.Control, dwStyle AS LONG, dwExStyle AS LONG)
+	CONSTRUCTOR(Owner AS VOSDK.Control, dwStyle AS LONG, dwExStyle AS LONG)
 		LOCAL lSorted AS LOGIC
 		IF _AND(dwStyle, CBS_SORT) == CBS_SORT
 			lSorted := TRUE

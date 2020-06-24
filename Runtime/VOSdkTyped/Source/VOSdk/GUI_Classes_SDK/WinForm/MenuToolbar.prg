@@ -4,9 +4,10 @@
 // Also some On..() methods have been implemented that call the event handles on the VO Window
 // class that owns the control
 
-#USING System.Windows.Forms
-#USING System.Reflection
-#using System.Collections.Generic
+USING System.Windows.Forms
+USING System.Reflection
+USING System.Collections.Generic
+USING VOSDK := XSharp.VO.SDK
 CLASS VOMenu INHERIT System.Windows.Forms.MainMenu
 
 	CONSTRUCTOR() STRICT
@@ -154,7 +155,7 @@ END CLASS
 CLASS VOToolBar INHERIT System.Windows.Forms.ToolBar IMPLEMENTS IVOControl
 	#include "PropControl.vh"
 
-	CONSTRUCTOR(Owner AS XSharp.VO.Control, dwStyle AS LONG, dwExStyle AS LONG)
+	CONSTRUCTOR(Owner AS VOSDK.Control, dwStyle AS LONG, dwExStyle AS LONG)
 		oProperties := VOControlProperties{SELF, Owner, dwStyle, dwExStyle}
 		SUPER()
 		SELF:ButtonSize := System.Drawing.Size{20,20}

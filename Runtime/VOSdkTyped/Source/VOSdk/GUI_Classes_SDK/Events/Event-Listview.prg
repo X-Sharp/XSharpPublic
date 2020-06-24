@@ -3,8 +3,8 @@
 
 
 
-#USING System.Diagnostics
-
+USING System.Diagnostics
+USING VOSDK := XSharp.VO.SDK
 #region ListViewEvents
 CLASS ListViewColumnClickEvent INHERIT ControlNotifyEvent
 	PROTECT oCol AS ListViewColumn
@@ -81,30 +81,30 @@ CLASS ListViewItemEvent INHERIT ControlNotifyEvent
 	PROTECT oListView	AS ListView
 
 	
-	CONSTRUCTOR(oLV AS XSharp.VO.ListView)
+	CONSTRUCTOR(oLV AS VOSDK.ListView)
 		SUPER(oLV)
 		oListView := oLV
 		oLVI := oListView:GetSelectedItem()
 	
 	[DebuggerStepThrough];
-	CONSTRUCTOR(oLV AS XSharp.VO.ListView, oItem AS ListViewItem)
+	CONSTRUCTOR(oLV AS VOSDK.ListView, oItem AS ListViewItem)
 		SUPER(oLV)
 		oLVI := oItem
 
 	[DebuggerStepThrough];
-	CONSTRUCTOR(oLV AS XSharp.VO.ListView, e AS System.EventArgs)
+	CONSTRUCTOR(oLV AS VOSDK.ListView, e AS System.EventArgs)
 		SUPER(oLV)
 		oListView := oLV
 		oLVI := oListView:GetSelectedItem()
 
 	[DebuggerStepThrough];	
-	CONSTRUCTOR(oLV AS XSharp.VO.ListView, e AS System.Windows.Forms.ItemChangedEventArgs)
+	CONSTRUCTOR(oLV AS VOSDK.ListView, e AS System.Windows.Forms.ItemChangedEventArgs)
 		SUPER(oLV)
 		oListView := oLV
 		oLVI	  := oLV:GetItemAttributes(e:Index+1)
 	
 	[DebuggerStepThrough];
-	CONSTRUCTOR(oLV AS XSharp.VO.ListView, e AS System.Windows.Forms.ItemCheckEventArgs)
+	CONSTRUCTOR(oLV AS VOSDK.ListView, e AS System.Windows.Forms.ItemCheckEventArgs)
 		SUPER(oLV)
 		oListView := oLV
 		oLVI	  := oLV:GetItemAttributes(e:Index)
@@ -141,7 +141,7 @@ CLASS ListViewMouseEvent INHERIT ControlNotifyEvent
 		RETURN 0
 
 	[DebuggerStepThrough];
-	CONSTRUCTOR(oLv AS XSharp.VO.ListView, e AS System.Windows.Forms.MouseEventArgs) 
+	CONSTRUCTOR(oLv AS VOSDK.ListView, e AS System.Windows.Forms.MouseEventArgs) 
 		SUPER(oLv)
 		nButton := e:Button
 		oPoint := e:Location

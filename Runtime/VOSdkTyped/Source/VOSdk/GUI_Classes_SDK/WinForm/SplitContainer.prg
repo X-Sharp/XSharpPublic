@@ -6,9 +6,11 @@
 // class that owns the control
 
 USING System.Windows.Forms
+USING VOSDK := XSharp.VO.SDK
 
 CLASS VOSplitContainer INHERIT System.Windows.Forms.SplitContainer IMPLEMENTS IVOControl, IVOControlInitialize
-    PROPERTY oSplitView		AS XSharp.VO.SplitView GET (XSharp.VO.SplitView) SELF:Control
+
+    PROPERTY oSplitView		AS VOSDK.SplitView GET (VOSDK.SplitView) SELF:Control
 
 	#include "PropControl.vh"
 
@@ -16,7 +18,7 @@ CLASS VOSplitContainer INHERIT System.Windows.Forms.SplitContainer IMPLEMENTS IV
 		SELF:AutoSize			:= FALSE
 		RETURN
 	
-	CONSTRUCTOR(Owner AS XSharp.VO.Control, dwStyle AS LONG, dwExStyle AS LONG)
+	CONSTRUCTOR(Owner AS VOSDK.Control, dwStyle AS LONG, dwExStyle AS LONG)
 		SUPER()
 		oProperties := VOControlProperties{SELF, Owner, dwStyle, dwExStyle}
 		SELF:Initialize()

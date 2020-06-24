@@ -1,4 +1,4 @@
-
+USING VOSDK := XSharp.VO.SDK
 
 
 CLASS Brush INHERIT VObject
@@ -6,7 +6,7 @@ CLASS Brush INHERIT VObject
 	PROTECT _hParent AS IntPtr
 	PROTECT oColor   as Color
 
-	ACCESS Color AS XSharp.VO.Color
+	ACCESS Color AS VOSDK.Color
 		RETURN oColor
 
 	[Obsolete];
@@ -97,7 +97,7 @@ CLASS Brush INHERIT VObject
 
 
 
-	OPERATOR IMPLICIT ( c AS XSharp.VO.Color) AS Brush
+	OPERATOR IMPLICIT ( c AS VOSDK.Color) AS Brush
 		RETURN Brush{c}
 
 	OPERATOR IMPLICIT ( b AS Brush) AS System.Drawing.Color

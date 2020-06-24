@@ -1,5 +1,6 @@
 
-#USING System.Windows.Forms
+USING System.Windows.Forms
+USING VOSDK := XSharp.VO.SDK
 CLASS ChildAppWindow INHERIT AppWindow
 	PROTECT oShell AS ShellWindow
 
@@ -46,7 +47,7 @@ CLASS ChildAppWindow INHERIT AppWindow
 			//ENDIF
 		ENDIF
 
-	ASSIGN Menu(oNewMenu AS XSharp.VO.Menu) 
+	ASSIGN Menu(oNewMenu AS VOSDK.Menu) 
 		LOCAL i as DWORD
 		SUPER:Menu := oNewMenu
 		if oShell != NULL_OBJECT

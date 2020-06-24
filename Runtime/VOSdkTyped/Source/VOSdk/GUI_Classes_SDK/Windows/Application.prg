@@ -2,7 +2,8 @@
 
 
 
-#USING System.Windows.Forms
+USING System.Windows.Forms
+USING VOSDK := XSharp.VO.SDK
 
 CLASS App INHERIT VObject
 	PROTECT liWindowCount AS LONGINT
@@ -188,8 +189,8 @@ FUNCTION SetAccelerator(hWnd AS IntPtr, hAccel AS IntPtr) AS LOGIC STRICT
 
 
 CLASS MessageFilter IMPLEMENTS System.Windows.Forms.IMessageFilter
-	PROTECT oApp AS XSharp.VO.App
-	CONSTRUCTOR (oA AS XSharp.VO.App)
+	PROTECT oApp AS VOSDK.App
+	CONSTRUCTOR (oA AS VOSDK.App)
 		SELF:oApp := oA
 		System.Windows.Forms.Application.AddMessageFilter(SELF)
 		

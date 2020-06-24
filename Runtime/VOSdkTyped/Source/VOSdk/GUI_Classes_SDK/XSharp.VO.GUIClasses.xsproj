@@ -6,11 +6,11 @@
   <PropertyGroup>
     <Dialect>Vulcan</Dialect>
     <ProjectGuid>051D166B-3886-43FB-A3C6-6C6846EA6DF1</ProjectGuid>
-    <AssemblyName>XSharp.VO.GUIClasses</AssemblyName>
+    <AssemblyName>XSharp.VOGUIClasses</AssemblyName>
     <Name>XSharp.VO.GUIClasses</Name>
     <OutputName>XSharpGUIClasses</OutputName>
     <XSharpProjectExtensionsPath>$(MSBuildExtensionsPath)\XSharp\</XSharpProjectExtensionsPath>
-    <XSharpProjectversion>2.4.1.0</XSharpProjectversion>
+    <XSharpProjectversion>2.5.0.0</XSharpProjectversion>
     <Includepaths>$(Solutiondir)Common</Includepaths>
     <Nostandarddefs>false</Nostandarddefs>
     <PlatformTarget>x86</PlatformTarget>
@@ -19,7 +19,7 @@
     <CS>false</CS>
     <NamedArgs>false</NamedArgs>
     <InitLocals>false</InitLocals>
-    <RootNamespace>XSharp.VO</RootNamespace>
+    <RootNamespace>XSharp.VO.SDK</RootNamespace>
     <NoWin32Manifest>False</NoWin32Manifest>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">

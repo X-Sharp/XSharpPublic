@@ -6,10 +6,10 @@
 // class that owns the control
 
 USING System.Windows.Forms
-
+USING VOSDK := XSharp.VO.SDK
 
 CLASS VOTextBox INHERIT System.Windows.Forms.TextBox IMPLEMENTS IVOControl, IVOControlInitialize
-	PROPERTY oEdit		AS XSharp.VO.Edit GET (XSharp.VO.Edit) SELF:Control
+	PROPERTY oEdit		AS VOSDK.Edit GET (VOSDK.Edit) SELF:Control
 
 	#include "PropControl.vh"
 
@@ -18,7 +18,7 @@ CLASS VOTextBox INHERIT System.Windows.Forms.TextBox IMPLEMENTS IVOControl, IVOC
         SELF:oProperties:OnWndProc += OnWndProc
 		RETURN
 	
-	CONSTRUCTOR(Owner AS XSharp.VO.Control, dwStyle AS LONG, dwExStyle AS LONG)
+	CONSTRUCTOR(Owner AS VOSDK.Control, dwStyle AS LONG, dwExStyle AS LONG)
 		SUPER()
 			oProperties := VOControlProperties{SELF, Owner, dwStyle, dwExStyle}
 		SELF:Initialize()
@@ -97,7 +97,7 @@ CLASS VOTextBox INHERIT System.Windows.Forms.TextBox IMPLEMENTS IVOControl, IVOC
 END CLASS
 
 CLASS VOHotKeyTextBox INHERIT VOTextBox IMPLEMENTS IVOControl
-	CONSTRUCTOR(Owner AS XSharp.VO.Control, dwStyle AS LONG, dwExStyle AS LONG)
+	CONSTRUCTOR(Owner AS VOSDK.Control, dwStyle AS LONG, dwExStyle AS LONG)
 		SUPER(Owner, dwStyle, dwExStyle)
 
 	VIRTUAL PROTECTED PROPERTY CreateParams AS System.Windows.Forms.CreateParams 
@@ -110,7 +110,7 @@ CLASS VOHotKeyTextBox INHERIT VOTextBox IMPLEMENTS IVOControl
 END CLASS
 
 CLASS VOMLETextBox INHERIT VOTextBox
-	CONSTRUCTOR(Owner AS XSharp.VO.Control, dwStyle AS LONG, dwExStyle AS LONG)
+	CONSTRUCTOR(Owner AS VOSDK.Control, dwStyle AS LONG, dwExStyle AS LONG)
 		SUPER(Owner,dwStyle,dwExStyle )
 		SELF:Multiline := TRUE
 	
@@ -133,7 +133,7 @@ END CLASS
 
 
 CLASS VOIPAddressTextBox INHERIT VOTextBox
-	CONSTRUCTOR(Owner AS XSharp.VO.Control, dwStyle AS LONG, dwExStyle AS LONG)
+	CONSTRUCTOR(Owner AS VOSDK.Control, dwStyle AS LONG, dwExStyle AS LONG)
 		SUPER(Owner,dwStyle,dwExStyle )
 	
 	VIRTUAL PROTECTED PROPERTY CreateParams AS System.Windows.Forms.CreateParams 
@@ -155,7 +155,7 @@ CLASS VORichTextBox INHERIT System.Windows.Forms.RichTextBox IMPLEMENTS IVOContr
 		RETURN
 
 
-	CONSTRUCTOR(Owner AS XSharp.VO.Control, dwStyle AS LONG, dwExStyle AS LONG)
+	CONSTRUCTOR(Owner AS VOSDK.Control, dwStyle AS LONG, dwExStyle AS LONG)
 		oProperties := VOControlProperties{SELF, Owner, dwStyle, dwExStyle}
 		SUPER()
 		SELF:Initialize()
@@ -171,10 +171,10 @@ END CLASS
 
 
 CLASS VOSpinnerTextBox INHERIT System.Windows.Forms.NumericUpDown IMPLEMENTS IVOControl
-	PROPERTY oEdit		AS XSharp.VO.SpinnerEdit GET (XSharp.VO.SpinnerEdit) SELF:Control
+	PROPERTY oEdit		AS VOSDK.SpinnerEdit GET (VOSDK.SpinnerEdit) SELF:Control
 	#include "PropControl.vh"
 
-	CONSTRUCTOR(Owner AS XSharp.VO.Control, dwStyle AS LONG, dwExStyle AS LONG)
+	CONSTRUCTOR(Owner AS VOSDK.Control, dwStyle AS LONG, dwExStyle AS LONG)
 		oProperties := VOControlProperties{SELF, Owner, dwStyle, dwExStyle}
 		SUPER()
 		SELF:Minimum := 0

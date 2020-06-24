@@ -3,6 +3,8 @@
 #include "VOWin32APILibrary.vh"
 
 using System.Collections.Generic
+USING VOSDK := XSharp.VO.SDK
+
 
 PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParent, ITimer
 	PROTECT oParent AS OBJECT
@@ -24,7 +26,7 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
 	PROTECT lRetVal AS LOGIC
 	PROTECT oOrigin AS Point
 	PROTECT oPen AS Pen
-	PROTECT oCursor AS XSharp.VO.Cursor
+	PROTECT oCursor AS VOSDK.Cursor
 	PROTECT oDragDropClient AS DragDropClient
 	//PROTECT oDragDropServer AS DragDropServer
 	PROTECT oToolBar AS ToolBar
@@ -49,7 +51,7 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
 	PROTECT lTimerRegistered AS LOGIC
 	
 	//PROTECT lDragActive AS LOGIC
-	//PROTECT oDragImageList AS XSharp.VO.ImageList
+	//PROTECT oDragImageList AS VOSDK.ImageList
 	PROTECT hDragSingleCursor AS IntPtr
 	PROTECT hDragMultipCursor AS IntPtr
 	PROTECT aAlignes			AS ARRAY
@@ -98,7 +100,7 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
 			NEXT
 		ENDIF
 		RETURN oWnd
-	METHOD __SetupDataControl(oDC AS XSharp.VO.Control) AS VOID
+	METHOD __SetupDataControl(oDC AS VOSDK.Control) AS VOID
 		RETURN 
 	
 	METHOD __AddAlign(oControl AS IGUIObject, iType AS USUAL) AS LOGIC STRICT 
@@ -148,13 +150,13 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
 			LOCAL oRect AS System.Drawing.Rectangle
 			IF IsInstanceOf(oControl, #Window)
 				LOCAL oForm AS System.Windows.Forms.Form
-				oForm 			:= ((XSharp.VO.Window) oControl):__Form
+				oForm 			:= ((VOSDK.Window) oControl):__Form
 				oRect 			:= oForm:ClientRectangle
 				oRect:Location 	:= oControl:Origin
 				oRect:Size     	:= oForm:Size
 			ELSE
 				LOCAL oCtrl AS System.Windows.Forms.Control
-				oCtrl			:= ((XSharp.VO.Control) oControl):__Control
+				oCtrl			:= ((VOSDK.Control) oControl):__Control
 				oRect			:= oCtrl:DisplayRectangle
 				oRect:Location  := oCtrl:Location
 			ENDIF
@@ -167,7 +169,7 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
 		
 		RETURN TRUE
 	
-	METHOD __AddTool(oControl AS XSharp.VO.Control) AS LOGIC STRICT 
+	METHOD __AddTool(oControl AS VOSDK.Control) AS LOGIC STRICT 
 		//LOCAL cMessage AS STRING
 		//SELF:EnableToolTips(TRUE)
 		//cMessage := oControl:ToolTipText
@@ -182,7 +184,7 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
 
 		RETURN TRUE
 	
-	METHOD __ShowToolTip(oControl AS XSharp.VO.Control) AS VOID STRICT
+	METHOD __ShowToolTip(oControl AS VOSDK.Control) AS VOID STRICT
 		LOCAL cMessage AS STRING
 		cMessage := oControl:ToolTipText
 		IF STRING.IsNullOrEmpty(cMessage) .and. oControl:UseHLForToolTip
@@ -542,10 +544,10 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
 		RETURN hDIB
 	
 
-	ACCESS __Cursor AS XSharp.VO.Cursor STRICT 
+	ACCESS __Cursor AS VOSDK.Cursor STRICT 
 		RETURN oCursor
 
-	ASSIGN __Cursor(oNewCursor AS XSharp.VO.Cursor)  STRICT 
+	ASSIGN __Cursor(oNewCursor AS VOSDK.Cursor)  STRICT 
 		oCursor:=oNewCursor
 	
 	[Obsolete];
@@ -1533,7 +1535,7 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
 	//	RETURN oDragDropServer
 	
 
-	//ACCESS DragImageList AS XSharp.VO.ImageList
+	//ACCESS DragImageList AS VOSDK.ImageList
 	//	RETURN oDragImageList
 	
 
@@ -1689,11 +1691,11 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
 	
 
 
-	ACCESS Font AS XSharp.VO.Font
+	ACCESS Font AS VOSDK.Font
 		RETURN oFont
 	
 
-	ASSIGN Font(oNewFont AS XSharp.VO.Font) 
+	ASSIGN Font(oNewFont AS VOSDK.Font) 
 		oFont := oNewFont
 		SELF:__SetFont()
 		RETURN 

@@ -1,7 +1,9 @@
 
 
-#USING System.Windows.Forms
-#USING System.Runtime.InteropServices
+USING System.Windows.Forms
+USING System.Runtime.InteropServices
+USING VOSDK := XSharp.VO.SDK
+
 CLASS DateTimePicker INHERIT TextControl
 	HIDDEN _lNoAssign AS LOGIC   
 	PROTECT cFormat        AS STRING
@@ -92,7 +94,7 @@ CLASS DateTimePicker INHERIT TextControl
 	ASSIGN MCBackgroundColor(oColor AS Color) 
 		__DateTimePicker:BackColor := oColor
 
-	ASSIGN MCFont(oNewFont as XSharp.VO.Font) 
+	ASSIGN MCFont(oNewFont AS VOSDK.Font) 
 		__DateTimePicker:CalendarFont := oNewFont
 		RETURN 
 

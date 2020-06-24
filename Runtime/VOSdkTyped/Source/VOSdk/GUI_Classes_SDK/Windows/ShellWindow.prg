@@ -2,13 +2,14 @@
 
 STATIC DEFINE __WCMdiFirstChildID := 0x8001
 USING SWF := System.Windows.Forms
+USING VOSDK := XSharp.VO.SDK
 
 CLASS ShellWindow INHERIT AppWindow
 	PROTECT oWndClient	AS System.Windows.Forms.MdiClient
 	PROTECT lOpened		AS LOGIC
 	PROTECT lUsingChildMenu AS LOGIC
-	PROTECT oActualMenu	AS XSharp.VO.Menu
-	PROTECT oSavedTB	AS XSharp.VO.ToolBar
+	PROTECT oActualMenu	AS VOSDK.Menu
+	PROTECT oSavedTB	AS VOSDK.ToolBar
 	PROTECT iChildTBLoc AS INT
 	
 	METHOD enableScrollBars(enable AS LOGIC) AS VOID
@@ -46,7 +47,7 @@ CLASS ShellWindow INHERIT AppWindow
 	ACCESS __Shell AS VOShellForm
 		RETURN (VOShellForm) __Form
 	
-	ACCESS __ActualMenu AS XSharp.VO.Menu STRICT 
+	ACCESS __ActualMenu AS VOSDK.Menu STRICT 
 		//PP-030828 Strong typing
 		RETURN oActualMenu
 	
@@ -55,7 +56,7 @@ CLASS ShellWindow INHERIT AppWindow
 		RETURN TRUE
 	
 
-	METHOD __RemoveChildToolBar() AS XSharp.VO.ToolBar STRICT 
+	METHOD __RemoveChildToolBar() AS VOSDK.ToolBar STRICT 
 		
 		IF (iChildTBLoc == TBL_SHELL)
 			IF (oSavedTB != NULL_OBJECT)
@@ -71,8 +72,8 @@ CLASS ShellWindow INHERIT AppWindow
 	
 	
 
-	METHOD __SetChildToolBar(oChildToolbar AS XSharp.VO.ToolBar) AS XSharp.VO.ToolBar STRICT 
-		LOCAL oTB AS XSharp.VO.ToolBar
+	METHOD __SetChildToolBar(oChildToolbar AS VOSDK.ToolBar) AS VOSDK.ToolBar STRICT 
+		LOCAL oTB AS VOSDK.ToolBar
 		IF oChildToolbar != NULL_OBJECT  //SE-050926
 			
 			IF (iChildTBLoc == TBL_SHELL)
@@ -312,7 +313,7 @@ CLASS ShellWindow INHERIT AppWindow
 		RETURN 
 	
 
-	ASSIGN Menu(oNewMenu  AS XSharp.VO.Menu) 
+	ASSIGN Menu(oNewMenu  AS VOSDK.Menu) 
 		LOCAL nAuto as LONG
 		SUPER:Menu := oNewMenu
 		nAuto := oNewMenu:GetAutoUpdate()
@@ -333,7 +334,7 @@ CLASS ShellWindow INHERIT AppWindow
 		SUPER:StatusBar := oNewBar
 		RETURN 
 	
-	ASSIGN ToolBar(oNewToolBar As XSharp.VO.ToolBar) 
+	ASSIGN ToolBar(oNewToolBar AS VOSDK.ToolBar) 
 		oSavedTB := oNewToolBar
 		SUPER:ToolBar := oNewToolBar
 	

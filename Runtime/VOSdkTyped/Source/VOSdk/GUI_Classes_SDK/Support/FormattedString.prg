@@ -288,7 +288,7 @@ CLASS __FormattedString
 
 
 	METHOD InvalidAction() AS VOID STRICT 
-		Win32.MessageBeep(0XFFFFFFFF)
+		GuiWin32.MessageBeep(0XFFFFFFFF)
 		RETURN
 
 	METHOD IsEditPos(iPos AS INT) AS LOGIC STRICT 

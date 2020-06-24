@@ -23,7 +23,7 @@ CLASS TextObject INHERIT DrawObject
 		IF oColor != NULL_OBJECT
 			SELF:oColor := oColor
 		ELSE
-			dwColor	:=	Win32.GetSysColor(Color_WindowText)
+			dwColor	:=	GuiWin32.GetSysColor(Color_WindowText)
 			SELF:oColor := Color{dwColor}
 		ENDIF
 

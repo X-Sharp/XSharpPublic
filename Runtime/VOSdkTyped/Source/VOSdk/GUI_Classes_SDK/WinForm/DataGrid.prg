@@ -208,8 +208,8 @@ CLASS VODataGridViewColumn INHERIT DataGridViewTextBoxColumn
 		SUPER()
 		SELF:DataColumn := oCol
 		SELF:SortMode := DataGridViewColumnSortMode.Programmatic
-		SELF:HeaderCell:Style:BackColor	:= oForeColor //XSharp.VO.Color{Win32.GetSysColor(COLOR_BTNFACE)}
-		SELF:HeaderCell:Style:ForeColor := oBackColor // XSharp.VO.Color{Win32.GetSysColor(COLOR_BTNTEXT)}
+		SELF:HeaderCell:Style:BackColor	:= oForeColor //XSharp.VO.Color{GuiWin32.GetSysColor(COLOR_BTNFACE)}
+		SELF:HeaderCell:Style:ForeColor := oBackColor // XSharp.VO.Color{GuiWin32.GetSysColor(COLOR_BTNTEXT)}
 		SELF:HeaderCell:Style:WrapMode  := DataGridViewTriState.False
 		IF oCol:HyperLabel != NULL_OBJECT
 			SELF:Name	:= oCol:HyperLabel:Name

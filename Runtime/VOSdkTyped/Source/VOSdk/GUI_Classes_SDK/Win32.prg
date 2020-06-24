@@ -1,4 +1,4 @@
-// Win32.prg
+// GuiWin32.prg
 // Static class with some Win32 API functions that are used inside the Unicode GUI Classes
 
 #USING System.Runtime.InteropServices
@@ -6,7 +6,7 @@
 
 
 
-STATIC CLASS Win32
+INTERNAL STATIC CLASS GuiWin32
 	#region Kernel32
 
 	[DllImport("kernel32.dll")];

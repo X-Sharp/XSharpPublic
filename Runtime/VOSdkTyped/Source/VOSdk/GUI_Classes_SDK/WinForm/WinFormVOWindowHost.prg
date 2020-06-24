@@ -155,7 +155,7 @@ CLASS XSharp.VO.WinFormVOWindowHost INHERIT Component
 		
 	METHOD Close() AS VOID STRICT
 		IF ! window == NULL
-			Win32.SendMessage(window:Handle(),WM_CLOSE,0,0)
+			GuiWin32.SendMessage(window:Handle(),WM_CLOSE,0,0)
 		ENDIF
 		
 		RETURN

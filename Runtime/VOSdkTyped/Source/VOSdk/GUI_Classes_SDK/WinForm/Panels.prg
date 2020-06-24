@@ -240,7 +240,7 @@ CLASS VOPanel INHERIT System.Windows.Forms.Panel
 	PROTECTED METHOD OnVisibleChanged(e AS EventArgs ) AS VOID
 		SUPER:OnVisibleChanged(e)
 		IF SELF:Visible
-			Win32.SendMessage(SELF:Handle, WM_UPDATEUISTATE, MakeWParam(UIS_CLEAR,UISF_HIDEFOCUS) , 0) // always show focus rectangles, switching the ui mode flickers
+			GuiWin32.SendMessage(SELF:Handle, WM_UPDATEUISTATE, MakeWParam(UIS_CLEAR,UISF_HIDEFOCUS) , 0) // always show focus rectangles, switching the ui mode flickers
 			SELF:_lNoUpdateUIState := TRUE
 			IF SELF:Parent != NULL_OBJECT
 				IF self:Parent is System.Windows.Forms.Form

@@ -107,7 +107,7 @@ CLASS App INHERIT VObject
 		RETURN NIL
 
 	METHOD Run(sCommand) 
-		Win32.WinExec(sCommand, SW_SHOWNORMAL)
+		GuiWin32.WinExec(sCommand, SW_SHOWNORMAL)
 		RETURN NIL
 	
 	METHOD BeforeDispatch(hWnd AS IntPtr, uMsg AS DWORD, wParam AS DWORD, lParam AS LONG) AS LOGIC STRICT

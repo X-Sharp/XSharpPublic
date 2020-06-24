@@ -26,7 +26,7 @@ CLASS XSharp.VO.WinFormVOWindow INHERIT System.Windows.Forms.Form
         LOCAL control AS System.Windows.Forms.Control
         LOCAL hWnd AS IntPtr
         
-        hWnd := Win32.GetParent(window:Handle())
+        hWnd := GuiWin32.GetParent(window:Handle())
         control := System.Windows.Forms.Form.FromHandle(hWnd)
         
         IF ! control == NULL

@@ -2456,10 +2456,11 @@ BEGIN NAMESPACE XSharp
         /// <include file="RTComments.xml" path="Comments/Operator/*" />
         /// Note this generates error XS0553.
         /// However our compiler needs this one. Therefore disable XS0553
+        #pragma warnings (553, off)
         [DebuggerStepThroughAttribute];
         STATIC OPERATOR IMPLICIT(val AS OBJECT) AS __Usual
             RETURN __Usual{val}
-
+        #pragma warnings (553, on)
             /// <include file="RTComments.xml" path="Comments/Operator/*" />
         [DebuggerStepThroughAttribute];
         STATIC OPERATOR IMPLICIT(val AS LOGIC) AS __Usual

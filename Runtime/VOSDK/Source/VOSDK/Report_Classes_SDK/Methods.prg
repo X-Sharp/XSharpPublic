@@ -1,3 +1,4 @@
+#pragma warnings(414, off)  // unused fields
 CLASS DDEMC
 	EXPORT isModal AS LOGIC
 	EXPORT cCmd AS STRING
@@ -985,3 +986,4 @@ FUNCTION IsCaretLoaded() AS LOGIC
 	
 _DLL FUNC WrmCloseReportWindow(x AS DWORD, y AS DWORD) AS VOID PASCAL:CAQR3WRM.WrmCloseReportWindow
 	
+#pragma warnings(414, DEFAULT)

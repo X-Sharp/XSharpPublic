@@ -81,11 +81,6 @@
     <Folder Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Runtime\VOSDK\Source\VOSDK\SQL_Unicode_SDK\XSSQLClasses.xsproj">
-      <Name>XSSQLClasses</Name>
-      <Project>{91816960-eb2d-4e4a-ae67-4edc5bd38940}</Project>
-      <Private>True</Private>
-    </ProjectReference>
     <ProjectReference Include="..\Runtime\VOSDK\Source\VOSDK\System_Classes_SDK\VOSystemClasses.xsproj">
       <Name>VOSystemClasses</Name>
       <Project>{ac2aebff-69ff-405d-b7d9-6e5cb1db914c}</Project>

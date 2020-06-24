@@ -21,35 +21,40 @@
     <Language>en-US</Language>
     <DocumentationSources>
       <DocumentationSource sourceFile="Docs\XsRuntimeClasses.xml" />
-      <DocumentationSource sourceFile="Binaries\Documentation\XSharp.Rdd.dll" />
-      <DocumentationSource sourceFile="Binaries\Documentation\XSharp.Core.XML" />
-      <DocumentationSource sourceFile="Binaries\Documentation\XSharp.Core.dll" />
-      <DocumentationSource sourceFile="Binaries\Documentation\XSharp.RDD.XML" />
-      <DocumentationSource sourceFile="Binaries\Documentation\XSharp.RT.XML" />
-      <DocumentationSource sourceFile="Binaries\Documentation\XSharp.RT.dll" />
-      <DocumentationSource sourceFile="Binaries\Documentation\XSharp.VFP.XML" />
-      <DocumentationSource sourceFile="Binaries\Documentation\XSharp.VFP.dll" />
-      <DocumentationSource sourceFile="Binaries\Documentation\XSharp.VO.XML" />
-      <DocumentationSource sourceFile="Binaries\Documentation\XSharp.VO.dll" />
-      <DocumentationSource sourceFile="Binaries\Documentation\XSharp.XPP.XML" />
-      <DocumentationSource sourceFile="Binaries\Documentation\XSharp.XPP.dll" />
-      <DocumentationSource sourceFile="Binaries\Documentation\XSharp.Data.dll" />
-      <DocumentationSource sourceFile="Binaries\Documentation\XSharp.Data.xml" />
-      <DocumentationSource sourceFile="Binaries\Documentation\VOSystemClasses.dll" />
-      <DocumentationSource sourceFile="Binaries\Documentation\VOConsoleClasses.dll" />
-      <DocumentationSource sourceFile="Binaries\Documentation\VOGUIClasses.dll" />
-      <DocumentationSource sourceFile="Binaries\Documentation\VOInternetClasses.dll" />
-      <DocumentationSource sourceFile="Binaries\Documentation\VORDDClasses.dll" />
-      <DocumentationSource sourceFile="Binaries\Documentation\VOSQLClasses.dll" />
-      <DocumentationSource sourceFile="Docs\VOSDK_Classes.xml" />
-      <DocumentationSource sourceFile="Binaries\Documentation\VOSystemClasses.XML" />
-      <DocumentationSource sourceFile="Binaries\Documentation\VOSQLClasses.XML" />
-      <DocumentationSource sourceFile="Binaries\Documentation\VORDDClasses.XML" />
-      <DocumentationSource sourceFile="Binaries\Documentation\VOInternetClasses.XML" />
-      <DocumentationSource sourceFile="Binaries\Documentation\VOGUIClasses.XML" />
-    </DocumentationSources>
+<DocumentationSource sourceFile="Binaries\Documentation\XSharp.Rdd.dll" />
+<DocumentationSource sourceFile="Binaries\Documentation\XSharp.Core.XML" />
+<DocumentationSource sourceFile="Binaries\Documentation\XSharp.Core.dll" />
+<DocumentationSource sourceFile="Binaries\Documentation\XSharp.RDD.XML" />
+<DocumentationSource sourceFile="Binaries\Documentation\XSharp.RT.XML" />
+<DocumentationSource sourceFile="Binaries\Documentation\XSharp.RT.dll" />
+<DocumentationSource sourceFile="Binaries\Documentation\XSharp.VFP.XML" />
+<DocumentationSource sourceFile="Binaries\Documentation\XSharp.VFP.dll" />
+<DocumentationSource sourceFile="Binaries\Documentation\XSharp.VO.XML" />
+<DocumentationSource sourceFile="Binaries\Documentation\XSharp.VO.dll" />
+<DocumentationSource sourceFile="Binaries\Documentation\XSharp.XPP.XML" />
+<DocumentationSource sourceFile="Binaries\Documentation\XSharp.XPP.dll" />
+<DocumentationSource sourceFile="Binaries\Documentation\XSharp.Data.dll" />
+<DocumentationSource sourceFile="Binaries\Documentation\XSharp.Data.xml" />
+<DocumentationSource sourceFile="Binaries\Documentation\VOSystemClasses.dll" />
+<DocumentationSource sourceFile="Binaries\Documentation\VOConsoleClasses.dll" />
+<DocumentationSource sourceFile="Binaries\Documentation\VOGUIClasses.dll" />
+<DocumentationSource sourceFile="Binaries\Documentation\VOInternetClasses.dll" />
+<DocumentationSource sourceFile="Binaries\Documentation\VORDDClasses.dll" />
+<DocumentationSource sourceFile="Binaries\Documentation\VOSQLClasses.dll" />
+<DocumentationSource sourceFile="Docs\VOSDK_Classes.xml" />
+<DocumentationSource sourceFile="Binaries\Documentation\VOSystemClasses.XML" />
+<DocumentationSource sourceFile="Binaries\Documentation\VOSQLClasses.XML" />
+<DocumentationSource sourceFile="Binaries\Documentation\VORDDClasses.XML" />
+<DocumentationSource sourceFile="Binaries\Documentation\VOInternetClasses.XML" />
+<DocumentationSource sourceFile="Binaries\Documentation\VOGUIClasses.XML" />
+<DocumentationSource sourceFile="Binaries\Documentation\XSharp.VO.SystemClasses.XML" />
+<DocumentationSource sourceFile="Binaries\Documentation\XSharp.VO.SystemClasses.dll" />
+<DocumentationSource sourceFile="Binaries\Documentation\XSharp.VO.SQLClasses.dll" />
+<DocumentationSource sourceFile="Binaries\Documentation\XSharp.VO.RDDClasses.dll" />
+<DocumentationSource sourceFile="Binaries\Documentation\XSharp.VO.RDDClasses.xml" />
+<DocumentationSource sourceFile="Docs\XSharpVOSDK_Classes.xml" /></DocumentationSources>
     <HelpTitle>X# Runtime and VO SDK Reference</HelpTitle>
-    <HelpFileVersion>2.4.1.0</HelpFileVersion>
+    <HelpFileVersion>2.5.0.0</HelpFileVersion>
     <NamingMethod>MemberName</NamingMethod>
     <ContentPlacement>AboveNamespaces</ContentPlacement>
     <RootNamespaceContainer>True</RootNamespaceContainer>

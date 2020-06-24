@@ -15,9 +15,12 @@ END class
 [STAThread];      
 FUNCTION Start() AS VOID
     TRY
-
-
-        TestChrisCorrupt2()
+        VAR x := MemAlloc(80000)
+        ? PtrLen(x)
+        ? PtrLenWrite(x)
+        //DeleteAllOrders()
+        //TestZapJune()
+        //TestChrisCorrupt2()
         //TestChrisCorrupt()
         //DumpKeesFiles()
         //TestIndexKey()
@@ -218,6 +221,155 @@ FUNCTION TestChrisCorrupt2() AS VOID
 //	DbfTest1.RunTest6()
 RETURN
 
+
+FUNCTION DeleteAllOrders() AS VOID	
+LOCAL cDBF, cPfad, cIndex AS STRING 
+LOCAL aFields AS ARRAY 
+
+//    SetExclusive ( TRUE )  //  or FALSE makes no difference
+
+    RddSetDefault ( "DBFCDX" ) 
+    
+    cPfad := "D:\TEST\" 
+
+	cDBF := cPfad + "Foo"
+	cIndex := cPfad + "Foox" 
+	
+	FErase ( cIndex + IndexExt() )
+	
+
+	aFields := { { "LAST" , "C" , 20 , 0 } ,;
+				{ "CITY" , "C" , 20 , 0 }	 } 
+
+		
+    // -------------------
+	
+	? DbCreate( cDBF , AFields)
+	? DbUseArea( ,,cDBF )		
+	
+		
+	? DbCreateOrder ( "ORDER1"  , cIndex , "upper(LAST)" , { || Upper ( _FIELD->LAST) } )
+	? DbCreateOrder ( "ORDER2"  , cIndex , "upper(CITY)" , { || Upper ( _FIELD->CITY) } )	
+		
+    
+	DbCloseArea()
+	
+    ?
+	? DbUseArea( ,,cDBF )	
+	? DbSetIndex ( cIndex ) 
+	
+	? 
+	? DbOrderInfo(DBOI_ORDERCOUNT)  // 2
+	? DbDeleteOrder( "ORDER1" )	 
+	? DbOrderInfo(DBOI_ORDERCOUNT)	// 1
+	? DbDeleteOrder( "ORDER2" )	 
+	? DbOrderInfo(DBOI_ORDERCOUNT)	// 0
+	
+
+	DbCloseArea()		
+	
+	?
+	? "Does the file " + cIndex + IndexExt() + " still exist ? " , File ( cIndex + IndexExt() ) 
+		
+	RETURN	 
+
+FUNCTION TestZapJune() AS VOID
+LOCAL cDBF, cPfad, cDriver, cIndex AS STRING 
+LOCAL aFields, aValues AS ARRAY
+LOCAL i, dwWhich AS DWORD 	
+LOCAL lDeleted AS LOGIC
+		
+		
+   cDriver := RddSetDefault ( "DBFCDX" ) 
+   lDeleted := SetDeleted ( FALSE )  // <---------NOTE ------------  
+   
+//   dwWhich := 1 // dbPack()   
+//   dwWhich := 2 // dbZap()
+   dwWhich := 3 // dbReindex()     
+   
+	cPfad := "D:\TEST\"	
+
+	cDBF := cPfad + "Foo.dbf"
+	cIndex := cPfad + "Foox.cdx"  
+	
+   	FErase ( cIndex ) 
+		 
+	aFields := { { "LAST" , "C" , 20 , 0 } } 
+
+	aValues := { "a1" , "o5" , "g2", "g1" , "g8" , "g6"}	
+		
+    ? "-------------------"
+	? "Create server + cdx"
+	? "-------------------"
+	? DbCreate( cDBF , AFields) 
+	? DbUseArea( ,,cDBF , , FALSE )	// open shared 	
+	
+	FOR i := 1 UPTO ALen ( aValues )
+		DbAppend() 
+		FieldPut ( 1 , aValues [ i ] ) 
+		
+		IF InList ( Upper ( aValues [i] ) , "O5" ) 
+			? "DBDelete()" , DbDelete()
+			
+		ENDIF 	
+						
+	NEXT 
+	
+ 	? "Createorder" , DbCreateOrder ( "ORDER1" , cIndex , "upper(LAST)" , { || Upper ( _FIELD->LAST) } )
+ 	// create a conditional, descending order
+	DbSetOrderCondition( "Upper(LAST) = 'G'" ,{ || Upper ( _FIELD->LAST) = "G" },,,,,,,,, TRUE) 
+	? "Createorder" , DbCreateOrder ( "ORDER2" , cIndex , "upper(LAST)", { || Upper ( _FIELD->LAST) } )
+
+	DbCloseArea()
+	
+	? DbUseArea( ,,cDBF , , FALSE )	
+    ? DbSetIndex( cIndex )
+
+    ?
+	DbSetOrder ( 1 )  
+	? DbOrderInfo(DBOI_NAME), "OrdCount:" , DbOrderInfo(DBOI_KEYCOUNT)  
+	DbSetOrder ( 2 )  
+	? DbOrderInfo(DBOI_NAME), "OrdCount:" , DbOrderInfo(DBOI_KEYCOUNT)                 
+    ?	
+    
+    DbSetOrder ( 2 )  // <--------- NOTE ---------- 
+
+    ? "--------------"
+    ? "Reccount()", RecCount() 
+  	DO CASE 
+  	CASE dwWhich == 1
+  		? "DBPack()" , DbPack()
+  	CASE dwWhich == 2
+		? "DBZap()" , DbZap()
+  	CASE dwWhich == 3
+		? "DbReindex()" , DbReindex()  
+  	ENDCASE 		
+	? "Reccount()", RecCount()
+	? "--------------"    
+    ?
+	DbSetOrder ( 1 )  
+	? DbOrderInfo(DBOI_NAME), "OrdCount:" , DbOrderInfo(DBOI_KEYCOUNT)  
+	DbSetOrder ( 2 )  
+	? DbOrderInfo(DBOI_NAME), "OrdCount:" , DbOrderInfo(DBOI_KEYCOUNT)  
+    ?
+	? "------------------------------"    
+  	? "Close and open dbf + cdx again"
+  	? "------------------------------"
+    DbCloseArea() 
+	DbUseArea( ,,cDBF , , TRUE )	 	
+	DbSetIndex ( cIndex ) 
+	
+	DbSetOrder ( 1 )  
+	? DbOrderInfo(DBOI_NAME), "OrdCount:" , DbOrderInfo(DBOI_KEYCOUNT)  
+	DbSetOrder ( 2 ) 
+	? DbOrderInfo(DBOI_NAME), "OrdCount:" , DbOrderInfo(DBOI_KEYCOUNT)  
+	
+    DbCloseArea() 
+    
+	cDriver := RddSetDefault ( cDriver ) 
+	SetDeleted ( lDeleted )    
+    
+	RETURN	
 
 CLASS DbfTest1
 	STATIC PROTECT nIterations AS DWORD

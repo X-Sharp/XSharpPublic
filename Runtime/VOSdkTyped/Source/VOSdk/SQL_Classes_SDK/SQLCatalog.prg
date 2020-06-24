@@ -37,7 +37,7 @@ CLASS SQLCatalogQuery INHERIT SQLSelect
         lEof := FALSE
         RETURN SELF:__Open(oCatalog, NULL)
     
-    METHOD FIELDPUT( uFieldID , uValue ) AS USUAL CLIPPER
+    METHOD FieldPut( uFieldID AS USUAL, uValue AS USUAL) AS USUAL 
         RETURN uValue
     
     METHOD Prepare()  AS LOGIC

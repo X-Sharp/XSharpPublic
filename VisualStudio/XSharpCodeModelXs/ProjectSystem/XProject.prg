@@ -37,6 +37,7 @@ BEGIN NAMESPACE XSharpModel
       PRIVATE _ImplicitNamespaces                AS List<STRING>
       PRIVATE _dependentProjectList              AS STRING
       PRIVATE _dependentAssemblyList             AS STRING
+      PRIVATE _name                              AS STRING
       PUBLIC  FileWalkComplete						AS XProject.OnFileWalkComplete
       
       #endregion
@@ -148,10 +149,14 @@ BEGIN NAMESPACE XSharpModel
          SELF:_projectNode := project
          SELF:_SourceFilesDict   := XFileDictionary{}
          SELF:_OtherFilesDict    := XFileDictionary{}
+         SELF:_name              := System.IO.Path.GetFileNameWithoutExtension(project:Url)
          SELF:Loaded := TRUE
          SELF:FileWalkCompleted := FALSE
-      INTERNAL METHOD Close() AS VOID
+         XSolution.Add(SELF) 
+      PUBLIC METHOD Close() AS VOID
+         XSolution.Remove(SELF)
          _projectNode := NULL
+         SELF:UnLoad()
          RETURN
       PRIVATE METHOD _clearTypeCache() AS VOID
          _ImplicitNamespaces    := NULL
@@ -991,9 +996,16 @@ BEGIN NAMESPACE XSharpModel
       
       PROPERTY Loaded AS LOGIC AUTO
       
+      METHOD Rename(newName AS STRING) AS VOID
+         VAR oldName := _name
+         newName     := System.IO.Path.GetFileNameWithoutExtension(newName)
+         _name       := newName
+         XSolution.RenameProject(oldName, newName)
+         RETURN
+      
       PROPERTY Name AS STRING
          GET
-            RETURN System.IO.Path.GetFileNameWithoutExtension(SELF:ProjectNode:Url)
+            RETURN _name
          END GET
       END PROPERTY
       
@@ -1023,7 +1035,7 @@ BEGIN NAMESPACE XSharpModel
          END GET
       END PROPERTY
       PROPERTY IsVsBuilding AS LOGIC GET IIF(SELF:_projectNode == NULL, FALSE, SELF:_projectNode:IsVsBuilding)
-      PROPERTY ProjectNode AS IXSharpProject GET SELF:_projectNode SET SELF:_projectNode := VALUE
+      PROPERTY ProjectNode AS IXSharpProject GET SELF:_projectNode 
       
       PROPERTY ReferencedProjects AS IList<XProject>
          GET

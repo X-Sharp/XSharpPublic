@@ -1163,11 +1163,7 @@ namespace XSharp.Project
                 // Neither ? Ok, Create
                 if (projectModel == null)
                 {
-                    projectModel = new XSharpModel.XProject(this);
-                    // Set the backlink, so the walker can access the StatusBar
-                    projectModel.ProjectNode = this;
-                    //
-                    XSharpModel.XSolution.Add(projectModel);
+                    projectModel = new XProject(this);
                 }
                 return projectModel;
             }
@@ -1942,7 +1938,10 @@ namespace XSharp.Project
                 }
             }
             // CleanUp the CodeModel
-            XSharpModel.XSolution.Remove(projectModel);
+            if (projectModel != null)
+            {
+                projectModel.Close();
+            }
             _closing = true;
             var res = base.Close();
 
@@ -1959,16 +1958,13 @@ namespace XSharp.Project
         protected override void RenameProjectFile(string newFile)
         {
 
+            base.RenameProjectFile(newFile);
             var model = this.ProjectModel;
             if (model != null)
             {
-                XSharpModel.XSolution.Remove(model);
+                model.Rename(newFile);
             }
-            base.RenameProjectFile(newFile);
-            if (model != null)
-            {
-                XSharpModel.XSolution.Add(model);
-            }
+
         }
 
         const string config = "$(Configuration)";

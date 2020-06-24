@@ -76,10 +76,10 @@ BEGIN NAMESPACE XSharpModel
          
             
 
-		STATIC METHOD Add(project AS XProject) AS LOGIC
+		INTERNAL STATIC METHOD Add(project AS XProject) AS LOGIC
 			RETURN @@Add(project:Name, project)
 
-		STATIC METHOD Add(projectName AS STRING, project AS XProject) AS LOGIC
+		INTERNAL STATIC METHOD Add(projectName AS STRING, project AS XProject) AS LOGIC
 			WriteOutputMessage("XModel.Solution.Add() "+projectName)
 			IF _projects:ContainsKey(projectName)
 				RETURN FALSE
@@ -140,21 +140,29 @@ BEGIN NAMESPACE XSharpModel
 			ENDIF
 			RETURN NULL
 
-		STATIC METHOD Remove(projectName AS STRING) AS LOGIC
+		INTERNAL STATIC METHOD Remove(projectName AS STRING) AS LOGIC
 			WriteOutputMessage("XModel.Solution.Remove() "+projectName)
 			IF _projects:ContainsKey(projectName)
 				VAR project := _projects:Item[projectName]
 				project:UnLoad()
             project:Close()
-				VAR result := _projects:TryRemove(projectName, OUT project)
+				VAR result := _projects:TryRemove(projectName, OUT VAR _)
 				SystemTypeController.UnloadUnusedAssemblies()
 				RETURN result
 			ENDIF
 			RETURN FALSE
 
-		STATIC METHOD Remove(project AS XProject) AS LOGIC
+      INTERNAL STATIC METHOD RenameProject(oldName AS STRING, newName AS STRING) AS VOID
+         IF _projects:ContainsKey(oldName)
+            _projects:TryRemove(oldName, OUT VAR project)    
+            IF project != NULL
+               _projects:TryAdd(newName, project)
+            ENDIF
+         ENDIF
+
+		INTERNAL STATIC METHOD Remove(project AS XProject) AS LOGIC
 			IF project != NULL .AND. project:ProjectNode != NULL  .AND. _projects:Count > 0
-				RETURN @@Remove(project:Name)
+				RETURN XSolution.Remove(project:Name)
 			ENDIF
 			RETURN FALSE
 

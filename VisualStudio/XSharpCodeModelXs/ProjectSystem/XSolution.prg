@@ -16,7 +16,7 @@ BEGIN NAMESPACE XSharpModel
 		STATIC PRIVATE _projects AS ConcurrentDictionary<STRING, XProject>
       STATIC PRIVATE _fileName   AS STRING
       STATIC PRIVATE _sqldb      AS STRING
-      
+      STATIC PROPERTY IsClosing  AS LOGIC AUTO
       
       PUBLIC STATIC PROPERTY FileName as STRING get _fileName
 
@@ -27,7 +27,7 @@ BEGIN NAMESPACE XSharpModel
 			OutputWindow := DummyOutputWindow{}
          OutputWindow:DisplayOutPutMessage("XSolution Loaded")
          CreateOrphanedFilesProject()
-
+         IsClosing   := FALSE
 
 		STATIC METHOD WriteOutputMessage(message AS STRING) AS VOID
          IF XSettings.EnableLogging
@@ -143,11 +143,7 @@ BEGIN NAMESPACE XSharpModel
 		INTERNAL STATIC METHOD Remove(projectName AS STRING) AS LOGIC
 			WriteOutputMessage("XModel.Solution.Remove() "+projectName)
 			IF _projects:ContainsKey(projectName)
-				VAR project := _projects:Item[projectName]
-				project:UnLoad()
-            project:Close()
 				VAR result := _projects:TryRemove(projectName, OUT VAR _)
-				SystemTypeController.UnloadUnusedAssemblies()
 				RETURN result
 			ENDIF
 			RETURN FALSE

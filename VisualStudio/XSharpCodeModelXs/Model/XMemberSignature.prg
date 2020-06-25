@@ -38,24 +38,6 @@ BEGIN NAMESPACE XSharpModel
          END GET
       END PROPERTY  
       
-      PROPERTY ComboParameterList AS STRING
-         GET
-            VAR parameters := ""
-            FOREACH variable AS IXVariable IN SELF:Parameters
-               IF (parameters:Length > 0)
-                  parameters := parameters + ", "
-               ENDIF
-               VAR cType := variable:ShortTypeName
-               IF variable:IsTyped .AND. variable:ParamType != ParamType.As
-                  parameters += variable:ParamTypeDesc + cType
-               ELSE
-                  parameters += cType
-               ENDIF
-            NEXT
-            RETURN parameters
-         END GET
-      END PROPERTY
-      
       CONSTRUCTOR()
          SUPER()
          SELF:TypeParameters             := List<STRING>{}

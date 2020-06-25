@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic
 
 BEGIN NAMESPACE XSharpModel
+   /// <summary>Properties shared by all objects in the codemodel</summary>
    INTERFACE IXElement
       PROPERTY Name        as STRING GET
       PROPERTY Kind        as Kind   GET
@@ -8,6 +9,7 @@ BEGIN NAMESPACE XSharpModel
       PROPERTY Parent      AS IXEntity GET SET
    END INTERFACE
       
+   /// <summary>Properties shared by all entities (types and members, internal and external) in the codemodel</summary>
    INTERFACE IXEntity INHERIT IXElement
       PROPERTY Description AS STRING GET
       PROPERTY ModVis      AS STRING GET
@@ -16,7 +18,7 @@ BEGIN NAMESPACE XSharpModel
       PROPERTY IsStatic    AS LOGIC     GET
       PROPERTY Prototype   AS STRING    GET         
       PROPERTY FileUsings  AS IList<String> GET
-      PROPERTY IsArray        AS LOGIC GET
+      PROPERTY IsArray     AS LOGIC GET
       PROPERTY Namespace   AS STRING GET
       PROPERTY FullName    AS STRING GET
      
@@ -25,6 +27,7 @@ BEGIN NAMESPACE XSharpModel
    END INTERFACE
    
    
+   /// <summary>Properties shared by types (both internal and external) </summary>
    INTERFACE IXType INHERIT IXEntity
       PROPERTY Children    AS IList<IXType> GET
       PROPERTY IsNested    AS LOGIC GET
@@ -46,13 +49,12 @@ BEGIN NAMESPACE XSharpModel
          
    END INTERFACE
 
+   /// <summary>Properties shared by members (both internal and external) </summary>
    INTERFACE IXMember INHERIT IXEntity
       PROPERTY IsTyped        AS LOGIC  GET 
       PROPERTY ParentType     AS IXType GET
       PROPERTY ParameterList  as STRING GET
       PROPERTY Value          AS STRING GET
-      PROPERTY ComboParameterList AS STRING GET
-      PROPERTY ComboPrototype AS STRING GET
       PROPERTY Parameters     AS IList<IXVariable> GET
       PROPERTY DeclaringType  AS STRING GET  
       PROPERTY IsExtension    AS LOGIC GET
@@ -61,6 +63,7 @@ BEGIN NAMESPACE XSharpModel
       PROPERTY Location    AS STRING GET
    END INTERFACE
    
+   /// <summary>Properties shared by variables (locals, parameters, both internal and external) </summary>
    INTERFACE IXVariable   INHERIT IXElement
       PROPERTY IsParameter    AS LOGIC GET
       PROPERTY IsArray        AS LOGIC GET

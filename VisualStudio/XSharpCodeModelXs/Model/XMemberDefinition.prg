@@ -71,7 +71,23 @@ BEGIN NAMESPACE XSharpModel
       
       PROPERTY ParameterList      AS STRING GET _signature:ParameterList
       
-      PROPERTY ComboParameterList AS STRING	GET _signature:ComboParameterList
+     PROPERTY ComboParameterList AS STRING
+         GET
+            VAR parameters := ""
+            FOREACH variable AS IXVariable IN SELF:Parameters
+               IF (parameters:Length > 0)
+                  parameters := parameters + ", "
+               ENDIF
+               VAR cType := variable:ShortTypeName
+               IF variable:IsTyped .AND. variable:ParamType != ParamType.As
+                  parameters += variable:ParamTypeDesc + cType
+               ELSE
+                  parameters += cType
+               ENDIF
+            NEXT
+            RETURN parameters
+         END GET
+      END PROPERTY
       PROPERTY Parameters         AS IList<IXVariable> GET _signature:Parameters:ToArray()
       
       PROPERTY Signature         AS XMemberSignature  GET _signature SET _signature := @@value
@@ -80,7 +96,28 @@ BEGIN NAMESPACE XSharpModel
       
       PROPERTY Prototype      AS STRING GET SELF:GetProtoType()
       
-      PROPERTY ComboPrototype AS STRING GET SELF:GetComboProtoType()
+      PROPERTY ComboPrototype AS STRING 
+         GET
+            VAR vars := ""
+            VAR desc := ""
+            IF SELF:Kind:HasParameters()
+               IF ( SELF:Kind == Kind.@@Constructor )
+                  vars := "{" + SELF:ComboParameterList + "}"
+               ELSE
+                  vars := "(" + SELF:ComboParameterList + ")"
+               ENDIF 
+            ENDIF
+            IF ( SELF:Kind == Kind.@@Constructor )
+               desc := SELF:Parent:Name + vars
+            ELSE
+               desc := SELF:Name + vars
+            ENDIF
+            IF SELF:Kind:HasReturnType()
+               desc := desc +  XLiterals.AsKeyWord + SELF:TypeName
+            ENDIF
+            RETURN desc
+         END GET
+      END PROPERTY
          
       PROPERTY ParentType     AS IXType   GET SELF:Parent ASTYPE IXType
       PROPERTY IsExtension    AS LOGIC    GET _signature:IsExtension

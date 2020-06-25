@@ -46,14 +46,14 @@ BEGIN NAMESPACE XSharpModel
          RETURN 
       
       STATIC METHOD SaveDatabase(cFile AS STRING) AS LOGIC
-         IF oConn != NULL_OBJECT .AND. oConn:State == ConnectionState.Open
+         IF IsDbOpen
             SaveToDisk(oConn, cFile)
             RETURN TRUE
          ENDIF
          RETURN FALSE
       
       STATIC METHOD CloseDatabase(cFile AS STRING) AS LOGIC
-         IF oConn != NULL_OBJECT .AND. oConn:State == ConnectionState.Open
+         IF IsDbOpen
             SaveToDisk(oConn, cFile)
             oConn:Close()
             RETURN TRUE
@@ -62,24 +62,26 @@ BEGIN NAMESPACE XSharpModel
          RETURN FALSE
       
       STATIC METHOD SetPragmas(oConn AS SQLiteConnection) AS VOID
-         IF oConn == NULL
+         IF ! IsDbOpen
             RETURN
          ENDIF
          BEGIN LOCK oConn
             BEGIN USING VAR oCmd := SQLiteCommand{"PRAGMA foreign_keys = ON", oConn}
+               oCmd:ExecuteNonQuery()
+               oCmd:CommandText := "VACUUM"
                oCmd:ExecuteNonQuery()
             END USING
          END LOCK
          RETURN
       
       STATIC METHOD OpenFile(cFile AS STRING) AS SQLiteConnection
-         VAR db := SQLiteConnection{"Data Source="+cFile+"; Version=3;"}
+         VAR db := SQLiteConnection{"Data Source="+cFile+";Version=3;"}
          db:Open()    
          SetPragmas(db)
          RETURN db
       
       STATIC METHOD SaveToDisk(oConn AS SQLiteConnection, cFile AS STRING) AS VOID
-         IF oConn == NULL
+         IF ! IsDbOpen
             RETURN
          ENDIF
          IF System.IO.File.Exists(cFile)
@@ -88,12 +90,15 @@ BEGIN NAMESPACE XSharpModel
          ENDIF
          VAR diskdb := OpenFile(cFile)
          oConn:BackupDatabase(diskdb, "main", "main", -1, NULL, 0)
+         BEGIN USING VAR oCmd := SQLiteCommand{"VACUUM", diskdb}
+            oCmd:ExecuteNonQuery()
+         END USING
          diskdb:Close()
          lastWritten := DateTime.Now
          RETURN         
       
       STATIC METHOD RestoreFromDisk(oDiskDb AS SQLiteConnection, oConn AS SQLiteConnection) AS VOID
-         IF oConn == NULL
+         IF ! IsDbOpen
             RETURN
          ENDIF
          oDiskDb:BackupDatabase(oConn, "main", "main", -1, NULL, 0)
@@ -114,7 +119,7 @@ BEGIN NAMESPACE XSharpModel
          ENDIF
 
       STATIC METHOD BackupInBackground(sender AS OBJECT , args AS DoWorkEventArgs ) AS VOID
-         IF oConn == NULL
+         IF ! IsDbOpen
             RETURN
          ENDIF
          BEGIN LOCK oConn
@@ -385,7 +390,7 @@ BEGIN NAMESPACE XSharpModel
       
       STATIC METHOD GetProjectNames() AS List<STRING>
          VAR result := List<STRING>{}
-         IF oConn != NULL 
+         IF IsDbOpen
             BEGIN LOCK oConn
                BEGIN USING VAR cmd := SQLiteCommand{"SELECT ProjectFileName from Projects", oConn}
                   BEGIN USING VAR rdr := cmd:ExecuteReader()
@@ -402,7 +407,7 @@ BEGIN NAMESPACE XSharpModel
          
       #region CRUD projects      
       STATIC METHOD Read(oProject AS XProject) AS VOID
-         IF oConn == NULL .or. String.IsNullOrEmpty(oProject:FileName)
+         IF ! IsDbOpen .OR. String.IsNullOrEmpty(oProject:FileName)  
             RETURN
          ENDIF
          VAR file    := oProject:FileName
@@ -433,7 +438,7 @@ BEGIN NAMESPACE XSharpModel
          RETURN
       
       STATIC METHOD DeleteProject(cFileName AS STRING) AS VOID
-         IF oConn == NULL .OR. String.IsNullOrEmpty(cFileName)
+         IF ! IsDbOpen .OR. String.IsNullOrEmpty(cFileName)  
             RETURN
          ENDIF
          VAR file := cFileName
@@ -450,7 +455,7 @@ BEGIN NAMESPACE XSharpModel
       #region CRUD files
       
       STATIC METHOD DeleteFile(cFileName AS STRING) AS VOID
-         IF oConn == NULL .OR. String.IsNullOrEmpty(cFileName)
+         IF ! IsDbOpen .OR. String.IsNullOrEmpty(cFileName)
             RETURN
          ENDIF
          VAR file    := cFileName
@@ -465,7 +470,7 @@ BEGIN NAMESPACE XSharpModel
          CommitWhenNeeded()
       
       STATIC METHOD Read(oFile AS XFile) AS VOID
-         IF oConn == NULL .OR. String.IsNullOrEmpty(oFile:FullPath)
+         IF ! IsDbOpen .OR. String.IsNullOrEmpty(oFile:FullPath)
             RETURN
          ENDIF
          VAR file    := oFile:FullPath
@@ -533,7 +538,7 @@ BEGIN NAMESPACE XSharpModel
       RETURN
       
       STATIC PRIVATE METHOD UpdateFileData(oFile AS XFile) AS VOID
-         IF oConn == NULL 
+         IF ! IsDbOpen
             RETURN
          ENDIF
          BEGIN LOCK oConn
@@ -560,7 +565,7 @@ BEGIN NAMESPACE XSharpModel
          // No need to do this in the background.
          // It is called on a background thread while editing
          // and also called on a background thread when scanning at startup
-         IF oConn == NULL 
+         IF ! IsDbOpen
             RETURN
          ENDIF
          IF oFile:Id == -1
@@ -585,7 +590,7 @@ BEGIN NAMESPACE XSharpModel
          " FOREIGN KEY (idFile) REFERENCES Files (Id) ON DELETE CASCADE ON UPDATE CASCADE"
          ")"
          */
-         IF oConn == NULL 
+         IF ! IsDbOpen
             RETURN
          ENDIF
          BEGIN LOCK oConn
@@ -716,7 +721,7 @@ BEGIN NAMESPACE XSharpModel
       
       #region CRUD Assemblies
       STATIC METHOD Read(oAssembly AS XAssembly) AS VOID
-         IF oConn == NULL .OR. String.IsNullOrEmpty(oAssembly:FullName) .OR. String.IsNullOrEmpty(oAssembly:FileName)
+         IF ! IsDbOpen .OR. String.IsNullOrEmpty(oAssembly:FullName) .OR. String.IsNullOrEmpty(oAssembly:FileName)
             RETURN
          ENDIF
       /*
@@ -764,7 +769,7 @@ BEGIN NAMESPACE XSharpModel
       RETURN
       
       STATIC METHOD Update(oAssembly AS XAssembly) AS VOID
-         IF oConn == NULL .OR. String.IsNullOrEmpty(oAssembly:FullName) .OR. String.IsNullOrEmpty(oAssembly:FileName)
+         IF ! IsDbOpen .OR. String.IsNullOrEmpty(oAssembly:FullName) .OR. String.IsNullOrEmpty(oAssembly:FileName)
             RETURN
          ENDIF   
          BEGIN LOCK oConn
@@ -820,7 +825,7 @@ BEGIN NAMESPACE XSharpModel
       STATIC METHOD FindFunction(sName AS STRING, sProjectIds AS STRING) AS IList<XDbResult>
          // search class members in the Types list
          VAR result := List<XDbResult>{}
-         IF oConn != NULL
+         IF IsDbOpen
             BEGIN LOCK oConn
                TRY
                   BEGIN USING VAR oCmd := SQLiteCommand{"SELECT 1", oConn}
@@ -849,7 +854,7 @@ BEGIN NAMESPACE XSharpModel
       STATIC METHOD FindGlobalOrDefine(sName AS STRING, sProjectIds AS STRING) AS IList<XDbResult>
          // search class members in the Types list
          VAR result := List<XDbResult>{}
-         IF oConn != NULL
+         IF IsDbOpen
             BEGIN LOCK oConn
                TRY
                   BEGIN USING VAR oCmd := SQLiteCommand{"SELECT 1", oConn}
@@ -876,7 +881,7 @@ BEGIN NAMESPACE XSharpModel
       STATIC METHOD GetTypes(sName AS STRING, sProjectIds AS STRING) AS IList<XDbResult>
          VAR stmt := "Select * from ProjectTypes where name = $name AND IdProject in ("+sProjectIds+")"
          VAR result := List<XDbResult>{}
-         IF oConn != NULL
+         IF IsDbOpen
             BEGIN LOCK oConn
                TRY
                   BEGIN USING VAR oCmd := SQLiteCommand{stmt, oConn}
@@ -899,7 +904,7 @@ BEGIN NAMESPACE XSharpModel
          VAR stmt := "Select * from ProjectTypes where name like $name AND IdProject in ("+sProjectIds+")"
          VAR result := List<XDbResult>{}
          sName += '%'
-         IF oConn != NULL
+         IF IsDbOpen
             BEGIN LOCK oConn
                TRY
                   BEGIN USING VAR oCmd := SQLiteCommand{stmt, oConn}
@@ -921,7 +926,7 @@ BEGIN NAMESPACE XSharpModel
       STATIC METHOD GetNamespaces(sProjectIds AS STRING) AS IList<XDbResult>
          VAR stmt := "Select distinct Namespace from ProjectTypes where Namespace is not null and IdProject in ("+sProjectIds+")"
          VAR result := List<XDbResult>{}
-         IF oConn != NULL
+         IF IsDbOpen
             BEGIN LOCK oConn
                TRY
                   BEGIN USING VAR oCmd := SQLiteCommand{stmt, oConn}
@@ -949,7 +954,7 @@ BEGIN NAMESPACE XSharpModel
       STATIC METHOD GetReferenceTypes(sName AS STRING, sAssemblyIds AS STRING) AS IList<XDbResult>
          VAR stmt := "Select * from AssemblyTypes where (name like $name or fullname like  $name) AND idAssembly in ("+sAssemblyIds+")"
          VAR result := List<XDbResult>{}
-         IF oConn != NULL
+         IF IsDbOpen
             BEGIN LOCK oConn
                TRY
                   BEGIN USING VAR oCmd := SQLiteCommand{stmt, oConn}
@@ -972,7 +977,7 @@ BEGIN NAMESPACE XSharpModel
          VAR stmt := "Select * from ProjectMembers where IdType ="+idType:ToString()
          stmt     += " order by idFile, idType" 
          VAR result := List<XDbResult>{}
-         IF oConn != NULL
+         IF IsDbOpen
             BEGIN LOCK oConn
                TRY
                   BEGIN USING VAR oCmd := SQLiteCommand{stmt, oConn}
@@ -1066,6 +1071,9 @@ BEGIN NAMESPACE XSharpModel
          ENDIF
          RETURN 0
       
+      
+      STATIC PROPERTY IsDbOpen AS LOGIC GET oConn != NULL_OBJECT .AND.  oConn:State == ConnectionState.Open
+         
       STATIC METHOD Log(cMessage AS STRING) AS VOID
          IF XSettings.EnableDatabaseLog .AND. XSettings.EnableLogging
             XSolution.WriteOutputMessage("XDatabase: "+cMessage)

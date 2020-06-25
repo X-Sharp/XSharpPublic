@@ -41,6 +41,7 @@ namespace XSharp.Project
             EnvDTE80.Solution2 solution = dte.Solution as EnvDTE80.Solution2;
             var solutionFile = solution.FullName;
             XSharpModel.XSolution.Open(solutionFile);
+            XSharpModel.XSolution.IsClosing = false;
             /*
             Code below to detect items in solution folders
             var projects = solution.Projects;
@@ -74,6 +75,7 @@ namespace XSharp.Project
 
         public override int OnBeforeCloseSolution(object pUnkReserved)
         {
+            XSharpModel.XSolution.IsClosing = true;
             XSharpModel.XSolution.Close();
             return VSConstants.S_OK;
         }
@@ -81,6 +83,7 @@ namespace XSharp.Project
         {
             XSharpModel.XSolution.Close();
             XSharpXMLDocTools.Close();
+            XSharpModel.XSolution.IsClosing = false;
             return VSConstants.S_OK;
         }
         #endregion

@@ -10,7 +10,7 @@ USING System.Collections.Generic
 USING LanguageService.SyntaxTree
 
 BEGIN NAMESPACE XSharpModel
-   // an entity in the source code
+   /// <summary>An entity in the source code</summary>
    CLASS XSourceElement INHERIT XElement
       PROTECTED _id    := -1                AS Int64                         
       PROPERTY Id   AS INT64                GET _id INTERNAL SET _id := value
@@ -32,8 +32,5 @@ BEGIN NAMESPACE XSharpModel
             SELF:File:Project:ProjectNode:OpenElement(SELF:File:SourcePath, SELF:Range:StartLine+1, (SELF:Range:StartColumn ))
          ENDIF
 
-      METHOD Save() AS VOID
-      METHOD Load() AS VOID
-         
    END CLASS
 END NAMESPACE      

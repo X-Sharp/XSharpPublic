@@ -965,6 +965,8 @@ BEGIN NAMESPACE XSharpModel
             asm:RemoveProject(SELF)
          NEXT
          SELF:_AssemblyReferences:Clear()
+         SystemTypeController.UnloadUnusedAssemblies()
+
          
          
       METHOD Walk() AS VOID

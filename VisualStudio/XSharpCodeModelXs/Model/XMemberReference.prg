@@ -397,7 +397,6 @@ BEGIN NAMESPACE XSharpModel
       PROPERTY TypeParameterConstraintsList AS STRING    GET SELF:_signature:TypeParameterConstraintsList
 
 
-      PROPERTY ComboParameterList AS STRING	GET _signature:ComboParameterList
       PROPERTY Parameters         AS IList<IXVariable> 
          GET 
             SELF:DoResolve()
@@ -415,13 +414,6 @@ BEGIN NAMESPACE XSharpModel
          END GET
       END PROPERTY
 		
-		PROPERTY ComboPrototype AS STRING 
-         GET 
-            SELF:DoResolve()
-            RETURN SELF:GetComboProtoType()
-         END GET
-      END PROPERTY
-         
       PROPERTY IsExtension    AS LOGIC  GET _signature:IsExtension
       PROPERTY XMLSignature   AS STRING 
          GET 

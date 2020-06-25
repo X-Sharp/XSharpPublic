@@ -35,25 +35,8 @@ BEGIN NAMESPACE XSharpModel
          desc := desc +  XLiterals.AsKeyWord + tm:TypeName
          RETURN desc
       
-      STATIC METHOD GetComboProtoType(SELF tm as IXMember) AS STRING
-         VAR vars := ""
-         VAR desc := ""
-         IF tm:Kind:HasParameters()
-            IF ( tm:Kind == Kind.@@Constructor )
-               vars := "{" + tm:ComboParameterList + "}"
-            ELSE
-               vars := "(" + tm:ComboParameterList + ")"
-            ENDIF 
-         ENDIF
-         IF ( tm:Kind == Kind.@@Constructor )
-            desc := tm:Parent:Name + vars
-         ELSE
-            desc := tm:Name + vars
-         ENDIF
-         desc := desc +  XLiterals.AsKeyWord + tm:TypeName
-         RETURN desc
       
-      STATIC METHOD GetDescription(SELF tm as IXMember) AS STRING
+      STATIC METHOD GetDescription(SELF tm AS IXMember) AS STRING
          VAR desc := tm:ModVis
          IF ( tm:IsStatic )
             desc += "STATIC "

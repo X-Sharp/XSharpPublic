@@ -35,20 +35,15 @@ BEGIN NAMESPACE XSharpModel
       // Methods
       STATIC CONSTRUCTOR()
          nullUsings := <String>{}
-
          RETURN
    
-      
-        
   
       CONSTRUCTOR(name AS STRING, kind AS Kind, attributes AS Modifiers, asm AS XAssembly)
          SUPER(name, kind, attributes)
          SELF:Assembly     := asm
-
          
       METHOD ForceComplete() AS VOID
          RETURN
-         
          
          // Properties
          
@@ -57,8 +52,6 @@ BEGIN NAMESPACE XSharpModel
             RETURN SELF:ModVis + KindKeyword +  SELF:Prototype
          END GET
       END PROPERTY
-      
-      
       
       PROPERTY IsTyped                 AS LOGIC    GET TRUE
       PROPERTY TypeName                AS STRING   AUTO

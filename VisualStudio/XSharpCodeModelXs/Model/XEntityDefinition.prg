@@ -95,8 +95,6 @@ BEGIN NAMESPACE XSharpModel
             END SET
          END PROPERTY
          
-         
-         
          #endregion
    END CLASS
    

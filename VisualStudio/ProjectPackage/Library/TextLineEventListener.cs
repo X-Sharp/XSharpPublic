@@ -28,7 +28,7 @@ using VSConstants = Microsoft.VisualStudio.VSConstants;
 
 namespace XSharp.Project
 {
-
+#if TEXTCHANGELISTENER
     /// <summary>
     /// Used to attach to IVsTextLines events and been notified when something happens to the Buffer
     /// </summary>
@@ -58,7 +58,7 @@ namespace XSharp.Project
             }
         }
 
-        #region Properties
+    #region Properties
         public XSharpModuleId FileID
         {
             get { return fileId; }
@@ -68,9 +68,9 @@ namespace XSharp.Project
             get { return fileName; }
             set { fileName = value; }
         }
-        #endregion
+    #endregion
 
-        #region Events
+    #region Events
         private EventHandler<HierarchyEventArgs> onFileChanged;
         public event EventHandler<HierarchyEventArgs> OnFileChanged
         {
@@ -80,9 +80,9 @@ namespace XSharp.Project
 
         public event TextLineChangeEvent OnFileChangedImmediate;
 
-        #endregion
+    #endregion
 
-        #region IVsTextLinesEvents Members
+    #region IVsTextLinesEvents Members
         void IVsTextLinesEvents.OnChangeLineAttributes(int iFirstLine, int iLastLine)
         {
             // Do Nothing
@@ -98,9 +98,9 @@ namespace XSharp.Project
             // As soon as we have a modification on a buffer... Maybe a little bit too much !! :)
             isDirty = true;
         }
-        #endregion
+    #endregion
 
-        #region IDisposable Members
+    #region IDisposable Members
         public void Dispose()
         {
             if ((null != connectionPoint) && (0 != connectionCookie))
@@ -114,9 +114,9 @@ namespace XSharp.Project
             this.buffer = null;
             this.fileId = null;
         }
-        #endregion
+    #endregion
 
-        #region Idle time processing
+    #region Idle time processing
         public void OnIdle()
         {
             if (!isDirty)
@@ -133,6 +133,8 @@ namespace XSharp.Project
 
             isDirty = false;
         }
-        #endregion
+    #endregion
+
     }
+#endif
 }

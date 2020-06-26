@@ -1,8 +1,8 @@
-// XMLDocument.prg
-// Created by    : robert
-// Creation Date : 5/2/2019 10:37:00 AM
-// Created for   : 
-// WorkStation   : ARTEMIS
+//
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
+// See License.txt in the project root for license information.
+//
 
 
 USING System

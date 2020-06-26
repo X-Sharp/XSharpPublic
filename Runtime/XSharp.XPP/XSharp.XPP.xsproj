@@ -13,7 +13,7 @@
     <Unsafe>true</Unsafe>
     <NS>true</NS>
     <VulcanCompatibleResources>True</VulcanCompatibleResources>
-    <XSharpProjectversion>2.4.1.0</XSharpProjectversion>
+    <XSharpProjectversion>2.5.0.0</XSharpProjectversion>
     <IncludePaths>$(CommonInclude)</IncludePaths>
     <Nostandarddefs>true</Nostandarddefs>
     <XSharpProjectExtensionsPath>$(MSBuildExtensionsPath)\XSharp\</XSharpProjectExtensionsPath>
@@ -67,11 +67,12 @@
     <Compile Include="Defines\Collat_ch.prg" />
     <Compile Include="Defines\dll_ch.prg" />
     <Compile Include="Defines\dmlb_ch.prg" />
-    <Compile Include="Functions.prg" />
+    <Compile Include="OOPFunctions.prg" />
     <Compile Include="Properties\AssemblyInfo.prg">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="RuntimeClasses.prg" />
+    <Compile Include="StringFunctions.prg" />
     <Compile Include="XMLDocument.prg" />
     <Compile Include="XMLFunctions.prg" />
     <Compile Include="_StartupCode.prg" />

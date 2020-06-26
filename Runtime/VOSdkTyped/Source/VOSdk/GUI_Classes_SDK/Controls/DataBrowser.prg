@@ -1672,7 +1672,7 @@ CLASS DataBrowser INHERIT VOSDK.Control
 
 		RETURN 0
 
-	ACCESS ColumnCount 
+	ACCESS ColumnCount AS DWORD
 		RETURN ALen(aColumn)
 
 	METHOD ColumnFocusChange(oDataColumn, lHasFocus) 
@@ -1687,13 +1687,13 @@ CLASS DataBrowser INHERIT VOSDK.Control
 		ENDIF
 		RETURN SELF
 
-	METHOD ColumnMoved(oColumn) 
+	METHOD ColumnMoved(oColumn as DataColumn) AS VOID
 		SELF:__EndEditField(0)
-		RETURN SELF
+		RETURN 
 
-	METHOD ColumnReSize(oColumn) 
+	METHOD ColumnReSize(oColumn as DataColumn) AS VOID
 		SELF:__EndEditField(0)
-		RETURN SELF
+		RETURN 
 	
 	ACCESS Columns AS ARRAY
 		RETURN aColumn
@@ -2111,15 +2111,15 @@ CLASS DataBrowser INHERIT VOSDK.Control
 		SELF:SetPointer(oPointer, gblText)
 		RETURN 
 
-	METHOD Refresh() 
+	METHOD Refresh() AS VOID STRICT
 		IF oDataServer!=NULL_OBJECT .AND. IsInstanceOf(oDataServer,#DBServer)
 			oDataServer:GoTo(oDataServer:RecNo) //Forces refresh if DBF was empty
 		ENDIF
 		SELF:__RefreshBuffer()
 		SELF:__RefreshData()
-		RETURN SELF
+		RETURN 
 
-	METHOD RemoveColumn(uColumnOrIndex) 
+	METHOD RemoveColumn(uColumnOrIndex AS USUAL) AS DataColumn
 		LOCAL oDC AS DataColumn
 		LOCAL i AS DWORD
 			
@@ -2190,7 +2190,7 @@ CLASS DataBrowser INHERIT VOSDK.Control
 		ENDIF
 		RETURN oDC
 
-	METHOD SetColumnFocus(oColumn AS DataColumn) 
+	METHOD SetColumnFocus(oColumn AS DataColumn) AS LOGIC
 		LOCAL oDC	AS DataColumn
 		LOCAL iRow	:= -1 AS INT
 		IF SELF:__IsValid .and. SELF:__DataGridView:CurrentCell != NULL_OBJECT
@@ -2329,7 +2329,7 @@ CLASS DataBrowser INHERIT VOSDK.Control
 
 		RETURN lLinked
 
-	METHOD Validate() AS LOGIC
+	METHOD Validate() AS LOGIC STRICT
 		
 		IF IsInstanceOf(SELF:Owner, #DataWindow)
 			RETURN ((DataWindow) SELF:Owner):__CheckRecordStatus()

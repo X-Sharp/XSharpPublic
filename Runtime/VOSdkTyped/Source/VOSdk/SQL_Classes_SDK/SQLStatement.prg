@@ -264,10 +264,7 @@ CLASS SQLStatement
         
         
         
-        METHOD FreeStmt( fOption )
-            IF PCount() == 0
-                fOption := SQL_CLOSE
-            ENDIF
+        METHOD FreeStmt( fOption := SQL_CLOSE AS WORD) AS LOGIC
             RETURN SELF:__FreeStmt( fOption )
             
         METHOD MakeErrorInfo(oObject, symMethod, e)

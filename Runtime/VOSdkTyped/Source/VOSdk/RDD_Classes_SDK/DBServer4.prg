@@ -232,7 +232,7 @@ METHOD RecordInfo( kRecInfoType, nRecordNumber, uRecVal ) AS USUAL
 	
 	RETURN uRecVal
 
-METHOD Refresh() CLIPPER
+METHOD Refresh() AS LOGIC STRICT
 	LOCAL lRet AS LOGIC
 	LOCAL oError AS USUAL
 	LOCAL n AS DWORD
@@ -306,12 +306,10 @@ METHOD Refresh() CLIPPER
 	
 	RETURN lRet
 
-METHOD Reindex() AS LOGIC
+METHOD Reindex() AS LOGIC STRICT
 	LOCAL lRetCode AS LOGIC
 	LOCAL oError AS USUAL
 	LOCAL dwCurrentWorkArea := 0 AS DWORD
-
-	
 
 	lErrorFlag := FALSE
 	BEGIN SEQUENCE

@@ -225,14 +225,11 @@ PARTIAL CLASS SQLSelect INHERIT DataServer
 		ENDIF
 		RETURN lRet
 
-	METHOD FLOCK() 
+	METHOD FLock( ) AS LOGIC STRICT
 		// Dummy, no locking available for SQL
 		RETURN TRUE
 
-	METHOD FreeStmt( fOption )
-		IF PCount() == 0
-			fOption := SQL_CLOSE
-		ENDIF
+	METHOD FreeStmt( fOption := SQL_CLOSE AS WORD ) AS LOGIC
 		RETURN oStmt:FreeStmt( fOption )
 
 	METHOD GetData( uFieldID AS USUAL )  AS USUAL

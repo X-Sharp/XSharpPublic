@@ -104,7 +104,7 @@ PARTIAL CLASS SQLSelect INHERIT DataServer
 	METHOD Prepare() AS LOGIC
 		RETURN oStmt:Prepare()
 
-	METHOD Refresh() CLIPPER
+	METHOD Refresh() AS LOGIC STRICT
 		RETURN SELF:Update( FALSE )
 
 	METHOD RejectChanges() AS LOGIC
@@ -151,7 +151,7 @@ PARTIAL CLASS SQLSelect INHERIT DataServer
 	METHOD Rollback() AS LOGIC STRICT
 		RETURN SELF:oStmt:Connection:Rollback()
 
-	METHOD SetColumnAttributes(uFieldPos, oColAttributes)
+	METHOD SetColumnAttributes(uFieldPos AS USUAL, oColAttributes AS SQLColumnAttributes) AS LOGIC
 		LOCAL nIndex    AS DWORD
 		LOCAL lOk		 AS LOGIC
 		nIndex := SELF:__GetColIndex( uFieldPos, TRUE )
@@ -159,13 +159,9 @@ PARTIAL CLASS SQLSelect INHERIT DataServer
 			oStmt:__GenerateSQLError( __CavoStr( __CAVOSTR_SQLCLASS__BADFLD ), #SetColumnAttributes )
 			SELF:Error( oStmt:ErrInfo )
 			lOk := FALSE
-		ELSEIF IsInstanceOfUsual(oColAttributes, #SQLColumnAttributes)
+		ELSE
 			SELF:aSQLColumns[nIndex] 		:= oColAttributes
 			lOk := TRUE
-		ELSE
-			oStmt:__GenerateSQLError( __CavoStr( __CAVOSTR_SQLCLASS__INVALIDCOLATT ), #SetColumnAttributes )
-			SELF:Error( oStmt:ErrInfo )
-			lOk := FALSE
 		ENDIF
 		RETURN lOk
 

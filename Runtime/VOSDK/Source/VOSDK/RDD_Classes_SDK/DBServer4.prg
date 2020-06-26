@@ -823,7 +823,6 @@ METHOD SetFilter( cbFilterBlock, cFilterText )
 		DBFDebug( "Leaving "+__ENTITY__, AsString(lRetCode) )
 	#ENDIF
 	RETURN lRetCode
-	///JSP
 
 METHOD SetIndex( oFSIndexFile )
 	// oFSIndexFile is a a FileSpec object for the index file,

@@ -14,9 +14,7 @@ CLASS SQLValue INHERIT DataField
 	//PROTECT nODBCType   AS SHORT             AUTO
 
 CONSTRUCTOR( oHyperLabel as HyperLabel, oFieldSpec as FieldSpec, nType as System.Type, nScale as SHORT, lNullable  AS LOGIC) 
-	IF IsInstanceOfUsual(oFieldSpec, #FieldSpec) 	
-		((FieldSpec)oFieldSpec):Nullable := lNullable
-	ENDIF
+	oFieldSpec:Nullable := lNullable
 	SUPER( oHyperLabel, oFieldSpec )
 	IF !IsNil(nType)
 		SELF:Type := nType

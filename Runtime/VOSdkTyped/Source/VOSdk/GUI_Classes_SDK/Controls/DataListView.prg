@@ -495,7 +495,7 @@ CLASS DataListView INHERIT ListView
 	ACCESS Owner as Object
 		RETURN oParent
 
-	METHOD Refresh() 
+	METHOD Refresh() AS VOID STRICT
 		LOCAL dwItems AS LONG
 		dwItems := SELF:__GetServerCount
 		SELF:__ListView:VirtualListSize := dwItems
@@ -504,7 +504,7 @@ CLASS DataListView INHERIT ListView
 		ENDIF
 		SELF:__ListView:RedrawItems(0, dwItems, TRUE)
 		
-		RETURN SELF
+		RETURN 
 
 	ACCESS Server as DataServer
 		RETURN oDLVServer

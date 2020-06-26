@@ -27,7 +27,8 @@ CLASS DbFileSpec INHERIT FileSpec
 	PROTECT aHidRDDs AS ARRAY
 	PROTECT aOrders AS ARRAY
 	PROTECT aIndexNames AS ARRAY
-	METHOD __MemFullPath() AS STRING STRICT 
+
+METHOD __MemFullPath() AS STRING STRICT 
 	LOCAL cPath AS STRING
 
 	IF SELF:MemFileName == NULL_STRING .AND. SELF:MemFileExt == NULL_STRING
@@ -1022,11 +1023,11 @@ METHOD Move( oDBFSTarget, lIDX, lName ) AS LOGIC STRICT
 
 	RETURN lRetCode
 
-ACCESS Orders 
+ACCESS Orders AS USUAL
 
 	RETURN SELF:aOrders
 
-ASSIGN Orders( oOrderSpec ) 
+ASSIGN Orders( oOrderSpec AS USUAL) 
 
 	IF IsObject(oOrderSpec) .and. __Usual.ToObject(oOrderSpec) IS OrderSpec  
 		AAdd( SELF:aOrders, oOrderSpec )

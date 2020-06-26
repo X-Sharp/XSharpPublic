@@ -219,10 +219,10 @@ PARTIAL CLASS DbServer
         
         lErrorFlag := FALSE
         BEGIN SEQUENCE
-                VoDbSelect( wWorkArea, OUT dwCurrentWorkArea )
-                IF ! VoDbInfo(DBI_GETHEADERSIZE, REF uInfo)
-                    BREAK ErrorBuild(_VoDbErrInfoPtr())
-                ENDIF
+            VoDbSelect( wWorkArea, OUT dwCurrentWorkArea )
+            IF ! VoDbInfo(DBI_GETHEADERSIZE, REF uInfo)
+               BREAK ErrorBuild(_VoDbErrInfoPtr())
+            ENDIF
             __DBSSetSelect( dwCurrentWorkArea )
         RECOVER USING oError
             oErrorInfo := oError
@@ -559,9 +559,7 @@ PARTIAL CLASS DbServer
         RETURN uVoVal
     
     
-    ACCESS Retries AS DWORD
-        RETURN SELF:nRetries
-    
+     
     ACCESS RelationChildren AS ARRAY
         RETURN SELF:aRelationChildren
         
@@ -576,9 +574,12 @@ PARTIAL CLASS DbServer
         ENDIF
         
         RETURN 
-        
+         
+    ACCESS Retries AS DWORD
+        RETURN SELF:nRetries
+      
     ASSIGN Retries  (n AS DWORD) 
-        IF IsNumeric(n) .AND. n > 0
+        IF n > 0
             SELF:nRetries := n
         ENDIF
         RETURN 
@@ -610,8 +611,8 @@ PARTIAL CLASS DbServer
     ASSIGN Scope( uScope AS USUAL) 
         uStoredScope := uScope
         IF uScope == NIL
-                lStoredAllRecords := FALSE
-                lStoredRestOfFile := FALSE
+            lStoredAllRecords := FALSE
+            lStoredRestOfFile := FALSE
             nStoredNextCount := 0
         ELSEIF IsNumeric(uScope)
             lStoredAllRecords := FALSE

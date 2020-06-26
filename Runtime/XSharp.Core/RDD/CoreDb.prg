@@ -965,7 +965,6 @@ CLASS XSharp.CoreDb
         })
         
         
-        
         /// <summary>
         /// Return the work area number.
         /// </summary>

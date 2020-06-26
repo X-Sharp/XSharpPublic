@@ -209,14 +209,15 @@ FUNCTION VoDbFlock() AS LOGIC
 /// <seealso cref="M:XSharp.CoreDb.Found"  /> 
 FUNCTION VoDbFound() AS LOGIC
     RETURN VoDb.Found()
-    
+
+ 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/vodbgetselect/*" /> 
 /// <seealso cref="M:XSharp.CoreDb.GetSelect"  /> 
 FUNCTION VoDbGetSelect() AS DWORD
     RETURN VoDb.GetSelect()
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/vodbgetselect1/*" /> 
-FUNCTION VODbGetSelect(sArea AS STRING) AS DWORD
+FUNCTION VoDbGetSelect(sArea AS STRING) AS DWORD
     RETURN XSharp.RuntimeState.Workareas:FindAlias(sArea)
     
 

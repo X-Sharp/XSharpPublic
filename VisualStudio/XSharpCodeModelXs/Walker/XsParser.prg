@@ -744,9 +744,9 @@ attributeParam      : Name=identifierName Op=assignoperator Expr=expression     
                ELSE
                   SELF:ParseForBlockLocals()
                ENDIF
-               
+            ELSE
+               SELF:ReadLine()
             ENDIF
-            SELF:ReadLine()
             RETURN TRUE
          ELSEIF nMiddle > 0
             // Do something

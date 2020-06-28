@@ -615,8 +615,9 @@ attributeParam      : Name=identifierName Op=assignoperator Expr=expression     
                      entityKind := Kind.Field
                   ENDIF
                   // PRIVATE and PUBLIC as memvar declarator
+                  // when inside a method or function
                   IF mods == Modifiers.Public .OR. mods == Modifiers.Private
-                     IF CurrentEntity IS XMemberDefinition
+                     IF CurrentEntity IS XMemberDefinition VAR xDef .AND. ! xDef:SingleLine .AND. CurrentEntity.Kind:HasBody()
                         entityKind := Kind.Unknown
                      ENDIF
                   ENDIF

@@ -99,8 +99,31 @@ BEGIN NAMESPACE XSharp.XPP
             RETURN NULL_ARRAY
 
         /// <summary>Find a child tag in an XML Node</summary>
-
         STATIC METHOD FindChildTag(nId AS INT64, cChildName AS STRING, lFirst AS LOGIC) AS USUAL
+            IF lFirst
+                RETURN FindFirstChildTag(nId, cChildName)
+            ELSE
+                RETURN FindAllChildTags(nId, cChildName)
+            ENDIF
+            
+        /// <summary>Find a child tag in an XML Node</summary>
+        STATIC METHOD FindFirstChildTag(nId AS INT64, cChildName AS STRING) AS INT64
+            LOCAL oNode AS XmlNode
+            oNode := FindNode(nId, OUT VAR oDoc)
+            IF oNode != NULL
+                LOCAL aResult := {} AS ARRAY
+                FOREACH oChild AS XmlNode IN oNode:ChildNodes
+                    IF String.Compare(oChild:Name, cChildName, TRUE) == 0
+                        IF oDoc:Nodes:ContainsKey(oChild)
+                            RETURN oDoc:Nodes[oChild]
+                        ENDIF
+                    ENDIF
+                NEXT
+            ENDIF
+            // When not found we return -1 
+            RETURN -1
+
+        STATIC METHOD FindAllChildTags(nId AS INT64, cChildName AS STRING) AS ARRAY
             LOCAL oNode AS XmlNode
             // When lFirst = TRUE then  return the id of that node or -1
             // When lFirst = FALSE then return an array of nodes
@@ -110,11 +133,7 @@ BEGIN NAMESPACE XSharp.XPP
                 FOREACH oChild AS XmlNode IN oNode:ChildNodes
                     IF String.Compare(oChild:Name, cChildName, TRUE) == 0
                         IF oDoc:Nodes:ContainsKey(oChild)
-                            IF lFirst
-                                RETURN oDoc:Nodes[oChild]
-                            ELSE
-                                AAdd(aResult, oDoc:Nodes[oChild])
-                            ENDIF
+                            AAdd(aResult, oDoc:Nodes[oChild])
                         ENDIF
                     ENDIF
                 NEXT
@@ -122,13 +141,8 @@ BEGIN NAMESPACE XSharp.XPP
                     RETURN aResult
                 ENDIF
             ENDIF
-            IF lFirst
-                RETURN 0
-            ELSE
-                RETURN NULL_ARRAY
-            ENDIF
-
-        /// <summary>Return the children of a node as a XPP specific XML array</summary>
+            RETURN NULL_ARRAY
+    /// <summary>Return the children of a node as a XPP specific XML array</summary>
 
         STATIC METHOD AsXmlArray(oNode AS XmlNode, oFoundDoc AS XDocument) AS ARRAY
             LOCAL aResult AS ARRAY

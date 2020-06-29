@@ -35,18 +35,17 @@ PARTIAL CLASS SQLSelect INHERIT DataServer
 
 		RETURN
 
-	METHOD NoIVarGet(symVar ) AS USUAL
+	METHOD NoIVarGet(symVar  AS USUAL) AS USUAL
 		RETURN SELF:FieldGet(symVar)
 
-	METHOD NoIVarPut(symVar , uValue ) AS USUAL
+	METHOD NoIVarPut(symVar AS USUAL, uValue  AS USUAL) AS USUAL
 		RETURN SELF:FieldPut(symVar, uValue)
 
-	METHOD Notify( uNotification, uDescription ) AS USUAL
+	METHOD Notify( kNotification AS LONG, uDescription := NIL AS USUAL) AS USUAL
 		LOCAL lRetValue AS LOGIC
 		LOCAL uRetValue	AS USUAL
 		LOCAL nClient	AS DWORD
 		LOCAL laClients AS ARRAY
-        LOCAL kNotification := uNotification AS LONG
 		//
 		// If notification is enabled
 		// Call DataServer:Notify. This will call all the clients
@@ -142,7 +141,7 @@ PARTIAL CLASS SQLSelect INHERIT DataServer
 		--nNotifyCount
 		RETURN nNotifyCount
 
-	METHOD RLock(nRecno)  AS LOGIC
+	METHOD RLock(nRecord AS LONG ) AS LOGIC 
 		RETURN TRUE
 
 	METHOD RLockVerify() AS LOGIC STRICT
@@ -272,7 +271,7 @@ PARTIAL CLASS SQLSelect INHERIT DataServer
 		RETURN 
 
 
-	METHOD Skip( nSkip ) AS LOGIC CLIPPER
+	METHOD Skip( nSkip := 1 AS LONG) AS LOGIC 
 		LOCAL lOk AS LOGIC
 		LOCAL nRow AS LONG
 		SELF:lErrorFlag := FALSE
@@ -316,7 +315,7 @@ PARTIAL CLASS SQLSelect INHERIT DataServer
 		SELF:nNotifyCount := SELF:nNotifyCount + 1
 		RETURN nNotifyCount
 
-	METHOD UnLock( nRecordNumber ) AS LOGIC CLIPPER 
+	METHOD UnLock( nRecordNumber := 0 AS LONG) AS LOGIC  
 		RETURN TRUE
 
 	METHOD Update(lUpdateFlag) AS LOGIC CLIPPER

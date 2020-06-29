@@ -61,7 +61,7 @@ PARTIAL CLASS SQLSelect INHERIT DataServer
 
 
 
-	METHOD Append()  AS LOGIC 
+	METHOD Append(lReleaseLocks AS LOGIC)  AS LOGIC 
 		LOCAL oRow AS DataRow
 		LOCAL lOk AS LOGIC
 		IF SELF:__PrepareForRecordMovement()
@@ -154,7 +154,7 @@ PARTIAL CLASS SQLSelect INHERIT DataServer
 	METHOD BindColumn( i ) AS LOGIC
 		RETURN TRUE
  
-	METHOD Close() AS LOGIC CLIPPER
+	METHOD Close() AS LOGIC STRICT
 		LOCAL lOk AS LOGIC
 		SELF:lErrorFlag := FALSE
 		TRY
@@ -241,7 +241,7 @@ PARTIAL CLASS SQLSelect INHERIT DataServer
 		SELF:aColumnAttributes[nIndex] := oSQLColAtt
 		RETURN oSQLColAtt
 
-	METHOD Commit() AS LOGIC CLIPPER
+	METHOD Commit() AS LOGIC STRICT
 		SELF:Update(TRUE)
 		RETURN SELF:oConn:Commit()
 

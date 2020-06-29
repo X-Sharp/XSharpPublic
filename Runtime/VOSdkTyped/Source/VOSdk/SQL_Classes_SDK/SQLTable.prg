@@ -439,7 +439,7 @@ CLASS SQLTable INHERIT SQLSelect
         
         RETURN
     
-    METHOD Notify ( kNotification, uDescription )
+    METHOD Notify ( kNotification AS LONG, uDescription := NIL AS USUAL) AS USUAL
         LOCAL lRetValue AS LOGIC
         LOCAL nChild := 0 AS DWORD
         
@@ -546,7 +546,7 @@ CLASS SQLTable INHERIT SQLSelect
         ENDIF
     
     
-    METHOD Seek( symColumn, uValue, lSoftSeek ) AS LOGIC CLIPPER
+    METHOD Seek( symColumn AS SYMBOL, uValue AS USUAL, lSoftSeek := FALSE AS LOGIC) AS LOGIC 
         
         LOCAL aArgs                              AS ARRAY
         IF ! IsNil(lSoftSeek )

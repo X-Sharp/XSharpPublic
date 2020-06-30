@@ -33,32 +33,32 @@ CLASS ListView INHERIT TextControl
 
 
 	STATIC METHOD ListView_GetStringWidth(hwndLV AS IntPtr, _psz AS STRING) AS INT PASCAL
-		RETURN (INT(_CAST, (Win32.SendMessage(hwndLV, LVM_GETSTRINGWIDTH, 0, _psz))))
+		RETURN (INT(_CAST, (GuiWin32.SendMessage(hwndLV, LVM_GETSTRINGWIDTH, 0, _psz))))
 
 
 	#region Static Methods - API calls
 
 	STATIC METHOD ListView_Update(hwndLV AS IntPtr, i AS DWORD) AS LOGIC STRICT
-		RETURN (LOGIC(_CAST, (Win32.SendMessage((hwndLV), LVM_UPDATE, i, 0L))))
+		RETURN (LOGIC(_CAST, (GuiWin32.SendMessage((hwndLV), LVM_UPDATE, i, 0L))))
 
 	STATIC METHOD ListView_Scroll(hwndLV AS IntPtr, dx AS INT, dy AS INT) AS LOGIC STRICT
-		RETURN (LOGIC(_CAST, (Win32.SendMessage((hwndLV), LVM_SCROLL, DWORD(_CAST,dx), LONGINT(_CAST,dy)))))
+		RETURN (LOGIC(_CAST, (GuiWin32.SendMessage((hwndLV), LVM_SCROLL, DWORD(_CAST,dx), LONGINT(_CAST,dy)))))
 
 
 
 	STATIC METHOD ListView_RedrawItems(hwndLV AS IntPtr, iFirst AS INT, iLast AS INT) AS LOGIC STRICT
-		RETURN (LOGIC(_CAST, (Win32.SendMessage((hwndLV), LVM_REDRAWITEMS, DWORD(_CAST, iFirst), LONGINT(_CAST, iLast)))))
+		RETURN (LOGIC(_CAST, (GuiWin32.SendMessage((hwndLV), LVM_REDRAWITEMS, DWORD(_CAST, iFirst), LONGINT(_CAST, iLast)))))
 
 	//STATIC METHOD ListView_EnsureVisible(hwndLV AS PTR, i AS INT, fPartialOK AS WORD) AS LOGIC 
-	//	RETURN (LOGIC(_CAST, (Win32.SendMessage((hwndLV), LVM_ENSUREVISIBLE, DWORD(_CAST,i), MAKELPARAM(fPartialOK , 0)))))
+	//	RETURN (LOGIC(_CAST, (GuiWin32.SendMessage((hwndLV), LVM_ENSUREVISIBLE, DWORD(_CAST,i), MAKELPARAM(fPartialOK , 0)))))
 
 	//STATIC METHOD ListView_SetItemPosition(hwndLV AS PTR, i AS INT, x AS WORD, y AS WORD) AS LOGIC STRICT
-	//	RETURN (LOGIC(_CAST, (Win32.SendMessage((hwndLV), LVM_SETITEMPOSITION, DWORD(_CAST, i), MAKELPARAM(x, y)))))
+	//	RETURN (LOGIC(_CAST, (GuiWin32.SendMessage((hwndLV), LVM_SETITEMPOSITION, DWORD(_CAST, i), MAKELPARAM(x, y)))))
 	STATIC METHOD ListView_GetNextItem(hwnd AS IntPtr, i AS INT, flags AS WORD) AS INT STRICT
-		RETURN (INT(_CAST, (Win32.SendMessage((hwnd), LVM_GETNEXTITEM, DWORD(_CAST,i), MAKELONG((flags), 0)))))
+		RETURN (INT(_CAST, (GuiWin32.SendMessage((hwnd), LVM_GETNEXTITEM, DWORD(_CAST,i), MAKELONG((flags), 0)))))
 
 	STATIC METHOD ListView_GetItemSpacing(hwndLV AS IntPtr, fSmall AS DWORD) AS LONG STRICT
-		RETURN (LONG(_CAST, (Win32.SendMessage((hwndLV), LVM_GETITEMSPACING, fSmall, 0L))))
+		RETURN (LONG(_CAST, (GuiWin32.SendMessage((hwndLV), LVM_GETITEMSPACING, fSmall, 0L))))
 
 	#endregion
 
@@ -444,7 +444,7 @@ CLASS ListView INHERIT TextControl
 
 	METHOD GetExLVStyle(kExStyle AS USUAL) 
 		LOCAL dwExStyle AS DWORD
-		dwExStyle := DWORD(_CAST, Win32.SendMessage(SELF:Handle(), LVM_GETEXTENDEDLISTVIEWSTYLE, 0, 0))
+		dwExStyle := DWORD(_CAST, GuiWin32.SendMessage(SELF:Handle(), LVM_GETEXTENDEDLISTVIEWSTYLE, 0, 0))
 		IF IsLong(kExStyle)
 			RETURN (_AND(dwExStyle, DWORD(kExStyle)) > 0)
 		ENDIF
@@ -572,7 +572,7 @@ CLASS ListView INHERIT TextControl
 		RETURN oListViewItem
 
 	METHOD GetSelectedColumn() AS LONG
-		RETURN Win32.SendMessage(SELF:Handle(), LVM_GETSELECTEDCOLUMN, 0, 0) + 1
+		RETURN GuiWin32.SendMessage(SELF:Handle(), LVM_GETSELECTEDCOLUMN, 0, 0) + 1
 
 	METHOD GetSelectedItem() AS ListViewItem
 		IF __ListView:SelectedItems:Count > 0
@@ -891,7 +891,7 @@ CLASS ListView INHERIT TextControl
 			lEnable := TRUE
 		ENDIF
 
-		Win32.SendMessage(SELF:Handle(), LVM_SETEXTENDEDLISTVIEWSTYLE, kExStyle, (LONG) IIF(lEnable, kExStyle, 0l))
+		GuiWin32.SendMessage(SELF:Handle(), LVM_SETEXTENDEDLISTVIEWSTYLE, kExStyle, (LONG) IIF(lEnable, kExStyle, 0l))
 
 		RETURN SELF
 
@@ -1208,11 +1208,8 @@ CLASS ListViewColumn INHERIT VObject
 			oHeader:AutoResize(System.Windows.Forms.ColumnHeaderAutoResizeStyle.ColumnContent)
 		ELSE
 			IF nNewWidth > 0
-				IF SELF:Owner != NULL_OBJECT
-					oHeader:Width := ListView.ListView_GetStringWidth(SELF:Owner:Handle(), replicate("M", (DWORD) nNewWidth))
-				ELSE
-					oHeader:Width := nNewWidth
-				ENDIF
+				//oHeader:Width := nNewWidth *2
+                oHeader:AutoResize(System.Windows.Forms.ColumnHeaderAutoResizeStyle.ColumnContent)
 			ELSE
 				oHeader:Width := nNewWidth * -1
 			ENDIF
@@ -1415,7 +1412,6 @@ END CLASS
 #using System.Reflection
 CLASS ListViewItemComparer IMPLEMENTS IComparer
 	PROTECT oListView AS ListView
-	PROTECT oMethodInfo AS System.Reflection.MethodInfo
 	PROTECT symMethod AS SYMBOL	  
 	CONSTRUCTOR(oLv AS ListView)
 		oListView := oLv
@@ -1423,31 +1419,16 @@ CLASS ListViewItemComparer IMPLEMENTS IComparer
 	PUBLIC METHOD Compare(x AS OBJECT , y AS OBJECT ) AS INT
 		IF oListView:__SortRoutineName != NULL_SYMBOL
 			IF oListView:__SortRoutineName != symMethod 
-				SELF:GetMethodInfo()
-				IF oMethodInfo != NULL_OBJECT
+				IF IsMethod(oListView, oListView:__SortRoutineName)
 					symMethod := oListView:__SortRoutineName
 				ENDIF
 			ENDIF
-			IF oMethodInfo != NULL_OBJECT
-				LOCAL oPars AS OBJECT[]
-				oPars := OBJECT[]{2}
-				LOCAL oItem1 AS VOListViewItem
-				LOCAL oItem2 AS VOListViewItem
-				oItem1 := (VOListViewItem) x
-				oItem2 := (VOListViewItem) y
-				oPars[1] := oItem1:Item
-				oPars[2] := oItem2:Item
-				RETURN (INT) oMethodInfo:Invoke(oListView, oPars)
+			IF symMethod != NULL_SYMBOL
+				VAR oItem1 := (VOListViewItem) x
+				VAR oItem2 := (VOListViewItem) y
+                RETURN __InternalSend(oListview, symMethod, oItem1:Item, oItem2:Item)
 			ENDIF
 		ENDIF
 		RETURN 0
-    PROTECTED METHOD GetMethodInfo() AS VOID
-		LOCAL oType AS System.Type
-		LOCAL cMethod AS STRING
-		oMethodInfo := NULL_OBJECT
-		oType := oListView:GetType()
-		cMethod := oListView:__SortRoutineName:ToString()
-		oMethodInfo := oType:GetMethod(cMethod, BindingFlags.Instance+ BindingFlags.PUBLIC+BindingFlags.IgnoreCase)
-		RETURN 
 	
 END CLASS

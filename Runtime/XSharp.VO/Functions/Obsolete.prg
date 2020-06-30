@@ -212,16 +212,6 @@ FUNCTION SetWipeDynSpace(lWipe AS LOGIC) AS LOGIC
 	RETURN FALSE   
 	
 	
-/// <exclude/>
-[Obsolete( "'PtrLen()' is not supported and always returns 0" )] ;
-FUNCTION PtrLen( lpv AS IntPtr ) AS DWORD
-	RETURN 0
-	
-/// <exclude/>
-[Obsolete( "'PtrLenWrite()' is not supported and always returns 0" )] ;
-FUNCTION PtrLenWrite( lpv AS IntPtr ) AS DWORD
-	RETURN 0
-	
 	
 /// <exclude/>
 [Obsolete( "'ExitVOThread()' is not supported and has no effect" )] ;
@@ -239,11 +229,6 @@ FUNCTION WriteAtomTable(hf AS DWORD) AS DWORD
 FUNCTION CreateVOThread(pSecAttr AS IntPtr,nStackSize AS DWORD,pFunc AS IntPtr,pParam AS IntPtr,dwFlags AS DWORD,pdwID REF DWORD ) AS IntPtr
 	RETURN IntPtr.Zero
 	
-	
-/// <exclude/>
-[Obsolete( "'StrEvaluate()' is not supported" )] ;
-FUNCTION StrEvaluate( s AS STRING ) AS STRING
-	RETURN s
 	
 /// <exclude/>
 [Obsolete( "'TerminateVOThread()' is not supported always returns FALSE" )] ;

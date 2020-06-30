@@ -11,18 +11,18 @@
 
 [DebuggerDisplay("ID: {ControlID}, Caption: {Caption}, Class: {Class}, X,Y: {X},{Y} ")];
 CLASS ResourceDialogItem  INHERIT ResourceReader
-	EXPORT Caption		AS STRING
-	EXPORT ClassID		AS LONG
-	EXPORT ClassName	AS STRING
-	EXPORT ControlID	AS WORD
-	EXPORT X            AS LONG
-	EXPORT Y            AS LONG
-	EXPORT CX           AS LONG
-	EXPORT CY           AS LONG
-	EXPORT Style        AS LONG
-	EXPORT ExStyle      AS LONG
-	EXPORT HelpID		AS DWORD
-	EXPORT TabIndex		as LONG
+	PROPERTY Caption		AS STRING   AUTO
+	PROPERTY ClassID		AS LONG     AUTO
+	PROPERTY ClassName	    AS STRING   AUTO
+	PROPERTY ControlID	    AS WORD     AUTO
+	PROPERTY X              AS LONG     AUTO
+	PROPERTY Y              AS LONG     AUTO
+	PROPERTY CX             AS LONG     AUTO
+	PROPERTY CY             AS LONG     AUTO
+	PROPERTY Style          AS LONG     AUTO
+	PROPERTY ExStyle        AS LONG     AUTO
+	PROPERTY HelpID		    AS DWORD    AUTO
+	PROPERTY TabIndex		AS LONG     AUTO
 
 	// typedef struct {
 	//		DWORD helpID;

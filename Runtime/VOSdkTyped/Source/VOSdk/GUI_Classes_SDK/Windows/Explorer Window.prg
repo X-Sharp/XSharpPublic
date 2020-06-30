@@ -1,7 +1,7 @@
 STATIC DEFINE __EXPW_LABEL_HEIGHT	:= 19
 
 CLASS __ExplorerLV INHERIT ListView
-	EXPORT symSortCol AS SYMBOL
+	PROPERTY symSortCol AS SYMBOL   AUTO
 
 METHOD DefaultSort(oLVItem1, oLVItem2) 
 	LOCAL s1, s2 AS STRING
@@ -63,10 +63,8 @@ CLASS ExplorerWindow INHERIT SplitWindow
 	PROTECT oTreeView	AS TreeView
 	PROTECT oListView	AS ListView
 
-	METHOD __FocusLV AS ExplorerWindow STRICT 
-	
-
-	oListView:SetFocus()
+METHOD __FocusLV AS ExplorerWindow STRICT 
+    oListView:SetFocus()
 	RETURN SELF
 
 METHOD __FocusTV AS ExplorerWindow STRICT 
@@ -86,8 +84,6 @@ METHOD Destroy() AS USUAL CLIPPER
 
 CONSTRUCTOR(oOwner, lLabels, symTreeViewClassName, symListViewClassName) 
 	LOCAL oDimension	AS Dimension
-
-	
 
 	DEFAULT(@lLabels, TRUE) // by default, add labels
 
@@ -131,8 +127,7 @@ CONSTRUCTOR(oOwner, lLabels, symTreeViewClassName, symListViewClassName)
 
 		// create the pane clients
 		oTreeView := CreateInstance(symTreeViewClassName, SELF, 1001, Point{}, Dimension{}, TVS_SHOWSELALWAYS)
-		oListView := CreateInstance(symListViewClassName, SELF, 1002, Point{}, Dimension{}, _Or(LVS_SHOWSELALWAYS, LVS_AUTOARRANGE))
-
+		oListView := CreateInstance(symListViewClassName, SELF, 1002, Point{}, Dimension{}, _OR(LVS_SHOWSELALWAYS, LVS_AUTOARRANGE))
 		// associate the clients with the respective panes
 		SELF:SetPaneClient(oTreeView, 1)
 		SELF:SetPaneClient(oListView, 2)
@@ -144,19 +139,13 @@ CONSTRUCTOR(oOwner, lLabels, symTreeViewClassName, symListViewClassName)
 
 	RETURN 
 
-ACCESS LabelLeft 
-	
-
+ACCESS LabelLeft AS Fixedtext
 	RETURN oLabelLeft
 
-ACCESS LabelRight 
-	
-
+ACCESS LabelRight AS Fixedtext 
 	RETURN oLabelRight
 
-ACCESS ListView 
-	
-
+ACCESS ListView AS ListView
 	RETURN oListView
 
 METHOD ListViewColumnClick(oEvt) 
@@ -169,9 +158,7 @@ METHOD ListViewColumnClick(oEvt)
 
 	RETURN SUPER:ListViewColumnClick(oEvt)
 
-ACCESS TreeView 
-	
-
+ACCESS TreeView AS TreeView
 	RETURN oTreeView
 END CLASS
 

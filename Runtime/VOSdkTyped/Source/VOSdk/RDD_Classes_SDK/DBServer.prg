@@ -1,4 +1,4 @@
-
+#pragma warnings(165, off)
 
 PARTIAL CLASS DbServer INHERIT DataServer
 	PROTECT lShared AS LOGIC
@@ -39,9 +39,8 @@ PARTIAL CLASS DbServer INHERIT DataServer
 	PROTECT oRDD AS XSharp.RDD.IRdd
 
 
-METHOD __AcceptSelectiveRelation( oDBParent AS DbServer, wParentWorkArea AS DWORD, ;
-	cbSelection AS USUAL) AS VOID STRICT 
-	//SE-060601
+METHOD __AcceptSelectiveRelation( oDBParent AS DbServer, wParentWorkArea AS DWORD, cbSelection AS USUAL) AS VOID STRICT 
+	
 	LOCAL cIndexExt AS STRING
 	LOCAL dwCurrentWorkArea AS DWORD
 
@@ -63,19 +62,17 @@ METHOD __AcceptSelectiveRelation( oDBParent AS DbServer, wParentWorkArea AS DWOR
 		lCDXSelectionActive := TRUE
 	ENDIF
 
-   __DBSSetSelect( dwCurrentWorkArea  ) //SE-060527
+   __DBSSetSelect( dwCurrentWorkArea  ) 
 
 	RETURN
 
 METHOD __BuildDataField( a AS ARRAY ) AS DataField STRICT 
-	LOCAL oRet AS DataField
-
+	LOCAL oRet := NULL AS DataField
 	
 	IF IsArray( a )
 		oRet := DataField{ a[ DBS_NAME ], FieldSpec{ a[ DBS_NAME ], a[ DBS_TYPE ],  ;
 			a[ DBS_LEN ], a[ DBS_DEC ] } }
 	ENDIF
-
 	RETURN oRet
 
 METHOD __ClearChildRelation( oChild AS DbServer ) AS VOID STRICT 
@@ -142,8 +139,8 @@ METHOD __DbServerEval( uBlock AS USUAL, uCobFor AS USUAL, uCobWhile AS USUAL, ;
 	LOCAL uFLock AS USUAL
    LOCAL lRestore	AS LOGIC
 	
-   //RvdH 070711 Make sure we restore the workarea
-   //				  The codeblocks may select another workarea
+   // Make sure we restore the workarea
+   // The codeblocks may select another workarea
 	lRestore	:= DbSetRestoreWorkarea(TRUE)      
 
 	VoDbSelect( wWorkArea, OUT dwCurrentWorkArea )
@@ -232,25 +229,24 @@ METHOD __DbServerEval( uBlock AS USUAL, uCobFor AS USUAL, uCobWhile AS USUAL, ;
 	RECOVER USING oError
 		oErrorInfo := oError
 		IF ! lInternalError
-			__DBSSetSelect(dwCurrentWorkArea  ) //SE-060527
+			__DBSSetSelect(dwCurrentWorkArea  ) 
 			SELF:Error( oErrorInfo, #__DbServerEval )
 		ENDIF
 		lRetCode := FALSE
 	END SEQUENCE
 
-	__DBSSetSelect( dwCurrentWorkArea )  //SE-060527
+	__DBSSetSelect( dwCurrentWorkArea )  
 
 	
    DbSetRestoreWorkarea(lRestore)
 	RETURN lRetCode
 
 METHOD __GenerateStatusHL( oError AS  Error) AS HyperLabel STRICT 
-	LOCAL oRet AS HyperLabel // OBJECT  dcaton 070428 changed from OBJECT
+	LOCAL oRet AS HyperLabel 
 	LOCAL cDesc AS STRING
     IF oError == NULL_OBJECT
         oError := Error{}
     ENDIF
-
 	
 	lErrorFlag := TRUE
 
@@ -281,7 +277,7 @@ METHOD __InitRecordBuf( ) AS VOID STRICT
 
 	FOR i := 1 TO SELF:wFieldCount
 		IF VoDbFieldGet( i, REF x )
-			//RvdH 060928 Mark as BLOB when fieldtype = 'M' and not string
+			//Mark as BLOB when fieldtype = 'M' and not string
 			aOriginalBuffer[BUFFER_VALUE, i] 			:= x                                                       
 			IF ! IsString(x) .AND. SELF:aStruct[i,DBS_TYPE] == "M"  
 				aOriginalBuffer[BUFFER_IS_BLOB, i] 		:= TRUE    
@@ -320,7 +316,7 @@ METHOD __NotifyBufferFlush( ) AS VOID STRICT
 	ASend( aRelationChildren, #__NotifyBufferFlush )
 	VoDbSelect( wWorkArea, OUT dwCurrentWorkArea )
 	SELF:__OptimisticFlush( )
-	__DBSSetSelect( dwCurrentWorkArea  ) //SE-060527
+	__DBSSetSelect( dwCurrentWorkArea  ) 
 
 	
 	RETURN
@@ -355,7 +351,7 @@ METHOD __OptimisticFlush() AS VOID STRICT
 							BREAK ErrorBuild( _VoDbErrInfoPtr( ) )
 						ENDIF
 						IF ! uFLock
-							//RvdH 051216 Memo Fields must NOT be padded !
+							// Memo Fields must NOT be padded !
 							IF cFieldType != "M" .AND. IsString( aOriginalBuffer[BUFFER_VALUE, w] )
 								nOrgBuffLen := SLen( aOriginalBuffer[BUFFER_VALUE, w] )
 								aOriginalBuffer[BUFFER_VALUE, w] := PadR( uValue, nOrgBuffLen )
@@ -390,10 +386,6 @@ METHOD __OptimisticFlush() AS VOID STRICT
 METHOD __OptimisticFlushNoLock( ) AS VOID STRICT 
 	LOCAL w AS DWORD
 	LOCAL uValue AS USUAL
-	// LOCAL nCurRec AS DWORD         dcaton 070430 never used
-
-	
-	// nCurRec := VoDbRecno( )      // dcaton 070430 never used
 	IF nEffectiveCCMode == ccOptimistic .AND. lCCOptimisticRecChg
 		FOR w := 1 UPTO wFieldCount
 			IF aCurrentBuffer[BUFFER_IS_CHANGED, w] .AND. ! aOriginalBuffer[BUFFER_IS_BLOB, w]
@@ -769,7 +761,7 @@ CONSTRUCTOR( oFile, lShareMode, lReadOnlyMode, xDriver, aRdd )
 		SELF:__InitRecordBuf( )
 		
 
-		__DBSSetSelect(dwCurrentWorkArea) //SE-060527
+		__DBSSetSelect(dwCurrentWorkArea) 
 
 	RECOVER USING oError
 		oErrorInfo := oError
@@ -777,7 +769,7 @@ CONSTRUCTOR( oFile, lShareMode, lReadOnlyMode, xDriver, aRdd )
 			VoDbCloseArea( )
 		ENDIF
 		wWorkArea := 0
-		__DBSSetSelect(dwCurrentWorkArea) //SE-060527
+		__DBSSetSelect(dwCurrentWorkArea) 
 		oHLStatus := HyperLabel{ #NoTable, __CavoStr( __CAVOSTR_DBFCLASS_NOTABLE_CAPTION ),  ;
 			__CavoStr( __CAVOSTR_DBFCLASS_NOTABLE ) }
 		SELF:Error( oErrorInfo, #Init )

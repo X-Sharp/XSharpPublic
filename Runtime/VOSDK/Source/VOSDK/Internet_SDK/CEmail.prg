@@ -15,24 +15,6 @@ CLASS CEmail INHERIT CMessage
 
 	PROTECT oStorage        AS CStorage;
 
-#ifndef __VULCAN__
-    ~"ONLYEARLY+"
-    DECLARE METHOD __CreateCommands
-    DECLARE METHOD __CreateContentType
-    DECLARE METHOD __GetFileContentType
-    DECLARE METHOD __GetContentInfo
-    DECLARE METHOD __IsBoundary
-    DECLARE METHOD CloneAttachments
-    DECLARE METHOD CreateHtml
-    DECLARE METHOD CreateReplyBody
-    DECLARE METHOD DeleteAttachment
-    DECLARE METHOD GetAttachmentInfo
-    DECLARE METHOD SetAttachmentInfo
-    DECLARE METHOD StreamIn
-    DECLARE METHOD StreamOut
-    ~"ONLYEARLY-"
-#endif
-
 METHOD __CreateCommands() AS ARRAY STRICT
 	LOCAL lAlternate AS LOGIC
 	LOCAL dwFiles    AS DWORD
@@ -102,8 +84,6 @@ METHOD __CreateContentType(dwType AS DWORD, dwCode REF DWORD) AS STRING STRICT
 	RETURN cRet
 
 METHOD __GetContentInfo(cPart AS STRING) AS DWORD STRICT
-    //SE-090420
-    //SE-070523
     LOCAL cTemp    AS STRING
     LOCAL dwType   AS DWORD
     LOCAL dwTEnc   AS DWORD
@@ -119,7 +99,7 @@ METHOD __GetContentInfo(cPart AS STRING) AS DWORD STRICT
     ENDIF
 
     SELF:cContentType := cTemp
-    //RvdH 070125 Save charset, SE-070406
+    // Save charset
     SELF:cCharSet :=  __GetToken(cTemp, TEMP_CHARSET, ";", TRUE)
     SELF:cCharSet := StrTran (SELF:cCharSet, e"\"")	// added this line KB 20-5-2010 because sometimes the charset is between quotes
 
@@ -155,7 +135,6 @@ METHOD __GetContentInfo(cPart AS STRING) AS DWORD STRICT
         ENDIF
     ELSE
         //message, image, audio, video, application
-        //SE-070728
         cDisposition := __GetMailInfo(cPart, TEMP_CONTENTDISPOSITION, FALSE)
         dwType := STREAM_Attachment
     ENDIF
@@ -182,7 +161,6 @@ METHOD __GetContentInfo(cPart AS STRING) AS DWORD STRICT
     SELF:nTransferEncoding := dwTEnc
 
     IF dwType = STREAM_Attachment
-        //SE-070728
         cName := __GetToken(cDisposition, TEMP_FNAME, ";", TRUE)
 
         IF cName == NULL_STRING
@@ -205,7 +183,7 @@ METHOD __GetContentInfo(cPart AS STRING) AS DWORD STRICT
                 ENDIF
                 IF cTemp = "rtf" .OR. cTemp = "richtext"
                     cName += ".rtf"
-				ELSEIF cTemp = "enriched" //SE-080513 added "enriched"
+				ELSEIF cTemp = "enriched" 
 				   cName += "_enriched.txt"
                 ELSE
                     cName += ".txt"
@@ -215,12 +193,11 @@ METHOD __GetContentInfo(cPart AS STRING) AS DWORD STRICT
             ENDIF
         ENDIF
         cName := __GoodFileName(cName)
-        //SE-090420
         IF Empty(cDisposition)
-        cTemp := __GetMailInfo(cPart, TEMP_CONTENTID, FALSE)
-        IF cTemp = "<"
-            cTemp := __GetToken(cTemp, "<", ">")
-           ENDIF
+            cTemp := __GetMailInfo(cPart, TEMP_CONTENTID, FALSE)
+            IF cTemp = "<"
+                cTemp := __GetToken(cTemp, "<", ">")
+            ENDIF
         ELSE
            //for attachments no content id is needed
            cTemp := NULL_STRING
@@ -275,7 +252,7 @@ METHOD AddAttachment(cFullPath, cContentType, dwEncodeType, cContentID, cFilenam
 
 	IF IsString(cFullPath)
 		cID := cFullPath
-		IF FFirst(String2Psz(cID), 0)
+		IF FFirst(cID, 0)
 			IF IsString(cFilename)
 				cFName := cFilename
 			ELSE
@@ -400,7 +377,7 @@ ASSIGN BCCList(xNew)
 		SELF:aBCCList := xNew
 	ENDIF
 
-	RETURN SELF:aBCCList
+	RETURN 
 
 ACCESS Boundary
 	RETURN SELF:cBoundary
@@ -441,7 +418,7 @@ ASSIGN CCList(xNew)
 		SELF:aCCList := xNew
 	ENDIF
 
-	RETURN SELF:aCCList
+	RETURN 
 
 METHOD CloneAttachments() AS VOID STRICT
 	LOCAL dwI       AS DWORD
@@ -460,7 +437,6 @@ METHOD CloneAttachments() AS VOID STRICT
 	RETURN
 
 METHOD CreateHtml(cText AS STRING) AS STRING STRICT
-   //SE-040715
 	//convert plain text to HTML
 	LOCAL cHTM, cLine AS STRING
 	LOCAL dwStart, dwEnd, dwLen AS DWORD
@@ -497,7 +473,6 @@ METHOD CreateHtml(cText AS STRING) AS STRING STRICT
 	RETURN cHTM
 
 METHOD CreateReplyBody(lReFormat := TRUE AS LOGIC) AS STRING
-   //SE-040707
 	// Converts Text into a forward/Reply to format - does not consider HTML component
 	LOCAL cTemp       AS STRING
 	LOCAL cOutput     AS STRING
@@ -542,7 +517,6 @@ METHOD CreateReplyBody(lReFormat := TRUE AS LOGIC) AS STRING
 	RETURN cOutput
 
 METHOD Decode(cMail)
-   //SE-070423
    LOCAL dwPos  AS DWORD
    LOCAL dwEnd  AS DWORD
    LOCAL dwStop AS DWORD
@@ -621,7 +595,7 @@ ASSIGN DestList(xNew)
 		SELF:aDestList := xNew
 	ENDIF
 
-	RETURN SELF:aDestList
+	RETURN 
 
 ACCESS DispositionNotification
 	RETURN SELF:cDispositionNotification
@@ -660,7 +634,6 @@ METHOD GetAttachmentInfo(dwIndex AS DWORD, dwType AS DWORD) AS USUAL STRICT
 	RETURN NIL
 
 METHOD GetHeaderInfo()
-   //SE-040622
 	LOCAL cHeader AS STRING
 
 	cHeader := SELF:MailHeader
@@ -673,7 +646,6 @@ METHOD GetHeaderInfo()
 	SELF:CCList   := __GetMailInfo(cHeader, TEMP_CC, FALSE)
 	SELF:BCCList  := __GetMailInfo(cHeader, TEMP_BCC, FALSE)
 
-	// Added for Jan Timmer - 15/04/04
 	SELF:ReturnReceipt           := __GetMailInfo(cHeader, TEMP_RETURN_RECEIPT, .F. )
 	SELF:Priority                := Val(__GetMailInfo(cHeader, TEMP_PRIORITY, TRUE))
 	SELF:DispositionNotification := __GetMailInfo(cHeader, TEMP_DISPOSITIONNOTIFICATION, FALSE)
@@ -681,10 +653,7 @@ METHOD GetHeaderInfo()
 	RETURN TRUE
 
 ACCESS HTMLText
-    //SE-090420 processing of CID's without enclosing quotation marks
-    //SE-040622
     // either read the HTML text or convert plain text to HTML
-    //SE-071226
     LOCAL cHTM, cTag, cContentID, cTmp AS STRING
     LOCAL cFilename AS STRING
     LOCAL dwStart, dwLen, dwStop, dwPos AS DWORD
@@ -719,13 +688,13 @@ ACCESS HTMLText
             // develop and scan for this CID
             cContentID := SubStr3(cHTM, dwStart, dwStop-dwStart)
             IF (dwPos := AScan(SELF:aAttachList, {|aProp| aProp[ATTACH_CONTENTID] = cContentID})) > 0
-                  cFilename := "file://localhost/" + SELF:GetAttachmentInfo(dwPos, ATTACH_FULLPATH) //SE-071226
+                  cFilename := "file://localhost/" + SELF:GetAttachmentInfo(dwPos, ATTACH_FULLPATH) 
                   // replace CID in the HTML string with the disk file name
                   IF ! lQM
                      cFilename := e"\"" + cFilename + e"\""
                   ENDIF
                   cHTM := Left(cHTM, dwStart-5) + cFilename + SubStr2(cHTM, dwStop)
-                  dwStart := dwStop + 1 + SLen(cFilename) - SLen(cContentID) //SE-071226
+                  dwStart := dwStop + 1 + SLen(cFilename) - SLen(cContentID) 
               ENDIF
             ENDIF
         ELSE
@@ -744,7 +713,6 @@ CONSTRUCTOR(cRawMail, uStorage)
 		//    ENDIF
 		//    IF oStorage = Null_Object
 	ELSE
-	   //SE-070524 uStorage can be a path also.
 		oStorage := CStorage{uStorage}
 	ENDIF
 
@@ -755,13 +723,10 @@ CONSTRUCTOR(cRawMail, uStorage)
 	RETURN
 
 ACCESS  MailPriority
-    //SE-040707
 	RETURN SELF:Priority
 
 ASSIGN MailPriority(nNew)
-    //SE-040707
-	//Sets the mail priority, 3 = Normal, 1 = High, 5 = Low
-	RETURN SELF:Priority := nNew
+	SELF:Priority := nNew
 
 
 METHOD MimeEncode(c, nCode)
@@ -782,11 +747,9 @@ METHOD MimeEncode(c, nCode)
 
 	ENDCASE
 
-   //SE-071017
 	RETURN StrTran(c, CRLF + ".", CRLF + "..")
 
 METHOD MimeHeader(nCode, xContentType, cFile, cCID)
-    //SE-070419
     // Added " before and after the filenames KB 16-6-2009
     // reason: some clients could not open attachments with long filenames
     // note: Microsoft Outlook does it too
@@ -923,7 +886,6 @@ METHOD SetAttachmentInfo(dwIndex AS DWORD, dwType AS DWORD, uNewValue AS USUAL) 
 	RETURN uOldValue
 
 METHOD SetHeaderInfo()
-   //SE-070419
 	LOCAL cBuffer AS STRING
 
 	SELF:SetMailTime()
@@ -943,8 +905,7 @@ METHOD SetHeaderInfo()
 		cBuffer += __CreateAddressList(TEMP_CC, SELF:CCList)
 	ENDIF
 
-	// Build the Bcc: list (don't use this list for a reply or a forwarding)
-	//RvdH 070325 NEVER include the BCC list in the header...
+	// NEVER include the BCC list in the header...
 	//IF ALen(SELF:BCCList) > 0
 	//	cBuffer += TEMP_BCC + " " + __CreateAddressList(SELF:BCCList)
 	//ENDIF
@@ -996,7 +957,6 @@ ACCESS Size
 	RETURN dwSize
 
 METHOD StreamIn(cData AS STRING) AS LOGIC STRICT
-   //SE-070421
 	IF dwStreamStatus = STREAM_RESET  //Reset Header
 		oStorage:RawNew(SELF)
 		SELF:cHeader      := NULL_STRING
@@ -1118,18 +1078,13 @@ METHOD StreamOut() AS STRING STRICT
 			IF dwType = CEMAIL_Attachment
 				IF dwFile>0
 					cData := CRLF + SELF:Boundary + CRLF
-                    cTemp := aAttachList[dwFile, ATTACH_CONTENTID] //SE-080513
-		              cData += SELF:MimeHeader(aTransferEncoding[dwFile], aContentType[dwFile], __GetFileName(aFileList[dwFile]), cTemp) + CRLF
-		              /*
-                    cTemp := __GetFileName(aFileList[dwFile])
-                    cData += SELF:MimeHeader(aTransferEncoding[dwFile], aContentType[dwFile], cTemp) + CRLF
-                    cTemp := aAttachList[dwFile, ATTACH_CONTENTID]
-                    */
+                    cTemp := aAttachList[dwFile, ATTACH_CONTENTID] 
+		            cData += SELF:MimeHeader(aTransferEncoding[dwFile], aContentType[dwFile], __GetFileName(aFileList[dwFile]), cTemp) + CRLF
 
 					IF cTemp == NULL_STRING
 						cData += CRLF
 					ELSE
-						//RvdH 030720 Some clients want <> delimiters around the content-id
+						// Some clients want <> delimiters around the content-id
 						cData += TEMP_CONTENTID + " <" + cTemp +">"+ CRLF + CRLF
 					ENDIF
 					oStorage:AttachmentOpen(SELF:aAttachList[dwFile, ATTACH_STOREID], aTransferEncoding[dwFile])
@@ -1138,7 +1093,6 @@ METHOD StreamOut() AS STRING STRICT
 				ELSE
 					cData := oStorage:AttachmentRead()
 					IF cData == NULL_STRING
-					   //SE-070523
 					   oStorage:AttachmentClose()
 						cData := CRLF
 					ELSE
@@ -1179,29 +1133,28 @@ METHOD StreamOut() AS STRING STRICT
 	RETURN cData
 
 METHOD StreamStart()
-   //SE-070421
-   dwStreamStatus := STREAM_RESET
+    dwStreamStatus := STREAM_RESET
 	RETURN TRUE
 END CLASS
 
 
 
 #region defines
-STATIC DEFINE CEMAIL_Attachment  := 0x0100
-STATIC DEFINE CEMail_Body        := 0b00000001
-STATIC DEFINE CEMail_BodyHtml    := 0b00000010
-STATIC DEFINE CEMail_BoundaryEnd := 0b10000000
-STATIC DEFINE CEMail_CAlternate  := 0b00001100
-STATIC DEFINE CEMAIL_CBody       := 0b00000100
-STATIC DEFINE CEMAIL_CBodyHtml   := 0b00001000
-STATIC DEFINE CEMail_CMixed      := 0b00010000
-STATIC DEFINE CEMail_CRelated    := 0b00010100
-STATIC DEFINE STREAM_Attachment := 4
-STATIC DEFINE STREAM_Boundary := 5
-STATIC DEFINE STREAM_END := 9
-STATIC DEFINE STREAM_Header  := 1
-STATIC DEFINE STREAM_Html    := 3
-STATIC DEFINE STREAM_Part := 6
-STATIC DEFINE STREAM_Plain   := 2
-STATIC DEFINE STREAM_RESET   := 0
+INTERNAL DEFINE CEMAIL_Attachment  := 0x0100
+INTERNAL DEFINE CEMail_Body        := 0b00000001
+INTERNAL DEFINE CEMail_BodyHtml    := 0b00000010
+INTERNAL DEFINE CEMail_BoundaryEnd := 0b10000000
+INTERNAL DEFINE CEMail_CAlternate  := 0b00001100
+INTERNAL DEFINE CEMAIL_CBody       := 0b00000100
+INTERNAL DEFINE CEMAIL_CBodyHtml   := 0b00001000
+INTERNAL DEFINE CEMail_CMixed      := 0b00010000
+INTERNAL DEFINE CEMail_CRelated    := 0b00010100
+INTERNAL DEFINE STREAM_Attachment := 4
+INTERNAL DEFINE STREAM_Boundary := 5
+INTERNAL DEFINE STREAM_END := 9
+INTERNAL DEFINE STREAM_Header  := 1
+INTERNAL DEFINE STREAM_Html    := 3
+INTERNAL DEFINE STREAM_Part := 6
+INTERNAL DEFINE STREAM_Plain   := 2
+INTERNAL DEFINE STREAM_RESET   := 0
 #endregion

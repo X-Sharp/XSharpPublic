@@ -5,11 +5,10 @@
 //
 
 USING System.Text
-USING XSharp.RDD.Enums
 USING XSharp.RDD.Support
 USING XSharp.RDD.CDX
 
-
+BEGIN NAMESPACE XSharp.RDD.Enums
 INTERNAL ENUM FlexArrayTypes
     MEMBER NIL      := 0
     MEMBER UChar    := 1       // 1 byte
@@ -81,3 +80,4 @@ INTERNAL ENUM FlexFieldType
     MEMBER LastExtended2  := StringEmpty
     MEMBER Illegal      := -1
 END ENUM
+END NAMESPACE

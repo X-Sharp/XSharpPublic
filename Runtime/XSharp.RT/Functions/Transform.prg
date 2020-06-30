@@ -294,11 +294,11 @@ INTERNAL STATIC CLASS TransformHelpers
                 aTemp[4] := "YES"
                 aTemp[5] := "Y"
             ELSE
-                aTemp[1] := SetLiteral(VOErrors.RT_MSG_LONG_TRUE)
+                aTemp[1] := __CavoStr(VOErrors.RT_MSG_LONG_TRUE)
                 aTemp[2] := ".T."
-                aTemp[3] := SetLiteral(VOErrors.RT_MSG_SHORT_TRUE)
-                aTemp[4] := SetLiteral(VOErrors.RT_MSG_LONG_YES)
-                aTemp[5] := SetLiteral(VOErrors.RT_MSG_SHORT_YES)
+                aTemp[3] := __CavoStr(VOErrors.RT_MSG_SHORT_TRUE)
+                aTemp[4] := __CavoStr(VOErrors.RT_MSG_LONG_YES)
+                aTemp[5] := __CavoStr(VOErrors.RT_MSG_SHORT_YES)
             ENDIF
             
             IF cPic == ""
@@ -472,15 +472,15 @@ INTERNAL STATIC CLASS TransformHelpers
         LOCAL cReturn AS STRING
         IF lYesNo
             IF lValue
-                cReturn := SetLiteral(VOErrors.RT_MSG_SHORT_YES)
+                cReturn := __CavoStr(VOErrors.RT_MSG_SHORT_YES)
             ELSE
-                cReturn := SetLiteral(VOErrors.RT_MSG_SHORT_NO)
+                cReturn := __CavoStr(VOErrors.RT_MSG_SHORT_NO)
             ENDIF
         ELSE
             IF lValue
-                cReturn := SetLiteral(VOErrors.RT_MSG_SHORT_TRUE)
+                cReturn := __CavoStr(VOErrors.RT_MSG_SHORT_TRUE)
             ELSE
-                cReturn := SetLiteral(VOErrors.RT_MSG_SHORT_FALSE)
+                cReturn := __CavoStr(VOErrors.RT_MSG_SHORT_FALSE)
             ENDIF
         ENDIF
         RETURN cReturn[0]

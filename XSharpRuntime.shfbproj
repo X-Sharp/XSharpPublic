@@ -47,19 +47,23 @@
       <DocumentationSource sourceFile="Binaries\Documentation\VORDDClasses.XML" />
       <DocumentationSource sourceFile="Binaries\Documentation\VOInternetClasses.XML" />
       <DocumentationSource sourceFile="Binaries\Documentation\VOGUIClasses.XML" />
+      <DocumentationSource sourceFile="Docs\XSharpVOSDK_Classes.xml" />
+      <DocumentationSource sourceFile="Binaries\Documentation\XSharp.VOConsoleClasses.dll" />
+      <DocumentationSource sourceFile="Binaries\Documentation\XSharp.VORDDClasses.dll" />
+      <DocumentationSource sourceFile="Binaries\Documentation\XSharp.VOSystemClasses.dll" />
     </DocumentationSources>
     <HelpTitle>X# Runtime and VO SDK Reference</HelpTitle>
-    <HelpFileVersion>2.4.0.0</HelpFileVersion>
+    <HelpFileVersion>2.5.0.0</HelpFileVersion>
     <NamingMethod>MemberName</NamingMethod>
     <ContentPlacement>AboveNamespaces</ContentPlacement>
     <RootNamespaceContainer>True</RootNamespaceContainer>
     <NamespaceGrouping>False</NamespaceGrouping>
     <Preliminary>False</Preliminary>
     <SdkLinkTarget>Blank</SdkLinkTarget>
-    <HelpFileFormat>HtmlHelp1, MSHelpViewer, Website</HelpFileFormat>
+    <HelpFileFormat>HtmlHelp1</HelpFileFormat>
     <SyntaxFilters>C#, X#</SyntaxFilters>
     <PresentationStyle>VS2013XSharp</PresentationStyle>
-    <CleanIntermediates>False</CleanIntermediates>
+    <CleanIntermediates>True</CleanIntermediates>
     <KeepLogFile>True</KeepLogFile>
     <DisableCodeBlockComponent>False</DisableCodeBlockComponent>
     <IndentHtml>False</IndentHtml>
@@ -188,18 +192,7 @@
       <PlugInConfig id="XSharp Function Output" enabled="True">
         <configuration />
       </PlugInConfig>
-      <PlugInConfig id="XPath Reflection File Filter" enabled="True">
-        <configuration>
-          <expressions>
-            <expression>//api[starts-with(apidata/@name,"$")]</expression>
-            <expression>//api[contains(@id,":VOConsoleClasses")]</expression>
-            <expression>//api[contains(@id,"XSharp.ADS.ACE")]</expression>
-            <expression>//api[contains(@id,"XSharp.VO.VOBitmaps")]</expression>
-            <expression>//api[contains(@id,"XSharp.VO.Win32")]</expression>
-          </expressions>
-        </configuration>
-      </PlugInConfig>
-    </PlugInConfigurations>
+<PlugInConfig id="XPath Reflection File Filter" enabled="True"><configuration><expressions><expression>//api[starts-with(apidata/@name,"$")]</expression><expression>//api[contains(@id,"XSharp.ADS.ACE")]</expression><expression>//api[starts-with(apidata/@name,"__") and not(starts-with(@id,"T:"))]</expression></expressions></configuration></PlugInConfig></PlugInConfigurations>
     <RootNamespaceTitle>X# Runtime and VO SDK Reference</RootNamespaceTitle>
     <CopyrightHref>https://www.xsharp.info/licensing/xsharp-open-software-license</CopyrightHref>
     <CopyrightText>Copyright &amp;#169%3b 2015-2020 XSharp BV, All rights reserved. The VO SDK classes are Copyright &amp;#169%3b 1993-2020 Computer Associates.</CopyrightText>
@@ -213,8 +206,7 @@
     <TopicVersion>100</TopicVersion>
     <MSHelpViewerSdkLinkType>Msdn</MSHelpViewerSdkLinkType>
     <CatalogName>VisualStudio15</CatalogName>
-    <ProjectSummary>
-      This is the generated documentation for the XSharp Runtime and VO SDK.&amp;lt%3bbr/&amp;gt%3b
+    <ProjectSummary>      This is the generated documentation for the XSharp Runtime and VO SDK.&amp;lt%3bbr/&amp;gt%3b
       Please note that DotNet does not know the concept of a function. Therefore the compiler converts functions to static methods of a compiler generated functions class. &amp;lt%3bbr/&amp;gt%3b
       The same is true for DEFINES. These are added as constants fields in the functions class.&amp;lt%3bbr/&amp;gt%3b
       The XSharp runtime has a couple of these classes:&amp;lt%3bbr/&amp;gt%3b

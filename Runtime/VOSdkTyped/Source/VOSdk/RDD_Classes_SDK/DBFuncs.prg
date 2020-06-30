@@ -1,7 +1,7 @@
+#pragma warnings(165, off)
 /// <exclude/>
 FUNCTION __GetFldPos( uField AS USUAL, wFieldCount AS DWORD ) AS DWORD STRICT
-	LOCAL dwPos AS DWORD
-   //SE-060527
+	LOCAL dwPos := 0 AS DWORD
 	IF IsNumeric( uField )
 		IF uField > 0 .AND. uField <= wFieldCount
 			dwPos := uField
@@ -20,7 +20,6 @@ FUNCTION __GetFldPos( uField AS USUAL, wFieldCount AS DWORD ) AS DWORD STRICT
 /// <exclude/>
 FUNCTION __DBSAPPEND( lRelease AS LOGIC, nTries := 1 AS DWORD ) AS LOGIC STRICT
 	LOCAL lOk := FALSE AS LOGIC
-   //SE-060527
    DO WHILE nTries > 0
 		NetErr( FALSE )
 		IF VoDbAppend(lRelease)
@@ -38,7 +37,6 @@ FUNCTION __DBSAPPEND( lRelease AS LOGIC, nTries := 1 AS DWORD ) AS LOGIC STRICT
 /// <exclude/>
 FUNCTION __DBSCommit( nTries := 1 AS DWORD) AS LOGIC STRICT
 	LOCAL lOk := FALSE AS LOGIC
-   //SE-060527
    DO WHILE nTries > 0
 		NetErr( FALSE )
 		IF VoDbCommit()
@@ -54,9 +52,7 @@ FUNCTION __DBSCommit( nTries := 1 AS DWORD) AS LOGIC STRICT
 	RETURN lOk
 
 /// <exclude/>
-FUNCTION __DBSDBAPP( cFile, aFields, uCobFor, uCobWhile,  ;
-		nNext, nRec, lRest, cDriver, aRDD, aStruct ) AS LOGIC  CLIPPER
-	//SE-060601
+FUNCTION __DBSDBAPP( cFile, aFields, uCobFor, uCobWhile,  nNext, nRec, lRest, cDriver, aRDD, aStruct ) AS LOGIC  CLIPPER
 	LOCAL cobOldErrFunc AS USUAL
 	LOCAL oError AS USUAL
 	LOCAL lBreak AS LOGIC
@@ -126,13 +122,10 @@ FUNCTION __DBSDBAPP( cFile, aFields, uCobFor, uCobWhile,  ;
 /// <exclude/>
 FUNCTION __DBSDBAPPDELIM( cFile, cDelim, aFields,	uCobFor, uCobWhile,   ;
 		nNext, nRec, lRest, aStruct ) AS LOGIC  CLIPPER
-	//SE-060601
 	LOCAL cobOldErrFunc 	AS USUAL
 	LOCAL oError 			AS USUAL
 	LOCAL lBreak 			AS LOGIC
-	// LOCAL dwFrom 			AS DWORD   // dcaton 070430 never used
 	LOCAL dwTo 				AS DWORD
-	// LOCAL siPos 			AS DWORD   // dcaton 070430 never used
 	LOCAL lRetCode 		AS LOGIC
 	LOCAL lAnsi 			AS LOGIC
 	LOCAL lDbfAnsi 		AS LOGIC
@@ -151,7 +144,6 @@ FUNCTION __DBSDBAPPDELIM( cFile, cDelim, aFields,	uCobFor, uCobWhile,   ;
 			cFile, "cFile" }
 	ENDIF
 
-//	IF Empty( siPos := At(".", cFile ) )   // dcaton 070430 siPos never used
 	IF At(".", cFile ) == 0
 		cFile := cFile + ".TXT"
 	ENDIF
@@ -164,8 +156,6 @@ FUNCTION __DBSDBAPPDELIM( cFile, cDelim, aFields,	uCobFor, uCobWhile,   ;
 	IF ! lRetCode
 		BREAK ErrorBuild( _VoDbErrInfoPtr( ) )
 	ENDIF
-
-	// dwFrom := VoDbGetSelect( )   // dcaton 070430 never used
 
 	lDbfAnsi := __DBSDBINFO( DBI_ISANSI )
 
@@ -195,15 +185,11 @@ FUNCTION __DBSDBAPPDELIM( cFile, cDelim, aFields,	uCobFor, uCobWhile,   ;
 	RETURN lRetCode
 
 /// <exclude/>
-FUNCTION __DBSDBAPPSDF( cFile, aFields, uCobFor, uCobWhile,  ;
-		nNext, nRec, lRest, aStruct ) AS LOGIC  CLIPPER
-	//SE-060601
+FUNCTION __DBSDBAPPSDF( cFile, aFields, uCobFor, uCobWhile,  nNext, nRec, lRest, aStruct ) AS LOGIC  CLIPPER
 	LOCAL cobOldErrFunc AS USUAL
 	LOCAL oError AS USUAL
 	LOCAL lBreak := FALSE  AS LOGIC
-	// LOCAL dwFrom AS DWORD  dcaton 070430 never used
 	LOCAL dwTo AS DWORD
-	// LOCAL siPos AS DWORD   dcaton 070430 never used
 	LOCAL lRetCode AS LOGIC
 	LOCAL lAnsi AS LOGIC
 	LOCAL lDbfAnsi AS LOGIC
@@ -240,13 +226,11 @@ FUNCTION __DBSDBAPPSDF( cFile, aFields, uCobFor, uCobWhile,  ;
 		BREAK ErrorBuild( _VoDbErrInfoPtr( ) )
 	ENDIF
 
-	// dwFrom := VoDbGetSelect( )    // dcaton 070430 never used
-
 	IF ( ! lAnsi .AND. lDbfAnsi )
 		SetAnsi( TRUE )
 	ENDIF
 
-   cobOldErrFunc := ErrorBlock( { | oErr | _Break( oErr ) } )
+    cobOldErrFunc := ErrorBlock( { | oErr | _Break( oErr ) } )
 	BEGIN SEQUENCE
 
 		lRetCode := DbTrans( dwTo, aStruct, uCobFor, uCobWhile, nNext, nRec, lRest )
@@ -268,9 +252,7 @@ FUNCTION __DBSDBAPPSDF( cFile, aFields, uCobFor, uCobWhile,  ;
 	RETURN lRetCode
 
 /// <exclude/>
-FUNCTION __DBSDBCopy( cFile, aFields, uCobFor,	uCobWhile, nNext, nRec,	lRest,  ;
-		cDriver, aRDD, aStruct ) AS LOGIC  CLIPPER
-	//SE-060601
+FUNCTION __DBSDBCopy( cFile, aFields, uCobFor,	uCobWhile, nNext, nRec,	lRest,  cDriver, aRDD, aStruct ) AS LOGIC  CLIPPER
 	LOCAL cobOldErrFunc AS USUAL
 	LOCAL oError AS USUAL
 	LOCAL lBreak  := FALSE AS LOGIC
@@ -350,15 +332,12 @@ FUNCTION __DBSDBCopy( cFile, aFields, uCobFor,	uCobWhile, nNext, nRec,	lRest,  ;
 	RETURN lRetCode
 
 /// <exclude/>
-FUNCTION __DBSDBCOPYDELIM( cFile, cDelim, aFields, uCobFor, uCobWhile, nNext,  ;
-		nRec, lRest, aStruct ) AS LOGIC  CLIPPER
-	//SE-060601
+FUNCTION __DBSDBCOPYDELIM( cFile, cDelim, aFields, uCobFor, uCobWhile, nNext,  nRec, lRest, aStruct ) AS LOGIC  CLIPPER
 	LOCAL cobOldErrFunc AS USUAL
 	LOCAL oError AS USUAL
 	LOCAL lBreak := FALSE AS LOGIC
 	LOCAL dwFrom AS DWORD
 	LOCAL dwTo AS DWORD
-	// LOCAL siPos AS DWORD   dcaton 070430 never used
 	LOCAL lRetCode AS LOGIC
 	LOCAL lAnsi AS LOGIC
 	LOCAL lDbfAnsi AS LOGIC
@@ -376,7 +355,6 @@ FUNCTION __DBSDBCOPYDELIM( cFile, cDelim, aFields, uCobFor, uCobWhile, nNext,  ;
 		BREAK DbError{ NIL, #CopyDelimited, EG_ARG, __CavoStr( __CAVOSTR_DBFCLASS_BADFILENAME ),  ;
 			cFile, "cFile" }
 	ENDIF
-//	IF Empty( siPos := At( ".", cFile ) )  // dcaton 070430 siPos never used
 	IF At( ".", cFile ) == 0 
 		cFile := cFile + ".TXT"
 	ENDIF
@@ -424,15 +402,12 @@ FUNCTION __DBSDBCOPYDELIM( cFile, cDelim, aFields, uCobFor, uCobWhile, nNext,  ;
 	RETURN lRetCode
 
 /// <exclude/>
-FUNCTION __DBSDBCOPYSDF( cFile, aFields, uCobFor, uCobWhile, nNext,  ;
-		nRec, lRest, aStruct ) AS LOGIC  CLIPPER
-	//SE-060601
+FUNCTION __DBSDBCOPYSDF( cFile, aFields, uCobFor, uCobWhile, nNext, nRec, lRest, aStruct ) AS LOGIC  CLIPPER
 	LOCAL cobOldErrFunc AS USUAL
 	LOCAL oError AS USUAL
 	LOCAL lBreak  := FALSE AS LOGIC
 	LOCAL dwFrom AS DWORD
 	LOCAL dwTo AS DWORD
-	// LOCAL siPos AS DWORD     dcaton 070430 never used
 	LOCAL lRetCode AS LOGIC
 	LOCAL cAlias AS STRING
 	LOCAL lAnsi AS LOGIC
@@ -451,7 +426,6 @@ FUNCTION __DBSDBCOPYSDF( cFile, aFields, uCobFor, uCobWhile, nNext,  ;
 		BREAK DbError{ NIL, #CopySDF, EG_ARG, __CavoStr( __CAVOSTR_DBFCLASS_BADFILENAME ),  ;
 			cFile, "cFile" }
 	ENDIF
-//	IF Empty( siPos := At( ".", cFile ) )  // dcaton 070430 siPos never used
 	IF At( ".", cFile ) == 0 
 		cFile := cFile + ".TXT"
 	ENDIF
@@ -497,7 +471,6 @@ FUNCTION __DBSDBCOPYSDF( cFile, aFields, uCobFor, uCobWhile, nNext,  ;
 	
 /// <exclude/>
 FUNCTION __DBSDBINFO( nOrdinal AS DWORD , xNewVal := NIL AS USUAL, nTries := 1 AS DWORD) AS USUAL STRICT
-   //SE-060601 
    LOCAL lOk := FALSE AS LOGIC
    DO WHILE nTries > 0
 		IF VoDbInfo(nOrdinal, REF xNewVal)
@@ -579,9 +552,7 @@ FUNCTION __DBSDBJOIN( cAlias, cFile, aFields, uCobFor, cRDD ) AS LOGIC  CLIPPER
 	RETURN lRetCode
 
 /// <exclude/>
-FUNCTION __DBSDbOrderInfo( nOrdinal AS DWORD, cBagName := NULL_STRING AS STRING, uOrder:= NIL AS USUAL, ;
-	xNewVal := NIL AS USUAL, nTries := 1 AS DWORD) AS USUAL STRICT
-	//SE-060527
+FUNCTION __DBSDbOrderInfo( nOrdinal AS DWORD, cBagName := NULL_STRING AS STRING, uOrder:= NIL AS USUAL, xNewVal := NIL AS USUAL, nTries := 1 AS DWORD) AS USUAL STRICT
 	LOCAL lKeyVal   AS LOGIC
 
 	IF IsString(uOrder)
@@ -619,9 +590,7 @@ FUNCTION __DBSDbOrderInfo( nOrdinal AS DWORD, cBagName := NULL_STRING AS STRING,
 	RETURN xNewVal
 
 /// <exclude/>
-FUNCTION __DBSDBSORT( cFile, aFields, uCobFor, uCobWhile, nNext, nRec, lRest,  ;
-		aStruct, cRDD ) AS LOGIC  CLIPPER
-	//SE-060601
+FUNCTION __DBSDBSORT( cFile, aFields, uCobFor, uCobWhile, nNext, nRec, lRest, aStruct, cRDD ) AS LOGIC  CLIPPER
 	LOCAL dwFrom 			AS DWORD
 	LOCAL dwTo 				AS DWORD
 	LOCAL fnFieldNames 	AS _FieldNames
@@ -679,9 +648,7 @@ FUNCTION __DBSDBSORT( cFile, aFields, uCobFor, uCobWhile, nNext, nRec, lRest,  ;
 	RETURN TRUE
 
 /// <exclude/>
-FUNCTION __DBSDBTOTAL( cFile, bKey, aFields, uCobFor, uCobWhile, nNext, nRec,  ;
-		lRest, aStruct, cRDD ) AS LOGIC  CLIPPER
-	//SE-060601
+FUNCTION __DBSDBTOTAL( cFile, bKey, aFields, uCobFor, uCobWhile, nNext, nRec, lRest, aStruct, cRDD ) AS LOGIC  CLIPPER
 	LOCAL oError AS USUAL
    LOCAL lBreak  := FALSE AS LOGIC
 	LOCAL dwFrom AS DWORD
@@ -696,7 +663,7 @@ FUNCTION __DBSDBTOTAL( cFile, bKey, aFields, uCobFor, uCobWhile, nNext, nRec,  ;
 	LOCAL fldNames AS _FieldNames
 	LOCAL aRdds AS ARRAY
 	LOCAL rddList AS _RddList
-	LOCAL nCountMemos AS DWORD  //PP-040416 Issue 12643, from PDB
+	LOCAL nCountMemos AS DWORD  
 
 	IF ! lRest
 		IF ! VoDbGoTop( )
@@ -719,11 +686,10 @@ FUNCTION __DBSDBTOTAL( cFile, bKey, aFields, uCobFor, uCobWhile, nNext, nRec,  ;
 	n := ALen( aStruct )
 	FOR i := n DOWNTO 1
 		IF aStruct[i, DBS_TYPE] = "M"
-			nCountMemos += 1    //PP-040416 Issue 12643, from PDB
+			nCountMemos += 1    
 			ADel( aStruct, i )
 		ENDIF
 	NEXT
-	//PP-040416 Issue 12643 PDB: resize array with the number of deleted Memo entries
 	ASize( aStruct, ALen( aStruct ) - nCountMemos)
 
 	IF ( Empty( aStruct ) )
@@ -772,12 +738,9 @@ FUNCTION __DBSDBTOTAL( cFile, bKey, aFields, uCobFor, uCobWhile, nNext, nRec,  ;
 				IF lSomething
 					VoDbSetSelect(LONGINT(dwTo ) )
 					FOR i := 1 UPTO n
-						//PP-040416 Issue 12643 commented next line, put in the one after
-						//VoDbFieldPut( aFldNum[i], aNum[i] )
-						IF ! VoDbFieldPut( FieldPos(aFields[i]), aNum[i] ) //SE-060601
+						IF ! VoDbFieldPut( FieldPos(aFields[i]), aNum[i] ) 
 							BREAK ErrorBuild( _VoDbErrInfoPtr( ) )
 						ENDIF
-						//FieldPutSym(String2Symbol(aFields[i]), aNum[i])  //  added by PDB
 					NEXT  // i
 					VoDbSetSelect(LONGINT(dwFrom ) )
 				ENDIF
@@ -848,7 +811,6 @@ FUNCTION __DBSDBUPDATE( cAlias, uCobKey, lRand, bReplace ) AS LOGIC  CLIPPER
 /// <exclude/>
 FUNCTION __DBSFLock( nTries := 1 AS DWORD) AS LOGIC STRICT
    LOCAL lOk := FALSE AS LOGIC
-   //SE-060527
    DO WHILE nTries > 0
 		NetErr( FALSE )
 		IF VoDbFlock()
@@ -866,7 +828,6 @@ FUNCTION __DBSFLock( nTries := 1 AS DWORD) AS LOGIC STRICT
 /// <exclude/>
 FUNCTION __DBSGoTop( nTries := 1 AS DWORD) AS LOGIC STRICT
    LOCAL lOk := FALSE AS LOGIC
-   //SE-060527
    DO WHILE nTries > 0
 		NetErr( FALSE )
 		IF VoDbGoTop()
@@ -887,7 +848,6 @@ FUNCTION __DBSGoTop( nTries := 1 AS DWORD) AS LOGIC STRICT
 /// <exclude/>
 FUNCTION __DBSGoBottom( nTries := 1 AS DWORD) AS LOGIC STRICT
 	LOCAL lOk := FALSE AS LOGIC
-   //SE-060527
    DO WHILE nTries > 0
 		NetErr( FALSE )
 		IF VoDbGoBottom()
@@ -909,7 +869,6 @@ FUNCTION __DBSGoBottom( nTries := 1 AS DWORD) AS LOGIC STRICT
 /// <exclude/>
 FUNCTION __DBSOrdListAdd( cBag AS STRING, xOrder AS USUAL, nTries  := 1 AS DWORD) AS LOGIC STRICT
 	LOCAL lOk := FALSE AS LOGIC
-   //SE-060527
    DO WHILE nTries > 0
 		NetErr( FALSE )
 		IF VoDbOrdListAdd(cBag, xOrder)
@@ -930,8 +889,7 @@ FUNCTION __DBSOrdListAdd( cBag AS STRING, xOrder AS USUAL, nTries  := 1 AS DWORD
 /// <exclude/>
 FUNCTION __DBSOrdListClear( cBag AS STRING, xOrder AS USUAL, nTries := 1 AS DWORD ) AS LOGIC STRICT
 	LOCAL lOk := FALSE AS LOGIC
-	//SE-060527
-   DO WHILE nTries > 0
+	DO WHILE nTries > 0
 		NetErr( FALSE )
 		IF VoDbOrdListClear(cBag, xOrder)
 			lOk := TRUE
@@ -951,9 +909,7 @@ FUNCTION __DBSOrdListClear( cBag AS STRING, xOrder AS USUAL, nTries := 1 AS DWOR
 /// <exclude/>
 FUNCTION __DBSRLock( n AS USUAL, nTries := 1 AS DWORD) AS LOGIC STRICT
 	 LOCAL lOk := FALSE AS LOGIC
-	//PP-040416 Issue 12766 First parameter must be usual
-	//SE-060527
-   DO WHILE nTries > 0
+	DO WHILE nTries > 0
 		NetErr( FALSE )
 		IF VoDbRlock(n)
 			lOk := TRUE
@@ -970,10 +926,7 @@ FUNCTION __DBSRLock( n AS USUAL, nTries := 1 AS DWORD) AS LOGIC STRICT
 
 /// <exclude/>
 FUNCTION __DBSSeek( xValue AS USUAL, lSoft AS USUAL, lLast AS USUAL, nTries  := 1 AS DWORD) AS LOGIC STRICT
-   //SE-060527
-   //RvdH 080611 Changed lLast from USUAL to LOGIC and changed the way 
-   //            in which lLast is passed to the RDD.
-	LOCAL lRet  AS LOGIC
+   LOCAL lRet  AS LOGIC
 
 	DEFAULT(REF lSoft, SetSoftSeek())
 	DEFAULT(REF lLast, FALSE)
@@ -1001,13 +954,12 @@ FUNCTION __DBSSeek( xValue AS USUAL, lSoft AS USUAL, lLast AS USUAL, nTries  := 
 
 /// <exclude/>
 FUNCTION __DBSSetSelect(dwNew AS DWORD) AS DWORD STRICT
-   //SE-060527
    IF __glRestoreWorkarea
       RETURN VoDbSetSelect(LONGINT(dwNew))
    ENDIF
    RETURN dwNew
 
-STATIC GLOBAL __glRestoreWorkarea := FALSE AS LOGIC //SE-060527
+STATIC GLOBAL __glRestoreWorkarea := FALSE AS LOGIC 
 
 /// <exclude/>
 FUNCTION __DBSFieldGet( wPos AS DWORD ) AS USUAL
@@ -1078,7 +1030,6 @@ FUNCTION __MakeErrObj( nTries ) AS USUAL  CLIPPER
 /// <summary>Get/Set the flag that determines if DbServer operations restore the current workarea </summary>
 
 FUNCTION DbSetRestoreWorkarea(lEnable := NIL AS USUAL) AS LOGIC STRICT
-	//SE-060527
    LOCAL lOldValue AS LOGIC
 
    lOldValue := __glRestoreWorkarea
@@ -1114,7 +1065,6 @@ FUNCTION __ConstructUniqueAlias ( cFileName AS STRING ) AS SYMBOL STRICT
 /// <exclude/>
 FUNCTION __DBSGoTo( n AS LONGINT, nTries := 1 AS DWORD) AS LOGIC STRICT
    LOCAL lOk := FALSE AS LOGIC
-   //SE-060527
    DO WHILE nTries > 0
 		NetErr( FALSE )
 		IF VoDbGoto(n)
@@ -1136,7 +1086,6 @@ FUNCTION __DBSGoTo( n AS LONGINT, nTries := 1 AS DWORD) AS LOGIC STRICT
 /// <exclude/>
 FUNCTION __DBSSkip( n AS LONGINT, nTries := 1 AS DWORD) AS LOGIC STRICT
 	LOCAL lOk := FALSE AS LOGIC
-   //SE-060527
    DO WHILE nTries > 0
 		NetErr( FALSE )
 		IF VoDbSkip(n)
@@ -1158,7 +1107,6 @@ FUNCTION __DBSSkip( n AS LONGINT, nTries := 1 AS DWORD) AS LOGIC STRICT
 
 /// <exclude/>
 FUNCTION __CheckFieldType(uValue REF USUAL, aField AS ARRAY, uError REF USUAL) AS LOGIC  PASCAL
-    //SE-080609 Type checking for DBServer:Fieldput() and NoIvarGet() 
     LOCAL dwType AS DWORD
     LOCAL cType  AS STRING
     LOCAL lOK    AS LOGIC
@@ -1203,7 +1151,6 @@ FUNCTION __CheckFieldType(uValue REF USUAL, aField AS ARRAY, uError REF USUAL) A
     ENDIF
     
     RETURN lOK
-//RvdH 080613 Allow control over default Setting for Lockmode  
 STATIC GLOBAL sgLockMode := ccOptimistic AS DWORD
 
 /// <summary>Get/Set the default locking mode for the DbServer class</summary>

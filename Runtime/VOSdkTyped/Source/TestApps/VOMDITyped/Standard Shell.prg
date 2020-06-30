@@ -52,6 +52,7 @@ METHOD FilePrinterSetup()
 	
 RETURN SELF	
 
+
 CONSTRUCTOR( oOwnerApp ) 
 	local oSB as StatusBar
 	

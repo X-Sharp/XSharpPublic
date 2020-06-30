@@ -14,6 +14,7 @@ USING System.Reflection
 /// <param name="args"></param>
 /// <returns>
 /// </returns>
+#pragma options ("az", ON)
 FUNCTION Eval(block AS ICodeblock, args PARAMS USUAL[]) AS USUAL
 	LOCAL result AS USUAL
 	IF block == NULL
@@ -26,12 +27,13 @@ FUNCTION Eval(block AS ICodeblock, args PARAMS USUAL[]) AS USUAL
 		// runtime codeblock ? convert args to object[]
 		VAR num := args:Length
 		VAR oArgs := OBJECT[]{num}
-		FOR VAR i := 1 TO num
+		FOR VAR i := 0 TO num-1
 			oArgs[i] := (OBJECT) args[i]
 		NEXT
 		result := block:EvalBlock(oArgs)
 	ENDIF
 	RETURN result
+#pragma options ("az", DEFAULT)	
 /// <summary>Evaluate a code block or an objects Eval() method.</summary>	
 FUNCTION Eval( uCodeBlock AS USUAL, args PARAMS USUAL[] ) AS USUAL
 	LOCAL result AS USUAL
@@ -43,7 +45,8 @@ FUNCTION Eval( uCodeBlock AS USUAL, args PARAMS USUAL[] ) AS USUAL
 		result := Eval( (CODEBLOCK) uCodeBlock, args )
 	ENDIF
 	RETURN result
-/// <summary>Evaluate a code block or an object's Eval() method.</summary>	
+/// <summary>Evaluate a code block or an object's Eval() method.</summary>
+#pragma options ("az", ON)
 FUNCTION Eval( obj AS OBJECT,  args PARAMS USUAL[] ) AS USUAL
 	LOCAL result AS USUAL
 	
@@ -53,14 +56,14 @@ FUNCTION Eval( obj AS OBJECT,  args PARAMS USUAL[] ) AS USUAL
 		result := Eval( (CODEBLOCK) obj, args )
 	ELSE
 		VAR types   := Type[]{ 1 }
-		types[__ARRAYBASE__]	:= TYPEOF( USUAL[] )
+		types[0]	:= TYPEOF( USUAL[] )
 		VAR oType := obj:GetType()
 		LOCAL mi AS MethodInfo
 		mi := oType:GetMethod( "Eval", BindingFlags.Public | BindingFlags.Instance | BindingFlags.IgnoreCase, NULL, types, NULL )
 		
 		IF mi != NULL
 			VAR pars := OBJECT[]{ 1 }
-			pars[__ARRAYBASE__] := args
+			pars[0] := args
 			result := mi:Invoke( obj , pars )
 		ELSE 
 			THROW Error.ArgumentError( __ENTITY__, "obj","Argument is not a codeblock"  ,1)
@@ -68,7 +71,7 @@ FUNCTION Eval( obj AS OBJECT,  args PARAMS USUAL[] ) AS USUAL
 	ENDIF
 	
 	RETURN result
-
+#pragma options ("az", DEFAULT)
 
 /// <summary>
 /// Return the number of arguments that a code block is expecting.

@@ -161,7 +161,7 @@ CLASS StatusBar INHERIT Control
 	METHOD __GetKeyState(bKey AS BYTE) AS LOGIC STRICT 
 		LOCAL aKeyStates AS BYTE[]
 		aKeyStates := BYTE[]{256}
-		Win32.GetKeyboardState(aKeyStates)
+		GuiWin32.GetKeyboardState(aKeyStates)
 		IF _AND(aKeyStates[bKey + 1], 1) == 1
 			RETURN TRUE
 		ENDIF
@@ -203,14 +203,14 @@ CLASS StatusBar INHERIT Control
 	METHOD __ToggleKeyState(bKey AS BYTE) AS VOID STRICT 
 		LOCAL aKeyStates AS BYTE[]
 		aKeyStates := BYTE[]{256}
-		Win32.GetKeyboardState(aKeyStates)
+		GuiWin32.GetKeyboardState(aKeyStates)
 		IF (_AND(aKeyStates[INT(bKey)+1], 1) > 0) // Is Key on
 			aKeyStates[bKey+1] := (byte) _AND(aKeyStates[bKey+1],  0xFE) // Turn Key off
 		ELSE
 			aKeyStates[bKey+1] := (byte) _OR(aKeyStates[bKey+1],  0x01) // Turn Key on
 		ENDIF
 
-		Win32.SetKeyboardState(aKeyStates)
+		GuiWin32.SetKeyboardState(aKeyStates)
 
 		RETURN
 
@@ -223,7 +223,7 @@ CLASS StatusBar INHERIT Control
 
 		IF __GetItemFromSymbol(#InsArea) > 0
 
-			Win32.GetKeyboardState(aKeyStates)
+			GuiWin32.GetKeyboardState(aKeyStates)
 
 			IF (iSet := _AND(aKeyStates[VK_INSERT + 1], 1)) != iInsertOn
 				Label := SELF:__GetLabel(#InsArea)
@@ -603,7 +603,7 @@ CLASS StatusBar INHERIT Control
 		CASE (nMode == MESSAGEERROR)
 			cLastErrorMessage := cMessage
 			IF NULL_STRING != AllTrim(cMessage) .AND. SELF:ErrorMessageBeep
-				Win32.MessageBeep(0xFFFFFFFF)
+				GuiWin32.MessageBeep(0xFFFFFFFF)
 			ENDIF
 		CASE nMode == MESSAGEPERMANENT
 			cLastPermanentMessage := cMessage
@@ -697,7 +697,7 @@ CLASS StatusBar INHERIT Control
 		NEXT
 		RETURN uValue
 
-	METHOD Show()  AS VOID
+	METHOD Show()  AS VOID STRICT
 		SUPER:Show()
 		SELF:RefreshMemoryDisplay()
 		SELF:__UpdateKeyStates()

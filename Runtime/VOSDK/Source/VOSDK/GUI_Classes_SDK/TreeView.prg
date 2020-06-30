@@ -501,9 +501,12 @@ METHOD GetItemAttributes(symItem)
 	LOCAL symTemp AS SYMBOL
 
 	
-
 	// set up the structure to receive item attributes
-	strucItem:hItem := SELF:__GetHandleFromSymbol(symItem)
+    IF IsSymbol(symItem)
+        strucItem:hItem := SELF:__GetHandleFromSymbol(symItem)
+    ELSEIF IsPtr(symItem)
+        strucItem:hItem := symItem
+    ENDIF
 	strucItem:mask := _OR(TVIF_TEXT, TVIF_CHILDREN, TVIF_IMAGE, TVIF_SELECTEDIMAGE, TVIF_PARAM, TVIF_STATE)
 	pszItemText := @aBuf[1]
 	strucItem:pszText := pszItemText

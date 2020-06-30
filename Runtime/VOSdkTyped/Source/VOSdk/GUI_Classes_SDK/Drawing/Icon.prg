@@ -54,7 +54,7 @@ CLASS Icon INHERIT VObject
 			
 			TRY
 				LOCAL hIcon AS IntPtr
-				hIcon := Win32.LoadImage(hInst, oResourceID:Address(), IMAGE_ICON, iWidth, iHeight, kLoadOption)
+				hIcon := GuiWin32.LoadImage(hInst, oResourceID:Address(), IMAGE_ICON, iWidth, iHeight, kLoadOption)
 				oIcon := System.Drawing.Icon.FromHandle(hIcon)
 			CATCH
 				oIcon := NULL_OBJECT

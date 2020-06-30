@@ -187,22 +187,35 @@ BEGIN NAMESPACE XSharp
 		/// <exclude />
 		PROPERTY Address AS IntPtr GET _value
 		/// <exclude />
+        #pragma options ("az", ON)
 		PROPERTY SELF[index AS INT] AS BYTE
 			GET
                 IF !IsValid
                     RETURN 0
                 ENDIF
-				RETURN _value[index + __ARRAYBASE__]
+				RETURN _value[index ]
 			END GET
 			SET
                 IF IsValid
-				    _value[index + __ARRAYBASE__] := value
+				    _value[index ] := value
                 ENDIF
 			END SET
 		END PROPERTY
-		
+		#pragma options ("az", default)
 		#region OPERATOR methods
 			// binary
+			/// <include file="RTComments.xml" path="Comments/Operator/*" />
+            // Note that this does not allocate a new string but it returns the offset in the original string
+            #pragma options ("az", on)
+			OPERATOR +( lhs AS PSZ, rhs AS LONG ) AS PSZ
+				RETURN PSZ{@lhs:_value[rhs] }
+
+			/// <include file="RTComments.xml" path="Comments/Operator/*" />
+            // Note that this does not allocate a new string but it returns the offset in the original string
+			OPERATOR +( lhs AS PSZ, rhs AS DWORD ) AS PSZ
+				RETURN PSZ{@lhs:_value[(LONG) rhs] }
+
+            #pragma options ("az", DEFAULT)
 			/// <include file="RTComments.xml" path="Comments/Operator/*" />
 			OPERATOR +( lhs AS PSZ, rhs AS PSZ ) AS PSZ
 				RETURN PSZ{ lhs:ToString() + rhs:ToString() }

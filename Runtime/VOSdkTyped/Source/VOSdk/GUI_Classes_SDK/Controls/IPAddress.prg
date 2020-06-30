@@ -25,20 +25,20 @@ CLASS IPAddress INHERIT TextControl
 
 	ACCESS Address AS DWORD
 		LOCAL dwAddr AS DWORD
-		Win32.SendMessage(oCtrl:Handle, IPM_GETADDRESS, 0, LONGINT(_CAST, @dwAddr))
+		GuiWin32.SendMessage(oCtrl:Handle, IPM_GETADDRESS, 0, LONGINT(_CAST, @dwAddr))
 		RETURN dwAddr
 
 
 	ASSIGN Address(nNewAddress AS DWORD) 
 		LOCAL dwAddr AS DWORD
 		dwAddr := nNewAddress
-		Win32.SendMessage(oCtrl:Handle, IPM_SETADDRESS, 0, LONGINT(_CAST, dwAddr))
+		GuiWin32.SendMessage(oCtrl:Handle, IPM_SETADDRESS, 0, LONGINT(_CAST, dwAddr))
 
 		RETURN 
 
 	ACCESS EditHandle AS IntPtr
 		IF SELF:ValidateControl()
-			//RETURN Win32.GetWindow(SELF:oCtrl:Handle,GW_CHILD)
+			//RETURN GuiWin32.GetWindow(SELF:oCtrl:Handle,GW_CHILD)
 			RETURN SELF:oCtrl:Handle
 		ENDIF
 
@@ -104,7 +104,7 @@ CLASS IPAddress INHERIT TextControl
 
 		iField := iFieldIndex -1
 		wRange := _Or((LoWord(iUpper) << 8), LoWord( iLower))
-		RETURN (Win32.SendMessage(oCtrl:Handle, IPM_SETRANGE, iField, LONGINT(_CAST, wRange)) != 0)
+		RETURN (GuiWin32.SendMessage(oCtrl:Handle, IPM_SETRANGE, iField, LONGINT(_CAST, wRange)) != 0)
 
 
 	ACCESS TextValue AS STRING

@@ -14,50 +14,20 @@
     <INS>true</INS>
     <NamedArgs>true</NamedArgs>
     <VulcanCompatibleResources>False</VulcanCompatibleResources>
-    <XSharpProjectversion>2.4.0.0</XSharpProjectversion>
+    <XSharpProjectversion>2.4.1.0</XSharpProjectversion>
     <XSharpProjectExtensionsPath>$(MSBuildExtensionsPath)\XSharp\</XSharpProjectExtensionsPath>
     <IncludePaths>$(CommonInclude)</IncludePaths>
     <Nostandarddefs>true</Nostandarddefs>
     <StandardDefs />
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'" Label="Configuration">
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <EmitDebugInformation>true</EmitDebugInformation>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
-    <UseSharedCompilation>true</UseSharedCompilation>
-    <DisabledWarnings>9001;1591</DisabledWarnings>
-    <SignAssembly>true</SignAssembly>
-    <DelaySign>false</DelaySign>
+    <DisabledWarnings />
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'" Label="Configuration">
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <EmitDebugInformation>false</EmitDebugInformation>
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
-    <UseSharedCompilation>true</UseSharedCompilation>
-    <DisabledWarnings>9001,649</DisabledWarnings>
+    <DisabledWarnings />
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Documentation|AnyCPU'">
-    <EmitDebugInformation>true</EmitDebugInformation>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
-    <UseSharedCompilation>true</UseSharedCompilation>
-    <DisabledWarnings>9001;1591;1573</DisabledWarnings>
     <DocumentationFile>XSharp.Rdd.Xml</DocumentationFile>
-    <CommandLineOption>/noclipcall</CommandLineOption>
   </PropertyGroup>
   <Import Project="$(MSBuildExtensionsPath)\XSharp\XSharp.targets" />
   <ItemGroup>
@@ -100,6 +70,7 @@
     <Compile Include="DbfCdx\Tag\CdxTagLock.prg" />
     <Compile Include="DbfCdx\Tag\CdxTagNavigation.prg" />
     <Compile Include="DbfCdx\Tag\CdxTagUpdate.prg" />
+    <Compile Include="DbfCdx\Tag\CdxValidate.prg" />
     <Compile Include="DbfCdx\VfpCollation.prg" />
     <Compile Include="DbfDbt\DbfDbt.prg" />
     <Compile Include="DbfDbt\DbtMemo.prg" />

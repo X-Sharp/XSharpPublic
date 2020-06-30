@@ -102,7 +102,7 @@ CLASS TextBox INHERIT VObject
 		//ENDIF
 
 		IF Beep
-			Win32.MessageBeep(0)
+			GuiWin32.MessageBeep(0)
 		ENDIF
 		iButtons := Type % 8
 		iIcons	 := Type - iButtons

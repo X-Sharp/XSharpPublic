@@ -11,10 +11,7 @@ USING System.Drawing
 
 FUNCTION Start() AS VOID STRICT
 TRY
-    DbUseArea(TRUE,"DBFCDX","c:\cavo28SP3\Samples\Email\EMAIL.DBF")
-    ? DbSetOrder(2)
-    ? DbOrderInfo(DBOI_ORDERCOUNT)
-    DbCloseArea()
+    TestInvalidSql()
     //TestProviders()
     //TestProvidersStringConnect()
     //TestBatch()
@@ -432,6 +429,15 @@ FUNCTION testExec2()
         ? SqlExec(handle, "Select * from customers","test",aInfo)
         ShowArray(aInfo)
         ? SqlExec(handle, "Select * from categories","test",aInfo)
+        ShowArray(aInfo)
+ENDIF
+
+FUNCTION TestInvalidSql()
+     SqlSetFactory("ODBC")
+     LOCAL handle := SqlStringConnect("Dsn=Northwind;")
+    IF handle > 0
+         LOCAL aInfo := {} AS ARRAY
+        ? SqlExec(handle, "Jimmy runs fast","test",aInfo)
         ShowArray(aInfo)
 ENDIF
 

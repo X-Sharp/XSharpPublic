@@ -1,16 +1,16 @@
 // Interfaces.prg
 // This file defgines a couple of interfaces that are used in the VO Compatible Unicode GUI Classes
 
-
+USING VOSDK := XSharp.VO.SDK
 
 /// <summary>
 /// This interface is defined for all VO..Control classes 
 /// </summary>
 INTERFACE IVOControl
-	PROPERTY Control            AS XSharp.VO.Control GET
+	PROPERTY Control            AS VOSDK.Control GET
 	PROPERTY ControlProperties  AS VOControlProperties GET
 	METHOD SetVisualStyle AS VOID STRICT
-	METHOD SetOwner(Owner AS XSharp.VO.Control) AS VOID 
+	METHOD SetOwner(Owner AS VOSDK.Control) AS VOID 
 
 END INTERFACE
 
@@ -21,7 +21,7 @@ END INTERFACE
 
 
 INTERFACE IVOForm
-	PROPERTY Window		AS XSharp.VO.Window GET
+	PROPERTY Window		AS VOSDK.Window GET
 	PROPERTY Properties AS VOFormProperties GET
 END INTERFACE
 
@@ -34,8 +34,12 @@ INTERFACE IGuiObject
 	PROPERTY Caption	AS STRING GET SET
 	PROPERTY HyperLabel AS HyperLabel GET SET
 	PROPERTY NameSym	AS SYMBOL GET
-    PROPERTY __Handle   as IntPtr GET
+    PROPERTY __Handle   AS IntPtr GET
 	METHOD   Destroy()	AS USUAL CLIPPER
+    METHOD   Show()     AS VOID STRICT
+    METHOD   Hide()     AS VOID STRICT
+    METHOD   SetFocus() AS VOID STRICT
+        
 END INTERFACE
 
 

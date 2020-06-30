@@ -761,8 +761,8 @@ CLASS XSharp.CoreDb
                         VAR nBlock := oDBF:_getMemoBlockNumber( (LONG)nPos)
                         IF nBlock == 0
                             oRet := BYTE[]{0}
-                        ELSEIF oDBF:_Memo != NULL
-                            oRet := (BYTE[]) oDBF:_Memo:GetValue((LONG) nPos)
+                        ELSEIF oDBF:Memo != NULL
+                            oRet := (BYTE[]) oDBF:Memo:GetValue((LONG) nPos)
                         ELSE
                             oRet := BYTE[]{0}
                         ENDIF
@@ -963,7 +963,6 @@ CLASS XSharp.CoreDb
         VAR oRdd := CoreDb.CWA(__FUNCTION__)
         RETURN oRdd:Found
         })
-        
         
         
         /// <summary>
@@ -1415,21 +1414,21 @@ CLASS XSharp.CoreDb
         strPreviousOrder := ""
         TRY
             LOCAL oRdd := CoreDb.CWA(__FUNCTION__) AS IRdd
+            LOCAL result AS OBJECT
             VAR info     := DbOrderInfo{}
+            strPreviousOrder := String.Empty
+            result := oRdd:OrderInfo(DBOI_NAME,info)
+            IF result IS STRING VAR cOrder
+                strPreviousOrder := cOrder
+            ENDIF
             cBagName     := cBagName?:Trim()
             info:BagName := cBagName
             info:Order   := oOrder
-            strPreviousOrder := String.Empty
-            VAR result := oRdd:OrderListFocus(info)
+            VAR isOk := oRdd:OrderListFocus(info)
             IF HasEvents .AND. ! info:IsEmpty
-                info := DbOrderInfo{}
-                oRdd:OrderInfo(DBOI_NAME,info)
                 RAISE OrderChanged info:Result
             ENDIF
-            IF result .AND. info:Result IS STRING
-                strPreviousOrder := (STRING)info:Result
-            ENDIF
-            RETURN result
+            RETURN isOk 
         CATCH e AS Exception
             Fail(e)
         END TRY
@@ -1844,12 +1843,21 @@ CLASS XSharp.CoreDb
         AFTERMOVE 
         RETURN result
         })
+
+
+        /// <summary>Gets the locate condition.</summary>
+        /// <returns>An object containing the scope for the current area.</returns>
         
-        
+    STATIC METHOD GetScope() AS DbScopeInfo
+        RETURN CoreDb.Do ({ =>
+        LOCAL oRdd := CoreDb.CWA(__FUNCTION__) AS IRdd
+        RETURN oRdd:GetScope()
+        })
+
         /// <summary>Set the locate condition.</summary>
         /// <param name="scope">A Scope objhect describing the current scope.</param>
         /// <returns>TRUE if successful; otherwise, FALSE.</returns>
-        /// <remarks><note type="tip">VoDbSetFound() and CoreDb.SetFound() are aliases</note></remarks>
+        /// <remarks><note type="tip">VoDbSetScope() and CoreDb.SetScope() are aliases</note></remarks>
         
     STATIC METHOD SetScope(scope AS DbScopeInfo) AS LOGIC
         RETURN CoreDb.Do ({ =>

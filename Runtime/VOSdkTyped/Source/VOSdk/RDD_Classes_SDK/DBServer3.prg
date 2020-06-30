@@ -1,7 +1,7 @@
-
+#pragma warnings(165, off)
 PARTIAL CLASS DbServer
 
-METHOD GetArray( nMaxRows, uField1, uSearchValue )  
+METHOD GetArray( nMaxRows, uField1, uSearchValue )  AS ARRAY
 	LOCAL uValue AS USUAL
 	LOCAL cbKey AS USUAL
 	LOCAL aResult := { } AS ARRAY
@@ -90,11 +90,11 @@ METHOD GetArray( nMaxRows, uField1, uSearchValue )
 
 		SELF:__ProcessConcurrency( TRUE )
 
-		__DBSSetSelect( dwCurrentWorkArea )  //SE-060527
+		__DBSSetSelect( dwCurrentWorkArea )  
 
 	RECOVER USING oError
 		SELF:__ProcessConcurrency(FALSE)
-		__DBSSetSelect( dwCurrentWorkArea )  //SE-060527
+		__DBSSetSelect( dwCurrentWorkArea )  
 		SELF:Error( oError, #GetArray )
 		oErrorInfo := oError
 		oHLTemp := oHLStatus
@@ -116,9 +116,9 @@ METHOD GetArray( nMaxRows, uField1, uSearchValue )
 
 	RETURN aResult
 
-METHOD GetLocate ( ) 
-	//SE-060601
-   LOCAL dwCurrentWorkArea := 0 AS DWORD
+METHOD GetLocate ( ) AS USUAL
+	
+    LOCAL dwCurrentWorkArea := 0 AS DWORD
 	LOCAL oError AS USUAL
 	LOCAL uInfo AS USUAL
 
@@ -141,7 +141,7 @@ METHOD GetLocate ( )
 
 	RETURN uInfo
 
-METHOD GetLookupTable( nMaxRows, uField1, uField2, uSearchValue )  
+METHOD GetLookupTable( nMaxRows, uField1, uField2, uSearchValue )  AS ARRAY
 	LOCAL uValue AS USUAL
 	LOCAL cbKey AS USUAL
 	LOCAL aResult := { } AS ARRAY
@@ -234,12 +234,12 @@ METHOD GetLookupTable( nMaxRows, uField1, uField2, uSearchValue )
 		ENDIF
 
 		SELF:__ProcessConcurrency( TRUE )
-		__DBSSetSelect( dwCurrentWorkArea )  //SE-060527
+		__DBSSetSelect( dwCurrentWorkArea )  
 
 	RECOVER USING oError
 		oErrorInfo := oError
 		SELF:__ProcessConcurrency( FALSE )
-		__DBSSetSelect( dwCurrentWorkArea )  //SE-060527
+		__DBSSetSelect( dwCurrentWorkArea )  
 		SELF:Error( oError, #GetLookupTable )
 		oErrorInfo := oError
 		oHLTemp := oHLStatus
@@ -321,12 +321,12 @@ METHOD GoBottom( )   AS LOGIC
 				__CavoStr( __CAVOSTR_DBFCLASS_INTENTTOMOVE ) )
 		ENDIF
 
-		__DBSSetSelect( dwCurrentWorkArea )  //SE-060527
+		__DBSSetSelect( dwCurrentWorkArea )  
 
 	RECOVER USING oError
 		oHLStatus := SELF:__GenerateStatusHL( oError )
 		oErrorInfo := oError
-		__DBSSetSelect( dwCurrentWorkArea )  //SE-060527
+		__DBSSetSelect( dwCurrentWorkArea )  
 		lRetCode := FALSE
 	END SEQUENCE
 
@@ -385,12 +385,12 @@ METHOD GoTo( nRecordNumber ) AS LOGIC
 				__CavoStr( __CAVOSTR_DBFCLASS_INTENTTOMOVE ) )
 		ENDIF
 
-		__DBSSetSelect( dwCurrentWorkArea )  //SE-060527
+		__DBSSetSelect( dwCurrentWorkArea )  
 
 	RECOVER USING oError
 		oHLStatus := SELF:__GenerateStatusHL( oError )
 		oErrorInfo := oError
-		__DBSSetSelect( dwCurrentWorkArea ) //SE-060527
+		__DBSSetSelect( dwCurrentWorkArea ) 
 		lRetCode := FALSE
 	END SEQUENCE
 
@@ -435,20 +435,20 @@ METHOD GoTop( ) AS LOGIC
 			SELF:__SetStatusHL( #GoTop, __CavoStr( __CAVOSTR_DBFCLASS_INTENTTOMOVE_CAPTION ),  ;
 				__CavoStr( __CAVOSTR_DBFCLASS_INTENTTOMOVE ) )
 		ENDIF
-		__DBSSetSelect( dwCurrentWorkArea )  //SE-060527
+		__DBSSetSelect( dwCurrentWorkArea )  
 
 	RECOVER USING oError
 		oHLStatus := SELF:__GenerateStatusHL( oError )
 		oErrorInfo := oError
-		__DBSSetSelect( dwCurrentWorkArea )  //SE-060527
+		__DBSSetSelect( dwCurrentWorkArea )  
 		lRetCode := FALSE
 	END SEQUENCE
 
 
 	RETURN lRetCode
 
-METHOD INDEXKEY( uOrder ) 
-	//SE-060601
+METHOD INDEXKEY( uOrder ) AS USUAL
+	
    LOCAL dwCurrentWorkArea := 0 AS DWORD
 	LOCAL oError AS USUAL
 	LOCAL uOrdVal AS USUAL
@@ -470,8 +470,8 @@ METHOD INDEXKEY( uOrder )
 
 	RETURN uOrdVal
 
-METHOD INDEXORD( ) 
-	//SE-060601
+METHOD INDEXORD( ) AS USUAL
+	
    LOCAL dwCurrentWorkArea := 0 AS DWORD
 	LOCAL oError AS USUAL
 	LOCAL uOrdVal AS USUAL
@@ -494,8 +494,8 @@ METHOD INDEXORD( )
 
 	RETURN uOrdVal
 
-METHOD Info( kInfoType, uInfo ) 
-	//SE-060601
+METHOD Info( kInfoType, uInfo ) AS USUAL
+	
    LOCAL dwCurrentWorkArea := 0 AS DWORD
 	LOCAL oError AS USUAL
 
@@ -517,7 +517,7 @@ METHOD Info( kInfoType, uInfo )
 	
 	RETURN uInfo
 
-METHOD Join( oDBSource, oFSTarget, aFieldList, cbForBlock ) 
+METHOD Join( oDBSource, oFSTarget, aFieldList, cbForBlock ) AS LOGIC
 	LOCAL cSource AS STRING
 	LOCAL cTarget AS STRING
 	LOCAL aFieldNames AS ARRAY
@@ -528,9 +528,7 @@ METHOD Join( oDBSource, oFSTarget, aFieldList, cbForBlock )
 	LOCAL wLen AS DWORD
 	LOCAL lRestore	AS LOGIC
 	
-   //RvdH 070711 Make sure we restore the workarea
-   //				  The codeblocks may select another workarea
-	lRestore	:= DbSetRestoreWorkarea(TRUE)      
+   lRestore	:= DbSetRestoreWorkarea(TRUE)      
 
 	lErrorFlag := FALSE
 	BEGIN SEQUENCE
@@ -569,20 +567,20 @@ METHOD Join( oDBSource, oFSTarget, aFieldList, cbForBlock )
 			SELF:__SetStatusHL ( #Join, __CavoStr( __CAVOSTR_DBFCLASS_INTENTTOMOVE_CAPTION ),  ;
 				__CavoStr( __CAVOSTR_DBFCLASS_INTENTTOMOVE ) )
 		ENDIF
-		__DBSSetSelect( dwCurrentWorkArea )  //SE-060527
+		__DBSSetSelect( dwCurrentWorkArea )  
 
 	RECOVER USING oError
 		oHLStatus := SELF:__GenerateStatusHL( oError )
 		oErrorInfo := oError
 		SELF:__ProcessConcurrency( FALSE )
-		__DBSSetSelect( dwCurrentWorkArea )  //SE-060527
+		__DBSSetSelect( dwCurrentWorkArea )  
 		lRetCode := FALSE
 	END SEQUENCE
 
 	DbSetRestoreWorkarea(lRestore)
 	RETURN lRetCode
 
-METHOD Locate( cbForBlock, cbWhileBlock, uScope )  
+METHOD Locate( cbForBlock, cbWhileBlock, uScope )  AS LOGIC
 	LOCAL uValue AS USUAL
 	LOCAL cbKey AS USUAL
 	LOCAL nNextCount AS LONGINT
@@ -593,8 +591,6 @@ METHOD Locate( cbForBlock, cbWhileBlock, uScope )
 	LOCAL oHLTemp AS HyperLabel
 	LOCAL lRestore	AS LOGIC
 	
-   //RvdH 070711 Make sure we restore the workarea
-   //				  The codeblocks may select another workarea
 	lRestore	:= DbSetRestoreWorkarea(TRUE)      
 
 	lErrorFlag := FALSE
@@ -692,14 +688,14 @@ METHOD Locate( cbForBlock, cbWhileBlock, uScope )
 				__CavoStr( __CAVOSTR_DBFCLASS_INTENTTOMOVE ) )
 			oHLTemp := oHLStatus
 		ENDIF
-		__DBSSetSelect( dwCurrentWorkArea )  //SE-060527
+		__DBSSetSelect( dwCurrentWorkArea )  
 
 	RECOVER USING oError
 		oHLStatus := SELF:__GenerateStatusHL( oError )
 		oHLTemp := oHLStatus
 		oErrorInfo := oError
 		SELF:__ProcessConcurrency( FALSE )
-		__DBSSetSelect( dwCurrentWorkArea )  //SE-060527
+		__DBSSetSelect( dwCurrentWorkArea )  
 		lRetCode := FALSE
 	END SEQUENCE
 
@@ -719,7 +715,7 @@ METHOD Locate( cbForBlock, cbWhileBlock, uScope )
 	DbSetRestoreWorkarea(lRestore)
 	RETURN lRetCode
 
-METHOD LockCurrentRecord( ) 
+METHOD LockCurrentRecord( ) AS LOGIC
 	LOCAL lRetCode := FALSE AS LOGIC
 	LOCAL oError AS USUAL
 	LOCAL dwCurrentWorkArea := 0 AS DWORD
@@ -734,19 +730,19 @@ METHOD LockCurrentRecord( )
 			BREAK ErrorBuild( _VoDbErrInfoPtr( ) )
 		ENDIF
 		SELF:__OptimisticFlushNoLock( )
-		__DBSSetSelect( dwCurrentWorkArea )  //SE-060527
+		__DBSSetSelect( dwCurrentWorkArea )  
 
 	RECOVER USING oError
 		oHLStatus := SELF:__GenerateStatusHL( oError )
 		oErrorInfo := oError
-		__DBSSetSelect( dwCurrentWorkArea )  //SE-060527
+		__DBSSetSelect( dwCurrentWorkArea )  
 		lRetCode := FALSE
 	END SEQUENCE
 
 
 	RETURN lRetCode
 
-METHOD LockSelection( )  
+METHOD LockSelection( )  AS LOGIC
 	LOCAL uCurrentRecord AS USUAL
 	LOCAL uValue AS USUAL
 	LOCAL cbKey AS USUAL
@@ -790,20 +786,20 @@ METHOD LockSelection( )
 			ENDIF
 		ENDIF
 		SELF:__OptimisticFlushNoLock( )
-		__DBSSetSelect( dwCurrentWorkArea )  //SE-060527
+		__DBSSetSelect( dwCurrentWorkArea )  
 
 	RECOVER USING oError
 		oHLStatus := SELF:__GenerateStatusHL( oError )
 		oErrorInfo := oError
-		__DBSSetSelect( dwCurrentWorkArea )  //SE-060527
+		__DBSSetSelect( dwCurrentWorkArea )  
 		lRetCode := FALSE
 	END SEQUENCE
 
 
 	RETURN lRetCode
 
-METHOD NoIVarGet( symFieldName ) 
-	//SE-060601
+METHOD NoIVarGet( symFieldName ) AS USUAL
+	
    LOCAL dwCurrentWorkArea := 0 AS DWORD
 	LOCAL uRetVal := NIL AS USUAL
 	LOCAL oError AS USUAL
@@ -833,8 +829,7 @@ METHOD NoIVarGet( symFieldName )
 
 	RETURN uRetVal
 
-METHOD NoIVarPut( symFieldName, uValue ) 
-    //SE-080608 Updated error handling
+METHOD NoIVarPut( symFieldName, uValue ) AS USUAL
 	LOCAL uRetVal := NIL AS USUAL
 	LOCAL uError AS USUAL
 	LOCAL dwCurrentWorkArea := 0 AS DWORD
@@ -866,19 +861,19 @@ METHOD NoIVarPut( symFieldName, uValue )
 			uRetVal := FieldPutSym( symFieldName, uValue )
 		ENDIF
 		SELF:Notify( Notify.FieldChange, symFieldName )
-		__DBSSetSelect( dwCurrentWorkArea )  //SE-060527
+		__DBSSetSelect( dwCurrentWorkArea )  
 
 	RECOVER USING uError
 		oErrorInfo := uError
-		__DBSSetSelect( dwCurrentWorkArea )  //SE-060527
+		__DBSSetSelect( dwCurrentWorkArea )  
 		SELF:Error( oErrorInfo, #symFieldName )
 	END SEQUENCE
 
 
 	RETURN uRetVal
 
-METHOD Notify(	 kNotification,	 uDescription )	 
-	//SE-060527
+METHOD Notify(	 kNotification,	 uDescription )	 AS USUAL
+	
 	LOCAL dwCurrentWorkArea := 0 AS DWORD
 	LOCAL uVOVal, uVoVal2 AS USUAL
 	LOCAL uRetValue AS USUAL
@@ -1003,8 +998,6 @@ METHOD Notify(	 kNotification,	 uDescription )
 		cbSelectionIndexingExpression := NIL
 		IF lCDXSelectionActive
 			lCDXSelectionActive := FALSE       
-			//RvdH 070711 Select the correct workarea
-			//VoDbSelect( wSelectionWorkArea, OUT dwCurrentWorkArea )			
 			VoDbSelect( wWorkArea, OUT dwCurrentWorkArea )
 			uVOVal := NIL
 			VoDbOrderInfo( DBOI_SCOPETOPCLEAR, "", NIL, REF uVOVal )
@@ -1034,8 +1027,8 @@ METHOD Notify(	 kNotification,	 uDescription )
 	RETURN uRetValue
 	
 
-METHOD OrderDescend( uOrder, oFSIndex, lNew ) 
-	//SE-060601
+METHOD OrderDescend( uOrder, oFSIndex, lNew ) AS USUAL
+	
    LOCAL dwCurrentWorkArea := 0 AS DWORD
 	LOCAL oError AS USUAL
 	LOCAL cTarget AS STRING
@@ -1067,8 +1060,8 @@ METHOD OrderDescend( uOrder, oFSIndex, lNew )
 
 	RETURN lNew
 
-METHOD OrderInfo( kOrderInfoType, oFSIndex, uOrder, uOrdVal ) 
-	//SE-060601
+METHOD OrderInfo( kOrderInfoType, oFSIndex, uOrder, uOrdVal ) AS USUAL
+	
 	LOCAL dwCurrentWorkArea := 0 AS DWORD
 	LOCAL oError AS USUAL
 	LOCAL cTarget AS STRING
@@ -1086,17 +1079,6 @@ METHOD OrderInfo( kOrderInfoType, oFSIndex, uOrder, uOrdVal )
 				cTarget := oFSIndex
 			ENDIF
 		ENDIF
-
-		/* UH 04/12/2002
-		        IF ! VoDbOrderInfo(kOrderInfoType, cTarget, uOrder, REF uOrdVal)
-		            //BREAK DbError{SELF, #OrderInfo, EG_ARG, "", kOrderInfoType, "kOrderInfoType" }
-		            BREAK ErrorBuild(_VoDbErrInfoPtr()) 
-		        ENDIF
-		*/
-		//RvdH 030926 uOrderVal parameter was missing ! (Bug # 170)
-		//uOrdVal := DBORDERINFO( kOrderInfoType, cTarget, uOrder )
-		//SE-060602 error handling was missing
-		//uOrdVal := DBORDERINFO( kOrderInfoType, cTarget, uOrder, uOrdVal )
 
 		IF IsString(uOrder)
 			IF Len(uOrder) == 0
@@ -1134,8 +1116,8 @@ METHOD OrderInfo( kOrderInfoType, oFSIndex, uOrder, uOrdVal )
 
 	RETURN uOrdVal
 
-METHOD OrderIsUnique( uOrder, oFSIndex ) 
-	//SE-060601
+METHOD OrderIsUnique( uOrder, oFSIndex ) AS LOGIC
+	
    LOCAL dwCurrentWorkArea := 0 AS DWORD
 	LOCAL lRetVal AS USUAL
 	LOCAL oError AS USUAL
@@ -1167,8 +1149,8 @@ METHOD OrderIsUnique( uOrder, oFSIndex )
 
 	RETURN lRetVal
 
-METHOD OrderKeyAdd( uOrder, oFSIndex, uKeyValue ) 
-	//SE-060601
+METHOD OrderKeyAdd( uOrder, oFSIndex, uKeyValue ) AS USUAL
+	
 	LOCAL dwCurrentWorkArea := 0 AS DWORD
 	LOCAL oError AS USUAL
 	LOCAL cTarget AS STRING
@@ -1201,9 +1183,9 @@ METHOD OrderKeyAdd( uOrder, oFSIndex, uKeyValue )
 
 	RETURN uKeyValue
 
-METHOD OrderKeyCount( uOrder, oFSIndex ) 
-	//SE-060601
-   LOCAL dwCurrentWorkArea := 0 AS DWORD
+METHOD OrderKeyCount( uOrder, oFSIndex ) AS LONG
+	
+    LOCAL dwCurrentWorkArea := 0 AS DWORD
 	LOCAL uRetVal := NIL AS USUAL
 	LOCAL oError AS USUAL
 	LOCAL cTarget AS STRING
@@ -1234,8 +1216,8 @@ METHOD OrderKeyCount( uOrder, oFSIndex )
 
 	RETURN uRetVal
 
-METHOD OrderKeyDel( uOrder, oFSIndex ) 
-	//SE-060601
+METHOD OrderKeyDel( uOrder, oFSIndex ) AS LOGIC
+	
    LOCAL dwCurrentWorkArea := 0 AS DWORD
 	LOCAL lRetCode AS USUAL
 	LOCAL oError AS USUAL
@@ -1267,7 +1249,7 @@ METHOD OrderKeyDel( uOrder, oFSIndex )
 
 	RETURN lRetCode
 
-METHOD OrderKeyGoTo( nKeyNo ) 
+METHOD OrderKeyGoTo( nKeyNo ) AS LOGIC
 	LOCAL lRetCode := FALSE AS LOGIC
 	LOCAL oError AS USUAL
 	LOCAL dwCurrentWorkArea := 0 AS DWORD
@@ -1302,7 +1284,7 @@ METHOD OrderKeyGoTo( nKeyNo )
 		__DBSSetSelect( dwCurrentWorkArea )
 
 	RECOVER USING oError
-		__DBSSetSelect( dwCurrentWorkArea )  //SE-060527
+		__DBSSetSelect( dwCurrentWorkArea )  
 		oHLStatus := SELF:__GenerateStatusHL( oError )
 		oErrorInfo := oError
 		lRetCode := FALSE
@@ -1311,8 +1293,8 @@ METHOD OrderKeyGoTo( nKeyNo )
 
 	RETURN lRetCode
 
-METHOD OrderKeyNo( uOrder, oFSIndex ) 
-	////SE-060601
+METHOD OrderKeyNo( uOrder, oFSIndex ) AS LONG
+	//
    LOCAL dwCurrentWorkArea := 0 AS DWORD
 	LOCAL uRetVal := NIL AS USUAL
 	LOCAL oError AS USUAL
@@ -1345,8 +1327,8 @@ METHOD OrderKeyNo( uOrder, oFSIndex )
 
 	RETURN uRetVal
 
-METHOD OrderScope( nScope, uValue ) 
-	//SE-060601
+METHOD OrderScope( nScope, uValue ) AS USUAL
+	
    LOCAL dwCurrentWorkArea := 0 AS DWORD
 	LOCAL oError AS USUAL
 	LOCAL n AS DWORD
@@ -1355,10 +1337,8 @@ METHOD OrderScope( nScope, uValue )
 
 	lErrorFlag := FALSE
 	BEGIN SEQUENCE
-      //RvdH 070925 Save pending changes
       SELF:__OptimisticFlush()
 
-		//RvdH 050705 Changed to explicitely use TOPSCOPE
 		DEFAULT(REF nScope, TOPSCOPE)
 		IF nScope == TOPSCOPE
 			n := DBOI_SCOPETOP
@@ -1397,7 +1377,7 @@ METHOD OrderScope( nScope, uValue )
 
 	RETURN uValue
 
-METHOD OrderSkipUnique( nDirection ) 
+METHOD OrderSkipUnique( nDirection )  AS LOGIC
 	LOCAL lRetCode := FALSE AS LOGIC
 	LOCAL oError AS USUAL
 	LOCAL dwCurrentWorkArea := 0 AS DWORD
@@ -1409,9 +1389,6 @@ METHOD OrderSkipUnique( nDirection )
 		VoDbSelect( wWorkArea, OUT dwCurrentWorkArea )
 		IF SELF:Notify( NOTIFYINTENTTOMOVE )
 			lRetCode := VoDbOrderInfo( DBOI_SKIPUNIQUE, "", NIL, REF nDirection )
-			// RvdH 060629 __ProcessConcurrency needs a Logic and not a numeric !
-			//lRetCode := SELF:__ProcessConcurrency( nDirection, TRUE )
-			//lRetCode := SELF:__ProcessConcurrency( lRetCode, TRUE )
 			IF lRetCode
 				lRetCode := SELF:__ProcessConcurrency( TRUE )
 			ENDIF
@@ -1426,7 +1403,7 @@ METHOD OrderSkipUnique( nDirection )
 		__DBSSetSelect( dwCurrentWorkArea )
 
 	RECOVER USING oError
-		__DBSSetSelect( dwCurrentWorkArea )  //SE-060527
+		__DBSSetSelect( dwCurrentWorkArea )  
 		oErrorInfo := oError
 		oHLStatus := SELF:__GenerateStatusHL( oError )
 		oErrorInfo := oError
@@ -1436,8 +1413,8 @@ METHOD OrderSkipUnique( nDirection )
 
 	RETURN lRetCode
 
-METHOD Pack( ) 
-	//SE-060601
+METHOD Pack( ) AS LOGIC
+	
    LOCAL dwCurrentWorkArea := 0 AS DWORD
 	LOCAL lRetCode := FALSE AS LOGIC
 	LOCAL oError AS USUAL
@@ -1446,7 +1423,6 @@ METHOD Pack( )
 
 	lErrorFlag := FALSE
 	BEGIN SEQUENCE
-      //RvdH 070925 Save pending changes
       SELF:__OptimisticFlush()
 		VoDbSelect( wWorkArea, OUT dwCurrentWorkArea )
 		IF (lRetCode := VoDbPack( ))

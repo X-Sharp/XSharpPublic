@@ -100,7 +100,7 @@ BEGIN NAMESPACE XSharp
     VIRTUAL PROPERTY CanSubstitute      AS LOGIC AUTO 
     /// <summary>A string that describes the operation being attempted when the error occurred.</summary> 
     VIRTUAL PROPERTY Operation          AS STRING AUTO := ""
-    /// <summary>A value of 0 indicates that the error condition was not caused by an error from the operating system.  When Error:OsCode is set to a value other </summary>
+    /// <summary>A value of 0 indicates that the error condition was not caused by an error from the operating system.</summary>
     VIRTUAL PROPERTY OSCode				AS DWORD AUTO := 0
     /// <summary>Descripion of the OSCode</summary>
     VIRTUAL PROPERTY OSCodeText			AS STRING GET IIF(OSCode == 0, "", DosErrString(OSCode))
@@ -119,7 +119,7 @@ BEGIN NAMESPACE XSharp
     VIRTUAL PROPERTY Stack              AS STRING GET SELF:StackTrace SET SELF:StackTrace := Value
 
 	PRIVATE _StackTrace AS STRING
-    VIRTUAL PROPERTY StackTrace         AS STRING
+    VIRTUAL PROPERTY StackTrace         AS STRING    
     	GET
     		IF String.IsNullOrEmpty(SELF:_StackTrace)
     			RETURN SUPER:StackTrace
@@ -149,7 +149,7 @@ BEGIN NAMESPACE XSharp
     CONSTRUCTOR (msg AS STRING)
     SUPER(msg)
     SELF:setDefaultValues()
-    SELF:Description := msg
+    SELF:Description := msg 
     SELF:Gencode     := EG_EXCEPTION
     RETURN 
 
@@ -169,7 +169,7 @@ BEGIN NAMESPACE XSharp
     ELSE
         SELF:Description := ex:Message
         SELF:Gencode     := EG_EXCEPTION
-        VAR sStack       := ErrorStack( StackTrace{ex,TRUE})
+        VAR sStack       := ErrorStack( StackTrace{ex,TRUE},UInt32.MaxValue)
         IF !sStack:StartsWith("*EmptyCallStack*")
             SELF:_StackTrace := sStack + SELF:_StackTrace
         ENDIF
@@ -237,7 +237,6 @@ BEGIN NAMESPACE XSharp
       LOCAL nGenCode AS Gencode
       nGenCode := (Gencode) SELF:Gencode
       sb := StringBuilder{}
-      
       sb:AppendLine( LangString(VOErrors.ERROR_DESCRIPTION) + SELF:Description)
       sb:AppendLine( LangString(VOErrors.ERROR_SUBSYSTEM) + SELF:SubSystem )
       sb:AppendLine( LangString(VOErrors.ERROR_GENCODE) + nGenCode:ToString()  +" " +SELF:GenCodeText  )

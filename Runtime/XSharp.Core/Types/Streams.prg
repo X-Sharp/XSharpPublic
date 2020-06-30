@@ -188,7 +188,7 @@ BEGIN NAMESPACE XSharp.IO
         #region Construct the filestream
         /// <summary>Create a XsFileStream object on Windows and a normal FileStream object on other OS-es</summary>
         STATIC METHOD CreateFileStream (path AS STRING, mode AS FileMode, faccess AS FileAccess, share AS FileShare, bufferSize AS LONG, options AS FileOptions) AS FileStream
-            IF System.Environment.OSVersion:Platform == System.PlatformID.Win32NT .AND. share != FileShare.None
+            IF IsRunningOnWindows() .AND. share != FileShare.None
                 RETURN CreateXsFileStream(path, mode, faccess, share, bufferSize, options)
             ELSE
                 RETURN FileStream{path, mode, faccess, share, bufferSize, options}

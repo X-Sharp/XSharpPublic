@@ -1,14 +1,14 @@
 
-#USING System.Windows.Forms
-
+USING System.Windows.Forms
+USING VOSDK := XSharp.VO.SDK
 CLASS VOHtmlEditorControl INHERIT WebBrowser IMPLEMENTS IVOControl
 	//PRIVATE lBusy		AS LOGIC
 
 	#include "PropControl.vh"
-	PROPERTY oHTML		AS XSharp.VO.HTMLControl GET (XSharp.VO.HTMLControl) SELF:Control
+	PROPERTY oHTML		AS VOSDK.HTMLControl GET (VOSDK.HTMLControl) SELF:Control
 
 
-	CONSTRUCTOR(Owner AS XSharp.VO.Control, dwStyle AS LONG, dwExStyle AS LONG)
+	CONSTRUCTOR(Owner AS VOSDK.Control, dwStyle AS LONG, dwExStyle AS LONG)
 		oProperties := VOControlProperties{SELF, Owner, dwStyle, dwExStyle}
 		SUPER()
 		

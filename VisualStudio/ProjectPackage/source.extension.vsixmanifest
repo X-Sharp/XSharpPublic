@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <PackageManifest Version="2.0.0" xmlns="http://schemas.microsoft.com/developer/vsx-schema/2011" xmlns:d="http://schemas.microsoft.com/developer/vsx-schema-design/2011">
   <Metadata>
-    <Identity Id="XSharp.ProjectSystem" Version="2.4.1.0" Language="en-US" Publisher="XSharp BV" />
+    <Identity Id="XSharp.ProjectSystem" Version="2.5.3.0" Language="en-US" Publisher="XSharp BV" />
     <DisplayName>XSharp Visual Studio Project System</DisplayName>
     <Description xml:space="preserve">X# Visual Studio Project Project System.
 Includes support for Windows Form Editor, WPF Editor, VO Compatible form and menu Editors etc.</Description>
@@ -26,6 +26,7 @@ Includes support for Windows Form Editor, WPF Editor, VO Compatible form and men
     <Asset Type="Microsoft.VisualStudio.ProjectTemplate" d:Source="Project" d:ProjectName="%CurrentProject%" d:TargetPath="|%CurrentProject%;TemplateProjectOutputGroup|" Path="ProjectTemplates" d:VsixSubPath="ProjectTemplates" />
     <Asset Type="Microsoft.VisualStudio.MefComponent" d:Source="Project" d:ProjectName="%CurrentProject%" Path="|%CurrentProject%|" />
     <Asset d:Source="File" Path="Designers.pkgdef" Type="Microsoft.VisualStudio.VsPackage" TargetPath="|%CurrentProject%|"/>
+    <Asset Type="Microsoft.VisualStudio.Assembly" d:Source="File" Path="Mono.Cecil.dll" AssemblyName="Mono.Cecil, Version=0.10.0.0, Culture=neutral, PublicKeyToken=50cebf1cceb9d05e" />
   </Assets>
   <Content>
     <ProjectTemplate>ProjectTemplates</ProjectTemplate>

@@ -6,94 +6,104 @@
 
 USING XSharpModel
 USING System.Diagnostics
+USING System.Collections.Generic
+USING LanguageService.SyntaxTree
+
 BEGIN NAMESPACE XSharpModel
-    [DebuggerDisplay("{Prototype,nq}")];
-    CLASS XVariable INHERIT XElement
-        // Fields
-        PRIVATE _isParameter AS LOGIC
-        PRIVATE _isTyped     AS LOGIC
-        PRIVATE _typeName AS STRING
-        STATIC INITONLY PUBLIC VarType := "$VAR$" AS STRING
-        STATIC INITONLY PUBLIC UsualType := "USUAL" AS STRING
+     // A variable is strictly speaking not an entity
+    [DebuggerDisplay("{DebuggerDisplay(),nq}")];
+    CLASS XVariable INHERIT XEntityDefinition IMPLEMENTS IXVariable
+        
         // Methods
-        CONSTRUCTOR(parent AS XElement, name AS STRING, kind AS Kind,  ;
-            span AS TextRange, position AS TextInterval, typeName AS STRING, isParameter := FALSE AS LOGIC)
-            SUPER(name, kind, Modifiers.None, Modifiers.None, span, position)
-            SELF:_typeName      := typeName
-            SELF:_isParameter   := isParameter
-            SELF:_isTyped       := !String.IsNullOrEmpty(typeName)
-            SELF:VarDefinition  := NULL	// Not a VAR
+        CONSTRUCTOR(parent AS XEntityDefinition, name AS STRING, span AS TextRange, position AS TextInterval, typeName AS STRING)
+            SUPER(name, Kind.Local, Modifiers.None, span, position)
+            SELF:TypeName       := typeName
             SUPER:Parent        := parent
-            SELF:File           := parent:File
+            IF parent != NULL
+                SELF:File           := parent:File
+            ENDIF
 
         // Properties
-        PROPERTY Description AS STRING
+	
+        PROPERTY Expression   AS IList<IToken> AUTO GET INTERNAL SET
+	
+        PROPERTY FullName     AS STRING GET SELF:TypeName
+	
+        PROPERTY Description  AS STRING
             GET
                 //
                 LOCAL prefix AS STRING
-                IF (SELF:_isParameter)
-                    //
-                    prefix := "PARAMETER "
-                ELSE
-                    //
-                    prefix := "LOCAL "
-                ENDIF
+                prefix := SELF:Kind:ToString():ToUpper() +" "
                 VAR result := prefix + SELF:Prototype
-                IF (_isTyped)
+                IF SELF:IsTyped
                     result += ParamTypeDesc + SELF:TypeName + IIF(SELF:IsArray,"[]","")
                 ENDIF
                 RETURN result
             END GET
         END PROPERTY
 
-        PROPERTY IsArray AS LOGIC AUTO
-        PROPERTY IsTyped AS LOGIC GET _isTyped
-		PROPERTY IsParameter AS LOGIC GET _isParameter
+
+
+        PROPERTY IsParameter AS LOGIC GET FALSE
         PROPERTY ParamType AS ParamType AUTO
-        PROPERTY Prototype AS STRING GET SUPER:Name
+        PROPERTY Prototype AS STRING 
+            GET 
+               VAR result := SUPER:Name
+               IF SELF:Kind == Kind.DbField
+                  IF !String.IsNullOrEmpty(SELF:Value)
+                     result := SELF:Value+"->"+result
+                  ENDIF
+                  result := "FIELD "+result
+               ENDIF
+               RETURN result
+            END GET
+        END PROPERTY
         PROPERTY ParamTypeDesc AS STRING
             GET
                 SWITCH ParamType
                 CASE ParamType.Ref
-                    RETURN RefKeyWord
+                    RETURN XLiterals.RefKeyWord
                 CASE ParamType.Out
-                    RETURN OutKeyWord
+                    RETURN XLiterals.OutKeyWord
                 CASE ParamType.Params
-                    RETURN ParamsKeyWord
-                OTHERWISE
-                    RETURN AsKeyWord
+                    RETURN XLiterals.ParamsKeyWord
+                OTHERWISE // AS and IN
+                    RETURN XLiterals.AsKeyWord
                 END SWITCH
             END GET
         END PROPERTY
 
-        PROPERTY TypeName AS STRING
-            GET
-                IF IsTyped
-                    RETURN SELF:_typeName
-                ELSE
-                    RETURN UsualType
-                ENDIF
-            END GET
-            SET
-                SELF:_typeName := VALUE
-                _isTyped := ! String.IsNullOrEmpty(_typeName)
-            END SET
-        END PROPERTY
 
         PROPERTY ShortTypeName AS STRING
             GET
                 VAR cType := SELF:TypeName
                 VAR nPos := cType:LastIndexOf(".")
                 IF (nPos >= 0)
-                    cType := cType:SubString(nPos+1)
+                    cType := cType:Substring(nPos+1)
                 ENDIF
                 RETURN cType
             END GET
         END PROPERTY
 
-        PROPERTY VarDefinition AS ParseContext AUTO
+
+        METHOD DebuggerDisplay() AS STRING
+            VAR result := SUPER:Name
+            IF SELF:IsTyped
+                result += ParamTypeDesc+" "+SELF:TypeName
+            ENDIF
+            RETURN result
 
     END CLASS
+    CLASS XParameter INHERIT XVariable
+
+        CONSTRUCTOR(parent AS XEntityDefinition, name AS STRING, span AS TextRange, position AS TextInterval, parameterType AS STRING)
+            SUPER(parent, name, span, position, parameterType)
+            SELF:Kind := Kind.Parameter
+	    
+        PROPERTY IsParameter AS LOGIC GET TRUE
+
+   END CLASS
+         
 
 END NAMESPACE
 

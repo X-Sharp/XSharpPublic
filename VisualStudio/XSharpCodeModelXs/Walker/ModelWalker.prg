@@ -13,15 +13,20 @@ USING System.Collections.Generic
 USING System.Diagnostics
 USING System.Linq
 USING System.Text
+USING System.IO
 USING System.Threading
 USING System.Threading.Tasks
 USING System.Collections.Concurrent
+USING XSharp.Parser
+USING LanguageService.CodeAnalysis
+USING LanguageService.CodeAnalysis.Text
 
 BEGIN NAMESPACE XSharpModel
-	CLASS ModelWalker
+	CLASS ModelWalker IMPLEMENTS VsParser.IErrorListener
 		// Fields
 		PRIVATE _projects := ConcurrentQueue<XProject>{} AS ConcurrentQueue<XProject>
 		PRIVATE _projectsForTypeResolution := ConcurrentQueue<XProject>{} AS ConcurrentQueue<XProject>
+      PRIVATE _currentProject AS XProject
 		STATIC PRIVATE _walker AS ModelWalker
 		PRIVATE _WalkerThread AS System.Threading.Thread
 		STATIC PRIVATE suspendLevel  AS LONG
@@ -36,49 +41,37 @@ BEGIN NAMESPACE XSharpModel
 
 
 		INTERNAL METHOD AddProject(xProject AS XProject) AS VOID
-			//
-			WriteOutputMessage("-->> AddProject() "+xProject:Name)
+			//WriteOutputMessage("-->> AddProject() "+xProject:Name)
 			BEGIN LOCK SELF
-				//
 				VAR lAdd2Queue := TRUE
 				FOREACH project AS XProject IN SELF:_projects
-					//
 					IF (String.Equals(project:Name, xProject:Name, StringComparison.OrdinalIgnoreCase))
-						//
 						lAdd2Queue := FALSE
 						EXIT
-
 					ENDIF
 				NEXT
 				IF (lAdd2Queue)
-					//
 					SELF:_projects:Enqueue(xProject)
 				ENDIF
-				IF (! SELF:IsWalkerRunning .AND. ! xProject:ProjectNode:IsVsBuilding)
-					//
+				IF (! SELF:IsWalkerRunning .AND. ! xProject:IsVsBuilding)
 					SELF:Walk()
 				ENDIF
 			END LOCK
-			WriteOutputMessage("<<-- AddProject()")
-
+			//WriteOutputMessage("<<-- AddProject()")
+      
+      STATIC INSTANCE bOld := FALSE AS LOGIC
+      
 		INTERNAL METHOD FileWalk(file AS XFile) AS VOID
-            IF ! XSolution.Open
-                RETURN
-            ENDIF
-			VAR lastWriteTime := System.IO.File.GetLastWriteTime(file:SourcePath)
-			IF lastWriteTime > file:LastWritten
-				//
+         IF ! XSolution.IsOpen
+               RETURN
+         ENDIF
+			IF file:UpdatedOnDisk
+            WriteOutputMessage("..."+file:FullPath)
 				BEGIN USING VAR walker := SourceWalker{file}
 					TRY
-						//
-						VAR lines := System.IO.File.ReadAllLines(file:SourcePath)
-						VAR xTree := walker:Parse(lines, FALSE)
-						walker:BuildModel(xTree)
-						file:LastWritten := lastWriteTime
+                  walker:Parse(FALSE)
 						IF file:Project != NULL
-							//
 							IF file:Project:FileWalkComplete != NULL
-								//
 								file:Project:FileWalkComplete?:Invoke(file)
 							ENDIF
 						ENDIF
@@ -88,7 +81,6 @@ BEGIN NAMESPACE XSharpModel
 						XSolution.WriteException(e)
 					FINALLY
 						IF walker != NULL
-							//
 							walker:Dispose()
 						ENDIF
 					END TRY
@@ -96,23 +88,23 @@ BEGIN NAMESPACE XSharpModel
 			ENDIF
 
 		STATIC METHOD GetWalker() AS ModelWalker
-			//
-			IF (ModelWalker._walker == NULL)
-				//
+			IF ModelWalker._walker == NULL
 				ModelWalker._walker := ModelWalker{}
 			ENDIF
 			RETURN ModelWalker._walker
 
+      STATIC METHOD Start  AS VOID
+         ModelWalker.suspendLevel  := 0
+
 		STATIC METHOD Resume() AS VOID
-			//
 			ModelWalker.suspendLevel--
 
 		INTERNAL METHOD StopThread() AS VOID
 			TRY
-				IF (SELF:_WalkerThread == NULL)
+				IF SELF:_WalkerThread == NULL
 					RETURN
 				ENDIF
-				IF (SELF:_WalkerThread:IsAlive)
+				IF SELF:_WalkerThread:IsAlive
 					SELF:_WalkerThread:Abort()
 				ENDIF
 			CATCH exception AS System.Exception
@@ -120,26 +112,25 @@ BEGIN NAMESPACE XSharpModel
 				XSolution.WriteException(exception)
 			END TRY
 			SELF:_WalkerThread := NULL
+         ModelWalker._walker := NULL
 
 		STATIC METHOD Suspend() AS VOID
-			//
 			ModelWalker.suspendLevel++
-            IF (ModelWalker._walker != null .and. ModelWalker._walker:_projects:Count > 0)
-                LOCAL project := NULL as XProject
-                IF ModelWalker._walker:_projects:TryPeek(REF project)
-                    project:ProjectNode:SetStatusBarText("")
-                ENDIF
-            ENDIF
+         IF (ModelWalker._walker != NULL .AND. ModelWalker._walker:_projects:Count > 0)
+               LOCAL project := NULL AS XProject
+               IF ModelWalker._walker:_projects:TryPeek(REF project)
+                  project:ProjectNode:SetStatusBarText("")
+               ENDIF
+         ENDIF
 
 		METHOD Walk() AS VOID
 			LOCAL start AS System.Threading.ThreadStart
-			IF (ModelWalker.suspendLevel <= 0 .and. XSolution:Open)
+			IF ModelWalker.suspendLevel <= 0 .and. XSolution:IsOpen
 				TRY
 					SELF:StopThread()
 					start := System.Threading.ThreadStart{ SELF, @Walker() }
 					SELF:_WalkerThread := System.Threading.Thread{start}
 					SELF:_WalkerThread:IsBackground := TRUE
-					SELF:_WalkerThread:Priority := System.Threading.ThreadPriority.Highest
 					SELF:_WalkerThread:Name := "ModelWalker"
 					SELF:_WalkerThread:Start()
 				CATCH exception AS System.Exception
@@ -150,63 +141,72 @@ BEGIN NAMESPACE XSharpModel
 			ENDIF
 
 		INTERNAL iProcessed AS LONG
-		INTERNAL aFiles AS XFile[]
+		INTERNAL aFiles AS STRING[]
+      
 		PRIVATE METHOD Walker() AS VOID
 			LOCAL project AS XProject
 			LOCAL parallelOptions AS System.Threading.Tasks.ParallelOptions
-
 			project := NULL
-			IF ((SELF:_projects:Count != 0) .AND. ! System.Linq.Enumerable.First<XProject>(SELF:_projects):ProjectNode:IsVsBuilding)
-				DO WHILE (TRUE)
-					IF (ModelWalker.suspendLevel > 0)
-						IF (project != NULL)
+			IF SELF:_projects:Count != 0 .AND. ! SELF:_projects:First():IsVsBuilding
+				DO WHILE TRUE
+					IF ModelWalker.suspendLevel > 0
+						IF project != NULL
 							SELF:_projects:Enqueue(project)
 						ENDIF
 						EXIT
 					ENDIF
 					BEGIN LOCK SELF
-						IF ((SELF:_projects:Count == 0) .OR. ! SELF:_projects:TryDequeue( OUT project))
+						IF SELF:_projects:Count == 0 .OR. ! SELF:_projects:TryDequeue( OUT project)
 							EXIT
 						ENDIF
-						project:ProjectNode:SetStatusBarText(String.Format("Start scanning project {0}", project:Name))
-					END LOCK
+						XSolution.SetStatusBarText(String.Format("Start scanning project {0}", project:Name))
+               END LOCK
+               _currentProject := project
 					WriteOutputMessage("-->> Walker("+project.Name+")")
 					aFiles := project:SourceFiles:ToArray()
 					iProcessed := 0
 					parallelOptions := ParallelOptions{}
 					IF (System.Environment.ProcessorCount > 1)
-						parallelOptions:MaxDegreeOfParallelism := ((System.Environment.ProcessorCount * 3) / 4)
+						parallelOptions:MaxDegreeOfParallelism := (System.Environment.ProcessorCount*3)  /4
 					ENDIF
-					project:ProjectNode:SetStatusBarAnimation(TRUE, 0)
-                    TRY
-					    Parallel.ForEach(aFiles, walkOneFile)
-                    CATCH e as Exception
-
-                        WriteOutPutMessage("Parallel.Foreach failed")
-                        XSolution.WriteException(e)
-                    END TRY
+					XSolution.SetStatusBarAnimation(TRUE, 3)
+               TRY
+					    Parallel.ForEach(aFiles, parallelOptions, walkOneFile)
+               CATCH e as Exception
+                  WriteOutputMessage("Parallel.Foreach failed")
+                  XSolution.WriteException(e)
+               END TRY
 					BEGIN LOCK SELF
 						_projectsForTypeResolution:Enqueue(project)
 					END LOCK
-					project:ProjectNode:SetStatusBarText("")
-					project:ProjectNode:SetStatusBarAnimation(FALSE, 0)
+					XSolution.SetStatusBarText("")
+					XSolution.SetStatusBarAnimation(FALSE, 3)
 					WriteOutputMessage("<<-- Walker("+project.Name+")")
-                    project:FileWalkCompleted := TRUE
+               
+               aFiles := project:OtherFiles:ToArray()
+               FOREACH VAR file IN aFiles
+                  VAR oFile := project:FindXFile(file)
+                  IF oFile:UpdatedOnDisk
+                     XDatabase.Update(oFile)
+                  ENDIF
+               NEXT
+               _currentProject := NULL
+               project:FileWalkCompleted := TRUE
 				ENDDO
 
 
-			ENDIF
-			IF ((SELF:_projectsForTypeResolution:Count != 0) .AND. ! System.Linq.Enumerable.First<XProject>(SELF:_projectsForTypeResolution):ProjectNode:IsVsBuilding)
-				DO WHILE (TRUE)
-					IF (ModelWalker.suspendLevel > 0)
-						IF (project != NULL)
+         ENDIF
+			IF SELF:_projectsForTypeResolution:Count != 0 .AND. ! SELF:_projectsForTypeResolution:First():IsVsBuilding
+				DO WHILE TRUE
+					IF ModelWalker.suspendLevel > 0
+						IF project != NULL
 							SELF:_projectsForTypeResolution:Enqueue(project)
 						ENDIF
 						EXIT
 					ENDIF
 
 					BEGIN LOCK SELF
-						IF ((SELF:_projectsForTypeResolution:Count == 0) .OR. ! SELF:_projectsForTypeResolution:TryDequeue( OUT project))
+						IF SELF:_projectsForTypeResolution:Count == 0 .OR. ! SELF:_projectsForTypeResolution:TryDequeue( OUT project)
 							EXIT
 						ENDIF
 					END LOCK
@@ -217,33 +217,27 @@ BEGIN NAMESPACE XSharpModel
 
 			ENDIF
 
-		PRIVATE METHOD walkOneFile(file AS XFile) AS VOID
-			VAR project := file:Project
-			IF (project:Loaded .and. XSolution:Open)
+		PRIVATE METHOD walkOneFile(fileName AS STRING) AS VOID
+			VAR project := _currentProject
+			IF project:Loaded .and. XSolution:IsOpen
 				iProcessed++
 				DO WHILE (project:ProjectNode:IsVsBuilding)
 					System.Threading.Thread.Sleep(1000)
-				ENDDO
-				project:ProjectNode:SetStatusBarText(String.Format("Walking {0} : Processing File {1} ({2} of {3})", project:Name, file:Name, iProcessed, aFiles:Length))
+            ENDDO
+            IF iProcessed % 10 == 0 .OR. iProcessed == aFiles:Length
+				   XSolution.SetStatusBarText(String.Format("Walking {0} : Processing File {1} of {2}", project:Name, iProcessed, aFiles:Length)) 
+            ENDIF
+            VAR file := project:FindXFile(fileName)
 				SELF:FileWalk(file)
-			    DO WHILE ModelWalker.IsSuspended .AND. System.Threading.Thread.CurrentThread:IsBackground
+			   DO WHILE ModelWalker.IsSuspended .AND. System.Threading.Thread.CurrentThread:IsBackground
 				    System.Threading.Thread.Sleep(100)
 			    ENDDO
 			ENDIF
 			RETURN
 
 		// Properties
-		PROPERTY HasWork AS LOGIC
-			GET
-				RETURN (SELF:_projects:Count > 0)
-			END GET
-		END PROPERTY
-
-		STATIC PROPERTY IsSuspended AS LOGIC
-			GET
-				RETURN ModelWalker.suspendLevel > 0
-			END GET
-		END PROPERTY
+		PROPERTY HasWork AS LOGIC GET SELF:_projects:Count > 0
+		STATIC PROPERTY IsSuspended AS LOGIC GET ModelWalker.suspendLevel > 0
 
 		PROPERTY IsWalkerRunning AS LOGIC
 			GET
@@ -262,6 +256,12 @@ BEGIN NAMESPACE XSharpModel
 
 		STATIC METHOD WriteOutputMessage(message AS STRING) AS VOID
 			XSolution.WriteOutputMessage("XModel.Walker "+message)
+
+		METHOD ReportError(fileName AS STRING, span AS LinePositionSpan, errorCode AS STRING, message AS STRING, args AS OBJECT[]) AS VOID
+         RETURN
+                  
+		METHOD ReportWarning(fileName AS STRING, span AS LinePositionSpan, errorCode AS STRING, message AS STRING, args AS OBJECT[]) AS VOID
+         RETURN
 
 	END CLASS
 

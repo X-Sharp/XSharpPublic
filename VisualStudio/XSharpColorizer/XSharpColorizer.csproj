@@ -69,11 +69,13 @@
     <Compile Include="..\..\Common\Constants.cs">
       <Link>Constants.cs</Link>
     </Compile>
+    <Compile Include="..\..\Common\GuidStrings.cs">
+      <Link>GuidStrings.cs</Link>
+    </Compile>
     <Compile Include="ClassificationDefinitions.cs" />
     <Compile Include="ColorizerConstants.cs" />
     <Compile Include="EditorFormats.cs" />
     <Compile Include="Extensions.cs" />
-    <Compile Include="GuidStrings.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="XSharpClassifier.cs" />
     <Compile Include="XSharpClassifierProvider.cs" />

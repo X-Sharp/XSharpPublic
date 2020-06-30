@@ -27,6 +27,7 @@ using System.Threading.Tasks;
 using System.Collections.Generic;
 using Microsoft;
 using Microsoft.VisualStudio.ComponentModelHost;
+using Microsoft.VisualStudio.Text.Adornments;
 /*
 Substitution strings
 String	Description
@@ -60,10 +61,12 @@ $WINDIR$	The Windows folder.
 
 // The following lines ensure that the right versions of the various DLLs are loaded.
 // They will be included in the generated PkgDef folder for the project system
-[assembly: ProvideCodeBase(AssemblyName = "XSharp.CodeDom.XSharpCodeDomProvider", CodeBase = "XSharpCodeDomProvider.dll", Culture = "neutral", PublicKeyToken = "ed555a0467764586", Version = XSharp.Constants.Version)]
-[assembly: ProvideCodeBase(AssemblyName = "XSharp.VsParser", CodeBase = "XSharp.VsParser.dll", Culture = "neutral", PublicKeyToken = "ed555a0467764586", Version = XSharp.Constants.Version)]
-[assembly: ProvideCodeBase(AssemblyName = "XSharpColorizer", CodeBase = "XSharpColorizer.dll", Culture = "neutral", PublicKeyToken = "ed555a0467764586", Version = XSharp.Constants.Version)]
-[assembly: ProvideCodeBase(AssemblyName = "XSharpModel", CodeBase = "XSharpModel.dll", Culture = "neutral", PublicKeyToken = "ed555a0467764586", Version = XSharp.Constants.Version)]
+[assembly: ProvideCodeBase(AssemblyName = "XSharp.CodeDom.XSharpCodeDomProvider", CodeBase = "XSharpCodeDomProvider.dll", Culture = "neutral", PublicKeyToken = XSharp.Constants.PublicKey, Version = XSharp.Constants.Version)]
+[assembly: ProvideCodeBase(AssemblyName = "XSharp.VsParser", CodeBase = "XSharp.VsParser.dll", Culture = "neutral", PublicKeyToken = XSharp.Constants.PublicKey, Version = XSharp.Constants.Version)]
+[assembly: ProvideCodeBase(AssemblyName = "XSharpColorizer", CodeBase = "XSharpColorizer.dll", Culture = "neutral", PublicKeyToken = XSharp.Constants.PublicKey, Version = XSharp.Constants.Version)]
+[assembly: ProvideCodeBase(AssemblyName = "XSharpModel", CodeBase = "XSharpModel.dll", Culture = "neutral", PublicKeyToken = XSharp.Constants.PublicKey, Version = XSharp.Constants.Version)]
+[assembly: ProvideCodeBase(AssemblyName = "Mono.Cecil", CodeBase = "Mono.Cecil.dll", Culture = "neutral", PublicKeyToken = "50cebf1cceb9d05e", Version = "0.11.2.0")]
+[assembly: ProvideCodeBase(AssemblyName = "System.Data.SQLite", CodeBase = "System.Data.SQLite.dll", Culture = "neutral", PublicKeyToken = "db937bc2d44ff139", Version = "1.0.113.0")]
 namespace XSharp.Project
 {
 
@@ -248,7 +251,21 @@ namespace XSharp.Project
         internal IntellisenseOptionsPage GetIntellisenseOptionsPage()
         {
             if (_intellisensePage == null)
+            {
                 _intellisensePage = (IntellisenseOptionsPage)GetDialogPage(typeof(IntellisenseOptionsPage));
+            }
+            XSharpModel.XSettings.EnableLogging = _intellisensePage.EnableOutputPane;
+            XSharpModel.XSettings.EnableDatabaseLog = _intellisensePage.EnableDatabaseLog;
+            XSharpModel.XSettings.EnableParseLog = _intellisensePage.EnableParserLog;
+            XSharpModel.XSettings.EnableReferenceInfoLog = _intellisensePage.EnableReferenceInfoLog;
+            XSharpModel.XSettings.EnableTypelookupLog = _intellisensePage.EnableTypelookupLog;
+            XSharpModel.XSettings.DisableEntityParsing = _intellisensePage.DisableEntityParsing;
+            XSharpModel.XSettings.DisableRegions = _intellisensePage.DisableRegions;
+            XSharpModel.XSettings.DisableSyntaxHighlighting = _intellisensePage.DisableSyntaxColorization;
+            XSharpModel.XSettings.DisableAssemblyReferences = _intellisensePage.DisableAssemblyReferences;
+            XSharpModel.XSettings.DisableForeignProjectReferences = _intellisensePage.DisableForeignProjectReferences;
+            XSharpModel.XSettings.DisableXSharpProjectReferences = _intellisensePage.DisableXSharpProjectReferences;
+
             return _intellisensePage;
         }
 

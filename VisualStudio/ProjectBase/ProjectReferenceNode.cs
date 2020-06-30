@@ -448,9 +448,25 @@ namespace Microsoft.VisualStudio.Project
             this.buildDependency = new BuildDependency(this.ProjectMgr, this.referencedProjectGuid);
 
         }
-#endregion
 
-#region methods
+        protected override void Dispose(bool disposing)
+        {
+            try
+            {
+                if (this.projectReference != null)
+                {
+                    this.projectReference.Dispose();
+                }
+            }
+            finally
+            {
+                this.projectReference = null;
+                base.Dispose(disposing);
+            }
+        }
+        #endregion
+
+        #region methods
         protected override NodeProperties CreatePropertiesObject()
         {
             return new ProjectReferencesProperties(this);

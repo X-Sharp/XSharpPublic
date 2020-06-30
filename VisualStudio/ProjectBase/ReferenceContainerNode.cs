@@ -349,7 +349,8 @@ namespace Microsoft.VisualStudio.Project
                 }
                 buildProject.Save(original);
             }
-            var references = MSBuildProjectInstance.GetItems(buildResult.ProjectInstance, ProjectFileConstants.ReferencePath);
+            var references = buildResult.ProjectInstance.GetItems(ProjectFileConstants.ReferencePath);
+            //var references = MSBuildProjectInstance.GetItems(buildResult.ProjectInstance, ProjectFileConstants.ReferencePath);
             foreach (var reference in references)
             {
                 string fullName = MSBuildItem.GetEvaluatedInclude(reference);

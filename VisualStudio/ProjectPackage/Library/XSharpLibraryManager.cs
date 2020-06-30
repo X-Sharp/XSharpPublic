@@ -253,7 +253,8 @@ namespace XSharp.Project
         {
             // No Hierarchy or... Hierarchy already registered ?
             var optionsPage = XSharpProjectPackage.Instance.GetIntellisenseOptionsPage();
-            if (optionsPage.DisableClassViewObjectView)
+            // disable classview for now
+            if (optionsPage.DisableClassViewObjectView || true)
             {
                 return;
             }
@@ -474,10 +475,11 @@ namespace XSharp.Project
 
         private void CreateModuleTree(XSharpLibraryProject prjNode, XFile scope, XSharpModuleId moduleId)
         {
-            if ((null == scope))
+            if (null == scope || XSolution.IsClosing)
             {
                 return;
             }
+            
             if (!scope.HasCode)
                 return;
             // Retrieve all Types
@@ -486,9 +488,9 @@ namespace XSharp.Project
                 return;
             //
             // First search for NameSpaces
-            foreach (KeyValuePair<string, XType> pair in elements)
+            foreach (KeyValuePair<string, XTypeDefinition> pair in elements)
             {
-                XType xType = pair.Value;
+                XTypeDefinition xType = pair.Value;
                 if (xType.Kind == Kind.Namespace)
                 {
                     // Does that NameSpave already exist ?
@@ -520,19 +522,24 @@ namespace XSharp.Project
                     }
                 }
             }
-
             // Now, look for Classes
-            foreach (KeyValuePair<string, XType> pair in elements)
+            foreach (KeyValuePair<string, XTypeDefinition> pair in elements)
             {
-                XType xType = pair.Value;
+                XTypeDefinition xType = pair.Value;
                 // Is it a kind of Type ?
                 if ((xType.Kind.IsType()))
                 {
                     string nSpace = prjNode.DefaultNameSpace;
-                    if (!String.IsNullOrEmpty(xType.NameSpace))
-                        nSpace = xType.NameSpace;
+                    if (!String.IsNullOrEmpty(xType.Namespace))
+                        nSpace = xType.Namespace;
                     // Search for the corresponding NameSpace
                     LibraryNode nsNode = prjNode.SearchNameSpace(nSpace);
+                    if (nsNode == null)
+                    {
+
+                        nsNode = prjNode.SearchClass(nSpace);
+                    }
+
                     if (nsNode is XSharpLibraryNode)
                     {
                         XSharpLibraryNode xsNSNode = (XSharpLibraryNode)nsNode;
@@ -568,14 +575,13 @@ namespace XSharp.Project
             }
         }
 
-        private void CreateGlobalTree(LibraryNode current, XType scope, XSharpModuleId moduleId)
+        private void CreateGlobalTree(LibraryNode current, XTypeDefinition scope, XSharpModuleId moduleId)
         {
-            if (null == scope)
-            {
+            if (null == scope || XSolution.IsClosing)
+            { 
                 return;
             }
-
-            foreach (XTypeMember member in scope.Members)
+            foreach (XMemberDefinition member in scope.XMembers)
             {
                 XSharpLibraryNode newNode = new XSharpLibraryNode(member, "", moduleId.Hierarchy, moduleId.ItemID);
                 // Functions ?
@@ -591,14 +597,15 @@ namespace XSharp.Project
             }
         }
 
-        private void CreateMembersTree(LibraryNode current, XType scope, XSharpModuleId moduleId)
+        private void CreateMembersTree(LibraryNode current, XTypeDefinition scope, XSharpModuleId moduleId)
         {
-            if (null == scope)
+            if (null == scope || XSolution.IsClosing)
             {
                 return;
             }
+            
 
-            foreach (XTypeMember member in scope.Members)
+            foreach (XMemberDefinition member in scope.Members)
             {
                 XSharpLibraryNode newNode = new XSharpLibraryNode(member, "", moduleId.Hierarchy, moduleId.ItemID);
 
@@ -624,7 +631,7 @@ namespace XSharp.Project
         private void OnFileWalkComplete(XFile xfile)
         {
             // Retrieve the corresponding node
-            if (!xfile.HasCode)
+            if (!xfile.HasCode || XSolution.IsClosing)
                 return;
             XSharpProjectNode prjNode = (XSharpProjectNode)xfile.Project.ProjectNode;
             Microsoft.VisualStudio.Project.HierarchyNode node = prjNode.FindURL(xfile.FullPath);
@@ -638,7 +645,8 @@ namespace XSharp.Project
 
         private void CreateParseRequest(string file, XSharpModuleId id)
         {
-
+            if (XSolution.IsClosing)
+                return;
             LibraryTask task = new LibraryTask(file, id);
             task.ModuleID = id;
             lock (requests)
@@ -799,12 +807,15 @@ namespace XSharp.Project
 
         public int OnAfterSave(uint docCookie)
         {
-            //string fileName = getFileNameFromCookie(docCookie);
-            //var xFile = XSolution.FindFile(fileName);
-            //if (xFile != null && xFile.HasCode)
-            //{
-            //    xFile.Project.WalkFile(xFile);
-            //}
+            if (!XSolution.IsClosing)
+            {
+                string fileName = getFileNameFromCookie(docCookie);
+                var xFile = XSolution.FindFile(fileName);
+                if (xFile != null && xFile.HasCode)
+                {
+                    xFile.Project.WalkFile(xFile);
+                }
+            }
             return VSConstants.S_OK;
         }
 

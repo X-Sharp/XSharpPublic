@@ -53,6 +53,14 @@ namespace XSharp.Project.OptionsPages
         public bool DisableForeignProjectReferences { get; set; }
         public bool DisableXSharpProjectReferences { get; set; }
         public bool EnableOutputPane { get; set; }
+        public bool EnableDatabaseLog { get; set; }
+        public bool EnableParserLog { get; set; }
+        public bool EnableCodeCompletionLog { get; set; }
+        public bool EnableParameterLog{ get; set; }
+        public bool EnableBraceMatchLog{ get; set; }
+        public bool EnableQuickInfoLog { get; set; }
+        public bool EnableTypelookupLog { get; set; }
+        public bool EnableReferenceInfoLog { get; set; }
 
         public bool HideAdvancemembers { get; set; } // not on control. Is already on another page.
         protected override IWin32Window Window
@@ -77,11 +85,20 @@ namespace XSharp.Project.OptionsPages
         public override void LoadSettingsFromStorage()
         {
             base.LoadSettingsFromStorage();
-            SetDefaultCommitChars();
+            if (this.CommitChars != "<Empty>")
+            {
+                SetDefaultCommitChars();
+            }
+            else
+            {
+                this.CommitChars = "";
+            }
             SetCaseSync();
         }
         public override void SaveSettingsToStorage()
         {
+            if (this.CommitChars != null && this.CommitChars.Length == 0)
+                this.CommitChars = "<Empty>";
             SetDefaultCommitChars();
             base.SaveSettingsToStorage();
             SetCaseSync();

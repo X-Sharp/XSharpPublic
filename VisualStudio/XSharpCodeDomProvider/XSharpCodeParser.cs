@@ -74,7 +74,7 @@ namespace XSharp.CodeDom
                 //
                 var reporter = new ErrorIgnorer();
                 ITokenStream tokenStream;
-                LanguageService.CodeAnalysis.XSharp.SyntaxParser.XSharpParser.SourceContext xtree;
+                LanguageService.CodeAnalysis.XSharp.SyntaxParser.XSharpParserRuleContext xtree;
                 bool ok = XSharp.Parser.VsParser.Parse(source, this.FileName, _projectNode.ParseOptions, reporter, out tokenStream, out xtree);
 
                 // We need to d 2 steps here:

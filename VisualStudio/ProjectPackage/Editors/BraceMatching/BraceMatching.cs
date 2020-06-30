@@ -15,6 +15,7 @@ using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
 using XSharpLanguage;
 using LanguageService.CodeAnalysis.XSharp;
 using XSharpModel;
+using XSharp.Project.OptionsPages;
 
 namespace XSharp.Project.Editors.BraceMatching
 {
@@ -50,6 +51,8 @@ namespace XSharp.Project.Editors.BraceMatching
         ITextBuffer SourceBuffer { get; set; }
         SnapshotPoint? CurrentChar { get; set; }
         static private Dictionary<char, char> m_braceList;
+        IntellisenseOptionsPage optionsPage = null;
+        XSharpProjectPackage package;
 
         static BraceMatchingTagger()
         {
@@ -68,11 +71,16 @@ namespace XSharp.Project.Editors.BraceMatching
 
             this.View.Caret.PositionChanged += CaretPositionChanged;
             this.View.LayoutChanged += ViewLayoutChanged;
+            package = XSharpProjectPackage.Instance;
+            optionsPage = package.GetIntellisenseOptionsPage();
         }
 
-        void Debug(string sMessage)
+        void WriteOutputMessage(string sMessage)
         {
-            XSharpProjectPackage.Instance.DisplayOutPutMessage("Brace Matching: "+sMessage);
+            if (optionsPage.EnableBraceMatchLog && optionsPage.EnableOutputPane)
+            {
+                package.DisplayOutPutMessage("Brace Matching: " + sMessage);
+            }
         }
 
         public event EventHandler<SnapshotSpanEventArgs> TagsChanged;
@@ -110,7 +118,7 @@ namespace XSharp.Project.Editors.BraceMatching
 
             oStart = DateTime.Now;
 
-            Debug("Start get brackets: " + oStart.ToString("hh:mm:ss.fff"));
+            WriteOutputMessage("Start get brackets: " + oStart.ToString("hh:mm:ss.fff"));
 
             if (spans.Count == 0)   //there is no content in the buffer
                 yield break;
@@ -139,9 +147,16 @@ namespace XSharp.Project.Editors.BraceMatching
             SnapshotPoint lastChar = new SnapshotPoint();
             try
             {
-                currentText = ssp.GetChar();
-                lastChar = ssp == 0 ? ssp : ssp - 1; //if ssp is 0 (beginning of buffer), don't move it back
-                lastText = lastChar.GetChar();
+                if (ssp.Position < ssp.Snapshot.Length)
+                {
+                    currentText = ssp.GetChar();
+                    lastChar = ssp == 0 ? ssp : ssp - 1; //if ssp is 0 (beginning of buffer), don't move it back
+                    lastText = lastChar.GetChar();
+                }
+                else
+                {
+                    yield break;
+                }
             }
             catch (Exception)
             {
@@ -178,11 +193,12 @@ namespace XSharp.Project.Editors.BraceMatching
                             {
                                 var sourceWalker = new SourceWalker(xfile);
                                 string text = ssp.Snapshot.GetText();
-                                text = text.Substring(member.Interval.Start, member.Interval.Width); //FM#081219 #2 - We are in a 'member'. For brace matching we should only ever need to look to the end of this member
+                                var length = Math.Min(member.Interval.Width, text.Length - member.Interval.Start);
+                                text = text.Substring(member.Interval.Start, length); //FM#081219 #2 - We are in a 'member'. For brace matching we should only ever need to look to the end of this member
                                 offset = member.Interval.Start;
-                                Debug("Start sourceWalker.Lex: " + DateTime.Now.ToString("hh:mm:ss.fff"));
+                                WriteOutputMessage("Start sourceWalker.Lex: " + DateTime.Now.ToString("hh:mm:ss.fff"));
                                 var stream = (BufferedTokenStream)sourceWalker.Lex(text);
-                                Debug("End sourceWalker.Lex: " + DateTime.Now.ToString("hh:mm:ss.fff"));
+                                WriteOutputMessage("End sourceWalker.Lex: " + DateTime.Now.ToString("hh:mm:ss.fff"));
                                 tokens = stream.GetTokens();
                             }
                             catch (Exception e)
@@ -277,8 +293,8 @@ namespace XSharp.Project.Editors.BraceMatching
             oEnd = DateTime.Now;
             timeSpan = oEnd - oStart;
 
-            Debug("Finished get brackets: " + oEnd.ToString("hh:mm:ss.fff"));
-            Debug("Finished get brackets - total ms: " + timeSpan.TotalMilliseconds.ToString());
+            WriteOutputMessage("Finished get brackets: " + oEnd.ToString("hh:mm:ss.fff"));
+            WriteOutputMessage("Finished get brackets - total ms: " + timeSpan.TotalMilliseconds.ToString());
         }
         private bool FindMatchingCloseTag(List<ClassificationSpan> sortedTags, int indexTag, ITextSnapshot snapshot, out SnapshotSpan pairSpan)
         {

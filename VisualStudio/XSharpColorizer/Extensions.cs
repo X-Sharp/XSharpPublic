@@ -47,32 +47,7 @@ namespace XSharpColorizer
             return new XsClassificationSpan(sspan, classificationType);
         }
 
-        //public static String GetText(this ITextSnapshot snapshot, TextSpan span)
-        //{
-        //    int start = span.Start;
-        //    int length = span.Length;
-        //    // validate
-        //    if (span.End > snapshot.Length)
-        //    {
-        //        length = snapshot.Length - start;
-        //    }
-        //    return snapshot.GetText(new Span(start, length));
-        //}
-
-        //public static string GetFileName(this ITextBuffer buffer)
-        //{
-        //    XFile file = buffer.GetFile();
-        //    if (file != null)
-        //    {
-        //        return file.FullPath;
-        //    }
-        //    ITextDocument textDoc;
-        //    if (buffer.Properties.TryGetProperty(typeof(ITextDocument), out textDoc))
-        //    {
-        //        return textDoc.FilePath;
-        //    }
-        //    return string.Empty;
-        //}
+    
         public static XFile GetFile(this ITextBuffer buffer)
         {
             XFile file;
@@ -126,6 +101,7 @@ namespace XSharpColorizer
             var file = XSolution.FindFile(path);
             if (file != null)
             {
+                file.Interactive = true;
                 buffer.Properties.AddProperty(typeof(XFile), file);
             }
             return file != null;

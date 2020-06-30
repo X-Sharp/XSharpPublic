@@ -170,7 +170,7 @@ namespace XSharp.Project
         }
         protected object GetProjectNode(string fileName)
         {
-            var dte = this.GetService(typeof(Microsoft.VisualStudio.Shell.Interop.SDTE)) as EnvDTE80.DTE2;
+            var dte = this.GetService(typeof(SDTE)) as EnvDTE80.DTE2;
             var projectitem = dte.Solution.FindProjectItem(fileName);
             if (projectitem != null)
             {

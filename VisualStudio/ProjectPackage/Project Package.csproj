@@ -222,13 +222,13 @@
     <Reference Include="Microsoft.Windows.Design.Host">
       <HintPath>$(DevEnvDir)\PrivateAssemblies\Microsoft.Windows.Design.Host.dll</HintPath>
     </Reference>
+    <Reference Include="Mono.Cecil, Version=0.10.0.0, Culture=neutral, PublicKeyToken=50cebf1cceb9d05e, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\External\Debug\Mono.Cecil.dll</HintPath>
+    </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
     <Reference Include="System" />
-    <Reference Include="System.Collections.Immutable">
-      <HintPath>..\..\packages\System.Collections.Immutable.1.4.0\lib\portable-net45+win8+wp8+wpa81\System.Collections.Immutable.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
     <Reference Include="System.ComponentModel.Composition" />
     <Reference Include="System.Core" />
     <Reference Include="System.Data" />
@@ -253,6 +253,9 @@
     <Compile Include="..\..\Common\Constants.cs">
       <Link>Constants.cs</Link>
     </Compile>
+    <Compile Include="..\..\Common\GuidStrings.cs">
+      <Link>GuidStrings.cs</Link>
+    </Compile>
     <Compile Include="Automation\OAXSharpProjectItem.cs" />
     <Compile Include="CodeDomProvider\VSXsharpCodeDomProvider.cs">
       <SubType>Component</SubType>
@@ -273,10 +276,9 @@
     <Compile Include="Editors\PeekDefinition\XSharpPeekItemProvider.cs" />
     <Compile Include="Editors\SmartIndent\SmartIndent.cs" />
     <Compile Include="Editors\SmartIndent\SmartIndentProvider.cs" />
-    <Compile Include="Editors\XAMLCompletionSource.cs" />
-    <Compile Include="Editors\XSharpCompletionSource_Partial.cs" />
-    <Compile Include="Editors\XSharpErrorColorizer.cs" />
-    <Compile Include="Editors\XSharpQuickInfo.cs" />
+    <Compile Include="Editors\Completion\XAMLCompletionSource.cs" />
+    <Compile Include="Editors\Errors\XSharpErrorColorizer.cs" />
+    <Compile Include="Editors\QuickInfo\XSharpQuickInfo.cs" />
     <Compile Include="Editors\XMLDoc\XSharpXMLDoc.cs" />
     <Compile Include="ErrorList\ErrorListManager.cs" />
     <Compile Include="LanguageService\ExpansionFunctions.cs" />
@@ -351,8 +353,8 @@
     <Compile Include="Wix\XColorUserControl.Designer.cs">
       <DependentUpon>XColorUserControl.cs</DependentUpon>
     </Compile>
-    <Compile Include="Editors\CommandFilter.cs" />
-    <Compile Include="Editors\XSharpCompletionSource.cs" />
+    <Compile Include="Editors\CommandFilter\CommandFilter.cs" />
+    <Compile Include="Editors\Completion\XSharpCompletionSource.cs" />
     <Compile Include="ErrorList\ErrorListProvider.cs" />
     <Compile Include="ErrorList\ErrorListSinkManager.cs" />
     <Compile Include="ErrorList\ErrorMessageUtil.cs" />
@@ -438,6 +440,21 @@
     <ZipItem Include="Templates\ProjectItems\WPF\WPFPageFunction\PageFunction1.xaml.prg" />
     <ZipItem Include="Templates\ProjectItems\WPF\WPFPageFunction\WPFPageFunction.vstemplate" />
     <ZipItem Include="Templates\ProjectItems\WPF\WPFResourceDictionary\WPFResourceDictionary.vstemplate" />
+    <Content Include="..\..\External\Debug\Mono.Cecil.dll">
+      <Link>Mono.Cecil.dll</Link>
+      <IncludeInVSIX>true</IncludeInVSIX>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\External\Debug\SQLite.Interop.dll">
+      <Link>SQLite.Interop.dll</Link>
+      <IncludeInVSIX>true</IncludeInVSIX>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\External\Debug\System.Data.SQLite.dll">
+      <Link>System.Data.SQLite.dll</Link>
+      <IncludeInVSIX>true</IncludeInVSIX>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Designers.pkgdef">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <IncludeInVSIX>true</IncludeInVSIX>

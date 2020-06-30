@@ -84,6 +84,7 @@ namespace XSharp.Project
         IErrorList errorList = null;
         bool isLoading = false;
         private FileChangeManager filechangemanager = null;
+        XSharpModel.XProject projectModel;
 
 
         //private Microsoft.VisualStudio.Designer.Interfaces.IVSMDCodeDomProvider codeDomProvider;
@@ -123,7 +124,7 @@ namespace XSharp.Project
             XSharpProjectPackage.Instance.DisplayOutPutMessage("FileChangedOnDisk " + e.FileName);
             if (IsXamlFile(e.FileName) || IsCodeFile(e.FileName))
             {
-                XFile file = this.ProjectModel.FindFullPath(e.FileName);
+                XFile file = this.ProjectModel.FindXFile(e.FileName);
                 if (file != null)
                 {
                     this.ProjectModel.WalkFile(file);
@@ -1033,7 +1034,7 @@ namespace XSharp.Project
 
         private void ReferencesEvents_ReferenceAdded(Reference pReference)
         {
-            ProjectModel.AddAssemblyReference(pReference);
+            ProjectModel.AddAssemblyReference(pReference.Path);
             //
             ProjectModel.ResolveReferences();
         }
@@ -1149,7 +1150,6 @@ namespace XSharp.Project
         #endregion
 
 
-        XSharpModel.XProject projectModel;
         public XSharpModel.XProject ProjectModel
         {
             get
@@ -1163,11 +1163,7 @@ namespace XSharp.Project
                 // Neither ? Ok, Create
                 if (projectModel == null)
                 {
-                    projectModel = new XSharpModel.XProject(this);
-                    // Set the backlink, so the walker can access the StatusBar
-                    projectModel.ProjectNode = this;
-                    //
-                    XSharpModel.XSolution.Add(projectModel);
+                    projectModel = new XProject(this);
                 }
                 return projectModel;
             }
@@ -1192,7 +1188,7 @@ namespace XSharp.Project
                 else
                 {
                     // OAAssemblyReference or OACOMReference
-                    ProjectModel.AddAssemblyReference(reference);
+                    ProjectModel.AddAssemblyReference(reference.Path);
                 }
             }
         }
@@ -1291,7 +1287,7 @@ namespace XSharp.Project
             }
             return list;
         }
-        public EnvDTE.Project FindProject(String sProject)
+        public EnvDTE.Project FindProject(string sProject)
         {
             foreach (var p in GetSolutionProjects())
             {
@@ -1305,32 +1301,33 @@ namespace XSharp.Project
 
         public override void RemoveURL(String url)
         {
-            if (_closing)
-                return;
-            //
-            // We should remove the external projects entries
-            if (IsProjectFile(url))
+            if (!_closing)
             {
-                this.ProjectModel.RemoveProjectReference(url);
-            }
-            else if (IsStrangerProjectFile(url))
-            {
-                this.ProjectModel.RemoveStrangerProjectReference(url);
-            }
-            else
-            {
-                var node = this.FindChild(url) as XSharpFileNode;
-                if (node != null && !node.IsNonMemberItem)
+                //
+                // We should remove the external projects entries
+                if (IsProjectFile(url))
                 {
-                    if (filechangemanager != null)
+                    this.ProjectModel.RemoveProjectReference(url);
+                }
+                else if (IsStrangerProjectFile(url))
+                {
+                    this.ProjectModel.RemoveStrangerProjectReference(url);
+                }
+                else
+                {
+                    var node = this.FindChild(url) as XSharpFileNode;
+                    if (node != null && !node.IsNonMemberItem)
                     {
-                        if (IsXamlFile(url) ||
-                            node.IsDependent)
+                        if (filechangemanager != null)
+                        {
+                            if (IsXamlFile(url) ||
+                                node.IsDependent)
 
-                            filechangemanager.StopObservingItem(url);
+                                filechangemanager.StopObservingItem(url);
+                        }
+
+                        this.ProjectModel.RemoveFile(url);
                     }
-
-                    this.ProjectModel.RemoveFile(url);
                 }
             }
             base.RemoveURL(url);
@@ -1436,6 +1433,18 @@ namespace XSharp.Project
         {
             try
             {
+                /*
+                    SBAI_Index 	Value1 	Description
+                    SBAI_General 	0 	Standard animation icon.
+                    SBAI_Print 	1 	Animation when printing.
+                    SBAI_Save 	2 	Animation when saving files.
+                    SBAI_Deploy 	3 	Animation when deploying the solution.
+                    SBAI_Synch 	4 	Animation when synchronizing files over the network.
+                    SBAI_Build 	5 	Animation when building the solution.
+                    SBAI_Find 	6 	Animation when searching.
+
+                    The values of SBAI_Index are taken from vsshell.idl.
+                */
                 getStatusBar();
                 if (statusBar != null)
                 {
@@ -1537,12 +1546,6 @@ namespace XSharp.Project
             }
         }
 
-        public bool DisableLexing => package.GetIntellisenseOptionsPage().DisableSyntaxColorization;
-        public bool DisableParsing => package.GetIntellisenseOptionsPage().DisableEntityParsing;
-        public bool DisableRegions => package.GetIntellisenseOptionsPage().DisableRegions;
-
-        public bool KeywordsUppercase => package.GetIntellisenseOptionsPage().KeywordCase == KeywordCase.Upper;
-
         #endregion
 
 
@@ -1611,22 +1614,26 @@ namespace XSharp.Project
             return bOk;
         }
         #region IProjectTypeHelper
-        public System.Type ResolveType(string name, IReadOnlyList<string> usings)
+        public IXType ResolveType(string name, IReadOnlyList<string> usings)
         {
             switch (name.ToLower())
             {
                 case "object":
                 case "system.object":
-                    return typeof(object);
+                    name = "System.Object";
+                    break;
                 case "void":
                 case "system.void":
-                    return typeof(void);
+                    name = "System.Void";
+                    break;
                 case "boolean":
                 case "system.boolean":
-                    return typeof(Boolean);
+                    name = "System.Boolean";
+                    break;
                 case "string":
                 case "system.string":
-                    return typeof(String);
+                    name = "System.String";
+                    break;
             }
             var model = this.ProjectModel;
             var myusings = new List<string>();
@@ -1635,74 +1642,38 @@ namespace XSharp.Project
             return model.FindSystemType(name, myusings);
         }
 
-        public XType ResolveXType(string name, IReadOnlyList<string> usings)
+        public XTypeDefinition ResolveXType(string name, IReadOnlyList<string> usings)
         {
             var model = this.ProjectModel;
-            //
-            XType result = model.Lookup(name, true);
+            XTypeDefinition result = model.Lookup(name, usings);
             if (result != null)
                 return result;
-            // try to find with explicit usings
-            if (usings != null)
-            {
-                foreach (var usingName in usings)
-                {
-                    var fullname = usingName + "." + name;
-                    result = model.Lookup(fullname, true);
-                    if (result != null)
-                        return result;
-                }
-            }
             return result;
         }
 
 
-        public XType ResolveReferencedType(string name, IReadOnlyList<string> usings)
+        public XTypeDefinition ResolveReferencedType(string name, IReadOnlyList<string> usings)
         {
             var model = this.ProjectModel;
             //
-            XType result = model.LookupReferenced(name, true);
+            var tmpusings = new List<string>();
+            tmpusings.AddRange(usings);
+            tmpusings.AddRange(model.ImplicitNamespaces);
+            XTypeDefinition result = model.LookupReferenced(name, tmpusings);
             if (result != null)
                 return result;
-            // try to find with explicit usings
-            if (usings != null)
-            {
-                foreach (var usingName in usings)
-                {
-                    var fullname = usingName + "." + name;
-                    result = model.LookupReferenced(fullname, true);
-                    if (result != null)
-                        return result;
-                }
-            }
-            foreach (var usingName in model.ImplicitNamespaces)
-            {
-                var fullname = usingName + "." + name;
-                result = model.LookupReferenced(fullname, true);
-                if (result != null)
-                    return result;
-            }
+        
             return result;
         }
+        public IXType ResolveExternalType(string name, IReadOnlyList<string> usings)
+        {
+            var model = this.ProjectModel;
+            var myusings = new List<string>();
+            myusings.AddRange(usings);
+            myusings.AddUnique("System");
+            return model.FindSystemType(name, myusings);
+        }
 
-        //public CodeElement ResolveStrangerType(string name, IReadOnlyList<string> usings)
-        //{
-        //    var model = this.ProjectModel;
-        //    // First, easy way..Use the simple name
-        //    CodeElement codeElt = model.LookupForStranger(name, true);
-        //    if (codeElt == null)
-        //    {
-        //        // Search using the USING statements in the File that contains the var
-        //        foreach (string usingStatement in usings)
-        //        {
-        //            String fqn = usingStatement + "." + name;
-        //            codeElt = model.LookupForStranger(fqn, true);
-        //            if (codeElt != null)
-        //                break;
-        //        }
-        //    }
-        //    return codeElt;
-        //}
 
         #endregion
         #region IVsSingleFileGeneratorFactory
@@ -1908,6 +1879,17 @@ namespace XSharp.Project
             return this.FindChild(strFileName) != null;
         }
 
+        protected override void Dispose(bool disposing)
+        {
+            projectModel = null;
+            if (filechangemanager != null)
+            {
+                filechangemanager.Dispose();
+                filechangemanager = null;
+            }
+            base.Dispose(disposing);
+        }
+
         public XSharpDialect Dialect
         {
             get
@@ -1956,7 +1938,10 @@ namespace XSharp.Project
                 }
             }
             // CleanUp the CodeModel
-            XSharpModel.XSolution.Remove(projectModel);
+            if (projectModel != null)
+            {
+                projectModel.Close();
+            }
             _closing = true;
             var res = base.Close();
 
@@ -1973,16 +1958,13 @@ namespace XSharp.Project
         protected override void RenameProjectFile(string newFile)
         {
 
+            base.RenameProjectFile(newFile);
             var model = this.ProjectModel;
             if (model != null)
             {
-                XSharpModel.XSolution.Remove(model);
+                model.Rename(newFile);
             }
-            base.RenameProjectFile(newFile);
-            if (model != null)
-            {
-                XSharpModel.XSolution.Add(model);
-            }
+
         }
 
         const string config = "$(Configuration)";

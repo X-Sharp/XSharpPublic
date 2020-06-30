@@ -4,16 +4,15 @@ using Microsoft.VisualStudio.Text;
 using System;
 using LanguageService.SyntaxTree;
 using XSharpLanguage;
-using System.Diagnostics;
 using XSharpColorizer;
-
+using XSharpModel;
 namespace XSharp.Project
 {
     internal sealed class XSharpPeekItemSource : IPeekableItemSource
     {
         private readonly ITextBuffer _textBuffer;
         private readonly IPeekResultFactory _peekResultFactory;
-        private XSharpModel.XFile _file;
+        private XFile _file;
 
         public XSharpPeekItemSource(ITextBuffer textBuffer, IPeekResultFactory peekResultFactory)
         {
@@ -42,12 +41,12 @@ namespace XSharp.Project
                 IToken stopToken;
                 //
                 // Check if we can get the member where we are
-                XSharpModel.XTypeMember member = XSharpLanguage.XSharpTokenTools.FindMember(triggerPoint.GetContainingLine().LineNumber, _file);
-                XSharpModel.XType currentNamespace = XSharpLanguage.XSharpTokenTools.FindNamespace(triggerPoint.Position, _file);
+                XMemberDefinition member = XSharpLanguage.XSharpTokenTools.FindMember(triggerPoint.GetContainingLine().LineNumber, _file);
+                XTypeDefinition currentNamespace = XSharpLanguage.XSharpTokenTools.FindNamespace(triggerPoint.Position, _file);
 
                 var lineNumber = triggerPoint.GetContainingLine().LineNumber;
                 var snapshot = _textBuffer.CurrentSnapshot;
-                List<String> tokenList = XSharpTokenTools.GetTokenList(triggerPoint.Position, lineNumber, snapshot, out stopToken, false, _file, false, member);
+                List<String> tokenList = XSharpTokenTools.GetTokenList(triggerPoint.Position, lineNumber, snapshot, out stopToken, true, _file, false, member);
                 // LookUp for the BaseType, reading the TokenList (From left to right)
                 CompletionElement gotoElement;
                 String currentNS = "";
@@ -55,11 +54,11 @@ namespace XSharp.Project
                 {
                     currentNS = currentNamespace.Name;
                 }
-                XSharpModel.CompletionType cType = XSharpLanguage.XSharpTokenTools.RetrieveType(_file, tokenList, member, currentNS, stopToken, out gotoElement, snapshot, lineNumber, _file.Project.Dialect);
+                CompletionType cType = XSharpLanguage.XSharpTokenTools.RetrieveType(_file, tokenList, member, currentNS, stopToken, out gotoElement, snapshot, lineNumber, _file.Project.Dialect);
                 //
-                if ((gotoElement != null) && (gotoElement.XSharpElement != null))
+                if ((gotoElement != null) && (gotoElement.IsSourceElement))
                 {
-                    peekableItems.Add(new XSharpDefinitionPeekItem(gotoElement.XSharpElement, _peekResultFactory));
+                    peekableItems.Add(new XSharpDefinitionPeekItem(gotoElement.SourceElement, _peekResultFactory));
                 }
             }
             catch (Exception ex)
@@ -69,7 +68,7 @@ namespace XSharp.Project
             }
             finally
             {
-                XSharpModel.ModelWalker.Resume();
+                ModelWalker.Resume();
             }
         }
 

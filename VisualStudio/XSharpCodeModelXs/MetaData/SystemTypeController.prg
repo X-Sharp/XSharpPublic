@@ -5,45 +5,59 @@
 //
 USING System.Collections.Concurrent
 USING System.Collections.Generic
-USING System.Collections.Immutable
+USING System.Linq
 USING System
 USING System.IO
+USING System.Reflection
+
+
 BEGIN NAMESPACE XSharpModel
-    /// <summary>
-    /// We have one SystemTypeController in memory : It will handle all references types for all projects
-    /// Assemblies are stored inside a List of AssemblyInfo
-    /// </summary>
+	/// <summary>
+		/// We have one SystemTypeController in memory : It will handle all references types for all projects
+		/// Assemblies are stored inside a List of AssemblyInfo
+	/// </summary>
 	CLASS SystemTypeController
 		#region fields
-		STATIC PRIVATE assemblies  	AS ConcurrentDictionary<STRING, XSharpModel.AssemblyInfo>
-		STATIC PRIVATE _mscorlib 	AS AssemblyInfo
+		STATIC PRIVATE assemblies  AS ConcurrentDictionary<STRING, XAssembly>
+		STATIC PRIVATE _mscorlib 	AS XAssembly
 		#endregion
-
+		
 		STATIC CONSTRUCTOR
-			assemblies := ConcurrentDictionary<STRING, AssemblyInfo>{StringComparer.OrdinalIgnoreCase}
+			assemblies := ConcurrentDictionary<STRING, XAssembly>{StringComparer.OrdinalIgnoreCase}
 			_mscorlib := NULL
 			RETURN
-
-		#region properties
-		// Properties
-		STATIC PROPERTY AssemblyFileNames AS ImmutableList<STRING>
-			GET
-				RETURN SystemTypeController.assemblies:Keys:ToImmutableList()
-			END GET
-		END PROPERTY
-		STATIC PROPERTY MsCorLib AS AssemblyInfo GET _mscorlib SET _mscorlib := VALUE
+			
+			#region properties
+			// Properties
+			STATIC PROPERTY AssemblyFileNames AS IList<STRING>
+				GET
+					RETURN SystemTypeController.assemblies:Keys:ToArray()
+				END GET
+			END PROPERTY
+			STATIC PROPERTY mscorlib AS XAssembly GET _mscorlib SET _mscorlib := VALUE
 		#endregion
-
+		
 		// Methods
 		STATIC METHOD Clear() AS VOID
 			assemblies:Clear()
 			_mscorlib := NULL
-
+         GC.Collect()
+		
 		STATIC METHOD FindAssemblyByLocation(location AS STRING) AS STRING
 			IF assemblies:ContainsKey(location)
 				RETURN assemblies:Item[location]:FullName
 			ENDIF
 			RETURN NULL
+
+		STATIC METHOD FindAssembly(fullName AS STRING) AS XAssembly
+			FOREACH VAR item IN assemblies
+				VAR asm := item:Value
+				IF String.Compare(asm:FullName, fullName, StringComparison.OrdinalIgnoreCase) == 0
+					RETURN asm
+				ENDIF
+			NEXT
+			RETURN NULL
+
 
 		STATIC METHOD FindAssemblyByName(fullName AS STRING) AS STRING
 			FOREACH VAR item IN assemblies
@@ -53,9 +67,9 @@ BEGIN NAMESPACE XSharpModel
 				ENDIF
 			NEXT
 			RETURN NULL
-
+		
 		STATIC METHOD FindAssemblyLocation(fullName AS STRING) AS STRING
-			LOCAL info AS AssemblyInfo
+			LOCAL info AS XAssembly
 			FOREACH VAR pair IN assemblies
 				info := pair:Value
 				IF ! String.IsNullOrEmpty(info:FullName) .AND. (String.Compare(info:FullName, fullName, System.StringComparison.OrdinalIgnoreCase) == 0)
@@ -63,11 +77,29 @@ BEGIN NAMESPACE XSharpModel
 				ENDIF
 			NEXT
 			RETURN NULL
+		
+      STATIC METHOD FindType(typeName as STRING, assemblyName as STRING) AS XTypeReference
+         VAR assemblies := List<XAssembly>{}
+         var asm := FindAssembly(assemblyName)
+         IF asm != null
+            assemblies:Add(asm)
+            FOREACH var name in asm:ReferencedAssemblies
+               var asm2 := FindAssembly(name)
+               if asm2 != null
+                  assemblies:Add(asm2)
+               endif
+            NEXT
+         ENDIF
+         IF assemblies:Count > 0
+            RETURN FindType(typeName, List<String>{}, assemblies)
+         ENDIF
+         return NULL
 
-		METHOD FindType(typeName AS STRING, usings AS IList<STRING>, assemblies AS IList<AssemblyInfo>) AS System.Type
-			LOCAL result := NULL AS System.Type
+
+		STATIC METHOD FindType(typeName AS STRING, usings AS IList<STRING>, assemblies AS IList<XAssembly>) AS XTypeReference
+			LOCAL result := NULL AS XTypeReference
 			TRY
-				WriteOutputMessage("--> FindType() "+typename)
+				WriteOutputMessage("--> FindType() "+typeName)
 				IF typeName:EndsWith(">") .AND.  typeName:Contains("<") .AND. typeName:Length > 2
 					IF typeName:Length <= (typeName:Replace(">", ""):Length + 1)
 						VAR elements := typeName:Split("<,>":ToCharArray(), System.StringSplitOptions.RemoveEmptyEntries)
@@ -104,7 +136,7 @@ BEGIN NAMESPACE XSharpModel
 					FOREACH VAR asm IN assemblies
 						IF asm:ImplicitNamespaces != NULL
 							FOREACH strNs AS STRING IN asm:ImplicitNamespaces
-								VAR fullname := strNs + "." + typeName
+								VAR fullName := strNs + "." + typeName
 								result := Lookup(fullName, assemblies)
 								IF result != NULL
 									RETURN result
@@ -115,107 +147,111 @@ BEGIN NAMESPACE XSharpModel
 				ENDIF
 				// Also Check into the Functions Class for Globals/Defines/...
 				result := Lookup("Functions." + typeName, assemblies)
-            CATCH e AS Exception
-                XSolution.WriteException(e)
-                result := NULL
+			CATCH e AS Exception
+				XSolution.WriteException(e)
+				result := NULL
 			FINALLY
-				WriteOutputMessage("<-- FindType() "+typename+" " + IIF(result != NULL, result:FullName, "* not found *"))
+				WriteOutputMessage("<-- FindType() "+typeName+" " + IIF(result != NULL, result:FullName, "* not found *"))
 			END TRY
 			RETURN result
-
-		METHOD GetNamespaces(assemblies AS IList<AssemblyInfo>) AS ImmutableList<STRING>
+			
+		STATIC METHOD GetNamespaces(assemblies AS IList<XAssembly>) AS IList<STRING>
 			VAR list := List<STRING>{}
 			FOREACH VAR info IN assemblies
 				FOREACH str AS STRING IN info:Namespaces
 					list:AddUnique( str)
 				NEXT
 			NEXT
-			RETURN list:ToImmutableList()
-
-		STATIC METHOD LoadAssembly(cFileName AS STRING) AS AssemblyInfo
-			LOCAL info AS AssemblyInfo
+			RETURN list:AsReadOnly()
+			
+		STATIC METHOD LoadAssembly(cFileName AS STRING) AS XAssembly
+			LOCAL info AS XAssembly
 			LOCAL lastWriteTime AS System.DateTime
 			LOCAL key AS STRING
 			//
-			WriteOutputMessage("<<-- LoadAssembly(string) "+cFileName)
+			//WriteOutputMessage("<<-- LoadAssembly(string) "+cFileName)
 			lastWriteTime := File.GetLastWriteTime(cFileName)
 			IF assemblies:ContainsKey(cFileName)
 				info := assemblies:Item[cFileName]
-				WriteOutputMessage("     ... assembly "+cFileName+" found in cache")
+				//WriteOutputMessage("     ... assembly "+cFileName+" found in cache")
 			ELSE
-				info := AssemblyInfo{cFileName, System.DateTime.MinValue}
+				info := XAssembly{cFileName, System.DateTime.MinValue}
 				assemblies:TryAdd(cFileName, info)
 			ENDIF
 			IF cFileName:EndsWith("mscorlib.dll", System.StringComparison.OrdinalIgnoreCase)
-				mscorlib := AssemblyInfo{cFileName, System.DateTime.MinValue}
+				mscorlib := XAssembly{cFileName, System.DateTime.MinValue}
 			ENDIF
 			IF Path.GetFileName(cFileName):ToLower() == "system.dll"
 				key := Path.Combine(Path.GetDirectoryName(cFileName), "mscorlib.dll")
 				IF ! assemblies:ContainsKey(key) .AND. File.Exists(key)
-					WriteOutputMessage("LoadAssembly() load mscorlib from same location as system.DLL")
+					//WriteOutputMessage("LoadAssembly() load mscorlib from same location as system.DLL")
 					LoadAssembly(key)
 				ENDIF
 			ENDIF
-			WriteOutputMessage(">>-- LoadAssembly(string) "+cFileName)
+			//WriteOutputMessage(">>-- LoadAssembly(string) "+cFileName)
 			RETURN info
-
-		STATIC METHOD LoadAssembly(reference AS VsLangProj.Reference) AS AssemblyInfo
-			LOCAL path AS STRING
-			path := reference:Path
-			WriteOutputMessage("<<-- LoadAssembly(VsLangProj.Reference)")
-			IF String.IsNullOrEmpty(path)
-				RETURN AssemblyInfo{reference}
-			ENDIF
-			VAR asm := LoadAssembly(path)
-			WriteOutputMessage(">>-- LoadAssembly(VsLangProj.Reference)")
-			RETURN asm
-
-		STATIC METHOD Lookup(typeName AS STRING, theirassemblies AS IList<AssemblyInfo>) AS System.Type
-			LOCAL sType AS System.Type
-			sType := NULL
+		
+		
+		STATIC METHOD Lookup(typeName AS STRING, theirassemblies AS IList<XAssembly>) AS XTypeReference
 			FOREACH VAR assembly IN theirassemblies
 				assembly:Refresh()
-				IF assembly:Types:TryGetValue(typeName, OUT sType) .AND. sType != NULL
-					EXIT
-				ENDIF
-				sType := assembly:GetType(typeName)
-				IF sType != NULL
-					EXIT
+ 				VAR type := assembly:GetType(typeName)
+				IF type != NULL
+               RETURN type
 				ENDIF
 			NEXT
-			IF sType == NULL .AND. mscorlib != NULL
-                // check mscorlib
-				sType := mscorlib:GetType(typeName)
-			ENDIF
-			RETURN sType
-
+			IF mscorlib != NULL
+				// check mscorlib
+				RETURN mscorlib:GetType(typeName)
+         ENDIF
+         RETURN NULL
+         
 		STATIC METHOD RemoveAssembly(cFileName AS STRING) AS VOID
-			LOCAL info AS AssemblyInfo
+			LOCAL info AS XAssembly
 			IF assemblies:ContainsKey(cFileName)
 				assemblies:TryRemove(cFileName, OUT info)
 			ENDIF
-
+		
 		STATIC METHOD UnloadUnusedAssemblies() AS VOID
 			LOCAL unused AS List<STRING>
 			unused := List<STRING>{}
-            // collect list of assemblies which are no longer in use
+			// collect list of assemblies which are no longer in use
 			FOREACH VAR asm IN assemblies
 				IF ! asm:Value:HasProjects
 					unused:Add(asm:Key)
 				ENDIF
 			NEXT
 			FOREACH key AS STRING IN unused
-				LOCAL info AS AssemblyInfo
+				LOCAL info AS XAssembly
 				assemblies:TryRemove(key, OUT info)
 			NEXT
-            // when no assemblies left, then unload mscorlib
+			// when no assemblies left, then unload mscorlib
 			IF assemblies:Count == 0
 				mscorlib := NULL
 			ENDIF
 			GC.Collect()
+		
 		STATIC METHOD WriteOutputMessage(message AS STRING) AS VOID
 			XSolution.WriteOutputMessage("XModel.Typecontroller "+message)
-	END CLASS
+		
+		STATIC METHOD LookForExtensions(typeName AS STRING, theirassemblies AS IList<XAssembly>) AS IList<IXMember>
+			// First Search for a system Type
+         VAR pos := typeName:IndexOf('<')
+         IF pos > 0
+            typeName := typeName:Substring(0, pos)+"<>"
 
+         ENDIF
+         VAR result := List<IXMember>{} 
+			FOREACH VAR assembly IN theirassemblies
+				assembly:Refresh()
+				IF assembly:HasExtensions
+               VAR ext := assembly:FindExtensionMethodsForType(typeName)
+               result:AddRange(ext)
+				ENDIF
+			NEXT
+			RETURN result
+		
+	END CLASS
+	
 END NAMESPACE
 

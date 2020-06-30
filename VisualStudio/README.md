@@ -8,7 +8,7 @@ Some of this source has been altered to handle:
 
 We also looked at and were inspired by the Visual Studio integration from:
 - the Nemerle Project
-- Python Toolk for VS
+- Python Tools for VS
 - NodeJs
 - The VS Integration for WIX (Votive)
 - VFPX and others.

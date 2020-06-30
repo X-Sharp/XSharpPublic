@@ -44,7 +44,7 @@
     <XSharpProjectExtensionsPath>$(MSBuildExtensionsPath)\XSharp\</XSharpProjectExtensionsPath>
     <StartupObject />
     <ApplicationIcon />
-    <XSharpProjectversion>2.4.0.0</XSharpProjectversion>
+    <XSharpProjectversion>2.5.0.0</XSharpProjectversion>
     <Includepaths>$(Solutiondir)common</Includepaths>
     <Nostandarddefs>false</Nostandarddefs>
     <IntermediateOutputPath>$(SolutionDir)Binaries\obj\$(Configuration)\$(ProjectName)\</IntermediateOutputPath>

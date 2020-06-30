@@ -159,11 +159,11 @@ namespace XSharp.Project
 
             // Parse the contents of the file and see if we have a windows form or a windows control
             XSharpProjectNode projectNode = ProjectMgr as XSharpProjectNode;
-            XSharpModel.XFile xfile = projectNode.ProjectModel.FindFullPath(this.Url);
+            XSharpModel.XFile xfile = projectNode.ProjectModel.FindXFile(this.Url);
             if (xfile == null)
             {
                 projectNode.ProjectModel.AddFile(this.Url);
-                xfile = projectNode.ProjectModel.FindFullPath(this.Url);
+                xfile = projectNode.ProjectModel.FindXFile(this.Url);
             }
             if (xfile != null)
             {
@@ -200,10 +200,10 @@ namespace XSharp.Project
                                 while (type.BaseType != null)
                                 {
                                     var bt = type.BaseType;
-                                    SubType = typeNameToSubtype(bt.Name);
+                                    SubType = typeNameToSubtype(bt);
                                     if (!String.IsNullOrEmpty(SubType))
                                         break;
-                                    type = bt;
+                                    type = mgr.ResolveType(SubType, usings); ;
                                 }
                             }
                             else
@@ -235,6 +235,7 @@ namespace XSharp.Project
             }
             return;
         }
+
 
         public void UpdateHasDesigner()
         {

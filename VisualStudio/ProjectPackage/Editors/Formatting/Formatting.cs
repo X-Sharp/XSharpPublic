@@ -284,10 +284,10 @@ namespace XSharp.Project
                 }
             }
         }
-
+  
         private void FormatDocument()
         {
-            XSharpProjectPackage.Instance.DisplayOutPutMessage("CommandFilter.FormatDocument() -->>");
+            WriteOutputMessage("CommandFilter.FormatDocument() -->>");
             if (!_buffer.CheckEditAccess())
             {
                 // can't edit !
@@ -447,13 +447,13 @@ namespace XSharp.Project
                     ts.Hours, ts.Minutes, ts.Seconds,
                     ts.Milliseconds / 10);
                 //
-                XSharpProjectPackage.Instance.DisplayOutPutMessage("FormatDocument : Done in " + elapsedTime);
+                WriteOutputMessage("FormatDocument : Done in " + elapsedTime);
 #endif
             }
             else
                 formatCaseForWholeBuffer();
             //
-            XSharpProjectPackage.Instance.DisplayOutPutMessage("CommandFilter.FormatDocument() <<--");
+            WriteOutputMessage("CommandFilter.FormatDocument() <<--");
         }
 
         /// <summary>
@@ -1196,7 +1196,7 @@ namespace XSharp.Project
         /// <returns></returns>
         private int getDesiredIndentation(ITextSnapshotLine line, ITextEdit editSession, bool alignOnPrev)
         {
-            XSharpProjectPackage.Instance.DisplayOutPutMessage($"CommandFilter.getDesiredIndentation({line.LineNumber + 1})");
+            WriteOutputMessage($"CommandFilter.getDesiredIndentation({line.LineNumber + 1})");
             try
             {
                 //
@@ -1260,7 +1260,7 @@ namespace XSharp.Project
                                 }
                                 catch (Exception ex)
                                 {
-                                    XSharpProjectPackage.Instance.DisplayOutPutMessage("Indentation of previous line failed");
+                                    WriteOutputMessage("Indentation of previous line failed");
                                     XSharpProjectPackage.Instance.DisplayException(ex);
                                 }
                             }
@@ -1313,7 +1313,7 @@ namespace XSharp.Project
                                 }
                                 catch (Exception ex)
                                 {
-                                    XSharpProjectPackage.Instance.DisplayOutPutMessage("Error indenting of current line ");
+                                    WriteOutputMessage("Error indenting of current line ");
                                     XSharpProjectPackage.Instance.DisplayException(ex);
                                 }
                             }
@@ -1329,7 +1329,7 @@ namespace XSharp.Project
             }
             catch (Exception ex)
             {
-                XSharpProjectPackage.Instance.DisplayOutPutMessage("SmartIndent.GetDesiredIndentation failed: ");
+                WriteOutputMessage("SmartIndent.GetDesiredIndentation failed: ");
                 XSharpProjectPackage.Instance.DisplayException(ex);
             }
             return _lastIndentValue;
@@ -1820,7 +1820,7 @@ namespace XSharp.Project
 
         private void FormatDocumentV2()
         {
-            XSharpProjectPackage.Instance.DisplayOutPutMessage("CommandFilter.FormatDocumentV2() -->>");
+            WriteOutputMessage("CommandFilter.FormatDocumentV2() -->>");
             if (!_buffer.CheckEditAccess())
             {
                 // can't edit !
@@ -1837,6 +1837,31 @@ namespace XSharp.Project
                 System.Diagnostics.Stopwatch stopWatch = new System.Diagnostics.Stopwatch();
                 stopWatch.Start();
 #endif
+                //
+                FormattingContext context = null;
+                // Already been lexed ?
+                if (_buffer.Properties != null && _buffer.Properties.ContainsProperty(typeof(XSharpTokens)))
+                {
+                    XSharpTokens xTokens = null;
+                    xTokens = _buffer.Properties.GetProperty<XSharpTokens>(typeof(XSharpTokens));
+                    if (!(xTokens == null || xTokens.TokenStream == null || xTokens.SnapShot == null))
+                    {
+                        var tokens = xTokens.TokenStream.GetTokens();
+                        // Ok, we have some tokens
+                        if (tokens != null)
+                        {
+                            // And they are the right ones
+                            if (xTokens.SnapShot.Version == _buffer.CurrentSnapshot.Version)
+                            {
+                                // Ok, use it
+                                context = new FormattingContext(tokens, this.ParseOptions.Dialect);
+                            }
+                        }
+                    }
+                }
+                // No Tokens....Ok, do the lexing now
+                if (context == null)
+                    context = new FormattingContext(this, _buffer.CurrentSnapshot);
                 //
                 #region Get and Sort Regions
                 ITextSnapshot snapshot = _classifier.Snapshot;
@@ -1860,6 +1885,16 @@ namespace XSharp.Project
                         int startTokenType = -1;
                         if (tag is XsClassificationSpan)
                             startTokenType = (tag as XsClassificationSpan).startTokenType;
+                        if ( startTokenType == -1 )
+                        {
+                            // Ok, we miss the info during the parsing, but, we will try to get it here
+                            context.MoveTo(tag.Span.Start);
+                            IToken openKeyword = context.GetFirstToken(true);
+                            if (openKeyword != null)
+                            {
+                                startTokenType = openKeyword.Type;
+                            }
+                        }
                         regionStarts.Push(new RegionTag(tag.Span.Span, startTokenType));
                     }
                     else if (tag.ClassificationType.IsOfType(ColorizerConstants.XSharpRegionStopFormat))
@@ -1887,31 +1922,9 @@ namespace XSharp.Project
                 var editSession = _buffer.CreateEdit();
                 try
                 {
-                    FormattingContext context = null;
-                    // Already been lexed ?
-                    if (_buffer.Properties != null && _buffer.Properties.ContainsProperty(typeof(XSharpTokens)))
-                    {
-                        XSharpTokens xTokens = null;
-                        xTokens = _buffer.Properties.GetProperty<XSharpTokens>(typeof(XSharpTokens));
-                        if (!(xTokens == null || xTokens.TokenStream == null || xTokens.SnapShot == null))
-                        {
-                            var tokens = xTokens.TokenStream.GetTokens();
-                            // Ok, we have some tokens
-                            if (tokens != null)
-                            {
-                                // And they are the right ones
-                                if (xTokens.SnapShot.Version == _buffer.CurrentSnapshot.Version)
-                                {
-                                    // Ok, use it
-                                    context = new FormattingContext(tokens, this.ParseOptions.Dialect);
-                                }
-                            }
-                        }
-                    }
-                    // No Tokens....Ok, do the lexing now
-                    if (context == null)
-                        context = new FormattingContext(this, _buffer.CurrentSnapshot);
-                    //
+                    
+
+
                     var lines = _buffer.CurrentSnapshot.Lines;
                     int indentSize = 0;
                     bool inComment = false;
@@ -2007,13 +2020,13 @@ namespace XSharp.Project
                     ts.Hours, ts.Minutes, ts.Seconds,
                     ts.Milliseconds / 10);
                 //
-                XSharpProjectPackage.Instance.DisplayOutPutMessage("FormatDocument : Done in " + elapsedTime);
+                WriteOutputMessage("FormatDocument : Done in " + elapsedTime);
 #endif
             }
             else
                 formatCaseForWholeBuffer();
             //
-            XSharpProjectPackage.Instance.DisplayOutPutMessage("CommandFilter.FormatDocument() <<--");
+            WriteOutputMessage("CommandFilter.FormatDocument() <<--");
         }
 
         private int getLineLengthV2(ITextSnapshot snapshot, int start)
@@ -2098,7 +2111,7 @@ namespace XSharp.Project
                     IToken openKeyword = context.GetFirstToken(true);
                     if (openKeyword == null)
                     {
-                        XSharpProjectPackage.Instance.DisplayOutPutMessage("FormatDocument : Error when moving in Tokens");
+                        WriteOutputMessage("FormatDocument : Error when moving in Tokens");
                         continue; // This should never happen
                     }
                     startTokenType = openKeyword.Type;
@@ -2129,7 +2142,7 @@ namespace XSharp.Project
                                 IToken openKeyword = context.GetFirstToken(true);
                                 if (openKeyword == null)
                                 {
-                                    XSharpProjectPackage.Instance.DisplayOutPutMessage("FormatDocument : Error when moving in Tokens");
+                                    WriteOutputMessage("FormatDocument : Error when moving in Tokens");
                                     continue; // This should never happen
                                 }
                                 context.MoveBack();
@@ -2174,8 +2187,7 @@ namespace XSharp.Project
                     // Comment or Using region ?
                     switch (startTokenType)
                     {
-                        case XSharpLexer.ML_COMMENT:
-                        case XSharpLexer.SL_COMMENT:
+                        
                         case XSharpLexer.USING:
                         case XSharpLexer.PP_INCLUDE:
                         case XSharpLexer.PP_DEFINE:
@@ -2189,7 +2201,7 @@ namespace XSharp.Project
                                 IToken openKeyword = context.GetFirstToken(true);
                                 if (openKeyword == null)
                                 {
-                                    XSharpProjectPackage.Instance.DisplayOutPutMessage("FormatDocument : Error when moving in Tokens");
+                                    WriteOutputMessage("FormatDocument : Error when moving in Tokens");
                                     continue; // This should never happen
                                 }
                                 context.MoveBack();
@@ -2200,6 +2212,8 @@ namespace XSharp.Project
                                 continue;
                             break;
                         default:
+                            if (XSharpLexer.IsComment(startTokenType))
+                                continue;
                             break;
                     }
                     // We are between the opening Keyword and the closing Keyword
@@ -2312,7 +2326,7 @@ namespace XSharp.Project
             {
                 return;
             }
-            XSharpProjectPackage.Instance.DisplayOutPutMessage($"CommandFilter.formatLineCaseV2({line.LineNumber + 1})");
+            WriteOutputMessage($"CommandFilter.formatLineCaseV2({line.LineNumber + 1})");
             //
             context.MoveTo(line.Start);
             IToken token = context.GetToken(true);

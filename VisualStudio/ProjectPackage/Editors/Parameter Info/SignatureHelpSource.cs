@@ -1,25 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.ComponentModel.Composition;
-using System.Runtime.InteropServices;
 using Microsoft.VisualStudio.Language.Intellisense;
 using Microsoft.VisualStudio.Text;
-using Microsoft.VisualStudio.Text.Editor;
-using Microsoft.VisualStudio.Utilities;
-using Microsoft.VisualStudio.Editor;
-using Microsoft.VisualStudio.Text.Operations;
-using Microsoft.VisualStudio;
-using Microsoft.VisualStudio.TextManager.Interop;
-using Microsoft.VisualStudio.OLE.Interop;
 using System.Reflection;
-using System.Linq;
-using System.Diagnostics;
 using XSharpModel;
+using XSharp.Project.OptionsPages;
 
 namespace XSharp.Project
 {
-    internal class XSharpParameter : IParameter
+    internal class XSharpVsParameter : IParameter
     {
         public string Documentation { get; private set; }
         public Span Locus { get; private set; }
@@ -28,7 +18,7 @@ namespace XSharp.Project
         public Span PrettyPrintedLocus { get; private set; }
 
 
-        public XSharpParameter(string documentation, Span locus, string name, ISignature signature)
+        public XSharpVsParameter(string documentation, Span locus, string name, ISignature signature)
         {
             Documentation = documentation;
             Locus = locus;
@@ -36,9 +26,7 @@ namespace XSharp.Project
             Signature = signature;
         }
     }
-
-
-    internal class XSharpSignature : ISignature
+    internal class XSharpVsSignature : ISignature
     {
         private ITextBuffer m_subjectBuffer;
         private IParameter m_currentParameter;
@@ -48,7 +36,7 @@ namespace XSharp.Project
         private ReadOnlyCollection<IParameter> m_parameters;
         private string m_printContent;
 
-        internal XSharpSignature(ITextBuffer subjectBuffer, string content, string doc, ReadOnlyCollection<IParameter> parameters)
+        internal XSharpVsSignature(ITextBuffer subjectBuffer, string content, string doc, ReadOnlyCollection<IParameter> parameters)
         {
             m_subjectBuffer = subjectBuffer;
             m_content = content;
@@ -67,8 +55,64 @@ namespace XSharp.Project
             EventHandler<CurrentParameterChangedEventArgs> tempHandler = this.CurrentParameterChanged;
             if (tempHandler != null)
             {
-                tempHandler(this, new CurrentParameterChangedEventArgs(prevCurrentParameter, newCurrentParameter));
+               tempHandler(this, new CurrentParameterChangedEventArgs(prevCurrentParameter, newCurrentParameter));
             }
+        }
+
+        internal static int CalculateCommaPosition(string sigText, int lastPos)
+        {
+            int commaCount = 0;
+            bool instring = false;
+            char endchar = '\0';
+            int currentPos = 0;
+            foreach (char ch in sigText)
+            {
+                if (currentPos > lastPos)
+                {
+                    break;
+                }
+                currentPos += 1;
+                switch (ch)
+                {
+                    case '\'':
+                        if (!instring)
+                        {
+                            instring = true;
+                            endchar = ch;
+                            continue;
+                        }
+                        break;
+                    case '"':
+                        if (!instring)
+                        {
+                            instring = true;
+                            endchar = ch;
+                            continue;
+                        }
+                        break;
+                    case '[':
+                        if (!instring)
+                        {
+                            instring = true;
+                            endchar = ']';
+                            continue;
+                        }
+                        break;
+                    case ',':
+                        if (!instring)
+                        {
+                            commaCount++;
+                        }
+
+                        break;
+                }
+                if (ch == endchar)
+                {
+                    instring = false;
+                    continue;
+                }
+            }
+            return commaCount;
         }
 
         internal void ComputeCurrentParameter(int atPosition = -1 )
@@ -83,31 +127,12 @@ namespace XSharp.Project
             string sigText = ApplicableToSpan.GetText(m_subjectBuffer.CurrentSnapshot);
             if ( atPosition == -1 )
                 atPosition = sigText.Length;
+            var commaCount = CalculateCommaPosition(sigText, atPosition);
 
-            int currentIndex = 0;
-            int commaCount = 0;
-            int maxPos = Math.Min(atPosition, sigText.Length);
-            //if (comma)
-            //    commaCount += 1;
-            while (currentIndex < maxPos)
-            {
-                int commaIndex = sigText.IndexOf(',', currentIndex);
-                if ((commaIndex == -1) || (commaIndex>maxPos))
-                {
-                    break;
-                }
-                commaCount++;
-                currentIndex = commaIndex + 1;
-            }
 
             if (commaCount < Parameters.Count)
             {
                 this.CurrentParameter = Parameters[commaCount];
-            }
-            else
-            {
-                //too many commas, so use the last parameter as the current one.
-                //this.CurrentParameter = Parameters[Parameters.Count - 1];
             }
         }
 
@@ -173,17 +198,27 @@ namespace XSharp.Project
         private ITextBuffer m_textBuffer;
         private ISignatureHelpSession m_session;
         private ITrackingSpan m_applicableToSpan;
+        IntellisenseOptionsPage optionsPage = null;
+        XSharpProjectPackage package;
 
         public XSharpSignatureHelpSource(ITextBuffer textBuffer)
         {
             m_textBuffer = textBuffer;
+            package = XSharpProjectPackage.Instance;
+            optionsPage = package.GetIntellisenseOptionsPage();
         }
-
+        internal void Debug(string strMessage)
+        {
+            if (optionsPage.EnableParameterLog && optionsPage.EnableOutputPane)
+            {
+                XSharpProjectPackage.Instance.DisplayOutPutMessage(strMessage);
+            }
+        }
         public void AugmentSignatureHelpSession(ISignatureHelpSession session, IList<ISignature> signatures)
         {
             try
             {
-                XSharpProjectPackage.Instance.DisplayOutPutMessage("XSharpSignatureHelpSource.AugmentSignatureHelpSession()");
+                Debug("XSharpSignatureHelpSource.AugmentSignatureHelpSession()");
                 XSharpModel.ModelWalker.Suspend();
                 ITextSnapshot snapshot = m_textBuffer.CurrentSnapshot;
                 int position = session.GetTriggerPoint(m_textBuffer).GetPosition(snapshot);
@@ -196,22 +231,30 @@ namespace XSharp.Project
 
                 object elt = session.Properties["Element"];
                 m_session = session;
-                if (elt is XSharpModel.XElement)
+                if (elt is IXElement)
                 {
-                    XSharpModel.XElement element = elt as XSharpModel.XElement;
+                    IXMember element = elt as IXMember;
                     //
-                    if (elt is XSharpModel.XTypeMember)
+                    if (elt is IXMember)
                     {
-                        XSharpModel.XTypeMember xMember = elt as XSharpModel.XTypeMember;
-                        signatures.Add(CreateSignature(m_textBuffer, null, xMember.Prototype, "", ApplicableToSpan, comma, xMember.Kind == XSharpModel.Kind.Constructor, file));
-                        List<XSharpModel.XTypeMember> namesake = xMember.Namesake();
-                        foreach (var member in namesake)
+                        IXMember xMember = elt as IXMember;
+                        var names = new List<string>();
+                        var proto = xMember.Prototype;
+                        names.Add(proto);
+                        signatures.Add(CreateSignature(m_textBuffer, xMember, proto, "", ApplicableToSpan, comma, xMember.Kind == XSharpModel.Kind.Constructor, file));
+                        var overloads = xMember.GetOverloads();
+                        foreach (var member in overloads)
                         {
-                            signatures.Add(CreateSignature(m_textBuffer, null,member.Prototype, "", ApplicableToSpan, comma, member.Kind == XSharpModel.Kind.Constructor, file));
+                            // prevent duplicate prototypes in the list  (when a child has overriden a method)
+                            proto = member.Prototype;
+                            if (!names.Contains(proto))
+                            {
+                                signatures.Add(CreateSignature(m_textBuffer, member, proto, "", ApplicableToSpan, comma, member.Kind == XSharpModel.Kind.Constructor, file));
+                                names.Add(proto);
+                            }
                         }
-                        //
                     }
-                    else
+                    else if (element != null)
                     {
                         // Type ??
                         signatures.Add(CreateSignature(m_textBuffer, null, element.Prototype, "", ApplicableToSpan, comma, false, file));
@@ -228,25 +271,12 @@ namespace XSharp.Project
                     //
                     m_textBuffer.Changed += new EventHandler<TextContentChangedEventArgs>(OnSubjectBufferChanged);
                 }
-                else if (elt is System.Reflection.MemberInfo)
-                {
-                    System.Reflection.MemberInfo element = elt as System.Reflection.MemberInfo;
-                    XSharpLanguage.MemberAnalysis analysis = new XSharpLanguage.MemberAnalysis(element);
-                    if (analysis.IsInitialized)
-                    {
-                        signatures.Add(CreateSignature(m_textBuffer, element, analysis.Prototype, "", ApplicableToSpan, comma, (element.MemberType == MemberTypes.Constructor), file));
-                        // Any other member with the same name in the current Type and in the Parent(s) ?
-                        SystemNameSake(element.DeclaringType, signatures, element.Name, analysis.Prototype, comma,file);
-                        //
-                        m_textBuffer.Changed += new EventHandler<TextContentChangedEventArgs>(OnSubjectBufferChanged);
-                    }
-                }
                 session.Dismissed += OnSignatureHelpSessionDismiss;
             }
             catch (Exception ex)
             {
-                XSharpProjectPackage.Instance.DisplayOutPutMessage("XSharpSignatureHelpSource.AugmentSignatureHelpSession Exception failed " );
-                XSharpProjectPackage.Instance.DisplayException(ex);
+                package.DisplayOutPutMessage("XSharpSignatureHelpSource.AugmentSignatureHelpSession Exception failed " );
+                package.DisplayException(ex);
             }
             finally
             {
@@ -255,47 +285,20 @@ namespace XSharp.Project
         }
 
 
-        private void SystemNameSake(System.Type sType, IList<ISignature> signatures, String elementName, String elementPrototype, bool comma, XFile file)
-        {
-            XSharpProjectPackage.Instance.DisplayOutPutMessage("XSharpSignatureHelpSource.SystemNameSake()");
-            MemberInfo[] members;
-            // Get Public, Internal, Protected & Private Members, we also get Instance vars, Static members...all that WITHOUT inheritance
-            members = sType.GetMembers(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance
-                | BindingFlags.Static | BindingFlags.DeclaredOnly);
-            //
-            bool ctor = false;
-            foreach (var member in members.Where(x => nameEquals(x.Name, elementName)))
-            {
-                if (member.MemberType == MemberTypes.Constructor)
-                    ctor = true;
-                XSharpLanguage.MemberAnalysis analysis = new XSharpLanguage.MemberAnalysis(member);
-                if (analysis.IsInitialized)
-                {
-                    // But don't add the current one
-                    if (String.Compare(elementPrototype, analysis.Prototype, true) != 0)
-                    {
-                        signatures.Add(CreateSignature(m_textBuffer, member, analysis.Prototype, "", ApplicableToSpan, comma, ctor,file ));
-                    }
-                }
-            }
-            // fill members of parent class,but not for constructorsS
-            if (sType.BaseType != null && !ctor)
-            {
-                SystemNameSake(sType.BaseType, signatures, elementName, elementPrototype, comma,file);
-            }
-        }
+ 
 
-
-        private XSharpSignature CreateSignature(ITextBuffer textBuffer, MemberInfo member, string methodSig, string methodDoc, ITrackingSpan span, bool comma, bool isCtor, XFile file )
+        private XSharpVsSignature CreateSignature(ITextBuffer textBuffer, IXMember member, string methodSig, string methodDoc, ITrackingSpan span, bool comma, bool isCtor, XFile file )
         {
             var doc = methodDoc;
+            string returns;
+            string remarks;
             if (member != null)
             {
-                doc = XSharpXMLDocMember.GetMemberSummary(member, file.Project);
+                doc = XSharpXMLDocMember.GetMemberSummary(member, file.Project, out returns, out remarks);
             }
 
-            XSharpProjectPackage.Instance.DisplayOutPutMessage("XSharpSignatureHelpSource.CreateSignature()");
-            XSharpSignature sig = new XSharpSignature(textBuffer, methodSig, doc, null);
+            Debug("XSharpSignatureHelpSource.CreateSignature()");
+            var sig = new XSharpVsSignature(textBuffer, methodSig, doc, null);
             var names = new List<String>();
             var descriptions = new List<String>();
             if (member != null)
@@ -339,7 +342,7 @@ namespace XSharp.Project
                     // paramList.Add(new XSharpParameter("Documentation for the parameter.", locus, param, sig));
                     if (!string.IsNullOrEmpty(names[i - 1]))
                         param = names[i - 1];
-                    paramList.Add(new XSharpParameter(descriptions[i-1], locus, param, sig));
+                    paramList.Add(new XSharpVsParameter(descriptions[i-1], locus, param, sig));
                 }
             }
 
@@ -391,7 +394,6 @@ namespace XSharp.Project
 
         internal void OnSubjectBufferChanged(object sender, TextContentChangedEventArgs e)
         {
-            //
             this.ComputeCurrentParameter();
         }
 
@@ -400,18 +402,8 @@ namespace XSharp.Project
             //the number of commas in the string is the index of the current parameter
             string sigText = ApplicableToSpan.GetText(m_textBuffer.CurrentSnapshot);
 
-            int currentIndex = 0;
-            int commaCount = 0;
-            while (currentIndex < sigText.Length)
-            {
-                int commaIndex = sigText.IndexOf(',', currentIndex);
-                if (commaIndex == -1)
-                {
-                    break;
-                }
-                commaCount++;
-                currentIndex = commaIndex + 1;
-            }
+            var commaCount = XSharpVsSignature.CalculateCommaPosition(sigText,sigText.Length);
+
             //
             List<ISignature> signatures = new List<ISignature>();
             foreach (ISignature sig in this.m_session.Signatures)
@@ -422,13 +414,13 @@ namespace XSharp.Project
             //
             if (signatures.Count == 0)
             {
-                XSharpSignature sig = this.m_session.SelectedSignature as XSharpSignature;
+                var sig = this.m_session.SelectedSignature as XSharpVsSignature;
                 sig.CurrentParameter = null;
             }
             else
             {
                 this.m_session.SelectedSignature = signatures[0];
-                XSharpSignature sig = this.m_session.SelectedSignature as XSharpSignature;
+                var sig = this.m_session.SelectedSignature as XSharpVsSignature;
                 sig.CurrentParameter = signatures[0].Parameters[commaCount];
             }
         }

@@ -138,6 +138,8 @@ FUNCTION ReadIni() AS VOID
 						cValue := cValue:ToUpper()
 						xPorter.ExportToXide := cValue:Contains("XIDE") .or. .not. cValue:Contains("VS")
 						xPorter.ExportToVS := cValue:Contains("VS") .or. .not. cValue:Contains("XIDE")
+					CASE "WEDXML"
+						xPorter.ExportWedToXml := cValue == "1"
 				END SWITCH
 			END IF
 		NEXT
@@ -277,6 +279,7 @@ CLASS xPorter
 	STATIC EXPORT NewKeywordsInXSharp AS Dictionary<STRING,STRING>
 
 	STATIC EXPORT ExportingSingleFile := FALSE AS LOGIC
+	STATIC EXPORT ExportWedToXml := FALSE AS LOGIC
 
 	STATIC PROPERTY OverWriteProjectFiles AS LOGIC AUTO
 	STATIC PROPERTY GenerateWinForms AS LOGIC AUTO
@@ -1187,6 +1190,18 @@ CLASS ApplicationDescriptor
 						ELSEIF oDesigner:Type == BINARY_DED
 //							MessageBox.Show(oDesigner:Name , "DBSERVER")
 							aDBServers:Add(cBinary, oDesigner:Bytes)
+						ELSEIF oDesigner:Type == BINARY_WED
+							IF xPorter.ExportWedToXml
+								BinaryEntity.SaveWindowToXml(cBinary, oDesigner:Bytes)
+							ELSE
+								File.WriteAllBytes(cBinary , oDesigner:Bytes)
+							END IF
+						ELSEIF oDesigner:Type == BINARY_MED
+							IF xPorter.ExportWedToXml
+								BinaryEntity.SaveMenuToXml(cBinary, oDesigner:Bytes)
+							ELSE
+								File.WriteAllBytes(cBinary , oDesigner:Bytes)
+							END IF
 						ELSE
 							// Necessary for both VS and XIDE, deleteded later if not needed anymore for VS
 							File.WriteAllBytes(cBinary , oDesigner:Bytes)
@@ -1195,9 +1210,11 @@ CLASS ApplicationDescriptor
 							TRY
 								DO CASE
 								CASE oDesigner:Type == BINARY_WED
-									VOWindowEditor.ProjectImportVNFrm(cPrg , cBinary)
+//									VOWindowEditor.ProjectImportVNFrm(cPrg , cBinary)
+									BinaryEntity.SaveWindowToWed(oDesigner:Bytes, cPrg , cBinary)
 								CASE oDesigner:Type == BINARY_MED
-									VOMenuEditor.ProjectImportVNMnu(cPrg , cBinary)
+//									VOMenuEditor.ProjectImportVNMnu(cPrg , cBinary)
+									BinaryEntity.SaveMenuToWed(oDesigner:Bytes, cPrg , cBinary)
 								CASE oDesigner:Type == BINARY_FED
 									File.WriteAllBytes(cBinary , oDesigner:Bytes)
 									aXideFieldSpecs:Add(cBinary)
@@ -1216,7 +1233,7 @@ CLASS ApplicationDescriptor
 								LOCAL cWF AS STRING
 								cWf := SELF:Project:WinFormsFolder + "\tmp\" + SELF:Name + "." + oDesigner:Name
 								SafeFileDelete(cWf + ".wed")
-								VOWindowEditor.ProjectImportVNFrm(cWf , cBinary)
+								BinaryEntity.SaveWindowToWed(oDesigner:Bytes, cWf , cBinary)
 							END IF
 						END IF
 						IF .not. xPorter.ExportToVS

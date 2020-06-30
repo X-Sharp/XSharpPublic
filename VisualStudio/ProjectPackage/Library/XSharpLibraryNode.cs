@@ -118,7 +118,7 @@ namespace XSharp.Project
         internal List<uint> filesId;
         //private TextSpan sourceSpan;
         private string fileMoniker;
-        private XElement member;
+        private XEntityDefinition member;
 
         internal XSharpLibraryNode(string namePrefix, LibraryNodeType nType)
             : base(namePrefix)
@@ -133,8 +133,8 @@ namespace XSharp.Project
         }
 
 
-        internal XSharpLibraryNode(XElement scope, string namePrefix, IVsHierarchy hierarchy, uint itemId)
-            : base(scope.Name)
+        internal XSharpLibraryNode(XEntityDefinition scope, string namePrefix, IVsHierarchy hierarchy, uint itemId)
+            : base(scope.FullName)
         {
             if (scope.Kind == Kind.Namespace)
             {
@@ -356,10 +356,10 @@ namespace XSharp.Project
             string className = "";
             if (member != null)
             {
-                if (member.Parent is XType)
+                if (member.Parent is XTypeDefinition)
                 {
-                    nameSp = ((XType)member.Parent).NameSpace;
-                    className = ((XType)member.Parent).Name;
+                    nameSp = ((XTypeDefinition)member.Parent).Namespace;
+                    className = ((XTypeDefinition)member.Parent).Name;
                 }
                 //
                 switch (tto)
@@ -375,9 +375,9 @@ namespace XSharp.Project
 
                     default:
                         descText = member.Name;
-                        if (member is XTypeMember)
+                        if (member is XMemberDefinition)
                         {
-                            var tm = member as XTypeMember;
+                            var tm = member as XMemberDefinition;
                             if (tm.Kind == Kind.Constructor)
                             {
                                 descText = "Constructor";
@@ -416,24 +416,24 @@ namespace XSharp.Project
             {
                 if (member.Parent != null)
                 {
-                    if (member.Parent is XType)
+                    if (member.Parent is IXType)
                     {
-                        namesp = ((XType)member.Parent).NameSpace;
-                        className = ((XType)member.Parent).Name;
+                        namesp = ((IXType)member.Parent).Namespace;
+                        className = ((IXType)member.Parent).Name;
                     }
                 }
                 //
                 string modifier = "";
                 string access = "";
-                if ((member is XType) && (member.Kind != Kind.Namespace))
+                if ((member is XTypeDefinition) && (member.Kind != Kind.Namespace))
                 {
-                    modifier = getModifierString(((XType)member).Modifiers);
-                    access = getAccessString(((XType)member).Visibility);
+                    modifier = getModifierString(((XTypeDefinition)member).Modifiers);
+                    access = getAccessString(((XTypeDefinition)member).Visibility);
                 }
-                else if ((member is XTypeMember) && ((member.Kind != Kind.Function) && (member.Kind != Kind.Procedure)))
+                else if ((member is XMemberDefinition) && ((member.Kind != Kind.Function) && (member.Kind != Kind.Procedure)))
                 {
-                    modifier = getModifierString(((XTypeMember)member).Modifiers);
-                    access = getAccessString(((XTypeMember)member).Visibility);
+                    modifier = getModifierString(((XMemberDefinition)member).Modifiers);
+                    access = getAccessString(((XMemberDefinition)member).Visibility);
                 }
                 //
                 if (!String.IsNullOrEmpty(modifier))
@@ -453,13 +453,13 @@ namespace XSharp.Project
                 // Parameters ?
                 if (this.NodeType == LibraryNodeType.Members)
                 {
-                    if (((XTypeMember)member).HasParameters)
+                    if (((XMemberDefinition)member).HasParameters)
                     {
                         descText = "(";
                         description.AddDescriptionText3(descText, VSOBDESCRIPTIONSECTION.OBDS_MISC, null);
                         //
                         int paramNum = 1;
-                        foreach (XVariable param in ((XTypeMember)member).Parameters)
+                        foreach (XVariable param in ((XMemberDefinition)member).Parameters)
                         {
                             descText = param.Name + " AS ";
                             description.AddDescriptionText3(descText, VSOBDESCRIPTIONSECTION.OBDS_PARAM, null);
@@ -469,7 +469,7 @@ namespace XSharp.Project
                             //
                             description.AddDescriptionText3(descText, VSOBDESCRIPTIONSECTION.OBDS_TYPE, navInfo);
                             // Need a comma ?
-                            if (paramNum < ((XTypeMember)member).ParameterCount)
+                            if (paramNum < ((XMemberDefinition)member).ParameterCount)
                             {
                                 paramNum++;
                                 descText = ",";
@@ -484,12 +484,12 @@ namespace XSharp.Project
                 {
                     descText = " AS ";
                     description.AddDescriptionText3(descText, VSOBDESCRIPTIONSECTION.OBDS_MISC, null);
-                    descText = ((XTypeMember)member).TypeName;
+                    descText = member.TypeName;
                     description.AddDescriptionText3(descText, VSOBDESCRIPTIONSECTION.OBDS_TYPE, null);
                 }
 
                 //
-                if ((member.Parent is XType) && (member.Parent.Kind == Kind.Class))
+                if ((member.Parent is XTypeDefinition) && (member.Parent.Kind == Kind.Class))
                 {
                     descText = " CLASS ";
                     description.AddDescriptionText3(descText, VSOBDESCRIPTIONSECTION.OBDS_MISC, null);
@@ -505,9 +505,7 @@ namespace XSharp.Project
         private IVsNavInfo buildNavInfo(XFile file, string typeName)
         {
             IVsNavInfo navInfo = null;
-            //
-            //= new XSharpNavInfo();
-            XSharpModel.CompletionType completion = new CompletionType(typeName, file, "");
+            CompletionType completion = new CompletionType(typeName, file, "");
             //
             //
             return navInfo;
@@ -587,7 +585,15 @@ namespace XSharp.Project
                                 return ((String.Compare(nd.Name, fqName) == 0) && ((nd.NodeType & LibraryNode.LibraryNodeType.Classes) != LibraryNode.LibraryNodeType.None));
                             }
                                     );
-            //
+            if (result == null)
+            {
+                foreach (XSharpLibraryNode child in children)
+                {
+                    result = child.SearchClass(fqName);
+                    if (result != null)
+                        break;
+                }
+            }
             return result;
         }
     }

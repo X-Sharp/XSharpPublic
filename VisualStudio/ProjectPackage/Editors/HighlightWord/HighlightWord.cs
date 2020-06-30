@@ -180,7 +180,7 @@ namespace XSharp.Project.Editors.HighlightWord
                     if (xFile != null)
                     {
                         // Now, retrieve the current member
-                        XSharpModel.XTypeMember member = XSharpTokenTools.FindMemberAtPosition(point.Position, xFile);
+                        XSharpModel.XMemberDefinition member = XSharpTokenTools.FindMemberAtPosition(point.Position, xFile);
                         if (member == null)
                             return;
                         // Ok, so we now have the "range" of the Member, and will only select text in THIS member
@@ -203,7 +203,7 @@ namespace XSharp.Project.Editors.HighlightWord
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine("HighlightWordTag Exception: " + ex.Message);
+                XSharpProjectPackage.Instance.DisplayOutPutMessage("HighlightWordTag Exception: " + ex.Message);
             }
         }
         static bool WordExtentIsValid(SnapshotPoint currentRequest, TextExtent word)

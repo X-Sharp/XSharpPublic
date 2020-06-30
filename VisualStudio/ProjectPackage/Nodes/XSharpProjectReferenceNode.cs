@@ -139,6 +139,7 @@ namespace XSharp.Project
                 if (projectNode != null)
                     projectNode.RemoveURL(this);
             }
+            ProjectMgr = null;
             base.Dispose(disposing);
         }
         #endregion

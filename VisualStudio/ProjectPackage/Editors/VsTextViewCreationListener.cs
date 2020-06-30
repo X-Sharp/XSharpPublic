@@ -7,17 +7,14 @@ using System;
 using System.ComponentModel.Composition;
 using System.Diagnostics;
 using Microsoft.VisualStudio.OLE.Interop;
-using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Text.Editor;
 using Microsoft.VisualStudio.TextManager.Interop;
 using Microsoft.VisualStudio.Utilities;
-using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Package;
 using System.Runtime.InteropServices;
 using Microsoft.VisualStudio.Editor;
 using Microsoft.VisualStudio.Language.Intellisense;
 using Microsoft.VisualStudio.Text.Operations;
-using Microsoft.VisualStudio.Text.Classification;
 using Microsoft.VisualStudio.Text.Tagging;
 using Microsoft.VisualStudio.Shell.Interop;
 using Microsoft;
@@ -94,6 +91,7 @@ namespace XSharp.Project
                         if (file != null)
                         {
                             textView.TextBuffer.Properties.AddProperty(typeof(XSharpModel.XFile), file);
+                            file.Interactive = true;
                         }
                     }
                     CommandFilter filter = new CommandFilter(textView, CompletionBroker, NavigatorService.GetTextStructureNavigator(textView.TextBuffer), SignatureHelpBroker, aggregator, this );

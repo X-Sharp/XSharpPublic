@@ -5,5 +5,6 @@
     <BaseOutputPath>$(SolutionDir)Binaries</BaseOutputPath>
     <IntermediateOutputPath>$(BaseOutputPath)\Obj\$(Configuration)\$(MSBuildProjectName)\</IntermediateOutputPath>
     <OutputPath>$(SHFBRoot)</OutputPath>
+    <SHFBPD>$(ProgramData)\EWSoftware\Sandcastle Help File Builder\Components and Plug-Ins\</SHFBPD>
   </PropertyGroup>
 </Project>

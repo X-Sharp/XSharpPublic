@@ -9,8 +9,8 @@ USING Xunit.Abstractions
 USING LanguageService.SyntaxTree
 
 
-FUNCTION Parse2( tokens AS ITokenStream, output AS ITestOutputHelper) AS VOID
-	VAR parse := Parserv2{ }
-	parse:Parse( tokens, TRUE )
-	
-	RETURN	
+//FUNCTION Parse2( tokens AS ITokenStream, output AS ITestOutputHelper) AS VOID
+//	VAR parse := Parserv2{ }
+//	parse:Parse( tokens, TRUE ,TRUE)
+//	
+//	RETURN	

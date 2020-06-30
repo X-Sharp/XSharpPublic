@@ -15,9 +15,6 @@ using Microsoft.VisualStudio.Shell.Interop;
 using Microsoft.VisualStudio.TextManager.Interop;
 
 using IOleServiceProvider = Microsoft.VisualStudio.OLE.Interop.IServiceProvider;
-
-using System.ComponentModel.Design;
-using System.Diagnostics;
 using Microsoft.VisualStudio.Project;
 
 namespace XSharp.Project

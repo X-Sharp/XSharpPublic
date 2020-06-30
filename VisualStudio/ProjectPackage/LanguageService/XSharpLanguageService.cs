@@ -197,7 +197,7 @@ namespace XSharp.LanguageService
             return VSConstants.E_FAIL;
         }
 
-        private XFile getFile(IVsTextBuffer pBuffer)
+        public XFile getFile(IVsTextBuffer pBuffer)
         {
             var buffer = _editorAdaptersFactoryService.GetDataBuffer(pBuffer);
             XFile file;
@@ -240,18 +240,18 @@ namespace XSharp.LanguageService
                 Dictionary<string, XVariable> locals = null;
                 if (member != null)
                 {
-                    if (member is XTypeMember)
+                    if (member is XMemberDefinition)
                     {
                         locals = new Dictionary<string, XVariable>(StringComparer.OrdinalIgnoreCase);
-                        var tm = member as XTypeMember;
+                        var tm = member as XMemberDefinition;
                         var vars = tm.GetLocals(buffer.CurrentSnapshot, iLine, file.Project.ParseOptions.Dialect);
                         foreach (var v in vars)
                         {
-                            locals.Add(v.Name, v);
+                            locals.Add(v.Name, (XVariable) v);
                         }
                         foreach (var p in tm.Parameters)
                         {
-                            locals.Add(p.Name, p);
+                            locals.Add(p.Name, (XVariable)p);
                         }
                     }
                     addtokens(buffer, iLine , list, file, locals);

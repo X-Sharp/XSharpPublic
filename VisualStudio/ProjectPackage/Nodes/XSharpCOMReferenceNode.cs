@@ -49,6 +49,18 @@ namespace XSharp.Project
       {
          BindReferenceData();
        }
+        protected override void Dispose(bool disposing)
+        {
+            if (this.ProjectMgr is XSharpProjectNode)
+            {
+                XSharpProjectNode projectNode = (XSharpProjectNode)this.ProjectMgr;
+                if (projectNode != null)
+                    projectNode.RemoveURL(this);
+                ProjectMgr = null;
+
+            }
+            base.Dispose(disposing);
+        }
 
         public override int ImageIndex
         {
@@ -243,7 +255,7 @@ namespace XSharp.Project
                     {
                         string path = base.Path;
                         tryLoad = true;
-                        assembly = XSharpModel.AssemblyInfo.LoadAssemblyFromFile(path);
+                        //assembly = XSharpModel.AssemblyInfo.LoadAssemblyFromFile(path);
                         assemblyPath = path;
                     }
                     catch (Exception)

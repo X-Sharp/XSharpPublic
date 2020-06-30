@@ -330,11 +330,17 @@ BEGIN NAMESPACE XSharp.RDD
                     ENDIF
                     
                 CASE DBOI_USER + 42
+                CASE DBOI_DUMP
                     // Dump Cdx to Txt file
                     IF workOrder != NULL
                         workOrder:_dump()
                     ENDIF
                     
+                CASE DBOI_VALIDATE
+                    // Validate integrity of the current Order
+                    IF workOrder != NULL
+                        info:Result := workOrder:_validate()
+                    ENDIF
                 OTHERWISE
                     SUPER:OrderInfo(nOrdinal, info)
                 END SWITCH
@@ -348,14 +354,14 @@ BEGIN NAMESPACE XSharp.RDD
                 // Save the current context
                 LOCAL currentRelation := SELF:_RelInfoPending AS DbRelInfo
                 SELF:_RelInfoPending := NULL
-                VAR oParent := (DBF) currentRelation:Parent 
-                IF oParent:_EoF
+                VAR oParent := (DBFCDX) currentRelation:Parent 
+                IF oParent:EoF
                     //
                     isOk := SELF:GoTo( 0 )
                 ELSE
                     isOk := SELF:RelEval( currentRelation )
                     
-                    IF isOk .AND. !((DBF)currentRelation:Parent):_EoF
+                    IF isOk .AND. !((DBFCDX)currentRelation:Parent):EoF
                         TRY
                             LOCAL seekInfo AS DbSeekInfo
                             seekInfo := DbSeekInfo{}

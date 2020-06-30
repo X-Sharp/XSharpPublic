@@ -7,7 +7,7 @@ x Accelerator.prg
 + AnimationControl.prg			Is now a Label without animation
 + Application Window.prg		Todo: Dispatcher for Help
 x Application.prg				Clean up
-x BaseListBox.prg
+x BaseListBox.prg  
 x Bitmap.prg
 x BoundingBox.prg
 x Brush.prg						Colors only
@@ -17,13 +17,13 @@ x CheckBox.prg
 x ChildAppWindow.prg			
 x ClipBoard.prg
 x Color.prg
-+ ComboBox.prg					Access to Edit Control, ComboBoxEx, Combobox Events
-+ Control.prg					ToolTips, Theme, EnsureVisible
+x ComboBox.prg					Access to Edit Control, ComboBoxEx, Combobox Events
+x Control.prg					ToolTips, Theme, EnsureVisible
 + Cursor.prg					Cursor from Bitmap not implemented yet
 x CustomControl.prg
 x DataBrowser.prg
 x DataDialog.prg
-  DataListView.prg				// Is this used by Gruen ?
+  DataListView.prg				
 + DataWindow.prg				Todo: Dispatcher for Help
 x DateTimePicker.prg			
 x DialogWindow.prg				
@@ -41,7 +41,7 @@ x FormattedString.prg
 x GroupBox.prg
   HelpDisplay.prg
 x HotKeyEdit.prg
-+ Hyperlink.prg					Todo: Dispatach and ShellOpen
+x Hyperlink.prg					Todo: Dispatach and ShellOpen
 x Icon.prg
 + ImageList.prg					Todo: Mask, OverlayImage, DragImage
 x IPAddress.prg
@@ -67,7 +67,7 @@ x ScrollBar.prg					// VScrollbar and HScrollbar class
 x ShellWindow.prg				Todo: Dispatcher for Help
 x Slider.prg					// DotNet Trackbar class
 x Spinner.prg					// Does not exist in the framework. Look at NumericUpdown Control, dummy subclasses from Scrollbar
-  Split Window.prg
++ Split Window.prg              // uptp 4 panels.
 x StandardDialog.prg
 x StatusBar.prg				
 x SysLink.prg					// Partial
@@ -86,15 +86,6 @@ x WCStructures.prg
   WindowEventHandlers.prg
   XP Theme Support.prg
   _Dummy.prg
-x Patches\AppWindow (Window).prg
-x Patches\bPropertyList (Class).prg
-x Patches\bTools (Func).prg
-x Patches\Control (Window).prg
-x Patches\DialogWindow (Window).prg
-x Patches\FormFrame.prg
-x Patches\PushButton (Control).prg
-x Patches\Various.prg
-x Patches\Window (Window).prg
 x Properties\AssemblyInfo.prg
 x ResourceReader\ResourceDialog.prg
 x ResourceReader\ResourceDlgItem.prg

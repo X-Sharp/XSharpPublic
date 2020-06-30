@@ -8,8 +8,8 @@ USING System
 USING System.Collections.Generic
 USING System.Text
 
-BEGIN NAMESPACE XSharp.RDD
-    /// <summary>Error subclass used by the RDD system.</summary>
+BEGIN NAMESPACE XSharp.RDD 
+    /// <summary>Error subclass used by the RDD system.</summary> 
     CLASS RddError INHERIT Error
         CONSTRUCTOR()
             RETURN
@@ -21,7 +21,7 @@ BEGIN NAMESPACE XSharp.RDD
             SELF:Gencode := dwGencode
             SELF:SubCode := dwSubCode
             RETURN
-        CONSTRUCTOR(dwGencode AS DWORD, dwSubCode AS DWORD)
+        CONSTRUCTOR(dwGencode AS DWORD, dwSubCode AS DWORD)  
             SUPER(dwGencode, dwSubCode)
             
         STATIC METHOD PostArgumentError( funcName AS STRING, subcode AS DWORD, argName AS STRING, argNum AS DWORD, args AS OBJECT[] ) AS VOID
@@ -47,9 +47,9 @@ BEGIN NAMESPACE XSharp.RDD
             e:Severity := ES_ERROR
             e:Gencode := gencode
             e:SubCode := subcode
-            e:FuncSym := funcName
+            e:FuncSym := funcName 
             THROW e
-    END CLASS
+    END CLASS 
 END NAMESPACE // XSharp.Rdd
 
 // Generate NOTABLE Error    

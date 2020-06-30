@@ -1,27 +1,16 @@
 CLASS HyperLabel
-	PROTECT symName AS SYMBOL       // A programmer's identifier
-	PROTECT rCaption AS STRING      // A human-readable identifier, used for things such as field labels on forms
-	PROTECT rDescription AS STRING  // A human-readable description, used for things such as status bar prompts
-	PROTECT rHelpContext AS STRING	// A token used as an identifier for the context-sensitive help
+	PROPERTY NameSym AS SYMBOL AUTO         // A programmer's identifier
+	PROPERTY Caption AS STRING AUTO         // A human-readable identifier, used for things such as field labels on forms
+	PROPERTY Description AS STRING  AUTO    // A human-readable description, used for things such as status bar prompts
+	PROPERTY HelpContext AS STRING	AUTO    // A token used as an identifier for the context-sensitive help
 
 METHOD AsString( )  AS STRING STRICT                            
 	RETURN SELF:Caption
 
-ACCESS Caption AS STRING                                	
-	RETURN rCaption
-
-ASSIGN Caption(u AS STRING )     
-	SELF:rCaption := u
-	RETURN 
-
-ACCESS Description AS STRING                                 
-	RETURN rDescription
-
-ASSIGN Description(u AS STRING ) 
-	SELF:rDescription  := u
-	RETURN 
-
-METHOD Error( oError AS Error, symMethod :=  #Unknown AS SYMBOL ) AS VOID
+METHOD Error( oError AS Error) AS VOID
+   SELF:Error(oError, #Unknown)
+   
+METHOD Error( oError AS Error, symMethod AS SYMBOL ) AS VOID
     LOCAL oErr AS Error
     oErr := oError
 	oErr:MethodSelf := SELF    
@@ -30,35 +19,21 @@ METHOD Error( oError AS Error, symMethod :=  #Unknown AS SYMBOL ) AS VOID
 	RETURN 
 
 
-ACCESS HelpContext AS STRING                           
-	RETURN rHelpContext
-
-ASSIGN HelpContext(u  AS STRING) 
-	SELF:rHelpContext :=u
-	RETURN 
-
 
 CONSTRUCTOR( uName AS SYMBOL, uCaption := "" AS STRING, uDescription := "" AS STRING, uHelpContext := ""  AS STRING)  
-	symName := uName
+	SELF:NameSym := uName
 	IF String.IsNullOrEmpty(uCaption)
-		rCaption := Symbol2String( symName )
+		SELF:Caption := Symbol2String( NameSym )
 	ELSE 
-		rCaption := uCaption
+		SELF:Caption := uCaption
 	ENDIF
-	rDescription := uDescription
-    rHelpContext := uHelpContext
+	SELF:Description := uDescription
+    SELF:HelpContext := uHelpContext
 	RETURN 
 
 
-ACCESS Name  AS STRING
-	RETURN Symbol2String( symName )
+PROPERTY Name  AS STRING GET Symbol2String( SELF:NameSym)
 
-ACCESS NameSym AS SYMBOL                               	
-	RETURN symName
-
-ASSIGN NameSym  (x AS SYMBOL)                 			
-	SELF:symName := x
-	RETURN 
 
 END CLASS
 

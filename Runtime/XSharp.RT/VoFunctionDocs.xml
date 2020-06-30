@@ -3176,7 +3176,7 @@
         &#0009;&#0009;&#0009;// Finally, store the settings
         &#0009;&#0009;&#0009;BLOBRootPut(aSettings)
         &#0009;&#0009;ENDIF
-        &#0009;&#0009;BLOBRootUnlock()
+        &#0009;&#0009;BLOBRootUnLock()
         &#0009;ELSE
         &#0009;&#0009;aSettings := {}
         &#0009;&#0009;Alert("Could not obtain a lock on the root;
@@ -3211,7 +3211,7 @@
         &#0009;USE customer NEW SHARED INHERIT FROM {"DBFBLOB"}
         &#0009;IF BLOBRootLock()
         &#0009;&#0009;aCustSettings := BLOBRootGet()
-        &#0009;&#0009;BLOBRootUnlock()
+        &#0009;&#0009;BLOBRootUnLock()
         &#0009;ELSE
         &#0009;&#0009;Alert("Could not obtain root lock of Customer;
         &#0009;&#0009;&#0009;file")
@@ -3222,7 +3222,7 @@
     </example>
     <seealso cref='O:XSharp.RT.Functions.BLOBRootGet'>BLOBRootGet</seealso>
     <seealso cref='O:XSharp.RT.Functions.BLOBRootPut'>BLOBRootPut</seealso>
-    <seealso cref='O:XSharp.RT.Functions.BLOBRootUnlock'>BLOBRootUnlock</seealso>
+    <seealso cref='O:XSharp.RT.Functions.BLOBRootUnLock'>BLOBRootUnLock</seealso>
     <seealso cref='O:XSharp.RT.Functions.DbRLock'>DBRLock</seealso>
     <seealso cref='O:XSharp.RT.Functions.DbUseArea'>DBUseArea</seealso>
   </blobrootlock>
@@ -3262,7 +3262,7 @@
         &#0009;&#0009;&#0009;// Finally, store the settings
         &#0009;&#0009;&#0009;BLOBRootPut(aSettings)
         &#0009;&#0009;ENDIF
-        &#0009;&#0009;BLOBRootUnlock()
+        &#0009;&#0009;BLOBRootUnLock()
         &#0009;ELSE
         &#0009;&#0009;aSettings := {}
         &#0009;&#0009;Alert("Could not obtain a lock on the root;
@@ -3282,10 +3282,10 @@
     <returns>
     </returns>
     <remarks>
-      Use BLOBRootUnlock() to release a lock previously obtained using BLOBRootLock().
+      Use BLOBRootUnLock() to release a lock previously obtained using BLOBRootLock().
       <include file="VoFunctionDocs.xml" path="Runtimefunctions/currentWorkarea/*" />
       Note:<br/>
-      The only functions that require the use of BLOBRootLock() or BLOBRootUnlock() are BLOBRootGet() and BLOBRootPut().
+      The only functions that require the use of BLOBRootLock() or BLOBRootUnLock() are BLOBRootGet() and BLOBRootPut().
     </remarks>
     <example>
       This example illustrates how to properly lock and unlock the root area of a BLOB file for a database file opened in shared mode.
@@ -3296,7 +3296,7 @@
         &#0009;USE customer NEW SHARED INHERIT FROM {"DBFBLOB"}
         &#0009;IF BLOBRootLock()
         &#0009;&#0009;aCustSettings := BLOBRootGet()
-        &#0009;&#0009;BLOBRootUnlock()
+        &#0009;&#0009;BLOBRootUnLock()
         &#0009;ELSE
         &#0009;&#0009;Alert("Could not obtain root lock of Customer;
         &#0009;&#0009;&#0009;file")
@@ -5262,7 +5262,7 @@
     <seealso cref='O:XSharp.RT.Functions.DbCloseAll'>DBCloseAll</seealso>
     <seealso cref='O:XSharp.RT.Functions.DbCommitAll'>DBCommitAll</seealso>
     <seealso cref='O:VO.DbServer.Commit'>DBServer:Commit</seealso>
-    <seealso cref='O:XSharp.RT.Functions.DbUnLock'>DBUnlock</seealso>
+    <seealso cref='O:XSharp.RT.Functions.DbUnLock'>DBUnLock</seealso>
     <seealso cref='O:XSharp.RT.Functions.VoDbCommit'>VODBCommit</seealso>
   </dbcommit>
   <dbcommitall>
@@ -5311,7 +5311,7 @@
     <seealso cref='O:XSharp.RT.Functions.DbCloseAll'>DBCloseAll</seealso>
     <seealso cref='O:XSharp.RT.Functions.DbCommit'>DBCommit</seealso>
     <seealso cref='O:VO.DbServer.Commit'>DBServer:Commit</seealso>
-    <seealso cref='O:XSharp.RT.Functions.DbUnLock'>DBUnlock</seealso>
+    <seealso cref='O:XSharp.RT.Functions.DbUnLock'>DBUnLock</seealso>
     <seealso cref='O:XSharp.RT.Functions.VoDbCommitAll'>VODBCommitAll</seealso>
   </dbcommitall>
   <dbcontinue>
@@ -7050,7 +7050,7 @@
       For each invocation of DBRLock(), there is one attempt to lock the target record, and the result is returned as a logical value.<br/>
       An attempt to obtain a record lock fails if another process currently has a file lock or record lock on the target record.
       If DBRLock() is successful, the record is locked and other processes are prevented from updating the record until the lock is released.  DBRLock() provides a shared lock, allowing other users read-only access to the locked record while allowing only the current process to modify it.
-      A record lock remains in effect until you explicitly unlock it (with DBUnlock(), for example), close the database file, or attempt another file or record lock (with RLock() or DBRLock() with no argument).  DBRLock() when specified with an argument does not release records locks held by the current process.  Instead, it adds the newly locked records to the lock list (see DBRLockList()).
+      A record lock remains in effect until you explicitly unlock it (with DBUnLock(), for example), close the database file, or attempt another file or record lock (with RLock() or DBRLock() with no argument).  DBRLock() when specified with an argument does not release records locks held by the current process.  Instead, it adds the newly locked records to the lock list (see DBRLockList()).
       <include file="VoFunctionDocs.xml" path="Runtimefunctions/currentWorkarea/*" />
       This feature is useful since DBRLock() does not automatically attempt a record lock for related files.
     </remarks>
@@ -7083,10 +7083,10 @@
     <seealso cref='O:XSharp.RT.Functions.DbRLockList'>DBRLockList</seealso>
     <seealso cref='O:VO.DbServer.LockCurrentRecord'>DBServer:LockCurrentRecord</seealso>
     <seealso cref='O:VO.DbServer.LockSelection'>DBServer:LockSelection</seealso>
-    <seealso cref='O:VO.DbServer.RLockList'>DBServer:RLockList</seealso>
+    <seealso cref='P:VO.DbServer.RLockList'>DBServer:RLockList</seealso>
     <seealso cref='O:VO.DbServer.RLockVerify'>DBServer:RLockVerify</seealso>
-    <seealso cref='O:VO.DbServer.Unlock'>DBServer:Unlock</seealso>
-    <seealso cref='O:XSharp.RT.Functions.DbUnLock'>DBUnlock</seealso>
+    <seealso cref='O:VO.DbServer.UnLock'>DBServer:UnLock</seealso>
+    <seealso cref='O:XSharp.RT.Functions.DbUnLock'>DBUnLock</seealso>
     <seealso cref='O:XSharp.RT.Functions.DbUseArea'>DBUseArea</seealso>
     <seealso cref='O:XSharp.RT.Functions.Flock'>FLock</seealso>
     <seealso cref='O:XSharp.RT.Functions.IndexHPLock'>IndexHPLock</seealso>
@@ -7124,9 +7124,9 @@
     <seealso cref='O:XSharp.RT.Functions.DbRLock'>DBRLock</seealso>
     <seealso cref='O:VO.DbServer.LockCurrentRecord'>DBServer:LockCurrentRecord</seealso>
     <seealso cref='O:VO.DbServer.LockSelection'>DBServer:LockSelection</seealso>
-    <seealso cref='O:VO.DbServer.RLockList'>DBServer:RLockList</seealso>
+    <seealso cref='P:VO.DbServer.RLockList'>DBServer:RLockList</seealso>
     <seealso cref='O:VO.DbServer.RLockVerify'>DBServer:RLockVerify</seealso>
-    <seealso cref='O:VO.DbServer.Unlock'>DBServer:Unlock</seealso>
+    <seealso cref='O:VO.DbServer.UnLock'>DBServer:UnLock</seealso>
     <seealso cref='O:XSharp.RT.Functions.RecNo'>RecNo</seealso>
   </dbrlocklist>
   <dbrselect>
@@ -7184,17 +7184,17 @@
       TRUE if successful; otherwise, FALSE.
     </returns>
     <remarks>
-      DBRUnlock() releases the lock on &lt;uRecID&gt; and removes it from the lock list.<br/>
+      DBRUnLock() releases the lock on &lt;uRecID&gt; and removes it from the lock list.<br/>
       If &lt;uRecID&gt; is not specified, all record locks are released.
     </remarks>
     <example>
       The following example unlocks a range of records:
       <code language="X#">
-        PROCEDURE dbRUnlockRange(nLo AS SHORTINT, nHi AS SHORTINT)
+        PROCEDURE dbRUnLockRange(nLo AS SHORTINT, nHi AS SHORTINT)
         &#0009;LOCAL nCounter
-        &#0009;// Unlock the records in the range from nLo to nHi
+        &#0009;// UnLock the records in the range from nLo to nHi
         &#0009;FOR nCounter := nLo UPTO nHi
-        &#0009;&#0009;DBRUnlock(nCounter)
+        &#0009;&#0009;DBRUnLock(nCounter)
         &#0009;NEXT
         &#0009;RETURN
       </code>
@@ -7202,7 +7202,7 @@
     <seealso cref='O:XSharp.RT.Functions.DbRLock'>DBRLock</seealso>
     <seealso cref='O:XSharp.RT.Functions.DbRLockList'>DBRLockList</seealso>
     <seealso cref='O:VO.DbServer.RLockVerify'>DBServer:RLockVerify</seealso>
-    <seealso cref='O:VO.DbServer.Unlock'>DBServer:Unlock</seealso>
+    <seealso cref='O:VO.DbServer.UnLock'>DBServer:UnLock</seealso>
     <seealso cref='O:XSharp.RT.Functions.IndexHPLock'>IndexHPLock</seealso>
     <seealso cref='O:XSharp.RT.Functions.NewIndexLock'>NewIndexLock</seealso>
     <seealso cref='O:XSharp.RT.Functions.RLock'>RLock</seealso>
@@ -8035,14 +8035,14 @@
       TRUE if successful; otherwise, FALSE.
     </returns>
     <remarks>
-      DBUnlock() releases any record or file locks obtained by the current process for a work area.  DBUnlock() is only meaningful on a shared database.
+      DBUnLock() releases any record or file locks obtained by the current process for a work area.  DBUnLock() is only meaningful on a shared database.
       <include file="VoFunctionDocs.xml" path="Runtimefunctions/currentWorkarea/*" />
       <note type="tip">
         Shared mode:&#0009;Releasing locks can cause updates to the database to become visible to other processes.  
       </note>
     </remarks>
     <example>
-      The following example illustrates a basic use of the DBUnlock() function:
+      The following example illustrates a basic use of the DBUnLock() function:
       <code language="X#">
         cLast := "Winston"
         USE sales SHARED NEW VIA "DBFNTX"
@@ -8051,7 +8051,7 @@
         &#0009;IF Sales-&gt;RLock()
         &#0009;&#0009;Sales-&gt;DBDelete()
         &#0009;&#0009;QOut("Record deleted: ", Sales-&gt;Deleted())
-        &#0009;&#0009;Sales-&gt;DBUnlock()
+        &#0009;&#0009;Sales-&gt;DBUnLock()
         &#0009;ELSE
         &#0009;&#0009;QOut("Unable to lock record...")
         &#0009;ENDIF
@@ -8060,13 +8060,13 @@
         ENDIF
       </code>
     </example>
-    <seealso cref='O:VO.DbServer.Unlock'>DBServer:Unlock</seealso>
+    <seealso cref='O:VO.DbServer.UnLock'>DBServer:UnLock</seealso>
     <seealso cref='O:XSharp.RT.Functions.DbUnLockAll'>DbUnLockAll</seealso>
     <seealso cref='O:XSharp.RT.Functions.Flock'>FLock</seealso>
     <seealso cref='O:XSharp.RT.Functions.IndexHPLock'>IndexHPLock</seealso>
     <seealso cref='O:XSharp.RT.Functions.NewIndexLock'>NewIndexLock</seealso>
     <seealso cref='O:XSharp.RT.Functions.RLock'>RLock</seealso>
-    <seealso cref='O:XSharp.RT.Functions.VoDbUnlock'>VODBUnlock</seealso>
+    <seealso cref='O:XSharp.RT.Functions.VoDbUnLock'>VODBUnLock</seealso>
   </dbunlock>
   <dbunlockall>
     <summary>
@@ -8081,7 +8081,7 @@
     <remarks>
       DbUnLockAll() releases any record or file locks obtained by the current process for any work area.  
       DbUnLockAll() is only meaningful on a shared database.<br/>
-      It is equivalent to calling DBUnlock() on every occupied work area.
+      It is equivalent to calling DBUnLock() on every occupied work area.
     </remarks>
     <example>
       The following example marks a record for deletion if an RLock() attempt is successful, then clears all locks in all work areas:
@@ -8107,8 +8107,8 @@
         ENDIF&#0009;&#0009;&#0009;&#0009;&#0009;&#0009;// all work areas
       </code>
     </example>
-    <seealso cref='O:VO.DbServer.Unlock'>DBServer:Unlock</seealso>
-    <seealso cref='O:XSharp.RT.Functions.DbUnLock'>DBUnlock</seealso>
+    <seealso cref='O:VO.DbServer.UnLock'>DBServer:UnLock</seealso>
+    <seealso cref='O:XSharp.RT.Functions.DbUnLock'>DBUnLock</seealso>
     <seealso cref='O:XSharp.RT.Functions.Flock'>FLock</seealso>
     <seealso cref='O:XSharp.RT.Functions.IndexHPLock'>IndexHPLock</seealso>
     <seealso cref='O:XSharp.RT.Functions.NewIndexLock'>NewIndexLock</seealso>
@@ -9818,7 +9818,7 @@
     <seealso cref='O:XSharp.RT.Functions.MAssign'>MAssign</seealso>
     <seealso cref='O:XSharp.RT.Functions.MCompile'>MCompile</seealso>
     <seealso cref='O:XSharp.RT.Functions.MExec'>MExec</seealso>
-    <seealso cref='O:XSharp.VO.Functions.StrEvaluate'>StrEvaluate</seealso>
+    <seealso cref='O:XSharp.RT.Functions.StrEvaluate'>StrEvaluate</seealso>
   </evaluate>
   <exp>
     <summary>
@@ -10611,7 +10611,7 @@
         &#0009;RETURN FALSE&#0009;&#0009;&#0009;&#0009;// Not locked
       </code>
     </example>
-    <seealso cref='O:XSharp.Core.Functions.FFUnLock'>FFUnlock</seealso>
+    <seealso cref='O:XSharp.Core.Functions.FFUnLock'>FFUnLock</seealso>
     <seealso cref='O:XSharp.RT.Functions.IndexHPLock'>IndexHPLock</seealso>
     <seealso cref='O:XSharp.RT.Functions.NewIndexLock'>NewIndexLock</seealso>
   </fflock>
@@ -10647,7 +10647,7 @@
   </fflush>
   <ffunlock>
     <summary>
-      Unlock a portion of an opened file.
+      UnLock a portion of an opened file.
     </summary>
 
     <param name="ptrHandle">The handle of the opened file you want to unlock.</param>
@@ -10657,19 +10657,19 @@
       TRUE if successful; otherwise, FALSE.
     </returns>
     <remarks>
-      FFUnlock() unlocks a specified portion of a file.<br/>
+      FFUnLock() unlocks a specified portion of a file.<br/>
       This permits other processes to access that portion.<br/>
       The unlocked portion must have been previously locked.
     </remarks>
     <example>
-      This example uses FFLock() and FFUnlock() to lock and then unlock the first 300 bytes of a file:
+      This example uses FFLock() and FFUnLock() to lock and then unlock the first 300 bytes of a file:
       <code language="X#">
         ptrHandle := FOpen2("c:\data\myfile.txt", ;
         &#0009;&#0009;FO_READWRITE + FO_SHARED)
         IF FFLock(ptrHandle, 0, 300)
         &#0009;? "Locked OK"
-        &#0009;IF FFUnlock(ptrHandle, 0, 300)
-        &#0009;&#0009;? "Unlocked OK"
+        &#0009;IF FFUnLock(ptrHandle, 0, 300)
+        &#0009;&#0009;? "UnLocked OK"
         &#0009;ENDIF
         ENDIF
       </code>
@@ -11452,7 +11452,7 @@
       For each invocation of FLock(), there is one attempt to lock the database file (and other related files, such as index and memo files), and the result is returned as a logical value.<br/>
       A file lock fails if another process currently has a file or record lock for the same database file.
       If FLock() is successful, the file lock is locked and other processes are prevented from making updates until the lock is released.  FLock() provides a shared lock, allowing other users read-only access to the locked file while allowing only the current process to modify it.
-      A file lock remains in effect until you close the database, explicitly unlock it (with DBUnlock(), for example), or attempt another file or record lock (with RLock() or DBRLock()).
+      A file lock remains in effect until you close the database, explicitly unlock it (with DBUnLock(), for example), or attempt another file or record lock (with RLock() or DBRLock()).
       <include file="VoFunctionDocs.xml" path="Runtimefunctions/currentWorkareaParam/*" />
       This feature is useful since FLock() does not automatically attempt a file lock for related files.
     </remarks>
@@ -11477,7 +11477,7 @@
       </code>
     </example>
     <seealso cref='O:XSharp.RT.Functions.DbRLock'>DBRLock</seealso>
-    <seealso cref='O:XSharp.RT.Functions.DbUnLock'>DBUnlock</seealso>
+    <seealso cref='O:XSharp.RT.Functions.DbUnLock'>DBUnLock</seealso>
     <seealso cref='O:XSharp.RT.Functions.DbUseArea'>DBUseArea</seealso>
     <seealso cref='O:XSharp.RT.Functions.IndexHPLock'>IndexHPLock</seealso>
     <seealso cref='O:XSharp.RT.Functions.NewIndexLock'>NewIndexLock</seealso>
@@ -15799,7 +15799,7 @@
     <seealso cref='O:XSharp.RT.Functions.Evaluate'>Evaluate</seealso>
     <seealso cref='O:XSharp.RT.Functions.MCompile'>MCompile</seealso>
     <seealso cref='O:XSharp.RT.Functions.MExec'>MExec</seealso>
-    <seealso cref='O:XSharp.VO.Functions.StrEvaluate'>StrEvaluate</seealso>
+    <seealso cref='O:XSharp.RT.Functions.StrEvaluate'>StrEvaluate</seealso>
   </massign>
   <max>
     <summary>
@@ -16396,7 +16396,7 @@
     <seealso cref='O:XSharp.RT.Functions.Evaluate'>Evaluate</seealso>
     <seealso cref='O:XSharp.RT.Functions.MAssign'>MAssign</seealso>
     <seealso cref='O:XSharp.RT.Functions.MExec'>MExec</seealso>
-    <seealso cref='O:XSharp.VO.Functions.StrEvaluate'>StrEvaluate</seealso>
+    <seealso cref='O:XSharp.RT.Functions.StrEvaluate'>StrEvaluate</seealso>
   </mcompile>
   <mem2string>
     <summary>
@@ -17698,7 +17698,7 @@
     <seealso cref='O:XSharp.RT.Functions.Evaluate'>Evaluate</seealso>
     <seealso cref='O:XSharp.RT.Functions.MAssign'>MAssign</seealso>
     <seealso cref='O:XSharp.RT.Functions.MCompile'>MCompile</seealso>
-    <seealso cref='O:XSharp.VO.Functions.StrEvaluate'>StrEvaluate</seealso>
+    <seealso cref='O:XSharp.RT.Functions.StrEvaluate'>StrEvaluate</seealso>
   </mexec>
   <min>
     <summary>
@@ -21155,7 +21155,7 @@
       For each invocation of RLock(), there is one attempt to lock the target record, and the result is returned as a logical value.<br/>
       An attempt to obtain a record lock fails if another process currently has a file lock or record lock on the target record.
       If RLock() is successful, the record is locked and other processes are prevented from updating the record until the lock is released.  RLock() provides a shared lock, allowing other users read-only access to the locked record while allowing only the current process to modify it.
-      A record lock remains in effect until you explicitly unlock it (with DBUnlock(), for example), close the database file, or attempt another file or record lock (with RLock() or DBRLock() without an argument).
+      A record lock remains in effect until you explicitly unlock it (with DBUnLock(), for example), close the database file, or attempt another file or record lock (with RLock() or DBRLock() without an argument).
       <include file="VoFunctionDocs.xml" path="Runtimefunctions/currentWorkareaParam/*" />
       This feature is useful since RLock() does not automatically attempt a record lock for related files.
 
@@ -21179,7 +21179,7 @@
       </code>
     </example>
     <seealso cref='O:XSharp.RT.Functions.DbRLock'>DBRLock</seealso>
-    <seealso cref='O:XSharp.RT.Functions.DbUnLock'>DBUnlock</seealso>
+    <seealso cref='O:XSharp.RT.Functions.DbUnLock'>DBUnLock</seealso>
     <seealso cref='O:XSharp.RT.Functions.DbUseArea'>DBUseArea</seealso>
     <seealso cref='O:XSharp.RT.Functions.Flock'>FLock</seealso>
     <seealso cref='O:XSharp.RT.Functions.IndexHPLock'>IndexHPLock</seealso>
@@ -27016,12 +27016,12 @@
       TRUE if successful; otherwise, FALSE.
     </returns>
     <remarks>
-      VODBUnlock() is the same as DBUnlock().<br/>
+      VODBUnLock() is the same as DBUnLock().<br/>
       This function, however, does not call the error handler and will not, therefore, produce a runtime error message or create an error object if it fails.  Thus, it may be important to check the return value to determine if the function succeeded.<br/>
-      The global structure, StrucErrInfo, will contain needed information regarding any error that occurs.  See DBUnlock() for more information.
+      The global structure, StrucErrInfo, will contain needed information regarding any error that occurs.  See DBUnLock() for more information.
     </remarks>
     <example>
-      The following example illustrates a basic use of the VODBUnlock() function:
+      The following example illustrates a basic use of the VODBUnLock() function:
       <code language="X#">
         cLast := "Winston"
         USE sales SHARED NEW VIA "DBFNTX"
@@ -27031,7 +27031,7 @@
         &#0009;&#0009;Sales-&gt;(VODBDelete())
         &#0009;&#0009;? "Record deleted: ", sales;
         &#0009;&#0009;&#0009;(VODBDeleted())
-        &#0009;&#0009;Sales-&gt;(VODBUnlock(NIL))
+        &#0009;&#0009;Sales-&gt;(VODBUnLock(NIL))
         &#0009;ELSE
         &#0009;&#0009;? "Unable to lock record..."
         &#0009;ENDIF
@@ -27040,7 +27040,7 @@
         ENDIF
       </code>
     </example>
-    <seealso cref='O:XSharp.RT.Functions.DbUnLock'>DBUnlock</seealso>
+    <seealso cref='O:XSharp.RT.Functions.DbUnLock'>DBUnLock</seealso>
     <seealso cref='O:XSharp.RT.Functions.DbUnLockAll'>DbUnLockAll</seealso>
     <seealso cref='O:XSharp.RT.Functions.IndexHPLock'>IndexHPLock</seealso>
     <seealso cref='O:XSharp.RT.Functions.NewIndexLock'>NewIndexLock</seealso>
@@ -27084,11 +27084,11 @@
         ENDIF&#0009;&#0009;&#0009;&#0009;&#0009;&#0009;&#0009;// all work areas
       </code>
     </example>
-    <seealso cref='O:XSharp.RT.Functions.DbUnLock'>DBUnlock</seealso>
+    <seealso cref='O:XSharp.RT.Functions.DbUnLock'>DBUnLock</seealso>
     <seealso cref='O:XSharp.RT.Functions.DbUnLockAll'>DbUnLockAll</seealso>
     <seealso cref='O:XSharp.RT.Functions.IndexHPLock'>IndexHPLock</seealso>
     <seealso cref='O:XSharp.RT.Functions.NewIndexLock'>NewIndexLock</seealso>
-    <seealso cref='O:XSharp.RT.Functions.VoDbUnlock'>VODBUnlock</seealso>
+    <seealso cref='O:XSharp.RT.Functions.VoDbUnLock'>VODBUnLock</seealso>
   </vodbunlockall>
   <vodbusearea>
     <summary>
@@ -27666,4 +27666,19 @@
       </note>
     </span>
   </recordscope>
+  <vodbsetscope>
+    <summary>Set the locate condition.</summary>
+    <param name="scope">Scope information for the current workarea</param>
+      <returns>TRUE if successful; otherwise, FALSE.</returns>
+    <remarks>Please note that this scope information is NOT the order scope, but a class that stores information about LOCATE operations and other workarea operations.</remarks>
+    <seealso cref="T:XSharp.RDD.Support.DBScopeInfo"/>
+  </vodbsetscope>
+    <vodbgetscope>
+      <summary>
+        Gets the current locate condition.
+        <returns>Scope information for the current workarea.</returns>
+        <remarks>Please note that this scope information is NOT the order scope, but a class that stores information about LOCATE operations and other workarea operations.</remarks>
+        <seealso cref="T:XSharp.RDD.Support.DBScopeInfo"/>
+      </summary>
+   </vodbgetscope>
 </Runtimefunctions>

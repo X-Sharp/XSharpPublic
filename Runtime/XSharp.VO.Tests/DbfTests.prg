@@ -2351,9 +2351,15 @@ RETURN
 		STATIC INTERNAL METHOD CreateDatabase(cFileName AS STRING, aFields AS ARRAY) AS VOID
 			CreateDatabase(cFileName, aFields , {})
 		STATIC INTERNAL METHOD CreateDatabase(cFileName AS STRING, aFields AS ARRAY, aValues AS ARRAY) AS VOID
-			FErase ( cFileName + IndexExt() )
-			FErase ( cFileName + ".fpt" )
-			FErase ( cFileName + ".dbt" )
+            IF File(cFileName + IndexExt())
+			    FErase ( FPathName() )
+            ENDIF
+            IF File(cFileName + ".fpt")
+			    FErase ( FPathName() )
+            ENDIF
+			IF File ( cFileName + ".dbt" )
+			    FErase ( FPathName() )
+            ENDIF
 			DbCreate( cFileName , aFields)
 			IF ALen(aValues) == 0
 				RETURN

@@ -35,7 +35,7 @@
     <initlocals>true</initlocals>
     <fox1>true</fox1>
     <OutputName>ConsoleApplication1</OutputName>
-    <XSharpProjectversion>2.3.2.0</XSharpProjectversion>
+    <XSharpProjectversion>2.4.1.0</XSharpProjectversion>
     <CS>false</CS>
     <NamedArgs>false</NamedArgs>
     <OVF>false</OVF>

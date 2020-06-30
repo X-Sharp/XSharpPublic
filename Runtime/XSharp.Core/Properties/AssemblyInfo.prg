@@ -14,7 +14,7 @@ using XSharp
 // associated with an assembly.
 //
 [assembly: AssemblyTitle("XSharp.Core")]
-[assembly: AssemblyDescription("XSharp common runtime DLL (no XBase types")]
+[assembly: AssemblyDescription("XSharp common runtime DLL (no XBase types)")]
 // in the core dialect the next attributes are not included automatically
 [assembly: ClassLibrary("XSharp.Core.Functions","XSharp")]
 [assembly: ImplicitNamespace("XSharp")]

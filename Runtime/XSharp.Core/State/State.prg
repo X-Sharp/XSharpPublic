@@ -57,7 +57,7 @@ CLASS XSharp.RuntimeState
             SELF:_SetThreadValue<Exception>(Set.LastRddError,NULL)
             SELF:_SetThreadValue<Exception>(Set.Patharray,NULL)
             SELF:_SetThreadValue<BYTE[]>(Set.CollationTable, NULL )
-			IF System.Environment.OSVersion:Platform == System.PlatformID.Win32NT
+			IF IsRunningOnWindows()
                 SELF:_SetThreadValue<LONG>(Set.DosCodepage, Win32.GetDosCodePage())
                 SELF:_SetThreadValue<LONG>(Set.WinCodepage, Win32.GetWinCodePage())
             ELSE
@@ -927,7 +927,7 @@ CLASS XSharp.RuntimeState
         VAR mode := RuntimeState.CollationMode 
         SWITCH mode
         CASE CollationMode.Windows
-            IF System.Environment.OSVersion:Platform == System.PlatformID.Win32NT
+            IF IsRunningOnWindows()
                 ret := XSharp.StringHelpers.CompareWindows(strLHS, strRHS)
             ELSE
                 ret := String.Compare(strLHS, strRHS)
@@ -959,7 +959,7 @@ CLASS XSharp.RuntimeState
         CASE CollationMode.Xpp
             RETURN XSharp.StringHelpers.CompareClipper(aLHS, aRHS, nLen)
         CASE CollationMode.Windows
-            IF System.Environment.OSVersion:Platform == System.PlatformID.Win32NT
+            IF IsRunningOnWindows()
                 RETURN XSharp.StringHelpers.CompareWindows(aLHS, aRHS, nLen)
             ELSE
                 VAR strLHS := RuntimeState.WinEncoding:GetString(aLHS, 0, nLen)

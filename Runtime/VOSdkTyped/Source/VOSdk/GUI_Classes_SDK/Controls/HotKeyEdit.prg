@@ -75,7 +75,7 @@ CLASS HotKeyEdit INHERIT TextControl
 			wInvalidModifiers := _OR(wInvalidModifiers, HOTKEYF_SHIFT)
 		ENDIF
 
-		Win32.SendMessage(SELF:Handle(), HKM_SETRULES, dwInvalidCombinations, MakeLong((WORD)wInvalidModifiers, 0))
+		GuiWin32.SendMessage(SELF:Handle(), HKM_SETRULES, dwInvalidCombinations, MakeLong((WORD)wInvalidModifiers, 0))
 		RETURN
 
 	METHOD ApplyHotKey(oWindow) 
@@ -85,9 +85,9 @@ CLASS HotKeyEdit INHERIT TextControl
 			oWindow := (Object)SELF:Owner
 		ENDIF
 
-		dwHotKey := _AND(Win32.SendMessage(SELF:Handle(), HKM_GETHOTKEY, 0, 0),0XFFFF)
+		dwHotKey := _AND(GuiWin32.SendMessage(SELF:Handle(), HKM_GETHOTKEY, 0, 0),0XFFFF)
 
-		RETURN Win32.SendMessage(oWindow:Handle(), WM_SETHOTKEY, dwHotKey, 0)
+		RETURN GuiWin32.SendMessage(oWindow:Handle(), WM_SETHOTKEY, dwHotKey, 0)
 
 	METHOD Create() AS System.Windows.Forms.Control
 		IF (SUPER:Create() != NULL_OBJECT)
@@ -101,7 +101,7 @@ CLASS HotKeyEdit INHERIT TextControl
 	ACCESS HotKey AS HotKey
 		LOCAL oHotKeyRet AS HotKey
 		LOCAL wRet AS WORD
-		wRet := (WORD) _AND(0XFFFF,Win32.SendMessage(SELF:Handle(), DWORD(HKM_GETHOTKEY), 0U, 0L))
+		wRet := (WORD) _AND(0XFFFF,GuiWin32.SendMessage(SELF:Handle(), DWORD(HKM_GETHOTKEY), 0U, 0L))
 
 		oHotKeyRet := HotKey{LoByte(wRet)}
 		oHotKeyRet:AltKey 		:= (_AND(HiByte(wRet), HOTKEYF_ALT) > 0)
@@ -126,7 +126,7 @@ CLASS HotKeyEdit INHERIT TextControl
 			bModifierFlags := _OR(bModifierFlags, HOTKEYF_SHIFT)
 		ENDIF
 
-		Win32.SendMessage(SELF:Handle(), HKM_SETHOTKEY, MakeWord(oNewHotKey:Key, (BYTE)bModifierFlags), 0)
+		GuiWin32.SendMessage(SELF:Handle(), HKM_SETHOTKEY, MakeWord(oNewHotKey:Key, (BYTE)bModifierFlags), 0)
 
 		RETURN 
 

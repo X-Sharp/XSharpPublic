@@ -27,7 +27,7 @@
     <MemVar>false</MemVar>
     <Undeclared>false</Undeclared>
     <InitLocals>false</InitLocals>
-    <XSharpProjectversion>2.1.0.0</XSharpProjectversion>
+    <XSharpProjectversion>2.5.0.0</XSharpProjectversion>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'" Label="Configuration">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -81,14 +81,14 @@
     <Folder Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Runtime\VOSDK\Source\VOSDK\SQL_Unicode_SDK\XSSQLClasses.xsproj">
-      <Name>XSSQLClasses</Name>
+    <ProjectReference Include="..\Runtime\VOSdkTyped\Source\VOSdk\SQL_Classes_SDK\XSharp.VO.SQLClasses.xsproj">
+      <Name>XSharp.VO.SQLClasses</Name>
       <Project>{91816960-eb2d-4e4a-ae67-4edc5bd38940}</Project>
       <Private>True</Private>
     </ProjectReference>
-    <ProjectReference Include="..\Runtime\VOSDK\Source\VOSDK\System_Classes_SDK\VOSystemClasses.xsproj">
-      <Name>VOSystemClasses</Name>
-      <Project>{ac2aebff-69ff-405d-b7d9-6e5cb1db914c}</Project>
+    <ProjectReference Include="..\Runtime\VOSdkTyped\Source\VOSdk\System_Classes_SDK\XSharp.VO.SystemClasses.xsproj">
+      <Name>XSharp.VO.SystemClasses</Name>
+      <Project>{5ac3e55d-f2bd-45eb-9cc2-dd8bd36240ea}</Project>
       <Private>True</Private>
     </ProjectReference>
     <ProjectReference Include="..\Runtime\XSharp.Core\XSharp.Core.xsproj">

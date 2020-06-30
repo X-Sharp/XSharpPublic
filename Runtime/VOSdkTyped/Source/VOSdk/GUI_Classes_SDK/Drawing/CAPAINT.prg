@@ -90,18 +90,18 @@ STATIC GLOBAL pfnCAPaintShowErrors   AS CAPaintShowErrors PTR
 
 FUNCTION InitializeCAPaint() AS LOGIC STRICT
 
-	hCAPaint := Win32.LoadLibrary(("CAPAINT.DLL"))
+	hCAPaint := GuiWin32.LoadLibrary(("CAPAINT.DLL"))
 	IF (hCAPaint != NULL_PTR)
-		pfnDIBCreateFromFile   := Win32.GetProcAddress(hCAPaint, ("DIBCreateFromFile"))
-		pfnDIBCreateFromPTR    := Win32.GetProcAddress(hCAPaint, ("DIBCreateFromPTR"))
-		pfnDIBDelete           := Win32.GetProcAddress(hCAPaint, ("DIBDelete"))
-		pfnDIBStretch          := Win32.GetProcAddress(hCAPaint, ("DIBStretch"))
-		pfnDIBShow             := Win32.GetProcAddress(hCAPaint, ("DIBShow"))
-		pfnDIBGetInfo          := Win32.GetProcAddress(hCAPaint, ("DIBGetInfo"))
-		pfnDIBSaveAs           := Win32.GetProcAddress(hCAPaint, ("DIBSaveAs"))
-		pfnCAPaintLastErrorMsg := Win32.GetProcAddress(hCAPaint, ("CAPaintLastErrorMsg"))
-		pfnCAPaintLastError    := Win32.GetProcAddress(hCAPaint, ("CAPaintLastError"))
-		pfnCAPaintShowErrors   := Win32.GetProcAddress(hCAPaint, ("CAPaintShowErrors"))
+		pfnDIBCreateFromFile   := GuiWin32.GetProcAddress(hCAPaint, ("DIBCreateFromFile"))
+		pfnDIBCreateFromPTR    := GuiWin32.GetProcAddress(hCAPaint, ("DIBCreateFromPTR"))
+		pfnDIBDelete           := GuiWin32.GetProcAddress(hCAPaint, ("DIBDelete"))
+		pfnDIBStretch          := GuiWin32.GetProcAddress(hCAPaint, ("DIBStretch"))
+		pfnDIBShow             := GuiWin32.GetProcAddress(hCAPaint, ("DIBShow"))
+		pfnDIBGetInfo          := GuiWin32.GetProcAddress(hCAPaint, ("DIBGetInfo"))
+		pfnDIBSaveAs           := GuiWin32.GetProcAddress(hCAPaint, ("DIBSaveAs"))
+		pfnCAPaintLastErrorMsg := GuiWin32.GetProcAddress(hCAPaint, ("CAPaintLastErrorMsg"))
+		pfnCAPaintLastError    := GuiWin32.GetProcAddress(hCAPaint, ("CAPaintLastError"))
+		pfnCAPaintShowErrors   := GuiWin32.GetProcAddress(hCAPaint, ("CAPaintShowErrors"))
 
 		lCAPaintInitialized  := LOGIC(_CAST, pfnDIBCreateFromFile) .and. LOGIC(_CAST, pfnDIBDelete) .and.;
 			LOGIC(_CAST, pfnDIBStretch) .and. LOGIC(_CAST, pfnDIBShow) .and.;
@@ -119,7 +119,7 @@ FUNCTION FreeCAPaint        ()  AS LOGIC STRICT
 		lCAPaintInitialized := .F. 
 		lRet := .F. 
 	ELSE
-		Win32.FreeLibrary(hCAPaint)
+		GuiWin32.FreeLibrary(hCAPaint)
 		hCAPaint := NULL_PTR
 		lCAPaintInitialized := .F. 
 		lRet := .T. 

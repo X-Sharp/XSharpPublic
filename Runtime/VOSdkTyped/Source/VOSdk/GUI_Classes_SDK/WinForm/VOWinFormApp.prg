@@ -7,7 +7,7 @@ using System.Collections
 
 
 
-CLASS XSharp.VO.VOWinFormApp INHERIT App
+CLASS VOWinFormApp INHERIT App
 	PRIVATE winForms := Hashtable{} as Hashtable
 
 	METHOD RegisterWinForm(form AS System.Windows.Forms.Form) AS VOID

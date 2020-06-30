@@ -2,8 +2,8 @@
 
 
 
-#USING System.Diagnostics
-
+USING System.Diagnostics
+USING VOSDK := XSharp.VO.SDK
 
 CLASS ComboBoxExEndEditEvent INHERIT ControlNotifyEvent
 	CONSTRUCTOR(oC AS Control) STRICT
@@ -51,9 +51,9 @@ CLASS ComboBoxExEndEditEvent INHERIT ControlNotifyEvent
 END CLASS
 
 CLASS ControlEvent INHERIT @@Event IMPLEMENTS INamedEvent
-	PROTECTED oControl   AS XSharp.VO.Control
+	PROTECTED oControl   AS VOSDK.Control
 	
-	PROPERTY Control     AS XSharp.VO.Control GET oControl
+	PROPERTY Control     AS VOSDK.Control GET oControl
 	PROPERTY ControlID   AS LONG GET Control:ControlID
 	PROPERTY Description AS STRING GET HyperLabel:Description
 	PROPERTY HelpContext AS STRING GET HyperLabel:HelpContext
@@ -70,7 +70,7 @@ CLASS ControlEvent INHERIT @@Event IMPLEMENTS INamedEvent
 	PROPERTY NameSym	AS SYMBOL GET HyperLabel:NameSym
 
 	[DebuggerStepThrough];	
-	CONSTRUCTOR(loControl AS XSharp.VO.Control)
+	CONSTRUCTOR(loControl AS VOSDK.Control)
 		SUPER()
 		oControl := loControl
 
@@ -88,12 +88,12 @@ CLASS ControlFocusChangeEvent INHERIT ControlEvent
 	PROPERTY GotFocus AS LOGIC GET lGotFocus
 	
 	[DebuggerStepThrough];
-	CONSTRUCTOR(loControl AS XSharp.VO.Control, lFocus AS LOGIC)
+	CONSTRUCTOR(loControl AS VOSDK.Control, lFocus AS LOGIC)
 		SUPER(loControl)
 		lGotFocus := lFocus
 	
 	[DebuggerStepThrough];
-	CONSTRUCTOR(oFocusChangeEvent AS FocusChangeEvent, loControl AS XSharp.VO.Control)
+	CONSTRUCTOR(oFocusChangeEvent AS FocusChangeEvent, loControl AS VOSDK.Control)
 		SUPER(loControl)
 		lGotFocus := oFocusChangeEvent:GotFocus
 
@@ -117,7 +117,7 @@ END CLASS
 CLASS DateTimeSelectionEvent INHERIT ControlEvent
 
 	[DebuggerStepThrough];
-	CONSTRUCTOR(loControl AS XSharp.VO.Control)
+	CONSTRUCTOR(loControl AS VOSDK.Control)
 		SUPER(loControl)
 
 
@@ -142,11 +142,11 @@ END CLASS
 
 CLASS EditFocusChangeEvent INHERIT ControlFocusChangeEvent
 	[DebuggerStepThrough];
-	CONSTRUCTOR(loControl AS XSharp.VO.Control, lFocus AS LOGIC)
+	CONSTRUCTOR(loControl AS VOSDK.Control, lFocus AS LOGIC)
 		SUPER(loControl, lFocus)
 		lGotFocus := lFocus
 
-	//CONSTRUCTOR(oFocusChangeEvent AS FocusChangeEvent, loControl AS XSharp.VO.Control)
+	//CONSTRUCTOR(oFocusChangeEvent AS FocusChangeEvent, loControl AS VOSDK.Control)
 	//	SUPER(oFocusChangeEvent, loControl)
 
 END CLASS
@@ -155,7 +155,7 @@ CLASS MonthCalSelectionEvent INHERIT ControlEvent
 	PROTECT _lExplicit AS LOGIC
 
 	[DebuggerStepThrough];
-	CONSTRUCTOR(loControl AS XSharp.VO.Control, lExplicit)
+	CONSTRUCTOR(loControl AS VOSDK.Control, lExplicit)
 		SUPER(loControl)
 		_lExplicit := lExplicit
 		

@@ -5,12 +5,13 @@
 // Also some On..() methods have been implemented that call the event handles on the VO Window
 // class that owns the control
 
-#USING System.Windows.Forms
+USING System.Windows.Forms
+USING VOSDK := XSharp.VO.SDK
 
 CLASS VOTabControl INHERIT System.Windows.Forms.TabControl IMPLEMENTS IVOControl, IVOControlInitialize
 	#include "PropControl.vh"
-	EXPORT BounceFocus:= FALSE AS LOGIC
-    PROPERTY VOTab AS XSharp.VO.TabControl GET (XSharp.VO.TabControl) SELF:Control
+	PROPERTY BounceFocus AS LOGIC AUTO := FALSE
+    PROPERTY VOTab AS VOSDK.TabControl GET (VOSDK.TabControl) SELF:Control
 
 	METHOD Initialize AS VOID STRICT
 		SELF:ShowToolTips := TRUE
@@ -24,7 +25,7 @@ CLASS VOTabControl INHERIT System.Windows.Forms.TabControl IMPLEMENTS IVOControl
 			SUPER:OnGotFocus(e)
 		ENDIF
 	
-	CONSTRUCTOR(Owner AS XSharp.VO.Control, dwStyle AS LONG, dwExStyle AS LONG)
+	CONSTRUCTOR(Owner AS VOSDK.Control, dwStyle AS LONG, dwExStyle AS LONG)
 		oProperties := VOControlProperties{SELF, Owner, dwStyle, dwExStyle}
 		SUPER()
 		SELF:Initialize()

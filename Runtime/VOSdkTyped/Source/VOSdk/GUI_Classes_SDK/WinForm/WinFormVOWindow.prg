@@ -3,9 +3,10 @@
 // Standard class for Hybrid windows to host a VO Window inside a .NET Shell
 // This probably is no longer needed
 
+USING VOSDK := XSharp.VO.SDK
 
-CLASS XSharp.VO.WinFormVOWindow INHERIT System.Windows.Forms.Form
-    PRIVATE winFormVOWindowHost AS XSharp.VO.WinFormVOWindowHost
+CLASS WinFormVOWindow INHERIT System.Windows.Forms.Form
+    PRIVATE winFormVOWindowHost AS VOSDK.WinFormVOWindowHost
     PROTECT currentFocusHandle AS IntPtr
     STATIC PROTECT oApp AS App
     
@@ -26,7 +27,7 @@ CLASS XSharp.VO.WinFormVOWindow INHERIT System.Windows.Forms.Form
         LOCAL control AS System.Windows.Forms.Control
         LOCAL hWnd AS IntPtr
         
-        hWnd := Win32.GetParent(window:Handle())
+        hWnd := GuiWin32.GetParent(window:Handle())
         control := System.Windows.Forms.Form.FromHandle(hWnd)
         
         IF ! control == NULL
@@ -42,7 +43,7 @@ CLASS XSharp.VO.WinFormVOWindow INHERIT System.Windows.Forms.Form
     ACCESS VOWindowHost AS WinFormVOWindowHost
         RETURN winFormVOWindowHost
         
-    ASSIGN VOWindowHost(new AS XSharp.VO.WinFormVOWindowHost)
+    ASSIGN VOWindowHost(NEW AS VOSDK.WinFormVOWindowHost)
         winFormVOWindowHost := new
         RETURN
         

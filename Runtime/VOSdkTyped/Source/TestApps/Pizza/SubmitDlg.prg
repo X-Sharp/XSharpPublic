@@ -31,24 +31,24 @@ self:PostInit()
 return self
 
 
-METHOD ShowModal(lActive AS LOGIC)  AS USUAL 
-  local i as int	
 
-  if (lActive)
-		for i:=1 to 100
-			oDCProgressBar1:Position := i
-			self:Wait()
-		next
-  endif
+METHOD PostShowDialog() AS USUAL
+  LOCAL i AS INT	
+  	FOR i:=1 TO 100
+		oDCProgressBar1:Position := i
+        DoEvents()
+		SELF:Wait()
+	NEXT
 
-  return super:ShowModal(lActive)	
+
+  
 
 	
 
 method Wait() 
-	local l := GetTickCount() as DWORD
+	LOCAL l := DateTime.Now:Ticks AS DWORD
 	
-	while ((GetTickCount() - l) < 25)
+	WHILE ((DateTime.Now:Ticks - l) < 25)
 	end	
 
 	return nil

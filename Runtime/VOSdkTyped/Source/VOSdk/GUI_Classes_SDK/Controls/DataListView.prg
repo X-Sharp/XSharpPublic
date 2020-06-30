@@ -1,7 +1,8 @@
 #include "VOSystemClasses.vh"
 
 
-#using System.Windows.Forms
+USING System.Windows.Forms
+USING VOSDK := XSharp.VO.SDK
 CLASS DataListView INHERIT ListView
 	PROTECT oDLVServer AS DataServer
 	PROTECT iColumns AS INT
@@ -24,10 +25,10 @@ CLASS DataListView INHERIT ListView
 	PROTECTED METHOD __RetrieveVirtualItems(sender AS OBJECT, e AS RetrieveVirtualItemEventArgs) AS VOID
 		// e:Item
 		// e:ItemIndex
-		LOCAL oItem AS XSharp.VO.ListViewItem
+		LOCAL oItem AS VOSDK.ListViewItem
 		LOCAL uValue AS USUAL
 		SELF:__SetServerPos(e:ItemIndex+1, TRUE)
-		oItem := XSharp.VO.ListViewItem{}
+		oItem := VOSDK.ListViewItem{}
 		FOREACH IMPLIED oCol IN __ListView:Columns
 			LOCAL oColumn AS ListViewColumn
 			LOCAL symCol AS SYMBOL
@@ -376,7 +377,7 @@ CLASS DataListView INHERIT ListView
 	METHOD __StatusOK() AS OBJECT STRICT 
 		RETURN NULL_OBJECT
 
-	METHOD __Unlink(oDS := NIL AS USUAL) AS XSharp.VO.Control  STRICT 
+	METHOD __Unlink(oDS := NIL AS USUAL) AS VOSDK.Control  STRICT 
 		IF (oDLVServer != NULL_OBJECT)
 			oDLVServer:UnRegisterClient(SELF)
 			oDLVServer := NULL_OBJECT
@@ -494,7 +495,7 @@ CLASS DataListView INHERIT ListView
 	ACCESS Owner as Object
 		RETURN oParent
 
-	METHOD Refresh() 
+	METHOD Refresh() AS VOID STRICT
 		LOCAL dwItems AS LONG
 		dwItems := SELF:__GetServerCount
 		SELF:__ListView:VirtualListSize := dwItems
@@ -503,7 +504,7 @@ CLASS DataListView INHERIT ListView
 		ENDIF
 		SELF:__ListView:RedrawItems(0, dwItems, TRUE)
 		
-		RETURN SELF
+		RETURN 
 
 	ACCESS Server as DataServer
 		RETURN oDLVServer

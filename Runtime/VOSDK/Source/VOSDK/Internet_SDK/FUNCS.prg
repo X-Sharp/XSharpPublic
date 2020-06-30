@@ -177,7 +177,7 @@ FUNCTION __DecodeUU(cText AS STRING, hfOut AS PTR)    AS DWORD STRICT
 	RETURN nRet
 
 
-STATIC FUNCTION __FixDate   (pft AS _WINFILETIME) AS VOID STRICT
+INTERNAL FUNCTION __FixDate   (pft AS _WINFILETIME) AS VOID STRICT
 	LOCAL stRemote IS _WINSYSTEMTIME
 	LOCAL stLocal  IS _WINSYSTEMTIME
 	LOCAL nDiff    AS DWORD
@@ -248,13 +248,6 @@ FUNCTION __GetFileData(pData AS _WINWIN32_FIND_DATA) AS ARRAY STRICT
    aTemp := ArrayCreate(F_ATTR)
    cTemp := Psz2String(@pData:cFileName)
 
-   //  UH 03/08/2002
-   //RvdH 070423 File Names can have embedded spaces
-   //     nPos := RAt(" ", cTemp)
-   //     IF (nPos > 0)
-   //         cTemp := SubStr2(cTemp, nPos + 1)
-   //     ENDIF
-
    aTemp[F_NAME] := cTemp
    IF pData:nFileSizeHigh > 0
       aTemp[F_SIZE] := pData:nFileSizeLow + (pData:nFileSizeHigh * 1.0 * MAXDWORD)
@@ -264,7 +257,6 @@ FUNCTION __GetFileData(pData AS _WINWIN32_FIND_DATA) AS ARRAY STRICT
    aTemp[F_DATE] := __GetDate(@pData:ftLastWriteTime)
    aTemp[F_TIME] := __GetTime(@pData:ftLastWriteTime)
 
-   // UH 08/13/1998
    IF pData:dwFileAttributes = 0
       IF At2(".", cTemp) = 0
          pData:dwFileAttributes := FA_DIRECTORY
@@ -289,7 +281,6 @@ FUNCTION __GetFileName(cFile AS STRING) AS STRING STRICT
 	RETURN SubStr2(cFile, dwPos + 1)
 
 FUNCTION __GetFullPath(cPath AS STRING, cFile AS STRING)	AS STRING STRICT
-	//SE-040622
 	LOCAL dwPos	AS DWORD
 
 	IF SLen(cPath) > 0
@@ -314,14 +305,6 @@ FUNCTION __GetTime(pTime AS _WINFILETIME) AS STRING STRICT
    //LOCAL sysTime IS _WINSYSTEMTIME
    LOCAL wDate, wTime AS WORD
    LOCAL nHours, nMins, nSecs AS DWORD
-   //RvdH 071203 Use DosTime mechanism  because that produces the correct results !
-//    IF FileTimeToLocalFileTime(pTime, @ftLocal)
-//       pTime := @ftLocal
-//    ENDIF
-
-//    IF FileTimeToSystemTime(pTime, @sysTime)
-//       cRet := ConTime(sysTime.wHour, sysTime.wMinute, sysTime.wSecond)
-//    ENDIF
    // Dos Time Structure is 16 bits:
    // hhhhhmmmmmmsssss
    // 1111110000000000
@@ -348,8 +331,6 @@ FUNCTION __GetTimeZoneDiff() AS STRING STRICT
 		nDiff := tzi:Bias/60
 
 	CASE dwZone == TIME_ZONE_ID_DAYLIGHT
-		//  UH 08/03/2002
-		//  nDiff := tzi.DaylightBias/60
 		nDiff := (tzi:Bias/60) + (tzi:DaylightBias/60)
 
 	OTHERWISE
@@ -367,7 +348,6 @@ FUNCTION __GetTimeZoneDiff() AS STRING STRICT
 	RETURN cRet
 
 FUNCTION __GetToken(cText AS STRING, cStart AS STRING, cStop AS STRING, lStopNotRequired := FALSE AS LOGIC) AS STRING STRICT
-	//SE-040627
 	LOCAL cRet		AS STRING
 	LOCAL dwPos		AS DWORD
 	LOCAL dwStop	AS DWORD
@@ -399,52 +379,37 @@ FUNCTION __GetToken(cText AS STRING, cStart AS STRING, cStop AS STRING, lStopNot
 	RETURN cRet
 
 FUNCTION __GoodFileName(cAttachName AS STRING) AS STRING STRICT
-    LOCAL pName AS BYTE PTR
-    LOCAL x, len AS INT
-    LOCAL b AS BYTE
+    LOCAL sb AS System.Text.StringBuilder
     // The following characters are not allowed in a filename: \ / ? : * " > < |
     // Replace them with                                       [ ] $ = + ^ ) ( !
-    len     := SLen(cAttachName)
-	#ifndef VULCAN
-    pName   := StringAlloc(cAttachName)
-	#endif
-    FOR x := 1 TO len
-		#ifdef VULCAN
-			b := cAttachName[x]
-		#else
-	        b := pName[x]
-		#endif
-        DO CASE
-        CASE b ==  47   // "/" => "["  // 47 => 91
-            b := 91
-        CASE b ==  92   // "\" => "]"  // 92 => 93
-            b := 93
-        CASE b ==  63   // "?" => "$"  // 63 => 36
-            b := 36
-        CASE b ==  58   // ":" => "="  // 58 => 61
-            b := 61
-        CASE b ==  42   // "*" => "+"  // 42 => 43
-            b := 43
-        CASE b ==  34   // '"' => '^'  // 34 => 94
-            b := 94
-        CASE b ==  62  //  ">" => ")"  // 62 => 41
-            b := 41
-        CASE b ==  60  //  "<" => "("  // 60 => 40
-            b := 40
-        CASE b ==  124 //  "|" => "!"  // 124 => 33
-            b := 33
-        ENDCASE
-		#ifdef VULCAN
-			cAttachName[x] := b
-		#else
-	        pName[x] := b
-		#endif
+    sb      := System.Text.StringBuilder{}
+    FOREACH VAR ch IN cAttachName
+        LOCAL c AS CHAR
+		SWITCH ch
+        CASE c'/'    
+            c := c'['
+        CASE c'\\'   
+            c := c']'
+        CASE c'?'   
+            c := c'$'
+        CASE c':'   
+            c := c'='
+        CASE c'*'   
+            c := c'+'
+        CASE c'"'   
+            c := c'^'
+        CASE c'>'  
+            c := ')'
+        CASE c'<'  
+            c := c'('
+        CASE c'|' 
+            c := c'!'
+        OTHERWISE
+            c := ch
+        END SWITCH
+        sb:Append(c)
     NEXT
-	#ifndef VULCAN
-    	cAttachName := Mem2String(pName, Len)
-	    MemFree(pName)
-	#endif
-	RETURN cAttachName
+	RETURN sb:ToString()
 
 FUNCTION __SaveAs(cPath AS STRING, cFile AS STRING, cMail AS STRING) AS DWORD STRICT
 
@@ -472,7 +437,6 @@ FUNCTION __SaveAs(cPath AS STRING, cFile AS STRING, cMail AS STRING) AS DWORD ST
 	RETURN nRet
 
 FUNCTION __StrList2Array(cList AS STRING, cDelimiter := ", " AS STRING) AS ARRAY STRICT
-	//SE-040628
 	LOCAL dwPos	  AS DWORD
 	LOCAL dwStart AS DWORD
 	LOCAL dwLen   AS DWORD
@@ -527,7 +491,6 @@ FUNCTION __UUDecodeMail  (cPath AS STRING, cFile AS STRING, cMail AS STRING) AS 
 		cFile := SubStr3(cMail, nPos, nStop - nPos)
 	ENDIF
 
-	//  UH 15/12/1999
 	cFile := __GoodFileName(cFile)
 	cFile := __GetFullPath(cPath, cFile)
 
@@ -558,7 +521,6 @@ FUNCTION CheckHostIP(cHost AS STRING) AS STRING STRICT
 	//
 	//  Takes a IP or address string and returns IP string
 	//
-	// SE - 060704
 	LOCAL dwPos AS DWORD
 	LOCAL cRet  AS STRING
 
@@ -575,7 +537,6 @@ FUNCTION CheckHostIP(cHost AS STRING) AS STRING STRICT
 
 //GLOBAL csWSA IS _WINRTL_CRITICAL_SECTION
 FUNCTION DecodeMailTimeStamp(cDate AS STRING, dDate REF DATE, cTime REF STRING) AS LOGIC STRICT
-	//SE-040702
 	LOCAL aMonth  AS ARRAY
 	LOCAL cTemp	  AS STRING
 	LOCAL dwPos	  AS DWORD
@@ -589,7 +550,6 @@ FUNCTION DecodeMailTimeStamp(cDate AS STRING, dDate REF DATE, cTime REF STRING) 
 
 	aMonth := {"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"}
 
-	//	UH 09/07/1999
 	IF (dwPos := At2(", ", cDate)) = 0
 		dwPos := 1
 	ELSE
@@ -699,30 +659,14 @@ FUNCTION	GetMailTimeStamp(lForceUK AS LOGIC)	AS	STRING STRICT
 	LOCAL d         AS DATE
 	LOCAL cTime		AS STRING
 	LOCAL nTmp		AS DWORD
-	//RvdH 070709 Changed to use hardcoded DOW and MOY strings
-	//            in stead of switching the Nation DLLs
-	// 	LOCAL lDict     AS LOGIC
-	// 	LOCAL lIntl     AS LOGIC
-	// 	LOCAL nCountry  AS DWORD
-	// 	LOCAL cNation	AS STRING
-
-	// modified by W.Riedman to allow the date format to be forced to
-	// English for the transmission of Sent Date.  19/04/2004
-
-	// 	nCountry := SetDateCountry(BRITISH)
-	// 	cNation  := GetNatDLL()
-
-	// 	lDict := _SetDict(.F.)
-	// 	lIntl := _SetIntl(.F.)
-	// 	IF lForceUK
-	// 		SetNatDLL("")		// clear the loaded library
-	// 	ENDIF
+	// Changed to use hardcoded DOW and MOY strings
+	// in stead of switching the Nation DLLs
 
 	d := Today()
 
 	IF lForceUK
 		nTmp := DoW(d)
-		cRet := SubStr("SunMonTueWenThuFriSat",(3*nTmp)-2,3)
+		cRet := SubStr("SunMonTueWedThuFriSat",(3*nTmp)-2,3)
 	ELSE
 		cRet := SubStr3( CDoW(d), 1, 3)
 	ENDIF
@@ -741,14 +685,6 @@ FUNCTION	GetMailTimeStamp(lForceUK AS LOGIC)	AS	STRING STRICT
 	cRet += AllTrim(Str(Year(d)))
 
 	cTime := Time()
-
-	//  	_SetDict(lDict)
-	// 	_SetIntl(lIntl)
-
-	// reset nation dll and date format
-	// 	SetDateCountry(nCountry)
-	// 	SetNatDLL(cNation)
-
 	cRet := cRet + " " + cTime + __GetTimeZoneDiff()			//" +0100"
 
 	RETURN cRet
@@ -792,7 +728,6 @@ FUNCTION GetUseNetMsgID(cUnique AS STRING, cDomain AS STRING)   AS STRING STRICT
 
 
 FUNCTION HostName() AS STRING STRICT
-	//SE-040706
 	LOCAL cRet    AS STRING
 	LOCAL pBuffer AS PSZ
 
@@ -822,7 +757,7 @@ FUNCTION IFXFtpFindFirstFile(hConnect AS PTR,;
 	RETURN hFind
 
 
-STATIC FUNCTION IFXGetTimeDiff(pstRemote AS _WINSYSTEMTIME, pstLocal AS _WINSYSTEMTIME) AS INT STRICT
+INTERNAL FUNCTION IFXGetTimeDiff(pstRemote AS _WINSYSTEMTIME, pstLocal AS _WINSYSTEMTIME) AS INT STRICT
 	LOCAL nMinute   AS INT
 	LOCAL nHours    AS INT
 	LOCAL nDays     AS INT
@@ -863,7 +798,6 @@ STATIC FUNCTION IFXGetTimeDiff(pstRemote AS _WINSYSTEMTIME, pstLocal AS _WINSYST
 
 
 FUNCTION IFXInternetFindNextFile(hFind AS PTR, lpfd AS _WINWIN32_FIND_DATA) AS LOGIC STRICT
-	//SE-040706
 	IF InternetFindNextFile(hFind, lpfd)
 		__FixDate(@lpfd:ftLastWriteTime)
 		RETURN TRUE
@@ -887,8 +821,6 @@ FUNCTION WinSockExit() AS INT STRICT
 		ENDIF
 	ENDIF
 
-	//  UH 02/11/2000
-	//DeleteCriticalSection(@csWSA) //SE - was deleted by comment //
 
 	RETURN nRet
 
@@ -946,7 +878,6 @@ FUNCTION WinSockInit()
 
 
 FUNCTION __Array2StrList(aList AS ARRAY, cDelimiter := ", " AS STRING) AS STRING STRICT
-	//SE-040628
 	LOCAL cRet    AS STRING
 	LOCAL dwI     AS DWORD
 	LOCAL dwCount AS DWORD
@@ -965,21 +896,13 @@ FUNCTION __Array2StrList(aList AS ARRAY, cDelimiter := ", " AS STRING) AS STRING
 
 PROCEDURE LibInit() _INIT3
 	IF WinSockInit()
-#ifdef __VULCAN__
        AppDomain.CurrentDomain:ProcessExit += System.EventHandler{ NULL, @WinSockExitHandler() }
-#else
-        _RegisterExit(@WinSockExit())
-#endif
-		//  UH 02/11/2000
-		//InitializeCriticalSection(@csWSA)
 	ENDIF
 	RETURN
 
-#ifdef __VULCAN__
-STATIC FUNCTION WinSockExitHandler( o AS OBJECT, args AS EventArgs ) AS VOID
+INTERNAL FUNCTION WinSockExitHandler( o AS OBJECT, args AS EventArgs ) AS VOID
    WinSockExit()
    RETURN
-#endif
 
 
 FUNCTION POPGetMails(cServerIP AS STRING, cUser AS STRING, cPassW AS STRING, lDelete AS LOGIC) AS ARRAY STRICT
@@ -1069,7 +992,6 @@ FUNCTION __AdJustPath(cPath AS USUAL) AS STRING
     ENDIF
 RETURN cPath
 
-#ifdef __VULCAN__
   // Copied from System Library
 
 FUNCTION ConvertFromCodePageToCodePage(cString AS STRING, dwFrom AS DWORD, dwTo AS DWORD) AS STRING
@@ -1105,5 +1027,4 @@ FUNCTION ConvertFromCodePageToCodePage(cString AS STRING, dwFrom AS DWORD, dwTo 
 
    RETURN cString
 
-#endif
 

@@ -316,7 +316,7 @@ FUNCTION SetPath(cPathList AS STRING) AS STRING
 
 /// <summary>
 /// Return the Path array that is used by the File() function to locate files outside of the current directory.
-/// This is a combination of the SetDefault() and SetPath() variables
+/// This is a combination of the SetDefault() and SetPath() variables.
 /// This may be null if the file function has never been called or never been called for files outside of the current
 /// directory.
 /// </summary>
@@ -327,7 +327,7 @@ FUNCTION SetPathArray() AS STRING[]
 
 /// <summary>
 /// Set the Path array that is used by the File() function to locate files outside of the current directory.
-/// This is a combination of the SetDefault() and SetPath() variables
+/// This is a combination of the SetDefault() and SetPath() variables. 
 /// This array gets cleared when SetPath() or SetDefault() is called and is initialized the first time File() or a related function
 //  is called after the path has been changed.
 /// </summary>

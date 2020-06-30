@@ -207,7 +207,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
                 LOCAL ordCondInfo AS DbOrderCondInfo
                 LOCAL isOk AS LOGIC
                 //
-                ordCondInfo := SELF:_oRdd:_OrderCondInfo
+                ordCondInfo := SELF:_oRdd:OrderCondInfo
                 isOk := SELF:GoCold()
                 IF (!isOk)
                     RETURN FALSE

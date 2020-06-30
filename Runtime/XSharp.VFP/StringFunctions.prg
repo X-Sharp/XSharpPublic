@@ -1,4 +1,4 @@
-﻿//
+//
 // Copyright (c) XSharp B.V.  All Rights Reserved.
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
@@ -50,24 +50,24 @@ FUNCTION ForceExt( cFileName AS STRING, cExtension AS STRING, tlOptAsVfp9 AS LOG
     *-- current take on matters is that the Dotnet-Version should be Default behaviour
     *-- as vfp9 version behaviour in edge cases could be seen as erroneous
     *-- work in progress and not tested, as existing code should only call 2-parameter overload should be safe
-    if tlOptAsVfp9 == .f. 
-        return ForceExt( cFileName, cExtension)
-    endif
+    IF tlOptAsVfp9 == .f. 
+        RETURN ForceExt( cFileName, cExtension)
+    ENDIF
     cFileName := JustFName(cFileName)
-    if cFileName:EndsWith(".")
+    IF cFileName:EndsWith(".")
         *-- if filename ends with dot, cut that
         *-- but only rightmost one, ending in several dots cuts still only 1
         cFileName := cFileName:Substring(0 , cFileName:Length-1)
-    endif
-    if cExtension:StartsWith(".")
+    ENDIF
+    IF cExtension:StartsWith(".")
         cExtension := cExtension:Substring(1)
-    endif
-    local cResult as STRING
-    if Min(cFileName:Length, cExtension:Length)>0
+    ENDIF
+    LOCAL cResult AS STRING
+    IF Min(cFileName:Length, cExtension:Length)>0
         cResult := cFileName + "." + cExtension
-    else
+    ELSE
         cResult := ""
-    endif
+    ENDIF
     RETURN cResult
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/forcepath/*" />
@@ -76,7 +76,7 @@ FUNCTION ForcePath( cFileName AS STRING, cPath AS STRING) AS STRING
     IF String.IsNullOrEmpty(cFileName)
         RETURN ""
     ENDIF
-    var cReturn := AddBs(cPath) + JustFName(cFileName)
+    VAR cReturn := AddBs(cPath) + JustFName(cFileName)
     RETURN cReturn
 
 
@@ -97,7 +97,7 @@ FUNCTION JustDrive(cPath AS STRING) AS STRING
 FUNCTION JustExt(cPath AS STRING) AS STRING
     *-- Default for new parameter  lOptWithLeadingDot ist .f.
     *-- As returning all extensions with leading dot could lead to breaking changes
-    return JustExt(cPath, .f.)
+    RETURN JustExt(cPath, .f.)
     
     
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/justdrive/*" />
@@ -107,9 +107,9 @@ FUNCTION JustExt(cPath AS STRING, lOptWithLeadingDot AS LOGIC) AS STRING
         RETURN ""
     ENDIF
     VAR result := Path.GetExtension(cPath)
-    if lOptWithLeadingDot == .f. and result:StartsWith(".")
+    IF lOptWithLeadingDot == .f. AND result:StartsWith(".")
         result := result:Substring(1)
-    endif
+    ENDIF
     RETURN result
 
 
@@ -130,7 +130,7 @@ FUNCTION JustPath(cPath AS STRING) AS STRING
         RETURN ""
     ENDIF
     LOCAL result := cPath AS STRING
-    LOCAL nPos := result:LastIndexOf(PathHelpers.PathChar) as LONG
+    LOCAL nPos := result:LastIndexOf(PathHelpers.PathChar) AS LONG
     IF  nPos >= 0
         result := result:Substring(0, nPos )
     ENDIF
@@ -210,7 +210,7 @@ FUNCTION RAt(cSearchExpression AS STRING , cExpressionSearched AS STRING , nOccu
 			//  iPosition--
 			//    
 			//	, like the c# sources do, is not correct. 
-			//  That´s only necessary if the len of the search string 	
+			//  That's only necessary if the len of the search string 	
 			//  is 1.    
 
 			IF cSearchExpression:Length == 1 .AND. --iPosition < 0 
@@ -304,3 +304,76 @@ FUNCTION AtC(cSearchExpression AS STRING, cExpressionSearched AS STRING, nOccurr
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/atcc/*" />
 FUNCTION AtCC(cSearchExpression AS STRING, cExpressionSearched AS STRING, nOccurrence := 1 AS DWORD) AS DWORD
 	RETURN AtC(cSearchExpression, cExpressionSearched, nOccurrence)
+
+/// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/alltrim/*" />
+FUNCTION AllTrim(Expression AS STRING, Flags AS INT, TrimChars PARAMS STRING[]) AS STRING STRICT
+	RETURN Trim_helper(.T., .T., Expression, Flags, TrimChars)
+
+/// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/ltrim/*" />
+FUNCTION LTrim(Expression AS STRING, Flags AS INT, TrimChars PARAMS STRING[]) AS STRING STRICT
+	RETURN Trim_helper(.T., .F., Expression, Flags, TrimChars)
+
+/// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/rtrim/*" />
+FUNCTION RTrim(Expression AS STRING, Flags AS INT, TrimChars PARAMS STRING[]) AS STRING STRICT
+	RETURN Trim_helper(.F., .T., Expression, Flags, TrimChars)
+
+/// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/trim/*" />
+FUNCTION Trim(Expression AS STRING, Flags AS INT, TrimChars PARAMS STRING[]) AS STRING STRICT
+	RETURN Trim_helper(.F., .T., Expression, Flags, TrimChars)
+
+STATIC FUNCTION Trim_helper(TrimLeft AS Boolean, TrimRight AS Boolean, Expression AS STRING, Flags AS INT, TrimChars PARAMS STRING[]) AS STRING STRICT
+
+    LOCAL parmNdx AS INT
+    LOCAL Trimmed = .T. AS Boolean
+    LOCAL LRTrimmed AS INT
+    LOCAL comparison = StringComparison.Ordinal AS System.StringComparison
+    LOCAL compared AS STRING
+
+    IF Expression = NULL
+        RETURN Expression
+    END IF
+
+    IF Flags = 1
+         comparison = StringComparison.OrdinalIgnoreCase
+    END IF
+
+    DO WHILE Trimmed
+
+        Trimmed = .F.
+
+        FOR parmNdx = 1 TO TrimChars:Length
+ 
+            compared = TrimChars[parmNdx]
+
+            IF TrimLeft
+                LRTrimmed = 0
+ 
+                DO WHILE String.Compare(Expression, LRTrimmed, compared, 0, compared:Length, comparison) = 0
+                    LRTrimmed += compared:Length
+                END DO
+                IF LRTrimmed > 0
+                    Expression = Expression:Substring(LRTrimmed)
+                    Trimmed = .T.
+                END IF
+            END IF
+
+            IF TrimRight
+                LRTrimmed = Expression:Length - compared:Length
+
+                DO WHILE LRTrimmed >= 0 AND String.Compare(Expression, LRTrimmed, compared, 0, compared:Length, comparison) = 0
+                    LRTrimmed -= compared:Length
+                END DO
+                IF LRTrimmed < (Expression:Length - compared:Length)
+                    Expression = Expression:Substring(0, LRTrimmed + compared:Length)
+                    Trimmed = .T.
+                END IF
+            END IF
+
+        NEXT
+ 
+    END DO
+
+    RETURN Expression
+
+END FUNCTION
+

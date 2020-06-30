@@ -54,7 +54,7 @@ CLASS ComboBox INHERIT ListBox
 
 	ACCESS EditHandle AS IntPtr
 		IF SELF:ValidateControl()
-			Win32.GetWindow(SELF:oCtrl:Handle, GW_CHILD)
+			GuiWin32.GetWindow(SELF:oCtrl:Handle, GW_CHILD)
 		ENDIF
 		RETURN IntPtr.Zero
 	

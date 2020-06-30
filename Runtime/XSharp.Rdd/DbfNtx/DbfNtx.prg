@@ -292,14 +292,14 @@ BEGIN NAMESPACE XSharp.RDD
                 // Save the current context
                 LOCAL currentRelation := SELF:_RelInfoPending AS DbRelInfo
                 SELF:_RelInfoPending := NULL
-                VAR oParent := (DBF) currentRelation:Parent 
-                IF oParent:_EoF
+                VAR oParent := (DBFNTX) currentRelation:Parent 
+                IF oParent:EoF
                     //
                     isOk := SELF:GoTo( 0 )
                 ELSE
                     isOk := SELF:RelEval( currentRelation )
                     
-                    IF isOk .AND. !((DBF)currentRelation:Parent):_EoF
+                    IF isOk .AND. !((DBFNTX)currentRelation:Parent):EoF
                         TRY
                             LOCAL seekInfo AS DbSeekInfo
                             seekInfo := DbSeekInfo{}
@@ -415,7 +415,7 @@ BEGIN NAMESPACE XSharp.RDD
         
         PUBLIC METHOD GoTop() AS LOGIC
             BEGIN LOCK SELF
-                local result as LOGIC    
+                LOCAL result AS LOGIC
                 IF SELF:CurrentOrder != NULL
                     result := SELF:CurrentOrder:GoTop()
                     SELF:_CheckEofBof()

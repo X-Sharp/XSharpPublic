@@ -6425,7 +6425,7 @@ DEFINE PFE_TABLECELL       := 0x4000		/*  that para is part of a table*/
 
 // split window
 #region defines
-DEFINE CASPLIT_CLASS            := "CA_SplitWindow32"
+//DEFINE CASPLIT_CLASS            := "CA_SplitWindow32"
 DEFINE SWS_HALIGN               := 0x00000001
 DEFINE SWS_VALIGN               := 0x00000002
 DEFINE SWS_TEXTHASPARMS		:= 0x00000004

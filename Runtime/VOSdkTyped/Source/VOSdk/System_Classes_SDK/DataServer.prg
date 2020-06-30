@@ -134,7 +134,7 @@ ACCESS DBStruct AS ARRAY
 
     RETURN aStruct
 
-	METHOD Delete( ) AS LOGIC CLIPPER
+METHOD Delete( ) AS LOGIC CLIPPER
     RETURN FALSE
 
 ACCESS EoF AS LOGIC
@@ -266,7 +266,6 @@ METHOD Notify( kNotification, uDescription )
 		RETURN 
 
 METHOD RegisterClient( oForm ) AS LOGIC CLIPPER
-
     IF AScan( aClients, oForm ) # 0
         RETURN FALSE
     ENDIF
@@ -295,6 +294,7 @@ METHOD RegisterClient( oForm ) AS LOGIC CLIPPER
     IF aDataFields == NULL
         BREAK DbError{ SELF, #SetDataField, EG_SEQUENCE, ;
             __CavoStr( __CAVOSTR_DBFCLASS_NODATAFIELDSEXIST ) }
+            
     ELSEIF nFieldPosition < 1 .OR. nFieldPosition > ALen(aDataFields)
         BREAK DbError{ SELF, #SetDataField, EG_ARG, ;
             __CavoStr(__CAVOSTR_DBFCLASS_BADFIELDPOSITION), nFieldPosition, "nFieldPosition" }

@@ -56,13 +56,6 @@ FUNCTION StrExtract( cSearchExpression, cBeginDelim , cEndDelim , nOccurrence, n
     // RETURN ""
 
 /// <summary>-- todo --</summary>
-/// <include file="VFPDocs.xml" path="Runtimefunctions/strtofile/*" />
-
-FUNCTION StrToFile( cExpression, cFileName , uFlag) AS LONG
-    THROW NotImplementedException{}
-    // RETURN 0
-    
-/// <summary>-- todo --</summary>
 /// <include file="VFPDocs.xml" path="Runtimefunctions/sys/*" />
 
 FUNCTION Sys( nSetting, uNewValue) AS USUAL

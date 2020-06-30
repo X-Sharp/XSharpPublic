@@ -337,7 +337,7 @@
     <param name="uArea">
       Specifies the work area number or alias .
       Include this to specify a table open in a work area other than the current work area.
-      CpDbf( ) returns 0 if a table isn't open in the work area you specify. If a table doesn't have the alias you specify with cTableAlias,
+      CpDbf( ) returns 0 if a table isn't open in the work area you specify. If a table doesn't have the alias you specify with uArea,
       X# generates an error message.
     </param>
     <remarks>
@@ -378,6 +378,13 @@
     <summary>
       Creates an instance of a registered COM object (such as a X# Automation server) on a remote computer.
     </summary>
+    <param name="cClsIdOrcProgId">
+      Specifies the CLSID (Class Identifier) or PROGID (Programmatic Identifier) for the COM object to instantiate.
+      If you include a CLSID, the COM object must be registered on the remote server you specify with cComputerName.
+      If you include a PROGID, the COM object must be registered on both the your local computer and the remote computer you specify with cComputerName.
+      Attempting to use a PROGID without first registering the server on your local computer will generate the OLE error Code 0x800401f3, "Invalid Class String."<br/>
+      For Visual FoxPro automation servers created on your local machine, you can use the server object CLSID and PROGID properties to determine the local CLSID and PROGID values.
+    </param>
     <param name="cComputerName">
       Specifies the remote computer on which the COM object is instantiated.<br/>
       If cComputerName is the empty string, the COM object is instantiated on the local computer or a redirected machine as specified in the registry.<br/>
@@ -506,7 +513,7 @@
     </summary>
     <param name="uField">
       Specifies the name of a field. This is used primarily to retrieve the actual field caption as stored
-      in a database container (DBC) when used with the nFlags parameter.<br/>
+      in a database container (DBC) when used with the nFlag parameter.<br/>
       If the field caption is an expression (=), the expression is evaluated. Otherwise, the actual string literal is returned.
       If the expression cannot be evaluated at run time, an error is raised, and the actual field name is returned.<br/>
       Or<br/>
@@ -516,9 +523,8 @@
     </param>
     <param name="uArea">
       Specifies the work area of the table for which <b>Field( )</b> returns field names.
-      <b>Field( )</b> returns the empty string if a table is not open in the work area you specify.
-    </param>
-    <param name="cTableAlias">
+      <b>Field( )</b> returns the empty string if a table is not open in the work area you specify.<br/>
+      Or<br/>
       Specifies the alias of the table for which <b>Field( )</b> returns field names.
       X# generates an error message if you specify a table alias that does not exist.
     </param>
@@ -563,13 +569,41 @@
       </code>
     </example>
   </field>
+  <filetostr>
+    <summary>
+      Returns the contents of a file as a character string.
+    </summary>
+    <param name="cFileName">
+      Specifies the name of the file whose contents are returned as a character string.
+      If the file is in a directory other than the current default directory, include a path with the file name.
+    </param>
+    <param name="nFlags">
+      Specifies if the file needs to be opened in Unicode mode or as Binary file.
+      A value of S2F_FLAG_UNICODE_TEXT indicates that the file needs to be treated like a Unicode Text file.
+      All other values indicate that the file needs to be treated like a binary file (just like in FoxPro).
+    </param>
+    <returns>
+      Character
+    </returns>
+    <remarks>
+      Note that the size of the character string FileToStr( ) returns can be very large.
+    </remarks>
+    <example>
+       <code language="X#">
+        CD HOME()
+        cRedist=FileToStr("REDIST.TXT")
+        ?OCCURS(".MSM",cRedist)
+      </code>
+    </example>
+  </filetostr>
+
   <filter>
     <summary>
       Returns the table filter expression specified in Set Filter.
     </summary>
     <param name="uArea">
-      Specifies the work area of the table for which Filter( ) returns the filter expression.<br/>
-      Filter( ) returns the empty string if a table isn't open in the work area you specify.
+      Specifies the work area of the table for which Filter( ) returns the filter expression.
+      Filter( ) returns the empty string if a table isn't open in the work area you specify.<br/>
       Or<br/>
       Specifies the alias of the table for which Filter( ) returns the filter expression.<br/>
       X# generates an error message if you specify a table alias that doesn't exist.
@@ -876,7 +910,6 @@
       </code>
     </example>
   </idxcollate>
-
   <iscolor>
     <summary>
       Determines whether a computer can display color.
@@ -894,13 +927,9 @@
     <summary>
       Returns the table lock status.
     </summary>
-    <param name="nWorkArea">
-
-      Specifies the work area number of the table for which the lock status is returned. If you omit cTableAlias and nWorkArea, the lock status is returned for the table open in the current work area.
-
-    </param>
-    <param name="cTableAlias">
-
+    <param name="uArea">
+      Specifies the work area number of the table for which the lock status is returned. If you omit cTableAlias and nWorkArea, the lock status is returned for the table open in the current work area.<br/>
+      Or<br/>
       Specifies the alias of the table for which the lock status is returned. An "Alias not found" error message is generated if you specify an alias of a table that isn't open.
     </param>
     <returns>
@@ -961,13 +990,10 @@
       Specifies the number of the record for which the lock status is returned. If nRecordNumber is omitted, the record lock status is returned for the current record.
 
     </param>
-    <param name="nWorkArea">
+    <param name="uArea">
 
-      Specifies the work area number of the table for which the record lock status is returned. If you omit cTableAlias and nWorkArea, the record lock status is returned for the table open in the current work area.
-
-    </param>
-    <param name="cTableAlias">
-
+      Specifies the work area number of the table for which the record lock status is returned. If you omit cTableAlias and nWorkArea, the record lock status is returned for the table open in the current work area.<br/>
+      Or<br/>
       Specifies the alias of the table for which the record lock status is returned.
     </param>
     <returns>
@@ -1139,13 +1165,10 @@
       If the table doesn't have a structural compound index file and nIndexNumber is 1, the name of the first compound index file specified with Use or Set Index is returned. If nIndexNumber is 2, the second compound index file name is returned, and so on. If nIndexNumber is greater than the number of open compound index files, an empty string is returned.
 
     </param>
-    <param name="nWorkArea">
+    <param name="uArea">
 
-      Specifies the work area number for compound index files open in work areas other than the current one. If you omit this optional argument, names of compound index files are returned for the current work area.
-
-    </param>
-    <param name="cTableAlias">
-
+      Specifies the work area number for compound index files open in work areas other than the current one. If you omit this optional argument, names of compound index files are returned for the current work area.<br/>
+      Or<br/>
       Specifies the table alias for compound index files open in work areas other than the current one. If you omit this optional argument, names of compound index files are returned for the current work area.
     </param>
     <returns>
@@ -1196,7 +1219,7 @@
     </summary>
     <param name="eMessageText">
       Specifies the text that appears in the dialog box. You can also specify any other value instead of <paramref name="eMessageText" />.
-      The runtime will convert the value to a string before displaying it. 
+      The runtime will convert the value to a string before displaying it.
     </param>
     <param name="nDialogBoxType">
       Specifies the buttons and icons that appear in the dialog box, the default button when the dialog box is displayed, and the behavior of the dialog box.
@@ -1206,11 +1229,11 @@
       Specifies the text that appears in the title bar of the dialog box. If you omit <paramref name="cTitleBarText" />, the name of your program appears in the title bar.
     </param>
     <param name="nTimeOut">
-      Specifies the number of milliseconds X# displays <paramref name="eMessageText" /> without input from the keyboard or the mouse before clearing <paramref name="eMessageText" />. 
+      Specifies the number of milliseconds X# displays <paramref name="eMessageText" /> without input from the keyboard or the mouse before clearing <paramref name="eMessageText" />.
       You can specify any valid timeout value. A value of less than 1 never times out until user enters input and behaves the same as omitting the nTimeout parameter.
     </param>
     <returns>
-      Numeric data type. <b>MessageBox( )</b> returns a value that indicates which button was chosen in the dialog box. 
+      Numeric data type. <b>MessageBox( )</b> returns a value that indicates which button was chosen in the dialog box.
       The following table lists the values <b>MessageBox( )</b> returns for each button.
       <list type="table">
         <listheader>
@@ -1339,22 +1362,22 @@
         </item>
       </list>
 
-      nDialogBoxType can be the sum of up to three values, one value from each of the preceding tables. 
+      nDialogBoxType can be the sum of up to three values, one value from each of the preceding tables.
       For example, if nDialogBoxType is 290 (2+32+256), the specified dialog box has the following characteristics: <br/>
-      
+
       - Abort, Retry, and Ignore buttons.<br/>
       - The message box displays the question mark icon.<br/>
       - The second button, Retry, is the default.<br/>
       <p/>
       Using defined constants such as MB_ABORTRETRYIGNORE + MB_ICONQUESTION + MB_DEFBUTTON2 can be more readable than 2 + 32 + 256.
-      The question mark icon is no longer recommended, because it does not clearly represent a specific type of message and because 
-      the phrasing of a message as a question could apply to any message type. In addition, users could confuse the message symbol 
-      question mark with Help Information. Therefore, it is not recommended to use the question mark symbol in your message boxes. 
+      The question mark icon is no longer recommended, because it does not clearly represent a specific type of message and because
+      the phrasing of a message as a question could apply to any message type. In addition, users could confuse the message symbol
+      question mark with Help Information. Therefore, it is not recommended to use the question mark symbol in your message boxes.
       The system continues to support inclusion only for backwards compatibility.
       <p/>
-      The <b>MessageBox( )</b> function has several overloads based on the parameter types that you pass. 
-      The first parameter is required and is always eMessageText. 
-      However, the optional second parameter can be nDialogBoxType if the type is <b>Numeric</b> or cTitleBarText if type is <b>Character</b>. 
+      The <b>MessageBox( )</b> function has several overloads based on the parameter types that you pass.
+      The first parameter is required and is always eMessageText.
+      However, the optional second parameter can be nDialogBoxType if the type is <b>Numeric</b> or cTitleBarText if type is <b>Character</b>.
       The nTimeout parameter is always assumed for the second optional numeric parameter passed. Valid examples include:
        <code language="X#">
         MessageBox("HELLO","MyTitle",68,6000)
@@ -1434,13 +1457,10 @@
       NDX( ) returns an empty string if nIndexNumber is greater than the number of .idx files in the index file list.
 
     </param>
-    <param name="nWorkArea">
+    <param name="uArea">
 
       Specifies the work area number for .IDX files open in a work area other than the current one. NDX( ) returns an empty string if no table is open in the work area you specify. If you omit nWorkArea, NDX( ) returns the names of .idx files open with the table in the current work area.
-
-    </param>
-    <param name="cTableAlias">
-
+      <br/>Or<br/>
       Specifies the table alias for .idx files open in a work area other than the current one. If no table has the alias you include, X# generates an error message. If you omit cTableAlias, NDX( ) returns the names of .idx files open with the table in the current work area.
     </param>
     <returns>
@@ -1479,13 +1499,10 @@
     <summary>
       Returns the name of the controlling index file or tag for the current or specified table.
     </summary>
-    <param name="nWorkArea">
+    <param name="uArea">
 
       Specifies the work area of a table whose controlling index file name or controlling tag name Order( ) returns.
-
-    </param>
-    <param name="cTableAlias">
-
+      <br/>Or<br/>
       Specifies a table alias whose controlling index file name or controlling tag name Order( ) returns.
 
     </param>
@@ -1595,13 +1612,10 @@
       Specifies which relation is returned. For example, if nRelationNumber is 3, <b>RELATION( )</b> returns the relational expression for the third relation created.
 
     </param>
-    <param name="nWorkArea">
+    <param name="uArea">
 
       Specifies the work area for a table open in another work area. If a table is not open in the specified work area, <b>RELATION( )</b> returns an empty string.
-
-    </param>
-    <param name="cTableAlias">
-
+      <br/>Or<br/>
       Specifies the table alias for a table open in another work area.
     </param>
     <returns>
@@ -2690,6 +2704,89 @@
 
   </sqltables>
 
+  <strtofile>
+    <summary>
+      Writes the contents of a character string to a file.
+    </summary>
+    <param name="cExpression">
+      Specifies the character string that is written to the file. cExpression can be a literal character string,
+      an expression that evaluates to a character string, or a character type variable, array element, or field.
+    </param>
+    <param name="cFileName">
+      Specifies the name of the file to which the character string is written. Include a path with the file name if the file is in a directory
+      other than the current default directory. If the file you specify does not exist, X# automatically creates it.<br/>
+      lAdditive (for backward compatibility)<br/>
+    </param>
+    <param name="lAdditive">
+      Specifies whether the character string is appended to the end of the file.
+      If lAdditive is true (.T.), the character string is appended to the end of the file.<br/>
+      If lAdditive is false (.F.) (the default), the file is overwritten with the character string.
+      You are asked if you want to overwrite an existing file if Set SAFETY is set to ON. If Set SAFETY is set to OFF,
+      the file is overwritten without warning.
+    </param>
+    <param name="nFlags">
+      You can use the nFlag parameter instead of lAdditive which enables you to also chose to write UTF-8 and
+      Unicode Byte Order Marks. The table in the remarks section describes the valid nFlag values.
+    </param>
+    <returns>
+      Numeric; the number of bytes written to the file.
+    </returns>
+    <remarks>
+      An nFlags value of 3 or 5 is not valid. You cannot attempt to write a new Byte Order Mark if nFlag bit 1, Additive, is set.<br/>
+      Unlike earlier versions of FoxPro, StrToFile( ) opens a file in Shared rather than Exclusive mode.
+      This is useful when multiple servers attempt to simultaneously write to the same file. Because of this change,
+      you might not need to check for StrToFile( ) to return 0 (failure to open a file).
+      <list type="table">
+        <listheader>
+          <term>nFlags</term>
+          <description>Hex</description>
+          <description>Description</description>
+        </listheader>
+        <item>
+          <term>0 (S2F_FLAG_OVERWRITE) (default)</term>
+          <description>0x0000</description>
+          <description>The file is overwritten with the character string (formerly lAdditive=.f.)</description>
+        </item>
+        <item>
+          <term>1 (S2F_FLAG_APPEND) </term>
+          <description>0x0001</description>
+          <description>The string is appended to the end of the file (formerly lAdditive=.t.).</description>
+        </item>
+        <item>
+          <term>2 (S2F_FLAG_UNICODE_LE) </term>
+          <description>0x0002</description>
+          <description>
+            Write a Little Endian Unicode Byte Order Mark (BOM) FF FE at the beginning of file. cExpression is assumed to be UNICODE,
+            therefore no translation is performed. The file is overwritten
+          </description>
+        </item>
+        <item>
+          <term>4 (S2F_FLAG_UTF8) </term>
+          <description>0x0004</description>
+          <description>
+            Write UTF-8 Byte Order Mark (BOM) EF BB BF at the beginning of file. cExpression is assumed to be UTF-8,
+            therefore no translation is performed. The file is overwritten.
+          </description>
+        </item>
+        <item>
+          <term>8 (S2F_FLAG_UNICODE_BE) </term>
+          <description>0x0008</description>
+          <description>
+            Write a Big Endian Unicode Byte Order Mark (BOM) FE FF at the beginning of file. cExpression is assumed to be UNICODE,
+            therefore no translation is performed. The file is overwritten
+          </description>
+        </item>
+        <item>
+          <term>256 (S2F_FLAG_UNICODE_TEXT) </term>
+          <description>0x0100</description>
+          <description>
+            Write the file to disk using the normal .Net Unicode text functions.
+          </description>
+        </item>
+      </list>
+    </remarks>
+  </strtofile>
+
   <stuffc>
     <summary>
       Returns a character string created by replacing a specified number of characters in a character expression with another character expression.
@@ -2763,8 +2860,9 @@
       Tag names from the structural compound index file (if one exists for the table) are returned.
       Tag names from other open compound index files are returned, again in the order in which the tags were created in the compound index files and in the order in which the compound index files are specified in the <b>Index</b> clause for <b>Use</b> or <b>Set Index</b>.
 
-      nWorkArea| cTableAlias
-      Returns tag names and index file names from files open in another work area. nWorkArea specifies a work area number and cTableAlias specifies a table alias. By default, tag names and index file names are returned from files in the current work area.
+      <param name="uArea">
+        Returns tag names and index file names from files open in another work area. nWorkArea specifies a work area number and cTableAlias specifies a table alias. By default, tag names and index file names are returned from files in the current work area.
+      </param>
     </param>
     <returns>
       Character. <b>TAG( )</b> returns an index tag name as an uppercase character string.
@@ -2796,13 +2894,10 @@
       If you omit CDXFileName, TAGCOUNT( ) returns the number of tags in all .cdx compound index files and open .idx single-entry index files in the currently selected work area or alias.
 
     </param>
-    <param name="nWorkarea">
+    <param name="uArea">
 
       Specifies the work area of the table for which TAGCOUNT( ) returns the number of tags for the .cdx compound index file.
-
-    </param>
-    <param name="cTableAlias">
-
+      <br/>Or<br/>
       Specifies the alias of the table for which TAGCOUNT( ) returns the number of tags for the .cdx compound index file.
     </param>
     <returns>
@@ -2826,13 +2921,10 @@
       Specifies the name of a .cdx compound index file containing the name of the tag you specify with IndexName.
 
     </param>
-    <param name="nWorkArea">
+    <param name="uArea">
 
       Specifies the work area of the table for which TAGNO( ) returns the index position for .cdx compound index file tags and .idx single-entry index files.
-
-    </param>
-    <param name="cTableAlias">
-
+      <br/>Or<br/>
       Specifies the alias of the table for which TAGNO( ) returns the index position for .cdx compound index file tags and .idx single-entry index files.
     </param>
     <returns>

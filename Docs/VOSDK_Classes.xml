@@ -11767,8 +11767,8 @@
         </code></example>
     </member>
     <member name="M:VO.DbServer.ConstructUniqueAlias(XSharp.__Usual)">
-      <summary>**Missing documentation **</summary>
-      <param name="cFileName">** missing parameter documentation **</param>
+      <summary>Create a unique alias based on the filename and an optional numeric suffix</summary>
+      <param name="cFileName">The filename to base the alias on.</param>
     </member>
     <member name="M:VO.DbServer.Continue">
       <summary>
@@ -11989,8 +11989,9 @@
         </code></example>
     </member>
     <member name="P:VO.DbServer.DbStructure">
-      <summary>**Missing documentation **</summary>
-      <value>**Missing documentation **</value>
+      <summary>Return the original dbstructure array from the DbServer object.</summary>
+      <value>The original dbstructure array from the DbServer object.</value>
+	  <summary>Since this returns the original array and not a copy of it you should be extremely careful not to change it !</summary>
     </member>
     <member name="M:VO.DbServer.Delete(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)">
       <summary>
@@ -12160,8 +12161,8 @@
         </code></example>
     </member>
     <member name="P:VO.DbServer.ErrorInfo">
-      <summary>**Missing documentation **</summary>
-      <value>**Missing documentation **</value>
+      <summary>Returns the internal ErrorInfo object, regardless of the last operation produced an error or not.</summary>
+      <value>The internal ErrorInfo object, regardless of the last operation produced an error or not.</value>
     </member>
     <member name="M:VO.DbServer.Eval(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)">
       <summary>
@@ -12204,8 +12205,8 @@
         </code></example>
     </member>
     <member name="P:VO.DbServer.FieldDesc">
-      <summary>**Missing documentation **</summary>
-      <value>**Missing documentation **</value>
+      <summary>This returns an empty array. For servers that were painted in the DbServer editor this returns the array of DataFields.</summary>
+      <value>An empty array. For servers that were painted in the DbServer editor this returns the array of DataFields.</value>
     </member>
     <member name="M:VO.DbServer.FIELDGET(XSharp.__Usual)">
       <summary>
@@ -12735,8 +12736,8 @@
       </remarks>
     </member>
     <member name="P:VO.DbServer.IndexList">
-      <summary>**Missing documentation **</summary>
-      <value>**Missing documentation **</value>
+         <summary>This returns an empty array. For servers that were painted in the DbServer editor this returns the array of Indexes.</summary>
+      <value>An empty array. For servers that were painted in the DbServer editor this returns the array of Indexes.</value>
     </member>
     <member name="M:VO.DbServer.INDEXORD">
       <summary>
@@ -13014,12 +13015,12 @@
       <value>The last modification date of the DBF file used in the server.</value>
     </member>
     <member name="P:VO.DbServer.MemoExt">
-      <summary>**Missing documentation **</summary>
-      <value>**Missing documentation **</value>
+      <summary>This returns the memo extension of the file (if any). For example DBT or FPT.</summary>
+      <value>The memo extension of the file (if any).</value>
     </member>
     <member name="P:VO.DbServer.Name">
-      <summary>**Missing documentation **</summary>
-      <value>**Missing documentation **</value>
+      <summary>This returns the name of the DbServer.</summary>
+      <value>The name of the DbServer</value>
     </member>
     <member name="M:VO.DbServer.NoIVarGet(XSharp.__Usual)">
       <summary>
@@ -13061,9 +13062,10 @@
       </remarks>
     </member>
     <member name="P:VO.DbServer.OleExt">
-      <summary>**Missing documentation **</summary>
-      <value>**Missing documentation **</value>
-    </member>
+	<summary>This returns the OLE extension of the file (if any). For example DFL.</summary>
+      <value>The OLE extension of the file (if any).</value>    
+	  <remarks>DFL files are not supported by the X# RDD system.</remarks>
+	  </member>
     <member name="P:VO.DbServer.OrderBottomScope">
       <summary>
         A key value representing the record of the bottom boundary in the range of key values that will be included in the controlling order's current scope.
@@ -13357,10 +13359,12 @@
         DBServer:OrderKeyAdd() evaluates the key expression (or &lt;uKeyValue&gt;, if specified), then adds the key for the current record to the order.  If the order has a for condition, the key will be added only if that condition is met, and then, only if it falls within the current scoping range.
         <note type="tip">RDDs may allow you to add several keys for the same record with consecutive calls to DBServer:OrderKeyAdd().</note>
         DBServer:OrderKeyAdd() will fail if:
-        The record pointer is positioned on an invalid record (i.e., at DBServer:EOF)
-        The specified order is not custom built
-        The specified order does not exist
-        No order was specified and there is no controlling order
+		<list type="bullet">
+        <item>The record pointer is positioned on an invalid record (i.e., at DBServer:EOF)</item>
+        <item>The specified order is not custom built</item>
+        <item>The specified order does not exist</item>
+        <item>No order was specified and there is no controlling order</item>
+		</list>
         <note type="tip">
           From the standard RDDs only the DBFCDX RDD supports Custom Indexes. This RDD does NOT support the use of the &lt;uKeyValue&gt; parameter. It always uses the Key Expression to calculate the Key Values to insert.
         </note></remarks>
@@ -13438,10 +13442,13 @@
         A custom built order is one that is not automatically maintained by the DBFCDX driver.  You can determine if an order is custom built using DBServer:OrderInfo(DBOI_CUSTOM, ...).  When you create such an order, it is initially empty.
         You must manually add and delete keys using DBServer:OrderKeyAdd() and DBServer:OrderKeyDel().
         DBServer:OrderKeyDel() will fail if:
-        The record pointer is positioned on an invalid record (for example, DBServer:EOF returns TRUE or the record pointer is positioned on a record that falls outside the orders' scope or for condition)
-        The specified order is not custom built
-        The specified order does not exist
-        No order was specified and there is no controlling order
+		<list type="bullet">
+        <item>The record pointer is positioned on an invalid record (for example, DBServer:EOF returns TRUE 
+		or the record pointer is positioned on a record that falls outside the orders' scope or for condition)</item>
+        <item>The specified order is not custom built</item>
+        <item>The specified order does not exist</item>
+        <item>No order was specified and there is no controlling order</item>
+		</list>
       </remarks>
       <example>
         This example creates a custom index, adds every fiftieth record to it, and deletes every hundredth record:
@@ -13631,8 +13638,8 @@
       </remarks>
     </member>
     <member name="P:VO.DbServer.PaintedStructure">
-      <summary>**Missing documentation **</summary>
-      <value>**Missing documentation **</value>
+      <summary>This returns a DBSTRUCT array based on the DataFields and Fieldspecs that were painter in the server editor.</summary>
+      <value>A DBSTRUCT array based on the DataFields and Fieldspecs that were painter in the server editor.</value>
     </member>
     <member name="M:VO.DbServer.RDDINFO(XSharp.__Usual,XSharp.__Usual)">
       <summary>
@@ -13731,8 +13738,8 @@
       </remarks>
     </member>
     <member name="P:VO.DbServer.Rdds">
-      <summary>**Missing documentation **</summary>
-      <value>**Missing documentation **</value>
+      <summary>This returns the list of RDDs that were passed to the DbServer constructor.</summary>
+      <value>The list of RDDs that were passed to the DbServer constructor.</value>
     </member>
     <member name="P:VO.DbServer.ReadOnly">
       <summary>
@@ -13906,8 +13913,8 @@
       </returns>
     </member>
     <member name="P:VO.DbServer.RelationChildren">
-      <summary>**Missing documentation **</summary>
-      <value>**Missing documentation **</value>
+      <summary>The returns the array of children that were registered with SetRelation()</summary>
+      <value>The array of children that were registered with SetRelation()</value>
     </member>
     <member name="M:VO.DbServer.Replace(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)">
       <summary>
@@ -13955,8 +13962,8 @@
       </remarks>
     </member>
     <member name="P:VO.DbServer.Retries">
-      <summary>**Missing documentation **</summary>
-      <value>**Missing documentation **</value>
+      <summary>The setting that determines how often the DbServer object should retry operations that fail.</summary>
+      <value>The setting that determines how often the DbServer object should retry operations that fail.</value>
     </member>
     <member name="M:VO.DbServer.RLOCK(XSharp.__Usual)">
       <summary>
@@ -14052,11 +14059,12 @@
         </code></example>
     </member>
     <member name="M:VO.DbServer.SELECT">
-      <summary>**Missing documentation **</summary>
+      <summary>Select the workarea that the DbServer uses.</summary>
+	  <returns>The previous workarea that was selected.</returns>
     </member>
     <member name="P:VO.DbServer.SelectionWorkArea">
-      <summary>**Missing documentation **</summary>
-      <value>**Missing documentation **</value>
+      <summary>The workarea number of the parent area when the dbserver is a child in a relation.</summary>
+      <value>The workarea number of the parent area when the dbserver is a child in a relation.</value>
     </member>
     <member name="M:VO.DbServer.SetDataField(XSharp.__Usual,XSharp.__Usual)">
       <summary>
@@ -14337,8 +14345,8 @@
       </remarks>
     </member>
     <member name="P:VO.DbServer.TableExt">
-      <summary>**Missing documentation **</summary>
-      <value>**Missing documentation **</value>
+      <summary>Return the Extension for the opened DBF. This is normally .DBF but may be different if a file with a different extension was opened.</summary>
+      <value>The Extension for the opened DBF</value>
     </member>
     <member name="M:VO.DbServer.Total(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)">
       <summary>
@@ -15800,12 +15808,12 @@
       <value>A numeric value representing the new minimum length validation for this field specification.</value>
     </member>
     <member name="P:VO.FieldSpec.MinLengthHL">
-      <summary>**Missing documentation **</summary>
-      <value>**Missing documentation **</value>
+      <summary>Error message when MinLength validation fails.</summary>
+      <value>Error message when MinLength validation fails.</value>
     </member>
     <member name="P:VO.FieldSpec.Nullable">
-      <summary>**Missing documentation **</summary>
-      <value>**Missing documentation **</value>
+      <summary>Is the field Nullable ?</summary>
+      <value>Is the field Nullable ?</value>
     </member>
     <member name="M:VO.FieldSpec.PerformValidations(XSharp.__Usual,XSharp.__Usual)">
       <summary>
@@ -15831,8 +15839,8 @@
       <value>A string representing the picture clause defined to this field specification.  It is used by the FieldSpec:Transform() method.</value>
     </member>
     <member name="P:VO.FieldSpec.RangeHL">
-      <summary>**Missing documentation **</summary>
-      <value>**Missing documentation **</value>
+      <summary>Error message when Range validation fails.</summary>
+      <value>Error message when Range validation fails.</value>
     </member>
     <member name="P:VO.FieldSpec.Required">
       <summary>
@@ -15841,8 +15849,8 @@
       <value>Logical value indicating whether the field is required (TRUE) or not (FALSE).</value>
     </member>
     <member name="P:VO.FieldSpec.RequiredHL">
-      <summary>**Missing documentation **</summary>
-      <value>**Missing documentation **</value>
+      <summary>Error message when Required validation fails.</summary>
+      <value>Error message when Required validation fails.</value>
     </member>
     <member name="M:VO.FieldSpec.SetLength(XSharp.__Usual,XSharp.__Usual)">
       <summary>
@@ -16013,17 +16021,21 @@
       <value>A code block that sets the validation rule for this field specification.</value>
     </member>
     <member name="P:VO.FieldSpec.ValidationHL">
-      <summary>**Missing documentation **</summary>
-      <value>**Missing documentation **</value>
+      <summary>Error message when Validation fails.</summary>
+      <value>Error message when Validation fails.</value>
     </member>
     <member name="P:VO.FieldSpec.ValType">
       <summary>
         A one-character string representing the data type defined to this field specification:
-        <list type="table"><listheader><term>Character</term><description>Meaning</description></listheader><item><term>C</term><description>String</description></item><item><term>D</term><description>Date</description></item><item><term>L</term><description>Logic</description></item><item><term>M</term><description>Memo</description></item><item><term>N</term><description>Long integer, float, byte, short integer, word, double word, Real4, Real8</description></item></list></summary>
+		</summary>
       <value>
         A one-character string representing the data type defined to this field specification:
-        CharacterMeaningCStringDDateLLogicMMemoNLong integer, float, byte, short integer, word, double word, Real4, Real8
       </value>
+	  <remarks>
+	  <list type="table"><listheader><term>Character</term><description>Meaning</description>
+	  </listheader><item><term>C</term><description>String</description></item><item><term>D</term><description>Date</description></item>
+	  <item><term>L</term><description>Logic</description></item><item><term>M</term><description>Memo</description></item><item><term>N</term><description>Long integer, float, byte, short integer, word, double word, Real4, Real8</description></item></list>
+	  </remarks>
     </member>
     <member name="T:VO.FileSpec">
       <summary>
@@ -16171,8 +16183,10 @@
         </code></example>
     </member>
     <member name="P:VO.FileSpec.ErrInfo">
-      <summary>**Missing documentation **</summary>
-      <value>**Missing documentation **</value>
+      <summary>Return the error object from the last Copy() or Move() operation.</summary>
+      <value>The error object from the last Copy() or Move() operation.</value>
+	  <seealso cref="O:VO.FileSpec.Copy" />
+	  <seealso cref="O:VO.FileSpec.Move" />
     </member>
     <member name="M:VO.FileSpec.Error(XSharp.__Usual,XSharp.__Usual)">
       <summary>
@@ -16372,7 +16386,11 @@
         Rename the file represented by this file specification.
       </summary>
       <param name="oFSTarget">The new file name.</param>
-      <param name="lName">** missing parameter documentation **</param>
+            <param name="lName">Make a different file name if conflict exist. 
+		The new name will start with the base file name of the original file. 
+		8 character file name with 5 or 6 chars of original name plus a suffix
+		ranging from "_1" to "_99" if a name conflict occurs. Otherwise returns NULL_STRING</param>
+
       <returns>
         TRUE if the file was successfully renamed; otherwise, FALSE.
       </returns>

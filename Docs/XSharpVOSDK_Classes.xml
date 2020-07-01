@@ -1,95 +1,41 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <doc>
   <members>
-    <member name="T:VO.__DDImp">
+    <member name="T:XSharp.VO.SDK.__DDImp">
       <exclude />
     </member>
-    <member name="T:VO.__DocApp">
+    <member name="T:XSharp.VO.SDK.__DocApp">
       <exclude />
     </member>
-    <member name="T:VO.__ExplorerLV">
+    <member name="T:XSharp.VO.SDK.__ExplorerLV">
       <exclude />
     </member>
-    <member name="T:VO.__ExplorerTV">
+    <member name="T:XSharp.VO.SDK.__ExplorerTV">
       <exclude />
     </member>
-    <member name="T:VO.__ForeignWindow">
+    <member name="T:XSharp.VO.SDK.__ForeignWindow">
       <exclude />
     </member>
-    <member name="T:VO.__FormattedString">
+    <member name="T:XSharp.VO.SDK.__FormattedString">
       <exclude />
     </member>
-    <member name="T:VO.__FormDialogWindow">
+    <member name="T:XSharp.VO.SDK.__FormDialogWindow">
       <exclude />
     </member>
-    <member name="T:VO.__FormFrame">
+    <member name="T:XSharp.VO.SDK.__FormFrame">
       <exclude />
     </member>
-    <member name="T:VO.__SplitView">
+    <member name="T:XSharp.VO.SDK.__SplitView">
       <exclude />
     </member>
-    <member name="T:VO.__VOToolBarUpdate">
+    <member name="T:XSharp.VO.SDK.__VOToolBarUpdate">
       <exclude />
     </member>
-    <member name="T:VO.__WindApp">
+    <member name="T:XSharp.VO.SDK.__WindApp">
       <exclude />
     </member>
-    <member name="T:VO._CodeBlock">
-      <summary>
-        Provide a class to be used by the runtime system to implement runtime-compiled code blocks.  A runtime-compiled code block becomes an instance of this class.
-      </summary>
-      <example>
-        Create a runtime-compiled code block; since it is an object, the class name can be displayed:
-        <code language="X#">
-          LOCAL cb
-          cb := &amp;("{|x|x * x}")
-          ? ClassName(cb)			// _CodeBlock
-        </code></example>
-    </member>
-    <member name="M:VO._CodeBlock.#ctor">
-      <summary>
-        Create a _CodeBlock object.
-      </summary>
-      <param name="nParamCount">The number of parameters the runtime code block expects.</param>
-      <param name="cCode">The binary string representing the code that makes up the code block.</param>
-      <remarks>
-        This method is only to be called by the X# macro system.
-      </remarks>
-    </member>
-    <member name="F:VO._CodeBlock._Code">
-      <summary>
-        A binary string representing the code that makes up the code block.
-      </summary>
-      <value>A binary string representing the code that makes up the code block.</value>
-      <remarks>
-        <note type="tip">This variable is only intended for use by the X# macro system.</note>
-      </remarks>
-    </member>
-    <member name="M:XSharp.VO.SDK._CodeBlock.Eval">
-      <summary>
-        Evaluate a runtime-compiled code block.
-      </summary>
-      <returns>
-        A value whose data type depends on the value(s) passed to the code block, as well as the particular code block.
-      </returns>
-      <remarks>
-        This method is called if the Eval() function is used to evaluate a runtime-compiled code block.
-      </remarks>
-      <example>
-        Create a runtime-compiled code block and evaluate it using the _CodeBlock:Eval() method and the Eval() function:
-        <code language="X#">
-          LOCAL cb
-          cb := &amp;("{|x| x * x}"}
-          ? cb:EVAL(5)	// 25
-          ? EVAL(cb,5)	// 25
-        </code></example>
-    </member>
-    <member name="F:XSharp.VO.SDK._CodeBlock.NParamCount">
-      <summary>
-        A numeric value representing the number of parameters the runtime code block expects.
-      </summary>
-      <value>A numeric value representing the number of parameters the runtime code block expects.</value>
-    </member>
+  
+ 
     <member name="T:XSharp.VO.SDK.Accelerator">
       <summary>
         Create an accelerator table.
@@ -658,7 +604,7 @@
       <summary>
         Return the handle for an application.
       </summary>
-      <param name="nHandleType">The type of handle required.  0 is the only supported option, and it is the default if &lt;nHandleType&gt; is omitted.</param>
+      <param name="nHandleType">The type of handle required.  0 is the only supported option, and it is the default if <paramref name="nHandle" /> is omitted.</param>
       <returns>
         A handle describing the underlying system object.
       </returns>
@@ -1417,11 +1363,11 @@
         Search a list box for a specified string, and return the location of the first item in the list box that matches it.
       </summary>
       <param name="cItem">The text to search for.</param>
-      <param name="lWholeItem">Indicates how the search is to be performed.  TRUE matches an exact &lt;cItem&gt; string to a 'whole' list box item (for example, a 'can' string does not match 'scan').  FALSE finds a match for any list box prefixed by &lt;cItem&gt; (for example, the string 'cat' would match 'catalog' in the list box).  The default is TRUE.</param>
+      <param name="lWholeItem">Indicates how the search is to be performed.  TRUE matches an exact <paramref name="cItem" /> string to a 'whole' list box item (for example, a 'can' string does not match 'scan').  FALSE finds a match for any list box prefixed by <paramref name="cItem" /> (for example, the string 'cat' would match 'catalog' in the list box).  The default is TRUE.</param>
       <param name="nStart">Specifies the one-based index of the item before the first item to be searched. When the search reaches the bottom of the list box, it continues searching from the top of the list box back to the item specified by the nStart parameter. If nStart is 0, the entire list box is searched from the beginning. </param>
       <returns>
         The position of the first item that contains the matching text, if a match is found (a value of 1 refers to the first position in the list box); if no match is found, 0 is returned.
-        For example, if &lt;cItem&gt; matched the fifth string in the list box, the return value would be 5.  This means that no earlier string in the list box matched it.
+        For example, if <paramref name="cItem" /> matched the fifth string in the list box, the return value would be 5.  This means that no earlier string in the list box matched it.
       </returns>
     </member>
     <member name="M:XSharp.VO.SDK.BaseListBox.GetItem(XSharp.__Usual,XSharp.__Usual)">
@@ -1489,7 +1435,7 @@
       <summary>
         Return the handle for a bitmap.
       </summary>
-      <param name="nHandleType">The type of handle required.  0 is the only supported option and is the default if &lt;nHandleType&gt; is omitted.</param>
+      <param name="nHandleType">The type of handle required.  0 is the only supported option and is the default if <paramref name="nHandle" /> is omitted.</param>
       <returns>
         A handle describing the underlying system object.
       </returns>
@@ -1678,7 +1624,7 @@
       <summary>
         Return the handle for a brush.
       </summary>
-      <param name="nHandleType">The type of handle required.  0 is the only supported option and is the default if &lt;nHandleType&gt; is omitted.</param>
+      <param name="nHandleType">The type of handle required.  0 is the only supported option and is the default if <paramref name="nHandle" /> is omitted.</param>
       <returns>
         A handle describing the underlying system object.
       </returns>
@@ -4349,7 +4295,7 @@
       </summary>
       <param name="cItem">The item text as string.</param>
       <param name="nItemNumber">The position where to insert the new item.  The default placement is at the end of the list (-1).  Note that the index into the combo box is zero-based.</param>
-      <param name="uRetValue">The value associated with the specified item.  The default is &lt;cItem&gt;.</param>
+      <param name="uRetValue">The value associated with the specified item.  The default is <paramref name="cItem" />.</param>
       <param name="iImageIdx">The index of the image associated with this item.</param>
       <param name="iSelectedIdx">The image index to display when the item is selected.</param>
       <param name="iOverlayIdx">The image index of on overlay image in the image list.</param>
@@ -4451,7 +4397,7 @@
       </summary>
       <param name="cItem">The item text as string.</param>
       <param name="nItemNumber">The position where to insert the new item.  The default placement is at the end of the list (-1).  Note that the index into the combo box is zero-based.</param>
-      <param name="uRetValue">The value associated with the specified item.  The default is &lt;cItem&gt;.</param>
+      <param name="uRetValue">The value associated with the specified item.  The default is <paramref name="cItem" />.</param>
       <param name="iImageIdx">The index of the image associated with this item.</param>
       <param name="iSelectedIdx">The image index to display when the item is selected.</param>
       <param name="iOverlayIdx">The image index of on overlay image in the image list.</param>
@@ -4520,7 +4466,7 @@
       </summary>
       <param name="lNew">A logical value forcing the allocation of a new console window, if set to TRUE.  The default is FALSE.</param>
       <remarks>
-        The Init() method allocates a new console window.  By default, or if the &lt;lNew&gt; parameter is set to FALSE, X# first tries to use an already open console window, e.g., if the application was started from the command line.  If this fails, or if &lt;lNew&gt; was set to TRUE, Console:Init() allocates and opens a new console window.
+        The Init() method allocates a new console window.  By default, or if the <paramref name="lNew" /> parameter is set to FALSE, X# first tries to use an already open console window, e.g., if the application was started from the command line.  If this fails, or if <paramref name="lNew" /> was set to TRUE, Console:Init() allocates and opens a new console window.
       </remarks>
       <example>
         This code snippet creates and clear a new console window:
@@ -4946,7 +4892,7 @@
       <summary>
         Return the handle for a control.
       </summary>
-      <param name="uType">The type of handle required.  Zero (0) is the only supported option, and it is the default if &lt;nHandleType&gt; is omitted.</param>
+      <param name="uType">The type of handle required.  Zero (0) is the only supported option, and it is the default if <paramref name="nHandle" /> is omitted.</param>
       <returns>
         A handle to the "window" (control), describing the underlying system object.
       </returns>
@@ -6887,7 +6833,7 @@
         In most cases it is CODING_TYPE_BASE64 and only this type is implemented in the CStorage class.
       </param>
       <returns>
-        &lt;cID&gt;	STRING The unique ID. If AttachmentAdd() fails it returns a NULL_STRING.
+        <paramref name="cID" />	STRING The unique ID. If AttachmentAdd() fails it returns a NULL_STRING.
       </returns>
     </member>
     <member name="M:XSharp.VO.SDK.CStorage.AttachmentClose">
@@ -6911,7 +6857,7 @@
       </summary>
       <param name="cAttachID">Contains the ID or the full path of the attachment.If it is a full path the first character of cAttachID is ATTACHID_PATHFLAG (&gt;)</param>
       <returns>
-        &lt;cID&gt;	STRING The full path of an attachment file
+        <paramref name="cID" />	STRING The full path of an attachment file
       </returns>
     </member>
     <member name="M:XSharp.VO.SDK.CStorage.AttachmentOpen(System.String,System.UInt32)">
@@ -6944,7 +6890,7 @@
       <param name="cAttachID">Contains the ID or the full path of the attachment.</param>
       <param name="cToFile">Contains the full path name of the target file.</param>
       <returns>
-        &lt;cID&gt;	STRING The unique ID. If AttachmentAdd() fails it returns a NULL_STRING.
+        <paramref name="cID" />	STRING The unique ID. If AttachmentAdd() fails it returns a NULL_STRING.
       </returns>
     </member>
     <member name="P:XSharp.VO.SDK.CStorage.AttachmentSize">
@@ -7049,7 +6995,7 @@
       </summary>
       <param name="cData">Contains the file name of the attachment.</param>
       <returns>
-        &lt;cID&gt;	STRING The unique ID. If AttachmentAdd() fails it returns a NULL_STRING.
+        <paramref name="cID" />	STRING The unique ID. If AttachmentAdd() fails it returns a NULL_STRING.
       </returns>
       <remarks>
         <note type="tip">
@@ -7067,7 +7013,7 @@
       <param name="oEMail">The Email from which the attachments need to be saved to the storage.</param>
       <param name="lClone">If lClone is TRUE and oEMail was loaded from the storage new copies of the attachments are stored into the storage.</param>
       <returns>
-        &lt;cID&gt;	STRING The unique ID. If AttachmentAdd() fails it returns a NULL_STRING.
+        <paramref name="cID" />	STRING The unique ID. If AttachmentAdd() fails it returns a NULL_STRING.
       </returns>
     </member>
     <member name="M:XSharp.VO.SDK.CStorage.SaveEMail(System.String,VO.CEmail)">
@@ -7147,7 +7093,7 @@
       <summary>
         Return the handle for a cursor.
       </summary>
-      <param name="nHandleType">The type of handle required.  0 is the only supported option and is the default if &lt;nHandleType&gt; is omitted.</param>
+      <param name="nHandleType">The type of handle required.  0 is the only supported option and is the default if <paramref name="nHandle" /> is omitted.</param>
       <returns>
         A handle describing the underlying system object.
       </returns>
@@ -13177,7 +13123,7 @@
       </param>
       <param name="lNew">TRUE dynamically turns on the descending flag for the order, resulting in descending order.  FALSE dynamically turns the flag off, resulting in ascending order.</param>
       <returns>
-        If &lt;lNew&gt; is not specified, DBServer:OrderDescend() returns the current setting.  If &lt;lNewDescend&gt; is specified, the previous setting is returned.
+        If <paramref name="lNew" /> is not specified, DBServer:OrderDescend() returns the current setting.  If &lt;lNewDescend&gt; is specified, the previous setting is returned.
       </returns>
       <remarks>
         DBServer:OrderDescend() changes the ascending/descending flag at runtime only — it does not change the descending flag stored in the actual index file.
@@ -15159,7 +15105,7 @@
       <summary>
         Return the handle for a DrawObject object.
       </summary>
-      <param name="nHandleType">The type of handle required.  0 is the only supported option and is the default if &lt;nHandleType&gt; is omitted.</param>
+      <param name="nHandleType">The type of handle required.  0 is the only supported option and is the default if <paramref name="nHandle" /> is omitted.</param>
       <returns>
         A handle to the device context for the window on which the object is to be drawn.  X# will release this handle when necessary.  You should not save it to a variable.
       </returns>
@@ -17140,7 +17086,7 @@
       <summary>
         Return the handle for a font.
       </summary>
-      <param name="nHandleType">The type of handle required.  0 is the only supported option and is the default if &lt;nHandleType&gt; is omitted.</param>
+      <param name="nHandleType">The type of handle required.  0 is the only supported option and is the default if <paramref name="nHandle" /> is omitted.</param>
       <returns>
         A handle describing the underlying system object.
       </returns>
@@ -19140,7 +19086,7 @@
       <summary>
         Return the handle for an icon.
       </summary>
-      <param name="nHandleType">The type of handle required.  Zero (0) is the only supported option and is the default if &lt;nHandleType&gt; is omitted.</param>
+      <param name="nHandleType">The type of handle required.  Zero (0) is the only supported option and is the default if <paramref name="nHandle" /> is omitted.</param>
       <returns>
         A handle describing the underlying system object.
       </returns>
@@ -21426,7 +21372,7 @@
       </summary>
       <param name="cItem">The item to be inserted.</param>
       <param name="nItemNumber">The position in the list box at which to insert the new item.  Specify one of the values listed below.</param>
-      <param name="uRetValue">The value associated with the specified item.  The default is &lt;cItem&gt;.</param>
+      <param name="uRetValue">The value associated with the specified item.  The default is <paramref name="cItem" />.</param>
       <returns>
         If the item was added, its position in the list box is returned (a value of 1 refers to the first position in the list box).  If the item could not be added, 0 is returned.
       </returns>
@@ -23419,7 +23365,7 @@
       <summary>
         Return the handle for a menu.
       </summary>
-      <param name="nHandleType">The type of handle required.  Zero (0) is the only supported option and is the default if &lt;nHandleType&gt; is omitted.</param>
+      <param name="nHandleType">The type of handle required.  Zero (0) is the only supported option and is the default if <paramref name="nHandle" /> is omitted.</param>
       <returns>
         A handle describing the underlying system object.
       </returns>
@@ -26013,7 +25959,7 @@
       <summary>
         Return the handle for a pen.
       </summary>
-      <param name="uType">The type of handle required.  0 is the only supported option and is the default if &lt;nHandleType&gt; is omitted.</param>
+      <param name="uType">The type of handle required.  0 is the only supported option and is the default if <paramref name="nHandle" /> is omitted.</param>
       <returns>
         A handle describing the underlying system object.
       </returns>
@@ -26177,7 +26123,7 @@
       <summary>
         Return the handle for a pointer.
       </summary>
-      <param name="nHandleType">The type of handle required.  0 is the only supported option and is the default if &lt;nHandleType&gt; is omitted.</param>
+      <param name="nHandleType">The type of handle required.  0 is the only supported option and is the default if <paramref name="nHandle" /> is omitted.</param>
       <returns>
         A handle describing the underlying system object.
       </returns>
@@ -32537,7 +32483,7 @@
       <summary>
         Return the handle for a status bar.
       </summary>
-      <param name="nHandleType">The type of handle required.  0 is the only supported option and is the default if &lt;nHandleType&gt; is omitted.</param>
+      <param name="nHandleType">The type of handle required.  0 is the only supported option and is the default if <paramref name="nHandle" /> is omitted.</param>
       <returns>
         A handle to the "window" (control), describing the underlying system object.
       </returns>
@@ -35913,7 +35859,7 @@
       <summary>
         Return the handle for a window.
       </summary>
-      <param name="nHandleType">The type of handle required.  0 is the only supported option and is the default if &lt;nHandleType&gt; is omitted.</param>
+      <param name="nHandleType">The type of handle required.  0 is the only supported option and is the default if <paramref name="nHandle" /> is omitted.</param>
       <returns>
         A handle to the window, describing the underlying system object.
       </returns>
@@ -37182,16 +37128,16 @@
       </summary>
       <value>This property is provided to override the inherited functionality from the Control class, as it does not apply to WindowVerticalScrollBar.</value>
     </member>
-    <member name="T:VOGUIClasses.Functions">
+    <member name="T:XSharp_VOGUIClasses.Functions">
       <summary>
         This compiler generated class contains all the functions, globals and defines that are defined in the VOGUIClasses assembly.
       </summary>
     </member>
-    <member name="M:VOGUIClasses.Functions.ApplicationExec(XSharp.__Usual)">
+    <member name="M:XSharp_VOGUIClasses.Functions.ApplicationExec(XSharp.__Usual)">
       <summary>**Missing documentation **</summary>
       <param name="kExecType">** missing parameter documentation **</param>
     </member>
-    <member name="M:VOGUIClasses.Functions.DIBCreateFromFile(XSharp.__Psz)">
+    <member name="M:XSharp_VOGUIClasses.Functions.DIBCreateFromFile(XSharp.__Psz)">
       <summary>
         Create a device independent bitmap (DIB) from an image file.
       </summary>
@@ -37203,10 +37149,10 @@
         DIBCreateFromFile() creates a device independent bitmap (.DIB file) from an image file of the following types: .JPG, .TIF, .BMP, .TGA, .PNG, .PCX, or .PCT.
       </remarks>
       <example></example>
-      <seealso cref="O:VOGUIClasses.Functions.DIBCreateFromPTR">DIBCreateFromPTR</seealso>
-      <seealso cref="O:VOGUIClasses.Functions.DIBDelete">DIBDelete</seealso>
+      <seealso cref="O:XSharp_VOGUIClasses.Functions.DIBCreateFromPTR">DIBCreateFromPTR</seealso>
+      <seealso cref="O:XSharp_VOGUIClasses.Functions.DIBDelete">DIBDelete</seealso>
     </member>
-    <member name="M:VOGUIClasses.Functions.DIBCreateFromPTR(System.Byte*,System.Int32)">
+    <member name="M:XSharp_VOGUIClasses.Functions.DIBCreateFromPTR(System.Byte*,System.Int32)">
       <summary>
         Convert an image file to a device independent bitmap (DIB).
       </summary>
@@ -37295,10 +37241,10 @@
           DIBDelete(SELF:pBitmap)
           END CLASS
         </code></example>
-      <seealso cref="O:VOGUIClasses.Functions.DIBCreateFromFile">DIBCreateFromFile</seealso>
-      <seealso cref="O:VOGUIClasses.Functions.DIBDelete">DIBDelete</seealso>
+      <seealso cref="O:XSharp_VOGUIClasses.Functions.DIBCreateFromFile">DIBCreateFromFile</seealso>
+      <seealso cref="O:XSharp_VOGUIClasses.Functions.DIBDelete">DIBDelete</seealso>
     </member>
-    <member name="M:VOGUIClasses.Functions.DIBDelete(System.Void*)">
+    <member name="M:XSharp_VOGUIClasses.Functions.DIBDelete(System.Void*)">
       <summary>
         Destroy a DIB created either by DIBCreateFromFile() or DIBCreateFromPtr().
       </summary>
@@ -37310,10 +37256,10 @@
       <example>
         See the DIBCreateFromPtr() example.
       </example>
-      <seealso cref="O:VOGUIClasses.Functions.DIBCreateFromFile">DIBCreateFromFile</seealso>
-      <seealso cref="O:VOGUIClasses.Functions.DIBCreateFromPTR">DIBCreateFromPtr</seealso>
+      <seealso cref="O:XSharp_VOGUIClasses.Functions.DIBCreateFromFile">DIBCreateFromFile</seealso>
+      <seealso cref="O:XSharp_VOGUIClasses.Functions.DIBCreateFromPTR">DIBCreateFromPtr</seealso>
     </member>
-    <member name="M:VOGUIClasses.Functions.DIBGetInfo(System.Void*)">
+    <member name="M:XSharp_VOGUIClasses.Functions.DIBGetInfo(System.Void*)">
       <summary>
         Retrieve a pointer to the BITMAPINFO structure of a DIB.
       </summary>
@@ -37327,9 +37273,9 @@
       <example>
         See the DIBCreateFromPtr() example.
       </example>
-      <seealso cref="O:VOGUIClasses.Functions.DIBCreateFromPTR">DIBCreateFromPtr</seealso>
+      <seealso cref="O:XSharp_VOGUIClasses.Functions.DIBCreateFromPTR">DIBCreateFromPtr</seealso>
     </member>
-    <member name="M:VOGUIClasses.Functions.DIBSaveAs(System.Void*,XSharp.__Psz)">
+    <member name="M:XSharp_VOGUIClasses.Functions.DIBSaveAs(System.Void*,XSharp.__Psz)">
       <summary>
         Save the DIB to a file.
       </summary>
@@ -37352,9 +37298,9 @@
           ENDIF
           WAIT
         </code><code language="X#">	RETURN </code></example>
-      <seealso cref="O:VOGUIClasses.Functions.DIBCreateFromFile">DIBCreateFromFile</seealso>
+      <seealso cref="O:XSharp_VOGUIClasses.Functions.DIBCreateFromFile">DIBCreateFromFile</seealso>
     </member>
-    <member name="M:VOGUIClasses.Functions.DIBShow(System.Void*,System.Void*)">
+    <member name="M:XSharp_VOGUIClasses.Functions.DIBShow(System.Void*,System.Void*)">
       <summary>
         Display the DIB within the specified window.
       </summary>
@@ -37367,9 +37313,9 @@
       <example>
         See the DIBCreateFromPtr() example.
       </example>
-      <seealso cref="O:VOGUIClasses.Functions.DIBStretch">DIBStretch</seealso>
+      <seealso cref="O:XSharp_VOGUIClasses.Functions.DIBStretch">DIBStretch</seealso>
     </member>
-    <member name="M:VOGUIClasses.Functions.DIBStretch(System.Void*,System.Void*,System.UInt32,System.UInt32,System.Double)">
+    <member name="M:XSharp_VOGUIClasses.Functions.DIBStretch(System.Void*,System.Void*,System.UInt32,System.UInt32,System.Double)">
       <summary>
         Display the DIB within the specified window.
       </summary>
@@ -37387,13 +37333,13 @@
         For example, a value of 2.0 would double the bitmap size, while a value of 0.5 would shrink the DIB to half its normal size.
       </remarks>
       <example></example>
-      <seealso cref="O:VOGUIClasses.Functions.DIBShow">DIBShow</seealso>
+      <seealso cref="O:XSharp_VOGUIClasses.Functions.DIBShow">DIBShow</seealso>
     </member>
-    <member name="M:VOGUIClasses.Functions.Enable3dControls">
+    <member name="M:XSharp_VOGUIClasses.Functions.Enable3dControls">
       <summary>Determines whether controls on windows created with the GUI classes are displayed using a sculpted, three-dimensional look.</summary>
       <remarks>Note - This function has no purpose in 32 bit programs. It is included for backward compatibility with 16 bit applications only.</remarks>
     </member>
-    <member name="M:VOGUIClasses.Functions.EnableAppVisualTheme(System.Boolean)">
+    <member name="M:XSharp_VOGUIClasses.Functions.EnableAppVisualTheme(System.Boolean)">
       <summary>
         Enable or disable the applications support for visual themes.
       </summary>
@@ -37408,14 +37354,14 @@
       <remarks>
         Visual themes are automatically enabled if version 6 of the common controls is loaded by using an application manifest.
       </remarks>
-      <seealso cref="O:VOGUIClasses.Functions.IsThemeEnabled">IsThemeEnabled</seealso>
+      <seealso cref="O:XSharp_VOGUIClasses.Functions.IsThemeEnabled">IsThemeEnabled</seealso>
     </member>
-    <member name="M:VOGUIClasses.Functions.EnableThemeDialogTexture(XSharp.__Usual,System.UInt32)">
+    <member name="M:XSharp_VOGUIClasses.Functions.EnableThemeDialogTexture(XSharp.__Usual,System.UInt32)">
       <summary>**Missing documentation **</summary>
       <param name="oWindow">** missing parameter documentation **</param>
       <param name="dwStyle">** missing parameter documentation **</param>
     </member>
-    <member name="M:VOGUIClasses.Functions.GetAppObject">
+    <member name="M:XSharp_VOGUIClasses.Functions.GetAppObject">
       <summary>
         Return the global App object for this application.
       </summary>
@@ -37428,9 +37374,9 @@
           GetAppObject():Quit()
         </code></example>
       <seealso cref="T:XSharp.VO.SDK.App">App Class</seealso>
-      <seealso cref="O:VOGUIClasses.Functions.GetObjectByHandle">GetObjectByHandle</seealso>
+      <seealso cref="O:XSharp_VOGUIClasses.Functions.GetObjectByHandle">GetObjectByHandle</seealso>
     </member>
-    <member name="M:VOGUIClasses.Functions.GetFocusedObject">
+    <member name="M:XSharp_VOGUIClasses.Functions.GetFocusedObject">
       <summary>
         Return the object corresponding to the control or window that currently has input focus.
       </summary>
@@ -37448,14 +37394,14 @@
         </code></example>
       <seealso cref="T:XSharp.VO.SDK.Control">CLASS Control</seealso>
       <seealso cref="T:XSharp.VO.SDK.Window">Class Window</seealso>
-      <seealso cref="O:VOGUIClasses.Functions.GetAppObject">GetAppObject</seealso>
-      <seealso cref="O:VOGUIClasses.Functions.GetObjectByHandle">GetObjectByHandle</seealso>
+      <seealso cref="O:XSharp_VOGUIClasses.Functions.GetAppObject">GetAppObject</seealso>
+      <seealso cref="O:XSharp_VOGUIClasses.Functions.GetObjectByHandle">GetObjectByHandle</seealso>
     </member>
-    <member name="M:VOGUIClasses.Functions.GetFrameWidth(System.Void*)">
+    <member name="M:XSharp_VOGUIClasses.Functions.GetFrameWidth(System.Void*)">
       <summary>**Missing documentation **</summary>
       <param name="hWnd">** missing parameter documentation **</param>
     </member>
-    <member name="M:VOGUIClasses.Functions.GetObjectByHandle(System.Void*)">
+    <member name="M:XSharp_VOGUIClasses.Functions.GetObjectByHandle(System.Void*)">
       <summary>
         Return the object associated with a given window handle.
       </summary>
@@ -37478,10 +37424,10 @@
         </code></example>
       <seealso cref="T:XSharp.VO.SDK.Control">CLASS Control</seealso>
       <seealso cref="T:XSharp.VO.SDK.Window">Class Window</seealso>
-      <seealso cref="O:VOGUIClasses.Functions.GetAppObject">GetAppObject</seealso>
-      <seealso cref="O:VOGUIClasses.Functions.GetFocusedObject">GetAppObject</seealso>
+      <seealso cref="O:XSharp_VOGUIClasses.Functions.GetAppObject">GetAppObject</seealso>
+      <seealso cref="O:XSharp_VOGUIClasses.Functions.GetFocusedObject">GetAppObject</seealso>
     </member>
-    <member name="M:VOGUIClasses.Functions.GetThemeAppProperties">
+    <member name="M:XSharp_VOGUIClasses.Functions.GetThemeAppProperties">
       <summary>
         Retrieves the property flags that control how visual styles are applied in the current application
       </summary>
@@ -37500,35 +37446,35 @@
       <remarks></remarks>
       <example></example>
     </member>
-    <member name="M:VOGUIClasses.Functions.IsAltPressed">
+    <member name="M:XSharp_VOGUIClasses.Functions.IsAltPressed">
       <summary>Get the current state of the Alt key.</summary>
     </member>
-    <member name="M:VOGUIClasses.Functions.IsAppThemed">
+    <member name="M:XSharp_VOGUIClasses.Functions.IsAppThemed">
       <summary>Return the theme setting for the current application.</summary>
     </member>
-    <member name="M:VOGUIClasses.Functions.IsControlPressed">
+    <member name="M:XSharp_VOGUIClasses.Functions.IsControlPressed">
       <summary>Get the current state of the Ctrl key.</summary>
     </member>
-    <member name="M:VOGUIClasses.Functions.IsCtl3dEnabled">
+    <member name="M:XSharp_VOGUIClasses.Functions.IsCtl3dEnabled">
       <summary>**Missing documentation **</summary>
     </member>
-    <member name="M:VOGUIClasses.Functions.IsShiftPressed">
+    <member name="M:XSharp_VOGUIClasses.Functions.IsShiftPressed">
       <summary>Get the current state of the Shift key.</summary>
     </member>
-    <member name="M:VOGUIClasses.Functions.IsThemeEnabled">
+    <member name="M:XSharp_VOGUIClasses.Functions.IsThemeEnabled">
       <summary>
         Determine if visual theme support is enabled.
       </summary>
       <returns>
         TRUE if visual theme support is enabled; otherwise, FALSE.
       </returns>
-      <seealso cref="O:VOGUIClasses.Functions.EnableAppVisualTheme">EnableAppVisualTheme</seealso>
+      <seealso cref="O:XSharp_VOGUIClasses.Functions.EnableAppVisualTheme">EnableAppVisualTheme</seealso>
     </member>
-    <member name="M:VOGUIClasses.Functions.VerifyThemeState">
+    <member name="M:XSharp_VOGUIClasses.Functions.VerifyThemeState">
       <summary>Verifies the current theme state and sets the ThemeEnabled flag.</summary>
       <returns>The function returns the current value of the ThemeEnabled flag like the function IsThemeEnabled().</returns>
     </member>
-    <member name="T:VOInternetClasses.Functions">
+    <member name="T:XSharp_VOInternetClasses.Functions">
       <summary>
         This compiler generated class contains all the functions, globals and defines that are defined in the VOInternetClasses assembly.
       </summary>
@@ -37539,20 +37485,22 @@
       </summary>
     </member>
     <member name="M:VORDDClasses.Functions.DBFDebug(System.String,System.String,System.String,System.String)">
-      <summary>**Missing documentation **</summary>
+      <exclude />
     </member>
-    <member name="M:VORDDClasses.Functions.DbGetDefaultLockMode">
-      <summary>**Missing documentation **</summary>
+    <member name="M:XSharp_VORDDClasses.Functions.DbGetDefaultLockMode">
+      <summary>Get/Set the default locking mode for the DbServer class</summary>
+            <param name="dwLockMode">The new locking mode. The default = ccOptimistic</param>
+            <returns>The previous locking mode</returns>
+
     </member>
-    <member name="M:VORDDClasses.Functions.DbSetDefaultLockMode(System.UInt32)">
-      <summary>**Missing documentation **</summary>
-      <param name="dwLockMode">** missing parameter documentation **</param>
+    <member name="M:XSharp_VORDDClasses.Functions.DbSetDefaultLockMode(System.UInt32)">
+            <summary>Get the default locking mode for the DbServer class</summary>
+            <returns>The current locking mode</returns>
     </member>
-    <member name="M:VORDDClasses.Functions.DbSetRestoreWorkarea(XSharp.__Usual)">
-      <summary>**Missing documentation **</summary>
-      <param name="lEnable">** missing parameter documentation **</param>
+    <member name="M:XSharp_VORDDClasses.Functions.DbSetRestoreWorkarea(XSharp.__Usual)">
+           <summary>Get/Set the flag that determines if DbServer operations restore the current workarea </summary>
     </member>
-    <member name="T:VOSQLClasses.Functions">
+    <member name="T:XSharp_VOSQLClasses.Functions">
       <summary>
         This compiler generated class contains all the functions, globals and defines that are defined in the VOSQLClasses assembly.
       </summary>
@@ -37577,10 +37525,10 @@
       <seealso cref="O:XSharp.VO.SDK.SQLConnection.Connect">SQLConnection:Connect</seealso>
       <seealso cref="O:XSharp.VO.SDK.SQLConnection.DriverConnect">SQLConnection:DriverConnect</seealso>
     </member>
-    <member name="M:VOSQLClasses.Functions.SqlDeleteWhiteSpace(System.String)">
+    <member name="M:XSharp_VOSQLClasses.Functions.SqlDeleteWhiteSpace(System.String)">
       <summary>**Missing documentation **</summary>
     </member>
-    <member name="M:VOSQLClasses.Functions.SQLDropMyConnection(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)">
+    <member name="M:XSharp_VOSQLClasses.Functions.SQLDropMyConnection(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)">
       <summary>
         Disconnect the ODBC data source.
       </summary>
@@ -37604,12 +37552,12 @@
           ? "PWD=",oConn:Password
           SQLDropMyConnection("sample", "dba", "sql")
         </code></example>
-      <seealso cref="O:VOSQLClasses.Functions.SQLGetDataSources">SQLGetDataSources</seealso>
-      <seealso cref="O:VOSQLClasses.Functions.SQLGetMyConnection">SQLGetMyConnection</seealso>
-      <seealso cref="O:VOSQLClasses.Functions.SQLOpenConnection">SQLOpenConnection</seealso>
-      <seealso cref="O:VOSQLClasses.Functions.SQLSetConnection">SQLSetConnection</seealso>
+      <seealso cref="O:XSharp_VOSQLClasses.Functions.SQLGetDataSources">SQLGetDataSources</seealso>
+      <seealso cref="O:XSharp_VOSQLClasses.Functions.SQLGetMyConnection">SQLGetMyConnection</seealso>
+      <seealso cref="O:XSharp_VOSQLClasses.Functions.SQLOpenConnection">SQLOpenConnection</seealso>
+      <seealso cref="O:XSharp_VOSQLClasses.Functions.SQLSetConnection">SQLSetConnection</seealso>
     </member>
-    <member name="M:VOSQLClasses.Functions.SQLGetDataSources">
+    <member name="M:XSharp_VOSQLClasses.Functions.SQLGetDataSources">
       <summary>
         Identify the available ODBC data sources.
       </summary>
@@ -37639,12 +37587,12 @@
           // Disconnect
           oConn:Disconnect()
         </code></example>
-      <seealso cref="O:VOSQLClasses.Functions.SQLDropMyConnection">SQLDropMyConnection</seealso>
-      <seealso cref="O:VOSQLClasses.Functions.SQLGetMyConnection">SQLGetMyConnection</seealso>
-      <seealso cref="O:VOSQLClasses.Functions.SQLOpenConnection">SQLOpenConnection</seealso>
-      <seealso cref="O:VOSQLClasses.Functions.SQLSetConnection">SQLSetConnection</seealso>
+      <seealso cref="O:XSharp_VOSQLClasses.Functions.SQLDropMyConnection">SQLDropMyConnection</seealso>
+      <seealso cref="O:XSharp_VOSQLClasses.Functions.SQLGetMyConnection">SQLGetMyConnection</seealso>
+      <seealso cref="O:XSharp_VOSQLClasses.Functions.SQLOpenConnection">SQLOpenConnection</seealso>
+      <seealso cref="O:XSharp_VOSQLClasses.Functions.SQLSetConnection">SQLSetConnection</seealso>
     </member>
-    <member name="M:VOSQLClasses.Functions.SQLGetMyConnection(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)">
+    <member name="M:XSharp_VOSQLClasses.Functions.SQLGetMyConnection(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)">
       <summary>
         Connect to the ODBC source specified.
       </summary>
@@ -37670,21 +37618,21 @@
           ? "PWD=",oConn:Password
           SQLDropMyConnection("sample", "dba", "sql")
         </code></example>
-      <seealso cref="O:VOSQLClasses.Functions.SQLDropMyConnection">SQLDropMyConnection</seealso>
-      <seealso cref="O:VOSQLClasses.Functions.SQLGetDataSources">SQLGetDataSources</seealso>
-      <seealso cref="O:VOSQLClasses.Functions.SQLOpenConnection">SQLOpenConnection</seealso>
-      <seealso cref="O:VOSQLClasses.Functions.SQLSetConnection">SQLSetConnection</seealso>
+      <seealso cref="O:XSharp_VOSQLClasses.Functions.SQLDropMyConnection">SQLDropMyConnection</seealso>
+      <seealso cref="O:XSharp_VOSQLClasses.Functions.SQLGetDataSources">SQLGetDataSources</seealso>
+      <seealso cref="O:XSharp_VOSQLClasses.Functions.SQLOpenConnection">SQLOpenConnection</seealso>
+      <seealso cref="O:XSharp_VOSQLClasses.Functions.SQLSetConnection">SQLSetConnection</seealso>
     </member>
-    <member name="M:VOSQLClasses.Functions.SqlIsBinaryType(System.Int32)">
+    <member name="M:XSharp_VOSQLClasses.Functions.SqlIsBinaryType(System.Int32)">
       <summary>Helper function to determine if an ODBC type is Binary</summary>
     </member>
-    <member name="M:VOSQLClasses.Functions.SqlIsCharType(System.Int32)">
+    <member name="M:XSharp_VOSQLClasses.Functions.SqlIsCharType(System.Int32)">
       <summary>Helper function to determine if an ODBC type is Character</summary>
     </member>
-    <member name="M:VOSQLClasses.Functions.SqlIsLongType(System.Int32)">
+    <member name="M:XSharp_VOSQLClasses.Functions.SqlIsLongType(System.Int32)">
       <summary>Helper function to determine if an ODBC type is Long (BLOB, MEMO etc)</summary>
     </member>
-    <member name="M:VOSQLClasses.Functions.SQLOpenConnection">
+    <member name="M:XSharp_VOSQLClasses.Functions.SQLOpenConnection">
       <summary>
         Connect to a list of ODBC sources.
       </summary>
@@ -37715,12 +37663,12 @@
           // Disconnect
           oConn:Disconnect()
         </code></example>
-      <seealso cref="O:VOSQLClasses.Functions.SQLDropMyConnection">SQLDropMyConnection</seealso>
-      <seealso cref="O:VOSQLClasses.Functions.SQLGetDataSources">SQLGetDataSources</seealso>
-      <seealso cref="O:VOSQLClasses.Functions.SQLGetMyConnection">SQLGetMyConnection</seealso>
-      <seealso cref="O:VOSQLClasses.Functions.SQLSetConnection">SQLSetConnection</seealso>
+      <seealso cref="O:XSharp_VOSQLClasses.Functions.SQLDropMyConnection">SQLDropMyConnection</seealso>
+      <seealso cref="O:XSharp_VOSQLClasses.Functions.SQLGetDataSources">SQLGetDataSources</seealso>
+      <seealso cref="O:XSharp_VOSQLClasses.Functions.SQLGetMyConnection">SQLGetMyConnection</seealso>
+      <seealso cref="O:XSharp_VOSQLClasses.Functions.SQLSetConnection">SQLSetConnection</seealso>
     </member>
-    <member name="M:VOSQLClasses.Functions.SQLSetConnection(XSharp.__Usual)">
+    <member name="M:XSharp_VOSQLClasses.Functions.SQLSetConnection(XSharp.__Usual)">
       <summary>
         Return and optionally change the default SQL connection.
       </summary>
@@ -37753,19 +37701,19 @@
           // Disconnect
           oConn:Disconnect()
         </code></example>
-      <seealso cref="O:VOSQLClasses.Functions.SQLDropMyConnection">SQLDropMyConnection</seealso>
-      <seealso cref="O:VOSQLClasses.Functions.SQLGetDataSources">SQLGetDataSources</seealso>
-      <seealso cref="O:VOSQLClasses.Functions.SQLGetMyConnection">SQLGetMyConnection</seealso>
-      <seealso cref="O:VOSQLClasses.Functions.SQLSetConnection">SQLSetConnection</seealso>
+      <seealso cref="O:XSharp_VOSQLClasses.Functions.SQLDropMyConnection">SQLDropMyConnection</seealso>
+      <seealso cref="O:XSharp_VOSQLClasses.Functions.SQLGetDataSources">SQLGetDataSources</seealso>
+      <seealso cref="O:XSharp_VOSQLClasses.Functions.SQLGetMyConnection">SQLGetMyConnection</seealso>
+      <seealso cref="O:XSharp_VOSQLClasses.Functions.SQLSetConnection">SQLSetConnection</seealso>
     </member>
-    <member name="M:VOSQLClasses.Functions.SqlSetStmtConcurrency(XSharp.__Usual)">
+    <member name="M:XSharp_VOSQLClasses.Functions.SqlSetStmtConcurrency(XSharp.__Usual)">
       <summary>
         Return and optionally change the default concurrency mode for SQLSelect objects
       </summary>
       <param name="nNew">The default  concurrency strategy that will be used by new SqlSelect objects</param>
       <returns>
-        If &lt;nNew&gt; is not specified, SQLSetStmtConcurrency() returns the current setting.
-        If &lt;nNew&gt; is specified, the new setting is returned.
+        If <paramref name="nNew" /> is not specified, SQLSetStmtConcurrency() returns the current setting.
+        If <paramref name="nNew" /> is specified, the new setting is returned.
       </returns>
       <remarks>
         The concurrency mode for SQLSelect objects is used to determine if rows have been changed by other connections. The possible values are:
@@ -37773,20 +37721,20 @@
         The default value used by X# is SQL_CONCUR_ROWVER
       </remarks>
       <example></example>
-      <seealso cref="O:VOSQLClasses.Functions.SqlSetStmtCursorType">SqlSetStmtCursorType</seealso>
-      <seealso cref="O:VOSQLClasses.Functions.SqlSetStmtSimulateCursor">SqlSetStmtSimulateCursor</seealso>
+      <seealso cref="O:XSharp_VOSQLClasses.Functions.SqlSetStmtCursorType">SqlSetStmtCursorType</seealso>
+      <seealso cref="O:XSharp_VOSQLClasses.Functions.SqlSetStmtSimulateCursor">SqlSetStmtSimulateCursor</seealso>
       <seealso cref="P:XSharp.VO.SDK.SQLSelect.ScrollConcurrency">SqlSelect:ScrollConcurrency</seealso>
       <seealso cref="P:XSharp.VO.SDK.SQLSelect.CursorType">SqlSelect:CursorType</seealso>
       <seealso cref="P:XSharp.VO.SDK.SQLSelect.SimulateCursor">SqlSelect:SimulateCursor</seealso>
     </member>
-    <member name="M:VOSQLClasses.Functions.SqlSetStmtCursorType(XSharp.__Usual)">
+    <member name="M:XSharp_VOSQLClasses.Functions.SqlSetStmtCursorType(XSharp.__Usual)">
       <summary>
         Return and optionally change the default cursor type used by for SQLSelect objects
       </summary>
       <param name="nNew">The default  concurrency strategy that will be used by new SqlSelect objects</param>
       <returns>
-        If &lt;nNew&gt; is not specified, SQLSetStmtCursorType() returns the current setting.
-        If &lt;nNew&gt; is specified, the new setting is returned.
+        If <paramref name="nNew" /> is not specified, SQLSetStmtCursorType() returns the current setting.
+        If <paramref name="nNew" /> is specified, the new setting is returned.
       </returns>
       <remarks>
         The concurrency mode for SQLSelect objects is used to determine if rows have been changed by other connections. The possible values are:
@@ -37794,20 +37742,20 @@
         The default value used by X# is SQL_CURSOR_KEYSET_DRIVEN
       </remarks>
       <example></example>
-      <seealso cref="O:VOSQLClasses.Functions.SqlSetStmtConcurrency">SqlSetStmtConcurrency</seealso>
-      <seealso cref="O:VOSQLClasses.Functions.SqlSetStmtSimulateCursor">SqlSetStmtSimulateCursor</seealso>
+      <seealso cref="O:XSharp_VOSQLClasses.Functions.SqlSetStmtConcurrency">SqlSetStmtConcurrency</seealso>
+      <seealso cref="O:XSharp_VOSQLClasses.Functions.SqlSetStmtSimulateCursor">SqlSetStmtSimulateCursor</seealso>
       <seealso cref="P:XSharp.VO.SDK.SQLSelect.ScrollConcurrency">SqlSelect:ScrollConcurrency</seealso>
       <seealso cref="P:XSharp.VO.SDK.SQLSelect.CursorType">SqlSelect:CursorType</seealso>
       <seealso cref="P:XSharp.VO.SDK.SQLSelect.SimulateCursor">SqlSelect:SimulateCursor</seealso>
     </member>
-    <member name="M:VOSQLClasses.Functions.SqlSetStmtSimulateCursor(XSharp.__Usual)">
+    <member name="M:XSharp_VOSQLClasses.Functions.SqlSetStmtSimulateCursor(XSharp.__Usual)">
       <summary>
         Return and optionally change the default cursor simulation mode used by for SQLSelect objects
       </summary>
       <param name="nNew">The default cursor simulation mode that will be used by new SqlSelect objects</param>
       <returns>
-        If &lt;nNew&gt; is not specified, SQLSetStmtSimulateCursor() returns the current setting.
-        If &lt;nNew&gt; is specified, the new setting is returned.
+        If <paramref name="nNew" /> is not specified, SQLSetStmtSimulateCursor() returns the current setting.
+        If <paramref name="nNew" /> is specified, the new setting is returned.
       </returns>
       <remarks>
         The cursor simulation mode for SQLSelect objects is used to determine if rows have been changed by other connections. The possible values are:
@@ -37815,99 +37763,99 @@
         The default value used by X# is SQL_SC_TRY_UNIQUE
       </remarks>
       <example></example>
-      <seealso cref="O:VOSQLClasses.Functions.SqlSetStmtConcurrency">SqlSetStmtConcurrency</seealso>
-      <seealso cref="O:VOSQLClasses.Functions.SqlSetStmtCursorType">SqlSetStmtCursorType</seealso>
+      <seealso cref="O:XSharp_VOSQLClasses.Functions.SqlSetStmtConcurrency">SqlSetStmtConcurrency</seealso>
+      <seealso cref="O:XSharp_VOSQLClasses.Functions.SqlSetStmtCursorType">SqlSetStmtCursorType</seealso>
       <seealso cref="P:XSharp.VO.SDK.SQLSelect.ScrollConcurrency">SqlSelect:ScrollConcurrency</seealso>
       <seealso cref="P:XSharp.VO.SDK.SQLSelect.CursorType">SqlSelect:CursorType</seealso>
       <seealso cref="P:XSharp.VO.SDK.SQLSelect.SimulateCursor">SqlSelect:SimulateCursor</seealso>
     </member>
-    <member name="M:VOSQLClasses.Functions.SQLThrowOutOfMemoryError">
+    <member name="M:XSharp_VOSQLClasses.Functions.SQLThrowOutOfMemoryError">
       <exclude />
     </member>
-    <member name="M:VOSQLClasses.Functions.SQLType2CType(System.Int16)">
+    <member name="M:XSharp_VOSQLClasses.Functions.SQLType2CType(System.Int16)">
       <exclude />
     </member>
-    <member name="T:VOSystemClasses.Functions">
+    <member name="T:XSharp_VOSystemClasses.Functions">
       <summary>
         This compiler generated class contains all the functions, globals and defines that are defined in the VOSystemClasses assembly.
       </summary>
     </member>
-    <member name="M:XSharp.ChildWinForm.#ctor(XSharp.__Usual,XSharp.__Usual)">
+    <member name="M:XSharp.VO.SDK.ChildWinForm.#ctor(XSharp.__Usual,XSharp.__Usual)">
       <exclude />
     </member>
-    <member name="M:XSharp.ChildWinForm.Activate(XSharp.__Usual)">
+    <member name="M:XSharp.VO.SDK.ChildWinForm.Activate(XSharp.__Usual)">
       <exclude />
     </member>
-    <member name="M:XSharp.ChildWinForm.Close(XSharp.__Usual)">
+    <member name="M:XSharp.VO.SDK.ChildWinForm.Close(XSharp.__Usual)">
       <exclude />
     </member>
-    <member name="M:XSharp.ChildWinForm.DeActivate(XSharp.__Usual)">
+    <member name="M:XSharp.VO.SDK.ChildWinForm.DeActivate(XSharp.__Usual)">
       <exclude />
     </member>
-    <member name="M:XSharp.ChildWinForm.Resize(XSharp.__Usual)">
+    <member name="M:XSharp.VO.SDK.ChildWinForm.Resize(XSharp.__Usual)">
       <exclude />
     </member>
-    <member name="P:XSharp.ChildWinForm.WinForm">
+    <member name="P:XSharp.VO.SDK.ChildWinForm.WinForm">
       <summary>**Missing documentation **</summary>
     </member>
-    <member name="M:XSharp.VOWinFormApp.#ctor">
+    <member name="M:XSharp.VO.SDK.VOWinFormApp.#ctor">
       <exclude />
     </member>
-    <member name="M:XSharp.VOWinFormApp.BeforeDispatch(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)">
+    <member name="M:XSharp.VO.SDK.VOWinFormApp.BeforeDispatch(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)">
       <exclude />
     </member>
-    <member name="M:XSharp.VOWinFormApp.RegisterWinForm(System.Windows.Forms.Form)">
+    <member name="M:XSharp.VO.SDK.VOWinFormApp.RegisterWinForm(System.Windows.Forms.Form)">
       <exclude />
     </member>
-    <member name="M:XSharp.VOWinFormApp.UnRegisterWinForm(System.Windows.Forms.Form)">
+    <member name="M:XSharp.VO.SDK.VOWinFormApp.UnRegisterWinForm(System.Windows.Forms.Form)">
       <exclude />
     </member>
-    <member name="M:XSharp.WinFormVOWindow.#ctor">
+    <member name="M:XSharp.VO.SDK.WinFormVOWindow.#ctor">
       <exclude />
     </member>
-    <member name="M:XSharp.WinFormVOWindow.CloseHostForm(VO.Window)">
+    <member name="M:XSharp.VO.SDK.WinFormVOWindow.CloseHostForm(VO.Window)">
       <exclude />
     </member>
-    <member name="M:XSharp.WinFormVOWindow.Initialize">
+    <member name="M:XSharp.VO.SDK.WinFormVOWindow.Initialize">
       <exclude />
     </member>
-    <member name="P:XSharp.WinFormVOWindow.VOWindowHost">
+    <member name="P:XSharp.VO.SDK.WinFormVOWindow.VOWindowHost">
       <summary>**Missing documentation **</summary>
     </member>
-    <member name="M:XSharp.WinFormVOWindowHost.#ctor">
+    <member name="M:XSharp.VO.SDK.WinFormVOWindowHost.#ctor">
       <exclude />
     </member>
-    <member name="M:XSharp.WinFormVOWindowHost.#ctor(System.ComponentModel.IContainer)">
+    <member name="M:XSharp.VO.SDK.WinFormVOWindowHost.#ctor(System.ComponentModel.IContainer)">
       <exclude />
     </member>
-    <member name="M:XSharp.WinFormVOWindowHost.#ctor(VO.Window,System.Windows.Forms.Control)">
+    <member name="M:XSharp.VO.SDK.WinFormVOWindowHost.#ctor(VO.Window,System.Windows.Forms.Control)">
       <exclude />
     </member>
-    <member name="M:XSharp.WinFormVOWindowHost.AdjustVOWindow">
+    <member name="M:XSharp.VO.SDK.WinFormVOWindowHost.AdjustVOWindow">
       <exclude />
     </member>
-    <member name="P:XSharp.WinFormVOWindowHost.ClassesNeedingTranslateTabToArrow">
+    <member name="P:XSharp.VO.SDK.WinFormVOWindowHost.ClassesNeedingTranslateTabToArrow">
       <summary>**Missing documentation **</summary>
     </member>
-    <member name="M:XSharp.WinFormVOWindowHost.Close">
+    <member name="M:XSharp.VO.SDK.WinFormVOWindowHost.Close">
       <exclude />
     </member>
-    <member name="M:XSharp.WinFormVOWindowHost.Focus">
+    <member name="M:XSharp.VO.SDK.WinFormVOWindowHost.Focus">
       <exclude />
     </member>
-    <member name="P:XSharp.WinFormVOWindowHost.HostingControl">
+    <member name="P:XSharp.VO.SDK.WinFormVOWindowHost.HostingControl">
       <summary>**Missing documentation **</summary>
     </member>
-    <member name="M:XSharp.WinFormVOWindowHost.IsHostingDataWindow">
+    <member name="M:XSharp.VO.SDK.WinFormVOWindowHost.IsHostingDataWindow">
       <exclude />
     </member>
-    <member name="M:XSharp.WinFormVOWindowHost.ProcessDialogKey(System.Windows.Forms.Keys)">
+    <member name="M:XSharp.VO.SDK.WinFormVOWindowHost.ProcessDialogKey(System.Windows.Forms.Keys)">
       <exclude />
     </member>
-    <member name="P:XSharp.WinFormVOWindowHost.VOWindow">
+    <member name="P:XSharp.VO.SDK.WinFormVOWindowHost.VOWindow">
       <summary>**Missing documentation **</summary>
     </member>
-    <member name="P:XSharp.WinFormVOWindowHost.VOWindowClassName">
+    <member name="P:XSharp.VO.SDK.WinFormVOWindowHost.VOWindowClassName">
       <summary>**Missing documentation **</summary>
     </member>
   </members>

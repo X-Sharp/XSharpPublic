@@ -658,7 +658,7 @@
       <summary>
         Return the handle for an application.
       </summary>
-      <param name="nHandleType">The type of handle required.  0 is the only supported option, and it is the default if &lt;nHandleType&gt; is omitted.</param>
+      <param name="nHandleType">The type of handle required.  0 is the only supported option, and it is the default if <paramref name="nHandle" /> is omitted.</param>
       <returns>
         A handle describing the underlying system object.
       </returns>
@@ -1417,11 +1417,11 @@
         Search a list box for a specified string, and return the location of the first item in the list box that matches it.
       </summary>
       <param name="cItem">The text to search for.</param>
-      <param name="lWholeItem">Indicates how the search is to be performed.  TRUE matches an exact &lt;cItem&gt; string to a 'whole' list box item (for example, a 'can' string does not match 'scan').  FALSE finds a match for any list box prefixed by &lt;cItem&gt; (for example, the string 'cat' would match 'catalog' in the list box).  The default is TRUE.</param>
+      <param name="lWholeItem">Indicates how the search is to be performed.  TRUE matches an exact <paramref name="cItem" /> string to a 'whole' list box item (for example, a 'can' string does not match 'scan').  FALSE finds a match for any list box prefixed by <paramref name="cItem" /> (for example, the string 'cat' would match 'catalog' in the list box).  The default is TRUE.</param>
       <param name="nStart">Specifies the one-based index of the item before the first item to be searched. When the search reaches the bottom of the list box, it continues searching from the top of the list box back to the item specified by the nStart parameter. If nStart is 0, the entire list box is searched from the beginning. </param>
       <returns>
         The position of the first item that contains the matching text, if a match is found (a value of 1 refers to the first position in the list box); if no match is found, 0 is returned.
-        For example, if &lt;cItem&gt; matched the fifth string in the list box, the return value would be 5.  This means that no earlier string in the list box matched it.
+        For example, if <paramref name="cItem" /> matched the fifth string in the list box, the return value would be 5.  This means that no earlier string in the list box matched it.
       </returns>
     </member>
     <member name="M:VO.BaseListBox.GetItem(XSharp.__Usual,XSharp.__Usual)">
@@ -1489,7 +1489,7 @@
       <summary>
         Return the handle for a bitmap.
       </summary>
-      <param name="nHandleType">The type of handle required.  0 is the only supported option and is the default if &lt;nHandleType&gt; is omitted.</param>
+      <param name="nHandleType">The type of handle required.  0 is the only supported option and is the default if <paramref name="nHandle" /> is omitted.</param>
       <returns>
         A handle describing the underlying system object.
       </returns>
@@ -1678,7 +1678,7 @@
       <summary>
         Return the handle for a brush.
       </summary>
-      <param name="nHandleType">The type of handle required.  0 is the only supported option and is the default if &lt;nHandleType&gt; is omitted.</param>
+      <param name="nHandleType">The type of handle required.  0 is the only supported option and is the default if <paramref name="nHandle" /> is omitted.</param>
       <returns>
         A handle describing the underlying system object.
       </returns>
@@ -4349,7 +4349,7 @@
       </summary>
       <param name="cItem">The item text as string.</param>
       <param name="nItemNumber">The position where to insert the new item.  The default placement is at the end of the list (-1).  Note that the index into the combo box is zero-based.</param>
-      <param name="uRetValue">The value associated with the specified item.  The default is &lt;cItem&gt;.</param>
+      <param name="uRetValue">The value associated with the specified item.  The default is <paramref name="cItem" />.</param>
       <param name="iImageIdx">The index of the image associated with this item.</param>
       <param name="iSelectedIdx">The image index to display when the item is selected.</param>
       <param name="iOverlayIdx">The image index of on overlay image in the image list.</param>
@@ -4451,7 +4451,7 @@
       </summary>
       <param name="cItem">The item text as string.</param>
       <param name="nItemNumber">The position where to insert the new item.  The default placement is at the end of the list (-1).  Note that the index into the combo box is zero-based.</param>
-      <param name="uRetValue">The value associated with the specified item.  The default is &lt;cItem&gt;.</param>
+      <param name="uRetValue">The value associated with the specified item.  The default is <paramref name="cItem" />.</param>
       <param name="iImageIdx">The index of the image associated with this item.</param>
       <param name="iSelectedIdx">The image index to display when the item is selected.</param>
       <param name="iOverlayIdx">The image index of on overlay image in the image list.</param>
@@ -4520,7 +4520,7 @@
       </summary>
       <param name="lNew">A logical value forcing the allocation of a new console window, if set to TRUE.  The default is FALSE.</param>
       <remarks>
-        The Init() method allocates a new console window.  By default, or if the &lt;lNew&gt; parameter is set to FALSE, X# first tries to use an already open console window, e.g., if the application was started from the command line.  If this fails, or if &lt;lNew&gt; was set to TRUE, Console:Init() allocates and opens a new console window.
+        The Init() method allocates a new console window.  By default, or if the <paramref name="lNew" /> parameter is set to FALSE, X# first tries to use an already open console window, e.g., if the application was started from the command line.  If this fails, or if <paramref name="lNew" /> was set to TRUE, Console:Init() allocates and opens a new console window.
       </remarks>
       <example>
         This code snippet creates and clear a new console window:
@@ -4937,7 +4937,7 @@
       <summary>
         Return the handle for a control.
       </summary>
-      <param name="uType">The type of handle required.  Zero (0) is the only supported option, and it is the default if &lt;nHandleType&gt; is omitted.</param>
+      <param name="uType">The type of handle required.  Zero (0) is the only supported option, and it is the default if <paramref name="nHandle" /> is omitted.</param>
       <returns>
         A handle to the "window" (control), describing the underlying system object.
       </returns>
@@ -6878,7 +6878,7 @@
         In most cases it is CODING_TYPE_BASE64 and only this type is implemented in the CStorage class.
       </param>
       <returns>
-        &lt;cID&gt;	STRING The unique ID. If AttachmentAdd() fails it returns a NULL_STRING.
+        <paramref name="cID" />	STRING The unique ID. If AttachmentAdd() fails it returns a NULL_STRING.
       </returns>
     </member>
     <member name="M:VO.CStorage.AttachmentClose">
@@ -6902,7 +6902,7 @@
       </summary>
       <param name="cAttachID">Contains the ID or the full path of the attachment.If it is a full path the first character of cAttachID is ATTACHID_PATHFLAG (&gt;)</param>
       <returns>
-        &lt;cID&gt;	STRING The full path of an attachment file
+        <paramref name="cID" />	STRING The full path of an attachment file
       </returns>
     </member>
     <member name="M:VO.CStorage.AttachmentOpen(System.String,System.UInt32)">
@@ -6935,7 +6935,7 @@
       <param name="cAttachID">Contains the ID or the full path of the attachment.</param>
       <param name="cToFile">Contains the full path name of the target file.</param>
       <returns>
-        &lt;cID&gt;	STRING The unique ID. If AttachmentAdd() fails it returns a NULL_STRING.
+        <paramref name="cID" />	STRING The unique ID. If AttachmentAdd() fails it returns a NULL_STRING.
       </returns>
     </member>
     <member name="P:VO.CStorage.AttachmentSize">
@@ -7040,7 +7040,7 @@
       </summary>
       <param name="cData">Contains the file name of the attachment.</param>
       <returns>
-        &lt;cID&gt;	STRING The unique ID. If AttachmentAdd() fails it returns a NULL_STRING.
+        <paramref name="cID" />	STRING The unique ID. If AttachmentAdd() fails it returns a NULL_STRING.
       </returns>
       <remarks>
         <note type="tip">
@@ -7058,7 +7058,7 @@
       <param name="oEMail">The Email from which the attachments need to be saved to the storage.</param>
       <param name="lClone">If lClone is TRUE and oEMail was loaded from the storage new copies of the attachments are stored into the storage.</param>
       <returns>
-        &lt;cID&gt;	STRING The unique ID. If AttachmentAdd() fails it returns a NULL_STRING.
+        <paramref name="cID" />	STRING The unique ID. If AttachmentAdd() fails it returns a NULL_STRING.
       </returns>
     </member>
     <member name="M:VO.CStorage.SaveEMail(System.String,VO.CEmail)">
@@ -7138,7 +7138,7 @@
       <summary>
         Return the handle for a cursor.
       </summary>
-      <param name="nHandleType">The type of handle required.  0 is the only supported option and is the default if &lt;nHandleType&gt; is omitted.</param>
+      <param name="nHandleType">The type of handle required.  0 is the only supported option and is the default if <paramref name="nHandle" /> is omitted.</param>
       <returns>
         A handle describing the underlying system object.
       </returns>
@@ -9365,7 +9365,18 @@
       </remarks>
     </member>
     <member name="M:VO.DataWindow.ControlFocusChange(XSharp.__Usual)">
-      <inheritdoc />
+      <summary>Provide a method that is invoked when the input focus changes to or from a control.</summary>
+	  <param name="oControlFocusChangeEvent" >The ControlFocusChangeEvent object that identifies which control generated the ControlFocusChangeEvent object and whether it has just gained or lost the keyboard focus. </param>
+	  <remarks>
+	  If ControlFocusChange() is used to validate a control (and also set the focus to another control), 
+	  Control:SetFocus() should not be called until another control has received the focus.
+	 In complex dialog windows that contain many edit controls, it makes sense to grab the edit 
+	 control's text when the focus is changing so that other controls can be updated with it if necessary.
+	See the ButtonClick() method for an example of similar syntax to be used in this method.  
+	Note that all controls are passed through this method, not only SingleLineEdit and MultiLineEdit controls.  
+	If looking to control Combobox selections, then the ListBoxSelect() callback method should be reviewed.
+	</remarks>
+	<seealso cref="T:VO.ControlFocusChangeEvent" />
     </member>
     <member name="P:VO.DataWindow.Controls">
       <summary>**Missing documentation **</summary>
@@ -13086,7 +13097,7 @@
       </param>
       <param name="lNew">TRUE dynamically turns on the descending flag for the order, resulting in descending order.  FALSE dynamically turns the flag off, resulting in ascending order.</param>
       <returns>
-        If &lt;lNew&gt; is not specified, DBServer:OrderDescend() returns the current setting.  If &lt;lNewDescend&gt; is specified, the previous setting is returned.
+        If <paramref name="lNew" /> is not specified, DBServer:OrderDescend() returns the current setting.  If &lt;lNewDescend&gt; is specified, the previous setting is returned.
       </returns>
       <remarks>
         DBServer:OrderDescend() changes the ascending/descending flag at runtime only — it does not change the descending flag stored in the actual index file.
@@ -14548,7 +14559,19 @@
       <summary>**Missing documentation **</summary>
     </member>
     <member name="M:VO.DialogWindow.ControlFocusChange(XSharp.__Usual)">
-      <summary>**Missing documentation **</summary>
+	<summary>Provide a method that is invoked when the input focus changes to or from a control.</summary>
+	  <param name="oControlFocusChangeEvent" >The ControlFocusChangeEvent object that identifies which control generated the ControlFocusChangeEvent object and whether it has just gained or lost the keyboard focus. </param>
+	  <remarks>
+	  If ControlFocusChange() is used to validate a control (and also set the focus to another control), 
+	  Control:SetFocus() should not be called until another control has received the focus.
+	 In complex dialog windows that contain many edit controls, it makes sense to grab the edit 
+	 control's text when the focus is changing so that other controls can be updated with it if necessary.
+	See the ButtonClick() method for an example of similar syntax to be used in this method.  
+	Note that all controls are passed through this method, not only SingleLineEdit and MultiLineEdit controls.  
+	If looking to control Combobox selections, then the ListBoxSelect() callback method should be reviewed.
+	</remarks>
+		<seealso cref="T:VO.ControlFocusChangeEvent" />
+
       <param name="oControlFocusChangeEvent">** missing parameter documentation **</param>
     </member>
     <member name="M:VO.DialogWindow.DeActivate(XSharp.__Usual)">
@@ -15010,7 +15033,7 @@
       <summary>
         Return the handle for a DrawObject object.
       </summary>
-      <param name="nHandleType">The type of handle required.  0 is the only supported option and is the default if &lt;nHandleType&gt; is omitted.</param>
+      <param name="nHandleType">The type of handle required.  0 is the only supported option and is the default if <paramref name="nHandle" /> is omitted.</param>
       <returns>
         A handle to the device context for the window on which the object is to be drawn.  X# will release this handle when necessary.  You should not save it to a variable.
       </returns>
@@ -16980,7 +17003,7 @@
       <summary>
         Return the handle for a font.
       </summary>
-      <param name="nHandleType">The type of handle required.  0 is the only supported option and is the default if &lt;nHandleType&gt; is omitted.</param>
+      <param name="nHandleType">The type of handle required.  0 is the only supported option and is the default if <paramref name="nHandle" /> is omitted.</param>
       <returns>
         A handle describing the underlying system object.
       </returns>
@@ -18976,7 +18999,7 @@
       <summary>
         Return the handle for an icon.
       </summary>
-      <param name="nHandleType">The type of handle required.  Zero (0) is the only supported option and is the default if &lt;nHandleType&gt; is omitted.</param>
+      <param name="nHandleType">The type of handle required.  Zero (0) is the only supported option and is the default if <paramref name="nHandle" /> is omitted.</param>
       <returns>
         A handle describing the underlying system object.
       </returns>
@@ -21258,7 +21281,7 @@
       </summary>
       <param name="cItem">The item to be inserted.</param>
       <param name="nItemNumber">The position in the list box at which to insert the new item.  Specify one of the values listed below.</param>
-      <param name="uRetValue">The value associated with the specified item.  The default is &lt;cItem&gt;.</param>
+      <param name="uRetValue">The value associated with the specified item.  The default is <paramref name="cItem" />.</param>
       <returns>
         If the item was added, its position in the list box is returned (a value of 1 refers to the first position in the list box).  If the item could not be added, 0 is returned.
       </returns>
@@ -22889,7 +22912,9 @@
       </remarks>
     </member>
     <member name="M:VO.ListViewMouseEvent.#ctor(XSharp.__Usual)">
-      <inheritdoc />
+		<summary>Construct a ListViewMouseEvent object.</summary>
+      <param name="oControlNotifyEvent">The ControlNotifyEvent that occurred when the event happened.</param>
+	  
     </member>
     <member name="P:VO.ListViewMouseEvent.ButtonID">
       <summary>
@@ -23247,7 +23272,7 @@
       <summary>
         Return the handle for a menu.
       </summary>
-      <param name="nHandleType">The type of handle required.  Zero (0) is the only supported option and is the default if &lt;nHandleType&gt; is omitted.</param>
+      <param name="nHandleType">The type of handle required.  Zero (0) is the only supported option and is the default if <paramref name="nHandle" /> is omitted.</param>
       <returns>
         A handle describing the underlying system object.
       </returns>
@@ -25829,7 +25854,7 @@
       <summary>
         Return the handle for a pen.
       </summary>
-      <param name="uType">The type of handle required.  0 is the only supported option and is the default if &lt;nHandleType&gt; is omitted.</param>
+      <param name="uType">The type of handle required.  0 is the only supported option and is the default if <paramref name="nHandle" /> is omitted.</param>
       <returns>
         A handle describing the underlying system object.
       </returns>
@@ -25993,7 +26018,7 @@
       <summary>
         Return the handle for a pointer.
       </summary>
-      <param name="nHandleType">The type of handle required.  0 is the only supported option and is the default if &lt;nHandleType&gt; is omitted.</param>
+      <param name="nHandleType">The type of handle required.  0 is the only supported option and is the default if <paramref name="nHandle" /> is omitted.</param>
       <returns>
         A handle describing the underlying system object.
       </returns>
@@ -29195,7 +29220,7 @@
       </returns>
     </member>
     <member name="M:VO.SplitWindow.Show(XSharp.__Usual,XSharp.__Usual)">
-      <inheritdoc />
+      <inheritdoc cref="M:VO.Window.Show(XSharp.__Usual)"/>
     </member>
     <member name="M:VO.SplitWindow.ShowPane(XSharp.__Usual)">
       <summary>
@@ -32353,7 +32378,7 @@
       <summary>
         Return the handle for a status bar.
       </summary>
-      <param name="nHandleType">The type of handle required.  0 is the only supported option and is the default if &lt;nHandleType&gt; is omitted.</param>
+      <param name="nHandleType">The type of handle required.  0 is the only supported option and is the default if <paramref name="nHandle" /> is omitted.</param>
       <returns>
         A handle to the "window" (control), describing the underlying system object.
       </returns>
@@ -32743,7 +32768,8 @@
       </summary>
     </member>
     <member name="M:VO.SysLinkSelectEvent.#ctor(XSharp.__Usual)">
-      <inheritdoc />
+      	<summary>Construct a ListViewMouseEvent object.</summary>
+      <param name="oControlNotifyEvent">The ControlNotifyEvent that occurred when the event happened.</param>
     </member>
     <member name="P:VO.SysLinkSelectEvent.ID">
       <summary>**Missing documentation **</summary>
@@ -34792,7 +34818,9 @@
       </remarks>
     </member>
     <member name="M:VO.TreeViewMouseEvent.#ctor(XSharp.__Usual)">
-      <inheritdoc />
+    <summary>Construct a TreeViewMouseEvent object.</summary>
+      <param name="oControlNotifyEvent">The ControlNotifyEvent that occurred when the event happened.</param>
+
     </member>
     <member name="P:VO.TreeViewMouseEvent.ButtonID">
       <summary>
@@ -35725,7 +35753,7 @@
       <summary>
         Return the handle for a window.
       </summary>
-      <param name="nHandleType">The type of handle required.  0 is the only supported option and is the default if &lt;nHandleType&gt; is omitted.</param>
+      <param name="nHandleType">The type of handle required.  0 is the only supported option and is the default if <paramref name="nHandle" /> is omitted.</param>
       <returns>
         A handle to the window, describing the underlying system object.
       </returns>
@@ -37351,18 +37379,21 @@
       </summary>
     </member>
     <member name="M:VORDDClasses.Functions.DBFDebug(System.String,System.String,System.String,System.String)">
-      <summary>**Missing documentation **</summary>
+      <exclude />
     </member>
     <member name="M:VORDDClasses.Functions.DbGetDefaultLockMode">
-      <summary>**Missing documentation **</summary>
+      <summary>Get/Set the default locking mode for the DbServer class</summary>
+            <param name="dwLockMode">The new locking mode. The default = ccOptimistic</param>
+            <returns>The previous locking mode</returns>
+
     </member>
     <member name="M:VORDDClasses.Functions.DbSetDefaultLockMode(System.UInt32)">
-      <summary>**Missing documentation **</summary>
-      <param name="dwLockMode">** missing parameter documentation **</param>
+            <summary>Get the default locking mode for the DbServer class</summary>
+            <returns>The current locking mode</returns>
     </member>
     <member name="M:VORDDClasses.Functions.DbSetRestoreWorkarea(XSharp.__Usual)">
-      <summary>**Missing documentation **</summary>
-      <param name="lEnable">** missing parameter documentation **</param>
+           <summary>Get/Set the flag that determines if DbServer operations restore the current workarea </summary>
+ 
     </member>
     <member name="T:VOSQLClasses.Functions">
       <summary>
@@ -37576,8 +37607,8 @@
       </summary>
       <param name="nNew">The default  concurrency strategy that will be used by new SqlSelect objects</param>
       <returns>
-        If &lt;nNew&gt; is not specified, SQLSetStmtConcurrency() returns the current setting.
-        If &lt;nNew&gt; is specified, the new setting is returned.
+        If <paramref name="nNew" /> is not specified, SQLSetStmtConcurrency() returns the current setting.
+        If <paramref name="nNew" /> is specified, the new setting is returned.
       </returns>
       <remarks>
         The concurrency mode for SQLSelect objects is used to determine if rows have been changed by other connections. The possible values are:
@@ -37597,8 +37628,8 @@
       </summary>
       <param name="nNew">The default  concurrency strategy that will be used by new SqlSelect objects</param>
       <returns>
-        If &lt;nNew&gt; is not specified, SQLSetStmtCursorType() returns the current setting.
-        If &lt;nNew&gt; is specified, the new setting is returned.
+        If <paramref name="nNew" /> is not specified, SQLSetStmtCursorType() returns the current setting.
+        If <paramref name="nNew" /> is specified, the new setting is returned.
       </returns>
       <remarks>
         The concurrency mode for SQLSelect objects is used to determine if rows have been changed by other connections. The possible values are:
@@ -37618,8 +37649,8 @@
       </summary>
       <param name="nNew">The default cursor simulation mode that will be used by new SqlSelect objects</param>
       <returns>
-        If &lt;nNew&gt; is not specified, SQLSetStmtSimulateCursor() returns the current setting.
-        If &lt;nNew&gt; is specified, the new setting is returned.
+        If <paramref name="nNew" /> is not specified, SQLSetStmtSimulateCursor() returns the current setting.
+        If <paramref name="nNew" /> is specified, the new setting is returned.
       </returns>
       <remarks>
         The cursor simulation mode for SQLSelect objects is used to determine if rows have been changed by other connections. The possible values are:

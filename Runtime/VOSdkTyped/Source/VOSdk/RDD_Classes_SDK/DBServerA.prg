@@ -6,7 +6,8 @@ PARTIAL CLASS DbServer
     PROPERTY AliasSym AS SYMBOL GET symAlias
     
     
-    ACCESS BoF AS LOGIC
+    PROPERTY BoF AS LOGIC
+        GET
         
         LOCAL dwCurrentWorkArea := 0 AS DWORD
         LOCAL lRetVal AS LOGIC
@@ -18,7 +19,8 @@ PARTIAL CLASS DbServer
         lRetVal := VoDbBof()
         __DBSSetSelect( dwCurrentWorkArea )
         RETURN lRetVal
-    
+        END GET
+    END PROPERTY
     
     ACCESS ConcurrencyControl AS USUAL
         RETURN SELF:nCCMode
@@ -112,8 +114,8 @@ PARTIAL CLASS DbServer
     PROPERTY Driver AS STRING GET SELF:cRDDName
     
     
-    ACCESS EoF AS LOGIC
-        
+    PROPERTY EoF AS LOGIC
+        GET
         LOCAL dwCurrentWorkArea := 0 AS DWORD
         LOCAL lRetVal AS LOGIC
         
@@ -125,7 +127,8 @@ PARTIAL CLASS DbServer
         lRetVal := VoDbEof()
         __DBSSetSelect( dwCurrentWorkArea )
         RETURN lRetVal
-    
+        END GET
+    END PROPERTY
     
     PROPERTY ErrInfo AS Error GET IIF (lErrorFlag, oErrorInfo, NULL_OBJECT)
         // returns an Error object if last operation generated an error.
@@ -184,8 +187,8 @@ PARTIAL CLASS DbServer
         RETURN 
     
     
-    ACCESS Found AS LOGIC
-        
+    PROPERTY Found AS LOGIC
+        GET
         LOCAL dwCurrentWorkArea := 0 AS DWORD
         LOCAL oError            AS USUAL
         LOCAL lRetCode          AS LOGIC
@@ -208,10 +211,11 @@ PARTIAL CLASS DbServer
         
         
         RETURN lRetCode
+        END GET
+    END PROPERTY
     
-    
-    ACCESS Header AS DWORD
-        
+    PROPERTY Header AS DWORD
+        GET
         LOCAL dwCurrentWorkArea := 0 AS DWORD
         LOCAL oError            AS USUAL
         LOCAL uInfo             AS USUAL
@@ -232,9 +236,12 @@ PARTIAL CLASS DbServer
         
         
         RETURN uInfo
-        
-    ACCESS IndexExt AS STRING
-        
+        END GET
+    END PROPERTY
+
+
+    PROPERTY IndexExt AS STRING
+        GET
         LOCAL dwCurrentWorkArea := 0 AS DWORD
         LOCAL oError            AS USUAL
         LOCAL uOrdVal           AS USUAL
@@ -255,13 +262,14 @@ PARTIAL CLASS DbServer
         
         
         RETURN uOrdVal
-    
+        END GET
+   END PROPERTY
     
     PROPERTY IndexList AS ARRAY GET {}
     
     
-    ACCESS LastRec AS LONG
-        
+    PROPERTY LastRec AS LONG
+        GET        
         LOCAL dwCurrentWorkArea := 0 AS DWORD
         LOCAL liRecno AS LONGINT
         
@@ -270,9 +278,11 @@ PARTIAL CLASS DbServer
         liRecno := VoDbLastRec()
         __DBSSetSelect( dwCurrentWorkArea )
         RETURN liRecno
+        END GET
+   END PROPERTY
         
-    ACCESS Lupdate AS DATE
-        
+    PROPERTY Lupdate AS DATE
+        GET
         LOCAL dwCurrentWorkArea := 0 AS DWORD
         LOCAL oError            AS USUAL
         LOCAL uInfo             AS USUAL
@@ -293,12 +303,17 @@ PARTIAL CLASS DbServer
         
         
         RETURN uInfo
+        END GET
+   END PROPERTY
     
-    ACCESS MemoExt AS STRING
+    PROPERTY MemoExt AS STRING
+        GET
         IF SELF:Used
             RETURN SELF:Info(DBI_MEMOEXT)
         ENDIF
         RETURN ""
+        END GET
+    END PROPERTY
         
     PROPERTY Name AS STRING GET SUPER:Name
     
@@ -354,8 +369,8 @@ PARTIAL CLASS DbServer
         
         RETURN 
         
-    ACCESS OrderKeyVal  AS USUAL
-        
+    PROPERTY OrderKeyVal  AS USUAL
+        GET
         LOCAL dwCurrentWorkArea := 0 AS DWORD
         LOCAL uRetVal := NIL AS USUAL
         LOCAL oError        AS USUAL
@@ -377,7 +392,8 @@ PARTIAL CLASS DbServer
         END SEQUENCE
         
         RETURN uRetVal
-    
+        END GET
+    END PROPERTY
     
     ACCESS OrderTopScope  AS USUAL
         
@@ -432,8 +448,8 @@ PARTIAL CLASS DbServer
         RETURN 
     
     
-    ACCESS  PaintedStructure AS ARRAY
-        
+    PROPERTY  PaintedStructure AS ARRAY
+        GET
         LOCAL aRet       AS ARRAY
         LOCAL aFDesc     AS ARRAY
         LOCAL i,nField   AS DWORD
@@ -450,7 +466,8 @@ PARTIAL CLASS DbServer
         NEXT
         
         RETURN aRet
-    
+        END GET
+    END PROPERTY
     
     PROPERTY RddName  AS STRING GET cRDDName
     
@@ -460,12 +477,14 @@ PARTIAL CLASS DbServer
     
     PROPERTY ReadOnly AS LOGIC GET lReadOnly
     
-    
-    ACCESS RecCount  AS LONG
+    PROPERTY RecCount  AS LONG
+        GET
         LOCAL nCurrentRecord            AS LONGINT
         LOCAL siCurrentSelectionStatus  AS SHORTINT
         LOCAL iRetVal                   AS INT
         LOCAL dwCurrentWorkArea := 0    AS DWORD
+         
+         
         LOCAL oError                    AS USUAL
         
         lErrorFlag := FALSE
@@ -498,7 +517,8 @@ PARTIAL CLASS DbServer
         
         
         RETURN iRetVal
-    
+        END GET
+    END PROPERTY
     
     ACCESS RecNo AS LONG
         LOCAL dwCurrentWorkArea := 0 AS DWORD
@@ -536,7 +556,8 @@ PARTIAL CLASS DbServer
         RETURN 
     
     
-    ACCESS RecSize AS DWORD
+    PROPERTY RecSize AS DWORD
+        GET
         LOCAL dwCurrentWorkArea := 0 AS DWORD
         LOCAL oError        AS USUAL
         LOCAL uVoVal        AS USUAL
@@ -555,9 +576,9 @@ PARTIAL CLASS DbServer
             SELF:Error( oErrorInfo, #RECSIZE )
         END SEQUENCE
         
-        
         RETURN uVoVal
-    
+        END GET
+     END PROPERTY
     
      
     ACCESS RelationChildren AS ARRAY
@@ -585,7 +606,8 @@ PARTIAL CLASS DbServer
         RETURN 
     
     
-    ACCESS RLockList AS ARRAY
+    PROPERTY RLockList AS ARRAY
+        GET
         LOCAL dwCurrentWorkArea := 0 AS DWORD
         LOCAL oError            AS USUAL
         LOCAL aLockList := { }  AS ARRAY
@@ -602,7 +624,8 @@ PARTIAL CLASS DbServer
         END SEQUENCE
         
         RETURN aLockList
-    
+        END GET
+    END PROPERTY
     ACCESS Scope AS USUAL
         RETURN uStoredScope
     
@@ -649,7 +672,8 @@ PARTIAL CLASS DbServer
         
     PROPERTY TableExt AS STRING GET SELF:Info(DBI_TABLEEXT)
         
-    ACCESS Used AS LOGIC
+    PROPERTY Used AS LOGIC
+        GET
         LOCAL dwCurrentWorkArea := 0 AS DWORD
         LOCAL lRetVal AS LOGIC
         
@@ -660,7 +684,8 @@ PARTIAL CLASS DbServer
         lRetVal := Used()
         __DBSSetSelect( dwCurrentWorkArea )
         RETURN lRetVal
-    
+        END GET
+    END PROPERTY
     
     ACCESS WhileBlock AS USUAL
         RETURN cbStoredWhileBlock

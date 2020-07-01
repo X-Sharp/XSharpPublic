@@ -599,7 +599,10 @@ METHOD __SetupLocks( )  AS VOID STRICT
 	RETURN
 
 
-CONSTRUCTOR( oFile, lShareMode, lReadOnlyMode, xDriver, aRdd ) 
+CONSTRUCTOR( cFile AS STRING, lShareMode := FALSE AS OBJECT, lReadOnlyMode := FALSE AS OBJECT, xDriver:= "" AS STRING, aRdd := NULL_ARRAY AS ARRAY) 
+    SELF(FileSpec{cFile}, lShareMode, lReadOnlyMode , xDriver, aRdd )
+    
+CONSTRUCTOR( oFS AS FileSpec, lShareMode := FALSE AS OBJECT, lReadOnlyMode := FALSE AS OBJECT, xDriver:= "" AS STRING, aRdd := NULL_ARRAY AS ARRAY) 
 	LOCAL dwCurrentWorkArea := 0 AS DWORD
 	LOCAL cFileName AS STRING
 	LOCAL w AS DWORD
@@ -623,46 +626,31 @@ CONSTRUCTOR( oFile, lShareMode, lReadOnlyMode, xDriver, aRdd )
 		siSuspendNotification := 0
 		dwCurrentWorkArea := VoDbGetSelect( )
 
-		IF  IsObject(oFile) .AND. __Usual.ToObject(oFile) IS FileSpec VAR oFS
-			IF Empty( oFS:Extension )
-				oFS:Extension := ".DBF"
-			ENDIF
-			oFileSpec := oFS
-
-		ELSEIF IsString( oFile ) .OR. IsSymbol( oFile )
-			oFileSpec := FileSpec{ oFile }
-			IF oFileSpec:Extension == NULL_STRING
-				oFileSpec:Extension := ".DBF"
-			ENDIF
-
-		ELSEIF IsNil( oFile )
-			BREAK DbError{ SELF, #Init, EG_ARG, __CavoStr( __CAVOSTR_DBFCLASS_NOFILENAME ),  ;
-				NIL, "oFile" }
-		ELSE
-			BREAK DbError{ SELF, #Init, EG_ARG, __CavoStr( __CAVOSTR_DBFCLASS_BADFILENAME ),  ;
-				oFile, "oFile" }
+		IF Empty( oFS:Extension )
+			oFS:Extension := ".DBF"
 		ENDIF
+		oFileSpec := oFS
 
 		cFileName := oFileSpec:FileName
 
 		symAlias := SELF:ConstructUniqueAlias( cFileName )
 
-		IF IsNil( lShareMode )
+		IF lShareMode  == NULL
 			SELF:lShared := ! SetExclusive( )
-		ELSEIF IsLogic( lShareMode )
-			SELF:lShared := lShareMode
-		ELSEIF IsSymbol( lShareMode )
-			IF lShareMode = #Shared
+		ELSEIF lShareMode  IS LOGIC
+			SELF:lShared := (LOGIC) lShareMode
+		ELSEIF lShareMode IS SYMBOL VAR symShareMode
+			IF symShareMode = #Shared
 				SELF:lShared := TRUE
-			ELSEIF lShareMode = #Exclusive
+			ELSEIF symShareMode = #Exclusive
 				SELF:lShared := FALSE
 			ELSE
 				BREAK DbError{ SELF, #Init, EG_ARG, __CavoStr( __CAVOSTR_DBFCLASS_BADSHAREMODE ),  ;
 					lShareMode, "lShareMode" }
 			ENDIF
 
-		ELSEIF IsString( lShareMode )
-			symTemp := String2Symbol( lShareMode )
+		ELSEIF lShareMode IS STRING VAR strShareMode
+			symTemp := String2Symbol( strShareMode )
 			IF symTemp = #Shared
 				SELF:lShared := TRUE
 			ELSEIF symTemp = #Exclusive
@@ -676,21 +664,21 @@ CONSTRUCTOR( oFile, lShareMode, lReadOnlyMode, xDriver, aRdd )
 				lShareMode, "lShareMode" }
 		ENDIF
 
-		IF IsNil( lReadOnlyMode )
+		IF lReadOnlyMode == NULL
 			lReadOnly := FALSE
-		ELSEIF IsLogic( lReadOnlyMode )
-			lReadOnly := lReadOnlyMode
-		ELSEIF IsSymbol( lReadOnlyMode )
-			IF lReadOnlyMode = #ReadOnly
+		ELSEIF lReadOnlyMode IS LOGIC
+			lReadOnly := (LOGIC) lReadOnlyMode
+		ELSEIF lReadOnlyMode  IS SYMBOL VAR symReadOnlyMode
+			IF symReadOnlyMode = #ReadOnly
 				lReadOnly := TRUE
-			ELSEIF lReadOnlyMode = #ReadWrite
+			ELSEIF symReadOnlyMode = #ReadWrite
 				lReadOnly := FALSE
 			ELSE
 				BREAK DbError{ SELF, #Init, EG_ARG, __CavoStr( __CAVOSTR_DBFCLASS_BADREADONLYMODE ),  ;
 					lReadOnlyMode, "lReadOnlyMode" }
 			ENDIF
-		ELSEIF IsString( lReadOnlyMode )
-			symTemp := String2Symbol( lReadOnlyMode )
+		ELSEIF lReadOnlyMode IS STRING VAR strReadOnlyMode
+			symTemp := String2Symbol( strReadOnlyMode)
 			IF symTemp = #ReadOnly
 				lReadOnly := TRUE
 			ELSEIF symTemp = #ReadWrite

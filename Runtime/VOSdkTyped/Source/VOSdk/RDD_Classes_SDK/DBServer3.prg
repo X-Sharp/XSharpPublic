@@ -1,7 +1,7 @@
 #pragma warnings(165, off)
 PARTIAL CLASS DbServer
 
-METHOD GetArray( nMaxRows, uField1, uSearchValue )  AS ARRAY
+METHOD GetArray( nMaxRows:= 100 AS LONG, uField1 := 1 AS USUAL, uSearchValue := NIL AS USUAL)  AS ARRAY
 	LOCAL uValue AS USUAL
 	LOCAL cbKey AS USUAL
 	LOCAL aResult := { } AS ARRAY
@@ -19,9 +19,7 @@ METHOD GetArray( nMaxRows, uField1, uSearchValue )  AS ARRAY
 			BREAK DbError{ SELF, #GetArray, 999, VO_Sprintf( __CAVOSTR_DBFCLASS_INTENTTOMOVE ) }
 		ENDIF
 
-		IF IsNil( nMaxRows )
-			wRows := 100
-		ELSEIF nMaxRows < wRows
+	    IF nMaxRows < wRows
 			wRows := nMaxRows
 		ENDIF
 
@@ -141,7 +139,7 @@ METHOD GetLocate ( ) AS USUAL
 
 	RETURN uInfo
 
-METHOD GetLookupTable( nMaxRows, uField1, uField2, uSearchValue )  AS ARRAY
+METHOD GetLookupTable( nMaxRows:= 100 AS LONG, uField1 := 1 AS USUAL, uField2 := 2 AS USUAL, uSearchValue := NIL AS USUAL)  AS ARRAY
 	LOCAL uValue AS USUAL
 	LOCAL cbKey AS USUAL
 	LOCAL aResult := { } AS ARRAY
@@ -150,7 +148,6 @@ METHOD GetLookupTable( nMaxRows, uField1, uField2, uSearchValue )  AS ARRAY
 	LOCAL dwCurrentWorkArea := 0 AS DWORD
 	LOCAL oHLTemp AS HyperLabel
 
-	
 
 	lErrorFlag := FALSE
 	BEGIN SEQUENCE
@@ -159,9 +156,7 @@ METHOD GetLookupTable( nMaxRows, uField1, uField2, uSearchValue )  AS ARRAY
 			BREAK DbError{ SELF, #GetLookupTable, 999, VO_Sprintf( __CAVOSTR_DBFCLASS_INTENTTOMOVE ) }
 		ENDIF
 
-		IF IsNil( nMaxRows )
-			wRows := 100
-		ELSEIF nMaxRows < wRows
+		IF nMaxRows < wRows
 			wRows := nMaxRows
 		ENDIF
 
@@ -333,7 +328,7 @@ METHOD GoBottom( )   AS LOGIC
 
 	RETURN lRetCode
  
-METHOD GoTo( nRecordNumber ) AS LOGIC
+METHOD GoTo( nRecordNumber AS LONG) AS LOGIC
 	LOCAL nCurrentRecord AS LONGINT
 	LOCAL lRetCode := FALSE AS LOGIC
 	LOCAL dwCurrentWorkArea := 0 AS DWORD
@@ -348,7 +343,6 @@ METHOD GoTo( nRecordNumber ) AS LOGIC
 	BEGIN SEQUENCE
 		VoDbSelect( wWorkArea, OUT dwCurrentWorkArea )
 		IF SELF:Notify( NOTIFYINTENTTOMOVE )
-			nRecordNumber := INT( nRecordNumber )
 			IF lSelectionActive
 
 				IF siSelectionStatus == DBSELECTIONEMPTY
@@ -447,7 +441,7 @@ METHOD GoTop( ) AS LOGIC
 
 	RETURN lRetCode
 
-METHOD INDEXKEY( uOrder ) AS USUAL
+METHOD IndexKey( uOrder AS USUAL) AS USUAL
 	
    LOCAL dwCurrentWorkArea := 0 AS DWORD
 	LOCAL oError AS USUAL
@@ -470,7 +464,7 @@ METHOD INDEXKEY( uOrder ) AS USUAL
 
 	RETURN uOrdVal
 
-METHOD INDEXORD( ) AS USUAL
+METHOD IndexOrd( ) AS USUAL
 	
    LOCAL dwCurrentWorkArea := 0 AS DWORD
 	LOCAL oError AS USUAL
@@ -494,7 +488,7 @@ METHOD INDEXORD( ) AS USUAL
 
 	RETURN uOrdVal
 
-METHOD Info( kInfoType, uInfo ) AS USUAL
+METHOD Info( kInfoType AS LONG, uInfo := NIL AS USUAL) AS USUAL
 	
    LOCAL dwCurrentWorkArea := 0 AS DWORD
 	LOCAL oError AS USUAL
@@ -798,7 +792,7 @@ METHOD LockSelection( )  AS LOGIC
 
 	RETURN lRetCode
 
-METHOD NoIVarGet( symFieldName ) AS USUAL
+METHOD NoIVarGet( symFieldName AS USUAL) AS USUAL
 	
    LOCAL dwCurrentWorkArea := 0 AS DWORD
 	LOCAL uRetVal := NIL AS USUAL
@@ -829,7 +823,7 @@ METHOD NoIVarGet( symFieldName ) AS USUAL
 
 	RETURN uRetVal
 
-METHOD NoIVarPut( symFieldName, uValue ) AS USUAL
+METHOD NoIVarPut( symFieldName AS USUAL, uValue AS USUAL ) AS USUAL
 	LOCAL uRetVal := NIL AS USUAL
 	LOCAL uError AS USUAL
 	LOCAL dwCurrentWorkArea := 0 AS DWORD
@@ -872,7 +866,7 @@ METHOD NoIVarPut( symFieldName, uValue ) AS USUAL
 
 	RETURN uRetVal
 
-METHOD Notify(	 kNotification,	 uDescription )	 AS USUAL
+METHOD Notify( kNotification AS LONG, uDescription := NIL AS USUAL) AS USUAL
 	
 	LOCAL dwCurrentWorkArea := 0 AS DWORD
 	LOCAL uVOVal, uVoVal2 AS USUAL
@@ -1027,27 +1021,17 @@ METHOD Notify(	 kNotification,	 uDescription )	 AS USUAL
 	RETURN uRetValue
 	
 
-METHOD OrderDescend( uOrder, oFSIndex, lNew ) AS USUAL
-	
+
+METHOD OrderDescend( uOrder AS USUAL, oFSIndex AS FileSpec, lNew := NIL AS USUAL) AS LONG
+    RETURN SELF:OrderDescend(uOrder, oFSIndex:FullPath, lNew)
+
+METHOD OrderDescend( uOrder AS USUAL, cTarget := "" AS STRING, lNew := NIL AS USUAL) AS LONG
    LOCAL dwCurrentWorkArea := 0 AS DWORD
 	LOCAL oError AS USUAL
-	LOCAL cTarget AS STRING
-
-	
 
 	lErrorFlag := FALSE
 	BEGIN SEQUENCE
 		VoDbSelect( wWorkArea, OUT dwCurrentWorkArea )
-		IF IsObject(oFSIndex) .and. __Usual.ToObject(oFSIndex) IS FileSpec VAR oFS
-			cTarget := oFS:FullPath
-		ELSE
-			IF IsString( oFSIndex )
-				cTarget := oFSIndex
-			ENDIF
-		ENDIF
-		IF ! IsLogic( lNew )
-			lNew := NIL
-		ENDIF
 		VoDbOrderInfo( DBOI_ISDESC, cTarget, uOrder, REF lNew )
 		__DBSSetSelect( dwCurrentWorkArea )
 	RECOVER USING oError
@@ -1116,25 +1100,20 @@ METHOD OrderInfo( kOrderInfoType, oFSIndex, uOrder, uOrdVal ) AS USUAL
 
 	RETURN uOrdVal
 
-METHOD OrderIsUnique( uOrder, oFSIndex ) AS LOGIC
-	
+
+METHOD OrderIsUnique( uOrder AS USUAL, oFSIndex AS FileSpec) AS LONG
+    RETURN SELF:OrderIsUnique(uOrder, oFSIndex:FullPath)
+
+METHOD OrderIsUnique( uOrder AS USUAL, cTarget := "" AS STRING) AS LONG
    LOCAL dwCurrentWorkArea := 0 AS DWORD
 	LOCAL lRetVal AS USUAL
 	LOCAL oError AS USUAL
-	LOCAL cTarget AS STRING
 
 	
 
 	lErrorFlag := FALSE
 	BEGIN SEQUENCE
 		VoDbSelect( wWorkArea, OUT dwCurrentWorkArea )
-		IF IsObject(oFSIndex) .and. __Usual.ToObject(oFSIndex) IS FileSpec VAR oFS
-			cTarget := oFS:FullPath
-		ELSE
-			IF IsString( oFSIndex )
-				cTarget := oFSIndex
-			ENDIF
-		ENDIF
 		IF ! VoDbOrderInfo( DBOI_UNIQUE, cTarget, uOrder, REF lRetVal )
 			BREAK ErrorBuild(_VoDbErrInfoPtr())
 		ENDIF
@@ -1149,25 +1128,20 @@ METHOD OrderIsUnique( uOrder, oFSIndex ) AS LOGIC
 
 	RETURN lRetVal
 
-METHOD OrderKeyAdd( uOrder, oFSIndex, uKeyValue ) AS USUAL
+
+METHOD OrderKeyAdd( uOrder AS USUAL, oFSIndex AS FileSpec, uKeyValue  := NIL AS USUAL) AS LONG
+    RETURN SELF:OrderKeyAdd(uOrder, oFSIndex:FullPath,uKeyValue)
+
+METHOD OrderKeyAdd( uOrder AS USUAL, cTarget := "" AS STRING, uKeyValue := NIL  AS USUAL) AS LONG
+
 	
 	LOCAL dwCurrentWorkArea := 0 AS DWORD
 	LOCAL oError AS USUAL
-	LOCAL cTarget AS STRING
-
-	
 
 	VoDbSelect( wWorkArea, OUT dwCurrentWorkArea )
 
 	lErrorFlag := FALSE
 	BEGIN SEQUENCE
-		IF IsObject(oFSIndex) .and. __Usual.ToObject(oFSIndex) IS FileSpec VAR oFS
-			cTarget := oFS:FullPath
-		ELSE
-			IF IsString( oFSIndex )
-				cTarget := oFSIndex
-			ENDIF
-		ENDIF
 		IF ! VoDbOrderInfo( DBOI_KEYADD, cTarget, uOrder, REF uKeyValue )
 			BREAK ErrorBuild(_VoDbErrInfoPtr())
 		ENDIF
@@ -1183,24 +1157,19 @@ METHOD OrderKeyAdd( uOrder, oFSIndex, uKeyValue ) AS USUAL
 
 	RETURN uKeyValue
 
-METHOD OrderKeyCount( uOrder, oFSIndex ) AS LONG
-	
+
+METHOD OrderKeyCount( uOrder AS USUAL, oFSIndex AS FileSpec) AS LONG
+    RETURN SELF:OrderKeyCount(uOrder, oFSIndex:FullPath)
+
+METHOD OrderKeyCount( uOrder AS USUAL, cTarget := "" AS STRING) AS LONG
     LOCAL dwCurrentWorkArea := 0 AS DWORD
 	LOCAL uRetVal := NIL AS USUAL
 	LOCAL oError AS USUAL
-	LOCAL cTarget AS STRING
 
 
 	lErrorFlag := FALSE
 	BEGIN SEQUENCE
 		VoDbSelect( wWorkArea, OUT dwCurrentWorkArea )
-		IF IsObject(oFSIndex) .and. __Usual.ToObject(oFSIndex) IS FileSpec VAR oFS
-			cTarget := oFS:FullPath
-		ELSE
-			IF IsString( oFSIndex )
-				cTarget := oFSIndex
-			ENDIF
-		ENDIF
 		IF ! VoDbOrderInfo( DBOI_KEYCOUNT, cTarget, uOrder, REF uRetVal )
 			BREAK ErrorBuild(_VoDbErrInfoPtr())
 		ENDIF
@@ -1216,24 +1185,18 @@ METHOD OrderKeyCount( uOrder, oFSIndex ) AS LONG
 
 	RETURN uRetVal
 
-METHOD OrderKeyDel( uOrder, oFSIndex ) AS LOGIC
-	
-   LOCAL dwCurrentWorkArea := 0 AS DWORD
+METHOD OrderKeyDel( uOrder AS USUAL, oFSIndex AS FileSpec) AS LONG
+    RETURN SELF:OrderKeyDel(uOrder, oFSIndex:FullPath)
+
+METHOD OrderKeyDel( uOrder AS USUAL, cTarget := "" AS STRING) AS LONG
+    LOCAL dwCurrentWorkArea := 0 AS DWORD
 	LOCAL lRetCode AS USUAL
 	LOCAL oError AS USUAL
-	LOCAL cTarget AS STRING
 
 
 	lErrorFlag := FALSE
 	BEGIN SEQUENCE
 		VoDbSelect( wWorkArea, OUT dwCurrentWorkArea )
-		IF IsObject(oFSIndex) .and. __Usual.ToObject(oFSIndex) IS FileSpec VAR oFS
-			cTarget := oFS:FullPath
-		ELSE
-			IF IsString( oFSIndex )
-				cTarget := oFSIndex
-			ENDIF
-		ENDIF
 		IF ! VoDbOrderInfo( DBOI_KEYDELETE, cTarget, uOrder, REF lRetCode )
 			BREAK ErrorBuild(_VoDbErrInfoPtr())
 		ENDIF
@@ -1249,7 +1212,7 @@ METHOD OrderKeyDel( uOrder, oFSIndex ) AS LOGIC
 
 	RETURN lRetCode
 
-METHOD OrderKeyGoTo( nKeyNo ) AS LOGIC
+METHOD OrderKeyGoTo( nKeyNo AS LONG) AS LOGIC
 	LOCAL lRetCode := FALSE AS LOGIC
 	LOCAL oError AS USUAL
 	LOCAL dwCurrentWorkArea := 0 AS DWORD
@@ -1293,25 +1256,19 @@ METHOD OrderKeyGoTo( nKeyNo ) AS LOGIC
 
 	RETURN lRetCode
 
-METHOD OrderKeyNo( uOrder, oFSIndex ) AS LONG
+
+METHOD OrderKeyNo( uOrder AS USUAL, oFSIndex AS FileSpec) AS LONG
+    RETURN SELF:OrderKeyNo(uOrder, oFSIndex:FullPath)
+
+METHOD OrderKeyNo( uOrder AS USUAL, cTarget := "" AS STRING) AS LONG
 	//
    LOCAL dwCurrentWorkArea := 0 AS DWORD
 	LOCAL uRetVal := NIL AS USUAL
 	LOCAL oError AS USUAL
-	LOCAL cTarget AS STRING
-
-	
 
 	lErrorFlag := FALSE
 	BEGIN SEQUENCE
 		VoDbSelect( wWorkArea, OUT dwCurrentWorkArea )
-		IF IsObject(oFSIndex) .and. __Usual.ToObject(oFSIndex) IS FileSpec VAR oFS
-			cTarget := oFS:FullPath
-		ELSE
-			IF IsString( oFSIndex )
-				cTarget := oFSIndex
-			ENDIF
-		ENDIF
 		IF ! VoDbOrderInfo( DBOI_POSITION, cTarget, uOrder, REF uRetVal )
 			BREAK ErrorBuild(_VoDbErrInfoPtr())
 		ENDIF
@@ -1327,7 +1284,7 @@ METHOD OrderKeyNo( uOrder, oFSIndex ) AS LONG
 
 	RETURN uRetVal
 
-METHOD OrderScope( nScope, uValue ) AS USUAL
+METHOD OrderScope( nScope := TOPSCOPE AS LONG, uValue := NIL AS USUAL) AS USUAL
 	
    LOCAL dwCurrentWorkArea := 0 AS DWORD
 	LOCAL oError AS USUAL
@@ -1339,7 +1296,6 @@ METHOD OrderScope( nScope, uValue ) AS USUAL
 	BEGIN SEQUENCE
       SELF:__OptimisticFlush()
 
-		DEFAULT(REF nScope, TOPSCOPE)
 		IF nScope == TOPSCOPE
 			n := DBOI_SCOPETOP
 			IF IsNil( uValue )
@@ -1351,12 +1307,7 @@ METHOD OrderScope( nScope, uValue ) AS USUAL
 				n := DBOI_SCOPEBOTTOMCLEAR
 			ENDIF
 		ENDIF
-		//IF IsNumeric( nScope )
-		//	nScope := INT( nScope )
-		//	IF nScope > 0
-		//		n += 1
-		//	ENDIF
-		//ENDIF
+		
 		VoDbSelect( wWorkArea, OUT dwCurrentWorkArea )
 		IF ! VoDbOrderInfo( n, "", NIL, REF uValue )
 			BREAK ErrorBuild(_VoDbErrInfoPtr())
@@ -1377,7 +1328,7 @@ METHOD OrderScope( nScope, uValue ) AS USUAL
 
 	RETURN uValue
 
-METHOD OrderSkipUnique( nDirection )  AS LOGIC
+METHOD OrderSkipUnique( nDirection AS USUAL)  AS LOGIC
 	LOCAL lRetCode := FALSE AS LOGIC
 	LOCAL oError AS USUAL
 	LOCAL dwCurrentWorkArea := 0 AS DWORD

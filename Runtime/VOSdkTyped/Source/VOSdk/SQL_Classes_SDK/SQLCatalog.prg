@@ -29,7 +29,7 @@ CLASS SQLCatalogQuery INHERIT SQLSelect
     METHOD __GoCold AS LOGIC STRICT 
         RETURN TRUE
     
-    METHOD Append() AS LOGIC  CLIPPER
+    METHOD Append() AS LOGIC STRICT 
         RETURN FALSE
     
     METHOD Execute()  AS LOGIC CLIPPER
@@ -45,7 +45,7 @@ CLASS SQLCatalogQuery INHERIT SQLSelect
     
     PROTECTED METHOD _OpenTable(cCollectionName AS STRING, oSQLConnection AS SQLConnection, aFilters AS ARRAY) AS VOID
         LOCAL aFilterArray AS STRING[]
-        LOCAL lHasFilter AS LOGIC
+        LOCAL lHasFilter := FALSE AS LOGIC
         LOCAL nElement  AS DWORD
         LOCAL oTable AS DataTable
         cCollection := cCollectionName

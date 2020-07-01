@@ -1,7 +1,7 @@
 #pragma warnings(165, off)
 PARTIAL CLASS DbServer
 
-METHOD Append( lReleaseLocks ) AS LOGIC 
+METHOD Append( lReleaseLocks AS LOGIC) AS LOGIC 
 	LOCAL lRetCode AS LOGIC
 	LOCAL oError AS USUAL
 	LOCAL dwCurrentWorkArea := 0 AS DWORD
@@ -369,7 +369,7 @@ METHOD AppendSDF(oFSSource,aFieldList,cbForBlock,cbWhileBlock,uScope) AS LOGIC
 	
 	RETURN lRetCode
 
-METHOD Average( acbExpression, cbForBlock, cbWhileBlock, uScope )  AS ARRAY
+METHOD Average( acbExpression AS USUAL, cbForBlock := NIL AS USUAL, cbWhileBlock:= NIL AS USUAL, uScope := NIL AS USUAL)  AS ARRAY
 	LOCAL uValue AS USUAL
 	LOCAL cbKey AS USUAL
 	LOCAL nNextCount AS LONGINT
@@ -518,24 +518,20 @@ DESTRUCTOR( )
 	
 	RETURN 
 
-METHOD BLOBDirectExport( nPointer, oFSTarget, kMode ) AS USUAL
+METHOD BLOBDirectExport( nPointer AS LONG, oFSTarget AS FileSpec, kMode := BLOB_EXPORT_OVERWRITE AS LONG) AS USUAL
+    RETURN BLOBDirectExport(nPointer, oFSTarget:FullPath, kMode)
+    
+METHOD BLOBDirectExport( nPointer AS LONG, cTarget AS STRING, kMode := BLOB_EXPORT_OVERWRITE AS LONG) AS USUAL
 	
 	LOCAL dwCurrentWorkArea := 0 AS DWORD
 	LOCAL uRetCode AS USUAL
 	LOCAL oError AS USUAL
-	LOCAL cTarget AS STRING
-
 	
 
 	VoDbSelect( wWorkArea, OUT dwCurrentWorkArea )
 
 	lErrorFlag := FALSE
 	BEGIN SEQUENCE
-		IF IsObject(oFSTarget) .and. __Usual.ToObject(oFSTarget) IS FileSpec VAR oFS
-			cTarget := oFS:FullPath
-		ELSE
-			cTarget := oFSTarget
-		ENDIF
 		uRetCode := { nPointer, cTarget, kMode }
 		IF ! VoDbInfo( BLOB_DIRECT_EXPORT, REF uRetCode )
 			BREAK ErrorBuild( _VoDbErrInfoPtr( ) )
@@ -552,7 +548,7 @@ METHOD BLOBDirectExport( nPointer, oFSTarget, kMode ) AS USUAL
 	
 	RETURN uRetCode
 
-METHOD BLOBDirectGet( nPointer, nStart, nCount ) AS USUAL
+METHOD BLOBDirectGet( nPointer AS LONG, nStart AS LONG, nCount AS LONG) AS USUAL
 	
 	LOCAL dwCurrentWorkArea := 0 AS DWORD
 	LOCAL uRetVal AS USUAL
@@ -579,23 +575,19 @@ METHOD BLOBDirectGet( nPointer, nStart, nCount ) AS USUAL
 	
 	RETURN uRetVal
 
-METHOD BLOBDirectImport( nPointer, oFSSource ) AS USUAL
+METHOD BLOBDirectImport( nPointer AS LONG, oFSSource AS FileSpec) AS USUAL
+    RETURN BLOBDirectImport(nPointer, oFSSource:FullPath)
+    
+METHOD BLOBDirectImport( nPointer AS LONG, cTarget AS STRING) AS USUAL
 	
 	LOCAL dwCurrentWorkArea := 0 AS DWORD
 	LOCAL uRetVal AS USUAL
 	LOCAL oError AS USUAL
-	LOCAL cTarget AS STRING
-
 	
 
 	lErrorFlag := FALSE
 	BEGIN SEQUENCE
 		VoDbSelect( wWorkArea, OUT dwCurrentWorkArea )
-		IF IsObject(oFSSource) .AND. __Usual.ToObject(oFSSource) IS FileSpec VAR oFsParam
-			cTarget := oFsParam:FullPath
-		ELSE
-			cTarget := oFSSource
-		ENDIF
 		uRetVal := { nPointer, cTarget }
 		IF ! VoDbInfo( BLOB_DIRECT_IMPORT, REF uRetVal )
 			BREAK ErrorBuild( _VoDbErrInfoPtr( ) )
@@ -612,7 +604,7 @@ METHOD BLOBDirectImport( nPointer, oFSSource ) AS USUAL
 	
 	RETURN uRetVal
 
-METHOD BLOBDirectPut( nPointer, uBlob ) AS USUAL
+METHOD BLOBDirectPut( nPointer AS LONG, uBlob AS USUAL ) AS USUAL
 	
    LOCAL dwCurrentWorkArea := 0 AS DWORD
 	LOCAL uRetVal AS USUAL
@@ -639,11 +631,15 @@ METHOD BLOBDirectPut( nPointer, uBlob ) AS USUAL
 	
 	RETURN uRetVal
 
-METHOD BLOBExport( uField, oFSTarget, kMode ) AS LOGIC
+
+
+METHOD BLOBExport( uField AS USUAL, oFSTarget AS FileSpec, kMode := BLOB_EXPORT_OVERWRITE AS LONG) AS LOGIC
+        RETURN SELF:BLOBExport(uField, oFSTarget:FullPath, kMode)
+        
+METHOD BLOBExport( uField AS USUAL, cTarget AS STRING, kMode := BLOB_EXPORT_OVERWRITE AS LONG) AS LOGIC
 	
 	LOCAL lRetCode AS LOGIC
 	LOCAL oError AS USUAL
-	LOCAL cTarget AS STRING
 	LOCAL wPos AS DWORD
 	LOCAL dwCurrentWorkArea := 0 AS DWORD
 
@@ -656,13 +652,9 @@ METHOD BLOBExport( uField, oFSTarget, kMode ) AS LOGIC
 		IF wPos == 0
 			BREAK DbError{ SELF, #BLOBExport, EG_ARG, __CavoStr( __CAVOSTR_DBFCLASS_FIELDSPEC ),  ;
 				uField, "uField" }
-		ENDIF
-        IF IsObject(oFSTarget) .and. __Usual.ToObject(oFSTarget) IS FileSpec VAR oFS
-			cTarget := oFS:FullPath
-		ELSE
-			cTarget := oFSTarget
-		ENDIF
-		IF ! VoDbInfo( BLOB_NMODE, REF kMode )
+        ENDIF
+        LOCAL uMode := kMode AS USUAL
+		IF ! VoDbInfo( BLOB_NMODE, REF uMode )
 			BREAK ErrorBuild( _VoDbErrInfoPtr( ) )
 		ENDIF
 
@@ -684,14 +676,12 @@ METHOD BLOBExport( uField, oFSTarget, kMode ) AS LOGIC
 	
 	RETURN lRetCode
 
-METHOD BLOBGet( uField, nStart, nCount ) AS USUAL
+METHOD BLOBGet( uField AS USUAL, nStart AS LONG, nCount AS LONG) AS USUAL
 	
 	LOCAL uRetVal AS USUAL
 	LOCAL oError AS USUAL
 	LOCAL wPos AS DWORD
 	LOCAL dwCurrentWorkArea := 0 AS DWORD
-
-	
 
 	lErrorFlag := FALSE
 	BEGIN SEQUENCE
@@ -712,8 +702,6 @@ METHOD BLOBGet( uField, nStart, nCount ) AS USUAL
 		__DBSSetSelect( dwCurrentWorkArea )  
 		uRetVal := NIL
 	END SEQUENCE
-
-
 	
 	RETURN uRetVal
 
@@ -916,21 +904,17 @@ METHOD ClearFilter( ) AS LOGIC STRICT
 	
 	RETURN lRetCode
 
-METHOD ClearIndex( uOrder, cOrdBag ) AS LOGIC 
+METHOD ClearIndex( uOrder AS USUAL, cOrdBag := "" AS STRING) AS LOGIC 
 	
    LOCAL dwCurrentWorkArea := 0 AS DWORD
 	LOCAL lRetCode AS LOGIC
 	LOCAL oError AS USUAL
 
-	
-
 	VoDbSelect( wWorkArea, OUT dwCurrentWorkArea )
 
 	BEGIN SEQUENCE
       SELF:__OptimisticFlush()
-		IF IsNil( cOrdBag ) .OR. ! IsString( cOrdBag )
-			cOrdBag := ""
-		ENDIF
+		cOrdBag := ""
 		IF ! (lRetCode := VoDbOrdListClear( cOrdBag, uOrder ))
 			BREAK ErrorBuild( _VoDbErrInfoPtr( ) )
 		ENDIF
@@ -1035,7 +1019,7 @@ METHOD ClearScope( ) AS LOGIC STRICT
 
 	RETURN TRUE
 
-METHOD Close( ) AS LOGIC CLIPPER
+METHOD Close( ) AS LOGIC STRICT
 	LOCAL dwCurrentWorkArea := 0 AS DWORD
 	LOCAL lRetCode AS LOGIC
 	LOCAL oError AS USUAL
@@ -1084,7 +1068,7 @@ METHOD Close( ) AS LOGIC CLIPPER
 	
 	RETURN lRetCode
 
-METHOD Commit( ) AS LOGIC CLIPPER
+METHOD Commit( ) AS LOGIC STRICT
 	LOCAL lRetCode AS LOGIC
 	LOCAL oError AS USUAL
 	LOCAL dwCurrentWorkArea := 0 AS DWORD
@@ -1131,10 +1115,8 @@ METHOD Commit( ) AS LOGIC CLIPPER
 	
 	RETURN lRetCode
 
-METHOD ConstructUniqueAlias( cFileName ) AS STRING
+METHOD ConstructUniqueAlias( cFileName := "" AS STRING ) AS STRING
     LOCAL sResult AS SYMBOL
-	DEFAULT( REF cFileName, "" )
-	
 
 	sResult := __ConstructUniqueAlias( cFileName )
 	

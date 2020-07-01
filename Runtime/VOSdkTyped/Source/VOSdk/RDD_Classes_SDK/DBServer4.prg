@@ -2,7 +2,7 @@
 
 PARTIAL CLASS DbServer
 
-METHOD RddInfo( kRDDInfoType, uRDDVal ) AS USUAL
+METHOD RddInfo( kRDDInfoType AS LONG, uRDDVal := NIL AS USUAL) AS USUAL
 	
    LOCAL dwCurrentWorkArea := 0 AS DWORD
 	LOCAL oError AS USUAL
@@ -26,7 +26,7 @@ METHOD RddInfo( kRDDInfoType, uRDDVal ) AS USUAL
 	
 	RETURN uRDDVal
 
-METHOD Recall( cbForBlock, cbWhileBlock, uScope ) AS LOGIC
+METHOD Recall( cbForBlock := NIL AS USUAL, cbWhileBlock := NIL AS USUAL, uScope  := NIL AS USUAL) AS LOGIC
 	LOCAL nNextCount AS LONGINT
 	LOCAL lRestOfFile AS LOGIC
 	LOCAL lRetCode AS LOGIC
@@ -200,7 +200,7 @@ METHOD RecallAll() AS LOGIC
 	
 	RETURN lRetCode
 
-METHOD RecordInfo( kRecInfoType, nRecordNumber, uRecVal ) AS USUAL
+METHOD RecordInfo( kRecInfoType AS LONG, nRecordNumber:= 0 AS LONG, uRecVal := NIL AS USUAL) AS USUAL
 	
    LOCAL dwCurrentWorkArea := 0 AS DWORD
 	LOCAL oError AS USUAL
@@ -210,9 +210,6 @@ METHOD RecordInfo( kRecInfoType, nRecordNumber, uRecVal ) AS USUAL
 	lErrorFlag := FALSE
 	BEGIN SEQUENCE
 		VoDbSelect( wWorkArea, OUT dwCurrentWorkArea )
-		IF IsNil( nRecordNumber )
-			nRecordNumber := 0
-		ENDIF
 		IF ! VoDbRecordInfo( kRecInfoType, nRecordNumber, REF uRecVal )
 			IF ! VoDbEof() .OR. ! Used()
 				BREAK DbError{ SELF, #RecordInfo, EG_ARG, "", kRecInfoType, "kRecInfoType" }
@@ -340,7 +337,7 @@ METHOD Reindex() AS LOGIC STRICT
 	
 	RETURN lRetCode
 
-METHOD Relation( nRelation ) AS STRING
+METHOD Relation( nRelation := 0 AS LONG) AS STRING
 	
     LOCAL dwCurrentWorkArea := 0 AS DWORD
 	LOCAL cRelation AS STRING
@@ -510,7 +507,7 @@ METHOD ResetNotification() AS LONG
 
 	RETURN siSuspendNotification
 
-METHOD RLock( nRecordNumber ) AS LOGIC
+METHOD RLock( nRecordNumber AS LONG ) AS LOGIC
 	LOCAL lRetCode AS LOGIC
 	LOCAL oError AS USUAL
 	LOCAL dwCurrentWorkArea := 0 AS DWORD
@@ -572,7 +569,7 @@ METHOD RLockVerify() AS LOGIC
 	
 	RETURN lRetCode
 
-METHOD Seek( uSearchExpr, lSoftSeek, lLast ) AS LOGIC CLIPPER
+METHOD Seek( uSearchExpr:= NIL AS USUAL, lSoftSeek:= FALSE AS LOGIC, lLast := FALSE AS LOGIC) AS LOGIC 
 	LOCAL lRetCode AS LOGIC
 	LOCAL oError AS USUAL
 	LOCAL dwCurrentWorkArea := 0 AS DWORD
@@ -582,7 +579,6 @@ METHOD Seek( uSearchExpr, lSoftSeek, lLast ) AS LOGIC CLIPPER
 
 	lErrorFlag := FALSE
 	nTries := SELF:nRetries
-    DEFAULT(REF lLast, FALSE)
 	BEGIN SEQUENCE
 		VoDbSelect( wWorkArea, OUT dwCurrentWorkArea )
 		IF SELF:Notify( NOTIFYINTENTTOMOVE )
@@ -635,9 +631,8 @@ METHOD Select() AS DWORD
 
 
 
-METHOD SetDataField( nFieldPosition AS USUAL, oDataField AS DataField) AS LOGIC
+METHOD SetDataField( nFieldPosition AS LONG, oDataField AS DataField) AS LOGIC
 	LOCAL wFieldPosition := nFieldPosition  AS DWORD
-	LOCAL oField := oDataField AS DataField
 	LOCAL lRetCode AS LOGIC
 	LOCAL oError AS USUAL
 
@@ -646,24 +641,17 @@ METHOD SetDataField( nFieldPosition AS USUAL, oDataField AS DataField) AS LOGIC
 	lErrorFlag := FALSE
 	BEGIN SEQUENCE
 		IF aDataFields == NULL_ARRAY
-			BREAK DbError{ SELF, #SetDataField, EG_SEQUENCE,  ;
-				__CavoStr( __CAVOSTR_DBFCLASS_NODATAFIELDSEXIST ) }
+			BREAK DbError{ SELF, #SetDataField, EG_SEQUENCE,  __CavoStr( __CAVOSTR_DBFCLASS_NODATAFIELDSEXIST ) }
 
-		ELSEIF IsNil( nFieldPosition ) .OR. ! IsNumeric( nFieldPosition ) .OR.  ;
-			wFieldPosition < 1 .OR. wFieldPosition > ALen( aDataFields )
-			BREAK DbError{ SELF, #SetDataField, EG_ARG,  ;
-				__CavoStr( __CAVOSTR_DBFCLASS_BADFIELDPOSITION ), nFieldPosition, "nFieldPosition" }
-
-		ELSEIF IsNil( oDataField ) .OR. ! IsInstanceOfUsual( oDataField, #DataField )
-			BREAK DbError{ SELF, #SetDataField, EG_ARG,  ;
-				__CavoStr( __CAVOSTR_DBFCLASS_BADFIELDPOSITION ), nFieldPosition, "nFieldPosition" }
+		ELSEIF  oDataField == NULL 
+			BREAK DbError{ SELF, #SetDataField, EG_ARG,  __CavoStr( __CAVOSTR_DBFCLASS_BADFIELDPOSITION ), oDataField, "oDataField" }
 
 		ELSE
-			IF oField:Name == aStruct[wFieldPosition, DBS_NAME] .AND.  ;
-				oField:FieldSpec:ValType 	== aStruct[wFieldPosition, DBS_TYPE] .AND.  ;
-				oField:FieldSpec:Length 	== aStruct[wFieldPosition, DBS_LEN] .AND.  ;
-				oField:FieldSpec:Decimals 	== aStruct[wFieldPosition, DBS_DEC]
-				aDataFields[wFieldPosition] := oField
+			IF oDataField:Name == aStruct[wFieldPosition, DBS_NAME] .AND.  ;
+				oDataField:FieldSpec:ValType 	== aStruct[wFieldPosition, DBS_TYPE] .AND.  ;
+				oDataField:FieldSpec:Length 	== aStruct[wFieldPosition, DBS_LEN] .AND.  ;
+				oDataField:FieldSpec:Decimals 	== aStruct[wFieldPosition, DBS_DEC]
+				aDataFields[wFieldPosition] := oDataField
 				lRetCode := TRUE
 			ELSE
 				BREAK DbError{ SELF, #SetDataField, EG_ARG,  ;
@@ -681,7 +669,9 @@ METHOD SetDataField( nFieldPosition AS USUAL, oDataField AS DataField) AS LOGIC
 	
 	RETURN lRetCode
 
-METHOD SetFilter( cbFilterBlock, cFilterText ) AS LOGIC
+
+
+METHOD SetFilter( cbFilterBlock , cFilterText ) AS LOGIC
 	
    LOCAL dwCurrentWorkArea := 0 AS DWORD
 	LOCAL lRetCode 			AS LOGIC
@@ -747,9 +737,12 @@ METHOD SetFilter( cbFilterBlock, cFilterText ) AS LOGIC
 
 	
 	RETURN lRetCode
-	///JSP
+	
 
-METHOD SetIndex( oFSIndexFile ) AS LOGIC
+METHOD SetIndex( oFSIndexFile AS FileSpec) AS LOGIC
+    RETURN SetIndex(oFSIndexFile:FullPath)
+    
+METHOD SetIndex( cIndexFile := "" AS STRING ) AS LOGIC
 	// oFSIndexFile is a a FileSpec object for the index file,
 	// or the filename of the index file as a string,
 	// with or without file type.
@@ -772,14 +765,9 @@ METHOD SetIndex( oFSIndexFile ) AS LOGIC
 	BEGIN SEQUENCE
 		VoDbSelect( wWorkArea, OUT dwCurrentWorkArea )
 		IF SELF:Notify( NOTIFYINTENTTOMOVE )
-			IF IsNil(oFSIndexFile)
+			IF String.IsNullOrEmpty(cIndexFile)
 				lRetCode := __DBSOrdListClear("", NIL, nTries)
 			ELSE
-				 IF IsObject(oFSIndexFile) .and. __Usual.ToObject(oFSIndexFile) IS FileSpec VAR oFs
-					cIndexFileName := oFs:FullPath
-				ELSE
-					cIndexFileName := oFSIndexFile
-				ENDIF
 				lRetCode := __DBSOrdListAdd(cIndexFileName, NIL, nTries)
 			END
 
@@ -801,29 +789,25 @@ METHOD SetIndex( oFSIndexFile ) AS LOGIC
 	RETURN lRetCode
 
 
-METHOD SetOrder( uOrder, cIndexFileName ) AS LOGIC
+METHOD SetOrder( uOrder AS USUAL, oFSIndex AS FileSpec) AS LOGIC
+    RETURN SELF:SetOrder(uOrder, oFSIndex:FullPath)
+
+METHOD SetOrder( uOrder AS USUAL, cIndexFileName := "" AS STRING) AS LOGIC
 	// Like function SetOrder
 	// It sends a NotifyRecordChange
 	// Does not change the current record
 	//
 	
-   LOCAL dwCurrentWorkArea := 0 AS DWORD
+    LOCAL dwCurrentWorkArea := 0 AS DWORD
 	LOCAL lRetCode      AS LOGIC
 	LOCAL oError        AS USUAL
 	LOCAL pszStuff      AS STRING
-
-	
 
 	lErrorFlag := FALSE 
 	BEGIN SEQUENCE
       SELF:__OptimisticFlush()
 
 		VoDbSelect( wWorkArea, OUT dwCurrentWorkArea )
-		IF IsObject(cIndexFileName) .and. __Usual.ToObject(cIndexFileName) IS FileSpec VAR oFs
-			cIndexFileName := oFs:FullPath
-		ELSEIF IsNil(cIndexFileName)
-			cIndexFileName:=""
-		ENDIF
 		IF ! (lRetCode := VoDbOrdSetFocus(cIndexFileName,uOrder, REF pszStuff))
 			BREAK ErrorBuild(_VoDbErrInfoPtr())
 		ENDIF
@@ -912,7 +896,7 @@ METHOD SetOrderCondition(   cFor,           ;
 
 
 
-METHOD SetRelation(oDBChild,uRelation,cRelation,lSelective) AS LOGIC
+METHOD SetRelation(oDBChild := NULL_OBJECT AS DbServer,uRelation AS USUAL,cRelation := "" AS STRING,lSelective := FALSE AS LOGIC) AS LOGIC
 	// Sets a relation from this server to the child server.
 	// The child server must be specified as a DbServer object ( not as an alias )
 	// The relation may be specified in one of two ways:
@@ -938,14 +922,10 @@ METHOD SetRelation(oDBChild,uRelation,cRelation,lSelective) AS LOGIC
 
 	lErrorFlag := FALSE
 	BEGIN SEQUENCE
-		IF oDBChild == NIL
+		IF oDBChild == NULL_OBJECT
 			SELF:ClearRelation()
 		ELSE
-			IF IsObject(oDBChild) .AND. __Usual.ToObject(oDBChild) IS DbServer VAR oDb
-				cChildAlias := oDb:Alias
-			ELSE
-				BREAK DbError{ SELF, #SetRelation, EG_ARG, __CavoStr(__CAVOSTR_DBFCLASS_BADCHILD), oDBChild, "oDBChild" }
-			ENDIF
+			cChildAlias := oDBChild:Alias
 			IF __CanEval( uRelation )
 				cbRelationExpression := uRelation
 				IF !IsNil(cRelation)
@@ -971,11 +951,11 @@ METHOD SetRelation(oDBChild,uRelation,cRelation,lSelective) AS LOGIC
 				BREAK DbError{ SELF, #SetRelation, EG_ARG, __CavoStr(__CAVOSTR_DBFCLASS_NOFIELDS), uRelation, "uRelation" }
 			ENDIF
 
-			Send(oDBChild,#__NotifyBufferFlush)
+			oDBChild:__NotifyBufferFlush()
 
-         VoDbSelect( wWorkArea, OUT dwCurrentWorkArea )
-         lRetCode := VoDbSetRelation( cChildAlias, cbRelationExpression, cRelationExpression )
-         __DBSSetSelect( dwCurrentWorkArea )
+             VoDbSelect( wWorkArea, OUT dwCurrentWorkArea )
+             lRetCode := VoDbSetRelation( cChildAlias, cbRelationExpression, cRelationExpression )
+             __DBSSetSelect( dwCurrentWorkArea )
 			IF ! lRetCode
 				BREAK ErrorBuild(_VoDbErrInfoPtr())
 			ENDIF
@@ -984,10 +964,10 @@ METHOD SetRelation(oDBChild,uRelation,cRelation,lSelective) AS LOGIC
 				AAdd( aRelationChildren, oDBChild )
 			ENDIF
 			lRelationsActive := TRUE
-			IF IsLogic(lSelective) .AND. lSelective
-				Send(oDBChild,#__AcceptSelectiveRelation, SELF, wWorkArea, cbRelationExpression )
+			IF lSelective
+				oDBChild:__AcceptSelectiveRelation( SELF, wWorkArea, cbRelationExpression )
 			ENDIF
-			Send(oDBChild,#Notify, NOTIFYRELATIONCHANGE )
+			oDBChild:Notify( NOTIFYRELATIONCHANGE )
 		ENDIF
 
 	RECOVER USING oError
@@ -1002,25 +982,17 @@ METHOD SetRelation(oDBChild,uRelation,cRelation,lSelective) AS LOGIC
 
 
 
-METHOD SetSelectiveRelation(oDBChild,uRelation,cRelation) AS LOGIC
-	
-
-	#IFDEF __DEBUG__
-		// AltD()
-	#ENDIF
-
+METHOD SetSelectiveRelation(oDBChild := NULL_OBJECT AS DbServer,uRelation AS USUAL,cRelation := "" AS STRING) AS LOGIC
 	RETURN SELF:SetRelation( oDBChild, uRelation, cRelation, TRUE )
 
 
-METHOD Skip( nRecordCount ) AS LOGIC
+METHOD Skip( nRecordCount := 1 AS LONG) AS LOGIC
 	LOCAL dwCurrentWorkArea := 0 AS DWORD
 	LOCAL iRecords          AS LONGINT
 	LOCAL i                 AS LONGINT
 	LOCAL nTries            AS DWORD
 	LOCAL lRetCode          AS LOGIC
 	LOCAL oError            AS USUAL
-
-    DEFAULT( REF nRecordCount, 1)
 
 	lErrorFlag := FALSE
 	BEGIN SEQUENCE
@@ -1104,7 +1076,11 @@ METHOD Skip( nRecordCount ) AS LOGIC
 
 
 
-METHOD Sort(oFSTarget,aFieldList,cbForBlock,cbWhileBlock,uScope) AS LOGIC
+METHOD Sort(oFSTarget AS FileSpec,aFieldList AS ARRAY, cbForBlock := NIL AS USUAL, cbWhileBlock := NIL AS USUAL,uScope := NIL AS USUAL) AS LOGIC
+   RETURN SELF:Sort(oFSTarget:FullPath, aFieldList,  cbForBlock, cbWhileBlock, uScope)
+
+
+METHOD Sort(cTarget AS STRING,aFieldList AS ARRAY,cbForBlock := NIL AS USUAL,cbWhileBlock := NIL AS USUAL,uScope := NIL AS USUAL) AS LOGIC
 	// Like Sort
 	// Parameter differences:
 	//      The target file may be specified as a FileSpec object
@@ -1116,7 +1092,6 @@ METHOD Sort(oFSTarget,aFieldList,cbForBlock,cbWhileBlock,uScope) AS LOGIC
 	LOCAL cbKey                 AS USUAL
 	LOCAL nNextCount            AS LONGINT
 	LOCAL lRestOfFile           AS LOGIC
-	LOCAL cTarget               AS STRING
 	LOCAL w                     AS DWORD
 	LOCAL lRetCode              AS LOGIC
 	LOCAL aFieldNames := { }    AS ARRAY
@@ -1131,13 +1106,8 @@ METHOD Sort(oFSTarget,aFieldList,cbForBlock,cbWhileBlock,uScope) AS LOGIC
     BEGIN SEQUENCE
 	VoDbSelect( wWorkArea, OUT dwCurrentWorkArea )
 	IF SELF:Notify( NOTIFYINTENTTOMOVE )
-		IF IsObject(oFSTarget) .and. __Usual.ToObject(oFSTarget) IS FileSpec VAR oFs
-			cTarget := oFs:FullPath
-		ELSE
-			cTarget := oFSTarget
-		ENDIF
 
-		aFieldNames := ArrayNew( ALen( aFieldList ) )
+        aFieldNames := ArrayNew( ALen( aFieldList ) )
 		wLen:=ALen(aFieldList)
 		FOR w := 1 UPTO wLen
 			aFieldNames[ w ] := AsString( aFieldList[ w ] )
@@ -1159,11 +1129,11 @@ METHOD Sort(oFSTarget,aFieldList,cbForBlock,cbWhileBlock,uScope) AS LOGIC
 			ENDIF
             lRetCode := __DBSDBSORT( cTarget,   aFieldNames,        ;
                 cbForBlock,         ;                   // For
-            cbWhileBlock,       ;                   // While
-            nNextCount,         ;                   // Next
-            NIL,                ;                   // Record #
-            lRestOfFile,        ;                   // lRest
-            aStruct, SELF:cRDDName)
+                cbWhileBlock,       ;                   // While
+                nNextCount,         ;                   // Next
+                NIL,                ;                   // Record #
+                lRestOfFile,        ;                   // lRest
+                aStruct, SELF:cRDDName)
 		ELSEIF lActiveScope
 			lRetCode := __DBSDBSORT( cTarget,   aFieldNames,    ;
 				cbStoredForBlock,   ;
@@ -1224,7 +1194,7 @@ METHOD Sort(oFSTarget,aFieldList,cbForBlock,cbWhileBlock,uScope) AS LOGIC
 	RETURN lRetCode
 
 
-METHOD Sum(acbExpression,cbForBlock,cbWhileBlock,uScope) AS ARRAY
+METHOD Sum(acbExpression := NIL AS USUAL,cbForBlock := NIL  AS USUAL,cbWhileBlock := NIL  AS USUAL,uScope := NIL AS USUAL) AS ARRAY
 	// SUM totals a series of numeric expressions
 	//
 	// The expressions are specified in acbExpression is an array of codeblocks, or an array of fieldnames specified
@@ -1538,7 +1508,7 @@ METHOD Total(oFSTarget,cbKeyField,aFieldList,cbForBlock,cbWhileBlock,uScope) AS 
 	
 	RETURN lRetCode
 
-METHOD UnLock( nRecordNumber ) AS LOGIC CLIPPER
+METHOD UnLock( nRecordNumber := 0 AS LONG) AS LOGIC 
 	LOCAL lRetCode          AS LOGIC
 	LOCAL oError            AS USUAL
 	LOCAL dwCurrentWorkArea := 0 AS DWORD

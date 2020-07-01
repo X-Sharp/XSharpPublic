@@ -424,9 +424,12 @@ METHOD CopySDF( oFSTarget, aFieldList, cbForBlock, cbWhileBlock, uScope )   AS L
 	
 	
 	RETURN lRetCode
-	
 
-METHOD CopyStructure( oFSTarget, aFieldList )   AS LOGIC
+
+METHOD CopyStructure( oFSTarget AS FileSpec, aFieldList := NULL AS ARRAY) AS LOGIC
+    RETURN SELF:CopyStructure(oFSTarget:FullPath, aFieldList)
+
+METHOD CopyStructure( cFileName AS STRING, aFieldList := NULL AS ARRAY )   AS LOGIC
 	LOCAL cTarget AS STRING
 	LOCAL w AS DWORD
 	LOCAL j AS DWORD
@@ -437,9 +440,7 @@ METHOD CopyStructure( oFSTarget, aFieldList )   AS LOGIC
 	LOCAL oError AS USUAL
 	LOCAL oHLTemp AS HyperLabel
 	LOCAL cAlias AS STRING
-	LOCAL cFileName AS STRING
 	LOCAL cPath AS STRING
-	LOCAL oSelf AS DbServer
 	LOCAL aFullPath AS ARRAY
 	LOCAL aRdds AS ARRAY
 	LOCAL rddList AS _RddList
@@ -448,38 +449,27 @@ METHOD CopyStructure( oFSTarget, aFieldList )   AS LOGIC
 	
 	lErrorFlag := FALSE
 	BEGIN SEQUENCE
-		IF IsObject(oFSTarget) .and. __Usual.ToObject(oFSTarget) IS FileSpec VAR oFS
-			cTarget := oFS:FullPath
-			cFileName := oFS:FileName
-			
-			IF Upper( SELF:oFileSpec:FileName ) == Upper( cFileName )
-				cAlias := Symbol2String( __ConstructUniqueAlias( cFileName ) )
-			ENDIF
-			
+		cTarget := cFileName
+		aFullPath := ArrayNew( 4 )
+		__SplitPath( NULL, cTarget, aFullPath )
+		IF SubStr2( aFullPath[2], SLen( aFullPath[2] ) ) == "\"
+			cPath := aFullPath[1] + aFullPath[2]
 		ELSE
-			cTarget := oFSTarget
-			aFullPath := ArrayNew( 4 )
-			oSelf := SELF
-			__SplitPath( oSelf:FileSpec, cTarget, aFullPath )
-			IF SubStr2( aFullPath[2], SLen( aFullPath[2] ) ) == "\"
-				cPath := aFullPath[1] + aFullPath[2]
-			ELSE
-				cPath := aFullPath[1] + aFullPath[2] + "\"
-			ENDIF
-			
-			cFileName := aFullPath[3] + aFullPath[4]
-			
-			IF aFullPath[4] == NULL_STRING
-				cFileName += oFileSpec:Extension
-			ENDIF
-			
-			IF aFullPath[3] == SELF:oFileSpec:FileName
-				cAlias := Symbol2String( __ConstructUniqueAlias( SELF:oFileSpec:FileName ) )
-			ENDIF
-			cTarget := cPath + cFileName
+			cPath := aFullPath[1] + aFullPath[2] + "\"
 		ENDIF
+			
+		cFileName := aFullPath[3] + aFullPath[4]
+			
+		IF aFullPath[4] == NULL_STRING
+			cFileName += oFileSpec:Extension
+		ENDIF
+			
+		IF aFullPath[3] == SELF:oFileSpec:FileName
+			cAlias := Symbol2String( __ConstructUniqueAlias( SELF:oFileSpec:FileName ) )
+		ENDIF
+		cTarget := cPath + cFileName
 		
-		IF IsNil( aFieldList )
+		IF aFieldList == NULL
 			aNew := aStruct
 		ELSE
 			aNew := { }
@@ -528,7 +518,7 @@ METHOD CopyStructure( oFSTarget, aFieldList )   AS LOGIC
 	RETURN lRetCode
 	
 
-METHOD Count( cbForBlock, cbWhileBlock, uScope )   AS LONG
+METHOD Count( cbForBlock := NIL AS USUAL, cbWhileBlock := NIL AS USUAL, uScope := NIL AS USUAL)   AS LONG
 	LOCAL uValue AS USUAL
 	LOCAL cbKey AS USUAL
 	LOCAL nNextCount AS LONGINT
@@ -1074,7 +1064,7 @@ METHOD DeleteOrder( uOrder, cIndexFileName )  AS LOGIC
 	RETURN lRetCode
 	
 
-METHOD Error( oError, symMethod ) 
+METHOD Error( oError AS Error, symMethod AS Symbol) 
 	STATIC LOCAL lErrorProcessingSemaphor AS LOGIC
 	LOCAL cErrorValType AS STRING
     LOCAL oErr  as Error

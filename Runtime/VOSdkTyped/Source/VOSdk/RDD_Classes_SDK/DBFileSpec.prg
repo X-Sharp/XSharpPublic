@@ -726,27 +726,22 @@ ASSIGN IndexNames( cIndexName AS ARRAY)
 	SELF:aIndexNames := cIndexName
 	RETURN 
 
-CONSTRUCTOR( cFullPath, cDriver, _aRDDs ) 
 
+CONSTRUCTOR( oFS AS FileSpec, cDriver := "" AS STRING, _aRDDs := NULL_ARRAY AS ARRAY)
+    SELF(oFS:FullPath, cDriver, _aRDDs)
 
+CONSTRUCTOR( cFullPath := "" AS STRING, cDriver := "" AS STRING, _aRDDs := NULL_ARRAY AS ARRAY) 
 	SELF:aOrders := { }
 	SELF:aIndexNames := { }
 
-	IF IsObject(cFullPath) .AND. __Usual.ToObject(cFullPath) IS FileSpec  VAR oFS
-		cFullPath := oFS:FullPath
-	ENDIF
 
-	IF Empty( cDriver ) .OR. ! IsString( cDriver )
+	IF Empty( cDriver ) 
 		SELF:cRDD_Name := RddInfo( _SET_DEFAULTRDD )
 	ELSE
 		SELF:cRDD_Name := cDriver
 	ENDIF
 
-	IF Empty( _aRDDs ) .OR. ! IsArray( _aRDDs )
-		SELF:aRDDs := NULL_ARRAY
-	ELSE
-		SELF:aRDDs := _aRDDs
-	ENDIF
+	SELF:aRDDs := _aRDDs
 
 	IF ! Empty( cFullPath )
 

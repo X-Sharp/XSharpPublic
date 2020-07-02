@@ -601,7 +601,11 @@ attributeParam      : Name=identifierName Op=assignoperator Expr=expression     
             IF _dialect == XSharpDialect.XPP
                entityKind := Kind.Method // Not really a field but handled later
             ENDIF
-            
+         CASE XSharpLexer.GET
+         CASE XSharpLexer.SET
+         //CASE XSharpLexer.ADD
+         CASE XSharpLexer.REMOVE
+            entityKind := Kind.Unknown
          OTHERWISE
             IF IsId(SELF:La1) 
                IF mods != Modifiers.None
@@ -626,7 +630,9 @@ attributeParam      : Name=identifierName Op=assignoperator Expr=expression     
                      entityKind := Kind.Field
                   ELSEIF SELF:La1 == XSharpLexer.ID .AND. SELF:Lt1:Text:EndsWith("COMATTRIB", StringComparison.OrdinalIgnoreCase)
                      entityKind := Kind.Field
-                  ENDIF
+                  ENDIF 
+               ELSEIF CurrentType?:Kind == Kind.Enum
+                  entityKind := Kind.EnumMember
                ENDIF
             ENDIF   
             
@@ -1692,9 +1698,7 @@ enummember          : (Attributes=attributes)? MEMBER? Id=identifier (Op=assigno
 */         
 
          VAR att := SELF:ParseAttributes()
-         IF ! Expect(XSharpLexer.MEMBER)
-            RETURN NULL
-         ENDIF
+         Expect(XSharpLexer.MEMBER)    // Optional !
          VAR strValue := ""
          VAR id := SELF:ParseQualifiedName()
          IF ExpectAssign()

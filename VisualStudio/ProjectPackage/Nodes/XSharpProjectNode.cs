@@ -1271,7 +1271,7 @@ namespace XSharp.Project
             Assumes.Present(dte);
             foreach (EnvDTE.Project p in dte.Solution.Projects)
             {
-                if (p == null)
+                if (p == null || p.Properties == null) // unloaded ?
                 {
                     continue;
                 }
@@ -1291,7 +1291,16 @@ namespace XSharp.Project
         {
             foreach (var p in GetSolutionProjects())
             {
-                if (p.FullName.Equals(sProject, StringComparison.InvariantCultureIgnoreCase))
+                string name = "";
+                try
+                {
+                    name = p.FullName;
+                }
+                catch (Exception e)
+                {
+                    Debug.WriteLine(e.Message);
+                }
+                if (name.Equals(sProject, StringComparison.InvariantCultureIgnoreCase))
                 {
                     return p;
                 }

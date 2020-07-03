@@ -17,10 +17,13 @@ INTERNAL STATIC CLASS OOPHelpers
     STATIC INTERNAL EnableOptimizations AS LOGIC
     STATIC INTERNAL cacheClassesAll AS Dictionary<STRING,Type>
     STATIC INTERNAL cacheClassesOurAssemblies AS Dictionary<STRING,Type>
-
+    STATIC INTERNAL fieldPropCache    AS Dictionary<System.Type, Dictionary<STRING, MemberInfo> >
+    STATIC INTERNAL overloadCache     AS Dictionary<System.Type, Dictionary<STRING, IList<MethodInfo>> >
     STATIC CONSTRUCTOR()
-	    cacheClassesAll := Dictionary<STRING,Type>{StringComparer.OrdinalIgnoreCase}
-	    cacheClassesOurAssemblies := Dictionary<STRING,Type>{StringComparer.OrdinalIgnoreCase}
+	    cacheClassesAll             := Dictionary<STRING,Type>{StringComparer.OrdinalIgnoreCase}
+	    cacheClassesOurAssemblies   := Dictionary<STRING,Type>{StringComparer.OrdinalIgnoreCase}
+        fieldPropCache              := Dictionary<System.Type, Dictionary<STRING, MemberInfo> >{}
+        overloadCache               := Dictionary<System.Type, Dictionary<STRING, IList<MethodInfo>> >{}
 	RETURN
     
 	STATIC METHOD FindOurAssemblies AS IEnumerable<Assembly>
@@ -47,12 +50,22 @@ INTERNAL STATIC CLASS OOPHelpers
 					ENDIF
 				CATCH AS AmbiguousMatchException
 					LOCAL aMI AS MethodInfo[]
-					aMI := oType:GetMethods(bf)
-					FOREACH oM AS MethodInfo IN aMI
-						IF String.Compare(oM:Name, cFunction, TRUE) == 0
-							aMethods:Add( oM )
-						ENDIF
-					NEXT
+                    VAR list := GetOverLoads(oType, cFunction)
+                    IF list != NULL
+                        aMethods:AddRange(list)
+                    ELSE
+                        list := List<MethodInfo>{}
+					    aMI := oType:GetMethods(bf)
+					    FOREACH oM AS MethodInfo IN aMI
+						    IF String.Compare(oM:Name, cFunction, TRUE) == 0
+							    list:Add( oM )
+						    ENDIF
+                        NEXT
+                        IF list:Count > 0
+                            AddOverLoads(oType, cFunction, list)
+                            aMethods:AddRange(list)
+                        ENDIF
+                    ENDIF
 				END TRY 
 			ENDIF
 		NEXT
@@ -479,9 +492,19 @@ INTERNAL STATIC CLASS OOPHelpers
 		RETURN aList
 
 	STATIC METHOD FindProperty( t AS Type , cName AS STRING, lAccess AS LOGIC, lSelf AS LOGIC) AS PropertyInfo
+        VAR mi := GetMember(t, cName)
+        IF mi != NULL
+            IF mi IS PropertyInfo VAR pi
+                RETURN pi
+            ENDIF
+            RETURN NULL     // it must be a field then
+        ENDIF
+
+        VAR bt := t
 		DO WHILE t != NULL
 			VAR oInfo := t:GetProperty( cName, BindingFlags.Instance | BindingFlags.IgnoreCase | BindingFlags.Public | IIF(lSelf , BindingFlags.NonPublic , BindingFlags.Public) | BindingFlags.DeclaredOnly ) 
 			IF oInfo != NULL .AND. ( (lAccess .AND. oInfo:CanRead) .OR. (.NOT. lAccess .AND. oInfo:CanWrite) )
+                AddMember(bt, cName, oInfo)
 				RETURN oInfo
 			ELSE
 				t := t:BaseType
@@ -498,13 +521,45 @@ INTERNAL STATIC CLASS OOPHelpers
 			RETURN TRUE
 		ENDIF
 		RETURN FALSE
-		
+
+
+    STATIC METHOD GetMember(t AS Type, cName AS STRING) AS MemberInfo
+        IF fieldPropCache:ContainsKey(t)
+            VAR fields := fieldPropCache[t]
+            IF fields:ContainsKey(cName)
+                VAR result := fields[cName]
+                RETURN result
+            ENDIF
+        ENDIF
+        RETURN NULL
+
+    STATIC METHOD AddMember(t AS Type, cName AS STRING, mi AS MemberInfo) AS LOGIC
+        IF ! fieldPropCache:ContainsKey(t)
+            fieldPropCache:Add( t, Dictionary<STRING, MemberInfo> {StringComparison.OrdinalIgnoreCase})
+        ENDIF
+        VAR fields := fieldPropCache[t]
+        IF !fields:ContainsKey(cName)
+            fields:Add(cName, mi)
+            RETURN TRUE
+        ENDIF
+        RETURN FALSE
+
+
 	STATIC METHOD FindField( t AS Type, cName AS STRING, lAccess AS LOGIC, lSelf AS LOGIC ) AS FieldInfo
+        VAR mi := GetMember(t, cName)
+        IF mi != NULL
+            IF mi IS FieldInfo VAR fi
+                RETURN fi
+            ENDIF
+            RETURN NULL     // it must be a property then
+        ENDIF
+        VAR bt := t
 		DO WHILE t != NULL
 			VAR oInfo := t:GetField( cName, BindingFlags.Instance | BindingFlags.IgnoreCase | BindingFlags.Public | IIF(lSelf, BindingFlags.NonPublic , BindingFlags.Public | BindingFlags.DeclaredOnly ) ) 
 			IF oInfo != NULL 
 				// check for readonly (initonly) fields
 				IF lAccess .OR. ! oInfo:Attributes:HasFlag(FieldAttributes.InitOnly)
+                    AddMember(bt, cName, oInfo)
 					RETURN oInfo
 				ENDIF
 			ELSE
@@ -523,12 +578,11 @@ INTERNAL STATIC CLASS OOPHelpers
 		ENDIF
 		RETURN FALSE
 		
-		
+    
 	STATIC METHOD IVarGet(oObject AS OBJECT, cIVar AS STRING, lSelf AS LOGIC) AS USUAL
 		LOCAL t AS Type
         LOCAL result AS OBJECT
 		t := oObject:GetType()
-		//Todo: optimization
 		VAR fldInfo := FindField(t, cIVar, TRUE, lSelf)
         TRY
 		    IF fldInfo != NULL_OBJECT .AND. IsFieldVisible(fldInfo, lSelf)
@@ -601,29 +655,66 @@ INTERNAL STATIC CLASS OOPHelpers
         oObject := result   // get rid of warning
         RETURN lOk
 
+    STATIC METHOD GetOverLoads(t AS System.Type, cMethod AS STRING) AS IList<MethodInfo>
+        IF overloadCache:ContainsKey(t)
+            VAR type := overloadCache[t]
+            IF type:ContainsKey(cMethod)
+                VAR result := type[cMethod]
+                RETURN result
+            ENDIF
+        ENDIF
+        RETURN NULL
+
+
+    STATIC METHOD AddOverLoads(t AS System.Type, cMethod AS STRING, ml AS IList<MethodInfo>) AS LOGIC
+        IF !overloadCache:ContainsKey(t)
+            overloadCache:Add(t, Dictionary<STRING, IList<MethodInfo> >{StringComparer.OrdinalIgnoreCase})
+        ENDIF
+        VAR type := overloadCache[t]
+        IF type:ContainsKey(cMethod)
+            RETURN FALSE
+        ENDIF
+        type:Add(cMethod, ml)
+        RETURN TRUE
+
+
+
 	STATIC METHOD SendHelper(oObject AS OBJECT, cMethod AS STRING, uArgs AS USUAL[], result OUT USUAL) AS LOGIC
 		LOCAL t := oObject?:GetType() AS Type
 		result := NIL
 		IF t == NULL
 			THROW Error.NullArgumentError( __ENTITY__, NAMEOF(oObject), 1 )
 		ENDIF
-		LOCAL mi AS MethodInfo
-        TRY
-		    mi := t:GetMethod(cMethod,BindingFlags.Instance | BindingFlags.Public | BindingFlags.IgnoreCase )
-        CATCH  AS AmbiguousMatchException
+		LOCAL mi := NULL AS MethodInfo
+        VAR list := GetOverLoads(t, cMethod)
+        IF list == NULL
             TRY
-                VAR list := List<MethodInfo>{}
+		        mi := t:GetMethod(cMethod,BindingFlags.Instance | BindingFlags.Public | BindingFlags.IgnoreCase )
+            CATCH  AS AmbiguousMatchException
+                mi := NULL
+            END TRY
+        ENDIF
+        IF mi == NULL
+            IF list == NULL
+                list := List<MethodInfo>{}
                 FOREACH VAR minfo IN t:GetMethods(BindingFlags.Instance | BindingFlags.Public)
                     IF String.Compare(minfo:Name, cMethod, StringComparison.OrdinalIgnoreCase) == 0
                         list:Add(minfo)
                     ENDIF
                 NEXT
-                VAR mis := list:ToArray()
-                mi := FindBestOverLoad(mis, "SendHelper",uArgs)
+                IF list:Count > 0
+                    AddOverLoads(t, cMethod, list)
+                ENDIF
+            ENDIF
+            TRY
+                IF list:Count > 0
+                    VAR mis := list:ToArray()
+                    mi := FindBestOverLoad(mis, "SendHelper",uArgs)
+                ENDIF
             CATCH AS Exception
                 mi := NULL
             END TRY
-        END TRY
+        ENDIF
 		IF mi == NULL
 			// No Error Here. THat is done in the calling code
 			RETURN FALSE

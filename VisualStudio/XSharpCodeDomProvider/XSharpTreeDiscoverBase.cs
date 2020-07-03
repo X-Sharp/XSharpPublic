@@ -608,7 +608,7 @@ namespace XSharp.CodeDom
             memberType = null;
             while (xtype != null)
             {
-                var mi = xtype.GetMember(name);
+                var mi = xtype.GetMembers(name, true);
                 if (mi.Count() == 0)
                 {
                     // Member not found !? MayBe in the parent
@@ -618,7 +618,7 @@ namespace XSharp.CodeDom
                 //
                 if (mi.Count() > 0)
                 {
-                    var m = mi[0];
+                    var m = mi.First();
                     memberType = findType(m.OriginalTypeName);
                     switch (m.Kind)
                     {

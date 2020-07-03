@@ -615,8 +615,8 @@ BEGIN NAMESPACE XSharpModel
             IF !String.IsNullOrEmpty(asm:GlobalClassName)
                VAR type := asm:GetType(asm.GlobalClassName)
                IF type != NULL
-                  VAR methods := type:GetMember(name)
-                  IF methods.Length > 0
+                  VAR methods := type:GetMembers(name,TRUE)
+                  IF methods:Count > 0
                      result:AddRange(methods)
                   ENDIF
                ENDIF

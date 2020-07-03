@@ -447,7 +447,7 @@ namespace XSharp.Project
         }
         public void SetCommentTokens()
         {
-            var commentTokens = taskList.CommentTokens;
+            var commentTokens = _taskList.CommentTokens;
             var tokens = new List< XSharpModel.XCommentToken>();
             foreach (var token in commentTokens)
             {

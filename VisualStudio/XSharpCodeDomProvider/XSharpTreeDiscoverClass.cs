@@ -765,7 +765,7 @@ namespace XSharp.CodeDom
             for (int i = 0; i < lines.Length; i++)
             {
                 var line = lines[i];
-                if (!line.StartsWith("//"))
+                if (!line.StartsWith("//") && i != lines.Length-1)
                 {
                     sb.AppendLine(line);
                 }

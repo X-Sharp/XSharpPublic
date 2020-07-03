@@ -45,6 +45,7 @@ BEGIN NAMESPACE XSharpModel
       PROPERTY Id   AS INT64                     GET _id INTERNAL SET _id := value
       PROPERTY FileWalkCompleted                 AS LOGIC AUTO
       PROPERTY FileName                          AS STRING GET _projectNode:Url
+         
       PROPERTY DependentAssemblyList             AS STRING
          GET
             IF String.IsNullOrEmpty(_dependentAssemblyList)
@@ -158,6 +159,7 @@ BEGIN NAMESPACE XSharpModel
          _projectNode := NULL
          SELF:UnLoad()
          RETURN
+         
       PRIVATE METHOD _clearTypeCache() AS VOID
          _ImplicitNamespaces    := NULL
          _dependentAssemblyList := NULL
@@ -318,6 +320,16 @@ BEGIN NAMESPACE XSharpModel
                   SELF:_projectOutputDLLs:Item[sProjectURL] := sOutputDLL
                ELSE
                   SELF:_projectOutputDLLs:TryAdd(sProjectURL, sOutputDLL)
+               ENDIF
+               LOCAL found := FALSE AS LOGIC
+               FOREACH VAR asm IN SELF:AssemblyReferences
+                  IF String.Equals(asm:FileName, sOutputDLL,StringComparison.OrdinalIgnoreCase)
+                     found := TRUE
+                     EXIT
+                  ENDIF
+               NEXT
+               IF ! found
+                  SELF:_unprocessedAssemblyReferences:Add(sOutputDLL)
                ENDIF
                SELF:_clearTypeCache()
             ENDIF
@@ -677,10 +689,8 @@ BEGIN NAMESPACE XSharpModel
       METHOD FindSystemTypesByName(typeName AS STRING, usings AS IReadOnlyList<STRING>) AS IList<XTypeReference>
          usings := AdjustUsings(REF typeName, usings)
          VAR result := XDatabase.GetReferenceTypes(typeName, SELF:DependentAssemblyList )
-         result := FilterUsings(result,usings)
+         result := FilterUsings(result,usings,typeName, FALSE)
          RETURN GetRefType(result)
-         
-         
          
       PRIVATE METHOD GetRefType(found AS IList<XDbResult>) AS IList<XTypeReference>
          LOCAL IdAssembly := -1 AS INT64
@@ -703,7 +713,6 @@ BEGIN NAMESPACE XSharpModel
          NEXT
          RETURN result
          
-      
       METHOD FindSystemType(name AS STRING, usings AS IList<STRING>) AS XTypeReference
          IF XSettings.EnableTypelookupLog
             WriteOutputMessage("FindSystemType() "+name)
@@ -725,6 +734,23 @@ BEGIN NAMESPACE XSharpModel
       METHOD GetAssemblyNamespaces() AS IList<STRING>
          RETURN SystemTypeController.GetNamespaces(SELF:_AssemblyReferences)
          
+      METHOD GetCommentTasks() AS IList<XCommentTask>
+         VAR tasks := XDatabase.GetCommentTasks(SELF:Id:ToString())
+         LOCAL oFile AS XFile
+         VAR result := List<XCommentTask>{}
+         FOREACH VAR item IN tasks
+            IF oFile == NULL .OR. oFile:FullPath != item:FileName
+               oFile := XFile{item:FileName, SELF}
+            ENDIF
+            VAR task := XCommentTask{}
+            task:File := oFile
+            task:Line := item:Line
+            task:Column := item:Column
+            task:Priority := item:Priority
+            task:Comment := item:Comment
+            result:Add(task)
+         NEXT
+         RETURN result
          
       METHOD Lookup(typeName AS STRING) AS XTypeDefinition
          VAR usings := List<STRING>{}
@@ -748,7 +774,7 @@ BEGIN NAMESPACE XSharpModel
       
       METHOD GetTypes( startWith AS STRING, usings AS IReadOnlyList<STRING>) AS IList<XTypeDefinition>
          VAR result := XDatabase.GetTypesLike(startWith, SELF:DependentProjectList)
-         result := FilterUsings(result,usings)
+         result := FilterUsings(result,usings,startWith,TRUE)
          VAR types := SELF:GetTypeList(result)
          RETURN types
                   
@@ -769,7 +795,7 @@ BEGIN NAMESPACE XSharpModel
          ENDIF
          
          VAR result := XDatabase.GetTypes(typeName, SELF:DependentProjectList) 
-         result := FilterUsings(result,usings)
+         result := FilterUsings(result,usings,typeName, FALSE)
          _lastFound := GetType(result)
          _lastName  := originalName
          IF XSettings.EnableTypelookupLog
@@ -778,10 +804,12 @@ BEGIN NAMESPACE XSharpModel
          RETURN _lastFound
          
       METHOD LookupReferenced(typeName AS STRING) AS XTypeDefinition
+      	 // lookup Type definition in X# projects referenced by this project
          VAR usings := List<STRING>{}
          RETURN LookupReferenced(typeName, usings)
          
       METHOD LookupReferenced(typeName AS STRING, usings AS IReadOnlyList<STRING>) AS XTypeDefinition
+   	// lookup Type definition in X# projects referenced by this project
         IF XSettings.EnableTypelookupLog
             WriteOutputMessage(i"LookupReferenced {typeName}")
          ENDIF
@@ -791,18 +819,30 @@ BEGIN NAMESPACE XSharpModel
          ENDIF
          usings := AdjustUsings(REF typeName, usings)
          VAR result := XDatabase.GetTypes(typeName, SELF:DependentProjectList)
-         result := FilterUsings(result,usings)
-         _lastFound := GetType(result)
-         _lastName  := originalName
+         result      := FilterUsings(result,usings, typeName, FALSE)
+         _lastFound  := GetType(result)
+         _lastName   := originalName
          IF XSettings.EnableTypelookupLog
             WriteOutputMessage(ie"LookupReferenced {typeName}, result {iif(_lastFound != NULL, _lastFound.FullName, \"not found\" } ")
          ENDIF
           
          RETURN _lastFound
          
-      METHOD FilterUsings(list AS IList<XDbResult> , usings AS IReadOnlyList<STRING>) AS IList<XDbResult>
+      METHOD FilterUsings(list AS IList<XDbResult> , usings AS IReadOnlyList<STRING>, typeName AS STRING, partial AS LOGIC) AS IList<XDbResult>
          VAR result := List<XDbResult>{}
+         VAR checkCase := SELF:ParseOptions:CaseSensitive
          FOREACH VAR element IN list
+            IF checkCase
+               IF partial
+                  IF !element:TypeName:StartsWith(typeName) 
+                     LOOP
+                  ENDIF
+               ELSE
+                  IF element:TypeName != typeName
+                     LOOP
+                  ENDIF
+               ENDIF
+            ENDIF
             IF String.IsNullOrEmpty(element:Namespace)
                result:Add(element)
             ELSEIF usings:Contains(element:Namespace)
@@ -817,15 +857,13 @@ BEGIN NAMESPACE XSharpModel
          VAR result := List<XTypeDefinition>{}
          LOCAL idProject := -1 AS INT64
          LOCAL fullTypeName:= ""  AS STRING
+         LOCAL namespace := "" AS STRING
          FOREACH VAR element IN found
             // Skip types found in another project
             IF idProject != -1 .AND. element:IdProject != idProject
                LOOP
             ENDIF
-            // skip types from different namespaces
-            IF fullTypeName:Length > 0 .AND. fullTypeName != element:Namespace+"."+element:TypeName
-               LOOP
-            ENDIF
+            namespace    := element:Namespace
             fullTypeName := element:Namespace+"."+element:TypeName
             idProject   := element:IdProject  
             VAR name    := element:TypeName
@@ -836,13 +874,14 @@ BEGIN NAMESPACE XSharpModel
             VAR members := XDatabase.GetMembers(idType):ToArray()
             // now create a temporary source for the parser
             VAR source     := GetTypeSource(element, members)
-            VAR walker := SourceWalker{file}
+            VAR walker     := SourceWalker{file}
             walker:Parse(source, FALSE)
             IF walker:EntityList:Count > 0
                VAR xElement      := walker:EntityList:First()
                IF xElement IS XTypeDefinition VAR xtype
                   xtype:Range       := TextRange{element:StartLine, element:StartColumn, element:EndLine, element:EndColumn}
                   xtype:Interval    := TextInterval{element:Start, element:Stop}
+                  xtype:Namespace   := namespace
                   xtype:XmlComments := element:XmlComments
                   xtype:ClassType   := (XSharpDialect) element:ClassType
                   VAR xmembers := xtype:XMembers:ToArray()
@@ -879,8 +918,8 @@ BEGIN NAMESPACE XSharpModel
         
          
   PRIVATE METHOD GetTypeList(found AS IList<XDbResult>) AS IList<XTypeDefinition>
-         VAR result := List<XTypeDefinition>{}
-         LOCAL idProject := -1 AS INT64
+         VAR result        := List<XTypeDefinition>{}
+         LOCAL idProject   := -1 AS INT64
          LOCAL fullTypeName:= ""  AS STRING
          FOREACH VAR element IN found
             // Skip types found in another project
@@ -1059,43 +1098,6 @@ BEGIN NAMESPACE XSharpModel
          END GET
       END PROPERTY
       
-      #endregion
-      
-      #region Types
-      INTERNAL METHOD AddType(xType AS XTypeDefinition) AS VOID
-         // only add global types that have members
-         //         IF ! XTypeDefinition.IsGlobalType(xType) .OR. xType:Members:Count > 0
-         //            VAR typeName := xType:FullName
-         //            VAR fileName := xType:File:FullPath
-         //            IF xType:File:IsXaml
-         //               fileName := xType:File:XamlCodeBehindFile
-         //            ENDIF
-         //            BEGIN LOCK _TypeDict
-         //               SELF:_TypeDict:Add(typeName, fileName)
-         //               
-         //            END LOCK
-         //         ENDIF
-         //         RETURN
-      
-      INTERNAL METHOD RemoveType(xType AS XTypeDefinition) AS VOID
-         //         VAR typeName := xType:FullName
-         //         VAR fileName := xType:File:FullPath
-         //         IF xType:File:IsXaml
-         //            fileName := xType:File:XamlCodeBehindFile
-         //         ENDIF
-         //         BEGIN LOCK _TypeDict
-         //            IF SELF:_TypeDict:ContainsKey(typeName)
-         //               IF SELF:_TypeDict[typeName]:Contains(fileName)
-         //                  SELF:_TypeDict[typeName]:Remove(fileName)
-         //               ENDIF
-         //               IF SELF:_TypeDict[typeName]:Count == 0
-         //                  SELF:_TypeDict:Remove(typeName)
-         //               ENDIF
-         //            ENDIF
-         //            
-         //         END LOCK
-         RETURN
-         
       #endregion
       
       PRIVATE METHOD WriteOutputMessage(message AS STRING) AS VOID

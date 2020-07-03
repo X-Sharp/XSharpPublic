@@ -2110,7 +2110,7 @@ namespace XSharpLanguage
                         if (!cType.IsEmpty())
                         {
                             SearchConstructorIn(cType, Modifiers.Private, out foundElement);
-                            if (foundElement.Result == null && cType.XTypeDef  != null)
+                            if (foundElement?.Result == null && cType.XTypeDef  != null)
                             {
                                 foundElement = new CompletionElement(cType.XTypeDef);
                             }

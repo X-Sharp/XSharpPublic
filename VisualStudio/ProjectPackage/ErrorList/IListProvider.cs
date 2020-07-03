@@ -7,18 +7,18 @@ using Microsoft.VisualStudio.Shell.TableManager;
 
 namespace XSharp.Project
 {
-    internal interface IErrorListProvider
+    internal interface IListProvider
     {
         /// <summary>
         /// This is called by the project error manager to add its error list factory
         /// </summary>
-        void AddErrorListFactory(ITableEntriesSnapshotFactory factory);
+        void AddListFactory(ITableEntriesSnapshotFactory factory);
 
         /// <summary>
         /// This is called by the project error manager to remove the  error list factory from
         /// out list and all sinks
         /// </summary>
-        void RemoveErrorListFactory(ITableEntriesSnapshotFactory factory);
+        void RemoveListFactory(ITableEntriesSnapshotFactory factory);
 
         /// <summary>
         /// Called to update all sinks when changes occured. Passing null for the factory will update
@@ -29,12 +29,12 @@ namespace XSharp.Project
         /// <summary>
         /// Called bvy the error sink manager to add itsself to the list of error sinks
         /// </summary>
-        void RemoveSinkManager(IErrorListSinkManager sink);
+        void RemoveSinkManager(IListSinkManager sink);
 
         /// <summary>
         /// Called bvy the error sink manager to removeitsself to the list of error sinks. Occurs when
         /// the subscribed is done if the sink.
         /// </summary>
-        void AddSinkManager(IErrorListSinkManager sink);
+        void AddSinkManager(IListSinkManager sink);
     }
 }

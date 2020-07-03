@@ -149,6 +149,7 @@
       <Link>Properties\constants.prg</Link>
     </Compile>
     <Compile Include="CompletionType.prg" />
+    <Compile Include="Model\CommentTask.prg" />
     <Compile Include="Model\XDbResult.prg" />
     <Compile Include="Model\XBaseSignature.prg" />
     <Compile Include="ProjectSystem\XSettings.prg" />

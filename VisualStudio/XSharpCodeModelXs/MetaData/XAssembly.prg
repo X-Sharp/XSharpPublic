@@ -29,7 +29,9 @@ BEGIN NAMESPACE XSharpModel
       PROPERTY IsXSharp             AS LOGIC AUTO
       PROPERTY Loaded               AS LOGIC AUTO
       PROPERTY LastChanged          AS DateTime AUTO GET INTERNAL SET
-      PROPERTY Size                 AS INT64 AUTO GET INTERNAL SET      
+      PROPERTY Size                 AS INT64 AUTO GET INTERNAL SET    
+      PROPERTY DuplicateTypes       AS List<XTypeReference> AUTO
+      PROPERTY HasDuplicateTypes    AS LOGIC GET DuplicateTypes != NULL .AND. DuplicateTypes:Count > 0
       
       STATIC CONSTRUCTOR
          RETURN
@@ -56,6 +58,7 @@ BEGIN NAMESPACE XSharpModel
          Namespaces           := List<STRING>{}
          ReferencedAssemblies := List<STRING>{}
          CustomAttributes     := List<STRING>{}
+         DuplicateTypes       := NULL
          ExtensionMethods     := List<XMemberReference>{}
          ExtensionDict        := NULL
          GlobalClassName      := ""
@@ -81,16 +84,55 @@ BEGIN NAMESPACE XSharpModel
          ENDIF
          
       METHOD GetType(name AS STRING) AS XTypeReference
+         
          IF SELF:IsModifiedOnDisk .OR. SELF:Types:Count == 0
             SELF:Read()
          ENDIF
          IF SELF:Types:ContainsKey(name)
-            RETURN Types[name]
+            VAR found := Types[name]
+            IF String.Equals(name, found:FullName)
+               RETURN found
+            ENDIF
+            IF String.Equals(name, found:TypeDef:FullName)
+               RETURN found
+            ENDIF
+               
+            IF SELF:HasDuplicateTypes
+               FOREACH VAR type IN DuplicateTypes
+                  IF String.Equals(type:FullName, name) 
+                     RETURN type
+                  ENDIF                     
+                  IF String.Equals(type:TypeDef:FullName, name)
+                     RETURN type
+                  ENDIF
+               NEXT
+            ENDIF
+            // no exact match in the duplicates. Return the type with not exact match
+            RETURN found
          ENDIF
          IF !name:Contains(".")
             FOREACH VAR ns IN SELF:Namespaces
-               IF SELF:Types:ContainsKey(ns+"."+name)
-                  RETURN Types[ns+"."+name]
+               VAR fullName := ns+"."+name
+               IF SELF:Types:ContainsKey(fullName)
+                  VAR found := Types[fullName]
+                  IF String.Equals(name, found:FullName)
+                     RETURN found
+                  ENDIF
+                  IF String.Equals(name, found:TypeDef:FullName)
+                     RETURN found
+                  ENDIF
+                  IF SELF:HasDuplicateTypes
+                     FOREACH VAR type IN DuplicateTypes
+                        IF String.Equals(type:FullName, fullName)
+                           RETURN type
+                        ENDIF                     
+                        IF String.Equals(type:TypeDef:FullName, name)
+                           RETURN type
+                        ENDIF
+                     NEXT
+                  ENDIF
+                  // no exact match in the duplicates. Return the type with not exact match
+                  RETURN found
                ENDIF
             NEXT
          ENDIF

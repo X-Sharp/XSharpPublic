@@ -52,6 +52,7 @@ BEGIN NAMESPACE XSharpModel
             //
 			// Todo: Rename to XSharp type names
 			//
+            LOCAL lHandled := TRUE AS LOGIC
             IF lXSharpNames
                  SWITCH typename:ToLower()
                     CASE "array"
@@ -66,6 +67,8 @@ BEGIN NAMESPACE XSharpModel
                         RETURN "XSharp.__Symbol"
                     CASE "usual"
                         RETURN "XSharp.__Usual"
+                     OTHERWISE
+                        lHandled := FALSE
                 END SWITCH
 
              ELSE
@@ -82,8 +85,18 @@ BEGIN NAMESPACE XSharpModel
                         RETURN "Vulcan.__Symbol"
                     CASE "usual"
                         RETURN "Vulcan.__Usual"
+                     OTHERWISE
+                        lHandled := FALSE
                 END SWITCH
-             ENDIF
+            ENDIF
+            IF ! lHandled .AND. lookupTable:Values:Contains(typename:ToUpper())
+               FOREACH VAR item IN lookupTable
+                  IF String.Compare(item:Value, typename, TRUE) == 0
+                     typename := item:Key
+                     EXIT
+                  ENDIF
+               NEXT
+            ENDIF
             RETURN typename
 
         STATIC METHOD GetXSharpTypeName( SELF sysType AS System.Type) AS STRING

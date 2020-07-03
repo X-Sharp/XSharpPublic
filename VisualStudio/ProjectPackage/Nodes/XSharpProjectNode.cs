@@ -81,7 +81,6 @@ namespace XSharp.Project
         internal static int imageOffset;
         private static ImageList imageList;
         private VSLangProj.VSProject vsProject;
-        IErrorList errorList = null;
         bool isLoading = false;
         private FileChangeManager filechangemanager = null;
         XSharpModel.XProject projectModel;
@@ -114,9 +113,6 @@ namespace XSharp.Project
             // False: C++-Like Property pages
             this.SupportsProjectDesigner = true;
 
-            object errlist = ((IServiceProvider)this.package).GetService(typeof(SVsErrorList));
-            errorList = (IErrorList)errlist;
-
         }
 
         private void Filechangemanager_FileChangedOnDisk(object sender, FileChangedOnDiskEventArgs e)
@@ -129,6 +125,15 @@ namespace XSharp.Project
                 {
                     this.ProjectModel.WalkFile(file);
                 }
+            }
+        }
+
+        private void Newtask_Navigate(object sender, EventArgs e)
+        {
+            lock (this)
+            {
+                var task = (Microsoft.VisualStudio.Shell.Task)sender;
+                this.OpenElement(task.Document, task.Line, task.Column);
             }
         }
 
@@ -697,7 +702,7 @@ namespace XSharp.Project
             if (type == XFileType.Resource)
             {
                 string path = Path.GetDirectoryName(target);
-                if ( ! Directory.Exists(path))
+                if (!Directory.Exists(path))
                     Directory.CreateDirectory(path);
                 File.Copy(source, target, true);
                 return;
@@ -1008,7 +1013,7 @@ namespace XSharp.Project
             //event handler generation (EventBindingProvider) for the XAML designer.
             this.OleServiceProvider.AddService(typeof(DesignerContext), new OleServiceProvider.ServiceCreatorCallback(this.CreateServices), false);
 
-            CreateErrorListManager();
+            CreateListManagers();
 
 
             // Add EventHandler to handle adding / removing a Reference
@@ -1027,7 +1032,7 @@ namespace XSharp.Project
             if ((pReference.Type == prjReferenceType.prjReferenceTypeAssembly) ||
                 (pReference.Type == prjReferenceType.prjReferenceTypeActiveX))
             {
-                if (! String.IsNullOrEmpty(pReference.Path))
+                if (!String.IsNullOrEmpty(pReference.Path))
                     ProjectModel.RemoveAssemblyReference(pReference.Path);
             }
         }
@@ -1053,11 +1058,15 @@ namespace XSharp.Project
 
         #region Private implementation
 
-        private void CreateErrorListManager()
+        private void CreateListManagers()
         {
             if (_errorListManager == null)
             {
-                _errorListManager = ErrorListManager.RegisterProject(errorList, this);
+                _errorListManager = ErrorListManager.RegisterProject( this);
+            }
+            if (_taskListManager == null)
+            {
+                _taskListManager = TaskListManager.RegisterProject(this);
             }
         }
 
@@ -1164,6 +1173,7 @@ namespace XSharp.Project
                 if (projectModel == null)
                 {
                     projectModel = new XProject(this);
+                    projectModel.FileWalkComplete += OnFileWalkComplete;
                 }
                 return projectModel;
             }
@@ -1172,6 +1182,18 @@ namespace XSharp.Project
             {
                 projectModel = null;
             }
+        }
+
+        private void OnFileWalkComplete(XFile xfile)
+        {
+            var tasks = this.ProjectModel.GetCommentTasks();
+            var list = new List<Task>();
+            _taskListManager.Clear();
+            foreach (var task in tasks)
+            {
+                _taskListManager.AddItem(task,this.ProjectIDGuid);
+            }
+            _taskListManager.Refresh();
         }
 
         public void UpdateAssemblyReferencesModel()
@@ -1783,6 +1805,7 @@ namespace XSharp.Project
         #region TableManager
         //internal ITableManagerProvider tableManagerProvider { get; private set; }
         ErrorListManager _errorListManager = null;
+        TaskListManager _taskListManager = null;
 
         protected override void SetOutputLogger(IVsOutputWindowPane output)
         {
@@ -1797,7 +1820,7 @@ namespace XSharp.Project
             logger.ProjectNode = this;
             logger.ErrorString = ErrorString;
             logger.WarningString = WarningString;
-            CreateErrorListManager();
+            CreateListManagers();
             logger.ErrorListManager = _errorListManager;
             return logger;
         }
@@ -1959,7 +1982,18 @@ namespace XSharp.Project
                 logger.Clear();
             }
             ErrorListManager.RemoveProject(this);
-            _errorListManager = null;
+            if (_errorListManager!= null)
+            {
+                _errorListManager.Refresh();
+                _errorListManager = null;
+            }
+            TaskListManager.RemoveProject(this);
+            if (_taskListManager != null)
+            {
+                _taskListManager.Clear();
+                _taskListManager.Refresh();
+                _taskListManager = null;
+            }
             URLNodes.Clear();
             return res;
         }

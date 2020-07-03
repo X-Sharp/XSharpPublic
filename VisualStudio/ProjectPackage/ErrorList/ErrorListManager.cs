@@ -3,13 +3,10 @@
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
 //
-using LanguageService.CodeAnalysis;
-using Microsoft.VisualStudio.Shell.Interop;
-using Microsoft.VisualStudio.Shell.TableControl;
 using Microsoft.VisualStudio.Shell.TableManager;
+using Microsoft.VisualStudio.Shell;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 
 namespace XSharp.Project
 {
@@ -24,7 +21,7 @@ namespace XSharp.Project
     {
         static Dictionary<Guid, ErrorListManager> _projects;
         static ErrorListProvider _provider = null;
-        static Microsoft.VisualStudio.Shell.IErrorList _errorList;
+        static IErrorList _errorList;
         static ITableManager _manager;
         static object _gate;
         private XSharpProjectNode Project { get; set; }
@@ -44,39 +41,22 @@ namespace XSharp.Project
         {
             _projects = new Dictionary<Guid, ErrorListManager>();
             _gate = new object();
+            _errorList = XSharpProjectPackage.Instance.ErrorList;
+            _manager = _errorList.TableControl.Manager;
+            _provider = new ErrorListProvider(_manager);
         }
-        internal static ErrorListManager RegisterProject(Microsoft.VisualStudio.Shell.IErrorList errorList, XSharpProjectNode project)
+        internal static ErrorListManager RegisterProject(XSharpProjectNode project)
         {
-            lock (_gate)
-            {
-                if (_provider == null)
-                {
-                    _errorList = errorList;
-                    _manager = errorList.TableControl.Manager;
-                    _provider = new ErrorListProvider(_manager);
-                    _errorList.PropertyChanged += _errorList_PropertyChanged;
-                }
-            }
-
             if (!_projects.ContainsKey(project.ProjectIDGuid))
             {
-                var entry = new ErrorListManager(project);
-                entry.Factory = new ErrorsFactory(_provider, project.ProjectIDGuid);
-                _provider.AddErrorListFactory(entry.Factory);
-                _projects.Add(project.ProjectIDGuid, entry);
-                return entry;
+                var manager = new ErrorListManager(project);
+                manager.Factory = new ErrorsFactory(_provider, project.ProjectIDGuid);
+                _provider.AddListFactory(manager.Factory);
+                _projects.Add(project.ProjectIDGuid, manager);
             }
             return _projects[project.ProjectIDGuid];
         }
-
-        private static void _errorList_PropertyChanged(object sender, PropertyChangedEventArgs e)
-        {
-            //foreach (var element in _projects)
-            //{
-            //    element.Value.dirty = true;
-            //    element.Value.Refresh();
-            //}
-        }
+  
 
         internal void DeleteIntellisenseErrorsFromFile(string fileName)
         {
@@ -265,6 +245,9 @@ namespace XSharp.Project
         {
             if (!_projects.ContainsKey(project.ProjectIDGuid))
                 return false;
+
+            var entry = _projects[project.ProjectIDGuid];
+            _provider.RemoveListFactory(entry.Factory);
             return _projects.Remove(project.ProjectIDGuid);
         }
 

@@ -108,8 +108,6 @@ CLASS XSharp.CoreDb
                 j++
                 
                 IF fMatch
-                    // todo
-                    
                     LOCAL srcFld AS RddFieldInfo
                     LOCAL dstFld AS RddFieldInfo
                     srcFld := src:GetField(uiSrc)

@@ -82,7 +82,6 @@ BEGIN NAMESPACE XSharp
 			RETURN ret   
 		
 		INTERNAL METHOD LessThan( p AS PSZ ) AS LOGIC
-			// todo: should this follow nation rules ?
 			LOCAL ret := FALSE AS LOGIC
 			IF _value == p:_value
 				ret := FALSE
@@ -93,7 +92,6 @@ BEGIN NAMESPACE XSharp
 
 		INTERNAL METHOD GreaterThan( p AS PSZ ) AS LOGIC
 			LOCAL ret := FALSE AS LOGIC
-			// todo: should this follow nation rules ?
 			IF _value == p:_value
 				ret := FALSE
 			ELSEIF _value != NULL .AND. p:_value != NULL

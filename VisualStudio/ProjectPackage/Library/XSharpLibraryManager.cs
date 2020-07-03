@@ -630,6 +630,8 @@ namespace XSharp.Project
         /// </summary>
         private void OnFileWalkComplete(XFile xfile)
         {
+            if (xfile == null)
+                return;
             // Retrieve the corresponding node
             if (!xfile.HasCode || XSolution.IsClosing)
                 return;

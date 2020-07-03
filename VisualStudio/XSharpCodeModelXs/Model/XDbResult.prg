@@ -35,9 +35,13 @@ BEGIN NAMESPACE XSharpModel
       PROPERTY IdFile       AS INT64 AUTO
       PROPERTY IdProject    AS INT64 AUTO     
       PROPERTY IdType       AS INT64 AUTO
-      PROPERTY FullName     AS STRING GET FileName SET FileName := value
-      PROPERTY Assembly     AS STRING GET Project  SET Project := value
-      PROPERTY IdAssembly   AS INT64  GET IdProject SET IdProject := value
+      PROPERTY FullName     AS STRING  GET FileName SET FileName := value
+      PROPERTY Assembly     AS STRING  GET Project  SET Project := value
+      PROPERTY IdAssembly   AS INT64   GET IdProject SET IdProject := value
+      PROPERTY Priority     AS INT   GET Start SET Start := value
+      PROPERTY Comment      AS STRING  GET SourceCode SET SourceCode := value
+      PROPERTY Line         AS INT   GET StartLine    SET StartLine := value
+      PROPERTY Column       AS INT   GET StartColumn  SET StartColumn := value
          
     END CLASS
 END NAMESPACE

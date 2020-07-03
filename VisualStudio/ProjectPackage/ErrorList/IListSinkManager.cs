@@ -7,19 +7,19 @@ using Microsoft.VisualStudio.Shell.TableManager;
 
 namespace XSharp.Project
 {
-    internal interface IErrorListSinkManager
+    internal interface IListSinkManager
     {
         /// <summary>
-        /// This is called if a new project is added after there is already a sink connected. Informans the sink
+        /// This is called if a new project is added after there is already a sink connected. Informs the sink
         /// of the new source of errors
         /// </summary>
-        void AddErrorListFactory(ITableEntriesSnapshotFactory factory);
+        void AddListFactory(ITableEntriesSnapshotFactory factory);
 
         /// <summary>
-        /// If a project is removed from the solution (unloaded, closed, etc) informans the sink
+        /// If a project is removed from the solution (unloaded, closed, etc) informs the sink
         /// that the source is no longer available.
         /// </summary>
-        void RemoveErrorListFactory(ITableEntriesSnapshotFactory factory);
+        void RemoveListFactory(ITableEntriesSnapshotFactory factory);
 
         /// <summary>
         /// Called when a snapshot changes to have its errors updated by the subscriber. Pass null to have

@@ -534,7 +534,6 @@ FUNCTION DbSetFilter(cbCondition, cCondition) AS LOGIC CLIPPER
             cbCondition := &(cCondition)
         endif
     ENDIF
-    // Todo : Extract the string from compiled codeblocks
     if cCondition:IsNil
         local oBlock as Object
         EnforceType(cbCondition, CODEBLOCK)

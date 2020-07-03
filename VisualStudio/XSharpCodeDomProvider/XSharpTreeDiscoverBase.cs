@@ -1519,6 +1519,7 @@ namespace XSharp.CodeDom
 
         protected IXType findType(string typeName, IList<string> usings = null)
         {
+            typeName = typeName.GetSystemTypeName(_projectNode.ParseOptions.XSharpRuntime);
             if (_types.ContainsKey(typeName))
             {
                 return _types[typeName];

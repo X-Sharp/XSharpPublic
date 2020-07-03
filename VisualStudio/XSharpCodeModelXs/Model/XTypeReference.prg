@@ -22,6 +22,8 @@ BEGIN NAMESPACE XSharpModel
       PRIVATE _typeDef        as TypeDefinition
       PRIVATE _initialized   := FALSE  AS LOGIC
 
+      PROPERTY TypeDef        AS TypeDefinition GET _typeDef
+
      CONSTRUCTOR(typedef as TypeDefinition, asm as XAssembly)
          SUPER(typedef:Name, GetKind(typedef), ConvertAttributes(typedef:Attributes), asm)  
          SELF:_typeDef        := typedef

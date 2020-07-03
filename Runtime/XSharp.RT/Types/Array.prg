@@ -194,11 +194,21 @@ BEGIN NAMESPACE XSharp
         /// <returns>The element stored at the specified location in the array.</returns>
         PUBLIC METHOD __GetElement(index AS INT, index2 AS INT) AS USUAL
             VAR u := SELF:_internalList[ index ]
-            IF !u:IsArray
-                THROW Error{ArgumentOutOfRangeException{nameof(index2)}}
-            ENDIF
-			VAR a := (ARRAY) u
-            RETURN a:_internalList [index2]
+            TRY
+                IF u:IsArray
+                    VAR a := (ARRAY) u
+                    RETURN a:_internalList [index2]
+                ENDIF
+                // not an array, so we call the index operation on the usual, 
+                // this will handle special cases such as indexing a string for Xbase++ 
+                RETURN u[index2+1]
+            CATCH
+                // This does not make sense, but that is the way  VO does it.
+                // when aTest := {1,2,3}
+                // ? aTest[1,1] is allowed and returns NIL !
+                // but when aTest is not an array at all then it fails
+                RETURN NIL
+            END TRY
 
 
         /// <include file="RTComments.xml" path="Comments/ZeroBasedIndexProperty/*" />
@@ -208,9 +218,11 @@ BEGIN NAMESPACE XSharp
             LOCAL length := indices:Length AS INT
             LOCAL currentArray AS ARRAY
             LOCAL i AS INT
-            currentArray := SELF
+            LOCAL u AS USUAL
+            u := SELF
             FOR i:= 1  UPTO length  -1 // walk all but the last level
-                LOCAL u := currentArray:_internalList[ indices[i] ] AS USUAL
+                currentArray := (ARRAY) u
+                u := currentArray:_internalList[ indices[i] ] 
                 IF u:IsNil
                     RETURN u
                 ENDIF
@@ -218,12 +230,20 @@ BEGIN NAMESPACE XSharp
                     LOCAL o := (IIndexedProperties) (OBJECT) u AS IIndexedProperties
                     RETURN o[indices[length]]
                 ENDIF
+                // This does not make sense, but that is the way  VO does it.
+                // when aTest := {1,2,3}
+                // ? aTest[1,1] is allowed and returns NIL !
+                // but when aTest is not an array at all then it fails
                 IF !u:IsArray
-                    THROW Error{ArgumentOutOfRangeException{nameof(indices)}}
+                    EXIT
                 ENDIF
-                currentArray := (ARRAY) u
             NEXT
-            RETURN currentArray:_internalList[ indices[length] ]
+            IF u:IsArray
+               currentArray := (ARRAY) u
+               RETURN currentArray:_internalList[ indices[i] ]
+            ENDIF
+	    // Call the array operator on the usual class to support substring and bittest operations.
+            RETURN u[indices[length] +1]
 
         INTERNAL METHOD DebuggerString() AS STRING
             LOCAL sb AS StringBuilder
@@ -254,8 +274,8 @@ BEGIN NAMESPACE XSharp
         /// <param name="index"><include file="RTComments.xml" path="Comments/ZeroBasedIndexParam/*" /></param>
         /// <returns>The element stored at the specified location in the array.</returns>
         NEW PUBLIC METHOD __SetElement(u AS USUAL, index AS INT) AS USUAL
-			IF SELF:CheckLock()
-			    SELF:_internalList[ index ] := u
+            IF SELF:CheckLock()
+               SELF:_internalList[ index ] := u
             ENDIF
             RETURN u
 
@@ -266,11 +286,11 @@ BEGIN NAMESPACE XSharp
         /// <returns>The element stored at the specified location in the array.</returns>
         PUBLIC METHOD __SetElement(u AS USUAL, index AS INT, index2 AS INT) AS USUAL
             IF SELF:CheckLock()
-			    VAR uElement := SELF:_internalList[ index ]
+		VAR uElement := SELF:_internalList[ index ]
                 IF !uElement:IsArray
                     THROW Error{ArgumentOutOfRangeException{nameof(index2)}}
                 ENDIF
-			    VAR a := (ARRAY) uElement
+		VAR a := (ARRAY) uElement
                 a:_internalList [index2] := u
             ENDIF
             RETURN u

@@ -661,7 +661,7 @@ namespace XSharp.CodeDom
                 type = findType(cfr.TargetObject);
                 if (type != null)
                 {
-                    var f = type.GetField(cfr.FieldName);
+                    var f = type.GetFields(cfr.FieldName);
                     if (f.Length > 0)
                         return findType(f[0].OriginalTypeName);
                 }
@@ -676,7 +676,7 @@ namespace XSharp.CodeDom
                 type = findType(cpr.TargetObject);
                 if (type != null)
                 {
-                    var p = type.GetProperty(cpr.PropertyName);
+                    var p = type.GetProperties(cpr.PropertyName);
                     if (p.Length > 0)
                         return findType(p[0].OriginalTypeName);
                 }
@@ -692,7 +692,7 @@ namespace XSharp.CodeDom
                 type = findType(cmi.Method.TargetObject);
                 if (type != null)
                 {
-                    var m = type.GetMethod(cmi.Method.MethodName);
+                    var m = type.GetMethods(cmi.Method.MethodName);
                     if (m.Length > 0)
                         return findType(m[0].OriginalTypeName);
                 }

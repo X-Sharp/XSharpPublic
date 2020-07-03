@@ -20,8 +20,8 @@
   </ItemGroup>
   
 	<!-- XML Doc file generation -->
-   <ItemGroup>
-     <DocFileItem Include="$(IntermediateOutputPath)$(MSBuildProjectName).XML" Condition="'$(DocumentationFile)'!=''"/>
+  <ItemGroup>
+    <DocFileItem Include="$(DocumentationFile)" Condition="'$(DocumentationFile)'!=''"/>
   </ItemGroup>
 
   <!-- Common Project System support -->

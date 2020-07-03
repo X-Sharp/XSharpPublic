@@ -218,12 +218,16 @@ namespace XSharp.Project
         private XSharpDocumentWatcher _documentWatcher;
         private Microsoft.VisualStudio.Package.LanguageService _xsLangService;
         private IVsTextManager4 _txtManager;
+        private IErrorList _errorList = null;
+        private ITaskList _taskList = null;
 
         // =========================================================================================
         // Properties
         // =========================================================================================
 
         internal UIThread UIThread => _uiThread;
+        internal ITaskList TaskList => _taskList;
+        internal IErrorList ErrorList => _errorList;
 
         /// <summary>
         /// Gets the singleton XSharpProjectPackage instance.
@@ -342,6 +346,10 @@ namespace XSharp.Project
             shell.GetProperty((int)__VSSPROPID5.VSSPROPID_ReleaseVersion, out vers);
 
             VsVersion = vers.ToString();
+            _errorList = await GetServiceAsync(typeof(SVsErrorList)) as IErrorList;
+            _taskList = await GetServiceAsync(typeof(SVsTaskList)) as ITaskList;
+
+
         }
 
         internal static string VsVersion;
@@ -436,12 +444,17 @@ namespace XSharp.Project
                     OLEMSGICON.OLEMSGICON_CRITICAL, 0, out result));
             }
 
-
-
-
-
-
-
+        }
+        public void SetCommentTokens()
+        {
+            var commentTokens = taskList.CommentTokens;
+            var tokens = new List< XSharpModel.XCommentToken>();
+            foreach (var token in commentTokens)
+            {
+                var cmttoken = new XSharpModel.XCommentToken(token.Text,  (int)token.Priority );
+                tokens.Add(cmttoken);
+            }
+            XSharpModel.XSolution.SetCommentTokens(tokens);
         }
 
         /// <summary>
@@ -572,12 +585,13 @@ namespace XSharp.Project
         public int OnShellPropertyChange(int propid, object var)
         {
             // A modal dialog has been opened. Editor Options ?
-            if (propid == (int)__VSSPROPID4.VSSPROPID_IsModal && var is Boolean)
+            if (propid == (int)__VSSPROPID4.VSSPROPID_IsModal && var is bool)
             {
                 // when modal window closes
-                if (!(Boolean) var)
+                if (!(bool) var)
                 {
                     CommandFilter.InvalidateOptions();
+                    SetCommentTokens();
                 }
             }
             return VSConstants.S_OK;

@@ -11,8 +11,8 @@ using Microsoft.VisualStudio.Shell.TableManager;
 
 namespace XSharp.Project
 {
-    [Export(typeof(ErrorListProvider))]
-    internal class ErrorListProvider : IListProvider, ITableDataSource, IDisposable
+    [Export(typeof(TaskListProvider))]
+    internal class TaskListProvider : IListProvider, ITableDataSource, IDisposable
     {
         [Export(typeof(ITableManager))]
         internal  ITableManager tableManager;
@@ -22,9 +22,9 @@ namespace XSharp.Project
         // The list sinks. Probably only one but there could be more. Needs to be thread safe so is
         // also used as a lock
         private List<IListSinkManager> _managers = new List<IListSinkManager>();
-        private List<ITableEntriesSnapshotFactory> _errorListFactories = new List<ITableEntriesSnapshotFactory>();
+        private List<ITableEntriesSnapshotFactory> _factories = new List<ITableEntriesSnapshotFactory>();
 
-        internal ErrorListProvider(ITableManager manager)
+        internal TaskListProvider(ITableManager manager)
         {
             tableManager = manager;
             this.AddSource();
@@ -32,12 +32,10 @@ namespace XSharp.Project
 
         internal virtual void AddSource()
         {
-            tableManager.AddSource(this, StandardTableColumnDefinitions.DetailsExpander, StandardTableColumnDefinitions.ProjectName,
-                                                StandardTableColumnDefinitions.ErrorSeverity, StandardTableColumnDefinitions.ErrorCode,
-                                                StandardTableColumnDefinitions.ErrorSource, StandardTableColumnDefinitions.ErrorCategory,
-                                                StandardTableColumnDefinitions.Text, StandardTableColumnDefinitions.DocumentName,
-                                                StandardTableColumnDefinitions.Line, StandardTableColumnDefinitions.Column,
-                                                StandardTableColumnDefinitions.BuildTool);
+            tableManager.AddSource(this, 
+                                                StandardTableColumnDefinitions.Priority, StandardTableColumnDefinitions.Text,
+                                                StandardTableColumnDefinitions.ProjectName, StandardTableColumnDefinitions.DocumentName,
+                                                StandardTableColumnDefinitions.Line, StandardTableColumnDefinitions.Column);
 
         }
 
@@ -67,7 +65,7 @@ namespace XSharp.Project
         {
             get
             {
-                return StandardTableDataSources.ErrorTableDataSource;
+                return StandardTableDataSources.CommentTableDataSource;
             }
         }
 
@@ -87,7 +85,7 @@ namespace XSharp.Project
                 _managers.Add(manager);
 
                 // Add the pre-existing error factories to the manager.
-                foreach (var errorFactory in _errorListFactories)
+                foreach (var errorFactory in _factories)
                 {
                     manager.AddListFactory(errorFactory);
                 }
@@ -111,7 +109,7 @@ namespace XSharp.Project
         {
             lock (_managers)
             {
-                _errorListFactories.Add(factory);
+                _factories.Add(factory);
 
                 // Tell the preexisting sinks about the new error source
                 foreach (var manager in _managers)
@@ -129,7 +127,7 @@ namespace XSharp.Project
         {
             lock (_managers)
             {
-                _errorListFactories.Remove(factory);
+                _factories.Remove(factory);
 
                 foreach (var manager in _managers)
                 {

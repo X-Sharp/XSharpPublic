@@ -975,9 +975,10 @@ BEGIN NAMESPACE XSharpModel
          
       METHOD WalkFile(file AS XFile) AS VOID
          ModelWalker.GetWalker():FileWalk(file)
-         IF FileWalkComplete != NULL
-            FileWalkComplete(file)
-         ENDIF
+// Moved to ModelWalker:FileWalk(), then Moved to XSParser:Parse			
+//         IF FileWalkComplete != NULL
+//            FileWalkComplete(file)
+//         ENDIF
          
       PUBLIC DELEGATE OnFileWalkComplete(xFile AS XFile) AS VOID
       

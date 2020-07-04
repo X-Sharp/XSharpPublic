@@ -90,31 +90,69 @@ FUNCTION ErrorStack(wActivation := 1 AS DWORD) AS STRING
 	oStackTrace := System.Diagnostics.StackTrace{TRUE}
     RETURN ErrorStack(oStackTrace, wActivation)
 
+INTERNAL STATIC CLASS XSharp.ErrorStackSettings
+    STATIC PROPERTY ErrorStackVOFormat AS LOGIC AUTO
+    STATIC CONSTRUCTOR
+        IF XSharp.RuntimeState.Dialect == XSharp.XSharpDialect.VO .OR. ;
+            XSharp.RuntimeState.Dialect == XSharp.XSharpDialect.Vulcan
+            ErrorStackVOFormat := TRUE
+        ENDIF
+END CLASS
+
+
+INTERNAL GLOBAL ErrorStackVOFormat := FALSE AS LOGIC
+
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/errorstack/*" />
 FUNCTION ErrorStack(oStackTrace AS System.Diagnostics.StackTrace, wActivation := 1 AS DWORD) AS STRING
 	LOCAL cResult := "" AS STRING
-	IF wActivation + 1 <= oStackTrace:FrameCount - 1
-		FOR VAR i := wActivation + 1 UPTO (oStackTrace:FrameCount - 1)
-			VAR oFrame := oStackTrace:GetFrame((INT)i)
-			VAR oMethod := oFrame:GetMethod()
-			VAR cStackLine := oMethod:Name:ToUpper()
-			VAR oInnerType := oMethod:DeclaringType
-			DO WHILE ( oInnerType != NULL )
-				IF !( oInnerType:Name == "Functions" )
-					cStackLine := oInnerType:Name:ToUpper() + ":" + cStackLine
-				ENDIF
-				oInnerType := oInnerType:DeclaringType
-			ENDDO
-			cStackLine += " (Line: " + oFrame:GetFileLineNumber():ToString() + ")" + CRLF
-			cResult += cStackLine
-		NEXT
-	ELSE
-		cResult := "*EmptyCallStack*" + CRLF
-	ENDIF
-
+    LOCAL wStart  AS DWORD
+    IF wActivation == UInt32.MaxValue
+        wStart := 0
+    ELSE
+        wStart := wActivation + 1
+    ENDIF
+    
+    IF ErrorStackSettings.ErrorStackVOFormat
+	    IF wStart <= oStackTrace:FrameCount - 1
+		    FOR VAR i := wStart UPTO (oStackTrace:FrameCount - 1)
+			    VAR oFrame := oStackTrace:GetFrame((INT)i)
+			    VAR oMethod := oFrame:GetMethod()
+			    VAR cStackLine := oMethod:Name:ToUpper()
+			    VAR oInnerType := oMethod:DeclaringType
+			    DO WHILE ( oInnerType != NULL )
+				    IF !( oInnerType:Name == "Functions" )
+					    cStackLine := oInnerType:Name:ToUpper() + ":" + cStackLine
+				    ENDIF
+				    oInnerType := oInnerType:DeclaringType
+			    ENDDO
+			    cStackLine += " (Line: " + oFrame:GetFileLineNumber():ToString() + ")" + CRLF
+			    cResult += cStackLine
+		    NEXT
+	    ELSE
+		    cResult := "*EmptyCallStack*" + CRLF
+	    ENDIF
+    ELSE
+        cResult := oStackTrace:ToString()
+        VAR aLines := cResult:Split(<CHAR>{'\r','\n'},StringSplitOptions.RemoveEmptyEntries)
+        IF aLines:Length >= wStart
+            cResult := ""
+            FOR VAR i := wStart UPTO aLines:Length -1
+                cResult += aLines[i]+e"\r\n"
+            NEXT
+        ENDIF
+    ENDIF
 	RETURN cResult
 
-
+/// <summary>This function allows you to enable or disable the VO compatible Errorstack format.<summary/>
+/// <param name="lNew">Specify TRUE to enable the new format.</param>
+/// <returns>The current setting for the ErrorStack format.</returns>
+/// <remarks>The default setting for the format is based on the dialect of the main application.
+/// When the main dialect is VO or Vulcan then the VO format is used. Otherwise the normal .Net format is used.
+/// </remarks>
+FUNCTION SetErrorStackVOFormat(lNew AS LOGIC) AS LOGIC
+    LOCAL lPrevious := ErrorStackSettings.ErrorStackVOFormat AS LOGIC
+    ErrorStackSettings.ErrorStackVOFormat := lNew
+    RETURN lPrevious
 
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/altd/*" />

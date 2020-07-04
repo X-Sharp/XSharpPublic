@@ -368,12 +368,12 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         PRIVATE METHOD _saveCurrentRecord( node AS CdxNode) AS VOID
             IF node:Recno == -1
                 NOP
-            ENDIF
+            ELSE
             IF SELF:_currentvalue:Recno != node:Recno .AND. ! SELF:RDD:EoF
                 SELF:_currentvalue:Recno := node:Recno
                 Array.Copy(node:KeyBytes, SELF:_currentvalue:Key, _keySize)
             ENDIF
-            
+            ENDIF
         STATIC PRIVATE Jan_1_1901 := DateTime{1901, 1, 1 } AS DateTime
         
         PRIVATE STATIC METHOD _toJulian(dt AS DateTime) AS LONG
@@ -389,10 +389,9 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             LOCAL text AS STRING
             LOCAL typeCde AS TypeCode
             text := NULL
-            IF (toConvert ASTYPE IFloat) != NULL // Float Value ?
+            IF toConvert IS IFloat // Float Value ?
                 typeCde   := TypeCode.Double
-            ELSEIF (toConvert ASTYPE IDate) != NULL // Date Value
-                VAR valueDate := (IDate)toConvert
+            ELSEIF toConvert IS IDate VAR valueDate // Date Value
                 toConvert := DateTime{valueDate:Year, valueDate:Month, valueDate:Day}
                 typeCde   := TypeCode.DateTime
             ELSE
@@ -477,11 +476,11 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                         RETURN FALSE
                     ENDIF
                 ENDIF
-                IF SELF:HasScope .AND. ! XSharp.RuntimeState.Deleted .AND. ! SELF:_oRdd:_FilterInfo:Active
+                IF SELF:HasScope .AND. ! XSharp.RuntimeState.Deleted .AND. ! SELF:_oRdd:FilterInfo:Active
                     SELF:_ScopeSeek(DbOrder_Info.DBOI_SCOPEBOTTOM)
                     records := SELF:_getScopePos()
                 ELSE
-                    IF  XSharp.RuntimeState.Deleted  .OR. SELF:_oRdd:_FilterInfo:Active
+                    IF  XSharp.RuntimeState.Deleted  .OR. SELF:_oRdd:FilterInfo:Active
                         SELF:_oRdd:SkipFilter(1)
                         oldRec := SELF:_RecNo
                         records := 0
@@ -569,11 +568,11 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 IF SELF:HasScope
                     record := SELF:_getScopePos()
                 ELSE
-                    IF XSharp.RuntimeState.Deleted .OR. SELF:_oRdd:_FilterInfo:Active
+                    IF XSharp.RuntimeState.Deleted .OR. SELF:_oRdd:FilterInfo:Active
                         SELF:_oRdd:SkipFilter(1)
                         oldRec := SELF:_RecNo
                         record := 0
-                        IF !SELF:_oRdd:_EoF
+                        IF !SELF:_oRdd:EoF
                             SELF:GoTop()
                             recno := SELF:_RecNo
                             count := 1
@@ -769,7 +768,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         
         PRIVATE METHOD _getFieldValue(sourceIndex AS LONG, byteArray AS BYTE[]) AS LOGIC
             SELF:_oRdd:Validate()
-            Array.Copy(SELF:_oRdd:_RecordBuffer, sourceIndex, byteArray, 0, SELF:_keySize)
+            Array.Copy(SELF:_oRdd:RecordBuffer, sourceIndex, byteArray, 0, SELF:_keySize)
             RETURN TRUE
 
         PRIVATE METHOD _getFieldValueWithCollation(sourceIndex AS LONG, byteArray AS BYTE[]) AS LOGIC

@@ -1,82 +1,24 @@
 CLASS CSocket
-	// UH 10/06/1998
-	// PROTECT nSocket AS INT
 	PROTECT nSocket AS DWORD
 
 	PROTECT nSocketType AS INT
 	PROTECT nCurrentStatus AS INT
 	PROTECT lCleanupRequired AS LOGIC
 	PROTECT ServerAddress AS _WinSockAddr_IN
-	//PROTECT pHostBuffer AS BYTE PTR
 	PROTECT cErrorString AS STRING
-	//PROTECT cAddress AS STRING
-	//PROTECT cReceiveLine AS STRING
-	//PROTECT cSendLine AS STRING
-	//PROTECT pRawSendData AS BYTE PTR
-	//PROTECT nRawSendDataLength AS INT
-
 	PROTECT nTimeoutReTries AS INT
 	PROTECT nTimeout AS INT
 	PROTECT nLastError AS DWORD
-	//PROTECT hWnd AS PTR
 
-	// UH 05/29/2000
 	PROTECT nRcvBuf  AS INT
 	PROTECT nSndBuf  AS INT
 	PROTECT pRcvBuf  AS PTR
 	PROTECT cRcvBuf  AS STRING  //SE
 	PROTECT pSndBuf  AS PTR
-	#ifndef __VULCAN__
-   ~"ONLYEARLY+"
-   DECLARE METHOD __Start
-   DECLARE METHOD __ReceiveBuf
-   DECLARE METHOD __SendRaw
-   DECLARE METHOD connect
-   DECLARE METHOD Close
-   DECLARE METHOD DisConnect
-   DECLARE METHOD SendLine
-   DECLARE METHOD SendLineTo
-   DECLARE METHOD SendRaw
-   DECLARE METHOD SendRawText
-   DECLARE METHOD GetRaw
-   DECLARE METHOD GetRawText
-   //DECLARE METHOD GetMultilineResponse
-   DECLARE METHOD GetLine
-   DECLARE METHOD GetSockName
-   DECLARE METHOD GetPeerName
-   DECLARE METHOD Bind
-   DECLARE METHOD Listen
-   DECLARE METHOD accept
-   DECLARE METHOD __Linger
-   DECLARE METHOD GetLineFrom
-   DECLARE METHOD GetLines
-   DECLARE METHOD __SetErrorVars
-   DECLARE METHOD DisplayError
-   DECLARE METHOD __ConnectThread
-   DECLARE METHOD __SetOptions
-   DECLARE ACCESS Error
-   DECLARE ASSIGN Error
-   DECLARE ACCESS ErrorMsg
-   DECLARE ACCESS TimeOut
-   DECLARE ASSIGN TimeOut
-   DECLARE ACCESS TimeOutRetries
-   DECLARE ASSIGN TimeOutRetries
-   DECLARE ACCESS Status
-   DECLARE ACCESS RcvBufSize
-   DECLARE ACCESS SndBufSize
-   ~"ONLYEARLY-"
-	#endif
 
 METHOD __ConnectThread() AS LOGIC STRICT
-	#ifndef  __VULCAN__
-	LOCAL dwID AS DWORD
-	#endif
 	LOCAL cMsg AS STRING
-#ifdef __VULCAN__
-   LOCAL phT AS System.Threading.Thread
-#else
-	LOCAL phT AS PTR
-#endif
+   	LOCAL phT AS System.Threading.Thread
 	LOCAL nWait AS DWORD
 	LOCAL condata IS _THREAD_DATA
 
@@ -88,14 +30,9 @@ METHOD __ConnectThread() AS LOGIC STRICT
 	MemCopy(@condata:ServerAddress:sin_family, @ServerAddress:sin_family, _SIZEOF(_WinSockAddr_IN))
 
 	nWait := DWORD(SELF:nTimeout)
-#ifdef __VULCAN__
-   phT := System.Threading.Thread{ System.Threading.ParameterizedThreadStart{ NULL, @__ConnectFunc() } }
-   phT:Start( (IntPtr) @condata )
-   phT:Join( nWait )
-#else
-	phT := CreateVOThread(0, 0, @__ConnectFunc(), @condata, THREAD_TERMINATE, @dwID)
-	WaitForSingleObject(phT, nWait)
-#endif
+	phT := System.Threading.Thread{ System.Threading.ParameterizedThreadStart{ NULL, @__ConnectFunc() } }
+	phT:Start( (IntPtr) @condata )
+	phT:Join( nWait )
 
 	IF condata:nRC = SOCKET_ERROR
 		SELF:Error := DWORD(_CAST,WSAGetLastError())
@@ -104,33 +41,11 @@ METHOD __ConnectThread() AS LOGIC STRICT
 		ENDIF
 		SELF:nCurrentStatus := SSTAT_DISCONNECTED
 		cMsg := "Connection failed "
-#ifndef __VULCAN__
-		CloseHandle(phT)
-#endif
 		SELF:InternetStatus(0, SSTAT_DISCONNECTED, cMsg, SLen(cMsg))
 
-		/*	original code wcm 2003-11-19
-		SuspendThread(phT)
-
-		// UH 07/24/2000
-		// TerminateThread(phT, 0xFFFFFFFF)
-		TerminateVOThread(phT, 0xFFFFFFFF)
-
-		CloseHandle(phT)
-		SELF:Error := ERR_WSA_WAIT_TIMEOUT
-		SELF:nCurrentStatus := SSTAT_DISCONNECTED
-
-		// UH 01/11/2000
-		// cMsg := "Connection failed "
-		// CloseHandle(phT)
-		// SELF:InternetStatus(0, SSTAT_DISCONNECTED, cMsg, SLen(cMsg))
-		*/
 		RETURN .F.
 	ELSE
 		cMsg := "Connected to Server "
-#ifndef __VULCAN__
-		CloseHandle(phT)
-#endif
 		SELF:InternetStatus(0, INTERNET_STATUS_CONNECTED_TO_SERVER, cMsg, SLen(cMsg))
 	ENDIF
 
@@ -215,7 +130,6 @@ METHOD __ReceiveBuf() AS LOGIC STRICT
 	RETURN nNumChars != SOCKET_ERROR
 
 METHOD __SendRaw(cData AS STRING, dwSize REF DWORD) AS LOGIC STRICT
-   //SE-040702
 	LOCAL nRet         AS INT
 	LOCAL nLoops       AS INT
 	LOCAL dwPos        AS DWORD
@@ -239,7 +153,7 @@ METHOD __SendRaw(cData AS STRING, dwSize REF DWORD) AS LOGIC STRICT
 	nLoops       := SELF:nTimeOutRetries
 	dwPos        := 0
 	dwSent       := 0
-	pData        := String2Psz(cData) //SE-070611
+	pData        := String2Psz(cData) 
 
 	#IFDEF __DEBUG__
 		DebOut32("__SendRaw() dwSize = " + NTrim(dwSize))
@@ -358,7 +272,6 @@ METHOD __SetOptions () AS VOID STRICT
 
 	nTemp := SELF:nTimeout
 
-	// UH 05/30/2000 Moved from sendline()
 	setsockopt( SELF:nSocket, SOL_SOCKET, SO_SNDTIMEO, @nTemp, _SIZEOF(INT) )
 	setsockopt( SELF:nSocket, SOL_SOCKET, SO_RCVTIMEO, @nTemp, _SIZEOF(INT) )
 
@@ -403,7 +316,6 @@ METHOD accept() AS CSocket STRICT
 		//
 		oSocket := CSocket{SELF:nSocketType, nSock, SSTAT_CONNECTED}
 
-		// UH 07/06/2000
 		oSocket:__SetOptions()
 	ELSE
 		nErr := WSAGetLastError()
@@ -416,7 +328,6 @@ METHOD accept() AS CSocket STRICT
 
 
 DESTRUCTOR()
-	//RvdH 070407 Moved code from Axit() to Destroy()
 	Destroy()
 	RETURN
 
@@ -454,7 +365,6 @@ METHOD Close() AS LOGIC STRICT
 	LOCAL lRet AS LOGIC
 
 	IF SELF:nCurrentStatus != SSTAT_UNINITIALIZED
-		// UH 09/29/2000
 		SELF:Disconnect()
 		IF closesocket(SELF:nSocket) = SOCKET_ERROR
 			SELF:Error := WSAGetLastError()
@@ -515,17 +425,13 @@ METHOD connect(cIP AS STRING, nPort AS WORD) AS LOGIC STRICT
 
 	RETURN lRet
 
-METHOD Destroy()
-	//RvdH 070407 Moved code from Axit() to Destroy()
+METHOD Destroy() AS VOID
 	LOCAL cMsg AS STRING
 	IF SELF:lCleanupRequired
 		IF SELF:nSocket != INVALID_SOCKET
-			// UH 11/12/2000
-			//self:Disconnect()
 			SELF:Close()
 
 			MemFree(SELF:ServerAddress)
-			//MemFree(SELF:pHostBuffer)
 
 			IF SELF:pRcvBuf != NULL_PTR
 				MemFree(SELF:pRcvBuf)
@@ -546,17 +452,14 @@ METHOD Destroy()
 
 		SELF:lCleanupRequired := .F.
 	ENDIF
-	IF ! InCollect()
-		UnregisterAxit(SELF)
-	ENDIF
-	RETURN NIL
+	UnregisterAxit(SELF)
+	RETURN 
 
 METHOD DisConnect() AS LOGIC STRICT
 	LOCAL lRet AS LOGIC
 
 	IF SELF:nCurrentStatus != SSTAT_UNINITIALIZED
 		IF SELF:nCurrentStatus != SSTAT_DISCONNECTED
-			// UH 09/29/2000
 			IF shutdown(SELF:nSocket, SD_BOTH) = SOCKET_ERROR
 				SELF:Error := WSAGetLastError()
 			ELSE
@@ -585,13 +488,12 @@ ACCESS Error AS DWORD STRICT
 	RETURN SELF:nLastError
 
 ASSIGN Error(n AS DWORD)  STRICT
-	RETURN SELF:nLastError := n
+	SELF:nLastError := n
 
 ACCESS ErrorMsg AS STRING STRICT
 	RETURN SystemErrorString(SELF:nLastError, "Socket Error " + NTrim(SELF:nLastError))
 
 METHOD GetLine() AS STRING STRICT
-   //SE-040707
 	LOCAL cRet AS STRING
 	LOCAL cMsg AS STRING
 
@@ -918,7 +820,6 @@ ACCESS RcvBufSize() AS INT STRICT
 	RETURN SELF:nRcvBuf
 
 METHOD SendLine(cData AS STRING) AS INT STRICT
-    //SE-040702
     LOCAL dwSent AS DWORD
 
     dwSent := 0
@@ -929,7 +830,6 @@ METHOD SendLine(cData AS STRING) AS INT STRICT
     RETURN -1
 
 METHOD SendLineTo(cData AS STRING, cDest AS STRING, nRemPort AS WORD) AS INT STRICT
-   //SE-040625
 	LOCAL nSize AS DWORD
 	LOCAL nSinSize AS DWORD
 	LOCAL nRet AS INT
@@ -982,7 +882,7 @@ METHOD SendLineTo(cData AS STRING, cDest AS STRING, nRemPort AS WORD) AS INT STR
 
 	SELF:nCurrentStatus := SSTAT_CONNECTING
 
-	nRet := sendto( SELF:nSocket, @abBuffer[1], INT(nSize), 0, @sin, INT(nSinSize)) // UH 11/02/2000 nSize
+	nRet := sendto( SELF:nSocket, @abBuffer[1], INT(nSize), 0, @sin, INT(nSinSize)) 
 
 	IF nRet = SOCKET_ERROR
 		SELF:__SetErrorVars(ProcName(), ProcLine())
@@ -1065,7 +965,6 @@ METHOD SendRaw(pData AS PTR, nSize AS DWORD) AS LOGIC STRICT
 
 
 METHOD SendRawText(cData AS STRING) AS LOGIC STRICT
-   //SE-040625
    LOCAL dwSize AS DWORD
 
    RETURN SELF:__SendRaw(cData, @dwSize)
@@ -1095,14 +994,14 @@ ASSIGN TimeOut(nNew AS INT)  STRICT
 			_SIZEOF(INT) )
 	ENDIF
 
-	RETURN SELF:nTimeOut
+	RETURN 
 
 ACCESS TimeOutRetries() AS INT STRICT
 	RETURN SELF:nTimeOutRetries
 
 ASSIGN TimeOutRetries(nNew AS INT)  STRICT
 	SELF:nTimeoutRetries := nNew
-	RETURN SELF:nTimeOutRetries
+	RETURN 
 
 END CLASS
 
@@ -1137,24 +1036,13 @@ INTERNAL VOSTRUCT _THREAD_DATA
 
 _DLL FUNCTION WSAGetLastError() AS DWORD PASCAL:WSOCK32.WSAGetLastError
 
-#ifdef __VULCAN__
 
-STATIC FUNCTION __ConnectFunc( oData AS OBJECT ) AS VOID
+INTERNAL FUNCTION __ConnectFunc( oData AS OBJECT ) AS VOID
    LOCAL pData AS _THREAD_DATA
    pData := (_THREAD_DATA PTR) (IntPtr) oData
 	pData:nRC := connect(pData:nSocket, (_WINsockaddr PTR) @pData:ServerAddress, pData:nSize)
 	RETURN
 
-#else
-
-STATIC FUNCTION __ConnectFunc( pData AS _THREAD_DATA) AS VOID STRICT
-
-	pData:nRC := connect(pData:nSocket, @pData:ServerAddress, pData:nSize)
-
-	ExitVOThread(0)
-	RETURN
-
-#endif
 
 
 

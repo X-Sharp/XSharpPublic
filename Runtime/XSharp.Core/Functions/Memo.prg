@@ -6,7 +6,7 @@
 
 
 /// <exclude />
-PUBLIC CLASS MemoHelpers
+PUBLIC CLASS XSharp.MemoHelpers
     /// <exclude/>	
 	CONST BLANK      := 0x20 AS INT
     /// <exclude/>	

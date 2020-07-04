@@ -2,19 +2,20 @@
 // This file contains subclasses from classes in System.Windows.Forms for the DataGrid Control
 
 
-#USING System.Windows.Forms
-#using System.Drawing
-#using System.Collections.Generic
+USING System.Windows.Forms
+USING System.Drawing
+USING System.Collections.Generic
+USING VOSDK := XSharp.VO.SDK
 CLASS VODataGridView INHERIT System.Windows.Forms.DataGridView IMPLEMENTS IVOControl
 	// We will activate the VirtualMode later and will then have to implement the methods 
 	// for Virtual Mode
 	// See: http://msdn.microsoft.com/en-us/library/15a31akc%28v=vs.90%29.aspx
 	PROTECT _lLastHScrollVisible AS LOGIC
-	PROPERTY DataBrowser AS XSharp.VO.DataBrowser GET (XSharp.VO.DataBrowser) oProperties:Control
+	PROPERTY DataBrowser AS VOSDK.DataBrowser GET (VOSDK.DataBrowser) oProperties:Control
 
 	#include "PropControl.vh"
 
-	CONSTRUCTOR(Owner AS XSharp.VO.Control, dwStyle AS LONG, dwExStyle AS LONG)
+	CONSTRUCTOR(Owner AS VOSDK.Control, dwStyle AS LONG, dwExStyle AS LONG)
 		oProperties := VOControlProperties{SELF, Owner, dwStyle, dwExStyle}
 		SUPER()
 		// Set Some defaults
@@ -208,8 +209,8 @@ CLASS VODataGridViewColumn INHERIT DataGridViewTextBoxColumn
 		SUPER()
 		SELF:DataColumn := oCol
 		SELF:SortMode := DataGridViewColumnSortMode.Programmatic
-		SELF:HeaderCell:Style:BackColor	:= oForeColor //XSharp.VO.Color{Win32.GetSysColor(COLOR_BTNFACE)}
-		SELF:HeaderCell:Style:ForeColor := oBackColor // XSharp.VO.Color{Win32.GetSysColor(COLOR_BTNTEXT)}
+		SELF:HeaderCell:Style:BackColor	:= oForeColor //VOSDK.Color{GuiWin32.GetSysColor(COLOR_BTNFACE)}
+		SELF:HeaderCell:Style:ForeColor := oBackColor // VOSDK.Color{GuiWin32.GetSysColor(COLOR_BTNTEXT)}
 		SELF:HeaderCell:Style:WrapMode  := DataGridViewTriState.False
 		IF oCol:HyperLabel != NULL_OBJECT
 			SELF:Name	:= oCol:HyperLabel:Name

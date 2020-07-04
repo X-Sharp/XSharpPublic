@@ -193,16 +193,17 @@ BEGIN NAMESPACE XSharpModel
 					XSolution.SetStatusBarText("")
 					XSolution.SetStatusBarAnimation(FALSE, 3)
 					WriteOutputMessage("<<-- Walker("+project.Name+")")
-					
-					aFiles := project:OtherFiles:ToArray()
-					FOREACH VAR file IN aFiles
-						VAR oFile := project:FindXFile(file)
-						IF oFile:UpdatedOnDisk
-							XDatabase.Update(oFile)
-						ENDIF
-					NEXT
-					_currentProject := NULL
-					project:FileWalkCompleted := TRUE
+               
+               aFiles := project:OtherFiles:ToArray()
+               FOREACH VAR file IN aFiles
+                  VAR oFile := project:FindXFile(file)
+                  IF oFile:UpdatedOnDisk
+                     XDatabase.Update(oFile)
+                  ENDIF
+               NEXT
+               _currentProject:FileWalkComplete?:Invoke(NULL)
+               _currentProject := NULL
+               project:FileWalkCompleted := TRUE
 				ENDDO
 				
 				

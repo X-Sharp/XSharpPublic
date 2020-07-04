@@ -35,6 +35,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			LOCAL c AS STRING
             LOCAL f AS FLOAT
 			SetDecimalSep(46)
+            SetDecimal(2)
 			c := Str3(12.3456,5,2)
 			Assert.Equal("12.35", c)	// ROunded up
 			c := Str3(12.3411,5,2)
@@ -93,7 +94,8 @@ BEGIN NAMESPACE XSharp.VO.Tests
 		METHOD ValTest() AS VOID
 			LOCAL u AS USUAL
             SetDecimalSep('.')
-            SetThousandSep(',') 
+            SetThousandSep(',')
+            SetDecimal(2)
 			u := Val("1.234")
 			Assert.Equal(1.234, (FLOAT) u)
 			SetDecimalSep(',')

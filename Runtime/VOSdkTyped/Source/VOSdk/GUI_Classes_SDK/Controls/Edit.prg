@@ -712,7 +712,7 @@ CLASS SingleLineEdit INHERIT Edit
 END CLASS
 
 CLASS strucPictureFuncFlags
-	EXPORT   Flags       AS System.Collections.BitArray
+	PROPERTY Flags       AS System.Collections.BitArray AUTO
 	PROPERTY lLeftJust   AS LOGIC GET Flags[0]
 	PROPERTY lDispCR     AS LOGIC GET Flags[1]
 	PROPERTY lSetDate    AS LOGIC GET Flags[2]

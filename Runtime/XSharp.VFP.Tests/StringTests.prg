@@ -171,6 +171,24 @@ BEGIN NAMESPACE XSharp.VFP.Tests
             Assert.Equal(0u, AtC ("aA" , "AaaA", 12 ) )
             Assert.Equal(0u, AtC ("aA" , "AaaA", 4 ) )
 
+		[Fact, Trait("Category", "String")];
+		METHOD TrimTests() AS VOID
+
+            Assert.Equal("",		AllTrim(" "))
+            Assert.Equal("",		AllTrim(e" \n ", 0, " ", ChrW(9), ChrW(10), ChrW(13)))
+            Assert.Equal("Test",	AllTrim("Test "))
+            Assert.Equal("Test",	AllTrim(e"Test \n ", 0, " ", ChrW(9), ChrW(10), ChrW(13)))
+            Assert.Equal("TeTeTest",AllTrim("TeTeTest", 0, "te"))
+            Assert.Equal("st",		AllTrim("TeTeTest", 1, "te"))
+            Assert.Equal("TeTeTes",	AllTrim("TeTeTest", 0, "t", "e"))
+            Assert.Equal("s",		AllTrim("TeTeTest", 1, "t", "e"))
+            Assert.Equal("abc",		AllTrim("***abc*", 0, "*"))
+            Assert.Equal("abc*",	LTrim("***abc*", 0, "*"))
+            Assert.Equal("***abc",	RTrim("***abc*", 0, "*"))
+            Assert.Equal("cdefgh",	AllTrim("abcdefghab", 1, "AB", "B"))
+            Assert.Equal("cdefgha",	AllTrim("abcdefghab", 1, "B", "AB"))
+            Assert.Equal("ef",		AllTrim("abABabCdef", 1, "ab", "CD"))
+
 	END CLASS
 
 END NAMESPACE

@@ -341,7 +341,7 @@ BEGIN NAMESPACE XSharp.RDD
                         System.Array.Copy(bFile,0, bData,8, bFile:Length)
                         IF SELF:PutValue(nFldPos, bData)
                             // Update the Field Info with the new MemoBlock Position
-                            RETURN oColumn:PutValue(SELF:LastWrittenBlockNumber, SELF:_oRdd:_RecordBuffer)
+                            RETURN oColumn:PutValue(SELF:LastWrittenBlockNumber, SELF:_oRdd:RecordBuffer)
                         ENDIF
                     ENDIF
                 ENDIF
@@ -510,7 +510,7 @@ BEGIN NAMESPACE XSharp.RDD
             RETURN TRUE
 
         METHOD WriteHeader() AS VOID
-            IF SELF:IsOpen .AND. ! SELF:_oRdd:_ReadOnly
+            IF SELF:IsOpen .AND. ! SELF:_oRdd:ReadOnly
                 IF ! SELF:_fptHeader:Write(SELF:_hFile)
                     SELF:Error(FException(), Subcodes.ERDD_WRITE, Gencode.EG_WRITE, "FPTMemo.WriteHeader")
                 ENDIF

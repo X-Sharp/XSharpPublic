@@ -7,7 +7,6 @@ CLASS CSmtp INHERIT CMailAbstract
 
 	PROTECT cMailApplication	AS STRING
 
-	//S.Ebert
 	PROTECT lSecureSMTP   	AS LOGIC
 
 METHOD __StartData () 
@@ -39,7 +38,6 @@ METHOD __StopSending (lSuccess)
 	SELF:Disconnect()
 	SELF:nCurState := WAITING_FOR_ACTION
 	IF !lSuccess
-		//  UH 05/29/2000
 		SELF:nError := nTemp
 		SELF:cReply := cTemp
 	ENDIF
@@ -47,7 +45,6 @@ METHOD __StopSending (lSuccess)
 
 
 METHOD CheckReply()
-   //SE-040707
 	LOCAL cChar AS STRING
 
 	cChar := SubStr3(SELF:cReply, 1, 1)
@@ -66,7 +63,6 @@ METHOD CheckReply()
 	RETURN TRUE
 
 METHOD connect(cIP, nPort) 
-   //SE-040707
 	LOCAL cBuffer AS STRING
 	LOCAL wPort   AS WORD
 
@@ -76,7 +72,6 @@ METHOD connect(cIP, nPort)
 		wPort := SELF:RemotePort
 	ENDIF
 
-	// UH 08/03/2000
 	IF ! SELF:Open()
 		RETURN FALSE
 	ENDIF
@@ -90,7 +85,7 @@ METHOD connect(cIP, nPort)
 		RETURN FALSE
 	ENDIF
 
-	//S.Ebert - EHLO for secured servers
+	// EHLO for secured servers
 	cBuffer := IIF(SELF:SecureSMTP, "EHLO ","HELO " )+ SELF:DomainName + CRLF
 
 	IF ! SELF:SendRemote(cBuffer)
@@ -106,7 +101,7 @@ METHOD connect(cIP, nPort)
 		RETURN FALSE
 	ENDIF
 
-	//S.Ebert - For multiline 250- responses   05/22/2005
+	// For multiline 250- responses  
 	DO WHILE SELF:nReply = 250 .AND. RAt2("250 ", SELF:cReply) = 0
 		IF ! SELF:RecvRemote()
 			RETURN FALSE
@@ -117,7 +112,6 @@ METHOD connect(cIP, nPort)
 		ENDIF
 	ENDDO
 
-	//S.Ebert
 	IF SELF:SecureSMTP		// needs to authenticate SMTP login
 		RETURN SELF:Logon()
 	ENDIF
@@ -125,7 +119,6 @@ METHOD connect(cIP, nPort)
 	RETURN TRUE
 
 METHOD Disconnect () 
-   //SE-040707
 	LOCAL cBuffer AS STRING
 	LOCAL lRet AS LOGIC
 
@@ -173,13 +166,12 @@ ASSIGN Email(oMail)
 		SELF:oEmail := oMail
 	ENDIF
 
-	RETURN SELF:oEmail
+	RETURN 
 
 ACCESS EmailFormat 
 	RETURN SELF:nEmailFormat
 
 ASSIGN EmailFormat(nValue) 
-    //SE-040707
 	DO CASE
 	CASE nValue == EMAIL_FORMAT_MIME
 
@@ -192,7 +184,7 @@ ASSIGN EmailFormat(nValue)
 		nValue := SELF:nEmailFormat
 	ENDCASE
 
-	RETURN SELF:nEmailFormat := nValue
+	SELF:nEmailFormat := nValue
 
 
 CONSTRUCTOR(oMail, cServer, nPort) 
@@ -207,17 +199,11 @@ CONSTRUCTOR(oMail, cServer, nPort)
 	SELF:RemoteHost       := cServer					// this does a string name conversion to an IP string
 	SELF:nEmailFormat     := EMAIL_FORMAT_MIME		// this is default. Could be UUENCODE but not recommmended
 	SELF:TextEncoding     := CODING_TYPE_PRINTABLE
-#ifdef __VULCAN__
 	 SELF:cMailApplication := "SMTP Mailer V1.6 - Powered by build "+__VERSION__
-#else	 
-	SELF:cMailApplication := "SMTP Mailer V1.6 - Powered by Visual Objects 2.8 build "+__VERSION__
-#endif	 
 	
 	RETURN 
 
 METHOD Logon() 
-   //SE-040706
-	//S.Ebert - October 2003
 	LOCAL cBuffer  AS STRING
 	LOCAL cUserID 	AS STRING
 	LOCAL cPassW 	AS STRING
@@ -269,10 +255,9 @@ ACCESS MailApplication
    RETURN SELF:cMailApplication
 
 ASSIGN MailApplication(cValue) 
-   RETURN SELF:cMailApplication := cValue
+   SELF:cMailApplication := cValue
 
 METHOD RecvRemote() 
-   //SE-040707
 	LOCAL lRet   AS LOGIC
 	LOCAL dwSize AS DWORD
 	LOCAL cRet	 AS STRING
@@ -290,7 +275,6 @@ METHOD RecvRemote()
 			lRet        := TRUE
 			SELF:nError := 0
 		ELSE
-			//	UH 03/16/1998
 			cRet := AllTrim(Upper(cRet))
 			IF cRet = "(EST)"
 				SELF:nReply := 250
@@ -308,12 +292,9 @@ ACCESS SecureSMTP
 	RETURN lSecureSMTP
 
 ASSIGN SecureSMTP(lValue) 
-	RETURN SELF:lSecureSMTP := lValue
+	SELF:lSecureSMTP := lValue
 
 METHOD SendHeaderInfo() 
-   //SE-040709    
-	//RvdH 070325 Removed parameters. Get everything from the oEmail
-	//     instance variable. 
 	LOCAL lRet        AS LOGIC
 	LOCAL dwI, dwJ    AS DWORD
 	LOCAL dwCount     AS DWORD
@@ -321,7 +302,6 @@ METHOD SendHeaderInfo()
 	LOCAL aList       AS ARRAY
 	LOCAL aRCPT       AS ARRAY
 	LOCAL cAddress    AS STRING
-	LOCAL cName       AS STRING
 	LOCAL cFromAdr    AS STRING
 	LOCAL dwRCPTs     AS DWORD  
 	LOCAL cFrom			AS STRING
@@ -330,7 +310,7 @@ METHOD SendHeaderInfo()
 	// when the same person is in CC's, BCC's or in the TO list
 	
 	IF IsString(cFrom)
-		cFromAdr := __ParseAddress(SELF:oEmail:From, @cName)
+		cFromAdr := __ParseAddress(SELF:oEmail:From,  OUT NULL)
 	ENDIF
 
 	aRCPT := {}
@@ -346,7 +326,7 @@ METHOD SendHeaderInfo()
 		aList := aRCPT[dwJ]
 		dwCount := ALen(aList)
 		FOR dwI := 1 UPTO dwCount
-			cAddress    := __ParseAddress(aList[dwI], @cName)
+			cAddress    := __ParseAddress(aList[dwI], OUT NULL)
 			IF AScan(aAddressees, {|cTag|At(cAddress, cTag)>0}) = 0
 				AAdd(aAddressees, cAddress)
 			ENDIF
@@ -400,8 +380,6 @@ METHOD SendHeaderInfo()
 	RETURN lRet
 
 METHOD SendMail() 
-    //SE-070419   
-    //SE-071018 Updated
     LOCAL lRet   AS LOGIC
     LOCAL cData  AS STRING
     
@@ -414,7 +392,6 @@ METHOD SendMail()
     ENDIF
 
     SELF:nCurState := ESTABLISHING_SESSION
-    //RvdH 070325 Added BCCList..
     IF ! SELF:SendHeaderInfo()
         RETURN SELF:__StopSending(FALSE)
     ENDIF
@@ -436,7 +413,7 @@ METHOD SendMail()
             EXIT
         ENDIF   
         
-        //SE-071018 see RFC-2821 chapter 4.5.2 Transparency 
+        // see RFC-2821 chapter 4.5.2 Transparency 
         SmtpTransparency(@cData)
         
         lRet  := SELF:oSocket:SendRawText(cData)
@@ -450,8 +427,6 @@ METHOD SendMail()
     SELF:__StopSending(lRet)
     
     cData := NULL_STRING
-    //RvdH 070417 CollectForced should not be needed. Let VO handle it.
-    // CollectForced()
 
     RETURN lRet
 
@@ -468,15 +443,14 @@ ACCESS TextEncoding
 ASSIGN TextEncoding(n) 
 
 	IF SELF:oEmail == NULL_OBJECT
-		RETURN CODING_TYPE_NONE
+		RETURN 
 	ENDIF
 
-	RETURN SELF:oEmail:TransferEncoding := n
+	SELF:oEmail:TransferEncoding := n
 
-END CLASS
 
-STATIC FUNCTION SmtpTransparency(cData REF STRING) AS VOID PASCAL
-    /* SE-071017 see RFC-2821 chapter 4.5.2 Transparency
+PRIVATE STATIC METHOD SmtpTransparency(cData REF STRING) AS VOID PASCAL
+    /* see RFC-2821 chapter 4.5.2 Transparency
     Before sending a line of mail text, the SMTP client checks the
     first character of the line. If it is a period, one additional
     period is inserted at the beginning of the line.
@@ -485,9 +459,6 @@ STATIC FUNCTION SmtpTransparency(cData REF STRING) AS VOID PASCAL
     */   
     STATIC bLast AS BYTE
     LOCAL  dwLen AS DWORD
-    #ifndef  __VULCAN__
-    LOCAL  pChar AS BYTE PTR  
-    #endif
     
     IF At2(CRLF+".", cData) > 0
         cData := StrTran(cData, CRLF+".", CRLF+"..")
@@ -504,20 +475,10 @@ STATIC FUNCTION SmtpTransparency(cData REF STRING) AS VOID PASCAL
     ENDIF
     
     IF (dwLen := SLen(cData)) > 0
-#ifdef  __VULCAN__
         bLast := cData[dwLen - 1]
-#else
-        pChar := PTR(_CAST, cData)  
-        bLast := pChar[dwLen]
-#endif        
         IF bLast = 0x0A
             IF dwLen > 1 
-#ifdef  __VULCAN__
                IF cData[dwLen - 2] == 0x0D
-#else
-                pChar := PTR(_CAST, cData)
-                IF pChar[dwLen - 1] = 0x0D
-#endif
                     RETURN
                 ENDIF    
             ENDIF     
@@ -528,3 +489,7 @@ STATIC FUNCTION SmtpTransparency(cData REF STRING) AS VOID PASCAL
     
     bLast := 0
     RETURN
+
+END CLASS
+
+

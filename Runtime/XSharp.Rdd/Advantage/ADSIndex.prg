@@ -18,7 +18,7 @@ CLASS XSharp.ADS.ADSIndex INHERIT BaseIndex
     PRIVATE _iProgress  AS LONG
     #region Helpers
     
-    PROPERTY OrderCondInfo AS DbOrderCondInfo GET oRDD:_OrderCondInfo SET oRDD:_OrderCondInfo := value
+    PROPERTY OrderCondInfo AS DbOrderCondInfo GET oRDD:OrderCondInfo SET oRDD:OrderCondInfo := value
     PROPERTY Index AS IntPtr GET oRDD:_Index SET oRDD:_Index := value
     PROPERTY Table AS IntPtr GET oRDD:_Table
     PROPERTY BagName   AS STRING AUTO GET PRIVATE SET
@@ -551,9 +551,9 @@ CLASS XSharp.ADS.ADSIndex INHERIT BaseIndex
         ENDIF
         SELF:_CheckError(ACE.AdsAtEOF(SELF:Table, OUT VAR atEOF),EG_CORRUPTION)
         SELF:_CheckError(ACE.AdsAtBOF(SELF:Table, OUT VAR atBOF),EG_CORRUPTION)
-        oRDD:_Found := found != 0
-        oRDD:_EoF := atEOF != 0
-        oRDD:_BoF := atBOF != 0
+        oRDD:Found := found != 0
+        oRDD:_SetEOF(atEOF != 0)
+        oRDD:_SetBOF(atBOF != 0)
         RETURN TRUE
         
     INTERNAL METHOD ProgressCallback(usPercentDone AS WORD , ulCallbackID AS DWORD ) AS DWORD

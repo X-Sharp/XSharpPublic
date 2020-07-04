@@ -5,6 +5,7 @@
 //
 USING System.Collections.Concurrent
 USING System.Collections.Generic
+USING System.Collections.ObjectModel
 USING System
 USING System.Linq
 USING System.Diagnostics
@@ -19,10 +20,9 @@ BEGIN NAMESPACE XSharpModel
         #region Fields
         PROPERTY Id           AS INT64          AUTO      GET INTERNAL SET 
         PRIVATE _globalType	AS XTypeDefinition
-        PRIVATE _lock			AS OBJECT
         PRIVATE _parsed			AS LOGIC
         PRIVATE _type			AS XFileType
-        PRIVATE _typeList		AS ConcurrentDictionary<STRING, XTypeDefinition>
+        PRIVATE _typeList		AS Dictionary<STRING, XTypeDefinition>
         PRIVATE _entityList	AS List<XEntityDefinition>
         PRIVATE _usings			AS List<STRING>
         PRIVATE _usingStatics	AS List<STRING>
@@ -36,10 +36,10 @@ BEGIN NAMESPACE XSharpModel
             SELF:LastChanged := System.DateTime.MinValue
             SELF:_type := GetFileType(fullPath)
             SELF:_parsed := ! SELF:HasCode
-            SELF:_lock := OBJECT{}
             SELF:_project := project
 
-        PROPERTY EntityList AS 	List<XEntityDefinition> GET _entityList
+        PROPERTY CommentTasks AS IList<XCommentTask> AUTO 
+        PROPERTY EntityList   AS 	List<XEntityDefinition> GET _entityList
         PROPERTY Dialect AS XSharpDialect GET _project:Dialect
         PROPERTY Virtual AS LOGIC AUTO
 
@@ -60,7 +60,7 @@ BEGIN NAMESPACE XSharpModel
             IF (SELF:TypeList == NULL || SELF:TypeList:Count == 0)
                 RETURN NULL
             ENDIF
-            BEGIN LOCK SELF:_lock
+            BEGIN LOCK SELF
                 VAR element := SELF:TypeList:FirstOrDefault()
                 RETURN element:Value:Members:FirstOrDefault()
             END
@@ -152,14 +152,14 @@ BEGIN NAMESPACE XSharpModel
 
 
         METHOD InitTypeList() AS VOID
-            SELF:_usings		:= List<STRING>{}
+            SELF:_usings		   := List<STRING>{}
             SELF:_usingStatics	:= List<STRING>{}
-            SELF:_entityList    := List<XEntityDefinition>{}
-            SELF:_typeList		:= ConcurrentDictionary<STRING, XTypeDefinition>{System.StringComparer.InvariantCultureIgnoreCase}
+            SELF:_entityList     := List<XEntityDefinition>{}
+            SELF:_typeList		   := Dictionary<STRING, XTypeDefinition>{System.StringComparer.InvariantCultureIgnoreCase}
             SELF:AddDefaultUsings()
             IF SELF:HasCode
                 SELF:_globalType	:= XTypeDefinition.CreateGlobalType(SELF)
-                SELF:_typeList:TryAdd(SELF:_globalType:Name, SELF:_globalType)
+                SELF:_typeList:Add(SELF:_globalType:Name, SELF:_globalType)
             ENDIF
 
         METHOD SetTypes(types AS IDictionary<STRING, XTypeDefinition>, usings AS IList<STRING>, ;
@@ -167,19 +167,14 @@ BEGIN NAMESPACE XSharpModel
             IF SELF:HasCode
                 //WriteOutputMessage("-->> SetTypes() "+ SELF:SourcePath)
                 BEGIN LOCK SELF
-                    FOREACH VAR type IN _typeList
-                        SELF:Project:RemoveType(type:Value)
-                    NEXT
-                     
                     SELF:_typeList:Clear()
                     SELF:_usings:Clear()
                     SELF:_usingStatics:Clear()
                     FOREACH type AS KeyValuePair<STRING, XTypeDefinition> IN types
-                        SELF:_typeList:TryAdd(type:Key, type:Value)
+                        SELF:_typeList:Add(type:Key, type:Value)
                         IF (XTypeDefinition.IsGlobalType(type:Value))
                             SELF:_globalType := type:Value
                         ENDIF
-                        SELF:Project:AddType(type:Value)
                     NEXT
                     SELF:_usings:AddRange(usings)
                     SELF:AddDefaultUsings()
@@ -204,7 +199,7 @@ BEGIN NAMESPACE XSharpModel
             IF SELF:HasCode
 
                 //WriteOutputMessage("-->> WaitParsing()")
-                BEGIN LOCK SELF:_lock
+                BEGIN LOCK SELF
 
                     IF ! SELF:Parsed
                         BEGIN USING VAR walker := SourceWalker{SELF}
@@ -234,7 +229,7 @@ BEGIN NAMESPACE XSharpModel
                 ENDIF
                 //WriteOutputMessage("-->> AllUsingStatics")
                 VAR statics := List<STRING>{}
-                BEGIN LOCK SELF:_lock
+                BEGIN LOCK SELF
 
                     statics:AddRange(SELF:_usingStatics)
                     IF SELF:Project != NULL .AND. SELF:Project:ProjectNode != NULL .AND. SELF:Project:ProjectNode:ParseOptions:HasRuntime
@@ -259,7 +254,7 @@ BEGIN NAMESPACE XSharpModel
                 IF ! SELF:HasCode .OR. SELF:TypeList == NULL
                     RETURN 0
                 ENDIF
-                BEGIN LOCK SELF:_lock
+                BEGIN LOCK SELF
                     VAR hash := 0U
                     FOREACH var entity in SELF:EntityList
                         BEGIN UNCHECKED
@@ -294,7 +289,7 @@ BEGIN NAMESPACE XSharpModel
             GET
                 //WriteOutputMessage("-->> Parsed")
                 LOCAL flag AS LOGIC
-                BEGIN LOCK SELF:_lock
+                BEGIN LOCK SELF
 
                     flag := SELF:_parsed
                 END LOCK
@@ -327,8 +322,8 @@ BEGIN NAMESPACE XSharpModel
                 IF ! SELF:HasCode
                     RETURN NULL
                 ENDIF
-                BEGIN LOCK SELF:_lock
-                    RETURN SELF:_typeList
+                BEGIN LOCK SELF
+                    RETURN ReadOnlyDictionary<STRING, XTypeDefinition>{SELF:_typeList}
                 END LOCK
             END GET
         END PROPERTY

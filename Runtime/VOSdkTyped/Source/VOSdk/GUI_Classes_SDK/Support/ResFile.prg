@@ -5,7 +5,7 @@ CLASS ResourceFile INHERIT VObject
 
 METHOD Destroy() AS USUAL CLIPPER
 	IF ((int) hLib >= 32)
-		Win32.FreeLibrary(hLib)
+		GuiWin32.FreeLibrary(hLib)
 	ENDIF
 
 	hLib := IntPtr.Zero
@@ -21,7 +21,7 @@ CONSTRUCTOR(sName AS STRING)
 	
 	SUPER()
 
-	hLib := Win32.LoadLibrary(sName)
+	hLib := GuiWin32.LoadLibrary(sName)
 	IF (Int) hLib < 32
 		rsCaption	:= ResourceString{__WCSLibraryName}
 		rsFormat	:= ResourceString{__WCSLoadLibraryError}

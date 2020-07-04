@@ -42,7 +42,7 @@
     <VO16>true</VO16>
     <NoStandardDefs>false</NoStandardDefs>
     <IncludePaths />
-    <XSharpProjectversion>2.4.0.0</XSharpProjectversion>
+    <XSharpProjectversion>2.4.1.0</XSharpProjectversion>
     <NoWin32Manifest>False</NoWin32Manifest>
     <NamedArgs>false</NamedArgs>
     <StandardDefs />

@@ -1,20 +1,4 @@
-﻿STATIC FUNCTION __GetDataTime(dStart AS DATE, cTime AS STRING, lGmt AS LOGIC)   AS STRING STRICT
-    LOCAL cRet      AS STRING
-    LOCAL cTemp     AS STRING
-
-    cTemp := DToS(dStart)
-    cRet  := SubStr2(cTemp, 3)
-
-    cTemp := StrTran(cTime, ":", "")
-    cRet += " " + cTemp
-
-    IF lGmt
-        cRet += " " + "[GMT]"
-    ENDIF
-
-    RETURN cRet
-
-
+﻿
 CLASS CNNTP INHERIT CMailAbstract
     PROTECT oNews           AS CNews
     PROTECT nReceiveBytes   AS DWORD
@@ -98,8 +82,6 @@ METHOD  __GetGroups     (cCommand, cSearch)
         SELF:nCurState := RETREIVING_DATA
 
         DEFAULT(@cSearch, "")
-        //  UH 05/12/2000
-        //  aRet := SELF:oSocket:GetLines(cSearch)
         IF IsArray(cSearch)
             aRet := SELF:oSocket:GetLines(cSearch)
         ELSE
@@ -178,28 +160,6 @@ METHOD  Authenticate        ()
 
     IF SELF:lSocketOpen
         SELF:nError := 0
-
-        //
-        //  UH: - Code moved to Method SetReadMode()
-        //      - Problems with Exchange News Server
-        //        (regarding to Dieter's mail from 06/07/2000)
-        //
-        /*cBuffer := "MODE READER" + CRLF
-        SELF:nCurState := SENDING_REQUEST
-        IF !SELF:SendRemote(cBuffer)
-            RETURN .F.
-        ENDIF
-        SELF:nCurState := RETREIVING_DATA
-        IF !SELF:RecvRemote()
-            RETURN .F.
-        ENDIF
-        IF !SELF:CheckReply()
-            RETURN .F.
-        ENDIF
-        IF SELF:nReply != 480
-            RETURN .T.
-        ENDIF
-        */
 
         // USER
         cBuffer := "AUTHINFO USER " + SELF:cUserName + CRLF
@@ -294,7 +254,7 @@ ASSIGN  CurrentNews     (x)
         SELF:oNews := x
     ENDIF
 
-    RETURN SELF:oNews
+    RETURN
 
 METHOD  Disconnect      ()
     LOCAL cBuffer   AS STRING
@@ -351,7 +311,6 @@ METHOD  GetArticle  (xMsg)
     lRet := SELF:RecvData(cBuffer, 220)
 
     IF lRet
-        //  UH 10/15/1999
         SELF:oNews := CNews{SELF:cReply}
 
         IF IsNumeric(xMsg)
@@ -406,7 +365,6 @@ METHOD  GetHeader   (xMsg)
     lRet := SELF:RecvData(cBuffer, 221)
 
     IF lRet .AND. IsNumeric(xMsg)
-        //  UH 10/15/1999
         SELF:oNews := CNews{SELF:cReply}
 
         SELF:__DecodeStatus(223)
@@ -780,7 +738,7 @@ METHOD  SetNewsGroup    (cGroup)
 
 METHOD  SetReadMode         ()
     //
-    //  UH: Necessary for some News servers to
+    //  Necessary for some News servers to
     //
     LOCAL cBuffer   AS STRING
 
@@ -859,6 +817,22 @@ METHOD  SkipPrev    ()
 
     RETURN lRet
 
+    PRIVATE STATIC METHOD __GetDataTime(dStart AS DATE, cTime AS STRING, lGmt AS LOGIC)   AS STRING STRICT
+    LOCAL cRet      AS STRING
+    LOCAL cTemp     AS STRING
+
+    cTemp := DToS(dStart)
+    cRet  := SubStr2(cTemp, 3)
+
+    cTemp := StrTran(cTime, ":", "")
+    cRet += " " + cTemp
+
+    IF lGmt
+        cRet += " " + "[GMT]"
+    ENDIF
+
+    RETURN cRet
+
 
 
 END CLASS
@@ -918,3 +892,5 @@ DEFINE NEWSLIST_MAX   := 4
 DEFINE NEWSLIST_NAME  := 1
 DEFINE NEWSLIST_POST  := 4
 #endregion
+
+

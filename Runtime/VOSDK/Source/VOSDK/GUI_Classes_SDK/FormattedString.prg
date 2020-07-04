@@ -350,9 +350,6 @@ METHOD MatchesTemplChar( cTest AS STRING, _cTemplChar AS STRING, lIgnoreBlank AS
 		RETURN IsAlNum( cTest )
 	CASE c'9'
     CASE c'.'
-        IF cType == "N"
-            RETURN TRUE
-        ENDIF
 		RETURN IsDigit( cTest ) .OR. ( cType == "N" .AND. At2( cTest, " +-" ) > 0 )
 	CASE c'#'
 		RETURN IsDigit( cTest ) .OR. At2( cTest, " +-" ) > 0
@@ -399,12 +396,12 @@ METHOD MatchesTemplChar(cTest AS STRING, cTemplChar AS STRING, lIgnoreBlank AS L
 	CASE cTemplChar == "!"
 		RETURN TRUE
 	CASE cTemplChar == "Y"
-		RETURN (At2(Upper(cTest), Psz2String(_GetStringDXAX(RT_MSG_YNSTRING))) > 0)
+		RETURN (At2(Upper(cTest), Psz2String(__CavoStr(RT_MSG_YNSTRING))) > 0)
 	CASE cTemplChar == "L"
 		cTest := Upper(cTest)               
-		cYesNo := Psz2String(_GetStringDXAX(RT_MSG_YNSTRING)) 
-		cTrue  := Psz2String(_GetStringDXAX(RT_MSG_SHORT_TRUE)) 
-		cFalse := Psz2String(_GetStringDXAX(RT_MSG_SHORT_FALSE)) 
+		cYesNo := Psz2String(__CavoStr(RT_MSG_YNSTRING)) 
+		cTrue  := Psz2String(__CavoStr(RT_MSG_SHORT_TRUE)) 
+		cFalse := Psz2String(__CavoStr(RT_MSG_SHORT_FALSE)) 
 		RETURN ((At2(cTest,cYesNo) >0) .OR. (cTest == cTrue) .OR. (cTest == cFalse))
 	CASE cTemplChar == "." .AND. cType == "N"
 		RETURN TRUE
@@ -601,7 +598,8 @@ METHOD ProcessChar(cChar AS STRING) AS LOGIC STRICT
 	ENDIF
 
 	RETURN TRUE
-
+#pragma warnings(219,off)
+// warning about assignment to iCurPos. We have to call oEditOwner:__CurPos for code inside that property
 METHOD ProcessKeyEvent(oKeyEvt AS KeyEvent) AS LOGIC STRICT 
 	LOCAL iCurPos AS INT
 	LOCAL uMsg AS DWORD
@@ -663,6 +661,8 @@ METHOD ProcessKeyEvent(oKeyEvt AS KeyEvent) AS LOGIC STRICT
 	END SWITCH
 
 	RETURN lRet
+
+#pragma warnings(219,on)
 
 METHOD PutChar(cChar AS STRING, iPos AS INT) AS VOID STRICT 
 #ifdef __VULCAN__

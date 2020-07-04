@@ -9,7 +9,6 @@
 
 
 METHOD __GetFileName(cTemp) 
-    //SE-040707
 	LOCAL dwPos  AS DWORD
 	LOCAL dwStop AS DWORD
 	LOCAL cRet	  AS STRING
@@ -49,8 +48,6 @@ METHOD GetAttachInfo(c)
 			cBefore := SubStr3(cRest, 1, nPos - 1)
 
 			DO WHILE nPos > 0
-				//RvdH 070417 CollectForced should not be needed. Let VO handle it.
-				//CollectForced()
 				cRest := SubStr2(cRest, nPos)
 				nTemp := At3(UUE_START_NEWS, cRest, SLen(UUE_START_NEWS))
 				nPos  := At3(UUE_END, cRest, SLen(UUE_START_NEWS))
@@ -92,7 +89,6 @@ METHOD  GetHeaderInfo ()
 
 	SUPER:GetHeaderInfo()
 
-	//  UH 03/14/2000 (Recommende by HM)
 	cTemp := __GetMailInfo(cHeader, TEMP_POSTED, .F. )
 	IF SLen(cTemp) > 0
 		SELF:__GetMailTime(cTemp)
@@ -110,7 +106,6 @@ METHOD  GetHeaderInfo ()
 
 	cTemp := __GetMailInfo(cHeader, TEMP_SENDER, .F. )
 
-	//  UH 03/14/2000 (Recommende by HM)
 	IF SLen(cTemp) > 0
 		SELF:cSender := cTemp
 	ELSE
@@ -123,7 +118,6 @@ METHOD  GetHeaderInfo ()
 	RETURN TRUE
 
 CONSTRUCTOR(xData) 
-   //SE-040707
 	LOCAL cRaw	AS STRING
 	LOCAL dwPos	AS DWORD
 

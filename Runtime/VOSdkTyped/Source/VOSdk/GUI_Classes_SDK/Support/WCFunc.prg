@@ -2,8 +2,8 @@
 
 
 
-#using System.Runtime.InteropServices
-
+USING System.Runtime.InteropServices
+USING VOSDK := XSharp.VO.SDK
 
 FUNCTION __SetAppObject(oNewApp AS App) AS App STRICT
 
@@ -19,7 +19,7 @@ FUNCTION GetObjectByHandle(hwnd AS IntPtr) AS OBJECT STRICT
 
 DELEGATE TimerProcDelegate( hWnd AS IntPtr, uMsg AS DWORD, idEvent AS DWORD, dwTime AS DWORD ) AS VOID
 
-PARTIAL STATIC CLASS WC
+STATIC CLASS WC
 
 
 	STATIC PROPERTY CoordinateSystem AS LOGIC AUTO
@@ -66,12 +66,12 @@ PARTIAL STATIC CLASS WC
 		
 		IF CoordinateSystem == WC.CartesianCoordinates
 			IF oWindow == NULL_OBJECT .OR. oWindow IS App
-				yCoord := Win32.GetSystemMetrics(SM_CYSCREEN) - oPoint:Y
+				yCoord := GuiWin32.GetSystemMetrics(SM_CYSCREEN) - oPoint:Y
 			ELSEIF oWindow IS Window
-				Win32.GetClientRect(oWindow:Handle(4), REF sRect)
+				GuiWin32.GetClientRect(oWindow:Handle(4), REF sRect)
 				yCoord :=  sRect:bottom - oPoint:Y
 			ELSE // The parent is a control 
-				Win32.GetWindowRect(oWindow:Handle(), REF sRect)
+				GuiWin32.GetWindowRect(oWindow:Handle(), REF sRect)
 				yCoord := sRect:bottom - sRect:top - oPoint:Y
 			ENDIF
 		ELSE // Windows Coordinate System
@@ -208,7 +208,7 @@ PARTIAL STATIC CLASS WC
 	//	RETURN oObject
 
 	// This function now returns a Control
-	STATIC METHOD GetControlByHandle(hWnd AS IntPtr) AS XSharp.VO.Control STRICT
+	STATIC METHOD GetControlByHandle(hWnd AS IntPtr) AS VOSDK.Control STRICT
 		LOCAL oC AS System.Windows.Forms.Control
 		oC := System.Windows.Forms.Control.FromHandle(hWnd)
 		IF oC IS IVOControl VAR oVOC
@@ -256,7 +256,7 @@ PARTIAL STATIC CLASS WC
 				ENDIF
 			ENDIF
 		ENDIF
-		Win32.GetWindowRect(oObject:Handle(), REF rect)
+		GuiWin32.GetWindowRect(oObject:Handle(), REF rect)
 		point:x := rect:left
 		IF WC.CoordinateSystem // Cartesian Coordinate System
 			point:y := rect:bottom
@@ -273,7 +273,7 @@ PARTIAL STATIC CLASS WC
 
 		IF oParent != NULL_OBJECT .AND. oParent IS Window
 			hWnd := oParent:Handle(4)
-			Win32.ScreenToClient(hWnd, REF point)
+			GuiWin32.ScreenToClient(hWnd, REF point)
 		ENDIF
 
 		RETURN ConvertPoint(oParent, Point{point:x, point:y})
@@ -619,18 +619,18 @@ PARTIAL STATIC CLASS WC
 	
 
 	#region Timers
-	STATIC METHOD RegisterTimer(oNew AS ITimer) AS VOID 
+	STATIC METHOD RegisterTimer(oNew AS ITimer) AS DWORD 
 		BEGIN LOCK WC.TimerObjects
 			IF ! WC.TimerObjects:Contains(oNew)
 				WC.TimerObjects:Add(oNew)
 			ENDIF
 			IF WC.TimerObjects:Count == 1
-				WC.TimerObjectID := Win32.SetTimer(NULL_PTR, 0, 956, TimerProcPtr )
+				WC.TimerObjectID := GuiWin32.SetTimer(NULL_PTR, 0, 956, TimerProcPtr )
 			ENDIF
 
 		END LOCK
 		
-		RETURN
+		RETURN WC.TimerObjectID
 	
 	STATIC METHOD UnregisterTimer(oDel AS ITimer) AS VOID STRICT
 
@@ -683,7 +683,7 @@ FUNCTION GetAppObject() AS App STRICT
 	RETURN oRet
 
 FUNCTION GetFocusedObject() AS OBJECT STRICT
-	RETURN WC.GetObjectByHandle(Win32.GetFocus())
+	RETURN WC.GetObjectByHandle(GuiWin32.GetFocus())
 
 FUNCTION IsCtl3dEnabled() AS LOGIC
 	RETURN TRUE
@@ -692,7 +692,7 @@ FUNCTION SetClassStyle(hWnd AS IntPtr, dwSetStyle AS DWORD, lEnable := TRUE AS L
 	LOCAL dwOldStyle AS LONG
 
 	IF (hWnd != NULL_PTR)
-		dwOldStyle := Win32.GetClassLong(hWnd, GCL_STYLE)
+		dwOldStyle := GuiWin32.GetClassLong(hWnd, GCL_STYLE)
 
 		IF lEnable
 			dwSetStyle := _OR(dwOldStyle, dwSetStyle)
@@ -701,7 +701,7 @@ FUNCTION SetClassStyle(hWnd AS IntPtr, dwSetStyle AS DWORD, lEnable := TRUE AS L
 		ENDIF
 
 		IF dwOldStyle != dwSetStyle
-			Win32.SetClassLong(hWnd, GCL_STYLE, LONGINT(_CAST, dwSetStyle))
+			GuiWin32.SetClassLong(hWnd, GCL_STYLE, LONGINT(_CAST, dwSetStyle))
 		ENDIF
 	ENDIF
 

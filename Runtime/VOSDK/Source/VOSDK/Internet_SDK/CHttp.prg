@@ -125,7 +125,7 @@ ASSIGN FtpRequest			(lNew)
 	IF IsLogic(lNew)
 		SELF:lFtpRequest  := lNew
 	ENDIF
-	RETURN SELF:lFtpRequest
+	RETURN 
 
 METHOD GetCurDir    ()                  					
 	RETURN SELF:cCurDir
@@ -152,7 +152,6 @@ METHOD GetDocumentByURL		(cURL, nFlags)
     ENDIF
 
     IF lRet
-        //  UH 02/11/2000
         SELF:__SetStatusObject()
         SELF:hRequest := InternetOpenUrl(SELF:hSession, String2Psz(cUrl), String2Psz(cHead), SLen(cHead), nFlags, SELF:__GetStatusContext())
 
@@ -160,7 +159,6 @@ METHOD GetDocumentByURL		(cURL, nFlags)
         ELSE
             SELF:__SetStatus(SELF:hRequest)
 
-            // UH 03/13/2002
             SELF:GetResponseHeader()
         	cRet := SELF:GetResponse()
             SELF:CloseRequest()
@@ -295,11 +293,8 @@ CONSTRUCTOR         (cCaption, n, lStat)
 
 METHOD Open         (nFlags, xProxy, aProxyByPass)      
     IF IsString(xProxy)
-        // UH 07/30/2001
         IF SLen(xProxy) > 0
             SELF:Proxy := xProxy
-	    //RvdH 050419 Moved down.
-            //xProxy := SELF:Proxy
         ENDIF
         xProxy := SELF:Proxy
     ENDIF
@@ -387,7 +382,6 @@ METHOD OpenRequest(cMethod, cDocument, nFlags)
 
 ASSIGN Proxy        (cNew)                              	
     IF IsString(cNew)
-    	// UH 30/07/2001
     	IF SLen(cNew) > 0
 			IF AtC("=", cNew) == 0
 				cNew := "http=http://" + cNew
@@ -397,7 +391,7 @@ ASSIGN Proxy        (cNew)
         SELF:cProxy := cNew
     ENDIF
 
-    RETURN SELF:cProxy
+    RETURN 
 
 
 ACCESS	Response											
@@ -453,16 +447,11 @@ METHOD SetCurDir    (cRemoteDir)
 
 
 
-END CLASS
-
-STATIC FUNCTION __GetAttr	(c AS STRING, a AS ARRAY)			AS VOID STRICT
-
-	a[F_ATTR] := "A"
-	a[F_SIZE] := Val(StrTran(c, ",", ""))
-
-	RETURN
-
-STATIC FUNCTION __GetFile	(cLine AS STRING, nPos AS DWORD)		AS ARRAY STRICT
+    PRIVATE STATIC METHOD __GetAttr	(c AS STRING, a AS ARRAY)			AS VOID STRICT
+	    a[F_ATTR] := "A"
+	    a[F_SIZE] := Val(StrTran(c, ",", ""))
+	    RETURN
+PRIVATE STATIC METHOD __GetFile	(cLine AS STRING, nPos AS DWORD)		AS ARRAY STRICT
     LOCAL aRet 		AS ARRAY
     LOCAL cFile		AS STRING
     LOCAL cTemp1	AS STRING
@@ -511,7 +500,7 @@ STATIC FUNCTION __GetFile	(cLine AS STRING, nPos AS DWORD)		AS ARRAY STRICT
 	RETURN aRet
 
 
-STATIC FUNCTION __GetFName	(c AS STRING, lDir AS LOGIC)	AS STRING STRICT
+PRIVATE STATIC METHOD __GetFName	(c AS STRING, lDir AS LOGIC)	AS STRING STRICT
 	LOCAL n		AS DWORD
 
 	n := SLen(c)
@@ -529,10 +518,10 @@ STATIC FUNCTION __GetFName	(c AS STRING, lDir AS LOGIC)	AS STRING STRICT
 	RETURN c
 
 
-STATIC FUNCTION __GetVOTime	(c AS STRING)		AS STRING STRICT
+PRIVATE STATIC METHOD __GetVOTime	(c AS STRING)		AS STRING STRICT
 	LOCAL n		AS INT
 
-	UpperA(@c)
+	c := Upper(c)
 	IF At2("PM", c) > 0
 		n := Val(SubStr(c, 1, 2))
 		n += 12
@@ -546,6 +535,11 @@ STATIC FUNCTION __GetVOTime	(c AS STRING)		AS STRING STRICT
     ENDIF
 
 	RETURN c
+
+
+END CLASS
+
+
 
 
 

@@ -17,7 +17,7 @@ BEGIN NAMESPACE XSharpModel
       STATIC PRIVATE oConn   AS SQLiteConnection     // In memory database !
       STATIC PRIVATE lastWritten := DateTime.MinValue AS DateTime
       STATIC PRIVATE currentFile AS STRING
-      PRIVATE CONST CurrentDbVersion := 0.2 AS System.Double
+      PRIVATE CONST CurrentDbVersion := 0.4 AS System.Double
       
       STATIC METHOD CreateOrOpenDatabase(cFileName AS STRING) AS VOID
          LOCAL lValid := FALSE AS LOGIC
@@ -156,6 +156,8 @@ BEGIN NAMESPACE XSharpModel
             cmd:CommandText := "DROP TABLE IF EXISTS Assemblies"
             cmd:ExecuteNonQuery()		
             cmd:CommandText := "DROP TABLE IF EXISTS ReferencedTypes"
+            cmd:ExecuteNonQuery()		
+            cmd:CommandText := "DROP TABLE IF EXISTS CommentTasks"
             cmd:ExecuteNonQuery()		
             #endregion
             #region Table Projects
@@ -304,39 +306,56 @@ BEGIN NAMESPACE XSharpModel
             cmd:ExecuteNonQuery()		         
             #endregion
             
+            #region Table CommentTasks
+            stmt  	:=  "CREATE TABLE CommentTasks ("
+            stmt	   +=  " Id integer NOT NULL PRIMARY KEY, idFile integer NOT NULL, Line integer, Column integer, Priority integer,  "
+            stmt     +=  " Comment text NOT NULL, "
+            stmt     +=  " FOREIGN KEY (idFile) REFERENCES Files (Id) ON DELETE CASCADE ON UPDATE CASCADE"
+            stmt	   += ")"
+            cmd:CommandText := stmt
+            cmd:ExecuteNonQuery()		         
+            
+            stmt	:= "CREATE INDEX CommentTasks_File on CommentTasks (idFile) "
+            cmd:CommandText := stmt
+            cmd:ExecuteNonQuery()				
+
+            
+            #endregion
+            cmd:Parameters:Clear()
+            
             #region views
             stmt := " CREATE VIEW ProjectFiles AS SELECT fp.IdFile, f.FileName, f.LastChanged, f.Size, fp.IdProject, p.ProjectFileName " + ;
             " FROM Files f JOIN FilesPerProject fp ON f.Id = fp.IdFile JOIN Projects p ON fp.IdProject = P.Id"
             cmd:CommandText := stmt
-            cmd:Parameters:Clear()
             cmd:ExecuteNonQuery()		
             
             
             stmt := "CREATE VIEW TypeMembers AS SELECT m.*, t.Name AS TypeName, t.Namespace, t.BaseTypeName, t.ClassType " + ;
             "FROM members m JOIN Types t ON m.IdType = t.Id"
             cmd:CommandText := stmt
-            cmd:Parameters:Clear()
             cmd:ExecuteNonQuery()		
             
             stmt := "CREATE VIEW ProjectTypes AS SELECT t.*, p.IdProject, p.FileName, p.ProjectFileName " +;
             " FROM Types t  JOIN ProjectFiles p ON t.IdFile = p.IdFile "
             cmd:CommandText := stmt
-            cmd:Parameters:Clear()
             cmd:ExecuteNonQuery()		
             
             
             stmt := "CREATE VIEW ProjectMembers AS SELECT m.*, p.IdProject, p.FileName, p.ProjectFileName " +;
             " FROM TypeMembers m  JOIN ProjectFiles p ON m.IdFile = p.IdFile "
             cmd:CommandText := stmt
-            cmd:Parameters:Clear()
             cmd:ExecuteNonQuery()		
             
             stmt := "CREATE VIEW AssemblyTypes AS SELECT t.*, t.IdAssembly, a.AssemblyFileName " +;
             " FROM ReferencedTypes t  JOIN Assemblies a ON t.IdAssembly = a.Id "
             cmd:CommandText := stmt
-            cmd:Parameters:Clear()
             cmd:ExecuteNonQuery()		
             
+            stmt := " CREATE VIEW ProjectCommentTasks AS SELECT c.*, pf.IdProject, pf.ProjectFileName, pf.FileName FROM CommentTasks c" + ;
+                    " JOIN ProjectFiles pf ON c.IdFile = pf.IdFile JOIN Projects p ON pf.IdProject = p.Id" 
+            cmd:CommandText := stmt
+            cmd:ExecuteNonQuery()		
+
             #endregion
             
             #region Table DB_Version
@@ -364,7 +383,7 @@ BEGIN NAMESPACE XSharpModel
                BEGIN USING VAR cmd  := SQLiteCommand{"SELECT 1", connection}
                   VAR stmt := "SELECT count(name) from sqlite_master WHERE type='table' AND name=$table"
                   cmd:CommandText := stmt
-                  VAR tables := <STRING> {"Projects","FilesPerProject","Files", "Types", "Members", "Db_Version"}
+                  VAR tables := <STRING> {"Projects","FilesPerProject","Files", "Types", "Members", "Db_Version","Assemblies","ReferencedTypes","CommentTasks"}
                   FOREACH VAR table IN tables    
                      cmd:Parameters:Clear()
                      cmd:Parameters:AddWithValue("$table",table)
@@ -598,8 +617,13 @@ BEGIN NAMESPACE XSharpModel
                Log(i"Update File contents for file {oFile.FullPath}")
                BEGIN USING VAR oCmd := SQLiteCommand{"DELETE FROM Members WHERE IdFile = "+oFile:Id:ToString(), oConn}
                   oCmd:ExecuteNonQuery()
+                  
+                  oCmd:CommandText  := "DELETE FROM CommentTasks WHERE IdFile = "+oFile:Id:ToString()
+                  oCmd:ExecuteNonQuery() 
+                  
                   oCmd:CommandText  := "DELETE FROM Types WHERE IdFile = "+oFile:Id:ToString()
                   oCmd:ExecuteNonQuery()
+
                   oCmd:CommandText := "INSERT INTO Types (Name, IdFile, Namespace, Kind,  BaseTypeName, Attributes,  Sourcecode, XmlComments, " + ;
                   "                 StartLine,  StartColumn,  EndLine,  EndColumn,  Start,  Stop, ClassType) " +;
                   " VALUES ($name, $file, $namespace, $kind, $baseTypeName,  $attributes, $sourcecode, $xmlcomments, " +;
@@ -706,6 +730,24 @@ BEGIN NAMESPACE XSharpModel
                         Log("Column : "+xmember:Range:StartColumn:ToString())
                      END TRY
                   NEXT
+               NEXT
+               oCmd:CommandText := "INSERT INTO CommentTasks (idFile, Line, Column, Priority,Comment) " +;
+               " VALUES ($file, $line, $column, $priority, $comment) ;" +;
+               " SELECT last_insert_rowid()"
+               oCmd:Parameters:Clear()
+               pars := List<SQLiteParameter>{} { ;
+               oCmd:Parameters:AddWithValue("$file", oFile:Id),;
+               oCmd:Parameters:AddWithValue("$line", 0),;
+               oCmd:Parameters:AddWithValue("$column", 0),;
+               oCmd:Parameters:AddWithValue("$priority", 0),;
+               oCmd:Parameters:AddWithValue("$comment", "")}
+               FOREACH task AS XCommentTask IN oFile:CommentTasks
+                  pars[ 0]:Value := oFile:Id
+                  pars[ 1]:Value := task:Line
+                  pars[ 2]:Value := task:Column
+                  pars[ 3]:Value := task:Priority
+                  pars[ 4]:Value := task:Comment
+                  oCmd:ExecuteScalar()
                NEXT
                END USING
             CATCH e AS Exception
@@ -923,6 +965,29 @@ BEGIN NAMESPACE XSharpModel
          Log(i"GetTypesLike '{sName}' returns {result.Count} matches")
          RETURN result   
 
+      STATIC METHOD GetCommentTasks(sProjectIds AS STRING) AS IList<XDbResult>
+         VAR stmt := "Select Line, Column, Priority, Comment, FileName from " + ;
+            " ProjectCommentTasks where IdProject in ("+sProjectIds+") Order BY IdProject, IdFile "
+         VAR result := List<XDbResult>{}
+         IF IsDbOpen
+            BEGIN LOCK oConn
+               TRY
+                  BEGIN USING VAR oCmd := SQLiteCommand{stmt, oConn}
+                     BEGIN USING VAR rdr := oCmd:ExecuteReader()
+                        DO WHILE rdr:Read()
+                           result:Add(CreateCommentTask(rdr))
+                        ENDDO
+                     END USING
+                  END USING
+               CATCH e AS Exception
+                  Log("Exception: "+e:ToString())
+               END TRY            
+            END LOCK
+         ENDIF
+         Log(i"GetCommentTasks returns {result.Count} matches")
+         RETURN result     
+         
+      
       STATIC METHOD GetNamespaces(sProjectIds AS STRING) AS IList<XDbResult>
          VAR stmt := "Select distinct Namespace from ProjectTypes where Namespace is not null and IdProject in ("+sProjectIds+")"
          VAR result := List<XDbResult>{}
@@ -1074,7 +1139,17 @@ BEGIN NAMESPACE XSharpModel
          res:IdType       := (INT64) rdr["Id"]
          res:IdAssembly   := (INT64) rdr["IdAssembly"]
          RETURN res
-      
+
+      STATIC METHOD CreateCommentTask(rdr AS SQLiteDataReader) AS XDbResult
+         VAR res := XDbResult{}
+         res:Line         := DbToInt(rdr["Line"])
+         res:Column       := DbToInt(rdr["Column"])
+         res:Priority     := DbToInt(rdr["Priority"])
+         res:Comment      := DbToString(rdr["Comment"])
+         res:FileName     := DbToString(rdr["FileName"])
+         RETURN res
+
+
       STATIC METHOD CreateMemberInfo(rdr AS SQLiteDataReader) AS XDbResult
          VAR res := XDbResult{}
          res:TypeName     := DbToString(rdr["TypeName"])

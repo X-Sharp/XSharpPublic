@@ -47,7 +47,7 @@ BEGIN NAMESPACE XSharp
 		CONSTRUCTOR( elements AS OBJECT[] )
 			SELF()
 			IF elements == NULL
-				THROW ArgumentNullException{NAMEOF(elements)}
+				THROW Error{ArgumentNullException{NAMEOF(elements)}}
 			ENDIF
 			FOREACH element AS OBJECT IN elements
 				IF element == NULL
@@ -55,7 +55,7 @@ BEGIN NAMESPACE XSharp
 				ELSEIF element IS T
 					_internalList:Add( (T) element)
 				ELSE
-					THROW ArgumentException{"Object array contains element of incorrect type "+element:GetType():FullName}
+					THROW Error{ArgumentException{"Object array contains element of incorrect type "+element:GetType():FullName}}
 				ENDIF
 			NEXT
 			RETURN
@@ -134,7 +134,7 @@ BEGIN NAMESPACE XSharp
 			type := TYPEOF(T)
 			oProp := type:GetProperty(sName, BindingFlags.IgnoreCase | BindingFlags.Instance | BindingFlags.Public)
 			IF oProp == NULL_OBJECT
-				THROW ArgumentException{"Unknown property: "+sName}
+				THROW Error{ArgumentException{"Unknown property: "+sName}}
 			ENDIF
 			RETURN oProp
 
@@ -174,14 +174,14 @@ BEGIN NAMESPACE XSharp
 		PUBLIC PROPERTY SELF[index AS INT] AS T
 			GET
 				IF  index > _internalList:Count-1
-					THROW ArgumentOutOfRangeException{}
+					THROW Error{ArgumentOutOfRangeException{nameof(index)}}
 				ENDIF
 				RETURN _internalList[index ]
 			END GET
 			SET
 				IF SELF:CheckLock()
 					IF index > _internalList:Count-1
-						THROW ArgumentOutOfRangeException{}
+						THROW Error{ArgumentOutOfRangeException{nameof(index)}}
 					ENDIF
 					_internalList[index] := value
 				ENDIF
@@ -196,7 +196,7 @@ BEGIN NAMESPACE XSharp
 			GET
 				LOCAL oElement AS T
 				IF  index > _internalList:Count-1
-					THROW ArgumentOutOfRangeException{}
+					THROW Error{ArgumentOutOfRangeException{nameof(index)}}
                 ENDIF
 				oElement := _internalList[index ]
                 IF oElement IS IIndexedProperties
@@ -208,11 +208,11 @@ BEGIN NAMESPACE XSharp
                 IF oProp != NULL
                     RETURN oProp:GetValue(oElement, <OBJECT>{index2})
                 ENDIF
-                THROW ArgumentException{"Indexed property missing for type: "+oElement:GetType():FullName}
+                THROW Error{ArgumentException{"Indexed property missing for type: "+oElement:GetType():FullName}}
 			END GET
 			SET
 				IF  index > _internalList:Count-1
-					THROW ArgumentOutOfRangeException{}
+					THROW Error{ArgumentOutOfRangeException{nameof(index)}}
 				ENDIF
 				IF SELF:CheckLock()
 					LOCAL oElement AS T
@@ -227,7 +227,7 @@ BEGIN NAMESPACE XSharp
                         oProp:SetValue(oElement, OOPHelpers.VOConvert(value, oProp:PropertyType), <OBJECT>{index2} )
                         RETURN
                     ENDIF
-                    THROW ArgumentException{"Indexed property missing for type: "+oElement:GetType():FullName}
+                    THROW Error{ArgumentException{"Indexed property missing for type: "+oElement:GetType():FullName}}
 				ENDIF
 			END SET
 		END PROPERTY
@@ -240,7 +240,7 @@ BEGIN NAMESPACE XSharp
 			GET
 				LOCAL oElement AS T
 				IF  index > _internalList:Count-1
-					THROW ArgumentOutOfRangeException{}
+					THROW Error{ArgumentOutOfRangeException{}}
                 ENDIF
 				oElement := _internalList[index ]
                 IF oElement IS IIndexedProperties
@@ -257,7 +257,7 @@ BEGIN NAMESPACE XSharp
 			END GET
 			SET
 				IF  index > _internalList:Count-1
-					THROW ArgumentOutOfRangeException{}
+					THROW Error{ArgumentOutOfRangeException{}}
 				ENDIF
 				IF SELF:CheckLock()
 					LOCAL oElement AS T

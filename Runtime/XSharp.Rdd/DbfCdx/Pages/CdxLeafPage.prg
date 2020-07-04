@@ -51,7 +51,7 @@ LEAF Page
 
 
 */
-
+//#define TESTCDX
 USING System.Runtime.CompilerServices
 USING System.Runtime.InteropServices
 USING System
@@ -520,7 +520,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 
                 _leaves:Insert(nPos, leaf)
 #ifdef TESTCDX
-                validateLeaves(prevLeaf, leaf)
+                ValidateLeaves(prevLeaf, leaf)
 #endif
                 adjustNext      := TRUE
             ENDIF
@@ -534,7 +534,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                     nextLeaf:Dup    := nDupCount
                 ENDIF
 #ifdef TESTCDX
-                validateLeaves(leaf, nextLeaf) 
+                ValidateLeaves(leaf, nextLeaf) 
 #endif
             ENDIF
             SELF:NumKeys := (WORD) _leaves:Count
@@ -561,7 +561,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 RETURN
             ENDIF
             IF SELF:HasLeft
-                oPage := SELF:Tag:GetPage(SELF:LeftPtr)
+                oPage := (CdxLeafPage) SELF:Tag:GetPage(SELF:LeftPtr)
                 IF oPage:NumKeys > 0
                     oLeft := oPage:Leaves[oPage:NumKeys-1]
                     oRight := SELF:_leaves[0]
@@ -569,14 +569,14 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 ENDIF
             ENDIF
             IF SELF:HasRight
-                oPage := SELF:Tag:GetPage(SELF:RightPtr)
+                oPage := (CdxLeafPage) SELF:Tag:GetPage(SELF:RightPtr)
                 IF oPage:NumKeys > 0
                     oRight := oPage:Leaves[0]
                     oLeft := SELF:_leaves[SELF:NumKeys-1]
                     ValidateLeaves(oLeft, oRight)
                 ENDIF
             ENDIF
-
+  
         INTERNAL METHOD ValidateLeaves(oLeft AS CdxLeaf, oRight AS CdxLeaf) AS LOGIC
             LOCAL nDiff AS LONG
             IF SELF:Tag == NULL
@@ -588,7 +588,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             ELSEIF nDiff == 0 .AND. oLeft:Recno < oRight:Recno
                 RETURN TRUE
             ENDIF
-            //SELF:Debug("Incorrect order of Keys", oLeft:Key:ToAscii(),oRight:Key:ToAscii())
+           SELF:Debug("Incorrect order of Keys", oLeft:Key:ToAscii(),oRight:Key:ToAscii())
             RETURN FALSE
 
         METHOD Validate() AS VOID

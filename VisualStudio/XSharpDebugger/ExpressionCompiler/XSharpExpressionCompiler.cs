@@ -80,12 +80,12 @@ namespace XSharpDebugger.ExpressionCompiler
                     changed = true;
                 }
                 // check for literal array
-                var lbrkt = newexpr.IndexOf('[');
-                var rbrkt = newexpr.IndexOf(']');
-                if (lbrkt > 0 && rbrkt > 0 && lbrkt < rbrkt)
-                {
-                    newexpr = AdjustArrayIndices(newexpr, ref changed);
-                }
+                //var lbrkt = newexpr.IndexOf('[');
+                //var rbrkt = newexpr.IndexOf(']');
+                //if (lbrkt > 0 && rbrkt > 0 && lbrkt < rbrkt)
+                //{
+                //    newexpr = AdjustArrayIndices(newexpr, ref changed);
+                //}
                 if (changed && fi != null)
                 {
                     fi.SetValue(expression, newexpr);
@@ -168,7 +168,7 @@ namespace XSharpDebugger.ExpressionCompiler
             result = null;
             expression.CompileAssignment(instructionAddress, lValue, out error, out result);
         }
-
+/*
         private static string AdjustArrayIndices(string newexpr, ref bool changed)
         {
             var sb = new System.Text.StringBuilder();
@@ -216,5 +216,6 @@ namespace XSharpDebugger.ExpressionCompiler
             }
             return sb.ToString();
         }
+        */
     }
 }

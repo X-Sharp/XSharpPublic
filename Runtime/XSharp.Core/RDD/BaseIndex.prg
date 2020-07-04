@@ -23,7 +23,7 @@ CLASS XSharp.RDD.BaseIndex IMPLEMENTS IOrder
         ENDIF
         info:Compile(_oArea)
         info:Validate()
-        _oArea:_OrderCondInfo := info
+        _oArea:OrderCondInfo := info
         RETURN TRUE
 		
 	/// <inheritdoc />
@@ -106,7 +106,7 @@ CLASS XSharp.RDD.BaseIndex IMPLEMENTS IOrder
 		THROW NotImplementedException{}
 		
 	/// <inheritdoc />
-	VIRTUAL PROPERTY Found AS LOGIC	GET _oArea:_Found SET _oArea:_Found := value
+	VIRTUAL PROPERTY Found AS LOGIC	GET _oArea:Found SET _oArea:Found := value
 
 	/// <inheritdoc />
 	VIRTUAL METHOD Flush() 							AS LOGIC

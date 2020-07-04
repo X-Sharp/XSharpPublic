@@ -31,8 +31,8 @@ BEGIN NAMESPACE XSharp.RDD
             SUPER(oRDD)
             SELF:_oRdd  := oRDD
             SELF:_hFile := F_ERROR
-            SELF:_Shared := oRDD:_Shared
-            SELF:_ReadOnly := oRDD:_ReadOnly
+            SELF:_Shared := oRDD:Shared
+            SELF:_ReadOnly := oRDD:ReadOnly
 
             /// <inheritdoc />
         METHOD Flush() AS LOGIC

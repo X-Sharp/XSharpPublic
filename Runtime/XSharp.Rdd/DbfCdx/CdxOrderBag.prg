@@ -123,7 +123,9 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 SELF:_tagList:Remove(oParam)
                 // We do not Delete the pages from the tag. Comix also does not do that
                 IF SELF:_tagList:Tags:Count == 0
+                    LOCAL cFileName := SELF:FullPath AS STRING
                     SELF:_oRdd:_indexList:_CloseBag(SELF)
+                    FErase(cFileName)
                 ENDIF
             ENDIF
             RETURN found
@@ -188,7 +190,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             LOCAL cFullName AS STRING
             LOCAL cDbf      AS STRING
             cFullName := cBagName
-            cDbf      := SELF:_oRdd:_FileName
+            cDbf      := SELF:_oRdd:FileName
             VAR cExt  := GetIndexExtFromDbfExt(cDbf)
             IF String.IsNullOrEmpty(cFullName)
                 cFullName := Path.ChangeExtension(cDbf, cExt)
@@ -282,7 +284,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             ENDIF
             cPath := Path.GetDirectoryName(cFullName)
             IF String.IsNullOrEmpty(cPath)
-                cPath := SELF:_oRdd:_FileName
+                cPath := SELF:_oRdd:FileName
                 cPath := Path.GetDirectoryName(cPath)
                 cFullName := Path.Combine(cPath, cFileName)
             ENDIF

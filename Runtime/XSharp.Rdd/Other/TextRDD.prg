@@ -202,7 +202,7 @@ BEGIN NAMESPACE XSharp.RDD
                 RETURN SELF:_readRecord()
             ELSE
                 SELF:_Recno += 1
-                SELF:_EoF := TRUE
+                SELF:EoF := TRUE
                 RETURN FALSE
             ENDIF
             

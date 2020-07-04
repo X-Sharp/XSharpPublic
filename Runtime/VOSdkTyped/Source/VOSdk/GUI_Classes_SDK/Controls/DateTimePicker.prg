@@ -1,7 +1,9 @@
 
 
-#USING System.Windows.Forms
-#USING System.Runtime.InteropServices
+USING System.Windows.Forms
+USING System.Runtime.InteropServices
+USING VOSDK := XSharp.VO.SDK
+
 CLASS DateTimePicker INHERIT TextControl
 	HIDDEN _lNoAssign AS LOGIC   
 	PROTECT cFormat        AS STRING
@@ -92,7 +94,7 @@ CLASS DateTimePicker INHERIT TextControl
 	ASSIGN MCBackgroundColor(oColor AS Color) 
 		__DateTimePicker:BackColor := oColor
 
-	ASSIGN MCFont(oNewFont as XSharp.VO.Font) 
+	ASSIGN MCFont(oNewFont AS VOSDK.Font) 
 		__DateTimePicker:CalendarFont := oNewFont
 		RETURN 
 
@@ -148,7 +150,7 @@ CLASS DateTimePicker INHERIT TextControl
 
 		// DHer: 18/12/2008
 		uOldValue := SELF:uValue
-		IF _AND(Win32.GetWindowLong(SELF:Handle(),GWL_STYLE),DTS_TIMEFORMAT)>0
+		IF _AND(GuiWin32.GetWindowLong(SELF:Handle(),GWL_STYLE),DTS_TIMEFORMAT)>0
 			SELF:uValue := SELF:SelectedTime
 		ELSE	
 			SELF:uValue := SELF:SelectedDate
@@ -221,13 +223,13 @@ CLASS DateTimePicker INHERIT TextControl
 		RETURN
 
 	ACCESS TextValue  AS STRING
-		IF (_AND(Win32.GetWindowLong(SELF:Handle(), GWL_STYLE), DTS_TIMEFORMAT) > 0)
+		IF (_AND(GuiWin32.GetWindowLong(SELF:Handle(), GWL_STYLE), DTS_TIMEFORMAT) > 0)
 			RETURN SELF:SelectedTime
 		ENDIF
 		RETURN AsString(SELF:SelectedDate)
 
 	ACCESS Value as USUAL
-		IF _AND(Win32.GetWindowLong(SELF:Handle(),GWL_STYLE),DTS_TIMEFORMAT)>0
+		IF _AND(GuiWin32.GetWindowLong(SELF:Handle(),GWL_STYLE),DTS_TIMEFORMAT)>0
 			SELF:uValue := SELF:SelectedTime
 		ELSE	
 			SELF:uValue := SELF:SelectedDate
@@ -240,7 +242,7 @@ CLASS DateTimePicker INHERIT TextControl
 
 	ACCESS IsTimePicker AS LOGIC
         LOCAL nStyle AS LONG
-        nStyle := Win32.GetWindowStyle(SELF:__Handle)
+        nStyle := GuiWin32.GetWindowStyle(SELF:__Handle)
         RETURN _AND(nStyle, _OR(DTS_TIMEFORMAT,DTS_UPDOWN) ) > 0
 
 	

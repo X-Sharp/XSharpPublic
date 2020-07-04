@@ -5,30 +5,7 @@
    PROTECT _dwCode          AS DWORD
    PROTECT _dwCharCount     AS DWORD
    PROTECT _cRest           AS STRING
-   #ifndef __VULCAN__
-    ~"ONLYEARLY+"
-    DECLARE METHOD __CreateNewID
-    DECLARE METHOD __StreamDecode
-    DECLARE METHOD __StreamEncode
-    DECLARE METHOD AttachmentAdd
-    DECLARE METHOD AttachmentClose
-    DECLARE METHOD AttachmentDelete
-    DECLARE METHOD AttachmentFullPath
-    DECLARE METHOD AttachmentOpen
-    DECLARE METHOD AttachmentRead
-    DECLARE METHOD AttachmentSave
-    DECLARE ACCESS AttachmentSize
-    DECLARE METHOD AttachmentWrite
-    DECLARE METHOD CreateNewEMail
-    DECLARE METHOD LoadEMail
-    DECLARE ASSIGN NoSave
-    DECLARE METHOD RawClose
-    DECLARE METHOD RawNew
-    DECLARE METHOD RawWrite
-    DECLARE METHOD SaveAttachments
-    DECLARE METHOD SaveEMail
-    ~"ONLYEARLY-"
-	#endif
+  
 METHOD __CreateNewID(cFileName AS STRING) AS STRING
    LOCAL cID      AS STRING
    LOCAL cExt     AS STRING
@@ -69,11 +46,10 @@ METHOD __StreamDecode(cData AS STRING, dwCode AS DWORD) AS STRING
     IF dwCode == CODING_TYPE_BASE64
        cData    := _cRest + cData
        dwLength := SLen(cData)
-       IF dwLength > 3 //SE-070523
+       IF dwLength > 3 
           pBuffer := MemAlloc((dwLength / 4) * 3)
           IF pBuffer != NULL_PTR
              dwDecoded := 0
-             //SE-070523
              IF (dwLength := B64Decode(String2Psz(cData), pBuffer, dwLength, @dwDecoded)) > 0
                 _cRest := SubStr2(cData, dwLength+1)
                 cData := Mem2String(pBuffer, dwDecoded)
@@ -84,7 +60,7 @@ METHOD __StreamDecode(cData AS STRING, dwCode AS DWORD) AS STRING
           _cRest := cData
           cData  := NULL_STRING
        ENDIF
-    ELSEIF dwCode == CODING_TYPE_PRINTABLE //SE-070728 decoding of QP encoded attachments
+    ELSEIF dwCode == CODING_TYPE_PRINTABLE // decoding of QP encoded attachments
         cData := QPDecode(cData)
     ENDIF
 
@@ -106,7 +82,6 @@ METHOD __StreamEncode(cData AS STRING, dwCode AS DWORD) AS STRING
 METHOD AttachmentAdd(cFile AS STRING, dwCode := 0 AS DWORD) AS STRING
    LOCAL cID AS STRING
 
-   //SE-070524
    SELF:AttachmentClose()
 
    IF _lNoSave
@@ -134,12 +109,11 @@ METHOD AttachmentClose() AS VOID STRICT
    ENDIF
 
    _dwCode := _dwCharCount := 0
-    _cRest  := NULL_STRING  //SE-070728
+    _cRest  := NULL_STRING  
 
    RETURN
 
 METHOD AttachmentDelete(cID AS STRING) AS LOGIC
-   //SE-070621
    IF ! cID = ATTACHID_PATHFLAG
       //only stored attachments will be deleted and not the originals.
       IF ! (cID := SELF:AttachmentFullPath(cID)) == NULL_STRING
@@ -159,7 +133,6 @@ METHOD AttachmentOpen(cAttachID AS STRING, dwCode := 0 AS DWORD) AS LOGIC STRICT
    //Opens an attachment file for reading
    //If cAttachID is empty, cFile should contain the full path of the file
 
-   //SE-070524
    SELF:AttachmentClose()
 
    _dwCode   := dwCode
@@ -178,8 +151,7 @@ METHOD AttachmentRead() AS STRING STRICT
    LOCAL cData		AS STRING
    LOCAL nData		AS DWORD
    IF _hAttFile != NULL_PTR
-   	//RvdH 070615 FreadStr() depends on SetAnsi!
-      //RETURN SELF:__StreamEncode(FReadStr(_hAttFile, 1536), _dwCode)
+   	// Note: FreadStr() depends on SetAnsi, so that is why we use FRead3()
 		ptrData := MemAlloc(1536)
 		nData := FRead3(_hAttFile, ptrData, 1536)
 		cData := Mem2String(ptrData, nData)
@@ -254,7 +226,6 @@ METHOD RawClose() AS VOID STRICT
    RETURN
 
 METHOD RawNew(oEMail AS CEmail) AS VOID STRICT
-   //SE-070420
    RETURN
 
 METHOD RawWrite(cData AS STRING) AS VOID STRICT

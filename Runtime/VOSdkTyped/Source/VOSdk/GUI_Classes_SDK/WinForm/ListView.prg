@@ -5,16 +5,17 @@
 // class that owns the control
 
 
-#USING System.Windows.Forms
-  
+USING System.Windows.Forms
+USING VOSDK := XSharp.VO.SDK
+
 CLASS VOListView INHERIT System.Windows.Forms.ListView IMPLEMENTS IVOControl, IVOControlInitialize
-	PROPERTY ListView     AS XSharp.VO.ListView GET (XSharp.VO.ListView) oProperties:Control
+	PROPERTY ListView     AS VOSDK.ListView GET (VOSDK.ListView) oProperties:Control
 	#include "PropControl.vh"
 
 	METHOD Initialize() AS VOID STRICT
 		SELF:View := System.Windows.Forms.View.Details
 
-	CONSTRUCTOR(Owner AS XSharp.VO.Control, dwStyle AS LONG, dwExStyle AS LONG)
+	CONSTRUCTOR(Owner AS VOSDK.Control, dwStyle AS LONG, dwExStyle AS LONG)
 		oProperties := VOControlProperties{SELF, Owner, dwStyle, dwExStyle}
 		SUPER()
 		SELF:Initialize()
@@ -118,7 +119,7 @@ END CLASS
 
 CLASS VODataListView INHERIT VOListView 
 
-	CONSTRUCTOR(Owner AS XSharp.VO.Control, dwStyle AS LONG, dwExStyle AS LONG)
+	CONSTRUCTOR(Owner AS VOSDK.Control, dwStyle AS LONG, dwExStyle AS LONG)
 		SUPER(Owner, dwStyle, dwExStyle)
 		SELF:VirtualMode := TRUE
 	
@@ -126,16 +127,16 @@ END CLASS
 
 
 CLASS VOColumnHeader INHERIT System.Windows.Forms.ColumnHeader
-	EXPORT Column AS XSharp.VO.ListViewColumn
+	PROPERTY Column AS VOSDK.ListViewColumn AUTO
 	
-	METHOD LinkTo(oColumn AS XSharp.VO.ListViewColumn) AS VOID STRICT
+	METHOD LinkTo(oColumn AS VOSDK.ListViewColumn) AS VOID STRICT
 		SELF:Column := oColumn
 		SELF:Tag	:= oColumn
 		IF oColumn:HyperLabel != NULL_OBJECT
 			SELF:Name := oColumn:HyperLabel:Name
 		ENDIF
 	
-	CONSTRUCTOR(oColumn AS XSharp.VO.ListViewColumn) STRICT
+	CONSTRUCTOR(oColumn AS VOSDK.ListViewColumn) STRICT
 		SUPER()
 		SELF:LinkTo(oColumn)	
 END CLASS
@@ -143,14 +144,14 @@ END CLASS
 
 
 CLASS VOListViewItem INHERIT System.Windows.Forms.ListViewItem
-	EXPORT Item AS XSharp.VO.ListViewItem
+	PROPERTY Item AS VOSDK.ListViewItem AUTO 
 	
 	
-	METHOD LinkTo(oItem AS XSharp.VO.ListViewItem) AS VOID STRICT
+	METHOD LinkTo(oItem AS VOSDK.ListViewItem) AS VOID STRICT
 		SELF:Item  := oItem
 		SELF:Tag   := oItem
 	
-	CONSTRUCTOR(oItem AS XSharp.VO.ListViewItem) STRICT
+	CONSTRUCTOR(oItem AS VOSDK.ListViewItem) STRICT
 		SUPER()
 		SELF:LinkTo(oItem)
 	

@@ -54,7 +54,7 @@ METHOD __SetupLocks( ) AS VOID STRICT
 
     RETURN
 
-METHOD Append( )  AS LOGIC CLIPPER
+METHOD Append( lReleaseLocks AS LOGIC)  AS LOGIC 
     RETURN FALSE
 
 METHOD AsString( ) AS STRING STRICT
@@ -71,10 +71,10 @@ ASSIGN Clients(aNewClients AS ARRAY)
     SELF:nClients := ALen(SELF:aClients)
 RETURN 
 
-METHOD Close( ) AS LOGIC CLIPPER
+METHOD Close( ) AS LOGIC STRICT
     RETURN FALSE
 
-METHOD Commit( ) AS LOGIC CLIPPER
+METHOD Commit( ) AS LOGIC STRICT
     RETURN FALSE
 
 ACCESS ConcurrencyControl( )  AS USUAL
@@ -134,7 +134,7 @@ ACCESS DBStruct AS ARRAY
 
     RETURN aStruct
 
-	METHOD Delete( ) AS LOGIC CLIPPER
+METHOD Delete( ) AS LOGIC CLIPPER
     RETURN FALSE
 
 ACCESS EoF AS LOGIC
@@ -203,7 +203,7 @@ METHOD FieldPut( nFieldPosition AS USUAL, uValue  AS USUAL) AS USUAL
 	METHOD GoBottom( ) AS LOGIC STRICT
 		RETURN FALSE
 
-	METHOD GoTo( nPosition ) AS LOGIC CLIPPER
+	METHOD GoTo( nPosition AS LONG ) AS LOGIC 
 		RETURN FALSE
 
 	METHOD GoTop( ) AS LOGIC STRICT
@@ -235,16 +235,16 @@ METHOD FieldPut( nFieldPosition AS USUAL, uValue  AS USUAL) AS USUAL
         ENDIF
         RETURN NULL_STRING
 
-METHOD NoIVarGet( symFieldName ) 
+METHOD NoIVarGet( symFieldName AS USUAL) AS USUAL
     RETURN SELF:FieldGet( symFieldName )
 
-METHOD NoIVarPut( symFieldName, uValue ) 
+METHOD NoIVarPut( symFieldName AS USUAL, uValue AS USUAL)  AS USUAL
 
     SELF:FieldPut( symFieldName, uValue )
     SELF:Notify( NOTIFYFIELDCHANGE, symFieldName )
     RETURN uValue
 
-METHOD Notify( kNotification, uDescription ) 
+METHOD Notify( kNotification AS LONG, uDescription := NIL AS USUAL) AS USUAL
     FOREACH oClient AS OBJECT IN AClone(aClients)
         Send(oClient, #Notify, kNotification, uDescription )
     NEXT
@@ -265,8 +265,7 @@ METHOD Notify( kNotification, uDescription )
 	ASSIGN RecNo( lRecNo AS LONG) 
 		RETURN 
 
-METHOD RegisterClient( oForm ) AS LOGIC CLIPPER
-
+METHOD RegisterClient( oForm AS OBJECT) AS LOGIC 
     IF AScan( aClients, oForm ) # 0
         RETURN FALSE
     ENDIF
@@ -278,8 +277,8 @@ METHOD RegisterClient( oForm ) AS LOGIC CLIPPER
 	METHOD ResetNotification( ) AS LONG STRICT
     RETURN 0
 
-	METHOD RLock( nRecord ) AS LOGIC CLIPPER
-    RETURN FALSE
+	METHOD RLock( nRecord AS LONG ) AS LOGIC 
+        RETURN FALSE
 
 	METHOD RLockVerify( ) AS LOGIC STRICT
 		RETURN FALSE
@@ -287,7 +286,7 @@ METHOD RegisterClient( oForm ) AS LOGIC CLIPPER
 	METHOD Rollback( ) AS LOGIC STRICT
 		RETURN FALSE
 
-	METHOD Seek( uValue ) AS LOGIC CLIPPER
+	METHOD Seek( ) AS LOGIC STRICT
 		RETURN FALSE
 
 	METHOD SetDataField( nFieldPosition AS DWORD, oDataField AS DataField ) AS LOGIC
@@ -295,6 +294,7 @@ METHOD RegisterClient( oForm ) AS LOGIC CLIPPER
     IF aDataFields == NULL
         BREAK DbError{ SELF, #SetDataField, EG_SEQUENCE, ;
             __CavoStr( __CAVOSTR_DBFCLASS_NODATAFIELDSEXIST ) }
+            
     ELSEIF nFieldPosition < 1 .OR. nFieldPosition > ALen(aDataFields)
         BREAK DbError{ SELF, #SetDataField, EG_ARG, ;
             __CavoStr(__CAVOSTR_DBFCLASS_BADFIELDPOSITION), nFieldPosition, "nFieldPosition" }
@@ -311,7 +311,7 @@ METHOD RegisterClient( oForm ) AS LOGIC CLIPPER
         ENDIF
     ENDIF
 
-	METHOD Skip( nRelativePosition ) AS LOGIC CLIPPER
+	METHOD Skip( nRelativePosition := 1 AS LONG) AS LOGIC 
 		RETURN FALSE
 
 	ACCESS Status AS HyperLabel
@@ -328,10 +328,10 @@ METHOD RegisterClient( oForm ) AS LOGIC CLIPPER
 	METHOD SuspendNotification( ) AS LONG STRICT
 		RETURN 0
 
-	METHOD UnLock(nRecno) AS LOGIC CLIPPER 
+	METHOD UnLock(nRecno := 0  AS LONG) AS LOGIC 
 		RETURN FALSE
 
-	METHOD UnRegisterClient( oClient , lAllowClose )  AS LOGIC CLIPPER
+	METHOD UnRegisterClient( oClient AS OBJECT, lAllowClose := TRUE AS LOGIC)  AS LOGIC 
     LOCAL w AS DWORD
 
     IF ( w := AScan( aClients, oClient ) ) = 0
@@ -340,7 +340,7 @@ METHOD RegisterClient( oForm ) AS LOGIC CLIPPER
         ADel( aClients, w )
         nClients := ALen( aClients ) -1
         ASize( aClients, nClients )
-        IF ( IsNil( lAllowClose ) .OR. lAllowClose) .AND. nClients = 0
+        IF lAllowClose .AND. nClients = 0
             SELF:Close( )
         ENDIF
         RETURN TRUE

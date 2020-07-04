@@ -33,10 +33,10 @@
 // SET commands for string comparison, date and numeric formats
 ///////////////////////////////////////////////////////////////////////////
 
-#command  SET EXACT <x:ON,OFF,&>    =>  SetExact( upper(<(x)>)=="ON" )
+#command  SET EXACT <x:ON,OFF,&>    =>  SetExact( Upper(<(x)>)=="ON" )
 #command  SET EXACT (<x>)           =>  SetExact( <x> )
 
-#command  SET FIXED <x:ON,OFF,&>    =>  SetFixed( upper(<(x)>)=="ON")
+#command  SET FIXED <x:ON,OFF,&>    =>  SetFixed( Upper(<(x)>)=="ON")
 #command  SET FIXED (<x>)           =>  SetFixed(  <x> )
 
 #command  SET DECIMALS TO <x>       =>  SetDecimals( <x> )
@@ -55,7 +55,7 @@
 #command  SET TIME TO <*x*>         =>  SetTimeFormat( <(x)> )
 #command  SET TIME TO SYSTEM        =>  SetTimeFormat( "" )
 
-#command  SET CENTURY <x:ON,OFF,&>  =>  SetCentury( upper(<(x)>)=="ON")
+#command  SET CENTURY <x:ON,OFF,&>  =>  SetCentury( Upper(<(x)>)=="ON")
 #command  SET CENTURY (<x>)         =>  SetCentury(  <x> )
 #command  SET EPOCH TO <year>       =>  SetEpoch( <year> )
 
@@ -63,16 +63,16 @@
 //  DB SETs
 ///////////////////////////////////////////////////////////////////////////
 
-#command SET EXCLUSIVE <x:ON,OFF,&>     =>  SetExclusive(upper(<(x)>)=="ON" )
+#command SET EXCLUSIVE <x:ON,OFF,&>     =>  SetExclusive(Upper(<(x)>)=="ON" )
 #command SET EXCLUSIVE (<x>)            =>  SetExclusive( <x> )
 
-#command SET SOFTSEEK <x:ON,OFF,&>      =>  SetSoftSeek( upper(<(x)>)=="ON" )
+#command SET SOFTSEEK <x:ON,OFF,&>      =>  SetSoftSeek( Upper(<(x)>)=="ON" )
 #command SET SOFTSEEK (<x>)             =>  SetSoftSeek( <x> )
 
-#command SET UNIQUE <x:ON,OFF,&>        =>  SetUnique( upper(<(x)>)=="ON" )
+#command SET UNIQUE <x:ON,OFF,&>        =>  SetUnique( Upper(<(x)>)=="ON" )
 #command SET UNIQUE (<x>)               =>  SetUnique( <x> )
 
-#command SET DELETED <x:ON,OFF,&>       =>  SetDeleted( upper(<(x)>)=="ON" )
+#command SET DELETED <x:ON,OFF,&>       =>  SetDeleted( Upper(<(x)>)=="ON" )
 #command SET DELETED (<x>)              =>  SetDeleted( <x> )
 
 #endif

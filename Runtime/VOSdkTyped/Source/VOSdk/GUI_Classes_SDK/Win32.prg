@@ -1,4 +1,4 @@
-// Win32.prg
+// GuiWin32.prg
 // Static class with some Win32 API functions that are used inside the Unicode GUI Classes
 
 #USING System.Runtime.InteropServices
@@ -6,7 +6,7 @@
 
 
 
-STATIC CLASS Win32
+INTERNAL STATIC CLASS GuiWin32
 	#region Kernel32
 
 	[DllImport("kernel32.dll")];
@@ -335,18 +335,18 @@ STATIC CLASS Win32
 
 [StructLayout(LayoutKind.Sequential)];
 INTERNAL STRUCTURE WINRECT
-	EXPORT left AS System.Int32
-	EXPORT top AS System.Int32
-	EXPORT right AS System.Int32
-	EXPORT bottom AS System.Int32
+	PUBLIC left AS System.Int32
+	PUBLIC top AS System.Int32
+	PUBLIC right AS System.Int32
+	PUBLIC bottom AS System.Int32
 
 END STRUCTURE
 
  
 [StructLayout(LayoutKind.Sequential)];
 INTERNAL STRUCTURE WINPOINT
-	EXPORT x AS System.Int32
-	EXPORT y AS System.Int32
+	PUBLIC x AS System.Int32
+	PUBLIC y AS System.Int32
 
 END STRUCTURE
 
@@ -496,12 +496,12 @@ INTERNAL VOSTRUCT _winMSG
 [Serializable];
 [StructLayout(LayoutKind.Sequential)];
 INTERNAL STRUCTURE WindowPlacement
-	EXPORT length AS INT
-	EXPORT flags AS INT
-	EXPORT showCmd AS ShowWindowCommands
-	EXPORT ptMinPosition AS System.Drawing.Point
-	EXPORT ptMaxPosition AS System.Drawing.Point
-	EXPORT rcNormalPosition AS System.Drawing.Rectangle
+	PUBLIC length AS INT
+	PUBLIC flags AS INT
+	PUBLIC showCmd AS ShowWindowCommands
+	PUBLIC ptMinPosition AS System.Drawing.Point
+	PUBLIC ptMaxPosition AS System.Drawing.Point
+	PUBLIC rcNormalPosition AS System.Drawing.Rectangle
 END STRUCTURE
 
 ENUM ShowWindowCommands

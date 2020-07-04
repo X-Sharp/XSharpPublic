@@ -1,6 +1,7 @@
 
 
-#USING System.Windows.Forms.VisualStyles
+USING System.Windows.Forms.VisualStyles
+USING VOSDK := XSharp.VO.SDK
 CLASS DataWindow INHERIT ChildAppWindow IMPLEMENTS ILastFocus
 	PROTECT sCurrentView AS SYMBOL
 	PROTECT nCCMode AS INT
@@ -1080,7 +1081,7 @@ CLASS DataWindow INHERIT ChildAppWindow IMPLEMENTS ILastFocus
 			SELF:__Unlink()
 		ENDIF
 		// Workaround for TreeView Control Loosing focus bug
-		//SetFocus(Win32.GetParent(SELF:Handle()))
+		//SetFocus(GuiWin32.GetParent(SELF:Handle()))
 		SUPER:Close(oEvent)
 		
 		RETURN TRUE
@@ -1486,7 +1487,7 @@ CLASS DataWindow INHERIT ChildAppWindow IMPLEMENTS ILastFocus
 		ENDIF
 		RETURN SELF
 
-	METHOD EnableDragDropClient(lEnable AS LOGIC, lSurfaceOnly := TRUE AS LOGIC)
+	METHOD EnableDragDropClient(lEnable AS LOGIC, lSurfaceOnly := TRUE AS LOGIC) AS VOID
         SELF:__Surface:AllowDrop := TRUE
 
 		SUPER:EnableDragDropClient(lEnable)
@@ -1666,13 +1667,13 @@ CLASS DataWindow INHERIT ChildAppWindow IMPLEMENTS ILastFocus
 		ENDIF
 		RETURN lRetCode
 
-	METHOD Hide() 
+	METHOD Hide() AS VOID STRICT
 		IF lSubForm
 			SELF:__DataForm:HideSubForm()
 		ELSE
 			Super:Hide()
 		ENDIF
-		RETURN SELF
+		RETURN 
 	
 	ACCESS HyperLabel AS HyperLabel
 		RETURN SUPER:HyperLabel
@@ -1845,7 +1846,7 @@ CLASS DataWindow INHERIT ChildAppWindow IMPLEMENTS ILastFocus
 		SUPER:ListBoxSelect(oCE)
 		RETURN SELF
 	
-	ASSIGN Menu(oNewMenu AS XSharp.VO.Menu) 
+	ASSIGN Menu(oNewMenu AS VOSDK.Menu) 
 		SUPER:Menu := oNewMenu
 		IF oParent IS ShellWindow
 			// No need to resize. __DataForm handles this 
@@ -2272,7 +2273,7 @@ CLASS DataWindow INHERIT ChildAppWindow IMPLEMENTS ILastFocus
 	
 
 	
-	METHOD Show(nShowState) 
+	METHOD Show(nShowState AS LONG)  AS VOID
 
 		IF lDeferUse .AND. (oDeferUseServer != NULL_OBJECT)
 			lDeferUse := FALSE
@@ -2295,7 +2296,7 @@ CLASS DataWindow INHERIT ChildAppWindow IMPLEMENTS ILastFocus
 		ENDIF		
 		
 		
-		RETURN SELF
+		RETURN 
 	
 
 	ACCESS Size AS Dimension

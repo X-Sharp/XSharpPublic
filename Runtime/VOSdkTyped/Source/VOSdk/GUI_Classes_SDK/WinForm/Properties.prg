@@ -1,17 +1,18 @@
 // Properties.prg
 
 
-#using System.Windows.Forms
-#using System.ComponentModel
-#using System.Drawing
+USING System.Windows.Forms
+USING System.ComponentModel
+USING System.Drawing
+USING VOSDK := XSharp.VO.SDK
 
 CLASS VOProperties
 	DELEGATE StyleChanged_Delegate() AS VOID
-	EXPORT Style AS LONG 
-	EXPORT ExStyle AS  LONG 
-	EXPORT NotStyle AS LONG
-	EXPORT NotExStyle AS LONG
-	EVENT StyleChanged AS StyleChanged_Delegate
+	PROPERTY Style AS LONG      AUTO 
+	PROPERTY ExStyle AS  LONG   AUTO 
+	PROPERTY NotStyle AS LONG   AUTO 
+	PROPERTY NotExStyle AS LONG AUTO 
+    EVENT StyleChanged AS StyleChanged_Delegate
 	EVENT ExStyleChanged AS StyleChanged_Delegate
 
 	CONSTRUCTOR() STRICT
@@ -89,9 +90,9 @@ END CLASS
 DELEGATE WndProc(msg REF Message) AS VOID
 
 CLASS VOControlProperties INHERIT VOProperties
-	EXPORT oWFC AS System.Windows.Forms.Control 
-	EXPORT Control AS XSharp.VO.Control 
-	EXPORT Window AS XSharp.VO.Window
+	PROPERTY oWFC AS System.Windows.Forms.Control  AUTO GET PRIVATE SET
+	PROPERTY Control AS VOSDK.Control AUTO GET PRIVATE SET
+	PROPERTY Window AS VOSDK.Window AUTO GET PRIVATE SET
 	PROTECT _lHandleDoubleClickThroughMouseUp AS LOGIC
 
     PUBLIC EVENT OnWndProc AS WndProc
@@ -109,7 +110,7 @@ CLASS VOControlProperties INHERIT VOProperties
 	ACCESS ModifierKeys AS Keys
 		RETURN System.Windows.Forms.Control.ModifierKeys
 	
-	METHOD LinkTo(oOwner AS XSharp.VO.Control) AS VOID STRICT
+	METHOD LinkTo(oOwner AS VOSDK.Control) AS VOID STRICT
 		Control := oOwner
 		Window := oOwner:Owner
 		IF oWFC is IVOControl
@@ -120,11 +121,11 @@ CLASS VOControlProperties INHERIT VOProperties
 
 		
 
-	CONSTRUCTOR(oControl AS System.Windows.Forms.Control, oOwner AS XSharp.VO.Control)
+	CONSTRUCTOR(oControl AS System.Windows.Forms.Control, oOwner AS VOSDK.Control)
 		SELF(oControl, oOwner, 0, 0)
 
 	
-	CONSTRUCTOR(oControl AS System.Windows.Forms.Control, oOwner AS XSharp.VO.Control, liStyle AS LONG, dwExStyle AS LONG)
+	CONSTRUCTOR(oControl AS System.Windows.Forms.Control, oOwner AS VOSDK.Control, liStyle AS LONG, dwExStyle AS LONG)
 		LOCAL lFlagDoubleClick AS LOGIC
 		SUPER(liStyle, dwExStyle)
 		oWFC := oControl
@@ -140,13 +141,13 @@ CLASS VOControlProperties INHERIT VOProperties
 
 		// Handle Treeview and Listbox Doubleclicks through the actual doubleclick-event (and SinglelineEdits)
 		// Because DoubleClicks on Treeviews (allg. Voreinstellungen) and Listviews (Multifelder) weren't responding
-		lFlagDoubleClick := oOwner is XSharp.VO.TreeView .or. oOwner is XSharp.VO.ListBox
+		lFlagDoubleClick := oOwner IS VOSDK.TreeView .OR. oOwner IS VOSDK.ListBox
 		SELF:_lHandleDoubleClickThroughMouseUp := !lFlagDoubleClick
 		IF lFlagDoubleClick
 			oWFC:MouseDoubleClick += OnMouseDoubleClick
-		ELSEIF oOwner is XSharp.VO.SingleLineEdit
+		ELSEIF oOwner IS VOSDK.SingleLineEdit
 			oWFC:MouseDoubleClick += OnMouseDoubleClick
-		ELSEIF oOwner is XSharp.VO.Button
+		ELSEIF oOwner IS VOSDK.Button
 			oWFC:Click			+= OnClick
 			oWFC:DoubleClick	+= OnDoubleClick
 		ENDIF
@@ -204,7 +205,7 @@ CLASS VOControlProperties INHERIT VOProperties
 			IF SELF:Window != NULL_OBJECT .AND. SELF:Control:EventReturnValue == 0
 				SELF:Window:KeyUp(k)					
 			ENDIF
-			IF SELF:COntrol is XSharp.VO.Combobox
+			IF SELF:COntrol IS VOSDK.Combobox
 				SELF:Control:__Update()
 			ENDIF
 		ENDIF
@@ -317,10 +318,10 @@ END CLASS
 
 
 CLASS VOFormProperties INHERIT VOProperties
-	EXPORT Form AS System.Windows.Forms.Form
-	EXPORT Window AS XSharp.VO.Window
+	PROPERTY Form AS System.Windows.Forms.Form  AUTO
+	PROPERTY Window AS VOSDK.Window         AUTO
 	
-	CONSTRUCTOR(oForm AS System.Windows.Forms.Form, oWindow AS XSharp.VO.Window)
+	CONSTRUCTOR(oForm AS System.Windows.Forms.Form, oWindow AS VOSDK.Window)
 		SUPER()
 		Window := oWindow
 		Form  := oForm		

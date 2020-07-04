@@ -209,14 +209,15 @@ FUNCTION VoDbFlock() AS LOGIC
 /// <seealso cref="M:XSharp.CoreDb.Found"  /> 
 FUNCTION VoDbFound() AS LOGIC
     RETURN VoDb.Found()
-    
+
+ 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/vodbgetselect/*" /> 
 /// <seealso cref="M:XSharp.CoreDb.GetSelect"  /> 
 FUNCTION VoDbGetSelect() AS DWORD
     RETURN VoDb.GetSelect()
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/vodbgetselect1/*" /> 
-FUNCTION VODbGetSelect(sArea AS STRING) AS DWORD
+FUNCTION VoDbGetSelect(sArea AS STRING) AS DWORD
     RETURN XSharp.RuntimeState.Workareas:FindAlias(sArea)
     
 
@@ -426,7 +427,8 @@ FUNCTION VoDbSeek(uKey AS USUAL,lSoftSeek AS LOGIC, lLast AS LOGIC) AS LOGIC
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/vodbseek/*" />
 /// <seealso cref="M:XSharp.CoreDb.Seek(System.Object,System.Boolean,System.Boolean)"  />
 FUNCTION VoDbSeek(uKey AS USUAL,lSoftSeek AS LOGIC) AS LOGIC
-    RETURN VoDb.Seek( uKey, lSoftSeek, FALSE)
+    LOCAL oScope := VoDbGetScope() AS DbScopeInfo
+    RETURN VoDb.Seek( uKey, lSoftSeek, oScope:Last)
     
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/vodbrselect/*" />
 /// <seealso cref="M:XSharp.CoreDb.RSelect(System.UInt32)"  />
@@ -465,9 +467,16 @@ FUNCTION VoDbSetLocate(cbForCondition AS USUAL) AS LOGIC
 FUNCTION VoDbSetRelation(cAlias AS STRING,cbRel AS USUAL,cRel AS STRING, cName := "" AS STRING) AS LOGIC
     RETURN VoDb.SetRelation(cAlias, VoDb.ValidBlock(cbRel), cRel, cName)
  
-    
+
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/vodbgetscope/*" /> 
+/// <seealso cref="M:XSharp.CoreDb.SetScope(XSharp.RDD.Support.DbScopeInfo)"  />  
+/// <seealso cref="M:XSharp.RT.Functions.VoDbSetScope(XSharp.RDD.Support.DbScopeInfo)"  />  
+FUNCTION VoDbGetScope() AS DbScopeInfo 
+    RETURN VoDb.GetScope()
+
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/vodbsetscope/*" /> 
 /// <seealso cref="M:XSharp.CoreDb.SetScope(XSharp.RDD.Support.DbScopeInfo)"  />  
+/// <seealso cref="M:XSharp.RT.Functions.VoDbGetScope()"  />  
 FUNCTION VoDbSetScope(scope AS DbScopeInfo) AS LOGIC
     RETURN VoDb.SetScope(scope)
     

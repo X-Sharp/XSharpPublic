@@ -1,8 +1,8 @@
-// XMLFunctions.prg
-// Created by    : robert
-// Creation Date : 5/2/2019 10:36:45 AM
-// Created for   : 
-// WorkStation   : ARTEMIS
+//
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
+// See License.txt in the project root for license information.
+//
 
 
 USING System
@@ -176,7 +176,7 @@ RETURN nTag
 /// <returns>Returns a non-zero handle for the passed string or 0 if there are not enough system resources for the parser, 
 /// or when the string does not contain valid XML code. The handle returned by this function must be used in subsequent 
 /// calls to other XMLDoc..() functions. <br/>
-/// If the function returns 0, more information can be obtained by calling XMLDocGetErrorList(, &lt;nErrHandle&gt;). </returns>
+/// If the function returns 0, more information can be obtained by calling XMLDocGetErrorList(, <paramref name="nErrHandle" /> ). </returns>
 /// <remarks>Invokes the XML parser engine which parsed the passed string and builds the internal tree structure. </remarks>
 FUNCTION XMLDocOpenString( cXMLString AS STRING ,  nErrHandle OUT USUAL ) AS INT64
     LOCAL oDoc AS XDocument
@@ -235,16 +235,10 @@ RETURN NULL_STRING
 /// <param name="cChildTagName">The tag name of the child to search.</param>
 /// <returns>Returns the numeric handle of the first child matching the specified name, or 0 if no child with the given name exists. </returns>
 /// <remarks>This function is used to retrieve the first child tag of an XML tag matching the name 
-/// specified with the second parameter. The XMLGetChildren() function can be used to obtain all child tags having a specific name. </remarks>
+/// specified with the second parameter. The XMLGetChildren() function can be used to obtain ALL child tags having a specific name. </remarks>
 
 FUNCTION XMLGetChild( nTagHandle AS INT64, cChildTagName AS STRING) AS INT64
-    LOCAL result as USUAL
-    result := XDocument.FindChildTag(nTagHandle, cChildTagName, TRUE)
-    IF IsArray(result)
-        RETURN 0
-    ELSE
-        RETURN result
-    ENDIF
+    RETURN XDocument.FindFirstChildTag(nTagHandle, cChildTagName)
   
 /// <summary>Get array of children of an XML tag. </summary>
 /// <param name="nTagHandle">Numeric handle for the XML tag. </param>
@@ -252,11 +246,11 @@ FUNCTION XMLGetChild( nTagHandle AS INT64, cChildTagName AS STRING) AS INT64
 /// <returns>Returns an array of child handles matching the name specified as second parameter, or 0 if no child with the given name exists.</returns>
 /// <remarks>This function is used to retrieve all child tags having the tag name specified with the second parameter.</remarks>
 FUNCTION XMLGetChildren( nTagHandle AS INT64, cChildTagName AS STRING) AS ARRAY
-    RETURN XDocument.FindChildTag(nTagHandle, cChildTagName, FALSE)
+    RETURN XDocument.FindAllChildTags(nTagHandle, cChildTagName)
 
 /// <summary>Get parent of XML tag.</summary>
 /// <param name="nTagHandle">Numeric handle for the XML tag.</param>
-/// <returns>Returns the numeric handle of the parent tag or 0 if &lt;nTagHandle&gt; doesn't have a parent tag. </returns>
+/// <returns>Returns the numeric handle of the parent tag or 0 if <paramref name="nTagHandle" /> doesn't have a parent tag. </returns>
 /// <remarks>This function is used to retrieve the parent tag of an XML tag. Every tag has only one parent, except the document root tag which has no parent tag. </remarks>
 FUNCTION XMLGetParent( nTagHandle AS INT64) AS INT64
     RETURN XDocument.FindParent(nTagHandle)

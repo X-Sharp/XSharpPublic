@@ -1,8 +1,9 @@
-STATIC FUNCTION __FindStatus(h AS PTR) AS DWORD STRICT
+INTERNAL FUNCTION __FindStatus(h AS PTR) AS DWORD STRICT
     RETURN AScan(agStatus, {|a| a[STATUS_HANDLE] == h} )
 
 
-STATIC GLOBAL agStatus := {} AS ARRAY
+INTERNAL GLOBAL agStatus := {} AS ARRAY
+
 
 CLASS CSession
     PROTECT cHostAddress        AS STRING
@@ -19,16 +20,11 @@ CLASS CSession
     PROTECT nAccessType         AS DWORD
     PROTECT lFixPortNumber      AS LOGIC
 
-    //  UH 10/29/2001
     PROTECT nOpenFlags          AS DWORD
 
-    //  UH 02/08/2000
     PROTECT lStatus             AS LOGIC
 
-    #ifdef __VULCAN__
-       STATIC HIDDEN callbackDelegate AS __INTStatusCallback_Delegate
-    #endif
-    //RvdH 100216 Moved GLOBAL and Lock structure to Session Class
+    STATIC HIDDEN callbackDelegate AS __INTStatusCallback_Delegate
     STATIC EXPORT oLock := OBJECT{}        AS OBJECT
     STATIC EXPORT ogStatus AS OBJECT
 
@@ -37,8 +33,6 @@ METHOD __DelStatus        (h)
     LOCAL lRet  AS LOGIC
 
     IF SELF:lStatus
-        //  UH 02/11/2000
-        //EnterCriticalSection(@csWSA)
         BEGIN LOCK oLock
 
         n := __FindStatus(h)
@@ -48,8 +42,6 @@ METHOD __DelStatus        (h)
             ASize(agStatus, ALen(agStatus) - 1 )
             lRet := .T.
         ENDIF
-        //  UH 02/11/2000
-        //LeaveCriticalSection(@csWSA)
         END LOCK
         SELF:lStatus := FALSE
     ENDIF
@@ -58,12 +50,8 @@ METHOD __DelStatus        (h)
 
 
 METHOD __DelStatusObject  ()
-    //  UH 02/11/2000
-    //EnterCriticalSection(@csWSA)
     BEGIN LOCK oLock
-    ogStatus := NULL_OBJECT
-    //  UH 02/11/2000
-    //LeaveCriticalSection(@csWSA)
+        ogStatus := NULL_OBJECT
     END LOCK
     RETURN SELF
 
@@ -71,8 +59,6 @@ METHOD __DelStatusObject  ()
 METHOD __GetStatusContext   (h)
     LOCAL nRet      AS DWORD
 
-    //  UH 02/11/2000
-    //EnterCriticalSection(@csWSA)
     BEGIN LOCK oLock
 
     DEFAULT(@h, NULL_PTR)
@@ -85,49 +71,34 @@ METHOD __GetStatusContext   (h)
             nRet := ALen(agStatus)  + 1
         ENDIF
     ENDIF
-    //  UH 02/11/2000
-    //LeaveCriticalSection(@csWSA)
     END LOCK
     RETURN nRet
 
 
 
 METHOD __SetStatus        (h)
-    //  UH 02/08/2000
     LOCAL nStatus       AS DWORD
     LOCAL lRet          AS LOGIC
 
     IF SELF:lStatus
-        //  UH 02/11/2000
-        //EnterCriticalSection(@csWSA)
         BEGIN LOCK oLock
         nStatus := __FindStatus(h)
         IF nStatus = 0
             AAdd(agStatus, {h, SELF} )
-#ifdef __VULCAN__
             IF callbackDelegate == NULL
                 callbackDelegate := __INTStatusCallback_Delegate{ NULL, @INTStatusCallback() }
             ENDIF
             InternetSetStatusCallback( h, System.Runtime.InteropServices.Marshal.GetFunctionPointerForDelegate( (System.Delegate) callbackDelegate ) )
-#else
-            InternetSetStatusCallback(h, @INTStatusCallback() )
-#endif
             lRet := .T.
         ENDIF
-        //  UH 02/11/2000
-        //LeaveCriticalSection(@csWSA)
         END LOCK
     ENDIF
 
     RETURN lRet
 
 METHOD __SetStatusObject  ()
-    //  UH 02/11/2000
-    //EnterCriticalSection(@csWSA)
     BEGIN LOCK oLock
-    ogStatus := SELF
-    //  UH 02/11/2000
-    //LeaveCriticalSection(@csWSA)
+        ogStatus := SELF
     END LOCK
 
     RETURN SELF
@@ -142,12 +113,13 @@ ASSIGN AccessType(nNew)
     ENDIF
     RETURN
 
-
 DESTRUCTOR()
+    SELF:Destroy()
+
+METHOD Destroy() AS VOID
     SELF:CloseRemote()
 
     IF SELF:hSession != NULL_PTR
-       //  UH 02/08/2000
        IF SELF:lStatus
           SELF:__DelStatus (SELF:hSession)
        ENDIF
@@ -156,11 +128,11 @@ DESTRUCTOR()
           SELF:hSession := NULL_PTR
        ENDIF
     ENDIF
-
-    // RvdH 050302 Added next line. Was missing
+    // No need to run the destructor anymore.
     UnregisterAxit(SELF)
-
     RETURN
+
+
 
 
 METHOD CloseFile(hFile)
@@ -174,7 +146,6 @@ METHOD CloseFile(hFile)
         ENDIF
     ENDIF
 
-    //  UH 02/27/2001
     SELF:SetResponseStatus()
 
     RETURN lRet
@@ -186,7 +157,6 @@ METHOD CloseRemote()
     LOCAL lRet AS LOGIC
 
     IF SELF:hConnect != NULL_PTR
-       //  UH 02/08/2000
        IF SELF:lStatus
           lRet := SELF:__DelStatus (SELF:hConnect)
        ENDIF
@@ -197,8 +167,6 @@ METHOD CloseRemote()
        lRet := TRUE
     ENDIF
 
-    //  UH 02/27/2001
-    //  SELF:SetResponseStatus()
 
     RETURN lRet
 
@@ -248,7 +216,6 @@ METHOD ConnectRemote(cIP, nService, nFlags, nContext)
                                     nContext)
 
         IF SELF:hConnect = NULL_PTR
-           //  UH 02/27/2001
            SELF:SetResponseStatus()
            lRet := .F.
            IF SELF:nError = 0
@@ -256,7 +223,6 @@ METHOD ConnectRemote(cIP, nService, nFlags, nContext)
            ENDIF
         ELSE
            SELF:__SetStatus(SELF:hConnect)
-           //  UH 02/27/2001
            SELF:SetResponseStatus()
         ENDIF
         SELF:__DelStatusObject()
@@ -302,7 +268,6 @@ CONSTRUCTOR(cCaption, n, lStat)
 
     SELF:nAccessType := INTERNET_OPEN_TYPE_DIRECT
 
-    //  UH 02/08/2000
     DEFAULT(@lStat, TRUE)
     SELF:lStatus  := lStat
 
@@ -337,7 +302,6 @@ METHOD Open(nFlags, xProxy, aProxyByPass)
     ENDIF
 
     IF lProxy
-    	// UH 07/30/2001
         SELF:cProxy := xProxy
 
         IF IsArray(aProxyByPass)
@@ -374,24 +338,20 @@ METHOD Open(nFlags, xProxy, aProxyByPass)
 
     IF SELF:hSession != NULL_PTR
         lRet := TRUE
-        //  UH 02/08/2000
         IF lRet
             SELF:__SetStatus(SELF:hSession)
         ENDIF
     ENDIF
 
-    //  UH 02/27/2001
     SELF:SetResponseStatus()
 
     RETURN lRet
 
 
 ACCESS OpenFlags
-    //  UH 10/29/2001
     RETURN SELF:nOpenFlags
 
 ASSIGN OpenFlags(n)
-    //  UH 10/29/2001
     IF IsNumeric(n)
        SELF:nOpenFlags := n
     ENDIF
@@ -456,10 +416,9 @@ ASSIGN RemoteHost(cServer)
 
 
 METHOD SetResponseStatus()
-    //SE-040707
     LOCAL dwError                   AS DWORD
     LOCAL dwSize                    AS DWORD
-    LOCAL DIM abStatus[STATUS_SIZE] AS BYTE	//RvdH 070407 changed from DWORD to BYTE
+    LOCAL DIM abStatus[STATUS_SIZE] AS BYTE	
     LOCAL cStatus                   AS STRING
     LOCAL dwContext                 AS DWORD
 
@@ -468,7 +427,6 @@ METHOD SetResponseStatus()
     IF InternetGetLastResponseInfo(@dwError, @abStatus[1], @dwSize)
        SELF:nError := dwError
 
-       // UH 07/30/2001
        IF dwSize == 0
           dwError := GetLastError()
         	 cStatus := "Error " + NTrim(dwError)
@@ -505,12 +463,11 @@ ASSIGN UserName(cNew)
     RETURN
 
 
+
 END CLASS
 
 
-#ifdef __VULCAN__
-   DELEGATE __INTStatusCallback_Delegate( hInternet AS PTR, dwContext AS DWORD, dwInternetStatus AS DWORD, pStatusInformation AS PTR, dwStatusInfoLength AS DWORD ) AS VOID
-#endif
+DELEGATE __INTStatusCallback_Delegate( hInternet AS PTR, dwContext AS DWORD, dwInternetStatus AS DWORD, pStatusInformation AS PTR, dwStatusInfoLength AS DWORD ) AS VOID
 
 FUNCTION INTStatusCallback( hInternet           AS PTR, ;
                             dwContext           AS DWORD,;
@@ -520,22 +477,18 @@ FUNCTION INTStatusCallback( hInternet           AS PTR, ;
     LOCAL oSession  AS CSession
     LOCAL n         AS DWORD
 
-    //  UH 02/11/2000
-    //EnterCriticalSection(@csWSA)
     BEGIN LOCK cSession.oLock
 
-    IF (n := __FindStatus(hInternet)) > 0
-       oSession := agStatus[n, STATUS_OP]
-    ELSE
-       oSession := cSession.ogStatus
-    ENDIF
+        IF (n := __FindStatus(hInternet)) > 0
+           oSession := agStatus[n, STATUS_OP]
+        ELSE
+           oSession := cSession.ogStatus
+        ENDIF
 
-    IF ! oSession == NULL_OBJECT
-       oSession:InternetStatus(dwContext, dwInternetStatus, pStatusInformation, dwStatusInfoLength)
-    ENDIF
+        IF ! oSession == NULL_OBJECT
+           oSession:InternetStatus(dwContext, dwInternetStatus, pStatusInformation, dwStatusInfoLength)
+        ENDIF
 
-    //  UH 02/11/2000
-    //LeaveCriticalSection(@csWSA)
     END LOCK
 
     RETURN

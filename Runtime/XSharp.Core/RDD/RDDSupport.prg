@@ -256,12 +256,17 @@ CLASS DbOrderInfo
         RETURN (DbOrderInfo) SELF:MemberwiseClone()
     PROPERTY IsEmpty AS LOGIC 
         GET
-            IF Order == NULL 
-                RETURN String.IsNullOrEmpty(BagName)
-            ENDIF
-            // VFP NIL is represented by a logic FALSE
-            IF Order IS LOGIC VAR lValue .AND. ! lValue
-                RETURN String.IsNullOrEmpty(BagName)
+            IF String.IsNullOrEmpty(BagName)
+                IF Order == NULL 
+                    RETURN TRUE
+                ELSEIF Order IS LONG VAR nOrder
+                    RETURN nOrder == 0 
+                ELSEIF Order IS STRING VAR cOrder
+                    RETURN String.IsNullOrEmpty(cOrder)
+                ELSEIF RuntimeState.Dialect == XSharpDialect.FoxPro .AND. Order IS LOGIC VAR lValue 
+                    // VFP NIL is represented by a logic FALSE
+                    RETURN ! lValue
+                ENDIF
             ENDIF
             RETURN FALSE
         END GET

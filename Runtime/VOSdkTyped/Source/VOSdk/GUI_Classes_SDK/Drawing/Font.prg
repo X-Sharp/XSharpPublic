@@ -96,11 +96,11 @@ CLASS Font INHERIT VObject
 		LOCAL hDC AS IntPtr
 		LOCAL wDim AS Dimension
 
-		IF (hDCConv == NULL_PTR) .AND. ((hDC := Win32.GetDC(NULL_PTR)) != NULL_PTR)
-			wDim := Dimension{0, -(Win32.MulDiv(nPntSize, Win32.GetDeviceCaps(hDC, LOGPIXELSY), 72))}
-			Win32.ReleaseDC(NULL_PTR, hDC)
+		IF (hDCConv == NULL_PTR) .AND. ((hDC := GuiWin32.GetDC(NULL_PTR)) != NULL_PTR)
+			wDim := Dimension{0, -(GuiWin32.MulDiv(nPntSize, GuiWin32.GetDeviceCaps(hDC, LOGPIXELSY), 72))}
+			GuiWin32.ReleaseDC(NULL_PTR, hDC)
 		ELSEIF (hDCConv != NULL_PTR)
-			wDim := Dimension{0, -(Win32.MulDiv(nPntSize, Win32.GetDeviceCaps(hDCConv, LOGPIXELSY), 72))}
+			wDim := Dimension{0, -(GuiWin32.MulDiv(nPntSize, GuiWin32.GetDeviceCaps(hDCConv, LOGPIXELSY), 72))}
 		ELSE
 			wDim := Dimension{nPntSize, nPntSize}
 		ENDIF
@@ -129,9 +129,9 @@ CLASS Font INHERIT VObject
 			ENDIF
 			IF lPrinter .AND. (hdc != NULL_PTR)
 				IF lStdFont
-					oLogFont:Height := -(((Win32.GetDeviceCaps(hdc, LOGPIXELSY) * StdFontPointSize[iStdFontType + 1]) + 36) / 72)
+					oLogFont:Height := -(((GuiWin32.GetDeviceCaps(hdc, LOGPIXELSY) * StdFontPointSize[iStdFontType + 1]) + 36) / 72)
 				ELSEIF (iPointSize > 0)
-					oLogFont:Height := -Win32.MulDiv(iPointSize, Win32.GetDeviceCaps(hdc, LOGPIXELSY), 72)
+					oLogFont:Height := -GuiWin32.MulDiv(iPointSize, GuiWin32.GetDeviceCaps(hdc, LOGPIXELSY), 72)
 				ENDIF
 			ENDIF
 			
@@ -422,19 +422,19 @@ CLASS Font INHERIT VObject
 	
 	[StructLayout(LayoutKind.Sequential, CharSet:=System.Runtime.InteropServices.CharSet.Auto)];
 	PUBLIC class LOGFONT
-		EXPORT Height := 0         AS INT
-		EXPORT Width := 0          AS INT
-		EXPORT Escapement := 0     AS INT
-		EXPORT Orientation := 0    AS INT
-		EXPORT Weight := 0         AS INT
-		EXPORT Italic := 0         AS BYTE
-		EXPORT Underline := 0      AS BYTE
-		EXPORT StrikeOut := 0      AS BYTE
-		EXPORT CharSet := 0        AS BYTE
-		EXPORT OutPrecision := 0   AS BYTE
-		EXPORT ClipPrecision := 0  AS BYTE
-		EXPORT Quality := 0        AS BYTE
-		EXPORT PitchAndFamily := 0 AS BYTE
+		PUBLIC Height := 0         AS INT
+		PUBLIC Width := 0          AS INT
+		PUBLIC Escapement := 0     AS INT
+		PUBLIC Orientation := 0    AS INT
+		PUBLIC Weight := 0         AS INT
+		PUBLIC Italic := 0         AS BYTE
+		PUBLIC Underline := 0      AS BYTE
+		PUBLIC StrikeOut := 0      AS BYTE
+		PUBLIC CharSet := 0        AS BYTE
+		PUBLIC OutPrecision := 0   AS BYTE
+		PUBLIC ClipPrecision := 0  AS BYTE
+		PUBLIC Quality := 0        AS BYTE
+		PUBLIC PitchAndFamily := 0 AS BYTE
 		[MarshalAs(UnmanagedType.ByValTStr, SizeConst:=32)];
 		EXPORT FaceName := ""      AS STRING
 
@@ -470,9 +470,9 @@ CLASS Font INHERIT VObject
 		LOCAL hDC AS PTR
 		LOCAL iHeight AS INT
 
-		hDC		:= Win32.CreateIC("DISPLAY", NULL_STRING, NULL_STRING, IntPtr.Zero)
-		iHeight := -(((Win32.GetDeviceCaps(hDC, LOGPIXELSY) * StdFontPointSize[kStandardFont + 1]) + 36) / 72)
-		Win32.DeleteDC(hDC)
+		hDC		:= GuiWin32.CreateIC("DISPLAY", NULL_STRING, NULL_STRING, IntPtr.Zero)
+		iHeight := -(((GuiWin32.GetDeviceCaps(hDC, LOGPIXELSY) * StdFontPointSize[kStandardFont + 1]) + 36) / 72)
+		GuiWin32.DeleteDC(hDC)
 
 		RETURN iHeight
 	STATIC INITONLY PROTECT StdFontFamily 	:= {FF_MODERN, FF_MODERN, FF_MODERN, FF_ROMAN, FF_ROMAN, FF_ROMAN, FF_ROMAN, FF_ROMAN, FF_ROMAN, FF_SWISS, FF_SWISS, FF_SWISS, FF_SWISS, FF_SWISS, FF_SWISS, FF_DONTCARE} AS ARRAY

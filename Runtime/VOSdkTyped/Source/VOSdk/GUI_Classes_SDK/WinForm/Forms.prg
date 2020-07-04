@@ -213,11 +213,11 @@ CLASS VOForm INHERIT Form IMPLEMENTS IVOForm
 		RETURN
 
 	PUBLIC METHOD SuspendRedraw AS VOID
-        Win32.SendMessage(SELF:Handle, WM_SETREDRAW, 0, 0)
+        GuiWin32.SendMessage(SELF:Handle, WM_SETREDRAW, 0, 0)
 
 
 	PUBLIC METHOD ResumeRedraw AS VOID
-        Win32.SendMessage(SELF:Handle, WM_SETREDRAW, 1, 0)
+        GuiWin32.SendMessage(SELF:Handle, WM_SETREDRAW, 1, 0)
 		SELF:Refresh()
     
 

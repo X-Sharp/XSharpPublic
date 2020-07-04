@@ -5,11 +5,11 @@
   <!-- Please note that many properties are read from VOSDK.Targets -->
   <PropertyGroup>
     <ProjectGuid>223BE288-7390-48C2-8C3D-6742287962DC</ProjectGuid>
-    <AssemblyName>XSharp.VO.RDDClasses</AssemblyName>
+    <AssemblyName>XSharp.VORDDClasses</AssemblyName>
     <Name>XSharp.VO.RDDClasses</Name>
     <OutputName>XSharpRDDClasses</OutputName>
     <XSharpProjectExtensionsPath>$(MSBuildExtensionsPath)\XSharp\</XSharpProjectExtensionsPath>
-    <XSharpProjectversion>2.4.0.0</XSharpProjectversion>
+    <XSharpProjectversion>2.5.0.0</XSharpProjectversion>
     <Includepaths>$(Solutiondir)Common</Includepaths>
     <Nostandarddefs>false</Nostandarddefs>
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -20,15 +20,15 @@
     <VO14>false</VO14>
     <VO7>false</VO7>
     <FOX1>false</FOX1>
-    <RootNamespace>XSharp.VO</RootNamespace>
+    <RootNamespace>XSharp.VO.SDK</RootNamespace>
     <NoWin32Manifest>False</NoWin32Manifest>
     <VO5>false</VO5>
     <cs>true</cs>
+	<DisabledWarnings>165</DisabledWarnings>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Documentation|AnyCPU'">
-    <CommandLineOption>/noclipcall</CommandLineOption>
     <DocumentationFile>VORDDClasses.Xml</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">

@@ -1,6 +1,6 @@
 
 
-
+USING VOSDK := XSharp.VO.SDK
 
 CLASS OpenDialog INHERIT StandardFileDialog
 	
@@ -474,8 +474,8 @@ CLASS StandardFontDialog INHERIT StandardDialog
 	PROTECT lEffectFlag AS LONGINT
 	PROTECT lANSIFlag AS LONGINT
 	PROTECT lOldFlags AS LONGINT
-	PROTECT oColor AS Color
-	PROTECT oFont AS XSharp.VO.Font
+	PROTECT oColor AS VOSDK.Color
+	PROTECT oFont AS VOSDK.Font
 	PROTECT iFamily AS INT
 	//PROTECT oPrinter AS printer
 	PROTECT oOwner as Window
@@ -518,8 +518,8 @@ CLASS StandardFontDialog INHERIT StandardDialog
 		lFlags := _OR(lFlags, LONGINT(_CAST, lInt))
 		RETURN 
 
-	PROPERTY Font		AS XSharp.VO.Font	GET oFont	SET oFont	:= VALUE
-	PROPERTY FontColor  AS Color			GET oColor	SET oColor	:= VALUE
+	PROPERTY Font		AS VOSDK.Font	GET oFont	SET oFont	:= VALUE
+	PROPERTY FontColor  AS VOSDK.Color  GET oColor	SET oColor	:= VALUE
 
 	CONSTRUCTOR(uOwner) 
 		IF !IsNil(uOwner)

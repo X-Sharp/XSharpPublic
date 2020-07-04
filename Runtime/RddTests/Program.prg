@@ -7,11 +7,25 @@ USING System.IO
 USING System.Threading
 USING System.Reflection
 
+CLASS a
+END CLASS
+CLASS b
+END class
 
 [STAThread];      
 FUNCTION Start() AS VOID
     TRY
-        testAppDelim()
+        VAR x := MemAlloc(80000)
+        ? PtrLen(x)
+        ? PtrLenWrite(x)
+        //DeleteAllOrders()
+        //TestZapJune()
+        //TestChrisCorrupt2()
+        //TestChrisCorrupt()
+        //DumpKeesFiles()
+        //TestIndexKey()
+        //TestDateTimeAndCurrency()
+        // testAppDelim()
         //testDelimWrite()
         //testUnique3()
         //BofAndScope()
@@ -190,6 +204,574 @@ FUNCTION Start() AS VOID
         ErrorDialog(e)
     END TRY
     RETURN
+
+GLOBAL CONST gnIterations := 50_000 AS INT
+
+USING System.Windows.Forms
+USING System.Threading
+
+GLOBAL gcPath := "c:\test\"
+
+FUNCTION TestChrisCorrupt2() AS VOID
+	DbfTest1.RunTest1()
+	DbfTest1.RunTest2()
+	DbfTest1.RunTest3()
+	DbfTest1.RunTest4()
+	DbfTest1.RunTest5()
+//	DbfTest1.RunTest6()
+RETURN
+
+
+FUNCTION DeleteAllOrders() AS VOID	
+LOCAL cDBF, cPfad, cIndex AS STRING 
+LOCAL aFields AS ARRAY 
+
+//    SetExclusive ( TRUE )  //  or FALSE makes no difference
+
+    RddSetDefault ( "DBFCDX" ) 
+    
+    cPfad := "D:\TEST\" 
+
+	cDBF := cPfad + "Foo"
+	cIndex := cPfad + "Foox" 
+	
+	FErase ( cIndex + IndexExt() )
+	
+
+	aFields := { { "LAST" , "C" , 20 , 0 } ,;
+				{ "CITY" , "C" , 20 , 0 }	 } 
+
+		
+    // -------------------
+	
+	? DbCreate( cDBF , AFields)
+	? DbUseArea( ,,cDBF )		
+	
+		
+	? DbCreateOrder ( "ORDER1"  , cIndex , "upper(LAST)" , { || Upper ( _FIELD->LAST) } )
+	? DbCreateOrder ( "ORDER2"  , cIndex , "upper(CITY)" , { || Upper ( _FIELD->CITY) } )	
+		
+    
+	DbCloseArea()
+	
+    ?
+	? DbUseArea( ,,cDBF )	
+	? DbSetIndex ( cIndex ) 
+	
+	? 
+	? DbOrderInfo(DBOI_ORDERCOUNT)  // 2
+	? DbDeleteOrder( "ORDER1" )	 
+	? DbOrderInfo(DBOI_ORDERCOUNT)	// 1
+	? DbDeleteOrder( "ORDER2" )	 
+	? DbOrderInfo(DBOI_ORDERCOUNT)	// 0
+	
+
+	DbCloseArea()		
+	
+	?
+	? "Does the file " + cIndex + IndexExt() + " still exist ? " , File ( cIndex + IndexExt() ) 
+		
+	RETURN	 
+
+FUNCTION TestZapJune() AS VOID
+LOCAL cDBF, cPfad, cDriver, cIndex AS STRING 
+LOCAL aFields, aValues AS ARRAY
+LOCAL i, dwWhich AS DWORD 	
+LOCAL lDeleted AS LOGIC
+		
+		
+   cDriver := RddSetDefault ( "DBFCDX" ) 
+   lDeleted := SetDeleted ( FALSE )  // <---------NOTE ------------  
+   
+//   dwWhich := 1 // dbPack()   
+//   dwWhich := 2 // dbZap()
+   dwWhich := 3 // dbReindex()     
+   
+	cPfad := "D:\TEST\"	
+
+	cDBF := cPfad + "Foo.dbf"
+	cIndex := cPfad + "Foox.cdx"  
+	
+   	FErase ( cIndex ) 
+		 
+	aFields := { { "LAST" , "C" , 20 , 0 } } 
+
+	aValues := { "a1" , "o5" , "g2", "g1" , "g8" , "g6"}	
+		
+    ? "-------------------"
+	? "Create server + cdx"
+	? "-------------------"
+	? DbCreate( cDBF , AFields) 
+	? DbUseArea( ,,cDBF , , FALSE )	// open shared 	
+	
+	FOR i := 1 UPTO ALen ( aValues )
+		DbAppend() 
+		FieldPut ( 1 , aValues [ i ] ) 
+		
+		IF InList ( Upper ( aValues [i] ) , "O5" ) 
+			? "DBDelete()" , DbDelete()
+			
+		ENDIF 	
+						
+	NEXT 
+	
+ 	? "Createorder" , DbCreateOrder ( "ORDER1" , cIndex , "upper(LAST)" , { || Upper ( _FIELD->LAST) } )
+ 	// create a conditional, descending order
+	DbSetOrderCondition( "Upper(LAST) = 'G'" ,{ || Upper ( _FIELD->LAST) = "G" },,,,,,,,, TRUE) 
+	? "Createorder" , DbCreateOrder ( "ORDER2" , cIndex , "upper(LAST)", { || Upper ( _FIELD->LAST) } )
+
+	DbCloseArea()
+	
+	? DbUseArea( ,,cDBF , , FALSE )	
+    ? DbSetIndex( cIndex )
+
+    ?
+	DbSetOrder ( 1 )  
+	? DbOrderInfo(DBOI_NAME), "OrdCount:" , DbOrderInfo(DBOI_KEYCOUNT)  
+	DbSetOrder ( 2 )  
+	? DbOrderInfo(DBOI_NAME), "OrdCount:" , DbOrderInfo(DBOI_KEYCOUNT)                 
+    ?	
+    
+    DbSetOrder ( 2 )  // <--------- NOTE ---------- 
+
+    ? "--------------"
+    ? "Reccount()", RecCount() 
+  	DO CASE 
+  	CASE dwWhich == 1
+  		? "DBPack()" , DbPack()
+  	CASE dwWhich == 2
+		? "DBZap()" , DbZap()
+  	CASE dwWhich == 3
+		? "DbReindex()" , DbReindex()  
+  	ENDCASE 		
+	? "Reccount()", RecCount()
+	? "--------------"    
+    ?
+	DbSetOrder ( 1 )  
+	? DbOrderInfo(DBOI_NAME), "OrdCount:" , DbOrderInfo(DBOI_KEYCOUNT)  
+	DbSetOrder ( 2 )  
+	? DbOrderInfo(DBOI_NAME), "OrdCount:" , DbOrderInfo(DBOI_KEYCOUNT)  
+    ?
+	? "------------------------------"    
+  	? "Close and open dbf + cdx again"
+  	? "------------------------------"
+    DbCloseArea() 
+	DbUseArea( ,,cDBF , , TRUE )	 	
+	DbSetIndex ( cIndex ) 
+	
+	DbSetOrder ( 1 )  
+	? DbOrderInfo(DBOI_NAME), "OrdCount:" , DbOrderInfo(DBOI_KEYCOUNT)  
+	DbSetOrder ( 2 ) 
+	? DbOrderInfo(DBOI_NAME), "OrdCount:" , DbOrderInfo(DBOI_KEYCOUNT)  
+	
+    DbCloseArea() 
+    
+	cDriver := RddSetDefault ( cDriver ) 
+	SetDeleted ( lDeleted )    
+    
+	RETURN	
+
+CLASS DbfTest1
+	STATIC PROTECT nIterations AS DWORD
+	STATIC PROTECT lUseCommit AS LOGIC
+	STATIC PROTECT cDbf AS STRING
+	STATIC PROTECT nKeyLength AS DWORD
+	
+	STATIC METHOD RunTest1() AS VOID
+		? "Running test1"
+		cDbf := gcPath + __FUNCTION__
+		TRY
+			nKeyLength := 60
+			ResetFile()
+			nIterations := 100_000
+			lUseCommit := FALSE
+			Test()
+			CheckResults()
+		CATCH e AS Exception
+			MessageBox.Show(e:ToString(), "Error running test 1")
+		END TRY
+	RETURN
+
+	STATIC METHOD RunTest2() AS VOID
+		? "Running test2"
+		cDbf := gcPath + __FUNCTION__
+		TRY
+			nKeyLength := 1
+			ResetFile()
+			nIterations := 300
+			lUseCommit := TRUE
+			Test()
+			CheckResults()
+		CATCH e AS Exception
+			MessageBox.Show(e:ToString(), "Error running Test 2")
+		END TRY
+	RETURN
+
+	STATIC METHOD RunTest3() AS VOID
+		? "Running test3"
+		cDbf := gcPath + __FUNCTION__
+		TRY
+			ResetFile()
+			nIterations := 1_000
+			lUseCommit := TRUE
+			nKeyLength := 60
+			Test()
+			CheckResults()
+		CATCH e AS Exception
+			MessageBox.Show(e:ToString(), "Error running Test 3")
+		END TRY
+	RETURN
+
+	STATIC METHOD RunTest4() AS VOID
+		? "Running test4"
+		cDbf := gcPath + __FUNCTION__
+		TRY
+			nKeyLength := 60
+			ResetFile()
+			nIterations := 100_000
+			lUseCommit := TRUE
+			Test()
+			CheckResults()
+		CATCH e AS Exception
+			MessageBox.Show(e:ToString(), "Error running Test 4")
+		END TRY
+	RETURN
+
+	STATIC METHOD RunTest5() AS VOID
+		? "Running test5"
+		cDbf := gcPath + __FUNCTION__
+
+		nIterations := 100
+		lUseCommit := TRUE
+		nKeyLength := 60
+
+		TRY
+			ResetFile()
+			LOCAL aThreads AS Thread[]
+			aThreads := Thread[]{10}
+			FOR LOCAL n := 1 AS INT UPTO 10
+				aThreads[n] := Thread{Test}
+				Thread.Sleep(100)
+				aThreads[n]:Start()
+			NEXT
+			LOCAL lWait AS LOGIC
+			lWait := TRUE
+			DO WHILE lWait
+				Thread.Sleep(100)
+				lWait := FALSE
+				FOR LOCAL n := 1 AS INT UPTO 10
+					lWait := lWait .OR. aThreads[n]:IsAlive
+				NEXT
+			END DO
+			CheckResults()
+		CATCH e AS Exception
+			MessageBox.Show(e:ToString(), "Error running test 5")
+		END TRY
+	RETURN
+
+	STATIC METHOD RunTest6() AS VOID
+		? "Running test6"
+		cDbf := gcPath + __FUNCTION__
+
+		nIterations := 10_000
+		lUseCommit := TRUE
+		nKeyLength := 10
+
+		TRY
+			ResetFile()
+			LOCAL aThreads AS Thread[]
+			aThreads := Thread[]{10}
+			FOR LOCAL n := 1 AS INT UPTO 10
+				aThreads[n] := Thread{Test}
+                aThreads[n]:Name := "Thread "+n:ToString()
+				Thread.Sleep(100)
+				aThreads[n]:Start()
+			NEXT
+			LOCAL lWait AS LOGIC
+			lWait := TRUE
+			DO WHILE lWait
+				Thread.Sleep(100)
+				lWait := FALSE
+				FOR LOCAL n := 1 AS INT UPTO 10
+					lWait := lWait .OR. aThreads[n]:IsAlive
+				NEXT
+			END DO
+			CheckResults()
+		CATCH e AS Exception
+			MessageBox.Show(e:ToString(), "Error running test 6")
+		END TRY
+	RETURN
+
+	STATIC METHOD ResetFile() AS VOID
+		TRY
+			FErase(cDbf + ".dbf")
+			FErase(cDbf + ".cdx")
+		END TRY
+		DbCreate(cDbf, {{"FNUM" , "N" , 5 , 0},{"FSTR" , "C" , nKeyLength , 0}})
+		DbUseArea(,"DBFCDX",cDbf,,FALSE)
+		DbCreateIndex(cDbf, "FSTR + Str(FNUM,3,0)")
+		DbAppend()
+		FieldPut(1, 123)
+		FieldPut(2, "ABC")
+		DbAppend()
+		FieldPut(1, 456)
+		FieldPut(2, "DEF")
+		DbCloseArea()
+	RETURN
+
+	STATIC METHOD Test() AS VOID
+		LOCAL oRand AS Random
+		
+		oRand := Random{1}
+		DbUseArea(,"DBFCDX",cDbf,,TRUE)
+		TRY
+            ? ProcName(1), nIterations, "iterations"
+		FOR LOCAL n := 1 AS DWORD UPTO nIterations
+			IF n % 1000 == 0
+				? n, System.Threading.Thread.CurrentThread.Name
+			END IF
+			IF n % 31 == 0
+				DbAppend()
+			ELSE
+				DbGoto(oRand:@@Next() % (INT)LastRec() + 1)
+				IF .NOT. RLock()
+					LOOP
+				ENDIF
+			END IF
+			FieldPut(1, oRand:@@Next() % 100)
+			FieldPut(2, Replicate( Chr(n % 10 + 65) + Chr(n % 13 + 65) + Chr(n % 15 + 65) , nKeyLength ))
+			IF lUseCommit
+				DbCommit()
+			END IF
+			DbUnLock()
+//			IF n %100 == 0
+//                //DbOrderInfo(DBOI_DUMP)
+//                VAR oRes := DbOrderInfo(DBOI_VALIDATE)
+//                IF (OBJECT) oRes IS LOGIC VAR lRes .AND. !lRes
+//                    ? "Error after iteration ", n, "Record", Recno()
+//                    Altd()
+//                    EXIT
+//                ELSEIF ! ((OBJECT) oRes IS LOGIC)
+//                    ? "Error after iteration ", n, "result of DborderInfo is not logic"
+//                    Altd()
+//                    EXIT
+//                ENDIF
+//            ENDIF
+        NEXT
+        CATCH e AS Exception
+            ? e:ToString()
+            Console.Read()
+        END TRY
+		DbCloseArea()
+	RETURN
+
+	STATIC METHOD CheckResults() AS VOID
+		LOCAL cOld,cNew AS STRING
+		LOCAL nTotalErrors := 0 AS INT
+		LOCAL nRecords AS DWORD
+		cOld := ""
+		
+		DbUseArea(,"DBFCDX",cDbf,,FALSE)
+		nRecords := LastRec()
+		DbGoTop()
+		DO WHILE !Eof()
+			cNew := FieldGet(2) + Str(FieldGet(1),3,0)
+			IF cNew < cOld
+				? "Error at recno", RecNo(), "next and previous values:", cNew,cOld
+				nTotalErrors ++
+			END IF
+			cOld := cNew
+			DbSkip()
+		END DO
+		
+		DbCloseArea()
+		
+		? nTotalErrors, "errors, out of", nRecords, "records"
+		
+		IF nTotalErrors != 0
+			THROW Exception{"There were errors found whe validating index"}
+		END IF
+	RETURN
+
+END CLASS
+
+
+
+
+FUNCTION TestChrisCorrupt() AS VOID
+LOCAL cDbf AS STRING
+LOCAL hFile AS PTR
+LOCAL nInstance AS LONG            
+TRY
+nInstance := 0
+hFile := F_ERROR                         
+DO WHILE hFile == F_ERROR                                           
+	nInstance++
+	hFile := FCreate2("c:\test\test"+StrZero(nInstance,4,0)+".txt",FC_NORMAL)
+ENDDO		
+Console.Title := "testing instance "+nInstance:ToString()
+cDbf := "c:\test\letstest"
+IF nInstance == 1
+	FErase(cDbf + ".dbf")            
+	FErase(cDbf + ".cdx")
+	DbCreate(cDbf, {{"FNUM" , "N" , 5 , 0},{"FSTR" , "C" , 20 , 0}})
+	DbUseArea(,"DBFCDX",cDbf,,FALSE)
+	DbCreateIndex(cDbf, "FSTR + Str(FNUM,3,0)")
+	DbCloseArea()
+ENDIF
+
+DbUseArea(,"DBFCDX",cDbf,,TRUE)          
+? "running"
+IF LastRec() == 0        
+	DbAppend()
+	FieldPut(1, 123)
+	FieldPut(2, "ABC")
+	DbAppend()
+	FieldPut(1, 456)
+	FieldPut(2, "DEF")
+	DbUnLock()
+END IF
+
+FOR LOCAL n := 1 AS INT UPTO gnIterations       
+	IF (n % 100 == 0)
+		? n
+	ENDIF
+	IF n % 7 == 0
+		DbAppend()
+		FWriteLine(hFile, i"Appending record {Recno()}")
+	ELSE                                                                  
+//		DbGoto(oRand:@@Next() % (INT)LastRec() + 1)
+		DbGoto(n * 15 % (INT)LastRec() + 1)                              
+		FWriteLine(hFile, i"Updating record {Recno()}")
+		IF .NOT. RLock()
+			FWriteLine(hFile, i"Failed to lock record {Recno()}")
+			LOOP                             
+		ENDIF
+	END IF
+	FieldPut(1, n * 123 % 1000)
+	FieldPut(2, Chr(n % 10 + 65) + Chr(n % 13 + 65) + Chr(n % 15 + 65))
+	#warning try with and without DBCommit(), I get different results
+	// DbCommit()
+	DbUnLock()
+NEXT
+DbCloseArea()
+
+WAIT "Press enter to start check. make sure dbf is not updated by other process"
+	
+LOCAL cOld,cNew AS STRING
+LOCAL nTotalErrors := 0 AS INT
+cOld := ""
+
+IF nInstance == 1
+	DbUseArea(,"DBFCDX",cDbf,,FALSE)
+	DbGoTop()
+	IF OrdKeyCount() != RecCount()
+		VAR cLine := i"Error OrdKeyCount= {OrdKeyCount()} RecCount= {RecCount()}"
+		? cLine
+		FWriteLine(hFile, cLine)	
+	ENDIF	
+	DO WHILE !Eof()
+		cNew := FieldGet(2) + Str(FieldGet(1),3,0)
+		IF cNew < cOld
+			VAR cLine := I"Error at recno {RecNo()} next and previous values: {cNew} {cOld}"
+			? cLine
+			FWriteLine(hFile, cLine)
+			nTotalErrors ++
+		END IF
+		cOld := cNew
+		DbSkip()
+	END DO
+	DbOrderInfo(DBOI_USER+42)
+	DbCloseArea()
+	VAR cLine1 := i"{nTotalErrors} errors, out of {gnIterations} iterations"
+	? cLine1
+	? FWriteLine(hFile, cLine1)
+ENDIF
+
+
+CATCH e AS Exception                  
+	? e:ToString()
+	FWriteLine(hFile, e:ToString())
+	WAIT
+END TRY	
+
+FClose(hFile)
+
+FUNCTION TestDateTimeAndCurrency() AS VOID
+LOCAL dt AS DateTime
+LOCAL c AS CURRENCY
+ 
+dt := DateTime(2000,12,2)
+c := 12.45
+
+// ok, the FP and VO dialect show the same results
+? dt  // 02.12.2020 00:00:00
+? c   // 12,4500
+?
+// ok, the FP and VO dialect show the same results
+
+? XSharp.RuntimeState.Dialect
+? dt:GetType():ToString()  // System.DateTime
+? c:GetType():ToString()   // XSharp.__Currency 
+?
+? "Test DateTime:"
+TestUsual ( dt )
+?
+? "Test Currency:" 
+TestUsual ( c ) 
+?
+
+RETURN 
+
+FUNCTION TestIndexKey() AS VOID
+        
+    LOCAL aDbf AS ARRAY
+    LOCAL cDBF AS STRING
+    LOCAL aValues AS ARRAY
+    LOCAL i AS DWORD
+    
+    RddSetDefault("DBFCDX")
+    
+    DbCloseAll()
+    
+    cDBF := "c:\test\abc"
+    FErase(cDbf + ".cdx")
+    
+    RddSetDefault("DBFCDX")
+    
+    aValues := { 44 , 12, 34 , 21 }
+    aDbf := {{ "AGE" , "N" , 2 , 0 }}
+    
+    DbCreate( cDBF , aDbf)
+    DbUseArea(,"DBFCDX",cDBF,,FALSE)
+    FOR i := 1 UPTO ALen ( aValues )
+        DbAppend()
+        FieldPut(1,aValues [i])
+    NEXT
+    DbCreateIndex( cDbf, "age" )
+    DbGoTop()
+    
+    ? IndexKey() // EMPTY, should be "age"
+    DbCloseArea() 
+           
+FUNCTION TestUsual ( u AS USUAL ) AS VOID 
+
+/*	
+ The VO dialect shows: 
+
+	XSharp.__Usual
+	XSharp.__Usual 
+	
+  while the FP dialect shows:
+  
+	System.DateTime
+ 	XSharp.__Currency
+
+*/
+
+? u:GetType():ToString()   
+
+RETURN 
 
 FUNCTION testAppDelim() AS VOID
 LOCAL cPfad, cSource, cDbf AS STRING
@@ -3682,7 +4264,7 @@ PROCEDURE CauseException()
 	LOCAL u AS USUAL
 	u := 1
 	? u + TRUE
-RETURN
+RETURN 
 
 FUNCTION TestSetDefault() AS VOID
     ? RddSetDefault(NULL_STRING)
@@ -4343,7 +4925,7 @@ PROCEDURE CheckOrder()
         ? "Wrong record count", nCount
     END IF
     
-RETURN 
+RETURN  
 
 FUNCTION TestVFPFiles() AS VOID
 LOCAL cDbf AS STRING
@@ -6359,3 +6941,22 @@ FUNCTION IsRlocked() AS LOGIC // Helper func
     RETURN ascan ( DBRlocklist() , recno() ) > 0
 
 
+
+FUNCTION DumpDbfCdx(cFile AS STRING) AS VOID
+    ? "Dumping index info for ", cFile
+    RddSetDefault("DBFCDX")
+    DBUSEAREA(TRUE, "DBFCDX", cFile, "test", FALSE)
+    FOR VAR i := 1 TO DbOrderInfo(DBOI_ORDERCOUNT)
+        DbSetOrder(i)
+        VAR d = datetime.Now
+        ? OrdName(), OrdKeyCount(), RecCount()
+        LOCAL ts := DateTime.Now - d AS TimeSPan
+        ? ts:Milliseconds, ts:Seconds
+        DbOrderInfo(DBOI_USER+42)
+    NEXT
+    DbCloseArea()
+    RETURN
+
+FUNCTION DumpKeesFiles() AS STRING
+DumpDbfCdx("c:\download\KeesB\ORDERS.DBF")
+DumpDbfCdx("c:\download\KeesB\Seek_ORDERS.DBF")

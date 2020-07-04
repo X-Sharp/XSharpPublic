@@ -21,7 +21,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         PUBLIC METHOD Create(createInfo AS DbOrderCreateInfo ) AS LOGIC
             LOCAL isOk AS LOGIC
             LOCAL hasForCond AS LOGIC
-            SELF:_ordCondInfo := SELF:_oRdd:_OrderCondInfo:Clone()
+            SELF:_ordCondInfo := SELF:_oRdd:OrderCondInfo:Clone()
             #ifdef SHOWTIMES
             ? DateTime.Now, "Create", createInfo:Order, "# of records", SELF:_oRdd:RecCount
             #endif
@@ -101,6 +101,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             SELF:_ordCondInfo:Compile(SELF:_oRdd)
             SELF:_ordCondInfo:Active := TRUE
             SELF:_ordCondInfo:Validate()
+            SELF:Stack:Clear()
             RETURN SELF:_Build()
 
         PRIVATE METHOD _Build() AS LOGIC
@@ -255,7 +256,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             ENDIF
             SELF:_oRdd:__Goto(record)
             // IF record is EOF then do nothing
-            IF !SELF:_oRdd:_isValid .AND. !SELF:_oRdd:_EoF
+            IF !SELF:_oRdd:_isValid .AND. !SELF:_oRdd:EoF
                 SELF:_oRdd:__Goto(start)
                 SELF:ClearStack()
                 RETURN FALSE
@@ -310,12 +311,12 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                     IF toDo != 0 .AND. done >= toDo
                         EXIT
                     ENDIF
-                    IF SELF:_oRdd:_EoF 
+                    IF SELF:_oRdd:EoF 
                         EXIT
                     ENDIF
                 ENDDO
             ELSE
-                DO WHILE !_oRdd:_EoF
+                DO WHILE !_oRdd:EoF
                     // Only conditions, nothing else
                     includeRecord := SELF:_EvalBlock(ordCondInfo:ForBlock, TRUE)
                     IF includeRecord
@@ -401,7 +402,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             IF lRecCount == 0
                 RETURN TRUE
             ENDIF
-            hasBlock    := SELF:_oRdd:_OrderCondInfo:EvalBlock != NULL
+            hasBlock    := SELF:_oRdd:OrderCondInfo:EvalBlock != NULL
             evalCount := 1
             SELF:_oRdd:GoTo(1)
             result    := TRUE
@@ -410,8 +411,8 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                     EXIT
                 ENDIF
                 IF hasBlock
-                    IF evalCount >= SELF:_oRdd:_OrderCondInfo:StepSize
-                        IF ! SELF:_EvalBlock(SELF:_oRdd:_OrderCondInfo:EvalBlock, FALSE)
+                    IF evalCount >= SELF:_oRdd:OrderCondInfo:StepSize
+                        IF ! SELF:_EvalBlock(SELF:_oRdd:OrderCondInfo:EvalBlock, FALSE)
                             EXIT
                         ENDIF
                         evalCount := 1

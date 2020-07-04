@@ -17,10 +17,10 @@ namespace XSharp.Project
     /// </summary>
     internal class ErrorsFactory : TableEntriesSnapshotFactoryBase
     {
-        private readonly IErrorListProvider _errorProvider;
+        private readonly IListProvider _errorProvider;
         private List<IErrorListItem> _currentErrors = new List<IErrorListItem>();
         private Guid _projectGuid = Guid.Empty;
-        internal ErrorsFactory(IErrorListProvider errorProvider, Guid projectGuid)
+        internal ErrorsFactory(IListProvider errorProvider, Guid projectGuid)
         {
             _errorProvider = errorProvider;
             _projectGuid = projectGuid;

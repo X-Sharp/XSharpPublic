@@ -86,7 +86,7 @@ BEGIN NAMESPACE XSharp.RDD
             IF oOther:Key:Length != SELF:Key:Length
                 oOther:Key  := (BYTE[]) SELF:Key:Clone()
             ELSE
-                Array.Copy(SELF:Key, oOther:Key, SELF:Key:Length)
+                System.Array.Copy(SELF:Key, oOther:Key, SELF:Key:Length)
             ENDIF
     END CLASS
 

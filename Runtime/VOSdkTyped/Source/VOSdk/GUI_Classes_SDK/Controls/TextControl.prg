@@ -142,9 +142,9 @@ CLASS TextControl INHERIT Control
 				oFont:Create()
 				hFont := oFont:Handle()
 			ELSE
-				hFont := Win32.GetStockObject(DEFAULT_GUI_FONT)
+				hFont := GuiWin32.GetStockObject(DEFAULT_GUI_FONT)
 				IF (hFont == NULL_PTR)
-					hFont := Win32.GetStockObject(SYSTEM_FONT)
+					hFont := GuiWin32.GetStockObject(SYSTEM_FONT)
 				ENDIF
 			ENDIF
 			SELF:oCtrl:Font := oFont:__Font
@@ -209,9 +209,9 @@ CLASS TextControl INHERIT Control
 		IF (oFont != NULL_OBJECT)
 			oFont:Create()
 		ELSE
-			hFont := Win32.GetStockObject(DEFAULT_GUI_FONT)
+			hFont := GuiWin32.GetStockObject(DEFAULT_GUI_FONT)
 			IF hFont == NULL_PTR
-				hFont := Win32.GetStockObject(SYSTEM_FONT)
+				hFont := GuiWin32.GetStockObject(SYSTEM_FONT)
 			ENDIF
 			oFont := System.Drawing.Font.FromHfont(hFont)
 		ENDIF
@@ -292,7 +292,7 @@ CLASS TextControl INHERIT Control
 		LOCAL dwNewColor AS DWORD
 		LOCAL dwOldColor AS DWORD
 		
-		dwDefaultColor := Win32.GetSysColor(COLOR_WINDOWTEXT)
+		dwDefaultColor := GuiWin32.GetSysColor(COLOR_WINDOWTEXT)
 		dwNewColor     := oColor:ColorRef
 		IF lManageColor
 			dwOldColor := oTextColor:ColorRef

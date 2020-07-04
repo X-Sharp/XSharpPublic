@@ -12,7 +12,7 @@ USING System.Collections.Generic
 #define MAXDIGITS               30
 #define MAXDECIMALS             15
 
-INTERNAL STATIC CLASS ConversionHelpers
+INTERNAL STATIC CLASS XSharp.ConversionHelpers
     STATIC INTERNAL usCulture AS CultureInfo
     STATIC PRIVATE formatStrings AS Dictionary<INT, STRING>
     STATIC CONSTRUCTOR

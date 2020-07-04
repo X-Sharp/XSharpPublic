@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\XSharp\XSharp.Default.props" />
+  <Import Project="..\VOSDK.Targets" />
+  <!-- Please note that many properties are read from VOSDK.Targets -->
+  <PropertyGroup>
+    <ProjectGuid>{91816960-eb2d-4e4a-ae67-4edc5bd38940}</ProjectGuid>
+    <AssemblyName>XSharp.VOSQLClasses</AssemblyName>
+    <Name>XSharp.VO.SQLClasses</Name>
+    <OutputName>XSSQLClasses</OutputName>
+    <XSharpProjectExtensionsPath>$(MSBuildExtensionsPath)\XSharp\</XSharpProjectExtensionsPath>
+    <XSharpProjectversion>2.5.0.0</XSharpProjectversion>
+    <Includepaths>$(Solutiondir)Common</Includepaths>
+    <Nostandarddefs>false</Nostandarddefs>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <Unsafe>false</Unsafe>
+    <VO6>false</VO6>
+    <VO9>false</VO9>
+    <VO10>false</VO10>
+    <VO14>false</VO14>
+    <VO7>false</VO7>
+    <FOX1>false</FOX1>
+    <RootNamespace>XSharp.VO.SDK</RootNamespace>
+    <NoWin32Manifest>False</NoWin32Manifest>
+	<DisabledWarnings>165</DisabledWarnings>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
+ 
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Documentation|AnyCPU'">
+    <DocumentationFile>VOSQLClasses.Xml</DocumentationFile>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
+  </PropertyGroup>
+  <Import Project="$(MSBuildExtensionsPath)\XSharp\XSharp.targets" />
+  <ItemGroup>
+    <Compile Include="..\..\SharedSource\SDKAssemblyinfo.prg">
+      <Link>SDKAssemblyinfo.prg</Link>
+    </Compile>
+    <Compile Include="SQL.prg" />
+    <Compile Include="SQLExt.prg" />
+    <Compile Include="Properties\AssemblyInfo.prg" />
+    <Compile Include="SQLCatalog.prg" />
+    <Compile Include="SqlListSubclasses.prg" />
+    <Compile Include="SQLColumn.prg" />
+    <Compile Include="SQLColumnAttributes.prg" />
+    <Compile Include="SQLConnection.prg" />
+    <Compile Include="SQLData.prg" />
+    <Compile Include="SQLDefines.prg" />
+    <Compile Include="SQLErrorInfo.prg" />
+    <Compile Include="SQLFunctions.prg" />
+    <Compile Include="SQLLangDef.prg" />
+    <Compile Include="SQLParameter.prg" />
+    <Compile Include="SQLSelect1.prg" />
+    <Compile Include="SQLSelect2.prg" />
+    <Compile Include="SQLSelect3.prg" />
+    <Compile Include="SQLSelect4.prg" />
+    <Compile Include="SQLSelectA.prg" />
+    <Compile Include="SQLStatement.prg" />
+    <Compile Include="SQLTable.prg" />
+    <Compile Include="SQLValue.prg" />
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Data, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+      <Name>System.Data</Name>
+      <AssemblyName>System.Data.dll</AssemblyName>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Properties\" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\..\XSharp.Core\XSharp.Core.xsproj">
+      <Name>XSharp.Core</Name>
+      <Project>{535dff14-efb7-43f5-a4e1-71c1c4280040}</Project>
+      <Private>True</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\..\XSharp.Data\XSharp.Data.xsproj">
+      <Name>XSharp.Data</Name>
+      <Project>{db9ad987-ebd9-4f0c-8604-608a9028585c}</Project>
+      <Private>True</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\..\XSharp.RT\XSharp.RT.xsproj">
+      <Name>XSharp.RT</Name>
+      <Project>{ef8d2bf2-e81a-479a-ba4f-294c4c348b66}</Project>
+      <Private>True</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\System_Classes_SDK\XSharp.VO.SystemClasses.xsproj">
+      <Name>XSharp.VO.SystemClasses</Name>
+      <Project>{5ac3e55d-f2bd-45eb-9cc2-dd8bd36240ea}</Project>
+      <Private>True</Private>
+    </ProjectReference>
+  </ItemGroup>
+  <!-- This next bit is required unless the macro used to Import your targets is defined in an MSBuild toolset. -->
+  <ProjectExtensions>
+    <ProjectCapabilities>
+      <ProjectConfigurationsDeclaredAsItems />
+    </ProjectCapabilities>
+  </ProjectExtensions>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
+    <PreBuildEvent />
+    <PostBuildEvent />
+    <RunPostBuildEvent />
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
+    <PreBuildEvent />
+    <PostBuildEvent />
+    <RunPostBuildEvent />
+  </PropertyGroup>
+</Project>

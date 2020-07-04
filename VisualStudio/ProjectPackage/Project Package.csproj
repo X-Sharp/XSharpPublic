@@ -280,7 +280,12 @@
     <Compile Include="Editors\Errors\XSharpErrorColorizer.cs" />
     <Compile Include="Editors\QuickInfo\XSharpQuickInfo.cs" />
     <Compile Include="Editors\XMLDoc\XSharpXMLDoc.cs" />
+    <Compile Include="ErrorList\TaskListManager.cs" />
+    <Compile Include="ErrorList\TasksSnapShot.cs" />
+    <Compile Include="ErrorList\TasksFactory.cs" />
+    <Compile Include="ErrorList\TaskListItem.cs" />
     <Compile Include="ErrorList\ErrorListManager.cs" />
+    <Compile Include="ErrorList\TaskListProvider.cs" />
     <Compile Include="LanguageService\ExpansionFunctions.cs" />
     <Compile Include="LanguageService\XSharpViewFilter.cs" />
     <Compile Include="Library\HierarchyListener.cs" />
@@ -356,11 +361,11 @@
     <Compile Include="Editors\CommandFilter\CommandFilter.cs" />
     <Compile Include="Editors\Completion\XSharpCompletionSource.cs" />
     <Compile Include="ErrorList\ErrorListProvider.cs" />
-    <Compile Include="ErrorList\ErrorListSinkManager.cs" />
+    <Compile Include="ErrorList\ListSinkManager.cs" />
     <Compile Include="ErrorList\ErrorMessageUtil.cs" />
     <Compile Include="ErrorList\ErrorListItem.cs" />
-    <Compile Include="ErrorList\IErrorListProvider.cs" />
-    <Compile Include="ErrorList\IErrorListSinkManager.cs" />
+    <Compile Include="ErrorList\IListProvider.cs" />
+    <Compile Include="ErrorList\IListSinkManager.cs" />
     <Compile Include="ErrorList\ErrorsFactory.cs" />
     <Compile Include="ErrorList\ErrorsSnapshot.cs" />
     <Compile Include="LanguageService\XSharpTypeAndMemberDropDownBars.cs" />

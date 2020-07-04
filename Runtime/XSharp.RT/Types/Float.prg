@@ -354,9 +354,13 @@ BEGIN NAMESPACE XSharp
             RETURN FLOAT{ lhs:_value * rhs:_value, lhs:Decimals + rhs:Decimals}
             
             /// <include file="RTComments.xml" path="Comments/Operator/*" />
-        [DebuggerStepThroughAttribute];
+        //[DebuggerStepThroughAttribute];
         OPERATOR/(lhs AS FLOAT, rhs AS FLOAT) AS FLOAT
-            RETURN FLOAT{ lhs:_value / rhs:_value, RuntimeState.Decimals}
+            VAR tmp := lhs:_value / rhs:_value
+            IF System.Double.IsNaN(tmp)
+                THROW DivideByZeroException{}
+            ENDIF
+            RETURN FLOAT{ tmp, RuntimeState.Decimals}
             
             /// <include file="RTComments.xml" path="Comments/Operator/*" />
         [DebuggerStepThroughAttribute];

@@ -1,3 +1,8 @@
+//
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
+// See License.txt in the project root for license information.
+//
 // Aliases to functions in XSharp.RT
 USING System
 USING XSharp.RDD
@@ -38,7 +43,7 @@ FUNCTION DbCargo(xNewValue) AS USUAL
     LOCAL wa := XSharp.RuntimeState.Workareas AS Workareas
     nArea   := wa:CurrentWorkareaNO
     old     := wa:GetCargo(nArea) 
-    IF ! IsNil(xNewValue)
+    IF PCOUNT() != 0
         wa:SetCargo(nArea, xNewValue)
     ENDIF
     RETURN old

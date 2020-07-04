@@ -5,34 +5,35 @@
 
 
 
+USING System.Collections.Generic
+USING System.Runtime.InteropServices
+USING System.Text
+USING System.Diagnostics
+USING System.Windows.Forms.VisualStyles
+USING System.Windows.Forms
 
-#USING System.Runtime.InteropServices
-#USING System.Text
-#USING System.Diagnostics
-#USING System.Windows.Forms.VisualStyles
-#USING System.Windows.Forms
 CLASS ResourceDialog INHERIT ResourceReader
-	EXPORT Caption		AS STRING
-	EXPORT FontName		AS STRING
-	EXPORT FontPitch	AS WORD
-	EXPORT FontWeight	AS WORD
-	EXPORT FontItalic   AS BYTE
-	EXPORT FontCharSet   AS BYTE
-	EXPORT ClassName	AS STRING
-	EXPORT MenuName		AS STRING
-	EXPORT ClassID		AS WORD
-	EXPORT MenuID		AS LONG
-	PROTECT oOwner		 AS OBJECT
-	PROTECT X            AS LONG		// Dialog box Units
-	PROTECT Y            AS LONG
-	PROTECT CX           AS LONG		// Dialog box Units
-	PROTECT CY           AS LONG		// Dialog box Units
-	EXPORT Style        AS INT
-	EXPORT ExStyle      AS INT
-	EXPORT ItemCnt		AS LONG
-	EXPORT HelpID		AS DWORD	
-	EXPORT Controls     AS System.Collections.Generic.List<ResourceDialogItem>
-	EXPORT IsValid		AS LOGIC
+	PROPERTY Caption		AS STRING   AUTO
+	PROPERTY FontName		AS STRING   AUTO
+	PROPERTY FontPitch	    AS WORD     AUTO
+	PROPERTY FontWeight	    AS WORD     AUTO
+	PROPERTY FontItalic     AS BYTE     AUTO
+	PROPERTY FontCharSet    AS BYTE     AUTO
+	PROPERTY ClassName	    AS STRING   AUTO
+	PROPERTY MenuName		AS STRING   AUTO
+	PROPERTY ClassID		AS WORD     AUTO
+	PROPERTY MenuID		    AS LONG     AUTO
+	PROPERTY oOwner		    AS OBJECT   AUTO
+	PROPERTY X              AS LONG		AUTO // Dialog box Units
+	PROPERTY Y              AS LONG     AUTO 
+	PROPERTY CX             AS LONG		AUTO // Dialog box Units
+	PROPERTY CY             AS LONG		AUTO // Dialog box Units
+	PROPERTY Style          AS INT      AUTO 
+	PROPERTY ExStyle        AS INT      AUTO 
+	PROPERTY ItemCnt		AS LONG     AUTO 
+	PROPERTY HelpID		    AS DWORD	AUTO 
+	PROPERTY Controls       AS List<ResourceDialogItem> AUTO
+	PROPERTY IsValid		AS LOGIC    AUTO
 
 #region Properties
 	ACCESS Size as System.Drawing.Size
@@ -70,7 +71,7 @@ CLASS ResourceDialog INHERIT ResourceReader
 			ELSE
 				hOwner := IntPtr.Zero
 			ENDIF
-			hWnd := Win32.CreateDialogParam(hDLL, sName, hOwner, IntPtr.Zero, IntPtr.Zero)
+			hWnd := GuiWin32.CreateDialogParam(hDLL, sName, hOwner, IntPtr.Zero, IntPtr.Zero)
 			IF hWnd != IntPtr.Zero 
 				LOCAL oRect := WINRECT{} AS WINRECT
 				LOCAL oPoint := WINPOINT{} AS WINPOINT
@@ -79,10 +80,10 @@ CLASS ResourceDialog INHERIT ResourceReader
 				LOCAL oFont AS System.Drawing.Font
 				LOCAL lOk AS LOGIC
 				sb := StringBuilder{256}
-				IF Win32.GetClassName(hWnd, sb, sb:Capacity) > 0
+				IF GuiWin32.GetClassName(hWnd, sb, sb:Capacity) > 0
 					SELF:ClassName := sb:ToString()
 				ENDIF
-				hFont := (IntPtr) Win32.SendMessage(hWnd, WM_GETFONT,0,0)
+				hFont := (IntPtr) GuiWin32.SendMessage(hWnd, WM_GETFONT,0,0)
 				TRY
 					IF hFont != NULL
 						oFont := System.Drawing.Font.FromHfont(hFont)
@@ -93,9 +94,9 @@ CLASS ResourceDialog INHERIT ResourceReader
 					ENDIF
 				CATCH  AS Exception
 				END TRY
-				SELF:Style	 := Win32.GetWindowLong(hWnd, GWL_STYLE)
-				SELF:ExStyle := Win32.GetWindowLong(hWnd, GWL_EXSTYLE)
-				lOk := Win32.GetWindowRect(hWnd, REF oRect)
+				SELF:Style	 := GuiWin32.GetWindowLong(hWnd, GWL_STYLE)
+				SELF:ExStyle := GuiWin32.GetWindowLong(hWnd, GWL_EXSTYLE)
+				lOk := GuiWin32.GetWindowRect(hWnd, REF oRect)
 				IF lOk
 					SELF:X := oRect:left
 					SELF:Y := oRect:top
@@ -104,9 +105,9 @@ CLASS ResourceDialog INHERIT ResourceReader
 				ENDIF
 				FOREACH IMPLIED oControl IN SELF:Controls
 					LOCAL hItem AS IntPtr
-					hItem	:= Win32.GetDlgItem(hWnd, oControl:ControlID)
+					hItem	:= GuiWin32.GetDlgItem(hWnd, oControl:ControlID)
 					IF hItem != IntPtr.Zero
-						lOk		           := Win32.GetWindowRect(hItem, REF oRect)
+						lOk		           := GuiWin32.GetWindowRect(hItem, REF oRect)
 						IF lOk
 							oControl:CX        := oRect:right - oRect:left
 							IF !oControl:IsComboBox
@@ -115,26 +116,26 @@ CLASS ResourceDialog INHERIT ResourceReader
 							ENDIF
 							oPoint:x           := oRect:left
 							oPoint:y           := oRect:top
-							lOk                := Win32.ScreenToClient(hWnd, REF oPoint)
+							lOk                := GuiWin32.ScreenToClient(hWnd, REF oPoint)
 							IF lOk
 								oControl:X         := oPoint:x
 								oControl:Y         := oPoint:y
 							ENDIF
 						ENDIF
-						oControl:Style	   := Win32.GetWindowLong(hItem, GWL_STYLE)
-						oControl:ExStyle   := Win32.GetWindowLong(hItem, GWL_EXSTYLE)
-						IF Win32.GetClassName(hItem, sb, sb:Capacity) > 0
+						oControl:Style	   := GuiWin32.GetWindowLong(hItem, GWL_STYLE)
+						oControl:ExStyle   := GuiWin32.GetWindowLong(hItem, GWL_EXSTYLE)
+						IF GuiWin32.GetClassName(hItem, sb, sb:Capacity) > 0
 							oControl:ClassName := sb:ToString()
 						ENDIF
 						//TRY
-						//	hFont              := (IntPtr) Win32.SendMessage(hItem, WM_GETFONT,0,0)
+						//	hFont              := (IntPtr) GuiWin32.SendMessage(hItem, WM_GETFONT,0,0)
 						//	IF hFont != NULL
 						//		oFont := System.Drawing.Font.FromHfont(hFont)
 						//	ENDIF
 						//END TRY
 					ENDIF
 				NEXT
-				lOk  := Win32.DestroyWindow(hWnd)
+				lOk  := GuiWin32.DestroyWindow(hWnd)
 			ENDIF
 		ENDIF
 		RETURN 
@@ -146,14 +147,14 @@ CLASS ResourceDialog INHERIT ResourceReader
 		Controls := System.Collections.Generic.List<ResourceDialogItem>{}
 		SELF:IsValid := FALSE
 		IF hResInfo != NULL
-			uiResSize := Win32.SizeOfResource(hDLL, hResInfo)
+			uiResSize := GuiWin32.SizeOfResource(hDLL, hResInfo)
 			IF uiResSize != 0
-				hResource := Win32.LoadResource(hDLL, hResInfo)
+				hResource := GuiWin32.LoadResource(hDLL, hResInfo)
 				IF hResource != NULL
-					lpBuffer := Win32.LockResource(hResource)
+					lpBuffer := GuiWin32.LockResource(hResource)
 					SELF:ReadData(lpBuffer)
 					SELF:IsValid := TRUE
-					Win32.FreeResource(hResource)
+					GuiWin32.FreeResource(hResource)
 				ENDIF
 			ENDIF	
 		ENDIF
@@ -164,7 +165,7 @@ CLASS ResourceDialog INHERIT ResourceReader
 		LOCAL hResInfo AS IntPtr
 		SUPER()
 		oOwner   := Owner
-		hResInfo := Win32.FindResource(hDLL, cName, 5)
+		hResInfo := GuiWin32.FindResource(hDLL, cName, 5)
 		IF SELF:__LoadFromResource(hDLL, hResInfo)
 			SELF:__AdjustSizes(hDLL, cName)
 		ENDIF

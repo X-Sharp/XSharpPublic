@@ -352,7 +352,9 @@ METHOD __NotifyBufferFlush( ) AS VOID STRICT
 		DBFDebug("Entering "+__ENTITY__)
 	#ENDIF
 
-	ASend( aRelationChildren, #__NotifyBufferFlush )
+			FOREACH oChild AS USUAL IN aRelationChildren
+                Send(oChild, #__NotifyBufferFlush)
+			NEXT  // nChild
 	VODBSelect( wWorkArea, OUT dwCurrentWorkArea )
 	SELF:__OptimisticFlush( )
 	__DBSSetSelect( dwCurrentWorkArea  ) //SE-060527

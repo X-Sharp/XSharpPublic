@@ -9,11 +9,34 @@ using XSharp.XPP
 #translate SetDefault(@ <expr>, <value>) => <expr> := SetDefault(<expr> , <value>)
 
 
-FUNCTION MAIN(A,B,C) AS VOID clipper
+PROCEDURE Main()
+    TRY
+    ? PosUpper("abcdeFghi")
+    ? PosUpper("abcd1Fghi",TRUE)
+    ? PosUpper("Abcd1Fghi",FALSE,1)
+    ? PosLower("abcdeFghi")
+    ? PosLower("abcd1Fghi",TRUE)
+    ? PosLower("Abcd1Fghi",FALSE,1)
+    ? PosChar("abcdefg","h")
+    ? PosChar("abcdefg",42)
+    ? PosChar("abcdefg","ç",3)
+    ? PosDel("abcdefg",5,25)
+    ? PosIns("abcde","ABC",2)
+    ? PosIns("abcde","ABC")
+    ? PosRepl("abcde","q",3)
+    ? PosRepl("abcde","qrstuv")
+    CATCH e AS Exception
+        ? e:ToString()
+        
+    END TRY
+WAIT
+    RETURN
+
+FUNCTION MAINx(A,B,C) AS VOID clipper
     TRY
     ? XSharp.RuntimeState.Dialect:ToString() 
     LOCAL uTest := NIL as usual
-
+    SetCollationTable(2)
     SetDefault(@uTest, 123)
     ? uTest
 

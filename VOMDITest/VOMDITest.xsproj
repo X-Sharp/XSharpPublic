@@ -1,0 +1,199 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\XSharp\XSharp.Default.props" />
+  <PropertyGroup>
+    <ProjectGuid>5aa2d0de-06f3-4e9f-82b3-575a8b4006bf</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>VOMDITest</RootNamespace>
+    <AssemblyName>VOMDIApp</AssemblyName>
+    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
+    <Name>VOMDIApp</Name>
+    <Nologo>true</Nologo>
+    <GenerateFullPaths>true</GenerateFullPaths>
+    <Dialect>VO</Dialect>
+    <LB>true</LB>
+    <OutputName>VOMDIApp</OutputName>
+    <StartupObject />
+    <ApplicationIcon />
+    <Prefer32Bit>True</Prefer32Bit>
+    <VulcanCompatibleResources>False</VulcanCompatibleResources>
+    <AZ>false</AZ>
+    <CS>false</CS>
+    <OVF>false</OVF>
+    <Unsafe>true</Unsafe>
+    <INS>true</INS>
+    <NS>false</NS>
+    <VO1>true</VO1>
+    <VO2>true</VO2>
+    <VO3>true</VO3>
+    <VO4>true</VO4>
+    <VO5>true</VO5>
+    <VO6>true</VO6>
+    <VO7>true</VO7>
+    <VO8>true</VO8>
+    <VO9>true</VO9>
+    <VO10>true</VO10>
+    <VO11>false</VO11>
+    <VO12>false</VO12>
+    <VO13>true</VO13>
+    <VO14>false</VO14>
+    <VO15>true</VO15>
+    <VO16>true</VO16>
+    <NoStandardDefs>false</NoStandardDefs>
+    <IncludePaths />
+    <XSharpProjectversion>2.4.1.0</XSharpProjectversion>
+    <NoWin32Manifest>False</NoWin32Manifest>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'" Label="Configuration">
+    <PlatformTarget>x86</PlatformTarget>
+    <EmitDebugInformation>true</EmitDebugInformation>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>$(SolutionDir)$(Configuration)</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <UseSharedCompilation>true</UseSharedCompilation>
+    <DisabledWarnings>9032;9043;618;162;165;649;9025</DisabledWarnings>
+    <WarningLevel>4</WarningLevel>
+    <PPO>false</PPO>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'" Label="Configuration">
+    <PlatformTarget>x86</PlatformTarget>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <EmitDebugInformation>false</EmitDebugInformation>
+    <DebugType>pdbonly</DebugType>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <UseSharedCompilation>true</UseSharedCompilation>
+    <DisabledWarnings>9032;9043;618;162;165;649;9025</DisabledWarnings>
+    <PPO>false</PPO>
+  </PropertyGroup>
+  <Import Project="$(MSBuildExtensionsPath)\XSharp\XSharp.targets" />
+  <ItemGroup>
+    <Reference Include="mscorlib" />
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Standard Menus.prg" />
+    <Compile Include="Standard Shell.prg" />
+    <Compile Include="Start.prg" />
+    <Compile Include="Help About.prg" />
+    <Compile Include="Properties\AssemblyInfo.prg" />
+  </ItemGroup>
+  <ItemGroup>
+    <NativeResource Include="Standard Menus.EmptyShellMenu.rc">
+      <DependentUpon>Standard Menus.prg</DependentUpon>
+    </NativeResource>
+    <NativeResource Include="Standard Menus.EmptyShellMenu_Accelerator.rc">
+      <DependentUpon>Standard Menus.prg</DependentUpon>
+    </NativeResource>
+    <NativeResource Include="Standard Menus.StandardShellMenu.rc">
+      <DependentUpon>Standard Menus.prg</DependentUpon>
+    </NativeResource>
+    <NativeResource Include="Standard Menus.StandardShellMenu_Accelerator.rc">
+      <DependentUpon>Standard Menus.prg</DependentUpon>
+    </NativeResource>
+    <NativeResource Include="Standard Menus.VS_VERSION_INFO.rc">
+      <DependentUpon>Standard Menus.prg</DependentUpon>
+    </NativeResource>
+    <NativeResource Include="Standard Shell.IDI_STANDARDICON.rc">
+      <DependentUpon>Standard Shell.prg</DependentUpon>
+    </NativeResource>
+    <NativeResource Include="Standard Shell.Manifest.rc">
+      <DependentUpon>Standard Shell.prg</DependentUpon>
+    </NativeResource>
+    <NativeResource Include="Help About.HelpAbout.rc">
+      <DependentUpon>Help About.prg</DependentUpon>
+    </NativeResource>
+    <NativeResource Include="Help About.POWXSHARPBMP.rc">
+      <DependentUpon>Help About.prg</DependentUpon>
+    </NativeResource>
+  </ItemGroup>
+  <ItemGroup>
+    <VOBinary Include="Standard Menus.StandardShellMenu.xsmnu">
+      <DependentUpon>Standard Menus.prg</DependentUpon>
+    </VOBinary>
+    <VOBinary Include="Standard Menus.EmptyShellMenu.xsmnu">
+      <DependentUpon>Standard Menus.prg</DependentUpon>
+    </VOBinary>
+    <VOBinary Include="Help About.HELPABOUT.xsfrm">
+      <DependentUpon>Help About.prg</DependentUpon>
+    </VOBinary>
+    <None Include="Properties\cavowed.inf" />
+    <None Include="Properties\cavowed.tpl" />
+    <None Include="Properties\cavoded.tpl" />
+    <None Include="Properties\cavofed.tpl" />
+    <None Include="Resources\XSharp.ICO" />
+    <None Include="Resources\HelpAbt.BMP" />
+    <None Include="Resources\cctl6.man" />
+    <None Include="Readme.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Properties\" />
+    <Folder Include="Resources\" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Runtime\MacroCompiler\MacroCompiler.csproj">
+      <Name>MacroCompiler (Macrocompiler\MacroCompiler)</Name>
+      <Project>{eb3f3142-07f7-48ca-b38d-f611c45a9511}</Project>
+      <Private>True</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\Runtime\VOSDK\Source\VOSDK\GUI_Classes_SDK\VOGUIClasses.xsproj">
+      <Name>VOGUIClasses</Name>
+      <Project>{0bce49e2-3597-4e32-aa3c-c465130c05c8}</Project>
+      <Private>True</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\Runtime\VOSDK\Source\VOSDK\RDD_Classes_SDK\VORDDClasses.xsproj">
+      <Name>VORDDClasses</Name>
+      <Project>{d7079298-1712-4b03-ad76-4ec53bfe8356}</Project>
+      <Private>True</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\Runtime\VOSDK\Source\VOSDK\System_Classes_SDK\VOSystemClasses.xsproj">
+      <Name>VOSystemClasses</Name>
+      <Project>{ac2aebff-69ff-405d-b7d9-6e5cb1db914c}</Project>
+      <Private>True</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\Runtime\XSharp.Core\XSharp.Core.xsproj">
+      <Name>XSharp.Core</Name>
+      <Project>{535dff14-efb7-43f5-a4e1-71c1c4280040}</Project>
+      <Private>True</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\Runtime\XSharp.Rdd\XSharp.RDD.xsproj">
+      <Name>XSharp.RDD</Name>
+      <Project>{e83c6c8c-773f-4b01-a597-3d38398a9362}</Project>
+      <Private>True</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\Runtime\XSharp.RT\XSharp.RT.xsproj">
+      <Name>XSharp.RT</Name>
+      <Project>{ef8d2bf2-e81a-479a-ba4f-294c4c348b66}</Project>
+      <Private>True</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\Runtime\XSharp.VO\XSharp.VO.xsproj">
+      <Name>XSharp.VO</Name>
+      <Project>{06099c3d-1697-4eb1-9f53-8a9a50b9eacd}</Project>
+      <Private>True</Private>
+    </ProjectReference>
+  </ItemGroup>
+  <!-- This next bit is required unless the macro used to Import your targets is defined in an MSBuild toolset. -->
+  <ProjectExtensions>
+    <ProjectCapabilities>
+      <ProjectConfigurationsDeclaredAsItems />
+    </ProjectCapabilities>
+  </ProjectExtensions>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
+    <PreBuildEvent />
+    <PostBuildEvent />
+    <RunPostBuildEvent>Always</RunPostBuildEvent>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
+    <PreBuildEvent />
+    <PostBuildEvent />
+    <RunPostBuildEvent>Always</RunPostBuildEvent>
+  </PropertyGroup>
+</Project>

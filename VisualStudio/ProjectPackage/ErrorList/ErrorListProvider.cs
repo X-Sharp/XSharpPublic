@@ -12,7 +12,7 @@ using Microsoft.VisualStudio.Shell.TableManager;
 namespace XSharp.Project
 {
     [Export(typeof(ErrorListProvider))]
-    internal class ErrorListProvider : IErrorListProvider, ITableDataSource, IDisposable
+    internal class ErrorListProvider : IListProvider, ITableDataSource, IDisposable
     {
         [Export(typeof(ITableManager))]
         internal  ITableManager tableManager;
@@ -21,7 +21,7 @@ namespace XSharp.Project
 
         // The list sinks. Probably only one but there could be more. Needs to be thread safe so is
         // also used as a lock
-        private List<IErrorListSinkManager> _managers = new List<IErrorListSinkManager>();
+        private List<IListSinkManager> _managers = new List<IListSinkManager>();
         private List<ITableEntriesSnapshotFactory> _errorListFactories = new List<ITableEntriesSnapshotFactory>();
 
         internal ErrorListProvider(ITableManager manager)
@@ -75,10 +75,10 @@ namespace XSharp.Project
         {
             // This method is called to each consumer interested in errors. In general, there will be only a single consumer (the error list tool window)
             // but it is always possible for 3rd parties to write code that will want to subscribe.
-            return new ErrorListSinkManager(this, sink);
+            return new ListSinkManager(this, sink);
         }
 
-        public void AddSinkManager(IErrorListSinkManager manager)
+        public void AddSinkManager(IListSinkManager manager)
         {
             // This call can, in theory, happen from any thread so be appropriately thread safe.
             // In practice, it will probably be called only once from the UI thread (by the error list tool window).
@@ -89,12 +89,12 @@ namespace XSharp.Project
                 // Add the pre-existing error factories to the manager.
                 foreach (var errorFactory in _errorListFactories)
                 {
-                    manager.AddErrorListFactory(errorFactory);
+                    manager.AddListFactory(errorFactory);
                 }
             }
         }
 
-        public void RemoveSinkManager(IErrorListSinkManager manager)
+        public void RemoveSinkManager(IListSinkManager manager)
         {
             // This call can, in theory, happen from any thread so be appropriately thread safe.
             // In practice, it will probably be called only once from the UI thread (by the error list tool window).
@@ -107,7 +107,7 @@ namespace XSharp.Project
         /// <summary>
         /// This is called by the project error manager to add its error list factory
         /// </summary>
-        public void AddErrorListFactory(ITableEntriesSnapshotFactory factory)
+        public void AddListFactory(ITableEntriesSnapshotFactory factory)
         {
             lock (_managers)
             {
@@ -116,7 +116,7 @@ namespace XSharp.Project
                 // Tell the preexisting sinks about the new error source
                 foreach (var manager in _managers)
                 {
-                    manager.AddErrorListFactory(factory);
+                    manager.AddListFactory(factory);
                 }
             }
         }
@@ -125,7 +125,7 @@ namespace XSharp.Project
         /// This is called by the project error manager to remove the  error list factory from
         /// out list and all sinks
         /// </summary>
-        public void RemoveErrorListFactory(ITableEntriesSnapshotFactory factory)
+        public void RemoveListFactory(ITableEntriesSnapshotFactory factory)
         {
             lock (_managers)
             {
@@ -133,7 +133,7 @@ namespace XSharp.Project
 
                 foreach (var manager in _managers)
                 {
-                    manager.RemoveErrorListFactory(factory);
+                    manager.RemoveListFactory(factory);
                 }
             }
         }

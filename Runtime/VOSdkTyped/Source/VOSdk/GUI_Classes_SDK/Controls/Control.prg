@@ -46,7 +46,7 @@ CLASS Control INHERIT VObject IMPLEMENTS IGuiObject, ITimer
 	PROTECT lUseHLForToolTip     AS LOGIC
 	PROTECT oControlWindow		 AS ControlWindow
 	
-	EXPORT EventReturnValue      AS LONGINT
+	PROPERTY EventReturnValue      AS LONGINT AUTO
 
 	PROPERTY __IsValid		AS LOGIC GET oCtrl != NULL_OBJECT .and. ! oCtrl:IsDisposed
     PROPERTY ControlType    AS Controltype GET ControlType.Control
@@ -237,7 +237,7 @@ CLASS Control INHERIT VObject IMPLEMENTS IGuiObject, ITimer
 	METHOD __SetColors(_hDC AS IntPtr) AS IntPtr STRICT 
 		RETURN IntPtr.Zero
 
-	METHOD __Timer() AS OBJECT STRICT 
+	METHOD __Timer() AS VOID STRICT 
 		dwTimerCount := dwTimerCount - 1
 		IF (dwTimerCount == 0)
 			SELF:Timer()
@@ -248,7 +248,7 @@ CLASS Control INHERIT VObject IMPLEMENTS IGuiObject, ITimer
 			ENDIF
 		ENDIF
 		
-		RETURN SELF
+		RETURN 
 	
 
 	[Obsolete];
@@ -513,7 +513,7 @@ CLASS Control INHERIT VObject IMPLEMENTS IGuiObject, ITimer
 
 		RETURN 1L
 	
-	METHOD Destroy() AS USUAL CLIPPER
+	METHOD Destroy() AS USUAL 
 		
 		IF oCtrl != NULL_OBJECT
 			IF ! oCtrl:IsDisposed
@@ -767,7 +767,7 @@ CLASS Control INHERIT VObject IMPLEMENTS IGuiObject, ITimer
 		LOCAL lBorder		AS LOGIC
 		LOCAL nStyle		AS LONG    
 
-		nStyle := Win32.GetWindowLong(SELF:hWnd,GWL_EXSTYLE)
+		nStyle := GuiWin32.GetWindowLong(SELF:hWnd,GWL_EXSTYLE)
 		IF _AND(nStyle,WS_EX_DLGMODALFRAME)>0
 			lBorder := TRUE
 		ELSEIF _AND(nStyle,WS_EX_WINDOWEDGE)>0
@@ -777,18 +777,18 @@ CLASS Control INHERIT VObject IMPLEMENTS IGuiObject, ITimer
 		ELSEIF _AND(nStyle,WS_EX_CLIENTEDGE)>0
 			lBorder := TRUE
 		ELSE
-			nStyle := Win32.GetWindowLong(SELF:hWnd,GWL_STYLE)
+			nStyle := GuiWin32.GetWindowLong(SELF:hWnd,GWL_STYLE)
 			IF _AND(nStyle,WS_BORDER)>0
 				lBorder := TRUE
 			ENDIF
 		ENDIF
 		RETURN lBorder
 
-	METHOD Hide() 
+	METHOD Hide() AS VOID STRICT
 		IF SELF:__IsValid 
 			oCtrl:Visible := FALSE
 		ENDIF		
-		RETURN NIL
+		RETURN 
 	
 
 	METHOD HorizontalScroll(oScrollEvent ) 
@@ -1283,20 +1283,20 @@ CLASS Control INHERIT VObject IMPLEMENTS IGuiObject, ITimer
 		ELSE
 			LOCAL iCtrl AS IVOControl
 			iCtrl := (IVOControl) (OBJECT) oCtrl			
-			liTemp := Win32.GetWindowLong(hWnd, GWL_EXSTYLE)
+			liTemp := GuiWin32.GetWindowLong(hWnd, GWL_EXSTYLE)
 			iCtrl:ControlProperties:SetExStyle(kExStyle, lEnable)
 			IF lEnable
 				liTemp := _OR(kExStyle, liTemp)
 			ELSE
 				liTemp := _AND(liTemp, _NOT(kExStyle))
 			ENDIF
-			Win32.SetWindowLong(hWnd, GWL_EXSTYLE, liTemp)
+			GuiWin32.SetWindowLong(hWnd, GWL_EXSTYLE, liTemp)
 		ENDIF
 		
 		RETURN 
 	
 
-	METHOD SetFocus() AS VOID
+	METHOD SetFocus() AS VOID STRICT
 		
 		IF SELF:ValidateControl()
 			oCtrl:Focus()
@@ -1308,11 +1308,11 @@ CLASS Control INHERIT VObject IMPLEMENTS IGuiObject, ITimer
 
 	METHOD HasStyle(kStyle AS LONG)
 		LOCAL liStyle	AS LONG
-		liStyle := Win32.GetWindowLong(SELF:hWnd,GWL_STYLE)
+		liStyle := GuiWin32.GetWindowLong(SELF:hWnd,GWL_STYLE)
 		RETURN _AND(liStyle,kStyle) != 0
 	
 	ACCESS Style AS LONG
-		RETURN Win32.GetWindowLong(SELF:hWnd,GWL_STYLE)
+		RETURN GuiWin32.GetWindowLong(SELF:hWnd,GWL_STYLE)
 
 	METHOD SetStyle(kStyle AS LONG, lEnable := TRUE AS LOGIC) 
 		LOCAL liTemp as LONG
@@ -1325,7 +1325,7 @@ CLASS Control INHERIT VObject IMPLEMENTS IGuiObject, ITimer
 		ELSE
 			LOCAL iCtrl AS IVOControl
 			iCtrl := (IVOControl) (OBJECT) oCtrl			
-			liTemp := Win32.GetWindowLong(SELF:hWnd,GWL_STYLE)				
+			liTemp := GuiWin32.GetWindowLong(SELF:hWnd,GWL_STYLE)				
 			iCtrl:ControlProperties:SetStyle(kStyle, lEnable)
 			IF lEnable
 				liTemp := _OR(kStyle, liTemp)
@@ -1333,13 +1333,13 @@ CLASS Control INHERIT VObject IMPLEMENTS IGuiObject, ITimer
 				liTemp := _AND(liTemp, _NOT(kStyle))
 			ENDIF
 			dwStyle := liTemp // without this line it does not work for custom drawn labels
-			Win32.SetWindowLong(hWnd, GWL_STYLE,  liTemp)
+			GuiWin32.SetWindowLong(hWnd, GWL_STYLE,  liTemp)
 		ENDIF
 		
 		RETURN SELF
 	
 
-	METHOD Show() AS VOID 
+	METHOD Show( ) AS VOID STRICT
 		
 		IF (oCtrl == NULL_OBJECT)
 			SELF:Create()

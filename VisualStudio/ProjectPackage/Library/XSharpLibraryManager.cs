@@ -254,7 +254,7 @@ namespace XSharp.Project
             // No Hierarchy or... Hierarchy already registered ?
             var optionsPage = XSharpProjectPackage.Instance.GetIntellisenseOptionsPage();
             // disable classview for now
-            if (optionsPage.DisableClassViewObjectView || true)
+            if (optionsPage.DisableClassViewObjectView)// || true)
             {
                 return;
             }
@@ -483,17 +483,19 @@ namespace XSharp.Project
             if (!scope.HasCode)
                 return;
             // Retrieve all Types
-            var elements = scope.TypeList;
-            if (elements == null)
+            // !!! WARNING !!! The XFile object (scope) comes from the DataBase
+            // We should retrieve TypeList from the DataBase.....
+            var namespaces = XSharpModel.XDatabase.GetNamespacesInFile( scope.Id.ToString() );
+            if (namespaces == null)
                 return;
             //
+            var elements = XDbResultHelpers.BuildTypesInFile(scope, namespaces);
             // First search for NameSpaces
-            foreach (KeyValuePair<string, XTypeDefinition> pair in elements)
+            foreach (XTypeDefinition xType in elements)
             {
-                XTypeDefinition xType = pair.Value;
                 if (xType.Kind == Kind.Namespace)
                 {
-                    // Does that NameSpave already exist ?
+                    // Does that NameSpace already exist ?
                     // Search for the corresponding NameSpace
                     XSharpLibraryNode newNode;
                     LibraryNode nsNode = prjNode.SearchNameSpace(xType.Name);
@@ -522,10 +524,15 @@ namespace XSharp.Project
                     }
                 }
             }
+            
+            // 
+            var types = XSharpModel.XDatabase.GetTypesInFile(scope.Id.ToString());
+            if (types == null)
+                return;
+            elements = XDbResultHelpers.BuildFullTypesInFile(scope, types);
             // Now, look for Classes
-            foreach (KeyValuePair<string, XTypeDefinition> pair in elements)
+            foreach (XTypeDefinition xType in elements)
             {
-                XTypeDefinition xType = pair.Value;
                 // Is it a kind of Type ?
                 if ((xType.Kind.IsType()))
                 {
@@ -536,7 +543,6 @@ namespace XSharp.Project
                     LibraryNode nsNode = prjNode.SearchNameSpace(nSpace);
                     if (nsNode == null)
                     {
-
                         nsNode = prjNode.SearchClass(nSpace);
                     }
 
@@ -559,6 +565,7 @@ namespace XSharp.Project
                             nsNode.AddNode(newNode);
                             newNode.parent = nsNode;
                         }
+                        //
                         // Insert Members
                         CreateMembersTree(newNode, xType, moduleId);
                         //
@@ -573,6 +580,7 @@ namespace XSharp.Project
                     }
                 }
             }
+            
         }
 
         private void CreateGlobalTree(LibraryNode current, XTypeDefinition scope, XSharpModuleId moduleId)

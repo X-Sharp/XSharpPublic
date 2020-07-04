@@ -93,6 +93,9 @@ INTERNAL CLASS AssemblyReader
             IF assembly:DuplicateTypes == NULL
                assembly:DuplicateTypes := List<XTypeReference>{}
             ENDIF
+            XSolution.WriteOutputMessage("**************************")
+            XSolution.WriteOutputMessage("Duplicate type name found: "+typeref:FullName)
+            XSolution.WriteOutputMessage("**************************")
             assembly:DuplicateTypes:Add(typeref)
          ENDIF
          IF SELF:HasExtensionMethods(type)

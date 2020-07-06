@@ -10,15 +10,42 @@
     <header>
       <para styleclass="Heading1">Version History</para>
     </header>
+    <para styleclass="Heading1">Changes in 2.5.1.0 (Cahors)</para>
+    <para styleclass="Heading1"><text styleclass="Heading2">Compiler</text></para>
+    <list id="184" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Body Text">no changes to the compiler in this build (it is still called 2.5.0.0)</li>
+    </list>
+    <para styleclass="Heading1"><text styleclass="Heading2">Runtime</text></para>
+    <list id="185" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Normal"><text styleclass="Body Text">(VO Compatibility) Fixed a VO compatibility issue for arrays . Accessing an single dimensional array with an index with 2 dimensions now returns NIL and does not generate an exception. This is stupid but compatible.</text></li>
+      <li styleclass="Normal"><text styleclass="Body Text">(VO Compatibility) Comparing a usual with a numeric value with a symbol no longer generates an exception. The numeric value is now casted to a symbol and that symbol is used for the comparison.</text></li>
+      <li styleclass="Normal"><text styleclass="Body Text">(XPP compatibility) Accessing a USUAL variable with the index operator (u[1]) is not allowed for usuals containing a LONG. This will return TRUE or FALSE and is a simple way to check if a bit is set.</text></li>
+      <li styleclass="Normal"><text styleclass="Body Text">The Literals for &quot;DB&quot; and &quot;CR&quot; are now stored in the resources and may be changed for other languages.</text></li>
+      <li styleclass="Normal"><text styleclass="Body Text">Added some optimizations to the support code for late binding</text></li>
+    </list>
+    <para styleclass="Heading1"><text styleclass="Heading2">Visual Studio integration</text></para>
+    <list id="185" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Normal"><text styleclass="Body Text">Reading type information for external assemblies would fail when the external assembly contained 2 types for which the names were only different in case.</text></li>
+      <li styleclass="Normal"><text styleclass="Body Text">The entity parser did not recognize GET and SET accessors that were prefixed with a visibility modifier (PROTECTED SET)</text></li>
+      <li styleclass="Normal"><text styleclass="Body Text">The entity parser did not recognize ENUM members that did not start with the MEMBER keyword</text></li>
+      <li styleclass="Normal"><text styleclass="Body Text">Added support for the Visual Studio Task Window. Source code comments containing the words TODO or HACK (this is configurable in the Tools/Options window) are now added to the Task List. These tasls are persisted in the intellisense database, so all tasks are immediately visible after opening a solution without (re)scanning the source files.</text></li>
+      <li styleclass="Normal"><text styleclass="Body Text">Fixed a problem in the Type and Member lookup for the WIndows Forms editor</text></li>
+      <li styleclass="Normal"><text styleclass="Body Text">Fixed a problem in the VS debugger where we were subtracting one from index operators for arrays and collections. This was not correct (obviously).</text></li>
+    </list>
+    <para styleclass="Heading1"><text styleclass="Heading2">Build System</text></para>
+    <list id="186" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Normal">The file name of the generated XML file was derived from the project file name instead of the output assembly name. This has been fixed.</li>
+    </list>
+    <para styleclass="Normal"></para>
     <para styleclass="Heading1">Changes in 2.5.0.0 (Cahors)</para>
     <para styleclass="Heading1"><text styleclass="Heading2">Compiler</text></para>
-    <list id="90" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
+    <list id="184" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Body Text">#pragma lines that were followed by incorrect syntax would &quot;eat&quot; the incorrect syntax causing entire methods to be excluded from compilation. This has been fixed.</li>
       <li styleclass="Body Text">Multiline compile time codeblocks in a method /function with a VOID return type were not being compiled correctly. This has been fixed.</li>
       <li styleclass="Body Text">The compiler now allows to type the parameters in a codeblock. Since the codeblock definition requires parameters of type USUAL this gets transformed by the compiler. The parameters will still be of type USUAL, but inside the codeblock a local variable of the proper type will be allocated. So this compiles now</li>
     </list>
     <para styleclass="Code Example"><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; { | s </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">as</text><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">string</text><text style="font-weight:normal; font-style:normal; color:#000000;">, i </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">as</text><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">int</text><text style="font-weight:normal; font-style:normal; color:#000000;">| s:SubString(i,1) }</text></para>
-    <list id="90" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
+    <list id="184" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Body Text">The code to fill in missing parameters was causing problems when passing parameters to COM calls (Word Example from Peter Monadjemi)</li>
       <li styleclass="Body Text">Fixed a problem passing an IntPtr, Typed pointer of the address of a VOSTRUCT to a function that accepts an object. </li>
       <li styleclass="Body Text">We have added code to add an integer value to a PSZ, which results in a new PSZ that starts at a relative location in the original PSZ. No new buffer is allocated.</li>
@@ -31,14 +58,14 @@
       <li styleclass="Body Text"><text style="font-weight:normal; font-style:normal; color:#000000;">The compiler now allows to embed quotes inside a string by writing double quotes. So this works:</text></li>
     </list>
     <para styleclass="Code Example"><text style="font-weight:normal; font-style:normal; color:#000000;">? &quot;Some String that has an embedded &quot;&quot; character&quot;</text></para>
-    <list id="90" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
+    <list id="184" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Body Text"><text style="font-weight:normal; font-style:normal; color:#000000;">When you declare a MEMVAR with the same name as a function, the compiler will now have no problem anymore resolving the function call. Please note that you HAVE to declare the memvar for this resolution to work.</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">For example</text></li>
     </list>
     <para styleclass="Body Text"><br/><tab /><text styleclass="Code Example" style="font-weight:bold; font-style:normal; color:#ff0000;">FUNCTION</text><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;"> Start() </text><text styleclass="Code Example" style="font-weight:bold; font-style:normal; color:#ff0000;">AS</text><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text styleclass="Code Example" style="font-weight:bold; font-style:normal; color:#ff0000;">VOID</text><br/><tab /><text styleclass="Code Example" style="font-weight:bold; font-style:normal; color:#ff0000;">MEMVAR</text><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;"> Test</text><br/><tab /><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;">Test := 123 &#160; &#160; &#160;</text><text styleclass="Code Example" style="font-weight:bold; font-style:italic; color:#339966;">// assign to the memory variable</text><br/><tab /><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;">Test(Test) &#160; &#160; &#160;</text><text styleclass="Code Example" style="font-weight:bold; font-style:italic; color:#339966;">// call the function &apos;Test&apos; with the value of &apos;Test&apos;</text><br/><tab /><text styleclass="Code Example" style="font-weight:bold; font-style:normal; color:#ff0000;">RETURN</text><br/><tab /><text styleclass="Code Example" style="font-weight:bold; font-style:normal; color:#ff0000;">FUNCTION</text><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;"> Test(a)</text><br/><tab /><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;">? a</text><br/><tab /><text styleclass="Code Example" style="font-weight:bold; font-style:normal; color:#ff0000;">RETURN</text><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;"> a</text></para>
     <para styleclass="Body Text"></para>
     <para styleclass="Body Text"></para>
     <para styleclass="Body Text"><text styleclass="Heading2">Common Runtime</text></para>
-    <list id="90" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
+    <list id="184" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Body Text">The Workareas class no longer has an array of 4096 elements, but uses a dictionary to hold the open RDDs. This reduces the memory used by the runtime state.</li>
       <li styleclass="Body Text">Fixed a problem in the WrapperRDD class</li>
       <li styleclass="Body Text">OrdSetFocus() now returns the previous active tag as STRING</li>
@@ -62,11 +89,11 @@
       <li styleclass="Body Text"><text styleclass="Normal">The OS() function now returns a more appropriate version description when running on Windows. It reads the version name from the registry and also includes a x86 and x64 flag in the version.</text></li>
     </list>
     <para styleclass="Heading2">RDD System</para>
-    <list id="90" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
+    <list id="184" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Body Text">The DBF RDD Now forces a disk flush when writing a record in shared mode.</li>
       <li styleclass="Body Text">Fixed a problem in the DBFCDX rdd that could corrupt indexes.</li>
       <li styleclass="Body Text">We have built in a validation routine inside the DBFCDX RDD that validates the integrity of the current tag. To call this routine call DbOrderInfo with the DBOI_VALIDATE constant.<br/>This will validate:</li>
-      <list id="90" level="2" type="ul" listtype="bullet" formatstring="&#167;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Wingdings; font-size:11pt; color:#000000;">
+      <list id="184" level="2" type="ul" listtype="bullet" formatstring="&#167;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Wingdings; font-size:11pt; color:#000000;">
         <li styleclass="Body Text">If all records are included exactly once in the index</li>
         <li styleclass="Body Text">If the values for each record in the index are correct</li>
         <li styleclass="Body Text">If the order of the index keys in a page is correct</li>
@@ -74,33 +101,33 @@
       </list>
     </list>
     <para styleclass="Body Text" style="margin-left:13px;">When a problem is found then this call returns FALSE and a file will be written with the name &lt;BagName&gt;_&lt;TagName&gt;.ERR containing a description of the errors found.</para>
-    <list id="90" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
+    <list id="184" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Body Text">Most exported variables inside the Workarea class (inside XSharp.Core) and other RDD classes have been changed to PROTECTED. <br/>We have also added some properties for variables that need to be accessed from outside of the RDD</li>
       <li styleclass="Body Text">Fixed a problem that occurred when skipping back repeatedly from the BOF position in a scoped CDX index.</li>
       <li styleclass="Body Text">The Zap() operation for DBFCDX was not clearing one of the internal caches. This has been fixed.</li>
       <li styleclass="Body Text">The DBFCDX driver now closes and deletes a CDX file when the last tag in that CDX has been deleted.</li>
     </list>
     <para styleclass="Heading2">Macro compiler</para>
-    <list id="90" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
+    <list id="184" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Body Text"><text style="font-weight:normal; font-style:normal; color:#000000;">The macro compiler was not recognizing 0000.00.00 as an empty date. This has been fixed.</text></li>
       <li styleclass="Body Text"><text style="font-weight:normal; font-style:normal; color:#000000;">The macro compiler now also exotic characters in identifiers like the normal compiler. We have added the same identifier name rules that the C# compiler uses.</text></li>
     </list>
     <para styleclass="Body Text"></para>
     <para styleclass="Body Text"><text styleclass="Heading2">XBase++ Functions</text></para>
-    <list id="90" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
+    <list id="184" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Body Text">Fixed a problem in the XPP function SetCollationTable()</li>
       <li styleclass="Body Text">DbCargo() can now also set the cargo value for a workarea to NULL or NIL</li>
       <li styleclass="Body Text">We have added several functions, such as PosUpper(), PosLower(), PosIns() and PosDel().</li>
     </list>
     <para styleclass="Body Text"></para>
     <para styleclass="Body Text"><text styleclass="Heading2">VFP Functions</text></para>
-    <list id="90" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
+    <list id="184" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Body Text">Added AllTrim() , RTrim(), LTrim() and Trim() variations for FoxPro (thanks Antonio)</li>
       <li styleclass="Body Text">Added StrToFile() and FileToStr() (thanks Antonio and Karl Heinz)</li>
     </list>
     <para styleclass="Body Text"></para>
     <para styleclass="Body Text"><text styleclass="Heading2">VOSDK</text></para>
-    <list id="90" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
+    <list id="184" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Body Text">We have created a Destroy() method on the CSession and CSocket class, so you can &apos;clean up&apos; objects (in VO you could call Axit(), but that is no longer allowed). The derstructor on these classes will also call Destroy().</li>
       <li styleclass="Body Text">Fixed a problem in TreeView:GetItemAttributes. It can now also be called with a hItem (which happens inside TreeViewSelectionEvent:NewTreeViewItem)</li>
       <li styleclass="Body Text">The OpenDialog class is now resizable.</li>
@@ -111,7 +138,7 @@
     </list>
     <para styleclass="Heading1"><text styleclass="Heading2">Visual Studio Integration</text></para>
     <para styleclass="Heading3">Code Model</para>
-    <list id="90" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
+    <list id="184" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Body Text">We have totally rewritten the background parser and code model that is used to parse &quot;entities&quot; in the VS editor and that is used to build a memory model of the types, methods, functions etc in your VS solution. This parser now uses the same lexer that the compiler uses, but the entities are collected with a hand written parser (since the code in the editor buffer may contains incomplete code we can&apos;t reliably use the normal parser).</li>
       <li styleclass="Body Text">We are now using a SQLite database to persist the code model between sessions. This reduces the memory needed by the X# project system. We are no longer keeping the entire code model in memory.</li>
       <li styleclass="Body Text">This also means that when you reopen an existing solution we will only have to parse files that have &#160;changed since the last time they were processed. That should speed up loading of large VS solutions. </li>
@@ -120,7 +147,7 @@
     </list>
     <para styleclass="Body Text"></para>
     <para styleclass="Heading3">Source code editor</para>
-    <list id="90" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
+    <list id="184" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Body Text">Fixed a problem with the dropdown comboboxes above the editor when the cursor is in a line of code before the first entity.</li>
       <li styleclass="Body Text">Fixed a problem that functions in the editor after a class declaration had no collapsible regions</li>
       <li styleclass="Body Text">The code completion inside the editor now also picks up extension methods for the types themselves, but also extension methods for interfaces implemented by these types.</li>
@@ -129,20 +156,20 @@
       <li styleclass="Body Text">Fixed several problems in the &quot;reformatting&quot; code</li>
     </list>
     <para styleclass="Heading3">Windows Forms editor</para>
-    <list id="90" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
+    <list id="184" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Body Text">Some inline assignments to fields inside classes that are used by the Windows Forms could make the form unusable by the form editor. This has been fixed.</li>
       <li styleclass="Body Text">The Windows Forms editor was sometimes removing blank lines between entities. This has been fixed.</li>
       <li styleclass="Body Text">User Defined Commands in code parsed by the Windows Forms Editor were not recognized and disappeared when the form was changed and saved. This has been fixed.</li>
       <li styleclass="Body Text">Fixed a problem with setting images and similar properties with resources stored in the project resources file (which are prefixed with &quot;global::&quot; in the source code)</li>
     </list>
     <para styleclass="Heading2">VOXporter</para>
-    <list id="90" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
+    <list id="184" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Body Text">We have added support to export VO Forms from the AEFs to XML format</li>
       <li styleclass="Body Text">We have added support to export VO Menus from the AEFs to XML format</li>
     </list>
     <para styleclass="Heading1">Changes in 2.4.1.0 (Bandol GA 2.4a)</para>
     <para styleclass="Heading1"><text styleclass="Heading2">Compiler</text></para>
-    <list id="90" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
+    <list id="184" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Body Text">Bracketed strings are now no longer supported in the Core dialect to avoid problems with single line external property declarations that contain attributes between the GET and SET keywords</li>
       <li styleclass="Body Text">The PROPERTY keyword was not properly recognized after an EXTERN modifier.</li>
       <li styleclass="Body Text">Fixed a XS9021 warning for a IIF expressions with 2 numeric constants</li>
@@ -150,7 +177,7 @@
       <li styleclass="Body Text">We have added a new compiler option <link displaytype="text" defaultstyle="true" type="topiclink" href="opt-fox2">-fox2</link>. This option makes local variables visible to the macro compiler and should also be used when you use SQL statements with embedded parameters. This compiler option must be used in combination with <link displaytype="text" defaultstyle="true" type="topiclink" href="opt-memvar">-memvar</link> and the FoxPro dialect</li>
     </list>
     <para styleclass="Heading1"><text styleclass="Heading2">Runtime</text></para>
-    <list id="90" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
+    <list id="184" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Body Text">Fixed a problem in the DELIM Rdd that would occur when using DbServer:AppendDelimited() and DbServer:CopyDelimited().</li>
       <li styleclass="Body Text">Fixed a problem with DbSetOrder() returning TRUE even when the order was not found.</li>
       <li styleclass="Body Text">Fixed a problem where the File() function would return FALSE when using wildcard characters</li>
@@ -167,11 +194,11 @@
       <li styleclass="Body Text">IVarGet() and Send() now return Empty strings when a method returns a NULL_STRING and the return type &#160;is STRING</li>
     </list>
     <para styleclass="Heading1"><text styleclass="Heading2">RDD</text></para>
-    <list id="91" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+    <list id="186" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Normal"><text styleclass="Body Text">Getting the OrdKeyNo for a scoped index was resetting the index position to the top of the index. This would affect scrollbars in browsers for scoped indexes</text></li>
     </list>
     <para styleclass="Heading1"><text styleclass="Heading2">VOSDK</text></para>
-    <list id="90" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
+    <list id="184" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Body Text">The Console classes assembly is now marked as AnyCpu.</li>
       <li styleclass="Body Text">Fixed a problem introduced in the previous build with the calling convention for certain functions imported from Shell32.DLL such as the Drag and Drop support.</li>
       <li styleclass="Body Text">Fixed a problem in the PrintingDevice constructor for reading of printers when running on a Remote Desktop</li>
@@ -180,7 +207,7 @@
       <li styleclass="Body Text">Improved &quot;column scatter&quot; code for the DataBrowser class</li>
     </list>
     <para styleclass="Heading1"><text styleclass="Heading2">Visual Studio Integration</text></para>
-    <list id="90" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
+    <list id="184" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Body Text">If you removed all the characters from the &quot;Commit Completion List&quot; control in the XSharp editor options, then after restarting VS all default characters would appear. We now remember that you have cleared the list and will not refill the list again.</li>
       <li styleclass="Body Text">Fixed a problem that caused the editor not to rescan the current buffer for changed entities</li>
       <li styleclass="Body Text">Added project property for the new -fox2 compiler option</li>
@@ -191,7 +218,7 @@
     </list>
     <para styleclass="Heading1">Changes in 2.4.0.0 (Bandol GA 2.4)</para>
     <para styleclass="Heading1"><text styleclass="Heading2">Compiler</text></para>
-    <list id="90" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
+    <list id="184" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Body Text">Fixed problems where certain operations on integers would still return the wrong variable type</li>
       <li styleclass="Body Text">The Unary Minus operator on unsigned integral types (BYTE, WORD, DWORD, UINT64) was returning the same type as the original, so it was not returning a negative value. This has been changed. The return value of this operator is now the next larger signed integral type.</li>
       <li styleclass="Body Text">Using a compiler macro, such as __VERSION__ in an interpolated string was causing an internal error in the compiler. This has been fixed.</li>
@@ -199,7 +226,7 @@
       <li styleclass="Body Text">Bracketed strings are now also recognized after a RETURN and GET keyword.</li>
     </list>
     <para styleclass="Heading1"><text styleclass="Heading2">Runtime</text></para>
-    <list id="90" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
+    <list id="184" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Body Text">Fixed problems when subtracting a dword from a date (related to the signed/unsigned problems in the compiler)</li>
       <li styleclass="Body Text">LUpdate() now returns a NULL_DATE for workareas have no open table.</li>
       <li styleclass="Body Text">Added the missing ErrorStack() function (thanks Leonid)</li>
@@ -215,7 +242,7 @@
       <li styleclass="Body Text">Fixed several incompatibilities with VO for FLOAT-&gt;STRING conversions</li>
     </list>
     <para styleclass="Heading1"><text styleclass="Heading2">RDD System</text></para>
-    <list id="90" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
+    <list id="184" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Body Text">Fixed a problem with skipping backward in a DBFCDX table with a scope</li>
       <li styleclass="Body Text">Fixed a problem with creating unique indexes with the DBFCDX and DBFNTX drivers</li>
       <li styleclass="Body Text">Writing NULL values to DBF columns is now always supported. When the column is a Nullable column in a DBFVFP table then the null flags are set. For other RDDs a NULL value will be written as a blank value.</li>
@@ -228,7 +255,7 @@
     </list>
     <para styleclass="Code Example"><text style="font-weight:normal; font-style:normal; color:#000000;">RddSetDefault(&quot;DBFNTX&quot;)</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">DbUseArea(TRUE,&quot;DBFNTX&quot;, &quot;c:\Test\TEST.DBF&quot;)</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">DbCopyDelim(&quot;C:\test\test.txt&quot;) &#160; &#160; &#160; &#160; &#160; &#160; </text><text style="font-weight:bold; font-style:italic; color:#339966;">// this uses the DELIM RDD</text><br/><br/><text style="font-weight:normal; font-style:normal; color:#000000;">RuntimeState.DelimRDD := &quot;CSV&quot; &#160; &#160; &#160; &#160; &#160; &#160; &#160;</text><text style="font-weight:bold; font-style:italic; color:#339966;">// Tell the runtime to use the CSV RDD for delimited writes</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">DbCopyDelim(&quot;C:\test\test.csv&quot;) &#160; &#160; &#160; &#160; &#160; &#160; </text><text style="font-weight:bold; font-style:italic; color:#339966;">// this uses the CSV RDD</text><br/><br/><text style="font-weight:normal; font-style:normal; color:#000000;">RuntimeState.DelimRDD := &quot;TSV&quot; &#160; &#160; &#160; &#160; &#160; &#160; &#160;</text><text style="font-weight:bold; font-style:italic; color:#339966;">// Tell the runtime to use the TSV RDD for delimited writes</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">DbCopyDelim(&quot;C:\test\test.tsv&quot;) &#160; &#160; &#160; &#160; &#160; &#160; </text><text style="font-weight:bold; font-style:italic; color:#339966;">// this uses the TSV RDD</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">DbZap()</text><br/><br/><text style="font-weight:normal; font-style:normal; color:#000000;">RuntimeState.DelimRDD := &quot;CSV&quot; &#160; &#160; &#160; &#160; &#160; &#160; &#160;</text><text style="font-weight:bold; font-style:italic; color:#339966;">// Tell the runtime to use the CSV RDD for delimited reads</text><br/><text styleclass="" style="font-family:Consolas; font-size:9pt; color:#000000;">DbAppDelim</text><text style="font-weight:normal; font-style:normal; color:#000000;">(&quot;C:\test\test.csv&quot;) &#160; &#160; &#160; &#160; &#160; &#160; &#160;</text><text style="font-weight:bold; font-style:italic; color:#339966;">// this uses the CSV RDD</text></para>
     <para styleclass="Heading1"><text styleclass="Heading2">VO SDK</text></para>
-    <list id="90" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
+    <list id="184" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Body Text">PrintingDevice:Init() no longer tries to read the default printer from win.ini but from the registry</li>
       <li styleclass="Body Text">Several other locations where the code was still accessing win.ini (with the GetProfile..() funcitons) have been updated.</li>
       <li styleclass="Body Text">The GUI Classes were delay loading several calls to common dialog DLL and winspool.drv. This has changed because that is no longer needed in .Net.</li>
@@ -246,12 +273,12 @@
     </list>
     <para styleclass="Heading1">Changes in 2.3.2 (Bandol GA 2.3b)</para>
     <para styleclass="Heading1"><text styleclass="Heading2">Compiler</text></para>
-    <list id="90" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
+    <list id="184" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Body Text">Added support for Bracketed Strings ([Some String containing quotes: &apos;&apos; and &apos; ] )</li>
       <li styleclass="Body Text">Added support for Support for PRIVATE/PUBLIC syntax with &amp;Id and &amp;Id.Suffix notation</li>
       <li styleclass="Body Text">EXE files were created without manifest before, unless you were using a WIN32 resource with a manifest. This manifest is now correctly added to exe files when no manifest is supplied.</li>
       <li styleclass="Body Text">The handling of unmanaged resources in relation to version resources and manifests has changed:</li>
-      <list id="90" level="1" type="ul" listtype="bullet" formatstring="&#111;" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:&apos;Courier New&apos;; font-size:11pt; color:#000000;">
+      <list id="184" level="1" type="ul" listtype="bullet" formatstring="&#111;" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:&apos;Courier New&apos;; font-size:11pt; color:#000000;">
         <li styleclass="Body Text">When the compiler detects native resources it will now check to see if there is a version and/or manifest resource included.</li>
         <li styleclass="Body Text">When there is no manifest resource, then the default manifest resource will be added to the resources from the Win32 resource file.</li>
         <li styleclass="Body Text">When there is a version resource then this version resource will be replaced by the version resource that the compiler generates from the Assembly attributes.</li>
@@ -259,12 +286,12 @@
         <li styleclass="Body Text">Of course we have added a command line option to suppress this: if you use the commandline option &quot;<link displaytype="text" defaultstyle="true" type="topiclink" href="Opt-usenativeversion">-usenativeversion</link>&quot; then the native version that is included in the Win32 resource will be used. If there is no version resource included in the Win32 resource file, then this commandline option is ignored. </li>
       </list>
     </list>
-    <list id="90" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
+    <list id="184" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Body Text">PCOUNT() and ARGCOUNT() are now supported inside ACCESS/ASSIGN methods. The number of parameters that you can pass is still fixed, but both functions will now return the # of parameters defined in ACCESS and/or ASSIGN methods. </li>
       <li styleclass="Body Text">We fixed a problem that a compiler error &quot;Failed to emit module&quot; was produced instead of showing the real problem in the code (a missing type) .</li>
       <li styleclass="Body Text">Extended match markers in the preprocessor, such as &lt;(file)&gt; &#160;in the USE udc, now also properly match file names.</li>
       <li styleclass="Body Text">Improved the detection algorithm that distinguishes parenthesized expressions and typecasts. This algorithm is now:</li>
-      <list id="90" level="1" type="ul" listtype="bullet" formatstring="&#111;" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:&apos;Courier New&apos;; font-size:11pt; color:#000000;">
+      <list id="184" level="1" type="ul" listtype="bullet" formatstring="&#111;" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:&apos;Courier New&apos;; font-size:11pt; color:#000000;">
         <li styleclass="Body Text">Built in type names between parentheses are always seen as a typecast. For example <text styleclass="Code Example" style="font-size:12pt;">(DWORD), (SHORT) </text>etc.</li>
         <li styleclass="Body Text">Other type names between parentheses may be treated as typecast but also as parenthesized expression. This depends on the token following the closing parenthesis. When this token is an operator such as +, -, / or * then this is seen as parenthesized expression. When the token following the closing parenthesis is an opening parenthesis then the expression is seen as a typecast. Some examples:</li>
       </list>
@@ -278,7 +305,7 @@
       <li styleclass="Body Text">The lexer now recognizes (in the FoxPro dialect) the For() and Field() functions and you do not need to prefix these with @@ anymore. </li>
     </list>
     <para styleclass="Heading1"><text styleclass="Heading2">Runtime</text></para>
-    <list id="90" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
+    <list id="184" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Body Text">Fix for StrZero() with negative values</li>
       <li styleclass="Body Text">Fix for IsSpace() crashing with empty or null string</li>
       <li styleclass="Body Text">AFill() in the VFP dialect now fills also elements in subarrays (for multi dimensional arrays)</li>
@@ -299,12 +326,12 @@
       <li styleclass="Body Text">We have added DBOI_COLLATION and DBS_CAPTION for FoxPro specific properties</li>
     </list>
     <para styleclass="Heading1"><text styleclass="Heading2">VO SDK</text></para>
-    <list id="90" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
+    <list id="184" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Body Text">We have removed the versioninfo resource from the GUI classes sourcecode. The version info is now generated from the Assembly attributes</li>
       <li styleclass="Body Text">We have cleaned up the code and removed the warnings 9020 and 9021 from the suppressed warnings, since the compiler now handles this correctly.</li>
     </list>
     <para styleclass="Heading1"><text styleclass="Heading2">RDD system</text></para>
-    <list id="90" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
+    <list id="184" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Body Text">The DBFVP driver no longer fails to open a DBF when the DBC file is used exclusively by someone else</li>
       <li styleclass="Body Text">Added support for reading captions with DBS_CAPTION and collations with DBOI_COLLATION</li>
       <li styleclass="Body Text">The DBFNTX driver was not setting the HPLocking flag properly when creating new indexes</li>

@@ -492,6 +492,9 @@ INTERNAL STATIC CLASS OOPHelpers
 		RETURN aList
 
 	STATIC METHOD FindProperty( t AS Type , cName AS STRING, lAccess AS LOGIC, lSelf AS LOGIC) AS PropertyInfo
+        IF t == NULL .OR. String.IsNullOrEmpty(cName)
+            RETURN NULL
+        ENDIF
         VAR mi := GetMember(t, cName)
         IF mi != NULL
             IF mi IS PropertyInfo VAR pi
@@ -524,7 +527,7 @@ INTERNAL STATIC CLASS OOPHelpers
 
 
     STATIC METHOD GetMember(t AS Type, cName AS STRING) AS MemberInfo
-        IF fieldPropCache:ContainsKey(t)
+        IF t != NULL .AND. ! String.IsNullOrEmpty(cName) .AND. fieldPropCache:ContainsKey(t)
             VAR fields := fieldPropCache[t]
             IF fields:ContainsKey(cName)
                 VAR result := fields[cName]
@@ -534,18 +537,23 @@ INTERNAL STATIC CLASS OOPHelpers
         RETURN NULL
 
     STATIC METHOD AddMember(t AS Type, cName AS STRING, mi AS MemberInfo) AS LOGIC
-        IF ! fieldPropCache:ContainsKey(t)
-            fieldPropCache:Add( t, Dictionary<STRING, MemberInfo> {StringComparison.OrdinalIgnoreCase})
-        ENDIF
-        VAR fields := fieldPropCache[t]
-        IF !fields:ContainsKey(cName)
-            fields:Add(cName, mi)
-            RETURN TRUE
+        IF t != NULL .AND. ! String.IsNullOrEmpty(cName) 
+            IF ! fieldPropCache:ContainsKey(t)
+                fieldPropCache:Add( t, Dictionary<STRING, MemberInfo> {StringComparison.OrdinalIgnoreCase})
+            ENDIF
+            VAR fields := fieldPropCache[t]
+            IF !fields:ContainsKey(cName)
+                fields:Add(cName, mi)
+                RETURN TRUE
+            ENDIF
         ENDIF
         RETURN FALSE
 
 
 	STATIC METHOD FindField( t AS Type, cName AS STRING, lAccess AS LOGIC, lSelf AS LOGIC ) AS FieldInfo
+        IF t == NULL .OR. String.IsNullOrEmpty(cName)
+            RETURN NULL
+        ENDIF
         VAR mi := GetMember(t, cName)
         IF mi != NULL
             IF mi IS FieldInfo VAR fi
@@ -582,6 +590,9 @@ INTERNAL STATIC CLASS OOPHelpers
 	STATIC METHOD IVarGet(oObject AS OBJECT, cIVar AS STRING, lSelf AS LOGIC) AS USUAL
 		LOCAL t AS Type
         LOCAL result AS OBJECT
+        IF oObject == NULL_OBJECT
+            THROW Error.NullArgumentError("IvarPut", nameof(oObject),1)
+        ENDIF
 		t := oObject:GetType()
 		VAR fldInfo := FindField(t, cIVar, TRUE, lSelf)
         TRY
@@ -620,6 +631,9 @@ INTERNAL STATIC CLASS OOPHelpers
 		
 	STATIC METHOD IVarPut(oObject AS OBJECT, cIVar AS STRING, oValue AS OBJECT, lSelf AS LOGIC)  AS VOID
 		LOCAL t AS Type
+        IF oObject == NULL_OBJECT
+            THROW Error.NullArgumentError("IvarPut", nameof(oObject),1)
+        ENDIF
         TRY
 		    t := oObject:GetType()
 		    VAR fldInfo := FindField(t, cIVar, FALSE, lSelf)
@@ -656,6 +670,9 @@ INTERNAL STATIC CLASS OOPHelpers
         RETURN lOk
 
     STATIC METHOD GetOverLoads(t AS System.Type, cMethod AS STRING) AS IList<MethodInfo>
+        IF t == NULL .OR. String.IsNullOrEmpty(cMethod)
+            RETURN List<MethodInfo>{}
+        ENDIF
         IF overloadCache:ContainsKey(t)
             VAR type := overloadCache[t]
             IF type:ContainsKey(cMethod)
@@ -722,7 +739,10 @@ INTERNAL STATIC CLASS OOPHelpers
 		RETURN SendHelper(oObject, mi, uArgs, OUT result)
 		
 	STATIC METHOD SendHelper(oObject AS OBJECT, mi AS MethodInfo , uArgs AS USUAL[], result OUT USUAL) AS LOGIC
-        result := NIL 
+        result := NIL
+		IF oObject == NULL .AND. ! mi:IsStatic
+			THROW Error.NullArgumentError( __ENTITY__, NAMEOF(oObject), 1 )
+		ENDIF
 		IF mi != NULL   
             VAR oArgs := MatchParameters(mi, uArgs) 
             TRY
@@ -774,6 +794,9 @@ INTERNAL STATIC CLASS OOPHelpers
 		ENDIF
 		
 	STATIC METHOD DoSend(oObject AS OBJECT, cMethod AS STRING, args AS USUAL[] ) AS USUAL
+		IF oObject == NULL
+			THROW Error.NullArgumentError( __ENTITY__, NAMEOF(oObject), 1 )
+		ENDIF
 		IF ! SendHelper(oObject, cMethod, args, OUT VAR result)
 			LOCAL nomethodArgs AS USUAL[]
     	    cMethod := cMethod:ToUpperInvariant()
@@ -847,12 +870,18 @@ FUNCTION ClassList() AS ARRAY
 	
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/classname/*" />
 FUNCTION ClassName(oObject AS OBJECT) AS STRING
-	RETURN oObject?:GetType():Name:ToUpper()
+    IF oObject != NULL
+	    RETURN oObject?:GetType():Name:ToUpper()
+    ENDIF
+    RETURN ""
 	
 	
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/classtree/*" />
 FUNCTION ClassTree(oObject AS OBJECT) AS ARRAY
-	RETURN OOPHelpers.ClassTree(oObject?:GetType())
+    IF oObject != NULL
+	    RETURN OOPHelpers.ClassTree(oObject?:GetType())
+    ENDIF
+    RETURN {}
 	
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/createinstance/*" />
 FUNCTION CreateInstance(symClassName,InitArgList) AS OBJECT CLIPPER
@@ -911,18 +940,22 @@ FUNCTION ClassTreeClass(symClass AS STRING) AS ARRAY
 	
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/isaccess/*" />
 FUNCTION IsAccess(oObject AS OBJECT,symAccess AS STRING) AS LOGIC
-	VAR oProp := OOPHelpers.FindProperty(oObject?:GetType(), symAccess, TRUE, TRUE)
-	IF oProp != NULL_OBJECT
-		RETURN oProp:CanRead
-	ENDIF
+    IF oObject != NULL
+	    VAR oProp := OOPHelpers.FindProperty(oObject?:GetType(), symAccess, TRUE, TRUE)
+	    IF oProp != NULL_OBJECT
+		    RETURN oProp:CanRead
+        ENDIF
+    ENDIF
 	RETURN FALSE
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/isassign/*" />
 FUNCTION IsAssign(oObject AS OBJECT,symAssign AS STRING) AS LOGIC
-	VAR oProp := OOPHelpers.FindProperty(oObject?:GetType(), symAssign, FALSE, TRUE)
-	IF oProp != NULL_OBJECT
-		RETURN oProp:CanWrite
-	ENDIF
+    IF oObject != NULL
+	    VAR oProp := OOPHelpers.FindProperty(oObject?:GetType(), symAssign, FALSE, TRUE)
+	    IF oProp != NULL_OBJECT
+		    RETURN oProp:CanWrite
+        ENDIF
+    ENDIF
 	RETURN FALSE
 	
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/isclass/*" />
@@ -995,12 +1028,15 @@ FUNCTION IVarGet(oObject AS OBJECT,symInstanceVar AS STRING) AS USUAL
 	
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/ivargetinfo/*" />
 FUNCTION IVarGetInfo(oObject AS OBJECT,symInstanceVar AS STRING) AS DWORD
-	RETURN OOPHelpers.IVarHelper(oObject, symInstanceVar, TRUE)
+    RETURN OOPHelpers.IVarHelper(oObject, symInstanceVar, TRUE)
 	
 	
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/ismethod/*" />
 FUNCTION IsMethod(oObject AS OBJECT,symMethod AS STRING) AS LOGIC
-	RETURN OOPHelpers.IsMethod(oObject?:GetType(), symMethod)
+	IF oObject != NULL_OBJECT
+	    RETURN OOPHelpers.IsMethod(oObject?:GetType(), symMethod)
+    ENDIF
+    RETURN FALSE
 	
 	
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/ismethodusual/*" />
@@ -1032,7 +1068,8 @@ FUNCTION IVarGetSelf(oObject AS OBJECT,symInstanceVar AS STRING) AS USUAL
 	
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/ivarlist/*" />
 FUNCTION IvarList(oObject AS OBJECT) AS ARRAY
-	RETURN OOPHelpers.IVarList(oObject?:GetType())
+    // IVarList already checks for NULL_OBJECT
+    RETURN OOPHelpers.IVarList(oObject?:GetType())
 	
 	
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/ivarlistclass/*" />
@@ -1043,7 +1080,8 @@ FUNCTION IvarListClass(symClass AS STRING) AS ARRAY
 	
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/ivarputinfo/*" />
 FUNCTION IVarPutInfo(oObject AS OBJECT,symInstanceVar AS SYMBOL) AS DWORD
-	RETURN OOPHelpers.IVarHelper(oObject, symInstanceVar, FALSE)
+    // IVarHelper already checks for NULL_OBJECT
+    RETURN OOPHelpers.IVarHelper(oObject, symInstanceVar, FALSE)
 	
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/ivarput/*" />
 FUNCTION IVarPut(oObject AS OBJECT,symInstanceVar AS STRING,uValue AS USUAL) AS USUAL
@@ -1135,11 +1173,13 @@ FUNCTION Object2Array(oObject AS OBJECT) AS ARRAY
 	
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/ooptree/*" />
 FUNCTION OOPTree(oObject AS OBJECT) AS ARRAY
+    // TreeHelper already checks for NULL_OBJECT    
 	RETURN OOPHelpers.TreeHelper(oObject?:GetType())
 	
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/ooptreeclass/*" />
 FUNCTION OOPTreeClass(symClass AS STRING) AS ARRAY
 	VAR type := OOPHelpers.FindClass(symClass)
+    // TreeHelper already checks for NULL_OBJECT    
 	RETURN OOPHelpers.TreeHelper(type)
 	
 	

@@ -296,6 +296,9 @@ INTERNAL STATIC CLASS OOPHelpers
                 IF pi:ParameterType == TYPEOF(USUAL)
 					// We need to box a usual here 
     				oArgs[nPar] := __CASTCLASS(OBJECT, arg)
+                ELSEIF arg == NIL
+                    // This is new in X#: a NIL in the middle of the parameter list gets set to the default value now 
+                    oArgs[nPar] := GetDefaultValue(pi)
                 ELSEIF pi:ParameterType:IsAssignableFrom(arg:SystemType) .OR. arg == NULL
 					oArgs[nPar] := arg
                 ELSEIF pi:GetCustomAttributes( TYPEOF( ParamArrayAttribute ), FALSE ):Length > 0
@@ -324,45 +327,51 @@ INTERNAL STATIC CLASS OOPHelpers
             FOR VAR nArg := nMax+1 TO aPars:Length
                 LOCAL oPar AS ParameterInfo
                 oPar        := aPars[nArg]
-                IF oPar:HasDefaultValue
-                    oArgs[nArg] := oPar:DefaultValue
+                VAR oArg    := GetDefaultValue(oPar)
+                IF oArg != NULL
+                    oArgs[nArg] := oArg
                 ELSE
-                	LOCAL oDefAttrib AS DefaultParameterValueAttribute
-                	oDefAttrib := (DefaultParameterValueAttribute) oPar:GetCustomAttribute(TypeOf(DefaultParameterValueAttribute))
-                	IF oDefAttrib != NULL
-	                	// That only covers default params at the end of the argument list
-	                	// If a call is made with: LateBoundCall(1,,3)
-	                	// then the second argument does not get converted to the default value of the 
-	                	// second param. But this scenario does not work in VO or vulcan either
-                		SWITCH oDefAttrib:Flag 
-                		CASE 1 // NIL
-                			NOP // it is already NIL
-                		CASE 2 // DATE, stored in Ticks
-	                		oArgs[nArg] := DATE{ (INT64)oDefAttrib:Value }
-                		CASE 3 // SYMBOL
-	                		oArgs[nArg] := String2Symbol( (STRING)oDefAttrib:Value )
-                		CASE 4 // NULL_PSZ
-                            IF oDefAttrib:Value IS STRING
-                                // Note: Do not use String2Psz() because that PSZ will be freed when this method finishes !
-                                oArgs[nArg]:= PSZ{ (STRING) oDefAttrib:Value}
-                            ELSE
-	                		    oArgs[nArg] := PSZ{IntPtr.Zero}
-                            ENDIF
-                		CASE  5 // NULL_PTR
-                            IF oDefAttrib:Value IS Int32
-                                oArgs[nArg]:= IntPtr{ (Int32) oDefAttrib:Value}
-                            ELSE
-                			    oArgs[nArg]:= IntPtr.Zero
-                            ENDIF
-                		OTHERWISE
-	                		oArgs[nArg] := oDefAttrib:Value
-                		END SWITCH
-                	END IF
+                    oArgs[nArg] := NIL
                 ENDIF
             NEXT
 		ENDCASE
         RETURN oArgs
 
+    STATIC METHOD GetDefaultValue(oPar AS ParameterInfo) AS OBJECT
+        LOCAL result := NULL AS OBJECT
+        IF oPar:HasDefaultValue
+            result := oPar:DefaultValue
+        ELSE
+            LOCAL oDefAttrib AS DefaultParameterValueAttribute
+            oDefAttrib := (DefaultParameterValueAttribute) oPar:GetCustomAttribute(TypeOf(DefaultParameterValueAttribute))
+            IF oDefAttrib != NULL
+                SWITCH oDefAttrib:Flag 
+                CASE 1 // NIL
+                	NOP // it is already NIL
+                CASE 2 // DATE, stored in Ticks
+	                result := DATE{ (INT64)oDefAttrib:Value }
+                CASE 3 // SYMBOL
+	                result := String2Symbol( (STRING)oDefAttrib:Value )
+                CASE 4 // NULL_PSZ
+                    IF oDefAttrib:Value IS STRING
+                        // Note: Do not use String2Psz() because that PSZ will be freed when this method finishes !
+                        result := PSZ{ (STRING) oDefAttrib:Value}
+                    ELSE
+	                	result := PSZ{IntPtr.Zero}
+                    ENDIF
+                CASE  5 // NULL_PTR
+                    IF oDefAttrib:Value IS Int32
+                        result := IntPtr{ (Int32) oDefAttrib:Value}
+                    ELSE
+                		result := IntPtr.Zero
+                    ENDIF
+                OTHERWISE
+	                result := oDefAttrib:Value
+                END SWITCH
+            END IF
+        ENDIF
+        RETURN result
+    
 	STATIC METHOD IsMethod( t AS System.Type, cName AS STRING ) AS LOGIC
 		RETURN FindMethod(t, cName, TRUE) != NULL
 		

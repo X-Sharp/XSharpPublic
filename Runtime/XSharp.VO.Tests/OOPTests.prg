@@ -272,7 +272,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
         	
         	Assert.Equal(60 , (INT)o:DefaultParams1(10,20,30))
         	Assert.Equal(15 , (INT)o:DefaultParams1(10))
-//        	Assert.Equal(32 , (INT)o:DefaultParams1(10,,20)) // doesn't work in VO either
+        	Assert.Equal(32 , (INT)o:DefaultParams1(10,,20)) // doesn't work in VO either
         	Assert.Equal(113 , (INT)o:DefaultParams1(10,100))
 
         	Assert.Equal("TESTFALSE" , (STRING)o:DefaultParams2("TEST",FALSE))

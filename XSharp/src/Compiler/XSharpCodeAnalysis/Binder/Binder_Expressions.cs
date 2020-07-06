@@ -416,7 +416,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             DiagnosticBag diagnostics
             )
         {
-            if (Compilation.Options.LateBindingOrFox(node) && right.Kind() != SyntaxKind.GenericName)
+            if (Compilation.Options.LateBindingOrFox(node) && right.Kind() != SyntaxKind.GenericName && boundLeft.Kind != BoundKind.TypeExpression )
             {
                 string propName = right.Identifier.ValueText;
                 if (leftType != null)

@@ -242,6 +242,7 @@ namespace XSharp.Project
                             string asmName = (string)key.GetValue("PrimaryInteropAssemblyName");
                             var name = new AssemblyName(asmName);
                             assembly = Assembly.Load(name);
+                            assemblyPath = assembly.Location;
                         }
                     }
                 }

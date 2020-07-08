@@ -264,7 +264,6 @@ BEGIN NAMESPACE XSharpModel
                parRef:ParamType := ParamType.As
                parRef:OriginalTypeName := "XSharp.__Usual"
                SELF:_signature:Parameters:Add(parRef)
-               
             NEXT
          endif
          
@@ -291,6 +290,9 @@ BEGIN NAMESPACE XSharpModel
             parRef:OriginalTypeName := oPar:ParameterType:FullName
             if defValue != NULL
                parRef:Value := defValue:ToString()
+            ENDIF
+            IF parRef:OriginalTypeName:Contains("&")
+               parType := ParamType.Ref
             ENDIF
             parRef:ParamType := parType
             SELF:_signature:Parameters:Add(parRef)
@@ -357,7 +359,10 @@ BEGIN NAMESPACE XSharpModel
          return result
          
 
-      METHOD AddTypeParameters(aPars as Mono.Collections.Generic.Collection<GenericParameter>) AS VOID
+      METHOD AddTypeParameters(aPars AS Mono.Collections.Generic.Collection<GenericParameter>) AS VOID
+         FOREACH typeParam AS Mono.Cecil.GenericParameter IN aPars
+            SELF:_signature:TypeParameters:Add(typeParam:Name)
+         NEXT
          RETURN
 
 //

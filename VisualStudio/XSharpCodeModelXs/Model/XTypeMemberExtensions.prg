@@ -92,6 +92,9 @@ BEGIN NAMESPACE XSharpModel
          sb:Append(prefix)
          sb:Append(tm:ParentType:FullName)
          sb:Append("."+name)
+         IF tm:TypeParameters:Count > 0
+            sb:Append("``"+tm:TypeParameters:Count:ToString())
+         ENDIF
          IF tm:Parameters:Count > 0
             sb:Append( "(")
             FOR var iParam := 0 to tm:Parameters:Count-1
@@ -99,14 +102,45 @@ BEGIN NAMESPACE XSharpModel
                IF iParam > 0
                   sb:Append(",")
                ENDIF
-               if param is XParameterReference var xrefpar
-                  sb:Append(xrefpar:OriginalTypeName)
-               else
-                  sb:Append(param:TypeName)
+               IF param IS XParameterReference VAR xrefpar
+                  // check if the original parameter contains a type reference
+                  VAR typeName := xrefpar:OriginalTypeName
+                  VAR result   := typeName
+                  IF typeName:Contains("<")
+                     VAR nPos := typeName:IndexOf("<")
+                     result   := typeName:Substring(0, nPos)
+                     typeName := typeName:Substring(nPos+1):Replace(">","")
+                     nPos := result:IndexOf("`")
+                     IF  nPos > 0
+                        result := result:Substring(0, nPos)
+                     ENDIF
+                     VAR vars := typeName:Split(",":ToCharArray())
+                     VAR delim := "{"
+                     FOREACH VAR parName IN vars
+                        result += delim
+                        delim  := ","
+                        nPos := tm:TypeParameters:IndexOf(parName)
+                        IF nPos >= 0
+                           result += "``"+nPos:ToString()
+                        ELSE
+                           result += parName
+                        ENDIF
+                     NEXT
+                     result += "}"
+                     sb:Append(result)
+                  ELSE
+                     VAR nPos := tm:TypeParameters:IndexOf(typeName)
+                     IF nPos >= 0
+                        sb:Append("``"+nPos:ToString())
+                     ELSE
+                        sb:Append(typeName)
+                     ENDIF
+                  ENDIF
                endif
             NEXT
             sb:Append(")")
          ENDIF
+         sb:Replace('&','@')  // Ampersand is not allowed in the string
          RETURN sb:ToString()
          
    END CLASS

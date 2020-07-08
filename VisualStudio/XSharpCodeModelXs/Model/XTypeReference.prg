@@ -212,6 +212,10 @@ BEGIN NAMESPACE XSharpModel
                      VAR ifname := @@interface:InterfaceType:FullName
                      SELF:_signature:AddInterface(ifname)
                      VAR mod := _typeDef:Module
+                     // see if we can find the type behind the interface in our assembly
+                     // and if we do then update the member list
+                     // this is especially needed with AdoDb where the Connection interface
+                     // has no members but inherits all its members from 2 other interfaces
                      VAR ifType := mod:GetType(ifname)
                      IF ifType != NULL
                         AddMembers(aMembers, ifType, SELF)

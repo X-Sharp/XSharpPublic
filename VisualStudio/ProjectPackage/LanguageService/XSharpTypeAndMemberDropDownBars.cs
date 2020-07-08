@@ -256,6 +256,12 @@ namespace XSharp.LanguageService
                     else
                     {
                         members.AddRange(currentType.XMembers);
+                        foreach (XTypeDefinition child in currentType.Children)
+                        {
+                            members.Add(child);
+                            members.AddRange(child.XMembers);
+                        }
+
                     }
                 }
                 else
@@ -327,14 +333,32 @@ namespace XSharp.LanguageService
                         }
 
                         string prototype = member.ComboPrototype;
-                        if (!currentTypeOnly && member.Parent != null && member.Parent.Name != XLiterals.GlobalName)
+                        bool addPrefix = false;
+
+                        if (currentTypeOnly)
                         {
-                            if (member.Modifiers.HasFlag(Modifiers.Static) || member is XTypeDefinition)
-                                prototype = member.Parent.Name + "." + prototype;
-                            else
-                                prototype = member.Parent.Name + ":" + prototype;
+                            if (member.Parent != currentType && member.Kind.IsClassMember(file.Project.Dialect))
+                            {
+                                addPrefix = true;
+                            }
+
+                        }
+                        else
+                        {
+                            if (member.Parent is XEntityDefinition && member.Parent.Name != XLiterals.GlobalName && member.Kind.IsClassMember(file.Project.Dialect))
+                            {
+                                addPrefix = true;
+                            }
                         }
 
+                        if (addPrefix )
+                        {
+                            var parent = member.Parent as XEntityDefinition;
+                            if (member.Modifiers.HasFlag(Modifiers.Static) || member is XTypeDefinition)
+                                prototype = parent.ComboPrototype + "." + prototype;
+                            else
+                                prototype = parent.ComboPrototype + ":" + prototype;
+                        }
                         if (otherFile)
                         {
                             ft = DROPDOWNFONTATTR.FONTATTR_GRAY;

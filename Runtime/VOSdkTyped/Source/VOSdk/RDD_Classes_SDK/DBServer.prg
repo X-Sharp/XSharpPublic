@@ -597,8 +597,6 @@ METHOD __SetupLocks( )  AS VOID STRICT
 
 	
 	RETURN
-
-
 CONSTRUCTOR( cFile AS STRING, lShareMode := FALSE AS OBJECT, lReadOnlyMode := FALSE AS OBJECT, xDriver:= "" AS STRING, aRdd := NULL_ARRAY AS ARRAY) 
     SELF(FileSpec{cFile}, lShareMode, lReadOnlyMode , xDriver, aRdd )
     

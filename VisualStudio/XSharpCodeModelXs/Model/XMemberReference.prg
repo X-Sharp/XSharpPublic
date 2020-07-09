@@ -187,15 +187,16 @@ BEGIN NAMESPACE XSharpModel
          ENDIF         
          OVERRIDE METHOD Resolve() AS VOID         
             IF SELF:_methoddef != NULL
+               // Add Generic parameters first so have that info when processing the parameters
+               IF _methoddef:HasGenericParameters
+                  SELF:AddTypeParameters(_methoddef:GenericParameters)
+               ENDIF
                IF _methoddef:HasParameters
                   IF SELF:CallingConvention = CallingConvention.Clipper
                      SELF:AddParameters(_ccAttrib)
                   ELSE
                      SELF:AddParameters(_methoddef:Parameters)
                   ENDIF
-               ENDIF
-               IF _methoddef:HasGenericParameters
-                  SELF:AddTypeParameters(_methoddef:GenericParameters)
                ENDIF
                SUPER:Resolve()
             ENDIF
@@ -295,6 +296,10 @@ BEGIN NAMESPACE XSharpModel
                parType := ParamType.Ref
             ENDIF
             parRef:ParamType := parType
+            IF parRef:OriginalTypeName:Contains("`")
+               VAR count := SELF:TypeParameters:Count
+               parRef:TypeName := parRef:OriginalTypeName:Replace("`"+count:ToString(),"")
+            ENDIF            
             SELF:_signature:Parameters:Add(parRef)
          NEXT
          RETURN

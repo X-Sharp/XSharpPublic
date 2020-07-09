@@ -15,25 +15,39 @@ BEGIN NAMESPACE XSharpModel
    STATIC CLASS TypeMemberExtensions
       
       STATIC METHOD GetProtoType(SELF tm as IXMember) AS STRING
-         VAR vars := ""
-         VAR desc := ""
+         VAR vars := StringBuilder{}
+         IF tm:TypeParameters?:Count > 0
+            VAR delim := "<"
+            FOREACH VAR typeParam IN tm:TypeParameters
+               vars:Append(delim)
+               delim := ","
+               vars:Append(typeParam)
+            NEXT
+            vars:Append(">")
+         ENDIF
          IF tm:Kind:HasParameters()
             IF ( tm:Kind == Kind.@@Constructor )
-               vars := "{" + tm:ParameterList + "}"
+               vars:Append("{")
+               vars:Append(tm:ParameterList)
+               vars:Append("}")
             ELSE
-               vars := "(" + tm:ParameterList + ")"
+               vars:Append("(")
+               vars:Append(tm:ParameterList)
+               vars:Append(")")
             ENDIF 
          ENDIF
          IF tm:Kind == Kind.VODefine .OR. tm:Kind == Kind.EnumMember
-            vars := " "+tm:Value
+            vars:Append(" "+tm:Value)
          ENDIF
+         
          IF ( tm:Kind == Kind.@@Constructor )
-            desc := tm:DeclaringType + vars
+            vars:Insert(0, tm:DeclaringType )
          ELSE
-            desc := tm:Name + vars
+            vars:Insert(0, tm:Name )
          ENDIF 
-         desc := desc +  XLiterals.AsKeyWord + tm:TypeName
-         RETURN desc
+         vars:Append(XLiterals.AsKeyWord)
+         vars:Append(tm:TypeName)
+         RETURN vars:ToString()
       
       
       STATIC METHOD GetDescription(SELF tm AS IXMember) AS STRING

@@ -762,10 +762,12 @@ BEGIN NAMESPACE XSharpModel
          VAR myusings := List<STRING>{}
          myusings:AddRange(usings)
          myusings:AddRange(SELF:ImplicitNamespaces)
-         IF pos > 0 .AND. ! typeName:EndsWith(".")
+         IF pos > 0 
             VAR ns   := typeName:Substring(0,pos)
-            typeName := typeName:Substring(pos+1)
             myusings:Add(ns)
+            IF ! typeName:EndsWith(".")
+               typeName := typeName:Substring(pos+1)
+            ENDIF
          ENDIF
          RETURN myusings
          
@@ -846,10 +848,13 @@ BEGIN NAMESPACE XSharpModel
             ENDIF
             IF String.IsNullOrEmpty(element:Namespace)
                result:Add(element)
-            ELSEIF usings:Contains(element:Namespace)
-               result:Add(element)
             ELSE
-               NOP   // namespace does not match
+               FOREACH VAR ns IN usings
+                  IF element:Namespace:StartsWith(ns, StringComparison.OrdinalIgnoreCase)
+                     result:Add(element)
+                     EXIT
+                  ENDIF
+               NEXT
             ENDIF
          NEXT
          RETURN result

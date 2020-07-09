@@ -1060,30 +1060,7 @@ namespace XSharpLanguage
                 this.TypeName = t;
                 this.Direction = dir;
             }
-            internal ParamInfo(System.Reflection.ParameterInfo p)
-            {
-                this.Name = p.Name;
-                if (p.IsIn)
-                {
-                    Direction = "IN";
-                }
-                else if (p.IsOut)
-                {
-                    Direction = "OUT";
-                }
-                else
-                {
-                    Direction = "AS";
-                    string type = p.ParameterType.FullName;
-                    if (type == null)
-                        type = p.ParameterType.Name;
-                    if (type != null && type.EndsWith("&"))
-                        Direction = "REF";
-                }
-
-                this.TypeName = p.ParameterType.GetXSharpTypeName();
-                Optional = p.IsOptional;
-            }
+      
         }
 
 

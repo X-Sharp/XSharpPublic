@@ -1,11 +1,11 @@
 ﻿begin namespace $rootnamespace$
 
-    partial class $safeitemrootname$ INHERIT System.Windows.Forms.Form
+    partial class $safeitemrootname$ inherit System.Windows.Forms.Form
 
         /// <summary>
         /// Required designer variable.
         /// </summary>
-        private components := NULL as System.ComponentModel.IContainer
+        private components := null as System.ComponentModel.IContainer
 
         /// <summary>
         /// Clean up any resources being used.
@@ -13,7 +13,7 @@
         /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
         protected method Dispose(disposing as logic) as void strict
 
-            if (disposing .AND. (components != null))
+            if (disposing .and. (components != null))
                 components:Dispose()
             endif
             Super:Dispose(disposing)

@@ -39,6 +39,7 @@ BEGIN NAMESPACE XSharpModel
       PRIVATE _dependentAssemblyList             AS STRING
       PRIVATE _name                              AS STRING
       PUBLIC  FileWalkComplete						AS XProject.OnFileWalkComplete
+	  PUBLIC  ProjectWalkComplete					AS XProject.OnProjectWalkComplete
       
       #endregion
       #region Properties
@@ -1020,6 +1021,8 @@ BEGIN NAMESPACE XSharpModel
 //         ENDIF
          
       PUBLIC DELEGATE OnFileWalkComplete(xFile AS XFile) AS VOID
+		
+	  PUBLIC DELEGATE OnProjectWalkComplete( xProject AS XProject ) AS VOID		
       
       #region Properties
       PROPERTY AssemblyReferences AS List<XAssembly>

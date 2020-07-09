@@ -256,12 +256,14 @@ BEGIN NAMESPACE XSharpModel
                 ENDIF
                 BEGIN LOCK SELF
                     VAR hash := 0U
-                    FOREACH var entity in SELF:EntityList
-                        BEGIN UNCHECKED
-                           hash += (DWORD) entity:Prototype:GetHashCode()
-                           hash += (DWORD) entity:Range:StartLine
-                        END UNCHECKED
-                    NEXT
+					TRY
+						FOREACH VAR entity IN SELF:EntityList
+							BEGIN UNCHECKED
+							   hash += (DWORD) entity:Prototype:GetHashCode()
+							   hash += (DWORD) entity:Range:StartLine
+							END UNCHECKED
+						NEXT
+					END TRY
                     RETURN hash
                 END LOCK
             END GET
@@ -319,7 +321,7 @@ BEGIN NAMESPACE XSharpModel
 
         PROPERTY TypeList AS IDictionary<STRING, XTypeDefinition>
             GET
-                IF ! SELF:HasCode
+                IF ! SELF:HasCode .OR. SELF:_typeList==NULL
                     RETURN NULL
                 ENDIF
                 BEGIN LOCK SELF

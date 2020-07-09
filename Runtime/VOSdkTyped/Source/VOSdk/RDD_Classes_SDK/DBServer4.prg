@@ -805,9 +805,9 @@ METHOD SetOrder( uOrder AS USUAL, cIndexFileName := "" AS STRING) AS LOGIC
 
 	lErrorFlag := FALSE 
 	BEGIN SEQUENCE
-      SELF:__OptimisticFlush()
 
 		VoDbSelect( wWorkArea, OUT dwCurrentWorkArea )
+		SELF:__OptimisticFlush()
 		IF ! (lRetCode := VoDbOrdSetFocus(cIndexFileName,uOrder, REF pszStuff))
 			BREAK ErrorBuild(_VoDbErrInfoPtr())
 		ENDIF
@@ -1557,10 +1557,10 @@ METHOD Update(oDbServer,cbKey,lRandomFlag,cbReplace) AS LOGIC CLIPPER
 
 	lErrorFlag := FALSE
 	BEGIN SEQUENCE
-      SELF:__OptimisticFlush()
 
 		VoDbSelect( wWorkArea, OUT dwCurrentWorkArea )
-		IF IsObject(oDbServer) .and. __Usual.ToObject(oDbServer) IS DbServer VAR oDb
+		SELF:__OptimisticFlush()
+		IF IsObject(oDbServer) .AND. __Usual.ToObject(oDbServer) IS DbServer VAR oDb
 			cAlias := oDb:Alias
 		ELSE
 			cAlias := AsString( oDbServer )

@@ -1009,8 +1009,8 @@ METHOD ClearIndex( uOrder, cOrdBag )
 	VODBSelect( wWorkArea, OUT dwCurrentWorkArea )
 
 	BEGIN SEQUENCE
-      //RvdH 070925 Save pending changes
-      SELF:__OptimisticFlush()
+        //RvdH 070925 Save pending changes
+        SELF:__OptimisticFlush()
 		IF IsNil( cOrdBag ) .OR. ! IsString( cOrdBag )
 			cOrdBag := ""
 		ENDIF

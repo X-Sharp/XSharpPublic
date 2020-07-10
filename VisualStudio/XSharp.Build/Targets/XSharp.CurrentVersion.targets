@@ -21,7 +21,8 @@
   
 	<!-- XML Doc file generation -->
   <ItemGroup>
-    <DocFileItem Include="$(DocumentationFile)" Condition="'$(DocumentationFile)'!=''"/>
+    <DocFileNoPath Include="$([System.IO.Path]::GetFileName(`$(DocumentationFile)`))"  Condition="'$(DocumentationFile)'!=''" />    
+    <DocFileItem Include="$(IntermediateOutputPath)$(DocFileNoPath)" Condition="'$(DocumentationFile)'!=''"/>
   </ItemGroup>
 
   <!-- Common Project System support -->

@@ -357,7 +357,7 @@ BEGIN NAMESPACE XSharp
         //[DebuggerStepThroughAttribute];
         OPERATOR/(lhs AS FLOAT, rhs AS FLOAT) AS FLOAT
             VAR tmp := lhs:_value / rhs:_value
-            IF System.Double.IsNaN(tmp)
+            IF System.Double.IsNaN(tmp) .or. System.Double.IsInfinity(tmp)
                 THROW DivideByZeroException{}
             ENDIF
             RETURN FLOAT{ tmp, RuntimeState.Decimals}

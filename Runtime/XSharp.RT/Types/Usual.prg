@@ -1631,7 +1631,7 @@ BEGIN NAMESPACE XSharp
                     
                         END SWITCH
                         IF handled
-                            IF System.Double.IsNaN(res)
+                            IF System.Double.IsNaN(res)  .or. System.Double.IsInfinity(res)
                                 THROW DivideByZeroException{}
                             ENDIF
                             RETURN FLOAT{res, width, deci}

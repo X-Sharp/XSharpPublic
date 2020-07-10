@@ -349,48 +349,84 @@
     </topicref>
     <topicref type="topic" id="423890127319554" build="ALL" modified="2016-01-19T22:41:45.448Z" icon="0" href="Visual-Studio-Integration">
       <caption translate="true">Using X# in Visual Studio</caption>
-      <topicref type="topic" id="423888586335039" modified="2020-04-21T20:52:17.586Z" icon="0" href="Project-System">
+      <topicref type="topic" id="423888586335039" build="ALL" modified="2020-07-10T11:19:04.975Z" icon="0" href="Project-System">
         <caption translate="true">Project System</caption>
-        <topicref type="topic" id="42386764973040" modified="2020-04-21T20:52:17.598Z" icon="0" href="Source-code-Items">
-          <caption translate="true">Source code Items</caption>
+        <topicref type="topic" id="440226752769796" build="ALL" modified="2020-07-10T16:49:04.511Z" icon="0" href="Solution">
+          <caption translate="true">Solution</caption>
         </topicref>
-        <topicref type="topic" id="423886862409427" modified="2020-04-21T20:52:17.605Z" icon="0" href="Forms">
-          <caption translate="true">Forms</caption>
+        <topicref type="topic" id="440226868564114" build="ALL" modified="2020-07-10T17:04:13.271Z" icon="0" href="Build-Configurations">
+          <caption translate="true">Build Configurations</caption>
         </topicref>
-        <topicref type="topic" id="423887693907857" modified="2020-04-21T20:52:17.613Z" icon="0" href="Other-Item-types">
-          <caption translate="true">Other Item types</caption>
+        <topicref type="topic" id="440222915594132" build="ALL" modified="2020-07-10T11:19:04.981Z" icon="0" href="Projects">
+          <caption translate="true">Projects</caption>
+          <topicref type="topic" id="423889199749481" build="ALL" modified="2020-07-10T11:19:10.302Z" icon="0" href="Project-Properties">
+            <caption translate="true">Project Properties</caption>
+            <topicref type="topic" id="440224767523358" build="ALL" modified="2020-07-10T11:16:02.759Z" icon="0" href="General">
+              <caption translate="true">General</caption>
+            </topicref>
+            <topicref type="topic" id="440224293000248" build="ALL" modified="2020-07-10T11:16:14.908Z" icon="0" href="Language">
+              <caption translate="true">Language</caption>
+            </topicref>
+            <topicref type="topic" id="440223989792678" build="ALL" modified="2020-07-10T11:16:22.678Z" icon="0" href="Dialect">
+              <caption translate="true">Dialect</caption>
+            </topicref>
+          </topicref>
+          <topicref type="topic" id="440224103266362" build="ALL" modified="2020-07-10T11:15:21.095Z" icon="0" href="References">
+            <caption translate="true">References</caption>
+            <topicref type="topic" id="440224903790668" build="ALL" modified="2020-07-10T11:16:40.423Z" icon="0" href="_Net">
+              <caption translate="true">.Net</caption>
+            </topicref>
+            <topicref type="topic" id="440226062271839" build="ALL" modified="2020-07-10T11:16:50.980Z" icon="0" href="COM">
+              <caption translate="true">COM</caption>
+            </topicref>
+            <topicref type="topic" id="440226636425739" build="ALL" modified="2020-07-10T11:16:59.035Z" icon="0" href="Project">
+              <caption translate="true">Project</caption>
+            </topicref>
+          </topicref>
         </topicref>
-        <topicref type="topic" id="423889199749481" modified="2020-04-21T20:52:17.620Z" icon="0" href="Project-Properties">
-          <caption translate="true">Project Properties</caption>
-        </topicref>
-        <topicref type="topic" id="423887085079505" modified="2020-04-21T20:52:17.628Z" icon="0" href="Resources">
-          <caption translate="true">Resources</caption>
-        </topicref>
-        <topicref type="topic" id="423889093227394" modified="2020-04-21T20:52:17.635Z" icon="0" href="Settings">
-          <caption translate="true">Settings</caption>
+        <topicref type="topic" id="440223873621196" build="ALL" modified="2020-07-10T11:19:04.986Z" icon="0" href="Project-Items">
+          <caption translate="true">Project Items</caption>
+          <topicref type="topic" id="42386764973040" build="ALL" modified="2020-07-10T11:19:22.111Z" icon="0" href="Source-code-Items">
+            <caption translate="true">Source code Items</caption>
+          </topicref>
+          <topicref type="topic" id="423886862409427" build="ALL" modified="2020-07-10T11:19:22.117Z" icon="0" href="Forms">
+            <caption translate="true">Forms</caption>
+          </topicref>
+          <topicref type="topic" id="423887693907857" build="ALL" modified="2020-07-10T11:19:22.122Z" icon="0" href="Other-Item-types">
+            <caption translate="true">Other Item types</caption>
+          </topicref>
+          <topicref type="topic" id="423887085079505" build="ALL" modified="2020-07-10T11:19:22.128Z" icon="0" href="Resources">
+            <caption translate="true">Native Resources</caption>
+          </topicref>
+          <topicref type="topic" id="440225421222903" build="ALL" modified="2020-07-10T11:19:22.133Z" icon="0" href="Managed-Resources">
+            <caption translate="true">Managed Resources</caption>
+          </topicref>
+          <topicref type="topic" id="423889093227394" build="ALL" modified="2020-07-10T11:19:22.138Z" icon="0" href="Settings">
+            <caption translate="true">Settings</caption>
+          </topicref>
         </topicref>
       </topicref>
-      <topicref type="topic" id="423888873133831" modified="2020-04-21T20:52:27.269Z" icon="0" href="Source-Code-Editor">
+      <topicref type="topic" id="423888873133831" build="ALL" modified="2020-07-10T11:19:04.992Z" icon="0" href="Source-Code-Editor">
         <caption translate="true">Source Code Editor</caption>
-        <topicref type="topic" id="423887361540682" modified="2020-04-21T20:52:27.276Z" icon="0" href="Keyword-Coloring">
+        <topicref type="topic" id="423887361540682" build="ALL" modified="2020-07-10T11:18:58.534Z" icon="0" href="Keyword-Coloring">
           <caption translate="true">Keyword Coloring</caption>
         </topicref>
-        <topicref type="topic" id="423896290118079" modified="2020-04-21T20:52:27.283Z" icon="0" href="Highlighting-Errors">
+        <topicref type="topic" id="423896290118079" build="ALL" modified="2020-07-10T11:18:58.540Z" icon="0" href="Highlighting-Errors">
           <caption translate="true">Highlighting Errors</caption>
         </topicref>
-        <topicref type="topic" id="423889358133456" modified="2020-04-21T20:52:27.290Z" icon="0" href="Regions">
+        <topicref type="topic" id="423889358133456" build="ALL" modified="2020-07-10T11:18:58.545Z" icon="0" href="Regions">
           <caption translate="true">Regions</caption>
         </topicref>
-        <topicref type="topic" id="423889781598128" modified="2020-04-21T20:52:27.298Z" icon="0" href="Blocks">
+        <topicref type="topic" id="423889781598128" build="ALL" modified="2020-07-10T11:18:58.550Z" icon="0" href="Blocks">
           <caption translate="true">Blocks</caption>
         </topicref>
-        <topicref type="topic" id="423888278218038" modified="2020-04-21T20:52:27.305Z" icon="0" href="Parameter-Tips">
+        <topicref type="topic" id="423888278218038" build="ALL" modified="2020-07-10T11:18:58.556Z" icon="0" href="Parameter-Tips">
           <caption translate="true">Parameter Tips</caption>
         </topicref>
-        <topicref type="topic" id="423887688675988" modified="2020-04-21T20:52:27.313Z" icon="0" href="Quick-Info">
+        <topicref type="topic" id="423887688675988" build="ALL" modified="2020-07-10T11:18:58.562Z" icon="0" href="Quick-Info">
           <caption translate="true">Quick Info</caption>
         </topicref>
-        <topicref type="topic" id="423888640134134" modified="2020-04-21T20:52:27.320Z" icon="0" href="Code-Completion">
+        <topicref type="topic" id="423888640134134" build="ALL" modified="2020-07-10T11:18:58.568Z" icon="0" href="Code-Completion">
           <caption translate="true">Code Completion</caption>
         </topicref>
       </topicref>
@@ -5775,6 +5811,12 @@
       </topicref>
       <topicref type="topic" id="439504841296930" build="ALL" modified="2020-04-29T12:12:15.400Z" icon="0" href="XS9098">
         <caption translate="true">XS9098</caption>
+      </topicref>
+      <topicref type="topic" id="1009099" build="ALL" modified="2017-01-09T16:17:58.854Z" icon="0" href="XS9099">
+        <caption translate="true">XS9099</caption>
+      </topicref>
+      <topicref type="topic" id="1009100" build="ALL" modified="2017-01-09T16:17:58.854Z" icon="0" href="XS9100">
+        <caption translate="true">XS9100</caption>
       </topicref>
       <topicref type="topic" id="1009200" build="ALL" modified="2017-01-09T16:17:58.854Z" icon="0" href="XS9200">
         <caption translate="true">XS9200</caption>

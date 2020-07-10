@@ -767,21 +767,6 @@
       <file-mod href="Types.xml"/>
       <file-mod href="Unsafe-Code-and-Pointers.xml"/>
       <file-mod href="Strong-Typing.xml"/>
-      <file-mod href="Project-System.xml"/>
-      <file-mod href="Source-code-Items.xml"/>
-      <file-mod href="Forms.xml"/>
-      <file-mod href="Other-Item-types.xml"/>
-      <file-mod href="Project-Properties.xml"/>
-      <file-mod href="Resources.xml"/>
-      <file-mod href="Settings.xml"/>
-      <file-mod href="Source-Code-Editor.xml"/>
-      <file-mod href="Keyword-Coloring.xml"/>
-      <file-mod href="Highlighting-Errors.xml"/>
-      <file-mod href="Regions.xml"/>
-      <file-mod href="Blocks.xml"/>
-      <file-mod href="Parameter-Tips.xml"/>
-      <file-mod href="Quick-Info.xml"/>
-      <file-mod href="Code-Completion.xml"/>
       <file-mod href="Debugger.xml"/>
     </file>
     <file href="Baggage/*.*" build="ALL" filetype="baggage"/>

@@ -1,0 +1,77 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>Solution</title>
+  <body>
+    <header>
+      <para styleclass="Heading1">Solution</para>
+    </header>
+    <para styleclass="Normal">Visual Studio organizes your source code in Solutions and one or more projects.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">A solution is a container for one or more related projects, along with build information, Visual Studio window settings, and any miscellaneous files that aren&apos;t associated with a particular project. </para>
+    <para styleclass="Normal">A solution is described by a text file (extension .sln) with its own unique format; it&apos;s not intended to be edited by hand.</para>
+    <para styleclass="Body Text">Visual Studio uses two file types (.sln and .suo) to store settings for solutions:</para>
+    <para styleclass="Body Text"></para>
+    <para styleclass="Body Text"><table styleclass="Default" rowcount="3" colcount="3">
+      <tr style="vertical-align:top">
+        <td style="vertical-align:middle;">
+          <para styleclass="Body Text">Extension</para>
+        </td>
+        <td style="vertical-align:middle;">
+          <para styleclass="Body Text">Name</para>
+        </td>
+        <td style="vertical-align:middle;">
+          <para styleclass="Body Text">Description</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="vertical-align:middle;">
+          <para styleclass="Body Text">.sln</para>
+        </td>
+        <td style="vertical-align:middle;">
+          <para styleclass="Body Text">Visual Studio Solution</para>
+        </td>
+        <td style="vertical-align:middle;">
+          <para styleclass="Body Text">Organizes projects, project items, and solution items in the solution.</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="vertical-align:middle;">
+          <para styleclass="Body Text">.suo</para>
+        </td>
+        <td style="vertical-align:middle;">
+          <para styleclass="Body Text">Solution User Options</para>
+        </td>
+        <td style="vertical-align:middle;">
+          <para styleclass="Body Text">Stores user-level settings and customizations, such as breakpoints.</para>
+        </td>
+      </tr>
+    </table></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">Different projects in Visual Studio may target different development languages. </para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">It is very well possible to use C# and X# projects next to each other in the same solutions.</para>
+    <para styleclass="Normal">And you can set dependency relations between projects for different development languages without problems.</para>
+    <para styleclass="Normal">Visual Studio will automatically determine the order in which projects must be build.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">If you want you can control this order by opening the Solution Properties dialog (right click on the Solution node in the Solution Explorer and choose &quot;Properties&quot;).</para>
+    <para styleclass="Normal">The image below shows the Solution Properties dialog for the X# runtime solution.</para>
+    <para styleclass="Normal">On this dialog you can also set which project needs to be the &quot;startup project&quot; when you start debugging inside Visual Studio. </para>
+    <para styleclass="Normal">As you can see you can also start multiple projects at the same time.</para>
+    <para styleclass="Normal">The &quot;Action&quot; combo offers you the choice to Start a program or to start Debugging a program when you start the debugger inside Visual Studio.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><image src="SolutionProperties.png" scale="100.00%" styleclass="Image Caption"></image></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Body Text">On the &quot;Project Dependencies&quot; tab page you can set the dependencies between projects</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><image src="SolutionDependencies.png" scale="100.00%" styleclass="Image Caption"></image></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Body Text">On this dialog you can see that 2 projects are already marked with a check box: these are projects that are added in the references list of the XSharp.VO project.</para>
+    <para styleclass="Body Text">Other projects have a gray checkbox, which means that they depend on XSharp.VO, so you cannot make XSharp.VO dependent on them (that would introduce a circular relation). Other projects ave w hite checkbox. You could add these to the &quot;Depends on:&quot; list for XSharp.VO if you want, which would mean that Visual Studio would always build them before XSharp.VO is built. </para>
+    <para styleclass="Body Text"></para>
+    <para styleclass="Body Text">From this dialog you can also open the &quot;Configuration Manager&quot; with which you can maintain the various Configurations (Normally Debug and Release, but you can to that it you want and the various &quot;Platforms&quot;. Normally there is only one Platform called &quot;AnyCpu&quot;. But if your project contains C++ code you may have a x86 and a x64 platform as well. This configuration manager is also available in the Visual Studio Build menu.</para>
+    <para styleclass="Body Text">See the next chapter for more information about build configurations.</para>
+    <para styleclass="Body Text"></para>
+    <para styleclass="Body Text"></para>
+  </body>
+</topic>

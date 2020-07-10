@@ -1,0 +1,30 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>Build Configurations</title>
+  <body>
+    <header>
+      <para styleclass="Heading1">Build Configurations</para>
+    </header>
+    <para styleclass="Body Text">You need build configurations when you need to build your projects with different settings. For example, Debug and Release are configurations and different compiler options are used accordingly when building them. One configuration is active and is indicated in the command bar at the top of the Visual Studio IDE.</para>
+    <para styleclass="Body Text"></para>
+    <para styleclass="Body Text"><image src="VsBuildToolbar.png" scale="71.07%" width="881" height="86"></image></para>
+    <para styleclass="Body Text"></para>
+    <para styleclass="Body Text">The configuration and the platform control where built output files are stored. Normally, when Visual Studio builds your project, the output is placed in a project subfolder named with the active configuration (for example, bin/Debug), but you can change that.</para>
+    <para styleclass="Body Text">You can create your own build configurations at the solution and project level. The solution configuration determines which projects are included in the build when that configuration is active. Only the projects that are specified in the active solution configuration will be built. If multiple target platforms are selected in Configuration Manager, all projects that apply to that platform are built. The project configuration determines what build settings and compiler options are used when you build the project.</para>
+    <para styleclass="Body Text">To create, select, modify, or delete a configuration, you can use the Configuration Manager. To open it, on the menu bar, choose Build &gt; Configuration Manager, or just type Configuration in the search box. You can also use the Solution Configurations list on the Standard toolbar to select a configuration or open the Configuration Manager.</para>
+    <para styleclass="Body Text"></para>
+    <para styleclass="Body Text"><image src="ConfigurationManager.png" scale="66.62%" width="734" height="491" styleclass="Image Caption"></image></para>
+    <para styleclass="Body Text"></para>
+    <para styleclass="Body Text">By default, Debug and Release configurations are included in projects that are created by using Visual Studio templates. A Debug configuration supports the debugging of an app, and a Release configuration builds a version of the app that can be deployed. For more information, see <link displaytype="text" defaultstyle="true" type="weblink" href="https://docs.microsoft.com/en-us/visualstudio/debugger/how-to-set-debug-and-release-configurations?view=vs-2019">How to: Set debug and release configurations</link>. You can also create custom solution configurations and project configurations. For more information, see <link displaytype="text" defaultstyle="true" type="weblink" href="https://docs.microsoft.com/en-us/visualstudio/ide/how-to-create-and-edit-configurations?view=vs-2019">How to: Create and edit configurations</link>.</para>
+    <para styleclass="Heading2">Solution Configurations</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">A solution configuration specifies how projects in the solution are to be built and deployed. To modify a solution configuration or define a new one, in the Configuration Manager, under Active solution configuration, choose Edit or New.</para>
+    <para styleclass="Normal">Each entry in the Project contexts box in a solution configuration represents a project in the solution. For every combination of Active solution configuration and Active solution platform, you can set how each project is used. (For more information about solution platforms, see <link displaytype="text" defaultstyle="true" type="weblink" href="https://docs.microsoft.com/en-us/visualstudio/ide/understanding-build-platforms?view=vs-2019">Understand build platforms</link>.)</para>
+    <para styleclass="Normal">When you define a new solution configuration and select the Create new project configurations check box, Visual Studio automatically assigns the new configuration to all of the projects. Likewise, when you define a new solution platform and select the Create new project platforms check box, Visual Studio automatically assigns the new platform to all of the projects. Also, if you add a project that targets a new platform, Visual Studio adds that platform to the list of solution platforms and assigns it to all of the projects. You can still modify the settings for each project.</para>
+    <para styleclass="Normal">The active solution configuration also provides context to the IDE. For example, if you&apos;re working on a project and the configuration specifies that it will be built for a mobile device, the Toolbox displays only items that can be used in a mobile device project.</para>
+    <para styleclass="Heading2">Project Configurations</para>
+    <para styleclass="Normal">The configuration and platform that a project targets are used together to specify the build settings and compiler options to use when it&apos;s built. A project can have different settings for each combination of configuration and platform. To modify the properties of a project, open the shortcut menu for the project in Solution Explorer, and then choose Properties. At the top of the Build tab of the project designer, choose an active configuration to edit its build settings.</para>
+    <para styleclass="Normal">See the project properties dialogs for more information about which project properties are configuration dependent and which project properties are configuration independent.</para>
+  </body>
+</topic>

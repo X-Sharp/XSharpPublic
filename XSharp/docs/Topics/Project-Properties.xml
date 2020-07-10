@@ -7,5 +7,14 @@
       <para styleclass="Heading1">Project Properties</para>
     </header>
     <para styleclass="Normal"></para>
+    <para styleclass="Normal">There are several ways that you can set project properties in Visual Studio:</para>
+    <list id="1" type="ol" listtype="decimal" formatstring="&#37;&#48;&#58;&#115;&#46;" format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Arial; font-size:11pt; color:#000000;">
+      <li styleclass="Normal">There is a &lt;Myprojectname&gt; Properties menu option in the Project Menu</li>
+      <li styleclass="Normal">There is a context menu option &quot;Properties&quot; on the project icons in the Solution Explorer</li>
+      <li styleclass="Normal">By choosing the context menu option &quot;Open&quot; on the Properties folder below the Project Icon in the Solution Explorer.</li>
+    </list>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">All these options do the same and open the project properties dialog. This dialog has several pages.</para>
+    <para styleclass="Normal"></para>
   </body>
 </topic>

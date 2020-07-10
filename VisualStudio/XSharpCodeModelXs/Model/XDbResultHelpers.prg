@@ -72,6 +72,8 @@ BEGIN NAMESPACE XSharpModel
 						ENDIF
 						VAR file       := XFile{ fileName, origin:Project}
 						file:Virtual   := TRUE
+						// If we don't set Interactive, the EntityList will be emptied after the Parse() operation
+						file:Interactive := TRUE
 						file:Id        := element:IdFile
 						VAR members := XDatabase.GetMembers(idType)
 						// now create a temporary source for the parser

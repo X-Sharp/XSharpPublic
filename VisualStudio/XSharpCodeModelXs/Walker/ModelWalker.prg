@@ -201,7 +201,7 @@ BEGIN NAMESPACE XSharpModel
                      XDatabase.Update(oFile)
                   ENDIF
                NEXT
-               _currentProject:FileWalkComplete?:Invoke(NULL)
+               _currentProject:ProjectWalkComplete?:Invoke(_currentProject)
                _currentProject := NULL
                project:FileWalkCompleted := TRUE
 				ENDDO

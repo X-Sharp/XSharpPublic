@@ -303,7 +303,7 @@ BEGIN NAMESPACE XSharpModel
             _file:SetTypes(typelist, _usings, _staticusings, SELF:_EntityList)
             _file:SaveToDatabase()
          ENDIF
-         _file:Project:FileWalkComplete(_file)
+         //_file:Project:FileWalkComplete(_file)
          
       
       PRIVATE METHOD GetXmlDoc(startToken AS XSharpToken) AS STRING

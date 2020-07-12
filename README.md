@@ -1,7 +1,7 @@
 # XSharpDev
-XSharp Development branch
+XSharp Compiler repository
 
-This is the development branch of the Compiler.
+This repository contains the source code to the X# compiler
 Apart from the compiler this repository also has the source to:
 - Documentation
 

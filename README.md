@@ -24,9 +24,9 @@ After retrieving this source code, you need to perform the following steps to be
 - Goto the Roslyn subfolder
 - Run Restore.Cmd to restore the nuget packages
 - (Optionally) build the Roslyn binaries. You can run
-  x MsBuild Compilers.sln to build just the compilers
-  x MsBuild Workspaces.sln to build the VS integration
-  x MsBuild Roslyn.sln to build everything
+  - MsBuild Compilers.sln to build just the compilers
+  - MsBuild Workspaces.sln to build the VS integration
+  - MsBuild Roslyn.sln to build everything
 - Then navigate to the XSharp folder
 - Run Restore.cmd to restore the nuget packages. This will also call Rebuild.Cmd that will build a Debug AND Release version.
 - If you want to you can also build either for Debug, Public or for Release with the build.cmd. Add the configuration name: Build Debug.

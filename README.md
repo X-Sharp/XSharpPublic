@@ -36,7 +36,5 @@ After retrieving this source code, you need to perform the following steps to be
 The source code is available under the Apache 2 license that you can find in the root of this repository:
 https://github.com/X-Sharp/XSharpDev/blob/master/license.txt.
 
-Some source files still speak about the "X# compiler source code License". This will be changed in the coming weeks.
-
 Of course we welcome all additions, bug fixes etc.
 

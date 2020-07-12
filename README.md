@@ -20,7 +20,7 @@ prevent name conflicts when assemblies of both origin are in memory at the same 
 
 After retrieving this source code, you need to perform the following steps to be able to compile your XSharp Compiler:
 
-- Open a VS (2015 or 2017) developers command prompt
+- Open a VS (2017 or 2019) developers command prompt
 - Goto the Roslyn subfolder
 - Run Restore.Cmd to restore the nuget packages
 - (Optionally) build the Roslyn binaries. You can run

@@ -522,6 +522,14 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             return r;
         }
 
+        public static bool IsZeroLiteral(this IToken token)
+        {
+            return (token.Type == XSharpParser.INT_CONST || token.Type == XSharpParser.HEX_CONST || token.Type == XSharpParser.BIN_CONST)
+                && token.SyntaxLiteralValue(CSharpParseOptions.Default) is SyntaxToken lv
+                && lv.Kind == SyntaxKind.NumericLiteralToken
+                && lv.ValueText == "0";
+        }
+
         public static SyntaxToken SyntaxOp(this IToken token)
         {
             SyntaxToken r;

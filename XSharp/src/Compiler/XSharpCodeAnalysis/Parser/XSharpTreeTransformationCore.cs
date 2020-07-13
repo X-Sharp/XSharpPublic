@@ -7016,7 +7016,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     ch = (char)number;
                 else
                     overflow = true;
-                if (number > 0 && number <= 127)
+                if (number >= 0 && number <= 127)	// Also allow Chr(0)
                 {
                     var literal = GenerateLiteral(ch.ToString());
                     if (overflow)

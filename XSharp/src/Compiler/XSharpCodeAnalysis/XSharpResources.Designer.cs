@@ -12978,6 +12978,15 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Literal value for define has an Ansi character between 128 and 255 which depends on the current codepage. Consider to use a Unicode literal inside the string instead..
+        /// </summary>
+        internal static string WRN_ChrInDefine {
+            get {
+                return ResourceManager.GetString("WRN_ChrInDefine", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Arrays as attribute arguments is not CLS-compliant.
         /// </summary>
         internal static string WRN_CLS_ArrayArgumentToAttribute {

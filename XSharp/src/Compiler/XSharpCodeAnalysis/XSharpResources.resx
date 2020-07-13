@@ -5721,4 +5721,9 @@ To remove the warning, you can use /reference instead (set the Embed Interop Typ
   <data name="ERR_PublicInit" xml:space="preserve">
     <value>Public declarations cannot have both an array specification and an initialization value.</value>
   </data>
+  <data name="WRN_ChrInDefine" xml:space="preserve">
+    <value>Literal value for define has an Ansi character between 128 and 255 which depends on the current codepage. Consider to use a Unicode literal inside the string instead.</value>
+  </data>
+
+
 </root>

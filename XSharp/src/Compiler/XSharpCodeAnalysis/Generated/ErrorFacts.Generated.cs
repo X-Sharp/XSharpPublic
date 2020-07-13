@@ -247,6 +247,7 @@
                 case ErrorCode.WRN_UndeclaredVariableLatebound:
                 case ErrorCode.WRN_IllegalPPOption:
                 case ErrorCode.WRN_UndeclaredMember:
+                case ErrorCode.WRN_ChrInDefine:
                 case ErrorCode.WRN_XPPSuperIVarsAlwaysShared:
                 case ErrorCode.WRN_XPPFrozedNotSupported:
                 case ErrorCode.WRN_XPPVarIsInNotSupported:

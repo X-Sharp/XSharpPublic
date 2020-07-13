@@ -7023,12 +7023,21 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     ch = (char)number;
                 else
                     overflow = true;
+                var literal = GenerateLiteral(ch.ToString());
+                if (overflow)
+                {
+                    literal = literal.WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.ERR_IntOverflow));
+                }
                 if (number >= 0 && number <= 127)	// Also allow Chr(0)
                 {
-                    var literal = GenerateLiteral(ch.ToString());
-                    if (overflow)
+                    context.Put(literal);
+                    return true;
+                }
+                else if (CurrentEntity is XP.VodefineContext)
+                {
+                    if (!overflow)
                     {
-                        literal = literal.WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.ERR_IntOverflow));
+                        literal = literal.WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.WRN_ChrInDefine));
                     }
                     context.Put(literal);
                     return true;

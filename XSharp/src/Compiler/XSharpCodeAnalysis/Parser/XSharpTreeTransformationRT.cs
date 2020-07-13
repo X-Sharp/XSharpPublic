@@ -3200,29 +3200,22 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 dataType = _usualType;
             if (parameters.Parameters.Count > 0)
             {
-                // generate default parameter attribute to make sure that calling code will compile
-                //var attr = MakeDefaultParameter(GenerateLiteral(0), GenerateLiteral(1));
-                //var attrs = _pool.AllocateSeparated<AttributeSyntax>();
-                //attrs.Add(attr);
-                //var defExpr = _syntaxFactory.EqualsValueClause(
-                //    SyntaxFactory.MakeToken(SyntaxKind.EqualsToken),
-                //    MakeDefault(_usualType));
+                var defExpr = _syntaxFactory.EqualsValueClause(
+                    SyntaxFactory.MakeToken(SyntaxKind.EqualsToken),
+                    MakeDefault(_usualType));
 
-                //var attrlist = MakeList(MakeAttributeList(null, attrs));
                 var @params = new List<ParameterSyntax>();
                 for (int i = 0; i < parameters.Parameters.Count; i++)
                 {
-                    ParameterSyntax parm = parameters.Parameters[i];
+                    var parm = parameters.Parameters[i];
                     var par = _syntaxFactory.Parameter(
                           attributeLists: EmptyList<AttributeListSyntax>(), //attrlist,
                           modifiers: EmptyList<SyntaxToken>(),
                           type: _usualType,
-                          identifier: parm.Identifier, @default: null);
-                    //@default: defExpr);
+                          identifier: parm.Identifier,@default: defExpr);
                     @params.Add(par);
                 }
                 parameters = MakeParameterList(@params);
-                //_pool.Free(attrs);
             }
         }
         protected override void ImplementClipperAndPSZ(XP.IEntityWithBodyContext context,

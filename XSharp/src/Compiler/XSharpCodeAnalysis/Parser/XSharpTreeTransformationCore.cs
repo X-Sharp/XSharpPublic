@@ -823,6 +823,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     if (e.Type != null)
                     {
                         type = e.Type.Get<TypeSyntax>();
+                        if (e.Type.Token.Type == XP.PTR
+                            && e.Expr is XP.PrimaryExpressionContext pe
+                            && pe.Expr is XP.LiteralExpressionContext le
+                            && le.Literal.Token.IsZeroLiteral()) // treat PTR(_CAST,0) as NULL_PTR
+                        {
+                            type = _ptrType;
+                        }
                     }
                     else if (e.XType != null)
                     {

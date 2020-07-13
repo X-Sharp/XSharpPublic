@@ -4334,6 +4334,22 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         return;
                 }
             }
+            if (context.Type != null)
+            {
+                var type = context.Type as XP.NativeTypeContext;
+                switch (type.Token.Type)
+                {
+                    case XP.PTR:
+                        if (context.Expr is XP.PrimaryExpressionContext pe
+                            && pe.Expr is XP.LiteralExpressionContext le
+                            && le.Literal.Token.IsZeroLiteral()) // treat PTR(_CAST,0) as NULL_PTR
+                        {
+                            context.Put(MakeSimpleMemberAccess(_ptrType, GenerateSimpleName("Zero")));
+                            return;
+                        }
+                        break;
+                }
+            }
             base.ExitVoCastExpression(context);
         }
 

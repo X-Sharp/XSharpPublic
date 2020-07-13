@@ -43,14 +43,14 @@ namespace XSharp.Project
 
         #region Constants
         internal const string captVulcanCompatibleResouces = "Vulcan Compatible Managed Resources";
-        internal const string descVulcanCompatibleResouces = "Use Vulcan Compatible Managed Resources (when 'True' then resources files are included in the assembly without namespace prefix. When 'False' then the resource files are prefixed with the namespace of the app, just like in other .Net languages, such as C#))";
+        internal const string descVulcanCompatibleResouces = "Use Vulcan Compatible Managed Resources (when 'True' then resources files are included in the assembly without namespace prefix. When 'False' then the resource files are prefixed with the namespace of the app, just like in other .Net languages, such as C#)";
         internal const string captDialect = "Dialect";
         internal const string descDialect = "Select the compiler dialect to use when compiling this project. Changing the dialect may also change the 'Allow NamedArguments' setting on the Language page.";
         internal const string captWin32Manifest = "Suppress default Win32 manifest";
         internal const string descWin32Manifest = "Suppress default Win32 manifest. You will have to supply your own Win32 manifest if you suppress the default one. (/nowin32manifest)";
         internal const string catResources = "Resources";
-        internal const string UseNativeVersionCaption = "Prefer native resource over managed resource";
-        internal const string UseNativeVersionDescription = "When your application includes a native resource, use this native resource and do not generate a resource based on the global assembly properties such as AssemblyTitle, AssemblyVersion etc (/usenativeversion)";
+        internal const string UseNativeVersionCaption = "Prefer native version resource over managed version resource";
+        internal const string UseNativeVersionDescription = "When your application includes a native version resource, use this native version resource and do not generate a resource based on the global assembly properties such as AssemblyTitle, AssemblyVersion etc (/usenativeversion)";
 
         #endregion
 

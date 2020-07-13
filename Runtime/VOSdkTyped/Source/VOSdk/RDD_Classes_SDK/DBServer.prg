@@ -600,7 +600,7 @@ METHOD __SetupLocks( )  AS VOID STRICT
 CONSTRUCTOR( cFile AS STRING, lShareMode := FALSE AS OBJECT, lReadOnlyMode := FALSE AS OBJECT, xDriver:= "" AS STRING, aRdd := NULL_ARRAY AS ARRAY) 
     SELF(FileSpec{cFile}, lShareMode, lReadOnlyMode , xDriver, aRdd )
     
-CONSTRUCTOR( oFS AS FileSpec, lShareMode := FALSE AS OBJECT, lReadOnlyMode := FALSE AS OBJECT, xDriver:= "" AS STRING, aRdd := NULL_ARRAY AS ARRAY) 
+CONSTRUCTOR( oFS := NULL AS FileSpec, lShareMode := FALSE AS OBJECT, lReadOnlyMode := FALSE AS OBJECT, xDriver:= "" AS STRING, aRdd := NULL_ARRAY AS ARRAY) 
 	LOCAL dwCurrentWorkArea := 0 AS DWORD
 	LOCAL cFileName AS STRING
 	LOCAL w AS DWORD
@@ -614,7 +614,8 @@ CONSTRUCTOR( oFS AS FileSpec, lShareMode := FALSE AS OBJECT, lReadOnlyMode := FA
 	LOCAL uProps AS USUAL
 	LOCAL wProps AS DWORD
 	LOCAL lRetCode AS LOGIC
-	
+
+
 	SUPER( )
 
 	aRelationChildren := { }
@@ -623,6 +624,10 @@ CONSTRUCTOR( oFS AS FileSpec, lShareMode := FALSE AS OBJECT, lReadOnlyMode := FA
 	BEGIN SEQUENCE
 		siSuspendNotification := 0
 		dwCurrentWorkArea := VoDbGetSelect( )
+        IF oFs == NULL
+		    BREAK DbError{ SELF, #Init, EG_ARG, __CavoStr( __CAVOSTR_DBFCLASS_NOFILENAME ),  ;
+			    NIL, "oFs" }
+        ENDIF
 
 		IF Empty( oFS:Extension )
 			oFS:Extension := ".DBF"

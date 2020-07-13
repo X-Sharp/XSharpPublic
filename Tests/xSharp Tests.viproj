@@ -83128,9 +83128,9 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   Optimize=0
 ENDApplication = R727 Define with special value as default property causes "emit failed"
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
-; ************** APPLICATION R728 *************
-Application = R728
+ApplicationGroup = 43A04886-532C-4DC6-A4FB-751288B40D7A
+; ************** APPLICATION R728 Using _Chr() in a define with a number between 128 and 255 *************
+Application = R728 Using _Chr() in a define with a number between 128 and 255
 IDEVersion = 1.06
 GalleryName = 
 GalleryPage = 
@@ -83163,20 +83163,20 @@ KeyFile =
 [ExportOptions]
 ExportResources = 0
 ExportImages = 0
-[R728 FileGroups]
-[R728 Files]
+[R728 Using _Chr() in a define with a number between 128 and 255 FileGroups]
+[R728 Using _Chr() in a define with a number between 128 and 255 Files]
 File = %AppPath%\Prg\R728.prg
 FileGUID = 1AECC6C9-F567-4E47-9F39-D8B333FCCA31
 FileType = Code
 CopyToBin = 0
-[R728 References]
+[R728 Using _Chr() in a define with a number between 128 and 255 References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
 ReferenceBrowse = C:\XSharp\DevRt\Binaries\Debug\XSharp.Core.dll,1,1
 ReferenceBrowse = C:\XSharp\DevRt\Binaries\Debug\XSharp.RT.dll,1,1
-[R728 Resources]
-[R728 Native Resources]
-[R728 License files]
-[R728 General Options]
+[R728 Using _Chr() in a define with a number between 128 and 255 Resources]
+[R728 Using _Chr() in a define with a number between 128 and 255 Native Resources]
+[R728 Using _Chr() in a define with a number between 128 and 255 License files]
+[R728 Using _Chr() in a define with a number between 128 and 255 General Options]
 Switches=
 ZeroArrays=0
 CaseSensitive=0
@@ -83207,7 +83207,7 @@ IgnoreStdDefs=0
 Ovf=0
 FOvf=0
 ResponseOnly=0
-[R728 Configurations]
+[R728 Using _Chr() in a define with a number between 128 and 255 Configurations]
 AppConfig = Debug,11111111-1111-1111-1111-111111111111
   Switches=
   SwitchesCF=
@@ -83236,7 +83236,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceConsole=0
   ForceX86=0
   Optimize=0
-ENDApplication = R728
+ENDApplication = R728 Using _Chr() in a define with a number between 128 and 255
 [EndApplications]
 
 [Configurations]

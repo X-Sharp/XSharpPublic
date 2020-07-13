@@ -808,6 +808,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         protected ExpressionSyntax GenerateNIL()
         {
+            if (_options.NoClipCall)
+                return MakeDefault(_usualType);
             if (_options.XSharpRuntime)
                 return GenerateQualifiedName(XSharpQualifiedFunctionNames.UsualNIL);
             else
@@ -3244,6 +3246,18 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 return;
             }
             List<string> parameternames = new List<String>();
+            if (_options.NoClipCall && body != null && !(context is XP.PropertyAccessorContext))
+            {
+                // Bring body back to a simple "throw null" Assign xnode so we will have line numbers and a [Source] button in the docs.
+                var stmts = new List<StatementSyntax>();
+                var stmt = _syntaxFactory.ThrowStatement(SyntaxFactory.MakeToken(SyntaxKind.ThrowKeyword),
+                    GenerateLiteralNull(),
+                    SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken));
+                stmt.XNode = context;
+                stmts.Add(stmt);
+                body = MakeBlock(stmts);
+                context.Data.UsesPSZ = false;
+            }
             if (context.Data.HasClipperCallingConvention || context.Data.UsesPSZ || context.Data.HasMemVars || _options.HasOption(CompilerOption.UndeclaredMemVars, prc, PragmaOptions))
             {
                 var stmts = _pool.Allocate<StatementSyntax>();

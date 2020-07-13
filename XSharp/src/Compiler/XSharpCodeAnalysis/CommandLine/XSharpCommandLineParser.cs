@@ -103,9 +103,8 @@ namespace Microsoft.CodeAnalysis.CSharp
 
                 case "noclipcall":
                     options.NoClipCall = positive;
-                    // make sure we also compile with /refonly
-                    handled = false;
-                    name = "refonly";
+					// rolled back change that also compiles with /refonly because that removes the line number
+					// information that we need for the [Source] button in the generated docs.
                     break;
 
                 case "norun":

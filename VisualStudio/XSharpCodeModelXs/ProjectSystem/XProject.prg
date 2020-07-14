@@ -781,7 +781,11 @@ BEGIN NAMESPACE XSharpModel
          VAR types := SELF:GetTypeList(result)
          RETURN types
                   
-         
+      METHOD ClearCache(file as XFile) AS VOID
+         IF SELF:_lastFound != NULL
+            SELF:_lastFound := NULL
+            SELF:_lastName  := NULL
+         ENDIF
       
       METHOD Lookup(typeName AS STRING, usings AS IReadOnlyList<STRING>) AS XTypeDefinition
          IF XSettings.EnableTypelookupLog

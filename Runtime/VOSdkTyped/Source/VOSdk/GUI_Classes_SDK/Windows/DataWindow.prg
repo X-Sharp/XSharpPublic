@@ -842,7 +842,7 @@ CLASS DataWindow INHERIT ChildAppWindow IMPLEMENTS ILastFocus
 		
 		oHLStatus := NULL_OBJECT // assume success
 		IF (oAttachedServer != NULL_OBJECT) .AND. SELF:__CheckRecordStatus()
-			IF !(lRetCode := oAttachedServer:Append())
+			IF !(lRetCode := oAttachedServer:Append(TRUE))
 				oHLStatus := oAttachedServer:Status
 				SELF:__UpdateStatus()
 			ELSE
@@ -2196,12 +2196,12 @@ CLASS DataWindow INHERIT ChildAppWindow IMPLEMENTS ILastFocus
 		RETURN 
 	
 
-	METHOD Seek(uValue, lSoftSeek) 
+	METHOD Seek(uValue, lSoftSeek, lLast) 
 		LOCAL lRetCode := FALSE AS LOGIC
 		IF oAttachedServer!=NULL_OBJECT
 			oHLStatus := NULL_OBJECT // assume success
 			IF SELF:__CheckRecordStatus()
-				IF !(lRetCode := oAttachedServer:Seek(uValue, lSoftSeek))
+				IF !(lRetCode := oAttachedServer:Seek(uValue, lSoftSeek, lLast))
 					oHLStatus := oAttachedServer:Status
 					//oHLStatus := HyperLabel{#Seek, "Seek Failed, key not found"}
 					SELF:__UpdateStatus()

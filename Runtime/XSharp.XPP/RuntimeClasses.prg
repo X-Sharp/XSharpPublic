@@ -124,7 +124,7 @@ CLASS XSharp.XPP.ClassObject
         OldClasses := Dictionary<INT, ClassObject>{}
 	
     STATIC METHOD FindClass(cClassName AS STRING, lIncludeDeleted AS LOGIC) AS ClassObject
-        IF Classes:ContainsKey(cClassName)
+        IF !String.IsNullOrEmpty(cClassName) .and. Classes:ContainsKey(cClassName)
             RETURN Classes[cClassName]
         ENDIF
         RETURN NULL

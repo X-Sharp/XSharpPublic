@@ -421,7 +421,7 @@ INTERNAL STATIC CLASS OOPHelpers
 		VAR list := List<STRING>{}
 		FOREACH fi AS FieldInfo IN aFields
 			IF fi:IsPublic || (fi:IsFamily  .and. fi:IsDefined(typeof(IsInstanceAttribute), false))
-				VAR name := fi:Name:ToUpper()
+				VAR name := fi:Name:ToUpperInvariant()
 				IF ! list:Contains(name)
 					list:Add(name)
 				ENDIF
@@ -431,7 +431,7 @@ INTERNAL STATIC CLASS OOPHelpers
 		VAR aProps := t:GetProperties( BindingFlags.Instance | BindingFlags.Public )
 		
 		FOREACH pi AS PropertyInfo IN aProps
-			VAR name := pi:Name:ToUpper()
+			VAR name := pi:Name:ToUpperInvariant()
 			IF ! list:Contains(name)
 				list:Add(name)
 			ENDIF
@@ -477,7 +477,7 @@ INTERNAL STATIC CLASS OOPHelpers
 			VAR listVar    := List<STRING>{}
 			VAR aInfo := type:GetMembers(BindingFlags.Instance + BindingFlags.Public + BindingFlags.NonPublic)
 			FOREACH oInfo AS MemberInfo IN aInfo
-				VAR name := oInfo:Name:ToUpper()
+				VAR name := oInfo:Name:ToUpperInvariant()
 				DO CASE
 					CASE oInfo:MemberType == MemberTypes.Field
 						IF listVar:IndexOf(name)  == -1 .AND. ((FieldInfo)oInfo):IsPublic
@@ -600,9 +600,13 @@ INTERNAL STATIC CLASS OOPHelpers
 		LOCAL t AS Type
         LOCAL result AS OBJECT
         IF oObject == NULL_OBJECT
-            THROW Error.NullArgumentError("IvarPut", nameof(oObject),1)
+            THROW Error.NullArgumentError(__FUNCTION__, nameof(oObject),1)
+        ENDIF
+        IF String.IsNullOrEmpty(cIVar)
+            THROW Error.NullArgumentError(__FUNCTION__, nameof(cIVar),2)
         ENDIF
 		t := oObject:GetType()
+        cIVar := cIVar:ToUpperInvariant()
 		VAR fldInfo := FindField(t, cIVar, TRUE, lSelf)
         TRY
 		    IF fldInfo != NULL_OBJECT .AND. IsFieldVisible(fldInfo, lSelf)
@@ -641,10 +645,14 @@ INTERNAL STATIC CLASS OOPHelpers
 	STATIC METHOD IVarPut(oObject AS OBJECT, cIVar AS STRING, oValue AS OBJECT, lSelf AS LOGIC)  AS VOID
 		LOCAL t AS Type
         IF oObject == NULL_OBJECT
-            THROW Error.NullArgumentError("IvarPut", nameof(oObject),1)
+            THROW Error.NullArgumentError(__FUNCTION__, nameof(oObject),1)
+        ENDIF
+        IF String.IsNullOrEmpty(cIVar)
+            THROW Error.NullArgumentError(__FUNCTION__, nameof(cIVar),2)
         ENDIF
         TRY
 		    t := oObject:GetType()
+            cIVar := cIVar:ToUpperInvariant()
 		    VAR fldInfo := FindField(t, cIVar, FALSE, lSelf)
 		
 		    IF fldInfo != NULL_OBJECT .AND. IsFieldVisible(fldInfo, lSelf)
@@ -709,9 +717,13 @@ INTERNAL STATIC CLASS OOPHelpers
 		LOCAL t := oObject?:GetType() AS Type
 		result := NIL
 		IF t == NULL
-			THROW Error.NullArgumentError( __ENTITY__, NAMEOF(oObject), 1 )
+			THROW Error.NullArgumentError( __FUNCTION__, NAMEOF(oObject), 1 )
+		ENDIF
+		IF cMethod == NULL
+			THROW Error.NullArgumentError( __FUNCTION__, NAMEOF(cMethod), 2 )
 		ENDIF
 		LOCAL mi := NULL AS MethodInfo
+        cMethod := cMethod:ToUpperInvariant()
         VAR list := GetOverLoads(t, cMethod)
         IF list == NULL
             TRY
@@ -756,7 +768,7 @@ INTERNAL STATIC CLASS OOPHelpers
             VAR oArgs := MatchParameters(mi, uArgs) 
             TRY
 			    IF mi:ReturnType == typeof(USUAL)
-                        result := mi:Invoke(oObject, oArgs)
+                    result := mi:Invoke(oObject, oArgs)
                 ELSE
                     LOCAL oResult AS OBJECT
                     oResult := mi:Invoke(oObject, oArgs)
@@ -804,7 +816,10 @@ INTERNAL STATIC CLASS OOPHelpers
 		
 	STATIC METHOD DoSend(oObject AS OBJECT, cMethod AS STRING, args AS USUAL[] ) AS USUAL
 		IF oObject == NULL
-			THROW Error.NullArgumentError( __ENTITY__, NAMEOF(oObject), 1 )
+			THROW Error.NullArgumentError( __FUNCTION__, NAMEOF(oObject), 1 )
+		ENDIF
+		IF cMethod == NULL
+			THROW Error.NullArgumentError( __FUNCTION__, NAMEOF(cMethod), 2 )
 		ENDIF
 		IF ! SendHelper(oObject, cMethod, args, OUT VAR result)
 			LOCAL nomethodArgs AS USUAL[]
@@ -821,7 +836,7 @@ INTERNAL STATIC CLASS OOPHelpers
 			    Array.Copy( args, 0, nomethodArgs, 0, args:Length )
             ENDIF
 			IF ! SendHelper(oObject, "NoMethod" , nomethodArgs, OUT result)
-                VAR oError := Error.VOError( EG_NOMETHOD, __ENTITY__, nameof(cMethod), 2, <OBJECT>{oObject, cMethod, args} )
+                VAR oError := Error.VOError( EG_NOMETHOD, __FUNCTION__, nameof(cMethod), 2, <OBJECT>{oObject, cMethod, args} )
                 oError:Description  := oError:Message + " '"+cMethod+"'"
                 THROW oError
 

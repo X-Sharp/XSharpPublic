@@ -15,9 +15,10 @@ END class
 [STAThread];      
 FUNCTION Start() AS VOID
     TRY
-        VAR x := MemAlloc(80000)
-        ? PtrLen(x)
-        ? PtrLenWrite(x)
+        OrdDescTest2()
+            //        VAR x := MemAlloc(80000)
+            //        ? PtrLen(x)
+            //        ? PtrLenWrite(x)
         //DeleteAllOrders()
         //TestZapJune()
         //TestChrisCorrupt2()
@@ -211,6 +212,93 @@ USING System.Windows.Forms
 USING System.Threading
 
 GLOBAL gcPath := "c:\test\"
+
+FUNCTION OrdDescTest2() AS VOID 
+LOCAL cDBF, cPfad, cIndex   AS STRING 
+LOCAL aFields, aValues AS ARRAY 
+LOCAL i AS DWORD
+
+
+	RddSetDefault ( "DBFCDX" )
+   
+   
+    cPfad := "D:\test\" 
+ 
+	cDBF := cPfad + "Foo"
+	cIndex := cPfad + "Foox" 
+	
+	? FErase ( cIndex + IndexExt() )	
+
+	//  ------------------
+	    
+	aFields := { { "LAST" , "C" , 20 , 0 } } 
+	
+	aValues := { "g6" , "o2", "g2" , "g1" , "g3" , "g5" , "A1" , "a2"  }	
+	
+	
+	? DbCreate( cDBF , AFields)
+
+	? DbUseArea( ,,cDBF)
+	
+	FOR i := 1 UPTO ALen ( aValues )
+		
+		DbAppend() 
+		FieldPut ( 1 , aValues [ i ] )
+		
+	NEXT			
+
+	? DbCreateOrder ( "ORDER1" , cIndex , "upper(LAST)" , { || Upper ( _Field->LAST) } )
+	? DbSetOrder ( 1 ) 
+	?	 
+	
+	// Set the scope to "G" or "X" 
+	OrdScope(BOTTOMSCOPE, "G")   
+	OrdScope(TOPSCOPE, "G")      
+
+	// ------------
+
+/*			
+	DbGoTop() 
+	? "Ascending" , "OrdKeyCount()" , OrdKeyCount() 
+	?
+	DO WHILE !Eof() 
+		? "*Do while" , FieldGet ( 1 ) , Eof() 
+		DbSkip ( 1 )
+	ENDDO 	
+	
+    ?
+   	DbGoTop()
+   	FOR i := 1 UPTO 8 
+		? "*" , FieldGet ( 1 ) , Eof()
+		DbSkip ( 1 )
+   	NEXT	
+*/ 		
+	// ----------------		
+	OrdDescend ( , , TRUE )
+	// ----------------		 		
+	?
+		
+	DbGoTop() 
+	? "Descending" , "OrdKeyCount()" , OrdKeyCount() 
+    ?
+	
+	DO WHILE !Eof() 
+		? "*Do while" , Recno(), FieldGet ( 1 ) , Eof() 
+		DbSkip ( 1 )
+	ENDDO  	
+    ? "EOF after the loop", Eof()
+	?	
+	? "--- skip(1) only results ---"  
+    ?
+    FOR i := 1 UPTO 30
+		? "*" , Recno(), FieldGet ( 1 ) , Eof() 
+		DbSkip ( 1 )
+    NEXT
+    ? "etc."	
+		
+	DbCloseArea() 
+		
+	RETURN		
 
 FUNCTION TestChrisCorrupt2() AS VOID
 	DbfTest1.RunTest1()

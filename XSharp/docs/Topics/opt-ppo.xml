@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" lasteditedby="Geert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>-ppo</title>
   <keywords>
     <keyword>-ppo</keyword>
@@ -27,6 +27,7 @@
       <li styleclass="Normal">Open the project&apos;s Properties page (see How to: Set Build Properties). </li>
       <li styleclass="Normal">Click the Build tab. </li>
       <li styleclass="Normal">In the Preprocessor section, modify the &quot;Generate preprocessor output&quot;property. </li>
+      <li styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="PropPage-Build">Click here to see the property page</link></li>
     </list>
     <para styleclass="Normal"></para>
     <para styleclass="Normal">&#32;</para>

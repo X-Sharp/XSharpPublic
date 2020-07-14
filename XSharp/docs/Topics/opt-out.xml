@@ -39,6 +39,7 @@
       <li styleclass="Normal" style="margin-left:13px;">Open the project&apos;s Properties page.</li>
       <li styleclass="Normal" style="margin-left:13px;">Click the Application property page.</li>
       <li styleclass="Normal" style="margin-left:13px;">Modify the Assembly name property.</li>
+      <li styleclass="Normal" style="margin-left:13px;"><link displaytype="text" defaultstyle="true" type="topiclink" href="PropPage-General">Click here to see the property page</link></li>
     </list>
     <para styleclass="Normal" style="margin-left:13px;"></para>
     <para styleclass="Normal">To set this compiler option programmatically: the OutputFileName is a read-only property, which is determined by a combination of the project type (exe, library, and so forth) and the assembly name. Modifying one or both of these properties will be necessary to set the output file name.</para>

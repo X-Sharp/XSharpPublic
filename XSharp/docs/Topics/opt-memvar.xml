@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" status="Under Construction" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" status="Under Construction" lasteditedby="Geert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>-memvar</title>
   <body>
     <header>
@@ -19,5 +19,7 @@
     <para styleclass="Body Text">PUBLIC &lt;MemVarName,...&gt; &#160;</para>
     <para styleclass="Body Text">PRIVATE &lt;MemVarName,...&gt; </para>
     <para styleclass="Body Text">PARAMETERS &lt;ParameterName,,...&gt; </para>
+    <para styleclass="Body Text"></para>
+    <para styleclass="Normal" style="margin-left:13px;"><link displaytype="text" defaultstyle="true" type="topiclink" href="PropPage-Language">Click here to see the property page</link></para>
   </body>
 </topic>

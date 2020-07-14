@@ -25,6 +25,15 @@
     <para styleclass="List" style="text-indent:-100px; margin-left:100px; tabstops:96px left,144px left ;">Harbour<tab />This activates the Harbour dialect. </para>
     <para styleclass="List" style="text-indent:-100px; margin-left:100px; tabstops:96px left,144px left ;">XBasePP<tab />This activates the Harbour dialect. </para>
     <para styleclass="List" style="text-indent:-100px; margin-left:100px; tabstops:96px left,144px left ;">FoxPro<tab />This activates the FoxPro dialect. </para>
+    <para styleclass="List" style="text-indent:-100px; margin-left:100px; tabstops:96px left,144px left ;"></para>
+    <para styleclass="List" style="text-indent:-100px; margin-left:100px; tabstops:96px left,144px left ;"></para>
+    <para styleclass="Heading3">To set this compiler option in the Visual Studio development environment</para>
+    <list id="3" type="ol" listtype="decimal" formatstring="&#37;&#48;&#58;&#115;&#46;" format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:Arial; font-size:11pt; color:#000000;">
+      <li styleclass="Normal" style="margin-left:13px;">Open the project&apos;s Properties page.</li>
+      <li styleclass="Normal" style="margin-left:13px;">Click the Application property page.</li>
+      <li styleclass="Normal" style="margin-left:13px;">Modify the Dialect property.</li>
+      <li styleclass="Normal" style="margin-left:13px;"><link displaytype="text" defaultstyle="true" type="topiclink" href="PropPage-General">Click here to see the property page</link></li>
+    </list>
     <para styleclass="Heading3"><link displaytype="text" defaultstyle="true" type="topiclink" href="Dialects" style="font-weight:normal;">See the dialect topic for differences between dialects</link></para>
     <para styleclass="Normal"></para>
   </body>

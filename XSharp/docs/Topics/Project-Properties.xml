@@ -15,6 +15,17 @@
     </list>
     <para styleclass="Normal"></para>
     <para styleclass="Normal">All these options do the same and open the project properties dialog. This dialog has several pages.</para>
+    <list id="2" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="PropPage-General">General</link></li>
+      <li styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="PropPage-Language">Language</link></li>
+      <li styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="PropPage-Dialect">Dialect</link></li>
+      <li styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="PropPage-Build">Build</link></li>
+      <li styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="PropPage-BuildEvents">Build Events</link></li>
+      <li styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="PropPage-Debug">Debug</link></li>
+      <li styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="PropPage-Resources">Resources</link></li>
+      <li styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="PropPage-Settings">Settings</link></li>
+    </list>
     <para styleclass="Normal"></para>
+    <para styleclass="Normal">A description of each of these pages will follow in the next chapters.</para>
   </body>
 </topic>

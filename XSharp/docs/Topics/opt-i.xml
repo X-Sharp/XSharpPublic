@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" lasteditedby="Geert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>-i</title>
   <keywords>
     <keyword>-i</keyword>
@@ -33,6 +33,7 @@
       <li styleclass="Normal" style="margin-left:13px;">Open the project&apos;s Properties page.</li>
       <li styleclass="Normal" style="margin-left:13px;">Click the Build tab. </li>
       <li styleclass="Normal" style="margin-left:13px;">In the Preprocessor section, modify the &quot;Additional include paths&quot; property. </li>
+      <li styleclass="Normal" style="margin-left:13px;"><link displaytype="text" defaultstyle="true" type="topiclink" href="PropPage-Language">Click here to see the property page</link></li>
     </list>
     <para styleclass="Normal"></para>
   </body>

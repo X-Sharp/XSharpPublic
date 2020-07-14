@@ -27,21 +27,8 @@
       <li styleclass="Normal" style="margin-left:13px;">Open the project&apos;s Properties page.</li>
       <li styleclass="Normal" style="margin-left:13px;">Click the Language tab. </li>
       <li styleclass="Normal" style="margin-left:13px;">In the Namespaces section, modify the Enable Implicit Lookup of Namespaces property. </li>
+      <li styleclass="Normal" style="margin-left:13px;"><link displaytype="text" defaultstyle="true" type="topiclink" href="PropPage-Language">Click here to see the property page</link></li>
     </list>
-    <para styleclass="Heading2">Example</para>
-    <para styleclass="Normal"></para>
-    <para styleclass="Normal">The following example will compile when The -ins switch is used and the VulcanVOGUIClasses assembly is included. Without -ins, errors will be raised.</para>
-    <para styleclass="Normal"></para>
-    <para styleclass="Normal">Note that the App class and ShellWindow class are located in the Vulcan.VO namespace</para>
-    <para styleclass="Normal"></para>
-    <para styleclass="Normal">&#32;</para>
-    <para styleclass="Code with box"></para>
-    <para styleclass="Normal"></para>
-    <para styleclass="Normal">If The -ins option is enabled, then the above example will be compiled as if it was written:</para>
-    <para styleclass="Normal"></para>
-    <para styleclass="Normal"></para>
-    <para styleclass="Code with box"></para>
-    <para styleclass="Normal"></para>
-    <para styleclass="Normal"></para>
+    <para styleclass="Heading2"></para>
   </body>
 </topic>

@@ -28,6 +28,7 @@
       <li styleclass="Normal" style="margin-left:13px;">Open the project&apos;s Properties page.</li>
       <li styleclass="Normal" style="margin-left:13px;">Click the Build property page.</li>
       <li styleclass="Normal" style="margin-left:13px;">Modify the &quot;Optimize&quot; property.</li>
+      <li styleclass="Normal" style="margin-left:13px;"><link displaytype="text" defaultstyle="true" type="topiclink" href="PropPage-Build">Click here to see the property page</link></li>
     </list>
     <para styleclass="Heading2">Example</para>
     <para styleclass="Normal"></para>

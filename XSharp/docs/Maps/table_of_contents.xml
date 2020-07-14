@@ -361,14 +361,29 @@
           <caption translate="true">Projects</caption>
           <topicref type="topic" id="423889199749481" build="ALL" modified="2020-07-10T11:19:10.302Z" icon="0" href="Project-Properties">
             <caption translate="true">Project Properties</caption>
-            <topicref type="topic" id="440224767523358" build="ALL" modified="2020-07-10T11:16:02.759Z" icon="0" href="General">
+            <topicref type="topic" id="440224767523358" build="ALL" modified="2020-07-14T12:35:05.696Z" icon="0" href="PropPage-General">
               <caption translate="true">General</caption>
             </topicref>
-            <topicref type="topic" id="440224293000248" build="ALL" modified="2020-07-10T11:16:14.908Z" icon="0" href="Language">
+            <topicref type="topic" id="440224293000248" build="ALL" modified="2020-07-14T12:39:25.632Z" icon="0" href="PropPage-Language">
               <caption translate="true">Language</caption>
             </topicref>
-            <topicref type="topic" id="440223989792678" build="ALL" modified="2020-07-10T11:16:22.678Z" icon="0" href="Dialect">
+            <topicref type="topic" id="440223989792678" build="ALL" modified="2020-07-14T12:39:32.505Z" icon="0" href="PropPage-Dialect">
               <caption translate="true">Dialect</caption>
+            </topicref>
+            <topicref type="topic" id="440262582345626" build="ALL" modified="2020-07-14T12:39:42.027Z" icon="0" href="PropPage-Build">
+              <caption translate="true">Build</caption>
+            </topicref>
+            <topicref type="topic" id="441402700297" build="ALL" modified="2020-07-14T12:39:51.087Z" icon="0" href="PropPage-BuildEvents">
+              <caption translate="true">Build Events</caption>
+            </topicref>
+            <topicref type="topic" id="440263311416545" build="ALL" modified="2020-07-14T12:39:56.759Z" icon="0" href="PropPage-Debug">
+              <caption translate="true">Debug</caption>
+            </topicref>
+            <topicref type="topic" id="440265768732156" build="ALL" modified="2020-07-14T12:40:07.087Z" icon="0" href="PropPage-Resources">
+              <caption translate="true">Resources</caption>
+            </topicref>
+            <topicref type="topic" id="440262921654853" build="ALL" modified="2020-07-14T12:40:20.313Z" icon="0" href="PropPage-Settings">
+              <caption translate="true">Settings</caption>
             </topicref>
           </topicref>
           <topicref type="topic" id="440224103266362" build="ALL" modified="2020-07-10T11:15:21.095Z" icon="0" href="References">
@@ -1379,6 +1394,9 @@
         </topicref>
         <topicref type="topic" id="423892640420966" build="ALL" modified="2016-01-20T09:46:48.518Z" icon="0" href="opt-i">
           <caption translate="true">-i</caption>
+        </topicref>
+        <topicref type="topic" id="440264828350542" build="ALL" modified="2020-07-14T14:35:24.955Z" icon="0" href="opt-initlocals">
+          <caption translate="true">-initlocals</caption>
         </topicref>
         <topicref type="topic" id="423894258729324" build="ALL" modified="2016-01-20T10:58:08.394Z" icon="0" href="opt-ins">
           <caption translate="true">-ins</caption>

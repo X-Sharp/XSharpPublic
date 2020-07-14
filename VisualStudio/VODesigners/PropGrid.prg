@@ -113,9 +113,11 @@ CLASS DesignerGrid INHERIT Panel
 	RETURN
 
 	METHOD GridTabPageChanged(o AS OBJECT,e AS EventArgs) AS VOID
-		SELF:cPage := SELF:oTabControl:SelectedTab:Text
-		SELF:Fill(SELF:aSelected)
-		SELF:oPanel:ShowButton()
+      IF SELF:oTabControl:SelectedTab != NULL
+		   SELF:cPage := SELF:oTabControl:SelectedTab:Text
+		   SELF:Fill(SELF:aSelected)
+		   SELF:oPanel:ShowButton()
+      ENDIF
 	RETURN
 
 	METHOD UseHierarchy(lUse AS LOGIC) AS VOID

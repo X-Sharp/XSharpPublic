@@ -52,9 +52,11 @@ CLASS XSharp_VODbServerEditor INHERIT VODbServerEditor
 			aAvailableFieldSpecs  := ArrayList{}
 		ENDIF
 		FOREACH oFs AS FSEDesignFieldSpec IN aAvailableFieldSpecs
-			IF String.Equals(oFS:Name, cFieldSpec, StringComparison.OrdinalIgnoreCase) 
-				RETURN oFS
-			ENDIF
+         if oFs?:Name != NULL
+			   IF String.Equals(oFS:Name, cFieldSpec, StringComparison.OrdinalIgnoreCase) 
+				   RETURN oFs
+            ENDIF
+         ENDIF
 		NEXT
 		RETURN NULL
 	METHOD ReadAllAvailableFieldSpecs(cModule AS STRING) AS VOID

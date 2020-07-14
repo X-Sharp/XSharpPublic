@@ -64,5 +64,8 @@ namespace XSharp
 
         public const int cmdidShowGrid = 0x6001;
         public const int cmdidTestDialog = 0x6002;
+        public const int VOFormEditorToolbar = 0x6003;
+        public const int VOFormEditorToolbarGroup = 0x6004;
+        public const int cmdidTabOrder = 0x6005;
     }
 }

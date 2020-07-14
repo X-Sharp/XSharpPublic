@@ -197,13 +197,13 @@ namespace XSharp.Project
                             var type = mgr.ResolveType(parentclass, usings);
                             if (type != null)
                             {
-                                while (type.BaseType != null)
+                                while (type?.BaseType != null)
                                 {
-                                    var bt = type.BaseType;
-                                    SubType = typeNameToSubtype(bt);
+                                    var btName = type.BaseType;
+                                    SubType = typeNameToSubtype(btName);
                                     if (!String.IsNullOrEmpty(SubType))
                                         break;
-                                    type = mgr.ResolveType(SubType, usings); ;
+                                    type = mgr.ResolveType(btName, usings); ;
                                 }
                             }
                             else

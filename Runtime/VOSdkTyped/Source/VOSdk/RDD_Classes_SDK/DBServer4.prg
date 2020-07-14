@@ -569,13 +569,18 @@ METHOD RLockVerify() AS LOGIC
 	
 	RETURN lRetCode
 
-METHOD Seek( uSearchExpr:= NIL AS USUAL, lSoftSeek:= FALSE AS LOGIC, lLast := FALSE AS LOGIC) AS LOGIC 
+METHOD Seek( uSearchExpr , lSoftSeek, lLast ) AS LOGIC CLIPPER
+//METHOD Seek( uSearchExpr:= NIL AS USUAL, lSoftSeek:= FALSE AS LOGIC, lLast := FALSE AS LOGIC) AS LOGIC 
 	LOCAL lRetCode AS LOGIC
 	LOCAL oError AS USUAL
 	LOCAL dwCurrentWorkArea := 0 AS DWORD
 	LOCAL nTries AS DWORD
-
-	
+    IF IsNil(lSoftSeek)
+        lSoftSeek := FALSE
+    ENDIF
+    IF IsNil(lLast)
+        lLast := FALSE
+    ENDIF
 
 	lErrorFlag := FALSE
 	nTries := SELF:nRetries

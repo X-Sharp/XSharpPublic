@@ -546,7 +546,7 @@ CLASS SQLTable INHERIT SQLSelect
         ENDIF
     
     
-    METHOD Seek( symColumn AS SYMBOL, uValue AS USUAL, lSoftSeek := FALSE AS LOGIC) AS LOGIC 
+    METHOD Seek( symColumn , uValue , lSoftSeek ) AS LOGIC CLIPPER
         
         LOCAL aArgs                              AS ARRAY
         IF ! IsNil(lSoftSeek )

@@ -189,6 +189,7 @@ BEGIN NAMESPACE XSharpModel
         METHOD SaveToDatabase() AS VOID
             IF ! SELF:Virtual
                XDatabase.Update(SELF)
+               SELF:Project:ClearCache(SELF)
                IF ! SELF:Interactive
                   SELF:InitTypeList()
                ENDIF

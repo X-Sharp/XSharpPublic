@@ -1294,7 +1294,6 @@ METHOD OrderScope( nScope := TOPSCOPE AS LONG, uValue := NIL AS USUAL) AS USUAL
 
 	lErrorFlag := FALSE
 	BEGIN SEQUENCE
-      SELF:__OptimisticFlush()
 
 		IF nScope == TOPSCOPE
 			n := DBOI_SCOPETOP
@@ -1309,6 +1308,7 @@ METHOD OrderScope( nScope := TOPSCOPE AS LONG, uValue := NIL AS USUAL) AS USUAL
 		ENDIF
 		
 		VoDbSelect( wWorkArea, OUT dwCurrentWorkArea )
+		SELF:__OptimisticFlush()
 		IF ! VoDbOrderInfo( n, "", NIL, REF uValue )
 			BREAK ErrorBuild(_VoDbErrInfoPtr())
 		ENDIF
@@ -1374,8 +1374,8 @@ METHOD Pack( ) AS LOGIC
 
 	lErrorFlag := FALSE
 	BEGIN SEQUENCE
-      SELF:__OptimisticFlush()
 		VoDbSelect( wWorkArea, OUT dwCurrentWorkArea )
+		SELF:__OptimisticFlush()
 		IF (lRetCode := VoDbPack( ))
 			__DBSSetSelect( dwCurrentWorkArea )
 			SELF:Notify( NOTIFYFILECHANGE )

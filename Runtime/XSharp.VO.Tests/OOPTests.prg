@@ -191,6 +191,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
         	Assert.True( IsAssign(o , #asn_prot) )
         	Assert.True( IsAssign(o , #asn_priv) )
 
+
         	Assert.False( IsAssign(o , #acc_exp) )
         	Assert.False( IsAssign(o , #acc_prot) )
         	Assert.False( IsAccess(o , #asn_exp) )
@@ -199,7 +200,17 @@ BEGIN NAMESPACE XSharp.VO.Tests
         	Assert.True( IsMethod(o , #meth_exp) )
         	Assert.True( IsMethod(o , #meth_prot) )
         	Assert.True( IsMethod(o , #meth_priv) )
-			
+
+        [Fact, Trait("Category", "OOP")];
+        METHOD IsAccessAssignMethod_Nulltests() AS VOID
+        	LOCAL o AS OBJECT
+        	o := NULL_OBJECT
+        	Assert.False( IsAccess(o , #acc_exp) )
+        	Assert.False( IsAssign(o , #acc_exp) )
+        	Assert.False( IsMethod(o , #meth_exp) )
+
+            
+
         [Fact, Trait("Category", "OOP")];
         METHOD IVarPutGetSet_tests() AS VOID
         	LOCAL o AS GeneralLBTestClass
@@ -261,7 +272,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
         	
         	Assert.Equal(60 , (INT)o:DefaultParams1(10,20,30))
         	Assert.Equal(15 , (INT)o:DefaultParams1(10))
-//        	Assert.Equal(32 , (INT)o:DefaultParams1(10,,20)) // doesn't work in VO either
+        	Assert.Equal(32 , (INT)o:DefaultParams1(10,,20)) // doesn't work in VO either
         	Assert.Equal(113 , (INT)o:DefaultParams1(10,100))
 
         	Assert.Equal("TESTFALSE" , (STRING)o:DefaultParams2("TEST",FALSE))

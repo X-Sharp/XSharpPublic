@@ -97,6 +97,29 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			Assert.Equal(sym1, #onetwothreefourfive)
 			Assert.Equal(MaxAtom(),dwstart+2)			// the literals do not create a new atom
 
+        [Fact, Trait("Category", "Symbol")];
+        METHOD UsualSymbolTest AS VOID
+            // VO allows to compare usuals with symbol even when the usual does not contain a symbol!
+            LOCAL uValue AS USUAL
+            LOCAL symCompare AS SYMBOL
+
+            uValue := NIL
+            Assert.TRUE (uValue == NULL_SYMBOL)
+            symCompare := #XSharpRules
+
+            uValue := (DWORD) symCompare
+            Assert.TRUE (uValue == symCompare)
+
+            uValue := (INT64) uValue
+            Assert.TRUE (uValue == symCompare)
+
+            uValue := (FLOAT) uValue
+            Assert.TRUE (uValue == symCompare)
+
+            uValue :=  1m * uValue
+            Assert.TRUE (uValue == symCompare)
+
+        
 
 	END CLASS
 END NAMESPACE // XSharp.Runtime.Tests

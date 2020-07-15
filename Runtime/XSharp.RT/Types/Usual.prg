@@ -14,7 +14,7 @@ BEGIN NAMESPACE XSharp
     /// This type has many operators and implicit converters that normally are never directly called from user code.
     /// </summary>
     //[DebuggerTypeProxy(TYPEOF(UsualDebugView))];
-    [DebuggerDisplay("{Value,nq} ({_usualType})", Type := "USUAL")];
+    [DebuggerDisplay("{ToString(),nq} ({_usualType})", Type := "USUAL")];
     [AllowLateBinding];
     [StructLayout(LayoutKind.Sequential, Pack := 4)];
     PUBLIC STRUCTURE __Usual IMPLEMENTS IConvertible, ;
@@ -1631,7 +1631,7 @@ BEGIN NAMESPACE XSharp
                     
                         END SWITCH
                         IF handled
-                            IF System.Double.IsNaN(res)
+                            IF System.Double.IsNaN(res)  .or. System.Double.IsInfinity(res)
                                 THROW DivideByZeroException{}
                             ENDIF
                             RETURN FLOAT{res, width, deci}
@@ -1978,6 +1978,10 @@ BEGIN NAMESPACE XSharp
             SWITCH u:_usualType
             CASE __UsualType.String	; RETURN __Symbol{u:_stringValue, TRUE}
             CASE __UsualType.Symbol	; RETURN u:_symValue
+            CASE __UsualType.Long	; RETURN (SYMBOL)  ((DWORD) u:_intValue)
+            CASE __UsualType.Int64	; RETURN (SYMBOL)  ((DWORD) u:_i64Value)
+            CASE __UsualType.Float	; RETURN (SYMBOL)  ((DWORD) u:_floatValue)
+            CASE __UsualType.Decimal; RETURN (SYMBOL)  ((DWORD) u:_decimalValue)
             OTHERWISE
                 THROW ConversionError(SYMBOL, TYPEOF(SYMBOL), u)
             END SWITCH
@@ -2837,15 +2841,15 @@ BEGIN NAMESPACE XSharp
         PROPERTY SELF[index AS INT[]] AS USUAL
             GET
               IF SELF:IsArray
-                 RETURN  SELF:_arrayValue:__GetElement(index)
-              ELSEIF SELF:IsString .and. RuntimeState.Dialect  == XSharpDialect.XPP .and. index:Length == 1
-                    VAR s := SELF:_stringValue
-                    VAR i := index[1]
-                    IF i>= 0 .AND. i < s:Length
-                        RETURN s:Substring(i, 1)
-                    ENDIF
-                    RETURN ""
-
+                 IF index:Length == 1
+                     RETURN  SELF:_arrayValue:__GetElement(index[1])
+                 ELSEIF index:Length == 2
+                     RETURN  SELF:_arrayValue:__GetElement(index[1], index[2])
+                 ELSE
+                     RETURN  SELF:_arrayValue:__GetElement(index)
+                 ENDIF
+              ELSEIF (SELF:IsString .OR. SELF:IsLong) .AND. RuntimeState.Dialect  == XSharpDialect.XPP .AND. index:Length == 1
+                 RETURN SELF:XppUsualIndex(index[1])
               ELSEIF SELF:IsObject .AND. _refData IS IIndexedProperties
                   VAR props := (IIndexedProperties) _refData
                   IF index:Length == 1
@@ -2876,6 +2880,22 @@ BEGIN NAMESPACE XSharp
         END PROPERTY
         #endregion
 
+        METHOD XppUsualIndex(index AS INT) AS USUAL
+            IF RuntimeState.Dialect  == XSharpDialect.XPP 
+                IF SELF:IsString 
+                    VAR s := SELF:_stringValue
+                    IF index>= 0 .AND. index < s:Length
+                        RETURN s:Substring(index, 1)
+                    ENDIF
+                    RETURN ""
+                ELSEIF  SELF:IsLong 
+                    // xbase++ checks if the bit is set
+                    LOCAL liValue   := SELF:_intValue AS LONG
+                    LOCAL testValue := 1 << index AS LONG
+                    RETURN _AND(liValue, testValue) != 0
+               ENDIF
+            ENDIF
+            THROW InvalidCastException{VO_Sprintf(VOErrors.USUALNOTINDEXED, typeof(IIndexedProperties):FullName)}
 
         #region IIndexedProperties
 		/// <include file="RTComments.xml" path="Comments/ZeroBasedIndexProperty/*" /> 
@@ -2889,12 +2909,8 @@ BEGIN NAMESPACE XSharp
                     VAR a := SELF:_arrayValue
                     RETURN a:__GetElement(index)
                 ENDIF
-                IF SELF:IsString .and. RuntimeState.Dialect == XSharpDialect.XPP
-                    VAR s := SELF:_stringValue
-                    IF index >= 0 .AND. index < s:Length
-                        RETURN s:Substring(index, 1)
-                    ENDIF
-                    RETURN ""
+                IF (SELF:IsString .OR. SELF:IsLong) .AND. RuntimeState.Dialect  == XSharpDialect.XPP 
+                    RETURN SELF:XppUsualIndex(index)
                 ENDIF
 
                 VAR indexer := _refData ASTYPE IIndexedProperties
@@ -2906,7 +2922,7 @@ BEGIN NAMESPACE XSharp
             SET
                 IF SELF:IsArray
                     VAR a := SELF:_arrayValue 
-                    a:__SetElement(index,value)
+                    a:__SetElement(value, index)
                     RETURN
                 ENDIF
                 VAR indexer := _refData ASTYPE IIndexedProperties

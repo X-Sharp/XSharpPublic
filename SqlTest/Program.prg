@@ -28,7 +28,7 @@ FUNCTION Start() AS VOID STRICT
         oSel:Skip(0)
         oSel:FIELDPUT(2, cName)
         oSel:Skip(0)
-        oSel:Append()
+        oSel:Append(TRUE)
         oSel:FIELDPUT(2, "ZZZ")
         oSel:AppendRow()
         oSel:Close()        

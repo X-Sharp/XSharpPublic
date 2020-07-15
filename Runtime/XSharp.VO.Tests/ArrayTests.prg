@@ -484,6 +484,25 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			Assert.True(  ACloneShallow({NULL_ARRAY})[1] == NULL_ARRAY  )
 	
 
+		[Fact, Trait("Category", "Hacks")];
+		METHOD ArrayVOSpecialHandling() AS VOID
+            LOCAL aValues := {1,2,4} AS ARRAY
+            RuntimeState.Dialect := XSharpDialect.VO
+			Assert.True(  aValues[1,1] == NIL)
+
+		[Fact, Trait("Category", "Hacks")];
+		METHOD ArrayXPPSpecialHandling() AS VOID
+            LOCAL aValues := {1,2,4} AS ARRAY
+            RuntimeState.Dialect := XSharpDialect.XPP
+            Assert.True(  aValues[1,1] == TRUE)
+            Assert.True(  aValues[2,2] == TRUE)
+            Assert.True(  aValues[3,3] == TRUE)
+            aValues := {"a","bb","ccc"} 
+            Assert.True(  aValues[1,1] == "a")
+            Assert.True(  aValues[2,2] == "b")
+            Assert.True(  aValues[3,3] == "c")
+
+
 	END CLASS
     CLASS IntegerSorter
         METHOD Eval(a,b)

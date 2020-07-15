@@ -507,16 +507,30 @@ INTERNAL STATIC CLASS OOPHelpers
         VAR mi := GetMember(t, cName)
         IF mi != NULL
             IF mi IS PropertyInfo VAR pi
-                RETURN pi
+                // we must check. Sometimes in a subclass the Access was overwritten but not the assign
+                // then we want to read the assign from the parent class
+                IF lAccess .and. pi:CanRead
+                    RETURN pi
+                ELSEIF ! lAccess .and. pi:CanWrite
+                    RETURN pi
+                ENDIF
+            ELSE
+                RETURN NULL
             ENDIF
-            RETURN NULL     // it must be a field then
         ENDIF
 
-        VAR bt := t
+        VAR bt := t // save the original type
+        var bf := BindingFlags.Instance | BindingFlags.IgnoreCase |  BindingFlags.DeclaredOnly | BindingFlags.Public
+        IF lSelf
+            bf |= BindingFlags.NonPublic 
+        ENDIF
 		DO WHILE t != NULL
-			VAR oInfo := t:GetProperty( cName, BindingFlags.Instance | BindingFlags.IgnoreCase | BindingFlags.Public | IIF(lSelf , BindingFlags.NonPublic , BindingFlags.Public) | BindingFlags.DeclaredOnly ) 
+			VAR oInfo := t:GetProperty( cName, bf) 
 			IF oInfo != NULL .AND. ( (lAccess .AND. oInfo:CanRead) .OR. (.NOT. lAccess .AND. oInfo:CanWrite) )
-                AddMember(bt, cName, oInfo)
+                if t == bt
+                    // do not store properties from the parent class
+                    AddMember(bt, cName, oInfo)
+                ENDIF
 				RETURN oInfo
 			ELSE
 				t := t:BaseType
@@ -571,8 +585,12 @@ INTERNAL STATIC CLASS OOPHelpers
             RETURN NULL     // it must be a property then
         ENDIF
         VAR bt := t
+        var bf := BindingFlags.Instance | BindingFlags.IgnoreCase |  BindingFlags.DeclaredOnly | BindingFlags.Public
+        IF lSelf
+            bf |= BindingFlags.NonPublic
+        ENDIF        
 		DO WHILE t != NULL
-			VAR oInfo := t:GetField( cName, BindingFlags.Instance | BindingFlags.IgnoreCase | BindingFlags.Public | IIF(lSelf, BindingFlags.NonPublic , BindingFlags.Public | BindingFlags.DeclaredOnly ) ) 
+			VAR oInfo := t:GetField( cName, bf ) 
 			IF oInfo != NULL 
 				// check for readonly (initonly) fields
 				IF lAccess .OR. ! oInfo:Attributes:HasFlag(FieldAttributes.InitOnly)

@@ -136,7 +136,7 @@
     <value>Default Namespace</value>
   </data>
   <data name="DefaultNamespaceDescription" xml:space="preserve">
-    <value>Specifies the default namespace for added items, such as classes, that are added via the Add New Item Dialog Box.(/rootnamespace:)</value>
+    <value>Specifies the default namespace for added items, such as classes, that are added via the Add New Item Dialog Box.</value>
   </data>
   <data name="GeneralCaption" xml:space="preserve">
     <value>General</value>

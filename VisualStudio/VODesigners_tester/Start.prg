@@ -57,8 +57,8 @@ FUNCTION Start() AS VOID
 	oForm:Controls:Add(oSurface)
 	oForm:Text := "VOWED"
 	oForm:Show()
-	CreateToolWindow("Properties" , oForm , Point{550 , 150} , Size{300 , 500} , oGrid)
-	CreateToolWindow("Toolbox" , oForm , Point{950 , 150} , Size{200 , 600} , oToolBox)
+	CreateToolWindow("Properties" , oForm , Point{550 , 150} , Size{300 , 500} , oGrid,"Properties")
+	CreateToolWindow("Toolbox" , oForm , Point{950 , 150} , Size{200 , 600} , oToolBox,"ToolBox")
 //	oEditor:CreateNewWindow("DATAWINDOW" , "Window1")
 //	oEditor:CreateNewWindow("DIALOGWINDOW" , "Window1")
 //	oEditor:CreateNewWindow("DATADIALOG" , "Window1")
@@ -194,7 +194,7 @@ CLASS TestForm INHERIT Form
 
 END CLASS
 
-PROCEDURE CreateToolWindow(cCaption AS STRING , oParent AS Form , oPos AS Point , oSize AS Size , oPanel AS Panel)
+PROCEDURE CreateToolWindow(cCaption AS STRING , oParent AS Form , oPos AS Point , oSize AS Size , oPanel AS Panel, cName as STRING)
 	LOCAL oForm AS Form
 	oForm := Form{}
 	oForm:Text := cCaption

@@ -154,7 +154,9 @@ namespace XSharp.Project
         {
             get
             {
-                return this.editorControl.IWin32Window;
+                if (editorControl != null)
+                    return this.editorControl.IWin32Window;
+                return null;
             }
         }
         public XSharpModel.IXSharpProject Project
@@ -1476,8 +1478,8 @@ namespace XSharp.Project
                 addCommand(mcs, VSConstants.GUID_VSStandardCommandSet97, (int)VSConstants.VSStd97CmdID.SizeToControlHeight,
                                 new EventHandler(onSameVertSize), onQueryAlignEH);
 
-                addCommand(mcs, VSConstants.GUID_VSStandardCommandSet97, (int)VSConstants.VSStd97CmdID.TabOrder,
-                                new EventHandler(onTabOrder), null);
+                //addCommand(mcs, VSConstants.GUID_VSStandardCommandSet97, (int)VSConstants.VSStd97CmdID.TabOrder,
+                //                new EventHandler(onTabOrder), null);
 
                 //addCommand(mcs, VSConstants.GUID_VSStandardCommandSet97, (int)VSConstants.VSStd97CmdID.SizeToGrid,
                 //                new EventHandler(onUnimplemented), new EventHandler(onQueryUnimplemented));
@@ -1534,6 +1536,12 @@ namespace XSharp.Project
 
                 addCommand(mcs, GuidStrings.guidVOFormEditorCmdSet, (int)GuidStrings.cmdidTestDialog,
                                 new EventHandler(onTestDialog), null);
+
+                addCommand(mcs, GuidStrings.guidVOFormEditorCmdSet, (int)GuidStrings.cmdidTabOrder,
+                                new EventHandler(onTabOrder), null);
+
+                addCommand(mcs, GuidStrings.guidVOFormEditorCmdSet, (int) GuidStrings.VOFormEditorToolbar, new EventHandler(onTabOrder), null);
+                addCommand(mcs, GuidStrings.guidVOFormEditorCmdSet, (int)GuidStrings.VOFormEditorToolbarGroup, new EventHandler(onTabOrder), null);
             }
         }
         /// <summary>

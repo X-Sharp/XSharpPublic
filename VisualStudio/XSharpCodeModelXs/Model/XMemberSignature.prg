@@ -31,7 +31,7 @@ BEGIN NAMESPACE XSharpModel
                   parameters += " := "+variable:Value
                ENDIF
                IF variable:IsTyped
-                  parameters += variable:ParamTypeDesc + variable:TypeName
+                  parameters += variable:ParamTypeDesc + variable:TypeName:GetXSharpTypeName()
                ENDIF
             NEXT
             RETURN parameters
@@ -62,7 +62,7 @@ BEGIN NAMESPACE XSharpModel
             FOREACH VAR par IN SELF:Parameters
                res += par:Name
                IF par:IsTyped
-                  res += " "+par:ParamTypeDesc+" "+par:TypeName
+                  res += " "+par:ParamTypeDesc+" "+par:TypeName:GetXSharpTypeName()
                ENDIF
                res += ","
             NEXT

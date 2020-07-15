@@ -44,6 +44,7 @@ BEGIN NAMESPACE XSharpModel
       PRIVATE  _globalType    AS XTypeDefinition
       PRIVATE  _dialect       AS XSharpDialect
       PRIVATE  _xppVisibility AS Modifiers
+      PRIVATE  _commentTasks  AS IList<XCommentTask>
 
       PRIVATE  _attributes   AS Modifiers      // for the current entity
       PRIVATE  _start        AS IToken
@@ -80,6 +81,7 @@ BEGIN NAMESPACE XSharpModel
       CONSTRUCTOR(oFile AS XFile, dialect AS XSharpDialect)
          _errors        := List<XError>{}
          _usings        := List<STRING>{}
+         _commentTasks  := List<XCommentTask>{}
          _staticusings  := List<STRING>{}
          _EntityList    := List<XEntityDefinition>{}
          _EntityStack   := Stack<XEntityDefinition>{}
@@ -113,16 +115,44 @@ BEGIN NAMESPACE XSharpModel
       METHOD Parse( tokenStream AS ITokenStream, lBlocks AS LOGIC, lLocals AS LOGIC) AS VOID
          LOCAL aAttribs        AS IList<IToken>
          LOCAL cXmlDoc   := "" AS STRING
+         VAR cmtTokens  := XSolution.CommentTokens
          Log(i"Start")
          
          _collectLocals := lLocals
          _collectBlocks := lBlocks
          _stream        := (BufferedTokenStream) tokenStream 
          _tokens        := _stream:GetTokens()
-         
-         _input         := _tokens:Where({ t => t:Channel == XSharpLexer.DefaultTokenChannel .OR. t:Channel == XSharpLexer.PREPROCESSORCHANNEL }):ToArray()
-         _hasXmlDoc     := _tokens:FirstOrDefault({t => t:Channel == XSharpLexer.XMLDOCCHANNEL }) != NULL
-         _index := 0
+         _input         := List<IToken>{}
+         FOREACH VAR token IN _tokens
+            SWITCH token:Channel
+            CASE TokenConstants.HiddenChannel
+            CASE XSharpLexer.DEFOUTCHANNEL // Inactive code 
+               IF XSharpLexer.IsComment(token:Type)      
+                  FOREACH VAR cmtToken IN cmtTokens
+                     VAR pos := token:Text:IndexOf(cmtToken:Text, StringComparison.OrdinalIgnoreCase)
+                     IF pos >= 0
+                        VAR comment := token:Text:Substring(pos)
+                        pos := comment:IndexOf('\r')
+                        IF pos > 0
+                           comment := comment.Substring(0, pos)
+                        ENDIF
+                         VAR item := XCommentTask{}{ File:=_file, Line := token:Line, Column := token:Column, Priority := cmtToken:Priority, Comment := comment}
+                         _commentTasks:Add(item)  
+                     ENDIF
+                  NEXT
+               ENDIF
+             CASE XSharpLexer.DefaultTokenChannel
+             CASE XSharpLexer.PREPROCESSORCHANNEL
+               _input:Add(token)
+             CASE XSharpLexer.XMLDOCCHANNEL
+               _hasXmlDoc := TRUE
+             OTHERWISE
+               NOP
+             END SWITCH
+         NEXT
+         _file:CommentTasks := _commentTasks
+         _input 	:= _input:ToArray()
+         _index 	:= 0
          _lastToken     := _tokens:FirstOrDefault()
 
          DO WHILE ! SELF:Eoi()
@@ -273,6 +303,7 @@ BEGIN NAMESPACE XSharpModel
             _file:SetTypes(typelist, _usings, _staticusings, SELF:_EntityList)
             _file:SaveToDatabase()
          ENDIF
+         //_file:Project:FileWalkComplete(_file)
          
       
       PRIVATE METHOD GetXmlDoc(startToken AS XSharpToken) AS STRING
@@ -601,7 +632,11 @@ attributeParam      : Name=identifierName Op=assignoperator Expr=expression     
             IF _dialect == XSharpDialect.XPP
                entityKind := Kind.Method // Not really a field but handled later
             ENDIF
-            
+         CASE XSharpLexer.GET
+         CASE XSharpLexer.SET
+         //CASE XSharpLexer.ADD
+         CASE XSharpLexer.REMOVE
+            entityKind := Kind.Unknown
          OTHERWISE
             IF IsId(SELF:La1) 
                IF mods != Modifiers.None
@@ -626,7 +661,9 @@ attributeParam      : Name=identifierName Op=assignoperator Expr=expression     
                      entityKind := Kind.Field
                   ELSEIF SELF:La1 == XSharpLexer.ID .AND. SELF:Lt1:Text:EndsWith("COMATTRIB", StringComparison.OrdinalIgnoreCase)
                      entityKind := Kind.Field
-                  ENDIF
+                  ENDIF 
+               ELSEIF CurrentType?:Kind == Kind.Enum
+                  entityKind := Kind.EnumMember
                ENDIF
             ENDIF   
             
@@ -1692,9 +1729,7 @@ enummember          : (Attributes=attributes)? MEMBER? Id=identifier (Op=assigno
 */         
 
          VAR att := SELF:ParseAttributes()
-         IF ! Expect(XSharpLexer.MEMBER)
-            RETURN NULL
-         ENDIF
+         Expect(XSharpLexer.MEMBER)    // Optional !
          VAR strValue := ""
          VAR id := SELF:ParseQualifiedName()
          IF ExpectAssign()

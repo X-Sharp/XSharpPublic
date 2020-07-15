@@ -8,16 +8,16 @@ using Microsoft.VisualStudio.Shell.TableManager;
 
 namespace XSharp.Project
 {
-    internal class ErrorListSinkManager : IErrorListSinkManager, IDisposable
+    internal class ListSinkManager : IListSinkManager, IDisposable
     {
-        private IErrorListProvider ErrorProvider { get; set; }
-        private ITableDataSink ErrorTableSink { get; set; }
+        private IListProvider ListProvider { get; set; }
+        private ITableDataSink TableSink { get; set; }
 
-        internal ErrorListSinkManager(IErrorListProvider errorProvider, ITableDataSink sink)
+        internal ListSinkManager(IListProvider provider, ITableDataSink sink)
         {
-            ErrorProvider = errorProvider;
-            ErrorTableSink = sink;
-            ErrorProvider.AddSinkManager(this);
+            ListProvider = provider;
+            TableSink = sink;
+            ListProvider.AddSinkManager(this);
         }
 
         /// <summary>
@@ -25,25 +25,25 @@ namespace XSharp.Project
         /// </summary>
         public void Dispose()
         {
-            ErrorProvider.RemoveSinkManager(this);
+            ListProvider.RemoveSinkManager(this);
         }
 
         /// <summary>
         /// This is called if a new project is added after there is already a sink connected. Informs the sink
         /// of the new source of errors
         /// </summary>
-        public void AddErrorListFactory(ITableEntriesSnapshotFactory factory)
+        public void AddListFactory(ITableEntriesSnapshotFactory factory)
         {
-            ErrorTableSink.AddFactory(factory);
+            TableSink.AddFactory(factory);
         }
 
         /// <summary>
         /// If a project is removed from the solution (unloaded, closed, etc) informans the sink
         /// that the source is no longer available.
         /// </summary>
-        public void RemoveErrorListFactory(ITableEntriesSnapshotFactory factory)
+        public void RemoveListFactory(ITableEntriesSnapshotFactory factory)
         {
-            ErrorTableSink.RemoveFactory(factory);
+            TableSink.RemoveFactory(factory);
         }
 
         /// <summary>
@@ -52,7 +52,7 @@ namespace XSharp.Project
         /// </summary>
         public void UpdateSink(ITableEntriesSnapshotFactory factory)
         {
-            ErrorTableSink.FactorySnapshotChanged(factory);
+            TableSink.FactorySnapshotChanged(factory);
         }
     }
 }

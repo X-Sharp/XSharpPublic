@@ -1060,30 +1060,7 @@ namespace XSharpLanguage
                 this.TypeName = t;
                 this.Direction = dir;
             }
-            internal ParamInfo(System.Reflection.ParameterInfo p)
-            {
-                this.Name = p.Name;
-                if (p.IsIn)
-                {
-                    Direction = "IN";
-                }
-                else if (p.IsOut)
-                {
-                    Direction = "OUT";
-                }
-                else
-                {
-                    Direction = "AS";
-                    string type = p.ParameterType.FullName;
-                    if (type == null)
-                        type = p.ParameterType.Name;
-                    if (type != null && type.EndsWith("&"))
-                        Direction = "REF";
-                }
-
-                this.TypeName = p.ParameterType.GetXSharpTypeName();
-                Optional = p.IsOptional;
-            }
+      
         }
 
 
@@ -2110,7 +2087,7 @@ namespace XSharpLanguage
                         if (!cType.IsEmpty())
                         {
                             SearchConstructorIn(cType, Modifiers.Private, out foundElement);
-                            if (foundElement.Result == null && cType.XTypeDef  != null)
+                            if (foundElement?.Result == null && cType.XTypeDef  != null)
                             {
                                 foundElement = new CompletionElement(cType.XTypeDef);
                             }
@@ -2877,7 +2854,7 @@ namespace XSharpLanguage
             if (cType.Type != null)
             {
                 
-                IXMember property = cType.Type.GetProperty(currentToken).FirstOrDefault();
+                IXMember property = cType.Type.GetProperties(currentToken).FirstOrDefault();
                 //
                 if ((property != null) && (property.Visibility < minVisibility))
                 {
@@ -2919,7 +2896,7 @@ namespace XSharpLanguage
             foundElement = null;
             if (cType.Type != null)
             {
-                IXMember field = cType.Type.GetField(currentToken).FirstOrDefault();
+                IXMember field = cType.Type.GetFields(currentToken).FirstOrDefault();
                 if ((field != null) && (field.Visibility < minVisibility))
                 {
                     field = null;

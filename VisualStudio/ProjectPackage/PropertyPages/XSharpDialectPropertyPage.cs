@@ -65,7 +65,7 @@ namespace XSharp.Project
         internal const string VO16Description = "Automatically create clipper calling convention constructors for classes without constructor where the parent class has a Clipper Calling convention constructor.(/vo16)";
         internal const string XPP1Description = "All classes without parent class inherit from the XPP Abstract class.(/xpp1)";
         internal const string FOX1Description = "All classes are assumed to inherit from the Custom class. This also affects the way in which properties are processed by the compiler.(/fox1)";
-        internal const string FOX2Description = "Make local variables visible to the macro compiler. This may be needed for SQL queries with embedded parameters or the ampersand (&) operator. Use with care because this will generate quite some extra code.";
+        internal const string FOX2Description = "Make local variables visible to the macro compiler. This may be needed for SQL queries with embedded parameters or the ampersand (&) operator. Use with care because this will generate quite some extra code.(/fox2)";
         internal const string CatCompatibility = "All dialects";
         internal const string CatNotCore = "Not in Core dialect";
         internal const string XPPCompatibility = "Xbase++ Compatibility";

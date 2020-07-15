@@ -22,6 +22,8 @@ BEGIN NAMESPACE XSharpModel
       PRIVATE _typeDef        as TypeDefinition
       PRIVATE _initialized   := FALSE  AS LOGIC
 
+      PROPERTY TypeDef        AS TypeDefinition GET _typeDef
+
      CONSTRUCTOR(typedef as TypeDefinition, asm as XAssembly)
          SUPER(typedef:Name, GetKind(typedef), ConvertAttributes(typedef:Attributes), asm)  
          SELF:_typeDef        := typedef
@@ -119,70 +121,72 @@ BEGIN NAMESPACE XSharpModel
          ENDIF
          return modifiers         
               
-          
+       
+      INTERNAL STATIC METHOD AddMembers(aMembers AS  List<XMemberReference>, typedef AS TypeDefinition, parent AS XTypeReference) AS VOID
+                
+            IF typedef:HasMethods
+               FOREACH VAR md IN typedef:Methods
+                  // filter 
+                  IF md:IsPrivate
+                     LOOP
+                  ENDIF
+                  VAR kind := Kind.Method
+                  IF md:IsRuntimeSpecialName
+                     VAR name := md:Name
+                     IF name:StartsWith("set_")
+                        LOOP
+                     ELSEIF name:StartsWith("get_")
+                        LOOP
+                     ELSEIF name:StartsWith("op_")
+                        kind := Kind.Operator
+                     ELSEIF name:StartsWith(".ctor")
+                        kind := Kind.Constructor
+                     ENDIF
+                  ENDIF
+                  VAR xmember := XMethodReference{md,parent:Assembly}
+                  IF xmember:Kind == Kind.Method      // this could have changed from Method to Function
+                     xmember:Kind := kind
+                  ENDIF
+                  aMembers:Add(xmember)
+                  xmember:Parent := parent
+               NEXT
+            ENDIF
+            IF typedef:HasProperties
+               FOREACH VAR pd IN typedef:Properties
+                  IF pd:GetMethod != NULL .AND. pd:GetMethod:IsPrivate
+                     LOOP
+                  ENDIF
+                  VAR xprop := XPropertyReference{pd,parent:Assembly}
+                  aMembers:Add(xprop)
+                  xprop:Parent := parent
+               NEXT
+            ENDIF
+            IF typedef:HasFields
+               FOREACH VAR fd IN typedef:Fields
+                  IF fd:IsPrivate
+                     LOOP
+                  ENDIF
+                  VAR xField := XFieldReference{fd,parent:Assembly} 
+                  aMembers:Add(xField)
+                  xField:Parent := parent
+               NEXT
+            ENDIF
+            IF typedef:HasEvents
+               FOREACH VAR ed IN typedef:Events
+                  IF ed:AddMethod != NULL .AND. ed:AddMethod:IsPrivate
+                     LOOP
+                  ENDIF
+                  VAR xEvent := XEventReference{ed,parent:Assembly} 
+                  aMembers:Add(xEvent)
+                  xEvent:Parent := parent
+                     
+               NEXT
+            ENDIF
+         
       INTERNAL METHOD Resolve() AS VOID
          IF ! SELF:_initialized .AND. SELF:_typeDef != NULL
                VAR aMembers := List<XMemberReference>{}
-             
-               IF _typeDef:HasMethods
-                  FOREACH var md in _typeDef:Methods
-                     // filter 
-                     if md:IsPrivate
-                        loop
-                     endif
-                     var kind := Kind.Method
-                     if md:IsRuntimeSpecialName
-                        var name := md:Name
-                        if name:StartsWith("set_")
-                           loop
-                        elseif name:StartsWith("get_")
-                           loop
-                        elseif name:StartsWith("op_")
-                           kind := Kind.Operator
-                        elseif name:StartsWith(".ctor")
-                           kind := Kind.Constructor
-                        endif
-                     endif
-                     VAR xmember := XMethodReference{md,SELF:Assembly}
-                     if xmember:Kind == Kind.Method      // this could have changed from Method to Function
-                        xmember:Kind := kind
-                     endif
-                     aMembers:Add(xmember)
-                     xmember:Parent := SELF
-                  NEXT
-               ENDIF
-               IF _typeDef:HasProperties
-                  FOREACH var pd in _typeDef:Properties
-                     if pd:GetMethod != null .and. pd:GetMethod:IsPrivate
-                        loop
-                     endif
-                     VAR xprop := XPropertyReference{pd,SELF:Assembly}
-                     aMembers:Add(xprop)
-                     xprop:Parent := SELF
-                  NEXT
-               ENDIF
-               IF _typeDef:HasFields
-                  FOREACH var fd in _typeDef:Fields
-                     if fd:IsPrivate
-                        loop
-                     endif
-                     VAR xField := XFieldReference{fd,SELF:Assembly} 
-                     aMembers:Add(xField)
-                     xField:Parent := SELF
-                  NEXT
-               ENDIF
-               IF _typeDef:HasEvents
-                  FOREACH var ed in _typeDef:Events
-                    if ed:AddMethod != NULL .and. ed:AddMethod:IsPrivate
-                        loop
-                     endif
-                     VAR xEvent := XEventReference{ed,SELF:Assembly} 
-                     aMembers:Add(xEvent)
-                     xEvent:Parent := SELF
-                     
-                  NEXT
-               ENDIF
-               
+               AddMembers(aMembers, SELF:_typeDef, SELF)
               // Get methods from parent class(es), recursively
               if SELF:Assembly != NULL .and. ! String.IsNullOrEmpty(SELF:BaseType)
                   _baseType := SystemTypeController.FindType(SELF:BaseType, SELF:Assembly:FullName)
@@ -192,11 +196,7 @@ BEGIN NAMESPACE XSharpModel
                      aMembers:AddRange( basemembers )
                   ENDIF
                ENDIF
-              BEGIN LOCK SELF
-                  // now add to 
-                  SELF:_members:Clear()
-                  SELF:_members:AddRange(aMembers)
-              END LOCK
+
               // nested children ?
               IF _typeDef:HasNestedTypes
                   var aChildren := List<XTypeReference>{}
@@ -208,10 +208,26 @@ BEGIN NAMESPACE XSharpModel
                   END LOCK
                ENDIF
                IF _typeDef:HasInterfaces
-                  FOREACH VAR @@interface in _typeDef:Interfaces
-                     SELF:_signature:AddInterface(@@interface:InterfaceType:FullName)
+                  FOREACH VAR @@interface IN _typeDef:Interfaces
+                     VAR ifname := @@interface:InterfaceType:FullName
+                     SELF:_signature:AddInterface(ifname)
+                     VAR mod := _typeDef:Module
+                     // see if we can find the type behind the interface in our assembly
+                     // and if we do then update the member list
+                     // this is especially needed with AdoDb where the Connection interface
+                     // has no members but inherits all its members from 2 other interfaces
+                     VAR ifType := mod:GetType(ifname)
+                     IF ifType != NULL
+                        AddMembers(aMembers, ifType, SELF)
+                     ENDIF
+                     
                   NEXT
                ENDIF
+              BEGIN LOCK SELF
+                  // now add to 
+                  SELF:_members:Clear()
+                  SELF:_members:AddRange(aMembers)
+              END LOCK               
                
               SELF:_initialized := TRUE
          ENDIF

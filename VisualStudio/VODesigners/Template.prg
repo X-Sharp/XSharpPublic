@@ -542,6 +542,8 @@ CLASS VOControlTemplate
 		SELF:cInitMethod := ""
 		SELF:aProperties := ArrayList{}
 		SELF:aPages := List<STRING>{}
+      SELF:aExStyles := List<STRING>{}
+      SELF:aStyles := List<STRING>{}
 	RETURN
 	METHOD AddFrom(cControl AS STRING) AS VOID
 		LOCAL oTemplate AS VOControlTemplate

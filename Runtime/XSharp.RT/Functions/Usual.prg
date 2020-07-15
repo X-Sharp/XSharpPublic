@@ -14,31 +14,46 @@ FUNCTION Empty(uValue AS USUAL) AS LOGIC
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/emptyusual/*" />
 FUNCTION EmptyUsual(kType AS DWORD) AS USUAL
 	LOCAL result AS USUAL
-	SWITCH kType
-	CASE ARRAY
+	SWITCH (__UsualType) kType
+	CASE __UsualType.Array
 		result := USUAL{NULL_ARRAY}
-	CASE BYTE; CASE WORD; CASE DWORD; CASE SHORTINT;  CASE LONG; CASE INT64
+	CASE __UsualType.Byte
+    CASE __UsualType.Word
+    CASE __UsualType.DWord
+    CASE __UsualType.ShortInt
+    CASE __UsualType.Long
+    CASE __UsualType.Int64
+    CASE __UsualType.UInt64
 		result := USUAL{0}
-	CASE FLOAT; CASE REAL4; CASE REAL8; CASE (DWORD) __UsualType.Decimal
+    CASE __UsualType.Float
+    CASE __UsualType.Real4
+    CASE __UsualType.Real8
 		result := USUAL{0.0}
-	CASE STRING
+    CASE __UsualType.Decimal
+    CASE __UsualType.Currency
+		result := USUAL{0m}
+	CASE __UsualType.String
 		result := USUAL{""}
-	CASE DATE
+	CASE __UsualType.Date
 		result := USUAL{(DATE) 0}
-	CASE (DWORD) __UsualType.DateTime
+	CASE __UsualType.DateTime
 		result := USUAL{DateTime.MinValue}
-	CASE LOGIC
+	CASE __UsualType.Logic
 		result := USUAL{FALSE}
-	CASE PTR
+	CASE __UsualType.Ptr
 		result := USUAL{NULL_PTR}
-	CASE PSZ
+	CASE __UsualType.Psz
 		result := USUAL{NULL_PSZ}
-	CASE SYMBOL
+	CASE __UsualType.Symbol
 		result := USUAL{NULL_SYMBOL}
-	CASE USUAL
+	CASE __UsualType.Usual
+	CASE __UsualType.Void
 		result := NIL
-	CASE CODEBLOCK
+	CASE __UsualType.Codeblock
 		result := USUAL{NULL_CODEBLOCK}
+    CASE __UsualType.Object
+	    result := USUAL{NULL_OBJECT}
+    CASE __UsualType.Fixed
 	OTHERWISE
 		THROW Error.ArgumentError(__ENTITY__, NAMEOF(kType) , "Unknown type parameter")
 	END SWITCH

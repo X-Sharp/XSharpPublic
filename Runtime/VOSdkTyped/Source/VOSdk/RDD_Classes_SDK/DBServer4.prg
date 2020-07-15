@@ -569,13 +569,18 @@ METHOD RLockVerify() AS LOGIC
 	
 	RETURN lRetCode
 
-METHOD Seek( uSearchExpr:= NIL AS USUAL, lSoftSeek:= FALSE AS LOGIC, lLast := FALSE AS LOGIC) AS LOGIC 
+METHOD Seek( uSearchExpr , lSoftSeek, lLast ) AS LOGIC CLIPPER
+//METHOD Seek( uSearchExpr:= NIL AS USUAL, lSoftSeek:= FALSE AS LOGIC, lLast := FALSE AS LOGIC) AS LOGIC 
 	LOCAL lRetCode AS LOGIC
 	LOCAL oError AS USUAL
 	LOCAL dwCurrentWorkArea := 0 AS DWORD
 	LOCAL nTries AS DWORD
-
-	
+    IF IsNil(lSoftSeek)
+        lSoftSeek := FALSE
+    ENDIF
+    IF IsNil(lLast)
+        lLast := FALSE
+    ENDIF
 
 	lErrorFlag := FALSE
 	nTries := SELF:nRetries
@@ -805,9 +810,9 @@ METHOD SetOrder( uOrder AS USUAL, cIndexFileName := "" AS STRING) AS LOGIC
 
 	lErrorFlag := FALSE 
 	BEGIN SEQUENCE
-      SELF:__OptimisticFlush()
 
 		VoDbSelect( wWorkArea, OUT dwCurrentWorkArea )
+		SELF:__OptimisticFlush()
 		IF ! (lRetCode := VoDbOrdSetFocus(cIndexFileName,uOrder, REF pszStuff))
 			BREAK ErrorBuild(_VoDbErrInfoPtr())
 		ENDIF
@@ -1557,10 +1562,10 @@ METHOD Update(oDbServer,cbKey,lRandomFlag,cbReplace) AS LOGIC CLIPPER
 
 	lErrorFlag := FALSE
 	BEGIN SEQUENCE
-      SELF:__OptimisticFlush()
 
 		VoDbSelect( wWorkArea, OUT dwCurrentWorkArea )
-		IF IsObject(oDbServer) .and. __Usual.ToObject(oDbServer) IS DbServer VAR oDb
+		SELF:__OptimisticFlush()
+		IF IsObject(oDbServer) .AND. __Usual.ToObject(oDbServer) IS DbServer VAR oDb
 			cAlias := oDb:Alias
 		ELSE
 			cAlias := AsString( oDbServer )

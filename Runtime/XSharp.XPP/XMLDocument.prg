@@ -111,7 +111,6 @@ BEGIN NAMESPACE XSharp.XPP
             LOCAL oNode AS XmlNode
             oNode := FindNode(nId, OUT VAR oDoc)
             IF oNode != NULL
-                LOCAL aResult := {} AS ARRAY
                 FOREACH oChild AS XmlNode IN oNode:ChildNodes
                     IF String.Compare(oChild:Name, cChildName, TRUE) == 0
                         IF oDoc:Nodes:ContainsKey(oChild)

@@ -27674,11 +27674,9 @@
     <seealso cref="T:XSharp.RDD.Support.DBScopeInfo"/>
   </vodbsetscope>
     <vodbgetscope>
-      <summary>
-        Gets the current locate condition.
-        <returns>Scope information for the current workarea.</returns>
-        <remarks>Please note that this scope information is NOT the order scope, but a class that stores information about LOCATE operations and other workarea operations.</remarks>
-        <seealso cref="T:XSharp.RDD.Support.DBScopeInfo"/>
-      </summary>
+      <summary>Gets the current locate condition.</summary>
+	<returns>Scope information for the current workarea.</returns>
+	<remarks>Please note that this scope information is NOT the order scope, but a class that stores information about LOCATE operations and other workarea operations.</remarks>
+	<seealso cref="T:XSharp.RDD.Support.DBScopeInfo"/>
    </vodbgetscope>
 </Runtimefunctions>

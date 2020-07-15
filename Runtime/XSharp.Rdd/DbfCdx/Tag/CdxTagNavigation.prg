@@ -166,9 +166,13 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 IF SELF:Descending
                     nToSkip := - nToSkip
                 ENDIF
-                IF !SELF:_oRdd:_isValid
+                IF !SELF:_oRdd:_isValid // we're at EOF
                     IF nToSkip < 0
-                        recno := SELF:_locateKey(NULL, 0, SearchMode.Bottom,0)
+                        IF SELF:Descending
+                            SELF:GoBottom()
+                        ELSE
+                            SELF:GoTop()
+                        ENDIF
                         nToSkip ++
                         SELF:_oRdd:_SetBOF(recno == 0)
                         SELF:_oRdd:_SetEOF(recno == 0)
@@ -421,6 +425,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                                 IF lBOF
                                     IF SELF:Descending
                                         SELF:_oRdd:_SetEOF(TRUE)
+                                        recno := 0
                                     ELSE
                                         recno := SELF:_getNextKey(SkipDirection.Forward)
                                         SELF:_oRdd:_SetBOF(TRUE)
@@ -435,6 +440,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                                 nRes := SELF:__Compare(SELF:_currentvalue:Key, SELF:_Scopes[BOTTOMSCOPE]:Buffer, SELF:_Scopes[BOTTOMSCOPE]:Size) 
                                 VAR lEOF := nRes > 0
                                 IF lEOF
+                                    recno := 0
                                     IF SELF:Descending
                                         recno := SELF:_getNextKey(SkipDirection.Forward)
                                         SELF:_oRdd:_SetBOF(TRUE)

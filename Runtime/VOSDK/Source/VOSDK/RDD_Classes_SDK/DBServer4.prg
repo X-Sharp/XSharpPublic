@@ -895,11 +895,11 @@ METHOD SetOrder( uOrder, cIndexFileName )
 
 	lErrorFlag := FALSE 
 	BEGIN SEQUENCE
-      //RvdH 070925 Save pending changes
-      SELF:__OptimisticFlush()
 
 		VODBSelect( wWorkArea, REF dwCurrentWorkArea )
-		IF IsObject(cIndexFileName) .and. __Usual.ToObject(cIndexFileName) IS FileSpec VAR oFs
+        //RvdH 070925 Save pending changes
+        SELF:__OptimisticFlush()
+		IF IsObject(cIndexFileName) .AND. __Usual.ToObject(cIndexFileName) IS FileSpec VAR oFs
 			cIndexFileName := oFS:FullPath
 		ELSEIF IsNil(cIndexFileName)
 			cIndexFileName:=""
@@ -1715,10 +1715,10 @@ METHOD Update(oDbServer,cbKey,lRandomFlag,cbReplace)
 
 	lErrorFlag := FALSE
 	BEGIN SEQUENCE
-      //RvdH 070925 Save pending changes
-      SELF:__OptimisticFlush()
 
 		VODBSelect( wWorkArea, REF dwCurrentWorkArea )
+        //RvdH 070925 Save pending changes
+        SELF:__OptimisticFlush()
 		IF IsObject(oDbServer) .and. __Usual.ToObject(oDbServer) IS DbServer VAR oDb
 			cAlias := oDb:ALIAS
 		ELSE

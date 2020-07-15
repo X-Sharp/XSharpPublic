@@ -286,7 +286,7 @@ METHOD RegisterClient( oForm AS OBJECT) AS LOGIC
 	METHOD Rollback( ) AS LOGIC STRICT
 		RETURN FALSE
 
-	METHOD Seek( ) AS LOGIC STRICT
+	METHOD Seek( ) AS LOGIC CLIPPER
 		RETURN FALSE
 
 	METHOD SetDataField( nFieldPosition AS DWORD, oDataField AS DataField ) AS LOGIC

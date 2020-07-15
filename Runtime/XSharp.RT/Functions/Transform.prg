@@ -672,13 +672,11 @@ INTERNAL STATIC CLASS TransformHelpers
         
         IF nValue > 0
             IF  nPicFunc:HasFlag( TransformPictures.Credit ) 
-                // TODO: should these be localized?
-                cReturn := cReturn + " CR"
+                cReturn := cReturn + " "+ __CavoStr(VOErrors.RT_MSG_CREDIT)
             ENDIF
         ELSEIF nValue < 0
             IF  nPicFunc:HasFlag( TransformPictures.Debit ) 
-                // TODO: should these be localized?
-                cReturn := cReturn + " DB"
+                cReturn := cReturn + " "+ __CavoStr(VOErrors.RT_MSG_DEBIT)
             ENDIF
         ENDIF
         

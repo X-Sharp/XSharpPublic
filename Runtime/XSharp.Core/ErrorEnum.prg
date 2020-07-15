@@ -473,6 +473,12 @@ ENUM XSharp.VOErrors
 	MEMBER RT_MSG_CURRENCY     := RT_MSG_LITERAL + 9
     /// <summary>String ID for the literal for Yes/No</summary>
 	MEMBER RT_MSG_YNSTRING     := RT_MSG_LITERAL + 10
+    /// <summary>String ID for the literal for Debit</summary>
+	MEMBER RT_MSG_DEBIT        := RT_MSG_LITERAL + 11
+    /// <summary>String ID for the literal for credit</summary>
+	MEMBER RT_MSG_CREDIT        := RT_MSG_LITERAL + 12
+   
+   
 	
 	// NOTE DUPLICATE VALUES WILL CAUSE PROBLEM WITH LOOKUP. THEREFORE RT_MSG_ERR IS A DEFINE
 	// MEMBER RT_MSG_ERR     := 0X4000
@@ -1193,6 +1199,13 @@ DEFINE  RT_MSG_LONG_NO     := VOErrors.RT_MSG_LONG_NO
 DEFINE  RT_MSG_CURRENCY    := VOErrors.RT_MSG_CURRENCY  
 /// <exclude />
 DEFINE  RT_MSG_YNSTRING    := VOErrors.RT_MSG_YNSTRING  
+/// <exclude />
+DEFINE  RT_MSG_DEBIT       := VOErrors.RT_MSG_DEBIT
+/// <exclude />
+DEFINE  RT_MSG_CREDIT      := VOErrors.RT_MSG_CREDIT
+
+
+
 /// <exclude />
 DEFINE RT_MSG_DOSERR  := 0x4040
 /// <exclude />

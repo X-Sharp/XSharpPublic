@@ -87,7 +87,17 @@ INTERNAL CLASS AssemblyReader
                assembly:Namespaces:Add(ns)
             ENDIF
          ENDIF
-         assembly:Types:Add(name, typeref)      // FullName
+         IF ! assembly:Types:ContainsKey(name)
+            assembly:Types:Add(name, typeref)      // FullName
+         ELSE
+            IF assembly:DuplicateTypes == NULL
+               assembly:DuplicateTypes := List<XTypeReference>{}
+            ENDIF
+            XSolution.WriteOutputMessage("**************************")
+            XSolution.WriteOutputMessage("Duplicate type name found: "+typeref:FullName)
+            XSolution.WriteOutputMessage("**************************")
+            assembly:DuplicateTypes:Add(typeref)
+         ENDIF
          IF SELF:HasExtensionMethods(type)
             SELF:LoadExtensionMethods(type)
          endif

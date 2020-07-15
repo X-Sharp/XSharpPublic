@@ -212,34 +212,103 @@ CLASS VOWEDControl INHERIT Panel
     STATIC METHOD InitializeGrid() AS VOID
         IF VOWEDControl.oGrid == NULL
 	        VOWEDControl.oGrid := DesignerGrid{}
-	        VOWEDControl.CreateToolWindow( Resources.PropertiesCaption, Point{550 , 150} , Size{300 , 500} , oGrid)
+	        VOWEDControl.CreateToolWindow( Resources.PropertiesCaption, Point{550 , 150} , Size{300 , 500} , oGrid,"Properties")
 	    ENDIF
     RETURN
     STATIC METHOD InitializeToolbox() AS VOID
         IF VOWEDControl.oToolBox == NULL
 	        VOWEDControl.oToolBox := ToolBox{}
-	        VOWEDControl.CreateToolWindow( Resources.ToolboxCaption, Point{950 , 150} , Size{200 , 600} , oToolBox)
+	        VOWEDControl.CreateToolWindow( Resources.ToolboxCaption, Point{950 , 150} , Size{200 , 600} , oToolBox,"ToolBox")
 	    ENDIF
     RETURN
 
-    STATIC METHOD CreateToolWindow(cCaption AS STRING , oPos AS Point , oSize AS Size , oPanel AS Panel) AS VOID
+    STATIC METHOD CreateToolWindow(cCaption AS STRING , oPos AS Point , oSize AS Size , oPanel AS Panel,cName as STRING) AS VOID
 	    LOCAL oForm AS Form
 	    oForm := Form{}
+       oForm:Tag := cName
+       RestoreLocation(cName, ref oSize, ref oPos)
 	    oForm:Text := cCaption
-    	oForm:ShowInTaskbar := FALSE
+    	 oForm:ShowInTaskbar := FALSE
 	    oForm:StartPosition := FormStartPosition.Manual
 	    oForm:Location := oPos
 	    oForm:Size := oSize
 	    oForm:TopMost := TRUE
 	    oForm:FormBorderStyle := FormBorderStyle.SizableToolWindow
 	    oForm:Controls:Add(oPanel)
-    	oForm:Closing += System.ComponentModel.CancelEventHandler{ NULL , @ToolWindowClosing() }
-//	    oForm:Show()
+    	 oForm:Closing += System.ComponentModel.CancelEventHandler{ NULL , @ToolWindowClosing() }
+       oForm:Move    += ToolWindowmoving
+       oForm:SizeChanged += ToolWindowSizeChanged
     RETURN 
     STATIC METHOD ToolWindowClosing(o AS OBJECT , e AS System.ComponentModel.CancelEventArgs) AS VOID
 	    e:Cancel := TRUE
 	    ((Form)o):Hide()
     RETURN
+    STATIC METHOD ToolWindowmoving(o AS OBJECT , e AS EventArgs) AS VOID
+         LOCAL form := (Form) o as Form
+         var size := form:Size
+         var pos  := form:Location
+         SaveLocation((string) form:Tag, size, pos)
+    RETURN
+    STATIC METHOD ToolWindowSizeChanged(o AS OBJECT , e AS EventArgs) AS VOID
+         var form := (Form) o
+         var size := form:Size
+         var pos  := form:Location
+         SaveLocation((string) form:Tag, size, pos)
+    RETURN
+    STATIC METHOD SaveLocation(name as STRING, size as System.Drawing.Size, point as System.Drawing.Point) as void
+         var keyName := "VOED_"+name
+         var key     := Microsoft.Win32.Registry.CurrentUser
+         var subkey  := key:OpenSubKey(Constants.RegistryKey, true)
+         if (subkey == null)
+            subkey := key:CreateSubKey(Constants.RegistryKey)
+         endif
+         subkey:SetValue(keyName+"_W", size:Width)
+         subkey:SetValue(keyName+"_H", size:Height)
+         subkey:SetValue(keyName+"_X", point:X)
+         subkey:SetValue(keyName+"_Y", point:Y)
+         subkey:Close()
 
+    STATIC METHOD RestoreLocation(name as STRING, size REF System.Drawing.Size, point REF System.Drawing.Point) as void
+         LOCAL key     := Microsoft.Win32.Registry.CurrentUser as Microsoft.Win32.RegistryKey
+         LOCAL subkey  := key:OpenSubKey(Constants.RegistryKey, true) as Microsoft.Win32.RegistryKey
+         var keyName := "VOED_"+name
+         if (subkey == null)
+            subkey := key:CreateSubKey(Constants.RegistryKey)
+         endif
+         var w := subkey:GetValue(keyName+"_W")
+         var h := subkey:GetValue(keyName+"_H")
+         var x := subkey:GetValue(keyName+"_X")
+         var y := subkey:GetValue(keyName+"_Y")
+         if w == null .or. h == null .or. x == null .or. y == null
+            SaveLocation(name, size, point)
+            RETURN
+         endif
+         TRY
+            // ensure visible
+            var iX := (int) x
+            var iY := (int) y
+            var iW := (int) w
+            var iH := (int) h
+            var screens := Screen.AllScreens
+            var ok      := false
+            foreach oScreen as Screen in screens
+               if iX >= oScreen:Bounds:Left .and. iX+iW <= oScreen:Bounds:Right .and. ;
+                  iY >= oScreen:Bounds:Top  .and. iY+iH <= oScreen:Bounds:Bottom
+                  ok := true
+               endif
+            next
+            if ok
+               size  := System.Drawing.Size{ iW, iH}
+               point := System.Drawing.Point{ iX, iY}
+            endif            
+            
+         CATCH e as Exception
+            subkey:DeleteValue(keyName+"_W")
+            subkey:DeleteValue(keyName+"_H")
+            subkey:DeleteValue(keyName+"_X")
+            subkey:DeleteValue(keyName+"_X")
+         END TRY
+         subkey:Close()
+         RETURN
 END CLASS
 

@@ -37,7 +37,7 @@ namespace XSharp.Project
         public override int Open(bool newFile, bool openWith, ref Guid logicalView, IntPtr docDataExisting, out IVsWindowFrame windowFrame, WindowFrameShowAction windowFrameAction)
         {
             windowFrame = null;
-            Guid editorType = VSConstants.LOGVIEWID_Primary;
+            Guid editorType = logicalView;
             string fullPath = this.GetFullPathForDocument();
             switch (System.IO.Path.GetExtension(fullPath).ToLower())
             {
@@ -49,10 +49,7 @@ namespace XSharp.Project
                 case ".ch":
                     // No idea why but testwindow needs this. Other windows not ! In fact specifying this for other windows
                     // has the opposite effect that files will NOT be opened correctly
-                    if (Environment.StackTrace.Contains("VisualStudio.TestWindow"))
-                    {
-                        editorType = GuidStrings.guidSourcecodeEditorFactory;
-                    }
+                    editorType = GuidStrings.guidSourcecodeEditorFactory;
                     break;
                 case ".xsfrm":
                 case ".vnfrm":
@@ -60,7 +57,10 @@ namespace XSharp.Project
                     break;
                 case ".xsmnu":
                 case ".vnmnu":
-                    editorType = GuidStrings.guidVOMenuEditorFactory;
+                    if (logicalView == VSConstants.LOGVIEWID.Code_guid)
+                        editorType = VSConstants.LOGVIEWID.TextView_guid;
+                    else
+                        editorType = GuidStrings.guidVOMenuEditorFactory;
                     break;
                 case ".xsdbs":
                 case ".vndbs":
@@ -71,7 +71,6 @@ namespace XSharp.Project
                     editorType = GuidStrings.guidVOFieldSpecEditorFactory;
                     break;
             }
-
             return base.Open(newFile, openWith, 0, ref editorType, null, ref logicalView, docDataExisting, out windowFrame, windowFrameAction);
         }
     }

@@ -4,7 +4,7 @@ $if$ ($targetframeworkversion$ >= 3.5)USING System.Linq
 $endif$USING System.Text
 
 
-Procedure Main
-    ? "Hello World! Today is ",ToDay()
+FUNCTION Start() AS VOID STRICT
+    ? "Hello World! Today is ",Today()
     WAIT
-	RETURN
+	RETURN	

@@ -196,6 +196,10 @@ namespace XSharp.Project
     [ProvideEditorLogicalView(typeof(VOMenuEditorFactory), VSConstants.LOGVIEWID.Designer_string)]
     [ProvideEditorLogicalView(typeof(VODBServerEditorFactory), VSConstants.LOGVIEWID.Designer_string)]
     [ProvideEditorLogicalView(typeof(VOFieldSpecEditorFactory), VSConstants.LOGVIEWID.Designer_string)]
+    [ProvideEditorLogicalView(typeof(VOFormEditorFactory), VSConstants.LOGVIEWID.Code_string)]
+    [ProvideEditorLogicalView(typeof(VOMenuEditorFactory), VSConstants.LOGVIEWID.Code_string)]
+    [ProvideEditorLogicalView(typeof(VODBServerEditorFactory), VSConstants.LOGVIEWID.Code_string)]
+    [ProvideEditorLogicalView(typeof(VOFieldSpecEditorFactory), VSConstants.LOGVIEWID.Code_string)]
     // Vulcan Binaries
     [ProvideEditorExtension(typeof(VOFormEditorFactory), ".vnfrm", 0x42, DefaultName = "XSharp VO Form Editor", NameResourceID = 80110)]
     [ProvideEditorExtension(typeof(VOMenuEditorFactory), ".vnmnu", 0x42, DefaultName = "XSharp VO Menu Editor", NameResourceID = 80111)]
@@ -204,6 +208,13 @@ namespace XSharp.Project
 
     [SingleFileGeneratorSupportRegistrationAttribute(typeof(XSharpProjectFactory))]  // 5891B814-A2E0-4e64-9A2F-2C2ECAB940FE"
     [Guid(GuidStrings.guidXSharpProjectPkgString)]
+    [ProvideUIContextRule(GuidStrings.guidXSharpVOFormEditor,
+        name: "Supported Files",
+        expression: "XSharp",
+        termNames: new[] { "XSharp","XSharp" },
+        termValues: new[] { "HierSingleSelectionName:.xsfrm$", "HierSingleSelectionName:.vnfrm$" })]
+
+
     [ProvideMenuResource("Menus.ctmenu", 1)]
     //[ProvideBindingPath]        // Tell VS to look in our path for assemblies
     public sealed class XSharpProjectPackage : AsyncProjectPackage, IOleComponent,
@@ -218,12 +229,16 @@ namespace XSharp.Project
         private XSharpDocumentWatcher _documentWatcher;
         private Microsoft.VisualStudio.Package.LanguageService _xsLangService;
         private IVsTextManager4 _txtManager;
+        private IErrorList _errorList = null;
+        private ITaskList _taskList = null;
 
         // =========================================================================================
         // Properties
         // =========================================================================================
 
         internal UIThread UIThread => _uiThread;
+        internal ITaskList TaskList => _taskList;
+        internal IErrorList ErrorList => _errorList;
 
         /// <summary>
         /// Gets the singleton XSharpProjectPackage instance.
@@ -342,6 +357,10 @@ namespace XSharp.Project
             shell.GetProperty((int)__VSSPROPID5.VSSPROPID_ReleaseVersion, out vers);
 
             VsVersion = vers.ToString();
+            _errorList = await GetServiceAsync(typeof(SVsErrorList)) as IErrorList;
+            _taskList = await GetServiceAsync(typeof(SVsTaskList)) as ITaskList;
+
+
         }
 
         internal static string VsVersion;
@@ -436,12 +455,17 @@ namespace XSharp.Project
                     OLEMSGICON.OLEMSGICON_CRITICAL, 0, out result));
             }
 
-
-
-
-
-
-
+        }
+        public void SetCommentTokens()
+        {
+            var commentTokens = _taskList.CommentTokens;
+            var tokens = new List< XSharpModel.XCommentToken>();
+            foreach (var token in commentTokens)
+            {
+                var cmttoken = new XSharpModel.XCommentToken(token.Text,  (int)token.Priority );
+                tokens.Add(cmttoken);
+            }
+            XSharpModel.XSolution.SetCommentTokens(tokens);
         }
 
         /// <summary>
@@ -572,12 +596,13 @@ namespace XSharp.Project
         public int OnShellPropertyChange(int propid, object var)
         {
             // A modal dialog has been opened. Editor Options ?
-            if (propid == (int)__VSSPROPID4.VSSPROPID_IsModal && var is Boolean)
+            if (propid == (int)__VSSPROPID4.VSSPROPID_IsModal && var is bool)
             {
                 // when modal window closes
-                if (!(Boolean) var)
+                if (!(bool) var)
                 {
                     CommandFilter.InvalidateOptions();
+                    SetCommentTokens();
                 }
             }
             return VSConstants.S_OK;

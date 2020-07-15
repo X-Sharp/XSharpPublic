@@ -37,17 +37,14 @@ BEGIN NAMESPACE XSharpModel
       STATIC METHOD GetProperties(SELF type as IXType) AS IXMember[]
          return type:Members:Where( { m => m.Kind:IsProperty()}):ToArray()
          
-      STATIC METHOD GetMember(SELF type as IXType, strName as STRING) AS IXMember[]
-         RETURN type:GetMembers(strName):ToArray()
+      STATIC METHOD GetMethods(SELF type AS IXType, strName AS STRING) AS IXMember[]
+         RETURN type:GetMembers(strName, TRUE):Where( { m=> m.Kind:IsMethod()}):ToArray()
          
-      STATIC METHOD GetMethod(SELF type as IXType, strName as STRING) AS IXMember[]
-         return type:GetMembers(strName):Where( { m=> m.Kind:IsMethod()}):ToArray()
+      STATIC METHOD GetProperties(SELF type as IXType, strName as STRING) AS IXMember[]
+         RETURN type:GetMembers(strName, TRUE):Where( { m=> m.Kind:IsProperty()}):ToArray()
          
-      STATIC METHOD GetProperty(SELF type as IXType, strName as STRING) AS IXMember[]
-         return type:GetMembers(strName):Where( { m=> m.Kind:IsProperty()}):ToArray()
-         
-      STATIC METHOD GetField(SELF type as IXType, strName as STRING) AS IXMember[]
-         return type:GetMembers(strName):Where( { m=> m.Kind:IsField()}):ToArray()
+      STATIC METHOD GetFields(SELF type AS IXType, strName AS STRING) AS IXMember[]
+         RETURN type:GetMembers(strName, TRUE):Where( { m=> m.Kind:IsField()}):ToArray()
          
       STATIC METHOD GetXmlSignature(SELF tm as IXType) AS STRING
          // todo: need to handle type parameters !

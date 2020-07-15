@@ -16,20 +16,26 @@ BEGIN NAMESPACE XSharpModel
 		STATIC PRIVATE _projects AS ConcurrentDictionary<STRING, XProject>
       STATIC PRIVATE _fileName   AS STRING
       STATIC PRIVATE _sqldb      AS STRING
+      STATIC PRIVATE _commentTokens AS List<XCommentToken>
       STATIC PROPERTY IsClosing  AS LOGIC AUTO
       
-      PUBLIC STATIC PROPERTY FileName as STRING get _fileName
-
-		PUBLIC STATIC OutputWindow AS IOutputWindow
+      STATIC PROPERTY FileName AS STRING GET _fileName
+      STATIC PROPERTY CommentTokens AS IList<XCommentToken> GET _commentTokens
+      STATIC OutputWindow AS IOutputWindow
 		// Methods
-		STATIC CONSTRUCTOR
+      STATIC CONSTRUCTOR
          _projects := ConcurrentDictionary<STRING, XProject>{StringComparer.OrdinalIgnoreCase}
-			OutputWindow := DummyOutputWindow{}
+	 OutputWindow := DummyOutputWindow{}
          OutputWindow:DisplayOutPutMessage("XSolution Loaded")
          CreateOrphanedFilesProject()
          IsClosing   := FALSE
+         _commentTokens := List < XCommentToken >{}
 
-		STATIC METHOD WriteOutputMessage(message AS STRING) AS VOID
+      STATIC METHOD SetCommentTokens( aTokens AS IList<XCommentToken>) AS VOID
+         _commentTokens:Clear()
+         _commentTokens:AddRange(aTokens)
+
+      STATIC METHOD WriteOutputMessage(message AS STRING) AS VOID
          IF XSettings.EnableLogging
 			   OutputWindow:DisplayOutPutMessage(message)
          ENDIF
@@ -91,8 +97,9 @@ BEGIN NAMESPACE XSharpModel
          RETURN lOk
          
 
-		STATIC METHOD Close() AS VOID
-			WriteOutputMessage("XModel.Solution.CloseSolution()")
+	STATIC METHOD Close() AS VOID
+      IF IsOpen
+	      WriteOutputMessage("XModel.Solution.CloseSolution()")
          ModelWalker.Suspend()
          ModelWalker.GetWalker():StopThread()
          XDatabase.CloseDatabase(_sqldb)
@@ -106,8 +113,8 @@ BEGIN NAMESPACE XSharpModel
 			SystemTypeController.Clear()
 			_orphanedFilesProject := NULL
          _fileName  := NULL
-         GC.Collect()
-
+      ENDIF
+      
 		STATIC METHOD FileClose(fileName AS STRING) AS VOID
 			IF FindFile(fileName):Project == _orphanedFilesProject
 				_orphanedFilesProject:RemoveFile(fileName)

@@ -15,25 +15,39 @@ BEGIN NAMESPACE XSharpModel
    STATIC CLASS TypeMemberExtensions
       
       STATIC METHOD GetProtoType(SELF tm as IXMember) AS STRING
-         VAR vars := ""
-         VAR desc := ""
+         VAR vars := StringBuilder{}
+         IF tm:TypeParameters?:Count > 0
+            VAR delim := "<"
+            FOREACH VAR typeParam IN tm:TypeParameters
+               vars:Append(delim)
+               delim := ","
+               vars:Append(typeParam)
+            NEXT
+            vars:Append(">")
+         ENDIF
          IF tm:Kind:HasParameters()
             IF ( tm:Kind == Kind.@@Constructor )
-               vars := "{" + tm:ParameterList + "}"
+               vars:Append("{")
+               vars:Append(tm:ParameterList)
+               vars:Append("}")
             ELSE
-               vars := "(" + tm:ParameterList + ")"
+               vars:Append("(")
+               vars:Append(tm:ParameterList)
+               vars:Append(")")
             ENDIF 
          ENDIF
          IF tm:Kind == Kind.VODefine .OR. tm:Kind == Kind.EnumMember
-            vars := " "+tm:Value
+            vars:Append(" "+tm:Value)
          ENDIF
+         
          IF ( tm:Kind == Kind.@@Constructor )
-            desc := tm:DeclaringType + vars
+            vars:Insert(0, tm:DeclaringType )
          ELSE
-            desc := tm:Name + vars
+            vars:Insert(0, tm:Name )
          ENDIF 
-         desc := desc +  XLiterals.AsKeyWord + tm:TypeName
-         RETURN desc
+         vars:Append(XLiterals.AsKeyWord)
+         vars:Append(tm:TypeName)
+         RETURN vars:ToString()
       
       
       STATIC METHOD GetDescription(SELF tm AS IXMember) AS STRING
@@ -92,6 +106,9 @@ BEGIN NAMESPACE XSharpModel
          sb:Append(prefix)
          sb:Append(tm:ParentType:FullName)
          sb:Append("."+name)
+         IF tm:TypeParameters:Count > 0
+            sb:Append("``"+tm:TypeParameters:Count:ToString())
+         ENDIF
          IF tm:Parameters:Count > 0
             sb:Append( "(")
             FOR var iParam := 0 to tm:Parameters:Count-1
@@ -99,14 +116,45 @@ BEGIN NAMESPACE XSharpModel
                IF iParam > 0
                   sb:Append(",")
                ENDIF
-               if param is XParameterReference var xrefpar
-                  sb:Append(xrefpar:OriginalTypeName)
-               else
-                  sb:Append(param:TypeName)
+               IF param IS XParameterReference VAR xrefpar
+                  // check if the original parameter contains a type reference
+                  VAR typeName := xrefpar:OriginalTypeName
+                  VAR result   := typeName
+                  IF typeName:Contains("<")
+                     VAR nPos := typeName:IndexOf("<")
+                     result   := typeName:Substring(0, nPos)
+                     typeName := typeName:Substring(nPos+1):Replace(">","")
+                     nPos := result:IndexOf("`")
+                     IF  nPos > 0
+                        result := result:Substring(0, nPos)
+                     ENDIF
+                     VAR vars := typeName:Split(",":ToCharArray())
+                     VAR delim := "{"
+                     FOREACH VAR parName IN vars
+                        result += delim
+                        delim  := ","
+                        nPos := tm:TypeParameters:IndexOf(parName)
+                        IF nPos >= 0
+                           result += "``"+nPos:ToString()
+                        ELSE
+                           result += parName
+                        ENDIF
+                     NEXT
+                     result += "}"
+                     sb:Append(result)
+                  ELSE
+                     VAR nPos := tm:TypeParameters:IndexOf(typeName)
+                     IF nPos >= 0
+                        sb:Append("``"+nPos:ToString())
+                     ELSE
+                        sb:Append(typeName)
+                     ENDIF
+                  ENDIF
                endif
             NEXT
             sb:Append(")")
          ENDIF
+         sb:Replace('&','@')  // Ampersand is not allowed in the string
          RETURN sb:ToString()
          
    END CLASS

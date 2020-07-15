@@ -187,15 +187,16 @@ BEGIN NAMESPACE XSharpModel
          ENDIF         
          OVERRIDE METHOD Resolve() AS VOID         
             IF SELF:_methoddef != NULL
+               // Add Generic parameters first so have that info when processing the parameters
+               IF _methoddef:HasGenericParameters
+                  SELF:AddTypeParameters(_methoddef:GenericParameters)
+               ENDIF
                IF _methoddef:HasParameters
                   IF SELF:CallingConvention = CallingConvention.Clipper
                      SELF:AddParameters(_ccAttrib)
                   ELSE
                      SELF:AddParameters(_methoddef:Parameters)
                   ENDIF
-               ENDIF
-               IF _methoddef:HasGenericParameters
-                  SELF:AddTypeParameters(_methoddef:GenericParameters)
                ENDIF
                SUPER:Resolve()
             ENDIF
@@ -264,7 +265,6 @@ BEGIN NAMESPACE XSharpModel
                parRef:ParamType := ParamType.As
                parRef:OriginalTypeName := "XSharp.__Usual"
                SELF:_signature:Parameters:Add(parRef)
-               
             NEXT
          endif
          
@@ -292,7 +292,14 @@ BEGIN NAMESPACE XSharpModel
             if defValue != NULL
                parRef:Value := defValue:ToString()
             ENDIF
+            IF parRef:OriginalTypeName:Contains("&")
+               parType := ParamType.Ref
+            ENDIF
             parRef:ParamType := parType
+            IF parRef:OriginalTypeName:Contains("`")
+               VAR count := SELF:TypeParameters:Count
+               parRef:TypeName := parRef:OriginalTypeName:Replace("`"+count:ToString(),"")
+            ENDIF            
             SELF:_signature:Parameters:Add(parRef)
          NEXT
          RETURN
@@ -357,7 +364,10 @@ BEGIN NAMESPACE XSharpModel
          return result
          
 
-      METHOD AddTypeParameters(aPars as Mono.Collections.Generic.Collection<GenericParameter>) AS VOID
+      METHOD AddTypeParameters(aPars AS Mono.Collections.Generic.Collection<GenericParameter>) AS VOID
+         FOREACH typeParam AS Mono.Cecil.GenericParameter IN aPars
+            SELF:_signature:TypeParameters:Add(typeParam:Name)
+         NEXT
          RETURN
 
 //

@@ -204,7 +204,7 @@ namespace Microsoft.VisualStudio.Project
                 return;
             }
 
-            String currentValue = item.GetMetadataValue(attributeName);
+            String currentValue = item?.GetMetadataValue(attributeName);
             bool changed;
             if (String.IsNullOrEmpty(currentValue) && String.IsNullOrEmpty(attributeValue))
                 changed = false;

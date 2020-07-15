@@ -10,48 +10,56 @@ BEGIN NAMESPACE XSharpModel
 
     STATIC CLASS TypeExtensions
         // Fields
-        STATIC INTERNAL lookupTable AS IDictionary<STRING, STRING>
+        STATIC INTERNAL SystemToXSharp AS IDictionary<STRING, STRING>
+        STATIC INTERNAL XSharpToSystem AS IDictionary<STRING, STRING>
 
         // Methods
-        STATIC  CONSTRUCTOR()
-            lookupTable  := Dictionary<STRING, STRING>{StringComparer.OrdinalIgnoreCase}
-            lookupTable:Add("System.Boolean", "LOGIC")
-            lookupTable:Add("System.Byte", "BYTE")
-            lookupTable:Add("System.String", "STRING")
-            lookupTable:Add("System.Char", "CHAR")
-            lookupTable:Add("System.Double", "REAL8")
-            lookupTable:Add("System.Int16", "SHORT")
-            lookupTable:Add("System.Int32", "INT")
-            lookupTable:Add("System.Int64", "INT64")
-            lookupTable:Add("System.Object", "OBJECT")
-            lookupTable:Add("System.Single", "REAL4")
-            lookupTable:Add("System.UInt16", "WORD")
-            lookupTable:Add("System.UInt32", "DWORD")
-            lookupTable:Add("System.UInt64", "UINT64")
-            lookupTable:Add("System.Void", "VOID")
-            lookupTable:Add("Vulcan._CodeBlock", "CODEBLOCK")
-            lookupTable:Add("Vulcan.__Array", "UINT64")
-            lookupTable:Add("Vulcan.__Psz", "PSZ")
-            lookupTable:Add("Vulcan.__Symbol", "SYMBOL")
-            lookupTable:Add("Vulcan.__Usual", "USUAL")
-            lookupTable:Add("Vulcan.__VODate", "DATE")
-            lookupTable:Add("Vulcan.__VOFloat", "FLOAT")
-            lookupTable:Add("Vulcan.__WinBool", "LOGIC")
-            lookupTable:Add("XSharp._CodeBlock", "CODEBLOCK")
-            lookupTable:Add("XSharp.__Array", "ARRAY")
-            lookupTable:Add("XSharp.__Psz", "PSZ")
-            lookupTable:Add("XSharp.__Symbol", "SYMBOL")
-            lookupTable:Add("XSharp.__Usual", "USUAL")
-            lookupTable:Add("XSharp.__VODate", "DATE")
-            lookupTable:Add("XSharp.__VOFloat", "FLOAT")
-            lookupTable:Add("XSharp.__Date", "DATE")
-            lookupTable:Add("XSharp.__Float", "FLOAT")
-            lookupTable:Add("XSharp.__WinBool", "LOGIC")
+        STATIC CONSTRUCTOR()
+            SystemToXSharp  := Dictionary<STRING, STRING>{StringComparer.OrdinalIgnoreCase}
+            SystemToXSharp:Add("System.Boolean", "LOGIC")
+            SystemToXSharp:Add("System.Byte", "BYTE")
+            SystemToXSharp:Add("System.String", "STRING")
+            SystemToXSharp:Add("System.Char", "CHAR")
+            SystemToXSharp:Add("System.Double", "REAL8")
+            SystemToXSharp:Add("System.Int16", "SHORT")
+            SystemToXSharp:Add("System.Int32", "INT")
+            SystemToXSharp:Add("System.Int64", "INT64")
+            SystemToXSharp:Add("System.Object", "OBJECT")
+            SystemToXSharp:Add("System.Single", "REAL4")
+            SystemToXSharp:Add("System.UInt16", "WORD")
+            SystemToXSharp:Add("System.UInt32", "DWORD")
+            SystemToXSharp:Add("System.UInt64", "UINT64")
+            SystemToXSharp:Add("System.Void", "VOID")
+            SystemToXSharp:Add("XSharp._CodeBlock", "CODEBLOCK")
+            SystemToXSharp:Add("XSharp.__Array", "ARRAY")
+            SystemToXSharp:Add("XSharp.__Psz", "PSZ")
+            SystemToXSharp:Add("XSharp.__Symbol", "SYMBOL")
+            SystemToXSharp:Add("XSharp.__Usual", "USUAL")
+            SystemToXSharp:Add("XSharp.__VODate", "DATE")
+            SystemToXSharp:Add("XSharp.__VOFloat", "FLOAT")
+            SystemToXSharp:Add("XSharp.__Date", "DATE")
+            SystemToXSharp:Add("XSharp.__Float", "FLOAT")
+            SystemToXSharp:Add("XSharp.__WinBool", "LOGIC")
+            SystemToXSharp:Add("Vulcan._CodeBlock", "CODEBLOCK")
+            SystemToXSharp:Add("Vulcan.__Array", "ARRAY")
+            SystemToXSharp:Add("Vulcan.__Psz", "PSZ")
+            SystemToXSharp:Add("Vulcan.__Symbol", "SYMBOL")
+            SystemToXSharp:Add("Vulcan.__Usual", "USUAL")
+            SystemToXSharp:Add("Vulcan.__VODate", "DATE")
+            SystemToXSharp:Add("Vulcan.__VOFloat", "FLOAT")
+            SystemToXSharp:Add("Vulcan.__WinBool", "LOGIC")
+            XSharpToSystem  := Dictionary<STRING, STRING>{StringComparer.OrdinalIgnoreCase}
+            FOREACH VAR pair IN SystemToXSharp
+               IF ! XSharpToSystem:ContainsKey(pair:Value)
+                  XSharpToSystem:Add(pair:Value, pair:Key)
+               ENDIF
+            NEXT
 
         STATIC METHOD GetSystemTypeName( SELF typename AS STRING, lXSharpNames AS LOGIC) AS STRING
             //
 			// Todo: Rename to XSharp type names
 			//
+            LOCAL lHandled := TRUE AS LOGIC
             IF lXSharpNames
                  SWITCH typename:ToLower()
                     CASE "array"
@@ -66,6 +74,8 @@ BEGIN NAMESPACE XSharpModel
                         RETURN "XSharp.__Symbol"
                     CASE "usual"
                         RETURN "XSharp.__Usual"
+                     OTHERWISE
+                        lHandled := FALSE
                 END SWITCH
 
              ELSE
@@ -82,52 +92,41 @@ BEGIN NAMESPACE XSharpModel
                         RETURN "Vulcan.__Symbol"
                     CASE "usual"
                         RETURN "Vulcan.__Usual"
+                     OTHERWISE
+                        lHandled := FALSE
                 END SWITCH
-             ENDIF
+            ENDIF
+            IF ! lHandled .AND. XSharpToSystem:ContainsKey(typename)
+                  typename := XSharpToSystem[typename]
+            ENDIF
             RETURN typename
 
-        STATIC METHOD GetXSharpTypeName( SELF sysType AS System.Type) AS STRING
-            LOCAL fullName AS STRING
-            LOCAL suffix AS STRING
-            fullName := sysType:FullName
-            IF (fullName == NULL)
-                fullName := sysType:Name
+
+    STATIC METHOD GetXSharpTypeName( SELF typeName AS STRING) AS STRING
+            VAR pos := typeName:IndexOf("<")
+            IF pos > 0
+               VAR lhs := typeName:Substring(0, pos)
+               VAR rhs := typeName:Substring(pos+1)
+               pos := lhs:IndexOf("`")
+               IF pos > 0
+                  lhs := lhs:Substring(0,pos)
+               ENDIF
+               VAR parts := rhs:Split(",>":ToCharArray(),StringSplitOptions.RemoveEmptyEntries)
+               VAR delim := "<"
+               FOREACH VAR part IN parts
+                  lhs += delim
+                  delim := ","
+                  lhs += part:GetXSharpTypeName()
+               NEXT
+               lhs += ">"
+               typeName := lhs
+            ELSE
+               IF (SystemToXSharp:ContainsKey(typeName))
+                   typeName := SystemToXSharp[typeName]
+               ENDIF
             ENDIF
-            suffix := ""
-            IF fullName:EndsWith("[]")
-                fullName := fullName:Substring(0, (fullName:Length - 2))
-                suffix := "[]"
-            ENDIF
-            IF fullName:EndsWith("&")
-                fullName := fullName:Substring(0, (fullName:Length - 1))
-                suffix := ""
-            ENDIF
-            IF (lookupTable:ContainsKey(fullName))
-                //
-                fullName := lookupTable:Item[fullName]
-            ENDIF
-            // Maybe it's a Raw format ?
-            LOCAL genMarker := fullName:IndexOf('`') AS INT
-            IF (genMarker > -1)
-                // First extract the type
-                LOCAL genTypeName := fullName:Substring(0, genMarker) AS STRING
-                VAR genericString := "<"
-                VAR GenericTypeArguments := sysType:GetGenericArguments()
-                LOCAL first := TRUE AS LOGIC
-                FOREACH VAR genArg IN GenericTypeArguments
-                    IF first
-                        genericString += genArg:Name
-                        first := FALSE
-                    ELSE
-                        genericString += "," + genArg:Name
-                    ENDIF
-                NEXT
-                //
-                genericString += ">"
-                fullName := genTypeName + genericString
-            ENDIF
-            RETURN fullName+ suffix
-            
+            RETURN typeName         
+
     STATIC METHOD GetXSharpTypeName( SELF sysType AS Mono.Cecil.TypeReference) AS STRING
             LOCAL fullName AS STRING
             LOCAL suffix AS STRING
@@ -144,9 +143,9 @@ BEGIN NAMESPACE XSharpModel
                 fullName := fullName:Substring(0, (fullName:Length - 1))
                 suffix := ""
             ENDIF
-            IF (lookupTable:ContainsKey(fullName))
+            IF (SystemToXSharp:ContainsKey(fullName))
                 //
-                fullName := lookupTable:Item[fullName]
+                fullName := SystemToXSharp[fullName]
             ENDIF
             // Maybe it's a Raw format ?
             LOCAL genMarker := fullName:IndexOf('`') AS INT

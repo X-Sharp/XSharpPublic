@@ -184,10 +184,7 @@ namespace XSharp.Project
                 uint id = 0;
                 string xml = "";
                 var result = file.ParseMemberSignature(sig, out id);
-                if (result >= 0 && id != 0)
-                {
-                    result = file.GetMemberXML(id, out xml);
-                }
+                result = file.GetMemberXML(id, out xml);
                 summary = getSummary(file, xml, out returns, out remarks);
             }
             return summary;
@@ -311,10 +308,7 @@ namespace XSharp.Project
                     uint id = 0;
                     string xml = "";
                     var result = file.ParseMemberSignature(sig, out id);
-                    if (result >= 0 && id != 0)
-                    {
-                        result = file.GetMemberXML(id, out xml);
-                    }
+                    result = file.GetMemberXML(id, out xml);
                     getParameterInfo(file, xml, names, descriptions);
                 }
             }

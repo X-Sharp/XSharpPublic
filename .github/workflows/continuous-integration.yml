@@ -4,7 +4,7 @@ name: ContinuousBuild
 on:
   schedule:
     #uses the POSIX cron syntax. The below runs every 10 minutes
-    - cron: '*/10 * * * *'
+    - cron: '*/5 * * * *'
 jobs:
   build:
     name: BuildRoslyn

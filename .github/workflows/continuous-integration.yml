@@ -19,5 +19,5 @@ jobs:
     steps:
       - uses: actions/checkout@master #Clone the repository code at master
       - name: RestoreRoslyn
-        run: dir
+        run: ./Restore.cmd 
         working-directory: ${{env.RoslynDir}} #we do this in the roslyn subdirectory

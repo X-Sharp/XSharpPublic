@@ -27,6 +27,7 @@ jobs:
       - name: RestoreRoslyn
         run: ./Restore.cmd
         working-directory: ${{env.RoslynDir}} #we do this in the roslyn subdirectory
+        continue-on-error: true
       - name: BuildRoslyn
         run: ./Build.cmd
         working-directory: ${{env.RoslynDir}} #we do this in the roslyn subdirectory

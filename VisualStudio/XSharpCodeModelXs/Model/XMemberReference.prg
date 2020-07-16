@@ -283,6 +283,8 @@ BEGIN NAMESPACE XSharpModel
                parType := ParamType.Out
             ELSEIF oPar:IsIn
                parType := ParamType.As
+            ELSE
+               parType := ParamType.As               
             ENDIF
             if oPar:HasCustomAttributes
                defValue := SELF:DecodeCustomAttributes(oPar:CustomAttributes)
@@ -292,7 +294,7 @@ BEGIN NAMESPACE XSharpModel
             if defValue != NULL
                parRef:Value := defValue:ToString()
             ENDIF
-            IF parRef:OriginalTypeName:Contains("&")
+            IF parRef:OriginalTypeName:Contains("&") .and. parType == ParamType.As    
                parType := ParamType.Ref
             ENDIF
             parRef:ParamType := parType

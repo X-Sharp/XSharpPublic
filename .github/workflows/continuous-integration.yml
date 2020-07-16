@@ -22,6 +22,8 @@ jobs:
         uses: warrenbuckley/Setup-MSBuild@v1
       - name: Setup NuGet
         uses: NuGet/setup-nuget@v1.0.2
+      - name: Setup VS dev environment
+        uses: seanmiddleditch/gha-setup-vsdevenv@v1
       - name: RestoreRoslyn
         run: ./Restore.cmd 
         working-directory: ${{env.RoslynDir}} #we do this in the roslyn subdirectory

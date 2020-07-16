@@ -2063,10 +2063,11 @@ signature             : Id=identifier
          ENDIF
          Consume()   // LParen
          VAR aResult  := List<IXVariable>{}
-         LOCAL defaultExpr AS IList<IToken>
          LOCAL cond AS DelEndToken
          cond := { token => IIF (lBracketed, token == XSharpLexer.RBRKT, token == XSharpLexer.RPAREN ) }
          DO WHILE !cond(SELF:La1) .AND. ! SELF:Eos()
+            LOCAL defaultExpr := NULL AS IList<IToken>
+
             VAR start := SELF:Lt1
             VAR atts := SELF:TokensAsString(ParseAttributes())
             VAR sId   := ""

@@ -1,0 +1,14 @@
+#See https://docs.github.com/en/actions/configuring-and-managing-workflows/configuring-a-workflow for help
+name: test-attempt
+#Test when this build is activated. This can be once x time period
+on:
+  schedule:
+    #uses the POSIX cron syntax. The below runs every 10 minutes
+    - cron: '*/10 * * * *'
+jobs:
+  build:
+    name: TestingName
+    runs-on: windows-latest #Specify the OS to execute on
+    steps:
+      - name: Hello world
+        run: echo 'hi is this working?'

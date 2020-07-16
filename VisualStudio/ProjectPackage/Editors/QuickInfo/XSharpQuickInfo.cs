@@ -18,6 +18,7 @@ using System.Windows.Media;
 using XSharpModel;
 using System.Windows.Controls;
 using Microsoft.VisualStudio.Text.Classification;
+//using Microsoft.VisualStudio.Text.Adornments;
 
 namespace XSharp.Project
 {
@@ -424,9 +425,7 @@ namespace XSharp.Project
                     temp.Foreground = txtBrush;
                     content.Add(temp);
 
-                    temp = new Run(" ( " + _type.Location + " )");
-                    temp.Foreground = this.kwBrush;
-                    content.Add(temp);
+                    
                     //
                     string returns;
                     string remarks;
@@ -457,7 +456,12 @@ namespace XSharp.Project
                             content.Add(temp);
                         }
                     }
-
+                    temp = new Run("\rLocation: ");
+                    temp.Foreground = this.kwBrush;
+                    content.Add(temp);
+                    temp = new Run( _type.Location);
+                    temp.Foreground = this.txtBrush;
+                    content.Add(temp);
                     return content;
                 }
 
@@ -553,6 +557,10 @@ namespace XSharp.Project
                     temp = new Run(this.Name);
                     temp.Foreground = txtBrush;
                     content.Add(temp);
+                    // Todo: For Vs 2017 and later add wrapping
+                    // In Vs2017 and later we can put this in a container to handle wrapping
+                    //var element = new ContainerElement(ContainerElementStyle.Wrapped, vars);
+
                     content.AddRange(vars);
                     //
                     if (!String.IsNullOrEmpty(this.Value))
@@ -718,10 +726,6 @@ namespace XSharp.Project
                         temp.Foreground = this.txtBrush;
                         content.Add(temp);
                     }
-                    temp = new Run(" ( " + typeMember.Location + " )");
-                    temp.Foreground = this.kwBrush;
-                    content.Add(temp);
-
 
                     string returns;
                     string remarks;
@@ -750,7 +754,12 @@ namespace XSharp.Project
                             content.Add(temp);
                         }
                     }
-
+                    temp = new Run("\rLocation: ");
+                    temp.Foreground = this.kwBrush;
+                    content.Add(temp);
+                    temp = new Run(typeMember.Location);
+                    temp.Foreground = this.txtBrush;
+                    content.Add(temp);
                     return content;
                 }
             }

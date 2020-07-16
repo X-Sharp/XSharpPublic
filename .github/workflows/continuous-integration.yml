@@ -10,7 +10,5 @@ jobs:
     name: BuildRoslyn
     runs-on: windows-latest #Specify the OS to execute on
     steps:
-      - name: FindRoslynDir
-        run: cd Roslyn
-      - name: RestoreRoslyn
-        run: Restore.cmd
+      - name: figureoutDirectory
+        run: dir

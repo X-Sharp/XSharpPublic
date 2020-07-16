@@ -29,5 +29,5 @@ jobs:
         working-directory: ${{env.RoslynDir}} #we do this in the roslyn subdirectory
         continue-on-error: true
       - name: BuildRoslyn
-        run: ./Build.cmd
+        run: msbuild Compilers.sln
         working-directory: ${{env.RoslynDir}} #we do this in the roslyn subdirectory

@@ -9,9 +9,14 @@ on:
     branches: 
       - master
 jobs:
-  build:
+  job1:
     name: BuildRoslyn
     runs-on: windows-latest #Specify the OS to execute on
+    env:
+      RoslynDir: ./Roslyn
+      XSharpDir: ./XSharp
+    
     steps:
-      - name: figureoutDirectory
-        run: dir
+      - name: RestoreRoslyn
+        run: Restore.cmd
+        working-directory: ${{env.RoslynDir}} #we do this in the roslyn subdirectory

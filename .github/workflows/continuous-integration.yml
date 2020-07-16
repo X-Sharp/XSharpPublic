@@ -26,6 +26,7 @@ jobs:
         uses: seanmiddleditch/gha-setup-vsdevenv@v1
       - name: RestoreRoslyn
         run: ./Restore.cmd
+        working-directory: ${{env.RoslynDir}} #we do this in the roslyn subdirectory
       - name: BuildRoslyn
         run: ./Build.cmd
         working-directory: ${{env.RoslynDir}} #we do this in the roslyn subdirectory

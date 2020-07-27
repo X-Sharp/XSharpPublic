@@ -366,9 +366,14 @@ namespace Microsoft.CodeAnalysis.CSharp
                 case CompilerOption.FloatConstants: // vo14
                     return CheckOption(option, VOFloatConstants, context, options);
 
-                case CompilerOption.FoxExposeLocals: // vo14
-                    return CheckOption(option, FoxExposeLocals, context, options);
+                case CompilerOption.UntypedAllowed: // vo15
+                    return CheckOption(option, VOUntypedAllowed, context, options);
 
+                case CompilerOption.DefaultClipperContructors: // vo16
+                    return CheckOption(option, VOClipperConstructors, context, options);
+
+                case CompilerOption.FoxExposeLocals: // fox2
+                    return CheckOption(option, FoxExposeLocals, context, options);
 
                 case CompilerOption.LateBinding:  // lb is handled in cde generation
                 case CompilerOption.SignedUnsignedConversion: // vo4

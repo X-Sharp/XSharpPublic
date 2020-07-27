@@ -158,6 +158,8 @@ namespace Microsoft.CodeAnalysis.CSharp
                 case CompilerOption.AllowMissingReturns:   // Vo9
                 case CompilerOption.ClipperIntegerDivisions:   // Vo12
                 case CompilerOption.FloatConstants: // vo14
+                case CompilerOption.UntypedAllowed: // v015
+                case CompilerOption.DefaultClipperContructors: // v016
                     return false;
 
             }

@@ -161,7 +161,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         protected string _fileName;
         protected bool _isScript;
         protected string _entryPoint;
-        protected List<PragmaOption> PragmaOptions;
+        internal List<PragmaOption> PragmaOptions;
         protected List<PragmaWarningDirectiveTriviaSyntax> PragmaWarnings;
 
         internal SyntaxEntities GlobalEntities;

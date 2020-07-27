@@ -1402,33 +1402,49 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     }
                 }
 
-                if (!context.Data.Partial && !context.Data.HasInstanceCtor && _options.VOClipperConstructors)
+                if (!context.Data.Partial && !context.Data.HasInstanceCtor && _options.HasOption(CompilerOption.DefaultClipperContructors, context, PragmaOptions))
                 {
+
+                    var hasComImport = false;
+                    foreach (var attlist in classdecl.AttributeLists)
+                    {
+                        for (int iAtt = 0; iAtt < attlist.Attributes.Count && ! hasComImport; iAtt++)
+                        {
+                            var att = attlist.Attributes[iAtt];
+                            if (XSharpString.Compare(att.Name.ToString(), "ComImport") == 0)
+                            { 
+                                hasComImport = true;
+                            }
+                        }
+                    }
                     //
                     // generate new class constructor
-                    // 
-                    var ctor = GenerateDefaultCtor(classdecl.Identifier, context);
-                    var newmembers = _pool.Allocate<MemberDeclarationSyntax>();
-                    newmembers.AddRange(classdecl.Members);
-                    if (ctor != null)
+                    //
+                    if (!hasComImport)
                     {
-                        newmembers.Add(ctor);
+                        var ctor = GenerateDefaultCtor(classdecl.Identifier, context);
+                        var newmembers = _pool.Allocate<MemberDeclarationSyntax>();
+                        newmembers.AddRange(classdecl.Members);
+                        if (ctor != null)
+                        {
+                            newmembers.Add(ctor);
+                        }
+                        classdecl = classdecl.Update(
+                            classdecl.AttributeLists,
+                            classdecl.Modifiers,
+                            classdecl.Keyword,
+                            classdecl.Identifier,
+                            classdecl.TypeParameterList,
+                            classdecl.BaseList,
+                            classdecl.ConstraintClauses,
+                            classdecl.OpenBraceToken,
+                            newmembers,
+                            classdecl.CloseBraceToken,
+                            classdecl.SemicolonToken);
+                        _pool.Free(newmembers);
+                        context.Put(classdecl);
+                        context.Data.HasInstanceCtor = true;
                     }
-                    classdecl = classdecl.Update(
-                        classdecl.AttributeLists,
-                        classdecl.Modifiers,
-                        classdecl.Keyword,
-                        classdecl.Identifier,
-                        classdecl.TypeParameterList,
-                        classdecl.BaseList,
-                        classdecl.ConstraintClauses,
-                        classdecl.OpenBraceToken,
-                        newmembers,
-                        classdecl.CloseBraceToken,
-                        classdecl.SemicolonToken);
-                    _pool.Free(newmembers);
-                    context.Put(classdecl);
-                    context.Data.HasInstanceCtor = true;
                 }
             }
         }

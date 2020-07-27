@@ -1338,7 +1338,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         protected override TypeSyntax _getMissingType()
         {
             TypeSyntax varType;
-            if (_options.HasOption(CompilerOption.UntypedAllowed, context, PragmaOptions))
+            if (_options.HasOption(CompilerOption.UntypedAllowed, (XSharpParserRuleContext) CurrentEntity, PragmaOptions))
                 varType = _usualType;
             else
                 varType = MissingType();
@@ -1366,6 +1366,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             var ctor = _syntaxFactory.ConstructorDeclaration(attributeLists, mods, id, pars, chain, body, null, null);
             ctor.XGenerated = true;
             _pool.Free(attributeLists);
+            ctor.XNode = classctx;
             return ctor;
         }
 

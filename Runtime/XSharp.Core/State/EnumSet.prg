@@ -138,7 +138,8 @@ BEGIN NAMESPACE XSharp
         MEMBER Near         := 134
         MEMBER MemoWidth    := 135
         MEMBER SqlAnsi      := 136
-        MEMBER Compatible   := 137
+        MEMBER Compatible   := 137 // Logic
+        MEMBER Safety       := 138  // Logic
 
         // Xbase++ defines
         MEMBER CharSet          := 160
@@ -477,6 +478,8 @@ DEFINE _SET_SQLANSI    := Set.SqlAnsi
 /// <include file="CoreComments.xml" path="Comments/Set/*" />
 DEFINE _SET_COMPATIBLE := Set.Compatible   
 
+/// <include file="CoreComments.xml" path="Comments/Set/*" />
+DEFINE _SET_SAFETY     := Set.Safety    
     
 #endregion
 
@@ -542,6 +545,7 @@ INTERNAL FUNCTION RuntimeStateDefaultValue(nSet AS XSharp.Set) AS OBJECT
         CASE Set.ForceOpt
         CASE Set.Trimfilename
         CASE Set.TextMerge    
+        CASE Set.Safety
 			RETURN TRUE
        
        CASE Set.DirCase

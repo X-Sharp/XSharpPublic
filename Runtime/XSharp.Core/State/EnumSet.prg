@@ -138,6 +138,7 @@ BEGIN NAMESPACE XSharp
         MEMBER Near         := 134
         MEMBER MemoWidth    := 135
         MEMBER SqlAnsi      := 136
+        MEMBER Compatible   := 137
 
         // Xbase++ defines
         MEMBER CharSet          := 160
@@ -456,6 +457,26 @@ DEFINE  _SET_COLLATION   := Set.Collation
 DEFINE  _SET_LEXICAL    := Set.Lexical
 
 
+// FoxPro defines
+
+
+/// <include file="CoreComments.xml" path="Comments/Set/*" />
+DEFINE _SET_TEXTMERGE  := Set.TextMerge    
+/// <include file="CoreComments.xml" path="Comments/Set/*" />
+DEFINE _SET_FULLPATH   := Set.FullPath     
+/// <include file="CoreComments.xml" path="Comments/Set/*" />
+DEFINE _SET_SPACE      := Set.Space        
+/// <include file="CoreComments.xml" path="Comments/Set/*" />
+DEFINE _SET_FOXCOLLATE := Set.FoxCollate   
+/// <include file="CoreComments.xml" path="Comments/Set/*" />
+DEFINE _SET_NEAR       := Set.Near         
+/// <include file="CoreComments.xml" path="Comments/Set/*" />
+DEFINE _SET_MEMOWIDTH  := Set.MemoWidth    
+/// <include file="CoreComments.xml" path="Comments/Set/*" />
+DEFINE _SET_SQLANSI    := Set.SqlAnsi      
+/// <include file="CoreComments.xml" path="Comments/Set/*" />
+DEFINE _SET_COMPATIBLE := Set.Compatible   
+
     
 #endregion
 
@@ -507,6 +528,7 @@ INTERNAL FUNCTION RuntimeStateDefaultValue(nSet AS XSharp.Set) AS OBJECT
         CASE Set.NullValue   
         CASE Set.Lexical
         CASE Set.HardCommit
+        CASE Set.Compatible
             RETURN FALSE
 
         CASE Set.Ansi           

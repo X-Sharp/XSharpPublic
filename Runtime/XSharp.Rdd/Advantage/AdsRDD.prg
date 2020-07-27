@@ -464,8 +464,8 @@ RETURN SELF:RecordMovement()
     // Date Length must be 8, Number are long enough to store Dot and Decs (if any), ...
 PROTECT OVERRIDE METHOD _checkFields(info AS RddFieldInfo) AS LOGIC
     // FieldName
-    info:Name := info:Name:ToUpper():Trim()
-    IF info:Name:Length > 10 
+    IF info:Name:Length > 10 .and. SELF:_TableType != ACE.ADS_ADT
+        info:Name := info:Name:ToUpper():Trim()
         info:Name := info:Name:Substring(0,10)
     ENDIF
     IF ! info:Validate()

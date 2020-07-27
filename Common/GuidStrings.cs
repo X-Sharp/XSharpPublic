@@ -36,6 +36,7 @@ namespace XSharp
         public const string guidVulcanDbEditor = "{5325db94-5d6c-41fd-be44-c5b277612ce6}";
         public const string guidVulcanFsEditor = "{4849278c-aacb-4bbe-9a15-d96da837aeb7}";
 
+        public const string guidVSXmlEditorString = "{fa3cd31e-987b-443a-9b81-186104e8dac1}";
 
 
         public const string guidXSharpLanguageServicePkgString = "e9b6ee0f-9bfa-4cff-a60b-51a08bbc5050";
@@ -61,6 +62,8 @@ namespace XSharp
         public static readonly Guid guidLanguageService = new Guid(guidXSharpLanguageServicePkgString);
         public static readonly Guid guidXSharpLanguageServiceCmdSet = new Guid(guidXSharpLanguageServiceCmdSetString);
         public static readonly Guid guidVulcanLanguageService  = new Guid(guidVulcanLanguageServiceString);
+
+        public static readonly Guid guidVSXmlEditor = new Guid(guidVSXmlEditorString);
 
         public const int cmdidShowGrid = 0x6001;
         public const int cmdidTestDialog = 0x6002;

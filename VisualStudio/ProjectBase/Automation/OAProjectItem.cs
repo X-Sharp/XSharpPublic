@@ -151,7 +151,7 @@ namespace Microsoft.VisualStudio.Project.Automation
             {
                 Guid guid;
                 ErrorHandler.ThrowOnFailure(this.node.GetGuidProperty((int)__VSHPROPID.VSHPROPID_TypeGuid, out guid));
-                return guid.ToString("B");
+                return guid.ToString("B").ToUpperInvariant();
             }
         }
 

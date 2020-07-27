@@ -1325,7 +1325,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             TypeSyntax type = context.Type?.Get<TypeSyntax>();
             if (type == null)
             {
-                if (!_options.VOUntypedAllowed)
+                if (!_options.HasOption(CompilerOption.UntypedAllowed, context, PragmaOptions))
                     type = _getMissingType();
                 else if (CurrentEntity != null && CurrentEntity.Data.HasTypedParameter)
                     type = _usualType;
@@ -1338,7 +1338,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         protected override TypeSyntax _getMissingType()
         {
             TypeSyntax varType;
-            if (_options.VOUntypedAllowed)
+            if (_options.HasOption(CompilerOption.UntypedAllowed, context, PragmaOptions))
                 varType = _usualType;
             else
                 varType = MissingType();
@@ -3184,7 +3184,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     }
                 }
                 context.Data.HasTypedParameter = bHasTypedParameter;
-                if (!context.Data.HasClipperCallingConvention && !isEntryPoint && !hasConvention && _options.VOUntypedAllowed)
+                if (!context.Data.HasClipperCallingConvention && !isEntryPoint && !hasConvention && _options.HasOption(CompilerOption.UntypedAllowed, (XSharpParserRuleContext) context, PragmaOptions))
                     context.Data.HasClipperCallingConvention = !bHasTypedParameter;
                 if (! bHasTypedParameter)
                 {

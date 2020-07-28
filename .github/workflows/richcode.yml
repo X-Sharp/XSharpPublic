@@ -1,0 +1,5 @@
+uses: microsoft/RichCodeNavIndexer@v0.1
+  with: 
+    languages: {csharp}
+    
+    

@@ -1,5 +1,7 @@
+name: Create Rich Code
 uses: microsoft/RichCodeNavIndexer@v0.1
   with: 
-    languages: {csharp}
+    repo-token: ${{ github.token }}
+    
     
     

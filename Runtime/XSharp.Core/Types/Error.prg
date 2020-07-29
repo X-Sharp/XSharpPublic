@@ -169,6 +169,9 @@ BEGIN NAMESPACE XSharp
     ELSE
         SELF:Description := ex:Message
         SELF:Gencode     := EG_EXCEPTION
+        IF ! String.IsNullOrEmpty(ex:Source)
+            SELF:SubSystem := ex:Source
+        ENDIF
         VAR sStack       := ErrorStack( StackTrace{ex,TRUE},UInt32.MaxValue)
         IF !sStack:StartsWith("*EmptyCallStack*")
             SELF:_StackTrace := sStack + SELF:_StackTrace
@@ -574,9 +577,16 @@ BEGIN NAMESPACE XSharp
         NEXT
     ENDIF
     RETURN NULL
-  END CLASS
+  
 
-
+  STATIC METHOD GetInnerException( SELF e as Exception) AS Exception
+     IF e:InnerException != NULL
+        DO WHILE e:InnerException != NULL
+            e := e:InnerException
+        ENDDO
+     ENDIF
+     RETURN e   
+END CLASS
 END NAMESPACE
 
 

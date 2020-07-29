@@ -71,5 +71,5 @@
       		<Context>BrowseObject</Context>
 	</PropertyPageSchema>
   </ItemGroup>
-   <Import Project="$(MSBuildBinPath)\Microsoft.Common.targets" />
+   <Import Condition="'$(UsingMicrosoftNETSdk)'== ''" Project="$(MSBuildBinPath)\Microsoft.Common.targets" />
 </Project>

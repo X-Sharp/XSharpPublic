@@ -112,7 +112,7 @@ namespace XSharp.Build
                 ExtractedClassName result = CreateXSharpManifestResourceName.GetFirstClassNameFullyQualified(fileName, binaryStream, log);
                 if (result.IsInsideConditionalBlock && log != null)
                 {
-                    log.LogWarningWithCodeFromResources("CreateManifestResourceName.DefinitionFoundWithinConditionalDirective", dependentUponFileName, embeddedFileName);
+                    log.LogWarning("MSB3042: A namespace or class definition was found within a conditional compilation directive in the file \"{ 0}\".  This may lead to an incorrect choice for the manifest resource name for resource \"{ 1}\".", dependentUponFileName, embeddedFileName);
                 }
                 if ((result.Name != null) && (result.Name.Length > 0))
                 {

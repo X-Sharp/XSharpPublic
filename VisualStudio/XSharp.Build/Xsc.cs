@@ -498,7 +498,7 @@ namespace XSharp.Build
         }
 
 
-        protected override void AddResponseFileCommands(CommandLineBuilderExtension commandLine)
+        protected internal override void AddResponseFileCommands(CommandLineBuilderExtension commandLine)
         {
             try
             {

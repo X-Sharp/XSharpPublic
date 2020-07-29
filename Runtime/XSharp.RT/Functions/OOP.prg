@@ -647,9 +647,8 @@ INTERNAL STATIC CLASS OOPHelpers
                 RETURN result
 		    ENDIF
         CATCH e as Exception
-            if e:InnerException != NULL
-                var er := Error{e:InnerException}   // this freezes the stacktrace
-                throw er
+            IF e:InnerException != NULL
+                THROW Error{e:GetInnerException()}
             ENDIF
             THROW // rethrow exception
         END TRY
@@ -691,9 +690,8 @@ INTERNAL STATIC CLASS OOPHelpers
 		    oError:Description := oError:Message+" '"+cIVar+"'"
             THROW oError
         CATCH e as Exception
-            if e:InnerException != NULL
-                var er := Error{e:InnerException}   // this freezes the stacktrace
-                throw er
+            IF e:InnerException != NULL
+                THROW Error{e:GetInnerException()}
             ENDIF
             THROW // rethrow exception
         END TRY
@@ -795,9 +793,8 @@ INTERNAL STATIC CLASS OOPHelpers
                     result := oResult
                 ENDIF
             CATCH e as Exception
-                if e:InnerException != NULL
-                    var er := Error{e:InnerException}   // this freezes the stacktrace
-                    throw er
+                IF e:InnerException != NULL
+                    THROW Error{e:GetInnerException()}
                 ENDIF
                 THROW // rethrow exception
             END TRY
@@ -953,13 +950,8 @@ FUNCTION CreateInstance(symClassName,InitArgList) AS OBJECT CLIPPER
 		oRet := ctor:Invoke( oArgs )
     CATCH e as Error
         THROW e
-	CATCH e as Exception
-        if e:InnerException != NULL
-            var er := Error{e:InnerException}   // this freezes the stacktrace
-            throw er
-        ENDIF
-		VAR oError := Error{e}
-        THROW oError
+    CATCH e as Exception
+        THROW Error{e:GetInnerException()}
 	END TRY
 	RETURN oRet
 	
@@ -1202,9 +1194,8 @@ FUNCTION Object2Array(oObject AS OBJECT) AS ARRAY
 		    ENDIF
     	NEXT
     CATCH e as Exception
-        if e:InnerException != NULL
-            var er := Error{e:InnerException}   // this freezes the stacktrace
-            throw er
+        IF e:InnerException != NULL
+            THROW Error{e:GetInnerException()}
         ENDIF
         THROW // rethrow exception
     END TRY

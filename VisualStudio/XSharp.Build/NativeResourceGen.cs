@@ -67,7 +67,7 @@ namespace XSharp.Build {
         public override bool Execute() {
             string rcPath = GenerateFullPathToTool();
             if (!System.IO.File.Exists(rcPath)){
-                base.Log.LogError("Cannot find the Native Resource compiler in the XSharp Bin folder", null);
+                base.Log.LogError("MSB3108: Cannot find the Native Resource compiler in the XSharp Bin folder", null);
                 return false;
             }
             bool ok = base.Execute();
@@ -192,7 +192,7 @@ namespace XSharp.Build {
             var alreadychecked = new List<string>();
             foreach (var fileName in fileNames) {
                 if (! System.IO.File.Exists(fileName)) {
-                    base.Log.LogError("Input file: {0} not found", fileName);
+                    base.Log.LogError("MSB3375: Input file: {0} not found", fileName);
                     return true;
                 }
                 DateTime fileTime = File.GetLastWriteTime(fileName);
@@ -233,16 +233,16 @@ namespace XSharp.Build {
                         if(found) {
                             if(!alreadychecked.Contains(foundfile.ToLower())) {
                                 DateTime includeTime = File.GetLastWriteTime(foundfile);
-                                base.Log.LogMessage("Input file: {0}  depends on include file {1}", fileName, foundfile);
+                                base.Log.LogMessage("Input file: \"{0}\"  depends on include file \"{1}\"", fileName, foundfile);
                                 if(includeTime > outputTime) {
-                                    base.Log.LogMessage("Include file: {0} is newer than output file {1} as was last updated on {2:f}", foundfile, outputFileName, includeTime);
+                                    base.Log.LogMessage("Include file: \"{0}\" is newer than output file \"{1}\" as was last updated on {2:f}", foundfile, outputFileName, includeTime);
                                     return true;
                                 }
                                 alreadychecked.Add(foundfile.ToLower());
                             }
                         }
                         else{
-                            base.Log.LogError("Could not file include file {0} ", includefile);
+                            base.Log.LogError("MSB3375: Could not find include file \"{0}\" ", includefile);
                             return true;
                         }
                     }
@@ -285,15 +285,15 @@ namespace XSharp.Build {
             string resourceCompilerExe = this.GenerateFullPathToTool();
             bool parametersValid = true;
             if(!File.Exists(resourceCompilerExe)) {
-                base.Log.LogError(resourceCompilerExe + " not found.", null);
+                base.Log.LogError("MSB3666: "+resourceCompilerExe + " not found.", null);
                 parametersValid = false;
             }
             if(this.numberofInputFiles == 0) {
-                base.Log.LogError("No input files specified", null);
+                base.Log.LogError("No input files specified. Skipping resource generation.", null);
                 parametersValid = false;
             }
             if(this.OutputPath == null) {
-                base.Log.LogError("No output path specified", null);
+                base.Log.LogError("No output path specified. Skipping resource generation.", null);
                 return false;
             }
             this.outputFileName = this.OutputPath + outputName;

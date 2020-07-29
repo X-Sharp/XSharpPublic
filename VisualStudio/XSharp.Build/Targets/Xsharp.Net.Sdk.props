@@ -1,6 +1,6 @@
 <!--
 ***********************************************************************************************
-XSharp.Sdk.props, inspired by Microsoft.NET.Sdk.CSharp.props
+XSharp.NET.Sdk.props
 
 WARNING:  DO NOT MODIFY this file unless you are knowledgeable about MSBuild and have
           created a backup copy.  Incorrect changes to this file will make it
@@ -10,12 +10,10 @@ Copyright (c) XSharp B.V.  All Rights Reserved
 ***********************************************************************************************
 -->
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-
+  <Import Project="$(MSBuildThisFileDirectory)XSharp.default.props" />
   <PropertyGroup>
-    <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
     <WarningLevel Condition=" '$(WarningLevel)' == '' ">4</WarningLevel>
-    <NoWarn Condition=" '$(NoWarn)' == '' ">1701;1702;1705</NoWarn>
-
+    <NoWarn Condition=" '$(NoWarn)' == '' ">1701;1702</NoWarn>
   </PropertyGroup>
   <PropertyGroup>
     <DefineConstants Condition=" '$(DefineConstants)' != '' ">$(DefineConstants);</DefineConstants>

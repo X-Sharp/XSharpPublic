@@ -607,11 +607,11 @@ namespace XSharp.Build
                 {
                     if (disambiguatingMetadataName == null || string.IsNullOrEmpty(text))
                     {
-                        base.Log.LogErrorWithCodeFromResources("General.DuplicateItemsNotSupported", taskItem.ItemSpec, parameterName);
+                        base.Log.LogError("MSB3105: The item \"{0}\" was specified more than once in the \"{1}\" parameter. Duplicate items are not supported by the \"{1}\" parameter.", taskItem.ItemSpec, parameterName);
                     }
                     else
                     {
-                        base.Log.LogErrorWithCodeFromResources("General.DuplicateItemsNotSupportedWithMetadata", taskItem.ItemSpec, parameterName, text, disambiguatingMetadataName);
+                        base.Log.LogError("MSB3083: The item \"{0}\" was specified more than once in the \"{1}\" parameter and both items had the same value \"{2}\" for the \"{3}\" metadata. Duplicate items are not supported by the \"{1}\" parameter.", taskItem.ItemSpec, parameterName, text, disambiguatingMetadataName);
                     }
                     return false;
                 }
@@ -638,7 +638,7 @@ namespace XSharp.Build
         {
             if (!resultFromHostObjectSetOperation)
             {
-                base.Log.LogMessageFromResources(MessageImportance.Normal, "General.ParameterUnsupportedOnHostCompiler", parameterName);
+                base.Log.LogMessage(MessageImportance.Normal, "The compiler does not support the \"{0}\" parameter.", parameterName);
                 hostCompilerSupportsAllParameters = false;
             }
         }
@@ -658,7 +658,7 @@ namespace XSharp.Build
                 if (!File.Exists(taskItem.ItemSpec))
                 {
                     result = false;
-                    base.Log.LogErrorWithCodeFromResources("General.ReferenceDoesNotExist", taskItem.ItemSpec);
+                    base.Log.LogError("MSB3104: The referenced assembly \"{0}\" was not found.", taskItem.ItemSpec);
                 }
             }
             return result;
@@ -671,7 +671,7 @@ namespace XSharp.Build
                 string pathToDotNetFrameworkFile = ToolLocationHelper.GetPathToDotNetFrameworkFile("default.win32manifest", TargetDotNetFrameworkVersion.Version45);
                 if (pathToDotNetFrameworkFile == null)
                 {
-                    base.Log.LogMessageFromResources("General.ExpectedFileMissing", "default.win32manifest");
+                    base.Log.LogMessage("Expected file \"{ 0}\" does not exist", "default.win32manifest");
                 }
                 return pathToDotNetFrameworkFile;
             }

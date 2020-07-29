@@ -98,11 +98,11 @@ namespace XSharp.Build
             int num = 0;
             if (RootNamespace != null)
             {
-                base.Log.LogMessageFromResources(MessageImportance.Low, "CreateManifestResourceName.RootNamespace", _rootNamespace);
+                base.Log.LogMessage(MessageImportance.Low, "Root namespace \"{0}\"", _rootNamespace);
             }
             else
             {
-                base.Log.LogMessageFromResources(MessageImportance.Low, "CreateManifestResourceName.NoRootNamespace");
+                base.Log.LogMessage(MessageImportance.Low, "Root namespace is empty");
             }
             ITaskItem[] resourceFiles = ResourceFiles;
             foreach (ITaskItem taskItem in resourceFiles)
@@ -114,11 +114,11 @@ namespace XSharp.Build
                     bool flag = metadata != null && metadata.Length > 0 && IsSourceFile(metadata);
                     if (flag)
                     {
-                        base.Log.LogMessageFromResources(MessageImportance.Low, "CreateManifestResourceName.DependsUpon", itemSpec, metadata);
+                        base.Log.LogMessage(MessageImportance.Low, "Resource file \"{0}\" depends on \"{1}\"", itemSpec, metadata);
                     }
                     else
                     {
-                        base.Log.LogMessageFromResources(MessageImportance.Low, "CreateManifestResourceName.DependsUponNothing", itemSpec);
+                        base.Log.LogMessage(MessageImportance.Low, "Resource file \"{0}\" doesn't depend on any other file", itemSpec);
                     }
                     Stream stream = null;
                     if (flag)
@@ -140,7 +140,7 @@ namespace XSharp.Build
                     {
                         _resourceFilesWithManifestResourceNames[num].SetMetadata("LogicalName", text);
                     }
-                    base.Log.LogMessageFromResources(MessageImportance.Low, "CreateManifestResourceName.AssignedName", itemSpec, text);
+                    base.Log.LogMessage(MessageImportance.Low, "MSB3041: Unable to create a manifest resource name for \"{0}\", {1}", itemSpec, text);
                 }
                 catch (Exception ex)
                 {
@@ -148,7 +148,7 @@ namespace XSharp.Build
                     {
                         throw;
                     }
-                    base.Log.LogErrorWithCodeFromResources("CreateManifestResourceName.Error", taskItem.ItemSpec, ex.Message);
+                    base.Log.LogError("MSB3041: Unable to create a manifest resource name for \"{0}\", {1}", taskItem.ItemSpec, ex.Message);
                     result = false;
                 }
                 num++;

@@ -5,7 +5,6 @@
 //
 
 // Note that the comment blocks from the various rules have been copied from XSharp.g4 inside the compiler
-// Todo: XPP Class rules
 
 
 USING System.Collections.Generic

@@ -2,12 +2,14 @@
 name: ContinuousBuild
 #Set when this build is activated. This can be once x time period, or on push/commit of certain branches
 on:
-  schedule:
-    #uses the POSIX cron syntax. The below runs every houe
-    - cron: '0 * * * *'
+#   schedule:
+#     #uses the POSIX cron syntax. The below runs every hour
+#     - cron: '0 * * * *'
   push:
     branches: 
       - master
+  pull_request:
+    types: [opened, assigned, synchronize, edited]
 jobs:
   job1:
     name: BuildRoslyn
@@ -18,16 +20,20 @@ jobs:
     
     steps:
       - uses: actions/checkout@master #Clone the repository code at master
-      - name: Setup MSBuild Path
-        uses: warrenbuckley/Setup-MSBuild@v1
+#       - name: Setup MSBuild Path
+#         uses: warrenbuckley/Setup-MSBuild@v1
       - name: Setup NuGet
         uses: NuGet/setup-nuget@v1.0.2
-      - name: Setup VS dev environment
-        uses: seanmiddleditch/gha-setup-vsdevenv@v1
+#       - name: Setup VS dev environment
+#         uses: seanmiddleditch/gha-setup-vsdevenv@v1
       - name: RestoreRoslyn
-        run: ./Restore.cmd
-        working-directory: ${{env.RoslynDir}} #we do this in the roslyn subdirectory
-        continue-on-error: true
-      - name: BuildRoslyn
-        run: msbuild Compilers.sln
-        working-directory: ${{env.RoslynDir}} #we do this in the roslyn subdirectory
+        shell: cmd
+        run: |
+          call "C:\ProgramData\Microsoft\Windows\Start Menu\Programs\Visual Studio 2019\Visual Studio Tools\Developer Command Prompt for VS 2019.lnk"
+          call ${{env.RoslynDir}}\Restore.cmd
+#       - name: RestoreRoslyn
+#         run: ./Restore.cmd
+#         working-directory: ${{env.RoslynDir}} #we do this in the roslyn subdirectory
+#       - name: BuildRoslyn
+#         run: msbuild Compilers.sln
+#         working-directory: ${{env.RoslynDir}} #we do this in the roslyn subdirectory

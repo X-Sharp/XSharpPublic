@@ -52,11 +52,11 @@ namespace XSharp.Build
             }
         }
 
-        internal override void AppendPlusOrMinusSwitch(string switchName, Hashtable bag, string parameterName)
+        internal override void AppendPlusOrMinusSwitch(string switchName, BuildPropertyCollection bag, string parameterName)
         {
-            base.AppendPlusOrMinusSwitch(switchName, bag, parameterName);
             if (bag[parameterName] != null)
             {
+                base.AppendPlusOrMinusSwitch(switchName, bag, parameterName);
                 this.AppendNewLine();
             }
         }
@@ -64,7 +64,7 @@ namespace XSharp.Build
         /// <summary>
         /// Set a switch if its value exists by choosing from the input choices
         /// </summary>
-        internal void AppendByChoiceSwitch( string switchName, System.Collections.Hashtable bag, string parameterName, string choice1,string choice2)
+        internal void AppendByChoiceSwitch( string switchName, BuildPropertyCollection bag, string parameterName, string choice1,string choice2)
         {
             object obj = bag[parameterName];
             // If the switch isn't set, don't add it to the command line.

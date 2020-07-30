@@ -13,9 +13,10 @@ using System.Text;
 
 namespace XSharp.Build
 {
-    public abstract class ManagedCompiler : ToolTaskExtension
+    public abstract class ManagedCompiler : ToolTask
     {
-        
+        private BuildPropertyCollection bag = new BuildPropertyCollection();
+        internal BuildPropertyCollection Bag => bag;
         private bool hostCompilerSupportsAllParameters;
 
         /// <summary>Gets or sets the additional folders in which to look for assemblies.</summary>
@@ -24,11 +25,11 @@ namespace XSharp.Build
         {
             get
             {
-                return (string[])base.Bag["AdditionalLibPaths"];
+                return (string[])Bag["AdditionalLibPaths"];
             }
             set
             {
-                base.Bag["AdditionalLibPaths"] = value;
+                Bag["AdditionalLibPaths"] = value;
             }
         }
 
@@ -38,11 +39,11 @@ namespace XSharp.Build
         {
             get
             {
-                return (string[])base.Bag["AddModules"];
+                return (string[])Bag["AddModules"];
             }
             set
             {
-                base.Bag["AddModules"] = value;
+                Bag["AddModules"] = value;
             }
         }
 
@@ -56,7 +57,7 @@ namespace XSharp.Build
             }
             set
             {
-                base.Bag["CodePage"] = value;
+                Bag["CodePage"] = value;
             }
         }
 
@@ -66,11 +67,11 @@ namespace XSharp.Build
         {
             get
             {
-                return (string)base.Bag["DebugType"];
+                return (string)Bag["DebugType"];
             }
             set
             {
-                base.Bag["DebugType"] = value;
+                Bag["DebugType"] = value;
             }
         }
 
@@ -80,11 +81,11 @@ namespace XSharp.Build
         {
             get
             {
-                return (string)base.Bag["DefineConstants"];
+                return (string)Bag["DefineConstants"];
             }
             set
             {
-                base.Bag["DefineConstants"] = value;
+                Bag["DefineConstants"] = value;
             }
         }
 
@@ -98,7 +99,7 @@ namespace XSharp.Build
             }
             set
             {
-                base.Bag["DelaySign"] = value;
+                Bag["DelaySign"] = value;
             }
         }
 
@@ -112,7 +113,7 @@ namespace XSharp.Build
             }
             set
             {
-                base.Bag["EmitDebugInformation"] = value;
+                Bag["EmitDebugInformation"] = value;
             }
         }
 
@@ -126,7 +127,7 @@ namespace XSharp.Build
             }
             set
             {
-                base.Bag["FileAlignment"] = value;
+                Bag["FileAlignment"] = value;
             }
         }
 
@@ -138,7 +139,7 @@ namespace XSharp.Build
             }
             set
             {
-                base.Bag["HighEntropyVA"] = value;
+                Bag["HighEntropyVA"] = value;
             }
         }
 
@@ -148,11 +149,11 @@ namespace XSharp.Build
         {
             get
             {
-                return (string)base.Bag["KeyContainer"];
+                return (string)Bag["KeyContainer"];
             }
             set
             {
-                base.Bag["KeyContainer"] = value;
+                Bag["KeyContainer"] = value;
             }
         }
 
@@ -162,11 +163,11 @@ namespace XSharp.Build
         {
             get
             {
-                return (string)base.Bag["KeyFile"];
+                return (string)Bag["KeyFile"];
             }
             set
             {
-                base.Bag["KeyFile"] = value;
+                Bag["KeyFile"] = value;
             }
         }
 
@@ -176,11 +177,11 @@ namespace XSharp.Build
         {
             get
             {
-                return (ITaskItem[])base.Bag["LinkResources"];
+                return (ITaskItem[])Bag["LinkResources"];
             }
             set
             {
-                base.Bag["LinkResources"] = value;
+                Bag["LinkResources"] = value;
             }
         }
 
@@ -190,11 +191,11 @@ namespace XSharp.Build
         {
             get
             {
-                return (string)base.Bag["MainEntryPoint"];
+                return (string)Bag["MainEntryPoint"];
             }
             set
             {
-                base.Bag["MainEntryPoint"] = value;
+                Bag["MainEntryPoint"] = value;
             }
         }
 
@@ -208,7 +209,7 @@ namespace XSharp.Build
             }
             set
             {
-                base.Bag["NoConfig"] = value;
+                Bag["NoConfig"] = value;
             }
         }
 
@@ -222,7 +223,7 @@ namespace XSharp.Build
             }
             set
             {
-                base.Bag["NoLogo"] = value;
+                Bag["NoLogo"] = value;
             }
         }
 
@@ -236,7 +237,7 @@ namespace XSharp.Build
             }
             set
             {
-                base.Bag["NoWin32Manifest"] = value;
+                Bag["NoWin32Manifest"] = value;
             }
         }
 
@@ -250,7 +251,7 @@ namespace XSharp.Build
             }
             set
             {
-                base.Bag["Optimize"] = value;
+                Bag["Optimize"] = value;
             }
         }
 
@@ -261,11 +262,11 @@ namespace XSharp.Build
         {
             get
             {
-                return (ITaskItem)base.Bag["OutputAssembly"];
+                return (ITaskItem)Bag["OutputAssembly"];
             }
             set
             {
-                base.Bag["OutputAssembly"] = value;
+                Bag["OutputAssembly"] = value;
             }
         }
 
@@ -273,11 +274,11 @@ namespace XSharp.Build
         {
             get
             {
-                return (string)base.Bag["Platform"];
+                return (string)Bag["Platform"];
             }
             set
             {
-                base.Bag["Platform"] = value;
+                Bag["Platform"] = value;
             }
         }
 
@@ -289,7 +290,7 @@ namespace XSharp.Build
             }
             set
             {
-                base.Bag["Prefer32Bit"] = value;
+                Bag["Prefer32Bit"] = value;
             }
         }
 
@@ -299,11 +300,11 @@ namespace XSharp.Build
         {
             get
             {
-                return (ITaskItem[])base.Bag["References"];
+                return (ITaskItem[])Bag["References"];
             }
             set
             {
-                base.Bag["References"] = value;
+                Bag["References"] = value;
             }
         }
 
@@ -313,11 +314,11 @@ namespace XSharp.Build
         {
             get
             {
-                return (ITaskItem[])base.Bag["Resources"];
+                return (ITaskItem[])Bag["Resources"];
             }
             set
             {
-                base.Bag["Resources"] = value;
+                Bag["Resources"] = value;
             }
         }
 
@@ -327,11 +328,11 @@ namespace XSharp.Build
         {
             get
             {
-                return (ITaskItem[])base.Bag["ResponseFiles"];
+                return (ITaskItem[])Bag["ResponseFiles"];
             }
             set
             {
-                base.Bag["ResponseFiles"] = value;
+                Bag["ResponseFiles"] = value;
             }
         }
 
@@ -341,11 +342,11 @@ namespace XSharp.Build
         {
             get
             {
-                return (ITaskItem[])base.Bag["Sources"];
+                return (ITaskItem[])Bag["Sources"];
             }
             set
             {
-                base.Bag["Sources"] = value;
+                Bag["Sources"] = value;
             }
         }
 
@@ -353,11 +354,11 @@ namespace XSharp.Build
         {
             get
             {
-                return (string)base.Bag["SubsystemVersion"];
+                return (string)Bag["SubsystemVersion"];
             }
             set
             {
-                base.Bag["SubsystemVersion"] = value;
+                Bag["SubsystemVersion"] = value;
             }
         }
 
@@ -367,11 +368,11 @@ namespace XSharp.Build
         {
             get
             {
-                return (string)base.Bag["TargetType"];
+                return (string)Bag["TargetType"];
             }
             set
             {
-                base.Bag["TargetType"] = value.ToLower(CultureInfo.InvariantCulture);
+                Bag["TargetType"] = value.ToLower(CultureInfo.InvariantCulture);
             }
         }
 
@@ -385,7 +386,7 @@ namespace XSharp.Build
             }
             set
             {
-                base.Bag["TreatWarningsAsErrors"] = value;
+                Bag["TreatWarningsAsErrors"] = value;
             }
         }
 
@@ -399,7 +400,7 @@ namespace XSharp.Build
             }
             set
             {
-                base.Bag["Utf8Output"] = value;
+                Bag["Utf8Output"] = value;
             }
         }
 
@@ -409,11 +410,11 @@ namespace XSharp.Build
         {
             get
             {
-                return (string)base.Bag["Win32Icon"];
+                return (string)Bag["Win32Icon"];
             }
             set
             {
-                base.Bag["Win32Icon"] = value;
+                Bag["Win32Icon"] = value;
             }
         }
 
@@ -423,11 +424,11 @@ namespace XSharp.Build
         {
             get
             {
-                return (string)base.Bag["Win32Manifest"];
+                return (string)Bag["Win32Manifest"];
             }
             set
             {
-                base.Bag["Win32Manifest"] = value;
+                Bag["Win32Manifest"] = value;
             }
         }
 
@@ -437,11 +438,11 @@ namespace XSharp.Build
         {
             get
             {
-                return (string)base.Bag["Win32Resource"];
+                return (string)Bag["Win32Resource"];
             }
             set
             {
-                base.Bag["Win32Resource"] = value;
+                Bag["Win32Resource"] = value;
             }
         }
 
@@ -484,7 +485,7 @@ namespace XSharp.Build
 
         /// <summary>Fills the specified <paramref name="commandLine" /> parameter with the switches and other information that can go into a response file.</summary>
         /// <param name="commandLine">Command line builder to add arguments to.</param>
-        protected internal override void AddResponseFileCommands(CommandLineBuilderExtension commandLine)
+        protected internal virtual void AddResponseFileCommands(CommandLineBuilderExtension commandLine)
         {
             if (OutputAssembly == null && Sources != null && Sources.Length != 0 && ResponseFiles == null)
             {
@@ -510,12 +511,12 @@ namespace XSharp.Build
                 }
             }
             commandLine.AppendSwitchIfNotNull("/addmodule:", AddModules, ",");
-            commandLine.AppendSwitchWithInteger("/codepage:", base.Bag, "CodePage");
+            commandLine.AppendSwitchWithInteger("/codepage:", Bag, "CodePage");
             ConfigureDebugProperties();
-            commandLine.AppendPlusOrMinusSwitch("/debug", base.Bag, "EmitDebugInformation");
+            commandLine.AppendPlusOrMinusSwitch("/debug", Bag, "EmitDebugInformation");
             commandLine.AppendSwitchIfNotNull("/debug:", DebugType);
-            commandLine.AppendPlusOrMinusSwitch("/delaysign", base.Bag, "DelaySign");
-            commandLine.AppendSwitchWithInteger("/filealign:", base.Bag, "FileAlignment");
+            commandLine.AppendPlusOrMinusSwitch("/delaysign", Bag, "DelaySign");
+            commandLine.AppendSwitchWithInteger("/filealign:", Bag, "FileAlignment");
             commandLine.AppendSwitchIfNotNull("/keycontainer:", KeyContainer);
             commandLine.AppendSwitchIfNotNull("/keyfile:", KeyFile);
             commandLine.AppendSwitchIfNotNull("/linkresource:", LinkResources, new string[2]
@@ -523,9 +524,9 @@ namespace XSharp.Build
             "LogicalName",
             "Access"
             });
-            commandLine.AppendWhenTrue("/nologo", base.Bag, "NoLogo");
-            commandLine.AppendWhenTrue("/nowin32manifest", base.Bag, "NoWin32Manifest");
-            commandLine.AppendPlusOrMinusSwitch("/optimize", base.Bag, "Optimize");
+            commandLine.AppendWhenTrue("/nologo", Bag, "NoLogo");
+            commandLine.AppendWhenTrue("/nowin32manifest", Bag, "NoWin32Manifest");
+            commandLine.AppendPlusOrMinusSwitch("/optimize", Bag, "Optimize");
             commandLine.AppendSwitchIfNotNull("/out:", OutputAssembly);
             commandLine.AppendSwitchIfNotNull("/subsystemversion:", SubsystemVersion);
             commandLine.AppendSwitchIfNotNull("/resource:", Resources, new string[2]
@@ -534,8 +535,8 @@ namespace XSharp.Build
             "Access"
             });
             commandLine.AppendSwitchIfNotNull("/target:", TargetType);
-            commandLine.AppendPlusOrMinusSwitch("/warnaserror", base.Bag, "TreatWarningsAsErrors");
-            commandLine.AppendWhenTrue("/utf8output", base.Bag, "Utf8Output");
+            commandLine.AppendPlusOrMinusSwitch("/warnaserror", Bag, "TreatWarningsAsErrors");
+            commandLine.AppendWhenTrue("/utf8output", Bag, "Utf8Output");
             commandLine.AppendSwitchIfNotNull("/win32icon:", Win32Icon);
             commandLine.AppendSwitchIfNotNull("/win32manifest:", Win32Manifest);
             commandLine.AppendFileNamesIfNotNull(Sources, " ");
@@ -543,18 +544,36 @@ namespace XSharp.Build
 
         private void ConfigureDebugProperties()
         {
-            if (base.Bag["DebugType"] != null && string.Compare((string)base.Bag["DebugType"], "none", StringComparison.OrdinalIgnoreCase) == 0)
+            if (Bag["DebugType"] != null && string.Compare((string)Bag["DebugType"], "none", StringComparison.OrdinalIgnoreCase) == 0)
             {
-                base.Bag["DebugType"] = null;
-                base.Bag["EmitDebugInformation"] = false;
+                Bag["DebugType"] = null;
+                Bag["EmitDebugInformation"] = false;
             }
         }
 
+        protected internal bool GetBoolParameterWithDefault(string parameterName, bool defaultValue)
+        {
+            object obj = bag[parameterName];
+            if (obj != null)
+            {
+                return (bool)obj;
+            }
+            return defaultValue;
+        }
+        protected internal int GetIntParameterWithDefault(string parameterName, int defaultValue)
+        {
+            object obj = bag[parameterName];
+            if (obj != null)
+            {
+                return (int)obj;
+            }
+            return defaultValue;
+        }
         /// <summary>Generates command line arguments that the command line tool must run directly from the command line and not from a response file.</summary>
         /// <param name="commandLine">Command line builder to add arguments to.</param>
-        protected internal override void AddCommandLineCommands(CommandLineBuilderExtension commandLine)
+        protected internal virtual void AddCommandLineCommands(CommandLineBuilderExtension commandLine)
         {
-            commandLine.AppendWhenTrue("/noconfig", base.Bag, "NoConfig");
+            commandLine.AppendWhenTrue("/noconfig", Bag, "NoConfig");
         }
 
         /// <summary>If an alternate tool name or tool path was specified in the project file, then that tool is used rather than the host compiler for integrated development environment (IDE) builds.</summary>
@@ -677,36 +696,5 @@ namespace XSharp.Build
             }
             return win32Manifest;
         }
-    }
-
-    public abstract class ToolTaskExtension : ToolTask
-    {
-        private Hashtable bag = new Hashtable();
-        protected internal Hashtable Bag => bag;
-        protected internal bool GetBoolParameterWithDefault(string parameterName, bool defaultValue)
-        {
-            object obj = bag[parameterName];
-            if (obj != null)
-            {
-                return (bool)obj;
-            }
-            return defaultValue;
-        }
-        protected internal int GetIntParameterWithDefault(string parameterName, int defaultValue)
-        {
-            object obj = bag[parameterName];
-            if (obj != null)
-            {
-                return (int)obj;
-            }
-            return defaultValue;
-        }
-        protected internal virtual void AddCommandLineCommands(CommandLineBuilderExtension commandLine)
-        {
-        }
-        protected internal virtual void AddResponseFileCommands(CommandLineBuilderExtension commandLine)
-        {
-        }
-
     }
 }

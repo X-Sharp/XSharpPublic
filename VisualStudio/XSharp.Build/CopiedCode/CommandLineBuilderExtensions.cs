@@ -18,7 +18,7 @@ namespace XSharp.Build
     /// <summary>Comprises extended utility methods for constructing a command line.</summary>
     public class CommandLineBuilderExtension : CommandLineBuilder
     {
-        internal virtual void AppendWhenTrue(string switchName, Hashtable bag, string parameterName)
+        internal virtual void AppendWhenTrue(string switchName, BuildPropertyCollection bag, string parameterName)
         {
             object obj = bag[parameterName];
             if (obj != null && (bool)obj)
@@ -27,7 +27,7 @@ namespace XSharp.Build
             }
         }
 
-        internal virtual void AppendPlusOrMinusSwitch(string switchName, Hashtable bag, string parameterName)
+        internal virtual void AppendPlusOrMinusSwitch(string switchName, BuildPropertyCollection bag, string parameterName)
         {
             object obj = bag[parameterName];
             if (obj != null)
@@ -38,7 +38,7 @@ namespace XSharp.Build
         }
 
 
-        internal virtual void AppendSwitchWithInteger(string switchName, Hashtable bag, string parameterName)
+        internal virtual void AppendSwitchWithInteger(string switchName, BuildPropertyCollection bag, string parameterName)
         {
             object obj = bag[parameterName];
             if (obj != null)

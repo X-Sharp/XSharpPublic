@@ -5,9 +5,9 @@ on:
 #   schedule:
 #     #uses the POSIX cron syntax. The below runs every hour
 #     - cron: '0 * * * *'
-  push:
-    branches: 
-      - master
+#   push:
+#     branches: 
+#       - master
   pull_request:
     types: [opened, assigned, synchronize, edited]
 jobs:

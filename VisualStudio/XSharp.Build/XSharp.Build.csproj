@@ -56,6 +56,7 @@
     <Compile Include="..\..\Common\Constants.cs">
       <Link>Constants.cs</Link>
     </Compile>
+    <Compile Include="BuildPropertyCollection.cs" />
     <Compile Include="CommandLineBuilder.cs" />
     <Compile Include="CopiedCode\CommandLineBuilderExtensions.cs" />
     <Compile Include="CopiedCode\CreateManagedResourceName.cs" />

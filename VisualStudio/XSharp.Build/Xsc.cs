@@ -22,47 +22,47 @@ namespace XSharp.Build
 
         #region VO Compatible properties
 
-        public Boolean AZ
+        public bool AZ
         {
             set { base.Bag[nameof(AZ)] = value; }
             get { return base.GetBoolParameterWithDefault(nameof(AZ), false); }
         }
-        public Boolean CS
+        public bool CS
         {
             set { base.Bag[nameof(CS)] = value; }
             get { return base.GetBoolParameterWithDefault(nameof(CS), false); }
         }
-        public Boolean LB
+        public bool LB
         {
             set { base.Bag[nameof(LB)] = value; }
             get { return base.GetBoolParameterWithDefault(nameof(LB), false); }
         }
-        public Boolean OVF
+        public bool OVF
         {
             set { base.Bag[nameof(OVF)] = value; }
             get { return base.GetBoolParameterWithDefault(nameof(OVF), false); }
         }
-        public Boolean PPO
+        public bool PPO
         {
             set { base.Bag[nameof(PPO)] = value; }
             get { return base.GetBoolParameterWithDefault(nameof(PPO), false); }
         }
-        public Boolean MemVar
+        public bool MemVar
         {
             set { base.Bag[nameof(MemVar)] = value; }
             get { return base.GetBoolParameterWithDefault(nameof(MemVar), false); }
         }
-        public Boolean NamedArgs
+        public bool NamedArgs
         {
             set { base.Bag[nameof(NamedArgs)] = value; }
             get { return base.GetBoolParameterWithDefault(nameof(NamedArgs), false); }
         }
-        public Boolean NS
+        public bool NS
         {
             set { base.Bag[nameof(NS)] = value; }
             get { return base.GetBoolParameterWithDefault(nameof(NS), false); }
         }
-        public Boolean INS
+        public bool INS
         {
             set { base.Bag[nameof(INS)] = value; }
             get { return base.GetBoolParameterWithDefault(nameof(INS), false); }
@@ -72,13 +72,13 @@ namespace XSharp.Build
             set { base.Bag[nameof(IncludePaths)] = value; }
             get { return (string[])base.Bag[nameof(IncludePaths)]; }
         }
-        public Boolean InitLocals
+        public bool InitLocals
         {
             set { base.Bag[nameof(InitLocals)] = value; }
             get { return base.GetBoolParameterWithDefault(nameof(InitLocals), false); }
         }
 
-        public Boolean NoStandardDefs
+        public bool NoStandardDefs
         {
             set { base.Bag[nameof(NoStandardDefs)] = value; }
             get { return base.GetBoolParameterWithDefault(nameof(NoStandardDefs), false); }
@@ -90,205 +90,205 @@ namespace XSharp.Build
             get { return (string)base.Bag[nameof(StandardDefs)]; }
         }
         public string RootNameSpace { get; set; }
-        public Boolean Undeclared
+        public bool Undeclared
         {
             set { base.Bag[nameof(Undeclared)] = value; }
             get { return base.GetBoolParameterWithDefault(nameof(Undeclared), false); }
         }
 
-        public Boolean VO1
+        public bool VO1
         {
             set { base.Bag[nameof(VO1)] = value; }
             get { return base.GetBoolParameterWithDefault(nameof(VO1), false); }
         }
-        public Boolean VO2
+        public bool VO2
         {
             set { base.Bag[nameof(VO2)] = value; }
             get { return base.GetBoolParameterWithDefault(nameof(VO2), false); }
         }
-        public Boolean VO3
+        public bool VO3
         {
             set { base.Bag[nameof(VO3)] = value; }
             get { return base.GetBoolParameterWithDefault(nameof(VO3), false); }
         }
-        public Boolean VO4
+        public bool VO4
         {
             set { base.Bag[nameof(VO4)] = value; }
             get { return base.GetBoolParameterWithDefault(nameof(VO4), false); }
         }
-        public Boolean VO5
+        public bool VO5
         {
             set { base.Bag[nameof(VO5)] = value; }
             get { return base.GetBoolParameterWithDefault(nameof(VO5), false); }
         }
-        public Boolean VO6
+        public bool VO6
         {
             set { base.Bag[nameof(VO6)] = value; }
             get { return base.GetBoolParameterWithDefault(nameof(VO6), false); }
         }
-        public Boolean VO7
+        public bool VO7
         {
             set { base.Bag[nameof(VO7)] = value; }
             get { return base.GetBoolParameterWithDefault(nameof(VO7), false); }
         }
-        public Boolean VO8
+        public bool VO8
         {
             set { base.Bag[nameof(VO8)] = value; }
             get { return base.GetBoolParameterWithDefault(nameof(VO8), false); }
         }
-        public Boolean VO9
+        public bool VO9
         {
             set { base.Bag[nameof(VO9)] = value; }
             get { return base.GetBoolParameterWithDefault(nameof(VO9), false); }
         }
-        public Boolean VO10
+        public bool VO10
         {
             set { base.Bag[nameof(VO10)] = value; }
             get { return base.GetBoolParameterWithDefault(nameof(VO10), false); }
         }
-        public Boolean VO11
+        public bool VO11
         {
             set { base.Bag[nameof(VO11)] = value; }
             get { return base.GetBoolParameterWithDefault(nameof(VO11), false); }
         }
-        public Boolean VO12
+        public bool VO12
         {
             set { base.Bag[nameof(VO12)] = value; }
             get { return base.GetBoolParameterWithDefault(nameof(VO12), false); }
         }
-        public Boolean VO13
+        public bool VO13
         {
             set { base.Bag[nameof(VO13)] = value; }
             get { return base.GetBoolParameterWithDefault(nameof(VO13), false); }
         }
-        public Boolean VO14
+        public bool VO14
         {
             set { base.Bag[nameof(VO14)] = value; }
             get { return base.GetBoolParameterWithDefault(nameof(VO14), false); }
         }
 
-        public Boolean VO15 {
+        public bool VO15 {
             set { base.Bag[nameof(VO15)] = value; }
             get { return base.GetBoolParameterWithDefault(nameof(VO15), false); }
         }
 
-        public Boolean VO16
+        public bool VO16
         {
             set { base.Bag[nameof(VO16)] = value; }
             get { return base.GetBoolParameterWithDefault(nameof(VO16), false); }
         }
-        public Boolean XPP1
+        public bool XPP1
         {
             set { base.Bag[nameof(XPP1)] = value; }
             get { return base.GetBoolParameterWithDefault(nameof(XPP1), false); }
         }
-        public Boolean XPP2
+        public bool XPP2
         {
             set { base.Bag[nameof(XPP2)] = value; }
             get { return base.GetBoolParameterWithDefault(nameof(XPP2), false); }
         }
-        public Boolean FOX1
+        public bool FOX1
         {
             set { base.Bag[nameof(FOX1)] = value; }
             get { return base.GetBoolParameterWithDefault(nameof(FOX1), false); }
         }
-        public Boolean FOX2
+        public bool FOX2
         {
             set { base.Bag[nameof(FOX2)] = value; }
             get { return base.GetBoolParameterWithDefault(nameof(FOX2), false); }
         }
 
-        public String CompilerPath
+        public string CompilerPath
         {
             set { base.Bag[nameof(CompilerPath)] = value; }
-            get { return (String)base.Bag[nameof(CompilerPath)]; }
+            get { return (string)base.Bag[nameof(CompilerPath)]; }
         }
         // Misc. (unknown at that time) CommandLine options
-        public String CommandLineOption
+        public string CommandLineOption
         {
             set { base.Bag[nameof(CommandLineOption)] = value; }
-            get { return (String)base.Bag[nameof(CommandLineOption)]; }
+            get { return (string)base.Bag[nameof(CommandLineOption)]; }
         }
         #endregion
 
         #region XSharp specific properties
-        public String Dialect
+        public string Dialect
         {
             set { base.Bag[nameof(Dialect)] = value; }
-            get { return (String)base.Bag[nameof(Dialect)]; }
+            get { return (string)base.Bag[nameof(Dialect)]; }
         }
         #endregion
         #region properties copied from the csc task
 
-        public Boolean AllowUnsafeBlocks
+        public bool AllowUnsafeBlocks
         {
             set { base.Bag[nameof(AllowUnsafeBlocks)] = value; }
             get { return base.GetBoolParameterWithDefault(nameof(AllowUnsafeBlocks), false); }
         }
 
-        public String ApplicationConfiguration
+        public string ApplicationConfiguration
         {
             set { base.Bag[nameof(ApplicationConfiguration)] = value; }
-            get { return (String)base.Bag[nameof(ApplicationConfiguration)]; }
+            get { return (string)base.Bag[nameof(ApplicationConfiguration)]; }
         }
-        public String BaseAddress
+        public string BaseAddress
         {
             set { base.Bag[nameof(BaseAddress)] = value; }
-            get { return (String)base.Bag[nameof(BaseAddress)]; }
+            get { return (string)base.Bag[nameof(BaseAddress)]; }
         }
-        public Boolean CheckForOverflowUnderflow
+        public bool CheckForOverflowUnderflow
         {
             set { base.Bag[nameof(CheckForOverflowUnderflow)] = value; }
             get { return base.GetBoolParameterWithDefault(nameof(CheckForOverflowUnderflow), false); }
         }
-        public String DisabledWarnings
+        public string DisabledWarnings
         {
             set { base.Bag[nameof(DisabledWarnings)] = value; }
-            get { return (String)base.Bag[nameof(DisabledWarnings)]; }
+            get { return (string)base.Bag[nameof(DisabledWarnings)]; }
         }
-        public String DocumentationFile
+        public string DocumentationFile
         {
             set { base.Bag[nameof(DocumentationFile)] = value; }
-            get { return (String)base.Bag[nameof(DocumentationFile)]; }
+            get { return (string)base.Bag[nameof(DocumentationFile)]; }
         }
-        public Boolean ErrorEndLocation
+        public bool ErrorEndLocation
         {
             set { base.Bag[nameof(ErrorEndLocation)] = value; }
             get { return base.GetBoolParameterWithDefault(nameof(ErrorEndLocation), false); }
         }
 
-        public String ErrorReport
+        public string ErrorReport
         {
             set { base.Bag[nameof(ErrorReport)] = value; }
-            get { return (String)base.Bag[nameof(ErrorReport)]; }
+            get { return (string)base.Bag[nameof(ErrorReport)]; }
         }
-        public Boolean GenerateFullPaths
+        public bool GenerateFullPaths
         {
             set { base.Bag[nameof(GenerateFullPaths)] = value; }
             get { return base.GetBoolParameterWithDefault(nameof(GenerateFullPaths), false); }
         }
 
-        public String LangVersion
+        public string LangVersion
         {
             set { base.Bag[nameof(LangVersion)] = value; }
-            get { return (String)base.Bag[nameof(LangVersion)]; }
+            get { return (string)base.Bag[nameof(LangVersion)]; }
         }
-        public String ModuleAssemblyName
+        public string ModuleAssemblyName
         {
             set { base.Bag[nameof(ModuleAssemblyName)] = value; }
-            get { return (String)base.Bag[nameof(ModuleAssemblyName)]; }
+            get { return (string)base.Bag[nameof(ModuleAssemblyName)]; }
         }
 
-        public Boolean NoStandardLib
+        public bool NoStandardLib
         {
             set { base.Bag[nameof(NoStandardLib)] = value; }
             get { return base.GetBoolParameterWithDefault(nameof(NoStandardLib), false); }
         }
 
-        public String PdbFile
+        public string PdbFile
         {
             set { base.Bag[nameof(PdbFile)] = value; }
-            get { return (String)base.Bag[nameof(PdbFile)]; }
+            get { return (string)base.Bag[nameof(PdbFile)]; }
         }
 
         /// <summary>
@@ -298,12 +298,12 @@ namespace XSharp.Build
         /// If set to null, "/preferreduilang" option is omitted, and csc.exe uses its default setting.
         /// Otherwise, the value is passed to "/preferreduilang" as is.
         /// </remarks>
-        public String PreferredUILang
+        public string PreferredUILang
         {
             set { base.Bag[nameof(PreferredUILang)] = value; }
-            get { return (String)base.Bag[nameof(PreferredUILang)]; }
+            get { return (string)base.Bag[nameof(PreferredUILang)]; }
         }
-        public Boolean ReportAnalyzer
+        public bool ReportAnalyzer
         {
             set { base.Bag[nameof(ReportAnalyzer)] = value; }
             get { return base.GetBoolParameterWithDefault(nameof(ReportAnalyzer), false); }
@@ -322,15 +322,15 @@ namespace XSharp.Build
             get { return (bool)base.Bag[nameof(VulcanCompatibleResources)]; }
 
         }
-        public String VsSessionGuid
+        public string VsSessionGuid
         {
             set { base.Bag[nameof(VsSessionGuid)] = value; }
-            get { return (String)base.Bag[nameof(VsSessionGuid)]; }
+            get { return (string)base.Bag[nameof(VsSessionGuid)]; }
         }
 
 
         // We do not support this
-        //public Boolean UseHostCompilerIfAvailable
+        //public bool UseHostCompilerIfAvailable
         //{
         //    set { base.Bag[nameof(UseHostCompilerIfAvailable)] = value; }
         //    get { return base.GetBoolParameterWithDefault(nameof(UseHostCompilerIfAvailable), false); }
@@ -342,15 +342,15 @@ namespace XSharp.Build
             get { return base.GetIntParameterWithDefault(nameof(WarningLevel), 4); }
         }
 
-        public String WarningsAsErrors
+        public string WarningsAsErrors
         {
             set { base.Bag[nameof(WarningsAsErrors)] = value; }
-            get { return (String)base.Bag[nameof(WarningsAsErrors)]; }
+            get { return (string)base.Bag[nameof(WarningsAsErrors)]; }
         }
-        public String WarningsNotAsErrors
+        public string WarningsNotAsErrors
         {
             set { base.Bag[nameof(WarningsNotAsErrors)] = value; }
-            get { return (String)base.Bag[nameof(WarningsNotAsErrors)]; }
+            get { return (string)base.Bag[nameof(WarningsNotAsErrors)]; }
         }
 
         #endregion
@@ -373,10 +373,10 @@ namespace XSharp.Build
         // We do not support BugReport because it always requires user interaction,
         // which will cause a hang.
 
-        public String CodeAnalysisRuleSet
+        public string CodeAnalysisRuleSet
         {
             set { base.Bag[nameof(CodeAnalysisRuleSet)] = value; }
-            get { return (String)base.Bag[nameof(CodeAnalysisRuleSet)]; }
+            get { return (string)base.Bag[nameof(CodeAnalysisRuleSet)]; }
         }
         // CodePage in base
         [Output]
@@ -388,21 +388,21 @@ namespace XSharp.Build
         // DebugType in base
         // DefineConstants
         // DelaySign
-        public Boolean Deterministic
+        public bool Deterministic
         {
             set { base.Bag[nameof(Deterministic)] = value; }
             get { return base.GetBoolParameterWithDefault(nameof(Deterministic), false); }
         }
         // EmitDebugInformation
-        public String ErrorLog
+        public string ErrorLog
         {
             set { base.Bag[nameof(ErrorLog)] = value; }
-            get { return (String)base.Bag[nameof(ErrorLog)]; }
+            get { return (string)base.Bag[nameof(ErrorLog)]; }
         }
-        public String Features
+        public string Features
         {
             set { base.Bag[nameof(Features)] = value; }
-            get { return (String)base.Bag[nameof(Features)]; }
+            get { return (string)base.Bag[nameof(Features)]; }
         }
         // FileAlignment
         // HighEntropyVA
@@ -415,15 +415,15 @@ namespace XSharp.Build
         // NoWin32Manifest
         // Optimize
         // OutputAssembly
-        public String PathMap
+        public string PathMap
         {
             set { base.Bag[nameof(PathMap)] = value; }
-            get { return (String)base.Bag[nameof(PathMap)]; }
+            get { return (string)base.Bag[nameof(PathMap)]; }
         }
         // Platform
         // Prefer32Bit
 
-        public Boolean ProvideCommandLineArgs
+        public bool ProvideCommandLineArgs
         {
             set { base.Bag[nameof(ProvideCommandLineArgs)] = value; }
             get { return base.GetBoolParameterWithDefault(nameof(ProvideCommandLineArgs), false); }
@@ -431,7 +431,7 @@ namespace XSharp.Build
         // References
         // Resources
         // ResponseFiles
-        public Boolean SkipCompilerExecution
+        public bool SkipCompilerExecution
         {
             set { base.Bag[nameof(SkipCompilerExecution)] = value; }
             get { return base.GetBoolParameterWithDefault(nameof(SkipCompilerExecution), false); }
@@ -447,7 +447,7 @@ namespace XSharp.Build
         /// XSCompiler server instance, starting a new instance if necessary.
         /// If false, we will use the values from ToolPath/Exe.
         /// </summary>
-        public Boolean UseSharedCompilation
+        public bool UseSharedCompilation
         {
             set { base.Bag[nameof(UseSharedCompilation)] = value; }
             get { return base.GetBoolParameterWithDefault(nameof(UseSharedCompilation), false); }
@@ -466,8 +466,8 @@ namespace XSharp.Build
         //private bool hasShownMaxErrorMsg;
         public Xsc() : base()
         {
-            //System.Diagnostics.Debugger.Launch();
-            useCRLF = !String.IsNullOrEmpty(System.Environment.GetEnvironmentVariable("XSHARPDEV"));
+            System.Diagnostics.Debugger.Launch();
+            useCRLF = !string.IsNullOrEmpty(System.Environment.GetEnvironmentVariable("XSHARPDEV"));
             errorCount = 0;
             //hasShownMaxErrorMsg = false;
             VulcanCompatibleResources = false;
@@ -535,7 +535,7 @@ namespace XSharp.Build
             if (string.IsNullOrEmpty(CompilerPath))
             {
                 // If used after MSI Installer, value should be in the Registry
-                string InstallPath = String.Empty;
+                string InstallPath = string.Empty;
                 string node;
                 if (IntPtr.Size == 4)
                     node = @"HKEY_LOCAL_MACHINE\" + XSharp.Constants.RegistryKey;
@@ -734,7 +734,7 @@ namespace XSharp.Build
 
             // User-defined CommandLine Option (in order to support switches unknown at that time)
             // cannot use appendswitch because it will quote the string when there are embedded spaces
-            if (!String.IsNullOrEmpty(this.CommandLineOption))
+            if (!string.IsNullOrEmpty(this.CommandLineOption))
             {
                 commandline.AppendTextUnquoted( this.CommandLineOption);
             }

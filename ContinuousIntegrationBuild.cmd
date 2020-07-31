@@ -5,5 +5,6 @@ call "%~dp0\Roslyn\Restore.cmd"
 echo Start building Roslyn Compiler ...
 msbuild "%~dp0\Roslyn\Compilers.sln" /v:m /m
 echo Start building XSharp Compilers (all 3 configurations)
-call "%~dp0\XSharp\Build.cmd All"
+cd "%~dp0\XSharp"
+call Build.cmd All
 

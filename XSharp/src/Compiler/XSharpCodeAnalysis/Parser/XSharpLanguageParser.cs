@@ -824,9 +824,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         {
                             clsmembers.Clear();
                             var classdecl = ctxt.Get<ClassDeclarationSyntax>();
-                            if (!hasctor && !classdecl.IsStatic() && _options.VOClipperConstructors && trans != null )
+                            var classcontext = ctxt as XP.Class_Context;
+                            if (!hasctor && !classdecl.IsStatic() && trans != null && _options.HasOption(CompilerOption.DefaultClipperContructors, classcontext, trans.PragmaOptions))
                             {
-                                var ctor = trans.GenerateDefaultCtor(classdecl.Identifier, ctxt as XP.Class_Context);
+                                var ctor = trans.GenerateDefaultCtor(classdecl.Identifier, classcontext);
                                 if (ctor != null)
                                 {
                                     clsmembers.Add(ctor);

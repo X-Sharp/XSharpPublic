@@ -38,3 +38,22 @@ https://github.com/X-Sharp/XSharpDev/blob/master/license.txt.
 
 Of course we welcome all additions, bug fixes etc.
 
+
+Additional notes:
+- to open the projects in Visual Studio, you MUST have the correct .Net Core version loaded on your machine 
+  The version number for this SDK is specified in the global.json files inside the Roslyn and XSharp folders. 
+  At this moment this version is 2.1.500
+  This version number matches the version number in Roslyn\build\Targets\Tools.props and Roslyn\build\Targets\Tools.props.
+- The CI build process for Roslyn does not use this setting. This process uses the version defined in Roslyn\build\Targets\Tools.props 
+  and downloads a copy of .Net core into the Roslyn\Binaries\Tools\dotnet folder. The dotnet.exe file in this folder is used for the CI build.
+- The Build scripts in the XSharp subfolder add the Roslyn\Binaries\Tools\dotnet folder to the path and then call dotnet to restore the files.
+  This will make sure that the SDK of the right version is found.
+  If this somehow fails, then you can set an environment variable SET COREHOST_TRACE=1. This will show where dotnet.exe is looking for the sdk.
+    
+To open the current projects in Visual Studio you need to install .Net Core 2.1.500 (this is also the version in global.json) from:
+https://dotnet.microsoft.com/download/dotnet-core/2.1  
+
+  
+  
+  
+

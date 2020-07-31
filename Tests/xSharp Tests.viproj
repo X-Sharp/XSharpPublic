@@ -43064,8 +43064,8 @@ FileType = Code
 CopyToBin = 0
 [C391 - Some issues with alias expressions References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
-ReferenceGAC = VulcanRT,1,0,1.1.401.0
-ReferenceGAC = VulcanRTFuncs,1,0,1.1.401.0
+ReferenceGAC = CLR4,VulcanRT,1,0,4.0.401.0
+ReferenceGAC = CLR4,VulcanRTFuncs,1,0,4.0.401.0
 [C391 - Some issues with alias expressions Resources]
 [C391 - Some issues with alias expressions Native Resources]
 [C391 - Some issues with alias expressions License files]
@@ -48244,8 +48244,8 @@ FileType = Code
 CopyToBin = 0
 [C435 - Problem with 1 char long literral strings delimited with single quotes References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
-ReferenceGAC = VulcanRT,1,0,1.1.401.0
-ReferenceGAC = VulcanRTFuncs,1,0,1.1.401.0
+ReferenceGAC = CLR4,VulcanRT,1,0,4.0.401.0
+ReferenceGAC = CLR4,VulcanRTFuncs,1,0,4.0.401.0
 [C435 - Problem with 1 char long literral strings delimited with single quotes Resources]
 [C435 - Problem with 1 char long literral strings delimited with single quotes Native Resources]
 [C435 - Problem with 1 char long literral strings delimited with single quotes License files]
@@ -65047,8 +65047,8 @@ FileType = Code
 CopyToBin = 0
 [C582 - Cannot use alias expression with field named after a keyword References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
-ReferenceGAC = VulcanRT,1,0,1.1.401.0
-ReferenceGAC = VulcanRTFuncs,1,0,1.1.401.0
+ReferenceGAC = CLR4,VulcanRT,1,0,4.0.401.0
+ReferenceGAC = CLR4,VulcanRTFuncs,1,0,4.0.401.0
 [C582 - Cannot use alias expression with field named after a keyword Resources]
 [C582 - Cannot use alias expression with field named after a keyword Native Resources]
 [C582 - Cannot use alias expression with field named after a keyword License files]
@@ -67019,8 +67019,8 @@ FileType = Code
 CopyToBin = 0
 [C599 - Bogus error when using ++/-- in alias expression References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
-ReferenceGAC = VulcanRT,1,0,1.1.401.0
-ReferenceGAC = VulcanRTFuncs,1,0,1.1.401.0
+ReferenceGAC = CLR4,VulcanRT,1,0,4.0.401.0
+ReferenceGAC = CLR4,VulcanRTFuncs,1,0,4.0.401.0
 [C599 - Bogus error when using ++/-- in alias expression Resources]
 [C599 - Bogus error when using ++/-- in alias expression Native Resources]
 [C599 - Bogus error when using ++/-- in alias expression License files]
@@ -82949,9 +82949,9 @@ FileType = Code
 CopyToBin = 0
 [C725 - ICE under specific circumstances References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
-ReferenceGAC = CLR4,XSharp.Core,1,0,2.1.0.0
-ReferenceGAC = CLR4,XSharp.VO,1,0,2.1.0.0
-ReferenceGAC = CLR4,XSharp.RT,1,0,2.1.0.0
+ReferenceGAC = XSharp.Core,1,0,2.1.0.0
+ReferenceGAC = XSharp.VO,1,0,2.1.0.0
+ReferenceGAC = XSharp.RT,1,0,2.1.0.0
 [C725 - ICE under specific circumstances Resources]
 [C725 - ICE under specific circumstances Native Resources]
 [C725 - ICE under specific circumstances License files]
@@ -83237,6 +83237,337 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
   Optimize=0
 ENDApplication = R728 Using _Chr() in a define with a number between 128 and 255
+
+ApplicationGroup = 43A04886-532C-4DC6-A4FB-751288B40D7A
+; ************** APPLICATION C726 - Bogus warning about unbalanced ">>" in TEXT...ENDTEXT *************
+Application = C726 - Bogus warning about unbalanced ">>" in TEXT...ENDTEXT
+IDEVersion = 1.06
+GalleryName = 
+GalleryPage = 
+GalleryDefaultName = 
+Target = 0
+Platform = AnyCPU
+Language = XSharp
+Runtime = CLR4
+Dialect = FoxPro
+Folder = %ProjectPath%\Applications\C726\
+PrgSubFolder = \Prg
+ResourcesSubFolder = 
+Description = 
+NameSpace = 
+Assembly = C726
+Extension = 
+ApplicationIcon = 
+OutputFolder = 
+Frameworks = 1
+GUID = 050293AD-E5B9-4780-947B-39BBA6EBD3C3
+IncludeInProjectBuild = 1
+IncludeInProjectSearch = 1
+IncludeInProjectExport = 1
+IncludePath = 
+StdDefsFile = 
+AppToRun = 
+SignAssembly = 0
+KeyFile = 
+
+[ExportOptions]
+ExportResources = 0
+ExportImages = 0
+[C726 - Bogus warning about unbalanced ">>" in TEXT...ENDTEXT FileGroups]
+[C726 - Bogus warning about unbalanced ">>" in TEXT...ENDTEXT Files]
+File = %AppPath%\Prg\C726.prg
+FileGUID = ECAD1C32-DBA0-45C4-9229-93CB2CE636A5
+FileType = Code
+CopyToBin = 0
+[C726 - Bogus warning about unbalanced ">>" in TEXT...ENDTEXT References]
+ReferenceGAC = CLR4,System,1,0,4.0.0.0
+ReferenceGAC = XSharp.Core,1,0,2.1.0.0
+ReferenceGAC = XSharp.RT,1,0,2.1.0.0
+ReferenceGAC = XSharp.VFP,1,0,2.1.0.0
+[C726 - Bogus warning about unbalanced ">>" in TEXT...ENDTEXT Resources]
+[C726 - Bogus warning about unbalanced ">>" in TEXT...ENDTEXT Native Resources]
+[C726 - Bogus warning about unbalanced ">>" in TEXT...ENDTEXT License files]
+[C726 - Bogus warning about unbalanced ">>" in TEXT...ENDTEXT General Options]
+Switches=
+ZeroArrays=0
+CaseSensitive=0
+ImplicitNamespace=0
+VO1=0
+VO2=0
+VO3=0
+VO4=0
+VO5=0
+VO6=0
+VO7=0
+VO8=0
+VO9=0
+VO10=0
+VO11=0
+VO12=0
+VO13=0
+VO14=0
+VO16=0
+FOX1=0
+FOX2=0
+XPP1=0
+LateBound=0
+Unsafe=0
+Undeclared=0
+MemVar=0
+IgnoreStdDefs=0
+Ovf=0
+FOvf=0
+ResponseOnly=0
+[C726 - Bogus warning about unbalanced ">>" in TEXT...ENDTEXT Configurations]
+AppConfig = Debug,11111111-1111-1111-1111-111111111111
+  Switches=
+  SwitchesCF=
+  CommandLine=
+  CommandLineCF=
+  Debug=1
+  DebugInit=1
+  DefineDebug=1
+  DefineTrace=0
+  SyntaxOnly=0
+  WarningsErrors=0
+  ForceConsole=0
+  ForceX86=0
+  Optimize=0
+AppConfig = Release,22222222-2222-2222-2222-222222222222
+  Switches=
+  SwitchesCF=
+  CommandLine=
+  CommandLineCF=
+  Debug=0
+  DebugInit=0
+  DefineDebug=0
+  DefineTrace=0
+  SyntaxOnly=0
+  WarningsErrors=0
+  ForceConsole=0
+  ForceX86=0
+  Optimize=0
+ENDApplication = C726 - Bogus warning about unbalanced ">>" in TEXT...ENDTEXT
+
+ApplicationGroup = 43A04886-532C-4DC6-A4FB-751288B40D7A
+; ************** APPLICATION C727 - Cannot locally turn option /vo16 off *************
+Application = C727 - Cannot locally turn option /vo16 off
+IDEVersion = 1.06
+GalleryName = 
+GalleryPage = 
+GalleryDefaultName = 
+Target = 2
+Platform = AnyCPU
+Language = XSharp
+Runtime = CLR4
+Dialect = VO
+Folder = %ProjectPath%\Applications\C727\
+PrgSubFolder = \Prg
+ResourcesSubFolder = 
+Description = 
+NameSpace = 
+Assembly = C727
+Extension = 
+ApplicationIcon = 
+OutputFolder = 
+Frameworks = 1
+GUID = CED34A55-EAD3-4D0A-A0F6-32FC6473EDB0
+IncludeInProjectBuild = 1
+IncludeInProjectSearch = 1
+IncludeInProjectExport = 1
+IncludePath = 
+StdDefsFile = 
+AppToRun = 
+SignAssembly = 0
+KeyFile = 
+
+[ExportOptions]
+ExportResources = 0
+ExportImages = 0
+[C727 - Cannot locally turn option /vo16 off FileGroups]
+[C727 - Cannot locally turn option /vo16 off Files]
+File = %AppPath%\Prg\C727.prg
+FileGUID = 543D336E-A120-412E-AAD1-61FA88A53764
+FileType = Code
+CopyToBin = 0
+[C727 - Cannot locally turn option /vo16 off References]
+ReferenceGAC = CLR4,System,1,0,4.0.0.0
+ReferenceBrowse = C:\XSharp\DevRt\Binaries\Debug\XSharp.Core.dll,1,1
+ReferenceBrowse = C:\XSharp\DevRt\Binaries\Debug\XSharp.RT.dll,1,1
+[C727 - Cannot locally turn option /vo16 off Resources]
+[C727 - Cannot locally turn option /vo16 off Native Resources]
+[C727 - Cannot locally turn option /vo16 off License files]
+[C727 - Cannot locally turn option /vo16 off General Options]
+Switches=
+ZeroArrays=0
+CaseSensitive=0
+ImplicitNamespace=0
+VO1=0
+VO2=0
+VO3=0
+VO4=0
+VO5=0
+VO6=0
+VO7=0
+VO8=0
+VO9=0
+VO10=0
+VO11=0
+VO12=0
+VO13=0
+VO14=0
+VO16=1
+FOX1=0
+FOX2=0
+XPP1=0
+LateBound=0
+Unsafe=0
+Undeclared=0
+MemVar=0
+IgnoreStdDefs=0
+Ovf=0
+FOvf=0
+ResponseOnly=0
+[C727 - Cannot locally turn option /vo16 off Configurations]
+AppConfig = Debug,11111111-1111-1111-1111-111111111111
+  Switches=
+  SwitchesCF=
+  CommandLine=
+  CommandLineCF=
+  Debug=1
+  DebugInit=1
+  DefineDebug=1
+  DefineTrace=0
+  SyntaxOnly=0
+  WarningsErrors=0
+  ForceConsole=0
+  ForceX86=0
+  Optimize=0
+AppConfig = Release,22222222-2222-2222-2222-222222222222
+  Switches=
+  SwitchesCF=
+  CommandLine=
+  CommandLineCF=
+  Debug=0
+  DebugInit=0
+  DefineDebug=0
+  DefineTrace=0
+  SyntaxOnly=0
+  WarningsErrors=0
+  ForceConsole=0
+  ForceX86=0
+  Optimize=0
+ENDApplication = C727 - Cannot locally turn option /vo16 off
+
+ApplicationGroup = 43A04886-532C-4DC6-A4FB-751288B40D7A
+; ************** APPLICATION R729 - Passing arguments by reference *************
+Application = R729 - Passing arguments by reference
+IDEVersion = 1.06
+GalleryName = 
+GalleryPage = 
+GalleryDefaultName = 
+Target = 0
+Platform = x86
+Language = XSharp
+Runtime = CLR4
+Dialect = VO
+Folder = %ProjectPath%\Applications\R729\
+PrgSubFolder = \Prg
+ResourcesSubFolder = \Resources
+Description = Just a simple x# application
+NameSpace = 
+Assembly = R729
+Extension = 
+ApplicationIcon = 
+OutputFolder = 
+Frameworks = 1
+GUID = 8F0314D6-95B4-4CA9-8F63-BC099A13086B
+IncludeInProjectBuild = 1
+IncludeInProjectSearch = 1
+IncludeInProjectExport = 1
+IncludePath = 
+StdDefsFile = 
+AppToRun = 
+SignAssembly = 0
+KeyFile = 
+
+[ExportOptions]
+ExportResources = 0
+ExportImages = 0
+[R729 - Passing arguments by reference FileGroups]
+[R729 - Passing arguments by reference Files]
+File = %AppPath%\Prg\R729.prg
+FileGUID = 7BB1BFF1-5645-4603-92BF-406F5DB20C18
+FileType = Code
+CopyToBin = 0
+[R729 - Passing arguments by reference References]
+ReferenceGAC = CLR4,System,1,0,4.0.0.0
+ReferenceBrowse = C:\XSharp\DevRt\Binaries\Debug\XSharp.Core.dll,1,1
+ReferenceBrowse = C:\XSharp\DevRt\Binaries\Debug\XSharp.RT.dll,1,1
+[R729 - Passing arguments by reference Resources]
+[R729 - Passing arguments by reference Native Resources]
+[R729 - Passing arguments by reference License files]
+[R729 - Passing arguments by reference General Options]
+Switches=
+ZeroArrays=0
+CaseSensitive=0
+ImplicitNamespace=0
+VO1=0
+VO2=0
+VO3=0
+VO4=0
+VO5=0
+VO6=0
+VO7=1
+VO8=0
+VO9=0
+VO10=0
+VO11=0
+VO12=0
+VO13=0
+VO14=0
+VO16=0
+FOX1=0
+FOX2=0
+XPP1=0
+LateBound=1
+Unsafe=1
+Undeclared=0
+MemVar=0
+IgnoreStdDefs=0
+Ovf=0
+FOvf=0
+ResponseOnly=0
+[R729 - Passing arguments by reference Configurations]
+AppConfig = Debug,11111111-1111-1111-1111-111111111111
+  Switches=
+  SwitchesCF=
+  CommandLine=
+  CommandLineCF=
+  Debug=1
+  DebugInit=1
+  DefineDebug=1
+  DefineTrace=0
+  SyntaxOnly=0
+  WarningsErrors=0
+  ForceConsole=0
+  ForceX86=0
+  Optimize=0
+AppConfig = Release,22222222-2222-2222-2222-222222222222
+  Switches=
+  SwitchesCF=
+  CommandLine=
+  CommandLineCF=
+  Debug=0
+  DebugInit=0
+  DefineDebug=0
+  DefineTrace=0
+  SyntaxOnly=0
+  WarningsErrors=1
+  ForceConsole=0
+  ForceX86=0
+  Optimize=0
+ENDApplication = R729 - Passing arguments by reference
 [EndApplications]
 
 [Configurations]

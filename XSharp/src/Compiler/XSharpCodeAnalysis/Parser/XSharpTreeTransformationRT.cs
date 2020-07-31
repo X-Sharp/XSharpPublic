@@ -1325,7 +1325,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             TypeSyntax type = context.Type?.Get<TypeSyntax>();
             if (type == null)
             {
-                if (!_options.VOUntypedAllowed)
+                if (!_options.HasOption(CompilerOption.UntypedAllowed, context, PragmaOptions))
                     type = _getMissingType();
                 else if (CurrentEntity != null && CurrentEntity.Data.HasTypedParameter)
                     type = _usualType;
@@ -1338,7 +1338,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         protected override TypeSyntax _getMissingType()
         {
             TypeSyntax varType;
-            if (_options.VOUntypedAllowed)
+            if (_options.HasOption(CompilerOption.UntypedAllowed, (XSharpParserRuleContext) CurrentEntity, PragmaOptions))
                 varType = _usualType;
             else
                 varType = MissingType();
@@ -1366,6 +1366,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             var ctor = _syntaxFactory.ConstructorDeclaration(attributeLists, mods, id, pars, chain, body, null, null);
             ctor.XGenerated = true;
             _pool.Free(attributeLists);
+            ctor.XNode = classctx;
             return ctor;
         }
 
@@ -1402,33 +1403,49 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     }
                 }
 
-                if (!context.Data.Partial && !context.Data.HasInstanceCtor && _options.VOClipperConstructors)
+                if (!context.Data.Partial && !context.Data.HasInstanceCtor && _options.HasOption(CompilerOption.DefaultClipperContructors, context, PragmaOptions))
                 {
+
+                    var hasComImport = false;
+                    foreach (var attlist in classdecl.AttributeLists)
+                    {
+                        for (int iAtt = 0; iAtt < attlist.Attributes.Count && ! hasComImport; iAtt++)
+                        {
+                            var att = attlist.Attributes[iAtt];
+                            if (XSharpString.Compare(att.Name.ToString(), "ComImport") == 0)
+                            { 
+                                hasComImport = true;
+                            }
+                        }
+                    }
                     //
                     // generate new class constructor
-                    // 
-                    var ctor = GenerateDefaultCtor(classdecl.Identifier, context);
-                    var newmembers = _pool.Allocate<MemberDeclarationSyntax>();
-                    newmembers.AddRange(classdecl.Members);
-                    if (ctor != null)
+                    //
+                    if (!hasComImport)
                     {
-                        newmembers.Add(ctor);
+                        var ctor = GenerateDefaultCtor(classdecl.Identifier, context);
+                        var newmembers = _pool.Allocate<MemberDeclarationSyntax>();
+                        newmembers.AddRange(classdecl.Members);
+                        if (ctor != null)
+                        {
+                            newmembers.Add(ctor);
+                        }
+                        classdecl = classdecl.Update(
+                            classdecl.AttributeLists,
+                            classdecl.Modifiers,
+                            classdecl.Keyword,
+                            classdecl.Identifier,
+                            classdecl.TypeParameterList,
+                            classdecl.BaseList,
+                            classdecl.ConstraintClauses,
+                            classdecl.OpenBraceToken,
+                            newmembers,
+                            classdecl.CloseBraceToken,
+                            classdecl.SemicolonToken);
+                        _pool.Free(newmembers);
+                        context.Put(classdecl);
+                        context.Data.HasInstanceCtor = true;
                     }
-                    classdecl = classdecl.Update(
-                        classdecl.AttributeLists,
-                        classdecl.Modifiers,
-                        classdecl.Keyword,
-                        classdecl.Identifier,
-                        classdecl.TypeParameterList,
-                        classdecl.BaseList,
-                        classdecl.ConstraintClauses,
-                        classdecl.OpenBraceToken,
-                        newmembers,
-                        classdecl.CloseBraceToken,
-                        classdecl.SemicolonToken);
-                    _pool.Free(newmembers);
-                    context.Put(classdecl);
-                    context.Data.HasInstanceCtor = true;
                 }
             }
         }
@@ -3168,7 +3185,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     }
                 }
                 context.Data.HasTypedParameter = bHasTypedParameter;
-                if (!context.Data.HasClipperCallingConvention && !isEntryPoint && !hasConvention && _options.VOUntypedAllowed)
+                if (!context.Data.HasClipperCallingConvention && !isEntryPoint && !hasConvention && _options.HasOption(CompilerOption.UntypedAllowed, (XSharpParserRuleContext) context, PragmaOptions))
                     context.Data.HasClipperCallingConvention = !bHasTypedParameter;
                 if (! bHasTypedParameter)
                 {

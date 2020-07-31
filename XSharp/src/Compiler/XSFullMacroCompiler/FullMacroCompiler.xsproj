@@ -21,7 +21,7 @@
     <OutputPath>$(Binariesdir)</OutputPath>
     <StartupObject />
     <ApplicationIcon />
-    <XSharpProjectversion>2.0.5.0</XSharpProjectversion>
+    <XSharpProjectversion>2.5.2.0</XSharpProjectversion>
     <AZ>false</AZ>
     <CS>false</CS>
     <LB>false</LB>
@@ -95,6 +95,13 @@
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Xml.Linq" />
+    <Reference Include="XSharp.CodeAnalysis, Version=2.1.0.0, Culture=neutral, PublicKeyToken=ed555a0467764586">
+      <Name>XSharp.CodeAnalysis</Name>
+      <AssemblyName>XSharp.CodeAnalysis.dll</AssemblyName>
+      <SpecificVersion>False</SpecificVersion>
+      <Private>True</Private>
+      <HintPath>..\..\..\Binaries\Debug\Dlls\XSharp.CodeAnalysis.dll</HintPath>
+    </Reference>
     <Reference Include="XSharp.Core, Version=2.0.0.0, Culture=neutral, PublicKeyToken=ed555a0467764586">
       <Name>XSharp.Core</Name>
       <AssemblyName>XSharp.Core.dll</AssemblyName>
@@ -109,6 +116,13 @@
       <Private>True</Private>
       <HintPath>..\..\..\..\..\DevRt\Binaries\Debug\XSharp.RT.dll</HintPath>
     </Reference>
+    <Reference Include="XSharp.Scripting, Version=2.1.0.0, Culture=neutral, PublicKeyToken=ed555a0467764586">
+      <Name>XSharp.Scripting</Name>
+      <AssemblyName>XSharp.Scripting.dll</AssemblyName>
+      <SpecificVersion>False</SpecificVersion>
+      <Private>True</Private>
+      <HintPath>..\..\..\Binaries\Debug\Dlls\XSharp.Scripting.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.prg">
@@ -120,18 +134,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Properties\" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\Scripting\XSharpScripting\XSharpScripting.csproj">
-      <Name>XSharpScripting</Name>
-      <Project>{014963ae-d6d1-4ff8-8d8a-8d417f5d8d1f}</Project>
-      <Private>True</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\XSharpCodeAnalysis\XSharpCodeAnalysis.csproj">
-      <Name>XSharpCodeAnalysis</Name>
-      <Project>{f738fd65-ffaf-4f52-8efc-5affd1c42846}</Project>
-      <Private>True</Private>
-    </ProjectReference>
   </ItemGroup>
   <!-- This next bit is required unless the macro used to Import your targets is defined in an MSBuild toolset. -->
   <ProjectExtensions>

@@ -1,2 +1,2 @@
-set nugetdir=%userprofile%\.nuget\packages\nuget.commandline\4.6.2\tools\
-%nugetdir%nuget restore Compiler.sln
+set path=%~dp0\..\Roslyn\Binaries\Tools\dotnet;%path%
+dotnet restore Compiler.sln

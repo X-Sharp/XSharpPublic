@@ -171,7 +171,9 @@ namespace Microsoft.CodeAnalysis.CSharp
         Vo14 = 1 << 14,
         FloatConstants = Vo14,
         Vo15 = 1 << 15,
+        UntypedAllowed = Vo15,
         Vo16 = 1 << 16,
+        DefaultClipperContructors = Vo16,
         Xpp1 = 1 << 17,
         Xpp2 = 1 << 18,
         Fox1 = 1 << 19,
@@ -246,6 +248,10 @@ namespace Microsoft.CodeAnalysis.CSharp
                     return CompilerOption.Vo13;
                 case "vo14":
                     return CompilerOption.Vo14;
+                case "vo15":
+                    return CompilerOption.Vo15;
+                case "vo16":
+                    return CompilerOption.Vo16;
                 case "xpp1":
                     return CompilerOption.Xpp1;
                 case "xpp2":

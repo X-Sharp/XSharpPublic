@@ -7,10 +7,8 @@ using System;
 using System.Text;
 using Microsoft.Build.Framework;
 using System.Diagnostics;
-using System.Collections;
 namespace XSharp.Build
 {
-
     internal class XSharpCommandLineBuilder : CommandLineBuilderExtension
     {
         bool fNewLine = false;
@@ -147,13 +145,19 @@ namespace XSharp.Build
 
         public new void AppendSwitchUnquotedIfNotNull(string switchName, string parameter)
         {
-            base.AppendSwitchUnquotedIfNotNull(switchName, parameter);
-            this.AppendNewLine();
+            if (parameter != null)
+            {
+                base.AppendSwitchUnquotedIfNotNull(switchName, parameter);
+                this.AppendNewLine();
+            }
         }
         public new void AppendSwitchIfNotNull(string switchName, string[] parameters, string delimiter)
         {
-            base.AppendSwitchIfNotNull(switchName, parameters, delimiter);
-            this.AppendNewLine();
+            if (parameters != null)
+            {
+                base.AppendSwitchIfNotNull(switchName, parameters, delimiter);
+                this.AppendNewLine();
+            }
         }
 
         /// <summary>
@@ -162,9 +166,9 @@ namespace XSharp.Build
         /// </summary>
         public override void AppendSwitchIfNotNull(string switchName, ITaskItem[] parameters, string[] attributes)
         {
-            this.AppendSwitchIfNotNull(switchName, parameters, attributes, null /* treatAsFlag */);
             if (parameters != null)
-            { 
+            {
+                this.AppendSwitchIfNotNull(switchName, parameters, attributes, null /* treatAsFlag */);
                 this.AppendNewLine();
             }
         }

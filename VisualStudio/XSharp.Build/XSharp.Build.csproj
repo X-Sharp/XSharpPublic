@@ -60,7 +60,6 @@
     <Compile Include="CommandLineBuilder.cs" />
     <Compile Include="CopiedCode\CommandLineBuilderExtensions.cs" />
     <Compile Include="CopiedCode\CreateManagedResourceName.cs" />
-    <Compile Include="CopiedCode\TaskExtension.cs" />
     <Compile Include="CreateXSharpManifestResourceName.cs" />
     <Compile Include="Culture.cs" />
     <Compile Include="CopiedCode\ErrorUtilities.cs" />

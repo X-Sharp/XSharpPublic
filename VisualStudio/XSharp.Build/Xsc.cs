@@ -9,7 +9,6 @@ using Microsoft.Build.Tasks;
 
 using Microsoft.Build.Framework;
 using Microsoft.Build.Utilities;
-using Microsoft.Win32;
 using System.IO;
 using System.Diagnostics;
 namespace XSharp.Build
@@ -466,8 +465,8 @@ namespace XSharp.Build
         //private bool hasShownMaxErrorMsg;
         public Xsc() : base()
         {
-            System.Diagnostics.Debugger.Launch();
-            useCRLF = !string.IsNullOrEmpty(System.Environment.GetEnvironmentVariable("XSHARPDEV"));
+            //System.Diagnostics.Debugger.Launch();
+            useCRLF = !string.IsNullOrEmpty(System.Environment.GetEnvironmentVariable(Constants.EnvironmentXSharpDev));
             errorCount = 0;
             //hasShownMaxErrorMsg = false;
             VulcanCompatibleResources = false;
@@ -535,47 +534,22 @@ namespace XSharp.Build
             if (string.IsNullOrEmpty(CompilerPath))
             {
                 // If used after MSI Installer, value should be in the Registry
-                string InstallPath = string.Empty;
-                string node;
-                if (IntPtr.Size == 4)
-                    node = @"HKEY_LOCAL_MACHINE\" + XSharp.Constants.RegistryKey;
-                else
-                    node = @"HKEY_LOCAL_MACHINE\" + XSharp.Constants.RegistryKey64;
-
-                try
-                {
-                    InstallPath = (string)Registry.GetValue(node, XSharp.Constants.RegistryValue, "");
-                }
-                catch (Exception)
-                {
-                    // Registry entry not found  x64 ?
-                }
-                if (string.IsNullOrEmpty(InstallPath))
-                {
-                    InstallPath = @"C:\Program Files (x86)\XSharp";
-                }
-                CompilerPath = Utilities.AddSlash(InstallPath) + "Bin\\";
+                string InstallPath = Utilities.FindXSharpBinPath();
                 // Allow to override the path when developing.
                 // Please note that this must be a complete path, for example "d:\Xsharp\Dev\XSharp\Binaries\Debug"
 
-                string DevPath = System.Environment.GetEnvironmentVariable("XSHARPDEV");
+                string DevPath = System.Environment.GetEnvironmentVariable(Constants.EnvironmentXSharpDev);
                 if (!string.IsNullOrEmpty(DevPath) )
                 {
-                    DevPath = Utilities.AddSlash(DevPath);
-                    string testPath = Path.Combine(Path.GetDirectoryName(DevPath), toolName);
+                    string testPath = Path.Combine(DevPath, toolName);
                     if (File.Exists(testPath))
                     {
                         CompilerPath = DevPath;
                     }
                 }
-                if (string.IsNullOrEmpty(CompilerPath))
-                {
-                    // get the path of the current DLL
-                    CompilerPath = new Uri(typeof(Xsc).Assembly.CodeBase).LocalPath;
-                }
             }
             // Search the compiler at the same place
-            var xsc_file = Path.Combine(Path.GetDirectoryName(CompilerPath), toolName);
+            var xsc_file = Path.Combine(CompilerPath, toolName);
             if (File.Exists(xsc_file))
             {
                 // The tool has been found.
@@ -715,7 +689,7 @@ namespace XSharp.Build
             commandline.AppendPlusOrMinusSwitch("/vo8", base.Bag, nameof(VO8));
             commandline.AppendPlusOrMinusSwitch("/vo9", base.Bag, nameof(VO9));
             commandline.AppendPlusOrMinusSwitch("/vo10", base.Bag, nameof(VO10));
-            //commandline.AppendPlusOrMinusSwitch("/vo11", base.Bag, nameof(VO11));
+            commandline.AppendPlusOrMinusSwitch("/vo11", base.Bag, nameof(VO11));
             commandline.AppendPlusOrMinusSwitch("/vo12", base.Bag, nameof(VO12));
             commandline.AppendPlusOrMinusSwitch("/vo13", base.Bag, nameof(VO13));
             commandline.AppendPlusOrMinusSwitch("/vo14", base.Bag, nameof(VO14));
@@ -1039,7 +1013,7 @@ namespace XSharp.Build
             // The managed compiler command line options are called from the cscCompiler options
             if (this.Dialect?.Length > 0)
             {
-                cmdline.AppendTextUnquoted("/dialect:" + this.Dialect);
+                commandLine.AppendSwitchUnquotedIfNotNull("/dialect:" , this.Dialect);
             }
             AddCscCompilerCommands(commandLine);
             AddVOCompatibilityCommands(commandLine);

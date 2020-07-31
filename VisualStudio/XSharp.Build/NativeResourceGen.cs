@@ -10,39 +10,17 @@ using System.Collections.Generic;
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Text;
-using Microsoft.Win32;
-namespace XSharp.Build {
+
+namespace XSharp.Build
+{
 
     public class NativeResourceCompiler : ToolTask {
 
         const string outputName = "NativeResources.res";
         const string defines = "NativeResourceDefines.xh";
-        static string InstallPath = String.Empty;
-        static string RootPath = String.Empty;
-        /// <summary>
-        /// Read XSharp Installation location from the Registry
-        /// </summary>
-        static NativeResourceCompiler() {
-            string node;
-            if (IntPtr.Size == 4)
-                node = @"HKEY_LOCAL_MACHINE\" + XSharp.Constants.RegistryKey;
-            else
-                node = @"HKEY_LOCAL_MACHINE\" + XSharp.Constants.RegistryKey64;
+        static string InstallPath = string.Empty;
+        static string RootPath = string.Empty;
 
-            try
-            {
-                RootPath = (string)Registry.GetValue(node, XSharp.Constants.RegistryValue, "");
-            }
-            catch (Exception)
-            {
-                // Registry entry not found  x64 ?
-            }
-            if (string.IsNullOrEmpty(RootPath))
-            {
-                RootPath = @"C:\Program Files (x86)\XSharp";
-            }
-            InstallPath = System.IO.Path.Combine(RootPath, "Bin");
-        }
 
         public NativeResourceCompiler() : base()
         {
@@ -121,8 +99,13 @@ namespace XSharp.Build {
             return FindRc(this.ToolName);
         }
 
-        private string FindRc(string toolName) {
-            return System.IO.Path.Combine(InstallPath, ToolName);
+        private string FindRc(string toolName)
+        {
+            if (string.IsNullOrEmpty(InstallPath))
+            {
+                InstallPath = Utilities.FindXSharpBinPath();
+            }
+            return Path.Combine(InstallPath, ToolName);
         }
 
         /// <summary>
@@ -356,19 +339,9 @@ namespace XSharp.Build {
                     defincpath = incpath + ";" + defincpath;
                 }
                 // Find the Vulcan Include path
-                string vulcanIncludeDir = String.Empty;
-                try {
-                    string key;
-                    if(Environment.Is64BitProcess)
-                        key = @"HKEY_LOCAL_MACHINE\SOFTWARE\Wow6432Node\Grafx\Vulcan.NET";
-                    else
-                        key = @"HKEY_LOCAL_MACHINE\SOFTWARE\Grafx\Vulcan.NET";
-                    vulcanIncludeDir = (string)Registry.GetValue(key, "InstallPath", "");
-                } catch(Exception) { }
-                if(!String.IsNullOrEmpty(vulcanIncludeDir)) {
-                    if(!vulcanIncludeDir.EndsWith(@"\"))
-                        vulcanIncludeDir += @"\";
-                    vulcanIncludeDir += @"Include";
+                string vulcanIncludeDir = Utilities.VulcanIncludeDir();
+                if(!string.IsNullOrEmpty(vulcanIncludeDir))
+                {
                     defincpath += ";" + vulcanIncludeDir;
                 }
                 // please note that the path should not end with a backslash

@@ -357,6 +357,9 @@ namespace Microsoft.CodeAnalysis.CSharp
                 case CompilerOption.ClipperCallingConvention: // vo5
                     return CheckOption(option, VOClipperCallingConvention, context, options);
 
+                case CompilerOption.ImplicitCastsAndConversions: // vo7
+                    return CheckOption(option, VOImplicitCastsAndConversions, context, options);
+
                 case CompilerOption.AllowMissingReturns: // vo9
                     return CheckOption(option, VOAllowMissingReturns, context, options);
 
@@ -378,7 +381,6 @@ namespace Microsoft.CodeAnalysis.CSharp
                 case CompilerOption.LateBinding:  // lb is handled in cde generation
                 case CompilerOption.SignedUnsignedConversion: // vo4
                 case CompilerOption.ResolveTypedFunctionPointersToPtr: // vo6
-                case CompilerOption.ImplicitCastsAndConversions: // vo7
                 case CompilerOption.CompatibleIIF:  // vo10
                 case CompilerOption.ArithmeticConversions: // vo11
                 case CompilerOption.StringComparisons: // vo13

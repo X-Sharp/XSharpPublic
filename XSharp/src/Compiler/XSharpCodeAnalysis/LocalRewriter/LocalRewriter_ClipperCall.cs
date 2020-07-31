@@ -48,14 +48,28 @@ namespace Microsoft.CodeAnalysis.CSharp
                                    ImmutableArray<BoundExpression>.Builder args,
                                    ImmutableArray<LocalSymbol>.Builder temps,
                                    BoundLocal[] argBoundTemps,
-                                   BoundPropertyAccess[] boundProperties)
+                                   BoundPropertyAccess[] boundProperties,
+                                   out bool addressOfChangedToRef)
         {
             exprs.Clear();
+            addressOfChangedToRef = false;
             for (int i = 0; i < arguments.Length; i++)
             {
+                // Check for @var when ImplicitCastsAndConversions is enabled (/vo7) and dialect allows AddressOf
+                var a = arguments[i];
+                if (a.Kind == BoundKind.AddressOfOperator && !_compilation.Options.Dialect.AddressOfIsAlwaysByRef() )
+                {
+                    if (_compilation.Options.HasOption(CompilerOption.ImplicitCastsAndConversions, a.Syntax))
+                    {
+                        var be = a as BoundAddressOfOperator;
+                        a = be.Operand;
+                        refKinds[i] = RefKind.Ref;
+                        addressOfChangedToRef = true;
+                    }
+                }
+
                 if (refKinds[i].IsWritableReference())
                 {
-                    var a = arguments[i];
                     bool normalArg = true;
                     while (a is BoundConversion c) a = c.Operand;
                     if (a is BoundPropertyAccess bp && bp.PropertySymbol is XsVariableSymbol)
@@ -191,13 +205,36 @@ namespace Microsoft.CodeAnalysis.CSharp
                 }
 
                 // keep track of the locals that need to be assigned back
-                checkRefKinds(arguments, refKinds, exprs, args, temps, argBoundTemps, properties);
+                checkRefKinds(arguments, refKinds, exprs, args, temps, argBoundTemps, properties, out var addressOfChangedToRef);
                 var preExprs = exprs.ToImmutable();
                 exprs.Clear();
 
                 // the usual array is in the 3rd parameter to the bound call
                 var actualargs = bc.Arguments;
                 var argsNode = actualargs[2] as BoundArrayCreation;
+
+                if (addressOfChangedToRef)
+                {
+                    var initializer = argsNode.InitializerOpt;
+                    var expressions = initializer.Initializers;
+                    for (int i = 0; i < expressions.Length; i++)
+                    {
+                        // note that an expression like @USUAL will be replaced already in the Initializers array
+                        // with a call to an implicit operator. So we take the original argument here.
+                        var e = expressions[i];
+                        var a = arguments[i];
+                        if (a is BoundAddressOfOperator bop)
+                        {
+                            exprs.Add(bop.Operand);
+                        }
+                        else
+                        {
+                            exprs.Add(e);
+                        }
+                    }
+                    initializer = initializer.Update(exprs.ToImmutable());
+                    argsNode = argsNode.Update(argsNode.Bounds, initializer, argsNode.Type);
+                }
 
                 LocalSymbol parsTemp = _factory.SynthesizedLocal(argsNode.Type);
                 BoundExpression boundPars = _factory.Local(parsTemp);
@@ -357,7 +394,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 refKinds[i] = r;
             }
 
-            checkRefKinds(arguments, refKinds, exprs, args, argTemps, argBoundTemps, properties);
+            checkRefKinds(arguments, refKinds, exprs, args, argTemps, argBoundTemps, properties, out var addressOfChangedToRef);
 
             var rewrittenArgumentRefKindsOpt = argumentRefKindsOpt;
             var rewrittenArguments = args.ToImmutable();

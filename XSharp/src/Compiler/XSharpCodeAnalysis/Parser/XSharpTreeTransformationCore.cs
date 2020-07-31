@@ -7124,7 +7124,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     && _options.HasOption(CompilerOption.ImplicitCastsAndConversions, context, PragmaOptions))
                     || arg.RefKindKeyword != null)
                 {
-                    return true;
+                return true;
                 }
             }
             return false;

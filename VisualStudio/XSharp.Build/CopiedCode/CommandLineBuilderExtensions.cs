@@ -1,20 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿//
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
+// See License.txt in the project root for license information.
+//
+using Microsoft.Build.Framework;
+using Microsoft.Build.Shared;
+using Microsoft.Build.Utilities;
+using System;
+using System.Globalization;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace XSharp.Build
 {
-    // Microsoft.Build.Tasks.CommandLineBuilderExtension
-    using Microsoft.Build.Framework;
-    using Microsoft.Build.Shared;
-    using Microsoft.Build.Utilities;
-    using System;
-    using System.Collections;
-    using System.Globalization;
-    using System.Text;
-
     /// <summary>Comprises extended utility methods for constructing a command line.</summary>
     public class CommandLineBuilderExtension : CommandLineBuilder
     {

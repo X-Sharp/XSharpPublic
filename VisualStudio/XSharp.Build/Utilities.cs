@@ -11,13 +11,61 @@ using System.Threading.Tasks;
 using Microsoft.Build.Utilities;
 using Microsoft.Build.Framework;
 using System.IO;
-
+using Microsoft.Win32;
 namespace XSharp.Build
 {
 
     class Utilities
     {
 
+        internal static string FindXSharpBinPath()
+        {
+            // If used after MSI Installer, value should be in the Registry
+            string InstallPath = Environment.GetEnvironmentVariable(Constants.EnvironmentXSharpBin);
+            if (string.IsNullOrEmpty(InstallPath))
+            {
+                string node;
+                if (IntPtr.Size == 4)
+                    node = @"HKEY_LOCAL_MACHINE\" + XSharp.Constants.RegistryKey;
+                else
+                    node = @"HKEY_LOCAL_MACHINE\" + XSharp.Constants.RegistryKey64;
+
+                try
+                {
+                    InstallPath = (string)Registry.GetValue(node, XSharp.Constants.RegistryValue, "");
+                    InstallPath = Path.Combine(InstallPath, "Bin");
+                }
+                catch (Exception)
+                {
+                    // Registry entry not found  x64 ?
+                }
+
+            }
+            if (string.IsNullOrEmpty(InstallPath))
+            {
+                InstallPath = @"C:\Program Files (x86)\XSharp\Bin";
+            }
+            return InstallPath;
+        }
+        internal static string VulcanIncludeDir()
+        {
+            string vulcanIncludeDir ;
+            try
+            {
+                string key;
+                if (Environment.Is64BitProcess)
+                    key = @"HKEY_LOCAL_MACHINE\SOFTWARE\Wow6432Node\Grafx\Vulcan.NET";
+                else
+                    key = @"HKEY_LOCAL_MACHINE\SOFTWARE\Grafx\Vulcan.NET";
+                vulcanIncludeDir = (string)Registry.GetValue(key, "InstallPath", "");
+                vulcanIncludeDir = Path.Combine(vulcanIncludeDir, "Include");
+            }
+            catch (Exception)
+            {
+                vulcanIncludeDir = "";
+            }
+            return vulcanIncludeDir;
+        }
         internal static bool CopyFileSafe(string source, string target)
         {
             try
@@ -36,14 +84,6 @@ namespace XSharp.Build
                 return false;
             }
         }
-        internal static string AddSlash(string Path)
-        {
-            if (!String.IsNullOrEmpty(Path) && !Path.EndsWith("\\"))
-                Path += "\\";
-            return Path;
-
-        }
-
 
         internal static bool TryConvertItemMetadataToBool(ITaskItem item, string itemMetadataName)
         {

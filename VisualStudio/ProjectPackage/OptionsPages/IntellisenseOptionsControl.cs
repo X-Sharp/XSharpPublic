@@ -15,7 +15,7 @@ namespace XSharp.Project.OptionsPages
         public IntellisenseOptionsControl()
         {
             InitializeComponent();
-            if (String.IsNullOrEmpty(System.Environment.GetEnvironmentVariable("XSHARPDEV")))
+            if (String.IsNullOrEmpty(System.Environment.GetEnvironmentVariable(Constants.EnvironmentXSharpDev)))
             {
                 this.btnShowMeTheMagic.Visible = false;
             }

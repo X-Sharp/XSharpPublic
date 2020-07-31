@@ -1,18 +1,21 @@
-﻿// Microsoft.Build.Tasks.ManagedCompiler
+﻿//
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
+// See License.txt in the project root for license information.
+//
 using Microsoft.Build.Framework;
-using Microsoft.Build.Tasks;
 using Microsoft.Build.Utilities;
 using System;
 using System.Collections;
 using System.Globalization;
 using System.IO;
-using System.Security.Permissions;
 using System.Text;
 
-/// <summary>Defines the properties and methods common to managed compiler tasks.</summary>
+
 
 namespace XSharp.Build
 {
+    /// <summary>Defines the properties and methods common to managed compiler tasks.</summary>
     public abstract class ManagedCompiler : ToolTask
     {
         private BuildPropertyCollection bag = new BuildPropertyCollection();

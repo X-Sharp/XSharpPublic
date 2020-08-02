@@ -34,7 +34,7 @@ set AntlrInputDir=%~dp0src\Compiler\XSharpCodeAnalysis\Parser\
 set AntlrParams=-long-messages  -message-format vs2005 -Dlanguage=CSharp_v4_5 %AntlrPackage% -listener -o %AntlrOutputdir%
 rem echo %AntlrCall% %AntlrParams% %AntlrInputdir%XSharpLexer.g4
 rem echo %AntlrCall% %AntlrParams% %AntlrInputdir%XSharp.g4
-del %AntlrOutputdir%\XSharp*.* /q
+if exist "%AntlrOutputdir%\XSharp*.*" del %AntlrOutputdir%\XSharp*.* /q
 %AntlrCall% %AntlrParams% %AntlrInputdir%XSharpLexer.g4
 %AntlrCall% %AntlrParams% %AntlrInputdir%XSharp.g4
 msbuild Compiler.sln /fl1 /p:Configuration=%1 /t:Build /v:m /nologo

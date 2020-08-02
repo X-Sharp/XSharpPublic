@@ -10,9 +10,9 @@ goto Error
 Echo Restore nuget packages once for all builds
 dotnet restore Compiler.sln 
 SET XSHARPBUILDNESTED=1
-call Build Public
 call Build Debug
 call Build Release
+call Build Public
 SET XSHARPBUILDNESTED=
 Goto End
 :Ok

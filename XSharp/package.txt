@@ -1,0 +1,4 @@
+To package "manually" call dotnet pack
+
+See https://docs.microsoft.com/en-us/nuget/reference/msbuild-targets#packing-using-a-nuspec for options.
+We can use a predefined nuspec file and declare a list of files to include

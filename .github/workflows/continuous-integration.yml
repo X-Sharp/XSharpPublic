@@ -1,0 +1,27 @@
+#See https://docs.github.com/en/actions/configuring-and-managing-workflows/configuring-a-workflow for help
+name: ContinuousBuild
+#Set when this build is activated. This can be once x time period, or on push/commit of certain branches
+on:
+#   schedule:
+#     #uses the POSIX cron syntax. The below runs every hour
+#     - cron: '0 * * * *'
+  push:
+    branches: 
+     - master
+  pull_request:
+      types: [opened, assigned, synchronize, edited]
+jobs:
+  job1:
+    name: BuildRoslyn
+    runs-on: windows-latest #Specify the OS to execute on
+    env:
+      RoslynDir: ./Roslyn
+      XSharpDir: ./XSharp
+    
+    steps:
+      - uses: actions/checkout@master #Clone the repository code at master
+      - uses: NuGet/setup-nuget@v1.0.2 #Setup NuGet
+      - name: BuildCompiler
+        shell: cmd
+        run: |
+          call ContinuousIntegrationBuild.cmd

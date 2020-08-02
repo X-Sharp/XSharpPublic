@@ -27,6 +27,16 @@ Echo Restoring packages for configuration %1
 dotnet restore Compiler.sln 
 :Build
 Echo Building output for configuration %1
+set AntlrCall=java -jar build\antlr4-csharp-4.6.1-SNAPSHOT-complete.jar
+set AntlrPackage=-package LanguageService.CodeAnalysis.XSharp.SyntaxParser
+set AntlrOutputDir=%~dp0src\Compiler\XSharpCodeAnalysis\Generated
+set AntlrInputDir=%~dp0src\Compiler\XSharpCodeAnalysis\Parser\
+set AntlrParams=-long-messages  -message-format vs2005 -Dlanguage=CSharp_v4_5 %AntlrPackage% -listener -o %AntlrOutputdir%
+rem echo %AntlrCall% %AntlrParams% %AntlrInputdir%XSharpLexer.g4
+rem echo %AntlrCall% %AntlrParams% %AntlrInputdir%XSharp.g4
+del %AntlrOutputdir%\XSharp*.* /q
+%AntlrCall% %AntlrParams% %AntlrInputdir%XSharpLexer.g4
+%AntlrCall% %AntlrParams% %AntlrInputdir%XSharp.g4
 msbuild Compiler.sln /fl1 /p:Configuration=%1 /t:Build /v:m /nologo
 if exist build-%1.log del build-%1.log
 rename msbuild1.log build-%1.log

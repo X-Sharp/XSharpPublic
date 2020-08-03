@@ -1,15 +1,12 @@
 @echo off
+call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\Common7\Tools\VsDevCmd.bat"
 if "%libpath%" == "" goto NotFound
 if /i "%1" == "Debug" goto Ok
 if /i "%1" == "Release" goto Ok
 if /i "%1" == "Documentation" goto Ok
 goto Error
 :Ok
-rem call findmsbuild.cmd
-rem if "%msbuilddir%" == "" goto NotFound
-:found
 Echo Building Runtime %1 Configuration
-rem Echo Using MsBuild in "%msbuilddir%"
 if not "%XSHARPDEV%" == "" Echo Using X# development compiler in "%XSHARPDEV%"
 msbuild Runtime.sln 		/fl1 /flp1:Append /p:Configuration=%1	/p:Platform="Any CPU"     /t:Build  /m /v:m
 rem /v:q /nologo 

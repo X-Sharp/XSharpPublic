@@ -2971,6 +2971,8 @@ METHOD ViewAs(symViewType)
 			// oGBrowse:Show()
 			SELF:__FormWindow:SetGBrowse(oGBrowse)
 			// oSurface:Hide()
+        CATCH as Exception
+            NOP
 		END TRY
 		Send(oGBrowse, #SuspendUpdate)
 		oFormFrame:ViewAs(TRUE) // view as browse

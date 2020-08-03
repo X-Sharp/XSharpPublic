@@ -13,7 +13,7 @@
     </header>
     <para styleclass="Normal">When you install XSharp you will find the following folders on your machine.</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"><table styleclass="Default" rowcount="25" colcount="3">
+    <para styleclass="Normal"><table styleclass="Default" rowcount="26" colcount="3">
       <tr style="vertical-align:top">
         <td style="width:562px;">
           <para styleclass="Normal"><text style="font-weight:bold;">Folder</text></para>
@@ -325,7 +325,20 @@
         <td style="width:666px;">
         </td>
       </tr>
+      <tr style="vertical-align:top">
+        <td style="width:562px;">
+          <para styleclass="Body Text"><text styleclass="Heading3">Environment variables</text></para>
+          <para styleclass="Body Text"><text styleclass="Normal">The installer creates / modifies the following environment variables</text></para>
+          <para styleclass="Body Text"><text styleclass="Normal">XSHARPPATH</text></para>
+          <para styleclass="Body Text"><text styleclass="Normal">XSHARPMSBUILDDIR</text></para>
+        </td>
+        <td style="width:143px;">
+        </td>
+        <td style="width:666px;">
+        </td>
+      </tr>
     </table></para>
+    <para styleclass="Normal"></para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal">See the topic <link displaytype="text" defaultstyle="true" type="topiclink" href="Building-XSharp-apps-with-Visu">Building XSharp apps with Visual Studio and/or MsBuild</link> for a description how the various registry settings and folders are involved with the build process with MsBuild and Visual Studio.</para>
   </body>

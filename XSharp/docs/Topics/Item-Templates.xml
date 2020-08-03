@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" lasteditedby="Geert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>Item Templates</title>
   <keywords>
     <keyword>item templates</keyword>
@@ -12,7 +12,7 @@
     </header>
     <para styleclass="Normal">The X# Visual Studio integration comes with the following item templates:</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"><table styleclass="Default" rowcount="25" colcount="4">
+    <para styleclass="Normal"><table styleclass="Default" rowcount="36" colcount="4">
       <tr style="vertical-align:top">
         <td>
         </td>
@@ -150,6 +150,82 @@
         <td>
         </td>
         <td>
+          <para styleclass="Normal"><text style="font-weight:bold;">Category: Internal</text></para>
+        </td>
+        <td>
+        </td>
+        <td>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+        </td>
+        <td>
+          <para styleclass="Normal">AppConfigInternal</para>
+        </td>
+        <td>
+          <para styleclass="Normal">A hidden app.config</para>
+        </td>
+        <td>
+          <para styleclass="Normal">2.0</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+        </td>
+        <td>
+          <para styleclass="Normal">AppManifestInternal</para>
+        </td>
+        <td>
+          <para styleclass="Normal">A hidden app.manifest</para>
+        </td>
+        <td>
+          <para styleclass="Normal">2.0</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+        </td>
+        <td>
+          <para styleclass="Normal">AssemblyInfoInternal</para>
+        </td>
+        <td>
+          <para styleclass="Normal">A hidden assemblyinfo prg</para>
+        </td>
+        <td>
+          <para styleclass="Normal">2.0</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+        </td>
+        <td>
+          <para styleclass="Normal">Managed Resource Internal</para>
+        </td>
+        <td>
+          <para styleclass="Normal">A hidden resource file</para>
+        </td>
+        <td>
+          <para styleclass="Normal">2.0</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+        </td>
+        <td>
+          <para styleclass="Normal">Settings Internal</para>
+        </td>
+        <td>
+          <para styleclass="Normal">A hidden settings file</para>
+        </td>
+        <td>
+          <para styleclass="Normal">2.0</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+        </td>
+        <td>
           <para styleclass="Normal"><text style="font-weight:bold;">Category: Resources</text></para>
         </td>
         <td>
@@ -225,6 +301,69 @@
         </td>
         <td>
           <para styleclass="Normal">2.0</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+        </td>
+        <td>
+          <para styleclass="Normal"><text style="font-weight:bold;">Category: VO</text></para>
+        </td>
+        <td>
+        </td>
+        <td>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+        </td>
+        <td>
+          <para styleclass="Normal">VODBServer</para>
+        </td>
+        <td>
+          <para styleclass="Normal">An empty DBServer</para>
+        </td>
+        <td>
+          <para styleclass="Normal">n/a</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+        </td>
+        <td>
+          <para styleclass="Normal">VOFieldSpec</para>
+        </td>
+        <td>
+          <para styleclass="Normal">An empty FieldSpec container file</para>
+        </td>
+        <td>
+          <para styleclass="Normal">n/a</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+        </td>
+        <td>
+          <para styleclass="Normal">VOMenu</para>
+        </td>
+        <td>
+          <para styleclass="Normal">An empty VO Menu</para>
+        </td>
+        <td>
+          <para styleclass="Normal">n/a</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+        </td>
+        <td>
+          <para styleclass="Normal">VOWindow</para>
+        </td>
+        <td>
+          <para styleclass="Normal">An empty VO Window</para>
+        </td>
+        <td>
+          <para styleclass="Normal">n/a</para>
         </td>
       </tr>
       <tr style="vertical-align:top">

@@ -7,9 +7,9 @@
     <PlatformTarget>AnyCPU</PlatformTarget>
     <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
     <!-- Note: All directories in this list end with a back slash -->
-    <DevPublicDir>$(Solutiondir)\..\..\devpublic\</DevPublicDir>
-    <DevRtDir>$(Solutiondir)\..\..\devrt\</DevRtDir>
-    <RoslynDir>$(Solutiondir)\..\Roslyn\</RoslynDir>
+    <DevPublicDir>$(Solutiondir)..\..\DevPublic\</DevPublicDir>
+    <DevRtDir>$(Solutiondir)..\..\DevRt\</DevRtDir>
+    <RoslynDir>$(Solutiondir)..\Roslyn\</RoslynDir>
     <RoslynBin>$(RoslynDir)Binaries\</RoslynBin>
     <RoslynSrc>$(RoslynDir)Src\</RoslynSrc>
     <CoreSource>$(RoslynSrc)Compilers\Core\Portable\</CoreSource>
@@ -26,10 +26,9 @@
     <UseRoslynAnalyzers>false</UseRoslynAnalyzers>
     <GenerateMicrosoftCodeAnalysisCommitHashAttribute>false</GenerateMicrosoftCodeAnalysisCommitHashAttribute>
     <BinariesDir>$(Solutiondir)Binaries\$(Configuration)\</BinariesDir>
-    <GeneratedCompilerPath>$(Solutiondir)Binaries\$(Configuration)\net46\</GeneratedCompilerPath>
+    <GeneratedCompilerPath>$(Solutiondir)Binaries\$(Configuration)\Exes\csc\net46\</GeneratedCompilerPath>
     <XscToolPath>$(BinariesDir)net46\</XscToolPath>
     <EnableBaseIntermediateOutputPathMismatchWarning>false</EnableBaseIntermediateOutputPathMismatchWarning>
+    <CurrentDate>$([System.DateTime]::Now.ToString(yyyyMMdd-HHmmss))</CurrentDate>
   </PropertyGroup>
-
-
 </Project>

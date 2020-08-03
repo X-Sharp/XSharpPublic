@@ -1,0 +1,19 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>COM</title>
+  <body>
+    <header>
+      <para styleclass="Heading1">External COM Components</para>
+    </header>
+    <para styleclass="Normal">The COM page in the Add Reference dialog lists the COM components that were found in the registry on your machine.</para>
+    <para styleclass="Normal">You can select a component from this list.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">However, these components cannot be consumed directly by the X# compiler. Therefore Visual Studio calls a tool (tlbimp.exe) that reads the typelibrary from the COM component and produces a managed wrapper around this COM object. This wrapper usually has a name that starts with &quot;interop&quot;. In the <link displaytype="text" defaultstyle="true" type="topiclink" href="Example-4-The-Email-Client-Exa">Email example</link> this is the case for the Internet Explorer component for which a Interop.SHDocVw.dll is generated.</para>
+    <para styleclass="Normal">If the COM component is an ActiveX then a second assembly will be generated that has code that declares an object that inherits from System.Windows.Forms.AxHost, for the ActiveX control. Visual Stdio calls the tool &quot;aximp.exe&quot; for this. The file names for these wrappers usually start with &quot;axinterop&quot;, such as &quot;AxInterop.SHDocVw.dll&quot;</para>
+    <para styleclass="Normal">Some COM components are used a lot and for these components a so called &quot;Primary Interop Assembly&quot; is installed on your machines. For these components no &quot;interop&quot; assemblies will be generated but the primary interop assemblies will be used when compiling. For example for ADO there is a primary interop assembly in the GAC. </para>
+    <para styleclass="Heading2"></para>
+    <para styleclass="Image Caption"><image src="COM references 1.png" scale="100.00%"></image></para>
+    <para styleclass="Normal"></para>
+  </body>
+</topic>

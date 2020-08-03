@@ -30,33 +30,27 @@ DefaultPropertiesGuid = 25819EAF-9863-441B-90D0-A9072599943A
 
 [Application Groups]
 ApplicationGroup = BUGS,E440B545-3C18-4457-A54F-4F3256349ABE,7A4D68CC-1F6B-46FA-B99B-A8CD8EA65C11
-ApplicationGroup = VO compatibility,6817B77E-0C9E-4118-914A-96AC0093E8C8,E440B545-3C18-4457-A54F-4F3256349ABE
-ApplicationGroup = Various,3D21BF3B-D4BB-4A9E-8A1F-5F6EBC234911,6817B77E-0C9E-4118-914A-96AC0093E8C8
-ApplicationGroup = Conversions,88298FB4-3414-43D5-8469-DCD70E89A8CA,E440B545-3C18-4457-A54F-4F3256349ABE
 ApplicationGroup = Runtime issues,D2167BBF-156A-4E64-861D-753C3894EE87,E440B545-3C18-4457-A54F-4F3256349ABE
-ApplicationGroup = Improve error message,58C99556-708F-4FF0-90A7-13774F4F3886,E440B545-3C18-4457-A54F-4F3256349ABE
-ApplicationGroup = Minor issues,D4C4BF75-E4C6-4D72-83FB-AB345AEE3625,E440B545-3C18-4457-A54F-4F3256349ABE
-ApplicationGroup = Name Conflicts,84D6F36B-73F2-4D6B-9105-4A55EA68E829,E440B545-3C18-4457-A54F-4F3256349ABE
-ApplicationGroup = RUNTIME ISSUES,BABB7440-6687-477E-BC04-CEBD4A22FCB6,7A4D68CC-1F6B-46FA-B99B-A8CD8EA65C11
-ApplicationGroup = Fixed,601137E1-03A5-45B4-994E-BFD3410FDE72,BABB7440-6687-477E-BC04-CEBD4A22FCB6
 ApplicationGroup = MUST REPORT ERROR,A95A4D23-3574-40FD-B873-22D28ACCA212,7A4D68CC-1F6B-46FA-B99B-A8CD8EA65C11
 ApplicationGroup = MISC,277C4CD0-A49F-40CE-9680-36717155B0A2,7A4D68CC-1F6B-46FA-B99B-A8CD8EA65C11
 ApplicationGroup = FIXED,715D7617-320E-41FF-B82F-E314D950CD23,7A4D68CC-1F6B-46FA-B99B-A8CD8EA65C11
 ApplicationGroup = C200-C249,AFC1C415-FAD6-4C6F-B86D-3D981AB09BAD,715D7617-320E-41FF-B82F-E314D950CD23
 ApplicationGroup = C250-C299,F5307DDC-4DCD-4576-89C9-1B07F6C6D655,715D7617-320E-41FF-B82F-E314D950CD23
 ApplicationGroup = C150-C199,EBE227D6-3F55-4251-A268-C654F38F1FAF,715D7617-320E-41FF-B82F-E314D950CD23
-ApplicationGroup = C050-C099,3A527CCD-FFA2-423D-A17F-3B2D5424CFCE,715D7617-320E-41FF-B82F-E314D950CD23
 ApplicationGroup = C350-C399,CB2E170B-0122-4D3B-8692-FF0130BAE231,715D7617-320E-41FF-B82F-E314D950CD23
 ApplicationGroup = C400-C449,C8A205F1-7289-4E5A-A714-71E5A29AFFCE,715D7617-320E-41FF-B82F-E314D950CD23
+ApplicationGroup = C050-C099,3A527CCD-FFA2-423D-A17F-3B2D5424CFCE,C8A205F1-7289-4E5A-A714-71E5A29AFFCE
+ApplicationGroup = C300-C349,DBAFC850-8A63-413C-9C9F-0450290A3721,C8A205F1-7289-4E5A-A714-71E5A29AFFCE
+ApplicationGroup = C100-C149,62CDEEEA-3C4C-4E5E-9B0A-FD8DF7D670BC,C8A205F1-7289-4E5A-A714-71E5A29AFFCE
 ApplicationGroup = C450-C499,6E592304-313A-42E3-8A1D-C66384522531,715D7617-320E-41FF-B82F-E314D950CD23
-ApplicationGroup = C300-C349,DBAFC850-8A63-413C-9C9F-0450290A3721,715D7617-320E-41FF-B82F-E314D950CD23
 ApplicationGroup = C500-C549,A7EA751C-5EDA-4A5A-A8E0-B7D18B0CCB30,715D7617-320E-41FF-B82F-E314D950CD23
-ApplicationGroup = C100-C149,62CDEEEA-3C4C-4E5E-9B0A-FD8DF7D670BC,715D7617-320E-41FF-B82F-E314D950CD23
 ApplicationGroup = C550-C599,EFF5B9B4-0F2A-45E0-87BB-24AC86F3D3DB,715D7617-320E-41FF-B82F-E314D950CD23
 ApplicationGroup = C600-C649,A0D98383-C5F1-4134-AC6B-8AC98A1EC5BA,715D7617-320E-41FF-B82F-E314D950CD23
 ApplicationGroup = C650-C699,7D1C4D98-F0BB-48B3-932B-B3AECEE395BA,715D7617-320E-41FF-B82F-E314D950CD23
 ApplicationGroup = C001-C049,85737FA8-B9AF-41E9-A347-4C4093D05606,715D7617-320E-41FF-B82F-E314D950CD23
+ApplicationGroup = R000-R749,962BFCBC-0AA0-4B6C-90C7-F389146CC3FA,715D7617-320E-41FF-B82F-E314D950CD23
 ApplicationGroup = C700-C749,43A04886-532C-4DC6-A4FB-751288B40D7A,715D7617-320E-41FF-B82F-E314D950CD23
+ApplicationGroup = RUNTIME ISSUES,601137E1-03A5-45B4-994E-BFD3410FDE72,715D7617-320E-41FF-B82F-E314D950CD23
 ApplicationGroup = NEW,B9CFE839-D401-428D-94E9-E9D21E9F772D,7A4D68CC-1F6B-46FA-B99B-A8CD8EA65C11
 ApplicationGroup = Known Incompatibilities with VO,40E29AF9-85EE-4D50-BADC-953EE318D423,7A4D68CC-1F6B-46FA-B99B-A8CD8EA65C11
 
@@ -47102,7 +47096,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   Optimize=0
 ENDApplication = C424 - Cannot compare PTR to INT/DWORD
 
-ApplicationGroup = 6817B77E-0C9E-4118-914A-96AC0093E8C8
+ApplicationGroup = C8A205F1-7289-4E5A-A714-71E5A29AFFCE
 ; ************** APPLICATION C425 - No error reported when implicitly converting from PTR to VOSTRUCT without /vo7 *************
 Application = C425 - No error reported when implicitly converting from PTR to VOSTRUCT without /vo7
 IDEVersion = 1.06
@@ -47145,8 +47139,8 @@ FileType = Code
 CopyToBin = 0
 [C425 - No error reported when implicitly converting from PTR to VOSTRUCT without /vo7 References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
-ReferenceGAC = VulcanRT,1,0,1.1.401.0
-ReferenceGAC = VulcanRTFuncs,1,0,1.1.401.0
+ReferenceGAC = CLR4,VulcanRTFuncs,1,0,4.0.401.0
+ReferenceGAC = CLR4,VulcanRT,1,0,4.0.401.0
 [C425 - No error reported when implicitly converting from PTR to VOSTRUCT without /vo7 Resources]
 [C425 - No error reported when implicitly converting from PTR to VOSTRUCT without /vo7 Native Resources]
 [C425 - No error reported when implicitly converting from PTR to VOSTRUCT without /vo7 License files]
@@ -47161,7 +47155,7 @@ VO3=0
 VO4=0
 VO5=0
 VO6=0
-VO7=0
+VO7=1
 VO8=0
 VO9=0
 VO10=0
@@ -47174,7 +47168,7 @@ FOX1=0
 FOX2=0
 XPP1=0
 LateBound=0
-Unsafe=1
+Unsafe=0
 Undeclared=0
 MemVar=0
 IgnoreStdDefs=0
@@ -47323,7 +47317,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   Optimize=0
 ENDApplication = C426 - InvalidCastException when assigning (LOGIC in) USUAL to LOGIC VOSTRUCT member
 
-ApplicationGroup = BABB7440-6687-477E-BC04-CEBD4A22FCB6
+ApplicationGroup = D2167BBF-156A-4E64-861D-753C3894EE87
 ; ************** APPLICATION C427 - Runtime problem accessing VOSTRUT LOGIC members with LOGIC PTR *************
 Application = C427 - Runtime problem accessing VOSTRUT LOGIC members with LOGIC PTR
 IDEVersion = 1.06
@@ -66317,7 +66311,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   Optimize=0
 ENDApplication = C593 - Error messages without file/line info with PARTIAL classes and ACCESS/ASSIGNs
 
-ApplicationGroup = EFF5B9B4-0F2A-45E0-87BB-24AC86F3D3DB
+ApplicationGroup = 962BFCBC-0AA0-4B6C-90C7-F389146CC3FA
 ; ************** APPLICATION R594 *************
 Application = R594
 IDEVersion = 1.06
@@ -75753,7 +75747,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   Optimize=0
 ENDApplication = C677 - Problem calling a constructor with PARAMS parameter with a USUAL
 
-ApplicationGroup = 7D1C4D98-F0BB-48B3-932B-B3AECEE395BA
+ApplicationGroup = 962BFCBC-0AA0-4B6C-90C7-F389146CC3FA
 ; ************** APPLICATION R678 Aliased Expressions *************
 Application = R678 Aliased Expressions
 IDEVersion = 1.06
@@ -76195,7 +76189,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   Optimize=0
 ENDApplication = C680 - Problem with ?: syntax
 
-ApplicationGroup = 7D1C4D98-F0BB-48B3-932B-B3AECEE395BA
+ApplicationGroup = 962BFCBC-0AA0-4B6C-90C7-F389146CC3FA
 ; ************** APPLICATION R681 USUAL Casts *************
 Application = R681 USUAL Casts
 IDEVersion = 1.06
@@ -76306,7 +76300,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   Optimize=0
 ENDApplication = R681 USUAL Casts
 
-ApplicationGroup = 7D1C4D98-F0BB-48B3-932B-B3AECEE395BA
+ApplicationGroup = 962BFCBC-0AA0-4B6C-90C7-F389146CC3FA
 ; ************** APPLICATION R682 - FoxPro AND, OR, NOT *************
 Application = R682 - FoxPro AND, OR, NOT
 IDEVersion = 1.06
@@ -76417,7 +76411,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   Optimize=0
 ENDApplication = R682 - FoxPro AND, OR, NOT
 
-ApplicationGroup = 7D1C4D98-F0BB-48B3-932B-B3AECEE395BA
+ApplicationGroup = 962BFCBC-0AA0-4B6C-90C7-F389146CC3FA
 ; ************** APPLICATION R683 FoxPro Text .. Endtext *************
 Application = R683 FoxPro Text .. Endtext
 IDEVersion = 1.06
@@ -77192,7 +77186,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   Optimize=0
 ENDApplication = C689
 
-ApplicationGroup = 7D1C4D98-F0BB-48B3-932B-B3AECEE395BA
+ApplicationGroup = 962BFCBC-0AA0-4B6C-90C7-F389146CC3FA
 ; ************** APPLICATION R690 Missing Out parameters and default values *************
 Application = R690 Missing Out parameters and default values
 IDEVersion = 1.06
@@ -77955,7 +77949,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   Optimize=0
 ENDApplication = C696 - Internal Compiler Error with __ENTITY__ macro in indexer
 
-ApplicationGroup = 7D1C4D98-F0BB-48B3-932B-B3AECEE395BA
+ApplicationGroup = 962BFCBC-0AA0-4B6C-90C7-F389146CC3FA
 ; ************** APPLICATION R697 *************
 Application = R697
 IDEVersion = 1.06
@@ -78066,7 +78060,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   Optimize=0
 ENDApplication = R697
 
-ApplicationGroup = 7D1C4D98-F0BB-48B3-932B-B3AECEE395BA
+ApplicationGroup = 962BFCBC-0AA0-4B6C-90C7-F389146CC3FA
 ; ************** APPLICATION R698 USUAL IS Type check *************
 Application = R698 USUAL IS Type check
 IDEVersion = 1.06
@@ -78176,7 +78170,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   Optimize=0
 ENDApplication = R698 USUAL IS Type check
 
-ApplicationGroup = 7D1C4D98-F0BB-48B3-932B-B3AECEE395BA
+ApplicationGroup = 962BFCBC-0AA0-4B6C-90C7-F389146CC3FA
 ; ************** APPLICATION R699 OUT Var syntax *************
 Application = R699 OUT Var syntax
 IDEVersion = 1.06
@@ -78284,7 +78278,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   Optimize=0
 ENDApplication = R699 OUT Var syntax
 
-ApplicationGroup = 43A04886-532C-4DC6-A4FB-751288B40D7A
+ApplicationGroup = 962BFCBC-0AA0-4B6C-90C7-F389146CC3FA
 ; ************** APPLICATION R700 Array, Date and DateTime functions *************
 Application = R700 Array, Date and DateTime functions
 IDEVersion = 1.06
@@ -78394,7 +78388,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   Optimize=0
 ENDApplication = R700 Array, Date and DateTime functions
 
-ApplicationGroup = 43A04886-532C-4DC6-A4FB-751288B40D7A
+ApplicationGroup = 962BFCBC-0AA0-4B6C-90C7-F389146CC3FA
 ; ************** APPLICATION R701 FoxPro MemberAccess *************
 Application = R701 FoxPro MemberAccess
 IDEVersion = 1.06
@@ -78834,7 +78828,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   Optimize=0
 ENDApplication = C699 - {SELF:Member} in interpolated string gets replaced with clas name, instead of member value
 
-ApplicationGroup = 43A04886-532C-4DC6-A4FB-751288B40D7A
+ApplicationGroup = 962BFCBC-0AA0-4B6C-90C7-F389146CC3FA
 ; ************** APPLICATION R702 *************
 Application = R702
 IDEVersion = 1.06
@@ -80265,7 +80259,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   Optimize=0
 ENDApplication = C714 - Problem with "&cVarName" syntax
 
-ApplicationGroup = 43A04886-532C-4DC6-A4FB-751288B40D7A
+ApplicationGroup = 962BFCBC-0AA0-4B6C-90C7-F389146CC3FA
 ; ************** APPLICATION R704 PP extended match marker filenames *************
 Application = R704 PP extended match marker filenames
 IDEVersion = 1.06
@@ -80595,7 +80589,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   Optimize=0
 ENDApplication = C716 - Macrocompiler problem with &cMacroToCompile syntax
 
-ApplicationGroup = 43A04886-532C-4DC6-A4FB-751288B40D7A
+ApplicationGroup = 962BFCBC-0AA0-4B6C-90C7-F389146CC3FA
 ; ************** APPLICATION R705 PCall to type pointers inside structures *************
 Application = R705 PCall to type pointers inside structures
 IDEVersion = 1.06
@@ -81254,7 +81248,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   Optimize=0
 ENDApplication = C721 - Ambiguous operand error with INT/DWORD literals
 
-ApplicationGroup = 43A04886-532C-4DC6-A4FB-751288B40D7A
+ApplicationGroup = 962BFCBC-0AA0-4B6C-90C7-F389146CC3FA
 ; ************** APPLICATION R706 - Crash for Preprocessor macro in interpolated string *************
 Application = R706 - Crash for Preprocessor macro in interpolated string
 IDEVersion = 1.06
@@ -81582,7 +81576,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   Optimize=0
 ENDApplication = C723 - Bogus warning about converting from SByte with iif() and literal numbers
 
-ApplicationGroup = 43A04886-532C-4DC6-A4FB-751288B40D7A
+ApplicationGroup = 962BFCBC-0AA0-4B6C-90C7-F389146CC3FA
 ; ************** APPLICATION R707 - Allow latebinding for FoxPro for certain types *************
 Application = R707 - Allow latebinding for FoxPro for certain types
 IDEVersion = 1.06
@@ -81692,7 +81686,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   Optimize=0
 ENDApplication = R707 - Allow latebinding for FoxPro for certain types
 
-ApplicationGroup = 43A04886-532C-4DC6-A4FB-751288B40D7A
+ApplicationGroup = 962BFCBC-0AA0-4B6C-90C7-F389146CC3FA
 ; ************** APPLICATION R708 Empty class & AddProperty *************
 Application = R708 Empty class & AddProperty
 IDEVersion = 1.06
@@ -81803,7 +81797,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   Optimize=0
 ENDApplication = R708 Empty class & AddProperty
 
-ApplicationGroup = 43A04886-532C-4DC6-A4FB-751288B40D7A
+ApplicationGroup = 962BFCBC-0AA0-4B6C-90C7-F389146CC3FA
 ; ************** APPLICATION R709 TEXT ENDText and MessageBox() *************
 Application = R709 TEXT ENDText and MessageBox()
 IDEVersion = 1.06
@@ -81915,7 +81909,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   Optimize=0
 ENDApplication = R709 TEXT ENDText and MessageBox()
 
-ApplicationGroup = 43A04886-532C-4DC6-A4FB-751288B40D7A
+ApplicationGroup = 962BFCBC-0AA0-4B6C-90C7-F389146CC3FA
 ; ************** APPLICATION R710 Codeblock variations *************
 Application = R710 Codeblock variations
 IDEVersion = 1.06
@@ -82025,7 +82019,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   Optimize=0
 ENDApplication = R710 Codeblock variations
 
-ApplicationGroup = 43A04886-532C-4DC6-A4FB-751288B40D7A
+ApplicationGroup = 962BFCBC-0AA0-4B6C-90C7-F389146CC3FA
 ; ************** APPLICATION R711 - PSZ Arithmatic in Vulcan dialect *************
 Application = R711 - PSZ Arithmatic in Vulcan dialect
 IDEVersion = 1.06
@@ -82136,7 +82130,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   Optimize=0
 ENDApplication = R711 - PSZ Arithmatic in Vulcan dialect
 
-ApplicationGroup = 43A04886-532C-4DC6-A4FB-751288B40D7A
+ApplicationGroup = 962BFCBC-0AA0-4B6C-90C7-F389146CC3FA
 ; ************** APPLICATION R712 - PSZ Arithmatic in VO dialect *************
 Application = R712 - PSZ Arithmatic in VO dialect
 IDEVersion = 1.06
@@ -82247,7 +82241,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   Optimize=0
 ENDApplication = R712 - PSZ Arithmatic in VO dialect
 
-ApplicationGroup = 43A04886-532C-4DC6-A4FB-751288B40D7A
+ApplicationGroup = 962BFCBC-0AA0-4B6C-90C7-F389146CC3FA
 ; ************** APPLICATION R720 - Chr() and _Chr() with global value *************
 Application = R720 - Chr() and _Chr() with global value
 IDEVersion = 1.06
@@ -82355,7 +82349,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   Optimize=0
 ENDApplication = R720 - Chr() and _Chr() with global value
 
-ApplicationGroup = 43A04886-532C-4DC6-A4FB-751288B40D7A
+ApplicationGroup = 962BFCBC-0AA0-4B6C-90C7-F389146CC3FA
 ; ************** APPLICATION R721 - PUBLIC with Array dims *************
 Application = R721 - PUBLIC with Array dims
 IDEVersion = 1.06
@@ -82465,7 +82459,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   Optimize=0
 ENDApplication = R721 - PUBLIC with Array dims
 
-ApplicationGroup = 43A04886-532C-4DC6-A4FB-751288B40D7A
+ApplicationGroup = 962BFCBC-0AA0-4B6C-90C7-F389146CC3FA
 ; ************** APPLICATION R722 - Pointer - Object - Pointer *************
 Application = R722 - Pointer - Object - Pointer
 IDEVersion = 1.06
@@ -82618,9 +82612,8 @@ FileType = Code
 CopyToBin = 0
 [C724 - Wrong usual type assigned to result of evaluating codeblock that returns nil References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
-ReferenceGAC = XSharp.Core,1,0,2.1.0.0
-ReferenceGAC = XSharp.RT,1,0,2.1.0.0
-ReferenceGAC = XSharp.VO,1,0,2.1.0.0
+ReferenceBrowse = C:\XSharp\DevRt\Binaries\Debug\XSharp.Core.dll,1,1
+ReferenceBrowse = C:\XSharp\DevRt\Binaries\Debug\XSharp.RT.dll,1,1
 [C724 - Wrong usual type assigned to result of evaluating codeblock that returns nil Resources]
 [C724 - Wrong usual type assigned to result of evaluating codeblock that returns nil Native Resources]
 [C724 - Wrong usual type assigned to result of evaluating codeblock that returns nil License files]
@@ -82686,7 +82679,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   Optimize=0
 ENDApplication = C724 - Wrong usual type assigned to result of evaluating codeblock that returns nil
 
-ApplicationGroup = 43A04886-532C-4DC6-A4FB-751288B40D7A
+ApplicationGroup = 962BFCBC-0AA0-4B6C-90C7-F389146CC3FA
 ; ************** APPLICATION R725 - Conversion from PSZ to object and back *************
 Application = R725 - Conversion from PSZ to object and back
 IDEVersion = 1.06
@@ -82796,7 +82789,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   Optimize=0
 ENDApplication = R725 - Conversion from PSZ to object and back
 
-ApplicationGroup = 43A04886-532C-4DC6-A4FB-751288B40D7A
+ApplicationGroup = 962BFCBC-0AA0-4B6C-90C7-F389146CC3FA
 ; ************** APPLICATION R726 allow embedded quotes inside string *************
 Application = R726 allow embedded quotes inside string
 IDEVersion = 1.06
@@ -83017,7 +83010,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   Optimize=0
 ENDApplication = C725 - ICE under specific circumstances
 
-ApplicationGroup = 43A04886-532C-4DC6-A4FB-751288B40D7A
+ApplicationGroup = 962BFCBC-0AA0-4B6C-90C7-F389146CC3FA
 ; ************** APPLICATION R727 Define with special value as default property causes "emit failed" *************
 Application = R727 Define with special value as default property causes "emit failed"
 IDEVersion = 1.06
@@ -83128,7 +83121,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   Optimize=0
 ENDApplication = R727 Define with special value as default property causes "emit failed"
 
-ApplicationGroup = 43A04886-532C-4DC6-A4FB-751288B40D7A
+ApplicationGroup = 962BFCBC-0AA0-4B6C-90C7-F389146CC3FA
 ; ************** APPLICATION R728 Using _Chr() in a define with a number between 128 and 255 *************
 Application = R728 Using _Chr() in a define with a number between 128 and 255
 IDEVersion = 1.06
@@ -83459,7 +83452,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   Optimize=0
 ENDApplication = C727 - Cannot locally turn option /vo16 off
 
-ApplicationGroup = 43A04886-532C-4DC6-A4FB-751288B40D7A
+ApplicationGroup = 962BFCBC-0AA0-4B6C-90C7-F389146CC3FA
 ; ************** APPLICATION R729 - Passing arguments by reference *************
 Application = R729 - Passing arguments by reference
 IDEVersion = 1.06
@@ -83568,6 +83561,226 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
   Optimize=0
 ENDApplication = R729 - Passing arguments by reference
+
+ApplicationGroup = 962BFCBC-0AA0-4B6C-90C7-F389146CC3FA
+; ************** APPLICATION R730 - USUAL notequals for strings *************
+Application = R730 - USUAL notequals for strings
+IDEVersion = 1.06
+GalleryName = 
+GalleryPage = 
+GalleryDefaultName = 
+Target = 0
+Platform = AnyCPU
+Language = XSharp
+Runtime = CLR4
+Dialect = VO
+Folder = %ProjectPath%\Applications\R730\
+PrgSubFolder = \Prg
+ResourcesSubFolder = \Resources
+Description = Just a simple x# application
+NameSpace = 
+Assembly = R730
+Extension = 
+ApplicationIcon = 
+OutputFolder = 
+Frameworks = 1
+GUID = 4BBFC495-6609-458C-B3FA-F1DC5A7DF7AA
+IncludeInProjectBuild = 1
+IncludeInProjectSearch = 1
+IncludeInProjectExport = 1
+IncludePath = 
+StdDefsFile = 
+AppToRun = 
+SignAssembly = 0
+KeyFile = 
+
+[ExportOptions]
+ExportResources = 0
+ExportImages = 0
+[R730 - USUAL notequals for strings FileGroups]
+[R730 - USUAL notequals for strings Files]
+File = %AppPath%\Prg\R730.prg
+FileGUID = EDB1CAED-158D-4ADA-9E6A-1C9444673DEE
+FileType = Code
+CopyToBin = 0
+[R730 - USUAL notequals for strings References]
+ReferenceGAC = CLR4,System,1,0,4.0.0.0
+ReferenceBrowse = C:\XSharp\DevRt\Binaries\Debug\XSharp.Core.dll,1,1
+ReferenceBrowse = C:\XSharp\DevRt\Binaries\Debug\XSharp.RT.dll,1,1
+[R730 - USUAL notequals for strings Resources]
+[R730 - USUAL notequals for strings Native Resources]
+[R730 - USUAL notequals for strings License files]
+[R730 - USUAL notequals for strings General Options]
+Switches=
+ZeroArrays=0
+CaseSensitive=0
+ImplicitNamespace=0
+VO1=0
+VO2=0
+VO3=0
+VO4=0
+VO5=0
+VO6=0
+VO7=0
+VO8=0
+VO9=0
+VO10=0
+VO11=0
+VO12=0
+VO13=0
+VO14=0
+VO16=0
+FOX1=0
+FOX2=0
+XPP1=0
+LateBound=0
+Unsafe=0
+Undeclared=0
+MemVar=0
+IgnoreStdDefs=0
+Ovf=0
+FOvf=0
+ResponseOnly=0
+[R730 - USUAL notequals for strings Configurations]
+AppConfig = Debug,11111111-1111-1111-1111-111111111111
+  Switches=
+  SwitchesCF=
+  CommandLine=
+  CommandLineCF=
+  Debug=1
+  DebugInit=1
+  DefineDebug=1
+  DefineTrace=0
+  SyntaxOnly=0
+  WarningsErrors=1
+  ForceConsole=0
+  ForceX86=0
+  Optimize=0
+AppConfig = Release,22222222-2222-2222-2222-222222222222
+  Switches=
+  SwitchesCF=
+  CommandLine=
+  CommandLineCF=
+  Debug=0
+  DebugInit=0
+  DefineDebug=0
+  DefineTrace=0
+  SyntaxOnly=0
+  WarningsErrors=1
+  ForceConsole=0
+  ForceX86=0
+  Optimize=0
+ENDApplication = R730 - USUAL notequals for strings
+
+ApplicationGroup = A95A4D23-3574-40FD-B873-22D28ACCA212
+; ************** APPLICATION R731 *************
+Application = R731
+IDEVersion = 1.06
+GalleryName = 
+GalleryPage = 
+GalleryDefaultName = 
+Target = 0
+Platform = AnyCPU
+Language = XSharp
+Runtime = CLR4
+Dialect = Core
+Folder = %ProjectPath%\Applications\R731\
+PrgSubFolder = \Prg
+ResourcesSubFolder = \Resources
+Description = Just a simple x# application
+NameSpace = 
+Assembly = R731
+Extension = 
+ApplicationIcon = 
+OutputFolder = 
+Frameworks = 1
+GUID = BBF3B086-CF66-41ED-9B66-5780F5A2D065
+IncludeInProjectBuild = 1
+IncludeInProjectSearch = 1
+IncludeInProjectExport = 1
+IncludePath = 
+StdDefsFile = 
+AppToRun = 
+SignAssembly = 0
+KeyFile = 
+
+[ExportOptions]
+ExportResources = 0
+ExportImages = 0
+[R731 FileGroups]
+[R731 Files]
+File = %AppPath%\Prg\R731.prg
+FileGUID = 5EEE6865-1F59-4AEB-A131-A9270B7E66E7
+FileType = Code
+CopyToBin = 0
+[R731 References]
+ReferenceGAC = CLR4,System,1,0,4.0.0.0
+ReferenceBrowse = C:\XSharp\DevRt\Binaries\Debug\XSharp.Core.dll,1,1
+ReferenceBrowse = C:\XSharp\DevRt\Binaries\Debug\XSharp.RT.dll,1,1
+[R731 Resources]
+[R731 Native Resources]
+[R731 License files]
+[R731 General Options]
+Switches=
+ZeroArrays=0
+CaseSensitive=0
+ImplicitNamespace=0
+VO1=0
+VO2=0
+VO3=0
+VO4=0
+VO5=0
+VO6=0
+VO7=0
+VO8=0
+VO9=0
+VO10=0
+VO11=0
+VO12=0
+VO13=0
+VO14=0
+VO16=0
+FOX1=0
+FOX2=0
+XPP1=0
+LateBound=0
+Unsafe=1
+Undeclared=0
+MemVar=0
+IgnoreStdDefs=0
+Ovf=0
+FOvf=0
+ResponseOnly=0
+[R731 Configurations]
+AppConfig = Debug,11111111-1111-1111-1111-111111111111
+  Switches=
+  SwitchesCF=
+  CommandLine=
+  CommandLineCF=
+  Debug=1
+  DebugInit=1
+  DefineDebug=1
+  DefineTrace=0
+  SyntaxOnly=0
+  WarningsErrors=1
+  ForceConsole=0
+  ForceX86=0
+  Optimize=0
+AppConfig = Release,22222222-2222-2222-2222-222222222222
+  Switches=
+  SwitchesCF=
+  CommandLine=
+  CommandLineCF=
+  Debug=0
+  DebugInit=0
+  DefineDebug=0
+  DefineTrace=0
+  SyntaxOnly=0
+  WarningsErrors=1
+  ForceConsole=0
+  ForceX86=0
+  Optimize=0
+ENDApplication = R731
 [EndApplications]
 
 [Configurations]

@@ -1,0 +1,19 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>.Net</title>
+  <body>
+    <header>
+      <para styleclass="Heading1">External .Net Assemblies</para>
+    </header>
+    <para styleclass="Body Text">The page with assembly references shows the list of assemblies that were found on the developers machine.</para>
+    <para styleclass="Body Text">You can select a reference from this list and this reference will be used without extra work.</para>
+    <para styleclass="Body Text"></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Image Caption"><image src=".Net references 1.png" scale="100.00%"></image></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
+  </body>
+</topic>

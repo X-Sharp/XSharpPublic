@@ -1,0 +1,14 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>Regions</title>
+  <body>
+    <header>
+      <para styleclass="Heading1">Regions</para>
+    </header>
+    <para styleclass="Normal"><image src="Regions 1.png" scale="100.00%" styleclass="Image Caption"></image></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><image src="Regions 2.png" scale="100.00%" styleclass="Image Caption"></image></para>
+  </body>
+</topic>

@@ -492,7 +492,10 @@ namespace Microsoft.CodeAnalysis.CSharp
             // When unsafe we always allow to cast void * to typed *
             // Is this OK ?
             // See ticket C425
-            if (source.IsVoidPointer() && destination.IsPointerType() && Compilation.Options.AllowUnsafe && Compilation.Options.Dialect.AllowPointerMagic())
+            
+            if (source.IsVoidPointer() && destination.IsPointerType() &&
+                Compilation.Options.HasOption(CompilerOption.ImplicitCastsAndConversions, sourceExpression.Syntax) &&
+                Compilation.Options.Dialect.AllowPointerMagic())
             {
                 return Conversion.Identity;
             }

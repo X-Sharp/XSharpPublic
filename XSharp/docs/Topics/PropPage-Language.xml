@@ -63,7 +63,8 @@
     </header>
     <para styleclass="Body Text">The Language page contains some settings that control X# Language specific options. These settings apply to all dialects.</para>
     <para styleclass="Body Text"></para>
-    <para styleclass="Normal"><image src="ProjectPropertiesLanguage.png" scale="100.00%" styleclass="Image Caption"></image></para>
+    <para styleclass="Image Caption"><image src="ProjectPropertiesLanguage.png" scale="100.00%"></image></para>
+    <para styleclass="Body Text"></para>
     <para styleclass="Normal"><table styleclass="Default" rowcount="15" colcount="3">
       <tr style="vertical-align:top">
         <td>

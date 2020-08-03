@@ -12,7 +12,7 @@
       <PropertyGroup>
         <_NeedRuntimeAssets>true</_NeedRuntimeAssets> 
         <CopyNuGetImplementations>true</CopyNuGetImplementations>
-        <OutputPath>$(OutputPath)Dlls\</OutputPath>
+        <OutputPath>$(OutputPath)Dlls\$(MSBuildProjectName)\</OutputPath>
          <ProduceReferenceAssembly>false</ProduceReferenceAssembly>
       </PropertyGroup>
     </When>
@@ -21,7 +21,7 @@
         <_NeedRuntimeAssets>true</_NeedRuntimeAssets>
         <_CopyReferences>true</_CopyReferences>
         <CopyNuGetImplementations>true</CopyNuGetImplementations>
-        <OutputPath>$(OutputPath)</OutputPath>
+        <OutputPath>$(OutputPath)Exes\$(MSBuildProjectName)\</OutputPath>
         <ProduceReferenceAssembly>false</ProduceReferenceAssembly>
       </PropertyGroup>
     </When>
@@ -80,7 +80,7 @@
       <PropertyGroup>
         <_NeedRuntimeAssets>true</_NeedRuntimeAssets> 
         <CopyNuGetImplementations>true</CopyNuGetImplementations>
-        <OutputPath>$(OutputPath)Exes\</OutputPath>
+        <OutputPath>$(OutputPath)Exes\$(MSBuildProjectName)\</OutputPath>
         <ProduceReferenceAssembly>true</ProduceReferenceAssembly>
       </PropertyGroup>
     </When>

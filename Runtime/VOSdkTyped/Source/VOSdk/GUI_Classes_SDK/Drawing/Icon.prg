@@ -64,6 +64,8 @@ CLASS Icon INHERIT VObject
 				TRY
 					oBmp := System.Drawing.Bitmap.FromResource(hInst, oResourceID:Name) 
 					oIcon := System.Drawing.Icon.FromHandle(oBmp:GetHicon())
+                CATCH
+                    NOP
 				END TRY
 			ENDIF
 	

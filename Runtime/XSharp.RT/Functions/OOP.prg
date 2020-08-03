@@ -898,10 +898,15 @@ FUNCTION ClassList() AS ARRAY
 				TRY
 					IF type:IsPublic
 						classes:Add(String2Symbol(type:Name))
-					ENDIF
+                    ENDIF
+                CATCH as Exception
+                    NOP
+                
 				END TRY
 			NEXT
 //		CATCH oEx AS ReflectionTypeLoadException
+        CATCH as Exception
+            NOP
 		END TRY
 	NEXT
 	RETURN classes

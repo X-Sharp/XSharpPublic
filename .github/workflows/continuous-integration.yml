@@ -12,7 +12,7 @@ on:
       types: [opened, assigned, synchronize, edited]
 jobs:
   job1:
-    name: BuildRoslyn
+    name: BuildXSharpCompiler
     runs-on: windows-latest #Specify the OS to execute on
     env:
       RoslynDir: ./Roslyn

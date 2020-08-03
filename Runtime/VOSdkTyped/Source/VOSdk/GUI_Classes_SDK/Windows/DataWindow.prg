@@ -2604,7 +2604,8 @@ CLASS DataWindow INHERIT ChildAppWindow IMPLEMENTS ILastFocus
 				#endif			
 				SELF:__AutoCreateBrowser()
 				__DataForm:DataBrowser := oGBrowse:__DataGridView
-				
+            CATCH
+                NOP				
 			END TRY
 			sCurrentView := #BrowseView
 			IF oGBrowse != NULL_OBJECT

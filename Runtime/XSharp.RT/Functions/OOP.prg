@@ -507,16 +507,31 @@ INTERNAL STATIC CLASS OOPHelpers
         VAR mi := GetMember(t, cName)
         IF mi != NULL
             IF mi IS PropertyInfo VAR pi
+                // we must check. Sometimes in a subclass the Access was overwritten but not the assign
+                // then we want to read the assign from the parent class
+                IF lAccess .and. pi:CanRead .and. IsPropertyMethodVisible(pi:GetMethod, lSelf)
+                    RETURN pi
+                ELSEIF ! lAccess .and. pi:CanWrite .and. IsPropertyMethodVisible(pi:SetMethod, lSelf)
+                    RETURN pi
+                ENDIF
+            ELSE
+                RETURN NULL
+            ENDIF
+        ELSE
+            VAR pi := FindProperty(t:BaseType, cName, lAccess, lSelf)
+            IF pi != NULL
                 RETURN pi
             ENDIF
-            RETURN NULL     // it must be a field then
         ENDIF
 
-        VAR bt := t
+        var bf := BindingFlags.Instance | BindingFlags.IgnoreCase |  BindingFlags.DeclaredOnly | BindingFlags.Public
+        IF lSelf
+            bf |= BindingFlags.NonPublic 
+        ENDIF
 		DO WHILE t != NULL
-			VAR oInfo := t:GetProperty( cName, BindingFlags.Instance | BindingFlags.IgnoreCase | BindingFlags.Public | IIF(lSelf , BindingFlags.NonPublic , BindingFlags.Public) | BindingFlags.DeclaredOnly ) 
+			VAR oInfo := t:GetProperty( cName, bf) 
 			IF oInfo != NULL .AND. ( (lAccess .AND. oInfo:CanRead) .OR. (.NOT. lAccess .AND. oInfo:CanWrite) )
-                AddMember(bt, cName, oInfo)
+                AddMember(t, cName, oInfo)
 				RETURN oInfo
 			ELSE
 				t := t:BaseType
@@ -565,14 +580,18 @@ INTERNAL STATIC CLASS OOPHelpers
         ENDIF
         VAR mi := GetMember(t, cName)
         IF mi != NULL
-            IF mi IS FieldInfo VAR fi
+            IF mi IS FieldInfo VAR fi .AND. IsFieldVisible(fi, lSelf)
                 RETURN fi
             ENDIF
             RETURN NULL     // it must be a property then
         ENDIF
         VAR bt := t
+        var bf := BindingFlags.Instance | BindingFlags.IgnoreCase |  BindingFlags.DeclaredOnly | BindingFlags.Public
+        IF lSelf
+            bf |= BindingFlags.NonPublic
+        ENDIF        
 		DO WHILE t != NULL
-			VAR oInfo := t:GetField( cName, BindingFlags.Instance | BindingFlags.IgnoreCase | BindingFlags.Public | IIF(lSelf, BindingFlags.NonPublic , BindingFlags.Public | BindingFlags.DeclaredOnly ) ) 
+			VAR oInfo := t:GetField( cName, bf ) 
 			IF oInfo != NULL 
 				// check for readonly (initonly) fields
 				IF lAccess .OR. ! oInfo:Attributes:HasFlag(FieldAttributes.InitOnly)
@@ -606,21 +625,12 @@ INTERNAL STATIC CLASS OOPHelpers
             THROW Error.NullArgumentError(__FUNCTION__, nameof(cIVar),2)
         ENDIF
 		t := oObject:GetType()
-        cIVar := cIVar:ToUpperInvariant()
-		VAR fldInfo := FindField(t, cIVar, TRUE, lSelf)
         TRY
-		    IF fldInfo != NULL_OBJECT .AND. IsFieldVisible(fldInfo, lSelf)
-                result := fldInfo:GetValue(oObject)
-                IF result == NULL .AND. fldInfo:FieldType == TYPEOF(STRING)
-                    result := String.Empty
-                ENDIF
-                RETURN result
-		    ENDIF
-		    VAR propInfo := FindProperty(t, cIVar, TRUE, lSelf) 
-		    IF propInfo != NULL_OBJECT .AND. propInfo:CanRead .AND. IsPropertyMethodVisible(propInfo:GetMethod, lSelf)
+		    VAR propInfo := FindProperty(t, cIVar, TRUE, lSelf)
+            if propInfo != NULL_OBJECT 
                 IF propInfo:GetIndexParameters():Length == 0
 			        result := propInfo:GetValue(oObject, NULL)
-                    IF result == NULL .AND. propInfo:PropertyType == TYPEOF(STRING)
+                    IF result == NULL .AND. propInfo:PropertyType == TYPEOF(System.String)
                         result := String.Empty
                     ENDIF
                     RETURN result
@@ -628,13 +638,21 @@ INTERNAL STATIC CLASS OOPHelpers
                     RETURN NIL
                 ENDIF
             ENDIF
+    		VAR fldInfo := FindField(t, cIVar, TRUE, lSelf)
+		    IF fldInfo != NULL_OBJECT 
+                result := fldInfo:GetValue(oObject)
+                IF result == NULL .AND. fldInfo:FieldType == TYPEOF(System.String)
+                    result := String.Empty
+                ENDIF
+                RETURN result
+		    ENDIF
         CATCH e as Exception
-            if e:InnerException != NULL
-                var er := Error{e:InnerException}   // this freezes the stacktrace
-                throw er
+            IF e:InnerException != NULL
+                THROW Error{e:GetInnerException()}
             ENDIF
             THROW // rethrow exception
         END TRY
+        cIVar := cIVar:ToUpperInvariant()
 		IF SendHelper(oObject, "NoIVarGet", <USUAL>{cIVar}, OUT VAR oResult)
 			RETURN oResult
 		END IF
@@ -650,23 +668,21 @@ INTERNAL STATIC CLASS OOPHelpers
         IF String.IsNullOrEmpty(cIVar)
             THROW Error.NullArgumentError(__FUNCTION__, nameof(cIVar),2)
         ENDIF
+		t := oObject:GetType()
         TRY
-		    t := oObject:GetType()
-            cIVar := cIVar:ToUpperInvariant()
-		    VAR fldInfo := FindField(t, cIVar, FALSE, lSelf)
-		
-		    IF fldInfo != NULL_OBJECT .AND. IsFieldVisible(fldInfo, lSelf)
-			    oValue := VOConvert(oValue, fldInfo:FieldType)
-			    fldInfo:SetValue(oObject, oValue)
-			    RETURN
-		    ENDIF
-		    LOCAL propInfo AS PropertyInfo
-		    propInfo := FindProperty(t, cIVar, FALSE, lSelf)
-		    IF propInfo != NULL_OBJECT .AND. propInfo:CanWrite .AND. IsPropertyMethodVisible(propInfo:SetMethod, lSelf)
+		    VAR propInfo := FindProperty(t, cIVar, FALSE, lSelf)
+		    IF propInfo != NULL_OBJECT 
 			    oValue := VOConvert(oValue, propInfo:PropertyType)
 			    propInfo:SetValue(oObject,oValue , NULL)
 			    RETURN
 		    ENDIF
+		    VAR fldInfo := FindField(t, cIVar, FALSE, lSelf)
+		    IF fldInfo != NULL_OBJECT 
+			    oValue := VOConvert(oValue, fldInfo:FieldType)
+			    fldInfo:SetValue(oObject, oValue)
+			    RETURN
+            ENDIF
+            cIVar := cIVar:ToUpperInvariant()
 		    IF SendHelper(oObject, "NoIVarPut", <USUAL>{cIVar, oValue})
 			    RETURN
 		    END IF
@@ -674,9 +690,8 @@ INTERNAL STATIC CLASS OOPHelpers
 		    oError:Description := oError:Message+" '"+cIVar+"'"
             THROW oError
         CATCH e as Exception
-            if e:InnerException != NULL
-                var er := Error{e:InnerException}   // this freezes the stacktrace
-                throw er
+            IF e:InnerException != NULL
+                THROW Error{e:GetInnerException()}
             ENDIF
             THROW // rethrow exception
         END TRY
@@ -778,9 +793,8 @@ INTERNAL STATIC CLASS OOPHelpers
                     result := oResult
                 ENDIF
             CATCH e as Exception
-                if e:InnerException != NULL
-                    var er := Error{e:InnerException}   // this freezes the stacktrace
-                    throw er
+                IF e:InnerException != NULL
+                    THROW Error{e:GetInnerException()}
                 ENDIF
                 THROW // rethrow exception
             END TRY
@@ -884,10 +898,15 @@ FUNCTION ClassList() AS ARRAY
 				TRY
 					IF type:IsPublic
 						classes:Add(String2Symbol(type:Name))
-					ENDIF
+                    ENDIF
+                CATCH as Exception
+                    NOP
+                
 				END TRY
 			NEXT
 //		CATCH oEx AS ReflectionTypeLoadException
+        CATCH as Exception
+            NOP
 		END TRY
 	NEXT
 	RETURN classes
@@ -936,13 +955,8 @@ FUNCTION CreateInstance(symClassName,InitArgList) AS OBJECT CLIPPER
 		oRet := ctor:Invoke( oArgs )
     CATCH e as Error
         THROW e
-	CATCH e as Exception
-        if e:InnerException != NULL
-            var er := Error{e:InnerException}   // this freezes the stacktrace
-            throw er
-        ENDIF
-		VAR oError := Error{e}
-        THROW oError
+    CATCH e as Exception
+        THROW Error{e:GetInnerException()}
 	END TRY
 	RETURN oRet
 	
@@ -1185,9 +1199,8 @@ FUNCTION Object2Array(oObject AS OBJECT) AS ARRAY
 		    ENDIF
     	NEXT
     CATCH e as Exception
-        if e:InnerException != NULL
-            var er := Error{e:InnerException}   // this freezes the stacktrace
-            throw er
+        IF e:InnerException != NULL
+            THROW Error{e:GetInnerException()}
         ENDIF
         THROW // rethrow exception
     END TRY

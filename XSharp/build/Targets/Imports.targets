@@ -28,11 +28,11 @@
     <!-- Disable the message indicating we are using a preview SDK. That is understood and by design -->
     <SuppressNETCoreSdkPreviewMessage>true</SuppressNETCoreSdkPreviewMessage>
   </PropertyGroup>
-
+  <!-- disabled for X# 
   <ItemGroup>
     <PackageReference Include="XliffTasks" Version="$(XliffTasksVersion)" PrivateAssets="All" Condition="'$(NonShipping)' != 'true'" />
   </ItemGroup>
-
+  -->
   <!-- Whole group is disabled because we sign with X# key
   <Choose>
     <When Condition="'$(SignAssembly)' == 'true'">

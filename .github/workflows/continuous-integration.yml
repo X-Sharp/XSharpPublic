@@ -31,3 +31,9 @@ jobs:
         with:
             name: BuildResults
             path: ./XSharp/Binaries/Zips/*.zip
+      - name: Upload BuildLogs
+        uses: actions/upload-artifact@v2
+        with:
+            name: BuildLogs
+            path: build*.Log
+                      

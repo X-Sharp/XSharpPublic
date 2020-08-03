@@ -50,17 +50,16 @@
       <Link>Properties\CommonAssemblyInfo.cs</Link>
     </Compile>
   </ItemGroup>
-  <Target Name="DeleteCSFiles" AfterTargets="Build"  Condition="'$(TargetFramework)' != '' AND '$(Configuration)' == 'Release'">
+  <Target Name="CreateDirectories" AfterTargets="BeforeBuild"  >
+    <MakeDir Directories="$(ZipsDir)" /> 
+  </Target>
+  <Target Name="DeleteCSFiles" AfterTargets="Build"  Condition="'$(TargetFramework)' != '' ">
     <ItemGroup>
         <FilesToDelete Include="$(OutputPath)\CS*.*"/>
-        <FilesToDelete Include="$(BinariesDir)\$(MSBuildProjectName).$(TargetFramework).*.zip"/>
     </ItemGroup> 
      <Delete Files="@(FilesToDelete)" />
   </Target>
-  <Target Name="ZipOutputPath" AfterTargets="DeleteCSFiles" Condition="'$(TargetFramework)' != '' AND '$(Configuration)' == 'Release'" >
-     <ZipDirectory
-       SourceDirectory="$(OutputPath)"
-       DestinationFile="$(BinariesDir)\$(MSBuildProjectName).$(TargetFramework).$(CurrentDate).zip" 
-       Overwrite="true" />
+  <Target Name="ZipOutputPath" AfterTargets="DeleteCSFiles" Condition="'$(TargetFramework)' != '' ">
+     <ZipDirectory SourceDirectory="$(OutputPath)" DestinationFile="$(ZipsDir)$(MSBuildProjectName).$(TargetFramework).$(Configuration).zip" Overwrite="true" />
     </Target>
 </Project>

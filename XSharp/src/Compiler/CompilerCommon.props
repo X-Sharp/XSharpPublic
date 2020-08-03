@@ -26,6 +26,7 @@
     <UseRoslynAnalyzers>false</UseRoslynAnalyzers>
     <GenerateMicrosoftCodeAnalysisCommitHashAttribute>false</GenerateMicrosoftCodeAnalysisCommitHashAttribute>
     <BinariesDir>$(Solutiondir)Binaries\$(Configuration)\</BinariesDir>
+	<ZipsDir>$(Solutiondir)Binaries\Zips\</ZipsDir>
     <GeneratedCompilerPath>$(Solutiondir)Binaries\$(Configuration)\Exes\csc\net46\</GeneratedCompilerPath>
     <XscToolPath>$(BinariesDir)net46\</XscToolPath>
     <EnableBaseIntermediateOutputPathMismatchWarning>false</EnableBaseIntermediateOutputPathMismatchWarning>

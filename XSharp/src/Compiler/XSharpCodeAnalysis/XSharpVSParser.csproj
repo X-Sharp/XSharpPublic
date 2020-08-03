@@ -108,6 +108,7 @@
   -->
   <Target Name="CreateDirectories" AfterTargets="BeforeBuild" Condition="Exists('$(DevPublicDir)binaries\$(Configuration)\XSharpProject.dll') ">
     <MakeDir Directories="$(DevPublicDir)external\$(ConfigurationName)" /> 
+    <MakeDir Directories="$(ZipsDir)" /> 
   </Target>
   <Target Name="CopyFiles" AfterTargets="Build" Condition="Exists('$(DevPublicDir)binaries\$(Configuration)\XSharpProject.dll')">
     <ItemGroup>
@@ -115,14 +116,13 @@
     </ItemGroup> 
     <Copy SourceFiles="@(VsparserFiles)" DestinationFolder="$(DevPublicDir)external\$(ConfigurationName)" />
   </Target>
-  <Target Name="DeleteMsFiles" AfterTargets="Build" Condition="'$(TargetFramework)' != '' AND '$(Configuration)' == 'Release'">
+  <Target Name="DeleteMsFiles" AfterTargets="Build" Condition="'$(TargetFramework)' != '' ">
     <ItemGroup>
       <FilesToDelete Include="$(OutputPath)\Microsoft*.*" />
-      <FilesToDelete Include="$(BinariesDir)\$(MSBuildProjectName).*.zip"/>
     </ItemGroup>
     <Delete Files="@(FilesToDelete)" />
   </Target>
-  <Target Name="ZipOutputPath" AfterTargets="DeleteMsFiles" Condition="'$(TargetFramework)' != '' AND '$(Configuration)' == 'Release'">
-    <ZipDirectory SourceDirectory="$(OutputPath)" DestinationFile="$(BinariesDir)\$(MSBuildProjectName).$(CurrentDate).zip" Overwrite="true" />
-  </Target>
+  <Target Name="ZipOutputPath" AfterTargets="DeleteMsFiles" Condition="'$(TargetFramework)' != '' ">
+     <ZipDirectory SourceDirectory="$(OutputPath)" DestinationFile="$(ZipsDir)$(MSBuildProjectName).$(TargetFramework).$(Configuration).zip" Overwrite="true" />
+    </Target>
 </Project> 

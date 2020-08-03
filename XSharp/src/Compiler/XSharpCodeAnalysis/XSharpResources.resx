@@ -5725,7 +5725,7 @@ To remove the warning, you can use /reference instead (set the Embed Interop Typ
     <value>Literal value for define has an Ansi character between 128 and 255 which depends on the current codepage. Consider to use a Unicode literal inside the string instead.</value>
   </data>
   <data name="WRN_TryWithoutCatch" xml:space="preserve">
-    <value>Try statement found without CATCH clause and without FINALLY clause. The compiler will generate a default CATCH clause that catches and ignores all exceptions.</value>
+    <value>TRY statement found without CATCH clause and without FINALLY clause. The compiler will generate a default CATCH clause that catches and ignores all exceptions.</value>
   </data>
   
 

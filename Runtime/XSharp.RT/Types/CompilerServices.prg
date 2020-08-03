@@ -45,6 +45,8 @@ STATIC CLASS XSharp.Internal.CompilerServices
 		FOREACH VAR p IN pszList
 			TRY
 				MemFree(p)
+            CATCH as Exception
+                NOP
 			END TRY
 		NEXT
 		RETURN

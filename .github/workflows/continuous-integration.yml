@@ -20,10 +20,7 @@ jobs:
     
     steps:
       - uses: actions/checkout@master #Clone the repository code at master
-      - uses: NuGet/setup-nuget@v1.0.2 #Setup NuGet
-#      - uses: actions/setup-java@v1
-#        with:
-#          java-version: '7.0' # The JDK version to make available on the path.
+#     - uses: NuGet/setup-nuget@v1.0.2 #Setup NuGet
       - name: BuildCompiler
         shell: cmd
         run: |
@@ -32,5 +29,5 @@ jobs:
       - name: Upload Results
         uses: actions/upload-artifact@v2
         with:
-            name: UploadBinariesBinaries
-            path: ./XSharp/Binaries/Release/*.zip
+            name: BuildResults
+            path: ./XSharp/Binaries/Zips/*.zip

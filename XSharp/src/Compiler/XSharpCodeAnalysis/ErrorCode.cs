@@ -1719,6 +1719,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         WRN_UndeclaredMember = 9098,
         ERR_PublicInit = 9099,
         WRN_ChrInDefine = 9100,
+        WRN_TryWithoutCatch = 9101,
 
         // XPP dialect Error messages
         ERR_XPPMultipleInheritance = 9200,

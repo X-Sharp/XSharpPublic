@@ -15353,6 +15353,15 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Try statement found without CATCH clause and without FINALLY clause. The compiler will generate a default CATCH clause that catches and ignores all exceptions..
+        /// </summary>
+        internal static string WRN_TryWithoutCatch {
+            get {
+                return ResourceManager.GetString("WRN_TryWithoutCatch", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The tuple element name &apos;{0}&apos; is ignored because a different name or no name is specified on the other side of the tuple == or != operator..
         /// </summary>
         internal static string WRN_TupleBinopLiteralNameMismatch {

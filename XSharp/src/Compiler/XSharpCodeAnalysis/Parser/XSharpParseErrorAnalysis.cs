@@ -132,6 +132,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
         }
 
+
         // Check for missing end keywords for statement blocks
 
         public override void ExitWhileStmt([NotNull] XSharpParser.WhileStmtContext context)
@@ -230,10 +231,15 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
             checkMissingKeyword(context.CaseStmt?.Start, context, "CASE or OTHERWISE");
             checkMissingKeyword(context.e, context, "END[CASE]");
-        } 
+        }
         public override void ExitTryStmt([NotNull] XSharpParser.TryStmtContext context)
         {
             checkMissingKeyword(context.e, context, "END [TRY]");
+            if (context._CatchBlock?.Count == 0 && context.FinBlock == null)
+            {
+                var errdata = new ParseErrorData(context, ErrorCode.WRN_TryWithoutCatch);
+                _parseErrors.Add(errdata);
+            }
         }
         public override void ExitSwitchStmt([NotNull] XSharpParser.SwitchStmtContext context)
         {

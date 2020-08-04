@@ -6,7 +6,7 @@
     <Platform Condition="'$(Platform)' == ''">AnyCPU</Platform>
     <PlatformTarget>AnyCPU</PlatformTarget>
     <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
-    <!-- Note: All directories in this list end with a back slash -->
+    <!-- Note: All directories in this list end with a back slash, with the exception of the ZipsDir -->
     <DevPublicDir>$(Solutiondir)\..\..\devpublic\</DevPublicDir>
     <DevRtDir>$(Solutiondir)\..\..\devrt\</DevRtDir>
     <RoslynDir>$(Solutiondir)\..\Roslyn\</RoslynDir>
@@ -26,7 +26,7 @@
     <UseRoslynAnalyzers>false</UseRoslynAnalyzers>
     <GenerateMicrosoftCodeAnalysisCommitHashAttribute>false</GenerateMicrosoftCodeAnalysisCommitHashAttribute>
     <BinariesDir>$(Solutiondir)Binaries\$(Configuration)\</BinariesDir>
-	<ZipsDir>$(Solutiondir)Binaries\Zips\</ZipsDir>
+	<ZipsDir>$(Solutiondir)Binaries\Zips</ZipsDir>
     <GeneratedCompilerPath>$(Solutiondir)Binaries\$(Configuration)\Exes\csc\net46\</GeneratedCompilerPath>
     <XscToolPath>$(BinariesDir)net46\</XscToolPath>
     <EnableBaseIntermediateOutputPathMismatchWarning>false</EnableBaseIntermediateOutputPathMismatchWarning>

@@ -134,6 +134,6 @@
   </Target>
   <Target Name="ZipOutputPath" AfterTargets="DeleteMsFiles" Condition="'$(TargetFramework)' != '' ">
     <MakeDir Directories="$(ZipsDir)" />
-    <ZipDirectory SourceDirectory="$(OutputPath)" DestinationFile="$(ZipsDir)$(MSBuildProjectName).$(TargetFramework).$(Configuration).zip" Overwrite="true" />
+    <ZipDirectory SourceDirectory="$(OutputPath)" DestinationFile="$(ZipsDir)\$(MSBuildProjectName).$(TargetFramework).$(Configuration).zip" Overwrite="true" />
     </Target>
 </Project>

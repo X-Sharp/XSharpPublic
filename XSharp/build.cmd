@@ -41,6 +41,8 @@ rem echo %AntlrCall% %AntlrParams% %AntlrInputdir%XSharp.g4
 if exist "%AntlrOutputdir%\XSharp*.*" del %AntlrOutputdir%\XSharp*.* /q
 %AntlrCall% %AntlrParams% %AntlrInputdir%XSharpLexer.g4
 %AntlrCall% %AntlrParams% %AntlrInputdir%XSharp.g4
+rem There seems to be a problem packing the zips on the CI server, so create the folder "manually"
+IF NOT EXIST %~dp0Binaries\Zips\*.* md %~dp0Binaries\Zips
 msbuild Compiler.sln /fl1 /p:Configuration=%1 /t:Build /v:m /nologo /m
 if exist build-%1.log del build-%1.log
 rename msbuild1.log build-%1.log

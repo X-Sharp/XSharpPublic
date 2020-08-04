@@ -67,6 +67,6 @@
   </Target>
   <Target Name="ZipOutputPath" AfterTargets="CopyCompilerFiles" Condition="'$(TargetFramework)' != '' ">
     <MakeDir Directories="$(ZipsDir)" />
-    <ZipDirectory SourceDirectory="$(OutputPath)" DestinationFile="$(ZipsDir)Bin.$(TargetFramework).$(Configuration).zip" Overwrite="true" />
+    <ZipDirectory SourceDirectory="$(OutputPath)" DestinationFile="$(ZipsDir)\Bin.$(TargetFramework).$(Configuration).zip" Overwrite="true" />
     </Target>
 </Project>

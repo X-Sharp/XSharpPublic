@@ -123,6 +123,6 @@
     <Delete Files="@(FilesToDelete)" />
   </Target>
   <Target Name="ZipOutputPath" AfterTargets="DeleteMsFiles" Condition="'$(TargetFramework)' != '' ">
-     <ZipDirectory SourceDirectory="$(OutputPath)" DestinationFile="$(ZipsDir)$(MSBuildProjectName).$(TargetFramework).$(Configuration).zip" Overwrite="true" />
+     <ZipDirectory SourceDirectory="$(OutputPath)" DestinationFile="$(ZipsDir)\$(MSBuildProjectName).$(TargetFramework).$(Configuration).zip" Overwrite="true" />
     </Target>
 </Project> 

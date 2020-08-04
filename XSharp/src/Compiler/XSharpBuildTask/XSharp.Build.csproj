@@ -40,6 +40,9 @@
     <None Include="rcdll.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory> 
     </None>
+    <None Include="rc.exe">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory> 
+    </None>
     <None Include="XSharp.CurrentVersion.targets">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory> 
     </None>
@@ -58,6 +61,7 @@
     <None Include="XSharp.targets">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <Content Include="debugging.txt" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Xaml\PropertyPage_Advanced.xaml">
@@ -112,12 +116,6 @@
       <SubType>Designer</SubType>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="rc.exe">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="debugging.txt" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.Build" Version="$(MicrosoftBuildFixedVersion)" />

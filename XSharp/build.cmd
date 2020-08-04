@@ -41,7 +41,7 @@ rem echo %AntlrCall% %AntlrParams% %AntlrInputdir%XSharp.g4
 if exist "%AntlrOutputdir%\XSharp*.*" del %AntlrOutputdir%\XSharp*.* /q
 %AntlrCall% %AntlrParams% %AntlrInputdir%XSharpLexer.g4
 %AntlrCall% %AntlrParams% %AntlrInputdir%XSharp.g4
-msbuild Compiler.sln /fl1 /p:Configuration=%1 /t:Build /v:m /nologo
+msbuild Compiler.sln /fl1 /p:Configuration=%1 /t:Build /v:m /nologo /m
 if exist build-%1.log del build-%1.log
 rename msbuild1.log build-%1.log
 set XSharpDev=%tmpXSharpDev%

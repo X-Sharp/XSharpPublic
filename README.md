@@ -20,24 +20,28 @@ prevent name conflicts when assemblies of both origin are in memory at the same 
 
 After retrieving this source code, you need to perform the following steps to be able to compile your XSharp Compiler:
 
-- Open a VS (2017 or 2019) developers command prompt
-- Goto the Roslyn subfolder
-- Run Restore.Cmd to restore the nuget packages
-- (Optionally) build the Roslyn binaries. You can run
-  - MsBuild Compilers.sln to build just the compilers
-  - MsBuild Workspaces.sln to build the VS integration
-  - MsBuild Roslyn.sln to build everything
-- Then navigate to the XSharp folder
-- Run Restore.cmd to restore the nuget packages. This will also call Rebuild.Cmd that will build a Debug AND Release version.
-- If you want to you can also build either for Debug, Public or for Release with the build.cmd. Add the configuration name: Build Debug.
-  The separate Build.cmd will not clean old results and will only build changed code.
-  In all cases the log file of the build process will be written into build-debug.log  or build-release.log 
+- Make sure you have VS 2019 or 2017 installed. The preferred edition is Enterprise.
+- Goto the root of the repository
+- If you do not have Vs 2019 Enterprise you can set 2 environment variables to the VS version and edition you have installed
+  SET VSVERSION=2019  (2017 also works)
+  SET VSEDITION=Enterprise (Professional, Community, BuildTools)
+- Run the cmd file ContinuousIntegrationBuild.cmd 
+  This will:
+  - download a .Net Core version in the Roslyn\Binaries folder
+  - restore missing nuget packages
+  - switch to the XSharp Folder
+  - Restore the nuget packages for the X# projects
+  - Build all configurations for the X# projects.
+  - The output will be in the Binaries folder
+  - The log file of the build process will be written into build-debug.log, build-public.log  and/or build-release.log 
+  
+- Later you can build a specific version of the X# compiler by running the build.cmd file in the XSharp folder. You will have  
+  to pass it an argument. Valid arguments are Debug, Release, Public or All.  
   
 The source code is available under the Apache 2 license that you can find in the root of this repository:
 https://github.com/X-Sharp/XSharpDev/blob/master/license.txt.
 
 Of course we welcome all additions, bug fixes etc.
-
 
 Additional notes:
 - to open the projects in Visual Studio, you MUST have the correct .Net Core version loaded on your machine 

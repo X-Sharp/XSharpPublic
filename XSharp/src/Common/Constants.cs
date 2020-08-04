@@ -21,6 +21,12 @@ namespace XSharp
         internal const string RegistryKey64 = @"Software\WOW6432Node\" + RegCompany + @"\" + Product;
         internal const string RegistryValue = "XSharpPath";
 
+        // Environment variable that points to the BIN folder where xsc.exe AND rc.exe are located
+        internal const string EnvironmentXSharpBin = "XSHARPBINPATH";   
+        // Environment variable on _developers_ machine to override location of xsc.exe. 
+        // This also enables the "magic" button on the tools-options dialog
+        // and adds CRLF to the response file between the various commands to make it easier to read.
+        internal const string EnvironmentXSharpDev = "XSHARPDEV";       
 
     }
 }

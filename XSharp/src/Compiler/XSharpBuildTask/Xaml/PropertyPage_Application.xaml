@@ -1,0 +1,98 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Rule
+	Name="ConfigurationGeneral"
+	DisplayName="Application"
+    	Order="1"
+	PageTemplate="generic"
+	Description="Application properties"
+	xmlns="http://schemas.microsoft.com/build/2009/properties">
+    <Rule.Categories>
+        <Category Name="General" DisplayName="General" Description="General" />
+        <Category Name="Target"  DisplayName="Target"  Description="Target Framework and Platform" />
+    </Rule.Categories>
+
+    <Rule.DataSource>
+        <DataSource Persistence="ProjectFile"   HasConfigurationCondition="False" />
+    </Rule.DataSource>
+    <StringProperty Name="ApplicationIcon" DisplayName="Application Icon" Category="General" />
+    <StringListProperty Name="ProjectTypeGuids" Visible="False" />
+    <StringProperty Name="ProjectGuid" Visible="False">
+        <StringProperty.DataSource>
+            <DataSource Persistence="ProjectFile" Label="Globals" HasConfigurationCondition="False" />
+        </StringProperty.DataSource>
+    </StringProperty>
+    <StringProperty Name="AssemblyName" DisplayName="Assembly Name" Category="General" Description="File Name of the output assemply"/>
+    <StringProperty Name="Name" DisplayName="Project Name" Category="General" Description="File Name of the output assemply" ReadOnly="True"/>
+    <StringProperty Name="RootNamespace" DisplayName="Root namespace" Category="General" 
+    	Description="This name will be used when generating new source files and will be added to classes without namespace when you select the /ns compiler switch">
+        <StringProperty.DataSource>
+            <DataSource Persistence="ProjectFile" Label="Configuration" HasConfigurationCondition="false" />
+        </StringProperty.DataSource>
+    </StringProperty>
+    <!--<StringProperty Name="OutputName" Category="General"/>-->
+    <EnumProperty Name="OutputType" DisplayName="Output Type" Default="exe" Category="General">
+        <EnumValue Name="Library" DisplayName="Class Library" />
+        <EnumValue Name="exe" DisplayName="Console Application" />
+        <EnumValue Name="winexe" DisplayName="Windows Application" />
+        <EnumValue Name="AppContainerExe" DisplayName="Windows Store app" />
+        <EnumValue Name="WinMDObj" DisplayName="WinMD" />
+        <EnumProperty.DataSource>
+            <DataSource Persistence="ProjectFile" Label="Configuration" HasConfigurationCondition="false" />
+        </EnumProperty.DataSource>
+    </EnumProperty>
+
+    <EnumProperty Name="Dialect" DisplayName="Dialect" Category="General" Default="Core" 
+    	Description="Select the compiler dialect to use when compiling this project">
+        <EnumValue Name="Core"      DisplayName="Core" />
+        <EnumValue Name="VO"        DisplayName="Visual Objects" />
+        <EnumValue Name="Vulcan"    DisplayName="Vulcan.NET" />
+        <EnumValue Name="Harbour"   DisplayName="Harbour" />
+        <EnumValue Name="Xpp"       DisplayName="Xbase++" />
+        <!--<EnumValue Name="Foxpro"    DisplayName="Microsoft FoxPro" />
+        <EnumValue Name="dBase"     DisplayName="dBase" />-->
+        <!--<EnumProperty.DataSource>
+            <DataSource Persistence="ProjectFile" Label="Configuration" HasConfigurationCondition="false" />
+        </EnumProperty.DataSource>-->
+    </EnumProperty>
+
+    <DynamicEnumProperty Name="TargetFrameworkMoniker" DisplayName="Target Framework" EnumProvider="TargetFrameworkMoniker" />
+    <StringProperty Name="TargetFrameworkIdentifier" Visible="False" />
+    <StringProperty Name="TargetFrameworkVersion" Visible="False" />
+    <StringProperty Name="TargetFrameworkProfile" Visible="False" />
+    <StringProperty Name="TargetPath" Visible="False" />
+    <StringListProperty Name="AvailablePlatforms" Separator=","  Visible="False"/>
+
+    <StringProperty Name="MSBuildProjectDirectory" Visible="false"/>
+    <StringProperty Name="DefaultPlatform" Visible="false" />
+    <StringProperty Name="PackageAction" Visible="false" Description="The MSBuild target to use when packaging a project." />
+    <StringProperty Name="DefaultContentType" Visible="false" Description="The default content type name to use when adding files." />
+    <StringProperty Name="DebuggerSymbolsPath" Visible="false" />
+    <StringProperty Name="TargetPlatformWinMDLocation" Visible="false" />
+    <StringProperty Name="SDKReferenceDirectoryRoot" Visible="false" />
+    <StringProperty Name="SDKReferenceRegistryRoot" Visible="false" />
+    <StringProperty Name="TargetPlatformIdentifier" Visible="false" />
+    <StringProperty Name="TargetPlatformVersion" Visible="false" />
+    <BoolProperty Name="WindowsAppContainer" Visible="false" />
+    <BoolProperty Name="WinMDAssembly" Visible="false" />
+    <EnumProperty Name="TargetRuntime" Visible="false">
+        <EnumValue Name="Managed" />
+        <EnumValue Name="Native" />
+        <EnumValue Name="AppHost" DisplayName="Windows app" />
+    </EnumProperty>
+    <StringProperty Name="AssemblySearchPaths" Visible="false" />
+    <StringProperty Name="WinRTReferenceTabs" Visible="false" />
+    <StringProperty Name="AssemblyReferenceTabs" Visible="false" />
+    <BoolProperty Name="SuppressOutOfDateMessageOnBuild" Visible="false" Description="True to just build out-of-date projects without ever prompting the user to confirm." />
+    <BoolProperty Name="ShowAllFiles" Visible="False">
+        <BoolProperty.DataSource>
+            <DataSource Persistence="UserFile" HasConfigurationCondition="False" />
+        </BoolProperty.DataSource>
+    </BoolProperty>
+    <BoolProperty Name="AutoRefresh" Visible="False">
+        <BoolProperty.DataSource>
+            <DataSource Persistence="UserFile" HasConfigurationCondition="False" />
+        </BoolProperty.DataSource>
+    </BoolProperty>
+</Rule>
+
+    

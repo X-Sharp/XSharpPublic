@@ -12,9 +12,19 @@
     <DefaultLanguage>en-US</DefaultLanguage>
     <TargetFrameworks>$(RoslynPortableTargetFrameworks)</TargetFrameworks>
     <GenerateMicrosoftCodeAnalysisCommitHashAttribute>false</GenerateMicrosoftCodeAnalysisCommitHashAttribute>
+    <DebugSymbols>true</DebugSymbols>
+    <ErrorReport>prompt</ErrorReport>
+    <Configurations>Debug;Release;Public</Configurations>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'" />
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'" />
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DefineConstants>$(GenericDefines);TRACE;DEBUG</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Public|AnyCPU' "> 
+    <DefineConstants>$(GenericDefines);TRACE</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DefineConstants>$(GenericDefines);NDEBUG</DefineConstants>
+  </PropertyGroup>
   <ItemGroup>
     <Compile Include="..\..\Common\CommonAssemblyInfo.cs" Link="Properties\CommonAssemblyInfo.cs" />
     <Compile Include="..\..\Common\Constants.cs" Link="Properties\Constants.cs" />
@@ -27,6 +37,9 @@
 
   </ItemGroup>
   <ItemGroup>
+    <None Include="rcdll.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory> 
+    </None>
     <None Include="XSharp.CurrentVersion.targets">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory> 
     </None>
@@ -104,9 +117,6 @@
     <Content Include="rc.exe">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Baggage\rcdll.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
     <Content Include="debugging.txt" />
   </ItemGroup>
   <ItemGroup>
@@ -116,5 +126,14 @@
     <PackageReference Include="System.IO.Pipes.AccessControl" Version="$(SystemIOPipesAccessControlVersion)" Condition="'$(TargetFramework)' == 'netcoreapp2.0'" />
     <PackageReference Include="System.Security.AccessControl" Version="$(SystemSecurityAccessControlVersion)" Condition="'$(TargetFramework)' == 'netcoreapp2.0'" />
   </ItemGroup>
-
+  <Target Name="DeleteMsFiles" AfterTargets="Build" >
+    <ItemGroup>
+      <FilesToDelete Include="$(OutputPath)\Microsoft*.*" />
+    </ItemGroup>
+    <Delete Files="@(FilesToDelete)" />
+  </Target>
+  <Target Name="ZipOutputPath" AfterTargets="DeleteMsFiles" Condition="'$(TargetFramework)' != '' ">
+    <MakeDir Directories="$(ZipsDir)" />
+    <ZipDirectory SourceDirectory="$(OutputPath)" DestinationFile="$(ZipsDir)$(MSBuildProjectName).$(TargetFramework).$(Configuration).zip" Overwrite="true" />
+    </Target>
 </Project>

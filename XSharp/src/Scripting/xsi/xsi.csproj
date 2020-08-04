@@ -50,16 +50,23 @@
       <Link>Properties\CommonAssemblyInfo.cs</Link>
     </Compile>
   </ItemGroup>
-  <Target Name="CreateDirectories" AfterTargets="BeforeBuild"  >
-    <MakeDir Directories="$(ZipsDir)" /> 
-  </Target>
   <Target Name="DeleteCSFiles" AfterTargets="Build"  Condition="'$(TargetFramework)' != '' ">
     <ItemGroup>
         <FilesToDelete Include="$(OutputPath)\CS*.*"/>
     </ItemGroup> 
      <Delete Files="@(FilesToDelete)" />
   </Target>
-  <Target Name="ZipOutputPath" AfterTargets="DeleteCSFiles" Condition="'$(TargetFramework)' != '' ">
-     <ZipDirectory SourceDirectory="$(OutputPath)" DestinationFile="$(ZipsDir)$(MSBuildProjectName).$(TargetFramework).$(Configuration).zip" Overwrite="true" />
+  <Target Name="CopyCompilerFiles" AfterTargets="Build"  Condition="'$(TargetFramework)' != '' ">
+    <ItemGroup>
+        <FilesToCopy Include="$(OutputPath.Replace('xsi','xsc'))X*.*"/>
+    </ItemGroup> 
+     <Copy 
+		SourceFiles="@(FilesToCopy)" 
+		DestinationFolder="$(OutputPath)"
+		/>
+  </Target>
+  <Target Name="ZipOutputPath" AfterTargets="CopyCompilerFiles" Condition="'$(TargetFramework)' != '' ">
+    <MakeDir Directories="$(ZipsDir)" />
+    <ZipDirectory SourceDirectory="$(OutputPath)" DestinationFile="$(ZipsDir)Bin.$(TargetFramework).$(Configuration).zip" Overwrite="true" />
     </Target>
 </Project>

@@ -81,16 +81,10 @@
     <Compile Remove="$(CscSource)Program.cs" />
   </ItemGroup>
   <Import Project="$(CoreSource)..\CommandLine\CommandLine.projitems" Label="Shared" />
-  <Target Name="CreateDirectories" AfterTargets="BeforeBuild"  >
-    <MakeDir Directories="$(ZipsDir)" /> 
-  </Target>
   <Target Name="DeleteCSFiles" AfterTargets="Build" Condition="'$(TargetFramework)' != ''">
     <ItemGroup>
         <FilesToDelete Include="$(OutputPath)\CS*.*" />
     </ItemGroup> 
      <Delete Files="@(FilesToDelete)" />
   </Target>
-  <Target Name="ZipOutputPath" AfterTargets="DeleteCSFiles" Condition="'$(TargetFramework)' != '' ">
-     <ZipDirectory SourceDirectory="$(OutputPath)" DestinationFile="$(ZipsDir)$(MSBuildProjectName).$(TargetFramework).$(Configuration).zip" Overwrite="true" />
-    </Target>
 </Project>

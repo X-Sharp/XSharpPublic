@@ -22,7 +22,7 @@ namespace XSharp.Build
 
         public Xsc() : base()
         {
-            System.Diagnostics.Debugger.Launch();
+            //System.Diagnostics.Debugger.Launch();
             useCRLF = !string.IsNullOrEmpty(System.Environment.GetEnvironmentVariable(Constants.EnvironmentXSharpDev));
             errorCount = 0;
         }

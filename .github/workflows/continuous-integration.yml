@@ -36,4 +36,9 @@ jobs:
         with:
             name: BuildLogs
             path: ./XSharp/build*.Log
+      - name: Upload TestLogs
+        uses: actions/upload-artifact@v2
+        with:
+            name: TestLogs
+            path: ./XSharp/Binaries/Tests/*.Log
                       

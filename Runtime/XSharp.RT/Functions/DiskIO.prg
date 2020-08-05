@@ -89,6 +89,9 @@ FUNCTION Directory(cFileSpec AS STRING, uAttributes := NIL AS USUAL) AS ARRAY
 	IF (nAttr & FA_VOLUME ) != 0
 		TRY
 			AAdd(aReturn, {DriveInfo{cFileSpec}:VolumeLabel, 0, NULL_DATE, "00:00:00", "V"})
+        CATCH as Exception
+            NOP
+            
 		END TRY
 	ENDIF
     lWild := cFileSpec:Contains("*") .or. cFileSpec:Contains("?") 

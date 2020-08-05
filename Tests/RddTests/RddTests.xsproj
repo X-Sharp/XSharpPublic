@@ -42,7 +42,7 @@
     <ApplicationIcon />
     <VulcanCompatibleResources>False</VulcanCompatibleResources>
     <TargetFrameworkProfile />
-    <XSharpProjectversion>2.4.1.0</XSharpProjectversion>
+    <XSharpProjectversion>2.5.2.0</XSharpProjectversion>
     <Includepaths />
     <Nostandarddefs>false</Nostandarddefs>
     <NamedArgs>False</NamedArgs>
@@ -130,52 +130,52 @@
     <Folder Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\MacroCompiler\MacroCompiler.csproj">
+    <ProjectReference Include="..\..\Runtime\MacroCompiler\MacroCompiler.csproj">
       <Name>MacroCompiler (Macrocompiler\MacroCompiler)</Name>
       <Project>{eb3f3142-07f7-48ca-b38d-f611c45a9511}</Project>
       <Private>True</Private>
     </ProjectReference>
-    <ProjectReference Include="..\VOSDK\Source\VOSDK\RDD_Classes_SDK\VORDDClasses.xsproj">
+    <ProjectReference Include="..\..\Runtime\VOSDK\Source\VOSDK\RDD_Classes_SDK\VORDDClasses.xsproj">
       <Name>VORDDClasses</Name>
       <Project>{d7079298-1712-4b03-ad76-4ec53bfe8356}</Project>
       <Private>True</Private>
     </ProjectReference>
-    <ProjectReference Include="..\VOSDK\Source\VOSDK\System_Classes_SDK\VOSystemClasses.xsproj">
+    <ProjectReference Include="..\..\Runtime\VOSDK\Source\VOSDK\System_Classes_SDK\VOSystemClasses.xsproj">
       <Name>VOSystemClasses</Name>
       <Project>{ac2aebff-69ff-405d-b7d9-6e5cb1db914c}</Project>
       <Private>True</Private>
     </ProjectReference>
-    <ProjectReference Include="..\XSharp.Core\XSharp.Core.xsproj">
+    <ProjectReference Include="..\..\Runtime\XSharp.Core\XSharp.Core.xsproj">
       <Name>XSharp.Core</Name>
       <Project>{535dff14-efb7-43f5-a4e1-71c1c4280040}</Project>
       <Private>True</Private>
     </ProjectReference>
-    <ProjectReference Include="..\XSharp.Data\XSharp.Data.xsproj">
+    <ProjectReference Include="..\..\Runtime\XSharp.Data\XSharp.Data.xsproj">
       <Name>XSharp.Data</Name>
       <Project>{db9ad987-ebd9-4f0c-8604-608a9028585c}</Project>
       <Private>True</Private>
     </ProjectReference>
-    <ProjectReference Include="..\XSharp.Rdd\XSharp.RDD.xsproj">
+    <ProjectReference Include="..\..\Runtime\XSharp.Rdd\XSharp.RDD.xsproj">
       <Name>XSharp.RDD</Name>
       <Project>{e83c6c8c-773f-4b01-a597-3d38398a9362}</Project>
       <Private>True</Private>
     </ProjectReference>
-    <ProjectReference Include="..\XSharp.RT\XSharp.RT.xsproj">
+    <ProjectReference Include="..\..\Runtime\XSharp.RT\XSharp.RT.xsproj">
       <Name>XSharp.RT</Name>
       <Project>{ef8d2bf2-e81a-479a-ba4f-294c4c348b66}</Project>
       <Private>True</Private>
     </ProjectReference>
-    <ProjectReference Include="..\XSharp.VFP\XSharp.VFP.xsproj">
+    <ProjectReference Include="..\..\Runtime\XSharp.VFP\XSharp.VFP.xsproj">
       <Name>XSharp.VFP</Name>
       <Project>{3a771f0e-9400-4a19-8663-c71567ebfa29}</Project>
       <Private>True</Private>
     </ProjectReference>
-    <ProjectReference Include="..\XSharp.VO\XSharp.VO.xsproj">
+    <ProjectReference Include="..\..\Runtime\XSharp.VO\XSharp.VO.xsproj">
       <Name>XSharp.VO</Name>
       <Project>{06099c3d-1697-4eb1-9f53-8a9a50b9eacd}</Project>
       <Private>True</Private>
     </ProjectReference>
-    <ProjectReference Include="..\XSharp.XPP\XSharp.XPP.xsproj">
+    <ProjectReference Include="..\..\Runtime\XSharp.XPP\XSharp.XPP.xsproj">
       <Name>XSharp.XPP</Name>
       <Project>{c5d7be20-038e-4b42-a90a-b13bab83d8e5}</Project>
       <Private>True</Private>

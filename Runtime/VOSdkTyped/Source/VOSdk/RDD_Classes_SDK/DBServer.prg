@@ -624,7 +624,7 @@ CONSTRUCTOR( oFS := NULL AS FileSpec, lShareMode := FALSE AS OBJECT, lReadOnlyMo
 	BEGIN SEQUENCE
 		siSuspendNotification := 0
 		dwCurrentWorkArea := VoDbGetSelect( )
-        IF oFs == NULL
+        IF oFS == NULL
 		    BREAK DbError{ SELF, #Init, EG_ARG, __CavoStr( __CAVOSTR_DBFCLASS_NOFILENAME ),  ;
 			    NIL, "oFs" }
         ENDIF

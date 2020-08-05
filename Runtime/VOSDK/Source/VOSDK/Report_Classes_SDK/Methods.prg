@@ -433,7 +433,9 @@ METHOD __TerminateCAQRT()
 		bTermWrappers := FALSE
 		// free the report wrapper
 		TRY // TODO: Temp workaround for Access Violation thrown by WrmTerminate()
-		WrmTerminate( hWpHandle )
+    		WrmTerminate( hWpHandle )
+        CATCH as Exception
+            NOP
 		END TRY
 		bTermWrappers := TRUE
 		

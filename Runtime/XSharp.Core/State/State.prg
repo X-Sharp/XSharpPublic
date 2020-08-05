@@ -267,6 +267,15 @@ CLASS XSharp.RuntimeState
         SET SetValue<AutoShareMode>(Set.Autoshare, (AutoShareMode)value)
 
 
+	/// <summary>The current Compatible setting.</summary>
+    /// <include file="CoreComments.xml" path="Comments/PerThread/*" />
+    /// <seealso cref="M:XSharp.Core.Functions.SetCompatible" />
+    /// <seealso cref="M:XSharp.Core.Functions.SetCompatible(System.Boolean)" />
+    /// <seealso cref="F:XSharp.Set.Century" />
+   STATIC PROPERTY Compatible AS LOGIC ;
+        GET GetValue<LOGIC>(Set.Compatible);
+        SET SetValue<LOGIC>(Set.Compatible, value)
+
 	/// <summary>The current Century setting (used in DATE &lt;-&gt; STRING conversions).</summary>
     /// <include file="CoreComments.xml" path="Comments/PerThread/*" />
     /// <seealso cref="M:XSharp.Core.Functions.SetCentury" />
@@ -542,6 +551,14 @@ CLASS XSharp.RuntimeState
     STATIC PROPERTY Optimize AS LOGIC ;
         GET GetValue<LOGIC>(Set.Optimize);
         SET SetValue<LOGIC>(Set.Optimize, value)
+
+	/// <summary>The current SetSafety flag.</summary>
+    /// <include file="CoreComments.xml" path="Comments/PerThread/*" />
+    /// <seealso cref="M:XSharp.Core.Functions.SetSafety" />
+    /// <seealso cref="M:XSharp.Core.Functions.SetSafety(System.Boolean)" />
+    STATIC PROPERTY Safety AS LOGIC ;
+        GET GetValue<LOGIC>(Set.Safety);
+        SET SetValue<LOGIC>(Set.Safety, value)
 
 	/// <summary>The current SetSoftSeek flag.</summary>
     /// <include file="CoreComments.xml" path="Comments/PerThread/*" />

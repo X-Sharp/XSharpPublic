@@ -11,14 +11,70 @@ USING System.Linq
 USING System.Collections.Generic
 
 
+INTERNAL FUNCTION _SelectFoxPro(uWorkArea) AS USUAL CLIPPER
+    LOCAL sSelect   AS DWORD
+	LOCAL sCurrent  AS DWORD
+    // handles an alias string or a uWorkArea number > 1 
+	IF IsString ( uWorkArea  ) .OR. ( IsNumeric ( uWorkArea )  .AND. uWorkArea > 1 ) 
+			
+		// Throws a exception if the uWorkArea number is > 4096 !
+		IF IsNumeric ( uWorkArea ) .AND. uWorkArea > RuntimeState.Workareas:FindEmptyArea( FALSE )
+			THROW ArgumentException{}				
+		ENDIF 	 
+			
+			
+		// note: No exception is thrown if a alias name doesn´t exist !
+			
+		sCurrent := VoDbGetSelect()  // save the current workarea
+			
+		sSelect := _Select(uWorkArea)  // activates temporary the area 
+			
+		// IF ! Used()		
+		IF ! (sSelect) -> Used()
+			sSelect := 0
+		ENDIF 				
+			
+		VoDbSetSelect(INT(sCurrent))  // restore the workarea		 
+		
+	ELSE 		
+			
+		VAR lGetCurrentAreaNumber := ( PCount() == 1 .AND. IsNumeric( uWorkArea ) .AND. uWorkArea == 0 )
+		VAR lGetHighestUnusedAreaNumber := ( PCount() == 1 .AND. IsNumeric( uWorkArea ) .AND. uWorkArea == 1 )
+		
+		// handles Select(), Select(0), Select(1) and takes care of 
+		// the - not yet implemented - SET COMPATIBLE ON/OFF setting. 
+			
+		IF PCount() == 0 .OR. lGetHighestUnusedAreaNumber .OR. lGetCurrentAreaNumber 
+			
+			IF lGetHighestUnusedAreaNumber .OR. ( PCount() == 0 .AND. RuntimeState.GetValue<LOGIC>(Set.Compatible) )  
+				// get the number of the highest unused work area 
+				sSelect := RuntimeState.Workareas:FindEmptyArea( FALSE )
+				
+			ELSE // Pcount()== 0 or lGetCurrentAreaNumber 
+				sSelect := VoDbGetSelect()
+								
+			ENDIF 
+			
+		ELSE
+			// Throw a exception if uWorkArea is something else  	
+			THROW ArgumentException{}
+		ENDIF 
+			
+	ENDIF     
+    RETURN sSelect 
+
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/select/*" />
 FUNCTION Select(uWorkArea) AS USUAL CLIPPER
     LOCAL sSelect   AS DWORD
-	LOCAL sCurrent  AS DWORD
-	sCurrent := VoDbGetSelect()
-	sSelect := _Select(uWorkArea)
-	VoDbSetSelect(INT(sCurrent))
+    IF RuntimeState.Dialect == XSharpDialect.FoxPro  // KHR
+        sSelect := _SelectFoxPro(uWorkArea)
+    ELSE
+    	LOCAL sCurrent  AS DWORD
+	    sCurrent := VoDbGetSelect()
+	    sSelect := _Select(uWorkArea)
+	    VoDbSetSelect(INT(sCurrent))
+    ENDIF
 	RETURN sSelect
 
 
@@ -433,7 +489,7 @@ FUNCTION DbRLockList() AS ARRAY STRICT
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/dbrselect/*" />
 FUNCTION DbRSelect(nRelation) AS DWORD CLIPPER
 
-    DEFAULT( REF nRelation, 0)
+    @@Default( REF nRelation, 0)
     
     RETURN VoDb.RSelect(nRelation)
     
@@ -450,7 +506,7 @@ FUNCTION DbSelect(nNew) AS DWORD CLIPPER
 
     LOCAL nOld := 0 AS DWORD
     
-    DEFAULT( REF nNew, 0)
+    @@Default( REF nNew, 0)
     
     VoDb.Select(nNew, REF nOld)
     
@@ -473,7 +529,7 @@ FUNCTION DbSelectArea(uArea) AS LOGIC CLIPPER
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/dbsetselect/*" /> 
 FUNCTION DbSetSelect(nNewArea) AS DWORD CLIPPER
 
-    DEFAULT( REF  nNewArea, 0)
+    @@Default( REF  nNewArea, 0)
     
     RETURN (DWORD) VoDb.SetSelect(nNewArea)
     
@@ -495,7 +551,7 @@ FUNCTION DbSymSelect(symAlias)  AS DWORD CLIPPER
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/dbrelation/*" /> 
 FUNCTION DbRelation(nRelation)  AS STRING CLIPPER
     LOCAL cRelText  := "" AS STRING
-    DEFAULT(  REF nRelation, 1)
+    @@Default(  REF nRelation, 1)
     _DbThrowErrorOnFailure(__FUNCTION__, VoDb.Relation(nRelation, REF cRelText))
     RETURN cRelText
     
@@ -564,7 +620,7 @@ FUNCTION DbSetRelation  (xAlias, cbKey, cKey, cName) AS LOGIC CLIPPER
     LOCAL nSelect   AS DWORD
     LOCAL cAlias    AS STRING
     LOCAL cbRelation AS CODEBLOCK
-    DEFAULT(REF cName, "")
+    @@Default(REF cName, "")
     
     IF xAlias:IsString
         nSelect := Val(xAlias)
@@ -611,11 +667,11 @@ FUNCTION DbUseArea (lNewArea, cDriver, cDataFile, cAlias, lShared, lReadOnly, aS
     LOCAL nTries          AS LONG
     LOCAL aRdds           AS ARRAY
     
-    DEFAULT( REF lNewArea, .F.)
-    DEFAULT( REF cAlias, "")
-    DEFAULT( REF lShared, !SetExclusive())
-    DEFAULT( REF lReadOnly, .F.)
-    DEFAULT( REF cDelim, "")
+    @@Default( REF lNewArea, .F.)
+    @@Default( REF cAlias, "")
+    @@Default( REF lShared, !SetExclusive())
+    @@Default( REF lReadOnly, .F.)
+    @@Default( REF cDelim, "")
     nTries := 1
     aRdds   := VoDb.RddList(cDriver, acRDDs)
     rddList := VoDb.AllocRddList(aRdds)
@@ -829,7 +885,7 @@ FUNCTION _DbCreate(cFile1, cFile2, cDriver,lNew, cAlias)      AS LOGIC CLIPPER
     
     nSelect := 0
     
-    DEFAULT( REF lNew, .F.)
+    @@Default( REF lNew, .F.)
     
     IF ( Used() .AND. !lNew )
         VoDb.CloseArea()

@@ -431,8 +431,8 @@ STATIC METHOD  OleSend(oComObject AS OBJECT, oType AS System.Type, cName AS STRI
 				THROW Error.VOError(EG_ARG,  cMethod, "args", 4, <OBJECT>{args})
 			CATCH AS MissingMethodException
 				THROW Error.VOError(EG_NOMETHOD,  cMethod, "cName", 2,  <OBJECT>{cName}  )
-			CATCH AS Exception
-				THROW Error.VOError( EG_ARG , cMethod, "args", 4,  <OBJECT>{args}  )
+			CATCH e AS Exception
+				THROW Error{e}
 			END TRY
 		ELSE
 			pi := mi:GetParameters()

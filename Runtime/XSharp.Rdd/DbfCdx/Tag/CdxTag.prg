@@ -50,6 +50,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         INTERNAL _Ansi AS LOGIC
         // Scopes
         PRIVATE DIM _Scopes[2] AS ScopeInfo
+        PRIVATE _scopeEmpty    AS LOGIC
         // siblings
         PRIVATE _oRdd   AS DBFCDX
         PRIVATE _Header AS CdxTagHeader
@@ -433,25 +434,32 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         METHOD SetOrderScope(itmScope AS OBJECT , uiScope AS DbOrder_Info ) AS LOGIC
             LOCAL uiRealLen AS LONG
             LOCAL result AS LOGIC
-            
             uiRealLen := 0
             result := TRUE
             SWITCH uiScope
             CASE DbOrder_Info.DBOI_SCOPETOPCLEAR
                 SELF:_Scopes[SELF:TopScopeNo]:Clear()
+                SELF:_scopeEmpty := FALSE
             CASE DbOrder_Info.DBOI_SCOPEBOTTOMCLEAR
                 SELF:_Scopes[SELF:BottomScopeNo]:Clear()
+                SELF:_scopeEmpty := FALSE
             CASE DbOrder_Info.DBOI_SCOPETOP
-                SELF:_Scopes[SELF:TopScopeNo]:Value := itmScope
-                IF itmScope != NULL
-                    SELF:_ToString(itmScope, SELF:_keySize,  SELF:_Scopes[SELF:TopScopeNo]:Buffer, REF uiRealLen)
-                    SELF:_Scopes[SELF:TopScopeNo]:Size := uiRealLen
+                if (itmScope != SELF:_Scopes[SELF:TopScopeNo]:Value)
+                    SELF:_scopeEmpty := FALSE
+                    SELF:_Scopes[SELF:TopScopeNo]:Value := itmScope
+                    IF itmScope != NULL
+                        SELF:_ToString(itmScope, SELF:_keySize,  SELF:_Scopes[SELF:TopScopeNo]:Buffer, REF uiRealLen)
+                        SELF:_Scopes[SELF:TopScopeNo]:Size := uiRealLen
+                    ENDIF
                 ENDIF
             CASE DbOrder_Info.DBOI_SCOPEBOTTOM
-                SELF:_Scopes[SELF:BottomScopeNo]:Value   := itmScope
-                IF itmScope != NULL
-                    SELF:_ToString(itmScope, SELF:_keySize, SELF:_Scopes[SELF:BottomScopeNo]:Buffer, REF uiRealLen)
-                    SELF:_Scopes[SELF:BottomScopeNo]:Size := uiRealLen
+                IF (itmScope != SELF:_Scopes[SELF:BottomScopeNo]:Value)
+                    SELF:_scopeEmpty := FALSE
+                    SELF:_Scopes[SELF:BottomScopeNo]:Value   := itmScope
+                    IF itmScope != NULL
+                        SELF:_ToString(itmScope, SELF:_keySize, SELF:_Scopes[SELF:BottomScopeNo]:Buffer, REF uiRealLen)
+                        SELF:_Scopes[SELF:BottomScopeNo]:Size := uiRealLen
+                    ENDIF
                 ENDIF
             OTHERWISE
                 result := FALSE
@@ -489,6 +497,8 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                         IF lWasDescending
                             SELF:Descending := FALSE
                         ENDIF
+                        SELF:_oRdd:_SetEOF(FALSE)
+                        SELF:_oRdd:_SetBOF(FALSE)
                         isOk := SELF:GoTop()
                         recno := SELF:_RecNo
                         last := SELF:_oRdd:RecCount + 1

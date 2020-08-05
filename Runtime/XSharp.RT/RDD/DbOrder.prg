@@ -21,14 +21,14 @@ FUNCTION DbSeek(uKey, lSoftSeek, lLast) AS LOGIC CLIPPER
 	LOCAL dbsci     AS DbScopeInfo
 	LOCAL lRet      AS LOGIC
 	
-	DEFAULT(REF lSoftSeek, SetSoftSeek())
+	@@Default(REF lSoftSeek, SetSoftSeek())
 	
 	dbsci := DbScopeInfo{}
 	IF lLast:IsNil
 		lLast := FALSE
 	ENDIF
 	VoDb.SetScope( dbsci)
-	DEFAULT(REF uKey, "")
+	@@Default(REF uKey, "")
     IF lRet := _DbThrowErrorOnFailure(__FUNCTION__, VoDb.Seek(uKey, lSoftSeek, lLast))
 	    lRet := VoDb.Found()
 	    VoDb.SetScope(dbsci)
@@ -62,7 +62,7 @@ FUNCTION DbSetIndex(cIndexFile, uOrder) AS LOGIC CLIPPER
 	
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/dbsetorder/*" />
 FUNCTION DbSetOrder(uOrder, cIndexFile) AS LOGIC CLIPPER
-	DEFAULT( REF cIndexFile, "")
+	@@Default( REF cIndexFile, "")
 	RETURN VoDb.OrdSetFocus(cIndexFile, uOrder)
 	
 
@@ -97,7 +97,7 @@ FUNCTION IndexKey(nPosition) AS STRING CLIPPER
 FUNCTION IndexOrd() AS INT STRICT
 	LOCAL uRetVal := NIL AS USUAL
 	uRetVal := DbOrderInfo(DBOI_NUMBER, "", NIL)
-	DEFAULT( REF uRetVal, 0)
+	@@Default( REF uRetVal, 0)
     RETURN uRetVal
 	
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/ordsetrelation/*" />
@@ -395,7 +395,7 @@ FUNCTION OrdNumber(uOrder, cIndexFile) AS USUAL CLIPPER
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/dbsetorder/*" />	
 FUNCTION OrdSetFocus(uOrder, cIndexFile) AS USUAL CLIPPER
 	LOCAL cOrder := ""   AS   STRING
-	DEFAULT( REF cIndexFile, "")
+	@@Default( REF cIndexFile, "")
 	VoDb.OrdSetFocus(cIndexFile, uOrder, OUT cOrder)
 	RETURN cOrder
 	

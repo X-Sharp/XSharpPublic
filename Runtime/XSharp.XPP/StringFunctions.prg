@@ -22,8 +22,8 @@ USING System.Text
 
 FUNCTION PosUpper(cString, lNoLetter, nIgnoreCharsFromLeft) AS LONG
     EnforceType(cString, STRING)  
-    DEFAULT( REF lNoLetter, FALSE)
-    DEFAULT( REF nIgnoreCharsFromLeft, 0)
+    @@Default( REF lNoLetter, FALSE)
+    @@Default( REF nIgnoreCharsFromLeft, 0)
     LOCAL sString := cString AS STRING
     LOCAL noLetter := lNoLetter AS LOGIC
     LOCAL ignoreChars := nIgnoreCharsFromLeft AS LONG
@@ -52,8 +52,8 @@ FUNCTION PosUpper(cString, lNoLetter, nIgnoreCharsFromLeft) AS LONG
 
 FUNCTION PosLower(cString, lNoLetter, nIgnoreCharsFromLeft) AS LONG
     EnforceType(cString, STRING)  
-    DEFAULT( REF lNoLetter, FALSE)
-    DEFAULT( REF nIgnoreCharsFromLeft, 0)
+    @@Default( REF lNoLetter, FALSE)
+    @@Default( REF nIgnoreCharsFromLeft, 0)
     LOCAL sString := cString AS STRING
     LOCAL noLetter := lNoLetter AS LOGIC
     LOCAL ignoreChars := nIgnoreCharsFromLeft AS LONG
@@ -85,8 +85,8 @@ FUNCTION PosLower(cString, lNoLetter, nIgnoreCharsFromLeft) AS LONG
 
 FUNCTION PosAlpha(cString, lNoLetter, nIgnoreCharsFromLeft) AS LONG
     EnforceType(cString, STRING)  
-    DEFAULT( REF lNoLetter, FALSE)
-    DEFAULT( REF nIgnoreCharsFromLeft, 0)
+    @@Default( REF lNoLetter, FALSE)
+    @@Default( REF nIgnoreCharsFromLeft, 0)
     LOCAL sString := cString AS STRING
     LOCAL noLetter := lNoLetter AS LOGIC
     LOCAL ignoreChars := nIgnoreCharsFromLeft AS LONG
@@ -134,7 +134,7 @@ FUNCTION PosChar(cString, uChar, nPosition ) AS STRING
         THROW Error.DataTypeError(ProcName(), nameof(uChar), 2, uChar, cMessage)
     ENDIF
     sSource := cString
-    DEFAULT(nPosition, SLen(sSource))
+    @@Default(nPosition, SLen(sSource))
     LOCAL sb AS StringBuilder
     sb := StringBuilder{sSource}
     IF nPosition <= sb:Length
@@ -159,7 +159,7 @@ FUNCTION PosDel(cString, nStartPos, nDeleteLen ) AS STRING
     EnforceType(nDeleteLen,LONG)
     LOCAL sSource  AS STRING
     sSource := cString
-    DEFAULT(nStartPos, SLen(sSource))
+    @@Default(nStartPos, SLen(sSource))
     LOCAL sb AS StringBuilder
     sb := StringBuilder{sSource}
     nDeleteLen := Math.Min(sSource:Length - nStartPos+1, nDeleteLen)
@@ -183,7 +183,7 @@ FUNCTION PosIns(cString, cInsertString, nPosition ) AS STRING
     EnforceType(cInsertString,STRING)
     LOCAL sSource  AS STRING
     sSource := cString
-    DEFAULT(nPosition, SLen(sSource))   // not + 1, StringBuilder is zero based
+    @@Default(nPosition, SLen(sSource))   // not + 1, StringBuilder is zero based
     LOCAL sb AS StringBuilder
     sb := StringBuilder{sSource}
     sb:Insert(nPosition, cInsertString, 1)
@@ -209,7 +209,7 @@ FUNCTION PosRepl(cString, cReplace, nStartPos ) AS STRING
     LOCAL sReplace AS STRING
     sSource     := cString
     sReplace    := cReplace
-    DEFAULT(nStartPos, sSource:Length - sReplace:Length+1)
+    @@Default(nStartPos, sSource:Length - sReplace:Length+1)
     nStartPos := Math.Max(nStartPos, 1L)
     LOCAL sb AS StringBuilder
     sb := StringBuilder{sSource}

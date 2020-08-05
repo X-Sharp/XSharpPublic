@@ -641,7 +641,7 @@ FUNCTION DbSort(	cTargetFile, acFields, cbForCondition, cbWhileCondition, nNext,
 	
 	siFrom := VoDbGetSelect()
 	siTo   := 0
-	DEFAULT(REF lRest, .F.)
+	@@Default(REF lRest, .F.)
 	
 	TRY
 		

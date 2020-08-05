@@ -46,7 +46,7 @@ FUNCTION Descending( uIndex, uArea)
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/field/*" />
 FUNCTION Field( uField , uArea, nFlag) AS STRING
     LOCAL nInfo as LONG
-    DEFAULT(@nFlag, 0)
+    @@Default(@nFlag, 0)
     IF nFlag == 1
         nInfo := DBS_CAPTION
     ELSE

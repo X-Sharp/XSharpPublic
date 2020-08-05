@@ -247,15 +247,17 @@ METHOD Skip(nToSkip AS INT) AS LOGIC
 		ELSE
 			result := SELF:SkipRaw( nToSkip )
             // We reached the top ?
-			IF result .AND. ( nToSkip < 0 ) .AND. SELF:_BoF
-				SELF:GoTop()
-				SELF:BoF := TRUE
-			ENDIF
-			IF nToSkip < 0 
-				SELF:_SetEOF(FALSE)
-			ELSEIF nToSkip > 0 
-				SELF:BoF := FALSE
-			ENDIF
+			IF result
+                IF ( nToSkip < 0 ) .AND. SELF:_BoF
+				    SELF:GoTop()
+				    SELF:BoF := TRUE
+			    ENDIF
+			    IF nToSkip < 0 
+				    SELF:_SetEOF(FALSE)
+			    ELSEIF nToSkip > 0 
+				    SELF:BoF := FALSE
+                ENDIF
+             ENDIF
         ENDIF
 	ENDIF
     SELF:_CheckEofBof()

@@ -4529,6 +4529,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                                         MakeAttributeArgumentList(arguments)));
                                     _pool.Free(arguments);
                                 }
+                                if (version.IndexOf('*') > 0 && _options.CommandLineArguments.CompilationOptions.Deterministic)
+                                {
+                                    var node = attrCtx.CsNode as AttributeSyntax;
+                                    node = node.WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.ERR_InvalidVersionFormatDeterministic));
+                                    attrCtx.Put(node);
+                                }
 
                             }
                             break;

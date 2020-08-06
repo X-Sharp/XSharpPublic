@@ -141,15 +141,14 @@ namespace Microsoft.CodeAnalysis
             {
                 for (int i = lastExplicitValue; i < values.Length; i++)
                 {
-#if !XSHARP
                     values[i] = ushort.MaxValue;
-#else
-                    values[i] = maxValue;
-#endif
                 }
             }
 
             version = new Version(values[0], values[1], values[2], values[3]);
+#if XSHARP
+            version = GenerateVersionFromPatternAndCurrentTime(DateTime.Now, version);
+#endif
             return !parseError;
         }
 

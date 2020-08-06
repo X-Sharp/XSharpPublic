@@ -1307,11 +1307,11 @@ BEGIN NAMESPACE XSharp
             /// <include file="RTComments.xml" path="Comments/Operator/*" />
         STATIC OPERATOR +(u AS __Usual) AS __Usual
             SWITCH u:_usualType
-                CASE __UsualType.Long		; RETURN u:_intValue
-                CASE __UsualType.Int64		; RETURN u:_i64Value
-                CASE __UsualType.Float		; RETURN u:_floatValue
-                CASE __UsualType.Currency	; RETURN u:_currencyValue
-                CASE __UsualType.Decimal	; RETURN u:_decimalValue
+                CASE __UsualType.Long		; RETURN +u:_intValue
+                CASE __UsualType.Int64		; RETURN +u:_i64Value
+                CASE __UsualType.Float		; RETURN +u:_floatValue
+                CASE __UsualType.Currency	; RETURN +u:_currencyValue
+                CASE __UsualType.Decimal	; RETURN +u:_decimalValue
                 OTHERWISE
                     THROW UnaryError("+", u)
                 END SWITCH
@@ -1526,6 +1526,7 @@ BEGIN NAMESPACE XSharp
             SWITCH lhs:_usualType
 
                 CASE __UsualType.Long
+                    // Integer divisions return an integer when the remainder is 0. Otherwise a float
                     SWITCH rhs:_usualType
                     CASE __UsualType.Long
                         LOCAL result AS INT
@@ -1547,26 +1548,16 @@ BEGIN NAMESPACE XSharp
                         RETURN FLOAT{lhs:_intValue / rhs:_r8Value, rhs:_width, rhs:_decimals}
 
                     CASE __UsualType.Currency
-                        LOCAL result AS INT64
-                        result := Math.DivRem((INT64) lhs:_intValue, (INT64) rhs:_currencyValue, OUT VAR remainder)
-                        IF remainder == 0
-                            RETURN result
-                        ELSE
-                            RETURN lhs:_intValue / rhs:_currencyValue
-                        ENDIF
+                        RETURN (CURRENCY) lhs:_intValue / rhs:_currencyValue
+                        
                    CASE __UsualType.Decimal
-                        LOCAL result AS INT64
-                        result := Math.DivRem((INT64) lhs:_intValue, (INT64) rhs:_decimalValue, OUT VAR remainder)
-                        IF remainder == 0
-                            RETURN result
-                        ELSE
-                            RETURN lhs:_intValue / rhs:_decimalValue
-                        ENDIF
+                        RETURN (System.Decimal) lhs:_intValue / rhs:_decimalValue
                     OTHERWISE
                         NOP // error below
                     END SWITCH
 
                 CASE __UsualType.Int64
+                    // Integer divisions return an integer when the remainder is 0. Otherwise a float
                     SWITCH rhs:_usualType
                         CASE __UsualType.Long
                             LOCAL result AS INT64
@@ -1587,23 +1578,11 @@ BEGIN NAMESPACE XSharp
                         CASE __UsualType.Float
                             RETURN FLOAT{lhs:_i64Value / rhs:_r8Value, rhs:_width, rhs:_decimals}
 
-                       CASE __UsualType.Currency
-                            LOCAL result AS INT64
-                            result := Math.DivRem(lhs:_i64Value, (INT64) rhs:_currencyValue, OUT VAR remainder)
-                            IF remainder == 0
-                                RETURN result
-                            ELSE
-                                RETURN lhs:_i64Value / rhs:_currencyValue
-                            ENDIF
+                        CASE __UsualType.Currency
+                            RETURN ((CURRENCY) lhs:_i64Value) / rhs:_currencyValue
 
                          CASE __UsualType.Decimal
-                            LOCAL result AS INT64
-                            result := Math.DivRem(lhs:_i64Value, (INT64) rhs:_decimalValue, OUT VAR remainder)
-                            IF remainder == 0
-                                RETURN result
-                            ELSE
-                                RETURN lhs:_i64Value / rhs:_decimalValue
-                            ENDIF
+                            RETURN ((System.Decimal) lhs:_i64Value) / rhs:_decimalValue
                         OTHERWISE
                             NOP // error below
                     END SWITCH
@@ -1615,11 +1594,11 @@ BEGIN NAMESPACE XSharp
                         VAR deci  := lhs:_decimals
                         SWITCH rhs:_usualType
                         CASE __UsualType.Long
-                            res := lhs:_r8Value / rhs:_intValue
+                            res     := lhs:_r8Value / (REAL8) rhs:_intValue
                         CASE __UsualType.Int64
-                            res := lhs:_r8Value / rhs:_i64Value
+                            res     := lhs:_r8Value / (REAL8) rhs:_i64Value
                         CASE __UsualType.Float
-                            res := lhs:_r8Value / rhs:_r8Value
+                            res     := lhs:_r8Value / rhs:_r8Value
                             width   := Math.Max(lhs:_width,rhs:_width)
                             deci    := lhs:_decimals+ rhs:_decimals
                         CASE __UsualType.Currency
@@ -1638,21 +1617,21 @@ BEGIN NAMESPACE XSharp
                         ENDIF
                 CASE __UsualType.Decimal
                     SWITCH rhs:_usualType
-                    CASE __UsualType.Long		; RETURN lhs:_decimalValue / rhs:_intValue
-                    CASE __UsualType.Int64		; RETURN lhs:_decimalValue / rhs:_i64Value
+                    CASE __UsualType.Long		; RETURN lhs:_decimalValue / (System.Decimal) rhs:_intValue
+                    CASE __UsualType.Int64		; RETURN lhs:_decimalValue / (System.Decimal) rhs:_i64Value
                     CASE __UsualType.Float		; RETURN lhs:_decimalValue / (System.Decimal) rhs:_r8Value
-                    CASE __UsualType.Currency	; RETURN lhs:_decimalValue / rhs:_currencyValue
-                    CASE __UsualType.Decimal	; RETURN lhs:_decimalValue / rhs:_decimalValue
+                    CASE __UsualType.Currency	; RETURN lhs:_decimalValue / (System.Decimal) rhs:_currencyValue
+                    CASE __UsualType.Decimal	; RETURN lhs:_decimalValue / (System.Decimal) rhs:_decimalValue
                     OTHERWISE					; NOP // error below
                     END SWITCH
 
                CASE __UsualType.Currency
                     SWITCH rhs:_usualType
-                    CASE __UsualType.Long		; RETURN lhs:_currencyValue / rhs:_intValue
-                    CASE __UsualType.Int64		; RETURN lhs:_currencyValue / rhs:_i64Value
-                    CASE __UsualType.Float		; RETURN lhs:_currencyValue / (System.Decimal) rhs:_r8Value
-                    CASE __UsualType.Currency	; RETURN lhs:_currencyValue / rhs:_currencyValue
-                    CASE __UsualType.Decimal	; RETURN lhs:_currencyValue / rhs:_decimalValue
+                    CASE __UsualType.Long		; RETURN lhs:_currencyValue / (CURRENCY) rhs:_intValue
+                    CASE __UsualType.Int64		; RETURN lhs:_currencyValue / (CURRENCY) rhs:_i64Value
+                    CASE __UsualType.Float		; RETURN lhs:_currencyValue / (CURRENCY) rhs:_r8Value
+                    CASE __UsualType.Currency	; RETURN lhs:_currencyValue / (CURRENCY) rhs:_currencyValue
+                    CASE __UsualType.Decimal	; RETURN lhs:_currencyValue / (CURRENCY) rhs:_decimalValue
                     OTHERWISE					; NOP // error below
                     END SWITCH
 
@@ -1669,8 +1648,8 @@ BEGIN NAMESPACE XSharp
                     CASE __UsualType.Long		; RETURN lhs:_intValue % rhs:_intValue
                     CASE __UsualType.Int64		; RETURN lhs:_intValue % rhs:_i64Value
                     CASE __UsualType.Float		; RETURN FLOAT{lhs:_intValue % rhs:_r8Value, rhs:_width, rhs:_decimals}
-                    CASE __UsualType.Currency	; RETURN lhs:_intValue % rhs:_currencyValue
-                    CASE __UsualType.Decimal	; RETURN lhs:_intValue % rhs:_decimalValue
+                    CASE __UsualType.Currency	; RETURN (CURRENCY) lhs:_intValue % rhs:_currencyValue
+                    CASE __UsualType.Decimal	; RETURN (System.Decimal) lhs:_intValue % rhs:_decimalValue
                     OTHERWISE					; NOP // error below
                     END SWITCH
 
@@ -1679,16 +1658,16 @@ BEGIN NAMESPACE XSharp
                     CASE __UsualType.Long		; RETURN lhs:_i64Value % rhs:_intValue
                     CASE __UsualType.Int64		; RETURN lhs:_i64Value % rhs:_i64Value
                     CASE __UsualType.Float		; RETURN FLOAT{lhs:_i64Value % rhs:_r8Value, rhs:_width, rhs:_decimals}
-                    CASE __UsualType.Currency	; RETURN lhs:_i64Value % rhs:_currencyValue
-                    CASE __UsualType.Decimal	; RETURN lhs:_i64Value % rhs:_decimalValue
+                    CASE __UsualType.Currency	; RETURN (CURRENCY) lhs:_i64Value % rhs:_currencyValue
+                    CASE __UsualType.Decimal	; RETURN (System.Decimal) lhs:_i64Value % rhs:_decimalValue
                     OTHERWISE					; NOP // error below
                      END SWITCH
 
                 CASE __UsualType.Float
                     SWITCH rhs:_usualType
-                    CASE __UsualType.Long		; RETURN FLOAT{lhs:_r8Value % rhs:_intValue, lhs:_width, lhs:_decimals}
-                    CASE __UsualType.Int64		; RETURN FLOAT{lhs:_r8Value % rhs:_i64Value, lhs:_width, lhs:_decimals}
-                    CASE __UsualType.Float		; RETURN FLOAT{lhs:_r8Value % rhs:_r8Value, Math.Max(lhs:_width,rhs:_width), lhs:_decimals+ rhs:_decimals}
+                    CASE __UsualType.Long		; RETURN FLOAT{lhs:_r8Value % (REAL8) rhs:_intValue, lhs:_width, lhs:_decimals}
+                    CASE __UsualType.Int64		; RETURN FLOAT{lhs:_r8Value % (REAL8) rhs:_i64Value, lhs:_width, lhs:_decimals}
+                    CASE __UsualType.Float		; RETURN FLOAT{lhs:_r8Value % (REAL8) rhs:_r8Value, Math.Max(lhs:_width,rhs:_width), lhs:_decimals+ rhs:_decimals}
                     CASE __UsualType.Currency	; RETURN FLOAT{lhs:_r8Value % (REAL8) rhs:_currencyValue, lhs:_width, lhs:_decimals}
                     CASE __UsualType.Decimal	; RETURN FLOAT{lhs:_r8Value % (REAL8) rhs:_decimalValue, lhs:_width, lhs:_decimals}
                     OTHERWISE					; NOP // error below
@@ -1696,21 +1675,21 @@ BEGIN NAMESPACE XSharp
 
                 CASE __UsualType.Decimal
                     SWITCH rhs:_usualType
-                    CASE __UsualType.Long		; RETURN lhs:_decimalValue % rhs:_intValue
-                    CASE __UsualType.Int64		; RETURN lhs:_decimalValue % rhs:_i64Value
+                    CASE __UsualType.Long		; RETURN lhs:_decimalValue % (System.Decimal) rhs:_intValue
+                    CASE __UsualType.Int64		; RETURN lhs:_decimalValue % (System.Decimal) rhs:_i64Value
                     CASE __UsualType.Float		; RETURN lhs:_decimalValue % (System.Decimal) rhs:_r8Value
-                    CASE __UsualType.Currency	; RETURN lhs:_decimalValue %  rhs:_currencyValue
-                    CASE __UsualType.Decimal	; RETURN lhs:_decimalValue %  rhs:_decimalValue
+                    CASE __UsualType.Currency	; RETURN lhs:_decimalValue % (System.Decimal) rhs:_currencyValue
+                    CASE __UsualType.Decimal	; RETURN lhs:_decimalValue % (System.Decimal) rhs:_decimalValue
                     OTHERWISE					; NOP // error below
                     END SWITCH
 
                 CASE __UsualType.Currency
                     SWITCH rhs:_usualType
-                    CASE __UsualType.Long		; RETURN lhs:_currencyValue % rhs:_intValue
-                    CASE __UsualType.Int64		; RETURN lhs:_currencyValue % rhs:_i64Value
-                    CASE __UsualType.Float		; RETURN lhs:_currencyValue % (System.Decimal) rhs:_r8Value
-                    CASE __UsualType.Currency	; RETURN lhs:_currencyValue %  rhs:_currencyValue
-                    CASE __UsualType.Decimal	; RETURN lhs:_currencyValue %  rhs:_decimalValue
+                    CASE __UsualType.Long		; RETURN lhs:_currencyValue % (CURRENCY) rhs:_intValue
+                    CASE __UsualType.Int64		; RETURN lhs:_currencyValue % (CURRENCY) rhs:_i64Value
+                    CASE __UsualType.Float		; RETURN lhs:_currencyValue % (CURRENCY) rhs:_r8Value
+                    CASE __UsualType.Currency	; RETURN lhs:_currencyValue % (CURRENCY) rhs:_currencyValue
+                    CASE __UsualType.Decimal	; RETURN lhs:_currencyValue % (CURRENCY) rhs:_decimalValue
                     OTHERWISE					; NOP // error below
                     END SWITCH
 

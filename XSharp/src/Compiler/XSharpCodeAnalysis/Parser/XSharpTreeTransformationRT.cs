@@ -3876,19 +3876,31 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     expr = GenerateLiteralSymbol(context.Token.Text);
                     break;
                 case XP.REAL_CONST:
-                    if (_options.HasOption(CompilerOption.FloatConstants, context , PragmaOptions) && !(CurrentEntity is XP.VodefineContext))
+                    var text = context.Token.Text;
+                    if (text[0] == '$' )
                     {
-                        // check to see if the token contains an '$', 'S', 'D' or 'M'. In that case leave as is, since the user has specified
+                        var dec = GenerateLiteral(context.Start, context);
+                        if (!(CurrentEntity is XP.VodefineContext))
+                        {
+                            arg0 = MakeArgument(dec);
+                            expr = CreateObject(_currencyType, MakeArgumentList(arg0));
+                        }
+                        else
+                        {
+                            expr = dec;
+                        }
+                    }
+                    else if (_options.HasOption(CompilerOption.FloatConstants, context , PragmaOptions) && !(CurrentEntity is XP.VodefineContext))
+                    {
+                        // check to see if the token contains an 'S', 'D' or 'M'. In that case leave as is, since the user has specified
                         // single, double or decimal or currency
-                        var text = context.Token.Text;
-                        if (text.IndexOfAny("sdmSDM$".ToCharArray()) == -1 )
+                        if (text.IndexOfAny("sdmSDM".ToCharArray()) == -1 )
                         {
                             args = text.Split('.');
                             if (args.Length == 2)
                             {
-                                int len = context.Token.Text.Length;
                                 int dec = args[1].Length;
-                                arg0 = MakeArgument(GenerateLiteral(context.Token));
+                                arg0 = MakeArgument(GenerateLiteral(context.Token,context));
                                 arg1 = MakeArgument(GenerateLiteral("0", 0));
                                 arg2 = MakeArgument(GenerateLiteral(dec.ToString(), dec));
                                 expr = CreateObject(_floatType, MakeArgumentList(arg0, arg1, arg2));

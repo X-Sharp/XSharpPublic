@@ -127,7 +127,6 @@
       <styleclass name="SeeAlso" parentclass="Normal" nextclass="Normal" shortcut="0">
         <style-set media="screen" type="para">margin-top:10px; page-break-after:avoid; </style-set>
         <style-set media="screen" type="text">font-size:12pt; font-style:italic; </style-set>
-        <style-set media="print" type="para"/>
         <style-set media="print" type="text">font-size:12pt; font-weight:bold; font-style:italic; </style-set>
       </styleclass>
       <styleclass name="Tip Body" parentclass="Normal" shortcut="0">

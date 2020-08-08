@@ -77,16 +77,27 @@ PROCEDURE DoTests(oXide AS XideHelper, aGroupsToBuild AS List<STRING>, cConfigNa
 	LOCAL aFailed AS List<AppClass>
 	LOCAL oProcess AS Process
 	
-	Message("Rnning tests, expecting them to " + iif(lTestTheFixedOnes , "succeed" , "fail"))
+	Message("Running tests, expecting them to " + iif(lTestTheFixedOnes , "succeed" , "fail"))
 	Message("")
 
 	aFailed := List<AppClass>{}
 	oProject := oXide:Project
 	
+	LOCAL aApps AS SortedList<STRING,AppClass>
+	aApps := SortedList<STRING,AppClass>{}
 	FOR LOCAL nApp := 1 AS INT UPTO oProject:GetAppCount()
 		LOCAL oApp AS AppClass
-		gaCompilerMessages := List<STRING>{}
+		LOCAL cKey AS STRING
 		oApp := oProject:GetApp(nApp)
+		// make sure helper apps get compiled first
+		cKey := iif(oApp:cName:ToUpper():Contains("HELPER") , "0" , "1")
+		cKey += "_" + oApp:cName
+		aApps:Add(cKey ,oApp)
+	NEXT
+	
+	FOREACH oPair AS KeyValuePair<STRING,AppClass> IN aApps
+		LOCAL oApp AS AppClass
+		oApp := oPair:Value
 		gaCompilerMessages := List<STRING>{}
 		oApp:aCompilerMessages := gaCompilerMessages
 		IF IsAppInGroups(oApp, aGroupsToBuild)
@@ -97,7 +108,7 @@ PROCEDURE DoTests(oXide AS XideHelper, aGroupsToBuild AS List<STRING>, cConfigNa
 				END IF
 				oApp:aCompilerMessages:Add("Test is using vulcan language!!!!!")
 				Message("*****************  Test is using vulcan language!!!!! ********************")
-				aFailed:Add(oApp)
+//				aFailed:Add(oApp)
 //				Console.Beep()
 //				Console.ReadLine()
 				LOOP

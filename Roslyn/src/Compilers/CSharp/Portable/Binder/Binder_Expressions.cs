@@ -1956,6 +1956,13 @@ namespace Microsoft.CodeAnalysis.CSharp
             {
                 return expression;
             }
+            // WE do not want (USUAL) <object> to unbox the object !
+            if (operand.Type?.SpecialType == SpecialType.System_Object &&
+                targetType == Compilation.UsualType())
+            {
+                return operand;
+            }
+
 #endif
 
             if (targetType.IsNullableType() &&

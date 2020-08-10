@@ -1,13 +1,11 @@
-namespace aa.bb.cc.dd
-{
-	public class test1
-	{
-	}
-}
+BEGIN NAMESPACE aa.bb.cc.dd
+	PUBLIC CLASS test1
+	END CLASS
+END NAMESPACE
 
-namespace aa.bb.cc.dD
-{
-	public class test2
-	{
-	}
-}
+
+BEGIN NAMESPACE aa.bb.cc.dD
+	PUBLIC CLASS test2
+	END CLASS
+END NAMESPACE
+

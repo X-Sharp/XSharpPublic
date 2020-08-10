@@ -67,26 +67,96 @@ FUNCTION Start() AS VOID
 	Message( "" )
 
 	DoTests(oXide, aGroupsToBuild, cConfigName, lTestTheFixedOnes)
+//	DoRuntimeTests(oXide, cConfigName)
 
 	System.IO.File.WriteAllLines(cLogFilename, gaLog)
 
 RETURN
+
+FUNCTION DoRuntimeTests(oXide AS XideHelper, cConfigName AS STRING) AS INT
+	LOCAL oProject AS ProjectClass
+	LOCAL oOptions AS CompileOptions
+	LOCAL oProcess AS Process
+	LOCAL oApp AS AppClass
+	LOCAL nFail AS INT
+	
+	oProject := oXide:Project
+	
+	oApp := oProject:GetAppFromGuid("B098889A-A74F-46CE-8771-3AAEEECA0F99")
+	gaCompilerMessages := List<STRING>{}
+	oApp:aCompilerMessages := gaCompilerMessages
+	Message("Performing test: " + oApp:cName) 
+	oOptions := oXide:GetCompileOptions(oApp, cConfigName)
+	
+	oProcess := CreateProcess()
+	oOptions:cSwitches := oOptions:cSwitches:Replace(":GUI",":NOGUI")
+	oProcess:StartInfo:Arguments := oOptions:cSwitches + " /fullpaths /noconfig /shared"
+	oApp:cCompilerOptions := oOptions:cSwitches
+	
+	oProcess:Start()
+	oProcess:BeginErrorReadLine()
+	oProcess:BeginOutputReadLine()
+	
+	IF oProcess:WaitForExit(20000)
+		Message( "Exit code compiling runtime tests: " + oProcess:ExitCode:ToString() )
+	ELSE
+		Message( "Timed out compiling runtime tests!" )
+	ENDIF
+	Message( "" )
+	oProcess:Dispose()	
+
+	oProcess := CreateProcess()
+	
+	LOCAL oConfig AS ProjectConfigClass
+	oConfig := oProject:oConfigs:Get( iif(cConfigName:ToUpper() == "DEBUG" , 1 , 2) )
+	
+	oProcess:StartInfo:FileName := oApp:GetOutputFileName(oConfig:cSubFolder,FALSE)
+	oProcess:StartInfo:Arguments := ""
+
+	oProcess:Start()
+	oProcess:BeginErrorReadLine()
+	oProcess:BeginOutputReadLine()
+	IF oProcess:WaitForExit(30000)
+		nFail := oProcess:ExitCode
+		Message( "Exit code running runtime tests: " + oProcess:ExitCode:ToString() )
+	ELSE
+		Message( "Timed out running runtime tests!" )
+	ENDIF
+	Message( "" )
+	
+	FOREACH cMessage AS STRING IN gaCompilerMessages
+		Message(cMessage)
+	NEXT
+RETURN nFail
+	
+	
 PROCEDURE DoTests(oXide AS XideHelper, aGroupsToBuild AS List<STRING>, cConfigName AS STRING, lTestTheFixedOnes AS LOGIC)
 	LOCAL nCount, nFail, nSuccess, nCrash AS INT
 	LOCAL oProject AS ProjectClass
 	LOCAL aFailed AS List<AppClass>
 	LOCAL oProcess AS Process
 	
-	Message("Rnning tests, expecting them to " + iif(lTestTheFixedOnes , "succeed" , "fail"))
+	Message("Running tests, expecting them to " + iif(lTestTheFixedOnes , "succeed" , "fail"))
 	Message("")
 
 	aFailed := List<AppClass>{}
 	oProject := oXide:Project
 	
+	LOCAL aApps AS SortedList<STRING,AppClass>
+	aApps := SortedList<STRING,AppClass>{}
 	FOR LOCAL nApp := 1 AS INT UPTO oProject:GetAppCount()
 		LOCAL oApp AS AppClass
-		gaCompilerMessages := List<STRING>{}
+		LOCAL cKey AS STRING
 		oApp := oProject:GetApp(nApp)
+		// make sure helper apps get compiled first
+		cKey := iif(oApp:cName:ToUpper():Contains("HELPER") , "0" , "1")
+		cKey += "_" + oApp:cName
+		aApps:Add(cKey ,oApp)
+	NEXT
+	
+	FOREACH oPair AS KeyValuePair<STRING,AppClass> IN aApps
+		LOCAL oApp AS AppClass
+		oApp := oPair:Value
 		gaCompilerMessages := List<STRING>{}
 		oApp:aCompilerMessages := gaCompilerMessages
 		IF IsAppInGroups(oApp, aGroupsToBuild)
@@ -97,7 +167,7 @@ PROCEDURE DoTests(oXide AS XideHelper, aGroupsToBuild AS List<STRING>, cConfigNa
 				END IF
 				oApp:aCompilerMessages:Add("Test is using vulcan language!!!!!")
 				Message("*****************  Test is using vulcan language!!!!! ********************")
-				aFailed:Add(oApp)
+//				aFailed:Add(oApp)
 //				Console.Beep()
 //				Console.ReadLine()
 				LOOP
@@ -151,13 +221,25 @@ PROCEDURE DoTests(oXide AS XideHelper, aGroupsToBuild AS List<STRING>, cConfigNa
 			oProcess:Dispose()
 		END IF
 	NEXT
+	
+	Message("")
+	Message("End of compiling tests, now performing runtime tests")
+	Message("")
+	LOCAL nRuntimeFail AS INT
+	nRuntimeFail := DoRuntimeTests(oXide, cConfigName)
+	Message("")
+	Message("End of runtime tests")
+	Message("")
+	
 	Message( "===============================" )
 	Message( "Total tests: " + nCount:ToString() )
 	Message( "Success: " + nSuccess:ToString() )
 	Message( "Fail: " + nFail:ToString() )
 	Message( "Compiler Problem: " + nCrash:ToString() )
 	Message( "===============================" )
-	Message( "Result: " + iif(aFailed:Count == 0 , "SUCESS!" , "Fail :(") )
+	Message( "Runtime tests failed: " + nRuntimeFail:ToString() )
+	Message( "===============================" )
+	Message( "Result: " + iif(aFailed:Count + nRuntimeFail == 0 , "SUCESS!" , "Fail :(") )
 	Message( "===============================" )
 	IF aFailed:Count != 0
 		Message( "Failed tests:" )

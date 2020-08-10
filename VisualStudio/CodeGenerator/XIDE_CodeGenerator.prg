@@ -381,6 +381,9 @@ RETURN
 					IF _AND(oDeclarationLine:oEntity:eModifiers , EntityModifiers._Internal) == EntityModifiers._Internal
 						cDeclarationLine := "INTERNAL " + cDeclarationLine
 					ENDIF
+					IF .NOT. String.IsNullOrEmpty( oDeclarationLine:oEntity:cImplements:Trim() )
+						cDeclarationLine := cDeclarationLine + " IMPLEMENTS " + oDeclarationLine:oEntity:cImplements
+					ENDIF
 				END IF
 				SELF:ReplaceWEDLine(cDeclarationLine , nLine)
 				nLine ++

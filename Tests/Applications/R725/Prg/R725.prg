@@ -1,11 +1,10 @@
-FUNCTION Start as VOID
+FUNCTION Start AS VOID
 LOCAL o AS OBJECT
 LOCAL p AS PSZ
 o := StringAlloc("abc")      
 p := o             
 ? p
 XAssert(p == String2Psz("abc"))
-Console.ReadLine()
 RETURN
 
 PROC xAssert(l AS LOGIC)

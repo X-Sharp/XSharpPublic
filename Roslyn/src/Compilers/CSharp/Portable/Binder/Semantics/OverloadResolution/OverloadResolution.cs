@@ -499,6 +499,41 @@ namespace Microsoft.CodeAnalysis.CSharp
 
             var normalResult = IsConstructorApplicableInNormalForm(constructor, arguments, completeResults, ref useSiteDiagnostics);
             var result = normalResult;
+#if XSHARP
+            if (normalResult.IsValid && IsValidParams(constructor) && Compilation.Options.HasRuntime)
+            {
+                // Find Params argument
+                BoundExpression paramsArg = null;
+                var parameters = constructor.Parameters;
+                for (int arg = 0; arg < arguments.Arguments.Count; ++arg)
+                {
+                    int parm = normalResult.ParameterFromArgument(arg);
+                    if (parm >= parameters.Length)
+                        continue;
+                    var parameter = parameters[parm];
+                    if (parameter.IsParams)
+                    {
+                        paramsArg = arguments.Argument(arg);
+                    }
+                }
+
+                // If params arg is USUAL prefer the epanded form
+                if (paramsArg?.Type == Compilation.UsualType())
+                {
+                    if (arguments.RefKinds.Count == 0 || arguments.RefKinds[0] == RefKind.None)
+                    {
+                        if (!constructor.HasUseSiteError)
+                        {
+                            var expandedResult = IsConstructorApplicableInExpandedForm(constructor, arguments, completeResults, ref useSiteDiagnostics);
+                            if (expandedResult.IsValid || completeResults)
+                            {
+                                result = expandedResult;
+                            }
+                        }
+                    }
+                }
+            }
+#endif
             if (!normalResult.IsValid)
             {
                 if (IsValidParams(constructor))
@@ -734,23 +769,6 @@ namespace Microsoft.CodeAnalysis.CSharp
             Debug.Assert(typeArguments.Count == 0 || typeArguments.Count == member.GetMemberArity());
 
             // Second, we need to determine if the method is applicable in its normal form or its expanded form.
-#if XSHARP
-            // when calling a USUAL[] function we allow 1 usual param and wrap it as params as well
-            // REF USUAL is not allowed
-            if (allowUnexpandedForm && Compilation.Options.HasRuntime
-                && arguments.Arguments.Count == 1 && arguments.Arguments[0].Type  == Compilation.UsualType())
-            {
-                if (arguments.RefKinds.Count == 0 || arguments.RefKinds[0] == RefKind.None)
-                {
-                    // We have seen an example where the customer is mixing different versions of the Vulcan runtime.
-                    // when we set allowUnexpandedForm to false then strange errors will happen later.
-                    if (!member.HasUseSiteError)
-                    { 
-                        allowUnexpandedForm = false;
-                    }
-                }
-            }
-#endif
 
             var normalResult = (allowUnexpandedForm || !IsValidParams(leastOverriddenMember))
                 ? IsMemberApplicableInNormalForm(
@@ -765,6 +783,41 @@ namespace Microsoft.CodeAnalysis.CSharp
                     useSiteDiagnostics: ref useSiteDiagnostics)
                 : default(MemberResolutionResult<TMember>);
 
+#if XSHARP
+            // when calling a USUAL[] function we allow 1 usual param and wrap it as params as well
+            // REF USUAL is not allowed
+            if (allowUnexpandedForm && normalResult.Result.IsValid && IsValidParams(leastOverriddenMember) && Compilation.Options.HasRuntime)
+            {
+                // Find Params argument
+                BoundExpression paramsArg = null;
+                var parameters = member.GetParameters();
+                for (int arg = 0; arg < arguments.Arguments.Count; ++arg)
+                {
+                    int parm = normalResult.Result.ParameterFromArgument(arg);
+                    if (parm >= parameters.Length)
+                        continue;
+                    var parameter = parameters[parm];
+                    if (parameter.IsParams)
+                    {
+                        paramsArg = arguments.Argument(arg);
+                    }
+                }
+
+                // If params arg is USUAL prefer the epanded form
+                if (paramsArg?.Type == Compilation.UsualType())
+                {
+                    if (arguments.RefKinds.Count == 0 || arguments.RefKinds[0] == RefKind.None)
+                    {
+                        // We have seen an example where the customer is mixing different versions of the Vulcan runtime.
+                        // when we set allowUnexpandedForm to false then strange errors will happen later.
+                        if (!member.HasUseSiteError)
+                        {
+                            normalResult = default(MemberResolutionResult<TMember>);
+                        }
+                    }
+                }
+            }
+#endif
             var result = normalResult;
             if (!normalResult.Result.IsValid)
             {

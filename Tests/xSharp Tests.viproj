@@ -42288,7 +42288,7 @@ ReferenceBrowse = C:\XSharp\DevRt\Binaries\Debug\XSharp.RT.dll,1,1
 [RuntimeTests Native Resources]
 [RuntimeTests License files]
 [RuntimeTests General Options]
-Switches=
+Switches=/define:GUI
 ZeroArrays=0
 CaseSensitive=0
 ImplicitNamespace=0

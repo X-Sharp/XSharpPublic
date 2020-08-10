@@ -20,7 +20,13 @@ jobs:
     
     steps:
       - uses: actions/checkout@master #Clone the repository code at master
-#     - uses: NuGet/setup-nuget@v1.0.2 #Setup NuGet
+      - uses: actions/cache@v2
+        with:
+          path: | 
+            ./Roslyn/Binaries/Tools/dotnet/*
+          key: ${{ runner.os }}-netcoresdk-${{ hashFiles('./Roslyn/Binaries/Tools/dotnet/*') }}
+          restore-keys: |
+            ${{ runner.os }}-netcoresdk-
       - name: BuildCompiler
         shell: cmd
         run: |

@@ -15,6 +15,33 @@ namespace Microsoft.CodeAnalysis.CSharp
 {
     internal sealed partial class OverloadResolution
     {
+        private static BetterResult PreferMostDerived<TMember>(MemberResolutionResult<TMember> m1, MemberResolutionResult<TMember> m2, ref HashSet<DiagnosticInfo> useSiteDiagnostics) where TMember : Symbol
+        {
+            var t1 = m1.Member.ContainingType;
+            var t2 = m2.Member.ContainingType;
+
+            if (t1.SpecialType != SpecialType.System_Object && t2.SpecialType == SpecialType.System_Object)
+                return BetterResult.Left;
+            if (t1.SpecialType == SpecialType.System_Object && t2.SpecialType != SpecialType.System_Object)
+                return BetterResult.Right;
+
+            if (t1.IsInterfaceType() && t2.IsInterfaceType())
+            {
+                if (t1.AllInterfacesWithDefinitionUseSiteDiagnostics(ref useSiteDiagnostics).Contains((NamedTypeSymbol)t2))
+                    return BetterResult.Left;
+                if (t2.AllInterfacesWithDefinitionUseSiteDiagnostics(ref useSiteDiagnostics).Contains((NamedTypeSymbol)t1))
+                    return BetterResult.Right;
+            }
+            else if (t1.IsClassType() && t2.IsClassType())
+            {
+                if (t1.IsDerivedFrom(t2, TypeCompareKind.ConsiderEverything, useSiteDiagnostics: ref useSiteDiagnostics))
+                    return BetterResult.Left;
+                if (t2.IsDerivedFrom(t1, TypeCompareKind.ConsiderEverything, useSiteDiagnostics: ref useSiteDiagnostics))
+                    return BetterResult.Right;
+            }
+
+            return BetterResult.Neither;
+        }
 
         private bool VOBetterFunctionMember<TMember>(
             MemberResolutionResult<TMember> m1,

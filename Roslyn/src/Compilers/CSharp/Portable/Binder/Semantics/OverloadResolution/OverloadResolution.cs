@@ -1138,10 +1138,12 @@ namespace Microsoft.CodeAnalysis.CSharp
                 // work necessary to eliminate methods on base types of Mammal when we eliminated
                 // methods on base types of Cat.
 
+#if !XSHARP
                 if (IsLessDerivedThanAny(result.LeastOverriddenMember.ContainingType, results, ref useSiteDiagnostics))
                 {
                     results[f] = new MemberResolutionResult<TMember>(result.Member, result.LeastOverriddenMember, MemberAnalysisResult.LessDerived());
                 }
+#endif
             }
         }
 
@@ -1994,8 +1996,15 @@ namespace Microsoft.CodeAnalysis.CSharp
                 return (m1ModifierCount < m2ModifierCount) ? BetterResult.Left : BetterResult.Right;
             }
 
+#if XSHARP
+            result = PreferValOverInParameters(arguments, m1, m1LeastOverridenParameters, m2, m2LeastOverridenParameters);
+            if (result != BetterResult.Neither)
+                return result;
+            return PreferMostDerived(m1, m2, ref useSiteDiagnostics);
+#else
             // Otherwise, prefer methods with 'val' parameters over 'in' parameters.
             return PreferValOverInParameters(arguments, m1, m1LeastOverridenParameters, m2, m2LeastOverridenParameters);
+#endif
         }
 
         private static BetterResult PreferValOverInParameters<TMember>(

@@ -4248,10 +4248,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                                 return;
                             }
                             break;
-                        case XP.USUAL:
-                            // no typecast needed
-                            context.Put(context.Expr.Get<ExpressionSyntax>());
-                            return;
+                        //case XP.USUAL:
+                        //    // no typecast needed
+                        //    context.Put(context.Expr.Get<ExpressionSyntax>());
+                        //    return;
                         default:
                             break;
                     }

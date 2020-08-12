@@ -2,8 +2,8 @@
   "profiles": {
     "xsc": {
       "commandName": "Project",
-      "commandLineArgs": "@c369.rsp",
-      "workingDirectory": "c:\\XSharp\\Dev\\Tests\\"
+      "commandLineArgs": "@LastXSharpResponseFile.Rsp /parallel-",
+      "workingDirectory": "c:\\XSharp\\DevRt\\Runtime\\VOSDK\\Source\\VOSDK\\GUI_Classes_SDK\\"
     }
   }
 }

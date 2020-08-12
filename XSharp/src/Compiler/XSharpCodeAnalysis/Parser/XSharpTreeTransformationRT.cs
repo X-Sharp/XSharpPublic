@@ -125,7 +125,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         public override string GetGlobalClassName(XSharpTargetDLL targetDLL)
         {
             // our runtime DLLs have a fixed Globals Class name
-            if (targetDLL != XSharpTargetDLL.Other)
+            if (targetDLL != XSharpTargetDLL.Other && targetDLL < XSharpTargetDLL.VOWin32Api)
             {
                 return base.GetGlobalClassName(targetDLL);
             }

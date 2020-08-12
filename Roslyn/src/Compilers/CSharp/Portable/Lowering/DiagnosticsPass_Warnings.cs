@@ -152,11 +152,9 @@ namespace Microsoft.CodeAnalysis.CSharp
 
             return false;
         }
-#if XSHARP
-        private BoundExpression StripImplicitCasts(BoundExpression expr)
-#else
+
         private static BoundExpression StripImplicitCasts(BoundExpression expr)
-#endif
+
         {
             BoundExpression current = expr;
             while (true)
@@ -168,17 +166,12 @@ namespace Microsoft.CodeAnalysis.CSharp
                     return current;
                 }
 
-#if XSHARP
-                VOCheckSignedUnsigned(expr, conversion);
-#endif
                 current = conversion.Operand;
             }
         }
-#if XSHARP
-        private bool IsSameLocalOrField(BoundExpression expr1, BoundExpression expr2)
-#else
+
         private static bool IsSameLocalOrField(BoundExpression expr1, BoundExpression expr2)
-#endif
+
         {
             if (expr1 == null && expr2 == null)
             {

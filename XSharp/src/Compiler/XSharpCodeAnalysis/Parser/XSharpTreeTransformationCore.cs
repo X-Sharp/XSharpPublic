@@ -6223,7 +6223,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             if (stmt is XP.JumpStmtContext)
             {
                 var jmpstmt = stmt as XP.JumpStmtContext;
-                if (jmpstmt.Key.Type == XP.THROW)
+                if (jmpstmt.Key.Type == XP.THROW || jmpstmt.Key.Type == XP.BREAK)
                     return false;
 
                 if ((jmpstmt.Key.Type == XP.EXIT || jmpstmt.Key.Type == XP.LOOP) && !inSideLoop)

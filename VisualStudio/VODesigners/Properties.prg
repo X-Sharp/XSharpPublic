@@ -236,6 +236,8 @@ CLASS VODesignProperty INHERIT DesignProperty
 								EXIT
 							END IF
 						NEXT
+               CATCH
+                  NOP
 					END TRY
 					RETURN
 					
@@ -262,6 +264,8 @@ CLASS VODesignProperty INHERIT DesignProperty
 							IF rSize > (REAL4)500 // TODO big bad ugly hack
 								rSize := rSize / (REAL4)100.0
 							ENDIF
+                  CATCH
+                     NOP
 						END TRY
 						FOR n := 3 UPTO aFont:Length
 							SWITCH aFont[n]:ToUpper() 
@@ -277,6 +281,8 @@ CLASS VODesignProperty INHERIT DesignProperty
 						NEXT
 						TRY
 							oFont := Font{cFont , rSize , eStyle}
+                  CATCH
+                     NOP
 						END TRY
 						SELF:oValue := oFont
 						RETURN
@@ -558,7 +564,9 @@ CLASS DesignProperty
 			IF _oValue:GetType() == TypeOf(STRING)
 				TRY
 					SELF:oValue := Convert.ToInt32((STRING)_oValue)
-				END
+            CATCH
+               NOP
+				END TRY
 			ELSE
 				SELF:oValue := _oValue
 			ENDIF

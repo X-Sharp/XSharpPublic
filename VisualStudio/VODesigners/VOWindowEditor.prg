@@ -3487,6 +3487,8 @@ RETURN
 				IF oType != TypeOf(DesignPushButton)
 					oControl:BackColor := oDesign:Control:BackColor
 				END IF
+         CATCH
+            NOP
 			END TRY
 		NEXT
 		AdjustGroupBoxesInForm(oTest)
@@ -3545,6 +3547,8 @@ RETURN
 			        ENDIF
 				ENDIF
 			END IF
+         CATCH
+            NOP
         END TRY
 
 		IF !System.IO.File.Exists(cCavoWed)
@@ -3561,6 +3565,8 @@ RETURN
                IF cCavoWed:Contains("cavowed") .AND. cCavoWed:EndsWith(".tpl")
                   File.Copy(cCavoWed , cOrigDir + "\cavowed.tpl" , FALSE)
                ENDIF
+            CATCH
+               NOP
             END TRY
 			ELSE
 				RETURN FALSE

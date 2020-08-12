@@ -257,14 +257,16 @@ BEGIN NAMESPACE XSharpModel
                 ENDIF
                 BEGIN LOCK SELF
                     VAR hash := 0U
-					TRY
-						FOREACH VAR entity IN SELF:EntityList
-							BEGIN UNCHECKED
-							   hash += (DWORD) entity:Prototype:GetHashCode()
-							   hash += (DWORD) entity:Range:StartLine
-							END UNCHECKED
-						NEXT
-					END TRY
+					      TRY
+						      FOREACH VAR entity IN SELF:EntityList
+							      BEGIN UNCHECKED
+							         hash += (DWORD) entity:Prototype:GetHashCode()
+							         hash += (DWORD) entity:Range:StartLine
+							      END UNCHECKED
+						      NEXT
+                     CATCH
+                        NOP
+                    END TRY
                     RETURN hash
                 END LOCK
             END GET

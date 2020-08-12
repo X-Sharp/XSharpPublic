@@ -1083,6 +1083,8 @@ PARTIAL CLASS VOFieldSpecEditor
 		nPos += 4
 		TRY
 			oItem:aProperties:Add("superclass" , __ReadNextVNFsString(aBytes , nPos , 80))
+      CATCH
+         NOP
 		END TRY
 
 	RETURN oItem

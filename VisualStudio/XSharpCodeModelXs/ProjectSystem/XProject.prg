@@ -281,6 +281,8 @@ BEGIN NAMESPACE XSharpModel
                   NEXT
                   // repeat the assemblyreferences because we can have _projectOutputDLLs added to the list
                   SELF:ResolveUnprocessedAssemblyReferences()
+               CATCH
+                  NOP
                END TRY
                IF XSettings.EnableReferenceInfoLog
                   SELF:WriteOutputMessage(">>-- ResolveReferences()")

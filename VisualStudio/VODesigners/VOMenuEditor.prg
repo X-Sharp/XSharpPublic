@@ -1241,6 +1241,8 @@ RETURN
 					cPathToVh += "..\"
 					oDirInfo := oDirInfo:Parent
 				END DO
+         CATCH
+            NOP
 			END TRY
 			IF .not. lFound
 				cPathToVh := ""

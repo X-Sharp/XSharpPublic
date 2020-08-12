@@ -181,6 +181,8 @@ PARTIAL CLASS VODBServerEditor INHERIT DesignerBase
 		TRY
 			oDocument:Load(cFileName)
 			lSuccess := TRUE
+      CATCH
+         NOP
 		END TRY
 		IF .not. lSuccess .or. oDocument:FirstChild == NULL
 			RETURN FALSE

@@ -115,9 +115,13 @@ INTERNAL CLASS DesignPushButton INHERIT Button
 			IF SELF:oItem:GetProperty("ExAlignment"):TextValue:ToUpper() == "RIGHT"
 				SELF:oSF:Alignment := StringAlignment.Far
 			END IF
+      CATCH
+         NOP
 		END TRY
 		TRY
 			e:Graphics:DrawString(SELF:oItem:GetProperty("Caption"):TextValue , SELF:Font , SELF:oBrush , SELF:ClientRectangle , SELF:oSF)
+      CATCH
+         NOP
 		END TRY
 		
 	RETURN
@@ -146,6 +150,8 @@ INTERNAL CLASS DesignFixedText INHERIT Label
 			LOCAL lExLeft AS LOGIC
 			TRY
 				lExLeft := SELF:oItem:GetProperty("ExAlignment"):TextValue:ToUpper() == "RIGHT"
+         CATCH
+            NOP
 			END TRY
 			TRY
 				IF SELF:oItem:GetProperty("Center vertically"):ValueLogic
@@ -215,6 +221,8 @@ INTERNAL CLASS DesignCheckBox INHERIT CheckBox
 			TRY
 				SELF:TextAlign := GetButtonAlignment(SELF:oItem , TRUE)
 				SELF:CheckAlign := GetButtonAlignment(SELF:oItem , FALSE)
+         CATCH
+            NOP
 			END TRY
 		CASE cUpper == "PUSH LIKE"
 			SELF:Appearance := iif(oProp:ValueLogic , Appearance.Button , Appearance.Normal)
@@ -249,6 +257,8 @@ INTERNAL CLASS DesignRadioButton INHERIT RadioButton
 			TRY
 				SELF:TextAlign := GetButtonAlignment(SELF:oItem , TRUE)
 				SELF:CheckAlign := GetButtonAlignment(SELF:oItem , FALSE)
+         CATCH
+            NOP
 			END TRY
 		CASE cUpper == "PUSH LIKE"
 			SELF:Appearance := iif(oProp:ValueLogic , Appearance.Button , Appearance.Normal)
@@ -901,6 +911,8 @@ INTERNAL FUNCTION GetButtonAlignment(oItem AS DesignWindowItem , lText AS LOGIC)
 	TRY
 		lExLeft := oItem:GetProperty("ExAlignment"):TextValue:ToUpper() == "RIGHT"
 		lTextLeft := oItem:GetProperty("Text Left"):ValueLogic
+   CATCH
+      NOP
 	END TRY
 
 	TRY

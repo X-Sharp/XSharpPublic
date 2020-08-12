@@ -41,7 +41,7 @@ BEGIN NAMESPACE XSharpModel
 		STATIC METHOD Clear() AS VOID
 			assemblies:Clear()
 			_mscorlib := NULL
-         GC.Collect()
+			//GC.Collect()
 		
 		STATIC METHOD FindAssemblyByLocation(location AS STRING) AS STRING
 			IF assemblies:ContainsKey(location)
@@ -229,7 +229,7 @@ BEGIN NAMESPACE XSharpModel
 			IF assemblies:Count == 0
 				mscorlib := NULL
 			ENDIF
-			GC.Collect()
+			//GC.Collect()
 		
 		STATIC METHOD WriteOutputMessage(message AS STRING) AS VOID
 			XSolution.WriteOutputMessage("XModel.Typecontroller "+message)

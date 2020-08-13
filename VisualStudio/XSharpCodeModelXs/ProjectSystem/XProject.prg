@@ -805,7 +805,14 @@ BEGIN NAMESPACE XSharpModel
          
          VAR result := XDatabase.GetTypes(typeName, SELF:DependentProjectList) 
          result := FilterUsings(result,usings,typeName, FALSE)
-         _lastFound := GetType(result)
+         var tmp := GetType(result)
+         // RvdH make sure that the full typename matches if we are looking with a fully qualified type
+         // So when looking for the Type Foo.SomeType (defined in an external assembly) we should not return 
+         // Bar.SomeType (defined in code). 
+         if tmp != null .and. originalName:Contains(".") .and. tmp:FullName != originalName
+            tmp := NULL
+         endif
+         _lastFound := tmp
          _lastName  := originalName
          IF XSettings.EnableTypelookupLog
             WriteOutputMessage(ie"Lookup {typeName}, result {iif(_lastFound != NULL, _lastFound.FullName, \"not found\" } ")

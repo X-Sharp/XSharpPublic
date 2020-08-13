@@ -684,6 +684,17 @@ namespace XSharp.MacroCompiler
                                 }
                             }
                             break;
+                        case TokenType.SUBSTR:
+                            if (La() == '.' || (La() >= '0' && La() <= '9'))
+                            {
+                                t = TokenType.REAL_CONST;
+                                while (ExpectRange('0', '9') || Expect('_')) ;
+                                if (Lb() == '_') t = TokenType.INVALID_NUMBER;
+                                if (Expect('.')) while (ExpectRange('0', '9') || Expect('_')) ;
+                                if (Lb() == '_') t = TokenType.INVALID_NUMBER;
+                                value = _Source.Substring(start, _index - start).Replace("_", "");
+                            }
+                            break;
                         case TokenType.INT_CONST:
                             if (c == '0' && ExpectAny('X','x'))
                             {

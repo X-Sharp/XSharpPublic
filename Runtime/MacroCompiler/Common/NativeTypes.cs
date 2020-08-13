@@ -42,6 +42,7 @@ namespace XSharp.MacroCompiler
         Psz = 27,
         Array = 28,
         Codeblock = 29,
+        Currency = 30,
     }
 
     public static class NativeTypeInfo
@@ -90,6 +91,7 @@ namespace XSharp.MacroCompiler
             XSharpQualifiedTypeNames.Psz + "|" + VulcanQualifiedTypeNames.Psz,
             XSharpQualifiedTypeNames.Array + "|" + VulcanQualifiedTypeNames.Array,
             XSharpQualifiedTypeNames.Codeblock + "|" + VulcanQualifiedTypeNames.Codeblock,
+            "XSharp.__Currency",
         };
 
         static TypeSymbol[] NativeTypeSymbols;
@@ -181,6 +183,8 @@ namespace XSharp.MacroCompiler
                     return "array";
                 case NativeType.Codeblock:
                     return "codeblock";
+                case NativeType.Currency:
+                    return "currency";
                 default:
                     return null;
             }

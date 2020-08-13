@@ -194,7 +194,7 @@ namespace XSharp.Project
                                 usings.AddRange(xfile.Usings);
                             }
                             var mgr = this.ProjectMgr as XSharpProjectNode;
-                            var type = mgr.ResolveType(parentclass, usings);
+                            var type = mgr.ResolveExternalType(parentclass, usings);
                             if (type != null)
                             {
                                 while (type?.BaseType != null)
@@ -203,7 +203,7 @@ namespace XSharp.Project
                                     SubType = typeNameToSubtype(btName);
                                     if (!String.IsNullOrEmpty(SubType))
                                         break;
-                                    type = mgr.ResolveType(btName, usings); ;
+                                    type = mgr.ResolveExternalType(btName, usings); ;
                                 }
                             }
                             else

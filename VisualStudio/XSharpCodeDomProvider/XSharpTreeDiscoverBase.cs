@@ -1530,13 +1530,8 @@ namespace XSharp.CodeDom
             }
             IXType type;
             var myusings = usings.ToArray();
+            // this looks up the type in the current project and all the dependent X# projects
             type = _projectNode.ResolveXType(typeName, myusings);
-            if (type != null)
-            {
-                _types.Add(typeName, type);
-                return type;
-            }
-            type = _projectNode.ResolveReferencedType(typeName, myusings);
             if (type != null)
             {
                 _types.Add(typeName, type);

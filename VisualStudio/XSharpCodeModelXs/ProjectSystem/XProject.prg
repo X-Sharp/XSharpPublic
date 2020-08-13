@@ -755,9 +755,6 @@ BEGIN NAMESPACE XSharpModel
          NEXT
          RETURN result
          
-      METHOD Lookup(typeName AS STRING) AS XTypeDefinition
-         VAR usings := List<STRING>{}
-         RETURN Lookup(typeName, usings)
          
       PRIVATE METHOD AdjustUsings(typeName REF STRING, usings AS IReadOnlyList<STRING>) AS IReadOnlyList<STRING>
          VAR pos := typeName:LastIndexOf(".")
@@ -788,9 +785,14 @@ BEGIN NAMESPACE XSharpModel
             SELF:_lastFound := NULL
             SELF:_lastName  := NULL
          ENDIF
-      
+
+      METHOD Lookup(typeName AS STRING) AS XTypeDefinition
+         VAR usings := List<STRING>{}
+         RETURN Lookup(typeName, usings)
+
       METHOD Lookup(typeName AS STRING, usings AS IReadOnlyList<STRING>) AS XTypeDefinition
-         IF XSettings.EnableTypelookupLog
+      	 // lookup Type definition in this project and X# projects referenced by this project
+        IF XSettings.EnableTypelookupLog
             WriteOutputMessage(i"Lookup {typeName}")
          ENDIF
          VAR originalName := typeName
@@ -801,48 +803,34 @@ BEGIN NAMESPACE XSharpModel
          VAR pos := typeName:IndexOf('<')
          IF pos > 0
             typeName := typeName:Substring(0, pos)
-         ENDIF
-         
-         VAR result := XDatabase.GetTypes(typeName, SELF:DependentProjectList) 
-         result := FilterUsings(result,usings,typeName, FALSE)
-         var tmp := GetType(result)
+         ENDIF         
+         VAR result := XDatabase.GetTypes(typeName, SELF:DependentProjectList)
+         result      := FilterUsings(result,usings, typeName, FALSE)
+ 
+         var tmp  := GetType(result)
          // RvdH make sure that the full typename matches if we are looking with a fully qualified type
          // So when looking for the Type Foo.SomeType (defined in an external assembly) we should not return 
          // Bar.SomeType (defined in code). 
+         
          if tmp != null .and. originalName:Contains(".") .and. tmp:FullName != originalName
             tmp := NULL
          endif
-         _lastFound := tmp
-         _lastName  := originalName
+         _lastFound  := tmp
+         _lastName   := originalName
          IF XSettings.EnableTypelookupLog
             WriteOutputMessage(ie"Lookup {typeName}, result {iif(_lastFound != NULL, _lastFound.FullName, \"not found\" } ")
          ENDIF
+          
          RETURN _lastFound
          
       METHOD LookupReferenced(typeName AS STRING) AS XTypeDefinition
       	 // lookup Type definition in X# projects referenced by this project
          VAR usings := List<STRING>{}
-         RETURN LookupReferenced(typeName, usings)
+         RETURN Lookup(typeName, usings)
          
       METHOD LookupReferenced(typeName AS STRING, usings AS IReadOnlyList<STRING>) AS XTypeDefinition
-   	// lookup Type definition in X# projects referenced by this project
-        IF XSettings.EnableTypelookupLog
-            WriteOutputMessage(i"LookupReferenced {typeName}")
-         ENDIF
-         VAR originalName := typeName
-         IF originalName == _lastName
-            RETURN _lastFound
-         ENDIF
-         usings := AdjustUsings(REF typeName, usings)
-         VAR result := XDatabase.GetTypes(typeName, SELF:DependentProjectList)
-         result      := FilterUsings(result,usings, typeName, FALSE)
-         _lastFound  := GetType(result)
-         _lastName   := originalName
-         IF XSettings.EnableTypelookupLog
-            WriteOutputMessage(ie"LookupReferenced {typeName}, result {iif(_lastFound != NULL, _lastFound.FullName, \"not found\" } ")
-         ENDIF
-          
-         RETURN _lastFound
+   	   // Is now identical to Lookup()
+         RETURN Lookup(typeName, usings)
          
       METHOD FilterUsings(list AS IList<XDbResult> , usings AS IReadOnlyList<STRING>, typeName AS STRING, partial AS LOGIC) AS IList<XDbResult>
          VAR result := List<XDbResult>{}

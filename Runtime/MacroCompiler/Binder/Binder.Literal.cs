@@ -86,7 +86,8 @@ namespace XSharp.MacroCompiler
                             }
                     }
                 case TokenType.REAL_CONST:
-                    switch (Value.Last())
+                    char spec = Value.First() == '$' ? '$' : Value.Last();
+                    switch (spec)
                     {
                         case 'M':
                         case 'm':
@@ -113,6 +114,15 @@ namespace XSharp.MacroCompiler
                             try
                             {
                                 return Constant.Create(double.Parse(Value.Substring(0, Value.Length - 1), System.Globalization.CultureInfo.InvariantCulture));
+                            }
+                            catch (OverflowException)
+                            {
+                                throw expr.Error(ErrorCode.LiteralFloatOverflow);
+                            }
+                        case '$':
+                            try
+                            {
+                                return Constant.CreateCurrency(decimal.Parse(Value.Substring(1, Value.Length - 1), System.Globalization.CultureInfo.InvariantCulture));
                             }
                             catch (OverflowException)
                             {

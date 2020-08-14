@@ -176,6 +176,14 @@ namespace Microsoft.CodeAnalysis.CSharp
         BoundExpression MakeIsDeclarationPattern(SyntaxNode syntax, BoundExpression loweredInput, BoundExpression loweredTarget, bool requiresNullTest)
         {
             var type = loweredTarget.Type;
+#if XSHARP
+            var usualType = _compilation.UsualType();
+            if (loweredInput.Type == usualType && type.IsReferenceType)
+            {
+                // Avoid boxing the USUAL; convert to OBJECT instead
+                loweredInput = _factory.StaticCall(usualType, ReservedNames.ToObject, loweredInput);
+            }
+#endif
             requiresNullTest = requiresNullTest && loweredInput.Type.CanContainNull();
 
             // If the match is impossible, we simply evaluate the input and yield false.

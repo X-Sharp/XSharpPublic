@@ -134,7 +134,11 @@ namespace Microsoft.CodeAnalysis.CSharp
                         var xnode = rewrittenOperand.Syntax.Parent?.XNode as LanguageService.CodeAnalysis.XSharp.SyntaxParser.XSharpParserRuleContext;
                         if (xnode != null && xnode.IsCastClass())
                         {
-                            conversionKind = ConversionKind.Boxing;
+                            if (rewrittenType == _compilation.UsualType())
+                                conversionKind = ConversionKind.Unboxing;
+                            else
+                                conversionKind = ConversionKind.Boxing;
+
                         }
                         else
                         {

@@ -4351,9 +4351,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         }
                         break;
                     case XP.USUAL:
-                        // no typecast needed
-                        context.Put(context.Expr.Get<ExpressionSyntax>());
-                        return;
+                        // no typecast needed for CASTCLASS because that is handled later
+                        if (context.Start.Type == XP.CASTCLASS)
+                        { 
+                            context.Put(context.Expr.Get<ExpressionSyntax>());
+                            return;
+                        }
+                        break;
                 }
             }
             if (context.Type != null)

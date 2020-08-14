@@ -289,6 +289,8 @@ namespace Microsoft.CodeAnalysis.CSharp
             if (sourceExpression.Syntax != null)
             {
                 var xNode = sourceExpression.Syntax.XNode;
+                if (xNode is XP.PrimaryExpressionContext pex)
+                    xNode = pex.Expr;
                 while (xNode != null)
                 {
                     voCast = xNode is XP.VoCastExpressionContext;
@@ -438,6 +440,16 @@ namespace Microsoft.CodeAnalysis.CSharp
                 {
                     // not really boxing, but this is handled in UnBoxXSharpType 
                     return Conversion.Boxing;
+                }
+            }
+            if (voCast && srcType == SpecialType.System_Object)
+            {
+                var xnode = sourceExpression.Syntax.XNode as XSharpParserRuleContext;
+                if (xnode.IsCastClass() && destination == Compilation.UsualType() )
+                {
+                    // __CASTCLASS(USUAL, OBJECT)
+                    // not really boxing, but this is handled in UnBoxXSharpType 
+                    return Conversion.Boxing; 
                 }
             }
 

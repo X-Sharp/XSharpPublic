@@ -313,9 +313,13 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             SELF:SetPage(_tagList)
             _tagList:ReadTags()
             // Compile expressions
+            var oError := RuntimeState.LastRddError
             FOREACH VAR tag IN Tags
                 tag:EvaluateExpressions()
             NEXT
+            IF oError != NULL
+                RuntimeState.LastRddError := oError
+            ENDIF
             RETURN TRUE
         #endregion
 

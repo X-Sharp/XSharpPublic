@@ -68,6 +68,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 
 #region Properties
         INTERNAL PROPERTY Binary            AS LOGIC AUTO
+        INTERNAL PROPERTY IsOpen            AS LOGIC AUTO
         INTERNAL PROPERTY Collation         AS VfpCollation GET _Collation
         INTERNAL PROPERTY Expression        AS STRING GET _KeyExpr
         INTERNAL PROPERTY Encoding          AS Encoding GET _Encoding
@@ -136,7 +137,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             SELF:Page := nPage
             SELF:_Header := CdxTagHeader{oBag, nPage,SELF:OrderName, SELF}
             SELF:_bag:SetPage(SELF:_Header)
-            SELF:Open()
+            SELF:IsOpen := SELF:Open()
 
 
          METHOD ReadHeader AS VOID
@@ -190,18 +191,20 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 
         INTERNAL METHOD EvaluateExpressions() AS LOGIC
             LOCAL evalOk AS LOGIC
-            LOCAL oKey AS OBJECT
+            LOCAL oKey := NULL AS OBJECT
             evalOk := TRUE
             TRY
                 SELF:_KeyCodeBlock := SELF:_oRdd:Compile(SELF:_KeyExpr)
             CATCH AS Exception
-                THROW
+                evalOk := FALSE
             END TRY
-
+            IF ! evalOk
+                RETURN FALSE
+            ENDIF
             TRY
                 oKey := SELF:_oRdd:EvalBlock(SELF:_KeyCodeBlock)
             CATCH AS Exception
-                    THROW
+                evalOk := FALSE
             END TRY
             IF !evalOk
                 RETURN FALSE

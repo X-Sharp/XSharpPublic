@@ -36,9 +36,11 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                         oBag:Structural := lStructural
                         _bags:Add(oBag)
                         isOk := oBag:Open(info)
-                        IF isOk .AND. XSharp.RuntimeState.AutoOrder != 0
-                            SELF:CurrentOrder := oBag:Tags[0]
-                            SELF:CurrentOrder:GoTop()
+                        IF isOk
+                            IF XSharp.RuntimeState.AutoOrder != 0
+                                SELF:CurrentOrder := oBag:Tags[0]
+                                SELF:CurrentOrder:GoTop()
+                            ENDIF
                         ELSE
                             _bags:Remove(oBag)
                         ENDIF

@@ -1907,11 +1907,12 @@ VIRTUAL METHOD Compile(sBlock AS STRING) AS ICodeblock
 	LOCAL result AS ICodeblock
 	result := SUPER:Compile(sBlock)
 	IF result == NULL
-        var msg := "Could not compile epression '"+sBlock+"'"
         if (RuntimeState:LastRddError != NULL_OBJECT)
-            msg += "("+RuntimeState:LastRddError:Message+")"
+            SELF:_dbfError( RuntimeState:LastRddError, Subcodes.EDB_EXPRESSION, Gencode.EG_SYNTAX,"DBF.Compile")
+        ELSE
+            var msg := "Could not compile epression '"+sBlock+"'"
+		    SELF:_dbfError( Subcodes.EDB_EXPRESSION, Gencode.EG_SYNTAX,"DBF.Compile", msg )
         ENDIF
-		SELF:_dbfError( Subcodes.EDB_EXPRESSION, Gencode.EG_SYNTAX,"DBF.Compile", msg )
 	ENDIF
 RETURN result
 

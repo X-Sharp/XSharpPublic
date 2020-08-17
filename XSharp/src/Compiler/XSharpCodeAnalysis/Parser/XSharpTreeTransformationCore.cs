@@ -6459,17 +6459,31 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         }
                         if (oldStyleAssign || nestedAssign)
                         {
-                            // check for x = y = z, but also x = y > z
+                            ExpressionSyntax RHS = bin.Right;
+                            ExpressionSyntax LHS = bin.Left;
                             if (nestedAssign)
                             {
-                                var Left = (BinaryExpressionSyntax)bin.Left;
-                                var assignTo = Left.Left;
-                                var valueToAssign = _syntaxFactory.BinaryExpression(
+                                // check for x = y = z, but also x = y > z
+                                var Left = (BinaryExpressionSyntax)LHS;
+                                LHS = Left.Left;
+                                RHS = _syntaxFactory.BinaryExpression(
                                                     bin.Kind,
                                                     Left.Right,
                                                     bin.OperatorToken,
                                                     bin.Right);
-                                expr = MakeSimpleAssignment(assignTo, valueToAssign);
+                            }
+                            // check to see if the LHS is Late bound access
+                            // because we need to generate a IVarPut() then
+                            var left = LHS.XNode;
+                            if (left is XP.AccessMemberLateContext || left is XP.AccessMemberLateNameContext)
+                            {
+                                // lhs is then an InvocationExpression
+                                var invoke = LHS as InvocationExpressionSyntax;
+                                string putMethod = _options.XSharpRuntime ? XSharpQualifiedFunctionNames.IVarPut : VulcanQualifiedFunctionNames.IVarPut;
+                                var obj = invoke.ArgumentList.Arguments[0];
+                                var varName = invoke.ArgumentList.Arguments[1];
+                                var args = MakeArgumentList(obj, varName, MakeArgument(RHS));
+                                expr = GenerateMethodCall(putMethod, args, true);
                             }
                             else
                             {

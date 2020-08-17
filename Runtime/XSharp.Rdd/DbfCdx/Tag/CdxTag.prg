@@ -67,6 +67,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 
 
 #region Properties
+        INTERNAL PROPERTY Binary            AS LOGIC AUTO
         INTERNAL PROPERTY Collation         AS VfpCollation GET _Collation
         INTERNAL PROPERTY Expression        AS STRING GET _KeyExpr
         INTERNAL PROPERTY Encoding          AS Encoding GET _Encoding
@@ -232,13 +233,20 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 CASE DbFieldType.Number
                     SELF:_sourcekeySize := SELF:_keySize   := 8
                     SELF:getKeyValue := _getNumFieldValue
+                    SELF:Binary      := TRUE
                 CASE DbFieldType.Date
                     // CDX converts the Date to a Julian Number and stores that as a Real8 in the index
                     SELF:_sourcekeySize := SELF:_keySize   := 8
                     SELF:getKeyValue := _getDateFieldValue
+                    SELF:Binary      := TRUE
+                CASE DbFieldType.Integer
+                    SELF:_sourcekeySize := SELF:_keySize   := 4
+                    SELF:getKeyValue := _getIntFieldValue
+                    SELF:Binary      := TRUE
                 OTHERWISE
                     SELF:_sourcekeySize := SELF:_keySize   := (WORD) SELF:_oRdd:_Fields[_SingleField]:Length
                     SELF:getKeyValue := _getFieldValue
+                    SELF:Binary      := FALSE
                     IF SELF:_Collation != NULL
                         SELF:_keySize := SELF:Header:KeySize
                         SELF:getKeyValue := _getFieldValueWithCollation
@@ -410,10 +418,13 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             CASE TypeCode.Single
             CASE TypeCode.Double
             CASE TypeCode.Decimal
-                LOCAL ds := DoubleStruct{} AS DoubleStruct
-                ds:doubleValue := Convert.ToDouble(toConvert)
-                ds:SaveToIndex(buffer)
-                resultLength := 8
+                IF sLen == 4
+                    LongToFoxOrder(Convert.ToInt32(toConvert), buffer)
+                    resultLength := 4
+                ELSE
+                    DoubleToFoxOrder(Convert.ToDouble(toConvert), buffer)
+                    resultLength := 8
+                ENDIF
                 RETURN TRUE
             CASE TypeCode.String
                 text := (STRING)toConvert
@@ -750,14 +761,18 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             ENDIF
             RETURN
 
-        // Three methods to calculate keys. We have split these to optimize index creating
+        // Methods to calculate keys. We have split these to optimize index creating
         PRIVATE METHOD _getNumFieldValue(sourceIndex AS LONG, byteArray AS BYTE[]) AS LOGIC
-            LOCAL r8 := DoubleStruct{} AS DoubleStruct
             LOCAL oValue := SELF:_oRdd:GetValue(_SingleField+1) AS OBJECT
-            r8:doubleValue := Convert.ToDouble(oValue)
-            r8:SaveToIndex(byteArray)
+            DoubleToFoxOrder(Convert.ToDouble(oValue), byteArray)
             RETURN TRUE
-            
+
+       PRIVATE METHOD _getIntFieldValue(sourceIndex AS LONG, byteArray AS BYTE[]) AS LOGIC
+            LOCAL oValue := SELF:_oRdd:GetValue(_SingleField+1) AS OBJECT
+            LongToFoxOrder(Convert.ToInt32(oValue),byteArray)
+            RETURN TRUE
+
+
         PRIVATE METHOD _getDateFieldValue(sourceIndex AS LONG, byteArray AS BYTE[]) AS LOGIC
             LOCAL oValue := SELF:_oRdd:GetValue(_SingleField+1) AS OBJECT
             IF oValue IS IDate VAR valueDate
@@ -768,10 +783,8 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 ENDIF
             ENDIF
             IF oValue IS DateTime VAR dt
-                LOCAL r8 := DoubleStruct{} AS DoubleStruct
                 VAR longValue  := _toJulian(dt)
-                r8:doubleValue := Convert.ToDouble(longValue)
-                r8:SaveToIndex(byteArray)
+                DoubleToFoxOrder(Convert.ToDouble(longValue), byteArray)
                 RETURN TRUE
             ENDIF
             RETURN FALSE

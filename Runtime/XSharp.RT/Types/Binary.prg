@@ -12,12 +12,11 @@ USING System.Diagnostics
 BEGIN NAMESPACE XSharp
     // use explicit layout so we can compact the size into 12 bytes
     // Type is Immutable, so has no settable properties
-    /// <summary>Internal type that implements the FoxPro Compatible CURRENCY type.
+    /// <summary>Internal type that implements the FoxPro Compatible BINARY type.
     /// This type has many operators and implicit converters that normally are never directly called from user code.
-    /// The data in this type is stored as a System.Decimal with 4 decimal places
+    /// The data in this type is stored as an array of Bytes
+    /// Conversion To String are supported and they use the current active windows codepage.
     /// </summary>
-    /// <seealso cref="T:XSharp.__Float"/>
-    /// <seealso cref="T:System.Decimal"/>
     PUBLIC STRUCTURE __Binary IMPLEMENTS IFormattable, ;
         IComparable<__Binary>, ;
         IEquatable<__Binary>, ;
@@ -27,10 +26,20 @@ BEGIN NAMESPACE XSharp
         
         #region constructors
         /// <include file="RTComments.xml" path="Comments/Constructor/*" />
-        /// <param name="r8">Real8 value to convert to a FLOAT</param>
+        /// <param name="b">Byte[] value that has the bytes that define the binary</param>
         [DebuggerStepThroughAttribute] [MethodImpl(MethodImplOptions.AggressiveInlining)];        
         CONSTRUCTOR (b as Byte[])
+            IF b == NULL
+                VAR err			 := Error{ArgumentException{}}
+                err:Gencode		 := Gencode.EG_ARG
+                err:ArgNum		 := 1
+                err:FuncSym		 := "Binary.ctor"
+                err:Description  := "Argument cannot be null"
+                err:Args         := <OBJECT> {b}
+                THROW err
+            ENDIF
             SELF:_value    := b
+          
             
         #endregion
         #region Properties

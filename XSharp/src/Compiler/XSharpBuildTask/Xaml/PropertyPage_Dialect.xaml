@@ -1,9 +1,9 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Rule
-	Name="LanguageSettings"
+	Name="Dialect"
 	DisplayName="Language"
 	PageTemplate="generic"
-	Description="Language Settings"
+	Description="Dialect Settings"
     Order="2"
     SwitchPrefix="/"
     xmlns="http://schemas.microsoft.com/build/2009/properties">

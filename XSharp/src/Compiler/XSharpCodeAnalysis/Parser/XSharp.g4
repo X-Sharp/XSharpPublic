@@ -1007,6 +1007,7 @@ xbaseFunc           : Token=	// Aphabetical order
 // xBaseTypes are NOT available in the Core dialect and therefore separated here.
 xbaseType           : Token=	// Aphabetical order
                     ( ARRAY
+                    | BINARY
                     | CODEBLOCK
                     | CURRENCY
                     | DATE
@@ -1051,6 +1052,7 @@ literalValue        : Token=
                     | SYMBOL_CONST
                     | HEX_CONST
                     | BIN_CONST
+                    | BINARY_CONST
                     | REAL_CONST
                     | INT_CONST
                     | INVALID_NUMBER
@@ -1084,7 +1086,7 @@ keywordxs           : Token=(AUTO | CHAR | CONST |  DEFAULT | GET | IMPLEMENTS |
                     // The following did not exist in Vulcan
                     | ADD | ARGLIST | ASCENDING | ASTYPE | ASYNC | AWAIT | BY | CHECKED | DESCENDING | DYNAMIC | EQUALS | EXTERN | FIXED | FROM 
                     | GROUP | INTO | JOIN | LET | NAMEOF | OF | ON | ORDERBY | OVERRIDE |PARAMS | REMOVE 
-                    | SELECT | UNCHECKED | VAR | VOLATILE | WHERE |  CHAR  | CURRENCY | DECIMAL | DATETIME 
+                    | SELECT | UNCHECKED | VAR | VOLATILE | WHERE |  BINARY | CHAR  | CURRENCY | DECIMAL | DATETIME 
                     // Added as XS keywords to allow them to be treated as IDs
                     // the following entity keywords will be never used 'alone' and can therefore be safely defined as identifiers
                     | DELEGATE | ENUM | GLOBAL | INHERIT | STRUCTURE    

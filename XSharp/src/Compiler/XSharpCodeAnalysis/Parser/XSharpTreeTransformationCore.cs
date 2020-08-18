@@ -157,6 +157,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         protected readonly TypeSyntax _stringType;
         protected readonly TypeSyntax _intType;
         protected readonly TypeSyntax _dateTimeType;
+        protected readonly ArrayTypeSyntax _byteArrayType;
 
         protected string _fileName;
         protected bool _isScript;
@@ -251,6 +252,14 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             _stringType = _syntaxFactory.PredefinedType(SyntaxFactory.MakeToken(SyntaxKind.StringKeyword));
             _intType = _syntaxFactory.PredefinedType(SyntaxFactory.MakeToken(SyntaxKind.IntKeyword));
             _dateTimeType = GenerateQualifiedName("System.DateTime");
+            var emptysizes = _pool.AllocateSeparated<ExpressionSyntax>();
+            emptysizes.Add(_syntaxFactory.OmittedArraySizeExpression(SyntaxFactory.MakeToken(SyntaxKind.OmittedArraySizeExpressionToken)));
+            var emptyrank = _syntaxFactory.ArrayRankSpecifier(
+                             SyntaxFactory.MakeToken(SyntaxKind.OpenBracketToken),
+                             emptysizes,
+                             SyntaxFactory.MakeToken(SyntaxKind.CloseBracketToken));
+
+            _byteArrayType = _syntaxFactory.ArrayType(_syntaxFactory.PredefinedType(SyntaxFactory.MakeToken(SyntaxKind.ByteKeyword)), emptyrank);
             _impliedType = GenerateSimpleName(XSharpSpecialNames.ImpliedTypeName);
             _fileName = fileName;
             _entryPoint = "Start";
@@ -8245,6 +8254,48 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             int[] elements;
             switch (context.Token.Type)
             {
+                case XP.BINARY_CONST:
+                    var source = context.Token.Text.Substring(2);
+                    var error = false;
+                    if (source.Length % 2 != 0)
+                    {
+                        error = true;
+                        source += "0";
+                    }
+                    else if (source.Length == 0)
+                    {
+                        error = true;
+                    }
+                    var values = new List<ExpressionSyntax>();
+                    for (var i = 0; i < source.Length; i+=2)
+                    {
+                        var substr = source.Substring(i, 2);
+                        var value = (int) TokenExtensions.HexValue(substr);
+                        values.Add(GenerateLiteral(value));
+                    }
+                    var bin = _syntaxFactory.ArrayCreationExpression(
+                        SyntaxFactory.MakeToken(SyntaxKind.NewKeyword),
+                            _byteArrayType,
+                            _syntaxFactory.InitializerExpression(SyntaxKind.ArrayInitializerExpression,
+                                SyntaxFactory.MakeToken(SyntaxKind.OpenBraceToken),
+                                MakeSeparatedList<ExpressionSyntax>(values.ToArray()),
+                                SyntaxFactory.MakeToken(SyntaxKind.CloseBraceToken)));
+                    if (error)
+                    {
+                        string msg;
+                        if (source.Length == 0)
+                        {
+                            msg = "no binary value specified";
+                        }
+                        else
+                        {
+                            msg = "length of literal must be an even number of characters";
+                        }
+                        bin = bin.WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.ERR_InvalidLiteral, "Binary", context.Token.Text, msg));
+                    }
+                    context.Put(bin);
+                    return;
+
                 case XP.INTERPOLATED_STRING_CONST:
                     context.Put(CreateInterPolatedStringExpression(context.Token));
                     return;
@@ -8922,6 +8973,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 case XSharpLexer.ARRAY:
                     context.Put(GenerateLiteral(5));
+                    break;
+                case XSharpLexer.BINARY:                  // New in XSharp
+                    context.Put(GenerateLiteral(29));
                     break;
                 case XSharpLexer.BYTE:
                     context.Put(GenerateLiteral(11));

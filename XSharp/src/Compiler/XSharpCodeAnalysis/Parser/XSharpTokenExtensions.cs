@@ -127,7 +127,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             return sb.ToString();
         }
 
-        private static long HexValue(string text)
+        internal static long HexValue(string text)
         {
             long r = 0;
             foreach (char c in text)

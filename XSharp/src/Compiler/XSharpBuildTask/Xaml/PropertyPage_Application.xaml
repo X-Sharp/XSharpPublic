@@ -15,12 +15,6 @@
         <DataSource Persistence="ProjectFile"   HasConfigurationCondition="False" />
     </Rule.DataSource>
     <StringProperty Name="ApplicationIcon" DisplayName="Application Icon" Category="General" />
-    <StringListProperty Name="ProjectTypeGuids" Visible="False" />
-    <StringProperty Name="ProjectGuid" Visible="False">
-        <StringProperty.DataSource>
-            <DataSource Persistence="ProjectFile" Label="Globals" HasConfigurationCondition="False" />
-        </StringProperty.DataSource>
-    </StringProperty>
     <StringProperty Name="AssemblyName" DisplayName="Assembly Name" Category="General" Description="File Name of the output assemply"/>
     <StringProperty Name="Name" DisplayName="Project Name" Category="General" Description="File Name of the output assemply" ReadOnly="True"/>
     <StringProperty Name="RootNamespace" DisplayName="Root namespace" Category="General" 

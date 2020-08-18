@@ -401,7 +401,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                     parseOne(HEX_CONST);
                     while ((La_1 >= '0' && La_1 <= '9') || (La_1 >= 'A' && La_1 <= 'F') || (La_1 >= 'a' && La_1 <= 'f') || La_1 == '_')
                         parseOne();
-                    if (_textSb[_textSb.Length-1]== '_') invalid = true;
+                    if (_textSb[_textSb.Length - 1] == '_') invalid = true;
                     if (La_1 == 'U' || La_1 == 'L' || La_1 == 'u' || La_1 == 'l')
                         parseOne();
                     if (invalid)
@@ -417,6 +417,13 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                         parseOne();
                     if (invalid)
                         parseType(INVALID_NUMBER);
+                    return;
+                }
+                else if (La_1 == 'h' || La_1 == 'H')
+                {
+                    parseOne(BINARY_CONST);
+                    while ((La_1 >= '0' && La_1 <= '9') || (La_1 >= 'A' && La_1 <= 'F') || (La_1 >= 'a' && La_1 <= 'f') )
+                        parseOne();
                     return;
                 }
             }
@@ -1787,6 +1794,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
 
 			    // Predefined types
                 {"ARRAY", ARRAY},
+                {"BINARY", BINARY},
                 {"BYTE", BYTE},
                 {"CODEBLOCK", CODEBLOCK},
                 {"CURRENCY", CURRENCY},

@@ -25,6 +25,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         protected readonly TypeSyntax _usualType;
         protected readonly TypeSyntax _floatType;
         protected readonly TypeSyntax _currencyType;
+        protected readonly TypeSyntax _binaryType;
         protected readonly TypeSyntax _arrayType;
         protected readonly TypeSyntax _dateType;
         protected readonly TypeSyntax _symbolType;
@@ -69,12 +70,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 _usualType = GenerateQualifiedName(XSharpQualifiedTypeNames.Usual);
                 _floatType = GenerateQualifiedName(XSharpQualifiedTypeNames.Float);
+                _arrayType = GenerateQualifiedName(XSharpQualifiedTypeNames.Array);
+                _binaryType = GenerateQualifiedName(XSharpQualifiedTypeNames.Binary);
+                _codeblockType = GenerateQualifiedName(XSharpQualifiedTypeNames.Codeblock);
                 _currencyType = GenerateQualifiedName(XSharpQualifiedTypeNames.Currency);
                 _dateType = GenerateQualifiedName(XSharpQualifiedTypeNames.Date);
-                _arrayType = GenerateQualifiedName(XSharpQualifiedTypeNames.Array);
-                _symbolType = GenerateQualifiedName(XSharpQualifiedTypeNames.Symbol);
                 _pszType = GenerateQualifiedName(XSharpQualifiedTypeNames.Psz);
-                _codeblockType = GenerateQualifiedName(XSharpQualifiedTypeNames.Codeblock);
+                _symbolType = GenerateQualifiedName(XSharpQualifiedTypeNames.Symbol);
                 _errorType = XSharpQualifiedTypeNames.Error;
                 _wrappedExceptionType = XSharpQualifiedTypeNames.WrappedException;
                 _classLibraryType = XSharpQualifiedTypeNames.ClassLibrary;
@@ -89,6 +91,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 _usualType = GenerateQualifiedName(VulcanQualifiedTypeNames.Usual);
                 _floatType = GenerateQualifiedName(VulcanQualifiedTypeNames.Float);
                 _currencyType = GenerateQualifiedName(VulcanQualifiedTypeNames.Usual);
+                _binaryType = GenerateQualifiedName(VulcanQualifiedTypeNames.Usual);
                 _dateType = GenerateQualifiedName(VulcanQualifiedTypeNames.Date);
                 _arrayType = GenerateQualifiedName(VulcanQualifiedTypeNames.Array);
                 _symbolType = GenerateQualifiedName(VulcanQualifiedTypeNames.Symbol);
@@ -1165,6 +1168,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 case XP.ARRAY:
                     type = _arrayType;
+                    break;
+                case XP.BINARY:
+                    type = _binaryType;
                     break;
                 case XP.CODEBLOCK:
                     type = _codeblockType;
@@ -3858,6 +3864,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 case XP.NULL_SYMBOL:
                     arg0 = MakeArgument(GenerateLiteral(""));
                     expr = CreateObject(_symbolType, MakeArgumentList(arg0));
+                    break;
+                case XP.BINARY_CONST:
+                    base.ExitLiteralValue(context);
+                    expr = context.Get<ExpressionSyntax>();
+                    expr = CreateObject(_binaryType, MakeArgumentList(MakeArgument(expr)));
+
                     break;
                 case XP.DATE_CONST:
                     var elements = DecodeDateConst(context.Token.Text);

@@ -50,6 +50,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         internal const string Usual = "global::XSharp.__Usual";
         internal const string Float = "global::XSharp.__Float";
         internal const string Currency = "global::XSharp.__Currency";
+        internal const string Binary = "global::XSharp.__Binary";
         internal const string Date = "global::XSharp.__Date";
         internal const string Array = "global::XSharp.__Array";
         internal const string Symbol = "global::XSharp.__Symbol";

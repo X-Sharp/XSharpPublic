@@ -4017,18 +4017,20 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
             var push = GenerateMethodCall(_options.XSharpRuntime ? XSharpQualifiedFunctionNames.PushWorkarea : VulcanQualifiedFunctionNames.PushWorkarea, MakeArgumentList(MakeArgument(wa)), true);
             var pop = GenerateMethodCall(_options.XSharpRuntime ? XSharpQualifiedFunctionNames.PopWorkarea : VulcanQualifiedFunctionNames.PopWorkarea, EmptyArgumentList(), true);
-            var pushStmt = GenerateExpressionStatement(push, true);
-            var popStmt = GenerateExpressionStatement(pop, true);
-            // RvdH 2020-08-19
-            // This messes up the sequence points. For now always use AreaEval
-            //if (context.Parent.Parent.Parent is XP.ExpressionStmtContext)
-            //{
-            //    // context.Parent is always a primaryexpression
-            //    // if context.Parent.Parent is a Expressionstatement then we do not have 
-            //    // save the return value of the expression
-            //    var list = new List<StatementSyntax>() { pushStmt, GenerateExpressionStatement(expr), popStmt };
-            //    return MakeBlock(list);
-            //}
+            var pushStmt = GenerateExpressionStatement(push);
+            var popStmt = GenerateExpressionStatement(pop,true);
+            // we mark the popStmt as generated so there is no extra stop in the debugger.
+            // we do not mark the pushStmt as generated, so a select to an invalid workarea will show the right line number
+            if (context.Parent.Parent.Parent is XP.ExpressionStmtContext)
+            {
+                // context.Parent is always a primaryexpression
+                // if context.Parent.Parent is a Expressionstatement then we do not have 
+                // save the return value of the expression
+                pushStmt.XNode = wa.XNode;
+                popStmt.XNode = expr.XNode;
+                var list = new List<StatementSyntax>() { pushStmt, GenerateExpressionStatement(expr), popStmt };
+                return MakeBlock(list);
+            }
 
             if (_options.XSharpRuntime)
             {

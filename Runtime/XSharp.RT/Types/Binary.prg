@@ -8,7 +8,7 @@ USING System.Text
 USING System.Runtime.InteropServices
 USING System.Runtime.CompilerServices
 USING System.Diagnostics
-
+#pragma options ("az", on)
 BEGIN NAMESPACE XSharp
     // use explicit layout so we can compact the size into 12 bytes
     // Type is Immutable, so has no settable properties
@@ -39,7 +39,13 @@ BEGIN NAMESPACE XSharp
                 THROW err
             ENDIF
             SELF:_value    := b
-          
+        PRIVATE CONSTRUCTOR( lhs as byte[], rhs as byte[]) 
+            var len := lhs:Length + rhs:Length
+            var result := byte[]{len}
+            System.Array.Copy(lhs, result, lhs:Length)
+            System.Array.Copy(rhs, 0, result,lhs:Length, rhs:Length)
+            RETURN __Binary{result}
+            
             
         #endregion
         #region Properties
@@ -161,31 +167,20 @@ BEGIN NAMESPACE XSharp
             #endregion
             
         #region Numeric Operators
-            
+
+
             /// <include file="RTComments.xml" path="Comments/Operator/*" />
         OPERATOR+(lhs AS __Binary, rhs AS __Binary) AS __Binary
-            var len := lhs:Value:Length + rhs:Value:Length
-            var result := byte[]{len}
-            System.Array.Copy(lhs, result, lhs:Value:Length)
-            System.Array.Copy(rhs, 0, result,lhs:Length, rhs:Value:Length)
-            RETURN __Binary{result}
+            return __Binary{lhs:Value, rhs:Value}
             
         /// <include file="RTComments.xml" path="Comments/Operator/*" />
-        OPERATOR+(lhs AS __Binary, rhs AS STRING) AS STRING
-            var sb := StringBuilder{}
-            foreach var b in lhs:Value
-                sb:Append(Chr(b))
-            next
-            sb:Append(rhs)
-            RETURN sb:ToString()
-
+        OPERATOR+(lhs AS __Binary, rhs AS STRING) AS __Binary
+            return __Binary{lhs:Value, RuntimeState.WinEncoding:GetBytes(rhs)}
 
         OPERATOR+(lhs AS STRING, rhs AS __Binary) AS STRING
             var sb := StringBuilder{}
             sb:Append(lhs)
-            foreach var b in rhs:Value
-                sb:Append(Chr(b))
-            next
+            sb:Append(RuntimeState.WinEncoding:GetString(rhs))
             RETURN sb:ToString()
 
         #endregion
@@ -225,17 +220,14 @@ BEGIN NAMESPACE XSharp
             
         /// <inheritdoc cref="M:System.Double.ToString(System.String)"/>
         PUBLIC METHOD ToString(sFormat AS STRING) AS STRING
-            var sb := StringBuilder{}
             if sFormat == "G"
-                foreach var b in self:Value
-                    sb:Append(Chr(b))
-                next
-            else
-                sb:Append("0h")
-                foreach var b in self:Value
-                    sb:Append(b:ToString("X"))
-                next
+                return RuntimeState:WinEncoding:GetString(self:Value)
             endif
+            var sb := StringBuilder{}
+            sb:Append("0h")
+            foreach var b in self:Value
+                sb:Append(b:ToString("X"))
+            next
             return sb:ToString()
             /// <inheritdoc />
         PUBLIC METHOD ToString(format AS STRING, provider AS System.IFormatProvider) AS STRING

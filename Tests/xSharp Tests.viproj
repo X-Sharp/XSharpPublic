@@ -70846,9 +70846,8 @@ FileType = Code
 CopyToBin = 0
 [C633 - Various "the call is ambiguous" errors when calling X# runtime funcs References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
-ReferenceGAC = XSharp.Core,1,0,2.0.0.9
-ReferenceGAC = XSharp.RT,1,0,2.0.0.9
-ReferenceGAC = XSharp.VO,1,0,2.0.0.9
+ReferenceBrowse = C:\XSharp\DevRt\Binaries\Debug\XSharp.Core.dll,1,1
+ReferenceBrowse = C:\XSharp\DevRt\Binaries\Debug\XSharp.RT.dll,1,1
 [C633 - Various "the call is ambiguous" errors when calling X# runtime funcs Resources]
 [C633 - Various "the call is ambiguous" errors when calling X# runtime funcs Native Resources]
 [C633 - Various "the call is ambiguous" errors when calling X# runtime funcs License files]
@@ -71732,9 +71731,8 @@ FileType = Code
 CopyToBin = 0
 [C641 - Runtime error with SHORT( _CAST , usual) References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
-ReferenceGAC = XSharp.Core,1,0,2.0.0.7
-ReferenceGAC = XSharp.VO,1,0,2.0.0.7
-ReferenceGAC = XSharp.RT,1,0,
+ReferenceBrowse = C:\XSharp\DevRt\Binaries\Debug\XSharp.RT.dll,1,1
+ReferenceBrowse = C:\XSharp\DevRt\Binaries\Debug\XSharp.Core.dll,1,1
 [C641 - Runtime error with SHORT( _CAST , usual) Resources]
 [C641 - Runtime error with SHORT( _CAST , usual) Native Resources]
 [C641 - Runtime error with SHORT( _CAST , usual) License files]
@@ -76566,9 +76564,8 @@ FileType = Code
 CopyToBin = 0
 [C684 - Problem with (DWORD), (INT) conversion References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
-ReferenceGAC = XSharp.Core,1,0,2.0.0.0
-ReferenceGAC = XSharp.RT,1,0,2.0.0.0
-ReferenceGAC = XSharp.VO,1,0,2.0.0.0
+ReferenceBrowse = C:\XSharp\DevRt\Binaries\Debug\XSharp.Core.dll,1,1
+ReferenceBrowse = C:\XSharp\DevRt\Binaries\Debug\XSharp.RT.dll,1,1
 [C684 - Problem with (DWORD), (INT) conversion Resources]
 [C684 - Problem with (DWORD), (INT) conversion Native Resources]
 [C684 - Problem with (DWORD), (INT) conversion License files]
@@ -83901,7 +83898,7 @@ GalleryPage =
 GalleryDefaultName = 
 Target = 0
 Platform = x86
-Language = VulcanNet
+Language = XSharp
 Runtime = CLR2
 Dialect = VO
 Folder = %ProjectPath%\Applications\R733\
@@ -84113,8 +84110,8 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
 ENDApplication = C729 - Problems with macro substitution
 
 ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
-; ************** APPLICATION C728 *************
-Application = C728
+; ************** APPLICATION C728 - Double quotes inside TEXT .. ENDTEXT *************
+Application = C728 - Double quotes inside TEXT .. ENDTEXT
 IDEVersion = 1.06
 GalleryName = 
 GalleryPage = 
@@ -84147,21 +84144,21 @@ KeyFile =
 [ExportOptions]
 ExportResources = 0
 ExportImages = 0
-[C728 FileGroups]
-[C728 Files]
+[C728 - Double quotes inside TEXT .. ENDTEXT FileGroups]
+[C728 - Double quotes inside TEXT .. ENDTEXT Files]
 File = %AppPath%\Prg\C728.prg
 FileGUID = 4ED91B77-B386-4FA4-B81F-C0EDFFB570F4
 FileType = Code
 CopyToBin = 0
-[C728 References]
+[C728 - Double quotes inside TEXT .. ENDTEXT References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
-ReferenceGAC = XSharp.Core,1,0,2.1.0.0
-ReferenceGAC = XSharp.RT,1,0,2.1.0.0
-ReferenceGAC = XSharp.VFP,1,0,2.1.0.0
-[C728 Resources]
-[C728 Native Resources]
-[C728 License files]
-[C728 General Options]
+ReferenceBrowse = C:\XSharp\DevRt\Binaries\Debug\XSharp.Core.dll,1,1
+ReferenceBrowse = C:\XSharp\DevRt\Binaries\Debug\XSharp.RT.dll,1,1
+ReferenceBrowse = C:\XSharp\DevRt\Binaries\Debug\XSharp.VFP.dll,1,1
+[C728 - Double quotes inside TEXT .. ENDTEXT Resources]
+[C728 - Double quotes inside TEXT .. ENDTEXT Native Resources]
+[C728 - Double quotes inside TEXT .. ENDTEXT License files]
+[C728 - Double quotes inside TEXT .. ENDTEXT General Options]
 Switches=
 ZeroArrays=0
 CaseSensitive=0
@@ -84174,7 +84171,7 @@ VO5=0
 VO6=0
 VO7=0
 VO8=0
-VO9=0
+VO9=1
 VO10=0
 VO11=0
 VO12=0
@@ -84192,7 +84189,7 @@ IgnoreStdDefs=0
 Ovf=0
 FOvf=0
 ResponseOnly=0
-[C728 Configurations]
+[C728 - Double quotes inside TEXT .. ENDTEXT Configurations]
 AppConfig = Debug,11111111-1111-1111-1111-111111111111
   Switches=
   SwitchesCF=
@@ -84221,7 +84218,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceConsole=0
   ForceX86=0
   Optimize=0
-ENDApplication = C728
+ENDApplication = C728 - Double quotes inside TEXT .. ENDTEXT
 
 ApplicationGroup = 962BFCBC-0AA0-4B6C-90C7-F389146CC3FA
 ; ************** APPLICATION R734 *************

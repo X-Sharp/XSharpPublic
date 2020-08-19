@@ -160,6 +160,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             var cs = root as CompilationUnitSyntax;
             var eof = (cs?.EndOfFileToken.Node as InternalSyntax.SyntaxToken)?.XNode;
             var eofPos = cs?.EndOfFileToken.Position;
+            bool isUdc = false;
             if (span.Start >= eofPos && eofPos != null)
             {
                 var start = span.Start - (eofPos ?? 0);
@@ -235,6 +236,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                         start = symbol.StartIndex;
                         length = symbol.StopIndex - start + 1;
                         fn = symbol.InputStream.SourceName;
+                        isUdc = true;
                     }
                 }
                 if (length < 0)
@@ -257,7 +259,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
             var s = text.Lines.GetLinePosition(span.Start);
             var e = text.Lines.GetLinePosition(span.End);
-            if (e.Line > s.Line+1)
+            if (e.Line > s.Line+1 || isUdc)
             {
                 // prevent multi line break points
                 e = new LinePosition(s.Line + 1, 0);

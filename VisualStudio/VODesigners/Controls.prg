@@ -119,7 +119,7 @@ INTERNAL CLASS DesignPushButton INHERIT Button
          NOP
 		END TRY
 		TRY
-			e:Graphics:DrawString(SELF:oItem:GetProperty("Caption"):TextValue , SELF:Font , SELF:oBrush , SELF:ClientRectangle , SELF:oSF)
+			e:Graphics:DrawString(Funcs.TranslateCaption(SELF:oItem:GetProperty("Caption"):TextValue , FALSE) , SELF:Font , SELF:oBrush , SELF:ClientRectangle , SELF:oSF)
       CATCH
          NOP
 		END TRY

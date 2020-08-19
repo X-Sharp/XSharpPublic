@@ -510,6 +510,7 @@
 
 #command CLOSE                  => DbCloseArea()
 #command CLOSE DATABASES        => DbCloseAll()
+#command CLOSE ALL              => DbCloseAll()
 #command CLOSE INDEXES          => DbClearIndex()
 
 

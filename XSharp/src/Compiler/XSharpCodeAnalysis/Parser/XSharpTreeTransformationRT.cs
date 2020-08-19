@@ -4019,14 +4019,16 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             var pop = GenerateMethodCall(_options.XSharpRuntime ? XSharpQualifiedFunctionNames.PopWorkarea : VulcanQualifiedFunctionNames.PopWorkarea, EmptyArgumentList(), true);
             var pushStmt = GenerateExpressionStatement(push, true);
             var popStmt = GenerateExpressionStatement(pop, true);
-            if (context.Parent.Parent.Parent is XP.ExpressionStmtContext)
-            {
-                // context.Parent is always a primaryexpression
-                // if context.Parent.Parent is a Expressionstatement then we do not have 
-                // save the return value of the expression
-                var list = new List<StatementSyntax>() { pushStmt, GenerateExpressionStatement(expr), popStmt };
-                return MakeBlock(list);
-            }
+            // RvdH 2020-08-19
+            // This messes up the sequence points. For now always use AreaEval
+            //if (context.Parent.Parent.Parent is XP.ExpressionStmtContext)
+            //{
+            //    // context.Parent is always a primaryexpression
+            //    // if context.Parent.Parent is a Expressionstatement then we do not have 
+            //    // save the return value of the expression
+            //    var list = new List<StatementSyntax>() { pushStmt, GenerateExpressionStatement(expr), popStmt };
+            //    return MakeBlock(list);
+            //}
 
             if (_options.XSharpRuntime)
             {

@@ -16,14 +16,12 @@ using Microsoft.VisualStudio.TextManager.Interop;
 using Microsoft.VisualStudio.Shell.Interop;
 using System.ComponentModel.Design;
 using Microsoft.VisualStudio.ComponentModelHost;
+using XSharpModel;
 
 // The following lines ensure that the right versions of the various DLLs are loaded.
 // They will be included in the generated PkgDef folder for the project system
 [assembly: ProvideCodeBase(AssemblyName = "XSharp.VsParser", CodeBase = "XSharp.VsParser.dll", Culture = "neutral", PublicKeyToken = XSharp.Constants.PublicKey, Version = XSharp.Constants.Version)]
-[assembly: ProvideCodeBase(AssemblyName = "XSharpColorizer", CodeBase = "XSharpColorizer.dll", Culture = "neutral", PublicKeyToken = XSharp.Constants.PublicKey, Version = XSharp.Constants.Version)]
 [assembly: ProvideCodeBase(AssemblyName = "XSharpModel", CodeBase = "XSharpModel.dll", Culture = "neutral", PublicKeyToken = XSharp.Constants.PublicKey, Version = XSharp.Constants.Version)]
-[assembly: ProvideCodeBase(AssemblyName = "System.Collections.Immutable", CodeBase = "System.Collections.Immutable.dll", Culture = "neutral", PublicKeyToken = "b03f5f7f11d50a3a", Version = "1.2.5.0")]
-[assembly: ProvideCodeBase(AssemblyName = "System.Reflection.Metadata", CodeBase = "System.Reflection.Metadata.dll", Culture = "neutral", PublicKeyToken = "b03f5f7f11d50a3a", Version = "1.4.5.0")]
 namespace XSharp.LanguageService
 {
 
@@ -103,7 +101,37 @@ namespace XSharp.LanguageService
         internal IntellisenseOptionsPage GetIntellisenseOptionsPage()
         {
             if (_intellisensePage == null)
+            {
                 _intellisensePage = (IntellisenseOptionsPage)GetDialogPage(typeof(IntellisenseOptionsPage));
+            }
+            XSettings.EnableLogging = _intellisensePage.EnableOutputPane;
+            XSettings.EnableBraceMatchLog = _intellisensePage.EnableBraceMatchLog;
+            XSettings.EnableCodeCompletionLog = _intellisensePage.EnableCodeCompletionLog;
+            XSettings.EnableDatabaseLog = _intellisensePage.EnableDatabaseLog;
+            XSettings.EnableParameterLog = _intellisensePage.EnableParameterLog;
+            XSettings.EnableParseLog = _intellisensePage.EnableParserLog;
+            XSettings.EnableReferenceInfoLog = _intellisensePage.EnableReferenceInfoLog;
+            XSettings.EnableTypelookupLog = _intellisensePage.EnableTypelookupLog;
+
+            XSettings.DisableAssemblyReferences = _intellisensePage.DisableAssemblyReferences;
+            XSettings.DisableBraceMatching = _intellisensePage.DisableBraceMatching;
+            XSettings.DisableCaseSynchronization = _intellisensePage.DisableCaseSynchronization;
+            XSettings.DisableClassViewObjectView = _intellisensePage.DisableClassViewObjectView;
+            XSettings.DisableCodeCompletion= _intellisensePage.DisableCodeCompletion;
+            XSettings.DisableEntityParsing = _intellisensePage.DisableEntityParsing;
+            XSettings.DisableForeignProjectReferences = _intellisensePage.DisableForeignProjectReferences;
+            XSettings.DisableGotoDefinition= _intellisensePage.DisableGotoDefinition;
+            XSettings.DisableHighLightWord = _intellisensePage.DisableHighLightWord;
+            XSettings.DisablePeekDefinition= _intellisensePage.DisablePeekDefinition;
+            XSettings.DisableQuickInfo= _intellisensePage.DisableQuickInfo;
+            XSettings.DisableRegions = _intellisensePage.DisableRegions;
+            XSettings.DisableSyntaxHighlighting = _intellisensePage.DisableSyntaxColorization;
+            XSettings.DisableXSharpProjectReferences = _intellisensePage.DisableXSharpProjectReferences;
+
+            XSettings.KeywordCase = (int) _intellisensePage.KeywordCase;
+
+            XSettings.DisplayOutputMessage = DisplayOutPutMessage;
+            XSettings.DisplayException = DisplayException;
             return _intellisensePage;
         }
 

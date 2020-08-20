@@ -66,7 +66,10 @@ namespace XSharp.Project
                         // This triggers the evaluation of the property
                         try
                         {
-                            prop.UnevaluatedValue = prop.UnevaluatedValue;
+                            if (! prop.IsImported)
+                            { 
+                                prop.UnevaluatedValue = prop.UnevaluatedValue;
+                            }
                             result = prop.EvaluatedValue;
                         }
                         catch (Exception)

@@ -82,7 +82,6 @@ namespace XSharp.Project
         public override int OnAfterCloseSolution(object reserved)
         {
             XSharpModel.XSolution.Close();
-            XSharpXMLDocTools.Close();
             XSharpModel.XSolution.IsClosing = false;
             return VSConstants.S_OK;
         }

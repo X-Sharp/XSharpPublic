@@ -94,18 +94,14 @@ namespace XSharp.LanguageService
 
         internal static void WriteOutputMessage(string strMessage)
         {
-            if (_optionsPage.EnableCodeCompletionLog && _optionsPage.EnableOutputPane)
+            if (XSettings.EnableCodeCompletionLog && XSettings.EnableLogging)
             {
-                XSharpProjectPackage.Instance.DisplayOutPutMessage(strMessage);
+                XSettings.DisplayOutputMessage(strMessage);
             }
         }
         public void AugmentCompletionSession(ICompletionSession session, IList<CompletionSet> completionSets)
         {
-<<<<<<< HEAD:VisualStudio/LanguageService/Completion/XSharpCompletionSource.cs
-            XSharpLanguageService.DisplayOutPutMessage("-->> AugmentCompletionSessions");
-=======
             WriteOutputMessage("-->> AugmentCompletionSessions");
->>>>>>> feature/Intellisense:VisualStudio/ProjectPackage/Editors/Completion/XSharpCompletionSource.cs
             try
             {
                 if (_optionsPage.DisableCodeCompletion)
@@ -540,23 +536,14 @@ namespace XSharp.LanguageService
             }
             catch (Exception ex)
             {
-<<<<<<< HEAD:VisualStudio/LanguageService/Completion/XSharpCompletionSource.cs
-                XSharpLanguageService.DisplayOutPutMessage("AugmentCompletionSessions failed: ");
-                XSharpLanguageService.DisplayException(ex);
-=======
                 WriteOutputMessage("AugmentCompletionSessions failed: ");
-                XSharpProjectPackage.Instance.DisplayException(ex);
->>>>>>> feature/Intellisense:VisualStudio/ProjectPackage/Editors/Completion/XSharpCompletionSource.cs
+                XSettings.DisplayException(ex);
             }
             finally
             {
                 XSharpModel.ModelWalker.Resume();
             }
-<<<<<<< HEAD:VisualStudio/LanguageService/Completion/XSharpCompletionSource.cs
-            XSharpLanguageService.DisplayOutPutMessage("<<-- AugmentCompletionSessions");
-=======
             WriteOutputMessage("<<-- AugmentCompletionSessions");
->>>>>>> feature/Intellisense:VisualStudio/ProjectPackage/Editors/Completion/XSharpCompletionSource.cs
         }
 
         private void AddUsingStaticMembers(CompletionList compList, XFile file, string filterText)
@@ -1017,13 +1004,6 @@ namespace XSharp.LanguageService
                             lifname = reftype.FullName;
                         }
                     }
-<<<<<<< HEAD:VisualStudio/LanguageService/Completion/XSharpCompletionSource.cs
-                }
-                catch (Exception e)
-                {
-                    XSharpLanguageService.DisplayOutPutMessage("BuildCompletionListInfo failed: ");
-                    XSharpLanguageService.DisplayException(e);
-=======
                     extensions = lookupproject.GetExtensions(lifname);
                     selection = extensions;
                     if (!string.IsNullOrEmpty(startWith))
@@ -1031,7 +1011,6 @@ namespace XSharp.LanguageService
                         selection = extensions.Where(x => nameStartsWith(x.Name, startWith));
                     }
                     FillMembers(compList, selection, Modifiers.Public, true);
->>>>>>> feature/Intellisense:VisualStudio/ProjectPackage/Editors/Completion/XSharpCompletionSource.cs
                 }
             }
             //WriteOutputMessage($"FillExtensions complete for type {sType.FullName}");
@@ -1119,7 +1098,7 @@ namespace XSharp.LanguageService
         public Modifiers Visibility { get; private set; }
         public Kind Kind { get; private set; }
         public bool IsStatic { get; private set; }
-        IntellisenseOptionsPage _optionsPage => XSharp.Project.XSharpProjectPackage.Instance.GetIntellisenseOptionsPage();
+        IntellisenseOptionsPage _optionsPage => XSharpLanguageService.Instance.GetIntellisenseOptionsPage();
 
         internal TypeAnalysis(IXType typeInfo)
         {
@@ -1204,838 +1183,6 @@ namespace XSharp.LanguageService
         /// - See also GlyphGroup
         ///  http://glyphlist.azurewebsites.net/standardglyphgroup/
         /// </summary>
-<<<<<<< HEAD:VisualStudio/LanguageService/Completion/XSharpCompletionSource.cs
-        internal MemberAnalysis(MemberInfo member)
-        {
-            Type declType;
-            //
-            this._name = member.Name;
-            this._kind = Kind.Class;
-            this._modifiers = Modifiers.None;
-            this._visibility = Modifiers.Public;
-            this._typeName = "";
-            this._parameters = new List<ParamInfo>();
-            //
-            AppDomain.CurrentDomain.AssemblyResolve += CurrentDomain_AssemblyResolve;
-            switch (member.MemberType)
-            {
-                case MemberTypes.Constructor:
-                    this._name = member.DeclaringType.Name;
-                    this._kind = Kind.Constructor;
-                    ConstructorInfo constInfo = member as ConstructorInfo;
-                    this._isStatic = constInfo.IsStatic;
-                    //
-                    if (constInfo.IsAbstract)
-                    {
-                        this._modifiers = Modifiers.Abstract;
-                    }
-                    //
-                    if (constInfo.IsPrivate)
-                    {
-                        this._visibility = Modifiers.Private;
-                    }
-                    else if (constInfo.IsAssembly)
-                    {
-                        this._visibility = Modifiers.Internal;
-                    }
-                    else if (constInfo.IsFamily)
-                    {
-                        this._visibility = Modifiers.Protected;
-                    }
-                    //
-                    //
-                    addParameters(constInfo, constInfo.GetParameters());
-                    //
-                    declType = constInfo.DeclaringType;
-                    this._typeName = declType.GetXSharpTypeName();
-                    break;
-                case MemberTypes.Event:
-                    this._kind = Kind.Event;
-                    EventInfo evt = member as EventInfo;
-                    MethodInfo methodInfo = evt.GetAddMethod(true);
-                    if (methodInfo == null)
-                    {
-                        methodInfo = evt.GetRemoveMethod(true);
-                    }
-                    //
-                    this._isStatic = methodInfo.IsStatic;
-                    //
-                    if (methodInfo.IsAbstract)
-                    {
-                        this._modifiers = Modifiers.Abstract;
-                    }
-                    //
-                    if (methodInfo.IsPrivate)
-                    {
-                        this._visibility = Modifiers.Private;
-                    }
-                    else if (methodInfo.IsAssembly)
-                    {
-                        this._visibility = Modifiers.Internal;
-                    }
-                    else if (methodInfo.IsFamily)
-                    {
-                        this._visibility = Modifiers.Protected;
-                    }
-                    //
-                    declType = evt.EventHandlerType;
-                    this._typeName = declType.GetXSharpTypeName();
-                    break;
-                case MemberTypes.Field:
-                    this._kind = Kind.Field;
-                    if (member.DeclaringType.IsEnum)
-                        this._kind = Kind.EnumMember;
-                    FieldInfo field = member as FieldInfo;
-                    if (field.IsStatic)
-                    {
-                        if (field.DeclaringType.Name.ToLower() == "functions")
-                        {
-                            if (field.Attributes.HasFlag(FieldAttributes.InitOnly))
-                                this.Kind = Kind.VODefine;
-                            else if (field.Attributes.HasFlag(FieldAttributes.Literal))
-                            {
-                                this.Kind = Kind.VODefine;
-                                var value = System.Convert.ChangeType(field.GetValue(null), field.FieldType);
-                                _value = value.ToString();
-                            }
-                            else
-                                this.Kind = Kind.VOGlobal;
-                        }
-                        declType = field.DeclaringType;
-                        if (declType.IsEnum)
-                        {
-                            var value = System.Convert.ChangeType(field.GetValue(null), declType.GetEnumUnderlyingType());
-                            _value = value.ToString();
-                        }
-                    }
-                    
-                    //
-                    this._isStatic = field.IsStatic;
-                    //
-                    if (field.IsPrivate)
-                    {
-                        this._visibility = Modifiers.Private;
-                    }
-                    else if (field.IsAssembly)
-                    {
-                        this._visibility = Modifiers.Internal;
-                    }
-                    else if (field.IsFamily)
-                    {
-                        this._visibility = Modifiers.Protected;
-                    }
-                    //
-                    declType = field.FieldType;
-                    this._typeName = declType.GetXSharpTypeName();
-                    break;
-                case MemberTypes.Method:
-                    this.Kind = Kind.Method;
-                    MethodInfo method = member as MethodInfo;
-                    if (method.IsStatic)
-                    {
-                        if (method.DeclaringType.Name.ToLower() == "functions")
-                        {
-                            if (method.ReturnType.FullName != "System.Void")
-                                this.Kind = Kind.Function;
-                            else
-                                this.Kind = Kind.Procedure;
-                        }
-                    }
-                    if (method.IsSpecialName)
-                    {
-                        // The SpecialName bit is set to flag members that are treated in a special way by some compilers (such as property accessors and operator overloading methods).
-                        this._name = null;
-                        break;
-                    }
-                    //
-                    this._isStatic = method.IsStatic;
-                    //
-                    if (method.IsPrivate)
-                    {
-                        this._visibility = Modifiers.Private;
-                    }
-                    else if (method.IsAssembly)
-                    {
-                        this._visibility = Modifiers.Internal;
-                    }
-                    else if (method.IsFamily)
-                    {
-                        this._visibility = Modifiers.Protected;
-                    }
-                    //
-                    addParameters(method, method.GetParameters());
-                    //
-                    declType = method.ReturnType;
-                    this._typeName = declType.GetXSharpTypeName();
-                    break;
-                case MemberTypes.Property:
-                    this.Kind = Kind.Property;
-                    PropertyInfo prop = member as PropertyInfo;
-                    MethodInfo propInfo = prop.GetGetMethod(true);
-                    if (propInfo == null)
-                    {
-                        propInfo = prop.GetSetMethod(true);
-                    }
-                    //
-                    this._isStatic = propInfo.IsStatic;
-                    //
-                    if (propInfo.IsPrivate)
-                    {
-                        this._visibility = Modifiers.Private;
-                    }
-                    else if (propInfo.IsAssembly)
-                    {
-                        this._visibility = Modifiers.Internal;
-                    }
-                    else if (propInfo.IsFamily)
-                    {
-                        this._visibility = Modifiers.Protected;
-                    }
-                    //
-                    addParameters(propInfo, propInfo.GetParameters());
-                    declType = prop.PropertyType;
-                    this._typeName = declType.GetXSharpTypeName();
-                    break;
-                // Todo: Event ?
-
-                default:
-                    // Mark as Not-Initialized
-                    this._name = null;
-                    break;
-            }
-            AppDomain.CurrentDomain.AssemblyResolve -= CurrentDomain_AssemblyResolve;
-        }
-
-        private Assembly CurrentDomain_AssemblyResolve(object sender, ResolveEventArgs args)
-        {
-            // return "OUR" copy of the assembly. Most likely we have it
-            var name = args.Name;
-            var request = args.RequestingAssembly;
-            var asmLoc = SystemTypeController.FindAssemblyByName(name);
-            return AssemblyInfo.LoadAssemblyFromFile(asmLoc);
-        }
-
-        private void addParameters(MemberInfo member, ParameterInfo[] parameters)
-        {
-            bool isExtension = member.IsDefined(typeof(ExtensionAttribute), false);
-            //
-            if (parameters.Length == 1)
-            {
-                try
-                {
-                    var atts = member.GetCustomAttributes(false);
-                    if (atts != null)
-                    {
-                        foreach (var custattr in atts)
-                        {
-                            if (custattr.ToString().EndsWith("ClipperCallingConventionAttribute"))
-                            {
-                                string[] names = (string[])custattr.GetType().GetProperty("ParameterNames").GetValue(custattr, null);
-                                if (names.Length == 0)
-                                {
-                                    ; // no parameters defined
-                                      //this._parameters.Add(new ParamInfo("[params", "USUAL]", "AS"));
-                                }
-                                else
-                                {
-                                    foreach (var param in names)
-                                    {
-                                        this._parameters.Add(new ParamInfo(param, _optionsPage.Usual(), _optionsPage.As()));
-                                    }
-                                }
-                                return;
-                            }
-                        }
-                    }
-                }
-                catch (Exception e)
-                {
-                    XSharpLanguageService.DisplayOutPutMessage("Error reading Clipper params ");
-                    XSharpLanguageService.DisplayException(e);
-                }
-
-            }
-            // Add Parameters
-            foreach (ParameterInfo p in parameters)
-            {
-                // In case of an Extension Method, "eat" the first parameter...
-                if ( isExtension )
-                {
-                    isExtension = false;
-                    continue;
-                }
-                this._parameters.Add(new ParamInfo(p));
-            }
-
-        }
-
-        //internal MemberAnalysis(EnvDTE.CodeElement member)
-        //{
-        //    EnvDTE.CodeTypeRef declType;
-        //    //
-        //    this._name = member.Name;
-        //    this._kind = Kind.Class;
-        //    this._modifiers = Modifiers.None;
-        //    this._visibility = Modifiers.Public;
-        //    this._typeName = "";
-        //    this._parameters = new List<ParamInfo>();
-        //    //
-        //    switch (member.Kind)
-        //    {
-        //        case EnvDTE.vsCMElement.vsCMElementEvent:
-        //            this._kind = Kind.Event;
-        //            EnvDTE80.CodeEvent evt = member as EnvDTE80.CodeEvent;
-        //            //
-        //            this._isStatic = evt.IsShared;
-        //            //
-        //            if (evt.Access == EnvDTE.vsCMAccess.vsCMAccessPrivate)
-        //            {
-        //                this._visibility = Modifiers.Private;
-        //            }
-        //            else if (evt.Access == EnvDTE.vsCMAccess.vsCMAccessAssemblyOrFamily)
-        //            {
-        //                this._visibility = Modifiers.Internal;
-        //            }
-        //            else if (evt.Access == EnvDTE.vsCMAccess.vsCMAccessProtected)
-        //            {
-        //                this._visibility = Modifiers.Protected;
-        //            }
-        //            //
-        //            declType = evt.Type;
-        //            this._typeName = declType.AsFullName;
-        //            break;
-        //        case EnvDTE.vsCMElement.vsCMElementVariable:
-        //            this._kind = Kind.Field;
-        //            EnvDTE.CodeVariable field = member as EnvDTE.CodeVariable;
-        //            //
-        //            this._isStatic = field.IsShared;
-        //            //
-        //            if (field.Access == EnvDTE.vsCMAccess.vsCMAccessPrivate)
-        //            {
-        //                this._visibility = Modifiers.Private;
-        //            }
-        //            else if (field.Access == EnvDTE.vsCMAccess.vsCMAccessAssemblyOrFamily)
-        //            {
-        //                this._visibility = Modifiers.Internal;
-        //            }
-        //            else if (field.Access == EnvDTE.vsCMAccess.vsCMAccessProtected)
-        //            {
-        //                this._visibility = Modifiers.Protected;
-        //            }
-        //            //
-        //            declType = field.Type;
-        //            this._typeName = declType.AsFullName;
-        //            break;
-        //        case EnvDTE.vsCMElement.vsCMElementFunction:
-        //            this.Kind = Kind.Method;
-        //            EnvDTE.CodeFunction method = member as EnvDTE.CodeFunction;
-        //            //
-        //            if (method.FunctionKind == EnvDTE.vsCMFunction.vsCMFunctionConstructor)
-        //            {
-        //                this.Kind = Kind.Constructor;
-        //            }
-        //            //
-        //            this._isStatic = method.IsShared;
-        //            //
-        //            if (method.Access == EnvDTE.vsCMAccess.vsCMAccessPrivate)
-        //            {
-        //                this._visibility = Modifiers.Private;
-        //            }
-        //            else if (method.Access == EnvDTE.vsCMAccess.vsCMAccessAssemblyOrFamily)
-        //            {
-        //                this._visibility = Modifiers.Internal;
-        //            }
-        //            else if (method.Access == EnvDTE.vsCMAccess.vsCMAccessProtected)
-        //            {
-        //                this._visibility = Modifiers.Protected;
-        //            }
-        //            //
-        //            EnvDTE.CodeElements pars = method.Parameters;
-        //            foreach (EnvDTE.CodeParameter p in pars)
-        //            {
-        //                this._parameters.Add(new ParamInfo(p.Name, p.Type.AsFullName, _optionsPage.As()));
-        //            }
-        //            //
-        //            declType = method.Type;
-        //            this._typeName = declType.AsFullName;
-        //            break;
-        //        case EnvDTE.vsCMElement.vsCMElementProperty:
-        //            this.Kind = Kind.Property;
-        //            EnvDTE.CodeProperty prop = member as EnvDTE.CodeProperty;
-        //            //
-        //            if (prop.Access == EnvDTE.vsCMAccess.vsCMAccessPrivate)
-        //            {
-        //                this._visibility = Modifiers.Private;
-        //            }
-        //            else if (prop.Access == EnvDTE.vsCMAccess.vsCMAccessAssemblyOrFamily)
-        //            {
-        //                this._visibility = Modifiers.Internal;
-        //            }
-        //            else if (prop.Access == EnvDTE.vsCMAccess.vsCMAccessProtected)
-        //            {
-        //                this._visibility = Modifiers.Protected;
-        //            }
-        //            //
-        //            declType = prop.Type;
-        //            this._typeName = declType.AsFullName;
-        //            break;
-        //        default:
-        //            // Mark as Not-Initialized
-        //            this._name = null;
-        //            break;
-        //    }
-        //}
-
-        public bool IsInitialized => this.Name != null;
-
-        public string Name => _name;
-        public string Value => _value;
-
-        public String Description
-        {
-            get
-            {
-                String modVis = "";
-                if (this.Modifiers != Modifiers.None)
-                {
-                    modVis += _optionsPage.formatKeyword(this.Modifiers) + " ";
-                }
-                modVis += _optionsPage.formatKeyword(this.Visibility) + " ";
-                //
-                if (this.IsStatic)
-                {
-                    modVis += _optionsPage.Static() + " ";
-                }
-                //
-                String desc = modVis;
-                //
-                if ((this.Kind != Kind.Field) && (this.Kind != Kind.Constructor))
-                {
-                   desc += _optionsPage.formatKeyword(this.Kind) + " ";
-                }
-                desc += this.Prototype;
-                //
-                return desc;
-            }
-        }
-
-        public String Prototype
-        {
-            get
-            {
-                string vars = "";
-                if (this.Kind.HasParameters())
-                {
-                    vars = this.Kind == Kind.Constructor ? "{" : "(";
-                    foreach (var var in this.Parameters)
-                    {
-                        if (vars.Length > 1)
-                            vars += ", ";
-                        vars += var.Name + " " + _optionsPage.formatKeyword(var.Direction) + " " + var.TypeName;
-                    }
-                    vars += this.Kind == Kind.Constructor ? "}" : ")";
-                }
-                //
-                string desc = this.Name;
-                desc += vars;
-                //
-                if (this.Kind.HasReturnType())
-                {
-                    desc += " " + _optionsPage.As() + this.TypeName;
-                }
-                //
-                return desc;
-            }
-        }
-
-        public StandardGlyphGroup GlyphGroup
-        {
-            get
-            {
-                StandardGlyphGroup imgG;
-                //
-                switch (this.Kind)
-                {
-                    case Kind.Namespace:
-                        imgG = StandardGlyphGroup.GlyphGroupNamespace;
-                        break;
-                    case Kind.Constructor:
-                    case Kind.Destructor:
-                    case Kind.Method:
-                    case Kind.Function:
-                    case Kind.Procedure:
-                        imgG = StandardGlyphGroup.GlyphGroupMethod;
-                        break;
-                    case Kind.Structure:
-                    case Kind.Union:
-                        imgG = StandardGlyphGroup.GlyphGroupStruct;
-                        break;
-                    case Kind.Access:
-                    case Kind.Assign:
-                    case Kind.Property:
-                        imgG = StandardGlyphGroup.GlyphGroupProperty;
-                        break;
-                    case Kind.Local:
-                        imgG = StandardGlyphGroup.GlyphGroupVariable;
-                        break;
-                    case Kind.Enum:
-                        imgG = StandardGlyphGroup.GlyphGroupEnumMember;
-                        break;
-                    case Kind.VOGlobal:
-                    case Kind.Field:
-                        imgG = StandardGlyphGroup.GlyphGroupField;
-                        break;
-                    case Kind.Delegate:
-                        imgG = StandardGlyphGroup.GlyphGroupDelegate;
-                        break;
-                    case Kind.Event:
-                        imgG = StandardGlyphGroup.GlyphGroupEvent;
-                        break;
-                    case Kind.Interface:
-                        imgG = StandardGlyphGroup.GlyphGroupInterface;
-                        break;
-                    case Kind.VODefine:
-                        imgG = StandardGlyphGroup.GlyphGroupConstant;
-                        break;
-                    case Kind.Class:
-                    default:
-                        imgG = StandardGlyphGroup.GlyphGroupClass;
-                        break;
-                }
-                return imgG;
-            }
-        }
-
-        /// <summary>
-        /// Glyph Item used by CompletionList in CompletionSource
-        /// - See also GlyphGroup
-        ///  http://glyphlist.azurewebsites.net/standardglyphgroup/
-        /// </summary>
-        public StandardGlyphItem GlyphItem
-        {
-            get
-            {
-                StandardGlyphItem imgI;
-                //
-                switch (this.Visibility)
-                {
-                    case Modifiers.Protected:
-                        imgI = StandardGlyphItem.GlyphItemProtected;
-                        break;
-                    case Modifiers.Private:
-                        imgI = StandardGlyphItem.GlyphItemPrivate;
-                        break;
-                    case Modifiers.Internal:
-                        imgI = StandardGlyphItem.GlyphItemInternal;
-                        break;
-                    case Modifiers.ProtectedInternal:
-                        imgI = StandardGlyphItem.GlyphItemFriend;
-                        break;
-                    case Modifiers.Public:
-                    default:
-                        imgI = StandardGlyphItem.GlyphItemPublic;
-                        break;
-                }
-                //
-                return imgI;
-            }
-        }
-
-        public Kind Kind
-        {
-            get
-            {
-                return _kind;
-            }
-
-            set
-            {
-                _kind = value;
-            }
-        }
-
-        public Modifiers Modifiers
-        {
-            get
-            {
-                return _modifiers;
-            }
-        }
-
-        public Modifiers Visibility
-        {
-            get
-            {
-                return _visibility;
-            }
-        }
-
-        public string TypeName
-        {
-            get
-            {
-                return _typeName;
-            }
-        }
-
-        public List<ParamInfo> Parameters
-        {
-            get
-            {
-                return _parameters;
-            }
-
-            set
-            {
-                _parameters = value;
-            }
-        }
-
-        public bool IsStatic
-        {
-            get
-            {
-                return _isStatic;
-            }
-
-            set
-            {
-                _isStatic = value;
-            }
-        }
-    }
-
-    /// <summary>
-    /// Process a TypeInfo in order to provide usable informations (TypeName, Glyph, ... )
-    /// </summary>
-    public class TypeAnalysis
-    {
-        private String _name;
-        private Modifiers _modifiers;
-        private Modifiers _visibility;
-        private Kind _kind;
-        private bool _isStatic;
-        IntellisenseOptionsPage _optionsPage => XSharpLanguageService.Instance.GetIntellisenseOptionsPage();
-
-        internal TypeAnalysis(TypeInfo typeInfo)
-        {
-            //
-            this._name = typeInfo.FullName;
-            this._kind = Kind.Class;
-            this._modifiers = Modifiers.None;
-            this._visibility = Modifiers.Public;
-            //
-            if (typeInfo.IsClass)
-            {
-                this._kind = Kind.Class;
-                if (typeInfo.IsSubclassOf(typeof(Delegate)))
-                {
-                    this._kind = Kind.Delegate;
-                }
-            }
-            else if (typeInfo.IsEnum)
-            {
-                this._kind = Kind.Enum;
-            }
-            else if (typeInfo.IsInterface)
-            {
-                this._kind = Kind.Interface;
-            }
-            else if (typeInfo.IsValueType && !typeInfo.IsPrimitive)
-            {
-                this._kind = Kind.Structure;
-            }
-            //
-            this._isStatic = (typeInfo.IsAbstract && typeInfo.IsSealed);
-            //
-            if (!this.IsStatic)
-            {
-                if (typeInfo.IsAbstract)
-                {
-                    this._modifiers = Modifiers.Abstract;
-                }
-            }
-            //
-            if (typeInfo.IsGenericType)
-            {
-                string genName = typeInfo.FullName;
-                int index = genName.IndexOf('`');
-                if (index != -1)
-                {
-                    genName = genName.Substring(0, index);
-                }
-                genName += "<";
-                int count = 0;
-                int max = typeInfo.GenericTypeParameters.Length;
-                foreach (Type genType in typeInfo.GenericTypeParameters)
-                {
-                    genName += genType.Name;
-                    count++;
-                    if ((count < max))
-                        genName += ", ";
-                }
-                genName += ">";
-                //
-                this._name = genName;
-            }
-            ////
-            //if (typeInfo.IsPrivate)
-            //{
-            //    this._visibility = Modifiers.Private;
-            //}
-            //if (typeInfo.IsAssembly)
-            //{
-            //    this._visibility = Modifiers.Internal;
-            //}
-            //if (typeInfo.IsFamily)
-            //{
-            //    this._visibility = Modifiers.Protected;
-            //}
-            //
-        }
-
-        internal TypeAnalysis(XSharpModel.XType type)
-        {
-            //
-            this._name = type.FullName;
-            this._kind = type.Kind;
-            this._modifiers = Modifiers.None;
-            this._visibility = Modifiers.Public;
-            //
-            this._isStatic = type.Modifiers.HasFlag(XSharpModel.Modifiers.Static);
-            //
-            if (!this.IsStatic)
-            {
-                if (type.Modifiers.HasFlag(XSharpModel.Modifiers.Abstract))
-                {
-                    this._modifiers = Modifiers.Abstract;
-                }
-            }
-            //
-        }
-
-        //internal TypeAnalysis(EnvDTE.CodeType typeInfo)
-        //{
-        //    //
-        //    this._name = typeInfo.Name;
-        //    this._kind = Kind.Class;
-        //    this._modifiers = Modifiers.None;
-        //    this._visibility = Modifiers.Public;
-        //    //
-        //    if (typeInfo.Kind == EnvDTE.vsCMElement.vsCMElementClass)
-        //    {
-        //        this._kind = Kind.Class;
-        //    }
-        //    else if (typeInfo.Kind == EnvDTE.vsCMElement.vsCMElementEnum)
-        //    {
-        //        this._kind = Kind.Enum;
-        //    }
-        //    else if (typeInfo.Kind == EnvDTE.vsCMElement.vsCMElementInterface)
-        //    {
-        //        this._kind = Kind.Interface;
-        //    }
-        //    else if (typeInfo.Kind == EnvDTE.vsCMElement.vsCMElementStruct)
-        //    {
-        //        this._kind = Kind.Structure;
-        //    }
-        //    //
-        //    /*
-        //    this._isStatic = (typeInfo.IsAbstract && typeInfo.IsSealed);
-        //    //
-        //    if (!this.IsStatic)
-        //    {
-        //        if (typeInfo.IsAbstract)
-        //        {
-        //            this._modifiers = Modifiers.Abstract;
-        //        }
-        //    }*/
-        //}
-
-        public bool IsInitialized
-        {
-            get
-            {
-                return (this.Name != null);
-            }
-        }
-
-        public string Name
-        {
-            get
-            {
-                return _name;
-            }
-        }
-
-        public String Description
-        {
-            get
-            {
-                String modVis = "";
-                if (this.Modifiers != Modifiers.None)
-                {
-                    modVis += _optionsPage.formatKeyword(this.Modifiers) + " ";
-                }
-                modVis += _optionsPage.formatKeyword(this.Visibility) + " ";
-                //
-                if (this.IsStatic)
-                {
-                    modVis += _optionsPage.Static() + " ";
-                }
-                //
-                String desc = modVis;
-                //
-                if (this.Kind != Kind.Field)
-                    desc += this.Kind.ToString() + " ";
-                desc += this.Prototype;
-                //
-                return desc;
-            }
-        }
-
-        public String Prototype
-        {
-            get
-            {
-                return this.Name;
-                //
-            }
-        }
-
-        public StandardGlyphGroup GlyphGroup
-        {
-            get
-            {
-                StandardGlyphGroup imgG;
-                //
-                switch (this.Kind)
-                {
-                    case Kind.Class:
-                    default:
-                        imgG = StandardGlyphGroup.GlyphGroupClass;
-                        break;
-                    case Kind.Interface:
-                        imgG = StandardGlyphGroup.GlyphGroupInterface;
-                        break;
-                    case Kind.Enum:
-                        imgG = StandardGlyphGroup.GlyphGroupEnum;
-                        break;
-                    case Kind.Delegate:
-                        imgG = StandardGlyphGroup.GlyphGroupDelegate;
-                        break;
-
-                }
-                return imgG;
-            }
-        }
-
-        /// <summary>
-        /// Glyph Item used by CompletionList in CompletionSource
-        /// - See also GlyphGroup
-        ///  http://glyphlist.azurewebsites.net/standardglyphgroup/
-        /// </summary>
-=======
->>>>>>> feature/Intellisense:VisualStudio/ProjectPackage/Editors/Completion/XSharpCompletionSource.cs
         public StandardGlyphItem GlyphItem
         {
             get
@@ -2783,15 +1930,9 @@ namespace XSharp.LanguageService
                 return null;
             }
             var member = file.FindMemberAtPosition(nPosition);
-<<<<<<< HEAD:VisualStudio/LanguageService/Completion/XSharpCompletionSource.cs
-            if (member is XTypeMember xtm)
-            {
-                return xtm;
-=======
             if (member is XMemberDefinition)
             {
                 return member as XMemberDefinition;
->>>>>>> feature/Intellisense:VisualStudio/ProjectPackage/Editors/Completion/XSharpCompletionSource.cs
             }
             // if we can't find a member then look for the global type in the file
             // and return its last member
@@ -2800,11 +1941,7 @@ namespace XSharp.LanguageService
             {
                 return xType.Value.XMembers.LastOrDefault();
             }
-<<<<<<< HEAD:VisualStudio/LanguageService/Completion/XSharpCompletionSource.cs
-            XSharpLanguageService.DisplayOutPutMessage(String.Format("Cannot find member at 0 based position {0} in file {0} .", nPosition, file.FullPath));
-=======
             WriteOutputMessage(string.Format("Cannot find member at 0 based position {0} in file {0} .", nPosition, file.FullPath));
->>>>>>> feature/Intellisense:VisualStudio/ProjectPackage/Editors/Completion/XSharpCompletionSource.cs
             return null;
 
         }
@@ -2816,14 +1953,6 @@ namespace XSharp.LanguageService
                 return null;
             }
             var member = file.FindMemberAtRow(nLine);
-<<<<<<< HEAD:VisualStudio/LanguageService/Completion/XSharpCompletionSource.cs
-            if (member is XTypeMember xtm)
-            {
-                return xtm;
-            }
-            if (member is XType xtype)
-            {
-=======
             if (member is XMemberDefinition)
             {
                 return member as XMemberDefinition;
@@ -2831,7 +1960,6 @@ namespace XSharp.LanguageService
             if (member is XTypeDefinition)
             {
                 var xtype = member as XTypeDefinition;
->>>>>>> feature/Intellisense:VisualStudio/ProjectPackage/Editors/Completion/XSharpCompletionSource.cs
                 if (xtype.Members.Count > 0)
                 {
                     return xtype.Members.LastOrDefault() as XMemberDefinition;
@@ -2839,17 +1967,6 @@ namespace XSharp.LanguageService
             }
             // try a few rows before
             member = file.FindMemberAtRow(Math.Max(nLine - 10, 1));
-<<<<<<< HEAD:VisualStudio/LanguageService/Completion/XSharpCompletionSource.cs
-            if (member is XTypeMember xtm1)
-            {
-                return xtm1;
-            }
-            if (member is XType xtype1)
-            {
-                if (xtype1.Members.Count > 0)
-                {
-                    return xtype1.Members.LastOrDefault();
-=======
             if (member is XMemberDefinition)
             {
                 return member as XMemberDefinition;
@@ -2860,23 +1977,12 @@ namespace XSharp.LanguageService
                 if (xtype.XMembers.Count > 0)
                 {
                     return xtype.XMembers.LastOrDefault();
->>>>>>> feature/Intellisense:VisualStudio/ProjectPackage/Editors/Completion/XSharpCompletionSource.cs
                 }
             }
 
             // if we can't find a member then look for the global type in the file
             // and return its last member
             var ent = file.EntityList.LastOrDefault();
-<<<<<<< HEAD:VisualStudio/LanguageService/Completion/XSharpCompletionSource.cs
-            if (ent is XTypeMember xtm2)
-                return xtm2;
-            if (ent is XType xtype2)
-                return xtype2.Members.LastOrDefault();
-
-
-#if DEBUG
-            XSharpLanguageService.DisplayOutPutMessage(String.Format("Cannot find member at 0 based line {0} in file {0} .", nLine, file.FullPath));
-=======
             if (ent is XMemberDefinition)
                 return ent as XMemberDefinition;
             if (ent is XTypeDefinition)
@@ -2885,7 +1991,6 @@ namespace XSharp.LanguageService
 
 #if DEBUG
             WriteOutputMessage(string.Format("Cannot find member at 0 based line {0} in file {0} .", nLine, file.FullPath));
->>>>>>> feature/Intellisense:VisualStudio/ProjectPackage/Editors/Completion/XSharpCompletionSource.cs
 #endif
             return null;
         }
@@ -2993,13 +2098,8 @@ namespace XSharp.LanguageService
                 if (currentMember == null)
                 {
 #if TRACE
-<<<<<<< HEAD:VisualStudio/LanguageService/Completion/XSharpCompletionSource.cs
-                        stopWatch.Stop();
-                        XSharpLanguageService.DisplayOutPutMessage(String.Format("Retrieve current Type : Member cannot be null."));
-=======
                     stopWatch.Stop();
                     WriteOutputMessage(string.Format("Retrieve current Type : Member cannot be null."));
->>>>>>> feature/Intellisense:VisualStudio/ProjectPackage/Editors/Completion/XSharpCompletionSource.cs
 #endif
                     return null;
                 }
@@ -3326,13 +2426,8 @@ namespace XSharp.LanguageService
                 string elapsedTime = string.Format("{0:00}h {1:00}m {2:00}.{3:00}s",
                     ts.Hours, ts.Minutes, ts.Seconds,
                     ts.Milliseconds / 10);
-<<<<<<< HEAD:VisualStudio/LanguageService/Completion/XSharpCompletionSource.cs
-                //
-                XSharpLanguageService.DisplayOutPutMessage("XSharpTokenTools::RetrieveType : Done in " + elapsedTime);
-=======
             //
             WriteOutputMessage("XSharpTokenTools::RetrieveType : Done in " + elapsedTime);
->>>>>>> feature/Intellisense:VisualStudio/ProjectPackage/Editors/Completion/XSharpCompletionSource.cs
 #endif
             return cType;
         }
@@ -3466,8 +2561,8 @@ namespace XSharp.LanguageService
             }
             catch (Exception ex)
             {
-                XSharpProjectPackage.Instance.DisplayOutPutMessage("FindIdentifier failed: ");
-                XSharpProjectPackage.Instance.DisplayException(ex);
+                XSettings.DisplayOutputMessage("FindIdentifier failed: ");
+                XSettings.DisplayException(ex);
 
             }
             finally
@@ -4120,22 +3215,11 @@ namespace XSharp.LanguageService
 
         static void WriteOutputMessage(string message)
         {
-<<<<<<< HEAD:VisualStudio/LanguageService/Completion/XSharpCompletionSource.cs
-            XSharpLanguageService.DisplayOutPutMessage("XSharp.Codecompletion :" + message);
-=======
-            if (XSharpCompletionSource._optionsPage == null)
+            if (XSettings.EnableCodeCompletionLog)
             {
-                var package = XSharpProjectPackage.Instance;
-                XSharpCompletionSource._optionsPage = package.GetIntellisenseOptionsPage();
+                XSettings.DisplayOutputMessage("XSharp.Codecompletion :" + message);
             }
-            if (XSharpCompletionSource._optionsPage.EnableCodeCompletionLog && XSharpCompletionSource._optionsPage.EnableOutputPane)
-            {
-                XSharpProjectPackage.Instance.DisplayOutPutMessage("XSharp.Codecompletion :" + message);
-            }
->>>>>>> feature/Intellisense:VisualStudio/ProjectPackage/Editors/Completion/XSharpCompletionSource.cs
         }
-
-
 
     }
 
@@ -4293,26 +3377,10 @@ namespace XSharp.LanguageService
         {
             get
             {
-<<<<<<< HEAD:VisualStudio/LanguageService/Completion/XSharpCompletionSource.cs
-                string name;
-                if (this.foundElement is MemberInfo mi)
-                {
-                    name = mi.Name;
-                }
-                else if (foundElement is XElement xe)
-                {
-                    name = xe.Name;
-                }
-                else
-                {
-                    name = "";
-                }
-=======
                 var t = ReturnType;
                 var name = t.FullName;
                 if (t.IsArray)
                     name += "[]";
->>>>>>> feature/Intellisense:VisualStudio/ProjectPackage/Editors/Completion/XSharpCompletionSource.cs
                 return name;
             }
         }
@@ -4349,64 +3417,6 @@ namespace XSharp.LanguageService
                 
                 if (IsSourceElement)
                 {
-<<<<<<< HEAD:VisualStudio/LanguageService/Completion/XSharpCompletionSource.cs
-                    // Would be better by checking Dialect...
-                    if (this.XSharpElement is XTypeMember xt)// && (this.XSharpElement.Kind.HasReturnType()))
-                    {
-                        if (!String.IsNullOrEmpty(xt.TypeName))
-                        {
-                            string searchTypeName = xt.TypeName;
-                            if (searchTypeName.EndsWith("[]"))
-                            {
-                                searchTypeName = searchTypeName.Substring(0, searchTypeName.Length - 2);
-                                this.isArray = true;
-                            }
-                            else if (searchTypeName.EndsWith(">"))
-                                this.isGeneric = true;
-                            cType = new CompletionType(searchTypeName, xt.File, xt.FileUsings);
-                            cType.IsArray = this.isArray;
-                        }
-                    }
-                    else if (this.XSharpElement is XVariable xv)
-                    {
-                        string searchTypeName = xv.TypeName;
-                        if (searchTypeName.EndsWith("[]"))
-                        {
-                            searchTypeName = searchTypeName.Substring(0, searchTypeName.Length - 2);
-                            this.isArray = true;
-                        }
-                        else if (searchTypeName.EndsWith(">"))
-                            this.isGeneric = true;
-                        cType = new CompletionType(searchTypeName, xv.File, xv.FileUsings);
-                        cType.IsArray = this.isArray;
-                    }
-                    else if (this.XSharpElement is XType xt1)
-                    {
-                        cType = new CompletionType(xt1.FullName, xt1.File, xt1.FileUsings);
-                    }
-                }
-                else
-                {
-                    if (this.SystemElement is MethodInfo mi)
-                    {
-                        cType = new CompletionType(mi.ReturnType);
-                    }
-                    else if (this.SystemElement is PropertyInfo pi)
-                    {
-                        cType = new CompletionType(pi.PropertyType);
-                    }
-                    else if (this.SystemElement is FieldInfo fi)
-                    {
-                        cType = new CompletionType(fi.FieldType);
-                    }
-                    else if (this.SystemElement is ConstructorInfo ci)
-                    {
-                        cType = new CompletionType(ci.DeclaringType);
-                    }
-                    else if (this.SystemElement is System.Type st)
-                    {
-                        cType = new CompletionType(st);
-=======
                     string searchTypeName = foundElement.TypeName;
                     cType = new CompletionType(searchTypeName, SearchLocation.File, SearchLocation.FileUsings);
                 }
@@ -4419,7 +3429,6 @@ namespace XSharp.LanguageService
                     else // if (foundElement is IXType)
                     {
                         cType = new CompletionType(foundElement as IXType);
->>>>>>> feature/Intellisense:VisualStudio/ProjectPackage/Editors/Completion/XSharpCompletionSource.cs
                     }
                 }
                 return cType;
@@ -4436,14 +3445,6 @@ namespace XSharp.LanguageService
                     if (this.genTypeName == null)
                     {
                         string searchTypeName = "";
-<<<<<<< HEAD:VisualStudio/LanguageService/Completion/XSharpCompletionSource.cs
-                        if ((this.XSharpElement is XTypeMember xt) && (this.XSharpElement.Kind.HasReturnType()))
-                        {
-                            searchTypeName = xt.TypeName;
-                        }
-                        else if (this.XSharpElement is XVariable xv)
-                        {
-=======
                         if ((this.foundElement is XMemberDefinition) && (this.Result.Kind.HasReturnType()))
                         {
                             XMemberDefinition xt = (XMemberDefinition)this.foundElement;
@@ -4452,7 +3453,6 @@ namespace XSharp.LanguageService
                         else if (this.foundElement is XVariable)
                         {
                             XVariable xv = (XVariable)this.foundElement;
->>>>>>> feature/Intellisense:VisualStudio/ProjectPackage/Editors/Completion/XSharpCompletionSource.cs
                             searchTypeName = xv.TypeName;
                         }
                         if (!string.IsNullOrEmpty(searchTypeName))

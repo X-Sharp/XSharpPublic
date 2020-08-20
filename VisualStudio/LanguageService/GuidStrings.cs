@@ -6,11 +6,7 @@
 
 using System;
 
-<<<<<<< HEAD:VisualStudio/LanguageService/GuidStrings.cs
 namespace XSharp.LanguageService
-=======
-namespace XSharp
->>>>>>> feature/Intellisense:Common/GuidStrings.cs
 {
     /// <summary>
     /// The package GUID 

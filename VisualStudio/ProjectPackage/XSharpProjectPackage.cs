@@ -26,6 +26,7 @@ using System.Threading.Tasks;
 using System.Collections.Generic;
 using Microsoft;
 using Microsoft.VisualStudio.ComponentModelHost;
+using XSharpModel;
 /*
 Substitution strings
 String	Description
@@ -61,7 +62,6 @@ $WINDIR$	The Windows folder.
 // They will be included in the generated PkgDef folder for the project system
 [assembly: ProvideCodeBase(AssemblyName = "XSharp.CodeDom.XSharpCodeDomProvider", CodeBase = "XSharpCodeDomProvider.dll", Culture = "neutral", PublicKeyToken = "ed555a0467764586", Version = XSharp.Constants.Version)]
 [assembly: ProvideCodeBase(AssemblyName = "XSharp.VsParser", CodeBase = "XSharp.VsParser.dll", Culture = "neutral", PublicKeyToken = "ed555a0467764586", Version = XSharp.Constants.Version)]
-[assembly: ProvideCodeBase(AssemblyName = "XSharpColorizer", CodeBase = "XSharpColorizer.dll", Culture = "neutral", PublicKeyToken = "ed555a0467764586", Version = XSharp.Constants.Version)]
 [assembly: ProvideCodeBase(AssemblyName = "XSharpModel", CodeBase = "XSharpModel.dll", Culture = "neutral", PublicKeyToken = "ed555a0467764586", Version = XSharp.Constants.Version)]
 [assembly: ProvideCodeBase(AssemblyName = "Mono.Cecil", CodeBase = "Mono.Cecil.dll", Culture = "neutral", PublicKeyToken = "50cebf1cceb9d05e", Version = "0.11.2.0")]
 [assembly: ProvideCodeBase(AssemblyName = "System.Data.SQLite", CodeBase = "System.Data.SQLite.dll", Culture = "neutral", PublicKeyToken = "db937bc2d44ff139", Version = "1.0.113.0")]
@@ -101,21 +101,6 @@ namespace XSharp.Project
     [ProvideProjectFactory(typeof(XSharpProjectFactory),
         LanguageName, ProjectFileMask, ProjectExtension, ProjectExtensions,
         @".NullPath", LanguageVsTemplate = "XSharp", NewProjectRequireNewFolderVsTemplate = false)]
-
-
-#if SMARTINDENT
-                         ShowSmartIndent = true,
-                         EnableFormatSelection = true,
-#else
-                         ShowSmartIndent = false,
-                         EnableFormatSelection = false,
-#endif
-                         HideAdvancedMembersByDefault = true,
-                         SingleCodeWindowOnly = false,
-                         ShowHotURLs = true,
-                         SupportCopyPasteOfHTML = true
-
-                 )]
     [ProvideLanguageCodeExpansionAttribute(
          typeof(XSharpLanguageService),
          LanguageName,  // Name of language used as registry key.
@@ -125,14 +110,6 @@ namespace XSharp.Project
          SearchPaths = @"%InstallRoot%\Common7\IDE\Extensions\XSharp\Snippets\%LCID%\Snippets;" +
                   @"\%MyDocs%\Code Snippets\XSharp\My Code Snippets"
          )]
-    [ProvideLanguageEditorOptionPageAttribute(
-                 typeof(IntellisenseOptionsPage),  // GUID of property page
-                 LanguageName,  // Language Name
-                 null,      // Page Category
-                 "Intellisense",// Page name
-                 "#201"         // Localized name of property page
-                 )]
-
      [ProvideProjectFactory(typeof(XSharpWPFProjectFactory),
         null,
         null,
@@ -179,8 +156,7 @@ namespace XSharp.Project
 
     [ProvideMenuResource("Menus.ctmenu", 1)]
     //[ProvideBindingPath]        // Tell VS to look in our path for assemblies
-    public sealed class XSharpProjectPackage : AsyncProjectPackage, IOleComponent,
-        IVsShellPropertyEvents, IVsDebuggerEvents, XSharpModel.IOutputWindow
+    public sealed class XSharpProjectPackage : AsyncProjectPackage, IOleComponent,IVsDebuggerEvents, XSharpModel.IOutputWindow
     {
         private UIThread _uiThread;
         private uint m_componentID;
@@ -188,12 +164,16 @@ namespace XSharp.Project
         private XPackageSettings settings;
         private XSharpLibraryManager _libraryManager;
         private XSharpDocumentWatcher _documentWatcher;
+        private IErrorList _errorList = null;
+        private ITaskList _taskList = null;
 
         // =========================================================================================
         // Properties
         // =========================================================================================
 
         internal UIThread UIThread => _uiThread;
+        internal ITaskList TaskList => _taskList;
+        internal IErrorList ErrorList => _errorList;
 
         /// <summary>
         /// Gets the singleton XSharpProjectPackage instance.
@@ -216,14 +196,6 @@ namespace XSharp.Project
                     frame.Show();
                 }
             });
-        }
-
-            return _intellisensePage;
-        }
-
-        internal IVsTextManager4 GetTextManager()
-        {
-            return this._txtManager;
         }
 
        // XSharpLanguageService _langService = null;
@@ -279,14 +251,16 @@ namespace XSharp.Project
             //
             container.AddService(typeof(IXSharpLibraryManager), callback, true);
             this._documentWatcher = new XSharpDocumentWatcher(this);
+            _errorList = await GetServiceAsync(typeof(SVsErrorList)) as IErrorList;
+            if (_errorList == null)
+            {
 
-            _txtManager = await GetServiceAsync(typeof(SVsTextManager)) as IVsTextManager4;
+            }
+            _taskList = await GetServiceAsync(typeof(SVsTaskList)) as ITaskList;
+            if (_taskList == null)
+            {
 
-            // determine version of VS
-            object vers;
-            shell.GetProperty((int)__VSSPROPID5.VSSPROPID_ReleaseVersion, out vers);
-
-            VsVersion = vers.ToString();
+            }
         }
 
         //internal static string VsVersion;
@@ -341,38 +315,17 @@ namespace XSharp.Project
             return Ok;
         }
 
-        //private void validateVulcanEditors()
-        //{
-        //    // check Vulcan Source code editor keys
-        //    bool Ok = true;
-        //    // Source editor
-        //    Ok = Ok && CheckKey(GuidStrings.guidVulcanSourceCodeEditor, "prg");
-        //    Ok = Ok && CheckKey(GuidStrings.guidVulcanSourceCodeEditor, "ppo");
-        //    Ok = Ok && CheckKey(GuidStrings.guidVulcanSourceCodeEditor, "vh");
-        //    Ok = Ok && CheckKey(GuidStrings.guidVulcanFormEditor, "vnfrm");
-        //    Ok = Ok && CheckKey(GuidStrings.guidVulcanMenuEditor, "vnmnu");
-        //    Ok = Ok && CheckKey(GuidStrings.guidVulcanDbEditor, "vndbs");
-        //    Ok = Ok && CheckKey(GuidStrings.guidVulcanFsEditor, "vnfs");
-        //    if (!Ok)
-        //    {
-        //        int result = 0;
-        //        Guid tempGuid = Guid.Empty;
-        //        IVsUIShell VsUiShell = GetService(typeof(SVsUIShell)) as IVsUIShell;
-        //        ErrorHandler.ThrowOnFailure(VsUiShell.ShowMessageBox(0, ref tempGuid, "File Associations",
-        //            "The Vulcan file associations must be changed.\nPlease run setup again\n\n" +
-        //            "Failure to do so may result in unexpected behavior inside Visual Studio",
-        //            null, 0,
-        //            OLEMSGBUTTON.OLEMSGBUTTON_OK, OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST,
-        //            OLEMSGICON.OLEMSGICON_CRITICAL, 0, out result));
-        //    }
-
-
-
-
-
-
-
-        //}
+        public void SetCommentTokens()
+        {
+            var commentTokens = _taskList.CommentTokens;
+            var tokens = new List< XSharpModel.XCommentToken>();
+            foreach (var token in commentTokens)
+            {
+                var cmttoken = new XSharpModel.XCommentToken(token.Text,  (int)token.Priority );
+                tokens.Add(cmttoken);
+            }
+            XSharpModel.XSolution.SetCommentTokens(tokens);
+        }
 
         /// <summary>
         /// Gets the settings stored in the registry for this package.
@@ -484,12 +437,6 @@ namespace XSharp.Project
         {
             initUITHread();
             _uiThread.MustBeCalledFromUIThread();
-            //var shell = this.GetService(typeof(SVsShell)) as IVsShell;
-            //if (shell != null)
-            //{
-            //    shell.UnadviseShellPropertyChanges(shellCookie);
-            //    shellCookie = 0;
-            //}
         }
 
         #endregion
@@ -539,28 +486,13 @@ namespace XSharp.Project
 
         public void DisplayException(Exception ex)
         {
-            if (GetIntellisenseOptionsPage().EnableOutputPane)
-            {
-                string space = "";
-                while (ex != null)
-                {
-                    XSharpOutputPane.DisplayOutPutMessage(space+"**** Exception *** " + ex.GetType().FullName);
-                    XSharpOutputPane.DisplayOutPutMessage(space + ex.Message);
-                    XSharpOutputPane.DisplayOutPutMessage(space + ex.StackTrace);
-                    ex = ex.InnerException;
-                    space += " ";
-                }
-
-            }
+            XSettings.DisplayException(ex);
 
         }
 
         public void DisplayOutPutMessage(string message)
         {
-            //if (GetIntellisenseOptionsPage().EnableOutputPane)
-            {
-                XSharpOutputPane.DisplayOutPutMessage(message);
-            }
+            XSettings.DisplayOutputMessage(message);
         }
 
         internal static IComponentModel GetComponentModel()

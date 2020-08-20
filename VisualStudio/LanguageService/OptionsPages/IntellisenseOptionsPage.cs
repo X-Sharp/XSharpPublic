@@ -104,7 +104,7 @@ namespace XSharp.LanguageService.OptionsPages
             SetCaseSync();
         }
         private caseSync CaseSync;
-        public IntellisenseOptionsPage() : base()
+        public IntellisenseOptionsPage() 
         {
             CaseSync = (x) => x;
 

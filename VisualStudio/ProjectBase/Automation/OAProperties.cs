@@ -102,7 +102,7 @@ namespace Microsoft.VisualStudio.Project.Automation
         {
             get
             {
-                return UIThread.DoOnUIThread(delegate()
+                return (EnvDTE.DTE) UIThread.DoOnUIThread(delegate()
                 {
                     if (_target == null || _target.Node == null || _target.Node.ProjectMgr == null || _target.Node.ProjectMgr.IsClosed ||
                         _target.Node.ProjectMgr.Site == null)

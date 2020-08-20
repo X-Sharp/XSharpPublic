@@ -31,12 +31,9 @@ using System.Linq;
 using Microsoft.VisualStudio.Shell.Interop;
 using LanguageService.CodeAnalysis.XSharp;
 using Microsoft;
-<<<<<<< HEAD:VisualStudio/LanguageService/CommandFilter.cs
 using Microsoft.VisualStudio.Threading;
+using XSharp.LanguageService.OptionsPages;
 using System.Windows.Threading;
-=======
-using XSharp.Project.OptionsPages;
->>>>>>> feature/Intellisense:VisualStudio/ProjectPackage/Editors/CommandFilter/CommandFilter.cs
 
 namespace XSharp.LanguageService
 {
@@ -105,11 +102,7 @@ namespace XSharp.LanguageService
         }
         private void _classifier_ClassificationChanged(object sender, ClassificationChangedEventArgs e)
         {
-<<<<<<< HEAD:VisualStudio/LanguageService/CommandFilter.cs
-            XSharpLanguageService.DisplayOutPutMessage("CommandFilter.ClassificationChanged()");
-=======
             WriteOutputMessage("CommandFilter.ClassificationChanged()");
->>>>>>> feature/Intellisense:VisualStudio/ProjectPackage/Editors/CommandFilter/CommandFilter.cs
             if (_suspendSync)
                 return;
             getEditorPreferences(TextView);
@@ -294,13 +287,8 @@ namespace XSharp.LanguageService
                 if (currentMember == null)
                     return;
                 CompletionType cType = null;
-<<<<<<< HEAD:VisualStudio/LanguageService/CommandFilter.cs
                 CompletionElement foundElement = null;
-                XVariable element = null;
-=======
-                XSharpLanguage.CompletionElement foundElement = null;
                 IXVariable element = null;
->>>>>>> feature/Intellisense:VisualStudio/ProjectPackage/Editors/CommandFilter/CommandFilter.cs
                 // Search in Parameters
                 if (currentMember.Parameters != null)
                 {
@@ -336,11 +324,7 @@ namespace XSharp.LanguageService
                 if (element != null)
                 {
                     cType = new CompletionType((XVariable)element, "");
-<<<<<<< HEAD:VisualStudio/LanguageService/CommandFilter.cs
-                    foundElement = new CompletionElement(element);
-=======
-                    foundElement = new XSharpLanguage.CompletionElement((XVariable)element);
->>>>>>> feature/Intellisense:VisualStudio/ProjectPackage/Editors/CommandFilter/CommandFilter.cs
+                    foundElement = new CompletionElement((XVariable)element);
                 }
                 // got it !
                 if (foundElement != null)
@@ -417,11 +401,7 @@ namespace XSharp.LanguageService
             {
                 return;
             }
-<<<<<<< HEAD:VisualStudio/LanguageService/CommandFilter.cs
-            XSharpLanguageService.DisplayOutPutMessage($"CommandFilter.formatLineCase({line.LineNumber + 1})");
-=======
             WriteOutputMessage($"CommandFilter.formatLineCase({line.LineNumber + 1})");
->>>>>>> feature/Intellisense:VisualStudio/ProjectPackage/Editors/CommandFilter/CommandFilter.cs
             // get classification of the line.
             // when the line is part of a multi line comment then do nothing
             // to detect that we take the start of the line and check if it is in
@@ -503,9 +483,9 @@ namespace XSharp.LanguageService
         }
         internal void WriteOutputMessage(string strMessage)
         {
-            if (_optionsPage.EnableCodeCompletionLog && _optionsPage.EnableOutputPane)
+            if (XSettings.EnableCodeCompletionLog && XSettings.EnableLogging)
             {
-                XSharpProjectPackage.Instance.DisplayOutPutMessage(strMessage);
+                XSettings.DisplayOutputMessage(strMessage);
             }
         }
         private void formatCaseForWholeBuffer()
@@ -517,11 +497,7 @@ namespace XSharp.LanguageService
             getEditorPreferences(TextView);
             if (_optionsPage.KeywordCase != 0)
             {
-<<<<<<< HEAD:VisualStudio/LanguageService/CommandFilter.cs
-                XSharpLanguageService.DisplayOutPutMessage("--> CommandFilter.formatCaseForBuffer()");
-=======
                 WriteOutputMessage("--> CommandFilter.formatCaseForBuffer()");
->>>>>>> feature/Intellisense:VisualStudio/ProjectPackage/Editors/CommandFilter/CommandFilter.cs
                 /*
                 bool changed = false;
                 // wait until we can work
@@ -558,11 +534,7 @@ namespace XSharp.LanguageService
                     var classify = _buffer.Properties.GetProperty<XSharpClassifier>(typeof(XSharpClassifier));
                     classify.Classify();
                 }
-<<<<<<< HEAD:VisualStudio/LanguageService/CommandFilter.cs
-                XSharpLanguageService.DisplayOutPutMessage("<-- CommandFilter.formatCaseForBuffer()");
-=======
                 WriteOutputMessage("<-- CommandFilter.formatCaseForBuffer()");
->>>>>>> feature/Intellisense:VisualStudio/ProjectPackage/Editors/CommandFilter/CommandFilter.cs
             }
             return;
         }
@@ -732,7 +704,6 @@ namespace XSharp.LanguageService
                         case VSConstants.VSStd2KCmdID.BACKSPACE:
                             FilterCompletionSession('\0');
                             break;
-#if SMARTINDENT
                         case VSConstants.VSStd2KCmdID.FORMATDOCUMENT:
                             try
                             {
@@ -752,7 +723,7 @@ namespace XSharp.LanguageService
                                 }
                             }
                             break;
-#endif
+
                         case VSConstants.VSStd2KCmdID.RETURN:
                             CancelSignatureSession();
                             if (!returnClosedCompletionList)
@@ -785,11 +756,7 @@ namespace XSharp.LanguageService
             {
                 if (_noGotoDefinition)
                     return;
-<<<<<<< HEAD:VisualStudio/LanguageService/CommandFilter.cs
-                XSharpLanguageService.DisplayOutPutMessage("CommandFilter.GotoDefn()");
-=======
                 WriteOutputMessage("CommandFilter.GotoDefn()");
->>>>>>> feature/Intellisense:VisualStudio/ProjectPackage/Editors/CommandFilter/CommandFilter.cs
                 XSharpModel.ModelWalker.Suspend();
                 // First, where are we ?
                 int caretPos = this.TextView.Caret.Position.BufferPosition.Position;
@@ -831,15 +798,9 @@ namespace XSharp.LanguageService
                 {
                     if (gotoElement.Result != null)
                     {
-<<<<<<< HEAD:VisualStudio/LanguageService/CommandFilter.cs
-                        if (gotoElement.XSharpElement is XTypeMember xtm)
-                        {
-                            if (xtm.Namesake().Count > 1)
-=======
                         if (gotoElement.Result is XMemberDefinition)
                         {
                             if (((XMemberDefinition)gotoElement.Result).GetOverloads().Length > 1)
->>>>>>> feature/Intellisense:VisualStudio/ProjectPackage/Editors/CommandFilter/CommandFilter.cs
                             {
                                 ObjectBrowserHelper.FindSymbols(gotoElement.Result.Name);
                                 return;
@@ -872,13 +833,8 @@ namespace XSharp.LanguageService
             }
             catch (Exception ex)
             {
-<<<<<<< HEAD:VisualStudio/LanguageService/CommandFilter.cs
-                XSharpLanguageService.DisplayOutPutMessage("Goto failed: ");
-                XSharpLanguageService.DisplayException(ex);
-=======
                 WriteOutputMessage("Goto failed: ");
-                XSharpProjectPackage.Instance.DisplayException(ex);
->>>>>>> feature/Intellisense:VisualStudio/ProjectPackage/Editors/CommandFilter/CommandFilter.cs
+                XSettings.DisplayException(ex);
             }
             finally
             {
@@ -937,16 +893,7 @@ namespace XSharp.LanguageService
 
         private void FilterCompletionSession(char ch)
         {
-<<<<<<< HEAD:VisualStudio/LanguageService/CommandFilter.cs
-            XSharpLanguageService.DisplayOutPutMessage("CommandFilter.FilterCompletionSession()");
-            if (_completionSession == null)
-                return;
 
-            XSharpLanguageService.DisplayOutPutMessage(" --> in Filter");
-            if (_completionSession.SelectedCompletionSet != null)
-            {
-                XSharpLanguageService.DisplayOutPutMessage(" --> Filtering ?");
-=======
             WriteOutputMessage("CommandFilter.FilterCompletionSession()");
             if (_completionSession == null)
                 return;
@@ -955,7 +902,6 @@ namespace XSharp.LanguageService
             if (_completionSession.SelectedCompletionSet != null)
             {
                 WriteOutputMessage(" --> Filtering ?");
->>>>>>> feature/Intellisense:VisualStudio/ProjectPackage/Editors/CommandFilter/CommandFilter.cs
                 _completionSession.SelectedCompletionSet.Filter();
                 if (_completionSession.SelectedCompletionSet.Completions.Count == 0)
                 {
@@ -963,11 +909,7 @@ namespace XSharp.LanguageService
                 }
                 else
                 {
-<<<<<<< HEAD:VisualStudio/LanguageService/CommandFilter.cs
-                    XSharpLanguageService.DisplayOutPutMessage(" --> Selecting ");
-=======
                     WriteOutputMessage(" --> Selecting ");
->>>>>>> feature/Intellisense:VisualStudio/ProjectPackage/Editors/CommandFilter/CommandFilter.cs
                     _completionSession.SelectedCompletionSet.SelectBestMatch();
                     _completionSession.SelectedCompletionSet.Recalculate();
                 }
@@ -1002,11 +944,7 @@ namespace XSharp.LanguageService
             bool commit = false;
             bool moveBack = false;
             ITextCaret caret = null;
-<<<<<<< HEAD:VisualStudio/LanguageService/CommandFilter.cs
-            XSharpLanguageService.DisplayOutPutMessage("CommandFilter.CompleteCompletionSession()");
-=======
             WriteOutputMessage("CommandFilter.CompleteCompletionSession()");
->>>>>>> feature/Intellisense:VisualStudio/ProjectPackage/Editors/CommandFilter/CommandFilter.cs
             if (_completionSession.SelectedCompletionSet != null)
             {
                 if ((_completionSession.SelectedCompletionSet.Completions.Count > 0) && (_completionSession.SelectedCompletionSet.SelectionStatus.IsSelected))
@@ -1016,19 +954,15 @@ namespace XSharp.LanguageService
                         caret = _completionSession.TextView.Caret;
                         Kind kind = Kind.Unknown;
                         var completion = _completionSession.SelectedCompletionSet.SelectionStatus.Completion;
-                        if (completion is XSCompletion xsc)
+                        if (completion is XSCompletion)
                         {
-                            kind = xsc.Kind;
+                            kind = ((XSCompletion)completion).Kind;
                         }
                         if (kind == Kind.Keyword)
                         {
                             formatKeyword(completion);
                         }
-<<<<<<< HEAD:VisualStudio/LanguageService/CommandFilter.cs
-                        XSharpLanguageService.DisplayOutPutMessage(" --> select " + completion.InsertionText);
-=======
                         WriteOutputMessage(" --> select " + completion.InsertionText);
->>>>>>> feature/Intellisense:VisualStudio/ProjectPackage/Editors/CommandFilter/CommandFilter.cs
                         if (completion.InsertionText.EndsWith("("))
                         {
                             moveBack = true;
@@ -1074,7 +1008,7 @@ namespace XSharp.LanguageService
                     if (_completionSession.SelectedCompletionSet.SelectionStatus.Completion != null)
                     {
                         var completion = _completionSession.SelectedCompletionSet.SelectionStatus.Completion;
-                        if (completion is XSCompletion xsc && xsc.Kind == Kind.Keyword)
+                        if (completion is XSCompletion && ((XSCompletion)completion).Kind == Kind.Keyword)
                         {
                             formatKeyword(completion);
                         }
@@ -1108,11 +1042,7 @@ namespace XSharp.LanguageService
             }
             if (commit)
             {
-<<<<<<< HEAD:VisualStudio/LanguageService/CommandFilter.cs
-                XSharpLanguageService.DisplayOutPutMessage(" --> Commit");
-=======
                 WriteOutputMessage(" --> Commit");
->>>>>>> feature/Intellisense:VisualStudio/ProjectPackage/Editors/CommandFilter/CommandFilter.cs
                 _completionSession.Commit();
                 if (moveBack && (caret != null))
                 {
@@ -1122,11 +1052,7 @@ namespace XSharp.LanguageService
                 return true;
             }
 
-<<<<<<< HEAD:VisualStudio/LanguageService/CommandFilter.cs
-            XSharpLanguageService.DisplayOutPutMessage(" --> Dismiss");
-=======
             WriteOutputMessage(" --> Dismiss");
->>>>>>> feature/Intellisense:VisualStudio/ProjectPackage/Editors/CommandFilter/CommandFilter.cs
             _completionSession.Dismiss();
             return false;
         }
@@ -1155,11 +1081,7 @@ namespace XSharp.LanguageService
 
         bool StartCompletionSession(uint nCmdId, char typedChar)
         {
-<<<<<<< HEAD:VisualStudio/LanguageService/CommandFilter.cs
-            XSharpLanguageService.DisplayOutPutMessage("CommandFilter.StartCompletionSession()");
-=======
             WriteOutputMessage("CommandFilter.StartCompletionSession()");
->>>>>>> feature/Intellisense:VisualStudio/ProjectPackage/Editors/CommandFilter/CommandFilter.cs
 
             if (_completionSession != null)
             {
@@ -1195,13 +1117,8 @@ namespace XSharp.LanguageService
             }
             catch (Exception e)
             {
-<<<<<<< HEAD:VisualStudio/LanguageService/CommandFilter.cs
-                XSharpLanguageService.DisplayOutPutMessage("Startcompletion failed");
-                XSharpLanguageService.DisplayException(e);
-=======
                 WriteOutputMessage("Startcompletion failed");
-                XSharpProjectPackage.Instance.DisplayException(e);
->>>>>>> feature/Intellisense:VisualStudio/ProjectPackage/Editors/CommandFilter/CommandFilter.cs
+                XSettings.DisplayException(e);
             }
             return true;
         }
@@ -1218,11 +1135,7 @@ namespace XSharp.LanguageService
         private void OnCompletionSessionCommitted(object sender, EventArgs e)
         {
             // it MUST be the case....
-<<<<<<< HEAD:VisualStudio/LanguageService/CommandFilter.cs
-            XSharpLanguageService.DisplayOutPutMessage("CommandFilter.OnCompletionSessionCommitted()");
-=======
             WriteOutputMessage("CommandFilter.OnCompletionSessionCommitted()");
->>>>>>> feature/Intellisense:VisualStudio/ProjectPackage/Editors/CommandFilter/CommandFilter.cs
 
             if (_completionSession.SelectedCompletionSet.SelectionStatus.Completion != null)
             {
@@ -1262,11 +1175,7 @@ namespace XSharp.LanguageService
 
         bool StartSignatureSession(bool comma, XSharpModel.CompletionType cType = null, string methodName = null)
         {
-<<<<<<< HEAD:VisualStudio/LanguageService/CommandFilter.cs
-            XSharpLanguageService.DisplayOutPutMessage("CommandFilter.StartSignatureSession()");
-=======
             WriteOutputMessage("CommandFilter.StartSignatureSession()");
->>>>>>> feature/Intellisense:VisualStudio/ProjectPackage/Editors/CommandFilter/CommandFilter.cs
 
             if (_signatureSession != null)
                 return false;
@@ -1308,15 +1217,9 @@ namespace XSharp.LanguageService
                 IToken stopToken;
                 // Check if we can get the member where we are
 
-<<<<<<< HEAD:VisualStudio/LanguageService/CommandFilter.cs
-                XTypeMember member = XSharpTokenTools.FindMember(lineNumber, file);
-                XType currentNamespace = XSharpTokenTools.FindNamespace(caretPos, file);
+                XMemberDefinition member = XSharpTokenTools.FindMember(lineNumber, file);
+                XTypeDefinition currentNamespace = XSharpTokenTools.FindNamespace(caretPos, file);
                 List<String> tokenList = XSharpTokenTools.GetTokenList(caretPos, lineNumber, snapshot, out stopToken, true, file, false, member);
-=======
-                XMemberDefinition member = XSharpLanguage.XSharpTokenTools.FindMember(lineNumber, file);
-                XTypeDefinition currentNamespace = XSharpLanguage.XSharpTokenTools.FindNamespace(caretPos, file);
-                List<String> tokenList = XSharpLanguage.XSharpTokenTools.GetTokenList(caretPos, lineNumber, snapshot, out stopToken, true, file, false, member);
->>>>>>> feature/Intellisense:VisualStudio/ProjectPackage/Editors/CommandFilter/CommandFilter.cs
                 // LookUp for the BaseType, reading the TokenList (From left to right)
                 string currentNS = "";
                 if (currentNamespace != null)
@@ -1376,13 +1279,8 @@ namespace XSharp.LanguageService
                 }
                 catch (Exception e)
                 {
-<<<<<<< HEAD:VisualStudio/LanguageService/CommandFilter.cs
-                    XSharpLanguageService.DisplayOutPutMessage("Start Signature session failed:");
-                    XSharpLanguageService.DisplayException(e);
-=======
                     WriteOutputMessage("Start Signature session failed:");
-                    XSharpProjectPackage.Instance.DisplayException(e);
->>>>>>> feature/Intellisense:VisualStudio/ProjectPackage/Editors/CommandFilter/CommandFilter.cs
+                    XSettings.DisplayException(e);
                 }
             }
             //
@@ -1423,7 +1321,6 @@ namespace XSharp.LanguageService
 
         public int QueryStatus(ref Guid pguidCmdGroup, uint cCmds, OLECMD[] prgCmds, IntPtr pCmdText)
         {
-            Microsoft.VisualStudio.Shell.ThreadHelper.ThrowIfNotOnUIThread();
             if (pguidCmdGroup == VSConstants.VSStd2K)
             {
                 switch ((VSConstants.VSStd2KCmdID)prgCmds[0].cmdID)
@@ -1457,11 +1354,7 @@ namespace XSharp.LanguageService
         /// <param name="line"></param>
         static public void FormatLineIndent(ITextView TextView, ITextEdit editSession, ITextSnapshotLine line, int desiredIndentation)
         {
-<<<<<<< HEAD:VisualStudio/LanguageService/CommandFilter.cs
-            XSharpLanguageService.DisplayOutPutMessage($"CommandFilterHelper.FormatLineIndent({line.LineNumber + 1})");
-=======
             //CommandFilter.WriteOutputMessage($"CommandFilterHelper.FormatLineIndent({line.LineNumber + 1})");
->>>>>>> feature/Intellisense:VisualStudio/ProjectPackage/Editors/CommandFilter/CommandFilter.cs
             int tabSize = TextView.Options.GetTabSize();
             int indentSize = TextView.Options.GetIndentSize();
             bool useSpaces = TextView.Options.IsConvertTabsToSpacesEnabled();

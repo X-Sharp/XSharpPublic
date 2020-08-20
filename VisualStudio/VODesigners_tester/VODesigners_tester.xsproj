@@ -12,7 +12,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>VODesigners_tester</RootNamespace>
     <AssemblyName>VODesigners_tester</AssemblyName>
-    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <Nologo>true</Nologo>
     <GenerateFullPaths>true</GenerateFullPaths>
     <Dialect>Core</Dialect>
@@ -22,7 +22,7 @@
     <ApplicationIcon />
     <VulcanCompatibleResources>False</VulcanCompatibleResources>
     <TargetFrameworkProfile />
-    <XSharpProjectversion>2.5.0.0</XSharpProjectversion>
+    <XSharpProjectversion>2.5.2.0</XSharpProjectversion>
     <Includepaths>$(Solutiondir)common</Includepaths>
     <Nostandarddefs>false</Nostandarddefs>
     <IntermediateOutputPath>$(SolutionDir)Binaries\obj\$(Configuration)\$(ProjectName)\</IntermediateOutputPath>
@@ -39,6 +39,7 @@
     <StandardDefs />
     <MemVar>false</MemVar>
     <Undeclared>false</Undeclared>
+    <NoWin32Manifest>False</NoWin32Manifest>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'" Label="Configuration">
     <PlatformTarget>x86</PlatformTarget>
@@ -100,19 +101,9 @@
     <Folder Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\CodeGenerator\XSharpCodeGenerator.xsproj">
-      <Name>XSharpCodeGenerator</Name>
-      <Project>{b837ac3b-9c61-49e4-9f4f-c8ad1faf21cc}</Project>
-      <Private>True</Private>
-    </ProjectReference>
     <ProjectReference Include="..\VODesigners\VODesigners.xsproj">
       <Name>VODesigners</Name>
       <Project>{faac947e-0355-4f8d-adb9-c57b1c9357d2}</Project>
-      <Private>True</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\XSharpVoEditors\XSharpVoEditors.xsproj">
-      <Name>XSharpVoEditors</Name>
-      <Project>{7619db88-6286-4ef1-8273-2a08cc8ac70e}</Project>
       <Private>True</Private>
     </ProjectReference>
   </ItemGroup>

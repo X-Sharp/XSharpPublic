@@ -12,14 +12,10 @@ using System.ComponentModel.Composition;
 using Microsoft.VisualStudio.Utilities;
 using Microsoft.VisualStudio.Shell;
 using XSharpColorizer;
-<<<<<<< HEAD:VisualStudio/LanguageService/Completion/XAMLCompletionSource.cs
 using XSharp.LanguageService.OptionsPages;
 using System.Runtime.CompilerServices;
 using XSharp.LanguageService;
-=======
-using XSharp.Project;
-using XSharp.Project.OptionsPages;
->>>>>>> feature/Intellisense:VisualStudio/ProjectPackage/Editors/Completion/XAMLCompletionSource.cs
+using XSharpModel;
 
 namespace XSharpLanguage
 {
@@ -49,7 +45,7 @@ namespace XSharpLanguage
         private string _fileName;
         private XSharpModel.XFile _file;
         IntellisenseOptionsPage optionsPage = null;
-        XSharpProjectPackage package;
+        XSharpLanguageService package;
 
 
         internal static bool StringEquals(string lhs, string rhs)
@@ -65,24 +61,20 @@ namespace XSharpLanguage
             _buffer = buffer;
             _fileName = buffer.GetXAMLFile();
             _file = buffer.GetFile();
-            package = XSharpProjectPackage.Instance;
+            package = XSharpLanguageService.Instance;
             optionsPage = package.GetIntellisenseOptionsPage();
 
         }
         internal void WriteOutputMessage(string strMessage)
         {
-            if (optionsPage.EnableCodeCompletionLog && optionsPage.EnableOutputPane)
+            if (XSettings.EnableCodeCompletionLog && XSettings.EnableLogging)
             {
-                XSharpProjectPackage.Instance.DisplayOutPutMessage(strMessage);
+                XSettings.DisplayOutputMessage(strMessage);
             }
         }
         public void AugmentCompletionSession(ICompletionSession session, IList<CompletionSet> completionSets)
         {
-<<<<<<< HEAD:VisualStudio/LanguageService/Completion/XAMLCompletionSource.cs
-            XSharpLanguageService.DisplayOutPutMessage("-->> XAML AugmentCompletionSessions");
-=======
             WriteOutputMessage("-->> XAML AugmentCompletionSessions");
->>>>>>> feature/Intellisense:VisualStudio/ProjectPackage/Editors/Completion/XAMLCompletionSource.cs
             try
             {
                 // Where does the StartSession has been triggered ?
@@ -115,22 +107,13 @@ namespace XSharpLanguage
             }
             catch (Exception ex)
             {
-<<<<<<< HEAD:VisualStudio/LanguageService/Completion/XAMLCompletionSource.cs
-                XSharpLanguageService.DisplayOutPutMessage("XAML AugmentCompletionSessions failed " );
-                XSharpLanguageService.DisplayException(ex);
-=======
                 WriteOutputMessage("XAML AugmentCompletionSessions failed " );
-                XSharpProjectPackage.Instance.DisplayException(ex);
->>>>>>> feature/Intellisense:VisualStudio/ProjectPackage/Editors/Completion/XAMLCompletionSource.cs
+                XSettings.DisplayException(ex);
             }
             finally
             {
             }
-<<<<<<< HEAD:VisualStudio/LanguageService/Completion/XAMLCompletionSource.cs
-            XSharpLanguageService.DisplayOutPutMessage("<<-- XAML AugmentCompletionSessions");
-=======
             WriteOutputMessage("<<-- XAML AugmentCompletionSessions");
->>>>>>> feature/Intellisense:VisualStudio/ProjectPackage/Editors/Completion/XAMLCompletionSource.cs
         }
 
         public void Dispose()

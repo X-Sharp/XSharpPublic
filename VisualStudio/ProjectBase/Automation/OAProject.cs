@@ -183,7 +183,7 @@ namespace Microsoft.VisualStudio.Project.Automation
                 }
                 else
                 {
-                    return UIThread.DoOnUIThread(delegate ()
+                    var  result = UIThread.DoOnUIThread(delegate ()
                     {
                         // Get Solution service
                         IVsSolution solution = this.project.GetService(typeof(IVsSolution)) as IVsSolution;
@@ -197,6 +197,7 @@ namespace Microsoft.VisualStudio.Project.Automation
                         ErrorHandler.ThrowOnFailure(solution.GetUniqueNameOfProject(this.project, out uniqueName));
                         return uniqueName;
                     });
+                    return result;
                 }
             }
         }
@@ -291,7 +292,7 @@ namespace Microsoft.VisualStudio.Project.Automation
         {
             get
             {
-                return UIThread.DoOnUIThread(delegate ()
+                return (EnvDTE.ConfigurationManager) UIThread.DoOnUIThread(delegate ()
                 {
                     if (this.configurationManager == null)
                     {

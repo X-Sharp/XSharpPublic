@@ -12,7 +12,7 @@ using Microsoft.VisualStudio.Text.Classification;
 using Microsoft.VisualStudio.Text.Operations;
 using System.Windows.Media;
 using System.Collections.ObjectModel;
-
+using XSharpModel;
 
 // Based on https://docs.microsoft.com/en-US/visualstudio/extensibility/walkthrough-highlighting-text
 // But we wil only hightlight Text in the current Members of our XSharp model.
@@ -203,7 +203,7 @@ namespace XSharp.LanguageService.Editors.HighlightWord
             }
             catch (Exception ex)
             {
-                XSharpProjectPackage.Instance.DisplayOutPutMessage("HighlightWordTag Exception: " + ex.Message);
+                XSettings.DisplayOutputMessage("HighlightWordTag Exception: " + ex.Message);
             }
         }
         static bool WordExtentIsValid(SnapshotPoint currentRequest, TextExtent word)

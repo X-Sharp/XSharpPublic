@@ -1,4 +1,5 @@
-﻿using System;
+﻿#if NOTDEFINED
+using System;
 using System.Linq;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
@@ -180,3 +181,4 @@ namespace XSharp.LanguageService.Editors.LightBulb
 
 
 }
+#endif

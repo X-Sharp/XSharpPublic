@@ -91,68 +91,6 @@ namespace XSharp.LanguageService
         internal static bool IsOurSourceFile(string fileName)
         {
             return true;
-    //        var serviceProvider = XSharpEditorFactory.GetServiceProvider();
-    //        if (serviceProvider == null)
-    //            return false;
-    //        var type = XSharpModel.XFileTypeHelpers.GetFileType(fileName);
-    //        switch (type)
-    //        {
-    //            case XSharpModel.XFileType.SourceCode:
-    //            case XSharpModel.XFileType.Header:
-    //            case XSharpModel.XFileType.PreprocessorOutput:
-    //                break;
-    //            default:
-    //                return false;
-    //        }
-
-    //        // Find the document in the Running Document Table and Get Its hierarchy object
-    //        // so we can ask for a property that we can use to see if this is 'Ours'
-    //        IVsRunningDocumentTable rdt = serviceProvider.GetService(typeof(IVsRunningDocumentTable)) as IVsRunningDocumentTable;
-    //        Assumes.Present(rdt);
-    //        uint itemID;
-    //        IVsHierarchy hierarchy;
-    //        IntPtr unkDocData;
-    //        uint cookie;
-    //        rdt.FindAndLockDocument((uint)(_VSRDTFLAGS.RDT_NoLock), fileName, out hierarchy, out itemID, out unkDocData, out cookie);
-    //        if (unkDocData != IntPtr.Zero)
-    //        {
-    //            Marshal.Release(unkDocData);
-    //        }
-    //        object result;
-    //        bool ours = false;
-    //        if (string.Compare(XSharpProjectPackage.VsVersion.Substring(0, 3) ,"15.0") >= 0)
-    //        {
-    //            ours = true;
-    //        }
-    //        // Ask for the Language. X# returns the product name
-    //        // the implementation for this property is inside XSharpFileNode.
-    //        if (hierarchy != null)
-    //        {
-    //            hierarchy.GetProperty(itemID, (int)__VSHPROPID8.VSHPROPID_DiagHubLanguage, out result);
-    //            ours = (result is string && (string)result == Constants.Product);
-    //        }
-    //        if (! ours)
-    //        {
-    //            // this could be a XAML generated source file that is not in the hierarchy
-    //            // in that case it is part of the XSolution and we should be able to find its XAML parent
-    //            var file = XSharpModel.XSolution.FindFullPath(fileName);
-    //            ours = (file != null);
-    //        }
-    //        if (! ours )
-    //        {
-    //            // ask for a project root. If there is no project root, then we take ownership
-				//result = null;
-    //            if (hierarchy != null)
-    //            {
-    //                hierarchy.GetProperty(itemID, (int)__VSHPROPID.VSHPROPID_Root, out result);
-    //            }
-    //            ours = (result == null);
-    //            if (ours)
-    //            {
-    //                XSharpModel.XSolution.OrphanedFilesProject.AddFile(fileName);
-    //            }
-    //        }
-    //        return ours;
         }
     }
 

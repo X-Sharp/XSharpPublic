@@ -328,7 +328,10 @@ namespace XSharp.LanguageService
                 }
             }
         }
-
+        public override void SynchronizeDropdowns()
+        {
+            base.SynchronizeDropdowns();
+        }
         int IVsLanguageDebugInfo.IsMappedLocation(IVsTextBuffer pBuffer, int iLine, int iCol)
         {
             return VSConstants.S_FALSE;

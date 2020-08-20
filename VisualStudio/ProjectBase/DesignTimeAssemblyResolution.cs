@@ -18,7 +18,7 @@ using Microsoft.Build.Utilities;
 using Microsoft.Build.Execution;
 using System.IO;
 using System.Globalization;
-
+using XSharpModel;
 namespace Microsoft.VisualStudio.Project
 {
     public class DesignTimeAssemblyResolution
@@ -110,13 +110,7 @@ namespace Microsoft.VisualStudio.Project
             }
             catch (Exception ex)
             {
-                //if (ErrorHandler.IsCriticalException(ex))
-                //{
-                //    throw;
-                //}
-
-                //engine.RecordRARExecutionException(ex);
-                //results = Enumerable.Empty<VsResolvedAssemblyPath>();
+                XSettings.DisplayException(ex);
             }
             finally
             {

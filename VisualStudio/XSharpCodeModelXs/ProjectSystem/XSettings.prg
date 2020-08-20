@@ -12,6 +12,7 @@ BEGIN NAMESPACE XSharpModel
 
     DELEGATE DisplayOutputMessage(message as string) AS VOID
     DELEGATE DisplayException(ex as Exception) AS VOID
+    DELEGATE ShowMessageBox(message as string) AS INT
 
 	STATIC CLASS XSettings
 		// Fields
@@ -44,14 +45,20 @@ BEGIN NAMESPACE XSharpModel
 
       PUBLIC STATIC PROPERTY DisplayOutputMessage             AS DisplayOutputMessage AUTO
       PUBLIC STATIC PROPERTY DisplayException                 AS DisplayException AUTO
+      PUBLIC STATIC PROPERTY ShowMessageBox                   AS ShowMessageBox AUTO
 
       PRIVATE STATIC METHOD NoOutput(message as string) AS VOID
             RETURN
       PRIVATE STATIC METHOD NoException(ex as Exception) AS VOID
             RETURN
+      PRIVATE STATIC METHOD NoMessageBox(message as string) AS INT
+            RETURN 0
+
+
       STATIC CONSTRUCTOR
             DisplayOutputMessage := NoOutput
             DisplayException     := NoException
+            ShowMessageBox       := NoMessageBox
             
 
 

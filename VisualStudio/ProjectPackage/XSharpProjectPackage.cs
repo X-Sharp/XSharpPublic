@@ -261,6 +261,12 @@ namespace XSharp.Project
             {
 
             }
+
+            // register our output
+            XSettings.DisplayException = DisplayException;
+            XSettings.DisplayOutputMessage = DisplayOutPutMessage;
+            XSettings.ShowMessageBox = ShowMessageBox;
+
         }
 
         //internal static string VsVersion;
@@ -486,13 +492,28 @@ namespace XSharp.Project
 
         public void DisplayException(Exception ex)
         {
-            XSettings.DisplayException(ex);
+            if (XSettings.EnableLogging)
+            {
+                string space = "";
+                while (ex != null)
+                {
+                    XSharpOutputPane.DisplayOutPutMessage(space+"**** Exception *** " + ex.GetType().FullName);
+                    XSharpOutputPane.DisplayOutPutMessage(space + ex.Message);
+                    XSharpOutputPane.DisplayOutPutMessage(space + ex.StackTrace);
+                    ex = ex.InnerException;
+                    space += " ";
+                }
+
+            }
 
         }
 
         public void DisplayOutPutMessage(string message)
         {
-            XSettings.DisplayOutputMessage(message);
+            if (XSettings.EnableLogging)
+            {
+                XSharpOutputPane.DisplayOutPutMessage(message);
+            }
         }
 
         internal static IComponentModel GetComponentModel()

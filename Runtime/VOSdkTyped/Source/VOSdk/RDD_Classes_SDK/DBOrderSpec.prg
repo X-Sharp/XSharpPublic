@@ -1,3 +1,4 @@
+#pragma warnings(165, off)
 CLASS OrderSpec
 	PROTECT oDBF            AS DbFileSpec
 
@@ -11,10 +12,10 @@ CLASS OrderSpec
 
 	// conditional index items
 	PROTECT lIsCond          AS LOGIC
-	PROTECT uForCond        AS STRING   // RvdH 070310 Was ForCond which is the same as an Access....
-	PROTECT uForBlock       AS USUAL		// RvdH 070310 Was ForBlock which is the same as an Access....
-	PROTECT uWhileBlock     AS USUAL		// RvdH 070310 Was WhileBlock which is the same as an Access....
-	PROTECT uEvalBlock      AS USUAL		// RvdH 070310 Was EvalBlock which is the same as an Access....
+	PROTECT uForCond        AS STRING   
+	PROTECT uForBlock       AS USUAL	
+	PROTECT uWhileBlock     AS USUAL	
+	PROTECT uEvalBlock      AS USUAL	
 	PROTECT nStep           AS DWORD
 	PROTECT nStart          AS DWORD
 	PROTECT nNext           AS DWORD
@@ -45,7 +46,6 @@ CLASS OrderSpec
 
 	RETURN DbUseArea( TRUE, SELF:oDBF:RDDs, SELF:oDBF:FullPath, cAlias, FALSE, FALSE )
 
-PROPERTY __DBF AS DbFileSpec GET oDBF
 METHOD __OrderSetInfo( cAlias AS STRING ) AS VOID STRICT  
 	// Gets order information and assigns info into the OrderSpec Object.
 	// Assumes that the workarea defined by cAlias is already opened and the order
@@ -57,7 +57,7 @@ METHOD __OrderSetInfo( cAlias AS STRING ) AS VOID STRICT
 	IF SLen( cAlias )  > 0
 		aKeyInfo := ArrayNew( 4 )
 
-		cRDD := SELF:__DBF:RDD_Name
+		cRDD := SELF:DBF:RDD_Name
 
 		aKeyInfo[ORD_KEYTYPE] := ( cAlias )->( DbOrderInfo( DBOI_KEYTYPE ) )
 		DO CASE
@@ -80,13 +80,13 @@ METHOD __OrderSetInfo( cAlias AS STRING ) AS VOID STRICT
 
 		// non-conditional order information
 		SELF:FileName           := ( cAlias )->( DbOrderInfo( DBOI_FULLPATH ) )
-		SELF:__DBF:IndexNames     := ( cAlias )->( DbOrderInfo( DBOI_FULLPATH ) )
+		SELF:DBF:IndexNames     := ( cAlias )->( DbOrderInfo( DBOI_FULLPATH ) )
 		SELF:OrderName          := ( cAlias )->( DbOrderInfo( DBOI_NAME ) )
 		SELF:OrderExpr          := ( cAlias )->( DbOrderInfo( DBOI_EXPRESSION ) )
 		SELF:OrderBlock         := &( "{||" + SELF:OrderExpr + "}" )
 		SELF:Unique             := ( cAlias )->( DbOrderInfo( DBOI_UNIQUE ) )
 
-		SELF:__DBF:Orders         := SELF
+		SELF:DBF:Orders         := SELF
 
 		// key info
 		SELF:KeyInfo            := aKeyInfo
@@ -162,86 +162,64 @@ METHOD __OrderSetInfo( cAlias AS STRING ) AS VOID STRICT
 
 	RETURN
 
-ACCESS Add          
+ACCESS Add   AS LOGIC        
 	RETURN SELF:lAdd
 
-ASSIGN Add( lLogic )      
+ASSIGN Add( lLogic  AS LOGIC)      
 	// conditional index
-	IF Empty( lLogic ) .OR. !IsLogic( lLogic )
-		SELF:lAdd := FALSE
-	ELSE
-		SELF:lAdd := lLogic
-		SELF:lIsCond := TRUE
-	ENDIF
+	SELF:lAdd := lLogic
+	SELF:lIsCond := TRUE
 	RETURN 
 
-ACCESS All          
+ACCESS All  AS LOGIC
 	RETURN SELF:lAll
 
-ASSIGN All( lLogic )      
-	IF Empty( lLogic ) .OR. !IsLogic( lLogic )
-		SELF:lAll := FALSE
-
-	ELSE
-		SELF:lAll := lLogic
-		SELF:lIsCond := TRUE
-
-	ENDIF
+ASSIGN All( lLogic AS LOGIC)      
+	SELF:lAll := lLogic
+	SELF:lIsCond := TRUE
 
 	RETURN 
 
-ACCESS AutoOpen     
+ACCESS AutoOpen AS LOGIC    
 	RETURN SELF:lAutoOpen
 
-ACCESS AutoOrder    
+ACCESS AutoOrder  AS LONG   
 	RETURN SELF:nAutoOrder
 
-ACCESS AutoShare    
+ACCESS AutoShare  AS LONG  
 	RETURN SELF:nAutoShare
 
-ACCESS Current          
+ACCESS Current   AS LOGIC        
 	RETURN SELF:lCurrent
 
-ASSIGN Current( lLogic )      
+ASSIGN Current( lLogic  AS LOGIC) 
 	// conditional index
-	IF Empty( lLogic ) .OR. !IsLogic( lLogic )
-		SELF:lCurrent := FALSE
-
-	ELSE
-		SELF:lCurrent := lLogic
-		SELF:lIsCond := TRUE
-
-	ENDIF
+	SELF:lCurrent := lLogic
+	SELF:lIsCond := TRUE
 
 	RETURN 
 
-ACCESS Custom           
+ACCESS Custom   AS LOGIC 
 	RETURN SELF:lCustom
 
-ASSIGN Custom( lLogic )       
+ASSIGN Custom( lLogic  AS LOGIC) 
 	// conditional index
-	IF Empty( lLogic ) .OR. !IsLogic( lLogic )
-		SELF:lCustom := FALSE
-
-	ELSE
-		SELF:lCustom := lLogic
-		SELF:lIsCond := TRUE
-
-	ENDIF
+	SELF:lCustom := lLogic
+	SELF:lIsCond := TRUE
 
 	RETURN 
 
-ACCESS DBF          
+ACCESS DBF AS DbFileSpec
 	//
 	// Returns the DBFileSpec object that this OrderSpec object
 	// belongs to.
 	//
 	RETURN SELF:oDBF
 
-ACCESS Descend          
+ACCESS Descend AS LOGIC
 	RETURN SELF:lDescend
 
-ASSIGN Descend( lLogic )      
+ASSIGN Descend( lLogic  AS LOGIC) 
 	// conditional index
 	IF Empty( lLogic ) .OR. !IsLogic( lLogic )
 		SELF:lDescend := FALSE
@@ -254,10 +232,10 @@ ASSIGN Descend( lLogic )
 
 	RETURN 
 
-ACCESS EvalBlock    
+ACCESS EvalBlock  AS USUAL  
 	RETURN SELF:uEvalBlock
 
-ASSIGN EvalBlock( cbCodeBlock )   
+ASSIGN EvalBlock( cbCodeBlock AS USUAL)   
 	// conditional index
 	IF Empty( cbCodeBlock ) .OR. !__CanEval( cbCodeBlock )
 		SELF:uEvalBlock := NIL
@@ -270,15 +248,15 @@ ASSIGN EvalBlock( cbCodeBlock )
 
 	RETURN 
 
-ACCESS FileName         
+ACCESS FileName AS STRING
 	RETURN SELF:cFileName
 
-ASSIGN FileName( cName )          
+ASSIGN FileName( cName AS STRING)
 	LOCAL aFullPath AS ARRAY
 	LOCAL cFileName AS STRING
 	LOCAL oDBFS     AS DbFileSpec
 
-	IF Empty( cName ) .OR. !IsString( cName )
+	IF Empty( cName ) 
 		SELF:cFileName := NULL_STRING
 
 	ELSE
@@ -303,10 +281,10 @@ ASSIGN FileName( cName )
 
 	RETURN 
 
-ACCESS ForBlock     
+ACCESS ForBlock AS USUAL
 	RETURN SELF:uForBlock
 
-ASSIGN ForBlock( cbCodeBlock )    
+ASSIGN ForBlock( cbCodeBlock AS USUAL)
 	// conditional index
 	IF Empty( cbCodeBlock ) .OR. !__CanEval( cbCodeBlock )
 		SELF:uForBlock := NIL
@@ -319,10 +297,10 @@ ASSIGN ForBlock( cbCodeBlock )
 
 	RETURN 
 
-ACCESS ForCond      
+ACCESS ForCond AS USUAL 
 	RETURN SELF:uForCond
 
-ASSIGN ForCond( cForCondition )   
+ASSIGN ForCond( cForCondition AS USUAL)   
 	// conditional index
 	IF Empty( cForCondition ) .OR. !IsString( cForCondition )
 		SELF:uForCond := NULL_STRING
@@ -335,93 +313,67 @@ ASSIGN ForCond( cForCondition )
 
 	RETURN 
 
-ACCESS HPLock       
+ACCESS HPLock AS LOGIC 
 	RETURN SELF:lHPLock
 
-ASSIGN HPLock( lLogic )   
-
-	IF Empty( lLogic ) .OR. !IsLogic( lLogic )
-		lLogic := FALSE
-
-	ENDIF
-
+ASSIGN HPLock( lLogic AS LOGIC)   
 	SELF:lHPLock := lLogic
-
 	RETURN 
 
-CONSTRUCTOR( oDBFS )      
-	//
-	// oDBFS is an existing DBFileSpec object
-	//
-    IF IsObject(oDBFS) .and. __Usual.ToObject(oDBFS) IS DbFileSpec  
-		SELF:oDBF := oDBFS
-		IF SELF:__DBF:Orders == NULL_ARRAY
-			SELF:__DBF:Orders := {}
 
-		ENDIF
+CONSTRUCTOR( )      
+   SELF(NULL_OBJECT)
 
-		IF SELF:__DBF:IndexNames == NULL_ARRAY
-			SELF:__DBF:IndexNames := {}
+CONSTRUCTOR( oDBFS AS DbFileSpec)      
+      SELF:oDBF := oDBFS
+      IF SELF:oDBF != NULL_OBJECT
+         IF SELF:DBF:Orders == NULL_ARRAY
+            SELF:DBF:Orders := {}
+         ENDIF
+         IF SELF:DBF:IndexNames == NULL_ARRAY
+            SELF:DBF:IndexNames := {}
+         ENDIF
+      ENDIF
+      // init the USUALs to NILs
+      SELF:cbOrdExpr  	:= NIL
+      SELF:uForBlock   := NIL
+      SELF:uWhileBlock := NIL
+      SELF:uEvalBlock  := NIL
+      SELF:aKeyInfo   	:= {}
+   RETURN 
 
-		ENDIF
-
-		// init the USUALs to NILs
-		SELF:cbOrdExpr  	:= NIL
-		SELF:uForBlock   := NIL
-		SELF:uWhileBlock := NIL
-		SELF:uEvalBlock  := NIL
-		SELF:aKeyInfo   	:= {}
-
-	ELSE
-		SELF:oDBF := NULL_OBJECT
-
-	ENDIF
-	RETURN 
-
-ACCESS Interval         
+ACCESS Interval AS DWORD
 	RETURN SELF:nStep
 
-ASSIGN Interval( nDWord )     
+ASSIGN Interval( nDWord AS DWORD)     
 	// conditional index
-	IF Empty( nDWord ) .OR. !IsNumeric( nDWord )
-		SELF:nStep := 0
-	ELSE
-		SELF:nStep := nDWord
-		SELF:lIsCond := TRUE
-	ENDIF
+	SELF:nStep := nDWord
+	SELF:lIsCond := TRUE
 	RETURN 
 
-ACCESS IsCond           
+ACCESS IsCond AS LOGIC
 	RETURN SELF:lIsCond
 
-ASSIGN IsCond( lLogic )       
+ASSIGN IsCond( lLogic AS LOGIC)       
 	// conditional index
-	IF Empty( lLogic ) .OR. !IsLogic( lLogic )
-		SELF:lIsCond := FALSE
-	ELSE
-		SELF:lIsCond := lLogic
-	ENDIF
+	SELF:lIsCond := lLogic
 	RETURN 
 
-ACCESS KeyInfo      
+ACCESS KeyInfo AS ARRAY     
 	RETURN SELF:aKeyInfo
 
-ASSIGN KeyInfo( aKeyInfo )        
+ASSIGN KeyInfo( aKeyInfo AS ARRAY)        
 
-	IF Empty( aKeyInfo ) .OR. !IsArray( aKeyInfo )
-		SELF:aKeyInfo := NULL_ARRAY
-	ELSE
-		SELF:aKeyInfo := aKeyInfo
-	ENDIF
+	SELF:aKeyInfo := aKeyInfo
 	RETURN 
 
-ACCESS LockOffSet   
+ACCESS LockOffSet  AS LONG 
 	RETURN SELF:nLockOffSet
 
-ACCESS NoOptimize       
+ACCESS NoOptimize   AS LOGIC    
 	RETURN SELF:lNoOpt
 
-ASSIGN NoOptimize( lLogic )   
+ASSIGN NoOptimize( lLogic AS LOGIC)   
 	// conditional index
 	IF Empty( lLogic ) .OR. !IsLogic( lLogic )
 		SELF:lNoOpt := FALSE
@@ -431,7 +383,7 @@ ASSIGN NoOptimize( lLogic )
 	ENDIF
 	RETURN 
 
-METHOD OrderAdd( oFS, uOrder )    
+METHOD OrderAdd( oFS, uOrder ) AS LOGIC   
 	LOCAL lRetCode      AS LOGIC
 	LOCAL aFullPath     AS ARRAY
 	LOCAL cDrive        AS STRING
@@ -541,10 +493,10 @@ METHOD OrderAdd( oFS, uOrder )
 
 	RETURN lRetCode
 
-ACCESS OrderBlock       
+ACCESS OrderBlock    AS USUAL    
 	RETURN SELF:cbOrdExpr
 
-ASSIGN OrderBlock( cbCodeBlock )          
+ASSIGN OrderBlock( cbCodeBlock AS USUAL)          
 
 	IF Empty( cbCodeBlock ) .OR. !__CanEval( cbCodeBlock )
 		SELF:cbOrdExpr := NIL
@@ -553,7 +505,7 @@ ASSIGN OrderBlock( cbCodeBlock )
 	ENDIF
 	RETURN
 
-METHOD OrderCreate( oFS, cOrder, cKeyValue, cbKeyValue, lUnique ) 
+METHOD OrderCreate( oFS, cOrder, cKeyValue, cbKeyValue, lUnique ) AS LOGIC
 	LOCAL lRetCode      AS LOGIC
 	LOCAL aFullPath     AS ARRAY
 	LOCAL cDrive        AS STRING
@@ -701,18 +653,16 @@ METHOD OrderCreate( oFS, cOrder, cKeyValue, cbKeyValue, lUnique )
 	ENDIF
 	RETURN lRetCode
 
-METHOD OrderDelete( uOrder )  
+METHOD OrderDelete( uOrder )  AS LOGIC
 	LOCAL lRetCode  AS LOGIC
 	LOCAL cFullPath AS STRING
 	LOCAL cRDD      AS STRING
 	LOCAL cAlias	AS STRING
-	// LOCAL oSelf     AS OrderSpec      dcaton 070430 never used
 	LOCAL i         AS DWORD
 	LOCAL nOrders, nFiles   AS DWORD
 	LOCAL nOrdCount, nHandle AS DWORD
 
 	cRDD := SELF:oDBF:RDD_Name
-	// oSelf := SELF         // dcaton 070430 never used
 
 	IF cRDD != "DBFNTX"
 		cAlias := Symbol2String( __ConstructUniqueAlias( SELF:oDBF:FileName ) )
@@ -730,12 +680,12 @@ METHOD OrderDelete( uOrder )
 			ENDIF
 
 			IF lRetCode
-				nOrders := ALen( SELF:__DBF:Orders )
+				nOrders := ALen( SELF:DBF:Orders )
 				FOR i := 1 UPTO nOrders
-                    VAR os := (OrderSpec) SELF:__DBF:Orders[ i ]
+                    VAR os := (OrderSpec) SELF:DBF:Orders[ i ]
 					IF os:FileName == SELF:cFileName
-						ADel( SELF:__DBF:Orders, i )
-						ASize( SELF:__DBF:Orders, nOrders - 1 )
+						ADel( SELF:DBF:Orders, i )
+						ASize( SELF:DBF:Orders, nOrders - 1 )
 						EXIT
 					ENDIF
 				NEXT
@@ -770,7 +720,7 @@ METHOD OrderDelete( uOrder )
 			NEXT
 			nOrders := ALen( SELF:oDBF:Orders )
 			FOR i := 1 UPTO nOrders
-                VAR os := (OrderSpec) SELF:__DBF:Orders[ i ]
+                VAR os := (OrderSpec) SELF:DBF:Orders[ i ]
 	            IF os:FileName == SELF:cFileName
 					ADel( SELF:oDBF:Orders, i )
 					ASize( SELF:oDBF:Orders, nFiles - 1 )
@@ -787,29 +737,19 @@ METHOD OrderDelete( uOrder )
 	RETURN lRetCode
 
 
-ACCESS OrderExpr        
+ACCESS OrderExpr AS STRING       
 
 	RETURN SELF:cOrdExpr
 
-ASSIGN OrderExpr( cExpression )           
-
-	IF Empty( cExpression ) .OR. !IsString( cExpression )
-		SELF:cOrdExpr := NULL_STRING
-	ELSE
-		SELF:cOrdExpr := cExpression
-	ENDIF
+ASSIGN OrderExpr( cExpression AS STRING)           
+	SELF:cOrdExpr := cExpression
 	RETURN 
 
-ACCESS OrderName        
+ACCESS OrderName  AS STRING
 	RETURN SELF:cOrdName
 
-ASSIGN OrderName( cOrderName )            
-
-	IF Empty( cOrderName ) .OR. !IsString( cOrderName )
-		SELF:cOrdName := NULL_STRING
-	ELSE
-		SELF:cOrdName := cOrderName
-	ENDIF
+ASSIGN OrderName( cOrderName AS STRING)            
+	SELF:cOrdName := cOrderName
 	RETURN 
 
 ACCESS RecNo  AS DWORD      
@@ -825,64 +765,47 @@ ASSIGN RecNo ( nDWord AS DWORD)
 	ENDIF
 	RETURN 
 
-ACCESS Records      
+ACCESS Records  AS DWORD
 	RETURN SELF:nNext
 
-ASSIGN Records( nDWord )      
+ASSIGN Records( nDWord AS DWORD)      
 	// conditional index
-	IF Empty( nDWord ) .OR. !IsNumeric( nDWord )
-		SELF:nNext := 0
-	ELSE
-		SELF:nNext := nDWord
-		SELF:lIsCond := TRUE
-	ENDIF
+	SELF:nNext := nDWord
+	SELF:lIsCond := TRUE
 	RETURN 
 
-ACCESS Rest         
+ACCESS Rest  AS LOGIC
 	RETURN SELF:lRest
 
-ASSIGN Rest( lLogic )     
+ASSIGN Rest( lLogic AS LOGIC)     
 	// conditional index
-	IF Empty( lLogic ) .OR. !IsLogic( lLogic )
-		SELF:lRest := FALSE
-	ELSE
-		SELF:lRest := lLogic
-		SELF:lIsCond := TRUE
-	ENDIF
+	SELF:lRest := lLogic
+	SELF:lIsCond := TRUE
 	RETURN 
 
-ACCESS Start        
+ACCESS Start  AS DWORD      
 	RETURN SELF:nStart
 
-ASSIGN Start( nDWord )        
+ASSIGN Start( nDWord AS DWORD)        
 	// conditional index
-	IF Empty( nDWord ) .OR. !IsNumeric( nDWord )
-		SELF:nStart := 0
-	ELSE
-		SELF:nStart := nDWord
-		SELF:lIsCond := TRUE
-	ENDIF
+	SELF:nStart := nDWord
+	SELF:lIsCond := TRUE
 	RETURN 
 
-ACCESS StrictRead   
+ACCESS StrictRead  AS LOGIC
 	RETURN SELF:lStrictRead
 
-ACCESS Unique       
+ACCESS Unique  AS LOGIC      
 	RETURN SELF:lUnique
 
-ASSIGN Unique( lLogic )           
-
-	IF Empty( lLogic ) .OR. !IsLogic( lLogic )
-		SELF:lUnique := FALSE
-	ELSE
-		SELF:lUnique := lLogic
-	ENDIF
+ASSIGN Unique( lLogic  AS LOGIC)           
+	SELF:lUnique := lLogic
 	RETURN 
 
-ACCESS WhileBlock   
+ACCESS WhileBlock  AS USUAL
 	RETURN SELF:uWhileBlock
 
-ASSIGN WhileBlock( cbCodeBlock )  
+ASSIGN WhileBlock( cbCodeBlock AS USUAL)  
 	// conditional index
 	IF Empty( cbCodeBlock ) .OR. !__CanEval( cbCodeBlock )
 		SELF:uWhileBlock := NIL

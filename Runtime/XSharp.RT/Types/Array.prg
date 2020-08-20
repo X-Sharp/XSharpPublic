@@ -36,7 +36,7 @@ BEGIN NAMESPACE XSharp
         CONSTRUCTOR( elements AS USUAL[] )
             SELF()
             IF elements == NULL
-                THROW ArgumentNullException{NAMEOF(elements)}
+                THROW Error{ArgumentNullException{NAMEOF(elements)}}
             ENDIF
             _internalList:Capacity := elements:Length
             _internalList:AddRange(elements)
@@ -64,7 +64,7 @@ BEGIN NAMESPACE XSharp
         INTERNAL STATIC METHOD ArrayCreate(dimensions PARAMS INT[] ) AS ARRAY
             LOCAL count := dimensions:Length AS INT
             IF count <= 0
-                THROW ArgumentException{"No dimensions provided."}
+                THROW Error{ArgumentException{"No dimensions provided.",nameof(dimensions)}}
             ENDIF
             LOCAL initializer := OBJECT[]{dimensions[1]} AS OBJECT[]
             LOCAL arrayNew AS ARRAY
@@ -133,15 +133,44 @@ BEGIN NAMESPACE XSharp
         INTERNAL METHOD CloneShallow() AS ARRAY
             RETURN (ARRAY) SUPER:Clone()
 
+
         /// <include file="RTComments.xml" path="Comments/ZeroBasedIndexProperty/*" /> 
         /// <param name="index"><include file="RTComments.xml" path="Comments/ZeroBasedIndexParam/*" /></param>
         /// <returns>The value of the property of the element stored at the indicated location in the array.</returns>
-        PUBLIC PROPERTY SELF[index PARAMS INT[]] AS USUAL
+        NEW PUBLIC PROPERTY SELF[index AS INT] AS USUAL
             GET
                 RETURN __GetElement(index)
             END GET
             SET
                 SELF:__SetElement(value,index)
+            END SET
+        END PROPERTY
+
+
+        /// <include file="RTComments.xml" path="Comments/ZeroBasedIndexProperty/*" /> 
+        /// <param name="index"><include file="RTComments.xml" path="Comments/ZeroBasedIndexParam/*" /></param>
+        /// <param name="index2"><include file="RTComments.xml" path="Comments/ZeroBasedIndexParam/*" /></param>
+        /// <returns>The value of the property of the element stored at the indicated location in the array.</returns>
+        NEW PUBLIC PROPERTY SELF[index AS INT, index2 AS INT] AS USUAL
+            GET
+                RETURN __GetElement(index,index2)
+            END GET
+            SET
+                SELF:__SetElement(value,index,index2)
+            END SET
+        END PROPERTY
+
+
+
+        /// <include file="RTComments.xml" path="Comments/ZeroBasedIndexProperty/*" /> 
+        /// <param name="indices"><include file="RTComments.xml" path="Comments/ZeroBasedIndexParam/*" /></param>
+        /// <returns>The value of the property of the element stored at the indicated location in the array.</returns>
+        PUBLIC PROPERTY SELF[indices PARAMS INT[]] AS USUAL
+            GET
+                RETURN __GetElement(indices)
+            END GET
+            SET
+                SELF:__SetElement(value,indices)
             END SET
         END PROPERTY
 
@@ -152,29 +181,69 @@ BEGIN NAMESPACE XSharp
         NEW INTERNAL METHOD Swap(position AS INT, element AS USUAL) AS USUAL
             RETURN SUPER:Swap(position, element)
 
+
+
         /// <include file="RTComments.xml" path="Comments/ZeroBasedIndexProperty/*" />
         /// <param name="index"><include file="RTComments.xml" path="Comments/ZeroBasedIndexParam/*" /></param>
         /// <returns>The element stored at the specified location in the array.</returns>
-        PUBLIC METHOD __GetElement(index PARAMS INT[]) AS USUAL
-            LOCAL length := index:Length AS INT
+        NEW PUBLIC METHOD __GetElement(index AS INT) AS USUAL
+			RETURN SELF:_internalList[ index ]
+
+        /// <include file="RTComments.xml" path="Comments/ZeroBasedIndexProperty/*" />
+        /// <param name="index"><include file="RTComments.xml" path="Comments/ZeroBasedIndexParam/*" /></param>
+        /// <returns>The element stored at the specified location in the array.</returns>
+        PUBLIC METHOD __GetElement(index AS INT, index2 AS INT) AS USUAL
+            VAR u := SELF:_internalList[ index ]
+            TRY
+                IF u:IsArray
+                    VAR a := (ARRAY) u
+                    RETURN a:_internalList [index2]
+                ENDIF
+                // not an array, so we call the index operation on the usual, 
+                // this will handle special cases such as indexing a string for Xbase++ 
+                RETURN u[index2+1]
+            CATCH
+                // This does not make sense, but that is the way  VO does it.
+                // when aTest := {1,2,3}
+                // ? aTest[1,1] is allowed and returns NIL !
+                // but when aTest is not an array at all then it fails
+                RETURN NIL
+            END TRY
+
+
+        /// <include file="RTComments.xml" path="Comments/ZeroBasedIndexProperty/*" />
+        /// <param name="indices"><include file="RTComments.xml" path="Comments/ZeroBasedIndexParam/*" /></param>
+        /// <returns>The element stored at the specified location in the array.</returns>
+        PUBLIC METHOD __GetElement(indices PARAMS INT[]) AS USUAL
+            LOCAL length := indices:Length AS INT
             LOCAL currentArray AS ARRAY
             LOCAL i AS INT
-            currentArray := SELF
+            LOCAL u AS USUAL
+            u := SELF
             FOR i:= 1  UPTO length  -1 // walk all but the last level
-                LOCAL u := currentArray:_internalList[ index[i] ] AS USUAL
+                currentArray := (ARRAY) u
+                u := currentArray:_internalList[ indices[i] ] 
                 IF u:IsNil
                     RETURN u
                 ENDIF
                 IF (OBJECT) u IS IIndexedProperties .AND. i == length-1
                     LOCAL o := (IIndexedProperties) (OBJECT) u AS IIndexedProperties
-                    RETURN o[index[length]]
+                    RETURN o[indices[length]]
                 ENDIF
+                // This does not make sense, but that is the way  VO does it.
+                // when aTest := {1,2,3}
+                // ? aTest[1,1] is allowed and returns NIL !
+                // but when aTest is not an array at all then it fails
                 IF !u:IsArray
-                    THROW InvalidOperationException{"out of range error."}
+                    EXIT
                 ENDIF
-                currentArray := (ARRAY) u
             NEXT
-            RETURN currentArray:_internalList[ index[length] ]
+            IF u:IsArray
+               currentArray := (ARRAY) u
+               RETURN currentArray:_internalList[ indices[i] ]
+            ENDIF
+	    // Call the array operator on the usual class to support substring and bittest operations.
+            RETURN u[indices[length] +1]
 
         INTERNAL METHOD DebuggerString() AS STRING
             LOCAL sb AS StringBuilder
@@ -203,26 +272,53 @@ BEGIN NAMESPACE XSharp
 
         /// <include file="RTComments.xml" path="Comments/ZeroBasedIndexProperty/*" />
         /// <param name="index"><include file="RTComments.xml" path="Comments/ZeroBasedIndexParam/*" /></param>
+        /// <returns>The element stored at the specified location in the array.</returns>
+        NEW PUBLIC METHOD __SetElement(u AS USUAL, index AS INT) AS USUAL
+            IF SELF:CheckLock()
+               SELF:_internalList[ index ] := u
+            ENDIF
+            RETURN u
+
+
+        /// <include file="RTComments.xml" path="Comments/ZeroBasedIndexProperty/*" />
+        /// <param name="index"><include file="RTComments.xml" path="Comments/ZeroBasedIndexParam/*" /></param>
+        /// <param name="index2"><include file="RTComments.xml" path="Comments/ZeroBasedIndexParam/*" /></param>
+        /// <returns>The element stored at the specified location in the array.</returns>
+        PUBLIC METHOD __SetElement(u AS USUAL, index AS INT, index2 AS INT) AS USUAL
+            IF SELF:CheckLock()
+		VAR uElement := SELF:_internalList[ index ]
+                IF !uElement:IsArray
+                    THROW Error{ArgumentOutOfRangeException{nameof(index2)}}
+                ENDIF
+		VAR a := (ARRAY) uElement
+                a:_internalList [index2] := u
+            ENDIF
+            RETURN u
+
+
+
+        /// <include file="RTComments.xml" path="Comments/ZeroBasedIndexProperty/*" />
+        /// <param name="indices"><include file="RTComments.xml" path="Comments/ZeroBasedIndexParam/*" /></param>
         /// <param name='u'>New element to store in the array at the position specified</param>
         /// <returns>The new element</returns>
-        PUBLIC METHOD __SetElement(u AS USUAL, index PARAMS INT[] ) AS USUAL
+        PUBLIC METHOD __SetElement(u AS USUAL, indices PARAMS INT[] ) AS USUAL
             // indices are 0 based
             IF SELF:CheckLock()
-                LOCAL length := index:Length AS INT
+                LOCAL length := indices:Length AS INT
                 LOCAL currentArray := SELF AS ARRAY
                 FOR VAR i := 1 UPTO length-1
-                    LOCAL uArray := currentArray:_internalList[index[i]] AS USUAL
+                    LOCAL uArray := currentArray:_internalList[indices[i]] AS USUAL
                     IF (OBJECT) u IS IIndexedProperties .AND. i == length-1
                         LOCAL o := (IIndexedProperties) (OBJECT) u AS IIndexedProperties
-                        o[index[length]] := u
+                        o[indices[length]] := u
                         RETURN u
                     ENDIF
-                    IF !(uArray:IsArray)
-                        THROW InvalidOperationException{"Out of range error."}
+                    IF ! uArray:IsArray
+                        THROW Error{ArgumentOutOfRangeException{nameof(indices)}}
                     ENDIF
                     currentArray := (ARRAY) uArray
                 NEXT
-                currentArray:_internalList[index[length]] := u
+                currentArray:_internalList[indices[length]] := u
             ENDIF
             RETURN u
 

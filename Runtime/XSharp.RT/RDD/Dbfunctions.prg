@@ -14,17 +14,16 @@ USING System.Linq
 USING System.Text
 
 #command DOINAREA <uArea> <func>  => ;
-    LOCAL nArea := _Select(<uArea>)  AS DWORD ; ; 
-    IF nArea != 0; ;
-        VAR nOld := RuntimeState.CurrentWorkarea; ;
-        TRY ;  ;
-            RuntimeState.CurrentWorkarea := nArea; ;
-            RETURN <FUNC> ; ; 
-        FINALLY;  ;
+  	LOCAL nOld := RuntimeState.CurrentWorkarea AS DWORD ; ;   
+    IF _Select(<uArea>) != 0 ; ;
+         TRY ;  ; 
+            RETURN <FUNC> ;;	
+         FINALLY;  ;
             RuntimeState.CurrentWorkarea := nOld ; ;
         END TRY; ;
-    ENDIF; ;
+    ENDIF ; ;
     THROW _NoAlias( <uArea> )  
+
  
 FUNCTION _NoAlias(uArea AS USUAL) AS Error
     VAR oErr := Error{EG_NOTABLE, "uArea", "Alias '"+uArea:ToString()+"' is not found"}
@@ -397,7 +396,7 @@ FUNCTION Used() AS LOGIC
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/used/*" />
 FUNCTION Used(uArea AS USUAL) AS LOGIC
     IF IsString(uArea) .OR. IsSymbol(uArea)
-        RETURN VODbGetSelect(uArea) != 0
+        RETURN VoDbGetSelect(uArea) != 0
     ENDIF
     RETURN Alias(uArea) != NULL_STRING
 

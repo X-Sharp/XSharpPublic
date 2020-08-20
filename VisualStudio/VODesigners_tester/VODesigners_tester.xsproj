@@ -22,7 +22,7 @@
     <ApplicationIcon />
     <VulcanCompatibleResources>False</VulcanCompatibleResources>
     <TargetFrameworkProfile />
-    <XSharpProjectversion>2.4.1.0</XSharpProjectversion>
+    <XSharpProjectversion>2.5.0.0</XSharpProjectversion>
     <Includepaths>$(Solutiondir)common</Includepaths>
     <Nostandarddefs>false</Nostandarddefs>
     <IntermediateOutputPath>$(SolutionDir)Binaries\obj\$(Configuration)\$(ProjectName)\</IntermediateOutputPath>
@@ -39,7 +39,6 @@
     <StandardDefs />
     <MemVar>false</MemVar>
     <Undeclared>false</Undeclared>
-    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'" Label="Configuration">
     <PlatformTarget>x86</PlatformTarget>
@@ -95,15 +94,14 @@
     <None Include="..\..\Common\BuildNumber.h">
       <Link>BuildNumber.h</Link>
     </None>
-    <None Include="app.config" />
     <None Include="VOWEDTest.prg" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\CodeGenerator\CodeGenerator.xsproj">
-      <Name>CodeGenerator</Name>
+    <ProjectReference Include="..\CodeGenerator\XSharpCodeGenerator.xsproj">
+      <Name>XSharpCodeGenerator</Name>
       <Project>{b837ac3b-9c61-49e4-9f4f-c8ad1faf21cc}</Project>
       <Private>True</Private>
     </ProjectReference>
@@ -112,8 +110,8 @@
       <Project>{faac947e-0355-4f8d-adb9-c57b1c9357d2}</Project>
       <Private>True</Private>
     </ProjectReference>
-    <ProjectReference Include="..\XSharpVoEditors\VoEditors.xsproj">
-      <Name>VoEditors</Name>
+    <ProjectReference Include="..\XSharpVoEditors\XSharpVoEditors.xsproj">
+      <Name>XSharpVoEditors</Name>
       <Project>{7619db88-6286-4ef1-8273-2a08cc8ac70e}</Project>
       <Private>True</Private>
     </ProjectReference>

@@ -115,7 +115,7 @@ FUNCTION Days(nSeconds AS REAL8) AS INT
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/seconds/*" />
 FUNCTION Seconds() AS REAL8
 	VAR dt := DateTime.Now
-    LOCAL result as REAL8
+    LOCAL result AS REAL8
     result := dt:Hour * 3600 + dt:Minute * 60 + dt:Second + (REAL8) (dt:Millisecond)/1000.0
     IF XSharp.RuntimeState.Dialect == XSharpDialect.FoxPro
         result := Math.Round(result,3)
@@ -227,10 +227,15 @@ STATIC FUNCTION _SplitDate(cDate AS STRING) AS STRING[]
 	LOCAL aNums := STRING[]{3} AS STRING[]
 	LOCAL cCurrent := "" AS STRING
 	LOCAL nCurrent := __ARRAYBASE__ AS INT
+	LOCAL lFirstCharFound := FALSE AS LOGIC
 	FOREACH cChar AS CHAR IN cDate
-		IF cChar >= '0' .AND. cChar <= '9'
+ 		IF cChar >= '0' .AND. cChar <= '9'
+			lFirstCharFound := TRUE
 			cCurrent += cChar:ToString()
+		ELSEIF cChar == ' ' .and. .not. lFirstCharFound
+			NOP
 		ELSE
+			lFirstCharFound := TRUE
 			aNums[nCurrent] := cCurrent
 			cCurrent := ""
 			nCurrent++

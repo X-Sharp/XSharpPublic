@@ -28,6 +28,9 @@ CLASS XSharp.OleAutoObjectFromFile INHERIT OleAutoObject
          type    := oObj:GetType()
          
          SUPER(oDoc, type)
+      CATCH as Exception
+         NOP
+            
       END TRY
    
       RETURN

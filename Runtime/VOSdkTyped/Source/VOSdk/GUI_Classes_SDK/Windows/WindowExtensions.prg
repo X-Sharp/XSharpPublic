@@ -17,7 +17,7 @@ PARTIAL CLASS Window
 		ENDIF
 
 	ACCESS IsResizable() AS LOGIC
-		RETURN ( _AND( Win32.GetWindowLong( SELF:Handle(), GWL_STYLE ), WS_THICKFRAME ) = WS_THICKFRAME )
+		RETURN ( _AND( GuiWin32.GetWindowLong( SELF:Handle(), GWL_STYLE ), WS_THICKFRAME ) = WS_THICKFRAME )
 
 	ACCESS Min_Visibility AS INT
 		//Für Subwindows ebenfalls interessant
@@ -76,9 +76,9 @@ FUNCTION YieldMessageLoop( oWin AS OBJECT )
 	IF oWin is IGuiObject
         LOCAL oGui := (IGuiObject) oWin
 		hWnd := oGui:__Handle
-		DO WHILE ( Win32.PeekMessage( @msg, hWnd, 0, 0, PM_REMOVE ) )
-			Win32.TranslateMessage( @msg )
-			Win32.DispatchMessage( @msg )
+		DO WHILE ( GuiWin32.PeekMessage( @msg, hWnd, 0, 0, PM_REMOVE ) )
+			GuiWin32.TranslateMessage( @msg )
+			GuiWin32.DispatchMessage( @msg )
 		ENDDO
 	ENDIF
 	RETURN NIL

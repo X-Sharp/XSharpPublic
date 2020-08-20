@@ -1,3 +1,4 @@
+#pragma warnings(165, off)
 CLASS DbFileSpec INHERIT FileSpec
 	PROTECT DBF AS ARRAY
 	PROTECT cMemFileName AS STRING
@@ -26,7 +27,8 @@ CLASS DbFileSpec INHERIT FileSpec
 	PROTECT aHidRDDs AS ARRAY
 	PROTECT aOrders AS ARRAY
 	PROTECT aIndexNames AS ARRAY
-	METHOD __MemFullPath() AS STRING STRICT 
+
+METHOD __MemFullPath() AS STRING STRICT 
 	LOCAL cPath AS STRING
 
 	IF SELF:MemFileName == NULL_STRING .AND. SELF:MemFileExt == NULL_STRING
@@ -437,14 +439,14 @@ METHOD DBFSGetInfo( xRdds, aHidden )
 			ENDIF
 
 			IF DbInfo( DBI_ISDBF )
-				SELF:nFCount := ( cAlias ) -> ( DbInfo( DBI_FCOUNT ) )
-				SELF:nRecSize := ( cAlias ) -> (  DbInfo( DBI_GETRECSIZE ) )
-				SELF:nHeaderSize := ( cAlias ) -> ( DbInfo( DBI_GETHEADERSIZE ) )
-				SELF:lAnsi := ( cAlias ) -> ( DbInfo( DBI_ISANSI ) )
-				SELF:dLastUpDate := ( cAlias ) -> ( DbInfo( DBI_LASTUPDATE ) )
-				SELF:nRecCount := ( cAlias ) -> ( VoDbLastRec() )
-				SELF:nRLockCount := ( cAlias ) -> ( DbInfo( DBI_LOCKCOUNT ) )
-				SELF:aDbStruct := ( cAlias ) -> ( DbStruct() )
+				SELF:nFCount        := ( cAlias ) -> ( DbInfo( DBI_FCOUNT ) )
+				SELF:nRecSize       := ( cAlias ) -> (  DbInfo( DBI_GETRECSIZE ) )
+				SELF:nHeaderSize    := ( cAlias ) -> ( DbInfo( DBI_GETHEADERSIZE ) )
+				SELF:lAnsi          := ( cAlias ) -> ( DbInfo( DBI_ISANSI ) )
+				SELF:dLastUpDate    := ( cAlias ) -> ( DbInfo( DBI_LASTUPDATE ) )
+				SELF:nRecCount      := ( cAlias ) -> ( VoDbLastRec() )
+				SELF:nRLockCount    := ( cAlias ) -> ( DbInfo( DBI_LOCKCOUNT ) )
+				SELF:aDbStruct      := ( cAlias ) -> ( DbStruct() )
 			ENDIF
 
             // pMemoHandle := ( cAlias ) -> ( DbINFO( DBI_MEMOHANDLE ) )
@@ -504,7 +506,7 @@ METHOD DBFSGetInfo( xRdds, aHidden )
 	RETURN lRetCode
 
 ACCESS DbFSize AS LONG
-	LOCAL DW AS LONG
+	LOCAL DW := 0 AS LONG
 	IF ALen( SELF:DBF ) > 0
 		DW := SELF:DBF[1, F_SIZE]
 	ENDIF
@@ -556,10 +558,8 @@ METHOD Delete()  AS LOGIC STRICT
 		ENDIF
 
 		IF lRetCode .AND. ! Empty( SELF:aIndexNames )
-			// cPath := SubStr3( cFileFullPath, 1, RAt2( "\", cFileFullPath ) )  // dcaton 070439 never used
 
 			FOREACH cFame as STRING in SELF:aIndexNames
-				//cDBFTarget := cPath + SubStr2( cFileName, RAt2( "\", cFileName ) + 1 )  // dcaton 070430 never used
 				lRetCode := FErase( cFame ) 
 			NEXT
 
@@ -726,27 +726,22 @@ ASSIGN IndexNames( cIndexName AS ARRAY)
 	SELF:aIndexNames := cIndexName
 	RETURN 
 
-CONSTRUCTOR( cFullPath, cDriver, _aRDDs ) 
 
+CONSTRUCTOR( oFS AS FileSpec, cDriver := "" AS STRING, _aRDDs := NULL_ARRAY AS ARRAY)
+    SELF(oFS:FullPath, cDriver, _aRDDs)
 
+CONSTRUCTOR( cFullPath := "" AS STRING, cDriver := "" AS STRING, _aRDDs := NULL_ARRAY AS ARRAY) 
 	SELF:aOrders := { }
 	SELF:aIndexNames := { }
 
-	IF IsObject(cFullPath) .AND. __Usual.ToObject(cFullPath) IS FileSpec  VAR oFS
-		cFullPath := oFS:FullPath
-	ENDIF
 
-	IF Empty( cDriver ) .OR. ! IsString( cDriver )
+	IF Empty( cDriver ) 
 		SELF:cRDD_Name := RddInfo( _SET_DEFAULTRDD )
 	ELSE
 		SELF:cRDD_Name := cDriver
 	ENDIF
 
-	IF Empty( _aRDDs ) .OR. ! IsArray( _aRDDs )
-		SELF:aRDDs := NULL_ARRAY
-	ELSE
-		SELF:aRDDs := _aRDDs
-	ENDIF
+	SELF:aRDDs := _aRDDs
 
 	IF ! Empty( cFullPath )
 
@@ -1023,11 +1018,11 @@ METHOD Move( oDBFSTarget, lIDX, lName ) AS LOGIC STRICT
 
 	RETURN lRetCode
 
-ACCESS Orders 
+ACCESS Orders AS USUAL
 
 	RETURN SELF:aOrders
 
-ASSIGN Orders( oOrderSpec ) 
+ASSIGN Orders( oOrderSpec AS USUAL) 
 
 	IF IsObject(oOrderSpec) .and. __Usual.ToObject(oOrderSpec) IS OrderSpec  
 		AAdd( SELF:aOrders, oOrderSpec )

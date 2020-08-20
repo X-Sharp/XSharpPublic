@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 namespace XSharp.MacroCompiler
 {
     using Syntax;
+    using System.Globalization;
     using static Syntax.TokenAttr;
 
     partial class Lexer
@@ -180,13 +181,101 @@ namespace XSharp.MacroCompiler
             return false;
         }
 
+        // copied from the Roslyn C# lexer
+        private static bool IsLetterChar(UnicodeCategory cat)
+        {
+            // letter-character:
+            //   A Unicode character of classes Lu, Ll, Lt, Lm, Lo, or Nl 
+            //   A Unicode-escape-sequence representing a character of classes Lu, Ll, Lt, Lm, Lo, or Nl
+
+            switch (cat)
+            {
+                case UnicodeCategory.UppercaseLetter:
+                case UnicodeCategory.LowercaseLetter:
+                case UnicodeCategory.TitlecaseLetter:
+                case UnicodeCategory.ModifierLetter:
+                case UnicodeCategory.OtherLetter:
+                case UnicodeCategory.LetterNumber:
+                    return true;
+            }
+
+            return false;
+        }
+        // copied from the Roslyn C# lexer
+        public static bool IsIdentifierPartCharacter(char ch)
+        {
+            // identifier-part-character:
+            //   letter-character
+            //   decimal-digit-character
+            //   connecting-character
+            //   combining-character
+            //   formatting-character
+
+            if (ch < 'a') // '\u0061'
+            {
+                if (ch < 'A') // '\u0041'
+                {
+                    return ch >= '0'  // '\u0030'
+                        && ch <= '9'; // '\u0039'
+                }
+
+                return ch <= 'Z'  // '\u005A'
+                    || ch == '_'; // '\u005F'
+            }
+
+            if (ch <= 'z') // '\u007A'
+            {
+                return true;
+            }
+
+            if (ch <= '\u007F') // max ASCII
+            {
+                return false;
+            }
+
+            UnicodeCategory cat = CharUnicodeInfo.GetUnicodeCategory(ch);
+            return IsLetterChar(cat)
+                || cat == UnicodeCategory.DecimalDigitNumber
+                || cat == UnicodeCategory.ConnectorPunctuation
+                || cat == UnicodeCategory.NonSpacingMark
+                || cat == UnicodeCategory.SpacingCombiningMark
+                || (ch > 127 && cat == UnicodeCategory.Format);
+        }
+        // copied from the Roslyn C# lexer
+        public static bool IsIdentifierStartCharacter(char ch)
+        {
+            // identifier-start-character:
+            //   letter-character
+            //   _ (the underscore character U+005F)
+
+            if (ch < 'a') // '\u0061'
+            {
+                if (ch < 'A') // '\u0041'
+                {
+                    return false;
+                }
+
+                return ch <= 'Z'  // '\u005A'
+                    || ch == '_'; // '\u005F'
+            }
+
+            if (ch <= 'z') // '\u007A'
+            {
+                return true;
+            }
+
+            if (ch <= '\u007F') // max ASCII
+            {
+                return false;
+            }
+
+            return IsLetterChar(CharUnicodeInfo.GetUnicodeCategory(ch));
+        }
+
         bool ExpectIdStart()
         {
             var c = La();
-            if ((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || c == '_'
-                || (c >= '\u00C0' && c <= '\u00D6') || (c >= '\u00D8' && c <= '\u00F6')
-                || (c >= '\u00F8' && c <= '\u02FF') || (c >= '\u0370' && c <= '\u037D')
-                || (c >= '\u037F' && c <= '\u1FFF') || (c >= '\u200C' && c <= '\u200D'))
+            if (IsIdentifierStartCharacter(c))
             {
                 Consume();
                 return true;
@@ -197,11 +286,7 @@ namespace XSharp.MacroCompiler
         bool ExpectIdChar()
         {
             var c = La();
-            if ((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || (c >= '0' && c <= '9') || c == '_'
-                    || (c >= '\u00C0' && c <= '\u00D6') || (c >= '\u00D8' && c <= '\u00F6')
-                    || (c >= '\u00F8' && c <= '\u02FF') || (c >= '\u0370' && c <= '\u037D')
-                    || (c >= '\u037F' && c <= '\u1FFF') || (c >= '\u200C' && c <= '\u200D')
-                    || c == '\u00B7' || (c >= '\u0300' && c <= '\u036F') || (c >= '\u203F' && c <= '\u2040'))
+            if (IsIdentifierPartCharacter (c))
             {
                 Consume();
                 return true;

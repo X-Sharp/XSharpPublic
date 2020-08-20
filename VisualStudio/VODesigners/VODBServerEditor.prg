@@ -407,6 +407,8 @@ PARTIAL CLASS VODBServerEditor INHERIT DesignerBase
 				File.Delete(cBackup)
 				File.Move(cFileName , cBackup)
 				lImport := TRUE
+         CATCH
+            NOP
 			END TRY
 		END IF
 		
@@ -445,6 +447,8 @@ PARTIAL CLASS VODBServerEditor INHERIT DesignerBase
 				IF DBHelpers.DBH_Used()
 					DBHelpers.DBH_DBCloseArea()
 				END IF
+         CATCH
+            NOP
 			END TRY
 		CATCH e AS Exception
 			Funcs.ErrorBox(e:Message , "Export to dbf failed.")
@@ -1859,6 +1863,8 @@ PARTIAL CLASS VODBServerEditor INHERIT DesignerBase
 		TRY
 			FileInfo{cFileName}
 			lSuccess := TRUE
+      CATCH
+         NOP
 		END TRY
 	RETURN lSuccess
 	STATIC METHOD NameFromFilename(cFileName AS STRING) AS STRING
@@ -2822,6 +2828,8 @@ CLASS DBServerCode
 			        ENDIF
 				ENDIF
 			END IF
+         CATCH
+            NOP
         END TRY
 		IF !System.IO.File.Exists(cCavoWed)
 			MessageBox.Show("File Cavoded.tpl was not found, please locate it on disk." , "DBServer Editor")
@@ -2837,6 +2845,8 @@ CLASS DBServerCode
                IF cCavoWed:Contains("cavoded") .and. cCavoWed:EndsWith(".tpl")
                   File.Copy(cCavoWed , cOrigDir + "\cavoded.tpl" , FALSE)
                ENDIF
+            CATCH
+               NOP
             END TRY
 			ELSE
 				RETURN FALSE
@@ -2954,6 +2964,8 @@ CLASS DBServerCode
 			        ENDIF
 				ENDIF
 			END IF
+         CATCH
+            NOP
         END TRY
 		IF !System.IO.File.Exists(cCavoWed)
 			MessageBox.Show("File Cavofed.tpl was not found, please locate it on disk." , "DBServer Editor")
@@ -2969,6 +2981,8 @@ CLASS DBServerCode
                IF cCavoWed:Contains("cavofed") .and. cCavoWed:EndsWith(".tpl")
                   File.Copy(cCavoWed , cOrigDir + "\cavofed.tpl" , FALSE)
                ENDIF
+            CATCH
+               NOP
             END TRY
 			ELSE
 				RETURN FALSE

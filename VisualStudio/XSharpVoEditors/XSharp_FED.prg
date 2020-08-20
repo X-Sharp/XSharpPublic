@@ -204,6 +204,8 @@ CLASS XSharp_VOFieldSpecEditor INHERIT VOFieldSpecEditor
 				aDesign := SELF:GetAllDesignItems()
 				SaveToXml(cFileName , aDesign)
 				lSuccess := TRUE
+         CATCH
+            NOP
 			END TRY
 			RETURN lSuccess
 		END IF

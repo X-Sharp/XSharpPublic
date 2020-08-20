@@ -6,5 +6,5 @@
 #using System.Security
 
 
-[assembly: AssemblyTitleAttribute( "XSharp.VO.SystemClasses" )]
+[assembly: AssemblyTitleAttribute( "XSharp.VOSystemClasses" )]
 [assembly: AssemblyDescriptionAttribute( "XSharp Typed VO System Classes" )]

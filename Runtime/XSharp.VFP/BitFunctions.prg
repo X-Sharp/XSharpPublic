@@ -4,7 +4,7 @@
 // See License.txt in the project root for license information.
 //
 /// <summary>-- todo --</summary>
-/// <include file="VFPDocs.xml" path="Runtimefunctions/bintand/*" />
+/// <include file="VFPDocs.xml" path="Runtimefunctions/bitand/*" />
 
 
 FUNCTION BitAnd (BinaryExpression1, BinaryExpression2 )

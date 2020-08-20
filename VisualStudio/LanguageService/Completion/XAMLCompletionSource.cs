@@ -6,25 +6,20 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using Microsoft.VisualStudio.Language.Intellisense;
 using Microsoft.VisualStudio.Text;
 using System.ComponentModel.Composition;
 using Microsoft.VisualStudio.Utilities;
-using XSharpModel;
 using Microsoft.VisualStudio.Shell;
-using System.Windows.Media;
-using LanguageService.SyntaxTree;
-using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
-using System.Reflection;
-using Microsoft.VisualStudio;
-using LanguageService.CodeAnalysis.XSharp;
-using System.Diagnostics;
-using System.Collections.Immutable;
 using XSharpColorizer;
+<<<<<<< HEAD:VisualStudio/LanguageService/Completion/XAMLCompletionSource.cs
 using XSharp.LanguageService.OptionsPages;
 using System.Runtime.CompilerServices;
 using XSharp.LanguageService;
+=======
+using XSharp.Project;
+using XSharp.Project.OptionsPages;
+>>>>>>> feature/Intellisense:VisualStudio/ProjectPackage/Editors/Completion/XAMLCompletionSource.cs
 
 namespace XSharpLanguage
 {
@@ -51,7 +46,11 @@ namespace XSharpLanguage
         private ITextBuffer _buffer;
         private bool _disposed = false;
         private XAMLCompletionSourceProvider _provider;
-        private String _file;
+        private string _fileName;
+        private XSharpModel.XFile _file;
+        IntellisenseOptionsPage optionsPage = null;
+        XSharpProjectPackage package;
+
 
         internal static bool StringEquals(string lhs, string rhs)
         {
@@ -64,12 +63,26 @@ namespace XSharpLanguage
         {
             _provider = provider;
             _buffer = buffer;
-            _file = buffer.GetXAMLFile();
-        }
+            _fileName = buffer.GetXAMLFile();
+            _file = buffer.GetFile();
+            package = XSharpProjectPackage.Instance;
+            optionsPage = package.GetIntellisenseOptionsPage();
 
+        }
+        internal void WriteOutputMessage(string strMessage)
+        {
+            if (optionsPage.EnableCodeCompletionLog && optionsPage.EnableOutputPane)
+            {
+                XSharpProjectPackage.Instance.DisplayOutPutMessage(strMessage);
+            }
+        }
         public void AugmentCompletionSession(ICompletionSession session, IList<CompletionSet> completionSets)
         {
+<<<<<<< HEAD:VisualStudio/LanguageService/Completion/XAMLCompletionSource.cs
             XSharpLanguageService.DisplayOutPutMessage("-->> XAML AugmentCompletionSessions");
+=======
+            WriteOutputMessage("-->> XAML AugmentCompletionSessions");
+>>>>>>> feature/Intellisense:VisualStudio/ProjectPackage/Editors/Completion/XAMLCompletionSource.cs
             try
             {
                 // Where does the StartSession has been triggered ?
@@ -89,7 +102,7 @@ namespace XSharpLanguage
                     return;
                 }
                 // The Completion list we are building
-                CompletionList compList = new CompletionList();
+                CompletionList compList = new CompletionList(_file);
                 ///
                 /// 
                 //compList.Add(new XSCompletion("XSDummy", "XSDummy", "XSDummy Description", null, null, Kind.Class));
@@ -102,13 +115,22 @@ namespace XSharpLanguage
             }
             catch (Exception ex)
             {
+<<<<<<< HEAD:VisualStudio/LanguageService/Completion/XAMLCompletionSource.cs
                 XSharpLanguageService.DisplayOutPutMessage("XAML AugmentCompletionSessions failed " );
                 XSharpLanguageService.DisplayException(ex);
+=======
+                WriteOutputMessage("XAML AugmentCompletionSessions failed " );
+                XSharpProjectPackage.Instance.DisplayException(ex);
+>>>>>>> feature/Intellisense:VisualStudio/ProjectPackage/Editors/Completion/XAMLCompletionSource.cs
             }
             finally
             {
             }
+<<<<<<< HEAD:VisualStudio/LanguageService/Completion/XAMLCompletionSource.cs
             XSharpLanguageService.DisplayOutPutMessage("<<-- XAML AugmentCompletionSessions");
+=======
+            WriteOutputMessage("<<-- XAML AugmentCompletionSessions");
+>>>>>>> feature/Intellisense:VisualStudio/ProjectPackage/Editors/Completion/XAMLCompletionSource.cs
         }
 
         public void Dispose()

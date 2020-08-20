@@ -12,7 +12,8 @@ USING LanguageService.SyntaxTree
 USING LanguageService.CodeAnalysis.XSharp.SyntaxParser
 
 BEGIN NAMESPACE XSharpModel
-[DebuggerDisplay("{DebuggerDisplay(),nq}")];
+   
+   [DebuggerDisplay("{DebuggerDisplay(),nq}")];
     CLASS XBlock
         PROPERTY Token1   AS IToken AUTO GET PRIVATE SET
         PROPERTY Token2   AS IToken AUTO GET PRIVATE SET
@@ -27,6 +28,7 @@ BEGIN NAMESPACE XSharpModel
             SELF:Token1   := token1
             SELF:Token2   := token2
             SELF:Children := List<XBlock>{}
+            
         PROPERTY Valid    AS LOGIC
             GET
                 IF SELF:Closed
@@ -42,11 +44,11 @@ BEGIN NAMESPACE XSharpModel
                     CASE XSharpLexer.DO
                         SWITCH SELF:Token2:Type
                             CASE XSharpLexer.WHILE
-                                RETURN last:Type == XSharpLexer.ENDDO .OR. last:Type == XSharplexer.END .AND. (Last:Type2 == SELF:Type .OR. Last:Type2 == XSharpLexer.EOS)
+                                RETURN last:Type == XSharpLexer.ENDDO .OR. last:Type == XSharpLexer.END .AND. (Last:Type2 == SELF:Type .OR. Last:Type2 == XSharpLexer.EOS)
                             CASE XSharpLexer.CASE
-                                RETURN last:Type == XSharpLexer.ENDCASE .OR. (last:Type == XSharplexer.END .AND. (Last:Type2 == SELF:Type2 .OR. Last:Type2 == XSharpLexer.EOS))
+                                RETURN last:Type == XSharpLexer.ENDCASE .OR. (last:Type == XSharpLexer.END .AND. (Last:Type2 == SELF:Type2 .OR. Last:Type2 == XSharpLexer.EOS))
                             CASE XSharpLexer.SWITCH
-                                RETURN last:Type == XSharplexer.END .AND. (Last:Type2 == SELF:Type2 .OR. Last:Type2 == XSharpLexer.EOS)
+                                RETURN last:Type == XSharpLexer.END .AND. (Last:Type2 == SELF:Type2 .OR. Last:Type2 == XSharpLexer.EOS)
                          END SWITCH
                     CASE XSharpLexer.SWITCH
                         RETURN last:Type == XSharpLexer.END .AND. (Last:Type2 == SELF:Type .OR. Last:Type2 == XSharpLexer.EOS)

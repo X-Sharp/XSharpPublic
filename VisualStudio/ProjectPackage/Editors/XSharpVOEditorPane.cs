@@ -102,7 +102,7 @@ namespace XSharp.Project
         }
 
         #region Fields
-        private XSharpProjectPackage  myPackage;
+        private XSharpProjectPackage myPackage;
 
         private string fileName = string.Empty;
         private bool isDirty;
@@ -154,7 +154,9 @@ namespace XSharp.Project
         {
             get
             {
-                return this.editorControl.IWin32Window;
+                if (editorControl != null)
+                    return this.editorControl.IWin32Window;
+                return null;
             }
         }
         public XSharpModel.IXSharpProject Project
@@ -175,7 +177,7 @@ namespace XSharp.Project
             get
             {
                 IVsUIShell uiShell = null;
-                UIThread.DoOnUIThread( () => uiShell = (IVsUIShell)GetService(typeof(SVsUIShell)));
+                UIThread.DoOnUIThread(() => uiShell = (IVsUIShell)GetService(typeof(SVsUIShell)));
                 return uiShell;
             }
         }
@@ -210,7 +212,7 @@ namespace XSharp.Project
 
             // Create and initialize the editor
 
-            this.editorControl = (IVOWEDControl) Activator.CreateInstance(typeof(XSharp_VOWEDControl));
+            this.editorControl = (IVOWEDControl)Activator.CreateInstance(typeof(XSharp_VOWEDControl));
             this.editorControl.IsDirtyChanged = new EventHandler(IsDirtyChangedHandler);
             this.editorControl.TriggerSave = new EventHandler(TriggerSaveHandler);
 
@@ -331,7 +333,7 @@ namespace XSharp.Project
 
             // Get a reference to the Running Document Table
             IVsRunningDocumentTable runningDocTable = null;
-            UIThread.DoOnUIThread( () => runningDocTable = (IVsRunningDocumentTable)GetService(typeof(SVsRunningDocumentTable)));
+            UIThread.DoOnUIThread(() => runningDocTable = (IVsRunningDocumentTable)GetService(typeof(SVsRunningDocumentTable)));
 
             // Lock the document
             uint docCookie;
@@ -374,7 +376,7 @@ namespace XSharp.Project
         {
         }
 
-        protected  void onQueryUnimplemented(object sender, EventArgs e)
+        protected void onQueryUnimplemented(object sender, EventArgs e)
         {
             OleMenuCommand command = (OleMenuCommand)sender;
             command.Enabled = false;
@@ -842,7 +844,7 @@ namespace XSharp.Project
                 case VSSAVEFLAGS.VSSAVE_SilentSave:
                     {
                         IVsQueryEditQuerySave2 queryEditQuerySave = null;
-                        UIThread.DoOnUIThread( () => queryEditQuerySave = (IVsQueryEditQuerySave2)GetService(typeof(SVsQueryEditQuerySave)));
+                        UIThread.DoOnUIThread(() => queryEditQuerySave = (IVsQueryEditQuerySave2)GetService(typeof(SVsQueryEditQuerySave)));
 
                         // Call QueryEditQuerySave
                         uint result = 0;
@@ -1018,6 +1020,11 @@ namespace XSharp.Project
 
         #endregion
 
+        internal static void Debug(string strMessage)
+        {
+            XSharpProjectPackage.Instance.DisplayOutPutMessage(strMessage);
+        }
+
         #region IVsFileChangeEvents Members
 
         /// <summary>
@@ -1029,7 +1036,7 @@ namespace XSharp.Project
         /// <returns></returns>
         int IVsFileChangeEvents.FilesChanged(uint cChanges, string[] rgpszFile, uint[] rggrfChange)
         {
-            XSharpProjectPackage.Instance.DisplayOutPutMessage("**** Inside FilesChanged ****");
+            Debug("**** Inside FilesChanged ****");
 
             //check the different parameters
             if (0 == cChanges || null == rgpszFile || null == rggrfChange)
@@ -1099,7 +1106,7 @@ namespace XSharp.Project
         /// <returns></returns>
         int IVsDocDataFileChangeControl.IgnoreFileChanges(int fIgnore)
         {
-            XSharpProjectPackage.Instance.DisplayOutPutMessage("**** Inside IgnoreFileChanges ****");
+            Debug("**** Inside IgnoreFileChanges ****");
 
             if (fIgnore != 0)
             {
@@ -1145,7 +1152,7 @@ namespace XSharp.Project
         /// <returns>Result of teh operation</returns>
         private int SetFileChangeNotification(string strFileName, bool fStart)
         {
-            XSharpProjectPackage.Instance.DisplayOutPutMessage($"**** Inside SetFileChangeNotification {strFileName} {fStart} {vsFileChangeCookie} ****");
+            Debug($"**** Inside SetFileChangeNotification {strFileName} {fStart} {vsFileChangeCookie} ****");
 
             int result = VSConstants.E_FAIL;
 
@@ -1190,7 +1197,7 @@ namespace XSharp.Project
 
         private int SuspendFileChangeNotification(string strFileName, int fSuspend)
         {
-            XSharpProjectPackage.Instance.DisplayOutPutMessage($"**** Inside SuspendFileChangeNotification {strFileName} {fSuspend}****");
+            Debug($"**** Inside SuspendFileChangeNotification {strFileName} {fSuspend}****");
 
             if (null == VsFileChangeEx)
                 return VSConstants.E_UNEXPECTED;
@@ -1471,8 +1478,8 @@ namespace XSharp.Project
                 addCommand(mcs, VSConstants.GUID_VSStandardCommandSet97, (int)VSConstants.VSStd97CmdID.SizeToControlHeight,
                                 new EventHandler(onSameVertSize), onQueryAlignEH);
 
-                addCommand(mcs, VSConstants.GUID_VSStandardCommandSet97, (int)VSConstants.VSStd97CmdID.TabOrder,
-                                new EventHandler(onTabOrder), null);
+                //addCommand(mcs, VSConstants.GUID_VSStandardCommandSet97, (int)VSConstants.VSStd97CmdID.TabOrder,
+                //                new EventHandler(onTabOrder), null);
 
                 //addCommand(mcs, VSConstants.GUID_VSStandardCommandSet97, (int)VSConstants.VSStd97CmdID.SizeToGrid,
                 //                new EventHandler(onUnimplemented), new EventHandler(onQueryUnimplemented));
@@ -1529,6 +1536,12 @@ namespace XSharp.Project
 
                 addCommand(mcs, GuidStrings.guidVOFormEditorCmdSet, (int)GuidStrings.cmdidTestDialog,
                                 new EventHandler(onTestDialog), null);
+
+                addCommand(mcs, GuidStrings.guidVOFormEditorCmdSet, (int)GuidStrings.cmdidTabOrder,
+                                new EventHandler(onTabOrder), null);
+
+                addCommand(mcs, GuidStrings.guidVOFormEditorCmdSet, (int) GuidStrings.VOFormEditorToolbar, new EventHandler(onTabOrder), null);
+                addCommand(mcs, GuidStrings.guidVOFormEditorCmdSet, (int)GuidStrings.VOFormEditorToolbarGroup, new EventHandler(onTabOrder), null);
             }
         }
         /// <summary>

@@ -57,7 +57,7 @@ CLASS XSharp.RuntimeState
             SELF:_SetThreadValue<Exception>(Set.LastRddError,NULL)
             SELF:_SetThreadValue<Exception>(Set.Patharray,NULL)
             SELF:_SetThreadValue<BYTE[]>(Set.CollationTable, NULL )
-			IF System.Environment.OSVersion:Platform == System.PlatformID.Win32NT
+			IF IsRunningOnWindows()
                 SELF:_SetThreadValue<LONG>(Set.DosCodepage, Win32.GetDosCodePage())
                 SELF:_SetThreadValue<LONG>(Set.WinCodepage, Win32.GetWinCodePage())
             ELSE
@@ -266,6 +266,15 @@ CLASS XSharp.RuntimeState
         GET (LONG) GetValue<AutoShareMode>(Set.Autoshare);
         SET SetValue<AutoShareMode>(Set.Autoshare, (AutoShareMode)value)
 
+
+	/// <summary>The current Compatible setting.</summary>
+    /// <include file="CoreComments.xml" path="Comments/PerThread/*" />
+    /// <seealso cref="M:XSharp.Core.Functions.SetCompatible" />
+    /// <seealso cref="M:XSharp.Core.Functions.SetCompatible(System.Boolean)" />
+    /// <seealso cref="F:XSharp.Set.Century" />
+   STATIC PROPERTY Compatible AS LOGIC ;
+        GET GetValue<LOGIC>(Set.Compatible);
+        SET SetValue<LOGIC>(Set.Compatible, value)
 
 	/// <summary>The current Century setting (used in DATE &lt;-&gt; STRING conversions).</summary>
     /// <include file="CoreComments.xml" path="Comments/PerThread/*" />
@@ -542,6 +551,14 @@ CLASS XSharp.RuntimeState
     STATIC PROPERTY Optimize AS LOGIC ;
         GET GetValue<LOGIC>(Set.Optimize);
         SET SetValue<LOGIC>(Set.Optimize, value)
+
+	/// <summary>The current SetSafety flag.</summary>
+    /// <include file="CoreComments.xml" path="Comments/PerThread/*" />
+    /// <seealso cref="M:XSharp.Core.Functions.SetSafety" />
+    /// <seealso cref="M:XSharp.Core.Functions.SetSafety(System.Boolean)" />
+    STATIC PROPERTY Safety AS LOGIC ;
+        GET GetValue<LOGIC>(Set.Safety);
+        SET SetValue<LOGIC>(Set.Safety, value)
 
 	/// <summary>The current SetSoftSeek flag.</summary>
     /// <include file="CoreComments.xml" path="Comments/PerThread/*" />
@@ -927,7 +944,7 @@ CLASS XSharp.RuntimeState
         VAR mode := RuntimeState.CollationMode 
         SWITCH mode
         CASE CollationMode.Windows
-            IF System.Environment.OSVersion:Platform == System.PlatformID.Win32NT
+            IF IsRunningOnWindows()
                 ret := XSharp.StringHelpers.CompareWindows(strLHS, strRHS)
             ELSE
                 ret := String.Compare(strLHS, strRHS)
@@ -959,7 +976,7 @@ CLASS XSharp.RuntimeState
         CASE CollationMode.Xpp
             RETURN XSharp.StringHelpers.CompareClipper(aLHS, aRHS, nLen)
         CASE CollationMode.Windows
-            IF System.Environment.OSVersion:Platform == System.PlatformID.Win32NT
+            IF IsRunningOnWindows()
                 RETURN XSharp.StringHelpers.CompareWindows(aLHS, aRHS, nLen)
             ELSE
                 VAR strLHS := RuntimeState.WinEncoding:GetString(aLHS, 0, nLen)

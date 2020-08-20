@@ -1,7 +1,9 @@
 // DataForm.prg
 
-#using System.Windows.Forms
-#using System.Drawing
+USING System.Windows.Forms
+USING System.Drawing
+USING VOSDK := XSharp.VO.SDK
+
 #define INSIDEFORMBORDER 5
 /*
  For MDI Child windows this looks like:
@@ -60,7 +62,7 @@ CLASS VODataForm INHERIT VOChildAppForm
 	PROTECT oDataBrowser	AS System.Windows.Forms.Control
 #endregion
 #region Properties
-	PROPERTY Origin			AS XSharp.VO.Point  GET SELF:Location SET SELF:Location := Value
+	PROPERTY Origin			AS VOSDK.Point      GET SELF:Location SET SELF:Location := Value
 	PROPERTY Surface		AS VoSurfacePanel	GET oSurfacePanel
 	PROPERTY Frame          AS VOFramePanel		GET oFramePanel
 	PROPERTY AutoLayout	    AS LOGIC AUTO       GET SET 
@@ -89,7 +91,7 @@ CLASS VODataForm INHERIT VOChildAppForm
 		END SET
 	END PROPERTY
 
-    PROPERTY DataWindow AS XSharp.VO.DataWindow GET (DataWindow) Window
+    PROPERTY DataWindow AS VOSDK.DataWindow GET (DataWindow) Window
 
 
 	PROPERTY StatusBar AS VOStatusStrip
@@ -336,16 +338,16 @@ CLASS VODataForm INHERIT VOChildAppForm
 
 	PUBLIC METHOD SuspendRedraw AS VOID
 		IF SELF:lInBrowseView
-	        Win32.SendMessage(SELF:Frame:Handle, WM_SETREDRAW, 0, 0)
+	        GuiWin32.SendMessage(SELF:Frame:Handle, WM_SETREDRAW, 0, 0)
 		ELSE
-	        Win32.SendMessage(SELF:Surface:Handle, WM_SETREDRAW, 0, 0)
+	        GuiWin32.SendMessage(SELF:Surface:Handle, WM_SETREDRAW, 0, 0)
 		ENDIF
 
 	PUBLIC METHOD ResumeRedraw AS VOID
 		IF SELF:lInBrowseView
-	        Win32.SendMessage(SELF:Frame:Handle, WM_SETREDRAW, 1, 0)
+	        GuiWin32.SendMessage(SELF:Frame:Handle, WM_SETREDRAW, 1, 0)
 		ELSE
-	        Win32.SendMessage(SELF:Surface:Handle, WM_SETREDRAW, 1, 0)
+	        GuiWin32.SendMessage(SELF:Surface:Handle, WM_SETREDRAW, 1, 0)
 		ENDIF
 		SELF:Refresh()
     

@@ -1,6 +1,6 @@
 
 
-
+USING VOSDK := XSharp.VO.SDK
 CLASS TextObject INHERIT DrawObject
 	PROTECT oFont  AS Font
 	PROTECT oColor AS Color
@@ -23,7 +23,7 @@ CLASS TextObject INHERIT DrawObject
 		IF oColor != NULL_OBJECT
 			SELF:oColor := oColor
 		ELSE
-			dwColor	:=	Win32.GetSysColor(Color_WindowText)
+			dwColor	:=	GuiWin32.GetSysColor(Color_WindowText)
 			SELF:oColor := Color{dwColor}
 		ENDIF
 
@@ -96,10 +96,10 @@ CLASS TextObject INHERIT DrawObject
 		RETURN NIL
 	#endif
 	
-	ACCESS Font AS XSharp.VO.Font
+	ACCESS Font AS VOSDK.Font
 		RETURN oFont
 
-	ASSIGN Font(oNewFont AS XSharp.VO.Font) 
+	ASSIGN Font(oNewFont AS VOSDK.Font) 
 		oFont:=oNewFont
 
 

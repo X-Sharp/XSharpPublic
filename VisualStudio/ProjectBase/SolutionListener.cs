@@ -238,18 +238,18 @@ namespace Microsoft.VisualStudio.Project
         #endregion
 
         #region IVsSolutionEvents5
-        public void OnBeforeOpenProject(ref Guid guidProjectID, ref Guid guidProjectType, string pszFileName)
+        public virtual void OnBeforeOpenProject(ref Guid guidProjectID, ref Guid guidProjectType, string pszFileName)
         {
             return;
         }
         #endregion
         #region IVsSolutionEvents6
-        public int OnBeforeProjectRegisteredInRunningDocumentTable(Guid projectID, string projectFullPath)
+        public virtual int OnBeforeProjectRegisteredInRunningDocumentTable(Guid projectID, string projectFullPath)
         {
             return VSConstants.E_NOTIMPL;
         }
 
-        public int OnAfterProjectRegisteredInRunningDocumentTable(Guid projectID, string projectFullPath, uint docCookie)
+        public virtual int OnAfterProjectRegisteredInRunningDocumentTable(Guid projectID, string projectFullPath, uint docCookie)
         {
             return VSConstants.E_NOTIMPL;
         }

@@ -81,9 +81,9 @@ namespace XSharp.Project
         internal static int imageOffset;
         private static ImageList imageList;
         private VSLangProj.VSProject vsProject;
-        IErrorList errorList = null;
         bool isLoading = false;
         private FileChangeManager filechangemanager = null;
+        XSharpModel.XProject projectModel;
 
 
         //private Microsoft.VisualStudio.Designer.Interfaces.IVSMDCodeDomProvider codeDomProvider;
@@ -98,7 +98,7 @@ namespace XSharp.Project
         public XSharpProjectNode(XSharpProjectPackage package)
         {
             this.package = package;
-            //package.StartLanguageService();
+            package.StartLanguageService();
             InitializeImageList();
 
             InitializeCATIDs();
@@ -113,9 +113,6 @@ namespace XSharp.Project
             // False: C++-Like Property pages
             this.SupportsProjectDesigner = true;
 
-            object errlist = ((IServiceProvider)this.package).GetService(typeof(SVsErrorList));
-            errorList = (IErrorList)errlist;
-
         }
 
         private void Filechangemanager_FileChangedOnDisk(object sender, FileChangedOnDiskEventArgs e)
@@ -123,11 +120,20 @@ namespace XSharp.Project
             XSharpProjectPackage.Instance.DisplayOutPutMessage("FileChangedOnDisk " + e.FileName);
             if (IsXamlFile(e.FileName) || IsCodeFile(e.FileName))
             {
-                XFile file = this.ProjectModel.FindFullPath(e.FileName);
+                XFile file = this.ProjectModel.FindXFile(e.FileName);
                 if (file != null)
                 {
                     this.ProjectModel.WalkFile(file);
                 }
+            }
+        }
+
+        private void Newtask_Navigate(object sender, EventArgs e)
+        {
+            lock (this)
+            {
+                var task = (Microsoft.VisualStudio.Shell.Task)sender;
+                this.OpenElement(task.Document, task.Line, task.Column);
             }
         }
 
@@ -696,7 +702,7 @@ namespace XSharp.Project
             if (type == XFileType.Resource)
             {
                 string path = Path.GetDirectoryName(target);
-                if ( ! Directory.Exists(path))
+                if (!Directory.Exists(path))
                     Directory.CreateDirectory(path);
                 File.Copy(source, target, true);
                 return;
@@ -1007,7 +1013,7 @@ namespace XSharp.Project
             //event handler generation (EventBindingProvider) for the XAML designer.
             this.OleServiceProvider.AddService(typeof(DesignerContext), new OleServiceProvider.ServiceCreatorCallback(this.CreateServices), false);
 
-            CreateErrorListManager();
+            CreateListManagers();
 
 
             // Add EventHandler to handle adding / removing a Reference
@@ -1026,14 +1032,14 @@ namespace XSharp.Project
             if ((pReference.Type == prjReferenceType.prjReferenceTypeAssembly) ||
                 (pReference.Type == prjReferenceType.prjReferenceTypeActiveX))
             {
-                if (! String.IsNullOrEmpty(pReference.Path))
+                if (!String.IsNullOrEmpty(pReference.Path))
                     ProjectModel.RemoveAssemblyReference(pReference.Path);
             }
         }
 
         private void ReferencesEvents_ReferenceAdded(Reference pReference)
         {
-            ProjectModel.AddAssemblyReference(pReference);
+            ProjectModel.AddAssemblyReference(pReference.Path);
             //
             ProjectModel.ResolveReferences();
         }
@@ -1052,11 +1058,15 @@ namespace XSharp.Project
 
         #region Private implementation
 
-        private void CreateErrorListManager()
+        private void CreateListManagers()
         {
             if (_errorListManager == null)
             {
-                _errorListManager = ErrorListManager.RegisterProject(errorList, this);
+                _errorListManager = ErrorListManager.RegisterProject( this);
+            }
+            if (_taskListManager == null)
+            {
+                _taskListManager = TaskListManager.RegisterProject(this);
             }
         }
 
@@ -1149,7 +1159,6 @@ namespace XSharp.Project
         #endregion
 
 
-        XSharpModel.XProject projectModel;
         public XSharpModel.XProject ProjectModel
         {
             get
@@ -1163,11 +1172,8 @@ namespace XSharp.Project
                 // Neither ? Ok, Create
                 if (projectModel == null)
                 {
-                    projectModel = new XSharpModel.XProject(this);
-                    // Set the backlink, so the walker can access the StatusBar
-                    projectModel.ProjectNode = this;
-                    //
-                    XSharpModel.XSolution.Add(projectModel);
+                    projectModel = new XProject(this);
+                    projectModel.FileWalkComplete += OnFileWalkComplete;
                 }
                 return projectModel;
             }
@@ -1176,6 +1182,18 @@ namespace XSharp.Project
             {
                 projectModel = null;
             }
+        }
+
+        private void OnFileWalkComplete(XFile xfile)
+        {
+            var tasks = this.ProjectModel.GetCommentTasks();
+            var list = new List<Task>();
+            _taskListManager.Clear();
+            foreach (var task in tasks)
+            {
+                _taskListManager.AddItem(task,this.ProjectIDGuid);
+            }
+            _taskListManager.Refresh();
         }
 
         public void UpdateAssemblyReferencesModel()
@@ -1192,7 +1210,7 @@ namespace XSharp.Project
                 else
                 {
                     // OAAssemblyReference or OACOMReference
-                    ProjectModel.AddAssemblyReference(reference);
+                    ProjectModel.AddAssemblyReference(reference.Path);
                 }
             }
         }
@@ -1275,7 +1293,7 @@ namespace XSharp.Project
             Assumes.Present(dte);
             foreach (EnvDTE.Project p in dte.Solution.Projects)
             {
-                if (p == null)
+                if (p == null || p.Properties == null) // unloaded ?
                 {
                     continue;
                 }
@@ -1291,11 +1309,20 @@ namespace XSharp.Project
             }
             return list;
         }
-        public EnvDTE.Project FindProject(String sProject)
+        public EnvDTE.Project FindProject(string sProject)
         {
             foreach (var p in GetSolutionProjects())
             {
-                if (p.FullName.Equals(sProject, StringComparison.InvariantCultureIgnoreCase))
+                string name = "";
+                try
+                {
+                    name = p.FullName;
+                }
+                catch (Exception e)
+                {
+                    Debug.WriteLine(e.Message);
+                }
+                if (name.Equals(sProject, StringComparison.InvariantCultureIgnoreCase))
                 {
                     return p;
                 }
@@ -1305,32 +1332,33 @@ namespace XSharp.Project
 
         public override void RemoveURL(String url)
         {
-            if (_closing)
-                return;
-            //
-            // We should remove the external projects entries
-            if (IsProjectFile(url))
+            if (!_closing)
             {
-                this.ProjectModel.RemoveProjectReference(url);
-            }
-            else if (IsStrangerProjectFile(url))
-            {
-                this.ProjectModel.RemoveStrangerProjectReference(url);
-            }
-            else
-            {
-                var node = this.FindChild(url) as XSharpFileNode;
-                if (node != null && !node.IsNonMemberItem)
+                //
+                // We should remove the external projects entries
+                if (IsProjectFile(url))
                 {
-                    if (filechangemanager != null)
+                    this.ProjectModel.RemoveProjectReference(url);
+                }
+                else if (IsStrangerProjectFile(url))
+                {
+                    this.ProjectModel.RemoveStrangerProjectReference(url);
+                }
+                else
+                {
+                    var node = this.FindChild(url) as XSharpFileNode;
+                    if (node != null && !node.IsNonMemberItem)
                     {
-                        if (IsXamlFile(url) ||
-                            node.IsDependent)
+                        if (filechangemanager != null)
+                        {
+                            if (IsXamlFile(url) ||
+                                node.IsDependent)
 
-                            filechangemanager.StopObservingItem(url);
+                                filechangemanager.StopObservingItem(url);
+                        }
+
+                        this.ProjectModel.RemoveFile(url);
                     }
-
-                    this.ProjectModel.RemoveFile(url);
                 }
             }
             base.RemoveURL(url);
@@ -1355,8 +1383,8 @@ namespace XSharp.Project
         private bool IsProjectFile(string fullPath)
         {
             string cExt = Path.GetExtension(fullPath);
-            return String.Equals(cExt, ".xsproj", StringComparison.OrdinalIgnoreCase)
-                || String.Equals(cExt, ".xsprj", StringComparison.OrdinalIgnoreCase);
+            return String.Equals(cExt, ".xsprj", StringComparison.OrdinalIgnoreCase)
+                || String.Equals(cExt, ".xsproj", StringComparison.OrdinalIgnoreCase);
         }
 
         /// <summary>
@@ -1373,65 +1401,12 @@ namespace XSharp.Project
         #region IXSharpProject Interface
         protected IVsStatusbar statusBar;
 
-
-        int getKeywordCase()
-        {
-            // 0 : none; 1 : UPPER; 2 : lower; 3 : TitleCase
-            object kwcase = 1;
-            try
-            {
-                var key = Microsoft.Win32.Registry.CurrentUser;
-                var subkey = key.OpenSubKey(Constants.RegistryKey, true);
-                if (subkey == null)
-                {
-                    subkey = key.CreateSubKey(Constants.RegistryKey, true);
-                }
-                kwcase = subkey.GetValue("KeywordCase");
-                if (kwcase == null)
-                {
-                    subkey.SetValue("KeywordCase", 1);
-                    kwcase = 1;
-                }
-            }
-            catch
-            {
-                kwcase = 1;
-            }
-            SetCaseSync((int) kwcase);
-
-            return (int)kwcase;
-        }
-        void SetCaseSync(int kwcase)
-        {
-            // 0 : none; 1 : UPPER; 2 : lower; 3 : TitleCase
-            switch (kwcase)
-            {
-                case 1:
-                    CaseSync = (x) => x.ToUpper();
-                    break;
-                case 2:
-                    CaseSync = (x) => x.ToLower();
-                    break;
-                case 3:
-                    CaseSync = (x) => x.Length > 1 ? x.Substring(0, 1).ToUpper() + x.Substring(1).ToLower() : x.ToUpper();
-                    break;
-                case 0:
-                    CaseSync = (x) => x;
-                    break;
-            }
-        }
-
-        caseSync CaseSync;
-        delegate string caseSync(string original);
-
         public string SynchronizeKeywordCase(string code, string fileName)
         {
             var package = XSharp.Project.XSharpProjectPackage.Instance;
-            var kwcase = getKeywordCase();
-            // 0 : none; 1 : UPPER; 2 : lower; 3 : TitleCase
-
-            if (kwcase == 0)
-            //    return code;
+            var optionsPage = package.GetIntellisenseOptionsPage();
+            if (optionsPage.KeywordCase == Project.KeywordCase.None)
+                return code;
             // we also normalize the line endings
             code = code.Replace("\n", "");
             code = code.Replace("\r", "\r\n");
@@ -1454,7 +1429,7 @@ namespace XSharp.Project
             {
                 if (XSharpLexer.IsKeyword(token.Type))
                 {
-                    sb.Append(CaseSync(token.Text));
+                    sb.Append(optionsPage.SyncKeyword(token.Text));
                 }
                 else
                 {
@@ -1489,6 +1464,18 @@ namespace XSharp.Project
         {
             try
             {
+                /*
+                    SBAI_Index 	Value1 	Description
+                    SBAI_General 	0 	Standard animation icon.
+                    SBAI_Print 	1 	Animation when printing.
+                    SBAI_Save 	2 	Animation when saving files.
+                    SBAI_Deploy 	3 	Animation when deploying the solution.
+                    SBAI_Synch 	4 	Animation when synchronizing files over the network.
+                    SBAI_Build 	5 	Animation when building the solution.
+                    SBAI_Find 	6 	Animation when searching.
+
+                    The values of SBAI_Index are taken from vsshell.idl.
+                */
                 getStatusBar();
                 if (statusBar != null)
                 {
@@ -1590,12 +1577,6 @@ namespace XSharp.Project
             }
         }
 
-        public bool DisableLexing => false; // package.GetIntellisenseOptionsPage().DisableSyntaxColorization;
-        public bool DisableParsing => false; //package.GetIntellisenseOptionsPage().DisableEntityParsing;
-        public bool DisableRegions => false; //package.GetIntellisenseOptionsPage().DisableRegions;
-
-        public bool KeywordsUppercase => false; //package.GetIntellisenseOptionsPage().KeywordCase == KeywordCase.Upper;
-
         #endregion
 
 
@@ -1664,22 +1645,26 @@ namespace XSharp.Project
             return bOk;
         }
         #region IProjectTypeHelper
-        public System.Type ResolveType(string name, IReadOnlyList<string> usings)
+        public IXType ResolveExternalType(string name, IReadOnlyList<string> usings)
         {
             switch (name.ToLower())
             {
                 case "object":
                 case "system.object":
-                    return typeof(object);
+                    name = "System.Object";
+                    break;
                 case "void":
                 case "system.void":
-                    return typeof(void);
+                    name = "System.Void";
+                    break;
                 case "boolean":
                 case "system.boolean":
-                    return typeof(Boolean);
+                    name = "System.Boolean";
+                    break;
                 case "string":
                 case "system.string":
-                    return typeof(String);
+                    name = "System.String";
+                    break;
             }
             var model = this.ProjectModel;
             var myusings = new List<string>();
@@ -1688,74 +1673,22 @@ namespace XSharp.Project
             return model.FindSystemType(name, myusings);
         }
 
-        public XType ResolveXType(string name, IReadOnlyList<string> usings)
+        public XTypeDefinition ResolveXType(string name, IReadOnlyList<string> usings)
         {
             var model = this.ProjectModel;
-            //
-            XType result = model.Lookup(name, true);
+            XTypeDefinition result = model.Lookup(name, usings);
             if (result != null)
                 return result;
-            // try to find with explicit usings
-            if (usings != null)
-            {
-                foreach (var usingName in usings)
-                {
-                    var fullname = usingName + "." + name;
-                    result = model.Lookup(fullname, true);
-                    if (result != null)
-                        return result;
-                }
-            }
             return result;
         }
 
 
-        public XType ResolveReferencedType(string name, IReadOnlyList<string> usings)
+        public XTypeDefinition ResolveReferencedType(string name, IReadOnlyList<string> usings)
         {
-            var model = this.ProjectModel;
-            //
-            XType result = model.LookupReferenced(name, true);
-            if (result != null)
-                return result;
-            // try to find with explicit usings
-            if (usings != null)
-            {
-                foreach (var usingName in usings)
-                {
-                    var fullname = usingName + "." + name;
-                    result = model.LookupReferenced(fullname, true);
-                    if (result != null)
-                        return result;
-                }
-            }
-            foreach (var usingName in model.ImplicitNamespaces)
-            {
-                var fullname = usingName + "." + name;
-                result = model.LookupReferenced(fullname, true);
-                if (result != null)
-                    return result;
-            }
-            return result;
+            // identical but may be used by others
+            return ResolveXType(name, usings);
         }
 
-        //public CodeElement ResolveStrangerType(string name, IReadOnlyList<string> usings)
-        //{
-        //    var model = this.ProjectModel;
-        //    // First, easy way..Use the simple name
-        //    CodeElement codeElt = model.LookupForStranger(name, true);
-        //    if (codeElt == null)
-        //    {
-        //        // Search using the USING statements in the File that contains the var
-        //        foreach (string usingStatement in usings)
-        //        {
-        //            String fqn = usingStatement + "." + name;
-        //            codeElt = model.LookupForStranger(fqn, true);
-        //            if (codeElt != null)
-        //                break;
-        //        }
-        //    }
-        //    return codeElt;
-        //}
 
         #endregion
         #region IVsSingleFileGeneratorFactory
@@ -1856,6 +1789,7 @@ namespace XSharp.Project
         #region TableManager
         //internal ITableManagerProvider tableManagerProvider { get; private set; }
         ErrorListManager _errorListManager = null;
+        TaskListManager _taskListManager = null;
 
         protected override void SetOutputLogger(IVsOutputWindowPane output)
         {
@@ -1870,7 +1804,7 @@ namespace XSharp.Project
             logger.ProjectNode = this;
             logger.ErrorString = ErrorString;
             logger.WarningString = WarningString;
-            CreateErrorListManager();
+            CreateListManagers();
             logger.ErrorListManager = _errorListManager;
             return logger;
         }
@@ -1961,6 +1895,17 @@ namespace XSharp.Project
             return this.FindChild(strFileName) != null;
         }
 
+        protected override void Dispose(bool disposing)
+        {
+            projectModel = null;
+            if (filechangemanager != null)
+            {
+                filechangemanager.Dispose();
+                filechangemanager = null;
+            }
+            base.Dispose(disposing);
+        }
+
         public XSharpDialect Dialect
         {
             get
@@ -2009,7 +1954,10 @@ namespace XSharp.Project
                 }
             }
             // CleanUp the CodeModel
-            XSharpModel.XSolution.Remove(projectModel);
+            if (projectModel != null)
+            {
+                projectModel.Close();
+            }
             _closing = true;
             var res = base.Close();
 
@@ -2018,7 +1966,18 @@ namespace XSharp.Project
                 logger.Clear();
             }
             ErrorListManager.RemoveProject(this);
-            _errorListManager = null;
+            if (_errorListManager!= null)
+            {
+                _errorListManager.Refresh();
+                _errorListManager = null;
+            }
+            TaskListManager.RemoveProject(this);
+            if (_taskListManager != null)
+            {
+                _taskListManager.Clear();
+                _taskListManager.Refresh();
+                _taskListManager = null;
+            }
             URLNodes.Clear();
             return res;
         }
@@ -2026,27 +1985,25 @@ namespace XSharp.Project
         protected override void RenameProjectFile(string newFile)
         {
 
+            base.RenameProjectFile(newFile);
             var model = this.ProjectModel;
             if (model != null)
             {
-                XSharpModel.XSolution.Remove(model);
+                model.Rename(newFile);
             }
-            base.RenameProjectFile(newFile);
-            if (model != null)
-            {
-                XSharpModel.XSolution.Add(model);
-            }
+
         }
 
         const string config = "$(Configuration)";
         const string configPlatform = "$(Configuration)|$(Platform)";
         const string conditionDebug = "'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'";
         const string conditionRelease = "'$(Configuration)|$(Platform)' == 'Release|AnyCPU'";
-        const string importDefaultProps1 = @"$(MSBuildExtensionsPath)\XSharp\XSharp.Default.props";
-        const string importDefaultProps2 = @"$(XSharpProjectExtensionsPath)XSharp.Default.props";
-        const string importProps = @"XSharp.props";
-        const string importTargets = @"XSharp.targets";
-        const string importTargetsFull = @"$(MSBuildExtensionsPath)\XSharp\XSharp.targets";
+        const string XSharpMsBuildDir = @"$(XSharpMsBuildDir)";
+        const string importDefaultPropsFull = XSharpMsBuildDir+@"\XSharp.Default.props";
+        const string importDefaultPropsShort = @"XSharp.Default.props";
+        const string importPropsShort = @"XSharp.props";
+        const string importTargetsShort = @"XSharp.targets";
+        const string importTargetsFull = XSharpMsBuildDir + @"\XSharp.targets";
         const string postBuildEvent = "PostBuildEvent";
         const string preBuildEvent = "PreBuildEvent";
         const string runPostBuildEvent = "RunPostBuildEvent";
@@ -2071,7 +2028,7 @@ namespace XSharp.Project
                     ok = vers.UnevaluatedValue == Constants.FileVersion;
                     if (!ok)
                     {
-                        ok = String.Compare(vers.UnevaluatedValue, "2.0.1.0") >= 0;
+                        ok = String.Compare(vers.UnevaluatedValue, "2.6.0.0") >= 0;
                     }
                     if (ok)
                     {
@@ -2082,6 +2039,11 @@ namespace XSharp.Project
             StringWriter backup = new StringWriter();
             BuildProject.Save(backup);
             var str = backup.ToString();
+            // do not touch SDK style projects !
+            if (str.IndexOf("<Project Sdk=",StringComparison.OrdinalIgnoreCase) > 0)
+            {
+                return VSConstants.S_OK;
+            }
             var str2 = System.Text.RegularExpressions.Regex.Replace(str, "anycpu", "AnyCPU", System.Text.RegularExpressions.RegexOptions.IgnoreCase);
             if (str2 != str)
             {
@@ -2113,20 +2075,19 @@ namespace XSharp.Project
             {
                 ok = false;
             }
-            if (ok && str.IndexOf(importDefaultProps1, StringComparison.OrdinalIgnoreCase) == -1 &&
-                str.IndexOf(importDefaultProps2, StringComparison.OrdinalIgnoreCase) == -1)
+            if (ok && str.IndexOf(importDefaultPropsFull, StringComparison.OrdinalIgnoreCase) == -1)
             {
                 ok = false;
             }
             // XSharp.Props should no longer be there
-            if (ok && str.IndexOf(importProps, StringComparison.OrdinalIgnoreCase) >= 0)
+            if (ok && str.IndexOf(importPropsShort, StringComparison.OrdinalIgnoreCase) >= 0)
             {
                 ok = false;
             }
 
             if (ok)
             {
-                int iTargets = str.IndexOf(importTargets, StringComparison.OrdinalIgnoreCase);
+                int iTargets = str.IndexOf(importTargetsShort, StringComparison.OrdinalIgnoreCase);
                 if (iTargets == -1)
                 {
                     ok = false;
@@ -2326,9 +2287,14 @@ namespace XSharp.Project
                     if (addProperty(grp, Nostandarddefs, debugNoStdDefs))
                         changed = true;
                 }
-                if (BuildProject.Xml.ToString().IndexOf("$("+XSharpProjectExtensionsPath,StringComparison.OrdinalIgnoreCase) >= 0)
+                if (BuildProject.Xml.RawXml.ToString().IndexOf("$("+XSharpProjectExtensionsPath,StringComparison.OrdinalIgnoreCase) >= 0)
                 {
-                    if (addProperty(grp, XSharpProjectExtensionsPath, @"$(MSBuildExtensionsPath)\XSharp\"))
+                    if (addProperty(grp, XSharpProjectExtensionsPath, XSharpMsBuildDir + "\\"))
+                        changed = true;
+                }
+                else
+                {
+                    if (removeProperty(grp, XSharpProjectExtensionsPath))
                         changed = true;
                 }
             }
@@ -2372,7 +2338,17 @@ namespace XSharp.Project
                 changed = true;
             }
             return changed;
-
+        }
+        private bool removeProperty(MBC.ProjectPropertyGroupElement grp, string Name)
+        {
+            bool changed = false;
+            var prop = grp.Properties.Where(p => String.Equals(p.Name, Name, StringComparison.OrdinalIgnoreCase)).FirstOrDefault();
+            if (prop != null)
+            {
+                grp.RemoveChild(prop);
+                changed = true;
+            }
+            return changed;
         }
 
         private bool addReferences()
@@ -2417,19 +2393,21 @@ namespace XSharp.Project
             foreach (var import in BuildProject.Xml.Imports)
             {
                 var prj = import.Project;
-                if (String.Equals(prj, importDefaultProps1, StringComparison.OrdinalIgnoreCase))
-                    hasImportDefaultProps = true;
-                if (String.Equals(prj, importDefaultProps2, StringComparison.OrdinalIgnoreCase))
+                if (prj.IndexOf(importDefaultPropsShort, StringComparison.OrdinalIgnoreCase) >= 0)
                 {
                     hasImportDefaultProps = true;
-                    import.Project = importDefaultProps1;
+                    if (prj != importDefaultPropsFull)
+                    {
+                        import.Project = importDefaultPropsFull;
+                        changed = true;
+                    }
                 }
-                if (prj.IndexOf(importProps, StringComparison.OrdinalIgnoreCase) >= 0)
+                if (prj.IndexOf(importPropsShort, StringComparison.OrdinalIgnoreCase) >= 0)
                 {
                     hasImportProps = true;
                     iProps = import;
                 }
-                if (prj.IndexOf(importTargets, StringComparison.OrdinalIgnoreCase) >= 0)
+                if (prj.IndexOf(importTargetsShort, StringComparison.OrdinalIgnoreCase) >= 0)
                 {
                     hasImportTargets = true;
                     iTargets = import;

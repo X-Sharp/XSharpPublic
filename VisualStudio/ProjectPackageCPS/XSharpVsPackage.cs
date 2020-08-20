@@ -9,15 +9,21 @@ PURPOSE, MERCHANTABILITY, OR NON-INFRINGEMENT.
 
 ***************************************************************************/
 using XSharp;
-namespace XSharpLanguage
+using System;
+using System.ComponentModel;
+using System.Runtime.InteropServices;
+using Microsoft.VisualStudio.Shell;
+using Microsoft.VisualStudio;
+using Microsoft.VisualStudio.Package;
+using Microsoft.VisualStudio.ProjectSystem.VS;
+using System.ComponentModel.Composition;
+//using Microsoft.VisualStudio.LanguageServices;
+using Microsoft.VisualStudio.Shell.Interop;
+using XSharp.ProjectSystem;
+[assembly: ProvideDiffSupportedContentType(".xsproj", "")]
+[assembly: ProvideEditorFactoryMapping("{f6819a78-a205-47b5-be1c-675b3c7f0b8e}", ".xsproj")] // Use the XML editor
+namespace XSharp.ProjectSystem
 {
-    using System;
-    using System.ComponentModel;
-    using System.Runtime.InteropServices;
-    using Microsoft.VisualStudio.Shell;
-    using System.ComponentModel.Composition;
-    using Microsoft.VisualStudio.LanguageServices;
-    using Microsoft.VisualStudio.Shell.Interop;
     /// <summary>
     /// This class implements the package exposed by this assembly.
     /// </summary>
@@ -26,23 +32,24 @@ namespace XSharpLanguage
     /// or localized resources for the strings that appear in the New Project and Open Project dialogs.
     /// Creating project extensions or project types does not actually require a VSPackage.
     /// </remarks>
-    [InstalledProductRegistration("#110", "#112", XSharp.Constants.Version, IconResourceID = 400)]
-    [PackageRegistration(UseManagedResourcesOnly = true)]
+    [InstalledProductRegistration("#110", "#112", XSharp.Constants.ProductVersion, IconResourceID = 400)]
+    [PackageRegistration(UseManagedResourcesOnly = true, AllowsBackgroundLoading =true)]
     [Description("XSharp project type based on CPS")]
     [Guid(XSharpVsPackage.PackageGuid)]
-    public sealed class XSharpVsPackage : Package
+    public sealed class XSharpVsPackage : AsyncPackage
     {
         /// <summary>
         /// The GUID for this package.
         /// </summary>
-        public const string PackageGuid = "E299FB7B-D273-4678-9ACF-B37B4AF04A12";
+        public const string PackageGuid = "D79AA3F8-FE25-42C0-854D-CF22EBE83818";
 
         /// <summary>
         /// The GUID for this project type.  It is unique with the project file extension and
         /// appears under the VS registry hive's Projects key.
         /// </summary>
-        public const string ProjectTypeGuid = "AA6C8D78-22FF-423A-9C7C-5F2393824E04";
-
+        public const string ProjectTypeGuid = "286E78A2-2FBA-47EA-A12B-EAEC3D38BC7C";
+        public const string LegacyXSharpGuid = "AA6C8D78-22FF-423A-9C7C-5F2393824E04";
+        public const string ProjectSelectorGuid = "5F81BD32-54BC-4245-9EBA-FA00F3DA9A35";
         /// <summary>
         /// The file extension of this project type.  No preceding period.
         /// </summary>
@@ -54,7 +61,7 @@ namespace XSharpLanguage
         /// </summary>
         internal const string DefaultNamespace = "XSharp";
 
-        [Import(typeof(VisualStudioWorkspace))]
-        public VisualStudioWorkspace myWorkspace { get; set; }
+        //[Import(typeof(VisualStudioWorkspace))]
+        //public VisualStudioWorkspace myWorkspace { get; set; }
     }
 }

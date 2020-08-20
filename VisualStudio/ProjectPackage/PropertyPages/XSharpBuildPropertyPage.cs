@@ -43,9 +43,9 @@ namespace XSharp.Project
         internal const string captDocumentationFile1 = "XML doc comments file name";
         internal const string descDocumentationFile1 = "XML doc comments file name";
         internal const string captOptimize = "Optimize";
-        internal const string descOptimize = "Should compiler optimize output?";
+        internal const string descOptimize = "Should compiler optimize output? (/optimize)";
         internal const string captUseSharedCompilation = "Use Shared Compiler";
-        internal const string descUseSharedCompilation = "Should the shared compiler be used to compile the project? (Faster, but may hide some compiler errors)";
+        internal const string descUseSharedCompilation = "Should the shared compiler be used to compile the project? (Faster, but may hide some compiler errors) (/shared)";
         internal const string captDisabledWarnings = "Suppress Specific Warnings";
         internal const string descDisabledWarnings = "Specify a list of warnings to suppress (/nowarn)";
         internal const string captWarningLevel = "Warning Level";
@@ -53,7 +53,7 @@ namespace XSharp.Project
         internal const string captTreatWarningsAsErrors = "Warnings As Errors";
         internal const string descTreatWarningsAsErrors = "Treat warnings as errors (/warnaserror)";
         internal const string captSignAssembly = "Sign the output assembly";
-        internal const string descSignAssembly = "Sign the assembly  (/sign)";
+        internal const string descSignAssembly = "Sign the assembly  (/keyfile)";
         internal const string captDelaySign = "Delayed sign only";
         internal const string descDelaySign = "Delayed signing (/delaysign)";
         internal const string captAssemblyOriginatorKeyFile = "Code Signing KeyFile";
@@ -66,9 +66,9 @@ namespace XSharp.Project
         internal const string CmdLineCaption = "Extra Command Line Options";
         internal const string CmdLineDescription = "User-Defined Command Line options";
         internal const string DefCaption = "Defines for the preprocessor";
-        internal const string DefDescription = "Defines for the preprocessor (/d)";
+        internal const string DefDescription = "Defines for the preprocessor (/define)";
         internal const string captPrefer32Bit = "\tPrefer 32 Bit";
-        internal const string descPrefer32Bit = "Prefer 32 bit when AnyCpu platform is selected.";
+        internal const string descPrefer32Bit = "Prefer 32 bit when AnyCpu platform is selected. (/platform)";
 
 
         internal const string defaultOutputPath = @"bin\$(Configuration)\";
@@ -123,7 +123,7 @@ namespace XSharp.Project
         [RefreshProperties(System.ComponentModel.RefreshProperties.All)]
         [Category(catOutput)]
         [LocDisplayName("\t\tPlatform Target")]
-        [Description("Select the platform target when compiling this project. This should be AnyCPU, X86, x64,Arm or Itanium")]
+        [Description("Select the platform target when compiling this project. This should be AnyCPU, X86, x64,Arm or Itanium (/platform)")]
         public Platform PlatformTarget
         {
             get { return this.platformtarget; }

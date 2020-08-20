@@ -4,8 +4,8 @@
 CLASS FixedText INHERIT TextControl
 	PROTECT _dwDrawStyle AS DWORD
 	PROTECT _dwMargin	 AS DWORD
-	EXPORT lUseDrawText AS LOGIC
-	EXPORT lDrawThemeBackground AS LOGIC
+	PROPERTY lUseDrawText AS LOGIC AUTO
+	PROPERTY lDrawThemeBackground AS LOGIC AUTO
 
     PROPERTY ControlType AS Controltype GET ControlType.FixedText
 
@@ -148,10 +148,10 @@ CLASS FixedText INHERIT TextControl
 
 		hHandle := SELF:Handle()
 		IF oCtrl != NULL_OBJECT .and. ! oCtrl:IsDisposed
-			dwStyle := DWORD(Win32.GetWindowLong(hHandle, GWL_STYLE))
+			dwStyle := DWORD(GuiWin32.GetWindowLong(hHandle, GWL_STYLE))
 			dwStyle := _AND(dwStyle, _NOT(0X00000003U))
 			dwStyle := _OR(dwStyle, dwTempStyle)
-			Win32.SetWindowLong(hHandle, GWL_STYLE, LONGINT(_CAST, dwStyle))
+			GuiWin32.SetWindowLong(hHandle, GWL_STYLE, LONGINT(_CAST, dwStyle))
 		ENDIF
 
 		RETURN dwStyle

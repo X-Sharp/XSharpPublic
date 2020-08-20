@@ -534,8 +534,8 @@ BEGIN NAMESPACE XSharp.IO
                  XSharp.IO.File.setStream(pFile, oMemoryStream:FileStream)
                  RETURN 
             ENDIF
-            THROW Error{"Could not convert stream, source stream is not a Memory Stream"}
-			//RETURN 
+            //THROW Error{"Could not convert stream, source stream is not a Memory Stream"}
+			RETURN 
 
 	END CLASS
 	
@@ -708,7 +708,7 @@ FUNCTION FReadText(ptrHandle AS IntPtr,cBufferVar REF STRING,dwBytes AS DWORD) A
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/fread/*" />  
 FUNCTION FRead(ptrHandle AS IntPtr,cBufferVar REF STRING,dwBytes AS DWORD) AS DWORD
-	RETURN (DWORD) XSharp.IO.File.Read(ptrHandle, OUT cBufferVar, (INT) dwBytes, XSharp.RuntimeState.Ansi)
+	RETURN (DWORD) XSharp.IO.File.Read(ptrHandle, OUT cBufferVar, (INT) dwBytes, TRUE)
 
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/freadtext3/*" />  
@@ -1043,19 +1043,15 @@ FUNCTION FGetBuffer(hFile AS IntPtr, nSize AS INT) AS BYTE[]
 /// If you want to close the stream, please use the FClose() function </note>
 /// </remarks>
 /// <seealso cref="O:XSharp.Core.Functions.FClose" />
-FUNCTION FGetStream(pFile AS IntPtr) AS Stream
+FUNCTION FGetStream(pFile AS IntPtr) AS Stream 
     RETURN XSharp.IO.File.findStream(pFile)
 
 
 /// <summary>Returns the size in bytes of a specified file. </summary>
 /// <param name="pFile"><include file="CoreComments.xml" path="Comments/FileHandle/*" /></param> 
 /// <returns>The size of the file or -1 when the file handle is not valid.</returns>
-/// <remarks><note type="warning">You are not supposed to close the stream object that you retrieve with this function.
-/// The Lifetime management of the stream should be left to the X# Runtime <br/>
-/// If you want to close the stream, please use the FClose() function </note>
-/// </remarks>
 /// <seealso cref="O:XSharp.Core.Functions.FClose" />
-FUNCTION FSize(pFile AS IntPtr) AS INT64
+FUNCTION FSize(pFile AS IntPtr) AS INT64 
    VAR oStream := XSharp.IO.File.findStream(pFile)
     IF oStream != NULL
         RETURN oStream:Length

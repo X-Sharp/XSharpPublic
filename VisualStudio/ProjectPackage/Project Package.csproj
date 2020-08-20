@@ -13,7 +13,6 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <SchemaVersion>2.0</SchemaVersion>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <ProjectTypeGuids>{82b43b9b-a64c-4715-b499-d71e9ca2bd60};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
@@ -22,7 +21,7 @@
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>$(SolutionDir)Common\XSharp.snk</AssemblyOriginatorKeyFile>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
-    <TargetFrameworkMoniker>.NETFramework,Version=v4.7.2</TargetFrameworkMoniker>
+    <TargetFrameworkMoniker>.NETFramework,Version=v4.6</TargetFrameworkMoniker>
     <TargetFrameworkProfile />
     <ProjectGuid>{F4ADEBDB-CD20-4532-B4E3-FE7424F5369C}</ProjectGuid>
     <BootstrapperEnabled>true</BootstrapperEnabled>
@@ -66,7 +65,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <RunCodeAnalysis>false</RunCodeAnalysis>
-    <CodeAnalysisRuleSet>Project Package.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
     <Prefer32Bit>false</Prefer32Bit>
     <PlatformTarget>x86</PlatformTarget>
   </PropertyGroup>
@@ -139,11 +138,11 @@
       <DependentUpon>XColorUserControl.cs</DependentUpon>
     </Compile>
     <Compile Include="ErrorList\ErrorListProvider.cs" />
-    <Compile Include="ErrorList\ErrorListSinkManager.cs" />
+    <Compile Include="ErrorList\ListSinkManager.cs" />
     <Compile Include="ErrorList\ErrorMessageUtil.cs" />
     <Compile Include="ErrorList\ErrorListItem.cs" />
-    <Compile Include="ErrorList\IErrorListProvider.cs" />
-    <Compile Include="ErrorList\IErrorListSinkManager.cs" />
+    <Compile Include="ErrorList\IListProvider.cs" />
+    <Compile Include="ErrorList\IListSinkManager.cs" />
     <Compile Include="ErrorList\ErrorsFactory.cs" />
     <Compile Include="ErrorList\ErrorsSnapshot.cs" />
     <Compile Include="Wix\XPropertyPagePanel.cs">
@@ -240,20 +239,20 @@
     <ZipItem Include="Templates\ProjectItems\Resources\ResBitMap\Bitmap.png" />
     <ZipItem Include="Templates\ProjectItems\Resources\ResCursor\Cursor.png" />
     <ZipItem Include="Templates\ProjectItems\Resources\ResIcon\Icon.png" />
-    <ZipItem Include="Templates\ProjectItems\Resources\Rc\Rc.png" />
-    <ZipItem Include="Templates\ProjectItems\Resources\Resource\Resource.png" />
+    <ZipItem Include="Templates\ProjectItems\Resources\NativeResource\Rc.png" />
+    <ZipItem Include="Templates\ProjectItems\Resources\ManagedResource\Resource.png" />
     <ZipItem Include="Templates\ProjectItems\Forms\Form\Form.png" />
     <ZipItem Include="Templates\ProjectItems\Forms\FormSimple\Form.png" />
     <ZipItem Include="Templates\ProjectItems\Forms\UserControl\UserControl.png" />
     <ZipItem Include="Templates\ProjectItems\Code\TextFile\TextFile.png" />
     <ZipItem Include="Templates\ProjectItems\Code\Header\Include.png" />
     <ZipProject Include="Templates\Projects\ClassLibraries\ClassLibrary\ClassLibrary.png" />
-    <ZipProject Include="Templates\Projects\Windows\Console\ConsoleApplication.png" />
-    <ZipProject Include="Templates\Projects\Windows\WinFormApp\WinFormApp.png" />
-    <ZipProject Include="Templates\Projects\Windows\WPFApplication\WPFApplication.png" />
-    <ZipProject Include="Templates\Projects\Windows\VulcanConsole\VulcanConsole.png" />
-    <ZipProject Include="Templates\Projects\Windows\VulcanConsole\VulcanConsole.vstemplate" />
-    <ZipProject Include="Templates\Projects\Windows\VulcanConsole\Readme.txt" />
+    <ZipProject Include="Templates\Projects\Windows\ConsoleCore\ConsoleApplication.png" />
+    <ZipProject Include="Templates\Projects\Windows\CoreWinFormApp\WinFormApp.png" />
+    <ZipProject Include="Templates\Projects\Windows\CoreWPFApp\WPFApplication.png" />
+    <ZipProject Include="Templates\Projects\Windows\ConsoleVulcan\VulcanConsole.png" />
+    <ZipProject Include="Templates\Projects\Windows\ConsoleVulcan\VulcanConsole.vstemplate" />
+    <ZipProject Include="Templates\Projects\Windows\ConsoleVulcan\Readme.txt" />
     <ZipItem Include="Templates\ProjectItems\WPF\WPFFlowDocument\WPFFlowDocument.png" />
     <ZipItem Include="Templates\ProjectItems\WPF\WPFPageFunction\WPFPageFunction.png" />
     <ZipItem Include="Templates\ProjectItems\WPF\WPFPage\WPFPage.png" />
@@ -275,11 +274,11 @@
     <ZipProject Include="Templates\Projects\Test\TestXUnit\XUnitTestClassLibrary.png" />
     <ZipProject Include="Templates\Projects\Test\TestXUnit\XUnitTestClassLibrary.vstemplate" />
     <ZipProject Include="Templates\Projects\Test\TestXUnit\XUnitTestClassLibrary.xsproj" />
-    <ZipProject Include="Templates\Projects\Windows\VOConsole\AssemblyInfo.prg" />
-    <ZipProject Include="Templates\Projects\Windows\VOConsole\VOConsole.png" />
-    <ZipProject Include="Templates\Projects\Windows\VOConsole\VOConsole.vstemplate" />
-    <ZipProject Include="Templates\Projects\Windows\VOConsole\VOConsole.xsproj" />
-    <ZipProject Include="Templates\Projects\Windows\VOConsole\Program.prg" />
+    <ZipProject Include="Templates\Projects\Windows\ConsoleVO\AssemblyInfo.prg" />
+    <ZipProject Include="Templates\Projects\Windows\ConsoleVO\VOConsole.png" />
+    <ZipProject Include="Templates\Projects\Windows\ConsoleVO\VOConsole.vstemplate" />
+    <ZipProject Include="Templates\Projects\Windows\ConsoleVO\VOConsole.xsproj" />
+    <ZipProject Include="Templates\Projects\Windows\ConsoleVO\Program.prg" />
     <ZipProject Include="Templates\Projects\ClassLibraries\ClassLibraryVO\AssemblyInfo.prg" />
     <ZipProject Include="Templates\Projects\ClassLibraries\ClassLibraryVO\Class1.prg" />
     <ZipProject Include="Templates\Projects\ClassLibraries\ClassLibraryVO\VOClassLibrary.png" />
@@ -299,11 +298,11 @@
     <ZipProject Include="Templates\Projects\ClassLibraries\ClassLibraryCore\Class1.prg" />
     <ZipProject Include="Templates\Projects\ClassLibraries\ClassLibraryCore\CoreClassLibrary.png" />
     <ZipProject Include="Templates\Projects\ClassLibraries\ClassLibraryCore\CoreClassLibrary.vstemplate" />
-    <ZipProject Include="Templates\Projects\Windows\VFPConsole\AssemblyInfo.prg" />
-    <ZipProject Include="Templates\Projects\Windows\VFPConsole\Program.prg" />
-    <ZipProject Include="Templates\Projects\Windows\VFPConsole\VFPConsole.png" />
-    <ZipProject Include="Templates\Projects\Windows\VFPConsole\VFPConsole.vstemplate" />
-    <ZipProject Include="Templates\Projects\Windows\VFPConsole\VFPConsole.xsproj" />
+    <ZipProject Include="Templates\Projects\Windows\ConsoleFox\AssemblyInfo.prg" />
+    <ZipProject Include="Templates\Projects\Windows\ConsoleFox\Program.prg" />
+    <ZipProject Include="Templates\Projects\Windows\ConsoleFox\VFPConsole.png" />
+    <ZipProject Include="Templates\Projects\Windows\ConsoleFox\VFPConsole.vstemplate" />
+    <ZipProject Include="Templates\Projects\Windows\ConsoleFox\VFPConsole.xsproj" />
     <ZipProject Include="Templates\Projects\ClassLibraries\ClassLibraryCore\CoreClassLibrary.xsproj" />
     <ZipProject Include="Templates\Projects\Windows\VOMdiApp\Help About.HelpAbout.rc" />
     <ZipProject Include="Templates\Projects\Windows\VOMdiApp\Help About.POWXSHARPBMP.rc" />
@@ -347,11 +346,11 @@
     <ZipProject Include="Templates\Projects\Windows\VOSdiApp\Standard SDI.Manifest.rc" />
     <ZipProject Include="Templates\Projects\Windows\VOMdiApp\Readme.txt" />
     <ZipProject Include="Templates\Projects\Windows\VOSdiApp\Readme.txt" />
-    <ZipProject Include="Templates\Projects\Windows\XPPConsole\AssemblyInfo.prg" />
-    <ZipProject Include="Templates\Projects\Windows\XPPConsole\Program.prg" />
-    <ZipProject Include="Templates\Projects\Windows\XPPConsole\XPPConsole.png" />
-    <ZipProject Include="Templates\Projects\Windows\XPPConsole\XPPConsole.vstemplate" />
-    <ZipProject Include="Templates\Projects\Windows\XPPConsole\XPPConsole.xsproj" />
+    <ZipProject Include="Templates\Projects\Windows\ConsoleXPP\AssemblyInfo.prg" />
+    <ZipProject Include="Templates\Projects\Windows\ConsoleXPP\Program.prg" />
+    <ZipProject Include="Templates\Projects\Windows\ConsoleXPP\XPPConsole.png" />
+    <ZipProject Include="Templates\Projects\Windows\ConsoleXPP\XPPConsole.vstemplate" />
+    <ZipProject Include="Templates\Projects\Windows\ConsoleXPP\XPPConsole.xsproj" />
     <ZipProject Include="Templates\Projects\ClassLibraries\ClassLibraryVulcan\AssemblyInfo.prg" />
     <ZipProject Include="Templates\Projects\ClassLibraries\ClassLibraryVulcan\Class1.prg" />
     <ZipProject Include="Templates\Projects\ClassLibraries\ClassLibraryVulcan\VulcanClassLibrary.png" />
@@ -420,22 +419,22 @@
     <ZipItem Include="Templates\ProjectItems\VO\VOMenu\VOMenu.xsmnu" />
     <ZipItem Include="Templates\ProjectItems\VO\VOWindow\VOWindow.xsfrm" />
     <ZipProject Include="Templates\Projects\ClassLibraries\ClassLibrary\ClassLibrary.xsproj" />
-    <ZipProject Include="Templates\Projects\Windows\Console\ConsoleApplication.xsproj" />
-    <ZipProject Include="Templates\Projects\Windows\WinFormApp\Settings.settings" />
-    <ZipProject Include="Templates\Projects\Windows\WinFormApp\WinFormApp.xsproj" />
-    <ZipProject Include="Templates\Projects\Windows\WPFApplication\App.config" />
-    <ZipProject Include="Templates\Projects\Windows\WPFApplication\Settings.settings" />
-    <ZipProject Include="Templates\Projects\Windows\WPFApplication\WPFApplication.xsproj" />
+    <ZipProject Include="Templates\Projects\Windows\ConsoleCore\ConsoleApplication.xsproj" />
+    <ZipProject Include="Templates\Projects\Windows\CoreWinFormApp\Settings.settings" />
+    <ZipProject Include="Templates\Projects\Windows\CoreWinFormApp\WinFormApp.xsproj" />
+    <ZipProject Include="Templates\Projects\Windows\CoreWPFApp\App.config" />
+    <ZipProject Include="Templates\Projects\Windows\CoreWPFApp\Settings.settings" />
+    <ZipProject Include="Templates\Projects\Windows\CoreWPFApp\WPFApplication.xsproj" />
     <ZipItem Include="Templates\ProjectItems\Internal\AppConfigInternal\App.config">
     </ZipItem>
     <ZipItem Include="Templates\ProjectItems\Internal\AppManifestInternal\app.manifest">
     </ZipItem>
     <ZipItem Include="Templates\ProjectItems\Internal\SettingsInternal\Settings.settings">
     </ZipItem>
-    <ZipProject Include="Templates\Projects\Windows\WinFormApp\App.config" />
-    <ZipProject Include="Templates\Projects\Windows\VulcanConsole\AssemblyInfo.prg" />
-    <ZipProject Include="Templates\Projects\Windows\VulcanConsole\Program.prg" />
-    <ZipProject Include="Templates\Projects\Windows\VulcanConsole\VulcanConsole.xsproj" />
+    <ZipProject Include="Templates\Projects\Windows\CoreWinFormApp\App.config" />
+    <ZipProject Include="Templates\Projects\Windows\ConsoleVulcan\AssemblyInfo.prg" />
+    <ZipProject Include="Templates\Projects\Windows\ConsoleVulcan\Program.prg" />
+    <ZipProject Include="Templates\Projects\Windows\ConsoleVulcan\VulcanConsole.xsproj" />
     <None Include="Project Package.ruleset" />
     <None Include="Snippets\Snippets\case.snippet" />
     <None Include="Snippets\Snippets\class.snippet" />
@@ -515,9 +514,9 @@
     <EmbeddedResource Include="Resources.resx">
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <ZipProject Include="Templates\Projects\Windows\WinFormApp\Resources.resx" />
-    <ZipProject Include="Templates\Projects\Windows\WPFApplication\Resources.resx" />
-    <ZipItem Include="Templates\ProjectItems\Resources\Resource\Resource.resX">
+    <ZipProject Include="Templates\Projects\Windows\CoreWinFormApp\Resources.resx" />
+    <ZipProject Include="Templates\Projects\Windows\CoreWPFApp\Resources.resx" />
+    <ZipItem Include="Templates\ProjectItems\Resources\ManagedResource\Resource.resX">
     </ZipItem>
     <ZipItem Include="Templates\ProjectItems\Internal\ResourceInternal\Resource.resX">
     </ZipItem>
@@ -570,17 +569,17 @@
     <ZipProject Include="Templates\Projects\ClassLibraries\ClassLibrary\AssemblyInfo.prg" />
     <ZipProject Include="Templates\Projects\ClassLibraries\ClassLibrary\Class1.prg" />
     <ZipProject Include="Templates\Projects\ClassLibraries\ClassLibrary\ClassLibrary.vstemplate" />
-    <ZipProject Include="Templates\Projects\Windows\Console\AssemblyInfo.prg" />
-    <ZipProject Include="Templates\Projects\Windows\Console\ConsoleApplication.vstemplate" />
-    <ZipProject Include="Templates\Projects\Windows\Console\Program.prg" />
-    <ZipProject Include="Templates\Projects\Windows\WinFormApp\AssemblyInfo.prg" />
-    <ZipProject Include="Templates\Projects\Windows\WinFormApp\Program.prg" />
-    <ZipProject Include="Templates\Projects\Windows\WinFormApp\Form1.prg" />
-    <ZipProject Include="Templates\Projects\Windows\WinFormApp\WinFormApp.vstemplate" />
-    <ZipProject Include="Templates\Projects\Windows\WPFApplication\App.xaml.prg" />
-    <ZipProject Include="Templates\Projects\Windows\WPFApplication\AssemblyInfo.prg" />
-    <ZipProject Include="Templates\Projects\Windows\WPFApplication\WPFApplication.vstemplate" />
-    <ZipProject Include="Templates\Projects\Windows\WPFApplication\WPFWindow1.xaml.prg" />
+    <ZipProject Include="Templates\Projects\Windows\ConsoleCore\AssemblyInfo.prg" />
+    <ZipProject Include="Templates\Projects\Windows\ConsoleCore\ConsoleApplication.vstemplate" />
+    <ZipProject Include="Templates\Projects\Windows\ConsoleCore\Program.prg" />
+    <ZipProject Include="Templates\Projects\Windows\CoreWinFormApp\AssemblyInfo.prg" />
+    <ZipProject Include="Templates\Projects\Windows\CoreWinFormApp\Program.prg" />
+    <ZipProject Include="Templates\Projects\Windows\CoreWinFormApp\Form1.prg" />
+    <ZipProject Include="Templates\Projects\Windows\CoreWinFormApp\WinFormApp.vstemplate" />
+    <ZipProject Include="Templates\Projects\Windows\CoreWPFApp\App.xaml.prg" />
+    <ZipProject Include="Templates\Projects\Windows\CoreWPFApp\AssemblyInfo.prg" />
+    <ZipProject Include="Templates\Projects\Windows\CoreWPFApp\WPFApplication.vstemplate" />
+    <ZipProject Include="Templates\Projects\Windows\CoreWPFApp\WPFWindow1.xaml.prg" />
     <ZipItem Include="Templates\ProjectItems\WPF\WPFPage\WPFPage.vstemplate" />
     <ZipItem Include="Templates\ProjectItems\WPF\WPFUserControl\WPFUserControl.vstemplate">
     </ZipItem>
@@ -592,11 +591,11 @@
     </ZipItem>
     <ZipItem Include="Templates\ProjectItems\WPF\WPFWindow\WPFWindow.xaml.prg">
     </ZipItem>
-    <ZipItem Include="Templates\ProjectItems\Resources\Rc\NativeResources.rc">
+    <ZipItem Include="Templates\ProjectItems\Resources\NativeResource\NativeResources.rc">
     </ZipItem>
-    <ZipItem Include="Templates\ProjectItems\Resources\Rc\RC.vstemplate">
+    <ZipItem Include="Templates\ProjectItems\Resources\NativeResource\RC.vstemplate">
     </ZipItem>
-    <ZipItem Include="Templates\ProjectItems\Resources\Resource\Resource.vstemplate">
+    <ZipItem Include="Templates\ProjectItems\Resources\ManagedResource\Resource.vstemplate">
     </ZipItem>
     <ZipItem Include="Templates\ProjectItems\Internal\AppConfigInternal\App.vstemplate">
     </ZipItem>
@@ -702,9 +701,9 @@
       <IncludeOutputGroupsInVSIX>BuiltProjectOutputGroup%3bBuiltProjectOutputGroupDependencies%3bGetCopyToOutputDirectoryItems%3bSatelliteDllsProjectOutputGroup%3b</IncludeOutputGroupsInVSIX>
       <IncludeOutputGroupsInVSIXLocalOnly>DebugSymbolsProjectOutputGroup%3b</IncludeOutputGroupsInVSIXLocalOnly>
     </ProjectReference>
-    <ProjectReference Include="..\XSharpCodeModelXs\CodeModel.xsproj">
+    <ProjectReference Include="..\XSharpCodeModelXs\XSharpModelXs.xsproj">
       <Project>{eed6843b-b727-4f08-aa32-ca0f48fdde3f}</Project>
-      <Name>CodeModel</Name>
+      <Name>XSharpModelXs</Name>
     </ProjectReference>
     <ProjectReference Include="..\LanguageService\LanguageService.csproj">
       <Project>{ffa0338a-27ed-42ba-b801-ec5ad32a7395}</Project>
@@ -712,16 +711,16 @@
       <IncludeOutputGroupsInVSIX>BuiltProjectOutputGroup%3bBuiltProjectOutputGroupDependencies%3bGetCopyToOutputDirectoryItems%3bSatelliteDllsProjectOutputGroup%3bPkgdefProjectOutputGroup%3b</IncludeOutputGroupsInVSIX>
       <IncludeOutputGroupsInVSIXLocalOnly>DebugSymbolsProjectOutputGroup%3b</IncludeOutputGroupsInVSIXLocalOnly>
     </ProjectReference>
-    <ProjectReference Include="..\XSharpVoEditors\VoEditors.xsproj">
+    <ProjectReference Include="..\XSharpVoEditors\XSharpVoEditors.xsproj">
       <Project>{7619db88-6286-4ef1-8273-2a08cc8ac70e}</Project>
-      <Name>VoEditors</Name>
+      <Name>XSharpVoEditors</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <ZipProject Include="Templates\Projects\Windows\WPFApplication\App.xaml">
+    <ZipProject Include="Templates\Projects\Windows\CoreWPFApp\App.xaml">
       <SubType>Designer</SubType>
     </ZipProject>
-    <ZipProject Include="Templates\Projects\Windows\WPFApplication\WPFWindow1.xaml">
+    <ZipProject Include="Templates\Projects\Windows\CoreWPFApp\WPFWindow1.xaml">
       <SubType>Designer</SubType>
     </ZipProject>
   </ItemGroup>
@@ -747,7 +746,7 @@
       <SubType>Designer</SubType>
     </ZipItem>
   </ItemGroup>
-  <ItemGroup />
+  </ItemGroup>
   <PropertyGroup>
     <RunPostBuildEvent>Always</RunPostBuildEvent>
   </PropertyGroup>

@@ -286,7 +286,7 @@ FUNCTION ArrayCreate(dwElements AS DWORD) AS ARRAY
     /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/arraycreate/*" />
     /// <typeparam name="T">The type of the array elements</typeparam>
 FUNCTION ArrayCreate<T>(dwElements AS DWORD) AS __ArrayBase<T> WHERE T IS NEW()
-    RETURN __ArrayBase<T>{dwElements}
+    RETURN __ArrayBase<T>{dwElements,TRUE}
     
     
     /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/arrayinit/*" /> 

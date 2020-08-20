@@ -75,6 +75,15 @@ FUNCTION SetCentury(lNewSetting AS LOGIC) AS LOGIC
     RETURN lOld
 
 
+FUNCTION SetCompatible() AS LOGIC
+	RETURN RuntimeState.Compatible
+
+FUNCTION SetCompatible(lNewSetting AS LOGIC) AS LOGIC
+	VAR lOld := RuntimeState.Compatible
+    RuntimeState.Compatible := lNewSetting
+    RETURN lOld
+
+
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/setcpu/*" />
 FUNCTION SetCpu() AS DWORD
 	GETSTATE DWORD Set.Cpu
@@ -316,7 +325,7 @@ FUNCTION SetPath(cPathList AS STRING) AS STRING
 
 /// <summary>
 /// Return the Path array that is used by the File() function to locate files outside of the current directory.
-/// This is a combination of the SetDefault() and SetPath() variables
+/// This is a combination of the SetDefault() and SetPath() variables.
 /// This may be null if the file function has never been called or never been called for files outside of the current
 /// directory.
 /// </summary>
@@ -327,7 +336,7 @@ FUNCTION SetPathArray() AS STRING[]
 
 /// <summary>
 /// Set the Path array that is used by the File() function to locate files outside of the current directory.
-/// This is a combination of the SetDefault() and SetPath() variables
+/// This is a combination of the SetDefault() and SetPath() variables. 
 /// This array gets cleared when SetPath() or SetDefault() is called and is initialized the first time File() or a related function
 //  is called after the path has been changed.
 /// </summary>
@@ -362,6 +371,16 @@ FUNCTION SetSoftSeek(lNewSetting AS LOGIC) AS LOGIC
 	VAR lOld := RuntimeState.SoftSeek
     RuntimeState.SoftSeek := lNewSetting
     RETURN lOld
+
+FUNCTION SetSafety() AS LOGIC
+	RETURN RuntimeState.Safety
+
+FUNCTION SetSafety(lNewSetting AS LOGIC) AS LOGIC
+	VAR lOld := RuntimeState.Safety
+    RuntimeState.Safety := lNewSetting
+    RETURN lOld
+
+
 
 /// <summary>
 /// Return the setting that determines whether a space is displayed between fields or expressions when you use the ? or ?? command.

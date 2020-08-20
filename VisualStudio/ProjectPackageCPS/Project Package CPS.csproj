@@ -1,0 +1,366 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <MinimumVisualStudioVersion>15.0</MinimumVisualStudioVersion>
+    <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">14.0</VisualStudioVersion>
+    <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
+    <TargetFrameworkProfile />
+    <BaseOutputPath>$(SolutionDir)Binaries</BaseOutputPath>
+    <IntermediateOutputPath>$(BaseOutputPath)\Obj\$(Configuration)\$(AssemblyName)\</IntermediateOutputPath>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <UpgradeBackupLocation>
+    </UpgradeBackupLocation>
+    <OldToolsVersion>4.0</OldToolsVersion>
+  </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject />
+  </PropertyGroup>
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectTypeGuids>{82b43b9b-a64c-4715-b499-d71e9ca2bd60};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <ProjectGuid>{679502AC-264C-40AC-9E3A-587F2A27F08B}</ProjectGuid>
+    <OutputPath>$(BaseOutputPath)\$(Configuration)\</OutputPath>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>XSharp.ProjectSystem</RootNamespace>
+    <AssemblyName>XSharpProjectCPS</AssemblyName>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <SignAssembly>true</SignAssembly>
+    <AssemblyOriginatorKeyFile>Key.snk</AssemblyOriginatorKeyFile>
+    <StartAction>Program</StartAction>
+    <StartProgram>$(MSBuildProgramFiles32)\Microsoft Visual Studio 14.0\Common7\IDE\devenv.exe</StartProgram>
+    <StartArguments>/rootSuffix Exp</StartArguments>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>$(BaseOutputPath)\$(Configuration)\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <CodeAnalysisRuleSet>XSharp.ProjectType.ruleset</CodeAnalysisRuleSet>
+    <IntermediateOutputPath>C:\Users\robert\AppData\Local\Temp\vsA568.tmp\Debug\</IntermediateOutputPath>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>$(BaseOutputPath)\$(Configuration)\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <CodeAnalysisRuleSet>XSharp.ProjectType.ruleset</CodeAnalysisRuleSet>
+    <IntermediateOutputPath>C:\Users\robert\AppData\Local\Temp\vsA568.tmp\Release\</IntermediateOutputPath>
+  </PropertyGroup>
+  <!-- 
+  Resources for our new project system
+  -->
+  <ItemGroup>
+    <EmbeddedResource Include="Resources.resx">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="VSPackage.resx">
+      <MergeWithCTO>true</MergeWithCTO>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\..\Common\CommonAssemblyInfo.cs">
+      <Link>Properties\CommonAssemblyInfo.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Constants.cs">
+      <Link>Constants.cs</Link>
+    </Compile>
+    <Compile Include="Debugging\XSharpDebuggerLaunchProvider.cs" />
+    <Compile Include="MyConfiguredProject.cs" />
+    <Compile Include="MyUnconfiguredProject.cs" />
+    <Compile Include="Images\XSharpImagesMonikers.cs" />
+    <Compile Include="ProjectProperties.cs" />
+    <Compile Include="ProjectIconProvider.cs" />
+    <Compile Include="ProjectSelector.cs" />
+    <Compile Include="ProvideDiffSupportedContentTypeAttribute.cs" />
+    <Compile Include="ProvideEditorFactoryMappingAttribute.cs" />
+    <Compile Include="XSharpVsPackage.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Images\XSharp.ico" />
+    <Content Include="PropertyPages.txt" />
+    <Content Include="XSharp.ico">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <None Include="app.config" />
+    <None Include="BuildSystem\DeployedBuildSystem\XSharp.CurrentVersion.targets" />
+    <None Include="BuildSystem\DeployedBuildSystem\Xsharp.Net.Sdk.props" />
+    <None Include="BuildSystem\DeployedBuildSystem\XSharp.Net.Sdk.targets" />
+    <None Include="BuildSystem\DeployedBuildSystem\XSharp.props">
+      <SubType>Designer</SubType>
+    </None>
+    <Content Include="ProjectSelectors.pkgdef">
+      <IncludeInVSIX>true</IncludeInVSIX>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <None Include="source.extension.vsixmanifest" />
+    <None Include="Key.snk" />
+    <None Include="XSharp.ProjectType.ruleset" />
+    <Resource Include="Images\XSharpProject.png" />
+    <Resource Include="Images\XSharpDocument.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Content Include="Images\XSharpImages.imagemanifest">
+      <IncludeInVSIX>true</IncludeInVSIX>
+      <SubType>Designer</SubType>
+    </Content>
+  </ItemGroup>
+  <!-- 
+  These are the parts of the custom project system which will be deployed as part of the 
+  final implementation, and provide the basic processing for handling rules in CPS.
+  -->
+  <ItemGroup>
+    <None Include="BuildSystem\DeployedBuildSystem\XSharp.Default.props">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="BuildSystem\DeployedBuildSystem\XSharp.targets">
+      <SubType>Designer</SubType>
+    </None>
+  </ItemGroup>
+  <!--
+  The XAML files provide buth compile-time implementations for CPS rules as well as
+  runtime information for property pages.  They will also be deployed as part of the
+  final package.
+  -->
+  <ItemGroup>
+    <None Include="BuildSystem\Rules\ProjectItemsSchema.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </None>
+    <XamlPropertyRule Include="BuildSystem\Rules\debugger_general.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:GenerateRuleSourceFromXaml</Generator>
+    </XamlPropertyRule>
+    <XamlPropertyRule Include="BuildSystem\Rules\General_File.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:GenerateRuleSourceFromXaml</Generator>
+    </XamlPropertyRule>
+    <XamlPropertyRule Include="BuildSystem\Rules\Folder.xaml">
+      <RuleInjection>None</RuleInjection>
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </XamlPropertyRule>
+    <XamlPropertyRule Include="BuildSystem\Rules\None.xaml">
+      <RuleInjection>None</RuleInjection>
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </XamlPropertyRule>
+    <XamlPropertyRule Include="BuildSystem\Rules\Assemblyreference.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </XamlPropertyRule>
+    <XamlPropertyRule Include="BuildSystem\Rules\Comreference.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </XamlPropertyRule>
+    <XamlPropertyRule Include="BuildSystem\Rules\Projectreference.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </XamlPropertyRule>
+    <XamlPropertyRule Include="BuildSystem\Rules\PropertyPage_Application.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:GenerateRuleSourceFromXaml</Generator>
+    </XamlPropertyRule>
+    <XamlPropertyRule Include="BuildSystem\Rules\ResolvedAssemblyReference.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </XamlPropertyRule>
+    <XamlPropertyRule Include="BuildSystem\Rules\ResolvedCOMReference.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </XamlPropertyRule>
+    <XamlPropertyRule Include="BuildSystem\Rules\ResolvedProjectReference.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </XamlPropertyRule>
+    <XamlPropertyRule Include="BuildSystem\Rules\resolvedsdkreference.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </XamlPropertyRule>
+    <XamlPropertyRule Include="BuildSystem\Rules\scc.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </XamlPropertyRule>
+    <XamlPropertyRule Include="BuildSystem\Rules\Sdkreference.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </XamlPropertyRule>
+    <XamlPropertyRule Include="BuildSystem\Rules\EmbeddedResource.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </XamlPropertyRule>
+    <XamlPropertyRule Include="BuildSystem\Rules\PropertyPage_Debugger.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:GenerateRuleSourceFromXaml</Generator>
+    </XamlPropertyRule>
+  </ItemGroup>
+  <ItemGroup>
+    <XamlPropertyRule Include="BuildSystem\Rules\PropertyPage_Language.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:GenerateRuleSourceFromXaml</Generator>
+    </XamlPropertyRule>
+    <XamlPropertyRule Include="BuildSystem\Rules\PropertyPage_Build.xaml">
+      <Generator>MSBuild:GenerateRuleSourceFromXaml</Generator>
+      <SubType>Designer</SubType>
+    </XamlPropertyRule>
+  </ItemGroup>
+  <ItemGroup>
+    <XamlPropertyRule Include="BuildSystem\Rules\general.browseobject.xaml">
+      <Generator>MSBuild:GenerateRuleSourceFromXaml</Generator>
+      <SubType>Designer</SubType>
+    </XamlPropertyRule>
+    <XamlPropertyRule Include="BuildSystem\Rules\PropertyPage_Advanced.xaml">
+      <Generator>MSBuild:GenerateRuleSourceFromXaml</Generator>
+      <SubType>Designer</SubType>
+    </XamlPropertyRule>
+  </ItemGroup>
+  <ItemGroup>
+    <XamlPropertyRule Include="BuildSystem\Rules\XSharp.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:GenerateRuleSourceFromXaml</Generator>
+    </XamlPropertyRule>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="BuildSystem\Rules\XSharp.browseobject.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <XamlPropertyRule Include="BuildSystem\Rules\Content.xaml">
+      <Generator>MSBuild:GenerateRuleSourceFromXaml</Generator>
+      <SubType>Designer</SubType>
+    </XamlPropertyRule>
+    <XamlPropertyRule Include="BuildSystem\Rules\SpecialFolder.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </XamlPropertyRule>
+    <XamlPropertyRule Include="BuildSystem\Rules\SubProject.xaml">
+      <Generator>MSBuild:GenerateRuleSourceFromXaml</Generator>
+      <SubType>Designer</SubType>
+    </XamlPropertyRule>
+    <None Include="BuildSystem\Rules\XSharp.ProjectItemsSchema.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.Composition" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Design" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xaml" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="WindowsBase" />
+  </ItemGroup>
+  <ItemGroup>
+    <XamlPropertyRule Include="BuildSystem\Rules\NativeResource.xaml">
+      <Generator>MSBuild:GenerateRuleSourceFromXaml</Generator>
+      <SubType>Designer</SubType>
+    </XamlPropertyRule>
+  </ItemGroup>
+  <ItemGroup>
+    <XamlPropertyRule Include="BuildSystem\Rules\VoBinary.xaml">
+      <Generator>MSBuild:GenerateRuleSourceFromXaml</Generator>
+      <SubType>Designer</SubType>
+    </XamlPropertyRule>
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Composition">
+      <Version>1.0.31</Version>
+    </PackageReference>
+    <PackageReference Include="Microsoft.VisualStudio.ProjectSystem">
+      <Version>15.8.243</Version>
+    </PackageReference>
+    <PackageReference Include="Microsoft.VisualStudio.ProjectSystem.SDK">
+      <Version>15.8.243</Version>
+    </PackageReference>
+    <PackageReference Include="Microsoft.VisualStudio.SDK">
+      <Version>15.0.1</Version>
+    </PackageReference>
+    <PackageReference Include="Microsoft.VisualStudio.SDK.VsixSuppression">
+      <Version>14.1.37</Version>
+    </PackageReference>
+    <PackageReference Include="Microsoft.VisualStudio.Threading.Analyzers">
+      <Version>16.3.52</Version>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.VSSDK.BuildTools">
+      <Version>15.9.3039</Version>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+  </ItemGroup>
+  <ItemGroup>
+    <XamlPropertyRule Include="BuildSystem\Rules\PropertyPage_Dialect.xaml">
+      <Generator>MSBuild:GenerateRuleSourceFromXaml</Generator>
+      <SubType>Designer</SubType>
+    </XamlPropertyRule>
+  </ItemGroup>
+  <ItemGroup>
+    <XamlPropertyRule Include="BuildSystem\Rules\AnalyzerReference.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </XamlPropertyRule>
+    <XamlPropertyRule Include="BuildSystem\Rules\FrameworkReference.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </XamlPropertyRule>
+    <XamlPropertyRule Include="BuildSystem\Rules\PackageReference.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </XamlPropertyRule>
+    <XamlPropertyRule Include="BuildSystem\Rules\ResolvedAnalyzerReference.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </XamlPropertyRule>
+    <XamlPropertyRule Include="BuildSystem\Rules\ResolvedFrameworkReference.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </XamlPropertyRule>
+    <XamlPropertyRule Include="BuildSystem\Rules\ResolvedPackageReference.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </XamlPropertyRule>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(VSToolsPath)\VSSDK\Microsoft.VsSDK.targets" Condition="'$(VSToolsPath)' != ''" />
+  <!-- TODO: This copies the build authoring to a well-known location so that on the machine this project builds on,
+       the projects created by the 3rd party consumer can open and build. But the real 3rd party consumer will not
+       have run this step so they won't be able to open their projects. 
+       To ship, the project type author must create an MSI that places these files in a well-known location on the
+       customer machine and update the project template to point at that location.-->
+  <Target Name="AfterBuild">
+    <ItemGroup>
+      <BuildSystemToCopy Include="BuildSystem\DeployedBuildSystem\**\*" />
+      <RulesToCopy Include="BuildSystem\Rules\**\*" />
+    </ItemGroup>
+    <Copy SourceFiles="@(BuildSystemToCopy)" DestinationFiles="@(BuildSystemToCopy->'$(LocalAppData)\CustomProjectSystems\XSharp\%(RecursiveDir)%(FileName)%(Extension)')" SkipUnchangedFiles="true" />
+    <Copy SourceFiles="@(RulesToCopy)" DestinationFiles="@(RulesToCopy->'$(LocalAppData)\CustomProjectSystems\XSharp\Rules\%(RecursiveDir)%(FileName)%(Extension)')" SkipUnchangedFiles="true" />
+  </Target>
+</Project>

@@ -22,5 +22,7 @@ namespace XSharp.LanguageService.OptionsPages
             this.DialogResult = DialogResult.OK;
             this.Close();
         }
+
+
     }
 }

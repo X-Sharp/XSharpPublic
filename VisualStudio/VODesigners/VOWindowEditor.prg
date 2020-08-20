@@ -2027,8 +2027,67 @@ RETURN
 	RETURN
 
 	PROTECTED METHOD GetNextName(cName AS STRING) AS STRING
+		LOCAL cBase AS STRING
 		LOCAL cNext AS STRING
+		
+		cNext := cName
+		
+		IF cName == "" .or. SELF:NameExists(cName)
+			
+			BEGIN SCOPE // new method
+				cBase := cName
+				LOCAL nIndex AS INT
+				LOCAL lFound AS LOGIC
+				LOCAL cNum AS STRING
+				LOCAL cBaseLeft AS STRING
+				LOCAL cBaseRight AS STRING
+				nIndex := cBase:Length - 1
+				lFound := FALSE
+				cBaseLeft := ""
+				cBaseRight := ""
+				cNum := ""
+				DO WHILE nIndex > 0
+					LOCAL cChar AS Char
+					cChar := cBase[nIndex]
+					DO CASE
+					CASE "0123456789":IndexOf(cChar) != -1
+						IF .not. lFound
+							IF nIndex < cBase:Length - 1
+								cBaseRight := cBase:Substring(nIndex + 1)
+							END IF
+							cBaseLeft := cBase
+						END IF
+						lFound := TRUE
+						cNum := cChar:ToString() + cNum
+						cBaseLeft := cBaseLeft:Substring(0 , nIndex)
+					CASE lFound
+						EXIT
+					END CASE
+					nIndex --
+				END DO
+				IF cNum:Length != 0 .and. cBaseLeft:Length != 0
+					LOCAL cNewName AS STRING
+					LOCAL cNewNum AS STRING
+					LOCAL nNum AS INT
+					Int32.TryParse(cNum , OUT nNum)
+					DO WHILE TRUE
+						nNum ++
+						cNewNum := nNum:ToString()
+						IF cNewNum:Length < cNum:Length
+							cNewNum := STRING{'0' , cNum:Length - cNewNum:Length} + cNewNum
+						END IF
+						cNewName := cBaseLeft + cNewNum + cBaseRight
+						IF .not. SELF:NameExists(cNewName)
+							RETURN cNewName
+						END IF
+					END DO
+				END IF
+			END SCOPE
+		ENDIF
+
+		// old method
 		LOCAL n AS INT
+		n := 0
 		DO WHILE TRUE
 			n ++
 			cNext := cName + n:ToString()
@@ -3428,6 +3487,8 @@ RETURN
 				IF oType != TypeOf(DesignPushButton)
 					oControl:BackColor := oDesign:Control:BackColor
 				END IF
+         CATCH
+            NOP
 			END TRY
 		NEXT
 		AdjustGroupBoxesInForm(oTest)
@@ -3486,6 +3547,8 @@ RETURN
 			        ENDIF
 				ENDIF
 			END IF
+         CATCH
+            NOP
         END TRY
 
 		IF !System.IO.File.Exists(cCavoWed)
@@ -3502,6 +3565,8 @@ RETURN
                IF cCavoWed:Contains("cavowed") .AND. cCavoWed:EndsWith(".tpl")
                   File.Copy(cCavoWed , cOrigDir + "\cavowed.tpl" , FALSE)
                ENDIF
+            CATCH
+               NOP
             END TRY
 			ELSE
 				RETURN FALSE

@@ -219,7 +219,7 @@ FUNCTION MemChr( ptrBuffer AS IntPtr, dwChar AS BYTE, dwCount AS DWORD ) AS IntP
 	ENDIF
 
 	pRet	:= IntPtr.Zero
-	pChr	:= ptrBuffer:ToPointer()
+	pChr	:= (BYTE PTR) ptrBuffer:ToPointer()
 	FOR VAR x := 1 TO dwCount
 		IF pChr[x] == dwChar
 			pRet := IntPtr{@pChr[x]}
@@ -248,8 +248,8 @@ FUNCTION MemComp( ptrFirst AS IntPtr, ptrSecond AS IntPtr, dwCount AS DWORD ) AS
 		THROW Error.NullArgumentError(__FUNCTION__,NAMEOF(ptrSecond), 2)
 	ENDIF
 
-	pByte1 := ptrFirst:ToPointer()
-	pByte2 := ptrSecond:ToPointer()
+	pByte1 := (BYTE PTR) ptrFirst:ToPointer()
+	pByte2 := (BYTE PTR) ptrSecond:ToPointer()
 	result := 0
 	FOR VAR x  := 1 TO dwCount
 		IF pByte1[x] < pByte2[x]
@@ -308,7 +308,7 @@ FUNCTION MemDWord( ptrBuffer AS IntPtr, dwValue AS DWORD, dwCount AS DWORD ) AS 
 		THROW Error.NullArgumentError(__FUNCTION__,NAMEOF(ptrBuffer), 1)
 	ENDIF
 	pRet   := IntPtr.Zero
-	pDword := ptrBuffer:ToPointer()
+	pDword := (DWORD PTR) ptrBuffer:ToPointer()
 	FOR VAR x := 1 TO dwCount
 		IF pDword[x] == dwValue
 			pRet := IntPtr{@pDword[x]}
@@ -365,7 +365,7 @@ FUNCTION MemLower( pMemory AS IntPtr, dwCount AS DWORD ) AS IntPtr
 	IF pMemory == IntPtr.Zero
 		THROW Error.NullArgumentError(__FUNCTION__,NAMEOF(pMemory), 1)
 	ENDIF
-	pChr := pMemory:ToPointer() 
+	pChr := (BYTE PTR) pMemory:ToPointer() 
 	FOR VAR x := 1 TO dwCount
         IF pChr[x] >= c'A' .AND. pChr[x] <= c'Z'
 			pChr[x] |= (BYTE) 32
@@ -391,8 +391,8 @@ FUNCTION MemMove( ptrDest AS IntPtr, ptrSource AS IntPtr, dwCount AS DWORD ) AS 
 		    // copy from higher address to lower address
             LOCAL dst AS BYTE PTR
             LOCAL src AS BYTE PTR
-	        dst := ptrDest:ToPointer()
-	        src := ptrSource:ToPointer()
+	        dst := (BYTE PTR) ptrDest:ToPointer()
+	        src := (BYTE PTR) ptrSource:ToPointer()
 		    FOR VAR x := dwCount DOWNTO 1 
 			    dst[x] := src[x]
 		    NEXT
@@ -415,7 +415,7 @@ FUNCTION MemShort( ptrBuffer AS IntPtr, siValue AS SHORT, dwCount AS DWORD ) AS 
 		THROW Error.NullArgumentError(__FUNCTION__,NAMEOF(ptrBuffer), 1)
 	ENDIF
 	pRet	:= IntPtr.Zero
-	pShort	:= ptrBuffer:ToPointer()
+	pShort	:= (SHORT PTR) ptrBuffer:ToPointer()
 	FOR VAR x := 1 TO dwCount
 		IF pShort[x] == siValue
 			pRet := IntPtr{@pShort[x]}
@@ -436,7 +436,7 @@ FUNCTION MemUpper( pMemory AS IntPtr, dwCount AS DWORD ) AS IntPtr
 	IF pMemory == IntPtr.Zero
 		THROW Error.NullArgumentError(__FUNCTION__,NAMEOF(pMemory), 1)
 	ENDIF
-    pChr := pMemory:ToPointer() 
+    pChr := (BYTE PTR) pMemory:ToPointer() 
 	FOR VAR x := 1 TO dwCount
         IF pChr[x] >= c'a' .AND. pChr[x] <= c'z'
 			pChr[x] -= (BYTE) 32
@@ -452,7 +452,7 @@ FUNCTION MemWord( ptrBuffer AS IntPtr, dwValue AS WORD, dwCount AS DWORD ) AS In
 		THROW Error.NullArgumentError(__FUNCTION__,NAMEOF(ptrBuffer), 1)
 	ENDIF
 	pRet	:= IntPtr.Zero
-	pWord	:= ptrBuffer:ToPointer()
+	pWord	:= (WORD PTR) ptrBuffer:ToPointer()
 	FOR VAR x := 1 TO dwCount
 		IF pWord[x] == dwValue
 			pRet := IntPtr{@pWord[x]}

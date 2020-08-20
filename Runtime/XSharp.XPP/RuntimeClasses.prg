@@ -1,8 +1,8 @@
-// RuntimeClasses.prg
-// Created by    : robert
-// Creation Date : 4/30/2019 9:29:24 AM
-// Created for   : 
-// WorkStation   : ARTEMIS
+//
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
+// See License.txt in the project root for license information.
+//
 
 
 USING System
@@ -124,7 +124,7 @@ CLASS XSharp.XPP.ClassObject
         OldClasses := Dictionary<INT, ClassObject>{}
 	
     STATIC METHOD FindClass(cClassName AS STRING, lIncludeDeleted AS LOGIC) AS ClassObject
-        IF Classes:ContainsKey(cClassName)
+        IF !String.IsNullOrEmpty(cClassName) .and. Classes:ContainsKey(cClassName)
             RETURN Classes[cClassName]
         ENDIF
         RETURN NULL

@@ -1,6 +1,6 @@
 ﻿USING System
 USING System.Collections.Generic
-USING System.Collections.Immutable
+USING System.Linq
  
 BEGIN NAMESPACE XSharpModel
 CLASS ParseResult
@@ -13,14 +13,14 @@ CLASS ParseResult
 	PROPERTY NameSpaces		AS IList<NameSpaceObject> AUTO
 
 	CONSTRUCTOR (oParser AS Parser)
-		SELF:Types			:= oParser:Types:ToImmutableArray()
-		SELF:Entities		:= oParser:Entities:ToImmutableArray()
-		SELF:SpecialLines   := oParser:SpecialLines:ToImmutableArray()
+		SELF:Types			:= oParser:Types:ToArray()
+		SELF:Entities		:= oParser:Entities:ToArray()
+		SELF:SpecialLines   := oParser:SpecialLines:ToArray()
 		SELF:SourceLength   := oParser:SourceLength
 		SELF:LineCount      := oParser:LineCount
 		SELF:Locals			:= oParser:Locals
 		//
-		SELF:NameSpaces		:= oParser:NameSpaces:ToImmutableArray()
+		SELF:NameSpaces		:= oParser:NameSpaces:ToArray()
 
 END CLASS
 END NAMESPACE

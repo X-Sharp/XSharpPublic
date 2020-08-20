@@ -4,7 +4,7 @@ CLASS DBSelectionIndex
 	PROTECT cbExpression AS _CODEBLOCK
 	PROTECT nSelect AS INT
 
-METHOD Eval( ) 
+METHOD Eval( ) AS USUAL
 	LOCAL nOldSelect := 0 AS DWORD
 	LOCAL xRet AS USUAL
 
@@ -13,7 +13,7 @@ METHOD Eval( )
 	VoDbSetSelect( LONGINT(nOldSelect) )
 	RETURN xRet
 
-CONSTRUCTOR( oDBServer, cExp, nWorkArea ) 
+CONSTRUCTOR( oDBServer as DbServer, cExp as string, nWorkArea as int) 
 
 	SELF:oServer := oDBServer
 	SELF:cExpression := cExp

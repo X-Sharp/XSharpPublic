@@ -15,12 +15,6 @@
         <DataSource Persistence="ProjectFile"   HasConfigurationCondition="False" />
     </Rule.DataSource>
     <StringProperty Name="ApplicationIcon" DisplayName="Application Icon" Category="General" />
-    <StringListProperty Name="ProjectTypeGuids" Visible="False" />
-    <StringProperty Name="ProjectGuid" Visible="False">
-        <StringProperty.DataSource>
-            <DataSource Persistence="ProjectFile" Label="Globals" HasConfigurationCondition="False" />
-        </StringProperty.DataSource>
-    </StringProperty>
     <StringProperty Name="AssemblyName" DisplayName="Assembly Name" Category="General" Description="File Name of the output assemply"/>
     <StringProperty Name="Name" DisplayName="Project Name" Category="General" Description="File Name of the output assemply" ReadOnly="True"/>
     <StringProperty Name="RootNamespace" DisplayName="Root namespace" Category="General" 
@@ -46,10 +40,10 @@
         <EnumValue Name="Core"      DisplayName="Core" />
         <EnumValue Name="VO"        DisplayName="Visual Objects" />
         <EnumValue Name="Vulcan"    DisplayName="Vulcan.NET" />
-        <EnumValue Name="Harbour"   DisplayName="(x)Harbour" />
-        <EnumValue Name="Foxpro"    DisplayName="Microsoft FoxPro" />
-        <EnumValue Name="dBase"     DisplayName="dBase" />
-        <EnumValue Name="XBasepp"   DisplayName="Alaska Xbase++" />
+        <EnumValue Name="Harbour"   DisplayName="Harbour" />
+        <EnumValue Name="Xpp"       DisplayName="Xbase++" />
+        <!--<EnumValue Name="Foxpro"    DisplayName="Microsoft FoxPro" />
+        <EnumValue Name="dBase"     DisplayName="dBase" />-->
         <!--<EnumProperty.DataSource>
             <DataSource Persistence="ProjectFile" Label="Configuration" HasConfigurationCondition="false" />
         </EnumProperty.DataSource>-->
@@ -68,14 +62,6 @@
     <StringProperty Name="DefaultContentType" Visible="false" Description="The default content type name to use when adding files." />
     <StringProperty Name="DebuggerSymbolsPath" Visible="false" />
     <StringProperty Name="TargetPlatformWinMDLocation" Visible="false" />
-    <EnumProperty Name="PlatformTarget" DisplayName="Platform Target" Category="Target" Default="AnyCPU" >
-        <EnumValue Name="x86" DisplayName="x86" />
-        <EnumValue Name="AnyCPU" DisplayName="Any Cpu" />
-        <EnumValue Name="x64" DisplayName="x64" />
-        <EnumProperty.DataSource>
-            <DataSource Persistence="ProjectFile" Label="Configuration" HasConfigurationCondition="false" />
-        </EnumProperty.DataSource>
-    </EnumProperty>
     <StringProperty Name="SDKReferenceDirectoryRoot" Visible="false" />
     <StringProperty Name="SDKReferenceRegistryRoot" Visible="false" />
     <StringProperty Name="TargetPlatformIdentifier" Visible="false" />

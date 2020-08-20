@@ -15,7 +15,8 @@ STATIC METHOD FindItemsOfType(oProject AS XProject, xType AS XFileType, aProject
 	IF (aProjects == NULL)
 		aProjects := List<XProject>{}
 	ENDIF
-	FOREACH oOther AS XFile IN oProject:OtherFiles
+	FOREACH fileName AS STRING IN oProject:OtherFiles
+      VAR oOther := XFile{fileName, oProject}
 		IF oOther:XFileType == xType
 			aResult:Add(oOther)
 		ENDIF
@@ -101,6 +102,8 @@ STATIC METHOD ErrorBox(cMessage AS STRING , cCaption AS STRING) AS VOID
 			TRY
                 System.IO.File.SetAttributes(cFile, FileAttributes.Normal)
 				System.IO.File.Delete(cFile)
+         CATCH
+            NOP
 			END TRY
 		END IF
 END CLASS

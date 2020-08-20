@@ -12,6 +12,7 @@ BYTE     rightPtr[ 4 ];    offset of right node or -1
 // BYTE child page [4]
 
 */
+//#define TESTCDX
 USING System
 USING System.Collections.Generic
 USING System.Text
@@ -382,9 +383,9 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                     var leftKey   := page:Branches[page:NumKeys-1]
                     var rightPage := (CdxBranchPage) SELF:_tag:GetPage(page:RightPtr)
                     var rightKey  := rightPage:Branches[0]
-                    VAR nDiff := SELF:Tag:__Compare(leftKey:key, rightKey:key, leftKey:key:Length)
-                    IF nDiff > 0 .or. (nDiff == 0 .and. LeftKey:Recno >= RightKey:Recno)
-                        SELF:Debug(page:PageNo:ToString("X"), "Keys in wrong order", LeftKey:Key:ToAscii():Trim(), LeftKey:Recno, RightKey:Key:ToAscii():Trim(), RightKey:Recno)
+                    VAR nDiff := SELF:Tag:__Compare(leftKey:Key, rightKey:Key, leftKey:Key:Length)
+                    IF nDiff > 0 .OR. (nDiff == 0 .AND. leftKey:Recno >= rightKey:Recno)
+                        SELF:Debug(page:PageNo:ToString("X"), "Keys in wrong order", leftKey:Key:ToAscii():Trim(), leftKey:Recno, rightKey:Key:ToAscii():Trim(), rightKey:Recno)
                         SELF:DumpKeys()
                         rightPage:DumpKeys()
                     ENDIF
@@ -402,20 +403,20 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             LOCAL last := NULL AS CdxBranch
             FOREACH VAR Branch IN SELF:Branches
                 IF last != NULL
-                    VAR nDiff := SELF:Tag:__Compare(last:key, branch:key, last:key:Length)
+                    VAR nDiff := SELF:Tag:__Compare(last:Key, Branch:Key, last:Key:Length)
                     IF nDiff > 0
-                        ? PageType, PageNo:ToString("X"), "Keys in wrong order", last:Key:ToAscii(), last:Recno, branch:Key:ToAscii(), branch:Recno
+                        ? PageType, PageNo:ToString("X"), "Keys in wrong order", last:Key:ToAscii(), last:Recno, Branch:Key:ToAscii(), Branch:Recno
                     ENDIF
                 ENDIF
-                last := branch
+                last := Branch
             NEXT
             IF SELF:HasLeft
-                local oPage := SELF:_tag:GetPage(SELF:LeftPtr) AS CdxBranchPage
+                LOCAL oPage := (CdxBranchPage) SELF:_tag:GetPage(SELF:LeftPtr) AS CdxBranchPage
                 IF oPage != NULL
                     if oPage:NumKeys > 0
                         VAR oLeftKey    := oPage:Branches[oPage:NumKeys-1]
                         VAR oRightKey   := SELF:Branches[0]
-                        VAR nDiff := SELF:Tag:__Compare(oLeftKey:key, oRightKey:key, oLeftKey:key:Length)
+                        VAR nDiff := SELF:Tag:__Compare(oLeftKey:Key, oRightKey:Key, oLeftKey:Key:Length)
                         IF nDiff > 0 .or. (nDiff == 0 .and. oLeftKey:Recno >= oRightKey:Recno)
                             SELF:Debug("Left Sibling", oPage:PageNo:ToString("X"), "Keys in wrong order", oLeftKey:Key:ToAscii():Trim(), oLeftKey:Recno, oRightKey:Key:ToAscii():Trim(), oRightKey:Recno)
                             oPage:DumpKeys()
@@ -426,12 +427,12 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 ENDIF
             ENDIF
             IF SELF:HasRight
-                local oPage := SELF:_tag:GetPage(SELF:RightPtr) AS CdxBranchPage
+                LOCAL oPage := (CdxBranchPage) SELF:_tag:GetPage(SELF:RightPtr) AS CdxBranchPage
                 IF oPage != NULL
                     if oPage:NumKeys > 0
                         VAR oLeftKey   := SELF:Branches[SELF:NumKeys-1]
                         VAR oRightKey  := oPage:Branches[0]
-                        VAR nDiff := SELF:Tag:__Compare(oLeftKey:key, oRightKey:key, oLeftKey:key:Length)
+                        VAR nDiff := SELF:Tag:__Compare(oLeftKey:Key, oRightKey:Key, oLeftKey:Key:Length)
                         IF nDiff > 0 .or. (nDiff == 0 .and. oLeftKey:Recno >= oRightKey:Recno)
                             SELF:Debug("Right Sibling", oPage:PageNo:ToString("X"), "Keys in wrong order", oLeftKey:Key:ToAscii():Trim(), oLeftKey:Recno, oRightKey:Key:ToAscii():Trim(), oRightKey:Recno, self:NumKeys, oPage:NumKeys)
                             SELF:DumpKeys()

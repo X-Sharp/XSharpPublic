@@ -1,6 +1,7 @@
 USING XSharp.RDD.Support
 USING XSharp.RDD.Enums
 USING System.Reflection
+USING System.Collections.Generic
 USING System.Diagnostics
 
 
@@ -19,11 +20,11 @@ BEGIN NAMESPACE XSharp.RDD
     /// CONSTRUCTOR(oRdd as XSharp.RDD.IRDD)
     ///    SUPER(oRdd)
     /// 
-    /// METHOD GetValue(nFldPos AS LONG)		AS OBJECT
+    /// VIRTUAL METHOD GetValue(nFldPos AS LONG)		AS OBJECT
     ///    Log("Reading field "+nFldPos:ToString())
     ///    RETURN SUPER:GetValue(nFldPos)
     ///
-    /// METHOD PutValue(nFldPos AS LONG, oValue AS OBJECT) AS LOGIC
+    /// VIRTUAL METHOD PutValue(nFldPos AS LONG, oValue AS OBJECT) AS LOGIC
     ///    Log("Writing field "+nFldPos:ToString()+" value "+oValue:ToString())
     ///    RETURN SUPER:PutValue(nFldPos, oValue)
     /// END CLASS
@@ -58,23 +59,17 @@ BEGIN NAMESPACE XSharp.RDD
         // If you are only interested in certain methods, then subclass this class and only write the methods that you are interested in
         // 
 
-        PROTECT oRdd AS IRdd
+        PROTECT oRdd AS IRdd 
 
-        PRIVATE METHOD DebuggerDisplay() AS STRING
+        VIRTUAL METHOD DebuggerDisplay() AS STRING
             IF oRdd != NULL
                 RETURN oRdd:Driver+" ("+oRdd:Alias+") - Wrapped"
             ENDIF
             RETURN "(uninitialized)"
 
         CONSTRUCTOR(loRdd AS IRdd)
-            LOCAL oType AS System.Type
-            LOCAL oFI   AS System.Reflection.FieldInfo
-            LOCAL aRDDs AS IRdd[]
             oRdd    := loRdd
-            oType   := TypeOf(XSharp.RDD.Workareas)
-            oFI     := oType:GetField("RDDs",BindingFlags.NonPublic | BindingFlags.IgnoreCase|BindingFlags.Instance)
-            aRDDs   := (IRdd[]) oFI:GetValue(XSharp.RuntimeState.Workareas)
-            aRDDs[oRdd:Area] := SELF
+            RuntimeState.Workareas:SetArea(oRdd:Area, SELF)
             RETURN
             
             
@@ -83,38 +78,38 @@ BEGIN NAMESPACE XSharp.RDD
         //-------------------------------------------------------
         #region Record Movement
         /// <inheritdoc />			
-        METHOD DbEval(info AS DbEvalInfo)		AS LOGIC
+        VIRTUAL METHOD DbEval(info AS DbEvalInfo)		AS LOGIC
             RETURN oRdd:DbEval(info)        
             
         /// <inheritdoc />			
-        METHOD GoTop()							AS LOGIC
+        VIRTUAL METHOD GoTop()							AS LOGIC
             RETURN oRdd:GoTop()
             
         /// <inheritdoc />			
-        METHOD GoBottom()						AS LOGIC   
+        VIRTUAL METHOD GoBottom()						AS LOGIC   
             RETURN oRdd:GoBottom()
         /// <inheritdoc />			
-        METHOD GoTo(nRec AS LONG)				AS LOGIC
+        VIRTUAL METHOD GoTo(nRec AS LONG)				AS LOGIC
             RETURN oRdd:GoTo(nRec)
             
         /// <inheritdoc />			
-        METHOD GoToId(oRec AS OBJECT)			AS LOGIC
+        VIRTUAL METHOD GoToId(oRec AS OBJECT)			AS LOGIC
             RETURN oRdd:GoToId(oRec)
             
         /// <inheritdoc />			
-        METHOD Skip(nToSkip AS INT)				AS LOGIC
+        VIRTUAL METHOD Skip(nToSkip AS INT)				AS LOGIC
             RETURN oRdd:Skip(nToSkip)
             
         /// <inheritdoc />			
-        METHOD SkipFilter(nToSkip AS INT)		AS LOGIC
+        VIRTUAL METHOD SkipFilter(nToSkip AS INT)		AS LOGIC
             RETURN oRdd:SkipFilter(nToSkip)
             
         /// <inheritdoc />			
-        METHOD SkipRaw(nToSkip AS INT)			AS LOGIC 
+        VIRTUAL METHOD SkipRaw(nToSkip AS INT)			AS LOGIC 
             RETURN oRdd:SkipRaw(nToSkip)
             
         /// <inheritdoc />			
-        METHOD SkipScope(nToSkip AS INT)		AS LOGIC
+        VIRTUAL METHOD SkipScope(nToSkip AS INT)		AS LOGIC
             RETURN oRdd:SkipScope(nToSkip)
         #endregion
         
@@ -123,43 +118,43 @@ BEGIN NAMESPACE XSharp.RDD
         //-------------------------------------------------------
         #region Read / Write
         /// <inheritdoc />			
-        METHOD Append(lReleaseLock AS LOGIC)	AS LOGIC
+        VIRTUAL METHOD Append(lReleaseLock AS LOGIC)	AS LOGIC
             RETURN oRdd:Append(lReleaseLock)
             
         /// <inheritdoc />			
-        METHOD Delete()							AS LOGIC   
+        VIRTUAL METHOD Delete()							AS LOGIC   
             RETURN oRdd:Delete()
             
         /// <inheritdoc />			
-        METHOD GetRec()							AS BYTE[]  
+        VIRTUAL METHOD GetRec()							AS BYTE[]  
             RETURN oRdd:GetRec()
             
         /// <inheritdoc />			
-        METHOD Pack()							AS LOGIC
+        VIRTUAL METHOD Pack()							AS LOGIC
             RETURN oRdd:Pack()
             
         /// <inheritdoc />			
-        METHOD PutRec(aRec AS BYTE[])			AS LOGIC 
+        VIRTUAL METHOD PutRec(aRec AS BYTE[])			AS LOGIC 
             RETURN oRdd:PutRec(aRec)
             
         /// <inheritdoc />			
-        METHOD Recall()							AS LOGIC
+        VIRTUAL METHOD Recall()							AS LOGIC
             RETURN oRdd:Recall()
             
         /// <inheritdoc />			
-        METHOD Zap()							AS LOGIC   
+        VIRTUAL METHOD Zap()							AS LOGIC   
             RETURN oRdd:Zap()
             
         /// <inheritdoc />			
-        METHOD Close() 							AS LOGIC
+        VIRTUAL METHOD Close() 							AS LOGIC
             RETURN oRdd:Close()
             
         /// <inheritdoc />			
-        METHOD Create(info AS DbOpenInfo)		AS LOGIC  
+        VIRTUAL METHOD Create(info AS DbOpenInfo)		AS LOGIC  
             RETURN oRdd:Create(info)
             
         /// <inheritdoc />			
-        METHOD Open(info AS DbOpenInfo)			AS LOGIC
+        VIRTUAL METHOD Open(info AS DbOpenInfo)			AS LOGIC
             RETURN oRdd:Open(info)
 
         #endregion
@@ -168,27 +163,27 @@ BEGIN NAMESPACE XSharp.RDD
         //-------------------------------------------------------
         #region Record Selection - Scoping
         /// <inheritdoc />			
-        METHOD ClearFilter() 					AS LOGIC
+        VIRTUAL METHOD ClearFilter() 					AS LOGIC
             RETURN oRdd:ClearFilter()
             
         /// <inheritdoc />			
-        METHOD ClearScope() 					AS LOGIC 
+        VIRTUAL METHOD ClearScope() 					AS LOGIC 
             RETURN oRdd:ClearScope()
             
         /// <inheritdoc />			
-        METHOD Continue()						AS LOGIC     
+        VIRTUAL METHOD Continue()						AS LOGIC     
             RETURN oRdd:Continue()
             
         /// <inheritdoc />			
-        METHOD GetScope()						AS DbScopeInfo 
+        VIRTUAL METHOD GetScope()						AS DbScopeInfo 
             RETURN oRdd:GetScope()
             
         /// <inheritdoc />			
-        METHOD SetFilter(info AS DbFilterInfo)	AS LOGIC 
+        VIRTUAL METHOD SetFilter(info AS DbFilterInfo)	AS LOGIC 
             RETURN oRdd:SetFilter(info)
             
         /// <inheritdoc />			
-        METHOD SetScope(info AS DbScopeInfo)	AS LOGIC
+        VIRTUAL METHOD SetScope(info AS DbScopeInfo)	AS LOGIC
             RETURN oRdd:SetScope(info)
         #endregion
         //-------------------------------------------------------
@@ -197,15 +192,15 @@ BEGIN NAMESPACE XSharp.RDD
 
         #region Creation
         /// <inheritdoc />			
-        METHOD SetFieldExtent(fieldCount AS LONG)	AS LOGIC
+        VIRTUAL METHOD SetFieldExtent(fieldCount AS LONG)	AS LOGIC
             RETURN oRdd:SetFieldExtent(fieldCount)
             
         /// <inheritdoc />			
-        METHOD AddField(info AS RddFieldInfo)	AS LOGIC
+        VIRTUAL METHOD AddField(info AS RddFieldInfo)	AS LOGIC
             RETURN oRdd:AddField(info)
             
         /// <inheritdoc />			
-        METHOD CreateFields(aFields AS RddFieldInfo[]) AS LOGIC
+        VIRTUAL METHOD CreateFields(aFields AS RddFieldInfo[]) AS LOGIC
             RETURN oRdd:CreateFields(aFields)
         #endregion
         
@@ -215,39 +210,39 @@ BEGIN NAMESPACE XSharp.RDD
 
         #region Field Related
         /// <inheritdoc />			
-        METHOD FieldIndex(fieldName AS STRING)	AS LONG 
+        VIRTUAL METHOD FieldIndex(fieldName AS STRING)	AS LONG 
             RETURN oRdd:FieldIndex(fieldName)
             
         /// <inheritdoc />			
-        METHOD FieldInfo(nFldPos AS LONG, nOrdinal AS LONG, oNewValue AS OBJECT) AS OBJECT
+        VIRTUAL METHOD FieldInfo(nFldPos AS LONG, nOrdinal AS LONG, oNewValue AS OBJECT) AS OBJECT
             RETURN oRdd:FieldInfo(nFldPos,nOrdinal,oNewValue)
             
         /// <inheritdoc />			
-        METHOD FieldName(nFldPos AS LONG)		AS STRING
+        VIRTUAL METHOD FieldName(nFldPos AS LONG)		AS STRING
             RETURN oRdd:FieldName(nFldPos)
             
         /// <inheritdoc />			
-        METHOD GetField(nFldPos AS LONG) AS RddFieldInfo
+        VIRTUAL METHOD GetField(nFldPos AS LONG) AS RddFieldInfo
             RETURN oRdd:GetField(nFldPos)
             
         /// <inheritdoc />			
-        METHOD GetValue(nFldPos AS LONG)		AS OBJECT
+        VIRTUAL METHOD GetValue(nFldPos AS LONG)		AS OBJECT
             RETURN oRdd:GetValue(nFldPos)
             
         /// <inheritdoc />			
-        METHOD GetValueFile(nFldPos AS LONG, fileName AS STRING) AS LOGIC
+        VIRTUAL METHOD GetValueFile(nFldPos AS LONG, fileName AS STRING) AS LOGIC
             RETURN oRdd:GetValueFile(nFldPos, fileName)
             
         /// <inheritdoc />			
-        METHOD GetValueLength(nFldPos AS LONG)	AS LONG
+        VIRTUAL METHOD GetValueLength(nFldPos AS LONG)	AS LONG
             RETURN oRdd:GetValueLength(nFldPos)
 
         /// <inheritdoc />			
-        METHOD PutValue(nFldPos AS LONG, oValue AS OBJECT) AS LOGIC
+        VIRTUAL METHOD PutValue(nFldPos AS LONG, oValue AS OBJECT) AS LOGIC
             RETURN oRdd:PutValue(nFldPos, oValue)
             
         /// <inheritdoc />			
-        METHOD PutValueFile(nFldPos AS LONG, fileName AS STRING) AS LOGIC
+        VIRTUAL METHOD PutValueFile(nFldPos AS LONG, fileName AS STRING) AS LOGIC
             RETURN oRdd:PutValueFile(nFldPos, fileName)
 
         #endregion
@@ -257,19 +252,19 @@ BEGIN NAMESPACE XSharp.RDD
         #region Hot and Cold
 
         /// <inheritdoc />			
-        METHOD Flush() 							AS LOGIC
+        VIRTUAL METHOD Flush() 							AS LOGIC
             RETURN oRdd:Flush()
             
         /// <inheritdoc />			
-        METHOD GoCold()							AS LOGIC
+        VIRTUAL METHOD GoCold()							AS LOGIC
             RETURN oRdd:GoCold()
             
         /// <inheritdoc />			
-        METHOD GoHot()							AS LOGIC   
+        VIRTUAL METHOD GoHot()							AS LOGIC   
             RETURN oRdd:GoHot()
     
         /// <inheritdoc />			
-        METHOD Refresh() 							AS LOGIC
+        VIRTUAL METHOD Refresh() 							AS LOGIC
             RETURN oRdd:Refresh()
 
         #endregion
@@ -279,19 +274,19 @@ BEGIN NAMESPACE XSharp.RDD
         //-------------------------------------------------------
         #region Locking
         /// <inheritdoc />			
-        METHOD AppendLock(uiMode AS DbLockMode) AS LOGIC  
+        VIRTUAL METHOD AppendLock(uiMode AS DbLockMode) AS LOGIC  
             RETURN oRdd:AppendLock(uiMode)
             
         /// <inheritdoc />			
-        METHOD HeaderLock(uiMode AS DbLockMode) AS LOGIC  
+        VIRTUAL METHOD HeaderLock(uiMode AS DbLockMode) AS LOGIC  
             RETURN oRdd:HeaderLock(uiMode)
             
         /// <inheritdoc />			
-        METHOD Lock(uiMode REF DbLockInfo)		AS LOGIC 
+        VIRTUAL METHOD Lock(uiMode REF DbLockInfo)		AS LOGIC 
             RETURN oRdd:Lock(REF uiMode)
             
         /// <inheritdoc />			
-        METHOD UnLock(oRecId AS OBJECT)			AS LOGIC
+        VIRTUAL METHOD UnLock(oRecId AS OBJECT)			AS LOGIC
             RETURN oRdd:UnLock(oRecId)
 
         #endregion
@@ -302,15 +297,15 @@ BEGIN NAMESPACE XSharp.RDD
         #region MemoFiles
         
         /// <inheritdoc />			
-        METHOD CloseMemFile() 					AS LOGIC    
+        VIRTUAL METHOD CloseMemFile() 					AS LOGIC    
             RETURN oRdd:CloseMemFile()
             
         /// <inheritdoc />			
-        METHOD CreateMemFile(info AS DbOpenInfo) AS LOGIC
+        VIRTUAL METHOD CreateMemFile(info AS DbOpenInfo) AS LOGIC
             RETURN oRdd:CreateMemFile(info)
             
         /// <inheritdoc />			
-        METHOD OpenMemFile(info AS DbOpenInfo) 		AS LOGIC   
+        VIRTUAL METHOD OpenMemFile(info AS DbOpenInfo) 		AS LOGIC   
             RETURN oRdd:OpenMemFile(info ) 		
 
         #endregion
@@ -319,39 +314,39 @@ BEGIN NAMESPACE XSharp.RDD
         //-------------------------------------------------------
         #region Indexes and orders
         /// <inheritdoc />			
-        METHOD OrderCondition(info AS DbOrderCondInfo) AS LOGIC
+        VIRTUAL METHOD OrderCondition(info AS DbOrderCondInfo) AS LOGIC
             RETURN oRdd:OrderCondition(info ) 		
             
         /// <inheritdoc />			
-        METHOD OrderCreate(info AS DbOrderCreateInfo) AS LOGIC	
+        VIRTUAL METHOD OrderCreate(info AS DbOrderCreateInfo) AS LOGIC	
             RETURN oRdd:OrderCreate(info ) 		
             
         /// <inheritdoc />			
-        METHOD OrderDestroy(info AS DbOrderInfo) AS LOGIC    	
+        VIRTUAL METHOD OrderDestroy(info AS DbOrderInfo) AS LOGIC    	
             RETURN oRdd:OrderDestroy(info ) 		
             
         /// <inheritdoc />			
-        METHOD OrderInfo(nOrdinal AS DWORD, info AS DbOrderInfo) AS OBJECT
+        VIRTUAL METHOD OrderInfo(nOrdinal AS DWORD, info AS DbOrderInfo) AS OBJECT
             RETURN oRdd:OrderInfo(nOrdinal, info ) 		
             
         /// <inheritdoc />			
-        METHOD OrderListAdd(info AS DbOrderInfo) AS LOGIC
+        VIRTUAL METHOD OrderListAdd(info AS DbOrderInfo) AS LOGIC
             RETURN oRdd:OrderListAdd(info ) 		
             
         /// <inheritdoc />			
-        METHOD OrderListDelete(info AS DbOrderInfo) AS LOGIC
+        VIRTUAL METHOD OrderListDelete(info AS DbOrderInfo) AS LOGIC
             RETURN oRdd:OrderListDelete(info ) 		
             
         /// <inheritdoc />			
-        METHOD OrderListFocus(info AS DbOrderInfo) AS LOGIC
+        VIRTUAL METHOD OrderListFocus(info AS DbOrderInfo) AS LOGIC
             RETURN oRdd:OrderListFocus(info ) 		
             
         /// <inheritdoc />			
-        METHOD OrderListRebuild() AS LOGIC 
+        VIRTUAL METHOD OrderListRebuild() AS LOGIC 
             RETURN oRdd:OrderListRebuild() 		
             
         /// <inheritdoc />			
-        METHOD Seek(info AS DbSeekInfo) AS LOGIC
+        VIRTUAL METHOD Seek(info AS DbSeekInfo) AS LOGIC
             RETURN oRdd:Seek(info) 		
 
         #endregion
@@ -360,43 +355,43 @@ BEGIN NAMESPACE XSharp.RDD
         //-------------------------------------------------------
         #region Relations
         /// <inheritdoc />			
-        METHOD ChildEnd(info AS DbRelInfo)				AS LOGIC 
+        VIRTUAL METHOD ChildEnd(info AS DbRelInfo)				AS LOGIC 
             RETURN oRdd:ChildEnd(info) 		
             
         /// <inheritdoc />			
-        METHOD ChildStart(info AS DbRelInfo)			AS LOGIC
+        VIRTUAL METHOD ChildStart(info AS DbRelInfo)			AS LOGIC
             RETURN oRdd:ChildStart(info) 		
             
         /// <inheritdoc />			
-        METHOD ChildSync(info AS DbRelInfo)				AS LOGIC
+        VIRTUAL METHOD ChildSync(info AS DbRelInfo)				AS LOGIC
             RETURN oRdd:ChildSync(info) 		
             
         /// <inheritdoc />			
-        METHOD ClearRel()								AS LOGIC
+        VIRTUAL METHOD ClearRel()								AS LOGIC
             RETURN oRdd:ClearRel() 		
             
         /// <inheritdoc />			
-        METHOD ForceRel()								AS LOGIC  
+        VIRTUAL METHOD ForceRel()								AS LOGIC  
             RETURN oRdd:ForceRel() 		
             
         /// <inheritdoc />			
-        METHOD RelArea(nRelNum AS DWORD)					AS DWORD 
+        VIRTUAL METHOD RelArea(nRelNum AS DWORD)					AS DWORD 
             RETURN oRdd:RelArea(nRelNum) 		
             
         /// <inheritdoc />			
-        METHOD RelEval(info AS DbRelInfo)				AS LOGIC
+        VIRTUAL METHOD RelEval(info AS DbRelInfo)				AS LOGIC
             RETURN oRdd:RelEval(info) 		
             
         /// <inheritdoc />			
-        METHOD RelText(nRelNum AS DWORD)					AS STRING
+        VIRTUAL METHOD RelText(nRelNum AS DWORD)					AS STRING
             RETURN oRdd:RelText(nRelNum) 		
             
         /// <inheritdoc />			
-        METHOD SetRel(info AS DbRelInfo)				AS LOGIC  
+        VIRTUAL METHOD SetRel(info AS DbRelInfo)				AS LOGIC  
             RETURN oRdd:SetRel(info) 		
             
         /// <inheritdoc />			
-        METHOD SyncChildren()							AS LOGIC
+        VIRTUAL METHOD SyncChildren()							AS LOGIC
             RETURN oRdd:SyncChildren() 		
 
         #endregion
@@ -406,19 +401,19 @@ BEGIN NAMESPACE XSharp.RDD
         //-------------------------------------------------------
         #region Bulk Sort and Copy
         /// <inheritdoc />			
-        METHOD Sort(info AS DbSortInfo)					AS LOGIC
+        VIRTUAL METHOD Sort(info AS DbSortInfo)					AS LOGIC
             RETURN oRdd:Sort(info) 		
             
         /// <inheritdoc />			
-        METHOD Trans(info AS DbTransInfo) 				AS LOGIC
+        VIRTUAL METHOD Trans(info AS DbTransInfo) 				AS LOGIC
             RETURN oRdd:Trans(info) 		
             
         /// <inheritdoc />			
-        METHOD TransRec(info AS DbTransInfo) 			AS LOGIC
+        VIRTUAL METHOD TransRec(info AS DbTransInfo) 			AS LOGIC
             RETURN oRdd:TransRec(info) 		
             
         /// <inheritdoc />			
-        METHOD BlobInfo(uiPos AS DWORD, nOrdinal AS DWORD) AS OBJECT
+        VIRTUAL METHOD BlobInfo(uiPos AS DWORD, nOrdinal AS DWORD) AS OBJECT
             RETURN oRdd:BlobInfo(uiPos, nOrdinal) 		
         #endregion
         //-------------------------------------------------------
@@ -426,11 +421,11 @@ BEGIN NAMESPACE XSharp.RDD
         //-------------------------------------------------------
         #region Macro compiler
         /// <inheritdoc />			
-        METHOD Compile(sBlock AS STRING)				AS ICodeblock
+        VIRTUAL METHOD Compile(sBlock AS STRING)				AS ICodeblock
             RETURN oRdd:Compile(sBlock) 		
 
         /// <inheritdoc />			
-        METHOD EvalBlock(oBlock AS ICodeblock)			AS OBJECT	
+        VIRTUAL METHOD EvalBlock(oBlock AS ICodeblock)			AS OBJECT	
             RETURN oRdd:EvalBlock(oBlock) 		
         #endregion
         //-------------------------------------------------------
@@ -438,11 +433,11 @@ BEGIN NAMESPACE XSharp.RDD
         //-------------------------------------------------------
         #region Info
         /// <inheritdoc />			
-        METHOD Info(nOrdinal AS LONG, oNewValue AS OBJECT) AS OBJECT
+        VIRTUAL METHOD Info(nOrdinal AS LONG, oNewValue AS OBJECT) AS OBJECT
             RETURN oRdd:Info(nOrdinal, oNewValue) 		
 
         /// <inheritdoc />			
-        METHOD RecInfo( nOrdinal AS LONG, oRecID AS OBJECT, oNewValue AS OBJECT) AS OBJECT  
+        VIRTUAL METHOD RecInfo( nOrdinal AS LONG, oRecID AS OBJECT, oNewValue AS OBJECT) AS OBJECT  
             RETURN oRdd:RecInfo(nOrdinal, oRecID, oNewValue) 		
         #endregion
         //-------------------------------------------------------
@@ -450,33 +445,33 @@ BEGIN NAMESPACE XSharp.RDD
         //-------------------------------------------------------
         #region Properties
         /// <inheritdoc />			
-        PROPERTY Alias 		AS STRING	GET oRdd:Alias SET oRdd:Alias := value
+        VIRTUAL PROPERTY Alias 		AS STRING	GET oRdd:Alias SET oRdd:Alias := value
         /// <inheritdoc />			
-        PROPERTY Area		AS DWORD	GET oRdd:Area  SET oRdd:Area := value
+        VIRTUAL PROPERTY Area		AS DWORD	GET oRdd:Area  SET oRdd:Area := value
         /// <inheritdoc />			
-        PROPERTY BoF 		AS LOGIC	GET oRdd:BoF
+        VIRTUAL PROPERTY BoF 		AS LOGIC	GET oRdd:BoF
         /// <inheritdoc />			
-        PROPERTY Deleted 	AS LOGIC	GET oRdd:Deleted
+        VIRTUAL PROPERTY Deleted 	AS LOGIC	GET oRdd:Deleted
         /// <inheritdoc />			
-        PROPERTY Driver     AS STRING	GET oRdd:Driver
+        VIRTUAL PROPERTY Driver     AS STRING	GET oRdd:Driver
         /// <inheritdoc />			
-        PROPERTY EoF 		AS LOGIC	GET oRdd:EoF
+        VIRTUAL PROPERTY EoF 		AS LOGIC	GET oRdd:EoF
         /// <inheritdoc />			
-        PROPERTY Exclusive	AS LOGIC	GET oRdd:Exclusive
+        VIRTUAL PROPERTY Exclusive	AS LOGIC	GET oRdd:Exclusive
         /// <inheritdoc />			
-        PROPERTY FieldCount AS LONG		GET oRdd:FieldCount
+        VIRTUAL PROPERTY FieldCount AS LONG		GET oRdd:FieldCount
         /// <inheritdoc />			
-        PROPERTY FilterText	AS STRING	GET oRdd:FilterText
+        VIRTUAL PROPERTY FilterText	AS STRING	GET oRdd:FilterText
         /// <inheritdoc />			
-        PROPERTY Found		AS LOGIC	GET oRdd:Found SET oRdd:Found := value
+        VIRTUAL PROPERTY Found		AS LOGIC	GET oRdd:Found SET oRdd:Found := value
         /// <inheritdoc />			
-        PROPERTY RecCount	AS LONG		GET oRdd:RecCount
+        VIRTUAL PROPERTY RecCount	AS LONG		GET oRdd:RecCount
         /// <inheritdoc />			
-        PROPERTY RecId		AS OBJECT	GET	oRdd:RecId
+        VIRTUAL PROPERTY RecId		AS OBJECT	GET	oRdd:RecId
         /// <inheritdoc />			
-        PROPERTY RecNo		AS LONG		GET oRdd:RecNo
+        VIRTUAL PROPERTY RecNo		AS LONG		GET oRdd:RecNo
         /// <inheritdoc />			
-        PROPERTY Shared		AS LOGIC	GET oRdd:Shared
+        VIRTUAL PROPERTY Shared		AS LOGIC	GET oRdd:Shared
         
         #endregion
         

@@ -7,8 +7,8 @@ CLASS RadioButton INHERIT Button
 
 	METHOD OnHandleCreated(o AS OBJECT, e AS EventArgs) AS VOID
 		SUPER:OnHandleCreated(o, e)
-		Win32.SetWindowLong(SELF:hWnd, GWL_STYLE, dwStyle)
-		Win32.SetWindowLong(SELF:hWnd, GWL_EXSTYLE, dwExStyle)
+		GuiWin32.SetWindowLong(SELF:hWnd, GWL_STYLE, dwStyle)
+		GuiWin32.SetWindowLong(SELF:hWnd, GWL_EXSTYLE, dwExStyle)
 		RETURN
 
 	ACCESS __RadioButton AS VORadioButton

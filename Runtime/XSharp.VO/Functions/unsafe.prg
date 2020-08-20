@@ -13,7 +13,7 @@ USING System.Runtime.InteropServices
 /// <param name="fAsynchWork"></param>
 /// <returns>
 /// </returns>
-UNSAFE	 FUNCTION DoSendMail(hWndOwner AS IntPtr,cFiles AS STRING,fAsynchWork AS LOGIC) AS VOID
+UNSAFE	FUNCTION DoSendMail(hWndOwner AS IntPtr,cFiles AS STRING,fAsynchWork AS LOGIC) AS VOID
     /// THROW NotImplementedException{}
     RETURN 
     
@@ -24,28 +24,52 @@ UNSAFE	 FUNCTION DoSendMail(hWndOwner AS IntPtr,cFiles AS STRING,fAsynchWork AS 
     RETURN Microsoft.Win32.Registry.GetValue("HKEY_CLASSES_ROOT\"+sExt,"Content Type",""):ToString()  
     
     
-/// <summary>
-/// Display a bitmap in a window or control.
-/// </summary>
-/// <param name="hWnd"></param>
-/// <param name="cFileName"></param>
-/// <param name="cTitle"></param>
-/// <returns>
-/// </returns>
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/showbitmap/*" />
 FUNCTION ShowBitmap(hWnd AS IntPtr,cFileName AS STRING,cTitle AS STRING) AS LOGIC
     RETURN VOBitmaps.Show(hWnd, cFileName, cTitle)
     
-/// <summary>
-/// Display a bitmap stretched or shrunk to fit a window or control.
-/// </summary>
-/// <param name="hWnd"></param>
-/// <param name="cFileName"></param>
-/// <param name="cTitle"></param>
-/// <returns>
-/// </returns>
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/stretchbitmap/*" />
 FUNCTION StretchBitmap(hWnd AS IntPtr,cFileName AS STRING,cTitle AS STRING) AS LOGIC
     RETURN VOBitmaps.Stretch(hWnd, cFileName, cTitle)
-    
+
+
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/ptrlen/*" />
+FUNCTION PtrLen( lpv AS IntPtr ) AS DWORD
+    IF IntPtr.Size == 4 .AND. IsRunningOnWindows()
+        LOCAL mbi IS _WINMEMORY_BASIC_INFORMATION
+        LOCAL hProcess AS IntPtr
+        hProcess := Win32.GetCurrentProcess()
+        IF Win32.VirtualQueryEx(hProcess, lpv, @mbi, sizeof(_WINMEMORY_BASIC_INFORMATION)) != 0
+            VAR base    := (IntPtr)mbi:BaseAddress
+            VAR offset  := lpv:ToInt32() - base:ToInt32()
+            RETURN mbi:RegionSize - (DWORD) offset
+        ENDIF
+    ELSE
+        RETURN MemLen(lpv)
+    ENDIF
+    RETURN 0
+
+
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/ptrlenwrite/*" />
+FUNCTION PtrLenWrite( lpv AS IntPtr ) AS DWORD
+    IF IntPtr.Size == 4 .AND. IsRunningOnWindows()
+        LOCAL mbi IS _WINMEMORY_BASIC_INFORMATION
+        LOCAL hProcess AS IntPtr
+        hProcess := Win32.GetCurrentProcess()
+        IF Win32.VirtualQueryEx(hProcess, lpv, @mbi, sizeof(_WINMEMORY_BASIC_INFORMATION)) != 0
+            IF _AND(mbi:AllocationProtect , 0x04) == 0x04   // PAGE_READWRITE
+                VAR base    := (IntPtr)mbi:BaseAddress
+                VAR offset  := lpv:ToInt32() - base:ToInt32()
+                RETURN mbi:RegionSize - (DWORD) offset
+             ENDIF
+        ENDIF
+    ELSE
+        RETURN MemLen(lpv)
+    ENDIF
+	RETURN 0
+
+
+
 INTERNAL _DLL FUNCTION GlobalAlloc( uFlags AS DWORD, dwBytes AS DWORD ) AS IntPtr PASCAL:KERNEL32.GlobalAlloc
 INTERNAL _DLL FUNCTION GlobalFree( hMem AS IntPtr ) AS IntPtr PASCAL:KERNEL32.GlobalFree
 INTERNAL _DLL FUNCTION GlobalReAlloc( hMem AS IntPtr, dwBytes AS DWORD, uFlags AS DWORD )	AS IntPtr PASCAL:KERNEL32.GlobalReAlloc
@@ -87,6 +111,16 @@ INTERNAL _DLL FUNCTION GetStockObject( fnObject AS INT ) AS IntPtr PASCAL:GDI32.
 #define RASTERCAPS 38
 
 
+BEGIN NAMESPACE XSharp.VO
+
+INTERNAL VOSTRUCT _WINMEMORY_BASIC_INFORMATION
+	MEMBER BaseAddress AS PTR
+	MEMBER AllocationBase AS PTR
+	MEMBER AllocationProtect AS DWORD
+	MEMBER RegionSize AS DWORD
+	MEMBER State AS DWORD
+	MEMBER _Protect AS DWORD
+	MEMBER Type AS DWORD
 
 INTERNAL VOSTRUCT RGBQUAD
     MEMBER rgbBlue     AS BYTE
@@ -143,7 +177,7 @@ INTERNAL VOSTRUCT PALETTEENTRY
     MEMBER peBlue  AS BYTE
     MEMBER peFlags AS BYTE
         
-CLASS VOBitmaps
+INTERNAL CLASS VOBitmaps
     PROTECTED hDIBInfo AS IntPtr
     PROTECTED hDDBitmap AS IntPtr
     PROTECTED offBits AS WORD
@@ -466,15 +500,23 @@ CLASS VOBitmaps
             
 END CLASS
     
-    
+END NAMESPACE    
     
     
 #endregion
 
-INTERNAL STATIC CLASS Win32
+INTERNAL STATIC CLASS XSharp.Win32
      CONST SW_SHOWNORMAL  := 1 AS LONG 
     [DllImport("kernel32.dll", CharSet := CharSet.Ansi )];
-    STATIC INTERNAL METHOD WinExec(lpCmdLine AS STRING, uCmdShow AS DWORD) AS DWORD   
+    STATIC INTERNAL METHOD WinExec(lpCmdLine AS STRING, uCmdShow AS DWORD) AS DWORD
+    [DllImport("kernel32.dll" )];
+    STATIC INTERNAL METHOD GetCurrentProcess() AS IntPtr 
+    [DllImport("kernel32.dll" )];
+    STATIC INTERNAL METHOD VirtualQueryEx(hProcess AS IntPtr, lpAddress AS IntPtr, ;
+        lpBuffer AS _WINMEMORY_BASIC_INFORMATION, dwLength AS DWORD) AS DWORD PASCAL
+
+
+
 END CLASS 
 FUNCTION _Run (cProg AS STRING) AS DWORD PASCAL
  

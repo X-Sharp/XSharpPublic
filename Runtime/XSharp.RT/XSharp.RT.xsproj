@@ -13,7 +13,7 @@
     <Unsafe>true</Unsafe>
     <NS>true</NS>
     <VulcanCompatibleResources>True</VulcanCompatibleResources>
-    <XSharpProjectversion>2.4.0.0</XSharpProjectversion>
+    <XSharpProjectversion>2.4.1.0</XSharpProjectversion>
     <IncludePaths>$(CommonInclude)</IncludePaths>
     <Nostandarddefs>true</Nostandarddefs>
     <XSharpProjectExtensionsPath>$(MSBuildExtensionsPath)\XSharp\</XSharpProjectExtensionsPath>
@@ -21,43 +21,13 @@
     <InitLocals>false</InitLocals>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'" Label="Configuration">
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <EmitDebugInformation>true</EmitDebugInformation>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
-    <UseSharedCompilation>true</UseSharedCompilation>
-    <DisabledWarnings>553</DisabledWarnings>
-    <SignAssembly>true</SignAssembly>
-    <DelaySign>false</DelaySign>
+    <DisabledWarnings />
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'" Label="Configuration">
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <EmitDebugInformation>false</EmitDebugInformation>
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
-    <UseSharedCompilation>true</UseSharedCompilation>
-    <DisabledWarnings>553</DisabledWarnings>
+    <DisabledWarnings />
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Documentation|AnyCPU'">
-    <EmitDebugInformation>true</EmitDebugInformation>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
-    <UseSharedCompilation>true</UseSharedCompilation>
-    <DisabledWarnings>162,171,553,1591,169,1573,649</DisabledWarnings>
     <DocumentationFile>XSharp.RT.Xml</DocumentationFile>
-    <CommandLineOption>/noclipcall</CommandLineOption>
   </PropertyGroup>
   <Import Project="$(MSBuildExtensionsPath)\XSharp\XSharp.targets" />
   <ItemGroup>

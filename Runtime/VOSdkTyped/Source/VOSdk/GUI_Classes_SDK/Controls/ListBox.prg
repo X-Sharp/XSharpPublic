@@ -177,7 +177,6 @@ CLASS ListBox INHERIT BaseListBox
 		IF oCtrl ==  NULL_OBJECT  .AND. !IsInstanceOf(SELF, #ComboBox)
 			SELF:SetStyle(_OR(LBS_Notify, LBS_NoIntegralHeight))
 		ENDIF
-
 		RETURN SUPER:Create()
 
 	ACCESS CurrentItem  AS STRING

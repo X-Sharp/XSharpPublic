@@ -61,6 +61,7 @@ namespace XSharp.Project
         public const int Properties = 9;
         public const int Reference = 10;
         public const int DanglingReference = 11;
+        public const int TabOrder = 12;
 
     }
 }

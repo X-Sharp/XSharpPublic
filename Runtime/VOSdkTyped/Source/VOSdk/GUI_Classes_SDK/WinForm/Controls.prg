@@ -5,9 +5,10 @@
 // Also some On..() methods have been implemented that call the event handles on the VO Window
 // class that owns the control
 
-#USING System.Windows.Forms
-#using System.Drawing
-#using System.Collections.Generic
+USING System.Windows.Forms
+USING System.Drawing
+USING System.Collections.Generic
+USING VOSDK := XSharp.VO.SDK
 
 CLASS VOButton INHERIT System.Windows.Forms.Button IMPLEMENTS IVOControl, IVOControlInitialize
 
@@ -15,7 +16,7 @@ CLASS VOButton INHERIT System.Windows.Forms.Button IMPLEMENTS IVOControl, IVOCon
 
     
 #region Properties
-    PROPERTY Button AS XSharp.VO.Button GET (XSharp.VO.Button) SELF:Control
+    PROPERTY Button AS VOSDK.Button GET (VOSDK.Button) SELF:Control
 #endregion        
 
 	METHOD Initialize AS VOID STRICT
@@ -26,7 +27,7 @@ CLASS VOButton INHERIT System.Windows.Forms.Button IMPLEMENTS IVOControl, IVOCon
 
 		RETURN
 	
-	CONSTRUCTOR(Owner AS XSharp.VO.Control, dwStyle AS LONG, dwExStyle AS LONG)
+	CONSTRUCTOR(Owner AS VOSDK.Control, dwStyle AS LONG, dwExStyle AS LONG)
 		oProperties := VOControlProperties{SELF, Owner, dwStyle, dwExStyle}
 		oProperties:NotStyle := WS_CLIPCHILDREN | WS_CLIPSIBLINGS
 		oProperties:NotExStyle := WS_EX_NOPARENTNOTIFY
@@ -62,7 +63,7 @@ CLASS VOCheckBox INHERIT System.Windows.Forms.CheckBox IMPLEMENTS IVOControl, IV
 			SELF:FlatStyle := FlatStyle.System
 		RETURN
 		
-	CONSTRUCTOR(Owner AS XSharp.VO.Control, dwStyle AS LONG, dwExStyle AS LONG)
+	CONSTRUCTOR(Owner AS VOSDK.Control, dwStyle AS LONG, dwExStyle AS LONG)
 		oProperties := VOControlProperties{SELF, Owner, dwStyle, dwExStyle}
 		SUPER()
 		SELF:Initialize()
@@ -105,7 +106,7 @@ CLASS VORadioButton INHERIT System.Windows.Forms.RadioButton IMPLEMENTS IVOContr
 			SELF:SetStyle(ControlStyles.StandardClick, TRUE)
 		RETURN
 	
-	CONSTRUCTOR(Owner AS XSharp.VO.Control, dwStyle AS LONG, dwExStyle AS LONG)
+	CONSTRUCTOR(Owner AS VOSDK.Control, dwStyle AS LONG, dwExStyle AS LONG)
 		oProperties := VOControlProperties{SELF, Owner, dwStyle, dwExStyle}
 		SUPER()
 		SELF:Initialize()
@@ -149,7 +150,7 @@ CLASS VOGroupBox INHERIT System.Windows.Forms.GroupBox IMPLEMENTS IVOControl, IV
 
 		RETURN
 		
-	CONSTRUCTOR(Owner AS XSharp.VO.Control, dwStyle AS LONG, dwExStyle AS LONG)
+	CONSTRUCTOR(Owner AS VOSDK.Control, dwStyle AS LONG, dwExStyle AS LONG)
 		oProperties := VOControlProperties{SELF, Owner, dwStyle, dwExStyle}
 		SUPER()
 		SELF:Initialize()
@@ -286,14 +287,14 @@ END CLASS
 CLASS VOLabel INHERIT System.Windows.Forms.Label IMPLEMENTS IVOControl, IVOControlInitialize
 
 	#include "PropControl.vh"
-	PROPERTY FixedText AS XSharp.VO.FixedText GET (XSharp.VO.FixedText) oProperties:Control
+	PROPERTY FixedText AS VOSDK.FixedText GET (VOSDK.FixedText) oProperties:Control
 
 	METHOD Initialize() AS VOID STRICT
 		SELF:Margin := Padding{0,0,0,0}
 		SELF:UseCompatibleTextRendering := FALSE
         	SELF:ResizeRedraw := TRUE
 		
-	CONSTRUCTOR(Owner AS XSharp.VO.Control, dwStyle AS LONG, dwExStyle AS LONG)
+	CONSTRUCTOR(Owner AS VOSDK.Control, dwStyle AS LONG, dwExStyle AS LONG)
 		oProperties := VOControlProperties{SELF, Owner, dwStyle, dwExStyle}
 		SUPER()
 		SELF:Initialize()
@@ -309,10 +310,10 @@ CLASS VOLabel INHERIT System.Windows.Forms.Label IMPLEMENTS IVOControl, IVOContr
 END CLASS
 
 CLASS VOOwnerDrawnLabel INHERIT VOLabel IMPLEMENTS IVOControl
-	PROPERTY FixedText AS XSharp.VO.FixedText GET (XSharp.VO.FixedText) oProperties:Control
+	PROPERTY FixedText AS VOSDK.FixedText GET (VOSDK.FixedText) oProperties:Control
 	// No need to include because inherits from VOLabel
 	
-	CONSTRUCTOR(Owner AS XSharp.VO.Control, dwStyle AS LONG, dwExStyle AS LONG)
+	CONSTRUCTOR(Owner AS VOSDK.Control, dwStyle AS LONG, dwExStyle AS LONG)
 		SUPER(Owner, dwStyle, dwExStyle)
 		
 //	#define WM_NCHITTEST 0X0084
@@ -343,7 +344,7 @@ CLASS VOImageLabel INHERIT System.Windows.Forms.Label IMPLEMENTS IVOControl, IVO
 		SELF:UseCompatibleTextRendering := FALSE
 		RETURN
 	
-	CONSTRUCTOR(Owner AS XSharp.VO.Control, dwStyle AS LONG, dwExStyle AS LONG)
+	CONSTRUCTOR(Owner AS VOSDK.Control, dwStyle AS LONG, dwExStyle AS LONG)
 		oProperties := VOControlProperties{SELF, Owner, dwStyle, dwExStyle}
 		SUPER()
 		SELF:Initialize()
@@ -364,7 +365,7 @@ CLASS VOLinkLabel INHERIT System.Windows.Forms.LinkLabel IMPLEMENTS IVOControl, 
 		SELF:UseCompatibleTextRendering := FALSE
 		RETURN
 
-	CONSTRUCTOR(Owner AS XSharp.VO.Control, dwStyle AS LONG, dwExStyle AS LONG)
+	CONSTRUCTOR(Owner AS VOSDK.Control, dwStyle AS LONG, dwExStyle AS LONG)
 		oProperties := VOControlProperties{SELF, Owner, dwStyle, dwExStyle}
 		SUPER()
 		SELF:Initialize()
@@ -383,7 +384,7 @@ CLASS VOProgressBar INHERIT System.Windows.Forms.ProgressBar IMPLEMENTS IVOContr
 
 	#include "PropControl.vh"
 
-	CONSTRUCTOR(Owner AS XSharp.VO.Control, dwStyle AS LONG, dwExStyle AS LONG)
+	CONSTRUCTOR(Owner AS VOSDK.Control, dwStyle AS LONG, dwExStyle AS LONG)
 		oProperties := VOControlProperties{SELF, Owner, dwStyle, dwExStyle}
 		SUPER()
 		SELF:SetVisualStyle()
@@ -401,7 +402,7 @@ END CLASS
 CLASS VOHScrollBar INHERIT System.Windows.Forms.HScrollBar IMPLEMENTS IVOControl
 
 	#include "PropControl.vh"
-	CONSTRUCTOR(Owner AS XSharp.VO.Control, dwStyle AS LONG, dwExStyle AS LONG)
+	CONSTRUCTOR(Owner AS VOSDK.Control, dwStyle AS LONG, dwExStyle AS LONG)
 		oProperties := VOControlProperties{SELF, Owner, dwStyle, dwExStyle}
 		SUPER()
 		SELF:SetVisualStyle()
@@ -416,7 +417,7 @@ END CLASS
 
 CLASS VOVScrollBar INHERIT System.Windows.Forms.VScrollBar IMPLEMENTS IVOControl
 	#include "PropControl.vh"
-	CONSTRUCTOR(Owner AS XSharp.VO.Control, dwStyle AS LONG, dwExStyle AS LONG)
+	CONSTRUCTOR(Owner AS VOSDK.Control, dwStyle AS LONG, dwExStyle AS LONG)
 		oProperties := VOControlProperties{SELF, Owner, dwStyle, dwExStyle}
 		SUPER()
 		SELF:SetVisualStyle()
@@ -430,7 +431,7 @@ END CLASS
 
 CLASS VOSlider INHERIT System.Windows.Forms.TrackBar IMPLEMENTS IVOControl
 	#include "PropControl.vh"
-	CONSTRUCTOR(Owner AS XSharp.VO.Control, dwStyle AS LONG, dwExStyle AS LONG)
+	CONSTRUCTOR(Owner AS VOSDK.Control, dwStyle AS LONG, dwExStyle AS LONG)
 		oProperties := VOControlProperties{SELF, Owner, dwStyle, dwExStyle}
 		SUPER()
 		SELF:SetVisualStyle()
@@ -445,7 +446,7 @@ END CLASS
 CLASS VOStatusStrip INHERIT System.Windows.Forms.StatusStrip IMPLEMENTS IVOControl
 	PRIVATE oTm AS System.Windows.Forms.Timer
 	#include "PropControl.vh"
-	CONSTRUCTOR(Owner AS XSharp.VO.Control, dwStyle AS LONG, dwExStyle AS LONG)
+	CONSTRUCTOR(Owner AS VOSDK.Control, dwStyle AS LONG, dwExStyle AS LONG)
 		oProperties := VOControlProperties{SELF, Owner, dwStyle, dwExStyle}
 		oTm := System.Windows.Forms.Timer{}
 		oTm:Tick += Timer_Tick
@@ -463,20 +464,20 @@ CLASS VOStatusStrip INHERIT System.Windows.Forms.StatusStrip IMPLEMENTS IVOContr
 		
 
 	VIRTUAL METHOD Timer_Tick(sender AS OBJECT, e AS System.EventArgs)  AS VOID
-		LOCAL oSb AS XSharp.VO.StatusBar
-		oSb := (XSharp.VO.StatusBar) Control
+		LOCAL oSb AS VOSDK.StatusBar
+		oSb := (VOSDK.StatusBar) Control
 		oSb:Timer()
 	
 	VIRTUAL PROTECTED METHOD OnItemClicked(e AS ToolStripItemClickedEventArgs) AS VOID
-		LOCAL oSb AS XSharp.VO.StatusBar
-		oSb := (XSharp.VO.StatusBar) Control
+		LOCAL oSb AS VOSDK.StatusBar
+		oSb := (VOSDK.StatusBar) Control
 		oSb:OnItemClicked(e:ClickedItem)
 	
 END CLASS
 
 CLASS VODateTimePicker  INHERIT System.Windows.Forms.DateTimePicker IMPLEMENTS IVOControl
 	#include "PropControl.vh"
-	CONSTRUCTOR(Owner AS XSharp.VO.Control, dwStyle AS LONG, dwExStyle AS LONG)
+	CONSTRUCTOR(Owner AS VOSDK.Control, dwStyle AS LONG, dwExStyle AS LONG)
 		oProperties := VOControlProperties{SELF, Owner, dwStyle, dwExStyle}
 		SUPER()
 		SELF:SetVisualStyle()
@@ -508,7 +509,7 @@ END CLASS
 
 CLASS VOMonthCalendar  INHERIT System.Windows.Forms.MonthCalendar IMPLEMENTS IVOControl
 	#include "PropControl.vh"
-	CONSTRUCTOR(Owner AS XSharp.VO.Control, dwStyle AS LONG, dwExStyle AS LONG)
+	CONSTRUCTOR(Owner AS VOSDK.Control, dwStyle AS LONG, dwExStyle AS LONG)
 		oProperties := VOControlProperties{SELF, Owner, dwStyle, dwExStyle}
 		SUPER()
 		SELF:SetVisualStyle()

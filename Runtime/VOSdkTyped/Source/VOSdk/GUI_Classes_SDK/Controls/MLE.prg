@@ -65,27 +65,27 @@ CLASS MultiLineEdit INHERIT Edit
 
 	METHOD LineDown ( ) 
 		IF SELF:ValidateControl()
-			Win32.SendMessage(oCtrl:Handle, EM_SCROLL, SB_LINEDOWN, 0)
+			GuiWin32.SendMessage(oCtrl:Handle, EM_SCROLL, SB_LINEDOWN, 0)
 		ENDIF
 		RETURN SELF
 
 	METHOD LineUp ( ) 
 		IF SELF:ValidateControl()
-			Win32.SendMessage(oCtrl:Handle, EM_SCROLL, SB_LINEUP, 0)
+			GuiWin32.SendMessage(oCtrl:Handle, EM_SCROLL, SB_LINEUP, 0)
 		ENDIF
 
 		RETURN SELF
 
 	METHOD PageDown ( ) 
 		IF SELF:ValidateControl()
-			Win32.SendMessage(oCtrl:Handle, EM_SCROLL, SB_PageDown, 0)
+			GuiWin32.SendMessage(oCtrl:Handle, EM_SCROLL, SB_PageDown, 0)
 		ENDIF
 
 		RETURN SELF
 
 	METHOD PageUp() 
 		IF SELF:ValidateControl()
-			Win32.SendMessage(oCtrl:Handle, EM_SCROLL, SB_PageUp, 0)
+			GuiWin32.SendMessage(oCtrl:Handle, EM_SCROLL, SB_PageUp, 0)
 		ENDIF
 
 		RETURN SELF
@@ -96,7 +96,7 @@ CLASS MultiLineEdit INHERIT Edit
 		ENDIF
 
 		IF SELF:ValidateControl()
-			Win32.SendMessage(oCtrl:Handle, EM_LINESCROLL, DWORD(_CAST, nChars), 0)
+			GuiWin32.SendMessage(oCtrl:Handle, EM_LINESCROLL, DWORD(_CAST, nChars), 0)
 		ENDIF
 
 		RETURN SELF
@@ -107,7 +107,7 @@ CLASS MultiLineEdit INHERIT Edit
 		ENDIF
 
 		IF SELF:ValidateControl()
-			Win32.SendMessage(oCtrl:Handle, EM_LINESCROLL, 0, (LONG) nLines)
+			GuiWin32.SendMessage(oCtrl:Handle, EM_LINESCROLL, 0, (LONG) nLines)
 		ENDIF
 
 		RETURN SELF

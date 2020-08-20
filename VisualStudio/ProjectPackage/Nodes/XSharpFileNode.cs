@@ -159,11 +159,11 @@ namespace XSharp.Project
 
             // Parse the contents of the file and see if we have a windows form or a windows control
             XSharpProjectNode projectNode = ProjectMgr as XSharpProjectNode;
-            XSharpModel.XFile xfile = projectNode.ProjectModel.FindFullPath(this.Url);
+            XSharpModel.XFile xfile = projectNode.ProjectModel.FindXFile(this.Url);
             if (xfile == null)
             {
                 projectNode.ProjectModel.AddFile(this.Url);
-                xfile = projectNode.ProjectModel.FindFullPath(this.Url);
+                xfile = projectNode.ProjectModel.FindXFile(this.Url);
             }
             if (xfile != null)
             {
@@ -194,16 +194,16 @@ namespace XSharp.Project
                                 usings.AddRange(xfile.Usings);
                             }
                             var mgr = this.ProjectMgr as XSharpProjectNode;
-                            var type = mgr.ResolveType(parentclass, usings);
+                            var type = mgr.ResolveExternalType(parentclass, usings);
                             if (type != null)
                             {
-                                while (type.BaseType != null)
+                                while (type?.BaseType != null)
                                 {
-                                    var bt = type.BaseType;
-                                    SubType = typeNameToSubtype(bt.Name);
+                                    var btName = type.BaseType;
+                                    SubType = typeNameToSubtype(btName);
                                     if (!String.IsNullOrEmpty(SubType))
                                         break;
-                                    type = bt;
+                                    type = mgr.ResolveExternalType(btName, usings); ;
                                 }
                             }
                             else
@@ -235,6 +235,7 @@ namespace XSharp.Project
             }
             return;
         }
+
 
         public void UpdateHasDesigner()
         {

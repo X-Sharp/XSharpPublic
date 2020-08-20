@@ -16,22 +16,11 @@ namespace XSharp.CodeDom
     internal class XCodeTypeReference : CodeTypeReference
     {
 
-        internal System.Type Type { get; set; }
-        internal XType XType { get; set; }
         internal XCodeTypeReference(string typeName) : base(typeName)
         {
-            Type = null;
-            XType = null;
         }
-        internal XCodeTypeReference(System.Type type) : base(type)
+        internal XCodeTypeReference(IXType type) : base(type.FullName)
         {
-            Type = type;
-            XType = null;
-        }
-        internal XCodeTypeReference(TypeXType type) : base(type.FullName)
-        {
-            Type = type.Type;
-            XType = type.xType;
         }
     }
 
@@ -46,6 +35,13 @@ namespace XSharp.CodeDom
         internal XCodeTypeReferenceExpression(string type) : base(type)
         {
             Name = type;
+            if (Name.StartsWith("global::"))
+            {
+                var typeName= Name.Substring(8);
+                typeName = typeName.Replace(".Properties.Resources",".Resources");
+                this.Type.BaseType = typeName;
+                this.Type.Options = CodeTypeReferenceOptions.GlobalReference;
+            }
         }
         internal XCodeTypeReferenceExpression(CodeTypeReference type) : base(type)
         {

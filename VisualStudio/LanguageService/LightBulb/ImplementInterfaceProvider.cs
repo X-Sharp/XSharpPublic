@@ -125,8 +125,9 @@ namespace XSharp.LanguageService.Editors.LightBulb
 
         public bool SearchImplement()
         {
+#if NOTIMPLEMENTED
             // Try to retrieve an already parsed list of Tags
-             XSharpClassifier xsClassifier = null;
+            XSharpClassifier xsClassifier = null;
             if (m_textBuffer.Properties.ContainsProperty(typeof(XSharpClassifier)))
             {
                 xsClassifier = m_textBuffer.Properties[typeof(XSharpClassifier)] as XSharpClassifier;
@@ -149,6 +150,7 @@ namespace XSharp.LanguageService.Editors.LightBulb
                 //
                 foreach (var classification in classifications)
                 {
+
                     if (!classification.Span.Contains(caret.Position.BufferPosition))
                         continue;
 
@@ -169,6 +171,7 @@ namespace XSharp.LanguageService.Editors.LightBulb
                     }
                 }
             }
+#endif
             return false;
         }
 

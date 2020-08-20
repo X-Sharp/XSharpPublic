@@ -107,7 +107,7 @@ namespace XSharp.Project
         private Library library;
 
 
-        private Thread walkerThread;
+        private Thread updateTreeThread;
         private ManualResetEvent requestPresent;
         private ManualResetEvent shutDownStarted;
         private Queue<LibraryTask> requests;
@@ -142,8 +142,8 @@ namespace XSharp.Project
             requestPresent = new ManualResetEvent(false);
             shutDownStarted = new ManualResetEvent(false);
             // Changes in the Model ??
-            walkerThread = new Thread(new ThreadStart(WalkerThread));
-            walkerThread.Start();
+            updateTreeThread = new Thread(new ThreadStart(UpdateTreeThread));
+            updateTreeThread.Start();
         }
 
         private IVsRunningDocumentTable DocumentTable
@@ -151,7 +151,7 @@ namespace XSharp.Project
             get
             {
                 IVsRunningDocumentTable rdt = null;
-                UIThread.DoOnUIThread( () => rdt = (IVsRunningDocumentTable) provider.GetService(typeof(SVsRunningDocumentTable)));
+                UIThread.DoOnUIThread(() => rdt = (IVsRunningDocumentTable)provider.GetService(typeof(SVsRunningDocumentTable)));
                 return rdt;
             }
         }
@@ -183,7 +183,7 @@ namespace XSharp.Project
             runningDocTableCookie = 0;
         }
 
-#region IDisposable Members
+        #region IDisposable Members
         public void Dispose()
         {
             // Make sure that the parse thread can exit.
@@ -191,14 +191,14 @@ namespace XSharp.Project
             {
                 shutDownStarted.Set();
             }
-            if ((null != walkerThread) && walkerThread.IsAlive)
+            if ((null != updateTreeThread) && updateTreeThread.IsAlive)
             {
-                walkerThread.Join(500);
-                if (walkerThread.IsAlive)
+                updateTreeThread.Join(500);
+                if (updateTreeThread.IsAlive)
                 {
-                    walkerThread.Abort();
+                    updateTreeThread.Abort();
                 }
-                walkerThread = null;
+                updateTreeThread = null;
             }
 
             requests.Clear();
@@ -242,9 +242,9 @@ namespace XSharp.Project
                 shutDownStarted = null;
             }
         }
-#endregion
+        #endregion
 
-#region IXSharpLibraryManager
+        #region IXSharpLibraryManager
         /// <summary>
         /// Called when a project is loaded
         /// </summary>
@@ -252,11 +252,12 @@ namespace XSharp.Project
         public void RegisterHierarchy(IVsHierarchy hierarchy, XProject Prj, XSharpProjectNode ProjectNode)
         {
             // No Hierarchy or... Hierarchy already registered ?
-            //var optionsPage = XSharpProjectPackage.Instance.GetIntellisenseOptionsPage();
-            //if (optionsPage.DisableClassViewObjectView)
-            //{
-            //    return;
-            //}
+            var optionsPage = XSharpProjectPackage.Instance.GetIntellisenseOptionsPage();
+            // disable classview for now
+            if (optionsPage.DisableClassViewObjectView)// || true)
+            {
+                return;
+            }
 
             if ((null == hierarchy) || hierarchies.ContainsKey(hierarchy))
             {
@@ -280,6 +281,7 @@ namespace XSharp.Project
             //this._defaultNameSpace = prjNode.DefaultNameSpace;
             //Define Callback
             ProjectNode.ProjectModel.FileWalkComplete = new XProject.OnFileWalkComplete(OnFileWalkComplete);
+            ProjectNode.ProjectModel.ProjectWalkComplete = new XProject.OnProjectWalkComplete(OnProjectWalkComplete);
 
             // Attach a listener to the Project/Hierarchy,so any change is raising an event
             HierarchyListener listener = new HierarchyListener(hierarchy);
@@ -381,7 +383,7 @@ namespace XSharp.Project
         /// a specific file. The resulting tree is built using LibraryNode objects so that it can
         /// be used inside the class view or object browser.
         /// </summary>
-        private void WalkerThread()
+        private void UpdateTreeThread()
         {
             const int waitTimeout = 500;
 
@@ -474,24 +476,27 @@ namespace XSharp.Project
 
         private void CreateModuleTree(XSharpLibraryProject prjNode, XFile scope, XSharpModuleId moduleId)
         {
-            if ((null == scope))
+            if (null == scope || XSolution.IsClosing)
             {
                 return;
             }
+
             if (!scope.HasCode)
                 return;
             // Retrieve all Types
-            var elements = scope.TypeList;
-            if (elements == null)
+            // !!! WARNING !!! The XFile object (scope) comes from the DataBase
+            // We should retrieve TypeList from the DataBase.....
+            var namespaces = XSharpModel.XDatabase.GetNamespacesInFile(scope.Id.ToString());
+            if (namespaces == null)
                 return;
             //
+            var elements = XDbResultHelpers.BuildTypesInFile(scope, namespaces);
             // First search for NameSpaces
-            foreach (KeyValuePair<string, XType> pair in elements)
+            foreach (XTypeDefinition xType in elements)
             {
-                XType xType = pair.Value;
                 if (xType.Kind == Kind.Namespace)
                 {
-                    // Does that NameSpave already exist ?
+                    // Does that NameSpace already exist ?
                     // Search for the corresponding NameSpace
                     XSharpLibraryNode newNode;
                     LibraryNode nsNode = prjNode.SearchNameSpace(xType.Name);
@@ -521,18 +526,27 @@ namespace XSharp.Project
                 }
             }
 
+            // Retrieve Classes from the file
+            var types = XSharpModel.XDatabase.GetTypesInFile(scope.Id.ToString());
+            if (types == null)
+                return;
+            elements = XDbResultHelpers.BuildFullTypesInFile(scope, types);
             // Now, look for Classes
-            foreach (KeyValuePair<string, XType> pair in elements)
+            foreach (XTypeDefinition xType in elements)
             {
-                XType xType = pair.Value;
                 // Is it a kind of Type ?
                 if ((xType.Kind.IsType()))
                 {
                     string nSpace = prjNode.DefaultNameSpace;
-                    if (!String.IsNullOrEmpty(xType.NameSpace))
-                        nSpace = xType.NameSpace;
+                    if (!String.IsNullOrEmpty(xType.Namespace))
+                        nSpace = xType.Namespace;
                     // Search for the corresponding NameSpace
                     LibraryNode nsNode = prjNode.SearchNameSpace(nSpace);
+                    if (nsNode == null)
+                    {
+                        nsNode = prjNode.SearchClass(nSpace);
+                    }
+
                     if (nsNode is XSharpLibraryNode)
                     {
                         XSharpLibraryNode xsNSNode = (XSharpLibraryNode)nsNode;
@@ -552,6 +566,7 @@ namespace XSharp.Project
                             nsNode.AddNode(newNode);
                             newNode.parent = nsNode;
                         }
+                        //
                         // Insert Members
                         CreateMembersTree(newNode, xType, moduleId);
                         //
@@ -566,16 +581,16 @@ namespace XSharp.Project
                     }
                 }
             }
+
         }
 
-        private void CreateGlobalTree(LibraryNode current, XType scope, XSharpModuleId moduleId)
+        private void CreateGlobalTree(LibraryNode current, XTypeDefinition scope, XSharpModuleId moduleId)
         {
-            if (null == scope)
+            if (null == scope || XSolution.IsClosing)
             {
                 return;
             }
-
-            foreach (XTypeMember member in scope.Members)
+            foreach (XMemberDefinition member in scope.XMembers)
             {
                 XSharpLibraryNode newNode = new XSharpLibraryNode(member, "", moduleId.Hierarchy, moduleId.ItemID);
                 // Functions ?
@@ -591,14 +606,15 @@ namespace XSharp.Project
             }
         }
 
-        private void CreateMembersTree(LibraryNode current, XType scope, XSharpModuleId moduleId)
+        private void CreateMembersTree(LibraryNode current, XTypeDefinition scope, XSharpModuleId moduleId)
         {
-            if (null == scope)
+            if (null == scope || XSolution.IsClosing)
             {
                 return;
             }
 
-            foreach (XTypeMember member in scope.Members)
+
+            foreach (XMemberDefinition member in scope.Members)
             {
                 XSharpLibraryNode newNode = new XSharpLibraryNode(member, "", moduleId.Hierarchy, moduleId.ItemID);
 
@@ -615,16 +631,23 @@ namespace XSharp.Project
                 }
             }
         }
-#endregion
+        #endregion
 
         //
         /// <summary>
-        /// We come here after a FileWlak
+        /// We come here : After a Project load (xFile == NULL), or after a File Save (xFile == the Saved file)
         /// </summary>
         private void OnFileWalkComplete(XFile xfile)
         {
+            if (xfile == null)
+            {
+                return;
+            }
             // Retrieve the corresponding node
-            if (!xfile.HasCode)
+            if (!xfile.HasCode || XSolution.IsClosing)
+                return;
+            //
+            if (xfile.Virtual)
                 return;
             XSharpProjectNode prjNode = (XSharpProjectNode)xfile.Project.ProjectNode;
             Microsoft.VisualStudio.Project.HierarchyNode node = prjNode.FindURL(xfile.FullPath);
@@ -632,13 +655,28 @@ namespace XSharp.Project
             {
                 XSharpModuleId module = new XSharpModuleId(prjNode.InteropSafeHierarchy, node.ID);
                 module.ContentHashCode = xfile.ContentHashCode;
-                CreateParseRequest(xfile.SourcePath, module);
+                CreateUpdateTreeRequest(xfile.SourcePath, module);
             }
         }
 
-        private void CreateParseRequest(string file, XSharpModuleId id)
+        private void OnProjectWalkComplete(XProject xsProject)
         {
+            if (xsProject != null)
+            {
+                var aFiles = xsProject.SourceFiles;
+                foreach (var fullPath in aFiles)
+                {
+                    var xfile = xsProject.FindXFile(fullPath);
+                    if (xfile != null)
+                        OnFileWalkComplete(xfile);
+                }
+            }
+        }
 
+        private void CreateUpdateTreeRequest(string file, XSharpModuleId id)
+        {
+            if (XSolution.IsClosing)
+                return;
             LibraryTask task = new LibraryTask(file, id);
             task.ModuleID = id;
             lock (requests)
@@ -709,7 +747,7 @@ namespace XSharp.Project
                     return;
                 }
             }
-            CreateParseRequest(args.CanonicalName, new XSharpModuleId(hierarchy, args.ItemID));
+            CreateUpdateTreeRequest(args.CanonicalName, new XSharpModuleId(hierarchy, args.ItemID));
         }
 
         /// <summary>
@@ -747,9 +785,9 @@ namespace XSharp.Project
             }
             //
         }
-#endregion
+        #endregion
 
-#region IVsRunningDocTableEvents Members
+        #region IVsRunningDocTableEvents Members
 
         public int OnAfterAttributeChange(uint docCookie, uint grfAttribs)
         {
@@ -799,12 +837,19 @@ namespace XSharp.Project
 
         public int OnAfterSave(uint docCookie)
         {
-            //string fileName = getFileNameFromCookie(docCookie);
-            //var xFile = XSolution.FindFile(fileName);
-            //if (xFile != null && xFile.HasCode)
-            //{
-            //    xFile.Project.WalkFile(xFile);
-            //}
+            if (!XSolution.IsClosing)
+            {
+                string fileName = getFileNameFromCookie(docCookie);
+                var xFile = XSolution.FindFile(fileName);
+                if (xFile != null && xFile.HasCode)
+                {
+                    xFile.Interactive = true;
+                    // this will update the Model in the DataBase
+                    xFile.Project.WalkFile(xFile);
+                    // Now, check if we need to update the ClassView tree
+                    xFile.Project.FileWalkComplete(xFile);
+                }
+            }
             return VSConstants.S_OK;
         }
 
@@ -903,7 +948,7 @@ namespace XSharp.Project
             return VSConstants.S_OK;
         }
 
-#endregion
+        #endregion
 
         public void OnIdle()
         {

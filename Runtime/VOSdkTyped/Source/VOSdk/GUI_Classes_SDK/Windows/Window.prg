@@ -3,6 +3,8 @@
 #include "VOWin32APILibrary.vh"
 
 using System.Collections.Generic
+USING VOSDK := XSharp.VO.SDK
+
 
 PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParent, ITimer
 	PROTECT oParent AS OBJECT
@@ -24,7 +26,7 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
 	PROTECT lRetVal AS LOGIC
 	PROTECT oOrigin AS Point
 	PROTECT oPen AS Pen
-	PROTECT oCursor AS XSharp.VO.Cursor
+	PROTECT oCursor AS VOSDK.Cursor
 	PROTECT oDragDropClient AS DragDropClient
 	//PROTECT oDragDropServer AS DragDropServer
 	PROTECT oToolBar AS ToolBar
@@ -49,7 +51,7 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
 	PROTECT lTimerRegistered AS LOGIC
 	
 	//PROTECT lDragActive AS LOGIC
-	//PROTECT oDragImageList AS XSharp.VO.ImageList
+	//PROTECT oDragImageList AS VOSDK.ImageList
 	PROTECT hDragSingleCursor AS IntPtr
 	PROTECT hDragMultipCursor AS IntPtr
 	PROTECT aAlignes			AS ARRAY
@@ -61,7 +63,7 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
 	PROTECT oTrayIcon AS VOTrayIcon
 	
 	
-	EXPORT EventReturnValue AS LONGINT
+	PROPERTY EventReturnValue AS LONGINT AUTO
 
 	PROTECT oResourceDialog AS ResourceDialog	// Class that holds the decoded version of the Win32 resource
 	PROPERTY ResourceDialog AS ResourceDialog GET oResourceDialog
@@ -98,7 +100,7 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
 			NEXT
 		ENDIF
 		RETURN oWnd
-	METHOD __SetupDataControl(oDC AS XSharp.VO.Control) AS VOID
+	METHOD __SetupDataControl(oDC AS VOSDK.Control) AS VOID
 		RETURN 
 	
 	METHOD __AddAlign(oControl AS IGUIObject, iType AS USUAL) AS LOGIC STRICT 
@@ -148,13 +150,13 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
 			LOCAL oRect AS System.Drawing.Rectangle
 			IF IsInstanceOf(oControl, #Window)
 				LOCAL oForm AS System.Windows.Forms.Form
-				oForm 			:= ((XSharp.VO.Window) oControl):__Form
+				oForm 			:= ((VOSDK.Window) oControl):__Form
 				oRect 			:= oForm:ClientRectangle
 				oRect:Location 	:= oControl:Origin
 				oRect:Size     	:= oForm:Size
 			ELSE
 				LOCAL oCtrl AS System.Windows.Forms.Control
-				oCtrl			:= ((XSharp.VO.Control) oControl):__Control
+				oCtrl			:= ((VOSDK.Control) oControl):__Control
 				oRect			:= oCtrl:DisplayRectangle
 				oRect:Location  := oCtrl:Location
 			ENDIF
@@ -167,7 +169,7 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
 		
 		RETURN TRUE
 	
-	METHOD __AddTool(oControl AS XSharp.VO.Control) AS LOGIC STRICT 
+	METHOD __AddTool(oControl AS VOSDK.Control) AS LOGIC STRICT 
 		//LOCAL cMessage AS STRING
 		//SELF:EnableToolTips(TRUE)
 		//cMessage := oControl:ToolTipText
@@ -182,7 +184,7 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
 
 		RETURN TRUE
 	
-	METHOD __ShowToolTip(oControl AS XSharp.VO.Control) AS VOID STRICT
+	METHOD __ShowToolTip(oControl AS VOSDK.Control) AS VOID STRICT
 		LOCAL cMessage AS STRING
 		cMessage := oControl:ToolTipText
 		IF STRING.IsNullOrEmpty(cMessage) .and. oControl:UseHLForToolTip
@@ -324,36 +326,36 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
 					IF IsPtr(uType) 
 						pB := (BYTE PTR) @dwType
 						IF (liMulDiv := pB[1]) > 0
-							iCtlX := Win32.MulDiv(iWinWidth , liMulDiv>>4, (LONG) _AND(liMulDiv, 0XF))
+							iCtlX := GuiWin32.MulDiv(iWinWidth , liMulDiv>>4, (LONG) _AND(liMulDiv, 0XF))
 						ENDIF
 						IF (liMulDiv := pB[2]) > 0
-							iCtlY := Win32.MulDiv(iWinHeight , liMulDiv>>4, (LONG)  _AND(liMulDiv, 0XF))
+							iCtlY := GuiWin32.MulDiv(iWinHeight , liMulDiv>>4, (LONG)  _AND(liMulDiv, 0XF))
 						ENDIF 
 						IF (liMulDiv := pB[3]) > 0
-							iCtlWidth := Win32.MulDiv(iWinWidth , liMulDiv>>4,  (LONG) _AND(liMulDiv, 0XF))
+							iCtlWidth := GuiWin32.MulDiv(iWinWidth , liMulDiv>>4,  (LONG) _AND(liMulDiv, 0XF))
 						ENDIF 
 						IF (liMulDiv := pB[4]) > 0
-							iCtlHeight := Win32.MulDiv(iWinHeight , liMulDiv>>4,  (LONG) _AND(liMulDiv, 0XF))
+							iCtlHeight := GuiWin32.MulDiv(iWinHeight , liMulDiv>>4,  (LONG) _AND(liMulDiv, 0XF))
 						ENDIF
 					ELSE        
 						// Width
 						IF _AND(dwType, OA_PWIDTH) = OA_PWIDTH
-							iCtlWidth := Win32.MulDiv(iWinWidth, iCtlRefWidth, iWinRefWidth)
+							iCtlWidth := GuiWin32.MulDiv(iWinWidth, iCtlRefWidth, iWinRefWidth)
 						ELSEIF _AND(dwType, OA_WIDTH) = OA_WIDTH
 							iCtlWidth += iWinWidth - iWinRefWidth
 						ENDIF
 						// Height
 						IF _AND(dwType, OA_PHEIGHT) = OA_PHEIGHT
-							iCtlHeight := Win32.MulDiv(iWinHeight, iCtlRefHeight, iWinRefHeight)
+							iCtlHeight := GuiWin32.MulDiv(iWinHeight, iCtlRefHeight, iWinRefHeight)
 						ELSEIF _AND(dwType, OA_HEIGHT) = OA_HEIGHT
 							iCtlHeight += iWinHeight - iWinRefHeight
 						ENDIF
 						// X-Position
 						IF _AND(dwType, OA_PX) = OA_PX
 							IF _AND(dwType, OA_PWIDTH) = OA_PWIDTH
-								iCtlX := Win32.MulDiv(iWinWidth, iCtlX, iWinRefWidth) 
+								iCtlX := GuiWin32.MulDiv(iWinWidth, iCtlX, iWinRefWidth) 
 							ELSE 
-								iCtlX := Win32.MulDiv(iWinWidth, iCtlX + iCtlRefWidth/2, iWinRefWidth) - iCtlWidth/2
+								iCtlX := GuiWin32.MulDiv(iWinWidth, iCtlX + iCtlRefWidth/2, iWinRefWidth) - iCtlWidth/2
 							ENDIF   
 						ELSEIF _AND(dwType, OA_X) = OA_X
 							iCtlX += iWinWidth - iWinRefWidth
@@ -361,9 +363,9 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
 						// Y- position
 						IF _AND(dwType, OA_PY) = OA_PY
 							IF _AND(dwType, OA_PHEIGHT) = OA_PHEIGHT
-								iCtlY := Win32.MulDiv(iWinHeight, iCtlY, iWinRefHeight)
+								iCtlY := GuiWin32.MulDiv(iWinHeight, iCtlY, iWinRefHeight)
 							ELSE
-								iCtlY := Win32.MulDiv(iWinHeight, iCtlY + iCtlRefHeight/2, iWinRefHeight) - iCtlHeight/2
+								iCtlY := GuiWin32.MulDiv(iWinHeight, iCtlY + iCtlRefHeight/2, iWinRefHeight) - iCtlHeight/2
 							ENDIF
 						ELSEIF _AND(dwType, OA_Y) = OA_Y
 							iCtlY += iWinHeight - iWinRefHeight
@@ -542,10 +544,10 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
 		RETURN hDIB
 	
 
-	ACCESS __Cursor AS XSharp.VO.Cursor STRICT 
+	ACCESS __Cursor AS VOSDK.Cursor STRICT 
 		RETURN oCursor
 
-	ASSIGN __Cursor(oNewCursor AS XSharp.VO.Cursor)  STRICT 
+	ASSIGN __Cursor(oNewCursor AS VOSDK.Cursor)  STRICT 
 		oCursor:=oNewCursor
 	
 	[Obsolete];
@@ -990,9 +992,9 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
 			OTHERWISE
 				RETURN FALSE
 			ENDCASE
-			Win32.PostMessage(hTemp, WM_WCHelp, HelpWindow, liTemp)
+			GuiWin32.PostMessage(hTemp, WM_WCHelp, HelpWindow, liTemp)
 		ELSE
-			Win32.PostMessage(hTemp, WM_WCHELP, HelpControl, LONGINT(_CAST,hTemp))
+			GuiWin32.PostMessage(hTemp, WM_WCHELP, HelpControl, LONGINT(_CAST,hTemp))
 		ENDIF
 		
 		RETURN TRUE
@@ -1057,7 +1059,7 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
 	METHOD __SetSelfMenu() AS VOID STRICT 
 		RETURN
 	
-	METHOD __Timer() AS OBJECT STRICT 
+	METHOD __Timer() AS VOID STRICT 
 		
 		dwTimerCount := dwTimerCount - 1
 		IF (dwTimerCount == 0)
@@ -1069,7 +1071,7 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
 			ENDIF
 		ENDIF
 		
-		RETURN SELF
+		RETURN 
 	
 
 	[Obsolete];
@@ -1113,7 +1115,7 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
 		// Determine Windows version
 		dwTime	:= nTime
 		dwFlags := nFlags
-		Win32.AnimateWindow(SELF:Handle(),dwTime,dwFlags)
+		GuiWin32.AnimateWindow(SELF:Handle(),dwTime,dwFlags)
 		RETURN TRUE
 	
 	ACCESS Automated AS LOGIC
@@ -1533,7 +1535,7 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
 	//	RETURN oDragDropServer
 	
 
-	//ACCESS DragImageList AS XSharp.VO.ImageList
+	//ACCESS DragImageList AS VOSDK.ImageList
 	//	RETURN oDragImageList
 	
 
@@ -1585,13 +1587,13 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
 	METHOD EnableCloseBox(lValue := TRUE AS LOGIC) 
 		LOCAL hBox AS IntPtr	
 		IF SELF:__IsValid 
-			hBox := Win32.GetSystemMenu(oWnd:Handle,FALSE) 
+			hBox := GuiWin32.GetSystemMenu(oWnd:Handle,FALSE) 
 		ENDIF
 		IF hBox != IntPtr.Zero
 			IF lValue 
-				RETURN Win32.EnableMenuItem(hBox,SC_CLOSE,MF_ENABLED)
+				RETURN GuiWin32.EnableMenuItem(hBox,SC_CLOSE,MF_ENABLED)
 			ELSE
-				RETURN Win32.EnableMenuItem(hBox,SC_CLOSE,_OR(MF_GRAYED,MF_BYCOMMAND))
+				RETURN GuiWin32.EnableMenuItem(hBox,SC_CLOSE,_OR(MF_GRAYED,MF_BYCOMMAND))
 			ENDIF
 		ENDIF
 
@@ -1642,7 +1644,7 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
 			oCurrentHelp := oHelpDisplay
 			IF oCurrentHelp = NULL_OBJECT .OR. ! oCurrentHelp:Win32Processing
 				lHelpOn := TRUE
-				//IF (Win32.GetActiveWindow() == oWnd:Handle) .AND. (oApp != NULL_OBJECT)
+				//IF (GuiWin32.GetActiveWindow() == oWnd:Handle) .AND. (oApp != NULL_OBJECT)
 				IF (oApp != NULL_OBJECT)
 					oApp:__SetHelpWind(oWnd, HM_GENERAL)
 				ENDIF
@@ -1665,7 +1667,7 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
 		IF lHelpOn
 			SELF:__EnableHelpCursor(TRUE)
 		ELSE
-			Win32.PostMessage(SELF:Handle(), WM_SYSCOMMAND, SC_CONTEXTHELP, 0)
+			GuiWin32.PostMessage(SELF:Handle(), WM_SYSCOMMAND, SC_CONTEXTHELP, 0)
 		ENDIF
 		
 		RETURN 
@@ -1689,11 +1691,11 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
 	
 
 
-	ACCESS Font AS XSharp.VO.Font
+	ACCESS Font AS VOSDK.Font
 		RETURN oFont
 	
 
-	ASSIGN Font(oNewFont AS XSharp.VO.Font) 
+	ASSIGN Font(oNewFont AS VOSDK.Font) 
 		oFont := oNewFont
 		SELF:__SetFont()
 		RETURN 
@@ -1772,13 +1774,13 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
 
 	METHOD GetStyle() AS LONG
 		IF SELF:__IsValid 
-			RETURN Win32.GetWindowLong(oWnd:Handle, GWL_STYLE)
+			RETURN GuiWin32.GetWindowLong(oWnd:Handle, GWL_STYLE)
 		ENDIF
 		RETURN SELF:dwStyle
 		
 	METHOD GetExStyle AS LONG
 		IF SELF:__IsValid 
-			RETURN Win32.GetWindowLong(oWnd:Handle, GWL_EXSTYLE)
+			RETURN GuiWin32.GetWindowLong(oWnd:Handle, GWL_EXSTYLE)
 		ENDIF
 		RETURN SELF:dwExStyle
 
@@ -1853,12 +1855,12 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
 		RETURN NIL
 	
 
-	METHOD Hide() 
+	METHOD Hide() AS VOID STRICT
 		IF SELF:__IsValid 
 			oWnd:Visible := FALSE
 		ENDIF
 		
-		RETURN NIL
+		RETURN 
 	
 
 	METHOD HorizontalScroll(oScrollEvent) 
@@ -2484,7 +2486,7 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
 		
 		IF (oWnd != NULL_OBJECT)
 			iWnd := (IVOForm) (OBJECT) oWnd
-			dwExStyle := Win32.GetWindowLong(oWnd:Handle, GWL_EXSTYLE)
+			dwExStyle := GuiWin32.GetWindowLong(oWnd:Handle, GWL_EXSTYLE)
 			
 			IF lEnable
 				dwExStyle := _OR(dwExStyle, LONG(_CAST, dwSetExStyle))
@@ -2494,17 +2496,17 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
 				iWnd:Properties:NotExStyle |= dwSetExStyle
 			ENDIF
 			
-			Win32.SetWindowLong(oWnd:Handle, GWL_EXSTYLE, dwExStyle)
+			GuiWin32.SetWindowLong(oWnd:Handle, GWL_EXSTYLE, dwExStyle)
 		ENDIF
 		
 		RETURN dwExStyle
 	
 
-	METHOD SetFocus() 
-		IF SELF:__IsValid  .and. oWnd:Visible
+	METHOD SetFocus() AS VOID STRICT
+		IF SELF:__IsValid  .AND. oWnd:Visible
 			oWnd:Focus()
 		ENDIF
-		RETURN SELF
+		RETURN 
 	
 
 	METHOD SetHandle(oNewWnd AS VOForm) 
@@ -2566,8 +2568,10 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
 	METHOD OnMdiChildActivated(s AS OBJECT, e AS EventArgs) AS VOID
 		SELF:Activate(@@Event{})
 
-	METHOD Show(kShowState) 
-		DEFAULT(@kShowState, SHOWNORMAL)
+    METHOD Show() AS VOID STRICT
+        SELF:Show(SHOWNORMAL)
+        
+	METHOD Show(kShowState AS LONG ) AS VOID STRICT
 		IF SELF:__IsValid
             oWnd:SuspendLayout()
 			IF (NULL_STRING != cCaption)
@@ -2627,7 +2631,7 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
 			oWnd:Show()
 
 		ENDIF	
-		RETURN NIL
+		RETURN 
 
 	METHOD ShowBalloonTrayTip(oIcon,dwID,sHeading,sToolTip,dwTimeOut,dwInfo) 
 		DEFAULT(@dwID,1)

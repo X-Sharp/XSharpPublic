@@ -9,7 +9,7 @@ namespace XSharp.LanguageService
     [Export(typeof(ISignatureHelpSourceProvider))]
     [Name("Signature Help source")]
     [Order(Before = "default")]
-    [ContentType("XSharp")]
+    [ContentType(XSharpConstants.LanguageName)]
     internal class XSharpSignatureHelpSourceProvider : ISignatureHelpSourceProvider
     {
         public ISignatureHelpSource TryCreateSignatureHelpSource(ITextBuffer textBuffer)

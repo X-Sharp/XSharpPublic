@@ -15,7 +15,7 @@ using Microsoft.VisualStudio.Text.Editor;
 using Microsoft.VisualStudio.Text.Editor.OptionsExtensionMethods;
 using Microsoft.VisualStudio.Text;
 using XSharpModel;
-using XSharpColorizer;
+using XSharp.LanguageService;
 
 namespace XSharp.LanguageService
 {

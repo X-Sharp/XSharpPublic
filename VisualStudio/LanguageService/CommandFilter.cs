@@ -24,7 +24,7 @@ using Microsoft.VisualStudio.Text.Operations;
 using Microsoft.VisualStudio.Text.Classification;
 using Microsoft.VisualStudio.Text.Tagging;
 using Microsoft.VisualStudio.Text.Editor.OptionsExtensionMethods;
-using XSharpColorizer;
+using XSharp.LanguageService;
 using XSharpModel;
 using XSharpLanguage;
 using System.Linq;

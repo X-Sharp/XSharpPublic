@@ -8,7 +8,7 @@ using System.Collections.Generic;
 using Microsoft.VisualStudio.Text.Classification;
 using Microsoft.VisualStudio.Text.Tagging;
 using Microsoft.VisualStudio.Text.Editor.OptionsExtensionMethods;
-using XSharpColorizer;
+using XSharp.LanguageService;
 using XSharpLanguage;
 using System.Linq;
 using System;

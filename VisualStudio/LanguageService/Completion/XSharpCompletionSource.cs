@@ -22,7 +22,7 @@ using Microsoft.VisualStudio;
 using LanguageService.CodeAnalysis.XSharp;
 using System.Diagnostics;
 using System.Collections.Immutable;
-using XSharpColorizer;
+using XSharp.LanguageService;
 using XSharp.LanguageService.OptionsPages;
 using System.Runtime.CompilerServices;
 using Microsoft.VisualStudio.Text.Tagging;

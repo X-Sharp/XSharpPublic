@@ -30,6 +30,7 @@ Includes support for Windows Form Editor, WPF Editor, VO Compatible form and men
         <Asset Type="Microsoft.VisualStudio.Assembly" d:Source="File" Path="Mono.Cecil.dll" AssemblyName="Mono.Cecil, Version=0.10.0.0, Culture=neutral, PublicKeyToken=50cebf1cceb9d05e" />
         <Asset Type="Microsoft.VisualStudio.VsPackage" d:Source="Project" d:ProjectName="XSharpProjectCPS" Path="|XSharpProjectCPS;PkgdefProjectOutputGroup|" />
         <Asset Type="Microsoft.VisualStudio.MefComponent" d:Source="Project" d:ProjectName="XSharpProjectCPS" Path="|XSharpProjectCPS|" />
+        <Asset Type="Microsoft.VisualStudio.VsPackage" d:Source="File" Path="ProjectSelectors.pkgdef" />
     </Assets>
     <Content>
         <ProjectTemplate>ProjectTemplates</ProjectTemplate>

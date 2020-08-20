@@ -59,7 +59,6 @@ namespace XSharpColorizer
         private IList<ClassificationSpan> _parserRegions = null;
         private ITextDocumentFactoryService _txtdocfactory;
         private bool _first = true;
-        private XSharpModel.ParseResult _info = null;
         private IToken keywordContext;
         private ITokenStream _tokens;
         private ITextSnapshot _snapshot;
@@ -70,9 +69,6 @@ namespace XSharpColorizer
         #region Properties
         public ITextSnapshot Snapshot => _snapshot;
 
-        private bool disableEntityParsing => _file.Project.ProjectNode.DisableParsing;
-        private bool disableSyntaxHighlighting => _file.Project.ProjectNode.DisableLexing;
-        private bool disableRegions => _file.Project.ProjectNode.DisableRegions;
         #endregion
 
 
@@ -97,7 +93,7 @@ namespace XSharpColorizer
             //
             xtraKeywords = new List<string>();
             // Initialize our background workers
-            this._buffer.Changed += Buffer_Changed;
+            _buffer.Changed += Buffer_Changed;
             _bwClassify = new BackgroundWorker();
             _bwClassify.RunWorkerCompleted += ClassifyCompleted;
             _bwClassify.DoWork += DoClassify;
@@ -160,7 +156,7 @@ namespace XSharpColorizer
         }
         private void ClassifyBuffer(ITextSnapshot snapshot)
         {
-            if (disableSyntaxHighlighting)
+            if (XSettings.DisableSyntaxHighlighting)
                 return;
             // verify if someone else did not classify this already
             XSharpTokens xTokens = _buffer.GetTokens();
@@ -185,7 +181,7 @@ namespace XSharpColorizer
             // Note this runs in the background
             // Wait a little and then get the current snapshot. They may have typed fast or the buffer may have been updated by the formatter
             // wait a second before actually starting to lex the buffer
-            if (disableSyntaxHighlighting)
+            if (XSettings.DisableSyntaxHighlighting)
                 return;
             System.Threading.Thread.Sleep(1000);
             // and then take the current snapshot because it may have changed in the meantime
@@ -197,7 +193,7 @@ namespace XSharpColorizer
         {
             if (ClassificationChanged != null)
             {
-                System.Diagnostics.Trace.WriteLine("-->> XSharpClassifier.triggerRepaint()");
+                Trace.WriteLine("-->> XSharpClassifier.triggerRepaint()");
                 if (snapshot != null && _buffer?.CurrentSnapshot != null)
                 {
                     // tell the editor that we have new info
@@ -207,12 +203,12 @@ namespace XSharpColorizer
                                 new SnapshotSpan(snapshot, Span.FromBounds(0, snapshot.Length))));
                     }
                 }
-                System.Diagnostics.Trace.WriteLine("<<-- XSharpClassifier.triggerRepaint()");
+                Trace.WriteLine("<<-- XSharpClassifier.triggerRepaint()");
             }
         }
         private void ClassifyCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
-            System.Diagnostics.Trace.WriteLine("-->> XSharpClassifier.ClassifyCompleted()");
+            Trace.WriteLine("-->> XSharpClassifier.ClassifyCompleted()");
             try
             {
                 if (e.Cancelled)
@@ -251,9 +247,9 @@ namespace XSharpColorizer
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Trace.WriteLine("<<-- Exception :" + ex.Message);
+                Trace.WriteLine("<<-- Exception :" + ex.Message);
             }
-            System.Diagnostics.Trace.WriteLine("<<-- XSharpClassifier.ClassifyCompleted()");
+            Trace.WriteLine("<<-- XSharpClassifier.ClassifyCompleted()");
         }
 
         #endregion
@@ -261,38 +257,21 @@ namespace XSharpColorizer
         #region Parser Methods
         private void BuildModelDoWork(object sender, DoWorkEventArgs e)
         {
-            if (disableEntityParsing)
+            if (XSettings.DisableEntityParsing)
                 return;
-            System.Diagnostics.Trace.WriteLine("-->> XSharpClassifier.BuildModelDoWork()");
+            Trace.WriteLine("-->> XSharpClassifier.BuildModelDoWork()");
             // Note this runs in the background
             // parse for positional keywords that change the colors
             // and get a reference to the tokenstream
             // do we need to create a new tree
             // this happens the first time in the buffer only
             var snapshot = _buffer.CurrentSnapshot;
-            ITokenStream tokens = null;
-            ParseResult info;
-            {
-                Debug("Starting parse at {0}, version {1}", DateTime.Now, snapshot.Version.ToString());
-                var lines = new List<String>();
-                foreach (var line in snapshot.Lines)
-                {
-                    lines.Add(line.GetText());
-                }
-
-                info = _sourceWalker.Parse(lines, false);
-                lock (gate)
-                {
-                    _info = info;
-                }
-                Debug("Ending parse at {0}, version {1}", DateTime.Now, snapshot.Version.ToString());
-            }
-            tokens = _tokens;
-            if (info != null && tokens != null)
+            var tokens = _tokens;
+            if (tokens != null)
             {
                 Debug("Starting model build  at {0}, version {1}", DateTime.Now, snapshot.Version.ToString());
-                _sourceWalker.BuildModel(info);
-                var regionTags = BuildRegionTags(info, snapshot, xsharpRegionStart, xsharpRegionStop);
+                _sourceWalker.ParseTokens(_tokens, true, false);
+                var regionTags = BuildRegionTags(_sourceWalker.EntityList, _sourceWalker.BlockList, snapshot, xsharpRegionStart, xsharpRegionStop);
                 lock (gate)
                 {
                     _parserRegions = regionTags.ToArray();
@@ -300,7 +279,7 @@ namespace XSharpColorizer
                 DoRepaintRegions();
                 Debug("Ending model build  at {0}, version {1}", DateTime.Now, snapshot.Version.ToString());
             }
-            System.Diagnostics.Trace.WriteLine("<<-- XSharpClassifier.BuildModelDoWork()");
+            Trace.WriteLine("<<-- XSharpClassifier.BuildModelDoWork()");
         }
         #endregion
 
@@ -313,307 +292,69 @@ namespace XSharpColorizer
             }
 
         }
-        public IList<ClassificationSpan> BuildRegionTags(XSharpModel.ParseResult info, ITextSnapshot snapshot, IClassificationType start, IClassificationType stop)
+
+        public IList<ClassificationSpan> BuildRegionTags( IList<XEntityDefinition> entities, IList<XBlock> blocks, ITextSnapshot snapshot, IClassificationType start, IClassificationType stop)
         {
-            if (disableRegions)
+            if (XSettings.DisableRegions)
             {
                 return new List<ClassificationSpan>();
             }
-            System.Diagnostics.Trace.WriteLine("-->> XSharpClassifier.BuildRegionTags()");
+            Trace.WriteLine("-->> XSharpClassifier.BuildRegionTagsNew()");
             var regions = new List<ClassificationSpan>();
-            var classList = new List<EntityObject>();
-            var propertyList = new List<EntityObject>();
-            var eventList = new List<EntityObject>();
-            var optionnalEnd = new List<EntityObject>();
-            bool flagInText = false;
-            // TODO: Get theses from external config
-            string[] input = { "ENDFUNC", "ENDPROC", "ENDFOR", "ENDDEFINE" };
-            xtraKeywords.Clear();
-            xtraKeywords.AddRange(input);
-            //
-            if (info != null && snapshot != null)
+            foreach (var entity in entities)
             {
-
-                // walk list of entities
-                foreach (var oElement in info.Entities)
+                if (entity is XMemberDefinition )
                 {
-                    if (oElement.eType.NeedsEndKeyword())
+                    var member = (XMemberDefinition)entity;
+                    if (member.SingleLine)
                     {
-                        classList.Add(oElement);
+                        continue;
                     }
-                    if (oElement.eType == EntityType._Property)
-                    {
-                        if (oElement.oParent?.eType != EntityType._Interface)
-                        {
-                            // make sure we only push multi line properties
-                            var text = snapshot.GetLineFromPosition(oElement.nOffSet).GetText();
-                            var substatements = text.Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
-                            var words = substatements[0].Split(new char[] { ' ', '\t' }, StringSplitOptions.RemoveEmptyEntries);
-                            var singleLine = false;
-                            foreach (var word in words)
-                            {
-                                switch (word.ToLower())
-                                {
-                                    case "auto":
-                                    case "get":
-                                    case "set":
-                                        singleLine = true;
-                                        break;
-                                    default:
-                                        break;
-                                }
-                            }
-                            if (!singleLine)
-                            {
-                                propertyList.Add(oElement);
-                            }
-                        }
-                    }
-                    else if (oElement.eType == EntityType._Event)
-                    {
-                        if (oElement.oParent?.eType != EntityType._Interface)
-                        {
-                            // make sure we only push multi line properties
-                            var text = snapshot.GetLineFromPosition(oElement.nOffSet).GetText();
-                            var substatements = text.Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
-                            var words = substatements[0].Split(new char[] { ' ', '\t' }, StringSplitOptions.RemoveEmptyEntries);
-                            var singleLine = false;
-                            foreach (var word in words)
-                            {
-                                switch (word.ToLower())
-                                {
-                                    case "add":
-                                    case "remove":
-                                        singleLine = true;
-                                        break;
-                                    default:
-                                        break;
-                                }
-                            }
-                            if (!singleLine)
-                            {
-                                eventList.Add(oElement);
-                            }
-                        }
-                    }
-                    else if (oElement.HasEnd)
-                    {
-                        optionnalEnd.Add(oElement);
-                    }
-                    else if (oElement.eType.HasBody()
-                            || oElement.eType == EntityType._VOStruct
-                            || oElement.eType == EntityType._Union)
-                    {
-                        int nStart, nEnd;
-                        nStart = oElement.nOffSet;
-                        nEnd = oElement.nOffSet;
-                        //
-                        var oNext = oElement.oNext;
-                        if (oElement.eType == EntityType._VOStruct
-                            || oElement.eType == EntityType._Union)
-                        {
-                            while (oNext != null && oNext.eType == EntityType._Field)
-                            {
-                                oNext = oNext.oNext;
-                            }
-                        }
-                        if (oNext != null && oNext.nOffSet > nEnd + 2)
-                        {
-                            nEnd = oNext.nOffSet - 2;
-                        }
-                        int nParentEnd = nEnd;
-                        if (oElement.oParent?.cName != XElement.GlobalName)
-                        {
-                            // find the endclass line after this element
-                            foreach (var oLine in info.SpecialLines)
-                            {
-                                if (oLine.eType == LineType.EndClass && oLine.Line > oElement.nStartLine)
-                                {
-                                    var nLine = oLine.Line;
-                                    // our lines are 1 based and we want the line before, so -2
-                                    nParentEnd = snapshot.GetLineFromLineNumber(nLine - 2).Start;
-                                    break;
-                                }
-                            }
-                        }
-                        if (oNext != null)
-                        {
-                            var nLine = oNext.nStartLine;
-                            if (oNext.VisualStartLine != -1)
-                                nLine = oNext.VisualStartLine;
-                            // our lines are 1 based and we want the line before, so -2
-                            nEnd = snapshot.GetLineFromLineNumber(nLine - 2).Start;
-                            // If our Parent ends before the Next, get the Parent's End
-                            if (nParentEnd < nEnd)
-                                nEnd = nParentEnd;
-                        }
-                        else
-                        {
-                            nEnd = nParentEnd;
-                            if (nEnd == nStart)
-                            {
-                                var nEndLine = snapshot.LineCount;
-                                // walk the special lines collection to see if there are any 'end' lines at the end of the file
-                                for (int i = info.SpecialLines.Count - 1; i >= 0; i--)
-                                {
-                                    var oLine = info.SpecialLines[i];
-                                    switch (oLine.eType)
-                                    {
-                                        case LineType.EndNamespace:
-                                        case LineType.EndClass:
-                                            nEndLine = oLine.Line - 1;
-                                            break;
-                                        default:
-                                            i = -1; // exit the loop
-                                            break;
-                                    }
-                                }
-                                // Our lines are 1 based, so subtract 1
-                                nEnd = snapshot.GetLineFromLineNumber(nEndLine - 1).Start;
-                            }
-                        }
-                        if (nEnd > snapshot.Length)
-                        {
-                            nEnd = snapshot.Length;
-                        }
-                        AddRegionSpan(regions, snapshot, nStart, nEnd);
-
-                    }
-
                 }
-
+                var startPos = entity.Interval.Start;
+                var endPos = entity.Interval.Stop;
+                AddRegionSpan(regions, snapshot, startPos, endPos);
             }
-            var blockStack = new Stack<LineObject>();
-            var nsStack = new Stack<LineObject>();
-            foreach (var oLine in info.SpecialLines)
+
+            foreach (var block in blocks)
             {
-                int nStart = 0, nEnd = 0;
-                switch (oLine.eType)
+                var startPos = block.Token1.StartIndex;
+                var endPos = block.Last.Token2.StopIndex;
+
+                AddRegionSpan(regions, snapshot, startPos, endPos);
+                if (block.Children.Count > 1)
                 {
-                    case LineType.BeginNamespace:
-                        nsStack.Push(oLine);
-                        break;
-                    case LineType.EndNamespace:
-                        if (nsStack.Count > 0)
+                    var lastline = block.Token1.Line;
+                    foreach (var child in block.Children)
+                    {
+                        if (child.Token1.Line > lastline+1 && child.Token1.Line >= 2)
                         {
-                            var nsStart = nsStack.Pop();
-                            nStart = nsStart.OffSet;
-                            nEnd = oLine.OffSet;
-                            AddRegionSpan(regions, snapshot, nStart, nEnd);
+                            // the child is a line with CASE, ELSE, ELSEIF CATCH etc.
+                            // we want the last token of the previous like to be the end of the previous block
+                            endPos = snapshot.GetLineFromLineNumber(child.Token1.Line - 2).End;
+                            AddRegionSpan(regions, snapshot, startPos, endPos);
                         }
-                        break;
-                    case LineType.EndClass:
-                        if (classList.Count > 0)
-                        {
-                            var cls = classList[0];
-                            classList.RemoveAt(0);
-                            nStart = cls.nOffSet;
-                            nEnd = oLine.OffSet;
-                            AddRegionSpan(regions, snapshot, nStart, nEnd);
-                        }
-                        break;
-                    case LineType.EndProperty:
-                        if (propertyList.Count > 0)
-                        {
-                            var prop = propertyList[0];
-                            propertyList.RemoveAt(0);
-                            nStart = prop.nOffSet;
-                            nEnd = oLine.OffSet;
-                            AddRegionSpan(regions, snapshot, nStart, nEnd);
-                        }
-                        break;
-                    case LineType.EndEvent:
-                        if (eventList.Count > 0)
-                        {
-                            var prop = eventList[0];
-                            eventList.RemoveAt(0);
-                            nStart = prop.nOffSet;
-                            nEnd = oLine.OffSet;
-                            AddRegionSpan(regions, snapshot, nStart, nEnd);
-                        }
-                        break;
-                    case LineType.OptionnalEnd:
-                        if (optionnalEnd.Count > 0)
-                        {
-                            var block = optionnalEnd[0];
-                            optionnalEnd.RemoveAt(0);
-                            nStart = block.nOffSet;
-                            nEnd = oLine.OffSet;
-                            AddRegionSpan(regions, snapshot, nStart, nEnd);
-                        }
-                        break;
-                    case LineType.TokenIn:
-                        if (!flagInText)
-                            blockStack.Push(oLine);
-                        if (oLine.cArgument == "TEXT")
-                            flagInText = true;
-                        break;
-                    case LineType.TokenInOut:
-                        if (!flagInText)
-                            blockStack.Push(oLine);
-                        break;
-                    case LineType.TokenOut:
-                        if (blockStack.Count > 0)
-                        {
-                            LineObject blStart = null;
-                            LineObject blEnd = oLine;
-                            // pop back to first token of the if .. endif or do case .. endcase
-                            while (blockStack.Count > 0 && blockStack.Peek().eType == LineType.TokenInOut)
-                            {
-                                blStart = blockStack.Pop();
-                                nStart = blStart.OffSet;
-                                nEnd = snapshot.GetLineFromLineNumber(blEnd.Line - 2).Start;
-                                // Fallthrough CASEs ??
-                                if ((nStart == nEnd) && (blStart.cArgument == "CASE"))
-                                {
-
-                                }
-                                else
-                                {
-                                    AddRegionSpan(regions, snapshot, nStart, nEnd);
-
-                                }
-                                blEnd = blStart;
-                            }
-                            if (blockStack.Count > 0)
-                            {
-
-                                blStart = blockStack.Pop();
-                                nStart = blStart.OffSet;
-                                // get position of the line based on the line number
-                                nEnd = snapshot.GetLineFromLineNumber(oLine.Line - 1).Start;
-                                //
-                                if (flagInText && (oLine.cArgument == "ENDTEXT"))
-                                    flagInText = false;
-                                AddRegionSpan(regions, snapshot, nStart, nEnd);
-                            }
-                        }
-                        break;
-                    default:
-                        break;
+                        startPos = child.Token1.StartIndex;
+                        lastline = child.Token1.Line;
+                    }
                 }
             }
-            System.Diagnostics.Trace.WriteLine("<<-- XSharpClassifier.BuildRegionTags()");
+            Trace.WriteLine("<<-- XSharpClassifier.BuildRegionTags()");
             return regions;
         }
-        private void AddRegionSpan(List<ClassificationSpan> regions, ITextSnapshot snapshot, int nStart, int nEnd)
+        private void AddRegionSpan(List<ClassificationSpan> regions, ITextSnapshot snapshot, int startPos, int endPos)
         {
             try
             {
                 TextSpan tokenSpan;
                 ClassificationSpan span;
-                int nLineLength = snapshot.GetLineFromPosition(nStart).Length;
-                tokenSpan = new TextSpan(nStart, nLineLength);
+                int nLineLength = snapshot.GetLineFromPosition(startPos).Length;
+                tokenSpan = new TextSpan(startPos, nLineLength);
                 span = tokenSpan.ToClassificationSpan(snapshot, xsharpRegionStart);
                 regions.Add(span);
-                nLineLength = snapshot.GetLineFromPosition(nEnd).Length;
-                if (nEnd + nLineLength >= snapshot.Length)
-                {
-                    nLineLength = snapshot.Length - nEnd - 1;
-                    if (nLineLength < 0)
-                        nLineLength = 0;
-                }
-                tokenSpan = new TextSpan(nEnd, nLineLength);
+                endPos = snapshot.GetLineFromPosition(endPos).Start;
+                nLineLength = snapshot.GetLineFromPosition(endPos).Length; ;
+                tokenSpan = new TextSpan(endPos, nLineLength);
                 span = tokenSpan.ToClassificationSpan(snapshot, xsharpRegionStop);
                 regions.Add(span);
             }
@@ -1064,7 +805,7 @@ namespace XSharpColorizer
                                 newtags.Add(item);
                         }
 
-                        if (!disableRegions)
+                        if (!XSettings.DisableRegions)
                         {
                             // now look for Regions of similar code lines
                             switch (token.Type)
@@ -1108,14 +849,14 @@ namespace XSharpColorizer
             {
                 newtags = _colorTags;
             }
-            System.Diagnostics.Trace.WriteLine("-->> XSharpClassifier.BuildColorClassifications()");
+            Trace.WriteLine("-->> XSharpClassifier.BuildColorClassifications()");
             lock (gate)
             {
                 _snapshot = snapshot;
                 _colorTags = newtags;
                 _lexerRegions = regionTags;
             }
-            System.Diagnostics.Trace.WriteLine("<<-- XSharpClassifier.BuildColorClassifications()");
+            Trace.WriteLine("<<-- XSharpClassifier.BuildColorClassifications()");
             Debug("End building Classifications at {0}, version {1}", DateTime.Now, snapshot.Version.ToString());
             triggerRepaint(snapshot);
         }
@@ -1161,7 +902,7 @@ namespace XSharpColorizer
 
         public IList<ClassificationSpan> GetRegionTags()
         {
-            System.Diagnostics.Trace.WriteLine("-->> XSharpClassifier.GetRegionTags()");
+            Trace.WriteLine("-->> XSharpClassifier.GetRegionTags()");
             IList<ClassificationSpan> result;
             lock (gate)
             {
@@ -1181,19 +922,19 @@ namespace XSharpColorizer
                     result = new List<ClassificationSpan>();
                 }
             }
-            System.Diagnostics.Trace.WriteLine("<<-- XSharpClassifier.GetRegionTags()");
+            Trace.WriteLine("<<-- XSharpClassifier.GetRegionTags()");
             return result;
         }
 
         public IList<ClassificationSpan> GetTags()
         {
-            System.Diagnostics.Trace.WriteLine("-->> XSharpClassifier.GetTags()");
+            Trace.WriteLine("-->> XSharpClassifier.GetTags()");
             IList<ClassificationSpan> ret;
             lock (gate)
             {
                 ret = _colorTags.Tags;
             }
-            System.Diagnostics.Trace.WriteLine("<<-- XSharpClassifier.GetTags()");
+            Trace.WriteLine("<<-- XSharpClassifier.GetTags()");
             return ret;
         }
 

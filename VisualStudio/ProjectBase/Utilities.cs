@@ -21,6 +21,7 @@ using System.Security.Permissions;
 using System.Security.Policy;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.OLE.Interop;
@@ -451,7 +452,6 @@ namespace Microsoft.VisualStudio.Project
 			}
 
 			string currentPlatformName = string.Empty;
-            ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
             if (automationObject.ConfigurationManager != null)
 			{
                 try
@@ -470,7 +470,7 @@ namespace Microsoft.VisualStudio.Project
                 }
 			}
 
-			return currentPlatformName;
+            return currentPlatformName;
 		}
 
 

@@ -275,7 +275,7 @@ namespace Microsoft.VisualStudio.Project.Automation
         /// <returns>A List of project items</returns>
         protected IList<EnvDTE.ProjectItem> GetListOfProjectItems()
         {
-            return UIThread.DoOnUIThread(delegate()
+            return (IList<EnvDTE.ProjectItem>) UIThread.DoOnUIThread(delegate()
             {
                 List<EnvDTE.ProjectItem> list = new List<EnvDTE.ProjectItem>();
                 for (HierarchyNode child = this.NodeWithItems.FirstChild; child != null; child = child.NextSibling)

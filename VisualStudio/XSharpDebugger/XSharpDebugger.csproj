@@ -22,8 +22,6 @@
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>$(SolutionDir)Common\XSharp.snk</AssemblyOriginatorKeyFile>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
-    <TargetFrameworkMoniker>.NETFramework,Version=v4.6</TargetFrameworkMoniker>
-    <TargetFrameworkProfile />
     <ProjectGuid>{16272550-75E6-4B9D-91E3-653BD141C755}</ProjectGuid>
     <BootstrapperEnabled>true</BootstrapperEnabled>
     <IncludeDebugSymbolsInVSIXContainer>true</IncludeDebugSymbolsInVSIXContainer>
@@ -71,7 +69,6 @@
     <VsdConfigFile>$(OutputPath)\XSharpDebugger.vsdconfig</VsdConfigFile>
     <!--Root directory to Concord SDK install; includes the trailing backslash '\'.-->
     <ConcordSDKDir>$(VSSDKRoot)VisualStudioIntegration\</ConcordSDKDir>
-    
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="..\..\Common\CommonAssemblyInfo.cs">
@@ -152,10 +149,10 @@
       <Version>16.4.1111102</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.VisualStudio.SDK">
-      <Version>15.0.0</Version>
+      <Version>16.0.206</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.VisualStudio.Threading">
-      <Version>15.8.209</Version>
+      <Version>16.7.54</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.VSSDK.Debugger.VSDConfigTool">
       <Version>16.4.1111102</Version>

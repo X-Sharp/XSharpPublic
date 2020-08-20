@@ -49,14 +49,10 @@ namespace XSharp.LanguageService
 
         internal void WriteOutputMessage(string message)
         {
-<<<<<<< HEAD:VisualStudio/LanguageService/QuickInfo/XSharpQuickInfo.cs
-            XSharpLanguageService.DisplayOutPutMessage("XSharp.QuickInfoSource :" + message);
-=======
             if (_optionsPage.EnableQuickInfoLog && _optionsPage.EnableOutputPane)
             {
-                XSharpProjectPackage.Instance.DisplayOutPutMessage("XSharp.QuickInfoSource :" + message);
+                XSettings.DisplayOutputMessage("XSharp.QuickInfoSource :" + message);
             }
->>>>>>> feature/Intellisense:VisualStudio/ProjectPackage/Editors/QuickInfo/XSharpQuickInfo.cs
         }
 
         //static bool skipFirst = true;
@@ -64,19 +60,6 @@ namespace XSharp.LanguageService
         public void AugmentQuickInfoSession(IQuickInfoSession session, IList<object> qiContent, out ITrackingSpan applicableToSpan)
         {
             applicableToSpan = null;
-<<<<<<< HEAD:VisualStudio/LanguageService/QuickInfo/XSharpQuickInfo.cs
-            Microsoft.VisualStudio.Shell.ThreadHelper.ThrowIfNotOnUIThread();
-            if (skipFirst)
-            {
-                skipFirst = false;
-                return;
-            }
-            else
-            {
-                skipFirst = true;
-            }
-            if (XSharpLanguageService.Instance.DebuggerIsRunning)
-=======
             //if (skipFirst)
             //{
             //    skipFirst = false;
@@ -86,8 +69,7 @@ namespace XSharp.LanguageService
             //{
             //    skipFirst = true;
             //}
-            if (XSharpProjectPackage.Instance.DebuggerIsRunning)
->>>>>>> feature/Intellisense:VisualStudio/ProjectPackage/Editors/QuickInfo/XSharpQuickInfo.cs
+            if (XSharpLanguageService.Instance.DebuggerIsRunning)
             {
                 return;
             }
@@ -151,13 +133,8 @@ namespace XSharp.LanguageService
                 // Then, the corresponding Type/Element if possible
                 IToken stopToken;
                 //ITokenStream tokenStream;
-<<<<<<< HEAD:VisualStudio/LanguageService/QuickInfo/XSharpQuickInfo.cs
-                XSharpModel.XTypeMember member = XSharpTokenTools.FindMember(lineNumber, _file);
-                XSharpModel.XType currentNamespace = XSharpTokenTools.FindNamespace(caretPos, _file);
-=======
-                XMemberDefinition member = XSharpLanguage.XSharpTokenTools.FindMember(lineNumber, _file);
-                XTypeDefinition currentNamespace = XSharpLanguage.XSharpTokenTools.FindNamespace(caretPos, _file);
->>>>>>> feature/Intellisense:VisualStudio/ProjectPackage/Editors/QuickInfo/XSharpQuickInfo.cs
+                XMemberDefinition member = XSharpTokenTools.FindMember(lineNumber, _file);
+                XTypeDefinition currentNamespace = XSharpTokenTools.FindNamespace(caretPos, _file);
                 // adjust caretpos, for other completions we need to stop before the caret. Now we include the caret
                 List<String> tokenList = XSharpTokenTools.GetTokenList(caretPos + 1, lineNumber, tokens.TokenStream, out stopToken, true, _file, false, member);
                 // Check if we can get the member where we are
@@ -166,13 +143,8 @@ namespace XSharp.LanguageService
                 //    tokenList.RemoveRange(0, tokenList.Count - 1);
                 //}
                 // LookUp for the BaseType, reading the TokenList (From left to right)
-<<<<<<< HEAD:VisualStudio/LanguageService/QuickInfo/XSharpQuickInfo.cs
                 CompletionElement gotoElement;
-                String currentNS = "";
-=======
-                XSharpLanguage.CompletionElement gotoElement;
                 string currentNS = "";
->>>>>>> feature/Intellisense:VisualStudio/ProjectPackage/Editors/QuickInfo/XSharpQuickInfo.cs
                 if (currentNamespace != null)
                 {
                     currentNS = currentNamespace.Name;
@@ -210,41 +182,24 @@ namespace XSharp.LanguageService
 
                             }
                         }
-<<<<<<< HEAD:VisualStudio/LanguageService/QuickInfo/XSharpQuickInfo.cs
-                        else if (gotoElement.XSharpElement is XSharpModel.XTypeMember xtm)
-                        {
-                            QuickInfoTypeMember qitm = new QuickInfoTypeMember(xtm, kwFormat.ForegroundBrush, txtFormat.ForegroundBrush);
-=======
                         else if (gotoElement.Result is IXMember)
                         {
                             QuickInfoTypeMember qitm = new QuickInfoTypeMember((IXMember)gotoElement.Result, kwFormat.ForegroundBrush, txtFormat.ForegroundBrush);
->>>>>>> feature/Intellisense:VisualStudio/ProjectPackage/Editors/QuickInfo/XSharpQuickInfo.cs
                             var description = new TextBlock();
                             description.Inlines.AddRange(qitm.WPFDescription);
                             qiContent.Add(description);
                         }
-<<<<<<< HEAD:VisualStudio/LanguageService/QuickInfo/XSharpQuickInfo.cs
-                        else if (gotoElement.XSharpElement is XSharpModel.XVariable xv)
-                        {
-                            QuickInfoVariable qitm = new QuickInfoVariable(xv, kwFormat.ForegroundBrush, txtFormat.ForegroundBrush);
-=======
                         else if (gotoElement.Result is IXVariable)
                         {
                             QuickInfoVariable qitm = new QuickInfoVariable((IXVariable)gotoElement.Result, kwFormat.ForegroundBrush, txtFormat.ForegroundBrush);
->>>>>>> feature/Intellisense:VisualStudio/ProjectPackage/Editors/QuickInfo/XSharpQuickInfo.cs
                             var description = new TextBlock();
                             description.Inlines.AddRange(qitm.WPFDescription);
                             qiContent.Add(description);
 
                         }
-<<<<<<< HEAD:VisualStudio/LanguageService/QuickInfo/XSharpQuickInfo.cs
-                        else if (gotoElement.XSharpElement is XSharpModel.XType xtype)
-                        {
-=======
                         else if (gotoElement.Result is IXType)
                         {
                             var xtype = gotoElement.Result as IXType;
->>>>>>> feature/Intellisense:VisualStudio/ProjectPackage/Editors/QuickInfo/XSharpQuickInfo.cs
                             var qitm = new QuickInfoTypeAnalysis(xtype, kwFormat.ForegroundBrush, txtFormat.ForegroundBrush);
                             var description = new TextBlock();
                             description.Inlines.AddRange(qitm.WPFDescription);

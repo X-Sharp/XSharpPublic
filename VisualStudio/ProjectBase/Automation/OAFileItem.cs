@@ -49,10 +49,10 @@ namespace Microsoft.VisualStudio.Project.Automation
         {
             get
             {
-                return UIThread.DoOnUIThread(delegate()
+                bool isDirty = false;
+                UIThread.DoOnUIThread(delegate()
                 {
                     CheckProjectIsValid();
-                    bool isDirty = false;
 
                     using (AutomationScope scope = new AutomationScope(this.Node.ProjectMgr.Site))
                     {
@@ -63,8 +63,8 @@ namespace Microsoft.VisualStudio.Project.Automation
                         isDirty = manager.IsDirty;
                     }
 
-                    return isDirty;
                 });
+                return isDirty;
             }
 
         }
@@ -76,7 +76,7 @@ namespace Microsoft.VisualStudio.Project.Automation
         {
             get
             {
-                return UIThread.DoOnUIThread(delegate()
+                return (EnvDTE.Document) UIThread.DoOnUIThread(delegate()
                 {
                     CheckProjectIsValid();
 
@@ -117,7 +117,7 @@ namespace Microsoft.VisualStudio.Project.Automation
         /// <returns>Window object</returns>
         public override EnvDTE.Window Open(string viewKind)
         {
-            return UIThread.DoOnUIThread(delegate()
+            return (EnvDTE.Window) UIThread.DoOnUIThread(delegate()
             {
                 CheckProjectIsValid();
 
@@ -212,7 +212,8 @@ namespace Microsoft.VisualStudio.Project.Automation
         /// <returns>A Boolean value indicating true if the project is open in the given view type; false if not. </returns>
         public override bool get_IsOpen(string viewKind)
         {
-            return UIThread.DoOnUIThread(delegate()
+            bool isOpen = false;
+            UIThread.DoOnUIThread(delegate()
             {
             	CheckProjectIsValid();
 
@@ -231,7 +232,6 @@ namespace Microsoft.VisualStudio.Project.Automation
                     throw new ArgumentException(SR.GetString(SR.ParameterMustBeAValidGuid, CultureInfo.CurrentUICulture), "viewKind");
                 }
 
-                bool isOpen = false;
 
                 using (AutomationScope scope = new AutomationScope(this.Node.ProjectMgr.Site))
                 {
@@ -244,8 +244,8 @@ namespace Microsoft.VisualStudio.Project.Automation
 
                 }
 
-                return isOpen;
             });
+            return isOpen;
         }
 
         /// <summary>
@@ -255,7 +255,7 @@ namespace Microsoft.VisualStudio.Project.Automation
         {
             get
             {
-                return UIThread.DoOnUIThread(delegate()
+                return (ProjectItems) UIThread.DoOnUIThread(delegate()
                 {
                     if (this.Project.Project.CanFileNodesHaveChilds)
                         return new OAProjectItems(this.Project, this.Node);

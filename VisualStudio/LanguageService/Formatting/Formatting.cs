@@ -15,6 +15,7 @@ using System;
 using LanguageService.CodeAnalysis.XSharp;
 using Microsoft.VisualStudio.Threading;
 using System.Windows.Threading;
+using XSharpModel;
 
 namespace XSharp.LanguageService
 {
@@ -288,7 +289,7 @@ namespace XSharp.LanguageService
 
         private void FormatDocument()
         {
-            XSharpLanguageService.DisplayOutPutMessage("CommandFilter.FormatDocument() -->>");
+            WriteOutputMessage("CommandFilter.FormatDocument() -->>");
             if (!_buffer.CheckEditAccess())
             {
                 // can't edit !
@@ -448,13 +449,13 @@ namespace XSharp.LanguageService
                     ts.Hours, ts.Minutes, ts.Seconds,
                     ts.Milliseconds / 10);
                 //
-                XSharpLanguageService.DisplayOutPutMessage("FormatDocument : Done in " + elapsedTime);
+                WriteOutputMessage("FormatDocument : Done in " + elapsedTime);
 #endif
             }
             else
                 formatCaseForWholeBuffer();
             //
-            XSharpLanguageService.DisplayOutPutMessage("CommandFilter.FormatDocument() <<--");
+            WriteOutputMessage("CommandFilter.FormatDocument() <<--");
         }
 
         /// <summary>
@@ -1132,7 +1133,6 @@ namespace XSharp.LanguageService
         }
 
 
-
         #region SmartIndent
         // This get reset when a modal dialog is opened in VS
         private static bool _optionsValid = false;
@@ -1166,6 +1166,7 @@ namespace XSharp.LanguageService
             {
                 var package = XSharpLanguageService.Instance;
                 var optionsPage = package.GetIntellisenseOptionsPage();
+                var textManager = package.GetTextManager();
                 //
                 _alignDoCase = optionsPage.AlignDoCase;
                 _alignMethod = optionsPage.AlignMethod;
@@ -1174,16 +1175,16 @@ namespace XSharp.LanguageService
                 _noGotoDefinition = optionsPage.DisableGotoDefinition;
                 var languagePreferences = new LANGPREFERENCES3[1];
                 languagePreferences[0].guidLang = GuidStrings.guidLanguageService;
-                if (!System.Threading.Thread.CurrentThread.IsBackground)
+                int result = 0;
+                var dispatcher = Dispatcher.CurrentDispatcher;
+                dispatcher.Invoke(delegate ()
                 {
-                    int result = 0;
-                    var textManager = package.GetTextManager();
                     result = textManager.GetUserPreferences4(pViewPrefs: null, pLangPrefs: languagePreferences, pColorPrefs: null);
-                    if (result == VSConstants.S_OK)
-                    {
-                        _indentStyle = languagePreferences[0].IndentStyle;
-                        optionsPage.HideAdvancemembers = languagePreferences[0].fHideAdvancedAutoListMembers != 0;
-                    }
+                });
+                if (result == VSConstants.S_OK)
+                {
+                    _indentStyle = languagePreferences[0].IndentStyle;
+                    optionsPage.HideAdvancemembers = languagePreferences[0].fHideAdvancedAutoListMembers != 0;
                 }
                 _tabSize = textView.Options.GetTabSize();
                 _indentSize = textView.Options.GetIndentSize();
@@ -1200,7 +1201,7 @@ namespace XSharp.LanguageService
         /// <returns></returns>
         private int getDesiredIndentation(ITextSnapshotLine line, ITextEdit editSession, bool alignOnPrev)
         {
-            XSharpLanguageService.DisplayOutPutMessage($"CommandFilter.getDesiredIndentation({line.LineNumber + 1})");
+            WriteOutputMessage($"CommandFilter.getDesiredIndentation({line.LineNumber + 1})");
             try
             {
                 //
@@ -1264,8 +1265,8 @@ namespace XSharp.LanguageService
                                 }
                                 catch (Exception ex)
                                 {
-                                    XSharpLanguageService.DisplayOutPutMessage("Indentation of previous line failed");
-                                    XSharpLanguageService.DisplayException(ex);
+                                    WriteOutputMessage("Indentation of previous line failed");
+                                    XSettings.DisplayException(ex);
                                 }
                             }
                         }
@@ -1317,8 +1318,8 @@ namespace XSharp.LanguageService
                                 }
                                 catch (Exception ex)
                                 {
-                                    XSharpLanguageService.DisplayOutPutMessage("Error indenting of current line ");
-                                    XSharpLanguageService.DisplayException(ex);
+                                    WriteOutputMessage("Error indenting of current line ");
+                                    XSettings.DisplayException(ex);
                                 }
                             }
                         }
@@ -1333,8 +1334,8 @@ namespace XSharp.LanguageService
             }
             catch (Exception ex)
             {
-                XSharpLanguageService.DisplayOutPutMessage("SmartIndent.GetDesiredIndentation failed: ");
-                XSharpLanguageService.DisplayException(ex);
+                WriteOutputMessage("SmartIndent.GetDesiredIndentation failed: ");
+                XSettings.DisplayException(ex);
             }
             return _lastIndentValue;
         }
@@ -1824,7 +1825,7 @@ namespace XSharp.LanguageService
 
         private void FormatDocumentV2()
         {
-            XSharpLanguageService.DisplayOutPutMessage("CommandFilter.FormatDocumentV2() -->>");
+            WriteOutputMessage("CommandFilter.FormatDocumentV2() -->>");
             if (!_buffer.CheckEditAccess())
             {
                 // can't edit !
@@ -2024,13 +2025,13 @@ namespace XSharp.LanguageService
                     ts.Hours, ts.Minutes, ts.Seconds,
                     ts.Milliseconds / 10);
                 //
-                XSharpLanguageService.DisplayOutPutMessage("FormatDocument : Done in " + elapsedTime);
+                WriteOutputMessage("FormatDocument : Done in " + elapsedTime);
 #endif
             }
             else
                 formatCaseForWholeBuffer();
             //
-            XSharpLanguageService.DisplayOutPutMessage("CommandFilter.FormatDocument() <<--");
+            WriteOutputMessage("CommandFilter.FormatDocument() <<--");
         }
 
         private int getLineLengthV2(ITextSnapshot snapshot, int start)
@@ -2115,7 +2116,7 @@ namespace XSharp.LanguageService
                     IToken openKeyword = context.GetFirstToken(true);
                     if (openKeyword == null)
                     {
-                        XSharpLanguageService.DisplayOutPutMessage("FormatDocument : Error when moving in Tokens");
+                        WriteOutputMessage("FormatDocument : Error when moving in Tokens");
                         continue; // This should never happen
                     }
                     startTokenType = openKeyword.Type;
@@ -2146,7 +2147,7 @@ namespace XSharp.LanguageService
                                 IToken openKeyword = context.GetFirstToken(true);
                                 if (openKeyword == null)
                                 {
-                                    XSharpLanguageService.DisplayOutPutMessage("FormatDocument : Error when moving in Tokens");
+                                    WriteOutputMessage("FormatDocument : Error when moving in Tokens");
                                     continue; // This should never happen
                                 }
                                 context.MoveBack();
@@ -2191,8 +2192,7 @@ namespace XSharp.LanguageService
                     // Comment or Using region ?
                     switch (startTokenType)
                     {
-                        case XSharpLexer.ML_COMMENT:
-                        case XSharpLexer.SL_COMMENT:
+                        
                         case XSharpLexer.USING:
                         case XSharpLexer.PP_INCLUDE:
                         case XSharpLexer.PP_DEFINE:
@@ -2206,7 +2206,7 @@ namespace XSharp.LanguageService
                                 IToken openKeyword = context.GetFirstToken(true);
                                 if (openKeyword == null)
                                 {
-                                    XSharpLanguageService.DisplayOutPutMessage("FormatDocument : Error when moving in Tokens");
+                                    WriteOutputMessage("FormatDocument : Error when moving in Tokens");
                                     continue; // This should never happen
                                 }
                                 context.MoveBack();
@@ -2217,6 +2217,8 @@ namespace XSharp.LanguageService
                                 continue;
                             break;
                         default:
+                            if (XSharpLexer.IsComment(startTokenType))
+                                continue;
                             break;
                     }
                     // We are between the opening Keyword and the closing Keyword
@@ -2329,7 +2331,7 @@ namespace XSharp.LanguageService
             {
                 return;
             }
-            XSharpLanguageService.DisplayOutPutMessage($"CommandFilter.formatLineCaseV2({line.LineNumber + 1})");
+            WriteOutputMessage($"CommandFilter.formatLineCaseV2({line.LineNumber + 1})");
             //
             context.MoveTo(line.Start);
             IToken token = context.GetToken(true);

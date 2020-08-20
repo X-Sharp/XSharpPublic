@@ -16,6 +16,7 @@ namespace Microsoft.VisualStudio.Project
     using System.Diagnostics;
     using System.Globalization;
     using System.Threading;
+    using System.Threading.Tasks;
     using System.Windows.Forms;
 
     internal sealed class UIThread : IDisposable
@@ -183,7 +184,13 @@ namespace Microsoft.VisualStudio.Project
         /// </summary>
         internal static T DoOnUIThread<T>(Func<T> callback)
         {
-            return ThreadHelper.Generic.Invoke<T>(callback);
+            T result = default(T);
+            ThreadHelper.JoinableTaskFactory.Run(async delegate
+            {
+                await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+                result = callback();
+            });
+            return result;
         }
 
         /// <summary>
@@ -192,7 +199,11 @@ namespace Microsoft.VisualStudio.Project
         /// </summary>
         internal static void DoOnUIThread(Action callback)
         {
-            ThreadHelper.Generic.Invoke(callback);
+            ThreadHelper.JoinableTaskFactory.Run(async delegate
+            {
+               await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+               callback();
+            });
         }
 
         /// <summary>

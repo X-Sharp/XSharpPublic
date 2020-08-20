@@ -37,6 +37,7 @@ using Microsoft;
 using LanguageService.SyntaxTree;
 using System.Text;
 using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
+using XSharp.LanguageService;
 
 namespace XSharp.Project
 {
@@ -98,7 +99,6 @@ namespace XSharp.Project
         public XSharpProjectNode(XSharpProjectPackage package)
         {
             this.package = package;
-            package.StartLanguageService();
             InitializeImageList();
 
             InitializeCATIDs();
@@ -1404,8 +1404,7 @@ namespace XSharp.Project
         public string SynchronizeKeywordCase(string code, string fileName)
         {
             var package = XSharp.Project.XSharpProjectPackage.Instance;
-            var optionsPage = package.GetIntellisenseOptionsPage();
-            if (optionsPage.KeywordCase == Project.KeywordCase.None)
+            if (XSettings.KeywordCase == (int) KeywordCase.None)
                 return code;
             // we also normalize the line endings
             code = code.Replace("\n", "");
@@ -1421,7 +1420,7 @@ namespace XSharp.Project
             else
                 parseoptions = XSharpParseOptions.Default;
             ITokenStream tokenStream;
-            var reporter = new ErrorIgnorer();
+            var reporter = new XSharp.CodeDom.ErrorIgnorer();
             bool ok = XSharp.Parser.VsParser.Lex(code, fileName, parseoptions, reporter, out tokenStream);
             var stream = tokenStream as BufferedTokenStream;
             var tokens = stream.GetTokens();
@@ -1429,7 +1428,8 @@ namespace XSharp.Project
             {
                 if (XSharpLexer.IsKeyword(token.Type))
                 {
-                    sb.Append(optionsPage.SyncKeyword(token.Text));
+                    //sb.Append(optionsPage.SyncKeyword(token.Text));
+                    sb.Append(token.Text);
                 }
                 else
                 {

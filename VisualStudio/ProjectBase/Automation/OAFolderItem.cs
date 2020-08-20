@@ -37,7 +37,7 @@ namespace Microsoft.VisualStudio.Project.Automation
         {
             get
             {
-                return UIThread.DoOnUIThread(delegate()
+                return (ProjectItems) UIThread.DoOnUIThread(delegate()
                 {
                     ProjectItems items = new OAProjectItems(this.Project, this.Node);
                     return items;

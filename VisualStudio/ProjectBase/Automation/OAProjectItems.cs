@@ -47,7 +47,7 @@ namespace Microsoft.VisualStudio.Project.Automation
 
             CheckProjectIsValid();
 
-            return UIThread.DoOnUIThread(delegate ()
+            return (EnvDTE.ProjectItem)UIThread.DoOnUIThread(delegate ()
             {
                 ProjectNode proj = this.Project.Project;
                 EnvDTE.ProjectItem itemAdded = null;
@@ -113,7 +113,7 @@ namespace Microsoft.VisualStudio.Project.Automation
         {
             CheckProjectIsValid();
 
-            return UIThread.DoOnUIThread(delegate()
+            return (ProjectItem) UIThread.DoOnUIThread(delegate()
             {
 	            //Verify name is not null or empty
 	            Utilities.ValidateFileName(this.Project.Project.Site, name);
@@ -192,7 +192,7 @@ namespace Microsoft.VisualStudio.Project.Automation
         {
             CheckProjectIsValid();
 
-            return UIThread.DoOnUIThread( () =>
+            return (ProjectItem)UIThread.DoOnUIThread( () =>
             {
                 ProjectNode proj = this.Project.Project;
 
@@ -222,7 +222,7 @@ namespace Microsoft.VisualStudio.Project.Automation
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1800:DoNotCastUnnecessarily")]
         protected virtual EnvDTE.ProjectItem EvaluateAddResult(VSADDRESULT result, string path)
         {
-            return UIThread.DoOnUIThread( () =>
+            return (ProjectItem)UIThread.DoOnUIThread( () =>
             {
                 if (result == VSADDRESULT.ADDRESULT_Success)
                 {

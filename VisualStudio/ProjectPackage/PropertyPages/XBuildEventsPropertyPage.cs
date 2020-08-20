@@ -10,7 +10,6 @@ namespace XSharp.Project
     using System.Globalization;
     using System.Runtime.InteropServices;
     using System.Windows.Forms;
-    using Microsoft.Build.BuildEngine;
     using Microsoft.VisualStudio;
     using Microsoft.VisualStudio.Package;
     using Microsoft.VisualStudio.Project;

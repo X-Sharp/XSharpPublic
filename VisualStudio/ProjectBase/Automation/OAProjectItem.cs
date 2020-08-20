@@ -108,7 +108,7 @@ namespace Microsoft.VisualStudio.Project.Automation
         {
             get
             {
-                return UIThread.DoOnUIThread(delegate()
+                return (EnvDTE.Properties) UIThread.DoOnUIThread(delegate()
                 {
                     if (this.node.NodeProperties == null)
                     {
@@ -183,7 +183,7 @@ namespace Microsoft.VisualStudio.Project.Automation
         {
             get
             {
-                return UIThread.DoOnUIThread(delegate()
+                return (EnvDTE.ProjectItems) UIThread.DoOnUIThread(delegate()
                 {
                 // Get the parent node
                 HierarchyNode parentNode = this.node.Parent;

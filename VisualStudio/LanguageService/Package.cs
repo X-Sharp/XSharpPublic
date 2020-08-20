@@ -104,34 +104,35 @@ namespace XSharp.LanguageService
             {
                 _intellisensePage = (IntellisenseOptionsPage)GetDialogPage(typeof(IntellisenseOptionsPage));
             }
-            XSettings.EnableLogging = _intellisensePage.EnableOutputPane;
-            XSettings.EnableBraceMatchLog = _intellisensePage.EnableBraceMatchLog;
-            XSettings.EnableCodeCompletionLog = _intellisensePage.EnableCodeCompletionLog;
-            XSettings.EnableDatabaseLog = _intellisensePage.EnableDatabaseLog;
-            XSettings.EnableParameterLog = _intellisensePage.EnableParameterLog;
-            XSettings.EnableParseLog = _intellisensePage.EnableParserLog;
-            XSettings.EnableReferenceInfoLog = _intellisensePage.EnableReferenceInfoLog;
-            XSettings.EnableTypelookupLog = _intellisensePage.EnableTypelookupLog;
+            if (_intellisensePage.SettingsChanged)
+            {
+                XSettings.EnableLogging = _intellisensePage.EnableOutputPane;
+                XSettings.EnableBraceMatchLog = _intellisensePage.EnableBraceMatchLog;
+                XSettings.EnableCodeCompletionLog = _intellisensePage.EnableCodeCompletionLog;
+                XSettings.EnableDatabaseLog = _intellisensePage.EnableDatabaseLog;
+                XSettings.EnableParameterLog = _intellisensePage.EnableParameterLog;
+                XSettings.EnableParseLog = _intellisensePage.EnableParserLog;
+                XSettings.EnableReferenceInfoLog = _intellisensePage.EnableReferenceInfoLog;
+                XSettings.EnableTypelookupLog = _intellisensePage.EnableTypelookupLog;
 
-            XSettings.DisableAssemblyReferences = _intellisensePage.DisableAssemblyReferences;
-            XSettings.DisableBraceMatching = _intellisensePage.DisableBraceMatching;
-            XSettings.DisableCaseSynchronization = _intellisensePage.DisableCaseSynchronization;
-            XSettings.DisableClassViewObjectView = _intellisensePage.DisableClassViewObjectView;
-            XSettings.DisableCodeCompletion= _intellisensePage.DisableCodeCompletion;
-            XSettings.DisableEntityParsing = _intellisensePage.DisableEntityParsing;
-            XSettings.DisableForeignProjectReferences = _intellisensePage.DisableForeignProjectReferences;
-            XSettings.DisableGotoDefinition= _intellisensePage.DisableGotoDefinition;
-            XSettings.DisableHighLightWord = _intellisensePage.DisableHighLightWord;
-            XSettings.DisablePeekDefinition= _intellisensePage.DisablePeekDefinition;
-            XSettings.DisableQuickInfo= _intellisensePage.DisableQuickInfo;
-            XSettings.DisableRegions = _intellisensePage.DisableRegions;
-            XSettings.DisableSyntaxHighlighting = _intellisensePage.DisableSyntaxColorization;
-            XSettings.DisableXSharpProjectReferences = _intellisensePage.DisableXSharpProjectReferences;
+                XSettings.DisableAssemblyReferences = _intellisensePage.DisableAssemblyReferences;
+                XSettings.DisableBraceMatching = _intellisensePage.DisableBraceMatching;
+                XSettings.DisableCaseSynchronization = _intellisensePage.DisableCaseSynchronization;
+                XSettings.DisableClassViewObjectView = _intellisensePage.DisableClassViewObjectView;
+                XSettings.DisableCodeCompletion = _intellisensePage.DisableCodeCompletion;
+                XSettings.DisableEntityParsing = _intellisensePage.DisableEntityParsing;
+                XSettings.DisableForeignProjectReferences = _intellisensePage.DisableForeignProjectReferences;
+                XSettings.DisableGotoDefinition = _intellisensePage.DisableGotoDefinition;
+                XSettings.DisableHighLightWord = _intellisensePage.DisableHighLightWord;
+                XSettings.DisablePeekDefinition = _intellisensePage.DisablePeekDefinition;
+                XSettings.DisableQuickInfo = _intellisensePage.DisableQuickInfo;
+                XSettings.DisableRegions = _intellisensePage.DisableRegions;
+                XSettings.DisableSyntaxHighlighting = _intellisensePage.DisableSyntaxColorization;
+                XSettings.DisableXSharpProjectReferences = _intellisensePage.DisableXSharpProjectReferences;
 
-            XSettings.KeywordCase = (int) _intellisensePage.KeywordCase;
-
-            XSettings.DisplayOutputMessage = DisplayOutPutMessage;
-            XSettings.DisplayException = DisplayException;
+                XSettings.KeywordCase = (int)_intellisensePage.KeywordCase;
+                _intellisensePage.SettingsChanged = false;
+            }
             return _intellisensePage;
         }
 
@@ -180,6 +181,7 @@ namespace XSharp.LanguageService
                 if (!lValue)
                 {
                     CommandFilter.InvalidateOptions();
+                    GetIntellisenseOptionsPage();
                 }
             }
             return VSConstants.S_OK;
@@ -190,34 +192,17 @@ namespace XSharp.LanguageService
             return this._txtManager;
         }
 
-        public static void SetLogger(IDebugLogger dbglogger)
-        {
-            logger = dbglogger;
-        }
-        static IDebugLogger logger = null;
-
         internal static void DisplayOutPutMessage(string message)
         {
-            if (logger != null)
-            {
-                logger.DisplayOutPutMessage(message);
-            }
+            XSettings.DisplayOutputMessage(message);
         }
         internal static void DisplayException(Exception e)
         {
-            if (logger != null)
-            {
-                logger.DisplayException(e);
-            }
-
+            XSettings.DisplayException(e);
         }
         internal static void ShowMessageBox(string message)
         {
-            if (logger != null)
-            {
-                logger.ShowMessageBox(message);
-            }
-
+            XSettings.ShowMessageBox(message);
         }
         internal static IComponentModel GetComponentModel()
         {
@@ -228,21 +213,9 @@ namespace XSharp.LanguageService
         {
             get
             {
-                if (logger != null)
-                {
-                    return logger.DebuggerIsRunning;
-                }
-
                 return false;
             }
         }
     }
 
-    public interface IDebugLogger
-    {
-        void DisplayOutPutMessage(string message);
-        void DisplayException(Exception e);
-        int ShowMessageBox(string message);
-        bool DebuggerIsRunning { get; }
-    }
 }

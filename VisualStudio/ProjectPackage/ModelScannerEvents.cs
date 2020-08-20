@@ -86,6 +86,31 @@ namespace XSharp.Project
             XSharpModel.XSolution.IsClosing = false;
             return VSConstants.S_OK;
         }
+        static bool hasEnvironmentvariable = false;
+        static ModelScannerEvents()
+        {
+            hasEnvironmentvariable = !String.IsNullOrEmpty(System.Environment.GetEnvironmentVariable("XSharpMsBuildDir"));
+        }
+        const string oldText = @"$(MSBuildExtensionsPath)\XSharp";
+        public override void OnBeforeOpenProject(ref Guid guidProjectID, ref Guid guidProjectType, string pszFileName)
+        {
+            if (hasEnvironmentvariable && pszFileName.ToLower().EndsWith("xsproj"))
+            {
+                string xml = System.IO.File.ReadAllText(pszFileName);
+                var pos = xml.IndexOf(oldText, StringComparison.OrdinalIgnoreCase);
+                if ( pos>=0)
+                {
+                    while (pos > 0)
+                    {
+                        xml = xml.Substring(0, pos) + "$(XSharpMsBuildDir)"+ xml.Substring(pos + oldText.Length);
+                        pos = xml.IndexOf(oldText, StringComparison.OrdinalIgnoreCase);
+                    }
+                    System.IO.File.WriteAllText(pszFileName, xml);
+                }
+            }
+
+        }
+
         #endregion
 
     }

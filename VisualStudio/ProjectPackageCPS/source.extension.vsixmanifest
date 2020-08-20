@@ -1,22 +1,25 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <PackageManifest Version="2.0.0" xmlns="http://schemas.microsoft.com/developer/vsx-schema/2011" xmlns:d="http://schemas.microsoft.com/developer/vsx-schema-design/2011">
-  <Metadata>
-    <Identity Id="XSharp.CPS.ProjectSystem" Version="0.2.6.0" Language="en-US" Publisher="XSharp BV" />
-    <DisplayName>XSharp Visual Studio Project System CPS</DisplayName>
-    <Description xml:space="preserve">XSharp Visual Studio Project Integration</Description>
-    <MoreInfo>http://www.xsharp.info</MoreInfo>
-    <Icon>XSharp.ico</Icon>
-    <PreviewImage>XSharp.png</PreviewImage>
-  </Metadata>
-  <Installation>
-    <InstallationTarget Version="[14.0,15.0)" Id="Microsoft.VisualStudio.Pro" />
-  </Installation>
-  <Dependencies>
-    <!--<Dependency Id="Microsoft.Framework.NDP" DisplayName="Microsoft .NET Framework" d:Source="Manual" Version="4.6" />-->
-    <!--<Dependency d:Source="Installed" Id="B73A99D8-FCAA-4197-9122-F8ABA095A72F" DisplayName="Visual Studio Common Project System v14" Version="[11.2,14.0)" />-->
-  </Dependencies>
-  <Assets>
-    <Asset Type="Microsoft.VisualStudio.MefComponent" d:Source="Project" d:ProjectName="%CurrentProject%" Path="|%CurrentProject%|" />
-    <Asset Type="Microsoft.VisualStudio.VsPackage" d:Source="Project" d:ProjectName="%CurrentProject%" Path="|%CurrentProject%;PkgdefProjectOutputGroup|" />
-  </Assets>
+    <Metadata>
+        <Identity Id="XSharp.CPS.ProjectSystem" Version="2.6.0.1" Language="en-US" Publisher="XSharp BV" />
+        <DisplayName>XSharp Visual Studio Project System CPS</DisplayName>
+        <Description xml:space="preserve">XSharp Visual Studio Project Integration</Description>
+        <MoreInfo>http://www.xsharp.info</MoreInfo>
+        <Icon>XSharp.ico</Icon>
+        <PreviewImage>XSharp.png</PreviewImage>
+    </Metadata>
+    <Installation>
+        <InstallationTarget Version="[15.0,17.0)" Id="Microsoft.VisualStudio.Pro" />
+    </Installation>
+    <Dependencies>
+        <!--<Dependency Id="Microsoft.Framework.NDP" DisplayName="Microsoft .NET Framework" d:Source="Manual" Version="4.6" />-->
+        <!--<Dependency d:Source="Installed" Id="B73A99D8-FCAA-4197-9122-F8ABA095A72F" DisplayName="Visual Studio Common Project System v14" Version="[11.2,14.0)" />-->
+    </Dependencies>
+    <Assets>
+        <Asset Type="Microsoft.VisualStudio.MefComponent" d:Source="Project" d:ProjectName="%CurrentProject%" Path="|%CurrentProject%|" />
+        <Asset Type="Microsoft.VisualStudio.VsPackage" d:Source="Project" d:ProjectName="%CurrentProject%" Path="|%CurrentProject%;PkgdefProjectOutputGroup|" />
+    </Assets>
+    <Prerequisites>
+        <Prerequisite Id="Microsoft.VisualStudio.Component.CoreEditor" Version="[15.0,17.0)" DisplayName="Visual Studio core editor" />
+    </Prerequisites>
 </PackageManifest>

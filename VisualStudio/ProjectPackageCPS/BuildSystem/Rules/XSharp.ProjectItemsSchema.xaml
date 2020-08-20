@@ -34,11 +34,12 @@
     <FileExtension Name=".xs"  ContentType="XSharpFile"/>
     <FileExtension Name=".vh"  ContentType="XSharpHeader"/>
     <FileExtension Name=".xh"  ContentType="XSharpHeader"/>
+    <FileExtension Name=".ch"  ContentType="XSharpHeader"/>
     <FileExtension Name=".rc"  ContentType="NativeResource"/>
     <FileExtension Name=".vnfrm"  ContentType="VOBinary"/>
     <FileExtension Name=".vndbs"  ContentType="VOBinary"/>
     <FileExtension Name=".vnmnu"  ContentType="VOBinary"/>
-    <FileExtension Name=".vnfs "  ContentType="VOBinary"/>
+    <FileExtension Name=".vnfs"  ContentType="VOBinary"/>
     <FileExtension Name=".xsfrm"  ContentType="VOBinary"/>
     <FileExtension Name=".xsdbs"  ContentType="VOBinary"/>
     <FileExtension Name=".xsmnu"  ContentType="VOBinary"/>

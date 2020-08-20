@@ -82,7 +82,7 @@ END CLASS
 /// <summary>Internal type that implements the Dynamic Memory Variables.<br/>
 /// </summary>
 /// <include file="RTComments.xml" path="Comments/Memvar/*" />
-[DebuggerDisplay("Memvar: {Name}")];	
+[DebuggerDisplay("Memvar: {Name,nq}: {Value}")];	
 PUBLIC CLASS XSharp.MemVar 
 
 

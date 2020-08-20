@@ -91,6 +91,10 @@ File = %AppPath%\WinFormsConverter.prg
 FileGUID = C3DF674A-CEF7-4E90-A951-AF432F6EA443
 FileType = Code
 CopyToBin = 0
+File = %AppPath%\Binaries.prg
+FileGUID = BA2D70CD-473B-4906-BBDF-96A8FCF7C045
+FileType = Code
+CopyToBin = 0
 [VOXPorter References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
 ReferenceGAC = CLR4,System.Drawing,1,0,4.0.0.0
@@ -102,18 +106,17 @@ ReferenceBrowse = %ProjectPath%\Dll\XIRES.dll,1,1
 ReferenceBrowse = %ProjectPath%\Dll\XIDED.dll,1,1
 ReferenceGAC = CLR4,System.Core,1,0,4.0.0.0
 ReferenceBrowse = C:\xSharp\DevPublic\Tools\VOXporter\Dll\XSharp.VODesigners.dll,1,1
+ReferenceGAC = CLR4,System.Xml,1,0,4.0.0.0
 [VOXPorter Resources]
 ResourceFile = Designers , %AppPath%\Resources\Designers.resources
 ResourceFileGuid = 369B3304-1BF5-4D80-AA97-2B60C561DEDF
 Linked = 1
-Modified = 1
+Modified = 0
 Resource = Icon , %AppPath%\Resources\XSharp.ico
 ResourceGuid = 51DF50DF-CDE8-48EB-AF15-E849348BEA52
 Resource = Icon , %AppPath%\Resources\XSharpSm.ico
 ResourceGuid = 9E143693-9BFF-4AD1-B6FF-390D4BBA124D
 [VOXPorter Native Resources]
-NativeResourceFile = External , %AppPath%\Resources\VersionInfo.rc
-ResourceFileGuid = C37529B1-9E79-466D-9098-8A3E1BFE3212
 [VOXPorter License files]
 [VOXPorter General Options]
 Switches=/debug:full`/nowarn:165
@@ -135,6 +138,9 @@ VO12=0
 VO13=0
 VO14=0
 VO16=0
+FOX1=0
+FOX2=0
+XPP1=0
 LateBound=0
 Unsafe=0
 Undeclared=0
@@ -302,6 +308,9 @@ VO12=0
 VO13=0
 VO14=0
 VO16=0
+FOX1=0
+FOX2=0
+XPP1=0
 LateBound=0
 Unsafe=1
 Undeclared=0

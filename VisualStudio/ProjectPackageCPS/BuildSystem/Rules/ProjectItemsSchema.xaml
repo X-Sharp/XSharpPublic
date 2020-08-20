@@ -54,18 +54,74 @@
       Name="EmbeddedResource"
       DisplayName="Embedded resource"
       ItemType="EmbeddedResource">
-      <NameValuePair Name="DefaultMetadata_Generator" Value="ResXFileCodeGenerator" />
-    </ContentType>
+  </ContentType>
 
-    <ItemType Name="None" DisplayName="None"/>
-    <ItemType Name="Content" DisplayName="Content" />
-    <ItemType Name="EmbeddedResource" DisplayName="Embedded resource "/>
+  <ContentType
+    Name="Page"
+    DisplayName="Page file"
+    ItemType="Page">
+    <NameValuePair Name="DefaultMetadata_Generator" Value="MSBuild:Compile" />
+  </ContentType>
+
+  <ContentType
+    Name="Manifest"
+    DisplayName="Manifest file"
+    ItemType="None">
+    <NameValuePair Name="SuppressNumericSuffix" Value="true" />
+  </ContentType>
+
+  <ContentType
+    Name="Config"
+    DisplayName="Config file"
+    ItemType="None">
+    <NameValuePair Name="SuppressNumericSuffix" Value="true" />
+  </ContentType>
+
+  <ContentType
+    Name="WindowsResource"
+    DisplayName="Windows Resourcs file"
+    ItemType="None">
+    <NameValuePair Name="SuppressNumericSuffix" Value="true" />
+  </ContentType>
+
+  <ContentType
+    Name="PackageLayout"
+    DisplayName="Package Layout file"
+    ItemType="None">
+    <NameValuePair Name="SuppressNumericSuffix" Value="true" />
+  </ContentType>
+
+  <ContentType
+    Name="AppInstaller"
+    DisplayName="App Installer file"
+    ItemType="None">
+    <NameValuePair Name="SuppressNumericSuffix" Value="true" />
+  </ContentType>
+
+  <ContentType 
+    Name="XamlAppDef"
+    DisplayName="Workflow definition"
+    ItemType="XamlAppDef" />
+
+  <ContentType 
+    Name="Resource"
+    DisplayName="Resource"
+    ItemType="Resource" />
+
+  <ItemType Name="None" DisplayName="None"/>
+  <ItemType Name="Content" DisplayName="Content" />
+  <ItemType Name="EmbeddedResource" DisplayName="Embedded resource" />
+  <ItemType Name="Page" DisplayName="Page" />
+  <ItemType Name="ApplicationDefinition" DisplayName="Application definition" />
+  <ItemType Name="XamlAppDef" DisplayName="Workflow definition" />
+  <ItemType Name="Resource" DisplayName="Resource" />
 
     <FileExtension Name=".asax" ContentType="Asax" />
     <FileExtension Name=".asmx" ContentType="HTML" />
     <FileExtension Name=".asp" ContentType="AspPage" />
     <FileExtension Name=".txt" ContentType="Text" />
     <FileExtension Name=".resx" ContentType="EmbeddedResource" />
+  <FileExtension Name=".licx" ContentType="EmbeddedResource" />
     <FileExtension Name=".html" ContentType="HTML" />
     <FileExtension Name=".htm" ContentType="HTML" />
     <FileExtension Name=".css" ContentType="CSS" />
@@ -75,10 +131,15 @@
     <FileExtension Name=".xml" ContentType="XML" />
     <FileExtension Name=".mht" ContentType="MHT" />
     <FileExtension Name=".manifest" ContentType="Manifest" />
+  <FileExtension Name=".config" ContentType="Config" />
+  <FileExtension Name=".resw;.resjson" ContentType="WindowsResource" />
+  <FileExtension Name=".packagelayout" ContentType="PackageLayout" />
+  <FileExtension Name=".appinstaller" ContentType="AppInstaller" />
     <FileExtension Name=".rdlc" ContentType="RDLC" />
     <FileExtension Name=".cd" ContentType="ClassDiagram" />
     <FileExtension Name=".licenses" ContentType="Licenses" />
     <FileExtension Name=".json" ContentType="Json" />
+  <FileExtension Name=".xaml" ContentType="Page" />
 
     <!-- Image formats -->
     <FileExtension Name=".jpeg" ContentType="Image" />

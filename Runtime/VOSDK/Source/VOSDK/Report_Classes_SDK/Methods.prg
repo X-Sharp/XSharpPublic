@@ -1,3 +1,4 @@
+#pragma warnings(414, off)  // unused fields
 CLASS DDEMC
 	EXPORT isModal AS LOGIC
 	EXPORT cCmd AS STRING
@@ -432,7 +433,9 @@ METHOD __TerminateCAQRT()
 		bTermWrappers := FALSE
 		// free the report wrapper
 		TRY // TODO: Temp workaround for Access Violation thrown by WrmTerminate()
-		WrmTerminate( hWpHandle )
+    		WrmTerminate( hWpHandle )
+        CATCH as Exception
+            NOP
 		END TRY
 		bTermWrappers := TRUE
 		
@@ -985,3 +988,4 @@ FUNCTION IsCaretLoaded() AS LOGIC
 	
 _DLL FUNC WrmCloseReportWindow(x AS DWORD, y AS DWORD) AS VOID PASCAL:CAQR3WRM.WrmCloseReportWindow
 	
+#pragma warnings(414, DEFAULT)

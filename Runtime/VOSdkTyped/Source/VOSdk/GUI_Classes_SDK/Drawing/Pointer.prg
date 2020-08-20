@@ -33,9 +33,9 @@ CLASS Pointer INHERIT VObject
 				LOCAL hCursor AS IntPtr
 				hInst		:= oResourceID:Handle()
 				IF String.IsNullOrEmpty(oResourceID:Name)
-					hCursor     := Win32.LoadCursor(hInst, oResourceID:ID)
+					hCursor     := GuiWin32.LoadCursor(hInst, oResourceID:ID)
 				ELSE
-					hCursor     := Win32.LoadCursor(hInst, oResourceID:Name)
+					hCursor     := GuiWin32.LoadCursor(hInst, oResourceID:Name)
 				ENDIF
 				oCursor     := System.Windows.Forms.Cursor{hCursor}
 				lOk := TRUE

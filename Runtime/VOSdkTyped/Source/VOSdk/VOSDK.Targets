@@ -68,7 +68,8 @@
     <EmitDebugInformation>true</EmitDebugInformation>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DefineConstants>DEBUG;TRACE;DOCUMENTATION</DefineConstants>
+    <DisabledWarnings>1591</DisabledWarnings>
     <CommandLineOption>/noclipcall</CommandLineOption>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'" Label="Configuration">

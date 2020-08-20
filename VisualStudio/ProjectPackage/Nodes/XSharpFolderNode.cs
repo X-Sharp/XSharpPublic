@@ -34,13 +34,6 @@ namespace XSharp.Project
             }
         }
 
-        public override int MenuCommandId
-        {
-            get
-            {
-                return 0x0453;
-            }
-        }
 
 
         // =========================================================================================
@@ -91,42 +84,29 @@ namespace XSharp.Project
             {
                 switch ((VsCommands)cmd)
                 {
-                    //case VsCommands.Copy:
-                    //case VsCommands.Paste:
-                    //case VsCommands.Cut:
-                    //case VsCommands.Rename:
-                    //case VsCommands.NewFolder:
-                    //case VsCommands.AddNewItem:
-                    //case VsCommands.AddExistingItem:
-                    //case VsCommands.Delete:
-                    //case VsCommands.Remove:
-                    //    result |= QueryStatusResult.NOTSUPPORTED;
-                    //    return VSConstants.S_OK;
-
+                    case VsCommands.Delete:
+                    case VsCommands.Remove:
+                    case VsCommands.Cut:
+                    case VsCommands.PropSheetOrProperties:
+                    case VsCommands.Rename:
+                        result = QueryStatusResult.NOTSUPPORTED | QueryStatusResult.INVISIBLE;
+                        return VSConstants.S_OK;
                     case VsCommands.Open:
-
-                        result |= QueryStatusResult.SUPPORTED | QueryStatusResult.ENABLED ;
+                        result = QueryStatusResult.SUPPORTED | QueryStatusResult.ENABLED ;
                         return VSConstants.S_OK;
                 }
             }
-            //else if (cmdGroup == VsMenus.guidStandardCommandSet2K)
-            //{
-            //    switch ((VsCommands2K)cmd)
-            //    {
-            //        case VsCommands2K.EXCLUDEFROMPROJECT:
+            if (cmdGroup == VsMenus.guidStandardCommandSet2K)
+            {
+                //switch ((VsCommands2K)cmd)
+                //{
+                //    case VsCommands2K.EXCLUDEFROMPROJECT:
+                        result = QueryStatusResult.NOTSUPPORTED | QueryStatusResult.INVISIBLE ;
+                        return VSConstants.S_OK;
 
-            //            result |= QueryStatusResult.NOTSUPPORTED;
-            //            return VSConstants.S_OK;
-            //    }
-            //}
-            //else
-            //{
-            //    return (int)OleConstants.OLECMDERR_E_UNKNOWNGROUP;
-            //}
-
-            //return base.QueryStatusOnNode(cmdGroup, cmd, pCmdText, ref result);
-            result |= QueryStatusResult.NOTSUPPORTED;
-            return VSConstants.S_OK;
+                //}
+            }
+            return base.QueryStatusOnNode(cmdGroup, cmd, pCmdText, ref result);
         }
 
         /// <summary>
@@ -146,7 +126,14 @@ namespace XSharp.Project
             {
                 switch ((VsCommands)cmd)
                 {
+                    case VsCommands.Delete:
+                    case VsCommands.Remove:
+                        return VSConstants.S_FALSE;
                     case VsCommands.Open:
+                    case VsCommands.PropertiesWindow:
+                    case VsCommands.Properties:
+                    case VsCommands.PropertyPages:
+                    case VsCommands.PropSheetOrProperties:
                         DocumentManager docmgr = this.ProjectMgr.GetDocumentManager();
                         Guid editorType = new Guid(VSConstants.GUID_ProjectDesignerEditor.ToString());
                         Guid logicalView = new Guid();
@@ -155,21 +142,6 @@ namespace XSharp.Project
 
                         return VSConstants.S_OK;
 
-                    case VsCommands.Properties:
-                        System.Windows.Forms.MessageBox.Show("Properties");
-                        return VSConstants.S_OK;
-
-                    case VsCommands.PropertiesWindow:
-                        System.Windows.Forms.MessageBox.Show("PropertiesWindow");
-                        return VSConstants.S_OK;
-
-                    case VsCommands.PropertyPages:
-                        System.Windows.Forms.MessageBox.Show("PropertyPages");
-                        return VSConstants.S_OK;
-
-                    case VsCommands.PropSheetOrProperties:
-                        System.Windows.Forms.MessageBox.Show("PropSheetOrProperties");
-                        return VSConstants.S_OK;
 
                 }
             }

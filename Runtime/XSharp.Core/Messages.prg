@@ -3,10 +3,12 @@ USING System.Globalization
 USING System.Resources
 
 /// <exclude />
+[Obsolete];
 FUNCTION SetLiteral(dwRes AS DWORD) AS STRING
 	RETURN __CavoStr( dwRes )
 
 /// <exclude />
+[Obsolete];
 FUNCTION _GetStringDXAX(dwRes AS DWORD) AS STRING
 	RETURN __CavoStr( dwRes )
 

@@ -26,11 +26,11 @@ CLASS MonthCalendar INHERIT TextControl
 	
 	METHOD __GetColor(dwColorID AS DWORD) AS Color STRICT 
 		LOCAL cr AS LONG
-		cr := Win32.SendMessage(oCtrl:Handle, MCM_GETCOLOR, dwColorID, 0L)
+		cr := GuiWin32.SendMessage(oCtrl:Handle, MCM_GETCOLOR, dwColorID, 0L)
 		RETURN Color.FromColorRef((DWORD) cr)
 
 	METHOD __SetColor(oColor AS Color, dwColorID AS DWORD) AS Color STRICT 
-		Win32.SendMessage(oCtrl:Handle, MCM_SETCOLOR, dwColorID, (LONG) oColor:ColorRef)
+		GuiWin32.SendMessage(oCtrl:Handle, MCM_SETCOLOR, dwColorID, (LONG) oColor:ColorRef)
 		RETURN oColor
 
 	ASSIGN __Value(dValue AS USUAL)  STRICT 
@@ -97,10 +97,10 @@ CLASS MonthCalendar INHERIT TextControl
 		SELF:__SetColor(oColor, MCSC_MONTHBK)
 
 	ACCESS MonthDelta 
-		RETURN Win32.SendMessage(SELF:Handle(), MCM_GETMONTHDELTA, 0, 0)
+		RETURN GuiWin32.SendMessage(SELF:Handle(), MCM_GETMONTHDELTA, 0, 0)
 
 	ASSIGN MonthDelta(iNewVal) 
-		Win32.SendMessage(SELF:Handle(), MCM_SETMONTHDELTA, DWORD(_CAST, iNewVal), 0)
+		GuiWin32.SendMessage(SELF:Handle(), MCM_SETMONTHDELTA, DWORD(_CAST, iNewVal), 0)
 		RETURN 
 
 	ACCESS Range AS DateRange

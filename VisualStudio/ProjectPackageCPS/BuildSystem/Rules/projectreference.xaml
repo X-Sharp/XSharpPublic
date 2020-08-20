@@ -1,45 +1,135 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Rule
-	Name="ProjectReference"
-	DisplayName="Project Reference"
-	PageTemplate="generic"
-	Description="Project reference properties"
-	xmlns="http://schemas.microsoft.com/build/2009/properties">
 
-    <Rule.DataSource>
-        <DataSource Persistence="ProjectFile" ItemType="ProjectReference" HasConfigurationCondition="False" />
-    </Rule.DataSource>
+<Rule Name="ProjectReference"
+      Description="Project Reference Properties"
+      DisplayName="Project Reference"
+      PageTemplate="generic"
+      xmlns="http://schemas.microsoft.com/build/2009/properties">
+  <Rule.DataSource>
+    <DataSource HasConfigurationCondition="False"
+                ItemType="ProjectReference"
+                Persistence="ProjectFile"
+                SourceOfDefaultValue="AfterContext" />
+  </Rule.DataSource>
 
-    <BoolProperty Name="ReferenceOutputAssembly"
-                  DisplayName="Reference Output Assembly"
-				  Description="A value indicating whether the compiler should include a reference to the target project's primary output assembly." />
+  <StringListProperty Name="Aliases"
+                      Description="A comma-delimited list of aliases to this reference."
+                      DisplayName="Aliases"
+                      Separator=",">
+    <StringListProperty.DataSource>
+      <DataSource HasConfigurationCondition="False"
+                  ItemType="ProjectReference"
+                  Persistence="ProjectFile"
+                  SourceOfDefaultValue="AfterContext" />
+    </StringListProperty.DataSource>
+  </StringListProperty>
 
-    <BoolProperty Name="Private"
-                  DisplayName="Copy Local"
-				  Description="Indicates whether the primary output of the reference target should be copied into this project's output directory, when that metadata is set on an unresolved reference." />
+  <BoolProperty Name="CopyLocal"
+                Description="Indicates whether the reference will be copied to the output directory."
+                DisplayName="Copy Local">
+    <BoolProperty.DataSource>
+      <DataSource HasConfigurationCondition="False"
+                  ItemType="ProjectReference"
+                  PersistedName="Private"
+                  Persistence="ProjectFile"
+                  SourceOfDefaultValue="AfterContext" />
+    </BoolProperty.DataSource>
+  </BoolProperty>
 
-    <BoolProperty Name="CopyLocalSatelliteAssemblies"
-                  DisplayName="Copy Local Satellite Assemblies"
-				  Description="Indicates whether the satellite assemblies of the reference target should be copied into this project's output directory." />
+  <BoolProperty Name="CopyLocalSatelliteAssemblies"
+                Description="Indicates whether the satellite assemblies of the reference target should be copied into this project's output directory."
+                DisplayName="Copy Local Satellite Assemblies" />
 
-    <BoolProperty Name="LinkLibraryDependencies" Visible="False" />
+  <StringProperty Name="Culture"
+                  Description="The value of the culture field from the assembly metadata."
+                  DisplayName="Culture"
+                  ReadOnly="True" />
 
-    <BoolProperty Name="UseLibraryDependencyInputs" Visible="False" />
+  <StringProperty Name="Description"
+                  Description="The value of the Title field from the assembly metadata."
+                  DisplayName="Description"
+                  ReadOnly="True" />
 
-    <StringProperty Name="Project" 
-                    Visible="False"
-                    Description="the Guid the solution tracks an individual project reference target with" />
+  <BoolProperty Name="EmbedInteropTypes"
+                Description="Indicates whether types defined in this assembly will be embedded into the target assembly."
+                DisplayName="Embed Interop Types">
+    <BoolProperty.DataSource>
+      <DataSource HasConfigurationCondition="False"
+                  ItemType="ProjectReference"
+                  Persistence="ProjectFile"
+                  SourceOfDefaultValue="AfterContext" />
+    </BoolProperty.DataSource>
+  </BoolProperty>
 
-    <StringProperty Name="ReferencedProjectIdentifier" Visible="False" Description="The old (VS2010 beta) way to store the Guid the solution tracks an individual project reference target with" />
+  <StringProperty Name="ExcludeAssets"
+                  Description="Assets to exclude from this reference."
+                  DisplayName="Exclude Assets" />
 
-    <BoolProperty Name="CopyLocal"
-                  DisplayName="Copy Local"
-                  Description="Indicates whether the reference will be copied to the output directory.">
-        <BoolProperty.DataSource>
-            <DataSource Persistence="ProjectFile"
-                        ItemType="ProjectReference"
-                        HasConfigurationCondition="False"
-                        PersistedName="Private" />
-        </BoolProperty.DataSource>
-    </BoolProperty>
+  <StringProperty Name="Identity"
+                  Description="Security identity of the referenced assembly (see System.Reflection.Assembly.Evidence or System.Security.Policy.Evidence)."
+                  DisplayName="Identity"
+                  ReadOnly="True">
+    <StringProperty.DataSource>
+      <DataSource PersistedName="{}{Identity}"
+                  SourceOfDefaultValue="AfterContext" />
+    </StringProperty.DataSource>
+  </StringProperty>
+
+  <StringProperty Name="IncludeAssets"
+                  Description="Assets to include from this reference."
+                  DisplayName="Include Assets" />
+
+  <StringProperty Name="IsImplicitlyDefined"
+                  ReadOnly="True"
+                  Visible="False" />
+
+  <BoolProperty Name="LinkLibraryDependencies"
+                Visible="False" />
+
+  <StringProperty Name="PrivateAssets"
+                  Description="Assets that are private in this reference."
+                  DisplayName="Private Assets" />
+
+  <StringProperty Name="Project"
+                  Visible="False" />
+  
+  <StringProperty Name="ProjectFileFullPath"
+                  Visible="False"
+                  ReadOnly="True">
+    <StringProperty.DataSource>
+      <DataSource ItemType="ProjectReference"
+                  PersistedName="FullPath"
+                  Persistence="Intrinsic"
+                  SourceOfDefaultValue="AfterContext" />
+    </StringProperty.DataSource>
+  </StringProperty>
+
+  <StringProperty Name="ReferencedProjectIdentifier"
+                  Visible="False" />
+
+  <BoolProperty Name="ReferenceOutputAssembly"
+                Description="A value indicating whether the compiler should include a reference to the target project's primary output assembly."
+                DisplayName="Reference Output Assembly" />
+
+  <StringProperty Name="ResolvedPath"
+                  Description="Location of the file being referenced."
+                  DisplayName="Path"
+                  ReadOnly="True">
+    <StringProperty.DataSource>
+      <DataSource PersistedName="Identity"
+                  SourceOfDefaultValue="AfterContext" />
+    </StringProperty.DataSource>
+  </StringProperty>
+
+  <BoolProperty Name="UseLibraryDependencyInputs"
+                Visible="False" />
+
+  <StringProperty Name="Version"
+                  Description="Version of reference."
+                  DisplayName="Version"
+                  ReadOnly="True" />
+
+  <BoolProperty Name="Visible"
+                ReadOnly="True"
+                Visible="False" />
 </Rule>

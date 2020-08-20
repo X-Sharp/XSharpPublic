@@ -10,15 +10,8 @@
 	PROTECT nMailCount        AS DWORD
 	PROTECT nReceiveBytes     AS DWORD
 	PROTECT nTotalBytes       AS DWORD
-    #ifndef __VULCAN__
-    ~"ONLYEARLY+"
-    DECLARE METHOD __GetScanList
-    DECLARE METHOD __ListMail
-    ~"ONLYEARLY-"
-	#endif
 
 METHOD __GetScanList(cBuffer AS STRING) AS ARRAY
-   //SE-070611
    LOCAL pChar AS BYTE PTR
 	LOCAL dwPos AS DWORD
 	LOCAL dwEnd AS DWORD
@@ -49,7 +42,6 @@ METHOD __GetScanList(cBuffer AS STRING) AS ARRAY
 	RETURN {liNum, AllTrim(cBuffer)}
 
 METHOD __ListMail(cCommand AS STRING, nMessageNum AS USUAL) AS ARRAY
-   //SE-040922
 	LOCAL cTemp     AS STRING
 	LOCAL aList     AS ARRAY
 	LOCAL lSingle   AS LOGIC
@@ -102,11 +94,9 @@ METHOD __ListMail(cCommand AS STRING, nMessageNum AS USUAL) AS ARRAY
 	RETURN aList
 
 METHOD CheckReply()
-    //SE-040628
 	RETURN SubStr3(SELF:cReply, 1, 3) = "+OK"
 
 METHOD connect(cIP, n)
-   //SE-040628
 	LOCAL nPort AS WORD
 
 	IF IsNumeric(n)
@@ -127,7 +117,6 @@ METHOD connect(cIP, n)
 	RETURN TRUE
 
 METHOD DeleteMail(nMail)
-    //SE-040628
 	SELF:nCurState := SENDING_REQUEST
 
 	IF ! SELF:SendRemote("DELE " + NTrim(nMail) + CRLF)
@@ -143,7 +132,6 @@ METHOD DeleteMail(nMail)
 	RETURN SELF:CheckReply()
 
 METHOD Disconnect()
-   //SE-040628
 
 	IF SELF:lSocketOpen
 		#IFDEF __DEBUG__
@@ -176,19 +164,16 @@ ACCESS Email
 
 
 METHOD GetList(nMail)
-   //SE-040923
    //retrieves a list of emails and their size  {...{nNum, cSize}...}
 	//to retrieve the size of one mail, use LIST n instead
    RETURN SELF:__ListMail("LIST", nMail)
 
 METHOD GetListIDs(nMail)
-   //SE-040923
 	//retrieves a list of emails and their Unique ID  {...{nNum, cID}...}
 	//to retrieve the ID of one mail, use UIDL n instead
    RETURN SELF:__ListMail("UIDL", nMail)
 
 METHOD GetMail(nMail)
-   //SE-070421
 	LOCAL cLine AS STRING
 
 	SELF:nError        := 0
@@ -224,15 +209,7 @@ METHOD GetMail(nMail)
 		IF oSocket:Error != 0 .OR. cLine == NULL_STRING
 			EXIT
 		ENDIF
-       //SE-071017 see RFC-2821 chapter 4.5.2 Transparency
-        /*
-        IF cLine = "."
-        cLine := SubStr2(cLine, 2)
-        ENDIF
-        */
-
-	SELF:oEmail:StreamIn(cLine)
-
+    	SELF:oEmail:StreamIn(cLine)
 	ENDDO
 
 	SELF:oEmail:StreamIn(NULL_STRING) //closes the stream
@@ -241,7 +218,6 @@ METHOD GetMail(nMail)
 
 
 METHOD GetMailTop(nMail, nBodyLines)
-   //SE-040923
 	LOCAL cTemp    AS STRING
 	LOCAL aTop 	   AS ARRAY
 	LOCAL cHeader  AS STRING
@@ -379,7 +355,6 @@ METHOD ListMail()
     RETURN aRet
 
 METHOD LogOn(cUID, cPwd)
-   //SE-040628
 	DEFAULT(@cUID, "")
 	DEFAULT(@cPwd, "")
 
@@ -436,7 +411,6 @@ ACCESS  ReceiveBytes
     RETURN SELF:nReceiveBytes
 
 METHOD RecvRemote()
-   //SE-040628
 	LOCAL dwSize AS DWORD
 	LOCAL cLine	 AS STRING
 

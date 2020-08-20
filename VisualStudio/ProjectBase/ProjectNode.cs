@@ -1505,6 +1505,7 @@ namespace Microsoft.VisualStudio.Project
 	            this.isClosed = true;
 
 	         	this.isZeroImpact = false;
+                this.ItemIdMap.Clear();
             }
             return hr;
         }
@@ -7060,7 +7061,7 @@ namespace Microsoft.VisualStudio.Project
         }
 
         /// <summary>
-        /// Recusively parses the tree and closes all nodes.
+        /// Recursively parses the tree and closes all nodes.
         /// </summary>
         /// <param name="node">The subtree to close.</param>
         private static void CloseAllNodes(HierarchyNode node)
@@ -7071,6 +7072,7 @@ namespace Microsoft.VisualStudio.Project
             }
 
             node.Close();
+
         }
         /// <summary>
         /// Recusively parses the tree and closes all nodes below "node", but don't close "node".

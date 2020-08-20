@@ -78,9 +78,12 @@
     <Content Include="ReadMe-MachineConfig.txt" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\XSharpCodeModelXs\CodeModel.xsproj">
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\XSharpCodeModelXs\XSharpModelXs.xsproj">
       <Project>{eed6843b-b727-4f08-aa32-ca0f48fdde3f}</Project>
-      <Name>CodeModel</Name>
+      <Name>XSharpModelXs</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

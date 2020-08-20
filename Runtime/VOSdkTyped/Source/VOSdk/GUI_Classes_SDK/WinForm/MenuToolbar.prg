@@ -4,9 +4,10 @@
 // Also some On..() methods have been implemented that call the event handles on the VO Window
 // class that owns the control
 
-#USING System.Windows.Forms
-#USING System.Reflection
-#using System.Collections.Generic
+USING System.Windows.Forms
+USING System.Reflection
+USING System.Collections.Generic
+USING VOSDK := XSharp.VO.SDK
 CLASS VOMenu INHERIT System.Windows.Forms.MainMenu
 
 	CONSTRUCTOR() STRICT
@@ -52,7 +53,11 @@ CLASS VOMenu INHERIT System.Windows.Forms.MainMenu
 	METHOD AsContextMenu AS ContextMenu STRICT
 		RETURN ContextMenu{SELF:MenuItemArray}
 	
-	
+
+    PROTECTED METHOD ProcessCmdKey (msg REF System.Windows.Forms.Message , keyData AS System.Windows.Forms.Keys ) AS LOGIC
+        System.Diagnostics.Debug.WriteLine(keyData:ToString())
+        RETURN SUPER:ProcessCmdKey(REF msg, keyData)
+
 END CLASS
 
 CLASS VOMenuItem INHERIT MenuItem
@@ -79,7 +84,10 @@ CLASS VOMenuItem INHERIT MenuItem
 		item := VOMenuItem{}
 		item:CloneMenu(SELF)
 		item:MenuItemID := SELF:MenuItemID
+        item:Click += ItemClick
 		RETURN item
+    METHOD ItemClick (sender AS OBJECT, e AS EventArgs) AS VOID
+        RETURN
 
 	ACCESS MenuItemArray AS MenuItem[]
 		LOCAL oItems AS List<MenuItem>
@@ -147,7 +155,7 @@ END CLASS
 CLASS VOToolBar INHERIT System.Windows.Forms.ToolBar IMPLEMENTS IVOControl
 	#include "PropControl.vh"
 
-	CONSTRUCTOR(Owner AS XSharp.VO.Control, dwStyle AS LONG, dwExStyle AS LONG)
+	CONSTRUCTOR(Owner AS VOSDK.Control, dwStyle AS LONG, dwExStyle AS LONG)
 		oProperties := VOControlProperties{SELF, Owner, dwStyle, dwExStyle}
 		SUPER()
 		SELF:ButtonSize := System.Drawing.Size{20,20}

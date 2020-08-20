@@ -479,7 +479,7 @@ namespace XSharp.Project
             {
                 this.UserBuildProject.Save(this.UserFileName);
             }
-
+            URLNodes.Clear();
             return result;
         }
         /// <summary>

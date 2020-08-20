@@ -97,6 +97,8 @@ PARTIAL CLASS VOWindowEditor INHERIT WindowDesignerBase
 		TRY
 			oDocument:Load(cFileName)
 			lSuccess := TRUE
+      CATCH
+         NOP
 		END TRY
 		IF .not. lSuccess
 			RETURN FALSE
@@ -124,6 +126,8 @@ PARTIAL CLASS VOWindowEditor INHERIT WindowDesignerBase
 
 				TRY
 					lSuccess := SELF:InitializeNew(oWindowNode:Attributes:GetNamedItem("Name"):InnerText)
+            CATCH
+               NOP
 				END TRY
 				lNewWindow := TRUE
 

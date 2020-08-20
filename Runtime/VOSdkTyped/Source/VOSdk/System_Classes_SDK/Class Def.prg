@@ -41,20 +41,20 @@ ENUM Notify
     MEMBER ConcurrencyControlMode := 50
 END ENUM
 
-DEFINE NOTIFYFIELDCHANGE :=  Notify.FieldChange
-DEFINE NOTIFYCLEARRELATION :=  Notify.ClearRelation
-DEFINE NOTIFYCLOSE :=  Notify.Close
-DEFINE NOTIFYCOMPLETION :=  Notify.Completion
-DEFINE NOTIFYINTENTTOMOVE :=  Notify.IntentToMove
-DEFINE NOTIFYRECORDCHANGE :=  Notify.RecordChange
-DEFINE NOTIFYGOBOTTOM :=  Notify.GoBottom
-DEFINE NOTIFYGOTOP :=   Notify.GoTop
-DEFINE NOTIFYDELETE :=   Notify.Delete
-DEFINE NOTIFYAPPEND :=  Notify.Append
-DEFINE NOTIFYFILECHANGE :=  Notify.FileChange
-DEFINE NOTIFYRELATIONCHANGE := Notify.RelationChange
+DEFINE NOTIFYFIELDCHANGE        :=  Notify.FieldChange
+DEFINE NOTIFYCLEARRELATION      :=  Notify.ClearRelation
+DEFINE NOTIFYCLOSE              :=  Notify.Close
+DEFINE NOTIFYCOMPLETION         :=  Notify.Completion
+DEFINE NOTIFYINTENTTOMOVE       :=  Notify.IntentToMove
+DEFINE NOTIFYRECORDCHANGE       :=  Notify.RecordChange
+DEFINE NOTIFYGOBOTTOM           :=  Notify.GoBottom
+DEFINE NOTIFYGOTOP              :=   Notify.GoTop
+DEFINE NOTIFYDELETE             :=   Notify.Delete
+DEFINE NOTIFYAPPEND             :=  Notify.Append
+DEFINE NOTIFYFILECHANGE         :=  Notify.FileChange
+DEFINE NOTIFYRELATIONCHANGE     := Notify.RelationChange
 DEFINE NOTIFYCONCURRENCYCONTROLMODE := Notify.ConcurrencyControlMode
-DEFINE TYPE_MULTIMEDIA := 42
+DEFINE TYPE_MULTIMEDIA          := 42
 
 DEFINE MAXFILENAME      := 260
 DEFINE MAXEXTNAME       := 128

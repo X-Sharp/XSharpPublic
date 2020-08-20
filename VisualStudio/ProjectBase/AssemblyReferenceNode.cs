@@ -226,10 +226,15 @@ namespace Microsoft.VisualStudio.Project
 
             try
             {
+                if (this.assemblyRef != null)
+                {
+                    this.assemblyRef.Dispose();
+                }
                 this.UnregisterFromFileChangeService();
             }
             finally
             {
+                this.assemblyRef = null;
                 base.Dispose(disposing);
                 this.isDisposed = true;
             }

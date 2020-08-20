@@ -105,7 +105,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
                 SELF:_fileName := value
                 IF  String.IsNullOrEmpty( SELF:_fileName )
                     // When empty then take same name as DBF but with NTX extension
-                    SELF:_fileName := SELF:_oRdd:_FileName
+                    SELF:_fileName := SELF:_oRdd:FileName
                     // force extenstion here, so change DBF to NTX
                     SELF:_fileName := Path.ChangeExtension(SELF:_fileName, NTX_EXTENSION)
                 ENDIF
@@ -115,7 +115,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
                     // Get the path from the RDD's open info
                     VAR cPath := Path.GetDirectoryName(SELF:_oRdd:_OpenInfo:FileName)
                     IF String.IsNullOrEmpty(cPath)
-                        cPath := SELF:_oRdd:_FileName
+                        cPath := SELF:_oRdd:FileName
                         cPath := Path.GetDirectoryName(cPath)
                     ENDIF
                     SELF:_fullPath := Path.Combine(cPath, SELF:_fullPath)
@@ -161,7 +161,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             LOCAL isOk AS LOGIC
             isOk := FALSE
             SELF:_oRdd:GoCold()
-            SELF:_Shared := SELF:_oRdd:_Shared
+            SELF:_Shared := SELF:_oRdd:Shared
             SELF:_hFile    := FOpen(SELF:FullPath, SELF:_oRdd:_OpenInfo:FileMode) 
             IF SELF:_hFile == F_ERROR 
                 SELF:_oRdd:_dbfError( ERDD.OPEN_ORDER, Gencode.EG_OPEN, SELF:FileName)
@@ -183,7 +183,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
                 RETURN FALSE
             ENDIF
             // For Condition
-            SELF:_Shared := SELF:_oRdd:_Shared
+            SELF:_Shared := SELF:_oRdd:Shared
             FSeek3( SELF:_hFile, 0, FS_END )
             SELF:_fileSize  := (LONG) FTell( SELF:_hFile ) 
             SELF:_Hot := FALSE
@@ -586,11 +586,11 @@ BEGIN NAMESPACE XSharp.RDD.NTX
                 SELF:_ScopeSeek(DbOrder_Info.DBOI_SCOPEBOTTOM)
                 records := SELF:_getScopePos()
             ELSE
-                IF  XSharp.RuntimeState.Deleted  .OR. SELF:_oRdd:_FilterInfo:Active
+                IF  XSharp.RuntimeState.Deleted  .OR. SELF:_oRdd:FilterInfo:Active
                     SELF:_oRdd:SkipFilter(1)
                     oldRec := SELF:_RecNo
                     records := 0
-                    IF !SELF:_oRdd:_EoF
+                    IF !SELF:_oRdd:EoF
                         recno := SELF:_locateKey(NULL, 0, SearchMode.Top)
                         isOk := SELF:_oRdd:__Goto(recno)
                         IF isOk
@@ -608,7 +608,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
                 ELSE
                     SELF:_oRdd:GoBottom()
                     records := 0
-                    IF !SELF:_oRdd:_EoF
+                    IF !SELF:_oRdd:EoF
                         records := 1
                         DO WHILE SELF:_findItemPos(REF records, FALSE)
                             NOP
@@ -643,11 +643,11 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             IF SELF:HasScope
                 record := SELF:_getScopePos()
             ELSE
-                IF XSharp.RuntimeState.Deleted .OR. SELF:_oRdd:_FilterInfo:Active
+                IF XSharp.RuntimeState.Deleted .OR. SELF:_oRdd:FilterInfo:Active
                     SELF:_oRdd:SkipFilter(1)
                     oldRec := SELF:_RecNo
                     record := 0
-                    IF !SELF:_oRdd:_EoF
+                    IF !SELF:_oRdd:EoF
                         recno := SELF:_locateKey(NULL, 0, SearchMode.Top)
                         IF SELF:_oRdd:__Goto(recno)
                             SELF:_oRdd:SkipFilter(1)
@@ -775,13 +775,13 @@ BEGIN NAMESPACE XSharp.RDD.NTX
         // Three methods to calculate keys. We have split these to optimize index creating
         PRIVATE METHOD _getNumFieldValue(sourceIndex AS LONG, byteArray AS BYTE[]) AS LOGIC
             SELF:_oRdd:Validate()
-            Array.Copy(SELF:_oRdd:_RecordBuffer, sourceIndex, byteArray, 0, SELF:_keySize)
+            Array.Copy(SELF:_oRdd:RecordBuffer, sourceIndex, byteArray, 0, SELF:_keySize)
             SELF:_checkDigits(byteArray, SELF:_keySize, SELF:_keyDecimals)
             RETURN TRUE
             
         PRIVATE METHOD _getFieldValue(sourceIndex AS LONG, byteArray AS BYTE[]) AS LOGIC
             SELF:_oRdd:Validate()
-            Array.Copy(SELF:_oRdd:_RecordBuffer, sourceIndex, byteArray, 0, SELF:_keySize)
+            Array.Copy(SELF:_oRdd:RecordBuffer, sourceIndex, byteArray, 0, SELF:_keySize)
             RETURN TRUE
             
         PRIVATE METHOD _getExpressionValue(sourceIndex AS LONG, byteArray AS BYTE[]) AS LOGIC

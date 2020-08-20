@@ -31,8 +31,8 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                     result := SELF:_ScopeSeek(DbOrder_Info.DBOI_SCOPEBOTTOM)
                 ELSE
                     SELF:_oRdd:GoCold()
-                    SELF:_oRdd:_Top := FALSE
-                    SELF:_oRdd:_Bottom := TRUE
+                    SELF:_oRdd:Top := FALSE
+                    SELF:_oRdd:Bottom := TRUE
                     locked := SELF:Slock()
                     IF !locked
                         RETURN FALSE
@@ -66,12 +66,12 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 
                 IF SELF:HasTopScope
                     result := SELF:_ScopeSeek(DbOrder_Info.DBOI_SCOPETOP)
-                    IF !SELF:_oRdd:_Found
+                    IF !SELF:_oRdd:Found
                         SELF:_oRdd:_SetBOF(TRUE)
                     ENDIF
                 ELSE
-                    SELF:_oRdd:_Top := TRUE
-                    SELF:_oRdd:_Bottom := FALSE
+                    SELF:_oRdd:Top := TRUE
+                    SELF:_oRdd:Bottom := FALSE
                     locked := SELF:Slock()
                     IF !locked
                         RETURN FALSE
@@ -141,8 +141,6 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             LOCAL recno AS LONG
             LOCAL isBof AS LOGIC
             LOCAL isEof AS LOGIC
-            LOCAL changedBof AS LOGIC
-            LOCAL changedEof AS LOGIC
             LOCAL locked AS LOGIC
             LOCAL orgToSkip AS INT
             LOCAL result := FALSE AS LOGIC
@@ -156,8 +154,6 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             forward := nToSkip > 0
             isBof := FALSE
             isEof := FALSE
-            changedBof := FALSE
-            changedEof := FALSE
             locked := FALSE
             
             TRY
@@ -170,12 +166,16 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 IF SELF:Descending
                     nToSkip := - nToSkip
                 ENDIF
-                IF !SELF:_oRdd:_isValid
+                IF !SELF:_oRdd:_isValid // we're at EOF
                     IF nToSkip < 0
-                        recno := SELF:_locateKey(NULL, 0, SearchMode.Bottom,0)
+                        IF SELF:Descending
+                            SELF:GoBottom()
+                        ELSE
+                            SELF:GoTop()
+                        ENDIF
                         nToSkip ++
-                        SELF:_oRdd:_BoF := recno == 0
-                        SELF:_oRdd:_EoF := recno == 0
+                        SELF:_oRdd:_SetBOF(recno == 0)
+                        SELF:_oRdd:_SetEOF(recno == 0)
                     ELSE
                         recno := 0
                         nToSkip := 0
@@ -188,23 +188,17 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 
                 IF orgToSkip != 0
                     IF SELF:HasScope
-                        isBof := SELF:_oRdd:_BoF
-                        isEof := SELF:_oRdd:_EoF 
+                        isBof := SELF:_oRdd:BoF
+                        isEof := SELF:_oRdd:EoF 
                         var newrec := SELF:_ScopeSkip(nToSkip)
                         if (newrec != -1) // -1  means that there was nothing todo
                             recno := newrec
                         endif
-                        IF isBof != SELF:_oRdd:_BoF
-                            changedBof := TRUE
-                            isBof := SELF:_oRdd:_BoF
-                        ELSE
-                            changedBof := FALSE
+                        IF isBof != SELF:_oRdd:BoF
+                            isBof := SELF:_oRdd:BoF
                         ENDIF
-                        IF isEof != SELF:_oRdd:_EoF
-                            changedEof := TRUE
-                            isEof := SELF:_oRdd:_EoF
-                        ELSE
-                            changedEof := FALSE
+                        IF isEof != SELF:_oRdd:EoF
+                            isEof := SELF:_oRdd:EoF
                         ENDIF
                     ELSE
                         IF nToSkip != 0
@@ -212,7 +206,6 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                             IF recno == -1
                                 recno := SELF:_locateFirst(SELF:_rootPage)
                                 isBof := TRUE
-                                changedBof := TRUE
                             ENDIF
                         ENDIF
                     ENDIF
@@ -225,10 +218,10 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                         SELF:_oRdd:_SetBOF(TRUE)
                     ENDIF
                 ELSE 
-                    IF changedBof
+                    IF isBof
                         SELF:_oRdd:_SetBOF(isBof)
                     ENDIF
-                    IF changedEof
+                    IF isEof
                         SELF:_oRdd:_SetEOF(isEof)
                     ENDIF
                 ENDIF
@@ -387,7 +380,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             result := SELF:_RecNo
             IF lNumKeys == 1
                 recno := SELF:_getNextKey(SkipDirection.Forward)
-                IF RT_Deleted .OR. SELF:_oRdd:_FilterInfo:Active
+                IF RT_Deleted .OR. SELF:_oRdd:FilterInfo:Active
                     recno := SELF:_skipFilter(recno, SkipDirection.Forward)
                 ENDIF
                 IF recno == 0
@@ -419,7 +412,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 IF lNumKeys != 0
                     REPEAT
                         recno := SELF:_getNextKey( SkipDirection)
-                        IF RT_Deleted .OR. SELF:_oRdd:_FilterInfo:Active
+                        IF RT_Deleted .OR. SELF:_oRdd:FilterInfo:Active
                             recno := SELF:_skipFilter(recno, SkipDirection)
                         ENDIF
                         lNumKeys--
@@ -432,6 +425,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                                 IF lBOF
                                     IF SELF:Descending
                                         SELF:_oRdd:_SetEOF(TRUE)
+                                        recno := 0
                                     ELSE
                                         recno := SELF:_getNextKey(SkipDirection.Forward)
                                         SELF:_oRdd:_SetBOF(TRUE)
@@ -446,6 +440,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                                 nRes := SELF:__Compare(SELF:_currentvalue:Key, SELF:_Scopes[BOTTOMSCOPE]:Buffer, SELF:_Scopes[BOTTOMSCOPE]:Size) 
                                 VAR lEOF := nRes > 0
                                 IF lEOF
+                                    recno := 0
                                     IF SELF:Descending
                                         recno := SELF:_getNextKey(SkipDirection.Forward)
                                         SELF:_oRdd:_SetBOF(TRUE)
@@ -495,8 +490,8 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 seekInfo:Value      := obj
                 seekInfo:SoftSeek   := TRUE
                 result              := SELF:_Seek(seekInfo, obj)
-                SELF:_oRdd:_Found   := SELF:_isBeforeBottomScope()
-                IF !SELF:_oRdd:_Found
+                SELF:_oRdd:Found    := SELF:_isBeforeBottomScope()
+                IF !SELF:_oRdd:Found
                     SELF:_oRdd:GoTo(0)
                 ENDIF
             ENDIF
@@ -507,7 +502,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             LOCAL isOk AS LOGIC
             LOCAL itmBottomScope AS OBJECT
             
-            isOk := SELF:_oRdd:_Found
+            isOk := SELF:_oRdd:Found
             IF !isOk .AND. SELF:_RecNo != 0
                 IF SELF:HasBottomScope
                     itmBottomScope := SELF:_Scopes[BottomScopeNo]:Value
@@ -767,7 +762,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             LOCAL cbFilter     AS ICodeblock
             LOCAL fRtDeleted   AS LOGIC
             LOCAL fi           AS DbFilterInfo
-            fi := _oRdd:_FilterInfo
+            fi := _oRdd:FilterInfo
             IF SELF:_oRdd:__Goto(recno)
                 fRtDeleted := RuntimeState.Deleted
                 IF fi:Active
@@ -821,7 +816,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             LOCAL oldDescend AS LOGIC
             LOCAL activeFilter AS LOGIC
             oldDescend   := SELF:Descending
-            activeFilter := XSharp.RuntimeState.Deleted .OR. SELF:_oRdd:_FilterInfo:Active 
+            activeFilter := XSharp.RuntimeState.Deleted .OR. SELF:_oRdd:FilterInfo:Active 
             TRY
                 SELF:Descending := FALSE
                 IF oldDescend
@@ -903,7 +898,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                                     recno := SELF:_nextKey(1)
                                     IF activeFilter
                                         recno := SELF:_skipFilter(recno, SkipDirection.Forward)
-                                        IF SELF:_oRdd:_EoF .OR. recno == recnoOk
+                                        IF SELF:_oRdd:EoF .OR. recno == recnoOk
                                             EXIT
                                         ENDIF
                                     ENDIF
@@ -956,7 +951,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                     SELF:ClearStack()
                 ENDIF
                 SELF:_oRdd:_SetBOF(SELF:_oRdd:RecCount == 0)
-                SELF:_oRdd:_Found := found
+                SELF:_oRdd:Found := found
                 RETURN result
                 
             FINALLY

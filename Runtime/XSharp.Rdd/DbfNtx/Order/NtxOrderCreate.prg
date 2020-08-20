@@ -29,7 +29,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             LOCAL hasForCond AS LOGIC
             LOCAL num AS WORD
             
-            ordCondInfo := SELF:_oRdd:_OrderCondInfo
+            ordCondInfo := SELF:_oRdd:OrderCondInfo
             IF String.IsNullOrEmpty(createInfo:BagName)
                 SELF:_oRdd:_dbfError(  Subcodes.EDB_CREATEINDEX, Gencode.EG_ARG,"OrdCreate", "Missing Orderbag Name")
                 RETURN FALSE
@@ -256,7 +256,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             ENDIF
             SELF:_oRdd:__Goto(record)
             // IF record is EOF then do nothing
-            IF !SELF:_oRdd:_isValid .AND. !SELF:_oRdd:_EoF
+            IF !SELF:_oRdd:_isValid .AND. !SELF:_oRdd:EoF
                 SELF:_oRdd:__Goto(start)
                 SELF:ClearStack()
                 RETURN FALSE
@@ -307,7 +307,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
                 IF toDo != 0 .AND. done >= toDo
                     EXIT
                 ENDIF
-                IF SELF:_oRdd:_EoF 
+                IF SELF:_oRdd:EoF 
                     EXIT
                 ENDIF
             ENDDO
@@ -372,7 +372,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
                 RETURN SELF:_CreateEmpty()
             ENDIF
             sortInfo := DbSortInfo{0,1}     // 0 trans items, 1 sort item
-            hasBlock    := SELF:_oRdd:_OrderCondInfo:EvalBlock != NULL
+            hasBlock    := SELF:_oRdd:OrderCondInfo:EvalBlock != NULL
             evalCount := 1
             SELF:_levelsCount := 1
             IF SELF:_SingleField != -1
@@ -400,7 +400,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
                 lAscii := TRUE
                 sortInfo:Items[0]:Flags := DbSortFlags.Ascii
             ENDIF
-            IF SELF:_oRdd:_OrderCondInfo:Descending
+            IF SELF:_oRdd:OrderCondInfo:Descending
                 sortInfo:Items[0]:Flags += DbSortFlags.Descending
             ENDIF
             sortInfo:Items[0]:OffSet := 0
@@ -416,8 +416,8 @@ BEGIN NAMESPACE XSharp.RDD.NTX
                 VAR toSort := SortRecord{byteArray, SELF:_RecNo}
                 sorting:Add(toSort)
                 IF hasBlock
-                    IF evalCount >= SELF:_oRdd:_OrderCondInfo:StepSize
-                        IF ! SELF:_EvalBlock(SELF:_oRdd:_OrderCondInfo:EvalBlock, FALSE)
+                    IF evalCount >= SELF:_oRdd:OrderCondInfo:StepSize
+                        IF ! SELF:_EvalBlock(SELF:_oRdd:OrderCondInfo:EvalBlock, FALSE)
                             EXIT
                         ENDIF
                         evalCount := 1

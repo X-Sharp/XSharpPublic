@@ -11,7 +11,8 @@ using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Shell.Interop;
 using IOleServiceProvider = Microsoft.VisualStudio.OLE.Interop.IServiceProvider;
 using Microsoft.VisualStudio.Project;
-using XSharp.LanguageService;
+using XSharpModel;
+
 namespace XSharp.Project
 {
     public class  XSharpFileDocumentManager: FileDocumentManager
@@ -40,39 +41,29 @@ namespace XSharp.Project
             windowFrame = null;
             Guid editorType = VSConstants.LOGVIEWID_Primary;
             string fullPath = this.GetFullPathForDocument();
-            switch (System.IO.Path.GetExtension(fullPath).ToLower())
+            XFileType type = XFileTypeHelpers.GetFileType(fullPath);
+            switch (type)
             {
-                case ".prg":
-                case ".ppo":
-                case ".vh":
-                case ".xs":
-                case ".xh":
-                case ".ch":
-                    // No idea why but testwindow needs this. Other windows not ! In fact specifying this for other windows
-                    // has the opposite effect that files will NOT be opened correctly
-                    if (Environment.StackTrace.Contains("VisualStudio.TestWindow"))
+                case XFileType.SourceCode:
+                case XFileType.Header:
+                case XFileType.PreprocessorOutput:
+                case XFileType.NativeResource:
+                case XFileType.License:
+                case XFileType.Template:
+                    editorType = GuidStrings.guidSourcecodeEditorFactory;
+                    break;
+                case XFileType.VOForm:
+                case XFileType.VOMenu:
+                case XFileType.VODBServer:
+                case XFileType.VOFieldSpec:
+                    // the primary view is the normal editor which is defined with an attribute on the package
+                    // we only have to tell it what to do when we want to see the code.
+                    if (logicalView == VSConstants.LOGVIEWID.Code_guid)
                     {
-                        editorType = GuidStrings.guidSourcecodeEditorFactory;
+                        editorType = GuidStrings.guidVSXmlEditor;
                     }
                     break;
-                case ".xsfrm":
-                case ".vnfrm":
-                    editorType = GuidStrings.guidVOFormEditorFactory;
-                    break;
-                case ".xsmnu":
-                case ".vnmnu":
-                    editorType = GuidStrings.guidVOMenuEditorFactory;
-                    break;
-                case ".xsdbs":
-                case ".vndbs":
-                    editorType = GuidStrings.guidVODbServerEditorFactory;
-                    break;
-                case ".xsfs":
-                case ".vnfs":
-                    editorType = GuidStrings.guidVOFieldSpecEditorFactory;
-                    break;
             }
-
             return base.Open(newFile, openWith, 0, ref editorType, null, ref logicalView, docDataExisting, out windowFrame, windowFrameAction);
         }
     }

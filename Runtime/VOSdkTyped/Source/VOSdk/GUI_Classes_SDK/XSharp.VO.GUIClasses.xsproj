@@ -6,11 +6,11 @@
   <PropertyGroup>
     <Dialect>Vulcan</Dialect>
     <ProjectGuid>051D166B-3886-43FB-A3C6-6C6846EA6DF1</ProjectGuid>
-    <AssemblyName>XSharp.VO.GUIClasses</AssemblyName>
+    <AssemblyName>XSharp.VOGUIClasses</AssemblyName>
     <Name>XSharp.VO.GUIClasses</Name>
     <OutputName>XSharpGUIClasses</OutputName>
     <XSharpProjectExtensionsPath>$(MSBuildExtensionsPath)\XSharp\</XSharpProjectExtensionsPath>
-    <XSharpProjectversion>2.4.0.0</XSharpProjectversion>
+    <XSharpProjectversion>2.5.0.0</XSharpProjectversion>
     <Includepaths>$(Solutiondir)Common</Includepaths>
     <Nostandarddefs>false</Nostandarddefs>
     <PlatformTarget>x86</PlatformTarget>
@@ -19,10 +19,26 @@
     <CS>false</CS>
     <NamedArgs>false</NamedArgs>
     <InitLocals>false</InitLocals>
-    <RootNamespace>XSharp.VO</RootNamespace>
+    <RootNamespace>XSharp.VO.SDK</RootNamespace>
     <NoWin32Manifest>False</NoWin32Manifest>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <OutputPath>bin\$(Configuration)\</OutputPath>
+    <IntermediateOutputPath>obj\$(Configuration)\</IntermediateOutputPath>
+    <Optimize>false</Optimize>
+    <UseSharedCompilation>true</UseSharedCompilation>
+    <DisabledWarnings>165, 168</DisabledWarnings>
+    <WarningLevel>4</WarningLevel>
+    <SignAssembly>true</SignAssembly>
+    <DelaySign>false</DelaySign>
+    <AssemblyOriginatorKeyFile />
+    <CommandLineOption />
+    <PPO>false</PPO>
+    <DefineConstants />
+    <PlatformTarget>x86</PlatformTarget>
+    <Prefer32Bit>False</Prefer32Bit>
+    <RegisterForComInterop>False</RegisterForComInterop>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
   </PropertyGroup>
@@ -62,6 +78,7 @@
     <Compile Include="Controls\ScrollBar.prg" />
     <Compile Include="Controls\Slider.prg" />
     <Compile Include="Controls\Spinner.prg" />
+    <Compile Include="Controls\SplitView.prg" />
     <Compile Include="Controls\StatusBar.prg" />
     <Compile Include="Controls\SysLink.prg" />
     <Compile Include="Controls\TabControl.prg" />
@@ -151,6 +168,7 @@
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="WinForm\HTMLEditControl.prg" />
+    <Compile Include="WinForm\SplitContainer.prg" />
     <Compile Include="WinForm\TrayIcon.prg" />
     <Compile Include="WinForm\Interfaces.prg" />
     <Compile Include="WinForm\ListBox.prg" />
@@ -243,33 +261,27 @@
       <Name>System.Windows.Forms</Name>
       <AssemblyName>System.Windows.Forms.dll</AssemblyName>
     </Reference>
-    <Reference Include="XSharp.Core, Version=1.2.0.0, Culture=neutral, PublicKeyToken=null">
-      <Name>XSharp.Core</Name>
-      <AssemblyName>XSharp.Core.dll</AssemblyName>
-      <SpecificVersion>False</SpecificVersion>
-      <Private>True</Private>
-      <HintPath>..\..\XSharpRuntime\XSharp.Core.dll</HintPath>
-    </Reference>
-    <Reference Include="XSharp.RT, Version=1.2.0.0, Culture=neutral, PublicKeyToken=null">
-      <Name>XSharp.RT</Name>
-      <AssemblyName>XSharp.RT.dll</AssemblyName>
-      <SpecificVersion>False</SpecificVersion>
-      <Private>True</Private>
-      <HintPath>..\..\XSharpRuntime\XSharp.RT.dll</HintPath>
-    </Reference>
-    <Reference Include="XSharp.VO, Version=1.2.0.0, Culture=neutral, PublicKeyToken=null">
-      <Name>XSharp.VO</Name>
-      <AssemblyName>XSharp.VO.dll</AssemblyName>
-      <SpecificVersion>False</SpecificVersion>
-      <Private>True</Private>
-      <HintPath>..\..\XSharpRuntime\XSharp.VO.dll</HintPath>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
     <None Include="WinForm\PropControl.vh" />
     <None Include="_readme.txt" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\..\..\XSharp.Core\XSharp.Core.xsproj">
+      <Name>XSharp.Core</Name>
+      <Project>{535dff14-efb7-43f5-a4e1-71c1c4280040}</Project>
+      <Private>True</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\..\XSharp.RT\XSharp.RT.xsproj">
+      <Name>XSharp.RT</Name>
+      <Project>{ef8d2bf2-e81a-479a-ba4f-294c4c348b66}</Project>
+      <Private>True</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\..\XSharp.VO\XSharp.VO.xsproj">
+      <Name>XSharp.VO</Name>
+      <Project>{06099c3d-1697-4eb1-9f53-8a9a50b9eacd}</Project>
+      <Private>True</Private>
+    </ProjectReference>
     <ProjectReference Include="..\System_Classes_SDK\XSharp.VO.SystemClasses.xsproj">
       <Name>XSharp.VO.SystemClasses</Name>
       <Project>{5ac3e55d-f2bd-45eb-9cc2-dd8bd36240ea}</Project>

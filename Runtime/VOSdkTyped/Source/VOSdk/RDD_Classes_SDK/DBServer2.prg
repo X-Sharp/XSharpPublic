@@ -1,7 +1,7 @@
-
+#pragma warnings(165, off)
 PARTIAL CLASS DbServer
 
-METHOD CopyDB( oFSTarget, aFieldList, cbForBlock, cbWhileBlock, uScope, cdriver, aRdd )  
+METHOD CopyDB( oFSTarget, aFieldList, cbForBlock, cbWhileBlock, uScope, cdriver, aRdd )   AS LOGIC
 	LOCAL uValue AS USUAL
 	LOCAL cbKey AS USUAL
 	LOCAL nNextCount AS LONGINT
@@ -16,8 +16,6 @@ METHOD CopyDB( oFSTarget, aFieldList, cbForBlock, cbWhileBlock, uScope, cdriver,
 	LOCAL wLen AS DWORD
 	LOCAL lRestore AS LOGIC	
 	
-   //RvdH 070711 Make sure we restore the workarea
-   //				  The codeblocks may select another workarea
 	lRestore	:= DbSetRestoreWorkarea(TRUE)      
 	
 	lErrorFlag := FALSE
@@ -28,7 +26,7 @@ METHOD CopyDB( oFSTarget, aFieldList, cbForBlock, cbWhileBlock, uScope, cdriver,
 				cTarget := oFS:FullPath
 				
 			ELSEIF IsObject(oFSTarget) .and. __Usual.ToObject(oFSTarget) IS DbServer VAR oDb
-				cTarget := oDb:__FileSpec:FullPath
+				cTarget := oDb:FileSpec:FullPath
 				
 			ELSE
 				cTarget := oFSTarget
@@ -132,14 +130,14 @@ METHOD CopyDB( oFSTarget, aFieldList, cbForBlock, cbWhileBlock, uScope, cdriver,
 			
 		ENDIF
 		
-		__DBSSetSelect( dwCurrentWorkArea )  //SE-060527
+		__DBSSetSelect( dwCurrentWorkArea )  
 		
 	RECOVER USING oError
 		oHLStatus := SELF:__GenerateStatusHL( oError )
 		oHLTemp := oHLStatus
 		oErrorInfo := oError
 		SELF:__ProcessConcurrency( FALSE )
-		__DBSSetSelect( dwCurrentWorkArea )  //SE-060527
+		__DBSSetSelect( dwCurrentWorkArea )  
 		lRetCode := FALSE
 		
 	END SEQUENCE
@@ -161,7 +159,7 @@ METHOD CopyDB( oFSTarget, aFieldList, cbForBlock, cbWhileBlock, uScope, cdriver,
 	RETURN lRetCode
 	
 
-METHOD CopyDelimited( oFSTarget, cDelimiter, aFieldList, cbForBlock, cbWhileBlock, uScope )  
+METHOD CopyDelimited( oFSTarget, cDelimiter, aFieldList, cbForBlock, cbWhileBlock, uScope )   AS LOGIC
 	LOCAL uValue AS USUAL
 	LOCAL cbKey AS USUAL
 	LOCAL nNextCount AS LONGINT
@@ -177,8 +175,6 @@ METHOD CopyDelimited( oFSTarget, cDelimiter, aFieldList, cbForBlock, cbWhileBloc
 	LOCAL lRestore AS LOGIC
 	
 	
-   //RvdH 070711 Make sure we restore the workarea
-   //				  The codeblocks may select another workarea
 	lRestore	:= DbSetRestoreWorkarea(TRUE)      
 
 	lErrorFlag := FALSE
@@ -267,14 +263,14 @@ METHOD CopyDelimited( oFSTarget, cDelimiter, aFieldList, cbForBlock, cbWhileBloc
 				__CavoStr( __CAVOSTR_DBFCLASS_INTENTTOMOVE ) )
 			oHLTemp := oHLStatus
 		ENDIF
-		__DBSSetSelect( dwCurrentWorkArea )  //SE-060527
+		__DBSSetSelect( dwCurrentWorkArea )  
 		
 	RECOVER USING oError
 		oHLStatus := SELF:__GenerateStatusHL( oError )
 		oHLTemp := oHLStatus
 		oErrorInfo := oError
 		SELF:__ProcessConcurrency( FALSE )
-		__DBSSetSelect( dwCurrentWorkArea )  //SE-060527
+		__DBSSetSelect( dwCurrentWorkArea )  
 		lRetCode := FALSE
 	END SEQUENCE
 	
@@ -297,7 +293,7 @@ METHOD CopyDelimited( oFSTarget, cDelimiter, aFieldList, cbForBlock, cbWhileBloc
 	RETURN lRetCode
 	
 
-METHOD CopySDF( oFSTarget, aFieldList, cbForBlock, cbWhileBlock, uScope )  
+METHOD CopySDF( oFSTarget, aFieldList, cbForBlock, cbWhileBlock, uScope )   AS LOGIC
 	LOCAL uValue AS USUAL
 	LOCAL cbKey AS USUAL
 	LOCAL nNextCount AS LONGINT
@@ -312,8 +308,6 @@ METHOD CopySDF( oFSTarget, aFieldList, cbForBlock, cbWhileBlock, uScope )
 	LOCAL wLen AS DWORD
 	LOCAL lRestore AS LOGIC	
 	
-   //RvdH 070711 Make sure we restore the workarea
-   //				  The codeblocks may select another workarea
 	lRestore	:= DbSetRestoreWorkarea(TRUE)      
 	
 	lErrorFlag := FALSE
@@ -403,14 +397,14 @@ METHOD CopySDF( oFSTarget, aFieldList, cbForBlock, cbWhileBlock, uScope )
 				__CavoStr( __CAVOSTR_DBFCLASS_INTENTTOMOVE ) )
 			oHLTemp := oHLStatus
 		ENDIF
-		__DBSSetSelect( dwCurrentWorkArea )  //SE-060527
+		__DBSSetSelect( dwCurrentWorkArea )  
 		
 	RECOVER USING oError
 		oHLStatus := SELF:__GenerateStatusHL( oError )
 		oHLTemp := oHLStatus
 		oErrorInfo := oError
 		SELF:__ProcessConcurrency( FALSE )
-		__DBSSetSelect( dwCurrentWorkArea )  //SE-060527
+		__DBSSetSelect( dwCurrentWorkArea )  
 		lRetCode := FALSE
 	END SEQUENCE
 	
@@ -430,9 +424,12 @@ METHOD CopySDF( oFSTarget, aFieldList, cbForBlock, cbWhileBlock, uScope )
 	
 	
 	RETURN lRetCode
-	
 
-METHOD CopyStructure( oFSTarget, aFieldList )  
+
+METHOD CopyStructure( oFSTarget AS FileSpec, aFieldList := NULL AS ARRAY) AS LOGIC
+    RETURN SELF:CopyStructure(oFSTarget:FullPath, aFieldList)
+
+METHOD CopyStructure( cFileName AS STRING, aFieldList := NULL AS ARRAY )   AS LOGIC
 	LOCAL cTarget AS STRING
 	LOCAL w AS DWORD
 	LOCAL j AS DWORD
@@ -443,9 +440,7 @@ METHOD CopyStructure( oFSTarget, aFieldList )
 	LOCAL oError AS USUAL
 	LOCAL oHLTemp AS HyperLabel
 	LOCAL cAlias AS STRING
-	LOCAL cFileName AS STRING
 	LOCAL cPath AS STRING
-	LOCAL oSelf AS DbServer
 	LOCAL aFullPath AS ARRAY
 	LOCAL aRdds AS ARRAY
 	LOCAL rddList AS _RddList
@@ -454,38 +449,27 @@ METHOD CopyStructure( oFSTarget, aFieldList )
 	
 	lErrorFlag := FALSE
 	BEGIN SEQUENCE
-		IF IsObject(oFSTarget) .and. __Usual.ToObject(oFSTarget) IS FileSpec VAR oFS
-			cTarget := oFS:FullPath
-			cFileName := oFS:FileName
-			
-			IF Upper( SELF:oFileSpec:FileName ) == Upper( cFileName )
-				cAlias := Symbol2String( __ConstructUniqueAlias( cFileName ) )
-			ENDIF
-			
+		cTarget := cFileName
+		aFullPath := ArrayNew( 4 )
+		__SplitPath( NULL, cTarget, aFullPath )
+		IF SubStr2( aFullPath[2], SLen( aFullPath[2] ) ) == "\"
+			cPath := aFullPath[1] + aFullPath[2]
 		ELSE
-			cTarget := oFSTarget
-			aFullPath := ArrayNew( 4 )
-			oSelf := SELF
-			__SplitPath( oSelf:FileSpec, cTarget, aFullPath )
-			IF SubStr2( aFullPath[2], SLen( aFullPath[2] ) ) == "\"
-				cPath := aFullPath[1] + aFullPath[2]
-			ELSE
-				cPath := aFullPath[1] + aFullPath[2] + "\"
-			ENDIF
-			
-			cFileName := aFullPath[3] + aFullPath[4]
-			
-			IF aFullPath[4] == NULL_STRING
-				cFileName += oFileSpec:Extension
-			ENDIF
-			
-			IF aFullPath[3] == SELF:oFileSpec:FileName
-				cAlias := Symbol2String( __ConstructUniqueAlias( SELF:oFileSpec:FileName ) )
-			ENDIF
-			cTarget := cPath + cFileName
+			cPath := aFullPath[1] + aFullPath[2] + "\"
 		ENDIF
+			
+		cFileName := aFullPath[3] + aFullPath[4]
+			
+		IF aFullPath[4] == NULL_STRING
+			cFileName += oFileSpec:Extension
+		ENDIF
+			
+		IF aFullPath[3] == SELF:oFileSpec:FileName
+			cAlias := Symbol2String( __ConstructUniqueAlias( SELF:oFileSpec:FileName ) )
+		ENDIF
+		cTarget := cPath + cFileName
 		
-		IF IsNil( aFieldList )
+		IF aFieldList == NULL
 			aNew := aStruct
 		ELSE
 			aNew := { }
@@ -534,7 +518,7 @@ METHOD CopyStructure( oFSTarget, aFieldList )
 	RETURN lRetCode
 	
 
-METHOD Count( cbForBlock, cbWhileBlock, uScope )  
+METHOD Count( cbForBlock := NIL AS USUAL, cbWhileBlock := NIL AS USUAL, uScope := NIL AS USUAL)   AS LONG
 	LOCAL uValue AS USUAL
 	LOCAL cbKey AS USUAL
 	LOCAL nNextCount AS LONGINT
@@ -608,7 +592,6 @@ METHOD Count( cbForBlock, cbWhileBlock, uScope )
 				BREAK ErrorBuild( _VoDbErrInfoPtr( ) )
 			ENDIF
 		ELSE
-			//PP-040216 lRest requires a logic due to strong typing
 			SELF:__DbServerEval( { || iTally++ },  ;
 				NIL,  ;
 				NIL,  ;
@@ -621,11 +604,11 @@ METHOD Count( cbForBlock, cbWhileBlock, uScope )
 		
 		SELF:__ProcessConcurrency( TRUE )
 		
-		__DBSSetSelect( dwCurrentWorkArea )  //SE-060527
+		__DBSSetSelect( dwCurrentWorkArea )  
 		
 	RECOVER USING oError
 		SELF:__ProcessConcurrency( FALSE )
-		__DBSSetSelect( dwCurrentWorkArea )  //SE-060527
+		__DBSSetSelect( dwCurrentWorkArea )  
 		SELF:Error( oError, #Count )
 		oErrorInfo := oError
 		oHLTemp := oHLStatus
@@ -649,7 +632,7 @@ METHOD Count( cbForBlock, cbWhileBlock, uScope )
 	RETURN iTally
 	
 
-METHOD CreateIndex( oFSIndex, cExpr, cbExpr, lUnique ) 
+METHOD CreateIndex( oFSIndex, cExpr, cbExpr, lUnique )  AS LOGIC
 	LOCAL cIndexFileName AS STRING
 	LOCAL lRetCode AS LOGIC
 	LOCAL oError AS USUAL
@@ -657,8 +640,6 @@ METHOD CreateIndex( oFSIndex, cExpr, cbExpr, lUnique )
 	LOCAL oHLTemp AS HyperLabel
 	LOCAL lRestore AS LOGIC	
 	
-   //RvdH 070711 Make sure we restore the workarea
-   //				  The codeblocks may select another workarea
 	lRestore	:= DbSetRestoreWorkarea(TRUE)      
 	
 	lErrorFlag := FALSE
@@ -705,13 +686,13 @@ METHOD CreateIndex( oFSIndex, cExpr, cbExpr, lUnique )
 				__CavoStr( __CAVOSTR_DBFCLASS_INTENTTOMOVE ) )
 			oHLTemp := oHLStatus
 		ENDIF
-		__DBSSetSelect( dwCurrentWorkArea ) //SE-060527
+		__DBSSetSelect( dwCurrentWorkArea ) 
 		
 	RECOVER USING oError
 		oHLStatus := SELF:__GenerateStatusHL( oError )
 		oHLTemp := oHLStatus
 		oErrorInfo := oError
-		__DBSSetSelect( dwCurrentWorkArea )  //SE-060527
+		__DBSSetSelect( dwCurrentWorkArea )  
 		lRetCode := FALSE
 	END SEQUENCE
 	
@@ -733,15 +714,13 @@ METHOD CreateIndex( oFSIndex, cExpr, cbExpr, lUnique )
 	RETURN lRetCode
 	
 
-METHOD CreateOrder( cOrderName, cIndexFileName, cExpr, cbExpr, lUnique ) 
+METHOD CreateOrder( cOrderName, cIndexFileName, cExpr, cbExpr, lUnique )  AS LOGIC
 	LOCAL lRetCode AS LOGIC
 	LOCAL oError AS USUAL
 	LOCAL dwCurrentWorkArea := 0 AS DWORD
 	LOCAL oHLTemp AS HyperLabel
 	LOCAL lRestore AS LOGIC	
 	
-   //RvdH 070711 Make sure we restore the workarea
-   //				  The codeblocks may select another workarea
 	lRestore	:= DbSetRestoreWorkarea(TRUE)      
 	
 	lErrorFlag := FALSE
@@ -786,13 +765,13 @@ METHOD CreateOrder( cOrderName, cIndexFileName, cExpr, cbExpr, lUnique )
 				__CavoStr( __CAVOSTR_DBFCLASS_INTENTTOMOVE ) )
 			oHLTemp := oHLStatus
 		ENDIF
-		__DBSSetSelect( dwCurrentWorkArea )  //SE-060527
+		__DBSSetSelect( dwCurrentWorkArea )  
 		
 	RECOVER USING oError
 		oHLStatus := SELF:__GenerateStatusHL( oError )
 		oHLTemp := oHLStatus
 		oErrorInfo := oError
-		__DBSSetSelect( dwCurrentWorkArea )  //SE-060527
+		__DBSSetSelect( dwCurrentWorkArea )  
 		lRetCode := FALSE
 	END SEQUENCE
 	
@@ -816,7 +795,7 @@ METHOD CreateOrder( cOrderName, cIndexFileName, cExpr, cbExpr, lUnique )
 	
 
 METHOD DataField( uField AS USUAL) AS DataField 
-	//SE-060527
+	
 	LOCAL oResult AS DataField
 	LOCAL dwPos   AS DWORD
 	LOCAL dwCurrentWorkArea := 0 AS DWORD
@@ -828,9 +807,8 @@ METHOD DataField( uField AS USUAL) AS DataField
 	ELSE
 		VoDbSelect( wWorkArea, OUT dwCurrentWorkArea )
 		dwPos := __GetFldPos( uField, wFieldCount )
-		__DBSSetSelect( dwCurrentWorkArea )  //SE-060527
+		__DBSSetSelect( dwCurrentWorkArea )  
 		IF dwPos > 0
-			//RvdH  Changed uField to dwPos in next lines
 			IF IsNil( aDataFields[dwPos] )
 				aDataFields[dwPos] := SELF:__BuildDataField( aStruct[dwPos] )
 			ENDIF
@@ -941,7 +919,7 @@ METHOD Delete( cbForBlock, cbWhileBlock, uScope ) AS LOGIC
 			lRetCode := SELF:__ProcessConcurrency(  TRUE )
 		ENDIF
 		
-		__DBSSetSelect( dwCurrentWorkArea )  //SE-060527
+		__DBSSetSelect( dwCurrentWorkArea )  
 		
 	RECOVER USING oError
 		oHLStatus := SELF:__GenerateStatusHL( oError )
@@ -949,13 +927,13 @@ METHOD Delete( cbForBlock, cbWhileBlock, uScope ) AS LOGIC
 		
 		SELF:__ProcessConcurrency( FALSE )
 		
-		__DBSSetSelect( dwCurrentWorkArea )  //SE-060527
+		__DBSSetSelect( dwCurrentWorkArea )  
 		lRetCode := FALSE
 	END SEQUENCE
 	RETURN lRetCode
 	
 
-METHOD DeleteAll( )  
+METHOD DeleteAll( )   AS LOGIC STRICT
 	LOCAL uValue AS USUAL
 	LOCAL cbKey AS USUAL
 	LOCAL lRetCode AS LOGIC
@@ -990,7 +968,6 @@ METHOD DeleteAll( )
 				ENDIF
 				
 			ELSE
-				//PP-040216 lRest requires a logic due to strong typing
 				lRetCode := SELF:__DbServerEval( { || VoDbDelete( ) },  ;
 					NIL,  ;
 					NIL,  ;
@@ -1015,14 +992,14 @@ METHOD DeleteAll( )
 				__CavoStr( __CAVOSTR_DBFCLASS_INTENTTOMOVE ) )
 			oHLTemp := oHLStatus
 		ENDIF
-		__DBSSetSelect( dwCurrentWorkArea )  //SE-060527
+		__DBSSetSelect( dwCurrentWorkArea )  
 		
 	RECOVER USING oError
 		oHLStatus := SELF:__GenerateStatusHL( oError )
 		oHLTemp := oHLStatus
 		oErrorInfo := oError
 		SELF:__ProcessConcurrency( FALSE )
-		__DBSSetSelect( dwCurrentWorkArea )  //SE-060527
+		__DBSSetSelect( dwCurrentWorkArea )  
 		lRetCode := FALSE
 	END SEQUENCE
 	
@@ -1043,7 +1020,7 @@ METHOD DeleteAll( )
 	RETURN lRetCode
 	
 
-METHOD DeleteOrder( uOrder, cIndexFileName ) 
+METHOD DeleteOrder( uOrder, cIndexFileName )  AS LOGIC
 	LOCAL lRetCode AS LOGIC
 	LOCAL oError AS USUAL
 	LOCAL cOrder AS USUAL
@@ -1073,12 +1050,12 @@ METHOD DeleteOrder( uOrder, cIndexFileName )
 		IF ! VoDbOrdDestroy( cOrdBag, uOrder )
 			BREAK ErrorBuild( _VoDbErrInfoPtr( ) )
 		ENDIF
-		__DBSSetSelect( dwCurrentWorkArea )  //SE-060527
+		__DBSSetSelect( dwCurrentWorkArea )  
 		
 	RECOVER USING oError
 		oHLStatus := SELF:__GenerateStatusHL( oError )
 		oErrorInfo := oError
-		__DBSSetSelect( dwCurrentWorkArea )  //SE-060527
+		__DBSSetSelect( dwCurrentWorkArea )  
 		lRetCode := FALSE
 	END SEQUENCE
 	
@@ -1087,7 +1064,7 @@ METHOD DeleteOrder( uOrder, cIndexFileName )
 	RETURN lRetCode
 	
 
-METHOD Error( oError, symMethod ) 
+METHOD Error( oError AS Error, symMethod AS Symbol) 
 	STATIC LOCAL lErrorProcessingSemaphor AS LOGIC
 	LOCAL cErrorValType AS STRING
     LOCAL oErr  as Error
@@ -1131,7 +1108,7 @@ METHOD Error( oError, symMethod )
 	RETURN SELF
 	
 
-METHOD Eval( cbBlock, cbForBlock, cbWhileBlock, uScope )  
+METHOD Eval( cbBlock, cbForBlock, cbWhileBlock, uScope )   AS LOGIC
 	LOCAL uValue AS USUAL
 	LOCAL cbKey AS USUAL
 	LOCAL nNextCount AS LONGINT
@@ -1200,7 +1177,6 @@ METHOD Eval( cbBlock, cbForBlock, cbWhileBlock, uScope )
 				ENDIF
 				
 			ELSE
-				//PP-031124 Pass FALSE for 6th parameter instead of NIL since it is strongly typed as LOGIC
 				lRetCode := SELF:__DbServerEval( cbBlock,  ;
 					NIL,  ;
 					NIL,  ;
@@ -1223,7 +1199,7 @@ METHOD Eval( cbBlock, cbForBlock, cbWhileBlock, uScope )
 				__CavoStr( __CAVOSTR_DBFCLASS_INTENTTOMOVE ) )
 			oHLTemp := oHLStatus
 		ENDIF
-		__DBSSetSelect( dwCurrentWorkArea )  //SE-060527
+		__DBSSetSelect( dwCurrentWorkArea )  
 		
 	RECOVER USING oError
 		oHLStatus := SELF:__GenerateStatusHL( oError )
@@ -1231,7 +1207,7 @@ METHOD Eval( cbBlock, cbForBlock, cbWhileBlock, uScope )
 		oErrorInfo := oError
 		lRetCode := FALSE
 		SELF:__ProcessConcurrency( FALSE )
-		__DBSSetSelect( dwCurrentWorkArea )  //SE-060527
+		__DBSSetSelect( dwCurrentWorkArea )  
 	END SEQUENCE
 	
 	
@@ -1252,7 +1228,7 @@ METHOD Eval( cbBlock, cbForBlock, cbWhileBlock, uScope )
 	
 
 METHOD FieldGet( uField AS USUAL) AS USUAL
-	//SE-060601
+	
 	LOCAL uRetVal AS USUAL
 	LOCAL oError AS USUAL
 	LOCAL wPos AS DWORD
@@ -1279,11 +1255,11 @@ METHOD FieldGet( uField AS USUAL) AS USUAL
 			ENDIF
 		ENDIF
 		
-		__DBSSetSelect( dwCurrentWorkArea )  //SE-060527
+		__DBSSetSelect( dwCurrentWorkArea )  
 		
 	RECOVER USING oError
 		oErrorInfo := oError
-		__DBSSetSelect( dwCurrentWorkArea )  //SE-060527
+		__DBSSetSelect( dwCurrentWorkArea )  
 		SELF:Error( oErrorInfo, #FIELDGET )
 	END SEQUENCE
 	
@@ -1310,11 +1286,11 @@ METHOD FieldGetBytes( uField AS USUAL ) AS BYTE[]
 			BREAK ErrorBuild( _VoDbErrInfoPtr( ) )
 		ENDIF
 		
-		__DBSSetSelect( dwCurrentWorkArea )  //SE-060527
+		__DBSSetSelect( dwCurrentWorkArea )  
 		
 	RECOVER USING oError
 		oErrorInfo := oError
-		__DBSSetSelect( dwCurrentWorkArea )  //SE-060527
+		__DBSSetSelect( dwCurrentWorkArea )  
 		SELF:Error( oErrorInfo, #FieldGetBytes )
 	END SEQUENCE
 	
@@ -1322,10 +1298,8 @@ METHOD FieldGetBytes( uField AS USUAL ) AS BYTE[]
 	
 	RETURN bRetVal
 		
-
-
 METHOD FieldGetFormatted( uField AS USUAL) AS USUAL
-	//SE-060527
+	
 	LOCAL uRetVal AS USUAL
 	LOCAL wPos AS DWORD
 	LOCAL oError AS USUAL
@@ -1350,7 +1324,7 @@ METHOD FieldGetFormatted( uField AS USUAL) AS USUAL
 				ENDIF
 			ENDIF
 		ENDIF
-		__DBSSetSelect( dwCurrentWorkArea )  //SE-060527
+		__DBSSetSelect( dwCurrentWorkArea )  
 		IF IsNil( aDataFields[wPos] )
 			aDataFields[wPos] := SELF:__BuildDataField( aStruct[wPos] )
 		ENDIF
@@ -1359,7 +1333,7 @@ METHOD FieldGetFormatted( uField AS USUAL) AS USUAL
 	RECOVER USING oError
 		oErrorInfo := oError
 		SELF:Error( oErrorInfo, #FieldGetFormatted )
-		__DBSSetSelect( dwCurrentWorkArea )  //SE-060527
+		__DBSSetSelect( dwCurrentWorkArea )  
 		RETURN NULL_STRING
 	END SEQUENCE
 	
@@ -1369,7 +1343,7 @@ METHOD FieldGetFormatted( uField AS USUAL) AS USUAL
 	
 
 METHOD FieldHyperLabel( uField AS USUAL) AS HyperLabel
-	//SE-060527
+	
 	LOCAL wPos AS DWORD
 	LOCAL uRetVal AS USUAL
 	LOCAL oError AS USUAL
@@ -1381,7 +1355,7 @@ METHOD FieldHyperLabel( uField AS USUAL) AS HyperLabel
 	BEGIN SEQUENCE
 		VoDbSelect( wWorkArea, OUT dwCurrentWorkArea )
 		wPos := __GetFldPos( uField, wFieldCount )
-		__DBSSetSelect( dwCurrentWorkArea )  //SE-060527
+		__DBSSetSelect( dwCurrentWorkArea )  
 		IF wPos > 0
 			IF IsNil( aDataFields[wPos] )
 				aDataFields[wPos] := SELF:__BuildDataField( aStruct[wPos] )
@@ -1395,7 +1369,7 @@ METHOD FieldHyperLabel( uField AS USUAL) AS HyperLabel
 	RECOVER USING oError
 		oHLStatus := SELF:__GenerateStatusHL( oError )
 		oErrorInfo := oError
-		__DBSSetSelect( dwCurrentWorkArea )  //SE-060527
+		__DBSSetSelect( dwCurrentWorkArea )  
 		uRetVal := NULL_OBJECT
 	END SEQUENCE
 	
@@ -1404,8 +1378,8 @@ METHOD FieldHyperLabel( uField AS USUAL) AS HyperLabel
 	RETURN uRetVal
 	
 
-METHOD FieldInfo( kFieldInfoType, uField, uFieldVal ) 
-	//SE-060527
+METHOD FieldInfo( kFieldInfoType, uField, uFieldVal ) AS USUAL
+	
 	LOCAL nPos AS DWORD
 	LOCAL oError AS USUAL
 	LOCAL dwCurrentWorkArea := 0 AS DWORD
@@ -1425,12 +1399,12 @@ METHOD FieldInfo( kFieldInfoType, uField, uFieldVal )
 		IF ! VoDbFieldInfo( kFieldInfoType, nPos, REF uFieldVal )
 			BREAK ErrorBuild( _VoDbErrInfoPtr( ) )
 		ENDIF
-		__DBSSetSelect( dwCurrentWorkArea )  //SE-060527
+		__DBSSetSelect( dwCurrentWorkArea )  
 		
 	RECOVER USING oError
 		oErrorInfo := oError
 		SELF:Error( oErrorInfo, #FieldInfo )
-		__DBSSetSelect( dwCurrentWorkArea )  //SE-060527
+		__DBSSetSelect( dwCurrentWorkArea )  
 		uFieldVal := NIL
 	END SEQUENCE
 	
@@ -1440,7 +1414,7 @@ METHOD FieldInfo( kFieldInfoType, uField, uFieldVal )
 	
 
 METHOD FieldName( nFieldPosition AS USUAL ) AS STRING
-	//SE-060601
+	
 	LOCAL dwCurrentWorkArea := 0 AS DWORD
 	LOCAL uRetVal AS USUAL
 	LOCAL oError AS USUAL
@@ -1482,12 +1456,12 @@ METHOD FieldPos( cFieldName AS USUAL) AS DWORD
 	BEGIN SEQUENCE
 		VoDbSelect( wWorkArea, OUT dwCurrentWorkArea )
 		uRetVal := __GetFldPos( cFieldName, wFieldCount )
-		__DBSSetSelect( dwCurrentWorkArea )  //SE-060527
+		__DBSSetSelect( dwCurrentWorkArea )  
 		
 	RECOVER USING oError
 		oHLStatus := SELF:__GenerateStatusHL( oError )
 		oErrorInfo := oError
-		__DBSSetSelect( dwCurrentWorkArea )  //SE-060527
+		__DBSSetSelect( dwCurrentWorkArea )  
 		uRetVal := 0
 	END SEQUENCE
 	
@@ -1497,7 +1471,6 @@ METHOD FieldPos( cFieldName AS USUAL) AS DWORD
 	
 
 METHOD FieldPut( uField AS USUAL, uValue AS USUAL)  AS USUAL
-    //SE-080608 Updated error handling
 	LOCAL wPos AS DWORD
 	LOCAL symFieldName AS SYMBOL
 	LOCAL uError AS USUAL
@@ -1539,11 +1512,11 @@ METHOD FieldPut( uField AS USUAL, uValue AS USUAL)  AS USUAL
 		ENDIF
       symFieldName := FieldSym(wPos)      
 		SELF:Notify( Notify.FieldChange, symFieldName )
-		__DBSSetSelect( dwCurrentWorkArea )  //SE-060527
+		__DBSSetSelect( dwCurrentWorkArea )  
 		
 	RECOVER USING uError
 		oErrorInfo := uError
-		__DBSSetSelect( dwCurrentWorkArea )  //SE-060527
+		__DBSSetSelect( dwCurrentWorkArea )  
 		SELF:Error( oErrorInfo, #FIELDPUT )
 		uValue := NIL
 	END SEQUENCE
@@ -1571,11 +1544,11 @@ METHOD FieldPutBytes( uField AS USUAL, bValue AS BYTE[])  AS BYTE[]
 		ENDIF
       symFieldName := FieldSym(wPos)      
 		SELF:Notify( Notify.FieldChange, symFieldName )
-		__DBSSetSelect( dwCurrentWorkArea )  //SE-060527
+		__DBSSetSelect( dwCurrentWorkArea )  
 		
 	RECOVER USING uError
 		oErrorInfo := uError
-		__DBSSetSelect( dwCurrentWorkArea )  //SE-060527
+		__DBSSetSelect( dwCurrentWorkArea )  
 		SELF:Error( oErrorInfo, #FieldPutBytes )
 		bValue := NULL
 	END SEQUENCE
@@ -1585,7 +1558,7 @@ METHOD FieldPutBytes( uField AS USUAL, bValue AS BYTE[])  AS BYTE[]
 	RETURN bValue
 
 METHOD FieldSpec( uField AS USUAL)  AS FieldSpec
-	//SE-060527
+	
 	LOCAL wPos AS DWORD
 	LOCAL uRetVal AS USUAL
 	LOCAL oError AS USUAL
@@ -1597,7 +1570,7 @@ METHOD FieldSpec( uField AS USUAL)  AS FieldSpec
 	BEGIN SEQUENCE
 		VoDbSelect( wWorkArea, OUT dwCurrentWorkArea )
 		wPos := __GetFldPos( uField, wFieldCount )
-		__DBSSetSelect( dwCurrentWorkArea )  //SE-060527
+		__DBSSetSelect( dwCurrentWorkArea )  
 		IF wPos > 0
 			IF IsNil( aDataFields[wPos] )
 				aDataFields[wPos] := SELF:__BuildDataField( aStruct[wPos] )
@@ -1611,7 +1584,7 @@ METHOD FieldSpec( uField AS USUAL)  AS FieldSpec
 	RECOVER USING oError
 		oHLStatus := SELF:__GenerateStatusHL( oError )
 		oErrorInfo := oError
-		__DBSSetSelect( dwCurrentWorkArea )  //SE-060527
+		__DBSSetSelect( dwCurrentWorkArea )  
 		uRetVal := NULL_OBJECT
 	END SEQUENCE
 	
@@ -1621,7 +1594,7 @@ METHOD FieldSpec( uField AS USUAL)  AS FieldSpec
 	
 
 METHOD FieldStatus( uField AS USUAL) AS HyperLabel
-	//SE-060527
+	
 	LOCAL wPos AS DWORD
 	LOCAL uRetVal AS USUAL
 	LOCAL oError AS USUAL
@@ -1633,7 +1606,7 @@ METHOD FieldStatus( uField AS USUAL) AS HyperLabel
 	BEGIN SEQUENCE
 		VoDbSelect( wWorkArea, OUT dwCurrentWorkArea )
 		wPos := __GetFldPos( uField, wFieldCount )
-		__DBSSetSelect( dwCurrentWorkArea )  //SE-060527
+		__DBSSetSelect( dwCurrentWorkArea )  
 		IF wPos > 0
 			IF IsNil( aDataFields[wPos] )
 				aDataFields[wPos] := SELF:__BuildDataField( aStruct[wPos] )
@@ -1647,7 +1620,7 @@ METHOD FieldStatus( uField AS USUAL) AS HyperLabel
 	RECOVER USING oError
 		oHLStatus := SELF:__GenerateStatusHL( oError )
 		oErrorInfo := oError
-		__DBSSetSelect( dwCurrentWorkArea )  //SE-060527
+		__DBSSetSelect( dwCurrentWorkArea )  
 		uRetVal := NULL_OBJECT
 	END SEQUENCE
 	
@@ -1657,7 +1630,7 @@ METHOD FieldStatus( uField AS USUAL) AS HyperLabel
 	
 
 METHOD FieldSym( uField AS USUAL) AS SYMBOL
-	//SE-060527
+	
 	LOCAL wPos AS DWORD
 	LOCAL uRetVal AS USUAL
 	LOCAL oError AS USUAL
@@ -1674,12 +1647,12 @@ METHOD FieldSym( uField AS USUAL) AS SYMBOL
 			SELF:__SetStatusHL( #FieldSym, EG_ARG, __CavoStr( __CAVOSTR_DBFCLASS_FIELDSPEC ) )
 			uRetVal := NULL_SYMBOL
 		ENDIF
-		__DBSSetSelect( dwCurrentWorkArea )  //SE-060527
+		__DBSSetSelect( dwCurrentWorkArea )  
 		
 	RECOVER USING oError
 		oHLStatus := SELF:__GenerateStatusHL( oError )
 		oErrorInfo := oError
-		__DBSSetSelect( dwCurrentWorkArea )  //SE-060527
+		__DBSSetSelect( dwCurrentWorkArea )  
 		uRetVal := NULL_SYMBOL
 	END SEQUENCE
 	
@@ -1689,7 +1662,7 @@ METHOD FieldSym( uField AS USUAL) AS SYMBOL
 	
 
 METHOD FieldValidate( uField AS USUAL, uValue AS USUAL) AS LOGIC
-	//SE-060527
+	
 	LOCAL wPos AS DWORD
 	LOCAL uRetVal AS USUAL
 	LOCAL oError AS USUAL
@@ -1701,7 +1674,7 @@ METHOD FieldValidate( uField AS USUAL, uValue AS USUAL) AS LOGIC
 	BEGIN SEQUENCE
 		VoDbSelect( wWorkArea, OUT dwCurrentWorkArea )
 		wPos := __GetFldPos( uField, wFieldCount )
-		__DBSSetSelect( dwCurrentWorkArea )  //SE-060527
+		__DBSSetSelect( dwCurrentWorkArea )  
 		IF wPos > 0
 			IF IsNil( aDataFields[wPos] )
 				aDataFields[wPos] := SELF:__BuildDataField( aStruct[wPos] )
@@ -1715,7 +1688,7 @@ METHOD FieldValidate( uField AS USUAL, uValue AS USUAL) AS LOGIC
 	RECOVER USING oError
 		oErrorInfo := oError
 		SELF:Error( oErrorInfo, #FieldValidate )
-		__DBSSetSelect( dwCurrentWorkArea )  //SE-060527
+		__DBSSetSelect( dwCurrentWorkArea )  
 		uRetVal := FALSE
 	END SEQUENCE
 	
@@ -1739,12 +1712,12 @@ METHOD FLock( )  AS LOGIC STRICT
 		VoDbSelect( wWorkArea, OUT dwCurrentWorkArea )
 		lRetCode := __DBSFLock( nTries )
 		SELF:__OptimisticFlushNoLock( )
-		__DBSSetSelect( dwCurrentWorkArea )  //SE-060527
+		__DBSSetSelect( dwCurrentWorkArea )  
 		
 	RECOVER USING oError
 		oHLStatus := SELF:__GenerateStatusHL( oError )
 		oErrorInfo := oError
-		__DBSSetSelect( dwCurrentWorkArea )  //SE-060527
+		__DBSSetSelect( dwCurrentWorkArea )  
 		lRetCode := FALSE
 	END SEQUENCE
 	

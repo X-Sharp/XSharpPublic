@@ -30,7 +30,7 @@ CLASS Console
         GET System.Console.CursorVisible ;
         SET System.Console.CursorVisible := VALUE
         
-    METHOD Destroy( ) 
+    METHOD Destroy( ) AS USUAL CLIPPER
         RETURN SELF
             
     METHOD Read( ) AS STRING

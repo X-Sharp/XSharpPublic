@@ -21,16 +21,6 @@ FUNCTION ExecScript( cExpression , eParameter1, eParameter2) AS USUAL
 
 
 /// <summary>-- todo --</summary>
-/// <include file="VFPDocs.xml" path="Runtimefunctions/filetostr/*" />
-
-FUNCTION FileToStr(cFileName ) AS STRING
-    THROW NotImplementedException{}
-    // RETURN ""
-
-
-
-
-/// <summary>-- todo --</summary>
 /// <include file="VFPDocs.xml" path="Runtimefunctions/fldlist/*" />
 
 FUNCTION FldList( ) AS USUAL

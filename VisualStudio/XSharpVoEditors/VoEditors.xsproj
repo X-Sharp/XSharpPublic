@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(MSBuildExtensionsPath)\XSharp\XSharp.Default.props" />
+  <Import Project="$(XSharpMsBuildDir)\XSharp.Default.props" />
   <PropertyGroup>
     <XSharpProjectExtensionsPath>$(MSBuildExtensionsPath)\XSharp\</XSharpProjectExtensionsPath>
     <ProjectGuid>7619db88-6286-4ef1-8273-2a08cc8ac70e</ProjectGuid>
@@ -8,8 +8,8 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>XSharp.VOEditors</RootNamespace>
     <AssemblyName>XSharpVoEditors</AssemblyName>
-    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
-    <Name>VoEditors</Name>
+    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
+    <Name>XSharp.VoEditors</Name>
     <Nologo>true</Nologo>
     <GenerateFullPaths>true</GenerateFullPaths>
     <Dialect>Core</Dialect>
@@ -40,13 +40,12 @@
     <VO13>false</VO13>
     <VO14>false</VO14>
     <VO15>false</VO15>
-    <XSharpProjectversion>2.4.1.0</XSharpProjectversion>
+    <XSharpProjectversion>2.5.0.0</XSharpProjectversion>
     <Includepaths>$(SolutionDir)\Common</Includepaths>
     <Nostandarddefs>true</Nostandarddefs>
     <IntermediateOutputPath>$(SolutionDir)Binaries\obj\$(Configuration)\$(ProjectName)\</IntermediateOutputPath>
     <OutputPath>$(SolutionDir)Binaries\$(Configuration)\</OutputPath>
     <AssemblyOriginatorKeyFile>$(SolutionDir)Common\XSharp.snk</AssemblyOriginatorKeyFile>
-    <NoWin32Manifest>False</NoWin32Manifest>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
@@ -77,7 +76,7 @@
     <PlatformTarget>x86</PlatformTarget>
     <Prefer32Bit>False</Prefer32Bit>
   </PropertyGroup>
-  <Import Project="$(MSBuildExtensionsPath)\XSharp\XSharp.targets" />
+  <Import Project="$(XSharpMsBuildDir)\XSharp.targets" />
   <ItemGroup>
     <Reference Include="mscorlib" />
     <Reference Include="System" />
@@ -116,8 +115,8 @@
     <Folder Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\CodeGenerator\CodeGenerator.xsproj">
-      <Name>CodeGenerator</Name>
+    <ProjectReference Include="..\CodeGenerator\XSharpCodeGenerator.xsproj">
+      <Name>XSharpCodeGenerator</Name>
       <Project>{b837ac3b-9c61-49e4-9f4f-c8ad1faf21cc}</Project>
       <Private>True</Private>
     </ProjectReference>
@@ -126,8 +125,8 @@
       <Project>{faac947e-0355-4f8d-adb9-c57b1c9357d2}</Project>
       <Private>True</Private>
     </ProjectReference>
-    <ProjectReference Include="..\XSharpCodeModelXs\CodeModel.xsproj">
-      <Name>CodeModel</Name>
+    <ProjectReference Include="..\XSharpCodeModelXs\XSharpModelXs.xsproj">
+      <Name>XSharpModelXs</Name>
       <Project>{eed6843b-b727-4f08-aa32-ca0f48fdde3f}</Project>
       <Private>True</Private>
     </ProjectReference>

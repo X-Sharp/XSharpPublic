@@ -11,7 +11,7 @@ CLASS BaseListBox INHERIT TextControl
 	PROTECT liSavedCurrentItemNo AS LONG
 	PROTECT sSavedCurrentItem AS STRING	
 	PROTECT lIsComboBox		AS LOGIC
-	EXPORT  IsBusy         as LOGIC
+	PROPERTY  IsBusy         AS LOGIC AUTO
 	
 	ACCESS __List AS System.Windows.Forms.ListControl
 		RETURN (System.Windows.Forms.ListControl) oCtrl

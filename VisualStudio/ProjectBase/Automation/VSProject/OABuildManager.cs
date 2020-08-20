@@ -51,7 +51,15 @@ namespace Microsoft.VisualStudio.Project.Automation
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1065:DoNotRaiseExceptionsInUnexpectedLocations")]
         public virtual object DesignTimeOutputMonikers
         {
-            get { throw new NotImplementedException(); }
+            get
+            {
+                // do not return the file because then we also need to implement BuildDesignTimeOutput 
+                // and really build the DLL in the background for the designer
+                //var project = this.projectManager as XSharp.Project.XProjectNode;
+                //string file = this.projectManager.GetOutputAssembly(project.CurrentConfig.ConfigCanonicalName);
+                //return new string[] { file };
+                return new string[] {  };
+            }
         }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1065:DoNotRaiseExceptionsInUnexpectedLocations")]

@@ -314,7 +314,7 @@ CLASS XSharp_VOWindowEditor INHERIT VOWindowEditor
 	PROTECTED VIRTUAL METHOD WriteCallback(oDesign AS DesignWindowItem , cName AS STRING) AS VOID
 		LOCAL oProject AS XSharpModel.XProject
 		LOCAL oFile AS XSharpModel.XFile
-		LOCAL oType AS XSharpModel.XType
+		LOCAL oType AS XSharpModel.XTypeDefinition
 		//LOCAL oEditor AS VulcanEditor
 		LOCAL aLines AS List<STRING>
 		LOCAL cClass AS STRING
@@ -342,11 +342,10 @@ CLASS XSharp_VOWindowEditor INHERIT VOWindowEditor
 			RETURN
 		END IF
 		// Find Method for this class
-	    VAR rootNs := oFile:Project:ProjectNode:RootNameSpace
-		oType := oProject:Lookup(cClass,TRUE)
-		IF oType == NULL_OBJECT
-			oType := oProject:Lookup(rootNs+"."+cClass,TRUE)
-		ENDIF
+	   VAR rootNs := oFile:Project:ProjectNode:RootNameSpace
+      VAR usings := List<STRING>{}
+      usings:Add(rootNs)
+		oType := oProject:Lookup(cClass,usings)
 		IF cName:ToUpper() == "CLASSDECLARATION"
 	        IF (oType != NULL_OBJECT)
 				oType:OpenEditor()
@@ -354,7 +353,7 @@ CLASS XSharp_VOWindowEditor INHERIT VOWindowEditor
 	        ENDIF
 
         ELSEIF oType != NULL_OBJECT
-			FOREACH VAR oMember IN oType:Members
+			FOREACH VAR oMember IN oType:XMembers
 				IF string.Compare(oMember:Name, cName, TRUE) == 0
 					oMember:OpenEditor()
 					RETURN

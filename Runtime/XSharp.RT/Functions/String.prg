@@ -97,10 +97,10 @@ INTERNAL FUNCTION __AtLenForStrTran( c1 AS STRING, c2 AS STRING, uiLen AS INT, c
 FUNCTION StrTran( uTarget, uSearch, uReplace, uStart, uCount ) AS STRING CLIPPER
 
    LOCAL cSource          AS STRING
-   LOCAL cSearch         AS STRING
+   LOCAL cSearch          AS STRING
    LOCAL cReplace         AS STRING
    LOCAL nStart := 1      AS INT
-   LOCAL iCount := 0xFFF8 AS INT   // This is MAX_ALLOC in VO
+   LOCAL iCount := -1     AS INT   // Set to -1, so we will replace all instances
    LOCAL iSource          AS INT
    LOCAL iSearch          AS INT
    LOCAL iRepl            AS INT
@@ -164,6 +164,11 @@ FUNCTION StrTran( uTarget, uSearch, uReplace, uStart, uCount ) AS STRING CLIPPER
    LOCAL iDiff   AS INT
    LOCAL iSize   AS INT
 
+   IF iCount < 0
+        // replace all occurrences.
+        iCount := cSource:Length
+   ENDIF
+
    iOccurs := (INT) Occurs3( cSearch, cSource, 0 )
 
    IF iCount > iOccurs
@@ -207,7 +212,7 @@ FUNCTION StrTran( uTarget, uSearch, uReplace, uStart, uCount ) AS STRING CLIPPER
 
    LOCAL x, y, z AS INT
 
-   DO WHILE iCount != 0 .AND. ( iFound <= iSize )
+   DO WHILE iCount != 0 .AND. iFound <= iSize 
       iFound := __AtLenForStrTran( cSearch, cSource, iSource - iSrcPos, iSrcPos )
 
       IF iFound != 0

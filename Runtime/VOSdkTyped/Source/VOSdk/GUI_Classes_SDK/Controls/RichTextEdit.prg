@@ -17,7 +17,7 @@ CLASS RichEdit INHERIT MultiLineEdit
     CONSTRUCTOR(oOwner, xID, oPoint, oDimension, kStyle) 
 		
 
-		Win32.LoadLibrary("RICHED20.DLL")
+		GuiWin32.LoadLibrary("RICHED20.DLL")
 
 		IF IsNil(kStyle) .OR. !IsLong(kStyle)
 			kStyle := _OR(ES_MULTILINE, ES_AUTOHSCROLL, ES_AUTOVSCROLL)
@@ -26,7 +26,7 @@ CLASS RichEdit INHERIT MultiLineEdit
 		SUPER(oOwner, xID, oPoint, oDimension, kStyle)
 		SELF:cClassName := RICHEDIT_CLASS
 
-		Win32.SendMessage(oCtrl:Handle, EM_SETEVENTMASK, 0, LONGINT(_CAST, _OR(ENM_CHANGE, ENM_PROTECTED, ENM_SCROLL, ENM_SELCHANGE, ENM_UPDATE)))
+		GuiWin32.SendMessage(oCtrl:Handle, EM_SETEVENTMASK, 0, LONGINT(_CAST, _OR(ENM_CHANGE, ENM_PROTECTED, ENM_SCROLL, ENM_SELCHANGE, ENM_UPDATE)))
 
 		RETURN 
 
@@ -86,7 +86,7 @@ CLASS RichEdit INHERIT MultiLineEdit
 		ELSE
 			dwOption := TO_ADVANCEDTYPOGRAPHY
 		ENDIF
-		Win32.SendMessage(oCtrl:Handle, EM_SETTYPOGRAPHYOPTIONS, dwOption, LONGINT(_CAST, dwOption))
+		GuiWin32.SendMessage(oCtrl:Handle, EM_SETTYPOGRAPHYOPTIONS, dwOption, LONGINT(_CAST, dwOption))
 		RETURN SELF
 
 	//ACCESS Font 
@@ -101,7 +101,7 @@ CLASS RichEdit INHERIT MultiLineEdit
 
 	//strucCharFormat:cbSize := _SIZEOF(_winCHARFORMAT)
 	//strucCharFormat:dwMask := DWORD(_CAST, _OR(CFM_FACE, CFM_SIZE, CFM_BOLD, CFM_ITALIC, CFM_STRIKEOUT, CFM_UNDERLINE))
-	//Win32.SendMessage(oCtrl:Handle, EM_GETCHARFORMAT, DWORD(_CAST, TRUE), LONGINT(_CAST, @strucCharFormat))
+	//GuiWin32.SendMessage(oCtrl:Handle, EM_GETCHARFORMAT, DWORD(_CAST, TRUE), LONGINT(_CAST, @strucCharFormat))
 
 	//DO CASE
 	//CASE _AND(strucCharFormat:bPitchAndFamily, FF_DECORATIVE) == 1
@@ -143,7 +143,7 @@ CLASS RichEdit INHERIT MultiLineEdit
 		//// First retrieve the current effects
 		//strucCharFormat:cbSize := _SIZEOF(_winCHARFORMAT)
 		//strucCharFormat:dwMask := DWORD(_CAST, _OR(CFM_FACE, CFM_SIZE, CFM_BOLD, CFM_ITALIC, CFM_STRIKEOUT, CFM_UNDERLINE))
-		//Win32.SendMessage(oCtrl:Handle, EM_GETCHARFORMAT, DWORD(_CAST, TRUE), LONGINT(_CAST, @strucCharFormat))
+		//GuiWin32.SendMessage(oCtrl:Handle, EM_GETCHARFORMAT, DWORD(_CAST, TRUE), LONGINT(_CAST, @strucCharFormat))
 
 		//IF (_AND(strucCharFormat:dwEffects, CFE_BOLD) != 0 .AND. !oNewFont:Bold) .OR. ;
 		//(_AND(strucCharFormat:dwEffects, CFE_BOLD) == 0 .AND. oNewFont:Bold)
@@ -172,8 +172,8 @@ CLASS RichEdit INHERIT MultiLineEdit
 		//ELSE
 		//	MemClear(@strucCharFormat:szFaceName[1], LF_FACESIZE)
 		//END
-		//// Win32.SendMessage(oCtrl:Handle, EM_SETCHARFORMAT, _Or(SCF_SELECTION, SCF_WORD), LONG(_CAST, @strucCharFormat))
-		//Win32.SendMessage(oCtrl:Handle, EM_SETCHARFORMAT, SCF_SELECTION, LONGINT(_CAST, @strucCharFormat))
+		//// GuiWin32.SendMessage(oCtrl:Handle, EM_SETCHARFORMAT, _Or(SCF_SELECTION, SCF_WORD), LONG(_CAST, @strucCharFormat))
+		//GuiWin32.SendMessage(oCtrl:Handle, EM_SETCHARFORMAT, SCF_SELECTION, LONGINT(_CAST, @strucCharFormat))
 
 		//RETURN 
 
@@ -181,7 +181,7 @@ CLASS RichEdit INHERIT MultiLineEdit
 		
 
 		// check to see if the specified option is set
-		RETURN _AND(LONGINT(kOption), Win32.SendMessage(oCtrl:Handle, EM_SETOPTIONS, 0, 0)) != 0
+		RETURN _AND(LONGINT(kOption), GuiWin32.SendMessage(oCtrl:Handle, EM_SETOPTIONS, 0, 0)) != 0
 
 	METHOD GetTabStops() AS INT[]
 		RETURN __RichEdit:SelectionTabs
@@ -195,7 +195,7 @@ CLASS RichEdit INHERIT MultiLineEdit
 		strucTextRange:lpstrText := MemAlloc(oRange:Max - oRange:Min + 1)
 
 		IF (PTR(_CAST, strucTextRange:lpstrText) != NULL_PTR)
-			Win32.SendMessage(oCtrl:Handle, EM_GETTEXTRANGE, 0, LONGINT(_CAST, @strucTextRange))
+			GuiWin32.SendMessage(oCtrl:Handle, EM_GETTEXTRANGE, 0, LONGINT(_CAST, @strucTextRange))
 			sRet := Psz2String(strucTextRange:lpstrText)
 			MemFree(strucTextRange:lpstrText)
 		ENDIF
@@ -206,17 +206,17 @@ CLASS RichEdit INHERIT MultiLineEdit
 		
 
 		IF kWordBreakType == REGWB_ISDELIMITER
-			RETURN LOGIC(_CAST, Win32.SendMessage(oCtrl:Handle, EM_FINDWORDBREAK, kWordBreakType, (LONG) nCharPos - 1))
+			RETURN LOGIC(_CAST, GuiWin32.SendMessage(oCtrl:Handle, EM_FINDWORDBREAK, kWordBreakType, (LONG) nCharPos - 1))
 		ENDIF
 
-		RETURN Win32.SendMessage(oCtrl:Handle, EM_FINDWORDBREAK, kWordBreakType, (LONG) nCharPos - 1)
+		RETURN GuiWin32.SendMessage(oCtrl:Handle, EM_FINDWORDBREAK, kWordBreakType, (LONG) nCharPos - 1)
 
 	METHOD HideSelection(lTemporary) 
 		
 
 		Default(@lTemporary, TRUE)
 
-		Win32.SendMessage(oCtrl:Handle, EM_HIDESELECTION, DWORD(_CAST, TRUE), LONGINT(_CAST, lTemporary))
+		GuiWin32.SendMessage(oCtrl:Handle, EM_HIDESELECTION, DWORD(_CAST, TRUE), LONGINT(_CAST, lTemporary))
 
 		RETURN NIL
 
@@ -292,7 +292,7 @@ CLASS RichEdit INHERIT MultiLineEdit
 		strucParaFormat:dxStartIndent := nStart
 		strucParaFormat:dxRightIndent := nRight
 		strucParaFormat:dxOffset := nOffset
-		Win32.SendMessage(oCtrl:Handle, EM_SETPARAFORMAT, 0, LONGINT(_CAST, @strucParaFormat))
+		GuiWin32.SendMessage(oCtrl:Handle, EM_SETPARAFORMAT, 0, LONGINT(_CAST, @strucParaFormat))
 
 		RETURN 1
 
@@ -300,7 +300,7 @@ CLASS RichEdit INHERIT MultiLineEdit
 		LOCAL strucParaFormat IS _winPARAFORMAT
 		strucParaFormat:cbSize := _SIZEOF(_winPARAFORMAT)
 		strucParaFormat:dwMask := PFM_NUMBERING
-		Win32.SendMessage(oCtrl:Handle, EM_GETPARAFORMAT, 0, LONGINT(_CAST, @strucParaFormat))
+		GuiWin32.SendMessage(oCtrl:Handle, EM_GETPARAFORMAT, 0, LONGINT(_CAST, @strucParaFormat))
 
 		RETURN strucParaFormat:wNumbering
 
@@ -309,14 +309,14 @@ CLASS RichEdit INHERIT MultiLineEdit
 		strucParaFormat:cbSize := _SIZEOF(_winPARAFORMAT)
 		strucParaFormat:dwMask := PFM_NUMBERING
 		strucParaFormat:wNumbering := kNumbering
-		Win32.SendMessage(oCtrl:Handle, EM_SETPARAFORMAT, 0, LONGINT(_CAST, @strucParaFormat))
+		GuiWin32.SendMessage(oCtrl:Handle, EM_SETPARAFORMAT, 0, LONGINT(_CAST, @strucParaFormat))
 
 		RETURN 
 
 	METHOD PasteSpecial(dwClipboardFormat) 
 		
 
-		Win32.SendMessage(oCtrl:Handle, EM_PASTESPECIAL, dwClipboardFormat, 0)
+		GuiWin32.SendMessage(oCtrl:Handle, EM_PASTESPECIAL, dwClipboardFormat, 0)
 		RETURN NIL
 
 	ACCESS PrimaryIndent  AS LONG
@@ -346,7 +346,7 @@ CLASS RichEdit INHERIT MultiLineEdit
 		////RvdH 070717 Changed text length calculatio to 'precize'
 		//strucTextLength[1] :=   2| 8	// GTL_PRECISE | GTL_NUMCHARS
 		//strucTextLength[2] := CP_ACP
-		//liTextAmt := Win32.SendMessage(oCtrl:Handle, EM_GETTEXTLENGTHEX, DWORD(_CAST,@strucTextLength), 0)  //SE
+		//liTextAmt := GuiWin32.SendMessage(oCtrl:Handle, EM_GETTEXTLENGTHEX, DWORD(_CAST,@strucTextLength), 0)  //SE
 		//IF liTextAmt = 0  //SE
 		//	RETURN FALSE   //SE
 		//ENDIF             //SE
@@ -436,7 +436,7 @@ CLASS RichEdit INHERIT MultiLineEdit
 		////RvdH 070717 Save rects. They are changed by the RTF control !
 		//CopyRect(@rc1, @strucFormatRange:rc)
 		//CopyRect(@rc2, @strucFormatRange:rcPage)
-		//Win32.SendMessage(oCtrl:Handle, EM_FORMATRANGE, 0, 0L)
+		//GuiWin32.SendMessage(oCtrl:Handle, EM_FORMATRANGE, 0, 0L)
 		//SetMapMode(hDC, MM_TEXT)
 		//WHILE (liTextOut < liTextAmt)
 		//	StartPage(hDC)                                              
@@ -446,14 +446,14 @@ CLASS RichEdit INHERIT MultiLineEdit
 
 		//	liTextPos := liTextOut //SE
 		//	IF (! lBanding)
-		//		liTextOut := Win32.SendMessage(oCtrl:Handle, EM_FORMATRANGE, 1, LONGINT(_CAST, @strucFormatRange))
+		//		liTextOut := GuiWin32.SendMessage(oCtrl:Handle, EM_FORMATRANGE, 1, LONGINT(_CAST, @strucFormatRange))
 		//		IF liTextOut <= liTextPos //SE
 		//			liTextOut := liTextAmt //SE
 		//		ENDIF //SE
 		//	ELSE
-		//		liTextOut := Win32.SendMessage(oCtrl:Handle, EM_FORMATRANGE, 0, LONGINT(_CAST, @strucFormatRange))
+		//		liTextOut := GuiWin32.SendMessage(oCtrl:Handle, EM_FORMATRANGE, 0, LONGINT(_CAST, @strucFormatRange))
 		//		IF liTextOut > liTextPos //SE
-		//			IF (Win32.SendMessage(oCtrl:Handle, EM_DISPLAYBAND, 0, LONGINT(_CAST, @strucFormatRange:rc )) == 0)
+		//			IF (GuiWin32.SendMessage(oCtrl:Handle, EM_DISPLAYBAND, 0, LONGINT(_CAST, @strucFormatRange:rc )) == 0)
 		//				//DeleteDC(hDC)
 		//				//RETURN FALSE
 		//				EXIT //SE otherwise memory of pszClassName becomes not free.
@@ -538,7 +538,7 @@ CLASS RichEdit INHERIT MultiLineEdit
 		strucFindTextEx:lpstrText  := cText
 		strucFindTextEx:chrg_Min := oRange:Min - 1
 		strucFindTextEx:chrg_Max := oRange:Max - 1
-		liRet := Win32.SendMessage(oCtrl:Handle, EM_FINDTEXTEXW, dwFlags, LONGINT(_CAST, @strucFindTextEx))
+		liRet := GuiWin32.SendMessage(oCtrl:Handle, EM_FINDTEXTEXW, dwFlags, LONGINT(_CAST, @strucFindTextEx))
 
 		IF lReturnRange
 			IF liRet >= 0l
@@ -586,7 +586,7 @@ CLASS RichEdit INHERIT MultiLineEdit
 			dwOperation := ECOOP_XOR
 		END CASE
 
-		Win32.SendMessage(oCtrl:Handle, EM_SETOPTIONS, dwOperation, LONGINT(kOption))
+		GuiWin32.SendMessage(oCtrl:Handle, EM_SETOPTIONS, dwOperation, LONGINT(kOption))
 
 		RETURN NIL
 
@@ -599,7 +599,7 @@ CLASS RichEdit INHERIT MultiLineEdit
 
 		Default(@lTemporary, TRUE)
 
-		Win32.SendMessage(oCtrl:Handle, EM_HIDESELECTION, DWORD(_CAST, FALSE), LONGINT(_CAST, lTemporary))
+		GuiWin32.SendMessage(oCtrl:Handle, EM_HIDESELECTION, DWORD(_CAST, FALSE), LONGINT(_CAST, lTemporary))
 
 		RETURN NIL
 
@@ -607,7 +607,7 @@ CLASS RichEdit INHERIT MultiLineEdit
 		LOCAL strucParaFormat	IS _winPARAFORMAT
 		strucParaFormat:cbSize	:= _SIZEOF(_winPARAFORMAT)
 		strucParaFormat:dwMask	:= PFM_TABSTOPS
-		Win32.SendMessage(oCtrl:Handle, EM_GETPARAFORMAT, 0, LONGINT(_CAST, @strucParaFormat))
+		GuiWin32.SendMessage(oCtrl:Handle, EM_GETPARAFORMAT, 0, LONGINT(_CAST, @strucParaFormat))
 
 		RETURN strucParaFormat:cTabCount
 		
@@ -616,7 +616,7 @@ CLASS RichEdit INHERIT MultiLineEdit
 		strucParaFormat:cbSize := _SIZEOF(_winPARAFORMAT)
 		strucParaFormat:dwMask := PFM_TABSTOPS
 		strucParaFormat:cTabCount := (SHORT) nTabStops
-		Win32.SendMessage(oCtrl:Handle, EM_SETPARAFORMAT, 0, LONGINT(_CAST, @strucParaFormat))
+		GuiWin32.SendMessage(oCtrl:Handle, EM_SETPARAFORMAT, 0, LONGINT(_CAST, @strucParaFormat))
 
 		RETURN 
 
@@ -667,11 +667,11 @@ INTERNAL VOSTRUCT _winPARAFORMAT ALIGN 1
 
 
 INTERNAL STRUCTURE winFindTextEx
-	EXPORT chrg_Min	AS LONGINT
-	EXPORT chrg_Max AS LONGINT
-	EXPORT lpstrText AS STRING
-	EXPORT chrgText_Min AS LONGINT
-	EXPORT chrgText_Max AS LONGINT
+	PUBLIC chrg_Min	AS LONGINT
+	PUBLIC chrg_Max AS LONGINT
+	PUBLIC lpstrText AS STRING
+	PUBLIC chrgText_Min AS LONGINT
+	PUBLIC chrgText_Max AS LONGINT
 END STRUCTURE
 
 

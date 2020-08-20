@@ -11,14 +11,70 @@ USING System.Linq
 USING System.Collections.Generic
 
 
+INTERNAL FUNCTION _SelectFoxPro(uWorkArea) AS USUAL CLIPPER
+    LOCAL sSelect   AS DWORD
+	LOCAL sCurrent  AS DWORD
+    // handles an alias string or a uWorkArea number > 1 
+	IF IsString ( uWorkArea  ) .OR. ( IsNumeric ( uWorkArea )  .AND. uWorkArea > 1 ) 
+			
+		// Throws a exception if the uWorkArea number is > 4096 !
+		IF IsNumeric ( uWorkArea ) .AND. uWorkArea > RuntimeState.Workareas:FindEmptyArea( FALSE )
+			THROW ArgumentException{}				
+		ENDIF 	 
+			
+			
+		// note: No exception is thrown if a alias name doesn´t exist !
+			
+		sCurrent := VoDbGetSelect()  // save the current workarea
+			
+		sSelect := _Select(uWorkArea)  // activates temporary the area 
+			
+		// IF ! Used()		
+		IF ! (sSelect) -> Used()
+			sSelect := 0
+		ENDIF 				
+			
+		VoDbSetSelect(INT(sCurrent))  // restore the workarea		 
+		
+	ELSE 		
+			
+		VAR lGetCurrentAreaNumber := ( PCount() == 1 .AND. IsNumeric( uWorkArea ) .AND. uWorkArea == 0 )
+		VAR lGetHighestUnusedAreaNumber := ( PCount() == 1 .AND. IsNumeric( uWorkArea ) .AND. uWorkArea == 1 )
+		
+		// handles Select(), Select(0), Select(1) and takes care of 
+		// the - not yet implemented - SET COMPATIBLE ON/OFF setting. 
+			
+		IF PCount() == 0 .OR. lGetHighestUnusedAreaNumber .OR. lGetCurrentAreaNumber 
+			
+			IF lGetHighestUnusedAreaNumber .OR. ( PCount() == 0 .AND. RuntimeState.GetValue<LOGIC>(Set.Compatible) )  
+				// get the number of the highest unused work area 
+				sSelect := RuntimeState.Workareas:FindEmptyArea( FALSE )
+				
+			ELSE // Pcount()== 0 or lGetCurrentAreaNumber 
+				sSelect := VoDbGetSelect()
+								
+			ENDIF 
+			
+		ELSE
+			// Throw a exception if uWorkArea is something else  	
+			THROW ArgumentException{}
+		ENDIF 
+			
+	ENDIF     
+    RETURN sSelect 
+
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/select/*" />
 FUNCTION Select(uWorkArea) AS USUAL CLIPPER
     LOCAL sSelect   AS DWORD
-	LOCAL sCurrent  AS DWORD
-	sCurrent := VoDbGetSelect()
-	sSelect := _Select(uWorkArea)
-	VoDbSetSelect(INT(sCurrent))
+    IF RuntimeState.Dialect == XSharpDialect.FoxPro  // KHR
+        sSelect := _SelectFoxPro(uWorkArea)
+    ELSE
+    	LOCAL sCurrent  AS DWORD
+	    sCurrent := VoDbGetSelect()
+	    sSelect := _Select(uWorkArea)
+	    VoDbSetSelect(INT(sCurrent))
+    ENDIF
 	RETURN sSelect
 
 
@@ -31,7 +87,16 @@ FUNCTION _SelectString(uWorkArea AS STRING) AS DWORD
 		VAR nAsc := Asc( Upper(uWorkArea) )
 		IF nAsc > 64 .AND. nAsc < 75
 			nSelect := nAsc - 64
-		ENDIF
+        ENDIF
+    ELSE
+    	//  ------ added KHR : FoxPro allowes SELECT 10 which becomes DbSelectArea("10")
+       // see https://github.com/X-Sharp/XSharpPublic/issues/236
+        LOCAL nTemp := Val( uWorkArea ) AS LONG
+   	    IF nTemp:ToString() == uWorkArea 
+   	        nSelect := (DWORD) nTemp
+    	ENDIF 
+
+        // -------------------
     ENDIF
         
     IF nSelect > 0 .OR. "0" == uWorkArea
@@ -525,7 +590,6 @@ FUNCTION DbSetFilter(cbCondition, cCondition) AS LOGIC CLIPPER
             cbCondition := &(cCondition)
         endif
     ENDIF
-    // Todo : Extract the string from compiled codeblocks
     if cCondition:IsNil
         local oBlock as Object
         EnforceType(cbCondition, CODEBLOCK)

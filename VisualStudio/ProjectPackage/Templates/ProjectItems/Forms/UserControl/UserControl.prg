@@ -12,12 +12,12 @@ using System.Windows.Forms
 
 begin namespace $rootnamespace$
 
-    PARTIAL CLASS $safeitemrootname$ INHERIT System.Windows.Forms.UserControl
+    partial class $safeitemrootname$ inherit System.Windows.Forms.UserControl
 
-        public CONSTRUCTOR() STRICT
+        public constructor() strict
             InitializeComponent()
 			return
 
 
-    END CLASS
+    end class
 end namespace

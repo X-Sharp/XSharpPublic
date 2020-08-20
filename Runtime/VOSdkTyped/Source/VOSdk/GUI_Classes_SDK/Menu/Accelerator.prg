@@ -44,10 +44,10 @@ CLASS Accelerator INHERIT VObject
 		LOCAL pMem    AS _winAccel
 		IF hTable != NULL_PTR 
 		
-			dwCount := DWORD(Win32.CopyAcceleratorTable(hTable, NULL_PTR, 0l))
+			dwCount := DWORD(GuiWin32.CopyAcceleratorTable(hTable, NULL_PTR, 0l))
 			IF dwCount > 1
 				IF (pMem := MemAlloc(_SIZEOF(_winAccel)*dwCount)) != NULL_PTR
-					Win32.CopyAcceleratorTable(hTable, pMem, INT(_CAST,dwCount))
+					GuiWin32.CopyAcceleratorTable(hTable, pMem, INT(_CAST,dwCount))
 					pAccel := pMem
 					FOR dwI := 1 UPTO dwCount
 						aKeys:Add(AcceleratorKey{pAccel:fVirt, pAccel:key, pAccel:cmd})
@@ -134,7 +134,7 @@ CLASS Accelerator INHERIT VObject
 						pAccel:cmd   := oKey:ID
 						pAccel += 1
 					NEXT //dwI
-					hAccel := Win32.CreateAcceleratorTable(pMem, INT(_CAST,dwCount))
+					hAccel := GuiWin32.CreateAcceleratorTable(pMem, INT(_CAST,dwCount))
 					MemFree(pMem)
 				ENDIF
 				aKeys:Clear()
@@ -145,7 +145,7 @@ CLASS Accelerator INHERIT VObject
 
 	METHOD Destroy() AS USUAL CLIPPER
 		IF hAccel != NULL_PTR
-			Win32.DestroyAcceleratorTable(hAccel)
+			GuiWin32.DestroyAcceleratorTable(hAccel)
 			hAccel := NULL_PTR
 		ENDIF
 
@@ -187,7 +187,7 @@ CLASS Accelerator INHERIT VObject
 		hInst := xResourceID:Handle()
 		lpTableName := xResourceID:Address()
 
-		hAccel := Win32.LoadAccelerators(hInst, lpTableName)
+		hAccel := GuiWin32.LoadAccelerators(hInst, lpTableName)
 
 		RETURN 
 		

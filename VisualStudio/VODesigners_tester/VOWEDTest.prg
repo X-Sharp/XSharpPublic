@@ -152,9 +152,10 @@ END CLASS
 
 END CLASS*/
 
-PROCEDURE CreateToolWindow(cCaption AS STRING , oParent AS Form , oPos AS Point , oSize AS Size , oPanel AS Panel)
+PROCEDURE CreateToolWindow(cCaption AS STRING , oParent AS Form , oPos AS Point , oSize AS Size , oPanel AS Panel, cName as STRING)
 	LOCAL oForm AS Form
 	oForm := Form{}
+   oForm:Tag := cName
 	oForm:Text := cCaption
 	oForm:ShowInTaskbar := FALSE
 	oForm:Owner := oParent

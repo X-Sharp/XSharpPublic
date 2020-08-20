@@ -1497,8 +1497,6 @@ METHOD OrderScope( nScope, uValue )
 
 	lErrorFlag := FALSE
 	BEGIN SEQUENCE
-      //RvdH 070925 Save pending changes
-      SELF:__OptimisticFlush()
 
 		//RvdH 050705 Changed to explicitely use TOPSCOPE
 		DEFAULT(REF nScope, TOPSCOPE)
@@ -1520,6 +1518,10 @@ METHOD OrderScope( nScope, uValue )
 		//	ENDIF
 		//ENDIF
 		VODBSelect( wWorkArea, OUT dwCurrentWorkArea )
+        
+        //RvdH 070925 Save pending changes
+        SELF:__OptimisticFlush()
+        
 		IF ! VODBOrderInfo( n, "", NIL, REF uValue )
 			BREAK ErrorBuild(_VODBErrInfoPtr())
 		ENDIF
@@ -1598,9 +1600,9 @@ METHOD Pack( )
 
 	lErrorFlag := FALSE
 	BEGIN SEQUENCE
-      //RvdH 070925 Save pending changes
-      SELF:__OptimisticFlush()
 		VODBSelect( wWorkArea, OUT dwCurrentWorkArea )
+		//RvdH 070925 Save pending changes
+		SELF:__OptimisticFlush()
 		IF (lRetCode := VODBPack( ))
 			__DBSSetSelect( dwCurrentWorkArea )
 			SELF:Notify( NOTIFYFILECHANGE )

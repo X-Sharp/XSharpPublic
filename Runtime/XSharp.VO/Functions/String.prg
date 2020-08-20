@@ -27,10 +27,9 @@ FUNCTION Crypt(cSource AS STRING,cKey AS STRING) AS STRING
 /// <summary>
 /// Encrypt or decrypt a string handling its characters as single bytes (high order byte is ignored)
 /// </summary>
-/// <param name="cSource"></param>
-/// <param name="cKey"></param>
-/// <returns>
-/// </returns>
+/// <param name="cSource">Text that must be encrypted</param>
+/// <param name="cKey">Key to use for the encryption</param>
+/// <returns>Encrypted text. This has the same length as the original text</returns>
 FUNCTION CryptRaw(cSource AS STRING,cKey AS STRING) AS STRING
 	LOCAL bSource AS BYTE[]
 	LOCAL bDest  AS BYTE[]

@@ -8,7 +8,7 @@ using Microsoft.VisualStudio.Text.Classification;
 using Microsoft.VisualStudio.Utilities;
 using XSharpModel;
 
-namespace XSharpColorizer
+namespace XSharp.LanguageService
 {
     internal static class ClassificationTypes
     {

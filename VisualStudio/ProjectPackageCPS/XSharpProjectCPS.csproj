@@ -67,8 +67,8 @@
       <Link>Constants.cs</Link>
     </Compile>
     <Compile Include="Debugging\XSharpDebuggerLaunchProvider.cs" />
-    <Compile Include="MyConfiguredProject.cs" />
-    <Compile Include="MyUnconfiguredProject.cs" />
+    <Compile Include="XSharpConfiguredProject.cs" />
+    <Compile Include="XSharpUnconfiguredProject.cs" />
     <Compile Include="Images\XSharpImagesMonikers.cs" />
     <Compile Include="ProjectProperties.cs" />
     <Compile Include="ProjectIconProvider.cs" />
@@ -94,7 +94,6 @@
     <Content Include="ProjectSelectors.pkgdef">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <None Include="Key.snk" />
     <None Include="XSharp.ProjectType.ruleset" />
     <Resource Include="Images\XSharpProject.png" />
     <Resource Include="Images\XSharpDocument.png">

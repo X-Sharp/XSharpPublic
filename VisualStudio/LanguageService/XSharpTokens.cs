@@ -11,7 +11,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace XSharpColorizer
+namespace XSharp.LanguageService
 {
     public class XSharpTokens
     {

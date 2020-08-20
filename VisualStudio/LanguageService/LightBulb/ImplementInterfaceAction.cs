@@ -11,7 +11,7 @@ using System.Threading;
 using XSharpModel;
 using System.Reflection;
 using Microsoft.VisualStudio.Text.Editor;
-using XSharpColorizer;
+using XSharp.LanguageService;
 using System.Collections.Immutable;
 
 namespace XSharp.Project.Editors.LightBulb

@@ -12,7 +12,7 @@ using Microsoft.VisualStudio.Text.Editor;
 using Microsoft.VisualStudio.Text.Operations;
 using Microsoft.VisualStudio.Utilities;
 using LanguageService.SyntaxTree;
-using XSharpColorizer;
+using XSharp.LanguageService;
 using System.Windows.Documents;
 using System.Windows.Media;
 using XSharpModel;

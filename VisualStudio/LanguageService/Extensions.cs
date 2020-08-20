@@ -10,7 +10,7 @@ using Microsoft.VisualStudio.Text.Tagging;
 using System;
 using XSharpModel;
 
-namespace XSharpColorizer
+namespace XSharp.LanguageService
 {
     public static class Extensions
     {

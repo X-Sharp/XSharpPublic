@@ -17,7 +17,7 @@ using XSharpModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading;
-namespace XSharpColorizer
+namespace XSharp.LanguageService
 {
     /// <summary>
     /// Classifier that classifies all text as an instance of the "XSharpClassifier" classification type.

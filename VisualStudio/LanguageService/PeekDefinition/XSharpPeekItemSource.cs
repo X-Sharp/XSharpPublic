@@ -4,7 +4,7 @@ using Microsoft.VisualStudio.Text;
 using System;
 using LanguageService.SyntaxTree;
 using XSharpLanguage;
-using XSharpColorizer;
+using XSharp.LanguageService;
 using XSharpModel;
 namespace XSharp.LanguageService
 {

@@ -11,7 +11,7 @@ using Microsoft.VisualStudio.Text;
 using System.ComponentModel.Composition;
 using Microsoft.VisualStudio.Utilities;
 using Microsoft.VisualStudio.Shell;
-using XSharpColorizer;
+using XSharp.LanguageService;
 using XSharp.LanguageService.OptionsPages;
 using System.Runtime.CompilerServices;
 using XSharp.LanguageService;

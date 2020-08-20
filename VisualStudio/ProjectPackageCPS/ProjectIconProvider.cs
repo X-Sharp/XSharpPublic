@@ -1,10 +1,14 @@
-﻿using System;
+﻿//
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
+// See License.txt in the project root for license information.
+//
+
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.IO;
-using Microsoft.VisualStudio.Imaging;
 using Microsoft.VisualStudio.ProjectSystem;
-
 
 namespace XSharp.ProjectSystem
 {
@@ -48,7 +52,7 @@ namespace XSharp.ProjectSystem
         }
     }
     [Export(typeof(IProjectImageProvider))]
-    [AppliesTo("XSharp")]
+    [AppliesTo(XSharpConstants.LanguageName)]
     internal class XSharpProjectImageProvider : IProjectImageProvider
     {
         [ImportingConstructor]

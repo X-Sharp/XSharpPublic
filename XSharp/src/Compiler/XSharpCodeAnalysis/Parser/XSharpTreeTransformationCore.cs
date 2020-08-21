@@ -3246,7 +3246,22 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         public override void ExitClassVarList([NotNull] XP.ClassVarListContext context)
         {
             foreach (var cvCtx in context._Var)
+            { 
                 VisitClassvar(cvCtx);
+            }
+            // Check for dwDim := 512 IS DWORD which will be parsed as
+            // dwDim := (512 IS DWORD)
+            if (context.DataType == null)
+            {
+                var last = context._Var.Last();
+                if (last.Initializer is XP.TypeCheckExpressionContext tcec)
+                {
+                    // expression was incorrectly parsed. Fix it here
+                    last.Initializer = tcec.Expr;
+                    context.As = tcec.Op;
+                    context.DataType = tcec.Type;
+                }
+            }
         }
 
  
@@ -4675,8 +4690,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             var varList = _pool.AllocateSeparated<VariableDeclaratorSyntax>();
             var varType = context.Vars.DataType?.Get<TypeSyntax>() ?? _getMissingType();
             context.SetSequencePoint(context.end);
-
-            varType.XVoDecl = true; 
+            varType.XVoDecl = true;
             if (context.Vars?.As?.Type == XP.IS)
             {
                 varType.XVoIsDecl = true;
@@ -5555,7 +5569,16 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             bool isDim = context.Dim != null && context.ArraySub != null;
             string staticName = null;
             TypeSyntax varType;
+            if (context.DataType is null && context.Expression is XP.TypeCheckExpressionContext tcec)
+            {
+                // expression was incorrectly parsed. Fix it here
+                // local x := 512 IS DWORD 
+                context.Expression = tcec.Expr;
+                context.As = tcec.Op;
+                context.DataType = tcec.Type;
+            }
             var initExpr = context.Expression?.Get<ExpressionSyntax>();
+
             if (context.DataType != null)
                 varType = context.DataType?.Get<TypeSyntax>();
             else

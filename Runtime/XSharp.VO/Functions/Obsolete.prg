@@ -685,6 +685,10 @@ FUNCTION AsPsz(u AS __Usual) AS PSZ
 [Obsolete] ;
 FUNCTION ErrorCount(dw AS USUAL) AS DWORD
 	RETURN 0  
+/// <exclude/>
+[Obsolete] ;
+FUNCTION ErrorCount() AS DWORD
+	RETURN 0  
 
 /// <exclude/>
 [Obsolete] ;

@@ -1,12 +1,14 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" lasteditedby="Geert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>Keyword Coloring</title>
   <body>
     <header>
       <para styleclass="Heading1">Keyword Coloring</para>
     </header>
-    <para styleclass="Normal"><image src="Keyword coloring.png" scale="100.00%" styleclass="Image Caption"></image></para>
+    <para styleclass="Normal"><text styleclass="Image Caption" style="font-style:normal;">Visual studio gives keywords colors based on their purpose. </text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Image Caption" style="font-style:normal;">When you select a specific bit of code</text><text styleclass="Image Caption">, </text><text styleclass="Image Caption" style="font-style:normal;">it shows you all the places this same bit is used, as can be seen with lRestore.</text></para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"><image src="Keyword coloring 2.png" scale="100.00%" styleclass="Image Caption"></image></para>
     <para styleclass="Normal"></para>

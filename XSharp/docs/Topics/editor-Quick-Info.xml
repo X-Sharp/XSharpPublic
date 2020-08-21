@@ -6,9 +6,16 @@
     <header>
       <para styleclass="Heading1">Quick Info</para>
     </header>
-    <para styleclass="Normal"><image src="Quick Info.png" scale="100.00%" styleclass="Image Caption"></image></para>
+    <para styleclass="Normal"><text styleclass="Image Caption" style="font-style:normal;">Quick Info displays the complete declaration for any identifier in your code. When you select a member from the List Members box, Quick Info also appears.</text></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"><image src="Quick Info 2.png" scale="100.00%" styleclass="Image Caption"></image></para>
-    <para styleclass="Normal"><image src="Quick Info 3.png" scale="100.00%" styleclass="Image Caption"></image></para>
+    <para styleclass="Normal"><text styleclass="Image Caption" style="font-style:normal;">You can manually invoke Quick Info by choosing Edit &gt; IntelliSense &gt; Quick Info, by pressing Ctrl+I, or by choosing the Quick Info button on the editor toolbar.</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Image Caption" style="font-style:normal;">If a function is overloaded, IntelliSense may not display information for all forms of the overload.</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><image src="Quick Info.png" scale="100.00%" styleclass="Image Caption" style="font-style:normal;"></image></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><image src="Quick Info 2.png" scale="100.00%" styleclass="Image Caption" style="font-style:normal;"></image></para>
+    <para styleclass="Normal"><image src="Quick Info 3.png" scale="100.00%" styleclass="Image Caption" style="font-style:normal;"></image></para>
   </body>
 </topic>

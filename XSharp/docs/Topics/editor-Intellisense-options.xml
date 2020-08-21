@@ -6,6 +6,7 @@
     <header>
       <para styleclass="Heading1">Intellisense options</para>
     </header>
-    <para styleclass="Normal"><image src="Intellisense options.png" scale="100.00%" styleclass="Image Caption"></image></para>
+    <para styleclass="Normal">The options for intellisense can be found by going to Tools &gt; Options &gt; Text Editor &gt; XSharp &gt; Intellisense</para>
+    <para styleclass="Normal"><image src="Intellisense options.png" scale="100.00%" styleclass="Image Caption" style="font-style:normal;"></image></para>
   </body>
 </topic>

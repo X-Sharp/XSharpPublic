@@ -6,6 +6,8 @@
     <header>
       <para styleclass="Heading1">Goto definition</para>
     </header>
-    <para styleclass="Normal"><image src="Goto definition.png" scale="100.00%" styleclass="Image Caption"></image></para>
+    <para styleclass="Normal"><text styleclass="Image Caption" style="font-style:normal;">The Visual Studio editor makes it easy to inspect the definition of a type, method, etc. One way is to navigate to the file that contains the definition, for example by choosing Go to Definition or pressing F12 anywhere the symbol is referenced. </text></para>
+    <para styleclass="Normal"><text styleclass="Image Caption" style="font-style:normal;">To do this, right-click on any occurrence of string and choose Peek Definition from the content menu. Or, press Alt+F12.</text></para>
+    <para styleclass="Normal"><image src="Goto definition.png" scale="100.00%" styleclass="Image Caption" style="font-style:normal;"></image></para>
   </body>
 </topic>

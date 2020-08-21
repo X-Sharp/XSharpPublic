@@ -1,11 +1,12 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" lasteditedby="Geert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>Brace matching</title>
   <body>
     <header>
       <para styleclass="Heading1">Brace matching</para>
     </header>
-    <para styleclass="Normal">Enter topic text here.</para>
+    <para styleclass="Normal"><text styleclass="Image Caption" style="font-style:normal;">When using Visual Studio, if your cursor is next to a brace it will highlight the corresponding opening or closing brace on screen.</text></para>
+    <para styleclass="Normal"><image src="Brace matching.png" scale="100.00%" styleclass="Image Caption" style="font-style:normal;"></image></para>
   </body>
 </topic>

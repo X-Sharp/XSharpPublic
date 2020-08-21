@@ -6,8 +6,14 @@
     <header>
       <para styleclass="Heading1">Code Completion</para>
     </header>
-    <para styleclass="Normal"><image src="Code completion.png" scale="100.00%" styleclass="Image Caption"></image></para>
+    <para styleclass="Normal"><text styleclass="Image Caption" style="font-style:normal;">IntelliSense is an invaluable resource when you&apos;re coding. It can show you information about available members of a type, or parameter details for different overloads of a method. You can also use IntelliSense to complete a word after you type enough characters to disambiguate it. </text></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"><image src="Code completion 2.png" scale="100.00%" styleclass="Image Caption"></image></para>
+    <para styleclass="Normal"><text styleclass="Image Caption" style="font-style:normal;">While typing bits of code, you see IntelliSense show you Quick Info about the query symbol.</text></para>
+    <para styleclass="Normal"><text styleclass="Image Caption" style="font-style:normal;">To insert the rest of the word query by using IntelliSense&apos;s word completion functionality, press Tab.</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><image src="Code completion.png" scale="100.00%" styleclass="Image Caption" style="font-style:normal;"></image></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><image src="Code completion 2.png" scale="100.00%" styleclass="Image Caption" style="font-style:normal;"></image></para>
   </body>
 </topic>

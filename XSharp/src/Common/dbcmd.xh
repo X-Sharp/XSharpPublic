@@ -506,13 +506,11 @@
 ** Todo FoxPro [TO ARRAY ArrayName]   
 
 // NOTE:  CLOSE <alias> must precede the others
-#command CLOSE <alias>          => <alias>->( DbCloseArea() )
+#command CLOSE <alias>              => <alias>->( DbCloseArea() )
 
-#command CLOSE                  => DbCloseArea()
-#command CLOSE DATABASES        => DbCloseAll()
-#command CLOSE ALL              => DbCloseAll()
-#command CLOSE INDEXES          => DbClearIndex()
-
+#command CLOSE                      => DbCloseArea()
+#command CLOSE [al: DATABASES,ALL>] => DbCloseAll()
+#command CLOSE INDEXES              => DbClearIndex()
 
 #command SCAN              ;
          [FOR <FOR>]       ;

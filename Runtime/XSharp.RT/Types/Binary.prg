@@ -39,12 +39,13 @@ BEGIN NAMESPACE XSharp
                 THROW err
             ENDIF
             SELF:_value    := b
+            
         PRIVATE CONSTRUCTOR( lhs as byte[], rhs as byte[]) 
             var len := lhs:Length + rhs:Length
             var result := byte[]{len}
             System.Array.Copy(lhs, result, lhs:Length)
             System.Array.Copy(rhs, 0, result,lhs:Length, rhs:Length)
-            RETURN __Binary{result}
+            _value := result
             
             
         #endregion

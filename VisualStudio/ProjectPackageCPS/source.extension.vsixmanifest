@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <PackageManifest Version="2.0.0" xmlns="http://schemas.microsoft.com/developer/vsx-schema/2011" xmlns:d="http://schemas.microsoft.com/developer/vsx-schema-design/2011">
     <Metadata>
-        <Identity Id="XSharp.ProjectSystem" Version="2.6.0.0" Language="en-US" Publisher="XSharp BV" />
+        <Identity Id="XSharp.ProjectSystem CPS" Version="2.6.0.0" Language="en-US" Publisher="XSharp BV" />
         <DisplayName>XSharp Visual Studio Project System</DisplayName>
         <Description xml:space="preserve">X# Visual Studio Project Project System.
 Includes support for Windows Form Editor, WPF Editor, VO Compatible form and menu Editors etc.</Description>
@@ -20,17 +20,10 @@ Includes support for Windows Form Editor, WPF Editor, VO Compatible form and men
         <Dependency Id="Microsoft.VisualStudio.MPF.14.0" DisplayName="Visual Studio MPF 14.0" d:Source="Installed" Version="[14.0,15.0)" />
     </Dependencies>
     <Assets>
-        <Asset Type="Microsoft.VisualStudio.VsPackage" d:Source="File" Path="ProjectSelectors.pkgdef" TargetPath="|%CurrentProject%|" d:VsixSubPath="ProjectSystem"/>
-        <Asset Type="Microsoft.VisualStudio.VsPackage" d:Source="File" Path="Designers.pkgdef" TargetPath="|%CurrentProject%|" d:VsixSubPath="ProjectSystem" />
         <Asset Type="Microsoft.VisualStudio.VsPackage" d:Source="Project" Path="|%CurrentProject%;PkgdefProjectOutputGroup|" d:ProjectName="%CurrentProject%" d:VsixSubPath="ProjectSystem" />
         <Asset Type="Microsoft.VisualStudio.VsPackage" d:Source="Project" Path="|XSharpLanguageService;PkgdefProjectOutputGroup|" d:VsixSubPath="LanguageService" />
-        <Asset Type="Microsoft.VisualStudio.VsPackage" d:Source="Project" d:ProjectName="XSharpProjectCPS" Path="|XSharpProjectCPS;PkgdefProjectOutputGroup|" />
         <Asset Type="Microsoft.VisualStudio.MefComponent" d:Source="Project" d:ProjectName="XSharpLanguageService" Path="|XSharpLanguageService|"  />
-        <Asset Type="Microsoft.VisualStudio.MefComponent" d:Source="Project" d:ProjectName="XSharpProjectCPS" Path="|XSharpProjectCPS|" />
         <Asset Type="Microsoft.VisualStudio.MefComponent" d:Source="Project" d:ProjectName="%CurrentProject%" Path="|%CurrentProject%|" />
-        <Asset Type="Microsoft.VisualStudio.ItemTemplate" d:Source="Project" d:ProjectName="%CurrentProject%" d:TargetPath="|%CurrentProject%;TemplateProjectOutputGroup|" Path="ItemTemplates" d:VsixSubPath="ItemTemplates" />
-        <Asset Type="Microsoft.VisualStudio.ProjectTemplate" d:Source="Project" d:ProjectName="%CurrentProject%" d:TargetPath="|%CurrentProject%;TemplateProjectOutputGroup|" Path="ProjectTemplates" d:VsixSubPath="ProjectTemplates" />
-        <Asset Type="Microsoft.VisualStudio.Assembly" d:Source="File" Path="Mono.Cecil.dll" AssemblyName="Mono.Cecil, Version=0.10.0.0, Culture=neutral, PublicKeyToken=50cebf1cceb9d05e" />
     </Assets>
     <Content>
         <ProjectTemplate>ProjectTemplates</ProjectTemplate>

@@ -42,7 +42,7 @@ namespace XSharp
         public const string guidXSharpLanguageServicePkgString = "e9b6ee0f-9bfa-4cff-a60b-51a08bbc5050";
         public const string guidXSharpLanguageServiceCmdSetString = "6511ea00-4558-4ae7-84ee-0e2aebd40d88";
 
-        public const string EditorFactoryGuidString = "B4829761-2BFA-44B7-8F8F-D2625EBCF218";
+        public const string EditorFactoryGuidString = XSharpConstants.EditorFactoryGuidString;
 
         public static readonly Guid guidXSharpProjectCmdSet = new Guid(guidXSharpProjectCmdSetString);
         public static readonly Guid guidXSharpProjectFactory = new Guid(guidXSharpProjectFactoryString);

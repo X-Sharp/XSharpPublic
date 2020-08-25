@@ -2,11 +2,11 @@
 <ProjectSchemaDefinitions
     xmlns="http://schemas.microsoft.com/build/2009/properties">
 
-    <ContentType
+  <ContentType
       Name="XSharpFile"
       DisplayName="X# file"
       ItemType="Compile">
-    </ContentType>
+  </ContentType>
 
     <ContentType
     Name="XSharpHeader"
@@ -25,13 +25,12 @@
         DisplayName="Native Resource"
         ItemType="NativeResource">
     </ContentType>
-
-    <ItemType Name="Compile" DisplayName="Compile"/>
+  <ItemType Name="Compile" DisplayName="X# compiler"/>
     <ItemType Name="NativeResource" DisplayName="NativeResource"/>
     <ItemType Name="VOBinary" DisplayName="VOBinary"/>
 
-    <FileExtension Name=".prg" ContentType="XSharpFile"/>
-    <FileExtension Name=".xs"  ContentType="XSharpFile"/>
+  <FileExtension Name=".prg" ContentType="XSharpFile"/>
+  <FileExtension Name=".xs"  ContentType="XSharpFile"/>
     <FileExtension Name=".vh"  ContentType="XSharpHeader"/>
     <FileExtension Name=".xh"  ContentType="XSharpHeader"/>
     <FileExtension Name=".ch"  ContentType="XSharpHeader"/>

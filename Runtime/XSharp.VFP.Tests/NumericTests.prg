@@ -30,6 +30,11 @@ BEGIN NAMESPACE XSharp.VFP.Tests
             Assert.Equal(1, Sign(1.2345))
             Assert.Equal(-1, Sign(-1.2345))
             Assert.Equal(0, Sign(0.0))
+
+            LOCAL u as USUAL
+            u := Val("$12345")
+            Assert.Equal((dword) __UsualType.Currency, UsualType(u))
+    
 	END CLASS
 
 END NAMESPACE

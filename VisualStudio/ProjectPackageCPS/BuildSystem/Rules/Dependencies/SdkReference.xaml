@@ -1,6 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-
-<Rule Name="ResolvedSdkReference"
+<Rule Name="SdkReference"
       Description="SDK Reference Properties"
       DisplayName="SDK Reference"
       PageTemplate="generic"
@@ -8,8 +7,8 @@
   <Rule.DataSource>
     <DataSource HasConfigurationCondition="False"
                 ItemType="SDKReference"
-                MSBuildTarget="CollectResolvedSDKReferencesDesignTime"
-                Persistence="ResolvedReference"
+                MSBuildTarget="CollectSDKReferencesDesignTime"
+                Persistence="ProjectFile"
                 SourceOfDefaultValue="AfterContext"
                 SourceType="TargetResults" />
   </Rule.DataSource>
@@ -53,10 +52,6 @@
   <StringProperty Name="Name"
                   DisplayName="Name"
                   ReadOnly="True" />
-
-  <StringProperty Name="OriginalItemSpec"
-                  ReadOnly="True"
-                  Visible="false" />
 
   <StringProperty Name="SDKPackageItemSpec"
                   ReadOnly="True"

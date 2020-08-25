@@ -62,7 +62,7 @@
     <Prefer32Bit>false</Prefer32Bit>
     <UseVSHostingProcess>true</UseVSHostingProcess>
     <PlatformTarget>x86</PlatformTarget>
-    <NoWarn>VSTHRD010;VSSDK006;1762</NoWarn>
+    <NoWarn>VSTHRD010;VSSDK006;1762;VSTHRD012</NoWarn>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -142,6 +142,7 @@
     <Compile Include="Library\XSharpLibraryProject.cs" />
     <Compile Include="Library\XSharpModuleId.cs" />
     <Compile Include="ModelScannerEvents.cs" />
+    <Compile Include="ProjectSelector.cs" />
     <Compile Include="PropertyPages\XBuildEventsPropertyPage.cs" />
     <Compile Include="PropertyPages\XSharpDialectPropertyPage.cs" />
     <Compile Include="Wix\FolderBrowserTextBox.cs">
@@ -289,7 +290,7 @@
     </Content>
     <Content Include="Editors\Todo.txt" />
     <Content Include="ProjectSelectors.pkgdef">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
     <Content Include="Snippets\SnippetsIndex.xml" />

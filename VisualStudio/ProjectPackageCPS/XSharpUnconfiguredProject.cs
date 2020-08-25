@@ -14,8 +14,12 @@ namespace XSharp.ProjectSystem
 {
     [Export]
     [AppliesTo(XSharpConstants.LanguageName)]
-    [ProjectTypeRegistration(XSharpVsPackage.ProjectTypeGuid, "XSharp", "#2", XSharpConstants.ProjectExtension, XSharpConstants.LanguageName, resourcePackageGuid: XSharpVsPackage.PackageGuid, PossibleProjectExtensions = XSharpConstants.ProjectExtension, ProjectTemplatesDir = @"..\..\Templates\Projects\XSharp")]
-    [ProvideProjectItem(XSharpVsPackage.ProjectTypeGuid, "XSharp Items", @"..\..\Templates\ProjectItems\MyCustomProject", 500)]
+    [ProjectTypeRegistration(XSharpConstants.CpsProjectTypeGuid, "XSharp", "#2",
+        XSharpConstants.ProjectExtension, XSharpConstants.LanguageName,
+        resourcePackageGuid: XSharpConstants.CPSPackageGuid,
+        PossibleProjectExtensions = XSharpConstants.ProjectExtensions,
+        ProjectTemplatesDir = @"..\..\Templates\Projects\XSharp")]
+    [ProvideProjectItem(XSharpConstants.CpsProjectTypeGuid, "XSharp Items", @"..\..\Templates\ProjectItems", 500)]
     internal class XSharpUnconfiguredProject
     {
         /// <summary>

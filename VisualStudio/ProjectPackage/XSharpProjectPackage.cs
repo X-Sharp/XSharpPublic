@@ -19,7 +19,7 @@ using XSharp.Project.WPF;
 using System.ComponentModel;
 using System.ComponentModel.Design;
 using System.Globalization;
-using static XSharp.Project.XSharpConstants;
+using static XSharp.XSharpConstants;
 using XSharp.VOEditors;
 using System.Threading;
 using System.Threading.Tasks;
@@ -153,10 +153,8 @@ namespace XSharp.Project
     [SingleFileGeneratorSupportRegistrationAttribute(typeof(XSharpProjectFactory))]  // 5891B814-A2E0-4e64-9A2F-2C2ECAB940FE"
     [Guid(GuidStrings.guidXSharpProjectPkgString)]
 
-
     [ProvideMenuResource("Menus.ctmenu", 1)]
-    //[ProvideBindingPath]        // Tell VS to look in our path for assemblies
-    public sealed class XSharpProjectPackage : AsyncProjectPackage, IOleComponent,IVsDebuggerEvents, XSharpModel.IOutputWindow
+    public sealed class XSharpProjectPackage : AsyncProjectPackage, IOleComponent,IVsDebuggerEvents
     {
         private UIThread _uiThread;
         private uint m_componentID;
@@ -166,6 +164,8 @@ namespace XSharp.Project
         private XSharpDocumentWatcher _documentWatcher;
         private IErrorList _errorList = null;
         private ITaskList _taskList = null;
+        private IVsRegisterProjectSelector _projectSelector;
+        private uint _cookie = VSConstants.VSCOOKIE_NIL;
 
         // =========================================================================================
         // Properties
@@ -210,9 +210,15 @@ namespace XSharp.Project
             base.SolutionListeners.Add(new ModelScannerEvents(this));
             await base.InitializeAsync(cancellationToken, progress);
             await JoinableTaskFactory.SwitchToMainThreadAsync();
+            var projectSelector = new XSharpProjectSelector();
+
+            _projectSelector = (IVsRegisterProjectSelector)await GetServiceAsync(typeof(SVsRegisterProjectTypes));
+
+            Guid selectorGuid = new Guid(XSharpConstants.ProjectSelectorGuid);
+            _projectSelector.RegisterProjectSelector(ref selectorGuid, projectSelector, out _cookie);
+
             initUITHread();
              XSharpProjectPackage.instance = this;
-             XSharpModel.XSolution.OutputWindow = this;
              this.RegisterProjectFactory(new XSharpProjectFactory(this));
              this.settings = new XPackageSettings(this);
              //validateVulcanEditors();

@@ -21,6 +21,7 @@ namespace XSharp.ProjectSystem
         public ProjectProperties(ConfiguredProject configuredProject)
             : base(configuredProject)
         {
+            ;
         }
 
         /// <summary>
@@ -29,6 +30,7 @@ namespace XSharp.ProjectSystem
         public ProjectProperties(ConfiguredProject configuredProject, string file, string itemType, string itemName)
             : base(configuredProject, file, itemType, itemName)
         {
+            ;
         }
 
         /// <summary>
@@ -37,6 +39,7 @@ namespace XSharp.ProjectSystem
         public ProjectProperties(ConfiguredProject configuredProject, IProjectPropertiesContext projectPropertiesContext)
             : base(configuredProject, projectPropertiesContext)
         {
+            ;
         }
 
         /// <summary>
@@ -45,6 +48,7 @@ namespace XSharp.ProjectSystem
         public ProjectProperties(ConfiguredProject configuredProject, UnconfiguredProject unconfiguredProject)
             : base(configuredProject, unconfiguredProject)
         {
+            ;
         }
     }
 }

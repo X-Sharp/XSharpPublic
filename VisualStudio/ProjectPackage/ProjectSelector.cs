@@ -19,12 +19,11 @@ using Microsoft.VisualStudio.ProjectSystem.VS;
 using Microsoft.VisualStudio;
 using System.ComponentModel.Composition.Primitives;
 
-namespace XSharp.ProjectSystem
+namespace XSharp.Project
 {
-    [Export(typeof(IPackageService))]
-    [Guid(XSharpVsPackage.ProjectSelectorGuid)]
+    [Guid(XSharpConstants.ProjectSelectorGuid)]
     [ProvideObject(typeof(XSharpProjectSelector), RegisterUsing = RegistrationMethod.CodeBase)]
-    internal sealed class XSharpProjectSelector : IVsProjectSelector, IPackageService, IDisposable
+    internal sealed class XSharpProjectSelector : IVsProjectSelector, IDisposable
     {
         private const string MSBuildXmlNamespace = "http://schemas.microsoft.com/developer/msbuild/2003";
 
@@ -36,6 +35,10 @@ namespace XSharp.ProjectSystem
         public XSharpProjectSelector(JoinableTaskContext context)
         {
             _context = context;
+        }
+
+        public XSharpProjectSelector()
+        {
         }
 
         public async Task InitializeAsync(IAsyncServiceProvider asyncServiceProvider)
@@ -65,11 +68,11 @@ namespace XSharp.ProjectSystem
 
             if (hasProjectElementWithSdkAttribute || hasImportElementWithSdkAttribute)
             {
-                guidProjectFactory = new Guid(XSharpVsPackage.ProjectTypeGuid);
+                guidProjectFactory = new Guid(XSharpConstants.CpsProjectTypeGuid);
                 return;
             }
 
-            guidProjectFactory = new Guid(XSharpVsPackage.LegacyXSharpGuid);
+            guidProjectFactory = new Guid(XSharpConstants.LegacyXSharpGuid);
         }
 
         public void Dispose()
@@ -82,24 +85,5 @@ namespace XSharp.ProjectSystem
         }
     }
 }
-namespace Microsoft.VisualStudio.ProjectSystem.VS
-{
-    /// <summary>
-    /// A service that is initialized when the VS package is initialized.
-    /// </summary>
-    /// <remarks>
-    /// Implementations must be exported in global scope.
-    /// </remarks>
-    [ProjectSystemContract(ProjectSystemContractScope.ConfiguredProject, ProjectSystemContractProvider.Private, Cardinality = Composition.ImportCardinality.ZeroOrMore)]
-    internal interface IPackageService
-    {
-        /// <summary>
-        /// Called when the package is initializing.
-        /// </summary>
-        /// <remarks>
-        /// Always called on the UI thread.
-        /// </remarks>
-        Task InitializeAsync(IAsyncServiceProvider asyncServiceProvider);
-    }
-}
+
 

@@ -52,7 +52,7 @@ namespace XSharp.ProjectSystem
         }
     }
     [Export(typeof(IProjectImageProvider))]
-    [AppliesTo(XSharpConstants.LanguageName)]
+    [AppliesTo("XSharp")]
     internal class XSharpProjectImageProvider : IProjectImageProvider
     {
         [ImportingConstructor]
@@ -75,6 +75,4 @@ namespace XSharp.ProjectSystem
         /// </summary>
         ProjectImageMoniker GetProjectImage(string key);
     }
-
 }
-

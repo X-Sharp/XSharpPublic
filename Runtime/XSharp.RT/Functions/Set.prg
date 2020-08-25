@@ -38,6 +38,11 @@ FUNCTION Set(nDefine, newValue) AS USUAL CLIPPER
             IF IsString(newValue)
                 RETURN SetDateFormat(newValue)
             ENDIF
+        CASE Set.Default
+            // Special handling, validaion on path for FoxPro and this also resets the path array
+            IF IsString(newValue)
+                RETURN SetDefault(newValue)
+            ENDIF
         CASE Set.CharSet 
             // Map SET_CHARSET to SetAnsi
             IF IsNumeric(newValue)

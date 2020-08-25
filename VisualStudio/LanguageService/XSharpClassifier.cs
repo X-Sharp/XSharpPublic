@@ -32,7 +32,6 @@ namespace XSharp.LanguageService
         static private IClassificationType xsharpIdentifierType;
         static private IClassificationType xsharpCommentType;
         static private IClassificationType xsharpOperatorType;
-        static private IClassificationType xsharpPunctuationType;
         static private IClassificationType xsharpStringType;
         static private IClassificationType xsharpNumberType;
         static private IClassificationType xsharpPPType;
@@ -109,7 +108,6 @@ namespace XSharp.LanguageService
                 xsharpIdentifierType = registry.GetClassificationType("identifier");
                 xsharpCommentType = registry.GetClassificationType("comment");
                 xsharpOperatorType = registry.GetClassificationType("operator");
-                xsharpPunctuationType = registry.GetClassificationType("punctuation");
                 xsharpPPType = registry.GetClassificationType("preprocessor keyword");
                 xsharpNumberType = registry.GetClassificationType("number");
                 xsharpStringType = registry.GetClassificationType("string");

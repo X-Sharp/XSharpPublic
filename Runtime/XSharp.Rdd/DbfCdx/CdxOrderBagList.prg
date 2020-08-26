@@ -39,7 +39,6 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                         IF isOk
                             IF XSharp.RuntimeState.AutoOrder != 0
                                 SELF:CurrentOrder := oBag:Tags[0]
-                                SELF:CurrentOrder:GoTop()
                             ENDIF
                         ELSE
                             _bags:Remove(oBag)

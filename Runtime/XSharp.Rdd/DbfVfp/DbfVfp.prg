@@ -151,6 +151,7 @@ CLASS DBFVFP INHERIT DBFCDX
             IF XSharp.RuntimeState.AutoOpen
                 SELF:OpenProductionIndex(info)
             ENDIF
+            SELF:GoTop()
         ENDIF
         
         RETURN lOk

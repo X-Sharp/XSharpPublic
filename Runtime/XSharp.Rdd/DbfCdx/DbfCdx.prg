@@ -446,6 +446,7 @@ BEGIN NAMESPACE XSharp.RDD
                 IF RuntimeState.AutoOpen
                     SELF:OpenProductionIndex(info)
                 ENDIF
+                SELF:GoTop()
             ENDIF
             RETURN lOk
             

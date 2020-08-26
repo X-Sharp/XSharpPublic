@@ -8,6 +8,7 @@
 USING System
 USING System.Collections.Generic
 USING System.Text
+USING System.Linq
 USING System.Diagnostics
 USING XSharp.Internal
 /// <summary>
@@ -15,7 +16,7 @@ USING XSharp.Internal
 /// </summary>
 [AllowLateBinding];
 [DebuggerTypeProxy(TYPEOF(EmptyDebugView))];
-CLASS XSharp.VFP.Empty
+CLASS XSharp.VFP.Empty IMPLEMENTS XSharp.IDynamicProperties
 
     PROTECTED _Properties AS Dictionary<STRING, USUAL> 
     PROTECTED _Attributes AS Dictionary<STRING, Tuple<PropertyVisibility, STRING> >
@@ -91,7 +92,10 @@ CLASS XSharp.VFP.Empty
         ENDIF
         RETURN FALSE
 
-
+    PUBLIC METHOD __ClearProperties() AS VOID
+        _Attributes:Clear()
+        _Properties:Clear()
+        _InitCompileTimeProperties()
         
     [Obsolete("This method is not supported in X#")];
     METHOD ResetToDefault(cName) AS VOID
@@ -123,23 +127,25 @@ CLASS XSharp.VFP.Empty
         RETURN ""
         
     #endregion
-    
-    VIRTUAL METHOD NoIvarPut(cName AS STRING, uValue AS USUAL) AS USUAL STRICT
+    #region IDynamicProperties
+    VIRTUAL METHOD NoIvarPut(cName AS STRING, uValue AS USUAL) AS VOID
         IF _Properties:ContainsKey( cName)
             _Properties[cName] := uValue
         ELSE
             THROW PropertyNotFoundException{cName}
         ENDIF
-        RETURN uValue
+        RETURN 
         
-    VIRTUAL METHOD NoIvarGet(cName AS STRING) AS USUAL STRICT
+    VIRTUAL METHOD NoIvarGet(cName AS STRING) AS USUAL 
         IF _Properties:ContainsKey(cName)
             RETURN _Properties[cName]
         ELSE
             THROW PropertyNotFoundException{cName}
         ENDIF
-        
-        
+	
+    VIRTUAL METHOD GetPropertyNames() AS STRING[]
+        return _Properties:Keys:ToArray()
+    #endregion
     #region Implementations
     PROTECTED METHOD _GetProperty(cName AS STRING) AS USUAL
         IF _Properties:ContainsKey(cName)

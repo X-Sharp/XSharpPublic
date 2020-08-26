@@ -45,16 +45,15 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         internal bool IsOptional { get { return _type.IsOptional(); } }
         internal bool IsToken { get { return _type == PPTokenType.Token; } }
         internal bool IsRepeat { get; set; }
-        internal PPTokenType RuleTokenType { get { return _type.GetTokenType(); } set { _type = value; } }
+        internal PPTokenType RuleTokenType { get { return _type; } set { _type = value; } }
 
         internal string SyntaxText
         {
 
             get
             {
-                var type = _type.GetTokenType();
                 string sResult;
-                switch (type)
+                switch (_type)
                 {
                     case PPTokenType.Token:
                         sResult = Key;
@@ -73,6 +72,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         break;
                     case PPTokenType.MatchWild:
                         sResult = "<*" + Key + "*>";
+                        break;
+                    case PPTokenType.MatchLike:
+                        sResult = "<%" + Key + "%>";
                         break;
                     case PPTokenType.ResultRegular:
                         sResult = "<" + Key + ">";
@@ -108,7 +110,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         #endregion
         internal string GetDebuggerDisplay()
         {
-            return _type.GetTokenType().ToString() + " " + SyntaxText;
+            return _type.ToString() + " " + SyntaxText;
         }
 
         internal PPRuleToken(XSharpToken token, PPTokenType type)

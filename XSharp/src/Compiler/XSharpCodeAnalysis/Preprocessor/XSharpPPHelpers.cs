@@ -13,6 +13,7 @@ using System.Diagnostics;
 
 namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 {
+
     enum PPUDCType : byte
     {
         None,
@@ -24,25 +25,27 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
     }
     enum PPTokenType : byte
     {
-        None = 0,                          //                      0000 0000
+        None = 0,                          //                      
         // Normal Token, part of UDC but with no special meaning
-        Token = 1,                         //                      0000 0001
-        MatchRegular = 2,                  // <idMarker>           0000 0010
-        MatchList = 3,                     // <idMarker,...>       0000 0011
-        MatchRestricted = 4,               // <idMarker:word list> 0000 0100
-        MatchWild = 5,                     // <*idMarker*>         0000 0101
-        MatchExtended = 6,                 // <(idMarker)>         0000 0110
-        MatchOptional = 7,                 // [......]             0000 0111
+        Token = 1,                         //                      
+        MatchRegular = 2,                  // <idMarker>           
+        MatchList = 3,                     // <idMarker,...>       
+        MatchRestricted = 4,               // <idMarker:word list> 
+        MatchWild = 5,                     // <*idMarker*>         
+        MatchExtended = 6,                 // <(idMarker)>         
+        MatchOptional = 7,                 // [......]             
         // Xbase++ addition
-        MatchSingle = 8,                   // <#idMarker>          0000 1000 
+        MatchSingle = 8,                   // <#idMarker>
+        // X# addition
+        MatchLike = 9,                     // <%idMarker%>          
 
-        ResultRegular = 9,                 // <idMarker>           0000 1001
-        ResultDumbStringify = 10,          // #<idMarker>          0000 1010
-        ResultNormalStringify = 11,        // <"idMarker">         0000 1011
-        ResultSmartStringify = 12,         // <(idMarker)>         0000 1100
-        ResultBlockify = 13,               // <{idMarker}>         0000 1101
-        ResultLogify = 14,                 // <.idMarker.>         0000 1110
-        ResultOptional = 15,               // [....]               0000 1111
+        ResultRegular = 0x81,                // <idMarker>           
+        ResultDumbStringify = 0x82,          // #<idMarker>          
+        ResultNormalStringify = 0x83,        // <"idMarker">         
+        ResultSmartStringify = 0x84,         // <(idMarker)>         
+        ResultBlockify = 0x85,               // <{idMarker}>         
+        ResultLogify = 0x86,                 // <.idMarker.>         
+        ResultOptional = 0x87,               // [....]               
 
     }
     internal class PPErrorMessages : List<PPErrorMessage>

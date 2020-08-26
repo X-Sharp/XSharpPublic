@@ -476,6 +476,20 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                             i += 4;
                         }
                         else if (i < max - 4
+                            // <%idMarker%>
+                            && matchTokens[i + 1].Type == XSharpLexer.MOD
+                            && matchTokens[i + 3].Type == XSharpLexer.MOD
+                            && matchTokens[i + 4].Type == XSharpLexer.GT
+                            && matchTokens[i + 2].IsName())
+
+                        {
+                            name = matchTokens[i + 2];
+                            element = new PPMatchToken(name, PPTokenType.MatchLike);
+                            result.Add(element);
+                            addToDict(markers, element);
+                            i += 4;
+                        }
+                        else if (i < max - 4
                               && matchTokens[i + 2].Type == XSharpLexer.COMMA
                               && matchTokens[i + 3].Type == XSharpLexer.ELLIPSIS
                               && matchTokens[i + 4].Type == XSharpLexer.GT
@@ -596,7 +610,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 for (int i = 0; i < mt.Length; i++)
                 {
                     var marker = mt[i];
-                    if (marker.RuleTokenType == PPTokenType.MatchList || marker.IsRepeat)
+                    if (marker.RuleTokenType.HasStopTokens() || marker.IsRepeat )
                     {
                         var stopTokens = new List<XSharpToken>();
                         findStopTokens(mt, i + 1, stopTokens);
@@ -606,7 +620,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     {
                         foreach (var child in marker.Children)
                         {
-                            if (child.RuleTokenType == PPTokenType.MatchList)
+                            if (child.RuleTokenType.HasStopTokens())
                             {
                                 var stopTokens = new List<XSharpToken>();
                                 findStopTokens(mt, i + 1, stopTokens);
@@ -930,6 +944,22 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
             return this.Name;
         }
+
+        bool IsStopToken(PPMatchToken mtoken, XSharpToken token)
+        {
+            if (mtoken.RuleTokenType.HasStopTokens())
+            {
+                foreach (var stopToken in mtoken.Tokens)
+                {
+                    if (tokenEquals(stopToken, token))
+                    {
+                        return true;
+                    }
+                }
+
+            }
+            return false;
+        }
         bool tokenEquals(XSharpToken lhs, XSharpToken rhs)
         {
             if (lhs != null && rhs != null)
@@ -961,7 +991,253 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             return false;
         }
 
-        internal bool matchListToken(PPMatchToken mToken, IList<XSharpToken> tokens, ref int iSource, PPMatchRange[] matchInfo)
+        bool matchLikeToken(PPMatchToken mToken, IList<XSharpToken> tokens, ref int iSource, PPMatchRange[] matchInfo)
+        {
+            int start = iSource;
+            int end = iSource;
+            bool found = false;
+            for (int iChild = iSource; iChild < tokens.Count; iChild++)
+            {
+                bool add = false;
+                var token = tokens[iChild];
+                var stopTokenFound = IsStopToken(mToken, token);
+                if (stopTokenFound)
+                {
+                    break;
+                }
+                switch (token.Type)
+                {
+                    case XSharpLexer.COMMA:
+                    case XSharpLexer.ID:
+                        add = true;
+                        break;
+                    default:
+                        if (token.IsWildCard())
+                            add = true;
+                        else
+                            add = false;
+                        break;
+                }
+                if (add)
+                {
+                    found = true;
+                    end = iChild;
+                }
+                else
+                    break;
+            }
+            if (found)
+            {
+                matchInfo[mToken.Index].SetPos(start, end);
+                iSource = end + 1;
+            }
+            return found;
+
+        }
+
+        bool matchOptionalToken(PPMatchToken mToken, IList<XSharpToken> tokens, ref int iSource, PPMatchRange[] matchInfo, IList<XSharpToken> matchedWithToken, ref int iRule)
+        {
+            var optional = mToken.Children;
+            bool optfound = false;
+            int iOriginal = iSource;
+            int iChild = 0;
+            int iEnd = -1;
+            var children = matchInfo[mToken.Index].Children;
+            PPMatchRange[] copyMatchInfo = new PPMatchRange[matchInfo.Length];
+            Array.Copy(matchInfo, copyMatchInfo, matchInfo.Length);
+            while (iChild < optional.Length && iSource < tokens.Count)
+            {
+                var mchild = optional[iChild];
+                if (!matchToken(mchild, ref iChild, matchInfo.Length, ref iSource, tokens, copyMatchInfo, matchedWithToken))
+                {
+                    /*
+                     Some optional tokens have optional children. In that case we can still match the optional
+                     token even when its child is not there, like the fldN in the rule below.
+                     If you have problems understanding this, please imagine how it was for me to write all of this
+                     and emulate the old Clipper, XPP and Harbour preprocessors...
+                     #command  REPLACE [<fld1> WITH <val1> [,<fldN> WITH <valN> ] ] ;
+                     [   FOR <for>] [ WHILE <whl>] [  NEXT <nxt>] [RECORD <rcd>] [ <rst: REST>] [ ALL ] =>  dbEval( {|| FIELD-><fld1> := <val1>[, ;
+                            FIELD-><fldN> := <valN>]  }, __EBCB(<for>), __EBCB(<whl>), <nxt>, <rcd>, <.rst.>)
+
+                     **/
+                    if (!mchild.IsOptional)
+                    {
+                        optfound = false;
+                    }
+                    break;
+                }
+                else
+                {
+                    optfound = true;
+                }
+            }
+            if (optfound)
+            {
+                Array.Copy(copyMatchInfo, matchInfo, matchInfo.Length);
+                if (!mToken.IsRepeat)
+                {
+                    iRule += 1;
+                }
+                iEnd = iSource - 1;
+                // truncate spaces at the end
+                iEnd = trimHiddenTokens(tokens, iSource, iEnd);
+                matchInfo[mToken.Index].SetPos(iOriginal, iEnd);
+            }
+            else
+            { 
+                iSource = iOriginal;
+            }
+            return optfound;
+        }
+        bool matchExtendedToken(PPMatchToken mToken, IList<XSharpToken> tokens, ref int iSource, PPMatchRange[] matchInfo, IList<XSharpToken> matchedWithToken)
+        {
+            int iStart = iSource;
+            var lastType = 0;
+            var level = 0;
+            var done = false;
+            var consumed = 0;
+            var iend = -1;
+            bool found = false;
+            if (matchAmpersandToken(tokens, iStart, ref iend))
+            {
+                matchInfo[mToken.Index].SetPos(iStart, iend);
+                iSource = iend + 1;
+                found = true;
+            }
+            else if (matchFileName(tokens, iStart, ref iend))
+            {
+                matchInfo[mToken.Index].SetPos(iStart, iend);
+                iSource = iend + 1;
+                found = true;
+            }
+            else if (XSharpLexer.IsString(tokens[iStart].Type))
+            {
+                matchInfo[mToken.Index].SetPos(iStart, iStart);
+                iSource = iSource + 1;
+                found = true;
+            }
+            else
+            {
+                while (iSource < tokens.Count && !done)
+                {
+                    switch (tokens[iSource].Type)
+                    {
+                        case XSharpLexer.LPAREN:
+                        case XSharpLexer.LBRKT:
+                        case XSharpLexer.LCURLY:
+                            level++;
+                            break;
+                        case XSharpLexer.RPAREN:
+                        case XSharpLexer.RBRKT:
+                        case XSharpLexer.RCURLY:
+                            level--;
+                            break;
+                        default:
+                            //
+                            // we consume one token between optional params or curly braces
+                            // but we also allow ID DOT ID (OUTPUT.TXT)
+                            // So second ID is only accepted after DOT
+                            if (level == 0 && consumed > 0)
+                            {
+                                var type = tokens[iSource].Type;
+
+                                if (type == XSharpLexer.ID || XSharpLexer.IsKeyword(type))
+                                {
+                                    done = lastType != XSharpLexer.DOT;
+                                }
+                                else if (type != XSharpLexer.DOT)
+                                {
+                                    done = true;
+                                }
+                            }
+                            break;
+                    }
+                    lastType = tokens[iSource].Type;
+                    consumed += 1;
+                    if (!done)
+                    { 
+                        iSource++;
+                        found = true;
+                    }
+                }
+                // we have either reached the end of the line or aborted because of a token that
+                // is not part of the match, so therefore iSource points to the token AFTER the last match
+                matchInfo[mToken.Index].SetPos(iStart, iSource - 1);
+            }
+            return found;
+
+        }
+        bool matchRestrictedToken(PPMatchToken mToken, IList<XSharpToken> tokens, ref int iSource, PPMatchRange[] matchInfo, IList<XSharpToken> matchedWithToken)
+        {
+            // match the words in the list.
+            // the token in the rule is the match marker
+            // the words to be checked are the MoreTokens
+            // This list includes the original commas because some restricted markers can have more than word:
+            // LIST ....  [<toPrint: TO PRINTER>] 
+            // where others have a list of single words
+            // #command SET CENTURY <x:ON,OFF,&>      => __SetCentury( <(x)> )
+            XSharpToken lastToken = null;
+            int iLast = mToken.Tokens.Length - 1;
+            int iMatch = 0;
+            int iCurrent = iSource;
+            int iEnd;
+            for (var iChild = 0; iChild <= iLast; iChild++)
+            {
+                var child = mToken.Tokens[iChild];
+                lastToken = child;
+                if (child.Type == XSharpLexer.COMMA)
+                {
+                    iMatch = 0;
+                }
+                else if (tokenEquals(child, tokens[iCurrent]))
+                {
+                    iMatch += 1;
+                    if (iChild == iLast) // No token following this one
+                    {
+                        break;
+                    }
+                    // next token comma ?
+                    var next = mToken.Tokens[iChild + 1];
+                    if (next.Type == XSharpLexer.COMMA)
+                    {
+                        break;
+                    }
+                    iCurrent += 1;
+                }
+                else
+                {
+                    iMatch = 0;
+                }
+            }
+            var found = iMatch > 0;
+            if (found)
+            {
+                iEnd = iCurrent;
+                if (lastToken.Type == XSharpLexer.AMP)
+                {
+                    // when the ampersand is the last token, then we also include the following token
+                    // This happens when we match the rule
+                    // #command SET CENTURY <x:ON,OFF,&>      => __SetCentury( <(x)> ) 
+                    // with the source SET CENTURY &MyVar
+                    // Thus generates the output __SetCentury((MyVar))
+                    if (lastToken == mToken.Tokens[mToken.Tokens.Length - 1] && tokens.Count > iEnd)
+                    {
+                        iEnd += 1;
+                        iSource = iEnd;
+                    }
+                }
+                // truncate spaces at the end
+                iEnd = trimHiddenTokens(tokens, iSource, iEnd);
+                matchInfo[mToken.Index].SetPos(iSource, iEnd);
+                for (int i = iSource; i <= iEnd; i++)
+                {
+                    matchedWithToken.Add(tokens[i]);
+                }
+                iSource = iEnd + 1;
+            }
+            return found;
+        }
+        bool matchListToken(PPMatchToken mToken, IList<XSharpToken> tokens, ref int iSource, PPMatchRange[] matchInfo)
         {
             // This should match a list of expressions
             // until one of the tokens in mToken.Tokens is found
@@ -979,22 +1255,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
              */
             if (mToken.RuleTokenType != PPTokenType.MatchList)
                 return false;
-            var stopTokens = mToken.Tokens;
             int iStart = iSource;
             var matches = new List<Tuple<int, int>>();
             bool stopTokenFound = false;
             while (iSource < tokens.Count)
             {
                 var token = tokens[iSource];
-                // check to see if the current token is in the stoptokens list
-                foreach (var stopToken in stopTokens)
-                {
-                    if (tokenEquals(stopToken, token))
-                    {
-                        stopTokenFound = true;
-                        break;
-                    }
-                }
+                stopTokenFound = IsStopToken(mToken, token);
                 if (stopTokenFound)
                 {
                     break;
@@ -1022,12 +1289,35 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             return true;
         }
-        internal bool matchToken(PPMatchToken mToken, ref int iRule, int iLastRule, ref int iSource, IList<XSharpToken> tokens,
+
+        bool matchSingleToken(PPMatchToken mToken, IList<XSharpToken> tokens, ref int iSource, PPMatchRange[] matchInfo)
+        {
+            // XPP addition
+            // add all normal tokens and operators until whitespace
+            var first = tokens[iSource];
+            var nextpos = first.Position + first.FullWidth;
+            var iEnd = iSource + 1;
+            while (iEnd < tokens.Count)
+            {
+                first = tokens[iEnd];
+                if (first.Position > nextpos)
+                {
+                    break;
+                }
+                nextpos = first.Position + first.FullWidth;
+                iEnd++;
+            }
+            iEnd -= 1;
+            matchInfo[mToken.Index].SetPos(iSource, iEnd);
+            iSource = iEnd + 1;
+            return true;
+        }
+
+        bool matchToken(PPMatchToken mToken, ref int iRule, int iLastRule, ref int iSource, IList<XSharpToken> tokens,
             PPMatchRange[] matchInfo, IList<XSharpToken> matchedWithToken)
         {
             XSharpToken sourceToken = tokens[iSource];
             XSharpToken ruleToken = mToken.Token;
-            int iChild = 0;
             int iEnd;
             bool found = false;
             while (sourceToken.Type == XSharpLexer.WS )
@@ -1065,8 +1355,15 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     }
 
                     break;
+                case PPTokenType.MatchLike:
+                    // This matches one or more name with an optional * or ? character.
+                    if (matchLikeToken(mToken, tokens, ref iSource, matchInfo))
+                    {
+                        iRule += 1;
+                        found = true;
+                    }
+                    break;
                 case PPTokenType.MatchList:
-                    // ignore for now
                     if (matchListToken(mToken, tokens, ref iSource, matchInfo))
                     {
                         iRule += 1;
@@ -1075,95 +1372,18 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     break;
 
                 case PPTokenType.MatchRestricted:
-                    // match the words in the list.
-                    // the token in the rule is the match marker
-                    // the words to be checked are the MoreTokens
-                    // This list includes the original commas because some restricted markers can have more than word:
-                    // LIST ....  [<toPrint: TO PRINTER>] 
-                    // where others have a list of single words
-                    // #command SET CENTURY <x:ON,OFF,&>      => __SetCentury( <(x)> ) 
-                    XSharpToken lastToken = null;
-                    int iLast = mToken.Tokens.Length - 1;
-                    int iMatch = 0;
-                    int iCurrent = iSource;
-                    for (iChild = 0; iChild <= iLast; iChild++)
+                    if (matchRestrictedToken(mToken, tokens, ref iSource, matchInfo, matchedWithToken))
                     {
-                        var child = mToken.Tokens[iChild];
-                        lastToken = child;
-                        if (child.Type == XSharpLexer.COMMA)
-                        {
-                            iMatch = 0;
-                        }
-                        else if (tokenEquals(child, sourceToken))
-                        {
-                            iMatch += 1;
-                            if (iChild == iLast) // No token following this one
-                            {
-                                break;
-                            }
-                            // next token comma ?
-                            var next = mToken.Tokens[iChild + 1];
-                            if (next.Type == XSharpLexer.COMMA)
-                            {
-                                break;
-                            }
-                            iCurrent += 1;
-                            sourceToken = tokens[iCurrent];
-                        }
-                        else
-                        {
-                            iMatch = 0;
-                        }
-                    }
-                    found = iMatch > 0;
-                    if (found)
-                    {
-                        iEnd = iCurrent;
-                        if (lastToken.Type == XSharpLexer.AMP)
-                        {
-                            // when the ampersand is the last token, then we also include the following token
-                            // This happens when we match the rule
-                            // #command SET CENTURY <x:ON,OFF,&>      => __SetCentury( <(x)> ) 
-                            // with the source SET CENTURY &MyVar
-                            // Thus generates the output __SetCentury((MyVar))
-                            if (lastToken == mToken.Tokens[mToken.Tokens.Length - 1] && tokens.Count > iEnd)
-                            {
-                                iEnd += 1;
-                                iSource = iEnd;
-                            }
-                        }
-                        // truncate spaces at the end
-                        iEnd = trimHiddenTokens(tokens, iSource, iEnd);
-                        matchInfo[mToken.Index].SetPos(iSource, iEnd);
-                        for (int i = iSource; i <= iEnd; i++)
-                        {
-                            matchedWithToken.Add(tokens[i]);
-                        }
-                        iSource = iEnd + 1;
                         iRule += 1;
+                        found = true;
                     }
                     break;
                 case PPTokenType.MatchSingle:
-                    // XPP addition
-                    // add all normal tokens and operators until whitespace
-                    var first = tokens[iSource];
-                    var nextpos = first.Position + first.FullWidth;
-                    iEnd = iSource + 1;
-                    while (iEnd < tokens.Count)
+                    if (matchSingleToken(mToken, tokens, ref iSource, matchInfo))
                     {
-                        first = tokens[iEnd];
-                        if (first.Position > nextpos)
-                        {
-                            break;
-                        }
-                        nextpos = first.Position + first.FullWidth;
-                        iEnd++;
+                        iRule += 1;
+                        found = true;
                     }
-                    iEnd -= 1;
-                    matchInfo[mToken.Index].SetPos(iSource, iEnd);
-                    iSource = iEnd + 1;
-                    iRule += 1;
-                    found = true;                    // matches anything until the end of the list
                     break;
                 case PPTokenType.MatchWild:
                     iEnd = tokens.Count - 1;
@@ -1176,126 +1396,19 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     break;
                 case PPTokenType.MatchExtended:
                     // either match a single token, a token in parentheses
-                    int iStart = iSource;
-                    var lastType = 0;
-                    var level = 0;
-                    var done = false;
-                    var consumed = 0;
-                    var iend = -1;
-                    if (matchAmpersandToken(tokens, iStart, ref iend))
+                    if (matchExtendedToken(mToken, tokens, ref iSource, matchInfo, matchedWithToken))
                     {
-                        matchInfo[mToken.Index].SetPos(iStart, iend);
-                        iSource = iend + 1;
+                        iRule += 1;
+                        found = true;
                     }
-                    else if (matchFileName(tokens, iStart, ref iend))
-                    {
-                        matchInfo[mToken.Index].SetPos(iStart, iend);
-                        iSource = iend + 1;
-                    }
-                    else if (XSharpLexer.IsString(tokens[iStart].Type))
-                    {
-                        matchInfo[mToken.Index].SetPos(iStart, iStart);
-                        iSource = iSource + 1;
-                    }
-                    else
-                    {
-                        while (iSource < tokens.Count && !done)
-                        {
-                            switch (tokens[iSource].Type)
-                            {
-                                case XSharpLexer.LPAREN:
-                                case XSharpLexer.LBRKT:
-                                case XSharpLexer.LCURLY:
-                                    level++;
-                                    break;
-                                case XSharpLexer.RPAREN:
-                                case XSharpLexer.RBRKT:
-                                case XSharpLexer.RCURLY:
-                                    level--;
-                                    break;
-                                default:
-                                    //
-                                    // we consume one token between optional params or curly braces
-                                    // but we also allow ID DOT ID (OUTPUT.TXT)
-                                    // So second ID is only accepted after DOT
-                                    if (level == 0 && consumed > 0)
-                                    {
-                                        var type = tokens[iSource].Type;
-
-                                        if (type == XSharpLexer.ID || XSharpLexer.IsKeyword(type))
-                                        {
-                                            done = lastType != XSharpLexer.DOT;
-                                        }
-                                        else if (type != XSharpLexer.DOT)
-                                        {
-                                            done = true;
-                                        }
-                                    }
-                                    break;
-                            }
-                            lastType = tokens[iSource].Type;
-                            consumed += 1;
-                            if (!done)
-                                iSource++;
-                        }
-                        // we have either reached the end of the line or aborted because of a token that
-                        // is not part of the match, so therefore iSource points to the token AFTER the last match
-                        matchInfo[mToken.Index].SetPos(iStart, iSource - 1);
-                    }
-                    iRule += 1;
-                    found = true;
                     break;
                 case PPTokenType.MatchOptional:
                     // 
                     // Get sublist of optional token and match with source
-                    var optional = mToken.Children;
-                    bool optfound = false;
-                    int iOriginal = iSource;
-                    iChild = 0;
-                    var children = matchInfo[mToken.Index].Children;
-                    PPMatchRange[] copyMatchInfo = new PPMatchRange[matchInfo.Length];
-                    Array.Copy(matchInfo, copyMatchInfo, matchInfo.Length);
-                    while (iChild < optional.Length && iSource < tokens.Count)
+                    if (matchOptionalToken(mToken, tokens, ref iSource, matchInfo, matchedWithToken, ref iRule))
                     {
-                        var mchild = optional[iChild];
-                        if (!matchToken(mchild, ref iChild, matchInfo.Length, ref iSource, tokens, copyMatchInfo, matchedWithToken))
-                        {
-                            /*
-                             Some optional tokens have optional children. In that case we can still match the optional
-                             token even when its child is not there, like the fldN in the rule below.
-                             If you have problems understanding this, please imagine how it was for me to write all of this
-                             and emulate the old Clipper, XPP and Harbour preprocessors...
-                             #command  REPLACE [<fld1> WITH <val1> [,<fldN> WITH <valN> ] ] ;
-                             [   FOR <for>] [ WHILE <whl>] [  NEXT <nxt>] [RECORD <rcd>] [ <rst: REST>] [ ALL ] =>  dbEval( {|| FIELD-><fld1> := <val1>[, ;
-                                    FIELD-><fldN> := <valN>]  }, __EBCB(<for>), __EBCB(<whl>), <nxt>, <rcd>, <.rst.>)
-
-                             **/
-                            if (!mchild.IsOptional)
-                            {
-                                optfound = false;
-                            }
-                            break;
-                        }
-                        else
-                        {
-                            optfound = true;
-                        }
-                    }
-                    if (optfound)
-                    {
-                        Array.Copy(copyMatchInfo, matchInfo, matchInfo.Length);
                         found = true;
-                        if (!mToken.IsRepeat)
-                        {
-                            iRule += 1;
-                        }
-                        iEnd = iSource - 1;
-                        // truncate spaces at the end
-                        iEnd = trimHiddenTokens(tokens, iSource, iEnd);
-                        matchInfo[mToken.Index].SetPos(iOriginal, iEnd);
                     }
-                    else
-                        iSource = iOriginal;
                     break;
             }
             return found;

@@ -13,6 +13,17 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 {
     internal static class XSharpPPTokenExtensions
     {
+        internal static bool HasStopTokens(this PPTokenType value)
+        {
+            switch (value)
+            {
+                case PPTokenType.MatchList:
+                case PPTokenType.MatchLike:
+                    return true; ;
+            }
+            return false;
+        }
+       
 
         internal static void TrimLeadingSpaces(this IList<XSharpToken> tokens)
         {
@@ -176,32 +187,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 type == PPTokenType.ResultOptional;
         }
 
-        internal static PPTokenType GetTokenType(this PPTokenType type)
-        {
-            return (PPTokenType)( (int) type & 0x0F);
-        }
-
-        internal static bool CanStartExpression(this IToken token)
-        {
-            return true;
-        }
         internal static bool IsLiteral(this IToken token)
         {
             if (token == null)
                 return false;
             return XSharpLexer.IsConstant(token.Type);
-        }
-        internal static bool CanQuote(this IToken token)
-        {
-            if (token == null)
-                return false;
-            if (token.IsName())
-                return true;
-            if (token.IsLiteral())
-                return true;
-            if (token.IsClose())
-                return true;
-            return false;
         }
 
         internal static bool NeedsLeft(this IToken token)
@@ -311,7 +301,16 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             return false;
         }
-
+        internal static bool IsWildCard(this IToken token)
+        {
+            switch (token.Type)
+            {
+                case XSharpLexer.QMARK:
+                case XSharpLexer.MULT:
+                    return true;
+            }
+            return false;
+        }
         internal static bool IsOpen(this IToken token, ref int closeType)
         {
             if (token == null)

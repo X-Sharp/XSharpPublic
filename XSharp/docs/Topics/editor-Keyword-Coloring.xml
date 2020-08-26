@@ -6,11 +6,26 @@
     <header>
       <para styleclass="Heading1">Keyword Coloring</para>
     </header>
-    <para styleclass="Normal"><text styleclass="Image Caption" style="font-style:normal;">Visual studio gives keywords colors based on their purpose. </text></para>
+    <para styleclass="Normal"><text styleclass="Image Caption" style="font-style:normal;">Visual studio gives keywords and other parts of the syntax colors based on their purpose, the following items are supported by X#:</text></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Image Caption" style="font-style:normal;">When you select a specific bit of code</text><text styleclass="Image Caption">, </text><text styleclass="Image Caption" style="font-style:normal;">it shows you all the places this same bit is used, as can be seen with lRestore.</text></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"><image src="Keyword coloring 2.png" scale="100.00%" styleclass="Image Caption"></image></para>
+    <para styleclass="Normal">Keywords</para>
+    <para styleclass="Normal">Identifiers</para>
+    <para styleclass="Normal">Comment &#160;s &#160;(single line, multi line etc)</para>
+    <para styleclass="Normal">Operators &#160; (+. -, := etc)</para>
+    <para styleclass="Normal">String s &#160; &#160;(also for Char constants)</para>
+    <para styleclass="Normal">Numbers &#160; &#160; (also for date and datetime literals)</para>
+    <para styleclass="Normal">Literals<tab /> &#160; (NIL, Symbols, _AND, _OR, _NOT, _XOR)</para>
+    <para styleclass="Normal">Preprocessor keywords</para>
+    <para styleclass="Normal">* contents of Text .. EndText</para>
+    <para styleclass="Normal">Inactive/Hidden code inside #IFDEF</para>
+    <para styleclass="Normal">* Highlighted Word</para>
     <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">* These are special XSharp colors. The other colors take the default Visual Studio editor colors for that category</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">You can change the options for this by going to Tools &gt; Options &gt; </para>
+    <para styleclass="Normal">Note that your settings will reset if you switch your color scheme in Visual Studio. </para>
   </body>
 </topic>

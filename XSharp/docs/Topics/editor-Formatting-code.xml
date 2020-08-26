@@ -6,6 +6,7 @@
     <header>
       <para styleclass="Heading1">Formatting code</para>
     </header>
+    <para styleclass="Normal"><text styleclass="Image Caption" style="font-style:normal;">Visual studio automatically formats your code, so that you have a clearer overview of your code, and which parts do what.</text></para>
     <para styleclass="Normal"><image src="Formatting code.png" scale="100.00%" styleclass="Image Caption"></image></para>
   </body>
 </topic>

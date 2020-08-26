@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="Geert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>Highlight words</title>
+  <body>
+    <header>
+      <para styleclass="Heading1">Highlight words</para>
+    </header>
+    <para styleclass="Normal"><text styleclass="Image Caption" style="font-style:normal;">When you select a specific word</text><text styleclass="Image Caption">, </text><text styleclass="Image Caption" style="font-style:normal;">it shows you all the places this word is used, this is case sensitive.</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><image src="Highlight words.png" scale="100.00%" styleclass="Image Caption"></image></para>
+  </body>
+</topic>

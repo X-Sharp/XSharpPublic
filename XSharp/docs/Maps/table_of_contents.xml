@@ -468,6 +468,9 @@
         <topicref type="topic" id="440463266528134" build="ALL" modified="2020-08-03T16:03:54.463Z" icon="0" href="editor-Intellisense-options">
           <caption translate="true">Intellisense options</caption>
         </topicref>
+        <topicref type="topic" id="440684277166773" build="ALL" modified="2020-08-25T12:58:59.687Z" icon="0" href="Highlight-words">
+          <caption translate="true">Highlight words</caption>
+        </topicref>
       </topicref>
       <topicref type="topic" id="423890888167298" build="ALL" modified="2017-04-20T14:46:46.911Z" icon="0" href="Templates">
         <caption translate="true">Templates</caption>

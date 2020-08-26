@@ -6,12 +6,13 @@
 
 USING System.Collections.Generic
 USING System.Diagnostics
+USING System.Linq
 
 /// <summary>
 /// The Xbase++ DataObject class.
 /// </summary>
 [DebuggerTypeProxy(TYPEOF(DataObjectDebugView))];
-CLASS XSharp.XPP.DataObject INHERIT XSharp.XPP.Abstract
+CLASS XSharp.XPP.DataObject INHERIT XSharp.XPP.Abstract IMPLEMENTS IDynamicProperties
     PRIVATE _fields  AS Dictionary<STRING, USUAL>
     PRIVATE _methods AS Dictionary<STRING, USUAL>
 
@@ -67,15 +68,19 @@ CLASS XSharp.XPP.DataObject INHERIT XSharp.XPP.Abstract
         RETURN {}
     
     /// <include file="XPPComments.xml" path="Comments/NoIvarPut/*" />
-    OVERRIDE METHOD NoIvarPut(cName AS STRING, uValue AS USUAL) AS USUAL STRICT
+    OVERRIDE METHOD NoIvarPut(cName AS STRING, uValue AS USUAL) AS VOID
         SELF:_fields[cName] := uValue
-        RETURN uValue
+        RETURN
+        
     /// <include file="XPPComments.xml" path="Comments/NoIvarGet/*" />
-    OVERRIDE METHOD NoIvarGet(cName AS STRING) AS USUAL STRICT
+    OVERRIDE METHOD NoIvarGet(cName AS STRING) AS USUAL 
         IF SELF:_fields:ContainsKey(cName)
             RETURN SELF:_fields[cName]
         ENDIF
         RETURN NIL
+
+    VIRTUAL METHOD GetPropertyNames() AS STRING[]
+        return _fields:Keys:ToArray()
 
     /// <summary>Creates a dependent shallow copy of this instance </summary>
     /// <returns>This method returns the new DataObject instance. </returns>

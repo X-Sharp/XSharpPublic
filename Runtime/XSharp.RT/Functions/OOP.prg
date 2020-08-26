@@ -435,7 +435,7 @@ INTERNAL STATIC CLASS OOPHelpers
 			IF ! list:Contains(name)
 				list:Add(name)
 			ENDIF
-		NEXT
+        NEXT
 		RETURN list:ToVoSymArray()
 		
 		
@@ -624,6 +624,10 @@ INTERNAL STATIC CLASS OOPHelpers
         IF String.IsNullOrEmpty(cIVar)
             THROW Error.NullArgumentError(__FUNCTION__, nameof(cIVar),2)
         ENDIF
+        // VFP Empty and XPP DataObject
+        IF oObject IS IDynamicProperties VAR oDynamic
+            RETURN oDynamic:NoIvarGet(cIVar)
+        ENDIF
 		t := oObject:GetType()
         TRY
 		    VAR propInfo := FindProperty(t, cIVar, TRUE, lSelf)
@@ -667,6 +671,11 @@ INTERNAL STATIC CLASS OOPHelpers
         ENDIF
         IF String.IsNullOrEmpty(cIVar)
             THROW Error.NullArgumentError(__FUNCTION__, nameof(cIVar),2)
+        ENDIF
+        // VFP Empty and XPP DataObject
+        IF oObject IS IDynamicProperties VAR oDynamic
+            oDynamic:NoIvarPut(cIVar, oValue)
+            RETURN
         ENDIF
 		t := oObject:GetType()
         TRY
@@ -714,7 +723,6 @@ INTERNAL STATIC CLASS OOPHelpers
         ENDIF
         RETURN NULL
 
-
     STATIC METHOD AddOverLoads(t AS System.Type, cMethod AS STRING, ml AS IList<MethodInfo>) AS LOGIC
         IF !overloadCache:ContainsKey(t)
             overloadCache:Add(t, Dictionary<STRING, IList<MethodInfo> >{StringComparer.OrdinalIgnoreCase})
@@ -725,8 +733,6 @@ INTERNAL STATIC CLASS OOPHelpers
         ENDIF
         type:Add(cMethod, ml)
         RETURN TRUE
-
-
 
 	STATIC METHOD SendHelper(oObject AS OBJECT, cMethod AS STRING, uArgs AS USUAL[], result OUT USUAL) AS LOGIC
 		LOCAL t := oObject?:GetType() AS Type
@@ -1107,6 +1113,14 @@ FUNCTION IVarGetSelf(oObject AS OBJECT,symInstanceVar AS STRING) AS USUAL
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/ivarlist/*" />
 FUNCTION IvarList(oObject AS OBJECT) AS ARRAY
     // IVarList already checks for NULL_OBJECT
+    IF oObject IS IDynamicProperties var oDynamic
+        var props := oDynamic:GetPropertyNames()
+        var result := {}
+        FOREACH var prop in props
+            result:Add(prop:ToUpper())
+        NEXT
+        RETURN result
+    ENDIF
     RETURN OOPHelpers.IVarList(oObject?:GetType())
 	
 	

@@ -101,11 +101,11 @@
   </topicref>
   <topicref type="topic" id="423886812341331" build="ALL" modified="2019-06-14T18:30:32.542Z" icon="0" href="XSharp">
     <caption translate="true">X# Documentation</caption>
+    <topicref type="topic" id="423888143662582" build="ALL" modified="2016-05-04T10:32:31.762Z" icon="0" href="VersionHistory">
+      <caption translate="true">Version History</caption>
+    </topicref>
     <topicref type="topic" id="423889533736020" build="ALL" modified="2016-01-30T22:08:40.876Z" icon="0" href="Introduction">
       <caption translate="true">Getting Started with X#</caption>
-      <topicref type="topic" id="423888143662582" build="ALL" modified="2016-05-04T10:32:31.762Z" icon="0" href="VersionHistory">
-        <caption translate="true">Version History</caption>
-      </topicref>
       <topicref type="topic" id="425165252463386" build="ALL" modified="2016-05-26T08:37:03.149Z" icon="0" href="Dialects">
         <caption translate="true">Dialects</caption>
         <topicref type="topic" id="437985041510088" build="ALL" modified="2019-12-13T11:25:48.582Z" icon="0" href="dialect_Core">
@@ -626,8 +626,14 @@
           <topicref type="topic" id="423890644701462" build="ALL" modified="2016-01-19T20:54:30.895Z" icon="0" href="ARRAY">
             <caption translate="true">ARRAY</caption>
           </topicref>
+          <topicref type="topic" id="440703829294760" build="ALL" modified="2020-08-27T12:29:19.963Z" icon="0" href="BINARY">
+            <caption translate="true">BINARY</caption>
+          </topicref>
           <topicref type="topic" id="423887355411409" build="ALL" modified="2016-01-19T20:57:24.371Z" icon="0" href="CODEBLOCK">
             <caption translate="true">CODEBLOCK</caption>
+          </topicref>
+          <topicref type="topic" id="440705985838876" build="ALL" modified="2020-08-27T12:29:12.095Z" icon="0" href="CURRENCY">
+            <caption translate="true">CURRENCY</caption>
           </topicref>
           <topicref type="topic" id="423888896117478" build="ALL" modified="2016-01-19T20:54:30.948Z" icon="0" href="DATE">
             <caption translate="true">DATE</caption>
@@ -680,6 +686,9 @@
         </topicref>
         <topicref type="topic" id="438724356265916" build="ALL" modified="2020-02-11T08:51:51.838Z" icon="0" href="Escape-codes">
           <caption translate="true">Escape codes</caption>
+        </topicref>
+        <topicref type="topic" id="440706093225582" build="ALL" modified="2020-08-27T12:45:04.182Z" icon="0" href="Binary-Literals">
+          <caption translate="true">Binary Literals</caption>
         </topicref>
       </topicref>
       <topicref type="topic" id="436906885634999" build="ALL" modified="2019-10-15T13:52:53.332Z" icon="0" href="Commands-by-Category">

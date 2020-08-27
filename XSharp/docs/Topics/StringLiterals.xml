@@ -2,6 +2,10 @@
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
 <topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>String Literals</title>
+  <keywords>
+    <keyword>Literals</keyword>
+    <keyword>String Literals</keyword>
+  </keywords>
   <body>
     <header>
       <para styleclass="Heading1">String Literals</para>

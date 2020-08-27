@@ -3,7 +3,9 @@
 <topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>Null Literals</title>
   <keywords>
+    <keyword>Literals</keyword>
     <keyword>NULL</keyword>
+    <keyword>Null Literals</keyword>
     <keyword>NULL_ARRAY</keyword>
     <keyword>NULL_CODEBLOCK</keyword>
     <keyword>NULL_DATE</keyword>
@@ -143,14 +145,6 @@
         </td>
       </tr>
     </table></para>
-    <para styleclass="Body Text"></para>
-    <para styleclass="Body Text"></para>
-    <para styleclass="Body Text"></para>
-    <para styleclass="Body Text"></para>
-    <para styleclass="Body Text"></para>
-    <para styleclass="Body Text"></para>
-    <para styleclass="Body Text"></para>
-    <para styleclass="Body Text"></para>
     <para styleclass="Body Text"></para>
   </body>
 </topic>

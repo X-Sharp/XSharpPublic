@@ -2,6 +2,22 @@
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
 <topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>Escape codes</title>
+  <keywords>
+    <keyword>\&apos;</keyword>
+    <keyword>\&quot;</keyword>
+    <keyword>\\</keyword>
+    <keyword>\0</keyword>
+    <keyword>\a</keyword>
+    <keyword>\b</keyword>
+    <keyword>\f</keyword>
+    <keyword>\n</keyword>
+    <keyword>\r</keyword>
+    <keyword>\t</keyword>
+    <keyword>\u</keyword>
+    <keyword>\v</keyword>
+    <keyword>\x</keyword>
+    <keyword>Escape codes</keyword>
+  </keywords>
   <body>
     <header>
       <para styleclass="Heading1">Escape codes</para>

@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
-<?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
-<topic template="Default" status="Complete" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>xBase Specific Types</title>
   <keywords>
     <keyword>SYMBOL</keyword>
@@ -9,7 +9,7 @@
     <header>
       <para styleclass="Heading1">xBase Specific Types</para>
     </header>
-    <para styleclass="Normal"><table styleclass="Default" rowcount="8" colcount="2">
+    <para styleclass="Normal"><table styleclass="Default" rowcount="10" colcount="2">
       <thead style="vertical-align:top">
         <td style="vertical-align:top;">
           <para styleclass="Normal"><text style="font-weight:bold;">Type</text></para>
@@ -27,7 +27,21 @@
       </tr>
       <tr style="vertical-align:top">
         <td style="vertical-align:top;">
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="BINARY">BINARY</link></para>
+        </td>
+        <td style="vertical-align:top;">
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="vertical-align:top;">
           <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="CODEBLOCK">CODEBLOCK</link></para>
+        </td>
+        <td style="vertical-align:top;">
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="vertical-align:top;">
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="CURRENCY">CURRENCY</link></para>
         </td>
         <td style="vertical-align:top;">
         </td>

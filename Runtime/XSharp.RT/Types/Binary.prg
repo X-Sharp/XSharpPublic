@@ -22,24 +22,28 @@ BEGIN NAMESPACE XSharp
         IEquatable<__Binary>, ;
         IComparable
     
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)];
         PRIVATE INITONLY _value AS BYTE[]
-        
+
         #region constructors
         /// <include file="RTComments.xml" path="Comments/Constructor/*" />
         /// <param name="b">Byte[] value that has the bytes that define the binary</param>
         [DebuggerStepThroughAttribute] [MethodImpl(MethodImplOptions.AggressiveInlining)];        
         CONSTRUCTOR (b as Byte[])
             IF b == NULL
-                VAR err			 := Error{ArgumentException{}}
-                err:Gencode		 := Gencode.EG_ARG
-                err:ArgNum		 := 1
-                err:FuncSym		 := "Binary.ctor"
-                err:Description  := "Argument cannot be null"
-                err:Args         := <OBJECT> {b}
-                THROW err
+                THROW NullError()
             ENDIF
             SELF:_value    := b
-            
+
+        PRIVATE STATIC METHOD NullError() as Error
+            VAR err			 := Error{ArgumentException{}}
+            err:Gencode		 := Gencode.EG_ARG
+            err:ArgNum		 := 1
+            err:FuncSym		 := "Binary.ctor"
+            err:Description  := "Argument cannot be null"
+            err:Args         := <OBJECT> {NULL}
+            return err
+
         PRIVATE CONSTRUCTOR( lhs as byte[], rhs as byte[]) 
             var len := lhs:Length + rhs:Length
             var result := byte[]{len}
@@ -52,7 +56,7 @@ BEGIN NAMESPACE XSharp
         #region Properties
         /// <summary>REAL8 (System.Double) value</summary>
         PROPERTY @@Value    AS Byte[]	GET _value
-        PROPERTY Length as LONG GET @@Value:Length
+        PROPERTY Length     AS LONG GET iif(_value == NULL, 0, _value:Length)
         #endregion
         
         #region Equality Operators
@@ -71,7 +75,7 @@ BEGIN NAMESPACE XSharp
             IF SELF:Length != rhs:Length
                 RETURN FALSE
             ENDIF
-            FOR VAR i := 0 to SELF:Length
+            FOR VAR i := 0 to SELF:Length-1
                 IF SELF:Value[i] != rhs:Value[i]
                     RETURN FALSE
                 ENDIF
@@ -100,47 +104,47 @@ BEGIN NAMESPACE XSharp
         /// <include file="RTComments.xml" path="Comments/Operator/*" />
         OPERATOR >(lhs AS __Binary, rhs AS __Binary) AS LOGIC
             var len := Math.Min(lhs:Length,rhs:Length)
-            FOR VAR i := 0 to len-1
-                IF lhs:Value[i] > rhs:Value[i]
-                    RETURN TRUE
-                ELSEIF lhs:Value[i] < rhs:Value[i]
-                    RETURN FALSE
-                ENDIF
-            NEXT
-            RETURN FALSE
+            var res := RuntimeState.StringCompare(lhs:Value, rhs:Value, len)
+            if res > 0
+                return TRUE
+            elseif res < 0
+                return FALSE
+            endif
+            RETURN lhs:Length > rhs:Length
             
             
             /// <include file="RTComments.xml" path="Comments/Operator/*" />
         OPERATOR <(lhs AS __Binary, rhs AS __Binary) AS LOGIC
             var len := Math.Min(lhs:Length,rhs:Length)
-            FOR VAR i := 0 to len-1
-                IF lhs:Value[i] < rhs:Value[i]
-                    RETURN TRUE
-                ELSEIF lhs:Value[i] > rhs:Value[i]
-                    RETURN FALSE
-                ENDIF
-            NEXT
-            RETURN FALSE
+            var res := RuntimeState.StringCompare(lhs:Value, rhs:Value, len)
+            if res < 0
+                return TRUE
+            elseif res > 0
+                return FALSE
+            endif
+            RETURN lhs:Length < rhs:Length
             
             /// <include file="RTComments.xml" path="Comments/Operator/*" />
         OPERATOR >=(lhs AS __Binary, rhs AS __Binary) AS LOGIC
-            var len := Math.Min(lhs:Value:Length,rhs:Value:Length)
-            FOR VAR i := 0 to len-1
-                IF lhs:Value[i] < rhs:Value[i]
-                    RETURN FALSE
-                ENDIF
-            NEXT
-            RETURN TRUE
+            var len := Math.Min(lhs:Length,rhs:Length)
+            var res := RuntimeState.StringCompare(lhs:Value, rhs:Value, len)
+            if res > 0
+                return TRUE
+            elseif res < 0
+                return FALSE
+            endif
+            RETURN lhs:Length >= rhs:Length
             
             /// <include file="RTComments.xml" path="Comments/Operator/*" />
         OPERATOR <=(lhs AS __Binary, rhs AS __Binary) AS LOGIC
-            var len := Math.Min(lhs:Value:Length,rhs:Value:Length)
-            FOR VAR i := 0 to len-1
-                IF lhs:Value[i] > rhs:Value[i]
-                    RETURN FALSE
-                ENDIF
-            NEXT
-            RETURN FALSE
+            var len := Math.Min(lhs:Length,rhs:Length)
+            var res := RuntimeState.StringCompare(lhs:Value, rhs:Value, len)
+            if res < 0
+                return TRUE
+            elseif res > 0
+                return FALSE
+            endif
+            RETURN lhs:Length <= rhs:Length
             
             #endregion
             
@@ -158,12 +162,11 @@ BEGIN NAMESPACE XSharp
 
         [DebuggerStepThroughAttribute];
         STATIC OPERATOR IMPLICIT(bytes AS __Binary) AS STRING
-            var sb := StringBuilder{}
-            foreach var b in bytes:Value
-                sb:Append(Chr(b))
-            next
-            return sb:ToString()
+            RETURN RuntimeState.WinEncoding:GetString(bytes:Value)
 
+        [DebuggerStepThroughAttribute];
+        STATIC OPERATOR IMPLICIT(s AS STRING) AS __Binary
+            RETURN __Binary{ RuntimeState.WinEncoding:GetBytes(s) }
 
             #endregion
             

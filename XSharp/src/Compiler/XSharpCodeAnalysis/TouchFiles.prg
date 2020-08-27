@@ -15,7 +15,7 @@ FUNCTION start (args AS STRING[]) AS VOID
 		IF System.IO.File.Exists(args[i])
 			TRY
 				var dtfile :=System.IO.File.GetLastWriteTime(args[i])
-				if dtfile < dt
+				if dtfile != dt
 					if first
 						Console.WriteLine("Copy timestamp from "+args[1]+" to" )
 						first := false

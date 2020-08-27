@@ -2762,7 +2762,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 name += "$" + entity.ShortName;
             }
-            name += UniqueNameSuffix;
+            name += UniqueNameSuffix(context);
             if (context.ArgList == null || context.ArgList?._Args.Count < 1)
             {
                 context.Put(GenerateLiteral(0).WithAdditionalDiagnostics(
@@ -2876,7 +2876,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             if (String.IsNullOrEmpty(fieldname))
             {
-                fieldname = "_$psz_" + UniqueNameSuffix;
+                fieldname = "_$psz_" + UniqueNameSuffix(context);
                 // create field declarator with inline assignment
                 // INTERNAL STATIC INITONLY _psz := Psz{"value"} AS __PSZ
                 var init = _syntaxFactory.EqualsValueClause(SyntaxFactory.MakeToken(SyntaxKind.EqualsToken), expr);

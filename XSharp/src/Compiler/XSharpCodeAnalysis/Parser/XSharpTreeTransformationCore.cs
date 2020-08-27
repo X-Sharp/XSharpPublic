@@ -141,7 +141,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
        
 
         #region Fields
-        private static int _unique = 0;
         protected static object gate = new object();
 
         protected string GlobalClassName = XSharpSpecialNames.FunctionsClass;
@@ -728,9 +727,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         }
 
 
-        internal string UniqueNameSuffix
+        internal string UniqueNameSuffix(XSharpParserRuleContext context)
         {
-            get { return "$" + _unique++; }
+            var prefix = _fileName == null ? "XX" : System.IO.Path.GetFileNameWithoutExtension(_fileName);
+            var token = context != null ? context.Start : new XSharpToken(XP.WS) { Line = 42, Column = 42, StartIndex = 42*42 };
+            return "$" + prefix+"_"+token.StartIndex.ToString()+"_"+ token.Line.ToString()+"_"+ token.Column.ToString(); 
         }
 
         internal T FixPosition<T>(T r, IToken t) where T : XSharpParserRuleContext
@@ -5519,7 +5520,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             // this function creates the array, initializes it and returns it.
             // StringArrayInit has no return type because it can handle arrays of different dimensions
             // 
-            var funcname = "$StringArrayInit" + UniqueNameSuffix;
+            var funcname = "$StringArrayInit" + UniqueNameSuffix(sub);
             var stmts = _pool.Allocate<StatementSyntax>();
             StatementSyntax stmt = GenerateLocalDecl(XSharpSpecialNames.ArrayName, arrayType, dims);
             stmt.XNode = sub.Parent as XSharpParserRuleContext;
@@ -5612,7 +5613,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             if (isStatic)
             {
-                staticName = XSharpSpecialNames.StaticLocalFieldNamePrefix + CurrentEntity.ShortName+"$"+context.Id.Get<SyntaxToken>().Text + UniqueNameSuffix;
+                staticName = XSharpSpecialNames.StaticLocalFieldNamePrefix + CurrentEntity.ShortName+"$"+context.Id.Get<SyntaxToken>().Text + UniqueNameSuffix(context);
                 if (initExpr == null)
                 {
                 	// no filtering on InitLocals here. That is done inside GenerateInitializer
@@ -5954,7 +5955,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         public override void EnterWithBlock([NotNull] XP.WithBlockContext context)
         {
-            context.VarName = XSharpSpecialNames.WithVarName+ UniqueNameSuffix;
+            context.VarName = XSharpSpecialNames.WithVarName+ UniqueNameSuffix(context);
         }
 
         public override void ExitWithBlock([NotNull] XP.WithBlockContext context)

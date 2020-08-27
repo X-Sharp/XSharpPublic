@@ -31,7 +31,7 @@ FUNCTION Start() AS INT
 	#ifdef GUI
 	aTests:Add("C386")
 	aTests:Add("C541")
-	aTests:Add("C705")
+	aTests:Add("R705")
 	#else
 	// they use Environment.CurrentDirectory, which does not work under tthe automated tests. Need to find a better way
 	aTests:Remove("C418")

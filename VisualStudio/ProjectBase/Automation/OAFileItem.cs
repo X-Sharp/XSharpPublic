@@ -50,8 +50,9 @@ namespace Microsoft.VisualStudio.Project.Automation
             get
             {
                 bool isDirty = false;
-                UIThread.DoOnUIThread(delegate()
+                ThreadHelper.JoinableTaskFactory.Run(async delegate
                 {
+                    await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
                     CheckProjectIsValid();
 
                     using (AutomationScope scope = new AutomationScope(this.Node.ProjectMgr.Site))
@@ -76,8 +77,9 @@ namespace Microsoft.VisualStudio.Project.Automation
         {
             get
             {
-                return (EnvDTE.Document) UIThread.DoOnUIThread(delegate()
+                return ThreadHelper.JoinableTaskFactory.Run(async delegate
                 {
+                    await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
                     CheckProjectIsValid();
 
                     EnvDTE.Document document = null;
@@ -117,8 +119,9 @@ namespace Microsoft.VisualStudio.Project.Automation
         /// <returns>Window object</returns>
         public override EnvDTE.Window Open(string viewKind)
         {
-            return (EnvDTE.Window) UIThread.DoOnUIThread(delegate()
+            return ThreadHelper.JoinableTaskFactory.Run(async delegate
             {
+                await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
                 CheckProjectIsValid();
 
                 IVsWindowFrame windowFrame = null;
@@ -213,9 +216,10 @@ namespace Microsoft.VisualStudio.Project.Automation
         public override bool get_IsOpen(string viewKind)
         {
             bool isOpen = false;
-            UIThread.DoOnUIThread(delegate()
+            ThreadHelper.JoinableTaskFactory.Run(async delegate
             {
-            	CheckProjectIsValid();
+                await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+                CheckProjectIsValid();
 
                 // Validate input params
                 Guid logicalViewGuid = VSConstants.LOGVIEWID_Primary;
@@ -255,8 +259,9 @@ namespace Microsoft.VisualStudio.Project.Automation
         {
             get
             {
-                return (ProjectItems) UIThread.DoOnUIThread(delegate()
+                return ThreadHelper.JoinableTaskFactory.Run(async delegate
                 {
+                    await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
                     if (this.Project.Project.CanFileNodesHaveChilds)
                         return new OAProjectItems(this.Project, this.Node);
                     else
@@ -276,9 +281,10 @@ namespace Microsoft.VisualStudio.Project.Automation
         /// <param name="fileName">The name of the project file.</param>
         private void DoSave(bool isCalledFromSaveAs, string fileName)
         {
-            UIThread.DoOnUIThread(delegate()
+            ThreadHelper.JoinableTaskFactory.Run(async delegate
             {
-            	Utilities.ArgumentNotNull("fileName", fileName);
+                await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+                Utilities.ArgumentNotNull("fileName", fileName);
 
             	CheckProjectIsValid();
                 using (AutomationScope scope = new AutomationScope(this.Node.ProjectMgr.Site))

@@ -84,9 +84,6 @@ namespace Microsoft.VisualStudio.Project
                     {
                         solutionListener.Dispose();
                     }
-
-                    // Dispose the UIThread singleton.
-                    UIThread.Instance.Dispose();
                 }
             }
             finally

@@ -20,6 +20,7 @@ using System.Security.Permissions;
 using System.Windows.Forms;
 using Microsoft.VisualStudio.Designer.Interfaces;
 using Microsoft.VisualStudio.OLE.Interop;
+using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 
 namespace Microsoft.VisualStudio.Project
@@ -95,8 +96,13 @@ namespace Microsoft.VisualStudio.Project
                 if(this.dirty != value)
                 {
                     this.dirty = value;
-                    if(this.site != null)
-                        site.OnStatusChange((uint)(this.dirty ? PropPageStatus.Dirty : PropPageStatus.Clean));
+                    ThreadHelper.JoinableTaskFactory.Run(async delegate
+                    {
+                        await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+
+                        if (this.site != null)
+                            site.OnStatusChange((uint)(this.dirty ? PropPageStatus.Dirty : PropPageStatus.Clean));
+                    });
                 }
             }
         }
@@ -409,30 +415,33 @@ namespace Microsoft.VisualStudio.Project
                     }
 
                     Dictionary<string, ProjectConfig> configsMap = new Dictionary<string, ProjectConfig>();
-
-                    for(int i = 0; i < count; i++)
+                    ThreadHelper.JoinableTaskFactory.Run(async delegate
                     {
-                        NodeProperties property = (NodeProperties)punk[i];
-                        IVsCfgProvider provider;
-                        ErrorHandler.ThrowOnFailure(property.Node.ProjectMgr.GetCfgProvider(out provider));
-                        uint[] expected = new uint[1];
-                        ErrorHandler.ThrowOnFailure(provider.GetCfgs(0, null, expected, null));
-                        if(expected[0] > 0)
-                        {
-                            ProjectConfig[] configs = new ProjectConfig[expected[0]];
-                            uint[] actual = new uint[1];
-                            provider.GetCfgs(expected[0], configs, actual, null);
+                        await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
 
-                            foreach(ProjectConfig config in configs)
+                        for (int i = 0; i < count; i++)
+                        {
+                            NodeProperties property = (NodeProperties)punk[i];
+                            IVsCfgProvider provider;
+                            ErrorHandler.ThrowOnFailure(property.Node.ProjectMgr.GetCfgProvider(out provider));
+                            uint[] expected = new uint[1];
+                            ErrorHandler.ThrowOnFailure(provider.GetCfgs(0, null, expected, null));
+                            if (expected[0] > 0)
                             {
-                                if(!configsMap.ContainsKey(config.ConfigName))
+                                ProjectConfig[] configs = new ProjectConfig[expected[0]];
+                                uint[] actual = new uint[1];
+                                provider.GetCfgs(expected[0], configs, actual, null);
+
+                                foreach (ProjectConfig config in configs)
                                 {
-                                    configsMap.Add(config.ConfigName, config);
+                                    if (!configsMap.ContainsKey(config.ConfigName))
+                                    {
+                                        configsMap.Add(config.ConfigName, config);
+                                    }
                                 }
                             }
                         }
-                    }
-
+                    });
                     if(configsMap.Count > 0)
                     {
                         if(this.projectConfigs == null)

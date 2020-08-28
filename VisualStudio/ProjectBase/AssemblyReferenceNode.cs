@@ -53,7 +53,7 @@ namespace Microsoft.VisualStudio.Project
             get { return assemblyPath; }
             set
             {
-                if (! String.IsNullOrEmpty(assemblyPath))
+                if (!String.IsNullOrEmpty(assemblyPath))
                 {
                     this.fileChangeListener.StopObservingItem(this.assemblyPath);
                 }
@@ -95,7 +95,7 @@ namespace Microsoft.VisualStudio.Project
         {
             get
             {
-                if(null == assemblyRef)
+                if (null == assemblyRef)
                 {
                     assemblyRef = new Automation.OAAssemblyReference(this);
                 }
@@ -131,11 +131,11 @@ namespace Microsoft.VisualStudio.Project
             : base(root)
         {
             // Validate the input parameters.
-            if(null == root)
+            if (null == root)
             {
                 throw new ArgumentNullException("root");
             }
-			if (string.IsNullOrEmpty(assemblyPath))
+            if (string.IsNullOrEmpty(assemblyPath))
             {
                 throw new ArgumentNullException("assemblyPath");
             }
@@ -143,7 +143,7 @@ namespace Microsoft.VisualStudio.Project
             this.InitializeFileChangeEvents();
 
             // The assemblyPath variable can be an actual path on disk or a generic assembly name.
-            if(File.Exists(assemblyPath))
+            if (File.Exists(assemblyPath))
             {
                 // The assemblyPath parameter is an actual file on disk; try to load it.
                 this.assemblyName = System.Reflection.AssemblyName.GetAssemblyName(assemblyPath);
@@ -176,6 +176,7 @@ namespace Microsoft.VisualStudio.Project
             }
             finally
             {
+                ThreadHelper.ThrowIfNotOnUIThread();
                 base.Close();
             }
 
@@ -188,12 +189,11 @@ namespace Microsoft.VisualStudio.Project
         protected override void BindReferenceData()
         {
             Debug.Assert(this.assemblyName != null, "The AssemblyName field has not been initialized");
-            new UIThread().MustBeCalledFromUIThread();
 
             // If the item has not been set correctly like in case of a new reference added it now.
             // The constructor for the AssemblyReference node will create a default project item. In that case the Item is null.
             // We need to specify here the correct project element.
-            if(this.ItemNode == null || this.ItemNode.Item == null)
+            if (this.ItemNode == null || this.ItemNode.Item == null)
             {
                 this.ItemNode = new ProjectElement(this.ProjectMgr, this.assemblyName.FullName, ProjectFileConstants.Reference);
             }
@@ -208,7 +208,7 @@ namespace Microsoft.VisualStudio.Project
             {
                 this.ItemNode.SetMetadata(ProjectFileConstants.AssemblyName, null);
             }
-			this.ItemNode.SetMetadata(ProjectFileConstants.SpecificVersion, "False");
+            this.ItemNode.SetMetadata(ProjectFileConstants.SpecificVersion, "False");
 
             this.SetReferenceProperties();
         }
@@ -219,7 +219,7 @@ namespace Microsoft.VisualStudio.Project
         /// <param name="disposing"></param>
         protected override void Dispose(bool disposing)
         {
-            if(this.isDisposed)
+            if (this.isDisposed)
             {
                 return;
             }
@@ -247,17 +247,17 @@ namespace Microsoft.VisualStudio.Project
             // Use MsBuild to resolve the assembly name
             this.ResolveAssemblyReference();
 
-            if(String.IsNullOrEmpty(this.assemblyPath) && (null != this.ItemNode.Item))
+            if (String.IsNullOrEmpty(this.assemblyPath) && (null != this.ItemNode.Item))
             {
                 // Try to get the assembly name from the hint path.
                 this.GetPathNameFromProjectFile();
-                if(this.assemblyPath == null)
+                if (this.assemblyPath == null)
                 {
                     // Try to get the assembly name from the path
                     this.assemblyName = System.Reflection.AssemblyName.GetAssemblyName(this.assemblyPath);
                 }
             }
-            if(null == resolvedAssemblyName)
+            if (null == resolvedAssemblyName)
             {
                 resolvedAssemblyName = assemblyName;
             }
@@ -272,15 +272,15 @@ namespace Microsoft.VisualStudio.Project
         {
             ReferenceContainerNode referencesFolder = this.ProjectMgr.FindChild(ReferenceContainerNode.ReferencesNodeVirtualName) as ReferenceContainerNode;
             Debug.Assert(referencesFolder != null, "Could not find the References node");
-			bool shouldCheckPath = !string.IsNullOrEmpty(this.Url);
+            bool shouldCheckPath = !string.IsNullOrEmpty(this.Url);
 
-            for(HierarchyNode n = referencesFolder.FirstChild; n != null; n = n.NextSibling)
+            for (HierarchyNode n = referencesFolder.FirstChild; n != null; n = n.NextSibling)
             {
                 AssemblyReferenceNode assemblyReferenceNode = n as AssemblyReferenceNode;
-                if(null != assemblyReferenceNode)
+                if (null != assemblyReferenceNode)
                 {
                     // We will check if the full assembly names are the same or if the Url of the assemblies is the same.
-                    if(String.Compare(assemblyReferenceNode.AssemblyName.FullName, this.assemblyName.FullName, StringComparison.OrdinalIgnoreCase) == 0 ||
+                    if (String.Compare(assemblyReferenceNode.AssemblyName.FullName, this.assemblyName.FullName, StringComparison.OrdinalIgnoreCase) == 0 ||
                         (shouldCheckPath && NativeMethods.IsSamePath(assemblyReferenceNode.Url, this.Url)))
                     {
                         existingReference = assemblyReferenceNode;
@@ -299,7 +299,7 @@ namespace Microsoft.VisualStudio.Project
         /// <returns></returns>
         protected override bool CanShowDefaultIcon()
         {
-            if(String.IsNullOrEmpty(this.assemblyPath) || !File.Exists(this.assemblyPath))
+            if (String.IsNullOrEmpty(this.assemblyPath) || !File.Exists(this.assemblyPath))
             {
                 return false;
             }
@@ -310,14 +310,14 @@ namespace Microsoft.VisualStudio.Project
         private void GetPathNameFromProjectFile()
         {
             string result = this.ItemNode.GetMetadata(ProjectFileConstants.HintPath);
-            if(String.IsNullOrEmpty(result))
+            if (String.IsNullOrEmpty(result))
             {
                 result = this.ItemNode.GetMetadata(ProjectFileConstants.AssemblyName);
-                if(String.IsNullOrEmpty(result))
+                if (String.IsNullOrEmpty(result))
                 {
                     this.assemblyPath = String.Empty;
                 }
-                else if(!result.EndsWith(".dll", StringComparison.OrdinalIgnoreCase))
+                else if (!result.EndsWith(".dll", StringComparison.OrdinalIgnoreCase))
                 {
                     result += ".dll";
                     this.assemblyPath = result;
@@ -336,7 +336,7 @@ namespace Microsoft.VisualStudio.Project
 
         private string GetFullPathFromPath(string path)
         {
-            if(Path.IsPathRooted(path))
+            if (Path.IsPathRooted(path))
             {
                 if (File.Exists(path))
                     return path;
@@ -350,7 +350,7 @@ namespace Microsoft.VisualStudio.Project
             {
                 Uri uri = new Uri(this.ProjectMgr.BaseURI.Uri, path);
 
-                if(uri != null )
+                if (uri != null)
                 {
                     string sPath = Microsoft.VisualStudio.Shell.Url.Unescape(uri.LocalPath, true);
                     if (File.Exists(sPath))
@@ -359,7 +359,7 @@ namespace Microsoft.VisualStudio.Project
                     {
                         this.ItemNode.SetMetadata(ProjectFileConstants.HintPath, null);
                         return String.Empty;
-                        }
+                    }
                 }
             }
 
@@ -374,7 +374,7 @@ namespace Microsoft.VisualStudio.Project
 
 
         internal protected virtual void SetHintPathAndPrivateValue(ProjectInstance instance)
-		{
+        {
 
             // Private means local copy; we want to know if it is already set to not override the default
             string privateValue = this.ItemNode.GetMetadata(ProjectFileConstants.Private);
@@ -420,19 +420,18 @@ namespace Microsoft.VisualStudio.Project
 
         // no loggers
         internal static bool BuildInstance(ProjectNode projectNode, ProjectInstance instance, string target)
-		{
-			BuildSubmission submission = projectNode.DoMSBuildSubmission(BuildKind.Sync, target, ref instance, null);
+        {
+            BuildSubmission submission = projectNode.DoMSBuildSubmission(BuildKind.Sync, target, ref instance, null);
             if (submission == null)
                 return false;
-			return (submission.BuildResult.OverallResult == BuildResultCode.Success);
-		}
+            return (submission.BuildResult.OverallResult == BuildResultCode.Success);
+        }
 
         /// <summary>
         /// This function ensures that some properties of the reference are set.
         /// </summary>
 		private void SetReferenceProperties()
-		{
-            new UIThread().MustBeCalledFromUIThread();
+        {
             // Set a default HintPath for msbuild to be able to resolve the reference.
             this.ItemNode.SetMetadata(ProjectFileConstants.HintPath, this.assemblyPath);
 
@@ -445,28 +444,28 @@ namespace Microsoft.VisualStudio.Project
             }
 
             var instance = this.ProjectMgr.ProjectInstance;
-			bool buildResultIsOk = BuildInstance(this.ProjectMgr, instance, MsBuildTarget.ResolveAssemblyReferences);
-			if (!buildResultIsOk)
-			{
-				return;
-			}
+            bool buildResultIsOk = BuildInstance(this.ProjectMgr, instance, MsBuildTarget.ResolveAssemblyReferences);
+            if (!buildResultIsOk)
+            {
+                return;
+            }
 
-			// Check if we have to resolve again the path to the assembly.
-			if (String.IsNullOrEmpty(this.assemblyPath))
-			{
-				ResolveReference();
-			}
+            // Check if we have to resolve again the path to the assembly.
+            if (String.IsNullOrEmpty(this.assemblyPath))
+            {
+                ResolveReference();
+            }
 
-			// Make sure that the hint path if set (if needed).
-			SetHintPathAndPrivateValue(instance);
-		}
+            // Make sure that the hint path if set (if needed).
+            SetHintPathAndPrivateValue(instance);
+        }
 
         /// <summary>
         /// Does the actual job of resolving an assembly reference. We need a private method that does not violate
         /// calling virtual method from the constructor.
         /// </summary>
         internal virtual void ResolveAssemblyReference()
-		{
+        {
             if (this.ProjectMgr == null || this.ProjectMgr.IsClosed)
             {
                 return;
@@ -549,7 +548,8 @@ namespace Microsoft.VisualStudio.Project
         private void OnAssemblyReferenceChangedOnDisk(object sender, FileChangedOnDiskEventArgs e)
         {
             Debug.Assert(e != null, "No event args specified for the FileChangedOnDisk event");
-            if (e == null) {
+            if (e == null)
+            {
                 return;
             }
 
@@ -560,16 +560,16 @@ namespace Microsoft.VisualStudio.Project
             //}
 
 
-            if(NativeMethods.IsSamePath(e.FileName, this.assemblyPath))
+            if (NativeMethods.IsSamePath(e.FileName, this.assemblyPath))
             {
                 this.OnInvalidateItems(this.Parent);
             }
         }
 
-		protected override Guid GetBrowseLibraryGuid()
-		{
-			return VSConstants.guidCOMPLUSLibrary;
-		}
+        protected override Guid GetBrowseLibraryGuid()
+        {
+            return VSConstants.guidCOMPLUSLibrary;
+        }
 
         #endregion
     }

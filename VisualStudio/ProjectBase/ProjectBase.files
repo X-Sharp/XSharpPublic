@@ -36,11 +36,7 @@
       <Link>ProjectBase\DesignTimeAssemblyResolution.cs</Link>
       <Visible>true</Visible>
     </Compile>
-    <Compile Include="$(ProjectBasePath)UIThread.cs">
-      <Link>ProjectBase\UIThread.cs</Link>
-      <Visible>true</Visible>
-    </Compile>
-
+    
     <Compile Include="$(ProjectBasePath)AssemblyReferenceNode.cs">
       <Link>ProjectBase\AssemblyReferenceNode.cs</Link>
       <Visible>true</Visible>

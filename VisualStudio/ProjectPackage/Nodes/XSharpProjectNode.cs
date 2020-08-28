@@ -1264,49 +1264,57 @@ namespace XSharp.Project
 
         private static IList<EnvDTE.Project> GetSolutionFolderProjects(EnvDTE.Project solutionFolder)
         {
-            List<EnvDTE.Project> list = new List<EnvDTE.Project>();
-            for (var i = 1; i <= solutionFolder.ProjectItems.Count; i++)
+            return ThreadHelper.JoinableTaskFactory.Run(async delegate
             {
-                var subProject = solutionFolder.ProjectItems.Item(i).SubProject;
-                if (subProject == null)
+                await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+                List<EnvDTE.Project> list = new List<EnvDTE.Project>();
+                for (var i = 1; i <= solutionFolder.ProjectItems.Count; i++)
                 {
-                    continue;
-                }
+                    var subProject = solutionFolder.ProjectItems.Item(i).SubProject;
+                    if (subProject == null)
+                    {
+                        continue;
+                    }
 
-                // If this is another solution folder, do a recursive call, otherwise add
-                if (subProject.Kind == EnvDTE80.ProjectKinds.vsProjectKindSolutionFolder)
-                {
-                    list.AddRange(GetSolutionFolderProjects(subProject));
+                    // If this is another solution folder, do a recursive call, otherwise add
+                    if (subProject.Kind == EnvDTE80.ProjectKinds.vsProjectKindSolutionFolder)
+                    {
+                        list.AddRange(GetSolutionFolderProjects(subProject));
+                    }
+                    else
+                    {
+                        list.Add(subProject);
+                    }
                 }
-                else
-                {
-                    list.Add(subProject);
-                }
-            }
-            return list;
+                return list;
+            });
         }
 
         private List<EnvDTE.Project> GetSolutionProjects()
         {
             List<EnvDTE.Project> list = new List<EnvDTE.Project>();
-            EnvDTE.DTE dte = (EnvDTE.DTE)this.Site.GetService(typeof(EnvDTE.DTE));
-            Assumes.Present(dte);
-            foreach (EnvDTE.Project p in dte.Solution.Projects)
+            EnvDTE.DTE dte = null;
+            ThreadHelper.JoinableTaskFactory.Run(async delegate
             {
-                if (p == null || p.Properties == null) // unloaded ?
+                await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+                dte = (EnvDTE.DTE)this.Site.GetService(typeof(EnvDTE.DTE));
+                foreach (EnvDTE.Project p in dte.Solution.Projects)
                 {
-                    continue;
-                }
+                    if (p == null || p.Properties == null) // unloaded ?
+                    {
+                        continue;
+                    }
 
-                if (p.Kind == EnvDTE80.ProjectKinds.vsProjectKindSolutionFolder)
-                {
-                    list.AddRange(GetSolutionFolderProjects(p));
+                    if (p.Kind == EnvDTE80.ProjectKinds.vsProjectKindSolutionFolder)
+                    {
+                        list.AddRange(GetSolutionFolderProjects(p));
+                    }
+                    else
+                    {
+                        list.Add(p);
+                    }
                 }
-                else
-                {
-                    list.Add(p);
-                }
-            }
+            });
             return list;
         }
         public EnvDTE.Project FindProject(string sProject)
@@ -1455,7 +1463,11 @@ namespace XSharp.Project
             getStatusBar();
             if (statusBar != null)
             {
-                UIThread.DoOnUIThread( () => statusBar.SetText(msg));
+                ThreadHelper.JoinableTaskFactory.Run(async delegate
+                {
+                await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+                statusBar.SetText(msg);
+            });
             }
 
 
@@ -1479,7 +1491,11 @@ namespace XSharp.Project
                 getStatusBar();
                 if (statusBar != null)
                 {
-                    UIThread.DoOnUIThread( () => statusBar.Animation(onoff ? 1 : 0, idAnimation));
+                    ThreadHelper.JoinableTaskFactory.Run(async delegate
+                    {
+                        await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+                        statusBar.Animation(onoff ? 1 : 0, idAnimation);
+                    });
                 }
             }
             catch //(Exception e)
@@ -1709,10 +1725,17 @@ namespace XSharp.Project
         }
         public int GetDefaultGenerator(string wszFilename, out string pbstrGenProgID)
         {
-            pbstrGenProgID = String.Empty;
-            if (createIVsSingleFileGeneratorFactory())
-                return factory.GetDefaultGenerator(wszFilename, out pbstrGenProgID);
-            return VSConstants.S_FALSE;
+            string temp = String.Empty; ;
+            int result = VSConstants.S_FALSE;
+            ThreadHelper.JoinableTaskFactory.Run(async delegate
+            {
+                await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+                
+                if (createIVsSingleFileGeneratorFactory())
+                    result = factory.GetDefaultGenerator(wszFilename, out temp);
+            });
+            pbstrGenProgID = temp;
+            return result;
         }
 
         public int CreateGeneratorInstance(string wszProgId, out int pbGeneratesDesignTimeSource, out int pbGeneratesSharedDesignTimeSource, out int pbUseTempPEFlag, out IVsSingleFileGenerator ppGenerate)

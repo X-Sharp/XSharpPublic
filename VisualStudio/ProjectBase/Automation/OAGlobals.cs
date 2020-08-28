@@ -3,6 +3,7 @@ using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Collections.Generic;
 using System.Xml;
+using Microsoft.VisualStudio.Shell;
 
 namespace Microsoft.VisualStudio.Project.Automation
 {
@@ -120,7 +121,11 @@ namespace Microsoft.VisualStudio.Project.Automation
         {
             get 
             {
-                return (EnvDTE.DTE)this._parent.Site.GetService(typeof(EnvDTE.DTE));
+                return ThreadHelper.JoinableTaskFactory.Run(async delegate
+                {
+                    await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+                    return (EnvDTE.DTE)this._parent.Site.GetService(typeof(EnvDTE.DTE));
+                });
             }
         }
 

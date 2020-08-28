@@ -13,6 +13,7 @@ using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.InteropServices;
 using EnvDTE;
+using Microsoft.VisualStudio.Shell;
 using VSLangProj;
 
 namespace Microsoft.VisualStudio.Project.Automation
@@ -49,7 +50,14 @@ namespace Microsoft.VisualStudio.Project.Automation
 
         public virtual DTE DTE
         {
-            get { return (DTE)this.fileNode.ProjectMgr.Site.GetService(typeof(DTE)); }
+            get
+            {
+                return ThreadHelper.JoinableTaskFactory.Run(async delegate
+                {
+                    await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+                    return (DTE)this.fileNode.ProjectMgr.Site.GetService(typeof(DTE));
+                });
+            }
         }
 
         public virtual void RunCustomTool()

@@ -9,6 +9,7 @@
  *
  * ***************************************************************************/
 
+using Microsoft.VisualStudio.Shell;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -102,10 +103,11 @@ namespace Microsoft.VisualStudio.Project.Automation
             get
             {
                 int count = 0;
-                UIThread.DoOnUIThread(delegate ()
-               {
-                   count = items.Count;
-               });
+                ThreadHelper.JoinableTaskFactory.Run(async delegate
+                {
+                    await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+                    count = items.Count;
+                });
                 return count;
             }
         }
@@ -140,7 +142,11 @@ namespace Microsoft.VisualStudio.Project.Automation
         {
             get
             {
-                return (EnvDTE.DTE)this.project.DTE;
+                return ThreadHelper.JoinableTaskFactory.Run(async delegate
+                {
+                    await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+                    return (EnvDTE.DTE)this.project.DTE;
+                });
             }
         }
 
@@ -207,17 +213,17 @@ namespace Microsoft.VisualStudio.Project.Automation
             throw new NotImplementedException();
         }
 
-		/// <summary>
-		/// Adds a project item which is a link to a file outside the project directory structure.
-		/// </summary>
-		/// <param name="fileName">The file to be linked to the project.</param>
-		/// <returns>A ProjectItem object.</returns>
-		public virtual EnvDTE.ProjectItem AddFileLink(string fileName)
-		{
-			throw new NotImplementedException();
-		}
+        /// <summary>
+        /// Adds a project item which is a link to a file outside the project directory structure.
+        /// </summary>
+        /// <param name="fileName">The file to be linked to the project.</param>
+        /// <returns>A ProjectItem object.</returns>
+        public virtual EnvDTE.ProjectItem AddFileLink(string fileName)
+        {
+            throw new NotImplementedException();
+        }
 
-		/// <summary>
+        /// <summary>
         /// Get Project Item from index
         /// </summary>
         /// <param name="index">Either index by number (1-based) or by name can be used to get the item</param>
@@ -225,27 +231,31 @@ namespace Microsoft.VisualStudio.Project.Automation
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1800:DoNotCastUnnecessarily")]
         public virtual EnvDTE.ProjectItem Item(object index)
         {
-            if(index is int)
+            return ThreadHelper.JoinableTaskFactory.Run(async delegate
             {
-                int realIndex = (int)index - 1;
-                if(realIndex >= 0 && realIndex < this.items.Count)
+                await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+                if (index is int)
                 {
-                    return (EnvDTE.ProjectItem)items[realIndex];
-                }
-                return null;
-            }
-            else if(index is string)
-            {
-                string name = (string)index;
-                foreach(EnvDTE.ProjectItem item in items)
-                {
-                    if(String.Compare(item.Name, name, StringComparison.OrdinalIgnoreCase) == 0)
+                    int realIndex = (int)index - 1;
+                    if (realIndex >= 0 && realIndex < this.items.Count)
                     {
-                        return item;
+                        return (EnvDTE.ProjectItem)items[realIndex];
+                    }
+                    return null;
+                }
+                else if (index is string)
+                {
+                    string name = (string)index;
+                    foreach (EnvDTE.ProjectItem item in items)
+                    {
+                        if (String.Compare(item.Name, name, StringComparison.OrdinalIgnoreCase) == 0)
+                        {
+                            return item;
+                        }
                     }
                 }
-            }
-            return null;
+                return null;
+            });
         }
 
         /// <summary>
@@ -254,13 +264,13 @@ namespace Microsoft.VisualStudio.Project.Automation
         /// <returns>An IEnumerator for this object.</returns>
         public virtual IEnumerator GetEnumerator()
         {
-            if(this.items == null)
+            if (this.items == null)
             {
                 yield return null;
             }
 
             int count = items.Count;
-            for(int i = 0; i < count; i++)
+            for (int i = 0; i < count; i++)
             {
                 yield return items[i];
             }
@@ -275,20 +285,21 @@ namespace Microsoft.VisualStudio.Project.Automation
         /// <returns>A List of project items</returns>
         protected IList<EnvDTE.ProjectItem> GetListOfProjectItems()
         {
-            return (IList<EnvDTE.ProjectItem>) UIThread.DoOnUIThread(delegate()
-            {
-                List<EnvDTE.ProjectItem> list = new List<EnvDTE.ProjectItem>();
-                for (HierarchyNode child = this.NodeWithItems.FirstChild; child != null; child = child.NextSibling)
+            return ThreadHelper.JoinableTaskFactory.Run(async delegate
                 {
-                    EnvDTE.ProjectItem item = child.GetAutomationObject() as EnvDTE.ProjectItem;
-                    if (null != item)
+                    await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+                    List<EnvDTE.ProjectItem> list = new List<EnvDTE.ProjectItem>();
+                    for (HierarchyNode child = this.NodeWithItems.FirstChild; child != null; child = child.NextSibling)
                     {
-                        list.Add(item);
+                        EnvDTE.ProjectItem item = child.GetAutomationObject() as EnvDTE.ProjectItem;
+                        if (null != item)
+                        {
+                            list.Add(item);
+                        }
                     }
-                }
 
-                return list;
-            });
+                    return list;
+                });
         }
         #endregion
     }

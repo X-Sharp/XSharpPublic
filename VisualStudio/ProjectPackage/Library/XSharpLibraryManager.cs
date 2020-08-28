@@ -150,9 +150,11 @@ namespace XSharp.Project
         {
             get
             {
-                IVsRunningDocumentTable rdt = null;
-                UIThread.DoOnUIThread(() => rdt = (IVsRunningDocumentTable)provider.GetService(typeof(SVsRunningDocumentTable)));
-                return rdt;
+                return ThreadHelper.JoinableTaskFactory.Run(async delegate
+                {
+                    await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+                    return (IVsRunningDocumentTable)provider.GetService(typeof(SVsRunningDocumentTable));
+                });
             }
         }
         private void RegisterForRDTEvents()

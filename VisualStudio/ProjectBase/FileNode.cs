@@ -1218,7 +1218,7 @@ namespace Microsoft.VisualStudio.Project
         {
             //Update the include for this item.
             string include = this.ItemNode.Item.UnevaluatedInclude;
-            if(String.Compare(include, newFileName, StringComparison.OrdinalIgnoreCase) == 0)
+            if (String.Compare(include, newFileName, StringComparison.OrdinalIgnoreCase) == 0)
             {
                 this.ItemNode.Item.Xml.Include = newFileName;
             }
@@ -1236,21 +1236,23 @@ namespace Microsoft.VisualStudio.Project
             // Refresh the property browser.
             IVsUIShell shell = this.ProjectMgr.Site.GetService(typeof(SVsUIShell)) as IVsUIShell;
             Debug.Assert(shell != null, "Could not get the ui shell from the project");
-            if(shell == null)
+            if (shell == null)
             {
                 throw new InvalidOperationException();
             }
-
-            shell.RefreshPropertyBrowser(0);
-
-            //Select the new node in the hierarchy
-            IVsUIHierarchyWindow uiWindow = UIHierarchyUtilities.GetUIHierarchyWindow(this.ProjectMgr.Site, SolutionExplorer);
-            // This happens in the context of renaming a file by case only (Table.sql -> table.sql)
-            // Since we are already in solution explorer, it is extremely unlikely that we get a null return.
-            if (uiWindow != null)
+            ThreadHelper.JoinableTaskFactory.Run(async delegate
             {
-            	uiWindow.ExpandItem(this.ProjectMgr, this.ID, EXPANDFLAGS.EXPF_SelectItem);
-            }
+                await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+                shell.RefreshPropertyBrowser(0);
+                //Select the new node in the hierarchy
+                IVsUIHierarchyWindow uiWindow = UIHierarchyUtilities.GetUIHierarchyWindow(this.ProjectMgr.Site, SolutionExplorer);
+                // This happens in the context of renaming a file by case only (Table.sql -> table.sql)
+                // Since we are already in solution explorer, it is extremely unlikely that we get a null return.
+                if (uiWindow != null)
+                {
+                    uiWindow.ExpandItem(this.ProjectMgr, this.ID, EXPANDFLAGS.EXPF_SelectItem);
+                }
+            });
         }
 
         #endregion

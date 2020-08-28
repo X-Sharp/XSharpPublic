@@ -16,6 +16,7 @@ using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Shell.Interop;
 using IOleServiceProvider = Microsoft.VisualStudio.OLE.Interop.IServiceProvider;
 using XSharp.Project;
+using Microsoft.VisualStudio.Shell;
 
 namespace Microsoft.VisualStudio.Project
 {
@@ -245,35 +246,36 @@ namespace Microsoft.VisualStudio.Project
                 {
                     ErrorHandler.ThrowOnFailure(result);
                 }
-
-                if(windowFrame != null)
-                {
-                    object var;
-
-                    if(newFile)
+              
+                    if (windowFrame != null)
                     {
-                        ErrorHandler.ThrowOnFailure(windowFrame.GetProperty((int)__VSFPROPID.VSFPROPID_DocData, out var));
-                        IVsPersistDocData persistDocData = (IVsPersistDocData)var;
-                        ErrorHandler.ThrowOnFailure(persistDocData.SetUntitledDocPath(fullPath));
-                    }
+                        object var;
 
-                    var = null;
-                    ErrorHandler.ThrowOnFailure(windowFrame.GetProperty((int)__VSFPROPID.VSFPROPID_DocCookie, out var));
-                    this.Node.DocCookie = (uint)(int)var;
+                        if (newFile)
+                        {
+                            ErrorHandler.ThrowOnFailure(windowFrame.GetProperty((int)__VSFPROPID.VSFPROPID_DocData, out var));
+                            IVsPersistDocData persistDocData = (IVsPersistDocData)var;
+                            ErrorHandler.ThrowOnFailure(persistDocData.SetUntitledDocPath(fullPath));
+                        }
 
-                    if(windowFrameAction == WindowFrameShowAction.Show)
-                    {
-                        ErrorHandler.ThrowOnFailure(windowFrame.Show());
+                        var = null;
+                        ErrorHandler.ThrowOnFailure(windowFrame.GetProperty((int)__VSFPROPID.VSFPROPID_DocCookie, out var));
+                        this.Node.DocCookie = (uint)(int)var;
+
+                        if (windowFrameAction == WindowFrameShowAction.Show)
+                        {
+                            ErrorHandler.ThrowOnFailure(windowFrame.Show());
+                        }
+                        else if (windowFrameAction == WindowFrameShowAction.ShowNoActivate)
+                        {
+                            ErrorHandler.ThrowOnFailure(windowFrame.ShowNoActivate());
+                        }
+                        else if (windowFrameAction == WindowFrameShowAction.Hide)
+                        {
+                            ErrorHandler.ThrowOnFailure(windowFrame.Hide());
+                        }
                     }
-                    else if(windowFrameAction == WindowFrameShowAction.ShowNoActivate)
-                    {
-                        ErrorHandler.ThrowOnFailure(windowFrame.ShowNoActivate());
-                    }
-                    else if(windowFrameAction == WindowFrameShowAction.Hide)
-                    {
-                        ErrorHandler.ThrowOnFailure(windowFrame.Hide());
-                    }
-                }
+              
             }
             catch(COMException e)
             {

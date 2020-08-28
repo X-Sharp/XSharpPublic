@@ -37,9 +37,6 @@ namespace XSharp.Project
             _context = context;
         }
 
-        public XSharpProjectSelector()
-        {
-        }
 
         public async Task InitializeAsync(IAsyncServiceProvider asyncServiceProvider)
         {

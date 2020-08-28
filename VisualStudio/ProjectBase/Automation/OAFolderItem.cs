@@ -13,7 +13,9 @@
 using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.InteropServices;
+using System.Threading.Tasks;
 using EnvDTE;
+using Microsoft.VisualStudio.Shell;
 
 namespace Microsoft.VisualStudio.Project.Automation
 {
@@ -37,8 +39,9 @@ namespace Microsoft.VisualStudio.Project.Automation
         {
             get
             {
-                return (ProjectItems) UIThread.DoOnUIThread(delegate()
+                return ThreadHelper.JoinableTaskFactory.Run(async delegate
                 {
+                    await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
                     ProjectItems items = new OAProjectItems(this.Project, this.Node);
                     return items;
                 });

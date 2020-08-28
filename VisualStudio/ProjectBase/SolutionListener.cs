@@ -12,6 +12,7 @@
 using System;
 using System.Diagnostics;
 using Microsoft.VisualStudio;
+using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using IServiceProvider = System.IServiceProvider;
 using ShellConstants = Microsoft.VisualStudio.Shell.Interop.Constants;
@@ -41,9 +42,10 @@ namespace Microsoft.VisualStudio.Project
             {
                 throw new ArgumentNullException("serviceProviderParameter");
             }
-            UIThread.DoOnUIThread(() =>
-              {
-                  this.serviceProvider = serviceProviderParameter;
+            ThreadHelper.JoinableTaskFactory.Run(async delegate
+            {
+                await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+                this.serviceProvider = serviceProviderParameter;
                   this.solution = this.serviceProvider.GetService(typeof(SVsSolution)) as IVsSolution;
               });
             if (this.solution == null)

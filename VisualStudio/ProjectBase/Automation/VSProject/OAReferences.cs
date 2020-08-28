@@ -14,6 +14,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.InteropServices;
+using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using VSLangProj;
 using ErrorHandler = Microsoft.VisualStudio.ErrorHandler;
@@ -160,7 +161,11 @@ namespace Microsoft.VisualStudio.Project.Automation
         {
             get
             {
-                return _project.Site.GetService(typeof(EnvDTE.DTE)) as EnvDTE.DTE;
+                return ThreadHelper.JoinableTaskFactory.Run(async delegate
+                {
+                    await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+                    return _project.Site.GetService(typeof(EnvDTE.DTE)) as EnvDTE.DTE;
+                });
             }
         }
 
@@ -331,16 +336,16 @@ namespace Microsoft.VisualStudio.Project.Automation
         #region IEventSource<_dispReferencesEvents> Members
         void IEventSource<_dispReferencesEvents>.OnSinkAdded(_dispReferencesEvents sink)
         {
-            ReferenceAdded += new _dispReferencesEvents_ReferenceAddedEventHandler(sink.ReferenceAdded);
-            ReferenceChanged += new _dispReferencesEvents_ReferenceChangedEventHandler(sink.ReferenceChanged);
-            ReferenceRemoved += new _dispReferencesEvents_ReferenceRemovedEventHandler(sink.ReferenceRemoved);
+            ReferenceAdded += sink.ReferenceAdded;
+            ReferenceChanged += sink.ReferenceChanged;
+            ReferenceRemoved += sink.ReferenceRemoved;
         }
 
         void IEventSource<_dispReferencesEvents>.OnSinkRemoved(_dispReferencesEvents sink)
         {
-            ReferenceAdded -= new _dispReferencesEvents_ReferenceAddedEventHandler(sink.ReferenceAdded);
-            ReferenceChanged -= new _dispReferencesEvents_ReferenceChangedEventHandler(sink.ReferenceChanged);
-            ReferenceRemoved -= new _dispReferencesEvents_ReferenceRemovedEventHandler(sink.ReferenceRemoved);
+            ReferenceAdded -= sink.ReferenceAdded;
+            ReferenceChanged -= sink.ReferenceChanged;
+            ReferenceRemoved -= sink.ReferenceRemoved;
         }
         #endregion
     }

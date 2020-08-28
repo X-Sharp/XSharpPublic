@@ -510,9 +510,13 @@ namespace XSharp.Project
         {
             get
             {
-                IVsRunningDocumentTable rdt = null;
-                UIThread.DoOnUIThread( ()=> rdt = (IVsRunningDocumentTable) this.ProjectMgr.GetService(typeof(SVsRunningDocumentTable)) );
-                return rdt;
+                return ThreadHelper.JoinableTaskFactory.Run(async delegate
+                {
+                    await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+                    var rdt = (IVsRunningDocumentTable)this.ProjectMgr.GetService(typeof(SVsRunningDocumentTable));
+                    return rdt;
+                });
+                
             }
         }
 
@@ -545,8 +549,11 @@ namespace XSharp.Project
                         Guid iid = VSConstants.IID_IUnknown;
                         cookie = 0;
                         docInRdt = false;
-                        ILocalRegistry localReg = null;
-                        UIThread.DoOnUIThread( () => localReg = (ILocalRegistry) this.ProjectMgr.GetService(typeof(SLocalRegistry)) );
+                        ILocalRegistry localReg = ThreadHelper.JoinableTaskFactory.Run(async delegate
+                        {
+                            await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+                            return (ILocalRegistry)this.ProjectMgr.GetService(typeof(SLocalRegistry));
+                        });
                         ErrorHandler.ThrowOnFailure(localReg.CreateInstance(CLSID_VsTextBuffer, null, ref iid, (uint)CLSCTX.CLSCTX_INPROC_SERVER, out docData));
                     }
 

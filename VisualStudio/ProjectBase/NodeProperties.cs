@@ -1045,9 +1045,10 @@ namespace Microsoft.VisualStudio.Project
             }
             set
             {
-               UIThread.DoOnUIThread(() =>
-               {
-                   this.Node.SetEditLabel(value);
+                ThreadHelper.JoinableTaskFactory.Run(async delegate
+                {
+                    await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+                    this.Node.SetEditLabel(value);
                    this.Node.ReDraw(UIHierarchyElement.Caption);
                });
             }
@@ -1064,9 +1065,10 @@ namespace Microsoft.VisualStudio.Project
             }
             set
             {
-                UIThread.DoOnUIThread(() =>
-                 {
-                     this.Node.SetEditLabel(value);
+                ThreadHelper.JoinableTaskFactory.Run(async delegate
+                {
+                    await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+                    this.Node.SetEditLabel(value);
                      this.Node.ReDraw(UIHierarchyElement.Caption);
                      });
             }

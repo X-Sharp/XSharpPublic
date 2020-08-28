@@ -156,7 +156,6 @@ namespace XSharp.Project
     [ProvideMenuResource("Menus.ctmenu", 1)]
     public sealed class XSharpProjectPackage : AsyncProjectPackage, IOleComponent,IVsDebuggerEvents
     {
-        private UIThread _uiThread;
         private uint m_componentID;
         private static XSharpProjectPackage instance;
         private XPackageSettings settings;
@@ -171,7 +170,6 @@ namespace XSharp.Project
         // Properties
         // =========================================================================================
 
-        internal UIThread UIThread => _uiThread;
         internal ITaskList TaskList => _taskList;
         internal IErrorList ErrorList => _errorList;
 
@@ -185,10 +183,11 @@ namespace XSharp.Project
 
         public  void OpenInBrowser(string url)
         {
-            UIThread.DoOnUIThread(() =>
+            ThreadHelper.JoinableTaskFactory.Run(async delegate
             {
+                await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
 
-                IVsWebBrowsingService service = GetService(typeof(SVsWebBrowsingService)) as IVsWebBrowsingService;
+                IVsWebBrowsingService service = await GetServiceAsync(typeof(SVsWebBrowsingService)) as IVsWebBrowsingService;
                 if (service != null)
                 {
                     IVsWindowFrame frame = null;
@@ -209,16 +208,15 @@ namespace XSharp.Project
             // Suspend walking until Solution is opened.
             base.SolutionListeners.Add(new ModelScannerEvents(this));
             await base.InitializeAsync(cancellationToken, progress);
-            await JoinableTaskFactory.SwitchToMainThreadAsync();
-            var projectSelector = new XSharpProjectSelector();
-
+            var projectSelector = new XSharpProjectSelector(ThreadHelper.JoinableTaskContext);
             _projectSelector = (IVsRegisterProjectSelector)await GetServiceAsync(typeof(SVsRegisterProjectTypes));
 
             Guid selectorGuid = new Guid(XSharpConstants.ProjectSelectorGuid);
+            await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+
             _projectSelector.RegisterProjectSelector(ref selectorGuid, projectSelector, out _cookie);
 
-            initUITHread();
-             XSharpProjectPackage.instance = this;
+                XSharpProjectPackage.instance = this;
              this.RegisterProjectFactory(new XSharpProjectFactory(this));
              this.settings = new XPackageSettings(this);
              //validateVulcanEditors();
@@ -247,6 +245,8 @@ namespace XSharp.Project
                                               (uint)_OLECADVF.olecadvfRedrawOff |
                                               (uint)_OLECADVF.olecadvfWarningsOff;
                 crinfo[0].uIdleTimeInterval = 1000;
+                await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+
                 int hr = mgr.FRegisterComponent(this, crinfo, out m_componentID);
             }
             // Initialize Custom Menu Items
@@ -258,15 +258,8 @@ namespace XSharp.Project
             container.AddService(typeof(IXSharpLibraryManager), callback, true);
             this._documentWatcher = new XSharpDocumentWatcher(this);
             _errorList = await GetServiceAsync(typeof(SVsErrorList)) as IErrorList;
-            if (_errorList == null)
-            {
-
-            }
             _taskList = await GetServiceAsync(typeof(SVsTaskList)) as ITaskList;
             if (_taskList == null)
-            {
-
-            }
 
             // register our output
             XSettings.DisplayException = DisplayException;
@@ -276,11 +269,6 @@ namespace XSharp.Project
         }
 
         //internal static string VsVersion;
-        void initUITHread()
-        {
-            if (_uiThread == null)
-            _uiThread = new UIThread();
-        }
         private object CreateLibraryService(IServiceContainer container, Type serviceType)
         {
             if (typeof(IXSharpLibraryManager) == serviceType)
@@ -295,7 +283,11 @@ namespace XSharp.Project
         {
             try
             {
-                UIThread.DoOnUIThread(() => this.UnRegisterDebuggerEvents());
+                ThreadHelper.JoinableTaskFactory.Run(async delegate
+                {
+                await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+                this.UnRegisterDebuggerEvents();
+            });
                 if (null != _libraryManager)
                 {
                     _libraryManager.Dispose();
@@ -304,7 +296,11 @@ namespace XSharp.Project
             }
             finally
             {
-                UIThread.DoOnUIThread(() => base.Dispose(disposing));
+                ThreadHelper.JoinableTaskFactory.Run(async delegate
+                {
+                    await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+                    base.Dispose(disposing);
+                });
 
             }
         }
@@ -365,7 +361,11 @@ namespace XSharp.Project
         protected override  object GetService(Type serviceType)
         {
             object result= null;
-            UIThread.DoOnUIThread( ()=> result = MyGetService(serviceType));
+            ThreadHelper.JoinableTaskFactory.Run(async delegate
+            {
+                await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+                result = MyGetService(serviceType);
+            });
             return result;
         }
         private object MyGetService(Type serviceType)
@@ -447,8 +447,6 @@ namespace XSharp.Project
 
         public void Terminate()
         {
-            initUITHread();
-            _uiThread.MustBeCalledFromUIThread();
         }
 
         #endregion
@@ -460,29 +458,34 @@ namespace XSharp.Project
         private void RegisterDebuggerEvents()
         {
             int hr;
-            initUITHread();
-            _uiThread.MustBeCalledFromUIThread();
-            m_debugger = this.GetService(typeof(SVsShellDebugger)) as IVsDebugger;
-            if (m_debugger != null)
+            ThreadHelper.JoinableTaskFactory.Run(async delegate
             {
-                hr = m_debugger.AdviseDebuggerEvents(this, out m_Debuggercookie);
-                Microsoft.VisualStudio.ErrorHandler.ThrowOnFailure(hr);
-                // Get initial value
-                hr = m_debugger.GetMode(modeArray);
-
-            }
+                m_debugger = await this.GetServiceAsync(typeof(SVsShellDebugger)) as IVsDebugger;
+                if (m_debugger != null)
+                {
+                    await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+                    hr = m_debugger.AdviseDebuggerEvents(this, out m_Debuggercookie);
+                    Microsoft.VisualStudio.ErrorHandler.ThrowOnFailure(hr);
+                    // Get initial value
+                    hr = m_debugger.GetMode(modeArray);
+                }
+            });
         }
         private void UnRegisterDebuggerEvents()
         {
             int hr;
-            _uiThread.MustBeCalledFromUIThread();
             if (m_debugger != null)
             {
                 if (m_Debuggercookie != 0)
                 {
-                    hr = m_debugger.UnadviseDebuggerEvents(m_Debuggercookie);
-                    Microsoft.VisualStudio.ErrorHandler.ThrowOnFailure(hr);
-                    m_Debuggercookie = 0;
+                    ThreadHelper.JoinableTaskFactory.Run(async delegate
+                    {
+                        await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+
+                        hr = m_debugger.UnadviseDebuggerEvents(m_Debuggercookie);
+                        Microsoft.VisualStudio.ErrorHandler.ThrowOnFailure(hr);
+                        m_Debuggercookie = 0;
+                    });
                 }
                 m_debugger = null;
             }

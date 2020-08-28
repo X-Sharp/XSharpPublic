@@ -1224,8 +1224,9 @@ namespace Microsoft.VisualStudio.Project
             Guid emptyGuid = Guid.Empty;
             int result = 0;
 
-            UIThread.DoOnUIThread(() =>
+            ThreadHelper.JoinableTaskFactory.Run(async delegate
             {
+                await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
                 ErrorHandler.ThrowOnFailure(uiShell.ShowMessageBox(
                     0,
                     ref emptyGuid,

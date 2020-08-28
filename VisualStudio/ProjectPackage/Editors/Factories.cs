@@ -58,9 +58,13 @@ namespace XSharp.Project
 
         public object GetService(Type serviceType)
         {
-            object result = null;
-            UIThread.DoOnUIThread(() => result = vsServiceProvider.GetService(serviceType));
-            return result;
+            return ThreadHelper.JoinableTaskFactory.Run(async delegate
+            {
+                await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+                object result = null;
+                result = vsServiceProvider.GetService(serviceType);
+                return result;
+            });
         }
 
         // This method is called by the Environment (inside IVsUIShellOpenDocument::

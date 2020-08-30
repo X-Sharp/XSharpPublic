@@ -158,6 +158,8 @@ PARTIAL CLASS VOFieldSpecEditor INHERIT DesignerBase
 		nPos += 4
 		TRY
 			oDesign:GetProperty("superclass"):Value := __ReadNextVNFsString(aBytes , nPos , 80)
+      CATCH
+         NOP
 		END TRY
 
 	RETURN TRUE
@@ -181,6 +183,8 @@ PARTIAL CLASS VOFieldSpecEditor INHERIT DesignerBase
 		TRY
 			oDocument:Load(cFileName)
 			lSuccess := TRUE
+      CATCH
+         NOP
 		END TRY
 		IF .not. lSuccess
 			RETURN aDesign
@@ -213,6 +217,8 @@ PARTIAL CLASS VOFieldSpecEditor INHERIT DesignerBase
 					oDesign:lModified := FALSE
 					oDesign:cVNfsFileName := cFileName
 					aDesign:Add(oDesign)
+            CATCH
+               NOP
 				END TRY
 			END IF
 			oFSNode := oFSNode:NextSibling

@@ -1,4 +1,4 @@
-﻿#using System.Collections
+#using System.Collections
 #using System.Text
 #using System.Xml
 #using System.IO
@@ -97,6 +97,8 @@ PARTIAL CLASS VOWindowEditor INHERIT WindowDesignerBase
 		TRY
 			oDocument:Load(cFileName)
 			lSuccess := TRUE
+      CATCH
+         NOP
 		END TRY
 		IF .not. lSuccess
 			RETURN FALSE
@@ -124,6 +126,8 @@ PARTIAL CLASS VOWindowEditor INHERIT WindowDesignerBase
 
 				TRY
 					lSuccess := SELF:InitializeNew(oWindowNode:Attributes:GetNamedItem("Name"):InnerText)
+            CATCH
+               NOP
 				END TRY
 				lNewWindow := TRUE
 
@@ -140,6 +144,9 @@ PARTIAL CLASS VOWindowEditor INHERIT WindowDesignerBase
 		END IF
 
 		IF lSuccess
+			IF .not. SELF:lAlreadySavedBefore
+				SELF:AutoAdjustDialogHeight()
+			END IF
 			SELF:EndAction()
 			SELF:lLoading := FALSE
 			SELF:ArrangeControlOrder()
@@ -309,6 +316,10 @@ PARTIAL CLASS VOWindowEditor INHERIT WindowDesignerBase
 						oPageNode := oPageNode:NextSibling
 					END IF
 				END DO
+			CASE cName == "SAVEDONCE"
+				IF cValue:ToUpper() == "YES"
+					SELF:lAlreadySavedBefore := TRUE
+				END IF
 			END CASE
 			oNode := oNode:NextSibling
 		END DO
@@ -423,6 +434,7 @@ PARTIAL CLASS VOWindowEditor INHERIT WindowDesignerBase
 		IF lError
 			SELF:Reset()
 		ELSE
+			SELF:AutoAdjustDialogHeight()
 			SELF:EndAction()
 			SELF:lLoading := FALSE
 			SELF:ArrangeControlOrder()
@@ -573,7 +585,7 @@ PARTIAL CLASS VOWindowEditor INHERIT WindowDesignerBase
 	RETURN
 
 	METHOD __ReadVNFrmControl(oReader AS BinaryReader) AS VOWEDItem
-		LOCAL nLeft,nRight,nTop,nBottom AS Int
+		LOCAL nLeft,nRight,nTop,nBottom AS INT
 		LOCAL nAt , nPropLength AS INT
 		LOCAL cName , cValue AS STRING
 		LOCAL cControl AS STRING
@@ -685,6 +697,30 @@ PARTIAL CLASS VOWindowEditor INHERIT WindowDesignerBase
 		ENDIF
 
 	RETURN oItem
+
+	METHOD AutoAdjustDialogHeight() AS VOID
+		LOCAL CONST nMargin := 24 AS INT
+		LOCAL nWindowBottom := SELF:oWindow:Height AS INT
+		LOCAL aDesign AS ArrayList
+	
+		IF .not. SELF:oWindowDesign:cFullClass:ToUpperInvariant():StartsWith("FORM:DIALOGWINDOW")
+			RETURN
+		ENDIF
+		LOCAL oProperty AS DesignProperty
+		oProperty := SELF:oWindowDesign:GetProperty("Caption Bar")
+		IF oProperty == NULL .or. oProperty:TextValue:ToUpperInvariant() == "NO CAPTION BAR"
+			RETURN
+		END IF
+	
+		aDesign := SELF:GetAllDesignItems(FALSE)
+		FOREACH oDesign AS DesignWindowItem IN aDesign
+			IF oDesign:Control:Bottom > nWindowBottom - nMargin
+				RETURN
+			END IF
+		NEXT
+		
+		SELF:StartAction(DesignerBasicActionType.SetProperty , ActionData{SELF:oWindowDesign:cGuid , "_Height" , nWindowBottom - nMargin})
+	RETURN
 	
 	METHOD AdjustStylesOnLoad(oItem AS VOWEDItem) AS VOID
 		// Workaround to include styles that were not being saved in builds <= 161.1
@@ -873,6 +909,9 @@ PARTIAL CLASS VOWindowEditor INHERIT WindowDesignerBase
 		LOCAL n AS INT
 		
 		oItem := oDesign:GetWedItem()
+		IF oDesign:IsForm
+			Funcs.AppendElement(oDocument , oParentNode , "SavedOnce" , TRUE)
+		END IF
 		Funcs.AppendElement(oDocument , oParentNode , "Name" , oItem:cName)
 		Funcs.AppendElement(oDocument , oParentNode , "Class" , oItem:cControl)
 		Funcs.AppendElement(oDocument , oParentNode , "Caption" , oItem:cCaption)

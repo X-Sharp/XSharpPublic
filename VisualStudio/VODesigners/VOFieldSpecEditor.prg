@@ -1084,6 +1084,8 @@ CLASS FSEDesignListViewItem INHERIT ListViewItem
 			SELF:SubItems[5]:Text := iif(cValue == "-1" , "" , cValue)
 			SELF:SubItems[6]:Text := SELF:oDesign:GetProperty("Required"):TextValue
 			SELF:SubItems[7]:Text := SELF:oDesign:GetProperty("Validation"):TextValue
+      CATCH
+         NOP
 		END TRY
 	RETURN
 END CLASS
@@ -1220,6 +1222,8 @@ CLASS FieldSpecCode
 			        ENDIF
 				ENDIF
 			END IF
+         CATCH
+            NOP
         END TRY
 		IF !System.IO.File.Exists(cCavoWed)
 			MessageBox.Show("File Cavofed.tpl was not found, please locate it on disk." , Resources.EditorName)
@@ -1235,6 +1239,8 @@ CLASS FieldSpecCode
                IF cCavoWed:Contains("cavofed") .and. cCavoWed:EndsWith(".tpl")
                   File.Copy(cCavoWed , cOrigDir + "\cavofed.tpl" , FALSE)
                ENDIF
+            CATCH
+               NOP
             END TRY
 			ELSE
 				RETURN FALSE

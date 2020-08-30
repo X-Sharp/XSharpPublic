@@ -75,6 +75,15 @@ FUNCTION SetCentury(lNewSetting AS LOGIC) AS LOGIC
     RETURN lOld
 
 
+FUNCTION SetCompatible() AS LOGIC
+	RETURN RuntimeState.Compatible
+
+FUNCTION SetCompatible(lNewSetting AS LOGIC) AS LOGIC
+	VAR lOld := RuntimeState.Compatible
+    RuntimeState.Compatible := lNewSetting
+    RETURN lOld
+
+
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/setcpu/*" />
 FUNCTION SetCpu() AS DWORD
 	GETSTATE DWORD Set.Cpu
@@ -362,6 +371,16 @@ FUNCTION SetSoftSeek(lNewSetting AS LOGIC) AS LOGIC
 	VAR lOld := RuntimeState.SoftSeek
     RuntimeState.SoftSeek := lNewSetting
     RETURN lOld
+
+FUNCTION SetSafety() AS LOGIC
+	RETURN RuntimeState.Safety
+
+FUNCTION SetSafety(lNewSetting AS LOGIC) AS LOGIC
+	VAR lOld := RuntimeState.Safety
+    RuntimeState.Safety := lNewSetting
+    RETURN lOld
+
+
 
 /// <summary>
 /// Return the setting that determines whether a space is displayed between fields or expressions when you use the ? or ?? command.

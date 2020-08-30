@@ -149,6 +149,8 @@ CLASS XSharp_VODbServerEditor INHERIT VODbServerEditor
 			TRY
 				SELF:SaveToXml(cFileName)
 				lSuccess := TRUE
+         CATCH
+            NOP
 			END TRY
 			RETURN lSuccess
 		END IF
@@ -224,6 +226,8 @@ CLASS XSharp_VODbServerEditor INHERIT VODbServerEditor
 				IF !lSrvOnly
 					SELF:nActionSaved := SELF:nAction
 				END IF
+         CATCH
+            NOP
 			END TRY
 		END IF
 		

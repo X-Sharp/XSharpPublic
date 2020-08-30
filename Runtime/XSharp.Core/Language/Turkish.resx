@@ -2611,9 +2611,6 @@
   <data name="__CAVOSTR_SYSLIB_DISK_FREE" xml:space="preserve">
     <value>Boş</value>
   </data>
-  <data name="__CAVOSTR_SYSLIB_DOS_ERROR" xml:space="preserve">
-    <value>%V1s DOS Hatası: %s</value>
-  </data>
   <data name="__CAVOSTR_SYSLIB_ENTITY" xml:space="preserve">
     <value>%V1s Entity: %s</value>
   </data>

@@ -102,6 +102,8 @@ STATIC METHOD ErrorBox(cMessage AS STRING , cCaption AS STRING) AS VOID
 			TRY
                 System.IO.File.SetAttributes(cFile, FileAttributes.Normal)
 				System.IO.File.Delete(cFile)
+         CATCH
+            NOP
 			END TRY
 		END IF
 END CLASS

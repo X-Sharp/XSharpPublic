@@ -1,4 +1,4 @@
-﻿//
+//
 // Copyright (c) XSharp B.V.  All Rights Reserved.
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
@@ -15,6 +15,22 @@ DEFINE S2F_FLAG_UTF8                = 0x0004
 DEFINE S2F_FLAG_UNICODE_BE          = 0x0008
 DEFINE S2F_FLAG_UNICODE_FORMATS     = S2F_FLAG_UNICODE_LE | S2F_FLAG_UTF8 | S2F_FLAG_UNICODE_BE
 DEFINE S2F_FLAG_UNICODE_TEXT        = 0x0100
+
+/// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/mkdir/*" />
+FUNCTION MkDir(cPath AS STRING) AS INT
+    LOCAL nRet AS INT
+    IF System.IO.Directory.Exists(cPath)
+        nRet := 6
+    ELSE
+        TRY
+            System.IO.Directory.CreateDirectory(cPath)
+            nRet := 0
+        CATCH
+            nRet := 1
+        END TRY
+    END IF
+RETURN nRet
+
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/strtofile/*" />
 FUNCTION StrToFile (cExpression AS STRING, cFileName AS STRING) AS INT

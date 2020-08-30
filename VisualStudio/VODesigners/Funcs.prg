@@ -274,6 +274,8 @@ PUBLIC STATIC PARTIAL CLASS Funcs
          cFileName := cFileName:Substring(nAt + 1)
          cModuleName := cFileName
          lOk := TRUE
+      CATCH
+         NOP
       END TRY
    RETURN lOk
 

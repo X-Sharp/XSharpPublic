@@ -147,6 +147,11 @@ BEGIN NAMESPACE XSharp.VO.Tests
 
 			u:FULLNAME := "Olympiacos"
 			Assert.Equal("Olympiacos", u:fullNAme)
+
+            U := TestClassChild{}
+            Assert.Equal(u:Name, "TestClassChild")
+            u:Name := "This class has a setter in the parent Only"
+
 		RETURN
         
         [Fact, Trait("Category", "OOP")];
@@ -499,8 +504,14 @@ END CLASS
 
 
 CLASS TestClassParent
+    VIRTUAL ACCESS Name as STRING
+        RETURN "TestClassParent"
+    VIRTUAL ASSIGN Name(cValue as STRING)
+        NOP
 END CLASS
 CLASS TestClassChild INHERIT TestClassParent
+    VIRTUAL ACCESS Name as STRING
+        RETURN "TestClassChild"
 END CLASS
 
 CLASS TestStrong

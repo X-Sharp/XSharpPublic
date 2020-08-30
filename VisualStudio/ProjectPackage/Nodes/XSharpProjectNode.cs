@@ -1645,7 +1645,7 @@ namespace XSharp.Project
             return bOk;
         }
         #region IProjectTypeHelper
-        public IXType ResolveType(string name, IReadOnlyList<string> usings)
+        public IXType ResolveExternalType(string name, IReadOnlyList<string> usings)
         {
             switch (name.ToLower())
             {
@@ -1685,24 +1685,8 @@ namespace XSharp.Project
 
         public XTypeDefinition ResolveReferencedType(string name, IReadOnlyList<string> usings)
         {
-            var model = this.ProjectModel;
-            //
-            var tmpusings = new List<string>();
-            tmpusings.AddRange(usings);
-            tmpusings.AddRange(model.ImplicitNamespaces);
-            XTypeDefinition result = model.LookupReferenced(name, tmpusings);
-            if (result != null)
-                return result;
-        
-            return result;
-        }
-        public IXType ResolveExternalType(string name, IReadOnlyList<string> usings)
-        {
-            var model = this.ProjectModel;
-            var myusings = new List<string>();
-            myusings.AddRange(usings);
-            myusings.AddUnique("System");
-            return model.FindSystemType(name, myusings);
+            // identical but may be used by others
+            return ResolveXType(name, usings);
         }
 
 
@@ -2014,11 +1998,12 @@ namespace XSharp.Project
         const string configPlatform = "$(Configuration)|$(Platform)";
         const string conditionDebug = "'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'";
         const string conditionRelease = "'$(Configuration)|$(Platform)' == 'Release|AnyCPU'";
-        const string importDefaultProps1 = @"$(MSBuildExtensionsPath)\XSharp\XSharp.Default.props";
-        const string importDefaultProps2 = @"$(XSharpProjectExtensionsPath)XSharp.Default.props";
-        const string importProps = @"XSharp.props";
-        const string importTargets = @"XSharp.targets";
-        const string importTargetsFull = @"$(MSBuildExtensionsPath)\XSharp\XSharp.targets";
+        const string XSharpMsBuildDir = @"$(XSharpMsBuildDir)";
+        const string importDefaultPropsFull = XSharpMsBuildDir+@"\XSharp.Default.props";
+        const string importDefaultPropsShort = @"XSharp.Default.props";
+        const string importPropsShort = @"XSharp.props";
+        const string importTargetsShort = @"XSharp.targets";
+        const string importTargetsFull = XSharpMsBuildDir + @"\XSharp.targets";
         const string postBuildEvent = "PostBuildEvent";
         const string preBuildEvent = "PreBuildEvent";
         const string runPostBuildEvent = "RunPostBuildEvent";
@@ -2054,6 +2039,11 @@ namespace XSharp.Project
             StringWriter backup = new StringWriter();
             BuildProject.Save(backup);
             var str = backup.ToString();
+            // do not touch SDK style projects !
+            if (str.IndexOf("<Project Sdk=",StringComparison.OrdinalIgnoreCase) > 0)
+            {
+                return VSConstants.S_OK;
+            }
             var str2 = System.Text.RegularExpressions.Regex.Replace(str, "anycpu", "AnyCPU", System.Text.RegularExpressions.RegexOptions.IgnoreCase);
             if (str2 != str)
             {
@@ -2085,20 +2075,19 @@ namespace XSharp.Project
             {
                 ok = false;
             }
-            if (ok && str.IndexOf(importDefaultProps1, StringComparison.OrdinalIgnoreCase) == -1 &&
-                str.IndexOf(importDefaultProps2, StringComparison.OrdinalIgnoreCase) == -1)
+            if (ok && str.IndexOf(importDefaultPropsFull, StringComparison.OrdinalIgnoreCase) == -1)
             {
                 ok = false;
             }
             // XSharp.Props should no longer be there
-            if (ok && str.IndexOf(importProps, StringComparison.OrdinalIgnoreCase) >= 0)
+            if (ok && str.IndexOf(importPropsShort, StringComparison.OrdinalIgnoreCase) >= 0)
             {
                 ok = false;
             }
 
             if (ok)
             {
-                int iTargets = str.IndexOf(importTargets, StringComparison.OrdinalIgnoreCase);
+                int iTargets = str.IndexOf(importTargetsShort, StringComparison.OrdinalIgnoreCase);
                 if (iTargets == -1)
                 {
                     ok = false;
@@ -2298,9 +2287,14 @@ namespace XSharp.Project
                     if (addProperty(grp, Nostandarddefs, debugNoStdDefs))
                         changed = true;
                 }
-                if (BuildProject.Xml.ToString().IndexOf("$("+XSharpProjectExtensionsPath,StringComparison.OrdinalIgnoreCase) >= 0)
+                if (BuildProject.Xml.RawXml.ToString().IndexOf("$("+XSharpProjectExtensionsPath,StringComparison.OrdinalIgnoreCase) >= 0)
                 {
-                    if (addProperty(grp, XSharpProjectExtensionsPath, @"$(MSBuildExtensionsPath)\XSharp\"))
+                    if (addProperty(grp, XSharpProjectExtensionsPath, XSharpMsBuildDir + "\\"))
+                        changed = true;
+                }
+                else
+                {
+                    if (removeProperty(grp, XSharpProjectExtensionsPath))
                         changed = true;
                 }
             }
@@ -2344,7 +2338,17 @@ namespace XSharp.Project
                 changed = true;
             }
             return changed;
-
+        }
+        private bool removeProperty(MBC.ProjectPropertyGroupElement grp, string Name)
+        {
+            bool changed = false;
+            var prop = grp.Properties.Where(p => String.Equals(p.Name, Name, StringComparison.OrdinalIgnoreCase)).FirstOrDefault();
+            if (prop != null)
+            {
+                grp.RemoveChild(prop);
+                changed = true;
+            }
+            return changed;
         }
 
         private bool addReferences()
@@ -2389,19 +2393,21 @@ namespace XSharp.Project
             foreach (var import in BuildProject.Xml.Imports)
             {
                 var prj = import.Project;
-                if (String.Equals(prj, importDefaultProps1, StringComparison.OrdinalIgnoreCase))
-                    hasImportDefaultProps = true;
-                if (String.Equals(prj, importDefaultProps2, StringComparison.OrdinalIgnoreCase))
+                if (prj.IndexOf(importDefaultPropsShort, StringComparison.OrdinalIgnoreCase) >= 0)
                 {
                     hasImportDefaultProps = true;
-                    import.Project = importDefaultProps1;
+                    if (prj != importDefaultPropsFull)
+                    {
+                        import.Project = importDefaultPropsFull;
+                        changed = true;
+                    }
                 }
-                if (prj.IndexOf(importProps, StringComparison.OrdinalIgnoreCase) >= 0)
+                if (prj.IndexOf(importPropsShort, StringComparison.OrdinalIgnoreCase) >= 0)
                 {
                     hasImportProps = true;
                     iProps = import;
                 }
-                if (prj.IndexOf(importTargets, StringComparison.OrdinalIgnoreCase) >= 0)
+                if (prj.IndexOf(importTargetsShort, StringComparison.OrdinalIgnoreCase) >= 0)
                 {
                     hasImportTargets = true;
                     iTargets = import;

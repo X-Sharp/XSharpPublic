@@ -57,6 +57,8 @@ CLASS XSharp_EditorStream INHERIT EditorStream
 					aLines:Add(oReader:ReadLine())
 				END DO
 			END IF
+      CATCH
+         NOP
 		END TRY
 
 		SELF:oXSharpEditor := XSharpBuffer.Create(aLines)

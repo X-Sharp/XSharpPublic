@@ -81,6 +81,8 @@ PARTIAL CLASS VOMenuEditor INHERIT DesignerBase
 		TRY
 			oDocument:Load(cFileName)
 			lSuccess := TRUE
+      CATCH
+         NOP
 		END TRY
 		IF .not. lSuccess
 			RETURN FALSE

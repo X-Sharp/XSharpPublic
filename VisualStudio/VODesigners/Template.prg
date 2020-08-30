@@ -74,6 +74,8 @@ STATIC CLASS VOWindowEditorTemplate
 			        ENDIF
 				ENDIF
 			END IF
+         CATCH
+            NOP
         END TRY
 		IF !System.IO.File.Exists(cCavoWed)
 			MessageBox.Show("File Cavowed.inf was not found, please locate it on disk." , Resources.EditorName)
@@ -89,6 +91,8 @@ STATIC CLASS VOWindowEditorTemplate
                IF cCavoWed:Contains("cavowed") .and. cCavoWed:EndsWith(".inf")
                   File.Copy(cCavoWed , cOrigDir + "\cavowed.inf" , FALSE)
                ENDIF
+            CATCH
+               NOP
             END TRY
 			ELSE
 				RETURN FALSE
@@ -257,6 +261,8 @@ STATIC CLASS VOWindowEditorTemplate
 							TRY
 								nAt := cRight:IndexOf(',')
 								oControl:oSize := Size{ Convert.ToInt32(cRight:Substring(0 , nAt)) , Convert.ToInt32(cRight:Substring(nAt + 1)) }
+                     CATCH
+                        NOP
 							END TRY
 						CASE cLeft == "PROPTABS"
 							aPages := oControl:aPages
@@ -437,6 +443,8 @@ STATIC CLASS VOWindowEditorTemplate
 							CASE cLeft == "GRIDY"
 								VOWindowEditorTemplate.GridY := Int32.Parse(cRight)
 							END CASE
+                  CATCH
+                     NOP
 						END TRY
 					ENDIF
 	

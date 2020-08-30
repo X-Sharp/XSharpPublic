@@ -1457,7 +1457,7 @@ DEFINE AFIELDS_AUTOINC_STEP			:=	18
 
 * UCS Transformation Format byte order marks.
 /// <exclude/>
-DEFINE ENCODE_UTF16	:=CHR(0xFF) + CHR(0xFE)
+DEFINE ENCODE_UTF16	:= e"\uFFFE"
 /// <exclude/>
 DEFINE ENCODE_UTF8		:=""
 /// <exclude/>

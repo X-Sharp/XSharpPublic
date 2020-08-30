@@ -435,6 +435,14 @@ namespace XSharp.Project
             nodeText = descText;
         }
 
+        public string NodeText
+        {
+            get
+            {
+                return nodeText != null ? nodeText : "";
+            }
+        }
+
         protected override void buildDescription(_VSOBJDESCOPTIONS flags, IVsObjectBrowserDescription3 obDescription)
         {
             obDescription.ClearDescriptionText();
@@ -490,8 +498,11 @@ namespace XSharp.Project
                 descText = member.Kind.DisplayName().ToUpper() + " ";
                 description.Add(new Tuple<string, VSOBDESCRIPTIONSECTION>(descText, VSOBDESCRIPTIONSECTION.OBDS_MISC));
                 //description.AddDescriptionText3(descText, VSOBDESCRIPTIONSECTION.OBDS_MISC, null);
-                descText = member.Name;
-                description.Add(new Tuple<string, VSOBDESCRIPTIONSECTION>(descText, VSOBDESCRIPTIONSECTION.OBDS_MISC));
+                if (member.Kind != Kind.Constructor)
+                {
+                    descText = member.Name;
+                    description.Add(new Tuple<string, VSOBDESCRIPTIONSECTION>(descText, VSOBDESCRIPTIONSECTION.OBDS_MISC));
+                }
                 //description.AddDescriptionText3(descText, VSOBDESCRIPTIONSECTION.OBDS_NAME, null);
                 // Parameters ?
                 if (this.NodeType == LibraryNodeType.Members)

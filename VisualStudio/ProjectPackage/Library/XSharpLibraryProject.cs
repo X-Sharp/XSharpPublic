@@ -73,7 +73,7 @@ namespace XSharp.Project
             result = children.Find(
                             delegate(LibraryNode nd)
                             {
-                                return ( String.Compare( nd.Name, nsName) == 0 );
+                                return ((String.Compare(nd.Name, nsName, true) == 0) && ((nd.NodeType & LibraryNode.LibraryNodeType.Namespaces) != LibraryNode.LibraryNodeType.None));
                             }
                                     );
             //

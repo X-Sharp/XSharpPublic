@@ -1015,7 +1015,10 @@ BEGIN NAMESPACE XSharpModel
          RETURN result     
          			
       STATIC METHOD GetNamespacesInFile(sFileId AS STRING) AS IList<XDbResult>
-         VAR stmt := "Select distinct Namespace from ProjectTypes where Namespace is not null and IdFile = "+sFileId
+	     RETURN GetNamespacesInFile( sFileId, FALSE )
+
+      STATIC METHOD GetNamespacesInFile(sFileId AS STRING, keepEmptyName AS LOGIC ) AS IList<XDbResult>
+		 VAR stmt := "Select distinct Namespace from ProjectTypes where Namespace is not null and IdFile = "+sFileId
          VAR result := List<XDbResult>{}
          IF IsDbOpen
             BEGIN LOCK oConn
@@ -1024,11 +1027,14 @@ BEGIN NAMESPACE XSharpModel
                      BEGIN USING VAR rdr := oCmd:ExecuteReader()
                         DO WHILE rdr:Read()
                            VAR res := XDbResult{}
-                           res:Namespace    := DbToString(rdr[0])
-                           res:TypeName     := res:Namespace
-                           IF ! String.IsNullOrEmpty(res:Namespace)
-                              result:Add(res)
-                           ENDIF
+						   IF rdr[0] != DBNull.Value
+							  res:Kind         := Kind.Namespace
+                              res:Namespace    := DbToString(rdr[0])
+                              res:TypeName     := res:Namespace							
+                              IF !String.IsNullOrEmpty(res:Namespace) .OR. keepEmptyName
+                                 result:Add(res)
+							  ENDIF
+						   ENDIF
                         ENDDO
                      END USING
                   END USING

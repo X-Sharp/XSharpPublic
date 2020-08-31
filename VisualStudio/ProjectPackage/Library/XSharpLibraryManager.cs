@@ -486,7 +486,7 @@ namespace XSharp.Project
             // Retrieve all Types
             // !!! WARNING !!! The XFile object (scope) comes from the DataBase
             // We should retrieve TypeList from the DataBase.....
-            var namespaces = XSharpModel.XDatabase.GetNamespacesInFile(scope.Id.ToString());
+            var namespaces = XSharpModel.XDatabase.GetNamespacesInFile(scope.Id.ToString(), true);
             if (namespaces == null)
                 return;
             //
@@ -494,12 +494,18 @@ namespace XSharp.Project
             // First search for NameSpaces
             foreach (XTypeDefinition xType in elements)
             {
+                
                 if (xType.Kind == Kind.Namespace)
                 {
+                    string nodeName = xType.Name;
+                    if ( String.IsNullOrEmpty(xType.Name) )
+                    {
+                        nodeName = "Default NameSpace";
+                    }
                     // Does that NameSpace already exist ?
                     // Search for the corresponding NameSpace
                     XSharpLibraryNode newNode;
-                    LibraryNode nsNode = prjNode.SearchNameSpace(xType.Name);
+                    LibraryNode nsNode = prjNode.SearchNameSpace(nodeName);
                     if (nsNode is XSharpLibraryNode)
                     {
                         newNode = (XSharpLibraryNode)nsNode;
@@ -507,7 +513,7 @@ namespace XSharp.Project
                     }
                     else
                     {
-                        newNode = new XSharpLibraryNode(xType, "", moduleId.Hierarchy, moduleId.ItemID);
+                        newNode = new XSharpLibraryNode(xType, nodeName, moduleId.Hierarchy, moduleId.ItemID);
 
                         // NameSpaces are always added to the root.
                         prjNode.AddNode(newNode);
@@ -537,7 +543,7 @@ namespace XSharp.Project
                 // Is it a kind of Type ?
                 if ((xType.Kind.IsType()))
                 {
-                    string nSpace = prjNode.DefaultNameSpace;
+                    string nSpace = "Default NameSpace"; // prjNode.DefaultNameSpace;
                     if (!String.IsNullOrEmpty(xType.Namespace))
                         nSpace = xType.Namespace;
                     // Search for the corresponding NameSpace

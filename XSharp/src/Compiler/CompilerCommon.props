@@ -3,6 +3,10 @@
 <Project ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 
   <PropertyGroup>
+    <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+  </PropertyGroup>
+
+  <PropertyGroup>
     <Platform Condition="'$(Platform)' == ''">AnyCPU</Platform>
     <PlatformTarget>AnyCPU</PlatformTarget>
     <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
@@ -26,7 +30,7 @@
     <UseRoslynAnalyzers>false</UseRoslynAnalyzers>
     <GenerateMicrosoftCodeAnalysisCommitHashAttribute>false</GenerateMicrosoftCodeAnalysisCommitHashAttribute>
     <BinariesDir>$(Solutiondir)Binaries\$(Configuration)\</BinariesDir>
-	<ZipsDir>$(Solutiondir)Binaries\Zips</ZipsDir>
+    <ZipsDir>$(Solutiondir)Binaries\Zips</ZipsDir>
     <GeneratedCompilerPath>$(Solutiondir)Binaries\$(Configuration)\Exes\csc\net46\</GeneratedCompilerPath>
     <XscToolPath>$(BinariesDir)net46\</XscToolPath>
     <EnableBaseIntermediateOutputPathMismatchWarning>false</EnableBaseIntermediateOutputPathMismatchWarning>

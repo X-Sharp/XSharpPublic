@@ -3198,6 +3198,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     foreach (XP.ParameterContext par in parameters)
                     {
                         var name = par.Id.GetText();
+                        if (name.StartsWith("@@"))
+                            name = name.Substring(2);
                         CurrentEntity.Data.AddField(name, XSharpSpecialNames.ClipperParamPrefix, par);
                     }
 

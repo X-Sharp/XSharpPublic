@@ -6097,8 +6097,28 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             context.SetSequencePoint(context.end);
             if (kw.Kind == SyntaxKind.CaseKeyword)
             {
-                labels.Add(_syntaxFactory.CaseSwitchLabel(kw, context.Const?.Get<ExpressionSyntax>(),
-                    SyntaxFactory.MakeToken(SyntaxKind.ColonToken)));
+                if (context.Const != null)
+                {
+                    labels.Add(_syntaxFactory.CaseSwitchLabel(kw, context.Const?.Get<ExpressionSyntax>(),
+                        SyntaxFactory.MakeToken(SyntaxKind.ColonToken)));
+                }
+                else
+                {
+                    VariableDesignationSyntax designation;
+                    if (context.Id.GetText() == "_")
+                        designation = _syntaxFactory.DiscardDesignation(SyntaxFactory.MakeToken(SyntaxKind.UnderscoreToken,"_"));
+                    else
+                        designation = _syntaxFactory.SingleVariableDesignation(context.Id.Get<SyntaxToken>());
+                    var type = context.DataType.Get<TypeSyntax>();
+                    var node = _syntaxFactory.DeclarationPattern(type, designation);
+                    WhenClauseSyntax whenexpr = null;
+                    if (context.whenexpr != null)
+                    {
+                        whenexpr = _syntaxFactory.WhenClause(context.W.SyntaxKeyword(), context.whenexpr.Get<ExpressionSyntax>());
+                    }
+
+                    labels.Add(_syntaxFactory.CasePatternSwitchLabel(kw, node, whenexpr, SyntaxFactory.MakeToken(SyntaxKind.ColonToken)));
+                }
             }
             else
             {

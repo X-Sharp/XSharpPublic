@@ -604,7 +604,12 @@ caseBlock           : Key=CASE Cond=expression end=eos StmtBlk=statementBlock Ne
                     ;
 
 // Note that literalValue is not enough. We also need to support members of enums
-switchBlock         : (Key=CASE Const=expression | Key=OTHERWISE) end=eos StmtBlk=statementBlock
+switchBlock         : (
+                      Key=CASE Const=expression
+                    | Key=CASE Id=identifier AS DataType=datatype (W=WHEN whenexpr=expression)? 
+                    | Key=OTHERWISE
+                    )
+                    end=eos StmtBlk=statementBlock
                     ;
 
 catchBlock          : (Id=identifier)? (AS Type=datatype)? (W=WHEN whenexpr=expression)? end=eos StmtBlk=statementBlock

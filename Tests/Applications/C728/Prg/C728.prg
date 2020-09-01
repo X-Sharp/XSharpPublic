@@ -15,11 +15,9 @@ cSubstitute = "substitute here"
 TEXT TO cText TEXTMERGE NOSHOW
 <<cSubstitute>>
 '<<cSubstitute>>'
-"<<cSubstitute>>"
+"<<cSubstitute>>" 
 ENDTEXT
-? cText
-
-//xAssert(cText == e"substitute here\r\n'substitute here'\r\n\"substitute here\"\r\n")
+xAssert(cText == e"substitute here\r\n'substitute here'\r\n\"substitute here\"\r\n")
 
 
 PROC xAssert(l AS LOGIC)

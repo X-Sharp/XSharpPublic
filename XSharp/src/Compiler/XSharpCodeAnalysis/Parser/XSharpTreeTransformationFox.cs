@@ -802,8 +802,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         }
                         break;
                     case '"':
-                        extended = true;
-                        sb.Append('\\');
                         break;
                     case '\n':
                         extended = true;

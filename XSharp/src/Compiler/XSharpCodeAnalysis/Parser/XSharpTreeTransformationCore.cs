@@ -6178,10 +6178,19 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     id,
                     SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken));
             }
+            CatchFilterClauseSyntax filter = null;
+            if (context.whenexpr != null)
+            {
+                filter = _syntaxFactory.CatchFilterClause(
+                    context.W.SyntaxKeyword(),
+                    SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
+                    context.whenexpr.Get<ExpressionSyntax>(),
+                    SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken));
+            }
 
             context.Put(_syntaxFactory.CatchClause(SyntaxFactory.MakeToken(SyntaxKind.CatchKeyword),
                 decl,
-                null, // TODO: (grammar) catch filters?
+                filter, 
                 context.StmtBlk.Get<BlockSyntax>()));
         }
 

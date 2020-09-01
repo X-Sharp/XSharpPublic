@@ -2115,6 +2115,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                     { "UNSAFE", UNSAFE},
                     { "VAR", VAR},
                     { "VOLATILE", VOLATILE},
+                    { "WHEN", WHEN},
                     { "WHERE", WHERE},
                     { "YIELD", YIELD},
                     // From FoxPro: WITH .. [END WITH]

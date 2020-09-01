@@ -607,7 +607,7 @@ caseBlock           : Key=CASE Cond=expression end=eos StmtBlk=statementBlock Ne
 switchBlock         : (Key=CASE Const=expression | Key=OTHERWISE) end=eos StmtBlk=statementBlock
                     ;
 
-catchBlock          : (Id=identifier)? (AS Type=datatype)? end=eos StmtBlk=statementBlock
+catchBlock          : (Id=identifier)? (AS Type=datatype)? (W=WHEN whenexpr=expression)? end=eos StmtBlk=statementBlock
                     ;
 
 recoverBlock        : (USING Id=identifier)? end=eos StmtBlock=statementBlock
@@ -1086,7 +1086,7 @@ keywordxs           : Token=(AUTO | CHAR | CONST |  DEFAULT | GET | IMPLEMENTS |
                     // The following did not exist in Vulcan
                     | ADD | ARGLIST | ASCENDING | ASTYPE | ASYNC | AWAIT | BY | CHECKED | DESCENDING | DYNAMIC | EQUALS | EXTERN | FIXED | FROM 
                     | GROUP | INTO | JOIN | LET | NAMEOF | OF | ON | ORDERBY | OVERRIDE |PARAMS | REMOVE 
-                    | SELECT | UNCHECKED | VAR | VOLATILE | WHERE |  BINARY | CHAR  | CURRENCY | DECIMAL | DATETIME 
+                    | SELECT | UNCHECKED | VAR | VOLATILE | WHEN | WHERE | BINARY | CHAR | CURRENCY | DECIMAL | DATETIME 
                     // Added as XS keywords to allow them to be treated as IDs
                     // the following entity keywords will be never used 'alone' and can therefore be safely defined as identifiers
                     | DELEGATE | ENUM | GLOBAL | INHERIT | STRUCTURE    

@@ -1671,9 +1671,16 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
 
                 if (refKind1 != refKind2)
                 {
-                    // '{0}' cannot define an overloaded {1} that differs only on parameter modifiers '{2}' and '{3}'
+
                     var methodKind = method1.MethodKind == MethodKind.Constructor ? MessageID.IDS_SK_CONSTRUCTOR : MessageID.IDS_SK_METHOD;
+                    // '{0}' cannot define an overloaded {1} that differs only on parameter modifiers '{2}' and '{3}'
+#if XSHARP
+                    var partype1 = method1.Parameters[i].IsParams ? "params" : refKind1.ToParameterDisplayString();
+                    var partype2 = method2.Parameters[i].IsParams ? "params" : refKind2.ToParameterDisplayString();
+                    diagnostics.Add(ErrorCode.ERR_OverloadRefKind, method1.Locations[0], this, methodKind.Localize(), partype1, partype2);
+#else
                     diagnostics.Add(ErrorCode.ERR_OverloadRefKind, method1.Locations[0], this, methodKind.Localize(), refKind1.ToParameterDisplayString(), refKind2.ToParameterDisplayString());
+#endif
 
                     return;
                 }

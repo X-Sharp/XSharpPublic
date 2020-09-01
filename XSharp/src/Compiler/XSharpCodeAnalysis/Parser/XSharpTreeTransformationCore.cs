@@ -6094,13 +6094,24 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
             var labels = _pool.Allocate<SwitchLabelSyntax>();
             var kw = context.Key.SyntaxKeyword();
+            var colon = SyntaxFactory.MakeToken(SyntaxKind.ColonToken);
             context.SetSequencePoint(context.end);
+            SwitchLabelSyntax label;
             if (kw.Kind == SyntaxKind.CaseKeyword)
             {
                 if (context.Const != null)
                 {
-                    labels.Add(_syntaxFactory.CaseSwitchLabel(kw, context.Const?.Get<ExpressionSyntax>(),
-                        SyntaxFactory.MakeToken(SyntaxKind.ColonToken)));
+                    var expr = context.Const?.Get<ExpressionSyntax>();
+                    if (context.whenexpr != null)
+                    {
+                        var whenClause = _syntaxFactory.WhenClause(context.W.SyntaxKeyword(), context.whenexpr.Get<ExpressionSyntax>());
+                        var pattern = _syntaxFactory.ConstantPattern(expr);
+                        label = _syntaxFactory.CasePatternSwitchLabel(kw, pattern, whenClause, colon);
+                    }
+                    else
+                    {
+                        label = _syntaxFactory.CaseSwitchLabel(kw, expr, colon);
+                    }
                 }
                 else
                 {
@@ -6116,14 +6127,15 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     {
                         whenexpr = _syntaxFactory.WhenClause(context.W.SyntaxKeyword(), context.whenexpr.Get<ExpressionSyntax>());
                     }
-
-                    labels.Add(_syntaxFactory.CasePatternSwitchLabel(kw, node, whenexpr, SyntaxFactory.MakeToken(SyntaxKind.ColonToken)));
+                    label = _syntaxFactory.CasePatternSwitchLabel(kw, node, whenexpr, colon);
                 }
+                labels.Add(label);
             }
             else
             {
-                labels.Add(_syntaxFactory.DefaultSwitchLabel(kw, SyntaxFactory.MakeToken(SyntaxKind.ColonToken)));
+                label = _syntaxFactory.DefaultSwitchLabel(kw, SyntaxFactory.MakeToken(SyntaxKind.ColonToken));
             }
+            labels.Add(label);
             var stmts = _pool.Allocate<StatementSyntax>();
             if (context.StmtBlk._Stmts.Count > 0)
             {

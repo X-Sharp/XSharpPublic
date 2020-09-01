@@ -46,7 +46,6 @@
     <!--<Compile Include="..\..\Common\Constants.cs">
       <Link>Properties\Constants.cs</Link>
     </Compile>-->
-
     <Compile Include="$(SharedSource)BuildClient.cs">
       <Link>BuildClient.cs</Link>
     </Compile>

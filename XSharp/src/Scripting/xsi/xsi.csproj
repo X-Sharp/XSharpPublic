@@ -30,7 +30,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Public|net46|AnyCPU'">
     <DefineConstants>DEBUG</DefineConstants>
   </PropertyGroup>
-    <ItemGroup>
+  <ItemGroup>
     <PackageReference Include="System.ValueTuple" Version="$(SystemValueTupleVersion)" />
     <PackageReference Include="Microsoft.CSharp" Version="$(MicrosoftCSharpVersion)" />
   </ItemGroup>
@@ -50,23 +50,22 @@
       <Link>Properties\CommonAssemblyInfo.cs</Link>
     </Compile>
   </ItemGroup>
-  <Target Name="DeleteCSFiles" AfterTargets="Build"  Condition="'$(TargetFramework)' != '' ">
+  <Target Name="DeleteCSFiles" AfterTargets="Build" Condition="'$(TargetFramework)' != '' ">
     <ItemGroup>
-        <FilesToDelete Include="$(OutputPath)\CS*.*"/>
-    </ItemGroup> 
-     <Delete Files="@(FilesToDelete)" />
+      <FilesToDelete Include="$(OutputPath)\CS*.*" />
+    </ItemGroup>
+    <Delete Files="@(FilesToDelete)" />
   </Target>
-  <Target Name="CopyCompilerFiles" AfterTargets="Build"  Condition="'$(TargetFramework)' != '' ">
+  <!-- Copy the files from the XSC folder into the XSI folder-->
+  <Target Name="CopyCompilerFiles" AfterTargets="Build" Condition="'$(TargetFramework)' != '' ">
     <ItemGroup>
-        <FilesToCopy Include="$(OutputPath.Replace('xsi','xsc'))X*.*"/>
-    </ItemGroup> 
-     <Copy 
-		SourceFiles="@(FilesToCopy)" 
-		DestinationFolder="$(OutputPath)"
-		/>
+      <FilesToCopy Include="$(OutputPath.Replace('xsi','xsc'))X*.*" />
+    </ItemGroup>
+    <Copy SourceFiles="@(FilesToCopy)" DestinationFolder="$(OutputPath)" />
   </Target>
+  <!-- Zip the XSI output folder -->
   <Target Name="ZipOutputPath" AfterTargets="CopyCompilerFiles" Condition="'$(TargetFramework)' != '' ">
     <MakeDir Directories="$(ZipsDir)" />
     <ZipDirectory SourceDirectory="$(OutputPath)" DestinationFile="$(ZipsDir)\Bin.$(TargetFramework).$(Configuration).zip" Overwrite="true" />
-    </Target>
+  </Target>
 </Project>

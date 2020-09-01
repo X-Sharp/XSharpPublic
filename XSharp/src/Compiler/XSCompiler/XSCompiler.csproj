@@ -9,8 +9,6 @@
     <RootNamespace>LanguageService.CodeAnalysis.CompilerServer</RootNamespace>
     <AssemblyName>XSCompiler</AssemblyName>
     <LargeAddressAware>true</LargeAddressAware>
-    <!--<TargetFrameworks>net46</TargetFrameworks>
-    <RuntimeIdentifiers>win;win-x64</RuntimeIdentifiers>-->
     <TargetFrameworks>$(RoslynPortableTargetFrameworks)</TargetFrameworks>
     <RuntimeIdentifiers>$(RoslynPortableRuntimeIdentifiers)</RuntimeIdentifiers>
     <DefineConstants Condition="'$(TargetFramework)' == 'net46'">$(DefineConstants)NET46</DefineConstants>
@@ -49,7 +47,6 @@
     <!--<Compile Include="..\..\Common\Constants.cs">
       <Link>Properties\Constants.cs</Link>
     </Compile>-->
-
     <Compile Include="$(SharedSource)BuildClient.cs">
       <Link>BuildClient.cs</Link>
     </Compile>

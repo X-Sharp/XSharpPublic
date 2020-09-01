@@ -124,12 +124,14 @@
     <PackageReference Include="System.IO.Pipes.AccessControl" Version="$(SystemIOPipesAccessControlVersion)" Condition="'$(TargetFramework)' == 'netcoreapp2.0'" />
     <PackageReference Include="System.Security.AccessControl" Version="$(SystemSecurityAccessControlVersion)" Condition="'$(TargetFramework)' == 'netcoreapp2.0'" />
   </ItemGroup>
-  <Target Name="DeleteMsFiles" AfterTargets="Build" >
+  <Target Name="DeleteMsFiles" AfterTargets="Build">
     <ItemGroup>
       <FilesToDelete Include="$(OutputPath)\Microsoft*.*" />
     </ItemGroup>
     <Delete Files="@(FilesToDelete)" />
   </Target>
+  <!-- Zip the XSharp.Build output folder-->
+
   <Target Name="ZipOutputPath" AfterTargets="DeleteMsFiles" Condition="'$(TargetFramework)' != '' ">
     <MakeDir Directories="$(ZipsDir)" />
     <ZipDirectory SourceDirectory="$(OutputPath)" DestinationFile="$(ZipsDir)\$(MSBuildProjectName).$(TargetFramework).$(Configuration).zip" Overwrite="true" />

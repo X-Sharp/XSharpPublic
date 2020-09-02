@@ -5,7 +5,7 @@
 //
 
 using System.Windows.Forms
-
+using System.Collections.Generic
 #define MB_TOPMOST 0x40000
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/_accept/*" />
@@ -108,22 +108,27 @@ FUNCTION _wait( uValuePrompt AS STRING ) AS STRING
 FUNCTION DoEvents() AS VOID
     System.Windows.Forms.Application.DoEvents()
     
-    
-FUNCTION ShowArray  (aTest as array, cName := "" as STRING) AS VOID
+/// <summary>Dump the contents of an array to the terminal window</summary>
+/// <param name="aTest">Array to dump</param>
+/// <param name="cPrefix">Name to show before the array brackets. Defaults to 'a'</param>
+/// <returns>Nothing</returns>
+/// <remarks>This dumps the information to the terminal window.
+/// This will only work if the main application is a console application.</remarks>
+FUNCTION ShowArray  (aTest as array, cPrefix := "" as STRING) AS VOID
     LOCAL i         AS DWORD
     LOCAL n         AS DWORD
     LOCAL x         AS USUAL
     LOCAL cOut      AS STRING
     LOCAL cOutTemp := "" AS STRING
     
-    IF cName:Length == 0
-        cName := "a"
+    IF cPrefix:Length == 0
+        cPrefix := "a"
     ENDIF
     
     n := ALen(aTest)
     
     FOR i := 1 TO n
-        cOut := cName + "[" + NTrim(i) + "]"
+        cOut := cPrefix + "[" + NTrim(i) + "]"
         x    := aTest[i]
         
         IF x:IsArray
@@ -144,28 +149,63 @@ FUNCTION ShowArray  (aTest as array, cName := "" as STRING) AS VOID
     NEXT
     RETURN 
     
-FUNCTION ShowObject(oObject as OBJECT) AS VOID
+/// <summary>Dump the contents of an object to the terminal window</summary>
+/// <param name="oObject">Object to dump</param>
+/// <param name="cPrefix">Name to show before the field names. Defaults to 'o'</param>
+/// <returns>Nothing</returns>
+/// <remarks>This dumps the information to the terminal window.
+/// This will only work if the main application is a console application.</remarks>
+
+FUNCTION ShowObject(oObject as OBJECT,cPrefix := "" as STRING) AS VOID
     LOCAL aNames := IvarList(oObject) AS ARRAY
-    ? "Show object of type ", oObject:GetType():FullName
+    IF cPrefix:Length == 0
+        cPrefix := "o"
+    ENDIF
+    var nLen := 10
     FOREACH cName AS STRING in aNames
-        ? cName, IVarGet(oObject, cName)
+        nLen := Max(nLen, cName:Length)
+    NEXT
+    FOREACH cName AS STRING in aNames
+        ? cPrefix+":"+PadR(cName,nLen), IVarGet(oObject, cName)
     NEXT
     ?
     RETURN
     
+/// <summary>Dump the currently defined privates to the terminal window</summary>
+/// <param name="lCurrentOnly">Only dump the privates from the current level on the evaluation stack.</param>
+/// <returns>Nothing</returns>
+/// <remarks>This dumps the information to the terminal window.
+/// This will only work if the main application is a console application.</remarks>
     
 FUNCTION ShowPrivates(lCurrentOnly := FALSE AS LOGIC) AS VOID
     VAR cName := _PrivateFirst(lCurrentOnly)
+    var aNames := List<string>{}
+    var nLen   := 10
     do while ! String.IsNullOrEmpty(cName)
-        ? cName, MemVarGet(cName)
+        aNames:Add(cName)
+        nLen  := Math.Max(nLen, cName:Length)
         cName := _PrivateNext()
     enddo
+    FOREACH var cElement in aNames
+        ? PadR(cElement,nLen), MemVarGet(cElement)
+    NEXT
     RETURN 
-    
+
+/// <summary>Dump the currently defined publics to the terminal window</summary>
+/// <returns>Nothing</returns>
+/// <remarks>This dumps the information to the terminal window.
+/// This will only work if the main application is a console application.</remarks>
+
 FUNCTION ShowPublics() AS VOID
     VAR cName := _PublicFirst()
+    var aNames := List<string>{}
+    var nLen   := 10
     do while ! String.IsNullOrEmpty(cName)
-        ? cName, MemVarGet(cName)
+        aNames:Add(cName)
+        nLen  := Math.Max(nLen, cName:Length)
         cName := _PublicNext()
     enddo
+    FOREACH var cElement in aNames
+        ? PadR(cElement,nLen), MemVarGet(cElement)
+    NEXT
     RETURN

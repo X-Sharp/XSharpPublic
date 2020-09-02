@@ -2382,6 +2382,13 @@ callingconvention	: Convention=(CLIPPER | STRICT | PASCAL | ASPEN | WINCALL | CA
                   // OUT NULL, also discard
                   Consume()
                ENDIF
+            ELSEIF LastToken:Type == XSharpLexer.CASE .and. SELF:IsId(SELF:La1) .and. SELF:La2 == XSharpLexer.AS       // CASE x as SomeType
+               VAR start := SELF:Lt1
+               VAR id    := SELF:ParseIdentifier()
+               VAR type  := SELF:ParseAsIsType()
+               SELF:GetSourceInfo(start, LastToken, OUT VAR range, OUT VAR interval, OUT VAR _)  
+               VAR xVar     := XVariable{SELF:CurrentEntity, id, range, interval, type}
+               SELF:_locals:Add(xVar)
             ELSE
                Consume()
             ENDIF               

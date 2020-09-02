@@ -6129,7 +6129,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     }
                     label = _syntaxFactory.CasePatternSwitchLabel(kw, node, whenexpr, colon);
                 }
-                labels.Add(label);
             }
             else
             {

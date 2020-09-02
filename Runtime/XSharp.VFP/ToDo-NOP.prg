@@ -29,13 +29,6 @@ FUNCTION NumLock( lExpression ) AS LOGIC
     // RETURN FALSE
 
 /// <summary>-- todo --</summary>
-/// <include file="VFPDocs.xml" path="Runtimefunctions/nvl/*" />
-
-FUNCTION NVL( eExpression1, eExpression2) AS USUAL
-    THROW NotImplementedException{}
-    // RETURN NIL
-
-/// <summary>-- todo --</summary>
 /// <include file="VFPDocs.xml" path="Runtimefunctions/oldval/*" />
 
 FUNCTION OldVal( cExpression , uArea ) AS USUAL

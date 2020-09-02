@@ -20,7 +20,7 @@
     <para styleclass="Body Text" style="margin-left:39px;"><image src="Keyword1.jpg" scale="100.00%" styleclass="Image Caption"></image></para>
     <para styleclass="Body Text"><tab /><text style="font-weight:normal;"> But as soon as you continue to complete the PROPERTY definition it will get the KEYWORD color:</text></para>
     <para styleclass="Body Text" style="margin-left:39px;"><image src="Keyword2.jpg" scale="100.00%" styleclass="Image Caption"></image></para>
-    <para styleclass="Normal"><table styleclass="Default" rowcount="230" colcount="5" style="border-width:0px; border-spacing:0px; border-collapse:collapse; cell-border-width:1px; border-color:#000000; border-style:solid;">
+    <para styleclass="Normal"><table styleclass="Default" rowcount="231" colcount="5" style="border-width:0px; border-spacing:0px; border-collapse:collapse; cell-border-width:1px; border-color:#000000; border-style:solid;">
       <thead style="vertical-align:top">
         <td style="vertical-align:middle;">
           <para styleclass="Normal"><text style="font-weight:bold;">Keyword</text></para>
@@ -3212,6 +3212,23 @@
         </td>
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;"></para>
+        </td>
+        <td style="vertical-align:middle;">
+          <para styleclass="Normal" style="text-align:center;">Y</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="vertical-align:middle;">
+          <para styleclass="Normal">WHEN</para>
+        </td>
+        <td style="vertical-align:middle;">
+          <para styleclass="Normal" style="text-align:center;"></para>
+        </td>
+        <td style="vertical-align:middle;">
+          <para styleclass="Normal" style="text-align:center;"></para>
+        </td>
+        <td style="vertical-align:middle;">
+          <para styleclass="Normal" style="text-align:center;">Y</para>
         </td>
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;">Y</para>

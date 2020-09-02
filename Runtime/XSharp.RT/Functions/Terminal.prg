@@ -10,136 +10,162 @@ using System.Windows.Forms
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/_accept/*" />
 FUNCTION _accept() AS STRING STRICT
-   RETURN _accept( "" )
-
+    RETURN _accept( "" )
+    
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/_accept/*" />
 FUNCTION _accept( uValuePrompt AS STRING ) AS STRING
-   LOCAL retval AS STRING
-
-   Console.WriteLine()
-   Console.Write( uValuePrompt )
-
-   TRY
-      retval := Console.ReadLine()
-   CATCH AS System.InvalidOperationException
-	 retval := ""
-   END TRY
-
-   RETURN IIF( retval == NULL, "", retval )
-
+    LOCAL retval AS STRING
+    
+    Console.WriteLine()
+    Console.Write( uValuePrompt )
+    
+    TRY
+        retval := Console.ReadLine()
+    CATCH AS System.InvalidOperationException
+        retval := ""
+    END TRY
+    
+    RETURN IIF( retval == NULL, "", retval )
+    
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/cls/*" />
 FUNCTION cls() AS VOID STRICT
-   Console.Clear()
-   RETURN
-    
+    Console.Clear()
+    RETURN
+
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/col/*" />
 FUNCTION Col() AS SHORT STRICT
-   RETURN (SHORT) Console.CursorLeft
-
+    RETURN (SHORT) Console.CursorLeft
+    
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/qout/*" />
 FUNCTION QOut() AS VOID STRICT
-   Console.WriteLine()
-   RETURN
-
+    Console.WriteLine()
+    RETURN
+    
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/qout/*" />
 FUNCTION QOut( uValueList AS USUAL ) AS VOID
-   Console.WriteLine()
-   QQOut( uValueList )
-   RETURN
-
+    Console.WriteLine()
+    QQOut( uValueList )
+    RETURN
+    
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/qout/*" />
 FUNCTION QOut( uValueList PARAMS USUAL[] ) AS VOID
-   Console.WriteLine()
-   QQOut( uValueList )
-   RETURN
-
+    Console.WriteLine()
+    QQOut( uValueList )
+    RETURN
+    
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/qqout/*" />
 FUNCTION QQOut( uValueList AS USUAL ) AS VOID
-   Console.Write( AsString( uValueList ) )
-   RETURN
-
+    Console.Write( AsString( uValueList ) )
+    RETURN
+    
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/qqout/*" />
 FUNCTION QQOut( uValueList PARAMS  USUAL[] ) AS VOID
-   LOCAL count := uValueList:Length AS INT
-   LOCAL x                 AS INT
-   LOCAL lAddSpace         AS LOGIC
-   lAddSpace := RuntimeState.GetValue<LOGIC>(Set.Space)
-   FOR x := 1 UPTO count
-      QQOut( uValueList[x] )
-      IF x < count .and. lAddSpace
-         Console.Write( " " )
-      ENDIF
-   NEXT
-   RETURN
-
+    LOCAL count := uValueList:Length AS INT
+    LOCAL x                 AS INT
+    LOCAL lAddSpace         AS LOGIC
+    lAddSpace := RuntimeState.GetValue<LOGIC>(Set.Space)
+    FOR x := 1 UPTO count
+        QQOut( uValueList[x] )
+        IF x < count .and. lAddSpace
+            Console.Write( " " )
+        ENDIF
+    NEXT
+    RETURN
+    
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/row/*" />
 FUNCTION Row() AS SHORT
-   RETURN (SHORT) Console.CursorTop
-
+    RETURN (SHORT) Console.CursorTop
+    
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/setpos/*" />
 FUNCTION SetPos( iRow AS INT, iCol AS INT ) AS VOID
-   Console.SetCursorPosition( iCol, iRow )
-   RETURN
-
-
+    Console.SetCursorPosition( iCol, iRow )
+    RETURN
+    
+    
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/_wait/*" />
- FUNCTION _wait() AS STRING STRICT
-   RETURN _wait( __CavoStr(VOErrors.TMSG_PRESSANYKEY))
-
+FUNCTION _wait() AS STRING STRICT
+    RETURN _wait( __CavoStr(VOErrors.TMSG_PRESSANYKEY))
+    
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/_wait/*" />
 FUNCTION _wait( uValuePrompt AS STRING ) AS STRING
-   LOCAL info AS ConsoleKeyInfo
-   LOCAL retval AS STRING
+    LOCAL info AS ConsoleKeyInfo
+    LOCAL retval AS STRING
+    
+    Console.WriteLine()
+    Console.Write( uValuePrompt )
+    
+    TRY
+            info   := Console.ReadKey()
+        retval := info:KeyChar:ToString()
+    CATCH AS System.InvalidOperationException
+        MessageBox.Show( uValuePrompt + chr(10) + chr(10) + "Wait", "Wait", MessageBoxButtons.OK, MessageBoxIcon.Exclamation, MessageBoxDefaultButton.Button1, (MessageBoxOptions)(INT) MB_TOPMOST )
+        retval := ""
+    END TRY
+    
+    RETURN retval
 
-   Console.WriteLine()
-   Console.Write( uValuePrompt )
-
-   TRY
-      info   := Console.ReadKey()
-      retval := info:KeyChar:ToString()
-   CATCH AS System.InvalidOperationException
-      MessageBox.Show( uValuePrompt + chr(10) + chr(10) + "Wait", "Wait", MessageBoxButtons.OK, MessageBoxIcon.Exclamation, MessageBoxDefaultButton.Button1, (MessageBoxOptions)(INT) MB_TOPMOST )
-      retval := ""
-   END TRY
-
-   RETURN retval
-   
 /// <exclude/>
 FUNCTION DoEvents() AS VOID
     System.Windows.Forms.Application.DoEvents()
-
-
+    
+    
 FUNCTION ShowArray  (aTest as array, cName := "" as STRING) AS VOID
     LOCAL i         AS DWORD
     LOCAL n         AS DWORD
     LOCAL x         AS USUAL
     LOCAL cOut      AS STRING
     LOCAL cOutTemp := "" AS STRING
-
+    
     IF cName:Length == 0
         cName := "a"
     ENDIF
-
+    
     n := ALen(aTest)
-
+    
     FOR i := 1 TO n
         cOut := cName + "[" + NTrim(i) + "]"
         x    := aTest[i]
-
+        
         IF x:IsArray
             cOutTemp := cOut
         ENDIF
-
+        
         cOut += " = "
         cOut += AsString(x)
         cOut += " ("
         cOut += ValType(x)
         cOut += ")"
         QOut(cOut)
-
+        
         IF x:IsArray
             ShowArray(x, cOutTemp)
         ENDIF
-
+        
     NEXT
     RETURN 
+    
+FUNCTION ShowObject(oObject as OBJECT) AS VOID
+    LOCAL aNames := IvarList(oObject) AS ARRAY
+    ? "Show object of type ", oObject:GetType():FullName
+    FOREACH cName AS STRING in aNames
+        ? cName, IVarGet(oObject, cName)
+    NEXT
+    ?
+    RETURN
+    
+    
+FUNCTION ShowPrivates(lCurrentOnly := FALSE AS LOGIC) AS VOID
+    VAR cName := _PrivateFirst(lCurrentOnly)
+    do while ! String.IsNullOrEmpty(cName)
+        ? cName, MemVarGet(cName)
+        cName := _PrivateNext()
+    enddo
+    RETURN 
+    
+FUNCTION ShowPublics() AS VOID
+    VAR cName := _PublicFirst()
+    do while ! String.IsNullOrEmpty(cName)
+        ? cName, MemVarGet(cName)
+        cName := _PublicNext()
+    enddo
+    RETURN

@@ -107,8 +107,12 @@ BEGIN NAMESPACE XSharp.RDD
                     IF hasDelimiter
                         _oSb:Append(stringDelimiter)
                     endif
-                    _oSb:Append(sValue:Replace(stringDelimiter,""))
-                    IF hasDelimiter
+                    if stringDelimiter:Length > 0
+                        _oSb:Append(sValue:Replace(stringDelimiter,""))
+                    else
+                        _oSb:Append(sValue)
+                    endif
+                     IF hasDelimiter
                         _oSb:Append(stringDelimiter)
                     ENDIF
                 CASE DbFieldType.Number         // 'N'
@@ -167,9 +171,9 @@ BEGIN NAMESPACE XSharp.RDD
             _oSb:Clear()
             FOREACH var fld in SELF:_Fields
                 if String.IsNullOrEmpty(fld:Alias)
-                    _oSb:Append(fld:Name)
+                    _oSb:Append(fld:Name:ToLower())
                 else
-                    _oSb:Append(fld:Alias)
+                    _oSb:Append(fld:Alias:ToLower())
                 endif
                 _oSb:Append(SELF:_Separator)
             NEXT

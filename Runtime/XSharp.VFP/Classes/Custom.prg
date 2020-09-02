@@ -56,7 +56,14 @@ BEGIN NAMESPACE XSharp.VFP
             SELF:_Controls:AddObject(oObject, cName)
             RETURN TRUE
         
-        
+
+        METHOD AddProperty(cPropertyName, uValue, nVisibility, cDescription) AS LOGIC
+            RETURN SUPER:__AddProperty(cPropertyName, uValue, nVisibility, cDescription)
+
+        METHOD RemoveProperty(cPropertyName) AS LOGIC
+            RETURN SUPER:__RemoveProperty(cPropertyName)
+
+
         METHOD NewObject(cObjectName, cClassName, cModule, cInApplication, aParams) AS OBJECT
             RETURN NULL_OBJECT
             
@@ -66,7 +73,31 @@ BEGIN NAMESPACE XSharp.VFP
             
         
         
-        #region Other
+        #region Designer Related and Other
+        
+        [Obsolete("This method is not supported in X#")];
+        METHOD ResetToDefault(cName) AS VOID
+            RETURN
+       [Obsolete("This method is not supported in X#")];
+        VIRTUAL METHOD ReadExpression(cPropertyName) AS STRING
+            RETURN ""
+        
+        [Obsolete("This method is not supported in X#")];
+        VIRTUAL METHOD WriteExpression(cPropertyName, uValue ) AS LOGIC
+            RETURN FALSE
+        
+        [Obsolete("This method is not supported in X#")];
+        VIRTUAL METHOD ReadMethod() AS STRING STRICT
+            RETURN ""
+        
+        [Obsolete("This method is not supported in X#")];
+        VIRTUAL METHOD SaveAsClass(cClassLib, cClass, cDescription) AS LOGIC
+            RETURN FALSE
+        
+        [Obsolete("This method is not supported in X#")];
+        VIRTUAL METHOD WriteMethod(cMethodName, cMethodText, lCreateMethod, nVisibility, cDescription) AS STRING STRICT
+            RETURN ""        
+        
         [Obsolete("This method is not supported in X#")];
         METHOD ShowWhatsThis() AS LOGIC
             RETURN FALSE

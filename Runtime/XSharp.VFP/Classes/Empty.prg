@@ -24,21 +24,21 @@ CLASS XSharp.VFP.Empty IMPLEMENTS XSharp.IDynamicProperties
     CONSTRUCTOR()
         _Properties := Dictionary<STRING, USUAL>{StringComparer.OrdinalIgnoreCase}
         _Attributes := Dictionary<STRING, Tuple<PropertyVisibility, STRING> >{StringComparer.OrdinalIgnoreCase}
-        _InitCompileTimeProperties()
+        __InitCompileTimeProperties()
         RETURN
         
-    METHOD _InitCompileTimeProperties() AS VOID
+    METHOD __InitCompileTimeProperties() AS VOID
         VAR aProps := SELF:GetType():GetProperties()
         FOREACH VAR oProp IN aProps
             VAR met := oProp:GetGetMethod(TRUE)
             VAR nVis := IIF(met:IsPublic,1 ,IIF(met:IsPrivate,3,2))
-            SELF:AddProperty(oProp:Name, NIL, nVis)
+            SELF:__AddProperty(oProp:Name, NIL, nVis)
         NEXT
         RETURN
         
         
         #region Property related
-    METHOD AddProperty(cPropertyName, uValue, nVisibility, cDescription) AS LOGIC
+    INTERNAL METHOD __AddProperty(cPropertyName, uValue, nVisibility, cDescription) AS LOGIC
         local cName as STRING
         // Note that we need to handle the syntax AddProperty("PropertyName(3)") which adds an array property with 3 elements
         EnforceType(cPropertyName, STRING)
@@ -80,7 +80,7 @@ CLASS XSharp.VFP.Empty IMPLEMENTS XSharp.IDynamicProperties
         ENDIF
         RETURN TRUE
 
-    METHOD RemoveProperty(cPropertyName) AS LOGIC
+    INTERNAL METHOD __RemoveProperty(cPropertyName) AS LOGIC
         // FoxPro does not throw an error when non existing properties are removed
         // FoxPro does not require the dimensions when deleting an array property
         IF _Attributes:ContainsKey(cPropertyName)
@@ -92,41 +92,9 @@ CLASS XSharp.VFP.Empty IMPLEMENTS XSharp.IDynamicProperties
         ENDIF
         RETURN FALSE
 
-    PUBLIC METHOD __ClearProperties() AS VOID
-        _Attributes:Clear()
-        _Properties:Clear()
-        _InitCompileTimeProperties()
-        
-    [Obsolete("This method is not supported in X#")];
-    METHOD ResetToDefault(cName) AS VOID
-        RETURN
-        
         #endregion
         
     
-    #region Designer related
-    
-    [Obsolete("This method is not supported in X#")];
-    VIRTUAL METHOD ReadExpression(cPropertyName) AS STRING
-        RETURN ""
-        
-    [Obsolete("This method is not supported in X#")];
-    VIRTUAL METHOD WriteExpression(cPropertyName, uValue ) AS LOGIC
-        RETURN FALSE
-        
-    [Obsolete("This method is not supported in X#")];
-    VIRTUAL METHOD ReadMethod() AS STRING STRICT
-        RETURN ""
-        
-    [Obsolete("This method is not supported in X#")];
-    VIRTUAL METHOD SaveAsClass(cClassLib, cClass, cDescription) AS LOGIC
-        RETURN FALSE
-        
-    [Obsolete("This method is not supported in X#")];
-    VIRTUAL METHOD WriteMethod(cMethodName, cMethodText, lCreateMethod, nVisibility, cDescription) AS STRING STRICT
-        RETURN ""
-        
-    #endregion
     #region IDynamicProperties
     VIRTUAL METHOD NoIvarPut(cName AS STRING, uValue AS USUAL) AS VOID
         IF _Properties:ContainsKey( cName)

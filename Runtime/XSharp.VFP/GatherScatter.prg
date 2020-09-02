@@ -65,6 +65,8 @@ RETURN values:ToArray()
 INTERNAL FUNCTION __GetAllElements(cSource as STRING) AS STRING[]
     cSource := cSource:ToUpperInvariant()
 RETURN cSource:Split(<Char>{c' ',c',',c'\t'}, StringSplitOptions.RemoveEmptyEntries)
+
+
 INTERNAL FUNCTION __BuildFieldList(cFieldList AS STRING, cIncludedFields AS STRING, cExcludedFields AS STRING, lIncludeMemo AS LOGIC) AS IList<String>
     VAR allfields := List<string>{}	// Contains all fields in UPPER case
     VAR selected := List<string>{}
@@ -194,8 +196,8 @@ FUNCTION __ScatterObject(cFieldList, cIncludedFields, cExcludedFields, lIncludeM
         oResult := XSharp.VFP.Empty{}
     ENDIF
     IF oResult IS XSharp.VFP.Empty VAR oEmpty
-            FOREACH var oField in aFields
-                oEmpty:AddProperty(oField:Name, oField:Value)
+        FOREACH var oField in aFields
+            oEmpty:__AddProperty(oField:Name, oField:Value)
         NEXT
     ELSE
         FOREACH var oField in aFields

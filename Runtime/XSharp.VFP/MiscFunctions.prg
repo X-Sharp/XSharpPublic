@@ -13,3 +13,9 @@ FUNCTION IsColor( ) AS LOGIC
 FUNCTION IsMouse( ) AS LOGIC
     RETURN TRUE
 
+/// <include file="VFPDocs.xml" path="Runtimefunctions/nvl/*" />
+FUNCTION NVL( eExpression1, eExpression2) AS USUAL
+    IF IsNil(eExpression1)
+        RETURN eExpression2
+    ENDIF
+    RETURN eExpression1

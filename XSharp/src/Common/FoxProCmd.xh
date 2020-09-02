@@ -16,4 +16,28 @@
 #xcommand ENDWITH [<*any*>] => END WITH
 #xcommand ENDTRY  [<*any*>] => END TRY
 
+
+// Scatter .. MEMVAR must be last !   
+
+#command SCATTER [FIELDS] [<fields,...>] [LIKE <%include%>] [EXCEPT <%exclude%> ]  [<memo: MEMO>] [<blank: BLANK>]  TO <arrayName> ;
+          => <arrayName> := __ScatterArray(  <(fields)> ,  #<include>, #<exclude> , <.memo.>, <.blank.>  )
+
+// Note that the objectName parameter is passed as a string because objectName may not have been created yet (when it is a MEMVAR).
+// For SCATTER NAME to work with LOCALS we therefore need to enable /fox2
+
+#command SCATTER [FIELDS] [ <fields,...>] [LIKE <%include%>] [EXCEPT <%exclude%> ]  [<memo: MEMO>] [<blank: BLANK>]  NAME <objectName> [<add: ADDITIVE>];
+          => <objectName> := __ScatterObject(   <(fields)> ,  #<include>, #<exclude> , <.memo.>, <.blank.> , <"objectName">,  <.add.>)
+
+#command SCATTER [FIELDS] [<fields,...>] [LIKE <%include%>] [EXCEPT <%exclude%> ]  [<memo: MEMO>] [<blank: BLANK>] MEMVAR ;
+          => __ScatterMemVar( <(fields)> ,  #<include>, #<exclude> , <.memo.>, <.blank.>  )
+
+#command GATHER FROM <arrayName> [FIELDS] [<fields,...>] [LIKE <%include%>] [EXCEPT <%exclude%> ]  [<memo: MEMO>] ;
+          => __GatherArray(<arrayName>,  <(fields)> ,  #<include>, #<exclude> , <.memo.>)
+
+#command GATHER FROM NAME <objectName> [FIELDS] [<fields,...>] [LIKE <%include%>] [EXCEPT <%exclude%> ]  [<memo: MEMO>] ;
+          => __GatherObject(<objectName>,  <(fields)> ,  #<include>, #<exclude> , <.memo.>)
+
+#command GATHER FROM MEMVAR [FIELDS] [<fields,...>] [LIKE <%include%>] [ EXCEPT <%exclude%> ]  [<memo: MEMO>] ;
+          => __GatherMemVar( <(fields)> ,  #<include>, #<exclude> , <.memo.>)
+
 #endif

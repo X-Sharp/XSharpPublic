@@ -16,28 +16,205 @@
 #xcommand ENDWITH [<*any*>] => END WITH
 #xcommand ENDTRY  [<*any*>] => END TRY
 
+// Replace FIELDS LIKE and FIELDS EXCEPT with single words to make matching expressions easier
+
+#translate FIELDS LIKE => LIKE
+#translate FIELDS EXCEPT => EXCEPT
 
 // Scatter .. MEMVAR must be last !   
 
-#command SCATTER [FIELDS] [<fields,...>] [LIKE <%include%>] [EXCEPT <%exclude%> ]  [<memo: MEMO>] [<blank: BLANK>]  TO <arrayName> ;
-          => <arrayName> := __ScatterArray(  <(fields)> ,  #<include>, #<exclude> , <.memo.>, <.blank.>  )
+#command SCATTER [FIELDS <f1> [,<fn> ] ] [LIKE <%include%>] [EXCEPT <%exclude%> ]  [<memo: MEMO>] [<blank: BLANK>]  TO <arrayName> ;
+          => <arrayName> := __ScatterArray(  {<(f1)>[, <(fn)> ]} ,  #<include>, #<exclude> , <.memo.>, <.blank.>  )
 
 // Note that the objectName parameter is passed as a string because objectName may not have been created yet (when it is a MEMVAR).
-// For SCATTER NAME to work with LOCALS we therefore need to enable /fox2
+// For SCATTER NAME to work with LOCALS and the ADDITIVE clause we therefore need to enable /fox2. 
 
-#command SCATTER [FIELDS] [ <fields,...>] [LIKE <%include%>] [EXCEPT <%exclude%> ]  [<memo: MEMO>] [<blank: BLANK>]  NAME <objectName> [<add: ADDITIVE>];
-          => <objectName> := __ScatterObject(   <(fields)> ,  #<include>, #<exclude> , <.memo.>, <.blank.> , <"objectName">,  <.add.>)
+#command SCATTER [FIELDS <f1> [,<fn> ]] [LIKE <%include%>] [EXCEPT <%exclude%> ]  [<memo: MEMO>] [<blank: BLANK>]  NAME <objectName> [<add: ADDITIVE>];
+          => <objectName> := __ScatterObject( {<(f1)>[, <(fn)> ]} ,  #<include>, #<exclude> , <.memo.>, <.blank.> , <"objectName">,  <.add.>)
 
-#command SCATTER [FIELDS] [<fields,...>] [LIKE <%include%>] [EXCEPT <%exclude%> ]  [<memo: MEMO>] [<blank: BLANK>] MEMVAR ;
-          => __ScatterMemVar( <(fields)> ,  #<include>, #<exclude> , <.memo.>, <.blank.>  )
+#command SCATTER [FIELDS <f1> [,<fn> ]] [LIKE <%include%>] [EXCEPT <%exclude%> ]  [<memo: MEMO>] [<blank: BLANK>] MEMVAR ;
+          => __ScatterMemVar( {<(f1)>[, <(fn)> ]} ,  #<include>, #<exclude> , <.memo.>, <.blank.>  )
 
-#command GATHER FROM <arrayName> [FIELDS] [<fields,...>] [LIKE <%include%>] [EXCEPT <%exclude%> ]  [<memo: MEMO>] ;
-          => __GatherArray(<arrayName>,  <(fields)> ,  #<include>, #<exclude> , <.memo.>)
 
-#command GATHER FROM NAME <objectName> [FIELDS] [<fields,...>] [LIKE <%include%>] [EXCEPT <%exclude%> ]  [<memo: MEMO>] ;
-          => __GatherObject(<objectName>,  <(fields)> ,  #<include>, #<exclude> , <.memo.>)
+#command GATHER FROM <arrayName> [FIELDS <f1> [,<fn> ]] [LIKE <%include%>] [EXCEPT <%exclude%> ]  [<memo: MEMO>] ;
+          => __GatherArray(<arrayName>, {<(f1)>[, <(fn)> ]} ,  #<include>, #<exclude> , <.memo.>)
 
-#command GATHER FROM MEMVAR [FIELDS] [<fields,...>] [LIKE <%include%>] [ EXCEPT <%exclude%> ]  [<memo: MEMO>] ;
-          => __GatherMemVar( <(fields)> ,  #<include>, #<exclude> , <.memo.>)
+#command GATHER FROM NAME <objectName> [FIELDS <f1> [,<fn> ]] [LIKE <%include%>] [EXCEPT <%exclude%> ]  [<memo: MEMO>] ;
+          => __GatherObject(<objectName>, {<(f1)>[, <(fn)> ]} ,  #<include>, #<exclude> , <.memo.>)
+
+#command GATHER FROM MEMVAR [FIELDS <f1> [,<fn> ]] [LIKE <%include%>] [ EXCEPT <%exclude%> ]  [<memo: MEMO>] ;
+          => __GatherMemVar( {<(f1)>[, <(fn)> ]} ,  #<include>, #<exclude> , <.memo.>)
+
+
+#command COPY TO ARRAY <arrayName> [FIELDS <f1> [,<fn> ] ]              ;
+         [LIKE <%include%>] [EXCEPT <%exclude%> ]                       ;
+         [FOR <for>]                                                    ;
+         [WHILE <while>]                                                ;
+         [NEXT <next>]                                                  ;
+         [RECORD <rec>]                                                 ;
+         [<rest:REST>]                                                  ;
+         [<noopt: NOOPTIMIZE>]                                          ;
+         [ALL]                                                          ;
+                                                                        ;
+      => <arrayName> := DbCopyToArray(                                  ;
+                        {<(f1)>[, <(fn)> ]}, #<include>, #<exclude>,    ;
+                        <{for}>, <{while}>, <next>, <rec>, <.rest.>     ;
+                        <.noopt.>                                       ;
+                        )
+** Todo FoxPro clauses  
+** [ [WITH] CDX ] | [ [WITH] PRODUCTION ] [NOOPTIMIZE] 
+** Implementation of CSV,SDF,FOXPLUS, FOX2X is implemented. Rest not yet.
+
+
+#command COPY TO <(file)>                                               ;
+         [DATABASE <dbname> [NAME <longtablename>]]                     ;
+         [WITH] [<cdx: CDX, PRODUCTION> ]                               ;
+         [FIELDS <f1> [,<fn> ] ]                                        ;
+         [LIKE <%include%>] [EXCEPT <%exclude%> ]                       ;
+         [FOR <for>]                                                    ;
+         [WHILE <while>]                                                ;
+         [NEXT <next>]                                                  ;
+         [RECORD <rec>]                                                 ;
+         [<rest:REST>]                                                  ;
+         [<noopt: NOOPTIMIZE>]                                          ;
+         [ALL]                                                          ;
+         [TYPE] [<type: FOXPLUS,FOX2X,DIF,MOD,SDF,SYLK,WK1,WKS,WR1,WRK,CSV,XLS,XL5 >]                                                          ;
+         [AS <nCodePage>]                                               ;
+      =>  DbCopyFox(                                                    ;
+                        <(file)>, iif( <.type.>,#<type>,"DBF"),         ;
+                        {<(f1)>[, <(fn)> ]}, <(include)>, <(exclude)> , ;
+                        <{for}>, <{while}>, <next>, <rec>, <.rest.>,    ;
+                        <nCodePage>, <(dbname)>, <(longtablename)>,     ;
+                        <.cdx.>, <.noopt.>                              ;
+                      )
+
+#command COPY TO <(file)>  [FIELDS <f1> [,<fn> ] ]                      ;
+         [LIKE <%include%>] [EXCEPT <%exclude%> ]                       ;
+         [FOR <for>]                                                    ;
+         [WHILE <while>]                                                ;
+         [NEXT <next>]                                                  ;
+         [RECORD <rec>]                                                 ;
+         [<rest:REST>]                                                  ;
+         [<noopt: NOOPTIMIZE>]                                          ;
+         [ALL]                                                          ;
+         [TYPE] DELIMITED WITH <delim>                                  ;
+         [WITH CHARACTER <char>]                                        ;
+         [AS <nCodePage>]                                               ;
+                                                                        ;
+      => DbCopyDelimFox(                                                ;
+                        <(file)>, <(delim)>,<char>,                     ;
+                        {<(f1)>[, <(fn)> ]}, #<include>, #<exclude>,    ;
+                        <{for}>, <{while}>, <next>, <rec>, <.rest.>,    ;
+                        <nCodePage>, <.noopt.>                          ;
+                        )
+
+#command COPY TO <(file)>  [FIELDS <f1> [,<fn> ] ]                      ;
+         [LIKE <%include%>] [EXCEPT <%exclude%> ]                       ;
+         [FOR <for>]                                                    ;
+         [WHILE <while>]                                                ;
+         [NEXT <next>]                                                  ;
+         [RECORD <rec>]                                                 ;
+         [<rest:REST>]                                                  ;
+         [<noopt: NOOPTIMIZE>]                                          ;
+         [ALL]                                                          ;
+         [TYPE] DELIMITED                                               ;
+         [WITH <tab: TAB, BLANK> ]                                      ;
+         [AS <nCodePage>]                                               ;
+                                                                        ;
+      => DbCopyDelimFox(                                                ;
+                        <(file)>, "\" + #<tab>, /* no char */ ,         ;
+                        {<(f1)>[, <(fn)> ]}, #<include>, #<exclude>,    ;
+                        <{for}>, <{while}>, <next>, <rec>, <.rest.>,    ;
+                        <nCodePage>, <.noopt.>                          ;
+                        )
+
+#command COPY TO ARRAY <arrayName> [FIELDS <f1> [,<fn> ] ]              ;
+         [LIKE <%include%>] [EXCEPT <%exclude%> ]                       ;
+         [FOR <for>]                                                    ;
+         [WHILE <while>]                                                ;
+         [NEXT <next>]                                                  ;
+         [RECORD <rec>]                                                 ;
+         [<rest:REST>]                                                  ;
+         [<noopt: NOOPTIMIZE>]                                          ;
+         [ALL]                                                          ;
+                                                                        ;
+      => <arrayName> := DbCopyToArray(                                  ;
+                        {<(f1)>[, <(fn)> ]}, #<include>, #<exclude>,    ;
+                        <{for}>, <{while}>, <next>, <rec>, <.rest.>     ;
+                        <.noopt.>                                       ;
+                        )
+
+#command APPEND FROM <(file)>                                           ;
+         [FIELDS <fields,...>]                                          ;
+         [FOR <FOR>]                                                    ;
+         [WHILE <WHILE>]                                                ;
+         [NEXT <NEXT>]                                                  ;
+         [RECORD <rec>]                                                 ;
+         [<rest:REST>]                                                  ;
+         [ALL]                                                          ;
+         [TYPE] DELIMITED WITH <delim>                                  ;
+         [WITH CHARACTER <char>]                                        ;
+                                                                        ;
+      => DbAppDelimFox(                                                 ;
+                       <(file)>, <(delim)>, <char>,       ;
+                       { <(fields)> }, <{FOR}>, <{WHILE}>, <NEXT>,      ;                       
+                       <rec>, <.rest.>                                  ;
+                     )
+
+
+#command APPEND FROM <(file)>                                           ;
+         [FIELDS <fields,...>]                                          ;
+         [FOR <FOR>]                                                    ;
+         [WHILE <WHILE>]                                                ;
+         [NEXT <NEXT>]                                                  ;
+         [RECORD <rec>]                                                 ;
+         [<rest:REST>]                                                  ;
+         [ALL]                                                          ;
+         [TYPE] DELIMITED                                               ;
+         [WITH <tab: TAB, BLANK> ]                                      ;
+                                                                        ;
+      => DbAppDelimFox(                                                 ;
+                       <(file)>, "\" + #<tab>,  ,                       ;
+                       { <(fields)> }, <{FOR}>, <{WHILE}>, <NEXT>,      ;                       
+                       <rec>, <.rest.>                                  ;
+                     )
+
+
+#command APPEND FROM <(file)>                                           ;
+         [FIELDS <fields,...>]                                          ;
+         [FOR <FOR>]                                                    ;
+         [WHILE <WHILE>]                                                ;
+         [NEXT <NEXT>]                                                  ;
+         [RECORD <rec>]                                                 ;
+         [<rest:REST>]                                                  ;
+         [ALL]                                                          ;
+         [TYPE] [<type: FOXPLUS,FOX2X,DIF,MOD,SDF,SYLK,WK1,WKS,WR1,WRK,CSV,XLS,XL5,XL8 >] ;
+         [SHEET <sheet>]                                           ;
+         [AS <nCodePage>]                                               ;
+                                                                        ;
+      => DbAppFox(                                                      ;
+                     <(file)>, iif( <.type.>,#<type>,"DBF"),{<(fields)>},;
+                     <{FOR}>, <{WHILE}>, <NEXT>, <rec>, <.rest.> ,      ;
+                     <(sheet)>, <nCodePage>                             ;
+                   )
+
+
+
+#command APPEND FROM ARRAY <arrayName> [FIELDS <f1> [,<fn> ] ]              ;
+         [LIKE <%include%>] [EXCEPT <%exclude%> ]                       ;
+         [FOR <for>]                                                    ;
+                                                                        ;
+      => DbAppendFromArray(<arrayName>,                  ;
+                        {<(f1)>[, <(fn)> ]}, #<include>, #<exclude>,    ;
+                        <{for}> )
+
+
+
+#command SCATTER [<options,...>] FIELDS <f1> [<otherfields,...>] <clause:LIKE,EXCEPT>  <*otherclause*> => __FIELDSERROR__
+#command GATHER  [<options,...>] FIELDS <f1> [<otherfields,...>] <clause:LIKE,EXCEPT>  <*otherclause*> => __FIELDSERROR__
+#command COPY    [<options,...>] FIELDS <f1> [<otherfields,...>] <clause:LIKE,EXCEPT>  <*otherclause*> => __FIELDSERROR__
+#command APPEND  [<options,...>] FIELDS <f1> [<otherfields,...>] <clause:LIKE,EXCEPT>  <*otherclause*> => __FIELDSERROR__
+
+#command __FIELDSERROR__ => #error You cannot combine both a field list and an wildcard mask in a statement
 
 #endif

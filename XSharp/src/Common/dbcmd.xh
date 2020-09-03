@@ -301,6 +301,8 @@
       => DbCopyStruct( <(file)>, { <(fields)> } )
 ** FoxPro clauses [[WITH] CDX | [WITH] PRODUCTION]  [DATABASE cDatabaseName [NAME cTableName]]
 
+#ifndef __DIALECT_FOXPRO__
+
 #command COPY TO <(file)>   DELIMITED [WITH <*delim*>]                  ;
          [FIELDS <fields,...>]                                          ;
          [FOR <FOR>]                                                    ;
@@ -339,19 +341,13 @@
          [RECORD <rec>]                                                 ;
          [<rest:REST>]                                                  ;
          [ALL]                                                          ;
+         [VIA <rdd>]                                                    ;
+         [INHERIT <hdnlist,...>]                                        ;
                                                                         ;
       => DbCopy(                                                        ;
                    <(file)>, { <(fields)> },                            ;
                    <{FOR}>, <{WHILE}>, <NEXT>, <rec>, <.rest.>          ;
-                 )
-
-** Todo VIA Clause
-** Todo FoxPro clauses  DATABASE DatabaseName [NAME LongTableName]]
-** [ [WITH] CDX ] | [ [WITH] PRODUCTION ] [NOOPTIMIZE] 
-** [TYPE] [ FOXPLUS | FOX2X | DIF | MOD | SDF | SYLK | WK1 | WKS | WR1
-** | WRK | CSV | XLS | XL5 | DELIMITED [ WITH Delimiter | WITH BLANK 
-**  WITH TAB | WITH CHARACTER Delimiter ] ] ] [AS nCodePage]
-
+		   <rdd>, { <(hdnlist)> } )
 
 #command APPEND FROM <(file)> DELIMITED [WITH <*delim*>]                ;
          [FIELDS <fields,...>]                                          ;
@@ -391,18 +387,14 @@
          [RECORD <rec>]                                                 ;
          [<rest:REST>]                                                  ;
          [ALL]                                                          ;
+         [VIA <rdd>]                                                    ;
                                                                         ;
       => DbApp(                                                         ;
                   <(file)>, { <(fields)> },                             ;
-                  <{FOR}>, <{WHILE}>, <NEXT>, <rec>, <.rest.>           ;
+                  <{FOR}>, <{WHILE}>, <NEXT>, <rec>, <.rest.>, <rdd>    ;
                 )
 
-** Todo VIA Clause
-** Todo FoxPro clauses  
-**[[TYPE] [DELIMITED [WITH Delimiter | WITH BLANK | WITH TAB
-**      | WITH CHARACTER Delimiter] | DIF | FW2 | MOD | PDOX | RPD 
-**       SDF | SYLK | WK1 | WK3 | WKS | WR1 | WRK | CSV | XLS | XL5 
-**       [SHEET cSheetName] | XL8 [SHEET cSheetName]]] [AS nCodePage]
+#endif
 
 #command SORT  TO <(file)>  [ON <fields,...>]                           ;
          [FOR <FOR>]                                                    ;

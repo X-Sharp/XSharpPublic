@@ -1112,6 +1112,33 @@ BEGIN NAMESPACE XSharpModel
          Log(i"GetMembers '{idType}' returns {result.Count} matches")
          RETURN result  
       
+		STATIC METHOD GetFunctions( sFileId AS STRING) AS IList<XDbResult>
+			// 
+			VAR result := List<XDbResult>{}
+			IF IsDbOpen
+				BEGIN LOCK oConn
+					TRY
+							BEGIN USING VAR oCmd := SQLiteCommand{"SELECT 1", oConn}
+								oCmd:CommandText := "SELECT * FROM ProjectMembers WHERE IdFile = $idfile AND TypeName = $typename " + ;
+								" AND Kind in ($kind1, $kind2, $kind3)"
+								oCmd:Parameters:AddWithValue("$idfile", sFileId)
+								oCmd:Parameters:AddWithValue("$kind1", (INT) Kind.Function)
+								oCmd:Parameters:AddWithValue("$kind2", (INT) Kind.Procedure)
+								oCmd:Parameters:AddWithValue("$kind3", (INT) Kind.VODLL)
+								oCmd:Parameters:AddWithValue("$typename", XLiterals.GlobalName)
+								BEGIN USING VAR rdr := oCmd:ExecuteReader()
+									DO WHILE rdr:Read()
+										result:Add(CreateMemberInfo(rdr))
+									ENDDO
+								END USING
+						END USING
+					CATCH e AS Exception
+						Log("Exception: "+e:ToString())
+					END TRY            
+				END LOCK
+			ENDIF
+			Log(i"GetFunctions returns {result.Count} matches")
+		RETURN result			
       STATIC METHOD CreateTypeInfo(rdr AS SQLiteDataReader) AS XDbResult
          VAR res := XDbResult{}
          res:TypeName     := DbToString(rdr["Name"])

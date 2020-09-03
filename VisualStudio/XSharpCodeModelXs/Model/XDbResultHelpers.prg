@@ -112,10 +112,50 @@ BEGIN NAMESPACE XSharpModel
 			//
 			RETURN result
 		
+		STATIC METHOD BuildFullFuncsInFile( origin AS XFile, found AS IList<XDbResult>) AS IList<XMemberDefinition>
+			VAR result := List<XMemberDefinition>{}
+			LOCAL idProject := -1 AS INT64
+			//
+			TRY
+					// now create a temporary source for the parser
+					VAR source     := GetTypeSource( NULL, found)
+               if found:Count() == 0
+                  return result
+               endif
+					VAR element := found:First()
+					VAR fileName := element:FileName
+					IF fileName == NULL
+						fileName := "dummy.prg"
+					ENDIF
+					VAR file       := XFile{ fileName, origin:Project}
+					file:Virtual   := TRUE
+					// If we don't set Interactive, the EntityList will be emptied after the Parse() operation
+					file:Interactive := TRUE
+					file:Id        := element:IdFile
+					VAR walker := SourceWalker{file}
+					walker:Parse(source, FALSE)
+					IF walker:EntityList:Count > 0 .AND. ( walker:EntityList:Count == found:Count )
+						LOCAL i AS INT
+						FOR i := 0 TO found:Count-1
+						    VAR entity := walker:EntityList[i]
+							IF entity IS XMemberDefinition VAR xMember
+								VAR melement := found[i]
+								xMember:Range       := TextRange{melement:StartLine, melement:StartColumn, melement:EndLine, melement:EndColumn}
+								xMember:Interval    := TextInterval{melement:Start, melement:Stop}
+								result:Add( xMember )
+							ENDIF
+						NEXT
+				ENDIF
+			CATCH e AS Exception
+				XSolution.WriteOutputMessage("BuildFullFuncsInFile: "+ e:Message)
+			END TRY
+		RETURN result				
 		// Comes from XProject, would be worth to merge source ??? 			
 		PRIVATE STATIC METHOD GetTypeSource(element AS XDbResult, members AS IList<XDbResult>) AS STRING
 			VAR sb := StringBuilder{}
+			IF element != NULL
 			sb:AppendLine(element:SourceCode)
+			ENDIF
 			FOREACH VAR xmember IN members
 				sb:AppendLine(xmember:SourceCode)
 				SWITCH xmember:Kind
@@ -140,6 +180,7 @@ BEGIN NAMESPACE XSharpModel
 						ENDIF
 				END SWITCH
 			NEXT
+			IF element != NULL
 			SWITCH element:Kind
 				CASE Kind.Class
 					IF element:ClassType == (INT) XSharpDialect.XPP
@@ -154,6 +195,7 @@ BEGIN NAMESPACE XSharpModel
 				CASE Kind.Interface
 					sb:AppendLine("END INTERFACE")
 			END SWITCH         
+			ENDIF
 			RETURN sb:ToString()			
 		END CLASS
 END NAMESPACE // global::XSharpCodeModel.Model

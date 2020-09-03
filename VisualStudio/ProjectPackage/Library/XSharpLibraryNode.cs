@@ -111,6 +111,13 @@ namespace XSharp.Project
         _Warning = 217,
     };
 
+    internal class SourcePosition
+    {
+        internal string FileName { get; set; }
+        internal string XMLComments { get; set; }
+        internal int Line { get; set; }
+        internal int Column { get; set; }
+    }
     [DebuggerDisplay("{Name}")]
     internal class XSharpLibraryNode : LibraryNode
     {
@@ -121,7 +128,7 @@ namespace XSharp.Project
         //private XEntityDefinition member;
         // Description Infos...
         private List<Tuple<string, VSOBDESCRIPTIONSECTION>> description;
-        private Tuple<String, int, int> editorInfo;
+        private SourcePosition editorInfo;
         private String nodeText;
         // ClassName & Namespace
         private string nameSp = "";
@@ -172,7 +179,13 @@ namespace XSharp.Project
             if ((ownerHierarchy != null) && (VSConstants.VSITEMID_NIL != itemId))
             {
                 this.CanGoToSource = true;
-                this.editorInfo = new Tuple<string, long, long>(scope.File.FullPath, scope.Range.StartLine + 1, scope.Range.StartColumn);
+                this.editorInfo = new SourcePosition()
+                {  
+				   FileName = scope.File.FullPath, 
+				   Line = scope.Range.StartLine + 1, 
+				   Column = scope.Range.StartColumn, 
+				   XMLComments = scope.XmlComments 
+				};
             }
             //
             this.buildImageData(scope.Kind, scope.Modifiers);
@@ -191,8 +204,10 @@ namespace XSharp.Project
                     break;
                 case Kind.Structure:
                 case Kind.VOStruct:
-                case Kind.Union:
                     iImage = (int)IconImageIndex._Struct;
+                    break;
+                case Kind.Union:
+                    iImage = (int)IconImageIndex._Union;
                     break;
                 case Kind.Delegate:
                     iImage = (int)IconImageIndex._Delegate;
@@ -232,11 +247,12 @@ namespace XSharp.Project
                 case Kind.VODefine:
                     iImage = (int)IconImageIndex._Constant;
                     break;
-                case Kind.EnumMember:
+                 case Kind.EnumMember:
                     iImage = (int)IconImageIndex._EnumMember;
                     break;
                 case Kind.Local:
                 case Kind.Parameter:
+                case Kind.DbField:
                     iImage = (int)IconImageIndex._VVariable;
                     break;
                 case Kind.Using:
@@ -342,15 +358,11 @@ namespace XSharp.Project
             if (this.CanGoToSource && this.editorInfo != null)
             {
                 // Need to retrieve the Project, then the File...
-                XFile memberFile = XSolution.FindFile(this.editorInfo.Item1);
-                if (memberFile != null)
-                {
-                    if (memberFile?.Project?.ProjectNode != null)
-                    {
-                        memberFile.Project.ProjectNode.OpenElement(this.editorInfo.Item1, this.editorInfo.Item2, this.editorInfo.Item3);
-                    }
-                }
                 //this.member.OpenEditor();
+                var file = XSolution.FindFile(editorInfo.FileName);
+                var project = file.Project;
+                var node = project.ProjectNode;
+                node.OpenElement(file.FullPath, editorInfo.Line, editorInfo.Column);
             }
         }
 
@@ -369,8 +381,8 @@ namespace XSharp.Project
             //
             if (this.editorInfo != null)
             {
-                pbstrFilename = this.editorInfo.Item1;
-                pulLineNum = (uint)this.editorInfo.Item2 - 1;
+                pbstrFilename = this.editorInfo.FileName;
+                pulLineNum = (uint)this.editorInfo.Line - 1;
             }
         }
 
@@ -458,13 +470,13 @@ namespace XSharp.Project
         protected override void buildDescription(_VSOBJDESCOPTIONS flags, IVsObjectBrowserDescription3 obDescription)
         {
             obDescription.ClearDescriptionText();
-            foreach (var element in description)
+            foreach( var element in description)
             {
                 obDescription.AddDescriptionText3(element.Item1, element.Item2, null);
             }
         }
 
-        private void initDescription(XEntityDefinition member) //, _VSOBJDESCOPTIONS flags, IVsObjectBrowserDescription3 description)
+        private void initDescription(XEntityDefinition member ) //, _VSOBJDESCOPTIONS flags, IVsObjectBrowserDescription3 description)
         {
             description = new List<Tuple<string, VSOBDESCRIPTIONSECTION>>();
             //

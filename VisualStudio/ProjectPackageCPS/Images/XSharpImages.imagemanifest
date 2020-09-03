@@ -3,20 +3,20 @@
                            xmlns:xsd="http://www.w3.org/2001/XMLSchema"
                            xmlns="http://schemas.microsoft.com/VisualStudio/ImageManifestSchema/2014">
   <Symbols>
-    <String Name="Resources" Value="/XSharpProject2015CPS;Component/" />
+    <String Name="Resources" Value="/XSharpProjectCPS;Component/" />
     <Guid Name="XSharpImagesGuid" Value="6c1120ab-b5cc-4593-9413-ad506eedcec7" />
     <ID Name="ProjectIcon" Value="1" />
     <ID Name="ItemIcon" Value="2" />
   </Symbols>
   <Images>
     <Image Guid="$(XSharpImagesGuid)" ID="$(ProjectIcon)">
-      <Source Uri="$(Resources)/Images/XSharp.png" >
-        <Size Value="48" />
+      <Source Uri="$(Resources)/Images/XSharpProject.png" >
+        <Size Value="16" />
       </Source>
     </Image>
     <Image Guid="$(XSharpImagesGuid)" ID="$(ItemIcon)">
         <Source Uri="$(Resources)/Images/XSharpDocument.png" >
-        <Size Value="48" />
+        <Size Value="16" />
       </Source>
     </Image>
   </Images>

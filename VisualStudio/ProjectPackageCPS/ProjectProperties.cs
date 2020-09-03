@@ -1,4 +1,4 @@
-namespace XSharpLanguage
+namespace XSharp.ProjectSystem
 {
     using System;
     using System.Collections.Generic;
@@ -8,7 +8,7 @@ namespace XSharpLanguage
     using System.Threading.Tasks;
     using Microsoft.VisualStudio.ProjectSystem;
     using Microsoft.VisualStudio.ProjectSystem.Properties;
-    using Microsoft.VisualStudio.ProjectSystem.Utilities;
+    //using Microsoft.VisualStudio.ProjectSystem.Utilities;
 
     [Export]
     [AppliesTo(MyUnconfiguredProject.UniqueCapability)]

@@ -3,19 +3,18 @@ using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.ProjectSystem;
-using Microsoft.VisualStudio.ProjectSystem.Debuggers;
-using Microsoft.VisualStudio.ProjectSystem.Utilities;
-using Microsoft.VisualStudio.ProjectSystem.Utilities.DebuggerProviders;
-using Microsoft.VisualStudio.ProjectSystem.VS.Debuggers;
+using Microsoft.VisualStudio.ProjectSystem.Debug;
+using Microsoft.VisualStudio.ProjectSystem.Properties;
+using Microsoft.VisualStudio.ProjectSystem.VS.Debug;
 using XSharp;
-namespace XSharpLanguage
+namespace XSharp.ProjectSystem
 {
     [ExportDebugger(XSharpDebugger.SchemaName)]
     [AppliesTo(MyUnconfiguredProject.UniqueCapability)]
     public class XSharpDebuggerLaunchProvider : DebugLaunchProviderBase
     {
         // 
-        [ExportPropertyXamlRuleDefinition(Constants.ProjectDllCPS+", Version=" + Constants.Version + ", Culture=neutral, PublicKeyToken=9be6e469bc4921f1", "XamlRuleToCode:PropertyPage_Debugger.xaml", "Project")]
+        [ExportPropertyXamlRuleDefinition("XSharpProjectCPS, Version=" + Constants.Version + ", Culture=neutral, PublicKeyToken=9be6e469bc4921f1", "XamlRuleToCode:PropertyPage_Debugger.xaml", "Project")]
         [AppliesTo(MyUnconfiguredProject.UniqueCapability)]
         private object DebuggerXaml { get { throw new NotImplementedException(); } }
 
@@ -33,7 +32,7 @@ namespace XSharpLanguage
 
         public override async Task<bool> CanLaunchAsync(DebugLaunchOptions launchOptions)
         {      
-            var properties = await this.DebuggerProperties.GetXSharpDebuggerPropertiesAsync();
+            var properties = await DebuggerProperties.GetXSharpDebuggerPropertiesAsync();
             string commandValue = await properties.XSharpDebuggerCommand.GetEvaluatedValueAtEndAsync();
             return !string.IsNullOrEmpty(commandValue);
         }
@@ -43,7 +42,7 @@ namespace XSharpLanguage
             var settings = new DebugLaunchSettings(launchOptions);
 
             // The properties that are available via DebuggerProperties are determined by the property XAML files in your project.
-            var debuggerProperties = await this.DebuggerProperties.GetXSharpDebuggerPropertiesAsync();
+            var debuggerProperties = await DebuggerProperties.GetXSharpDebuggerPropertiesAsync();
             settings.CurrentDirectory = await debuggerProperties.XSharpDebuggerWorkingDirectory.GetEvaluatedValueAtEndAsync();
             settings.Executable = await debuggerProperties.XSharpDebuggerCommand.GetEvaluatedValueAtEndAsync();
             settings.Arguments = await debuggerProperties.XSharpDebuggerCommandArguments.GetEvaluatedValueAtEndAsync();

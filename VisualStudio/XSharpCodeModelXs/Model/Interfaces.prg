@@ -74,5 +74,15 @@ BEGIN NAMESPACE XSharpModel
       PROPERTY ParamTypeDesc  AS STRING GET
       PROPERTY Value          AS STRING GET
          
+      END INTERFACE
+      
+   INTERFACE IXSourceElement 
+      PROPERTY File AS XFile               GET  
+      PROPERTY Range AS TextRange          GET  
+      PROPERTY Interval AS TextInterval    GET  
    END INTERFACE
+   
+   INTERFACE IXSourceVariable INHERIT IXVariable, IXSourceElement
+   END INTERFACE
+      
 END NAMESPACE   

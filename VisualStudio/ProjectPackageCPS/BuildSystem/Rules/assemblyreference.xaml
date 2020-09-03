@@ -1,46 +1,96 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Rule
-    Name="AssemblyReference"
-    DisplayName="Assembly Reference"
-    PageTemplate="generic"
-    Description="Assembly reference properties"
-    xmlns="http://schemas.microsoft.com/build/2009/properties">
-    <Rule.DataSource>
-        <DataSource Persistence="ProjectFile" ItemType="Reference" HasConfigurationCondition="False" />
-    </Rule.DataSource>
 
-    <StringListProperty Name="Aliases"
-                        DisplayName="Aliases"
-                        Description="A comma-delimited list of aliases to this reference."
-                        Separator="," />
+<Rule Name="AssemblyReference"
+      Description="Assembly Reference Properties"
+      DisplayName="Assembly Reference"
+      PageTemplate="generic"
+      xmlns="http://schemas.microsoft.com/build/2009/properties">
+  <Rule.DataSource>
+    <DataSource HasConfigurationCondition="False"
+                ItemType="Reference"
+                Persistence="ProjectFile"
+                SourceOfDefaultValue="AfterContext" />
+  </Rule.DataSource>
 
-    <BoolProperty Name="CopyLocal"
-                DisplayName="Copy Local"
-                Description="Indicates whether the reference will be copied to the output directory.">
-        <BoolProperty.DataSource>
-            <DataSource Persistence="ProjectFile" ItemType="Reference" HasConfigurationCondition="False" PersistedName="Private" />
-        </BoolProperty.DataSource>
-    </BoolProperty>
+  <StringListProperty Name="Aliases"
+                      Description="A comma-delimited list of aliases to this reference."
+                      DisplayName="Aliases"
+                      Separator="," />
 
-    <BoolProperty Name="EmbedInteropTypes"
-                  DisplayName="Embed Interop Types"
-                  Description="Indicates whether types defined in this assembly will be embedded into the target assembly." />
+  <BoolProperty Name="CopyLocal"
+                Description="Indicates whether the reference will be copied to the output directory."
+                DisplayName="Copy Local">
+    <BoolProperty.DataSource>
+      <DataSource HasConfigurationCondition="False"
+                  ItemType="Reference"
+                  PersistedName="Private"
+                  Persistence="ProjectFile"
+                  SourceOfDefaultValue="AfterContext" />
+    </BoolProperty.DataSource>
+  </BoolProperty>
 
-    <BoolProperty Name="SpecificVersion" 
-                  DisplayName="Specific Version"
-                  Description="Indicates whether this assembly can be resolved without regard to multi-targeting rules for assembly resolution.">
-        <BoolProperty.DataSource>
-            <DataSource Persistence="AssemblyReference" ItemType="Reference" HasConfigurationCondition="False"/>
-        </BoolProperty.DataSource>
-    </BoolProperty>
+  <BoolProperty Name="EmbedInteropTypes"
+                Description="Indicates whether types defined in this assembly will be embedded into the target assembly."
+                DisplayName="Embed Interop Types" />
 
-    <StringProperty Name="RequiredTargetFramework" DisplayName="Required Target Framework" Visible="False" />
-    <StringProperty Name="HintPath" Visible="false" />
-    <StringProperty Name="SDKName" Visible="false" />
-    <BoolProperty Name="IsWinMDFile" Visible="false" />
-    <StringProperty Name="ImageRuntime"
-                    DisplayName="Runtime Version"
-                    Description="The CLR runtime version targeted by this assembly."
-                    Visible="False"
-                    ReadOnly="True" />
+  <StringProperty Name="HintPath"
+                  Visible="false" />
+
+  <StringProperty Name="Identity"
+                  Description="Security identity of the referenced assembly (see System.Reflection.Assembly.Evidence or System.Security.Policy.Evidence)."
+                  DisplayName="Identity"
+                  ReadOnly="True">
+    <StringProperty.DataSource>
+      <DataSource PersistedName="{}{Identity}"
+                  SourceOfDefaultValue="AfterContext" />
+    </StringProperty.DataSource>
+  </StringProperty>
+
+  <StringProperty Name="ImageRuntime"
+                  ReadOnly="True"
+                  Visible="False" />
+
+  <StringProperty Name="IsImplicitlyDefined"
+                  ReadOnly="True"
+                  Visible="False" />
+
+  <BoolProperty Name="IsWinMDFile"
+                Visible="false" />
+
+  <StringProperty Name="RequiredTargetFramework"
+                  Visible="False" />
+
+  <StringProperty Name="ResolvedPath"
+                  Description="Location of the file being referenced."
+                  DisplayName="Path"
+                  ReadOnly="True">
+    <StringProperty.DataSource>
+      <DataSource PersistedName="Identity"
+                  SourceOfDefaultValue="AfterContext" />
+    </StringProperty.DataSource>
+  </StringProperty>
+
+  <StringProperty Name="SDKName"
+                  Visible="false" />
+
+  <BoolProperty Name="SpecificVersion"
+                Description="Indicates whether this assembly can be resolved without regard to multi-targeting rules for assembly resolution."
+                DisplayName="Specific Version">
+    <BoolProperty.DataSource>
+      <DataSource HasConfigurationCondition="False"
+                  ItemType="Reference"
+                  Persistence="AssemblyReference"
+                  SourceOfDefaultValue="AfterContext" />
+    </BoolProperty.DataSource>
+  </BoolProperty>
+
+  <StringProperty Name="Version"
+                  Description="Version of reference."
+                  DisplayName="Version"
+                  ReadOnly="True" />
+
+  <BoolProperty Name="Visible"
+                ReadOnly="True"
+                Visible="False" />
+
 </Rule>

@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Rule
 	Name="XSharpDebugger"
-	DisplayName="XSharp Debugger"
+	DisplayName="Debug"
 	PageTemplate="debugger"
 	Order="4"
     	Description="XSharpDebugger Debugger options"

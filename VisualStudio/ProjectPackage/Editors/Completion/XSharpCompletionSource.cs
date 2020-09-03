@@ -2500,7 +2500,7 @@ namespace XSharpLanguage
                 if (element == null)
                 {
                     // then Locals
-                    element = member.GetLocals(snapshot, currentLine, dialect).Where(x => StringEquals(x.Name, name)).LastOrDefault();
+                    element = member.GetLocals(snapshot, currentLine, dialect).Where(x => StringEquals(x.Name, name) && x.Range.StartLine < currentLine).LastOrDefault();
                     if (element == null)
                     {
                         // We can have a Property/Field of the current CompletionType
@@ -3572,7 +3572,7 @@ namespace XSharpLanguage
         /// <param name="snapshot"></param>
         /// <param name="iCurrentLine"></param>
         /// <returns></returns>
-        internal static IList<IXVariable> GetLocals(this XMemberDefinition member, ITextSnapshot snapshot, int iCurrentLine, XSharpDialect dialect)
+        internal static IList<IXSourceVariable> GetLocals(this XMemberDefinition member, ITextSnapshot snapshot, int iCurrentLine, XSharpDialect dialect)
         {
             iCurrentLine = Math.Min(snapshot.LineCount - 1, iCurrentLine);
             // create a walker with just the contents of the current member

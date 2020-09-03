@@ -11,7 +11,7 @@ USING LanguageService.SyntaxTree
 
 BEGIN NAMESPACE XSharpModel
    /// <summary>An entity in the source code</summary>
-   CLASS XSourceElement INHERIT XElement
+   CLASS XSourceElement INHERIT XElement IMPLEMENTS IXSourceElement
       PROTECTED _id    := -1                AS Int64                         
       PROPERTY Id   AS INT64                GET _id INTERNAL SET _id := value
       PROPERTY File AS XFile                AUTO 

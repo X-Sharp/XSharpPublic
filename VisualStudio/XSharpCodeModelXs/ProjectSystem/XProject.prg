@@ -789,7 +789,7 @@ BEGIN NAMESPACE XSharpModel
       METHOD Lookup(typeName AS STRING) AS XTypeDefinition
          VAR usings := List<STRING>{}
          RETURN Lookup(typeName, usings)
-
+   
       METHOD Lookup(typeName AS STRING, usings AS IReadOnlyList<STRING>) AS XTypeDefinition
       	 // lookup Type definition in this project and X# projects referenced by this project
         IF XSettings.EnableTypelookupLog

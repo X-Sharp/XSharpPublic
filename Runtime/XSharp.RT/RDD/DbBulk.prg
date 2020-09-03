@@ -325,7 +325,7 @@ FUNCTION DbCopy(cTargetFile, acFields, cbForCondition, cbWhileCondition, nNext, 
 			ENDIF
 			
 			DbUseArea(.T., cDriver, cTargetFile, __UniqueAlias(cTargetFile),,,,,acRDDs)
-		        DbMoveToMemory()
+		    DbMoveToMemory()
 			VoDbSelect(siFrom, REF siTo)
 			
 			lRetCode := DbTrans(siTo, aStruct, cbForCondition, cbWhileCondition, nNext, nRecord, lRest)

@@ -1635,8 +1635,10 @@ METHOD Refresh() 			AS LOGIC
 	ENDIF
 	SELF:_Hot := FALSE
 	SELF:_BufferValid := FALSE
-	IF SELF:_NewRecord 
+	IF SELF:_NewRecord
+        VAR nCount := SELF:RecCount
 		SELF:_NewRecord  := FALSE
+        SELF:_UpdateRecCount(nCount-1)      // writes the reccount to the header as well
 		isOK := SELF:GoBottom()
 	ELSE
 		isOK := TRUE

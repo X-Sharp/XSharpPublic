@@ -10,6 +10,7 @@
 /// The Init event is executed when you issue CREATEOBJECT( ) and allows you to initialize the object.</param>
 /// <returns>The object that was created</returns>
 /// <seealso cref='O:XSharp.RT.Functions.CreateInstance' >CreateInstance</seealso>
+using System.Collections.Generic
 
 FUNCTION CreateObject(cClassName, _args ) AS OBJECT CLIPPER
     // The pseudo function _ARGS() returns the Clipper arguments array
@@ -119,11 +120,12 @@ FUNCTION VarType( eExpression AS USUAL, lNullDataType AS LOGIC) AS STRING
     
     
     
-FUNCTION DbCopyFox(cTargetFile, cType, cFields, includedFields, excludedFields, cbForCondition, cbWhileCondition, nNext,nRecord, lRest, nCodePage)   AS LOGIC CLIPPER
+FUNCTION DbCopyFox(cTargetFile, cType, aFields, includedFields, excludedFields, cbForCondition, ;
+    cbWhileCondition, nNext,nRecord, lRest, nCodePage, cDbName, cLongTableName, lCdx, lNoOptimize)   AS LOGIC CLIPPER
     local cOutPutType as STRING
     LOCAL result as LOGIC
     cOutPutType := cType       
-    var fields := __BuildFieldList(cFields, includedFields, excludedFields, TRUE)
+    var fields := __BuildFieldList(aFields, includedFields, excludedFields, TRUE)
     var acFields := {}
     foreach var cField in fields
         AAdd(acFields, cField)
@@ -160,8 +162,9 @@ FUNCTION DbCopyFox(cTargetFile, cType, cFields, includedFields, excludedFields, 
 
 
 
-FUNCTION DbCopyDelimFox (cTargetFile, cDelim, cChar, cFields, includedFields, excludedFields, cbForCondition, cbWhileCondition, nNext,nRecord, lRest, nCodePage)   AS LOGIC CLIPPER
-    var fields := __BuildFieldList(cFields, includedFields, excludedFields, TRUE)
+FUNCTION DbCopyDelimFox (cTargetFile, cDelim, cChar, aFields, includedFields, excludedFields, ;
+    cbForCondition, cbWhileCondition, nNext,nRecord, lRest, nCodePage, lNoOptimize)   AS LOGIC CLIPPER
+    var fields := __BuildFieldList(aFields, includedFields, excludedFields, TRUE)
     var acFields := {}
     foreach var cField in fields
         AAdd(acFields, cField)
@@ -181,3 +184,107 @@ FUNCTION DbCopyDelimFox (cTargetFile, cDelim, cChar, cFields, includedFields, ex
 	RETURN DbCopyDelim(cTargetFile, cDelim, acFields, cbForCondition, cbWhileCondition, nNext,nRecord, lRest)
 	
 
+
+
+FUNCTION DbCopyToArray(aFieldList, cIncludedFields, cExcludedFields, cbForCondition, cbWhileCondition, nNext,nRecord, lRest, lNoOptimize) AS ARRAY
+    VAR aFields := __BuildFieldList(aFieldList, cIncludedFields, cExcludedFields, FALSE)
+    VAR aResult := {}
+
+    DbEval( {|| AAdd(aResult, DbCopyToArraySingleRecord(aFields)) }, cbForCondition, cbWhileCondition, nNext,nRecord, lRest )
+
+    RETURN aResult
+
+INTERNAL FUNCTION DbCopyToArraySingleRecord(aFields as IList<string> ) AS ARRAY
+    LOCAL result AS ARRAY
+    result := ArrayNew(aFields:Count)
+    FOR VAR i := 1 to aFields:Count
+        result[i] := __FieldGet(aFields[i-1])
+    NEXT
+    RETURN result
+
+
+FUNCTION DbAppendFromArray(aValues, aFieldList, cIncludedFields, cExcludedFields, cbForCondition) AS LOGIC
+    IF ! IsArray(aValues)
+        THROW Error.ArgumentError(__FUNCTION__ , nameof(aValues),"Argument should be a multidimensional array" , 1, {aValues})
+    ENDIF
+    VAR aFields := __BuildFieldList(aFieldList, cIncludedFields, cExcludedFields, FALSE)
+    LOCAL oForCondition   := NULL   AS ICodeblock
+    IF cbForCondition IS ICodeblock
+        oForCondition := (ICodeblock) cbForCondition
+    ENDIF
+    // Check to see if the array is multi dimensional and if the # of fields matches.
+    IF ALen(aValues) > 0
+        FOREACH var u in (ARRAY) aValues
+            IF !IsArray(u)
+                THROW Error.ArgumentError(__FUNCTION__ , nameof(aValues), "Argument should be a multidimensional array", 1, {aValues})
+            ENDIF
+            local aElement := u as ARRAY
+            IF ALen(aElement) < aFields:Count
+                THROW Error.ArgumentError(__FUNCTION__ , nameof(aValues), "Not enough elements in sub array", 1, {u})
+            ENDIF
+            DbAppend()
+            // Todo Evaluate FOR clause
+            FOR VAR i := 1 to aFields:Count
+                __FieldSet(aFields[i-1], aElement[i])
+            NEXT
+            IF oForCondition != NULL
+                LOCAL lResult as LOGIC
+                lResult := (LOGIC) oForCondition:EvalBlock()
+                IF ! lResult
+                    DbBuffRefresh()
+                ENDIF
+            ENDIF
+        NEXT
+    ENDIF
+    RETURN TRUE
+
+
+
+FUNCTION DbAppFox(cSourceFile, cType, aFields, cbForCondition, cbWhileCondition, nNext,nRecord, lRest, cSheet, nCodePage, lNoOptimize)
+    local cOutPutType as STRING
+    LOCAL result as LOGIC
+    cOutPutType := cType       
+    var cDelim := RuntimeState.DelimRDD
+    TRY
+        SWITCH cOutPutType:ToLower()
+        CASE "dbf"
+            result := DbApp(cSourceFile, aFields, cbForCondition, cbWhileCondition, nNext, nRecord,lRest)
+        CASE "csv"  
+            RuntimeState.DelimRDD := "CSV"  
+            if String.IsNullOrEmpty(System.IO.Path.GetExtension(cSourceFile))
+                cSourceFile += ".csv"
+            endif
+            result := DbAppDelim(cSourceFile, ",", aFields, cbForCondition, cbWhileCondition, nNext, nRecord, lRest)
+        CASE "sdf"  
+            if String.IsNullOrEmpty(System.IO.Path.GetExtension(cSourceFile))
+                cSourceFile += ".txt"
+            endif
+            result := DbAppSdf(cSourceFile, aFields, cbForCondition, cbWhileCondition, nNext,nRecord, lRest)   
+        CASE "foxplus"
+        CASE "fox2x"
+            result := DbApp(cSourceFile, aFields, cbForCondition, cbWhileCondition, nNext,nRecord, lRest,"DBFCDX")
+        OTHERWISE
+            // Other Formats
+            // DIF,MOD,SYLK,WK1,WKS,WR1,WRK,XLS,XL5, XL8
+            Throw NotSupportedException{"The input format "+cOutPutType+" is not available yet"}         
+        END SWITCH
+    FINALLY
+        RuntimeState.DelimRDD   := cDelim
+    END TRY
+return result
+
+
+FUNCTION DbAppDelimFox (cTargetFile, cDelim, cChar, aFields, cbForCondition, cbWhileCondition, nNext,nRecord, lRest, nCodePage, lNoOptimize)   AS LOGIC CLIPPER
+    IF IsString(cDelim)
+        VAR sDelim := Upper(cDelim) 
+        if sDelim == "\TAB"
+    	    cDelim := e"\t"
+        elseif sDelim == "\BLANK"
+    	    cDelim := " "
+        endif 
+    ENDIF
+    if !IsString(cChar)
+    	cChar := e"\""
+    ENDIF
+    RuntimeState.StringDelimiter := cChar
+	RETURN DbAppDelim(cTargetFile, cDelim, aFields, cbForCondition, cbWhileCondition, nNext,nRecord, lRest)

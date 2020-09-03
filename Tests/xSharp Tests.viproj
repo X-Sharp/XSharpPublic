@@ -84878,7 +84878,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   Optimize=0
 ENDApplication = R738 - Using @@ prefix for Clipper parameters
 
-ApplicationGroup = 962BFCBC-0AA0-4B6C-90C7-F389146CC3FA
+ApplicationGroup = A95A4D23-3574-40FD-B873-22D28ACCA212
 ; ************** APPLICATION R739 - Compiler crash *************
 Application = R739 - Compiler crash
 IDEVersion = 1.06

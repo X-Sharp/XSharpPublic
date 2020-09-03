@@ -13,6 +13,21 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 {
     internal static class XSharpPPTokenExtensions
     {
+        internal static int La(this XSharpToken[] tokens, int pos)
+        {
+            if (pos >= 0 && pos < tokens.Length)
+                return tokens[pos].Type;
+            return 0;
+        }
+        internal static bool IsName(this XSharpToken[] tokens, int pos)
+        {
+            if (pos >= 0 && pos < tokens.Length)
+            {
+                return tokens[pos].IsName();
+            }
+            return false;
+        }
+
         internal static bool HasStopTokens(this PPTokenType value)
         {
             switch (value)

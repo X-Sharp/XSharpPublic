@@ -239,7 +239,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     }
                 }
             }
-            if (hasOptionalResult)
+            if (hasOptionalResult )
             {
                 checkForRepeat(udc);
             }
@@ -325,7 +325,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
         }
 
-
         bool isRepeatToken(string left, string right, bool first = true)
         {
             if (left.EndsWith("n", StringComparison.OrdinalIgnoreCase))
@@ -407,7 +406,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
 
         }
-        PPMatchToken[] analyzeMatchTokens(XSharpToken[] matchTokens, Dictionary<string, PPMatchToken> markers, int offset = 0, int nestLevel = 0)
+        PPMatchToken[] analyzeMatchTokens(XSharpToken[] matchTokens, Dictionary<string, PPMatchToken> markers, int nestLevel = 0)
         {
             var result = new List<PPMatchToken>();
             var max = matchTokens.Length;
@@ -423,9 +422,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     case XSharpLexer.LT:
                         // These conditions match IsName() as last condition 
                         // because the other matches are faster
-                        if (i < max - 2
-                            && matchTokens[i + 2].Type == XSharpLexer.GT
-                            && matchTokens[i + 1].IsName())
+                        if (matchTokens.La(i + 2) == XSharpLexer.GT
+                            && matchTokens.IsName(i + 1))
                         {
                             // <idMarker>
                             name = matchTokens[i + 1];
@@ -434,9 +432,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                             addToDict(markers, element);
                             i += 2;
                         }
-                        if (i < max - 2
-                            && matchTokens[i + 2].Type == XSharpLexer.GT
-                            && matchTokens[i + 1].Type == XSharpLexer.SYMBOL_CONST)
+                        else if ( matchTokens.La(i + 2) == XSharpLexer.GT
+                            && matchTokens.La(i + 1) == XSharpLexer.SYMBOL_CONST)
                         {
                             // Xbase++ Addition
                             // <#idMarker>
@@ -448,52 +445,47 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                             addToDict(markers, element);
                             i += 2;
                         }
-                        else if (i < max - 4
-                            // <*idMarker*>
-                            && matchTokens[i + 1].Type == XSharpLexer.MULT
-                            && matchTokens[i + 3].Type == XSharpLexer.MULT
-                            && matchTokens[i + 4].Type == XSharpLexer.GT
-                            && matchTokens[i + 2].IsName())
+                        else if (matchTokens.La(i + 1) == XSharpLexer.MULT
+                            && matchTokens.La(i + 3) == XSharpLexer.MULT
+                            && matchTokens.La(i + 4) == XSharpLexer.GT
+                            && matchTokens.IsName(i + 2))
                         {
+                            // <*idMarker*>
                             name = matchTokens[i + 2];
                             element = new PPMatchToken(name, PPTokenType.MatchWild);
                             result.Add(element);
                             addToDict(markers, element);
                             i += 4;
                         }
-                        else if (i < max - 4
-                            // <(idMarker)>
-                            && matchTokens[i + 1].Type == XSharpLexer.LPAREN
-                            && matchTokens[i + 3].Type == XSharpLexer.RPAREN
-                            && matchTokens[i + 4].Type == XSharpLexer.GT
-                            && matchTokens[i + 2].IsName())
-
+                        else if (
+                            matchTokens.La(i + 1) == XSharpLexer.LPAREN
+                            && matchTokens.La(i + 3) == XSharpLexer.RPAREN
+                            && matchTokens.La(i + 4) == XSharpLexer.GT
+                            && matchTokens.IsName(i + 2))
                         {
+                            // <(idMarker)>
                             name = matchTokens[i + 2];
                             element = new PPMatchToken(name, PPTokenType.MatchExtended);
                             result.Add(element);
                             addToDict(markers, element);
                             i += 4;
                         }
-                        else if (i < max - 4
-                            // <%idMarker%>
-                            && matchTokens[i + 1].Type == XSharpLexer.MOD
-                            && matchTokens[i + 3].Type == XSharpLexer.MOD
-                            && matchTokens[i + 4].Type == XSharpLexer.GT
-                            && matchTokens[i + 2].IsName())
-
+                        else if (matchTokens.La(i + 1) == XSharpLexer.MOD
+                            && matchTokens.La(i + 3) == XSharpLexer.MOD
+                            && matchTokens.La(i + 4) == XSharpLexer.GT
+                            && matchTokens.IsName(i + 2))
                         {
+                            // <%idMarker%>
                             name = matchTokens[i + 2];
                             element = new PPMatchToken(name, PPTokenType.MatchLike);
                             result.Add(element);
                             addToDict(markers, element);
                             i += 4;
                         }
-                        else if (i < max - 4
-                              && matchTokens[i + 2].Type == XSharpLexer.COMMA
-                              && matchTokens[i + 3].Type == XSharpLexer.ELLIPSIS
-                              && matchTokens[i + 4].Type == XSharpLexer.GT
-                              && matchTokens[i + 1].IsName())
+                        else if (matchTokens.La(i + 2) == XSharpLexer.COMMA
+                              && matchTokens.La(i + 3) == XSharpLexer.ELLIPSIS
+                              && matchTokens.La(i + 4) == XSharpLexer.GT
+                              && matchTokens.IsName(i + 1))
                         {
                             // <idMarker,...>
                             name = matchTokens[i + 1];
@@ -502,9 +494,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                             addToDict(markers, element);
                             i += 4;
                         }
-                        else if (i < max - 3
-                              && matchTokens[i + 2].Type == XSharpLexer.COLON
-                              && matchTokens[i + 1].IsName())
+                        else if (matchTokens.La(i + 2) == XSharpLexer.COLON
+                              && matchTokens.IsName(i + 1))
                         {
                             // <idMarker:word list, separated with commas>
                             name = matchTokens[i + 1];
@@ -543,14 +534,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         {
                             i = i + more.Count + 1;
 
-                            var nested = analyzeMatchTokens(more.ToArray(), markers, result.Count, nestLevel + 1);
-                            PPMatchToken first = null;
+                            var nested = analyzeMatchTokens(more.ToArray(), markers, nestLevel + 1);
                             if (nested.Length > 0)
                             {
                                 // the '[' is added to the result list
                                 // and the nested elements are added as children
                                 // the type for '[' is MatchOptional
-                                first = nested[0];
+                                PPMatchToken first = nested[0];
                                 PPMatchToken marker = null;
                                 foreach (var e in nested)
                                 {
@@ -613,8 +603,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     if (marker.RuleTokenType.HasStopTokens() || marker.IsRepeat )
                     {
                         var stopTokens = new List<XSharpToken>();
-                        findStopTokens(mt, i + 1, stopTokens);
-                        marker.Tokens = stopTokens.ToArray();
+                        findStopTokens(mt,  1, stopTokens);
+                        marker.StopTokens = stopTokens.ToArray();
                     }
                     if (marker.IsOptional)
                     {
@@ -623,8 +613,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                             if (child.RuleTokenType.HasStopTokens())
                             {
                                 var stopTokens = new List<XSharpToken>();
-                                findStopTokens(mt, i + 1, stopTokens);
-                                child.Tokens = stopTokens.ToArray();
+                                findStopTokens(mt, 1, stopTokens);
+                                child.StopTokens = stopTokens.ToArray();
                                 break;
                             }
                         }
@@ -655,8 +645,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         void findStopTokens(PPMatchToken[] matchmarkers, int iStart, IList<XSharpToken> stoptokens)
         {
-            bool finished = false;
-            for (int j = iStart; j < matchmarkers.Length && !finished; j++)
+            for (int j = iStart; j < matchmarkers.Length ; j++)
             {
                 var next = matchmarkers[j];
                 switch (next.RuleTokenType)
@@ -675,7 +664,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     case PPTokenType.MatchSingle:
                     case PPTokenType.Token:
                         stoptokens.Add(next.Token);
-                        finished = true;
                         break;
                 }
             }
@@ -949,7 +937,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
             if (mtoken.RuleTokenType.HasStopTokens())
             {
-                foreach (var stopToken in mtoken.Tokens)
+                foreach (var stopToken in mtoken.StopTokens)
                 {
                     if (tokenEquals(stopToken, token))
                     {
@@ -1060,15 +1048,18 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                             FIELD-><fldN> := <valN>]  }, __EBCB(<for>), __EBCB(<whl>), <nxt>, <rcd>, <.rst.>)
 
                      **/
-                    if (!mchild.IsOptional)
-                    {
-                        optfound = false;
-                    }
                     break;
                 }
                 else
                 {
                     optfound = true;
+                    if (iChild == optional.Length && mchild.IsRepeat)
+                    {
+                        // if we have matched the last of a repeat group like the fldN in the sample above
+                        // and when the key ends with 'n' and the previous key ends with '1' then there may be more
+                        // repeated groups. In that case keep matching the optional group.
+                        iChild = 0;
+                    }
                 }
             }
             if (optfound)
@@ -1562,7 +1553,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 {
                     if (t.Channel == XSharpLexer.PREPROCESSORCHANNEL)
                     {
-                        t.Channel = t.OriginalChannel = XSharpLexer.DefaultTokenChannel;
+                        // Leave PP commands alone so we can redirect input to #error or #warning
+                        if (t.Type < XSharpLexer.PP_FIRST || t.Type > XSharpLexer.PP_LAST)
+                        {
+                            t.Channel = t.OriginalChannel = XSharpLexer.DefaultTokenChannel;
+                        }
                     }
                     t.SourceSymbol = source;
                 }
@@ -1984,8 +1979,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         void stringifyResult(PPResultToken rule, IList<XSharpToken> tokens, PPMatchRange[] matchInfo, IList<XSharpToken> result, int offset)
         {
             var range = matchInfo[rule.MatchMarker.Index];
-            if (!range.Empty)
+            if (range.Empty)
             {
+                stringifySingleResult(rule, tokens, range, result);
+            }
+            else
+            { 
                 if (range.MatchCount > 1)
                 {
                     range = range.Children[offset];
@@ -2007,7 +2006,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     stringifySingleResult(rule, tokens, range, result);
                 }
             }
-
         }
 
         void logifyResult(PPResultToken rule, IList<XSharpToken> tokens, PPMatchRange[] matchInfo, IList<XSharpToken> result, int offset)

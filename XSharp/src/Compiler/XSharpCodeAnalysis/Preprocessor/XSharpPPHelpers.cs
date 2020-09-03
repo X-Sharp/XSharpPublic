@@ -44,7 +44,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         ResultNormalStringify = 0x83,        // <"idMarker">         
         ResultSmartStringify = 0x84,         // <(idMarker)>         
         ResultBlockify = 0x85,               // <{idMarker}>         
-        ResultLogify = 0x86,                 // <.idMarker.>         
+        ResultLogify = 0x86,                 // <.idMarker.>
         ResultOptional = 0x87,               // [....]               
 
     }

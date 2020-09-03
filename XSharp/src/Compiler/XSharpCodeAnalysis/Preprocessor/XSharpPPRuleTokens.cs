@@ -49,7 +49,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         internal string SyntaxText
         {
-
             get
             {
                 string sResult;
@@ -94,7 +93,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     case PPTokenType.ResultLogify:
                         sResult = "<." + Key + ".>";
                         break;
-                    default:
+                   default:
                         sResult = "<" + Key + ">";
                         break;
                 }
@@ -128,14 +127,17 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
     /// Match markers do not have to have a Result marker.
     /// </summary>
 
+    [DebuggerDisplay("{GetDebuggerDisplay(), nq}")]
     internal class PPMatchToken : PPRuleToken
     {
         #region Properties
        // Restricted and Optional Markers may have more than one token
         // For restricted tokens this contains the list of possible match values
+        internal XSharpToken[] Tokens { get; set; }
+		// StopTokens is an alias for Tokens.
         // For List and Repeated match markers the Tokens list contains the list of 
         // tokens that may the end of the list
-        internal XSharpToken[] Tokens { get; set; }
+        internal XSharpToken[] StopTokens { get => Tokens; set => Tokens = value; }
         // For optional tokens this contains the list of tokens inside the option block
         internal PPMatchToken[] Children { get; set; }
         internal int Index { get; set; } // Index in the flattened matchmarker list
@@ -157,6 +159,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
     /// For result markers we set the property Matched to indicate that a matching 
     /// Match marker is found. Unmatched Result markers make a UDC invalid
     /// </summary>
+    [DebuggerDisplay("{GetDebuggerDisplay(), nq}")]
     internal class PPResultToken : PPRuleToken
     {
         #region Properties

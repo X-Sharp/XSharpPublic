@@ -1866,7 +1866,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     {
                         if (cmds[i].Count > 0)
                         {
-                            cmds[i] = doNormalLine(cmds[i], false);
+						    var res = ProcessLine(cmds[i]);
+							if (res == null)
+	                            cmds[i].Clear();
+							else
+								cmds[i] = res;
+
                             foreach (var token in cmds[i])
                             {
                                 result.Add(token);
@@ -1881,7 +1886,16 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             if (usedRules.Count > 0)
             {
+                // somerule => #Error 
                 result.TrimLeadingSpaces();
+                if (result[0].Channel == XSharpLexer.PREPROCESSORCHANNEL)
+                { 
+                    result = ProcessLine(result);
+                    if (result == null)
+                    {
+                        result = new List<XSharpToken>();
+                    }
+                }
                 return true;
             }
             result = null;

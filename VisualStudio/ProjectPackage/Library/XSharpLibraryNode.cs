@@ -121,7 +121,7 @@ namespace XSharp.Project
         //private XEntityDefinition member;
         // Description Infos...
         private List<Tuple<string, VSOBDESCRIPTIONSECTION>> description;
-        private Tuple<String, long, long> editorInfo;
+        private Tuple<String, int, int> editorInfo;
         private String nodeText;
         // ClassName & Namespace
         private string nameSp = "";
@@ -137,6 +137,10 @@ namespace XSharp.Project
             this.Depends(0);
             //this.member = null;
             this.NodeType = nType;
+            if (this.NodeType == LibraryNodeType.Namespaces)
+            {
+                buildImageData(Kind.Namespace, Modifiers.Public);
+            }
             //
             description = new List<Tuple<string, VSOBDESCRIPTIONSECTION>>();
             editorInfo = null;
@@ -338,6 +342,14 @@ namespace XSharp.Project
             if (this.CanGoToSource && this.editorInfo != null)
             {
                 // Need to retrieve the Project, then the File...
+                XFile memberFile = XSolution.FindFile(this.editorInfo.Item1);
+                if (memberFile != null)
+                {
+                    if (memberFile?.Project?.ProjectNode != null)
+                    {
+                        memberFile.Project.ProjectNode.OpenElement(this.editorInfo.Item1, this.editorInfo.Item2, this.editorInfo.Item3);
+                    }
+                }
                 //this.member.OpenEditor();
             }
         }
@@ -446,13 +458,13 @@ namespace XSharp.Project
         protected override void buildDescription(_VSOBJDESCOPTIONS flags, IVsObjectBrowserDescription3 obDescription)
         {
             obDescription.ClearDescriptionText();
-            foreach( var element in description)
+            foreach (var element in description)
             {
                 obDescription.AddDescriptionText3(element.Item1, element.Item2, null);
             }
         }
 
-        private void initDescription(XEntityDefinition member ) //, _VSOBJDESCOPTIONS flags, IVsObjectBrowserDescription3 description)
+        private void initDescription(XEntityDefinition member) //, _VSOBJDESCOPTIONS flags, IVsObjectBrowserDescription3 description)
         {
             description = new List<Tuple<string, VSOBDESCRIPTIONSECTION>>();
             //
@@ -550,7 +562,8 @@ namespace XSharp.Project
                 }
 
                 //
-                if ((member.Parent is XTypeDefinition) && (member.Parent.Kind == Kind.Class))
+                if (!((member.Kind == Kind.Function) || (member.Kind == Kind.Procedure) || (member.Kind == Kind.VODLL)) &&
+                    ((member.Parent is XTypeDefinition) && (member.Parent.Kind == Kind.Class)))
                 {
                     descText = " CLASS ";
                     description.Add(new Tuple<string, VSOBDESCRIPTIONSECTION>(descText, VSOBDESCRIPTIONSECTION.OBDS_MISC));

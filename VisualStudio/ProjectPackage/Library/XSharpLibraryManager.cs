@@ -410,6 +410,8 @@ namespace XSharp.Project
                     if (0 != requests.Count)
                     {
                         task = requests.Dequeue();
+                        if (requests.Count == 0)
+                            this.library.Refresh();
                     }
                     if (0 == requests.Count)
                     {
@@ -468,7 +470,7 @@ namespace XSharp.Project
                         prjNode.updateCount += 1;
                         //this.prjNode.AddNode(node);
                         //library.AddNode(node);
-                        this.library.Refresh();
+                        //this.library.Refresh();
                     }
                 }
             }
@@ -483,6 +485,10 @@ namespace XSharp.Project
 
             if (!scope.HasCode)
                 return;
+            XSharpLibraryNode newNode;
+            LibraryNode nsNode;
+            try
+            {
             // Retrieve all Types
             // !!! WARNING !!! The XFile object (scope) comes from the DataBase
             // We should retrieve TypeList from the DataBase.....
@@ -504,8 +510,7 @@ namespace XSharp.Project
                     }
                     // Does that NameSpace already exist ?
                     // Search for the corresponding NameSpace
-                    XSharpLibraryNode newNode;
-                    LibraryNode nsNode = prjNode.SearchNameSpace(nodeName);
+                        nsNode = prjNode.SearchNameSpace(nodeName);
                     if (nsNode is XSharpLibraryNode)
                     {
                         newNode = (XSharpLibraryNode)nsNode;
@@ -521,10 +526,6 @@ namespace XSharp.Project
                     }
                     // Handle Global Scope here
                     // It contains Function/Procedure/etc...
-                    if (newNode.Name == "(Global Scope)")
-                    {
-                        CreateGlobalTree(newNode, xType, moduleId);
-                    }
                     lock (files)
                     {
                         files.Add(moduleId, newNode);
@@ -547,7 +548,7 @@ namespace XSharp.Project
                     if (!String.IsNullOrEmpty(xType.Namespace))
                         nSpace = xType.Namespace;
                     // Search for the corresponding NameSpace
-                    LibraryNode nsNode = prjNode.SearchNameSpace(nSpace);
+                        nsNode = prjNode.SearchNameSpace(nSpace);
                     if (nsNode == null)
                     {
                         nsNode = prjNode.SearchClass(nSpace);
@@ -558,9 +559,8 @@ namespace XSharp.Project
                         XSharpLibraryNode xsNSNode = (XSharpLibraryNode)nsNode;
                         // So the Class node will belong to that NameSpace Node
                         // Now, try to check if such Type already exist
-                        XSharpLibraryNode newNode;
                         LibraryNode newTmpNode;
-                        newTmpNode = xsNSNode.SearchClass(xType.Name);
+                            newTmpNode = xsNSNode.SearchClass(xType.FullName);
                         if (newTmpNode is XSharpLibraryNode)
                         {
                             newNode = (XSharpLibraryNode)newTmpNode;
@@ -584,26 +584,51 @@ namespace XSharp.Project
                     else
                     {
                         // Not found !?
+                        }
                     }
                 }
+                nsNode = prjNode.SearchNameSpace(XLiterals.GlobalName);
+                if (nsNode is XSharpLibraryNode)
+                {
+                    newNode = (XSharpLibraryNode)nsNode;
+                    newNode.Depends(moduleId.ItemID);
+                }
+                else
+                {
+                    newNode = new XSharpLibraryNode(XLiterals.GlobalName, LibraryNode.LibraryNodeType.Namespaces);
+                    prjNode.AddNode(newNode);
+                    newNode.parent = prjNode;
+                }
+                lock (files)
+                {
+                    files.Add(moduleId, newNode);
+                }
+                var funcs = XSharpModel.XDatabase.GetFunctions(scope.Id.ToString());
+                if (funcs == null)
+                    return;
+                var elts = XDbResultHelpers.BuildFullFuncsInFile(scope, funcs);
+                CreateGlobalTree(newNode, elts, moduleId);
             }
+            catch
+            {
 
+            }
         }
 
-        private void CreateGlobalTree(LibraryNode current, XTypeDefinition scope, XSharpModuleId moduleId)
+        private void CreateGlobalTree(LibraryNode globalScope, IList<XMemberDefinition> XMembers, XSharpModuleId moduleId)
         {
-            if (null == scope || XSolution.IsClosing)
+            if (XSolution.IsClosing)
             {
                 return;
             }
-            foreach (XMemberDefinition member in scope.XMembers)
+            foreach (XMemberDefinition member in XMembers)
             {
                 XSharpLibraryNode newNode = new XSharpLibraryNode(member, "", moduleId.Hierarchy, moduleId.ItemID);
                 // Functions ?
                 if ((newNode.NodeType & LibraryNode.LibraryNodeType.Members) != LibraryNode.LibraryNodeType.None)
                 {
-                    current.AddNode(newNode);
-                    newNode.parent = current;
+                    globalScope.AddNode(newNode);
+                    newNode.parent = globalScope;
                     lock (files)
                     {
                         files.Add(moduleId, newNode);
@@ -655,6 +680,8 @@ namespace XSharp.Project
             //
             if (xfile.Virtual)
                 return;
+            try
+            {
             XSharpProjectNode prjNode = (XSharpProjectNode)xfile.Project.ProjectNode;
             Microsoft.VisualStudio.Project.HierarchyNode node = prjNode.FindURL(xfile.FullPath);
             if (node != null)
@@ -662,7 +689,12 @@ namespace XSharp.Project
                 XSharpModuleId module = new XSharpModuleId(prjNode.InteropSafeHierarchy, node.ID);
                 module.ContentHashCode = xfile.ContentHashCode;
                 CreateUpdateTreeRequest(xfile.SourcePath, module);
+                }
             }
+            catch
+            {
+            }
+            return;
         }
 
         private void OnProjectWalkComplete(XProject xsProject)

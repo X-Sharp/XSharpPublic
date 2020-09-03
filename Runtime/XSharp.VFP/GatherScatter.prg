@@ -49,9 +49,9 @@ INTERNAL Name  as STRING
     INTERNAL Value AS USUAL
 END STRUCTURE	
 
-INTERNAL FUNCTION __GetFieldValues(cFieldList AS STRING, cIncludedFields AS STRING, ;
+INTERNAL FUNCTION __GetFieldValues(aFieldList AS ARRAY, cIncludedFields AS STRING, ;
     cExcludedFields AS STRING, lIncludeMemo AS LOGIC, lBlank AS LOGIC) AS NameValuePair[]
-    var fields :=  __BuildFieldList(cFieldList, cIncludedFields, cExcludedFields, lIncludeMemo)
+    var fields :=  __BuildFieldList(aFieldList, cIncludedFields, cExcludedFields, lIncludeMemo)
     var values := List<NameValuePair>{}	
     FOREACH var cName in fields
         VAR uValue := __FieldGet(cName)
@@ -66,12 +66,16 @@ INTERNAL FUNCTION __GetAllElements(cSource as STRING) AS STRING[]
     cSource := cSource:ToUpperInvariant()
 RETURN cSource:Split(<Char>{c' ',c',',c'\t'}, StringSplitOptions.RemoveEmptyEntries)
 
-
-INTERNAL FUNCTION __BuildFieldList(cFieldList AS STRING, cIncludedFields AS STRING, cExcludedFields AS STRING, lIncludeMemo AS LOGIC) AS IList<String>
+INTERNAL FUNCTION __BuildFieldList(aFieldList AS ARRAY, cIncludedFields AS STRING, cExcludedFields AS STRING, lIncludeMemo AS LOGIC) AS IList<String>
     VAR allfields := List<string>{}	// Contains all fields in UPPER case
     VAR selected := List<string>{}
     LOCAL lAll as LOGIC
-    lAll := String.IsNullOrEmpty(cFieldList) .and. String.IsNullOrEmpty(cIncludedFields)
+    if ALen(aFieldList) > 0
+        IF !String.IsNullOrEmpty(cIncludedFields) .or. !String.IsNullOrEmpty(cExcludedFields)
+            Throw Error.ArgumentError(__FUNCTION__, "FIELDNAMES", i"You cannot combine both a field list and an include mask")
+        ENDIF
+    ENDIF
+    lAll := ALen(aFieldList) == 0 .and. String.IsNullOrEmpty(cIncludedFields)
     LOCAL fCount as DWORD
     fCount := FCount()
     FOR VAR nFld := 1u to fCount 
@@ -92,16 +96,14 @@ INTERNAL FUNCTION __BuildFieldList(cFieldList AS STRING, cIncludedFields AS STRI
     NEXT			    	
     IF lAll
         selected:AddRange(allfields)  
-    ELSEIF ! String.IsNullOrEmpty(cFieldList)
-        cFieldList := cFieldList:ToUpperInvariant()
-        IF cFieldList:Contains(",")       
-                var tokens := cFieldList:Split(<char>{c','}, StringSplitOptions.RemoveEmptyEntries)
-                foreach var token in tokens
-                    selected:Add(token:Trim())						
-            next
-        ELSE
-            selected:Add(cFieldList)
-        ENDIF
+    ELSEIF ALen(aFieldList) > 0
+        FOREACH cName AS STRING in aFieldList
+            var cField := cName:ToUpper()
+            IF allfields:IndexOf(cField) == -1
+                Throw Error.ArgumentError(__FUNCTION__, "FIELDNAME", i"Field '{cName}' does not exist")
+            ENDIF
+            selected:Add(cField)
+        NEXT
     ENDIF
     IF ! String.IsNullOrEmpty(cIncludedFields)  
         VAR aElements := __GetAllElements(cIncludedFields)
@@ -130,8 +132,9 @@ INTERNAL FUNCTION __BuildFieldList(cFieldList AS STRING, cIncludedFields AS STRI
         NEXT
     ENDIF 
 return selected
-FUNCTION __ScatterMemVar(cFieldList, cIncludedFields, cExcludedFields, lIncludeMemo, lBlank) AS LOGIC
-    VAR aFields := __GetFieldValues(cFieldList, cIncludedFields, cExcludedFields, lIncludeMemo, lBlank)
+
+FUNCTION __ScatterMemVar(aFieldList, cIncludedFields, cExcludedFields, lIncludeMemo, lBlank) AS LOGIC
+    VAR aFields := __GetFieldValues(aFieldList, cIncludedFields, cExcludedFields, lIncludeMemo, lBlank)
     FOREACH var oField in aFields
         __MemVarDecl(oField:Name, TRUE)
         __MemVarPut(oField:Name, oField:Value)
@@ -140,16 +143,16 @@ FUNCTION __ScatterMemVar(cFieldList, cIncludedFields, cExcludedFields, lIncludeM
     
     
     
-FUNCTION __GatherMemVar(cFieldList, cIncludedFields, cExcludedFields, lIncludeMemo) AS LOGIC
-    VAR aFields := __BuildFieldList(cFieldList, cIncludedFields, cExcludedFields, lIncludeMemo)
+FUNCTION __GatherMemVar(aFieldList, cIncludedFields, cExcludedFields, lIncludeMemo) AS LOGIC
+    VAR aFields := __BuildFieldList(aFieldList, cIncludedFields, cExcludedFields, lIncludeMemo)
     FOREACH var cField in aFields
         __FieldSet(cField, MemVarGet(cField))
     NEXT
     RETURN TRUE
     #pragma options ("az", on)
     
-FUNCTION __ScatterArray(cFieldList, cIncludedFields, cExcludedFields, lIncludeMemo, lBlank) AS ARRAY
-    VAR aFields := __GetFieldValues(cFieldList, cIncludedFields, cExcludedFields, lIncludeMemo, lBlank)
+FUNCTION __ScatterArray(aFieldList, cIncludedFields, cExcludedFields, lIncludeMemo, lBlank) AS ARRAY
+    VAR aFields := __GetFieldValues(aFieldList, cIncludedFields, cExcludedFields, lIncludeMemo, lBlank)
     VAR aResult := {}
     FOREACH var oField in aFields
         AAdd(aResult, oField:Value)
@@ -157,8 +160,8 @@ FUNCTION __ScatterArray(cFieldList, cIncludedFields, cExcludedFields, lIncludeMe
     RETURN aResult
     
     
-FUNCTION __GatherArray(uSource, cFieldList, cIncludedFields, cExcludedFields, lIncludeMemo) AS LOGIC
-    VAR aFields := __BuildFieldList(cFieldList, cIncludedFields, cExcludedFields, lIncludeMemo)
+FUNCTION __GatherArray(uSource, aFieldList, cIncludedFields, cExcludedFields, lIncludeMemo) AS LOGIC
+    VAR aFields := __BuildFieldList(aFieldList, cIncludedFields, cExcludedFields, lIncludeMemo)
     VAR current := 0    
     IF ! IsArray(uSource)
         RETURN FALSE
@@ -176,8 +179,8 @@ FUNCTION __GatherArray(uSource, cFieldList, cIncludedFields, cExcludedFields, lI
     
     #pragma options ("az", default)
     
-FUNCTION __ScatterObject(cFieldList, cIncludedFields, cExcludedFields, lIncludeMemo, lBlank, cObject, lAdditive) AS OBJECT
-    VAR aFields := __GetFieldValues(cFieldList, cIncludedFields, cExcludedFields, lIncludeMemo, lBlank)    
+FUNCTION __ScatterObject(aFieldList, cIncludedFields, cExcludedFields, lIncludeMemo, lBlank, cObject, lAdditive) AS OBJECT
+    VAR aFields := __GetFieldValues(aFieldList, cIncludedFields, cExcludedFields, lIncludeMemo, lBlank)    
     LOCAL oResult := NULL_OBJECT as OBJECT
     IF !IsLogic(lAdditive)
         lAdditive := FALSE
@@ -232,3 +235,5 @@ FUNCTION __GatherObject(oObject, cFieldList, cIncludedFields, cExcludedFields, l
     ENDIF
     RETURN TRUE
     
+
+

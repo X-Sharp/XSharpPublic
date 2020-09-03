@@ -56,7 +56,17 @@ CLASS XSharp.CoreDb
         ENDIF
         RddError.PostNoTableError(cFunction)
         RETURN 0
-        /// <exclude />   
+        
+        /// <exclude />
+    INTERNAL STATIC METHOD AdjustPath(cPath as STRING) AS STRING
+        IF String.IsNullOrEmpty(cPath)
+            cPath := GetDefault()
+        ENDIF
+        IF String.IsNullOrEmpty(cPath)
+            cPath := System.Environment.CurrentDirectory
+        ENDIF
+        RETURN cPath
+        
     INTERNAL STATIC METHOD  RddNameToType( cRDDName AS STRING ) AS Type
         LOCAL ret := NULL AS  Type
         LOCAL oRdd        AS RegisteredRDD
@@ -582,7 +592,10 @@ CLASS XSharp.CoreDb
                     dboi:Extension := "."
                 ELSE
                     dboi:Extension := Path.GetExtension( cName )
-                ENDIF        
+                ENDIF
+                var path := System.IO.Path.GetDirectoryName(cName)
+                path          := CoreDb.AdjustPath(path)
+                dboi:FileName := System.IO.Path.Combine(path, System.IO.Path.GetFileName(dboi:FileName))
                 dboi:Shared    := FALSE
                 dboi:ReadOnly  := FALSE
                 dboi:Alias     := cAlias
@@ -2169,8 +2182,10 @@ CLASS XSharp.CoreDb
                     LOCAL dboi := DbOpenInfo{} AS DbOpenInfo
                     LOCAL uiArea AS DWORD
                     uiArea := Workareas:CurrentWorkareaNO
-                    dboi:FileName     := Path.Combine(Path.GetDirectoryName(cName),Path.GetFileNameWithoutExtension(cName))
-                    dboi:Extension    := Path.GetExtension( cName )
+                    var path := Path.GetDirectoryName(cName)
+                    dboi:FileName    := System.IO.Path.Combine(path, System.IO.Path.GetFileNameWithoutExtension(cName))
+                    dboi:FileName    := Path.Combine(path,Path.GetFileNameWithoutExtension(cName))
+                    dboi:Extension   := Path.GetExtension( cName )
                     dboi:Shared      := lShare
                     dboi:ReadOnly    := lReadOnly
                     dboi:Alias       := cAlias

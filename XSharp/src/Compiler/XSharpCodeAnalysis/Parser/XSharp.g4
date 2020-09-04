@@ -152,7 +152,7 @@ parameter           : (Attributes=attributes)? Self=SELF? Id=identifier (Op=assi
                     | Ellipsis=ELLIPSIS
                     ;
 
-parameterDeclMods   : Tokens+=(AS | REF | OUT | IS | PARAMS) /*Tokens+=*/CONST?
+parameterDeclMods   : Tokens+=(AS | REF | OUT | IS | PARAMS | IN ) /*Tokens+=*/CONST?
                     ;
 
 statementBlock      : (Stmts+=statement)*
@@ -491,11 +491,11 @@ filewidememvar      : Token=MEMVAR Vars+=identifierName (COMMA Vars+=identifierN
 statement           : Decl=localdecl                        #declarationStmt
                     | Decl=xbasedecl                        #xbasedeclStmt
                     | Decl=fielddecl                        #fieldStmt
-                    | DO? WHILE Expr=expression end=eos
+                    | DO? w=WHILE Expr=expression end=eos
                       StmtBlk=statementBlock 
                       ((e=END (DO|WHILE)? | e=ENDDO) eos)?	#whileStmt
                     | NOP (LPAREN RPAREN )? end=eos								#nopStmt
-                    | FOR
+                    | f=FOR
                         ( AssignExpr=expression
                         | (LOCAL? ForDecl=IMPLIED | ForDecl=VAR) ForIter=identifier Op=assignoperator Expr=expression
                         | ForDecl=LOCAL ForIter=identifier Op=assignoperator Expr=expression (AS Type=datatype)?
@@ -504,7 +504,7 @@ statement           : Decl=localdecl                        #declarationStmt
                       (STEP Step=expression)? end=eos
                       StmtBlk=statementBlock
                       ((e = NEXT | e = END FOR)? eos)?	      #forStmt
-                    | IF IfStmt=ifElseBlock
+                    | i=IF IfStmt=ifElseBlock
                       ((e=END IF? | e=ENDIF)   eos)?			#ifStmt
                     | DO CASE end=eos
                       CaseStmt=caseBlock?
@@ -512,7 +512,7 @@ statement           : Decl=localdecl                        #declarationStmt
                     | Key=EXIT end=eos                                    #jumpStmt
                     | Key=LOOP end=eos                                    #jumpStmt
                     | Key=BREAK Expr=expression? end=eos                  #jumpStmt
-                    | RETURN (Void=VOID|Expr=expression)? end=eos         #returnStmt
+                    | R=RETURN (Void=VOID|Expr=expression)? end=eos       #returnStmt
                     | Q=(QMARK | QQMARK)
                        (Exprs+=expression (COMMA Exprs+=expression)*)?
                        end=eos                                            #qoutStmt
@@ -524,19 +524,19 @@ statement           : Decl=localdecl                        #declarationStmt
                     //
                     // New in Vulcan
                     //
-                    | REPEAT end=eos
+                    | r=REPEAT end=eos
                       StmtBlk=statementBlock
                       UNTIL Expr=expression
                       eos                                                 #repeatStmt
-                    | (FOREACH | FOR EACH)
+                    | (f=FOREACH | f=FOR EACH)
                       (IMPLIED Id=identifier | Id=identifier AS Type=datatype| VAR Id=identifier)
                       IN Container=expression end=eos
                       StmtBlk=statementBlock
                       ((e=NEXT |e=END FOR)? eos)?	    #foreachStmt
                     | Key=THROW Expr=expression? end=eos                  #jumpStmt
-                    | TRY end=eos StmtBlk=statementBlock
+                    | T=TRY end=eos StmtBlk=statementBlock
                       (CATCH CatchBlock+=catchBlock?)*
-                      (FINALLY eos FinBlock=statementBlock)?
+                      (F=FINALLY eos FinBlock=statementBlock)?
                       (e=END TRY? eos)?								                    #tryStmt
                     | BEGIN Key=LOCK Expr=expression end=eos
                       StmtBlk=statementBlock
@@ -547,9 +547,9 @@ statement           : Decl=localdecl                        #declarationStmt
                     //
                     // New XSharp Statements
                     //
-                    | YIELD RETURN (VOID | Expr=expression)? end=eos			#yieldStmt
-                    | YIELD Break=(BREAK|EXIT) end=eos							      #yieldStmt
-                    | (BEGIN|DO)? SWITCH Expr=expression end=eos
+                    | Y=YIELD R=RETURN (VOID | Expr=expression)? end=eos			#yieldStmt
+                    | Y=YIELD Break=(BREAK|EXIT) end=eos							      #yieldStmt
+                    | (BEGIN|DO)? S=SWITCH Expr=expression end=eos
                       (SwitchBlock+=switchBlock)+
                       (e=END SWITCH? eos)?					                      #switchStmt
                     | BEGIN Key=USING ( Expr=expression | VarDecl=variableDeclaration ) end=eos
@@ -966,26 +966,26 @@ fromClause          : FROM Id=identifier (AS Type=typeName)? IN Expr=expression
 queryBody           : (Bodyclauses+=queryBodyClause)* SorG=selectOrGroupclause (Continuation=queryContinuation)?
                     ;
 
-queryBodyClause     : From=fromClause                                                                    #fromBodyClause
-                    | LET Id=identifier Op=assignoperator Expr=expression                                #letClause
-                    | WHERE Expr=expression                                                              #whereClause        // expression must be Boolean
-                    | JOIN Id=identifier (AS Type=typeName)?
-                      IN Expr=expression ON OnExpr=expression EQUALS EqExpr=expression
-                      Into=joinIntoClause?                                                              #joinClause
-                    | ORDERBY Orders+=ordering (COMMA Orders+=ordering)*                                #orderbyClause
+queryBodyClause     : From=fromClause                                                                   #fromBodyClause
+                    | L=LET Id=identifier Op=assignoperator Expr=expression                              #letClause
+                    | W=WHERE Expr=expression                                                            #whereClause        // expression must be Boolean
+                    | J=JOIN Id=identifier (AS Type=typeName)?
+                      I=IN Expr=expression O=ON OnExpr=expression E=EQUALS EqExpr=expression
+                      Into=joinIntoClause?                                                               #joinClause
+                    | O=ORDERBY Orders+=ordering (COMMA Orders+=ordering)*                               #orderbyClause
                     ;
 
-joinIntoClause      : INTO Id=identifier
+joinIntoClause      : I=INTO Id=identifier
                     ;
 
 ordering            : Expr=expression Direction=(ASCENDING|DESCENDING)?
                     ;
 
-selectOrGroupclause : SELECT Expr=expression                                #selectClause
-                    | GROUP Expr=expression BY ByExpr=expression            #groupClause
+selectOrGroupclause : S=SELECT Expr=expression                                #selectClause
+                    | G=GROUP Expr=expression B=BY ByExpr=expression          #groupClause
                     ;
 
-queryContinuation   : INTO Id=identifier Body=queryBody
+queryContinuation   : I=INTO Id=identifier Body=queryBody
                     ;
 // -- End of LINQ
 

@@ -823,8 +823,14 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 case XSharpParser.PARAMS:
                     r = SyntaxFactory.MakeToken(SyntaxKind.ParamsKeyword, text);
                     break;
+                case XSharpParser.IN:
+                    r = SyntaxFactory.MakeToken(SyntaxKind.InKeyword, text);
+                    break;
                 case XSharpParser.CONST:
                     r = SyntaxFactory.MakeToken(SyntaxKind.ConstKeyword, text);
+                    break;
+                case XSharpParser.IS:
+                    r = SyntaxFactory.MakeToken(SyntaxKind.IsKeyword, text);
                     break;
                 case XSharpParser.CLASS:
                     r = SyntaxFactory.MakeToken(SyntaxKind.ClassKeyword, text);
@@ -908,14 +914,95 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     r = SyntaxFactory.MakeToken(SyntaxKind.PragmaKeyword, text.Substring(1));
                     break;
                 case XSharpParser.WHEN:
-                    r = SyntaxFactory.MakeToken(SyntaxKind.WhenKeyword, text.Substring(1));
+                    r = SyntaxFactory.MakeToken(SyntaxKind.WhenKeyword, text);
                     break;
+                case XSharpParser.IF:
+                    r = SyntaxFactory.MakeToken(SyntaxKind.IfKeyword, text);
+                    break;
+                case XSharpParser.WHILE:
+                    r = SyntaxFactory.MakeToken(SyntaxKind.WhileKeyword, text);
+                    break;
+                case XSharpParser.REPEAT:
+                    r = SyntaxFactory.MakeToken(SyntaxKind.DoKeyword, text);
+                    break;
+                case XSharpParser.FOR:
+                    r = SyntaxFactory.MakeToken(SyntaxKind.ForKeyword, text);
+                    break;
+                case XSharpParser.FOREACH:
+                    r = SyntaxFactory.MakeToken(SyntaxKind.ForEachKeyword, text);
+                    break;
+                case XSharpParser.GET:
+                    r = SyntaxFactory.MakeToken(SyntaxKind.GetKeyword, text);
+                    break;
+                case XSharpParser.SET:
+                    r = SyntaxFactory.MakeToken(SyntaxKind.SetKeyword, text);
+                    break;
+                case XSharpParser.EVENT:
+                    r = SyntaxFactory.MakeToken(SyntaxKind.EventKeyword, text);
+                    break;
+                case XSharpParser.RETURN:
+                    r = SyntaxFactory.MakeToken(SyntaxKind.ReturnKeyword, text);
+                    break;
+                case XSharpParser.EXIT:
+                case XSharpParser.BREAK:
+                    r = SyntaxFactory.MakeToken(SyntaxKind.BreakKeyword, text);
+                    break;
+
+                case XSharpParser.LOOP:
+                    r = SyntaxFactory.MakeToken(SyntaxKind.ContinueKeyword, text);
+                    break;
+                case XSharpParser.SWITCH:
+                    r = SyntaxFactory.MakeToken(SyntaxKind.SwitchKeyword, text);
+                    break;
+                case XSharpParser.LOCK:
+                    r = SyntaxFactory.MakeToken(SyntaxKind.LockKeyword, text);
+                    break;
+                case XSharpParser.WHERE:
+                    r = SyntaxFactory.MakeToken(SyntaxKind.WhereKeyword, text);
+                    break;
+                case XSharpParser.FROM:
+                    r = SyntaxFactory.MakeToken(SyntaxKind.FromKeyword, text);
+                    break;
+                case XSharpParser.LET:
+                    r = SyntaxFactory.MakeToken(SyntaxKind.LetKeyword, text);
+                    break;
+                case XSharpParser.JOIN:
+                    r = SyntaxFactory.MakeToken(SyntaxKind.JoinKeyword, text);
+                    break;
+                case XSharpParser.ORDERBY:
+                    r = SyntaxFactory.MakeToken(SyntaxKind.OrderByKeyword, text);
+                    break;
+                case XSharpParser.INTO:
+                    r = SyntaxFactory.MakeToken(SyntaxKind.IntoKeyword, text);
+                    break;
+                case XSharpParser.ON:
+                    r = SyntaxFactory.MakeToken(SyntaxKind.OnKeyword, text);
+                    break;
+                case XSharpParser.EQUALS:
+                    r = SyntaxFactory.MakeToken(SyntaxKind.EqualsKeyword, text);
+                    break;
+                case XSharpParser.INTERFACE:
+                    r = SyntaxFactory.MakeToken(SyntaxKind.InterfaceKeyword, text);
+                    break;
+                case XSharpParser.ENUM:
+                    r = SyntaxFactory.MakeToken(SyntaxKind.EnumKeyword, text);
+                    break;
+
+                case XSharpParser.SELECT:
+                    r = SyntaxFactory.MakeToken(SyntaxKind.SelectKeyword, text);
+                    break;
+                case XSharpParser.GROUP:
+                    r = SyntaxFactory.MakeToken(SyntaxKind.GroupKeyword, text);
+                    break;
+                case XSharpParser.BY:
+                    r = SyntaxFactory.MakeToken(SyntaxKind.ByKeyword, text);
+                    break;
+
                 case XSharpParser.ACCESS:
                 case XSharpParser.ALIGN:
                 case XSharpParser.AS:
                 case XSharpParser.ASSIGN:
                 case XSharpParser.BEGIN:
-                case XSharpParser.BREAK:
                 //case XSharpParser.CASE:
                 case XSharpParser.CAST:
                 case XSharpParser.CLIPPER:
@@ -930,31 +1017,18 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 case XSharpParser.ENDCASE:
                 case XSharpParser.ENDDO:
                 case XSharpParser.ENDIF:
-                case XSharpParser.EXIT:
-                //case XSharpParser.EXPORT:
                 case XSharpParser.FASTCALL:
                 case XSharpParser.FIELD:
-                case XSharpParser.FOR:
                 case XSharpParser.FUNCTION:
-                //case XSharpParser.HIDDEN:
-                case XSharpParser.IF:
                 case XSharpParser.IIF:
                 case XSharpParser.INHERIT:
-                case XSharpParser.IN:
-                case XSharpParser.IS:
                 case XSharpParser.LOCAL:
-                case XSharpParser.LOOP:
                 case XSharpParser.MEMBER:
                 case XSharpParser.METHOD:
                 case XSharpParser.NEXT:
-                //case XSharpParser.OTHERWISE:
                 case XSharpParser.PASCAL:
-                //case XSharpParser.PRIVATE:
                 case XSharpParser.PROCEDURE:
-                //case XSharpParser.PROTECTED:
-                //case XSharpParser.PUBLIC:
                 case XSharpParser.RECOVER:
-                case XSharpParser.RETURN:
                 case XSharpParser.SEQUENCE:
                 case XSharpParser.SIZEOF:
                 case XSharpParser.STEP:
@@ -964,48 +1038,18 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 case XSharpParser.TYPEOF:
                 case XSharpParser.UNION:
                 case XSharpParser.UPTO:
-                case XSharpParser.WHILE:
                 case XSharpParser.AUTO:
                 case XSharpParser.CONSTRUCTOR:
-                //case XSharpParser.CONST:
                 case XSharpParser.DESTRUCTOR:
-                case XSharpParser.ENUM:
-                case XSharpParser.EVENT:
-                case XSharpParser.FOREACH:
-                case XSharpParser.GET:
                 case XSharpParser.IMPLEMENTS:
                 case XSharpParser.IMPLIED:
-                case XSharpParser.INTERFACE:
-                //case XSharpParser.INTERNAL:
-                case XSharpParser.LOCK:
                 case XSharpParser.NAMESPACE:
                 case XSharpParser.NOP:
-                //case XSharpParser.NEW:
                 case XSharpParser.OPERATOR:
-                //case XSharpParser.OUT:
-                // case XSharpParser.PARAMS:
-                //case XSharpParser.PARTIAL:
                 case XSharpParser.PROPERTY:
-                case XSharpParser.REPEAT:
                 case XSharpParser.SCOPE:
-                case XSharpParser.SET:
                 case XSharpParser.UNTIL:
                 case XSharpParser.VOSTRUCT:
-                //case XSharpParser.ASYNC:
-                //case XSharpParser.AWAIT:
-                //case XSharpParser.CHECKED:
-                //case XSharpParser.DEFAULT:
-                //case XSharpParser.EXTERN:
-                case XSharpParser.SWITCH:
-                //case XSharpParser.UNCHECKED:
-                //case XSharpParser.UNSAFE:
-                case XSharpParser.WHERE:
-                case XSharpParser.FROM:
-                case XSharpParser.LET:
-                case XSharpParser.JOIN:
-                case XSharpParser.ORDERBY:
-                case XSharpParser.INTO:
-                case XSharpParser.ON:
                     r = SyntaxFactory.Identifier(text);
                     break;
                 default:
@@ -1017,76 +1061,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             return r;
         }
 
-        //public static bool MustBeCleared(this IToken token)
-        //{
-        //    // This is used to determine in the Start() function which locals and globals must be cleared.
-        //    switch (token.Type)
-        //    {
-        //        case XSharpParser.ARRAY:            // clear with null
-        //        case XSharpParser.CODEBLOCK:        // clear with null
-        //        case XSharpParser.DYNAMIC:          // clear with null
-        //        case XSharpParser.OBJECT:           // clear with null
-        //        case XSharpParser.PSZ:              // clear with 0
-        //        case XSharpParser.STRING:           // clear with null
-        //        case XSharpParser.USUAL:            // default(__Usual)
-        //            return true;
-        //        default:
-        //            return false;
-        //    }
-        //}
-        //public static bool IsNull(this IToken token)
-        //{
-        //    switch (token.Type)
-        //    {
-        //        case XSharpParser.NULL:
-        //        case XSharpParser.NULL_ARRAY:
-        //        case XSharpParser.NULL_CODEBLOCK:
-        //        case XSharpParser.NULL_DATE:
-        //        case XSharpParser.NULL_OBJECT:
-        //        case XSharpParser.NULL_PSZ:
-        //        case XSharpParser.NULL_PTR:
-        //        case XSharpParser.NULL_STRING:
-        //        case XSharpParser.NULL_SYMBOL:
-        //            return true;
-        //        default:
-        //            return false;
-        //    }
-        //}
-
-        //public static SyntaxKind OrderingKind(this IToken token)
-        //{
-        //    SyntaxKind r;
-        //    switch (token.Type)
-        //    {
-        //        case XSharpParser.ASCENDING:
-        //            r = SyntaxKind.AscendingOrdering;
-        //            break;
-        //        case XSharpParser.DESCENDING:
-        //            r = SyntaxKind.DescendingOrdering;
-        //            break;
-        //        default:
-        //            throw new InvalidOperationException();
-        //    }
-        //    return r;
-        //}
-
-        //public static SyntaxKind SwitchLabelKind(this IToken token)
-        //{
-        //    SyntaxKind r;
-        //    switch (token.Type)
-        //    {
-        //        case XSharpParser.CASE:
-        //            r = SyntaxKind.CaseSwitchLabel;
-        //            break;
-        //        case XSharpParser.DEFAULT:
-        //        case XSharpParser.OTHERWISE:
-        //            r = SyntaxKind.DefaultSwitchLabel;
-        //            break;
-        //        default:
-        //            throw new InvalidOperationException();
-        //    }
-        //    return r;
-        //}
+ 
 
         public static SyntaxKind ConstraintKind(this IToken token)
         {
@@ -1146,22 +1121,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         }
 
 
-        //public static SyntaxKind ExpressionKind(this IToken token)
-        //{
-        //    SyntaxKind r;
-        //    switch (token.Type)
-        //    {
-        //        case XSharpParser.CHECKED:
-        //            r = SyntaxKind.CheckedExpression;
-        //            break;
-        //        case XSharpParser.UNCHECKED:
-        //            r = SyntaxKind.UncheckedExpression;
-        //            break;
-        //        default:
-        //            throw new InvalidOperationException();
-        //    }
-        //    return r;
-        //}
+   
 
         public static SyntaxKind ExpressionKindLiteral(this IToken token)
         {
@@ -1611,35 +1571,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             return false;
         }
-        //public static bool IsLiteral(this IParseTree expr)
-        //{
-        //    var token = expr.GetLiteralToken();
-        //    return token != null;
-        //}
-        //public static bool IsLiteralExpression(this IParseTree expr)
-        //{
-        //    var e = expr as XSharpParser.ExpressionContext;
-        //    if (e == null)
-        //        return false;
-        //    if (e is XSharpParser.PrefixExpressionContext pfe)
-        //    {
-        //        return pfe.Expr.IsLiteralExpression();
-        //   }
-        //   if (e is XSharpParser.PrimaryExpressionContext primex)
-        //   {
-        //        var pr = primex.Expr as XSharpParser.PrimaryContext;
-        //        if (pr is XSharpParser.VoConversionExpressionContext voconv)
-        //        {
-        //            return voconv.Expr.IsLiteralExpression();
-        //        }
-        //        if (pr is XSharpParser.VoCastExpressionContext vocast)
-        //        {
-        //            return vocast.Expr.IsLiteralExpression();
-        //        }
-        //        return (pr is XSharpParser.LiteralExpressionContext);
-        //    }
-        //    return expr.IsLiteral();
-        //}
+ 
         public static bool IsIdentifier(this ParserRuleContext context)
         {
             return context.Start == context.Stop && context.Start.Type == XSharpParser.ID;

@@ -1055,9 +1055,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken));
             }
         }
-        protected LockStatementSyntax MakeLock(ExpressionSyntax expr, StatementSyntax statement)
+        protected LockStatementSyntax MakeLock(ExpressionSyntax expr, StatementSyntax statement, IToken token = null)
         {
-            return _syntaxFactory.LockStatement(SyntaxFactory.MakeToken(SyntaxKind.LockKeyword),
+            var kwd = token == null ? SyntaxFactory.MakeToken(SyntaxKind.LockKeyword) : token.SyntaxKeyword();
+            return _syntaxFactory.LockStatement(kwd,
                                                SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
                                                 expr,
                                                 SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken),
@@ -1197,10 +1198,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             return result;
         }
 
-        protected ReturnStatementSyntax GenerateReturn(ExpressionSyntax result = null, bool markAsGenerated = false)
+        protected ReturnStatementSyntax GenerateReturn(ExpressionSyntax result = null, bool markAsGenerated = false, IToken returnToken = null)
         {
-            var stmt = _syntaxFactory.ReturnStatement(SyntaxFactory.MakeToken(SyntaxKind.ReturnKeyword),
-                        result, SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken));
+            var kwd = returnToken == null ? SyntaxFactory.MakeToken(SyntaxKind.ReturnKeyword) : returnToken.SyntaxKeyword();
+            var stmt = _syntaxFactory.ReturnStatement(kwd, result, SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken));
             stmt.XGenerated = markAsGenerated;
             return stmt;
         }
@@ -3119,7 +3120,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     context.Put(_syntaxFactory.EventFieldDeclaration(
                         attributeLists: context.Attributes?.GetList<AttributeListSyntax>() ?? EmptyList<AttributeListSyntax>(),
                         modifiers: context.Modifiers?.GetList<SyntaxToken>() ?? DefaultMethodModifiers(context.isInInterface(), context.isInStructure()),
-                        eventKeyword: SyntaxFactory.MakeToken(SyntaxKind.EventKeyword),
+                        eventKeyword: context.E.SyntaxKeyword(),
                         declaration: _syntaxFactory.VariableDeclaration(
                             context.Type?.Get<TypeSyntax>() ?? MissingType(),
                             MakeSeparatedList<VariableDeclaratorSyntax>(
@@ -5763,7 +5764,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         public override void ExitWhileStmt([NotNull] XP.WhileStmtContext context)
         {
             context.SetSequencePoint(context.Expr);
-            StatementSyntax whileStmt = _syntaxFactory.WhileStatement(SyntaxFactory.MakeToken(SyntaxKind.WhileKeyword),
+            var whileKwd = context.w.SyntaxKeyword();
+
+            StatementSyntax whileStmt = _syntaxFactory.WhileStatement(whileKwd,
                 SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
                 context.Expr.Get<ExpressionSyntax>(),
                 SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken),
@@ -5775,7 +5778,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
             context.SetSequencePoint(context.end);
             context.Expr.SetSequencePoint();
-            var doStmt = _syntaxFactory.DoStatement(SyntaxFactory.MakeToken(SyntaxKind.DoKeyword),
+            var doKwd = context.r.SyntaxKeyword();
+            var doStmt = _syntaxFactory.DoStatement(doKwd,
                 context.StmtBlk.Get<BlockSyntax>(),
                 SyntaxFactory.MakeToken(SyntaxKind.WhileKeyword),
                 SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
@@ -5921,7 +5925,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             var incr = _pool.AllocateSeparated<ExpressionSyntax>();
             incr.Add(incrExpr);
-            StatementSyntax forStmt = _syntaxFactory.ForStatement(SyntaxFactory.MakeToken(SyntaxKind.ForKeyword),
+            var forKwd = context.f.SyntaxKeyword();
+            StatementSyntax forStmt = _syntaxFactory.ForStatement(forKwd,
                 SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
                 decl,
                 init,
@@ -5941,7 +5946,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             context.SetSequencePoint(context.end);
             context.Id.SetSequencePoint();
             context.Container.SetSequencePoint();
-            StatementSyntax forStmt = _syntaxFactory.ForEachStatement(SyntaxFactory.MakeToken(SyntaxKind.ForEachKeyword),
+            var foreachKwd = context.f.SyntaxKeyword();
+            StatementSyntax forStmt = _syntaxFactory.ForEachStatement(foreachKwd,
                 SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
                 context.Type?.Get<TypeSyntax>() ?? _impliedType,
                 context.Id.Get<SyntaxToken>(),
@@ -5975,7 +5981,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         #region Conditional Statements
         public override void ExitIfStmt([NotNull] XP.IfStmtContext context)
         {
-            StatementSyntax ifStmt = context.IfStmt.Get<IfStatementSyntax>();
+            IfStatementSyntax ifStmt = context.IfStmt.Get<IfStatementSyntax>();
+            ifStmt = ifStmt.Update(context.i.SyntaxKeyword(), ifStmt.OpenParenToken, ifStmt.Condition, ifStmt.CloseParenToken, ifStmt.Statement, ifStmt.Else);
             context.SetSequencePoint(context.IfStmt.Cond);
             if (context.IfStmt.Cond.CsNode is IsPatternExpressionSyntax)
             {
@@ -6077,7 +6084,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     emptyLabels.Clear();
                 }
             }
-            StatementSyntax switchStmt = _syntaxFactory.SwitchStatement(SyntaxFactory.MakeToken(SyntaxKind.SwitchKeyword),
+
+            StatementSyntax switchStmt = _syntaxFactory.SwitchStatement(context.S.SyntaxKeyword(),
                 SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
                 context.Expr.Get<ExpressionSyntax>(),
                 SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken),
@@ -6173,11 +6181,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 catches.Add(catchCtx.Get<CatchClauseSyntax>());
             }
+            var trykwd = context.T.SyntaxKeyword();
+            var finkwd = context.F?.SyntaxKeyword();
             StatementSyntax tryStmt =
-            _syntaxFactory.TryStatement(SyntaxFactory.MakeToken(SyntaxKind.TryKeyword),
+            _syntaxFactory.TryStatement(trykwd,
                 context.StmtBlk.Get<BlockSyntax>(),
                 catches,
-                context.FinBlock == null ? null : _syntaxFactory.FinallyClause(SyntaxFactory.MakeToken(SyntaxKind.FinallyKeyword),
+                context.FinBlock == null ? null : _syntaxFactory.FinallyClause(finkwd,
                     context.FinBlock.Get<BlockSyntax>()));
             _pool.Free(catches);
             context.Put(tryStmt);
@@ -6471,18 +6481,18 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             switch (context.Key.Type)
             {
                 case XP.EXIT:
-                    context.Put(_syntaxFactory.BreakStatement(SyntaxFactory.MakeToken(SyntaxKind.BreakKeyword),
+                    context.Put(_syntaxFactory.BreakStatement(context.Key.SyntaxKeyword(),
                         SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)));
                     break;
                 case XP.LOOP:
-                    context.Put(_syntaxFactory.ContinueStatement(SyntaxFactory.MakeToken(SyntaxKind.ContinueKeyword),
+                    context.Put(_syntaxFactory.ContinueStatement(context.Key.SyntaxKeyword(),
                         SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)));
                     break;
                 case XP.BREAK:
                     // Error already handled in ParseErrorAnalysis
                     break;
                 case XP.THROW:
-                    context.Put(_syntaxFactory.ThrowStatement(SyntaxFactory.MakeToken(SyntaxKind.ThrowKeyword),
+                    context.Put(_syntaxFactory.ThrowStatement(context.Key.SyntaxKeyword(),
                         context.Expr.Get<ExpressionSyntax>(),
                         SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)));
                     break;
@@ -6605,7 +6615,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 expr = GenerateLiteral(0);
             }
             // / vo9 is handled in the Subclass
-            context.Put(GenerateReturn(expr));
+            context.Put(GenerateReturn(expr,false, context.R));
         }
 
         public override void ExitYieldStmt([NotNull] XP.YieldStmtContext context)
@@ -6620,16 +6630,15 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 kind = SyntaxKind.YieldBreakStatement;
                 arg = null;
-                token = SyntaxFactory.MakeToken(SyntaxKind.BreakKeyword);
+                token = context.Break.SyntaxKeyword();
             }
             else                   // yield return
             {
                 kind = SyntaxKind.YieldReturnStatement;
                 arg = context.Expr?.Get<ExpressionSyntax>();
-                token = SyntaxFactory.MakeToken(SyntaxKind.ReturnKeyword);
+                token = context.R.SyntaxKeyword();
             }
-            context.Put(_syntaxFactory.YieldStatement(kind, SyntaxFactory.MakeToken(SyntaxKind.YieldKeyword),
-                token, arg,
+            context.Put(_syntaxFactory.YieldStatement(kind, context.Y.SyntaxKeyword(), token, arg,
                 SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)));
         }
 
@@ -6693,20 +6702,19 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     break;
                 case XP.LOCK:
                     node = MakeLock(context.Expr.Get<ExpressionSyntax>(),
-                        context.StmtBlk.Get<BlockSyntax>());
+                        context.StmtBlk.Get<BlockSyntax>(),context.Key);
                     break;
                 case XP.UNSAFE:
-                    node = _syntaxFactory.UnsafeStatement(SyntaxFactory.MakeToken(SyntaxKind.UnsafeKeyword),
+                    node = _syntaxFactory.UnsafeStatement(context.Key.SyntaxKeyword(),
                         context.StmtBlk.Get<BlockSyntax>());
                     break;
                 case XP.CHECKED:
                     node = _syntaxFactory.CheckedStatement(SyntaxKind.CheckedStatement,
-                        SyntaxFactory.MakeToken(SyntaxKind.CheckedKeyword),
+                        context.Key.SyntaxKeyword(),
                         context.StmtBlk.Get<BlockSyntax>());
                     break;
                 case XP.FIXED:
-                    node = _syntaxFactory.FixedStatement(
-                        SyntaxFactory.MakeToken(SyntaxKind.FixedKeyword),
+                    node = _syntaxFactory.FixedStatement(context.Key.SyntaxKeyword(),
                            SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
                            context.VarDecl?.Get<VariableDeclarationSyntax>(),
                            SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken),
@@ -6714,11 +6722,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     break;
                 case XP.UNCHECKED:
                     node = _syntaxFactory.CheckedStatement(SyntaxKind.UncheckedStatement,
-                        SyntaxFactory.MakeToken(SyntaxKind.UncheckedKeyword),
+                        context.Key.SyntaxKeyword(),
                         context.StmtBlk.Get<BlockSyntax>());
                     break;
                 case XP.USING:
-                    node = _syntaxFactory.UsingStatement(SyntaxFactory.MakeToken(SyntaxKind.UsingKeyword),
+                    node = _syntaxFactory.UsingStatement(context.Key.SyntaxKeyword(),
                            SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
                            context.VarDecl?.Get<VariableDeclarationSyntax>(),
                            context.Expr?.Get<ExpressionSyntax>(),
@@ -8887,7 +8895,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         public override void ExitWhereClause([NotNull] XP.WhereClauseContext context)
         {
             context.Put(_syntaxFactory.WhereClause(
-                SyntaxFactory.MakeToken(SyntaxKind.WhereKeyword),
+                context.W.SyntaxKeyword(),
                 context.Expr.Get<ExpressionSyntax>()
                 ));
         }
@@ -8895,14 +8903,14 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         public override void ExitJoinClause([NotNull] XP.JoinClauseContext context)
         {
             context.Put(_syntaxFactory.JoinClause(
-                SyntaxFactory.MakeToken(SyntaxKind.JoinKeyword),
+                context.J.SyntaxKeyword(),
                 context.Type?.Get<TypeSyntax>(),
                 context.Id.Get<SyntaxToken>(),
-                SyntaxFactory.MakeToken(SyntaxKind.InKeyword),
+                context.I.SyntaxKeyword(),
                 context.Expr.Get<ExpressionSyntax>(),
-                SyntaxFactory.MakeToken(SyntaxKind.OnKeyword),
+                context.O.SyntaxKeyword(),
                 context.OnExpr.Get<ExpressionSyntax>(),
-                SyntaxFactory.MakeToken(SyntaxKind.EqualsKeyword),
+                context.E.SyntaxKeyword(),
                 context.EqExpr.Get<ExpressionSyntax>(),
                 context.Into?.Get<JoinIntoClauseSyntax>()
                 ));
@@ -8911,30 +8919,28 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         public override void ExitJoinIntoClause([NotNull] XP.JoinIntoClauseContext context)
         {
             context.Put(_syntaxFactory.JoinIntoClause(
-                SyntaxFactory.MakeToken(SyntaxKind.IntoKeyword),
+                context.I.SyntaxKeyword(),
                 context.Id.Get<SyntaxToken>()));
         }
 
         public override void ExitOrderbyClause([NotNull] XP.OrderbyClauseContext context)
         {
             context.Put(_syntaxFactory.OrderByClause(
-                SyntaxFactory.MakeToken(SyntaxKind.OrderByKeyword),
+                context.O.SyntaxKeyword(),
                 MakeSeparatedList<OrderingSyntax>(context._Orders)
                 ));
         }
 
         public override void ExitOrdering([NotNull] XP.OrderingContext context)
         {
-            SyntaxToken direction;
+            SyntaxToken direction = context.Direction != null ? context.Direction.SyntaxKeyword() : SyntaxFactory.MakeToken(SyntaxKind.AscendingKeyword); 
             SyntaxKind kind;
             if (context.Direction != null && context.Direction.Type == XP.DESCENDING)
             {
-                direction = SyntaxFactory.MakeToken(SyntaxKind.DescendingKeyword);
                 kind = SyntaxKind.DescendingOrdering;
             }
             else
             {
-                direction = SyntaxFactory.MakeToken(SyntaxKind.AscendingKeyword);
                 kind = SyntaxKind.AscendingOrdering;
             }
             context.Put(_syntaxFactory.Ordering(kind, context.Expr.Get<ExpressionSyntax>(), direction));
@@ -8944,7 +8950,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         public override void ExitSelectClause([NotNull] XP.SelectClauseContext context)
         {
             context.Put(_syntaxFactory.SelectClause(
-                SyntaxFactory.MakeToken(SyntaxKind.SelectKeyword),
+                context.S.SyntaxKeyword(),
                 context.Expr.Get<ExpressionSyntax>()
                 ));
         }
@@ -8952,9 +8958,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         public override void ExitGroupClause([NotNull] XP.GroupClauseContext context)
         {
             context.Put(_syntaxFactory.GroupClause(
-                SyntaxFactory.MakeToken(SyntaxKind.GroupKeyword),
+                context.G.SyntaxKeyword(),
                 context.Expr.Get<ExpressionSyntax>(),
-                SyntaxFactory.MakeToken(SyntaxKind.ByKeyword),
+                context.B.SyntaxKeyword(),
                 context.ByExpr.Get<ExpressionSyntax>()
                 ));
         }
@@ -8962,7 +8968,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         public override void ExitQueryContinuation([NotNull] XP.QueryContinuationContext context)
         {
             context.Put(_syntaxFactory.QueryContinuation(
-                SyntaxFactory.MakeToken(SyntaxKind.IntoKeyword),
+                context.I.SyntaxKeyword(),
                 context.Id.Get<SyntaxToken>(),
                 context.Body.Get<QueryBodySyntax>()
                 ));

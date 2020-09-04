@@ -14,6 +14,18 @@ namespace Microsoft.CodeAnalysis.CSharp
 {
     internal static class VOTypeConversions
     {
+
+        internal static bool IsByRef(this RefKind kind)
+        {
+            switch (kind)
+            {
+                case RefKind.Ref:
+                case RefKind.Out:
+                case RefKind.In:
+                    return true;
+            }
+            return false;
+        }
         internal static bool IsIFormatProvider(this TypeSymbol source)
         {
             return source.IsInterfaceType() && source.Name == "IFormatProvider";

@@ -2253,8 +2253,8 @@ namespace Microsoft.CodeAnalysis.CSharp
                 // NOTE:    gets considered while classifying conversions between parameter types when computing better conversion target in the native compiler.
                 // NOTE:    Roslyn correctly follows the specification and ref kinds are not considered while classifying conversions between types, see method BetterConversionTarget.
 #if XSHARP
-                Debug.Assert(refKind1 == RefKind.None || refKind1 == RefKind.Ref || refKind1 == RefKind.Out);
-                Debug.Assert(refKind2 == RefKind.None || refKind2 == RefKind.Ref || refKind2 == RefKind.Out);
+                Debug.Assert(refKind1 == RefKind.None || refKind1.IsByRef());
+                Debug.Assert(refKind2 == RefKind.None || refKind2.IsByRef());
 #else
                 Debug.Assert(refKind1 == RefKind.None || refKind1 == RefKind.Ref);
                 Debug.Assert(refKind2 == RefKind.None || refKind2 == RefKind.Ref);
@@ -2947,7 +2947,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             {
                 ImmutableArray<RefKind> parameterRefKinds = member.GetParameterRefKinds();
 #if XSHARP
-                if (parameterRefKinds.IsDefaultOrEmpty || !parameterRefKinds.Any(refKind => refKind == RefKind.Ref || refKind == RefKind.Out))
+                if (parameterRefKinds.IsDefaultOrEmpty || !parameterRefKinds.Any(refKind => refKind.IsByRef()))
 #else
                 if (parameterRefKinds.IsDefaultOrEmpty)
 #endif
@@ -3018,7 +3018,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
 
 #if XSHARP
-            if (allowRefOmittedArguments && paramRefKind == RefKind.Out && (argRefKind == RefKind.None || argRefKind == RefKind.Ref) && !_binder.InAttributeArgument)
+            if (allowRefOmittedArguments && paramRefKind == RefKind.Out && (argRefKind == RefKind.None || argRefKind == RefKind.Ref || argRefKind == RefKind.In) && !_binder.InAttributeArgument)
             {
                 hasAnyRefOmittedArgument = argRefKind == RefKind.None;
                 return argRefKind;
@@ -3511,7 +3511,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                             useSiteDiagnostics = new HashSet<DiagnosticInfo>();
                             useSiteDiagnostics.Add(info);
                         }
-                        if ((parameterRefKind == RefKind.Out || parameterRefKind == RefKind.Ref) && argumentRefKind == RefKind.None)
+                        if (parameterRefKind.IsByRef() && argumentRefKind == RefKind.None)
                         {
                             argumentRefKind = parameterRefKind;
                             arguments.SetRefKind(argumentPosition, argumentRefKind);

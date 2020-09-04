@@ -11,8 +11,8 @@
     // This generally changes when we release a new full build
     // NOTE: DO NOT FORGET THE VERSION NUMBER IN THE CONSTANTS.CS FILE
 
-    #define VERSION_NUMBER_STR     "2.1.0.0"
-    #define VERSION_NUMBER			2,1,0,0
+    #define VERSION_NUMBER_STR     "2.6.0.0"
+    #define VERSION_NUMBER			2,6,0,0
 
     // This is the file version number, which is ignored by .NET but used by Windows installer to determine
     // whether one file is newer than another.

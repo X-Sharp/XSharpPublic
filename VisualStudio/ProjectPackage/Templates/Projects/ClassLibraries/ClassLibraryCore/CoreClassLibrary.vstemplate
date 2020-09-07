@@ -4,7 +4,7 @@
     <Name>Class Library Core Dialect with Runtime</Name>
     <Description>A project for creating a X# class library (.dll) for the Core dialect with a dependency on XSharp.Core</Description>
     <Icon>CoreClassLibrary.png</Icon>
-    <TemplateID>XSharp.CoreClassLibrary</TemplateID>
+    <TemplateID>XSharp.ClassLibraryCore</TemplateID>
     <ProjectType>XSharp</ProjectType>
     <SortOrder>1</SortOrder>
     <NumberOfParentCategoriesToRollUp>1</NumberOfParentCategoriesToRollUp>

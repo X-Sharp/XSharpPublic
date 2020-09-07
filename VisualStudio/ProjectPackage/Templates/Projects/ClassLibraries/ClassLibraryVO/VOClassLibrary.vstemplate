@@ -4,7 +4,7 @@
     <Name>Class Library VO Dialect</Name>
     <Description>A project for creating a X# class library (.dll) for the VO Dialect</Description>
     <Icon>VOClassLibrary.png</Icon>
-    <TemplateID>XSharp.VOClassLibrary</TemplateID>
+    <TemplateID>XSharp.ClassLibraryVO</TemplateID>
     <ProjectType>XSharp</ProjectType>
     <SortOrder>1</SortOrder>
     <NumberOfParentCategoriesToRollUp>1</NumberOfParentCategoriesToRollUp>

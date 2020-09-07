@@ -60,7 +60,7 @@ namespace Microsoft.VisualStudio.Project
         protected override async System.Threading.Tasks.Task InitializeAsync(CancellationToken cancellationToken, IProgress<ServiceProgressData> progress)
         {
             await base.InitializeAsync( cancellationToken, progress );
-
+            await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();            
             // Subscribe to the solution events
             this.solutionListeners.Add(new SolutionListenerForProjectReferenceUpdate(this));
             this.solutionListeners.Add(new SolutionListenerForProjectOpen(this));

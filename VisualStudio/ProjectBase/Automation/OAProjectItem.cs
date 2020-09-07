@@ -8,18 +8,18 @@
  * You must not remove this notice, or any other, from this software.
  *
  * ***************************************************************************/
-
+using EnvDTE;
 using System;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
 using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Shell.Interop;
+using Microsoft.VisualStudio.Shell;
 
 namespace Microsoft.VisualStudio.Project.Automation
 {
     [ComVisible(true), CLSCompliant(false)]
-    public class OAProjectItem<T> : EnvDTE.ProjectItem
-         where T : HierarchyNode
+    public class OAProjectItem<T> : ProjectItem where T : HierarchyNode
     {
 
         #region fields
@@ -82,7 +82,7 @@ namespace Microsoft.VisualStudio.Project.Automation
         /// <summary>
         /// Gets the Document associated with the item, if one exists.
         /// </summary>
-        public virtual EnvDTE.Document Document
+        public virtual Document Document
         {
             get
             {
@@ -104,12 +104,13 @@ namespace Microsoft.VisualStudio.Project.Automation
         /// <summary>
         /// Gets a collection of all properties that pertain to the object.
         /// </summary>
-        public virtual EnvDTE.Properties Properties
+        public virtual Properties Properties
         {
             get
             {
-                return UIThread.DoOnUIThread(delegate()
+                return ThreadHelper.JoinableTaskFactory.Run(async delegate
                 {
+                    await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
                     if (this.node.NodeProperties == null)
                     {
                     return null;
@@ -123,7 +124,7 @@ namespace Microsoft.VisualStudio.Project.Automation
         /// <summary>
         /// Gets the FileCodeModel object for the project item.
         /// </summary>
-        public virtual EnvDTE.FileCodeModel FileCodeModel
+        public virtual FileCodeModel FileCodeModel
         {
             get
             {
@@ -134,7 +135,7 @@ namespace Microsoft.VisualStudio.Project.Automation
         /// <summary>
         /// Gets a ProjectItems for the object.
         /// </summary>
-        public virtual EnvDTE.ProjectItems ProjectItems
+        public virtual ProjectItems ProjectItems
         {
             get
             {
@@ -168,23 +169,29 @@ namespace Microsoft.VisualStudio.Project.Automation
         /// <summary>
         /// Gets the top-level extensibility object.
         /// </summary>
-        public virtual EnvDTE.DTE DTE
+        public virtual DTE DTE
         {
             get
             {
+                return
+                    ThreadHelper.JoinableTaskFactory.Run(async delegate
+                    {
+                        await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
                 return (EnvDTE.DTE)this.project.DTE;
+                    });
             }
         }
 
         /// <summary>
         /// Gets the ProjectItems collection containing the ProjectItem object supporting this property.
         /// </summary>
-        public virtual EnvDTE.ProjectItems Collection
+        public virtual ProjectItems Collection
         {
             get
             {
-                return UIThread.DoOnUIThread(delegate()
+                return ThreadHelper.JoinableTaskFactory.Run(async delegate
                 {
+                    await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
                 // Get the parent node
                 HierarchyNode parentNode = this.node.Parent;
                 Debug.Assert(parentNode != null, "Failed to get the parent node");
@@ -195,20 +202,17 @@ namespace Microsoft.VisualStudio.Project.Automation
                     // The root node for the project
                     return ((OAProject)parentNode.GetAutomationObject()).ProjectItems;
                 }
-                    else if (parentNode is FileNode && parentNode.FirstChild != null)
+                    if (parentNode is FileNode && parentNode.FirstChild != null)
                 {
                     // The item has children
                     return ((OAProjectItem<FileNode>)parentNode.GetAutomationObject()).ProjectItems;
                 }
-                    else if (parentNode is FolderNode)
+                    if (parentNode is FolderNode)
                 {
                     return ((OAProjectItem<FolderNode>)parentNode.GetAutomationObject()).ProjectItems;
                 }
-                else
-                {
                     // Not supported. Override this method in derived classes to return appropriate collection object
                     throw new NotImplementedException();
-                }
                 });
             }
         }
@@ -227,7 +231,7 @@ namespace Microsoft.VisualStudio.Project.Automation
         /// Gets the ConfigurationManager object for this ProjectItem.
         /// </summary>
         /// <remarks>We do not support config management based per item.</remarks>
-        public virtual EnvDTE.ConfigurationManager ConfigurationManager
+        public virtual ConfigurationManager ConfigurationManager
         {
             get
             {
@@ -312,20 +316,23 @@ namespace Microsoft.VisualStudio.Project.Automation
             {
                 CheckProjectIsValid();
 
-                UIThread.DoOnUIThread(delegate()
+                ThreadHelper.JoinableTaskFactory.Run(async delegate
                 {
-                    using (AutomationScope scope = new AutomationScope(this.Node.ProjectMgr.Site))
+                    await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+                    using (new AutomationScope(this.Node.ProjectMgr.Site))
                     {
                     this.node.SetEditLabel(value);
                 }
                 });
             }
         }
-        protected void CheckProjectIsValid() {
+        protected void CheckProjectIsValid()
+        {
             Utilities.CheckNotNull(this.node);
             Utilities.CheckNotNull(this.node.ProjectMgr);
             Utilities.CheckNotNull(this.node.ProjectMgr.Site);
-            if (this.node.ProjectMgr.IsClosed) {
+            if (this.node.ProjectMgr.IsClosed)
+            {
                 throw new InvalidOperationException();
             }
         }
@@ -336,8 +343,9 @@ namespace Microsoft.VisualStudio.Project.Automation
         {
             CheckProjectIsValid();
 
-            UIThread.DoOnUIThread(delegate()
+            ThreadHelper.JoinableTaskFactory.Run(async delegate
             {
+                await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
                 using (AutomationScope scope = new AutomationScope(this.Node.ProjectMgr.Site))
             {
                 this.node.Remove(false);
@@ -352,9 +360,10 @@ namespace Microsoft.VisualStudio.Project.Automation
         {
             CheckProjectIsValid();
 
-            UIThread.DoOnUIThread(delegate()
+            ThreadHelper.JoinableTaskFactory.Run(async delegate
             {
-                using (AutomationScope scope = new AutomationScope(this.Node.ProjectMgr.Site))
+                await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+                using (new AutomationScope(this.Node.ProjectMgr.Site))
 	            {
 	                this.node.Remove(true);
 	            }
@@ -409,15 +418,12 @@ namespace Microsoft.VisualStudio.Project.Automation
         {
             CheckProjectIsValid();
 
-            UIThread.DoOnUIThread(delegate()
+            ThreadHelper.JoinableTaskFactory.Run(async delegate
             {
-                using (AutomationScope scope = new AutomationScope(this.Node.ProjectMgr.Site))
+                await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+                using (new AutomationScope(this.Node.ProjectMgr.Site))
             {
                 IVsUIHierarchyWindow uiHierarchy = UIHierarchyUtilities.GetUIHierarchyWindow(this.node.ProjectMgr.Site, HierarchyNode.SolutionExplorer);
-                    if (uiHierarchy == null)
-                {
-                    throw new InvalidOperationException();
-                }
 
                 ErrorHandler.ThrowOnFailure(uiHierarchy.ExpandItem(this.node.ProjectMgr, this.node.ID, EXPANDFLAGS.EXPF_ExpandFolder));
 
@@ -430,7 +436,7 @@ namespace Microsoft.VisualStudio.Project.Automation
         /// </summary>
         /// <param name="ViewKind">Specifies the view kind in which to open the item</param>
         /// <returns>Window object</returns>
-        public virtual EnvDTE.Window Open(string ViewKind)
+        public virtual Window Open(string ViewKind)
         {
             throw new NotImplementedException();
         }

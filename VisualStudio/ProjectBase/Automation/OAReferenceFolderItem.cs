@@ -8,10 +8,10 @@
  * You must not remove this notice, or any other, from this software.
  *
  * ***************************************************************************/
-
+using EnvDTE;
+using Microsoft.VisualStudio.Shell;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using System.Runtime.InteropServices;
 
 namespace Microsoft.VisualStudio.Project.Automation
@@ -19,7 +19,6 @@ namespace Microsoft.VisualStudio.Project.Automation
     /// <summary>
     /// Contains OAReferenceItem objects
     /// </summary>
-    [SuppressMessage("Microsoft.Interoperability", "CA1405:ComVisibleTypeBaseTypesShouldBeComVisible")]
     [ComVisible(true), CLSCompliant(false)]
     public class OAReferenceFolderItem : OAProjectItem<ReferenceContainerNode>
     {
@@ -35,7 +34,7 @@ namespace Microsoft.VisualStudio.Project.Automation
         /// <summary>
         /// Returns the project items collection of all the references defined for this project.
         /// </summary>
-        public override EnvDTE.ProjectItems ProjectItems
+        public override ProjectItems ProjectItems
         {
             get
             {
@@ -47,16 +46,20 @@ namespace Microsoft.VisualStudio.Project.Automation
         #endregion
 
         #region Helper methods
-        private List<EnvDTE.ProjectItem> GetListOfProjectItems()
+        private List<ProjectItem> GetListOfProjectItems()
         {
-            List<EnvDTE.ProjectItem> list = new List<EnvDTE.ProjectItem>();
+            List<ProjectItem> list = new List<ProjectItem>();
             for(HierarchyNode child = this.Node.FirstChild; child != null; child = child.NextSibling)
             {
                 ReferenceNode node = child as ReferenceNode;
 
                 if(node != null)
                 {
-                    list.Add(new OAReferenceItem(this.Project, node));
+                    ThreadHelper.JoinableTaskFactory.Run(async delegate
+                    {
+                        await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+                        list.Add(node.Object as ProjectItem);
+                    });
                 }
             }
 

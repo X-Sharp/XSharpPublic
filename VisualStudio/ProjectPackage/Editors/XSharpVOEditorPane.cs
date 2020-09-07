@@ -176,9 +176,11 @@ namespace XSharp.Project
         {
             get
             {
-                IVsUIShell uiShell = null;
-                UIThread.DoOnUIThread(() => uiShell = (IVsUIShell)GetService(typeof(SVsUIShell)));
-                return uiShell;
+                return ThreadHelper.JoinableTaskFactory.Run(async delegate
+                {
+                    await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+                    return (IVsUIShell)GetService(typeof(SVsUIShell));
+                });
             }
         }
 
@@ -225,7 +227,12 @@ namespace XSharp.Project
         {
             if (this.oStatusBar == null)
             {
-                UIThread.DoOnUIThread(() => oStatusBar = (IVsStatusbar)GetService(typeof(IVsStatusbar)));
+                ThreadHelper.JoinableTaskFactory.Run(async delegate
+                {
+                    await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+
+                    oStatusBar = (IVsStatusbar)GetService(typeof(IVsStatusbar));
+                });
             }
             if (this.oStatusBar != null)
             {
@@ -267,7 +274,12 @@ namespace XSharp.Project
             {
                 if (trackSel == null)
                 {
-                    UIThread.DoOnUIThread(() => trackSel = (ITrackSelection)GetService(typeof(ITrackSelection)));
+                    ThreadHelper.JoinableTaskFactory.Run(async delegate
+                    {
+                        await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+
+                        trackSel = (ITrackSelection)GetService(typeof(ITrackSelection));
+                    });
                 }
                 return trackSel;
             }
@@ -333,7 +345,12 @@ namespace XSharp.Project
 
             // Get a reference to the Running Document Table
             IVsRunningDocumentTable runningDocTable = null;
-            UIThread.DoOnUIThread(() => runningDocTable = (IVsRunningDocumentTable)GetService(typeof(SVsRunningDocumentTable)));
+            ThreadHelper.JoinableTaskFactory.Run(async delegate
+            {
+                await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+
+                runningDocTable = (IVsRunningDocumentTable)GetService(typeof(SVsRunningDocumentTable));
+            });
 
             // Lock the document
             uint docCookie;
@@ -844,7 +861,12 @@ namespace XSharp.Project
                 case VSSAVEFLAGS.VSSAVE_SilentSave:
                     {
                         IVsQueryEditQuerySave2 queryEditQuerySave = null;
-                        UIThread.DoOnUIThread(() => queryEditQuerySave = (IVsQueryEditQuerySave2)GetService(typeof(SVsQueryEditQuerySave)));
+                        ThreadHelper.JoinableTaskFactory.Run(async delegate
+                        {
+                            await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+
+                            queryEditQuerySave = (IVsQueryEditQuerySave2)GetService(typeof(SVsQueryEditQuerySave));
+                        });
 
                         // Call QueryEditQuerySave
                         uint result = 0;
@@ -1137,7 +1159,12 @@ namespace XSharp.Project
             {
                 if (vsFileChangeEx != null)
                 {
-                    UIThread.DoOnUIThread(() => vsFileChangeEx = (IVsFileChangeEx)GetService(typeof(SVsFileChangeEx)));
+                    ThreadHelper.JoinableTaskFactory.Run(async delegate
+                    {
+                        await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+
+                        vsFileChangeEx = (IVsFileChangeEx)GetService(typeof(SVsFileChangeEx));
+                    });
                 }
                 return vsFileChangeEx;
             }
@@ -1324,7 +1351,11 @@ namespace XSharp.Project
             string resourceValue;
 
             IVsResourceManager resourceManager = null;
-            UIThread.DoOnUIThread( () => resourceManager = (IVsResourceManager)GetService(typeof(SVsResourceManager)));
+            ThreadHelper.JoinableTaskFactory.Run(async delegate
+            {
+                await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+                resourceManager = (IVsResourceManager)GetService(typeof(SVsResourceManager));
+            });
             if (resourceManager == null)
             {
                 throw new InvalidOperationException("Could not get SVsResourceManager service. Make sure the package is Sited before calling this method");
@@ -1353,7 +1384,11 @@ namespace XSharp.Project
 
                 // Get the QueryEditQuerySave service
                 IVsQueryEditQuerySave2 queryEditQuerySave = null;
-                UIThread.DoOnUIThread (() => queryEditQuerySave = (IVsQueryEditQuerySave2)GetService(typeof(SVsQueryEditQuerySave)));
+                ThreadHelper.JoinableTaskFactory.Run(async delegate
+                {
+                    await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+                    queryEditQuerySave = (IVsQueryEditQuerySave2)GetService(typeof(SVsQueryEditQuerySave));
+                });
 
                 // Now call the QueryEdit method to find the edit status of this file
                 string[] documents = { this.fileName };
@@ -1415,7 +1450,11 @@ namespace XSharp.Project
             // responsible for handling the collection of commands implemented by the package.
 
             IMenuCommandService mcs = null;
-            UIThread.DoOnUIThread( () => mcs = GetService(typeof(IMenuCommandService)) as IMenuCommandService);
+            ThreadHelper.JoinableTaskFactory.Run(async delegate
+            {
+                await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+                mcs = GetService(typeof(IMenuCommandService)) as IMenuCommandService;
+            });
             if (null != mcs)
             {
                 // Now create one object derived from MenuCommnad for each command defined in

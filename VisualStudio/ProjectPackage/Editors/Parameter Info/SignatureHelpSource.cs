@@ -5,7 +5,6 @@ using Microsoft.VisualStudio.Language.Intellisense;
 using Microsoft.VisualStudio.Text;
 using System.Reflection;
 using XSharpModel;
-using XSharp.Project.OptionsPages;
 
 namespace XSharp.Project
 {
@@ -198,20 +197,16 @@ namespace XSharp.Project
         private ITextBuffer m_textBuffer;
         private ISignatureHelpSession m_session;
         private ITrackingSpan m_applicableToSpan;
-        IntellisenseOptionsPage optionsPage = null;
-        XSharpProjectPackage package;
 
         public XSharpSignatureHelpSource(ITextBuffer textBuffer)
         {
             m_textBuffer = textBuffer;
-            package = XSharpProjectPackage.Instance;
-            optionsPage = package.GetIntellisenseOptionsPage();
         }
         internal void Debug(string strMessage)
         {
-            if (optionsPage.EnableParameterLog && optionsPage.EnableOutputPane)
+            if (XSettings.EnableParameterLog && XSettings.EnableLogging)
             {
-                XSharpProjectPackage.Instance.DisplayOutPutMessage(strMessage);
+                XSettings.DisplayOutputMessage(strMessage);
             }
         }
         public void AugmentSignatureHelpSession(ISignatureHelpSession session, IList<ISignature> signatures)
@@ -275,8 +270,8 @@ namespace XSharp.Project
             }
             catch (Exception ex)
             {
-                package.DisplayOutPutMessage("XSharpSignatureHelpSource.AugmentSignatureHelpSession Exception failed " );
-                package.DisplayException(ex);
+                XSettings.DisplayOutputMessage("XSharpSignatureHelpSource.AugmentSignatureHelpSession Exception failed " );
+                XSettings.DisplayException(ex);
             }
             finally
             {

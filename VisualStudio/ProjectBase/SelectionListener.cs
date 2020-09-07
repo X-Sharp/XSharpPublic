@@ -43,8 +43,11 @@ namespace Microsoft.VisualStudio.Project
             }
 
             this.serviceProvider = serviceProviderParameter;
+            ThreadHelper.JoinableTaskFactory.Run(async delegate
+            {
+                await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
             this.monSel = this.serviceProvider.GetService(typeof(SVsShellMonitorSelection)) as IVsMonitorSelection;
-
+            });
             if(this.monSel == null)
             {
                 throw new InvalidOperationException();
@@ -111,10 +114,14 @@ namespace Microsoft.VisualStudio.Project
         #region methods
         public void Init()
         {
+            ThreadHelper.JoinableTaskFactory.Run(async delegate
+            {
+                await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
             if(this.SelectionMonitor != null)
             {
                 this.SelectionMonitor.AdviseSelectionEvents(this, out this.eventsCookie);
             }
+            });
         }
 
         /// <summary>
@@ -132,7 +139,11 @@ namespace Microsoft.VisualStudio.Project
                 {
                     if(disposing && this.eventsCookie != (uint)ShellConstants.VSCOOKIE_NIL && this.SelectionMonitor != null)
                     {
+                        ThreadHelper.JoinableTaskFactory.Run(async delegate
+                        {
+                            await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
                         this.SelectionMonitor.UnadviseSelectionEvents((uint)this.eventsCookie);
+                        });
                         this.eventsCookie = (uint)ShellConstants.VSCOOKIE_NIL;
                     }
 

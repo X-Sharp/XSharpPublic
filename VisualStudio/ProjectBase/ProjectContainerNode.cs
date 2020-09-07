@@ -450,58 +450,63 @@ namespace Microsoft.VisualStudio.Project
         [SuppressMessage("Microsoft.Naming", "CA1709:IdentifiersShouldBeCasedCorrectly", MessageId = "Vs")]
         protected internal void RunVsTemplateWizard(ProjectElement element, bool silent)
         {
-            ProjectElement elementToUse = (element == null) ? this.nestedProjectElement : element;
-
-            if(elementToUse == null)
+            ThreadHelper.JoinableTaskFactory.Run(async delegate
             {
-                throw new ArgumentNullException("element");
-            }
-            this.nestedProjectElement = elementToUse;
+                await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
 
-            Automation.OAProject oaProject = GetAutomationObject() as Automation.OAProject;
-            if(oaProject == null || oaProject.ProjectItems == null)
-                throw new System.InvalidOperationException(SR.GetString(SR.InvalidAutomationObject, CultureInfo.CurrentUICulture));
-            Debug.Assert(oaProject.Object != null, "The project automation object should have set the Object to the SolutionFolder");
-            Automation.OASolutionFolder<ProjectContainerNode> folder = oaProject.Object as Automation.OASolutionFolder<ProjectContainerNode>;
+                ProjectElement elementToUse = (element == null) ? this.nestedProjectElement : element;
 
-            // Prepare the parameters to pass to RunWizardFile
-            string destination = elementToUse.GetFullPathForElement();
-            string template = this.GetProjectTemplatePath(elementToUse);
-
-            object[] wizParams = new object[7];
-            wizParams[0] = EnvDTE.Constants.vsWizardAddSubProject;
-            wizParams[1] = Path.GetFileNameWithoutExtension(destination);
-            wizParams[2] = oaProject.ProjectItems;
-            wizParams[3] = Path.GetDirectoryName(destination);
-            wizParams[4] = Path.GetFileNameWithoutExtension(destination);
-            wizParams[5] = Path.GetDirectoryName(folder.DTE.FullName); //VS install dir
-            wizParams[6] = silent;
-
-            IVsDetermineWizardTrust wizardTrust = this.GetService(typeof(SVsDetermineWizardTrust)) as IVsDetermineWizardTrust;
-            if(wizardTrust != null)
-            {
-                Guid guidProjectAdding = Guid.Empty;
-
-                // In case of a project template an empty guid should be added as the guid parameter. See env\msenv\core\newtree.h IsTrustedTemplate method definition.
-                wizardTrust.OnWizardInitiated(template, ref guidProjectAdding);
-            }
-
-            try
-            {
-                // Make the call to execute the wizard. This should cause AddNestedProjectFromTemplate to be
-                // called back with the correct set of parameters.
-                EnvDTE.IVsExtensibility extensibilityService = (EnvDTE.IVsExtensibility)GetService(typeof(EnvDTE.IVsExtensibility));
-                EnvDTE.wizardResult result = extensibilityService.RunWizardFile(template, 0, ref wizParams);
-                if(result == EnvDTE.wizardResult.wizardResultFailure)
-                    throw new COMException();
-            }
-            finally
-            {
-                if(wizardTrust != null)
+                if (elementToUse == null)
                 {
-                    wizardTrust.OnWizardCompleted();
+                    throw new ArgumentNullException("element");
                 }
-            }
+                this.nestedProjectElement = elementToUse;
+
+                Automation.OAProject oaProject = GetAutomationObject() as Automation.OAProject;
+                if (oaProject == null || oaProject.ProjectItems == null)
+                    throw new System.InvalidOperationException(SR.GetString(SR.InvalidAutomationObject, CultureInfo.CurrentUICulture));
+                Debug.Assert(oaProject.Object != null, "The project automation object should have set the Object to the SolutionFolder");
+                Automation.OASolutionFolder<ProjectContainerNode> folder = oaProject.Object as Automation.OASolutionFolder<ProjectContainerNode>;
+
+                // Prepare the parameters to pass to RunWizardFile
+                string destination = elementToUse.GetFullPathForElement();
+                string template = this.GetProjectTemplatePath(elementToUse);
+
+                object[] wizParams = new object[7];
+                wizParams[0] = EnvDTE.Constants.vsWizardAddSubProject;
+                wizParams[1] = Path.GetFileNameWithoutExtension(destination);
+                wizParams[2] = oaProject.ProjectItems;
+                wizParams[3] = Path.GetDirectoryName(destination);
+                wizParams[4] = Path.GetFileNameWithoutExtension(destination);
+                wizParams[5] = Path.GetDirectoryName(folder.DTE.FullName); //VS install dir
+                wizParams[6] = silent;
+
+                IVsDetermineWizardTrust wizardTrust = this.GetService(typeof(SVsDetermineWizardTrust)) as IVsDetermineWizardTrust;
+                if (wizardTrust != null)
+                {
+                    Guid guidProjectAdding = Guid.Empty;
+
+                    // In case of a project template an empty guid should be added as the guid parameter. See env\msenv\core\newtree.h IsTrustedTemplate method definition.
+                    wizardTrust.OnWizardInitiated(template, ref guidProjectAdding);
+                }
+
+                try
+                {
+                    // Make the call to execute the wizard. This should cause AddNestedProjectFromTemplate to be
+                    // called back with the correct set of parameters.
+                    EnvDTE.IVsExtensibility extensibilityService = (EnvDTE.IVsExtensibility)GetService(typeof(EnvDTE.IVsExtensibility));
+                    EnvDTE.wizardResult result = extensibilityService.RunWizardFile(template, 0, ref wizParams);
+                    if (result == EnvDTE.wizardResult.wizardResultFailure)
+                        throw new COMException();
+                }
+                finally
+                {
+                    if (wizardTrust != null)
+                    {
+                        wizardTrust.OnWizardCompleted();
+                    }
+                }
+            });
         }
 
         /// <summary>
@@ -640,7 +645,7 @@ namespace Microsoft.VisualStudio.Project
         {
             ProjectElement elementToUse = (element == null) ? this.nestedProjectElement : element;
 
-            if(elementToUse == null)
+            if (elementToUse == null)
             {
                 throw new ArgumentNullException("element");
             }
@@ -649,19 +654,23 @@ namespace Microsoft.VisualStudio.Project
             string typeGuidString = elementToUse.GetMetadataAndThrow(ProjectFileConstants.TypeGuid, new Exception());
             Guid projectFactoryGuid = new Guid(typeGuidString);
 
-            EnvDTE.DTE dte = this.ProjectMgr.Site.GetService(typeof(EnvDTE.DTE)) as EnvDTE.DTE;
-            Debug.Assert(dte != null, "Could not get the automation object from the services exposed by this project");
-
-            if(dte == null)
-                throw new InvalidOperationException();
-
-            RegisteredProjectType registeredProjectType = RegisteredProjectType.CreateRegisteredProjectType(projectFactoryGuid);
-            Debug.Assert(registeredProjectType != null, "Could not read the registry setting associated to this project.");
-            if(registeredProjectType == null)
+            return ThreadHelper.JoinableTaskFactory.Run(async delegate
             {
-                throw new InvalidOperationException();
-            }
-            return registeredProjectType;
+                await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+                EnvDTE.DTE dte = this.ProjectMgr.Site.GetService(typeof(EnvDTE.DTE)) as EnvDTE.DTE;
+                Debug.Assert(dte != null, "Could not get the automation object from the services exposed by this project");
+
+                if (dte == null)
+                    throw new InvalidOperationException();
+
+                RegisteredProjectType registeredProjectType = RegisteredProjectType.CreateRegisteredProjectType(projectFactoryGuid);
+                Debug.Assert(registeredProjectType != null, "Could not read the registry setting associated to this project.");
+                if (registeredProjectType == null)
+                {
+                    throw new InvalidOperationException();
+                }
+                return registeredProjectType;
+            });
         }
 
         /// <summary>

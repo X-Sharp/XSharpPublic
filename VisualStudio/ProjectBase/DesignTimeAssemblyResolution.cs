@@ -18,7 +18,7 @@ using Microsoft.Build.Utilities;
 using Microsoft.Build.Execution;
 using System.IO;
 using System.Globalization;
-
+using XSharpModel;
 namespace Microsoft.VisualStudio.Project
 {
     public class DesignTimeAssemblyResolution
@@ -52,79 +52,74 @@ namespace Microsoft.VisualStudio.Project
             {
                 throw new ArgumentNullException("assemblies");
             }
+            
+            //// Resolve references WITHOUT invoking MSBuild to avoid re-entrancy problems.
+            //const bool projectDtar = true;
+            //var rar = new Microsoft.Build.Tasks.ResolveAssemblyReference();
+            
+            //var engine = new MockEngine(EnableLogging);
+            //rar.BuildEngine = engine;
 
-            // Resolve references WITHOUT invoking MSBuild to avoid re-entrancy problems.
-            const bool projectDtar = true;
-            var rar = new Microsoft.Build.Tasks.ResolveAssemblyReference();
-            var engine = new MockEngine(EnableLogging);
-            rar.BuildEngine = engine;
+            //// first set common properties/items then if projectDtar then set additional projectDtar properties
+            //ITaskItem[] assemblyItems = assemblies.Select(assembly => new TaskItem(assembly)).ToArray();
+            //rar.Assemblies = assemblyItems;
+            //rar.SearchPaths = rarInputs.PdtarSearchPaths;
 
-            // first set common properties/items then if projectDtar then set additional projectDtar properties
-            ITaskItem[] assemblyItems = assemblies.Select(assembly => new TaskItem(assembly)).ToArray();
-            rar.Assemblies = assemblyItems;
-            rar.SearchPaths = rarInputs.PdtarSearchPaths;
+            //rar.TargetFrameworkDirectories = rarInputs.TargetFrameworkDirectories;
+            //rar.AllowedAssemblyExtensions = rarInputs.AllowedAssemblyExtensions;
+            //rar.TargetProcessorArchitecture = rarInputs.TargetProcessorArchitecture;
+            //rar.TargetFrameworkVersion = rarInputs.TargetFrameworkVersion;
+            //rar.TargetFrameworkMoniker = rarInputs.TargetFrameworkMoniker;
+            //rar.TargetFrameworkMonikerDisplayName = rarInputs.TargetFrameworkMonikerDisplayName;
+            //rar.TargetedRuntimeVersion = rarInputs.TargetedRuntimeVersion;
+            //rar.FullFrameworkFolders = rarInputs.FullFrameworkFolders;
+            //rar.LatestTargetFrameworkDirectories = rarInputs.LatestTargetFrameworkDirectories;
+            //rar.FullTargetFrameworkSubsetNames = rarInputs.FullTargetFrameworkSubsetNames;
+            //rar.FullFrameworkAssemblyTables = rarInputs.FullFrameworkAssemblyTables;
+            //rar.IgnoreDefaultInstalledAssemblySubsetTables = rarInputs.IgnoreDefaultInstalledAssemblySubsetTables;
+            //rar.ProfileName = rarInputs.ProfileName;
 
-            rar.TargetFrameworkDirectories = rarInputs.TargetFrameworkDirectories;
-            rar.AllowedAssemblyExtensions = rarInputs.AllowedAssemblyExtensions;
-            rar.TargetProcessorArchitecture = rarInputs.TargetProcessorArchitecture;
-            rar.TargetFrameworkVersion = rarInputs.TargetFrameworkVersion;
-            rar.TargetFrameworkMoniker = rarInputs.TargetFrameworkMoniker;
-            rar.TargetFrameworkMonikerDisplayName = rarInputs.TargetFrameworkMonikerDisplayName;
-            rar.TargetedRuntimeVersion = rarInputs.TargetedRuntimeVersion;
-            rar.FullFrameworkFolders = rarInputs.FullFrameworkFolders;
-            rar.LatestTargetFrameworkDirectories = rarInputs.LatestTargetFrameworkDirectories;
-            rar.FullTargetFrameworkSubsetNames = rarInputs.FullTargetFrameworkSubsetNames;
-            rar.FullFrameworkAssemblyTables = rarInputs.FullFrameworkAssemblyTables;
-            rar.IgnoreDefaultInstalledAssemblySubsetTables = rarInputs.IgnoreDefaultInstalledAssemblySubsetTables;
-            rar.ProfileName = rarInputs.ProfileName;
+            //rar.Silent = !this.EnableLogging;
+            //rar.FindDependencies = true;
+            //rar.AutoUnify = false;
+            //rar.FindSatellites = false;
+            //rar.FindSerializationAssemblies = false;
+            //rar.FindRelatedFiles = false;
 
-            rar.Silent = !this.EnableLogging;
-            rar.FindDependencies = true;
-            rar.AutoUnify = false;
-            rar.FindSatellites = false;
-            rar.FindSerializationAssemblies = false;
-            rar.FindRelatedFiles = false;
-
-            // This set needs to be kept in sync with the set of project instance data that
-            // is populated into RarInputs
-            if (projectDtar)
-            {
-                // set project dtar specific properties 
-                rar.CandidateAssemblyFiles = rarInputs.CandidateAssemblyFiles;
-                rar.StateFile = rarInputs.StateFile;
-                rar.InstalledAssemblySubsetTables = rarInputs.InstalledAssemblySubsetTables;
-                rar.TargetFrameworkSubsets = rarInputs.TargetFrameworkSubsets;
-            }
+            //// This set needs to be kept in sync with the set of project instance data that
+            //// is populated into RarInputs
+            //if (projectDtar)
+            //{
+            //    // set project dtar specific properties 
+            //    rar.CandidateAssemblyFiles = rarInputs.CandidateAssemblyFiles;
+            //    rar.StateFile = rarInputs.StateFile;
+            //    rar.InstalledAssemblySubsetTables = rarInputs.InstalledAssemblySubsetTables;
+            //    rar.TargetFrameworkSubsets = rarInputs.TargetFrameworkSubsets;
+            //}
 
             IEnumerable<VsResolvedAssemblyPath> results;
 
             try
             {
-                rar.Execute();
-                results = FilterResults(rar.ResolvedFiles).Select(pair => new VsResolvedAssemblyPath
-                {
-                    bstrOrigAssemblySpec = pair.Key,
-                    bstrResolvedAssemblyPath = pair.Value,
-                });
+                //rar.Execute();
+                //results = FilterResults(rar.ResolvedFiles).Select(pair => new VsResolvedAssemblyPath
+                //{
+                //    bstrOrigAssemblySpec = pair.Key,
+                //    bstrResolvedAssemblyPath = pair.Value,
+                //});
             }
             catch (Exception ex)
             {
-                if (ErrorHandler.IsCriticalException(ex))
-                {
-                    throw;
-                }
-
-                engine.RecordRARExecutionException(ex);
-                results = Enumerable.Empty<VsResolvedAssemblyPath>();
+                XSettings.DisplayException(ex);
             }
             finally
             {
                 if (this.EnableLogging)
                 {
-                    WriteLogFile(engine, projectDtar, assemblies);
+                    //WriteLogFile(engine, projectDtar, assemblies);
                 }
             }
-
+            results = Enumerable.Empty<VsResolvedAssemblyPath>();
             return results.ToArray();
         }
 

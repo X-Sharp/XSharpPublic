@@ -114,7 +114,6 @@ namespace XSharp.Project
     internal class SourcePosition
     {
         internal string FileName { get; set; }
-        internal string XMLComments { get; set; }
         internal int Line { get; set; }
         internal int Column { get; set; }
     }
@@ -184,7 +183,6 @@ namespace XSharp.Project
 				   FileName = scope.File.FullPath, 
 				   Line = scope.Range.StartLine + 1, 
 				   Column = scope.Range.StartColumn, 
-				   XMLComments = scope.XmlComments 
 				};
             }
             //

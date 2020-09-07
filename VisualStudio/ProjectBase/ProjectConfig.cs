@@ -1394,7 +1394,7 @@ namespace Microsoft.VisualStudio.Project
 
             try
             {
-				config.ProjectMgr.BuildAsync(options, this.config.ConfigCanonicalName, output, target, (result, projectInstance) =>
+				config.ProjectMgr.StartAsyncBuild(options, this.config.ConfigCanonicalName, output, target, (result, projectInstance) =>
 				{
 					this.BuildCoda(new BuildResult(result, projectInstance), output, shouldRepaintReferences);
 				});

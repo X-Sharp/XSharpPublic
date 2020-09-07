@@ -16,6 +16,7 @@ namespace XSharp.Project.OptionsPages
     [SharedSettings("TextEditor.XSharp",false)]
     class IntellisenseOptionsPage : DialogPage
     {
+        public bool SettingsChanged { get; set; }
         public bool CompletionListTabs { get; set; }
         public String CommitChars { get; set; }
         public bool AutoPairs { get; set; }
@@ -94,6 +95,7 @@ namespace XSharp.Project.OptionsPages
                 this.CommitChars = "";
             }
             SetCaseSync();
+            SettingsChanged = true;
         }
         public override void SaveSettingsToStorage()
         {
@@ -102,6 +104,7 @@ namespace XSharp.Project.OptionsPages
             SetDefaultCommitChars();
             base.SaveSettingsToStorage();
             SetCaseSync();
+            SettingsChanged = true;
         }
         private caseSync CaseSync;
         public IntellisenseOptionsPage() : base()

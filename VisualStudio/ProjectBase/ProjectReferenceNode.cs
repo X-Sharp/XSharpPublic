@@ -195,26 +195,31 @@ namespace Microsoft.VisualStudio.Project
         {
             get
             {
-				if (!this.referencedProjectIsCached)
-				{
+                return ThreadHelper.JoinableTaskFactory.Run(async delegate
+                {
+                    await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
 
-                    // Search for the project in the collection of the projects in the
-                    // current solution.
-                    EnvDTE.DTE dte = (EnvDTE.DTE)this.ProjectMgr.GetService(typeof(EnvDTE.DTE));
-					if ((null == dte) || (null == dte.Solution))
-					{
-						return null;
-					}
-					InitReferencedProjectFromProjectItems(dte.Solution.Projects);
-                    // this may fail if the project is not loaded yet. We want to try
-                    // again later so do not set the IsCached flag !
-                    if (referencedProject != null)
+                    if (!this.referencedProjectIsCached)
                     {
-                        this.referencedProjectIsCached = true;
-                    }
-                }
 
-                return this.referencedProject;
+                        // Search for the project in the collection of the projects in the
+                        // current solution.
+                        EnvDTE.DTE dte = (EnvDTE.DTE)this.ProjectMgr.GetService(typeof(EnvDTE.DTE));
+                        if ((null == dte) || (null == dte.Solution))
+                        {
+                            return null;
+                        }
+                        InitReferencedProjectFromProjectItems(dte.Solution.Projects);
+                        // this may fail if the project is not loaded yet. We want to try
+                        // again later so do not set the IsCached flag !
+                        if (referencedProject != null)
+                        {
+                            this.referencedProjectIsCached = true;
+                        }
+                    }
+
+                    return this.referencedProject;
+                });
 			}
 		}
 

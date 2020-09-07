@@ -502,7 +502,6 @@ namespace Microsoft.VisualStudio.Project
         protected HierarchyNode(ProjectNode root, ProjectElement element)
         {
             Utilities.ArgumentNotNull("root", root);
-            XSharpProjectPackage.Instance.UIThread.MustBeCalledFromUIThread();
             this.projectMgr = root;
             this.itemNode = element;
             this.hierarchyId = this.projectMgr.ItemIdMap.Add(this);
@@ -516,7 +515,6 @@ namespace Microsoft.VisualStudio.Project
         protected HierarchyNode(ProjectNode root)
         {
             Utilities.ArgumentNotNull("root", root);
-            XSharpProjectPackage.Instance.UIThread.MustBeCalledFromUIThread();
             this.projectMgr = root;
             this.itemNode = new ProjectElement(this.projectMgr, null, true);
             this.hierarchyId = this.projectMgr.ItemIdMap.Add(this);
@@ -632,7 +630,6 @@ namespace Microsoft.VisualStudio.Project
         public virtual void RemoveChild(HierarchyNode node)
         {
             Utilities.ArgumentNotNull("node", node);
-            XSharpProjectPackage.Instance.UIThread.MustBeCalledFromUIThread();
 
             this.projectMgr.ItemIdMap.Remove(node);
 
@@ -1288,7 +1285,6 @@ namespace Microsoft.VisualStudio.Project
         /// <returns></returns>
         protected virtual int ExcludeFromProject()
         {
-            new UIThread().MustBeCalledFromUIThread();
             Debug.Assert(this.ProjectMgr != null, "The project item " + this.ToString() + " has not been initialised correctly. It has a null ProjectMgr");
             this.Remove(false);
             return VSConstants.S_OK;
@@ -2386,6 +2382,9 @@ namespace Microsoft.VisualStudio.Project
 
             HierarchyNode prev = child.PreviousSibling;
             uint prevId = (prev != null) ? prev.hierarchyId : VSConstants.VSITEMID_NIL;
+            ThreadHelper.JoinableTaskFactory.Run(async delegate
+            {
+                await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
             foreach(IVsHierarchyEvents sink in foo.hierarchyEventSinks)
             {
                 int result = sink.OnItemAdded(parent.hierarchyId, prevId, child.hierarchyId);
@@ -2394,6 +2393,7 @@ namespace Microsoft.VisualStudio.Project
                     ErrorHandler.ThrowOnFailure(result);
                 }
             }
+            });
         }
 
 
@@ -2576,7 +2576,11 @@ namespace Microsoft.VisualStudio.Project
 
             if(this.projectMgr.Site == null) return null;
             object result = null;
-            UIThread.DoOnUIThread( () => result = this.projectMgr.Site.GetService(type));
+            ThreadHelper.JoinableTaskFactory.Run(async delegate
+            {
+                await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+                result = this.projectMgr.Site.GetService(type);
+            });
             return result;
         }
 

@@ -9,6 +9,8 @@ using System.IO;
 using XSharpModel;
 using Microsoft.VisualStudio.Shell.Interop;
 using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.VisualStudio.Shell;
 
 namespace XSharp.Project
 {
@@ -22,7 +24,18 @@ namespace XSharp.Project
         static IVsXMLMemberIndex coreIndex = null;
         static XSharpXMLDocTools()
         {
-            _XMLMemberIndexService = (IVsXMLMemberIndexService)XSharpProjectPackage.GetGlobalService(typeof(SVsXMLMemberIndexService));
+            ThreadHelper.JoinableTaskFactory.Run(async delegate
+            {
+
+                await InitXML();
+            });
+        }
+
+        async static Task<int> InitXML()
+        {
+            var lang = XSharpProjectPackage.Instance;
+            _XMLMemberIndexService = (IVsXMLMemberIndexService)await lang.GetServiceAsync(typeof(SVsXMLMemberIndexService));
+
             // create default entry so our own xml lookup will work
             var node = @"HKEY_LOCAL_MACHINE\Software\XSharpBV\XSharp";
             var InstallPath = (string)Microsoft.Win32.Registry.GetValue(node, "XSharpPath", "");
@@ -36,6 +49,7 @@ namespace XSharp.Project
                 coreLoc = location;
                 coreIndex = index;
             }
+            return 0;
         }
 
         public static void Close()
@@ -240,8 +254,8 @@ namespace XSharp.Project
             }
             catch (Exception e)
             {
-                XSharpProjectPackage.Instance.DisplayOutPutMessage("Exception in XSharpXMLDocMember.GetDocSummary");
-                XSharpProjectPackage.Instance.DisplayException(e);
+                XSettings.DisplayOutputMessage("Exception in XSharpXMLDocMember.GetDocSummary");
+                XSettings.DisplayException(e);
             }
             //
             return summary;
@@ -250,6 +264,7 @@ namespace XSharp.Project
 
         static private bool getParameterInfo(IVsXMLMemberIndex file, string xml, IList<string> names, IList<string> descriptions)
         {
+            Microsoft.VisualStudio.Shell.ThreadHelper.ThrowIfNotOnUIThread();
             IVsXMLMemberData data = null;
             var result = file.GetMemberDataFromXML(xml, out data);
             int numparams = 0;
@@ -314,8 +329,8 @@ namespace XSharp.Project
             }
             catch (Exception e)
             {
-                XSharpProjectPackage.Instance.DisplayOutPutMessage("Exception in XSharpXMLDocMember.GetDocSummary");
-                XSharpProjectPackage.Instance.DisplayException(e);
+                XSettings.DisplayOutputMessage("Exception in XSharpXMLDocMember.GetDocSummary");
+                XSettings.DisplayException(e);
                 return false;
             }
             return true;

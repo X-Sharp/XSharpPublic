@@ -210,7 +210,6 @@ namespace Microsoft.VisualStudio.Project
         /// </summary>
 		public virtual /*void*/ ReferenceNode AddReference()  //
 		{
-            XSharpProjectPackage.Instance.UIThread.MustBeCalledFromUIThread();
 
             ReferenceNode existingNode = null;  /// returns existing node or null if this node has been newly added
 

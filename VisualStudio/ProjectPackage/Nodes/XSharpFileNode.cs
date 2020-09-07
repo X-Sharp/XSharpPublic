@@ -129,7 +129,9 @@ namespace XSharp.Project
 
         protected override int ExcludeFromProject()
         {
-            new UIThread().MustBeCalledFromUIThread();
+               return ThreadHelper.JoinableTaskFactory.Run(async delegate
+            {
+			await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
             //if (this.FileType == XFileType.SourceCode)
             {
                 var prjNode = this.ProjectMgr as XSharpProjectNode;
@@ -138,6 +140,7 @@ namespace XSharp.Project
                 prjNode.ShowIntellisenseErrors();
             }
             return base.ExcludeFromProject();
+			});
         }
 
         private static string typeNameToSubtype(string typeName)

@@ -150,9 +150,11 @@ namespace XSharp.Project
         {
             get
             {
-                IVsRunningDocumentTable rdt = null;
-                UIThread.DoOnUIThread(() => rdt = (IVsRunningDocumentTable)provider.GetService(typeof(SVsRunningDocumentTable)));
-                return rdt;
+                return ThreadHelper.JoinableTaskFactory.Run(async delegate
+                {
+                    await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+                    return (IVsRunningDocumentTable)provider.GetService(typeof(SVsRunningDocumentTable));
+                });
             }
         }
         private void RegisterForRDTEvents()
@@ -252,9 +254,8 @@ namespace XSharp.Project
         public void RegisterHierarchy(IVsHierarchy hierarchy, XProject Prj, XSharpProjectNode ProjectNode)
         {
             // No Hierarchy or... Hierarchy already registered ?
-            var optionsPage = XSharpProjectPackage.Instance.GetIntellisenseOptionsPage();
             // disable classview for now
-            if (optionsPage.DisableClassViewObjectView)// || true)
+            if (XSettings.DisableClassViewObjectView)// || true)
             {
                 return;
             }

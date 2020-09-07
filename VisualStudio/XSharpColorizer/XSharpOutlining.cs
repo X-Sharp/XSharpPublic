@@ -23,7 +23,7 @@ namespace XSharpColorizer
 
     [Export(typeof(ITaggerProvider))]
     [TagType(typeof(IOutliningRegionTag))]
-    [ContentType("XSharp")]
+    [ContentType(XSharp.Constants.LanguageName)]
     internal sealed class XSharpOutliningTaggerProvider : ITaggerProvider
     {
         [Import]

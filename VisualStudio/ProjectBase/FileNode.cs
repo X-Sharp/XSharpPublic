@@ -1240,17 +1240,19 @@ namespace Microsoft.VisualStudio.Project
             {
                 throw new InvalidOperationException();
             }
-
-            shell.RefreshPropertyBrowser(0);
-
-            //Select the new node in the hierarchy
-            IVsUIHierarchyWindow uiWindow = UIHierarchyUtilities.GetUIHierarchyWindow(this.ProjectMgr.Site, SolutionExplorer);
-            // This happens in the context of renaming a file by case only (Table.sql -> table.sql)
-            // Since we are already in solution explorer, it is extremely unlikely that we get a null return.
-            if (uiWindow != null)
+            ThreadHelper.JoinableTaskFactory.Run(async delegate
             {
-            	uiWindow.ExpandItem(this.ProjectMgr, this.ID, EXPANDFLAGS.EXPF_SelectItem);
-            }
+                await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+                shell.RefreshPropertyBrowser(0);
+                //Select the new node in the hierarchy
+                IVsUIHierarchyWindow uiWindow = UIHierarchyUtilities.GetUIHierarchyWindow(this.ProjectMgr.Site, SolutionExplorer);
+                // This happens in the context of renaming a file by case only (Table.sql -> table.sql)
+                // Since we are already in solution explorer, it is extremely unlikely that we get a null return.
+                if (uiWindow != null)
+                {
+                    uiWindow.ExpandItem(this.ProjectMgr, this.ID, EXPANDFLAGS.EXPF_SelectItem);
+                }
+            });
         }
 
         #endregion

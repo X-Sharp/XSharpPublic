@@ -9,6 +9,7 @@
  *
  * ***************************************************************************/
 
+using Microsoft.VisualStudio.Shell;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -102,8 +103,9 @@ namespace Microsoft.VisualStudio.Project.Automation
             get
             {
                 int count = 0;
-                UIThread.DoOnUIThread(delegate ()
+                ThreadHelper.JoinableTaskFactory.Run(async delegate
                {
+                    await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
                    count = items.Count;
                });
                 return count;
@@ -140,7 +142,11 @@ namespace Microsoft.VisualStudio.Project.Automation
         {
             get
             {
+                return ThreadHelper.JoinableTaskFactory.Run(async delegate
+                {
+                    await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
                 return (EnvDTE.DTE)this.project.DTE;
+                });
             }
         }
 
@@ -225,6 +231,9 @@ namespace Microsoft.VisualStudio.Project.Automation
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1800:DoNotCastUnnecessarily")]
         public virtual EnvDTE.ProjectItem Item(object index)
         {
+            return ThreadHelper.JoinableTaskFactory.Run(async delegate
+            {
+                await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
             if(index is int)
             {
                 int realIndex = (int)index - 1;
@@ -246,6 +255,7 @@ namespace Microsoft.VisualStudio.Project.Automation
                 }
             }
             return null;
+            });
         }
 
         /// <summary>
@@ -275,8 +285,9 @@ namespace Microsoft.VisualStudio.Project.Automation
         /// <returns>A List of project items</returns>
         protected IList<EnvDTE.ProjectItem> GetListOfProjectItems()
         {
-            return UIThread.DoOnUIThread(delegate()
+            return ThreadHelper.JoinableTaskFactory.Run(async delegate
             {
+                    await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
                 List<EnvDTE.ProjectItem> list = new List<EnvDTE.ProjectItem>();
                 for (HierarchyNode child = this.NodeWithItems.FirstChild; child != null; child = child.NextSibling)
                 {

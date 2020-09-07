@@ -95,9 +95,9 @@ namespace XSharpLanguage
 
         internal static void WriteOutputMessage(string strMessage)
         {
-            if (_optionsPage.EnableCodeCompletionLog && _optionsPage.EnableOutputPane)
+            if (XSettings.EnableCodeCompletionLog && XSettings.EnableLogging)
             {
-                XSharpProjectPackage.Instance.DisplayOutPutMessage(strMessage);
+                XSettings.DisplayOutputMessage(strMessage);
             }
         }
         public void AugmentCompletionSession(ICompletionSession session, IList<CompletionSet> completionSets)
@@ -105,7 +105,7 @@ namespace XSharpLanguage
             WriteOutputMessage("-->> AugmentCompletionSessions");
             try
             {
-                if (_optionsPage.DisableCodeCompletion)
+                if (XSettings.DisableCodeCompletion)
                     return;
                 XSharpModel.ModelWalker.Suspend();
                 if (_disposed)
@@ -538,7 +538,7 @@ namespace XSharpLanguage
             catch (Exception ex)
             {
                 WriteOutputMessage("AugmentCompletionSessions failed: ");
-                XSharpProjectPackage.Instance.DisplayException(ex);
+                XSettings.DisplayException(ex);
             }
             finally
             {
@@ -1046,7 +1046,6 @@ namespace XSharpLanguage
     }
     public class MemberAnalysis
     {
-        IntellisenseOptionsPage _optionsPage => XSharp.Project.XSharpProjectPackage.Instance.GetIntellisenseOptionsPage();
         public class ParamInfo
         {
             public string Name;
@@ -1099,7 +1098,6 @@ namespace XSharpLanguage
         public Modifiers Visibility { get; private set; }
         public Kind Kind { get; private set; }
         public bool IsStatic { get; private set; }
-        IntellisenseOptionsPage _optionsPage => XSharp.Project.XSharpProjectPackage.Instance.GetIntellisenseOptionsPage();
 
         internal TypeAnalysis(IXType typeInfo)
         {
@@ -2562,9 +2560,8 @@ namespace XSharpLanguage
             }
             catch (Exception ex)
             {
-                XSharpProjectPackage.Instance.DisplayOutPutMessage("FindIdentifier failed: ");
-                XSharpProjectPackage.Instance.DisplayException(ex);
-
+                XSettings.DisplayOutputMessage("FindIdentifier failed: ");
+                XSettings.DisplayException(ex);
             }
             finally
             {
@@ -3216,18 +3213,11 @@ namespace XSharpLanguage
 
         static void WriteOutputMessage(string message)
         {
-            if (XSharpCompletionSource._optionsPage == null)
+            if (XSettings.EnableCodeCompletionLog)
             {
-                var package = XSharpProjectPackage.Instance;
-                XSharpCompletionSource._optionsPage = package.GetIntellisenseOptionsPage();
-            }
-            if (XSharpCompletionSource._optionsPage.EnableCodeCompletionLog && XSharpCompletionSource._optionsPage.EnableOutputPane)
-            {
-                XSharpProjectPackage.Instance.DisplayOutPutMessage("XSharp.Codecompletion :" + message);
+                XSettings.DisplayOutputMessage("XSharp.Codecompletion :" + message);
             }
         }
-
-
 
     }
 

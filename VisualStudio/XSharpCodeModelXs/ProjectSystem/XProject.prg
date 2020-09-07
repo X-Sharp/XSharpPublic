@@ -39,13 +39,13 @@ BEGIN NAMESPACE XSharpModel
       PRIVATE _dependentAssemblyList             AS STRING
       PRIVATE _name                              AS STRING
       PUBLIC  FileWalkComplete						AS XProject.OnFileWalkComplete
-	  PUBLIC  ProjectWalkComplete					AS XProject.OnProjectWalkComplete
+	  PUBLIC  ProjectWalkComplete					   AS XProject.OnProjectWalkComplete
       
       #endregion
       #region Properties
       PROPERTY Id   AS INT64                     GET _id INTERNAL SET _id := value
       PROPERTY FileWalkCompleted                 AS LOGIC AUTO
-      PROPERTY FileName                          AS STRING GET _projectNode:Url
+      PROPERTY FileName                          AS STRING GET iif (_projectNode != null, _projectNode:Url, "")
          
       PROPERTY DependentAssemblyList             AS STRING
          GET
@@ -605,6 +605,7 @@ BEGIN NAMESPACE XSharpModel
                ENDIF
             ENDIF
             SELF:_SourceFilesDict:Remove( url)
+            XDatabase.DeleteFile(url)
          ENDIF
          #endregion
       

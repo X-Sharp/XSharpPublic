@@ -192,8 +192,8 @@ BEGIN NAMESPACE XSharpModel
 					END LOCK
 					XSolution.SetStatusBarText("")
 					XSolution.SetStatusBarAnimation(FALSE, 3)
+               XDatabase.Read(project)
 					WriteOutputMessage("<<-- Walker("+project.Name+")")
-               
                aFiles := project:OtherFiles:ToArray()
                FOREACH VAR file IN aFiles
                   VAR oFile := project:FindXFile(file)
@@ -267,7 +267,9 @@ BEGIN NAMESPACE XSharpModel
 		END PROPERTY
 		
 		STATIC METHOD WriteOutputMessage(message AS STRING) AS VOID
-			XSolution.WriteOutputMessage("XModel.Walker "+message)
+         IF XSettings.EnableParseLog
+			   XSolution.WriteOutputMessage("XModel.Walker "+message)
+         ENDIF
 		
 		METHOD ReportError(fileName AS STRING, span AS LinePositionSpan, errorCode AS STRING, message AS STRING, args AS OBJECT[]) AS VOID
 			RETURN

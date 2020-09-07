@@ -1509,24 +1509,30 @@ namespace XSharp.Project
             IVsTextView textView;
             IVsUIHierarchy dummy1;
             uint dummy2;
-
-            VsShellUtilities.OpenDocument(this.Site, file, VSConstants.LOGVIEWID_Code, out dummy1, out dummy2, out window, out textView);
-            if ((window != null) && (textView != null))
+            try
             {
-                window.Show();
-                //
-                TextSpan span = new TextSpan();
-                span.iStartLine = line - 1;
-                span.iStartIndex = column - 1;
-                span.iEndLine = line - 1;
-                span.iEndIndex = column - 1;
-                //
-                textView.SetCaretPos(span.iStartLine, span.iStartIndex);
-                textView.EnsureSpanVisible(span);
-                if (span.iStartLine > 5)
-                    textView.SetTopLine(span.iStartLine - 5);
-                else
-                    textView.SetTopLine(0);
+                VsShellUtilities.OpenDocument(this.Site, file, VSConstants.LOGVIEWID_Code, out dummy1, out dummy2, out window, out textView);
+                if ((window != null) && (textView != null))
+                {
+                    window.Show();
+                    //
+                    TextSpan span = new TextSpan();
+                    span.iStartLine = line - 1;
+                    span.iStartIndex = column - 1;
+                    span.iEndLine = line - 1;
+                    span.iEndIndex = column - 1;
+                    //
+                    textView.SetCaretPos(span.iStartLine, span.iStartIndex);
+                    textView.EnsureSpanVisible(span);
+                    if (span.iStartLine > 5)
+                        textView.SetTopLine(span.iStartLine - 5);
+                    else
+                        textView.SetTopLine(0);
+                }
+            }
+            catch 
+            {
+                ;
             }
         }
 

@@ -315,7 +315,8 @@ namespace Microsoft.VisualStudio.Project
             }
             catch(COMException e)
             {
-                XSharpProjectPackage.Instance.DisplayException(e);
+                // do not display exception. We see this also when trying to ask for a Clipboard operation
+                // when the actual change was a drag/drop
                 returnValue = e.ErrorCode;
             }
 

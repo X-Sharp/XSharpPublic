@@ -61,8 +61,7 @@ namespace XSharp.Project
             {
                 await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
 
-                result = vsServiceProvider.GetService(serviceType);
-            	return result;
+                return vsServiceProvider.GetService(serviceType);
             });
         }
 

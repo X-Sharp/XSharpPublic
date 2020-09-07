@@ -13,7 +13,8 @@ using XSharpLanguage;
 using System.Linq;
 using System;
 using LanguageService.CodeAnalysis.XSharp;
-using Microsoft.VisualStudio.Project;
+using XSharpModel;
+using Microsoft.VisualStudio.Shell;
 
 namespace XSharp.Project
 {
@@ -1171,11 +1172,15 @@ namespace XSharp.Project
                 _alignMethod = optionsPage.AlignMethod;
                 _keywordCase = optionsPage.KeywordCase;
                 _identifierCase = optionsPage.IdentifierCase;
-                _noGotoDefinition = optionsPage.DisableGotoDefinition;
+                _noGotoDefinition = XSettings.DisableGotoDefinition;
                 var languagePreferences = new LANGPREFERENCES3[1];
                 languagePreferences[0].guidLang = GuidStrings.guidLanguageService;
                 int result = 0;
-                UIThread.DoOnUIThread( () => result = textManager.GetUserPreferences4(pViewPrefs: null, pLangPrefs: languagePreferences, pColorPrefs: null));
+                ThreadHelper.JoinableTaskFactory.Run(async delegate
+                {
+                    await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+                    result = textManager.GetUserPreferences4(pViewPrefs: null, pLangPrefs: languagePreferences, pColorPrefs: null);
+                });
                 if (result == VSConstants.S_OK)
                 {
                     _indentStyle = languagePreferences[0].IndentStyle;
@@ -1261,7 +1266,7 @@ namespace XSharp.Project
                                 catch (Exception ex)
                                 {
                                     WriteOutputMessage("Indentation of previous line failed");
-                                    XSharpProjectPackage.Instance.DisplayException(ex);
+                                    XSettings.DisplayException(ex);
                                 }
                             }
                         }
@@ -1314,7 +1319,7 @@ namespace XSharp.Project
                                 catch (Exception ex)
                                 {
                                     WriteOutputMessage("Error indenting of current line ");
-                                    XSharpProjectPackage.Instance.DisplayException(ex);
+                                    XSettings.DisplayException(ex);
                                 }
                             }
                         }
@@ -1330,7 +1335,7 @@ namespace XSharp.Project
             catch (Exception ex)
             {
                 WriteOutputMessage("SmartIndent.GetDesiredIndentation failed: ");
-                XSharpProjectPackage.Instance.DisplayException(ex);
+                XSettings.DisplayException(ex);
             }
             return _lastIndentValue;
         }
@@ -1443,7 +1448,7 @@ namespace XSharp.Project
             }
             catch (Exception e)
             {
-                XSharpProjectPackage.Instance.DisplayException(e);
+                XSettings.DisplayException(e);
                 tokens = new List<IToken>();
             }
             return tokens;

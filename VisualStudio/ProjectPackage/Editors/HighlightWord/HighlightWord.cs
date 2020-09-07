@@ -13,6 +13,7 @@ using Microsoft.VisualStudio.Text.Operations;
 using System.Windows.Media;
 using System.Collections.ObjectModel;
 using XSharpLanguage;
+using XSharpModel;
 
 // Based on https://docs.microsoft.com/en-US/visualstudio/extensibility/walkthrough-highlighting-text
 // But we wil only hightlight Text in the current Members of our XSharp model.
@@ -35,9 +36,7 @@ namespace XSharp.Project.Editors.HighlightWord
 
         public ITagger<T> CreateTagger<T>(ITextView textView, ITextBuffer buffer) where T : ITag
         {
-            var package = XSharp.Project.XSharpProjectPackage.Instance;
-            var optionsPage = package.GetIntellisenseOptionsPage();
-            if (optionsPage.DisableHighLightWord)
+            if (XSettings.DisableHighLightWord)
                 return null;
 
             // Sorry, not the same buffer
@@ -203,7 +202,7 @@ namespace XSharp.Project.Editors.HighlightWord
             }
             catch (Exception ex)
             {
-                XSharpProjectPackage.Instance.DisplayOutPutMessage("HighlightWordTag Exception: " + ex.Message);
+                XSettings.DisplayOutputMessage("HighlightWordTag Exception: " + ex.Message);
             }
         }
         static bool WordExtentIsValid(SnapshotPoint currentRequest, TextExtent word)

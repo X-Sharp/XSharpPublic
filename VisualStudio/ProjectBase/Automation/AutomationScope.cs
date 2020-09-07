@@ -14,6 +14,7 @@ using System;
 using Microsoft.VisualStudio.Shell.Interop;
 using System.Diagnostics.CodeAnalysis;
 using ErrorHandler = Microsoft.VisualStudio.ErrorHandler;
+using Microsoft.VisualStudio.Shell;
 
 namespace Microsoft.VisualStudio.Project.Automation
 {
@@ -46,7 +47,7 @@ namespace Microsoft.VisualStudio.Project.Automation
         public AutomationScope(IServiceProvider provider)
         {
             Utilities.ArgumentNotNull("provider", provider);
-
+            ThreadHelper.ThrowIfNotOnUIThread();
             extensibility = provider.GetService(typeof(IVsExtensibility)) as IVsExtensibility3;
             Assumes.Present(extensibility);
             ErrorHandler.ThrowOnFailure(extensibility.EnterAutomationFunction());
@@ -61,8 +62,12 @@ namespace Microsoft.VisualStudio.Project.Automation
         {
             if(inAutomation)
             {
+                ThreadHelper.JoinableTaskFactory.Run(async delegate
+                {
+                    await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
                 ErrorHandler.ThrowOnFailure(extensibility.ExitAutomationFunction());
                 inAutomation = false;
+                });
             }
         }
 

@@ -2426,7 +2426,6 @@ namespace Microsoft.VisualStudio.Project
         public virtual void PrepareBuild(ConfigCanonicalName config, bool cleanBuild)
         {
             if (this.buildIsPrepared && !cleanBuild) return;
-            XSharpProjectPackage.Instance.UIThread.MustBeCalledFromUIThread();
             ProjectOptions options = this.GetProjectOptions(config);
             string outputPath = Path.GetDirectoryName(options.OutputAssembly);
 
@@ -2467,7 +2466,7 @@ namespace Microsoft.VisualStudio.Project
         /// <param name="output"></param>
         /// <param name="target"></param>
         /// <param name="coda"></param>
-        internal virtual void BuildAsync(uint vsopts, ConfigCanonicalName configCanonicalName, IVsOutputWindowPane output, string target, MSBuildCoda coda)
+        internal virtual void StartAsyncBuild(uint vsopts, ConfigCanonicalName configCanonicalName, IVsOutputWindowPane output, string target, MSBuildCoda coda)
         {
             bool engineLogOnlyCritical = BuildPrelude(output);
             MSBuildCoda fullCoda = (res, instance) =>
@@ -2493,7 +2492,6 @@ namespace Microsoft.VisualStudio.Project
         [SuppressMessage("Microsoft.Naming", "CA1704:IdentifiersShouldBeSpelledCorrectly", MessageId = "vsopts")]
         public virtual BuildResult Build(uint vsopts, ConfigCanonicalName configCanonicalName, IVsOutputWindowPane output, string target)
         {
-            XSharpProjectPackage.Instance.UIThread.MustBeCalledFromUIThread();
             string cTarget = target;
             if (String.IsNullOrEmpty(cTarget))
                 cTarget = "null";
@@ -3521,8 +3519,9 @@ namespace Microsoft.VisualStudio.Project
                     ProjectInstance projectInstanceCopy = projectInstance;
                     submission.ExecuteAsync(sub =>
                     {
-                        UIThread.DoOnUIThread(delegate ()
+                        ThreadHelper.JoinableTaskFactory.Run(async delegate
                         {
+                            await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
                             this.FlushBuildLoggerContent();
                             EndBuild(sub, designTime);
                             uiThreadCallback((sub.BuildResult.OverallResult == BuildResultCode.Success) ? MSBuildResult.Successful : MSBuildResult.Failed, projectInstanceCopy);
@@ -4492,7 +4491,6 @@ namespace Microsoft.VisualStudio.Project
         /// </summary>
         public virtual BuildResult Build(string target)
         {
-            XSharpProjectPackage.Instance.UIThread.MustBeCalledFromUIThread();
             return this.Build(0, new ConfigCanonicalName(), null, target);
         }
 
@@ -6221,7 +6219,6 @@ namespace Microsoft.VisualStudio.Project
         /// <param name="pResult">Result to be returned to the caller</param>
         public virtual int AddComponent(VSADDCOMPOPERATION dwAddCompOperation, uint cComponents, System.IntPtr[] rgpcsdComponents, System.IntPtr hwndDialog, VSADDCOMPRESULT[] pResult)
         {
-            XSharpProjectPackage.Instance.UIThread.MustBeCalledFromUIThread();
             if (rgpcsdComponents == null || pResult == null)
             {
                 return VSConstants.E_FAIL;
@@ -6876,7 +6873,6 @@ namespace Microsoft.VisualStudio.Project
         /// <returns>parent node</returns>
         private HierarchyNode GetItemParentNode(MSBuild.ProjectItem item)
         {
-            XSharpProjectPackage.Instance.UIThread.MustBeCalledFromUIThread();
             HierarchyNode currentParent = this;
             string strPath = item.EvaluatedInclude;
             string link = item.GetMetadataValue(ProjectFileConstants.Link);

@@ -8,6 +8,7 @@
  * You must not remove this notice, or any other, from this software.
  *
  * ***************************************************************************/
+using EnvDTE;
 
 using System;
 using System.Runtime.InteropServices;
@@ -18,7 +19,7 @@ namespace Microsoft.VisualStudio.Project.Automation
     /// This object defines a so called null object that is returned as instead of null. This is because callers in VSCore usually crash if a null propery is returned for them.
     /// </summary>
     [CLSCompliant(false), ComVisible(true)]
-    public class OANullProperty : EnvDTE.Property
+    public class OANullProperty : Property
     {
         #region fields
         private OAProperties parent;
@@ -32,14 +33,14 @@ namespace Microsoft.VisualStudio.Project.Automation
         }
         #endregion
 
-        #region EnvDTE.Property
+        #region Property
 
         public object Application
         {
             get { return String.Empty; }
         }
 
-        public EnvDTE.Properties Collection
+        public Properties Collection
         {
             get
             {
@@ -48,7 +49,7 @@ namespace Microsoft.VisualStudio.Project.Automation
             }
         }
 
-        public EnvDTE.DTE DTE
+        public DTE DTE
         {
             get { return null; }
         }
@@ -81,7 +82,7 @@ namespace Microsoft.VisualStudio.Project.Automation
             }
         }
 
-        public EnvDTE.Properties Parent
+        public Properties Parent
         {
             get { return this.parent; }
         }

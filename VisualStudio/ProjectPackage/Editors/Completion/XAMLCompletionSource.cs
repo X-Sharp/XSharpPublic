@@ -12,9 +12,8 @@ using System.ComponentModel.Composition;
 using Microsoft.VisualStudio.Utilities;
 using Microsoft.VisualStudio.Shell;
 using XSharpColorizer;
-using XSharp.Project;
-using XSharp.Project.OptionsPages;
 
+using XSharpModel;
 namespace XSharpLanguage
 {
     [Export(typeof(ICompletionSourceProvider))]
@@ -42,8 +41,6 @@ namespace XSharpLanguage
         private XAMLCompletionSourceProvider _provider;
         private string _fileName;
         private XSharpModel.XFile _file;
-        IntellisenseOptionsPage optionsPage = null;
-        XSharpProjectPackage package;
 
 
         internal static bool StringEquals(string lhs, string rhs)
@@ -59,15 +56,13 @@ namespace XSharpLanguage
             _buffer = buffer;
             _fileName = buffer.GetXAMLFile();
             _file = buffer.GetFile();
-            package = XSharpProjectPackage.Instance;
-            optionsPage = package.GetIntellisenseOptionsPage();
 
         }
         internal void WriteOutputMessage(string strMessage)
         {
-            if (optionsPage.EnableCodeCompletionLog && optionsPage.EnableOutputPane)
+            if (XSettings.EnableCodeCompletionLog && XSettings.EnableLogging)
             {
-                XSharpProjectPackage.Instance.DisplayOutPutMessage(strMessage);
+                XSettings.DisplayOutputMessage(strMessage);
             }
         }
         public void AugmentCompletionSession(ICompletionSession session, IList<CompletionSet> completionSets)
@@ -106,7 +101,7 @@ namespace XSharpLanguage
             catch (Exception ex)
             {
                 WriteOutputMessage("XAML AugmentCompletionSessions failed " );
-                XSharpProjectPackage.Instance.DisplayException(ex);
+                XSettings.DisplayException(ex);
             }
             finally
             {

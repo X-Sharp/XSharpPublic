@@ -176,6 +176,7 @@ namespace Microsoft.VisualStudio.Project
             }
             finally
             {
+                ThreadHelper.ThrowIfNotOnUIThread();
                 base.Close();
             }
 
@@ -188,7 +189,6 @@ namespace Microsoft.VisualStudio.Project
         protected override void BindReferenceData()
         {
             Debug.Assert(this.assemblyName != null, "The AssemblyName field has not been initialized");
-            new UIThread().MustBeCalledFromUIThread();
 
             // If the item has not been set correctly like in case of a new reference added it now.
             // The constructor for the AssemblyReference node will create a default project item. In that case the Item is null.
@@ -432,7 +432,6 @@ namespace Microsoft.VisualStudio.Project
         /// </summary>
 		private void SetReferenceProperties()
 		{
-            new UIThread().MustBeCalledFromUIThread();
             // Set a default HintPath for msbuild to be able to resolve the reference.
             this.ItemNode.SetMetadata(ProjectFileConstants.HintPath, this.assemblyPath);
 
@@ -549,7 +548,8 @@ namespace Microsoft.VisualStudio.Project
         private void OnAssemblyReferenceChangedOnDisk(object sender, FileChangedOnDiskEventArgs e)
         {
             Debug.Assert(e != null, "No event args specified for the FileChangedOnDisk event");
-            if (e == null) {
+            if (e == null)
+            {
                 return;
             }
 

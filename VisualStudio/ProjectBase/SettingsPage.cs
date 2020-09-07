@@ -20,6 +20,7 @@ using System.Security.Permissions;
 using System.Windows.Forms;
 using Microsoft.VisualStudio.Designer.Interfaces;
 using Microsoft.VisualStudio.OLE.Interop;
+using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 
 namespace Microsoft.VisualStudio.Project
@@ -95,8 +96,12 @@ namespace Microsoft.VisualStudio.Project
                 if(this.dirty != value)
                 {
                     this.dirty = value;
+                    ThreadHelper.JoinableTaskFactory.Run(async delegate
+                    {
+                        await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
                     if(this.site != null)
                         site.OnStatusChange((uint)(this.dirty ? PropPageStatus.Dirty : PropPageStatus.Clean));
+                    });
                 }
             }
         }
@@ -409,6 +414,9 @@ namespace Microsoft.VisualStudio.Project
                     }
 
                     Dictionary<string, ProjectConfig> configsMap = new Dictionary<string, ProjectConfig>();
+                    ThreadHelper.JoinableTaskFactory.Run(async delegate
+                    {
+                        await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
 
                     for(int i = 0; i < count; i++)
                     {
@@ -432,7 +440,7 @@ namespace Microsoft.VisualStudio.Project
                             }
                         }
                     }
-
+                    });
                     if(configsMap.Count > 0)
                     {
                         if(this.projectConfigs == null)

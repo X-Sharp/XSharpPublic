@@ -21,6 +21,7 @@ using System.Security.Permissions;
 using System.Security.Policy;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.OLE.Interop;
@@ -451,7 +452,6 @@ namespace Microsoft.VisualStudio.Project
 			}
 
 			string currentPlatformName = string.Empty;
-            ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
             if (automationObject.ConfigurationManager != null)
 			{
                 try
@@ -1224,8 +1224,9 @@ namespace Microsoft.VisualStudio.Project
             Guid emptyGuid = Guid.Empty;
             int result = 0;
 
-            UIThread.DoOnUIThread(() =>
+            ThreadHelper.JoinableTaskFactory.Run(async delegate
             {
+                await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
                 ErrorHandler.ThrowOnFailure(uiShell.ShowMessageBox(
                     0,
                     ref emptyGuid,

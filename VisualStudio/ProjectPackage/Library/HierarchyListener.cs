@@ -26,6 +26,7 @@ using Microsoft.VisualStudio.Shell.Interop;
 using Microsoft.VisualStudio.TextManager.Interop;
 
 using VSConstants = Microsoft.VisualStudio.VSConstants;
+using Microsoft.VisualStudio.Shell;
 
 namespace XSharp.Project
 {
@@ -95,8 +96,13 @@ namespace XSharp.Project
                 return;
             }
             // Register to receive any event that append to the hierarchy
-            Microsoft.VisualStudio.ErrorHandler.ThrowOnFailure(
+            ThreadHelper.JoinableTaskFactory.Run(async delegate
+            {
+                await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+
+                Microsoft.VisualStudio.ErrorHandler.ThrowOnFailure(
                 hierarchy.AdviseHierarchyEvents(this, out cookie));
+            });
             //
             //if (doInitialScan)
             //{
@@ -206,6 +212,9 @@ namespace XSharp.Project
 
         private bool InternalStopListening(bool throwOnError)
         {
+            return ThreadHelper.JoinableTaskFactory.Run(async delegate
+            {
+                await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
             if ((null != hierarchy) || (0 == cookie))
             {
                 return false;
@@ -217,6 +226,7 @@ namespace XSharp.Project
             }
             cookie = 0;
             return Microsoft.VisualStudio.ErrorHandler.Succeeded(hr);
+            });
         }
 
         /// <summary>

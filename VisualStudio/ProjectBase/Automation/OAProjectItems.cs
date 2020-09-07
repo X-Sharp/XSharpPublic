@@ -8,6 +8,7 @@
  * You must not remove this notice, or any other, from this software.
  *
  * ***************************************************************************/
+using EnvDTE;
 
 using System;
 using System.Diagnostics;
@@ -15,9 +16,11 @@ using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.IO;
 using System.Runtime.InteropServices;
-using EnvDTE;
 using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Shell.Interop;
+using Microsoft.VisualStudio.Shell;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Microsoft.VisualStudio.Project.Automation
 {
@@ -35,22 +38,23 @@ namespace Microsoft.VisualStudio.Project.Automation
         }
         #endregion
 
-        #region EnvDTE.ProjectItems
+        #region ProjectItems
         /// <summary>
         /// Creates a new project item from an existing item template file and adds it to the project.
         /// </summary>
         /// <param name="fileName">The full path and file name of the template project file.</param>
         /// <param name="name">The file name to use for the new project item.</param>
         /// <returns>A ProjectItem object. </returns>
-        public override EnvDTE.ProjectItem AddFromTemplate(string fileName, string name)
+        public override ProjectItem AddFromTemplate(string fileName, string name)
         {
 
             CheckProjectIsValid();
 
-            return UIThread.DoOnUIThread(delegate ()
+            ProjectNode proj = this.Project.Project;
+            return ThreadHelper.JoinableTaskFactory.Run(async delegate
             {
-                ProjectNode proj = this.Project.Project;
-                EnvDTE.ProjectItem itemAdded = null;
+                await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+                ProjectItem itemAdded = null;
 
                 using (AutomationScope scope = new AutomationScope(this.Project.Project.Site))
                 {
@@ -94,8 +98,10 @@ namespace Microsoft.VisualStudio.Project.Automation
                 return itemAdded;
             });
         }
-        private void CheckProjectIsValid() {
-            if (this.Project == null || this.Project.ProjectNode == null || this.Project.ProjectNode.Site == null || this.Project.ProjectNode.IsClosed) {
+        private void CheckProjectIsValid()
+        {
+            if (this.Project == null || this.Project.ProjectNode == null || this.Project.ProjectNode.Site == null || this.Project.ProjectNode.IsClosed)
+            {
                 throw new InvalidOperationException();
             }
         }
@@ -113,8 +119,9 @@ namespace Microsoft.VisualStudio.Project.Automation
         {
             CheckProjectIsValid();
 
-            return UIThread.DoOnUIThread(delegate()
+            return ThreadHelper.JoinableTaskFactory.Run(async delegate
             {
+                await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
 	            //Verify name is not null or empty
 	            Utilities.ValidateFileName(this.Project.Project.Site, name);
 
@@ -126,7 +133,7 @@ namespace Microsoft.VisualStudio.Project.Automation
 
                 for (HierarchyNode child = this.NodeWithItems.FirstChild; child != null; child = child.NextSibling)
 	            {
-	                    if (child.Caption.Equals(name, StringComparison.OrdinalIgnoreCase))
+                    if (string.Compare(child.Caption, name, StringComparison.OrdinalIgnoreCase) == 0)
 	                {
 	                    throw new ArgumentException(String.Format(CultureInfo.CurrentCulture, "Folder already exists with the name '{0}'", name));
 	                }
@@ -154,9 +161,9 @@ namespace Microsoft.VisualStudio.Project.Automation
         /// </summary>
         /// <param name="filePath">The path and file name of the project item to be added.</param>
         /// <returns>A ProjectItem object. </returns>
-        public override EnvDTE.ProjectItem AddFromFileCopy(string filePath)
+        public override ProjectItem AddFromFileCopy(string filePath)
         {
-            return this.AddItem(filePath, VSADDITEMOPERATION.VSADDITEMOP_CLONEFILE);
+            return AddItem(filePath, VSADDITEMOPERATION.VSADDITEMOP_CLONEFILE);
         }
 
         /// <summary>
@@ -164,10 +171,10 @@ namespace Microsoft.VisualStudio.Project.Automation
         /// </summary>
         /// <param name="fileName">The file name of the item to add as a project item. </param>
         /// <returns>A ProjectItem object. </returns>
-        public override EnvDTE.ProjectItem AddFromFile(string fileName)
+        public override ProjectItem AddFromFile(string fileName)
         {
             // TODO: VSADDITEMOP_LINKTOFILE
-            return this.AddItem(fileName, VSADDITEMOPERATION.VSADDITEMOP_OPENFILE);
+            return AddItem(fileName, VSADDITEMOPERATION.VSADDITEMOP_OPENFILE);
         }
 
 		/// <summary>
@@ -175,7 +182,7 @@ namespace Microsoft.VisualStudio.Project.Automation
 		/// </summary>
 		/// <param name="fileName">The file to be linked to the project.</param>
 		/// <returns>A ProjectItem object.</returns>
-		public override EnvDTE.ProjectItem AddFileLink(string fileName)
+        public override ProjectItem AddFileLink(string fileName)
 		{
 			return this.AddItem(fileName, VSADDITEMOPERATION.VSADDITEMOP_LINKTOFILE);
 		}
@@ -188,15 +195,16 @@ namespace Microsoft.VisualStudio.Project.Automation
         /// <param name="path">The full path of the item to add.</param>
         /// <param name="op">The <paramref name="VSADDITEMOPERATION"/> to use when adding the item.</param>
         /// <returns>A ProjectItem object. </returns>
-        protected virtual EnvDTE.ProjectItem AddItem(string path, VSADDITEMOPERATION op)
+        protected virtual ProjectItem AddItem(string path, VSADDITEMOPERATION op)
         {
             CheckProjectIsValid();
 
-            return UIThread.DoOnUIThread( () =>
+            return ThreadHelper.JoinableTaskFactory.Run(async delegate
             {
+                await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
                 ProjectNode proj = this.Project.Project;
 
-                EnvDTE.ProjectItem itemAdded = null;
+                ProjectItem itemAdded = null;
                 using (AutomationScope scope = new AutomationScope(this.Project.Project.Site))
                 {
                     VSADDRESULT[] result = new VSADDRESULT[1];
@@ -220,17 +228,18 @@ namespace Microsoft.VisualStudio.Project.Automation
         /// <param name="path">The full path of the item added.</param>
         /// <returns>A ProjectItem object.</returns>
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1800:DoNotCastUnnecessarily")]
-        protected virtual EnvDTE.ProjectItem EvaluateAddResult(VSADDRESULT result, string path)
+        protected virtual ProjectItem EvaluateAddResult(VSADDRESULT result, string path)
         {
-            return UIThread.DoOnUIThread( () =>
+            return ThreadHelper.JoinableTaskFactory.Run(async delegate
             {
+                await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
                 if (result == VSADDRESULT.ADDRESULT_Success)
                 {
                     HierarchyNode nodeAdded = this.NodeWithItems.FindChild(path);
                     Debug.Assert(nodeAdded != null, "We should have been able to find the new element in the hierarchy");
                     if (nodeAdded != null)
                     {
-                        EnvDTE.ProjectItem item = null;
+                        ProjectItem item = null;
                         if (nodeAdded is FileNode )
                         {
                             item = new OAFileItem(this.Project, nodeAdded as FileNode);
@@ -243,8 +252,11 @@ namespace Microsoft.VisualStudio.Project.Automation
                         {
                             item = new OAProjectItem<HierarchyNode>(this.Project, nodeAdded);
                         }
-
-                        this.Items.Add(item);
+                        IEnumerable<ProjectItem> match = base.Items.Where((ProjectItem titem) => titem.Name == item.Name);
+                        if (match == null || match.Count() == 0)
+                        {
+                            base.Items.Add(item);
+                        }
                         return item;
                     }
                 }

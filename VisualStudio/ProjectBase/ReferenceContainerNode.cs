@@ -30,35 +30,35 @@ namespace Microsoft.VisualStudio.Project
     [CLSCompliant(false), ComVisible(true)]
     public class ReferenceContainerNodeProperties : NodeProperties
     {
-      #region properties
-       [Microsoft.VisualStudio.Project.SRCategoryAttribute(Microsoft.VisualStudio.Project.SR.Misc)]
-       [Microsoft.VisualStudio.Project.LocDisplayName(Microsoft.VisualStudio.Project.SR.FolderName)]
-       [Microsoft.VisualStudio.Project.SRDescriptionAttribute(Microsoft.VisualStudio.Project.SR.FolderNameDescription)]
-      [AutomationBrowsable( false )]
-      public string FolderName
-      {
-         get
-         {
-            return this.Node.Caption;
-         }
-      }
+        #region properties
+        [Microsoft.VisualStudio.Project.SRCategoryAttribute(Microsoft.VisualStudio.Project.SR.Misc)]
+        [Microsoft.VisualStudio.Project.LocDisplayName(Microsoft.VisualStudio.Project.SR.FolderName)]
+        [Microsoft.VisualStudio.Project.SRDescriptionAttribute(Microsoft.VisualStudio.Project.SR.FolderNameDescription)]
+        [AutomationBrowsable(false)]
+        public string FolderName
+        {
+            get
+            {
+                return this.Node.Caption;
+            }
+        }
 
-      #endregion
+        #endregion
 
-      #region ctors
-      public ReferenceContainerNodeProperties( HierarchyNode node )
-         : base( node )
-      {
-      }
-      #endregion
+        #region ctors
+        public ReferenceContainerNodeProperties(HierarchyNode node)
+           : base(node)
+        {
+        }
+        #endregion
 
-      #region overridden methods
-      public override string GetClassName()
-      {
-          return Microsoft.VisualStudio.Project.SR.GetString(Microsoft.VisualStudio.Project.SR.FolderProperties, CultureInfo.CurrentUICulture);
-      }
-      #endregion
-   }
+        #region overridden methods
+        public override string GetClassName()
+        {
+            return Microsoft.VisualStudio.Project.SR.GetString(Microsoft.VisualStudio.Project.SR.FolderProperties, CultureInfo.CurrentUICulture);
+        }
+        #endregion
+    }
     [CLSCompliant(false), ComVisible(true)]
     public class ReferenceContainerNode : HierarchyNode, IReferenceContainer
     {
@@ -129,7 +129,7 @@ namespace Microsoft.VisualStudio.Project
         {
             get
             {
-                if(null == references)
+                if (null == references)
                 {
                     references = new Automation.OAReferences(this, ProjectMgr);
                 }
@@ -150,7 +150,7 @@ namespace Microsoft.VisualStudio.Project
         // it is null.
         protected override NodeProperties CreatePropertiesObject()
         {
-           return new ReferenceContainerNodeProperties( this );
+            return new ReferenceContainerNodeProperties(this);
         }
 
         /// <summary>
@@ -159,7 +159,7 @@ namespace Microsoft.VisualStudio.Project
         /// <returns>An intance of the Automation.OAReferenceFolderItem type if succeeeded</returns>
         public override object GetAutomationObject()
         {
-            if(this.ProjectMgr == null || this.ProjectMgr.IsClosed)
+            if (this.ProjectMgr == null || this.ProjectMgr.IsClosed)
             {
                 return null;
             }
@@ -202,9 +202,9 @@ namespace Microsoft.VisualStudio.Project
 
         protected override int QueryStatusOnNode(Guid cmdGroup, uint cmd, IntPtr pCmdText, ref QueryStatusResult result)
         {
-            if(cmdGroup == VsMenus.guidStandardCommandSet97)
+            if (cmdGroup == VsMenus.guidStandardCommandSet97)
             {
-                switch((VsCommands)cmd)
+                switch ((VsCommands)cmd)
                 {
                     case VsCommands.AddNewItem:
                     case VsCommands.AddExistingItem:
@@ -283,7 +283,6 @@ namespace Microsoft.VisualStudio.Project
         /// </summary>
         public void LoadReferencesFromBuildProject(MSBuild.Project buildProject)
         {
-            XSharpProjectPackage.Instance.UIThread.MustBeCalledFromUIThread();
             List<ReferenceNode> duplicatedNode = new List<ReferenceNode>();
 			BuildResult buildResult = this.ProjectMgr.Build(MsBuildTarget.ResolveAssemblyReferences);
 

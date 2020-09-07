@@ -18,7 +18,6 @@ using System.Diagnostics;
 using System.Globalization;
 using System.Collections;
 using System.IO;
-using MSBuild = Microsoft.Build.BuildEngine;
 using Microsoft.Build.Construction;
 using System.Collections.Generic;
 using System.Linq;
@@ -708,9 +707,12 @@ namespace Microsoft.VisualStudio.Project
 			var canonicalCfgName = new ConfigCanonicalName(configurationName);
 
 			// Get the configuration
-			IVsCfg cfg;
+            IVsCfg cfg = null;
+            ThreadHelper.JoinableTaskFactory.Run(async delegate
+            {
+                await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
 			ErrorHandler.ThrowOnFailure(this.GetCfgOfName(canonicalCfgName.ConfigName, canonicalCfgName.Platform, out cfg));
-
+            });
 			// Get the properties of the configuration
 			configurationProperties = ((ProjectConfig)cfg).ConfigurationProperties;
 
@@ -726,10 +728,14 @@ namespace Microsoft.VisualStudio.Project
         /// <param name="name">The name of configuration just added.</param>
 		protected void NotifyOnCfgNameAdded(string name)
 		{
+            ThreadHelper.JoinableTaskFactory.Run(async delegate
+            {
+                await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
 			foreach (IVsCfgProviderEvents sink in this.cfgEventSinks)
 			{
 				ErrorHandler.ThrowOnFailure(sink.OnCfgNameAdded(name));
 			}
+            });
 		}
 
         /// <summary>
@@ -738,10 +744,14 @@ namespace Microsoft.VisualStudio.Project
         /// <param name="name">The name of the configuration.</param>
 		protected void NotifyOnCfgNameDeleted(string name)
         {
+            ThreadHelper.JoinableTaskFactory.Run(async delegate
+            {
+                await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
             foreach(IVsCfgProviderEvents sink in this.cfgEventSinks)
             {
                 ErrorHandler.ThrowOnFailure(sink.OnCfgNameDeleted(name));
             }
+            });
         }
 
         /// <summary>
@@ -751,10 +761,14 @@ namespace Microsoft.VisualStudio.Project
         /// <param name="newName">New configuration name</param>
 		protected void NotifyOnCfgNameRenamed(string oldName, string newName)
         {
+            ThreadHelper.JoinableTaskFactory.Run(async delegate
+            {
+                await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
             foreach(IVsCfgProviderEvents sink in this.cfgEventSinks)
             {
                 ErrorHandler.ThrowOnFailure(sink.OnCfgNameRenamed(oldName, newName));
             }
+            });
         }
 
         /// <summary>

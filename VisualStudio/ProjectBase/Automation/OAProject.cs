@@ -15,6 +15,7 @@ using System.IO;
 using System.Runtime.InteropServices;
 using EnvDTE;
 using Microsoft.VisualStudio;
+using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 
 namespace Microsoft.VisualStudio.Project.Automation
@@ -61,9 +62,10 @@ namespace Microsoft.VisualStudio.Project.Automation
             {
                 CheckProjectIsValid();
 
-                UIThread.DoOnUIThread(delegate ()
+                ThreadHelper.JoinableTaskFactory.Run(async delegate
                 {
-                    using (AutomationScope scope = new AutomationScope(this.project.Site))
+                    await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+                    using (new AutomationScope(this.project.Site))
                     {
                         project.SetEditLabel(value);
                     }
@@ -94,18 +96,24 @@ namespace Microsoft.VisualStudio.Project.Automation
         {
             get
             {
-                int dirty;
 
-                ErrorHandler.ThrowOnFailure(project.IsDirty(out dirty));
-                return dirty != 0;
+                return ThreadHelper.JoinableTaskFactory.Run(async delegate
+                {
+                    await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+                    int dirty;
+                    ErrorHandler.ThrowOnFailure(project.IsDirty(out dirty));
+                    return dirty != 0;
+                });
+                
             }
             set
             {
                 CheckProjectIsValid();
 
-                UIThread.DoOnUIThread(delegate ()
+                ThreadHelper.JoinableTaskFactory.Run(async delegate
                 {
-                    using (AutomationScope scope = new AutomationScope(this.project.Site))
+                    await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+                    using (new AutomationScope(this.project.Site))
                     {
                         project.SetProjectFileDirty(value);
                     }
@@ -135,7 +143,11 @@ namespace Microsoft.VisualStudio.Project.Automation
         {
             get
             {
-                return (EnvDTE.DTE)this.project.Site.GetService(typeof(EnvDTE.DTE));
+                return ThreadHelper.JoinableTaskFactory.Run(async delegate
+                {
+                    await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+                    return (EnvDTE.DTE)this.project.Site.GetService(typeof(EnvDTE.DTE));
+                });
             }
         }
 
@@ -183,8 +195,9 @@ namespace Microsoft.VisualStudio.Project.Automation
                 }
                 else
                 {
-                    return UIThread.DoOnUIThread(delegate ()
+                    var  result = ThreadHelper.JoinableTaskFactory.Run(async delegate
                     {
+                        await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
                         // Get Solution service
                         IVsSolution solution = this.project.GetService(typeof(IVsSolution)) as IVsSolution;
                         if (solution == null)
@@ -197,6 +210,7 @@ namespace Microsoft.VisualStudio.Project.Automation
                         ErrorHandler.ThrowOnFailure(solution.GetUniqueNameOfProject(this.project, out uniqueName));
                         return uniqueName;
                     });
+                    return result;
                 }
             }
         }
@@ -218,7 +232,11 @@ namespace Microsoft.VisualStudio.Project.Automation
         {
             // changed by suggestion on http://mpfproj10.codeplex.com/workitem/9695
             //return null;
-            return DTE.ObjectExtenders.GetExtender(project.NodeProperties.ExtenderCATID.ToUpper(), ExtenderName, project.NodeProperties);
+            return ThreadHelper.JoinableTaskFactory.Run(async delegate
+            {
+                await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+                return DTE.ObjectExtenders.GetExtender(project.NodeProperties.ExtenderCATID.ToUpper(), ExtenderName, project.NodeProperties);
+            });
         }
 
         /// <summary>
@@ -228,7 +246,14 @@ namespace Microsoft.VisualStudio.Project.Automation
         {
             // changed by suggestion on http://mpfproj10.codeplex.com/workitem/9695
             //get { return null; }
-            get { return DTE.ObjectExtenders.GetExtenderNames(project.NodeProperties.ExtenderCATID.ToUpper(), project.NodeProperties); }
+            get
+            {
+                return ThreadHelper.JoinableTaskFactory.Run(async delegate
+                  {
+                      await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+                      return DTE.ObjectExtenders.GetExtenderNames(project.NodeProperties.ExtenderCATID.ToUpper(), project.NodeProperties);
+                  });
+            }
         }
 
         /// <summary>
@@ -248,8 +273,9 @@ namespace Microsoft.VisualStudio.Project.Automation
         {
             get
             {
-                return UIThread.DoOnUIThread(delegate ()
+                return ThreadHelper.JoinableTaskFactory.Run(async delegate
                 {
+                    await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
                     string filename;
                     uint format;
                     ErrorHandler.ThrowOnFailure(project.GetCurFile(out filename, out format));
@@ -274,9 +300,10 @@ namespace Microsoft.VisualStudio.Project.Automation
                     throw new InvalidOperationException();
                 }
 
-                UIThread.DoOnUIThread(delegate ()
+                ThreadHelper.JoinableTaskFactory.Run(async delegate
                 {
-                    using (AutomationScope scope = new AutomationScope(this.project.Site))
+                    await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+                    using (new AutomationScope(this.project.Site))
                     {
                         project.SetProjectFileDirty(!value);
                     }
@@ -291,8 +318,9 @@ namespace Microsoft.VisualStudio.Project.Automation
         {
             get
             {
-                return UIThread.DoOnUIThread(delegate ()
+                return ThreadHelper.JoinableTaskFactory.Run(async delegate
                 {
+                    await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
                     if (this.configurationManager == null)
                     {
                         IVsExtensibility3 extensibility = this.project.Site.GetService(typeof(IVsExtensibility)) as IVsExtensibility3;
@@ -364,8 +392,9 @@ namespace Microsoft.VisualStudio.Project.Automation
         {
             CheckProjectIsValid();
 
-            UIThread.DoOnUIThread(delegate ()
+            ThreadHelper.JoinableTaskFactory.Run(async delegate
             {
+                await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
                 using (AutomationScope scope = new AutomationScope(this.project.Site))
                 {
                     this.project.Remove(false);
@@ -395,9 +424,10 @@ namespace Microsoft.VisualStudio.Project.Automation
 
             CheckProjectIsValid();
 
-            UIThread.DoOnUIThread(delegate ()
+            ThreadHelper.JoinableTaskFactory.Run(async delegate
             {
-                using (AutomationScope scope = new AutomationScope(this.project.Site))
+                await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+                using (new AutomationScope(this.project.Site))
                 {
                     // If an empty file name is passed in for Save then make the file name the project name.
                     if (!isCalledFromSaveAs && String.IsNullOrEmpty(fileName))

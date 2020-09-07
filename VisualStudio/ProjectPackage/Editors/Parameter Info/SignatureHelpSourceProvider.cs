@@ -2,21 +2,19 @@
 using Microsoft.VisualStudio.Language.Intellisense;
 using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Utilities;
-
+using XSharpModel;
 namespace XSharp.Project
 {
 
     [Export(typeof(ISignatureHelpSourceProvider))]
     [Name("Signature Help source")]
     [Order(Before = "default")]
-    [ContentType("XSharp")]
+    [ContentType(XSharpConstants.LanguageName)]
     internal class XSharpSignatureHelpSourceProvider : ISignatureHelpSourceProvider
     {
         public ISignatureHelpSource TryCreateSignatureHelpSource(ITextBuffer textBuffer)
         {
-            var package = XSharp.Project.XSharpProjectPackage.Instance;
-            var optionsPage = package.GetIntellisenseOptionsPage();
-            if (optionsPage.DisableParameterInfo)
+            if (XSettings.DisableParameterInfo)
                 return null;
 
             return new XSharpSignatureHelpSource(textBuffer);

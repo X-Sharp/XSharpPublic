@@ -9,6 +9,7 @@
  *
  * ***************************************************************************/
 
+using Microsoft.VisualStudio.Shell;
 using System;
 using System.Reflection;
 using System.Runtime.InteropServices;
@@ -142,8 +143,9 @@ namespace Microsoft.VisualStudio.Project.Automation
         /// <param name="value">The value to set.</param>
         public void set_IndexedValue(object index1, object index2, object index3, object index4, object value)
         {
-            UIThread.DoOnUIThread(() =>
+            ThreadHelper.JoinableTaskFactory.Run(async delegate
             {
+                await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
                 ParameterInfo[] par = pi.GetIndexParameters();
                 int len = Math.Min(par.Length, 4);
                 if (len == 0)
@@ -170,12 +172,17 @@ namespace Microsoft.VisualStudio.Project.Automation
         {
             get
             {
-                return UIThread.DoOnUIThread(() => { return pi.GetValue(this.parent.Target, null); });
+                return ThreadHelper.JoinableTaskFactory.Run(async delegate
+                {
+                    await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+                    return pi.GetValue(this.parent.Target, null);
+                    });
             }
             set
             {
-                UIThread.DoOnUIThread(() =>
+                ThreadHelper.JoinableTaskFactory.Run(async delegate
                {
+                    await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
                    using (AutomationScope scope = new AutomationScope(this.parent.Target.Node.ProjectMgr.Site))
                    {
                        this.pi.SetValue(this.parent.Target, value, null);

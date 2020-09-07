@@ -33,6 +33,7 @@ using Microsoft.VisualStudio.Project;
 using LanguageService.CodeAnalysis.XSharp;
 using Microsoft;
 using XSharp.Project.OptionsPages;
+using Microsoft.VisualStudio.Shell;
 
 namespace XSharp.Project
 {
@@ -132,8 +133,9 @@ namespace XSharp.Project
                     System.Threading.Thread.Sleep(100);
                 }
 
-                UIThread.DoOnUIThread(delegate ()
-                    {
+                ThreadHelper.JoinableTaskFactory.Run(async delegate
+                {
+                    await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
                         var editSession = _buffer.CreateEdit();
                         var snapshot = editSession.Snapshot;
                         try
@@ -212,16 +214,6 @@ namespace XSharp.Project
         }
 
 
-        /// <summary>
-        /// Format the Keywords and Identifiers in the Line, using the EditSession
-        /// </summary>
-        /// <param name="editSession"></param>
-        /// <param name="line"></param>
-        private string FormatKeyword(string keyword)
-        {
-            return _optionsPage.SyncKeyword(keyword);
-        }
-
 
         private void formatToken(ITextEdit editSession, int offSet, IToken token)
         {
@@ -266,7 +258,7 @@ namespace XSharp.Project
             if (syncKeyword)
             {
                 var keyword = token.Text;
-                var transform = FormatKeyword(keyword);
+                var transform = XSettings.FormatKeyword(keyword);
                 if (String.Compare(transform, keyword) != 0)
                 {
                     int startpos = offSet + token.StartIndex;
@@ -481,9 +473,9 @@ namespace XSharp.Project
         }
         internal void WriteOutputMessage(string strMessage)
         {
-            if (_optionsPage.EnableCodeCompletionLog && _optionsPage.EnableOutputPane)
+            if (XSettings.EnableCodeCompletionLog && XSettings.EnableLogging)
             {
-                XSharpProjectPackage.Instance.DisplayOutPutMessage(strMessage);
+                XSettings.DisplayOutputMessage(strMessage);
             }
         }
         private void formatCaseForWholeBuffer()
@@ -831,7 +823,7 @@ namespace XSharp.Project
             catch (Exception ex)
             {
                 WriteOutputMessage("Goto failed: ");
-                XSharpProjectPackage.Instance.DisplayException(ex);
+                XSettings.DisplayException(ex);
             }
             finally
             {
@@ -842,6 +834,7 @@ namespace XSharp.Project
 
         private void gotoObjectBrowser(MemberInfo mbrInfo)
         {
+            Microsoft.VisualStudio.Shell.ThreadHelper.ThrowIfNotOnUIThread();
             ObjectBrowserHelper.GotoMemberDefinition(mbrInfo.Name);
         }
         #endregion
@@ -889,6 +882,7 @@ namespace XSharp.Project
 
         private void FilterCompletionSession(char ch)
         {
+
             WriteOutputMessage("CommandFilter.FilterCompletionSession()");
             if (_completionSession == null)
                 return;
@@ -927,7 +921,7 @@ namespace XSharp.Project
 
         void formatKeyword(Completion completion)
         {
-            completion.InsertionText = _optionsPage.SyncKeyword(completion.InsertionText);
+            completion.InsertionText = XSettings.FormatKeyword(completion.InsertionText);
         }
 
         bool CompleteCompletionSession(bool force = false, char ch = ' ')
@@ -1113,7 +1107,7 @@ namespace XSharp.Project
             catch (Exception e)
             {
                 WriteOutputMessage("Startcompletion failed");
-                XSharpProjectPackage.Instance.DisplayException(e);
+                XSettings.DisplayException(e);
             }
             return true;
         }
@@ -1275,7 +1269,7 @@ namespace XSharp.Project
                 catch (Exception e)
                 {
                     WriteOutputMessage("Start Signature session failed:");
-                    XSharpProjectPackage.Instance.DisplayException(e);
+                    XSettings.DisplayException(e);
                 }
             }
             //
@@ -1422,22 +1416,26 @@ namespace XSharp.Project
         /// </summary>
         public static void GotoMemberDefinition(string memberName, uint searchOptions = (uint)_VSOBSEARCHOPTIONS.VSOBSO_LOOKINREFS)
         {
+            Microsoft.VisualStudio.Shell.ThreadHelper.ThrowIfNotOnUIThread();
             gotoDefinition(memberName, _LIB_LISTTYPE.LLT_MEMBERS, searchOptions);
         }
 
         public static void GotoClassDefinition(string typeName, uint searchOptions = (uint)_VSOBSEARCHOPTIONS.VSOBSO_LOOKINREFS)
         {
+            Microsoft.VisualStudio.Shell.ThreadHelper.ThrowIfNotOnUIThread();
             gotoDefinition(typeName, _LIB_LISTTYPE.LLT_CLASSES, searchOptions);
         }
 
         public static void FindSymbols(string memberName)
         {
-            ObjectBrowserHelper.canFindSymbols(memberName, (uint)_VSOBSEARCHOPTIONS.VSOBSO_LOOKINREFS);
+            Microsoft.VisualStudio.Shell.ThreadHelper.ThrowIfNotOnUIThread();
+            canFindSymbols(memberName, (uint)_VSOBSEARCHOPTIONS.VSOBSO_LOOKINREFS);
         }
 
 
         private static void gotoDefinition(string memberName, _LIB_LISTTYPE libListtype, uint searchOptions)
         {
+            Microsoft.VisualStudio.Shell.ThreadHelper.ThrowIfNotOnUIThread();
             if (gotoDefinitionInternal(memberName, libListtype, searchOptions) == false)
             {
                 // There was an ambiguity (more than one item found) or no items found at all.
@@ -1450,6 +1448,7 @@ namespace XSharp.Project
 
         private static bool gotoDefinitionInternal(string typeOrMemberName, _LIB_LISTTYPE symbolType, uint searchOptions)
         {
+            Microsoft.VisualStudio.Shell.ThreadHelper.ThrowIfNotOnUIThread();
             IVsSimpleObjectList2 list;
             if (ObjectBrowserHelper.tryFindSymbol(typeOrMemberName, out list, symbolType, searchOptions))
             {
@@ -1467,6 +1466,7 @@ namespace XSharp.Project
         // Searching in the XSharp Library (Current Solution)
         private static IVsSimpleLibrary2 GetXSharpLibrary()
         {
+            Microsoft.VisualStudio.Shell.ThreadHelper.ThrowIfNotOnUIThread();
             Guid guid = new Guid(XSharpConstants.Library);
             IVsLibrary2 _library;
             IVsSimpleLibrary2 simpleLibrary = null;
@@ -1485,6 +1485,7 @@ namespace XSharp.Project
         private static bool tryGetSourceLocation(string memberName, out string fileName, out uint line, uint searchOptions)
         {
             IVsSimpleObjectList2 list;
+            Microsoft.VisualStudio.Shell.ThreadHelper.ThrowIfNotOnUIThread();
             if (ObjectBrowserHelper.tryFindSymbol(memberName, out list, _LIB_LISTTYPE.LLT_MEMBERS, searchOptions))
             {
                 return HResult.Succeeded(list.GetSourceContextWithOwnership(0, out fileName, out line));
@@ -1516,6 +1517,7 @@ namespace XSharp.Project
                 typeOrMemberName = typeOrMemberName.Replace(" ", "");
                 var library = ObjectBrowserHelper.GetXSharpLibrary();
                 IVsSimpleObjectList2 list;
+                Microsoft.VisualStudio.Shell.ThreadHelper.ThrowIfNotOnUIThread();
                 var searchSucceed = HResult.Succeeded(library.GetList2((uint)symbolType,
                     (uint)_LIB_LISTFLAGS.LLF_USESEARCHFILTER,
                     createSearchCriteria(typeOrMemberName, searchOptions),
@@ -1549,6 +1551,7 @@ namespace XSharp.Project
 
         private static bool canFindSymbols(string memberName, uint searchOptions)
         {
+            Microsoft.VisualStudio.Shell.ThreadHelper.ThrowIfNotOnUIThread();
             System.IServiceProvider provider = XSharpProjectPackage.Instance;
             bool result = true;
             // ProjectPackage already switches to UI thread inside GetService
@@ -1561,6 +1564,7 @@ namespace XSharp.Project
 
         private static bool canFindAllSymbols(string memberName, uint searchOptions)
         {
+            Microsoft.VisualStudio.Shell.ThreadHelper.ThrowIfNotOnUIThread();
             System.IServiceProvider provider = XSharpProjectPackage.Instance;
             bool result= true;
             // ProjectPackage already switches to UI thread inside GetService
@@ -1589,6 +1593,7 @@ namespace XSharp.Project
 
         private static IEnumerable<string> getSymbolNames(IVsSimpleObjectList2 list)
         {
+            Microsoft.VisualStudio.Shell.ThreadHelper.ThrowIfNotOnUIThread();
             uint count;
             if (HResult.Succeeded(list.GetItemCount(out count)))
             {

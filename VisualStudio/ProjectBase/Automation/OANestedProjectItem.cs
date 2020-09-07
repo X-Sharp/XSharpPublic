@@ -8,12 +8,13 @@
  * You must not remove this notice, or any other, from this software.
  *
  * ***************************************************************************/
-
+using EnvDTE;
 using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.InteropServices;
 using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Shell.Interop;
+using Microsoft.VisualStudio.Shell;
 
 namespace Microsoft.VisualStudio.Project.Automation
 {
@@ -32,10 +33,15 @@ namespace Microsoft.VisualStudio.Project.Automation
             Utilities.ArgumentNotNull("node", node);
 
             object nestedproject;
+            ThreadHelper.JoinableTaskFactory.Run(async delegate
+            {
+                await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
             if(ErrorHandler.Succeeded(node.NestedHierarchy.GetProperty(VSConstants.VSITEMID_ROOT, (int)__VSHPROPID.VSHPROPID_ExtObject, out nestedproject)))
             {
+                    await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
                 this.nestedProject = nestedproject as EnvDTE.Project;
             }
+            });
         }
 
         #endregion
@@ -44,15 +50,19 @@ namespace Microsoft.VisualStudio.Project.Automation
         /// <summary>
         /// Returns the collection of project items defined in the nested project
         /// </summary>
-        public override EnvDTE.ProjectItems ProjectItems
+        public override ProjectItems ProjectItems
         {
             get
             {
+                return ThreadHelper.JoinableTaskFactory.Run(async delegate
+                {
+                    await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
                 if(this.nestedProject != null)
                 {
                     return this.nestedProject.ProjectItems;
                 }
                 return null;
+                });
             }
         }
 

@@ -55,9 +55,12 @@ namespace XSharp.Project
         public virtual object GetService(Type serviceType)
         {
             // This is were we will load the IVSMDProvider interface
-            object result = null;
-            UIThread.DoOnUIThread(() => result = _serviceProvider.GetService(serviceType));
-            return result;
+            return ThreadHelper.JoinableTaskFactory.Run(async delegate
+            {
+                await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+
+                return _serviceProvider.GetService(serviceType);
+            });
         }
 
         // This method is called by the Environment (inside IVsUIShellOpenDocument::
@@ -192,8 +195,12 @@ namespace XSharp.Project
 
                 // set the buffer's site
                 IOleServiceProvider provider = null;
-                UIThread.DoOnUIThread(() => provider = (IOleServiceProvider)_serviceProvider.GetService(typeof(IOleServiceProvider)));
+                ThreadHelper.JoinableTaskFactory.Run(async delegate
+                {
+                    await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+                    provider = (IOleServiceProvider)_serviceProvider.GetService(typeof(IOleServiceProvider));
                 ((IObjectWithSite)textLines).SetSite(provider);
+                });
             }
             else
             {
@@ -268,7 +275,11 @@ namespace XSharp.Project
             try
             {
                 IOleServiceProvider service = null;
-                UIThread.DoOnUIThread( () => service = (IOleServiceProvider)_serviceProvider.GetService(typeof(IOleServiceProvider)) );
+                ThreadHelper.JoinableTaskFactory.Run(async delegate
+                {
+                    await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+                    service = (IOleServiceProvider)_serviceProvider.GetService(typeof(IOleServiceProvider)) ;
+                });
 
                 // Initialize designer loader
                 designerLoader.Initialize(service, hierarchy, (int)itemid, textLines);

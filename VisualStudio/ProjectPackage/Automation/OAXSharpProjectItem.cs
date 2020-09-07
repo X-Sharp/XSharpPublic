@@ -12,6 +12,7 @@ using System.Collections.Generic;
 using EnvDTE;
 using Microsoft.VisualStudio.Project;
 using VSLangProj;
+using Microsoft.VisualStudio.Shell;
 
 namespace XSharp.Project
 {
@@ -125,7 +126,12 @@ namespace XSharp.Project
         {
             get
             {
-                return project.DTE;
+                return ThreadHelper.JoinableTaskFactory.Run(async delegate
+                    {
+                        await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+
+                        return project.DTE;
+                    });
             }
         }
 

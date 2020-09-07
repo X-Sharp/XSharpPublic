@@ -21,12 +21,9 @@ BEGIN NAMESPACE XSharpModel
       
       STATIC PROPERTY FileName AS STRING GET _fileName
       STATIC PROPERTY CommentTokens AS IList<XCommentToken> GET _commentTokens
-      STATIC OutputWindow AS IOutputWindow
 		// Methods
       STATIC CONSTRUCTOR
          _projects := ConcurrentDictionary<STRING, XProject>{StringComparer.OrdinalIgnoreCase}
-	 OutputWindow := DummyOutputWindow{}
-         OutputWindow:DisplayOutPutMessage("XSolution Loaded")
          CreateOrphanedFilesProject()
          IsClosing   := FALSE
          _commentTokens := List < XCommentToken >{}
@@ -37,17 +34,10 @@ BEGIN NAMESPACE XSharpModel
 
       STATIC METHOD WriteOutputMessage(message AS STRING) AS VOID
          IF XSettings.EnableLogging
-			   OutputWindow:DisplayOutPutMessage(message)
+			   XSettings.DisplayOutputMessage(message)
          ENDIF
 		STATIC METHOD WriteException(ex AS Exception) AS VOID
-			LOCAL space := "" AS STRING
-			DO WHILE ex != NULL
-				WriteOutputMessage(String.Format("{0}***** exception {1}", space, ex:GetType()))
-				WriteOutputMessage(ex:Message)
-				WriteOutputMessage(ex:StackTrace)
-				space += " "
-				ex := ex:InnerException
-			ENDDO
+			XSettings.DisplayException(ex)
 			RETURN
 
       STATIC METHOD Open(cFile as STRING) AS VOID
@@ -213,14 +203,6 @@ BEGIN NAMESPACE XSharpModel
 
 	END CLASS
 
-	CLASS DummyOutputWindow IMPLEMENTS IOutputWindow
-		METHOD DisplayOutPutMessage(message AS STRING) AS VOID
-			System.Diagnostics.Debug.WriteLine(message)
-			RETURN
-	END CLASS
 
-	INTERFACE IOutputWindow
-		METHOD DisplayOutPutMessage(message AS STRING) AS VOID
-	END INTERFACE
 END NAMESPACE
 

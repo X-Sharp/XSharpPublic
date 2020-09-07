@@ -9,13 +9,14 @@ using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Text.Classification;
 using Microsoft.VisualStudio.Utilities;
 using XSharpModel;
+
 namespace XSharpColorizer
 {
     /// <summary>
     /// Classifier provider. It adds the classifier to the set of classifiers.
     /// </summary>
     [Export(typeof(IClassifierProvider))]
-    [ContentType("XSharp")]
+    [ContentType(XSharp.Constants.LanguageName)]
     internal class XSharpClassifierProvider : IClassifierProvider
     {
         // Disable "Field is never assigned to..." compiler's warning. Justification: the field is assigned by MEF.

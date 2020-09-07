@@ -28,6 +28,7 @@ using System.Collections.Generic;
 using Microsoft;
 using Microsoft.VisualStudio.ComponentModelHost;
 using Microsoft.VisualStudio.Text.Adornments;
+using XSharpModel;
 /*
 Substitution strings
 String	Description
@@ -218,9 +219,8 @@ namespace XSharp.Project
     [ProvideMenuResource("Menus.ctmenu", 1)]
     //[ProvideBindingPath]        // Tell VS to look in our path for assemblies
     public sealed class XSharpProjectPackage : AsyncProjectPackage, IOleComponent,
-        IVsShellPropertyEvents, IVsDebuggerEvents, XSharpModel.IOutputWindow
+        IVsShellPropertyEvents, IVsDebuggerEvents
     {
-        private UIThread _uiThread;
         private uint m_componentID;
         private static XSharpProjectPackage instance;
         private XPackageSettings settings;
@@ -236,7 +236,6 @@ namespace XSharp.Project
         // Properties
         // =========================================================================================
 
-        internal UIThread UIThread => _uiThread;
         internal ITaskList TaskList => _taskList;
         internal IErrorList ErrorList => _errorList;
 
@@ -250,10 +249,11 @@ namespace XSharp.Project
 
         public  void OpenInBrowser(string url)
         {
-            UIThread.DoOnUIThread(() =>
+            ThreadHelper.JoinableTaskFactory.Run(async delegate
             {
+                await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
 
-                IVsWebBrowsingService service = GetService(typeof(SVsWebBrowsingService)) as IVsWebBrowsingService;
+                IVsWebBrowsingService service = await GetServiceAsync(typeof(SVsWebBrowsingService)) as IVsWebBrowsingService;
                 if (service != null)
                 {
                     IVsWindowFrame frame = null;
@@ -269,19 +269,39 @@ namespace XSharp.Project
             {
                 _intellisensePage = (IntellisenseOptionsPage)GetDialogPage(typeof(IntellisenseOptionsPage));
             }
-            XSharpModel.XSettings.EnableLogging = _intellisensePage.EnableOutputPane;
-            XSharpModel.XSettings.EnableDatabaseLog = _intellisensePage.EnableDatabaseLog;
-            XSharpModel.XSettings.EnableParseLog = _intellisensePage.EnableParserLog;
-            XSharpModel.XSettings.EnableReferenceInfoLog = _intellisensePage.EnableReferenceInfoLog;
-            XSharpModel.XSettings.EnableTypelookupLog = _intellisensePage.EnableTypelookupLog;
-            XSharpModel.XSettings.DisableEntityParsing = _intellisensePage.DisableEntityParsing;
-            XSharpModel.XSettings.DisableRegions = _intellisensePage.DisableRegions;
-            XSharpModel.XSettings.DisableSyntaxHighlighting = _intellisensePage.DisableSyntaxColorization;
-            XSharpModel.XSettings.DisableAssemblyReferences = _intellisensePage.DisableAssemblyReferences;
-            XSharpModel.XSettings.DisableForeignProjectReferences = _intellisensePage.DisableForeignProjectReferences;
-            XSharpModel.XSettings.DisableXSharpProjectReferences = _intellisensePage.DisableXSharpProjectReferences;
+            if (_intellisensePage.SettingsChanged)
+            {
+                XSettings.EnableLogging = _intellisensePage.EnableOutputPane;
+                XSettings.EnableBraceMatchLog = _intellisensePage.EnableBraceMatchLog;
+                XSettings.EnableCodeCompletionLog = _intellisensePage.EnableCodeCompletionLog;
+                XSettings.EnableDatabaseLog = _intellisensePage.EnableDatabaseLog;
+                XSettings.EnableParameterLog = _intellisensePage.EnableParameterLog;
+                XSettings.EnableParseLog = _intellisensePage.EnableParserLog;
+                XSettings.EnableReferenceInfoLog = _intellisensePage.EnableReferenceInfoLog;
+                XSettings.EnableTypelookupLog = _intellisensePage.EnableTypelookupLog;
 
+                XSettings.DisableAssemblyReferences = _intellisensePage.DisableAssemblyReferences;
+                XSettings.DisableBraceMatching = _intellisensePage.DisableBraceMatching;
+                XSettings.DisableCaseSynchronization = _intellisensePage.DisableCaseSynchronization;
+                XSettings.DisableClassViewObjectView = _intellisensePage.DisableClassViewObjectView;
+                XSettings.DisableCodeCompletion = _intellisensePage.DisableCodeCompletion;
+                XSettings.DisableEntityParsing = _intellisensePage.DisableEntityParsing;
+                XSettings.DisableForeignProjectReferences = _intellisensePage.DisableForeignProjectReferences;
+                XSettings.DisableGotoDefinition = _intellisensePage.DisableGotoDefinition;
+                XSettings.DisableHighLightWord = _intellisensePage.DisableHighLightWord;
+                XSettings.DisableLightBulb = _intellisensePage.DisableLightBulb;
+                XSettings.DisableParameterInfo = _intellisensePage.DisableParameterInfo;
+                XSettings.DisablePeekDefinition = _intellisensePage.DisablePeekDefinition;
+                XSettings.DisableQuickInfo = _intellisensePage.DisableQuickInfo;
+                XSettings.DisableRegions = _intellisensePage.DisableRegions;
+                XSettings.DisableSyntaxHighlighting = _intellisensePage.DisableSyntaxColorization;
+                XSettings.DisableXSharpProjectReferences = _intellisensePage.DisableXSharpProjectReferences;
+
+                XSettings.KeywordCase = (int)_intellisensePage.KeywordCase;
+                _intellisensePage.SettingsChanged = false;
+            }
             return _intellisensePage;
+
         }
 
         internal IVsTextManager4 GetTextManager()
@@ -298,12 +318,14 @@ namespace XSharp.Project
         protected override async System.Threading.Tasks.Task InitializeAsync(CancellationToken cancellationToken, IProgress<ServiceProgressData> progress)
         {
             // Suspend walking until Solution is opened.
+
+            XSettings.DisplayOutputMessage = this.DisplayOutPutMessage;
+            XSettings.DisplayException = this.DisplayException;
+            XSettings.ShowMessageBox = this.ShowMessageBox;
             base.SolutionListeners.Add(new ModelScannerEvents(this));
             await base.InitializeAsync(cancellationToken, progress);
             await JoinableTaskFactory.SwitchToMainThreadAsync();
-            _uiThread = new UIThread();
              XSharpProjectPackage.instance = this;
-             XSharpModel.XSolution.OutputWindow = this;
              this.RegisterProjectFactory(new XSharpProjectFactory(this));
              this.settings = new XPackageSettings(this);
              validateVulcanEditors();
@@ -396,7 +418,8 @@ namespace XSharp.Project
         {
             try
             {
-                UIThread.DoOnUIThread(() => this.UnRegisterDebuggerEvents());
+
+                this.UnRegisterDebuggerEvents();
                 if (null != _libraryManager)
                 {
                     _libraryManager.Dispose();
@@ -405,7 +428,7 @@ namespace XSharp.Project
             }
             finally
             {
-                UIThread.DoOnUIThread(() => base.Dispose(disposing));
+                base.Dispose(disposing);
 
             }
         }
@@ -494,7 +517,12 @@ namespace XSharp.Project
         protected override  object GetService(Type serviceType)
         {
             object result= null;
-            UIThread.DoOnUIThread( ()=> result = MyGetService(serviceType));
+            ThreadHelper.JoinableTaskFactory.Run(async delegate
+            {
+                await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+
+                result = MyGetService(serviceType);
+            });
             return result;
         }
         private object MyGetService(Type serviceType)
@@ -584,7 +612,7 @@ namespace XSharp.Project
 
         public void Terminate()
         {
-            _uiThread.MustBeCalledFromUIThread();
+            ThreadHelper.ThrowIfNotOnUIThread();
             var shell = this.GetService(typeof(SVsShell)) as IVsShell;
             if (shell != null)
             {
@@ -616,31 +644,39 @@ namespace XSharp.Project
         private void RegisterDebuggerEvents()
         {
             int hr;
-            _uiThread.MustBeCalledFromUIThread();
-            m_debugger = this.GetService(typeof(SVsShellDebugger)) as IVsDebugger;
-            if (m_debugger != null)
+            ThreadHelper.JoinableTaskFactory.Run(async delegate
             {
-                hr = m_debugger.AdviseDebuggerEvents(this, out m_Debuggercookie);
-                Microsoft.VisualStudio.ErrorHandler.ThrowOnFailure(hr);
-                // Get initial value
-                hr = m_debugger.GetMode(modeArray);
+                await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
 
-            }
+                m_debugger = this.GetService(typeof(SVsShellDebugger)) as IVsDebugger;
+                if (m_debugger != null)
+                {
+                    hr = m_debugger.AdviseDebuggerEvents(this, out m_Debuggercookie);
+                    Microsoft.VisualStudio.ErrorHandler.ThrowOnFailure(hr);
+                    // Get initial value
+                    hr = m_debugger.GetMode(modeArray);
+
+                }
+            });
         }
         private void UnRegisterDebuggerEvents()
         {
             int hr;
-            _uiThread.MustBeCalledFromUIThread();
-            if (m_debugger != null)
+            ThreadHelper.JoinableTaskFactory.Run(async delegate
             {
-                if (m_Debuggercookie != 0)
+                await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+
+                if (m_debugger != null)
                 {
-                    hr = m_debugger.UnadviseDebuggerEvents(m_Debuggercookie);
-                    Microsoft.VisualStudio.ErrorHandler.ThrowOnFailure(hr);
-                    m_Debuggercookie = 0;
+                    if (m_Debuggercookie != 0)
+                    {
+                        hr = m_debugger.UnadviseDebuggerEvents(m_Debuggercookie);
+                        Microsoft.VisualStudio.ErrorHandler.ThrowOnFailure(hr);
+                        m_Debuggercookie = 0;
+                    }
+                    m_debugger = null;
                 }
-                m_debugger = null;
-            }
+            });
 
         }
         public int OnModeChange(DBGMODE dbgmodeNew)
@@ -653,7 +689,7 @@ namespace XSharp.Project
 
         public void DisplayException(Exception ex)
         {
-            if (GetIntellisenseOptionsPage().EnableOutputPane)
+            if (XSettings.EnableLogging)
             {
                 string space = "";
                 while (ex != null)
@@ -671,8 +707,8 @@ namespace XSharp.Project
 
         public void DisplayOutPutMessage(string message)
         {
-            if (GetIntellisenseOptionsPage().EnableOutputPane)
-            {
+            if (XSettings.EnableLogging)
+            { 
                 XSharpOutputPane.DisplayOutPutMessage(message);
             }
         }

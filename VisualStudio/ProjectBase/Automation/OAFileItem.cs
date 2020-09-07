@@ -49,10 +49,11 @@ namespace Microsoft.VisualStudio.Project.Automation
         {
             get
             {
-                return UIThread.DoOnUIThread(delegate()
+                bool isDirty = false;
+                ThreadHelper.JoinableTaskFactory.Run(async delegate
                 {
+                    await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
                     CheckProjectIsValid();
-                    bool isDirty = false;
 
                     using (AutomationScope scope = new AutomationScope(this.Node.ProjectMgr.Site))
                     {
@@ -63,8 +64,8 @@ namespace Microsoft.VisualStudio.Project.Automation
                         isDirty = manager.IsDirty;
                     }
 
-                    return isDirty;
                 });
+                return isDirty;
             }
 
         }
@@ -76,8 +77,9 @@ namespace Microsoft.VisualStudio.Project.Automation
         {
             get
             {
-                return UIThread.DoOnUIThread(delegate()
+                return ThreadHelper.JoinableTaskFactory.Run(async delegate
                 {
+                    await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
                     CheckProjectIsValid();
 
                     EnvDTE.Document document = null;
@@ -117,8 +119,9 @@ namespace Microsoft.VisualStudio.Project.Automation
         /// <returns>Window object</returns>
         public override EnvDTE.Window Open(string viewKind)
         {
-            return UIThread.DoOnUIThread(delegate()
+            return ThreadHelper.JoinableTaskFactory.Run(async delegate
             {
+                await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
                 CheckProjectIsValid();
 
                 IVsWindowFrame windowFrame = null;
@@ -212,9 +215,11 @@ namespace Microsoft.VisualStudio.Project.Automation
         /// <returns>A Boolean value indicating true if the project is open in the given view type; false if not. </returns>
         public override bool get_IsOpen(string viewKind)
         {
-            return UIThread.DoOnUIThread(delegate()
+            bool isOpen = false;
+            ThreadHelper.JoinableTaskFactory.Run(async delegate
             {
-            	CheckProjectIsValid();
+                await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+                CheckProjectIsValid();
 
                 // Validate input params
                 Guid logicalViewGuid = VSConstants.LOGVIEWID_Primary;
@@ -231,7 +236,6 @@ namespace Microsoft.VisualStudio.Project.Automation
                     throw new ArgumentException(SR.GetString(SR.ParameterMustBeAValidGuid, CultureInfo.CurrentUICulture), "viewKind");
                 }
 
-                bool isOpen = false;
 
                 using (AutomationScope scope = new AutomationScope(this.Node.ProjectMgr.Site))
                 {
@@ -244,8 +248,8 @@ namespace Microsoft.VisualStudio.Project.Automation
 
                 }
 
-                return isOpen;
             });
+            return isOpen;
         }
 
         /// <summary>
@@ -255,8 +259,9 @@ namespace Microsoft.VisualStudio.Project.Automation
         {
             get
             {
-                return UIThread.DoOnUIThread(delegate()
+                return ThreadHelper.JoinableTaskFactory.Run(async delegate
                 {
+                    await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
                     if (this.Project.Project.CanFileNodesHaveChilds)
                         return new OAProjectItems(this.Project, this.Node);
                     else
@@ -276,9 +281,10 @@ namespace Microsoft.VisualStudio.Project.Automation
         /// <param name="fileName">The name of the project file.</param>
         private void DoSave(bool isCalledFromSaveAs, string fileName)
         {
-            UIThread.DoOnUIThread(delegate()
+            ThreadHelper.JoinableTaskFactory.Run(async delegate
             {
-            	Utilities.ArgumentNotNull("fileName", fileName);
+                await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+                Utilities.ArgumentNotNull("fileName", fileName);
 
             	CheckProjectIsValid();
                 using (AutomationScope scope = new AutomationScope(this.Node.ProjectMgr.Site))

@@ -8,7 +8,8 @@
  * You must not remove this notice, or any other, from this software.
  *
  * ***************************************************************************/
-
+using EnvDTE;
+using Microsoft.VisualStudio.Shell;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -25,7 +26,7 @@ namespace Microsoft.VisualStudio.Project.Automation
     /// </summary>
     [SuppressMessage("Microsoft.Naming", "CA1710:IdentifiersShouldHaveCorrectSuffix")]
     [CLSCompliant(false), ComVisible(true)]
-    public class OAProperties : EnvDTE.Properties
+    public class OAProperties : Properties
     {
         #region fields
         private NodeProperties _target;
@@ -58,7 +59,7 @@ namespace Microsoft.VisualStudio.Project.Automation
         /// <summary>
         /// Defines a dictionary of the properties contained.
         /// </summary>
-        public Dictionary<string, EnvDTE.Property> Properties
+        public Dictionary<string, Property> Properties
         {
             get
             {
@@ -98,18 +99,19 @@ namespace Microsoft.VisualStudio.Project.Automation
         /// <summary>
         /// Gets the top-level extensibility object.
         /// </summary>
-        public virtual EnvDTE.DTE DTE
+        public virtual DTE DTE
         {
             get
             {
-                return UIThread.DoOnUIThread(delegate()
+                return ThreadHelper.JoinableTaskFactory.Run(async delegate
                 {
+                    await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
                     if (_target == null || _target.Node == null || _target.Node.ProjectMgr == null || _target.Node.ProjectMgr.IsClosed ||
                         _target.Node.ProjectMgr.Site == null)
                     {
                         throw new InvalidOperationException();
                     }
-                    return _target.Node.ProjectMgr.Site.GetService(typeof(EnvDTE.DTE)) as EnvDTE.DTE;
+                    return _target.Node.ProjectMgr.Site.GetService(typeof(DTE)) as DTE;
                 });
             }
         }
@@ -143,15 +145,18 @@ namespace Microsoft.VisualStudio.Project.Automation
         /// </summary>
         /// <param name="index">The index at which to return a mamber.</param>
         /// <returns>A Property object.</returns>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1800:DoNotCastUnnecessarily")]
-        public virtual EnvDTE.Property Item(object index)
+        public virtual Property Item(object index)
         {
             if(index is string)
             {
                 string indexAsString = (string)index;
                 if(_properties.ContainsKey(indexAsString))
                 {
-                    return (EnvDTE.Property)_properties[indexAsString];
+                    return ThreadHelper.JoinableTaskFactory.Run(async delegate
+                    {
+                        await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+                        return _properties[indexAsString];
+                    });
                 }
             }
             else if(index is int)
@@ -166,14 +171,18 @@ namespace Microsoft.VisualStudio.Project.Automation
                     {
                         if(i++ == realIndex)
                         {
+                            return ThreadHelper.JoinableTaskFactory.Run(async delegate
+                            {
+                                await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
                             return (EnvDTE.Property)enumerator.Current;
+                            });
                         }
                     }
                 }
             }
             // do not throw exception.
-            return null;
             //throw new ArgumentException(SR.GetString(SR.InvalidParameter, CultureInfo.CurrentUICulture), "index");
+            return new OANullProperty(this);
         }
         /// <summary>
         /// Gets the immediate parent object of a Properties collection.
@@ -231,11 +240,10 @@ namespace Microsoft.VisualStudio.Project.Automation
 
         private static bool IsAutomationVisible(PropertyInfo propertyInfo)
         {
-            object[] customAttributesOnProperty = propertyInfo.GetCustomAttributes(typeof(AutomationBrowsableAttribute), true);
-
-            foreach(AutomationBrowsableAttribute attr in customAttributesOnProperty)
+            object[] customAttributes = propertyInfo.GetCustomAttributes(typeof(AutomationBrowsableAttribute), inherit: true);
+            for (int i = 0; i < customAttributes.Length; i++)
             {
-                if(!attr.Browsable)
+                if (!((AutomationBrowsableAttribute)customAttributes[i]).Browsable)
                 {
                     return false;
                 }
@@ -245,11 +253,10 @@ namespace Microsoft.VisualStudio.Project.Automation
 
         private static bool IsComVisible(Type targetType)
         {
-            object[] customAttributesOnProperty = targetType.GetCustomAttributes(typeof(ComVisibleAttribute), true);
-
-            foreach(ComVisibleAttribute attr in customAttributesOnProperty)
+            object[] customAttributes = targetType.GetCustomAttributes(typeof(ComVisibleAttribute), inherit: true);
+            for (int i = 0; i < customAttributes.Length; i++)
             {
-                if(!attr.Value)
+                if (!((ComVisibleAttribute)customAttributes[i]).Value)
                 {
                     return false;
                 }
@@ -259,11 +266,10 @@ namespace Microsoft.VisualStudio.Project.Automation
 
         private static bool IsComVisible(PropertyInfo propertyInfo)
         {
-            object[] customAttributesOnProperty = propertyInfo.GetCustomAttributes(typeof(ComVisibleAttribute), true);
-
-            foreach(ComVisibleAttribute attr in customAttributesOnProperty)
+            object[] customAttributes = propertyInfo.GetCustomAttributes(typeof(ComVisibleAttribute), inherit: true);
+            for (int i = 0; i < customAttributes.Length; i++)
             {
-                if(!attr.Value)
+                if (!((ComVisibleAttribute)customAttributes[i]).Value)
                 {
                     return false;
                 }

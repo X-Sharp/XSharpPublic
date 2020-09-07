@@ -283,12 +283,19 @@ namespace XSharp.Project
 
         protected virtual void buildDescription(_VSOBJDESCOPTIONS flags, IVsObjectBrowserDescription3 description)
         {
+            ThreadHelper.JoinableTaskFactory.Run(async delegate
+            {
+                await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
             description.ClearDescriptionText();
             description.AddDescriptionText3(name, VSOBDESCRIPTIONSECTION.OBDS_NAME, null);
+            });
         }
 
         protected IVsSimpleObjectList2 FilterView(LibraryNodeType filterType)
         {
+            return ThreadHelper.JoinableTaskFactory.Run(async delegate
+            {
+                await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
             LibraryNode filtered = null;
             if (filteredView.TryGetValue(filterType, out filtered))
             {
@@ -308,6 +315,7 @@ namespace XSharp.Project
             }
             filteredView.Add(filterType, filtered);
             return filtered as IVsSimpleObjectList2;
+            });
         }
 
         protected virtual void GotoSource(VSOBJGOTOSRCTYPE gotoType)

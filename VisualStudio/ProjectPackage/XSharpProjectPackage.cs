@@ -324,7 +324,9 @@ namespace XSharp.Project
             XSettings.ShowMessageBox = this.ShowMessageBox;
             await base.InitializeAsync(cancellationToken, progress);
             await JoinableTaskFactory.SwitchToMainThreadAsync();
-            base.SolutionListeners.Add(new ModelScannerEvents(this));
+            var modelscanner = new ModelScannerEvents(this);
+            base.SolutionListeners.Add(modelscanner);
+            modelscanner.Init();
             XSharpProjectPackage.instance = this;
             this.RegisterProjectFactory(new XSharpProjectFactory(this));
             this.settings = new XPackageSettings(this);

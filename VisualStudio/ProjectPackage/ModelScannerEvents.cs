@@ -20,10 +20,13 @@ namespace XSharp.Project
     /// </summary>
     class ModelScannerEvents : SolutionListener
     {
+        List<string> projectfiles;
+
         #region ctors
         public ModelScannerEvents(IServiceProvider serviceProvider)
             : base(serviceProvider)
         {
+            projectfiles = new List<string>();
             XSharpModel.ModelWalker.Suspend();
         }
 
@@ -40,8 +43,23 @@ namespace XSharp.Project
             EnvDTE80.DTE2 dte = Microsoft.VisualStudio.Shell.Package.GetGlobalService(typeof(EnvDTE.DTE)) as EnvDTE80.DTE2;
             EnvDTE80.Solution2 solution = dte.Solution as EnvDTE80.Solution2;
             var solutionFile = solution.FullName;
-            XSharpModel.XSolution.Open(solutionFile);
-            XSharpProjectPackage.Instance.SetCommentTokens();
+            if (string.IsNullOrEmpty(solutionFile))
+            {
+                if (projectfiles.Count > 0)
+                {
+                    // open a project without solution.
+                    // assume solution name is the same as project name with different extension
+                    solutionFile = System.IO.Path.ChangeExtension(projectfiles[0], ".sln");
+                }
+
+            }
+            if (! string.IsNullOrEmpty(solutionFile))
+            {
+                XSharpModel.XSolution.Open(solutionFile);
+                XSharpProjectPackage.Instance.SetCommentTokens();
+            }
+            projectfiles.Clear();
+
             /*
             Code below to detect items in solution folders
             var projects = solution.Projects;
@@ -94,7 +112,7 @@ namespace XSharp.Project
         const string oldText = @"$(MSBuildExtensionsPath)\XSharp";
         public override void OnBeforeOpenProject(ref Guid guidProjectID, ref Guid guidProjectType, string pszFileName)
         {
-            if (hasEnvironmentvariable && pszFileName.ToLower().EndsWith("xsproj"))
+            if (hasEnvironmentvariable && pszFileName != null && pszFileName.ToLower().EndsWith("xsproj"))
             {
                 string xml = System.IO.File.ReadAllText(pszFileName);
                 var pos = xml.IndexOf(oldText, StringComparison.OrdinalIgnoreCase);
@@ -108,6 +126,7 @@ namespace XSharp.Project
                     System.IO.File.WriteAllText(pszFileName, xml);
                 }
             }
+            projectfiles.Add(pszFileName);
 
         }
 

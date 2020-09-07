@@ -105,7 +105,7 @@ namespace XSharp.Project
         LanguageName, ProjectFileMask, ProjectExtension, ProjectExtensions,
         @".NullPath", LanguageVsTemplate = "XSharp", NewProjectRequireNewFolderVsTemplate = false)]
 
-    [ProvideService(typeof(XSharpLanguageService), ServiceName = LanguageServiceName,IsAsyncQueryable =false)]//
+    [ProvideService(typeof(XSharpLanguageService), ServiceName = LanguageServiceName, IsAsyncQueryable = false)]//
     [ProvideLanguageExtension(typeof(XSharpLanguageService), ".prg")]
     [ProvideLanguageExtension(typeof(XSharpLanguageService), ".xs")]
     [ProvideLanguageExtension(typeof(XSharpLanguageService), ".ppo")]
@@ -163,7 +163,7 @@ namespace XSharp.Project
                  "#201"         // Localized name of property page
                  )]
 
-     [ProvideProjectFactory(typeof(XSharpWPFProjectFactory),
+    [ProvideProjectFactory(typeof(XSharpWPFProjectFactory),
         null,
         null,
         null,
@@ -212,7 +212,7 @@ namespace XSharp.Project
     [ProvideUIContextRule(GuidStrings.guidXSharpVOFormEditor,
         name: "Supported Files",
         expression: "XSharp",
-        termNames: new[] { "XSharp","XSharp" },
+        termNames: new[] { "XSharp", "XSharp" },
         termValues: new[] { "HierSingleSelectionName:.xsfrm$", "HierSingleSelectionName:.vnfrm$" })]
 
 
@@ -247,7 +247,7 @@ namespace XSharp.Project
             get { return XSharpProjectPackage.instance; }
         }
 
-        public  void OpenInBrowser(string url)
+        public void OpenInBrowser(string url)
         {
             ThreadHelper.JoinableTaskFactory.Run(async delegate
             {
@@ -309,7 +309,7 @@ namespace XSharp.Project
             return this._txtManager;
         }
 
-       // XSharpLanguageService _langService = null;
+        // XSharpLanguageService _langService = null;
         #region Overridden Implementation
         /// <summary>
         /// Initialization of the package; this method is called right after the package is sited, so this is the place
@@ -322,23 +322,23 @@ namespace XSharp.Project
             XSettings.DisplayOutputMessage = this.DisplayOutPutMessage;
             XSettings.DisplayException = this.DisplayException;
             XSettings.ShowMessageBox = this.ShowMessageBox;
-            base.SolutionListeners.Add(new ModelScannerEvents(this));
             await base.InitializeAsync(cancellationToken, progress);
             await JoinableTaskFactory.SwitchToMainThreadAsync();
-             XSharpProjectPackage.instance = this;
-             this.RegisterProjectFactory(new XSharpProjectFactory(this));
-             this.settings = new XPackageSettings(this);
-             validateVulcanEditors();
-             this.RegisterDebuggerEvents();
-             // Indicate how to open the different source files : SourceCode or Designer ??
-             this.RegisterEditorFactory(new XSharpEditorFactory(this));
-             this.RegisterProjectFactory(new XSharpWPFProjectFactory(this));
+            base.SolutionListeners.Add(new ModelScannerEvents(this));
+            XSharpProjectPackage.instance = this;
+            this.RegisterProjectFactory(new XSharpProjectFactory(this));
+            this.settings = new XPackageSettings(this);
+            validateVulcanEditors();
+            this.RegisterDebuggerEvents();
+            // Indicate how to open the different source files : SourceCode or Designer ??
+            this.RegisterEditorFactory(new XSharpEditorFactory(this));
+            this.RegisterProjectFactory(new XSharpWPFProjectFactory(this));
 
-             // editors for the binaries
-             base.RegisterEditorFactory(new VOFormEditorFactory(this));
-             base.RegisterEditorFactory(new VOMenuEditorFactory(this));
-             base.RegisterEditorFactory(new VODBServerEditorFactory(this));
-             base.RegisterEditorFactory(new VOFieldSpecEditorFactory(this));
+            // editors for the binaries
+            base.RegisterEditorFactory(new VOFormEditorFactory(this));
+            base.RegisterEditorFactory(new VOMenuEditorFactory(this));
+            base.RegisterEditorFactory(new VODBServerEditorFactory(this));
+            base.RegisterEditorFactory(new VOFieldSpecEditorFactory(this));
             XSharp.Project.XSharpMenuItems.Initialize(this);
 
             // Register a timer to call our language service during
@@ -387,22 +387,22 @@ namespace XSharp.Project
 
         internal static string VsVersion;
 
-        internal async void StartLanguageService()
+        internal void StartLanguageService()
         {
             if (_xsLangService == null)
             {
-                IServiceContainer serviceContainer = this as IServiceContainer;
-                await JoinableTaskFactory.SwitchToMainThreadAsync();
-                if (serviceContainer.GetService(typeof(XSharpLanguageService))== null)
+                ThreadHelper.JoinableTaskFactory.Run(async delegate ()
                 {
-                    XSharpLanguageService langService = new XSharpLanguageService(this);
-                    serviceContainer.AddService(typeof(XSharpLanguageService),
-                                                langService,
-                                                true);
-                }
-                _xsLangService =  GetService(typeof(XSharpLanguageService)) as Microsoft.VisualStudio.Package.LanguageService;
+                    var temp = await GetServiceAsync(typeof(XSharpLanguageService));
+                    if (temp == null)
+                    {
+                        XSharpLanguageService langService = new XSharpLanguageService(this);
+                        var serviceContainer = (IServiceContainer)this;
+                        serviceContainer.AddService(typeof(XSharpLanguageService), langService, true);
+                    }
+                    _xsLangService = await GetServiceAsync(typeof(XSharpLanguageService)) as Microsoft.VisualStudio.Package.LanguageService;
+                });
             }
-
         }
         private object CreateLibraryService(IServiceContainer container, Type serviceType)
         {
@@ -482,10 +482,10 @@ namespace XSharp.Project
         public void SetCommentTokens()
         {
             var commentTokens = _taskList.CommentTokens;
-            var tokens = new List< XSharpModel.XCommentToken>();
+            var tokens = new List<XSharpModel.XCommentToken>();
             foreach (var token in commentTokens)
             {
-                var cmttoken = new XSharpModel.XCommentToken(token.Text,  (int)token.Priority );
+                var cmttoken = new XSharpModel.XCommentToken(token.Text, (int)token.Priority);
                 tokens.Add(cmttoken);
             }
             XSharpModel.XSolution.SetCommentTokens(tokens);
@@ -514,21 +514,16 @@ namespace XSharp.Project
             return Utilities.ShowMessageBox(this, message, title, icon, buttons, defaultButton);
 
         }
-        protected override  object GetService(Type serviceType)
-        {
-            object result= null;
-            ThreadHelper.JoinableTaskFactory.Run(async delegate
-            {
-                await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+        //protected override  object GetService(Type serviceType)
+        //{
+        //  return ThreadHelper.JoinableTaskFactory.Run(async delegate
+        //  {
+        //      var result = await  base.GetServiceAsync(serviceType);
+        //      return result;
+        //  });
 
-                result = MyGetService(serviceType);
-            });
-            return result;
-        }
-        private object MyGetService(Type serviceType)
-        {
-            return base.GetService(serviceType);
-        }
+
+        //}
 
         #endregion
 
@@ -541,7 +536,7 @@ namespace XSharp.Project
             // reference the GUID for our language service.
             //Microsoft.VisualStudio.Package.LanguageService service = GetService(typeof(XSharpLanguageService))
             //                          as Microsoft.VisualStudio.Package.LanguageService;
-            if ( _xsLangService != null)
+            if (_xsLangService != null)
             {
                 _xsLangService.OnIdle(bPeriodic);
             }
@@ -627,7 +622,7 @@ namespace XSharp.Project
             if (propid == (int)__VSSPROPID4.VSSPROPID_IsModal && var is bool)
             {
                 // when modal window closes
-                if (!(bool) var)
+                if (!(bool)var)
                 {
                     CommandFilter.InvalidateOptions();
                     SetCommentTokens();
@@ -644,40 +639,29 @@ namespace XSharp.Project
         private void RegisterDebuggerEvents()
         {
             int hr;
-            ThreadHelper.JoinableTaskFactory.Run(async delegate
+            ThreadHelper.JoinableTaskFactory.Run(async delegate ()
             {
-                await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
-
-                m_debugger = this.GetService(typeof(SVsShellDebugger)) as IVsDebugger;
-                if (m_debugger != null)
-                {
-                    hr = m_debugger.AdviseDebuggerEvents(this, out m_Debuggercookie);
-                    Microsoft.VisualStudio.ErrorHandler.ThrowOnFailure(hr);
-                    // Get initial value
-                    hr = m_debugger.GetMode(modeArray);
-
-                }
+                m_debugger = await this.GetServiceAsync(typeof(SVsShellDebugger)) as IVsDebugger;
             });
+            if (m_debugger != null)
+            {
+                hr = m_debugger.AdviseDebuggerEvents(this, out m_Debuggercookie);
+                Microsoft.VisualStudio.ErrorHandler.ThrowOnFailure(hr);
+                // Get initial value
+                hr = m_debugger.GetMode(modeArray);
+
+            }
         }
         private void UnRegisterDebuggerEvents()
         {
             int hr;
-            ThreadHelper.JoinableTaskFactory.Run(async delegate
+            if (m_debugger != null && m_Debuggercookie != 0)
             {
-                await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
-
-                if (m_debugger != null)
-                {
-                    if (m_Debuggercookie != 0)
-                    {
-                        hr = m_debugger.UnadviseDebuggerEvents(m_Debuggercookie);
-                        Microsoft.VisualStudio.ErrorHandler.ThrowOnFailure(hr);
-                        m_Debuggercookie = 0;
-                    }
-                    m_debugger = null;
-                }
-            });
-
+                hr = m_debugger.UnadviseDebuggerEvents(m_Debuggercookie);
+                Microsoft.VisualStudio.ErrorHandler.ThrowOnFailure(hr);
+            }
+            m_Debuggercookie = 0;
+            m_debugger = null;
         }
         public int OnModeChange(DBGMODE dbgmodeNew)
         {
@@ -694,7 +678,7 @@ namespace XSharp.Project
                 string space = "";
                 while (ex != null)
                 {
-                    XSharpOutputPane.DisplayOutPutMessage(space+"**** Exception *** " + ex.GetType().FullName);
+                    XSharpOutputPane.DisplayOutPutMessage(space + "**** Exception *** " + ex.GetType().FullName);
                     XSharpOutputPane.DisplayOutPutMessage(space + ex.Message);
                     XSharpOutputPane.DisplayOutPutMessage(space + ex.StackTrace);
                     ex = ex.InnerException;
@@ -708,14 +692,14 @@ namespace XSharp.Project
         public void DisplayOutPutMessage(string message)
         {
             if (XSettings.EnableLogging)
-            { 
+            {
                 XSharpOutputPane.DisplayOutPutMessage(message);
             }
         }
 
         internal static IComponentModel GetComponentModel()
         {
-            return (IComponentModel) GetGlobalService(typeof(SComponentModel));
+            return (IComponentModel)GetGlobalService(typeof(SComponentModel));
         }
     }
 

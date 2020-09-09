@@ -31,7 +31,6 @@ jobs:
         shell: cmd
         run: |
           call ContinuousIntegrationBuild.cmd
-     
       - name: Upload Results
         uses: actions/upload-artifact@v2
         with:
@@ -42,9 +41,13 @@ jobs:
         with:
             name: BuildLogs
             path: ./XSharp/build*.Log
+      - name: RunTests
+        shell: cmd
+        run: |
+          call RunCompilertests.cmd 
       - name: Upload TestLogs
         uses: actions/upload-artifact@v2
         with:
             name: TestLogs
             path: ./XSharp/Binaries/Tests/*.Log
-                      
+

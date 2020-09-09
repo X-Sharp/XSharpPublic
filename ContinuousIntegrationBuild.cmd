@@ -11,9 +11,6 @@ rem msbuild "%~dp0\Roslyn\Compilers.sln" /v:m /m
 echo Start building XSharp Compilers (all 3 configurations)
 cd "%~dp0\XSharp"
 call Build.cmd All
-cd "%~dp0\Tests"
-echo Run compiler tests (using the release compiler)
-call runtests.cmd 
 Goto End
 :Error
 Echo Could not find the file %VsBatch%

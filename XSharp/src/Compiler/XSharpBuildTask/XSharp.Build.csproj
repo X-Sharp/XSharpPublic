@@ -132,7 +132,7 @@
   </Target>
   <!-- Zip the XSharp.Build output folder-->
 
-  <Target Name="ZipOutputPath" AfterTargets="DeleteMsFiles" Condition="'$(TargetFramework)' != '' ">
+  <Target Name="ZipOutputPath" AfterTargets="DeleteMsFiles" Condition="'$(TargetFramework)' != '' AND '$(CreateZips)' != '' ">
     <MakeDir Directories="$(ZipsDir)" />
     <ZipDirectory SourceDirectory="$(OutputPath)" DestinationFile="$(ZipsDir)\$(MSBuildProjectName).$(TargetFramework).$(Configuration).zip" Overwrite="true" />
     </Target>

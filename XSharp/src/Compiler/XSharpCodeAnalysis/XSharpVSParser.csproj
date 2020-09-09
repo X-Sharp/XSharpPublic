@@ -122,7 +122,7 @@
     </ItemGroup>
     <Delete Files="@(FilesToDelete)" />
   </Target>
-  <Target Name="ZipOutputPath" AfterTargets="DeleteMsFiles" Condition="'$(TargetFramework)' != '' ">
+  <Target Name="ZipOutputPath" AfterTargets="DeleteMsFiles" Condition="'$(TargetFramework)' != '' AND '$(CreateZips)' != '' ">
      <ZipDirectory SourceDirectory="$(OutputPath)" DestinationFile="$(ZipsDir)\$(MSBuildProjectName).$(TargetFramework).$(Configuration).zip" Overwrite="true" />
     </Target>
 </Project> 

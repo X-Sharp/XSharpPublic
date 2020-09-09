@@ -64,7 +64,7 @@
     <Copy SourceFiles="@(FilesToCopy)" DestinationFolder="$(OutputPath)" />
   </Target>
   <!-- Zip the XSI output folder -->
-  <Target Name="ZipOutputPath" AfterTargets="CopyCompilerFiles" Condition="'$(TargetFramework)' != '' ">
+  <Target Name="ZipOutputPath" AfterTargets="CopyCompilerFiles" Condition="'$(TargetFramework)' != '' AND '$(CreateZips)' != '' ">
     <MakeDir Directories="$(ZipsDir)" />
     <ZipDirectory SourceDirectory="$(OutputPath)" DestinationFile="$(ZipsDir)\Bin.$(TargetFramework).$(Configuration).zip" Overwrite="true" />
   </Target>

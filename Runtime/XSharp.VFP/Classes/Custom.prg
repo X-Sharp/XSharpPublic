@@ -46,7 +46,7 @@ BEGIN NAMESPACE XSharp.VFP
         VIRTUAL METHOD Destroy() AS USUAL
         RETURN TRUE
         
-        VIRTUAL METHOD Error(nErrpr, cMethod, nLine) AS USUAL
+        VIRTUAL METHOD Error(nErrpr, cMethod, nLine) AS USUAL CLIPPER
             RETURN TRUE
             
         #region Nested Items
@@ -57,17 +57,17 @@ BEGIN NAMESPACE XSharp.VFP
             RETURN TRUE
         
 
-        METHOD AddProperty(cPropertyName, uValue, nVisibility, cDescription) AS LOGIC
+        METHOD AddProperty(cPropertyName, uValue, nVisibility, cDescription) AS LOGIC CLIPPER
             RETURN SUPER:__AddProperty(cPropertyName, uValue, nVisibility, cDescription)
 
-        METHOD RemoveProperty(cPropertyName) AS LOGIC
+        METHOD RemoveProperty(cPropertyName) AS LOGIC CLIPPER
             RETURN SUPER:__RemoveProperty(cPropertyName)
 
 
-        METHOD NewObject(cObjectName, cClassName, cModule, cInApplication, aParams) AS OBJECT
+        METHOD NewObject(cObjectName, cClassName, cModule, cInApplication, aParams) AS OBJECT CLIPPER
             RETURN NULL_OBJECT
             
-        METHOD RemoveObject(cName) AS LOGIC
+        METHOD RemoveObject(cName) AS LOGIC CLIPPER
             RETURN FALSE
             #endregion
             
@@ -76,14 +76,14 @@ BEGIN NAMESPACE XSharp.VFP
         #region Designer Related and Other
         
         [Obsolete("This method is not supported in X#")];
-        METHOD ResetToDefault(cName) AS VOID
+        METHOD ResetToDefault(cName) AS VOID CLIPPER
             RETURN
        [Obsolete("This method is not supported in X#")];
-        VIRTUAL METHOD ReadExpression(cPropertyName) AS STRING
+        VIRTUAL METHOD ReadExpression(cPropertyName) AS STRING CLIPPER
             RETURN ""
         
         [Obsolete("This method is not supported in X#")];
-        VIRTUAL METHOD WriteExpression(cPropertyName, uValue ) AS LOGIC
+        VIRTUAL METHOD WriteExpression(cPropertyName, uValue ) AS LOGIC CLIPPER
             RETURN FALSE
         
         [Obsolete("This method is not supported in X#")];
@@ -91,11 +91,11 @@ BEGIN NAMESPACE XSharp.VFP
             RETURN ""
         
         [Obsolete("This method is not supported in X#")];
-        VIRTUAL METHOD SaveAsClass(cClassLib, cClass, cDescription) AS LOGIC
+        VIRTUAL METHOD SaveAsClass(cClassLib, cClass, cDescription) AS LOGIC CLIPPER
             RETURN FALSE
         
         [Obsolete("This method is not supported in X#")];
-        VIRTUAL METHOD WriteMethod(cMethodName, cMethodText, lCreateMethod, nVisibility, cDescription) AS STRING STRICT
+        VIRTUAL METHOD WriteMethod(cMethodName, cMethodText, lCreateMethod, nVisibility, cDescription) AS STRING  CLIPPER
             RETURN ""        
         
         [Obsolete("This method is not supported in X#")];

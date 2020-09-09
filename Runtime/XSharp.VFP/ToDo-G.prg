@@ -5,7 +5,7 @@
 //
 /// <summary>-- todo --</summary>
 /// <include file="VFPDocs.xml" path="Runtimefunctions/getautoincvalue/*" />
-
+#pragma options("vo15", on)
 FUNCTION GetAutoIncValue( nDataSessionNumber )
     THROW NotImplementedException{}
     // RETURN 0

@@ -133,7 +133,7 @@ INTERNAL FUNCTION __BuildFieldList(aFieldList AS ARRAY, cIncludedFields AS STRIN
     ENDIF 
 return selected
 
-FUNCTION __ScatterMemVar(aFieldList, cIncludedFields, cExcludedFields, lIncludeMemo, lBlank) AS LOGIC
+FUNCTION __ScatterMemVar(aFieldList, cIncludedFields, cExcludedFields, lIncludeMemo, lBlank) AS LOGIC CLIPPER
     VAR aFields := __GetFieldValues(aFieldList, cIncludedFields, cExcludedFields, lIncludeMemo, lBlank)
     FOREACH var oField in aFields
         __MemVarDecl(oField:Name, TRUE)
@@ -143,7 +143,7 @@ FUNCTION __ScatterMemVar(aFieldList, cIncludedFields, cExcludedFields, lIncludeM
     
     
     
-FUNCTION __GatherMemVar(aFieldList, cIncludedFields, cExcludedFields, lIncludeMemo) AS LOGIC
+FUNCTION __GatherMemVar(aFieldList, cIncludedFields, cExcludedFields, lIncludeMemo) AS LOGIC CLIPPER
     VAR aFields := __BuildFieldList(aFieldList, cIncludedFields, cExcludedFields, lIncludeMemo)
     FOREACH var cField in aFields
         __FieldSet(cField, MemVarGet(cField))
@@ -151,7 +151,7 @@ FUNCTION __GatherMemVar(aFieldList, cIncludedFields, cExcludedFields, lIncludeMe
     RETURN TRUE
     #pragma options ("az", on)
     
-FUNCTION __ScatterArray(aFieldList, cIncludedFields, cExcludedFields, lIncludeMemo, lBlank) AS ARRAY
+FUNCTION __ScatterArray(aFieldList, cIncludedFields, cExcludedFields, lIncludeMemo, lBlank) AS ARRAY CLIPPER
     VAR aFields := __GetFieldValues(aFieldList, cIncludedFields, cExcludedFields, lIncludeMemo, lBlank)
     VAR aResult := {}
     FOREACH var oField in aFields
@@ -160,7 +160,7 @@ FUNCTION __ScatterArray(aFieldList, cIncludedFields, cExcludedFields, lIncludeMe
     RETURN aResult
     
     
-FUNCTION __GatherArray(uSource, aFieldList, cIncludedFields, cExcludedFields, lIncludeMemo) AS LOGIC
+FUNCTION __GatherArray(uSource, aFieldList, cIncludedFields, cExcludedFields, lIncludeMemo) AS LOGIC CLIPPER
     VAR aFields := __BuildFieldList(aFieldList, cIncludedFields, cExcludedFields, lIncludeMemo)
     VAR current := 0    
     IF ! IsArray(uSource)
@@ -179,7 +179,7 @@ FUNCTION __GatherArray(uSource, aFieldList, cIncludedFields, cExcludedFields, lI
     
     #pragma options ("az", default)
     
-FUNCTION __ScatterObject(aFieldList, cIncludedFields, cExcludedFields, lIncludeMemo, lBlank, cObject, lAdditive) AS OBJECT
+FUNCTION __ScatterObject(aFieldList, cIncludedFields, cExcludedFields, lIncludeMemo, lBlank, cObject, lAdditive) AS OBJECT CLIPPER
     VAR aFields := __GetFieldValues(aFieldList, cIncludedFields, cExcludedFields, lIncludeMemo, lBlank)    
     LOCAL oResult := NULL_OBJECT as OBJECT
     IF !IsLogic(lAdditive)
@@ -187,7 +187,7 @@ FUNCTION __ScatterObject(aFieldList, cIncludedFields, cExcludedFields, lIncludeM
     ENDIF
     IF IsString(cObject) .and. lAdditive     
         TRY
-                LOCAL uObject := VarGet(cObject)
+                LOCAL uObject := VarGet(cObject) AS USUAL
                 IF IsObject(uObject)
                     oResult := uObject
             ENDIF
@@ -210,7 +210,7 @@ FUNCTION __ScatterObject(aFieldList, cIncludedFields, cExcludedFields, lIncludeM
     RETURN oResult
     
     
-FUNCTION __GatherObject(oObject, cFieldList, cIncludedFields, cExcludedFields, lIncludeMemo ) AS LOGIC
+FUNCTION __GatherObject(oObject, cFieldList, cIncludedFields, cExcludedFields, lIncludeMemo ) AS LOGIC CLIPPER
     VAR aFields := __BuildFieldList(cFieldList, cIncludedFields, cExcludedFields, lIncludeMemo)    
     LOCAL oLocal as OBJECT
     IF ! IsObject(oObject)

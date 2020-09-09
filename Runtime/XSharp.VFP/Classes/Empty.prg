@@ -38,7 +38,7 @@ CLASS XSharp.VFP.Empty IMPLEMENTS XSharp.IDynamicProperties
         
         
         #region Property related
-    INTERNAL METHOD __AddProperty(cPropertyName, uValue, nVisibility, cDescription) AS LOGIC
+    INTERNAL METHOD __AddProperty(cPropertyName, uValue, nVisibility, cDescription) AS LOGIC CLIPPER
         local cName as STRING
         // Note that we need to handle the syntax AddProperty("PropertyName(3)") which adds an array property with 3 elements
         EnforceType(cPropertyName, STRING)
@@ -80,7 +80,7 @@ CLASS XSharp.VFP.Empty IMPLEMENTS XSharp.IDynamicProperties
         ENDIF
         RETURN TRUE
 
-    INTERNAL METHOD __RemoveProperty(cPropertyName) AS LOGIC
+    INTERNAL METHOD __RemoveProperty(cPropertyName) AS LOGIC CLIPPER
         // FoxPro does not throw an error when non existing properties are removed
         // FoxPro does not require the dimensions when deleting an array property
         IF _Attributes:ContainsKey(cPropertyName)

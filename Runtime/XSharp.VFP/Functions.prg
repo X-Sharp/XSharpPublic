@@ -63,7 +63,7 @@ Function SetFoxCollation(cCollation as STRING) AS STRING
     
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/icase/*" />
 
-function ICase(lCondition, eResult, lCondition2, eResult2, eOtherwiseResult) as usual
+function ICase(lCondition, eResult, lCondition2, eResult2, eOtherwiseResult) as usual CLIPPER
     LOCAL nCount := PCount() AS LONG
     // loop through the actual parameters. The odd parameters should be logic
     // the even parameters are return values for their siblings.
@@ -186,7 +186,7 @@ FUNCTION DbCopyDelimFox (cTargetFile, cDelim, cChar, aFields, includedFields, ex
 
 
 
-FUNCTION DbCopyToArray(aFieldList, cIncludedFields, cExcludedFields, cbForCondition, cbWhileCondition, nNext,nRecord, lRest, lNoOptimize) AS ARRAY
+FUNCTION DbCopyToArray(aFieldList, cIncludedFields, cExcludedFields, cbForCondition, cbWhileCondition, nNext,nRecord, lRest, lNoOptimize) AS ARRAY CLIPPER
     VAR aFields := __BuildFieldList(aFieldList, cIncludedFields, cExcludedFields, FALSE)
     VAR aResult := {}
 
@@ -203,7 +203,7 @@ INTERNAL FUNCTION DbCopyToArraySingleRecord(aFields as IList<string> ) AS ARRAY
     RETURN result
 
 
-FUNCTION DbAppendFromArray(aValues, aFieldList, cIncludedFields, cExcludedFields, cbForCondition) AS LOGIC
+FUNCTION DbAppendFromArray(aValues, aFieldList, cIncludedFields, cExcludedFields, cbForCondition) AS LOGIC CLIPPER
     IF ! IsArray(aValues)
         THROW Error.ArgumentError(__FUNCTION__ , nameof(aValues),"Argument should be a multidimensional array" , 1, {aValues})
     ENDIF
@@ -240,7 +240,7 @@ FUNCTION DbAppendFromArray(aValues, aFieldList, cIncludedFields, cExcludedFields
 
 
 
-FUNCTION DbAppFox(cSourceFile, cType, aFields, cbForCondition, cbWhileCondition, nNext,nRecord, lRest, cSheet, nCodePage, lNoOptimize)
+FUNCTION DbAppFox(cSourceFile, cType, aFields, cbForCondition, cbWhileCondition, nNext,nRecord, lRest, cSheet, nCodePage, lNoOptimize) AS USUAL CLIPPER
     local cOutPutType as STRING
     LOCAL result as LOGIC
     cOutPutType := cType       

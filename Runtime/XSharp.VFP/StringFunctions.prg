@@ -155,7 +155,7 @@ FUNCTION LenC( cExpression AS STRING ) AS DWORD
     RETURN SLen(cExpression)
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/likec/*" />
-FUNCTION LikeC( cExpression1, cExpression2) AS LOGIC
+FUNCTION LikeC( cExpression1, cExpression2) AS LOGIC CLIPPER
     RETURN Like(cExpression1, cExpression2)
 
 
@@ -164,11 +164,11 @@ FUNCTION RightC( cExpression AS STRING, nCharacters AS DWORD) AS STRING
     RETURN Right(cExpression, nCharacters)
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/stuffc/*" />
-FUNCTION StuffC( cExpression, nStartReplacement, nCharactersReplaced, cReplacement) AS STRING
+FUNCTION StuffC( cExpression, nStartReplacement, nCharactersReplaced, cReplacement) AS STRING CLIPPER
     RETURN Stuff(cExpression, nStartReplacement, nCharactersReplaced, cReplacement)
     
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/substrc/*" />
-FUNCTION SubStrC(cExpression, nStartPosition , nCharactersReturned ) AS STRING
+FUNCTION SubStrC(cExpression, nStartPosition , nCharactersReturned ) AS STRING CLIPPER
     RETURN SubStr(cExpression, nStartPosition, nCharactersReturned)
 
 

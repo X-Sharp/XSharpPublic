@@ -85,7 +85,7 @@ METHOD CreateNew(xColor, kHatchStyle)
 	ENDIF
 	RETURN SELF
 
-METHOD Destroy() 
+METHOD Destroy()  AS USUAL CLIPPER
 	
 
 	IF (hBrush != NULL_PTR)

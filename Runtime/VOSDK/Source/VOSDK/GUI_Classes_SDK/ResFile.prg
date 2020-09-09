@@ -1,7 +1,7 @@
 CLASS ResourceFile INHERIT VObject
 	PROTECT hLib AS PTR
 
-METHOD Destroy() 
+METHOD Destroy()  AS USUAL CLIPPER
 	
 
 	IF (DWORD(_CAST, hLib) >= 32)

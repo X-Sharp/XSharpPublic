@@ -263,7 +263,7 @@ ASSIGN CurrentText(cNewText)
 
 	RETURN 
 
-METHOD Destroy() 
+METHOD Destroy()  AS USUAL CLIPPER
 	// save the current text for TextValue Accesses afte enddialog/endwindow (for 1.0 compatibility)
 	IF IsWindow(hwnd)
 		cSavedText := SELF:__GetText()

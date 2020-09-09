@@ -2044,7 +2044,7 @@ METHOD __AutoResize() AS VOID STRICT
 
       RETURN SELF
 
-   METHOD Destroy() 
+   METHOD Destroy()  AS USUAL CLIPPER
       LOCAL i AS DWORD
       LOCAL oCol  AS DataColumn
 
@@ -3772,7 +3772,7 @@ CLASS DataColumn INHERIT VObject
 	// DHer: 18/12/2008
       RETURN SELF:symDataField
 
-   METHOD Destroy() 
+   METHOD Destroy()  AS USUAL CLIPPER
       
       __WcSelfPtrFree(strucSelf)
       IF !InCollect()

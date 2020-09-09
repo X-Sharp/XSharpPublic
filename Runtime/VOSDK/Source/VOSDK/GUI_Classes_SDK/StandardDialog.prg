@@ -97,7 +97,7 @@ METHOD Color()
 	//PP-040425 Changed to use new capability of the Color class
 	RETURN Color{dwDefColor, -1}
 
-METHOD Destroy() 
+METHOD Destroy()  AS USUAL CLIPPER
 	
 
 	IF (pCustClr != NULL_PTR)
@@ -272,7 +272,7 @@ ASSIGN DefExt( cNew )
 	//PP-040101
 	RETURN ( SELF:cDefExt := cNew )
 
-METHOD Destroy() 
+METHOD Destroy()  AS USUAL CLIPPER
 	
 
 	IF (pOpenFileName != NULL_PTR)

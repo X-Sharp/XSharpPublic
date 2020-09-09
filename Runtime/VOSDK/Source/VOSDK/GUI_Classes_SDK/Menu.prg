@@ -101,7 +101,7 @@ METHOD DeleteItem(xItemIdOrMenu)
 	ENDIF
 
 	RETURN retVal
-METHOD Destroy() 
+METHOD Destroy()  AS USUAL CLIPPER
 	LOCAL wIndex AS DWORD
 	LOCAL wLen AS DWORD
 	LOCAL oSubMenu AS Menu
@@ -508,7 +508,7 @@ END CLASS
 
 CLASS SystemMenu INHERIT Menu
 
-METHOD Destroy() 
+METHOD Destroy()  AS USUAL CLIPPER
 	
 
 	IF !InCollect()

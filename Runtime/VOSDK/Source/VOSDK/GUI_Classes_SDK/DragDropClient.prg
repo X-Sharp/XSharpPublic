@@ -5,7 +5,7 @@ CLASS DragDropClient INHERIT VObject
 	//PROTECT ptrOldWinProc AS PTR
 	//PROTECT __ptrOldSelf AS PTR //Riz compiler bug. protect creates and error when using @ (address of)
 
-METHOD Destroy() 
+METHOD Destroy()  AS USUAL CLIPPER
 	
 
 	IF (hOwner != NULL_PTR)

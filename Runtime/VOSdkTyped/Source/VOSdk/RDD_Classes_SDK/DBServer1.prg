@@ -47,7 +47,7 @@ METHOD Append( lReleaseLocks AS LOGIC) AS LOGIC
 
 	RETURN lRetCode
 
-METHOD AppendDB( oFSSource, aFieldList, cbForBlock, cbWhileBlock, uScope, cDriver, aRdd )  AS LOGIC
+METHOD AppendDB( oFSSource, aFieldList, cbForBlock, cbWhileBlock, uScope, cDriver, aRdd )  AS LOGIC CLIPPER
 	LOCAL lRetCode 		AS LOGIC
 	LOCAL nNextCount 		AS LONGINT
 	LOCAL lRestOfFile 	AS LOGIC
@@ -155,7 +155,7 @@ METHOD AppendDB( oFSSource, aFieldList, cbForBlock, cbWhileBlock, uScope, cDrive
 	
 	RETURN lRetCode
 
-METHOD AppendDelimited( oFSSource, cDelimiter, aFieldList, cbForBlock, cbWhileBlock, uScope )  AS LOGIC
+METHOD AppendDelimited( oFSSource, cDelimiter, aFieldList, cbForBlock, cbWhileBlock, uScope )  AS LOGIC CLIPPER
 	LOCAL lRetCode AS LOGIC
 	LOCAL nNextCount AS LONGINT
 	LOCAL lRestOfFile AS LOGIC
@@ -255,7 +255,7 @@ METHOD AppendDelimited( oFSSource, cDelimiter, aFieldList, cbForBlock, cbWhileBl
 	
 	RETURN lRetCode
 
-METHOD AppendSDF(oFSSource,aFieldList,cbForBlock,cbWhileBlock,uScope) AS LOGIC
+METHOD AppendSDF(oFSSource,aFieldList,cbForBlock,cbWhileBlock,uScope) AS LOGIC CLIPPER
 	LOCAL lRetCode AS LOGIC
 	LOCAL nNextCount AS LONGINT
 	LOCAL lRestOfFile AS LOGIC
@@ -705,7 +705,7 @@ METHOD BLOBGet( uField AS USUAL, nStart AS LONG, nCount AS LONG) AS USUAL
 	
 	RETURN uRetVal
 
-METHOD BLOBImport( uField, oFSSource ) AS LOGIC
+METHOD BLOBImport( uField, oFSSource ) AS LOGIC CLIPPER
 	
 	LOCAL lRetCode AS LOGIC
 	LOCAL oError AS USUAL

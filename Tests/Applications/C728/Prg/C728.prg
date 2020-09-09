@@ -15,8 +15,8 @@ cSubstitute = "substitute here"
 TEXT TO cText TEXTMERGE NOSHOW
 <<cSubstitute>>
 '<<cSubstitute>>'
-"<<cSubstitute>>" 
-ENDTEXT
+"<<cSubstitute>>"
+ENDTEXT                                                                                       
 xAssert(cText == e"substitute here\r\n'substitute here'\r\n\"substitute here\"\r\n")
 
 

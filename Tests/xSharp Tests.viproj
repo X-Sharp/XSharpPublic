@@ -42502,9 +42502,10 @@ FileType = Code
 CopyToBin = 0
 [C386 - Probem embedding native resource files References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
-ReferenceGAC = VulcanRT,1,0,1.1.401.0
-ReferenceGAC = VulcanRTFuncs,1,0,1.1.401.0
-ReferenceGAC = VulcanVOGUIClasses,1,0,1.1.401.0
+ReferenceGAC = CLR4,VulcanRTFuncs,1,0,4.0.401.0
+ReferenceGAC = CLR4,VulcanRT,1,0,4.0.401.0
+ReferenceGAC = CLR4,VulcanVOGUIClasses,1,0,4.0.401.0
+ReferenceGAC = CLR4,VulcanVOSystemClasses,1,0,4.0.401.0
 [C386 - Probem embedding native resource files Resources]
 [C386 - Probem embedding native resource files Native Resources]
 NativeResourceFile = External , %AppPath%\Prg\C386.rc
@@ -84347,7 +84348,7 @@ PrgSubFolder = \Prg
 ResourcesSubFolder = \Resources
 Description = Just a simple x# application
 NameSpace = 
-Assembly = R735 - Binary values in Core
+Assembly = R735
 Extension = 
 ApplicationIcon = 
 OutputFolder = 

@@ -19,6 +19,7 @@
     <VO14>false</VO14>
     <VO7>false</VO7>
     <FOX1>false</FOX1>
+    <VO15>true</VO15>
     <RootNamespace>XSharp.VO.SDK</RootNamespace>
     <NoWin32Manifest>False</NoWin32Manifest>
     <DisabledWarnings>165</DisabledWarnings>

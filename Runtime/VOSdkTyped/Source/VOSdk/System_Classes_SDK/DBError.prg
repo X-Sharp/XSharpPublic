@@ -1,6 +1,6 @@
 PARTIAL CLASS DbError   INHERIT Error
 
-CONSTRUCTOR( oOriginator, symMethod, wErrorType, oHLErrorMessage, uMisc1, uMisc2 )  
+CONSTRUCTOR( oOriginator, symMethod, wErrorType, oHLErrorMessage, uMisc1, uMisc2 )  CLIPPER
     SUPER()
 	SubSystem := "Database"
 	IF oOriginator# NIL

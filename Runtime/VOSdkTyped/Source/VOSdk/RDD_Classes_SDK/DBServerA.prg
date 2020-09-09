@@ -26,7 +26,7 @@ PARTIAL CLASS DbServer
         RETURN SELF:nCCMode
         
     ASSIGN ConcurrencyControl( nMode AS USUAL) 
-        LOCAL newMode := nMode
+        LOCAL newMode := nMode AS USUAL
         LOCAL dwCurrentWorkArea  := 0 AS DWORD
         LOCAL oError            AS USUAL
         IF IsString(newMode)

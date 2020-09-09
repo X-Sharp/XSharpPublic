@@ -364,7 +364,7 @@ METHOD Relation( nRelation := 0 AS LONG) AS STRING
 	
 	RETURN cRelation
 
-METHOD Replace( acbExpression, aFieldList, cbForBlock, cbWhileBlock, uScope ) AS LOGIC
+METHOD Replace( acbExpression, aFieldList, cbForBlock, cbWhileBlock, uScope ) AS LOGIC CLIPPER
 	LOCAL nNextCount AS LONGINT
 	LOCAL lRestOfFile AS LOGIC
 	LOCAL lRetCode AS LOGIC
@@ -676,7 +676,7 @@ METHOD SetDataField( nFieldPosition AS LONG, oDataField AS DataField) AS LOGIC
 
 
 
-METHOD SetFilter( cbFilterBlock , cFilterText ) AS LOGIC
+METHOD SetFilter( cbFilterBlock , cFilterText ) AS LOGIC CLIPPER
 	
    LOCAL dwCurrentWorkArea := 0 AS DWORD
 	LOCAL lRetCode 			AS LOGIC
@@ -844,7 +844,7 @@ METHOD SetOrderCondition(   cFor,           ;
 	lAdditive,      ;
 	lCurrent,       ;
 	lCustom,        ;
-	lNoOptimize) AS LOGIC
+	lNoOptimize) AS LOGIC CLIPPER
 
    
    LOCAL dwCurrentWorkArea := 0 AS DWORD
@@ -1348,7 +1348,7 @@ METHOD SuspendNotification() AS LONG
 	siSuspendNotification += 1
 	RETURN siSuspendNotification
 
-METHOD Total(oFSTarget,cbKeyField,aFieldList,cbForBlock,cbWhileBlock,uScope) AS LOGIC
+METHOD Total(oFSTarget,cbKeyField,aFieldList,cbForBlock,cbWhileBlock,uScope) AS LOGIC CLIPPER
 	// Like DBTotal
 	// Parameter differences:
 	//      oFSTarget the target file may be specified as a FileSpec object, or as a string

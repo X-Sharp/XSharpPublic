@@ -7,62 +7,62 @@
 /// <include file="VFPDocs.xml" path="Runtimefunctions/bitand/*" />
 
 
-FUNCTION BitAnd (BinaryExpression1, BinaryExpression2 )
+FUNCTION BitAnd (BinaryExpression1, BinaryExpression2 ) AS USUAL CLIPPER
     THROW NotImplementedException{}
     //RETURN 0
 
 /// <summary>-- todo --</summary>
 /// <include file="VFPDocs.xml" path="Runtimefunctions/bitclear/*" />
 
-FUNCTION BitClear (nNumericExpression1, nNumericExpression2, BinaryExpression , nStartBit , nBitCount )
+FUNCTION BitClear (nNumericExpression1, nNumericExpression2, BinaryExpression , nStartBit , nBitCount ) AS USUAL CLIPPER
     THROW NotImplementedException{}
     //RETURN 0
 
 /// <summary>-- todo --</summary>
 /// <include file="VFPDocs.xml" path="Runtimefunctions/bitlshift/*" />
 
-FUNCTION BitLShift (nExpression1, nExpression2 )
+FUNCTION BitLShift (nExpression1, nExpression2 ) AS USUAL CLIPPER
     THROW NotImplementedException{}
     //RETURN 0
 
 /// <summary>-- todo --</summary>
 /// <include file="VFPDocs.xml" path="Runtimefunctions/bitnot/*" />
 
-FUNCTION BitNot (nNumericExpression, BinaryExpression , nStartBit , nBitCount )
+FUNCTION BitNot (nNumericExpression, BinaryExpression , nStartBit , nBitCount ) AS USUAL CLIPPER
     THROW NotImplementedException{}
     //RETURN 0
 
 /// <summary>-- todo --</summary>
 /// <include file="VFPDocs.xml" path="Runtimefunctions/bitor/*" />
 
-FUNCTION BitOr (BinaryExpression1, BinaryExpression2 )
+FUNCTION BitOr (BinaryExpression1, BinaryExpression2 ) AS USUAL CLIPPER
     THROW NotImplementedException{}
     //RETURN 0
 
 /// <summary>-- todo --</summary>
 /// <include file="VFPDocs.xml" path="Runtimefunctions/bitrshift/*" />
 
-FUNCTION BitRShift (nExpression1, nExpression2 )
+FUNCTION BitRShift (nExpression1, nExpression2 ) AS USUAL CLIPPER
     THROW NotImplementedException{}
     //RETURN 0
 
 /// <summary>-- todo --</summary>
 /// <include file="VFPDocs.xml" path="Runtimefunctions/bitset/*" />
 
-FUNCTION BitSet (nNumericExpression1, nNumericExpression2, BinaryExpression , nStartBit , nBitCount )
+FUNCTION BitSet (nNumericExpression1, nNumericExpression2, BinaryExpression , nStartBit , nBitCount ) AS USUAL CLIPPER
     THROW NotImplementedException{}
     //RETURN 0
 
 /// <summary>-- todo --</summary>
 /// <include file="VFPDocs.xml" path="Runtimefunctions/bittest/*" />
 
-FUNCTION BitTest (nNumericExpression1, nNumericExpression2, BinaryExpression, nBitNumber)
+FUNCTION BitTest (nNumericExpression1, nNumericExpression2, BinaryExpression, nBitNumber) AS USUAL CLIPPER
     THROW NotImplementedException{}
     //RETURN FALSE
 
 /// <summary>-- todo --</summary>
 /// <include file="VFPDocs.xml" path="Runtimefunctions/bitxor/*" />
 
-FUNCTION BitXOR (BinaryExpression1, BinaryExpression2)
+FUNCTION BitXOR (BinaryExpression1, BinaryExpression2)  AS USUAL CLIPPER
     THROW NotImplementedException{}
     //RETURN 0

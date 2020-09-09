@@ -6,7 +6,7 @@
 
 /// <summary>-- todo --</summary>
 /// <include file="VFPDocs.xml" path="Runtimefunctions/bintoc/*" />
-
+#pragma options("vo15", on)
 FUNCTION BinToc (nExpression , eFlags )
     THROW NotImplementedException{}
     //RETURN ""

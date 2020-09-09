@@ -12,7 +12,7 @@ USING System.Reflection
 /// <returns>The numeric identifier of the active collation table </returns>
 /// <seealso cref='T:XSharp.XPP.XppCollations' />
 /// <seealso cref='O:XSharp.XPP.Functions.SetCollationTable' />
-FUNCTION SetCollation(nCollation) AS LONG
+FUNCTION SetCollation(nCollation) AS LONG CLIPPER
     LOCAL nOld := @@Set(Set.Collation) AS LONG
     IF PCount() > 0 .AND. IsNumeric(nCollation)
         SetCollationTable(nCollation)
@@ -27,7 +27,7 @@ FUNCTION SetCollation(nCollation) AS LONG
 /// <returns>a one dimensional array holding the weighing factors of characters for the active collation. </returns>
 /// <seealso cref='T:XSharp.XPP.XppCollations' />
 /// <seealso cref='O:XSharp.XPP.Functions.SetCollation' />
-FUNCTION SetCollationTable(nCollation, aTable) AS ARRAY
+FUNCTION SetCollationTable(nCollation, aTable) AS ARRAY CLIPPER
     LOCAL liEnum AS LONG
     LOCAL aCollation AS ARRAY
     IF PCount() >= 1

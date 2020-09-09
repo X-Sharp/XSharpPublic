@@ -7,7 +7,7 @@
 
 /// <summary>-- todo --</summary>
 /// <include file="VFPDocs.xml" path="Runtimefunctions/candidate/*" />
-
+#pragma options("vo15", on)
 FUNCTION Candidate (nIndexNumber , uArea)
     THROW NotImplementedException{}
     // RETURN FALSE

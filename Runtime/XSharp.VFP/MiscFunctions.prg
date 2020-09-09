@@ -14,7 +14,7 @@ FUNCTION IsMouse( ) AS LOGIC
     RETURN TRUE
 
 /// <include file="VFPDocs.xml" path="Runtimefunctions/nvl/*" />
-FUNCTION NVL( eExpression1, eExpression2) AS USUAL
+FUNCTION NVL( eExpression1, eExpression2) AS USUAL CLIPPER
     IF IsNil(eExpression1)
         RETURN eExpression2
     ENDIF

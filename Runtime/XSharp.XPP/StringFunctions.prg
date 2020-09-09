@@ -20,7 +20,7 @@ USING System.Text
 /// <seealso cref="M:XSharp.XPP.Functions.PosLower(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)"/>
 /// <seealso cref="M:XSharp.XPP.Functions.PosAlpha(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)"/>
 
-FUNCTION PosUpper(cString, lNoLetter, nIgnoreCharsFromLeft) AS LONG
+FUNCTION PosUpper(cString, lNoLetter, nIgnoreCharsFromLeft) AS LONG CLIPPER
     EnforceType(cString, STRING)  
     @@Default( REF lNoLetter, FALSE)
     @@Default( REF nIgnoreCharsFromLeft, 0)
@@ -50,7 +50,7 @@ FUNCTION PosUpper(cString, lNoLetter, nIgnoreCharsFromLeft) AS LONG
 /// <seealso cref="M:XSharp.XPP.Functions.PosAlpha(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)"/>
 
 
-FUNCTION PosLower(cString, lNoLetter, nIgnoreCharsFromLeft) AS LONG
+FUNCTION PosLower(cString, lNoLetter, nIgnoreCharsFromLeft) AS LONG CLIPPER
     EnforceType(cString, STRING)  
     @@Default( REF lNoLetter, FALSE)
     @@Default( REF nIgnoreCharsFromLeft, 0)
@@ -83,7 +83,7 @@ FUNCTION PosLower(cString, lNoLetter, nIgnoreCharsFromLeft) AS LONG
 /// <seealso cref="M:XSharp.XPP.Functions.PosLower(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)"/>
 
 
-FUNCTION PosAlpha(cString, lNoLetter, nIgnoreCharsFromLeft) AS LONG
+FUNCTION PosAlpha(cString, lNoLetter, nIgnoreCharsFromLeft) AS LONG CLIPPER
     EnforceType(cString, STRING)  
     @@Default( REF lNoLetter, FALSE)
     @@Default( REF nIgnoreCharsFromLeft, 0)
@@ -120,7 +120,7 @@ INTERNAL DELEGATE PosDelegate( cChar AS CHAR) AS LOGIC
 /// <seealso cref="M:XSharp.XPP.Functions.PosIns(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)"/>
 /// <seealso cref="M:XSharp.XPP.Functions.PosRepl(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)"/>
     
-FUNCTION PosChar(cString, uChar, nPosition ) AS STRING
+FUNCTION PosChar(cString, uChar, nPosition ) AS STRING CLIPPER
     EnforceType(cString, STRING)
     LOCAL sReplace AS STRING
     LOCAL sSource  AS STRING
@@ -154,7 +154,7 @@ FUNCTION PosChar(cString, uChar, nPosition ) AS STRING
 /// <seealso cref="M:XSharp.XPP.Functions.PosRepl(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)"/>
 
 
-FUNCTION PosDel(cString, nStartPos, nDeleteLen ) AS STRING
+FUNCTION PosDel(cString, nStartPos, nDeleteLen ) AS STRING CLIPPER
     EnforceType(cString, STRING)
     EnforceType(nDeleteLen,LONG)
     LOCAL sSource  AS STRING
@@ -178,7 +178,7 @@ FUNCTION PosDel(cString, nStartPos, nDeleteLen ) AS STRING
 /// <seealso cref="M:XSharp.XPP.Functions.PosDel(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)"/>
 /// <seealso cref="M:XSharp.XPP.Functions.PosRepl(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)"/>
 
-FUNCTION PosIns(cString, cInsertString, nPosition ) AS STRING
+FUNCTION PosIns(cString, cInsertString, nPosition ) AS STRING CLIPPER
     EnforceType(cString, STRING)
     EnforceType(cInsertString,STRING)
     LOCAL sSource  AS STRING
@@ -202,7 +202,7 @@ FUNCTION PosIns(cString, cInsertString, nPosition ) AS STRING
 /// <seealso cref="M:XSharp.XPP.Functions.PosChar(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)"/>
 /// <seealso cref="M:XSharp.XPP.Functions.PosDel(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)"/>
 /// <seealso cref="M:XSharp.XPP.Functions.PosIns(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)"/>
-FUNCTION PosRepl(cString, cReplace, nStartPos ) AS STRING
+FUNCTION PosRepl(cString, cReplace, nStartPos ) AS STRING CLIPPER
     EnforceType(cString, STRING)
     EnforceType(cReplace,STRING)
     LOCAL sSource  AS STRING

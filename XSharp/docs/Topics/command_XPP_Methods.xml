@@ -10,8 +10,8 @@
     <para styleclass="Normal">Provide the implementation for methods that are forward defined between CLASS .. ENDCLASS</para>
     <para styleclass="Heading1">Syntax</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"><tab />[Attributes] <text styleclass="Body Text"> [ACCESS|ASSIGN] [CLASS] METHOD [&lt;ClassName&gt;:] &lt;MethodName&gt;[ </text>[([&lt;<text styleclass="Italic">idParam</text>&gt; [AS|REF|OUT &lt;<text styleclass="Italic">idType</text>&gt;] [, ...])] <text styleclass="Body Text">) </text>[AS &lt;<text styleclass="Italic">idType</text>&gt;]<br/><tab />[&lt;<text styleclass="Italic">Body</text>&gt;]<br/><tab />[END METHOD]?</para>
-        <para styleclass="Heading1"><text>Arguments</text></para>
+    <para styleclass="Normal"><tab />[Attributes] <text styleclass="Body Text"> [ACCESS|ASSIGN] [CLASS] METHOD [&lt;ClassName&gt;:] &lt;MethodName&gt;[ </text>[([&lt;<text styleclass="Italic">idParam</text>&gt; [AS|REF|OUT|IN &lt;<text styleclass="Italic">idType</text>&gt;] [, ...])] <text styleclass="Body Text">) </text>[AS &lt;<text styleclass="Italic">idType</text>&gt;]<br/><tab />[&lt;<text styleclass="Italic">Body</text>&gt;]<br/><tab />[END METHOD]?</para>
+    <para styleclass="Heading1">Arguments</para>
     <para styleclass="Normal"><snippet src="__IncludeAttributes" inline="false"/></para>
     <para styleclass="List">ACCESS | ASSIGN<tab />Declares that this method implements a Getter or Setter for a property. This must also be defined as ACCESS or ASSIGN in the class declaration.</para>
     <para styleclass="List"></para>

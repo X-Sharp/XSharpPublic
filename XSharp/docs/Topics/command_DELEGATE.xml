@@ -15,7 +15,7 @@
     <para styleclass="Heading1">Syntax</para>
     <para styleclass="Normal"><tab />[Attributes] [Modifiers] <text style="font-weight:bold;">DELEGATE</text> &lt;<text styleclass="Italic">idDelegate</text>&gt; </para>
     <para styleclass="Normal"><tab />[Typeparameters]</para>
-    <para styleclass="Normal"><tab />[([&lt;<text styleclass="Italic">idParam</text>&gt; [AS | REF &lt;<text styleclass="Italic">idType</text>&gt;] [, ...])] </para>
+    <para styleclass="Normal"><tab />[([&lt;<text styleclass="Italic">idParam</text>&gt; [AS | REF|OUT|IN &lt;<text styleclass="Italic">idType</text>&gt;] [, ...])] </para>
     <para styleclass="Normal"><tab />[AS &lt;<text styleclass="Italic">idType</text>&gt;]</para>
     <para styleclass="Normal"><tab />[TypeparameterConstraints]</para>
     <para styleclass="Heading1">Arguments</para>

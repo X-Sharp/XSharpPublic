@@ -226,7 +226,9 @@ PROCEDURE DoTests(oXide AS XideHelper, aGroupsToBuild AS List<STRING>, cConfigNa
 	Message("End of compiling tests, now performing runtime tests")
 	Message("")
 	LOCAL nRuntimeFail AS INT
-	nRuntimeFail := DoRuntimeTests(oXide, cConfigName)
+	IF lTestTheFixedOnes
+	    nRuntimeFail := DoRuntimeTests(oXide, cConfigName)
+	ENDIF
 	Message("")
 	Message("End of runtime tests")
 	Message("")
@@ -236,8 +238,10 @@ PROCEDURE DoTests(oXide AS XideHelper, aGroupsToBuild AS List<STRING>, cConfigNa
 	Message( "Success: " + nSuccess:ToString() )
 	Message( "Fail: " + nFail:ToString() )
 	Message( "Compiler Problem: " + nCrash:ToString() )
-	Message( "===============================" )
-	Message( "Runtime tests failed: " + nRuntimeFail:ToString() )
+	IF lTestTheFixedOnes
+		Message( "===============================" )
+		Message( "Runtime tests failed: " + nRuntimeFail:ToString() )
+	ENDIF
 	Message( "===============================" )
 	Message( "Result: " + iif(aFailed:Count + nRuntimeFail == 0 , "SUCESS!" , "Fail :(") )
 	Message( "===============================" )
@@ -282,9 +286,6 @@ PROCEDURE CompilerMessageReceived(o AS OBJECT, e AS DataReceivedEventArgs) AS VO
 		gaCompilerMessages:Add(e:Data)
 	END LOCK
 RETURN
-
-
-
 
 
 

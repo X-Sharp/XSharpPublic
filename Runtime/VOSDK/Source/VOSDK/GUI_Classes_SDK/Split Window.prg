@@ -129,7 +129,7 @@ ACCESS deferPaintCount
 	// DHer: 18/12/2008
 RETURN SELF:dwDeferPaintCount
 
-METHOD Destroy() 
+METHOD Destroy()  AS USUAL CLIPPER
 	//SE-060519
 	LOCAL liPane  AS LONGINT
    LOCAL liCount AS LONGINT
@@ -577,7 +577,7 @@ METHOD ChangeBackground(oBrush, kWhere)
 	
 	RETURN oSplitView:ChangeBackground(oBrush, kWhere)
 
-METHOD Destroy() 
+METHOD Destroy()  AS USUAL CLIPPER
 	
 
 	// if not in garbage collection, destroy the split view control

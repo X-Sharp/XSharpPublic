@@ -1832,7 +1832,7 @@ METHOD DeleteTrayIcon(dwID)
     RETURN Shell_NotifyIcon( NIM_DELETE, @NID)
     
     
-METHOD Destroy() 
+METHOD Destroy()  AS USUAL CLIPPER
 
     IF lAutomated
         SELF:Automated := FALSE

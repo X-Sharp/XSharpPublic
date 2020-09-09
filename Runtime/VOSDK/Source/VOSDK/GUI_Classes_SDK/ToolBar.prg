@@ -1060,7 +1060,7 @@ METHOD DeleteItem(nMenuItemID, symTB)
 
 	RETURN NIL
 
-METHOD Destroy() 
+METHOD Destroy()  AS USUAL CLIPPER
 	//PP-040417 from S Ebert
 	//SE-050729
 	//RvdH 0702056 Changed to use __VOToolBarChild

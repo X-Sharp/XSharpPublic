@@ -516,7 +516,7 @@ METHOD Default(oEvent)
 	RETURN 1l
 	
 
-METHOD Destroy() 
+METHOD Destroy()  AS USUAL CLIPPER
     
     
 	//SE-070501

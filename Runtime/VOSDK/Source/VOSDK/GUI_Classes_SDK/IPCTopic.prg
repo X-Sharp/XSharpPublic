@@ -39,7 +39,7 @@ METHOD DeleteItem(cItemString)
 
 	RETURN SELF
 
-METHOD Destroy() 
+METHOD Destroy()  AS USUAL CLIPPER
 	
 
 	IF ! InCollect()
@@ -79,7 +79,7 @@ ACCESS Data
 
 	RETURN ptrData
 
-METHOD Destroy() 
+METHOD Destroy()  AS USUAL CLIPPER
 	
 
 	IF ptrData!= NULL_PTR .and. lWasAlloc

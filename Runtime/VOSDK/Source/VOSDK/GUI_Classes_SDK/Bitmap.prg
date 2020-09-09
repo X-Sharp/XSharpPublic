@@ -13,7 +13,7 @@ CLASS Bitmap INHERIT VObject
 	RETURN hBitmap := hHandle
 	
 
-METHOD Destroy() 
+METHOD Destroy()   AS USUAL CLIPPER
 	
 	IF (hBitmap != NULL_PTR)
 		DeleteObject(hBitmap)

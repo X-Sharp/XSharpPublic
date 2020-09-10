@@ -313,29 +313,35 @@ namespace XSharp.Project
             }
             // Now remove all nodes
             // for all files
+
+            XSharpModuleId[] keys;
             lock (files)
             {
-                XSharpModuleId[] keys = new XSharpModuleId[files.Keys.Count];
+                keys = new XSharpModuleId[files.Keys.Count];
                 // Get all Keys (ModuleId)
                 files.Keys.CopyTo(keys, 0);
-                foreach (XSharpModuleId id in keys)
+            }
+
+            foreach (XSharpModuleId id in keys)
+            {
+                // The file is owned by the Hierarchy ?
+                if (hierarchy.Equals(id.Hierarchy))
                 {
-                    // The file is owned by the Hierarchy ?
-                    if (hierarchy.Equals(id.Hierarchy))
+                    HashSet<XSharpLibraryNode> values = null;
+                    // Ok, now remove ALL nodes for that key
+                    if (files.TryGetValue(id, out values))
                     {
-                        HashSet<XSharpLibraryNode> values = null;
-                        // Ok, now remove ALL nodes for that key
-                        if (files.TryGetValue(id, out values))
+                        foreach (XSharpLibraryNode node in values)
                         {
-                            foreach (XSharpLibraryNode node in values)
+                            if (node.parent != null)
                             {
-                                if (node.parent != null)
-                                {
-                                    node.parent.RemoveNode(node);
-                                }
+                                node.parent.RemoveNode(node);
                             }
                         }
-                        // and then remove the key
+                    }
+                    // and then remove the key
+                    lock (files)
+                    {
                         files.Remove(id);
                     }
                 }
@@ -404,6 +410,10 @@ namespace XSharp.Project
                 {
                     continue;
                 }
+                if (! XSharpModel.XSolution.IsOpen)
+                {
+                    break;
+                }
                 //
                 LibraryTask task = null;
                 bool forceRefresh = false;
@@ -433,48 +443,52 @@ namespace XSharp.Project
                         continue;
                 }
                 // If the file already exist
+                XSharpModuleId[] aTmp;
                 lock (files)
                 {
                     // These are the existing Modules
-                    XSharpModuleId[] aTmp = new XSharpModuleId[files.Keys.Count];
+                    aTmp = new XSharpModuleId[files.Keys.Count];
                     files.Keys.CopyTo(aTmp, 0);
-                    // Does this module already exist ?
-                    XSharpModuleId found = Array.Find<XSharpModuleId>(aTmp, (x => x.Equals(task.ModuleID)));
-                    if (found != null)
+                }
+                // Does this module already exist ?
+                XSharpModuleId found = Array.Find<XSharpModuleId>(aTmp, (x => x.Equals(task.ModuleID)));
+                if (found != null)
+                {
+                    // Doesn't it have the same members?
+                    if (found.ContentHashCode == task.ModuleID.ContentHashCode)
+                        continue;
+                    //
+                    HashSet<XSharpLibraryNode> values = null;
+                    // Ok, now remove ALL nodes for that key
+                    if (files.TryGetValue(task.ModuleID, out values))
                     {
-                        // Doesn't it have the same members?
-                        if (found.ContentHashCode == task.ModuleID.ContentHashCode)
-                            continue;
-                        //
-                        HashSet<XSharpLibraryNode> values = null;
-                        // Ok, now remove ALL nodes for that key
-                        if (files.TryGetValue(task.ModuleID, out values))
+                        foreach (XSharpLibraryNode node in values)
                         {
-                            foreach (XSharpLibraryNode node in values)
-                            {
-                                if (node.Freeing(task.ModuleID.ItemID) == 0)
-                                    if (node.parent != null)
-                                    {
-                                        node.parent.RemoveNode(node);
-                                    }
-                            }
-                            // and then remove the key
+                            if (node.Freeing(task.ModuleID.ItemID) == 0)
+                                if (node.parent != null)
+                                {
+                                    node.parent.RemoveNode(node);
+                                }
+                        }
+                        // and then remove the key
+                        lock (files)
+                        {
                             files.Remove(task.ModuleID);
                         }
                     }
+                }
+                //
+                LibraryNode prjNode = this.library.SearchHierarchy(task.ModuleID.Hierarchy);
+                if (prjNode is XSharpLibraryProject)
+                {
                     //
-                    LibraryNode prjNode = this.library.SearchHierarchy(task.ModuleID.Hierarchy);
-                    if (prjNode is XSharpLibraryProject)
-                    {
-                        //
-                        CreateModuleTree((XSharpLibraryProject)prjNode, scope, task.ModuleID);
-                        //
-                        prjNode.updateCount += 1;
-                        //this.prjNode.AddNode(node);
-                        //library.AddNode(node);
-                        if ( forceRefresh )
-                            this.library.Refresh();
-                    }
+                    CreateModuleTree((XSharpLibraryProject)prjNode, scope, task.ModuleID);
+                    //
+                    prjNode.updateCount += 1;
+                    //this.prjNode.AddNode(node);
+                    //library.AddNode(node);
+                    if (forceRefresh)
+                        this.library.Refresh();
                 }
             }
         }

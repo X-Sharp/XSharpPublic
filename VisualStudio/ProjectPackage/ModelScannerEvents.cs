@@ -21,12 +21,15 @@ namespace XSharp.Project
     class ModelScannerEvents : SolutionListener
     {
         List<string> projectfiles;
+        static List<string> changedProjectfiles;
 
+        static internal IList<string> ChangedProjectFiles => changedProjectfiles;
         #region ctors
         public ModelScannerEvents(IServiceProvider serviceProvider)
             : base(serviceProvider)
         {
             projectfiles = new List<string>();
+            changedProjectfiles = new List<string>();
             XSharpModel.ModelWalker.Suspend();
         }
 
@@ -110,6 +113,7 @@ namespace XSharp.Project
             hasEnvironmentvariable = !String.IsNullOrEmpty(System.Environment.GetEnvironmentVariable("XSharpMsBuildDir"));
         }
         const string oldText = @"$(MSBuildExtensionsPath)\XSharp";
+        const string newText = @"$(XSharpMsBuildDir)";
         public override void OnBeforeOpenProject(ref Guid guidProjectID, ref Guid guidProjectType, string pszFileName)
         {
             if (hasEnvironmentvariable && pszFileName != null && pszFileName.ToLower().EndsWith("xsproj"))
@@ -120,13 +124,20 @@ namespace XSharp.Project
                 {
                     while (pos > 0)
                     {
-                        xml = xml.Substring(0, pos) + "$(XSharpMsBuildDir)"+ xml.Substring(pos + oldText.Length);
+                        xml = xml.Substring(0, pos) + newText + xml.Substring(pos + oldText.Length);
                         pos = xml.IndexOf(oldText, StringComparison.OrdinalIgnoreCase);
                     }
+                    var atts = System.IO.File.GetAttributes(pszFileName);
+                    if (atts.HasFlag(System.IO.FileAttributes.ReadOnly))
+                    {
+                        System.IO.File.SetAttributes(pszFileName, System.IO.FileAttributes.Normal);
+                    }
                     System.IO.File.WriteAllText(pszFileName, xml);
+                    changedProjectfiles.Add(pszFileName.ToLower());
                 }
             }
             projectfiles.Add(pszFileName);
+
 
         }
 

@@ -1465,9 +1465,9 @@ namespace XSharp.Project
             {
                 ThreadHelper.JoinableTaskFactory.Run(async delegate
                 {
-                await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
-                statusBar.SetText(msg);
-            });
+                    await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+                    statusBar.SetText(msg);
+                });
             }
 
 
@@ -2047,6 +2047,11 @@ namespace XSharp.Project
             int result;
             bool dialectVO = false;
             silent = (__VSUPGRADEPROJFLAGS)grfUpgradeFlags == __VSUPGRADEPROJFLAGS.UPF_SILENTMIGRATE;
+            if (ModelScannerEvents.ChangedProjectFiles.Contains(this.Url.ToLower()))
+            {
+                ModelScannerEvents.ChangedProjectFiles.Remove(this.Url.ToLower());
+                this.QueryEditProjectFile(false);
+            }
             bool ok = true;
             // we have added a projectversion property to makes checks easier in the future
             if (ok)

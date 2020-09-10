@@ -12,10 +12,10 @@ USING System.Diagnostics
 BEGIN NAMESPACE XSharp
     // use explicit layout so we can compact the size into 12 bytes
     // Type is Immutable, so has no settable properties
-    /// <summary>Internal type that implements the FoxPro Compatible BINARY type.
+    /// <summary>Internal type that implements the FoxPro Compatible BINARY type.<br/>
     /// This type has many operators and implicit converters that normally are never directly called from user code.
-    /// The data in this type is stored as an array of Bytes
-    /// Conversion To String are supported and they use the current active windows codepage.
+    /// The data in this type is stored as an array of Bytes<br/>
+    /// Conversions from and to String are supported and they use the current active windows codepage.
     /// </summary>
     PUBLIC STRUCTURE __Binary IMPLEMENTS IFormattable, ;
         IComparable<__Binary>, ;
@@ -54,7 +54,7 @@ BEGIN NAMESPACE XSharp
             
         #endregion
         #region Properties
-        /// <summary>REAL8 (System.Double) value</summary>
+        /// <summary>Binary value as array of Bytes</summary>
         PROPERTY @@Value    AS Byte[]	GET _value
         PROPERTY Length     AS LONG GET iif(_value == NULL, 0, _value:Length)
         #endregion

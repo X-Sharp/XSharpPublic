@@ -285,7 +285,7 @@ Copyright (c) XSharp B.V.  All Rights Reserved
 	    WarningsNotAsErrors="$(WarningsNotAsErrors)"
 	    Win32Icon="$(ApplicationIcon)"
 	    Win32Manifest="$(Win32Manifest)"
-	    Win32Resource="$(Win32Resource)"
+	    Win32Resource="@(Win32Resource)"
 	    AZ="$(AZ)"
 	    CS="$(CS)"
 	    INS="$(INS)"

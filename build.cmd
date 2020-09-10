@@ -3,6 +3,7 @@ if /i "%1" == "Debug" goto Ok
 if /i "%1" == "Release" goto Ok
 goto Error
 :Ok
+call "C:\Program Files (x86)\Microsoft Visual Studio 14.0\Common7\Tools\VsDevCmd.bat"
 set msbuilddir=c:\Program Files (x86)\MSBuild\14.0\Bin\
 if "%msbuilddir%" == "" goto NotFound
 :found

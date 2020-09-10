@@ -112,7 +112,6 @@ BEGIN NAMESPACE XSharpModel
 			IF ts:Minutes >= 5 .OR. ts:Hours > 0
 				LOCAL oBW AS BackgroundWorker    
 				oBW := BackgroundWorker{}
-				
 				oBW:DoWork += BackupInBackground
 				oBW:RunWorkerAsync()
 				
@@ -124,16 +123,17 @@ BEGIN NAMESPACE XSharpModel
 			ENDIF
 			BEGIN LOCK oConn
 				TRY
-						XSolution.SetStatusBarText("Backing up intellisense database...")
-						XSolution.SetStatusBarAnimation(TRUE, 2)
+						//XSolution.SetStatusBarText("Backing up intellisense database...")
+						//XSolution.SetStatusBarAnimation(TRUE, 2)
 						Log("Starting backup to "+currentFile)
 						SaveToDisk(oConn, currentFile )
 					Log("Completed backup to "+currentFile)
 				CATCH e AS Exception
 					Log("Exception: "+e:ToString())
 				FINALLY
-					XSolution.SetStatusBarText("")
-					XSolution.SetStatusBarAnimation(FALSE, 2)
+					//XSolution.SetStatusBarText("")
+					//XSolution.SetStatusBarAnimation(FALSE, 2)
+               NOP
 				END TRY
 			END LOCK
 		RETURN

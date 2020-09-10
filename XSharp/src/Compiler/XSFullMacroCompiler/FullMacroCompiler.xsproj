@@ -1,9 +1,8 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="..\CompilerCommon.props" />
-  <Import Project="$(MSBuildExtensionsPath)\XSharp\XSharp.Default.props" />
+  <Import Project="$(XSharpMsBuildDir)\XSharp.Default.props" />
   <PropertyGroup>
-    <XSharpProjectExtensionsPath>$(MSBuildExtensionsPath)\XSharp\</XSharpProjectExtensionsPath>
     <ProjectGuid>5dc40adc-f250-4611-ad89-b67b150bbc8e</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
@@ -21,7 +20,7 @@
     <OutputPath>$(Binariesdir)</OutputPath>
     <StartupObject />
     <ApplicationIcon />
-    <XSharpProjectversion>2.5.2.0</XSharpProjectversion>
+    <XSharpProjectversion>2.6.0.0</XSharpProjectversion>
     <AZ>false</AZ>
     <CS>false</CS>
     <LB>false</LB>
@@ -86,7 +85,7 @@
     <PPO>false</PPO>
     <Prefer32Bit>False</Prefer32Bit>
   </PropertyGroup>
-  <Import Project="$(MSBuildExtensionsPath)\XSharp\XSharp.targets" />
+  <Import Project="$(XSharpMsBuildDir)\XSharp.targets" />
   <ItemGroup>
     <Reference Include="mscorlib" />
     <Reference Include="System" />
@@ -100,28 +99,28 @@
       <AssemblyName>XSharp.CodeAnalysis.dll</AssemblyName>
       <SpecificVersion>False</SpecificVersion>
       <Private>True</Private>
-      <HintPath>..\..\..\Binaries\Debug\Dlls\XSharp.CodeAnalysis.dll</HintPath>
+      <HintPath>$(Binariesdir)DLLs\XSharpCodeAnalysis\XSharp.CodeAnalysis.dll</HintPath>
     </Reference>
     <Reference Include="XSharp.Core, Version=2.0.0.0, Culture=neutral, PublicKeyToken=ed555a0467764586">
       <Name>XSharp.Core</Name>
       <AssemblyName>XSharp.Core.dll</AssemblyName>
       <SpecificVersion>False</SpecificVersion>
       <Private>True</Private>
-      <HintPath>..\..\..\..\..\DevRt\Binaries\Debug\XSharp.Core.dll</HintPath>
+      <HintPath>$(RuntimeFilesDir)XSharp.Core.dll</HintPath>
     </Reference>
     <Reference Include="XSharp.RT, Version=2.1.0.0, Culture=neutral, PublicKeyToken=ed555a0467764586">
       <Name>XSharp.RT</Name>
       <AssemblyName>XSharp.RT.dll</AssemblyName>
       <SpecificVersion>False</SpecificVersion>
       <Private>True</Private>
-      <HintPath>..\..\..\..\..\DevRt\Binaries\Debug\XSharp.RT.dll</HintPath>
+      <HintPath>$(RuntimeFilesDir)XSharp.RT.dll</HintPath>
     </Reference>
     <Reference Include="XSharp.Scripting, Version=2.1.0.0, Culture=neutral, PublicKeyToken=ed555a0467764586">
       <Name>XSharp.Scripting</Name>
       <AssemblyName>XSharp.Scripting.dll</AssemblyName>
       <SpecificVersion>False</SpecificVersion>
       <Private>True</Private>
-      <HintPath>..\..\..\Binaries\Debug\Dlls\XSharp.Scripting.dll</HintPath>
+      <HintPath>$(Binariesdir)DLLs\XSharpScripting\XSharp.Scripting.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>

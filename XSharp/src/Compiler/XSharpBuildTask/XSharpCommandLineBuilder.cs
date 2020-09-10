@@ -37,7 +37,7 @@ namespace XSharp.Build
         {
             AppendSwitchIfNotNull(switchName, parameter, true);
         }
-        public void AppendSwitchIfNotNull(string switchName, string parameter,bool fNewLine)
+        public void AppendSwitchIfNotNull(string switchName, string parameter, bool fNewLine)
         {
             if (parameter != null && switchName != null)
             {
@@ -55,9 +55,26 @@ namespace XSharp.Build
             }
         }
 
+        internal override void AppendWhenTrue(string switchName,PropertyDictionary bag, string parameterName)
+        {
+            if (bag[parameterName] != null)
+            {
+                base.AppendWhenTrue(switchName, bag, parameterName);
+                this.AppendNewLine();
+            }
+        }
+
+        internal override void AppendSwitchWithInteger(string switchName, PropertyDictionary bag, string parameterName)
+        {
+            if (bag[parameterName] != null)
+            {
+                base.AppendSwitchWithInteger(switchName, bag, parameterName);
+                this.AppendNewLine();
+            }
+        }
         internal override void AppendPlusOrMinusSwitch(string switchName, PropertyDictionary bag, string parameterName)
         {
-			// Overridden so we can add a NewLine when needed
+            // Overridden so we can add a NewLine when needed
             if (bag[parameterName] != null)
             {
                 base.AppendPlusOrMinusSwitch(switchName, bag, parameterName);
@@ -80,14 +97,14 @@ namespace XSharp.Build
         /// </summary>
         internal override void AppendSwitchAliased(string switchName, string alias, string parameter)
         {
-			// Overridden so we can add a NewLine when needed
+            // Overridden so we can add a NewLine when needed
             if (switchName != null)
             {
                 base.AppendSwitchAliased(switchName, alias, parameter);
                 this.AppendNewLine();
             }
         }
- 
+
         public new void AppendSwitchUnquotedIfNotNull(string switchName, string parameter)
         {
             if (parameter != null)
@@ -123,6 +140,6 @@ namespace XSharp.Build
                 this.AppendNewLine();
 
             }
-        }				
+        }
     }
 }

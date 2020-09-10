@@ -24,7 +24,7 @@ namespace XSharp.Build
         /// <summary>
         /// Set a boolean switch iff its value exists and its value is 'true'.
         /// </summary>
-        internal void AppendWhenTrue
+        internal virtual void AppendWhenTrue
             (
             string switchName,
             PropertyDictionary bag,
@@ -89,7 +89,7 @@ namespace XSharp.Build
         /// <summary>
         /// Set an integer switch only if its value exists.
         /// </summary>
-        internal void AppendSwitchWithInteger
+        internal virtual void AppendSwitchWithInteger
             (
             string switchName,
             PropertyDictionary bag,

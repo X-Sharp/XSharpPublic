@@ -6,7 +6,7 @@
 USING System.Globalization
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/dtot/*" />
-FUNCTION DToT( dDateExpression AS DATE)
+FUNCTION DToT( dDateExpression AS DATE) AS DateTime 
     RETURN (System.DateTime) dDateExpression
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/hour/*" />

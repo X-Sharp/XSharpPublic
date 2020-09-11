@@ -57,7 +57,7 @@ ASSIGN Copies(nCopies)
 
 	RETURN 
 
-METHOD Destroy() 
+METHOD Destroy()  AS USUAL CLIPPER
 	
 
 	IF (hPrinter != NULL_PTR)

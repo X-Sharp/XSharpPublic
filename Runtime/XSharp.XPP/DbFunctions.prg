@@ -37,7 +37,7 @@ FUNCTION DbSetDescend(lNewDescend AS LOGIC) AS LOGIC
 /// In this way, user defined data can be bound to a particular work area. Attached data is discarded when the workarea
 /// is closed.</remarks>
 
-FUNCTION DbCargo(xNewValue) AS USUAL
+FUNCTION DbCargo(xNewValue) AS USUAL CLIPPER
     LOCAL nArea AS DWORD
     LOCAL old   AS OBJECT
     LOCAL wa := XSharp.RuntimeState.Workareas AS Workareas

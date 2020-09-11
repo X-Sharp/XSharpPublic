@@ -5,17 +5,21 @@
 //
 
 /// <include file="VFPRuntimeDocs.xml" path="Runtimefunctions/addproperty/*" />
-FUNCTION AddProperty (oObjectName, cPropertyName, eNewValue )
-    IF IsObject(oObjectName) .and. IsString(cPropertyName)
+FUNCTION AddProperty (oObjectName AS OBJECT, cPropertyName AS STRING, eNewValue := NIL AS USUAL) AS LOGIC
+    if (object) oObjectName IS XSharp.VFP.Empty VAR oEmpty
+        oEmpty:__AddProperty(cPropertyName, eNewValue)
+    ELSE
         Send(oObjectName,#AddProperty,cPropertyName, eNewValue)
     ENDIF
-    RETURN FALSE
+    RETURN TRUE
 
 
 /// <include file="VFPRuntimeDocs.xml" path="Runtimefunctions/removeproperty/*" />
-FUNCTION RemoveProperty( oObjectName, cPropertyName ) AS LOGIC
-    IF IsObject(oObjectName) .and. IsString(cPropertyName)
+FUNCTION RemoveProperty( oObjectName AS OBJECT, cPropertyName AS STRING) AS LOGIC
+    if (object) oObjectName IS XSharp.VFP.Empty VAR oEmpty
+        oEmpty:__RemoveProperty(cPropertyName)
+    ELSE
         Send(oObjectName,#RemoveProperty,cPropertyName)
     ENDIF
-    RETURN FALSE
+    RETURN TRUE
 

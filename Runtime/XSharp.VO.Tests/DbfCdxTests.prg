@@ -3171,7 +3171,6 @@ RETURN
 			cFilter := "A"  // result does include *no* deleted records  ! 
 			
 			DbSetFilter ( { || Upper ( _Field->LAST ) = cFilter  } , "Upper (LAST) = "+ cFilter )  
-
 			Assert.Equal(6, (INT) OrdKeyCount() ) // 6 , ok 
 			
 			OrdDescend ( , , TRUE ) 

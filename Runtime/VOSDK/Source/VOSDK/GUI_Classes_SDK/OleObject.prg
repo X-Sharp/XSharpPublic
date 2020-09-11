@@ -202,7 +202,7 @@ METHOD Deactivate()
 	ENDIF
 	RETURN FALSE
 
-METHOD Destroy() 
+METHOD Destroy()  AS USUAL CLIPPER
 	IF _VOOLEReleaseObject(SELF:ObjHandle)
 		SELF:ObjHandle := NULL_PTR
 	ENDIF

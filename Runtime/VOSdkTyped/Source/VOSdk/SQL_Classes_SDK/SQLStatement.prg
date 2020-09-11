@@ -58,7 +58,7 @@ CLASS SQLStatement
     DESTRUCTOR()
         SELF:Destroy()
         RETURN
-    METHOD Destroy()
+    METHOD Destroy() AS USUAL CLIPPER
         IF oNetCmd != NULL .AND. oConn != NULL_OBJECT
             IF oConn:Connected
                 SELF:__FreeParameters()

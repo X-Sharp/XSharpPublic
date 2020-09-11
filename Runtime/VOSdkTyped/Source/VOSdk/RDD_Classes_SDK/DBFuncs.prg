@@ -928,9 +928,9 @@ FUNCTION __DBSRLock( n AS USUAL, nTries := 1 AS DWORD) AS LOGIC STRICT
 FUNCTION __DBSSeek( xValue AS USUAL, lSoft AS USUAL, lLast AS USUAL, nTries  := 1 AS DWORD) AS LOGIC STRICT
    LOCAL lRet  AS LOGIC
 
-	DEFAULT(REF lSoft, SetSoftSeek())
-	DEFAULT(REF lLast, FALSE)
-	DEFAULT(REF xValue, "")
+	@@Default(REF lSoft, SetSoftSeek())
+	@@Default(REF lLast, FALSE)
+	@@Default(REF xValue, "")
 
 	DO WHILE nTries > 0
 		NetErr( FALSE )

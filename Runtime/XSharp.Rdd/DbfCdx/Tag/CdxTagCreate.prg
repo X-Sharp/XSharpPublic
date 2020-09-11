@@ -88,6 +88,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             isOk := SELF:_Build()
             SELF:_bag:FlushPages()
             GC.Collect()
+            SELF:IsOpen := isOk
             RETURN isOk
 
 

@@ -165,6 +165,7 @@
     <Compile Include="MiscTests.prg" />
     <Compile Include="DateTests.prg" />
     <Compile Include="NumericTests.prg" />
+    <Compile Include="OtherTests.prg" />
     <Compile Include="Properties\AssemblyInfo.prg" />
     <Compile Include="StringTests.prg" />
   </ItemGroup>

@@ -376,7 +376,7 @@ METHOD DeleteItem(nItem)
 
 	RETURN FALSE
 
-METHOD Destroy() 
+METHOD Destroy()  AS USUAL CLIPPER
 	
 
 	IF !InCollect()
@@ -1492,7 +1492,7 @@ ASSIGN Caption(cNewCaption)
 	oHyperLabel := HyperLabel{oOldHL:NameSym, cNewCaption, oOldHL:Description, oOldHL:HelpContext}
 	RETURN 
 
-METHOD Destroy() 
+METHOD Destroy()  AS USUAL CLIPPER
 	
 
 	IF !InCollect()
@@ -1732,7 +1732,7 @@ ASSIGN Checked(lNewVal)
 	nStateImage := IIF(lNewVal, 2, 1)
 	RETURN 
 
-METHOD Destroy() 
+METHOD Destroy()  AS USUAL CLIPPER
 	
 
 	IF !InCollect()

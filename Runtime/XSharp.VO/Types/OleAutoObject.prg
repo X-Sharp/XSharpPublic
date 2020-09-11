@@ -10,10 +10,11 @@ USING System.Runtime.Remoting
 USING System.Runtime.InteropServices
 USING System.Runtime.CompilerServices
 USING XSharp.Internal
+USING System.Collections.Generic
 /// <summary>VO Compatible OLE Automation class</summary>
 [AllowLateBinding];
 [DebuggerDisplay( "Type= {__ComObject}", Type := "OleAutoObject" )];
-CLASS XSharp.OleAutoObject
+CLASS XSharp.OleAutoObject IMPLEMENTS IDynamicProperties
 	PROTECTED oComObject AS OBJECT
 	PROTECTED lOk        AS LOGIC
 	PROTECTED _liFuncs   AS LONG
@@ -85,17 +86,25 @@ CLASS XSharp.OleAutoObject
 			
 	// ? oObject:Property
 	    /// <exclude />   
-    METHOD NoIVarGet(cName AS STRING ) AS USUAL STRICT
+    VIRTUAL METHOD NoIvarGet(cName AS STRING ) AS USUAL 
 		LOCAL oRet AS OBJECT
 		oRet := OleAutoObject.__OleIvarGet(oComObject,oType, cName, NULL)
 		RETURN OleAutoObject.OleWrapObject(oRet, lDateTimeAsDate)
 			
 		// oObject:Property := Value
 	    /// <exclude />   
-	METHOD NoIvarPut(cName AS STRING, uValue AS USUAL) AS VOID STRICT
+	VIRTUAL METHOD NoIvarPut(cName AS STRING, uValue AS USUAL) AS VOID
 		OleAutoObject.__OleIVarPut(oComObject, oType, cName , uValue, NULL)
 		RETURN 
-			
+
+    VIRTUAL METHOD GetPropertyNames() AS STRING[]
+        var props := oType:GetProperties()
+        var names := List<string>{}
+        FOREACH VAR prop in props
+            names:Add(prop:Name)
+        NEXT
+        return names:ToArray()
+
 	    /// <exclude />   
 	METHOD NoMethod( ) AS USUAL CLIPPER
 		LOCAL cName AS STRING

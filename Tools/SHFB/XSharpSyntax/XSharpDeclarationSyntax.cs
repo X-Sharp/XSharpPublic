@@ -378,6 +378,10 @@ namespace Microsoft.Ddue.Tools
                     writer.WriteKeyword("LOGIC");
                     break;
 
+                case "T:XSharp.__Binary":
+                    writer.WriteKeyword("BINARY");
+                    break;
+
                 default:
                     writer.WriteReferenceLink(api);
                     break;

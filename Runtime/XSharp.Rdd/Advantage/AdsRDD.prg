@@ -924,10 +924,11 @@ RETURN TRUE
     #region Relations 
     /// <inheritdoc />
 VIRTUAL METHOD ClearRel() AS LOGIC
+    VAR lOk := SUPER:ClearRel()
     IF SELF:_Table != System.IntPtr.Zero
         SELF:_CheckError(ACE.AdsClearRelation(SELF:_Table))
     ENDIF
-RETURN TRUE
+RETURN lOk
 
       /// <inheritdoc />
 VIRTUAL METHOD SetRel(relinfo AS DbRelInfo) AS LOGIC
@@ -936,9 +937,12 @@ VIRTUAL METHOD SetRel(relinfo AS DbRelInfo) AS LOGIC
         SELF:ADSERROR(ERDD.UNSUPPORTED, XSharp.Gencode.EG_UNSUPPORTED, "SetRel", "Related workareas must be opened with the same driver.")
         RETURN FALSE
     ENDIF
-    LOCAL child := (ADSRDD) relinfo:Child AS ADSRDD
-    SELF:_CheckError(ACE.AdsSetRelation(SELF:_Table, child:ACEIndexHandle, relinfo:Key))
-RETURN TRUE
+    VAR lOk :=  SUPER:SetRel(relinfo)
+    IF lOk 
+        LOCAL child := (ADSRDD) relinfo:Child AS ADSRDD
+        SELF:_CheckError(ACE.AdsSetRelation(SELF:_Table, child:ACEIndexHandle, relinfo:Key))
+    ENDIF
+RETURN lOk
 
       #endregion
 

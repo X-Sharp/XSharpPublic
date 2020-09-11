@@ -3,17 +3,18 @@
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
+#pragma options("vo15", on)
 
 [Obsolete( "This function will not be supported" )];
 FUNCTION ADLLS( )
 RETURN NIL
 
 [Obsolete( "This function will not be supported" )];
-FUNCTION ADOCKSTATE( )
+FUNCTION ADOCKSTATE( ) AS USUAL CLIPPER
 RETURN NIL
 
 [Obsolete( "This function will not be supported" )];
-FUNCTION AERROR( )
+FUNCTION AERROR( ) AS USUAL CLIPPER
 RETURN NIL
 
 [Obsolete( "This function will not be supported" )];

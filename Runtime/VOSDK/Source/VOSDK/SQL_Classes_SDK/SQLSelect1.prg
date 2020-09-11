@@ -684,7 +684,8 @@ METHOD __InitColumnDesc() AS LOGIC PASCAL CLASS SQLSelect
    LOCAL aNull         AS ARRAY   
    LOCAL nMaxString    AS LONGINT
    LOCAL nMaxDisp      AS LONGINT
-   LOCAL lBinding       AS LOGIC      
+   LOCAL lBinding       AS LOGIC
+   LOCAL oTmpColumn    AS SQLColumn
     #IFDEF __DEBUG__
         __SQLOutputDebug( "** SQLSelect:__InitColumnDesc()" )
     #ENDIF
@@ -799,10 +800,15 @@ METHOD __InitColumnDesc() AS LOGIC PASCAL CLASS SQLSelect
       
       
       nSize := ALen( aOldSQLColumns )                     
-      IF nSize = 0
+      IF nSize = 0 .OR. nIndex>nSize
          cOldAlias := NULL_STRING
-      ELSEIF nIndex <= nSize .AND. SELF:__GetColumn(nIndex):ColName = cColName
-         cOldAlias := SELF:__GetColumn(nIndex):AliasName
+      ELSE
+         oTmpColumn:=SELF:__GetColumn(nIndex)
+         IF oTmpColumn != NULL_OBJECT .AND. oTmpColumn:ColName=cColName
+            cOldAlias := oTmpColumn:AliasName
+         ELSE
+            cOldAlias := NULL_STRING
+         END IF
       ENDIF
       
       nColLength   := nPrecision

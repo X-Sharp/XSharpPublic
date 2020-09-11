@@ -169,7 +169,7 @@ METHOD Create(lPrinter, hdc)
 	bFontChanged := FALSE
 	RETURN SELF
 
-METHOD Destroy() 
+METHOD Destroy()  AS USUAL CLIPPER
 	
 	SUPER:Destroy()
 

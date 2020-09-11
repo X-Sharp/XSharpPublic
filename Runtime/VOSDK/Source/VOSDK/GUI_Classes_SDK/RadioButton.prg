@@ -1,7 +1,7 @@
 CLASS RadioButton INHERIT Button
 	PROTECT lSavedPressed AS LOGIC
 
-METHOD Destroy() 
+METHOD Destroy()  AS USUAL CLIPPER
 	
 
 	IF IsWindow(hwnd)

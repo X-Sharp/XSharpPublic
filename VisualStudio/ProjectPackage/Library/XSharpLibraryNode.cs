@@ -502,30 +502,30 @@ namespace XSharp.Project
                 string access = "";
                 if ((member is XTypeDefinition) && (member.Kind != Kind.Namespace))
                 {
-                    modifier = getModifierString(((XTypeDefinition)member).Modifiers);
-                    access = getAccessString(((XTypeDefinition)member).Visibility);
+                    modifier = member.Modifiers.ToDisplayString() ;
+                    access = member.Visibility.ToDisplayString() ;
                 }
                 else if ((member is XMemberDefinition) && ((member.Kind != Kind.Function) && (member.Kind != Kind.Procedure)))
                 {
-                    modifier = getModifierString(((XMemberDefinition)member).Modifiers);
-                    access = getAccessString(((XMemberDefinition)member).Visibility);
+                    modifier = member.Modifiers.ToDisplayString();
+                    access = member.Visibility.ToDisplayString() ;
                 }
                 //
                 if (!String.IsNullOrEmpty(modifier))
                 {
-                    description.Add(new Tuple<string, VSOBDESCRIPTIONSECTION>(modifier, VSOBDESCRIPTIONSECTION.OBDS_ATTRIBUTE));
+                    description.Add(new Tuple<string, VSOBDESCRIPTIONSECTION>(modifier + " ", VSOBDESCRIPTIONSECTION.OBDS_ATTRIBUTE));
                 }
                 //
                 if (!String.IsNullOrEmpty(access))
                 {
-                    description.Add(new Tuple<string, VSOBDESCRIPTIONSECTION>(access, VSOBDESCRIPTIONSECTION.OBDS_ATTRIBUTE));
+                    description.Add(new Tuple<string, VSOBDESCRIPTIONSECTION>(access + " ", VSOBDESCRIPTIONSECTION.OBDS_ATTRIBUTE));
                     //description.AddDescriptionText3(access, VSOBDESCRIPTIONSECTION.OBDS_MISC, null);
                 }
                 // 
                 if (member.Kind != Kind.Field)
                 {
                     VSOBDESCRIPTIONSECTION descName = VSOBDESCRIPTIONSECTION.OBDS_MISC;
-                    descText = member.Kind.DisplayName().ToUpper() + " ";
+                    descText = XSettings.FormatKeyword(member.Kind.DisplayName()) + " ";
                     if (member.Kind == Kind.Constructor)
                     {
                         descName = VSOBDESCRIPTIONSECTION.OBDS_NAME;
@@ -540,21 +540,27 @@ namespace XSharp.Project
                 }
                 //description.AddDescriptionText3(descText, VSOBDESCRIPTIONSECTION.OBDS_NAME, null);
                 // Parameters ?
-                if ((this.NodeType == LibraryNodeType.Members) && (member.Kind != Kind.Field))
+                if (member.Kind.HasParameters())
                 {
                     descText = "(";
                     description.Add(new Tuple<string, VSOBDESCRIPTIONSECTION>(descText, VSOBDESCRIPTIONSECTION.OBDS_MISC));
                     //description.AddDescriptionText3(descText, VSOBDESCRIPTIONSECTION.OBDS_MISC, null);
+                    XMemberDefinition realmember;
+                    XTypeDefinition type = member as XTypeDefinition;
+                    if (member.Kind == Kind.Delegate && type?.XMembers.Count > 0)
+                        realmember = type.XMembers[0] ;
+                    else
+                        realmember = member as XMemberDefinition;
 
-                    if (((XMemberDefinition)member).HasParameters)
+                    if (realmember != null && realmember.HasParameters)
                     {
                         //
                         int paramNum = 1;
-                        foreach (XVariable param in ((XMemberDefinition)member).Parameters)
+                        foreach (XVariable param in realmember.Parameters)
                         {
                             descText = param.Name;
                             description.Add(new Tuple<string, VSOBDESCRIPTIONSECTION>(descText, VSOBDESCRIPTIONSECTION.OBDS_PARAM));
-                            descText = " AS ";
+                            descText = param.ParamTypeDesc;
                             description.Add(new Tuple<string, VSOBDESCRIPTIONSECTION>(descText, VSOBDESCRIPTIONSECTION.OBDS_MISC));
                             //description.AddDescriptionText3(descText, VSOBDESCRIPTIONSECTION.OBDS_PARAM, null);
                             descText = param.TypeName;
@@ -564,7 +570,7 @@ namespace XSharp.Project
                             description.Add(new Tuple<string, VSOBDESCRIPTIONSECTION>(descText, VSOBDESCRIPTIONSECTION.OBDS_TYPE));
                             //description.AddDescriptionText3(descText, VSOBDESCRIPTIONSECTION.OBDS_TYPE, navInfo);
                             // Need a comma ?
-                            if (paramNum < ((XMemberDefinition)member).ParameterCount)
+                            if (paramNum < realmember.ParameterCount)
                             {
                                 paramNum++;
                                 descText = ",";
@@ -579,7 +585,7 @@ namespace XSharp.Project
                 }
                 if (member.Kind.HasReturnType())
                 {
-                    descText = " AS ";
+                    descText = XLiterals.AsKeyWord;
                     description.Add(new Tuple<string, VSOBDESCRIPTIONSECTION>(descText, VSOBDESCRIPTIONSECTION.OBDS_MISC));
                     //description.AddDescriptionText3(descText, VSOBDESCRIPTIONSECTION.OBDS_MISC, null);
                     descText = member.TypeName;
@@ -588,16 +594,16 @@ namespace XSharp.Project
                 }
 
                 //
-                if (!((member.Kind == Kind.Function) || (member.Kind == Kind.Procedure) || (member.Kind == Kind.VODLL)) &&
-                    ((member.Parent is XTypeDefinition) && (member.Parent.Kind == Kind.Class)))
-                {
-                    descText = " CLASS ";
-                    description.Add(new Tuple<string, VSOBDESCRIPTIONSECTION>(descText, VSOBDESCRIPTIONSECTION.OBDS_MISC));
-                    //description.AddDescriptionText3(descText, VSOBDESCRIPTIONSECTION.OBDS_MISC, null);
-                    descText = className;
-                    description.Add(new Tuple<string, VSOBDESCRIPTIONSECTION>(descText, VSOBDESCRIPTIONSECTION.OBDS_TYPE));
-                    //description.AddDescriptionText3(descText, VSOBDESCRIPTIONSECTION.OBDS_TYPE, null);
-                }
+                //if (!((member.Kind == Kind.Function) || (member.Kind == Kind.Procedure) || (member.Kind == Kind.VODLL)) &&
+                //    ((member.Parent is XTypeDefinition) && (member.Parent.Kind == Kind.Class)))
+                //{
+                //    descText = " CLASS ";
+                //    description.Add(new Tuple<string, VSOBDESCRIPTIONSECTION>(descText, VSOBDESCRIPTIONSECTION.OBDS_MISC));
+                //    //description.AddDescriptionText3(descText, VSOBDESCRIPTIONSECTION.OBDS_MISC, null);
+                //    descText = className;
+                //    description.Add(new Tuple<string, VSOBDESCRIPTIONSECTION>(descText, VSOBDESCRIPTIONSECTION.OBDS_TYPE));
+                //    //description.AddDescriptionText3(descText, VSOBDESCRIPTIONSECTION.OBDS_TYPE, null);
+                //}
                 //
                 description.Add(new Tuple<string, VSOBDESCRIPTIONSECTION>(null, VSOBDESCRIPTIONSECTION.OBDS_ENDDECL));
                 //description.AddDescriptionText3(null, VSOBDESCRIPTIONSECTION.OBDS_ENDDECL, null);
@@ -626,10 +632,10 @@ namespace XSharp.Project
                 if (pNames.Count > 0)
                 {
                     description.Add(new Tuple<string, VSOBDESCRIPTIONSECTION>("\n", VSOBDESCRIPTIONSECTION.OBDS_MISC));
-                    description.Add(new Tuple<string, VSOBDESCRIPTIONSECTION>("\nParameters:\n", VSOBDESCRIPTIONSECTION.OBDS_NAME));
+                    description.Add(new Tuple<string, VSOBDESCRIPTIONSECTION>("\nParameters:", VSOBDESCRIPTIONSECTION.OBDS_NAME));
                     for( int i =0; i < pNames.Count; i++)
                     {
-                        description.Add(new Tuple<string, VSOBDESCRIPTIONSECTION>(pNames[i], VSOBDESCRIPTIONSECTION.OBDS_PARAM));
+                        description.Add(new Tuple<string, VSOBDESCRIPTIONSECTION>("\n"+pNames[i], VSOBDESCRIPTIONSECTION.OBDS_PARAM));
                         description.Add(new Tuple<string, VSOBDESCRIPTIONSECTION>(" : ", VSOBDESCRIPTIONSECTION.OBDS_MISC));
                         description.Add(new Tuple<string, VSOBDESCRIPTIONSECTION>(pDescriptions[i], VSOBDESCRIPTIONSECTION.OBDS_MISC));
                     }
@@ -657,43 +663,6 @@ namespace XSharp.Project
             //
             //
             return navInfo;
-        }
-
-
-        private string getModifierString(Modifiers accessType)
-        {
-            string result = "";
-            switch (accessType)
-            {
-                case Modifiers.Static:
-                    result = "STATIC ";
-                    break;
-                case Modifiers.Sealed:
-                    result = "SEALED ";
-                    break;
-            }
-            return result;
-        }
-
-        private string getAccessString(Modifiers accessType)
-        {
-            string result = "";
-            switch (accessType)
-            {
-                case Modifiers.Public:
-                    result = "PUBLIC ";
-                    break;
-                case Modifiers.Protected:
-                    result = "PROTECTED ";
-                    break;
-                case Modifiers.Internal:
-                    result = "INTERNAL ";
-                    break;
-                case Modifiers.Hidden:
-                    result = "PRIVATE ";
-                    break;
-            }
-            return result;
         }
 
         public override string UniqueName

@@ -26,7 +26,7 @@
 
 CLASS AdsSQLServer INHERIT DbServer
 
-CONSTRUCTOR( oFile, lShareMode, lReadOnlyMode, xDriver, aRdd )
+CONSTRUCTOR( oFile, lShareMode, lReadOnlyMode, xDriver, aRdd ) CLIPPER
     LOCAL cTemp AS STRING
     LOCAL cFileName AS STRING
 

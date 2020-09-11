@@ -2,7 +2,8 @@ CLASS DataField
 	PROTECT oFieldSpec		AS FieldSpec
 	PROTECT oHyperLabel	    AS HyperLabel
 
-
+CONSTRUCTOR()
+    
 CONSTRUCTOR( oHLName AS STRING, oFS := NULL AS FieldSpec)
     SELF(HyperLabel{ oHLName }, oFS)
 

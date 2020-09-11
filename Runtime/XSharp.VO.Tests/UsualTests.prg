@@ -49,8 +49,56 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			// Therefore we must add the m suffix here
 			u += 1.0m
 			Assert.Equal(5, (Decimal) u)
-			u := Decimal.MaxValue
+
+            LOCAL u1, u2 as USUAL
+            u1 := 1
+            u2 := 0.5m
+            Assert.Equal(2m, (System.Decimal)(u1 /u2 ))
+            Assert.Equal(0m, (System.Decimal)(u1 %u2 ))
+            u2 := 0.25m            
+            Assert.Equal(4m, (System.Decimal)(u1 /u2 ))
+            Assert.Equal(0m, (System.Decimal)(u1 %u2 ))
+            u2 := 0.33m   
+            Assert.Equal(3.0303030303030303030303030303m, (System.Decimal)(u1 /u2 ))
+            Assert.Equal(0.01m, (System.Decimal)(u1 %u2 ))
+            
 			RETURN
+
+	[Fact, Trait("Category", "Usual")];
+		METHOD UsualCurrencyTests() AS VOID
+			LOCAL u AS USUAL
+			LOCAL l AS Currency
+			l := $1
+			u := l
+			Assert.Equal(UsualType(u), (DWORD) 28)
+			l := u
+			Assert.Equal((CURRENCY)l,(CURRENCY) 1)
+			Assert.Equal(l,  (CURRENCY) u)
+			u += 1
+			Assert.Equal( $2,  (CURRENCY) u)
+			u++
+			Assert.Equal($3,  (CURRENCY) u)
+			u += 1U
+			Assert.Equal($4,  (CURRENCY) u)
+			// Note: adding a float to a usual results in a usual of type FLOAT
+			// Therefore we must add the m suffix here
+			u += 1.0m
+			Assert.Equal($5, (CURRENCY) u)
+
+            LOCAL u1, u2 as USUAL
+            u1 := 1
+            u2 := $0.5 
+            Assert.Equal($2, (CURRENCY)(u1 /u2 ))
+            Assert.Equal($0, (CURRENCY)(u1 %u2 ))
+            u2 := $0.25
+            Assert.Equal($4, (CURRENCY)(u1 /u2 ))
+            Assert.Equal($0, (CURRENCY)(u1 %u2 ))
+            u2 := $0.33
+            Assert.Equal($3.0303, (CURRENCY)(u1 /u2 ))
+            Assert.Equal($0.01, (CURRENCY)(u1 %u2 ))
+            
+			RETURN
+
 
 
 		[Fact, Trait("Category", "Usual")];

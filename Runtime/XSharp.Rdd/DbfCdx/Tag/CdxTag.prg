@@ -50,6 +50,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         INTERNAL _Ansi AS LOGIC
         // Scopes
         PRIVATE DIM _Scopes[2] AS ScopeInfo
+        PRIVATE _scopeEmpty    AS LOGIC
         // siblings
         PRIVATE _oRdd   AS DBFCDX
         PRIVATE _Header AS CdxTagHeader
@@ -66,6 +67,8 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 
 
 #region Properties
+        INTERNAL PROPERTY Binary            AS LOGIC AUTO
+        INTERNAL PROPERTY IsOpen            AS LOGIC AUTO
         INTERNAL PROPERTY Collation         AS VfpCollation GET _Collation
         INTERNAL PROPERTY Expression        AS STRING GET _KeyExpr
         INTERNAL PROPERTY Encoding          AS Encoding GET _Encoding
@@ -134,7 +137,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             SELF:Page := nPage
             SELF:_Header := CdxTagHeader{oBag, nPage,SELF:OrderName, SELF}
             SELF:_bag:SetPage(SELF:_Header)
-            SELF:Open()
+            SELF:IsOpen := SELF:Open()
 
 
          METHOD ReadHeader AS VOID
@@ -188,18 +191,20 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 
         INTERNAL METHOD EvaluateExpressions() AS LOGIC
             LOCAL evalOk AS LOGIC
-            LOCAL oKey AS OBJECT
+            LOCAL oKey := NULL AS OBJECT
             evalOk := TRUE
             TRY
                 SELF:_KeyCodeBlock := SELF:_oRdd:Compile(SELF:_KeyExpr)
             CATCH AS Exception
-                THROW
+                evalOk := FALSE
             END TRY
-
+            IF ! evalOk
+                RETURN FALSE
+            ENDIF
             TRY
                 oKey := SELF:_oRdd:EvalBlock(SELF:_KeyCodeBlock)
             CATCH AS Exception
-                    THROW
+                evalOk := FALSE
             END TRY
             IF !evalOk
                 RETURN FALSE
@@ -231,13 +236,20 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 CASE DbFieldType.Number
                     SELF:_sourcekeySize := SELF:_keySize   := 8
                     SELF:getKeyValue := _getNumFieldValue
+                    SELF:Binary      := TRUE
                 CASE DbFieldType.Date
                     // CDX converts the Date to a Julian Number and stores that as a Real8 in the index
                     SELF:_sourcekeySize := SELF:_keySize   := 8
                     SELF:getKeyValue := _getDateFieldValue
+                    SELF:Binary      := TRUE
+                CASE DbFieldType.Integer
+                    SELF:_sourcekeySize := SELF:_keySize   := 4
+                    SELF:getKeyValue := _getIntFieldValue
+                    SELF:Binary      := TRUE
                 OTHERWISE
                     SELF:_sourcekeySize := SELF:_keySize   := (WORD) SELF:_oRdd:_Fields[_SingleField]:Length
                     SELF:getKeyValue := _getFieldValue
+                    SELF:Binary      := FALSE
                     IF SELF:_Collation != NULL
                         SELF:_keySize := SELF:Header:KeySize
                         SELF:getKeyValue := _getFieldValueWithCollation
@@ -409,10 +421,13 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             CASE TypeCode.Single
             CASE TypeCode.Double
             CASE TypeCode.Decimal
-                LOCAL ds := DoubleStruct{} AS DoubleStruct
-                ds:doubleValue := Convert.ToDouble(toConvert)
-                ds:SaveToIndex(buffer)
-                resultLength := 8
+                IF sLen == 4
+                    LongToFoxOrder(Convert.ToInt32(toConvert), buffer)
+                    resultLength := 4
+                ELSE
+                    DoubleToFoxOrder(Convert.ToDouble(toConvert), buffer)
+                    resultLength := 8
+                ENDIF
                 RETURN TRUE
             CASE TypeCode.String
                 text := (STRING)toConvert
@@ -433,25 +448,32 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         METHOD SetOrderScope(itmScope AS OBJECT , uiScope AS DbOrder_Info ) AS LOGIC
             LOCAL uiRealLen AS LONG
             LOCAL result AS LOGIC
-            
             uiRealLen := 0
             result := TRUE
             SWITCH uiScope
             CASE DbOrder_Info.DBOI_SCOPETOPCLEAR
                 SELF:_Scopes[SELF:TopScopeNo]:Clear()
+                SELF:_scopeEmpty := FALSE
             CASE DbOrder_Info.DBOI_SCOPEBOTTOMCLEAR
                 SELF:_Scopes[SELF:BottomScopeNo]:Clear()
+                SELF:_scopeEmpty := FALSE
             CASE DbOrder_Info.DBOI_SCOPETOP
-                SELF:_Scopes[SELF:TopScopeNo]:Value := itmScope
-                IF itmScope != NULL
-                    SELF:_ToString(itmScope, SELF:_keySize,  SELF:_Scopes[SELF:TopScopeNo]:Buffer, REF uiRealLen)
-                    SELF:_Scopes[SELF:TopScopeNo]:Size := uiRealLen
+                if (itmScope != SELF:_Scopes[SELF:TopScopeNo]:Value)
+                    SELF:_scopeEmpty := FALSE
+                    SELF:_Scopes[SELF:TopScopeNo]:Value := itmScope
+                    IF itmScope != NULL
+                        SELF:_ToString(itmScope, SELF:_keySize,  SELF:_Scopes[SELF:TopScopeNo]:Buffer, REF uiRealLen)
+                        SELF:_Scopes[SELF:TopScopeNo]:Size := uiRealLen
+                    ENDIF
                 ENDIF
             CASE DbOrder_Info.DBOI_SCOPEBOTTOM
-                SELF:_Scopes[SELF:BottomScopeNo]:Value   := itmScope
-                IF itmScope != NULL
-                    SELF:_ToString(itmScope, SELF:_keySize, SELF:_Scopes[SELF:BottomScopeNo]:Buffer, REF uiRealLen)
-                    SELF:_Scopes[SELF:BottomScopeNo]:Size := uiRealLen
+                IF (itmScope != SELF:_Scopes[SELF:BottomScopeNo]:Value)
+                    SELF:_scopeEmpty := FALSE
+                    SELF:_Scopes[SELF:BottomScopeNo]:Value   := itmScope
+                    IF itmScope != NULL
+                        SELF:_ToString(itmScope, SELF:_keySize, SELF:_Scopes[SELF:BottomScopeNo]:Buffer, REF uiRealLen)
+                        SELF:_Scopes[SELF:BottomScopeNo]:Size := uiRealLen
+                    ENDIF
                 ENDIF
             OTHERWISE
                 result := FALSE
@@ -489,6 +511,8 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                         IF lWasDescending
                             SELF:Descending := FALSE
                         ENDIF
+                        SELF:_oRdd:_SetEOF(FALSE)
+                        SELF:_oRdd:_SetBOF(FALSE)
                         isOk := SELF:GoTop()
                         recno := SELF:_RecNo
                         last := SELF:_oRdd:RecCount + 1
@@ -740,14 +764,18 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             ENDIF
             RETURN
 
-        // Three methods to calculate keys. We have split these to optimize index creating
+        // Methods to calculate keys. We have split these to optimize index creating
         PRIVATE METHOD _getNumFieldValue(sourceIndex AS LONG, byteArray AS BYTE[]) AS LOGIC
-            LOCAL r8 := DoubleStruct{} AS DoubleStruct
             LOCAL oValue := SELF:_oRdd:GetValue(_SingleField+1) AS OBJECT
-            r8:doubleValue := Convert.ToDouble(oValue)
-            r8:SaveToIndex(byteArray)
+            DoubleToFoxOrder(Convert.ToDouble(oValue), byteArray)
             RETURN TRUE
-            
+
+       PRIVATE METHOD _getIntFieldValue(sourceIndex AS LONG, byteArray AS BYTE[]) AS LOGIC
+            LOCAL oValue := SELF:_oRdd:GetValue(_SingleField+1) AS OBJECT
+            LongToFoxOrder(Convert.ToInt32(oValue),byteArray)
+            RETURN TRUE
+
+
         PRIVATE METHOD _getDateFieldValue(sourceIndex AS LONG, byteArray AS BYTE[]) AS LOGIC
             LOCAL oValue := SELF:_oRdd:GetValue(_SingleField+1) AS OBJECT
             IF oValue IS IDate VAR valueDate
@@ -758,10 +786,8 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 ENDIF
             ENDIF
             IF oValue IS DateTime VAR dt
-                LOCAL r8 := DoubleStruct{} AS DoubleStruct
                 VAR longValue  := _toJulian(dt)
-                r8:doubleValue := Convert.ToDouble(longValue)
-                r8:SaveToIndex(byteArray)
+                DoubleToFoxOrder(Convert.ToDouble(longValue), byteArray)
                 RETURN TRUE
             ENDIF
             RETURN FALSE

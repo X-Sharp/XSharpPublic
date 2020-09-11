@@ -754,7 +754,17 @@ FUNCTION StrToFloat(c AS STRING) AS FLOAT
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/val/*" />
 FUNCTION Val(cNumber AS STRING) AS USUAL
-    RETURN _VOVal(AllTrim(cNumber))
+    LOCAL isCurrency as LOGIC
+    cNumber := AllTrim(cNumber)
+    isCurrency := cNumber:StartsWith("$")
+    if isCurrency
+        cNumber := cNumber:Substring(1)
+    ENDIF
+    var result := _VOVal(cNumber)
+    IF isCurrency
+        return __Currency{ (REAL8) result }
+    ENDIF        
+    RETURN result
 
 //implements the quirks of VO's version of Val()
 INTERNAL FUNCTION _VOVal(cNumber AS STRING) AS USUAL

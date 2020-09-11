@@ -474,7 +474,7 @@ METHOD Create()
 
 	RETURN hWnd
 
-METHOD Destroy() 
+METHOD Destroy()  AS USUAL CLIPPER
 	
 
 	IF !InCollect()

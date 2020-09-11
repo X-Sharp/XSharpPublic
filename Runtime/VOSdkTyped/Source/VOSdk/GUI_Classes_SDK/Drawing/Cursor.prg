@@ -41,7 +41,7 @@ CLASS Cursor INHERIT VObject
 		RETURN
 
 
-	METHOD Destroy() 
+	METHOD Destroy()  AS USUAL CLIPPER
 		LOCAL oWndCursor AS Cursor
 
 		IF lCreated

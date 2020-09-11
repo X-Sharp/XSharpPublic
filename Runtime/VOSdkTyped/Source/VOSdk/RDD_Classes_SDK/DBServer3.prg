@@ -511,7 +511,7 @@ METHOD Info( kInfoType AS LONG, uInfo := NIL AS USUAL) AS USUAL
 	
 	RETURN uInfo
 
-METHOD Join( oDBSource, oFSTarget, aFieldList, cbForBlock ) AS LOGIC
+METHOD Join( oDBSource, oFSTarget, aFieldList, cbForBlock ) AS LOGIC CLIPPER
 	LOCAL cSource AS STRING
 	LOCAL cTarget AS STRING
 	LOCAL aFieldNames AS ARRAY
@@ -574,7 +574,7 @@ METHOD Join( oDBSource, oFSTarget, aFieldList, cbForBlock ) AS LOGIC
 	DbSetRestoreWorkarea(lRestore)
 	RETURN lRetCode
 
-METHOD Locate( cbForBlock, cbWhileBlock, uScope )  AS LOGIC
+METHOD Locate( cbForBlock, cbWhileBlock, uScope )  AS LOGIC CLIPPER
 	LOCAL uValue AS USUAL
 	LOCAL cbKey AS USUAL
 	LOCAL nNextCount AS LONGINT
@@ -1044,7 +1044,7 @@ METHOD OrderDescend( uOrder AS USUAL, cTarget := "" AS STRING, lNew := NIL AS US
 
 	RETURN lNew
 
-METHOD OrderInfo( kOrderInfoType, oFSIndex, uOrder, uOrdVal ) AS USUAL
+METHOD OrderInfo( kOrderInfoType, oFSIndex, uOrder, uOrdVal ) AS USUAL CLIPPER
 	
 	LOCAL dwCurrentWorkArea := 0 AS DWORD
 	LOCAL oError AS USUAL

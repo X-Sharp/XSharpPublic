@@ -121,7 +121,7 @@ METHOD Create()
 
    RETURN NIL
 
-METHOD Destroy() 
+METHOD Destroy()  AS USUAL CLIPPER
 	//SE-060525
 
    IF hAccel != NULL_PTR

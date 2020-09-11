@@ -1,7 +1,7 @@
 CLASS Icon INHERIT VObject
 	PROTECT hIcon AS PTR
 
-METHOD Destroy() 
+METHOD Destroy()  AS USUAL CLIPPER
 	
 
 	IF ! hIcon == NULL_PTR

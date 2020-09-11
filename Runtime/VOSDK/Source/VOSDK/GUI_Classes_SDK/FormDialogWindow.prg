@@ -26,7 +26,7 @@ METHOD ControlNotify(oEvent)
 	SELF:EventReturnValue := oParent:Owner:EventReturnValue
 	RETURN SELF
 
-METHOD Destroy() 
+METHOD Destroy()  AS USUAL CLIPPER
 	
 	IF !InCollect()
 		oLastFocus := NULL_OBJECT

@@ -1,6 +1,6 @@
 CLASS WindowHorizontalScrollBar INHERIT WindowScrollBar
 
-METHOD Destroy() 
+METHOD Destroy()  AS USUAL CLIPPER
 	
 	ShowScrollBar(hWnd, SB_HORZ, FALSE)
 	SUPER:Destroy()
@@ -30,7 +30,7 @@ END CLASS
 
 CLASS WindowVerticalScrollBar INHERIT WindowScrollBar
 
-METHOD Destroy() 
+METHOD Destroy()  AS USUAL CLIPPER
 	
 	ShowScrollBar(hWnd, SB_VERT, FALSE)
 	SUPER:Destroy()

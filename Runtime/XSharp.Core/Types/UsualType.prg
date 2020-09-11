@@ -76,6 +76,8 @@ BEGIN NAMESPACE XSharp
         MEMBER Decimal	:=27
         /// <summary>The usual contains a Currency value (new in X#).</summary>
         MEMBER Currency	:=28
+        /// <summary>The usual contains a Binary value (new in X#).</summary>
+        MEMBER Binary	:=29
         /// <summary>The usual contains an Memo value. This value is there for compatibility with VO but never used.</summary>
         MEMBER Memo		:=32	// Used in RDD system in VO
         /// <summary>Invalid Usual Type.</summary>

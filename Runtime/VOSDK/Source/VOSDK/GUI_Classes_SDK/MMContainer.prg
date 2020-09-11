@@ -52,7 +52,7 @@ ASSIGN __Value(uNewVal AS USUAL)  STRICT
 	RETURN 
 
 
-METHOD Destroy() 
+METHOD Destroy()  AS USUAL CLIPPER
 
 	IF (pBitMap != NULL_PTR)
 		DIBDelete(pBitMap)

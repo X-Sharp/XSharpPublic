@@ -19,7 +19,7 @@ METHOD Default(oEvent)
 
 	RETURN LOGIC(_CAST, lRetVal)
 
-METHOD Destroy() 
+METHOD Destroy()  AS USUAL CLIPPER
 	
 
 	IF !InCollect()

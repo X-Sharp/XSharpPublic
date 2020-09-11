@@ -155,7 +155,7 @@ ACCESS CanvasArea
 
 	RETURN BoundingBox{Point{0, 0}, Dimension{iWidth, iHeight}}
 
-METHOD Destroy() 
+METHOD Destroy()  AS USUAL CLIPPER
 	
 
 	IF (hDC != NULL_PTR)

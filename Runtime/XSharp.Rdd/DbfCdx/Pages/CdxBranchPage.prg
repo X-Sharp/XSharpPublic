@@ -25,13 +25,14 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         INTERNAL Recno AS LONG
         INTERNAL ChildPage AS LONG
         INTERNAL Key   AS BYTE[]
-        INTERNAL PROPERTY KeyText AS STRING GET SELF:Key:ToAscii()
+        INTERNAL KeyBinary as LOGIC 
+        INTERNAL PROPERTY KeyText AS STRING GET SELF:Key:ToAscii(KeyBinary)
         INTERNAL PROPERTY DebuggerDisplay AS STRING GET  String.Format("{0,6} {1,6:X} {2}",   Recno, ChildPage, KeyText)
-
-        CONSTRUCTOR (nRecno AS LONG, nChild AS LONG, bKey AS BYTE[])
+        CONSTRUCTOR (nRecno AS LONG, nChild AS LONG, bKey AS BYTE[],binary as LOGIC)
             SELF:Recno := nRecno
             SELF:ChildPage := nChild
             SELF:Key   := (BYTE[]) bKey:Clone()
+            SELF:KeyBinary := binary
             RETURN
     END CLASS
     /// <summary>
@@ -266,11 +267,11 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             VAR nPos := SELF:FindKey(action:Key,action:Recno, action:Key:Length)
             //Self:Debug("Split to page", oTarget:PageNo:ToString("X"))
             if nPos < self:NumKeys -1
-                branches:Insert(nPos, CdxBranch{action:Recno, action:ChildPage, action:Key})
+                branches:Insert(nPos, CdxBranch{action:Recno, action:ChildPage, action:Key,SELF:Tag:Binary})
             elseif nPos >= self:NumKeys
-                branches:Add( CdxBranch{action:Recno, action:ChildPage, action:Key})
+                branches:Add( CdxBranch{action:Recno, action:ChildPage, action:Key,SELF:Tag:Binary})
             ELSE
-                branches:Insert(nPos, CdxBranch{action:Recno, action:ChildPage, action:Key})
+                branches:Insert(nPos, CdxBranch{action:Recno, action:ChildPage, action:Key,SELF:Tag:Binary})
             ENDIF
             LOCAL half AS INT
             IF lAdd
@@ -333,7 +334,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 nMax := SELF:NumKeys
                 oList := List<CdxBranch>{nMax}
                 FOR VAR i := 0 TO nMax -1
-                    oList:Add( CdxBranch{SELF:GetRecno(i), SELF:GetChildPage(i), SELF:GetKey(i)})
+                    oList:Add( CdxBranch{SELF:GetRecno(i), SELF:GetChildPage(i), SELF:GetKey(i),SELF:Tag:Binary})
                 NEXT
                 RETURN oList
             END GET

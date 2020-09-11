@@ -12,8 +12,6 @@ USING System.Diagnostics
 BEGIN NAMESPACE XSharp.RDD.CDX
 
     INTERNAL STATIC CLASS CdxHelpers
-        STATIC METHOD ToAscii (SELF bytes AS BYTE[]) AS STRING
-            RETURN ToAscii(bytes, FALSE)
 
         STATIC METHOD ToAscii (SELF bytes AS BYTE[], lHex AS LOGIC) AS STRING
             VAR sb := System.Text.StringBuilder{}

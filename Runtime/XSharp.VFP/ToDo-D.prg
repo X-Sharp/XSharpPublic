@@ -5,7 +5,7 @@
 //
 /// <summary>-- todo --</summary>
 /// <include file="VFPDocs.xml" path="Runtimefunctions/dbalias/*" />
-
+#pragma options("vo15", on)
 FUNCTION DBAlias ()
     THROW NotImplementedException{}
     // RETURN ""

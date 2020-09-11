@@ -160,10 +160,12 @@ BEGIN NAMESPACE XSharp
             RETURN b:Value
             
 
+        /// <include file="RTComments.xml" path="Comments/Operator/*" />
         [DebuggerStepThroughAttribute];
         STATIC OPERATOR IMPLICIT(bytes AS __Binary) AS STRING
             RETURN RuntimeState.WinEncoding:GetString(bytes:Value)
 
+        /// <include file="RTComments.xml" path="Comments/Operator/*" />
         [DebuggerStepThroughAttribute];
         STATIC OPERATOR IMPLICIT(s AS STRING) AS __Binary
             RETURN __Binary{ RuntimeState.WinEncoding:GetBytes(s) }

@@ -36,7 +36,7 @@
     <fox1>true</fox1>
     <fox2>false</fox2>
     <OutputName>BinaryTest</OutputName>
-    <XSharpProjectversion>2.5.2.0</XSharpProjectversion>
+    <XSharpProjectversion>2.6.0.0</XSharpProjectversion>
     <VO1>false</VO1>
     <VO8>false</VO8>
     <VO11>false</VO11>

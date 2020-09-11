@@ -179,11 +179,11 @@ namespace XSharp.Project
             {
                 this.CanGoToSource = true;
                 this.editorInfo = new SourcePosition()
-                {  
-				   FileName = scope.File.FullPath, 
-				   Line = scope.Range.StartLine + 1, 
-				   Column = scope.Range.StartColumn, 
-				};
+                {
+                    FileName = scope.File.FullPath,
+                    Line = scope.Range.StartLine + 1,
+                    Column = scope.Range.StartColumn,
+                };
             }
             //
             this.buildImageData(scope.Kind, scope.Modifiers);
@@ -245,7 +245,7 @@ namespace XSharp.Project
                 case Kind.VODefine:
                     iImage = (int)IconImageIndex._Constant;
                     break;
-                 case Kind.EnumMember:
+                case Kind.EnumMember:
                     iImage = (int)IconImageIndex._EnumMember;
                     break;
                 case Kind.Local:
@@ -437,11 +437,16 @@ namespace XSharp.Project
                     {
                         descText = member.Name;
                     }
-                    if (tm.HasParameters)
+                    if ((tm.Kind == Kind.Method) || (tm.Kind == Kind.Function) || (tm.Kind == Kind.Procedure) || (tm.Kind == Kind.Constructor))
                     {
+                        descText += "( ";
+                        if (tm.HasParameters)
+                        {
 
-                        //
-                        descText += "( " + tm.ParameterList + ")";
+                            //
+                            descText += tm.ParameterList;
+                        }
+                        descText += ")";
                     }
                 }
                 else if (member is XTypeDefinition)
@@ -468,13 +473,13 @@ namespace XSharp.Project
         protected override void buildDescription(_VSOBJDESCOPTIONS flags, IVsObjectBrowserDescription3 obDescription)
         {
             obDescription.ClearDescriptionText();
-            foreach( var element in description)
+            foreach (var element in description)
             {
                 obDescription.AddDescriptionText3(element.Item1, element.Item2, null);
             }
         }
 
-        private void initDescription(XEntityDefinition member ) //, _VSOBJDESCOPTIONS flags, IVsObjectBrowserDescription3 description)
+        private void initDescription(XEntityDefinition member) //, _VSOBJDESCOPTIONS flags, IVsObjectBrowserDescription3 description)
         {
             description = new List<Tuple<string, VSOBDESCRIPTIONSECTION>>();
             //
@@ -508,38 +513,49 @@ namespace XSharp.Project
                 //
                 if (!String.IsNullOrEmpty(modifier))
                 {
-                    description.Add(new Tuple<string, VSOBDESCRIPTIONSECTION>(modifier, VSOBDESCRIPTIONSECTION.OBDS_MISC));
+                    description.Add(new Tuple<string, VSOBDESCRIPTIONSECTION>(modifier, VSOBDESCRIPTIONSECTION.OBDS_ATTRIBUTE));
                 }
                 //
                 if (!String.IsNullOrEmpty(access))
                 {
-                    description.Add(new Tuple<string, VSOBDESCRIPTIONSECTION>(access, VSOBDESCRIPTIONSECTION.OBDS_MISC));
+                    description.Add(new Tuple<string, VSOBDESCRIPTIONSECTION>(access, VSOBDESCRIPTIONSECTION.OBDS_ATTRIBUTE));
                     //description.AddDescriptionText3(access, VSOBDESCRIPTIONSECTION.OBDS_MISC, null);
                 }
                 // 
-                descText = member.Kind.DisplayName().ToUpper() + " ";
-                description.Add(new Tuple<string, VSOBDESCRIPTIONSECTION>(descText, VSOBDESCRIPTIONSECTION.OBDS_MISC));
-                //description.AddDescriptionText3(descText, VSOBDESCRIPTIONSECTION.OBDS_MISC, null);
+                if (member.Kind != Kind.Field)
+                {
+                    VSOBDESCRIPTIONSECTION descName = VSOBDESCRIPTIONSECTION.OBDS_MISC;
+                    descText = member.Kind.DisplayName().ToUpper() + " ";
+                    if (member.Kind == Kind.Constructor)
+                    {
+                        descName = VSOBDESCRIPTIONSECTION.OBDS_NAME;
+                    }
+                    description.Add(new Tuple<string, VSOBDESCRIPTIONSECTION>(descText, descName));
+                    //description.AddDescriptionText3(descText, VSOBDESCRIPTIONSECTION.OBDS_MISC, null);
+                }
                 if (member.Kind != Kind.Constructor)
                 {
                     descText = member.Name;
-                    description.Add(new Tuple<string, VSOBDESCRIPTIONSECTION>(descText, VSOBDESCRIPTIONSECTION.OBDS_MISC));
+                    description.Add(new Tuple<string, VSOBDESCRIPTIONSECTION>(descText, VSOBDESCRIPTIONSECTION.OBDS_NAME));
                 }
                 //description.AddDescriptionText3(descText, VSOBDESCRIPTIONSECTION.OBDS_NAME, null);
                 // Parameters ?
-                if (this.NodeType == LibraryNodeType.Members)
+                if ((this.NodeType == LibraryNodeType.Members) && (member.Kind != Kind.Field))
                 {
+                    descText = "(";
+                    description.Add(new Tuple<string, VSOBDESCRIPTIONSECTION>(descText, VSOBDESCRIPTIONSECTION.OBDS_MISC));
+                    //description.AddDescriptionText3(descText, VSOBDESCRIPTIONSECTION.OBDS_MISC, null);
+
                     if (((XMemberDefinition)member).HasParameters)
                     {
-                        descText = "(";
-                        description.Add(new Tuple<string, VSOBDESCRIPTIONSECTION>(descText, VSOBDESCRIPTIONSECTION.OBDS_MISC));
-                        //description.AddDescriptionText3(descText, VSOBDESCRIPTIONSECTION.OBDS_MISC, null);
                         //
                         int paramNum = 1;
                         foreach (XVariable param in ((XMemberDefinition)member).Parameters)
                         {
-                            descText = param.Name + " AS ";
+                            descText = param.Name;
                             description.Add(new Tuple<string, VSOBDESCRIPTIONSECTION>(descText, VSOBDESCRIPTIONSECTION.OBDS_PARAM));
+                            descText = " AS ";
+                            description.Add(new Tuple<string, VSOBDESCRIPTIONSECTION>(descText, VSOBDESCRIPTIONSECTION.OBDS_MISC));
                             //description.AddDescriptionText3(descText, VSOBDESCRIPTIONSECTION.OBDS_PARAM, null);
                             descText = param.TypeName;
                             //
@@ -556,10 +572,10 @@ namespace XSharp.Project
                                 //description.AddDescriptionText3(descText, VSOBDESCRIPTIONSECTION.OBDS_COMMA, null);
                             }
                         }
-                        descText = ")";
-                        description.Add(new Tuple<string, VSOBDESCRIPTIONSECTION>(descText, VSOBDESCRIPTIONSECTION.OBDS_MISC));
-                        //description.AddDescriptionText3(descText, VSOBDESCRIPTIONSECTION.OBDS_MISC, null);
                     }
+                    descText = ")";
+                    description.Add(new Tuple<string, VSOBDESCRIPTIONSECTION>(descText, VSOBDESCRIPTIONSECTION.OBDS_MISC));
+                    //description.AddDescriptionText3(descText, VSOBDESCRIPTIONSECTION.OBDS_MISC, null);
                 }
                 if (member.Kind.HasReturnType())
                 {
@@ -586,7 +602,52 @@ namespace XSharp.Project
                 description.Add(new Tuple<string, VSOBDESCRIPTIONSECTION>(null, VSOBDESCRIPTIONSECTION.OBDS_ENDDECL));
                 //description.AddDescriptionText3(null, VSOBDESCRIPTIONSECTION.OBDS_ENDDECL, null);
             }
-
+            //
+            if (member.File?.Project != null)
+            {
+                string summary=null, returns=null, remarks=null;
+                List<string> pNames = new List<string>();
+                List<string> pDescriptions = new List<string>();
+                if (member is XMemberDefinition)
+                {
+                    summary = XSharpXMLDocMember.GetMemberSummary((XMemberDefinition)member, member.File?.Project, out returns, out remarks);
+                    XSharpXMLDocMember.GetMemberParameters((XMemberDefinition)member, member.File?.Project, pNames, pDescriptions);
+                }
+                else if ( member is XTypeDefinition)
+                {
+                    summary = XSharpXMLDocMember.GetTypeSummary((XTypeDefinition)member, member.File?.Project, out returns, out remarks);
+                }
+                if (!String.IsNullOrEmpty(summary))
+                {
+                    description.Add(new Tuple<string, VSOBDESCRIPTIONSECTION>("\n", VSOBDESCRIPTIONSECTION.OBDS_MISC));
+                    description.Add(new Tuple<string, VSOBDESCRIPTIONSECTION>("\nSummary:\n", VSOBDESCRIPTIONSECTION.OBDS_NAME));
+                    description.Add(new Tuple<string, VSOBDESCRIPTIONSECTION>(summary, VSOBDESCRIPTIONSECTION.OBDS_MISC));
+                }
+                if (pNames.Count > 0)
+                {
+                    description.Add(new Tuple<string, VSOBDESCRIPTIONSECTION>("\n", VSOBDESCRIPTIONSECTION.OBDS_MISC));
+                    description.Add(new Tuple<string, VSOBDESCRIPTIONSECTION>("\nParameters:\n", VSOBDESCRIPTIONSECTION.OBDS_NAME));
+                    for( int i =0; i < pNames.Count; i++)
+                    {
+                        description.Add(new Tuple<string, VSOBDESCRIPTIONSECTION>(pNames[i], VSOBDESCRIPTIONSECTION.OBDS_PARAM));
+                        description.Add(new Tuple<string, VSOBDESCRIPTIONSECTION>(" : ", VSOBDESCRIPTIONSECTION.OBDS_MISC));
+                        description.Add(new Tuple<string, VSOBDESCRIPTIONSECTION>(pDescriptions[i], VSOBDESCRIPTIONSECTION.OBDS_MISC));
+                    }
+                    
+                }
+                if (!String.IsNullOrEmpty(returns))
+                {
+                    description.Add(new Tuple<string, VSOBDESCRIPTIONSECTION>("\n", VSOBDESCRIPTIONSECTION.OBDS_MISC));
+                    description.Add(new Tuple<string, VSOBDESCRIPTIONSECTION>("\nReturn:\n", VSOBDESCRIPTIONSECTION.OBDS_NAME));
+                    description.Add(new Tuple<string, VSOBDESCRIPTIONSECTION>(returns, VSOBDESCRIPTIONSECTION.OBDS_MISC));
+                }
+                if (!String.IsNullOrEmpty(remarks))
+                {
+                    description.Add(new Tuple<string, VSOBDESCRIPTIONSECTION>("\n", VSOBDESCRIPTIONSECTION.OBDS_MISC));
+                    description.Add(new Tuple<string, VSOBDESCRIPTIONSECTION>("\nRemarks:\n", VSOBDESCRIPTIONSECTION.OBDS_NAME));
+                    description.Add(new Tuple<string, VSOBDESCRIPTIONSECTION>(remarks, VSOBDESCRIPTIONSECTION.OBDS_MISC));
+                }
+            }
         }
 
         private IVsNavInfo buildNavInfo(XFile file, string typeName)

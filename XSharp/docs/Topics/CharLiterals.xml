@@ -3,7 +3,9 @@
 <topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>Char Literals</title>
   <keywords>
-    <keyword>Char</keyword>
+    <keyword>CHAR</keyword>
+    <keyword>Char Literals</keyword>
+    <keyword>Literals</keyword>
   </keywords>
   <body>
     <header>

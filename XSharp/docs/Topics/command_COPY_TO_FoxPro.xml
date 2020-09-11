@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
 <topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
-  <title>COPY TO Command</title>
+  <title>COPY TO Command (FoxPro)</title>
   <keywords>
     <keyword>Commands</keyword>
     <keyword>COPY TO command</keyword>
@@ -13,66 +13,37 @@
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1">COPY TO Command (non FoxPro)</para>
+      <para styleclass="Heading1">COPY TO Command (FoxPro)</para>
     </header>
     <para styleclass="Normal"><snippet src="__CommandInclude" inline="false"/></para>
     <para styleclass="Heading1">Purpose</para>
     <para styleclass="Normal">Export records to a new database or text file.</para>
     <para styleclass="Heading1">Syntax</para>
-    <para styleclass="Code with box">COPY TO &lt;xcTargetFile&gt; [FIELDS &lt;idFieldList&gt;] [&lt;Scope&gt;] <br/><tab />[WHILE &lt;lCondition&gt;] [FOR &lt;lCondition&gt;]<br/><tab />[SDF] | [DELIMITED [WITH BLANK | &lt;xcDelimiter&gt;]] | <br/><tab />[VIA &lt;cDriver&gt;] [INHERIT FROM &lt;acRDDs&gt;]</para>
+    <para styleclass="Code with box">COPY TO &lt;xcTargetFile&gt; [DATABASE &lt;DbName&gt; [NAME &lt;LongName&gt;]<br/> &#160; [FIELDS FieldList | FIELDS LIKE &lt;Skeleton&gt; | FIELDS EXCEPT &lt;Skeleton&gt;]<br/> &#160; [&lt;Scope&gt;] [FOR &lt;lCondition&gt;] [WHILE &lt;lCondition&gt; ] <br/> &#160; [ [WITH] CDX ] | [ [WITH] PRODUCTION ] [NOOPTIMIZE] <br/> &#160; [ [TYPE] [ FOXPLUS | FOX2X | DIF | MOD | SDF | SYLK | WK1 | WKS | WR1<br/> &#160; | WRK | CSV | XLS | XL5 | DELIMITED [ WITH &lt;Delim&gt; | WITH BLANK <br/> &#160; | WITH TAB | WITH CHARACTER &lt;cDelim&gt; ] ] ] [AS &lt;nCodePage&gt;]</para>
     <para styleclass="Heading1">Arguments</para>
     <para styleclass="List">TO &lt;xcTargetFile&gt;<tab />The name of the target file, including an optional drive, directory, and extension. &#160;See SetDefault() and SetPath() for file searching and creation rules. &#160;The default extension for database files is determined by the RDD. &#160;For text files, it is .TXT.</para>
     <para styleclass="List"></para>
     <para styleclass="List"><tab />If &lt;xcTargetFile&gt; does not exist, it is created. &#160;If it exists, this command attempts to open the file in exclusive mode and, if successful, the file is overwritten without warning or error. &#160;If access is denied because, for example, another process is using the file, NetErr() is set to TRUE. </para>
+    <para styleclass="List">DATABASE &lt;DbName&gt;<tab /><text styleclass="Body Text">Specifies a database to which the new table is added. </text><text styleclass="Body Text" style="font-weight:bold; color:#ff0000;">NOT SUPPORTED AT THIS MOMENT</text></para>
+    <para styleclass="List">NAME &lt;LongName&gt;<tab />Specifies a long name for the new table. Long names can contain up to 128 characters and can be used instead of short file names in the database <text styleclass="Body Text" style="font-weight:bold; color:#ff0000;">NOT SUPPORTED AT THIS MOMENT</text></para>
     <para styleclass="List"></para>
-    <para styleclass="List"><snippet src="__FieldList" inline="false"/></para>
-    <para styleclass="List"><snippet src="__Scope" inline="false"/></para>
+    <para styleclass="List"><snippet src="__FoxFieldList" inline="false"/></para>
     <para styleclass="List"><snippet src="__While" inline="false"/></para>
+    <para styleclass="List"><snippet src="__Scope" inline="false"/></para>
     <para styleclass="List"><snippet src="__For" inline="false"/></para>
-    <para styleclass="List">SDF<tab />A System Data Format file with format specifications as shown in the table below. &#160;Records and fields are fixed length.<br/></para>
+    <para styleclass="List">DELIMITED WITH <text styleclass="Body Text">&lt;Delim&gt;</text><tab />Indicates that character fields are separated by a character other than the quotation mark.<tab />&#32;</para>
+    <para styleclass="List">DELIMITED WITH BLANK <tab />Specifies files that contain fields separated by spaces instead of commas.</para>
+    <para styleclass="List">DELIMITED WITH TAB <tab />Specifies files that contain fields separated by tabs rather than commas.</para>
+    <para styleclass="List">WITH CHARACTER <text styleclass="Body Text">&lt;cDelim&gt;</text><tab />Specifies files that contain fields all enclosed by the character specified with Delimiter. If Delimiter is a semicolon (the character used in Visual FoxPro to indicate command line continuation), enclose the semicolon in quotation marks. You can also specify the BLANK and TAB keywords for Delimiter.<br/>The WITH Delimiter clause can be combined with the WITH CHARACTER clause. </para>
     <para styleclass="List"></para>
-    <para styleclass="List">File Element<tab />Format<tab /></para>
-    <para styleclass="List">Character fields<tab />Padded with trailing blanks<tab /></para>
-    <para styleclass="List">Date fields<tab />yyyymmdd<tab /></para>
-    <para styleclass="List">Logical fields<tab />T or F<tab /></para>
-    <para styleclass="List">Memo fields<tab />Ignored<tab /></para>
-    <para styleclass="List">Numeric fields<tab />Padded with leading blanks for zeros<tab /></para>
-    <para styleclass="List">Field separator<tab />None<tab /></para>
-    <para styleclass="List">Record separator<tab />Carriage return/linefeed<tab /></para>
-    <para styleclass="List">End of file marker<tab />1A hex or Chr(26)<tab /></para>
-    <para styleclass="List"></para>
-    <para styleclass="List">DELIMITED [WITH &lt;xcDelimiter&gt;]</para>
-    <para styleclass="List"><tab />A text file in which character fields are enclosed in double quote marks (the default delimiter) or the specified &lt;xcDelimiter&gt;. &#160;Fields and records are variable length, and the format specifications are shown in the table below:</para>
-    <para styleclass="List"></para>
-    <para styleclass="List">File Element<tab />Format<tab /></para>
-    <para styleclass="List">Character fields<tab />Delimited, with trailing blanks truncated<tab /></para>
-    <para styleclass="List">Date fields<tab />yyyymmdd<tab /></para>
-    <para styleclass="List">Logical fields<tab />T or F<tab /></para>
-    <para styleclass="List">Memo fields<tab />Ignored<tab /></para>
-    <para styleclass="List">Numeric fields<tab />Leading zeros truncated<tab /></para>
-    <para styleclass="List">Field separator<tab />Comma<tab /></para>
-    <para styleclass="List">Record separator<tab />Carriage return/linefeed<tab /></para>
-    <para styleclass="List">End of file marker<tab />1A hex or Chr(26)<tab /></para>
-    <para styleclass="List"></para>
-    <para styleclass="List">DELIMITED WITH BLANK</para>
-    <para styleclass="List"><tab />A text file in which fields are separated by one space and character fields are not enclosed in delimiters. &#160;The format specifications are shown in the table below:</para>
-    <para styleclass="List"></para>
-    <para styleclass="List">File Element<tab />Format<tab /></para>
-    <para styleclass="List">Character fields<tab />Not delimited, trailing blanks truncated<tab /></para>
-    <para styleclass="List">Date fields<tab />yyyymmdd<tab /></para>
-    <para styleclass="List">Logical fields<tab />T or F<tab /></para>
-    <para styleclass="List">Memo fields<tab />Ignored<tab /></para>
-    <para styleclass="List">Numeric fields<tab />Leading zeros truncated<tab /></para>
-    <para styleclass="List">Field separator<tab />Single blank space<tab /></para>
-    <para styleclass="List">Record separator<tab />Carriage return/linefeed<tab /></para>
-    <para styleclass="List">End of file marker<tab />1A hex or Chr(26)<tab /></para>
-    <para styleclass="List"></para>
-    <para styleclass="List"><tab />Warning! &#160;If the DELIMITED WITH clause is specified on a COPY TO command line, it must be the last clause specified.</para>
-    <para styleclass="List"></para>
-    <para styleclass="List">VIA &lt;cDriver&gt;<tab />The name of the RDD that will service the work area. &#160;If not specified, the default RDD as determined by <link displaytype="text" defaultstyle="true" type="topiclink" href="html\Overload_XSharp_RT_Functions_RddSetDefault.htm" domain="XSharpRef.chm" styleclass="Normal">RDDSetDefault()</link> is used.</para>
-    <para styleclass="List"></para>
-    <para styleclass="List">INHERIT FROM &lt;acRDDs&gt;</para>
-    <para styleclass="List"><tab /><tab />A one-dimensional array with the names of RDDs from which the main RDD inherits special functionality. &#160;This allows you to use RDDs with special capabilities, like encryption or decryption, in different work areas with different database drivers. &#160;These RDDs overlay special functions of the main RDD (specified with the VIA clause). &#160;If multiple RDDs (specified with this INHERIT FROM clause) implement the same function, the function associated with the last RDD in the list takes precedence.</para>
+    <para styleclass="List">TYPE<tab />Specifies the file type if the file you create is not a XBase table. Although you must specify a file type, you do not need to include the TYPE keyword.</para>
+    <para styleclass="List"><tab />From the various types that FoxPro allows only the following ones are supported in X# at this moment:</para>
+    <para styleclass="List"><tab />SDF<tab />An SDF file is an ASCII text file in which records have a fixed length and end with a carriage return and line feed. Fields are not delimited. <br/><tab />The file name extension is assumed to be .txt for SDF files.</para>
+    <para styleclass="List"><br/>CSV<tab />A comma separated value file. A CSV file has field names as the first line in the file; the field names are ignored when the file is imported.<br/><tab />The file name extension is assumed to be .csv for CSV files.<br/>FOXPLUS<tab />Visual FoxPro memo files have a different structure than FoxBASE memo files. <br/><tab /><tab />If your source table contains a memo field, include the FOXPLUS clause to create a table that can be used in FoxBASE+. <br/><tab /><tab />The Visual FoxPro memo field cannot contain binary data because FoxBASE+ does not support binary data in memo fields.</para>
+    <para styleclass="List"><tab /><text styleclass="Body Text">FOX2X</text><tab /><tab /><text styleclass="Body Text">Creates a new table that can be opened in earlier versions of FoxPro (versions 2.0, 2.5, and 2.6).</text></para>
+    <para styleclass="List"><tab /><text styleclass="Body Text">OTHER</text><tab /><text styleclass="Body Text" style="font-weight:bold; color:#ff0000;">NOT SUPPORTED AT THIS MOMENT</text></para>
+    <para styleclass="List">AS &lt;nCodePage&gt;<tab />Specifies the codepage to use for the target file. <text styleclass="Body Text" style="font-weight:bold; color:#ff0000;">NOT SUPPORTED AT THIS MOMENT</text></para>
+    <para styleclass="List"><tab /><tab /></para>
     <para styleclass="Heading1">Notes</para>
     <para styleclass="Normal"><text styleclass="BoldItalic" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">Deleted records: &#160;</text>If <link displaytype="text" defaultstyle="true" type="topiclink" href="html\Overload_XSharp_Core_Functions_SetDeleted.htm" domain="XSharpRef.chm">SetDeleted()</link><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">&#32;</text> is FALSE, deleted records in the source file are copied to &lt;<text styleclass="Italic">xcTargetFile</text>&gt; where they retain their deleted status.</para>
     <para styleclass="Normal"></para>

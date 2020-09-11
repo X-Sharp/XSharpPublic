@@ -12,5 +12,7 @@
     </header>
     <para styleclass="Normal">For normal use the logic type is mapped to System.Boolean. </para>
     <para styleclass="Normal">Inside VOSTRUCT and UNION the XSharp.__WinBool is used because this is a 4 byte value just like the Win32 api expects.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><snippet src="LOGIC" inline="false"/></para>
   </body>
 </topic>

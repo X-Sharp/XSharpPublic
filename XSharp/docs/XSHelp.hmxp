@@ -191,6 +191,7 @@
       <config-value name="make3includeskin">OPT_PARENTHOME,OPT_TOPICFOOTER</config-value>
       <config-value name="make5include">PRINT</config-value>
       <config-value name="make5status">*</config-value>
+      <config-group name="bookmarks"/>
     </config-group>
     <config-group name="pdf">
       <config-value name="style">0</config-value>
@@ -745,7 +746,6 @@
       <file-mod href="__IncludeXPPMethodNames.xml"/>
       <file-mod href="X-Walkthroughs.xml"/>
       <file-mod href="__ByRef.xml"/>
-      <file-mod href="__TextRDD.xml"/>
       <file-mod href="command_SET_ANSI.xml" build="CHM,HTML,PDF"/>
       <file-mod href="command_SET_EXACT.xml" build="CHM,HTML,PDF"/>
       <file-mod href="cmd_cat_set.xml" build="CHM,HTML,PDF"/>

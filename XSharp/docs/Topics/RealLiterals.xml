@@ -6,6 +6,8 @@
     <keyword>Currency</keyword>
     <keyword>Currency Literal</keyword>
     <keyword>Floating point Literals</keyword>
+    <keyword>Literals</keyword>
+    <keyword>Numeric Literals</keyword>
   </keywords>
   <body>
     <header>

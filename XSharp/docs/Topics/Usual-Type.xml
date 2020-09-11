@@ -13,7 +13,7 @@
     <para styleclass="Normal">The USUAL type in X# is implemented as a .Net structure. It contains a type flag and a value. The value can be one of the following types:</para>
     <para styleclass="Normal">NIL, Long, Date, Float, Array, Object, String, Logic, Codeblock, Symbol, Ptr, Int64, DateTime, Decimal, DateTime</para>
     <para styleclass="Normal">The internal type name for this type is XSharp.__Usual<br/></para>
-    <para styleclass="Normal"><table styleclass="Default" rowcount="15" colcount="2" style="width:auto; background-color:#ffffff; head-row-background-color:#c0c0c0; alt-row-background-color:#ccffff;">
+    <para styleclass="Normal"><table styleclass="Default" rowcount="17" colcount="2" style="width:auto; background-color:#ffffff; head-row-background-color:#c0c0c0; alt-row-background-color:#ccffff;">
       <thead style="vertical-align:top">
         <td>
           <para styleclass="Normal"><text style="font-weight:bold;">Type</text></para>
@@ -134,6 +134,22 @@
           <para styleclass="Normal">27</para>
         </td>
       </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">Currency</para>
+        </td>
+        <td>
+          <para styleclass="Normal">28</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">Binary</para>
+        </td>
+        <td>
+          <para styleclass="Normal">29</para>
+        </td>
+      </tr>
     </table></para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal">Note that some Usual Type numbers are not included in this table. There are defines in the compiler for these numbers, but <text style="font-weight:bold;">they are never stored</text> inside a USUAL.<br/>So you can write UsualType(uValue) == REAL8 but that will NEVER be true.</para>
@@ -237,5 +253,6 @@
       </tr>
     </table></para>
     <para styleclass="Normal"></para>
+    <para styleclass="Normal"><snippet src="USUAL" inline="false"/></para>
   </body>
 </topic>

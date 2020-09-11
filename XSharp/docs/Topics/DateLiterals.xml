@@ -3,7 +3,9 @@
 <topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>Date Literals</title>
   <keywords>
+    <keyword>DATE</keyword>
     <keyword>Date Literals</keyword>
+    <keyword>DATETIME</keyword>
     <keyword>DateTime Literals</keyword>
     <keyword>Literals</keyword>
   </keywords>

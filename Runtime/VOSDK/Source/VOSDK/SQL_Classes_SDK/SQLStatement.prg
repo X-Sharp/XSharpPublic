@@ -281,7 +281,7 @@ ASSIGN CursorType( nVal )
 	ENDIF
 	RETURN SELF:nCursorType
 
-METHOD Destroy() 
+METHOD Destroy()  AS USUAL CLIPPER
 	IF hStmt != SQL_NULL_HSTMT .AND. oConn != NULL_OBJECT 
 		IF oConn:Connected
 		   SELF:__FreeParameters()

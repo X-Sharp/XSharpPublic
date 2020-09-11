@@ -154,9 +154,9 @@ CLASS SQLConnection
 		LOCAL cConnStr AS STRING
 		LOCAL cUserID AS STRING
 		LOCAL cPassword  AS STRING
-		DEFAULT( REF uConnStr, SELF:ConnectString )
-		DEFAULT( REF uUserID, SELF:UserID )
-		DEFAULT( REF uPassword, SELF:Password )
+		@@Default( REF uConnStr, SELF:ConnectString )
+		@@Default( REF uUserID, SELF:UserID )
+		@@Default( REF uPassword, SELF:Password )
 		cConnStr := (STRING) uConnStr
 		cUserID  := (STRING) uUserID
 		cPassword := (STRING) uPassword        
@@ -1105,7 +1105,7 @@ FUNCTION SQLGetDataSources() AS ARRAY
 
 
 FUNCTION SQLConnectErrorMsg( lValue ) AS LOGIC
-	DEFAULT( REF lValue, FALSE )
+	@@Default( REF lValue, FALSE )
 	SQLConnection.lConnErrMsg := lValue
 	RETURN SQLConnection.lConnErrMsg
 

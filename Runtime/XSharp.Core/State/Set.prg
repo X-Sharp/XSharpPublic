@@ -146,9 +146,21 @@ FUNCTION SetDecimalSep(nNewSetting AS DWORD) AS DWORD
 FUNCTION SetDefault() AS STRING
 	GETSTATE STRING Set.Default 
 
+
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/setdefault/*" />
 FUNCTION SetDefault(cPathSpec AS STRING) AS STRING
 	SetPathArray(NULL)
+    IF XSharp.RuntimeState.Dialect == XSharpDialect.FoxPro
+        VAR cTemp := cPathSpec:Trim()
+        IF cTemp:EndsWith(System.IO.Path.DirectorySeparatorChar:ToString())
+            cTemp := cTemp:Substring(0, cTemp:Length-1) 
+        ENDIF
+        IF ! System.IO.Directory.Exists(cTemp)
+            var err := Error.VOError(EG_ARG, __FUNCTION__, nameof(cPathSpec),1, <OBJECT>{cPathSpec})
+            err:Description := "Directory not found: '"+cPathSpec+"'"
+            THROW err
+        ENDIF
+    ENDIF
 	SETSTATE STRING Set.Default  cPathSpec
 
 

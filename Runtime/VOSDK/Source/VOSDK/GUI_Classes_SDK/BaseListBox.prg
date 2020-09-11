@@ -92,7 +92,7 @@ METHOD DeleteItem(nItemNumber)
 	RETURN FALSE
 	
 
-METHOD Destroy() 
+METHOD Destroy()   AS USUAL CLIPPER
 	IF IsWindow(hwnd)
 		sSavedCurrentItem := SELF:CurrentItem
 		liSavedCurrentItemNo := SELF:CurrentItemNo

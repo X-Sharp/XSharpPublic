@@ -18,7 +18,7 @@ BEGIN NAMESPACE XSharp.VFP.Tests
 		METHOD EmptyClasstests() AS VOID
             local o as Object
             o := XSharp.VFP.Empty{}
-            Assert.Throws( typeof(XSharp.Error), { => o:NonExistingProperty := 123 })
+            Assert.Throws( typeof(XSharp.VFP.PropertyNotFoundException), { => o:NonExistingProperty := 123 })
             try
                 o:NonExistingProperty := 123 
             catch e as exception
@@ -29,6 +29,6 @@ BEGIN NAMESPACE XSharp.VFP.Tests
             AddProperty(o, "BestLanguage","X#")
             Assert.True( (string) o:BestLanguage  == "X#")
             RemoveProperty(o, "BestLanguage")
-            Assert.Throws( typeof(XSharp.Error), { => o:BestLanguage  := FALSE})
+            Assert.Throws( typeof(XSharp.VFP.PropertyNotFoundException), { => o:BestLanguage  := FALSE})
     END CLASS
 END NAMESPACE

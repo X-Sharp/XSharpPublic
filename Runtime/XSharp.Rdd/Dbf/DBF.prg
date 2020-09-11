@@ -247,15 +247,17 @@ METHOD Skip(nToSkip AS INT) AS LOGIC
 		ELSE
 			result := SELF:SkipRaw( nToSkip )
             // We reached the top ?
-			IF result .AND. ( nToSkip < 0 ) .AND. SELF:_BoF
-				SELF:GoTop()
-				SELF:BoF := TRUE
-			ENDIF
-			IF nToSkip < 0 
-				SELF:_SetEOF(FALSE)
-			ELSEIF nToSkip > 0 
-				SELF:BoF := FALSE
-			ENDIF
+			IF result
+                IF ( nToSkip < 0 ) .AND. SELF:_BoF
+				    SELF:GoTop()
+				    SELF:BoF := TRUE
+			    ENDIF
+			    IF nToSkip < 0 
+				    SELF:_SetEOF(FALSE)
+			    ELSEIF nToSkip > 0 
+				    SELF:BoF := FALSE
+                ENDIF
+             ENDIF
         ENDIF
 	ENDIF
     SELF:_CheckEofBof()
@@ -1633,8 +1635,10 @@ METHOD Refresh() 			AS LOGIC
 	ENDIF
 	SELF:_Hot := FALSE
 	SELF:_BufferValid := FALSE
-	IF SELF:_NewRecord 
+	IF SELF:_NewRecord
+        VAR nCount := SELF:RecCount
 		SELF:_NewRecord  := FALSE
+        SELF:_UpdateRecCount(nCount-1)      // writes the reccount to the header as well
 		isOK := SELF:GoBottom()
 	ELSE
 		isOK := TRUE
@@ -1905,11 +1909,12 @@ VIRTUAL METHOD Compile(sBlock AS STRING) AS ICodeblock
 	LOCAL result AS ICodeblock
 	result := SUPER:Compile(sBlock)
 	IF result == NULL
-        var msg := "Could not compile epression '"+sBlock+"'"
         if (RuntimeState:LastRddError != NULL_OBJECT)
-            msg += "("+RuntimeState:LastRddError:Message+")"
+            SELF:_dbfError( RuntimeState:LastRddError, Subcodes.EDB_EXPRESSION, Gencode.EG_SYNTAX,"DBF.Compile")
+        ELSE
+            var msg := "Could not compile epression '"+sBlock+"'"
+		    SELF:_dbfError( Subcodes.EDB_EXPRESSION, Gencode.EG_SYNTAX,"DBF.Compile", msg )
         ENDIF
-		SELF:_dbfError( Subcodes.EDB_EXPRESSION, Gencode.EG_SYNTAX,"DBF.Compile", msg )
 	ENDIF
 RETURN result
 

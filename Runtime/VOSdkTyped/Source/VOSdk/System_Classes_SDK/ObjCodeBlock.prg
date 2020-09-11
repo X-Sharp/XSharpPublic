@@ -2,7 +2,7 @@
 	HIDDEN oOwner       AS OBJECT
 	HIDDEN symMethod    AS SYMBOL
 
-METHOD Eval (args PARAMS ARRAY[])               
+METHOD Eval (args PARAMS ARRAY[]) AS USUAL               
 	LOCAL xRet  AS USUAL
 	xRet := __InternalSend(SELF:oOwner, SELF:symMethod, args)
 	RETURN xRet

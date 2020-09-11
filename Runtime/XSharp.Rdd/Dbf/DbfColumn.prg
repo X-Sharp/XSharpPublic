@@ -756,8 +756,14 @@ BEGIN NAMESPACE XSharp.RDD
             oField:Counter := SELF:Counter 
             oField:IncStep := (BYTE) SELF:IncrStep 
             SELF:RDD:_writeField(SELF:OffSetInHeader, oField)
-            RETURN TRUE
-
+            RETURN TRUE  
+	    
+        /// <inheritdoc/>
+        VIRTUAL METHOD PutValue(oValue AS OBJECT, buffer AS BYTE[]) AS LOGIC
+            // FoxPro throws an error when writing to an autonumber field. We do that too.    
+            SELF:RDD:_dbfError(Subcodes.ERDD_WRITE ,EG_READONLY,"PutValue", i"Field '{SELF:Name}' is ReadOnly")
+            RETURN FALSE
+	    
         /// <inheritdoc/>
         VIRTUAL METHOD NewRecord(buffer AS BYTE[]) AS VOID
             // when shared then read the header again to get the current values of the counter and incrstep
@@ -765,14 +771,16 @@ BEGIN NAMESPACE XSharp.RDD
             // then write the current value to the buffer
             LOCAL nCurrent as LONG
             nCurrent := SELF:Counter
-            IF SELF:RDD:HeaderLock(DbLockMode.Lock)
-            
-                SELF:Read()
-                SELF:Counter += SELF:IncrStep
-                SELF:Write()
-                SELF:RDD:HeaderLock( DbLockMode.UnLock )
-            ENDIF
-            SELF:PutValue(nCurrent, buffer)
+            DO WHILE ! SELF:RDD:HeaderLock(DbLockMode.Lock)
+            ENDDO
+            SELF:Read()
+            SELF:Counter += SELF:IncrStep
+            SELF:Write()
+            SELF:RDD:HeaderLock( DbLockMode.UnLock )
+	    
+	    // Call SUPER:PutValue because we have overwritten PutValue to not allow to write, 
+	    // but this of course is the exception, since we HAVE to write the new autonumber field.
+            SUPER:PutValue(nCurrent, buffer)
             RETURN
 
 

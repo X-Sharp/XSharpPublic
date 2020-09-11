@@ -5,8 +5,8 @@
 //
 
 
-/// <summary>-- todo --</summary>
 
+#pragma options("vo15", on)
 
 /// <summary>-- todo --</summary>
 /// <include file="VFPDocs.xml" path="Runtimefunctions/raiseevent/*" />

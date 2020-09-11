@@ -353,7 +353,7 @@ METHOD DeleteItem(symName, lChildsOnly)
 
 	RETURN TreeView_DeleteItem(SELF:Handle(), hThisItem)
 
-METHOD Destroy() 
+METHOD Destroy()  AS USUAL CLIPPER
 	
 
 	IF !InCollect()

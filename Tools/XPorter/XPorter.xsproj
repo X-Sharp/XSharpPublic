@@ -1,8 +1,7 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(MSBuildExtensionsPath)\XSharp\XSharp.Default.props" />
+  <Import Project="$(XSharpMsBuildDir)\XSharp.Default.props" />
   <PropertyGroup>
-    <XSharpProjectExtensionsPath>$(MSBuildExtensionsPath)\XSharp\</XSharpProjectExtensionsPath>
     <Name>XPorter</Name>
     <ProjectGuid>8a49a47c-ade7-416c-8b28-cd3b401cbc25</ProjectGuid>
     <OutputType>WinExe</OutputType>
@@ -48,7 +47,7 @@
     <DisabledWarnings>1591</DisabledWarnings>
     <WarningLevel>4</WarningLevel>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-    <XSharpProjectversion>2.0.5.0</XSharpProjectversion>
+    <XSharpProjectversion>2.6.0.0</XSharpProjectversion>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
     <Optimize>false</Optimize>
@@ -88,7 +87,7 @@
     <PlatformTarget>AnyCPU</PlatformTarget>
     <Prefer32Bit>True</Prefer32Bit>
   </PropertyGroup>
-  <Import Project="$(MSBuildExtensionsPath)\XSharp\XSharp.targets" />
+  <Import Project="$(XSharpMsBuildDir)\XSharp.targets" />
   <ItemGroup>
     <Reference Include="mscorlib" />
     <Reference Include="System" />

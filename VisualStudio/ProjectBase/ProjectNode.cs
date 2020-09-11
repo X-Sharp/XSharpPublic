@@ -4064,7 +4064,7 @@ namespace Microsoft.VisualStudio.Project
 
         private void UpdateMSBuildState()
         {
-            this.buildProject.ReevaluateIfNecessary();
+            this.buildProject?.ReevaluateIfNecessary();
         }
 
         /// <summary>

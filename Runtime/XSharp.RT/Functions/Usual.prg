@@ -182,30 +182,16 @@ FUNCTION Len(uValue AS USUAL) AS DWORD
 	ENDIF
 
 
-
-  
-
-
-/// <summary>
-/// Assign a default value to a NIL argument.
-/// </summary>
-/// <param name="uVar"></param>
-/// <param name="uDefaultValue"></param>
-/// <returns>
-/// </returns>
-FUNCTION DEFAULT(uVar REF USUAL, uDefaultValue AS USUAL) AS VOID
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/default/*" />
+FUNCTION Default(uVar REF USUAL, uDefault AS USUAL) AS VOID
 	IF uVar:IsNil
-		uVar := uDefaultValue
+		uVar := uDefault
 	ENDIF
 	RETURN  
 
 
-/// <summary>
-/// Make sure a variable is a numeric.
-/// </summary>
-/// <param name="refu"></param>
-/// <returns> 
-/// </returns>
+
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/enforcenumeric/*" />
 FUNCTION EnforceNumeric(u REF USUAL) AS VOID
 	IF u:IsNil
 		u := 0
@@ -214,18 +200,19 @@ FUNCTION EnforceNumeric(u REF USUAL) AS VOID
 	ENDIF
 	RETURN  
 
-/// <summary>
-/// Make sure a variable is of a certain type.
-/// </summary>
-/// <param name="refu"></param>
-/// <param name="nType"></param>
-/// <returns>
-/// </returns>
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/enforcetype/*" />
 FUNCTION EnforceType(u REF USUAL, dwType AS DWORD) AS VOID
-	IF u:IsNil
+	IF u:_usualType != dwType
 		u := EmptyUsual(dwType)
-	ELSEIF UsualType(u) != dwType
+	ENDIF
+	RETURN
+
+
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/enforcetype/*" />
+FUNCTION EnforceType(u AS USUAL, dwType AS DWORD) AS VOID
+	IF u:_usualType != dwType
         VAR cMessage := "Expected type: " + ((__UsualType) dwType):ToString()+" actual type "+ ((__UsualType) UsualType(u)):ToString()
 		THROW Error.DataTypeError(ProcName(1), nameof(u), 1, u, cMessage)
 	ENDIF
 	RETURN  
+

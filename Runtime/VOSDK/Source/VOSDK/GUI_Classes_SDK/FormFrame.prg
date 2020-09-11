@@ -596,7 +596,7 @@ ASSIGN DataWindow(oNewDW)
 // 	//PP-041014 Method unused, to be removed next repository build
 // 	RETURN SELF
 
-METHOD Destroy()
+METHOD Destroy() AS USUAL CLIPPER
 
 
 	IF (oFormDlg != NULL_OBJECT)

@@ -1,7 +1,7 @@
 CLASS EventContext INHERIT VObject
 	PROTECT ptrSelfPtr AS SelfPtr // PTR  dcaton 070301 - type it as it really is!
 
-METHOD Destroy() 
+METHOD Destroy()  AS USUAL CLIPPER
 
    __WCSelfPtrFree(ptrSelfPtr)
 

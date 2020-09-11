@@ -40,7 +40,7 @@ ASSIGN Brush(oNewBrush)
 	ENDIF
 	RETURN oBrush:=oNewBrush
 
-METHOD Destroy() 
+METHOD Destroy()  AS USUAL CLIPPER
 	
 
 	IF !InCollect()

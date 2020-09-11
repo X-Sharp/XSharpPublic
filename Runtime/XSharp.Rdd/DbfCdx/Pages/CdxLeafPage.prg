@@ -67,13 +67,15 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         INTERNAL Key    AS BYTE[]
         INTERNAL Trail  AS BYTE
         INTERNAL Dup    AS BYTE
-        INTERNAL PROPERTY KeyText AS STRING GET SELF:Key:ToAscii()
+        INTERNAL KeyBinary AS LOGIC
+        INTERNAL PROPERTY KeyText AS STRING GET SELF:Key:ToAscii(KeyBinary)
         INTERNAL PROPERTY DebuggerDisplay AS STRING GET String.Format("{0,6} {1} ", Recno, KeyText)
-        CONSTRUCTOR (nRecno AS LONG, bKey AS BYTE[], nDup AS BYTE, nTrail AS BYTE)
+        CONSTRUCTOR (nRecno AS LONG, bKey AS BYTE[], nDup AS BYTE, nTrail AS BYTE, binary as LOGIC)
             SELF:Recno := nRecno
             SELF:Key   := (BYTE[]) bKey:Clone()
             SELF:Dup   := nDup
             SELF:Trail := nTrail
+            SELF:KeyBinary := binary
             RETURN
     END CLASS
 	/// <summary>
@@ -116,6 +118,15 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         PRIVATE CONST CDXLEAF_HEADERLEN             := 24   AS WORD // length of the page header
         PRIVATE CONST CDXLEAF_BYTESFREE             := 488  AS WORD // # of bytes 512 - 24
 #endregion
+
+        INTERNAL PROPERTY Binary AS LOGIC
+            GET
+                IF SELF:Tag != NULL
+                    RETURN SELF:Tag:Binary
+                ENDIF
+                RETURN FALSE
+            END GET
+        END PROPERTY
 
 
         INTERNAL CONSTRUCTOR( bag AS CdxOrderBag, page AS CdxPage)
@@ -282,7 +293,8 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                         System.Array.Copy(_buffer, nStart - nCopy, aBytes, nDup, nCopy)
                         nStart := nStart - nCopy
                     ENDIF
-                    _leaves.Add( CdxLeaf{ nRecno, aBytes,nDup, nTrail})
+                    var leaf := CdxLeaf{ nRecno, aBytes,nDup, nTrail,SELF:Binary}
+                    _leaves.Add( leaf)
                     nOffSet      += nStep
                 NEXT
             ENDIF
@@ -439,7 +451,8 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 SELF:Write()
                 RETURN CdxAction.AddLeaf(SELF, recno, key)
             ENDIF
-            VAR leaf := CdxLeaf{recno, key,nDupCount, nTrailCount}
+            VAR leaf := CdxLeaf{recno, key,nDupCount, nTrailCount,SELF:Binary}
+            
             _leaves:Add( leaf)
 #ifdef TESTCDX
             IF _leaves:Count > 1
@@ -491,7 +504,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             // compare position in page
             LOCAL nDupCount AS BYTE
             IF _leaves:Count == 0
-                leaf := CdxLeaf{recno, key, 0, nTrailCount}
+                leaf := CdxLeaf{recno, key, 0, nTrailCount,SELF:Binary}
                 _leaves:Add(leaf)
                 SELF:Freespace -= nBytesNeeded  
                 last := TRUE
@@ -499,7 +512,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 VAR prevLeaf := _leaves[_leaves:Count-1]
                 VAR prevkey := prevLeaf:Key
                 nDupCount := SELF:_getDupCount(prevkey, key,  nTrailCount)
-                leaf := CdxLeaf{recno, key,  nDupCount, nTrailCount}
+                leaf := CdxLeaf{recno, key,  nDupCount, nTrailCount,SELF:Binary}
                 _leaves:Add(leaf)
 #ifdef TESTCDX
                 ValidateLeaves(prevLeaf, leaf)
@@ -509,14 +522,14 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             ELSEIF nPos == 0
                 nDupCount       := 0
                 SELF:Freespace  := SELF:Freespace - nBytesNeeded
-                leaf := CdxLeaf{recno, key,nDupCount,nTrailCount}
+                leaf := CdxLeaf{recno, key,nDupCount,nTrailCount,SELF:Binary}
                 _leaves:Insert(nPos, leaf)
                 adjustNext      := TRUE
             ELSE // nPos > 0 .AND. nPos < _leaves:Count
                 VAR prevLeaf    := _leaves[nPos-1]
                 nDupCount       := SELF:_getDupCount(prevLeaf:Key, key,  nTrailCount)
                 SELF:Freespace  := SELF:Freespace- (nBytesNeeded-nDupCount)
-                leaf := CdxLeaf{recno, key, nDupCount,nTrailCount}
+                leaf := CdxLeaf{recno, key, nDupCount,nTrailCount,SELF:Binary}
 
                 _leaves:Insert(nPos, leaf)
 #ifdef TESTCDX
@@ -644,7 +657,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 LOCAL leaf AS CdxLeaf
                 IF nPos == 0
                     nDupCount := 0
-                    leaf := CdxLeaf{action:Recno, action:Key, 0, nTrailCount}
+                    leaf := CdxLeaf{action:Recno, action:Key, 0, nTrailCount,SELF:Binary}
                     list:Insert(0, leaf)
 #ifdef TESTCDX 
                     IF list:Count > 1
@@ -655,7 +668,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                     VAR nextLeaf := list[nPos]
                     VAR nextKey := nextLeaf:Key
                     nDupCount := SELF:_getDupCount(nextKey, action:Key, nTrailCount)
-                    leaf := CdxLeaf{action:Recno, action:Key, nDupCount, nTrailCount}
+                    leaf := CdxLeaf{action:Recno, action:Key, nDupCount, nTrailCount,SELF:Binary}
                     list:Insert(nPos, leaf)
 #ifdef TESTCDX
                     ValidateLeaves(leaf, nextLeaf)
@@ -668,7 +681,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                     VAR prevLeaf := list[list:Count-1]
                     VAR prevKey := prevLeaf:Key
                     nDupCount := SELF:_getDupCount(prevKey, action:Key, nTrailCount)
-                    leaf := CdxLeaf{action:Recno, action:Key, nDupCount, nTrailCount}
+                    leaf := CdxLeaf{action:Recno, action:Key, nDupCount, nTrailCount,SELF:Binary}
                     list:Add(leaf)
 #ifdef TESTCDX
                     ValidateLeaves(prevLeaf, leaf)
@@ -736,7 +749,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 ELSE
                     nDupCount := SELF:_getDupCount(SELF:_leaves[nPos-1]:Key, node:KeyBytes,nTrailCount)
                 ENDIF
-                _leaves[nPos] := CdxLeaf{node:Recno, node:KeyBytes, nDupCount, nTrailCount}
+                _leaves[nPos] := CdxLeaf{node:Recno, node:KeyBytes, nDupCount, nTrailCount,SELF:Binary}
                 RETURN SELF:Compress()
             ENDIF
             RETURN CdxAction.OutOfBounds(SELF)

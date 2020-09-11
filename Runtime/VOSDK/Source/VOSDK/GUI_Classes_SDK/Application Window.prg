@@ -34,7 +34,7 @@ METHOD Default(oEvent)
 	RETURN SELF
 	
 
-METHOD Destroy() 
+METHOD Destroy()   AS USUAL CLIPPER
 	
 	//SE-070501 
 	//__WCUnregisterMenu(oSysMenu)

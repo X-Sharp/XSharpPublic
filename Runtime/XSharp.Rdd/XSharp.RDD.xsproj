@@ -14,13 +14,21 @@
     <INS>true</INS>
     <NamedArgs>true</NamedArgs>
     <VulcanCompatibleResources>False</VulcanCompatibleResources>
-    <XSharpProjectversion>2.6.0.0</XSharpProjectversion>
+    <XSharpProjectversion>2.5.2.0</XSharpProjectversion>
     <IncludePaths>$(CommonInclude)</IncludePaths>
     <Nostandarddefs>true</Nostandarddefs>
     <StandardDefs />
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'" Label="Configuration">
     <DisabledWarnings />
+    <DebugType>full</DebugType>
+    <DebuggerCommand>
+    </DebuggerCommand>
+    <DebuggerCommandArguments>
+    </DebuggerCommandArguments>
+    <DebuggerWorkingDirectory />
+    <EnableUnmanagedDebugging>true</EnableUnmanagedDebugging>
+    <EmitDebugInformation>true</EmitDebugInformation>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'" Label="Configuration">
     <DisabledWarnings />

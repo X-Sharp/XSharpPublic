@@ -1,7 +1,7 @@
 #pragma warnings(165, off)
 PARTIAL CLASS DbServer
 
-METHOD CopyDB( oFSTarget, aFieldList, cbForBlock, cbWhileBlock, uScope, cdriver, aRdd )   AS LOGIC
+METHOD CopyDB( oFSTarget, aFieldList, cbForBlock, cbWhileBlock, uScope, cdriver, aRdd )   AS LOGIC CLIPPER
 	LOCAL uValue AS USUAL
 	LOCAL cbKey AS USUAL
 	LOCAL nNextCount AS LONGINT
@@ -159,7 +159,7 @@ METHOD CopyDB( oFSTarget, aFieldList, cbForBlock, cbWhileBlock, uScope, cdriver,
 	RETURN lRetCode
 	
 
-METHOD CopyDelimited( oFSTarget, cDelimiter, aFieldList, cbForBlock, cbWhileBlock, uScope )   AS LOGIC
+METHOD CopyDelimited( oFSTarget, cDelimiter, aFieldList, cbForBlock, cbWhileBlock, uScope )   AS LOGIC CLIPPER
 	LOCAL uValue AS USUAL
 	LOCAL cbKey AS USUAL
 	LOCAL nNextCount AS LONGINT
@@ -293,7 +293,7 @@ METHOD CopyDelimited( oFSTarget, cDelimiter, aFieldList, cbForBlock, cbWhileBloc
 	RETURN lRetCode
 	
 
-METHOD CopySDF( oFSTarget, aFieldList, cbForBlock, cbWhileBlock, uScope )   AS LOGIC
+METHOD CopySDF( oFSTarget, aFieldList, cbForBlock, cbWhileBlock, uScope )   AS LOGIC CLIPPER
 	LOCAL uValue AS USUAL
 	LOCAL cbKey AS USUAL
 	LOCAL nNextCount AS LONGINT
@@ -632,7 +632,7 @@ METHOD Count( cbForBlock := NIL AS USUAL, cbWhileBlock := NIL AS USUAL, uScope :
 	RETURN iTally
 	
 
-METHOD CreateIndex( oFSIndex, cExpr, cbExpr, lUnique )  AS LOGIC
+METHOD CreateIndex( oFSIndex, cExpr, cbExpr, lUnique )  AS LOGIC CLIPPER
 	LOCAL cIndexFileName AS STRING
 	LOCAL lRetCode AS LOGIC
 	LOCAL oError AS USUAL
@@ -714,7 +714,7 @@ METHOD CreateIndex( oFSIndex, cExpr, cbExpr, lUnique )  AS LOGIC
 	RETURN lRetCode
 	
 
-METHOD CreateOrder( cOrderName, cIndexFileName, cExpr, cbExpr, lUnique )  AS LOGIC
+METHOD CreateOrder( cOrderName, cIndexFileName, cExpr, cbExpr, lUnique )  AS LOGIC CLIPPER
 	LOCAL lRetCode AS LOGIC
 	LOCAL oError AS USUAL
 	LOCAL dwCurrentWorkArea := 0 AS DWORD
@@ -822,7 +822,7 @@ METHOD DataField( uField AS USUAL) AS DataField
 	RETURN oResult
 	
 
-METHOD Delete( cbForBlock, cbWhileBlock, uScope ) AS LOGIC
+METHOD Delete( cbForBlock, cbWhileBlock, uScope ) AS LOGIC CLIPPER
 	LOCAL nNextCount AS LONGINT
 	LOCAL lRestOfFile AS LOGIC
 	LOCAL lRetCode AS LOGIC
@@ -1020,7 +1020,7 @@ METHOD DeleteAll( )   AS LOGIC STRICT
 	RETURN lRetCode
 	
 
-METHOD DeleteOrder( uOrder, cIndexFileName )  AS LOGIC
+METHOD DeleteOrder( uOrder, cIndexFileName )  AS LOGIC CLIPPER
 	LOCAL lRetCode AS LOGIC
 	LOCAL oError AS USUAL
 	LOCAL cOrder AS USUAL
@@ -1064,7 +1064,7 @@ METHOD DeleteOrder( uOrder, cIndexFileName )  AS LOGIC
 	RETURN lRetCode
 	
 
-METHOD Error( oError AS Error, symMethod AS Symbol) 
+METHOD Error( oError AS Error, symMethod AS Symbol) AS USUAL 
 	STATIC LOCAL lErrorProcessingSemaphor AS LOGIC
 	LOCAL cErrorValType AS STRING
     LOCAL oErr  as Error
@@ -1108,7 +1108,7 @@ METHOD Error( oError AS Error, symMethod AS Symbol)
 	RETURN SELF
 	
 
-METHOD Eval( cbBlock, cbForBlock, cbWhileBlock, uScope )   AS LOGIC
+METHOD Eval( cbBlock, cbForBlock, cbWhileBlock, uScope )   AS LOGIC CLIPPER
 	LOCAL uValue AS USUAL
 	LOCAL cbKey AS USUAL
 	LOCAL nNextCount AS LONGINT
@@ -1378,7 +1378,7 @@ METHOD FieldHyperLabel( uField AS USUAL) AS HyperLabel
 	RETURN uRetVal
 	
 
-METHOD FieldInfo( kFieldInfoType, uField, uFieldVal ) AS USUAL
+METHOD FieldInfo( kFieldInfoType, uField, uFieldVal ) AS USUAL CLIPPER
 	
 	LOCAL nPos AS DWORD
 	LOCAL oError AS USUAL

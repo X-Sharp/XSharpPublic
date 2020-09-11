@@ -12,6 +12,7 @@
     <CS>true</CS>
     <Unsafe>true</Unsafe>
     <NS>true</NS>
+    <vo15>true</vo15>
     <VulcanCompatibleResources>True</VulcanCompatibleResources>
     <XSharpProjectversion>2.5.2.0</XSharpProjectversion>
     <IncludePaths>$(CommonInclude)</IncludePaths>

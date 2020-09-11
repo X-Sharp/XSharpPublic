@@ -264,7 +264,7 @@ namespace XSharp.Project
 
         static private bool getParameterInfo(IVsXMLMemberIndex file, string xml, IList<string> names, IList<string> descriptions)
         {
-            Microsoft.VisualStudio.Shell.ThreadHelper.ThrowIfNotOnUIThread();
+            //Microsoft.VisualStudio.Shell.ThreadHelper.ThrowIfNotOnUIThread();
             IVsXMLMemberData data = null;
             var result = file.GetMemberDataFromXML(xml, out data);
             int numparams = 0;

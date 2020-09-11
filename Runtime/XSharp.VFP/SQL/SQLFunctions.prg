@@ -174,8 +174,8 @@ FUNCTION SqlSetFactory() AS ISqlFactory
     RETURN SQLSupport.Factory
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/sqlsetfactory/*" />
-FUNCTION SqlSetFactory(cFactory AS STRING ) AS ISqlFactory
-    LOCAL oResult := SQLSupport.Factory
+FUNCTION SqlSetFactory(cFactory AS STRING ) AS ISqlFactory 
+    LOCAL oResult := SQLSupport.Factory AS ISqlFactory
     LOCAL oFactory  := NULL_OBJECT AS ISqlFactory
     cFactory := cFactory:ToLower()
     IF cFactory:StartsWith("odbc")
@@ -194,7 +194,7 @@ FUNCTION SqlSetFactory(cFactory AS STRING ) AS ISqlFactory
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/sqlsetfactory/*" />
 FUNCTION SqlSetFactory(oFactory AS ISqlFactory) AS ISqlFactory
-    LOCAL oResult := SQLSupport.Factory
+    LOCAL oResult := SQLSupport.Factory AS ISqlFactory
     IF oFactory != NULL 
         SQLSupport.Factory := oFactory
     ENDIF

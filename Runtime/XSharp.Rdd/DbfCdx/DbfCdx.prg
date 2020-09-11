@@ -446,6 +446,7 @@ BEGIN NAMESPACE XSharp.RDD
                 IF RuntimeState.AutoOpen
                     SELF:OpenProductionIndex(info)
                 ENDIF
+                SELF:GoTop()
             ENDIF
             RETURN lOk
             
@@ -494,7 +495,12 @@ BEGIN NAMESPACE XSharp.RDD
                 LOCAL result AS LOGIC    
                 IF SELF:CurrentOrder != NULL
                     result := SELF:CurrentOrder:GoBottom()
-                    SELF:_CheckEofBof()
+                    if (! result)
+                        SELF:_SetEOF(TRUE)
+                        SELF:_SetBOF(TRUE)
+                    ELSE
+                        SELF:_CheckEofBof()
+                    ENDIF
                 ELSE
                     result := SUPER:GoBottom()
                 ENDIF
@@ -506,7 +512,12 @@ BEGIN NAMESPACE XSharp.RDD
                 LOCAL result AS LOGIC    
                 IF SELF:CurrentOrder != NULL
                     result := SELF:CurrentOrder:GoTop()
-                    SELF:_CheckEofBof()
+                    if (! result)
+                        SELF:_SetEOF(TRUE)
+                        SELF:_SetBOF(TRUE)
+                    ELSE
+                        SELF:_CheckEofBof()
+                    ENDIF
                 ELSE
                     result := SUPER:GoTop()
                 ENDIF

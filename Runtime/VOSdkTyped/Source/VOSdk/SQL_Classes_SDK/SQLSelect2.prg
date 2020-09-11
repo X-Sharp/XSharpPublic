@@ -316,7 +316,7 @@ METHOD Execute( uParam ) AS LOGIC
 	METHOD ExtendedFetch( nFetchType, nRow ) AS LOGIC
 		LOCAL lResult AS LOGIC
 		EnforceType(REF nFetchType, LONG)
-		DEFAULT ( REF nRow, 0)
+		@@Default ( REF nRow, 0)
 		SWITCH (LONG) nFetchType 
 		CASE SQL_FETCH_LAST
 			lResult := SELF:GoBottom()

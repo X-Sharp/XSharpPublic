@@ -28,6 +28,7 @@ namespace XSharp.MacroCompiler
         internal static ConstantDateTime CreateDateTime(int year, int month, int day, int hour, int min, int secs) { return new ConstantDateTime(year, month, day, hour, min, secs); }
         internal static ConstantVOSymbol CreateSymbol(string value) { return new ConstantVOSymbol(value); }
         internal static ConstantDefault CreateDefault(TypeSymbol type) { return new ConstantDefault(type); }
+        internal static ConstantCurrency CreateCurrency(decimal value) { return new ConstantCurrency(value); }
 
         internal static ConstantDefault Null { get { return CreateDefault(Compilation.Get(NativeType.Object)); } }
         internal static ConstantDefault Nil { get { return CreateDefault(Compilation.Get(NativeType.Usual)); } }
@@ -63,6 +64,10 @@ namespace XSharp.MacroCompiler
         internal override DateTime? DateTime { get { return Value as DateTime?; } }
 
         internal override string FullName { get { return Value.ToString(); } }
+    }
+    internal partial class ConstantCurrency : ConstantWithValue<decimal>
+    {
+        internal ConstantCurrency(decimal value) : base(value, NativeType.Currency) {}
     }
     internal partial class ConstantVOFloat : ConstantWithValue<double>
     {

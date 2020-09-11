@@ -248,6 +248,7 @@ BEGIN NAMESPACE XSharp.IO
         STATIC METHOD ClearErrorState() AS VOID
             RuntimeState.FileException := NULL
             RuntimeState.FileError     := 0
+            RuntimeState.NetErr := FALSE
             RETURN
             
 		STATIC METHOD SetErrorState ( o AS Exception ) AS VOID
@@ -257,6 +258,9 @@ BEGIN NAMESPACE XSharp.IO
             RuntimeState.FileException := e
             RuntimeState.FileError := _AND ( (DWORD) System.Runtime.InteropServices.Marshal.GetHRForException ( o ) , 0x0000FFFF )
             e:OSCode := RuntimeState.FileError 
+            IF RuntimeState.FileError == 32 // SHARING VIOLATION
+                RuntimeState.NetErr := TRUE
+            ENDIF
             RETURN
             
 		STATIC INTERNAL METHOD CreateFile(cFile AS STRING, oMode AS VOFileMode) AS IntPtr
@@ -268,7 +272,6 @@ BEGIN NAMESPACE XSharp.IO
 				    fi:Attributes := FileAttributes.Normal
                 ENDIF
 			ENDIF
-			
 			oStream := createManagedFileStream(cFile, oMode)
 	        IF oStream != NULL
                 BEGIN LOCK streams

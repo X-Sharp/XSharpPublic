@@ -6,7 +6,7 @@ CLASS FixedImage INHERIT Control
 	//PP-030828 Strong typing
 	RETURN NULL_OBJECT
 
-METHOD Destroy() 
+METHOD Destroy()  AS USUAL CLIPPER
 	
 
 	IF (oImage != NULL_OBJECT)

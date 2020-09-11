@@ -287,7 +287,7 @@ METHOD Default(oEvent)
 	RETURN SELF
 	
 
-METHOD Destroy() 
+METHOD Destroy()  AS USUAL CLIPPER
 	IF (WCAppGetDialogWindow() == SELF:Handle()) //FdW// 20061202
 		WCAppSetDialogWindow(NULL_PTR)
 	ENDIF //FdW// 20061202

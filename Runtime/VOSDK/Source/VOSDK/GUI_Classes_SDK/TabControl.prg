@@ -423,7 +423,7 @@ METHOD DeleteTab(symTabName)
 
 	RETURN lRet
 
-METHOD Destroy() 
+METHOD Destroy()  AS USUAL CLIPPER
 	
 
 	IF !InCollect()

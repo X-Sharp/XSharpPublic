@@ -34,37 +34,26 @@ INTERNAL STRUCTURE LongStruct
     METHOD Clear() AS VOID
         longValue := 0
     RETURN
+        
 END STRUCTURE
     
 [StructLayout(LayoutKind.Explicit)];
 INTERNAL STRUCTURE DoubleStruct
     [FieldOffset(0)]  INTERNAL doubleValue  AS REAL8
-    [FieldOffset(0)]  INTERNAL b1 AS BYTE
-    [FieldOffset(1)]  INTERNAL b2 AS BYTE
-    [FieldOffset(2)]  INTERNAL b3 AS BYTE
-    [FieldOffset(3)]  INTERNAL b4 AS BYTE
-    [FieldOffset(4)]  INTERNAL b5 AS BYTE
-    [FieldOffset(5)]  INTERNAL b6 AS BYTE
-    [FieldOffset(6)]  INTERNAL b7 AS BYTE
-    [FieldOffset(7)]  INTERNAL b8 AS BYTE
+    [FieldOffset(0)]  INTERNAL b8 AS BYTE
+    [FieldOffset(1)]  INTERNAL b7 AS BYTE
+    [FieldOffset(2)]  INTERNAL b6 AS BYTE
+    [FieldOffset(3)]  INTERNAL b5 AS BYTE
+    [FieldOffset(4)]  INTERNAL b4 AS BYTE
+    [FieldOffset(5)]  INTERNAL b3 AS BYTE
+    [FieldOffset(6)]  INTERNAL b2 AS BYTE
+    [FieldOffset(7)]  INTERNAL b1 AS BYTE
     METHOD Clear() AS VOID
         doubleValue := 0
         RETURN
         
-    METHOD Reverse() AS VOID
-        LOCAL copy := DoubleStruct{} AS DoubleStruct
-        copy:doubleValue := SELF:doubleValue
-        SELF:b1 := copy:b8
-        SELF:b2 := copy:b7
-        SELF:b3 := copy:b6
-        SELF:b4 := copy:b5
-        SELF:b5 := copy:b4
-        SELF:b6 := copy:b3
-        SELF:b7 := copy:b2
-        SELF:b8 := copy:b1
         
     METHOD SaveToIndex(buffer AS BYTE[]) AS VOID
-        SELF:Reverse()
         IF _AND(b1, 0x80) != 0
             SELF:b1 := ~SELF:b1     
             SELF:b2 := ~SELF:b2 

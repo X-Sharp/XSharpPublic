@@ -17,7 +17,7 @@ ACCESS BoundingBox
 
 	RETURN BoundingBox{Point{0,0},Dimension{0,0}}
 
-METHOD Destroy() 
+METHOD Destroy()  AS USUAL CLIPPER
 	
 
 	IF !InCollect()

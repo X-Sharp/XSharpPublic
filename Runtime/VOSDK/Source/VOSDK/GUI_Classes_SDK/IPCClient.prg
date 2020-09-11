@@ -83,7 +83,7 @@ METHOD DataUpdate(oIpcDataUpdateEvent)
 	
 	RETURN SELF
 
-METHOD Destroy() 
+METHOD Destroy()  AS USUAL CLIPPER
 	LOCAL i, dwLen AS DWORD
 	LOCAL hConv AS PTR
 

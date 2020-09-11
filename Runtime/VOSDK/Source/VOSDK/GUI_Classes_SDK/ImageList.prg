@@ -54,7 +54,7 @@ METHOD CreateOverlayImage(nImageIndex, nListIndex)
 
 	RETURN ImageList_SetOverlayImage(hImageList, nImageIndex - 1, nListIndex)
 
-METHOD Destroy() 
+METHOD Destroy()  AS USUAL CLIPPER
 	
 
 	IF (hImageList != NULL_PTR)

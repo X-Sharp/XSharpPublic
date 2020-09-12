@@ -20,11 +20,11 @@ namespace XSharp.Build
     class Utilities
     {
 
-        internal static string FindXSharpBinPath()
+        internal static string XSharpPath()
         {
             // If used after MSI Installer, value should be in the Registry
-            string InstallPath = Environment.GetEnvironmentVariable(Constants.EnvironmentXSharpBin);
-            if (string.IsNullOrEmpty(InstallPath))
+            string XSharpPath = Environment.GetEnvironmentVariable(Constants.EnvironmentXSharp);
+            if (string.IsNullOrEmpty(XSharpPath))
             {
                 string node;
                 if (IntPtr.Size == 4)
@@ -34,8 +34,7 @@ namespace XSharp.Build
 
                 try
                 {
-                    InstallPath = (string)Registry.GetValue(node, XSharp.Constants.RegistryValue, "");
-                    InstallPath = Path.Combine(InstallPath, "Bin");
+                    XSharpPath = (string)Registry.GetValue(node, XSharp.Constants.RegistryValue, "");
                 }
                 catch (Exception)
                 {
@@ -43,12 +42,28 @@ namespace XSharp.Build
                 }
 
             }
-            if (string.IsNullOrEmpty(InstallPath))
+            if (string.IsNullOrEmpty(XSharpPath))
             {
-                InstallPath = @"C:\Program Files (x86)\XSharp\Bin";
+                XSharpPath = @"C:\Program Files (x86)\XSharp";
             }
-            return InstallPath;
+            return XSharpPath;
         }
+
+        internal static string XSharpBinPath()
+        {
+            // If used after MSI Installer, value should be in the Registry
+            string BinPath = Environment.GetEnvironmentVariable(Constants.EnvironmentXSharpBin);
+            if (String.IsNullOrEmpty(BinPath))
+            {
+                BinPath = Path.Combine(XSharpPath(), "bin");
+            }
+            return BinPath;
+        }
+        internal static string XSharpIncludeDir()
+        {
+            return Path.Combine(XSharpPath(),"include");
+        }
+
         internal static string VulcanIncludeDir()
         {
             string vulcanIncludeDir ;

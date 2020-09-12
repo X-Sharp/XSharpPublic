@@ -18,8 +18,6 @@ namespace XSharp.Build
 
         const string outputName = "NativeResources.res";
         const string defines = "NativeResourceDefines.xh";
-        static string InstallPath = string.Empty;
-        static string RootPath = string.Empty;
 
 
         public NativeResourceCompiler() : base()
@@ -101,11 +99,7 @@ namespace XSharp.Build
 
         private string FindRc(string toolName)
         {
-            if (string.IsNullOrEmpty(InstallPath))
-            {
-                InstallPath = Utilities.FindXSharpBinPath();
-            }
-            return Path.Combine(InstallPath, ToolName);
+            return Path.Combine(Utilities.XSharpBinPath(), ToolName);
         }
 
         /// <summary>
@@ -331,10 +325,8 @@ namespace XSharp.Build
         /// </summary>
         protected string XSharpIncludedir {
             get {
-                string defincpath = null;
-                string incpath = null;
-                incpath = this.IncludePaths;
-                defincpath = Path.Combine(InstallPath, "include");
+                var incpath = this.IncludePaths;
+                var defincpath = Utilities.XSharpIncludeDir();
                 if(!string.IsNullOrEmpty(incpath)) {
                     defincpath = incpath + ";" + defincpath;
                 }
@@ -354,10 +346,7 @@ namespace XSharp.Build
         {
             get
             {
-                string result = null;
-                result = Path.Combine(RootPath, "include");
-                result = Path.Combine(result, defines);
-                return result;
+                return Path.Combine(Utilities.XSharpIncludeDir(), defines);
             }
         }
     }

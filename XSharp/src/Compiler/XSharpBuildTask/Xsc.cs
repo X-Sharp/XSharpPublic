@@ -502,7 +502,7 @@ namespace XSharp.Build
             if (string.IsNullOrEmpty(CompilerPath))
             {
                 // If used after MSI Installer, value should be in the Registry
-                string InstallPath = Utilities.FindXSharpBinPath();
+                string InstallPath = Utilities.XSharpBinPath();
                 CompilerPath = InstallPath;
                 // Allow to override the path when developing.
                 // Please note that this must be a complete path, for example "d:\Xsharp\Dev\XSharp\Binaries\Debug"

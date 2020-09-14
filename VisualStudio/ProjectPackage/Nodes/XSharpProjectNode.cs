@@ -1960,9 +1960,12 @@ namespace XSharp.Project
                 if (this.CurrentConfig != null)
                 {
                     var xoptions = GetProjectOptions(this.CurrentConfig.ConfigCanonicalName) as XSharpProjectOptions;
-                    if (xoptions.ParseOptions == null)
-                        xoptions.BuildCommandLine();
-                    return xoptions.ParseOptions;
+                    if (xoptions != null)
+                    {
+                        if (xoptions.ParseOptions == null)
+                            xoptions.BuildCommandLine();
+                        return xoptions.ParseOptions;
+                    }
                 }
                 return XSharpParseOptions.Default;
             }
@@ -2342,9 +2345,9 @@ namespace XSharp.Project
             }
             if (changed )
             {
-                if (Path.GetExtension(filename).ToLower() != ".backup")
+                if (Path.GetExtension(filename).ToLower() != ".bak")
                 {
-                    var backupName = Path.ChangeExtension(filename, ".backup");
+                    var backupName = Path.ChangeExtension(filename, ".bak");
                     if (Utilities.DeleteFileSafe(backupName))
                     {
                         File.Copy(filename, backupName, true);

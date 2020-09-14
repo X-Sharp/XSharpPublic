@@ -120,7 +120,7 @@ namespace XSharp.Project
             {
                 string xml = System.IO.File.ReadAllText(pszFileName);
                 var pos = xml.IndexOf(oldText, StringComparison.OrdinalIgnoreCase);
-                if ( pos>=0)
+                if (pos >= 0)
                 {
                     while (pos > 0)
                     {

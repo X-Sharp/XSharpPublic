@@ -4,25 +4,33 @@ FUNCTION Start() AS VOID
 	LOCAL o AS ChildClass
 	o := ChildClass{}
 
-	o:TestSameLevel(DateTime.Now) // DateTime, ok
-	o:TestSameLevel(Today()) // DATE, ok
+	xAssert(o:TestSameLevel(DateTime.Now) == "DateTime") // DateTime, ok
+	xAssert(o:TestSameLevel(Today()) == "DATE") // DATE, ok
 	?
-	o:TestDifferentLevel(DateTime.Now) // DateTime, ok
-	o:TestDifferentLevel(Today()) // DateTime, wrong
+	xAssert(o:TestDifferentLevel(DateTime.Now) == "DateTime")// DateTime, ok  
+	xAssert(o:TestDifferentLevel(Today())== "DATE") // DateTime, wrong
 RETURN
 
 CLASS ParentClass
-	VIRTUAL METHOD TestDifferentLevel(d AS DATE) AS VOID
-	? "DATE"
+	VIRTUAL METHOD TestDifferentLevel(d AS DATE) AS STRING
+	return "DATE"
 END CLASS
 
 CLASS ChildClass INHERIT ParentClass
-	VIRTUAL METHOD TestDifferentLevel(d AS DateTime) AS VOID
-	? "DateTime"
+	VIRTUAL METHOD TestDifferentLevel(d AS DateTime) AS STRING
+	return "DateTime"
 	// SELF:TestDifferentLevel(Today()) // this will cause a recursive call to same method
 
-	VIRTUAL METHOD TestSameLevel(d AS DATE) AS VOID
-	? "DATE"
-	VIRTUAL METHOD TestSameLevel(d AS DateTime) AS VOID
-	? "DateTime"
+	VIRTUAL METHOD TestSameLevel(d AS DATE) AS STRING
+	return "DATE"
+	VIRTUAL METHOD TestSameLevel(d AS DateTime) AS STRING
+	return "DateTime"
 END CLASS
+
+
+PROC xAssert(l AS LOGIC)
+IF .not. l
+	THROW Exception{"Incorrect result in line " + System.Diagnostics.StackTrace{TRUE}:GetFrame(1):GetFileLineNumber():ToString()}
+END IF
+? "Assertion passed"
+

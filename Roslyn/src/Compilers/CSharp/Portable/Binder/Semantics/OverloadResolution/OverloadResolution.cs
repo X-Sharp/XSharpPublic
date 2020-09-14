@@ -1138,16 +1138,17 @@ namespace Microsoft.CodeAnalysis.CSharp
                 // work necessary to eliminate methods on base types of Mammal when we eliminated
                 // methods on base types of Cat.
 
-#if !XSHARP
-                if (IsLessDerivedThanAny(result.LeastOverriddenMember.ContainingType, results, ref useSiteDiagnostics))
-                {
-                    results[f] = new MemberResolutionResult<TMember>(result.Member, result.LeastOverriddenMember, MemberAnalysisResult.LessDerived());
-                }
+#if XSHARP
+                // For constructor calls we do not want to change the C# method of locating the right overload
+                if (result.Member.Name == ".ctor")
 #endif
+                    if (IsLessDerivedThanAny(result.LeastOverriddenMember.ContainingType, results, ref useSiteDiagnostics))
+                    {
+                        results[f] = new MemberResolutionResult<TMember>(result.Member, result.LeastOverriddenMember, MemberAnalysisResult.LessDerived());
+                    }
             }
         }
-
-        // Is this type a base type of any valid method on the list?
+            // Is this type a base type of any valid method on the list?
         private static bool IsLessDerivedThanAny<TMember>(TypeSymbol type, ArrayBuilder<MemberResolutionResult<TMember>> results, ref HashSet<DiagnosticInfo> useSiteDiagnostics)
             where TMember : Symbol
         {
@@ -1998,9 +1999,11 @@ namespace Microsoft.CodeAnalysis.CSharp
 
 #if XSHARP
             result = PreferValOverInParameters(arguments, m1, m1LeastOverridenParameters, m2, m2LeastOverridenParameters);
-            if (result != BetterResult.Neither)
-                return result;
-            return PreferMostDerived(m1, m2, ref useSiteDiagnostics);
+            if (result != BetterResult.Neither && m1.Member.Name != ".ctor")
+            {
+                result = PreferMostDerived(m1, m2, ref useSiteDiagnostics);
+            }
+            return result;
 #else
             // Otherwise, prefer methods with 'val' parameters over 'in' parameters.
             return PreferValOverInParameters(arguments, m1, m1LeastOverridenParameters, m2, m2LeastOverridenParameters);

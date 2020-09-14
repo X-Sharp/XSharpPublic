@@ -336,7 +336,7 @@ namespace Microsoft.VisualStudio.Project
             {
                 // Make a backup first
                 string original = buildProject.FullPath;
-                string backupName = Path.ChangeExtension(original,".backup");
+                string backupName = Path.ChangeExtension(original,".bak");
                 if (Utilities.DeleteFileSafe(backupName))
                 {
                     File.Copy(original, backupName);

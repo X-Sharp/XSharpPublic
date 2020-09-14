@@ -116,11 +116,11 @@ namespace XSharp.Project
         const string newText = @"$(XSharpMsBuildDir)";
         public override void OnBeforeOpenProject(ref Guid guidProjectID, ref Guid guidProjectType, string pszFileName)
         {
-            if (hasEnvironmentvariable && pszFileName != null && pszFileName.ToLower().EndsWith("xsproj"))
+            if (hasEnvironmentvariable && pszFileName != null && pszFileName.ToLower().EndsWith("xsproj") && System.IO.File.Exists(pszFileName))
             {
                 string xml = System.IO.File.ReadAllText(pszFileName);
                 var pos = xml.IndexOf(oldText, StringComparison.OrdinalIgnoreCase);
-                if ( pos>=0)
+                if (pos >= 0)
                 {
                     while (pos > 0)
                     {

@@ -789,7 +789,8 @@ namespace XSharpLanguage
                     break;
             }
             // Then, look for Locals
-            foreach (XVariable localVar in currentMember.GetLocals(_buffer.CurrentSnapshot, currentLine, _dialect).Where(l => nameStartsWith(l.Name, startWith)))
+            // line numbers in the range are 1 based. currentLine = 0 based !
+            foreach (XVariable localVar in currentMember.GetLocals(_buffer.CurrentSnapshot, currentLine, _dialect).Where(l => nameStartsWith(l.Name, startWith) && l.Range.StartLine-1 <= currentLine))
             {
                 //
                 ImageSource icon = _provider.GlyphService.GetGlyph(localVar.getGlyphGroup(), localVar.getGlyphItem());
@@ -2498,7 +2499,9 @@ namespace XSharpLanguage
                 if (element == null)
                 {
                     // then Locals
-                    element = member.GetLocals(snapshot, currentLine, dialect).Where(x => StringEquals(x.Name, name) && x.Range.StartLine < currentLine).LastOrDefault();
+                    // line numbers in the range are 1 based. currentLine = 0 based !
+
+                    element = member.GetLocals(snapshot, currentLine, dialect).Where(x => StringEquals(x.Name, name) && x.Range.StartLine-1 <= currentLine).LastOrDefault();
                     if (element == null)
                     {
                         // We can have a Property/Field of the current CompletionType

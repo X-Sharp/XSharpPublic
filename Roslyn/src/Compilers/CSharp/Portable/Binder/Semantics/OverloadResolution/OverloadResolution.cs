@@ -1142,13 +1142,14 @@ namespace Microsoft.CodeAnalysis.CSharp
                 // For constructor calls we do not want to change the C# method of locating the right overload
                 if (result.Member.Name == ".ctor")
 #endif
-                    if (IsLessDerivedThanAny(result.LeastOverriddenMember.ContainingType, results, ref useSiteDiagnostics))
-                    {
-                        results[f] = new MemberResolutionResult<TMember>(result.Member, result.LeastOverriddenMember, MemberAnalysisResult.LessDerived());
-                    }
+                if (IsLessDerivedThanAny(result.LeastOverriddenMember.ContainingType, results, ref useSiteDiagnostics))
+                {
+                    results[f] = new MemberResolutionResult<TMember>(result.Member, result.LeastOverriddenMember, MemberAnalysisResult.LessDerived());
+                }
             }
         }
-            // Is this type a base type of any valid method on the list?
+
+        // Is this type a base type of any valid method on the list?
         private static bool IsLessDerivedThanAny<TMember>(TypeSymbol type, ArrayBuilder<MemberResolutionResult<TMember>> results, ref HashSet<DiagnosticInfo> useSiteDiagnostics)
             where TMember : Symbol
         {

@@ -63,7 +63,30 @@ namespace Microsoft.CodeAnalysis.CSharp
                     {
                         var be = a as BoundAddressOfOperator;
                         a = be.Operand;
-                        if (!be.Operand.Type.IsVoStructOrUnion())
+                        bool makeRef = true;
+                        if (be.Operand is BoundLocal bl)
+                        {
+                            var decl = bl.LocalSymbol.DeclaringSyntaxReferences[0].GetSyntax();
+                            if (decl?.XNode is XSharpParser.LocalvarContext lvc)
+                            {
+                                makeRef = lvc.As?.Type != XSharpParser.IS;
+                            }
+                        }
+                        if (be.Operand is BoundFieldAccess bfa)
+                        {
+                            var decl = bfa.FieldSymbol.DeclaringSyntaxReferences[0].GetSyntax();
+                            if (decl?.XNode is XSharpParser.ClassvarContext cvc)
+                            {
+                                var parent = cvc.Parent as XSharpParser.ClassVarListContext;
+                                makeRef = parent.As?.Type != XSharpParser.IS;
+                            }
+                            if (decl?.XNode is XSharpParser.VostructmemberContext vmc)
+                            {
+                                makeRef = vmc.As?.Type != XSharpParser.IS;
+                            }
+                        }
+
+                        if (makeRef)
                         { 
                             refKinds[i] = RefKind.Ref;
                             addressOfChangedToRef = true;

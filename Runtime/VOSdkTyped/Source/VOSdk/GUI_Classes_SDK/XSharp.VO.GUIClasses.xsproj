@@ -16,6 +16,8 @@
     <LB>true</LB>
     <unsafe>true</unsafe>
     <CS>false</CS>
+    <vo15>true</vo15>
+    <DisabledWarnings>165, 168</DisabledWarnings>
     <NamedArgs>false</NamedArgs>
     <InitLocals>false</InitLocals>
     <RootNamespace>XSharp.VO.SDK</RootNamespace>
@@ -27,7 +29,6 @@
     <IntermediateOutputPath>obj\$(Configuration)\</IntermediateOutputPath>
     <Optimize>false</Optimize>
     <UseSharedCompilation>true</UseSharedCompilation>
-    <DisabledWarnings>165, 168</DisabledWarnings>
     <WarningLevel>4</WarningLevel>
     <SignAssembly>true</SignAssembly>
     <DelaySign>false</DelaySign>

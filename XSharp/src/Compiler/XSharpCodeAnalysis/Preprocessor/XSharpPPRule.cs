@@ -612,8 +612,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         {
                             if (child.RuleTokenType.HasStopTokens())
                             {
+
                                 var stopTokens = new List<XSharpToken>();
-                                findStopTokens(mt, 1, stopTokens);
+                                if (child.RuleTokenType == PPTokenType.MatchList)
+                                    findStopTokens(mt, i+1, stopTokens); 
+                                else
+                                    findStopTokens(mt, 1, stopTokens);
+
                                 child.StopTokens = stopTokens.ToArray();
                                 break;
                             }
@@ -645,7 +650,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         void findStopTokens(PPMatchToken[] matchmarkers, int iStart, IList<XSharpToken> stoptokens)
         {
-            for (int j = iStart; j < matchmarkers.Length ; j++)
+            for (int j = iStart; j < matchmarkers.Length ; j++) 
             {
                 var next = matchmarkers[j];
                 switch (next.RuleTokenType)

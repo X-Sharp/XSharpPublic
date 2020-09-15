@@ -63,8 +63,11 @@ namespace Microsoft.CodeAnalysis.CSharp
                     {
                         var be = a as BoundAddressOfOperator;
                         a = be.Operand;
-                        refKinds[i] = RefKind.Ref;
-                        addressOfChangedToRef = true;
+                        if (!be.Operand.Type.IsVoStructOrUnion())
+                        { 
+                            refKinds[i] = RefKind.Ref;
+                            addressOfChangedToRef = true;
+                        }
                     }
                 }
 

@@ -8,8 +8,6 @@ FUNCTION Start() AS VOID STRICT
     TRY
     LOCAL bin1 AS BINARY
     LOCAL bin2 AS BINARY
-    LOCAL strtest  IS TEST
-    strtest.l1 := TRUE
     bin1 := "Robert"
     bin2 := "Rober"
     ? bin1 == bin2
@@ -29,5 +27,3 @@ FUNCTION Start() AS VOID STRICT
 	RETURN	
 
 
-VOSTRUCT TEST
-    MEMBER l1 as LOGIC

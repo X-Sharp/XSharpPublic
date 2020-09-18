@@ -679,7 +679,11 @@ namespace XSharp.MacroCompiler
                                     {
                                         t = tt;
                                         if (IsSoftKeyword(tt))
+                                        { 
                                             st = TokenType.ID;
+                                            if (_lastToken == TokenType.COLON ||_lastToken == TokenType.DOT)
+                                                t = TokenType.ID;
+                                        }
                                     }
                                 }
                             }

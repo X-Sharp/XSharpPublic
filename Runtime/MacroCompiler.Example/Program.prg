@@ -160,7 +160,10 @@ CLASS TestWithItem
         RETURN 42
     PROPERTY Nested AS USUAL GET TestWithItem{}
 END CLASS
-
+    
+CLASS CheckBox
+    PROPERTY Checked AS LOGIC AUTO
+END CLASS
 CLASS TestWithItem2
     PROPERTY Item as LONG  GET 42
     PROPERTY Nested AS USUAL GET TestWithItem2{}
@@ -334,7 +337,9 @@ BEGIN NAMESPACE MacroCompilerTest
     FUNCTION RunTests(mc AS XSharp.Runtime.MacroCompiler) AS VOID
         Console.WriteLine("Running tests ...")
 
-        TestParse(mc, e"{|a,b| +a[++b] += 100, a[2]}", "{|a, b|RETURN (((+a((++b)))+='100'), a('2'))}")
+        //TestParse(mc, e"{|a,b| +a[++b] += 100, a[2]}", "{|a, b|RETURN (((+a((++b)))+='100'), a('2'))}")
+
+        TestMacro(mc, e"{|o|o:Checked}", Args(CheckBox{}), FALSE, typeof(LOGIC))
 
         TestMacro(mc, e"{|v|(v := upper(v), left(v,3))}", Args("ABCDE"), "ABC", typeof(STRING))
         TestMacro(mc, e"{|l, v|iif (l, (v := upper(v), left(v,3)), (v := lower(v), left(v,4))) }", Args(TRUE, "ABCDE"), "ABC", typeof(STRING))

@@ -45,14 +45,14 @@ namespace Microsoft.CodeAnalysis.CSharp
 
         private void checkRefKinds(ImmutableArray<BoundExpression> arguments, RefKind[] refKinds,
                                    ImmutableArray<BoundExpression>.Builder exprs,
-                                   ImmutableArray<BoundExpression>.Builder args,
+                                   ImmutableArray<BoundExpression>.Builder rewrittenArgs,
                                    ImmutableArray<LocalSymbol>.Builder temps,
                                    BoundLocal[] argBoundTemps,
                                    BoundPropertyAccess[] boundProperties,
-                                   out bool addressOfChangedToRef)
+                                   out bool hasRef)
         {
             exprs.Clear();
-            addressOfChangedToRef = false;
+            hasRef = false;
             for (int i = 0; i < arguments.Length; i++)
             {
                 // Check for @var when ImplicitCastsAndConversions is enabled (/vo7) and dialect allows AddressOf
@@ -87,9 +87,8 @@ namespace Microsoft.CodeAnalysis.CSharp
                         }
 
                         if (makeRef)
-                        { 
+                        {
                             refKinds[i] = RefKind.Ref;
-                            addressOfChangedToRef = true;
                         }
                     }
                 }
@@ -97,13 +96,14 @@ namespace Microsoft.CodeAnalysis.CSharp
                 if (refKinds[i].IsWritableReference())
                 {
                     bool normalArg = true;
+                    hasRef = true;
                     while (a is BoundConversion c) a = c.Operand;
                     if (a is BoundPropertyAccess bp && bp.PropertySymbol is XsVariableSymbol)
                     {
                         // no need for conversion here because everything is a USUAL
                         boundProperties[i] = bp;
                         var newarg = VisitExpression(arguments[i]);
-                        args.Add(MakeRefUsual(newarg));
+                        rewrittenArgs.Add(MakeRefUsual(newarg));
                         normalArg = false;
                     }
                     else if ( a is BoundDynamicMemberAccess dma && dma.Syntax?.XNode is XSharpParser.AccessMemberContext amc && amc.IsFox)
@@ -126,14 +126,14 @@ namespace Microsoft.CodeAnalysis.CSharp
                         BoundLocal bla = _factory.Local(la);
                         var lasgn = _factory.AssignmentExpression(bla, a, isRef: true);
                         exprs.Add(VisitAssignmentOperator(lasgn, true));
-                        var newarg = MakeConversionNode(bla, arguments[i].Type, false);
-                        args.Add(MakeRefUsual(newarg));
+                        var newarg = MakeConversionNode(a, _compilation.UsualType(), @checked: false);
+                        rewrittenArgs.Add(MakeRefUsual(newarg));
                         argBoundTemps[i] = bla;
                     }
                 }
                 else
                 {
-                    args.Add(VisitExpression(arguments[i]));
+                    rewrittenArgs.Add(VisitExpression(arguments[i]));
                 }
             }
         }
@@ -219,7 +219,7 @@ namespace Microsoft.CodeAnalysis.CSharp
 
                 var temps = ImmutableArray.CreateBuilder<LocalSymbol>();
                 var exprs = ImmutableArray.CreateBuilder<BoundExpression>();
-                var args = ImmutableArray.CreateBuilder<BoundExpression>(arguments.Length);
+                var rewrittenArgs = ImmutableArray.CreateBuilder<BoundExpression>(arguments.Length);
                 var argBoundTemps = new BoundLocal[arguments.Length];
                 var refKinds = new RefKind[arguments.Length];
                 var properties = new BoundPropertyAccess[arguments.Length];      // for xsVariableSymbols
@@ -231,7 +231,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 }
 
                 // keep track of the locals that need to be assigned back
-                checkRefKinds(arguments, refKinds, exprs, args, temps, argBoundTemps, properties, out var addressOfChangedToRef);
+                checkRefKinds(arguments, refKinds, exprs, rewrittenArgs, temps, argBoundTemps, properties, out var hasRef);
                 var preExprs = exprs.ToImmutable();
                 exprs.Clear();
 
@@ -239,21 +239,20 @@ namespace Microsoft.CodeAnalysis.CSharp
                 var actualargs = bc.Arguments;
                 var argsNode = actualargs[2] as BoundArrayCreation;
 
-                if (addressOfChangedToRef)
+                if (hasRef)
                 {
                     var initializer = argsNode.InitializerOpt;
                     var expressions = initializer.Initializers;
                     for (int i = 0; i < expressions.Length; i++)
                     {
-                        // note that an expression like @USUAL will be replaced already in the Initializers array
-                        // with a call to an implicit operator. So we take the original argument here.
+                        // checkRefKinds has updated rewrittenArgs for arguments by reference
+                        // and has created a constructor call for a usual by reference
                         var e = expressions[i];
-                        var a = arguments[i];
-                        if (a is BoundAddressOfOperator bop)
+                        if (refKinds[i] == RefKind.Ref)
                         {
-                            exprs.Add(bop.Operand);
+                            exprs.Add(rewrittenArgs[i]);
                         }
-                        else
+                        else 
                         {
                             exprs.Add(e);
                         }
@@ -270,12 +269,12 @@ namespace Microsoft.CodeAnalysis.CSharp
                 // local temp 
                 // __InternalSend( oObject, cName, temp = paramArray)
 
-                var rewrittenArgs = ImmutableArray.CreateBuilder<BoundExpression>();
+                var sendArgs = ImmutableArray.CreateBuilder<BoundExpression>();
                 // replace last argument node with assignment node
-                rewrittenArgs.Add(actualargs[0]);
-                rewrittenArgs.Add(actualargs[1]);
-                rewrittenArgs.Add(parsAssignment);
-                bc = bc.Update(bc.ReceiverOpt, bc.Method, rewrittenArgs.ToImmutableArray());
+                sendArgs.Add(actualargs[0]);
+                sendArgs.Add(actualargs[1]);
+                sendArgs.Add(parsAssignment);
+                bc = bc.Update(bc.ReceiverOpt, bc.Method, sendArgs.ToImmutableArray());
 
 
 
@@ -409,7 +408,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             var argTemps = ImmutableArray.CreateBuilder<LocalSymbol>();
              
             var exprs = ImmutableArray.CreateBuilder<BoundExpression>();
-            var args = ImmutableArray.CreateBuilder<BoundExpression>(arguments.Length);
+            var rewrittenArgs = ImmutableArray.CreateBuilder<BoundExpression>(arguments.Length);
             var argBoundTemps = new BoundLocal[arguments.Length];
             var refKinds = new RefKind[arguments.Length];
             var properties = new BoundPropertyAccess[arguments.Length];      // for xsVariableSymbols
@@ -420,10 +419,10 @@ namespace Microsoft.CodeAnalysis.CSharp
                 refKinds[i] = r;
             }
 
-            checkRefKinds(arguments, refKinds, exprs, args, argTemps, argBoundTemps, properties, out var addressOfChangedToRef);
+            checkRefKinds(arguments, refKinds, exprs, rewrittenArgs, argTemps, argBoundTemps, properties, out var hasRef);
 
             var rewrittenArgumentRefKindsOpt = argumentRefKindsOpt;
-            var rewrittenArguments = args.ToImmutable();
+            var rewrittenArguments = rewrittenArgs.ToImmutable();
             ImmutableArray<LocalSymbol> aTemps;
             rewrittenArguments = MakeArguments(syntax, rewrittenArguments, method, method, expanded, argsToParamsOpt, ref rewrittenArgumentRefKindsOpt, out aTemps, invokeAsExtensionMethod);
             argTemps.AddRange(aTemps);

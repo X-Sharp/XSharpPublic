@@ -40,7 +40,6 @@ CLASS XSharp.OleAutoObject IMPLEMENTS IDynamicProperties
 		IF lOk
 			oType := oComObject:GetType()
 		ENDIF
-			
 		RETURN
 			
    /// <summary>Construct an OleAutoObject</summary>
@@ -68,7 +67,6 @@ CLASS XSharp.OleAutoObject IMPLEMENTS IDynamicProperties
 		IF lOk
 			oType := oComObject:GetType()
 		ENDIF
-			
 		RETURN
 			
 		// Builds an OleAutoObject on Any OBJECT (including another AutoObject). Type already known
@@ -84,16 +82,47 @@ CLASS XSharp.OleAutoObject IMPLEMENTS IDynamicProperties
 		
 	#region No..() EntryPoints
 			
-	// ? oObject:Property
-	    /// <exclude />   
+	    /// <exclude />
+    PRIVATE METHOD GetOurFieldInfo(cName AS STRING, result OUT USUAL) AS LOGIC
+        SWITCH cName:ToLower()
+        CASE "finit"
+            result := SELF:lOk
+            return TRUE
+        CASE "dwfuncs"
+            result := SELF:_liFuncs
+            return TRUE
+        CASE "dwVars"
+            result := SELF:_liVars
+            return TRUE
+        OTHERWISE
+            result := NIL
+            RETURN FALSE
+        END SWITCH 
+
+    PRIVATE METHOD SetOurFieldInfo(cName AS STRING, newvalue AS USUAL) AS LOGIC
+        SWITCH cName:ToLower()
+        CASE "dwfuncs"
+            SELF:_liFuncs := newvalue
+            return TRUE
+        END SWITCH
+        RETURN FALSE
+            
+	/// <exclude />
+    // ? oObject:Property
     VIRTUAL METHOD NoIvarGet(cName AS STRING ) AS USUAL 
 		LOCAL oRet AS OBJECT
+        IF SELF:GetOurFieldInfo(cName, OUT VAR result)
+            return result
+        ENDIF
 		oRet := OleAutoObject.__OleIvarGet(oComObject,oType, cName, NULL)
 		RETURN OleAutoObject.OleWrapObject(oRet, lDateTimeAsDate)
 			
 		// oObject:Property := Value
 	    /// <exclude />   
 	VIRTUAL METHOD NoIvarPut(cName AS STRING, uValue AS USUAL) AS VOID
+        IF SELF:SetOurFieldInfo(cName, uValue)
+            return 
+        ENDIF
 		OleAutoObject.__OleIVarPut(oComObject, oType, cName , uValue, NULL)
 		RETURN 
 
@@ -112,21 +141,19 @@ CLASS XSharp.OleAutoObject IMPLEMENTS IDynamicProperties
 		LOCAL nArg, nArgs  AS INT
 		LOCAL oRet  AS OBJECT
 		nArgs := PCOUNT()
+		cName := NoMethod()
         IF RuntimeState.Dialect == XSharpDialect.Vulcan
-		    cName := NoMethod()
 		    args  := USUAL[]{nArgs-1}
 		    FOR nArg := 2 TO nArgs
 			    args[nArg-1] :=  _GetMParam(nArg)
             NEXT
         ELSE
-		    cName := NoMethod()
 		    args  := USUAL[]{nArgs}
 		    FOR nArg := 1 TO nArgs
 			    args[nArg] :=  _GetMParam(nArg)
             NEXT
         ENDIF
 		oRet := OleAutoObject.OleSend(oComObject, oType, cName, args)
-			
 		RETURN OleAutoObject.OleWrapObject(oRet, lDateTimeAsDate)
 			
 	// ? oObject:Property[dims]

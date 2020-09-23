@@ -173,6 +173,8 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			Assert.Equal("123,456", AsString(Val("  123.456"  )))
 			Assert.Equal("123,456", AsString(Val("  123,456"  )))
 
+			Assert.True(Val(NULL) == 0)
+
 		[Fact, Trait("Category", "Val")];
 		METHOD ValTests2() AS VOID
 			SetDecimalSep(',')

@@ -145,6 +145,12 @@ BEGIN NAMESPACE XSharp.VO.Tests
             Assert.Equal( 1.234d, (REAL8)(FLOAT) Unformat("1,234", "9.999","N"))
             Assert.Equal( 1234567.89d, (REAL8)(FLOAT) Unformat("1.234.567,89", "9,999,999.99","N"))
 
+            Assert.True( Unformat("", "@Z 99","N") == 0 )
+            Assert.True( Unformat("", "99","N")    == 0 )
+            Assert.True( Unformat("asd", "99","N") == 0 )
+            Assert.True( Unformat("*", "999","N")  == 0 )
+            Assert.True( Unformat("()", "999","N") == 0 )
+
 	END CLASS
 END NAMESPACE
 

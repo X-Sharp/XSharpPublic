@@ -1,29 +1,56 @@
-﻿USING System
-USING System.Collections.Generic
-USING System.Linq
-USING System.Text
+﻿// 742. Problem passing vars by reference when calling strongly typed methods late bound
 
+// In the following code, there are no compiler errors, but the vars passed by reference do not get updated when returning to the caller code
+FUNCTION Start() AS VOID
+	LOCAL u AS USUAL
+	u := TestClass{}
+	LOCAL n AS INT   
+	n := 1
+	u:TestInt(REF n)   
+	? n
+	xAssert(n == 123)
+	n := 1
+	u:TestInt(@n)
+	? n
+	xAssert(n == 123)
 
-FUNCTION Start() AS VOID STRICT
-    TRY
-    LOCAL bin1 AS BINARY
-    LOCAL bin2 AS BINARY
-    bin1 := "Robert"
-    bin2 := "Rober"
-    ? bin1 == bin2
-    ? bin1 > bin2
-    ? bin1 >= bin2
-    ? bin1 < bin2
-    ? bin1 <= bin2
-    bin2 := "Robert"
-    ? bin1 > bin2
-    ? bin1 >= bin2
-    ? bin1 < bin2
-    ? bin1 <= bin2
-    CATCH e as Exception
-        ? e:ToString()
-    END TRY
+	LOCAL l AS LOGIC
+	l := FALSE
+	u:TestLogic(REF l)
+	? l
+	xAssert(l == TRUE)
+	l := FALSE
+	u:TestLogic(@l)
+	? l
+	xAssert(l == TRUE)
+
+	LOCAL c AS STRING
+	c := ""
+	u:TestString(REF c)
+	? c
+	xAssert(c == "changed")
+	c := ""
+	u:TestString(@c)
+	? c
+	xAssert(c == "changed")
     WAIT
-	RETURN	
+
+RETURN
+
+CLASS TestClass
+	METHOD TestInt(n REF INT, c := "" AS STRING) AS VOID
+	n := 123
+	METHOD TestLogic(l REF LOGIC, d := NULL_DATE as Date) AS VOID
+	l := TRUE
+	METHOD TestString(c REF STRING, s := #somesymbol as symbol) AS VOID
+	c := "changed"
+	
+END CLASS
 
 
+PROC xAssert(l AS LOGIC)
+IF .not. l
+	THROW Exception{"Incorrect result in line " + System.Diagnostics.StackTrace{TRUE}:GetFrame(1):GetFileLineNumber():ToString()}
+END IF
+? "Assertion passed"
+RETURN

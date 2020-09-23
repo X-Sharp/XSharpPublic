@@ -4,6 +4,7 @@
 // See License.txt in the project root for license information.
 //
 
+#pragma options("az", on)
 
 
 USING XSharp.Internal
@@ -36,7 +37,7 @@ INTERNAL STATIC CLASS OOPHelpers
 		LOCAL aMethods AS List<MethodInfo>
 		aMethods := List<MethodInfo>{}
 		FOREACH asm AS Assembly IN FindOurAssemblies()
-			LOCAL atr := (ClassLibraryAttribute) (asm:GetCustomAttributes(cla,FALSE) [1]) AS ClassLibraryAttribute
+			LOCAL atr := (ClassLibraryAttribute) (asm:GetCustomAttributes(cla,FALSE):First()) AS ClassLibraryAttribute
 			LOCAL oType AS System.Type
 			oType := asm:GetType(atr:GlobalClassName,FALSE, TRUE)
 			IF oType != NULL_OBJECT
@@ -106,13 +107,13 @@ INTERNAL STATIC CLASS OOPHelpers
             // this is visible in the ClassLibraryAttribute
 			// We don't know if the current assembly is compiler with /INS, but we assume it is when they
 			// use the 'old fashioned' CreateInstance().
-			VAR ins := TYPEOF( ClassLibraryAttribute )
-			IF asm:IsDefined(  ins, FALSE )
+			VAR att := TYPEOF( ClassLibraryAttribute )
+			IF asm:IsDefined(  att, FALSE )
                 // there should be only one but it does not hurt to be cautious
-                FOREACH VAR attribute IN asm:GetCustomAttributes(ins,FALSE)
-				    VAR atr := (ClassLibraryAttribute) attribute
-                    IF !String.IsNullOrEmpty(atr:DefaultNameSpace)
-				        VAR cFullName := atr:DefaultNameSpace +"."+cName
+                FOREACH VAR attribute IN asm:GetCustomAttributes(att,FALSE)
+				    VAR cla := (ClassLibraryAttribute) attribute
+                    IF !String.IsNullOrEmpty(cla:DefaultNameSpace)
+				        VAR cFullName := cla:DefaultNameSpace +"."+cName
 				        ret := asm:GetType( cFullName, FALSE, TRUE )
 				        IF ret != NULL
 					        EXIT
@@ -124,12 +125,12 @@ INTERNAL STATIC CLASS OOPHelpers
             	EXIT
             END IF
             // If there is an Implicit Namespace Attribute
-            ins := TYPEOF( ImplicitNamespaceAttribute )
-			IF asm:IsDefined(  ins, FALSE )
-                FOREACH VAR attribute IN asm:GetCustomAttributes(ins,FALSE)
-				    VAR atr := (ImplicitNamespaceAttribute) attribute
-                    IF !String.IsNullOrEmpty(atr:Namespace)
-				        VAR cFullName := atr:Namespace+"."+cName
+            att := TYPEOF( ImplicitNamespaceAttribute )
+			IF asm:IsDefined(  att, FALSE )
+                FOREACH VAR attribute IN asm:GetCustomAttributes(att,FALSE)
+				    VAR ins := (ImplicitNamespaceAttribute) attribute
+                    IF !String.IsNullOrEmpty(ins:Namespace)
+				        VAR cFullName := ins:Namespace+"."+cName
 				        ret := asm:GetType( cFullName, FALSE, TRUE )
 				        IF ret != NULL
 					        EXIT
@@ -144,8 +145,8 @@ INTERNAL STATIC CLASS OOPHelpers
         IF ret == NULL
             // try to find classes in a namespace
             FOREACH asm AS Assembly IN aAssemblies
-                VAR ins := TYPEOF( ClassLibraryAttribute )
-			    IF asm:IsDefined(  ins, FALSE )
+                VAR cla := TYPEOF( ClassLibraryAttribute )
+			    IF asm:IsDefined(  cla, FALSE )
                     VAR types := asm:GetTypes()
                     FOREACH type AS System.Type IN types
                         IF String.Compare(type:Name, cName, StringComparison.OrdinalIgnoreCase) == 0
@@ -189,7 +190,6 @@ INTERNAL STATIC CLASS OOPHelpers
 		
 		RETURN oMI
 
-
     STATIC METHOD CompareMethods(m1 AS MethodBase, m2 AS MethodBase, uArgs AS USUAL[]) AS LONG
         VAR p1 := m1:GetParameters()
         VAR p2 := m2:GetParameters()
@@ -202,24 +202,26 @@ INTERNAL STATIC CLASS OOPHelpers
             ENDIF
         ENDIF
         // when we get here then the parameter counts are the same
-        FOR VAR nPar := 1 TO p1:Length
-            IF nPar > uArgs:Length
+        FOR VAR nPar := 0 TO p1:Length-1
+            IF nPar > uArgs:Length-1
                 EXIT
             ENDIF
             VAR par1 := p1[nPar]
             VAR par2 := p2[nPar]
+            VAR parType1 := par1:ParameterType
+            VAR parType2 := par2:ParameterType
             VAR arg  := uArgs[nPar]
-            IF par1:ParameterType != par2:ParameterType
-                IF par1:ParameterType:IsAssignableFrom(arg:SystemType)
+            IF  parType1 != parType2
+                IF parType1:IsAssignableFrom(arg:SystemType)
                     RETURN 1
                 ENDIF
-                IF par2:ParameterType:IsAssignableFrom(arg:SystemType)
+                IF parType2:IsAssignableFrom(arg:SystemType)
                     RETURN 2
                 ENDIF
-                IF par1:ParameterType = typeof(USUAL)
+                IF parType1 = typeof(USUAL)
                     RETURN 1
                 ENDIF
-                IF par2:ParameterType = typeof(USUAL)
+                IF parType2 = typeof(USUAL)
                     RETURN 2
                 ENDIF
             ENDIF
@@ -227,10 +229,8 @@ INTERNAL STATIC CLASS OOPHelpers
         RETURN 0
 
     STATIC METHOD FindBestOverLoad<T>(overloads AS T[], cFunction AS STRING, uArgs AS USUAL[]) AS T WHERE T IS MethodBase
-        IF overloads:Length == 0
-            RETURN NULL
-        ELSEIF overloads:Length = 1
-            RETURN overloads[1]
+        IF overloads:Length <= 1
+            RETURN overloads:FirstOrDefault()
         ENDIF
         // More than one
         VAR found := List<T>{}
@@ -241,11 +241,11 @@ INTERNAL STATIC CLASS OOPHelpers
             ENDIF
         NEXT
         IF found:Count == 1
-            RETURN found[0] // collection, so 0 based !
+            RETURN found:First() // collection, so 0 based !
         ENDIF
         // then look for methods with
         found:Clear()
-        FOR VAR nMethod := 1 TO overloads:Length -1
+        FOR VAR nMethod := 0 TO overloads:Length -2
             VAR m1     := overloads[nMethod]
             VAR m2     := overloads[nMethod+1]
             VAR result := CompareMethods(m1, m2, uArgs)
@@ -260,53 +260,73 @@ INTERNAL STATIC CLASS OOPHelpers
             ENDIF
         NEXT
         IF found:Count == 1
-            RETURN found[0] // collection, so 0 based !
+            RETURN found:First() 
         ENDIF
         LOCAL cClass AS STRING
-        cClass := overloads[1]:DeclaringType:Name
-        VAR oError := Error.VOError( EG_AMBIGUOUSMETHOD, cFunction, "MethodName", 1, <OBJECT>{cClass+":"+overloads[1]:Name})
+        cClass := overloads:First():DeclaringType:Name
+        VAR oError := Error.VOError( EG_AMBIGUOUSMETHOD, cFunction, "MethodName", 1, <OBJECT>{cClass+":"+overloads:First():Name})
         oError:Description := oError:Message+" ' "+cFunction+"'"
         THROW oError
         
 
-    STATIC METHOD MatchParameters<T>( methodinfo AS T, args AS USUAL[]) AS OBJECT[] WHERE T IS MethodBase
+    STATIC METHOD MatchParameters<T>( methodinfo AS T, args AS USUAL[], hasByRef OUT LOGIC) AS OBJECT[] WHERE T IS MethodBase
         // args contains the list of arguments. The methodname has already been deleted when appropriated
 		LOCAL oArgs AS OBJECT[]
         LOCAL lClipper := FALSE AS LOGIC
+        hasByRef := FALSE
         VAR aPars := methodinfo:GetParameters()
-        IF aPars:Length == 1 .AND. methodinfo:IsDefined(TYPEOF(ClipperCallingConventionAttribute),FALSE)
+        VAR numDefinedParameters := aPars:Length
+        VAR numActualParameters  := args:Length
+        IF numDefinedParameters == 1 .AND. methodinfo:IsDefined(TYPEOF(ClipperCallingConventionAttribute),FALSE)
             lClipper := TRUE
         ENDIF
         DO CASE
         CASE lClipper
+            // pass the whole array of clipper parameters (usual[]) as single parameter        
 			oArgs  := <OBJECT>{args}
         CASE aPars:Length == 0 
 			// no args
 			oArgs := NULL
 		OTHERWISE
 			// convert args to array of objects
-			oArgs := OBJECT[]{aPars:Length}
-            VAR nMax := args:Length
-            IF aPars:Length < nMax
-                nMax := aPars:Length 
+			oArgs := OBJECT[]{numDefinedParameters}
+            IF numDefinedParameters < numActualParameters
+                // ignore extra parameters
+                numActualParameters := numDefinedParameters
             ENDIF
-			FOR VAR nPar := 1 TO nMax
-                VAR     pi := aPars[nPar] // ParameterInfo
-                LOCAL   arg := args[nPar] AS USUAL
-                IF pi:ParameterType == TYPEOF(USUAL)
+			FOR VAR nPar := 0 TO numActualParameters -1
+                LOCAL pi        := aPars[nPar] AS ParameterInfo
+                LOCAL parType   := pi:ParameterType AS System.Type
+                LOCAL arg       := args[nPar] AS USUAL
+                IF parType:IsByRef
+                    // Get the referenced type. We assume it is in the assembly where the ByRef type is also defined
+                    // I am not sure if that is always true ?
+                    hasByRef := TRUE
+                    VAR typeName := parType:FullName
+                    typeName := typeName:Substring(0, typeName:Length-1)
+                    TRY
+                        VAR referencedType := parType:Assembly:GetType(typeName)
+                        IF referencedType != NULL
+                            parType := referencedType
+                        ENDIF
+                    CATCH
+                        NOP
+                    END TRY
+                ENDIF
+                IF parType == TYPEOF(USUAL)
 					// We need to box a usual here 
     				oArgs[nPar] := __CASTCLASS(OBJECT, arg)
                 ELSEIF arg == NIL
                     // This is new in X#: a NIL in the middle of the parameter list gets set to the default value now 
                     oArgs[nPar] := GetDefaultValue(pi)
-                ELSEIF pi:ParameterType:IsAssignableFrom(arg:SystemType) .OR. arg == NULL
+                ELSEIF arg == NULL .or. parType:IsAssignableFrom(arg:SystemType) // Null check must appear first !
 					oArgs[nPar] := arg
                 ELSEIF pi:GetCustomAttributes( TYPEOF( ParamArrayAttribute ), FALSE ):Length > 0
                     // Parameter array of certain type
 					// -> convert remaining elements from uArgs to an array and assign that to oArgs[i] 
-					LOCAL elementType := pi:ParameterType:GetElementType() AS System.Type
+					LOCAL elementType := parType:GetElementType() AS System.Type
 					LOCAL aVarArgs    := System.Array.CreateInstance(elementType, args:Length - nPar +1) AS System.Array
-					FOR VAR nArg := nPar TO args:Length
+					FOR VAR nArg := nPar TO numActualParameters -1
 						TRY
 							IF elementType:IsAssignableFrom(args[nArg]:SystemType)
 								aVarArgs:SetValue(args[nArg], nArg-nPar)
@@ -319,12 +339,17 @@ INTERNAL STATIC CLASS OOPHelpers
 					NEXT
 					oArgs[nPar] := aVarArgs
                     EXIT    // done with parameters
-                ELSE	// try to convert to the expected type
-					oArgs[nPar]  := VOConvert(args[nPar], pi:ParameterType)
+                ELSE
+                    
+                    // try to convert to the expected type, but don't do this for out parameters.
+                    // We can leave the slot empty for out parameters
+                    IF ! pi:IsOut
+					    oArgs[nPar]  := VOConvert(args[nPar], parType)
+                    ENDIF
                 ENDIF
 			NEXT 
-            // set default parameters for missing parameters
-            FOR VAR nArg := nMax+1 TO aPars:Length
+            // set default values for missing parameters, so we start after the last parameter
+            FOR VAR nArg := numActualParameters TO numDefinedParameters -1
                 LOCAL oPar AS ParameterInfo
                 oPar        := aPars[nArg]
                 VAR oArg    := GetDefaultValue(oPar)
@@ -786,7 +811,7 @@ INTERNAL STATIC CLASS OOPHelpers
 			THROW Error.NullArgumentError( __ENTITY__, NAMEOF(oObject), 1 )
 		ENDIF
 		IF mi != NULL   
-            VAR oArgs := MatchParameters(mi, uArgs) 
+            VAR oArgs := MatchParameters(mi, uArgs, OUT VAR hasByRef) 
             TRY
 			    IF mi:ReturnType == typeof(USUAL)
                     result := mi:Invoke(oObject, oArgs)
@@ -798,6 +823,9 @@ INTERNAL STATIC CLASS OOPHelpers
                     ENDIF
                     result := oResult
                 ENDIF
+                IF hasByRef
+                    CopyByRefParameters( uArgs, oArgs, mi:GetParameters())
+                ENDIF
             CATCH e as Exception
                 IF e:InnerException != NULL
                     THROW Error{e:GetInnerException()}
@@ -807,7 +835,17 @@ INTERNAL STATIC CLASS OOPHelpers
 			
 		ENDIF
 		RETURN TRUE
-		
+
+    STATIC METHOD CopyByRefParameters(uArgs as USUAL[], oArgs as OBJECT[], pars as ParameterInfo[]) AS VOID
+        // Assign parameters back.
+        VAR max    := Math.Min(uArgs:Length, oArgs:Length)  -1
+        FOR VAR nParam := 0 to max
+            LOCAL param := pars[nParam] as ParameterInfo
+            IF param:IsOut .or. param:ParameterType:IsByRef 
+                uArgs[nParam] := oArgs[nParam]
+            ENDIF
+        NEXT
+        
 	STATIC METHOD VOConvert(uValue AS USUAL,toType AS System.Type) AS OBJECT
 		IF toType == TYPEOF(FLOAT)
 			RETURN (FLOAT) uValue
@@ -827,7 +865,7 @@ INTERNAL STATIC CLASS OOPHelpers
       		
       		LOCAL oRet AS OBJECT
       		TRY
-	      		oRet := Convert.ChangeType(uValue, toType)
+     		    oRet := Convert.ChangeType(uValue, toType)
       		CATCH
       			oRet := uValue
       		END TRY
@@ -945,11 +983,11 @@ FUNCTION CreateInstance(symClassName,InitArgList) AS OBJECT CLIPPER
 	ENDIF
 	VAR constructors := t:GetConstructors()
     VAR nPCount := PCount() 
-	VAR args := USUAL[]{nPCount-1}
-	FOR VAR nArg := 2 TO nPCount
-		args[nArg-1] := _GetFParam(nArg)
+	VAR uArgs := USUAL[]{nPCount-1}
+	FOR VAR nArg := 1 TO nPCount-1
+		uArgs[nArg-1] := _GetFParam(nArg+1) // _GetFParam() is 1 based !
 	NEXT 
-    LOCAL ctor := OOPHelpers.FindBestOverLoad(constructors, __FUNCTION__ ,args) AS ConstructorInfo
+    LOCAL ctor := OOPHelpers.FindBestOverLoad(constructors, __FUNCTION__ ,uArgs) AS ConstructorInfo
 	IF ctor == NULL
     	VAR oError := Error.VOError( EG_NOMETHOD, __FUNCTION__, "Constructor", 0 , NULL)
         oError:Description := "No CONSTRUCTOR defined for type "+ (String) symClassName
@@ -957,8 +995,12 @@ FUNCTION CreateInstance(symClassName,InitArgList) AS OBJECT CLIPPER
     ENDIF
 	LOCAL oRet AS OBJECT  
 	TRY
-		LOCAL oArgs := OOPHelpers.MatchParameters(ctor, args) AS OBJECT[]
+		LOCAL oArgs := OOPHelpers.MatchParameters(ctor, uArgs, OUT VAR hasByRef) AS OBJECT[]
 		oRet := ctor:Invoke( oArgs )
+        IF hasByRef
+            OOPHelpers.CopyByRefParameters(uArgs, oArgs, ctor:GetParameters())
+            
+        ENDIF
     CATCH e as Error
         THROW e
     CATCH e as Exception
@@ -1274,7 +1316,7 @@ FUNCTION _ArrayToUsualArray (args AS ARRAY) AS USUAL[]
 	elements := (INT) args:Length
 	uargs    := USUAL[]{ elements }
 	
-	FOR x := 1 UPTO elements
+	FOR x := 0 UPTO elements -1
 		uargs[x] := args[x]
 	NEXT
 	RETURN uargs
@@ -1288,7 +1330,7 @@ FUNCTION _ArrayToObjectArray (args AS ARRAY) AS OBJECT[]
 	elements := (INT) args:Length
 	oArgs    := OBJECT[]{ elements }
 	
-	FOR x := 1 UPTO elements
+	FOR x := 0 UPTO elements -1
 		oArgs[x] := args[x]
 	NEXT
 	RETURN oArgs
@@ -1302,7 +1344,7 @@ FUNCTION _UsualArrayToObjectArray (args AS USUAL[]) AS OBJECT[]
 	elements := (INT) args:Length
 	oArgs    := OBJECT[]{ elements }
 	
-	FOR x := 1 UPTO elements
+	FOR x := 0 UPTO elements -1
 		oArgs[x] := args[x]
 	NEXT
 	RETURN oArgs
@@ -1316,7 +1358,7 @@ FUNCTION _ObjectArrayToUsualArray (args AS OBJECT[]) AS USUAL[]
 	elements := (INT) args:Length
 	uArgs    := USUAL[]{ elements }
 	
-	FOR x := 1 UPTO elements
+	FOR x := 0 UPTO elements -1
 		uArgs[x] := args[x]
 	NEXT
 	RETURN uArgs
@@ -1339,8 +1381,7 @@ FUNCTION MParamCount(symClass AS STRING,symMethod AS STRING) AS DWORD
 		IF met != NULL
 			IF met:IsDefined(TYPEOF(ClipperCallingConventionAttribute),FALSE)
 				// calculate the # of parameters
-				LOCAL oAttr AS ClipperCallingConventionAttribute
-				oAttr := (ClipperCallingConventionAttribute) met:GetCustomAttributes(TYPEOF(ClipperCallingConventionAttribute), FALSE)[1]
+				VAR oAttr := (ClipperCallingConventionAttribute) met:GetCustomAttributes(TYPEOF(ClipperCallingConventionAttribute), FALSE):First()
 				RETURN (DWORD) oAttr:ParameterNames:Length
 			ELSE
 				RETURN (DWORD) met:GetParameters():Length
@@ -1367,11 +1408,11 @@ FUNCTION FParamCount(symFunction AS STRING) AS DWORD
 	// CLipper functions can't and shouldn't have overloads
 	IF aFuncs != NULL 
 		IF aFuncs:Length == 1 
-			LOCAL oMI := aFuncs[1] AS MethodInfo
+			LOCAL oMI := aFuncs:First() AS MethodInfo
 			IF oMI:IsDefined(TYPEOF(ClipperCallingConventionAttribute),FALSE)
 				// calculate the # of parameters
 				LOCAL oAttr AS ClipperCallingConventionAttribute
-				oAttr := (ClipperCallingConventionAttribute) oMI:GetCustomAttributes(TYPEOF(ClipperCallingConventionAttribute), FALSE)[1]
+				oAttr := (ClipperCallingConventionAttribute) oMI:GetCustomAttributes(TYPEOF(ClipperCallingConventionAttribute), FALSE):First()
 				RETURN (DWORD) oAttr:ParameterNames:Length
 			ELSE
 				RETURN (DWORD) oMI:GetParameters():Length
@@ -1405,7 +1446,7 @@ FUNCTION _CallClipFunc(symFunction AS STRING,uArgs PARAMS USUAL[]) AS USUAL
 	IF aFuncs != NULL 
 		IF aFuncs:Length == 1 
 			LOCAL oMI AS MethodInfo
-			oMI		:= aFuncs[1] 
+			oMI		:= aFuncs:First()
 			IF OOPHelpers.SendHelper(NULL, oMI, uArgs, OUT VAR result)
 				RETURN result
 			ENDIF
@@ -1428,7 +1469,7 @@ FUNCTION XSharpLoadLibrary(cLibFileName AS STRING) AS Assembly
 	LOCAL oAssembly AS Assembly
 	oAssembly := Assembly.LoadFrom(cLibFileName)
 	LOCAL oModule AS Module
-	oModule := oAssembly:GetModules()[1]
+	oModule := oAssembly:GetModules():First()
 	LOCAL oMethod AS MethodInfo
 	oMethod := oModule:GetMethod("RunInitProcs")
 	IF oMethod != NULL
@@ -1440,3 +1481,4 @@ FUNCTION EnableLBOptimizations(lSet AS LOGIC) AS LOGIC
     LOCAL lOld := OOPHelpers.EnableOptimizations AS LOGIC
     OOPHelpers.EnableOptimizations := lSet
     RETURN lOld
+

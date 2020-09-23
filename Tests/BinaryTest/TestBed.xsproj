@@ -8,7 +8,7 @@
     <RootNamespace>BinaryTest</RootNamespace>
     <AssemblyName>BinaryTest</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
-    <Name>BinaryTest</Name>
+    <Name>TestBed</Name>
     <Nologo>true</Nologo>
     <GenerateFullPaths>true</GenerateFullPaths>
     <Dialect>VO</Dialect>

@@ -129,7 +129,7 @@ Project("{AA6C8D78-22FF-423A-9C7C-5F2393824E04}") = "VOMDITyped", "Tests\TypedSD
 EndProject
 Project("{AA6C8D78-22FF-423A-9C7C-5F2393824E04}") = "Vopad", "Tests\TypedSDK\Vopad\Vopad.xsproj", "{58AA6767-5191-4F90-A756-4584A4C42279}"
 EndProject
-Project("{AA6C8D78-22FF-423A-9C7C-5F2393824E04}") = "BinaryTest", "Tests\BinaryTest\BinaryTest.xsproj", "{22F634C4-97C1-4347-8994-A4F89D100AFB}"
+Project("{AA6C8D78-22FF-423A-9C7C-5F2393824E04}") = "TestBed", "Tests\BinaryTest\TestBed.xsproj", "{22F634C4-97C1-4347-8994-A4F89D100AFB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

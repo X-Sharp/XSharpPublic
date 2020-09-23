@@ -8,9 +8,9 @@ echo Start restoring Roslyn ...
 call "%~dp0\Roslyn\Restore.cmd"
 rem echo Start building Roslyn Compiler ...
 rem msbuild "%~dp0\Roslyn\Compilers.sln" /v:m /m
-echo Start building XSharp Compilers (all 3 configurations)
+echo Start building XSharp Compilers (Release Configuration)
 cd "%~dp0\XSharp"
-call Build.cmd All
+call Build.cmd Release
 Goto End
 :Error
 Echo Could not find the file %VsBatch%

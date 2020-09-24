@@ -841,8 +841,10 @@ INTERNAL STATIC CLASS OOPHelpers
         VAR max    := Math.Min(uArgs:Length, oArgs:Length)  -1
         FOR VAR nParam := 0 to max
             LOCAL param := pars[nParam] as ParameterInfo
-            IF param:IsOut .or. param:ParameterType:IsByRef 
-                uArgs[nParam] := oArgs[nParam]
+            IF param:IsOut .or. param:ParameterType:IsByRef
+                IF uArgs[nParam]:IsByRef
+                    uArgs[nParam] := oArgs[nParam]
+                ENDIF
             ENDIF
         NEXT
         

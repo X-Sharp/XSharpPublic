@@ -13,8 +13,7 @@ BEGIN NAMESPACE XSharp
     /// <summary>Internal type that implements the VO Compatible USUAL type.<br/>
     /// This type has many operators and implicit converters that normally are never directly called from user code.
     /// </summary>
-    //[DebuggerTypeProxy(TYPEOF(UsualDebugView))];
-    [DebuggerDisplay("{ToString(),nq} ({_usualType})", Type := "USUAL")];
+    [DebuggerDisplay("{ToDebuggerString(),nq}", Type := "USUAL")];
     [AllowLateBinding];
     [StructLayout(LayoutKind.Sequential, Pack := 4)];
     PUBLIC STRUCTURE __Usual IMPLEMENTS IConvertible, ;
@@ -466,8 +465,8 @@ BEGIN NAMESPACE XSharp
         /// <summary>This property returns TRUE when the USUAL is of type String</summary>
         [DebuggerBrowsable(DebuggerBrowsableState.Never)];
         PUBLIC PROPERTY IsString		AS LOGIC GET _usualType == __UsualType.String
+            
         /// <summary>This property returns TRUE when the USUAL is passed by reference (not implemented yet)</summary>
-        [DebuggerBrowsable(DebuggerBrowsableState.Never)];
         PUBLIC   PROPERTY IsByRef		AS LOGIC GET _isByRef
         /// <summary>This property returns TRUE when the USUAL is a reference type (Array, Decimal, Object, String)</summary>
         [DebuggerBrowsable(DebuggerBrowsableState.Never)];
@@ -3089,17 +3088,13 @@ BEGIN NAMESPACE XSharp
             ENDIF
 
             #endregion
-        INTERNAL CLASS UsualDebugView
-            PRIVATE _uvalue AS __Usual
-            PUBLIC CONSTRUCTOR (u AS __Usual)
-                _uvalue := u
-
-            [DebuggerBrowsable(DebuggerBrowsableState.RootHidden)] ;
-            PUBLIC PROPERTY @@Value     AS OBJECT       GET _uvalue:@@Value
-            PUBLIC PROPERTY Type        AS __UsualType  GET _uvalue:_usualType
-            PUBLIC PROPERTY Initialized AS LOGIC        GET _uvalue:_initialized
-
-        END CLASS
+         INTERNAL METHOD ToDebuggerString as STRING
+                var strValue := SELF:Value:ToString() +" ( "
+                IF SELF:IsByRef
+                    strValue += "ref "
+                ENDIF
+                strValue += _usualType:ToString() + " )"
+                RETURN strValue
     END STRUCTURE
 
 

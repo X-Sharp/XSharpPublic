@@ -202,10 +202,13 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			
 			LOCAL f AS FLOAT
 			u:TestUntyped(@f)
+            Assert.Equal(f, 123.0)
 			LOCAL r8 AS REAL8
 			u:TestUntyped(@r8)
+            Assert.Equal(r8, (REAL8) 123.0)
 			LOCAL r4 AS REAL4
 			u:TestUntyped(@r4)
+            Assert.Equal(r4, (REAL4)123.0)
 			LOCAL uu AS USUAL
 			u:TestUntyped(@uu)
 			LOCAL s := #ASD AS SYMBOL

@@ -20,6 +20,9 @@ jobs:
     
     steps:
       - uses: actions/checkout@master #Clone the repository code at master
+      - uses: actions/setup-dotnet@v1
+        with:
+           dotnet-version: '2.1.518' # SDK Version to use; should match version in global.json and build/Targets/Tools.props
       - uses: actions/cache@v2
         with:
           path: | 

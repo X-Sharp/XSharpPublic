@@ -4216,15 +4216,11 @@ namespace Microsoft.VisualStudio.Project
             // Remove the duplicates
             if (duplicates.Count > 0)
             {
-                string backupName = Path.ChangeExtension(buildProject.FullPath, ".bak");
-                if (Utilities.DeleteFileSafe(backupName))
-                {
-                    File.Copy(buildProject.FullPath, backupName);
-                }
                 foreach (var item in duplicates)
                 {
                     this.buildProject.RemoveItem(item);
                 }
+                Utilities.DeleteFileSafe(buildProject.FullPath);
                 this.buildProject.Save();
             }
             // Ok... Let's do it !

@@ -5,12 +5,10 @@
 //
 
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Diagnostics;
 using Microsoft.VisualStudio;
-using Microsoft.VisualStudio.Shell.Interop;
 using IServiceProvider = System.IServiceProvider;
+using System.IO;
 
 using Microsoft.VisualStudio.Project;
 namespace XSharp.Project
@@ -21,15 +19,15 @@ namespace XSharp.Project
     class ModelScannerEvents : SolutionListener
     {
         List<string> projectfiles;
-        static List<string> changedProjectfiles;
+        static Dictionary<string,string> changedProjectfiles;
 
-        static internal IList<string> ChangedProjectFiles => changedProjectfiles;
+        static internal IDictionary<string, string> ChangedProjectFiles => changedProjectfiles;
         #region ctors
         public ModelScannerEvents(IServiceProvider serviceProvider)
             : base(serviceProvider)
         {
             projectfiles = new List<string>();
-            changedProjectfiles = new List<string>();
+            changedProjectfiles = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
             XSharpModel.ModelWalker.Suspend();
         }
 
@@ -118,7 +116,7 @@ namespace XSharp.Project
         {
             if (hasEnvironmentvariable && pszFileName != null && pszFileName.ToLower().EndsWith("xsproj") && System.IO.File.Exists(pszFileName))
             {
-                string xml = System.IO.File.ReadAllText(pszFileName);
+                string xml = File.ReadAllText(pszFileName);
                 var pos = xml.IndexOf(oldText, StringComparison.OrdinalIgnoreCase);
                 if (pos >= 0)
                 {
@@ -127,13 +125,12 @@ namespace XSharp.Project
                         xml = xml.Substring(0, pos) + newText + xml.Substring(pos + oldText.Length);
                         pos = xml.IndexOf(oldText, StringComparison.OrdinalIgnoreCase);
                     }
-                    var atts = System.IO.File.GetAttributes(pszFileName);
-                    if (atts.HasFlag(System.IO.FileAttributes.ReadOnly))
-                    {
-                        System.IO.File.SetAttributes(pszFileName, System.IO.FileAttributes.Normal);
-                    }
-                    System.IO.File.WriteAllText(pszFileName, xml);
-                    changedProjectfiles.Add(pszFileName.ToLower());
+                    var original = Path.ChangeExtension(pszFileName, ".original");
+                    Utilities.DeleteFileSafe(original);
+                    File.Copy(pszFileName, original);
+                    Utilities.DeleteFileSafe(pszFileName);
+                    File.WriteAllText(pszFileName, xml);
+                    changedProjectfiles.Add(pszFileName, original);
                 }
             }
             projectfiles.Add(pszFileName);

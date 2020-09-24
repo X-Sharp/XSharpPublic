@@ -539,6 +539,16 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			LOCAL cRet AS STRING
 		RETURN cRet
 
+        [Fact, Trait("Category", "usual to string tests")];
+		METHOD UsualShortCircuit() AS VOID
+			local u1, u2 as USUAL
+            u1 := true
+            u2 := 1
+            Assert.Equal(TRUE, u1 .and. u2)
+            u2 := 0
+            Assert.Equal(FALSE, u1 .and. u2)
+
+
 	END CLASS
 END NAMESPACE // XSharp.Runtime.Tests
 

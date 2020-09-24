@@ -10,7 +10,8 @@ USING System.Text
 USING XUnit
 USING System.Globalization
 
-
+define FTRUE  := TRUE
+define FFALSE := FALSE
 BEGIN NAMESPACE XSharp.VO.Tests
 
 	CLASS VoConversionTests
@@ -228,7 +229,15 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			SetFixed(fixed_)
 			SetDigitFixed(digitfixed)
 		RETURN
-
+		[Fact, Trait("Category", "DirtyCasts")];
+        METHOD DirtyCasts() AS VOID
+            Assert.Equal(1, BYTE(_CAST, FTRUE))
+            Assert.Equal(0, BYTE(_CAST, FFALSE))
+            Assert.Equal(255, _OR(BYTE(_CAST, FTRUE),0xFF)) 
+            Assert.Equal(1, _AND(BYTE(_CAST, FTRUE),0xFF)) 
+            Assert.Equal(1, BYTE(_CAST, TRUE))
+            Assert.Equal(0, BYTE(_CAST, FALSE))
+            
 
 	END CLASS
 END NAMESPACE // XSharp.Runtime.Tests

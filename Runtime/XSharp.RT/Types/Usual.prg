@@ -558,7 +558,7 @@ BEGIN NAMESPACE XSharp
 
         #endregion
         #region Properties FOR the Debugger
-        /// <exclude />
+        /// <summary>Return the value of the USUAL as object. NIL values are shown as a NIL string.</summary>
         PROPERTY @@Value AS OBJECT
             GET
                 IF (_usualType == __UsualType.Void)
@@ -2639,6 +2639,15 @@ BEGIN NAMESPACE XSharp
         [DebuggerStepThroughAttribute];
         STATIC OPERATOR IMPLICIT(val AS DWORD) AS __Usual
             RETURN IIF((val <= 0x7fffffff),__Usual{(LONG)val },__Usual{(FLOAT)val })
+
+       	/// <include file="RTComments.xml" path="Comments/Operator/*" />
+        STATIC OPERATOR TRUE(u AS USUAL) AS LOGIC
+            RETURN (LOGIC) u
+            
+       	/// <include file="RTComments.xml" path="Comments/Operator/*" />
+        STATIC OPERATOR FALSE(u AS USUAL)AS LOGIC
+            RETURN  ! (LOGIC) u
+
             #endregion
 
         #region implementation IConvertable
@@ -2737,7 +2746,7 @@ BEGIN NAMESPACE XSharp
             END SWITCH
             RETURN result
 
-        /// <exclude/>
+        /// <inheritdoc/>
         PUBLIC OVERRIDE METHOD ToString() AS STRING
             LOCAL strResult AS STRING
 
@@ -2763,10 +2772,11 @@ BEGIN NAMESPACE XSharp
             RETURN strResult
 
 
-        /// <exclude/>
+        /// <inheritdoc/>
         PUBLIC METHOD ToString(provider AS System.IFormatProvider) AS STRING
             RETURN SELF:ToString()
 
+        /// <inheritdoc/>
         PUBLIC METHOD IConvertible.ToType(conversionType AS System.Type, provider AS System.IFormatProvider) AS OBJECT
             IF conversionType:IsPointer
                 SWITCH SELF:_usualType
@@ -2799,7 +2809,7 @@ BEGIN NAMESPACE XSharp
         PUBLIC METHOD IConvertible.ToUInt64(provider AS System.IFormatProvider) AS UINT64
             RETURN (UINT64) SELF
 
-            /// <exclude />
+            /// <inheritdoc/>
         PUBLIC METHOD GetTypeCode() AS System.TypeCode
             SWITCH _usualType
             CASE __UsualType.Array	    ; RETURN TypeCode.Object

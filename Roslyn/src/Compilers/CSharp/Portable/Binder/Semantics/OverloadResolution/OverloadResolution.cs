@@ -1389,23 +1389,8 @@ namespace Microsoft.CodeAnalysis.CSharp
 
             if (SingleValidResult(results))
             {
-#if XSHARP
-                int bi = GetTheBestCandidateIndex(results, arguments, ref useSiteDiagnostics);
-                if (results[bi].Member.HasClipperCallingConvention())
-                {
-                    for (var i = 0; i < arguments.Arguments.Count; i++)
-                    {
-                        if (arguments.Arguments[i] is BoundAddressOfOperator b)
-                        {
-                            arguments.Arguments[i] = b.Operand;
-                            arguments.SetRefKind(i, RefKind.Ref);
-                        }
-                    }
-                }
-#endif
                 return;
             }
-
             // See if we have a winner, otherwise we might need to perform additional analysis
             // in order to improve diagnostics
             int bestIndex = GetTheBestCandidateIndex(results, arguments, ref useSiteDiagnostics);
@@ -1419,20 +1404,6 @@ namespace Microsoft.CodeAnalysis.CSharp
                         results[index] = results[index].Worse();
                     }
                 }
-
-#if XSHARP
-                if (results[bestIndex].Member.HasClipperCallingConvention())
-                {
-                    for (var i = 0; i < arguments.Arguments.Count; i++)
-                    {
-                        if (arguments.Arguments[i] is BoundAddressOfOperator b)
-                        {
-                            arguments.Arguments[i] = b.Operand;
-                            arguments.SetRefKind(i, RefKind.Ref);
-                        }
-                    }
-                }
-#endif
                 return;
             }
 

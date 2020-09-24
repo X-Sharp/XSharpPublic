@@ -86368,7 +86368,6 @@ FileType = Code
 CopyToBin = 0
 [R740 - Internal compiler error for BYTE(_CAST, LOGIC) References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
-ReferenceBrowse = C:\XSharp\DevRt\Binaries\Debug\VOWin32APILibrary.dll,1,1
 ReferenceBrowse = C:\XSharp\DevRt\Binaries\Debug\XSharp.Core.dll,1,1
 ReferenceBrowse = C:\XSharp\DevRt\Binaries\Debug\XSharp.RT.dll,1,1
 [R740 - Internal compiler error for BYTE(_CAST, LOGIC) Resources]

@@ -4,8 +4,8 @@ if "%VSEDITION%" == "" SET VSEDITION=Enterprise
 set VsBatch="C:\Program Files (x86)\Microsoft Visual Studio\%VSVERSION%\%VSEDITION%\Common7\Tools\VsDevCmd.bat"
 if not exist %VsBatch% goto Error
 call %VsBatch%
-rem echo Start restoring Roslyn ...
-rem call "%~dp0\Roslyn\Restore.cmd"
+echo Start restoring Roslyn ...
+call "%~dp0\Roslyn\Restore.cmd"
 rem echo Start building Roslyn Compiler ...
 rem msbuild "%~dp0\Roslyn\Compilers.sln" /v:m /m
 echo Start building XSharp Compilers (Release Configuration)

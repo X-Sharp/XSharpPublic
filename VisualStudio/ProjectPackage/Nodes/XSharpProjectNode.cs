@@ -1174,6 +1174,7 @@ namespace XSharp.Project
                 {
                     projectModel = new XProject(this);
                     projectModel.FileWalkComplete += OnFileWalkComplete;
+                    ProjectModel.ProjectWalkComplete += OnProjectWalkComplete;
                 }
                 return projectModel;
             }
@@ -1182,6 +1183,18 @@ namespace XSharp.Project
             {
                 projectModel = null;
             }
+        }
+
+        private void OnProjectWalkComplete(XProject xProject)
+        {
+            var tasks = this.ProjectModel.GetCommentTasks();
+            var list = new List<Task>();
+            _taskListManager.Clear();
+            foreach (var task in tasks)
+            {
+                _taskListManager.AddItem(task, this.ProjectIDGuid);
+            }
+            _taskListManager.Refresh();
         }
 
         private void OnFileWalkComplete(XFile xfile)

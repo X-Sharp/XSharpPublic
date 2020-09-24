@@ -281,8 +281,8 @@ namespace XSharp.Project
 
             //this._defaultNameSpace = prjNode.DefaultNameSpace;
             //Define Callback
-            ProjectNode.ProjectModel.FileWalkComplete = new XProject.OnFileWalkComplete(OnFileWalkComplete);
-            ProjectNode.ProjectModel.ProjectWalkComplete = new XProject.OnProjectWalkComplete(OnProjectWalkComplete);
+            ProjectNode.ProjectModel.FileWalkComplete += OnFileWalkComplete;
+            ProjectNode.ProjectModel.ProjectWalkComplete += OnProjectWalkComplete;
 
             // Attach a listener to the Project/Hierarchy,so any change is raising an event
             HierarchyListener listener = new HierarchyListener(hierarchy);

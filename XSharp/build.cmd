@@ -4,7 +4,7 @@ if "%VSEDITION%" == "" SET VSEDITION=Enterprise
 set VsBatch="C:\Program Files (x86)\Microsoft Visual Studio\%VSVERSION%\%VSEDITION%\Common7\Tools\VsDevCmd.bat"
 if not exist %VsBatch% goto VsError
 if "%VSSDKINSTALL%" == "" call %VsBatch%
-set path=%~dp0\..\Roslyn\Binaries\Tools\dotnet;%path%
+rem set path=%~dp0\..\Roslyn\Binaries\Tools\dotnet;%path%
 if /i "%1" == "Debug" goto Ok
 if /i "%1" == "Public" goto Ok
 if /i "%1" == "Release" goto Ok

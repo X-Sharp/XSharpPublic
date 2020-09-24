@@ -1,4 +1,5 @@
 @echo off
+powershell  -noprofile -executionPolicy RemoteSigned -file "%~dp0\build\scripts\dotnet-install.ps1" --version 2.1.518
 if "%VSVERSION%" == "" SET VSVERSION=2019
 if "%VSEDITION%" == "" SET VSEDITION=Enterprise
 set VsBatch="C:\Program Files (x86)\Microsoft Visual Studio\%VSVERSION%\%VSEDITION%\Common7\Tools\VsDevCmd.bat"

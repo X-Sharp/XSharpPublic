@@ -57,7 +57,8 @@ Additional notes:
 To open the current projects in Visual Studio you need to install .Net Core 2.1.500 (this is also the version in global.json) from:
 https://dotnet.microsoft.com/download/dotnet-core/2.1  
 
-  
-  
+
+Results of automated builds:
+![ContinuousBuild](https://github.com/X-Sharp/XSharpDev/workflows/ContinuousBuild/badge.svg?branch=master)
   
 

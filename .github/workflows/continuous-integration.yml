@@ -20,16 +20,9 @@ jobs:
     
     steps:
       - uses: actions/checkout@master #Clone the repository code at master
-      - uses: actions/setup-dotnet@v1
+      - uses: actions/setup-dotnet@v1.7.0
         with:
            dotnet-version: '2.1.518' # SDK Version to use; should match version in global.json and build/Targets/Tools.props
-      - uses: actions/cache@v2
-        with:
-          path: | 
-            ./Roslyn/Binaries/Tools/dotnet/*
-          key: ${{ runner.os }}-netcoresdk-${{ hashFiles('./Roslyn/Binaries/Tools/dotnet/*') }}
-          restore-keys: |
-            ${{ runner.os }}-netcoresdk-
       - name: BuildCompiler
         shell: cmd
         run: |

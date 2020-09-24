@@ -334,19 +334,14 @@ namespace Microsoft.VisualStudio.Project
             // Now manage duplicates
             if (duplicatedNode.Count > 0)
             {
-                // Make a backup first
-                string original = buildProject.FullPath;
-                string backupName = Path.ChangeExtension(original,".bak");
-                if (Utilities.DeleteFileSafe(backupName))
-                {
-                    File.Copy(original, backupName);
-                }
                 foreach (ReferenceNode node in duplicatedNode)
                 {
-                    //this.RemoveChild( node );
                     node.Remove(false);
                 }
-                buildProject.Save(original);
+                if (this.ProjectMgr.QueryEditProjectFile(true))
+                { 
+                    buildProject.Save();
+                }
             }
             var references = buildResult.ProjectInstance.GetItems(ProjectFileConstants.ReferencePath);
             //var references = MSBuildProjectInstance.GetItems(buildResult.ProjectInstance, ProjectFileConstants.ReferencePath);

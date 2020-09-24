@@ -2300,7 +2300,7 @@ BEGIN NAMESPACE XSharp
                 CASE __UsualType.Int64	; RETURN u:_i64Value
                 CASE __UsualType.Float	; RETURN (System.Decimal) u:_r8Value
                 CASE __UsualType.Decimal; RETURN u:_decimalValue
-                CASE __UsualType.Currency; RETURN u:_currencyValue
+                CASE __UsualType.Currency; RETURN (System.Decimal) u:_currencyValue
                 CASE __UsualType.Logic	; RETURN IIF(u:_logicValue, 1, 0)
                 OTHERWISE
                     THROW ConversionError(__UsualType.Decimal, TYPEOF(INT64), u)
@@ -3095,6 +3095,7 @@ BEGIN NAMESPACE XSharp
                 ENDIF
                 strValue += _usualType:ToString() + " )"
                 RETURN strValue
+                //return SELF:Value:ToString()
     END STRUCTURE
 
 

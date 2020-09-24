@@ -8,7 +8,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Scripting
 {
     internal sealed class XSharpMacroCompiler : ScriptCompiler
     {
-        private static XSharpSpecificCompilationOptions xsOptions = new XSharpSpecificCompilationOptions() { Dialect = XSharpDialect.VO, NoStdDef = true, UndeclaredMemVars = true };
+        private static XSharpSpecificCompilationOptions xsOptions = new XSharpSpecificCompilationOptions() { Dialect = XSharpDialect.VO, NoStdDef = true, LateBinding = true, UndeclaredMemVars = true };
         private static ScriptCompiler[] compilers = {null,null};    // first = VO, second = Vulcan
 
         private XSharpSpecificCompilationOptions xoptions;
@@ -28,7 +28,14 @@ namespace Microsoft.CodeAnalysis.CSharp.Scripting
 
         private XSharpMacroCompiler(bool lVoStyleStrings)
         {
-            xoptions = new XSharpSpecificCompilationOptions() { Dialect = lVoStyleStrings ? XSharpDialect.VO : XSharpDialect.Vulcan};
+            if (lVoStyleStrings)
+            {
+                xoptions = new XSharpSpecificCompilationOptions() { Dialect = XSharpDialect.VO, LateBinding = true, NoStdDef = true, UndeclaredMemVars = true };
+            }
+            else
+            {
+                xoptions = new XSharpSpecificCompilationOptions() { Dialect = XSharpDialect.Vulcan, LateBinding = true, NoStdDef = true, UndeclaredMemVars = false};
+            }
             xoptions.RuntimeAssemblies = RuntimeAssemblies.XSharpCore | RuntimeAssemblies.XSharpRT;
             options = new CSharpParseOptions(kind: SourceCodeKind.Script)
                 .WithMacroScript(true)

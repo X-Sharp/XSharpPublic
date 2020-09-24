@@ -748,7 +748,7 @@ primary             : Key=SELF                                                  
                     | Key=SUPER                                                 #superExpression
                     | Literal=literalValue                                      #literalExpression		// literals
                     | LiteralArray=literalArray                                 #literalArrayExpression	// { expr [, expr] }
-                    | AnonType=anonType                                         #anonTypeExpression		// { .id := expr [, .id := expr] }
+                    | AnonType=anonType                                         #anonTypeExpression		// CLASS { id := expr [, id := expr] }
                     | CbExpr=codeblock                                          #codeblockExpression	// {| [id [, id...] | expr [, expr...] }
                     | AnoExpr=anonymousMethodExpression                         #codeblockExpression	// DELEGATE (x as Foo) { DoSomething(Foo) }
                     | Query=linqQuery                                           #queryExpression        // LINQ

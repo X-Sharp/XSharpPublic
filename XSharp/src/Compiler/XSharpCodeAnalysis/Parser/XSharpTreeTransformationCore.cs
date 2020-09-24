@@ -7550,35 +7550,40 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             var expr = context.Expr.Get<ExpressionSyntax>();
             // check for cast from a logical literal to a numeric
+            bool numeric = false;
+            bool signed = false;
             // in that case replace FALSE with 0 and TRUE with 1
-            if (expr.Kind == SyntaxKind.TrueLiteralExpression || expr.Kind == SyntaxKind.FalseLiteralExpression)
+            if (type is PredefinedTypeSyntax)
             {
-                bool numeric = false;
-                if (type is PredefinedTypeSyntax)
+                var pdt = type as PredefinedTypeSyntax;
+                switch (pdt.Keyword.Kind)
                 {
-                    var pdt = type as PredefinedTypeSyntax;
-                    switch (pdt.Keyword.Kind)
-                    {
-                        // 4 x unsigned
-                        case SyntaxKind.ByteKeyword:
-                        case SyntaxKind.CharKeyword:
-                        case SyntaxKind.UShortKeyword:
-                        case SyntaxKind.UIntKeyword:
-                        case SyntaxKind.ULongKeyword:
-                        // 4 x signed
-                        case SyntaxKind.SByteKeyword:
-                        case SyntaxKind.ShortKeyword:
-                        case SyntaxKind.IntKeyword:
-                        case SyntaxKind.LongKeyword:
-                        // floating point
-                        case SyntaxKind.FloatKeyword:
-                        case SyntaxKind.DoubleKeyword:
-                        case SyntaxKind.DecimalKeyword:
-                            numeric = true;
-                            break;
-                    }
+                    // 4 x unsigned
+                    case SyntaxKind.ByteKeyword:
+                    case SyntaxKind.CharKeyword:
+                    case SyntaxKind.UShortKeyword:
+                    case SyntaxKind.UIntKeyword:
+                    case SyntaxKind.ULongKeyword:
+                        signed = false;
+                        numeric = true;
+                        break;
+                    // 4 x signed
+                    case SyntaxKind.SByteKeyword:
+                    case SyntaxKind.ShortKeyword:
+                    case SyntaxKind.IntKeyword:
+                    case SyntaxKind.LongKeyword:
+                    // floating point
+                    case SyntaxKind.FloatKeyword:
+                    case SyntaxKind.DoubleKeyword:
+                    case SyntaxKind.DecimalKeyword:
+                        signed = true;
+                        numeric = true;
+                        break;
                 }
-                if (numeric)
+            }
+            if (numeric)
+            {
+                if (expr.Kind == SyntaxKind.TrueLiteralExpression || expr.Kind == SyntaxKind.FalseLiteralExpression)
                 {
                     LiteralExpressionSyntax lit = expr as LiteralExpressionSyntax;
                     if (lit.Kind == SyntaxKind.TrueLiteralExpression)
@@ -7590,12 +7595,14 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         expr = GenerateLiteral(0);
                     }
                 }
-            }
-            else
-            {
-                expr = MakeChecked(expr, false);
-            }
+                else if (mask != 0)
+                {
+                    var destType = signed ? _intType : _syntaxFactory.PredefinedType(SyntaxFactory.MakeToken(SyntaxKind.UIntKeyword));
+                    expr = MakeCastTo(destType, expr);
+                    expr = MakeChecked(expr, false);
 
+                }
+            }
             if (mask != 0)
             {
                 expr = MakeChecked(_syntaxFactory.BinaryExpression(

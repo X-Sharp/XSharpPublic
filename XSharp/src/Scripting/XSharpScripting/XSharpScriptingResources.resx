@@ -126,7 +126,7 @@
   <data name="InteractiveHelp" xml:space="preserve">
     <value><![CDATA[Usage: xsi [option] ... [script-file.prgx] [script-argument] ...
 
-Executes script-file.csx if specified, otherwise launches an interactive REPL (Read Eval Print Loop).
+Executes script-file.prgx if specified, otherwise launches an interactive REPL (Read Eval Print Loop).
 
 Options:
   /help                          Display this usage message (alternative form: /?)

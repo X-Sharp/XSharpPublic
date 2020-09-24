@@ -364,7 +364,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 (parseErrors.Count != 0 && parseErrors.Contains(p => !ErrorFacts.IsWarning(p.Code))))
             {
                 eof = SyntaxFactory.Token(SyntaxKind.EndOfFileToken);
-                eof = AddLeadingSkippedSyntax(eof, ParserErrorsAsTrivia(parseErrors, pp.IncludedFiles));
+                if (pp != null)
+                {
+                    eof = AddLeadingSkippedSyntax(eof, ParserErrorsAsTrivia(parseErrors, pp.IncludedFiles));
+                }
                 if (tree != null)
                 {
                     eof.XNode = new XTerminalNodeImpl(tree.Stop);

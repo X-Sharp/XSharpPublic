@@ -153,6 +153,91 @@ BEGIN NAMESPACE XSharp.VO.Tests
             u:Name := "This class has a setter in the parent Only"
 
 		RETURN
+
+#pragma options ("vo7", ON)
+		[Fact, Trait("Category", "OOP")];
+		METHOD LateBindingFields_ParamsbyReference() AS VOID
+			LOCAL u AS USUAL
+			u := LBTestClass{}
+
+			LOCAL l AS LOGIC
+			l := TRUE
+			u:TestUntyped(REF l)
+			Assert.Equal(FALSE, l)
+			
+			l := TRUE
+			u:TestUntyped(@l)
+			Assert.Equal(FALSE, l)
+			
+			
+			LOCAL i AS INT
+			i := 555
+			u:TestUntyped(REF i)
+			Assert.Equal(123, i)
+			
+			i := 555
+			u:TestUntyped(@i)
+			Assert.Equal(123, i)
+			
+			
+			LOCAL c AS STRING
+			c := "asd"
+			u:TestUntyped(REF c)
+			Assert.Equal("test", c)
+			
+			c := "asd"
+			u:TestUntyped(@c)
+			Assert.Equal("test", c)
+			
+			
+			LOCAL d AS DATE
+			d := Today()
+			u:TestUntyped(REF d)
+			Assert.Equal(Today()-1, d)
+			
+			d := Today()
+			u:TestUntyped(@d)
+			Assert.Equal(Today()-1, d)
+			
+			
+			LOCAL f AS FLOAT
+			u:TestUntyped(@f)
+			LOCAL r8 AS REAL8
+			u:TestUntyped(@r8)
+			LOCAL r4 AS REAL4
+			u:TestUntyped(@r4)
+			LOCAL uu AS USUAL
+			u:TestUntyped(@uu)
+			LOCAL s := #ASD AS SYMBOL
+			u:TestUntyped(@s)
+
+
+
+			LOCAL n AS INT
+			n := 1
+			u:TestInt(REF n)
+			Assert.Equal(123, n)
+			n := 1
+			u:TestInt(@n)
+			Assert.Equal(123, n)
+		
+			l := FALSE
+			u:TestLogic(REF l)
+			Assert.Equal(TRUE, l)
+			l := FALSE
+			u:TestLogic(@l)
+			Assert.Equal(TRUE, l)
+		
+			c := ""
+			u:TestString(REF c)
+			Assert.Equal("changed", c)
+			c := ""
+			u:TestString(@c)
+			Assert.Equal("changed", c)
+
+
+		RETURN
+#pragma options ("vo7", DEFAULT)
         
         [Fact, Trait("Category", "OOP")];
         METHOD IConvertibleTest() AS VOID
@@ -504,13 +589,13 @@ END CLASS
 
 
 CLASS TestClassParent
-    VIRTUAL ACCESS Name as STRING
+    VIRTUAL ACCESS Name AS STRING
         RETURN "TestClassParent"
-    VIRTUAL ASSIGN Name(cValue as STRING)
+    VIRTUAL ASSIGN Name(cValue AS STRING)
         NOP
 END CLASS
 CLASS TestClassChild INHERIT TestClassParent
-    VIRTUAL ACCESS Name as STRING
+    VIRTUAL ACCESS Name AS STRING
         RETURN "TestClassChild"
 END CLASS
 
@@ -541,5 +626,28 @@ CLASS NilTestClass
 			RETURN 2
 		END IF
 	RETURN NIL
+END CLASS
+
+CLASS LBTestClass
+	METHOD TestUntyped(u)
+		DO CASE
+		CASE IsString(u)
+			u := "test"
+		CASE IsNumeric(u)
+			u := 123
+		CASE IsDate(u)
+			u := Today() - 1
+		CASE IsLogic(u)
+			u := FALSE
+		END CASE
+	RETURN NIL
+		
+	METHOD TestInt(n REF INT) AS VOID
+	n := 123
+	METHOD TestLogic(l REF LOGIC) AS VOID
+	l := TRUE
+	METHOD TestString(c REF STRING) AS VOID
+	c := "changed"
+	
 END CLASS
 

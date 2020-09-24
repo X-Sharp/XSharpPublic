@@ -97,6 +97,10 @@ BEGIN NAMESPACE XSharp.VO.Tests
             Assert.Equal($3.0303, (CURRENCY)(u1 /u2 ))
             Assert.Equal($0.01, (CURRENCY)(u1 %u2 ))
             
+            u2 := $.5
+            Assert.Equal($0.5, (CURRENCY) u2)
+            u2 += $.5
+            Assert.Equal($1.0, (CURRENCY) u2)
 			RETURN
 
 

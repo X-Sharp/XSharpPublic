@@ -1972,7 +1972,10 @@ namespace Microsoft.CodeAnalysis.CSharp
 
                 if (!_unsafeAddressTakenVariables.ContainsKey(variable))
                 {
-                    _unsafeAddressTakenVariables.Add(variable, node.Syntax.Location);
+#if XSHARP
+                    if (!compilation.Options.HasOption(CompilerOption.ImplicitCastsAndConversions, node.Syntax))
+#endif
+                        _unsafeAddressTakenVariables.Add(variable, node.Syntax.Location);
                 }
             }
 
@@ -2192,7 +2195,11 @@ namespace Microsoft.CodeAnalysis.CSharp
                     CheckCaptured(receiver);
                     if (!_unsafeAddressTakenVariables.ContainsKey(receiver))
                     {
-                        _unsafeAddressTakenVariables.Add(receiver, node.Syntax.Location);
+#if XSHARP
+                        if ( !compilation.Options.HasOption(CompilerOption.ImplicitCastsAndConversions, node.Syntax))
+#endif
+
+                            _unsafeAddressTakenVariables.Add(receiver, node.Syntax.Location);
                     }
                 }
             }

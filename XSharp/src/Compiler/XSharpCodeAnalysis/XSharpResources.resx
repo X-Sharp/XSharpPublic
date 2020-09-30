@@ -2975,7 +2975,7 @@ A catch() block after a catch (System.Exception e) block can catch non-CLS excep
     <value>This error occurs when a predefined system type such as System.Int32 is found in two assemblies. One way this can happen is if you are referencing mscorlib or System.Runtime.dll from two different places, such as trying to run two versions of the .NET Framework side-by-side.</value>
   </data>
   <data name="ERR_LocalCantBeFixedAndHoisted" xml:space="preserve">
-    <value>Local '{0}' or its members cannot have their address taken and be used inside an anonymous method or lambda expression</value>
+    <value>Local '{0}' or its members cannot have their address taken and be used inside a codeblock, an anonymous method or lambda expression</value>
   </data>
   <data name="WRN_TooManyLinesForDebugger" xml:space="preserve">
     <value>Source file has exceeded the limit of 16,707,565 lines representable in the PDB; debug information will be incorrect</value>

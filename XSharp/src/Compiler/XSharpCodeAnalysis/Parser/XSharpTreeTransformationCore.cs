@@ -729,7 +729,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         internal string UniqueNameSuffix(XSharpParserRuleContext context)
         {
-            var prefix = _fileName == null ? "XX" : System.IO.Path.GetFileNameWithoutExtension(_fileName);
+            var prefix = _fileName == null ? "XX" : System.IO.Path.GetFileNameWithoutExtension(_fileName).Replace(".","#");
             var token = context != null ? context.Start : new XSharpToken(XP.WS) { Line = 42, Column = 42, StartIndex = 42*42 };
             return "$" + prefix+"_"+token.StartIndex.ToString()+"_"+ token.Line.ToString()+"_"+ token.Column.ToString(); 
         }

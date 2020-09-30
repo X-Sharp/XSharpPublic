@@ -997,7 +997,7 @@ BEGIN NAMESPACE XSharp.RDD
 			/// <inheritdoc />
 		VIRTUAL METHOD Info(nOrdinal AS INT, oNewValue AS OBJECT) AS OBJECT
 			LOCAL oResult AS OBJECT
-			// todo check basic implementation
+			// todo check basic implementation of Workarea.Info
          
 			SWITCH nOrdinal
 			    CASE DbInfo.DBI_ISDBF

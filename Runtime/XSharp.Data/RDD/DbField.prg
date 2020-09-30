@@ -15,13 +15,16 @@ CLASS XSharp.DbField
     /// <summary>Initializes a new instance of the DbField class</summary>
     /// <param name="info">Column info on which this field is based.</param>
     CONSTRUCTOR( info AS DbColumnInfo)
-    SELF:Info       := info
-    
+        SELF:Info       := info
+        IF String.IsNullOrEmpty(info:ColumnName)
+            info:ColumnName := info:Alias:ToLower()
+        ENDIF
+        
     #region properties
     /// <summary>Dotnet datatype for the field</summary>
     PROPERTY DataType   AS System.Type GET SELF:Info:DotNetType
     /// <summary>Name of the field</summary>
-    PROPERTY Name       AS STRING GET SELF:Info:Name
+    PROPERTY Name       AS STRING GET SELF:Info:Name:ToLower()
     /// <summary>Caption for the field</summary>
     PROPERTY Caption    AS STRING GET SELF:Info:ColumnName
     /// <summary>Ordinal position of the field</summary>
@@ -39,6 +42,7 @@ INTERNAL CLASS XSharp.DbFieldDescriptor INHERIT PropertyDescriptor
 
     #region constructors
     CONSTRUCTOR( dbField AS DbField )
+    
     SUPER( dbField:Caption , Attribute[]{0} )
     _dbField := dbField   
     RETURN

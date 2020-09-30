@@ -27,6 +27,7 @@ CLASS XSharp.DbDataSource IMPLEMENTS IBindingList
     PROTECTED _index         AS LONG
     PROTECTED _sorted        AS LOGIC
     PROTECTED _indexFile     AS STRING
+    
     INTERNAL EVENT FieldChanged       AS DbNotifyFieldChange
     
     CONSTRUCTOR(oRDD AS IRdd)
@@ -38,7 +39,8 @@ CLASS XSharp.DbDataSource IMPLEMENTS IBindingList
     SupportsSorting  := TRUE
     _sorted     := FALSE
     RETURN
-  
+    PROPERTY ShowDeleted AS LOGIC AUTO := TRUE
+    PROPERTY ShowRecno   AS LOGIC AUTO := TRUE
     #region IBindingList implementation
         /// <summary>TRUE when the workarea is not readonly</summary>
         PROPERTY AllowEdit      AS LOGIC GET !_readOnly
@@ -277,9 +279,15 @@ CLASS XSharp.DbDataSource IMPLEMENTS IBindingList
 
     /// <summary>This required method has not (yet) been implemented</summary>
 
-    VIRTUAL METHOD CopyTo( list AS System.Array , IndexExt AS INT ) AS VOID
-        THROW NotImplementedException{}         
-        //RETURN
+    VIRTUAL METHOD CopyTo( list AS System.Array , index AS INT ) AS VOID
+        _oRDD:GoTop()
+        DO WHILE ! _oRDD:EoF
+            list:SetValue(SELF:Current, index)
+            index += 1
+            _oRDD:Skip(1)
+        ENDDO
+        _oRDD:GoTop()
+        
         
     VIRTUAL PROPERTY Count          AS INT GET _oRDD:RecCount
     VIRTUAL PROPERTY IsSynchronized AS LOGIC GET TRUE
@@ -361,7 +369,31 @@ CLASS XSharp.DbDataSource IMPLEMENTS IBindingList
         END GET
     END PROPERTY
 
-
+    private _oColl := NULL as PropertyDescriptorCollection
+    INTERNAL PROPERTY PropertyDescriptors AS PropertyDescriptorCollection
+        GET
+            IF _oColl == NULL
+                var props  := TypeDescriptor.GetProperties(Typeof(DbRecord))
+                VAR list   := List<PropertyDescriptor>{}
+                FOREACH prop AS PropertyDescriptor IN props
+                    LOCAL lAdd := TRUE AS LOGIC
+                    IF ! SELF:ShowDeleted .and. String.Compare(prop:Name,"Deleted", true) == 0
+                        lAdd := FALSE
+                    ELSEIF ! SELF:ShowRecno .and. String.Compare(prop:Name,"Recno", true) == 0
+                        lAdd := FALSE
+                    ENDIF
+                    IF lAdd
+                        list:Add((PropertyDescriptor)prop)
+                    ENDIF
+                NEXT
+                FOREACH element AS DbField IN SELF:Fields
+                    list:Add( DbFieldDescriptor{element} )
+                NEXT
+                _oColl := PropertyDescriptorCollection{list:ToArray()}
+            ENDIF
+            RETURN _oColl
+        END GET
+    END PROPERTY
 
     /// Generate the meta data which will be used as source for generating the dynamic properties.
     PRIVATE METHOD generateFields() AS VOID
@@ -381,7 +413,7 @@ CLASS XSharp.DbDataSource IMPLEMENTS IBindingList
                 cType := (STRING) SELF:_oRDD:FieldInfo(f, DBS_TYPE, NULL)
                 nLen  := (LONG)   SELF:_oRDD:FieldInfo(f, DBS_LEN, NULL)
                 nDec  := (LONG)   SELF:_oRDD:FieldInfo(f, DBS_DEC, NULL)
-                oInfo :=  DbColumnInfo{fieldName, cType, nLen, nDec}
+                oInfo :=  DbColumnInfo{fieldName:ToLower(), cType, nLen, nDec}
                 oInfo:Ordinal := f
             ENDIF
             

@@ -2040,9 +2040,9 @@ VIRTUAL METHOD Info(nOrdinal AS INT, oNewValue AS OBJECT) AS OBJECT
 	CASE DbInfo.DBI_SCOPEDRELATION
 		oResult := FALSE
 	CASE DbInfo.DBI_TRIGGER
-		oResult := NULL     // Todo
-	CASE DbInfo.DBI_DECRYPT         // Todo
-	CASE DbInfo.DBI_ENCRYPT         // Todo
+		oResult := Null     // Todo Add DBI_TRIGGER
+	CASE DbInfo.DBI_DECRYPT         // Todo Add DBI_DECRYPT 
+	CASE DbInfo.DBI_ENCRYPT         // Todo Add DBI_ENCRYPT 
 	CASE DbInfo.DBI_MEMOPACK
 	CASE DbInfo.DBI_DIRTYREAD
 	CASE DbInfo.DBI_POSITIONED
@@ -2130,14 +2130,14 @@ VIRTUAL METHOD RecInfo(nOrdinal AS LONG, oRecID AS OBJECT, oNewValue AS OBJECT) 
 				SELF:_readRecord()
 			ENDIF
 		ENDIF
-	CASE DBRI_RAWMEMOS
+	CASE DBRI_RAWMEMOS    
 	CASE DBRI_RAWDATA
         // RawData returns a string with the record + memos
         // RawMemos returns just the memos
-        // Todo
+        // Todo Add DBRI_RAW..
 		oResult := ""
 	CASE DBRI_ENCRYPTED
-        // Todo
+        // Todo add DBRI_ENCRYPTED
 		oResult := FALSE
 	OTHERWISE
 		oResult := SUPER:Info(nOrdinal, oNewValue)

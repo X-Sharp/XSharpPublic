@@ -213,9 +213,9 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                         isBof := SELF:_oRdd:BoF
                         isEof := SELF:_oRdd:EoF 
                         var newrec := SELF:_ScopeSkip(nToSkip)
-                        if (newrec != -1) // -1  means that there was nothing todo
+                        IF newrec != -1 // -1  means that there was nothing to do
                             recno := newrec
-                        endif
+                        ENDIF 
                         IF isBof != SELF:_oRdd:BoF
                             isBof := SELF:_oRdd:BoF
                         ENDIF

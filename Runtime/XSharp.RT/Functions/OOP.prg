@@ -76,7 +76,7 @@ INTERNAL STATIC CLASS OOPHelpers
 	    RETURN FindClass(cName, TRUE)
 
 	STATIC METHOD FindClass(cName AS STRING, lOurAssembliesOnly AS LOGIC) AS System.Type 
-		// TOdo Optimize
+		// TOdo Optimize FindClass
 		LOCAL ret := NULL AS System.Type
 		LOCAL aAssemblies AS IEnumerable<Assembly>
 		

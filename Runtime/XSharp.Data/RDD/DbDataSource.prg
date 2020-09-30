@@ -337,6 +337,9 @@ CLASS XSharp.DbDataSource IMPLEMENTS IBindingList
     ENDIF
     IF fieldPos > 0    
         retVal     := SELF:_oRDD:GetValue(fieldPos)
+        IF retVal IS STRING VAR strValue
+            retVal := strValue:TrimEnd()
+        ENDIF
     ENDIF
     RETURN retVal
     
@@ -352,8 +355,16 @@ CLASS XSharp.DbDataSource IMPLEMENTS IBindingList
     ELSE
         fieldPos := -1        
     ENDIF
-    IF fieldPos > 0    
-        retVal     := SELF:_oRDD:PutValue(fieldPos, oValue)
+    IF fieldPos > 0
+        LOCAL lockInfo AS DbLockInfo
+        lockInfo := DbLockInfo{}
+        lockInfo:Method  := DbLockInfo.LockMethod.Exclusive
+        lockInfo:RecId    := SELF:_oRDD:RecNo
+        retVal  := SELF:_oRDD:Lock(REF lockInfo)
+        IF retVal
+            retVal     := SELF:_oRDD:PutValue(fieldPos, oValue)
+            SELF:_oRDD:UnLock(SELF:_oRDD:RecNo)
+        ENDIF
     ENDIF
     SELF:OnFieldChange(SELF:RecNo,fieldPos)   
     RETURN retVal

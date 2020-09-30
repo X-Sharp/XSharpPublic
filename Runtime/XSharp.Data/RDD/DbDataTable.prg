@@ -82,11 +82,11 @@ PROTECT _nArea   AS LONG
             VAR nOld := oRDD:RecNo
             oRDD:GoTop()
             IF oMIGet != NULL
-                    VAR GetData := (DbGetData) oMIGet:CreateDelegate(typeof(DbGetData), oRDD) 
-                    DO WHILE ! oRDD:EoF
-                        VAR oData := GetData()
-                        SELF:_AddRow(oData,oRDD:RecNo)
-                        oRDD:Skip(1)
+                VAR GetData := (DbGetData) oMIGet:CreateDelegate(typeof(DbGetData), oRDD) 
+                DO WHILE ! oRDD:EoF
+                    VAR oData := GetData()
+                    SELF:_AddRow(oData,oRDD:RecNo)
+                    oRDD:Skip(1)
                 ENDDO
             ELSE
                 VAR nFldCount := oRDD:FieldCount
@@ -95,6 +95,9 @@ PROTECT _nArea   AS LONG
                     oData := OBJECT[]{nFldCount}
                     FOR VAR nI := 1 TO nFldCount
                         oData[nI] := oRDD:GetValue(nI)
+                        IF oData[nI] IS STRING VAR strValue
+                            oData[nI] := strValue:TrimEnd()
+                        ENDIF
                     NEXT
                     SELF:_AddRow(oData,oRDD:RecNo)
                     oRDD:Skip(1)
@@ -104,7 +107,7 @@ PROTECT _nArea   AS LONG
         
         
         OVERRIDE PROTECTED METHOD NewRowFromBuilder(builder AS DataRowBuilder ) AS DataRow
-        RETURN DbDataRow{builder, SELF:_nAdding}
+            RETURN DbDataRow{builder, SELF:_nAdding}
         
         PRIVATE METHOD _AddRow(oData AS OBJECT[], nRecord AS LONG) AS VOID
             SELF:_nAdding := nRecord

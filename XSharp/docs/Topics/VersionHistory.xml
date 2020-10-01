@@ -10,6 +10,32 @@
     <header>
       <para styleclass="Heading1">Version History</para>
     </header>
+    <para styleclass="Heading1">Changes in 2.6.1.0 (Cahors)</para>
+    <para styleclass="Normal">This is a bug fix release with fixes for some issues found in 2.6.0.0</para>
+    <para styleclass="Heading1"><text styleclass="Heading2">Compiler</text></para>
+    <list id="97" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Body Text">Fixed problems with passing typed variables by reference to late bound code and to untyped constructors</li>
+      <li styleclass="Body Text">Fixed an internal compiler error in code where a define containing a logic was cast to a byte <br/> &#160; <text styleclass="Code Example" style="font-weight:bold; font-style:normal; color:#ff0000;">BYTE</text><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;">(</text><text styleclass="Code Example" style="font-weight:bold; font-style:normal; color:#ff0000;">_CAST</text><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;">, LOGICDEFINE)</text>.<br/>Of course this is code that should be avoided at all times, but unfortunately even the VO SDK is full of code like this..<br/>The example above should be written as <text styleclass="Code Example" style="font-weight:bold; font-style:normal; color:#ff0000;">IIF</text><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;">(LOGICDEFINE, 1,0)</text> for example. The compiler will see that the define is constant and will replace that code with either 1 or 0.</li>
+      <li styleclass="Body Text">The compiler was not recognizing <text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;">$.50</text> as a valid Currency literal (because the 0 is missing). This is now accepted.</li>
+    </list>
+    <para styleclass="Heading1"><text styleclass="Heading2">Runtime</text></para>
+    <list id="97" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Body Text">Updated the code in the runtime that handles late bound calls to improve the handling of parameters by reference</li>
+      <li styleclass="Body Text">Fixed a problem in late bound code when accessing properties such as fInit, dwFuncs and dwVars in the OleAutoObject class</li>
+      <li styleclass="Body Text">Added operator TRUE and operator FALSE to the Usual type</li>
+      <li styleclass="Body Text">Calling Val() with a NULL_STRING could cause an exception. This has been fixed.</li>
+      <li styleclass="Body Text">String properties returned by DbDataTable() and DbDataSource() are now trimmed with the TrimEnd() method of the string class.</li>
+      <li styleclass="Body Text">Added a DbTableSave() function to save changes in a DbDataTable to the current workarea.</li>
+    </list>
+    <para styleclass="Heading1"><text styleclass="Heading2">Visual Studio integration</text></para>
+    <list id="97" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Body Text">Opening and upgrading project files that are under Scc could sometimes cause problems. This has been fixed</li>
+      <li styleclass="Body Text">Fixed a regression introduced in 2.6.0.0. causing the task list to no longer be updated.</li>
+      <li styleclass="Body Text">Opening a solution that referenced X# projects that do not exist on disk could cause an exception. This has been fixed.</li>
+      <li styleclass="Body Text">Opening a X# Project file that is not part of a solution could also cause an exception. This has been fixed. We&apos;ll assume the project is part of a solution file in the same folder as the project and with the same name (but different extension) as the project.</li>
+      <li styleclass="Body Text">The project system no longer makes backup files of projects that are updated. We assume you&apos;re all making backups yourself or using some kind of SCC system.</li>
+      <li styleclass="Body Text">Fixed a regression that caused the VS Tasklist not to work for X# projects.</li>
+    </list>
     <para styleclass="Heading1">Changes in 2.6.0.0 (Cahors)</para>
     <para styleclass="Normal"><text style="font-weight:bold; font-style:italic;">Please note that there are some breaking changes in this build. </text><br/><text style="font-weight:bold; font-style:italic;">Therefore the Assembly version number of the Runtime Components has been changed and you will need to recompile all your code and you need new versions of 3rd party components!</text></para>
     <para styleclass="Heading1"><text styleclass="Heading2">Compiler</text></para>

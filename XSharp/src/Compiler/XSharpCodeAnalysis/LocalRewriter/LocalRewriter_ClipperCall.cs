@@ -57,7 +57,8 @@ namespace Microsoft.CodeAnalysis.CSharp
             {
                 // Check for @var when ImplicitCastsAndConversions is enabled (/vo7) and dialect allows AddressOf
                 var a = arguments[i];
-                if (a.Kind == BoundKind.AddressOfOperator && !_compilation.Options.Dialect.AddressOfIsAlwaysByRef() )
+                // no need to check for Dialect.AddressOfIsAlwaysByRef() because that is already done in the TreeTransformation phase
+                if (a.Kind == BoundKind.AddressOfOperator) 
                 {
                     if (_compilation.Options.HasOption(CompilerOption.ImplicitCastsAndConversions, a.Syntax))
                     {

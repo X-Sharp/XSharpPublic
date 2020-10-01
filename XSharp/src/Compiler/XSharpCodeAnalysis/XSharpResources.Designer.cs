@@ -6515,7 +6515,7 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Local &apos;{0}&apos; or its members cannot have their address taken and be used inside an anonymous method or lambda expression.
+        ///   Looks up a localized string similar to Local &apos;{0}&apos; or its members cannot have their address taken and be used inside a codeblock, an anonymous method or lambda expression.
         /// </summary>
         internal static string ERR_LocalCantBeFixedAndHoisted {
             get {
@@ -15353,7 +15353,7 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Try statement found without CATCH clause and without FINALLY clause. The compiler will generate a default CATCH clause that catches and ignores all exceptions..
+        ///   Looks up a localized string similar to TRY statement found without CATCH clause and without FINALLY clause. The compiler will generate a default CATCH clause that catches and ignores all exceptions..
         /// </summary>
         internal static string WRN_TryWithoutCatch {
             get {

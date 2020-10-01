@@ -1,11 +1,9 @@
 @echo off
-powershell  -noprofile -executionPolicy RemoteSigned -file "%~dp0\build\scripts\dotnet-install.ps1" --version 2.1.518
 if "%VSVERSION%" == "" SET VSVERSION=2019
 if "%VSEDITION%" == "" SET VSEDITION=Enterprise
 set VsBatch="C:\Program Files (x86)\Microsoft Visual Studio\%VSVERSION%\%VSEDITION%\Common7\Tools\VsDevCmd.bat"
 if not exist %VsBatch% goto VsError
 if "%VSSDKINSTALL%" == "" call %VsBatch%
-rem set path=%~dp0\..\Roslyn\Binaries\Tools\dotnet;%path%
 if /i "%1" == "Debug" goto Ok
 if /i "%1" == "Public" goto Ok
 if /i "%1" == "Release" goto Ok
@@ -13,6 +11,7 @@ if /i "%1" == "All" goto All
 goto Error
 :All
 Echo Restore nuget packages once for all builds
+powershell  -noprofile -executionPolicy RemoteSigned -file "%~dp0\build\scripts\dotnet-install.ps1" --version 3.1.402
 dotnet restore Compiler.sln 
 SET XSHARPBUILDNESTED=1
 call Build Debug
@@ -29,6 +28,7 @@ rem Next line can help to debug where DotNet.exe finds the right SDK
 rem SET COREHOST_TRACE=1
 if "%XSHARPBUILDNESTED%" == "1" goto Build
 Echo Restoring packages for configuration %1 
+powershell  -noprofile -executionPolicy RemoteSigned -file "%~dp0\build\scripts\dotnet-install.ps1" --version 3.1.402
 dotnet restore Compiler.sln 
 :Build
 Echo Building output for configuration %1

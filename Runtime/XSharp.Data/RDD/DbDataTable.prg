@@ -160,8 +160,8 @@ PROTECT _nArea   AS LONG
                                 VAR oldvalue := row[oCol:ColumnName, DataRowVersion.Original]
                                 VAR current  := row[oCol:ColumnName, DataRowVersion.Current]
                                 IF oldvalue != current
-                                    VAR strOld = IIF(oldvalue == DBNull.Value, "", oldvalue:ToString()):Trim()
-                                    VAR strNew = IIF(current  == DBNull.Value, "", current:ToString()):Trim()
+                                    VAR strOld := IIF(oldvalue == DBNull.Value, "", oldvalue:ToString()):Trim()
+                                    VAR strNew := IIF(current  == DBNull.Value, "", current:ToString()):Trim()
                                     IF !strOld:Equals(strNew)
                                         columnsChanged:Add(oCol)
                                     ENDIF
@@ -194,9 +194,8 @@ PROTECT _nArea   AS LONG
                     ENDIF
                         
             NEXT
-        CATCH e AS Exception
+        CATCH AS Exception
             THROW 
-            RETURN FALSE        
         END TRY 
         RETURN TRUE
 END CLASS

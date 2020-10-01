@@ -29,6 +29,7 @@ using Microsoft;
 using Microsoft.VisualStudio.ComponentModelHost;
 using Microsoft.VisualStudio.Text.Adornments;
 using XSharpModel;
+using Microsoft.Win32;
 /*
 Substitution strings
 String	Description
@@ -384,7 +385,25 @@ namespace XSharp.Project
             _errorList = await GetServiceAsync(typeof(SVsErrorList)) as IErrorList;
             _taskList = await GetServiceAsync(typeof(SVsTaskList)) as ITaskList;
 
+            
+            addOurFileExtensionsForDiffAndPeek("Diff\\SupportedContentTypes");
+            addOurFileExtensionsForDiffAndPeek("Peek\\SupportedContentTypes");
 
+        }
+        const string EXTENSIONS = ".prg;.ppo;.ch;.xh;.xs";
+        private void addOurFileExtensionsForDiffAndPeek(string parent)
+        {
+            using (RegistryKey root = VSRegistry.RegistryRoot(__VsLocalRegistryType.RegType_Configuration,true))
+            {
+                if (root != null)
+                {
+                    using (RegistryKey key = root.OpenSubKey(parent,true))
+                    {
+                        key.SetValue(EXTENSIONS, "");
+                    }
+                }
+            }
+            
         }
 
         internal static string VsVersion;
@@ -414,6 +433,8 @@ namespace XSharp.Project
             }
             return null;
         }
+
+
 
 
         protected override void Dispose(bool disposing)

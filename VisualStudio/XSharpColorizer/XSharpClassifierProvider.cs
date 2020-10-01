@@ -9,6 +9,7 @@ using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Text.Classification;
 using Microsoft.VisualStudio.Utilities;
 using XSharpModel;
+using Microsoft.VisualStudio.Text.Editor;
 
 namespace XSharpColorizer
 {
@@ -17,6 +18,8 @@ namespace XSharpColorizer
     /// </summary>
     [Export(typeof(IClassifierProvider))]
     [ContentType(XSharp.Constants.LanguageName)]
+    [TextViewRole(PredefinedTextViewRoles.Document)]
+
     internal class XSharpClassifierProvider : IClassifierProvider
     {
         // Disable "Field is never assigned to..." compiler's warning. Justification: the field is assigned by MEF.

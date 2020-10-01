@@ -22,7 +22,7 @@ jobs:
       - uses: actions/checkout@master #Clone the repository code at master
       - uses: actions/setup-dotnet@v1.7.0
         with:
-           dotnet-version: '2.1.518' # SDK Version to use; should match version in global.json and build/Targets/Tools.props
+           dotnet-version: '3.1.8' # SDK Version to use; should match version in global.json and build/Targets/Tools.props
       - name: BuildCompiler
         shell: cmd
         run: |

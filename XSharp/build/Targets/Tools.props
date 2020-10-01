@@ -7,7 +7,7 @@
   </PropertyGroup>
 
   <PropertyGroup>
-    <dotnetRuntimeVersion>2.1.22</dotnetRuntimeVersion>
+    <dotnetRuntimeVersion>3.1.8</dotnetRuntimeVersion>
 
     <!--
         When changing this value ensure that you do not exceed the LKG used by source build. This is necessary
@@ -20,7 +20,7 @@
         - Update links and version numbers in docs/contributing/Building%2C%20Debugging%2C%20and%20Testing%20on%20Windows.md
         - Email the team to ask them to upgrade to the new SDK
     -->
-    <dotnetSdkVersion>2.1.518</dotnetSdkVersion>
+    <dotnetSdkVersion>3.1.402</dotnetSdkVersion>
     <monoVersion>5.8.0.88</monoVersion>
     <vsMinimumVersion>15.7</vsMinimumVersion>
   </PropertyGroup>

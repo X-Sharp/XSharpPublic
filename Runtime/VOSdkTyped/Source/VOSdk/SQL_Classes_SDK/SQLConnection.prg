@@ -804,7 +804,7 @@ CLASS SQLConnection
 			oEnum := oConn:Factory:CreateDataSourceEnumerator()
 			oTable := oEnum:GetDataSources()
 			FOREACH oR AS DataRow IN oTable:Rows
-				AAdd(aSources, oR[0])
+				AAdd(aSources, oR:Item[0])
 			NEXT
 		ELSE
 			LOCAL oKey AS Microsoft.Win32.RegistryKey

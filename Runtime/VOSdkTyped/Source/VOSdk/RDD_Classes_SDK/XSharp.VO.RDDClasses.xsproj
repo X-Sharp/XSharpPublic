@@ -23,13 +23,11 @@
     <NoWin32Manifest>False</NoWin32Manifest>
     <VO5>false</VO5>
     <cs>true</cs>
-    <DisabledWarnings>165</DisabledWarnings>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Documentation|AnyCPU'">
     <DocumentationFile>VORDDClasses.Xml</DocumentationFile>
-    <DisabledWarnings>1591</DisabledWarnings>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
   </PropertyGroup>

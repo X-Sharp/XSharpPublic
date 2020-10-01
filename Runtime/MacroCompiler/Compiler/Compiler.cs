@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace XSharp.MacroCompiler
 {
     public static partial class Compilation
-    {
+    {    
         public static Compilation<T, Func<T[], T>> Create<T>(MacroOptions options = null)
         {
             return new Compilation<T, Func<T[], T>>(options ?? MacroOptions.Default);

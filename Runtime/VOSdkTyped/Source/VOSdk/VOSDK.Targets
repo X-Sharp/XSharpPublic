@@ -69,7 +69,7 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <DefineConstants>DEBUG;TRACE;DOCUMENTATION</DefineConstants>
-    <DisabledWarnings>1591</DisabledWarnings>
+    <DisabledWarnings>1591,9015,169,649</DisabledWarnings>
     <CommandLineOption>/noclipcall</CommandLineOption>
 	<vo15>true</vo15>
 	<vo5>false</vo5>

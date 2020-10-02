@@ -38,9 +38,6 @@ BEGIN NAMESPACE XSharp.RDD
 		/// <inheritdoc />
         OVERRIDE METHOD Create(info AS DbOpenInfo) AS LOGIC
             VAR lResult := SUPER:Create(info)
-            IF lResult
-                SELF:ConvertToMemory()
-            ENDIF
             RETURN lResult
 
 		/// <inheritdoc />
@@ -48,7 +45,6 @@ BEGIN NAMESPACE XSharp.RDD
             VAR lResult := SUPER:Open(info)
             VAR nFlds   := SELF:FieldCount
             IF lResult
-               SELF:ConvertToMemory()
                 FOR VAR nI := 1 TO SELF:_RecCount
                     SUPER:GoTo(nI)
                     VAR aData := OBJECT[]{nFlds}

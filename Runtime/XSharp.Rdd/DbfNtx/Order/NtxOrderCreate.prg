@@ -101,18 +101,15 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             SELF:FileName := createInfo:BagName
             
             TRY
-                SELF:_hFile    := FCreate2( SELF:FullPath,_OR(FC_NORMAL, FO_EXCLUSIVE)) 
+                SELF:_hFile    := FCreate2( SELF:FullPath,_OR(FC_NORMAL, FO_EXCLUSIVE))
+                SELF:_oStream  := FGetStream(SELF:_hFile)
             CATCH
                 SELF:Close()
                 SELF:_oRdd:_dbfError( Subcodes.ERDD_CREATE_ORDER, Gencode.EG_CREATE,createInfo:BagName)
                 RETURN FALSE
             END TRY
             TRY
-                IF !SELF:Shared
-                    FConvertToMemoryStream(SELF:_hFile)
-                ENDIF
                 SELF:_PageList := NtxPageList{SELF}
-            
                 SELF:_midItem                       := NtxNode{SELF:_keySize}
                 SELF:_oneItem                       := NtxNode{SELF:_keySize}
                 IF !SELF:_HeaderCreate(ordCondInfo:Scoped)
@@ -127,9 +124,6 @@ BEGIN NAMESPACE XSharp.RDD.NTX
                 ENDIF
                 SELF:Flush()
             FINALLY
-                IF !SELF:Shared
-                    FConvertToFileStream(SELF:_hFile)
-                ENDIF
                 IF !isOk
                     SELF:Close()
                     IF System.IO.File.Exists(SELF:FileName)
@@ -141,7 +135,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             RETURN isOk
             
         PRIVATE METHOD _HeaderCreate(lScoped AS LOGIC) AS LOGIC
-            SELF:_Header := NtxHeader{ SELF, SELF:_hFile }
+            SELF:_Header := NtxHeader{ SELF, FGetStream(SELF:_hFile)}
             SELF:_Header:Signature              := NtxHeaderFlags.Default
             SELF:_Header:IndexingVersion        := SELF:_indexVersion
             SELF:_Header:FirstPageOffset        := SELF:_firstPageOffset
@@ -456,8 +450,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
                     level:Write(level:PageOffset)
                 ENDIF
             NEXT
-            FSeek3( SELF:_hFile, 0, FS_END )
-            SELF:_fileSize  := (LONG) FTell( SELF:_hFile ) 
+            SELF:_fileSize  := (LONG) _oStream:Length
             SELF:_levels := NULL
             RETURN result
             

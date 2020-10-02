@@ -562,6 +562,7 @@ BEGIN NAMESPACE XSharpModel
 			ENDIF
 			BEGIN LOCK oConn
 				TRY
+               IF System.IO.File.Exists(oFile:FullPath)  // for files from SCC the physical file does not always exist
 						Log(i"Update File info for file {oFile.FullPath}")
 						BEGIN USING VAR oCmd := SQLiteCommand{"SELECT 1", oConn}
 							oCmd:CommandText := "UPDATE Files SET LastChanged = $last, Size = $size WHERE id = "+oFile:Id:ToString()
@@ -572,7 +573,8 @@ BEGIN NAMESPACE XSharpModel
 							oCmd:Parameters:AddWithValue("$last", oFile:LastChanged)
 							oCmd:Parameters:AddWithValue("$size", oFile:Size)
 							oCmd:ExecuteNonQuery()
-					END USING
+                  END USING
+               ENDIF
 				CATCH e AS Exception
 					Log("Exception: "+e:ToString())
 					Log("File   : "+oFile:FullPath+" "+oFile:Id:ToString())

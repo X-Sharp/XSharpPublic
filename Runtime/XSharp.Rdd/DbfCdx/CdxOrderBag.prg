@@ -11,7 +11,7 @@ USING XSharp.RDD.Support
 USING System.Text
 USING System.IO
 USING System.Linq
-//#define USE_STREAM 
+
 
 BEGIN NAMESPACE XSharp.RDD.CDX
     /// <summary>
@@ -23,9 +23,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 
 #endregion
         INTERNAL _hFile     AS IntPtr
-        #ifdef USE_STREAM
-        INTERNAL _stream    AS Stream
-        #endif
+        INTERNAL _stream    AS FileStream
         INTERNAL _OpenInfo	AS DbOpenInfo
         INTERNAL _Encoding  AS Encoding
         INTERNAL _PageList  AS CdxPageList
@@ -40,9 +38,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         INTERNAL PROPERTY FullPath AS STRING AUTO
         INTERNAL PROPERTY Name AS STRING GET Path.GetFileNameWithoutExtension(FullPath)
         INTERNAL PROPERTY Handle AS IntPtr GET _hFile
-        #ifdef USE_STREAM
-        INTERNAL PROPERTY Stream AS Stream GET _stream
-        #endif
+        INTERNAL PROPERTY Stream AS FileStream GET _stream
         INTERNAL PROPERTY Tags AS IList<CdxTag> GET IIF(_tagList == NULL, NULL, _tagList:Tags)
         INTERNAL PROPERTY Structural AS LOGIC AUTO
         INTERNAL PROPERTY Root      AS CdxFileHeader GET _root
@@ -88,18 +84,12 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             IF oTag != NULL_OBJECT
                 SELF:_tagList:Remove(oTag)
             ENDIF
-            IF !SELF:Shared
-                FConvertToMemoryStream(SELF:_hFile)
-            ENDIF
             oTag := CdxTag{SELF}
             VAR lOk := oTag:Create(info)
             IF lOk
                 // Read the tag from disk to get all the normal stuff
                 oTag  := CdxTag{SELF,oTag:Header:PageNo, oTag:OrderName}
                 SELF:AddTag(oTag)
-            ENDIF
-            IF !SELF:Shared
-                FConvertToFileStream(SELF:_hFile)
             ENDIF
             RETURN lOk
             
@@ -213,13 +203,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             ENDIF
             SELF:FullPath := cFullName
             SELF:_hFile    := FCreate(cFullName)
-//            IF !SELF:_OpenInfo:Shared
-//                FConvertToMemoryStream(SELF:_hFile)
-//            ENDIF
-
-            #ifdef USE_STREAM
-            SELF:_stream    := FGetStream(SELF:_hFile)
-            #endif
+            SELF:_stream   := FGetStream(SELF:_hFile)
             
             // Allocate Root Page
             _root   := CdxFileHeader{SELF}
@@ -257,13 +241,10 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             IF ! SELF:_PageList:Flush(FALSE)
                 lOk := FALSE
             ENDIF
-            FConvertToFileStream(SELF:_hFile)
             IF ! FClose(SELF:_hFile)
                 lOk := FALSE
             ENDIF
-            #ifdef USE_STREAM
             SELF:_stream := NULL
-            #endif
             SELF:_hFile  := F_ERROR
             RETURN lOk
 
@@ -294,16 +275,11 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             SELF:FullPath := cFullName
             SELF:_OpenInfo := _oRdd:_OpenInfo
             SELF:_hFile    := FOpen(cFullName, _OpenInfo:FileMode)
+            SELF:_stream   := FGetStream(SELF:_hFile)
             SELF:_Encoding := _oRdd:_Encoding
             IF SELF:_hFile == F_ERROR
                 RETURN FALSE
             ENDIF
-//            IF !SELF:_OpenInfo:Shared
-//                FConvertToMemoryStream(SELF:_hFile)
-//            ENDIF
-            #ifdef USE_STREAM
-            SELF:_stream   := FGetStream(SELF:_hFile)
-            #endif
             _root := CdxFileHeader{SELF}
             _root:Read()
             SELF:SetPage(_root)
@@ -391,12 +367,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 ENDIF
                 SELF:_PageList:Delete(nPage)
             ELSE
-                #ifdef USE_STREAM
                 nPage   := (LONG) _stream:Length
-                #else
-                nPage :=  FSeek3( SELF:_hFile, 0, SeekOrigin.End )
-                #endif
-                
             ENDIF
             RETURN nPage
 
@@ -413,26 +384,10 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             RETURN BYTE[]{CDXPAGE_SIZE *nSize}
 
         METHOD Read(nPage AS LONG, buffer AS BYTE[]) AS LOGIC
-            LOCAL isOk AS LOGIC
-            #ifdef USE_STREAM
-                SELF:_stream:Seek(nPage, SeekOrigin.Begin)
-                isOk := SELF:_stream:Read(buffer, 0, Buffer:Length) == Buffer:Length
-            #else
-    			FSeek3( SELF:_hFile, nPage, SeekOrigin.Begin )
-	    		isOk :=  FRead3(SELF:_hFile, buffer, (DWORD) buffer:Length) == (DWORD) buffer:Length
-            #endif
-            RETURN isOk
+            RETURN SELF:_stream:SafeSetPos(nPage) .AND. SELF:_stream:SafeRead(buffer) 
  
         METHOD Read(oPage AS CdxPage) AS LOGIC
-            LOCAL isOk AS LOGIC
-            #ifdef USE_STREAM
-                SELF:_stream:Seek(oPage:PageNo, SeekOrigin.Begin)
-                isOk :=  SELF:_stream:Read(oPage:Buffer, 0, oPage:Buffer:Length) == oPage:Buffer:Length
-            #else
-			    FSeek3( SELF:_hFile, oPage:PageNo, SeekOrigin.Begin )
-			    isOk :=  FRead3(SELF:_hFile, oPage:Buffer, (DWORD) oPage:Buffer:Length) == (DWORD) oPage:Buffer:Length 
-            #endif
-            RETURN isOk
+            RETURN SELF:_stream:SafeSetPos(oPage:PageNo) .AND.SELF:_stream:SafeRead(oPage:Buffer, oPage:Buffer:Length) 
 
         METHOD Write(oPage AS CdxPage) AS LOGIC
             LOCAL isOk AS LOGIC
@@ -442,17 +397,10 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 SELF:_PageList:SetPage(oPage:PageNo, oPage)
             ENDIF
             IF oPage:IsHot
-                #ifdef USE_STREAM
-                    SELF:_stream:Seek(oPage:PageNo, SeekOrigin.Begin)
-                    SELF:_stream:Write(oPage:Buffer,0,oPage:Buffer:Length)
-                    isOk := TRUE
-                #else
-                    FSeek3( SELF:_hFile, oPage:PageNo, SeekOrigin.Begin )
-			        isOk :=  FWrite3(SELF:_hFile, oPage:Buffer, (DWORD) oPage:Buffer:Length) == (DWORD) oPage:Buffer:Length
-                    if (isOk)
-                        FFlush(SELF:_hFile)
-                    ENDIF
-                #endif
+                isOk := SELF:_stream:SafeSetPos(oPage:PageNo) .AND. SELF:_stream:SafeWrite(oPage:Buffer)
+                IF isOk
+                    SELF:_stream:Flush()
+                ENDIF
             ELSE
                 isOk := TRUE
             ENDIF

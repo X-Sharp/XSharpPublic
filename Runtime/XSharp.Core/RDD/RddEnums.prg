@@ -140,7 +140,8 @@ BEGIN NAMESPACE XSharp.RDD.Enums
 		// 11-19 missing								
 		/// <summary>Logic: Is there a file lock active? </summary> 
 		MEMBER DBI_ISFLOCK 			:= 20				
-		// 21 missing									
+		/// <summary>Stream: The RDDs stream object</summary> 
+		MEMBER DBI_FILESTREAM 		:= 21
 		/// <summary>Number: Number of child relations set</summary> 
 		MEMBER DBI_CHILDCOUNT 		:= 22				
 		/// <summary>IntPtr: The data file's handle</summary> 
@@ -197,7 +198,9 @@ BEGIN NAMESPACE XSharp.RDD.Enums
 		/// <summary>Should the order be set to the first index when a structural index is opened</summary> 
 		MEMBER DBI_AUTOORDER   		:= 63 				
 		/// <summary>When a network is detected, open the index shared, otherwise open exclusively</summary> 
-		MEMBER DBI_AUTOSHARE   		:= 64 				
+		MEMBER DBI_AUTOSHARE   		:= 64
+        /// <summary>Stream: The memo file's stream</summary> 
+		MEMBER DBI_MEMOSTREAM 		:= 65
 		/// <summary></summary> 
 		MEMBER DBI_DB_VERSION 		:= 101
 		/// <summary></summary> 
@@ -474,9 +477,11 @@ BEGIN NAMESPACE XSharp.RDD.Enums
         /// <summary>Number: Optimization level for current query</summary>
 		MEMBER DBOI_OPTLEVEL 	:= 50 
         /// <summary>Number: The key count disregarding filter  </summary>
-		MEMBER DBOI_KEYCOUNTRAW := 51  
+		MEMBER DBOI_KEYCOUNTRAW := 51
+        /// <summary>FileStream: The stream object of the index</summary>
+		MEMBER DBOI_FILESTREAM 	:=52
 
-		// 54-59
+		// 53-59
 		/* These shouldn't need an open table */
         /// <summary>The following numbers are reserved but not implemented yet.</summary>
         MEMBER DBOI_STRICTREAD   := 60  /* Flag for avoiding RDD hierarchy and using a bigger buffer when indexing  */
@@ -485,6 +490,7 @@ BEGIN NAMESPACE XSharp.RDD.Enums
 
 		MEMBER DBOI_AUTOORDER    := 63  /* When a structural index is opened, the order to be set */
 		MEMBER DBOI_AUTOSHARE    := 64  /* When a network is detected, open the index shared, otherwise open exclusively   */ 
+		// 65-99
 
         MEMBER DBOI_LOCK_ALL    := 100  //
         MEMBER DBOI_LOCK_FAIL   := 101 // 
@@ -493,7 +499,6 @@ BEGIN NAMESPACE XSharp.RDD.Enums
 
 
 
-		// 65-99
 		/* Harbour extensions , not all implemented yet*/
 		MEMBER DBOI_SKIPEVAL           := 200  /* skip while code block doesn't return TRUE */
 		MEMBER DBOI_SKIPEVALBACK       := 201  /* skip backward while code block doesn't return TRUE */
@@ -537,7 +542,7 @@ BEGIN NAMESPACE XSharp.RDD.Enums
 		/// <summary>Logic: Validate the current order. Errors are written to a text file in the folder of the index. Only supported by DBFCDX</summary>
 		MEMBER DBOI_VALIDATE            := 301
         
-		MEMBER DBOI_USER 				:= 1000 
+		MEMBER DBOI_USER 		:= 1000 
 		// Advantage
 		MEMBER DBOI_AXS_PERCENT_INDEXED  := 1805
 		MEMBER DBOI_GET_ACE_INDEX_HANDLE := 1806

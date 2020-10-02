@@ -192,6 +192,8 @@ CLASS XSharp.ADS.ADSIndex INHERIT BaseIndex
             ENDIF
             
         CASE DBOI_FILEHANDLE
+            info:Result := IntPtr.Zero
+        CASE DBOI_FILESTREAM
             info:Result := NULL
             
         CASE DBOI_FULLPATH

@@ -21,11 +21,12 @@ BEGIN NAMESPACE XSharp.RDD
 [DebuggerDisplay("DBF ({Alias,nq})")];
 PARTIAL CLASS DBF INHERIT Workarea IMPLEMENTS IRddSortWriter
 #region STATIC properties and fields
-        STATIC PROTECT _Extension := ".DBF" AS STRING
-        STATIC PRIVATE  culture := System.Globalization.CultureInfo.InvariantCulture AS CultureInfo
+    STATIC PROTECT _Extension := ".DBF" AS STRING
+    STATIC PRIVATE  culture := System.Globalization.CultureInfo.InvariantCulture AS CultureInfo
 	
-#endregion	
-	PROTECT _RelInfoPending  AS DbRelInfo
+#endregion
+    PROTECT _oStream        AS FileStream
+	PROTECT _RelInfoPending AS DbRelInfo
 	
 	PROTECT _Header			AS DbfHeader
 	PROTECT _HeaderLength	AS LONG  	// Size of header
@@ -76,18 +77,6 @@ PARTIAL CLASS DBF INHERIT Workarea IMPLEMENTS IRddSortWriter
     NEW PROTECT PROPERTY Memo AS BaseMemo GET (BaseMemo) SELF:_Memo
 
 
-PROTECTED METHOD ConvertToMemory() AS LOGIC
-     IF !SELF:_OpenInfo:Shared
-        FConvertToMemoryStream(SELF:_hFile)
-        IF SELF:_Memo IS DBTMemo VAR dbtmemo
-            FConvertToMemoryStream(dbtmemo:_hFile)
-        ELSEIF SELF:_Memo IS FPTMemo VAR fptmemo
-            FConvertToMemoryStream(fptmemo:_hFile)
-        ENDIF
-        RETURN TRUE
-     ENDIF
-     RETURN FALSE
-
 INTERNAL METHOD _CheckEofBof() AS VOID
     IF SELF:RecCount == 0
         SELF:_SetEOF(TRUE)
@@ -122,8 +111,9 @@ PRIVATE METHOD _AllocateBuffers() AS VOID
 	NEXT
 	
 CONSTRUCTOR()
-	SELF:_hFile := F_ERROR
-	SELF:_Header := DbfHeader{} 
+	SELF:_hFile     := F_ERROR
+	SELF:_oStream   := NULL
+	SELF:_Header    := DbfHeader{} 
 	SELF:_Header:initialize()
 	SELF:_Locks     := List<LONG>{}
 	SELF:_numformat := (NumberFormatInfo) culture:NumberFormat:Clone()
@@ -435,10 +425,8 @@ METHOD HeaderLock( lockMode AS DbLockMode ) AS LOGIC
         
 		TRY
             //? CurrentThreadId, "Start Header UnLock",ProcName(1)
-			VAR unlocked := FFUnLock64( SELF:_hFile, SELF:_lockScheme:Offset, 1 )
-			IF unlocked
-				SELF:_HeaderLocked := FALSE
-            ENDIF
+            _oStream:SafeUnlock(SELF:_lockScheme:Offset, 1)
+			SELF:_HeaderLocked := FALSE
             //? CurrentThreadId, "Header UnLock", unlocked
 		CATCH ex AS Exception
 			SELF:_HeaderLocked := FALSE
@@ -503,13 +491,11 @@ PROTECT METHOD _unlockFile( ) AS LOGIC
 	IF ! SELF:IsOpen
 		RETURN FALSE
 	ENDIF
-	
-	TRY
-		unlocked := FFUnLock64( SELF:_hFile, SELF:_lockScheme:FileLockOffSet, SELF:_lockScheme:FileSize )
-	CATCH ex AS Exception
-		unlocked := FALSE
-		SELF:_dbfError(ex, Subcodes.ERDD_WRITE_UNLOCK,Gencode.EG_LOCK_ERROR,  "DBF._unlockFile") 
-	END TRY
+
+	unlocked := _oStream:SafeUnlock(SELF:_lockScheme:FileLockOffSet, SELF:_lockScheme:FileSize)
+	IF ! unlocked
+		SELF:_dbfError(FException(), Subcodes.ERDD_WRITE_UNLOCK,Gencode.EG_LOCK_ERROR,  "DBF._unlockFile") 
+	ENDIF
 RETURN unlocked
 
 PROTECTED PROPERTY CurrentThreadId AS STRING GET System.Threading.Thread.CurrentThread:ManagedThreadId:ToString()
@@ -520,17 +506,12 @@ PROTECT METHOD _unlockRecord( recordNbr AS LONG ) AS LOGIC
 	LOCAL iOffset AS INT64
 	IF ! SELF:IsOpen
 		RETURN FALSE
-    ENDIF
-    
-	TRY
-    	iOffset := SELF:_lockScheme:RecnoOffSet(recordNbr, SELF:_RecordLength , SELF:_HeaderLength )
-		unlocked := FFUnLock64( SELF:_hFile, iOffset, SELF:_lockScheme:RecordSize )
-        //? CurrentThreadId, "unlocked record ", recordNbr
-	CATCH ex AS Exception
-		unlocked := FALSE
-        //? CurrentThreadId, "failed to unlock record ", recordNbr
-		SELF:_dbfError(ex, Subcodes.ERDD_WRITE_UNLOCK,Gencode.EG_LOCK_ERROR,  "DBF._unlockRecord") 
-	END TRY
+	ENDIF
+	iOffset := SELF:_lockScheme:RecnoOffSet(recordNbr, SELF:_RecordLength , SELF:_HeaderLength )
+	unlocked :=  _oStream:SafeUnlock(iOffset, SELF:_lockScheme:RecordSize)
+	IF ! unlocked    
+		SELF:_dbfError(FException(), Subcodes.ERDD_WRITE_UNLOCK,Gencode.EG_LOCK_ERROR,  "DBF._unlockRecord") 
+	ENDIF
 	IF( unlocked )
 		SELF:_Locks:Remove( recordNbr )
 	ENDIF
@@ -543,12 +524,10 @@ PROTECT METHOD _lockFile( ) AS LOGIC
 		RETURN FALSE
 	ENDIF
 	
-	TRY
-		locked := FFLock64( SELF:_hFile, SELF:_lockScheme:FileLockOffSet, SELF:_lockScheme:FileSize )
-	CATCH ex AS Exception
-		locked := FALSE
-		SELF:_dbfError(ex, Subcodes.ERDD_WRITE_LOCK,Gencode.EG_LOCK_ERROR,  "DBF._lockFile") 
-	END TRY
+	locked := _oStream:SafeLock(SELF:_lockScheme:FileLockOffSet, SELF:_lockScheme:FileSize )
+	IF ! locked
+		SELF:_dbfError(FException(), Subcodes.ERDD_WRITE_LOCK,Gencode.EG_LOCK_ERROR,  "DBF._lockFile") 
+	ENDIF
 RETURN locked
 
     // Place a lock : <nOffset> indicate where the lock should be; <nLong> indicate the number bytes to lock
@@ -561,14 +540,9 @@ PROTECTED METHOD _tryLock( nOffset AS INT64, nLong AS INT64, lGenError AS LOGIC)
 		RETURN FALSE
 	ENDIF
 	LOCAL lockEx := NULL AS Exception
-    nTries := 123
+	nTries := 123
 	REPEAT
-		TRY
-			locked := FFLock64( SELF:_hFile, nOffset, nLong )
-        CATCH ex AS Exception
-            lockEx := ex
-			locked := FALSE
-		END TRY
+		locked := _oStream:SafeLock(nOffset, nLong)
 		IF !locked
             LOCAL nError := FError() AS DWORD
             IF nError != 33     // Someone else has locked the file
@@ -648,7 +622,7 @@ PROTECTED METHOD _lockRecord( lockInfo REF DbLockInfo ) AS LOGIC
 	ELSE
 		TRY
 			nToLock := Convert.ToUInt64( lockInfo:RecId )
-		CATCH ex AS Exception
+        CATCH ex AS Exception
 			SELF:_dbfError( ex, ERDD.DATATYPE, XSharp.Gencode.EG_DATATYPE )
 			isOK := FALSE
 		END TRY
@@ -880,26 +854,18 @@ METHOD Close() 			AS LOGIC
 				
 		END TRY
 		SELF:_hFile := F_ERROR
+        SELF:_oStream := NULL
 	ENDIF
 RETURN isOK
 
     // Move to the End of file, and place a End-Of-File Marker (0x1A)
 PRIVATE METHOD _putEndOfFileMarker() AS LOGIC
-    // According to DBASE.com Knowledge base :
-    // The end of the file is marked by a single byte, with the end-of-file marker, an OEM code page character value of 26 (0x1A).
-	LOCAL lOffset   := SELF:_HeaderLength + SELF:_RecCount * SELF:_RecordLength AS LONG
-	LOCAL eofMarker := <BYTE>{ 26 } AS BYTE[]
-	LOCAL isOK      AS LOGIC
-    // Note FoxPro does not write EOF character for files with 0 records
-	isOK := ( FSeek3( SELF:_hFile, lOffset, FS_SET ) == lOffset ) 
-	IF isOK 
-		isOK := ( FWrite3( SELF:_hFile, eofMarker, 1 ) == 1 )
-		IF isOK
-            // Fix length of File
-			isOK := FChSize( SELF:_hFile, (DWORD)lOffset+1)
-		ENDIF
-	ENDIF
-RETURN isOK
+	// According to DBASE.com Knowledge base :
+	// The end of the file is marked by a single byte, with the end-of-file marker, an OEM code page character value of 26 (0x1A).
+	LOCAL lOffset   := SELF:_HeaderLength + SELF:_RecCount * SELF:_RecordLength AS INT64
+	// Note FoxPro does not write EOF character for files with 0 records
+	RETURN _oStream:SafeSetPos(lOffset) .AND. _oStream:SafeWriteByte(26) .AND. _oStream:SafeSetLength(lOffset+1)
+
 
     // Create a DBF File, based on the DbOpenInfo Structure
     // Write the File Header, and the Fields Header; Create the Memo File if needed
@@ -926,6 +892,7 @@ METHOD Create(info AS DbOpenInfo) AS LOGIC
     //
 	SELF:_hFile    := FCreate2( SELF:_FileName, FO_EXCLUSIVE)
 	IF SELF:IsOpen
+        SELF:_oStream    := (FileStream) FGetStream(SELF:_hFile)
 		LOCAL fieldCount :=  SELF:_Fields:Length AS INT
 		LOCAL fieldDefSize := fieldCount * DbfField.SIZE AS INT
 		LOCAL codePage AS LONG
@@ -989,6 +956,8 @@ METHOD Create(info AS DbOpenInfo) AS LOGIC
 				SELF:CloseMemFile( )
 			ENDIF
 			FClose( SELF:_hFile )
+			SELF:_hFile	:= F_ERROR
+			SELF:_oStream    := NULL
 		ELSE
 			SELF:GoTop()
 		ENDIF
@@ -1049,14 +1018,9 @@ PROTECTED VIRTUAL METHOD _writeFieldsHeader() AS LOGIC
     // Terminator
 	fieldsBuffer[fieldDefSize] := 13
     // Go end of Header
-	isOK := ( FSeek3( SELF:_hFile, DbfHeader.SIZE, SeekOrigin.Begin ) == DbfHeader.SIZE )
-	IF isOK 
-    // Write Fields and Terminator
-		TRY
-			isOK := ( FWrite3( SELF:_hFile, fieldsBuffer, (DWORD)fieldsBuffer:Length ) == (DWORD)fieldsBuffer:Length )
-		CATCH ex AS Exception
-			SELF:_dbfError( ex, ERDD.WRITE, XSharp.Gencode.EG_WRITE )
-		END TRY
+    isOK := _oStream:SafeSetPos(DbfHeader.SIZE)  .AND. _oStream:SafeWrite(fieldsBuffer)
+    IF ! isOK
+		SELF:_dbfError( FException(), ERDD.WRITE, XSharp.Gencode.EG_WRITE )
 	ENDIF
     //
 RETURN isOK
@@ -1085,9 +1049,7 @@ METHOD Open(info AS XSharp.RDD.Support.DbOpenInfo) AS LOGIC
 	SELF:_hFile    := FOpen(SELF:_FileName, SELF:_OpenInfo:FileMode)
 
 	IF SELF:IsOpen
-//        IF !SELF:_OpenInfo:Shared
-//            FConvertToMemoryStream(SELF:_hFile)
-//        ENDIF
+		SELF:_oStream    := (FileStream) FGetStream(SELF:_hFile)
 		isOK := SELF:_readHeader()
 		IF isOK 
 			IF SELF:_HasMemo 
@@ -1122,7 +1084,7 @@ PRIVATE METHOD _readHeader() AS LOGIC
 	IF ! SELF:IsOpen
 		RETURN FALSE
 	ENDIF
-    isOK := SELF:_Header:Read(SELF:_hFile)
+    isOK := SELF:_Header:Read(SELF:_oStream)
     //
 	IF isOK 
 		SELF:_HeaderLength := SELF:_Header:HeaderLen
@@ -1136,10 +1098,7 @@ PRIVATE METHOD _readHeader() AS LOGIC
         SELF:_Encoding := System.Text.Encoding.GetEncoding( CodePageExtensions.ToCodePage( SELF:_Header:CodePage )  )
 
         // Move to top, after header
-        isOK := FSeek3( SELF:_hFile, DbfHeader.SIZE, SeekOrigin.Begin ) == DbfHeader.SIZE 
-		IF isOK 
-			isOK := _readFieldsHeader()
-		ENDIF
+        isOK := _oStream:SafeSetPos(DbfHeader.SIZE) .AND. _readFieldsHeader()
 	ENDIF
 RETURN isOK
 
@@ -1154,15 +1113,15 @@ PRIVATE METHOD _readFieldsHeader() AS LOGIC
 	SELF:_NullCount := 0
     // Read full Fields Header
 	VAR fieldsBuffer := BYTE[]{ fieldDefSize }
-    isOK := FRead3( SELF:_hFile, fieldsBuffer, (DWORD)fieldDefSize ) == (DWORD)fieldDefSize 
+	isOK   := _oStream:SafeRead(fieldsBuffer) 
 	IF isOK 
 		SELF:_HasMemo := FALSE
 		VAR currentField := DbfField{}
-        currentField:Encoding := SELF:_Encoding
+		currentField:Encoding := SELF:_Encoding
 		currentField:initialize()
-        // Now, process
-        //SELF:_Fields := DbfRddFieldInfo[]{ fieldCount }
-        // count # of fields. When we see a 0x0D then the header has blank space for non fields
+		// Now, process
+		//SELF:_Fields := DbfRddFieldInfo[]{ fieldCount }
+		// count # of fields. When we see a 0x0D then the header has blank space for non fields
 		fieldCount := 0
 		FOR VAR i := 0 UPTO fieldDefSize - 1 STEP DbfField.SIZE
 			IF fieldsBuffer[i] == 0x0D // last field
@@ -1194,21 +1153,15 @@ RETURN isOK
 
 INTERNAL METHOD _readField(nOffSet as LONG, oField as DbfField) AS LOGIC
     // Read single field. Called from AutoIncrement code to read the counter value
-	local nPos as LONG
-	nPos := (LONG) FTell(SELF:_hFile)
-	FSeek3(SELF:_hFile, nOffSet, FS_SET)
-	FRead3(SELF:_hFile, oField:Buffer, (DWORD) oField:Buffer:Length)
-	FSeek3(SELF:_hFile, nPos, FS_SET)
-RETURN TRUE
+    LOCAL nPos AS INT64
+    nPos := _oStream:Position
+    RETURN _oStream:SafeSetPos(nOffSet) .AND. _oStream:SafeRead(oField:Buffer) .AND. _oStream:SafeSetPos(nPos)
 
 INTERNAL METHOD _writeField(nOffSet as LONG, oField as DbfField) AS LOGIC
-	local nPos as LONG
+	LOCAL nPos AS INT64
     // Write single field in header. Called from AutoIncrement code to update the counter value
-	nPos := (LONG) FTell(SELF:_hFile)
-	FSeek3(SELF:_hFile, nOffSet, FS_SET)
-	FWrite3(SELF:_hFile, oField:Buffer, (DWORD) oField:Buffer:Length)
-	FSeek3(SELF:_hFile, nPos, FS_SET)
-RETURN TRUE
+    nPos := _oStream:Position
+    RETURN _oStream:SafeSetPos(nOffSet) .and. _oStream:SafeWrite(oField:Buffer) .and. _oStream:SafeSetPos(nPos)
 
 
 
@@ -1225,7 +1178,7 @@ PROTECTED METHOD _writeHeader() AS LOGIC
         // Update the number of records
 		SELF:_Header:RecCount := SELF:_RecCount
 		TRY
-            ret := SELF:_Header:Write(SELF:_hFile)
+			ret := SELF:_Header:Write(SELF:_oStream)
 		CATCH ex AS Exception
 			SELF:_dbfError( ex, ERDD.WRITE, XSharp.Gencode.EG_WRITE )
 			ret := FALSE
@@ -1364,19 +1317,12 @@ VIRTUAL PROTECTED METHOD _readRecord() AS LOGIC
 	IF  isOK 
         // Record pos is One-Based
 		LOCAL lOffset := SELF:_HeaderLength + ( SELF:_RecNo - 1 ) * SELF:_RecordLength AS LONG
-		isOK := ( FSeek3( SELF:_hFile, lOffset, FS_SET ) == lOffset )
+		isOK := _oStream:SafeSetPos(lOffset)  .AND. _oStream:SafeRead(SELF:_RecordBuffer, SELF:_RecordLength) 
 		IF isOK 
-            // Read Record
-			isOK := ( FRead3( SELF:_hFile, SELF:_RecordBuffer, (DWORD)SELF:_RecordLength ) == (DWORD)SELF:_RecordLength )
-			IF isOK 
-				SELF:_BufferValid := TRUE
-				SELF:_isValid := TRUE
-				SELF:_Deleted := ( SELF:_RecordBuffer[ 0 ] == '*' )
-            ELSE
-               NOP 
-            ENDIF
-        ELSE
-            NOP
+			// Read Record
+			SELF:_BufferValid := TRUE
+			SELF:_isValid := TRUE
+			SELF:_Deleted := ( SELF:_RecordBuffer[ 0 ] == '*' )
 		ENDIF
 	ENDIF
 RETURN isOK
@@ -1398,18 +1344,16 @@ VIRTUAL PROTECTED METHOD _writeRecord() AS LOGIC
             // Write Current Data Buffer
             // Record pos is One-Based
 			LOCAL recordPos AS LONG
-			
 			recordPos := SELF:_HeaderLength + ( SELF:_RecNo - 1 ) * SELF:_RecordLength
-			isOK := ( FSeek3( SELF:_hFile, recordPos, FS_SET ) == recordPos )
+            isOK := _oStream:SafeSetPos(recordPos) .AND. _oStream:SafeWrite(SELF:_RecordBuffer)
 			IF isOK
 			   // Write Record
 				TRY
-					FWrite3( SELF:_hFile, SELF:_RecordBuffer, (DWORD)SELF:_RecordLength )
-			                // Don't forget to Update Header
-					SELF:_Header:isHot := TRUE
-					IF SELF:Shared 
-						SELF:_writeHeader()
-                        			FFlush(SELF:_hFile, TRUE)
+	                // Don't forget to Update Header
+    				SELF:_Header:isHot := TRUE
+			        IF SELF:Shared 
+				        SELF:_writeHeader()
+                        _oStream:Flush(TRUE)
 					ENDIF
 				CATCH ex AS Exception
 					SELF:_dbfError( ex, ERDD.WRITE, XSharp.Gencode.EG_WRITE )
@@ -1612,7 +1556,7 @@ METHOD Flush() 			AS LOGIC
         //? SELF:CurrentThreadId, "After EOF"
 		SELF:_writeHeader()
         //? SELF:CurrentThreadId, "After writeHeader"
-    	FFlush( SELF:_hFile )
+        _oStream:Flush()
         //? SELF:CurrentThreadId, "After FFlush"
 	ENDIF
 	IF SELF:Shared .AND. locked
@@ -1961,6 +1905,8 @@ VIRTUAL METHOD Info(nOrdinal AS INT, oNewValue AS OBJECT) AS OBJECT
 		
 	CASE DbInfo.DBI_FILEHANDLE
 		oResult := SELF:_hFile
+	CASE DbInfo.DBI_FILESTREAM
+		oResult := SELF:_oStream
 	CASE DbInfo.DBI_FULLPATH
 		oResult := SELF:_FileName
 	CASE DbInfo.DBI_TABLEEXT
@@ -2542,16 +2488,11 @@ RETURN
     
     */
 
-METHOD Read(hFile as IntPtr) AS LOGIC
-    VAR nPos := FTell(hFile)
-    FSeek3(hFile, 0, FS_SET)
-    VAR Ok := FRead3(hFile, SELF:Buffer, DbfHeader.SIZE) == DbfHeader.SIZE
-    IF Ok
-        FSeek3(hFile, (LONG) nPos, FS_SET)
-    ENDIF
-    RETURN Ok
+METHOD Read(oStream AS FileStream) AS LOGIC
+    VAR nPos := oStream:Position
+    RETURN oStream:SafeSetPos(0) .AND. oStream:SafeRead(SELF:Buffer)  .AND. oStream:SafeSetPos(nPos)
 
-METHOD Write(hFile as IntPtr) AS LOGIC
+METHOD Write(oStream AS FileStream) AS LOGIC
 	LOCAL dtInfo AS DateTime
 	dtInfo := DateTime.Now
     // Update the Date/Time information
@@ -2559,11 +2500,9 @@ METHOD Write(hFile as IntPtr) AS LOGIC
 	SELF:Month  := (BYTE)dtInfo:Month
 	SELF:Day    := (BYTE)dtInfo:Day
 
-    VAR nPos := FTell(hFile)
-    FSeek3(hFile, 0, FS_SET)
-    VAR Ok := FWrite3(hFile, SELF:Buffer, DbfHeader.SIZE) == DbfHeader.SIZE
+    VAR nPos := oStream:Position
+    VAR Ok := oStream:SafeSetPos(0) .AND. oStream:SafeWrite(SELF:Buffer) .AND. oStream:SafeSetPos(nPos)
     IF Ok
-        FSeek3(hFile, (LONG) nPos, FS_SET)
         SELF:isHot := FALSE
     ENDIF
     RETURN Ok

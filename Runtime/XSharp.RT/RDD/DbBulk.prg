@@ -926,29 +926,9 @@ FUNCTION DbUpdate(cAlias, cbKey, lRand, cbReplace) AS LOGIC CLIPPER
 
 
 FUNCTION DbMoveToMemory() AS LOGIC
-IF Used()
-    LOCAL hFile AS IntPtr
-    hFile := (IntPtr) DbInfo(DBI_FILEHANDLE)
-    FConvertToMemoryStream(hFile)
-    hFile := (IntPtr) DbInfo(DBI_MEMOHANDLE)
-    IF hFile != IntPtr.Zero
-        FConvertToMemoryStream(hFile)
-    ENDIF
-    RETURN TRUE
-ENDIF
 RETURN FALSE
     
 FUNCTION DbMoveToDisk() AS LOGIC
-IF Used()
-    LOCAL hFile AS IntPtr
-    hFile := (IntPtr) DbInfo(DBI_FILEHANDLE)
-    FConvertToFileStream(hFile)
-    hFile := (IntPtr) DbInfo(DBI_MEMOHANDLE)
-    IF hFile != IntPtr.Zero
-        FConvertToFileStream(hFile)
-    ENDIF
-    RETURN TRUE
-ENDIF
 RETURN FALSE
 
 

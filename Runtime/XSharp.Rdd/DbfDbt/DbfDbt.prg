@@ -48,6 +48,12 @@ BEGIN NAMESPACE XSharp.RDD
                     oResult := IntPtr.Zero
                 ENDIF
                     
+            CASE DbInfo.DBI_MEMOSTREAM
+                IF ( SELF:_oDbtMemo != NULL .AND. SELF:_oDbtMemo:IsOpen)
+                    oResult := SELF:_oDbtMemo:_oStream
+                ELSE
+                    oResult := IntPtr.Zero
+                ENDIF
             CASE DbInfo.DBI_MEMOEXT
                 IF ( SELF:_oDbtMemo != NULL .AND. SELF:_oDbtMemo:IsOpen)
                     oResult := System.IO.Path.GetExtension(SELF:_oDbtMemo:FileName)

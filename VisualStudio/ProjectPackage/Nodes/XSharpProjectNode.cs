@@ -1174,6 +1174,7 @@ namespace XSharp.Project
                 {
                     projectModel = new XProject(this);
                     projectModel.FileWalkComplete += OnFileWalkComplete;
+                    ProjectModel.ProjectWalkComplete += OnProjectWalkComplete;
                 }
                 return projectModel;
             }
@@ -1182,6 +1183,18 @@ namespace XSharp.Project
             {
                 projectModel = null;
             }
+        }
+
+        private void OnProjectWalkComplete(XProject xProject)
+        {
+            var tasks = this.ProjectModel.GetCommentTasks();
+            var list = new List<Task>();
+            _taskListManager.Clear();
+            foreach (var task in tasks)
+            {
+                _taskListManager.AddItem(task, this.ProjectIDGuid);
+            }
+            _taskListManager.Refresh();
         }
 
         private void OnFileWalkComplete(XFile xfile)
@@ -2049,13 +2062,26 @@ namespace XSharp.Project
             bool silent;
             int result;
             bool dialectVO = false;
-            silent = (__VSUPGRADEPROJFLAGS)grfUpgradeFlags == __VSUPGRADEPROJFLAGS.UPF_SILENTMIGRATE;
-            if (ModelScannerEvents.ChangedProjectFiles.Contains(this.Url.ToLower()))
-            {
-                ModelScannerEvents.ChangedProjectFiles.Remove(this.Url.ToLower());
-                this.QueryEditProjectFile(false);
-            }
             bool ok = true;
+            silent = (__VSUPGRADEPROJFLAGS)grfUpgradeFlags == __VSUPGRADEPROJFLAGS.UPF_SILENTMIGRATE;
+            if (ModelScannerEvents.ChangedProjectFiles.ContainsKey(this.Url))
+            {
+                var original = ModelScannerEvents.ChangedProjectFiles[this.Url];
+                ModelScannerEvents.ChangedProjectFiles.Remove(this.Url);
+                var changedSource = File.ReadAllText(this.Url);
+                if (File.Exists(original))
+                {
+                    Utilities.DeleteFileSafe(this.Url);
+                    File.Move(original, this.Url);
+                }
+                if (!this.QueryEditProjectFile(true))
+                {
+                    return VSConstants.S_FALSE;
+                }
+                Utilities.DeleteFileSafe(this.Url);
+                File.WriteAllText(Url,changedSource);
+                ok = false;
+            }
             // we have added a projectversion property to makes checks easier in the future
             if (ok)
             {
@@ -2154,9 +2180,16 @@ namespace XSharp.Project
             }
             if (!ok)
             {
-                FixProjectFile(BuildProject.FullPath, dialectVO);
-                base.UpgradeProject(grfUpgradeFlags);
-                result = VSConstants.S_OK;
+                if (!this.QueryEditProjectFile(true))
+                {
+                    result = VSConstants.S_FALSE;
+                }
+                else
+                {
+                    FixProjectFile(BuildProject.FullPath, dialectVO);
+                    base.UpgradeProject(grfUpgradeFlags);
+                    result = VSConstants.S_OK;
+                }
             }
             else
             {
@@ -2233,11 +2266,15 @@ namespace XSharp.Project
                     changed = true;
 
                 }
-                condition = System.Text.RegularExpressions.Regex.Replace(condition, "anycpu", "AnyCPU", System.Text.RegularExpressions.RegexOptions.IgnoreCase).Trim();
-                group.Condition = condition;
-                if (!groupDict.ContainsKey(condition))
+                var newcondition = System.Text.RegularExpressions.Regex.Replace(condition, "anycpu", "AnyCPU", System.Text.RegularExpressions.RegexOptions.IgnoreCase).Trim();
+                if (condition != newcondition)
+                { 
+                    changed = true;
+                    group.Condition = newcondition;
+                }
+                if (!groupDict.ContainsKey(group.Condition))
                 {
-                    groupDict.Add(condition, group);
+                    groupDict.Add(group.Condition, group);
                 }
                 foreach (var prop in group.Properties.ToArray())
                 {
@@ -2345,18 +2382,13 @@ namespace XSharp.Project
             }
             if (changed )
             {
-                if (Path.GetExtension(filename).ToLower() != ".bak")
-                {
-                    var backupName = Path.ChangeExtension(filename, ".bak");
-                    if (Utilities.DeleteFileSafe(backupName))
-                    {
-                        File.Copy(filename, backupName, true);
-                    }
+                if (this.QueryEditProjectFile(true))
+                { 
+                    UpdateProjectVersion();
+                    Utilities.DeleteFileSafe(filename);
+                    BuildProject.Xml.Save(filename);
+                    BuildProject.ReevaluateIfNecessary();
                 }
-                UpdateProjectVersion();
-                BuildProject.Xml.Save(filename);
-                BuildProject.ReevaluateIfNecessary();
-                //this.Reload();
             }
         }
 

@@ -50,14 +50,30 @@ namespace XSharp.MacroCompiler
 
         bool HasMostDerivedArgs(OverloadResult other)
         {
+            bool preferthis = false;
             for (int i = 0; i < Parameters.Parameters.Length; i++)
             {
                 var pt = Binder.FindType(Parameters.Parameters[i].ParameterType);
                 var po = Binder.FindType(other.Parameters.Parameters[i].ParameterType);
                 if (pt.IsSubclassOf(po))
                     return true;
+                // when the rest of the arguments do not make a difference
+                // then prefer Int32 over UInt32
+                if (pt == Compilation.Get(WellKnownTypes.System_Int32) &&
+                    po == Compilation.Get(WellKnownTypes.System_UInt32) )
+                { 
+                    preferthis = true;
+                }
+                // when no preference then choose the one with a usual argument
+                // over the one without usual.
+                else if (pt == Compilation.Get(WellKnownTypes.XSharp___Usual) &&
+                    po != Compilation.Get(WellKnownTypes.XSharp___Usual) &&
+                    ! preferthis)
+                { 
+                    preferthis = true;
+                }
             }
-            return false;
+            return preferthis;
         }
 
         internal OverloadResult Better(OverloadResult other)

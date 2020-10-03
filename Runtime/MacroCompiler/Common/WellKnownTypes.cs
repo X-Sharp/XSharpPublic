@@ -13,6 +13,8 @@ namespace XSharp.MacroCompiler
     internal enum WellKnownTypes
     {
         System_ValueType,
+        System_Int32,
+        System_UInt32,
         System_Runtime_CompilerServices_IsConst,
         ClipperCallingConventionAttribute,
         DefaultParameterValueAttribute,
@@ -37,6 +39,8 @@ namespace XSharp.MacroCompiler
         static string[] TypeNames =
         {
             "System.ValueType",
+            "System.Int32",
+            "System.UInt32",
             "System.Runtime.CompilerServices.IsConst",
             XSharpQualifiedTypeNames.ClipperCallingConvention + "|" + VulcanQualifiedTypeNames.ClipperCallingConvention,
             XSharpQualifiedTypeNames.DefaultParameterAttribute + "|" + VulcanQualifiedTypeNames.DefaultParameterAttribute,

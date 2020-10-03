@@ -338,7 +338,7 @@ BEGIN NAMESPACE MacroCompilerTest
         Console.WriteLine("Running tests ...")
 
         //TestParse(mc, e"{|a,b| +a[++b] += 100, a[2]}", "{|a, b|RETURN (((+a((++b)))+='100'), a('2'))}")
-
+        Testmacro(mc, e"{|str, x| PadL(str, x)}",Args("abc",2),"ab",typeof(STRING))
         TestMacro(mc, e"{|o|o:Checked}", Args(CheckBox{}), FALSE, typeof(LOGIC))
 
         TestMacro(mc, e"{|v|(v := upper(v), left(v,3))}", Args("ABCDE"), "ABC", typeof(STRING))

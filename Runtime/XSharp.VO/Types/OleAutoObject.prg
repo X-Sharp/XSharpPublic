@@ -462,13 +462,20 @@ STATIC METHOD  OleSend(oComObject AS OBJECT, oType AS System.Type, cName AS STRI
 				NEXT
 				retval := t:InvokeMember(cName, bf, NULL, oComObject, oArgs1)
 			CATCH AS ArgumentException
-				THROW Error.VOError(EG_ARG,  cMethod,"args", 4, <OBJECT>{args} )
+				THROW Error.VOError(EG_ARG,  cName,"args", 4, <OBJECT>{args} )
 			CATCH AS TargetException
-				THROW Error.VOError(EG_ARG,  cMethod, "args", 4, <OBJECT>{args})
-			CATCH AS MissingMethodException
-				THROW Error.VOError(EG_NOMETHOD,  cMethod, "cName", 2,  <OBJECT>{cName}  )
-			CATCH e AS Exception
+				THROW Error.VOError(EG_ARG,  cName, "args", 4, <OBJECT>{args})
+			CATCH e AS COMException
 				THROW Error{e}
+            CATCH e AS TargetInvocationException
+                // this always has the original exception as inner exception
+                VAR er := Error{e:InnerException}
+                VAR arguments := List<OBJECT>{}{cName}
+                arguments:AddRange(_UsualArrayToObjectArray(args))
+                er:Args := arguments:ToArray()
+                THROW er
+            CATCH AS Exception
+				THROW Error.VOError(EG_NOMETHOD,  cMethod, "cName", 2,  <OBJECT>{cName}  )
 			END TRY
 		ELSE
 			pi := mi:GetParameters()

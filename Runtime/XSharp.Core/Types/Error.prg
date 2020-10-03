@@ -580,9 +580,12 @@ BEGIN NAMESPACE XSharp
   
 
   STATIC METHOD GetInnerException( SELF e as Exception) AS Exception
-     IF e:InnerException != NULL
-        DO WHILE e:InnerException != NULL
+     IF e:InnerException != NULL 
+        DO WHILE e:InnerException != NULL 
             e := e:InnerException
+            IF e IS XSharp.Error
+                EXIT
+            ENDIF
         ENDDO
      ENDIF
      RETURN e   

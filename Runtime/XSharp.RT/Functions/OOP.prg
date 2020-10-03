@@ -675,11 +675,10 @@ INTERNAL STATIC CLASS OOPHelpers
                 ENDIF
                 RETURN result
 		    ENDIF
-        CATCH e as Exception
-            IF e:InnerException != NULL
-                THROW Error{e:GetInnerException()}
-            ENDIF
-            THROW // rethrow exception
+        CATCH e AS TargetInvocationException
+            THROW Error{e:GetInnerException()}
+        CATCH e AS Exception
+            THROW Error{e:GetInnerException()}
         END TRY
         cIVar := cIVar:ToUpperInvariant()
 		IF SendHelper(oObject, "NoIVarGet", <USUAL>{cIVar}, OUT VAR oResult)
@@ -723,11 +722,10 @@ INTERNAL STATIC CLASS OOPHelpers
 		    VAR oError :=  Error.VOError( EG_NOVARMETHOD, IIF( lSelf, __ENTITY__, __ENTITY__ ), NAMEOF(cIVar), 2, <OBJECT>{oObject, cIVar, oValue, lSelf})
 		    oError:Description := oError:Message+" '"+cIVar+"'"
             THROW oError
-        CATCH e as Exception
-            IF e:InnerException != NULL
-                THROW Error{e:GetInnerException()}
-            ENDIF
-            THROW // rethrow exception
+        CATCH e AS TargetInvocationException
+            THROW Error{e:GetInnerException()}
+        CATCH e AS Exception
+            THROW Error{e:GetInnerException()}
         END TRY
 
     STATIC METHOD SendHelper(oObject AS OBJECT, cMethod AS STRING, uArgs AS USUAL[]) AS LOGIC
@@ -826,9 +824,24 @@ INTERNAL STATIC CLASS OOPHelpers
                 IF hasByRef
                     CopyByRefParameters( uArgs, oArgs, mi:GetParameters())
                 ENDIF
-            CATCH e as Exception
+            CATCH e AS TargetInvocationException
+               THROW Error{e:GetInnerException()}
+            CATCH e AS Exception
                 IF e:InnerException != NULL
-                    THROW Error{e:GetInnerException()}
+                    VAR ex := Error{e:GetInnerException()}
+                    LOCAL stack := ex:StackTrace AS STRING
+                    IF stack:IndexOf(mi:Name,StringComparison.OrdinalIgnoreCase) == -1
+                        // we have stripped too many layers. Strip until we see the method name we are trying to call
+                        DO WHILE e:InnerException != NULL .AND. stack:IndexOf(mi:Name,StringComparison.OrdinalIgnoreCase ) ==  -1
+                            e := e:InnerException
+                            stack := e:StackTrace
+                        ENDDO
+                        ex := Error{e}
+                        IF e IS Error VAR er
+                            ex:Args := er:Args
+                        ENDIF
+                    ENDIF
+                    THROW ex
                 ENDIF
                 THROW // rethrow exception
             END TRY
@@ -888,7 +901,7 @@ INTERNAL STATIC CLASS OOPHelpers
             IF XSharp.RuntimeState.Dialect == XSharpDialect.Vulcan
                 // vulcan includes the method name
 			    nomethodArgs := USUAL[]{ args:Length+1 } 
-                nomethodArgs[__ARRAYBASE__] := cMethod
+                nomethodArgs[0] := cMethod
 			    Array.Copy( args, 0, nomethodArgs, 1, args:Length )
             ELSE
                 // other dialects do not include the method name
@@ -1005,7 +1018,7 @@ FUNCTION CreateInstance(symClassName,InitArgList) AS OBJECT CLIPPER
         ENDIF
     CATCH e as Error
         THROW e
-    CATCH e as Exception
+    CATCH e AS Exception
         THROW Error{e:GetInnerException()}
 	END TRY
 	RETURN oRet
@@ -1257,10 +1270,7 @@ FUNCTION Object2Array(oObject AS OBJECT) AS ARRAY
 		    ENDIF
     	NEXT
     CATCH e as Exception
-        IF e:InnerException != NULL
-            THROW Error{e:GetInnerException()}
-        ENDIF
-        THROW // rethrow exception
+        THROW Error{e:GetInnerException()}
     END TRY
    	RETURN aResult
 	

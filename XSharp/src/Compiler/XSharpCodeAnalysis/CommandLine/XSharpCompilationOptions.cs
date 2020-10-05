@@ -16,7 +16,7 @@ namespace Microsoft.CodeAnalysis.CSharp
 #if VSPARSER
         public bool AllowUnsafe { get; private set; }
 #endif
-        #region private fields (need to be access with HasOption())
+        #region private fields (need to be accessed with HasOption())
         private bool ArrayZero;
         private bool VONullStrings;
         private bool VOImplicitCastsAndConversions;
@@ -205,7 +205,9 @@ namespace Microsoft.CodeAnalysis.CSharp
 #endif
         public void SetOptions(CSharpCommandLineArguments opt)
         {
+#if !VSPARSER
             NoWin32Manifest = opt.NoWin32Manifest;
+#endif
         }
 
         public void SetXSharpSpecificOptions(CSharpCompilationOptions opt)

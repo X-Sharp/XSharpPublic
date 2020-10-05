@@ -695,6 +695,7 @@ namespace XSharp.Build
             {
                 commandline.AppendSwitchIfNotNull("/stddefs:", StandardDefs);
             }
+            commandline.AppendWhenTrue("/usenativeversion", _store, nameof(UseNativeVersion));
 
             if (NS)     // Add Default Namespace
             {
@@ -705,7 +706,6 @@ namespace XSharp.Build
             commandline.AppendPlusOrMinusSwitch("/initlocals", _store, nameof(InitLocals));
             commandline.AppendPlusOrMinusSwitch("/ins", _store, nameof(INS));
             commandline.AppendPlusOrMinusSwitch("/lb", _store, nameof(LB));
-            commandline.AppendPlusOrMinusSwitch("/usenativeversion", _store, nameof(UseNativeVersion));
             commandline.AppendPlusOrMinusSwitch("/namedarguments", _store, nameof(NamedArgs));
             if (Dialect.ToLower() != "core" && Dialect.ToLower() != "vulcan")
             {

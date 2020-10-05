@@ -287,7 +287,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                     options.DumpAST = positive;
                     break;
                 case "usenativeversion":
-                    options.UseNativeVersion = true;
+                    options.UseNativeVersion = positive;
                     break;
                 case "verbose":
                     options.Verbose = true;

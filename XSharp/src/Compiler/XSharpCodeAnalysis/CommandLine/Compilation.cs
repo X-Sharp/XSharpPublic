@@ -10,10 +10,19 @@ namespace Microsoft.CodeAnalysis
     {
         internal IEnumerable<Cci.IWin32Resource> AdjustWin32VersionAndManifestResources(IEnumerable<Cci.IWin32Resource> resources, DiagnosticBag diagnostics)
         {
-            var hasVersion = resources.Where( (r) => r.TypeId == 16).Count() > 0;
-            var createManifest = resources.Where((r) => r.TypeId == 24).Count() == 0;
-            var opts = (CSharpCompilationOptions)Options;
-            var createVersion = !opts.UseNativeVersion || !hasVersion;
+            const int RC_RT_MANIFEST = 24;
+            const int RC_RT_VERSION = 16;
+            bool createVersion = true;
+            bool createManifest = resources.Where((r) => r.TypeId == RC_RT_MANIFEST).Count() == 0;
+            var options = (CSharpCompilationOptions)Options;
+            if (options.NoWin32Manifest)
+            {
+                createManifest = false; 
+            }
+            if (options.UseNativeVersion)
+            {
+                createVersion = resources.Where((r) => r.TypeId == RC_RT_VERSION).Count() == 0;
+            }
             if (createVersion || createManifest)
             {
                 var defVersion = CreateDefaultWin32Resources(createVersion, !createManifest, null, null);
@@ -22,9 +31,9 @@ namespace Microsoft.CodeAnalysis
                 {
                     var reslist = new List<Cci.IWin32Resource>();
                     if (createVersion)
-                        reslist.AddRange(resources.Where((r) => r.TypeId != 16 )); // RC_RT_VERSION
+                        reslist.AddRange(resources.Where((r) => r.TypeId != RC_RT_VERSION)); // 
                     else
-                        reslist.AddRange(resources); // RC_RT_VERSION
+                        reslist.AddRange(resources); 
                     reslist.AddRange(defList);
                     resources = reslist;
                 }

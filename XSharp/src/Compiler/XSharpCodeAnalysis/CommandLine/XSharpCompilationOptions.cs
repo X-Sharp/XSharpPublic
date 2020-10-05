@@ -61,6 +61,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             RuntimeAssemblies.HasFlag(RuntimeAssemblies.XSharpCore);
         // Access to the console output
         public TextWriter ConsoleOutput { get; private set; }
+        public bool NoWin32Manifest { get; private set; }
         public void SetXSharpSpecificOptions(XSharpSpecificCompilationOptions opt)
         {
             if (opt != null)
@@ -95,8 +96,8 @@ namespace Microsoft.CodeAnalysis.CSharp
                 RuntimeAssemblies = opt.RuntimeAssemblies;
                 //InitLocals = opt.InitLocals;
                 AllowUnsafe = opt.AllowUnsafe;
-               
-                
+                UseNativeVersion = opt.UseNativeVersion;
+
             }
         }
 #if !VSPARSER
@@ -204,6 +205,7 @@ namespace Microsoft.CodeAnalysis.CSharp
 #endif
         public void SetOptions(CSharpCommandLineArguments opt)
         {
+            NoWin32Manifest = opt.NoWin32Manifest;
         }
 
         public void SetXSharpSpecificOptions(CSharpCompilationOptions opt)
@@ -238,6 +240,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             //InitLocals = opt.InitLocals;
             AllowUnsafe = opt.AllowUnsafe;
             UseNativeVersion = opt.UseNativeVersion;
+            NoWin32Manifest = opt.NoWin32Manifest;
         }
 
         internal CSharpCompilationOptions WithXSharpSpecificOptions(XSharpSpecificCompilationOptions opt)

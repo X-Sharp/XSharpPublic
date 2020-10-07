@@ -173,6 +173,7 @@ namespace XSharp.MacroCompiler
                 case TokenType.INT_CONST:
                 case TokenType.DATE_CONST:
                 case TokenType.DATETIME_CONST:
+                case TokenType.BINARY_CONST:
                 case TokenType.NIL:
                 case TokenType.NULL:
                 case TokenType.NULL_ARRAY:
@@ -186,7 +187,9 @@ namespace XSharp.MacroCompiler
                 case TokenType.INCOMPLETE_STRING_CONST:
                 case TokenType.INVALID_NUMBER:
                 case TokenType.ARRAY:
+                case TokenType.BINARY:
                 case TokenType.CODEBLOCK:
+                case TokenType.CURRENCY:
                 case TokenType.DATE:
                 case TokenType.FLOAT:
                 case TokenType.PSZ:
@@ -287,6 +290,7 @@ namespace XSharp.MacroCompiler
                 case TokenType.INT_CONST:
                 case TokenType.DATE_CONST:
                 case TokenType.DATETIME_CONST:
+                case TokenType.BINARY_CONST:
                 case TokenType.NIL:
                 case TokenType.NULL:
                 case TokenType.NULL_ARRAY:
@@ -303,6 +307,8 @@ namespace XSharp.MacroCompiler
                 case TokenType.INVALID_NUMBER:
                     throw Error(Lt(), ErrorCode.InvalidNumber);
                 case TokenType.ARRAY:
+                case TokenType.BINARY:
+                case TokenType.CURRENCY:
                 case TokenType.DATE:
                 case TokenType.DATETIME:
                     if (TokenAttr.IsSoftKeyword(La()) && La(2) == TokenType.LPAREN)
@@ -372,7 +378,9 @@ namespace XSharp.MacroCompiler
                 case TokenType.ID:
                     return ParseTypeSuffix(ParseQualifiedName());
                 case TokenType.ARRAY:
+                case TokenType.BINARY:
                 case TokenType.CODEBLOCK:
+                case TokenType.CURRENCY:
                 case TokenType.DATE:
                 case TokenType.FLOAT:
                 case TokenType.PSZ:

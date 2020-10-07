@@ -29,6 +29,7 @@ namespace XSharp.MacroCompiler
         internal static ConstantVOSymbol CreateSymbol(string value) { return new ConstantVOSymbol(value); }
         internal static ConstantDefault CreateDefault(TypeSymbol type) { return new ConstantDefault(type); }
         internal static ConstantCurrency CreateCurrency(decimal value) { return new ConstantCurrency(value); }
+        internal static ConstantBinary CreateBinary(byte[] value) { return new ConstantBinary(value); }
 
         internal static ConstantDefault Null { get { return CreateDefault(Compilation.Get(NativeType.Object)); } }
         internal static ConstantDefault Nil { get { return CreateDefault(Compilation.Get(NativeType.Usual)); } }
@@ -43,6 +44,7 @@ namespace XSharp.MacroCompiler
         internal virtual decimal? Decimal { get; }
         internal virtual string String { get; }
         internal virtual DateTime? DateTime { get; }
+        internal virtual byte[] Binary { get; }
     }
     internal partial class ConstantWithValue<T> : Constant
     {
@@ -62,6 +64,7 @@ namespace XSharp.MacroCompiler
         internal override decimal? Decimal { get { return unchecked(Value as decimal?); } }
         internal override string String { get { return Value as string; } }
         internal override DateTime? DateTime { get { return Value as DateTime?; } }
+        internal override byte[] Binary { get { return Value as byte[]; } } 
 
         internal override string FullName { get { return Value.ToString(); } }
     }
@@ -69,6 +72,11 @@ namespace XSharp.MacroCompiler
     {
         internal ConstantCurrency(decimal value) : base(value, NativeType.Currency) {}
     }
+    internal partial class ConstantBinary : ConstantWithValue<byte[]>
+    {
+        internal ConstantBinary(byte[] value) : base(value, NativeType.Binary) { }
+    }
+
     internal partial class ConstantVOFloat : ConstantWithValue<double>
     {
         int Length;

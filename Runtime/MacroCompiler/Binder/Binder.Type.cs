@@ -21,8 +21,12 @@ namespace XSharp.MacroCompiler
             {
                 case TokenType.ARRAY:
                     return Compilation.Get(NativeType.Array);
+                case TokenType.BINARY:
+                    return Compilation.Get(NativeType.Binary);
                 case TokenType.CODEBLOCK:
                     return Compilation.Get(NativeType.Codeblock);
+                case TokenType.CURRENCY:
+                    return Compilation.Get(NativeType.Currency);
                 case TokenType.DATE:
                     return Compilation.Get(NativeType.VODate);
                 case TokenType.FLOAT:

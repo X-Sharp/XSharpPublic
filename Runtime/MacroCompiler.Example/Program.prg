@@ -338,9 +338,6 @@ BEGIN NAMESPACE MacroCompilerTest
         Console.WriteLine("Running tests ...")
 
         //TestParse(mc, e"{|a,b| +a[++b] += 100, a[2]}", "{|a, b|RETURN (((+a((++b)))+='100'), a('2'))}")
-        Testmacro(mc, e"{|str, x| PadL(str, x)}",Args("abc",2),"ab",typeof(STRING))
-        TestMacro(mc, e"{|o|o:Checked}", Args(CheckBox{}), FALSE, typeof(LOGIC))
-
         TestMacro(mc, e"{|v|(v := upper(v), left(v,3))}", Args("ABCDE"), "ABC", typeof(STRING))
         TestMacro(mc, e"{|l, v|iif (l, (v := upper(v), left(v,3)), (v := lower(v), left(v,4))) }", Args(TRUE, "ABCDE"), "ABC", typeof(STRING))
         TestMacro(mc, e"{|l, v|iif (l, (v := upper(v), left(v,3)), (v := lower(v), left(v,4))) }", Args(FALSE, "ABCDE"), "abcd", typeof(STRING))
@@ -363,7 +360,7 @@ BEGIN NAMESPACE MacroCompilerTest
         
         mc:Options:UndeclaredVariableResolution := VariableResolution.TreatAsFieldOrMemvar
         TestMacro(mc, e"{|| eval({||true}) }", Args(), true, typeof(logic))
-        TestMacro(mc, e"{|o| eval({|a|a},o) }", Args(true), true, typeof(logic))
+        TestMacro(mc, e"{|o| eval({|a|a},o) }", Args(TRUE), TRUE, typeof(LOGIC))
         TestMacro(mc, e"{|o| eval({|a|a},o) }", Args(false), false, typeof(logic))
         TestMacro(mc, e"{|| x := 42, eval({||x}) }", Args(), 42, typeof(int))
         TestMacro(mc, e"{|| x := true, eval({||x := 42}), x }", Args(), 42, typeof(int))
@@ -806,6 +803,17 @@ BEGIN NAMESPACE MacroCompilerTest
         TestMacro(mc, e"{|a,b| a .XOR. b }", Args(FALSE, TRUE), TRUE,typeof(LOGIC))
         TestMacro(mc, e"{|a,b| a .XOR. b }", Args(TRUE, FALSE), TRUE,typeof(LOGIC))
         TestMacro(mc, e"{|a,b| a .XOR. b }", Args(FALSE, FALSE), FALSE,typeof(LOGIC))
+
+        // Tests by Robert
+        Testmacro(mc, e"{| | 0h0123456789abcde } ", Args(), NULL, NULL, ErrorCode.BinaryIncorrectLength )
+        Testmacro(mc, e"{| | 0h } ", Args(), NULL, NULL, ErrorCode.BinaryIncorrectLength )
+        Testmacro(mc, e"{| | 0h0123456789abcdef } ", Args(), 0h0123456789abcdef, typeof(BINARY) )
+        Testmacro(mc, e"{| | 0h0123_4567_89ab_cdef } ", Args(), 0h0123456789abcdef, typeof(BINARY) )
+        Testmacro(mc, e"{| | (STRING) 0h41 } ", Args(), "A", typeof(STRING) )
+        Testmacro(mc, e"{| | (BINARY) \"A\" } ", Args(), 0h41, typeof(BINARY) )
+        Testmacro(mc, e"{|str, x| PadL(str, x)}",Args("abc",2),"ab",typeof(STRING))
+        TestMacro(mc, e"{|o|o:Checked}", Args(CheckBox{}), FALSE, typeof(LOGIC))
+
 
 
         Console.WriteLine("Total pass: {0}/{1}", TotalSuccess, TotalTests)

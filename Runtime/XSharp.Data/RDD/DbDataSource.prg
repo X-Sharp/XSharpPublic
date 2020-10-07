@@ -425,15 +425,17 @@ CLASS XSharp.DbDataSource IMPLEMENTS IBindingList
                 nLen  := (LONG)   SELF:_oRDD:FieldInfo(f, DBS_LEN, NULL)
                 nDec  := (LONG)   SELF:_oRDD:FieldInfo(f, DBS_DEC, NULL)
                 oInfo :=  DbColumnInfo{fieldName:ToLower(), cType, nLen, nDec}
+                oInfo:ColumnName := (STRING) SELF:_oRDD:FieldInfo(f, DBS_CAPTION, NULL)
                 oInfo:Ordinal := f
             ELSE
                 IF String.IsNullOrEmpty(oInfo:Alias )
-                    oInfo:Name := oInfo:Name:ToLower()
-                    oInfo:ColumnName := oInfo:ColumnName:ToLower()
+                    oInfo:Name          := oInfo:Name:ToLower()
+                    oInfo:ColumnName    := oInfo:ColumnName:ToLower()
                 ELSE
-                    oInfo:Name       := oInfo:Alias:ToLower()
-                    oInfo:ColumnName := oInfo:Name
+                    oInfo:Name          := oInfo:Alias:ToLower()
+                    oInfo:ColumnName    := oInfo:Name
                 ENDIF
+                oInfo:ColumnName := (STRING) SELF:_oRDD:FieldInfo(f, DBS_CAPTION, NULL)
             ENDIF
             
             _fieldList:Add(DbField{oInfo})

@@ -30,6 +30,9 @@ CLASS XSharp.DbField
     PROPERTY ReadOnly   AS LOGIC GET SELF:Info:IsAutoIncrement
     /// <summary>Can the field be sorted ?</summary>
     PROPERTY CanSort    AS LOGIC GET SELF:Info:CanSort
+    /// <summary>Can the field be sorted ?</summary>
+    PROPERTY Description   AS STRING GET SELF:Info:Description
+
     #endregion
 END CLASS
 
@@ -40,7 +43,7 @@ INTERNAL CLASS XSharp.DbFieldDescriptor INHERIT PropertyDescriptor
     #region constructors
     CONSTRUCTOR( dbField AS DbField )
     
-    SUPER( dbField:Caption , Attribute[]{0} )
+    SUPER( dbField:Name , Attribute[]{0} )
     _dbField := dbField   
     RETURN
     #endregion   

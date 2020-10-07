@@ -5,7 +5,7 @@
 //
 
 // Please note that this code code expects zero based arrays
-
+#pragma options ("az", ON)
 USING System.Runtime.InteropServices
 USING System.IO
 USING System.Text
@@ -21,8 +21,8 @@ BEGIN NAMESPACE XSharp.RDD
 [DebuggerDisplay("DBF ({Alias,nq})")];
 PARTIAL CLASS DBF INHERIT Workarea IMPLEMENTS IRddSortWriter
 #region STATIC properties and fields
-        STATIC PROTECT _Extension := ".DBF" AS STRING
-        STATIC PRIVATE  culture := System.Globalization.CultureInfo.InvariantCulture AS CultureInfo
+    STATIC PROTECT _Extension := ".DBF" AS STRING
+    STATIC PRIVATE  culture := System.Globalization.CultureInfo.InvariantCulture AS CultureInfo
 	
 #endregion	
 	PROTECT _RelInfoPending  AS DbRelInfo
@@ -74,6 +74,7 @@ PARTIAL CLASS DBF INHERIT Workarea IMPLEMENTS IRddSortWriter
     PROTECT PROPERTY IsOpen AS LOGIC GET SELF:_hFile != F_ERROR
     PROTECT PROPERTY HasMemo AS LOGIC GET SELF:_HasMemo
     NEW PROTECT PROPERTY Memo AS BaseMemo GET (BaseMemo) SELF:_Memo
+    INTERNAL PROPERTY Handle AS IntPtr GET _hFile
 
 
 PROTECTED METHOD ConvertToMemory() AS LOGIC
@@ -122,9 +123,8 @@ PRIVATE METHOD _AllocateBuffers() AS VOID
 	NEXT
 	
 CONSTRUCTOR()
-	SELF:_hFile := F_ERROR
-	SELF:_Header := DbfHeader{} 
-	SELF:_Header:initialize()
+	SELF:_hFile     := F_ERROR
+	SELF:_Header    := DbfHeader{SELF} 
 	SELF:_Locks     := List<LONG>{}
 	SELF:_numformat := (NumberFormatInfo) culture:NumberFormat:Clone()
 	SELF:_numformat:NumberDecimalSeparator := "."
@@ -938,7 +938,7 @@ METHOD Create(info AS DbOpenInfo) AS LOGIC
 		ENDIF        // First, just the Header
 		SELF:_Encoding := System.Text.Encoding.GetEncoding( codePage ) 
 
-		SELF:_Header:HeaderLen := SHORT(DbfHeader.SIZE + fieldDefSize+ 2 ) 
+		SELF:_Header:HeaderLen := SHORT(DbfHeader.SIZE + fieldDefSize + 2 ) 
 		SELF:_Header:isHot := TRUE
         //
 
@@ -1012,13 +1012,11 @@ PROTECTED VIRTUAL METHOD _writeFieldsHeader() AS LOGIC
 	LOCAL fieldDefSize := fieldCount * DbfField.SIZE AS INT
     // Now, create the Structure
 	LOCAL fieldsBuffer := BYTE[]{ fieldDefSize +1 } AS BYTE[] // +1 to add 0Dh stored as the field terminator.
-	LOCAL currentField := DbfField{} AS DbfField
-    currentField:Encoding := SELF:_Encoding
-	IF ! SELF:IsOpen
+	LOCAL currentField := DbfField{SELF:_Encoding} AS DbfField
+    IF ! SELF:IsOpen
 		RETURN FALSE
 	ENDIF
 	
-	currentField:initialize()
 	LOCAL nOffSet AS LONG
 	nOffSet := 0
 	FOREACH VAR fld IN SELF:_Fields
@@ -1037,7 +1035,7 @@ PROTECTED VIRTUAL METHOD _writeFieldsHeader() AS LOGIC
 			ENDIF
 		ENDIF
 		currentField:Flags := fld:Flags
-		IF ! _checkField(REF currentField)
+		IF ! SELF:_checkField(REF currentField)
 			SELF:_dbfError( ERDD.CREATE_FILE, XSharp.Gencode.EG_DATATYPE,"DBF:Create()", "Invalid "+fld:ToString())
 			RETURN FALSE
 		ENDIF
@@ -1047,7 +1045,7 @@ PROTECTED VIRTUAL METHOD _writeFieldsHeader() AS LOGIC
 	
 	
     // Terminator
-	fieldsBuffer[fieldDefSize] := 13
+	fieldsBuffer[fieldDefSize] := 0x0D
     // Go end of Header
 	isOK := ( FSeek3( SELF:_hFile, DbfHeader.SIZE, SeekOrigin.Begin ) == DbfHeader.SIZE )
 	IF isOK 
@@ -1122,14 +1120,13 @@ PRIVATE METHOD _readHeader() AS LOGIC
 	IF ! SELF:IsOpen
 		RETURN FALSE
 	ENDIF
-    isOK := SELF:_Header:Read(SELF:_hFile)
+    isOK := SELF:_Header:Read()
     //
 	IF isOK 
 		SELF:_HeaderLength := SELF:_Header:HeaderLen
         //
-		LOCAL fieldCount := (( SELF:_HeaderLength - DbfHeader.SIZE) / DbfField.SIZE ) AS INT
         // Something wrong in Size...
-		IF fieldCount <= 0 
+		IF SELF:_Header:FieldCount <= 0 
 			RETURN FALSE
 		ENDIF
 		SELF:_RecCount := SELF:_Header:RecCount
@@ -1146,7 +1143,7 @@ RETURN isOK
     // Read the Fields Header, filling the _Fields List with RddFieldInfo
 PRIVATE METHOD _readFieldsHeader() AS LOGIC
 	LOCAL isOK AS LOGIC
-	LOCAL fieldCount := (( SELF:_HeaderLength - DbfHeader.SIZE) / DbfField.SIZE ) AS INT
+	LOCAL fieldCount   := SELF:_Header:FieldCount AS INT
 	LOCAL fieldDefSize := fieldCount * DbfField.SIZE AS INT
 	IF ! SELF:IsOpen
 		RETURN FALSE
@@ -1157,9 +1154,7 @@ PRIVATE METHOD _readFieldsHeader() AS LOGIC
     isOK := FRead3( SELF:_hFile, fieldsBuffer, (DWORD)fieldDefSize ) == (DWORD)fieldDefSize 
 	IF isOK 
 		SELF:_HasMemo := FALSE
-		VAR currentField := DbfField{}
-        currentField:Encoding := SELF:_Encoding
-		currentField:initialize()
+		VAR currentField := DbfField{SELF:_Encoding}
         // Now, process
         //SELF:_Fields := DbfRddFieldInfo[]{ fieldCount }
         // count # of fields. When we see a 0x0D then the header has blank space for non fields
@@ -1225,7 +1220,7 @@ PROTECTED METHOD _writeHeader() AS LOGIC
         // Update the number of records
 		SELF:_Header:RecCount := SELF:_RecCount
 		TRY
-            ret := SELF:_Header:Write(SELF:_hFile)
+            ret := SELF:_Header:Write()
 		CATCH ex AS Exception
 			SELF:_dbfError( ex, ERDD.WRITE, XSharp.Gencode.EG_WRITE )
 			ret := FALSE
@@ -2373,473 +2368,9 @@ END PROPERTY
 /// <inheritdoc />
 VIRTUAL PROPERTY Driver AS STRING GET "DBF"
 	
-	
-/// <summary>DBF Header.</summary>
-CLASS DbfHeader
-    // Fixed Buffer of 32 bytes
-    // Matches the DBF layout
-    // Read/Write to/from the Stream with the Buffer
-    // and access individual values using the other fields
-	
-	PRIVATE CONST OFFSET_SIG			 := 0  AS BYTE
-	PRIVATE CONST OFFSET_YEAR			 := 1  AS BYTE           // add 1900 so possible values are 1900 - 2155
-	PRIVATE CONST OFFSET_MONTH	         := 2  AS BYTE
-	PRIVATE CONST OFFSET_DAY             := 3  AS BYTE
-	PRIVATE CONST OFFSET_RECCOUNT        := 4  AS BYTE
-	PRIVATE CONST OFFSET_DATAOFFSET      := 8  AS BYTE
-	PRIVATE CONST OFFSET_RECSIZE         := 10 AS BYTE
-	PRIVATE CONST OFFSET_RESERVED1       := 12 AS BYTE
-	PRIVATE CONST OFFSET_TRANSACTION     := 14 AS BYTE
-	PRIVATE CONST OFFSET_ENCRYPTED       := 15 AS BYTE
-	PRIVATE CONST OFFSET_DBASELAN        := 16 AS BYTE
-	PRIVATE CONST OFFSET_MULTIUSER       := 20 AS BYTE
-	PRIVATE CONST OFFSET_RESERVED2       := 24 AS BYTE
-	PRIVATE CONST OFFSET_HASTAGS	     := 28 AS BYTE
-	PRIVATE CONST OFFSET_CODEPAGE        := 29 AS BYTE
-	PRIVATE CONST OFFSET_RESERVED3       := 30 AS BYTE
-	INTERNAL CONST SIZE                  := 32 AS BYTE
-	
-	PUBLIC Buffer   AS BYTE[]
-// Hot ?  => Header has changed ?
-	PUBLIC isHot	AS LOGIC
-	
-PROPERTY Version    AS DBFVersion	;
-    GET (DBFVersion) Buffer[OFFSET_SIG] ;
-    SET Buffer[OFFSET_SIG] := (BYTE) value,isHot := TRUE
-	
-// Date of last update; in YYMMDD format.  Each byte contains the number as a binary.
-// YY is added to a base of 1900 decimal to determine the actual year.
-// Therefore, YY has possible values from 0x00-0xFF, which allows for a range from 1900-2155.
-	
-PROPERTY Year		AS LONG			
-	GET
-		LOCAL nYear AS LONG
-		nYear := DateTime.Now:Year
-		nYear := nYear - (nYear % 100)  // Get century
-		RETURN Buffer[OFFSET_YEAR] + nYear
-	END GET
-	SET
-		Buffer[OFFSET_YEAR] := (BYTE) (value% 100)
-		isHot := TRUE
-	END SET
-END PROPERTY	
-PROPERTY Month		AS BYTE			;
-    GET Buffer[OFFSET_MONTH]	;
-    SET Buffer[OFFSET_MONTH] := value, isHot := TRUE
-	
-PROPERTY Day		AS BYTE			;
-    GET Buffer[OFFSET_DAY]	;
-    SET Buffer[OFFSET_DAY] := value, isHot := TRUE
-// Number of records in the table. (Least significant byte first.)		
-PROPERTY RecCount	AS LONG			;
-    GET BitConverter.ToInt32(Buffer, OFFSET_RECCOUNT) ;
-    SET Array.Copy(BitConverter.GetBytes(value),0, Buffer, OFFSET_RECCOUNT, SIZEOF(LONG)), isHot := TRUE
-// Number of bytes in the header. (Least significant byte first.)
-	
-PROPERTY HeaderLen	AS SHORT		;
-    GET BitConverter.ToInt16(Buffer, OFFSET_DATAOFFSET);
-    SET Array.Copy(BitConverter.GetBytes(value),0, Buffer, OFFSET_DATAOFFSET, SIZEOF(SHORT)), isHot := TRUE
-	
-// Length of one data record, including deleted flag
-PROPERTY RecordLen	AS WORD		;
-    GET BitConverter.ToUInt16(Buffer, OFFSET_RECSIZE);
-    SET Array.Copy(BitConverter.GetBytes(value),0, Buffer, OFFSET_RECSIZE, SIZEOF(WORD)), isHot := TRUE
-	
-// Reserved
-PROPERTY Reserved1	AS SHORT		;
-    GET BitConverter.ToInt16(Buffer, OFFSET_RESERVED1);
-    SET Array.Copy(BitConverter.GetBytes(value),0, Buffer, OFFSET_RESERVED1, SIZEOF(SHORT)), isHot := TRUE
-	
-// Flag indicating incomplete dBASE IV transaction.		
-PROPERTY Transaction AS BYTE		;
-    GET Buffer[OFFSET_TRANSACTION];
-    SET Buffer[OFFSET_TRANSACTION] := value, isHot := TRUE
-	
-// dBASE IV encryption flag.		
-PROPERTY Encrypted	AS BYTE			;
-    GET Buffer[OFFSET_ENCRYPTED];
-    SET Buffer[OFFSET_ENCRYPTED] := value, isHot := TRUE
-	
-PROPERTY DbaseLan	AS LONG			;
-    GET BitConverter.ToInt32(Buffer, OFFSET_DBASELAN) ;
-    SET Array.Copy(BitConverter.GetBytes(value),0, Buffer, OFFSET_DBASELAN, SIZEOF(LONG)), isHot := TRUE
-	
-PROPERTY MultiUser	AS LONG			;
-    GET BitConverter.ToInt32(Buffer, OFFSET_MULTIUSER)	;
-    SET Array.Copy(BitConverter.GetBytes(value),0, Buffer, OFFSET_MULTIUSER, SIZEOF(LONG)), isHot := TRUE
-	
-PROPERTY Reserved2	AS LONG			;
-    GET BitConverter.ToInt32(Buffer, OFFSET_RESERVED2);
-    SET Array.Copy(BitConverter.GetBytes(value),0, Buffer, OFFSET_RESERVED2, SIZEOF(LONG))
-	
-PROPERTY HasTags	AS DBFTableFlags ;
-    GET (DBFTableFlags)Buffer[OFFSET_HASTAGS] ;
-    SET Buffer[OFFSET_HASTAGS] := (BYTE) value, isHot := TRUE
-	
-PROPERTY CodePage	AS DbfHeaderCodepage			 ;
-    GET (DbfHeaderCodepage) Buffer[OFFSET_CODEPAGE]  ;
-    SET Buffer[OFFSET_CODEPAGE] := (BYTE) value, isHot := TRUE
-	
-PROPERTY Reserved3	AS SHORT         ;
-    GET BitConverter.ToInt16(Buffer, OFFSET_RESERVED3);
-    SET Array.Copy(BitConverter.GetBytes(value),0, Buffer, OFFSET_RESERVED3, SIZEOF(SHORT)), isHot := TRUE
-	
-// Note that the year property already does the 1900 offset calculation ! 
-PROPERTY LastUpdate AS DateTime      ;  
-    GET DateTime{Year, Month, Day} ;
-
-	
-PROPERTY IsAnsi AS LOGIC GET CodePage:IsAnsi()
-	
-METHOD initialize() AS VOID STRICT
-	Buffer := BYTE[]{DbfHeader.SIZE}
-	isHot  := FALSE
-RETURN
-    // Dbase (7?) Extends this with
-    // [FieldOffSet(31)] PUBLIC LanguageDriverName[32]	 as BYTE
-    // [FieldOffSet(63)] PUBLIC Reserved6 AS LONG
-    /*
-    0x02   FoxBASE
-    0x03   FoxBASE+/Dbase III plus, no memo
-    0x04   dBase 4
-    0x05   dBase 5
-    0x07   VO/Vulcan Ansi encoding
-    0x13   FLagship dbv
-    0x23   Flagship 2/4/8
-    0x30   Visual FoxPro
-    0x31   Visual FoxPro, autoincrement enabled
-    0x33   Flagship 2/4/8 + dbv
-    0x43   dBASE IV SQL table files, no memo
-    0x63   dBASE IV SQL system files, no memo
-    0x7B   dBASE IV, with memo
-    0x83   FoxBASE+/dBASE III PLUS, with memo
-    0x87   VO/Vulcan Ansi encoding with memo
-    0x8B   dBASE IV with memo
-    0xCB   dBASE IV SQL table files, with memo
-    0xE5   Clipper SIX driver, with SMT memo
-    0xF5   FoxPro 2.x (or earlier) with memo
-    0xFB   FoxBASE
-    
-    FoxPro additional Table structure:
-    28 	Table flags:
-    0x01   file has a structural .cdx
-    0x02   file has a Memo field
-    0x04   file is a database (.dbc)
-    This byte can contain the sum of any of the above values.
-    For example, the value 0x03 indicates the table has a structural .cdx and a
-    Memo field.
-    29 	Code page mark
-    30 ? 31 	Reserved, contains 0x00
-    32 ? n 	Field subrecords
-    The number of fields determines the number of field subrecords.
-    One field subrecord exists for each field in the table.
-    n+1 			Header record terminator (0x0D)
-    n+2 to n+264 	A 263-byte range that contains the backlink, which is the
-    relative path of an associated database (.dbc) file, information.
-    If the first byte is 0x00, the file is not associated with a database.
-    Therefore, database files always contain 0x00.
-    see also ftp://fship.com/pub/multisoft/flagship/docu/dbfspecs.txt
-    
-    */
-
-METHOD Read(hFile as IntPtr) AS LOGIC
-    VAR nPos := FTell(hFile)
-    FSeek3(hFile, 0, FS_SET)
-    VAR Ok := FRead3(hFile, SELF:Buffer, DbfHeader.SIZE) == DbfHeader.SIZE
-    IF Ok
-        FSeek3(hFile, (LONG) nPos, FS_SET)
-    ENDIF
-    RETURN Ok
-
-METHOD Write(hFile as IntPtr) AS LOGIC
-	LOCAL dtInfo AS DateTime
-	dtInfo := DateTime.Now
-    // Update the Date/Time information
-	SELF:Year   := (BYTE)(dtInfo:Year % 100)
-	SELF:Month  := (BYTE)dtInfo:Month
-	SELF:Day    := (BYTE)dtInfo:Day
-
-    VAR nPos := FTell(hFile)
-    FSeek3(hFile, 0, FS_SET)
-    VAR Ok := FWrite3(hFile, SELF:Buffer, DbfHeader.SIZE) == DbfHeader.SIZE
-    IF Ok
-        FSeek3(hFile, (LONG) nPos, FS_SET)
-        SELF:isHot := FALSE
-    ENDIF
-    RETURN Ok
 
 
 END CLASS
-
-
-
-END CLASS
-// Inspired by Harbour
-/// <summary>This structure holds the various settings for locking models</summary>
-STRUCTURE DbfLocking
-    /// <summary>Offset of the Locking </summary>
-	PUBLIC Offset AS INT64
-    /// <summary>Length for File locks </summary>
-	PUBLIC FileSize AS INT64
-    /// <summary>Length for Record locks </summary>
-	PUBLIC RecordSize AS LONG
-    /// <summary>Direction of locking, used to calculate file lock offsets and record lock offsets</summary>
-	PUBLIC Direction AS LONG
-
-/// <summary>Set various numbers based on a locking model.</summary>	
-METHOD Initialize( model AS DbfLockingModel ) AS VOID
-	SWITCH model
-	CASE DbfLockingModel.Clipper52
-		SELF:Offset     := 1000000000
-		SELF:FileSize   := 1000000000
-		SELF:RecordSize := 1
-		SELF:Direction  := 1
-	CASE DbfLockingModel.Clipper53
-		SELF:Offset     := 1000000000
-		SELF:FileSize   := 1000000000
-		SELF:RecordSize := 1
-		SELF:Direction  := 1
-	CASE DbfLockingModel.Clipper53Ext
-		SELF:Offset     := 4000000000
-		SELF:FileSize   := 294967295
-		SELF:RecordSize := 1
-		SELF:Direction  := 1
-	CASE DbfLockingModel.FoxPro
-		SELF:Offset     := 0x40000000
-		SELF:FileSize   := 0x07ffffff
-		SELF:RecordSize := 1
-		SELF:Direction  := 2
-	CASE DbfLockingModel.FoxProExt
-		SELF:Offset     := 0x7ffffffe
-		SELF:FileSize   := 0x3ffffffd
-		SELF:RecordSize := 1
-		SELF:Direction  := -1
-	CASE DbfLockingModel.Harbour64
-		SELF:Offset     := 0x7FFFFFFF00000001
-		SELF:FileSize   := 0x7ffffffe
-		SELF:RecordSize := 1
-		SELF:Direction  := 1
-	CASE DbfLockingModel.VoAnsi
-		SELF:Offset     := 0x80000000
-		SELF:FileSize   := 0x7fffffff
-		SELF:RecordSize := 1
-		SELF:Direction  := 1
-	END SWITCH
-    /// <summary>File Lock offsets </summary>
-    PROPERTY FileLockOffSet AS INT64
-        GET
-            VAR iOffset := SELF:Offset
-	        IF SELF:Direction < 0 
-		        iOffset -= SELF:FileSize
-	        ELSE
-		        iOffset++
-            ENDIF
-            RETURN iOffset
-        END GET
-    END PROPERTY
-    /// <summary>Calculate the record offset based </summary>
-    METHOD RecnoOffSet(recordNbr AS LONG, recSize AS LONG, headerLength AS LONG) AS INT64
-	    VAR iOffset := SELF:Offset
-	    IF SELF:Direction < 0 
-		    iOffset -= (INT64)recordNbr
-	    ELSEIF( SELF:Direction == 2 )
-		    iOffset += (INT64)( ( recordNbr - 1 ) * recSize + headerLength )
-	    ELSE
-		    iOffset += (INT64) recordNbr
-	    ENDIF
-        RETURN iOffset
-END STRUCTURE
-
-
-
-
-INTERNAL CLASS DBFSortCompare IMPLEMENTS IComparer<SortRecord>
-	
-	PRIVATE _sortInfo AS DbSortInfo
-	PRIVATE _dataX AS BYTE[]
-	PRIVATE _dataY AS BYTE[]
-	
-INTERNAL CONSTRUCTOR( rdd AS DBF, info AS DbSortInfo )
-	SELF:_sortInfo  := info
-	LOCAL max       := 0 AS INT
-	FOREACH VAR item IN info:Items
-		max := Math.Max(max, item:Length)
-	NEXT
-	SELF:_dataX := BYTE[]{ max}     
-	SELF:_dataY := BYTE[]{ max}
-	
-	
-PUBLIC METHOD Compare(recordX AS SortRecord , recordY AS SortRecord ) AS LONG
-	LOCAL dataBufferX AS BYTE[]
-	LOCAL dataBufferY AS BYTE[]
-	LOCAL diff AS LONG
-	IF recordX:Recno == recordY:Recno
-		RETURN 0
-	ENDIF
-    //
-	dataBufferX := recordX:Data
-	dataBufferY := recordY:Data
-	diff := 0
-	FOREACH VAR item IN SELF:_sortInfo:Items
-		VAR start := item:OffSet
-		VAR iLen := item:Length
-		VAR flags := item:Flags
-        // Long Value ?
-		IF flags:HasFlag(DbSortFlags.Long)
-			VAR longValue1 := BitConverter.ToInt32(dataBufferX, start)
-			VAR longValue2 := BitConverter.ToInt32(dataBufferY, start)
-			diff := longValue1 - longValue2
-		ELSE
-            // String Value ?
-			IF flags:HasFlag(DbSortFlags.Ascii)
-                // String ASCII : Use Runtime comparer
-				Array.Copy(dataBufferX, start, _dataX, 0, iLen)
-				Array.Copy(dataBufferY, start, _dataY, 0, iLen)
-				diff := XSharp.RuntimeState.StringCompare(_dataX, _dataY, iLen)
-                //
-			ELSE
-				FOR VAR i := 0 TO iLen
-					diff := dataBufferX[i + start] - dataBufferY[i + start]
-					IF diff != 0
-						EXIT
-					ENDIF
-				NEXT
-			ENDIF
-		ENDIF
-		IF diff != 0
-			IF flags:HasFlag(DbSortFlags.Descending)
-				diff *= -1
-			ENDIF
-			EXIT
-		ENDIF
-	NEXT
-	IF diff == 0
-		diff := recordX:Recno - recordY:Recno
-	ENDIF
-RETURN diff
-
-
-
-
-END CLASS
-
-    /// <summary>DBF Field.</summary>
-STRUCTURE DbfField
-	PRIVATE CONST OFFSET_NAME		   := 0    AS BYTE
-	PRIVATE CONST OFFSET_TYPE		   := 11   AS BYTE
-	PRIVATE CONST OFFSET_OFFSET	       := 12   AS BYTE
-	PRIVATE CONST OFFSET_LEN          := 16   AS BYTE
-	PRIVATE CONST OFFSET_DEC          := 17   AS BYTE
-	PRIVATE CONST OFFSET_FLAGS        := 18   AS BYTE
-	PRIVATE CONST OFFSET_COUNTER      := 19   AS BYTE
-	PRIVATE CONST OFFSET_INCSTEP      := 23   AS BYTE
-	PRIVATE CONST OFFSET_RESERVED1    := 24   AS BYTE
-	PRIVATE CONST OFFSET_RESERVED2    := 25   AS BYTE
-	PRIVATE CONST OFFSET_RESERVED3    := 26   AS BYTE
-	PRIVATE CONST OFFSET_RESERVED4    := 27   AS BYTE
-	PRIVATE CONST OFFSET_RESERVED5    := 28   AS BYTE
-	PRIVATE CONST OFFSET_RESERVED6	   := 29  AS BYTE
-	PRIVATE CONST OFFSET_RESERVED7    := 30   AS BYTE
-	PRIVATE CONST OFFSET_HASTAG       := 31   AS BYTE
-	INTERNAL CONST NAME_SIZE           := 11  AS BYTE
-	INTERNAL CONST SIZE                := 32  AS BYTE
-	INTERNAL Encoding as System.Text.Encoding
-    // Fixed Buffer of 32 bytes
-    // Matches the DBF layout
-    // Read/Write to/from the Stream with the Buffer
-    // and access individual values using the other fields
-METHOD initialize() AS VOID
-	SELF:Buffer := BYTE[]{SIZE}
-	
-	PUBLIC Buffer		 AS BYTE[]
-
-METHOD ClearFlags() AS VOID
-    System.Array.Clear(Buffer, OFFSET_FLAGS, SIZE-OFFSET_FLAGS)
-    RETURN
-	
-PROPERTY Name		 AS STRING
-	GET
-		LOCAL fieldName := BYTE[]{DbfField.NAME_SIZE} AS BYTE[]
-		Array.Copy( Buffer, OFFSET_NAME, fieldName, 0, DbfField.NAME_SIZE )
-		LOCAL count := Array.FindIndex<BYTE>( fieldName, 0, { sz => sz == 0 } ) AS INT
-		IF count == -1
-			count := DbfField.NAME_SIZE
-		ENDIF
-		LOCAL str := Encoding:GetString( fieldName,0, count ) AS STRING
-		IF str == NULL 
-			str := String.Empty
-		ENDIF
-		str := str:Trim()
-		RETURN str
-	END GET
-	SET
-            // Be sure to fill the Buffer with 0
-		Array.Clear( Buffer, OFFSET_NAME, DbfField.NAME_SIZE )
-		Encoding:GetBytes( value, 0, Math.Min(DbfField.NAME_SIZE,value:Length), Buffer, OFFSET_NAME )
-	END SET
-END PROPERTY
-
-PROPERTY Type		 AS DbFieldType ;
-        GET (DbFieldType) Buffer[ OFFSET_TYPE ] ;
-        SET Buffer[ OFFSET_TYPE ] := (BYTE) value
-	
-    // Offset from record begin in FP
-PROPERTY Offset 	 AS LONG ;
-        GET BitConverter.ToInt32(Buffer, OFFSET_OFFSET);
-        SET Array.Copy(BitConverter.GetBytes(value),0, Buffer, OFFSET_OFFSET, SIZEOF(LONG))
-	
-PROPERTY Len		 AS BYTE;
-        GET Buffer[OFFSET_LEN]  ;
-        SET Buffer[OFFSET_LEN] := value
-	
-PROPERTY Dec		 AS BYTE;
-        GET Buffer[OFFSET_DEC]  ;
-        SET Buffer[OFFSET_DEC] := value
-	
-PROPERTY Flags		 AS DBFFieldFlags;
-        GET (DBFFieldFlags)Buffer[OFFSET_FLAGS] ;
-        SET Buffer[OFFSET_FLAGS] := (BYTE) value
-	
-PROPERTY Counter	 AS LONG;
-        GET BitConverter.ToInt32(Buffer, OFFSET_COUNTER);
-        SET Array.Copy(BitConverter.GetBytes(value),0, Buffer, OFFSET_COUNTER, SIZEOF(LONG))
-	
-PROPERTY IncStep	 AS BYTE;
-        GET Buffer[OFFSET_INCSTEP]  ;
-        SET Buffer[OFFSET_INCSTEP] :=  value
-	
-PROPERTY Reserved1   AS BYTE;
-        GET Buffer[OFFSET_RESERVED1]  ;
-        SET Buffer[OFFSET_RESERVED1] :=  value
-	
-PROPERTY Reserved2   AS BYTE;
-        GET Buffer[OFFSET_RESERVED2]  ;
-        SET Buffer[OFFSET_RESERVED2] := value
-	
-PROPERTY Reserved3   AS BYTE;
-        GET Buffer[OFFSET_RESERVED3]  ;
-        SET Buffer[OFFSET_RESERVED3] :=  value
-	
-PROPERTY Reserved4  AS BYTE;
-        GET Buffer[OFFSET_RESERVED4]  ;
-        SET Buffer[OFFSET_RESERVED4] :=  value
-	
-PROPERTY Reserved5   AS BYTE;
-        GET Buffer[OFFSET_RESERVED5]  ;
-        SET Buffer[OFFSET_RESERVED5] :=  value
-	
-PROPERTY Reserved6   AS BYTE;
-        GET Buffer[OFFSET_RESERVED6]  ;
-        SET Buffer[OFFSET_RESERVED6] :=  value
-	
-PROPERTY Reserved7   AS BYTE;
-        GET Buffer[OFFSET_RESERVED7]  ;
-        SET Buffer[OFFSET_RESERVED7] :=  value
-	
-PROPERTY HasTag		 AS BYTE;
-        GET Buffer[OFFSET_HASTAG]  ;
-        SET Buffer[OFFSET_HASTAG] :=  value
-END STRUCTURE
 
 
 

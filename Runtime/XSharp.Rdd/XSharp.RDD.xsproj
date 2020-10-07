@@ -14,7 +14,7 @@
     <INS>true</INS>
     <NamedArgs>true</NamedArgs>
     <VulcanCompatibleResources>False</VulcanCompatibleResources>
-    <XSharpProjectversion>2.5.2.0</XSharpProjectversion>
+    <XSharpProjectversion>2.6.1.0</XSharpProjectversion>
     <IncludePaths>$(CommonInclude)</IncludePaths>
     <Nostandarddefs>true</Nostandarddefs>
     <StandardDefs />
@@ -93,6 +93,10 @@
     <Compile Include="DbfVfp\DbfVfp.prg" />
     <Compile Include="DbfVfp\DBFVFPSQL.prg" />
     <Compile Include="Dbf\AbstractMemo.prg" />
+    <Compile Include="Dbf\DbfField.prg" />
+    <Compile Include="Dbf\DbfHeader.prg" />
+    <Compile Include="Dbf\DbfLocking.prg" />
+    <Compile Include="Dbf\DbfSortCompare.prg" />
     <Compile Include="Dbf\Structures.prg" />
     <Compile Include="Dbf\Functions.prg" />
     <Compile Include="Dbf\DBF.prg" />

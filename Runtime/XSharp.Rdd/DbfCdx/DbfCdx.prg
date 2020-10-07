@@ -458,9 +458,9 @@ BEGIN NAMESPACE XSharp.RDD
                     LOCAL orderinfo := DbOrderInfo{} AS DbOrderInfo
                     orderinfo:BagName := cCdxFileName
                     SELF:_indexList:Add(orderinfo, TRUE)
-                    SELF:Header:HasTags |= DBFTableFlags.HasStructuralCDX
+                    SELF:Header:TableFlags |= DBFTableFlags.HasStructuralCDX
                 ELSE
-                    SELF:Header:HasTags &= _NOT(DBFTableFlags.HasStructuralCDX)
+                    SELF:Header:TableFlags &= _NOT(DBFTableFlags.HasStructuralCDX)
                 ENDIF
             ENDIF
             

@@ -44,7 +44,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                             _bags:Remove(oBag)
                         ENDIF
                         IF lStructural
-                            SELF:_oRdd:Header:HasTags |= DBFTableFlags.HasStructuralCDX
+                            SELF:_oRdd:Header:TableFlags |= DBFTableFlags.HasStructuralCDX
                         ENDIF
                     CATCH e AS Exception
                         XSharp.RuntimeState.LastRddError := e

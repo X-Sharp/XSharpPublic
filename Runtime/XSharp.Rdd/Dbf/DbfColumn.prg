@@ -17,8 +17,8 @@ BEGIN NAMESPACE XSharp.RDD
         INTERNAL NullBit        := -1 AS LONG
         INTERNAL LengthBit      := -1 AS LONG
         INTERNAL OffSetInHeader := -1 as LONG
-        INTERNAL RDD        AS XSharp.RDD.DBF
-
+        INTERNAL RDD            AS XSharp.RDD.DBF
+        INTERNAL Properties     AS OBJECT
         /// <summary>Create a DbfColumn class, used when creating files.</summary>
         STATIC METHOD Create(oInfo AS RddFieldInfo, oRDD AS XSharp.RDD.DBF) AS DbfColumn
             // Commented out types are Harbour specific
@@ -738,9 +738,7 @@ BEGIN NAMESPACE XSharp.RDD
         /// <summary>Read the next autoincrement number from the dbf header </summary>
         VIRTUAL METHOD Read() AS LOGIC
             LOCAL oField  as DbfField
-            oField := DbfField{}
-            oField:initialize()
-            oField:Encoding := SELF:RDD:_Encoding
+            oField := DbfField{SELF:RDD:_Encoding}
             SELF:RDD:_readField(SELF:OffSetInHeader, oField)
             SELF:Counter := oField:Counter
             SELF:IncrStep := oField:IncStep
@@ -749,9 +747,7 @@ BEGIN NAMESPACE XSharp.RDD
         /// <summary>Write the next autoincrement number to the dbf header </summary>
         VIRTUAL METHOD Write() AS LOGIC
             LOCAL oField  AS DbfField
-            oField := DbfField{}
-            oField:initialize()
-            oField:Encoding := SELF:RDD:_Encoding
+            oField := DbfField{SELF:RDD:_Encoding}
             SELF:RDD:_readField(SELF:OffSetInHeader, oField)
             oField:Counter := SELF:Counter 
             oField:IncStep := (BYTE) SELF:IncrStep 

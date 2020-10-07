@@ -12,7 +12,7 @@
     <AZ>true</AZ>
     <CS>true</CS>
     <VulcanCompatibleResources>True</VulcanCompatibleResources>
-    <XSharpProjectversion>2.6.0.0</XSharpProjectversion>
+    <XSharpProjectversion>2.6.1.0</XSharpProjectversion>
     <IncludePaths>$(CommonInclude)</IncludePaths>
     <Nostandarddefs>true</Nostandarddefs>
     <StandardDefs />
@@ -90,7 +90,7 @@
     <Compile Include="RDD\IOrder.prg" />
     <Compile Include="RDD\IRDD.prg" />
     <Compile Include="RDD\RddError.prg" />
-    <Compile Include="RDD\RddHelpers.prg" />
+    <Compile Include="RDD\RegisteredRDD.prg" />
     <Compile Include="RDD\RDDSupport.prg" />
     <Compile Include="RDD\CoreDb.prg" />
     <Compile Include="RDD\RDDWrapper.prg" />

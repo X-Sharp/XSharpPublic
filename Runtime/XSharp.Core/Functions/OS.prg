@@ -216,12 +216,24 @@ FUNCTION LockTries(nValue AS DWORD) AS DWORD
 	RETURN nResult
 
 
+INTERNAL FUNCTION BadFileParam(cFunction AS STRING, cParam AS STRING, nParam AS DWORD) AS VOID
+    RuntimeState.FileError      := FERROR_PARAM
+    RuntimeState.FileException  := Error.ArgumentError(cFunction,cParam, nParam,"Empty file or directoryname is not allowed")
+    RuntimeState.NetErr         := FALSE
+RETURN 
+    
+
+
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/dirchange/*" />
 FUNCTION DirChange(pszDir AS STRING) AS INT
 	LOCAL result AS INT
 	TRY
-       XSharp.IO.File.ClearErrorState()
+		XSharp.IO.File.ClearErrorState()
+		IF String.IsNullOrEmpty(pszDir)
+		   BadFileParam(__FUNCTION__, nameof(pszDir), 1)
+		   RETURN -1
+		ENDIF        
 		IF Directory.Exists(pszDir)
 			Directory.SetCurrentDirectory(pszDir)
 			result := 0
@@ -239,6 +251,11 @@ FUNCTION DirMake(pszNewDir AS STRING) AS INT
 	LOCAL result AS INT
 	TRY
         XSharp.IO.File.ClearErrorState()
+		XSharp.IO.File.ClearErrorState()
+		IF String.IsNullOrEmpty(pszNewDir)
+		   BadFileParam(__FUNCTION__, nameof(pszNewDir), 1)
+		   RETURN -1
+		ENDIF        
 		IF !Directory.Exists(pszNewDir)
 			Directory.CreateDirectory(pszNewDir)
 			result := 0
@@ -255,7 +272,11 @@ FUNCTION DirMake(pszNewDir AS STRING) AS INT
 FUNCTION DirRemove(pszDirName AS STRING) AS INT
 	LOCAL result AS INT
 	TRY
-        XSharp.IO.File.ClearErrorState()
+		XSharp.IO.File.ClearErrorState()
+		IF String.IsNullOrEmpty(pszDirName)
+		   BadFileParam(__FUNCTION__, nameof(pszDirName), 1)
+		   RETURN -1
+		ENDIF        
 		IF Directory.Exists(pszDirName)
 			Directory.Delete(pszDirName,FALSE)
 			result := 0

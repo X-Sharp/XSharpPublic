@@ -266,6 +266,10 @@ BEGIN NAMESPACE XSharp.IO
 		STATIC INTERNAL METHOD CreateFile(cFile AS STRING, oMode AS VOFileMode) AS IntPtr
 			LOCAL hFile := F_ERROR AS IntPtr
 			LOCAL oStream AS FileStream
+            IF String.IsNullOrEmpty(cFile)
+                BadFileParam(__FUNCTION__, nameof(cFile), 1)            
+                RETURN hFile // F_ERROR
+            ENDIF
 			IF System.IO.File.Exists(cFile) .AND. oMode:FileMode == FileMode.Create
 				VAR fi := FileInfo{cFile}
                 IF ! fi:IsReadOnly
@@ -332,17 +336,20 @@ BEGIN NAMESPACE XSharp.IO
 			RETURN iCount
 		
 		INTERNAL STATIC METHOD ReadBuff(pFile AS IntPtr,pBuffer AS BYTE[],dwCount AS INT) AS INT64
-			LOCAL iResult := 0 AS INT64
+			LOCAL iCount := 0 AS INT64
 			VAR oStream := XSharp.IO.File.findStream(pFile)
 			IF oStream != NULL_OBJECT
 				TRY
                     ClearErrorState()
-					iResult := oStream:Read(pBuffer,0,(INT) dwCount)  
+					iCount := oStream:Read(pBuffer,0,(INT) dwCount)
+                    IF iCount == 0
+                        RuntimeState.FileError := FERROR_EOF
+                    ENDIF
 				CATCH e AS Exception
 					SetErrorState(e)
 				END TRY
 			ENDIF
-			RETURN iResult
+			RETURN iCount
 
 		INTERNAL STATIC METHOD ReadBuff(pFile AS IntPtr,pBuffer AS BYTE[],dwCount AS INT, lAnsi AS LOGIC) AS INT64
             LOCAL iResult := 0 AS INT64
@@ -366,6 +373,9 @@ BEGIN NAMESPACE XSharp.IO
                     ClearErrorState()
 					nPos    := oStream:Position
 					iCount := oStream:Read(pBuffer,0,(INT) iCount)
+                    IF iCount == 0
+                        RuntimeState.FileError := FERROR_EOF
+                    ENDIF
 					cResult := Bytes2Line(pBuffer, REF iCount)
 					nPos += iCount	// advance CRLF
 					oStream:Position := nPos

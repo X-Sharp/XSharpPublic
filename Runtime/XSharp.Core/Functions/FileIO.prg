@@ -20,6 +20,14 @@ USING System.Runtime.ConstrainedExecution
 FUNCTION FRename( cOldFile AS STRING , cNewFile AS STRING) AS LOGIC
 	LOCAL renamed := FALSE AS LOGIC
 	TRY
+        IF String.IsNullOrEmpty(cOldFile)
+            BadFileParam(__FUNCTION__, nameof(cOldFile), 1)
+            RETURN FALSE
+        ENDIF
+        IF String.IsNullOrEmpty(cNewFile)
+            BadFileParam(__FUNCTION__, nameof(cNewFile), 2)
+            RETURN FALSE
+        ENDIF
         XSharp.IO.File.ClearErrorState()
         IF System.IO.File.Exists(cOldFile)
 		    System.IO.File.Move(cOldFile, cNewFile)
@@ -37,6 +45,10 @@ FUNCTION FRename( cOldFile AS STRING , cNewFile AS STRING) AS LOGIC
 FUNCTION FErase(cFileName AS STRING) AS LOGIC
 	LOCAL isDeleted := FALSE AS LOGIC
 	TRY
+        IF String.IsNullOrEmpty(cFileName)
+            BadFileParam(__FUNCTION__, nameof(cFileName), 1)
+            RETURN FALSE
+        ENDIF
         XSharp.IO.File.ClearErrorState()
         IF System.IO.File.Exists(cFileName)
 		    System.IO.File.Delete(cFileName)
@@ -59,7 +71,16 @@ FUNCTION FCopy(cSourceFile AS STRING,cTargetFile AS STRING) AS LOGIC
 FUNCTION FCopy(cSourceFile AS STRING,cTargetFile AS STRING, lOverWrite AS LOGIC) AS LOGIC
 	LOCAL IsCopied := FALSE AS LOGIC
 	TRY
-        XSharp.IO.File.ClearErrorState()
+	        XSharp.IO.File.ClearErrorState()
+	        IF String.IsNullOrEmpty(cSourceFile)
+	            BadFileParam(__FUNCTION__, nameof(cSourceFile), 1)
+	            RETURN FALSE
+	        ENDIF
+	        IF String.IsNullOrEmpty(cTargetFile)
+	            BadFileParam(__FUNCTION__, nameof(cTargetFile), 2)
+	            RETURN FALSE
+	        ENDIF
+	
 		System.IO.File.Copy(cSourceFile,cTargetFile,lOverWrite)
 		IsCopied := TRUE
 	CATCH e AS Exception

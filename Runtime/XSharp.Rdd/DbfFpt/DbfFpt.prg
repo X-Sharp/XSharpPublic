@@ -181,7 +181,7 @@ BEGIN NAMESPACE XSharp.RDD
                 bData := BYTE[] { sValue:Length+8}
                 token := FtpMemoToken{bData}
                 token:DataType := FlexFieldType.String
-                token:Length   := (DWORD) sValue:Length
+                token:Length   := sValue:Length
                 VAR bytes := SELF:_Encoding:GetBytes(sValue)
                 System.Array.Copy(bytes,0, bData,8, bytes:Length)
                 RETURN bData
@@ -330,7 +330,12 @@ BEGIN NAMESPACE XSharp.RDD
                 ELSE
                     oResult := IntPtr.Zero
                 ENDIF
-                    
+            CASE DbInfo.DBI_MEMOSTREAM
+                IF ( SELF:_oFptMemo != NULL .AND. SELF:_oFptMemo:IsOpen)
+                    oResult := SELF:_oFptMemo:_oStream
+                ELSE
+                    oResult := NULL
+                ENDIF                    
             CASE DbInfo.DBI_MEMOEXT
                 IF ( SELF:_oFptMemo != NULL .AND. SELF:_oFptMemo:IsOpen)
                     oResult := System.IO.Path.GetExtension(SELF:_oFptMemo:FileName)

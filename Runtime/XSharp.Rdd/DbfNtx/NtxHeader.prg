@@ -21,7 +21,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
 		// https://www.clicketyclick.dk/databases/xbase/format/ntx.html#NTX_STRUCT  
 		// Read/Write to/from the Stream with the Buffer 
 		// and access individual values using the other fields
-		PRIVATE _hFile AS IntPtr
+		PRIVATE _oStream AS FileStream
 		PRIVATE Buffer   AS BYTE[]
 		// Hot ?  => Header has changed ?
 		INTERNAL isHot	AS LOGIC
@@ -29,26 +29,13 @@ BEGIN NAMESPACE XSharp.RDD.NTX
         PRIVATE PROPERTY Encoding as System.Text.Encoding GET _Order:Encoding
 		
 		INTERNAL METHOD Read() AS LOGIC
-			LOCAL isOk AS LOGIC
-			// Move to top
-			FSeek3( SELF:_hFile, 0, SeekOrigin.Begin )
-			// Read Buffer
-			isOk := FRead3(SELF:_hFile, SELF:Buffer, NTXHEADER_SIZE) == NTXHEADER_SIZE 
-			//
-			RETURN isOk
-			
+			RETURN _oStream:SafeSetPos( 0) .AND. _oStream:SafeRead(SELF:Buffer)
+            
 		INTERNAL METHOD Write() AS LOGIC
-			LOCAL isOk AS LOGIC
-			// Move to top
-			FSeek3( SELF:_hFile, 0, SeekOrigin.Begin )
-			// Write Buffer
-			isOk :=  FWrite3(SELF:_hFile, SELF:Buffer, NTXHEADER_SIZE) == NTXHEADER_SIZE 
-			RETURN isOk
+			RETURN _oStream:SafeSetPos( 0) .AND. _oStream:SafeWrite(SELF:Buffer)
 			
-			
-			
-		INTERNAL CONSTRUCTOR( oOrder as NtxOrder, fileHandle AS IntPtr )
-			SELF:_hFile := fileHandle
+		INTERNAL CONSTRUCTOR( oOrder AS NtxOrder, stream AS FileStream )
+			SELF:_oStream := stream
             SELF:_Order := oOrder
 			Buffer := BYTE[]{NTXHEADER_SIZE}
 			isHot  := FALSE

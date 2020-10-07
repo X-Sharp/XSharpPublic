@@ -10,6 +10,7 @@ USING System.Collections.Generic
 USING System.Text
 USING XSharp.RDD.Enums
 USING XSharp.RDD.Support
+USING System.IO
 
 BEGIN NAMESPACE XSharp.RDD
       /// <summary>DBT Memo class. Implements the DBT support.</summary>
@@ -46,10 +47,10 @@ BEGIN NAMESPACE XSharp.RDD
                     // Where do we start ?
                     LOCAL iOffset := blockNbr * SELF:BlockSize AS LONG
                     //
-                    FSeek3( SELF:_hFile, iOffset, FS_SET )
+                    _oStream:SafeSetPos( iOffset)
                     // Max 512 Blocks
                     LOCAL isOk AS LOGIC
-                    isOk := ( FRead3( SELF:_hFile, memoBlock, (DWORD)blockLen ) == blockLen )
+                    isOk := _oStream:SafeRead(memoBlock) 
                     IF ( !isOk )
                         memoBlock := NULL
                     ENDIF
@@ -83,12 +84,12 @@ BEGIN NAMESPACE XSharp.RDD
                     // Where do we start ?
                     LOCAL iOffset := blockNbr * SELF:BlockSize AS LONG
                     // Go to the blockNbr position
-                    FSeek3( SELF:_hFile, iOffset, FS_SET )
+                    _oStream:SafeSetPos( iOffset)
                     // 
                     LOCAL sizeRead := 1 AS LONG
                     LOCAL endPos := -1 AS LONG
                     WHILE ( sizeRead > 0 ) .AND. ( endPos == - 1 )
-                        sizeRead := (LONG)FRead3( SELF:_hFile, memoBlock, (DWORD)SELF:BlockSize )
+                        _oStream:SafeRead(memoBlock, SELF:BlockSize, OUT sizeRead)
                         IF ( sizeRead > 0 )
                             // Search for one field terminator (1Ah)
                             endPos := Array.FindIndex<BYTE>( memoBlock, { x => x == 0x1A } )
@@ -135,7 +136,7 @@ BEGIN NAMESPACE XSharp.RDD
                 SELF:Encoding:GetBytes( str, 0, str:Length, memoBlock, 0 )
             ENDIF
             // Now, calculate where we will write the Datas
-            LOCAL blockNbr AS LONG
+            LOCAL blockNbr AS INT64
             LOCAL blockLen := 0 AS LONG
             LOCAL newBlock AS LOGIC
             // Suppose we will have a new start of block
@@ -152,39 +153,40 @@ BEGIN NAMESPACE XSharp.RDD
             ENDIF
             IF newBlock
                 IF SELF:Shared 
-                    locked := SELF:_tryLock( (UINT64)SELF:_lockScheme:Offset, 1, (LONG)XSharp.RuntimeState.LockTries )
+                    locked := SELF:_tryLock( SELF:_lockScheme:Offset, 1, (LONG)XSharp.RuntimeState.LockTries )
                 ENDIF
                 // Go to the end of end, where we will add the new data
-                FSeek3( SELF:_hFile, 0, FS_END )
-                LOCAL fileSize := (LONG)FTell( SELF:_hFile ) AS LONG
+                _oStream:Seek(0, SeekOrigin.End)
+                VAR fileSize := _oStream:Length
                 // But first, check that the Size of Memo file is multiple of BlockSize
-                LOCAL toAdd := fileSize % SELF:BlockSize AS LONG
+                LOCAL toAdd := (INT) (fileSize % SELF:BlockSize) AS INT
                 // No ! Fill the gap
                 IF ( toAdd > 0 )
                     toAdd := SELF:BlockSize - toAdd
                     LOCAL dummy AS BYTE[]
                     dummy := BYTE[]{ toAdd }
-                    FWrite3( SELF:_hFile, dummy, (DWORD)toAdd )
+                    _oStream:SafeWrite(dummy)
                     // so, new size is
-                    fileSize := (LONG)FTell( SELF:_hFile )
+                    fileSize := (LONG)_oStream:Length
+                    
                 ENDIF
                 // The new block Number to write to is (I supposed we should use NextAvailableBlock, no ?)
                 blockNbr := fileSize / SELF:BlockSize
             ELSE
                 // Go to the position of the blockNbr
-                FSeek3( SELF:_hFile, blockNbr * SELF:BlockSize, FS_SET )
+                _oStream:SafeSetPos( blockNbr * SELF:BlockSize)
             ENDIF
             // Ok, now write the Datas
-            isOk := ( FWrite3( SELF:_hFile, memoBlock, (DWORD)memoBlock:Length ) == memoBlock:Length )
+            isOk := _oStream:SafeWrite(memoBlock)
             IF isOk
                 // Don't forget to write an End Of Block terminator (1Ah) (Should it be two ??)
                 LOCAL eob := <BYTE>{0x1A} AS BYTE[]
-                isOk := ( FWrite3( SELF:_hFile, eob, 1 ) == 1 )
+                isOk := _oStream:SafeWrite(eob, 1)
                 IF isOk .AND. newBlock
                     // We have to update the next block info
                     LOCAL newPos AS LONG // FTell might do the job ?
-                    newPos := blockNbr * SELF:BlockSize + memoBlock:Length + 1
-                    newPos += SELF:BlockSize - newPos % SELF:BlockSize
+                    newPos := (LONG) blockNbr * SELF:BlockSize + memoBlock:Length + 1
+                    newPos += (LONG) SELF:BlockSize - newPos % SELF:BlockSize
                     SELF:NextAvailableBlock := newPos / SELF:BlockSize
                 ENDIF
                 IF isOk
@@ -192,14 +194,14 @@ BEGIN NAMESPACE XSharp.RDD
                 ENDIF
             ENDIF
             IF ( locked )
-                SELF:_unlock( (UINT64)SELF:_lockScheme:Offset, 1 )
+                isOk := SELF:_unlock( SELF:_lockScheme:Offset, 1 )
             ENDIF
             //
             IF !isOk
                 SELF:Error( FException(), ERDD.WRITE, XSharp.Gencode.EG_WRITE ,"DBTMemo.PutValue")
             ENDIF
             // Now, update the information in the DBF, look at PutValue() in the DbfDbt Class
-            SELF:LastWrittenBlockNumber := blockNbr
+            SELF:LastWrittenBlockNumber := (LONG) blockNbr
             RETURN isOk
             
             /// <inheritdoc />
@@ -223,7 +225,7 @@ BEGIN NAMESPACE XSharp.RDD
                 nextBlock := 1
                 Array.Copy(BitConverter.GetBytes(nextBlock),0, memoHeader, 0, SIZEOF(LONG))
                 //
-                FWrite3( SELF:_hFile, memoHeader, DBTMemo.HeaderSize )
+                _oStream:SafeWrite(memoHeader)
                 //
                 SELF:_initContext()
             ELSE
@@ -253,12 +255,13 @@ BEGIN NAMESPACE XSharp.RDD
                     LOCAL _memoBlock AS BYTE[]
                     // NextBlock is at the beginning of MemoFile
                     _memoBlock := BYTE[]{4}
-                    LOCAL savedPos := FSeek3(SELF:_hFile, 0, FS_RELATIVE ) AS LONG
-                    FSeek3( SELF:_hFile, 0, FS_SET )
-                    IF ( FRead3( SELF:_hFile, _memoBlock, 4 ) == 4 )
+                    VAR savedPos := _oStream:Position
+                    _oStream:SafeSetPos(0)
+                    
+                    IF  _oStream:SafeRead(_memoBlock ) 
                         nBlock := BitConverter.ToInt32( _memoBlock, 0)
                     ENDIF
-                    FSeek3(SELF:_hFile, savedPos, FS_SET )
+                    _oStream:SafeSetPos(savedPos)
                 ENDIF
                 RETURN nBlock
             END GET
@@ -268,10 +271,10 @@ BEGIN NAMESPACE XSharp.RDD
                     LOCAL _memoBlock AS BYTE[]
                     _memoBlock := BYTE[]{4}
                     Array.Copy(BitConverter.GetBytes(value),0, _memoBlock, 0, SIZEOF(LONG))
-                    LOCAL savedPos := FSeek3(SELF:_hFile, 0, FS_RELATIVE ) AS LONG
-                    FSeek3( SELF:_hFile, 0, FS_SET )
-                    FWrite3( SELF:_hFile, _memoBlock, 4 )
-                    FSeek3(SELF:_hFile, savedPos, FS_SET )
+                    VAR savedPos := _oStream:Position
+                    _oStream:SafeSetPos(0)
+                    _oStream:SafeWrite(_memoBlock )
+                    _oStream:SafeSetPos(savedPos)
                 ENDIF
             END SET
             
@@ -280,19 +283,17 @@ BEGIN NAMESPACE XSharp.RDD
         // Place a lock : <nOffset> indicate where the lock should be; <nLong> indicate the number bytes to lock
         // If it fails, the operation is tried <nTries> times, waiting 1ms between each operation.
         // Return the result of the operation
-        PROTECTED METHOD _tryLock( nOffset AS UINT64, nLong AS LONG, nTries AS LONG  ) AS LOGIC
+        PROTECTED METHOD _tryLock( nOffset AS INT64, nLong AS LONG, nTries AS LONG  ) AS LOGIC
             LOCAL locked AS LOGIC
             IF ! SELF:IsOpen
                 RETURN FALSE
             ENDIF
   
             REPEAT
-                TRY
-                    locked := FFLock( SELF:_hFile, (DWORD)nOffset, (DWORD)nLong )
-                CATCH ex AS Exception
-                    locked := FALSE
-                    SELF:Error(ex, Subcodes.ERDD_INIT_LOCK, Gencode.EG_LOCK_ERROR, "DBTMemo._tryLock")
-                END TRY
+                locked := _oStream:SafeLock(nOffset, nLong)
+                IF ! locked
+                    SELF:Error(FException(), Subcodes.ERDD_INIT_LOCK, Gencode.EG_LOCK_ERROR, "DBTMemo._tryLock")
+                ENDIF
                 IF ( !locked )
                     nTries --
                     IF ( nTries > 0 )
@@ -303,19 +304,16 @@ BEGIN NAMESPACE XSharp.RDD
             //
             RETURN locked
             
-        PROTECTED METHOD _unlock( nOffset AS UINT64, nLong AS LONG ) AS LOGIC
+        PROTECTED METHOD _unlock( nOffset AS INT64, nLong AS LONG ) AS LOGIC
             LOCAL unlocked AS LOGIC
             //
             IF ! SELF:IsOpen
                 RETURN FALSE
             ENDIF
-            TRY
-                unlocked := FFUnLock( SELF:_hFile, (DWORD)nOffset, (DWORD)nLong )
-            CATCH ex AS Exception
-                unlocked := FALSE
-                SELF:Error(ex, Subcodes.ERDD_UNLOCKED, Gencode.EG_UNLOCKED, "DBFDBT._unlock")
-
-            END TRY
+            unlocked := _oStream:SafeUnlock( nOffset, nLong )
+            IF ! unlocked
+                SELF:Error(FException(), Subcodes.ERDD_UNLOCKED, Gencode.EG_UNLOCKED, "DBFDBT._unlock")
+            ENDIF
             RETURN unlocked
             
         VIRTUAL METHOD Zap() AS LOGIC
@@ -323,7 +321,7 @@ BEGIN NAMESPACE XSharp.RDD
                 IF SELF:Shared
                     SELF:Error(FException(), Subcodes.ERDD_SHARED, Gencode.EG_LOCK, "DBTMemo.Zap")
                 ENDIF
-                IF ! FChSize(SELF:_hFile, DBTMemo.HeaderSize)
+                IF ! _oStream:SafeSetLength(DBTMemo.HeaderSize)
                     SELF:Error(FException(), Subcodes.ERDD_WRITE, Gencode.EG_WRITE, "DBTMemo.Zap")
                 ENDIF
                 SELF:NextAvailableBlock := 1

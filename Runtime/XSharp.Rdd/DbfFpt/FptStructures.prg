@@ -29,12 +29,12 @@ BEGIN NAMESPACE XSharp.RDD
         END PROPERTY
         
         /// This includes the length of the token
-        INTERNAL PROPERTY Length AS DWORD       
+        INTERNAL PROPERTY Length AS LONG       
             GET
-                RETURN FoxToDword(Buffer, 4)
+                RETURN FoxToLong(Buffer, 4)
             END GET
             SET
-                DWordToFox(value, Buffer, 4)
+                LongToFox(VALUE, Buffer, 4)
             END SET
         END PROPERTY
         
@@ -43,18 +43,14 @@ BEGIN NAMESPACE XSharp.RDD
             SELF:Length   := 0
             RETURN
             
-        INTERNAL METHOD Write(hFile AS IntPtr) AS LOGIC
-            TRY
-                RETURN FWrite3(hFile, Buffer, 8) == 8
-            CATCH AS IOException
-                RETURN FALSE    
-            END TRY
+        INTERNAL METHOD Write(oStream AS FileStream) AS LOGIC
+            RETURN oStream:SafeWrite(Buffer, 8)
             
             
-        INTERNAL METHOD Read(hFile AS IntPtr) AS LOGIC
+        INTERNAL METHOD Read(oStream AS FileStream) AS LOGIC
             LOCAL lOk AS LOGIC
             TRY
-                lOk := FRead3(hFile, Buffer, 8) == 8
+                lOk := oStream:SafeRead(Buffer, 8) 
                 IF lOk
                     // Check for 'expected' Field Types
                     SWITCH SELF:DataType
@@ -80,7 +76,7 @@ BEGIN NAMESPACE XSharp.RDD
             END TRY
             IF ! lOk
                 SELF:DataType := FlexFieldType.Illegal
-                SELF:Length   := UInt32.MaxValue
+                SELF:Length   := Int32.MaxValue
             ENDIF
             RETURN lOk
             

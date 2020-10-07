@@ -91,7 +91,7 @@ CLASS DBFVFP INHERIT DBFCDX
         SELF:_HeaderLength   += VFP_BACKLINKSIZE
         SELF:_writeHeader()
         // Adjust the file size to accomodate the backlink data
-        FChSize(SELF:_hFile, (DWORD) SELF:_HeaderLength)
+        _oStream:SafeSetLength(SELF:_HeaderLength)
         RETURN
 
     /// <inheritdoc />
@@ -179,14 +179,13 @@ CLASS DBFVFP INHERIT DBFCDX
         LOCAL nPos := SELF:DbcPosition AS LONG
         LOCAL buffer AS BYTE[]
         buffer := BYTE[]{VFP_BACKLINKSIZE}
-        FSeek3(SELF:_hFile, nPos, FS_SET)
-        FRead3(SELF:_hFile, buffer, (DWORD) buffer:Length)
-        VAR cName := System.Text.Encoding.Default:GetString(buffer):Replace(e"\0","")
-        IF ! String.IsNullOrEmpty(cName)
-            SELF:DbcName := Path.Combine(Path.GetDirectoryName(SELF:_FileName), cName)
-            SELF:_ReadDbcFieldNames()
-        ELSE
-            SELF:DbcName := ""
+        SELF:DbcName := ""
+        IF _oStream:SafeSetPos(nPos) .AND. _oStream:SafeRead(buffer)
+            VAR cName := System.Text.Encoding.Default:GetString(buffer):Replace(e"\0","")
+            IF ! String.IsNullOrEmpty(cName)
+                SELF:DbcName := Path.Combine(Path.GetDirectoryName(SELF:_FileName), cName)
+                SELF:_ReadDbcFieldNames()
+            ENDIF
         ENDIF
         RETURN
 

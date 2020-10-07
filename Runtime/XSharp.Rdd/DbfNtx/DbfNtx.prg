@@ -27,14 +27,7 @@ BEGIN NAMESPACE XSharp.RDD
             
             #REGION Order Support 
         VIRTUAL METHOD OrderCreate(orderInfo AS DbOrderCreateInfo ) AS LOGIC
-            VAR useMemoryStream := FSize(SELF:_hFile) < Int32.MaxValue .AND. ! SELF:_Shared
-            IF useMemoryStream
-                FConvertToMemoryStream(SELF:_hFile)
-            ENDIF
             VAR result :=  SELF:_indexList:Create(orderInfo)
-            IF useMemoryStream
-                FConvertToFileStream(SELF:_hFile)
-            ENDIF
             RETURN result
         
         VIRTUAL METHOD OrderDestroy(orderInfo AS DbOrderInfo ) AS LOGIC
@@ -169,6 +162,12 @@ BEGIN NAMESPACE XSharp.RDD
                     info:Result := workOrder:Handle
                 ELSE
                     info:Result := IntPtr.Zero
+                ENDIF
+            CASE DBOI_FILESTREAM
+                IF workOrder != NULL
+                    info:Result := workOrder:Stream
+                ELSE
+                    info:Result := NULL
                 ENDIF
             CASE DBOI_ISDESC
                 IF workOrder != NULL

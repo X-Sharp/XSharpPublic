@@ -114,7 +114,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
                     SELF:_indexVersion++
                     SELF:_PutHeader()
                     SELF:_Hot := FALSE
-                    FFlush( SELF:_hFile )
+                    _oStream:Flush()
                     SELF:_WriteUnLock()
                     IF SELF:_HPLocking
                         DO WHILE lockCount != 0 .AND. !SELF:_ReadLock()

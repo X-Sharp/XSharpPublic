@@ -72,24 +72,20 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             ENDDO
             RETURN isOk
             
-        PRIVATE METHOD _lockBytes( nOffset AS DWORD, nLong AS DWORD  ) AS LOGIC
+        PRIVATE METHOD _lockBytes( nOffset AS INT64, nLong AS INT64  ) AS LOGIC
             LOCAL locked AS LOGIC
-            TRY
-                locked := FFLock( SELF:_hFile, nOffset, nLong )
-            CATCH ex AS Exception
-                Trace.WriteLine("Lock Error:" + ex:Message)
-                locked := FALSE
-            END TRY
+            locked := _oStream:SafeLock(nOffset, nLong )
+            IF ! locked
+                Trace.WriteLine("Lock Error:" + FException():Message)
+            ENDIF
             RETURN locked
             
-        PRIVATE METHOD _unlockBytes( nOffset AS DWORD, nLong AS DWORD  ) AS LOGIC
+        PRIVATE METHOD _unlockBytes( nOffset AS INT64, nLong AS INT64  ) AS LOGIC
             LOCAL unlocked AS LOGIC
-            TRY
-                unlocked := FFUnLock( SELF:_hFile, nOffset, nLong )
-            CATCH ex AS Exception
-                Trace.WriteLine("UnLock Error:" + ex:Message)
-                unlocked := FALSE
-            END TRY
+            unlocked := _oStream:SafeUnlock( nOffset, nLong )
+            IF ! unlocked
+                Trace.WriteLine("UnLock Error:" + FException():Message)
+            ENDIF
             RETURN unlocked
             
         PRIVATE METHOD _lockGate( tag AS DWORD ) AS LOGIC
@@ -330,9 +326,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
         PRIVATE METHOD _LockStuff() AS VOID
             IF SELF:_getHeader()
                 SELF:_PageList:Flush(FALSE)
-                
-                FSeek3( SELF:_hFile, 0, FS_END )
-                SELF:_fileSize  := (LONG) FTell( SELF:_hFile ) 
+                SELF:_fileSize  := (LONG) _oStream:Length
                 SELF:ClearStack()
             ENDIF
             

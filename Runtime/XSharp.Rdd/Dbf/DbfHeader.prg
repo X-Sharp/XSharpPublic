@@ -197,12 +197,9 @@ PROPERTY FieldCount AS LONG GET  (SELF:HeaderLen - DbfHeader.SIZE) / DbfField.SI
     */
 
 METHOD Read() AS LOGIC
-    VAR nPos := FTell(_oRDD:Handle)
-    FSeek3(_oRDD:Handle, 0, FS_SET)
-    VAR Ok := FRead3(_oRDD:Handle, SELF:Buffer, DbfHeader.SIZE) == DbfHeader.SIZE
-    IF Ok
-        FSeek3(_oRDD:Handle, (LONG) nPos, FS_SET)
-    ENDIF
+    VAR oStream := _oRDD:Stream
+    VAR nPos := oStream:Position
+    VAR Ok := oStream:SafeSetPos(0) .AND. oStream:SafeRead(SELF:Buffer) .AND. oStream:SafeSetPos(nPos)    
     RETURN Ok
 
 METHOD Write() AS LOGIC
@@ -213,11 +210,10 @@ METHOD Write() AS LOGIC
 	SELF:Month  := (BYTE)dtInfo:Month
 	SELF:Day    := (BYTE)dtInfo:Day
 
-    VAR nPos := FTell(_oRDD:Handle)
-    FSeek3(_oRDD:Handle, 0, FS_SET)
-    VAR Ok := FWrite3(_oRDD:Handle, SELF:Buffer, DbfHeader.SIZE) == DbfHeader.SIZE
+    VAR oStream := _oRDD:Stream
+    VAR nPos := oStream:Position
+    VAR Ok  := oStream:SafeSetPos(0) .AND. oStream:SafeWrite(SELF:Buffer) .AND. oStream:SafeSetPos(nPos)    
     IF Ok
-        FSeek3(_oRDD:Handle, (LONG) nPos, FS_SET)
         SELF:isHot := FALSE
     ENDIF
     RETURN Ok

@@ -12832,7 +12832,11 @@
           </item>
           <item>
             <term>DBI_FILEHANDLE</term>
-            <description>Returns an integer representing the DOS file handle for this database file.</description>
+            <description>Returns an IntPtr representing the file handle for this database file.</description>
+          </item>
+          <item>
+            <term>DBI_FILESTREAM</term>
+            <description>Returns a stream object representing the file stream for this database file.</description>
           </item>
           <item>
             <term>DBI_FOUND</term>
@@ -12896,7 +12900,11 @@
           </item>
           <item>
             <term>DBI_MEMOHANDLE</term>
-            <description>Returns an integer representing the DOS file handle for the memo file associated with this database file.</description>
+            <description>Returns an intptr representing the DOS file handle for the memo file associated with this database file.</description>
+          </item>
+          <item>
+            <term>DBI_MEMOSTREAM</term>
+            <description>Returns a stream object representing the file stream for the memo file associated with this database file.</description>
           </item>
           <item>
             <term>DBI_RDD_VERSION</term>
@@ -13166,8 +13174,12 @@
           </item>
           <item>
             <term>DBOI_FILEHANDLE</term>
-            <description>Returns the handle of the specified index file as a number.</description>
+            <description>Returns the handle of the specified index file as an IntPtr.</description>
           </item>
+         <item>
+            <term>DBOI_FILESTREAM</term>
+                <description>Returns the filestream of the specified index file.</description>
+            </item>
           <item>
             <term>DBOI_FULLPATH</term>
             <description>Returns the full path of the specified index file as a string.</description>

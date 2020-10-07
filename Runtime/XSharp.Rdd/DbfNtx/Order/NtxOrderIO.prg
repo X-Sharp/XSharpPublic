@@ -22,14 +22,11 @@ BEGIN NAMESPACE XSharp.RDD.NTX
     INTERNAL PARTIAL SEALED CLASS NtxOrder 
 
         INTERNAL METHOD WritePage(page AS NtxPage) AS LOGIC
-            FSeek3( SELF:_hFile, page:PageOffset, SeekOrigin.Begin )
-            RETURN FWrite3(SELF:_hFile, page:Bytes, NtxPage.NTXPAGE_SIZE) == NtxPage.NTXPAGE_SIZE 
+            RETURN _oStream:SafeSetPos(page:PageOffset) .AND. _oStream:SafeWrite(page:Bytes) 
 
 
         INTERNAL METHOD ReadPage(page AS NtxPage) AS LOGIC
-            FSeek3( SELF:_hFile, page:PageOffset , SeekOrigin.Begin )
-            // Read Buffer
-            RETURN FRead3(SELF:_hFile, page:Bytes, NtxPage.NTXPAGE_SIZE) == NtxPage.NTXPAGE_SIZE
+            RETURN _oStream:SafeSetPos(page:PageOffset) .AND. _oStream:SafeRead(page:Bytes) 
 
     END CLASS
     

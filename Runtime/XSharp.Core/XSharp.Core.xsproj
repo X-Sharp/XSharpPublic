@@ -107,6 +107,7 @@
     <Compile Include="Types\ErrorEnums.prg" />
     <Compile Include="Types\Interfaces.prg" />
     <Compile Include="Types\MacroSupport.prg" />
+    <Compile Include="Types\StreamExtensions.prg" />
     <Compile Include="Types\Streams.prg" />
     <Compile Include="Types\UsualType.prg" />
     <Compile Include="Types\WrappedException.prg" />

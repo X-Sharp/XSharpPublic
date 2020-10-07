@@ -66,6 +66,8 @@ CLASS XSharp.RDD.BaseIndex IMPLEMENTS IOrder
             RETURN ""
         CASE DBOI_FILEHANDLE
             RETURN IntPtr.Zero
+        CASE DBOI_FILESTREAM
+            RETURN NULL
 		CASE DBOI_ISCOND 	
 		CASE DBOI_ISDESC 	
         CASE DBOI_UNIQUE

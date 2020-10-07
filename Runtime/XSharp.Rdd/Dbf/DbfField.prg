@@ -132,3 +132,26 @@ STRUCTURE DbfField
 END STRUCTURE
 
 END NAMESPACE
+
+/*
+    /// <summary>DBase 7 Field.</summary>
+[StructLayout(LayoutKind.Explicit)];
+STRUCTURE Dbf7Field
+// Dbase 7 has 32 Bytes for Field Names
+// Fixed Buffer of 32 bytes
+// Matches the DBF layout
+// Read/Write to/from the Stream with the Buffer
+// and access individual values using the other fields
+	[FieldOffset(00)] PUBLIC Buffer		 AS BYTE[]
+	[FieldOffset(00)] PUBLIC Name		 AS BYTE[]    // Field name in ASCII (zero-filled).
+	[FieldOffset(32)] PUBLIC Type		 AS BYTE 	// Field type in ASCII (B, C, D, N, L, M, @, I, +, F, 0 or G).
+	[FieldOffset(33)] PUBLIC Len		 AS BYTE 	// Field length in binary.
+	[FieldOffset(34)] PUBLIC Dec		 AS BYTE
+	[FieldOffset(35)] PUBLIC Reserved1	 AS SHORT
+	[FieldOffset(37)] PUBLIC HasTag		 AS BYTE    // Production .MDX field flag; 0x01 if field has an index tag in the production .MDX file; 0x00 if the field is not indexed.
+	[FieldOffset(38)] PUBLIC Reserved2	 AS SHORT
+	[FieldOffset(40)] PUBLIC Counter	 AS LONG	// Next Autoincrement value, if the Field type is Autoincrement, 0x00 otherwise.
+	[FieldOffset(44)] PUBLIC Reserved3	 AS LONG
+	
+END STRUCTURE
+*/

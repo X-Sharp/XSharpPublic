@@ -10,10 +10,12 @@ USING System.Collections.Generic
 USING System.Text
 USING XSharp.RDD.Enums
 USING XSharp.RDD.Support
+USING System.IO
 
 BEGIN NAMESPACE XSharp.RDD
     INTERNAL ABSTRACT CLASS AbstractMemo INHERIT BaseMemo IMPLEMENTS IMemo
         INTERNAL _hFile	    AS IntPtr
+        INTERNAL _oStream   AS FileStream
         INTERNAL FileName  AS STRING
         PROTECT _Shared     AS LOGIC
         PROTECT _ReadOnly   AS LOGIC
@@ -31,6 +33,7 @@ BEGIN NAMESPACE XSharp.RDD
             SUPER(oRDD)
             SELF:_oRdd  := oRDD
             SELF:_hFile := F_ERROR
+            SELF:_oStream   := NULL
             SELF:_Shared := oRDD:Shared
             SELF:_ReadOnly := oRDD:ReadOnly
 
@@ -38,7 +41,8 @@ BEGIN NAMESPACE XSharp.RDD
         METHOD Flush() AS LOGIC
             LOCAL isOk := FALSE AS LOGIC
             IF SELF:IsOpen
-                isOk := FFlush( SELF:_hFile )
+                SELF:_oStream:Flush()
+                isOk := TRUE
             ENDIF
             RETURN isOk
             
@@ -56,6 +60,7 @@ BEGIN NAMESPACE XSharp.RDD
 
                 END TRY
                 SELF:_hFile := F_ERROR
+                SELF:_oStream := NULL
             ENDIF
             RETURN isOk
 
@@ -63,7 +68,8 @@ BEGIN NAMESPACE XSharp.RDD
             SELF:FileName  := System.IO.Path.ChangeExtension( info:FileName, SELF:Extension )
             SELF:_Shared    := info:Shared
             SELF:_ReadOnly  := info:ReadOnly
-            SELF:_hFile     := FCreate( SELF:FileName) 
+            SELF:_hFile     := FCreate( SELF:FileName)
+            SELF:_oStream   := FGetStream(_hFile)
             RETURN SELF:IsOpen
 
        VIRTUAL METHOD OpenMemFile(info AS DbOpenInfo ) AS LOGIC
@@ -71,6 +77,7 @@ BEGIN NAMESPACE XSharp.RDD
             SELF:_Shared    := info:Shared
             SELF:_ReadOnly  := info:ReadOnly
             SELF:_hFile     := FOpen(SELF:FileName, info:FileMode)
+            SELF:_oStream   := FGetStream(_hFile)
             RETURN SELF:IsOpen
    
      METHOD Error(ex AS Exception, iSubCode AS DWORD, iGenCode AS DWORD, strFunction AS STRING) AS VOID

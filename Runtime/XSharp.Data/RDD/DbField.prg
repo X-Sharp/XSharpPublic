@@ -16,15 +16,12 @@ CLASS XSharp.DbField
     /// <param name="info">Column info on which this field is based.</param>
     CONSTRUCTOR( info AS DbColumnInfo)
         SELF:Info       := info
-        IF String.IsNullOrEmpty(info:ColumnName)
-            info:ColumnName := info:Alias:ToLower()
-        ENDIF
         
     #region properties
     /// <summary>Dotnet datatype for the field</summary>
     PROPERTY DataType   AS System.Type GET SELF:Info:DotNetType
     /// <summary>Name of the field</summary>
-    PROPERTY Name       AS STRING GET SELF:Info:Name:ToLower()
+    PROPERTY Name       AS STRING GET SELF:Info:Name
     /// <summary>Caption for the field</summary>
     PROPERTY Caption    AS STRING GET SELF:Info:ColumnName
     /// <summary>Ordinal position of the field</summary>

@@ -50,6 +50,7 @@ namespace XSharp.MacroCompiler
         InvalidRuntimeIdExpr = 230,
         NameExpected = 231,
         DotMemberAccess = 232,
+        BinaryIncorrectLength = 233,
     }
 
     internal class ErrorString
@@ -97,6 +98,7 @@ namespace XSharp.MacroCompiler
             { ErrorCode.InvalidRuntimeIdExpr, "Invalid runtime identifier (&) expression" },
             { ErrorCode.NameExpected, "Member name expected" },
             { ErrorCode.DotMemberAccess, "Dot operator does not allow instance member access" },
+            { ErrorCode.BinaryIncorrectLength, "Binary Literal '{0}' has incorrect length" },
         };
 
         static internal string Get(ErrorCode e) { return _errorStrings[e]; }

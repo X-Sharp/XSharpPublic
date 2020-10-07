@@ -77,7 +77,7 @@ namespace XSharp.MacroCompiler.Syntax
         CHAR, INT64, UINT64,
 
         // XSharp Types
-        DYNAMIC, DECIMAL, DATETIME,
+        DYNAMIC, DECIMAL, DATETIME, CURRENCY, BINARY, 
         LAST_TYPE,
 
         // UDC Tokens that should be shown in the keyword color [entity]
@@ -132,7 +132,7 @@ namespace XSharp.MacroCompiler.Syntax
         HEX_CONST, BIN_CONST, INT_CONST, DATE_CONST, DATETIME_CONST, REAL_CONST, REAL_CONST_EXP, SYMBOL_CONST, CHAR_CONST, INVALID_NUMBER,
         STRING_CONST, ESCAPED_STRING_CONST, INTERPOLATED_STRING_CONST, INCOMPLETE_STRING_CONST,
         STRING_CONST_SINGLE,
-
+        BINARY_CONST,
         LAST_CONSTANT,
 
         // Pre processor symbols [entity]
@@ -296,8 +296,10 @@ namespace XSharp.MacroCompiler.Syntax
 
 			    // Predefined types
                 {"ARRAY", TokenType.ARRAY},
+                {"BINARY", TokenType.BINARY},
                 {"BYTE", TokenType.BYTE},
                 {"CODEBLOCK", TokenType.CODEBLOCK},
+                {"CURRENCY", TokenType.CURRENCY},
                 {"DATE", TokenType.DATE},
                 {"DWORD", TokenType.DWORD},
                 {"FLOAT", TokenType.FLOAT},
@@ -740,8 +742,10 @@ namespace XSharp.MacroCompiler.Syntax
             softKws[(int)TokenType.ASSEMBLY] = true;
             softKws[(int)TokenType.ASYNC] = true;
             softKws[(int)TokenType.AWAIT] = true;
+            softKws[(int)TokenType.BINARY] = true;
             softKws[(int)TokenType.BY] = true;
             softKws[(int)TokenType.CHECKED] = true;
+            softKws[(int)TokenType.CURRENCY] = true;
             softKws[(int)TokenType.DESCENDING] = true;
             softKws[(int)TokenType.DYNAMIC] = true;
             softKws[(int)TokenType.EQUALS] = true;

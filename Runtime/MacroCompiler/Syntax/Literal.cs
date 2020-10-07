@@ -111,6 +111,33 @@ namespace XSharp.MacroCompiler.Syntax
             return sb.ToString();
         }
 
+        internal static byte[] BinaryValue (string text)
+        {
+			// the string contains the 0H prefix.
+            if (string.IsNullOrEmpty(text) )
+                throw Compilation.Error(ErrorCode.BinaryIncorrectLength,"");
+            if (text.Length % 2 != 0 || text.Length == 2)
+                throw Compilation.Error(ErrorCode.BinaryIncorrectLength, text);
+            var source = text.Substring(2);
+            var result = new byte[source.Length / 2];
+             for(int i = 0; i < source.Length; i += 2)
+            {
+                var c1 = char.ToUpper(source[i]);
+                var c2 = char.ToUpper(source[i+1]);
+                byte b ;
+                if (c1 >= '0' && c1 <= '9')
+                    b = (byte)(c1 - '0');
+                else
+                    b = (byte)((c1 - 'A')+10);
+                b <<= 4;
+                if (c2 >= '0' && c2 <= '9')
+                    b += (byte)(c2 - '0');
+                else
+                    b += (byte)((c2 - 'A') + 10);
+                result[i / 2] = b;
+            }
+            return result;
+        }
         internal static long HexValue(string text)
         {
             long r = 0;

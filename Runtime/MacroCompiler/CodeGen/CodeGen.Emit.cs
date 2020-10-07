@@ -234,6 +234,21 @@ namespace XSharp.MacroCompiler
                         ilg.Emit(OpCodes.Newobj, (Compilation.Get(WellKnownMembers.System_Decimal_ctor) as ConstructorSymbol).Constructor);
                     }
                     break;
+                case NativeType.Binary:
+                    {
+                        byte[] bytes = c.Binary;
+                        EmitConstant_I4(ilg, bytes.Length);
+                        ilg.Emit(OpCodes.Newarr, typeof(byte));
+                        for (int i = 0; i < bytes.Length; i++)
+                        {
+                            ilg.Emit(OpCodes.Dup);
+                            EmitConstant_I4(ilg, i);
+                            EmitConstant_I4(ilg, bytes[i]);
+                            ilg.Emit(OpCodes.Stelem_I1);
+                        }
+                        ilg.Emit(OpCodes.Newobj, (Compilation.Get(WellKnownMembers.XSharp___Binary_ctor) as ConstructorSymbol).Constructor);
+                    }
+                    break;
                 case NativeType.Object:
                     ilg.Emit(OpCodes.Ldnull);
                     break;
@@ -281,6 +296,10 @@ namespace XSharp.MacroCompiler
                     ilg.Emit(OpCodes.Ldc_I4_1);
                     ilg.Emit(OpCodes.Newobj, typeof(decimal).GetConstructor(new[] { typeof(int) })); // TODO use Compilation.GetMember
                     break;
+                case NativeType.Currency:
+                    throw new InternalError();
+                case NativeType.Binary:
+                    throw new InternalError();
                 case NativeType.Object:
                     throw new InternalError();
                 default:

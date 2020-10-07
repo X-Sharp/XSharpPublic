@@ -29,6 +29,8 @@ namespace XSharp.MacroCompiler
                     return Constant.Create(Literals.StringValue(Value));
                 case TokenType.SYMBOL_CONST:
                     return Constant.CreateSymbol(Value.StartsWith("#") ? Value.Substring(1).ToUpperInvariant() : Value.ToUpperInvariant());
+                case TokenType.BINARY_CONST:
+                    return Constant.CreateBinary(Literals.BinaryValue(Value));
                 case TokenType.HEX_CONST:
                     switch (Value.Last())
                     {

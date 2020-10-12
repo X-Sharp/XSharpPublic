@@ -412,32 +412,8 @@ CLASS XSharp.DbDataSource IMPLEMENTS IBindingList
         LOCAL f AS INT
         LOCAL fieldCount := SELF:_oRDD:FieldCount AS LONG
         FOR f:=1 UPTO fieldCount
-            LOCAL fieldName:=_oRDD:FieldName(f) AS STRING
             LOCAL oInfo    AS DbColumnInfo
             oInfo  := (DbColumnInfo) SELF:_oRDD:FieldInfo(f, DBS_COLUMNINFO, NULL)
-            IF oInfo == NULL
-                // DBFVFPSQL implements DBS_COLUMNINFO. The other RDDs don't
-                LOCAL cType    AS STRING
-                LOCAL nDec     AS LONG
-                LOCAL nLen     AS LONG
-                
-                cType := (STRING) SELF:_oRDD:FieldInfo(f, DBS_TYPE, NULL)
-                nLen  := (LONG)   SELF:_oRDD:FieldInfo(f, DBS_LEN, NULL)
-                nDec  := (LONG)   SELF:_oRDD:FieldInfo(f, DBS_DEC, NULL)
-                oInfo :=  DbColumnInfo{fieldName:ToLower(), cType, nLen, nDec}
-                oInfo:ColumnName := (STRING) SELF:_oRDD:FieldInfo(f, DBS_CAPTION, NULL)
-                oInfo:Ordinal := f
-            ELSE
-                IF String.IsNullOrEmpty(oInfo:Alias )
-                    oInfo:Name          := oInfo:Name:ToLower()
-                    oInfo:ColumnName    := oInfo:ColumnName:ToLower()
-                ELSE
-                    oInfo:Name          := oInfo:Alias:ToLower()
-                    oInfo:ColumnName    := oInfo:Name
-                ENDIF
-                oInfo:ColumnName := (STRING) SELF:_oRDD:FieldInfo(f, DBS_CAPTION, NULL)
-            ENDIF
-            
             _fieldList:Add(DbField{oInfo})
             
         NEXT

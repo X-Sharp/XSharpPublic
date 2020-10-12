@@ -13,36 +13,15 @@ USING XSharp.RDD.Support
 USING XSharp.RDD.Enums
 
 
-INTERFACE XSharp.RDD.IColumnInfo
-    /// <summary>Caption for the column (optional)</summary>
-    PROPERTY Caption        AS STRING GET
-    /// <summary>Description (optional)</summary>
-    PROPERTY Description    AS STRING GET
-    /// <summary>Original column name (can be > 10 characters)</summary>
-    PROPERTY ColumnName     AS STRING GET
-    /// <summary>Ordinal position in the result set</summary>
-    //PROPERTY Ordinal        AS LONG   GET
-END INTERFACE    
-
-
 /// <summary>This class describes extended information for a field in a workarea, for fields that come from a SQL backend.</summary>
 [DebuggerDisplay("{ColumnName,nq} #{Ordinal} ({FieldTypeStr,nq} {Length} {Decimals}), ")];
-CLASS XSharp.RDD.DbColumnInfo INHERIT RddFieldInfo IMPLEMENTS XSharp.RDD.IColumnInfo
-    /// <summary>Column Name</summary>
-    PROPERTY ColumnName     AS STRING AUTO
+CLASS XSharp.RDD.DbColumnInfo INHERIT RddFieldInfo 
     /// <summary>DotNet datatype of the column</summary>
     PROPERTY DotNetType     AS System.Type AUTO
     /// <summary>Numeric Scale</summary>
     PROPERTY NumericScale   AS LONG AUTO
     /// <summary>Numeric Precision</summary>
     PROPERTY NumericPrecision AS LONG AUTO
-    /// <summary>Description (optional)</summary>
-    PROPERTY Description    AS STRING AUTO
-    /// <summary>Ordinal position in the result set</summary>
-    PROPERTY Ordinal         AS LONG AUTO
-    /// <summary>Optional caption for the column</summary>
-    PROPERTY Caption         AS STRING AUTO
-        
     /// <summary>Initializes a new instance of the DbColumnInfo class</summary>
     CONSTRUCTOR(sName AS STRING, sType AS STRING, nLength AS LONG, nDecimals AS LONG, nOffSet := -1 AS LONG)
         SUPER(sName, sType, nLength, nDecimals)

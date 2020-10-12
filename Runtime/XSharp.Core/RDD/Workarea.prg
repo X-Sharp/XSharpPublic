@@ -72,6 +72,8 @@ BEGIN NAMESPACE XSharp.RDD
 		
 		/// <summary>Result of the last Block evaluation.</summary>
 		PROTECTED _EvalResult    AS OBJECT
+
+        PROTECTED Properties   := PropertyCollection{} AS PropertyCollection
 		#endregion
 		
 		#region Static Properties that point to Runtime state ?
@@ -508,6 +510,7 @@ BEGIN NAMESPACE XSharp.RDD
                     info:Offset := 1
                 ENDIF
                 SELF:_Fields[ SELF:_currentField] := info 
+                info:Ordinal := SELF:_currentField+1
 
                 // the alias could be an empty string !
                 SELF:_fieldNames:Add(info:Name:Trim(), SELF:_currentField)
@@ -565,8 +568,19 @@ BEGIN NAMESPACE XSharp.RDD
                 oFld := SELF:_Fields[nFldPos-1]
                 SWITCH nOrdinal
                 CASE DbFieldInfo.DBS_NAME
-                CASE DbFieldInfo.DBS_CAPTION
                     RETURN oFld:Name
+                CASE DbFieldInfo.DBS_CAPTION
+                    var result := oFld:Caption
+                    if oNewValue IS STRING
+                        oFld:Caption := (STRING) oNewValue
+                    ENDIF
+                    RETURN result
+                CASE DbFieldInfo.DBS_DESCRIPTION
+                    var result := oFld:Description
+                    if oNewValue IS STRING
+                        oFld:Description := (STRING) oNewValue
+                    ENDIF
+                    RETURN result
                 CASE DbFieldInfo.DBS_TYPE
                     VAR cVar := Chr( (BYTE) oFld:FieldType)
                     IF oFld:Flags != DBFFieldFlags.None
@@ -612,7 +626,14 @@ BEGIN NAMESPACE XSharp.RDD
                         RETURN oFld:Name
                     ENDIF
                 CASE DbFieldInfo.DBS_COLUMNINFO
-                    RETURN DbColumnInfo{oFld} {Ordinal := nFldPos}
+                    var result := oFld
+                    IF ! (result IS DbColumnInfo)
+                        result := DbColumnInfo{result}
+                    ENDIF
+                    IF oNewValue is DbColumnInfo VAR column
+                        SELF:_Fields[nFldPos-1] := column
+                    ENDIF
+                    RETURN result
                 CASE DbFieldInfo.DBS_FLAGS
                     RETURN oFld:Flags
                 CASE DbFieldInfo.DBS_STRUCT

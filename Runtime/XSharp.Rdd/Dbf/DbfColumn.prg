@@ -18,7 +18,6 @@ BEGIN NAMESPACE XSharp.RDD
         INTERNAL LengthBit      := -1 AS LONG
         INTERNAL OffSetInHeader := -1 as LONG
         INTERNAL RDD            AS XSharp.RDD.DBF
-        INTERNAL Properties     AS OBJECT
         /// <summary>Create a DbfColumn class, used when creating files.</summary>
         STATIC METHOD Create(oInfo AS RddFieldInfo, oRDD AS XSharp.RDD.DBF) AS DbfColumn
             // Commented out types are Harbour specific
@@ -79,6 +78,7 @@ BEGIN NAMESPACE XSharp.RDD
                 dbfac:IncrStep  := oField:IncStep
                 dbfac:Counter   := oField:Counter
             ENDIF
+            oColumn:Properties := oInfo:Properties
             return oColumn
 
 

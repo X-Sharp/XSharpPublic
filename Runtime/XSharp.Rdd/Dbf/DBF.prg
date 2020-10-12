@@ -76,8 +76,19 @@ PARTIAL CLASS DBF INHERIT Workarea IMPLEMENTS IRddSortWriter
     PROTECT PROPERTY HasMemo AS LOGIC GET SELF:_HasMemo
     NEW PROTECT PROPERTY Memo AS BaseMemo GET (BaseMemo) SELF:_Memo
     INTERNAL PROPERTY Stream AS FileStream GET SELF:_oStream
-
-
+/*
+PROTECTED METHOD ConvertToMemory() AS LOGIC
+     IF !SELF:_OpenInfo:Shared
+        FConvertToMemoryStream(SELF:_hFile)
+        IF SELF:_Memo IS DBTMemo VAR dbtmemo
+            FConvertToMemoryStream(dbtmemo:_hFile)
+        ELSEIF SELF:_Memo IS FPTMemo VAR fptmemo
+            FConvertToMemoryStream(fptmemo:_hFile)
+        ENDIF
+        RETURN TRUE
+     ENDIF
+     RETURN FALSE
+*/
 INTERNAL METHOD _CheckEofBof() AS VOID
     IF SELF:RecCount == 0
         SELF:_SetEOF(TRUE)
@@ -859,7 +870,7 @@ METHOD Close() 			AS LOGIC
 RETURN isOK
 
     // Move to the End of file, and place a End-Of-File Marker (0x1A)
-PRIVATE METHOD _putEndOfFileMarker() AS LOGIC
+PROTECTED METHOD _putEndOfFileMarker() AS LOGIC
 	// According to DBASE.com Knowledge base :
 	// The end of the file is marked by a single byte, with the end-of-file marker, an OEM code page character value of 26 (0x1A).
 	LOCAL lOffset   := SELF:_HeaderLength + SELF:_RecCount * SELF:_RecordLength AS INT64

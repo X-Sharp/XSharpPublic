@@ -62,15 +62,15 @@ INTERNAL CLASS XSharp.VFP.SQLStatement
 
 
     METHOD SetDefaults() AS VOID
-        SELF:Asynchronous       := (LOGIC) SQLSupport.GetDefault(SQLProperty.Asynchronous)
-        SELF:BatchMode          := (LOGIC) SQLSupport.GetDefault(SQLProperty.BatchMode)
-        SELF:DisconnectRollback := (LOGIC) SQLSupport.GetDefault(SQLProperty.DisconnectRollback)
-        SELF:DispWarnings       := (LOGIC) SQLSupport.GetDefault(SQLProperty.DispWarnings)
-        SELF:IdleTimeout        := (LONG) SQLSupport.GetDefault(SQLProperty.IdleTimeout)
-        SELF:PacketSize         := (LONG) SQLSupport.GetDefault(SQLProperty.PacketSize)
+        SELF:Asynchronous       := SQLSupport.GetDefault<LOGIC>(SQLProperty.Asynchronous)
+        SELF:BatchMode          := SQLSupport.GetDefault<LOGIC>(SQLProperty.BatchMode)
+        SELF:DisconnectRollback := SQLSupport.GetDefault<LOGIC>(SQLProperty.DisconnectRollback)
+        SELF:DispWarnings       := SQLSupport.GetDefault<LOGIC>(SQLProperty.DispWarnings)
+        SELF:IdleTimeout        := SQLSupport.GetDefault<LONG>(SQLProperty.IdleTimeout)
+        SELF:PacketSize         := SQLSupport.GetDefault<LONG>(SQLProperty.PacketSize)
         SELF:Prepared           := FALSE
-        SELF:TransactionMode    := (LONG) SQLSupport.GetDefault(SQLProperty.Transactions)
-        SELF:WaitTime           := (LONG) SQLSupport.GetDefault(SQLProperty.WaitTime)
+        SELF:TransactionMode    := SQLSupport.GetDefault<LONG>(SQLProperty.Transactions)
+        SELF:WaitTime           := SQLSupport.GetDefault<LONG>(SQLProperty.WaitTime)
         SELF:_aSyncState        := AsyncState.Idle
 
     PRIVATE METHOD _AllocateCommand() AS VOID
@@ -124,49 +124,39 @@ INTERNAL CLASS XSharp.VFP.SQLStatement
 
 
     PRIVATE METHOD _CopyFromReaderToRDD(oDataReader AS DbDataReader, oRDD AS IRdd) AS LOGIC
-        LOCAL oMIGet := NULL AS MethodInfo 
-        VAR nFields := oRDD:FieldCount
-        VAR nCounter := 0 
-        // DBFVFPSQL has a method SetData to set all the values of the current row.
-        oMIGet := oRDD:GetType():GetMethod("GetData", BindingFlags.Instance+BindingFlags.IgnoreCase+BindingFlags.Public)
-        IF oMIGet != NULL
-            VAR GetData := (SqlGetData) oMIGet:CreateDelegate(typeof(SqlGetData), oRDD) 
-            DO WHILE oDataReader:Read()
-                oRDD:Append(TRUE)
-                // Get the data array from the workarea
-                VAR data := GetData()
-                // and fetch its values. This automatically updates the array that is owned by the RDD
-                oDataReader:GetValues(data)
-                IF SELF:Asynchronous .AND. ++nCounter % 100 == 0
-                    IF SELF:_aSyncState == AsyncState.Cancelling
-                        EXIT
-                    ENDIF
-                ENDIF
-            ENDDO
-        ELSE
-            VAR data := OBJECT[]{nFields+1}  // 1 extra for the NullFlags
-            DO WHILE oDataReader:Read()
-                oRDD:Append(TRUE)
-                // use our local data array
-                oDataReader:GetValues(data)
-                // and write the values to the RDD
-                FOR VAR nFld := 1 UPTO nFields
-                    oRDD:PutValue(nFld, data[nFld])
-                NEXT
-                IF SELF:Asynchronous .AND. ++nCounter % 100 == 0
-                    IF SELF:_aSyncState == AsyncState.Cancelling
-                        EXIT
-                    ENDIF
-                ENDIF
-            ENDDO
-        ENDIF
+        local oDataTable as DbDataTable
+        TRY
+            oDataTable := DbDataTable{}
+            oDataTable:RowChanged += OnRowChanged
+            oDataTable:Load(oDataReader)
+            oDataTable:RowChanged -= OnRowChanged
+            var oProp := oRDD:GetType():GetProperty("DataTable", BindingFlags.Instance+BindingFlags.IgnoreCase+BindingFlags.Public)
+            IF oProp != NULL
+                oProp:SetValue(oRDD, oDataTable)
+            ELSE
+                RuntimeState.LastRddError := Error{"Internal error: Could not locate the DataTable property of the SQL RDD"}
+                RETURN FALSE
+            ENDIF
+        CATCH e as Exception
+            IF SELF:_aSyncState == AsyncState.Cancelling
+                RuntimeState.LastRddError := Exception{"SQLExec Cancelled"}
+            ELSE
+                RuntimeState.LastRddError := e
+            ENDIF
+            RETURN FALSE
+        END TRY
         RETURN TRUE
-
+        
+    PRIVATE METHOD OnRowChanged(sender as OBJECT, e as DataRowChangeEventArgs) AS VOID
+        IF SELF:_aSyncState == AsyncState.Cancelling
+            SELF:_oLastDataReader:Close()   // this aborts the load
+        ENDIF
+        RETURN
 
     PRIVATE METHOD _CreateWorkarea(oSchema AS DataTable, oDataReader AS DbDataReader, cCursorName AS STRING) AS LOGIC
         LOCAL oRDD AS IRdd
         oRDD := SELF:CreateFile(oSchema, cCursorName)
-        SELF:_CopyFromReaderToRDD(oDataReader, oRDD) 
+        SELF:_CopyFromReaderToRDD(oDataReader, oRDD)
         RETURN TRUE
 
 
@@ -421,9 +411,9 @@ INTERNAL CLASS XSharp.VFP.SQLStatement
                 IF SELF:_aSyncState == AsyncState.Cancelling
                     EXIT
                 ENDIF
-                IF ! oDataReader:NextResult()
+                //IF ! oDataReader:NextResult()
                     EXIT
-                ENDIF
+                //ENDIF
             ENDDO
             BEGIN LOCK SELF
                 SELF:_aResult    := aResults
@@ -527,7 +517,7 @@ INTERNAL CLASS XSharp.VFP.SQLStatement
                 _nextCursorNo    := cursorNo
                 EXIT
             ENDIF
-            IF ! oDataReader:NextResult()
+            IF oDataReader:IsClosed .or. ! oDataReader:HasRows
                 EXIT
             ENDIF
         ENDDO
@@ -535,14 +525,12 @@ INTERNAL CLASS XSharp.VFP.SQLStatement
         RETURN 
 
 
-
-
     METHOD MoreResults(cursorName AS STRING, aInfo AS ARRAY) AS LONG
         IF !String.IsNullOrEmpty(cursorName)
             SELF:CursorName := cursorName
             SELF:_nextCursorNo := 0
         ENDIF
-        IF _oLastDataReader != NULL .AND. _oLastDataReader:NextResult()
+        IF _oLastDataReader != NULL .and. ! _oLastDataReader:IsClosed .AND. _oLastDataReader:HasRows 
             CopyToCursor(_oLastDataReader, _nextCursorNo)
             RETURN SELF:_SaveResult(aInfo)
         ENDIF
@@ -926,7 +914,7 @@ INTERNAL CLASS XSharp.VFP.SQLStatement
                         sbParam:Clear()
                     ENDIF
                     statements:Add(sb:ToString())
-                    statements:Clear()
+                    sb:Clear()
                     LOOP
                 ENDIF
                 sb:Append(ch)

@@ -10,6 +10,7 @@ USING System.IO
 USING System.Collections.Generic
 USING System.Data
 USING System.Diagnostics
+USING System.Reflection
 
 BEGIN NAMESPACE XSharp.RDD
     /// <summary>DBFVFPSQL RDD. DBFCDX with support for the FoxPro field types and a List of Object values as backing collection for the data.</summary>
@@ -19,7 +20,8 @@ BEGIN NAMESPACE XSharp.RDD
         PROTECT _table as DataTable
         PROTECT _phantomRow as DataRow
         PROTECT _padStrings AS LOGIC
-        PROTECT _originalRecordLength as LONG
+        PROTECT _incrementKey as LONG
+        PROTECT _incrementColumn as DataColumn
         #region Overridden properties
         OVERRIDE PROPERTY Driver AS STRING GET "DBFVFPSQL"
 
@@ -27,6 +29,8 @@ BEGIN NAMESPACE XSharp.RDD
 
         CONSTRUCTOR()
             SUPER()
+            _incrementKey    := -1
+            _padStrings      := FALSE
             RETURN
 
         /// <inheritdoc />  
@@ -45,6 +49,10 @@ BEGIN NAMESPACE XSharp.RDD
             VAR lResult := SUPER:Append(lReleaseLock)
             IF lResult
                 var row := _table:NewRow()
+                IF _incrementColumn != NULL
+                    row[_incrementColumn] := _incrementKey
+                    _incrementKey -= 1
+                ENDIF
                 if row IS IDbRow VAR dbRow
                     dbRow:RecNo := SUPER:RecNo
                 ENDIF
@@ -92,15 +100,22 @@ BEGIN NAMESPACE XSharp.RDD
                 SELF:_RecNo := 1
                 SELF:_RecCount   := _table:Rows:Count
                 SELF:_phantomRow := _table:NewRow()
+                var prop := _table:GetType():GetProperty("EnforceConstraints", BindingFlags.Instance+BindingFlags.NonPublic)
+                IF prop != null
+                    prop:SetValue(_table, FALSE)
+                ENDIF
                 FOREACH oColumn as DataColumn in _table:Columns
                     var index := oColumn:Ordinal
-                    var dbColumn := self:_Fields[index]
+                    LOCAL dbColumn := self:_Fields[index] as RddFieldInfo
                     dbColumn:Caption     := oColumn:Caption
+                    if oColumn:AutoIncrement
+                        _incrementColumn := oColumn
+                    endif
+                    if !oColumn:AllowDBNull
+                        oColumn:AllowDBNull := TRUE
+                    endif
+                    dbColumn:Flags := DBFFieldFlags.None
                 NEXT
-                SELF:_originalRecordLength := _RecordLength
-                SELF:_RecordLength := 2 // 1 byte "pseudo" data + deleted flag
-                SELF:_RecordBuffer := BYTE[]{ SELF:_RecordLength}
-                SELF:_BlankBuffer  := BYTE[]{ SELF:_RecordLength}
                 SELF:Header:RecCount := _RecCount
                 // set file length
                 LOCAL lOffset   := SELF:_HeaderLength + SELF:_RecCount * SELF:_RecordLength AS INT64
@@ -112,13 +127,6 @@ BEGIN NAMESPACE XSharp.RDD
             END SET
         END PROPERTY            
 
-        VIRTUAL METHOD RecInfo(nOrdinal AS LONG, oRecID AS OBJECT, oNewValue AS OBJECT) AS OBJECT
-            var oResult := SUPER:RecInfo(nOrdinal, oRecID, oNewValue)
-            IF nOrdinal == DBRI_RECSIZE
-                oResult := SELF:_originalRecordLength
-            ENDIF
-            RETURN oResult
-            
         /// <inheritdoc />
         OVERRIDE METHOD Close() AS LOGIC
             LOCAL lOk AS LOGIC

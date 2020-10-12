@@ -16,8 +16,8 @@ BEGIN NAMESPACE XSharp.RDD
 
     [DebuggerDisplay("DBFVFPSQL ({Alias,nq})")];
     CLASS DBFVFPSQL INHERIT DBFVFP
-        PROTECT _rows   AS List <OBJECT[]>
-        PROTECT _columns AS DbColumnInfo[]
+        PROTECT _table as DataTable
+        PROTECT _phantomRow as DataRow
         PROTECT _padStrings AS LOGIC
         #region Overridden properties
         OVERRIDE PROPERTY Driver AS STRING GET "DBFVFPSQL"
@@ -26,42 +26,28 @@ BEGIN NAMESPACE XSharp.RDD
 
         CONSTRUCTOR()
             SUPER()
-            _rows := List<OBJECT[]> {}
             RETURN
 
         /// <inheritdoc />  
         OVERRIDE METHOD SetFieldExtent(nFields AS LONG) AS LOGIC
             VAR result := SUPER:SetFieldExtent(nFields)
-            SELF:_columns := DbColumnInfo[]{nFields}
             RETURN result
 
 		/// <inheritdoc />
         OVERRIDE METHOD Create(info AS DbOpenInfo) AS LOGIC
             VAR lResult := SUPER:Create(info)
-            RETURN lResult
-
-		/// <inheritdoc />
-        OVERRIDE METHOD Open(info AS DbOpenInfo) AS LOGIC
-            VAR lResult := SUPER:Open(info)
-            VAR nFlds   := SELF:FieldCount
-            IF lResult
-                FOR VAR nI := 1 TO SELF:_RecCount
-                    SUPER:GoTo(nI)
-                    VAR aData := OBJECT[]{nFlds}
-                    _rows:Add(aData)
-                    FOR VAR nFld := 1 TO nFlds
-                        aData[nFld-1] := SUPER:GetValue(nFld)
-                    NEXT
-                NEXT
-            ENDIF
+            SELF:_RecordLength := 2 // 1 byte "pseudo" data + deleted flag
             RETURN lResult
 
 		/// <inheritdoc />
         OVERRIDE METHOD Append(lReleaseLock AS LOGIC) AS LOGIC
             VAR lResult := SUPER:Append(lReleaseLock)
             IF lResult
-                VAR aData := OBJECT[]{SELF:FieldCount}
-                _rows:Add(aData)
+                var row := _table:NewRow()
+                if row IS IDbRow VAR dbRow
+                    dbRow:RecNo := SUPER:RecNo
+                ENDIF
+                _table:Rows:Add(row)
             ENDIF
             RETURN lResult
 
@@ -69,57 +55,63 @@ BEGIN NAMESPACE XSharp.RDD
             LOCAL result AS INT
             result := SUPER:FieldIndex(fieldName)
             IF result == 0
-                FOR VAR nI := 1 TO SELF:_columns:Length
-                    VAR column := SELF:_columns[nI-1]
-                    IF column != NULL .AND. String.Compare(column:ColumnName, fieldName, TRUE) == 0
-                        result := nI
-                        EXIT
+                FOREACH var oColumn in SELF:_Fields
+                    if oColumn != NULL .and. String.Compare(oColumn:ColumnName, fieldName, TRUE) == 0
+                        return oColumn:Ordinal
                     ENDIF
                 NEXT
             ENDIF
             RETURN result
+    
 
-		/// <inheritdoc />
         OVERRIDE METHOD GetValue(nFldPos AS INT) AS OBJECT
             IF nFldPos > 0 .AND. nFldPos <= SELF:FieldCount
-                IF SELF:_RecNo <= _rows:Count .AND. SELF:_RecNo > 0
-                    VAR oFld := SELF:_Fields[nFldPos-1]
-                    VAR nRow := SELF:_RecNo -1
-                    VAR result := _rows[nRow][nFldPos -1]
-                    IF result != DBNull.Value
-                        IF oFld:FieldType == DbFieldType.Character .AND. _padStrings
-                            VAR strResult := (STRING) result
-                            RETURN strResult:PadRight(oFld:Length)
-                        ENDIF
-                        RETURN result
-                    ELSE
-                        IF SELF:_padStrings .AND. oFld:FieldType == DbFieldType.Character
-                            RETURN STRING{' ', oFld:Length}
-                        ELSE
-                            RETURN NULL
-                        ENDIF
-                    ENDIF
+                IF !SELF:EoF
+                    var row := _table:Rows[SELF:_RecNo -1]
+                    return row[nFldPos-1]
                 ENDIF
+                RETURN _phantomRow[nFldPos-1]
             ENDIF
             RETURN SUPER:GetValue(nFldPos)
-
-        /// <inheritdoc />
+            
         OVERRIDE METHOD PutValue(nFldPos AS INT, oValue AS OBJECT) AS LOGIC
             IF nFldPos > 0 .AND. nFldPos <= SELF:FieldCount
-                IF SELF:_RecNo <= _rows:Count .AND. SELF:_RecNo > 0
-                    VAR nRow := SELF:_RecNo -1
-                    _rows[nRow][nFldPos -1] := oValue
-                     RETURN TRUE
-                ENDIF
+                var row := _table:Rows[SELF:_RecNo -1]
+                row[nFldPos-1] := oValue
             ENDIF
             RETURN SUPER:PutValue(nFldPos, oValue)
 
-        METHOD GetData() AS OBJECT[]
-            RETURN SELF:_rows[SELF:_RecNo -1] 
+
+        PROPERTY DataTable as DataTable
+            GET
+                return _table
+            END GET
+            SET
+                _table := value
+                SELF:_RecNo := 1
+                SELF:_RecCount   := _table:Rows:Count
+                SELF:_phantomRow := _table:NewRow()
+                FOREACH oColumn as DataColumn in _table:Columns
+                    var index := oColumn:Ordinal
+                    var dbColumn := self:_Fields[index]
+                    dbColumn:Caption     := oColumn:Caption
+                NEXT
+                SELF:_RecordLength := 2 // 1 byte "pseudo" data + deleted flag
+                SELF:_RecordBuffer := BYTE[]{ SELF:_RecordLength}
+                SELF:_BlankBuffer  := BYTE[]{ SELF:_RecordLength}
+                SELF:Header:RecCount := _RecCount
+                // set file length
+                LOCAL lOffset   := SELF:_HeaderLength + SELF:_RecCount * SELF:_RecordLength AS INT64
+	            // Note FoxPro does not write EOF character for files with 0 records
+	            var ok := _oStream:SafeSetPos(lOffset) .AND. _oStream:SafeWriteByte(26) .AND. _oStream:SafeSetLength(lOffset+1)
+                // now set the file size and reccount in the header
+            END SET
+        END PROPERTY            
 
         /// <inheritdoc />
         OVERRIDE METHOD Close() AS LOGIC
             LOCAL lOk AS LOGIC
+            // This method deletes the temporary file after the file is closed
             LOCAL cFileName := SELF:_FileName AS STRING
             LOCAL cMemoName := "" AS STRING
             IF SELF:_Memo IS AbstractMemo VAR memo
@@ -143,18 +135,6 @@ BEGIN NAMESPACE XSharp.RDD
         ENDIF
         RETURN SUPER:Info(uiOrdinal, oNewValue)
 
-    /// <inheritdoc />
-    OVERRIDE METHOD FieldInfo(nFldPos AS LONG, nOrdinal AS LONG, oNewValue AS OBJECT) AS OBJECT
-        LOCAL result AS OBJECT
-        IF nOrdinal == DBS_COLUMNINFO .AND. nFldPos <= SELF:_Fields:Length .AND. nFldPos > 0
-            result := _columns[nFldPos-1] 
-            IF oNewValue IS DbColumnInfo VAR column
-                SELF:_columns[nFldPos-1] := column
-            ENDIF
-            RETURN result
-        ENDIF
-                
-        RETURN SUPER:FieldInfo(nFldPos, nOrdinal, oNewValue)
     OVERRIDE METHOD OrderCreate(orderInfo AS DbOrderCreateInfo ) AS LOGIC
         SELF:_padStrings := TRUE
         VAR result := SUPER:OrderCreate(orderInfo)

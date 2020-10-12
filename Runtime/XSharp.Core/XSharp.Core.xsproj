@@ -81,8 +81,13 @@
     <Compile Include="Properties\AssemblyInfo.prg" />
     <Compile Include="RDD\BaseIndex.prg" />
     <Compile Include="RDD\BaseMemo.prg" />
+    <Compile Include="RDD\CursorProperties.prg" />
     <Compile Include="RDD\DbColumnInfo.prg" />
     <Compile Include="RDD\DbFloat.prg" />
+    <Compile Include="RDD\DatabaseProperties.prg" />
+    <Compile Include="RDD\IDbRow.prg" />
+    <Compile Include="RDD\PropertyCollection.prg" />
+    <Compile Include="RDD\RddFieldInfo.prg" />
     <Compile Include="RDD\RDDNotifications.prg" />
     <Compile Include="RDD\RDDDefines.prg" />
     <Compile Include="RDD\RddEnums.prg" />
@@ -94,6 +99,7 @@
     <Compile Include="RDD\RDDSupport.prg" />
     <Compile Include="RDD\CoreDb.prg" />
     <Compile Include="RDD\RDDWrapper.prg" />
+    <Compile Include="RDD\SqlProperties.prg" />
     <Compile Include="RDD\Workarea.prg" />
     <Compile Include="RDD\Workareas.prg" />
     <Compile Include="State\Enums.prg" />

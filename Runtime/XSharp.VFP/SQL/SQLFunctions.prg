@@ -7,6 +7,7 @@ USING System.Collections.Generic
 USING System
 USING XSharp.VFP
 USING XSharp.Data
+USING XSharp.RDD
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/sqlconnect/*" />
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/sqlconnectoverload/*" />
@@ -233,10 +234,18 @@ FUNCTION SqlRollBack( nStatementHandle AS LONG) AS LONG
 FUNCTION SqlGetProp( nStatementHandle AS LONG, cSetting AS STRING ) AS USUAL
     RETURN SQLSupport.GetSetProperty(nStatementHandle, cSetting,NULL)
 
+FUNCTION SqlGetProp( nStatementHandle AS LONG, nSetting AS LONG ) AS USUAL
+    var cSetting := System.Enum.GetName(typeof(SQLProperty), nSetting)
+    RETURN SQLSupport.GetSetProperty(nStatementHandle, cSetting,NULL)
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/sqlsetprop/*" />
 FUNCTION SqlSetProp( nStatementHandle AS LONG, cSetting AS STRING, eExpression AS USUAL) AS LONG
     RETURN (INT) SQLSupport.GetSetProperty(nStatementHandle, cSetting,eExpression)
+
+FUNCTION SqlSetProp( nStatementHandle AS LONG, nSetting AS LONG, eExpression AS USUAL) AS LONG
+    var cSetting := System.Enum.GetName(typeof(SQLProperty), nSetting)
+    RETURN (INT) SQLSupport.GetSetProperty(nStatementHandle, cSetting,eExpression)
+
 
 #endregion
 

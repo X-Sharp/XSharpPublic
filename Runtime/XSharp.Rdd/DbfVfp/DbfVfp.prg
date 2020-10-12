@@ -157,21 +157,8 @@ CLASS DBFVFP INHERIT DBFCDX
         RETURN lOk
 
     METHOD FieldInfo(nFldPos AS LONG, nOrdinal AS LONG, oNewValue AS OBJECT) AS OBJECT
-
         IF nOrdinal == DbFieldInfo.DBS_PROPERTIES
            RETURN DbFieldInfo.DBS_FLAGS
-        ELSEIF nOrdinal == DbFieldInfo.DBS_CAPTION
-            VAR oCol := SELF:_GetColumn(nFldPos)
-            IF oCol IS IColumnInfo VAR info
-                RETURN info:Caption
-            ENDIF
-            nOrdinal := DbFieldInfo.DBS_ALIAS
-        ELSEIF nOrdinal == DbFieldInfo.DBS_DESCRIPTION
-            VAR oCol := SELF:_GetColumn(nFldPos)
-            IF oCol IS IColumnInfo VAR info
-                RETURN info:Description
-            ENDIF
-            RETURN ""
         ENDIF
         RETURN SUPER:FieldInfo(nFldPos, nOrdinal, oNewValue)
 
@@ -198,7 +185,7 @@ CLASS DBFVFP INHERIT DBFCDX
         LOCAL nParent AS LONG
         LOCAL nProp AS LONG
         LOCAL fields AS List<STRING>
-        LOCAL props  AS List<FoxDbProperties>
+        LOCAL props  AS List<byte[]>
         LOCAL cFile AS STRING
         LOCAL lOk AS LOGIC
         LOCAL lOld AS LOGIC
@@ -235,7 +222,8 @@ CLASS DBFVFP INHERIT DBFCDX
                 oDbc:Skip(1)
             ENDDO
             fields := List<STRING>{}
-            props  := List<FoxDbProperties>{}
+            props  := List<byte[]>{}
+            
             IF nTable != 0
                 oDbc:GoTop()
                 DO WHILE ! oDbc:EoF
@@ -245,7 +233,7 @@ CLASS DBFVFP INHERIT DBFCDX
                         VAR cAlias := (STRING) oDbc:GetValue(nName) 
                         VAR b1 := (BYTE[]) oDbc:Memo:GetValue(nProp)
                         fields:Add(cAlias:Trim())
-                        props:Add(SplitDbProperties(b1, _Encoding))
+                        props:Add(b1)
                     ENDIF
                     oDbc:Skip(1)
                 ENDDO
@@ -257,10 +245,9 @@ CLASS DBFVFP INHERIT DBFCDX
                 FOR nPos := 1 TO SELF:FieldCount
                     LOCAL oColumn AS DbfColumn
                     oColumn := SELF:_GetColumn(nPos)
-                    oColumn := DbfVfpColumn{oColumn, SELF}
-                    oColumn:Properties := props[nPos-1]
-                    SELF:_Fields[nPos-1] := oColumn
+                    SetColumnProperties(oColumn, props[nPos-1])
                     oColumn:Alias := fields[nPos-1]
+                    oColumn:ColumnName := fields[nPos-1]
                     IF String.Compare(oColumn:Name, oColumn:Alias, TRUE) != 0
                         SELF:_fieldNames:Remove(oColumn:Name)
                         SELF:_fieldNames:Add(oColumn:Alias, nPos-1)
@@ -268,6 +255,23 @@ CLASS DBFVFP INHERIT DBFCDX
                 NEXT
             ENDIF
         ENDIF
+
+    PRIVATE METHOD SetColumnProperties(oColumn as RddFieldInfo, bProps AS BYTE[]) AS VOID
+        VAR token  := FtpMemoToken{bProps}
+        VAR length := token:Length
+        Debug.Assert(token.DataType == FlexFieldType.String )
+        Debug.Assert(length == bProps.Length-8)
+        VAR pos := 8
+        DO WHILE pos < bProps:Length
+            VAR len  := (LONG) bProps[pos]
+            VAR type := FoxToLong(bProps, pos+1)
+            Debug.Assert(type == FlexFieldType.String )
+            VAR prop := (LONG) FoxToShort(bProps, pos+5)
+            VAR strValue := SELF:_Encoding:GetString(bProps, pos+7, len-8)
+            pos += len
+            oColumn:Properties:Add((DatabasePropertyType) prop, strValue)
+        ENDDO
+        RETURN 
 
     /// <inheritdoc />
     METHOD AddField(info AS RddFieldInfo) AS LOGIC
@@ -304,123 +308,8 @@ CLASS DBFVFP INHERIT DBFCDX
         RETURN SUPER:_writeRecord() 
 END CLASS
 
-ENUM FoxPropertyType 
-    MEMBER Path             := 1
-    MEMBER Class            := 2
-    MEMBER Comment          := 7
-    MEMBER RuleExpr         := 9 
-    MEMBER RuleText         := 10
-    MEMBER DefaultValue     := 11
-    MEMBER ParameterList    := 12
-    MEMBER ChildTag         := 13
-    MEMBER InsTrigger       := 14
-    MEMBER UpdateTrigger    := 15
-    MEMBER DelTrigger       := 16
-    MEMBER IsUnique         := 17
-    MEMBER RelTable         := 18
-    MEMBER RelTag           := 19
-    MEMBER PrimaryKey       := 20
-    MEMBER Version          := 24
-    MEMBER BatchUpdateCount := 28
-    MEMBER DataSource       := 29
-    MEMBER ConnectName      := 32
-    MEMBER UpdateName       := 35
-    MEMBER FetchMemo        := 36
-    MEMBER FetchSize        := 37
-    MEMBER KeyField         := 38
-    MEMBER MaxRecords       := 39
-    MEMBER ShareConnection  := 40
-    MEMBER SourceType       := 41
-    MEMBER SQL              := 42
-    MEMBER Tables           := 43
-    MEMBER SendUpdates      := 44
-    MEMBER UpdatableField   := 45
-    MEMBER UpdateType       := 46
-    MEMBER UseMemoSize      := 47
-    MEMBER WhereType        := 48
-    MEMBER Mask             := 54
-    MEMBER Format           := 55
-    MEMBER Caption          := 56
-    MEMBER Asynchronous     := 64
-    MEMBER BatchMode        := 65
-    MEMBER ConnectString    := 66
-    MEMBER ConnectTimeout   := 67
-    MEMBER DispLogin        := 68
-    MEMBER DispWarnings     := 69
-    MEMBER IdleTimeout      := 70
-    MEMBER QueryTimeOut     := 71
-    MEMBER Password         := 72
-    MEMBER Transactions     := 73
-    MEMBER UserID           := 74
-    MEMBER WaitTime         := 75
-    MEMBER TimeStamp        := 76
-    MEMBER DataType         := 77
-END ENUM
-
-[DebuggerDisplay("{Type} : {Value,nq}")]; 
-CLASS FoxDbProperty
-    PUBLIC PROPERTY Type AS FoxPropertyType AUTO
-    PUBLIC PROPERTY @@Value AS STRING AUTO
-END CLASS
-
-CLASS FoxDbProperties
-    PROTECTED props AS Dictionary<FoxPropertyType, FoxDbProperty>
-    CONSTRUCTOR()
-        props := Dictionary<FoxPropertyType, FoxDbProperty>{}
-        RETURN
-    METHOD Add(oProp AS FoxDbProperty) AS VOID
-        props:Add(oProp:Type, oProp)
-        RETURN 
-    METHOD GetProperty(nType AS FoxPropertyType) AS STRING
-        IF SELF:props:ContainsKey(nType)
-            RETURN SELF:props[nType]:Value
-        ENDIF
-        RETURN  ""
-END CLASS
 
 
-FUNCTION SplitDbProperties (bProps AS BYTE[], encoding AS System.Text.Encoding) AS FoxDbProperties
-    VAR token  := FtpMemoToken{bProps}
-    VAR length := token:Length
-    Debug.Assert(token.DataType == FlexFieldType.String )
-    Debug.Assert(length == bProps.Length-8)
-    VAR pos := 8
-    VAR result := FoxDbProperties{}
-    DO WHILE pos < bProps:Length
-        VAR len  := (LONG) bProps[pos]
-        VAR type := FoxToLong(bProps, pos+1)
-        Debug.Assert(type == FlexFieldType.String )
-        VAR prop := (FoxPropertyType) FoxToShort(bProps, pos+5)
-        VAR strvalue := encoding:GetString(bProps, pos+7, len-8)
-        pos += len
-        result:Add( FoxDbProperty{} { Type :=  prop, @@Value := strvalue} )
-    ENDDO
-    RETURN result
-
-
-CLASS DbfVfpColumn INHERIT DbfColumn IMPLEMENTS IColumnInfo
-    CONSTRUCTOR (oColumn AS DbfColumn, oRDD AS XSharp.RDD.DBF)
-        SUPER(oColumn, oRDD)
-        SELF:NullBit        := oColumn:NullBit
-        SELF:LengthBit      := oColumn:LengthBit
-        SELF:OffSetInHeader := oColumn:OffSetInHeader
-        
-
-    PROPERTY DbProperties AS FoxDbProperties
-        GET
-            IF ! (SELF:Properties IS FoxDbProperties) 
-                SELF:Properties := FoxDbProperties{}
-            ENDIF
-            RETURN (FoxDbProperties) SELF:Properties 
-        END GET
-    END PROPERTY
-    PROPERTY Caption      AS STRING GET DbProperties:GetProperty(FoxPropertyType.Caption)
-    PROPERTY ColumnName   AS STRING GET SELF:Alias
-    PROPERTY Description  AS STRING GET DbProperties:GetProperty(FoxPropertyType.Comment)
-    PROPERTY Mask         AS STRING GET DbProperties:GetProperty(FoxPropertyType.Mask)
-    PROPERTY Format       AS STRING GET DbProperties:GetProperty(FoxPropertyType.Format)
-        
-END CLASS
 
 END NAMESPACE
 

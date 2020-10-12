@@ -19,7 +19,6 @@ CLASS XSharp.DbDataTable INHERIT DataTable
 PROTECT _nAdding AS LONG
 PROTECT _nArea   AS LONG
 
-    PRIVATE DELEGATE DbGetData() AS OBJECT[]
         
         
         CONSTRUCTOR()
@@ -76,38 +75,33 @@ PROTECT _nArea   AS LONG
         
         
         PRIVATE METHOD AddData(oRDD AS IRdd) AS VOID
-            LOCAL oMIGet := NULL AS MethodInfo 
-            // DBFVFPSQL has a method GetData to get the array that stores all the field values
-            oMIGet := oRDD:GetType():GetMethod("GetData", BindingFlags.Instance+BindingFlags.IgnoreCase+BindingFlags.Public)
             VAR nOld := oRDD:RecNo
             oRDD:GoTop()
-            IF oMIGet != NULL
-                VAR GetData := (DbGetData) oMIGet:CreateDelegate(typeof(DbGetData), oRDD) 
-                DO WHILE ! oRDD:EoF
-                    VAR oData := GetData()
-                    SELF:_AddRow(oData,oRDD:RecNo)
-                    oRDD:Skip(1)
-                ENDDO
-            ELSE
-                VAR nFldCount := oRDD:FieldCount
-                DO WHILE ! oRDD:EoF
-                    LOCAL oData AS OBJECT[]
-                    oData := OBJECT[]{nFldCount}
-                    FOR VAR nI := 1 TO nFldCount
-                        oData[nI] := oRDD:GetValue(nI)
-                        IF oData[nI] IS STRING VAR strValue
-                            oData[nI] := strValue:TrimEnd()
-                        ENDIF
-                    NEXT
-                    SELF:_AddRow(oData,oRDD:RecNo)
-                    oRDD:Skip(1)
-                ENDDO
-            ENDIF
-        oRDD:GoTo(nOld)
+            VAR nFldCount := oRDD:FieldCount
+            DO WHILE ! oRDD:EoF
+                LOCAL oData AS OBJECT[]
+                oData := OBJECT[]{nFldCount}
+                FOR VAR nI := 1 TO nFldCount
+                    oData[nI] := oRDD:GetValue(nI)
+                    IF oData[nI] IS STRING VAR strValue
+                        oData[nI] := strValue:TrimEnd()
+                    ENDIF
+                NEXT
+                SELF:_AddRow(oData,oRDD:RecNo)
+                oRDD:Skip(1)
+            ENDDO
+            oRDD:GoTo(nOld)
         
         
         OVERRIDE PROTECTED METHOD NewRowFromBuilder(builder AS DataRowBuilder ) AS DataRow
-            RETURN DbDataRow{builder, SELF:_nAdding}
+            local row as DbDataRow
+            IF SELF:_nAdding == 0
+                row := DbDataRow{builder}
+                row:RecNo := SELF:Rows:Count+1
+            ELSE
+                row := DbDataRow{builder, SELF:_nAdding}
+            ENDIF
+            RETURN row
         
         PRIVATE METHOD _AddRow(oData AS OBJECT[], nRecord AS LONG) AS VOID
             SELF:_nAdding := nRecord

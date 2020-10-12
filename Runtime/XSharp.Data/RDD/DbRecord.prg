@@ -7,7 +7,7 @@
 
 USING System.Collections.Generic
 USING System.ComponentModel
-
+USING XSharp.RDD
 
 /// <summary>This class is used by the DbDataSource class to represent the records in a workarea.</summary>
 /// <remarks>The record class exposes the fields in the workarea as 'pseudo' properties of these fields.
@@ -15,7 +15,7 @@ USING System.ComponentModel
 /// then this control will 'see' changes that were made to the record.
 /// </remarks>
 [TypeDescriptionProvider(typeof(DbRecordDescriptorProvider))];
-CLASS XSharp.DbRecord IMPLEMENTS INotifyPropertyChanged
+CLASS XSharp.DbRecord IMPLEMENTS INotifyPropertyChanged, IDbRow
     #region instance variables
     
     INTERNAL PROPERTY Datasource  AS DbDataSource AUTO

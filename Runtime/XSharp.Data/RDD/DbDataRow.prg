@@ -5,13 +5,18 @@
 //
 
 USING System.Data
-
+USING XSharp.RDD
 
 /// <summary>This class represents a DBF Row in a DbDataTable class.</summary>
-CLASS XSharp.DbDataRow INHERIT DataRow
+CLASS XSharp.DbDataRow INHERIT DataRow IMPLEMENTS IDbRow
     /// <summary>Record number in the workarea</summary>
-    PROPERTY RecNo AS LONG AUTO 
+    PROPERTY RecNo AS LONG AUTO
+    PUBLIC CONSTRUCTOR(builder AS DataRowBuilder )
+        SUPER(builder)
+        
     PROTECTED INTERNAL CONSTRUCTOR(builder AS DataRowBuilder , nRecord AS LONG)
         SUPER(builder)
-    SELF:RecNo := nRecord
+        if nRecord != 0
+            SELF:RecNo := nRecord
+        endif
 END CLASS

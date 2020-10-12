@@ -244,7 +244,7 @@ CLASS DBFVFP INHERIT DBFCDX
                 LOCAL nPos AS LONG
                 FOR nPos := 1 TO SELF:FieldCount
                     LOCAL oColumn AS DbfColumn
-                    oColumn := SELF:_GetColumn(nPos)
+                    oColumn := SELF:_GetColumn(nPos) ASTYPE DbfColumn
                     SetColumnProperties(oColumn, props[nPos-1])
                     oColumn:Alias := fields[nPos-1]
                     oColumn:ColumnName := fields[nPos-1]

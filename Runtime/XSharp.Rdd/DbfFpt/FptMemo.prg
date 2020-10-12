@@ -323,7 +323,7 @@ BEGIN NAMESPACE XSharp.RDD
             /// <inheritdoc />
         VIRTUAL METHOD PutValueFile(nFldPos AS INT, fileName AS STRING) AS LOGIC
             TRY
-                VAR oColumn := SELF:_oRdd:_GetColumn(nFldPos)
+                VAR oColumn := SELF:_oRdd:_GetColumn(nFldPos) ASTYPE DbfColumn
                 IF oColumn != NULL .AND. oColumn:IsMemo 
                     LOCAL bFile AS BYTE[]
                     IF File(fileName)

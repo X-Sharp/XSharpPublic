@@ -291,7 +291,7 @@ BEGIN NAMESPACE XSharp.RDD
                 IF ! SELF:_Hot
                     SELF:GoHot()
                 ENDIF
-                VAR oColumn := SELF:_GetColumn(nFldPos)
+                VAR oColumn := SELF:_GetColumn(nFldPos) ASTYPE DbfColumn
                 IF oColumn != NULL
                     IF oColumn:IsMemo
                         IF SELF:HasMemo

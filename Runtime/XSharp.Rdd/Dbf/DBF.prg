@@ -1261,7 +1261,7 @@ METHOD FieldInfo(nFldPos AS LONG, nOrdinal AS LONG, oNewValue AS OBJECT) AS OBJE
 			CASE DbFieldInfo.DBS_STEP
 				oResult := NULL
 				local oColumn as DbfColumn
-				oColumn := SELF:_GetColumn(nFldPos)
+				oColumn := SELF:_GetColumn(nFldPos) ASTYPE DbfColumn
 				if oColumn != NULL
 					
 					IF nOrdinal == DbFieldInfo.DBS_ISNULL
@@ -1455,10 +1455,10 @@ INTERNAL METHOD _getUsualType(oValue AS OBJECT) AS __UsualType
 RETURN __UsualType.Object
 
 
-INTERNAL VIRTUAL METHOD _GetColumn(nFldPos AS LONG) AS DbfColumn
+INTERNAL VIRTUAL METHOD _GetColumn(nFldPos AS LONG) AS RddFieldInfo
 	LOCAL nArrPos := nFldPos -1 AS LONG
     IF nArrPos >= 0 .AND. nArrPos < SELF:_Fields:Length
-        RETURN (DbfColumn) SELF:_Fields[ nArrPos ]
+        RETURN SELF:_Fields[ nArrPos ]
     ENDIF
     SELF:_dbfError(EDB_FIELDINDEX, EG_ARG)
     RETURN NULL
@@ -1476,7 +1476,7 @@ INTERNAL VIRTUAL METHOD _isMemoField( nFldPos AS LONG ) AS LOGIC
 OVERRIDE METHOD _getMemoBlockNumber( nFldPos AS LONG ) AS LONG
 	LOCAL blockNbr := 0 AS LONG
 	SELF:ForceRel()
-	VAR oColumn := SELF:_GetColumn(nFldPos)
+	VAR oColumn := SELF:_GetColumn(nFldPos) ASTYPE DbfColumn
 	IF oColumn != NULL .AND. oColumn:IsMemo
 		IF SELF:_readRecord()
             VAR blockNo := oColumn:GetValue(SELF:_RecordBuffer)
@@ -1492,7 +1492,7 @@ METHOD GetValue(nFldPos AS LONG) AS OBJECT
 	LOCAL ret := NULL AS OBJECT
 	SELF:ForceRel()
     // Read Record to Buffer
-	VAR oColumn := SELF:_GetColumn(nFldPos)
+	VAR oColumn := SELF:_GetColumn(nFldPos) ASTYPE DbfColumn
     IF oColumn == NULL
         // Getcolumn already sets the error
         RETURN NULL
@@ -1655,7 +1655,7 @@ METHOD PutValue(nFldPos AS LONG, oValue AS OBJECT) AS LOGIC
 		IF ! SELF:_Hot
 			SELF:GoHot()
 		ENDIF
-		VAR oColumn := SELF:_GetColumn(nFldPos)
+		VAR oColumn := SELF:_GetColumn(nFldPos) ASTYPE DbfColumn
         IF oColumn != NULL
 		    IF oColumn:IsMemo
 			    IF SELF:HasMemo
@@ -2219,7 +2219,7 @@ IF FALSE .AND. info:Destination IS DBF VAR oDest
             result      := oDest:PutRec(buffer)
             FOR VAR nI := 1 TO SELF:FieldCount
                 LOCAL oColumn AS DbfColumn
-                oColumn := oDest:_GetColumn(nI)
+                oColumn := oDest:_GetColumn(nI) ASTYPE DbfColumn
                 IF oColumn:IsMemo
                     oValue := SELF:GetValue(nI)
                     oColumn:PutValue(0, oDest:_RecordBuffer)

@@ -44,9 +44,9 @@ USING System.Diagnostics
 USING System.Reflection
 
 [DebuggerDisplay("{Name,nq}={Value}")];
-    INTERNAL STRUCTURE NameValuePair
-INTERNAL Name  as STRING
-    INTERNAL Value AS USUAL
+INTERNAL STRUCTURE NameValuePair
+    INTERNAL Name  as STRING
+    INTERNAL @@Value AS USUAL
 END STRUCTURE	
 
 INTERNAL FUNCTION __GetFieldValues(aFieldList AS ARRAY, cIncludedFields AS STRING, ;
@@ -218,14 +218,13 @@ FUNCTION __GatherObject(oObject, cFieldList, cIncludedFields, cExcludedFields, l
     ENDIF
     oLocal := oObject
     IF oLocal IS XSharp.IDynamicProperties VAR oDynamic
-            var props := List<String>{} 
-            props:AddRange(oDynamic:GetPropertyNames())
-            FOREACH var cField in aFields           
-                if props:IndexOf(cField:ToUpper()) >= 0
-                    var value := oDynamic:NoIvarGet(cField)
-                    __FieldSet(cField, value)
-                endif
-                
+        var props := List<String>{} 
+        props:AddRange(oDynamic:GetPropertyNames())
+        FOREACH var cField in aFields           
+            if props:IndexOf(cField:ToUpper()) >= 0
+                var value := oDynamic:NoIvarGet(cField)
+                __FieldSet(cField, value)
+            endif
         NEXT
     ELSE
         FOREACH var cField in aFields

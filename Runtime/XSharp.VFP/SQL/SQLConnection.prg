@@ -15,7 +15,7 @@ USING System.Data.Odbc
 USING XSharp.VFP
 USING XSharp.Data
 USING XSharp.RDD
-USING System.Reflection
+
 
 INTERNAL CLASS XSharp.VFP.SQLConnection
     PROTECT _oNetConnection     AS DbConnection

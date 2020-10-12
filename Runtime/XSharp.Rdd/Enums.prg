@@ -171,9 +171,11 @@ BEGIN NAMESPACE XSharp.RDD
             CASE DbfHeaderCodepage.CP_DBF_MAC_RUSSIAN   ; RETURN OsCodepage.CP_INI_MAC_RUSSIAN    
             CASE DbfHeaderCodepage.CP_DBF_MAC_EEUROPEAN ; RETURN OsCodepage.CP_INI_MAC_EEUROPEAN
             OTHERWISE
-                RETURN  IIF(SetAnsi(), OsCodepage.CP_INI_WIN_ANSI, OsCodepage.CP_INI_DOS_US)
-                    
+                // this is what VO does and Vulcan.
+                // need to check what FoxPro and Xbase++ do.
+                RETURN OsCodepage.CP_INI_DOS_US
             END SWITCH
+            
                 
         STATIC METHOD ToHeaderCodePage(SELF codePage AS OsCodepage) AS DbfHeaderCodepage
             SWITCH codePage

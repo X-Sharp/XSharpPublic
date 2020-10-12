@@ -18,7 +18,6 @@ USING System.Data.Common
 USING XSharp.VFP
 USING XSharp.RDD
 USING System.Data
-USING System.Reflection
 
 INTERNAL CLASS XSharp.VFP.HandleCacheElement
     INTERNAL Number     AS LONG
@@ -29,8 +28,7 @@ INTERNAL STATIC CLASS XSharp.VFP.SQLSupport
     STATIC PRIVATE INITONLY Cache AS Dictionary <LONG, HandleCacheElement>
     STATIC INTERNAL UniqueId AS LONG
     STATIC INTERNAL Factory AS ISqlFactory
-    STATIC PRIVATE INITONLY aFieldNames AS System.Collections.Generic.Dictionary<STRING, STRING>
-    STATIC PRIVATE DefaultValues AS Dictionary<LONG, OBJECT>
+    STATIC PRIVATE DefaultValues AS Dictionary<SQLProperty, OBJECT>
 
     STATIC INTERNAL PROPERTY DispLogin AS LONG GET GetDefault<LONG>(SQLProperty.DispLogin)
     
@@ -38,8 +36,7 @@ INTERNAL STATIC CLASS XSharp.VFP.SQLSupport
         Cache    := Dictionary<LONG, HandleCacheElement>{}
         UniqueId := 0
         Factory  := XSharp.Data.Functions.GetSqlFactory()
-		aFieldNames   := System.Collections.Generic.Dictionary<STRING, STRING>{}
-        DefaultValues := Dictionary<LONG, OBJECT>{}
+        DefaultValues := Dictionary<SQLProperty, OBJECT>{}
         DefaultValues.Add(SQLProperty.Asynchronous       ,FALSE)
         DefaultValues.Add(SQLProperty.BatchMode          ,TRUE)
         DefaultValues.Add(SQLProperty.ConnectBusy        ,FALSE)
@@ -60,7 +57,7 @@ INTERNAL STATIC CLASS XSharp.VFP.SQLSupport
         //DefaultValues.Add(SQLProperty.UserId             ,"")
         DefaultValues.Add(SQLProperty.WaitTime           ,100)
 
-    STATIC METHOD GetDefault<T>(nDef AS LONG) AS T
+    STATIC METHOD GetDefault<T>(nDef AS SQLProperty) AS T
         IF DefaultValues:ContainsKey(nDef)
             RETURN (T) DefaultValues[nDef]
         ENDIF
@@ -100,32 +97,17 @@ INTERNAL STATIC CLASS XSharp.VFP.SQLSupport
         ENDIF
         RETURN FALSE
 
-    STATIC METHOD GetPropertyName(cProperty AS STRING) AS STRING
-        LOCAL oType     := Typeof(SQLProperty) AS System.Type
-        LOCAL aFields   := oType:GetFields() AS FieldInfo[]
-        LOCAL aNames    := List<STRING>{} AS List<STRING>
-        FOREACH VAR oFld IN aFields
-            IF oFld:IsLiteral .AND. oFld:Name:StartsWith(cProperty, StringComparison.OrdinalIgnoreCase) 
-                aNames:Add(oFld:Name)
-            ENDIF
-        NEXT
-        IF aNames:Count == 1
-            cProperty := aNames[0]
-        ELSE
-            cProperty := ""
-        ENDIF
-        RETURN cProperty
 
     STATIC METHOD GetSetProperty(nHandle AS LONG, cProperty AS STRING, newValue := NULL AS OBJECT) AS OBJECT
         LOCAL oStmt AS XSharp.VFP.SQLStatement
         LOCAL result := NULL AS OBJECT
         LOCAL cNewProp AS STRING
-        cNewProp := GetPropertyName(cProperty)
+        cNewProp := GetPartialEnumName(cProperty, typeof(SQLProperty))
         IF String.IsNullOrEmpty(cNewProp)
             VAR cMessage := String.Format(__VfpStr(VFPErrors.PROPERTY_UNKNOWN), cProperty)
             THROW Error{cMessage}
         ENDIF
-        var nProperty := GetSQLProperty(cNewProp)
+        var nProperty := (SQLProperty) GetSQLProperty(cNewProp)
         IF nHandle == 0 // Default values
             IF DefaultValues:ContainsKey(nProperty)
                 result := DefaultValues[nProperty]
@@ -279,63 +261,6 @@ INTERNAL STATIC CLASS XSharp.VFP.SQLSupport
         
     // This method is located here so we can keep the  a table with oldname - newname pairs, so we do not have
     // to do this over and over again.
-    STATIC METHOD  CleanupColumnName( cColumnName AS  STRING ) AS STRING
-		LOCAL sb AS System.Text.StringBuilder
-		LOCAL lLastWasOk AS LOGIC
-		LOCAL cResult AS STRING
-		LOCAL cWork		AS STRING
-		IF aFieldNames:ContainsKey(cColumnName)
-			RETURN aFieldNames[cColumnName]
-		ENDIF		
-		// return only allowed characters
-		sb  := System.Text.StringBuilder{}
-		// When the column is an expresion like CONCAT( foo, bar)
-		// Then remove the function name and the last closing param
-		// when there is more than one function we remove all functions
-		cWork := cColumnName
-		DO WHILE cWork:Contains("(") .AND. cWork:Contains(")") .AND. cWork:IndexOf("(") < cWork:IndexOf(")")
-			cWork := cWork:Substring(cWork:IndexOf('(')+1)
-			cWork := cWork:Substring(0, cWork:LastIndexOf(')'))
-		ENDDO
-		// Remove the paramter delimiters
-		cWork := cWork:Replace(",", "")
-		lLastWasOk := FALSE
-		FOREACH IMPLIED cChar IN cWork
-            IF Char.IsLetterOrDigit(cChar) .or. cChar == c'_'
-				sb:Append(cChar)
-				lLastWasOk := TRUE
-			ELSEIF lLastWasOk
-				sb:Append('_')
-				lLastWasOk := FALSE
-			ENDIF
-		NEXT
-		IF sb:Length == 0
-			// Something like "Count(*)" was passed in
-			cWork := cColumnName
-			cWork := cWork:Replace("(", "")
-			cWork := cWork:Replace(")", "")
-			FOREACH IMPLIED cChar IN cWork
-                IF Char.IsLetterOrDigit(cChar) .or. cChar == c'_'
-					sb:Append(cChar)
-					lLastWasOk := TRUE
-				ELSEIF lLastWasOk
-					sb:Append('_')
-					lLastWasOk := FALSE
-				ENDIF
-			NEXT
-		ENDIF	
-		IF sb:Length > 1
-			DO WHILE sb[sb:Length-1] == c'_'
-				sb:Remove(sb:Length-1,1)
-			ENDDO
-		ENDIF	
-		IF sb:Length == 0
-			cResult := "EXPR" 
-		ELSE	
-			cResult := sb:ToString()
-		ENDIF
-		aFieldNames:Add(cColumnName, cResult)
-		RETURN cResult
 
 
 

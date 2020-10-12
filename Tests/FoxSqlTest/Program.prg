@@ -11,15 +11,15 @@ USING System.Drawing
 
 FUNCTION Start() AS VOID STRICT
 TRY
-    TestInvalidSql()
-    //TestProviders()
+    //TestInvalidSql()
+    TestProviders()
     //TestProvidersStringConnect()
     //TestBatch()
     //Test3Results()
     //testTransaction()
     
-    // testMetaData()
-    // testDataTable()
+    //testMetaData()
+   //testDataTable()
     //testHandles()
     //testAsynchronous()
     //testConnect()
@@ -56,9 +56,11 @@ LOCAL nHandle AS LONG
 
 
 
-VAR properties := <STRING>{"asynchronous" , "batchmode" , "connectbusy" , "connectstring" ,"connecttimeout" , "datasource", ;
-"disconnectrollback", "displogin", "dispwarnings", "idletimeout" , "odbchdbc", "odbchstmt" ,;
-"packetsize" , "password" , "querytimeout" , "shared" , "transactions" , "userid" , "waittime" }
+VAR properties := <SqlProperty>{SqlProperty.Asynchronous , SqlProperty.batchmode , SqlProperty.connectbusy , SqlProperty.connectstring ,;
+    SqlProperty.connecttimeout , SqlProperty.datasource, SqlProperty.disconnectrollback, SqlProperty.displogin, ;
+    SqlProperty.dispwarnings, SqlProperty.idletimeout , SqlProperty.odbchdbc,SqlProperty.odbchstmt ,SqlProperty.packetsize , ;
+    SqlProperty.password , SqlProperty.querytimeout , SqlProperty.shared , SqlProperty.transactions , ;
+    SqlProperty.userid , SqlProperty.waittime }
 VAR cProviders := <STRING>{"ODBC","OLEDB","SQL"}
 VAR oProviders := <ISqlFactory>{XSharp.Data.OdbcFactory{}, XSharp.Data.OleDbFactory{}, XSharp.Data.SqlServerFactory{}}
 VAR cConnectionStrings := <STRING>{ ;
@@ -74,12 +76,12 @@ FOR VAR nProvider := 1 TO 3
     oProvider := SqlSetFactory()
     nHandle := SqlStringConnect(cConnectionString,TRUE)
     ? "Properties for provider "+oProvider:Name
-    FOREACH VAR sProp IN Properties
-        ? sProp, SqlGetProp(nHandle,sProp )
+    FOREACH sProp as SqlProperty IN Properties
+        ? sProp:ToString(), SqlGetProp(nHandle,sProp )
     NEXT
     LOCAL aInfo AS ARRAY
     aInfo := {}
-    ? SQLExec(nHandle, "Select * from CursusGroepen;Select * from Bedrijven;Select * from Personen;","Result",aInfo) // Select * from Bedrijven;Select * from Personen
+    ? SQLExec(nHandle, "Select * from CursusGroepen; Select * from Bedrijven" ,"Result",aInfo) // Select * from Bedrijven;Select * from Personen
     ShowArray(aInfo)
     ? seconds() - f
     WAIT
@@ -110,13 +112,14 @@ LOCAL nHandle AS LONG
 SqlSetFactory("SQLServer")
 VAR cConnectionString := "server=(LOCAL);trusted_connection=Yes;app=ConsoleApplication1;wsid=ARTEMIS;database=Cursadm;"
 ? nHandle := SqlStringConnect(cConnectionString,FALSE)
-SqlSetProp(nHandle, "BatchMode", FALSE)
+SqlSetProp(nHandle, SqlProperty.BatchMode, FALSE)
 LOCAL aInfo AS ARRAY
 aInfo := {}
 VAR f := seconds()
 SQLExec(nHandle, "Select * from CursusGroepen;Select * from Bedrijven;Select * from Personen;","Result",aInfo) // Select * from Bedrijven;Select * from Personen
 ShowArray(aInfo)
 DO WHILE SqlMoreResults(nHandle,,aInfo) != 0
+    ? "More"
     ShowArray(aInfo)
 ENDDO
 ? seconds() - f
@@ -129,8 +132,8 @@ LOCAL nHandle AS LONG
 SqlSetFactory("SQLServer")
 VAR cConnectionString := "server=(LOCAL);trusted_connection=Yes;app=ConsoleApplication1;wsid=ARTEMIS;database=Cursadm;"
 ? nHandle := SqlStringConnect(cConnectionString,TRUE)
-SqlSetProp(nHandle, SQLProperty.BatchMode, TRUE)
-SqlSetProp(nHandle, SQLProperty.ConnectTimeOut, 1000)
+SqlSetProp(nHandle, "BatchMode", TRUE)
+SqlSetProp(nHandle, "ConnectTimeOut", 1000)
 LOCAL aInfo AS ARRAY
 aInfo := {}
 VAR f := seconds()
@@ -147,7 +150,7 @@ LOCAL nHandle AS LONG
 SqlSetFactory("SQLServer")
 VAR cConnectionString := "server=(LOCAL);trusted_connection=Yes;database=Northwind;"
 ? nHandle := SqlStringConnect(cConnectionString,TRUE)
-SqlSetProp(nHandle, SQLProperty.Transactions, DB_TRANSMANUAL )
+SqlSetProp(nHandle, "Transactions", DB_TRANSMANUAL )
 VAR f := seconds()
 SQLExec(nHandle, "create table test(test int) ")
 ? SQLExec(nHandle, "insert into test(test) values(1) ")
@@ -171,7 +174,7 @@ VAR cConnectionString := "server=(LOCAL);trusted_connection=Yes;app=ConsoleAppli
 //VAR cConnectionString :=e"Provider=SQLNCLI11.1;Integrated Security=SSPI;Initial Catalog=\"CursAdm\";Data Source=(local)"
 //VAR cConnectionString :="DSN=CURSADM;Trusted_Connection=Yes;"
 ? nHandle := SqlStringConnect(cConnectionString,TRUE)
-SqlSetProp(nHandle, SQLProperty.Transactions, DB_TRANSMANUAL )
+SqlSetProp(nHandle, "Transactions", DB_TRANSMANUAL )
 VAR f := seconds()
 ? SqlColumns(nHandle,"Bedrijven","NATIVE")
 DbCopy("C:\temp\ColumnsXNATSQL")
@@ -190,7 +193,7 @@ LOCAL nHandle AS LONG
 SqlSetFactory("SQLServer")
 VAR cConnectionString := "server=(LOCAL);trusted_connection=Yes;database=NorthWind;"
 ? nHandle := SqlStringConnect(cConnectionString,TRUE)
-SQLExec(nHandle, "Select a.* from Customers a, Customers b","Customers") // Select * from Bedrijven;Select * from Personen
+SQLExec(nHandle, "Select * from Products") // Select * from Bedrijven;Select * from Personen
 Browse()
 RETURN
 
@@ -202,7 +205,7 @@ FUNCTION Browse(oTable AS Object) AS VOID
 LOCAL oForm AS Form
 LOCAL oGrid AS DataGridView
 oForm := Form{}
-oForm:Text := "Browse table "+oTable:Name
+//oForm:Text := "Browse table "+oTable:Name
 oGrid := DataGridView{}
 oForm:Controls:Add(oGrid)
 oGrid:Location := System.Drawing.Point{0,0}
@@ -261,19 +264,9 @@ RETURN
 
 
 FUNCTION Browse() AS VOID STRICT
-LOCAL oSource AS DbDataSource
+LOCAL oSource AS object
 oSource := DbDataSource()
-IF oSource != NULL
-    oSource:SupportsSorting := TRUE
-    Browse(oSource)
-ELSE
-    VAR err := XSharp.RuntimeState.LastRddError
-    IF err != NULL
-        MessageBox(err:ToString(),MB_YESNO,"Error")
-    ELSE
-        MessageBox("Workarea not in use" ,MB_OK+ MB_ICONSTOP ,"Error")
-    ENDIF
-ENDIF
+Browse(oSource)
 RETURN
 
 
@@ -314,7 +307,7 @@ VAR cConnectionString := "server=(LOCAL);trusted_connection=Yes;database=Northwi
 LOCAL aInfo := {} AS ARRAY
 LOCAL f := seconds() AS FLOAT
 SqlSetProp(nHandle, "Asynchronous", TRUE)
-VAR result := SqlExec(nHandle, "exec PPI_Db.dbo.ZoekProject 1, 9999, '' ,1", ,aInfo)
+VAR result := SqlExec(nHandle, "select top 100000 * from PPI_Db.dbo.tblUren", ,aInfo)
 VAR counter := 0
 DO WHILE result == 0
     counter += 1
@@ -335,7 +328,7 @@ FUNCTION testConnect()
 LOCAL handle AS LONG
 TRY
     SqlSetFactory("ODBC")
-    ? sqlSetprop(0, SqlProperty.ConnectTimeOut, 1) 
+    ? sqlSetprop(0, "ConnectTimeOut", 1) 
     ? SqlSetProp(0, "Displ",DB_PROMPTCOMPLETE)
     handle := SqlStringConnect("Dsn=Northwind;")
     IF handle > 0
@@ -361,6 +354,7 @@ FUNCTION testRddBrowse() AS VOID
 RETURN
 
 FUNCTION TestCopyTo AS VOID
+    local handle
     SqlSetFactory("ODBC")
     ? sqlSetprop(0, SqlProperty.ConnectTimeOut, 1) 
     ? SqlSetProp(0, "Displ",DB_PROMPTCOMPLETE)
@@ -387,7 +381,7 @@ FUNCTION testDbSetOrder() AS VOID
 
 FUNCTION TestSqlParameters AS VOID
     SqlSetFactory("ODBC")
-    ? sqlSetprop(0, SqlProperty.ConnectTimeOut, 1) 
+    ? sqlSetprop(0, "ConnectTimeOut", 1) 
     ? SqlSetProp(0, "Displ",DB_PROMPTCOMPLETE)
     //SQLSetFactory("SQL")
     //LOCAL handle := SqlStringConnect("server=(LOCAL);trusted_connection=Yes;database=Northwind;")
@@ -402,10 +396,11 @@ FUNCTION TestSqlParameters AS VOID
         SqlParameters(handle, oParams)
         // Execute a query with a parameter. We accept both a ? and a : as start of parameter name
         ? SqlExec(handle, "Select * from orders where customerId = :CustomerId","orders")
-        ? SqlGetprop(handle, SqlProperty.NativeCommand)
+        ? SqlGetprop(handle, "NativeCommand")
         Browse()
 
-ENDIF
+    ENDIF
+    RETURN
 
 
 FUNCTION TestPg()
@@ -419,7 +414,7 @@ FUNCTION TestPg()
         Browse()
 
 ENDIF
-
+RETURN
 
 FUNCTION testExec2()
      SqlSetFactory("ODBC")
@@ -430,7 +425,8 @@ FUNCTION testExec2()
         ShowArray(aInfo)
         ? SqlExec(handle, "Select * from categories","test",aInfo)
         ShowArray(aInfo)
-ENDIF
+    ENDIF
+    RETURN
 
 FUNCTION TestInvalidSql()
      SqlSetFactory("ODBC")
@@ -440,5 +436,5 @@ FUNCTION TestInvalidSql()
         ? SqlExec(handle, "Jimmy runs fast","test",aInfo)
         ShowArray(aInfo)
 ENDIF
-
+return FALSE
 

@@ -6,6 +6,7 @@ USING XSharp.RDD
 USING System.IO
 USING System.Threading
 USING System.Reflection
+USING System.Collections.Generic
 
 CLASS a
 END CLASS
@@ -15,7 +16,9 @@ END class
 [STAThread];      
 FUNCTION Start() AS VOID
     TRY
-        OrdDescTest2()
+        //ReadVfpTableWithInfo()
+        ReadDbcProperties()
+        //OrdDescTest2()
             //        VAR x := MemAlloc(80000)
             //        ? PtrLen(x)
             //        ? PtrLenWrite(x)
@@ -300,6 +303,124 @@ LOCAL i AS DWORD
 		
 	RETURN		
 
+Function ReadVfpTableWithInfo() as VOID
+    RddSetDefault("DBFVFP")
+    var tables := <String>{"employees","customers","orders","products","categories","region","orderdetails","employeeterritories","shippers"}
+    var path := "c:\XSharp\DevRt\Runtime\XSharp.VFP\TestData\"
+    FOREACH var table in tables
+        ? "Table", table        
+        DbUseArea(TRUE, "DBFVFP", path+table)
+        FOR var I := 1 to FCount()
+            ? "Column ", i, DbFieldInfo(DBS_NAME, i), DbFieldInfo(DBS_ALIAS, i),  DbFieldInfo(DBS_CAPTION, i), DbFieldInfo(DBS_DESCRIPTION, i)
+        NEXT
+        DbCloseArea()
+    NEXT
+FUNCTION ReadDbcProperties() AS VOID
+    var records := List<LONG>{}
+    RddSetDefault("DBFVFP")
+    //DbUseArea(TRUE, "DBFVFP", "c:\VFF\Samples\data\northwind.dbc")
+    DbUseArea(TRUE, "DBFVFP", "c:\Temp\testdb.DBC")
+    
+    OrdSetFocus("OBJECTID")
+    Set filter to FIELD->PARENTID == 1
+    DO WHILE ! Eof()
+        records:Add(recno())
+        skip
+    ENDDO
+    SET FILTER TO 
+    FOREACH var recno in records
+        DbGoto(recno) 
+		? "" 
+        var nparentId := FieldGetSym("ObjectID")
+        ? FieldGetSym("ObjectType"), Trim(FieldGetSym("ObjectName"))
+        var props := FieldGetBytes(FieldPos("Property"))
+		var sCode  := FieldGetSym("CODE")
+        DecodeProps(10, props)
+		if IsString(sCode) .and. ! empty(sCode) .and. "Source" $ Trim(FieldGetSym("ObjectName"))
+		//	? sCode
+		endif
+		if nparentId == 1
+			loop
+        endif
+        set filter to FIELD->Parentid == nparentId
+        DbGoTop()
+        DO WHILE ! Eof()
+            ? Space(10), FieldGetSym("ObjectType"), Trim(FieldGetSym("ObjectName"))
+            props := FieldGetBytes(FieldPos("Property"))
+            DecodeProps(20, props)
+            skip
+        ENDDO
+        SET FILTER TO
+    NEXT
+    DbCloseArea()
+
+#pragma options ("az", on)
+FUNCTION DecodeProps(indent as long, bProps as byte[])
+    if bProps:Length > 0
+        VAR pos := 8
+        DO WHILE pos < bProps:Length
+            VAR len  := FoxToLong(bProps, pos)
+            if len + pos > bProps:Length
+                EXIT
+            endif
+            VAR type := FoxToShort(bProps, pos+4)
+            VAR prop := (LONG) bProps[pos+6]
+            var ctype := DatabasePropertyValType(prop)
+            local oValue := "" as usual
+            var dbProp = (XSharp.RDD.DatabasePropertyType) prop
+            DO CASE
+            CASE ctype == "C"
+                oValue := System.Text.Encoding.Default:GetString(bProps, pos+7, len-8)
+                CASE ctype == "N"
+                    if len == 8
+                        oValue := bProps[pos+7]
+                    else
+                        oValue := FoxValue(bProps, pos+7)
+                    endif
+            CASE ctype == "L"
+                oValue := bProps[pos+7] != 0
+            ENDCASE
+			var skip := dbProp == DatabasePropertyType.Class 
+            if ! skip
+				skip := IsString(oValue) .and. empty(oValue)
+			endif
+			if ! skip
+                ? space(indent), "*"+padr(dbProp:ToString(),15) , oValue
+            endif
+            pos += len
+        ENDDO
+    ENDIF
+    RETURN     
+
+
+function FoxToLong(b as byte[], pos as int) as LONG
+    local result as long
+    result := b[pos+3]
+    result := result << 8
+    result += b[pos+2]
+    result := result << 8
+    result += b[pos+1]
+    result := result << 8
+    return result + b[pos]
+
+function FoxValue(b as byte[], pos as int) as LONG
+    local result as long
+    result := b[pos]
+    result := result << 8
+    result += b[pos+1]
+    result := result << 8
+    result += b[pos+2]
+    result := result << 8
+    return result + b[pos+3]
+
+function FoxToShort(b as byte[], pos as int) as Short
+    local result as long
+    result := b[pos+1]
+    result := result << 8
+    result += b[pos]
+    return result
+
+#pragma options ("az", default)
 FUNCTION TestChrisCorrupt2() AS VOID
 	DbfTest1.RunTest1()
 	DbfTest1.RunTest2()

@@ -6,6 +6,7 @@
 USING System.Text
 USING System.Globalization
 USING System.Collections.Generic
+USING System.Reflection
 
 INTERNAL STATIC CLASS XSharp.ConversionHelpers
     STATIC INTERNAL usCulture AS CultureInfo
@@ -377,7 +378,20 @@ FUNCTION _Val(cNumber AS STRING) AS OBJECT
 
 
 
-
+FUNCTION GetPartialEnumName(cName as STRING, oType as System.Type) AS STRING
+    LOCAL aFields   := oType:GetFields() AS FieldInfo[]
+    LOCAL aNames    := List<STRING>{} AS List<STRING>
+    FOREACH VAR oFld IN aFields
+        IF oFld:IsLiteral .AND. oFld:Name:StartsWith(cName, StringComparison.OrdinalIgnoreCase) 
+            aNames:Add(oFld:Name)
+        ENDIF
+    NEXT
+    IF aNames:Count == 1
+        cName := aNames[0]
+    ELSE
+        cName := ""
+    ENDIF
+    RETURN cName
 
 
 

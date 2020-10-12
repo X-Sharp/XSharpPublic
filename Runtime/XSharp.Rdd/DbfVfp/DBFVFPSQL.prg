@@ -19,6 +19,7 @@ BEGIN NAMESPACE XSharp.RDD
         PROTECT _table as DataTable
         PROTECT _phantomRow as DataRow
         PROTECT _padStrings AS LOGIC
+        PROTECT _originalRecordLength as LONG
         #region Overridden properties
         OVERRIDE PROPERTY Driver AS STRING GET "DBFVFPSQL"
 
@@ -96,18 +97,28 @@ BEGIN NAMESPACE XSharp.RDD
                     var dbColumn := self:_Fields[index]
                     dbColumn:Caption     := oColumn:Caption
                 NEXT
+                SELF:_originalRecordLength := _RecordLength
                 SELF:_RecordLength := 2 // 1 byte "pseudo" data + deleted flag
                 SELF:_RecordBuffer := BYTE[]{ SELF:_RecordLength}
                 SELF:_BlankBuffer  := BYTE[]{ SELF:_RecordLength}
                 SELF:Header:RecCount := _RecCount
                 // set file length
                 LOCAL lOffset   := SELF:_HeaderLength + SELF:_RecCount * SELF:_RecordLength AS INT64
-	            // Note FoxPro does not write EOF character for files with 0 records
-	            var ok := _oStream:SafeSetPos(lOffset) .AND. _oStream:SafeWriteByte(26) .AND. _oStream:SafeSetLength(lOffset+1)
+                // Note FoxPro does not write EOF character for files with 0 records
+                _oStream:SafeSetPos(lOffset)
+                _oStream:SafeWriteByte(26)
+                _oStream:SafeSetLength(lOffset+1)
                 // now set the file size and reccount in the header
             END SET
         END PROPERTY            
 
+        VIRTUAL METHOD RecInfo(nOrdinal AS LONG, oRecID AS OBJECT, oNewValue AS OBJECT) AS OBJECT
+            var oResult := SUPER:RecInfo(nOrdinal, oRecID, oNewValue)
+            IF nOrdinal == DBRI_RECSIZE
+                oResult := SELF:_originalRecordLength
+            ENDIF
+            RETURN oResult
+            
         /// <inheritdoc />
         OVERRIDE METHOD Close() AS LOGIC
             LOCAL lOk AS LOGIC

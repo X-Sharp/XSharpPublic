@@ -249,8 +249,9 @@ CLASS DBFVFP INHERIT DBFCDX
                     oColumn:Alias := fields[nPos-1]
                     oColumn:ColumnName := fields[nPos-1]
                     IF String.Compare(oColumn:Name, oColumn:Alias, TRUE) != 0
-                        SELF:_fieldNames:Remove(oColumn:Name)
-                        SELF:_fieldNames:Add(oColumn:Alias, nPos-1)
+                        // We add the alias as alternative to the fieldname.
+                        // As a result we can call FieldIndex with the alias AND the fieldName
+                        SELF:_fieldNames:Add(oColumn:Alias:ToUpper(), nPos-1)
                     ENDIF
                 NEXT
             ENDIF

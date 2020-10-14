@@ -1027,10 +1027,10 @@ PROTECTED VIRTUAL METHOD _writeFieldsHeader() AS LOGIC
     // Terminator
 	fieldsBuffer[fieldDefSize] := 0x0D
     // Go end of Header
-    isOK := _oStream:SafeSetPos(DbfHeader.SIZE)  .AND. _oStream:SafeWrite(fieldsBuffer)
+    isOK :=  _oStream:SafeWriteAt(DbfHeader.SIZE, fieldsBuffer,fieldDefSize+1 )
     IF ! isOK
 		SELF:_dbfError( FException(), ERDD.WRITE, XSharp.Gencode.EG_WRITE )
-	ENDIF
+    ENDIF
     //
 RETURN isOK
 
@@ -1159,15 +1159,11 @@ RETURN isOK
 
 INTERNAL METHOD _readField(nOffSet as LONG, oField as DbfField) AS LOGIC
     // Read single field. Called from AutoIncrement code to read the counter value
-    LOCAL nPos AS INT64
-    nPos := _oStream:Position
-    RETURN _oStream:SafeSetPos(nOffSet) .AND. _oStream:SafeRead(oField:Buffer) .AND. _oStream:SafeSetPos(nPos)
+    RETURN  _oStream:SafeReadAt(nOffSet,oField:Buffer,DbfField.SIZE) 
 
 INTERNAL METHOD _writeField(nOffSet as LONG, oField as DbfField) AS LOGIC
-	LOCAL nPos AS INT64
     // Write single field in header. Called from AutoIncrement code to update the counter value
-    nPos := _oStream:Position
-    RETURN _oStream:SafeSetPos(nOffSet) .AND. _oStream:SafeWrite(oField:Buffer) .AND. _oStream:SafeSetPos(nPos)
+    RETURN  _oStream:SafeWriteAt(nOffSet, oField:Buffer, DbfField.SIZE) 
 
 
 
@@ -1323,7 +1319,7 @@ VIRTUAL PROTECTED METHOD _readRecord() AS LOGIC
 	IF  isOK 
         // Record pos is One-Based
 		LOCAL lOffset := SELF:_HeaderLength + ( SELF:_RecNo - 1 ) * SELF:_RecordLength AS LONG
-		isOK := _oStream:SafeSetPos(lOffset)  .AND. _oStream:SafeRead(SELF:_RecordBuffer, SELF:_RecordLength) 
+		isOK := _oStream:SafeReadAt(lOffset, SELF:_RecordBuffer, SELF:_RecordLength) 
 		IF isOK 
 			// Read Record
 			SELF:_BufferValid := TRUE
@@ -1351,7 +1347,7 @@ VIRTUAL PROTECTED METHOD _writeRecord() AS LOGIC
             // Record pos is One-Based
 			LOCAL recordPos AS LONG
 			recordPos := SELF:_HeaderLength + ( SELF:_RecNo - 1 ) * SELF:_RecordLength
-            isOK := _oStream:SafeSetPos(recordPos) .AND. _oStream:SafeWrite(SELF:_RecordBuffer)
+            isOK :=  _oStream:SafeWriteAt(recordPos, SELF:_RecordBuffer)
 			IF isOK
 			   // Write Record
 				TRY
@@ -2306,8 +2302,7 @@ PRIVATE METHOD _calculateRecCount()	AS LONG
 	LOCAL reccount := 0 AS LONG
     //
 	IF SELF:IsOpen
-		VAR stream  := FGetStream(SELF:_hFile)
-        VAR fSize   := stream:Length
+        VAR fSize   := SELF:_oStream:Length
 		IF fSize != 0  // Just created file ?
 			reccount := (LONG) ( fSize - SELF:_HeaderLength ) / SELF:_RecordLength
         ENDIF

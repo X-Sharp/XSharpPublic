@@ -14,7 +14,16 @@ USING System.IO
 
 BEGIN NAMESPACE XSharp
     STATIC CLASS FileStreamExensions
-    
+
+        STATIC METHOD SafeReadAt(SELF oStream AS FileStream, pos as INT64, buffer AS BYTE[]) as LOGIC
+            oStream:Position := pos
+            var ok := oStream:SafeRead(buffer, buffer:Length)
+            return ok
+
+        STATIC METHOD SafeReadAt(SELF oStream AS FileStream, pos as INT64, buffer AS BYTE[], nLength as LONG) as LOGIC
+            oStream:Position := pos
+            var ok := oStream:SafeRead(buffer, nLength)
+            return ok
         STATIC METHOD SafeRead(SELF oStream AS FileStream, buffer AS BYTE[]) AS LOGIC
             RETURN SafeRead(oStream, buffer, buffer:Length)
             
@@ -37,8 +46,20 @@ BEGIN NAMESPACE XSharp
                 result := FALSE
             END TRY
             RETURN result
+
+        STATIC METHOD SafeWriteAt(SELF oStream AS FileStream, pos as INT64, buffer AS BYTE[]) as logic
+            oStream:Position := pos
+            var ok := oStream:SafeWrite(buffer, buffer:Length)
+            return ok
+
+        STATIC METHOD SafeWriteAt(SELF oStream AS FileStream, pos as INT64, buffer AS BYTE[], length as LONG) as logic
+            oStream:Position := pos
+            var ok := oStream:SafeWrite(buffer, length)
+            return ok
+            
         STATIC METHOD SafeWrite(SELF oStream AS FileStream, buffer AS BYTE[]) AS LOGIC
             RETURN SafeWrite(oStream, buffer, buffer:Length)
+            
             
         STATIC METHOD SafeWrite(SELF oStream AS FileStream, buffer AS BYTE[], length AS LONG) AS LOGIC
             LOCAL result AS LOGIC
@@ -61,7 +82,12 @@ BEGIN NAMESPACE XSharp
          STATIC METHOD SafeSetPos(SELF oStream AS FileStream, offset AS INT64) AS LOGIC
             LOCAL result AS LOGIC
             TRY
-                result := oStream:Seek(offset, SeekOrigin.Begin) == offset
+                oStream:Position := offset
+                if offset < 100 .and. offset != 0
+                    //? offset, ProcName(1), ProcName(2)
+                ENDIF
+                //result := oStream:Seek(offset, SeekOrigin.Begin) == offset
+                result := TRUE
             CATCH
                 result := FALSE
             END TRY

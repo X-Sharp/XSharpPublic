@@ -235,7 +235,7 @@ BEGIN NAMESPACE XSharp.IO
                 IF oMode:UnBuffered
                     oStream := FileStream{cFile, oMode:FileMode, oMode:FileAccess, oMode:FileShare, 1,FileOptions.RandomAccess}
                 ELSE
-                    oStream := XsSharedFileStream.CreateFileStream(cFile, oMode:FileMode, oMode:FileAccess, oMode:FileShare, 16*1024,FileOptions.RandomAccess)
+                    oStream := XsFileStream.CreateFileStream(cFile, oMode:FileMode, oMode:FileAccess, oMode:FileShare, 16*1024,FileOptions.RandomAccess)
                 ENDIF
  
 			CATCH e AS Exception

@@ -197,25 +197,23 @@ PROPERTY FieldCount AS LONG GET  (SELF:HeaderLen - DbfHeader.SIZE) / DbfField.SI
     */
 
 METHOD Read() AS LOGIC
-    VAR oStream := _oRDD:Stream
-    VAR nPos := oStream:Position
-    VAR Ok := oStream:SafeSetPos(0) .AND. oStream:SafeRead(SELF:Buffer) .AND. oStream:SafeSetPos(nPos)    
-    RETURN Ok
+    RETURN _oRDD:Stream:SafeReadAt(0, SELF:Buffer,SIZE)
 
 METHOD Write() AS LOGIC
-	LOCAL dtInfo AS DateTime
-	dtInfo := DateTime.Now
-    // Update the Date/Time information
-	SELF:Year   := (BYTE)(dtInfo:Year % 100)
-	SELF:Month  := (BYTE)dtInfo:Month
-	SELF:Day    := (BYTE)dtInfo:Day
+	LOCAL Ok := TRUE AS LOGIC
+	IF SELF:isHot
+	    LOCAL dtInfo AS DateTime
+	    dtInfo := DateTime.Now
+	    // Update the Date/Time information
+	    SELF:Year   := (BYTE)(dtInfo:Year % 100)
+	    SELF:Month  := (BYTE)dtInfo:Month
+	    SELF:Day    := (BYTE)dtInfo:Day
 
-    VAR oStream := _oRDD:Stream
-    VAR nPos := oStream:Position
-    VAR Ok  := oStream:SafeSetPos(0) .AND. oStream:SafeWrite(SELF:Buffer) .AND. oStream:SafeSetPos(nPos)    
-    IF Ok
-        SELF:isHot := FALSE
-    ENDIF
+	    Ok  := _oRDD:Stream:SafeWriteAt(0,SELF:Buffer,SIZE)
+	    IF Ok
+	        SELF:isHot := FALSE
+	    ENDIF
+	ENDIF
     RETURN Ok
 
 

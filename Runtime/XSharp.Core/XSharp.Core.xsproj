@@ -109,13 +109,15 @@
     <Compile Include="State\Set.prg" />
     <Compile Include="State\State.prg" />
     <Compile Include="Types\Attributes.prg" />
+    <Compile Include="Types\BufferedFileStream.prg" />
     <Compile Include="Types\Dialect.prg" />
     <Compile Include="Types\Error.prg" />
     <Compile Include="Types\ErrorEnums.prg" />
     <Compile Include="Types\Interfaces.prg" />
     <Compile Include="Types\MacroSupport.prg" />
+    <Compile Include="Types\SharedFileStream.prg" />
     <Compile Include="Types\StreamExtensions.prg" />
-    <Compile Include="Types\Streams.prg" />
+    <Compile Include="Types\FileStream.prg" />
     <Compile Include="Types\UsualType.prg" />
     <Compile Include="Types\WrappedException.prg" />
   </ItemGroup>

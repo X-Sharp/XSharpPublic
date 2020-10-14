@@ -180,8 +180,7 @@ BEGIN NAMESPACE XSharp.RDD
             isOk := _oStream:SafeWrite(memoBlock)
             IF isOk
                 // Don't forget to write an End Of Block terminator (1Ah) (Should it be two ??)
-                LOCAL eob := <BYTE>{0x1A} AS BYTE[]
-                isOk := _oStream:SafeWrite(eob, 1)
+                isOk := _oStream:SafeWriteByte(0x1A)
                 IF isOk .AND. newBlock
                     // We have to update the next block info
                     LOCAL newPos AS LONG // FTell might do the job ?

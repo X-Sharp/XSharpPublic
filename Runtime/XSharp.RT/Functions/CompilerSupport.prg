@@ -92,6 +92,9 @@ FUNCTION __FieldGet( fieldName AS STRING ) AS USUAL
     ELSE
          _DbThrowErrorOnFailure(__FUNCTION__, CoreDb.FieldGet( fieldpos, REF ret ))
     ENDIF
+    IF ret == NULL
+        CoreDb.FieldInfo(DBS_BLANK, fieldpos, REF ret)
+    ENDIF
     RETURN ret
     
     

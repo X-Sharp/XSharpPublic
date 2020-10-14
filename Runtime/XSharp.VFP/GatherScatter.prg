@@ -42,6 +42,7 @@
 USING System.Collections.Generic  
 USING System.Diagnostics
 USING System.Reflection
+USING XSharp.RDD.Support
 
 [DebuggerDisplay("{Name,nq}={Value}")];
 INTERNAL STRUCTURE NameValuePair
@@ -91,7 +92,14 @@ INTERNAL FUNCTION __BuildFieldList(aFieldList AS ARRAY, cIncludedFields AS STRIN
                 lInclude := TRUE
         END SWITCH
         IF lInclude
-            allfields:Add(VoDb.FieldName(nFld):ToUpperInvariant())
+            LOCAL oVar := NULL AS OBJECT
+            VoDb.FieldInfo( DBS_STRUCT, nFld, REF oVar)
+            VAR oFld := (RddFieldInfo) oVar
+            IF oFld:Alias != NULL
+                allfields:Add(oFld:Alias:ToUpperInvariant())
+            ELSE
+                allfields:Add(oFld:Name:ToUpperInvariant())
+            ENDIF
         ENDIF
     NEXT			    	
     IF lAll

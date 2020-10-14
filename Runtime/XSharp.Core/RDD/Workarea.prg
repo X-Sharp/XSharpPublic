@@ -638,6 +638,8 @@ BEGIN NAMESPACE XSharp.RDD
                     RETURN oFld:Flags
                 CASE DbFieldInfo.DBS_STRUCT
                     RETURN oFld
+                CASE DbFieldInfo.DBS_BLANK
+                    RETURN oFld:BlankValue()
                 CASE DbFieldInfo.DBS_PROPERTIES
                     RETURN DbFieldInfo.DBS_ALIAS
                 END SWITCH

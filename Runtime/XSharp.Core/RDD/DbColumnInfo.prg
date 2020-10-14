@@ -32,8 +32,6 @@ CLASS XSharp.RDD.DbColumnInfo INHERIT RddFieldInfo
     /// <summary>Initializes a new instance of the DbColumnInfo class</summary>
     CONSTRUCTOR(oInfo AS RddFieldInfo)
         SUPER(oInfo)
-        SELF:ColumnName := SELF:Name
-        SELF:Caption    := SELF:ColumnName
         SELF:CalculateColumnType()
         RETURN
         

@@ -104,19 +104,43 @@ CLASS RddFieldInfo
 
    /// <summary>Copy values from one object to another.</summary>
    /// <param name="oInfo">Object to copy values to.</param>
+   /// <remarks>Only the fields will be copied.</remarks>
     METHOD CopyValues(oInfo AS RddFieldInfo) AS VOID
- 		SELF:Name 		:= oInfo:Name                                
-		SELF:FieldType 	:= oInfo:FieldType
-		SELF:Length 	:= oInfo:Length
-		SELF:Alias      := oInfo:Alias
-		SELF:Flags      := oInfo:Flags
-		SELF:Offset     := oInfo:Offset
+        VAR oFields    := typeof(RddFieldInfo):GetFields()
+        FOREACH VAR oField IN oFields  
+            oField:SetValue(SELF, oField:GetValue(oInfo))
+        NEXT
 		IF SELF:FieldType:HasDecimals()  .OR. SELF:FieldType == DbFieldType.Character  // Support for char fields > 255 characters
         	SELF:Decimals 	:= oInfo:Decimals
-		ENDIF
+        ENDIF
         RETURN    
-
-       
+    /// <summary>Return the blank (non null) value of the column.</summary>
+    METHOD BlankValue() AS OBJECT
+     SWITCH SELF:FieldType
+     CASE DbFieldType.Character
+     CASE DbFieldType.VarChar    
+     CASE DbFieldType.Memo
+         RETURN String.Empty
+     CASE DbFieldType.Date
+     CASE DbFieldType.DateTime
+         RETURN DateTime.MinValue
+     CASE DbFieldType.Number
+     CASE DbFieldType.Integer
+         RETURN 0
+     CASE DbFieldType.Logic
+         RETURN FALSE
+     CASE DbFieldType.Blob
+     CASE DbFieldType.General
+     CASE DbFieldType.Picture
+     CASE DbFieldType.VarBinary
+         RETURN <BYTE>{}
+     CASE DbFieldType.Currency
+         RETURN 0.0m
+     CASE DbFieldType.Double
+     CASE DbFieldType.Float
+         RETURN 0.0
+        END SWITCH
+        RETURN NULL
     /// <summary>Clone a RddFieldInfo object.</summary>        
 	METHOD Clone() AS RddFieldInfo
         VAR info := (RddFieldInfo) SELF:MemberwiseClone()

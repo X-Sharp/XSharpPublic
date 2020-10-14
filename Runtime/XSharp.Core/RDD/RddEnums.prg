@@ -83,6 +83,8 @@ BEGIN NAMESPACE XSharp.RDD.Enums
 		MEMBER DBS_COLUMNINFO       := 15
         /// <summary>VFP / SQL extension: Returns a string describing the object (the comment).</summary>
 		MEMBER DBS_DESCRIPTION      := 16
+        /// <summary>X# Extension: returns a blank value for the field.</summary>
+		MEMBER DBS_BLANK            := 17
 
         /// <summary>Gets a BLOB value.</summary>
 		MEMBER DBS_BLOB_GET			:= 101

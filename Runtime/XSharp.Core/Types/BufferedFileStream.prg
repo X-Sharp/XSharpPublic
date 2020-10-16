@@ -10,6 +10,7 @@ USING System.Diagnostics
 USING System.Runtime.InteropServices
 USING System.Collections.Generic
 USING System.Runtime.CompilerServices
+USING System.Linq
 
 BEGIN NAMESPACE XSharp.IO
     // This class was inspired by a post on StackOverflow
@@ -30,7 +31,7 @@ BEGIN NAMESPACE XSharp.IO
                     VAR llnode := item:Value
                     VAR cacheItem := llnode:Value
                     result:Add(cacheItem:Value)
-                NEXt
+                NEXT
                 RETURN result
             END GET
         END PROPERTY
@@ -144,8 +145,8 @@ BEGIN NAMESPACE XSharp.IO
             page:Hot := FALSE
         RETURN
         
-        STATIC METHOD PageFlush(oStream as XsBufferedFileStream, lKeepData as LOGIC) AS VOID
-            FOREACH var page in cache:Values
+        STATIC METHOD PageFlush(oStream AS XsBufferedFileStream, lKeepData AS LOGIC) AS VOID
+            FOREACH VAR page IN cache:Values:ToArray()
                 IF  page:Stream == oStream
                     __WritePage(page)
                     // we can directly delete from the cache because cache:Values returns a new collection
@@ -170,34 +171,69 @@ BEGIN NAMESPACE XSharp.IO
     
     CLASS XsBufferedFileStream INHERIT XsFileStream
     
-    PUBLIC CONST BUFF_SIZE  := 1024 AS LONG
-    PUBLIC CONST BUFF_MASK  := 1023 AS LONG
-    PROTECTED _length   as INT64
-    PROTECTED _position as INT64
-    PROTECTED _closed   as LOGIC
+        PUBLIC CONST BUFF_SIZE  := 1024 AS LONG
+        PUBLIC CONST BUFF_MASK  := 1023 AS LONG
+        PROTECTED _length   AS INT64
+        PROTECTED _position AS INT64
+        PROTECTED _closed   AS LOGIC
+        PROTECTED _callOriginalMethods AS LOGIC
         
         CONSTRUCTOR(path AS STRING, mode AS FileMode, faccess AS FileAccess, share AS FileShare, bufferSize AS LONG, options AS FileOptions)
             SUPER(path, mode, faccess, share, bufferSize, options)
             SELF:_length := SUPER:Length
             SELF:Position := 0
+            SELF:_callOriginalMethods := FALSE
             
-        PUBLIC METHOD XRead(page as Int64,bytes AS BYTE[] , count AS INT) AS INT
-            SUPER:Position := page
-            RETURN SUPER:Read(bytes, 0, count)
+        PUBLIC METHOD XRead(page AS INT64,bytes AS BYTE[] , count AS INT) AS INT
+            SELF:_callOriginalMethods := TRUE
+            SELF:Position := page
+            VAR result := SUPER:Read(bytes, 0, count)
+            SELF:_callOriginalMethods := FALSE
+            RETURN result
         
-        PUBLIC METHOD XWrite(page as Int64, bytes AS BYTE[] , count AS INT) AS LOGIC
-            SUPER:Position := page
+        PUBLIC METHOD XWrite(page AS INT64, bytes AS BYTE[] , count AS INT) AS LOGIC
+            SELF:_callOriginalMethods := TRUE
+            SELF:Position := page
             SUPER:Write(bytes, 0, count)
+            SELF:_callOriginalMethods := FALSE
             RETURN TRUE
         
-        PUBLIC OVERRIDE PROPERTY Position as INT64 GET _position SET _position := value
-        PUBLIC OVERRIDE PROPERTY Length   as INT64 GET _length
+        PUBLIC OVERRIDE PROPERTY Position AS INT64
+            GET
+                IF SELF:_callOriginalMethods
+                    RETURN SUPER:Position
+                ENDIF
+                RETURN _position
+            END GET
+            SET
+                IF SELF:_callOriginalMethods
+                    SUPER:Position := VALUE
+                ELSE
+                    _position := VALUE
+                ENDIF
+            END SET
+        END PROPERTY
+        PUBLIC OVERRIDE PROPERTY Length   AS INT64
+            GET
+                IF SELF:_callOriginalMethods
+                    RETURN SUPER:Length
+                ENDIF
+                RETURN _length
+            END GET
+            
+        END PROPERTY
         
-        PUBLIC OVERRIDE METHOD SetLength (newLength as INT64) AS VOID
-        _length := newLength
+        PUBLIC OVERRIDE METHOD SetLength (newLength AS INT64) AS VOID
+            IF SELF:_callOriginalMethods
+                SUPER:SetLength(newLength)
+            ENDIF
+            _length := newLength
         
         PUBLIC OVERRIDE METHOD Read(bytes AS BYTE[] , offset AS INT, count AS INT) AS INT
             // pages in the cache are 1 K
+            IF SELF:_callOriginalMethods
+                RETURN SUPER:Read(bytes, offset, count)
+            ENDIF
             var pos         := SELF:Position
             var page        := (INT64) _AND(pos , ~BUFF_MASK) 
             var pageoffset  := (LONG) _AND(pos , BUFF_MASK)
@@ -220,7 +256,11 @@ BEGIN NAMESPACE XSharp.IO
         RETURN read
         
         PUBLIC OVERRIDE METHOD Write(bytes AS BYTE[] , offset AS INT, count AS INT) AS VOID
-            var pos         := SELF:Position
+            IF SELF:_callOriginalMethods
+                SUPER:Write(bytes, offset, count)
+                RETURN
+            ENDIF
+            VAR pos         := SELF:Position
             var page        := (INT64) _AND(pos , ~BUFF_MASK) 
             var pageoffset  := (LONG) _AND(pos , BUFF_MASK)
             var written     := 0
@@ -242,8 +282,12 @@ BEGIN NAMESPACE XSharp.IO
             SELF:_length := Math.Max(SELF:_length, pos+count)
         RETURN
         
-        PUBLIC OVERRIDE METHOD WriteByte(b as BYTE ) AS VOID
-            var pos             := SELF:Position
+        PUBLIC OVERRIDE METHOD WriteByte(b AS BYTE ) AS VOID
+            IF SELF:_callOriginalMethods
+                SUPER:WriteByte(b)
+                RETURN
+            ENDIF
+            VAR pos             := SELF:Position
             var page            := (INT64) _AND(pos , ~BUFF_MASK) 
             var pageoffset      := (LONG) _AND(pos , BUFF_MASK)
             VAR buffer          := PageBuffers.PageUpdate(SELF, page, BUFF_SIZE)
@@ -255,20 +299,27 @@ BEGIN NAMESPACE XSharp.IO
         PUBLIC OVERRIDE METHOD Flush(lCommit as LOGIC) AS VOID
             PageBuffers.PageFlush(SELF, TRUE)
             SUPER:Flush(lCommit)
-            SUPER:SetLength(_length)
+            IF SUPER:Length != _length
+                SUPER:SetLength(_length)
+            ENDIF
             SELF:Position := _length
         RETURN 
         
         PUBLIC OVERRIDE METHOD Close( ) AS VOID
             IF ! SELF:_closed
                 PageBuffers.PageFlush(SELF, FALSE)
-                SUPER:SetLength(_length)
+                IF SUPER:Length != _length
+                    SUPER:SetLength(_length)
+                ENDIF
                 SELF:_closed := TRUE
             ENDIF
             SUPER:Close()
             RETURN
         
         PUBLIC OVERRIDE METHOD Seek(offset AS INT64, origin AS SeekOrigin) AS INT64
+            IF SELF:_callOriginalMethods
+                RETURN SUPER:Seek(offset, origin)
+            ENDIF
             var pos := self:Position
             SWITCH origin
             CASE SeekOrigin.Begin

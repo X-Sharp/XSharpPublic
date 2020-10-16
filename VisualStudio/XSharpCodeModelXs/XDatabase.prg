@@ -127,7 +127,6 @@ BEGIN NAMESPACE XSharpModel
 						//XSolution.SetStatusBarAnimation(TRUE, 2)
 						Log("Starting backup to "+currentFile)
 						SaveToDisk(oConn, currentFile )
-					Log("Completed backup to "+currentFile)
 				CATCH e AS Exception
 					Log("Exception: "+e:ToString())
 				FINALLY
@@ -136,6 +135,7 @@ BEGIN NAMESPACE XSharpModel
                NOP
 				END TRY
 			END LOCK
+    		Log("Completed backup to "+currentFile)
 		RETURN
 		
 		STATIC METHOD CreateSchema(connection AS SQLiteConnection) AS VOID
@@ -560,10 +560,10 @@ BEGIN NAMESPACE XSharpModel
 			IF ! IsDbOpen
 				RETURN
 			ENDIF
+			Log(i"Update File info for file {oFile.FullPath}")
 			BEGIN LOCK oConn
 				TRY
                IF System.IO.File.Exists(oFile:FullPath)  // for files from SCC the physical file does not always exist
-						Log(i"Update File info for file {oFile.FullPath}")
 						BEGIN USING VAR oCmd := SQLiteCommand{"SELECT 1", oConn}
 							oCmd:CommandText := "UPDATE Files SET LastChanged = $last, Size = $size WHERE id = "+oFile:Id:ToString()
 							VAR fi            := FileInfo{oFile:FullPath}
@@ -614,9 +614,9 @@ BEGIN NAMESPACE XSharpModel
 			IF ! IsDbOpen
 				RETURN
 			ENDIF
+			Log(i"Update File contents for file {oFile.FullPath}")
 			BEGIN LOCK oConn
 				TRY
-						Log(i"Update File contents for file {oFile.FullPath}")
 						BEGIN USING VAR oCmd := SQLiteCommand{"DELETE FROM Members WHERE IdFile = "+oFile:Id:ToString(), oConn}
 							oCmd:ExecuteNonQuery()
 							
@@ -816,9 +816,9 @@ BEGIN NAMESPACE XSharpModel
 			IF ! IsDbOpen .OR. String.IsNullOrEmpty(oAssembly:FullName) .OR. String.IsNullOrEmpty(oAssembly:FileName)
 				RETURN
 			ENDIF   
+			Log(i"Update Assembly info for assembly {oAssembly.FileName}")
 			BEGIN LOCK oConn
 				TRY
-						Log(i"Update Assembly info for assembly {oAssembly.FileName}")
 						BEGIN USING VAR oCmd := SQLiteCommand{"SELECT 1", oConn}
 							// Updated TypeReferences
 							//	   "Create Table ReferencedTypes ("

@@ -270,6 +270,16 @@ namespace XSharp.MacroCompiler
                             return ConversionSymbol.Create(ConversionKind.ImplicitUserDefined, converter);
                     }
                 }
+                else if (type.IsByRef)
+                {
+                    var elem = type.ElementType;
+                    var inner = Conversion(expr, elem, options);
+                    if (inner.Exists)
+                    {
+                        var outer = ConversionSymbol.CreateByRef();
+                        return ConversionSymbol.Create(outer, new ConversionToTemp(inner, elem));
+                    }
+                }
                 else
                 {
                     MethodSymbol converter = null;
@@ -285,7 +295,7 @@ namespace XSharp.MacroCompiler
                     }
                 }
             }
-            else if (type.NativeType == NativeType.Usual && expr.Datatype.IsReferenceType)
+            else if (type.NativeType == NativeType.Usual && expr.Datatype.IsReferenceType) // XXX dead code!
             {
                 var inner = Conversion(expr, Compilation.Get(NativeType.Object), options | BindOptions.Explicit);
                 if (inner.Exists)
@@ -300,9 +310,10 @@ namespace XSharp.MacroCompiler
 
         internal static ConversionSymbol ResolveByRefConversion(Expr expr, TypeSymbol type, BindOptions options)
         {
-            if (type.IsByRef && TypesMatch(expr.Datatype, type.ElementType))
+            if (type.IsByRef)
             {
-                return ConversionSymbol.CreateByRef();
+                if (TypesMatch(expr.Datatype, type.ElementType))
+                    return ConversionSymbol.CreateByRef();
             }
             else
             {

@@ -279,6 +279,9 @@ CLASS TestNS2.TestClass
 	RETURN 123
 END CLASS
 
+FUNCTION TestByRef(s REF STRING) AS STRING
+   RETURN s
+
 BEGIN NAMESPACE MacroCompilerTest
 
 	FUNCTION Start() AS VOID
@@ -722,6 +725,7 @@ BEGIN NAMESPACE MacroCompilerTest
         TestMacro(mc, "{ || $123.456 } ", Args(), 123.456m, typeof(currency))
         TestMacro(mc, "{ || $.5 } ", Args(), .5m, typeof(currency))
         TestMacro(mc, "{ || $123_456 } ", Args(), 123456m, typeof(currency))
+        TestMacro(mc, e"{|a| TestByRef(a) }", Args("123"), "123", typeof(string))
 
         Compilation.Override(WellKnownMembers.XSharp_RT_Functions___MemVarGet, "MyMemVarGet")
         Compilation.Override(WellKnownMembers.XSharp_RT_Functions___MemVarPut, "MyMemVarPut")

@@ -149,6 +149,13 @@ namespace XSharp.MacroCompiler.Syntax
     }
     internal partial class IdExpr : NameExpr
     {
+        static internal IdExpr Bound(LocalSymbol loc)
+        {
+            var e = new IdExpr(Token.None);
+            e.Symbol = loc;
+            e.Datatype = loc.Type;
+            return e;
+        }
         internal override Node Bind(Binder b)
         {
             Symbol = b.Lookup(Name);

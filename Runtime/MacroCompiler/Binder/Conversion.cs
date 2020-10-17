@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Diagnostics;
 using System.Reflection;
+using XSharp.MacroCompiler.Syntax;
 
 namespace XSharp.MacroCompiler
 {
@@ -53,6 +54,8 @@ namespace XSharp.MacroCompiler
     internal partial class ConversionSymbol : Symbol
     {
         internal readonly ConversionKind Kind;
+
+        internal Expr Expr = null;
 
         internal virtual bool IsCast { get { return (convCost[(int)Kind] & Cast) != 0; } }
         internal virtual bool IsExplicit { get { return (convCost[(int)Kind] & Explicit) != 0; } }
@@ -160,6 +163,13 @@ namespace XSharp.MacroCompiler
     internal partial class ConversionByRef : ConversionSymbol
     {
         internal ConversionByRef() : base(ConversionKind.Refer) { }
+    }
+
+    internal partial class ConversionToTemp : ConversionSymbol
+    {
+        internal ConversionSymbol Conversion;
+        internal TypeSymbol Type;
+        internal ConversionToTemp(ConversionSymbol conv, TypeSymbol type) : base(conv.Kind) { Conversion = conv; Type = type; }
     }
 
     internal static class ConversionEasyOut

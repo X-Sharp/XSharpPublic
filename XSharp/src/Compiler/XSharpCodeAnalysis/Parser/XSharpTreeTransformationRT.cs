@@ -963,15 +963,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     }
 
                 }
-                else if (context.T.Type == XP.DIMENSION || context.T.Type == XP.DECLARE)
-                {
-                    foreach (var memvar in context._DimVars)
-                    {
-                        var name = memvar.Id.GetText();
-                        addFieldOrMemvar(name, "M", memvar, false);
-                    }
-
-                }
             }
             if (context.T.Type == XP.LPARAMETERS)
             {
@@ -1133,22 +1124,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     }
                     context.Put(MakeBlock(stmts));
                     break;
-                case XP.DECLARE:
-                case XP.DIMENSION:
-                    foreach (var dimvar in context._DimVars)
-                    {
-                        var name = dimvar.Id.GetText();
-                        var exp = GenerateMemVarDecl(GenerateLiteral(name), true);
-                        stmts.Add(GenerateExpressionStatement(exp));
-
-                        var initExpr = GenerateVOArrayInitializer(dimvar.ArraySub);
-                        exp = GenerateMemVarPut(GenerateLiteral(name), initExpr);
-                        var stmt = GenerateExpressionStatement(exp);
-                        dimvar.Put(stmt);
-                        stmts.Add(stmt);
-                    }
-                    context.Put(MakeBlock(stmts));
-                    break;
+               
                 case XP.MEMVAR:
                     // handled in the Enter method
                     break;

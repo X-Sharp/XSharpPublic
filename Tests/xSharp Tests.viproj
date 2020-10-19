@@ -85102,8 +85102,8 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
 ENDApplication = R734
 
 ApplicationGroup = 962BFCBC-0AA0-4B6C-90C7-F389146CC3FA
-; ************** APPLICATION R735 - Binary values in Core *************
-Application = R735 - Binary values in Core
+; ************** APPLICATION R735 - Binaries in Non Core *************
+Application = R735 - Binaries in Non Core
 IDEVersion = 1.06
 GalleryName = 
 GalleryPage = 
@@ -85113,7 +85113,7 @@ Platform = AnyCPU
 Language = XSharp
 Runtime = CLR4
 Dialect = Core
-Folder = %ProjectPath%\Applications\R735 - Binary values in Core\
+Folder = %ProjectPath%\Applications\R735\
 PrgSubFolder = \Prg
 ResourcesSubFolder = \Resources
 Description = Just a simple x# application
@@ -85136,18 +85136,18 @@ KeyFile =
 [ExportOptions]
 ExportResources = 0
 ExportImages = 0
-[R735 - Binary values in Core FileGroups]
-[R735 - Binary values in Core Files]
+[R735 - Binaries in Non Core FileGroups]
+[R735 - Binaries in Non Core Files]
 File = %AppPath%\Prg\R735.prg
 FileGUID = 90BF7496-97FC-43F2-9560-2CAC4FB70283
 FileType = Code
 CopyToBin = 0
-[R735 - Binary values in Core References]
+[R735 - Binaries in Non Core References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
-[R735 - Binary values in Core Resources]
-[R735 - Binary values in Core Native Resources]
-[R735 - Binary values in Core License files]
-[R735 - Binary values in Core General Options]
+[R735 - Binaries in Non Core Resources]
+[R735 - Binaries in Non Core Native Resources]
+[R735 - Binaries in Non Core License files]
+[R735 - Binaries in Non Core General Options]
 Switches=
 ZeroArrays=0
 CaseSensitive=0
@@ -85179,7 +85179,7 @@ IgnoreStdDefs=0
 Ovf=0
 FOvf=0
 ResponseOnly=0
-[R735 - Binary values in Core Configurations]
+[R735 - Binaries in Non Core Configurations]
 AppConfig = Debug,11111111-1111-1111-1111-111111111111
   Switches=
   SwitchesCF=
@@ -85208,11 +85208,11 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceConsole=0
   ForceX86=0
   Optimize=0
-ENDApplication = R735 - Binary values in Core
+ENDApplication = R735 - Binaries in Non Core
 
 ApplicationGroup = 962BFCBC-0AA0-4B6C-90C7-F389146CC3FA
-; ************** APPLICATION R736 - Binary values in Non-Core *************
-Application = R736 - Binary values in Non-Core
+; ************** APPLICATION R736 - Binaries in Core *************
+Application = R736 - Binaries in Core
 IDEVersion = 1.06
 GalleryName = 
 GalleryPage = 
@@ -85222,7 +85222,7 @@ Platform = x86
 Language = XSharp
 Runtime = CLR4
 Dialect = VO
-Folder = %ProjectPath%\Applications\R736 - Binary values in Non-Core\
+Folder = %ProjectPath%\Applications\R736\
 PrgSubFolder = \Prg
 ResourcesSubFolder = \Resources
 Description = Just a simple x# application
@@ -85245,20 +85245,20 @@ KeyFile =
 [ExportOptions]
 ExportResources = 0
 ExportImages = 0
-[R736 - Binary values in Non-Core FileGroups]
-[R736 - Binary values in Non-Core Files]
+[R736 - Binaries in Core FileGroups]
+[R736 - Binaries in Core Files]
 File = %AppPath%\Prg\R736.prg
 FileGUID = E0F8C294-7598-4886-A3B6-BAD4B1340E75
 FileType = Code
 CopyToBin = 0
-[R736 - Binary values in Non-Core References]
+[R736 - Binaries in Core References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
 ReferenceBrowse = C:\XSharp\DevRt\Binaries\Debug\XSharp.Core.dll,1,1
 ReferenceBrowse = C:\XSharp\DevRt\Binaries\Debug\XSharp.RT.dll,1,1
-[R736 - Binary values in Non-Core Resources]
-[R736 - Binary values in Non-Core Native Resources]
-[R736 - Binary values in Non-Core License files]
-[R736 - Binary values in Non-Core General Options]
+[R736 - Binaries in Core Resources]
+[R736 - Binaries in Core Native Resources]
+[R736 - Binaries in Core License files]
+[R736 - Binaries in Core General Options]
 Switches=
 ZeroArrays=0
 CaseSensitive=0
@@ -85290,7 +85290,7 @@ IgnoreStdDefs=0
 Ovf=0
 FOvf=0
 ResponseOnly=0
-[R736 - Binary values in Non-Core Configurations]
+[R736 - Binaries in Core Configurations]
 AppConfig = Debug,11111111-1111-1111-1111-111111111111
   Switches=
   SwitchesCF=
@@ -85319,7 +85319,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceConsole=0
   ForceX86=0
   Optimize=0
-ENDApplication = R736 - Binary values in Non-Core
+ENDApplication = R736 - Binaries in Core
 
 ApplicationGroup = A95A4D23-3574-40FD-B873-22D28ACCA212
 ; ************** APPLICATION R737 - incorrect IS in variable declarations *************
@@ -86877,6 +86877,118 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
   Optimize=0
 ENDApplication = R741 - Allow M DOT prefix in LOCAL and PRIVATE declarations
+
+ApplicationGroup = 962BFCBC-0AA0-4B6C-90C7-F389146CC3FA
+; ************** APPLICATION R742 - FoxPro with parenthesized Arrays *************
+Application = R742 - FoxPro with parenthesized Arrays
+IDEVersion = 1.06
+GalleryName = 
+GalleryPage = 
+GalleryDefaultName = 
+Target = 0
+Platform = x86
+Language = XSharp
+Runtime = CLR4
+Dialect = FoxPro
+Folder = %ProjectPath%\Applications\R742\
+PrgSubFolder = \Prg
+ResourcesSubFolder = \Resources
+Description = Just a simple x# application
+NameSpace = 
+Assembly = R742
+Extension = 
+ApplicationIcon = 
+OutputFolder = 
+Frameworks = 1
+GUID = A04F40C3-543A-4C2A-8EA3-D93CBBEA561F
+IncludeInProjectBuild = 1
+IncludeInProjectSearch = 1
+IncludeInProjectExport = 1
+IncludePath = 
+StdDefsFile = 
+AppToRun = 
+SignAssembly = 0
+KeyFile = 
+
+[ExportOptions]
+ExportResources = 0
+ExportImages = 0
+[R742 - FoxPro with parenthesized Arrays FileGroups]
+[R742 - FoxPro with parenthesized Arrays Files]
+File = %AppPath%\Prg\R742.prg
+FileGUID = 3E1906C9-7898-4A4E-8FAC-7A18F7200549
+FileType = Code
+CopyToBin = 0
+[R742 - FoxPro with parenthesized Arrays References]
+ReferenceGAC = CLR4,System,1,0,4.0.0.0
+ReferenceBrowse = C:\XSharp\DevRt\Binaries\Debug\XSharp.Core.dll,1,1
+ReferenceBrowse = C:\XSharp\DevRt\Binaries\Debug\XSharp.RT.dll,1,1
+ReferenceBrowse = C:\XSharp\DevRt\Binaries\Debug\XSharp.VFP.dll,1,1
+[R742 - FoxPro with parenthesized Arrays Resources]
+[R742 - FoxPro with parenthesized Arrays Native Resources]
+[R742 - FoxPro with parenthesized Arrays License files]
+[R742 - FoxPro with parenthesized Arrays General Options]
+Switches=
+ZeroArrays=0
+CaseSensitive=0
+ImplicitNamespace=0
+VO1=0
+VO2=0
+VO3=0
+VO4=0
+VO5=0
+VO6=0
+VO7=0
+VO8=0
+VO9=0
+VO10=0
+VO11=0
+VO12=0
+VO13=0
+VO14=0
+VO16=0
+FOX1=0
+FOX2=0
+XPP1=0
+LateBound=0
+Unsafe=0
+Undeclared=0
+UseNativeVersion=0
+MemVar=1
+IgnoreStdDefs=0
+Ovf=0
+FOvf=0
+ResponseOnly=0
+[R742 - FoxPro with parenthesized Arrays Configurations]
+AppConfig = Debug,11111111-1111-1111-1111-111111111111
+  Switches=
+  SwitchesCF=
+  CommandLine=
+  CommandLineCF=
+  Debug=1
+  DebugInit=1
+  DefineDebug=1
+  DefineTrace=0
+  SyntaxOnly=0
+  WarningsErrors=1
+  ForceConsole=0
+  ForceX86=0
+  Optimize=0
+AppConfig = Release,22222222-2222-2222-2222-222222222222
+  Switches=
+  SwitchesCF=
+  CommandLine=
+  CommandLineCF=
+  Debug=0
+  DebugInit=0
+  DefineDebug=0
+  DefineTrace=0
+  SyntaxOnly=0
+  WarningsErrors=1
+  ForceConsole=0
+  ForceX86=0
+  Optimize=0
+ENDApplication = R742 - FoxPro with parenthesized Arrays
 [EndApplications]
 
 [Configurations]

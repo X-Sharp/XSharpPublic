@@ -651,6 +651,8 @@ localdecl          : LOCAL (Static=STATIC)? LocalVars+=localvar (COMMA LocalVars
                    | Static=STATIC? VAR           ImpliedVars+=impliedvar (COMMA ImpliedVars+=impliedvar)*  end=eos #varLocalDecl
                    | Static=STATIC LOCAL? IMPLIED ImpliedVars+=impliedvar (COMMA ImpliedVars+=impliedvar)*  end=eos #varLocalDecl
                    | LOCAL Static=STATIC? IMPLIED ImpliedVars+=impliedvar (COMMA ImpliedVars+=impliedvar)*  end=eos #varLocalDecl
+                    // FoxPro dimension statement
+                   | T=(DIMENSION|DECLARE) DimVars += dimensionVar (COMMA DimVars+=dimensionVar)*    end=eos  #foxDimensionDecl
                    ;
 
 localvar           : (Const=CONST)? ( Dim=DIM )? (FOX_M DOT)? Id=identifier (LBRKT ArraySub=arraysub RBRKT)?  
@@ -674,8 +676,6 @@ xbasedecl           : T=(MEMVAR|PARAMETERS|LPARAMETERS)      // MEMVAR  Foo, Bar
                     | T=(PRIVATE | PUBLIC) 
                       XVars+=xbasevar (COMMA XVars+=xbasevar)*   // PRIVATE Foo := 123,  PUBLIC Bar, PUBLIC MyArray[5,2]
                       end=eos 
-                    // FoxPro dimension statement
-                    | T=(DIMENSION|DECLARE) DimVars += dimensionVar (COMMA DimVars+=dimensionVar)*    end=eos 
                     ;
 
 xbasevar            : (Amp=AMP)?  (FOX_M DOT)? Id=identifierName (LBRKT ArraySub=arraysub RBRKT)? (Op=assignoperator Expression=expression)?

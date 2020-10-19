@@ -122,6 +122,20 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             context.Put(stmt);
         }
 
+        public override void ExitFoxDimensionDecl([NotNull] XP.FoxDimensionDeclContext context)
+        {
+            context.SetSequencePoint();
+            var stmts = _pool.Allocate<StatementSyntax>();
+            foreach (var dimvar in context._DimVars)
+            {
+                var name = dimvar.Id.GetText();
+                var stmt = GenerateLocalDecl(name, _arrayType, GenerateVOArrayInitializer(dimvar.ArraySub));
+                stmts.Add(stmt);
+            }
+            context.PutList< StatementSyntax>(stmts);
+            _pool.Free(stmts);
+        }
+
         public override void ExitMethodCall([NotNull] XP.MethodCallContext context)
         {
             var expr = context.Expr.Get<ExpressionSyntax>();

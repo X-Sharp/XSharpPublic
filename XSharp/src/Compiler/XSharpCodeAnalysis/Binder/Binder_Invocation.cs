@@ -58,6 +58,18 @@ namespace Microsoft.CodeAnalysis.CSharp
                 }
                 else
                 {
+                    // FoxPro allows () for array indexes
+                    if (Compilation.Options.Dialect == XSharpDialect.FoxPro && analyzedArguments.Arguments.Count > 0)
+                    {
+                        var expression = BindExpression(node.Expression, diagnostics);
+                        if (expression.Kind != BoundKind.BadExpression ) 
+                        {
+                            var type = expression.Type;
+                            if (type == Compilation.ArrayType() || type == Compilation.UsualType())
+                                return BindIndexerOrVOArrayAccess(node.Expression, expression, analyzedArguments, diagnostics);
+                        }
+                    }
+
                     BoundExpression boundExpression = BindMethodGroup(node.Expression, invoked: true, indexed: false, diagnostics: diagnostics);
                     boundExpression = CheckValue(boundExpression, BindValueKind.RValueOrMethodGroup, diagnostics);
                     string name = boundExpression.Kind == BoundKind.MethodGroup ? GetName(node.Expression) : null;

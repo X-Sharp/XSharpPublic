@@ -12,6 +12,14 @@ using Antlr4.Runtime;
 using static Roslyn.Utilities.UnicodeCharacterUtilities;
 namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
 {
+    // Notes: If you want to add a dialect specific keyword then do this:
+    // - add the keyword to XSharpLexer.g4 between FIRST_KEYWORD and LAST_KEYWORD
+    // best choose a separate spot
+    // - add it to the _GetIds() routine below for that dialect
+    // - make sure that the FixPositionalKeyword code does not turn it back into an ID
+	// - if the keyword has to appear before a DOT check the _inDottedIdentifier logic
+    // - add it to the keyword<dialect> rule in XSharp.g4 (so it will become a positional keyword)
+    // - add it to the grammar in XSharp.g4 
 
 
     public partial class XSharpLexer
@@ -21,28 +29,29 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
 
         public static bool IsKeyword(int iToken)
         {
-            return iToken > XSharpLexer.FIRST_KEYWORD && iToken < XSharpLexer.LAST_KEYWORD;
+            return iToken > FIRST_KEYWORD && iToken <
+                XSharpLexer.LAST_KEYWORD;
         }
         public static bool IsOperator(int iToken)
         {
-            return (iToken > XSharpLexer.FIRST_OPERATOR && iToken < XSharpLexer.LAST_OPERATOR)
-                || (iToken > XSharpLexer.PP_FIRST && iToken < XSharpLexer.PP_LAST)
-                || iToken == XSharpLexer.SEMI;
+            return (iToken > FIRST_OPERATOR && iToken < LAST_OPERATOR)
+                || (iToken > PP_FIRST && iToken < PP_LAST)
+                || iToken == SEMI;
         }
         public static bool IsConstant(int iToken)
         {
-            return (iToken > XSharpLexer.FIRST_CONSTANT && iToken < XSharpLexer.LAST_CONSTANT)
-                || (iToken > XSharpLexer.FIRST_NULL && iToken < XSharpLexer.LAST_NULL)
-                || iToken == XSharpLexer.MACRO;
+            return (iToken > FIRST_CONSTANT && iToken < LAST_CONSTANT)
+                || (iToken > FIRST_NULL && iToken < LAST_NULL)
+                || iToken == MACRO;
         }
         public static bool IsIdentifier(int iToken)
         {
-            return iToken == XSharpLexer.ID || iToken == XSharpLexer.KWID;
+            return iToken == ID || iToken == KWID;
         }
 
         public static bool IsType(int iToken)
         {
-            return (iToken > XSharpLexer.FIRST_TYPE && iToken < XSharpLexer.LAST_TYPE);
+            return (iToken > FIRST_TYPE && iToken < LAST_TYPE);
         }
         public static bool IsPositionalKeyword(int iToken)
         {
@@ -69,7 +78,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
 
         public static bool IsComment(int iToken)
         {
-            return iToken == XSharpLexer.SL_COMMENT || iToken == XSharpLexer.ML_COMMENT || iToken == XSharpLexer.DOC_COMMENT;
+            return iToken == SL_COMMENT || iToken == ML_COMMENT || iToken == DOC_COMMENT;
         }
 
 
@@ -1211,7 +1220,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                     // In that case we change the type from Keyword to ID
                     if (_isValidIdentifier(t) && La_1 == (int)'.')
                     {
-                        if (t.Type != SELF && t.Type != SUPER)
+                        if (t.Type != SELF && t.Type != SUPER && t.Type != FOX_M)
                         {
                             t.Type = ID;
                         }
@@ -1512,7 +1521,8 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                         return ID;
                     else
                         return keyword;
-
+                case FOX_M:
+                    return keyword;
                 default:
                     switch (lastToken)
                     {
@@ -1941,9 +1951,10 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                     {"AND", FOX_AND},
                     {"OR", FOX_OR},
                     {"NOT", FOX_NOT},
-                    {"THEN", THEN},
+                    {"THEN", THEN}, 
                     {"XOR", FOX_XOR},
                     {"EACH", EACH },                // Only after FOR
+                    {"M", FOX_M }                   // FoxPro allows LOCAL M.Name and PRIVATE M.Name
                 }; 
                 var vfpKeyWordAbbrev = new Dictionary<string, int>
                 {

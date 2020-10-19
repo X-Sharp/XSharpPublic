@@ -14,9 +14,6 @@ jobs:
   job1:
     name: BuildXSharpCompiler
     runs-on: windows-2019 #Specify the OS to execute on
-    env:
-      RoslynDir: ./Roslyn
-      XSharpDir: ./XSharp
     
     steps:
       - uses: actions/checkout@master #Clone the repository code at master
@@ -26,6 +23,8 @@ jobs:
       - name: BuildCompiler
         shell: cmd
         run: |
+          echo "RoslynDir=./Roslyn" >> $GITHUB_ENV
+          echo "XSharpDir=./XSharp" >> $GITHUB_ENV
           call ContinuousIntegrationBuild.cmd
       - name: Upload Results
         uses: actions/upload-artifact@v2

@@ -639,6 +639,9 @@ variableDeclarator  : Id=identifier Op=assignoperator Expr=expression
 // When the type is missing and the following element has a type
 // then the type of the following element propagates forward until for all elements without type
 
+// FoxPro allows LOCAL M.Name The M is only lexed in FoxPro dialect
+// We parse the M. Prefix in the localvar rule but ignore it, it is not relevant here. 
+
 localdecl          : LOCAL (Static=STATIC)? LocalVars+=localvar (COMMA LocalVars+=localvar)*			end=eos #commonLocalDecl	
                    | Static=STATIC LOCAL    LocalVars+=localvar (COMMA LocalVars+=localvar)*			end=eos #commonLocalDecl	
                    | {!XSharpLexer.IsKeyword(InputStream.La(2))}?   // STATIC Identifier , but not STATIC <Keyword>
@@ -650,7 +653,7 @@ localdecl          : LOCAL (Static=STATIC)? LocalVars+=localvar (COMMA LocalVars
                    | LOCAL Static=STATIC? IMPLIED ImpliedVars+=impliedvar (COMMA ImpliedVars+=impliedvar)*  end=eos #varLocalDecl
                    ;
 
-localvar           : (Const=CONST)? ( Dim=DIM )? Id=identifier (LBRKT ArraySub=arraysub RBRKT)?
+localvar           : (Const=CONST)? ( Dim=DIM )? (FOX_M DOT)? Id=identifier (LBRKT ArraySub=arraysub RBRKT)?  
                      (Op=assignoperator Expression=expression)? (As=(AS | IS) DataType=datatype)?
                    ;
 
@@ -662,6 +665,8 @@ fielddecl          : FIELD Fields+=identifierName (COMMA Fields+=identifierName)
                    ;
 
 // Old Style xBase declarations
+// FoxPro allows PRIVATE M.Name The M is only lexed in the FoxPro dialect
+// We parse the M. Prefix in the xbasevar rule but ignore it.
 
 xbasedecl           : T=(MEMVAR|PARAMETERS|LPARAMETERS)      // MEMVAR  Foo, Bar or PARAMETERS Foo, Bar
                       Vars+=identifierName (COMMA Vars+=identifierName)*
@@ -673,7 +678,7 @@ xbasedecl           : T=(MEMVAR|PARAMETERS|LPARAMETERS)      // MEMVAR  Foo, Bar
                     | T=(DIMENSION|DECLARE) DimVars += dimensionVar (COMMA DimVars+=dimensionVar)*    end=eos 
                     ;
 
-xbasevar            : (Amp=AMP)?  Id=identifierName (LBRKT ArraySub=arraysub RBRKT)? (Op=assignoperator Expression=expression)?
+xbasevar            : (Amp=AMP)?  (FOX_M DOT)? Id=identifierName (LBRKT ArraySub=arraysub RBRKT)? (Op=assignoperator Expression=expression)?
                     ;
 
 dimensionVar        : Id=identifierName  ( LBRKT ArraySub=arraysub RBRKT | LPAREN ArraySub=arraysub RPAREN ) (AS DataType=datatype)?
@@ -1232,7 +1237,7 @@ xppmemberModifiers  : ( Tokens+=( CLASS | STATIC) )+
 
 
 /// FoxPro Parser definities
-keywordfox          :  Token=( OLEPUBLIC | EACH | EXCLUDE| THISACCESS| HELPSTRING| NOINIT | FOX_AND| FOX_OR| FOX_NOT| FOX_XOR | THEN)
+keywordfox          :  Token=( OLEPUBLIC | EACH | EXCLUDE| THISACCESS| HELPSTRING| NOINIT | FOX_AND| FOX_OR| FOX_NOT| FOX_XOR | THEN | FOX_M)
                       // These tokens are already marked as 'only valid in a certain context ' in the lexer
                               // ENDDEFINE | TEXT| ENDTEXT | DIMENSION | LPARAMETERS | NOSHOW | TEXTMERGE | PRETEXT | FLAGS | ADDITIVE
                     ;

@@ -1,9 +1,9 @@
 @echo off
 if "%VSVERSION%" == "" SET VSVERSION=2019
 if "%VSEDITION%" == "" SET VSEDITION=Enterprise
-rem set VsBatch="C:\Program Files (x86)\Microsoft Visual Studio\%VSVERSION%\%VSEDITION%\Common7\Tools\VsDevCmd.bat"
-rem if not exist %VsBatch% goto Error
-rem call %VsBatch%
+set VsBatch="C:\Program Files (x86)\Microsoft Visual Studio\%VSVERSION%\%VSEDITION%\Common7\Tools\VsDevCmd.bat"
+if not exist %VsBatch% goto Error
+call %VsBatch%
 echo Start restoring Roslyn ...
 call "%~dp0\Roslyn\Restore.cmd"
 rem echo Start building Roslyn Compiler ...

@@ -21,7 +21,7 @@
 using System;
 using Microsoft.VisualStudio.Shell.Interop;
 
-namespace XSharp.Project
+namespace XSharp.LanguageService
 {
     /// <summary>
     /// Identify a module. The module is identify using the hierarchy that

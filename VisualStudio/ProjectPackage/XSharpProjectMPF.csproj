@@ -132,15 +132,6 @@
     <Compile Include="ErrorList\TaskListItem.cs" />
     <Compile Include="ErrorList\ErrorListManager.cs" />
     <Compile Include="ErrorList\TaskListProvider.cs" />
-    <Compile Include="Library\HierarchyListener.cs" />
-    <Compile Include="Library\Library.cs" />
-    <Compile Include="Library\LibraryNode.cs" />
-    <Compile Include="Library\MultiValueDictionary.cs" />
-    <Compile Include="Library\TextLineEventListener.cs" />
-    <Compile Include="Library\XSharpLibraryManager.cs" />
-    <Compile Include="Library\XSharpLibraryNode.cs" />
-    <Compile Include="Library\XSharpLibraryProject.cs" />
-    <Compile Include="Library\XSharpModuleId.cs" />
     <Compile Include="ModelScannerEvents.cs" />
     <Compile Include="ProjectSelector.cs" />
     <Compile Include="PropertyPages\XBuildEventsPropertyPage.cs" />
@@ -863,6 +854,9 @@
     <PackageReference Include="VSSDK.VSHelp">
       <Version>7.0.4</Version>
     </PackageReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Library\" />
   </ItemGroup>
   <PropertyGroup>
     <RunPostBuildEvent>Always</RunPostBuildEvent>

@@ -17,7 +17,7 @@ namespace XSharp.LanguageService
     /// Classifier provider. It adds the classifier to the set of classifiers.
     /// </summary>
     [Export(typeof(IClassifierProvider))]
-    [ContentType(XSharpConstants.LanguageName)]
+    [ContentType(Constants.LanguageName)]
     [TextViewRole(PredefinedTextViewRoles.Document)]
 
     internal class XSharpClassifierProvider : IClassifierProvider

@@ -3,7 +3,7 @@
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
-   <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
     <TargetFrameworkProfile />
@@ -32,7 +32,6 @@
     <IncludeDebugSymbolsInLocalVSIXDeployment>true</IncludeDebugSymbolsInLocalVSIXDeployment>
     <CopyBuildOutputToOutputDirectory>true</CopyBuildOutputToOutputDirectory>
     <CopyOutputSymbolsToOutputDirectory>true</CopyOutputSymbolsToOutputDirectory>
-
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -83,6 +82,15 @@
     <Compile Include="LanguageService\XSharpSource.cs" />
     <Compile Include="LanguageService\XSharpTypeAndMemberDropDownBars.cs" />
     <Compile Include="LanguageService\XSharpViewFilter.cs" />
+    <Compile Include="Library\HierarchyListener.cs" />
+    <Compile Include="Library\Library.cs" />
+    <Compile Include="Library\LibraryNode.cs" />
+    <Compile Include="Library\MultiValueDictionary.cs" />
+    <Compile Include="Library\TextLineEventListener.cs" />
+    <Compile Include="Library\XSharpLibraryManager.cs" />
+    <Compile Include="Library\XSharpLibraryNode.cs" />
+    <Compile Include="Library\XSharpLibraryProject.cs" />
+    <Compile Include="Library\XSharpModuleId.cs" />
     <Compile Include="LightBulb\CreateStubAction.cs" />
     <Compile Include="LightBulb\CreateStubProvider.cs" />
     <Compile Include="LightBulb\ImplementInterfaceAction.cs" />

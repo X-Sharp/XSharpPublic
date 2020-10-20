@@ -30,7 +30,7 @@ using XSharpModel;
 using System.Collections.Generic;
 using System.Diagnostics;
 using XSharp.LanguageService;
-namespace XSharp.Project
+namespace XSharp.LanguageService
 {
 
     // Value are from OMGlyphs.h

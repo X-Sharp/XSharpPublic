@@ -29,7 +29,7 @@ using VSConstants = Microsoft.VisualStudio.VSConstants;
 using XSharpModel;
 using System.Collections.Generic;
 
-namespace XSharp.Project
+namespace XSharp.LanguageService
 {
 	internal class XSharpLibraryProject : XSharpLibraryNode
 	{
@@ -48,9 +48,9 @@ namespace XSharp.Project
         {
             this.ownerHierarchy = hierarchy;
             //
-            this.displayData.hImageList = XSharpProjectNode.ImageList.Handle;
-            this.displayData.Image = (ushort)XSharpProjectNode.XSharpProjectImageName.Project;
-            this.displayData.SelectedImage = (ushort)XSharpProjectNode.XSharpProjectImageName.Project;
+            //this.displayData.hImageList = XSharpProjectNode.ImageList.Handle;
+            //this.displayData.Image = (ushort)XSharpProjectNode.XSharpProjectImageName.Project;
+            //this.displayData.SelectedImage = (ushort)XSharpProjectNode.XSharpProjectImageName.Project;
             //
             this.NodeType = LibraryNodeType.Package;
             //

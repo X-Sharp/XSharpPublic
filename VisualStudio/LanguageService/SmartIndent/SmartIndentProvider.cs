@@ -21,7 +21,7 @@ namespace XSharp.Project
     [Export(typeof(ISmartIndentProvider))]
     [Name("Smart Indent")]
     [Order(Before = "default")]
-    [ContentType("XSharp")]
+    [ContentType(XSharpConstants.LanguageName)]
     internal class SmartIndentProvider : ISmartIndentProvider
     {
         [Import]

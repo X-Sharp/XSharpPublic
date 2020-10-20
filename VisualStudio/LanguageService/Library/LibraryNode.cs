@@ -27,7 +27,7 @@ using Microsoft.VisualStudio.Shell;
 using ErrorHandler = Microsoft.VisualStudio.ErrorHandler;
 using VSConstants = Microsoft.VisualStudio.VSConstants;
 
-namespace XSharp.Project
+namespace XSharp.LanguageService
 {
 
     /// <summary>

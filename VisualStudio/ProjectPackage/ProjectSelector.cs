@@ -27,24 +27,22 @@ namespace XSharp.Project
     {
         private const string MSBuildXmlNamespace = "http://schemas.microsoft.com/developer/msbuild/2003";
 
-        private readonly JoinableTaskContext _context;
-        private IVsRegisterProjectSelector _projectSelector;
+        private IVsRegisterProjectSelector _vsprojectSelector;
         private uint _cookie = VSConstants.VSCOOKIE_NIL;
 
         [ImportingConstructor]
-        public XSharpProjectSelector(JoinableTaskContext context)
+        public XSharpProjectSelector()
         {
-            _context = context;
+            
         }
 
-
-        public async Task InitializeAsync(IAsyncServiceProvider asyncServiceProvider)
+        public async Task InitAsync(IAsyncServiceProvider asyncServiceProvider)
         {
-            await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
-            _projectSelector = (IVsRegisterProjectSelector)await asyncServiceProvider.GetServiceAsync(typeof(SVsRegisterProjectTypes));
+            _vsprojectSelector = (IVsRegisterProjectSelector)await asyncServiceProvider.GetServiceAsync(typeof(SVsRegisterProjectTypes));
 
             Guid selectorGuid = GetType().GUID;
-            _projectSelector.RegisterProjectSelector(ref selectorGuid, this, out _cookie);
+            _vsprojectSelector.RegisterProjectSelector(ref selectorGuid, this, out _cookie);
+            return;
         }
 
         public void GetProjectFactoryGuid(Guid guidProjectType, string pszFilename, out Guid guidProjectFactory)
@@ -77,7 +75,7 @@ namespace XSharp.Project
 
             if (_cookie != VSConstants.VSCOOKIE_NIL)
             {
-                _projectSelector.UnregisterProjectSelector(_cookie);
+                _vsprojectSelector.UnregisterProjectSelector(_cookie);
             }
         }
     }

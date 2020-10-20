@@ -40,7 +40,6 @@ namespace XSharp.ProjectSystem
     /// or localized resources for the strings that appear in the New Project and Open Project dialogs.
     /// Creating project extensions or project types does not actually require a VSPackage.
     /// </remarks>
-    [InstalledProductRegistration("#110", "#112", XSharp.Constants.ProductVersion, IconResourceID = 400)]
     [PackageRegistration(UseManagedResourcesOnly = true, AllowsBackgroundLoading = true)]
     [Description("XSharp project type based on CPS")]
     [Guid(XSharpConstants.CPSPackageGuid)]

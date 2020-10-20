@@ -28,7 +28,7 @@ using Microsoft.VisualStudio.TextManager.Interop;
 using VSConstants = Microsoft.VisualStudio.VSConstants;
 using Microsoft.VisualStudio.Shell;
 
-namespace XSharp.Project
+namespace XSharp.LanguageService
 {
 
     internal class HierarchyEventArgs : EventArgs

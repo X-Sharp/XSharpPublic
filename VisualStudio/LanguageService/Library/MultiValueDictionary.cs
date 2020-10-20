@@ -24,7 +24,7 @@ using System.Text;
 using System.Collections;
 using System.Runtime.Serialization;
 
-namespace XSharp.Project
+namespace XSharp.LanguageService
 {
     // In Dictionary we have one key for one value
     // Here we have one key for multiple values

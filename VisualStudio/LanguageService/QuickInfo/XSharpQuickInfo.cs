@@ -255,7 +255,7 @@ namespace XSharp.LanguageService
         [Export(typeof(IQuickInfoSourceProvider))]
         [Name("XSharp QuickInfo Source")]
         [Order(Before = "Default Quick Info Presenter")]
-        [ContentType("XSharp")]
+        [ContentType(XSharpConstants.LanguageName)]
         internal class XSharpQuickInfoSourceProvider : IQuickInfoSourceProvider
         {
 
@@ -353,7 +353,7 @@ namespace XSharp.LanguageService
 
         [Export(typeof(IIntellisenseControllerProvider))]
         [Name("XSharp QuickInfo Controller")]
-        [ContentType("XSharp")]
+        [ContentType(XSharpConstants.LanguageName)]
         internal class XSharpQuickInfoControllerProvider : IIntellisenseControllerProvider
         {
 

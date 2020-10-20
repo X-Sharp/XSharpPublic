@@ -31,9 +31,8 @@ using VSConstants = Microsoft.VisualStudio.VSConstants;
 using IServiceProvider = System.IServiceProvider;
 using Microsoft.VisualStudio.TextManager.Interop;
 using XSharpModel;
-using Microsoft.VisualStudio.Project;
 
-namespace XSharp.Project
+namespace XSharp.LanguageService
 {
 
     /// <summary>
@@ -42,7 +41,7 @@ namespace XSharp.Project
     [Guid(XSharpConstants.LibraryManagerService)]
     public interface IXSharpLibraryManager
     {
-        void RegisterHierarchy(IVsHierarchy hierarchy, XProject Prj, XSharpProjectNode ProjectNode);
+        void RegisterHierarchy(IVsHierarchy hierarchy, XProject Prj, IXSharpProject ProjectNode);
         void UnregisterHierarchy(IVsHierarchy hierarchy);
         void RegisterLineChangeHandler(uint document, TextLineChangeEvent lineChanged, Action<IVsTextLines> onIdle);
     }
@@ -251,7 +250,7 @@ namespace XSharp.Project
         /// Called when a project is loaded
         /// </summary>
         /// <param name="hierarchy"></param>
-        public void RegisterHierarchy(IVsHierarchy hierarchy, XProject Prj, XSharpProjectNode ProjectNode)
+        public void RegisterHierarchy(IVsHierarchy hierarchy, XProject Prj, IXSharpProject ProjectNode)
         {
             // No Hierarchy or... Hierarchy already registered ?
             // disable classview for now
@@ -281,9 +280,12 @@ namespace XSharp.Project
 
             //this._defaultNameSpace = prjNode.DefaultNameSpace;
             //Define Callback
-            ProjectNode.ProjectModel.FileWalkComplete += OnFileWalkComplete;
-            ProjectNode.ProjectModel.ProjectWalkComplete += OnProjectWalkComplete;
-
+            var model = XSolution.FindProject(prjNode.Name);
+            if (model != null)
+            { 
+                model.FileWalkComplete += OnFileWalkComplete;
+                model.ProjectWalkComplete += OnProjectWalkComplete;
+            }
             // Attach a listener to the Project/Hierarchy,so any change is raising an event
             HierarchyListener listener = new HierarchyListener(hierarchy);
             //listener.OnAddItem += new EventHandler<HierarchyEventArgs>(OnNewFile);
@@ -704,7 +706,8 @@ namespace XSharp.Project
                 return;
             try
             {
-                XSharpProjectNode prjNode = (XSharpProjectNode)xfile.Project.ProjectNode;
+                /*
+                var prjNode = xfile.Project.ProjectNode;
                 Microsoft.VisualStudio.Project.HierarchyNode node = prjNode.FindURL(xfile.FullPath);
                 if (node != null)
                 {
@@ -712,6 +715,7 @@ namespace XSharp.Project
                     module.ContentHashCode = xfile.ContentHashCode;
                     CreateUpdateTreeRequest(xfile.SourcePath, module);
                 }
+                */
             }
             catch
             {

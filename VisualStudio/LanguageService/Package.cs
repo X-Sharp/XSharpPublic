@@ -19,6 +19,7 @@ using Microsoft.VisualStudio.ComponentModelHost;
 using XSharpModel;
 using Microsoft.Win32;
 using Microsoft;
+using Microsoft.VisualStudio.OLE.Interop;
 
 // The following lines ensure that the right versions of the various DLLs are loaded.
 // They will be included in the generated PkgDef folder for the project system
@@ -87,17 +88,28 @@ namespace XSharp.LanguageService
                  "Intellisense",// Page name
                  "#201"         // Localized name of property page
                  )]
-    public sealed class XSharpLanguageService : AsyncPackage, IVsShellPropertyEvents, IVsDebuggerEvents
+    public sealed class XSharpLanguageService : AsyncPackage, IVsShellPropertyEvents, IVsDebuggerEvents, IOleComponent
     {
         private static XSharpLanguageService instance;
         private IVsTextManager4 _txtManager;
         private uint shellCookie;
+        private XSharpLibraryManager _libraryManager;
+        private uint m_componentID;
+        private IOleComponentManager _oleComponentManager = null;
 
         public static XSharpLanguageService Instance
         {
             get { return XSharpLanguageService.instance; }
         }
 
+        private object CreateLibraryService(IServiceContainer container, Type serviceType)
+        {
+            if (typeof(IXSharpLibraryManager) == serviceType)
+            {
+                return _libraryManager = new XSharpLibraryManager(this);
+            }
+            return null;
+        }
 
         IntellisenseOptionsPage _intellisensePage;
         internal IntellisenseOptionsPage GetIntellisenseOptionsPage()
@@ -195,11 +207,31 @@ namespace XSharp.LanguageService
             serviceContainer.AddService(typeof(XSharpLegacyLanguageService),
                                         languageService,
                                         true);
+
+            ServiceCreatorCallback callback = new ServiceCreatorCallback(CreateLibraryService);
+            serviceContainer.AddService(typeof(IXSharpLibraryManager), callback, true);
+
             RegisterDebuggerEvents();
             addOurFileExtensionsForDiffAndPeek("Diff\\SupportedContentTypes");
             addOurFileExtensionsForDiffAndPeek("Peek\\SupportedContentTypes");
 
-            _txtManager = await GetServiceAsync(typeof(SVsTextManager)) as IVsTextManager4;
+
+            // Register a timer to call several services
+            // idle periods.
+            _oleComponentManager = await GetServiceAsync(typeof(SOleComponentManager)) as IOleComponentManager;
+            if (m_componentID == 0 && _oleComponentManager != null)
+            {
+                OLECRINFO[] crinfo = new OLECRINFO[1];
+                crinfo[0].cbSize = (uint)Marshal.SizeOf(typeof(OLECRINFO));
+                crinfo[0].grfcrf = (uint)_OLECRF.olecrfNeedIdleTime |
+                                              (uint)_OLECRF.olecrfNeedPeriodicIdleTime;
+                crinfo[0].grfcadvf = (uint)_OLECADVF.olecadvfModal |
+                                              (uint)_OLECADVF.olecadvfRedrawOff |
+                                              (uint)_OLECADVF.olecadvfWarningsOff;
+                crinfo[0].uIdleTimeInterval = 1000;
+
+                int hr = _oleComponentManager.FRegisterComponent(this, crinfo, out m_componentID);
+            }
 
         }
 
@@ -209,6 +241,17 @@ namespace XSharp.LanguageService
             {
 
                 this.UnRegisterDebuggerEvents();
+                if (null != _libraryManager)
+                {
+                    _libraryManager.Dispose();
+                    _libraryManager = null;
+                }
+                if (_oleComponentManager != null)
+                {
+                    _oleComponentManager.FRevokeComponent(m_componentID);
+                    _oleComponentManager = null;
+                }
+
             }
             finally
             {
@@ -313,12 +356,69 @@ namespace XSharp.LanguageService
         {
             XSettings.ShowMessageBox(message);
         }
+
+
         internal static IComponentModel GetComponentModel()
         {
             return (IComponentModel)GetGlobalService(typeof(SComponentModel));
         }
 
-      
+        #region IOLEComponent
+        public int FReserved1(uint dwReserved, uint message, IntPtr wParam, IntPtr lParam)
+        {
+            return 1;
+        }
+
+        public int FPreTranslateMessage(MSG[] pMsg)
+        {
+            return 0;
+        }
+
+        public void OnEnterState(uint uStateID, int fEnter)
+        {
+        }
+
+        public void OnAppActivate(int fActive, uint dwOtherThreadID)
+        {
+        }
+
+        public void OnLoseActivation()
+        {
+        }
+
+        public void OnActivationChange(IOleComponent pic, int fSameComponent, OLECRINFO[] pcrinfo, int fHostIsActivating, OLECHOSTINFO[] pchostinfo, uint dwReserved)
+        {
+        }
+
+        public int FDoIdle(uint grfidlef)
+        {
+            bool bPeriodic = (grfidlef & (uint)_OLEIDLEF.oleidlefPeriodic) != 0;
+            if (_libraryManager != null)
+                _libraryManager.OnIdle();
+
+            var walker = XSharpModel.ModelWalker.GetWalker();
+            if (walker != null && !walker.IsWalkerRunning && walker.HasWork)
+            {
+                walker.Walk();
+            }
+            return 0;
+        }
+
+        public int FContinueMessageLoop(uint uReason, IntPtr pvLoopData, MSG[] pMsgPeeked)
+        {
+            return 1;
+        }
+
+        public int FQueryTerminate(int fPromptUser)
+        {
+            return 1;
+        }
+
+        public IntPtr HwndGetWindow(uint dwWhich, uint dwReserved)
+        {
+            return IntPtr.Zero;
+        }
+        #endregion
     }
 
 }

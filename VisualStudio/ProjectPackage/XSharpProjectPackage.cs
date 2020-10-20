@@ -160,18 +160,14 @@ namespace XSharp.Project
 
     [ProvideMenuResource("Menus.ctmenu", 1)]
     //[ProvideBindingPath]        // Tell VS to look in our path for assemblies
-    public sealed class XSharpProjectPackage : AsyncProjectPackage, IOleComponent,
-        IVsShellPropertyEvents
+    public sealed class XSharpProjectPackage : AsyncProjectPackage, IVsShellPropertyEvents
     {
-        private uint m_componentID;
         private static XSharpProjectPackage instance;
         private XPackageSettings settings;
-        private XSharpLibraryManager _libraryManager;
         private XSharpDocumentWatcher _documentWatcher;
         private IErrorList _errorList = null;
         private ITaskList _taskList = null;
-        private IVsRegisterProjectSelector _projectSelector;
-        private uint _cookie = VSConstants.VSCOOKIE_NIL;
+        private XSharpProjectSelector _projectSelector = null;
 
         // =========================================================================================
         // Properties
@@ -214,17 +210,12 @@ namespace XSharp.Project
         protected override async System.Threading.Tasks.Task InitializeAsync(CancellationToken cancellationToken, IProgress<ServiceProgressData> progress)
         {
             // Suspend walking until Solution is opened.
+            XSharpProjectPackage.instance = this;
             base.SolutionListeners.Add(new ModelScannerEvents(this));
             await base.InitializeAsync(cancellationToken, progress);
-            var projectSelector = new XSharpProjectSelector(ThreadHelper.JoinableTaskContext);
-            _projectSelector = (IVsRegisterProjectSelector)await GetServiceAsync(typeof(SVsRegisterProjectTypes));
-
-            Guid selectorGuid = new Guid(XSharpConstants.ProjectSelectorGuid);
             await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
-
-            _projectSelector.RegisterProjectSelector(ref selectorGuid, projectSelector, out _cookie);
-
-                XSharpProjectPackage.instance = this;
+            _projectSelector = new XSharpProjectSelector();
+            await _projectSelector.InitAsync(this);
              this.RegisterProjectFactory(new XSharpProjectFactory(this));
             this.settings = new XPackageSettings(this);
             // Indicate how to open the different source files : SourceCode or Designer ??
@@ -238,67 +229,18 @@ namespace XSharp.Project
             base.RegisterEditorFactory(new VOFieldSpecEditorFactory(this));
             XSharp.Project.XSharpMenuItems.Initialize(this);
 
-            // Register a timer to call our language service during
-            // idle periods.
-            IOleComponentManager mgr = await GetServiceAsync(typeof(SOleComponentManager)) as IOleComponentManager;
-            if (m_componentID == 0 && mgr != null)
-            {
-                OLECRINFO[] crinfo = new OLECRINFO[1];
-                crinfo[0].cbSize = (uint)Marshal.SizeOf(typeof(OLECRINFO));
-                crinfo[0].grfcrf = (uint)_OLECRF.olecrfNeedIdleTime |
-                                              (uint)_OLECRF.olecrfNeedPeriodicIdleTime;
-                crinfo[0].grfcadvf = (uint)_OLECADVF.olecadvfModal |
-                                              (uint)_OLECADVF.olecadvfRedrawOff |
-                                              (uint)_OLECADVF.olecadvfWarningsOff;
-                crinfo[0].uIdleTimeInterval = 1000;
-
-                int hr = mgr.FRegisterComponent(this, crinfo, out m_componentID);
-            }
-            // Initialize Custom Menu Items
-            //
-            // ObjectBrowser : Add the LibraryManager service as a Service provided by that container
-            IServiceContainer container = this as IServiceContainer;
-            ServiceCreatorCallback callback = new ServiceCreatorCallback(CreateLibraryService);
-            //
-            container.AddService(typeof(IXSharpLibraryManager), callback, true);
             this._documentWatcher = new XSharpDocumentWatcher(this);
             _errorList = await GetServiceAsync(typeof(SVsErrorList)) as IErrorList;
             _taskList = await GetServiceAsync(typeof(SVsTaskList)) as ITaskList;
 
             XSettings.DisplayOutputMessage = XSharpOutputPane.DisplayOutputMessage;
             XSettings.DisplayException = XSharpOutputPane.DisplayException;
-
+            XSettings.ShowMessageBox = ShowMessageBox;
         }
        
 
-        private object CreateLibraryService(IServiceContainer container, Type serviceType)
-        {
-            if (typeof(IXSharpLibraryManager) == serviceType)
-            {
-                return _libraryManager = new XSharpLibraryManager(this);
-            }
-            return null;
-        }
 
 
-        protected override void Dispose(bool disposing)
-        {
-            try
-            {
-
-                if (null != _libraryManager)
-                {
-                    _libraryManager.Dispose();
-                    _libraryManager = null;
-                }
-            }
-            finally
-            {
-                base.Dispose(disposing);
-
-            }
-        }
-  
 
         public void SetCommentTokens()
         {
@@ -335,93 +277,8 @@ namespace XSharp.Project
             return Utilities.ShowMessageBox(this, message, title, icon, buttons, defaultButton);
 
         }
-        //protected override  object GetService(Type serviceType)
-        //{
-        //  return ThreadHelper.JoinableTaskFactory.Run(async delegate
-        //  {
-        //      var result = await  base.GetServiceAsync(serviceType);
-        //      return result;
-        //  });
-
-
-        //}
 
         #endregion
-
-        #region IOleComponent Members
-
-        public int FDoIdle(uint grfidlef)
-        {
-            bool bPeriodic = (grfidlef & (uint)_OLEIDLEF.oleidlefPeriodic) != 0;
-            if (_libraryManager != null)
-                _libraryManager.OnIdle();
-
-            var walker = XSharpModel.ModelWalker.GetWalker();
-            if (walker != null && !walker.IsWalkerRunning && walker.HasWork)
-            {
-                walker.Walk();
-            }
-            return 0;
-        }
-
-        public int FContinueMessageLoop(uint uReason,
-                                        IntPtr pvLoopData,
-                                        MSG[] pMsgPeeked)
-        {
-            return 1;
-        }
-
-        public int FPreTranslateMessage(MSG[] pMsg)
-        {
-            return 0;
-        }
-
-        public int FQueryTerminate(int fPromptUser)
-        {
-            return 1;
-        }
-
-        public int FReserved1(uint dwReserved,
-                              uint message,
-                              IntPtr wParam,
-                              IntPtr lParam)
-        {
-            return 1;
-        }
-
-        public IntPtr HwndGetWindow(uint dwWhich, uint dwReserved)
-        {
-            return IntPtr.Zero;
-        }
-
-        public void OnActivationChange(IOleComponent pic,
-                                       int fSameComponent,
-                                       OLECRINFO[] pcrinfo,
-                                       int fHostIsActivating,
-                                       OLECHOSTINFO[] pchostinfo,
-                                       uint dwReserved)
-        {
-        }
-
-        public void OnAppActivate(int fActive, uint dwOtherThreadID)
-        {
-            //System.Diagnostics.Debug.WriteLine($"OnAppActivate: {fActive} {dwOtherThreadID}");
-        }
-
-        public void OnEnterState(uint uStateID, int fEnter)
-        {
-            //    System.Diagnostics.Debug.WriteLine($"OnEnterState: {uStateID} {fEnter}");
-        }
-
-        public void OnLoseActivation()
-        {
-            //  System.Diagnostics.Debug.WriteLine($"OnLoseActivation");
-        }
-
-        public void Terminate()
-        {
-        }
-
         public int OnShellPropertyChange(int propid, object var)
         {
             // A modal dialog has been opened. Editor Options ?
@@ -435,15 +292,8 @@ namespace XSharp.Project
             }
             return VSConstants.S_OK;
         }
-        #endregion
 
 
-
-       
-
-      
-
-    
     }
 
 

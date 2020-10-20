@@ -26,7 +26,7 @@ using Microsoft.VisualStudio.TextManager.Interop;
 
 using VSConstants = Microsoft.VisualStudio.VSConstants;
 
-namespace XSharp.Project
+namespace XSharp.LanguageService
 {
 #if TEXTCHANGELISTENER
     /// <summary>

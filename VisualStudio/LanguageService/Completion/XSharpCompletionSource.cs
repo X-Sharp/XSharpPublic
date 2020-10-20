@@ -31,7 +31,7 @@ using LanguageService.CodeAnalysis.Text;
 namespace XSharp.LanguageService
 {
     [Export(typeof(ICompletionSourceProvider))]
-    [ContentType("XSharp")]
+    [ContentType(XSharpConstants.LanguageName)]
     [Name("XSharpCompletion")]
     class XSharpCompletionSourceProvider : ICompletionSourceProvider
     {

@@ -24,7 +24,7 @@ using Microsoft.VisualStudio.Shell.Interop;
 using VSConstants = Microsoft.VisualStudio.VSConstants;
 using System.Collections.Generic;
 
-namespace XSharp.Project
+namespace XSharp.LanguageService
 {
 
     public class Library : IVsSimpleLibrary2

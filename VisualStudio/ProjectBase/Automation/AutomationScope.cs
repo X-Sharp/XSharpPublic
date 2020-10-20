@@ -65,8 +65,8 @@ namespace Microsoft.VisualStudio.Project.Automation
                 ThreadHelper.JoinableTaskFactory.Run(async delegate
                 {
                     await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
-                    ErrorHandler.ThrowOnFailure(extensibility.ExitAutomationFunction());
-                    inAutomation = false;
+                ErrorHandler.ThrowOnFailure(extensibility.ExitAutomationFunction());
+                inAutomation = false;
                 });
             }
         }

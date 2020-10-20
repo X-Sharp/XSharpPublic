@@ -27,6 +27,7 @@ PARTIAL CLASS VOWindowEditor INHERIT WindowDesignerBase
 	PROTECT eCopyMode AS ViewMode
 	PROTECT cDefaultFileName AS STRING
 //	PROTECT oStatusBar AS StatusBar
+	PROTECT lAlreadySavedBefore AS LOGIC
 
 	STATIC PROTECT oClipboard := DesignerClipboard{} AS DesignerClipboard
 	STATIC ACCESS Clipboard AS DesignerClipboard

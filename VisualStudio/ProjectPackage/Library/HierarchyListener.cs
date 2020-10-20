@@ -22,11 +22,11 @@ using System.Collections.Generic;
 using System.Diagnostics;
 
 using Microsoft.VisualStudio.OLE.Interop;
-using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using Microsoft.VisualStudio.TextManager.Interop;
 
 using VSConstants = Microsoft.VisualStudio.VSConstants;
+using Microsoft.VisualStudio.Shell;
 
 namespace XSharp.Project
 {
@@ -99,8 +99,7 @@ namespace XSharp.Project
             ThreadHelper.JoinableTaskFactory.Run(async delegate
             {
                 await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
-
-                Microsoft.VisualStudio.ErrorHandler.ThrowOnFailure(
+            Microsoft.VisualStudio.ErrorHandler.ThrowOnFailure(
                 hierarchy.AdviseHierarchyEvents(this, out cookie));
             });
             //
@@ -215,18 +214,17 @@ namespace XSharp.Project
             return ThreadHelper.JoinableTaskFactory.Run(async delegate
             {
                 await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
-
-                if ((null != hierarchy) || (0 == cookie))
-                {
-                    return false;
-                }
-                int hr = hierarchy.UnadviseHierarchyEvents(cookie);
-                if (throwOnError)
-                {
-                    Microsoft.VisualStudio.ErrorHandler.ThrowOnFailure(hr);
-                }
-                cookie = 0;
-                return Microsoft.VisualStudio.ErrorHandler.Succeeded(hr);
+            if ((null != hierarchy) || (0 == cookie))
+            {
+                return false;
+            }
+            int hr = hierarchy.UnadviseHierarchyEvents(cookie);
+            if (throwOnError)
+            {
+                Microsoft.VisualStudio.ErrorHandler.ThrowOnFailure(hr);
+            }
+            cookie = 0;
+            return Microsoft.VisualStudio.ErrorHandler.Succeeded(hr);
             });
         }
 
@@ -241,36 +239,34 @@ namespace XSharp.Project
         private bool IsPrgFile(uint itemId, out string canonicalName)
         {
             // Find out if this item is a physical file.
+            Guid typeGuid = Guid.Empty;
             canonicalName = null;
- 
-                Guid typeGuid = Guid.Empty;
-                int hr = VSConstants.S_OK;
-                try
-                {
-                    hr = hierarchy.GetGuidProperty(itemId, (int)__VSHPROPID.VSHPROPID_TypeGuid, out typeGuid);
-                }
-                catch (System.Runtime.InteropServices.COMException)
-                {
-                    //For WPF Projects, they will throw an exception when trying to access this property if the
-                    //guid is empty. These are caught and ignored here.
-                }
+            int hr = VSConstants.S_OK;
+            try
+            {
+                hr = hierarchy.GetGuidProperty(itemId, (int)__VSHPROPID.VSHPROPID_TypeGuid, out typeGuid);
+            }
+            catch (System.Runtime.InteropServices.COMException)
+            {
+                //For WPF Projects, they will throw an exception when trying to access this property if the
+                //guid is empty. These are caught and ignored here.
+            }
 
-                if (Microsoft.VisualStudio.ErrorHandler.Failed(hr) ||
-                    VSConstants.GUID_ItemType_PhysicalFile != typeGuid)
-                {
-                    // It is not a file, we can exit now.
-                    return false;
-                }
+            if (Microsoft.VisualStudio.ErrorHandler.Failed(hr) ||
+                VSConstants.GUID_ItemType_PhysicalFile != typeGuid)
+            {
+                // It is not a file, we can exit now.
+                return false;
+            }
 
-                // This item is a file; find if it is a PRG file.
-                hr = hierarchy.GetCanonicalName(itemId, out canonicalName);
-                if (Microsoft.VisualStudio.ErrorHandler.Failed(hr))
-                {
-                    return false;
-                }
-                string extension = System.IO.Path.GetExtension(canonicalName);
-                return (0 == string.Compare(extension, ".prg", StringComparison.OrdinalIgnoreCase));
-            
+            // This item is a file; find if it is a PRG file.
+            hr = hierarchy.GetCanonicalName(itemId, out canonicalName);
+            if (Microsoft.VisualStudio.ErrorHandler.Failed(hr))
+            {
+                return false;
+            }
+            string extension = System.IO.Path.GetExtension(canonicalName);
+            return (0 == string.Compare(extension, ".prg", StringComparison.OrdinalIgnoreCase));
         }
 
         /// <summary>

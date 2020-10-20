@@ -32,7 +32,7 @@ ASSIGN Color(oNewColor)
 
 	RETURN (oColor := oNewColor)
 
-METHOD Destroy() 
+METHOD Destroy()  AS USUAL CLIPPER
 	
 
 	IF !InCollect()

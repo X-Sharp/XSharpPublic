@@ -41,10 +41,9 @@
     <VO15>false</VO15>
     <VO16>false</VO16>
     <VulcanCompatibleResources>False</VulcanCompatibleResources>
-    <XSharpProjectExtensionsPath>$(MSBuildExtensionsPath)\XSharp\</XSharpProjectExtensionsPath>
     <StartupObject />
     <ApplicationIcon />
-    <XSharpProjectversion>2.5.2.0</XSharpProjectversion>
+    <XSharpProjectversion>2.6.0.0</XSharpProjectversion>
     <Includepaths>$(Solutiondir)common</Includepaths>
     <Nostandarddefs>false</Nostandarddefs>
     <IntermediateOutputPath>$(SolutionDir)Binaries\obj\$(Configuration)\$(ProjectName)\</IntermediateOutputPath>
@@ -54,7 +53,6 @@
     <Memvar>False</Memvar>
     <Undeclared>False</Undeclared>
     <NoWin32Manifest>False</NoWin32Manifest>
-    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'" Label="Configuration">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -92,21 +90,7 @@
   </PropertyGroup>
   <Import Project="$(XSharpMsBuildDir)\XSharp.targets" />
   <ItemGroup>
-    <Reference Include="EnvDTE, Version=8.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-      <Name>EnvDTE</Name>
-      <AssemblyName>EnvDTE.dll</AssemblyName>
-      <SpecificVersion>False</SpecificVersion>
-      <Private>True</Private>
-      <HintPath>..\..\packages\EnvDTE.16.7.30328.74\lib\net45\EnvDTE.dll</HintPath>
-    </Reference>
     <Reference Include="mscorlib" />
-    <Reference Include="stdole, Version=7.0.3300.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-      <Name>stdole</Name>
-      <AssemblyName>stdole.dll</AssemblyName>
-      <SpecificVersion>False</SpecificVersion>
-      <Private>True</Private>
-      <HintPath>..\..\packages\stdole.16.7.30328.74\lib\net45\stdole.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Drawing" />
@@ -124,6 +108,13 @@
       <SpecificVersion>False</SpecificVersion>
       <Private>True</Private>
       <HintPath>..\..\..\DevRt\Binaries\Debug\XSharp.RT.dll</HintPath>
+    </Reference>
+    <Reference Include="XSharp.VO, Version=2.1.0.0, Culture=neutral, PublicKeyToken=ed555a0467764586">
+      <Name>XSharp.VO</Name>
+      <AssemblyName>XSharp.VO.dll</AssemblyName>
+      <SpecificVersion>False</SpecificVersion>
+      <Private>True</Private>
+      <HintPath>..\..\..\DevRt\Binaries\Debug\XSharp.VO.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -170,8 +161,6 @@
     <None Include="..\..\Common\BuildNumber.h">
       <Link>BuildNumber.h</Link>
     </None>
-    <None Include="packages.config" />
-    <None Include="Readme.txt" />
     <None Include="Templates\cavoded.tpl" />
     <None Include="Templates\cavofed.tpl" />
     <None Include="Templates\cavowed.inf" />

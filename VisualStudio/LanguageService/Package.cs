@@ -17,6 +17,7 @@ using Microsoft.VisualStudio.Shell.Interop;
 using System.ComponentModel.Design;
 using Microsoft.VisualStudio.ComponentModelHost;
 using XSharpModel;
+using Microsoft.Win32;
 
 // The following lines ensure that the right versions of the various DLLs are loaded.
 // They will be included in the generated PkgDef folder for the project system
@@ -85,7 +86,7 @@ namespace XSharp.LanguageService
                  "Intellisense",// Page name
                  "#201"         // Localized name of property page
                  )]
-    public sealed class XSharpLanguageService : AsyncPackage, IVsShellPropertyEvents
+    public sealed class XSharpLanguageService : AsyncPackage, IVsShellPropertyEvents, IVsDebuggerEvents
     {
         private static XSharpLanguageService instance;
         private IVsTextManager4 _txtManager;
@@ -112,6 +113,7 @@ namespace XSharp.LanguageService
                 XSettings.EnableDatabaseLog = _intellisensePage.EnableDatabaseLog;
                 XSettings.EnableParameterLog = _intellisensePage.EnableParameterLog;
                 XSettings.EnableParseLog = _intellisensePage.EnableParserLog;
+                XSettings.EnableQuickInfoLog = _intellisensePage.EnableQuickInfoLog;
                 XSettings.EnableReferenceInfoLog = _intellisensePage.EnableReferenceInfoLog;
                 XSettings.EnableTypelookupLog = _intellisensePage.EnableTypelookupLog;
 
@@ -120,17 +122,39 @@ namespace XSharp.LanguageService
                 XSettings.DisableCaseSynchronization = _intellisensePage.DisableCaseSynchronization;
                 XSettings.DisableClassViewObjectView = _intellisensePage.DisableClassViewObjectView;
                 XSettings.DisableCodeCompletion = _intellisensePage.DisableCodeCompletion;
+                XSettings.DisableEditorDropDowns = _intellisensePage.DisableEditorDropdowns;
                 XSettings.DisableEntityParsing = _intellisensePage.DisableEntityParsing;
                 XSettings.DisableForeignProjectReferences = _intellisensePage.DisableForeignProjectReferences;
                 XSettings.DisableGotoDefinition = _intellisensePage.DisableGotoDefinition;
                 XSettings.DisableHighLightWord = _intellisensePage.DisableHighLightWord;
+                XSettings.DisableLightBulb = _intellisensePage.DisableLightBulb;
+                XSettings.DisableParameterInfo = _intellisensePage.DisableParameterInfo;
                 XSettings.DisablePeekDefinition = _intellisensePage.DisablePeekDefinition;
                 XSettings.DisableQuickInfo = _intellisensePage.DisableQuickInfo;
                 XSettings.DisableRegions = _intellisensePage.DisableRegions;
                 XSettings.DisableSyntaxHighlighting = _intellisensePage.DisableSyntaxColorization;
                 XSettings.DisableXSharpProjectReferences = _intellisensePage.DisableXSharpProjectReferences;
 
-                XSettings.KeywordCase = (int)_intellisensePage.KeywordCase;
+                //XSettings.EditorIndentSize
+                XSettings.EditorCompletionListTabs = _intellisensePage.CompletionListTabs;
+                XSettings.EditorCommitChars = _intellisensePage.CommitChars;
+                XSettings.EditorCompletionAutoPairs = _intellisensePage.AutoPairs;
+                XSettings.EditorCompletionListAfterEachChar = _intellisensePage.ShowAfterChar;
+                XSettings.EditorIndentFactor = _intellisensePage.MultiFactor;
+                XSettings.EditorKeywordsInAll = _intellisensePage.KeywordsInAll;
+                XSettings.EditorUseDotAsUniversalSelector = _intellisensePage.UseDotAsUniversalSelector;
+
+                XSettings.EditorNavigationSorted = _intellisensePage.SortNavigationBars;
+                XSettings.EditorNavigationIncludeFields = _intellisensePage.IncludeFieldsInNavigationBars;
+                XSettings.EditorNavigationMembersOfCurrentTypeOnly = _intellisensePage.ShowMembersOfCurrentTypeOnly;
+                //XSettings.EditorTabsAsSpaces = ;
+                //XSettings.EditorTabSize = ;
+                //XSettings.EditorIndentSize = ;
+                //XSettings.EditorIndentStyle = ;
+                //XSettings.EditorHideAdvancedMembers = ;
+
+
+                XSettings.KeywordCase = _intellisensePage.KeywordCase;
                 _intellisensePage.SettingsChanged = false;
             }
             return _intellisensePage;
@@ -158,7 +182,40 @@ namespace XSharp.LanguageService
             serviceContainer.AddService(typeof(XSharpLegacyLanguageService),
                                         languageService,
                                         true);
+            RegisterDebuggerEvents();
+            addOurFileExtensionsForDiffAndPeek("Diff\\SupportedContentTypes");
+            addOurFileExtensionsForDiffAndPeek("Peek\\SupportedContentTypes");
 
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            try
+            {
+
+                this.UnRegisterDebuggerEvents();
+            }
+            finally
+            {
+                base.Dispose(disposing);
+
+            }
+        }
+
+
+        const string EXTENSIONS = ".prg;.ppo;.ch;.xh;.xs";
+        private void addOurFileExtensionsForDiffAndPeek(string parent)
+        {
+            using (RegistryKey root = VSRegistry.RegistryRoot(__VsLocalRegistryType.RegType_Configuration, true))
+            {
+                if (root != null)
+                {
+                    using (RegistryKey key = root.OpenSubKey(parent, true))
+                    {
+                        key.SetValue(EXTENSIONS, "");
+                    }
+                }
+            }
 
         }
         public void Terminate()
@@ -180,19 +237,56 @@ namespace XSharp.LanguageService
                 // when modal window closes
                 if (!lValue)
                 {
-                    CommandFilter.InvalidateOptions();
                     GetIntellisenseOptionsPage();
                 }
             }
             return VSConstants.S_OK;
         }
+        #region IVSDebuggerEvents
+        private void RegisterDebuggerEvents()
+        {
+            int hr;
+            ThreadHelper.JoinableTaskFactory.Run(async delegate
+            {
+                m_debugger = await this.GetServiceAsync(typeof(SVsShellDebugger)) as IVsDebugger;
+                if (m_debugger != null)
+                {
+                    await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+                    hr = m_debugger.AdviseDebuggerEvents(this, out m_Debuggercookie);
+                    Microsoft.VisualStudio.ErrorHandler.ThrowOnFailure(hr);
+                    // Get initial value
+                    DBGMODE[] modeArray = new DBGMODE[1];
+                    hr = m_debugger.GetMode(modeArray);
+                    XSettings.DebuggerIsRunning = modeArray[0] == DBGMODE.DBGMODE_Run;
+                }
+            });
+        }
+        private void UnRegisterDebuggerEvents()
+        {
+            int hr;
+            if (m_debugger != null && m_Debuggercookie != 0)
+            {
+                hr = m_debugger.UnadviseDebuggerEvents(m_Debuggercookie);
+                Microsoft.VisualStudio.ErrorHandler.ThrowOnFailure(hr);
+            }
+            m_Debuggercookie = 0;
+            m_debugger = null;
+        }
+        private IVsDebugger m_debugger = null;
+        private uint m_Debuggercookie = 0;
 
+        public int OnModeChange(DBGMODE dbgmodeNew)
+        {
+            XSettings.DebuggerIsRunning = dbgmodeNew == DBGMODE.DBGMODE_Run;
+            return VSConstants.S_OK;
+        }
+#endregion
         internal IVsTextManager4 GetTextManager()
         {
             return this._txtManager;
         }
 
-        internal static void DisplayOutPutMessage(string message)
+        internal static void DisplayOutputMessage(string message)
         {
             XSettings.DisplayOutputMessage(message);
         }
@@ -209,13 +303,7 @@ namespace XSharp.LanguageService
             return (IComponentModel)GetGlobalService(typeof(SComponentModel));
         }
 
-        internal bool DebuggerIsRunning
-        {
-            get
-            {
-                return false;
-            }
-        }
+      
     }
 
 }

@@ -14,7 +14,6 @@ using LanguageService.SyntaxTree;
 using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
 using LanguageService.CodeAnalysis.XSharp;
 using XSharpModel;
-using XSharp.LanguageService.OptionsPages;
 
 namespace XSharp.LanguageService.Editors.BraceMatching
 {
@@ -26,8 +25,6 @@ namespace XSharp.LanguageService.Editors.BraceMatching
     {
         public ITagger<T> CreateTagger<T>(ITextView textView, ITextBuffer buffer) where T : ITag
         {
-            var package = XSharpLanguageService.Instance;
-            var optionsPage = package.GetIntellisenseOptionsPage();
             if (XSettings.DisableBraceMatching)
                 return null;
             if (textView == null || buffer == null)
@@ -50,8 +47,6 @@ namespace XSharp.LanguageService.Editors.BraceMatching
         ITextBuffer SourceBuffer { get; set; }
         SnapshotPoint? CurrentChar { get; set; }
         static private Dictionary<char, char> m_braceList;
-        IntellisenseOptionsPage optionsPage = null;
-        XSharpLanguageService package;
 
         static BraceMatchingTagger()
         {
@@ -70,13 +65,11 @@ namespace XSharp.LanguageService.Editors.BraceMatching
 
             this.View.Caret.PositionChanged += CaretPositionChanged;
             this.View.LayoutChanged += ViewLayoutChanged;
-            package = XSharpLanguageService.Instance;
-            optionsPage = package.GetIntellisenseOptionsPage();
         }
 
         void WriteOutputMessage(string sMessage)
         {
-            if (optionsPage.EnableBraceMatchLog && optionsPage.EnableOutputPane)
+            if (XSettings.EnableBraceMatchLog && XSettings.EnableLogging)
             {
                 XSettings.DisplayOutputMessage("Brace Matching: " + sMessage);
             }

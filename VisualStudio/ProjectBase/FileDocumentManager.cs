@@ -17,6 +17,7 @@ using Microsoft.VisualStudio.Shell.Interop;
 using IOleServiceProvider = Microsoft.VisualStudio.OLE.Interop.IServiceProvider;
 using XSharp.Project;
 using Microsoft.VisualStudio.Shell;
+using XSharpModel;
 
 namespace Microsoft.VisualStudio.Project
 {
@@ -141,7 +142,7 @@ namespace Microsoft.VisualStudio.Project
             }
             catch(COMException e)
             {
-                XSharpProjectPackage.Instance.DisplayException(e);
+                XSettings.DisplayException(e);
                 returnValue = e.ErrorCode;
             }
             finally
@@ -279,7 +280,7 @@ namespace Microsoft.VisualStudio.Project
             }
             catch(COMException e)
             {
-                XSharpProjectPackage.Instance.DisplayException(e);
+                XSettings.DisplayException(e);
                 returnValue = e.ErrorCode;
 				CloseWindowFrame(ref windowFrame);
             }

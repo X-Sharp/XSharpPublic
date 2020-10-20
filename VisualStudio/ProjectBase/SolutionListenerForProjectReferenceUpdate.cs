@@ -18,6 +18,7 @@ using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Shell.Interop;
 using IServiceProvider = System.IServiceProvider;
 using XSharp.Project;
+using XSharpModel;
 
 namespace Microsoft.VisualStudio.Project
 {
@@ -126,7 +127,7 @@ namespace Microsoft.VisualStudio.Project
             }
             catch(COMException e)
             {
-                XSharpProjectPackage.Instance.DisplayException(e);
+                XSettings.DisplayException(e);
                 return e.ErrorCode;
             }
 

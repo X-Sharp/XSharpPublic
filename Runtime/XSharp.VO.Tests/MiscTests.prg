@@ -156,11 +156,11 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			Assert.True(u == "")
 			Assert.True(UsualType(u) == STRING)
 
-			#warning Hmmm, in VO EnforceType() can be used also like that and has different behavior when value is passed by reference or by value. Need to look closer into it.
-/*			u := 123
+			u := 123
 			EnforceType(REF u, STRING)
 			Assert.True(u == "")
-			Assert.True(UsualType(u) == STRING)*/
+			Assert.True(UsualType(u) == STRING)
+			EnforceType(u, STRING)
 			
 			Assert.True(EmptyUsual(STRING) == "")
 	END CLASS

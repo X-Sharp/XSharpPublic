@@ -208,7 +208,7 @@ FUNCTION LastRec(uArea AS USUAL) AS DWORD
 /// <returns>
 /// </returns>
 FUNCTION DbBuffRefresh() AS LOGIC STRICT
-	RETURN _DbThrowErrorOnFailure(__FUNCTION__, VoDb.BuffRefresh())
+	RETURN _DbThrowErrorOnFailure(__FUNCTION__, VoDb.Refresh())
 
 
 FUNCTION DbBuffRefresh(uArea AS USUAL) AS LOGIC STRICT

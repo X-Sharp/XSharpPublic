@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(MSBuildExtensionsPath)\XSharp\XSharp.Default.props" />
+  <Import Project="$(XSharpMsBuildDir)\XSharp.Default.props" />
   <Import Project="..\VOSDK.Targets" />
   <!-- Please note that many properties are read from VOSDK.Targets -->
   <PropertyGroup>
@@ -8,8 +8,7 @@
     <AssemblyName>XSharp.VORDDClasses</AssemblyName>
     <Name>XSharp.VO.RDDClasses</Name>
     <OutputName>XSharpRDDClasses</OutputName>
-    <XSharpProjectExtensionsPath>$(MSBuildExtensionsPath)\XSharp\</XSharpProjectExtensionsPath>
-    <XSharpProjectversion>2.5.0.0</XSharpProjectversion>
+    <XSharpProjectversion>2.6.0.0</XSharpProjectversion>
     <Includepaths>$(Solutiondir)Common</Includepaths>
     <Nostandarddefs>false</Nostandarddefs>
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -24,17 +23,15 @@
     <NoWin32Manifest>False</NoWin32Manifest>
     <VO5>false</VO5>
     <cs>true</cs>
-	<DisabledWarnings>165</DisabledWarnings>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Documentation|AnyCPU'">
     <DocumentationFile>VORDDClasses.Xml</DocumentationFile>
-	<DisabledWarnings>1591</DisabledWarnings>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
   </PropertyGroup>
-  <Import Project="$(MSBuildExtensionsPath)\XSharp\XSharp.targets" />
+  <Import Project="$(XSharpMsBuildDir)\XSharp.targets" />
   <ItemGroup>
     <Compile Include="..\..\SharedSource\SDKAssemblyinfo.prg">
       <Link>SDKAssemblyinfo.prg</Link>

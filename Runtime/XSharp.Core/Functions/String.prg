@@ -1054,6 +1054,9 @@ FUNCTION _Like(sWildCard AS STRING, sSource AS STRING) AS LOGIC
             ENDIF
         END SWITCH
     NEXT
+    IF nWildPos < nWildLen
+        RETURN FALSE
+    ENDIF
     RETURN TRUE
 
 /// <summary>Determine if a string matches a wildcard pattern (like the wildcard pattern for the DIR command in the OS).</summary>

@@ -13,7 +13,6 @@ using System;
 using Microsoft.VisualStudio.Shell.Interop;
 using VSLangProj;
 using Microsoft.VisualStudio;
-using Microsoft.VisualStudio.Shell;
 
 namespace Microsoft.VisualStudio.Project.Automation
 {
@@ -46,14 +45,7 @@ namespace Microsoft.VisualStudio.Project.Automation
 
         public virtual EnvDTE.DTE DTE
         {
-            get
-            {
-                return ThreadHelper.JoinableTaskFactory.Run(async delegate
-                {
-                    await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
-                    return projectManager.Site.GetService(typeof(EnvDTE.DTE)) as EnvDTE.DTE;
-                });
-            }
+            get { return projectManager.Site.GetService(typeof(EnvDTE.DTE)) as EnvDTE.DTE; }
         }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1065:DoNotRaiseExceptionsInUnexpectedLocations")]

@@ -53,10 +53,10 @@ BEGIN NAMESPACE XSharpModel
 				IF (lAdd2Queue)
 					SELF:_projects:Enqueue(xProject)
 				ENDIF
-				IF (! SELF:IsWalkerRunning .AND. ! xProject:IsVsBuilding)
-					SELF:Walk()
-				ENDIF
 			END LOCK
+			IF (! SELF:IsWalkerRunning .AND. ! xProject:IsVsBuilding)
+				SELF:Walk()
+			ENDIF
 			//WriteOutputMessage("<<-- AddProject()")
 		
 		STATIC INSTANCE bOld := FALSE AS LOGIC
@@ -170,8 +170,8 @@ BEGIN NAMESPACE XSharpModel
 						IF SELF:_projects:Count == 0 .OR. ! SELF:_projects:TryDequeue( OUT project)
 							EXIT
 						ENDIF
-						XSolution.SetStatusBarText(String.Format("Start scanning project {0}", project:Name))
 					END LOCK
+				   XSolution.SetStatusBarText(String.Format("Start scanning project {0}", project:Name))
 					_currentProject := project
 					WriteOutputMessage("-->> Walker("+project.Name+")")
 					aFiles := project:SourceFiles:ToArray()
@@ -192,8 +192,8 @@ BEGIN NAMESPACE XSharpModel
 					END LOCK
 					XSolution.SetStatusBarText("")
 					XSolution.SetStatusBarAnimation(FALSE, 3)
+               XDatabase.Read(project)
 					WriteOutputMessage("<<-- Walker("+project.Name+")")
-               
                aFiles := project:OtherFiles:ToArray()
                FOREACH VAR file IN aFiles
                   VAR oFile := project:FindXFile(file)
@@ -267,7 +267,9 @@ BEGIN NAMESPACE XSharpModel
 		END PROPERTY
 		
 		STATIC METHOD WriteOutputMessage(message AS STRING) AS VOID
-			XSolution.WriteOutputMessage("XModel.Walker "+message)
+         IF XSettings.EnableParseLog
+			   XSolution.WriteOutputMessage("XModel.Walker "+message)
+         ENDIF
 		
 		METHOD ReportError(fileName AS STRING, span AS LinePositionSpan, errorCode AS STRING, message AS STRING, args AS OBJECT[]) AS VOID
 			RETURN

@@ -18,6 +18,7 @@ using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.OLE.Interop;
 using Microsoft.VisualStudio.TextManager.Interop;
 using XSharp.Project;
+using XSharpModel;
 
 namespace Microsoft.VisualStudio.Project
 {
@@ -924,7 +925,8 @@ namespace Microsoft.VisualStudio.Project
             }
             catch(UriFormatException e)
             {
-                XSharpProjectPackage.Instance.DisplayException(e);
+
+                XSettings.DisplayException(e);
             }
 
             return false;
@@ -1063,7 +1065,7 @@ namespace Microsoft.VisualStudio.Project
         [DllImport("user32.dll", ExactSpelling = true, CharSet = CharSet.Auto)]
         public static extern bool DestroyIcon(IntPtr handle);
 
-        [DllImport("user32.dll", EntryPoint = "IsDialogMessageA", SetLastError = true, CharSet = CharSet.Ansi, ExactSpelling = true, CallingConvention = CallingConvention.StdCall)]
+        [DllImport("user32.dll", EntryPoint = "IsDialogMessageA", SetLastError = true, CharSet = CharSet.Ansi, ExactSpelling = true, CallingConvention = System.Runtime.InteropServices.CallingConvention.StdCall)]
         public static extern bool IsDialogMessageA(IntPtr hDlg, ref MSG msg);
 
         /// <summary>

@@ -5,7 +5,7 @@
     <Description>A project for creating a X# class library (.dll) for the Xbase++ Dialect</Description>
     <Icon>XPPClassLibrary.png</Icon>
     <PreviewImage>XPPClassLibrary.png</PreviewImage>
-    <TemplateID>XSharp.XPPClassLibrary</TemplateID>
+    <TemplateID>XSharp.ClassLibraryXPP</TemplateID>
     <ProjectType>XSharp</ProjectType>
     <SortOrder>1</SortOrder>
     <NumberOfParentCategoriesToRollUp>1</NumberOfParentCategoriesToRollUp>

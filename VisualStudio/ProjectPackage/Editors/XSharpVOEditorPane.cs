@@ -20,6 +20,9 @@ using EnvDTE;
 using XSharp.VOEditors;
 using Microsoft.VisualStudio.Project;
 using XSharp.LanguageService;
+using XSharpModel;
+using System.Collections.Generic;
+
 namespace XSharp.Project
 {
     /// <summary>
@@ -47,14 +50,14 @@ namespace XSharp.Project
     // Editor.vsdir contents:-
     //    myfile.myext|{guid}|#106|80|#109|0|401|0|#107
     // The fields in order are as follows:-
-    //    - form.vnfs - our empty vnfs file
+    //    - form.xsfs - our empty xsfs file
     //    - {guid} - our Editor package guid
     //    - #106 - the ID of "My File Type" in the resource
     //    - 80 - the display ordering priority
     //    - #109 - the ID of "A blank my file type" in the resource
     //    - 0 - resource dll string (we don't use this)
     //    - 401 - the ID of our icon
-    //    - 0 - various flags (we don't use this - se vsshell.idl)
+    //    - 0 - various flags (we don't use this - see vsshell.idl)
     //    - #107 - the ID of "myext"
     ///////////////////////////////////////////////////////////////////////////////
 
@@ -116,8 +119,6 @@ namespace XSharp.Project
         private IVsFileChangeEx vsFileChangeEx;
 
         private Timer FileChangeTrigger = new Timer();
-
-        private Timer FNFStatusbarTrigger = new Timer();
 
         private bool fileChangedTimerSet;
         private int ignoreFileChangeLevel;
@@ -200,7 +201,7 @@ namespace XSharp.Project
 
             Control.CheckForIllegalCrossThreadCalls = false;
             // Create an ArrayList to store the objects that can be selected
-            ArrayList listObjects = new ArrayList();
+            var listObjects = new List<VOEditorProperties>();
 
             // Create the object that will show the document's properties
             // on the properties window.
@@ -230,6 +231,7 @@ namespace XSharp.Project
                 ThreadHelper.JoinableTaskFactory.Run(async delegate
                 {
                     await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+
                     oStatusBar = (IVsStatusbar)GetService(typeof(IVsStatusbar));
                 });
             }
@@ -248,7 +250,9 @@ namespace XSharp.Project
         void TriggerSaveHandler(object o, EventArgs e)
         {
             if (!this.loading)
+            { 
                 ((IPersistFileFormat)this).Save(fileName, 0, 0);
+            }
         }
 
         public string FileName
@@ -276,6 +280,7 @@ namespace XSharp.Project
                     ThreadHelper.JoinableTaskFactory.Run(async delegate
                     {
                         await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+
                         trackSel = (ITrackSelection)GetService(typeof(ITrackSelection));
                     });
                 }
@@ -299,11 +304,6 @@ namespace XSharp.Project
                         FileChangeTrigger.Dispose();
                         FileChangeTrigger = null;
                     }
-                    if (null != FNFStatusbarTrigger)
-                    {
-                        FNFStatusbarTrigger.Dispose();
-                        FNFStatusbarTrigger = null;
-                    }
 
                     SetFileChangeNotification(null, false);
 
@@ -311,11 +311,6 @@ namespace XSharp.Project
                     {
                         editorControl.Dispose();
                         editorControl = null;
-                    }
-                    if (FileChangeTrigger != null)
-                    {
-                        FileChangeTrigger.Dispose();
-                        FileChangeTrigger = null;
                     }
                     if (extensibleObjectSite != null)
                     {
@@ -346,6 +341,7 @@ namespace XSharp.Project
             ThreadHelper.JoinableTaskFactory.Run(async delegate
             {
                 await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+
                 runningDocTable = (IVsRunningDocumentTable)GetService(typeof(SVsRunningDocumentTable));
             });
 
@@ -861,6 +857,7 @@ namespace XSharp.Project
                         ThreadHelper.JoinableTaskFactory.Run(async delegate
                         {
                             await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+
                             queryEditQuerySave = (IVsQueryEditQuerySave2)GetService(typeof(SVsQueryEditQuerySave));
                         });
 
@@ -1040,7 +1037,7 @@ namespace XSharp.Project
 
         internal static void Debug(string strMessage)
         {
-            XSharpProjectPackage.Instance.DisplayOutPutMessage(strMessage);
+            XSettings.DisplayOutputMessage(strMessage);
         }
 
         #region IVsFileChangeEvents Members
@@ -1079,7 +1076,7 @@ namespace XSharp.Project
                     }
                     // if it looks like the file contents have changed (either the size or the modified
                     // time has changed) then we need to prompt the user to see if we should reload the
-                    // file. it is important to not syncronisly reload the file inside of this FilesChanged
+                    // file. it is important to not synchronously reload the file inside of this FilesChanged
                     // notification. first it is possible that there will be more than one FilesChanged
                     // notification being sent (sometimes you get separate notifications for file attribute
                     // changing and file size/time changing). also it is the preferred UI style to not
@@ -1158,6 +1155,7 @@ namespace XSharp.Project
                     ThreadHelper.JoinableTaskFactory.Run(async delegate
                     {
                         await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+
                         vsFileChangeEx = (IVsFileChangeEx)GetService(typeof(SVsFileChangeEx));
                     });
                 }
@@ -1253,10 +1251,8 @@ namespace XSharp.Project
         {
             try
             {
-                if (Utilities.DeleteFileSafe(strBackupFileName))
-                {
-                    editorControl.Save(strBackupFileName, true);
-                }
+                Utilities.DeleteFileSafe(strBackupFileName);
+                editorControl.Save(strBackupFileName, true);
                 backupObsolete = false;
             }
             catch (ArgumentException)

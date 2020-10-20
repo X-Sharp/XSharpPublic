@@ -98,7 +98,7 @@ INTERNAL STATIC CLASS XSharp.VFP.SQLReflection
         ENDIF
         RETURN oField != NULL .AND. ! oField:IsInitOnly .AND. ! oField:IsLiteral
 
-    STATIC METHOD InvokeMethod(oObject AS OBJECT, cName AS STRING, oValue OUT OBJECT, aParams PARAMS OBJECT[] )
+    STATIC METHOD InvokeMethod(oObject AS OBJECT, cName AS STRING, oValue OUT OBJECT, aParams PARAMS OBJECT[] ) AS LOGIC 
         oValue := NULL
         VAR oMethod := GetMethod(oObject, cName)
         IF oMethod != NULL 

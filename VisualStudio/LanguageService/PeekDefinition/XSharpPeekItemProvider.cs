@@ -3,7 +3,7 @@ using Microsoft.VisualStudio.Language.Intellisense;
 using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Utilities;
 using static XSharp.LanguageService.XSharpConstants;
-
+using XSharpModel;
 namespace XSharp.LanguageService
 {
     [Export(typeof(IPeekableItemSourceProvider))]
@@ -21,9 +21,7 @@ namespace XSharp.LanguageService
         public IPeekableItemSource TryCreatePeekableItemSource(ITextBuffer textBuffer)
         {
 
-            var package = XSharpLanguageService.Instance;
-            var optionsPage = package.GetIntellisenseOptionsPage();
-            if (optionsPage.DisablePeekDefinition)
+            if (XSettings.DisablePeekDefinition)
                 return null;
 
             return textBuffer.Properties.GetOrCreateSingletonProperty(() => new XSharpPeekItemSource(textBuffer, _peekResultFactory));

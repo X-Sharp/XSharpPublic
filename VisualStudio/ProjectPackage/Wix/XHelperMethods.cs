@@ -25,6 +25,7 @@ using OleConstants = Microsoft.VisualStudio.OLE.Interop.Constants;
 using VsCommands = Microsoft.VisualStudio.VSConstants.VSStd97CmdID;
 using VsCommands2K = Microsoft.VisualStudio.VSConstants.VSStd2KCmdID;
 using VsMenus = Microsoft.VisualStudio.Project.VsMenus;
+using XSharpModel;
 
 namespace XSharp.Project
 {
@@ -733,7 +734,7 @@ internal static class XHelperMethods
             // If we fail to get it we can exit now.
             if (null == outputWindow)
             {
-                XSharpProjectPackage.Instance.DisplayOutPutMessage("Failed to get a reference to IVsOutputWindow");
+                XSettings.DisplayOutputMessage("Failed to get a reference to IVsOutputWindow");
                 return;
             }
             // Now get the window pane for the general output.
@@ -743,14 +744,14 @@ internal static class XHelperMethods
             {
                 if (Microsoft.VisualStudio.ErrorHandler.Failed(outputWindow.CreatePane(ref guidGeneral, tabName, 1, 0)))
                 {
-                    XSharpProjectPackage.Instance.DisplayOutPutMessage("Failed to get a reference to the Output window General pane");
+                    XSettings.DisplayOutputMessage("Failed to get a reference to the Output window General pane");
                     return;
                 }
                 outputWindow.GetPane(ref guidGeneral, out windowPane);
             }
             if (Microsoft.VisualStudio.ErrorHandler.Failed(windowPane.OutputString(outputText)))
             {
-                XSharpProjectPackage.Instance.DisplayOutPutMessage("Failed to write on the Output window");
+                XSettings.DisplayOutputMessage("Failed to write on the Output window");
             }
             //
         }

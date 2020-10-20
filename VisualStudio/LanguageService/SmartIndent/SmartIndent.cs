@@ -284,7 +284,7 @@ namespace XSharp.Project
             }
             catch (Exception ex)
             {
-                XSharpProjectPackage.Instance.DisplayException(ex);
+                XSettings.DisplayException(ex);
             }
             return _lastIndentValue;
         }

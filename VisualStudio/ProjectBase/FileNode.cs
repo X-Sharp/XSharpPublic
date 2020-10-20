@@ -23,6 +23,7 @@ using OleConstants = Microsoft.VisualStudio.OLE.Interop.Constants;
 using VsCommands = Microsoft.VisualStudio.VSConstants.VSStd97CmdID;
 using VsCommands2K = Microsoft.VisualStudio.VSConstants.VSStd2KCmdID;
 using XSharp.Project;
+using XSharpModel;
 
 namespace Microsoft.VisualStudio.Project
 {
@@ -536,7 +537,7 @@ namespace Microsoft.VisualStudio.Project
             catch(Exception e)
             {
                 // Just re-throw the exception so we don't get duplicate message boxes.
-                XSharpProjectPackage.Instance.DisplayException(e);
+                XSettings.DisplayException(e);
                 this.RecoverFromRenameFailure(newName, oldrelPath, oldLinkPath);
                 returnValue = Marshal.GetHRForException(e);
                 throw;
@@ -622,8 +623,8 @@ namespace Microsoft.VisualStudio.Project
                             }
                             catch(Exception e)
                             {
-                                XSharpProjectPackage.Instance.DisplayOutPutMessage("Running Custom Tool failed : " );
-                                XSharpProjectPackage.Instance.DisplayException(e);
+                                XSettings.DisplayOutputMessage("Running Custom Tool failed : " );
+                                XSettings.DisplayException(e);
                                 throw;
                             }
                         }
@@ -818,7 +819,7 @@ namespace Microsoft.VisualStudio.Project
             }
             catch(Exception e)
             {
-                XSharpProjectPackage.Instance.DisplayException(e);
+                XSettings.DisplayException(e);
                 this.RecoverFromRenameFailure(newFilePath, oldrelPath, oldLinkPath);
                 throw;
             }

@@ -77,7 +77,7 @@ METHOD __FocusTV AS ExplorerWindow STRICT
 	oTreeView:SetFocus()
 	RETURN SELF
 
-METHOD Destroy() 
+METHOD Destroy()  AS USUAL CLIPPER
 	
 
 	IF !InCollect()

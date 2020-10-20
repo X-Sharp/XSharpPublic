@@ -12,7 +12,6 @@ using Microsoft.VisualStudio.Text.Editor;
 using Microsoft.VisualStudio.Text.Operations;
 using Microsoft.VisualStudio.Utilities;
 using LanguageService.SyntaxTree;
-using XSharp.LanguageService;
 using System.Windows.Documents;
 using System.Windows.Media;
 using XSharpModel;
@@ -29,7 +28,6 @@ namespace XSharp.LanguageService
         private XSharpModel.XFile _file;
         private IClassificationFormatMapService _formatMap;
         private IClassificationTypeRegistryService _registry;
-        private static OptionsPages.IntellisenseOptionsPage _optionsPage;
 
         public XSharpQuickInfoSource(XSharpQuickInfoSourceProvider provider, ITextBuffer subjectBuffer, IClassificationFormatMapService formatMap, IClassificationTypeRegistryService registry)
         {
@@ -38,8 +36,6 @@ namespace XSharp.LanguageService
             _file = _subjectBuffer.GetFile();
             _formatMap = formatMap;
             _registry = registry;
-            var package = XSharpLanguageService.Instance;
-            _optionsPage = package.GetIntellisenseOptionsPage();
         }
         private int lastTriggerPoint = -1;
         private Inline[] lastHelp = null;
@@ -47,9 +43,13 @@ namespace XSharp.LanguageService
         private ITrackingSpan lastSpan = null;
         private int lastVersion = -1;
 
+
+        
+
+
         internal void WriteOutputMessage(string message)
         {
-            if (_optionsPage.EnableQuickInfoLog && _optionsPage.EnableOutputPane)
+            if (XSettings.EnableQuickInfoLog && XSettings.EnableLogging)
             {
                 XSettings.DisplayOutputMessage("XSharp.QuickInfoSource :" + message);
             }
@@ -69,16 +69,14 @@ namespace XSharp.LanguageService
             //{
             //    skipFirst = true;
             //}
-            if (XSharpLanguageService.Instance.DebuggerIsRunning)
+            if (XSettings.DebuggerIsRunning)
             {
                 return;
             }
             try
             {
                 XSharpModel.ModelWalker.Suspend();
-                var package = XSharpLanguageService.Instance;
-                var optionsPage = package.GetIntellisenseOptionsPage();
-                if (optionsPage.DisableQuickInfo)
+                if (XSettings.DisableQuickInfo)
                     return;
 
 
@@ -244,8 +242,8 @@ namespace XSharp.LanguageService
             }
             catch (Exception ex)
             {
-                XSharpLanguageService.DisplayOutPutMessage("XSharpQuickInfo.AugmentQuickInfoSession failed : ");
-                XSharpLanguageService.DisplayException(ex);
+                XSettings.DisplayOutputMessage("XSharpQuickInfo.AugmentQuickInfoSession failed : ");
+                XSettings.DisplayException(ex);
             }
             finally
             {
@@ -309,7 +307,7 @@ namespace XSharp.LanguageService
             private int lastPointPosition = -1;
             private void OnTextViewMouseHover(object sender, MouseHoverEventArgs e)
             {
-                if (XSharpLanguageService.Instance.DebuggerIsRunning)
+                if (XSettings.DebuggerIsRunning)
                 {
                     return;
                 }
@@ -335,8 +333,8 @@ namespace XSharp.LanguageService
                 }
                 catch (Exception ex)
                 {
-                    XSharpLanguageService.DisplayOutPutMessage("XSharpQuickInfo.OnTextViewMouseHover failed");
-                    XSharpLanguageService.DisplayException(ex);
+                    XSettings.DisplayOutputMessage("XSharpQuickInfo.OnTextViewMouseHover failed");
+                    XSettings.DisplayException(ex);
                 }
             }
 
@@ -399,24 +397,24 @@ namespace XSharp.LanguageService
 
                     if (this.Modifiers != XSharpModel.Modifiers.None)
                     {
-                        temp = new Run(_optionsPage.formatKeyword(this.Modifiers) + " ");
+                        temp = new Run(XSettings.FormatKeyword(this.Modifiers) + " ");
                         temp.Foreground = this.kwBrush;
                         content.Add(temp);
                     }
-                    temp = new Run(_optionsPage.formatKeyword(this.Visibility) + " ");
+                    temp = new Run(XSettings.FormatKeyword(this.Visibility) + " ");
                     temp.Foreground = this.kwBrush;
                     content.Add(temp);
                     //
                     if (this.IsStatic)
                     {
-                        temp = new Run(_optionsPage.Static() + " ");
+                        temp = new Run(XSettings.FormatKeyword("STATIC "));
                         temp.Foreground = this.kwBrush;
                         content.Add(temp);
                     }
                     //
                     if (this.Kind != XSharpModel.Kind.Field)
                     {
-                        temp = new Run(_optionsPage.formatKeyword(this.Kind) + " ");
+                        temp = new Run(XSettings.FormatKeyword(this.Kind) + " ");
                         temp.Foreground = this.kwBrush;
                         content.Add(temp);
                     }
@@ -489,24 +487,24 @@ namespace XSharp.LanguageService
                     Run temp;
                     if (this.Modifiers != XSharpModel.Modifiers.None)
                     {
-                        temp = new Run(_optionsPage.formatKeyword(this.Modifiers) + " ");
+                        temp = new Run(XSettings.FormatKeyword(this.Modifiers) + " ");
                         temp.Foreground = this.kwBrush;
                         content.Add(temp);
                     }
-                    temp = new Run(_optionsPage.formatKeyword(this.Visibility) + " ");
+                    temp = new Run(XSettings.FormatKeyword(this.Visibility) + " ");
                     temp.Foreground = this.kwBrush;
                     content.Add(temp);
                     //
                     if ((this.IsStatic) && ((this.Kind != Kind.Function) && (this.Kind != Kind.Procedure)))
                     {
-                        temp = new Run(_optionsPage.Static()+ " ");
+                        temp = new Run(XSettings.FormatKeyword("STATIC "));
                         temp.Foreground = this.kwBrush;
                         content.Add(temp);
                     }
                     //
                     if ((this.Kind != XSharpModel.Kind.Field) && (this.Kind != XSharpModel.Kind.Constructor))
                     {
-                        temp = new Run(_optionsPage.formatKeyword(this.Kind) + " ");
+                        temp = new Run(XSettings.FormatKeyword(this.Kind) + " ");
                         temp.Foreground = this.kwBrush;
                         content.Add(temp);
                     }
@@ -571,7 +569,7 @@ namespace XSharp.LanguageService
                     }
                     if (this.Kind.HasReturnType())
                     {
-                        temp = new Run(" "+ _optionsPage.As());
+                        temp = new Run(" "+ XSettings.FormatKeyword("AS "));
                         temp.Foreground = this.kwBrush;
                         content.Add(temp);
                         temp = new Run(this.TypeName);
@@ -617,7 +615,7 @@ namespace XSharp.LanguageService
                     list.Add(temp);
 
                 }
-                temp = new Run(_optionsPage.formatKeyword(var.ParamTypeDesc) + " ");
+                temp = new Run(XSettings.FormatKeyword(var.ParamTypeDesc) + " ");
                 temp.Foreground = this.kwBrush;
                 list.Add(temp);
                 temp = new Run(var.TypeName);
@@ -651,11 +649,11 @@ namespace XSharp.LanguageService
                     Run temp;
                     if (this.typeMember.Modifiers != Modifiers.None)
                     {
-                        temp = new Run(_optionsPage.formatKeyword(this.typeMember.Modifiers) + " ");
+                        temp = new Run(XSettings.FormatKeyword(this.typeMember.Modifiers) + " ");
                         temp.Foreground = this.kwBrush;
                         content.Add(temp);
                     }
-                    temp = new Run(_optionsPage.formatKeyword(this.typeMember.Visibility) + " ");
+                    temp = new Run(XSettings.FormatKeyword(this.typeMember.Visibility) + " ");
                     temp.Foreground = this.kwBrush;
                     content.Add(temp);
                     //
@@ -666,7 +664,7 @@ namespace XSharp.LanguageService
                         {
                             kind = kind.Substring(2);
                         }
-                        temp = new Run(_optionsPage.formatKeyword(kind) + " ");
+                        temp = new Run(XSettings.FormatKeyword(kind) + " ");
                         temp.Foreground = this.kwBrush;
                         content.Add(temp);
                     }
@@ -719,7 +717,7 @@ namespace XSharp.LanguageService
                     }
                     if (this.typeMember.Kind.HasReturnType() && !String.IsNullOrEmpty(this.typeMember.TypeName))
                     {
-                        temp = new Run(" " + _optionsPage.As());
+                        temp = new Run(" " + XSettings.FormatKeyword("AS "));
                         temp.Foreground = this.kwBrush;
                         content.Add(temp);
                         temp = new Run(this.typeMember.TypeName);
@@ -786,7 +784,7 @@ namespace XSharp.LanguageService
                     var kind = xVar.Kind.ToString();
                     if (xVar.Kind == Kind.DbField)
                         kind = "Field";
-                    temp = new Run(_optionsPage.formatKeyword( kind + " "));
+                    temp = new Run(XSettings.FormatKeyword( kind + " "));
                     temp.Foreground = this.kwBrush;
                     content.Add(temp);
                     AddVarInfo(content, xVar);
@@ -800,30 +798,6 @@ namespace XSharp.LanguageService
     }
     static class KeywordExtensions
     {
-        internal static string formatKeyword(this OptionsPages.IntellisenseOptionsPage page,  Modifiers keyword)
-        {
-            return page.formatKeyword(keyword.ToString());
-        }
-        internal static string formatKeyword(this OptionsPages.IntellisenseOptionsPage page,  Kind keyword)
-        {
-            switch (keyword)
-            {
-                case Kind.VODefine:
-                    return page.formatKeyword("define");
-                case Kind.VOGlobal:
-                    return page.formatKeyword("global");
-                case Kind.VODLL:
-                    return page.formatKeyword("_dll function");
-            }
-            return page.formatKeyword(keyword.ToString());
-        }
-        internal static string formatKeyword(this OptionsPages.IntellisenseOptionsPage page,  string keyword)
-        {
-            return page.SyncKeyword(keyword);
-        } 
-        internal static string As(this OptionsPages.IntellisenseOptionsPage page) => page.formatKeyword("AS ");
-        internal static string Static(this OptionsPages.IntellisenseOptionsPage page) => page.formatKeyword("STATIC");
- 
     }
 }
 

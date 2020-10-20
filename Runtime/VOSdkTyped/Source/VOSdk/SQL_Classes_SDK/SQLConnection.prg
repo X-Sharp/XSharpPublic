@@ -154,9 +154,9 @@ CLASS SQLConnection
 		LOCAL cConnStr AS STRING
 		LOCAL cUserID AS STRING
 		LOCAL cPassword  AS STRING
-		DEFAULT( REF uConnStr, SELF:ConnectString )
-		DEFAULT( REF uUserID, SELF:UserID )
-		DEFAULT( REF uPassword, SELF:Password )
+		@@Default( REF uConnStr, SELF:ConnectString )
+		@@Default( REF uUserID, SELF:UserID )
+		@@Default( REF uPassword, SELF:Password )
 		cConnStr := (STRING) uConnStr
 		cUserID  := (STRING) uUserID
 		cPassword := (STRING) uPassword        
@@ -804,7 +804,7 @@ CLASS SQLConnection
 			oEnum := oConn:Factory:CreateDataSourceEnumerator()
 			oTable := oEnum:GetDataSources()
 			FOREACH oR AS DataRow IN oTable:Rows
-				AAdd(aSources, oR[0])
+				AAdd(aSources, oR:Item[0])
 			NEXT
 		ELSE
 			LOCAL oKey AS Microsoft.Win32.RegistryKey
@@ -1105,7 +1105,7 @@ FUNCTION SQLGetDataSources() AS ARRAY
 
 
 FUNCTION SQLConnectErrorMsg( lValue ) AS LOGIC
-	DEFAULT( REF lValue, FALSE )
+	@@Default( REF lValue, FALSE )
 	SQLConnection.lConnErrMsg := lValue
 	RETURN SQLConnection.lConnErrMsg
 

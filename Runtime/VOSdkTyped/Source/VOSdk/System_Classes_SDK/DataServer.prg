@@ -81,7 +81,7 @@ ACCESS ConcurrencyControl( )  AS USUAL
     RETURN SELF:nCCMode
 
 ASSIGN ConcurrencyControl( nMode  AS USUAL) 
-    LOCAL newMode := nMode
+    LOCAL newMode := nMode AS USUAL
 
     IF UsualType( newMode ) == STRING
         newMode := String2Symbol( nMode )
@@ -250,10 +250,10 @@ METHOD Notify( kNotification AS LONG, uDescription := NIL AS USUAL) AS USUAL
     NEXT
     RETURN SELF
 
-	METHOD PostInit( ) CLIPPER
+	METHOD PostInit( ) AS USUAL CLIPPER
 		RETURN SELF
 
-	METHOD PreInit( ) CLIPPER
+	METHOD PreInit( ) AS USUAL CLIPPER
 		RETURN SELF
 
 	ACCESS RecCount AS LONG

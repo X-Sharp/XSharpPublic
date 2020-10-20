@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(MSBuildExtensionsPath)\XSharp\XSharp.Default.props" />
+  <Import Project="$(XSharpMsBuildDir)\XSharp.Default.props" />
   <Import Project="..\VOSDK.Targets" />
   <!-- Please note that most important settings are read from VOSDK.Targets -->
   <PropertyGroup>
@@ -9,14 +9,15 @@
     <AssemblyName>XSharp.VOGUIClasses</AssemblyName>
     <Name>XSharp.VO.GUIClasses</Name>
     <OutputName>XSharpGUIClasses</OutputName>
-    <XSharpProjectExtensionsPath>$(MSBuildExtensionsPath)\XSharp\</XSharpProjectExtensionsPath>
-    <XSharpProjectversion>2.5.0.0</XSharpProjectversion>
+    <XSharpProjectversion>2.6.0.0</XSharpProjectversion>
     <Includepaths>$(Solutiondir)Common</Includepaths>
     <Nostandarddefs>false</Nostandarddefs>
     <PlatformTarget>x86</PlatformTarget>
     <LB>true</LB>
     <unsafe>true</unsafe>
     <CS>false</CS>
+    <vo15>true</vo15>
+    <DisabledWarnings>165, 168</DisabledWarnings>
     <NamedArgs>false</NamedArgs>
     <InitLocals>false</InitLocals>
     <RootNamespace>XSharp.VO.SDK</RootNamespace>
@@ -28,7 +29,6 @@
     <IntermediateOutputPath>obj\$(Configuration)\</IntermediateOutputPath>
     <Optimize>false</Optimize>
     <UseSharedCompilation>true</UseSharedCompilation>
-    <DisabledWarnings>165, 168</DisabledWarnings>
     <WarningLevel>4</WarningLevel>
     <SignAssembly>true</SignAssembly>
     <DelaySign>false</DelaySign>
@@ -45,7 +45,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Documentation|AnyCPU'">
     <DocumentationFile>XSharpSystemClasses.Xml</DocumentationFile>
   </PropertyGroup>
-  <Import Project="$(MSBuildExtensionsPath)\XSharp\XSharp.targets" />
+  <Import Project="$(XSharpMsBuildDir)\XSharp.targets" />
   <ItemGroup>
     <Compile Include="..\..\SharedSource\SDKAssemblyinfo.prg">
       <Link>SDKAssemblyinfo.prg</Link>

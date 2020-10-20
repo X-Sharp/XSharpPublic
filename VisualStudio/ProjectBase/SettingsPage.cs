@@ -99,9 +99,8 @@ namespace Microsoft.VisualStudio.Project
                     ThreadHelper.JoinableTaskFactory.Run(async delegate
                     {
                         await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
-
-                        if (this.site != null)
-                            site.OnStatusChange((uint)(this.dirty ? PropPageStatus.Dirty : PropPageStatus.Clean));
+                    if(this.site != null)
+                        site.OnStatusChange((uint)(this.dirty ? PropPageStatus.Dirty : PropPageStatus.Clean));
                     });
                 }
             }
@@ -419,28 +418,28 @@ namespace Microsoft.VisualStudio.Project
                     {
                         await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
 
-                        for (int i = 0; i < count; i++)
+                    for(int i = 0; i < count; i++)
+                    {
+                        NodeProperties property = (NodeProperties)punk[i];
+                        IVsCfgProvider provider;
+                        ErrorHandler.ThrowOnFailure(property.Node.ProjectMgr.GetCfgProvider(out provider));
+                        uint[] expected = new uint[1];
+                        ErrorHandler.ThrowOnFailure(provider.GetCfgs(0, null, expected, null));
+                        if(expected[0] > 0)
                         {
-                            NodeProperties property = (NodeProperties)punk[i];
-                            IVsCfgProvider provider;
-                            ErrorHandler.ThrowOnFailure(property.Node.ProjectMgr.GetCfgProvider(out provider));
-                            uint[] expected = new uint[1];
-                            ErrorHandler.ThrowOnFailure(provider.GetCfgs(0, null, expected, null));
-                            if (expected[0] > 0)
-                            {
-                                ProjectConfig[] configs = new ProjectConfig[expected[0]];
-                                uint[] actual = new uint[1];
-                                provider.GetCfgs(expected[0], configs, actual, null);
+                            ProjectConfig[] configs = new ProjectConfig[expected[0]];
+                            uint[] actual = new uint[1];
+                            provider.GetCfgs(expected[0], configs, actual, null);
 
-                                foreach (ProjectConfig config in configs)
+                            foreach(ProjectConfig config in configs)
+                            {
+                                if(!configsMap.ContainsKey(config.ConfigName))
                                 {
-                                    if (!configsMap.ContainsKey(config.ConfigName))
-                                    {
-                                        configsMap.Add(config.ConfigName, config);
-                                    }
+                                    configsMap.Add(config.ConfigName, config);
                                 }
                             }
                         }
+                    }
                     });
                     if(configsMap.Count > 0)
                     {

@@ -177,7 +177,7 @@ PARTIAL CLASS SQLSelect INHERIT DataServer
 	METHOD __GoCold AS LOGIC STRICT
 		LOCAL lOk AS LOGIC
 		IF SELF:lChanges
-			// Todo: Write changes back to server. This is not needed for Grün because it is done in the subclass
+			// Todo: Check Writing back changes to server. 
             nRowCount := SELF:oAdapter:Update(oTable)
 			oTable:AcceptChanges()
 			SELF:lChanges := FALSE

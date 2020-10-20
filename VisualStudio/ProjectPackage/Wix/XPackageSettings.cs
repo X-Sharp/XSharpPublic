@@ -129,7 +129,7 @@ namespace XSharp.Project
         // =========================================================================================
         // Classes
         // =========================================================================================
-
+        /*
         /// <summary>
         /// Names of the various registry keys that store our settings.
         /// </summary>
@@ -330,5 +330,6 @@ namespace XSharp.Project
                 }
             }
         }
+    */
     }
 }

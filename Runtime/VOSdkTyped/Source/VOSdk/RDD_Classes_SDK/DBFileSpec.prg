@@ -42,7 +42,7 @@ METHOD __MemFullPath() AS STRING STRICT
 	ENDIF
 	RETURN SELF:cFSDrive + cPath + "\" + SELF:MemFileName + SELF:MemFileExt
 
-METHOD Copy( oDBFSTarget, lIDX, lName ) AS LOGIC STRICT
+METHOD Copy( oDBFSTarget AS USUAL, lIDX := NIL AS USUAL, lName := NIL AS USUAL) AS LOGIC STRICT
 	LOCAL cMEMTarget AS STRING
 	LOCAL cTargetPath AS STRING
 	LOCAL cFileName AS STRING
@@ -142,7 +142,7 @@ METHOD Copy( oDBFSTarget, lIDX, lName ) AS LOGIC STRICT
 
 	RETURN lRetCode
 
-METHOD CopyTo( oFS, cDriver, lWantAnsi ) 
+METHOD CopyTo( oFS, cDriver, lWantAnsi ) AS USUAL CLIPPER
 	LOCAL cTarget AS STRING
 	LOCAL cAlias AS STRING
 	LOCAL aFullPath AS ARRAY
@@ -261,7 +261,7 @@ METHOD CopyTo( oFS, cDriver, lWantAnsi )
 
 	RETURN lRetCode
 
-METHOD Create( cFullPath, aDbStruct, cDriver, lWantAnsi, aRdds ) 
+METHOD Create( cFullPath, aDbStruct, cDriver, lWantAnsi, aRdds ) AS USUAL CLIPPER
 	LOCAL cAlias AS STRING
 	LOCAL lRetCode AS LOGIC
 	LOCAL rddList AS _RddList
@@ -393,14 +393,14 @@ ACCESS DbFDateChanged AS DATE
 	ENDIF
 	RETURN NULL_DATE
 
-ACCESS DbFName 
+ACCESS DbFName AS STRING
 
 	IF ALen( SELF:DBF ) > 0
 		RETURN SELF:DBF[1, F_NAME]
 	ENDIF
 	RETURN NULL_STRING
 
-METHOD DBFSGetInfo( xRdds, aHidden ) 
+METHOD DBFSGetInfo( xRdds, aHidden ) AS USUAL CLIPPER
 	LOCAL cAlias AS STRING
 	LOCAL cFile AS STRING
 	LOCAL aDirArray AS ARRAY
@@ -758,11 +758,11 @@ CONSTRUCTOR( cFullPath := "" AS STRING, cDriver := "" AS STRING, _aRDDs := NULL_
 
 	RETURN 
 
-ACCESS IsAnsi 
+ACCESS IsAnsi AS LOGIC
 
 	RETURN SELF:lAnsi
 
-ACCESS LastUpDate 
+ACCESS LastUpDate AS DATE
 
 	RETURN SELF:dLastUpDate
 
@@ -843,7 +843,7 @@ ACCESS MemTime AS STRING
 	ENDIF
 	RETURN NULL_STRING
 
-METHOD Move( oDBFSTarget, lIDX, lName ) AS LOGIC STRICT
+METHOD Move( oDBFSTarget := NIL AS USUAL, lIDX := NIL AS USUAL, lName := NIL  AS USUAL) AS LOGIC STRICT
 	LOCAL cTargetPath AS STRING
 	LOCAL cMEMTarget AS STRING
 	LOCAL cFileName AS STRING
@@ -1045,7 +1045,7 @@ ACCESS RDDs AS ARRAY
 
 	RETURN SELF:aRDDs
 
-ACCESS RecCount 
+ACCESS RecCount AS LONG
 
 	RETURN SELF:nRecCount
 
@@ -1066,11 +1066,11 @@ ASSIGN Records( nDWord  AS LONG)
 	SELF:nNext := nDWord
 	RETURN 
 
-ACCESS RecSize 
+ACCESS RecSize AS LONG
 
 	RETURN SELF:nRecSize
 
-METHOD Rename( oDBFSNewName, lName ) AS LOGIC STRICT
+METHOD Rename( oDBFSNewName:= NIL  AS USUAL, lName := NIL  AS USUAL) AS LOGIC 
 	LOCAL cTargetPath AS STRING
 	LOCAL cSourcePath AS STRING
 	LOCAL aDirArray AS ARRAY

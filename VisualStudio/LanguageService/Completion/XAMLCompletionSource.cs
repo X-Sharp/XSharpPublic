@@ -12,11 +12,8 @@ using System.ComponentModel.Composition;
 using Microsoft.VisualStudio.Utilities;
 using Microsoft.VisualStudio.Shell;
 using XSharp.LanguageService;
-using XSharp.LanguageService.OptionsPages;
 using System.Runtime.CompilerServices;
-using XSharp.LanguageService;
 using XSharpModel;
-
 namespace XSharpLanguage
 {
     [Export(typeof(ICompletionSourceProvider))]
@@ -44,8 +41,6 @@ namespace XSharpLanguage
         private XAMLCompletionSourceProvider _provider;
         private string _fileName;
         private XSharpModel.XFile _file;
-        IntellisenseOptionsPage optionsPage = null;
-        XSharpLanguageService package;
 
 
         internal static bool StringEquals(string lhs, string rhs)
@@ -61,8 +56,6 @@ namespace XSharpLanguage
             _buffer = buffer;
             _fileName = buffer.GetXAMLFile();
             _file = buffer.GetFile();
-            package = XSharpLanguageService.Instance;
-            optionsPage = package.GetIntellisenseOptionsPage();
 
         }
         internal void WriteOutputMessage(string strMessage)

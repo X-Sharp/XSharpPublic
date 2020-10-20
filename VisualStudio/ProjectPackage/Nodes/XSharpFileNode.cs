@@ -129,6 +129,9 @@ namespace XSharp.Project
 
         protected override int ExcludeFromProject()
         {
+               return ThreadHelper.JoinableTaskFactory.Run(async delegate
+            {
+			await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
             //if (this.FileType == XFileType.SourceCode)
             {
                 var prjNode = this.ProjectMgr as XSharpProjectNode;
@@ -137,6 +140,7 @@ namespace XSharp.Project
                 prjNode.ShowIntellisenseErrors();
             }
             return base.ExcludeFromProject();
+			});
         }
 
         private static string typeNameToSubtype(string typeName)
@@ -348,8 +352,8 @@ namespace XSharp.Project
             }
             catch (Exception e)
             {
-                XSharpProjectPackage.Instance.DisplayOutPutMessage("AddDependant failed");
-                XSharpProjectPackage.Instance.DisplayException(e);
+                XSettings.DisplayOutputMessage("AddDependant failed");
+                XSettings.DisplayException(e);
             }
             dependant = (XSharpFileNode)ProjectMgr.CreateDependentFileNode(fileName);
 
@@ -758,6 +762,14 @@ namespace XSharp.Project
             return base.QueryStatusOnNode(guidCmdGroup, cmd, pCmdText, ref result);
         }
 
+
+        public override void Remove(bool removeFromStorage)
+        {
+            // Remove here because later the URL is gone
+            var project = (XSharpProjectNode)this.ProjectMgr;
+            project.RemoveURL(this.GetMkDocument());
+            base.Remove(removeFromStorage);
+        }
         protected override bool RenameDocument(string oldName, string newName, out HierarchyNode newNodeOut)
         {
 

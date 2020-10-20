@@ -59,7 +59,7 @@ METHOD bind(oStatement AS SQLStatement,nPos AS DWORD) AS LONGINT STRICT
 	
 	
 
-METHOD Destroy() 
+METHOD Destroy()  AS USUAL CLIPPER
 	/*
 	This method frees the resources used by the SQLParameter object.
 	

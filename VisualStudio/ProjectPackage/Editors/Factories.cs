@@ -12,7 +12,6 @@ using Microsoft.VisualStudio.Shell.Interop;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Project.Automation;
 using Microsoft.VisualStudio.Project;
-using XSharp.LanguageService;
 
 namespace XSharp.Project
 {
@@ -61,9 +60,8 @@ namespace XSharp.Project
             return ThreadHelper.JoinableTaskFactory.Run(async delegate
             {
                 await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
-                object result = null;
-                result = vsServiceProvider.GetService(serviceType);
-                return result;
+
+                return vsServiceProvider.GetService(serviceType);
             });
         }
 

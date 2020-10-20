@@ -110,7 +110,11 @@ BEGIN NAMESPACE XSharp.RDD
                 CASE DbFieldType.DateTime      // 'T'
                     local oDt  as DateTime
                     if oValue IS IDate var oDate
-                        oDt := DateTime{oDate:Year, oDate:Month, oDate:Day}
+                        if oDate:IsEmpty
+                            oDt := DateTime.MinValue
+                        ELSE
+                            oDt := DateTime{oDate:Year, oDate:Month, oDate:Day}
+                        ENDIF
                     elseif oValue is DateTime var oDt2
                         oDt := oDt2
                     else

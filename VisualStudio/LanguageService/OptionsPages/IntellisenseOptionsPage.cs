@@ -6,6 +6,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using XSharpModel;
 
 namespace XSharp.LanguageService.OptionsPages
 {
@@ -28,7 +29,7 @@ namespace XSharp.LanguageService.OptionsPages
         public bool ShowAfterChar { get; set; }
 
         // 0 : none; 1 : UPPER; 2 : lower; 3 : TitleCase
-        public KeywordCase KeywordCase { get; set; }
+        public XSharpModel.KeywordCase KeywordCase { get; set; }
         public bool IdentifierCase => false;
         public bool AlignDoCase { get; set; }
         public bool AlignMethod { get; set; }

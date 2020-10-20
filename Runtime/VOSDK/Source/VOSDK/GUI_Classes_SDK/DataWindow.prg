@@ -1543,7 +1543,7 @@ METHOD DeleteValidated
 	RETURN lRetCode
 	
 
-METHOD Destroy() 
+METHOD Destroy()  AS USUAL CLIPPER
 	LOCAL oSubForm AS Window
 	
 	IF oAttachedServer != NULL_OBJECT

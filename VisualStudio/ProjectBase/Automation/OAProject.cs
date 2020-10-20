@@ -96,15 +96,14 @@ namespace Microsoft.VisualStudio.Project.Automation
         {
             get
             {
-
                 return ThreadHelper.JoinableTaskFactory.Run(async delegate
                 {
                     await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
-                    int dirty;
-                    ErrorHandler.ThrowOnFailure(project.IsDirty(out dirty));
-                    return dirty != 0;
+                int dirty;
+
+                ErrorHandler.ThrowOnFailure(project.IsDirty(out dirty));
+                return dirty != 0;
                 });
-                
             }
             set
             {
@@ -146,7 +145,7 @@ namespace Microsoft.VisualStudio.Project.Automation
                 return ThreadHelper.JoinableTaskFactory.Run(async delegate
                 {
                     await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
-                    return (EnvDTE.DTE)this.project.Site.GetService(typeof(EnvDTE.DTE));
+                return (EnvDTE.DTE)this.project.Site.GetService(typeof(EnvDTE.DTE));
                 });
             }
         }
@@ -235,7 +234,7 @@ namespace Microsoft.VisualStudio.Project.Automation
             return ThreadHelper.JoinableTaskFactory.Run(async delegate
             {
                 await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
-                return DTE.ObjectExtenders.GetExtender(project.NodeProperties.ExtenderCATID.ToUpper(), ExtenderName, project.NodeProperties);
+            return DTE.ObjectExtenders.GetExtender(project.NodeProperties.ExtenderCATID.ToUpper(), ExtenderName, project.NodeProperties);
             });
         }
 
@@ -318,9 +317,9 @@ namespace Microsoft.VisualStudio.Project.Automation
         {
             get
             {
-                return ThreadHelper.JoinableTaskFactory.Run(async delegate
-                {
-                    await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+                //return ThreadHelper.JoinableTaskFactory.Run(async delegate
+                //{
+                //    await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync( );
                     if (this.configurationManager == null)
                     {
                         IVsExtensibility3 extensibility = this.project.Site.GetService(typeof(IVsExtensibility)) as IVsExtensibility3;
@@ -335,7 +334,7 @@ namespace Microsoft.VisualStudio.Project.Automation
                     }
 
                     return this.configurationManager;
-                });
+                //});
             }
         }
 

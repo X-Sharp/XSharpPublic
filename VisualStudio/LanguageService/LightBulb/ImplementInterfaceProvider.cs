@@ -1,5 +1,4 @@
-﻿#if NOTDEFINED
-using System;
+﻿using System;
 using System.Linq;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
@@ -32,9 +31,7 @@ namespace XSharp.LanguageService.Editors.LightBulb
 
         public ISuggestedActionsSource CreateSuggestedActionsSource(ITextView textView, ITextBuffer textBuffer)
         {
-            var package = XSharpLanguageService.Instance;
-            var optionsPage = package.GetIntellisenseOptionsPage();
-            if (optionsPage.DisableLightBulb)
+            if (XSettings.DisableLightBulb)
                 return null;
             if (textBuffer == null && textView == null)
             {
@@ -98,7 +95,7 @@ namespace XSharp.LanguageService.Editors.LightBulb
             return Task.Factory.StartNew(() =>
             {
                 return SearchImplement();
-            }); 
+            });
         }
 
         public IEnumerable<SuggestedActionSet> GetSuggestedActions(ISuggestedActionCategorySet requestedActionCategories, SnapshotSpan range, CancellationToken cancellationToken)
@@ -181,4 +178,3 @@ namespace XSharp.LanguageService.Editors.LightBulb
 
 
 }
-#endif

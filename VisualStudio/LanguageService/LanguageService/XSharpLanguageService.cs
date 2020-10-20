@@ -233,7 +233,7 @@ namespace XSharp.LanguageService
                     case Kind.Operator:
                         if (!member.Modifiers.HasFlag(Modifiers.Static))
                         {
-                            list.Add(_optionsPage.formatKeyword("SELF"));
+                            list.Add(XSettings.FormatKeyword("SELF"));
                         }
                         break;
                 }

@@ -160,12 +160,6 @@
     <seealso cref="O:XSharp.VFP.Functions.At_C">At_C Function</seealso>
     <seealso cref="O:XSharp.VFP.Functions.AtCC">AtCC Function</seealso>
   </atc>
-  <atcc>
-    <summary>This is an alias for the AtC() function. X# works with unicode and the difference between single byte and multi byte characters does not exist in Unicode</summary>
-    <seealso cref="O:XSharp.VFP.Functions.At">At Function</seealso>
-    <seealso cref="O:XSharp.VFP.Functions.AtC">AtC Function</seealso>
-    <seealso cref="O:XSharp.VFP.Functions.At_C">At_C Function</seealso>
-  </atcc>
   <cdx>
     <summary>
       Returns the names of the open compound index (.cdx) file that has the specified index position number.
@@ -340,10 +334,6 @@
       CpDbf( ) returns 0 if a table isn't open in the work area you specify. If a table doesn't have the alias you specify with uArea,
       X# generates an error message.
     </param>
-    <remarks>
-      Display Structure also displays the code page with which an open table has been marked.
-      For additional information on code pages and X#'s international support, see Code Pages Supported by X# and Developing International Applications.
-    </remarks>
   </cpdbf>
   <dmy>
     <summary>
@@ -577,7 +567,7 @@
       Specifies the name of the file whose contents are returned as a character string.
       If the file is in a directory other than the current default directory, include a path with the file name.
     </param>
-    <param name="nFlags">
+    <param name="Flags">
       Specifies if the file needs to be opened in Unicode mode or as Binary file.
       A value of S2F_FLAG_UNICODE_TEXT indicates that the file needs to be treated like a Unicode Text file.
       All other values indicate that the file needs to be treated like a binary file (just like in FoxPro).
@@ -695,7 +685,10 @@
     <param name="cExtension">
       Specifies the new extension (without a period) for cFileName.
     </param>
-    <returns>
+      <param name="tlOptAsVfp9">
+          Forces the use of the Vfp9 methodology which produces incorrect results in some cases.
+      </param>
+      <returns>
       Character
     </returns>
   </forceext>
@@ -759,7 +752,7 @@
     <param name="tExpression">
       Specifies a date/time expression for which GoMonth( ) returns the date.
     </param>
-    <param name="nNumberOfMonths">
+    <param name="iNumberOfMonths">
       Specifies the number of months from the date or date/time. If nNumberOfMonths is positive,
       GoMonth( ) returns a date that is nNumberOfMonths months after the date or date/time.
       If nNumberOfMonths is negative, GoMonth( ) returns a date that is nNumberOfMonths months before the date or date/time.
@@ -859,30 +852,36 @@
     <summary>
       Returns the collating sequence for an index or index tag.
     </summary>
-    <param name="cCDXFileName">
+    <param name="uIndex">
 
-      Specifies the name of the compound index file. The compound index file you specify can be the structural compound index file automatically opened with the table or an independent compound index file.
-
-    </param>
-    <param name="nIndexNumber">
-
-      Specifies the index or index tag for which <b>IDXCOLLATE( )</b> returns the collating sequence. <b>IDXCOLLATE( )</b> returns the collating sequence for indexes and index tags in the following order as nIndexNumber increases from 1 to the total number of open index files and index tags:
-      Collating sequences for single-entry .idx index files (if any are open) are returned first. The order in which the single-entry index files are included in <b>Use</b> or <b>Set Index</b> determines how the collating sequences are returned.
-      Collation sequences for tags in the structural compound index (if one is present) are returned next. The collating sequences are returned for the tags in the order in which the tags are created in the structural compound index.
-      Collating sequences for tags in any open independent compound indexes are returned last. The collation sequences are returned for the tags in the order in which the tags are created in the independent compound indexes.
-      The empty string is returned if nIndexNumber is greater than the total number of open single-entry .idx files and structural compound and independent compound index tags.
+      Specifies the name of the compound index file. The compound index file you specify can be the 
+      structural compound index file automatically opened with the table or an independent compound index file.
 
     </param>
-    <param name="nWorkArea">
+    <param name="nIndex">
 
-      Specifies the work area of the table for which <b>IDXCOLLATE( )</b> returns index file and index tag collating sequences.
-      <b>IDXCOLLATE( )</b> returns the empty string if a table isn't open in the work area you specify.
-
+      Specifies the index or index tag for which <b>IDXCOLLATE( )</b> returns the collating sequence. 
+        <b>IDXCOLLATE( )</b> returns the collating sequence for indexes and index tags in the following 
+        order as nIndexNumber increases from 1 to the total number of open index files and index tags:<br/>
+      Collating sequences for single-entry .idx index files (if any are open) are returned first. <br/>
+      The order in which the single-entry index files are included in <b>Use</b> or <b>Set Index</b> 
+        determines how the collating sequences are returned.<br/>
+        Collation sequences for tags in the structural compound index (if one is present) are returned next.
+        The collating sequences are returned for the tags in the order in which the tags are created in the structural compound index.<br/>
+      Collating sequences for tags in any open independent compound indexes are returned last. 
+      The collation sequences are returned for the tags in the order in which the tags are created in 
+      the independent compound indexes.
+      The empty string is returned if nIndexNumber is greater than the total number of open index 
+      files.<br/>
     </param>
-    <param name="cTableAlias">
+    <param name="uArea">
 
-      Specifies the alias of the table for which <b>IDXCOLLATE( )</b> returns index file and index tag collation sequences.
-      X# generates an error message if you specify a table alias that doesn't exist.
+        Specifies the work area number of the table for which the lock status is returned. If you omit cTableAlias and nWorkArea, the collation sequence 
+        is returned for the table open in the current work area.<br/>
+        Or<br/>
+        Specifies the alias of the table for which the lock status is returned. An "Alias not found" error message is generated 
+        if you specify an alias of a table that isn't open.
+
     </param>
     <returns>
       Character

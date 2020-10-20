@@ -160,7 +160,10 @@ CLASS TestWithItem
         RETURN 42
     PROPERTY Nested AS USUAL GET TestWithItem{}
 END CLASS
-
+    
+CLASS CheckBox
+    PROPERTY Checked AS LOGIC AUTO
+END CLASS
 CLASS TestWithItem2
     PROPERTY Item as LONG  GET 42
     PROPERTY Nested AS USUAL GET TestWithItem2{}
@@ -283,7 +286,7 @@ BEGIN NAMESPACE MacroCompilerTest
 
         ReportMemory("initial")
         VAR mc := CreateMacroCompiler()
-        EvalMacro(mc, "{|| 0000.00.00 }" ,NULL_DATE)
+        //EvalMacro(mc, "{|| 0000.00.00 }" ,NULL_DATE)
         //ParseMacro(mc, e"{|a,b| +a[++b] += 100, a[2]}")
         //EvalMacro(mc, e"{|a,b| a[++b] += 100, a[2]}", {1,2,3}, 1)
         //EvalMacro(mc, e"{|a|A,1_000", 123)
@@ -296,8 +299,8 @@ BEGIN NAMESPACE MacroCompilerTest
         //wait
         //EvalMacro(mc, "{|| 1+(2+3))))}")
         //EvalMacro(mc, "1+(2+3)))")
-        ? EvalMacro(mc, "{ || NIL } ")
-        wait
+        //EvalMacro(mc, "{ || NIL } ")
+        //wait
 
         RunTests(mc)
         wait
@@ -334,7 +337,9 @@ BEGIN NAMESPACE MacroCompilerTest
     FUNCTION RunTests(mc AS XSharp.Runtime.MacroCompiler) AS VOID
         Console.WriteLine("Running tests ...")
 
-        TestParse(mc, e"{|a,b| +a[++b] += 100, a[2]}", "{|a, b|RETURN (((+a((++b)))+='100'), a('2'))}")
+        //TestParse(mc, e"{|a,b| +a[++b] += 100, a[2]}", "{|a, b|RETURN (((+a((++b)))+='100'), a('2'))}")
+
+        TestMacro(mc, e"{|o|o:Checked}", Args(CheckBox{}), FALSE, typeof(LOGIC))
 
         TestMacro(mc, e"{|v|(v := upper(v), left(v,3))}", Args("ABCDE"), "ABC", typeof(STRING))
         TestMacro(mc, e"{|l, v|iif (l, (v := upper(v), left(v,3)), (v := lower(v), left(v,4))) }", Args(TRUE, "ABCDE"), "ABC", typeof(STRING))
@@ -716,6 +721,10 @@ BEGIN NAMESPACE MacroCompilerTest
         TestMacro(mc, "{|| date():gettype():FullName }", Args(), "XSharp.__Date", typeof(string))
         TestMacro(mc, "{|| datetime():gettype():FullName }", Args(), "System.DateTime", typeof(string))
         TestMacro(mc, "{|| alen(array()) }", Args(), 0, typeof(dword))
+        TestMacro(mc, "{ || $123 } ", Args(), 123m, typeof(currency))
+        TestMacro(mc, "{ || $123.456 } ", Args(), 123.456m, typeof(currency))
+        TestMacro(mc, "{ || $.5 } ", Args(), .5m, typeof(currency))
+        TestMacro(mc, "{ || $123_456 } ", Args(), 123456m, typeof(currency))
 
         Compilation.Override(WellKnownMembers.XSharp_RT_Functions___MemVarGet, "MyMemVarGet")
         Compilation.Override(WellKnownMembers.XSharp_RT_Functions___MemVarPut, "MyMemVarPut")

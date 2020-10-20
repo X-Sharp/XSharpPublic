@@ -286,8 +286,8 @@ namespace XSharp.Project
             ThreadHelper.JoinableTaskFactory.Run(async delegate
             {
                 await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
-                description.ClearDescriptionText();
-                description.AddDescriptionText3(name, VSOBDESCRIPTIONSECTION.OBDS_NAME, null);
+            description.ClearDescriptionText();
+            description.AddDescriptionText3(name, VSOBDESCRIPTIONSECTION.OBDS_NAME, null);
             });
         }
 
@@ -296,25 +296,25 @@ namespace XSharp.Project
             return ThreadHelper.JoinableTaskFactory.Run(async delegate
             {
                 await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
-                LibraryNode filtered = null;
-                if (filteredView.TryGetValue(filterType, out filtered))
-                {
-                    return filtered as IVsSimpleObjectList2;
-                }
-                filtered = this.Clone();
-                for (int i = 0; i < filtered.children.Count;)
-                {
-                    if (0 == (filtered.children[i].type & filterType))
-                    {
-                        filtered.children.RemoveAt(i);
-                    }
-                    else
-                    {
-                        i += 1;
-                    }
-                }
-                filteredView.Add(filterType, filtered);
+            LibraryNode filtered = null;
+            if (filteredView.TryGetValue(filterType, out filtered))
+            {
                 return filtered as IVsSimpleObjectList2;
+            }
+            filtered = this.Clone();
+            for (int i = 0; i < filtered.children.Count; )
+            {
+                if (0 == (filtered.children[i].type & filterType))
+                {
+                    filtered.children.RemoveAt(i);
+                }
+                else
+                {
+                    i += 1;
+                }
+            }
+            filteredView.Add(filterType, filtered);
+            return filtered as IVsSimpleObjectList2;
             });
         }
 

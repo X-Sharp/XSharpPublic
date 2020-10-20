@@ -29,7 +29,9 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         PROTECTED _pos            AS WORD				// Index of the Item in the page array of Offsets
 		// Retrieve the Key as String
         INTERNAL PROPERTY Pos       AS WORD     GET _pos SET _pos := value
+        #ifdef DEBUG            
         INTERNAL PROPERTY DebuggerDisplay AS STRING GET String.Format("Rec {0} Page {1:X} Key {2}", Recno, ChildPageNo, KeyText)
+        #endif            
 		// Get/Set the Key info as Bytes, copied from/to the Page it belongs to
         INTERNAL VIRTUAL PROPERTY KeyBytes AS BYTE[]
             GET

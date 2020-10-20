@@ -104,10 +104,10 @@ namespace Microsoft.VisualStudio.Project.Automation
             {
                 int count = 0;
                 ThreadHelper.JoinableTaskFactory.Run(async delegate
-                {
+               {
                     await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
-                    count = items.Count;
-                });
+                   count = items.Count;
+               });
                 return count;
             }
         }
@@ -145,7 +145,7 @@ namespace Microsoft.VisualStudio.Project.Automation
                 return ThreadHelper.JoinableTaskFactory.Run(async delegate
                 {
                     await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
-                    return (EnvDTE.DTE)this.project.DTE;
+                return (EnvDTE.DTE)this.project.DTE;
                 });
             }
         }
@@ -213,17 +213,17 @@ namespace Microsoft.VisualStudio.Project.Automation
             throw new NotImplementedException();
         }
 
-        /// <summary>
-        /// Adds a project item which is a link to a file outside the project directory structure.
-        /// </summary>
-        /// <param name="fileName">The file to be linked to the project.</param>
-        /// <returns>A ProjectItem object.</returns>
-        public virtual EnvDTE.ProjectItem AddFileLink(string fileName)
-        {
-            throw new NotImplementedException();
-        }
+		/// <summary>
+		/// Adds a project item which is a link to a file outside the project directory structure.
+		/// </summary>
+		/// <param name="fileName">The file to be linked to the project.</param>
+		/// <returns>A ProjectItem object.</returns>
+		public virtual EnvDTE.ProjectItem AddFileLink(string fileName)
+		{
+			throw new NotImplementedException();
+		}
 
-        /// <summary>
+		/// <summary>
         /// Get Project Item from index
         /// </summary>
         /// <param name="index">Either index by number (1-based) or by name can be used to get the item</param>
@@ -234,27 +234,27 @@ namespace Microsoft.VisualStudio.Project.Automation
             return ThreadHelper.JoinableTaskFactory.Run(async delegate
             {
                 await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
-                if (index is int)
+            if(index is int)
+            {
+                int realIndex = (int)index - 1;
+                if(realIndex >= 0 && realIndex < this.items.Count)
                 {
-                    int realIndex = (int)index - 1;
-                    if (realIndex >= 0 && realIndex < this.items.Count)
-                    {
-                        return (EnvDTE.ProjectItem)items[realIndex];
-                    }
-                    return null;
-                }
-                else if (index is string)
-                {
-                    string name = (string)index;
-                    foreach (EnvDTE.ProjectItem item in items)
-                    {
-                        if (String.Compare(item.Name, name, StringComparison.OrdinalIgnoreCase) == 0)
-                        {
-                            return item;
-                        }
-                    }
+                    return (EnvDTE.ProjectItem)items[realIndex];
                 }
                 return null;
+            }
+            else if(index is string)
+            {
+                string name = (string)index;
+                foreach(EnvDTE.ProjectItem item in items)
+                {
+                    if(String.Compare(item.Name, name, StringComparison.OrdinalIgnoreCase) == 0)
+                    {
+                        return item;
+                    }
+                }
+            }
+            return null;
             });
         }
 
@@ -264,13 +264,13 @@ namespace Microsoft.VisualStudio.Project.Automation
         /// <returns>An IEnumerator for this object.</returns>
         public virtual IEnumerator GetEnumerator()
         {
-            if (this.items == null)
+            if(this.items == null)
             {
                 yield return null;
             }
 
             int count = items.Count;
-            for (int i = 0; i < count; i++)
+            for(int i = 0; i < count; i++)
             {
                 yield return items[i];
             }
@@ -286,20 +286,20 @@ namespace Microsoft.VisualStudio.Project.Automation
         protected IList<EnvDTE.ProjectItem> GetListOfProjectItems()
         {
             return ThreadHelper.JoinableTaskFactory.Run(async delegate
-                {
+            {
                     await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
-                    List<EnvDTE.ProjectItem> list = new List<EnvDTE.ProjectItem>();
-                    for (HierarchyNode child = this.NodeWithItems.FirstChild; child != null; child = child.NextSibling)
+                List<EnvDTE.ProjectItem> list = new List<EnvDTE.ProjectItem>();
+                for (HierarchyNode child = this.NodeWithItems.FirstChild; child != null; child = child.NextSibling)
+                {
+                    EnvDTE.ProjectItem item = child.GetAutomationObject() as EnvDTE.ProjectItem;
+                    if (null != item)
                     {
-                        EnvDTE.ProjectItem item = child.GetAutomationObject() as EnvDTE.ProjectItem;
-                        if (null != item)
-                        {
-                            list.Add(item);
-                        }
+                        list.Add(item);
                     }
+                }
 
-                    return list;
-                });
+                return list;
+            });
         }
         #endregion
     }

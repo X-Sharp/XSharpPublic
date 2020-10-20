@@ -173,7 +173,7 @@ INTERNAL STATIC UNSAFE CLASS XSharp.FixedMemory
                     result := FixedMemory.SUCCESS
                 ENDIF
 			ELSE
-				// TODO: Throw an exception or log the result
+				// TODO: Throw an exception or log the result when FixedMemory.Free fails
             ENDIF
         CATCH
             result := FixedMemory.FAILURE

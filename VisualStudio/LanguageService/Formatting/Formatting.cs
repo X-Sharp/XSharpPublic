@@ -16,6 +16,7 @@ using LanguageService.CodeAnalysis.XSharp;
 using Microsoft.VisualStudio.Threading;
 using System.Windows.Threading;
 using XSharpModel;
+using Microsoft.VisualStudio.Shell;
 
 namespace XSharp.LanguageService
 {
@@ -213,8 +214,6 @@ namespace XSharp.LanguageService
         private void FormatLine()
         {
             //
-            getEditorPreferences(TextView);
-            //
             SnapshotPoint caret = this.TextView.Caret.Position.BufferPosition;
             ITextSnapshotLine line = caret.GetContainingLine();
             // On what line are we ?
@@ -246,7 +245,7 @@ namespace XSharp.LanguageService
                     }
                     else
                     {
-                        switch (_indentStyle)
+                        switch ((vsIndentStyle) XSettings.EditorIndentStyle)
                         {
                             case vsIndentStyle.vsIndentStyleSmart:
                                 indentation = getDesiredIndentation(line, editSession, alignOnPrev);
@@ -264,7 +263,7 @@ namespace XSharp.LanguageService
                                     {
                                         this.formatLineCase(editSession, prevLine);
                                     }
-                                    CommandFilterHelper.FormatLineIndent(this.TextView, editSession, line, indentation);
+                                    CommandFilterHelper.FormatLineIndent(editSession, line, indentation);
                                 }
                                 break;
                             case vsIndentStyle.vsIndentStyleDefault:
@@ -286,7 +285,7 @@ namespace XSharp.LanguageService
                 }
             }
         }
-
+  
         private void FormatDocument()
         {
             WriteOutputMessage("CommandFilter.FormatDocument() -->>");
@@ -296,7 +295,6 @@ namespace XSharp.LanguageService
                 return;
             }
             // Read Settings
-            getEditorPreferences(TextView);
 
             // Try to retrieve an already parsed list of Tags
             if (_classifier != null)
@@ -358,7 +356,7 @@ namespace XSharp.LanguageService
                     bool inComment = false;
                     int lineContinue = 0;
                     int prevIndentSize = 0;
-                    int continueOffset = _indentSize * _indentFactor;
+                    int continueOffset = XSettings.EditorIndentSize * XSettings.EditorIndentFactor;
                     char prevstart = '\0';
                     foreach (var snapLine in lines)
                     {
@@ -423,7 +421,7 @@ namespace XSharp.LanguageService
                         if (canFormatLine(snapLine))
                         {
                             formatLineCase(editSession, snapLine);
-                            CommandFilterHelper.FormatLineIndent(this.TextView, editSession, snapLine, indentSize);
+                            CommandFilterHelper.FormatLineIndent(editSession, snapLine, indentSize);
                         }
                     }
                 }
@@ -530,7 +528,7 @@ namespace XSharp.LanguageService
                             // Get the current indentation
                             SnapshotSpan sSpan = new SnapshotSpan(snapLine.Start, snapLine.End);
                             string lineText = sSpan.GetText();
-                            lineText = lineText.Replace("\t", new string(' ', _tabSize));
+                            lineText = lineText.Replace("\t", new string(' ', XSettings.EditorIndentSize));
                             mlCmtSpaces = (lineText.Length - lineText.TrimStart().Length);
                             // What is the difference with the start
                             length = region.Item1.End - region.Item1.Start + 1;
@@ -538,7 +536,7 @@ namespace XSharp.LanguageService
                                 length = 1;
                             sSpan = new SnapshotSpan(snapLine.Snapshot, region.Item1.Start, length);
                             lineText = sSpan.GetText();
-                            lineText = lineText.Replace("\t", new string(' ', _tabSize));
+                            lineText = lineText.Replace("\t", new string(' ', XSettings.EditorIndentSize));
                             mlCmtSpaces = mlCmtSpaces - (lineText.Length - lineText.TrimStart().Length);
                             //
                             inComment = true;
@@ -553,7 +551,7 @@ namespace XSharp.LanguageService
                         }
                         // Some Users wants CASE/OTHERWISE to be aligned to the opening DO CASE
                         // Check for a setting
-                        if (_alignDoCase)
+                        if (XSettings.EditorFormatAlignDoCase)
                         {
                             // Move back keywords ( CASE, OTHERWISE )
                             startToken = searchSpecialMiddleKeyword(openKeyword);
@@ -596,7 +594,7 @@ namespace XSharp.LanguageService
                         }
                         // Some Users wants CASE/OTHERWISE to be aligned to the opening DO CASE
                         // Check for a setting
-                        if (_alignDoCase)
+                        if (XSettings.EditorFormatAlignDoCase)
                         {
                             // Move back keywords ( CASE, OTHERWISE )
                             switch (startTokenType)
@@ -634,7 +632,7 @@ namespace XSharp.LanguageService
                                 break;
                         }
                         // We are between the opening Keyword and the closing Keyword
-                        if (!_alignMethod)
+                        if (!XSettings.EditorFormatAlignMethod)
                         {
 
                             indentValue++;
@@ -675,7 +673,7 @@ namespace XSharp.LanguageService
                                 break;
                         }
                         // We are between the opening Keyword and the closing Keyword
-                        if (!_alignMethod)
+                        if (!XSettings.EditorFormatAlignMethod)
                         {
 
                             indentValue++;
@@ -716,7 +714,7 @@ namespace XSharp.LanguageService
                 else //if ((region.Item2.Start >= snapLine.Start.Position) && (region.Item2.End <= snapLine.End.Position))
                 {
                     // We are on the closing Keyword
-                    if (!_alignMethod)
+                    if (!XSettings.EditorFormatAlignMethod)
                     {
                         if (startTokenType == -1)
                         {
@@ -725,7 +723,7 @@ namespace XSharp.LanguageService
                             {
                                 // per Default
                                 indentValue++;
-                                // Ok, CodeBlock, we can have an optionnal END as the last statement
+                                // Ok, CodeBlock, we can have an optional END as the last statement
                                 int currentLength;
                                 currentLength = getLineLength(snapLine.Snapshot, snapLine.Start.Position);
                                 if (currentLength <= 0)
@@ -775,7 +773,7 @@ namespace XSharp.LanguageService
                         }
                     }
                     //
-                    if (!_alignDoCase)
+                    if (!XSettings.EditorFormatAlignDoCase)
                     {
                         // Don't indent
                         // Move back keywords ( CASE, OTHERWISE )
@@ -810,7 +808,7 @@ namespace XSharp.LanguageService
                 indentValue = 0;
             }
             //
-            return (indentValue * _indentSize) + mlCmtSpaces;
+            return (indentValue * XSettings.EditorIndentSize) + mlCmtSpaces;
         }
 
         private int getLineLength(ITextSnapshot snapshot, int start)
@@ -1134,64 +1132,15 @@ namespace XSharp.LanguageService
 
 
         #region SmartIndent
-        // This get reset when a modal dialog is opened in VS
-        private static bool _optionsValid = false;
 
         // SmartIndent
         private static int _lastIndentValue;    // in number of characters
-        private static int _tabSize;
-        private static int _indentSize;
-        private static int _indentFactor;
-        private static bool _alignDoCase;
-        private static bool _alignMethod;
-        private static KeywordCase _keywordCase;
-        private static bool _identifierCase;
-        private static bool _noGotoDefinition;
-        private static vsIndentStyle _indentStyle;
-        internal static KeywordCase KeywordCase => _keywordCase;
-        internal static bool IdentifierCase => _identifierCase;
         //private IEditorOptions _options;
         //
         private ITextBuffer _buffer;
         private ITagAggregator<IClassificationTag> _tagAggregator = null;
 
-        internal static void InvalidateOptions()
-        {
-            _optionsValid = false;
-        }
 
-        private static void getEditorPreferences(ITextView textView)
-        {
-            if (!_optionsValid)
-            {
-                var package = XSharpLanguageService.Instance;
-                var optionsPage = package.GetIntellisenseOptionsPage();
-                var textManager = package.GetTextManager();
-                //
-                _alignDoCase = optionsPage.AlignDoCase;
-                _alignMethod = optionsPage.AlignMethod;
-                _keywordCase = optionsPage.KeywordCase;
-                _identifierCase = optionsPage.IdentifierCase;
-                _noGotoDefinition = optionsPage.DisableGotoDefinition;
-                var languagePreferences = new LANGPREFERENCES3[1];
-                languagePreferences[0].guidLang = GuidStrings.guidLanguageService;
-                int result = 0;
-                var dispatcher = Dispatcher.CurrentDispatcher;
-                dispatcher.Invoke(delegate ()
-                {
-                    result = textManager.GetUserPreferences4(pViewPrefs: null, pLangPrefs: languagePreferences, pColorPrefs: null);
-                });
-                if (result == VSConstants.S_OK)
-                {
-                    _indentStyle = languagePreferences[0].IndentStyle;
-                    optionsPage.HideAdvancemembers = languagePreferences[0].fHideAdvancedAutoListMembers != 0;
-                }
-                _tabSize = textView.Options.GetTabSize();
-                _indentSize = textView.Options.GetIndentSize();
-                _indentFactor = optionsPage.MultiFactor;
-                _optionsValid = true;
-            }
-        }
         /// <summary>
         /// the indentation is measured in # of characters
         /// </summary>
@@ -1230,21 +1179,21 @@ namespace XSharp.LanguageService
                         // Start of a block of code ?
                         if (_codeBlockKeywords.Contains(keyword))
                         {
-                            if (!_alignMethod)
+                            if (!XSettings.EditorFormatAlignMethod)
                             {
-                                indentValue += _indentSize;
+                                indentValue += XSettings.EditorIndentSize;
                             }
                         }
                         else if (_specialCodeBlockKeywords.Contains(keyword))
                         {
-                            if (!_alignMethod)
+                            if (!XSettings.EditorFormatAlignMethod)
                             {
-                                indentValue += _indentSize;
+                                indentValue += XSettings.EditorIndentSize;
                             }
                         }
                         else if (_indentKeywords.Contains(keyword))
                         {
-                            indentValue += _indentSize;
+                            indentValue += XSettings.EditorIndentSize;
                         }
                         else if ((outdentTokens = searchSpecialOutdentKeyword(keyword)) != null)
                         {
@@ -1261,7 +1210,7 @@ namespace XSharp.LanguageService
                             {
                                 try
                                 {
-                                    CommandFilterHelper.FormatLineIndent(this.TextView, editSession, prevLine, indentValue);
+                                    CommandFilterHelper.FormatLineIndent( editSession, prevLine, indentValue);
                                 }
                                 catch (Exception ex)
                                 {
@@ -1283,9 +1232,9 @@ namespace XSharp.LanguageService
                             {
                                 if (doSkipped && keyword == "CASE")
                                 {
-                                    if (!_alignDoCase)
+                                    if (!XSettings.EditorFormatAlignDoCase)
                                     {
-                                        indentValue += _indentSize;
+                                        indentValue += XSettings.EditorIndentSize;
                                     }
                                 }
                                 else
@@ -1297,9 +1246,9 @@ namespace XSharp.LanguageService
                                         // The startToken is a list of possible tokens
                                         specialIndentValue = alignToSpecificTokens(line, new List<string>( startToken.Split( new char[]{',' } ) ) );
                                         // The can be aligned to SWITCH/DO CASE or indented
-                                        if (!_alignDoCase)
+                                        if (!XSettings.EditorFormatAlignDoCase)
                                         {
-                                            specialIndentValue += _indentSize;
+                                            specialIndentValue += XSettings.EditorIndentSize;
                                         }
                                     }
                                 }
@@ -1312,9 +1261,9 @@ namespace XSharp.LanguageService
                                     // De-Indent previous line !!!
                                     if (canIndentLine(prevLine))
                                     {
-                                        CommandFilterHelper.FormatLineIndent(this.TextView, editSession, prevLine, specialIndentValue);
+                                        CommandFilterHelper.FormatLineIndent(editSession, prevLine, specialIndentValue);
                                     }
-                                    indentValue = specialIndentValue + _indentSize;
+                                    indentValue = specialIndentValue + XSettings.EditorIndentSize;
                                 }
                                 catch (Exception ex)
                                 {
@@ -1448,7 +1397,7 @@ namespace XSharp.LanguageService
             }
             catch (Exception e)
             {
-                XSharpLanguageService.DisplayException(e);
+                XSettings.DisplayException(e);
                 tokens = new List<IToken>();
             }
             return tokens;
@@ -1478,13 +1427,13 @@ namespace XSharp.LanguageService
                             {
                                 // if already at tab position then increment with whole tab
                                 // otherwise round up to next tab
-                                var mod = len % _tabSize;
-                                len = len - mod + _tabSize;
+                                var mod = len % XSettings.EditorTabSize;
+                                len = len - mod + XSettings.EditorIndentSize;
                                 space = false;
                             }
                             else
                             {
-                                len += _tabSize;
+                                len += XSettings.EditorIndentSize;
                             }
                             break;
                         default:
@@ -1493,14 +1442,14 @@ namespace XSharp.LanguageService
                             break;
                     }
                 }
-                int rest = len % _indentSize;
-                len = len / _indentSize;
+                int rest = len % XSettings.EditorIndentSize;
+                len = len / XSettings.EditorIndentSize;
                 if (rest != 0)
                 {
                     len += 1;
                 }
             }
-            return len * _indentSize;
+            return len * XSettings.EditorIndentSize;
         }
         /// <summary>
         /// Get the first keyword in Line. The keyword is in UPPERCASE The modifiers (Private, Protected, ... ) are ignored
@@ -1831,8 +1780,6 @@ namespace XSharp.LanguageService
                 // can't edit !
                 return;
             }
-            // Read Settings
-            getEditorPreferences(TextView);
 
             // Try to retrieve an already parsed list of Tags
             if (_classifier != null)
@@ -1935,7 +1882,7 @@ namespace XSharp.LanguageService
                     bool inComment = false;
                     int lineContinue = 0;
                     int prevIndentSize = 0;
-                    int continueOffset = _indentSize * _indentFactor;
+                    int continueOffset = XSettings.EditorIndentSize * XSettings.EditorIndentFactor;
                     IToken prevstart = null;
                     // We are more forward, line per line
                     foreach (var snapLine in lines)
@@ -1999,7 +1946,7 @@ namespace XSharp.LanguageService
                         {
                             formatLineCaseV2(context, editSession, snapLine);
                         }
-                        CommandFilterHelper.FormatLineIndent(this.TextView, editSession, snapLine, indentSize);
+                        CommandFilterHelper.FormatLineIndent(editSession, snapLine, indentSize);
                         
                     }
                 }
@@ -2174,7 +2121,7 @@ namespace XSharp.LanguageService
                     }
                     // Some Users wants CASE/OTHERWISE to be aligned to the opening DO CASE
                     // Check for a setting
-                    if (_alignDoCase)
+                    if (XSettings.EditorFormatAlignDoCase)
                     {
                         // Move back keywords ( CASE, OTHERWISE )
                         switch (startTokenType)
@@ -2222,7 +2169,7 @@ namespace XSharp.LanguageService
                             break;
                     }
                     // We are between the opening Keyword and the closing Keyword
-                    if (!_alignMethod)
+                    if (!XSettings.EditorFormatAlignMethod)
                     {
 
                         indentValue++;
@@ -2262,7 +2209,7 @@ namespace XSharp.LanguageService
                 else //if ((region.Item2.Start >= snapLine.Start.Position) && (region.Item2.End <= snapLine.End.Position))
                 {
                     // We are on the closing Keyword
-                    if (!_alignMethod)
+                    if (!XSettings.EditorFormatAlignMethod)
                     {
                         switch (startTokenType)
                         {
@@ -2288,7 +2235,7 @@ namespace XSharp.LanguageService
                         }
                     }
                     //
-                    if (!_alignDoCase)
+                    if (!XSettings.EditorFormatAlignDoCase)
                     {
                         // Don't indent
                         // Move back keywords ( CASE, OTHERWISE )
@@ -2312,12 +2259,12 @@ namespace XSharp.LanguageService
                 indentValue = 0;
             }
             //
-            return (indentValue * _indentSize) + mlCmtSpaces;
+            return (indentValue * XSettings.EditorIndentSize) + mlCmtSpaces;
         }
 
         private void formatLineCaseV2(FormattingContext context, ITextEdit editSession, ITextSnapshotLine line)
         {
-            if (XSharpLanguageService.Instance.DebuggerIsRunning)
+            if (XSettings.DebuggerIsRunning)
             {
                 return;
             }
@@ -2326,8 +2273,7 @@ namespace XSharp.LanguageService
                 return;
             }
 
-            getEditorPreferences(TextView);
-            if (_keywordCase == KeywordCase.None)
+            if (XSettings.KeywordCase == KeywordCase.None)
             {
                 return;
             }

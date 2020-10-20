@@ -24,16 +24,14 @@ using Microsoft.VisualStudio.Text.Operations;
 using Microsoft.VisualStudio.Text.Classification;
 using Microsoft.VisualStudio.Text.Tagging;
 using Microsoft.VisualStudio.Text.Editor.OptionsExtensionMethods;
-using XSharp.LanguageService;
 using XSharpModel;
 using XSharpLanguage;
 using System.Linq;
 using Microsoft.VisualStudio.Shell.Interop;
 using LanguageService.CodeAnalysis.XSharp;
 using Microsoft;
-using Microsoft.VisualStudio.Threading;
-using XSharp.LanguageService.OptionsPages;
 using System.Windows.Threading;
+using Microsoft.VisualStudio.Shell;
 
 namespace XSharp.LanguageService
 {
@@ -52,7 +50,6 @@ namespace XSharp.LanguageService
 
         ITextStructureNavigator m_navigator;
         IBufferTagAggregatorFactoryService _aggregator;
-        OptionsPages.IntellisenseOptionsPage _optionsPage;
         List<int> _linesToSync;
         bool _suspendSync = false;
 
@@ -105,8 +102,7 @@ namespace XSharp.LanguageService
             WriteOutputMessage("CommandFilter.ClassificationChanged()");
             if (_suspendSync)
                 return;
-            getEditorPreferences(TextView);
-            if (_keywordCase == KeywordCase.None)
+            if (XSettings.KeywordCase == KeywordCase.None)
             {
                 return;
             }
@@ -132,9 +128,10 @@ namespace XSharp.LanguageService
                 {
                     System.Threading.Thread.Sleep(100);
                 }
-                var dispatcher = Dispatcher.CurrentDispatcher;
-                dispatcher.Invoke(delegate ()
-                    {
+
+                ThreadHelper.JoinableTaskFactory.Run(async delegate
+                {
+                    await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
                         var editSession = _buffer.CreateEdit();
                         var snapshot = editSession.Snapshot;
                         try
@@ -186,7 +183,6 @@ namespace XSharp.LanguageService
             _aggregator = aggregator;
             _linesToSync = new List<int>();
             var package = XSharpLanguageService.Instance;
-            _optionsPage = package.GetIntellisenseOptionsPage();
             //
             _buffer = TextView.TextBuffer;
             if (_buffer != null)
@@ -200,29 +196,17 @@ namespace XSharp.LanguageService
                     //formatCaseForWholeBuffer();
                 }
             }
-            getEditorPreferences(textView);
         }
 
         private void Textbuffer_Changing(object sender, TextContentChangingEventArgs e)
         {
-            bool debugging = XSharpLanguageService.Instance.DebuggerIsRunning;
-            if (debugging)
+            if (XSettings.DebuggerIsRunning)
             {
                 XSharpLanguageService.ShowMessageBox("Cannot edit source code while debugging");
                 e.Cancel();
             }
         }
 
-
-        /// <summary>
-        /// Format the Keywords and Identifiers in the Line, using the EditSession
-        /// </summary>
-        /// <param name="editSession"></param>
-        /// <param name="line"></param>
-        private string FormatKeyword(string keyword)
-        {
-            return _optionsPage.SyncKeyword(keyword);
-        }
 
 
         private void formatToken(ITextEdit editSession, int offSet, IToken token)
@@ -268,14 +252,14 @@ namespace XSharp.LanguageService
             if (syncKeyword)
             {
                 var keyword = token.Text;
-                var transform = FormatKeyword(keyword);
+                var transform = XSettings.FormatKeyword(keyword);
                 if (String.Compare(transform, keyword) != 0)
                 {
                     int startpos = offSet + token.StartIndex;
                     editSession.Replace(startpos, transform.Length, transform);
                 }
             }
-            if (token.Type == XSharpLexer.ID && IdentifierCase)
+            if (token.Type == XSharpLexer.ID && XSettings.IdentifierCase)
             {
                 var identifier = token.Text;
                 // Remove the @@ marker
@@ -387,7 +371,7 @@ namespace XSharp.LanguageService
 
         private void formatLineCase(ITextEdit editSession, ITextSnapshotLine line)
         {
-            if (XSharpLanguageService.Instance.DebuggerIsRunning)
+            if (XSettings.DebuggerIsRunning)
             {
                 return;
             }
@@ -396,8 +380,7 @@ namespace XSharp.LanguageService
                 return;
             }
 
-            getEditorPreferences(TextView);
-            if (_keywordCase == KeywordCase.None)
+            if (XSettings.KeywordCase == KeywordCase.None)
             {
                 return;
             }
@@ -452,7 +435,7 @@ namespace XSharp.LanguageService
 
         private void registerLineForCaseSync(int line)
         {
-            if (!_suspendSync && _keywordCase != KeywordCase.None)
+            if (!_suspendSync && XSettings.KeywordCase != KeywordCase.None)
             {
                 lock (_linesToSync)
                 {
@@ -490,12 +473,11 @@ namespace XSharp.LanguageService
         }
         private void formatCaseForWholeBuffer()
         {
-            if (XSharpLanguageService.Instance.DebuggerIsRunning)
+            if (XSettings.DebuggerIsRunning)
             {
                 return;
             }
-            getEditorPreferences(TextView);
-            if (_optionsPage.KeywordCase != 0)
+            if (XSettings.KeywordCase != 0)
             {
                 WriteOutputMessage("--> CommandFilter.formatCaseForBuffer()");
                 /*
@@ -550,7 +532,6 @@ namespace XSharp.LanguageService
 
         public int Exec(ref Guid pguidCmdGroup, uint nCmdID, uint nCmdexecopt, IntPtr pvaIn, IntPtr pvaOut)
         {
-            Microsoft.VisualStudio.Shell.ThreadHelper.ThrowIfNotOnUIThread();
             if (Microsoft.VisualStudio.Shell.VsShellUtilities.IsInAutomationFunction(m_provider.ServiceProvider))
             {
                 return Next.Exec(ref pguidCmdGroup, nCmdID, nCmdexecopt, pvaIn, pvaOut);
@@ -656,7 +637,7 @@ namespace XSharp.LanguageService
                                     FilterCompletionSession(ch);
                                 else
                                 {
-                                    if (completionWasSelected && (_optionsPage.CommitChars.Contains(ch)))
+                                    if (completionWasSelected && (XSettings.EditorCommitChars.Contains(ch)))
                                     {
                                         CompleteCompletionSession(true, ch);
                                     }
@@ -751,10 +732,9 @@ namespace XSharp.LanguageService
 
         private void GotoDefn()
         {
-            Microsoft.VisualStudio.Shell.ThreadHelper.ThrowIfNotOnUIThread();
             try
             {
-                if (_noGotoDefinition)
+                if (XSettings.DisableGotoDefinition)
                     return;
                 WriteOutputMessage("CommandFilter.GotoDefn()");
                 XSharpModel.ModelWalker.Suspend();
@@ -853,7 +833,7 @@ namespace XSharp.LanguageService
         #region Completion Session
         private void completeCurrentToken(uint nCmdID, char ch)
         {
-            if (!_optionsPage.ShowAfterChar)
+            if (!XSettings.EditorCompletionListAfterEachChar)
                 return;
             SnapshotPoint caret = TextView.Caret.Position.BufferPosition;
             if (cursorIsInStringorComment(caret))
@@ -893,7 +873,6 @@ namespace XSharp.LanguageService
 
         private void FilterCompletionSession(char ch)
         {
-
             WriteOutputMessage("CommandFilter.FilterCompletionSession()");
             if (_completionSession == null)
                 return;
@@ -932,7 +911,7 @@ namespace XSharp.LanguageService
 
         void formatKeyword(Completion completion)
         {
-            completion.InsertionText = _optionsPage.SyncKeyword(completion.InsertionText);
+            completion.InsertionText = XSettings.FormatKeyword(completion.InsertionText);
         }
 
         bool CompleteCompletionSession(bool force = false, char ch = ' ')
@@ -949,7 +928,7 @@ namespace XSharp.LanguageService
             {
                 if ((_completionSession.SelectedCompletionSet.Completions.Count > 0) && (_completionSession.SelectedCompletionSet.SelectionStatus.IsSelected))
                 {
-                    if (_optionsPage.AutoPairs)
+                    if (XSettings.EditorCompletionAutoPairs)
                     {
                         caret = _completionSession.TextView.Caret;
                         Kind kind = Kind.Unknown;
@@ -1017,7 +996,7 @@ namespace XSharp.LanguageService
                         {
                             completion.InsertionText += ch;
                         }
-                        if (_optionsPage.AutoPairs)
+                        if (XSettings.EditorCompletionAutoPairs)
                         {
                             caret = _completionSession.TextView.Caret;
                             if (ch == '(')
@@ -1088,7 +1067,6 @@ namespace XSharp.LanguageService
                 if (!_completionSession.IsDismissed)
                     return false;
             }
-            getEditorPreferences(TextView);
             SnapshotPoint caret = TextView.Caret.Position.BufferPosition;
             if (cursorIsAfterSLComment(caret))
                 return false;
@@ -1352,12 +1330,12 @@ namespace XSharp.LanguageService
         /// </summary>
         /// <param name="editSession"></param>
         /// <param name="line"></param>
-        static public void FormatLineIndent(ITextView TextView, ITextEdit editSession, ITextSnapshotLine line, int desiredIndentation)
+        static public void FormatLineIndent(ITextEdit editSession, ITextSnapshotLine line, int desiredIndentation)
         {
             //CommandFilter.WriteOutputMessage($"CommandFilterHelper.FormatLineIndent({line.LineNumber + 1})");
-            int tabSize = TextView.Options.GetTabSize();
-            int indentSize = TextView.Options.GetIndentSize();
-            bool useSpaces = TextView.Options.IsConvertTabsToSpacesEnabled();
+            int tabSize = XSettings.EditorTabSize;
+            int indentSize = XSettings.EditorIndentSize;
+            bool useSpaces = XSettings.EditorTabsAsSpaces;
             int lineLength = line.Length;
 
             int originalIndentLength = lineLength - line.GetText().TrimStart().Length;

@@ -319,7 +319,7 @@ namespace XSharp.Project
         [SuppressMessage("Microsoft.Design", "CA1033:InterfaceMethodsShouldBeCallableByChildTypes")]
         int IProjectSourceNode.IncludeInProject(bool recursive)
         {
-            if (this.ProjectMgr == null || this.ProjectMgr.IsClosed)
+                if (this.ProjectMgr == null || this.ProjectMgr.IsClosed)
             {
                 return (int)OleConstants.OLECMDERR_E_NOTSUPPORTED;
             }

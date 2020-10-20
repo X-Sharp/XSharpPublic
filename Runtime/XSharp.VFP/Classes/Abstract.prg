@@ -27,12 +27,12 @@ ABSTRACT CLASS XSharp.VFP.Abstract INHERIT XSharp.VFP.Empty
 
     CONSTRUCTOR()
         SUPER()
-        SELF:Name := ""
-        SELF:Class := ClassName(SELF)
-        SELF:ParentClass := SELF:GetType():BaseType:Name
-        SELF:ClassLibrary := SELF:GetType():Assembly:ToString()
-        SELF:Comment := ""
-        SELF:BaseClass := ""
+        SELF:Name           := ""
+        SELF:Class          := ClassName(SELF)
+        SELF:ParentClass    := SELF:GetType():BaseType:Name
+        SELF:ClassLibrary   := SELF:GetType():Assembly:ToString()
+        SELF:Comment        := ""
+        SELF:BaseClass      := ""
         RETURN
         
 END CLASS

@@ -516,7 +516,6 @@ namespace XSharp.Project
                     var rdt = (IVsRunningDocumentTable)this.ProjectMgr.GetService(typeof(SVsRunningDocumentTable));
                     return rdt;
                 });
-                
             }
         }
 

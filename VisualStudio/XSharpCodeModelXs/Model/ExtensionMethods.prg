@@ -37,7 +37,7 @@ BEGIN NAMESPACE XSharpModel
 				CASE Kind.EnumMember
 					RETURN "MEMBER"
 			END SWITCH
-			RETURN elementKind:ToString():ToUpper()
+			RETURN elementKind:ToString()
 		
 		STATIC METHOD HasParameters( SELF elementKind AS Kind) AS LOGIC
 			SWITCH elementKind

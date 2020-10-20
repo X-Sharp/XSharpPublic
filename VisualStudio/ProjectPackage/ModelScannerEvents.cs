@@ -5,12 +5,10 @@
 //
 
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Diagnostics;
 using Microsoft.VisualStudio;
-using Microsoft.VisualStudio.Shell.Interop;
 using IServiceProvider = System.IServiceProvider;
+using System.IO;
 
 using Microsoft.VisualStudio.Project;
 namespace XSharp.Project
@@ -20,10 +18,16 @@ namespace XSharp.Project
     /// </summary>
     class ModelScannerEvents : SolutionListener
     {
+        List<string> projectfiles;
+        static Dictionary<string,string> changedProjectfiles;
+
+        static internal IDictionary<string, string> ChangedProjectFiles => changedProjectfiles;
         #region ctors
         public ModelScannerEvents(IServiceProvider serviceProvider)
             : base(serviceProvider)
         {
+            projectfiles = new List<string>();
+            changedProjectfiles = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
             XSharpModel.ModelWalker.Suspend();
         }
 
@@ -40,8 +44,23 @@ namespace XSharp.Project
             EnvDTE80.DTE2 dte = Microsoft.VisualStudio.Shell.Package.GetGlobalService(typeof(EnvDTE.DTE)) as EnvDTE80.DTE2;
             EnvDTE80.Solution2 solution = dte.Solution as EnvDTE80.Solution2;
             var solutionFile = solution.FullName;
-            XSharpModel.XSolution.Open(solutionFile);
-            XSharpProjectPackage.Instance.SetCommentTokens();
+            if (string.IsNullOrEmpty(solutionFile))
+            {
+                if (projectfiles.Count > 0)
+                {
+                    // open a project without solution.
+                    // assume solution name is the same as project name with different extension
+                    solutionFile = System.IO.Path.ChangeExtension(projectfiles[0], ".sln");
+                }
+
+            }
+            if (! string.IsNullOrEmpty(solutionFile))
+            {
+                XSharpModel.XSolution.Open(solutionFile);
+                XSharpProjectPackage.Instance.SetCommentTokens();
+            }
+            projectfiles.Clear();
+
             /*
             Code below to detect items in solution folders
             var projects = solution.Projects;
@@ -82,6 +101,7 @@ namespace XSharp.Project
         public override int OnAfterCloseSolution(object reserved)
         {
             XSharpModel.XSolution.Close();
+            XSharp.LanguageService.XSharpXMLDocTools.Close();
             XSharpModel.XSolution.IsClosing = false;
             return VSConstants.S_OK;
         }
@@ -91,22 +111,30 @@ namespace XSharp.Project
             hasEnvironmentvariable = !String.IsNullOrEmpty(System.Environment.GetEnvironmentVariable("XSharpMsBuildDir"));
         }
         const string oldText = @"$(MSBuildExtensionsPath)\XSharp";
+        const string newText = @"$(XSharpMsBuildDir)";
         public override void OnBeforeOpenProject(ref Guid guidProjectID, ref Guid guidProjectType, string pszFileName)
         {
-            if (hasEnvironmentvariable && pszFileName.ToLower().EndsWith("xsproj"))
+            if (hasEnvironmentvariable && pszFileName != null && pszFileName.ToLower().EndsWith("xsproj") && System.IO.File.Exists(pszFileName))
             {
-                string xml = System.IO.File.ReadAllText(pszFileName);
+                string xml = File.ReadAllText(pszFileName);
                 var pos = xml.IndexOf(oldText, StringComparison.OrdinalIgnoreCase);
-                if ( pos>=0)
+                if (pos >= 0)
                 {
                     while (pos > 0)
                     {
-                        xml = xml.Substring(0, pos) + "$(XSharpMsBuildDir)"+ xml.Substring(pos + oldText.Length);
+                        xml = xml.Substring(0, pos) + newText + xml.Substring(pos + oldText.Length);
                         pos = xml.IndexOf(oldText, StringComparison.OrdinalIgnoreCase);
                     }
-                    System.IO.File.WriteAllText(pszFileName, xml);
+                    var original = Path.ChangeExtension(pszFileName, ".original");
+                    Utilities.DeleteFileSafe(original);
+                    File.Copy(pszFileName, original);
+                    Utilities.DeleteFileSafe(pszFileName);
+                    File.WriteAllText(pszFileName, xml);
+                    changedProjectfiles.Add(pszFileName, original);
                 }
             }
+            projectfiles.Add(pszFileName);
+
 
         }
 

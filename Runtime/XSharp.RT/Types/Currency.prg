@@ -311,8 +311,10 @@ BEGIN NAMESPACE XSharp
             LOCAL result AS CURRENCY
             IF rhs:IsFloat
                 result := SELF:Add ( (CURRENCY) rhs)
-            ELSEIF rhs:IsDecimal .OR. rhs:IsCurrency
+            ELSEIF rhs:IsDecimal 
                 result := SELF:Add ( (System.Decimal) rhs)
+            ELSEIF rhs:IsCurrency
+                result := SELF:Add ( (CURRENCY) rhs)
             ELSEIF  rhs:IsLong
                 result := CURRENCY{ SELF:_value + (LONG) rhs}
             ELSE
@@ -330,8 +332,10 @@ BEGIN NAMESPACE XSharp
             LOCAL result AS CURRENCY
             IF rhs:IsFloat
                 result := SELF:Subtract( (CURRENCY) rhs)
-            ELSEIF rhs:IsDecimal .OR. rhs:IsCurrency
+            ELSEIF rhs:IsDecimal 
                 result := SELF:Subtract( (System.Decimal) rhs)
+            ELSEIF rhs:IsCurrency
+                result := SELF:Subtract( (CURRENCY) rhs)
             ELSEIF  rhs:IsLong
                 result := CURRENCY{ SELF:_value - (LONG) rhs}			
             ELSE

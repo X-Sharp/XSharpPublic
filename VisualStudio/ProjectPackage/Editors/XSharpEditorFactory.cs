@@ -323,6 +323,7 @@ namespace XSharp.Project
             ErrorHandler.ThrowOnFailure(window.SetBuffer(textLines));
             ErrorHandler.ThrowOnFailure(window.SetBaseEditorCaption(null));
             ErrorHandler.ThrowOnFailure(window.GetEditorCaption(READONLYSTATUS.ROSTATUS_Unknown, out editorCaption));
+
             cmdUI = VSConstants.GUID_TextEditorFactory;
             return Marshal.GetIUnknownForObject(window);
         }

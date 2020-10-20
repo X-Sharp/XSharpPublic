@@ -296,7 +296,7 @@ METHOD __InitRecordBuf( ) AS VOID STRICT
 	RETURN
 
 
-METHOD __Notify( kNotification, uDescription ) 
+METHOD __Notify( kNotification, uDescription )  AS USUAL CLIPPER
    LOCAL uRetValue AS USUAL
    LOCAL oError AS USUAL
 

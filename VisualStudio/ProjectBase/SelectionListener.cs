@@ -143,8 +143,7 @@ namespace Microsoft.VisualStudio.Project
                         ThreadHelper.JoinableTaskFactory.Run(async delegate
                         {
                             await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
-
-                            this.SelectionMonitor.UnadviseSelectionEvents((uint)this.eventsCookie);
+                        this.SelectionMonitor.UnadviseSelectionEvents((uint)this.eventsCookie);
                         });
                         this.eventsCookie = (uint)ShellConstants.VSCOOKIE_NIL;
                     }

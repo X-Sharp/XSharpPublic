@@ -373,7 +373,12 @@ CLASS XSharp_VOWindowEditor INHERIT VOWindowEditor
 
 		VAR oEditor := XSharp_EditorStream{}
 		oEditor:Load(oFile:FullPath)
-		VAR nLine := oType:Range:EndLine -1
+      local nLine as LONG
+      if oType != NULL
+		   nLine := oType:Range:EndLine -1
+      else
+         nLine := aLines:Count-1
+      ENDIF
 		aLines:Reverse()
 		FOREACH VAR cLine IN aLines
 			VAR cNew := VOWindowEditor.SubStituteTpl(cLine, cClass, oWindowDesign:cInitMethod)

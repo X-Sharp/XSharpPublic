@@ -111,12 +111,11 @@ namespace Microsoft.VisualStudio.Project.Automation
                 return ThreadHelper.JoinableTaskFactory.Run(async delegate
                 {
                     await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
-
                     if (this.node.NodeProperties == null)
                     {
-                        return null;
-                    }
-                    return new OAProperties(this.node.NodeProperties);
+                    return null;
+                }
+                return new OAProperties(this.node.NodeProperties);
                 });
             }
         }
@@ -178,7 +177,7 @@ namespace Microsoft.VisualStudio.Project.Automation
                     ThreadHelper.JoinableTaskFactory.Run(async delegate
                     {
                         await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
-                        return (EnvDTE.DTE)this.project.DTE;
+                return (EnvDTE.DTE)this.project.DTE;
                     });
             }
         }
@@ -193,26 +192,25 @@ namespace Microsoft.VisualStudio.Project.Automation
                 return ThreadHelper.JoinableTaskFactory.Run(async delegate
                 {
                     await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+                // Get the parent node
+                HierarchyNode parentNode = this.node.Parent;
+                Debug.Assert(parentNode != null, "Failed to get the parent node");
 
-                    // Get the parent node
-                    HierarchyNode parentNode = this.node.Parent;
-                    Debug.Assert(parentNode != null, "Failed to get the parent node");
-
-                    // Get the ProjectItems object for the parent node
+                // Get the ProjectItems object for the parent node
                     if (parentNode is ProjectNode)
-                    {
-                        // The root node for the project
-                        return ((OAProject)parentNode.GetAutomationObject()).ProjectItems;
-                    }
+                {
+                    // The root node for the project
+                    return ((OAProject)parentNode.GetAutomationObject()).ProjectItems;
+                }
                     if (parentNode is FileNode && parentNode.FirstChild != null)
-                    {
-                        // The item has children
-                        return ((OAProjectItem<FileNode>)parentNode.GetAutomationObject()).ProjectItems;
-                    }
+                {
+                    // The item has children
+                    return ((OAProjectItem<FileNode>)parentNode.GetAutomationObject()).ProjectItems;
+                }
                     if (parentNode is FolderNode)
-                    {
-                        return ((OAProjectItem<FolderNode>)parentNode.GetAutomationObject()).ProjectItems;
-                    }
+                {
+                    return ((OAProjectItem<FolderNode>)parentNode.GetAutomationObject()).ProjectItems;
+                }
                     // Not supported. Override this method in derived classes to return appropriate collection object
                     throw new NotImplementedException();
                 });
@@ -323,8 +321,8 @@ namespace Microsoft.VisualStudio.Project.Automation
                     await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
                     using (new AutomationScope(this.Node.ProjectMgr.Site))
                     {
-                        this.node.SetEditLabel(value);
-                    }
+                    this.node.SetEditLabel(value);
+                }
                 });
             }
         }
@@ -349,9 +347,9 @@ namespace Microsoft.VisualStudio.Project.Automation
             {
                 await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
                 using (AutomationScope scope = new AutomationScope(this.Node.ProjectMgr.Site))
-                {
-                    this.node.Remove(false);
-                }
+            {
+                this.node.Remove(false);
+            }
             });
         }
 
@@ -366,9 +364,9 @@ namespace Microsoft.VisualStudio.Project.Automation
             {
                 await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
                 using (new AutomationScope(this.Node.ProjectMgr.Site))
-                {
-                    this.node.Remove(true);
-                }
+	            {
+	                this.node.Remove(true);
+	            }
             });
         }
 
@@ -406,7 +404,7 @@ namespace Microsoft.VisualStudio.Project.Automation
             // existing automation they are still accepting 0. To be compatible with them
             // we accept it as well.
             //Debug.Assert(index > 0, "Index is 1 based.");
-            if (index < 0)
+            if(index < 0)
             {
                 throw new ArgumentOutOfRangeException("index");
             }
@@ -424,11 +422,12 @@ namespace Microsoft.VisualStudio.Project.Automation
             {
                 await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
                 using (new AutomationScope(this.Node.ProjectMgr.Site))
-                {
-                    IVsUIHierarchyWindow uiHierarchy = UIHierarchyUtilities.GetUIHierarchyWindow(this.node.ProjectMgr.Site, HierarchyNode.SolutionExplorer);
-                    ErrorHandler.ThrowOnFailure(uiHierarchy.ExpandItem(this.node.ProjectMgr, this.node.ID, EXPANDFLAGS.EXPF_ExpandFolder));
+            {
+                IVsUIHierarchyWindow uiHierarchy = UIHierarchyUtilities.GetUIHierarchyWindow(this.node.ProjectMgr.Site, HierarchyNode.SolutionExplorer);
 
-                }
+                ErrorHandler.ThrowOnFailure(uiHierarchy.ExpandItem(this.node.ProjectMgr, this.node.ID, EXPANDFLAGS.EXPF_ExpandFolder));
+
+            }
             });
         }
 

@@ -51,7 +51,6 @@ namespace Microsoft.VisualStudio.Project
         private TaskProvider taskProvider;
         private IVsHierarchy hierarchy;
         private IServiceProvider serviceProvider;
-        private Dispatcher dispatcher;
         private bool haveCachedVerbosity = false;
 
         // Queues to manage Tasks and Error output plus message logging
@@ -112,7 +111,6 @@ namespace Microsoft.VisualStudio.Project
             this.outputWindowPane = output;
             this.hierarchy = hierarchy;
             this.serviceProvider = new ServiceProvider(site);
-            this.dispatcher = Dispatcher.CurrentDispatcher;
         }
 
         #endregion
@@ -461,24 +459,24 @@ namespace Microsoft.VisualStudio.Project
         {
             // NOTE: This may run on a background thread!
             // We need to output this on the main thread. We must use BeginInvoke because the main thread may not be pumping events yet.
-            this.taskProvider.SuspendRefresh();
-            try
-            {
-                Func<ErrorTask> taskFunc;
-
-                while (this.taskQueue.TryDequeue(out taskFunc))
+                this.taskProvider.SuspendRefresh();
+                try
                 {
-                    // Create the error task
-                    ErrorTask task = taskFunc();
+                    Func<ErrorTask> taskFunc;
 
-                    // Log the task
-                    this.taskProvider.Tasks.Add(task);
+                    while (this.taskQueue.TryDequeue(out taskFunc))
+                    {
+                        // Create the error task
+                        ErrorTask task = taskFunc();
+
+                        // Log the task
+                        this.taskProvider.Tasks.Add(task);
+                    }
                 }
-            }
-            finally
-            {
-                this.taskProvider.ResumeRefresh();
-            }
+                finally
+                {
+                    this.taskProvider.ResumeRefresh();
+                }
         }
 
         private void ClearQueuedTasks()
@@ -489,7 +487,7 @@ namespace Microsoft.VisualStudio.Project
             if (this.InteractiveBuild)
             {
                 // We need to clear this on the main thread. We must use BeginInvoke because the main thread may not be pumping events yet.
-                this.taskProvider.Tasks.Clear();
+                    this.taskProvider.Tasks.Clear();
             }
         }
 
@@ -600,6 +598,12 @@ namespace Microsoft.VisualStudio.Project
 
         #region exception handling helpers
 
+        /// <summary>
+        /// Call Dispatcher.BeginInvoke, showing an error message if there was a non-critical exception.
+        /// </summary>
+        /// <param name="serviceProvider">service provider</param>
+        /// <param name="dispatcher">dispatcher</param>
+        /// <param name="action">action to invoke</param>
 
         /// <summary>
         /// Show error message if exception is caught when invoking a method

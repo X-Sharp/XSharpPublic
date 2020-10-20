@@ -37,24 +37,25 @@ ABSTRACT CLASS XSharp.XPP.Abstract
     VIRTUAL METHOD HasIVar(cName AS STRING) AS LOGIC
         RETURN IVarGetInfo(SELF, cName) != 0
 
-    VIRTUAL METHOD NoIvarGet(cName AS STRING) AS USUAL STRICT
+    VIRTUAL METHOD NoIvarGet(cName AS STRING) AS USUAL 
         IF XSharp.XPP.ClassObject.IsInstanceofRuntimeClass(SELF)
             RETURN XSharp.XPP.ClassObject.CallIVarGet(SELF, cName)
         ENDIF
         RETURN NIL
 
-    VIRTUAL METHOD NoIvarPut(cName AS STRING, uValue AS USUAL) AS USUAL STRICT
+    VIRTUAL METHOD NoIvarPut(cName AS STRING, uValue AS USUAL) AS VOID
         IF XSharp.XPP.ClassObject.IsInstanceofRuntimeClass(SELF)
-            RETURN XSharp.XPP.ClassObject.CallIVarPut(SELF, cName, uValue)
+            XSharp.XPP.ClassObject.CallIVarPut(SELF, cName, uValue)
         ENDIF
-        RETURN NIL
+        RETURN 
 
         /// <summary>Handles assign operations to undefined instance variables. </summary>
         /// <param name="cName">The fieldname to assign.</param>
         /// <param name="uValue">The value of an assignment. </param>
         /// <returns>The return value of the method is ignored.</returns>
-    METHOD SetNoIVar(cName AS USUAL , uValue  AS USUAL) AS USUAL STRICT
-        RETURN SELF:NoIvarPut(cName, uValue)
+    METHOD SetNoIVar(cName AS USUAL , uValue  AS USUAL) AS VOID 
+        SELF:NoIvarPut(cName, uValue)
+        RETURN 
         
         /// <summary>Handles access operations to undefined instance variables. </summary>
         /// <param name="cName">The fieldname to access.</param>

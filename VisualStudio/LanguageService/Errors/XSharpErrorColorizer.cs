@@ -3,6 +3,14 @@
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
 //
+#if NOTUSED
+
+// Note rewrite this using the [Export(typeof(ITaggerProvider))] and [TagType(typeof(IErrorTag))]
+// See Roslyn src\EditorFeatures\Core\Implementation\Diagnostics\DiagnosticsSquiggleTaggerProvider.cs 
+// Roslyn has an IDiagnosticService, which this tagger provider listens to.
+
+
+
 using System;
 using System.Collections.Generic;
 using Microsoft.VisualStudio.Text.Formatting;
@@ -15,12 +23,14 @@ using Microsoft.VisualStudio.Text.Editor;
 using Microsoft.VisualStudio.Text.Editor.OptionsExtensionMethods;
 using Microsoft.VisualStudio.Text;
 using XSharpModel;
-using XSharp.LanguageService;
+using XSharpColorizer;
+using Microsoft.VisualStudio.Text.Tagging;
 
-namespace XSharp.LanguageService
+namespace XSharp.Project
 {
 
-    [Export(typeof(IWpfTextViewCreationListener))]
+    [Export(typeof(ITaggerProvider))]
+
     [ContentType("XSharp")]
     [TextViewRole(PredefinedTextViewRoles.Document)]
     internal sealed class XSharpErrorColorizerFactory : IWpfTextViewCreationListener
@@ -75,6 +85,8 @@ namespace XSharp.LanguageService
         {
             layer.RemoveAllAdornments();
             // Retrieve the current list of Intellisense Error for the file
+            if (file?.Project?.ProjectNode == null)
+                return;
             List<IXErrorPosition> errors = file.Project.ProjectNode.GetIntellisenseErrorPos(file.FullPath);
             if ((errors == null) || (errors.Count == 0))
             {
@@ -107,7 +119,7 @@ namespace XSharp.LanguageService
                 Length = 1;
             //
             var iMax = line.End.Position;
-            var iEnd = line.Start.Position + offset + Length - 1;
+            var iEnd = line.Start.Position + offset + Length ;
             if (iEnd > iMax)
                 iEnd = iMax;
             var start = line.Start + offset;
@@ -159,3 +171,4 @@ namespace XSharp.LanguageService
         }
     }
 }
+#endif

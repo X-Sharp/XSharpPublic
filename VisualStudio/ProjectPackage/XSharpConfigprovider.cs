@@ -16,6 +16,7 @@ using MSBuild = Microsoft.Build.Evaluation;
 using MSBuildExecution = Microsoft.Build.Execution;
 using System.Runtime.InteropServices;
 using System.Collections.Generic;
+using XSharpModel;
 
 namespace XSharp.Project
 {
@@ -149,7 +150,7 @@ namespace XSharp.Project
             }
             catch (Exception e)
             {
-                XSharpProjectPackage.Instance.DisplayException(e);
+                XSettings.DisplayException(e);
 
                 return Marshal.GetHRForException(e);
             }

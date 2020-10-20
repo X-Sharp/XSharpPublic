@@ -257,7 +257,7 @@ METHOD __SetFilePath(cTestPath AS STRING ) AS STRING STRICT
 	cFSPath := aFullPath[ 2 ]
 	RETURN cFSPath
 
-METHOD AppendToPath(cDirectory AS STRING)     
+METHOD AppendToPath(cDirectory AS STRING)  AS STRING
     // This method appends the specified directory or string of directories to the existing path.
     // For example:
     //
@@ -332,10 +332,10 @@ ACCESS Attributes AS STRING
 
 	RETURN cRet
 
-METHOD Copy(oFSTarget AS FileSpec, lName := FALSE AS LOGIC)
+METHOD Copy(oFSTarget AS FileSpec, lName := FALSE AS LOGIC) AS LOGIC
     RETURN SELF:Copy(oFSTarget:FullPath, lName)
 
-METHOD Copy(oFSTarget AS STRING, lName := FALSE AS LOGIC)       
+METHOD Copy(oFSTarget AS STRING, lName := FALSE AS LOGIC)   AS LOGIC     
 	//
 	// May be used to copy a file. For example,
 	// oFSSource := FileSpec{ "C:\DATA\CUSTOMER.DBF" } // define original file
@@ -1243,7 +1243,7 @@ FUNCTION __NewName      (cFullPath AS STRING) AS STRING
 
 	RETURN NULL_STRING
 
-FUNCTION __SplitPath    (oFS AS FileSpec, cString AS STRING, aFullPath AS ARRAY)
+FUNCTION __SplitPath    (oFS AS FileSpec, cString AS STRING, aFullPath AS ARRAY) AS USUAL
 	//
 	// cString is the string to parse into DRIVE/PATH/FILENAME information
 	// Optional oFS parameter will cause ambiguous references to default to oFS's information

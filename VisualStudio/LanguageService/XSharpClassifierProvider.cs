@@ -9,6 +9,8 @@ using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Text.Classification;
 using Microsoft.VisualStudio.Utilities;
 using XSharpModel;
+using Microsoft.VisualStudio.Text.Editor;
+
 namespace XSharp.LanguageService
 {
     /// <summary>
@@ -16,6 +18,8 @@ namespace XSharp.LanguageService
     /// </summary>
     [Export(typeof(IClassifierProvider))]
     [ContentType(XSharpConstants.LanguageName)]
+    [TextViewRole(PredefinedTextViewRoles.Document)]
+
     internal class XSharpClassifierProvider : IClassifierProvider
     {
         // Disable "Field is never assigned to..." compiler's warning. Justification: the field is assigned by MEF.

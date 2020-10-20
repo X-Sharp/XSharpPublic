@@ -217,7 +217,7 @@ PARTIAL CLASS VODBServerEditor INHERIT DesignerBase
 	RETURN
 	METHOD ImportDbf() AS LOGIC
 		LOCAL oDesign AS DBEDesignDBServer
-		LOCAL oOrder AS DBEDesignDBServer
+//		LOCAL oOrder AS DBEDesignDBServer
 		LOCAL eResult AS DialogResult
 		LOCAL oDlg AS OpenFileDialog
 		LOCAL lDeleteOld AS LOGIC
@@ -227,8 +227,8 @@ PARTIAL CLASS VODBServerEditor INHERIT DesignerBase
 		LOCAL aStruct AS List<OBJECT>
 		LOCAL cType AS STRING
 		LOCAL nType AS INT
-		LOCAL d AS DWORD
-		LOCAL n AS INT
+//		LOCAL d AS DWORD
+//		LOCAL n AS INT
 		
 		oDlg := OpenFileDialog{}
 		oDlg:Filter := "Dbf files (*.dbf)|*.dbf"
@@ -309,7 +309,8 @@ PARTIAL CLASS VODBServerEditor INHERIT DesignerBase
 		NEXT
 
 		SELF:StartAction(DesignerBasicActionType.SetProperty , ActionData{SELF:oMainDesign:cGuid , "filename" , cFileName})
-		
+
+		#warning Index import not implemented yet
 /*		IF ALen(aIndexes) != 0
 			DO WHILE SELF:oIndexList:Items:Count != 0
 				SELF:StartAction(DesignerBasicActionType.Remove , ActionData{((DBEDesignListViewItem)SELF:oIndexList:Items[0]):oDesign:cGuid})

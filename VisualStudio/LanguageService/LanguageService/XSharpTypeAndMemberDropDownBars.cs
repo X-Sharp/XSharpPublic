@@ -105,7 +105,7 @@ namespace XSharp.LanguageService
             var sortItems = _optionsPage.SortNavigationBars;
             var includeFields = _optionsPage.IncludeFieldsInNavigationBars;
             var currentTypeOnly = _optionsPage.ShowMembersOfCurrentTypeOnly;
-            if (_optionsPage.DisableEditorDropdowns)
+            if (XSettings.DisableEditorDropDowns)
             {
                 dropDownTypes.Clear();
                 dropDownMembers.Clear();

@@ -30,8 +30,8 @@ namespace XSharp.LanguageService
     // otherwise the Export will not work.
 
     [Export(typeof(IVsTextViewCreationListener))]
-    [ContentType("code")]
-    [TextViewRole(PredefinedTextViewRoles.Editable)]
+    [ContentType(Constants.LanguageName)]
+    [TextViewRole(PredefinedTextViewRoles.Document)]
 
     internal class VsTextViewCreationListener : IVsTextViewCreationListener
     {

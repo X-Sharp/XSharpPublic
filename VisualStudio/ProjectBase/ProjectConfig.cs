@@ -24,6 +24,8 @@ using MSBuildExecution = Microsoft.Build.Execution;
 using MSBuildConstruction = Microsoft.Build.Construction;
 using System.Diagnostics.CodeAnalysis;
 using XSharp.Project;
+using XSharpModel;
+
 namespace Microsoft.VisualStudio.Project
 {
 	public struct ConfigCanonicalName
@@ -1115,7 +1117,7 @@ namespace Microsoft.VisualStudio.Project
             }
             catch (Exception e)
             {
-                XSharpProjectPackage.Instance.DisplayException(e);
+                XSettings.DisplayException(e);
                 return Marshal.GetHRForException(e);
             }
 
@@ -1401,7 +1403,7 @@ namespace Microsoft.VisualStudio.Project
             }
             catch(Exception e)
             {
-                XSharpProjectPackage.Instance.DisplayException(e);
+                XSettings.DisplayException(e);
 				this.BuildCoda(new BuildResult(MSBuildResult.Failed, null), output, shouldRepaintReferences);
                 throw;
             }

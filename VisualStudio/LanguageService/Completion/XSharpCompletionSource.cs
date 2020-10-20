@@ -23,7 +23,6 @@ using LanguageService.CodeAnalysis.XSharp;
 using System.Diagnostics;
 using System.Collections.Immutable;
 using XSharp.LanguageService;
-using XSharp.LanguageService.OptionsPages;
 using System.Runtime.CompilerServices;
 using Microsoft.VisualStudio.Text.Tagging;
 using static XSharp.Parser.VsParser;
@@ -66,7 +65,6 @@ namespace XSharp.LanguageService
         private bool _keywordsInAll;
         private bool _dotUniversal;
         private IBufferTagAggregatorFactoryService aggregator;
-        internal static IntellisenseOptionsPage _optionsPage;
         private XSharpDialect _dialect;
 
         internal static bool StringEquals(string lhs, string rhs)
@@ -88,8 +86,6 @@ namespace XSharp.LanguageService
             _settingIgnoreCase = true;
             _stopToken = null;
             this.aggregator = aggregator;
-            var package = XSharp.LanguageService.XSharpLanguageService.Instance;
-            _optionsPage = package.GetIntellisenseOptionsPage();
         }
 
         internal static void WriteOutputMessage(string strMessage)
@@ -104,20 +100,20 @@ namespace XSharp.LanguageService
             WriteOutputMessage("-->> AugmentCompletionSessions");
             try
             {
-                if (_optionsPage.DisableCodeCompletion)
+                if (XSettings.DisableCodeCompletion)
                     return;
                 XSharpModel.ModelWalker.Suspend();
                 if (_disposed)
                     throw new ObjectDisposedException("XSharpCompletionSource");
-                _showTabs = _optionsPage.CompletionListTabs;
-                _keywordsInAll = _optionsPage.KeywordsInAll;
+                _showTabs = XSettings.EditorCompletionListTabs;
+                _keywordsInAll = XSettings.EditorKeywordsInAll;
                 if (_dialect == XSharpDialect.FoxPro)
                 {
                     _dotUniversal = true;
                 }
                 else if (_dialect == XSharpDialect.Core)
                 {
-                    _dotUniversal = _optionsPage.UseDotAsUniversalSelector;
+                    _dotUniversal = XSettings.EditorUseDotAsUniversalSelector;
                 }
                 else
                 {
@@ -617,7 +613,7 @@ namespace XSharp.LanguageService
 
         private bool IsHiddenTypeName(string realTypeName)
         {
-            if (realTypeName.Length > 2 && realTypeName.StartsWith("__", StringComparison.Ordinal) && _optionsPage.HideAdvancemembers)
+            if (realTypeName.Length > 2 && realTypeName.StartsWith("__", StringComparison.Ordinal) && XSettings.EditorHideAdvancedMembers)
                 return true;
             if (realTypeName.IndexOf('$') >= 0)
                 return true;
@@ -627,7 +623,7 @@ namespace XSharp.LanguageService
 
         private bool IsHiddenMemberName(string realMemberName)
         {
-            if (realMemberName.Length > 2 && realMemberName.StartsWith("__", StringComparison.Ordinal) && _optionsPage.HideAdvancemembers)
+            if (realMemberName.Length > 2 && realMemberName.StartsWith("__", StringComparison.Ordinal) && XSettings.EditorHideAdvancedMembers)
                 return true;
             // suppress SELF properties
             if (string.Compare(realMemberName, "self", StringComparison.Ordinal) == 0)
@@ -788,7 +784,8 @@ namespace XSharp.LanguageService
                     break;
             }
             // Then, look for Locals
-            foreach (XVariable localVar in currentMember.GetLocals(_buffer.CurrentSnapshot, currentLine, _dialect).Where(l => nameStartsWith(l.Name, startWith)))
+            // line numbers in the range are 1 based. currentLine = 0 based !
+            foreach (XVariable localVar in currentMember.GetLocals(_buffer.CurrentSnapshot, currentLine, _dialect).Where(l => nameStartsWith(l.Name, startWith) && l.Range.StartLine-1 <= currentLine))
             {
                 //
                 ImageSource icon = _provider.GlyphService.GetGlyph(localVar.getGlyphGroup(), localVar.getGlyphItem());
@@ -832,7 +829,7 @@ namespace XSharp.LanguageService
             //
             IXType Owner = parent as IXType;
             //
-            bool hideAdvanced = _optionsPage.HideAdvancemembers;
+            bool hideAdvanced = XSettings.EditorHideAdvancedMembers;
             foreach (var elt in Owner.GetMembers(startWith))
             {
                 if (elt.Kind == Kind.Constructor)
@@ -1045,7 +1042,6 @@ namespace XSharp.LanguageService
     }
     public class MemberAnalysis
     {
-        IntellisenseOptionsPage _optionsPage => XSharpLanguageService.Instance.GetIntellisenseOptionsPage();
         public class ParamInfo
         {
             public string Name;
@@ -1098,7 +1094,6 @@ namespace XSharp.LanguageService
         public Modifiers Visibility { get; private set; }
         public Kind Kind { get; private set; }
         public bool IsStatic { get; private set; }
-        IntellisenseOptionsPage _optionsPage => XSharpLanguageService.Instance.GetIntellisenseOptionsPage();
 
         internal TypeAnalysis(IXType typeInfo)
         {
@@ -2499,7 +2494,9 @@ namespace XSharp.LanguageService
                 if (element == null)
                 {
                     // then Locals
-                    element = member.GetLocals(snapshot, currentLine, dialect).Where(x => StringEquals(x.Name, name)).LastOrDefault();
+                    // line numbers in the range are 1 based. currentLine = 0 based !
+
+                    element = member.GetLocals(snapshot, currentLine, dialect).Where(x => StringEquals(x.Name, name) && x.Range.StartLine-1 <= currentLine).LastOrDefault();
                     if (element == null)
                     {
                         // We can have a Property/Field of the current CompletionType
@@ -2563,7 +2560,6 @@ namespace XSharp.LanguageService
             {
                 XSettings.DisplayOutputMessage("FindIdentifier failed: ");
                 XSettings.DisplayException(ex);
-
             }
             finally
             {
@@ -3564,7 +3560,7 @@ namespace XSharp.LanguageService
         /// <param name="snapshot"></param>
         /// <param name="iCurrentLine"></param>
         /// <returns></returns>
-        internal static IList<IXVariable> GetLocals(this XMemberDefinition member, ITextSnapshot snapshot, int iCurrentLine, XSharpDialect dialect)
+        internal static IList<IXSourceVariable> GetLocals(this XMemberDefinition member, ITextSnapshot snapshot, int iCurrentLine, XSharpDialect dialect)
         {
             iCurrentLine = Math.Min(snapshot.LineCount - 1, iCurrentLine);
             // create a walker with just the contents of the current member

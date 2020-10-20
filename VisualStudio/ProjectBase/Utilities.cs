@@ -827,7 +827,22 @@ namespace Microsoft.VisualStudio.Project
 
             if(buildProject == null)
             {
-               buildProject = buildEngine.LoadProject(fullProjectPath);
+                bool done = false;
+                for (int i = 0; i < 10 && ! done; i++)
+                { 
+                    try
+                    {
+                        // VS 2019 seems to cache the project files.
+                        // if we have changed the project file then it may have to try to load the file more than once.
+                        buildProject = buildEngine.LoadProject(fullProjectPath);
+                        done = true;
+                    }
+                    catch
+                    {
+                        ;
+                    }
+                }
+
             }
 
             return buildProject;

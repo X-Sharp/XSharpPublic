@@ -383,7 +383,7 @@ ASSIGN NoOptimize( lLogic AS LOGIC)
 	ENDIF
 	RETURN 
 
-METHOD OrderAdd( oFS, uOrder ) AS LOGIC   
+METHOD OrderAdd( oFS, uOrder ) AS LOGIC   CLIPPER
 	LOCAL lRetCode      AS LOGIC
 	LOCAL aFullPath     AS ARRAY
 	LOCAL cDrive        AS STRING
@@ -505,7 +505,7 @@ ASSIGN OrderBlock( cbCodeBlock AS USUAL)
 	ENDIF
 	RETURN
 
-METHOD OrderCreate( oFS, cOrder, cKeyValue, cbKeyValue, lUnique ) AS LOGIC
+METHOD OrderCreate( oFS, cOrder, cKeyValue, cbKeyValue, lUnique ) AS LOGIC CLIPPER
 	LOCAL lRetCode      AS LOGIC
 	LOCAL aFullPath     AS ARRAY
 	LOCAL cDrive        AS STRING
@@ -653,7 +653,7 @@ METHOD OrderCreate( oFS, cOrder, cKeyValue, cbKeyValue, lUnique ) AS LOGIC
 	ENDIF
 	RETURN lRetCode
 
-METHOD OrderDelete( uOrder )  AS LOGIC
+METHOD OrderDelete( uOrder )  AS LOGIC CLIPPER
 	LOCAL lRetCode  AS LOGIC
 	LOCAL cFullPath AS STRING
 	LOCAL cRDD      AS STRING

@@ -21,6 +21,14 @@ namespace XSharp.MacroCompiler
             EmitLiteral(ilg, this);
         }
     }
+    internal partial class ConstantCurrency : ConstantWithValue<decimal>
+    {
+        internal override void EmitGet(ILGenerator ilg)
+        {
+            EmitLiteral(ilg, this, Compilation.Get(NativeType.Decimal));
+            ilg.Emit(OpCodes.Newobj, (Compilation.Get(WellKnownMembers.XSharp___Currency_ctor) as ConstructorSymbol).Constructor);
+        }
+    }
     internal partial class ConstantVOFloat : ConstantWithValue<double>
     {
         internal override void EmitGet(ILGenerator ilg)

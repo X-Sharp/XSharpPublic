@@ -122,38 +122,37 @@ namespace Microsoft.VisualStudio.Project.Automation
             return ThreadHelper.JoinableTaskFactory.Run(async delegate
             {
                 await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+	            //Verify name is not null or empty
+	            Utilities.ValidateFileName(this.Project.Project.Site, name);
 
-                //Verify name is not null or empty
-                Utilities.ValidateFileName(this.Project.Project.Site, name);
-
-                //Verify that kind is null, empty, or a physical folder
-                if (!(String.IsNullOrEmpty(kind) || kind.Equals(EnvDTE.Constants.vsProjectItemKindPhysicalFolder)))
-                {
-                    throw new ArgumentException("Parameter specification for AddFolder was not meet", "kind");
-                }
+	            //Verify that kind is null, empty, or a physical folder
+				if (!(String.IsNullOrEmpty(kind) || kind.Equals(EnvDTE.Constants.vsProjectItemKindPhysicalFolder)))
+	            {
+	                throw new ArgumentException("Parameter specification for AddFolder was not meet", "kind");
+	            }
 
                 for (HierarchyNode child = this.NodeWithItems.FirstChild; child != null; child = child.NextSibling)
-                {
+	            {
                     if (string.Compare(child.Caption, name, StringComparison.OrdinalIgnoreCase) == 0)
-                    {
-                        throw new ArgumentException(String.Format(CultureInfo.CurrentCulture, "Folder already exists with the name '{0}'", name));
-                    }
-                }
+	                {
+	                    throw new ArgumentException(String.Format(CultureInfo.CurrentCulture, "Folder already exists with the name '{0}'", name));
+	                }
+	            }
 
-                ProjectNode proj = this.Project.Project;
+	            ProjectNode proj = this.Project.Project;
 
-                HierarchyNode newFolder = null;
-                using (AutomationScope scope = new AutomationScope(this.Project.Project.Site))
-                {
+	            HierarchyNode newFolder = null;
+	            using (AutomationScope scope = new AutomationScope(this.Project.Project.Site))
+	            {
 
-                    //In the case that we are adding a folder to a folder, we need to build up
-                    //the path to the project node.
-                    name = Path.Combine(this.NodeWithItems.VirtualNodeName, name);
+	                //In the case that we are adding a folder to a folder, we need to build up
+	                //the path to the project node.
+	                name = Path.Combine(this.NodeWithItems.VirtualNodeName, name);
 
-                    newFolder = proj.CreateFolderNodes(name);
-                }
+	                newFolder = proj.CreateFolderNodes(name);
+	            }
 
-                return newFolder.GetAutomationObject() as ProjectItem;
+	            return newFolder.GetAutomationObject() as ProjectItem;
             });
         }
 
@@ -178,15 +177,15 @@ namespace Microsoft.VisualStudio.Project.Automation
             return AddItem(fileName, VSADDITEMOPERATION.VSADDITEMOP_OPENFILE);
         }
 
-        /// <summary>
-        /// Adds a project item which is a link to a file outside the project directory structure.
-        /// </summary>
-        /// <param name="fileName">The file to be linked to the project.</param>
-        /// <returns>A ProjectItem object.</returns>
+		/// <summary>
+		/// Adds a project item which is a link to a file outside the project directory structure.
+		/// </summary>
+		/// <param name="fileName">The file to be linked to the project.</param>
+		/// <returns>A ProjectItem object.</returns>
         public override ProjectItem AddFileLink(string fileName)
-        {
-            return this.AddItem(fileName, VSADDITEMOPERATION.VSADDITEMOP_LINKTOFILE);
-        }
+		{
+			return this.AddItem(fileName, VSADDITEMOPERATION.VSADDITEMOP_LINKTOFILE);
+		}
         #endregion
 
         #region helper methods
@@ -241,7 +240,7 @@ namespace Microsoft.VisualStudio.Project.Automation
                     if (nodeAdded != null)
                     {
                         ProjectItem item = null;
-                        if (nodeAdded is FileNode)
+                        if (nodeAdded is FileNode )
                         {
                             item = new OAFileItem(this.Project, nodeAdded as FileNode);
                         }

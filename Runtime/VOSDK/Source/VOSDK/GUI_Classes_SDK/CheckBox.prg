@@ -26,7 +26,7 @@ ASSIGN Checked(lChecked)
 
 	RETURN 
 
-METHOD Destroy() 
+METHOD Destroy()  AS USUAL CLIPPER
 	
 
 	IF IsWindow(hwnd)

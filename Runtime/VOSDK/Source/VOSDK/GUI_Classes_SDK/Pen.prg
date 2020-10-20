@@ -1,7 +1,7 @@
 CLASS Pen INHERIT VObject
 	HIDDEN hPen AS PTR
 
-METHOD Destroy() 
+METHOD Destroy()  AS USUAL CLIPPER
 	
 
 	IF (hPen != NULL_PTR)

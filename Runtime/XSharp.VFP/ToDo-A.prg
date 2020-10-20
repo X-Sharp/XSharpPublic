@@ -4,7 +4,7 @@
 // See License.txt in the project root for license information.
 //
 
-
+#pragma options("vo15", on)
 
 /// <summary>-- todo --</summary>
 /// <include file="VFPDocs.xml" path="Runtimefunctions/aclass/*" />

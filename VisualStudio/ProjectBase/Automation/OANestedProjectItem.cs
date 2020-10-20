@@ -36,11 +36,11 @@ namespace Microsoft.VisualStudio.Project.Automation
             ThreadHelper.JoinableTaskFactory.Run(async delegate
             {
                 await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
-                if (ErrorHandler.Succeeded(node.NestedHierarchy.GetProperty(VSConstants.VSITEMID_ROOT, (int)__VSHPROPID.VSHPROPID_ExtObject, out nestedproject)))
-                {
+            if(ErrorHandler.Succeeded(node.NestedHierarchy.GetProperty(VSConstants.VSITEMID_ROOT, (int)__VSHPROPID.VSHPROPID_ExtObject, out nestedproject)))
+            {
                     await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
-                    this.nestedProject = nestedproject as EnvDTE.Project;
-                }
+                this.nestedProject = nestedproject as EnvDTE.Project;
+            }
             });
         }
 
@@ -57,11 +57,11 @@ namespace Microsoft.VisualStudio.Project.Automation
                 return ThreadHelper.JoinableTaskFactory.Run(async delegate
                 {
                     await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
-                    if (this.nestedProject != null)
-                    {
-                        return this.nestedProject.ProjectItems;
-                    }
-                    return null;
+                if(this.nestedProject != null)
+                {
+                    return this.nestedProject.ProjectItems;
+                }
+                return null;
                 });
             }
         }

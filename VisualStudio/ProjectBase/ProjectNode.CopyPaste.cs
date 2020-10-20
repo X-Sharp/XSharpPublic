@@ -27,6 +27,8 @@ using OleConstants = Microsoft.VisualStudio.OLE.Interop.Constants;
 
 using System.Windows.Forms;
 using XSharp.Project;
+using XSharpModel;
+
 namespace Microsoft.VisualStudio.Project
 {
     /// <summary>
@@ -164,7 +166,7 @@ namespace Microsoft.VisualStudio.Project
             }
             catch(System.IO.FileNotFoundException e)
             {
-                XSharpProjectPackage.Instance.DisplayException(e);
+                XSettings.DisplayException(e);
 
                 if (!Utilities.IsInAutomationFunction(this.Site))
                 {
@@ -492,7 +494,7 @@ namespace Microsoft.VisualStudio.Project
             }
             catch (COMException e)
             {
-                XSharpProjectPackage.Instance.DisplayException(e);
+                XSettings.DisplayException(e);
 
                 dataObject = null;
             }
@@ -803,7 +805,7 @@ namespace Microsoft.VisualStudio.Project
             }
             catch(COMException e)
             {
-                XSharpProjectPackage.Instance.DisplayException(e);
+                XSettings.DisplayException(e);
                 returnValue = e.ErrorCode;
             }
 
@@ -841,12 +843,12 @@ namespace Microsoft.VisualStudio.Project
             }
             catch(COMException e)
             {
-                XSharpProjectPackage.Instance.DisplayException(e);
+                XSettings.DisplayException(e);
                 returnValue = e.ErrorCode;
             }
             catch(ArgumentException e)
             {
-                XSharpProjectPackage.Instance.DisplayException(e);
+                XSettings.DisplayException(e);
                 returnValue = Marshal.GetHRForException(e);
             }
 
@@ -919,7 +921,7 @@ namespace Microsoft.VisualStudio.Project
                 }
                 catch(ExternalException e)
                 {
-                    XSharpProjectPackage.Instance.DisplayException(e);
+                    XSettings.DisplayException(e);
 
                     // If it is a drop from windows and we get any kind of error ignore it. This
                     // prevents bogus messages from the shell from being displayed
@@ -936,7 +938,7 @@ namespace Microsoft.VisualStudio.Project
             }
             catch(COMException e)
             {
-                XSharpProjectPackage.Instance.DisplayException(e);
+                XSettings.DisplayException(e);
 
                 returnValue = e.ErrorCode;
             }
@@ -974,7 +976,7 @@ namespace Microsoft.VisualStudio.Project
             // We catch External exceptions since it might be that it is not our data on the clipboard.
             catch(ExternalException e)
             {
-                XSharpProjectPackage.Instance.DisplayException(e);
+                XSettings.DisplayException(e);
                 return false;
             }
         }

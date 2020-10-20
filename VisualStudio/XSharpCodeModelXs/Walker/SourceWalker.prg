@@ -90,7 +90,7 @@ BEGIN NAMESPACE XSharpModel
 			WriteOutputMessage("<<-- Lex() "+_file:FullPath)
 			RETURN stream
 
-      METHOD ParseLocals(source AS STRING, xmember AS XMemberDefinition) AS List<IXVariable>
+      METHOD ParseLocals(source AS STRING, xmember AS XMemberDefinition) AS List<IXSourceVariable>
          // This is JUST the source of the method. The locations in the variables need to be adjusted
          
          VAR owner := xmember:Parent
@@ -109,7 +109,7 @@ BEGIN NAMESPACE XSharpModel
             ENDIF
          ENDIF         
          SELF:Parse(source, TRUE)         
-         VAR result := List<IXVariable>{}
+         VAR result := List<IXSourceVariable>{}
          FOREACH VAR xVar IN SELF:_locals
             xVar:Range     := xVar:Range:AddLine(startLine)
             xVar:Interval  := xVar:Interval:AddPos(startIndex)

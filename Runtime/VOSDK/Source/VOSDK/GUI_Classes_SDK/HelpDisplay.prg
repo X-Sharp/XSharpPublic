@@ -50,7 +50,7 @@ METHOD __VerifyHelp() AS LOGIC STRICT
 
 	RETURN TRUE
 
-METHOD Destroy() 
+METHOD Destroy()  AS USUAL CLIPPER
 	
 
 	IF (hWnd != NULL_PTR)

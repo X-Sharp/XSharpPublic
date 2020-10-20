@@ -181,9 +181,9 @@ namespace Microsoft.VisualStudio.Project.Automation
             set
             {
                 ThreadHelper.JoinableTaskFactory.Run(async delegate
-                {
+               {
                     await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
-                    using (AutomationScope scope = new AutomationScope(this.parent.Target.Node.ProjectMgr.Site))
+                   using (AutomationScope scope = new AutomationScope(this.parent.Target.Node.ProjectMgr.Site))
                    {
                        this.pi.SetValue(this.parent.Target, value, null);
                    }

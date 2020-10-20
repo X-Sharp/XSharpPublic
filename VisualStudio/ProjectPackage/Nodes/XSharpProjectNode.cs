@@ -117,7 +117,7 @@ namespace XSharp.Project
 
         private void Filechangemanager_FileChangedOnDisk(object sender, FileChangedOnDiskEventArgs e)
         {
-            XSharpProjectPackage.Instance.DisplayOutPutMessage("FileChangedOnDisk " + e.FileName);
+            XSettings.DisplayOutputMessage("FileChangedOnDisk " + e.FileName);
             if (IsXamlFile(e.FileName) || IsCodeFile(e.FileName))
             {
                 XFile file = this.ProjectModel.FindXFile(e.FileName);
@@ -1174,6 +1174,7 @@ namespace XSharp.Project
                 {
                     projectModel = new XProject(this);
                     projectModel.FileWalkComplete += OnFileWalkComplete;
+                    ProjectModel.ProjectWalkComplete += OnProjectWalkComplete;
                 }
                 return projectModel;
             }
@@ -1182,6 +1183,18 @@ namespace XSharp.Project
             {
                 projectModel = null;
             }
+        }
+
+        private void OnProjectWalkComplete(XProject xProject)
+        {
+            var tasks = this.ProjectModel.GetCommentTasks();
+            var list = new List<Task>();
+            _taskListManager.Clear();
+            foreach (var task in tasks)
+            {
+                _taskListManager.AddItem(task, this.ProjectIDGuid);
+            }
+            _taskListManager.Refresh();
         }
 
         private void OnFileWalkComplete(XFile xfile)
@@ -1277,7 +1290,8 @@ namespace XSharp.Project
                     }
 
                     // If this is another solution folder, do a recursive call, otherwise add
-                    if (subProject.Kind == EnvDTE80.ProjectKinds.vsProjectKindSolutionFolder)
+                    // EnvDTE80.ProjectKinds.vsProjectKindSolutionFolder
+                    if (subProject.Kind == "{66A26720-8FB5-11D2-AA7E-00C04F688DDE}")
                     {
                         list.AddRange(GetSolutionFolderProjects(subProject));
                     }
@@ -1304,8 +1318,8 @@ namespace XSharp.Project
                     {
                         continue;
                     }
-
-                    if (p.Kind == EnvDTE80.ProjectKinds.vsProjectKindSolutionFolder)
+                    // EnvDTE80.ProjectKinds.vsProjectKindSolutionFolder
+                    if (p.Kind == "{66A26720-8FB5-11D2-AA7E-00C04F688DDE}")
                     {
                         list.AddRange(GetSolutionFolderProjects(p));
                     }
@@ -1411,8 +1425,7 @@ namespace XSharp.Project
 
         public string SynchronizeKeywordCase(string code, string fileName)
         {
-            var package = XSharp.Project.XSharpProjectPackage.Instance;
-            if (XSettings.KeywordCase == (int) KeywordCase.None)
+            if (XSettings.KeywordCase == KeywordCase.None)
                 return code;
             // we also normalize the line endings
             code = code.Replace("\n", "");
@@ -1436,8 +1449,7 @@ namespace XSharp.Project
             {
                 if (XSharpLexer.IsKeyword(token.Type))
                 {
-                    //sb.Append(optionsPage.SyncKeyword(token.Text));
-                    sb.Append(token.Text);
+                    sb.Append(XSettings.FormatKeyword(token.Text));
                 }
                 else
                 {
@@ -1465,9 +1477,9 @@ namespace XSharp.Project
             {
                 ThreadHelper.JoinableTaskFactory.Run(async delegate
                 {
-                await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
-                statusBar.SetText(msg);
-            });
+                    await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+                    statusBar.SetText(msg);
+                });
             }
 
 
@@ -1525,24 +1537,30 @@ namespace XSharp.Project
             IVsTextView textView;
             IVsUIHierarchy dummy1;
             uint dummy2;
-
-            VsShellUtilities.OpenDocument(this.Site, file, VSConstants.LOGVIEWID_Code, out dummy1, out dummy2, out window, out textView);
-            if ((window != null) && (textView != null))
+            try
             {
-                window.Show();
-                //
-                TextSpan span = new TextSpan();
-                span.iStartLine = line - 1;
-                span.iStartIndex = column - 1;
-                span.iEndLine = line - 1;
-                span.iEndIndex = column - 1;
-                //
-                textView.SetCaretPos(span.iStartLine, span.iStartIndex);
-                textView.EnsureSpanVisible(span);
-                if (span.iStartLine > 5)
-                    textView.SetTopLine(span.iStartLine - 5);
-                else
-                    textView.SetTopLine(0);
+                VsShellUtilities.OpenDocument(this.Site, file, VSConstants.LOGVIEWID_Code, out dummy1, out dummy2, out window, out textView);
+                if ((window != null) && (textView != null))
+                {
+                    window.Show();
+                    //
+                    TextSpan span = new TextSpan();
+                    span.iStartLine = line - 1;
+                    span.iStartIndex = column - 1;
+                    span.iEndLine = line - 1;
+                    span.iEndIndex = column - 1;
+                    //
+                    textView.SetCaretPos(span.iStartLine, span.iStartIndex);
+                    textView.EnsureSpanVisible(span);
+                    if (span.iStartLine > 5)
+                        textView.SetTopLine(span.iStartLine - 5);
+                    else
+                        textView.SetTopLine(0);
+                }
+            }
+            catch 
+            {
+                ;
             }
         }
 
@@ -1954,9 +1972,12 @@ namespace XSharp.Project
                 if (this.CurrentConfig != null)
                 {
                     var xoptions = GetProjectOptions(this.CurrentConfig.ConfigCanonicalName) as XSharpProjectOptions;
-                    if (xoptions.ParseOptions == null)
-                        xoptions.BuildCommandLine();
-                    return xoptions.ParseOptions;
+                    if (xoptions != null)
+                    {
+                        if (xoptions.ParseOptions == null)
+                            xoptions.BuildCommandLine();
+                        return xoptions.ParseOptions;
+                    }
                 }
                 return XSharpParseOptions.Default;
             }
@@ -2040,8 +2061,26 @@ namespace XSharp.Project
             bool silent;
             int result;
             bool dialectVO = false;
-            silent = (__VSUPGRADEPROJFLAGS)grfUpgradeFlags == __VSUPGRADEPROJFLAGS.UPF_SILENTMIGRATE;
             bool ok = true;
+            silent = (__VSUPGRADEPROJFLAGS)grfUpgradeFlags == __VSUPGRADEPROJFLAGS.UPF_SILENTMIGRATE;
+            if (ModelScannerEvents.ChangedProjectFiles.ContainsKey(this.Url))
+            {
+                var original = ModelScannerEvents.ChangedProjectFiles[this.Url];
+                ModelScannerEvents.ChangedProjectFiles.Remove(this.Url);
+                var changedSource = File.ReadAllText(this.Url);
+                if (File.Exists(original))
+                {
+                    Utilities.DeleteFileSafe(this.Url);
+                    File.Move(original, this.Url);
+                }
+                if (!this.QueryEditProjectFile(true))
+                {
+                    return VSConstants.S_FALSE;
+                }
+                Utilities.DeleteFileSafe(this.Url);
+                File.WriteAllText(Url,changedSource);
+                ok = false;
+            }
             // we have added a projectversion property to makes checks easier in the future
             if (ok)
             {
@@ -2140,9 +2179,16 @@ namespace XSharp.Project
             }
             if (!ok)
             {
-                FixProjectFile(BuildProject.FullPath, dialectVO);
-                base.UpgradeProject(grfUpgradeFlags);
-                result = VSConstants.S_OK;
+                if (!this.QueryEditProjectFile(true))
+                {
+                    result = VSConstants.S_FALSE;
+                }
+                else
+                {
+                    FixProjectFile(BuildProject.FullPath, dialectVO);
+                    base.UpgradeProject(grfUpgradeFlags);
+                    result = VSConstants.S_OK;
+                }
             }
             else
             {
@@ -2219,11 +2265,15 @@ namespace XSharp.Project
                     changed = true;
 
                 }
-                condition = System.Text.RegularExpressions.Regex.Replace(condition, "anycpu", "AnyCPU", System.Text.RegularExpressions.RegexOptions.IgnoreCase).Trim();
-                group.Condition = condition;
-                if (!groupDict.ContainsKey(condition))
+                var newcondition = System.Text.RegularExpressions.Regex.Replace(condition, "anycpu", "AnyCPU", System.Text.RegularExpressions.RegexOptions.IgnoreCase).Trim();
+                if (condition != newcondition)
+                { 
+                    changed = true;
+                    group.Condition = newcondition;
+                }
+                if (!groupDict.ContainsKey(group.Condition))
                 {
-                    groupDict.Add(condition, group);
+                    groupDict.Add(group.Condition, group);
                 }
                 foreach (var prop in group.Properties.ToArray())
                 {
@@ -2331,18 +2381,13 @@ namespace XSharp.Project
             }
             if (changed )
             {
-                if (Path.GetExtension(filename).ToLower() != ".backup")
-                {
-                    var backupName = Path.ChangeExtension(filename, ".backup");
-                    if (Utilities.DeleteFileSafe(backupName))
-                    {
-                        File.Copy(filename, backupName, true);
-                    }
+                if (this.QueryEditProjectFile(true))
+                { 
+                    UpdateProjectVersion();
+                    Utilities.DeleteFileSafe(filename);
+                    BuildProject.Xml.Save(filename);
+                    BuildProject.ReevaluateIfNecessary();
                 }
-                UpdateProjectVersion();
-                BuildProject.Xml.Save(filename);
-                BuildProject.ReevaluateIfNecessary();
-                //this.Reload();
             }
         }
 

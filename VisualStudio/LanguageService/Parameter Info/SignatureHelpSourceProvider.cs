@@ -2,7 +2,7 @@
 using Microsoft.VisualStudio.Language.Intellisense;
 using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Utilities;
-
+using XSharpModel;
 namespace XSharp.LanguageService
 {
 
@@ -14,9 +14,7 @@ namespace XSharp.LanguageService
     {
         public ISignatureHelpSource TryCreateSignatureHelpSource(ITextBuffer textBuffer)
         {
-            var package = XSharpLanguageService.Instance;
-            var optionsPage = package.GetIntellisenseOptionsPage();
-            if (optionsPage.DisableParameterInfo)
+            if (XSettings.DisableParameterInfo)
                 return null;
 
             return new XSharpSignatureHelpSource(textBuffer);

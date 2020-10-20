@@ -39,6 +39,7 @@ using VsCommands = Microsoft.VisualStudio.VSConstants.VSStd97CmdID;
 using VsCommands2K = Microsoft.VisualStudio.VSConstants.VSStd2KCmdID;
 using System.Reflection;
 using XSharp.Project;
+using XSharpModel;
 
 namespace Microsoft.VisualStudio.Project
 {
@@ -2130,7 +2131,7 @@ namespace Microsoft.VisualStudio.Project
             }
             catch (COMException e)
             {
-                XSharpProjectPackage.Instance.DisplayException(e);
+                XSettings.DisplayException(e);
                 return e.ErrorCode;
             }
             finally
@@ -2331,19 +2332,19 @@ namespace Microsoft.VisualStudio.Project
             }
             catch (IOException e)
             {
-                XSharpProjectPackage.Instance.DisplayException(e);
+                XSettings.DisplayException(e);
             }
             catch (UnauthorizedAccessException e)
             {
-                XSharpProjectPackage.Instance.DisplayException(e);
+                XSettings.DisplayException(e);
             }
             catch (ArgumentException e)
             {
-                XSharpProjectPackage.Instance.DisplayException(e);
+                XSettings.DisplayException(e);
             }
             catch (NotSupportedException e)
             {
-                XSharpProjectPackage.Instance.DisplayException(e);
+                XSettings.DisplayException(e);
             }
         }
 
@@ -2495,7 +2496,7 @@ namespace Microsoft.VisualStudio.Project
             string cTarget = target;
             if (String.IsNullOrEmpty(cTarget))
                 cTarget = "null";
-            XSharpProjectPackage.Instance.DisplayOutPutMessage("<<-- ProjectNode.Build("+cTarget+")");
+            XSettings.DisplayOutputMessage("<<-- ProjectNode.Build("+cTarget+")");
             BuildResult result = BuildResult.FAILED;
             lock (ProjectNode.BuildLock)
             {
@@ -2504,7 +2505,7 @@ namespace Microsoft.VisualStudio.Project
                 result = this.InvokeMsBuild(target);
 
             }
-            XSharpProjectPackage.Instance.DisplayOutPutMessage("-->> ProjectNode.Build()");
+            XSettings.DisplayOutputMessage("-->> ProjectNode.Build()");
             return result;
         }
 
@@ -2616,7 +2617,7 @@ namespace Microsoft.VisualStudio.Project
                     }
                     catch (ArgumentException e)
                     {
-                        XSharpProjectPackage.Instance.DisplayException(e);
+                        XSettings.DisplayException(e);
                     }
                 }
 
@@ -2684,19 +2685,19 @@ namespace Microsoft.VisualStudio.Project
                     }
                     catch (ArgumentNullException e)
                     {
-                        XSharpProjectPackage.Instance.DisplayException(e);
+                        XSettings.DisplayException(e);
                     }
                     catch (ArgumentException e)
                     {
-                        XSharpProjectPackage.Instance.DisplayException(e);
+                        XSettings.DisplayException(e);
                     }
                     catch (FormatException e)
                     {
-                        XSharpProjectPackage.Instance.DisplayException(e);
+                        XSettings.DisplayException(e);
                     }
                     catch (OverflowException e)
                     {
-                        XSharpProjectPackage.Instance.DisplayException(e);
+                        XSettings.DisplayException(e);
                     }
                 }
 
@@ -2733,19 +2734,19 @@ namespace Microsoft.VisualStudio.Project
                     }
                     catch (ArgumentNullException e)
                     {
-                        XSharpProjectPackage.Instance.DisplayException(e);
+                        XSettings.DisplayException(e);
                     }
                     catch (ArgumentException e)
                     {
-                        XSharpProjectPackage.Instance.DisplayException(e);
+                        XSettings.DisplayException(e);
                     }
                     catch (FormatException e)
                     {
-                        XSharpProjectPackage.Instance.DisplayException(e);
+                        XSettings.DisplayException(e);
                     }
                     catch (OverflowException e)
                     {
-                        XSharpProjectPackage.Instance.DisplayException(e);
+                        XSettings.DisplayException(e);
                     }
                 }
 
@@ -2780,19 +2781,19 @@ namespace Microsoft.VisualStudio.Project
                     }
                     catch (ArgumentNullException e)
                     {
-                        XSharpProjectPackage.Instance.DisplayException(e);
+                        XSettings.DisplayException(e);
                     }
                     catch (ArgumentException e)
                     {
-                        XSharpProjectPackage.Instance.DisplayException(e);
+                        XSettings.DisplayException(e);
                     }
                     catch (FormatException e)
                     {
-                        XSharpProjectPackage.Instance.DisplayException(e);
+                        XSettings.DisplayException(e);
                     }
                     catch (OverflowException e)
                     {
-                        XSharpProjectPackage.Instance.DisplayException(e);
+                        XSettings.DisplayException(e);
                     }
                 }
 
@@ -4064,7 +4065,7 @@ namespace Microsoft.VisualStudio.Project
 
         private void UpdateMSBuildState()
         {
-            this.buildProject.ReevaluateIfNecessary();
+            this.buildProject?.ReevaluateIfNecessary();
         }
 
         /// <summary>
@@ -4216,15 +4217,11 @@ namespace Microsoft.VisualStudio.Project
             // Remove the duplicates
             if (duplicates.Count > 0)
             {
-                string backupName = Path.ChangeExtension(buildProject.FullPath, ".backup");
-                if (Utilities.DeleteFileSafe(backupName))
-                {
-                    File.Copy(buildProject.FullPath, backupName);
-                }
                 foreach (var item in duplicates)
                 {
                     this.buildProject.RemoveItem(item);
                 }
+                Utilities.DeleteFileSafe(buildProject.FullPath);
                 this.buildProject.Save();
             }
             // Ok... Let's do it !

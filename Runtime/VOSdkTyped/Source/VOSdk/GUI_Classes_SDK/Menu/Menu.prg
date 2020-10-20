@@ -629,7 +629,7 @@ END CLASS
 
 //CLASS SystemMenu INHERIT Menu
 
-//	METHOD Destroy() 
+//	METHOD Destroy()  AS USUAL CLIPPER
 		
 //		SUPER:Destroy()
 //		RETURN SELF

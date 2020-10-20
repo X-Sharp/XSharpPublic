@@ -7,9 +7,11 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using XSharpModel;
+using Microsoft.VisualStudio.Shell.Interop;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.VisualStudio.Shell.Interop;
+using Microsoft.VisualStudio.Shell;
+using Microsoft;
 
 namespace XSharp.LanguageService
 {
@@ -23,14 +25,18 @@ namespace XSharp.LanguageService
         static IVsXMLMemberIndex coreIndex = null;
         static XSharpXMLDocTools()
         {
-            InitXML();
-        }
+            ThreadHelper.JoinableTaskFactory.Run(async delegate
+            {
 
-        async static Task<int> InitXML()
+                await InitXMLAsync();
+            });
+        }
+        async static Task<int> InitXMLAsync()
         {
+
             var lang = XSharpLanguageService.Instance;
             _XMLMemberIndexService = (IVsXMLMemberIndexService)await lang.GetServiceAsync(typeof(SVsXMLMemberIndexService));
-
+            Assumes.Present(_XMLMemberIndexService);
             // create default entry so our own xml lookup will work
             var node = @"HKEY_LOCAL_MACHINE\Software\XSharpBV\XSharp";
             var InstallPath = (string)Microsoft.Win32.Registry.GetValue(node, "XSharpPath", "");
@@ -60,7 +66,7 @@ namespace XSharp.LanguageService
         {
             get
             {
-                return _memberIndexes.Values.FirstOrDefault();       
+                return _memberIndexes.Values.FirstOrDefault();
             }
         }
         public static IVsXMLMemberIndex GetXmlDocFile(XAssembly assembly, XProject project)
@@ -88,7 +94,7 @@ namespace XSharp.LanguageService
                         refasm = asm.FileName;
                         break;
                     }
-                    if (! string.IsNullOrEmpty(asm.FileName) &&  asm.FileName.EndsWith("System.DLL", StringComparison.OrdinalIgnoreCase))
+                    if (!string.IsNullOrEmpty(asm.FileName) && asm.FileName.EndsWith("System.DLL", StringComparison.OrdinalIgnoreCase))
                     {
                         if (assembly.FullName.Contains("mscorlib"))
                         {
@@ -121,7 +127,7 @@ namespace XSharp.LanguageService
 
     static public class XSharpXMLDocMember
     {
-        static private string getSummary(IVsXMLMemberIndex file, string xml,out string returns, out string remarks)
+        static private string getSummary(IVsXMLMemberIndex file, string xml, out string returns, out string remarks)
         {
             string summary = "";
             returns = remarks = "";
@@ -140,7 +146,7 @@ namespace XSharp.LanguageService
         }
         static string CleanUpResult(string source)
         {
-            if (! string.IsNullOrEmpty(source))
+            if (!string.IsNullOrEmpty(source))
             {
                 if (source.Contains("\t"))
                 {
@@ -173,7 +179,7 @@ namespace XSharp.LanguageService
                 var xdef = (XTypeDefinition)type;
                 var xml = xdef.XmlComments;
                 var xfile = XSharpXMLDocTools.firstfile;
-                if (xfile != null && ! string.IsNullOrEmpty(xml))
+                if (xfile != null && !string.IsNullOrEmpty(xml))
                 {
                     summary = getSummary(xfile, xml, out returns, out remarks);
                 }
@@ -226,7 +232,7 @@ namespace XSharp.LanguageService
             var xmember = (XMemberReference)member;
             var declarationAssembly = xmember.Assembly;
 
-                //
+            //
             var file = XSharpXMLDocTools.GetXmlDocFile(declarationAssembly, project);
             if (file == null)
                 return null;
@@ -239,9 +245,9 @@ namespace XSharp.LanguageService
                     uint id = 0;
                     string xml = "";
                     var result = file.ParseMemberSignature(sig, out id);
-                    
+
                     result = file.GetMemberXML(id, out xml);
-                    if (! string.IsNullOrEmpty(xml))
+                    if (!string.IsNullOrEmpty(xml))
                     {
                         summary = getSummary(file, xml, out returns, out remarks);
                     }
@@ -259,7 +265,7 @@ namespace XSharp.LanguageService
 
         static private bool getParameterInfo(IVsXMLMemberIndex file, string xml, IList<string> names, IList<string> descriptions)
         {
-            Microsoft.VisualStudio.Shell.ThreadHelper.ThrowIfNotOnUIThread();
+            //Microsoft.VisualStudio.Shell.ThreadHelper.ThrowIfNotOnUIThread();
             IVsXMLMemberData data = null;
             var result = file.GetMemberDataFromXML(xml, out data);
             int numparams = 0;
@@ -282,7 +288,7 @@ namespace XSharp.LanguageService
             return true;
 
         }
-        static public bool GetMemberParameters(IXMember member, XProject project,  IList<string> names, IList<string> descriptions)
+        static public bool GetMemberParameters(IXMember member, XProject project, IList<string> names, IList<string> descriptions)
         {
             if (member == null)
                 return false;
@@ -312,7 +318,7 @@ namespace XSharp.LanguageService
             }
             try
             {
-                var sig  = xmember.XMLSignature;
+                var sig = xmember.XMLSignature;
                 if (!string.IsNullOrEmpty(sig))
                 {
                     uint id = 0;

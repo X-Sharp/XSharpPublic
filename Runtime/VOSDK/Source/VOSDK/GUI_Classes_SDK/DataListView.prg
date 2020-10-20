@@ -361,7 +361,7 @@ METHOD DeleteAll()
 
 	RETURN SUPER:DeleteAll()
 
-METHOD Destroy() 
+METHOD Destroy()  AS USUAL CLIPPER
 	
 
 	SELF:__Unlink()

@@ -122,19 +122,19 @@ namespace Microsoft.VisualStudio.Project.Automation
         /// <returns>An enumerator. </returns>
         public IEnumerator GetEnumerator()
         {
-            if (_properties == null)
+            if(_properties == null)
             {
                 yield return null;
             }
 
-            if (_properties.Count == 0)
+            if(_properties.Count == 0)
             {
                 yield return new OANullProperty(this);
             }
 
             IEnumerator enumerator = _properties.Values.GetEnumerator();
 
-            while (enumerator.MoveNext())
+            while(enumerator.MoveNext())
             {
                 yield return enumerator.Current;
             }
@@ -147,42 +147,41 @@ namespace Microsoft.VisualStudio.Project.Automation
         /// <returns>A Property object.</returns>
         public virtual Property Item(object index)
         {
-            if (index is string)
+            if(index is string)
             {
                 string indexAsString = (string)index;
-                if (_properties.ContainsKey(indexAsString))
+                if(_properties.ContainsKey(indexAsString))
                 {
                     return ThreadHelper.JoinableTaskFactory.Run(async delegate
                     {
                         await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
-
                         return _properties[indexAsString];
                     });
                 }
             }
-            else if (index is int)
+            else if(index is int)
             {
                 int realIndex = (int)index - 1;
-                if (realIndex >= 0 && realIndex < _properties.Count)
+                if(realIndex >= 0 && realIndex < _properties.Count)
                 {
                     IEnumerator enumerator = _properties.Values.GetEnumerator();
 
                     int i = 0;
-                    while (enumerator.MoveNext())
+                    while(enumerator.MoveNext())
                     {
-                        if (i++ == realIndex)
+                        if(i++ == realIndex)
                         {
                             return ThreadHelper.JoinableTaskFactory.Run(async delegate
                             {
                                 await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
-
-                                return (EnvDTE.Property)enumerator.Current;
+                            return (EnvDTE.Property)enumerator.Current;
                             });
                         }
                     }
                 }
             }
-            // do not throw exception.turn _properties.Values.ElementAt((int)index - 1);
+            // do not throw exception.
+            //throw new ArgumentException(SR.GetString(SR.InvalidParameter, CultureInfo.CurrentUICulture), "index");
             return new OANullProperty(this);
         }
         /// <summary>
@@ -204,14 +203,14 @@ namespace Microsoft.VisualStudio.Project.Automation
             Utilities.ArgumentNotNull("targetType", targetType);
 
             // If the type is not COM visible, we do not expose any of the properties
-            if (!IsComVisible(targetType))
+            if(!IsComVisible(targetType))
                 return;
 
             // Add all properties being ComVisible and AutomationVisible
             PropertyInfo[] propertyInfos = targetType.GetProperties();
-            foreach (PropertyInfo propertyInfo in propertyInfos)
+            foreach(PropertyInfo propertyInfo in propertyInfos)
             {
-                if (!IsInMap(propertyInfo) && IsComVisible(propertyInfo) && IsAutomationVisible(propertyInfo))
+                if(!IsInMap(propertyInfo) && IsComVisible(propertyInfo) && IsAutomationVisible(propertyInfo))
                 {
                     AddProperty(propertyInfo);
                 }

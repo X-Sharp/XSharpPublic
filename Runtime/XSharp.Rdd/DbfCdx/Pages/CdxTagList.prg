@@ -29,16 +29,24 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         INTERNAL METHOD ReadTags() AS List<CdxTag>
             _tags := List<CdxTag>{}
             System.Diagnostics.Debug.Assert (SELF:PageType:HasFlag(CdxPageType.Leaf) .AND. SELF:PageType:HasFlag(CdxPageType.Root))
+            local oError := NULL_OBJECT as Exception
             FOR VAR nI := 0 TO SELF:NumKeys-1
                 LOCAL nRecno    := SELF:GetRecno(nI) AS Int32
                 LOCAL bName     := SELF:GetKey(nI)  AS BYTE[]
                 LOCAL cName     := SELF:Encoding:GetString( bName, 0, bName:Length) AS STRING
                 cName           := cName:TrimEnd(<CHAR>{'\0'})
                 VAR tag         := CdxTag{_bag,  nRecno, cName:Trim()}
-                _tags:Add(tag)
+                if tag:IsOpen
+                    _tags:Add(tag)
+                ELSEIF oError == NULL
+                    oError := RuntimeState.LastRddError
+                ENDIF
             NEXT
             // default sort for tags in an orderbag is on pageno. 
-            _tags:Sort( { tagX, tagY => tagX:Page - tagY:Page} ) 
+            _tags:Sort( { tagX, tagY => tagX:Page - tagY:Page} )
+            if oError != NULL
+                RuntimeState.LastRddError := oError
+            ENDIF
             RETURN _tags
 
         PROPERTY Tags AS IList<CdxTag> GET _tags

@@ -24,41 +24,42 @@ using OleConstants = Microsoft.VisualStudio.OLE.Interop.Constants;
 using VsCommands = Microsoft.VisualStudio.VSConstants.VSStd97CmdID;
 using VsCommands2K = Microsoft.VisualStudio.VSConstants.VSStd2KCmdID;
 using XSharp.Project;
+using XSharpModel;
 
 namespace Microsoft.VisualStudio.Project
 {
     [CLSCompliant(false), ComVisible(true)]
     public class ReferenceContainerNodeProperties : NodeProperties
     {
-        #region properties
-        [Microsoft.VisualStudio.Project.SRCategoryAttribute(Microsoft.VisualStudio.Project.SR.Misc)]
-        [Microsoft.VisualStudio.Project.LocDisplayName(Microsoft.VisualStudio.Project.SR.FolderName)]
-        [Microsoft.VisualStudio.Project.SRDescriptionAttribute(Microsoft.VisualStudio.Project.SR.FolderNameDescription)]
-        [AutomationBrowsable(false)]
-        public string FolderName
-        {
-            get
-            {
-                return this.Node.Caption;
-            }
-        }
+      #region properties
+       [Microsoft.VisualStudio.Project.SRCategoryAttribute(Microsoft.VisualStudio.Project.SR.Misc)]
+       [Microsoft.VisualStudio.Project.LocDisplayName(Microsoft.VisualStudio.Project.SR.FolderName)]
+       [Microsoft.VisualStudio.Project.SRDescriptionAttribute(Microsoft.VisualStudio.Project.SR.FolderNameDescription)]
+      [AutomationBrowsable( false )]
+      public string FolderName
+      {
+         get
+         {
+            return this.Node.Caption;
+         }
+      }
 
-        #endregion
+      #endregion
 
-        #region ctors
-        public ReferenceContainerNodeProperties(HierarchyNode node)
-           : base(node)
-        {
-        }
-        #endregion
+      #region ctors
+      public ReferenceContainerNodeProperties( HierarchyNode node )
+         : base( node )
+      {
+      }
+      #endregion
 
-        #region overridden methods
-        public override string GetClassName()
-        {
-            return Microsoft.VisualStudio.Project.SR.GetString(Microsoft.VisualStudio.Project.SR.FolderProperties, CultureInfo.CurrentUICulture);
-        }
-        #endregion
-    }
+      #region overridden methods
+      public override string GetClassName()
+      {
+          return Microsoft.VisualStudio.Project.SR.GetString(Microsoft.VisualStudio.Project.SR.FolderProperties, CultureInfo.CurrentUICulture);
+      }
+      #endregion
+   }
     [CLSCompliant(false), ComVisible(true)]
     public class ReferenceContainerNode : HierarchyNode, IReferenceContainer
     {
@@ -129,7 +130,7 @@ namespace Microsoft.VisualStudio.Project
         {
             get
             {
-                if (null == references)
+                if(null == references)
                 {
                     references = new Automation.OAReferences(this, ProjectMgr);
                 }
@@ -150,7 +151,7 @@ namespace Microsoft.VisualStudio.Project
         // it is null.
         protected override NodeProperties CreatePropertiesObject()
         {
-            return new ReferenceContainerNodeProperties(this);
+           return new ReferenceContainerNodeProperties( this );
         }
 
         /// <summary>
@@ -159,7 +160,7 @@ namespace Microsoft.VisualStudio.Project
         /// <returns>An intance of the Automation.OAReferenceFolderItem type if succeeeded</returns>
         public override object GetAutomationObject()
         {
-            if (this.ProjectMgr == null || this.ProjectMgr.IsClosed)
+            if(this.ProjectMgr == null || this.ProjectMgr.IsClosed)
             {
                 return null;
             }
@@ -202,9 +203,9 @@ namespace Microsoft.VisualStudio.Project
 
         protected override int QueryStatusOnNode(Guid cmdGroup, uint cmd, IntPtr pCmdText, ref QueryStatusResult result)
         {
-            if (cmdGroup == VsMenus.guidStandardCommandSet97)
+            if(cmdGroup == VsMenus.guidStandardCommandSet97)
             {
-                switch ((VsCommands)cmd)
+                switch((VsCommands)cmd)
                 {
                     case VsCommands.AddNewItem:
                     case VsCommands.AddExistingItem:
@@ -212,9 +213,9 @@ namespace Microsoft.VisualStudio.Project
                         return VSConstants.S_OK;
                 }
             }
-            else if (cmdGroup == VsMenus.guidStandardCommandSet2K)
+            else if(cmdGroup == VsMenus.guidStandardCommandSet2K)
             {
-                if ((VsCommands2K)cmd == VsCommands2K.ADDREFERENCE)
+                if((VsCommands2K)cmd == VsCommands2K.ADDREFERENCE)
                 {
                     result |= QueryStatusResult.SUPPORTED | QueryStatusResult.ENABLED;
                     return VSConstants.S_OK;
@@ -229,9 +230,9 @@ namespace Microsoft.VisualStudio.Project
 
         protected override int ExecCommandOnNode(Guid cmdGroup, uint cmd, uint nCmdexecopt, IntPtr pvaIn, IntPtr pvaOut)
         {
-            if (cmdGroup == VsMenus.guidStandardCommandSet2K)
+            if(cmdGroup == VsMenus.guidStandardCommandSet2K)
             {
-                switch ((VsCommands2K)cmd)
+                switch((VsCommands2K)cmd)
                 {
                     case VsCommands2K.ADDREFERENCE:
                         return this.ProjectMgr.AddProjectReference();
@@ -254,7 +255,7 @@ namespace Microsoft.VisualStudio.Project
         /// <returns></returns>
         protected override bool CanShowDefaultIcon()
         {
-            if (!String.IsNullOrEmpty(this.VirtualNodeName))
+            if(!String.IsNullOrEmpty(this.VirtualNodeName))
             {
                 return true;
             }
@@ -267,10 +268,10 @@ namespace Microsoft.VisualStudio.Project
         public IList<ReferenceNode> EnumReferences()
         {
             List<ReferenceNode> refs = new List<ReferenceNode>();
-            for (HierarchyNode node = this.FirstChild; node != null; node = node.NextSibling)
+            for(HierarchyNode node = this.FirstChild; node != null; node = node.NextSibling)
             {
                 ReferenceNode refNode = node as ReferenceNode;
-                if (refNode != null)
+                if(refNode != null)
                 {
                     refs.Add(refNode);
                 }
@@ -284,25 +285,25 @@ namespace Microsoft.VisualStudio.Project
         public void LoadReferencesFromBuildProject(MSBuild.Project buildProject)
         {
             List<ReferenceNode> duplicatedNode = new List<ReferenceNode>();
-            BuildResult buildResult = this.ProjectMgr.Build(MsBuildTarget.ResolveAssemblyReferences);
+			BuildResult buildResult = this.ProjectMgr.Build(MsBuildTarget.ResolveAssemblyReferences);
 
             var children = new List<ReferenceNode>();
 
             foreach (string referenceType in SupportedReferenceTypes)
-            {
-                bool isAssemblyReference = referenceType == ProjectFileConstants.Reference;
-                if (isAssemblyReference && !buildResult.IsSuccessful)
-                {
-                    continue;
-                }
+			{
+				bool isAssemblyReference = referenceType == ProjectFileConstants.Reference;
+				if (isAssemblyReference && !buildResult.IsSuccessful)
+				{
+					continue;
+				}
 
-                foreach (var item in MSBuildProject.GetItems(buildProject, referenceType))
-                {
+				foreach (var item in MSBuildProject.GetItems(buildProject, referenceType))
+				{
                     ProjectElement element = new ProjectElement(this.ProjectMgr, item, false);
 
                     ReferenceNode node = CreateReferenceNode(referenceType, element);
 
-                    if (node != null)
+                    if(node != null)
                     {
                         // Make sure that we do not want to add the item twice to the ui hierarchy
                         // We are using here the UI representation of the Node namely the Caption to find that out, in order to
@@ -310,16 +311,16 @@ namespace Microsoft.VisualStudio.Project
                         // Example :<Reference Include="EnvDTE80, Version=8.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
                         //		  <Reference Include="EnvDTE80" />
                         bool found = false;
-                        for (HierarchyNode n = this.FirstChild; n != null && !found; n = n.NextSibling)
+                        for(HierarchyNode n = this.FirstChild; n != null && !found; n = n.NextSibling)
                         {
-                            if (String.Compare(n.Caption, node.Caption, StringComparison.OrdinalIgnoreCase) == 0)
+                            if(String.Compare(n.Caption, node.Caption, StringComparison.OrdinalIgnoreCase) == 0)
                             {
                                 found = true;
                                 break;
                             }
                         }
 
-                        if (!found)
+                        if(!found)
                         {
                             this.AddChild(node);
                             children.Add(node);
@@ -334,19 +335,14 @@ namespace Microsoft.VisualStudio.Project
             // Now manage duplicates
             if (duplicatedNode.Count > 0)
             {
-                // Make a backup first
-                string original = buildProject.FullPath;
-                string backupName = Path.ChangeExtension(original, ".backup");
-                if (Utilities.DeleteFileSafe(backupName))
-                {
-                    File.Copy(original, backupName);
-                }
                 foreach (ReferenceNode node in duplicatedNode)
                 {
-                    //this.RemoveChild( node );
                     node.Remove(false);
                 }
-                buildProject.Save(original);
+                if (this.ProjectMgr.QueryEditProjectFile(true))
+                { 
+                    buildProject.Save();
+                }
             }
             var references = buildResult.ProjectInstance.GetItems(ProjectFileConstants.ReferencePath);
             //var references = MSBuildProjectInstance.GetItems(buildResult.ProjectInstance, ProjectFileConstants.ReferencePath);
@@ -374,7 +370,7 @@ namespace Microsoft.VisualStudio.Project
         public virtual ReferenceNode AddReferenceFromSelectorData(VSCOMPONENTSELECTORDATA selectorData, string wrapperTool = null)
         {
             //Make sure we can edit the project file
-            if (!this.ProjectMgr.QueryEditProjectFile(false))
+            if(!this.ProjectMgr.QueryEditProjectFile(false))
             {
                 throw Marshal.GetExceptionForHR(VSConstants.OLE_E_PROMPTSAVECANCELLED);
             }
@@ -385,14 +381,14 @@ namespace Microsoft.VisualStudio.Project
             {
                 node = CreateReferenceNode(selectorData, wrapperTool);
             }
-            catch (ArgumentException)
+            catch(ArgumentException)
             {
                 // Some selector data was not valid.
             }
 
 
             //Add the reference node to the project if we have a valid reference node
-            if (node != null)
+            if(node != null)
             {
                 // Does such a reference already exist in the project?
                 ReferenceNode existingNode;
@@ -403,7 +399,7 @@ namespace Microsoft.VisualStudio.Project
                 // This call will find if the reference is in the project and, in this case
                 // will not add it again, so the parent node will not be set.
                 node.AddReference();
-                if (null == node.Parent)
+                if(null == node.Parent)
                 {
                     // The reference was not added, so we can not return this item because it
                     // is not inside the project.
@@ -446,7 +442,7 @@ namespace Microsoft.VisualStudio.Project
         protected virtual ReferenceNode CreateReferenceNode(VSCOMPONENTSELECTORDATA selectorData, string wrapperTool = null)
         {
             ReferenceNode node = null;
-            switch (selectorData.type)
+            switch(selectorData.type)
             {
                 case VSCOMPONENTTYPE.VSCOMPONENTTYPE_Project:
                     node = this.CreateProjectReferenceNode(selectorData);
@@ -486,20 +482,20 @@ namespace Microsoft.VisualStudio.Project
         /// </summary>
         protected virtual ReferenceNode CreateFileComponent(VSCOMPONENTSELECTORDATA selectorData, string wrapperTool = null)
         {
-            if (null == selectorData.bstrFile)
+            if(null == selectorData.bstrFile)
             {
                 throw new ArgumentNullException("selectorData");
             }
             // refer to http://social.msdn.microsoft.com/Forums/en-US/vsx/thread/50af4ee8-1431-4d27-86c4-7db799c3f085
-            if (selectorData.bstrFile[0] == '*')
+            if ( selectorData.bstrFile[0] == '*' )
             {
-                selectorData.bstrFile = selectorData.bstrFile.Substring(1);
+               selectorData.bstrFile = selectorData.bstrFile.Substring( 1 );
             }
 
             // We have a path to a file, it could be anything
             // First see if it is a managed assembly
             bool tryToCreateAnAssemblyReference = true;
-            if (File.Exists(selectorData.bstrFile))
+            if(File.Exists(selectorData.bstrFile))
             {
                 try
                 {
@@ -514,13 +510,13 @@ namespace Microsoft.VisualStudio.Project
                     // GetAssemblyName is assured not to load the assembly.
                     tryToCreateAnAssemblyReference = (AssemblyName.GetAssemblyName(selectorData.bstrFile) != null);
                 }
-                catch (BadImageFormatException)
+                catch(BadImageFormatException)
                 {
                     // We have found the file and it is not a .NET assembly; no need to try to
                     // load it again.
                     tryToCreateAnAssemblyReference = false;
                 }
-                catch (FileLoadException)
+                catch(FileLoadException)
                 {
                     // We must still try to load from here because this exception is thrown if we want
                     // to add the same assembly reference from different locations.
@@ -530,7 +526,7 @@ namespace Microsoft.VisualStudio.Project
 
             ReferenceNode node = null;
 
-            if (tryToCreateAnAssemblyReference)
+            if(tryToCreateAnAssemblyReference)
             {
                 // This might be a candidate for an assembly reference node. Try to load it.
                 // CreateAssemblyReferenceNode will suppress BadImageFormatException if the node cannot be created.
@@ -538,9 +534,9 @@ namespace Microsoft.VisualStudio.Project
             }
 
             // If no node has been created try to create a com reference node.
-            if (node == null)
+            if(node == null)
             {
-                if (!File.Exists(selectorData.bstrFile))
+                if(!File.Exists(selectorData.bstrFile))
                 {
                     return null;
                 }
@@ -560,25 +556,9 @@ namespace Microsoft.VisualStudio.Project
             {
                 node = new AssemblyReferenceNode(this.ProjectMgr, element);
             }
-            catch (ArgumentNullException e)
+            catch(Exception e)
             {
-                XSharpProjectPackage.Instance.DisplayException(e);
-            }
-            catch (FileNotFoundException e)
-            {
-                XSharpProjectPackage.Instance.DisplayException(e);
-            }
-            catch (BadImageFormatException e)
-            {
-                XSharpProjectPackage.Instance.DisplayException(e);
-            }
-            catch (FileLoadException e)
-            {
-                XSharpProjectPackage.Instance.DisplayException(e);
-            }
-            catch (System.Security.SecurityException e)
-            {
-                XSharpProjectPackage.Instance.DisplayException(e);
+                XSettings.DisplayException(e);
             }
 
             return node;
@@ -593,26 +573,11 @@ namespace Microsoft.VisualStudio.Project
             {
                 node = new AssemblyReferenceNode(this.ProjectMgr, fileName);
             }
-            catch (ArgumentNullException e)
+            catch(Exception e)
             {
-                XSharpProjectPackage.Instance.DisplayException(e);
+                XSettings.DisplayException(e);
             }
-            catch (FileNotFoundException e)
-            {
-                XSharpProjectPackage.Instance.DisplayException(e);
-            }
-            catch (BadImageFormatException e)
-            {
-                XSharpProjectPackage.Instance.DisplayException(e);
-            }
-            catch (FileLoadException e)
-            {
-                XSharpProjectPackage.Instance.DisplayException(e);
-            }
-            catch (System.Security.SecurityException e)
-            {
-                XSharpProjectPackage.Instance.DisplayException(e);
-            }
+            
 
             return node;
         }

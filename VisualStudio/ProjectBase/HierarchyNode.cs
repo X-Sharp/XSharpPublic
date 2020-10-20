@@ -30,6 +30,7 @@ using VsCommands = Microsoft.VisualStudio.VSConstants.VSStd97CmdID;
 using VsCommands2K = Microsoft.VisualStudio.VSConstants.VSStd2KCmdID;
 using IOleServiceProvider = Microsoft.VisualStudio.OLE.Interop.IServiceProvider;
 using XSharp.Project;
+using XSharpModel;
 
 namespace Microsoft.VisualStudio.Project
 {
@@ -1236,8 +1237,9 @@ namespace Microsoft.VisualStudio.Project
             }
             catch (COMException e)
             {
-                XSharpProjectPackage.Instance.DisplayOutPutMessage("COM Exception : " );
-                XSharpProjectPackage.Instance.DisplayException(e);
+
+                XSettings.DisplayOutputMessage("COM Exception : " );
+                XSettings.DisplayException(e);
                 return e.ErrorCode;
             }
 
@@ -1708,7 +1710,7 @@ namespace Microsoft.VisualStudio.Project
                 }
                 catch(COMException e)
                 {
-                    XSharpProjectPackage.Instance.DisplayException(e);
+                    XSettings.DisplayException(e);
                     returnValue = e.ErrorCode;
                 }
                 if(returnValue != VSConstants.S_OK)
@@ -2385,15 +2387,14 @@ namespace Microsoft.VisualStudio.Project
             ThreadHelper.JoinableTaskFactory.Run(async delegate
             {
                 await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
-
-                foreach (IVsHierarchyEvents sink in foo.hierarchyEventSinks)
+            foreach(IVsHierarchyEvents sink in foo.hierarchyEventSinks)
+            {
+                int result = sink.OnItemAdded(parent.hierarchyId, prevId, child.hierarchyId);
+                if(ErrorHandler.Failed(result) && result != VSConstants.E_NOTIMPL)
                 {
-                    int result = sink.OnItemAdded(parent.hierarchyId, prevId, child.hierarchyId);
-                    if (ErrorHandler.Failed(result) && result != VSConstants.E_NOTIMPL)
-                    {
-                        ErrorHandler.ThrowOnFailure(result);
-                    }
+                    ErrorHandler.ThrowOnFailure(result);
                 }
+            }
             });
         }
 
@@ -2570,12 +2571,12 @@ namespace Microsoft.VisualStudio.Project
 
         public object GetService(Type type)
         {
-            if (type == null)
+            if(type == null)
             {
                 throw new ArgumentNullException("type");
             }
 
-            if (this.projectMgr.Site == null) return null;
+            if(this.projectMgr.Site == null) return null;
             object result = null;
             ThreadHelper.JoinableTaskFactory.Run(async delegate
             {
@@ -2966,7 +2967,7 @@ namespace Microsoft.VisualStudio.Project
             }
             catch(COMException e)
             {
-                XSharpProjectPackage.Instance.DisplayException(e);
+                XSettings.DisplayException(e);
                 returnCode = e.ErrorCode;
 
             	// Try to recover

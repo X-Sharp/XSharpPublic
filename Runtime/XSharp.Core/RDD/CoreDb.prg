@@ -56,7 +56,17 @@ CLASS XSharp.CoreDb
         ENDIF
         RddError.PostNoTableError(cFunction)
         RETURN 0
-        /// <exclude />   
+        
+        /// <exclude />
+    INTERNAL STATIC METHOD AdjustPath(cPath as STRING) AS STRING
+        IF String.IsNullOrEmpty(cPath)
+            cPath := GetDefault()
+        ENDIF
+        IF String.IsNullOrEmpty(cPath)
+            cPath := System.Environment.CurrentDirectory
+        ENDIF
+        RETURN cPath
+        
     INTERNAL STATIC METHOD  RddNameToType( cRDDName AS STRING ) AS Type
         LOCAL ret := NULL AS  Type
         LOCAL oRdd        AS RegisteredRDD
@@ -286,14 +296,13 @@ CLASS XSharp.CoreDb
     /// <inheritdoc cref="M:XSharp.CoreDb.BlobInfo(System.UInt32,System.UInt32,System.Object)" />
     /// <param name="oRet">The returnvalue is returned through this parameter. When set on entry this is the new value of the setting.</param>
     STATIC METHOD BlobInfo(nOrdinal AS DWORD,nPos AS DWORD,oRet REF OBJECT) AS LOGIC
-        TRY
-            LOCAL oRdd := CoreDb.CWA(__FUNCTION__) AS IRdd
-            oRet := oRdd:BlobInfo(nOrdinal, nPos)
-            RETURN TRUE
-        CATCH e AS Exception
-            Fail(e)
-        END TRY
-        RETURN FALSE   
+        var oTemp := oRet
+        var result := CoreDb.Do ({ =>
+            RETURN CoreDb.BlobInfo(nOrdinal, nPos, REF oTemp)
+        })
+        oRet := oTemp
+        return result
+        
         /// <summary>
         /// Determine when beginning-of-file is encountered.
         /// </summary>
@@ -582,7 +591,10 @@ CLASS XSharp.CoreDb
                     dboi:Extension := "."
                 ELSE
                     dboi:Extension := Path.GetExtension( cName )
-                ENDIF        
+                ENDIF
+                var path := System.IO.Path.GetDirectoryName(cName)
+                path          := CoreDb.AdjustPath(path)
+                dboi:FileName := System.IO.Path.Combine(path, System.IO.Path.GetFileName(dboi:FileName))
                 dboi:Shared    := FALSE
                 dboi:ReadOnly  := FALSE
                 dboi:Alias     := cAlias
@@ -731,14 +743,14 @@ CLASS XSharp.CoreDb
         /// <param name="oRet">The returnvalue is returned through this parameter</param>
         /// <returns>TRUE if successful; otherwise, FALSE.</returns>
     STATIC METHOD FieldGet(nPos AS DWORD,oRet REF OBJECT) AS LOGIC
-        TRY
+        var oTemp := oRet
+        var result := CoreDb.Do( { =>
             LOCAL oRdd := CoreDb.CWA(__FUNCTION__) AS IRdd
-            oRet := oRdd:GetValue((INT) nPos)
-            RETURN TRUE
-        CATCH e AS Exception
-            Fail(e)
-        END TRY
-        RETURN FALSE
+            oTemp := oRdd:GetValue((INT) nPos)
+            return TRUE
+        })
+        oRet := oTemp
+        return result
 
         /// <summary>
         /// Retrieve the value of a specified database field as an array of bytes
@@ -748,7 +760,8 @@ CLASS XSharp.CoreDb
         /// <returns>TRUE if successful; otherwise, FALSE.</returns>
         /// <remarks>This function only works with RDDs that inherit from the DBF RDD. The Advantage RDD does not support this.</remarks>
     STATIC METHOD FieldGetBytes(nPos AS DWORD,oRet REF BYTE[]) AS LOGIC
-        TRY
+        var oTemp := oRet
+        var lResult :=  CoreDb.Do( { =>
             LOCAL oRdd := CoreDb.CWA(__FUNCTION__) AS IRdd
              IF oRdd IS Workarea VAR oDBF
                 LOCAL oFld AS RddFieldInfo
@@ -758,11 +771,11 @@ CLASS XSharp.CoreDb
                     IF oFld:FieldType.IsMemo()
                         VAR nBlock := oDBF:_getMemoBlockNumber( (LONG)nPos)
                         IF nBlock == 0
-                            oRet := BYTE[]{0}
+                            oTemp := BYTE[]{0}
                         ELSEIF oDBF:Memo != NULL
-                            oRet := (BYTE[]) oDBF:Memo:GetValue((LONG) nPos)
+                            oTemp := (BYTE[]) oDBF:Memo:GetValue((LONG) nPos)
                         ELSE
-                            oRet := BYTE[]{0}
+                            oTemp := BYTE[]{0}
                         ENDIF
                     ELSE
                         VAR nOffSet := oFld:Offset
@@ -771,17 +784,16 @@ CLASS XSharp.CoreDb
                         result := BYTE[]{nLen}
                         VAR aCopy := oDBF:GetRec()
                         System.Array.Copy(aCopy, nOffSet, result,0, nLen)
-                        oRet := result
+                        oTemp := result
                     ENDIF
                     RETURN TRUE
                 ENDIF
             ENDIF
-            oRet := NULL
+            oTemp := NULL
             RETURN FALSE
-        CATCH e AS Exception
-            Fail(e)
-        END TRY
-        RETURN FALSE
+        })
+        oRet := oTemp
+        return lResult
 
     /// <summary>
     /// Retrieve the value of a specified database field as an array of bytes
@@ -792,7 +804,7 @@ CLASS XSharp.CoreDb
     /// <remarks>This function only works with RDDs that inherit from the DBF RDD. The Advantage RDD does not support this.</remarks>
 
     STATIC METHOD FieldPutBytes(nPos AS DWORD, aValue AS BYTE[]) AS LOGIC
-        TRY
+        VAR lResult :=  CoreDb.Do( { =>        
              LOCAL oRdd := CoreDb.CWA(__FUNCTION__) AS IRdd
              IF oRdd IS Workarea VAR oWa
                 LOCAL oFld AS RddFieldInfo
@@ -813,11 +825,8 @@ CLASS XSharp.CoreDb
                 ENDIF
             ENDIF
             RETURN FALSE
-        CATCH e AS Exception
-            Fail(e)
-        END TRY
-        RETURN FALSE
-        
+        })
+        return lResult
         /// <inheritdoc cref="M:XSharp.RDD.IRdd.FieldInfo(System.Int32,System.Int32,System.Object)" />
         /// <returns>TRUE if successful; otherwise, FALSE.</returns>
         /// <remarks>This function is like DBFieldInfo().
@@ -835,14 +844,14 @@ CLASS XSharp.CoreDb
     /// <inheritdoc cref="M:XSharp.CoreDb.FieldInfo(System.UInt32,System.UInt32,System.Object)" />
     /// <param name="oRet">The returnvalue is returned through this parameter. When set on entry this is the new value of the setting.</param>
     STATIC METHOD FieldInfo(nOrdinal AS DWORD,nFldPos AS DWORD,oRet REF OBJECT) AS LOGIC
-        TRY
+        VAR oTemp := oRet
+        VAR lResult :=  CoreDb.Do( { =>        
             LOCAL oRdd := CoreDb.CWA(__FUNCTION__) AS IRdd
-            oRet := oRdd:FieldInfo((INT) nFldPos, (INT) nOrdinal, oRet)
+            oTemp := oRdd:FieldInfo((INT) nFldPos, (INT) nOrdinal, oTemp)
             RETURN TRUE
-        CATCH e AS Exception
-            Fail(e)
-        END TRY
-        RETURN FALSE
+        })
+        oRet := oTemp
+        RETURN lResult
         
     /// <summary>
     /// Return the name of a field as a string.
@@ -1051,23 +1060,23 @@ CLASS XSharp.CoreDb
     /// <param name="oValue">If specified, this parameter is used to change the value of a setting. This parameter also receives the return value.</param>
 
     STATIC METHOD Info(nOrdinal AS DWORD,oValue REF OBJECT) AS LOGIC
-        TRY
+        VAR oTemp := oValue
+        VAR result := CoreDb.Do ({ =>
             LOCAL oRdd := CoreDb.CWA(__FUNCTION__, FALSE) AS IRdd
             IF oRdd != null
                 IF (nOrdinal == DBI_RDD_OBJECT)
-                    oValue := oRdd
+                    oTemp := oRdd
                 ELSEIF (nOrdinal == DBI_RDD_LIST)
-                    oValue := _RddList{(Workarea) oRdd}
+                    oTemp := _RddList{(Workarea) oRdd}
                 ELSE
-                    oValue := oRdd:Info((INT) nOrdinal, oValue)
+                    oTemp := oRdd:Info((INT) nOrdinal, oTemp)
                 ENDIF
                 RETURN TRUE
             ENDIF
-        CATCH e AS Exception
-            Fail(e)
-        END TRY
-        
-        RETURN FALSE   
+            RETURN FALSE
+        })
+        oValue := oTemp
+        RETURN result
         
         /// <summary>Write values to destination Workarea in a JOIN operation</summary>
         /// <param name="nSelect"></param>
@@ -1279,20 +1288,19 @@ CLASS XSharp.CoreDb
     /// <inheritdoc cref="M:XSharp.CoreDb.OrderInfo(System.UInt32,System.String,System.Object,System.Object)" />
     /// <param name="oValue">If specified, this parameter is used to change the value of a setting and retrieve the current setting. </param>
     STATIC METHOD OrderInfo(nOrdinal AS DWORD,cBagName AS STRING,oOrder AS OBJECT,oValue REF OBJECT) AS LOGIC
-        TRY
-            LOCAL oRdd := CoreDb.CWA(__FUNCTION__) AS IRdd
+        VAR oTemp := oValue
+        VAR result := CoreDb.Do ({ =>
+        LOCAL oRdd := CoreDb.CWA(__FUNCTION__) AS IRdd
             VAR info := DbOrderInfo{}
             info:BagName := cBagName
             info:Order   := oOrder
-            info:Result  := oValue
+            info:Result  := oTemp
 			oRdd:OrderInfo(nOrdinal, info)
-            oValue :=  info:Result
+            oTemp :=  info:Result
             RETURN TRUE
-        CATCH e AS Exception
-            Fail(e)
-        END TRY
-        
-        RETURN FALSE
+        })
+        oValue := oTemp
+        return result
         
         
         /// <summary>
@@ -1384,7 +1392,7 @@ CLASS XSharp.CoreDb
         /// <include file="CoreComments.xml" path="Comments/LastError/*" />
         /// </remarks>
     STATIC METHOD OrdSetFocus(cBagName AS STRING,oOrder AS OBJECT) AS LOGIC
-        TRY
+        RETURN CoreDb.Do ({ =>
             LOCAL oRdd := CoreDb.CWA(__FUNCTION__) AS IRdd
             VAR info     := DbOrderInfo{}
             cBagName := cBagName?:Trim()
@@ -1393,11 +1401,8 @@ CLASS XSharp.CoreDb
             VAR result := oRdd:OrderListFocus(info)
             RAISE OrderChanged oRdd:OrderInfo(DBOI_NAME,info)
             RETURN  result
-        CATCH e AS Exception
-            Fail(e)
-        END TRY
-        RETURN FALSE
-        
+         })
+    
         /// <summary>
         /// Set the controlling order for a work area.
         /// </summary>
@@ -1409,15 +1414,15 @@ CLASS XSharp.CoreDb
         /// <include file="CoreComments.xml" path="Comments/LastError/*" />
         /// </remarks>
     STATIC METHOD OrdSetFocus(cBagName AS STRING,oOrder AS OBJECT, strPreviousOrder OUT STRING) AS LOGIC
-        strPreviousOrder := ""
-        TRY
+        local strTemp := "" AS STRING
+        var lResult := CoreDb.Do ({ =>
             LOCAL oRdd := CoreDb.CWA(__FUNCTION__) AS IRdd
             LOCAL result AS OBJECT
             VAR info     := DbOrderInfo{}
-            strPreviousOrder := String.Empty
+            strTemp := String.Empty
             result := oRdd:OrderInfo(DBOI_NAME,info)
             IF result IS STRING VAR cOrder
-                strPreviousOrder := cOrder
+                strTemp := cOrder
             ENDIF
             cBagName     := cBagName?:Trim()
             info:BagName := cBagName
@@ -1427,11 +1432,10 @@ CLASS XSharp.CoreDb
                 RAISE OrderChanged info:Result
             ENDIF
             RETURN isOk 
-        CATCH e AS Exception
-            Fail(e)
-        END TRY
+        })
+        strPreviousOrder := strTemp
+        return lResult
         
-        RETURN FALSE
         
         /// <summary>
         /// Remove all records that have been marked for deletion from a database file.
@@ -1469,18 +1473,19 @@ CLASS XSharp.CoreDb
         /// <seealso cref='O:XSharp.CoreDb.RddInfo' >RddInfo overloads in CoreDb</seealso>
         
     STATIC METHOD RddInfo(nOrdinal AS DWORD,oValue REF OBJECT) AS LOGIC
-        TRY
-            LOCAL oResult AS OBJECT
+        VAR oTemp := oValue
+        VAR result := CoreDb.Do ({ =>
+        LOCAL oResult AS OBJECT
             oResult := RuntimeState.GetValue<OBJECT> ((XSharp.Set) nOrdinal)
-            IF oValue != NULL_OBJECT
-                RuntimeState.SetValue((XSharp.Set) nOrdinal, oValue)
+            IF oTemp != NULL_OBJECT
+                RuntimeState.SetValue((XSharp.Set) nOrdinal, oTemp)
             ENDIF
-            oValue := oResult
+            oTemp := oResult
             RETURN oResult != NULL
-        CATCH e AS Exception
-            Fail(e)
-        END TRY
-        RETURN FALSE
+        })
+        oValue := oTemp
+        RETURN result
+        
         
     /// <inheritdoc cref="M:XSharp.CoreDb.RddInfo(System.UInt32,System.Object@)" />
     STATIC METHOD RddInfo(nOrdinal AS DWORD,oValue AS OBJECT) AS LOGIC
@@ -1610,15 +1615,14 @@ CLASS XSharp.CoreDb
     /// <inheritdoc cref="M:XSharp.CoreDb.RecordInfo(System.UInt32,System.Object,System.Object)" />
     /// <param name="oRet">The returnvalue is returned through this parameter. When set on entry this is the new value of the setting.</param>
     STATIC METHOD RecordInfo(nOrdinal AS DWORD,oRecID AS OBJECT,oValue REF OBJECT) AS LOGIC
-        TRY
-            LOCAL oRdd := CoreDb.CWA(__FUNCTION__) AS IRdd
-            oValue := oRdd:RecInfo( (INT) nOrdinal,oRecID, oValue )
-            RETURN TRUE
-        CATCH e AS Exception
-            Fail(e)
-        END TRY
-        
-        RETURN FALSE       
+        VAR oTemp := oValue
+        VAR result := CoreDb.Do ({ =>
+        LOCAL oRdd := CoreDb.CWA(__FUNCTION__) AS IRdd
+        oTemp := oRdd:RecInfo( (INT) nOrdinal,oRecID, oTemp )
+        RETURN TRUE
+        })
+        oValue := oTemp
+        RETURN result    
         
         /// <summary>Update the current record from an array of bytes</summary>
         /// <param name="aRecord">The bytes that form the record. Please note that if the DBF has a memo file, then this array must contain a valid position for the memo attached to the record.</param>
@@ -1642,15 +1646,14 @@ CLASS XSharp.CoreDb
         /// </remarks>
         
     STATIC METHOD Relation(nPos AS DWORD,sRel REF STRING) AS LOGIC
-        TRY
-            LOCAL oRdd := CoreDb.CWA(__FUNCTION__) AS IRdd
-            sRel :=  oRdd:RelText(nPos)
-            RETURN TRUE
-        CATCH e AS Exception
-            Fail(e)
-        END TRY
-        
-        RETURN FALSE   
+        VAR sTemp := sRel
+        VAR result := CoreDb.Do ({ =>
+        LOCAL oRdd := CoreDb.CWA(__FUNCTION__) AS IRdd
+        sTemp :=  oRdd:RelText(nPos)
+        RETURN TRUE
+        })
+        sRel := sTemp
+        RETURN result  
         
         /// <summary>
         /// Lock the current record.
@@ -1726,26 +1729,24 @@ CLASS XSharp.CoreDb
         /// <note type="tip">VoDbSelect() and CoreDb.Select() are aliases</note></remarks>
         
     STATIC METHOD Select(nNew AS DWORD,nOld OUT DWORD ) AS LOGIC
-        nOld := 0
-        TRY
-            VAR Workareas := RuntimeState.Workareas
-            nOld := (DWORD) Workareas:CurrentWorkareaNO
-            IF nNew != nOld
-                IF nNew == 0
-                    nNew := (DWORD) Workareas:FindEmptyArea(TRUE)
-                ENDIF
-                IF nNew > Workareas.MaxWorkareas
-                    RddError.PostArgumentError( __FUNCTION__, EDB_SELECT, nameof(nNew), 1, <OBJECT>{ nNew } )
-                ELSE
-                    Workareas:CurrentWorkareaNO :=  nNew
-                ENDIF
+        LOCAL nTemp := 0 as DWORD
+        var result := CoreDb.Do ({ =>
+        VAR Workareas := RuntimeState.Workareas
+        nTemp := (DWORD) Workareas:CurrentWorkareaNO
+        IF nNew != nTemp
+            IF nNew == 0
+                nNew := (DWORD) Workareas:FindEmptyArea(TRUE)
             ENDIF
-            RETURN TRUE
-        CATCH e AS Exception
-            Fail(e)
-        END TRY
-        
-        RETURN FALSE   
+            IF nNew > Workareas.MaxWorkareas
+                RddError.PostArgumentError( __FUNCTION__, EDB_SELECT, nameof(nNew), 1, <OBJECT>{ nNew } )
+            ELSE
+                Workareas:CurrentWorkareaNO :=  nNew
+            ENDIF
+        ENDIF
+        RETURN TRUE
+        })
+        nOld := nTemp
+        RETURN result
         
         /// <summary>
         /// Set a filter condition.
@@ -2169,8 +2170,10 @@ CLASS XSharp.CoreDb
                     LOCAL dboi := DbOpenInfo{} AS DbOpenInfo
                     LOCAL uiArea AS DWORD
                     uiArea := Workareas:CurrentWorkareaNO
-                    dboi:FileName     := Path.Combine(Path.GetDirectoryName(cName),Path.GetFileNameWithoutExtension(cName))
-                    dboi:Extension    := Path.GetExtension( cName )
+                    var path := Path.GetDirectoryName(cName)
+                    dboi:FileName    := System.IO.Path.Combine(path, System.IO.Path.GetFileNameWithoutExtension(cName))
+                    dboi:FileName    := Path.Combine(path,Path.GetFileNameWithoutExtension(cName))
+                    dboi:Extension   := Path.GetExtension( cName )
                     dboi:Shared      := lShare
                     dboi:ReadOnly    := lReadOnly
                     dboi:Alias       := cAlias

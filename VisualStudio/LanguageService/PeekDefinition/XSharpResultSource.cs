@@ -7,7 +7,7 @@ using Microsoft.VisualStudio.Language.Intellisense;
 using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Imaging.Interop;
 using System.Diagnostics;
-
+using XSharpModel;
 namespace XSharp.LanguageService
 {
     class XSharpResultSource : IPeekResultSource
@@ -56,8 +56,8 @@ namespace XSharp.LanguageService
             }
             catch (Exception ex)
             {
-                XSharpLanguageService.DisplayOutPutMessage("XSharpResultSource.FindResults failed : " );
-                XSharpLanguageService.DisplayException(ex);
+                XSettings.DisplayOutputMessage("XSharpResultSource.FindResults failed : " );
+                XSettings.DisplayException(ex);
             }
         }
 

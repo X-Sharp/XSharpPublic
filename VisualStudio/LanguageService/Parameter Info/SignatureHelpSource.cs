@@ -1,22 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.ComponentModel.Composition;
-using System.Runtime.InteropServices;
 using Microsoft.VisualStudio.Language.Intellisense;
 using Microsoft.VisualStudio.Text;
-using Microsoft.VisualStudio.Text.Editor;
-using Microsoft.VisualStudio.Utilities;
-using Microsoft.VisualStudio.Editor;
-using Microsoft.VisualStudio.Text.Operations;
-using Microsoft.VisualStudio;
-using Microsoft.VisualStudio.TextManager.Interop;
-using Microsoft.VisualStudio.OLE.Interop;
 using System.Reflection;
-using System.Linq;
-using System.Diagnostics;
 using XSharpModel;
-using XSharp.LanguageService.OptionsPages;
 
 namespace XSharp.LanguageService
 {
@@ -37,8 +25,6 @@ namespace XSharp.LanguageService
             Signature = signature;
         }
     }
-
-
     internal class XSharpVsSignature : ISignature
     {
         private ITextBuffer m_subjectBuffer;
@@ -68,7 +54,7 @@ namespace XSharp.LanguageService
             EventHandler<CurrentParameterChangedEventArgs> tempHandler = this.CurrentParameterChanged;
             if (tempHandler != null)
             {
-                tempHandler(this, new CurrentParameterChangedEventArgs(prevCurrentParameter, newCurrentParameter));
+               tempHandler(this, new CurrentParameterChangedEventArgs(prevCurrentParameter, newCurrentParameter));
             }
         }
 
@@ -211,18 +197,14 @@ namespace XSharp.LanguageService
         private ITextBuffer m_textBuffer;
         private ISignatureHelpSession m_session;
         private ITrackingSpan m_applicableToSpan;
-        IntellisenseOptionsPage optionsPage = null;
-        XSharpLanguageService package;
 
         public XSharpSignatureHelpSource(ITextBuffer textBuffer)
         {
             m_textBuffer = textBuffer;
-            package = XSharpLanguageService.Instance;
-            optionsPage = package.GetIntellisenseOptionsPage();
         }
         internal void Debug(string strMessage)
         {
-            if (optionsPage.EnableParameterLog && optionsPage.EnableOutputPane)
+            if (XSettings.EnableParameterLog && XSettings.EnableLogging)
             {
                 XSettings.DisplayOutputMessage(strMessage);
             }

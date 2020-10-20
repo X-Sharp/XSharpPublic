@@ -4,7 +4,7 @@
     <Name>Class Library with NUnit Testing</Name>
     <Description>A project for creating a X# class library (.dll) with NUnit Testing</Description>
     <Icon>NUnitTestClassLibrary.png</Icon>
-    <TemplateID>XSharp.Test.XUnitClassLibrary</TemplateID>
+    <TemplateID>XSharp.Test.NUnitClassLibrary</TemplateID>
     <ProjectType>XSharp</ProjectType>
     <SortOrder>1</SortOrder>
     <NumberOfParentCategoriesToRollUp>1</NumberOfParentCategoriesToRollUp>

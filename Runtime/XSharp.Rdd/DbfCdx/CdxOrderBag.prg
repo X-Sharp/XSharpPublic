@@ -312,10 +312,11 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             _tagList := CdxTagList{SELF,  page, _root:KeySize}
             SELF:SetPage(_tagList)
             _tagList:ReadTags()
-            // Compile expressions
-            FOREACH VAR tag IN Tags
-                tag:EvaluateExpressions()
-            NEXT
+            // No need to Compile expressions again. Is done in ReadTags already
+            // If we do want to do it again, then remember to save the LastRddError !
+            // FOREACH VAR tag IN Tags
+            //    tag:EvaluateExpressions()
+            // NEXT
             RETURN TRUE
         #endregion
 

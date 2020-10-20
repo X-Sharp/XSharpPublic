@@ -118,7 +118,20 @@ CLASS XSharp.DbRecord IMPLEMENTS INotifyPropertyChanged
         END SET
     END PROPERTY
     #endregion
-    
+
+    PROPERTY FieldName[fieldPos AS INT] AS STRING
+        GET
+            return SELF:Datasource:FieldName(fieldPos)
+        END GET
+    END PROPERTY
+
+    PROPERTY FieldValue[fieldPos AS INT] AS OBJECT
+        GET
+            return SELF:Datasource:GetValue(fieldPos)
+        END GET
+    END PROPERTY
+
+
     #region methods
     /// Always a good idea to implement this.
     PUBLIC METHOD ToString() AS STRING STRICT
@@ -147,8 +160,9 @@ CLASS XSharp.DbRecord IMPLEMENTS INotifyPropertyChanged
         LOCAL args:=PropertyChangedEventArgs{colname} AS PropertyChangedEventArgs 
         SELF:PropertyChanged(SELF,args)
     ENDIF
-    RETURN 
-    #endregion    
+    RETURN
+    #endregion
+
 END CLASS
 
 
@@ -156,7 +170,6 @@ INTERNAL CLASS XSharp.DbRecordDescriptorProvider INHERIT TypeDescriptionProvider
     #region class variables
     STATIC PROTECTED defaultTypeProvider := TypeDescriptor.GetProvider(typeof(DbRecord)) AS TypeDescriptionProvider
     #endregion
-    
     #region constructors
     CONSTRUCTOR() STRICT
     SUPER(defaultTypeProvider)
@@ -167,7 +180,6 @@ INTERNAL CLASS XSharp.DbRecordDescriptorProvider INHERIT TypeDescriptionProvider
     PUBLIC VIRTUAL METHOD GetTypeDescriptor(objectType AS Type, instanceObject AS OBJECT) AS ICustomTypeDescriptor
         LOCAL returnValue          AS ICustomTypeDescriptor
         LOCAL defaultDescriptor    AS ICustomTypeDescriptor
-        
         defaultDescriptor := SUPER:GetTypeDescriptor(objectType,instanceObject)
         
         IF instanceObject == NULL
@@ -184,39 +196,25 @@ END CLASS
 
 
 INTERNAL CLASS XSharp.DbRecordDescriptor  INHERIT CustomTypeDescriptor
-    #region instance variables
-    PRIVATE fields := List<DbFieldDescriptor>{} AS List<DbFieldDescriptor>
-    #endregion
     #region constructors
+    PROTECTED oDatasource as DbDataSource
     CONSTRUCTOR( parent AS ICustomTypeDescriptor, record AS DbRecord )
         SUPER(parent)
-        FOREACH element AS DbField IN record:Datasource:Fields
-            fields:Add( DbFieldDescriptor{element} )
-        NEXT
+        oDatasource := record:Datasource
         RETURN
     
     #endregion
     #region methods
 
-    /// Add standard properties (Recno & Deleted) to the fields to create a complete collection
-    PRIVATE METHOD mergeProps(props AS PropertyDescriptorCollection) AS PropertyDescriptorCollection
-        VAR list   := List<PropertyDescriptor>{}
-        FOREACH VAR prop IN props
-            list:Add((PropertyDescriptor)prop)
-        NEXT
-        list:AddRange(SELF:fields)
-        RETURN PropertyDescriptorCollection{list:ToArray()}
 
     
     PUBLIC VIRTUAL METHOD GetProperties() AS PropertyDescriptorCollection STRICT
-        VAR props := SUPER:GetProperties()
-        RETURN SELF:mergeProps(props)
+        RETURN SELF:oDatasource:PropertyDescriptors
         
     /// Same as the method before except that attributes are provided for filtering.
     PUBLIC VIRTUAL METHOD GetProperties(attributes AS Attribute[]) AS PropertyDescriptorCollection
-        VAR props := SUPER:GetProperties(attributes)
-        RETURN SELF:mergeProps(props)
-    #endregion
+        RETURN SELF:oDatasource:PropertyDescriptors
+#endregion
 END CLASS
 
 

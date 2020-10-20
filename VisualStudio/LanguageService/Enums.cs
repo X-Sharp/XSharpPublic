@@ -6,12 +6,12 @@ using System.Threading.Tasks;
 
 namespace XSharp.LanguageService
 {
-    public enum KeywordCase
-    {
-        None = 0,
-        Upper = 1,
-        Lower = 2,
-        Title = 3
-    }
+    //public enum KeywordCase
+    //{
+    //    None = 0,
+    //    Upper = 1,
+    //    Lower = 2,
+    //    Title = 3
+    //}
 
 }

@@ -13,6 +13,11 @@ namespace XSharp.Project
     class XSharpOutputPane
     {
         private static readonly Guid XSharpOutputWindowPane = new Guid("{58980A02-889C-4AC6-8321-D55E92976A70}");
+
+        internal static void DisplayException(Exception e)
+        {
+            DisplayOutputMessage(e.ToString());
+        }
         internal static void DisplayOutputMessage(string message)
         {
             IVsOutputWindowPane outputPane = null;

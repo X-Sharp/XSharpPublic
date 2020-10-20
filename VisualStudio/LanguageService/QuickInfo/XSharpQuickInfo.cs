@@ -4,6 +4,7 @@
 // See License.txt in the project root for license information.
 //
 using System;
+using System.Linq;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using Microsoft.VisualStudio.Language.Intellisense;
@@ -17,6 +18,7 @@ using System.Windows.Media;
 using XSharpModel;
 using System.Windows.Controls;
 using Microsoft.VisualStudio.Text.Classification;
+using Microsoft.VisualStudio.Text.Adornments;
 //using Microsoft.VisualStudio.Text.Adornments;
 
 namespace XSharp.LanguageService
@@ -55,20 +57,9 @@ namespace XSharp.LanguageService
             }
         }
 
-        //static bool skipFirst = true;
-
         public void AugmentQuickInfoSession(IQuickInfoSession session, IList<object> qiContent, out ITrackingSpan applicableToSpan)
         {
             applicableToSpan = null;
-            //if (skipFirst)
-            //{
-            //    skipFirst = false;
-            //    return;
-            //}
-            //else
-            //{
-            //    skipFirst = true;
-            //}
             if (XSettings.DebuggerIsRunning)
             {
                 return;

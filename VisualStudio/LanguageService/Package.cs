@@ -18,6 +18,7 @@ using System.ComponentModel.Design;
 using Microsoft.VisualStudio.ComponentModelHost;
 using XSharpModel;
 using Microsoft.Win32;
+using Microsoft;
 
 // The following lines ensure that the right versions of the various DLLs are loaded.
 // They will be included in the generated PkgDef folder for the project system
@@ -147,12 +148,23 @@ namespace XSharp.LanguageService
                 XSettings.EditorNavigationSorted = _intellisensePage.SortNavigationBars;
                 XSettings.EditorNavigationIncludeFields = _intellisensePage.IncludeFieldsInNavigationBars;
                 XSettings.EditorNavigationMembersOfCurrentTypeOnly = _intellisensePage.ShowMembersOfCurrentTypeOnly;
-                //XSettings.EditorTabsAsSpaces = ;
-                //XSettings.EditorTabSize = ;
-                //XSettings.EditorIndentSize = ;
-                //XSettings.EditorIndentStyle = ;
-                //XSettings.EditorHideAdvancedMembers = ;
-
+                var languagePreferences = new LANGPREFERENCES3[1];
+                languagePreferences[0].guidLang = GuidStrings.guidLanguageService;
+                int result = VSConstants.S_FALSE;
+                ThreadHelper.JoinableTaskFactory.Run(async delegate
+                {
+                    await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+                    result =  _txtManager.GetUserPreferences4(pViewPrefs: null, pLangPrefs: languagePreferences, pColorPrefs: null);
+                });
+                if (result == VSConstants.S_OK)
+                {
+                    XSettings.EditorIndentStyle= (int) languagePreferences[0].IndentStyle;
+                    XSettings.EditorHideAdvancedMembers = languagePreferences[0].fHideAdvancedAutoListMembers != 0;
+                    XSettings.EditorTabSize = (int)languagePreferences[0].uTabSize;
+                    XSettings.EditorIndentSize = (int) languagePreferences[0].uIndentSize;
+                    XSettings.EditorTabsAsSpaces  = languagePreferences[0].fInsertTabs == 0;
+                }
+                
 
                 XSettings.KeywordCase = _intellisensePage.KeywordCase;
                 _intellisensePage.SettingsChanged = false;
@@ -165,6 +177,7 @@ namespace XSharp.LanguageService
             instance = this;
             await base.InitializeAsync(cancellationToken, progress);
             _txtManager = await GetServiceAsync(typeof(SVsTextManager)) as IVsTextManager4;
+            Assumes.Present(_txtManager);
 
             // register property changed event handler
             await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
@@ -185,6 +198,8 @@ namespace XSharp.LanguageService
             RegisterDebuggerEvents();
             addOurFileExtensionsForDiffAndPeek("Diff\\SupportedContentTypes");
             addOurFileExtensionsForDiffAndPeek("Peek\\SupportedContentTypes");
+
+            _txtManager = await GetServiceAsync(typeof(SVsTextManager)) as IVsTextManager4;
 
         }
 

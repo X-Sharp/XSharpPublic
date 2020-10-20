@@ -317,9 +317,9 @@ namespace Microsoft.VisualStudio.Project.Automation
         {
             get
             {
-                //return ThreadHelper.JoinableTaskFactory.Run(async delegate
-                //{
-                //    await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync( );
+                return ThreadHelper.JoinableTaskFactory.Run(async delegate
+                {
+                    await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync( );
                     if (this.configurationManager == null)
                     {
                         IVsExtensibility3 extensibility = this.project.Site.GetService(typeof(IVsExtensibility)) as IVsExtensibility3;
@@ -334,7 +334,7 @@ namespace Microsoft.VisualStudio.Project.Automation
                     }
 
                     return this.configurationManager;
-                //});
+                });
             }
         }
 

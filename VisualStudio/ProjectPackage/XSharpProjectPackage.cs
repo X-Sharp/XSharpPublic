@@ -265,6 +265,9 @@ namespace XSharp.Project
             _errorList = await GetServiceAsync(typeof(SVsErrorList)) as IErrorList;
             _taskList = await GetServiceAsync(typeof(SVsTaskList)) as ITaskList;
 
+            XSettings.DisplayOutputMessage = XSharpOutputPane.DisplayOutputMessage;
+            XSettings.DisplayException = XSharpOutputPane.DisplayException;
+
         }
        
 

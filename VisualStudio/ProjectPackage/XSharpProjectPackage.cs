@@ -169,6 +169,8 @@ namespace XSharp.Project
         private ITaskList _taskList = null;
         private XSharpProjectSelector _projectSelector = null;
 
+        private XSharpLanguageService _langservice;
+
         // =========================================================================================
         // Properties
         // =========================================================================================
@@ -221,6 +223,8 @@ namespace XSharp.Project
             // Indicate how to open the different source files : SourceCode or Designer ??
             this.RegisterEditorFactory(new XSharpEditorFactory(this));
             this.RegisterProjectFactory(new XSharpWPFProjectFactory(this));
+
+            _langservice = new XSharpLanguageService();
 
             // editors for the binaries
             base.RegisterEditorFactory(new VOFormEditorFactory(this));

@@ -60,6 +60,7 @@ BEGIN NAMESPACE XSharpModel
         PUBLIC STATIC PROPERTY EditorNavigationIncludeFields        AS LOGIC AUTO
         PUBLIC STATIC PROPERTY EditorNavigationSorted               AS LOGIC AUTO
         PUBLIC STATIC PROPERTY EditorNavigationMembersOfCurrentTypeOnly AS LOGIC AUTO
+        PUBLIC STATIC PROPERTY EditorNavigationIncludedMembersFromOtherFiles AS LOGIC AUTO
 
         PUBLIC STATIC PROPERTY EditorTabSize                     AS LONG AUTO
         PUBLIC STATIC PROPERTY EditorIndentSize                 AS LONG AUTO

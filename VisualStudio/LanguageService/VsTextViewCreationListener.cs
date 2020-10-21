@@ -18,6 +18,9 @@ using Microsoft.VisualStudio.Text.Operations;
 using Microsoft.VisualStudio.Text.Tagging;
 using Microsoft.VisualStudio.Shell.Interop;
 using Microsoft;
+using Microsoft.VisualStudio.Text;
+using Microsoft.VisualStudio.Text.Outlining;
+using XSharpModel;
 
 namespace XSharp.LanguageService
 {
@@ -36,55 +39,99 @@ namespace XSharp.LanguageService
     internal class VsTextViewCreationListener : IVsTextViewCreationListener
     {
         [Import]
-        IVsEditorAdaptersFactoryService AdaptersFactory = null;
+        internal IOutliningManagerService OutliningManagerService { get; set; }
+
+        [ImportMany]
+        internal ISmartIndentProvider[] SmartIndentProviders { get; set; }
 
         [Import]
-        ICompletionBroker CompletionBroker = null;
+        internal IVsEditorAdaptersFactoryService EditorAdaptersFactoryService { get; set; }
 
         [Import]
-        ITextStructureNavigatorSelectorService NavigatorService { get; set; }
+        internal ICompletionBroker CompletionBroker { get; set; }
 
         [Import]
-        ISignatureHelpBroker SignatureHelpBroker = null;
+        internal ITextStructureNavigatorSelectorService TextStructureNavigatorSelectorService { get; set; }
 
         [Import]
-        IBufferTagAggregatorFactoryService aggregator = null;
+        internal ISignatureHelpBroker SignatureHelpBroker { get; set; }
+
+        [Import]
+        internal IBufferTagAggregatorFactoryService BufferTagAggregatorFactoryService { get; set; }
 
         [Import]
         internal Microsoft.VisualStudio.Shell.SVsServiceProvider ServiceProvider { get; set; }
 
+        [Import]
+        internal ITextEditorFactoryService TextEditorFactory { get; set; }
+
+        [Import]
+        internal ITextBufferFactoryService TextBufferFactory { get; set; }
+
+        [Import]
+        internal IContentTypeRegistryService ContentTypeRegistry { get; set; }
+        [Import]
+        internal ITextSearchService TextSearchService { get; set; }
+
+        [Import(typeof(ITextStructureNavigatorSelectorService))]
+        internal ITextStructureNavigatorSelectorService NavigatorService { get; set; }
+
         public void VsTextViewCreated(IVsTextView textViewAdapter)
         {
             IVsTextLines textlines;
+            IWpfTextView textView = EditorAdaptersFactoryService.GetWpfTextView(textViewAdapter);
+            IVsTextBuffer textBuffer = EditorAdaptersFactoryService.GetBufferAdapter(textView.TextBuffer);
+            textView.TextBuffer.Properties.TryGetProperty(typeof(ITextDocument), out ITextDocument document);
+
+            XFile file = null; 
             textViewAdapter.GetBuffer(out textlines);
             if (textlines != null)
             {
                 Guid langId;
                 textlines.GetLanguageServiceID(out langId);
-                IWpfTextView textView = AdaptersFactory.GetWpfTextView(textViewAdapter);
-                Debug.Assert(textView != null);
                 // Note that this may get called after the classifier has been instantiated
 
                 if (langId == GuidStrings.guidLanguageService)          // is our language service active ?
                 {
                     string fileName = FilePathUtilities.GetFilePath(textlines);
-                    
+
 
                     // Get XFile and assign it to the textbuffer
-                    if (!textView.TextBuffer.Properties.ContainsProperty(typeof(XSharpModel.XFile)))
+                    if (textView.TextBuffer.Properties.ContainsProperty(typeof(XFile)))
                     {
-                        var file = XSharpModel.XSolution.FindFile(fileName);
+                        file = textView.TextBuffer.Properties.GetProperty<XFile>(typeof(XFile));
+                    }
+                    else
+                    {
+                        file = XSharpModel.XSolution.FindFile(fileName);
                         if (file != null)
                         {
-                            textView.TextBuffer.Properties.AddProperty(typeof(XSharpModel.XFile), file);
-                            file.Interactive = true;
+                            textView.TextBuffer.Properties.AddProperty(typeof(XFile), file);
                         }
                     }
-                    CommandFilter filter = new CommandFilter(textView, CompletionBroker, NavigatorService.GetTextStructureNavigator(textView.TextBuffer), SignatureHelpBroker, aggregator, this );
+                    if (file != null)
+                    {
+                        file.Interactive = true;
+                    }
+                    CommandFilter filter = new CommandFilter(textView, CompletionBroker,
+                        TextStructureNavigatorSelectorService.GetTextStructureNavigator(textView.TextBuffer), SignatureHelpBroker, BufferTagAggregatorFactoryService, this );
                     IOleCommandTarget next;
                     textViewAdapter.AddCommandFilter(filter, out next);
                     
                     filter.Next = next;
+                }
+            }
+            var codeWindow = textView.Properties.GetProperty<IVsCodeWindow>(typeof(IVsCodeWindow));
+            if (codeWindow != null)
+            {
+                IVsDropdownBarManager dropDownBarManager = codeWindow as IVsDropdownBarManager;
+                if (dropDownBarManager != null)
+                {
+                    var dropDownClient = new XSharpDropDownClient(textView, codeWindow, file);
+                    dropDownBarManager.RemoveDropdownBar();
+                    dropDownBarManager.AddDropdownBar(2, dropDownClient);
+                    textView.Properties.AddProperty(typeof(IVsDropdownBarManager), dropDownBarManager);
+                    new TextViewClosedHandlerHelper(typeof(IVsDropdownBarManager), textView);
                 }
             }
         }
@@ -92,6 +139,26 @@ namespace XSharp.LanguageService
         {
             return true;
         }
+        public class TextViewClosedHandlerHelper
+        {
+            private Type _targetType;
+
+            private ITextView _textView;
+
+            public TextViewClosedHandlerHelper(Type targetType, ITextView textView)
+            {
+                _targetType = targetType;
+                _textView = textView;
+                _textView.Closed += Run;
+            }
+
+            public void Run(object sender, EventArgs args)
+            {
+                _textView.Properties.RemoveProperty(_targetType);
+                _textView.Closed -= Run;
+            }
+        }
+
     }
 
 }

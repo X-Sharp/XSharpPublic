@@ -103,6 +103,7 @@ BEGIN NAMESPACE XSharpModel
 				CASE Kind.Property 
 				CASE Kind.Event 
 				CASE Kind.Operator 
+				CASE Kind.Field
 					RETURN TRUE
 				OTHERWISE
 					IF ( inDialect == XSharpDialect.FoxPro )

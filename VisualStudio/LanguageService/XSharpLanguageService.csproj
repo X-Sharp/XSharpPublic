@@ -80,7 +80,8 @@
     <Compile Include="LanguageService\PkgCmdID.cs" />
     <Compile Include="LanguageService\XSharpLanguageService.cs" />
     <Compile Include="LanguageService\XSharpSource.cs" />
-    <Compile Include="LanguageService\XSharpTypeAndMemberDropDownBars.cs" />
+    <Compile Include="NavigationBar\DropDownClient.cs" />
+    <Compile Include="NavigationBar\XSharpTypeAndMemberDropDownBars.cs" />
     <Compile Include="LanguageService\XSharpViewFilter.cs" />
     <Compile Include="Library\HierarchyListener.cs" />
     <Compile Include="Library\Library.cs" />

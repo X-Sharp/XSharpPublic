@@ -160,6 +160,7 @@ namespace XSharp.LanguageService
                 XSettings.EditorNavigationSorted = _intellisensePage.SortNavigationBars;
                 XSettings.EditorNavigationIncludeFields = _intellisensePage.IncludeFieldsInNavigationBars;
                 XSettings.EditorNavigationMembersOfCurrentTypeOnly = _intellisensePage.ShowMembersOfCurrentTypeOnly;
+                XSettings.EditorNavigationIncludedMembersFromOtherFiles = _intellisensePage.IncludeMembersFromOtherFiles;
                 var languagePreferences = new LANGPREFERENCES3[1];
                 languagePreferences[0].guidLang = GuidStrings.guidLanguageService;
                 int result = VSConstants.S_FALSE;

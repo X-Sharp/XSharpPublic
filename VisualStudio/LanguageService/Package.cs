@@ -46,33 +46,11 @@ namespace XSharp.LanguageService
     [ProvideLanguageExtension(typeof(XSharpLanguageService), ".ch")]
     [ProvideLanguageService(typeof(XSharpLanguageService),
                          LanguageName,
-                         1,                            // resource ID of localized language name
-                         AutoOutlining = true,
-                         CodeSense = true,             // Supports IntelliSense
-                         CodeSenseDelay = 1000,        // Delay to wait
-                         DefaultToInsertSpaces = true,
-                         DefaultToNonHotURLs = true,
-                         EnableAdvancedMembersOption = true,
-                         EnableAsyncCompletion = true, // Supports background parsing
-                         EnableCommenting = true,      // Supports commenting out code
-                         EnableLineNumbers = true,
-                         MatchBraces = true,
-                         MatchBracesAtCaret = true,
-                         MaxErrorMessages = 10,
-                         QuickInfo = true,
-                         RequestStockColors = false,   // Supplies custom colors
-                         ShowCompletion = true,
-                         ShowDropDownOptions = true,    // Supports NavigationBar
-                         ShowMatchingBrace = true,
-                         ShowSmartIndent = true,
-                         EnableFormatSelection = true,
-                         HideAdvancedMembersByDefault = true,
-                         SingleCodeWindowOnly = false,
-                         ShowHotURLs = true,
-                         SupportCopyPasteOfHTML = true
-
+                         languageResourceID: 1,                            // resource ID of localized language name
+                         RequestStockColors = true,   
+                         ShowDropDownOptions = true    // Supports NavigationBar
                  )]
-    [ProvideLanguageCodeExpansionAttribute(
+    [ProvideLanguageCodeExpansion(
          typeof(XSharpLanguageService),
          LanguageName,  // Name of language used as registry key.
          1,         // Resource ID of localized name of language service.
@@ -81,12 +59,12 @@ namespace XSharp.LanguageService
          SearchPaths = @"%InstallRoot%\Common7\IDE\Extensions\XSharp\Snippets\%LCID%\Snippets;" +
                   @"\%MyDocs%\Code Snippets\XSharp\My Code Snippets"
          )]
-    [ProvideLanguageEditorOptionPageAttribute(
+    [ProvideLanguageEditorOptionPage(
                  typeof(IntellisenseOptionsPage),  // GUID of property page
                  LanguageName,  // Language Name
                  null,          // Page Category
                  "Intellisense",// Page name
-                 "#201"         // Localized name of property page
+                 pageNameResourceId: "201"         // Localized name of property page
                  )]
     public sealed class XSharpLanguageService : AsyncPackage, IVsShellPropertyEvents, IVsDebuggerEvents, IOleComponent
     {
@@ -340,25 +318,7 @@ namespace XSharp.LanguageService
             return VSConstants.S_OK;
         }
 #endregion
-        internal IVsTextManager4 GetTextManager()
-        {
-            return this._txtManager;
-        }
-
-        internal static void DisplayOutputMessage(string message)
-        {
-            XSettings.DisplayOutputMessage(message);
-        }
-        internal static void DisplayException(Exception e)
-        {
-            XSettings.DisplayException(e);
-        }
-        internal static void ShowMessageBox(string message)
-        {
-            XSettings.ShowMessageBox(message);
-        }
-
-
+  
         internal static IComponentModel GetComponentModel()
         {
             return (IComponentModel)GetGlobalService(typeof(SComponentModel));

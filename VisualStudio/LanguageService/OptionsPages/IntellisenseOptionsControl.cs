@@ -56,7 +56,7 @@ namespace XSharp.LanguageService.OptionsPages
             commitChars.Text = optionsPage.CommitChars;
             chkAutoPairs.Checked = optionsPage.AutoPairs;
             multiFactor.Text = optionsPage.MultiFactor.ToString();
-            chkIncludeMembersFromOtherfiles.Checked = optionsPage.IncludeMembersFromOtherFiles;
+            chkExcludeMembersFromOtherfiles.Checked = optionsPage.ExcludeMembersFromOtherFiles;
             _loading = false;
 
         }
@@ -223,7 +223,7 @@ namespace XSharp.LanguageService.OptionsPages
 
         private void chkIncludeMembersFromOtherfiles_CheckedChanged(object sender, EventArgs e)
         {
-            optionsPage.IncludeMembersFromOtherFiles = chkIncludeMembersFromOtherfiles.Checked;
+            optionsPage.ExcludeMembersFromOtherFiles = chkExcludeMembersFromOtherfiles.Checked;
         }
     }
 }

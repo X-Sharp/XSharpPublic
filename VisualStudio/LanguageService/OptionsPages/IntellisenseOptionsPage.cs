@@ -21,7 +21,7 @@ namespace XSharp.LanguageService.OptionsPages
         public bool CompletionListTabs { get; set; }
         public String CommitChars { get; set; }
         public bool AutoPairs { get; set; }
-        public bool IncludeMembersFromOtherFiles { get; set; }
+        public bool ExcludeMembersFromOtherFiles { get; set; }
         public bool KeywordsInAll { get; set; }
 
         public bool UseDotAsUniversalSelector { get; set; }

@@ -36,7 +36,7 @@ namespace XSharp.LanguageService
         private int _selectedTypeIndex = -1;
         private bool _lastIncludeFields;
         private bool _lastCurrentTypeOnly;
-        private bool _lastIncludeOtherFiles;
+        private bool _lastExcludeOtherFiles;
         private bool _lastSorted ;
 
         private IVsCodeWindow _codeWindow;
@@ -189,7 +189,7 @@ namespace XSharp.LanguageService
         private IList<XEntityDefinition> GetTypeMembers(XTypeDefinition type)
         {
             var members = new List<XEntityDefinition>();
-            if (type.IsPartial && ! type.IsGlobal && XSettings.EditorNavigationIncludedMembersFromOtherFiles)
+            if (type.IsPartial && ! type.IsGlobal && !XSettings.EditorNavigationExcludeMembersFromOtherFiles)
             { 
                 var usings = new List<string>();
                 usings.Add(type.Namespace);
@@ -219,7 +219,7 @@ namespace XSharp.LanguageService
                 if (ent is XTypeDefinition)
                 {
                     var xType = ent as XTypeDefinition;
-                    if (xType.IsPartial && XSettings.EditorNavigationIncludedMembersFromOtherFiles)
+                    if (xType.IsPartial && !XSettings.EditorNavigationExcludeMembersFromOtherFiles)
                     {
                         // load methods from other files
                         var usings = new List<string>();
@@ -421,12 +421,12 @@ namespace XSharp.LanguageService
             _lastSorted = XSettings.EditorNavigationSorted;
             _lastIncludeFields = XSettings.EditorNavigationIncludeFields;
             _lastCurrentTypeOnly = XSettings.EditorNavigationMembersOfCurrentTypeOnly;
-            _lastIncludeOtherFiles = XSettings.EditorNavigationIncludedMembersFromOtherFiles;
+            _lastExcludeOtherFiles = XSettings.EditorNavigationExcludeMembersFromOtherFiles;
         }
         bool SettingsChanged => _lastSorted != XSettings.EditorNavigationSorted ||
             _lastIncludeFields != XSettings.EditorNavigationIncludeFields ||
             _lastCurrentTypeOnly != XSettings.EditorNavigationMembersOfCurrentTypeOnly ||
-            _lastIncludeOtherFiles != XSettings.EditorNavigationIncludedMembersFromOtherFiles;
+            _lastExcludeOtherFiles != XSettings.EditorNavigationExcludeMembersFromOtherFiles;
 
         public async System.Threading.Tasks.Task RefreshDropDownAsync(bool needsUI)
         {

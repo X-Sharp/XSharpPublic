@@ -112,7 +112,7 @@ namespace XSharp.LanguageService
         }
 
         IntellisenseOptionsPage _intellisensePage;
-        internal IntellisenseOptionsPage GetIntellisenseOptionsPage()
+        internal IntellisenseOptionsPage GetIntellisenseSettings()
         {
             if (_intellisensePage == null)
             {
@@ -160,7 +160,7 @@ namespace XSharp.LanguageService
                 XSettings.EditorNavigationSorted = _intellisensePage.SortNavigationBars;
                 XSettings.EditorNavigationIncludeFields = _intellisensePage.IncludeFieldsInNavigationBars;
                 XSettings.EditorNavigationMembersOfCurrentTypeOnly = _intellisensePage.ShowMembersOfCurrentTypeOnly;
-                XSettings.EditorNavigationIncludedMembersFromOtherFiles = _intellisensePage.IncludeMembersFromOtherFiles;
+                XSettings.EditorNavigationExcludeMembersFromOtherFiles = _intellisensePage.ExcludeMembersFromOtherFiles;
                 var languagePreferences = new LANGPREFERENCES3[1];
                 languagePreferences[0].guidLang = GuidStrings.guidLanguageService;
                 int result = VSConstants.S_FALSE;
@@ -233,7 +233,7 @@ namespace XSharp.LanguageService
 
                 int hr = _oleComponentManager.FRegisterComponent(this, crinfo, out m_componentID);
             }
-
+            GetIntellisenseSettings();
         }
 
         protected override void Dispose(bool disposing)
@@ -296,7 +296,7 @@ namespace XSharp.LanguageService
                 // when modal window closes
                 if (!lValue)
                 {
-                    GetIntellisenseOptionsPage();
+                    GetIntellisenseSettings();
                 }
             }
             return VSConstants.S_OK;

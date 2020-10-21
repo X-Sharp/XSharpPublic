@@ -28,8 +28,6 @@ namespace XSharp.LanguageService
         private readonly IComponentModel _componentModel;
         private readonly IVsEditorAdaptersFactoryService _editorAdaptersFactoryService;
         private LanguagePreferences m_preferences;
-        private OptionsPages.IntellisenseOptionsPage _optionsPage;
-        //private XSharpScanner m_scanner;
 
         public XSharpLegacyLanguageService(IServiceContainer serviceContainer) : base()
         {
@@ -38,7 +36,6 @@ namespace XSharp.LanguageService
             _componentModel = XSharpLanguageService.GetComponentModel();
             _editorAdaptersFactoryService = _componentModel.GetService<IVsEditorAdaptersFactoryService>();
             base.SetSite(serviceContainer);
-            _optionsPage = XSharpLanguageService.Instance.GetIntellisenseOptionsPage();
 
         }
 

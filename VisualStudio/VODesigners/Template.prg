@@ -291,6 +291,7 @@ STATIC CLASS VOWindowEditorTemplate
 								cCaption := cRight:Substring(0 , nAt)
 								cEnumValues := cRight:Substring(nAt + 1)
 								IF cLeft:IndexOf("WINDOWSTYLE") == 0
+									oControl:cRawStyles := cEnumValues
 									oProp := VODesignProperty{cCaption , cType , cEnumValues , VOStyle.Style}
 									oControl:aProperties:Add(oProp)
 								ELSE
@@ -543,6 +544,7 @@ CLASS VOControlTemplate
 	EXPORT cInitMethod AS STRING
 	EXPORT lCreateResource AS LOGIC
 	EXPORT lForceCommandControl AS LOGIC
+	EXPORT cRawStyles AS STRING
 	CONSTRUCTOR()
 		SUPER()
 		SELF:cStartText := ""
@@ -553,6 +555,7 @@ CLASS VOControlTemplate
 		SELF:cTitle := ""
 		SELF:cWinClass := ""
 		SELF:cInitMethod := ""
+		SELF:cRawStyles := ""
 		SELF:aProperties := ArrayList{}
 		SELF:aPages := List<STRING>{}
       SELF:aExStyles := List<STRING>{}

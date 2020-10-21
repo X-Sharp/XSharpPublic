@@ -3520,7 +3520,9 @@ namespace XSharp.LanguageService
         {
             get
             {
-                return foundElement.IsArray;
+                if (foundElement != null)
+                    return foundElement.IsArray;
+                return false;
             }
         }
 
@@ -3528,9 +3530,12 @@ namespace XSharp.LanguageService
         {
             get
             {
-                var type = foundElement.TypeName;
-                if ( type!= null)
-                    return type.EndsWith(">");
+                if (foundElement != null)
+                {
+                    var type = foundElement.TypeName;
+                    if (type != null)
+                        return type.EndsWith(">");
+                }
                 return false;
             }
         }

@@ -211,20 +211,27 @@ namespace XSharp.Project
         /// </summary>
         protected override async System.Threading.Tasks.Task InitializeAsync(CancellationToken cancellationToken, IProgress<ServiceProgressData> progress)
         {
-            // Suspend walking until Solution is opened.
+            XSettings.DisplayOutputMessage = XSharpOutputPane.DisplayOutputMessage;
+            XSettings.DisplayException = XSharpOutputPane.DisplayException;
+            XSettings.ShowMessageBox = ShowMessageBox;
+
             XSharpProjectPackage.instance = this;
             base.SolutionListeners.Add(new ModelScannerEvents(this));
             await base.InitializeAsync(cancellationToken, progress);
             await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+            // The project selector helps to choose between MPF and CPS projects
             _projectSelector = new XSharpProjectSelector();
             await _projectSelector.InitAsync(this);
-             this.RegisterProjectFactory(new XSharpProjectFactory(this));
+
+
             this.settings = new XPackageSettings(this);
+
+            this.RegisterProjectFactory(new XSharpProjectFactory(this));
             // Indicate how to open the different source files : SourceCode or Designer ??
             this.RegisterEditorFactory(new XSharpEditorFactory(this));
             this.RegisterProjectFactory(new XSharpWPFProjectFactory(this));
 
-            _langservice = new XSharpLanguageService();
+            
 
             // editors for the binaries
             base.RegisterEditorFactory(new VOFormEditorFactory(this));
@@ -237,14 +244,9 @@ namespace XSharp.Project
             _errorList = await GetServiceAsync(typeof(SVsErrorList)) as IErrorList;
             _taskList = await GetServiceAsync(typeof(SVsTaskList)) as ITaskList;
 
-            XSettings.DisplayOutputMessage = XSharpOutputPane.DisplayOutputMessage;
-            XSettings.DisplayException = XSharpOutputPane.DisplayException;
-            XSettings.ShowMessageBox = ShowMessageBox;
+            _langservice = await GetServiceAsync(typeof(XSharpLanguageService)) as XSharpLanguageService;
+
         }
-       
-
-
-
 
         public void SetCommentTokens()
         {

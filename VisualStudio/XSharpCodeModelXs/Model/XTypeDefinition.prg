@@ -86,6 +86,7 @@ BEGIN NAMESPACE XSharpModel
          
       PROPERTY Interfaces  AS IList<STRING>              GET SELF:_signature:Interfaces:ToArray()
       PROPERTY InterfaceList AS STRING                   GET SELF:_signature:InterfaceList
+      PROPERTY IsGlobal    AS LOGIC                      GET SELF:Name == XLiterals.GlobalName
       PROPERTY TypeParameters as IList<STRING>           GET SELF:_signature:TypeParameters:ToArray()
       PROPERTY TypeParametersList AS STRING              GET SELF:_signature:TypeParametersList
       PROPERTY TypeParameterConstraints as IList<STRING> GET SELF:_signature:TypeParameterContraints:ToArray()

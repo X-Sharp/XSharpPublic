@@ -163,10 +163,10 @@ namespace XSharp.LanguageService
             return VSConstants.S_OK;
         }
 
-        public override TypeAndMemberDropdownBars CreateDropDownHelper(IVsTextView forView)
-        {
-            return new XSharpTypeAndMemberDropDownBars( this, forView );
-        }
+        //public override TypeAndMemberDropdownBars CreateDropDownHelper(IVsTextView forView)
+        //{
+        //    return new XSharpTypeAndMemberDropDownBars( this, forView );
+        //}
        #region IVsLanguageDebugInfo Members
 
         int IVsLanguageDebugInfo.GetLanguageID(IVsTextBuffer pBuffer, int iLine, int iCol, out Guid pguidLanguageID)

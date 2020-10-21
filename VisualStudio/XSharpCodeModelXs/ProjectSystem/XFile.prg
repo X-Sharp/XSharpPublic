@@ -183,6 +183,9 @@ BEGIN NAMESPACE XSharpModel
                     SELF:_entityList:AddRange(aEntities)
                 END LOCK
                 //WriteOutputMessage(String.Format("<<-- SetTypes() {0} (Types: {1}, Entities: {2})", SELF:SourcePath, _typeList:Count, SELF:_entityList:Count))
+                IF ContentsChanged != NULL
+                    ContentsChanged()
+                ENDIF
             ENDIF
       
          
@@ -350,6 +353,8 @@ BEGIN NAMESPACE XSharpModel
         END PROPERTY
 
         PROPERTY XFileType AS XFileType GET SELF:_type
+
+        PUBLIC EVENT ContentsChanged AS Action
       #endregion
  
     END CLASS

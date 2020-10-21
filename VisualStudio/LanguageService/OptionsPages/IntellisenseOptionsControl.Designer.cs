@@ -42,6 +42,7 @@
             this.chkDotAsUniversalSelector = new System.Windows.Forms.CheckBox();
             this.chkAutoPairs = new System.Windows.Forms.CheckBox();
             this.chkCompletionListtabs = new System.Windows.Forms.CheckBox();
+            this.chkIncludeMembersFromOtherfiles = new System.Windows.Forms.CheckBox();
             this.panel1 = new System.Windows.Forms.Panel();
             this.btnShowMeTheMagic = new System.Windows.Forms.Button();
             this.grpNavigationBars = new System.Windows.Forms.GroupBox();
@@ -63,29 +64,29 @@
             this.grpCase.SuspendLayout();
             this.grpKeywordCase.SuspendLayout();
             this.SuspendLayout();
-            //
+            // 
             // label2
-            //
+            // 
             label2.AutoSize = true;
             label2.Location = new System.Drawing.Point(10, 120);
             label2.Name = "label2";
             label2.Size = new System.Drawing.Size(192, 13);
             label2.TabIndex = 9;
             label2.Text = "MultiLine Statement Indentation factor :";
-            //
+            // 
             // label1
-            //
+            // 
             label1.AutoSize = true;
             label1.Location = new System.Drawing.Point(10, 99);
             label1.Name = "label1";
             label1.Size = new System.Drawing.Size(270, 13);
             label1.TabIndex = 6;
             label1.Text = "Commit completion list by typing the following characters";
-            //
+            // 
             // chkShowMembersOfCurrentType
-            //
+            // 
             this.chkShowMembersOfCurrentType.AutoSize = true;
-            this.chkShowMembersOfCurrentType.Location = new System.Drawing.Point(13, 58);
+            this.chkShowMembersOfCurrentType.Location = new System.Drawing.Point(13, 57);
             this.chkShowMembersOfCurrentType.Name = "chkShowMembersOfCurrentType";
             this.chkShowMembersOfCurrentType.Size = new System.Drawing.Size(335, 17);
             this.chkShowMembersOfCurrentType.TabIndex = 2;
@@ -95,10 +96,9 @@
         "ith the typenames.");
             this.chkShowMembersOfCurrentType.UseVisualStyleBackColor = true;
             this.chkShowMembersOfCurrentType.CheckedChanged += new System.EventHandler(this.chkShowMembersOfCurrentType_CheckedChanged);
-
-            //
+            // 
             // chkSortNavBar
-            //
+            // 
             this.chkSortNavBar.AutoSize = true;
             this.chkSortNavBar.Location = new System.Drawing.Point(13, 38);
             this.chkSortNavBar.Name = "chkSortNavBar";
@@ -110,10 +110,9 @@
         " the source code.");
             this.chkSortNavBar.UseVisualStyleBackColor = true;
             this.chkSortNavBar.CheckedChanged += new System.EventHandler(this.chkSortNavBar_CheckedChanged);
-
-            //
+            // 
             // chkIncludeFields
-            //
+            // 
             this.chkIncludeFields.AutoSize = true;
             this.chkIncludeFields.Location = new System.Drawing.Point(13, 17);
             this.chkIncludeFields.Name = "chkIncludeFields";
@@ -124,10 +123,9 @@
         "bar will also include fields and defines");
             this.chkIncludeFields.UseVisualStyleBackColor = true;
             this.chkIncludeFields.CheckedChanged += new System.EventHandler(this.chkIncludeFields_CheckedChanged);
-
-            //
+            // 
             // chkAlignMethod
-            //
+            // 
             this.chkAlignMethod.AutoSize = true;
             this.chkAlignMethod.Location = new System.Drawing.Point(13, 100);
             this.chkAlignMethod.Name = "chkAlignMethod";
@@ -139,10 +137,9 @@
         "ne level more.");
             this.chkAlignMethod.UseVisualStyleBackColor = true;
             this.chkAlignMethod.CheckedChanged += new System.EventHandler(this.chkAlignMethod_CheckedChanged);
-
-            //
+            // 
             // chkAlignDoCase
-            //
+            // 
             this.chkAlignDoCase.AutoSize = true;
             this.chkAlignDoCase.Location = new System.Drawing.Point(13, 78);
             this.chkAlignDoCase.Name = "chkAlignDoCase";
@@ -153,10 +150,9 @@
         " a DO CASE statement or the SWITCH keyword from a SWITCH statement");
             this.chkAlignDoCase.UseVisualStyleBackColor = true;
             this.chkAlignDoCase.CheckedChanged += new System.EventHandler(this.chkAlignDoCase_CheckedChanged);
-
-            //
+            // 
             // chkKeywordsInAll
-            //
+            // 
             this.chkKeywordsInAll.AutoSize = true;
             this.chkKeywordsInAll.Location = new System.Drawing.Point(13, 39);
             this.chkKeywordsInAll.Name = "chkKeywordsInAll";
@@ -167,10 +163,9 @@
         " to the main tab");
             this.chkKeywordsInAll.UseVisualStyleBackColor = true;
             this.chkKeywordsInAll.CheckedChanged += new System.EventHandler(this.chkKeywordsInAll_CheckedChanged);
-
-            //
+            // 
             // chkShowAfterChar
-            //
+            // 
             this.chkShowAfterChar.AutoSize = true;
             this.chkShowAfterChar.Location = new System.Drawing.Point(13, 80);
             this.chkShowAfterChar.Name = "chkShowAfterChar";
@@ -182,10 +177,9 @@
         "ource code editor");
             this.chkShowAfterChar.UseVisualStyleBackColor = true;
             this.chkShowAfterChar.CheckedChanged += new System.EventHandler(this.chkShowAfterChar_CheckedChanged);
-
-            //
+            // 
             // chkDotAsUniversalSelector
-            //
+            // 
             this.chkDotAsUniversalSelector.AutoSize = true;
             this.chkDotAsUniversalSelector.Location = new System.Drawing.Point(13, 59);
             this.chkDotAsUniversalSelector.Name = "chkDotAsUniversalSelector";
@@ -197,69 +191,83 @@
         "members after a colon (:).");
             this.chkDotAsUniversalSelector.UseVisualStyleBackColor = true;
             this.chkDotAsUniversalSelector.CheckedChanged += new System.EventHandler(this.chkDotAsUniversalSelector_CheckedChanged);
-
-            //
+            // 
             // chkAutoPairs
-            //
+            // 
             this.chkAutoPairs.AutoSize = true;
             this.chkAutoPairs.Location = new System.Drawing.Point(13, 140);
             this.chkAutoPairs.Name = "chkAutoPairs";
             this.chkAutoPairs.Size = new System.Drawing.Size(316, 17);
             this.chkAutoPairs.TabIndex = 8;
             this.chkAutoPairs.Text = "Auto Insert right parenthesis/bracket/curly after selecting item";
-            this.toolTip1.SetToolTip(this.chkAutoPairs, "After selecting a function, method or type from the completionlist this will automatically inser a closing token");
+            this.toolTip1.SetToolTip(this.chkAutoPairs, "After selecting a function, method or type from the completionlist this will auto" +
+        "matically inser a closing token");
             this.chkAutoPairs.UseVisualStyleBackColor = true;
             this.chkAutoPairs.CheckedChanged += new System.EventHandler(this.chkAutoPairs_CheckedChanged);
-
-            //
+            // 
             // chkCompletionListtabs
-            //
+            // 
             this.chkCompletionListtabs.AutoSize = true;
             this.chkCompletionListtabs.Location = new System.Drawing.Point(13, 18);
             this.chkCompletionListtabs.Name = "chkCompletionListtabs";
             this.chkCompletionListtabs.Size = new System.Drawing.Size(334, 17);
             this.chkCompletionListtabs.TabIndex = 0;
             this.chkCompletionListtabs.Text = "Organize in tabs with different item types (properties, methods etc)";
-            this.toolTip1.SetToolTip(this.chkCompletionListtabs, "This organizes your comletionlists in tabs, to make it easier to find a method or property in long completionlists");
+            this.toolTip1.SetToolTip(this.chkCompletionListtabs, "This organizes your comletionlists in tabs, to make it easier to find a method or" +
+        " property in long completionlists");
             this.chkCompletionListtabs.UseVisualStyleBackColor = true;
             this.chkCompletionListtabs.CheckedChanged += new System.EventHandler(this.chkCompletionListtabs_CheckedChanged);
-
-            //
+            // 
+            // chkIncludeMembersFromOtherfiles
+            // 
+            this.chkIncludeMembersFromOtherfiles.AutoSize = true;
+            this.chkIncludeMembersFromOtherfiles.Location = new System.Drawing.Point(13, 76);
+            this.chkIncludeMembersFromOtherfiles.Name = "chkIncludeMembersFromOtherfiles";
+            this.chkIncludeMembersFromOtherfiles.Size = new System.Drawing.Size(267, 17);
+            this.chkIncludeMembersFromOtherfiles.TabIndex = 3;
+            this.chkIncludeMembersFromOtherfiles.Text = "Include members from other files (for partial classes)";
+            this.toolTip1.SetToolTip(this.chkIncludeMembersFromOtherfiles, "If you select this then the combox on the right hand side will only show members " +
+        "of the current selected type. Also the member names will no longer be prefixed w" +
+        "ith the typenames.");
+            this.chkIncludeMembersFromOtherfiles.UseVisualStyleBackColor = true;
+            this.chkIncludeMembersFromOtherfiles.CheckedChanged += new System.EventHandler(this.chkIncludeMembersFromOtherfiles_CheckedChanged);
+            // 
             // panel1
-            //
+            // 
             this.panel1.Controls.Add(this.btnShowMeTheMagic);
             this.panel1.Controls.Add(this.grpNavigationBars);
             this.panel1.Controls.Add(this.grpCompletionListTabs);
             this.panel1.Controls.Add(this.grpCase);
             this.panel1.Location = new System.Drawing.Point(0, 0);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(381, 430);
+            this.panel1.Size = new System.Drawing.Size(381, 463);
             this.panel1.TabIndex = 4;
-            //
+            // 
             // btnShowMeTheMagic
-            //
-            this.btnShowMeTheMagic.Location = new System.Drawing.Point(262, 401);
+            // 
+            this.btnShowMeTheMagic.Location = new System.Drawing.Point(262, 429);
             this.btnShowMeTheMagic.Name = "btnShowMeTheMagic";
             this.btnShowMeTheMagic.Size = new System.Drawing.Size(114, 23);
             this.btnShowMeTheMagic.TabIndex = 7;
             this.btnShowMeTheMagic.Text = "Open Sesame";
             this.btnShowMeTheMagic.UseVisualStyleBackColor = true;
             this.btnShowMeTheMagic.Click += new System.EventHandler(this.btnShowMeTheMagic_Click);
-            //
+            // 
             // grpNavigationBars
-            //
+            // 
+            this.grpNavigationBars.Controls.Add(this.chkIncludeMembersFromOtherfiles);
             this.grpNavigationBars.Controls.Add(this.chkShowMembersOfCurrentType);
             this.grpNavigationBars.Controls.Add(this.chkSortNavBar);
             this.grpNavigationBars.Controls.Add(this.chkIncludeFields);
             this.grpNavigationBars.Location = new System.Drawing.Point(3, 314);
             this.grpNavigationBars.Name = "grpNavigationBars";
-            this.grpNavigationBars.Size = new System.Drawing.Size(373, 81);
+            this.grpNavigationBars.Size = new System.Drawing.Size(373, 109);
             this.grpNavigationBars.TabIndex = 6;
             this.grpNavigationBars.TabStop = false;
             this.grpNavigationBars.Text = "Navigation Bars";
-            //
+            // 
             // grpCompletionListTabs
-            //
+            // 
             this.grpCompletionListTabs.Controls.Add(this.chkAutoPairs);
             this.grpCompletionListTabs.Controls.Add(this.commitChars);
             this.grpCompletionListTabs.Controls.Add(label1);
@@ -273,19 +281,18 @@
             this.grpCompletionListTabs.TabIndex = 4;
             this.grpCompletionListTabs.TabStop = false;
             this.grpCompletionListTabs.Text = "Completion Lists";
-            //
+            // 
             // commitChars
-            //
+            // 
             this.commitChars.Location = new System.Drawing.Point(14, 115);
             this.commitChars.Name = "commitChars";
             this.commitChars.Size = new System.Drawing.Size(286, 20);
             this.commitChars.TabIndex = 7;
             this.commitChars.Text = "{}[]().,:;+-*/%&|^!~=<>?@#\'\"\\";
             this.commitChars.TextChanged += new System.EventHandler(this.commitChars_TextChanged);
-
-            //
+            // 
             // grpCase
-            //
+            // 
             this.grpCase.Controls.Add(this.multiFactor);
             this.grpCase.Controls.Add(label2);
             this.grpCase.Controls.Add(this.chkAlignMethod);
@@ -298,9 +305,9 @@
             this.grpCase.TabIndex = 5;
             this.grpCase.TabStop = false;
             this.grpCase.Text = "Document Formatting";
-            //
+            // 
             // multiFactor
-            //
+            // 
             this.multiFactor.Location = new System.Drawing.Point(220, 118);
             this.multiFactor.Margin = new System.Windows.Forms.Padding(2);
             this.multiFactor.Name = "multiFactor";
@@ -308,10 +315,9 @@
             this.multiFactor.TabIndex = 10;
             this.multiFactor.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             this.multiFactor.TextChanged += new System.EventHandler(this.multiFactor_TextChanged);
-
-            //
+            // 
             // grpKeywordCase
-            //
+            // 
             this.grpKeywordCase.Controls.Add(this.rbTitle);
             this.grpKeywordCase.Controls.Add(this.rbNone);
             this.grpKeywordCase.Controls.Add(this.rbUpper);
@@ -322,9 +328,9 @@
             this.grpKeywordCase.TabIndex = 1;
             this.grpKeywordCase.TabStop = false;
             this.grpKeywordCase.Text = "&Keyword Case Synchronization";
-            //
+            // 
             // rbTitle
-            //
+            // 
             this.rbTitle.AutoSize = true;
             this.rbTitle.Location = new System.Drawing.Point(183, 15);
             this.rbTitle.Name = "rbTitle";
@@ -334,10 +340,9 @@
             this.rbTitle.Text = "&Title";
             this.rbTitle.UseVisualStyleBackColor = true;
             this.rbTitle.CheckedChanged += new System.EventHandler(this.kwCaseChanged);
-
-            //
+            // 
             // rbNone
-            //
+            // 
             this.rbNone.AutoSize = true;
             this.rbNone.Location = new System.Drawing.Point(6, 15);
             this.rbNone.Name = "rbNone";
@@ -347,9 +352,9 @@
             this.rbNone.Text = "&None";
             this.rbNone.UseVisualStyleBackColor = true;
             this.rbNone.CheckedChanged += new System.EventHandler(this.kwCaseChanged);
-            //
+            // 
             // rbUpper
-            //
+            // 
             this.rbUpper.AutoSize = true;
             this.rbUpper.Location = new System.Drawing.Point(59, 15);
             this.rbUpper.Name = "rbUpper";
@@ -359,10 +364,9 @@
             this.rbUpper.Text = "&UPPER";
             this.rbUpper.UseVisualStyleBackColor = true;
             this.rbUpper.CheckedChanged += new System.EventHandler(this.kwCaseChanged);
-
-            //
+            // 
             // rbLower
-            //
+            // 
             this.rbLower.AutoSize = true;
             this.rbLower.Location = new System.Drawing.Point(127, 15);
             this.rbLower.Name = "rbLower";
@@ -372,10 +376,9 @@
             this.rbLower.Text = "&lower";
             this.rbLower.UseVisualStyleBackColor = true;
             this.rbLower.CheckedChanged += new System.EventHandler(this.kwCaseChanged);
-
-            //
+            // 
             // chkIdentifierCase
-            //
+            // 
             this.chkIdentifierCase.AutoSize = true;
             this.chkIdentifierCase.Enabled = false;
             this.chkIdentifierCase.Location = new System.Drawing.Point(13, 57);
@@ -385,16 +388,15 @@
             this.chkIdentifierCase.Text = "&Identifier Case Synchronization";
             this.chkIdentifierCase.UseVisualStyleBackColor = true;
             this.chkIdentifierCase.CheckedChanged += new System.EventHandler(this.chkIdentifierCase_CheckedChanged);
-
-            //
+            // 
             // IntellisenseOptionsControl
-            //
+            // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoScroll = true;
             this.Controls.Add(this.panel1);
             this.Name = "IntellisenseOptionsControl";
-            this.Size = new System.Drawing.Size(386, 436);
+            this.Size = new System.Drawing.Size(386, 466);
             this.panel1.ResumeLayout(false);
             this.grpNavigationBars.ResumeLayout(false);
             this.grpNavigationBars.PerformLayout();
@@ -433,5 +435,6 @@
         private System.Windows.Forms.RadioButton rbUpper;
         private System.Windows.Forms.RadioButton rbLower;
         private System.Windows.Forms.CheckBox chkIdentifierCase;
+        private System.Windows.Forms.CheckBox chkIncludeMembersFromOtherfiles;
     }
 }

@@ -222,11 +222,11 @@ CLASS VOWEDControl INHERIT Panel
 	    ENDIF
     RETURN
 
-    STATIC METHOD CreateToolWindow(cCaption AS STRING , oPos AS Point , oSize AS Size , oPanel AS Panel,cName as STRING) AS VOID
+    STATIC METHOD CreateToolWindow(cCaption AS STRING , oPos AS Point , oSize AS Size , oPanel AS Panel,cName AS STRING) AS VOID
 	    LOCAL oForm AS Form
 	    oForm := Form{}
        oForm:Tag := cName
-       RestoreLocation(cName, ref oSize, ref oPos)
+       RestoreLocation(cName, REF oSize, REF oPos)
 	    oForm:Text := cCaption
     	 oForm:ShowInTaskbar := FALSE
 	    oForm:StartPosition := FormStartPosition.Manual
@@ -244,71 +244,71 @@ CLASS VOWEDControl INHERIT Panel
 	    ((Form)o):Hide()
     RETURN
     STATIC METHOD ToolWindowmoving(o AS OBJECT , e AS EventArgs) AS VOID
-         LOCAL form := (Form) o as Form
-         var size := form:Size
-         var pos  := form:Location
-         SaveLocation((string) form:Tag, size, pos)
+         LOCAL form := (Form) o AS Form
+         VAR size := form:Size
+         VAR pos  := form:Location
+         SaveLocation((STRING) form:Tag, size, pos)
     RETURN
     STATIC METHOD ToolWindowSizeChanged(o AS OBJECT , e AS EventArgs) AS VOID
-         var form := (Form) o
-         var size := form:Size
-         var pos  := form:Location
-         SaveLocation((string) form:Tag, size, pos)
+         VAR form := (Form) o
+         VAR size := form:Size
+         VAR pos  := form:Location
+         SaveLocation((STRING) form:Tag, size, pos)
     RETURN
-    STATIC METHOD SaveLocation(name as STRING, size as System.Drawing.Size, point as System.Drawing.Point) as void
-         var keyName := "VOED_"+name
-         var key     := Microsoft.Win32.Registry.CurrentUser
-         var subkey  := key:OpenSubKey(Constants.RegistryKey, true)
-         if (subkey == null)
+    STATIC METHOD SaveLocation(name AS STRING, size AS System.Drawing.Size, point AS System.Drawing.Point) AS VOID
+/*         VAR keyName := "VOED_"+name
+         VAR key     := Microsoft.Win32.Registry.CurrentUser
+         VAR subkey  := key:OpenSubKey(Constants.RegistryKey, TRUE)
+         IF (subkey == NULL)
             subkey := key:CreateSubKey(Constants.RegistryKey)
-         endif
+         ENDIF
          subkey:SetValue(keyName+"_W", size:Width)
          subkey:SetValue(keyName+"_H", size:Height)
          subkey:SetValue(keyName+"_X", point:X)
          subkey:SetValue(keyName+"_Y", point:Y)
-         subkey:Close()
+         subkey:Close()*/
 
-    STATIC METHOD RestoreLocation(name as STRING, size REF System.Drawing.Size, point REF System.Drawing.Point) as void
-         LOCAL key     := Microsoft.Win32.Registry.CurrentUser as Microsoft.Win32.RegistryKey
-         LOCAL subkey  := key:OpenSubKey(Constants.RegistryKey, true) as Microsoft.Win32.RegistryKey
-         var keyName := "VOED_"+name
-         if (subkey == null)
+    STATIC METHOD RestoreLocation(name AS STRING, size REF System.Drawing.Size, point REF System.Drawing.Point) AS VOID
+/*         LOCAL key     := Microsoft.Win32.Registry.CurrentUser AS Microsoft.Win32.RegistryKey
+         LOCAL subkey  := key:OpenSubKey(Constants.RegistryKey, TRUE) AS Microsoft.Win32.RegistryKey
+         VAR keyName := "VOED_"+name
+         IF (subkey == NULL)
             subkey := key:CreateSubKey(Constants.RegistryKey)
-         endif
-         var w := subkey:GetValue(keyName+"_W")
-         var h := subkey:GetValue(keyName+"_H")
-         var x := subkey:GetValue(keyName+"_X")
-         var y := subkey:GetValue(keyName+"_Y")
-         if w == null .or. h == null .or. x == null .or. y == null
+         ENDIF
+         VAR w := subkey:GetValue(keyName+"_W")
+         VAR h := subkey:GetValue(keyName+"_H")
+         VAR x := subkey:GetValue(keyName+"_X")
+         VAR y := subkey:GetValue(keyName+"_Y")
+         IF w == NULL .or. h == NULL .or. x == NULL .or. y == NULL
             SaveLocation(name, size, point)
             RETURN
-         endif
+         ENDIF
          TRY
             // ensure visible
-            var iX := (int) x
-            var iY := (int) y
-            var iW := (int) w
-            var iH := (int) h
-            var screens := Screen.AllScreens
-            var ok      := false
-            foreach oScreen as Screen in screens
-               if iX >= oScreen:Bounds:Left .and. iX+iW <= oScreen:Bounds:Right .and. ;
+            VAR iX := (INT) x
+            VAR iY := (INT) y
+            VAR iW := (INT) w
+            VAR iH := (INT) h
+            VAR screens := Screen.AllScreens
+            VAR ok      := FALSE
+            FOREACH oScreen AS Screen IN screens
+               IF iX >= oScreen:Bounds:Left .and. iX+iW <= oScreen:Bounds:Right .and. ;
                   iY >= oScreen:Bounds:Top  .and. iY+iH <= oScreen:Bounds:Bottom
-                  ok := true
-               endif
-            next
-            if ok
+                  ok := TRUE
+               ENDIF
+            NEXT
+            IF ok
                size  := System.Drawing.Size{ iW, iH}
                point := System.Drawing.Point{ iX, iY}
-            endif            
+            ENDIF            
             
-         CATCH e as Exception
+         CATCH e AS Exception
             subkey:DeleteValue(keyName+"_W")
             subkey:DeleteValue(keyName+"_H")
             subkey:DeleteValue(keyName+"_X")
             subkey:DeleteValue(keyName+"_X")
          END TRY
-         subkey:Close()
+         subkey:Close()*/
          RETURN
 END CLASS
 

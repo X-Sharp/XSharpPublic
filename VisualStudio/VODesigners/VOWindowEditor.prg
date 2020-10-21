@@ -3613,6 +3613,7 @@ CLASS DesignWindowItem INHERIT DesignItem
 	INTERNAL oColumn AS DesignDataColumn
 	EXPORT lBrowseView AS LOGIC
 	PROTECT oBIProp,oBSProp,oDelProp AS DesignProperty
+	EXPORT lForceCommandControl AS LOGIC
 	
 	CONSTRUCTOR(_oDesigner AS VOWindowEditor , oTemplate AS VOControlTemplate)
 
@@ -3631,6 +3632,7 @@ CLASS DesignWindowItem INHERIT DesignItem
 		SELF:cFullClass := oTemplate:cFullClass
 		SELF:cInitMethod := oTemplate:cInitMethod
 		SELF:lCreateResource := oTemplate:lCreateResource
+		SELF:lForceCommandControl := oTemplate:lForceCommandControl
 		SELF:lForm := oTemplate:lForm
 		
 		SELF:cPrefix := "oDC"
@@ -3701,6 +3703,10 @@ CLASS DesignWindowItem INHERIT DesignItem
 			SELF:oControl := DesignEmpty{SELF}
 		END CASE
 		
+		IF SELF:lForceCommandControl
+			SELF:cPrefix := "oCC"
+		END IF
+
 		SELF:lAccessAssign := SELF:cFullClass:IndexOf("CONTROL:TEXTCONTROL:BUTTON:CHECKBOX") == 0 .OR. ;
 						SELF:cFullClass:IndexOf("CONTROL:TEXTCONTROL:EDIT:SINGLELINEEDIT") == 0 .OR. ;
 						SELF:cFullClass:IndexOf("CONTROL:TEXTCONTROL:EDIT:MULTILINEEDIT") == 0 .OR. ;

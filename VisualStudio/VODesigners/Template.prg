@@ -240,6 +240,10 @@ STATIC CLASS VOWindowEditorTemplate
 							END IF
 						CASE cLeft == "OPTCLASSNAME"
 							oControl:cWinClass := cRight
+						CASE cLeft == "TYPE"
+							IF cRight:ToUpper() == "COMMANDCONTROL"
+								oControl:lForceCommandControl := TRUE
+							ENDIF
 						CASE cLeft == "DIALOGTEMPLATE"
 							oControl:lCreateResource := cRight == "1"
 						CASE cLeft == "INITMETHOD"
@@ -538,6 +542,7 @@ CLASS VOControlTemplate
 	EXPORT aExStyles AS List<STRING>
 	EXPORT cInitMethod AS STRING
 	EXPORT lCreateResource AS LOGIC
+	EXPORT lForceCommandControl AS LOGIC
 	CONSTRUCTOR()
 		SUPER()
 		SELF:cStartText := ""

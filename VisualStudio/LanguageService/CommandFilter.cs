@@ -202,7 +202,7 @@ namespace XSharp.LanguageService
         {
             if (XSettings.DebuggerIsRunning)
             {
-                XSharpLanguageService.ShowMessageBox("Cannot edit source code while debugging");
+                XSettings.ShowMessageBox("Cannot edit source code while debugging");
                 e.Cancel();
             }
         }

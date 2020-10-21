@@ -38,7 +38,8 @@ namespace XSharp.LanguageService
         private bool _lastCurrentTypeOnly;
         private bool _lastExcludeOtherFiles;
         private bool _lastSorted ;
-
+        private List<string> _relatedFiles;
+        private DateTime _lastFileChanged = DateTime.MinValue;
         private IVsCodeWindow _codeWindow;
 
         static XSharpDropDownClient()
@@ -65,6 +66,8 @@ namespace XSharp.LanguageService
             _members = new List<XDropDownMember>();
             _saveSettings();
             _lastLine = 0;
+            _relatedFiles = new List<string>();
+            _lastFileChanged = DateTime.MinValue;
             RefreshDropDownAsync(false);
         }
 
@@ -117,6 +120,26 @@ namespace XSharp.LanguageService
             }
             return -1;
         }
+        private bool relatedFilesChanged
+        {
+            get 
+            {
+                // Check if we have other files with source that is shown in this editor
+                // and check their timestamps.
+                if (_relatedFiles.Count > 1)
+                {
+                    foreach (var file in _relatedFiles)
+                    {
+                        var dt = System.IO.File.GetLastWriteTime(file);
+                        if (dt > _lastFileChanged)
+                        {
+                            return true;
+                        }
+                    }
+                }
+                return false;
+            }
+        }
 
         private int findSelectedType(XTypeDefinition type)
         {
@@ -125,7 +148,9 @@ namespace XSharp.LanguageService
                 for (int i = 0; i < _types.Count; i++)
                 {
                     if (String.Compare(_types[i].Entity.FullName, type.FullName, true) == 0)
+                    {
                         return i;
+                    }
                 }
             }
             return -1;
@@ -157,7 +182,8 @@ namespace XSharp.LanguageService
             {
                 newType = false;
             }
-            if (_file.ContentHashCode == this._lastHashCode && !SettingsChanged)
+            var nothingChanged = _file.ContentHashCode == this._lastHashCode && !SettingsChanged && !relatedFilesChanged;
+            if (nothingChanged)
             {
                 if (newType && XSettings.EditorNavigationMembersOfCurrentTypeOnly)
                 {
@@ -168,22 +194,18 @@ namespace XSharp.LanguageService
                     _saveSettings();
                     return;
                 }
+                // when not on a new type or when the member combo is already complete then we
+                // can select the entry in the existing members combobox
+                _selectedMemberIndex = findSelectedMember(selectedElement);
+                _selectedTypeIndex = findSelectedType(parentType);
+                _lastSelected = selectedElement;
+                _lastType = parentType;
             }
             else
             {
                 reloadCombos(newLine);
             }
-            _selectedMemberIndex = findSelectedMember(selectedElement);
-            _selectedTypeIndex = findSelectedType(parentType);
-            // find the parentType in the types combo
-            // normally we should always find it. But if it fails then we simply build the list below.
-            if (_selectedMemberIndex != -1 && _selectedTypeIndex != -1)
-            {
-                // remember for later. No need to remember the type because it has not changed
-                _lastSelected = selectedElement;
-                _lastType = parentType;
-                return;
-            }
+            return;
         }
 
         private IList<XEntityDefinition> GetTypeMembers(XTypeDefinition type)
@@ -209,11 +231,27 @@ namespace XSharp.LanguageService
             return members;
         }
 
+        private void AddSourceFile(string fileName)
+        {
+            var changed = System.IO.File.GetLastWriteTime(fileName);
+            fileName = fileName.ToLower();
+            if (!_relatedFiles.Contains(fileName))
+            {
+                _relatedFiles.Add(fileName);
+                if (changed > this._lastFileChanged)
+                { 
+                    _lastFileChanged = changed;
+                }
+            }
+            
+        }
+
         private IList<XEntityDefinition> GetAllMembers()
         {
             var members = new List<XEntityDefinition>();
             var includeFields = XSettings.EditorNavigationIncludeFields;
             members.AddRange(_file.EntityList.Where(member => includeFields || !member.Kind.IsField()));
+            _lastFileChanged = DateTime.MinValue;
             foreach (var ent in _file.EntityList)
             {
                 if (ent is XTypeDefinition)
@@ -221,6 +259,7 @@ namespace XSharp.LanguageService
                     var xType = ent as XTypeDefinition;
                     if (xType.IsPartial && !XSettings.EditorNavigationExcludeMembersFromOtherFiles)
                     {
+
                         // load methods from other files
                         var usings = new List<string>();
                         usings.Add(xType.Namespace);
@@ -297,6 +336,8 @@ namespace XSharp.LanguageService
             DROPDOWNFONTATTR ft;
             bool hasPartial = !currentType.IsGlobal && currentType.IsPartial;
             _members.Clear();
+            _relatedFiles.Clear();
+            AddSourceFile(_file.SourcePath);
             var members = new List<XEntityDefinition>();
             if (currentTypeOnly)
             {
@@ -371,6 +412,7 @@ namespace XSharp.LanguageService
 
                     if (otherFile)
                     {
+                        AddSourceFile(member.File.SourcePath);
                         ft = DROPDOWNFONTATTR.FONTATTR_GRAY;
                         prototype += " (" + System.IO.Path.GetFileName(member.File.SourcePath) + ")";
                     }

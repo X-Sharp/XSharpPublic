@@ -42,7 +42,7 @@
             this.chkDotAsUniversalSelector = new System.Windows.Forms.CheckBox();
             this.chkAutoPairs = new System.Windows.Forms.CheckBox();
             this.chkCompletionListtabs = new System.Windows.Forms.CheckBox();
-            this.chkIncludeMembersFromOtherfiles = new System.Windows.Forms.CheckBox();
+            this.chkExcludeMembersFromOtherfiles = new System.Windows.Forms.CheckBox();
             this.panel1 = new System.Windows.Forms.Panel();
             this.btnShowMeTheMagic = new System.Windows.Forms.Button();
             this.grpNavigationBars = new System.Windows.Forms.GroupBox();
@@ -218,19 +218,18 @@
             this.chkCompletionListtabs.UseVisualStyleBackColor = true;
             this.chkCompletionListtabs.CheckedChanged += new System.EventHandler(this.chkCompletionListtabs_CheckedChanged);
             // 
-            // chkIncludeMembersFromOtherfiles
+            // chkExcludeMembersFromOtherfiles
             // 
-            this.chkIncludeMembersFromOtherfiles.AutoSize = true;
-            this.chkIncludeMembersFromOtherfiles.Location = new System.Drawing.Point(13, 76);
-            this.chkIncludeMembersFromOtherfiles.Name = "chkIncludeMembersFromOtherfiles";
-            this.chkIncludeMembersFromOtherfiles.Size = new System.Drawing.Size(267, 17);
-            this.chkIncludeMembersFromOtherfiles.TabIndex = 3;
-            this.chkIncludeMembersFromOtherfiles.Text = "Include members from other files (for partial classes)";
-            this.toolTip1.SetToolTip(this.chkIncludeMembersFromOtherfiles, "If you select this then the combox on the right hand side will only show members " +
-        "of the current selected type. Also the member names will no longer be prefixed w" +
-        "ith the typenames.");
-            this.chkIncludeMembersFromOtherfiles.UseVisualStyleBackColor = true;
-            this.chkIncludeMembersFromOtherfiles.CheckedChanged += new System.EventHandler(this.chkIncludeMembersFromOtherfiles_CheckedChanged);
+            this.chkExcludeMembersFromOtherfiles.AutoSize = true;
+            this.chkExcludeMembersFromOtherfiles.Location = new System.Drawing.Point(13, 76);
+            this.chkExcludeMembersFromOtherfiles.Name = "chkExcludeMembersFromOtherfiles";
+            this.chkExcludeMembersFromOtherfiles.Size = new System.Drawing.Size(270, 17);
+            this.chkExcludeMembersFromOtherfiles.TabIndex = 3;
+            this.chkExcludeMembersFromOtherfiles.Text = "Exclude members from other files (for partial classes)";
+            this.toolTip1.SetToolTip(this.chkExcludeMembersFromOtherfiles, "If you select this then the combox on the right hand side will only show members " +
+        "of the current selected type and only from the current file.");
+            this.chkExcludeMembersFromOtherfiles.UseVisualStyleBackColor = true;
+            this.chkExcludeMembersFromOtherfiles.CheckedChanged += new System.EventHandler(this.chkIncludeMembersFromOtherfiles_CheckedChanged);
             // 
             // panel1
             // 
@@ -255,7 +254,7 @@
             // 
             // grpNavigationBars
             // 
-            this.grpNavigationBars.Controls.Add(this.chkIncludeMembersFromOtherfiles);
+            this.grpNavigationBars.Controls.Add(this.chkExcludeMembersFromOtherfiles);
             this.grpNavigationBars.Controls.Add(this.chkShowMembersOfCurrentType);
             this.grpNavigationBars.Controls.Add(this.chkSortNavBar);
             this.grpNavigationBars.Controls.Add(this.chkIncludeFields);
@@ -435,6 +434,6 @@
         private System.Windows.Forms.RadioButton rbUpper;
         private System.Windows.Forms.RadioButton rbLower;
         private System.Windows.Forms.CheckBox chkIdentifierCase;
-        private System.Windows.Forms.CheckBox chkIncludeMembersFromOtherfiles;
+        private System.Windows.Forms.CheckBox chkExcludeMembersFromOtherfiles;
     }
 }

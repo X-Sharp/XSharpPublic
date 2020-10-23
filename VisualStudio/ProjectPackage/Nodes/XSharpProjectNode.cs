@@ -117,13 +117,13 @@ namespace XSharp.Project
 
         private void Filechangemanager_FileChangedOnDisk(object sender, FileChangedOnDiskEventArgs e)
         {
-            XSettings.DisplayOutputMessage("FileChangedOnDisk " + e.FileName);
+            //XSettings.DisplayOutputMessage("FileChangedOnDisk " + e.FileName);
             if (IsXamlFile(e.FileName) || IsCodeFile(e.FileName))
             {
                 XFile file = this.ProjectModel.FindXFile(e.FileName);
                 if (file != null)
                 {
-                    this.ProjectModel.WalkFile(file);
+                    this.ProjectModel.WalkFile(file,true);
                 }
             }
         }
@@ -976,11 +976,7 @@ namespace XSharp.Project
                             if (File.Exists(url))
                             {
                                 this.ProjectModel.AddFile(url);
-                                // make sure generated code is updated when changed
-                                if (xnode.IsDependent || IsXamlFile(url))
-                                {
-                                    filechangemanager.ObserveItem(url);
-                                }
+                            	filechangemanager.ObserveItem(url);
                             }
                         }
                     }

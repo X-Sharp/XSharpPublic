@@ -29,47 +29,16 @@ namespace Microsoft.VisualStudio.Project
         /// </summary>
         private struct ObservedItemInfo
         {
-            /// <summary>
-            /// Defines the id of the item that is to be reloaded.
-            /// </summary>
-            private uint itemID;
-
-            /// <summary>
-            /// Defines the file change cookie that is returned when listening on file changes on the nested project item.
-            /// </summary>
-            private uint fileChangeCookie;
 
             /// <summary>
             /// Defines the nested project item that is to be reloaded.
             /// </summary>
-            internal uint ItemID
-            {
-                get
-                {
-                    return this.itemID;
-                }
-
-                set
-                {
-                    this.itemID = value;
-                }
-            }
+            internal uint ItemID { get; set; }
 
             /// <summary>
             /// Defines the file change cookie that is returned when listenning on file changes on the nested project item.
             /// </summary>
-            internal uint FileChangeCookie
-            {
-                get
-                {
-                    return this.fileChangeCookie;
-                }
-
-                set
-                {
-                    this.fileChangeCookie = value;
-                }
-            }
+            internal uint FileChangeCookie { get; set; }
         }
         #endregion
 
@@ -88,7 +57,7 @@ namespace Microsoft.VisualStudio.Project
         /// Maps between the observed item identified by its filename (in canonicalized form) and the cookie used for subscribing
         /// to the events.
         /// </summary>
-        private Dictionary<string, ObservedItemInfo> observedItems = new Dictionary<string, ObservedItemInfo>();
+        private Dictionary<string, ObservedItemInfo> observedItems = new Dictionary<string, ObservedItemInfo>(StringComparer.OrdinalIgnoreCase);
 
         /// <summary>
         /// Has Disposed already been called?
@@ -167,15 +136,22 @@ namespace Microsoft.VisualStudio.Project
                     string fullFileName = Utilities.CanonicalizeFileName(filesChanged[i]);
                     if(this.observedItems.ContainsKey(fullFileName))
                     {
-                        ObservedItemInfo info = this.observedItems[fullFileName];
-                        this.FileChangedOnDisk(this, new FileChangedOnDiskEventArgs(fullFileName, info.ItemID, (_VSFILECHANGEFLAGS)flags[i]));
+                        var time = System.IO.File.GetLastWriteTime(fullFileName);
+                        if (fullFileName != lastFile || lastTime != time)
+                        {
+                            ObservedItemInfo info = this.observedItems[fullFileName];
+                            this.FileChangedOnDisk(this, new FileChangedOnDiskEventArgs(fullFileName, info.ItemID, (_VSFILECHANGEFLAGS)flags[i]));
+                            lastFile = fullFileName;
+                            lastTime = time;
+                        }
                     }
                 }
             }
 
             return VSConstants.S_OK;
-        }
-
+        } 
+        private string lastFile = "";
+        private DateTime lastTime = DateTime.MinValue;
         /// <summary>
         /// Notifies clients of changes made to a directory.
         /// </summary>

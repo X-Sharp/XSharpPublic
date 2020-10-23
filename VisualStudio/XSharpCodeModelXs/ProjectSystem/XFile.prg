@@ -14,9 +14,9 @@ USING LanguageService.CodeAnalysis.XSharp
 USING STATIC XSharpModel.XFileTypeHelpers
 BEGIN NAMESPACE XSharpModel
     DELEGATE FindMemberComparer (oElement AS XEntityDefinition, nValue AS LONG ) AS LONG
-
+    
     [DebuggerDisplay("{FullPath,nq}")];
-    CLASS XFile
+        CLASS XFile
         #region Fields
         PROPERTY Id           AS INT64          AUTO      GET INTERNAL SET 
         PRIVATE _globalType	AS XTypeDefinition
@@ -26,7 +26,7 @@ BEGIN NAMESPACE XSharpModel
         PRIVATE _entityList	AS List<XEntityDefinition>
         PRIVATE _usings			AS List<STRING>
         PRIVATE _usingStatics	AS List<STRING>
-        PRIVATE _project      AS XProject
+            PRIVATE _project      AS XProject
         #endregion
         // Methods
         CONSTRUCTOR(fullPath AS STRING, project AS XProject)
@@ -37,13 +37,13 @@ BEGIN NAMESPACE XSharpModel
             SELF:_type := GetFileType(fullPath)
             SELF:_parsed := ! SELF:HasCode
             SELF:_project := project
-
+            
         PROPERTY CommentTasks AS IList<XCommentTask> AUTO 
         PROPERTY EntityList   AS 	List<XEntityDefinition> GET _entityList
         PROPERTY Dialect AS XSharpDialect GET _project:Dialect
         PROPERTY Virtual AS LOGIC AUTO
-
-        METHOD AddDefaultUsings() AS void
+        
+        METHOD AddDefaultUsings() AS VOID
             IF SELF:_usings:IndexOf("XSharp") == -1
                 SELF:_usings:Insert(0, "XSharp")
             ENDIF
@@ -51,8 +51,8 @@ BEGIN NAMESPACE XSharpModel
                 SELF:_usings:Insert(0, "System")
             ENDIF
             RETURN
-
-
+            
+            
         METHOD FirstMember() AS IXMember
             IF (! SELF:HasCode)
                 RETURN NULL
@@ -64,11 +64,11 @@ BEGIN NAMESPACE XSharpModel
                 VAR element := SELF:TypeList:FirstOrDefault()
                 RETURN element:Value:Members:FirstOrDefault()
             END
-            ///
-            /// <Summary>Find member in file based on 0 based line number</Summary>
-            ///
-            ///
-
+        ///
+        /// <Summary>Find member in file based on 0 based line number</Summary>
+        ///
+        ///
+        
         METHOD FindMember(oDel AS FindMemberComparer, nValue AS LONG) AS XEntityDefinition
             LOCAL oResult := NULL_OBJECT AS XEntityDefinition
             LOCAL oLast AS XEntityDefinition
@@ -86,7 +86,7 @@ BEGIN NAMESPACE XSharpModel
                 VAR oElement := _entityList[current]
                 VAR result := oDel(oElement, nValue)
                 IF result == 0
-                    // found
+                        // found
                     RETURN oElement
                 ELSEIF result = 1 // element is after the search point
                     top := current
@@ -99,7 +99,7 @@ BEGIN NAMESPACE XSharpModel
                 oResult := oLast	// the last entity we saw before the selected line
             ENDIF
             RETURN oResult
-
+            
         PRIVATE METHOD CompareByLine(oElement AS XEntityDefinition, nLine AS LONG) AS LONG
             LOCAL nResult AS LONG
             LOCAL nStart, nEnd AS LONG
@@ -107,7 +107,7 @@ BEGIN NAMESPACE XSharpModel
             nEnd   := oElement:Range:EndLine
             IF oElement IS XTypeDefinition
                 VAR oType := oElement ASTYPE XTypeDefinition
-                IF oType:Members:Count > 0 .and. oType:Members[0] is XMemberDefinition VAR xmember
+                IF oType:Members:Count > 0 .AND. oType:Members[0] IS XMemberDefinition VAR xmember
                     nEnd := xmember:Range:StartLine-1
                 ENDIF
             ENDIF
@@ -118,15 +118,15 @@ BEGIN NAMESPACE XSharpModel
             ELSE
                 nResult := -1
             ENDIF
-            RETURN nResult
-
+        RETURN nResult
+        
         METHOD FindMemberAtRow(nLine AS LONG) AS XEntityDefinition
             RETURN SELF:FindMember(CompareByLine, nLine)
-
-            ///
-            /// <Summary>Find member in file based on 0 based position</Summary>
-            ///
-            ///
+            
+        ///
+        /// <Summary>Find member in file based on 0 based position</Summary>
+        ///
+        ///
         PRIVATE METHOD CompareByPosition(oElement AS XEntityDefinition, nPos AS LONG) AS LONG
             LOCAL nResult AS LONG
             LOCAL nStart, nEnd AS LONG
@@ -134,7 +134,7 @@ BEGIN NAMESPACE XSharpModel
             nEnd   := oElement:Interval:Stop
             IF oElement IS XTypeDefinition
                 VAR oType := oElement ASTYPE XTypeDefinition
-                IF oType:Members:Count > 0 .and. oType:Members[0] is XMemberDefinition VAR xmember
+                IF oType:Members:Count > 0 .AND. oType:Members[0] IS XMemberDefinition VAR xmember
                     nEnd := xmember:Interval:Start-2
                 ENDIF
             ENDIF
@@ -145,12 +145,12 @@ BEGIN NAMESPACE XSharpModel
             ELSE
                 nResult := -1
             ENDIF
-            RETURN nResult
-
+        RETURN nResult
+        
         METHOD FindMemberAtPosition(nPos AS LONG) AS XEntityDefinition
             RETURN SELF:FindMember(CompareByPosition, nPos)
-
-
+            
+            
         METHOD InitTypeList() AS VOID
             SELF:_usings		   := List<STRING>{}
             SELF:_usingStatics	:= List<STRING>{}
@@ -161,7 +161,7 @@ BEGIN NAMESPACE XSharpModel
                 SELF:_globalType	:= XTypeDefinition.CreateGlobalType(SELF)
                 SELF:_typeList:Add(SELF:_globalType:Name, SELF:_globalType)
             ENDIF
-
+            
         METHOD SetTypes(types AS IDictionary<STRING, XTypeDefinition>, usings AS IList<STRING>, ;
             staticUsings AS IList<STRING>, aEntities AS IList<XEntityDefinition>) AS VOID
             IF SELF:HasCode
@@ -187,28 +187,28 @@ BEGIN NAMESPACE XSharpModel
                     ContentsChanged()
                 ENDIF
             ENDIF
-      
-         
+        
+        
         METHOD SaveToDatabase() AS VOID
             IF ! SELF:Virtual
-               XDatabase.Update(SELF)
-               SELF:Project:ClearCache(SELF)
-               IF ! SELF:Interactive
-                  SELF:InitTypeList()
-               ENDIF
+                XDatabase.Update(SELF)
+                SELF:Project:ClearCache(SELF)
+                IF ! SELF:Interactive
+                    SELF:InitTypeList()
+                ENDIF
             ENDIF            
-         
+        
         METHOD WaitParsing() AS VOID
             //
             IF SELF:HasCode
-
+            
                 //WriteOutputMessage("-->> WaitParsing()")
                 BEGIN LOCK SELF
-
+                
                     IF ! SELF:Parsed
                         BEGIN USING VAR walker := SourceWalker{SELF}
                             TRY
-                                walker:Parse(FALSE)
+                                    walker:Parse(FALSE)
                                 
                             CATCH exception AS System.Exception
                                 XSolution.WriteException(exception)
@@ -218,31 +218,31 @@ BEGIN NAMESPACE XSharpModel
                 END LOCK
                 //WriteOutputMessage("<<-- WaitParsing()")
             ENDIF
-            
-       METHOD WriteOutputMessage(message AS STRING) AS VOID
+        
+        METHOD WriteOutputMessage(message AS STRING) AS VOID
             XSolution.WriteOutputMessage("XModel.File "+message)
-
-      #region Properties
-            // Properties
+            
+            #region Properties
+        // Properties
         PROPERTY AllUsingStatics AS IList<STRING>
             GET
-
+            
                 IF (! SELF:HasCode)
-
+                
                     RETURN NULL
                 ENDIF
                 //WriteOutputMessage("-->> AllUsingStatics")
                 VAR statics := List<STRING>{}
                 BEGIN LOCK SELF
-
+                
                     statics:AddRange(SELF:_usingStatics)
                     IF SELF:Project != NULL .AND. SELF:Project:ProjectNode != NULL .AND. SELF:Project:ProjectNode:ParseOptions:HasRuntime
-
+                    
                         FOREACH asm AS XAssembly IN SELF:Project:AssemblyReferences
-
+                        
                             VAR globalclass := asm:GlobalClassName
                             IF (! String.IsNullOrEmpty(globalclass))
-
+                            
                                 statics:AddUnique(globalclass)
                             ENDIF
                         NEXT
@@ -252,7 +252,7 @@ BEGIN NAMESPACE XSharpModel
                 RETURN statics
             END GET
         END PROPERTY
-
+        
         PROPERTY ContentHashCode AS DWORD
             GET
                 IF ! SELF:HasCode .OR. SELF:TypeList == NULL
@@ -260,21 +260,21 @@ BEGIN NAMESPACE XSharpModel
                 ENDIF
                 BEGIN LOCK SELF
                     VAR hash := 0U
-					      TRY
-						      FOREACH VAR entity IN SELF:EntityList
-							      BEGIN UNCHECKED
-							         hash += (DWORD) entity:Prototype:GetHashCode()
-							         hash += (DWORD) entity:Range:StartLine
-							      END UNCHECKED
-						      NEXT
-                     CATCH
+                    TRY
+                        FOREACH VAR entity IN SELF:EntityList
+                            BEGIN UNCHECKED
+                                hash += (DWORD) entity:Prototype:GetHashCode()
+                                hash += (DWORD) entity:Range:StartLine
+                            END UNCHECKED
+                        NEXT
+                    CATCH
                         NOP
                     END TRY
                     RETURN hash
                 END LOCK
             END GET
         END PROPERTY
-
+        
         PROPERTY FullPath           AS STRING AUTO GET INTERNAL SET 
         PROPERTY GlobalType         AS XTypeDefinition GET SELF:_globalType
         PROPERTY HasCode            AS LOGIC GET SELF:IsSource .OR. SELF:IsXaml .OR. SELF:IsHeader
@@ -288,24 +288,24 @@ BEGIN NAMESPACE XSharpModel
         PROPERTY Name               AS STRING GET System.IO.Path.GetFileNameWithoutExtension(SELF:FullPath)
         PROPERTY UpdatedOnDisk      AS LOGIC
             GET
-               VAR fi                  := System.IO.FileInfo{SELF:FullPath}
-               RETURN SELF:LastChanged != fi:LastWriteTime .OR. SELF:Size != fi:Length
+                VAR fi                  := System.IO.FileInfo{SELF:FullPath}
+                RETURN SELF:LastChanged != fi:LastWriteTime .OR. SELF:Size != fi:Length
             END GET
         END PROPERTY
-
+        
         PROPERTY Parsed AS LOGIC
             GET
                 //WriteOutputMessage("-->> Parsed")
                 LOCAL flag AS LOGIC
                 BEGIN LOCK SELF
-
+                
                     flag := SELF:_parsed
                 END LOCK
                 //WriteOutputMessage("<<-- Parsed")
                 RETURN flag
             END GET
         END PROPERTY
-
+        
         PROPERTY Project AS XProject
             GET
                 IF SELF:_project == NULL
@@ -315,7 +315,7 @@ BEGIN NAMESPACE XSharpModel
                 RETURN SELF:_project
             END GET
         END PROPERTY
-
+        
         PROPERTY SourcePath AS STRING
             GET
                 IF (SELF:IsXaml)
@@ -324,7 +324,7 @@ BEGIN NAMESPACE XSharpModel
                 RETURN SELF:FullPath
             END GET
         END PROPERTY
-
+        
         PROPERTY TypeList AS IDictionary<STRING, XTypeDefinition>
             GET
                 IF ! SELF:HasCode .OR. SELF:_typeList==NULL
@@ -335,7 +335,7 @@ BEGIN NAMESPACE XSharpModel
                 END LOCK
             END GET
         END PROPERTY
-
+        
         PROPERTY Usings AS IList<STRING>
             GET
                 IF ! SELF:HasCode
@@ -344,21 +344,21 @@ BEGIN NAMESPACE XSharpModel
                 RETURN _usings:ToArray()
             END GET
         END PROPERTY
-
+        
         PROPERTY XamlCodeBehindFile AS STRING
             GET
                 VAR projectNode := SELF:Project:ProjectNode
                 RETURN System.IO.Path.ChangeExtension(System.IO.Path.Combine(projectNode:IntermediateOutputPath, System.IO.Path.GetFileName(SELF:FullPath)), ".g.prg")
             END GET
         END PROPERTY
-
+        
         PROPERTY XFileType AS XFileType GET SELF:_type
-
+        
         PUBLIC EVENT ContentsChanged AS Action
-      #endregion
- 
-    END CLASS
-
-END NAMESPACE
-
-
+        #endregion
+        
+        END CLASS
+        
+    END NAMESPACE
+    
+    

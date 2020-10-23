@@ -727,10 +727,12 @@ BEGIN NAMESPACE XSharpModel
          SELF:ResolveReferences()
          VAR type := SystemTypeController.FindType(name, usings, SELF:_AssemblyReferences)
          IF XSettings.EnableTypelookupLog
-            IF type != NULL
-               WriteOutputMessage("FindSystemType() "+name+" found "+type:FullName)
-            ELSE
-               WriteOutputMessage("FindSystemType() "+name+" not found ")
+            IF XSettings.EnableTypelookupLog    
+                IF type != NULL
+                   WriteOutputMessage("FindSystemType() "+name+" found "+type:FullName)
+                ELSE
+                   WriteOutputMessage("FindSystemType() "+name+" not found ")
+                ENDIF
             ENDIF
          ENDIF
          RETURN type
@@ -1017,15 +1019,16 @@ BEGIN NAMESPACE XSharpModel
          
          
       METHOD Walk() AS VOID
-         WriteOutputMessage("Walk() ")
+            IF XSettings.EnableParseLog
+                WriteOutputMessage("Walk() ")
+            ENDIF
          ModelWalker.GetWalker():AddProject(SELF)
          
-      METHOD WalkFile(file AS XFile) AS VOID
+      METHOD WalkFile(file AS XFile, lNotify := FALSE AS LOGIC) AS VOID
          ModelWalker.GetWalker():FileWalk(file)
-// Moved to ModelWalker:FileWalk(), then Moved to XSParser:Parse			
-//         IF FileWalkComplete != NULL
-//            FileWalkComplete(file)
-//         ENDIF
+         IF FileWalkComplete != NULL .AND. lNotify
+            FileWalkComplete(file)
+         ENDIF
          
       PUBLIC DELEGATE OnFileWalkComplete(xFile AS XFile) AS VOID
 		

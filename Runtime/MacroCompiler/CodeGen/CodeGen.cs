@@ -12,7 +12,7 @@ namespace XSharp.MacroCompiler
 
     internal static partial class CodeGen
     {
-        internal static R Emit<T,R>(this Binder<T,R> b, Codeblock macro, string source) where R: class
+        internal static R Emit<T,R>(this Binder<T,R> b, Codeblock macro, string source) where R: Delegate
         {
             var dm = b.CreateMethod(source);
             macro.Emit(dm.GetILGenerator());

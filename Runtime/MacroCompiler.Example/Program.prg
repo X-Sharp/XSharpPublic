@@ -285,7 +285,7 @@ FUNCTION TestByRef(s REF STRING) AS STRING
 BEGIN NAMESPACE MacroCompilerTest
 
 	FUNCTION Start() AS VOID
-	    SetMacroCompiler(typeof(XSharp.Runtime.MacroCompiler))
+	    SetMacroCompiler(typeof(XSharp.MacroCompiler.ObjectMacro.MacroCompiler))
 
         ReportMemory("initial")
         VAR mc := CreateMacroCompiler()

@@ -13,13 +13,13 @@ namespace XSharp.MacroCompiler
             return new Compilation<T, Func<T[], T>>(options ?? MacroOptions.Default);
         }
 
-        public static Compilation<T, R> Create<T, R>(MacroOptions options = null) where R: class
+        public static Compilation<T, R> Create<T, R>(MacroOptions options = null) where R: Delegate
         {
             return new Compilation<T, R>(options ?? MacroOptions.Default);
         }
     }
 
-    public partial class Compilation<T,R> where R: class
+    public partial class Compilation<T,R> where R: Delegate
     {
         public struct CompilationResult
         {

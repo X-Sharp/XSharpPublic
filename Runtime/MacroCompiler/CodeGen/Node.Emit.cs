@@ -653,7 +653,10 @@ namespace XSharp.MacroCompiler.Syntax
 
                     ParamArray.EmitGet(ilg);
                     lidx.EmitGet(ilg);
-                    ilg.Emit(OpCodes.Ldelem_Ref);
+                    if (ls.Type.IsReferenceType)
+                        ilg.Emit(OpCodes.Ldelem_Ref);
+                    else
+                        ilg.Emit(OpCodes.Ldelem,ls.Type.Type);
                     ls.EmitSet(ilg);
 
                     ilg.MarkLabel(skip);
@@ -679,9 +682,18 @@ namespace XSharp.MacroCompiler.Syntax
         {
             // Emit nested codeblock
             var source = Token.ToString();
-            var dlg = NestedBinder.Emit(Codeblock, source) as RuntimeCodeblockDelegate;
-            var rtc = new RuntimeCodeblock(dlg, NestedBinder.ParamCount);
-            CbList[CbIndex] = new _Codeblock(rtc, source, true, NestedBinder.CreatesAutoVars);
+            if (usualMacro)
+            {
+                var dlg = NestedBinder.Emit(Codeblock, source) as UsualMacro.MacroCodeblockDelegate;
+                var rtc = new UsualMacro.MacroCodeblock(dlg, NestedBinder.ParamCount);
+                CbList[CbIndex] = new _Codeblock(rtc, source, true, NestedBinder.CreatesAutoVars);
+            }
+            else
+            {
+                var dlg = NestedBinder.Emit(Codeblock, source) as ObjectMacro.MacroCodeblockDelegate;
+                var rtc = new ObjectMacro.MacroCodeblock(dlg, NestedBinder.ParamCount);
+                CbList[CbIndex] = new _Codeblock(rtc, source, true, NestedBinder.CreatesAutoVars);
+            }
 
             // Emit code to retrieve codeblock
             var lidx = Constant.Create(CbIndex);

@@ -863,6 +863,7 @@ namespace XSharp.MacroCompiler.Syntax
         Binder NestedBinder;
         int CbIndex;
         IList<_Codeblock> CbList;
+        bool usualMacro;
         internal override Node Bind(Binder b)
         {
             NestedBinder = b.CreateNested();
@@ -870,6 +871,7 @@ namespace XSharp.MacroCompiler.Syntax
             CbIndex = b.AddNestedCodeblock(out Symbol);
             CbList = b.NestedCodeblocks;
             Datatype = Compilation.Get(WellKnownTypes.XSharp_Codeblock);
+            usualMacro = b.ObjectType == Compilation.Get(NativeType.Usual);
             return null;
         }
         internal override void RequireGetAccess() => RequireValue();

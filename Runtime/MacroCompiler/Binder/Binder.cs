@@ -69,7 +69,7 @@ namespace XSharp.MacroCompiler
             NestedCodeblocks = null;
         }
 
-        internal static Binder<T, R> Create<T,R>(MacroOptions options) where R: class
+        internal static Binder<T, R> Create<T,R>(MacroOptions options) where R: Delegate
         {
             return new Binder<T, R>(options);
         }
@@ -476,13 +476,15 @@ namespace XSharp.MacroCompiler
         internal abstract Delegate CreateDelegate(DynamicMethod dm);
     }
 
-    internal class Binder<T,R> : Binder where R: class
+    internal class Binder<T,R> : Binder where R: Delegate
     {
         internal Binder(MacroOptions options) : base(typeof(T),typeof(R), options) { }
 
+        internal delegate T MacroDelegate(params T[] args);
+
         internal class NestedWrapper
         {
-            internal delegate T EvalDelegate(_Codeblock[] cbs, params dynamic[] args);
+            internal delegate T EvalDelegate(_Codeblock[] cbs, params T[] args);
 
             _Codeblock[] nested_cbs_;
             EvalDelegate eval_func_;
@@ -492,7 +494,7 @@ namespace XSharp.MacroCompiler
                 eval_func_ = eval_func;
             }
 
-            internal dynamic Eval(params dynamic[] args)
+            internal T Eval(params T[] args)
             {
                 return eval_func_(nested_cbs_, args);
             }
@@ -522,8 +524,7 @@ namespace XSharp.MacroCompiler
             if (HasNestedCodeblocks)
             {
                 var eval_dlg = dm.CreateDelegate(typeof(NestedWrapper.EvalDelegate)) as NestedWrapper.EvalDelegate;
-                RuntimeCodeblockDelegate dlg = new NestedWrapper(NestedCodeblocks.ToArray(), eval_dlg).Eval;
-                return dlg;
+                return Delegate.CreateDelegate(typeof(R), new NestedWrapper(NestedCodeblocks.ToArray(), eval_dlg), "Eval", false);
             }
             else
                 return dm.CreateDelegate(typeof(R));

@@ -901,19 +901,19 @@ BEGIN NAMESPACE XSharpModel
 			IF IsDbOpen
 				BEGIN LOCK oConn
 					TRY
-							BEGIN USING VAR oCmd := SQLiteCommand{"SELECT 1", oConn}
-								oCmd:CommandText := "SELECT * FROM ProjectMembers WHERE name = $name AND TypeName = $typename " + ;
-								" AND Kind in ($kind1, $kind2) AND IdProject in ("+sProjectIds+")"
-								oCmd:Parameters:AddWithValue("$name", sName)
-								oCmd:Parameters:AddWithValue("$kind1", (INT) Kind.VOGlobal)
-								oCmd:Parameters:AddWithValue("$kind2", (INT) Kind.VODefine)
-								oCmd:Parameters:AddWithValue("$typename", XLiterals.GlobalName)
-								BEGIN USING VAR rdr := oCmd:ExecuteReader()
-									DO WHILE rdr:Read()
-										result:Add(CreateMemberInfo(rdr))
-									ENDDO
-								END USING
+					BEGIN USING VAR oCmd := SQLiteCommand{"SELECT 1", oConn}
+						oCmd:CommandText := "SELECT * FROM ProjectMembers WHERE name = $name AND TypeName = $typename " + ;
+						" AND Kind in ($kind1, $kind2) AND IdProject in ("+sProjectIds+")"
+						oCmd:Parameters:AddWithValue("$name", sName)
+						oCmd:Parameters:AddWithValue("$kind1", (INT) Kind.VOGlobal)
+						oCmd:Parameters:AddWithValue("$kind2", (INT) Kind.VODefine)
+						oCmd:Parameters:AddWithValue("$typename", XLiterals.GlobalName)
+						BEGIN USING VAR rdr := oCmd:ExecuteReader()
+							DO WHILE rdr:Read()
+								result:Add(CreateMemberInfo(rdr))
+							ENDDO
 						END USING
+				    END USING
 					CATCH e AS Exception
 						Log("Exception: "+e:ToString())
 					END TRY            
@@ -1122,11 +1122,13 @@ BEGIN NAMESPACE XSharpModel
 					TRY
 							BEGIN USING VAR oCmd := SQLiteCommand{"SELECT 1", oConn}
 								oCmd:CommandText := "SELECT * FROM ProjectMembers WHERE IdFile = $idfile AND TypeName = $typename " + ;
-								" AND Kind in ($kind1, $kind2, $kind3)"
+								" AND Kind in ($kind1, $kind2, $kind3, $kind4, $kind5)"
 								oCmd:Parameters:AddWithValue("$idfile", sFileId)
 								oCmd:Parameters:AddWithValue("$kind1", (INT) Kind.Function)
 								oCmd:Parameters:AddWithValue("$kind2", (INT) Kind.Procedure)
 								oCmd:Parameters:AddWithValue("$kind3", (INT) Kind.VODLL)
+								oCmd:Parameters:AddWithValue("$kind4", (INT) Kind.VOGlobal)
+								oCmd:Parameters:AddWithValue("$kind5", (INT) Kind.VODefine)
 								oCmd:Parameters:AddWithValue("$typename", XLiterals.GlobalName)
 								BEGIN USING VAR rdr := oCmd:ExecuteReader()
 									DO WHILE rdr:Read()
@@ -1141,7 +1143,8 @@ BEGIN NAMESPACE XSharpModel
 			ENDIF
 			Log(i"GetFunctions returns {result.Count} matches")
 		RETURN result			
-		
+
+
 		STATIC METHOD CreateTypeInfo(rdr AS SQLiteDataReader) AS XDbResult
 			VAR res := XDbResult{}
 			res:TypeName     := DbToString(rdr["Name"])

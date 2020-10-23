@@ -1070,7 +1070,7 @@ namespace Microsoft.VisualStudio.Project
             string fullPath = fileInfo.FullName;
 
             // Cast to upper-case
-            fullPath = fullPath.ToUpperInvariant();
+            //fullPath = fullPath.ToUpperInvariant();
 
             return fullPath;
         }

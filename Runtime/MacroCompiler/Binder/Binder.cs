@@ -55,7 +55,7 @@ namespace XSharp.MacroCompiler
         internal List<ArgumentSymbol> Args = new List<ArgumentSymbol>();
         internal TypeSymbol ObjectType;
         internal Type DelegateType;
-        internal List<_Codeblock> NestedCodeblocks;
+        internal List<XSharp.Codeblock> NestedCodeblocks;
         internal bool CreatesAutoVars = false;
         internal Stack<Stmt> StmtStack = new Stack<Stmt>();
 
@@ -458,7 +458,7 @@ namespace XSharp.MacroCompiler
         {
             if (NestedCodeblocks == null)
             {
-                NestedCodeblocks = new List<_Codeblock>();
+                NestedCodeblocks = new List<XSharp.Codeblock>();
                 argSym = AddParam(XSharpSpecialNames.NestedCodeblockArgs, ArrayOf(Compilation.Get(WellKnownTypes.XSharp_Codeblock)), true);
             }
             else
@@ -484,12 +484,12 @@ namespace XSharp.MacroCompiler
 
         internal class NestedWrapper
         {
-            internal delegate T EvalDelegate(_Codeblock[] cbs, params T[] args);
+            internal delegate T EvalDelegate(XSharp.Codeblock[] cbs, params T[] args);
 
-            _Codeblock[] nested_cbs_;
+            XSharp.Codeblock[] nested_cbs_;
             EvalDelegate eval_func_;
 
-            internal NestedWrapper(_Codeblock[] nested_cbs, EvalDelegate eval_func) {
+            internal NestedWrapper(XSharp.Codeblock[] nested_cbs, EvalDelegate eval_func) {
                 nested_cbs_ = nested_cbs;
                 eval_func_ = eval_func;
             }
@@ -514,7 +514,7 @@ namespace XSharp.MacroCompiler
         internal override DynamicMethod CreateMethod(string source)
         {
             if (HasNestedCodeblocks)
-                return new DynamicMethod(source, typeof(T), new Type[] { typeof(_Codeblock[]), typeof(T[]) });
+                return new DynamicMethod(source, typeof(T), new Type[] { typeof(XSharp.Codeblock[]), typeof(T[]) });
             else
                 return new DynamicMethod(source, typeof(T), new Type[] { typeof(T[]) });
         }

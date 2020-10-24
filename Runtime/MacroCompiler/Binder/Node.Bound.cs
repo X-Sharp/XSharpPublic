@@ -862,7 +862,7 @@ namespace XSharp.MacroCompiler.Syntax
     {
         Binder NestedBinder;
         int CbIndex;
-        IList<_Codeblock> CbList;
+        IList<XSharp.Codeblock> CbList;
         bool usualMacro;
         internal override Node Bind(Binder b)
         {

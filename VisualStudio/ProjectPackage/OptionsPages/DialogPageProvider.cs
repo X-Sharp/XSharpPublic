@@ -6,5 +6,6 @@
     internal class DialogPageProvider
     {
         public class WindowEditor : BaseOptionPage<WindowEditorOptions> { }
+        public class OtherEditor : BaseOptionPage<OtherEditorOptions> { }
     }
 }

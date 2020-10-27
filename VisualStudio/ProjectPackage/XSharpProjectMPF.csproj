@@ -137,6 +137,7 @@
     <Compile Include="OptionsPages\BaseOptionsPage.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="OptionsPages\OtherEditorOptions.cs" />
     <Compile Include="OptionsPages\DialogPageProvider.cs" />
     <Compile Include="OptionsPages\WindowEditorOptions.cs" />
     <Compile Include="ProjectSelector.cs" />

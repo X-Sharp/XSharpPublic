@@ -103,7 +103,8 @@ namespace XSharp.Project
         @".NullPath", LanguageVsTemplate = "XSharp", NewProjectRequireNewFolderVsTemplate = false)]
 
 
-    [ProvideOptionPage(typeof(Options.DialogPageProvider.WindowEditor), "XSharp Custom Editors", "Window Editor", 0, 0, true)]
+    [ProvideOptionPage(typeof(Options.DialogPageProvider.WindowEditor), "XSharp Custom Editors", "Window Editor", 0, 0, true,Sort = 1)]
+    [ProvideOptionPage(typeof(Options.DialogPageProvider.OtherEditor), "XSharp Custom Editors", "Other Editors", 0, 0, true, Sort = 2)]
 
     [ProvideLanguageCodeExpansionAttribute(
          typeof(XSharpLanguageService),
@@ -267,14 +268,22 @@ namespace XSharp.Project
         {
             System.Threading.Tasks.Task.Run(async () =>
             {
-                var options = await Options.WindowEditorOptions.GetLiveInstanceAsync();
-                XEditorSettings.ShowGrid = options.ShowGrid;
-                XEditorSettings.GridX = options.GridX;
-                XEditorSettings.GridY = options.GridX;
-                XEditorSettings.PasteOffSetX = options.PasteOffSetX;
-                XEditorSettings.PasteOffSetY = options.PasteOffSetY;
+                var woptions = await Options.WindowEditorOptions.GetLiveInstanceAsync();
+                XEditorSettings.ShowGrid = woptions.ShowGrid;
+                XEditorSettings.GridX = woptions.GridX;
+                XEditorSettings.GridY = woptions.GridX;
+                XEditorSettings.PasteOffSetX = woptions.PasteOffSetX;
+                XEditorSettings.PasteOffSetY = woptions.PasteOffSetY;
+
+                var options = await Options.OtherEditorOptions.GetLiveInstanceAsync();
+                XEditorSettings.DbServerDefaultRDD = options.DbServerDefaultRDD;
+                XEditorSettings.DbServerParentClass = options.DbServerParentClass;
+                XEditorSettings.MenuParentClass = options.MenuParentClass;
+                XEditorSettings.FieldSpecParentClass = options.FieldSpecParentClass;
+                XEditorSettings.ToolbarParentClass = options.ToolbarParentClass;
 
             }).FileAndForget("GetEditorOptions");
+
         }
         public void SetCommentTokens()
         {

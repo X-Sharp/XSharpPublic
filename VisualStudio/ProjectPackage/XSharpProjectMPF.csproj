@@ -133,6 +133,12 @@
     <Compile Include="ErrorList\ErrorListManager.cs" />
     <Compile Include="ErrorList\TaskListProvider.cs" />
     <Compile Include="ModelScannerEvents.cs" />
+    <Compile Include="OptionsPages\BaseOptionsModel.cs" />
+    <Compile Include="OptionsPages\BaseOptionsPage.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="OptionsPages\DialogPageProvider.cs" />
+    <Compile Include="OptionsPages\WindowEditorOptions.cs" />
     <Compile Include="ProjectSelector.cs" />
     <Compile Include="PropertyPages\XBuildEventsPropertyPage.cs" />
     <Compile Include="PropertyPages\XSharpDialectPropertyPage.cs" />

@@ -103,6 +103,7 @@ namespace XSharp.Project
         @".NullPath", LanguageVsTemplate = "XSharp", NewProjectRequireNewFolderVsTemplate = false)]
 
 
+    [ProvideOptionPage(typeof(Options.DialogPageProvider.WindowEditor), "XSharp Custom Editors", "Window Editor", 0, 0, true)]
 
     [ProvideLanguageCodeExpansionAttribute(
          typeof(XSharpLanguageService),
@@ -168,6 +169,7 @@ namespace XSharp.Project
         private IErrorList _errorList = null;
         private ITaskList _taskList = null;
         private XSharpProjectSelector _projectSelector = null;
+        private uint shellCookie;
 
         private XSharpLanguageService _langservice;
 
@@ -224,6 +226,7 @@ namespace XSharp.Project
             await _projectSelector.InitAsync(this);
 
 
+
             this.settings = new XPackageSettings(this);
 
             this.RegisterProjectFactory(new XSharpProjectFactory(this));
@@ -246,8 +249,33 @@ namespace XSharp.Project
 
             _langservice = await GetServiceAsync(typeof(XSharpLanguageService)) as XSharpLanguageService;
 
+            var shell = await this.GetServiceAsync(typeof(SVsShell)) as IVsShell;
+            if (shell != null)
+            {
+                shell.AdviseShellPropertyChanges(this, out shellCookie);
+            }
+
+
+            GetEditorOptions();
+
+
         }
 
+
+
+        public void GetEditorOptions()
+        {
+            System.Threading.Tasks.Task.Run(async () =>
+            {
+                var options = await Options.WindowEditorOptions.GetLiveInstanceAsync();
+                XEditorSettings.ShowGrid = options.ShowGrid;
+                XEditorSettings.GridX = options.GridX;
+                XEditorSettings.GridY = options.GridX;
+                XEditorSettings.PasteOffSetX = options.PasteOffSetX;
+                XEditorSettings.PasteOffSetY = options.PasteOffSetY;
+
+            }).FileAndForget("GetEditorOptions");
+        }
         public void SetCommentTokens()
         {
             var commentTokens = _taskList.CommentTokens;
@@ -294,6 +322,7 @@ namespace XSharp.Project
                 if (!(bool)var)
                 {
                     SetCommentTokens();
+                    GetEditorOptions();
                 }
             }
             return VSConstants.S_OK;

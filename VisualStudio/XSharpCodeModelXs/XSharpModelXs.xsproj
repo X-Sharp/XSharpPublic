@@ -39,7 +39,7 @@
     <VO14>false</VO14>
     <VO15>false</VO15>
     <VO16>false</VO16>
-    <XSharpProjectversion>2.6.0.0</XSharpProjectversion>
+    <XSharpProjectversion>2.6.1.0</XSharpProjectversion>
     <Includepaths>$(SolutionDir)\Common</Includepaths>
     <Nostandarddefs>true</Nostandarddefs>
     <NamedArgs>true</NamedArgs>
@@ -519,21 +519,24 @@
       <Name>System.IO</Name>
       <AssemblyName>System.IO.dll</AssemblyName>
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\packages\System.IO.4.3.0\lib\net462\System.IO.dll</HintPath>
+      <HintPath>
+      </HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System.Net.Http, Version=4.1.1.2, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
       <Name>System.Net.Http</Name>
       <AssemblyName>System.Net.Http.dll</AssemblyName>
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\packages\System.Net.Http.4.3.3\lib\net46\System.Net.Http.dll</HintPath>
+      <HintPath>
+      </HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System.Runtime, Version=4.1.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
       <Name>System.Runtime</Name>
       <AssemblyName>System.Runtime.dll</AssemblyName>
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\packages\System.Runtime.4.3.0\lib\net462\System.Runtime.dll</HintPath>
+      <HintPath>
+      </HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System.Security.AccessControl, Version=4.1.2.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
@@ -547,28 +550,32 @@
       <Name>System.Security.Cryptography.Algorithms</Name>
       <AssemblyName>System.Security.Cryptography.Algorithms.dll</AssemblyName>
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\packages\System.Security.Cryptography.Algorithms.4.3.0\lib\net463\System.Security.Cryptography.Algorithms.dll</HintPath>
+      <HintPath>
+      </HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System.Security.Cryptography.Encoding, Version=4.0.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
       <Name>System.Security.Cryptography.Encoding</Name>
       <AssemblyName>System.Security.Cryptography.Encoding.dll</AssemblyName>
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\packages\System.Security.Cryptography.Encoding.4.3.0\lib\net46\System.Security.Cryptography.Encoding.dll</HintPath>
+      <HintPath>
+      </HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System.Security.Cryptography.Primitives, Version=4.0.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
       <Name>System.Security.Cryptography.Primitives</Name>
       <AssemblyName>System.Security.Cryptography.Primitives.dll</AssemblyName>
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\packages\System.Security.Cryptography.Primitives.4.3.0\lib\net46\System.Security.Cryptography.Primitives.dll</HintPath>
+      <HintPath>
+      </HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System.Security.Cryptography.X509Certificates, Version=4.1.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
       <Name>System.Security.Cryptography.X509Certificates</Name>
       <AssemblyName>System.Security.Cryptography.X509Certificates.dll</AssemblyName>
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\packages\System.Security.Cryptography.X509Certificates.4.3.0\lib\net461\System.Security.Cryptography.X509Certificates.dll</HintPath>
+      <HintPath>
+      </HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System.Security.Principal.Windows, Version=4.1.2.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
@@ -589,7 +596,8 @@
       <Name>System.ValueTuple</Name>
       <AssemblyName>System.ValueTuple.dll</AssemblyName>
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\packages\System.ValueTuple.4.3.0\lib\netstandard1.0\System.ValueTuple.dll</HintPath>
+      <HintPath>
+      </HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
@@ -650,7 +658,8 @@
     <Compile Include="Model\XDbResult.prg" />
     <Compile Include="Model\XBaseSignature.prg" />
     <Compile Include="Model\XDbResultHelpers.prg" />
-    <Compile Include="ProjectSystem\XSettings.prg" />
+    <Compile Include="Settings\XEditorSettings.prg" />
+    <Compile Include="Settings\XSettings.prg" />
     <Compile Include="Support\TextInterval.prg" />
     <Compile Include="Support\TextRange.prg" />
     <Compile Include="Support\TypeExtensions.prg" />
@@ -692,6 +701,7 @@
   <ItemGroup>
     <Folder Include="Model\" />
     <Folder Include="MetaData" />
+    <Folder Include="Settings" />
     <Folder Include="Support" />
     <Folder Include="ProjectSystem\" />
     <Folder Include="Walker" />

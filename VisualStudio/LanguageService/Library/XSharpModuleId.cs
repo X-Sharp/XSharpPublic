@@ -32,10 +32,11 @@ namespace XSharp.LanguageService
         private IVsHierarchy ownerHierarchy;
         private uint itemId;
 
-        public XSharpModuleId(IVsHierarchy owner, uint id)
+        public XSharpModuleId(IVsHierarchy owner, uint id, string path)
         {
             this.ownerHierarchy = owner;
             this.itemId = id;
+            this.Path = path;
         }
 
         public IVsHierarchy Hierarchy
@@ -48,6 +49,7 @@ namespace XSharp.LanguageService
         }
 
         public uint ContentHashCode { get; set; }
+        public string Path { get; set; }
 
         public override int GetHashCode()
         {

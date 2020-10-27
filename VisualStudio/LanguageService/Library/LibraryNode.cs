@@ -152,6 +152,8 @@ namespace XSharp.LanguageService
             }
         }
 
+        internal IList<LibraryNode> Children => children;
+
         /// <summary>
         /// Get or Set if the node can be deleted.
         /// </summary>

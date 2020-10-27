@@ -1,7 +1,12 @@
-﻿#using System.Windows.Forms
-#using System.Drawing
-#using System.Collections
-#using System.Collections.Generic
+﻿//
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
+// See License.txt in the project root for license information.
+//
+USING System.Windows.Forms
+USING System.Drawing
+USING System.Collections
+using System.Collections.Generic
 
 CLASS VOControlCreationOrderDlg INHERIT System.Windows.Forms.Form
 

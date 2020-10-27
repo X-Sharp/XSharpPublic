@@ -16,21 +16,19 @@
 * Based on IronStudio/IronPythonTools/IronPythonTools/Navigation
 *
 ****************************************************************************/
-#undef TEXTCHANGELISTENER
+
+using Microsoft.VisualStudio.Shell;
+using Microsoft.VisualStudio.Shell.Interop;
+using Microsoft.VisualStudio.TextManager.Interop;
 using System;
+using System.Linq;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Threading;
-
-using Microsoft.VisualStudio.OLE.Interop;
-using Microsoft.VisualStudio.Shell.Interop;
-using Microsoft.VisualStudio.Shell;
-
-using VSConstants = Microsoft.VisualStudio.VSConstants;
-using IServiceProvider = System.IServiceProvider;
-using Microsoft.VisualStudio.TextManager.Interop;
 using XSharpModel;
+using IServiceProvider = System.IServiceProvider;
+using Microsoft.VisualStudio;
+using System.Diagnostics;
 
 namespace XSharp.LanguageService
 {
@@ -52,82 +50,47 @@ namespace XSharp.LanguageService
     /// This is the implementation of the service.
     /// </summary>
     [Guid(XSharpConstants.LibraryManager)]
-    internal class XSharpLibraryManager : IXSharpLibraryManager, IVsRunningDocTableEvents, IDisposable
+    internal class XSharpLibraryManager : IXSharpLibraryManager, IDisposable
     {
 
         /// <summary>
         /// Class storing the data about a parsing task on a module.
         /// A module is a source file, so here we use the file name as UID
         /// </summary>
+        [DebuggerDisplay("{FileName}")]
         private class LibraryTask
         {
-
-            private string fileName;
-            //private string text;
-            private XSharpModuleId moduleId;
-            //private object _sourceLock;
-
+            public string FileName { get; }
+            public XSharpModuleId ModuleID { get; }
             public LibraryTask(string fileName, XSharpModuleId ModuleID)
             {
-                this.fileName = fileName;
-                this.moduleId = ModuleID;
-                //this.text = text;
+                this.FileName = fileName;
+                this.ModuleID = ModuleID;
             }
-
-            public string FileName
-            {
-                get { return fileName; }
-            }
-            public XSharpModuleId ModuleID
-            {
-                get { return moduleId; }
-                set { moduleId = value; }
-            }
-            //public string Text
-            //{
-            //    get { return text; }
-            //}
-            //public object sourceLock
-            //{
-            //    get { return _sourceLock; }
-            //    set { _sourceLock = value; }
-            //}
         }
 
 
         private IServiceProvider provider;
         private uint objectManagerCookie;
-        private uint runningDocTableCookie;
-#if TEXTCHANGELISTENER
-        private Dictionary<uint, TextLineEventListener> documents;
-#endif
+       // private uint runningDocTableCookie;
         private Dictionary<IVsHierarchy, HierarchyListener> hierarchies;
         private MultiValueDictionary<XSharpModuleId, XSharpLibraryNode> files;
+        private Dictionary<string, XSharpModuleId> filedict;
         private Library library;
+        private Dictionary<string, XSharpLibraryProject> projectdict;
 
 
         private Thread updateTreeThread;
         private ManualResetEvent requestPresent;
         private ManualResetEvent shutDownStarted;
         private Queue<LibraryTask> requests;
+        private Dictionary<string, LibraryTask> tasks;
 
-        //private String _defaultNameSpace;
-
-        //public String DefaultNameSpace
-        //{
-        //    get
-        //    {
-        //        return this._defaultNameSpace;
-        //    }
-        //}
 
         public XSharpLibraryManager(IServiceProvider provider)
         {
             this.provider = provider;
             //
-#if TEXTCHANGELISTENER
-            documents = new Dictionary<uint, TextLineEventListener>();
-#endif
             hierarchies = new Dictionary<IVsHierarchy, HierarchyListener>();
             library = new Library(new Guid(XSharpConstants.Library));
             library.LibraryCapabilities = (_LIB_FLAGS2)_LIB_FLAGS.LF_PROJECT;
@@ -136,8 +99,11 @@ namespace XSharp.LanguageService
             // A library Node
             // --> For a single ModuleId we can have Multiple Library Node
             files = new MultiValueDictionary<XSharpModuleId, XSharpLibraryNode>();
+            filedict = new Dictionary<string, XSharpModuleId>(StringComparer.OrdinalIgnoreCase);
+            projectdict = new Dictionary<string, XSharpLibraryProject>(StringComparer.OrdinalIgnoreCase);
             //
             requests = new Queue<LibraryTask>();
+            tasks = new Dictionary<string, LibraryTask>(StringComparer.OrdinalIgnoreCase);
             requestPresent = new ManualResetEvent(false);
             shutDownStarted = new ManualResetEvent(false);
             // Changes in the Model ??
@@ -156,34 +122,7 @@ namespace XSharp.LanguageService
                 });
             }
         }
-        private void RegisterForRDTEvents()
-        {
-            if (0 != runningDocTableCookie)
-            {
-                return;
-            }
-            var rdt = this.DocumentTable;
-            if (null != rdt)
-            {
-                // Do not throw here in case of error, simply skip the registration.
-                rdt.AdviseRunningDocTableEvents(this, out runningDocTableCookie);
-            }
-        }
-        private void UnregisterRDTEvents()
-        {
-            if (0 == runningDocTableCookie)
-            {
-                return;
-            }
-            var rdt = this.DocumentTable;
-            if (null != rdt)
-            {
-                // Do not throw in case of error.
-                rdt.UnadviseRunningDocTableEvents(runningDocTableCookie);
-            }
-            runningDocTableCookie = 0;
-        }
-
+ 
         #region IDisposable Members
         public void Dispose()
         {
@@ -203,6 +142,7 @@ namespace XSharp.LanguageService
             }
 
             requests.Clear();
+            filedict.Clear();
 
             // Dispose all the listeners.
             foreach (HierarchyListener listener in hierarchies.Values)
@@ -210,13 +150,6 @@ namespace XSharp.LanguageService
                 listener.Dispose();
             }
             hierarchies.Clear();
-#if TEXTCHANGELISTENER
-            foreach (TextLineEventListener textListener in documents.Values)
-            {
-                textListener.Dispose();
-            }
-            documents.Clear();
-#endif
             // Remove this library from the object manager.
             if (0 != objectManagerCookie)
             {
@@ -277,23 +210,47 @@ namespace XSharp.LanguageService
             // The project is the Root of the Library
             XSharpLibraryProject prjNode = new XSharpLibraryProject(Prj, hierarchy);
             library.AddNode(prjNode);
+            projectdict.Add(Prj.FileName, prjNode);
 
             //this._defaultNameSpace = prjNode.DefaultNameSpace;
             //Define Callback
             var model = XSolution.FindProject(prjNode.Name);
             if (model != null)
-            { 
+            {
                 model.FileWalkComplete += OnFileWalkComplete;
                 model.ProjectWalkComplete += OnProjectWalkComplete;
             }
             // Attach a listener to the Project/Hierarchy,so any change is raising an event
             HierarchyListener listener = new HierarchyListener(hierarchy);
-            //listener.OnAddItem += new EventHandler<HierarchyEventArgs>(OnNewFile);
+            listener.OnAddItem += new EventHandler<HierarchyEventArgs>(OnNewFile);
             listener.OnDeleteItem += new EventHandler<HierarchyEventArgs>(OnDeleteFile);
-            listener.StartListening();
+            //listener.StartListening();
             hierarchies.Add(hierarchy, listener);
             // and ask for any change in the files that are opened in Source editor.
-            RegisterForRDTEvents();
+            //RegisterForRDTEvents();
+        }
+
+
+        private void addNode(XSharpModuleId moduleId, XSharpLibraryNode newNode)
+        {
+            lock (files)
+            {
+                files.Add(moduleId, newNode);
+                if (!filedict.ContainsKey(moduleId.Path))
+                {
+                    filedict.Add(moduleId.Path, moduleId);
+                }
+            }
+        }
+
+        private void removeNode(XSharpModuleId moduleId)
+        {
+            lock (files)
+            {
+                files.Remove(moduleId);
+                if (filedict.ContainsKey(moduleId.Path))
+                    filedict.Remove(moduleId.Path);
+            }
         }
 
         public void UnregisterHierarchy(IVsHierarchy hierarchy)
@@ -306,22 +263,14 @@ namespace XSharp.LanguageService
             HierarchyListener listener = hierarchies[hierarchy];
             if (null != listener)
             {
+                listener.StopListening();
                 listener.Dispose();
             }
             hierarchies.Remove(hierarchy);
-            if (0 == hierarchies.Count)
-            {
-                UnregisterRDTEvents();
-            }
-            // Now remove all nodes
-            // for all files
-
             XSharpModuleId[] keys;
             lock (files)
             {
-                keys = new XSharpModuleId[files.Keys.Count];
-                // Get all Keys (ModuleId)
-                files.Keys.CopyTo(keys, 0);
+                keys = files.Keys.ToArray();
             }
 
             foreach (XSharpModuleId id in keys)
@@ -341,47 +290,24 @@ namespace XSharp.LanguageService
                             }
                         }
                     }
-                    // and then remove the key
-                    lock (files)
-                    {
-                        files.Remove(id);
-                    }
+                    removeNode(id);
                 }
             }
             //
-            LibraryNode prjNode = this.library.SearchHierarchy(hierarchy);
-            if (prjNode is XSharpLibraryProject)
+            LibraryNode lnode = this.library.SearchHierarchy(hierarchy);
+            if (lnode is XSharpLibraryProject prjNode)
             {
                 library.RemoveNode(prjNode);
-            }
-#if TEXTCHANGELISTENER
-            // Remove the document listeners.
-            uint[] docKeys = new uint[documents.Keys.Count];
-            documents.Keys.CopyTo(docKeys, 0);
-            foreach (uint id in docKeys)
-            {
-                TextLineEventListener docListener = documents[id];
-                if (hierarchy.Equals(docListener.FileID.Hierarchy))
+                if (projectdict.ContainsKey(prjNode.FullPath))
                 {
-                    documents.Remove(id);
-                    docListener.Dispose();
+                    projectdict.Remove(prjNode.FullPath);
                 }
             }
-#endif
+
         }
         public void RegisterLineChangeHandler(uint document,
             TextLineChangeEvent lineChanged, Action<IVsTextLines> onIdle)
         {
-#if TEXTCHANGELISTENER
-            documents[document].OnFileChangedImmediate += delegate (object sender, TextLineChange[] changes, int fLast)
-            {
-                lineChanged(sender, changes, fLast);
-            };
-            documents[document].OnFileChanged += delegate (object sender, HierarchyEventArgs args)
-            {
-                onIdle(args.TextBuffer);
-            };
-#endif
         }
         #endregion
 
@@ -392,6 +318,60 @@ namespace XSharp.LanguageService
         /// a specific file. The resulting tree is built using LibraryNode objects so that it can
         /// be used inside the class view or object browser.
         /// </summary>
+
+        private XSharpModuleId FindFileByFileName(string name)
+        {
+            if (filedict.TryGetValue(name, out var value))
+                return value;
+            return null;
+        }
+
+
+        private void ProcessTask(LibraryTask task, XFile xfile, bool forceRefresh)
+        {
+            // If the file already exist
+            XSharpModuleId found = FindFileByFileName(task.FileName);
+            if (found == null)
+            {
+
+            }
+            if (found != null)
+            { 
+                //XSettings.DisplayOutputMessage("Library scanning: "+task.FileName);
+                // Doesn't it have the same members?
+                // if (found.ContentHashCode == task.ModuleID.ContentHashCode)
+                //    continue;
+                //
+                HashSet<XSharpLibraryNode> values = null;
+                // Ok, now remove ALL nodes for that key
+                if (files.TryGetValue(task.ModuleID, out values))
+                {
+                    foreach (XSharpLibraryNode node in values)
+                    {
+                        if (node.Freeing(task.ModuleID.ItemID) == 0)
+                            if (node.parent != null)
+                            {
+                                node.parent.RemoveNode(node);
+                            }
+                    }
+                    // and then remove the key
+                    removeNode(task.ModuleID);
+                }
+            }
+            //
+            LibraryNode prjNode = this.library.SearchHierarchy(task.ModuleID.Hierarchy);
+            if (prjNode is XSharpLibraryProject)
+            {
+                CreateModuleTree((XSharpLibraryProject)prjNode, xfile, task.ModuleID);
+                prjNode.updateCount += 1;
+                if (forceRefresh)
+                {
+                    this.library.Refresh();
+                    //XSolution.SetStatusBarAnimation(false, 0);
+                }
+            }
+        }
+
         private void UpdateTreeThread()
         {
             const int waitTimeout = 500;
@@ -412,20 +392,30 @@ namespace XSharp.LanguageService
                 {
                     continue;
                 }
-                if (! XSharpModel.XSolution.IsOpen)
+                if (!XSharpModel.XSolution.IsOpen)
                 {
                     break;
                 }
                 //
+
                 LibraryTask task = null;
                 bool forceRefresh = false;
                 lock (requests)
                 {
                     if (0 != requests.Count)
                     {
+                        //XSolution.SetStatusBarAnimation(true, 0);
                         task = requests.Dequeue();
+                        if (tasks.ContainsKey(task.FileName))
+                            tasks.Remove(task.FileName);
+                        //if (task != null)
+                        //{
+                            //XSettings.DisplayOutputMessage("Libary dequeue " + task.FileName);
+                        //}
                         if (requests.Count == 0)
+                        {
                             forceRefresh = true; ;
+                        }
                     }
                     if (0 == requests.Count)
                     {
@@ -437,62 +427,88 @@ namespace XSharp.LanguageService
                     continue;
                 }
                 //
-                XFile scope = null;
                 if (System.IO.File.Exists(task.FileName))
                 {
-                    scope = XSharpModel.XSolution.FindFile(task.FileName);
-                    if (scope == null || (!scope.HasCode))
-                        continue;
-                }
-                // If the file already exist
-                XSharpModuleId[] aTmp;
-                lock (files)
-                {
-                    // These are the existing Modules
-                    aTmp = new XSharpModuleId[files.Keys.Count];
-                    files.Keys.CopyTo(aTmp, 0);
-                }
-                // Does this module already exist ?
-                XSharpModuleId found = Array.Find<XSharpModuleId>(aTmp, (x => x.Equals(task.ModuleID)));
-                if (found != null)
-                {
-                    // Doesn't it have the same members?
-                    if (found.ContentHashCode == task.ModuleID.ContentHashCode)
-                        continue;
-                    //
-                    HashSet<XSharpLibraryNode> values = null;
-                    // Ok, now remove ALL nodes for that key
-                    if (files.TryGetValue(task.ModuleID, out values))
+                    var xfile = XSharpModel.XSolution.FindFile(task.FileName);
+                    if (xfile != null )
                     {
-                        foreach (XSharpLibraryNode node in values)
-                        {
-                            if (node.Freeing(task.ModuleID.ItemID) == 0)
-                                if (node.parent != null)
-                                {
-                                    node.parent.RemoveNode(node);
-                                }
-                        }
-                        // and then remove the key
-                        lock (files)
-                        {
-                            files.Remove(task.ModuleID);
-                        }
+                        ProcessTask(task, xfile, forceRefresh);
                     }
                 }
-                //
-                LibraryNode prjNode = this.library.SearchHierarchy(task.ModuleID.Hierarchy);
-                if (prjNode is XSharpLibraryProject)
-                {
-                    //
-                    CreateModuleTree((XSharpLibraryProject)prjNode, scope, task.ModuleID);
-                    //
-                    prjNode.updateCount += 1;
-                    //this.prjNode.AddNode(node);
-                    //library.AddNode(node);
-                    if (forceRefresh)
-                        this.library.Refresh();
-                }
             }
+        }
+
+        private void addNamespace(XTypeDefinition xType, XSharpLibraryProject prjNode, XSharpModuleId moduleId)
+        {
+            string nodeName = xType.Name;
+            XSharpLibraryNode node;
+            if (String.IsNullOrEmpty(xType.Name))
+            {
+                nodeName = "Default NameSpace";
+            }
+            // Does that NameSpace already exist ?
+            // Search for the corresponding NameSpace
+            var nsNode = prjNode.SearchNameSpace(nodeName);
+            if (nsNode is XSharpLibraryNode)
+            {
+                node = (XSharpLibraryNode)nsNode;
+                node.Depends(moduleId.ItemID);
+            }
+            else
+            {
+                node = new XSharpLibraryNode(xType, nodeName, moduleId.Hierarchy, moduleId.ItemID);
+
+                // NameSpaces are always added to the root.
+                prjNode.AddNode(node);
+                node.parent = prjNode;
+            }
+            addNode(moduleId, node);
+            return ;
+        }
+
+        private void addType(XTypeDefinition xType, XSharpLibraryProject prjNode, XSharpModuleId moduleId)
+        {
+            LibraryNode nsNode;
+            XSharpLibraryNode newNode;
+            string nSpace = "Default NameSpace"; // prjNode.DefaultNameSpace;
+            if (!String.IsNullOrEmpty(xType.Namespace))
+                nSpace = xType.Namespace;
+            // Search for the corresponding NameSpace
+            nsNode = prjNode.SearchNameSpace(nSpace);
+            if (nsNode == null)
+            {
+                // should we search for a class ????
+                nsNode = prjNode.SearchClass(nSpace);
+            }
+            if (nsNode is XSharpLibraryNode)
+            {
+                XSharpLibraryNode xsNSNode = (XSharpLibraryNode)nsNode;
+                // So the Class node will belong to that NameSpace Node
+                // Now, try to check if such Type already exist
+                LibraryNode newTmpNode;
+                newTmpNode = xsNSNode.SearchClass(xType.FullName);
+                if (newTmpNode is XSharpLibraryNode)
+                {
+                    newNode = (XSharpLibraryNode)newTmpNode;
+                    newNode.Depends(moduleId.ItemID);
+                }
+                else
+                {
+                    newNode = new XSharpLibraryNode(xType, "", moduleId.Hierarchy, moduleId.ItemID);
+                    nsNode.AddNode(newNode);
+                    newNode.parent = nsNode;
+                }
+                //
+                // Insert Members
+                CreateMembersTree(newNode, xType, moduleId);
+                //
+                addNode(moduleId, newNode);
+            }
+            else
+            {
+                // Not found !?
+            }
+            return;
         }
 
         private void CreateModuleTree(XSharpLibraryProject prjNode, XFile scope, XSharpModuleId moduleId)
@@ -523,32 +539,7 @@ namespace XSharp.LanguageService
 
                     if (xType.Kind == Kind.Namespace)
                     {
-                        string nodeName = xType.Name;
-                        if (String.IsNullOrEmpty(xType.Name))
-                        {
-                            nodeName = "Default NameSpace";
-                        }
-                        // Does that NameSpace already exist ?
-                        // Search for the corresponding NameSpace
-                        nsNode = prjNode.SearchNameSpace(nodeName);
-                        if (nsNode is XSharpLibraryNode)
-                        {
-                            newNode = (XSharpLibraryNode)nsNode;
-                            newNode.Depends(moduleId.ItemID);
-                        }
-                        else
-                        {
-                            newNode = new XSharpLibraryNode(xType, nodeName, moduleId.Hierarchy, moduleId.ItemID);
-
-                            // NameSpaces are always added to the root.
-                            prjNode.AddNode(newNode);
-                            newNode.parent = prjNode;
-                        }
-                        //
-                        lock (files)
-                        {
-                            files.Add(moduleId, newNode);
-                        }
+                        addNamespace(xType, prjNode, moduleId);
                     }
                 }
 
@@ -556,54 +547,16 @@ namespace XSharp.LanguageService
                 var types = XSharpModel.XDatabase.GetTypesInFile(scope.Id.ToString());
                 if (types == null)
                     return;
+                var model = scope.Project;
+                model.FileWalkComplete -= OnFileWalkComplete;
                 elements = XDbResultHelpers.BuildFullTypesInFile(scope, types);
+                model.FileWalkComplete += OnFileWalkComplete;
                 // Now, look for Classes
                 foreach (XTypeDefinition xType in elements)
                 {
-                    // Is it a kind of Type ?
                     if ((xType.Kind.IsType()))
                     {
-                        string nSpace = "Default NameSpace"; // prjNode.DefaultNameSpace;
-                        if (!String.IsNullOrEmpty(xType.Namespace))
-                            nSpace = xType.Namespace;
-                        // Search for the corresponding NameSpace
-                        nsNode = prjNode.SearchNameSpace(nSpace);
-                        if (nsNode == null)
-                        {
-                            // should we search for a class ????
-                            nsNode = prjNode.SearchClass(nSpace);
-                        }
-                        if (nsNode is XSharpLibraryNode)
-                        {
-                            XSharpLibraryNode xsNSNode = (XSharpLibraryNode)nsNode;
-                            // So the Class node will belong to that NameSpace Node
-                            // Now, try to check if such Type already exist
-                            LibraryNode newTmpNode;
-                            newTmpNode = xsNSNode.SearchClass(xType.FullName);
-                            if (newTmpNode is XSharpLibraryNode)
-                            {
-                                newNode = (XSharpLibraryNode)newTmpNode;
-                                newNode.Depends(moduleId.ItemID);
-                            }
-                            else
-                            {
-                                newNode = new XSharpLibraryNode(xType, "", moduleId.Hierarchy, moduleId.ItemID);
-                                nsNode.AddNode(newNode);
-                                newNode.parent = nsNode;
-                            }
-                            //
-                            // Insert Members
-                            CreateMembersTree(newNode, xType, moduleId);
-                            //
-                            lock (files)
-                            {
-                                files.Add(moduleId, newNode);
-                            }
-                        }
-                        else
-                        {
-                            // Not found !?
-                        }
+                        addType(xType, prjNode, moduleId);
                     }
                 }
 
@@ -616,22 +569,23 @@ namespace XSharp.LanguageService
                 }
                 else
                 {
-                    newNode = new XSharpLibraryNode(XLiterals.GlobalName, LibraryNode.LibraryNodeType.Namespaces);
+                    newNode = new XSharpLibraryNode(XLiterals.GlobalName, LibraryNode.LibraryNodeType.Namespaces, "");
                     // NameSpaces are always added to the root.
                     prjNode.AddNode(newNode);
                     newNode.parent = prjNode;
                 }
                 //
-                lock (files)
-                {
-                    files.Add(moduleId, newNode);
-                }
+                addNode(moduleId, newNode);
+
                 // Finally, any Function/Procedure ??
                 var funcs = XSharpModel.XDatabase.GetFunctions(scope.Id.ToString());
-                if (funcs == null)
-                    return;
-                var elts = XDbResultHelpers.BuildFullFuncsInFile(scope, funcs);
-                CreateGlobalTree(newNode, elts, moduleId);
+                IList<XMemberDefinition> elts;
+                if (funcs != null)
+                {
+                    elts = XDbResultHelpers.BuildFullFuncsInFile(scope, funcs);
+                    CreateGlobalTree(newNode, elts, moduleId);
+                }
+
             }
             catch
             {
@@ -649,14 +603,11 @@ namespace XSharp.LanguageService
             {
                 XSharpLibraryNode newNode = new XSharpLibraryNode(member, "", moduleId.Hierarchy, moduleId.ItemID);
                 // Functions ?
-                if ((newNode.NodeType & LibraryNode.LibraryNodeType.Members) != LibraryNode.LibraryNodeType.None)
+                if (newNode.NodeType.HasFlag(LibraryNode.LibraryNodeType.Members) )
                 {
                     globalScope.AddNode(newNode);
                     newNode.parent = globalScope;
-                    lock (files)
-                    {
-                        files.Add(moduleId, newNode);
-                    }
+                    addNode(moduleId, newNode);
                 }
             }
         }
@@ -668,21 +619,16 @@ namespace XSharp.LanguageService
                 return;
             }
 
-
             foreach (XMemberDefinition member in scope.Members)
             {
                 XSharpLibraryNode newNode = new XSharpLibraryNode(member, "", moduleId.Hierarchy, moduleId.ItemID);
 
-                // The classes are always added to the root node, the functions to the
-                // current node.
-                if ((newNode.NodeType & LibraryNode.LibraryNodeType.Members) != LibraryNode.LibraryNodeType.None)
+                // The classes are always added to the root node, the functions to the current node.
+                if (newNode.NodeType.HasFlag(LibraryNode.LibraryNodeType.Members) )
                 {
                     current.AddNode(newNode);
                     newNode.parent = current;
-                    lock (files)
-                    {
-                        files.Add(moduleId, newNode);
-                    }
+                    addNode(moduleId, newNode);
                 }
             }
         }
@@ -694,32 +640,27 @@ namespace XSharp.LanguageService
         /// </summary>
         private void OnFileWalkComplete(XFile xfile)
         {
-            if (xfile == null)
+            if (XSolution.IsClosing || xfile == null || !xfile.HasCode || xfile.Virtual)
             {
                 return;
             }
-            // Retrieve the corresponding node
-            if (!xfile.HasCode || XSolution.IsClosing)
-                return;
-            //
-            if (xfile.Virtual)
-                return;
-            try
+            //XSettings.DisplayOutputMessage("OnFileWalkComplete " + xfile.FullPath);
+            if (filedict.TryGetValue(xfile.FullPath, out var module))
             {
-                /*
-                var prjNode = xfile.Project.ProjectNode;
-                Microsoft.VisualStudio.Project.HierarchyNode node = prjNode.FindURL(xfile.FullPath);
-                if (node != null)
+                CreateUpdateTreeRequest(xfile.SourcePath, module);
+            }
+            else
+            {
+                if (projectdict.TryGetValue(xfile.Project.FileName, out var prjNode))
                 {
-                    XSharpModuleId module = new XSharpModuleId(prjNode.InteropSafeHierarchy, node.ID);
-                    module.ContentHashCode = xfile.ContentHashCode;
-                    CreateUpdateTreeRequest(xfile.SourcePath, module);
+                    var hierarchyId = prjNode.ownerHierarchy;
+                    var hr = hierarchyId.ParseCanonicalName(xfile.FullPath, out var itemid);
+                    if (itemid != 0 && hr == VSConstants.S_OK)
+                    {
+                        var args = new HierarchyEventArgs(itemid, xfile.FullPath);
+                        OnNewFile(hierarchyId, args);
+                    }
                 }
-                */
-            }
-            catch
-            {
-
             }
             return;
         }
@@ -728,12 +669,23 @@ namespace XSharp.LanguageService
         {
             if (xsProject != null)
             {
-                var aFiles = xsProject.SourceFiles;
-                foreach (var fullPath in aFiles)
+                if (projectdict.TryGetValue(xsProject.FileName, out var prjNode))
                 {
-                    var xfile = xsProject.FindXFile(fullPath);
-                    if (xfile != null)
-                        OnFileWalkComplete(xfile);
+					// Add all source files.
+                    var hierarchyId = prjNode.ownerHierarchy;
+                    var listener = hierarchies[hierarchyId];
+                    foreach (var path in xsProject.SourceFiles)
+                    {
+                        var xfile = xsProject.FindXFile(path);
+                        var hr = hierarchyId.ParseCanonicalName(xfile.FullPath, out var itemid);
+                        if (itemid != 0 && hr == VSConstants.S_OK)
+                        {
+                            var args = new HierarchyEventArgs(itemid, xfile.FullPath);
+                            OnNewFile(hierarchyId, args);
+                        }
+                    }
+
+                    listener.StartListening();
                 }
             }
         }
@@ -742,11 +694,15 @@ namespace XSharp.LanguageService
         {
             if (XSolution.IsClosing)
                 return;
-            LibraryTask task = new LibraryTask(file, id);
-            task.ModuleID = id;
             lock (requests)
             {
-                requests.Enqueue(task);
+                //XSettings.DisplayOutputMessage("Libary Enqueue " + task.FileName);
+                if (! tasks.ContainsKey(file))
+                {
+                    LibraryTask task = new LibraryTask(file, id);
+                    requests.Enqueue(task);
+                    tasks.Add(file, task);
+                }
             }
             requestPresent.Set();
         }
@@ -796,23 +752,7 @@ namespace XSharp.LanguageService
             {
                 return;
             }
-            string fileText = null;
-            if (null != args.TextBuffer)
-            {
-                int lastLine;
-                int lastIndex;
-                int hr = args.TextBuffer.GetLastLineIndex(out lastLine, out lastIndex);
-                if (Microsoft.VisualStudio.ErrorHandler.Failed(hr))
-                {
-                    return;
-                }
-                hr = args.TextBuffer.GetLineText(0, 0, lastLine, lastIndex, out fileText);
-                if (Microsoft.VisualStudio.ErrorHandler.Failed(hr))
-                {
-                    return;
-                }
-            }
-            CreateUpdateTreeRequest(args.CanonicalName, new XSharpModuleId(hierarchy, args.ItemID));
+            CreateUpdateTreeRequest(args.CanonicalName, new XSharpModuleId(hierarchy, args.ItemID, args.CanonicalName));
         }
 
         /// <summary>
@@ -827,12 +767,11 @@ namespace XSharp.LanguageService
             {
                 return;
             }
-            XSharpModuleId id = new XSharpModuleId(hierarchy, args.ItemID);
+            XSharpModuleId id = new XSharpModuleId(hierarchy, args.ItemID, args.CanonicalName);
+            // Ok, now remove ALL nodes for that key
             lock (files)
             {
-                HashSet<XSharpLibraryNode> values = null;
-                // Ok, now remove ALL nodes for that key
-                if (files.TryGetValue(id, out values))
+                if (files.TryGetValue(id, out var values))
                 {
                     foreach (XSharpLibraryNode node in values)
                     {
@@ -845,184 +784,16 @@ namespace XSharp.LanguageService
                         }
                     }
                 }
-                // and then remove the key
-                files.Remove(id);
             }
+            // and then remove the key
+            removeNode(id);
             //
         }
         #endregion
 
-        #region IVsRunningDocTableEvents Members
-
-        public int OnAfterAttributeChange(uint docCookie, uint grfAttribs)
-        {
-#if TEXTCHANGELISTENER
-            if ((grfAttribs & (uint)(__VSRDTATTRIB.RDTA_MkDocument)) == (uint)__VSRDTATTRIB.RDTA_MkDocument)
-            {
-                IVsRunningDocumentTable rdt = provider.GetService(typeof(SVsRunningDocumentTable)) as IVsRunningDocumentTable;
-                if (rdt != null)
-                {
-
-                    IntPtr docData = IntPtr.Zero;
-                    string moniker;
-                    try
-                    {
-                        int hr;
-                        uint flags, readLocks, editLocks, itemid;
-                        IVsHierarchy hier;
-                        hr = rdt.GetDocumentInfo(docCookie, out flags, out readLocks, out editLocks, out moniker, out hier, out itemid, out docData);
-                        TextLineEventListener listner;
-                        if (documents.TryGetValue(docCookie, out listner))
-                        {
-                            listner.FileName = moniker;
-                        }
-                    }
-                    finally
-                    {
-                        if (IntPtr.Zero != docData)
-                        {
-                            Marshal.Release(docData);
-                        }
-                    }
-                }
-            }
-#endif
-            return VSConstants.S_OK;
-        }
-
-        public int OnAfterDocumentWindowHide(uint docCookie, IVsWindowFrame pFrame)
-        {
-            return VSConstants.S_OK;
-        }
-
-        public int OnAfterFirstDocumentLock(uint docCookie, uint dwRDTLockType, uint dwReadLocksRemaining, uint dwEditLocksRemaining)
-        {
-            return VSConstants.S_OK;
-        }
-
-        public int OnAfterSave(uint docCookie)
-        {
-            if (!XSolution.IsClosing)
-            {
-                string fileName = getFileNameFromCookie(docCookie);
-                var xFile = XSolution.FindFile(fileName);
-                if (xFile != null && xFile.HasCode)
-                {
-                    xFile.Interactive = true;
-                    // this will update the Model in the DataBase
-                    xFile.Project.WalkFile(xFile);
-                    // Now, check if we need to update the ClassView tree
-                    xFile.Project.FileWalkComplete(xFile);
-                }
-            }
-            return VSConstants.S_OK;
-        }
-
-        public int OnBeforeDocumentWindowShow(uint docCookie, int fFirstShow, IVsWindowFrame pFrame)
-        {
-#if TEXTCHANGELISTENER
-            // Check if this document is in the list of the documents.
-            if (documents.ContainsKey(docCookie))
-            {
-                return VSConstants.S_OK;
-            }
-            // Get the information about this document from the RDT.
-            IVsRunningDocumentTable rdt = provider.GetService(typeof(SVsRunningDocumentTable)) as IVsRunningDocumentTable;
-            if (null != rdt)
-            {
-                // Note that here we don't want to throw in case of error.
-                uint flags;
-                uint readLocks;
-                uint writeLoks;
-                string documentMoniker;
-                IVsHierarchy hierarchy;
-                uint itemId;
-                IntPtr unkDocData;
-                int hr = rdt.GetDocumentInfo(docCookie, out flags, out readLocks, out writeLoks,
-                                             out documentMoniker, out hierarchy, out itemId, out unkDocData);
-                try
-                {
-                    if (Microsoft.VisualStudio.ErrorHandler.Failed(hr) || (IntPtr.Zero == unkDocData))
-                    {
-                        return VSConstants.S_OK;
-                    }
-                    // Check if the hierarchy is one of the hierarchies this service is monitoring.
-                    if (!hierarchies.ContainsKey(hierarchy))
-                    {
-                        // This hierarchy is not monitored, we can exit now.
-                        return VSConstants.S_OK;
-                    }
-
-                    // Check the extension of the file to see if a listener is required.
-                    string extension = System.IO.Path.GetExtension(documentMoniker);
-                    if (0 != string.Compare(extension, ".prg", StringComparison.OrdinalIgnoreCase))
-                    {
-                        return VSConstants.S_OK;
-                    }
-
-                    // Create the module id for this document.
-                    XSharpModuleId docId = new XSharpModuleId(hierarchy, itemId);
-
-                    // Try to get the text buffer.
-                    IVsTextLines buffer = Marshal.GetObjectForIUnknown(unkDocData) as IVsTextLines;
-
-                    // Create the listener.
-                    // So we are informed in case of Buffer change
-                    //TextLineEventListener listener = new TextLineEventListener(buffer, documentMoniker, docId);
-                    // Set the event handler for the change event. Note that there is no difference
-                    // between the AddFile and FileChanged operation, so we can use the same handler.
-                    //listener.OnFileChanged += new EventHandler<HierarchyEventArgs>(OnNewFile);
-                    // Add the listener to the dictionary, so we will not create it anymore.
-                    //documents.Add(docCookie, listener);
-                }
-                finally
-                {
-                    if (IntPtr.Zero != unkDocData)
-                    {
-                        Marshal.Release(unkDocData);
-                    }
-                }
-            }
-            // Always return success.
-#endif
-            return VSConstants.S_OK;
-        }
-
-        public int OnBeforeLastDocumentUnlock(uint docCookie, uint dwRDTLockType, uint dwReadLocksRemaining, uint dwEditLocksRemaining)
-        {
-#if TEXTCHANGELISTENER
-            if ((0 != dwEditLocksRemaining) || (0 != dwReadLocksRemaining))
-            {
-                return VSConstants.S_OK;
-            }
-            TextLineEventListener listener;
-            if (!documents.TryGetValue(docCookie, out listener) || (null == listener))
-            {
-                return VSConstants.S_OK;
-            }
-            using (listener)
-            {
-                documents.Remove(docCookie);
-                // Now make sure that the information about this file are up to date (e.g. it is
-                // possible that Class View shows something strange if the file was closed without
-                // saving the changes).
-                HierarchyEventArgs args = new HierarchyEventArgs(listener.FileID.ItemID, listener.FileName);
-                OnNewFile(listener.FileID.Hierarchy, args);
-            }
-#endif
-            return VSConstants.S_OK;
-        }
-
-        #endregion
 
         public void OnIdle()
         {
-#if TEXTCHANGELISTENER
-            foreach (TextLineEventListener listener in documents.Values)
-            {
-                listener.OnIdle();
-            }
-#endif
         }
     }
 }

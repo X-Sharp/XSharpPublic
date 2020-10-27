@@ -1,8 +1,14 @@
-#using System.Collections.Generic
-#using System.Collections
-#using System.Windows.Forms
-#using System.Drawing
-#using System.IO
+//
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
+// See License.txt in the project root for license information.
+//
+USING System.Collections.Generic
+USING System.Collections
+USING System.Windows.Forms
+USING System.Drawing
+USING System.IO
+USING XSharpModel
 
 INTERNAL ENUM CavoWedInfSection
 	MEMBER None
@@ -19,7 +25,8 @@ STATIC CLASS VOWindowEditorTemplate
 	STATIC PRIVATE aAssignMap AS Dictionary<STRING,STRING>
 	STATIC PRIVATE lLoaded AS LOGIC
 	STATIC EXPORT aPages AS HashTable
-	STATIC EXPORT GridX , GridY AS INT
+	STATIC PROPERTY GridX AS INT GET XEditorSettings.GridX SET XEditorSettings.GridX := VALUE
+    STATIC PROPERTY GridY AS INT GET XEditorSettings.GridY SET XEditorSettings.GridY := value
 	STATIC CONSTRUCTOR()
 
 		VOWindowEditorTemplate.aControls := ArrayList{}
@@ -40,9 +47,6 @@ STATIC CLASS VOWindowEditorTemplate
 		VOWindowEditorTemplate.aAssignMap:Add("FILLUSING" , "FillUsing")
 		VOWindowEditorTemplate.aAssignMap:Add("FONT" , "Font")
 		
-		VOWindowEditorTemplate.GridX := 8
-		VOWindowEditorTemplate.GridY := 8
-
 	RETURN
 	STATIC METHOD Load(cDirectory AS STRING) AS LOGIC
 		LOCAL cCavoWed AS STRING

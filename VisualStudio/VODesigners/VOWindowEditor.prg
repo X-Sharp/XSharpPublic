@@ -1,8 +1,14 @@
-#using System.Windows.Forms
-#using System.Drawing
-#using System.Collections.Generic
-#using System.Collections
-#using System.IO
+//
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
+// See License.txt in the project root for license information.
+//
+using System.Windows.Forms
+USING System.Drawing
+USING System.Collections.Generic
+USING System.Collections
+USING System.IO
+USING XSharpModel
 
 ENUM ViewMode
 	MEMBER Auto
@@ -2958,8 +2964,8 @@ RETURN
 			IF lNameConflict
 				SELF:StartAction(DesignerBasicActionType.SetProperty , ActionData{cGuid , "Name" , SELF:GetNextName(oEntry:cName)})
 			END IF
-			SELF:StartAction(DesignerBasicActionType.SetProperty , ActionData{cGuid , "_Left" , oEntry:x + 8 * oEntry:nPasted})
-			SELF:StartAction(DesignerBasicActionType.SetProperty , ActionData{cGuid , "_Top" , oEntry:y + 8 * oEntry:nPasted})
+			SELF:StartAction(DesignerBasicActionType.SetProperty , ActionData{cGuid , "_Left" , oEntry:x + XEditorSettings.PasteOffSetX * oEntry:nPasted})
+			SELF:StartAction(DesignerBasicActionType.SetProperty , ActionData{cGuid , "_Top" , oEntry:y + XEditorSettings.PasteOffSetY * oEntry:nPasted})
 			IF SELF:ViewMode == ViewMode.Browse
 				SELF:StartAction(DesignerBasicActionType.SetProperty , ActionData{cGuid , "_Deleted" , 1})
 			END IF

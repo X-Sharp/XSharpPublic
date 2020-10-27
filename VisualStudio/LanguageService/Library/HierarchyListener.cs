@@ -104,9 +104,9 @@ namespace XSharp.LanguageService
             });
             //
             //if (doInitialScan)
-            //{
-            //    InternalScanHierarchy(VSConstants.VSITEMID_ROOT);
-            //}
+            {
+                InternalScanHierarchy(VSConstants.VSITEMID_ROOT);
+            }
         }
 
         public void StopListening()
@@ -162,11 +162,11 @@ namespace XSharp.LanguageService
         {
             // Check if the item is a PRG file.
             Debug.WriteLine("--> OnItemAdded");
-            string name;
-            if (!IsPrgFile(itemidAdded, out name))
-            {
-                return VSConstants.S_OK;
-            }
+            string name = getItemName(itemidAdded);
+            // if (!IsPrgFile(itemidAdded, out name))
+            //{
+            //    return VSConstants.S_OK;
+            //}
 
             // This item is a PRG file, so we can notify that it is added to the hierarchy.
             if (null != onItemAdded)
@@ -181,11 +181,11 @@ namespace XSharp.LanguageService
         {
             Debug.WriteLine("--> OnItemDeleted");
             // Notify that the item is deleted only if it is a PRG file.
-            string name;
-            if (!IsPrgFile(itemid, out name))
-            {
-                return VSConstants.S_OK;
-            }
+            string name = getItemName(itemid);
+            //if (! IsPrgFile(itemid, out name))
+            //{
+            //    return VSConstants.S_OK;
+            //}
             if (null != onItemDeleted)
             {
                 HierarchyEventArgs args = new HierarchyEventArgs(itemid, name);
@@ -239,8 +239,14 @@ namespace XSharp.LanguageService
         private bool IsPrgFile(uint itemId, out string canonicalName)
         {
             // Find out if this item is a physical file.
+            canonicalName = getItemName(itemId);
+            string extension = System.IO.Path.GetExtension(canonicalName);
+            return (0 == string.Compare(extension, ".prg", StringComparison.OrdinalIgnoreCase));
+        }
+		
+        private string getItemName(uint itemId)
+        {
             Guid typeGuid = Guid.Empty;
-            canonicalName = null;
             int hr = VSConstants.S_OK;
             try
             {
@@ -256,17 +262,15 @@ namespace XSharp.LanguageService
                 VSConstants.GUID_ItemType_PhysicalFile != typeGuid)
             {
                 // It is not a file, we can exit now.
-                return false;
+                return string.Empty;
             }
 
+            //hierarchy.GetProperty(itemId, (int)__VSHPROPID.VSHPROPID_Name, out var name);
+
             // This item is a file; find if it is a PRG file.
-            hr = hierarchy.GetCanonicalName(itemId, out canonicalName);
-            if (Microsoft.VisualStudio.ErrorHandler.Failed(hr))
-            {
-                return false;
-            }
-            string extension = System.IO.Path.GetExtension(canonicalName);
-            return (0 == string.Compare(extension, ".prg", StringComparison.OrdinalIgnoreCase));
+            hr = hierarchy.GetCanonicalName(itemId, out var canonicalName);
+            
+            return canonicalName;
         }
 
         /// <summary>
@@ -279,8 +283,9 @@ namespace XSharp.LanguageService
             while (VSConstants.VSITEMID_NIL != currentItem)
             {
                 // If this item is a PRG file, then send the add item event.
-                string itemName;
-                if ((null != onItemAdded) && IsPrgFile(currentItem, out itemName))
+                string itemName = getItemName(itemId);
+                // IsPrgFile(currentItem, out itemName);
+                if ((null != onItemAdded) && ! string.IsNullOrEmpty(itemName))
                 {
                     HierarchyEventArgs args = new HierarchyEventArgs(currentItem, itemName);
                     onItemAdded(hierarchy, args);
@@ -290,9 +295,8 @@ namespace XSharp.LanguageService
                 // children of this node.
                 // Before looking at the children we have to make sure that the enumeration has not
                 // side effects to avoid unexpected behavior.
-                object propertyValue;
                 bool canScanSubitems = true;
-                int hr = hierarchy.GetProperty(currentItem, (int)__VSHPROPID.VSHPROPID_HasEnumerationSideEffects, out propertyValue);
+                int hr = hierarchy.GetProperty(currentItem, (int)__VSHPROPID.VSHPROPID_HasEnumerationSideEffects, out var propertyValue);
                 if ((VSConstants.S_OK == hr) && (propertyValue is bool))
                 {
                     canScanSubitems = !(bool)propertyValue;

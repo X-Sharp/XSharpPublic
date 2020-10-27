@@ -1,7 +1,12 @@
-#using System.Collections
-#using System.Text
-#using System.Xml
-#using System.IO
+//
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
+// See License.txt in the project root for license information.
+//
+USING System.Collections
+USING System.Text
+USING System.Xml
+USING System.IO
 
 CLASS VOWEDItem
 	EXPORT cName AS STRING
@@ -962,7 +967,7 @@ PARTIAL CLASS VOWindowEditor INHERIT WindowDesignerBase
 		oStream:Editor:AddLine(e"#include \"VOWin32APILibrary.vh\"")
 		IF lOldTransporter
 			FOR n := 0 UPTO oCode:aDefines:Count - 1
-				oStream:Editor:AddLine("#define " + oCode:aDefines[n] + " " + oCode:aDefineValues[n])
+				oStream:Editor:AddLine("#STATIC DEFINE " + oCode:aDefines[n] + " " + oCode:aDefineValues[n])
 			NEXT
 		ELSE
 			IF lRcInSameFolder
@@ -1030,4 +1035,5 @@ CLASS VODesignersException INHERIT Exception
 		SUPER(cMessage)
 	RETURN
 END CLASS
+
 

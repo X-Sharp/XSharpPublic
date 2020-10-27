@@ -42,9 +42,19 @@ namespace XSharp.LanguageService
                 return this._defaultNameSpace;
             }
         }
+        internal override LibraryNode Clone()
+        {
+            return new XSharpLibraryProject(this);
+        }
+
+        internal XSharpLibraryProject(XSharpLibraryProject node) :
+            base(node)
+        {
+            this._defaultNameSpace = node._defaultNameSpace;
+        }
 
         internal XSharpLibraryProject(XProject prj, IVsHierarchy hierarchy)
-            : base(prj.Name, LibraryNodeType.Package)
+            : base(prj.Name, LibraryNodeType.Package, prj.FileName)
         {
             this.ownerHierarchy = hierarchy;
             //
@@ -59,7 +69,7 @@ namespace XSharp.LanguageService
             if (String.IsNullOrEmpty(this._defaultNameSpace))
                 this._defaultNameSpace = "Default Namespace";
             //
-            XSharpLibraryNode defaultNS = new XSharpLibraryNode( _defaultNameSpace, LibraryNodeType.Namespaces );
+            XSharpLibraryNode defaultNS = new XSharpLibraryNode( _defaultNameSpace, LibraryNodeType.Namespaces,"" );
             defaultNS.displayData.Image = (ushort)IconImageIndex._Namespace;
             defaultNS.displayData.SelectedImage = (ushort)IconImageIndex._Namespace;
             this.AddNode(defaultNS);

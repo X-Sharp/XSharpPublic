@@ -123,9 +123,7 @@ namespace XSharp.LanguageService
     {
         internal IVsHierarchy ownerHierarchy;
         internal List<uint> filesId;
-        //private TextSpan sourceSpan;
         private string fileMoniker;
-        //private XEntityDefinition member;
         // Description Infos...
         private List<Tuple<string, VSOBDESCRIPTIONSECTION>> description;
         private SourcePosition editorInfo;
@@ -134,11 +132,14 @@ namespace XSharp.LanguageService
         private string nameSp = "";
         private string className = "";
 
-        internal XSharpLibraryNode(string namePrefix, LibraryNodeType nType)
+        internal string FullPath { get; } = "";
+		
+        internal XSharpLibraryNode(string namePrefix, LibraryNodeType nType, string path)
             : base(namePrefix)
         {
             //
             this.filesId = new List<uint>();
+            FullPath = path;
             //
             this.ownerHierarchy = null;
             this.Depends(0);
@@ -357,7 +358,6 @@ namespace XSharp.LanguageService
             if (this.CanGoToSource && this.editorInfo != null)
             {
                 // Need to retrieve the Project, then the File...
-                //this.member.OpenEditor();
                 var file = XSolution.FindFile(editorInfo.FileName);
                 var project = file.Project;
                 var node = project.ProjectNode;

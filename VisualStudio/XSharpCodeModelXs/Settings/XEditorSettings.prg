@@ -11,5 +11,11 @@ BEGIN NAMESPACE XSharpModel
             
         STATIC PROPERTY PasteOffSetX AS LONG AUTO := 8
         STATIC PROPERTY PasteOffSetY AS LONG AUTO := 8
+
+        STATIC PROPERTY DbServerParentClass AS STRING AUTO := "DbServer"
+        STATIC PROPERTY DbServerDefaultRDD AS STRING AUTO := "DBFNTX"
+        STATIC PROPERTY FieldSpecParentClass AS STRING AUTO := "FieldSpec"
+        STATIC PROPERTY MenuParentClass AS STRING AUTO := "Menu"
+        STATIC PROPERTY ToolbarParentClass AS STRING AUTO := "Menu"
     END CLASS
 END NAMESPACE

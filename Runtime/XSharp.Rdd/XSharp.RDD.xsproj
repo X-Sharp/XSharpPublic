@@ -51,6 +51,7 @@
     <Compile Include="ACE\ACE32.prg" />
     <Compile Include="ACE\ACE64.prg" />
     <Compile Include="ACE\AceEnums.prg" />
+    <Compile Include="ACE\ACEStructures.prg" />
     <Compile Include="ACE\AceUnpublished.prg" />
     <Compile Include="ACE\AceUnpublished32.prg" />
     <Compile Include="ACE\AceUnpublished64.prg" />

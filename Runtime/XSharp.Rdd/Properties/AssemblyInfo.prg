@@ -16,6 +16,7 @@ USING XSharp.Internal
 
 // in the core dialect the next attributes are not included automatically
 [assembly: ImplicitNamespace("XSharp")]
+[assembly: ImplicitNamespace("XSharp.ADS")]
 [assembly: CompilerVersionAttribute("X# "+__VERSION__ +" - dialect:"+__DIALECT__ )] 
 [assembly: ClassLibrary("XSharp.RDD.Functions","XSharp")]
 [assembly: RuntimeCompatibility(WrapNonExceptionThrows := TRUE)]

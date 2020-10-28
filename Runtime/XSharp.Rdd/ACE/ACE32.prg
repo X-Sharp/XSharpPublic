@@ -994,23 +994,53 @@ BEGIN NAMESPACE XSharp.ADS
         PUBLIC STATIC EXTERN METHOD AdsLookupKey(hIndex AS IntPtr , pucKey AS STRING , usKeyLen AS WORD, usDataType AS WORD, pbFound OUT WORD) AS DWORD 
         
         [DllImport("ace32.dll", CharSet := CharSet.Ansi)];
-        PUBLIC STATIC EXTERN METHOD AdsMgConnect(pucServerName AS STRING , pucUserName AS STRING , pucPassword AS STRING , phMgmtHandle OUT IntPtr ) AS DWORD 
-        
+        PUBLIC STATIC EXTERN METHOD AdsMgConnect( pucServerName AS STRING, pucUserName AS STRING, pucPassword AS STRING, phMgmtHandle OUT IntPtr ) AS DWORD 
+    
         [DllImport("ace32.dll", CharSet := CharSet.Ansi)];
-        PUBLIC STATIC EXTERN METHOD AdsMgDisconnect(hMgmtHandle AS IntPtr ) AS DWORD 
-        
+        PUBLIC STATIC EXTERN METHOD AdsMgDisconnect( hMgmtHandle AS IntPtr ) AS DWORD 
+    
         [DllImport("ace32.dll", CharSet := CharSet.Ansi)];
-        PUBLIC STATIC EXTERN METHOD AdsMgResetCommStats(hMgmtHandle AS IntPtr ) AS DWORD 
-        
+        PUBLIC STATIC EXTERN METHOD AdsMgGetActivityInfo( hMgmtHandle AS IntPtr, pstActivityInfo AS IntPtr, pusStructSize REF WORD ) AS DWORD 
+    
         [DllImport("ace32.dll", CharSet := CharSet.Ansi)];
-        PUBLIC STATIC EXTERN METHOD AdsMgDumpInternalTables(hMgmtHandle AS IntPtr ) AS DWORD 
-        
+        PUBLIC STATIC EXTERN METHOD AdsMgGetCommStats( hMgmtHandle AS IntPtr, pstCommStats AS IntPtr, pusStructSize REF WORD ) AS DWORD 
+    
         [DllImport("ace32.dll", CharSet := CharSet.Ansi)];
-        PUBLIC STATIC EXTERN METHOD AdsMgGetServerType(hMgmtHandle AS IntPtr , pusServerType OUT WORD ) AS DWORD 
-        
+        PUBLIC STATIC EXTERN METHOD AdsMgGetConfigInfo( hMgmtHandle AS IntPtr, pstConfigValues AS IntPtr, pusConfigValuesStructSize REF WORD, pstConfigMemory AS IntPtr, pusConfigMemoryStructSize REF WORD ) AS DWORD 
+    
         [DllImport("ace32.dll", CharSet := CharSet.Ansi)];
-        PUBLIC STATIC EXTERN METHOD AdsMgKillUser(hMgmtHandle AS IntPtr , pucUserName AS STRING , usConnNumber AS WORD ) AS DWORD 
-        
+        PUBLIC STATIC EXTERN METHOD AdsMgGetInstallInfo( hMgmtHandle AS IntPtr, pstInstallInfo AS IntPtr, pusStructSize REF WORD ) AS DWORD 
+    
+        [DllImport("ace32.dll", CharSet := CharSet.Ansi)];
+        PUBLIC STATIC EXTERN METHOD AdsMgGetLockOwner( hMgmtHandle AS IntPtr, pucTableName AS STRING, ulRecordNumber AS DWORD, pstUserInfo AS IntPtr, pusStructSize REF WORD, pusLockType REF WORD ) AS DWORD 
+    
+        [DllImport("ace32.dll", CharSet := CharSet.Ansi)];
+        PUBLIC STATIC EXTERN METHOD AdsMgGetLocks( hMgmtHandle AS IntPtr, pucTableName AS STRING, pucUserName AS STRING, usConnNumber AS WORD, astRecordInfo AS IntPtr, pusArrayLen REF WORD, pusStructSize REF WORD ) AS DWORD 
+    
+        [DllImport("ace32.dll", CharSet := CharSet.Ansi)];
+        PUBLIC STATIC EXTERN METHOD AdsMgGetOpenIndexes( hMgmtHandle AS IntPtr, pucTableName AS STRING, pucUserName AS STRING, usConnNumber AS WORD, astOpenIndexInfo AS IntPtr, pusArrayLen REF WORD, pusStructSize REF WORD ) AS DWORD 
+    
+        [DllImport("ace32.dll", CharSet := CharSet.Ansi)];
+        PUBLIC STATIC EXTERN METHOD AdsMgGetOpenTables( hMgmtHandle AS IntPtr, pucUserName AS STRING, usConnNumber AS WORD, astOpenTableInfo AS IntPtr, pusArrayLen REF WORD, pusStructSize REF WORD ) AS DWORD 
+
+        [DllImport("ace32.dll", CharSet := CharSet.Ansi)];
+        PUBLIC STATIC EXTERN METHOD AdsMgGetUserNames( hMgmtHandle AS IntPtr, pucFileName AS STRING, astUserInfo AS IntPtr, pusArrayLen REF WORD, pusStructSize REF WORD ) AS DWORD 
+    
+        [DllImport("ace32.dll", CharSet := CharSet.Ansi)];
+        PUBLIC STATIC EXTERN METHOD AdsMgGetWorkerThreadActivity( hMgmtHandle AS IntPtr, astWorkerThreadActivity AS IntPtr, pusArrayLen REF WORD, pusStructSize REF WORD ) AS DWORD 
+    
+        [DllImport("ace32.dll", CharSet := CharSet.Ansi)];
+        PUBLIC STATIC EXTERN METHOD AdsMgResetCommStats( hMgmtHandle AS IntPtr ) AS DWORD 
+
+        [DllImport("ace32.dll", CharSet := CharSet.Ansi)];
+        PUBLIC STATIC EXTERN METHOD AdsMgDumpInternalTables( hMgmtHandle AS IntPtr ) AS DWORD 
+	
+        [DllImport("ace32.dll", CharSet := CharSet.Ansi)];
+        PUBLIC STATIC EXTERN METHOD AdsMgGetServerType( hMgmtHandle AS IntPtr, pusServerType OUT WORD ) AS DWORD 
+    
+        [DllImport("ace32.dll", CharSet := CharSet.Ansi)];
+        PUBLIC STATIC EXTERN METHOD AdsMgKillUser( hMgmtHandle AS IntPtr, pucUserName AS STRING, usConnNumber AS WORD ) AS DWORD 
+
         [DllImport("ace32.dll", CharSet := CharSet.Ansi)];
         PUBLIC STATIC EXTERN METHOD AdsNullTerminateStrings(bNullTerminate AS WORD ) AS DWORD 
         

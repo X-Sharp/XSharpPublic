@@ -3613,6 +3613,8 @@ CLASS DesignWindowItem INHERIT DesignItem
 	INTERNAL oColumn AS DesignDataColumn
 	EXPORT lBrowseView AS LOGIC
 	PROTECT oBIProp,oBSProp,oDelProp AS DesignProperty
+	EXPORT lForceCommandControl AS LOGIC
+	EXPORT cRawStyles AS STRING
 	
 	CONSTRUCTOR(_oDesigner AS VOWindowEditor , oTemplate AS VOControlTemplate)
 
@@ -3630,7 +3632,9 @@ CLASS DesignWindowItem INHERIT DesignItem
 		SELF:cWinClass := oTemplate:cWinClass
 		SELF:cFullClass := oTemplate:cFullClass
 		SELF:cInitMethod := oTemplate:cInitMethod
+		SELF:cRawStyles := oTemplate:cRawStyles
 		SELF:lCreateResource := oTemplate:lCreateResource
+		SELF:lForceCommandControl := oTemplate:lForceCommandControl
 		SELF:lForm := oTemplate:lForm
 		
 		SELF:cPrefix := "oDC"
@@ -3651,6 +3655,17 @@ CLASS DesignWindowItem INHERIT DesignItem
 		CASE SELF:cFullClass:IndexOf("CONTROL:TEXTCONTROL:BUTTON:RADIOBUTTON") == 0
 			SELF:oControl := DesignRadioButton{SELF}
 			SELF:cPrefix := "oCC"
+
+			CASE SELF:cFullClass:IndexOf("CONTROL:TEXTCONTROL:BUTTON") == 0 .and. SELF:cRawStyles:Contains("BS_CHECKBOX")
+				SELF:oControl := DesignCheckBox{SELF}
+				SELF:oColumn := DesignDataColumn{SELF}
+			CASE SELF:cFullClass:IndexOf("CONTROL:TEXTCONTROL:BUTTON") == 0 .and. SELF:cRawStyles:Contains("BS_RADIOBUTTON")
+				SELF:oControl := DesignRadioButton{SELF}
+				SELF:cPrefix := "oCC"
+			CASE SELF:cFullClass:IndexOf("CONTROL:TEXTCONTROL:BUTTON") == 0
+				SELF:oControl := DesignPushButton{SELF}
+				SELF:cPrefix := "oCC"
+
 		CASE SELF:cFullClass:IndexOf("CONTROL:TEXTCONTROL:EDIT") == 0 .OR. ;
 					SELF:cFullClass:IndexOf("CONTROL:TEXTCONTROL:IPADDRESS") == 0 .OR. ;
 					SELF:cFullClass:IndexOf("CONTROL:TEXTCONTROL:DATETIMEPICKER") == 0 .OR. ;
@@ -3664,6 +3679,10 @@ CLASS DesignWindowItem INHERIT DesignItem
 			SELF:oControl := DesignComboBox{SELF}
 		CASE SELF:cFullClass:IndexOf("CONTROL:TEXTCONTROL:BASELISTBOX:LISTBOX") == 0
 			SELF:oControl := DesignListBox{SELF}
+
+			CASE SELF:cFullClass:IndexOf("CONTROL:TEXTCONTROL:BASELISTBOX") == 0 .and. SELF:cRawStyles:Contains("CBS_")
+				SELF:oControl := DesignComboBox{SELF}
+
 		CASE SELF:cFullClass:IndexOf("CONTROL:COMMONCONTROL:LISTVIEW") == 0
 			SELF:oControl := DesignListView{SELF}
 		CASE SELF:cFullClass:IndexOf("CONTROL:COMMONCONTROL:TREEVIEW") == 0
@@ -3701,6 +3720,10 @@ CLASS DesignWindowItem INHERIT DesignItem
 			SELF:oControl := DesignEmpty{SELF}
 		END CASE
 		
+		IF SELF:lForceCommandControl
+			SELF:cPrefix := "oCC"
+		END IF
+
 		SELF:lAccessAssign := SELF:cFullClass:IndexOf("CONTROL:TEXTCONTROL:BUTTON:CHECKBOX") == 0 .OR. ;
 						SELF:cFullClass:IndexOf("CONTROL:TEXTCONTROL:EDIT:SINGLELINEEDIT") == 0 .OR. ;
 						SELF:cFullClass:IndexOf("CONTROL:TEXTCONTROL:EDIT:MULTILINEEDIT") == 0 .OR. ;

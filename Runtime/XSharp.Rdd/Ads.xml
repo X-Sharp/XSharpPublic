@@ -2,7 +2,24 @@
 <functions>
   <ads>
   <summary>See the ADS documentation for more information about this function.</summary>
-    <remarks>This function calls the method with the same name in the Avantage Client Engine.</remarks>
+    <remarks>This function calls the method with the same name in the Avantage Client Engine.<br/>
+    Some important differences between the ADS API in Visual Objects and the ADS API in X#<br/>
+        <list type="table">
+        <item>
+            <term>Handles</term>
+            <description>
+                In Visual Objects the handles (Table Handle, Index Handle, Connection Handle etc) are declared as DWORD. 
+                In X# they are declared as IntPtr since the size can be 32 bits when the application is running in 32 bit mode but 64 bits when the application is running in 64 bits mode.
+            </description>
+        </item>
+        <item>
+            <term>String parameters</term>
+            <description>
+                In Visual Objects the string parameters are all declared as PSZ. In X# you can use normal strings. The .Net runtime takes care of the conversions between managed unicode strings and unmanaged native Ansi strings.
+            </description>
+        </item>
+        </list>
+    </remarks>
     <returns>All methods in the Advantage Client Engine return either 0 for success or an error code. 
     Most of the error numbers are defined in the AceError enumeration. 
     You can call AdsGetLastError() to retrieve the message for the error code.</returns>

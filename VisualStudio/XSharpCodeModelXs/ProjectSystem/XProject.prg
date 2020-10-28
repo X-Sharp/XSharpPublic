@@ -51,7 +51,7 @@ BEGIN NAMESPACE XSharpModel
          GET
             IF String.IsNullOrEmpty(_dependentAssemblyList)
                VAR result := ""
-               FOREACH VAR assembly IN _AssemblyReferences
+               FOREACH VAR assembly IN _AssemblyReferences:ToArray()
                   IF result:Length > 0
                      result += ","
                   ENDIF
@@ -69,7 +69,7 @@ BEGIN NAMESPACE XSharpModel
             IF String.IsNullOrEmpty(_dependentProjectList) .OR. _dependentProjectList == SELF:Id:ToString()
                VAR result := ""
                result := SELF:Id:ToString()
-               FOREACH VAR dependent IN _ReferencedProjects
+               FOREACH VAR dependent IN _ReferencedProjects:ToArray()
                   result += ","
                   result += dependent:Id:ToString()
                NEXT
@@ -99,7 +99,7 @@ BEGIN NAMESPACE XSharpModel
             IF _FunctionClasses == NULL
                VAR result := List<STRING>{}
                result.Add(XLiterals.GlobalName)
-               FOREACH VAR asm IN SELF:AssemblyReferences
+               FOREACH VAR asm IN SELF:AssemblyReferences:ToArray()
                   VAR gcn := asm:GlobalClassName
                   IF !String.IsNullOrEmpty(gcn) .AND.  result:IndexOf(gcn) == -1
                      result:Add(gcn)
@@ -116,13 +116,13 @@ BEGIN NAMESPACE XSharpModel
             IF _ImplicitNamespaces == NULL
                VAR result := List<STRING>{}
                IF SELF:ParseOptions:ImplicitNamespace
-                  FOREACH project AS XProject IN SELF:ReferencedProjects
+                  FOREACH project AS XProject IN SELF:ReferencedProjects:ToArray()
                      VAR ns := project:ProjectNode:ParseOptions:DefaultNamespace
                      IF ! String.IsNullOrEmpty(ns) .AND. result:IndexOf(ns) == -1
                         result:Add(ns)
                      ENDIF
                   NEXT
-                  FOREACH VAR asm IN SELF:AssemblyReferences
+                  FOREACH VAR asm IN SELF:AssemblyReferences:ToArray()
                      FOREACH VAR ns IN asm:ImplicitNamespaces
                         IF result:IndexOf(ns) == -1
                            result:Add(ns)
@@ -156,6 +156,7 @@ BEGIN NAMESPACE XSharpModel
          SELF:FileWalkCompleted := FALSE
          XSolution.Add(SELF) 
       PUBLIC METHOD Close() AS VOID
+         ModelWalker.GetWalker():RemoveProject(SELF)
          XSolution.Remove(SELF)
          _projectNode := NULL
          SELF:UnLoad()
@@ -204,7 +205,7 @@ BEGIN NAMESPACE XSharpModel
                SELF:WriteOutputMessage("ClearAssemblyReferences() ")
             ENDIF
             SELF:_clearTypeCache()
-            FOREACH VAR asm IN SELF:_AssemblyReferences
+            FOREACH VAR asm IN SELF:_AssemblyReferences:ToArray()
                asm:RemoveProject(SELF)
             NEXT
             SELF:_AssemblyReferences:Clear()
@@ -221,7 +222,7 @@ BEGIN NAMESPACE XSharpModel
                      _unprocessedAssemblyReferences.Remove(fileName)
                   ENDIF
                END LOCK
-               FOREACH VAR asm IN SELF:_AssemblyReferences
+               FOREACH VAR asm IN SELF:_AssemblyReferences:ToArray()
                   IF String.Equals(asm:FileName, fileName, System.StringComparison.OrdinalIgnoreCase)
                      SELF:_AssemblyReferences:Remove(asm)
                      EXIT
@@ -245,26 +246,24 @@ BEGIN NAMESPACE XSharpModel
                   SELF:WriteOutputMessage("ResolveUnprocessedAssemblyReferences()")
                ENDIF
                loaded := List<STRING>{}
-               BEGIN LOCK _unprocessedAssemblyReferences
-                  FOREACH path AS STRING IN SELF:_unprocessedAssemblyReferences
-                     IF System.IO.File.Exists(path)
-                        SELF:LoadReference(path)
-                        loaded:Add(path)
-                     ENDIF
-                  NEXT
-                  FOREACH path AS STRING IN loaded
-                     IF SELF:_unprocessedAssemblyReferences:Contains(path)
-                        SELF:_unprocessedAssemblyReferences:Remove(path)
-                     ENDIF
-                  NEXT
-               END LOCK
+               FOREACH path AS STRING IN SELF:_unprocessedAssemblyReferences:ToArray()
+                  IF System.IO.File.Exists(path)
+                     SELF:LoadReference(path)
+                     loaded:Add(path)
+                  ENDIF
+               NEXT
+               FOREACH path AS STRING IN loaded
+                  IF SELF:_unprocessedAssemblyReferences:Contains(path)
+                     SELF:_unprocessedAssemblyReferences:Remove(path)
+                  ENDIF
+               NEXT
                SELF:_clearTypeCache()
                SELF:ProjectNode:SetStatusBarText("")
             ENDIF
             RETURN
          
          METHOD ResolveReferences() AS VOID
-            IF SELF:hasUnprocessedReferences
+            IF SELF:hasUnprocessedReferences 
                IF XSettings.EnableReferenceInfoLog
                   SELF:WriteOutputMessage("<<-- ResolveReferences()")
                ENDIF
@@ -274,7 +273,7 @@ BEGIN NAMESPACE XSharpModel
                   SELF:ResolveUnprocessedAssemblyReferences()
                   SELF:ResolveUnprocessedProjectReferences()
                   SELF:ResolveUnprocessedStrangerReferences()
-                  FOREACH DLL AS STRING IN SELF:_projectOutputDLLs:Values
+                  FOREACH DLL AS STRING IN SELF:_projectOutputDLLs:Values:ToArray()
                      IF SystemTypeController.FindAssemblyByLocation(DLL) != NULL
                         SELF:AddAssemblyReference(DLL)
                      ENDIF
@@ -325,7 +324,7 @@ BEGIN NAMESPACE XSharpModel
                   SELF:_projectOutputDLLs:TryAdd(sProjectURL, sOutputDLL)
                ENDIF
                LOCAL found := FALSE AS LOGIC
-               FOREACH VAR asm IN SELF:AssemblyReferences
+               FOREACH VAR asm IN SELF:AssemblyReferences:ToArray()
                   IF String.Equals(asm:FileName, sOutputDLL,StringComparison.OrdinalIgnoreCase)
                      found := TRUE
                      EXIT
@@ -393,7 +392,7 @@ BEGIN NAMESPACE XSharpModel
                   WriteOutputMessage("ResolveUnprocessedProjectReferences()")
                ENDIF
                existing := List<STRING>{}
-               FOREACH sProject AS STRING IN SELF:_unprocessedProjectReferences
+               FOREACH sProject AS STRING IN SELF:_unprocessedProjectReferences:ToArray()
                   p := XSolution.FindProject(sProject)
                   IF p != NULL
                      existing:Add(sProject)
@@ -503,8 +502,8 @@ BEGIN NAMESPACE XSharpModel
             IF XSettings.EnableReferenceInfoLog
                WriteOutputMessage("--> RefreshStrangerProjectDLLOutputFiles() "+SELF:_StrangerProjects:Count():ToString())
             ENDIF
-            FOREACH p AS EnvDTE.Project IN SELF:_StrangerProjects
-               VAR sProjectURL := p:FullName
+            FOREACH p AS EnvDTE.Project IN SELF:_StrangerProjects:ToArray()
+               VAR  sProjectURL := p:FullName
                VAR mustAdd     := FALSE
                VAR outputFile  := SELF:GetStrangerOutputDLL(sProjectURL, p)
                IF SELF:_projectOutputDLLs:ContainsKey(sProjectURL)
@@ -538,7 +537,7 @@ BEGIN NAMESPACE XSharpModel
                WriteOutputMessage("ResolveUnprocessedStrangerReferences()" +_unprocessedStrangerProjectReferences:Count:ToString())
             ENDIF
             existing := List<STRING>{}
-            FOREACH sProject AS STRING IN SELF:_unprocessedStrangerProjectReferences
+            FOREACH sProject AS STRING IN SELF:_unprocessedStrangerProjectReferences:ToArray()
                p := SELF:ProjectNode:FindProject(sProject)
                IF (p != NULL)
                   SELF:_StrangerProjects:Add(p)
@@ -615,7 +614,7 @@ BEGIN NAMESPACE XSharpModel
             WriteOutputMessage(i"FindGlobalMembersInAssemblyReferences {name} ")
         ENDIF
          VAR result := List<IXMember>{}
-         FOREACH VAR asm IN AssemblyReferences
+         FOREACH VAR asm IN AssemblyReferences:ToArray()
             IF !String.IsNullOrEmpty(asm:GlobalClassName)
                VAR type := asm:GetType(asm.GlobalClassName)
                IF type != NULL
@@ -1008,7 +1007,7 @@ BEGIN NAMESPACE XSharpModel
          IF XSettings.EnableReferenceInfoLog
             WriteOutputMessage("UnLoad() ")
          ENDIF
-         FOREACH VAR asm IN SELF:_AssemblyReferences
+         FOREACH VAR asm IN SELF:_AssemblyReferences:ToArray()
             asm:RemoveProject(SELF)
          NEXT
          SELF:_AssemblyReferences:Clear()
@@ -1040,9 +1039,12 @@ BEGIN NAMESPACE XSharpModel
       
       PRIVATE PROPERTY hasUnprocessedReferences AS LOGIC
          GET
-            RETURN SELF:_unprocessedAssemblyReferences:Count + ;
-            SELF:_unprocessedProjectReferences:Count + ;
-            SELF:_unprocessedStrangerProjectReferences:Count > 0
+            IF SELF:Loaded
+               RETURN SELF:_unprocessedAssemblyReferences:Count + ;
+               SELF:_unprocessedProjectReferences:Count + ;
+               SELF:_unprocessedStrangerProjectReferences:Count > 0
+            ENDIF
+            RETURN FALSE
          END GET
       END PROPERTY
       

@@ -490,9 +490,8 @@ namespace XSharp.Project
             {
                 int result = 0;
                 Guid tempGuid = Guid.Empty;
-                Task<SVsUIShell> t = await GetServiceAsync(typeof(SVsUIShell)) as Task<SVsUIShell>;
-                Assumes.Present(t);
-                IVsUIShell VsUiShell = (IVsUIShell)t.Result;
+                var VsUiShell = await GetServiceAsync(typeof(SVsUIShell)) as IVsUIShell;
+                Assumes.Present(VsUiShell);
                 ErrorHandler.ThrowOnFailure(VsUiShell.ShowMessageBox(0, ref tempGuid, "File Associations",
                     "The Vulcan file associations must be changed.\nPlease run setup again\n\n" +
                     "Failure to do so may result in unexpected behavior inside Visual Studio",
@@ -500,7 +499,6 @@ namespace XSharp.Project
                     OLEMSGBUTTON.OLEMSGBUTTON_OK, OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST,
                     OLEMSGICON.OLEMSGICON_CRITICAL, 0, out result));
             }
-
         }
         public void SetCommentTokens()
         {

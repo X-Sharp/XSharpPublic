@@ -91,26 +91,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                     SELF:Unsupported(cName, nCodePage)
                 END SWITCH
             CASE "MACHINE"
-                SWITCH nCodePage
-                CASE 437
-                CASE 620
-                CASE 737
-                CASE 850
-                CASE 852
-                CASE 857
-                CASE 861
-                CASE 865
-                CASE 866
-                CASE 895
-                CASE 1250
-                CASE 1251
-                CASE 1252
-                CASE 1253
-                CASE 1254
-                    NOP
-                OTHERWISE
-                    SELF:Unsupported(cName, nCodePage)
-                END SWITCH
+				SELF:ResourceName := Upper(cName)	// All codepages have the same table
             CASE "NORDAN"
                 SELF:HasCombi := TRUE  
                 SWITCH nCodePage

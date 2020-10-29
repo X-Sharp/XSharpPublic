@@ -2657,14 +2657,28 @@ BEGIN NAMESPACE XSharp.VO.Tests
 				DbSkip (1)
 		 	ENDDO
 
-//		 	Assert.Equal(3 , nCount )
-//		 	Assert.Equal(3 , (INT) OrdKeyCount() )
-			#warning should it return 2 or 3?
+		 	Assert.Equal(2 , nCount )       // go3 is deleted and should not be counted
+		 	Assert.Equal(2 , (INT) OrdKeyCount() ) // go3 is deleted and should not be counted
 
-		 	Assert.True(nCount == 2 .or. nCount == 3)
 		 	LOCAL nOrdKey AS INT
 		 	nOrdKey := OrdKeyCount()
-		 	Assert.True(nOrdKey == 2 .or. nOrdKey == 3) // returns 0 when the test was added
+		 	Assert.True(nOrdKey == 2 ) // returns 0 when the test was added
+		 	
+		 	// make sure it still always gives the same result
+		 	Assert.Equal(nOrdKey , (INT) OrdKeyCount() )
+			DbGoTop()
+		 	Assert.Equal(nOrdKey , (INT) OrdKeyCount() )
+			DbSkip(-1)
+		 	Assert.Equal(nOrdKey , (INT) OrdKeyCount() )
+			DbGoBottom()
+		 	Assert.Equal(nOrdKey , (INT) OrdKeyCount() )
+			DbSkip()
+		 	Assert.Equal(nOrdKey , (INT) OrdKeyCount() )
+
+            SetDeleted(FALSE)
+            // When SetDeleted = FALSE then go3 will be included in the count
+		 	nOrdKey := OrdKeyCount()
+		 	Assert.True(nOrdKey == 3 ) // returns 0 when the test was added
 		 	
 		 	// make sure it still always gives the same result
 		 	Assert.Equal(nOrdKey , (INT) OrdKeyCount() )
@@ -2679,7 +2693,6 @@ BEGIN NAMESPACE XSharp.VO.Tests
 
 			DbCloseArea()
 
-			SetDeleted(FALSE)
 		RETURN	
 
 

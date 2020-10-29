@@ -47,4 +47,30 @@ BEGIN NAMESPACE XSharp
         PUBLIC METHOD NoIvarPut(cName AS STRING, uValue AS USUAL) AS VOID 
     END INTERFACE
 
+	/// <summary>
+	/// This interface defines and extension to the Macro compiler subsystem
+	/// </summary>
+	/// <seealso cref="T:XSharp.IMacroCompiler"/>
+	/// <seealso cref="T:XSharp.IMacroCompiler2"/>
+    INTERFACE IMacroCompilerUsual
+	/// <summary>Compile a string into a runtime codeblock.</summary>
+		/// <param name="macro">String to compile</param>
+		/// <param name="lAllowSingleQuotes">Should single quotes be allowed</param>
+		/// <param name="module">Module of the main app</param>
+		/// <param name="isCodeblock">will be set to TRUE when the string was a real codeblock (with {|..| }).</param>
+		/// <param name="addsMemVars">will be set to TRUE when the macro contains code that may result in adding new MemVars).</param>
+		/// <returns>A compiled codeblock</returns>
+		/// <seealso cref="T:XSharp.XSharp._Codeblock"/>
+    	PUBLIC METHOD CompileCodeblock(macro AS STRING , lAllowSingleQuotes AS LOGIC, module AS System.Reflection.Module, ;
+            isCodeblock OUT LOGIC, addsMemVars OUT LOGIC) AS XSharp.Codeblock
+
+        /// <summary>Compile a string into a runtime codeblock.</summary>
+	    /// <param name="macro">String to compile</param>
+	    /// <returns>A compiled codeblock</returns>
+	    /// <seealso cref="T:XSharp.XSharp._Codeblock"/>
+        /// <remarks>This overload of the CompileCodeBlock assumes that single quotes are allowed, and that no memvars are used.</remarks>
+        PUBLIC METHOD CompileCodeblock(macro AS STRING ) AS XSharp.Codeblock
+       
+    END INTERFACE
+
 END NAMESPACE    

@@ -1973,6 +1973,18 @@ BEGIN NAMESPACE XSharp
             ENDIF
             SWITCH u:_usualType 
             CASE __UsualType.Ptr		; RETURN u:_ptrValue
+            CASE __UsualType.Long
+                IF u:_intValue == 0
+                    RETURN IntPtr.Zero
+                ELSE
+                    RETURN IntPtr{u:_intValue}
+                ENDIF
+            CASE __UsualType.Int64
+                IF u:_i64Value  == 0
+                    RETURN IntPtr.Zero
+                ELSE
+                    RETURN IntPtr{u:_i64Value}
+                ENDIF
             OTHERWISE
                 THROW ConversionError(PTR, TYPEOF(IntPtr), u)
             END SWITCH
@@ -3088,12 +3100,17 @@ BEGIN NAMESPACE XSharp
             ENDIF
 
             #endregion
-         INTERNAL METHOD ToDebuggerString as STRING
-                var strValue := SELF:Value:ToString() +" ( "
-                IF SELF:IsByRef
-                    strValue += "ref "
+         INTERNAL METHOD ToDebuggerString AS STRING
+                LOCAL strValue AS STRING
+                IF SELF:IsNil
+                    strValue := "(NIL)"
+                ELSE
+                    strValue := SELF:Value:ToString() +" ( "
+                    IF SELF:IsByRef
+                        strValue += "ref "
+                    ENDIF
+                    strValue += _usualType:ToString() + " )"
                 ENDIF
-                strValue += _usualType:ToString() + " )"
                 RETURN strValue
                 //return SELF:Value:ToString()
     END STRUCTURE

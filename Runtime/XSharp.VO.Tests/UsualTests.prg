@@ -531,6 +531,24 @@ BEGIN NAMESPACE XSharp.VO.Tests
             Assert.Equal(TRUE, u2 < u1)
             Assert.Equal(TRUE, u2 <= u1)
 
+            LOCAL p AS IntPtr
+            // NIL, 0, < 0 should implicitly convert to IntPtr.Zero
+            u1 := -1
+            p := u1
+            Assert.Equal(TRUE, p == F_ERROR)
+            u1 := 0
+            p := u1
+            Assert.Equal(TRUE, p == IntPtr.Zero)
+            u1 := NIL
+            p := u1
+            Assert.Equal(TRUE, p == IntPtr.Zero)
+
+            u1 := 1
+            p := u1
+            Assert.Equal(TRUE, p == IntPtr{1})
+
+
+
 
         [Fact, Trait("Category", "usual to string tests")];
 		METHOD UsualToStringTests() AS VOID

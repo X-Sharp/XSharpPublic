@@ -59,6 +59,17 @@ namespace XSharp.MacroCompiler.ObjectMacro
             return compiler;
         }
 
+        public XSharp.Codeblock CompileCodeblock(string macro, bool lAllowSingleQuotes, Module module, out bool isCodeblock, out bool addsMemVars)
+        {
+            var cb = Compile(macro, lAllowSingleQuotes, module, out isCodeblock, out addsMemVars);
+            return new XSharp._Codeblock(cb, macro, true, addsMemVars);
+        }
+
+        public XSharp.Codeblock CompileCodeblock(string macro)
+        {
+            return new XSharp._Codeblock(Compile(macro), macro, true, false);
+        }
+
         public ICodeblock Compile(string macro, bool lAllowSingleQuotes, Module module, out bool isCodeblock, out bool addsMemVars)
 
         {
@@ -130,8 +141,7 @@ namespace XSharp.MacroCompiler.UsualMacro
             return compiler;
         }
 
-        public ICodeblock Compile(string macro, bool lAllowSingleQuotes, Module module, out bool isCodeblock, out bool addsMemVars)
-
+        public XSharp.Codeblock CompileCodeblock(string macro, bool lAllowSingleQuotes, Module module, out bool isCodeblock, out bool addsMemVars)
         {
             isCodeblock = macro.Replace(" ", "").StartsWith("{|");
             addsMemVars = false;
@@ -145,7 +155,7 @@ namespace XSharp.MacroCompiler.UsualMacro
             return new MacroCodeblock(m.Macro, m.ParamCount);
         }
 
-        public ICodeblock Compile(string macro)
+        public XSharp.Codeblock CompileCodeblock(string macro)
         {
             Compilation<MacroParamType, MacroCodeblockDelegate> compiler = GetCompiler(true);
             var m = compiler.Compile(macro);
@@ -154,6 +164,17 @@ namespace XSharp.MacroCompiler.UsualMacro
                 throw m.Diagnostic;
             }
             return new MacroCodeblock(m.Macro, m.ParamCount);
+        }
+
+        public ICodeblock Compile(string macro, bool lAllowSingleQuotes, Module module, out bool isCodeblock, out bool addsMemVars)
+
+        {
+            return CompileCodeblock(macro, lAllowSingleQuotes, module, out isCodeblock, out addsMemVars);
+        }
+
+        public ICodeblock Compile(string macro)
+        {
+            return CompileCodeblock(macro);
         }
     }
 }

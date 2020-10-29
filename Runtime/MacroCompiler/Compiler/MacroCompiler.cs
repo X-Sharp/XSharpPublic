@@ -20,7 +20,7 @@ namespace XSharp.MacroCompiler.ObjectMacro
 {
     using MacroParamType = Object;
     using XSharp.MacroCompiler.ObjectMacro;
-    public class MacroCompiler : IMacroCompiler2
+    public class MacroCompiler : IMacroCompiler2, IMacroCompilerUsual
     {
         private MacroOptions options;
         internal Compilation<MacroParamType, MacroCodeblockDelegate> compiler;
@@ -62,7 +62,7 @@ namespace XSharp.MacroCompiler.ObjectMacro
         public XSharp.Codeblock CompileCodeblock(string macro, bool lAllowSingleQuotes, Module module, out bool isCodeblock, out bool addsMemVars)
         {
             var cb = Compile(macro, lAllowSingleQuotes, module, out isCodeblock, out addsMemVars);
-            return new XSharp._Codeblock(cb, macro, true, addsMemVars);
+            return new XSharp._Codeblock(cb, macro, isCodeblock, addsMemVars);
         }
 
         public XSharp.Codeblock CompileCodeblock(string macro)
@@ -102,7 +102,7 @@ namespace XSharp.MacroCompiler.UsualMacro
 {
     using MacroParamType = __Usual;
     using XSharp.MacroCompiler.UsualMacro;
-    public class MacroCompiler : IMacroCompiler2
+    public class MacroCompiler : IMacroCompiler2, IMacroCompilerUsual
     {
         private  MacroOptions options;
         internal Compilation<MacroParamType, MacroCodeblockDelegate> compiler;
@@ -152,7 +152,7 @@ namespace XSharp.MacroCompiler.UsualMacro
                 throw m.Diagnostic;
             }
             addsMemVars = m.CreatesAutoVars;
-            return new MacroCodeblock(m.Macro, m.ParamCount);
+            return new MacroCodeblock(m.Macro, m.ParamCount, macro);
         }
 
         public XSharp.Codeblock CompileCodeblock(string macro)
@@ -163,7 +163,7 @@ namespace XSharp.MacroCompiler.UsualMacro
             {
                 throw m.Diagnostic;
             }
-            return new MacroCodeblock(m.Macro, m.ParamCount);
+            return new MacroCodeblock(m.Macro, m.ParamCount, macro);
         }
 
         public ICodeblock Compile(string macro, bool lAllowSingleQuotes, Module module, out bool isCodeblock, out bool addsMemVars)

@@ -214,50 +214,8 @@
   <data name="ICELAND_861_COLLATE" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>VfpCollations\ICELAND_861_Collate.bin;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="MACHINE_1250_COLLATE" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>VfpCollations\MACHINE_1250_Collate.bin;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="MACHINE_1251_COLLATE" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>VfpCollations\MACHINE_1251_Collate.bin;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="MACHINE_1252_COLLATE" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>VfpCollations\MACHINE_1252_Collate.bin;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="MACHINE_1253_COLLATE" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>VfpCollations\MACHINE_1253_Collate.bin;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="MACHINE_1254_COLLATE" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>VfpCollations\MACHINE_1254_Collate.bin;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="MACHINE_437_COLLATE" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>VfpCollations\MACHINE_437_Collate.bin;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="MACHINE_620_COLLATE" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>VfpCollations\MACHINE_620_Collate.bin;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="MACHINE_737_COLLATE" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>VfpCollations\MACHINE_737_Collate.bin;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="MACHINE_850_COLLATE" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>VfpCollations\MACHINE_850_Collate.bin;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="MACHINE_852_COLLATE" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>VfpCollations\MACHINE_852_Collate.bin;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="MACHINE_857_COLLATE" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>VfpCollations\MACHINE_857_Collate.bin;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="MACHINE_861_COLLATE" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>VfpCollations\MACHINE_861_Collate.bin;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="MACHINE_865_COLLATE" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>VfpCollations\MACHINE_865_Collate.bin;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="MACHINE_866_COLLATE" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>VfpCollations\MACHINE_866_Collate.bin;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="MACHINE_895_COLLATE" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>VfpCollations\MACHINE_895_Collate.bin;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  <data name="MACHINE_COLLATE" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>VfpCollations\MACHINE_Collate.bin;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="NORDAN_1252_COLLATE" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>VfpCollations\NORDAN_1252_Collate.bin;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>

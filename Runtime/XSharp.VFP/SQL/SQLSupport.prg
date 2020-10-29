@@ -30,7 +30,7 @@ INTERNAL STATIC CLASS XSharp.VFP.SQLSupport
     STATIC INTERNAL Factory AS ISqlFactory
     STATIC PRIVATE DefaultValues AS Dictionary<SQLProperty, OBJECT>
 
-    STATIC INTERNAL PROPERTY DispLogin AS LONG GET GetDefault<LONG>(SQLProperty.DispLogin)
+    STATIC INTERNAL PROPERTY DispLogin AS LONG GET SQLSupport.GetDefault<LONG>(SQLProperty.DispLogin)
     
     STATIC CONSTRUCTOR
         Cache    := Dictionary<LONG, HandleCacheElement>{}

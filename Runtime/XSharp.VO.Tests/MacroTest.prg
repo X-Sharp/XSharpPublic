@@ -52,22 +52,30 @@ BEGIN NAMESPACE XSharp.VO.Tests
 		    cMacro := "{|aaa , bbb| aaa + bbb + ccc }" // not existing field
 			bMacro := MCompile(cMacro)
 	        Assert.ThrowsAny<Exception>( { => Eval(bMacro,20,22) })
+/*
+            cMacro := "{||NIL}"
+            bMacro := MCompile(cMacro)
+            uValue := Eval(bMacro)
+            Assert.Equal(NIL, uValue)
+            Assert.Equal(0U, UsualType(uValue))    // returned 6 but should be 0
+            Assert.Equal("NIL", AsString(uValue))
+*/            
             RETURN
 
-//
-//		[Fact, Trait("Category", "Macro")]; 
-//		METHOD FunctionOverloadTest AS VOID
-//			LOCAL cMacro AS STRING
-//			LOCAL bMacro AS USUAL
-//		    cMacro := "Left('abcdefg',2)" // should call my replacement function
-//			bMacro := MCompile(cMacro)
-//
-//            Assert.Equal("MyLeft", eval(bMacro))
-//
-//            RETURN
+  
+		[Fact, Trait("Category", "Macro")]; 
+		METHOD FunctionOverloadTest AS VOID
+			LOCAL cMacro AS STRING
+			LOCAL bMacro AS USUAL
+		    cMacro := "Left('abcdefg',2)" // should call my replacement function
+			bMacro := MCompile(cMacro)
+  
+            Assert.Equal("MyLeft", eval(bMacro))
+  
+            RETURN
 
 	END CLASS
 END NAMESPACE // XSharp.Runtime.Tests
 
-//FUNCTION Left(cValue as STRING, nLen as DWORD) AS STRING
-//    RETURN "MyLeft"
+FUNCTION Left(cValue AS STRING, nLen AS DWORD) AS STRING
+    RETURN "MyLeft"

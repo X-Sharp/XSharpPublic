@@ -3,7 +3,7 @@
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
 //
-
+USING System.Reflection
 		
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/evaluate/*" />
 FUNCTION Evaluate(cString AS STRING) AS USUAL
@@ -40,7 +40,10 @@ FUNCTION MCompile(cString AS STRING, lAllowSingleQuotes AS LOGIC) AS XSharp._Cod
 		VAR oMod := XSharp.RuntimeState.AppModule
 		IF oMod == NULL_OBJECT
 			XSharp.RuntimeState.AppModule := TYPEOF(XSharp.Core.Functions):Module
-		ENDIF
+        ENDIF
+        IF XSharp.RuntimeState:MacroResolver == NULL
+            XSharp.RuntimeState:MacroResolver := DefaultMacroAmbigousMatchResolver
+        ENDIF
 		LOCAL iResult AS ICodeblock
 		LOCAL oResult AS XSharp._Codeblock
 		LOCAL lIsCodeblock  AS LOGIC
@@ -163,3 +166,26 @@ INTERNAL FUNCTION StrEvaluateMemVarGet(cVariableName AS STRING) AS STRING
     END TRY
     RETURN cVariableName
 
+INTERNAL FUNCTION DefaultMacroAmbigousMatchResolver(m1 AS MemberInfo, m2 AS MemberInfo, args AS System.Type[]) AS LONG
+    LOCAL comp1 := GetCompany(m1:Module:Assembly) AS STRING
+    LOCAL comp2 := GetCompany(m2:Module:Assembly) AS STRING
+    IF comp1 == XSharp.Constants.Company
+        IF ! (comp2 == XSharp.Constants.Company)
+            RETURN 2
+        ENDIF
+    ENDIF
+    IF comp2 == XSharp.Constants.Company
+        IF  ! (comp1== XSharp.Constants.Company)
+            RETURN 1
+        ENDIF
+    ENDIF
+    
+    RETURN 0
+
+INTERNAL FUNCTION GetCompany(asm AS System.Reflection.Assembly) AS STRING
+    FOREACH attr AS CustomAttributeData IN asm:CustomAttributes
+        IF attr:AttributeType== typeof(AssemblyCompanyAttribute)
+            RETURN (STRING) attr:ConstructorArguments[0]:Value
+        ENDIF
+    NEXT
+    RETURN NULL

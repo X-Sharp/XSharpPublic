@@ -384,10 +384,10 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             RETURN BYTE[]{CDXPAGE_SIZE *nSize}
 
         METHOD Read(nPage AS LONG, buffer AS BYTE[]) AS LOGIC
-            RETURN SELF:_stream:SafeSetPos(nPage) .AND. SELF:_stream:SafeRead(buffer) 
+            RETURN SELF:_stream:SafeReadAt(nPage, buffer) 
  
         METHOD Read(oPage AS CdxPage) AS LOGIC
-            RETURN SELF:_stream:SafeSetPos(oPage:PageNo) .AND.SELF:_stream:SafeRead(oPage:Buffer, oPage:Buffer:Length) 
+            RETURN SELF:_stream:SafeReadAt(oPage:PageNo, oPage:Buffer, oPage:Buffer:Length) 
 
         METHOD Write(oPage AS CdxPage) AS LOGIC
             LOCAL isOk AS LOGIC
@@ -397,8 +397,8 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 SELF:_PageList:SetPage(oPage:PageNo, oPage)
             ENDIF
             IF oPage:IsHot
-                isOk := SELF:_stream:SafeSetPos(oPage:PageNo) .AND. SELF:_stream:SafeWrite(oPage:Buffer)
-                IF isOk
+                isOk := SELF:_stream:SafeWriteAt(oPage:PageNo, oPage:Buffer)
+                IF isOk .and. SELF:Shared
                     SELF:_stream:Flush()
                 ENDIF
             ELSE

@@ -137,7 +137,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             IF SELF:RightPtr == 0
                 SELF:RightPtr := -1
             ENDIF            
-            IF SELF:PageNo != -1
+            IF SELF:PageNo > 0
                 System.Diagnostics.Debug.Assert(SELF:PageNo != SELF:RightPtr)
                 System.Diagnostics.Debug.Assert(SELF:PageNo != SELF:LeftPtr)
             ENDIF

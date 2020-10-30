@@ -645,7 +645,15 @@ BEGIN NAMESPACE XSharp.RDD
                 END SWITCH
             ENDIF
             RETURN NULL
-
+        INTERNAL Property FieldValues as Dictionary<String, Object>
+            GET
+                var result := Dictionary<String, Object>{}
+                FOR var i := 1 to SELF:FieldCount
+                    result:Add(SELF:FieldName(i), SELF:GetValue(i))
+                NEXT
+                RETURN result
+            END GET
+        END PROPERTY
 			
 		VIRTUAL METHOD GetField(nFldPos AS INT) AS RddFieldInfo
 			IF SELF:_FieldIndexValidate(nFldPos)

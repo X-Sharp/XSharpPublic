@@ -176,7 +176,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Ads.xml" />
+    <None Include="DbfCdx\CdxDebug.xh" />
     <None Include="DbfCdx\CdxReadme.txt" />
+    <None Include="DbfCdx\Pages\CdxDebug.xh" />
     <None Include="DbfCdx\Todo.txt" />
     <None Include="DbfNtx\NtxFormat.txt" />
     <None Include="VfpCollations\CZECH_1250_Collate.bin" />

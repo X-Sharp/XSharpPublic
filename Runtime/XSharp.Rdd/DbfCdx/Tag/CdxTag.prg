@@ -17,7 +17,7 @@ USING XSharp.RDD.Support
 
 BEGIN NAMESPACE XSharp.RDD.CDX
 
-    INTERNAL DELEGATE CompareFunc(aLHS AS BYTE[], aRHS AS BYTE[], nLength AS LONG) AS LONG
+    INTERNAL DELEGATE CompareFunc(aLHS AS BYTE[], aRHS AS BYTE[], nLength AS LONG, recnoLHS AS LONG, recnoRHS AS LONG) AS LONG
 
 
     [DebuggerDisplay("Tag: {OrderName}, Key: {Expression}, For: {Condition}")];
@@ -349,17 +349,30 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             VAR page := SELF:_bag:GetPage(nPage, SELF:_keySize, SELF)
             RETURN page ASTYPE CdxTreePage
 
-        INTERNAL STATIC METHOD _compareText(aLHS AS BYTE[], aRHS AS BYTE[], nLength AS LONG) AS LONG
+        INTERNAL STATIC METHOD _compareText(aLHS AS BYTE[], aRHS AS BYTE[], nLength AS LONG, recnoLHS AS LONG, recnoRHS AS LONG) AS LONG
             IF aRHS == NULL
                 RETURN 0
             ENDIF
-            RETURN RuntimeState.StringCompare(aLHS, aRHS, nLength)
+            VAR result := RuntimeState.StringCompare(aLHS, aRHS, nLength)
+            IF result == 0
+                result := _compareRecno(recnoLHS, recnoRHS)
+            ENDIF
+            RETURN result
 
-        INTERNAL STATIC METHOD _compareCollation(aLHS AS BYTE[], aRHS AS BYTE[], nLength AS LONG) AS LONG
-            RETURN _compareBin(aLHS, aRHS, nLength)
 
+        INTERNAL STATIC METHOD _compareCollation(aLHS AS BYTE[], aRHS AS BYTE[], nLength AS LONG, recnoLHS AS LONG, recnoRHS AS LONG) AS LONG
+            RETURN _compareBin(aLHS, aRHS, nLength, recnoLHS, recnoRHS)
 
-        INTERNAL STATIC METHOD _compareBin(aLHS AS BYTE[], aRHS AS BYTE[], nLength AS LONG) AS LONG
+        INTERNAL STATIC METHOD _compareRecno(recnoLHS AS LONG, recnoRHS AS LONG) AS LONG
+            IF recnoLHS < recnoRHS
+                RETURN -1
+            ELSEIF recnoLHS > recnoRHS
+                RETURN 1
+            ENDIF
+            RETURN 0
+            
+
+        INTERNAL STATIC METHOD _compareBin(aLHS AS BYTE[], aRHS AS BYTE[], nLength AS LONG, recnoLHS AS LONG, recnoRHS AS LONG) AS LONG
             IF aRHS == NULL
                 RETURN 0
             ENDIF
@@ -372,19 +385,15 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                     RETURN 1
                 ENDIF
             NEXT
-            RETURN 0
+            RETURN _compareRecno(recnoLHS, recnoRHS)
 
         PUBLIC METHOD SetOffLine() AS VOID
             SELF:ClearStack()
 
         PRIVATE METHOD _saveCurrentRecord( node AS CdxNode) AS VOID
-            IF node:Recno == -1
-                NOP
-            ELSE
             IF SELF:_currentvalue:Recno != node:Recno .AND. ! SELF:RDD:EoF
                 SELF:_currentvalue:Recno := node:Recno
                 Array.Copy(node:KeyBytes, SELF:_currentvalue:Key, _keySize)
-            ENDIF
             ENDIF
         STATIC PRIVATE Jan_1_1901 := DateTime{1901, 1, 1 } AS DateTime
         

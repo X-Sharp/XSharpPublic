@@ -2748,7 +2748,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			LOCAL cFilter AS STRING
 			cFilter := "GO" 
 			
-			Assert.True( DbSetFilter ( { || Upper ( _Field->LAST ) = cFilter  } , "Upper (LAST) = "+ cFilter )  )
+			Assert.True( DbSetFilter ( { || Upper ( _Field->LAST ) = cFilter  } )  )
 			DbGoTop()
 			Assert.False( Eof() )
 			Assert.Equal(2 , (INT) OrdKeyCount() )
@@ -2786,7 +2786,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			
 			Assert.Equal(6 , (INT) OrdKeyCount() )
 			
-			Assert.True( DbSetFilter ( { || _Field->LAST == 3  } , "LAST == 3")  )
+			Assert.True( DbSetFilter ( { || _Field->LAST == 3  } )  )
 			DbGoTop()
 			Assert.False( Eof() )
 			Assert.Equal(2 , (INT) OrdKeyCount() )
@@ -3122,7 +3122,7 @@ RETURN
 			cFilter := "G"  // result does include deleted records  ! 
 			
 			SetDeleted ( FALSE ) 	    
-			DbSetFilter ( { || Upper ( _Field->LAST ) = cFilter  } , "Upper (LAST) = "+ cFilter ) 
+			DbSetFilter ( { || Upper ( _Field->LAST ) = cFilter  }  ) 
 			DbGoTop()
 			
 			Assert.Equal(5, (INT) OrdKeyCount() ) //  5 ok
@@ -3135,7 +3135,7 @@ RETURN
 			
 			OrdDescend ( , , TRUE ) 
 			SetDeleted ( FALSE )  
-			DbSetFilter ( { || Upper ( _Field->LAST ) = cFilter  } , "Upper (LAST) = "+ cFilter )  
+			DbSetFilter ( { || Upper ( _Field->LAST ) = cFilter  }  )  
 			
 			Assert.Equal(5, (INT) OrdKeyCount() ) //  shows 0  ...
 			
@@ -3183,7 +3183,7 @@ RETURN
 			
 			cFilter := "A"  // result does include *no* deleted records  ! 
 			
-			DbSetFilter ( { || Upper ( _Field->LAST ) = cFilter  } , "Upper (LAST) = "+ cFilter )  
+			DbSetFilter ( { || Upper ( _Field->LAST ) = cFilter  }  )  
 			Assert.Equal(6, (INT) OrdKeyCount() ) // 6 , ok 
 			
 			OrdDescend ( , , TRUE ) 

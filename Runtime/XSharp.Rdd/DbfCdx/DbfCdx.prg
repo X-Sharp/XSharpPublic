@@ -10,8 +10,10 @@ USING XSharp.RDD.Enums
 USING System.IO
 USING System.Diagnostics
 
+//#define TESTCDX
+
 #ifdef TESTCDX
-    GLOBAL LOGGING := FALSE AS LOGIC
+    GLOBAL LOGGING := TRUE AS LOGIC
     GLOBAL VALIDATETREE := FALSE AS LOGIC
     
 #endif

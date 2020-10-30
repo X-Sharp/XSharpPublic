@@ -13,7 +13,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 
     INTERNAL STATIC CLASS CdxHelpers
 
-        STATIC METHOD ToAscii (SELF bytes AS BYTE[], lHex AS LOGIC) AS STRING
+        STATIC METHOD ToAscii (SELF bytes AS BYTE[], lHex := FALSE AS LOGIC) AS STRING
             VAR sb := System.Text.StringBuilder{}
             IF bytes == NULL
                 RETURN ""
@@ -146,9 +146,17 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         METHOD GetParent(oPage AS CdxTreePage) AS CdxTreePage
             VAR index := SELF:FindPage(oPage)
             IF index > 0
-                RETURN _pages[index-1]:Page
+                LOCAL oParent := (CdxBranchPage) _pages[index-1]:Page AS CdxBranchPage
+                RETURN oParent
             ENDIF
             RETURN NULL
+
+        METHOD GetLevel(oPage AS CdxTreePage) AS LONG
+            IF oPage != NULL
+                VAR index := SELF:FindPage(oPage)
+                RETURN index
+            ENDIF
+            RETURN -1
             
         METHOD Clear() AS VOID
             SELF:_pages:Clear()
@@ -158,12 +166,12 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 
     [DebuggerDisplay("Action {Type}")];
     INTERNAL SEALED CLASS CdxAction
-        INTERNAL Type  	       AS CdxActionType 
+        INTERNAL Type  	 AS CdxActionType 
         INTERNAL PageNo  := -1 AS LONG   
         INTERNAL PageNo2 := -1 AS LONG   
-        INTERNAL Pos   	:= -1  AS LONG    
-        INTERNAL Recno 	:= -1  AS LONG    
-        INTERNAL Key   	:= NULL AS BYTE[] 
+        INTERNAL Pos   	 := -1  AS LONG    
+        INTERNAL Recno 	 := -1  AS LONG    
+        INTERNAL Key   	 := NULL AS BYTE[] 
         INTERNAL ChildPage := -1 AS LONG  
         PRIVATE STATIC _Ok AS CdxAction
 
@@ -211,8 +219,8 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         INTERNAL STATIC METHOD SplitBranch(oPage AS CdxTreePage,  nChild AS LONG, nRecno AS LONG, bKey AS BYTE[], nPos AS INT) AS CdxAction
             RETURN CdxAction{CdxActionType.AddBranch}{PageNo := oPage:PageNo, ChildPage := nChild, Recno := nRecno, Key := bKey, Pos := nPos}
 
-        INTERNAL STATIC METHOD DeleteFromParent(oPage AS CdxTreePage) AS CdxAction
-            RETURN CdxAction{CdxActionType.DeleteFromParent}{PageNo := oPage:PageNo}
+        INTERNAL STATIC METHOD DeleteFromParent(oPage AS CdxTreePage, nLevel AS LONG) AS CdxAction
+            RETURN CdxAction{CdxActionType.DeleteFromParent}{PageNo := oPage:PageNo, Pos := nLevel}
 
         INTERNAL STATIC METHOD ExpandRecnos(oPage AS CdxLeafPage, nRecno AS LONG, bKey AS BYTE[], nPos AS INT) AS CdxAction
             RETURN CdxAction{CdxActionType.ExpandRecnos}{PageNo := oPage:PageNo, Recno := nRecno, Key := bKey, Pos := nPos}

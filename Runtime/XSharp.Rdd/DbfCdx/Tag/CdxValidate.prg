@@ -80,36 +80,38 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             DO WHILE currentPage != NULL
                 VAR prevKey := BYTE[]{_keySize}
                 VAR currKey := BYTE[]{_keySize}
+                LOCAL prevRec := 0 AS LONG
                 FOREACH leaf AS CdxLeaf IN currentPage:Leaves
                     IF aRecordList[leaf:Recno]
                         SELF:_addError( i"Record {leaf.Recno} is found more than once at the Leaf level. Second occurrence was on page on page {currentPage.PageNo:X} ")
                     ELSE
                         aRecordList[leaf:Recno] := TRUE
                     ENDIF
-                    IF SELF:__Compare(prevKey, leaf:Key, _keySize) > 0
+                    IF SELF:__Compare(prevKey, leaf:Key, _keySize, prevRec, leaf:Recno) > 0
                         VAR cLeft   := prevKey:ToAscii(FALSE)
                         VAR cRight  := leaf:Key:ToAscii(FALSE)
                         SELF:_addError( i"Key value in the index for record {leaf.Recno} is not in the right order, found '{cLeft}' '{cRight}' ")
                     ENDIF
                     SELF:_oRdd:__Goto(leaf:Recno)
                     SELF:getKeyValue(SELF:_SourceIndex, currKey)
-                    IF SELF:__Compare(currKey, leaf:Key, _keySize) != 0
+                    IF SELF:__Compare(currKey, leaf:Key, _keySize, leaf:Recno, leaf:Recno) != 0
                         VAR cLeft   := currKey:ToAscii(FALSE)
                         VAR cRight  := leaf:Key:ToAscii(FALSE)
                         SELF:_addError( i"Key value in the index for record {leaf.Recno} on page {currentPage.PageNo:X} is not up to date, the page contains the key '{cRight}' but that should be '{cLeft}'")
                     ENDIF
                     prevKey := leaf:Key
+                    prevRec := leaf:Recno
                 NEXT
                 
                 IF currentPage:HasRight
                     VAR nextPage := SELF:GetPage(currentPage:RightPtr)
                     IF nextPage:LeftPtr != currentPage:PageNo
-                        SELF:_addError( i"Left Link on page {currentPage.PageNo} contains incorrect pointer")
+                        SELF:_addError( i"Left Link on {currentPage.PageType} page {currentPage.PageNo:X} contains incorrect pointer")
                     ENDIF
                     IF nextPage IS CdxLeafPage VAR lp
-                        currentPage := lp
+                        currentPage := lp 
                     ELSE
-                        SELF:_addError( i"Page {currentPage.RightPtr} should have been a leafpage but instead it is a {nextPage.PageType}")
+                        SELF:_addError( i"Page {currentPage.RightPtr:X} should have been a leafpage but instead it is a {nextPage.PageType}")
                         EXIT
                     ENDIF
                 ELSE
@@ -152,30 +154,36 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             ENDIF
             DO WHILE currentPage != NULL
                 VAR prevKey := BYTE[]{_keySize}
+                LOCAL prevRecno := 0 AS LONG
                 FOR VAR nBranch := 0 TO currentPage:Branches:Count-1
                     VAR branch := currentPage:Branches[nBranch]
-                    IF SELF:__Compare(prevKey, branch:Key, _keySize) > 0
+                    IF SELF:__Compare(prevKey, branch:Key, _keySize, prevRecno, branch:Recno) > 0
                         SELF:_addError( i"Key value in the index for page {branch.ChildPage:X}, record {branch.Recno} is not in the right order")
                     ENDIF
                     VAR childPage  := SELF:GetPage(branch:ChildPage)
                     VAR lastNode   := childPage:LastNode
-                    IF branch:Recno != lastNode:Recno
-                        SELF:_addError( i"Page {currentPage.PageNo:X}, position {nBranch} branch points to page {branch.ChildPage:X} and record {branch.Recno} but the last record on page {branch.ChildPage:X} is {lastNode.Recno}")
-                    ENDIF
-                    IF SELF:__Compare(lastNode:KeyBytes, branch:Key, _keySize) != 0
-                        SELF:_addError( i"Branch has another keyvalue as page {branch.ChildPage:X} ")
+                    IF lastNode != NULL
+                        IF branch:Recno != lastNode:Recno
+                            SELF:_addError( i"Page {currentPage.PageNo:X}, position {nBranch} branch points to page {branch.ChildPage:X} and record {branch.Recno} but the last record on page {branch.ChildPage:X} is {lastNode.Recno}")
+                        ENDIF
+                        IF SELF:__Compare(lastNode:KeyBytes, branch:Key, _keySize, lastNode:Recno, branch:Recno) != 0
+                            SELF:_addError( i"Branch has another keyvalue as page {branch.ChildPage:X} ")
+                        ENDIF
+                    ELSE
+                        SELF:_addError( i"{childPage.PageType} Page {childPage.PageNo:X} has no lastNode. Keycount: {childPage.NumKeys} ")
                     ENDIF
                     prevKey := branch:Key
+                    prevRecno := branch:Recno
                 NEXT
                 IF currentPage:HasRight
                     VAR nextPage := SELF:GetPage(currentPage:RightPtr)
                     IF nextPage:LeftPtr != currentPage:PageNo
-                        SELF:_addError( i"Left Link on page {currentPage.PageNo} contains incorrect pointer")
+                        SELF:_addError( i"Left Link on {nextPage.PageType} page {nextPage.PageNo:X} contains incorrect pointer")
                     ENDIF
                     IF nextPage IS CdxBranchPage VAR bp
                         currentPage := bp
                     ELSE
-                        SELF:_addError( i"Page {currentPage.RightPtr} should have been a branchpage but instead it is a {nextPage.PageType}")
+                        SELF:_addError( i"Page {nextPage.PageNo:X} should have been a branchpage but instead it is a {nextPage.PageType}")
                         EXIT
                     ENDIF
                 ELSE

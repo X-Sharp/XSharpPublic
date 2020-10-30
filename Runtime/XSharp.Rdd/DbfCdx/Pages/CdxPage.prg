@@ -12,7 +12,7 @@ USING System.Runtime.CompilerServices
 USING System.Reflection
 USING System.Reflection.Emit
 USING System.Runtime.InteropServices
-
+#include "CdxDebug.xh"
 BEGIN NAMESPACE XSharp.RDD.CDX
 
  	/// <summary>
@@ -32,7 +32,8 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         INTERNAL PROPERTY IsHot  AS LOGIC GET _hot SET _hot := value
         INTERNAL PROPERTY Tag    AS CdxTag GET _tag SET _setTag(value)
         INTERNAL PROPERTY Buffer AS BYTE[] GET _buffer
-        INTERNAL PROPERTY PageNo AS Int32 GET _nPage SET _nPage := value
+        INTERNAL PROPERTY PageNo AS Int32 GET _nPage SET _nPage := VALUE
+        INTERNAL PROPERTY Bag    AS CdxOrderBag GET _bag
         // For debugging
         INTERNAL PROPERTY PageNoX AS STRING GET _nPage:ToString("X8")
 

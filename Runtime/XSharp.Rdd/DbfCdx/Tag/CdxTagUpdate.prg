@@ -16,6 +16,7 @@ USING XSharp.RDD.Enums
 USING XSharp.RDD.Support
 USING System.Linq
 
+//#define TESTCDX
 BEGIN NAMESPACE XSharp.RDD.CDX
 
     INTERNAL PARTIAL SEALED CLASS CdxTag
@@ -141,8 +142,8 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 RETURN CdxAction.Ok
             ENDIF
             // now update the reference to this page in the parent node
-            VAR oParent := SELF:Stack:GetParent(oPage)
-            IF oParent == NULL
+            VAR oParent     := SELF:Stack:GetParent(oPage)
+            IF oParent == NULL .AND. oPage == Stack:Root:Page
                // Then this was the top level leaf page. So the tag has no keys anymore is empty now
                 oPage:SetEmptyRoot()
                 SELF:OrderBag:FlushPages()
@@ -175,7 +176,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 // if oPageR has no LeftPtr .and. also no RightPtr then the level may be removed ?
                 //Debug.Assert(pageR:HasLeft .or. pageR:HasRight)
             ENDIF
-            VAR result := CdxAction.DeleteFromParent(oPage)
+            VAR result := CdxAction.DeleteFromParent(oPage,-1)
             SELF:OrderBag:FreePage(oPage)
             RETURN result
 
@@ -183,17 +184,27 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             VAR oPage   := SELF:GetPage(action:PageNo) 
             VAR oParent := SELF:Stack:GetParent(oPage) ASTYPE CdxBranchPage
             VAR result := CdxAction.Ok
-
+            VAR found   := FALSE
+            LOCAL nPos  := 0 AS LONG
             IF oParent != NULL_OBJECT
                 // this can be the top level. In that case we should not get here at all
-                LOCAL nPos AS LONG
                 nPos := oParent:FindPage(action:PageNo)
                 IF nPos != -1
-                    result := oParent:Delete(nPos)
+                    found := TRUE
                 ELSE
-                    // Todo: this is a logical problem
-                    _UpdateError(NULL, "CdxTag.DeleteFromParent","Could not find entry for child on parent page")
+                    // when there are duplicate keys then our record can also be on the next page
+                    DO WHILE oParent != NULL .AND. oParent:HasRight .AND. ! found
+                        oParent := SELF:GetPage(oParent:RightPtr) ASTYPE CdxBranchPage
+                        nPos := oParent:FindPage(action:PageNo)
+                        IF nPos != -1
+                            found := TRUE
+                        ENDIF
+                    ENDDO
                 ENDIF 
+            ELSE
+            ENDIF
+            IF found
+                result := oParent:Delete(nPos)
             ELSE
                 _UpdateError(NULL, "CdxTag.DeleteFromParent","DeleteFromParent called when there is no Parent on the stack")
             ENDIF
@@ -237,7 +248,10 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         INTERNAL METHOD ChangeParent(action AS CdxAction) AS CdxAction
             VAR oPage     := SELF:GetPage(action:PageNo)
             VAR oPage2    := SELF:GetPage(action:PageNo2)   // only filled after a pagesplit
-            VAR oParent   := SELF:FindParent(oPage) 
+            VAR oParent   := SELF:FindParent(oPage)
+            IF oParent == NULL .AND. oPage2 != NULL
+                oParent   := SELF:FindParent(oPage2)
+            ENDIF
             VAR result    := CdxAction.Ok
             VAR oLast     := oPage:LastNode
             LOCAL oGrandParent := NULL AS CdxBranchPage
@@ -245,7 +259,9 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 
                 #ifdef TESTCDX
                     oPage:Debug("Changeparent could not find new parent")
+                    IF oPage2 != NULL
                     oPage2:Debug("Changeparentcould not find new parent")
+                    ENDIF
                     
                 #endif
                 NOP
@@ -313,7 +329,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             oLast    := oPage:LastNode
             nPos     := oParent:FindKey(oLast:KeyBytes, oLast:Recno, oLast:KeyBytes:Length)
             IF nPos >= oParent:NumKeys -1
-                VAR nDiff := SELF:__Compare(oParent:LastNode:KeyBytes, oLast:KeyBytes, oLast:KeyBytes:Length)
+                VAR nDiff := SELF:__Compare(oParent:LastNode:KeyBytes, oLast:KeyBytes, oLast:KeyBytes:Length,oParent:LastNode:Recno, oLast:Recno)
                 IF nDiff > 0
                     #ifdef TESTCDX
                         IF LOGGING
@@ -764,7 +780,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 IF !lNewRecord
                     // find and delete existing key
                     IF ! changed
-                        changed := SELF:__Compare(SELF:_newvalue:Key, SELF:_currentvalue:Key, SELF:_keySize) != 0
+                        changed := SELF:__Compare(SELF:_newvalue:Key, SELF:_currentvalue:Key, SELF:_keySize,recordNo, recordNo) != 0
                     ENDIF
                     IF changed
                         SELF:Stack:Clear()

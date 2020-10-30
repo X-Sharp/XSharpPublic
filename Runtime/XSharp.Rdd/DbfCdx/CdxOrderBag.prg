@@ -459,29 +459,27 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         PRIVATE _useFoxLock     := FALSE AS LOGIC
         PRIVATE _sharedLocks    := 0 AS LONG         
         PRIVATE _exclusiveLocks := 0 AS LONG        
-
+        STATIC PRIVATE rand := Random{100} AS System.Random
 
         PRIVATE METHOD _LockRetry(nOffSet AS INT64, nLen AS INT64,sPrefix AS STRING) AS VOID
             LOCAL result := FALSE AS LOGIC
-            //LOCAL count := 0 as LONG
             REPEAT
-                //++count
-                result := FFLock64(SELF:_hFile, nOffSet, nLen)
-                //IF count % 10 == 0 .and. ! result
-                    //? "Retrying ",sPrefix+"lock", nOffset:ToString("X"), nLen:ToString("X"), count, ProcName(1)
-                //ENDIF
+                result := SELF:_stream:SafeLock(nOffSet, nLen)
                 IF ! result
-                    System.Threading.Thread.Sleep(10)
+                    var wait := 10 +rand:@@Next() % 50
+                    DebOut32("Retry Wait "+wait:ToString()+" milliseconds")
+                    System.Threading.Thread.Sleep(wait)
                 ENDIF
             UNTIL result
-            //Debout32( "Locked " +nOffSet:ToString()+" "+nLen:ToString())
+            //DebOut32( "Locked " +nOffSet:ToString()+" "+nLen:ToString())
 
         PRIVATE METHOD _Unlock(nOffSet AS INT64, nLen AS INT64) AS LOGIC
-            VAR res := FFUnLock64(SELF:_hFile, nOffSet, nLen)
-            //IF ! res
-            //    ? "Unlock failed",nOffset:ToString("X"), nLen:ToString("X"),ProcName(1)
-            //ENDIF
-            //Debout32( "UnLocked " +nOffSet:ToString()+" "+nLen:ToString())
+            VAR res := SELF:_stream:SafeUnlock(nOffSet, nLen)
+            IF res
+                NOP // DebOut32( "UnLocked " +nOffSet:ToString()+" "+nLen:ToString())
+            ELSE
+                DebOut32( "UnLock FAILED " +nOffSet:ToString()+" "+nLen:ToString())
+            ENDIF
             RETURN res
 
         INTERNAL METHOD SLock() AS LOGIC
@@ -496,11 +494,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                     ELSE
                         SELF:_SLockComix()
                     ENDIF
-                    IF SELF:CheckForChangedBag()
-//                        FOREACH VAR oTag IN SELF:Tags
-//                            oTag:Stack:Clear()
-//                        NEXT
-                    ENDIF
+                    SELF:CheckForChangedBag()
                 ENDIF
             END LOCK
             RETURN TRUE
@@ -510,7 +504,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             IF !SELF:Shared
                 RETURN TRUE
             ENDIF
-            //Debout32( System.Threading.Thread.CurrentThread:Name+__ENTITY__ )
+            //DebOut32( System.Threading.Thread.CurrentThread:Name+__ENTITY__ )
             BEGIN LOCK SELF
                 SELF:_exclusiveLocks += 1
                 IF SELF:_exclusiveLocks == 1
@@ -533,7 +527,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             IF !SELF:Shared
                 RETURN
             ENDIF
-           // Debout32( System.Threading.Thread.CurrentThread:Name+__ENTITY__ )
+            //DebOut32( System.Threading.Thread.CurrentThread:Name+__ENTITY__ )
             BEGIN LOCK SELF
                 IF _useFoxLock
                     SELF:_UnLockFox()
@@ -613,30 +607,30 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             SELF:_sLockGate := 0
             SELF:_xLockedInOne := TRUE
                 
-            IF ! FFLock64(SELF:_hFile, ComixXLockOfs, ComixXLockLen+1)
-                //Debout32( "_xLockComix Failed " +ComixXLockOfs:ToString()+" "+(ComixXLockLen+1):ToString())
+            IF ! SELF:_stream:SafeLock(ComixXLockOfs, ComixXLockLen+1)
+                DebOut32( "_xLockComix FAILED " +ComixXLockOfs:ToString()+" "+(ComixXLockLen+1):ToString())
                 SELF:_xLockedInOne := FALSE
                 SELF:_LockRetry(ComixXLockOfs, 1,"X")
                 SELF:_LockRetry(ComixSLockOfs, ComixXLockLen,"X")
-            //ELSE
-                // Debout32( "_xLockComix " +ComixXLockOfs:ToString()+" "+(ComixXLockLen+1):ToString())
+            ELSE
+                NOP // DebOut32( "_xLockComix " +ComixXLockOfs:ToString()+" "+(ComixXLockLen+1):ToString())
             ENDIF
  
         PRIVATE METHOD _UnLockComix() AS VOID
             
             IF SELF:_sharedLocks > 0
-                //Debout32("_UnLockComix() shared")
+                //DebOut32("_UnLockComix() shared")
                 SELF:_sharedLocks -= 1
                 IF SELF:_sharedLocks == 0
-                    //Debout32("_UnLockComix() shared == 0")
+                    NOP // DebOut32("_UnLockComix() shared == 0")
                     SELF:_Unlock(ComixSLockOfs| SELF:_sLockOffSet, 1)
                 ENDIF
             ELSEIF SELF:_exclusiveLocks > 0
-                //Debout32("_UnLockComix() exclusive")
+                //DebOut32("_UnLockComix() exclusive")
                 SELF:_exclusiveLocks -= 1
                 IF SELF:_exclusiveLocks == 0
                     SELF:_root:RootVersion += 1
-                    //? System.Threading.Thread.CurrentThread.ManagedThreadId:ToString()+ " Update Root version to "+SELF:_root:RootVersion:ToString()
+                    //DebOut32(System.Threading.Thread.CurrentThread.ManagedThreadId:ToString()+ " Update Root version to "+SELF:_root:RootVersion:ToString())
                     SELF:_root:Write()
                     
                     IF SELF:_xLockedInOne

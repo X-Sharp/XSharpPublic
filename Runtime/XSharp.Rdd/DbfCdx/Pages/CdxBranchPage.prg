@@ -12,7 +12,7 @@ BYTE     rightPtr[ 4 ];    offset of right node or -1
 // BYTE child page [4]
 
 */
-//#define TESTCDX
+#include "CdxDebug.xh"
 USING System
 USING System.Collections.Generic
 USING System.Text
@@ -172,7 +172,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             // make sure that this key is larger than the last key
             IF SELF:NumKeys > 0
                 VAR lastKey := SELF:GetKey(SELF:NumKeys-1)
-                VAR nDiff := SELF:Tag:__Compare(lastKey, key, key:Length)
+                VAR nDiff := SELF:Tag:__Compare(lastKey, key, key:Length, SELF:GetRecno(SELF:NumKeys-1), recno)
                 IF nDiff > 0
                     // New key needs to be inserted and not added to the page
                     VAR Pos := SELF:FindKey(key, recno, key:Length)
@@ -356,7 +356,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 // Branchpage can't really be empty...
                 FOR nI := 0 TO SELF:NumKeys -1
                     VAR pageKey := SELF:GetKey(nI)
-                    VAR nDiff := SELF:Tag:__Compare(pageKey, key, keyLength)
+                    VAR nDiff := SELF:Tag:__Compare(pageKey, key, keyLength, SELF:GetRecno(nI), recno)
                     SWITCH nDiff
                     CASE 0
                         IF SELF:GetRecno(nI) > recno
@@ -381,12 +381,12 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             ENDDO
             IF page != NULL
                 DO WHILE page:HasRight
-                    var leftKey   := page:Branches[page:NumKeys-1]
-                    var rightPage := (CdxBranchPage) SELF:_tag:GetPage(page:RightPtr)
-                    var rightKey  := rightPage:Branches[0]
-                    VAR nDiff := SELF:Tag:__Compare(leftKey:Key, rightKey:Key, leftKey:Key:Length)
-                    IF nDiff > 0 .OR. (nDiff == 0 .AND. leftKey:Recno >= rightKey:Recno)
-                        SELF:Debug(page:PageNo:ToString("X"), "Keys in wrong order", leftKey:Key:ToAscii():Trim(), leftKey:Recno, rightKey:Key:ToAscii():Trim(), rightKey:Recno)
+                    VAR leftNode  := page:Branches[page:NumKeys-1]
+                    VAR rightPage := (CdxBranchPage) SELF:_tag:GetPage(page:RightPtr)
+                    VAR rightNode := rightPage:Branches[0]
+                    VAR nDiff := SELF:Tag:__Compare(leftNode:Key, rightNode:Key, leftNode:Key:Length, leftNode:Recno, rightNode:Recno)
+                    IF nDiff > 0 
+                        SELF:Debug(page:PageNo:ToString("X"), "Keys in wrong order", leftNode:Key:ToAscii():Trim(), leftNode:Recno, rightNode:Key:ToAscii():Trim(), rightNode:Recno)
                         SELF:DumpKeys()
                         rightPage:DumpKeys()
                     ENDIF
@@ -402,24 +402,24 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 
         METHOD Validate() AS VOID
             LOCAL last := NULL AS CdxBranch
-            FOREACH VAR Branch IN SELF:Branches
+            FOREACH VAR node IN SELF:Branches
                 IF last != NULL
-                    VAR nDiff := SELF:Tag:__Compare(last:Key, Branch:Key, last:Key:Length)
+                    VAR nDiff := SELF:Tag:__Compare(last:Key, node:Key, last:Key:Length, last:Recno, node:Recno)
                     IF nDiff > 0
-                        ? PageType, PageNo:ToString("X"), "Keys in wrong order", last:Key:ToAscii(), last:Recno, Branch:Key:ToAscii(), Branch:Recno
+                        ? PageType, PageNo:ToString("X"), "Keys in wrong order", last:Key:ToAscii(), last:Recno, node:Key:ToAscii(), node:Recno
                     ENDIF
                 ENDIF
-                last := Branch
+                last := node 
             NEXT
             IF SELF:HasLeft
-                LOCAL oPage := (CdxBranchPage) SELF:_tag:GetPage(SELF:LeftPtr) AS CdxBranchPage
-                IF oPage != NULL
-                    if oPage:NumKeys > 0
-                        VAR oLeftKey    := oPage:Branches[oPage:NumKeys-1]
-                        VAR oRightKey   := SELF:Branches[0]
-                        VAR nDiff := SELF:Tag:__Compare(oLeftKey:Key, oRightKey:Key, oLeftKey:Key:Length)
-                        IF nDiff > 0 .or. (nDiff == 0 .and. oLeftKey:Recno >= oRightKey:Recno)
-                            SELF:Debug("Left Sibling", oPage:PageNo:ToString("X"), "Keys in wrong order", oLeftKey:Key:ToAscii():Trim(), oLeftKey:Recno, oRightKey:Key:ToAscii():Trim(), oRightKey:Recno)
+                VAR oL := SELF:_tag:GetPage(SELF:LeftPtr) 
+                IF oL IS CdxBranchPage VAR oPage
+                    IF oPage:NumKeys > 0 .AND. SELF:NumKeys > 0
+                        VAR oLeftNode    := oPage:Branches[oPage:NumKeys-1]
+                        VAR oRightNode   := SELF:Branches[0]
+                        VAR nDiff := SELF:Tag:__Compare(oLeftNode:Key, oRightNode:Key, oLeftNode:Key:Length,oLeftNode:Recno,oRightNode:Recno )
+                        IF nDiff > 0 
+                            SELF:Debug("Left Sibling", oPage:PageNo:ToString("X"), "Keys in wrong order", oLeftNode:Key:ToAscii():Trim(), oLeftNode:Recno, oRightNode:Key:ToAscii():Trim(), oRightNode:Recno)
                             oPage:DumpKeys()
                             SELF:DumpKeys()
 
@@ -428,14 +428,14 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 ENDIF
             ENDIF
             IF SELF:HasRight
-                LOCAL oPage := (CdxBranchPage) SELF:_tag:GetPage(SELF:RightPtr) AS CdxBranchPage
-                IF oPage != NULL
-                    if oPage:NumKeys > 0
-                        VAR oLeftKey   := SELF:Branches[SELF:NumKeys-1]
-                        VAR oRightKey  := oPage:Branches[0]
-                        VAR nDiff := SELF:Tag:__Compare(oLeftKey:Key, oRightKey:Key, oLeftKey:Key:Length)
-                        IF nDiff > 0 .or. (nDiff == 0 .and. oLeftKey:Recno >= oRightKey:Recno)
-                            SELF:Debug("Right Sibling", oPage:PageNo:ToString("X"), "Keys in wrong order", oLeftKey:Key:ToAscii():Trim(), oLeftKey:Recno, oRightKey:Key:ToAscii():Trim(), oRightKey:Recno, self:NumKeys, oPage:NumKeys)
+                VAR oR := SELF:_tag:GetPage(SELF:RightPtr) 
+                IF oR IS CdxBranchPage VAR oPage
+                    IF oPage:NumKeys > 0 .AND. SELF:NumKeys > 0
+                        VAR oLeftNode   := SELF:Branches[SELF:NumKeys-1]
+                        VAR oRightNode  := oPage:Branches[0]
+                        VAR nDiff := SELF:Tag:__Compare(oLeftNode:Key, oRightNode:Key, oLeftNode:Key:Length, oLeftNode:Recno, oRightNode:Recno)
+                        IF nDiff > 0 
+                            SELF:Debug("Right Sibling", oPage:PageNo:ToString("X"), "Keys in wrong order", oLeftNode:Key:ToAscii():Trim(), oLeftNode:Recno, oRightNode:Key:ToAscii():Trim(), oRightNode:Recno, SELF:NumKeys, oPage:NumKeys)
                             SELF:DumpKeys()
                             oPage:DumpKeys()
                         ENDIF

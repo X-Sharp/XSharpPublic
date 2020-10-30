@@ -8,7 +8,7 @@ USING System.Diagnostics
 USING XSharp.RDD.Enums
 USING XSharp.RDD.Support
 USING System.Collections.Generic
-#undef SHOWTIMES
+//#define SHOWTIMES
 
 BEGIN NAMESPACE XSharp.RDD.CDX
 

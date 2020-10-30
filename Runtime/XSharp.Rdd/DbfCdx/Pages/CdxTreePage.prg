@@ -10,7 +10,7 @@ USING System.Text
 USING System.IO
 USING System.Runtime.CompilerServices
 USING System.Diagnostics
-//#define TESTCDX
+#include "CdxDebug.xh"
 BEGIN NAMESPACE XSharp.RDD.CDX
 
 	/// <summary>
@@ -137,7 +137,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             IF SELF:RightPtr == 0
                 SELF:RightPtr := -1
             ENDIF            
-           IF SELF:PageNo != -1
+            IF SELF:PageNo != -1
                 System.Diagnostics.Debug.Assert(SELF:PageNo != SELF:RightPtr)
                 System.Diagnostics.Debug.Assert(SELF:PageNo != SELF:LeftPtr)
             ENDIF
@@ -178,25 +178,24 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             ELSE
                 NOP
             ENDIF
-            RETURN 
+            RETURN  
         INTERNAL ABSTRACT METHOD FindKey(key AS BYTE[], recno AS LONG, length AS LONG) AS WORD
 #ifdef TESTCDX
         METHOD Debug(o PARAMS  OBJECT[] ) AS VOID
-//           LOCAL count := o:Length AS INT
-//           LOCAL x                 AS INT
-//           LOCAL cProc             AS STRING
-//           
-//           cProc := ProcName(1):ToLower():PadRight(30) 
-//           Console.Write(cProc+" ")
-//           Console.Write(SELF:PageNo:ToString("X8"))
-//           Console.Write(" ")
-//           FOR x := 0 UPTO count-1
-//              Console.Write( o[x] )
-//              IF x < count
-//                 Console.Write( " " )
-//              ENDIF
-//           NEXT
-//           Console.WriteLine()
+           LOCAL count := o:Length AS INT
+           LOCAL x                 AS INT
+           LOCAL cProc             AS STRING
+           LOCAL sb as StringBuilder
+            sb := StringBuilder{}
+           cProc := ProcName(1):ToLower():PadRight(30)
+           sb:Append(cProc+" ")
+           sb:Append(SELF:PageNo:ToString("X8"))
+           sb:Append(" ")
+           FOR x := 0 UPTO count-1
+              sb:Append( o[x]:ToString())
+              sb:Append( " ")
+            NEXT
+           System.Diagnostics.Debug.WriteLine(sb:ToString())
            RETURN
 #endif            
 	END CLASS

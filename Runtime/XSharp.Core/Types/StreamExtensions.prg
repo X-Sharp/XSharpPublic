@@ -11,19 +11,29 @@ USING System
 USING System.Collections.Generic
 USING System.Text
 USING System.IO
+USING System.Diagnostics
 
 BEGIN NAMESPACE XSharp
     STATIC CLASS FileStreamExensions
 
-        STATIC METHOD SafeReadAt(SELF oStream AS FileStream, pos as INT64, buffer AS BYTE[]) as LOGIC
+        STATIC METHOD SafeReadAt(SELF oStream AS FileStream, pos AS INT64, buffer AS BYTE[]) AS LOGIC
+            Debug.Assert(pos >= 0)
+            IF pos < 0
+                RETURN FALSE
+            ENDIF
             oStream:Position := pos
             var ok := oStream:SafeRead(buffer, buffer:Length)
             return ok
 
-        STATIC METHOD SafeReadAt(SELF oStream AS FileStream, pos as INT64, buffer AS BYTE[], nLength as LONG) as LOGIC
+        STATIC METHOD SafeReadAt(SELF oStream AS FileStream, pos AS INT64, buffer AS BYTE[], nLength AS LONG) AS LOGIC
+            Debug.Assert(pos >= 0)
+            IF pos < 0
+                RETURN FALSE
+            ENDIF
             oStream:Position := pos
-            var ok := oStream:SafeRead(buffer, nLength)
-            return ok
+            VAR ok := oStream:SafeRead(buffer, nLength)
+            RETURN ok
+            
         STATIC METHOD SafeRead(SELF oStream AS FileStream, buffer AS BYTE[]) AS LOGIC
             RETURN SafeRead(oStream, buffer, buffer:Length)
             
@@ -47,19 +57,26 @@ BEGIN NAMESPACE XSharp
             END TRY
             RETURN result
 
-        STATIC METHOD SafeWriteAt(SELF oStream AS FileStream, pos as INT64, buffer AS BYTE[]) as logic
+        STATIC METHOD SafeWriteAt(SELF oStream AS FileStream, pos AS INT64, buffer AS BYTE[]) AS LOGIC
+            Debug.Assert(pos >= 0)
+            IF pos < 0
+                RETURN FALSE
+            ENDIF
             oStream:Position := pos
             var ok := oStream:SafeWrite(buffer, buffer:Length)
             return ok
 
-        STATIC METHOD SafeWriteAt(SELF oStream AS FileStream, pos as INT64, buffer AS BYTE[], length as LONG) as logic
+        STATIC METHOD SafeWriteAt(SELF oStream AS FileStream, pos AS INT64, buffer AS BYTE[], length AS LONG) AS LOGIC
+            Debug.Assert(pos >= 0)
+            IF pos < 0
+                RETURN FALSE
+            ENDIF
             oStream:Position := pos
             var ok := oStream:SafeWrite(buffer, length)
             return ok
             
         STATIC METHOD SafeWrite(SELF oStream AS FileStream, buffer AS BYTE[]) AS LOGIC
             RETURN SafeWrite(oStream, buffer, buffer:Length)
-            
             
         STATIC METHOD SafeWrite(SELF oStream AS FileStream, buffer AS BYTE[], length AS LONG) AS LOGIC
             LOCAL result AS LOGIC
@@ -79,31 +96,42 @@ BEGIN NAMESPACE XSharp
                 result := FALSE
             END TRY
             RETURN result
+            
          STATIC METHOD SafeSetPos(SELF oStream AS FileStream, offset AS INT64) AS LOGIC
             LOCAL result AS LOGIC
             TRY
-                oStream:Position := offset
-                if offset < 100 .and. offset != 0
-                    //? offset, ProcName(1), ProcName(2)
+                Debug.Assert(offset >= 0)
+                IF offset < 0
+                    RETURN FALSE
                 ENDIF
-                //result := oStream:Seek(offset, SeekOrigin.Begin) == offset
+                oStream:Position := offset
                 result := TRUE
             CATCH
                 result := FALSE
             END TRY
             RETURN result
-         STATIC METHOD SafeLock(SELF oStream AS FileStream, offset AS INT64, length AS INT64) AS LOGIC
+            
+        STATIC METHOD SafeLock(SELF oStream AS FileStream, offset AS INT64, length AS INT64) AS LOGIC
            LOCAL result AS LOGIC
             TRY
+                Debug.Assert(offset >= 0)
+                IF offset < 0
+                    RETURN FALSE
+                ENDIF
                 oStream:Lock(offset, length)
                 result := TRUE
             CATCH
                 result := FALSE
             END TRY
             RETURN result
+
          STATIC METHOD SafeUnlock(SELF oStream AS FileStream, offset AS INT64, length AS INT64) AS LOGIC
            LOCAL result AS LOGIC
             TRY
+                Debug.Assert(offset >= 0)
+                IF offset < 0
+                    RETURN FALSE
+                ENDIF
                 oStream:Unlock(offset, length)
                 result := TRUE
             CATCH
@@ -114,6 +142,10 @@ BEGIN NAMESPACE XSharp
         STATIC METHOD SafeSetLength(SELF oStream AS FileStream, length AS INT64) AS LOGIC
            LOCAL result AS LOGIC
             TRY
+                Debug.Assert(length >= 0)
+                IF length < 0
+                    RETURN FALSE
+                ENDIF
                 oStream:SetLength(length)
                 result := TRUE
             CATCH

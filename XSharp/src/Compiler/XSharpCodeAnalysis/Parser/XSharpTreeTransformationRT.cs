@@ -1050,13 +1050,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         }
         public override void ExitXbasedecl([NotNull] XP.XbasedeclContext context)
         {
-            if (!_options.SupportsMemvars)
-            {
-                var node = _syntaxFactory.EmptyStatement(SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken));
-                node = NotInDialect(node, "Memory Variables", "(did you forget the /memvar commandline option ?)");
-                context.Put(node);
-                return;
-            }
             context.SetSequencePoint(context.end);
             var stmts = _pool.Allocate<StatementSyntax>();
             switch (context.T.Type)

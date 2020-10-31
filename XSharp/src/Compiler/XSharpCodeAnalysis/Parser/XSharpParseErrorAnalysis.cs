@@ -191,6 +191,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
         }
 
+       
         public override void ExitDimensionVar([NotNull] XSharpParser.DimensionVarContext context)
         {
             // only comes here in the Fox dialect

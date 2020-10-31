@@ -693,8 +693,9 @@ namespace XSharp.MacroCompiler.Syntax
             else
             {
                 var dlg = NestedBinder.Emit(Codeblock, source) as ObjectMacro.MacroCodeblockDelegate;
-                var rtc = new ObjectMacro.MacroCodeblock(dlg, NestedBinder.ParamCount);
-                CbList[CbIndex] = new _Codeblock(rtc, source, true, NestedBinder.CreatesAutoVars);
+                ICodeblock rtc = NestedBinder.CreatesAutoVars ? new ObjectMacro.MacroMemVarCodeblock(dlg, NestedBinder.ParamCount)
+                                                              : new ObjectMacro.MacroCodeblock(dlg, NestedBinder.ParamCount);
+                CbList[CbIndex] = new _Codeblock(rtc, source, true, false);
             }
 
             // Emit code to retrieve codeblock

@@ -87,10 +87,10 @@ namespace XSharp.Runtime
             return new XSharp.MacroCompiler.ObjectMacro.MacroCodeblock(m.Macro, m.ParamCount);
         }
 
-        public _Codeblock CompileCodeblock(string macro, bool lAllowSingleQuotes, Module module, out bool isCodeblock, out bool addsMemVars)
+        public _Codeblock CompileCodeblock(string macro, bool lAllowSingleQuotes, Module module)
         {
-            isCodeblock = macro.Replace(" ", "").StartsWith("{|");
-            addsMemVars = false;
+            var isCodeblock = macro.Replace(" ", "").StartsWith("{|");
+            var addsMemVars = false;
             UsualCompilation compiler = GetUsualCompiler(lAllowSingleQuotes);
             var m = compiler.Compile(macro);
             if (m.Diagnostic != null)

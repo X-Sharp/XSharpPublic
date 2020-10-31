@@ -61,8 +61,7 @@ BEGIN NAMESPACE XSharp
 		/// <param name="addsMemVars">will be set to TRUE when the macro contains code that may result in adding new MemVars).</param>
 		/// <returns>A compiled codeblock</returns>
 		/// <seealso cref="T:XSharp.XSharp._Codeblock"/>
-    	PUBLIC METHOD CompileCodeblock(macro AS STRING , lAllowSingleQuotes AS LOGIC, module AS System.Reflection.Module, ;
-            isCodeblock OUT LOGIC, addsMemVars OUT LOGIC) AS XSharp._Codeblock
+    	PUBLIC METHOD CompileCodeblock(macro AS STRING , lAllowSingleQuotes AS LOGIC, module AS System.Reflection.Module) AS XSharp._Codeblock
 
         /// <summary>Compile a string into a runtime codeblock.</summary>
 	    /// <param name="macro">String to compile</param>

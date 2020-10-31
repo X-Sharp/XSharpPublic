@@ -44,13 +44,15 @@ FUNCTION MCompile(cString AS STRING, lAllowSingleQuotes AS LOGIC) AS XSharp._Cod
         IF XSharp.RuntimeState:MacroResolver == NULL
             XSharp.RuntimeState:MacroResolver := DefaultMacroAmbigousMatchResolver
         ENDIF
-		LOCAL iResult AS ICodeblock
 		LOCAL oResult AS XSharp._Codeblock
-		LOCAL lIsCodeblock  AS LOGIC
-        LOCAL addsMemVars   AS LOGIC
         //cString := MPrepare(cString)
-		iResult := oMC:Compile(cString, lAllowSingleQuotes, oMod, OUT lIsCodeblock, OUT addsMemVars)
-		oResult := XSharp._Codeblock{iResult, cString, lIsCodeblock, addsMemVars}
+        IF oMC is IMacroCompilerUsual VAR oMCU
+            oResult := oMCU:CompileCodeblock(cString, lAllowSingleQuotes, oMod)
+        ELSE
+    		LOCAL iResult AS ICodeblock
+		    iResult := oMC:Compile(cString, lAllowSingleQuotes, oMod, OUT VAR lIsCodeblock, OUT VAR addsMemVars)
+		    oResult := XSharp._Codeblock{iResult, cString, lIsCodeblock, addsMemVars}
+        ENDIF
 		RETURN oResult
 	ENDIF
 	RETURN NULL_OBJECT	

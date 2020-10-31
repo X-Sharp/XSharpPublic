@@ -57,9 +57,8 @@ BEGIN NAMESPACE XSharp.VO.Tests
             bMacro := MCompile(cMacro)
             uValue := Eval(bMacro)
             Assert.Equal(NIL, uValue)
-            #warning '2 tests commented out'
-            //Assert.Equal(0U, UsualType(uValue))    // returned 6 but should be 0
-            //Assert.Equal("NIL", AsString(uValue))    // returned "{(0x0000)0x00000000} CLASS"  but should be "NIL"
+            Assert.Equal(0U, UsualType(uValue))    // returned 6 but should be 0
+            Assert.Equal("NIL", AsString(uValue))    // returned "{(0x0000)0x00000000} CLASS"  but should be "NIL"
 
             RETURN
 

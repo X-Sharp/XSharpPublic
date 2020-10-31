@@ -307,7 +307,7 @@ BEGIN NAMESPACE MacroCompilerTest
 
     FUNCTION ParseMacro(mc AS XSharp.Runtime.MacroCompiler, src AS STRING) AS VOID
         Console.WriteLine("Parsing macro ...")
-        VAR ast := mc:compiler:Parse(src)
+        VAR ast := mc:GetObjectCompiler(true):Parse(src)
         Console.WriteLine(ast)
 
     FUNCTION EvalMacro(mc AS XSharp.Runtime.MacroCompiler, src AS STRING, args PARAMS OBJECT[]) AS USUAL
@@ -411,7 +411,7 @@ BEGIN NAMESPACE MacroCompilerTest
     FUNCTION TestParse(mc AS XSharp.Runtime.MacroCompiler, src AS STRING, val AS STRING) AS LOGIC
         TotalTests += 1
         Console.Write("Test: '{0}' ", src)
-        VAR res := mc:compiler:Parse(src):ToString()
+        VAR res := mc:GetObjectCompiler(true):Parse(src):ToString()
         IF res = val
             TotalSuccess += 1
             Console.WriteLine("[OK]")
@@ -530,7 +530,7 @@ BEGIN NAMESPACE MacroCompilerTest
                 //var o := mc:Compile(source)
                 //o:Eval()
             ELSE
-                VAR ast := mc:compiler:Parse(source)
+                VAR ast := mc:GetObjectCompiler(true):Parse(source)
                 //Console.WriteLine(ast);
             END
 

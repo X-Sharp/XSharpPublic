@@ -62,14 +62,14 @@ BEGIN NAMESPACE XSharp
 		/// <returns>A compiled codeblock</returns>
 		/// <seealso cref="T:XSharp.XSharp._Codeblock"/>
     	PUBLIC METHOD CompileCodeblock(macro AS STRING , lAllowSingleQuotes AS LOGIC, module AS System.Reflection.Module, ;
-            isCodeblock OUT LOGIC, addsMemVars OUT LOGIC) AS XSharp.Codeblock
+            isCodeblock OUT LOGIC, addsMemVars OUT LOGIC) AS XSharp._Codeblock
 
         /// <summary>Compile a string into a runtime codeblock.</summary>
 	    /// <param name="macro">String to compile</param>
 	    /// <returns>A compiled codeblock</returns>
 	    /// <seealso cref="T:XSharp.XSharp._Codeblock"/>
         /// <remarks>This overload of the CompileCodeBlock assumes that single quotes are allowed, and that no memvars are used.</remarks>
-        PUBLIC METHOD CompileCodeblock(macro AS STRING ) AS XSharp.Codeblock
+        PUBLIC METHOD CompileCodeblock(macro AS STRING ) AS XSharp._Codeblock
        
     END INTERFACE
 

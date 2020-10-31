@@ -1,4 +1,6 @@
-﻿namespace XSharp.MacroCompiler.ObjectMacro
+﻿using static XSharp.RT.Functions;
+
+namespace XSharp.MacroCompiler.ObjectMacro
 {
     public delegate object MacroCodeblockDelegate(params object[] args);
 
@@ -12,17 +14,33 @@
             _pcount = pCount;
         }
 
-        public object EvalBlock(params object[] args)
+        public virtual object EvalBlock(params object[] args)
         {
             return _eval(args);
         }
         public int PCount() => _pcount;
     }
+
+    public class MacroMemVarCodeblock : MacroCodeblock
+    {
+        public override object EvalBlock(params object[] args)
+        {
+            int nLevel = __MemVarInit();
+            try
+            {
+                return base.EvalBlock();
+            }
+            finally
+            {
+                __MemVarRelease(nLevel);
+            }
+        }
+        public MacroMemVarCodeblock(MacroCodeblockDelegate evalMethod, int pCount) : base(evalMethod, pCount) { }
+    }
 }
 
 namespace XSharp.MacroCompiler.UsualMacro
 {
-    using static XSharp.RT.Functions;
     public delegate __Usual MacroCodeblockDelegate(params __Usual[] args);
 
     class DummyCodeblock : ICodeblock

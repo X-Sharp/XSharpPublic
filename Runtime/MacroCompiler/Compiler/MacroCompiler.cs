@@ -73,7 +73,13 @@ namespace XSharp.Runtime
                 throw m.Diagnostic;
             }
             addsMemVars = m.CreatesAutoVars;
-            return new XSharp.MacroCompiler.ObjectMacro.MacroCodeblock(m.Macro, m.ParamCount);
+            if (addsMemVars)
+            {
+                addsMemVars = false;
+                return new XSharp.MacroCompiler.ObjectMacro.MacroMemVarCodeblock(m.Macro, m.ParamCount);
+            }
+            else
+                return new XSharp.MacroCompiler.ObjectMacro.MacroCodeblock(m.Macro, m.ParamCount);
         }
 
         public ICodeblock Compile(string macro)
@@ -98,7 +104,10 @@ namespace XSharp.Runtime
                 throw m.Diagnostic;
             }
             addsMemVars = m.CreatesAutoVars;
-            return new XSharp.MacroCompiler.UsualMacro.MacroCodeblock(m.Macro, m.ParamCount, macro, isCodeblock);
+            if (addsMemVars)
+                return new XSharp.MacroCompiler.UsualMacro.MacroMemVarCodeblock(m.Macro, m.ParamCount, macro, isCodeblock);
+            else
+                return new XSharp.MacroCompiler.UsualMacro.MacroCodeblock(m.Macro, m.ParamCount, macro, isCodeblock);
         }
 
         public _Codeblock CompileCodeblock(string macro)

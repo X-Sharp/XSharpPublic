@@ -5,18 +5,20 @@
 //
 using System.Reflection
 BEGIN NAMESPACE XSharp
-	/// <summary>
-	/// This interface defines Compile time and runtime codeblocks
-	/// </summary>
-	/// <seealso cref="T:XSharp.Codeblock"/>
-	/// <seealso cref="T:XSharp._Codeblock"/>
-	INTERFACE ICodeblock
-		/// <summary>Evaluate the codeblock</summary>
-		METHOD	EvalBlock( args PARAMS OBJECT[]) AS OBJECT
-		/// <summary>
-		/// Returns the number of parameters defined for the codeblock
-		/// </summary>
-		METHOD	PCount AS LONG 
+    /// <summary>
+    /// This interface defines Compile time and runtime codeblocks
+    /// </summary>
+    /// <seealso cref="T:XSharp.Codeblock"/>
+    /// <seealso cref="T:XSharp._Codeblock"/>
+    INTERFACE ICodeblock
+        /// <summary>Evaluate the codeblock</summary>
+        METHOD	EvalBlock( args PARAMS OBJECT[]) AS OBJECT
+        /// <summary>
+        /// Returns the number of parameters defined for the codeblock
+        /// </summary>
+        METHOD	PCount AS LONG
+        /// <summary>Return the source string from which the codeblock was created </summary>  
+        METHOD ToString() AS STRING STRICT
     END INTERFACE
 
     /// <summary>

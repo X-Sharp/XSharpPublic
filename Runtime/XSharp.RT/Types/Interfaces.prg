@@ -47,20 +47,20 @@ BEGIN NAMESPACE XSharp
         PUBLIC METHOD NoIvarPut(cName AS STRING, uValue AS USUAL) AS VOID 
     END INTERFACE
 
-	/// <summary>
-	/// This interface defines and extension to the Macro compiler subsystem
-	/// </summary>
-	/// <seealso cref="T:XSharp.IMacroCompiler"/>
-	/// <seealso cref="T:XSharp.IMacroCompiler2"/>
-    INTERFACE IMacroCompilerUsual
-	/// <summary>Compile a string into a runtime codeblock.</summary>
-		/// <param name="macro">String to compile</param>
-		/// <param name="lAllowSingleQuotes">Should single quotes be allowed</param>
-		/// <param name="module">Module of the main app</param>
-		/// <param name="isCodeblock">will be set to TRUE when the string was a real codeblock (with {|..| }).</param>
-		/// <param name="addsMemVars">will be set to TRUE when the macro contains code that may result in adding new MemVars).</param>
-		/// <returns>A compiled codeblock</returns>
-		/// <seealso cref="T:XSharp.XSharp._Codeblock"/>
+    /// <summary>
+    /// This interface defines and extension to the Macro compiler subsystem
+    /// </summary>
+    /// <seealso cref="T:XSharp.IMacroCompiler"/>
+    /// <seealso cref="T:XSharp.IMacroCompiler2"/>
+    INTERFACE IMacroCompilerUsual INHERIT IMacroCompiler2
+        /// <summary>Compile a string into a runtime codeblock.</summary>
+        /// <param name="macro">String to compile</param>
+        /// <param name="lAllowSingleQuotes">Should single quotes be allowed</param>
+        /// <param name="module">Module of the main app</param>
+        /// <param name="isCodeblock">will be set to TRUE when the string was a real codeblock (with {|..| }).</param>
+        /// <param name="addsMemVars">will be set to TRUE when the macro contains code that may result in adding new MemVars).</param>
+        /// <returns>A compiled codeblock</returns>
+        /// <seealso cref="T:XSharp.XSharp._Codeblock"/>
     	PUBLIC METHOD CompileCodeblock(macro AS STRING , lAllowSingleQuotes AS LOGIC, module AS System.Reflection.Module) AS XSharp._Codeblock
 
         /// <summary>Compile a string into a runtime codeblock.</summary>
@@ -72,4 +72,16 @@ BEGIN NAMESPACE XSharp
        
     END INTERFACE
 
+    /// <summary>
+    /// This interface Extended the ICodeblock interface and adds support for usual parameters and return values
+    /// </summary>
+    INTERFACE ICodeblockUsual INHERIT ICodeblock
+        /// <summary>Was the codeblock created from a string that started with "{|" </summary>  
+        PROPERTY IsBlock AS LOGIC GET
+        /// <summary>
+        /// Executes the codeblock.</summary>
+        /// <param name="args">Zero or more arguments to pass to the codeblock.</param>
+        /// <returns>The value of the last expression in the codeblock.</returns>
+        METHOD Eval(args PARAMS USUAL[]) AS USUAL
+    END INTERFACE
 END NAMESPACE    

@@ -77,7 +77,7 @@ ABSTRACT CLASS XSharp.Codeblock IMPLEMENTS ICodeblock
 /// <seealso cref="T:XSharp.IMacroCompiler"/>
 /// <seealso cref="T:XSharp.Codeblock"/>
 [DebuggerDisplay( "{_cMacro}", Type := "_Codeblock" )] ;
-PUBLIC CLASS XSharp._Codeblock INHERIT XSharp.Codeblock
+PUBLIC CLASS XSharp._Codeblock INHERIT XSharp.Codeblock IMPLEMENTS ICodeblockUsual
 	/// <exclude />
 	PROTECT _innerBlock AS ICodeblock 
 	/// <exclude />

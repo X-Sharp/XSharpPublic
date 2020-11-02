@@ -64,6 +64,19 @@ BEGIN NAMESPACE XSharp.VO.Tests
             
 			RETURN
 
+    [Fact, Trait("Category", "Usual")];
+    METHOD UsualBinaryTests() AS VOID
+        local u as USUAL
+        local b as Binary
+        b := 0h1234
+        u := b
+        Assert.Equal(true, u == b)
+        Assert.Equal(true, b == u)
+        b := u
+        Assert.Equal(true, u == 0h1234)
+        RETURN
+        
+
 	[Fact, Trait("Category", "Usual")];
 		METHOD UsualCurrencyTests() AS VOID
 			LOCAL u AS USUAL

@@ -17,8 +17,6 @@ BEGIN NAMESPACE XSharp
         /// Returns the number of parameters defined for the codeblock
         /// </summary>
         METHOD	PCount AS LONG
-        /// <summary>Return the source string from which the codeblock was created </summary>  
-        METHOD ToString() AS STRING STRICT
     END INTERFACE
 
     /// <summary>

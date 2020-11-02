@@ -17,7 +17,7 @@ BEGIN NAMESPACE XSharpModel
 			SELF:Parent          := NULL
          SELF:DeclaringType   := def:DeclaringType:GetXSharpTypeName()
          SELF:_propdef        := def
-			SELF:OriginalTypeName   := def:PropertyType:FullName
+			SELF:OriginalTypeName   := RemoveGenericParameters(def:PropertyType:FullName)
          SELF:TypeName        := SELF:Signature:DataType := def:PropertyType:GetXSharpTypeName()
          if def:GetMethod != NULL
             VAR xMethod := XMethodReference{def:GetMethod, asm}
@@ -75,7 +75,7 @@ BEGIN NAMESPACE XSharpModel
 			SUPER(def:Name, Kind.Field, ConvertAttributes(def:Attributes),  asm)
          SELF:DeclaringType   := def:DeclaringType:GetXSharpTypeName()
          SELF:_fielddef       := def
-         SELF:OriginalTypeName := def:FieldType:FullName
+         SELF:OriginalTypeName := RemoveGenericParameters(def:FieldType:FullName)
          SELF:TypeName        := SELF:Signature:DataType      := def:FieldType:GetXSharpTypeName()
          IF def:IsLiteral .AND. def:Constant != NULL
             SELF:Value := def:Constant:ToString()
@@ -98,7 +98,7 @@ BEGIN NAMESPACE XSharpModel
 			SUPER(def:Name, Kind.Event, Modifiers.Public,  asm)
          SELF:DeclaringType         := def:DeclaringType:GetXSharpTypeName()
          SELF:_eventdef             := def
-         SELF:OriginalTypeName      := def:EventType:FullName
+         SELF:OriginalTypeName      := RemoveGenericParameters(def:EventType:FullName)
          SELF:TypeName              := SELF:Signature:DataType    := def:EventType:GetXSharpTypeName()
          if def:AddMethod != NULL
             VAR xMethod := XMethodReference{def:AddMethod, asm}
@@ -169,7 +169,7 @@ BEGIN NAMESPACE XSharpModel
             SELF:Attributes := _AND(SELF:Attributes, ~Modifiers.Static)
             SELF:Kind      := Kind.Function
          ENDIF
-         SELF:OriginalTypeName   := def:ReturnType:FullName
+         SELF:OriginalTypeName   := RemoveGenericParameters(def:ReturnType:FullName)
          SELF:TypeName           := SELF:Signature:DataType := def:ReturnType:GetXSharpTypeName()
          SELF:_methoddef         := def
          IF def:HasCustomAttributes
@@ -290,7 +290,7 @@ BEGIN NAMESPACE XSharpModel
                defValue := SELF:DecodeCustomAttributes(oPar:CustomAttributes)
             ENDIF
             var parRef := XParameterReference {self, name, type}
-            parRef:OriginalTypeName := oPar:ParameterType:FullName
+            parRef:OriginalTypeName := RemoveGenericParameters(oPar:ParameterType:FullName)
             if defValue != NULL
                parRef:Value := defValue:ToString()
             ENDIF

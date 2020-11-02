@@ -651,6 +651,8 @@ localdecl          : LOCAL (Static=STATIC)? LocalVars+=localvar (COMMA LocalVars
                    | Static=STATIC? VAR           ImpliedVars+=impliedvar (COMMA ImpliedVars+=impliedvar)*  end=eos #varLocalDecl
                    | Static=STATIC LOCAL? IMPLIED ImpliedVars+=impliedvar (COMMA ImpliedVars+=impliedvar)*  end=eos #varLocalDecl
                    | LOCAL Static=STATIC? IMPLIED ImpliedVars+=impliedvar (COMMA ImpliedVars+=impliedvar)*  end=eos #varLocalDecl
+                    // FoxPro dimension statement
+                   | T=(DIMENSION|DECLARE) DimVars += dimensionVar (COMMA DimVars+=dimensionVar)*    end=eos  #foxDimensionDecl
                    ;
 
 localvar           : (Const=CONST)? ( Dim=DIM )? (FOX_M DOT)? Id=identifier (LBRKT ArraySub=arraysub RBRKT)?  
@@ -667,16 +669,22 @@ fielddecl          : FIELD Fields+=identifierName (COMMA Fields+=identifierName)
 // Old Style xBase declarations
 // FoxPro allows PRIVATE M.Name The M is only lexed in the FoxPro dialect
 // We parse the M. Prefix in the xbasevar rule but ignore it.
+// note that in FoxPro PUBLIC, PARAMETERS and LPARAMETERS may have a type declaration. That is here the XT=xbasedecltype
+// In FoxPro PUBLIC can also have an ARRAY clause. This must be combined with array indices. We should check for that.
+// In FoxPro there is also PRIVATE ALL [Like skeleton | Except skeleton] This is not implemented yet
 
-xbasedecl           : T=(MEMVAR|PARAMETERS|LPARAMETERS)      // MEMVAR  Foo, Bar or PARAMETERS Foo, Bar
-                      Vars+=identifierName (COMMA Vars+=identifierName)*
-                      end=eos
-                    | T=(PRIVATE | PUBLIC) 
-                      XVars+=xbasevar (COMMA XVars+=xbasevar)*   // PRIVATE Foo := 123,  PUBLIC Bar, PUBLIC MyArray[5,2]
-                      end=eos 
-                    // FoxPro dimension statement
-                    | T=(DIMENSION|DECLARE) DimVars += dimensionVar (COMMA DimVars+=dimensionVar)*    end=eos 
-                    ;
+xbasedecl           : T=MEMVAR Vars+=identifierName (COMMA Vars+=identifierName  )* end=eos  // MEMVAR  Foo, Bar 
+                    | T=(PARAMETERS|LPARAMETERS)    // PARAMETERS Foo, Bar  LPARAMETERS Foo AS Bar OF BarLib
+                      Vars+=identifierName XT=xbasedecltype? (COMMA Vars+=identifierName XT=xbasedecltype? )* end=eos
+                    | T=PRIVATE XVars+=xbasevar (COMMA XVars+=xbasevar)*  end=eos      // PRIVATE Foo := 123
+                    | T=PUBLIC Array=ARRAY? XVars+=xbasevar XT=xbasedecltype?
+                      (COMMA XVars+=xbasevar XT=xbasedecltype? )* end=eos   // PUBLIC Bar, PUBLIC MyArray[5,2]
+                    ;  
+
+
+xbasedecltype       : AS Type=datatype (OF ClassLib=identifierName)?
+                    ;  // parseed but ignored . FoxPro uses this only for intellisense. We can/should do that to in the editor
+                    
 
 xbasevar            : (Amp=AMP)?  (FOX_M DOT)? Id=identifierName (LBRKT ArraySub=arraysub RBRKT)? (Op=assignoperator Expression=expression)?
                     ;

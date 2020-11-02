@@ -89,9 +89,9 @@ BEGIN NAMESPACE XSharpModel
       PROPERTY TypeParameters as IList<STRING>           GET SELF:_signature:TypeParameters:ToArray()
       PROPERTY TypeParametersList AS STRING              GET SELF:_signature:TypeParametersList
       PROPERTY TypeParameterConstraints as IList<STRING> GET SELF:_signature:TypeParameterContraints:ToArray()
-      PROPERTY TypeParameterConstraintsList AS STRING    GET SELF:_signature:TypeParameterConstraintsList
-      PROPERTY Location       AS STRING GET SELF:File:FullPath   
-      PROPERTY OriginalTypeName  AS STRING GET SELF:TypeName
+      PROPERTY TypeParameterConstraintsList  AS STRING   GET SELF:_signature:TypeParameterConstraintsList
+      PROPERTY Location                      AS STRING   GET SELF:File:FullPath   
+      PROPERTY OriginalTypeName              AS STRING   GET SELF:TypeName
 
       METHOD ClearMembers() AS VOID
          SELF:_members:Clear()

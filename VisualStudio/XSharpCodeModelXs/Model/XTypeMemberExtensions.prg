@@ -156,7 +156,7 @@ BEGIN NAMESPACE XSharpModel
          ENDIF
          sb:Replace('&','@')  // Ampersand is not allowed in the string
          RETURN sb:ToString()
-         
+      
    END CLASS
 END NAMESPACE 
 

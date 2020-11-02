@@ -157,7 +157,7 @@ BEGIN NAMESPACE XSharp
             RETURN
 
         [DebuggerStepThroughAttribute] [MethodImpl(MethodImplOptions.AggressiveInlining)];
-        PRIVATE CONSTRUCTOR(@@Value AS __Binary)
+        PRIVATE CONSTRUCTOR(@@Value AS BINARY)
             SELF(__UsualType.Binary)
             SELF:_refData			:= @@Value:Value
             RETURN
@@ -269,12 +269,12 @@ BEGIN NAMESPACE XSharp
                     ELSEIF vartype == TYPEOF(SYMBOL) 
                         SELF:_flags				:= UsualFlags{__UsualType.Symbol}
                         SELF:_valueData:s		:= (SYMBOL) o
-                    ELSEIF vartype == TYPEOF(__Binary) 
+                    ELSEIF vartype == TYPEOF(BINARY) 
                         SELF:_flags				:= UsualFlags{__UsualType.Binary}
-                        SELF:_refData           := ((__Binary) o):Value
-                    ELSEIF vartype == TYPEOF(__Currency) 
+                        SELF:_refData           := ((BINARY) o):Value
+                    ELSEIF vartype == TYPEOF(CURRENCY) 
                         SELF:_flags				:= UsualFlags{__UsualType.Currency}
-                        SELF:_refData	 	    := ((__Currency) o):Value
+                        SELF:_refData	 	    := ((Currency) o):Value
                     ELSEIF vartype == TYPEOF(IntPtr) 
                         SELF:_flags				:= UsualFlags{__UsualType.Ptr}
                         SELF:_valueData:p		:= (IntPtr) o
@@ -335,7 +335,7 @@ BEGIN NAMESPACE XSharp
         [DebuggerBrowsable(DebuggerBrowsableState.Never)];
         PRIVATE PROPERTY _codeblockValue AS ICodeblock		GET (ICodeblock) _refData
         [DebuggerBrowsable(DebuggerBrowsableState.Never)];
-        PRIVATE PROPERTY _currencyValue	AS CURRENCY	    GET __Currency{ (System.Decimal) _refData}
+        PRIVATE PROPERTY _currencyValue	AS CURRENCY	    GET Currency{ (System.Decimal) _refData}
         [DebuggerBrowsable(DebuggerBrowsableState.Never)];
         PRIVATE PROPERTY _dateValue		AS DATE				GET _valueData:d
         [DebuggerBrowsable(DebuggerBrowsableState.Never)];
@@ -359,7 +359,7 @@ BEGIN NAMESPACE XSharp
         [DebuggerBrowsable(DebuggerBrowsableState.Never)];
         PRIVATE PROPERTY _symValue		AS SYMBOL			GET _valueData:s
         [DebuggerBrowsable(DebuggerBrowsableState.Never)];
-        PRIVATE PROPERTY _binaryValue	AS __Binary		    GET __Binary{ (Byte[]) _refData}
+        PRIVATE PROPERTY _binaryValue	AS BINARY		    GET BINARY{ (Byte[]) _refData}
 
         // properties for floats
         [DebuggerBrowsable(DebuggerBrowsableState.Never)];
@@ -532,9 +532,9 @@ BEGIN NAMESPACE XSharp
             GET
                 SWITCH _usualType
                 CASE __UsualType.Array		; RETURN TYPEOF(ARRAY)
-                CASE __UsualType.Binary		; RETURN TYPEOF(STRING)
+                CASE __UsualType.Binary		; RETURN TYPEOF(BINARY)
                 CASE __UsualType.Codeblock	; RETURN TYPEOF(CODEBLOCK)
-                CASE __UsualType.Currency	; RETURN TYPEOF(__Currency)
+                CASE __UsualType.Currency	; RETURN TYPEOF(Currency)
                 CASE __UsualType.Date		; RETURN TYPEOF(DATE)
                 CASE __UsualType.DateTime	; RETURN TYPEOF(System.DateTime)
                 CASE __UsualType.Decimal	; RETURN TYPEOF(System.Decimal)
@@ -600,7 +600,7 @@ BEGIN NAMESPACE XSharp
                 CASE __UsualType.Date
                     // Upscale when needed to avoid overflow errors
                     SWITCH rhs:_usualType
-                    CASE __UsualType.Currency	; RETURN ((__Currency) (INT) _dateValue):CompareTo(rhs:_currencyValue)
+                    CASE __UsualType.Currency	; RETURN ((Currency) (INT) _dateValue):CompareTo(rhs:_currencyValue)
                     CASE __UsualType.DateTime	; RETURN _dateValue:CompareTo((DATE) rhs:_dateTimeValue)
                     CASE __UsualType.Decimal	; RETURN ((System.Decimal) (INT) _dateValue):CompareTo(rhs:_decimalValue)
                     CASE __UsualType.Float		; RETURN ((REAL8) (INT) _dateValue):CompareTo(rhs:_r8Value)
@@ -2509,7 +2509,7 @@ BEGIN NAMESPACE XSharp
                 THROW OverflowError(ex, "FLOAT", TYPEOF(FLOAT), u)
             END TRY
 
-       [DebuggerStepThroughAttribute];
+        [DebuggerStepThroughAttribute];
         STATIC OPERATOR IMPLICIT(u AS __Usual) AS Currency
             TRY
                 IF !u:_initialized
@@ -2523,6 +2523,18 @@ BEGIN NAMESPACE XSharp
                 THROW OverflowError(ex, "CURRENCY", TYPEOF(Currency), u)
             END TRY
 
+        [DebuggerStepThroughAttribute];
+        STATIC OPERATOR IMPLICIT(u AS __Usual) AS Binary
+            IF !u:_initialized
+                RETURN (Binary) String.Empty
+            ENDIF
+            IF u:IsBinary
+                RETURN u:_binaryValue
+            ELSEIF u:IsString
+                RETURN (Binary) u:_stringValue
+                
+            ENDIF
+            THROW ConversionError(__UsualType.Binary, TYPEOF(Binary), u)
             #endregion
         #region Implicit FROM Other Type TO USUAL
 
@@ -2608,7 +2620,7 @@ BEGIN NAMESPACE XSharp
 
        /// <include file="RTComments.xml" path="Comments/Operator/*" />
         [DebuggerStepThroughAttribute];
-        STATIC OPERATOR IMPLICIT(val AS __Binary) AS __Usual
+        STATIC OPERATOR IMPLICIT(val AS Binary) AS __Usual
             RETURN __Usual{val}
 
 
@@ -2710,7 +2722,7 @@ BEGIN NAMESPACE XSharp
              ENDIF
             SWITCH u:_usualType
             CASE __UsualType.Array		; RETURN u:_arrayValue
-            CASE __UsualType.Binary		; RETURN u:_refData
+            CASE __UsualType.Binary		; RETURN u:_binaryValue
             CASE __UsualType.Codeblock	; RETURN u:_codeblockValue
             CASE __UsualType.Currency	; RETURN u:_currencyValue
             CASE __UsualType.Date		; RETURN u:_dateValue

@@ -232,7 +232,7 @@ BEGIN NAMESPACE XSharp
             var sb := StringBuilder{}
             sb:Append("0h")
             foreach var b in self:Value
-                sb:Append(b:ToString("X"))
+                sb:Append(b:ToString("X2"))
             next
             return sb:ToString()
             /// <inheritdoc />

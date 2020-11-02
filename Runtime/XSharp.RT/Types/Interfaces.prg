@@ -52,7 +52,7 @@ BEGIN NAMESPACE XSharp
     /// </summary>
     /// <seealso cref="T:XSharp.IMacroCompiler"/>
     /// <seealso cref="T:XSharp.IMacroCompiler2"/>
-    INTERFACE IMacroCompilerUsual INHERIT IMacroCompiler2
+    INTERFACE IMacroCompilerUsual 
         /// <summary>Compile a string into a runtime codeblock.</summary>
         /// <param name="macro">String to compile</param>
         /// <param name="lAllowSingleQuotes">Should single quotes be allowed</param>
@@ -75,7 +75,7 @@ BEGIN NAMESPACE XSharp
     /// <summary>
     /// This interface Extended the ICodeblock interface and adds support for usual parameters and return values
     /// </summary>
-    INTERFACE ICodeblockUsual INHERIT ICodeblock
+    INTERFACE IRtCodeblock INHERIT ICodeblock
         /// <summary>Was the codeblock created from a string that started with "{|" </summary>  
         PROPERTY IsBlock AS LOGIC GET
         /// <summary>

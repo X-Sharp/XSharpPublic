@@ -10,7 +10,7 @@ namespace XSharp.Runtime
 {
     using ObjectCompilation = Compilation<Object, XSharp.MacroCompiler.ObjectMacro.MacroCodeblockDelegate>;
     using UsualCompilation = Compilation<__Usual, XSharp.MacroCompiler.UsualMacro.MacroCodeblockDelegate>;
-    public class MacroCompiler : IMacroCompilerUsual
+    public class MacroCompiler : IMacroCompiler2, IMacroCompilerUsual
     {
         private MacroOptions options;
         private ObjectCompilation objectCompiler;

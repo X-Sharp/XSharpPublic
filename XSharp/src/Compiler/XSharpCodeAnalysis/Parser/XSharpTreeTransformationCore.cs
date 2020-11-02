@@ -8341,10 +8341,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         error = true;
                         source += "0";
                     }
-                    else if (source.Length == 0)
-                    {
-                        error = true;
-                    }
                     var values = new List<ExpressionSyntax>();
                     for (var i = 0; i < source.Length; i+=2)
                     {
@@ -8361,15 +8357,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                                 SyntaxFactory.MakeToken(SyntaxKind.CloseBraceToken)));
                     if (error)
                     {
-                        string msg;
-                        if (source.Length == 0)
-                        {
-                            msg = "no binary value specified";
-                        }
-                        else
-                        {
-                            msg = "length of literal must be an even number of characters";
-                        }
+                        var msg = "length of literal must be an even number of characters";
                         bin = bin.WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.ERR_InvalidLiteral, "Binary", context.Token.Text, msg));
                     }
                     context.Put(bin);

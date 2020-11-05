@@ -105,17 +105,18 @@ BEGIN NAMESPACE XSharp.RDD.Tests
 		METHOD CreateAppend() AS VOID
 			// Create the DBF, Define a Ntx, then add a some Data
             InitTest()
-            SELF:CreateAppendData( "XMenTestMe" )
+            SELF:CreateAppendData( "CreateAppend" )
 			// Now, Verify
-			SELF:CheckOrder( "XMenTestMe" )
+			SELF:CheckOrder( "CreateAppend" )
 
 		[Fact, Trait("DbfNtx", "CreateAppendSkipZero")];
 		METHOD CreateAppendSkipZero() AS VOID
 			// Create the DBF, Define a Ntx, then add a some Data
             InitTest()
-			SELF:CreateAppendData( "XMenTest" )
+            VAR cSource := "CreateSource"
+			SELF:CreateAppendData( cSource )
 			//
-			VAR dbInfo := DbOpenInfo{ "XMenTest", "", 1, FALSE, FALSE }
+			VAR dbInfo := DbOpenInfo{ cSource, "", 1, FALSE, FALSE }
 			//
 			LOCAL myDBF AS DbfNtx
 			myDBF := DbfNtx{}
@@ -132,7 +133,7 @@ BEGIN NAMESPACE XSharp.RDD.Tests
 			//FieldPos( "ID" )
 			LOCAL ntxInfo AS DbOrderInfo
 			ntxInfo := DbOrderInfo{}
-			ntxInfo:BagName := "XMenTest"
+			ntxInfo:BagName := cSource
 			ntxInfo:Order := "XMenTest"
 			// FilePath NullOrEmpty => Will get the FilePath of the DBF
 			Assert.Equal( TRUE, myDBF:OrderListAdd( ntxInfo ) )
@@ -207,8 +208,9 @@ BEGIN NAMESPACE XSharp.RDD.Tests
 		METHOD BigCreateAppend() AS VOID
 			LOCAL fieldDefs := "ID,N,5,0;NAME,C,20,0;MAN,L,1,0;BIRTHDAY,D,8,0" AS STRING
 			LOCAL fields := fieldDefs:Split( ';' ) AS STRING[]
+            local cSource := "BigCreateAppend" as STRING
             InitTest()
-			VAR dbInfo := DbOpenInfo{ "XMenTest.DBF", "XMenTest", 1, FALSE, FALSE }
+			VAR dbInfo := DbOpenInfo{ cSource, "XMenTest", 1, FALSE, FALSE }
 			//
 			LOCAL myDBF AS DbfNtx
 			LOCAL fieldInfo AS STRING[]
@@ -233,7 +235,7 @@ BEGIN NAMESPACE XSharp.RDD.Tests
 			//
 			LOCAL ntxInfo AS DbOrderCreateInfo
 			ntxInfo := DbOrderCreateInfo{}
-			ntxInfo:BagName := "XMenTest"
+			ntxInfo:BagName :=cSource
 			ntxInfo:Order := "XMenTest"
 			ntxInfo:Expression := "ID"
 			//
@@ -256,7 +258,7 @@ BEGIN NAMESPACE XSharp.RDD.Tests
 			//myDBF:Close()
 			RuntimeState.Workareas:CloseArea( dbInfo:WorkArea )
 			// Now, Verify
-			SELF:CheckOrder( "XMenTest" )
+			SELF:CheckOrder( cSource)
 			RETURN
 			
 		// Read a DBF/NTX who's first Field is a Number used as Index Key

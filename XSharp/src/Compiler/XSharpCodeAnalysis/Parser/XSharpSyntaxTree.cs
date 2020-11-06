@@ -88,6 +88,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
     internal sealed partial class CompilationUnitSyntax
     {
+        internal SyntaxTree SyntaxTree { get; set; }
         private XNodeFlags xflags = XNodeFlags.None;
         public Dictionary<string, SourceText> IncludedFiles { get; internal set; } = new Dictionary<string, SourceText>();
         public ITokenStream XTokens { get; internal set; } = default(ITokenStream);

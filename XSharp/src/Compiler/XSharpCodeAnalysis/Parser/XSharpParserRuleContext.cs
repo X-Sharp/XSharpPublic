@@ -20,7 +20,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
     public class XSharpParserRuleContext :
         Antlr4.Runtime.ParserRuleContext,
         IXParseTree
-        ,IFormattable
+        , IFormattable
     {
         public XSharpParserRuleContext() : base()
         {
@@ -35,97 +35,22 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                 return list;
             }
             var options = ((CSharpParseOptions)cu.SyntaxTree.Options);
-            if (! cu.HasDocComments && options.TargetDLL == XSharpTargetDLL.Other)
+            if (!cu.HasDocComments && options.TargetDLL == XSharpTargetDLL.Other)
             {
                 return list;
             }
             XSharpToken start = this.Start as XSharpToken;
-            var tokens = ((BufferedTokenStream) cu.XTokens).GetTokens();
-            // find offset of first token in the tokenlist
-            int startindex = start.OriginalTokenIndex;
-            if (startindex >= 0) 
+            // we have stored the XML comments of an entity in the first token of the ContextNode
+            if (start.HasXmlComments)
             {
-                startindex -= 1;
-                var sb = new System.Text.StringBuilder();
-                while (startindex >= 0)
-                {
-                    switch (tokens[startindex].Channel )
-                    {
-                        case XSharpLexer.XMLDOCCHANNEL:
-                            sb.Insert(0,tokens[startindex].Text + "\r\n");
-                            break;
-                        case XSharpLexer.DefaultTokenChannel:
-                            // exit the loop
-                            startindex = 0;
-                            break;
-                    }
-                    startindex--;
-                }
-                // when compiling the runtime we generate blank xml comments for enum members, defines and double underscores without xml comments
-                
-                if (sb.Length == 0 && options.TargetDLL != XSharpTargetDLL.Other)
-                {
-                    XSharpParser.IEntityContext entity = null;
-                    if (this is XSharpParser.EntityContext ec)
-                    {
-                        if (ec.GetChild(0) is XSharpParser.IEntityContext iec)
-                        {
-                            entity = iec;
-                        }
-                    }
-                    if (this is XSharpParser.ClassmemberContext cmc)
-                    {
-                        if (cmc.GetChild(0) is XSharpParser.IEntityContext iec)
-                        {
-                            entity = iec;
-                        }
-                    }
-                    if (entity == null && this is XSharpParser.FoxclassmemberContext fmc)
-                    {
-                        if (fmc.GetChild(0) is XSharpParser.IEntityContext iec)
-                        {
-                            entity = iec;
-                        }
-                    }
-                    if (entity == null && this is XSharpParser.XppclassMemberContext xmc)
-                    {
-                        if (xmc.GetChild(0) is XSharpParser.IEntityContext iec)
-                        {
-                            entity = iec;
-
-                        }
-                    }
-                    if (entity == null && this is XSharpParser.IEntityContext ec2)
-                    {
-                        entity = ec2;
-
-                    }
-                    if (entity != null && entity.ShortName.StartsWith("__"))
-                    {
-                        sb.Append("/// <exclude/>");
-                    }
-
-                    if (this is XSharpParser.EnummemberContext ||
-                        this is XSharpParser.VodefineContext )
-                    {
-                        if (sb.Length == 0)
-                        {
-                            sb.Append("/// <summary></summary>");
-                        }
-                    }
-                }
-                if (sb.Length > 0)
-                {
-                    string text = sb.ToString();
-                    var source = MCT.SourceText.From(text);
-                    var lexer = new Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax.Lexer(source, CSharpParseOptions.Default);
-                    list = lexer.LexSyntaxLeadingTrivia();
-                    lexer.Dispose();
-                }
-                 
+                var source = MCT.SourceText.From(start.XmlComments);
+                var lexer = new Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax.Lexer(source, CSharpParseOptions.Default);
+                list = lexer.LexSyntaxLeadingTrivia();
+                lexer.Dispose();
             }
             return list;
         }
+
 #endif
         public XSharpParserRuleContext(Antlr4.Runtime.ParserRuleContext parent, int state) : base(parent, state)
         {
@@ -144,12 +69,19 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
         public string MappedFileName { get { return (Start as XSharpToken).MappedFileName; } }
 
         internal List<ParseErrorData> ErrorData;
-
         internal bool HasErrors()
         {
             return (ErrorData != null) && ErrorData.Count > 0;
         }
 #if !VSPARSER
+
+        internal InternalSyntax.CSharpSyntaxNode CSharpSyntaxNode
+        {
+            get
+            {
+                return CsNode as InternalSyntax.CSharpSyntaxNode;
+            }
+        }
 
         internal InternalSyntax.CompilationUnitSyntax CompilationUnit
         {

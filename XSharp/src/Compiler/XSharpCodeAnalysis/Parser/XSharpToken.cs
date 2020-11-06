@@ -52,6 +52,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             StartIndex = token.StartIndex;
             StopIndex = token.StopIndex;
             SourceSymbol = token;
+            XmlComments = token.XmlComments;
 
         }
         internal XSharpToken(int type, string text, XSharpToken token) : base(type, text)
@@ -62,6 +63,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             StartIndex = token.StartIndex;
             StopIndex = token.StopIndex;
             SourceSymbol = token;
+            XmlComments = token.XmlComments;
         }
 
         internal XSharpToken(Tuple<ITokenSource, ICharStream> source, int type, int channel, int start, int stop) :
@@ -140,5 +142,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
         {
             return this.Text;
         }
+        public string XmlComments { get; set; } = null;
+        public bool HasXmlComments => XmlComments?.Length > 0;
     }
 }

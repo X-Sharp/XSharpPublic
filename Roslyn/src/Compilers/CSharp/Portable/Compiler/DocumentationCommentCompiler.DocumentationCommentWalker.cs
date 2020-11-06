@@ -88,9 +88,16 @@ namespace Microsoft.CodeAnalysis.CSharp
                 {
                     XmlCrefAttributeSyntax crefAttr = (XmlCrefAttributeSyntax)node;
                     CrefSyntax cref = crefAttr.Cref;
-
+#if XXXSHARP
+                    var xnode = cref.XNode as LanguageService.CodeAnalysis.XSharp.SyntaxParser.XSharpParserRuleContext;
+                    var syntaxNode = xnode.CSharpSyntaxNode.CreateRed();
+                    var tree = unit.SyntaxTree;
+                    BinderFactory factory = _compilation.GetBinderFactory(tree);
+                    Binder binder = factory.GetBinder(syntaxNode);
+#else
                     BinderFactory factory = _compilation.GetBinderFactory(cref.SyntaxTree);
                     Binder binder = factory.GetBinder(cref);
+#endif
 
                     // Do this for the diagnostics, even if it won't be written.
                     DiagnosticBag crefDiagnostics = DiagnosticBag.GetInstance();

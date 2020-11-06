@@ -83,8 +83,13 @@ namespace Microsoft.CodeAnalysis.CSharp
                                 {
                                     builder = ArrayBuilder<DocumentationCommentTriviaSyntax>.GetInstance();
                                 }
-
+#if XXXSHARP
+                                var element = (DocumentationCommentTriviaSyntax)trivia.GetStructure();
+                                element.CsGreen.XNode = syntaxNode.XNode;
+                                builder.Add(element);
+#else
                                 builder.Add((DocumentationCommentTriviaSyntax)trivia.GetStructure());
+#endif
                             }
                             break;
                         }

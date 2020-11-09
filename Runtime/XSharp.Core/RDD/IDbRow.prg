@@ -5,7 +5,7 @@
 //
 
 USING XSharp.RDD.Support
-/// <summary>This interface defines the mimimum methods that a RDD that supports indexes should implement.</summary>	
+/// <summary>This interface defines a row in a .Net Table.</summary>	
 INTERFACE XSharp.RDD.IDbRow
     PROPERTY RecNo as LONG GET SET
 END INTERFACE    

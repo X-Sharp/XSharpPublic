@@ -4,17 +4,25 @@ USING XSharp.RDD
 /// <seealso "O:XSharp.VFP.Functions.DbGetProp" />
 /// <seealso "O:XSharp.VFP.Functions.DbSetProp" />
 ENUM XSharp.RDD.DatabasePropertyType
+    /// <summary>Null (Internal) </summary>
+    MEMBER Null             := 0
     /// <summary>The relative path with respect to the DBC to the table including the name of the file. </summary>
     MEMBER Path             := 1
-    /// <summary></summary>
+    /// <summary>Class (Internal) </summary>
     MEMBER Class            := 2
-    // Missing - Unknown
-    // 3-6
-    // Missing - Unknown
+    /// <summary>Not defined</summary>
+    MEMBER Unknown_3         := 3
+    /// <summary>Not defined</summary>
+    MEMBER Unknown_4         := 4
+    /// <summary>Not defined</summary>
+    MEMBER Unknown_5         := 5
+    /// <summary>Not defined</summary>
+    MEMBER Unknown_6         := 6
     /// <summary>The text of the field comment. (C) </summary>
     MEMBER Comment          := 7
+    /// <summary>Not defined</summary>
+    MEMBER Unknown_8         := 8
     /// <summary>The rule expression. (C)</summary>
-    // Missing 8
     MEMBER RuleExpression   := 9 
     /// <summary>The row rule error text.(C) </summary>
     MEMBER RuleText         := 10
@@ -38,14 +46,34 @@ ENUM XSharp.RDD.DatabasePropertyType
     MEMBER RelatedTag       := 19
     /// <summary>The tag name of the primary key. (C) </summary>
     MEMBER PrimaryKey       := 20
+    /// <summary>Not defined</summary>
+    MEMBER Unknown_21        := 21
+    /// <summary>Not defined</summary>
+    MEMBER Unknown_22        := 22
+    /// <summary>Not defined</summary>
+    MEMBER Unknown_23        := 23
     /// <summary>The database version number. (N) </summary>
     MEMBER Version          := 24
+    /// <summary>Not defined</summary>
+    MEMBER Unknown_25        := 25
+    /// <summary>Not defined</summary>
+    MEMBER Unknown_26        := 26
+    /// <summary>Not defined</summary>
+    MEMBER Unknown_27        := 27
     /// <summary>The number of update statements sent to the back end for views. 1 is the default. Adjusting this value can greatly increase update performance. (N) </summary>
     MEMBER BatchUpdateCount := 28
     /// <summary>The name of the data source as defined in the Odbc.ini file.</summary>
     MEMBER DataSource       := 29
+    /// <summary>Not defined</summary>
+    MEMBER Unknown_30        := 30
+    /// <summary>Not defined</summary>
+    MEMBER Unknown_31        := 31
     /// <summary>The named connection used when the view is opened. (C)</summary>
     MEMBER ConnectName      := 32
+    /// <summary>Not defined</summary>
+    MEMBER Unknown_33        := 33
+    /// <summary>Not defined</summary>
+    MEMBER Unknown_34        := 34
     /// <summary>The name of the field used when data in the field is updated to the remote table. By default, the remote table field name.Read/write. </summary>
     MEMBER UpdateName       := 35
     /// <summary>Contains true (.T.) (default) if memo and general fields are fetched with the view results; otherwise, contains false (.F.).</summary>
@@ -74,19 +102,36 @@ ENUM XSharp.RDD.DatabasePropertyType
     MEMBER UseMemoSize      := 47
     /// <summary>The WHERE clause for updates to remote tables.WhereType may assume the following values: 1 or DB_KEY , 2 or DB_KEYANDUPDATABLE, 3 or DB_KEYANDMODIFIED and 4 or DB_KEYANDTIMESTAMP </summary>
     MEMBER WhereType        := 48
+    /// <summary>Not defined</summary>
+    MEMBER Unknown_49        := 49
     /// <summary>Name of the class used for field mapping. (C) </summary>
     MEMBER DisplayClass     := 50
     /// <summary>Path to the class library specified with the DisplayClass property.(C)  </summary>
     MEMBER DisplayClassLibrary := 51
+    /// <summary>Not defined</summary>
+    MEMBER Unknown_52        := 52
+    /// <summary>Not defined</summary>
+    MEMBER Unknown_53        := 53
     /// <summary>The field input format. (C) .Read/write. </summary>
     MEMBER InputMask        := 54
     /// <summary>The field display format. (C) .Read/write. </summary>
     MEMBER Format           := 55
     /// <summary>The field caption. (C) If an equal sign (=) precedes the value of this property, Visual FoxPro evaluates the value as an expression. Otherwise, it is treated as a string literal.Read/write. FIELD</summary>
     MEMBER Caption          := 56
-    // Missing - Unknown
-    // 57-63
-    // Missing - Unknown
+    /// <summary>Not defined</summary>
+    MEMBER Unknown_57        := 57
+    /// <summary>Not defined</summary>
+    MEMBER Unknown_58        := 58
+    /// <summary>Not defined</summary>
+    MEMBER Unknown_59        := 59
+    /// <summary>Not defined</summary>
+    MEMBER Unknown_60        := 60
+    /// <summary>Not defined</summary>
+    MEMBER Unknown_61        := 61
+    /// <summary>Not defined</summary>
+    MEMBER Unknown_62        := 62
+    /// <summary>Not defined</summary>
+    MEMBER Unknown_63        := 63
     /// <summary>The connection mode. (Default) False (.F.) specifies a synchronous connection. True (.T.) specifies an asynchronous connection.Read/write.</summary>
     MEMBER Asynchronous     := 64
     /// <summary>The batch-processing mode. (Default) True (.T.) specifies the connection that operates in batch mode.</summary>
@@ -111,7 +156,7 @@ ENUM XSharp.RDD.DatabasePropertyType
     MEMBER UserId           := 74
     /// <summary>The amount of time in milliseconds that elapses before Visual FoxPro checks whether the SQL statement has completed executing. </summary>
     MEMBER WaitTime         := 75
-    /// <summary></summary>
+    /// <summary>Timestamp (internal)</summary>
     MEMBER TimeStamp        := 76
     /// <summary>The data type for a field in a view. Initially set to the data type for the field in the data source.</summary>
     MEMBER DataType         := 77
@@ -125,6 +170,8 @@ ENUM XSharp.RDD.DatabasePropertyType
     MEMBER CompareMemo      := 81
     /// <summary>If True (.T.), data is fetched only when needed, such as when record pointer moves to a row that has not been fetched. If False (.F.), additional data is fetched during idle time. (Default)</summary>
     MEMBER FetchAsNeeded    := 82
+    /// <summary>Not defined</summary>
+    MEMBER Unknown_83        := 83
     /// <summary>When this property is found the table is offline. The Path property then returns the OffLinePath</summary>
     MEMBER OfflineRecs       := 84
     /// <summary># of remote records offline.</summary>

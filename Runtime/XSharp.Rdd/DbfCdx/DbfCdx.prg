@@ -57,6 +57,9 @@ BEGIN NAMESPACE XSharp.RDD
             
             VIRTUAL METHOD OrderCreate(orderInfo AS DbOrderCreateInfo ) AS LOGIC
                 VAR result := SELF:_indexList:Create(orderInfo)
+                if result
+                    SELF:MarkDbfHeader(SELF:_FileName,TRUE)
+                endif
                 RETURN result
                 
             VIRTUAL METHOD OrderDestroy(orderInfo AS DbOrderInfo ) AS LOGIC
@@ -459,12 +462,25 @@ BEGIN NAMESPACE XSharp.RDD
                     LOCAL orderinfo := DbOrderInfo{} AS DbOrderInfo
                     orderinfo:BagName := cCdxFileName
                     SELF:_indexList:Add(orderinfo, TRUE)
-                    SELF:Header:TableFlags |= DBFTableFlags.HasStructuralCDX
+                ENDIF
+                SELF:MarkDbfHeader(info:FileName,FALSE)
+            ENDIF
+         PROTECTED METHOD MarkDbfHeader(cFileName as STRING, lForce as LOGIC) AS VOID
+            VAR cExt  := CdxOrderBag.GetIndexExtFromDbfExt(cFileName)
+            IF ! String.IsNullOrEmpty(cExt)
+                VAR cCdxFileName := System.IO.Path.ChangeExtension(cFileName, cExt)
+                var wanted := SELF:Header:TableFlags
+                IF System.IO.File.Exists(cCdxFileName)
+                    wanted |= DBFTableFlags.HasStructuralCDX
                 ELSE
-                    SELF:Header:TableFlags &= _NOT(DBFTableFlags.HasStructuralCDX)
+                    wanted &= _NOT(DBFTableFlags.HasStructuralCDX)
+                ENDIF
+                IF wanted != SELF:Header:TableFlags .or. lForce
+                    SELF:Header:TableFlags := wanted
+                    SELF:Header:Write()
                 ENDIF
             ENDIF
-            
+                
         #endregion
         
         

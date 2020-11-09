@@ -653,12 +653,8 @@ BEGIN NAMESPACE XSharp.RDD
             
         /// <inheritdoc/>
        OVERRIDE METHOD Validate() AS LOGIC
-            IF SELF:RDD IS DBFVFP
-                IF SELF:Length != 4
-                    SELF:Length := 10
-                ENDIF
-            ELSE
-                SELF:Length   := 10
+            IF SELF:Length != 4
+                SELF:Length := 10
             ENDIF
             SELF:Decimals := 0
             RETURN TRUE

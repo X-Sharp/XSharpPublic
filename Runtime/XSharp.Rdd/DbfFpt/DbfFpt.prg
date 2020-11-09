@@ -272,6 +272,14 @@ BEGIN NAMESPACE XSharp.RDD
             IF SELF:_isMemoField( nFldPos )
                 // At this level, the return value is the raw Data, in BYTE[]
                 VAR rawData := (BYTE[])SUPER:GetValue(nFldPos)
+                var column  := SELF:_GetColumn(nFldPos)
+                IF column:IsBinary
+                    if rawData != NULL
+                        return rawData
+                    else
+                        return <byte>{}
+                    endif
+                ENDIF
                 IF rawData != NULL
                     // So, extract the "real" Data
                     RETURN SELF:DecodeValue(rawData)
@@ -303,7 +311,11 @@ BEGIN NAMESPACE XSharp.RDD
                                 RETURN oColumn:PutValue(NULL, SELF:_RecordBuffer)
                             ENDIF
                             LOCAL bData AS BYTE[]
-                            bData := SELF:EncodeValue(oValue)
+                            if oColumn:IsBinary
+                                bData := (Byte[]) oValue
+                            ELSE
+                                bData := SELF:EncodeValue(oValue)
+                            ENDIF
                             IF SELF:_oFptMemo:PutValue(nFldPos, bData)
                                 // Update the Field Info with the new MemoBlock Position
                                 RETURN oColumn:PutValue(SELF:_oFptMemo:LastWrittenBlockNumber, SELF:_RecordBuffer)

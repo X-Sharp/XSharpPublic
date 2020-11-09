@@ -1,0 +1,109 @@
+﻿//
+// Copyright (c) XSharp B.V.  All Rights Reserved.  
+// Licensed under the Apache License, Version 2.0.  
+// See License.txt in the project root for license information.
+//
+
+USING System.Collections.Generic
+USING System.Threading
+
+CLASS XSharp.RDD.DataSession INHERIT Workareas
+    #region Static Fields
+    PRIVATE STATIC gnSessionId AS LONG
+    PRIVATE STATIC sessions    AS List<DataSession>
+    PRIVATE STATIC timer       AS System.Timers.Timer
+    #endregion
+    #region Static methods
+    STATIC CONSTRUCTOR
+        LOCAL domain := AppDomain.CurrentDomain AS AppDomain
+        domain:ProcessExit += _CloseSessionsAtProcessExit
+        sessions    := List<DataSession>{}
+        gnSessionId := 0
+        timer       := System.Timers.Timer{5000}
+        timer:Elapsed += OnTimer
+        timer:AutoReset := TRUE
+        
+
+    STATIC METHOD AddSession(session as DataSession) AS VOID
+        BEGIN LOCK sessions
+            sessions:Add(session)
+            if sessions:Count > 1
+                timer:Enabled   := TRUE
+            endif
+        END LOCK
+
+    STATIC METHOD OnTimer(source as OBJECT, e as System.Timers.ElapsedEventArgs) AS VOID
+        LOCAL deleted := NULL as List<DataSession>
+        //
+        // please note that the OnTimer runs on its own thread.
+        // when we close a session here then we set the Workareas in the runtimestate
+        // for the timer thread !
+        //
+        BEGIN LOCK sessions
+            FOREACH var session in sessions:ToArray()
+                SWITCH session:Thread:ThreadState
+                CASE ThreadState.Aborted
+                CASE ThreadState.Stopped
+                    // Close session
+                    CloseOneSession(session)
+                    if deleted == null
+                        deleted := List<DataSession>{}
+                    endif
+                    deleted:Add(session)
+                CASE ThreadState.AbortRequested
+                CASE ThreadState.Background
+                CASE ThreadState.Running
+                CASE ThreadState.StopRequested
+                CASE ThreadState.Suspended
+                CASE ThreadState.SuspendRequested
+                OTHERWISE
+                    NOP
+                END SWITCH
+            NEXT
+        END LOCK
+        if deleted != null
+            BEGIN LOCK sessions
+                foreach var session in deleted
+                    sessions:Remove(session)
+                next
+                timer:Enabled := sessions:Count > 1
+            END LOCK
+        endif
+
+     STATIC METHOD CloseOneSession(session as DataSession) AS VOID
+         var old := RuntimeState:SetDataSession(session)
+         TRY
+             session:CloseAll()
+         CATCH ex as Exception
+             System.Diagnostics.Debug.WriteLine("Error in CloseOneSession: "+ex:ToString())
+         FINALLY
+            RuntimeState:SetDataSession(old)
+         END TRY
+         RETURN
+   
+    PRIVATE STATIC METHOD _CloseSessionsAtProcessExit(sender AS OBJECT, e AS EventArgs)  AS VOID
+        // This runs at process exit in the GC Thread
+        IF sessions != NULL
+            BEGIN LOCK sessions
+                FOREACH var session in sessions:ToArray()
+                    CloseOneSession(session)
+                NEXT
+                RuntimeState:SetDataSession(NULL)
+                sessions:Clear()
+            END LOCK
+        ENDIF
+        RETURN
+
+    #endregion
+
+    PUBLIC PROPERTY Id   AS INT AUTO GET PRIVATE SET
+    PRIVATE PROPERTY Thread as Thread AUTO
+    PUBLIC PROPERTY Name as STRING AUTO
+    PUBLIC CONSTRUCTOR(cName as STRING)
+        SUPER()
+        SELF:Name   := cName
+        SELF:Id     := ++gnSessionId
+        SELF:Thread := Thread.CurrentThread
+        AddSession(SELF)
+        
+END CLASS

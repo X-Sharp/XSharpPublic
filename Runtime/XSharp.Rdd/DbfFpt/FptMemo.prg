@@ -371,7 +371,7 @@ BEGIN NAMESPACE XSharp.RDD
             /// <inheritdoc />
         VIRTUAL METHOD CreateMemFile(info AS DbOpenInfo) AS LOGIC
             LOCAL isOk      AS LOGIC
-            SELF:Extension := DefExt
+            SELF:Extension := GetMemoExtFromDbfExt(info:FileName)
             isOk := SUPER:CreateMemFile(info)
             IF isOk
                 

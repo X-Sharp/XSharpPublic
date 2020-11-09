@@ -405,9 +405,6 @@ BEGIN NAMESPACE XSharp.RDD
         OVERRIDE METHOD EmptyValue() AS OBJECT
             RETURN DbDate{0,0,0}
         /// <inheritdoc/>
-        OVERRIDE METHOD Validate() AS LOGIC
-            RETURN SUPER:Validate()
-
 
     END CLASS
 
@@ -451,9 +448,6 @@ BEGIN NAMESPACE XSharp.RDD
         /// <inheritdoc/>
        OVERRIDE METHOD EmptyValue() AS OBJECT
             RETURN FALSE
-        /// <inheritdoc/>
-       OVERRIDE METHOD Validate() AS LOGIC
-            RETURN SUPER:Validate()
 
     END CLASS
 
@@ -659,7 +653,15 @@ BEGIN NAMESPACE XSharp.RDD
             
         /// <inheritdoc/>
        OVERRIDE METHOD Validate() AS LOGIC
-            RETURN (SELF:Length == 10 .OR. SELF:Length == 4)  .AND.  SELF:Decimals == 0 
+            IF SELF:RDD IS DBFVFP
+                IF SELF:Length != 4
+                    SELF:Length := 10
+                ENDIF
+            ELSE
+                SELF:Length   := 10
+            ENDIF
+            SELF:Decimals := 0
+            RETURN TRUE
 
 
     END CLASS
@@ -721,9 +723,11 @@ BEGIN NAMESPACE XSharp.RDD
         /// <inheritdoc/>
         OVERRIDE METHOD EmptyValue() AS OBJECT
             RETURN 0
+       
         /// <inheritdoc/>
        OVERRIDE METHOD Validate() AS LOGIC
-            RETURN (SELF:Length == 4 .OR. SELF:Length == 2)  .AND.  SELF:Decimals == 0 
+            SELF:Decimals := 0
+            RETURN SELF:Length == 4 .OR. SELF:Length == 2
 
     END CLASS
 
@@ -821,6 +825,7 @@ BEGIN NAMESPACE XSharp.RDD
             RETURN DbFloat{0,-1,-1}
         /// <inheritdoc/>
         OVERRIDE METHOD Validate() AS LOGIC
+            SELF:Decimals := 0
             RETURN SELF:Length == 8
     END CLASS
 
@@ -864,7 +869,9 @@ BEGIN NAMESPACE XSharp.RDD
             RETURN (Decimal) 0
         /// <inheritdoc/>
         OVERRIDE METHOD Validate() AS LOGIC
-            RETURN SELF:Length == 8
+            SELF:Decimals   := 0
+            SELF:Length     := 8
+            RETURN TRUE
         /// <inheritdoc/>
         OVERRIDE METHOD InitValue(buffer AS BYTE[]) AS VOID
             VAR blank := BYTE[]{SELF:Length}
@@ -1002,7 +1009,9 @@ BEGIN NAMESPACE XSharp.RDD
             RETURN DateTime.MinValue
         /// <inheritdoc/>
         OVERRIDE METHOD Validate() AS LOGIC
-            RETURN SELF:Length == 8  .AND.  SELF:Decimals == 0 
+            SELF:Decimals := 0
+            SELF:Length   := 8
+            RETURN TRUE  
 
     END CLASS
     /// <summary>Class for reading / writing the Special Column for NULL values. </summary>

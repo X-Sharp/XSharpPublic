@@ -133,6 +133,8 @@ Project("{AA6C8D78-22FF-423A-9C7C-5F2393824E04}") = "TestBed", "Tests\BinaryTest
 EndProject
 Project("{AA6C8D78-22FF-423A-9C7C-5F2393824E04}") = "AppendSpeed", "Tests\AppendSpeed\AppendSpeed.xsproj", "{E6A86E45-AE23-4422-BBDB-F84BF9EF100E}"
 EndProject
+Project("{AA6C8D78-22FF-423A-9C7C-5F2393824E04}") = "DbcTest", "ConsoleApplication1\DbcTest.xsproj", "{4BC29963-3419-4D9A-A301-BB63870381AE}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -384,6 +386,12 @@ Global
 		{E6A86E45-AE23-4422-BBDB-F84BF9EF100E}.Documentation|Any CPU.Build.0 = Debug|Any CPU
 		{E6A86E45-AE23-4422-BBDB-F84BF9EF100E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E6A86E45-AE23-4422-BBDB-F84BF9EF100E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4BC29963-3419-4D9A-A301-BB63870381AE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4BC29963-3419-4D9A-A301-BB63870381AE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4BC29963-3419-4D9A-A301-BB63870381AE}.Documentation|Any CPU.ActiveCfg = Debug|Any CPU
+		{4BC29963-3419-4D9A-A301-BB63870381AE}.Documentation|Any CPU.Build.0 = Debug|Any CPU
+		{4BC29963-3419-4D9A-A301-BB63870381AE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4BC29963-3419-4D9A-A301-BB63870381AE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -431,6 +439,7 @@ Global
 		{58AA6767-5191-4F90-A756-4584A4C42279} = {64603273-9D14-4557-A63B-C2FCB063B454}
 		{22F634C4-97C1-4347-8994-A4F89D100AFB} = {FBBE72BB-AF27-4F54-BB40-419574C1D018}
 		{E6A86E45-AE23-4422-BBDB-F84BF9EF100E} = {FBBE72BB-AF27-4F54-BB40-419574C1D018}
+		{4BC29963-3419-4D9A-A301-BB63870381AE} = {FBBE72BB-AF27-4F54-BB40-419574C1D018}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {EF30CE30-FC9E-4FC7-B9F0-DCA49411ACFC}

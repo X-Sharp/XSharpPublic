@@ -86,7 +86,10 @@ CLASS DBFVFP INHERIT DBFCDX
                 SELF:_Header:TableFlags |= DBFTableFlags.HasStructuralCDX
             ENDIF
         ENDIF
-        
+        LOCAL cExt := System.IO.Path.GetExtension(SELF:_FileName) AS STRING
+        IF cExt:ToLower() == ".dbc"
+            SELF:_Header:TableFlags  |= DBFTableFlags.IsDBC 
+        ENDIF
         SELF:_Header:HeaderLen += VFP_BACKLINKSIZE
         SELF:_HeaderLength   += VFP_BACKLINKSIZE
         SELF:_writeHeader()

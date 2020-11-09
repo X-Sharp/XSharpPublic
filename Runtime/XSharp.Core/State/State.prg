@@ -77,19 +77,6 @@ CLASS XSharp.RuntimeState
 //		ENDIF
 
 
-    /// <summary>This method closes all open Workareas for all threads. It is automatically called ad shutdown.</summary>
-    /// <remarks>It is usually better to manage the lifetime of your Workarea yourself in code, so don't trust on the runtime to close the Workareas.</remarks>
-    STATIC METHOD CloseWorkareasForAllThreads() AS VOID
-        TRY
-            _shutdown := TRUE   // prevent creating state when shutting down
-            FOREACH VAR state IN currentState:Values
-                IF state:_Workareas != NULL
-                    state:_Workareas:CloseAll()
-                ENDIF
-            NEXT
-        CATCH e AS Exception
-            System.Diagnostics.Debug.WriteLine(e:ToString())
-        END TRY
 	PRIVATE METHOD Clone() AS RuntimeState
 		LOCAL oNew AS RuntimeState
         IF Thread.CurrentThread == initialState:_thread .OR. _shutdown
@@ -767,19 +754,35 @@ CLASS XSharp.RuntimeState
         SELF:_SetThreadValue(Set.DateCountry, country)
         RETURN
 
-	PRIVATE _Workareas AS Workareas
+	PRIVATE _Workareas AS DataSession
 	/// <summary>The Workarea information for the current Thread.</summary>
     /// <include file="CoreComments.xml" path="Comments/PerThread/*" />
-	PUBLIC STATIC PROPERTY Workareas AS Workareas
+	PUBLIC STATIC PROPERTY Workareas AS DataSession
 	GET
-       LOCAL inst AS RuntimeState
+        LOCAL inst AS RuntimeState
         inst := GetInstance()
 		IF inst:_Workareas == NULL_OBJECT
-			inst:_Workareas := Workareas{}
+            local name as string
+            var thread := System.Threading.Thread.CurrentThread
+            if String.IsNullOrEmpty(thread:Name)
+                name := thread:ManagedThreadId:ToString()
+            else
+                name := thread:Name
+            endif
+			inst:_Workareas := DataSession{"DataSession for Thread "+name}
 		ENDIF
 		RETURN inst:_Workareas
 	END GET
     END PROPERTY
+
+    INTERNAL STATIC METHOD SetDataSession (session as DataSession) AS DataSession
+        LOCAL inst AS RuntimeState
+        LOCAL old  as DataSession
+        inst := GetInstance()
+        old := inst:_Workareas
+        inst:_Workareas := session
+        RETURN old
+
     /// <exclude />
     STATIC METHOD PushCurrentWorkarea(dwArea AS DWORD) AS VOID
         RuntimeState.Workareas:PushCurrentWorkarea(dwArea)

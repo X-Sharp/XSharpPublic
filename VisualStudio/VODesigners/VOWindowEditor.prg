@@ -4404,10 +4404,12 @@ END CLASS
 INTERNAL CLASS WindowTypeSelectDlg INHERIT Form
 	PROTECT oCancelButton AS System.Windows.Forms.Button
 	PROTECT oOKButton AS System.Windows.Forms.Button
+	PROTECT oCloneButton AS System.Windows.Forms.Button
 	PROTECT oGroupBox1 AS System.Windows.Forms.GroupBox
 	PROTECT oTypeListBox AS System.Windows.Forms.ListBox
 	
 	EXPORT cName AS STRING
+	EXPORT cCloneFrom := NULL AS STRING
 	
 	CONSTRUCTOR()
 
@@ -4436,6 +4438,7 @@ INTERNAL CLASS WindowTypeSelectDlg INHERIT Form
 	
 	SELF:oCancelButton := System.Windows.Forms.Button{}
 	SELF:oOKButton := System.Windows.Forms.Button{}
+	SELF:oCloneButton := System.Windows.Forms.Button{}
 	SELF:oGroupBox1 := System.Windows.Forms.GroupBox{}
 	SELF:oTypeListBox := System.Windows.Forms.ListBox{}
 
@@ -4443,7 +4446,7 @@ INTERNAL CLASS WindowTypeSelectDlg INHERIT Form
 
 	SELF:AutoScaleDimensions := System.Drawing.SizeF{ 6 , 13 }
 	SELF:AutoScaleMode := System.Windows.Forms.AutoScaleMode.Font
-	SELF:ClientSize := System.Drawing.Size{174 , 203}
+	SELF:ClientSize := System.Drawing.Size{174 , 233}
 	SELF:FormBorderStyle := FormBorderStyle.FixedDialog
 	SELF:Location := System.Drawing.Point{100 , 100}
 	SELF:MaximizeBox := FALSE
@@ -4456,7 +4459,7 @@ INTERNAL CLASS WindowTypeSelectDlg INHERIT Form
 
 	SELF:AcceptButton := SELF:oOKButton
 	SELF:CancelButton := SELF:oCancelButton
-	SELF:oCancelButton:Location := System.Drawing.Point{91 , 172}
+	SELF:oCancelButton:Location := System.Drawing.Point{91 , 202}
 	SELF:oCancelButton:Name := "CancelButton"
 	SELF:oCancelButton:Size := System.Drawing.Size{75 , 23}
 	SELF:oCancelButton:TabIndex := 2
@@ -4464,15 +4467,23 @@ INTERNAL CLASS WindowTypeSelectDlg INHERIT Form
 	SELF:Controls:Add(SELF:oCancelButton)
 	
 	SELF:oOKButton:Click += System.EventHandler{ SELF , @OKButtonClick() }
-	SELF:oOKButton:Location := System.Drawing.Point{8 , 172}
+	SELF:oOKButton:Location := System.Drawing.Point{8 , 202}
 	SELF:oOKButton:Name := "OKButton"
 	SELF:oOKButton:Size := System.Drawing.Size{75 , 23}
 	SELF:oOKButton:TabIndex := 1
 	SELF:oOKButton:Text := "&OK"
 	SELF:Controls:Add(SELF:oOKButton)
 	
+	SELF:oCloneButton:Click += System.EventHandler{ SELF , @CloneButtonClick() }
+	SELF:oCloneButton:Location := System.Drawing.Point{8 , 8}
+	SELF:oCloneButton:Name := "CloneButton"
+	SELF:oCloneButton:Size := System.Drawing.Size{158 , 23}
+	SELF:oCloneButton:TabIndex := 3
+	SELF:oCloneButton:Text := "C&lone from another window"
+	SELF:Controls:Add(SELF:oCloneButton)
+	
 	SELF:oGroupBox1:SuspendLayout()
-	SELF:oGroupBox1:Location := System.Drawing.Point{8 , 3}
+	SELF:oGroupBox1:Location := System.Drawing.Point{8 , 33}
 	SELF:oGroupBox1:Name := "GroupBox1"
 	SELF:oGroupBox1:Size := System.Drawing.Size{158 , 164}
 	SELF:oGroupBox1:TabIndex := 0
@@ -4501,6 +4512,15 @@ METHOD OKButtonClick(sender AS System.Object , e AS System.EventArgs) AS System.
 	SELF:SelectTemplate()
 RETURN
 
+METHOD CloneButtonClick(sender AS System.Object , e AS System.EventArgs) AS System.Void
+	LOCAL oDlg AS WindowCloneSelectDlg
+	oDlg := WindowCloneSelectDlg{}
+	IF oDlg:ShowDialog() == DialogResult.OK
+		SELF:cCloneFrom := oDlg:cSelected
+		SELF:DialogResult := DialogResult.OK
+	ENDIF
+RETURN
+
 METHOD SelectTemplate() AS VOID
 	IF SELF:oTypeListBox:SelectedIndex == -1
 		RETURN
@@ -4508,5 +4528,82 @@ METHOD SelectTemplate() AS VOID
 	SELF:cName := SELF:oTypeListBox:Text
 	SELF:DialogResult := DialogResult.OK
 RETURN
+
+END CLASS
+
+
+CLASS WindowCloneSelectDlg INHERIT System.Windows.Forms.Form
+
+	PROTECT oCancelButton AS System.Windows.Forms.Button
+	PROTECT oOKButton AS System.Windows.Forms.Button
+	PROTECT oFilesList AS System.Windows.Forms.ListBox
+	// User code starts here (DO NOT remove this line)  ##USER##
+	EXPORT cSelected := NULL AS STRING
+	CONSTRUCTOR()
+
+		SUPER()
+
+		SELF:InitializeForm()
+		
+		SELF:oFilesList:Items:AddRange(Directory.GetFiles("C:\xSharp\Users\test" , "*.xsfrm"))
+
+	RETURN
+	METHOD InitializeForm() AS VOID
+	
+	// IDE generated code (please DO NOT modify)
+	
+		SELF:oCancelButton := System.Windows.Forms.Button{}
+		SELF:oOKButton := System.Windows.Forms.Button{}
+		SELF:oFilesList := System.Windows.Forms.ListBox{}
+
+		SELF:SuspendLayout()
+
+		SELF:ClientSize := System.Drawing.Size{273 , 285}
+		SELF:FormBorderStyle := System.Windows.Forms.FormBorderStyle.Sizable
+		SELF:Location := System.Drawing.Point{100 , 100}
+		SELF:MaximizeBox := FALSE
+		SELF:MinimizeBox := FALSE
+		SELF:Name := "WindowCloneSelectDlg"
+		SELF:Text := "Choose source window to duplicate:"
+
+		SELF:AcceptButton := SELF:oOKButton
+		SELF:CancelButton := SELF:oCancelButton
+		SELF:oCancelButton:Anchor := System.Windows.Forms.AnchorStyles.Right + System.Windows.Forms.AnchorStyles.Bottom
+		SELF:oCancelButton:Location := System.Drawing.Point{146 , 255}
+		SELF:oCancelButton:Name := "CancelButton"
+		SELF:oCancelButton:Size := System.Drawing.Size{115 , 23}
+		SELF:oCancelButton:TabIndex := 2
+		SELF:oCancelButton:Text := "&Cancel"
+		SELF:Controls:Add(SELF:oCancelButton)
+		
+		SELF:oOKButton:Anchor := System.Windows.Forms.AnchorStyles.Left + System.Windows.Forms.AnchorStyles.Bottom
+		SELF:oOKButton:Click += System.EventHandler{ SELF , @OKButtonClick() }
+		SELF:oOKButton:Location := System.Drawing.Point{12 , 255}
+		SELF:oOKButton:Name := "OKButton"
+		SELF:oOKButton:Size := System.Drawing.Size{115 , 23}
+		SELF:oOKButton:TabIndex := 1
+		SELF:oOKButton:Text := "&OK"
+		SELF:Controls:Add(SELF:oOKButton)
+		
+		SELF:oFilesList:Anchor := System.Windows.Forms.AnchorStyles.Top + System.Windows.Forms.AnchorStyles.Left + System.Windows.Forms.AnchorStyles.Right + System.Windows.Forms.AnchorStyles.Bottom
+		SELF:oFilesList:Location := System.Drawing.Point{12 , 10}
+		SELF:oFilesList:Name := "FilesList"
+		SELF:oFilesList:Size := System.Drawing.Size{249 , 239}
+		SELF:oFilesList:TabIndex := 0
+		SELF:Controls:Add(SELF:oFilesList)
+		
+		SELF:ResumeLayout()
+
+	RETURN
+
+	METHOD OKButtonClick(sender AS System.Object , e AS System.EventArgs) AS VOID
+		IF SELF:oFilesList:SelectedIndex == -1
+			SELF:DialogResult := System.Windows.Forms.DialogResult.Cancel
+			RETURN
+		END IF
+		SELF:cSelected := SELF:oFilesList:SelectedItem:ToString()
+		SELF:DialogResult := System.Windows.Forms.DialogResult.OK
+	RETURN
+
 
 END CLASS

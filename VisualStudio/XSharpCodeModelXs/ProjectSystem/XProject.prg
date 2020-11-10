@@ -999,7 +999,17 @@ BEGIN NAMESPACE XSharpModel
       
       METHOD GetExtensions( typeName AS STRING) AS IList<IXMember>
          RETURN SystemTypeController.LookForExtensions( typeName, SELF:_AssemblyReferences)
+
+      METHOD GetFilesOfType(type as XFileType, lRecursive as LOGIC) AS IList<string>
+         LOCAL sProjectIds as STRING
+         IF lRecursive
+            sProjectIds := SELF:DependentProjectList
+         ELSE
+            sProjectIds := SELF:Id:ToString()
+         ENDIF
+         RETURN XDatabase.GetFilesOfType(type, sProjectIds)
          
+
          #endregion
       
       METHOD UnLoad() AS VOID

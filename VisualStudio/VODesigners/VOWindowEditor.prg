@@ -1,8 +1,9 @@
-#using System.Windows.Forms
-#using System.Drawing
-#using System.Collections.Generic
-#using System.Collections
-#using System.IO
+using System.Windows.Forms
+using System.Drawing
+using System.Collections.Generic
+using System.Collections
+using System.IO
+using XSharpModel
 
 ENUM ViewMode
 	MEMBER Auto
@@ -70,6 +71,11 @@ PARTIAL CLASS VOWindowEditor INHERIT WindowDesignerBase
 			ENDIF
 		NEXT
 	RETURN FALSE
+
+	ACCESS XFile AS XSharpModel.XFile
+      // Implemented in the Subclass
+	   RETURN NULL
+
 
 	METHOD CanDoAction(eAction AS DesignerActionType) AS LOGIC
 		
@@ -4410,11 +4416,14 @@ INTERNAL CLASS WindowTypeSelectDlg INHERIT Form
 	
 	EXPORT cName AS STRING
 	EXPORT cCloneFrom := NULL AS STRING
+   PROTECT xfile as XFile
+   PROTECT cDefaultFileName as STRING
 	
-	CONSTRUCTOR()
+	CONSTRUCTOR(file as XFile, cFileName as STRING)
 
 		SUPER()
-
+      xfile := file
+      cDefaultFileName := cFileName
 		LOCAL oTemplate AS VOControlTemplate
 		LOCAL n AS INT
 
@@ -4430,7 +4439,11 @@ INTERNAL CLASS WindowTypeSelectDlg INHERIT Form
 		
 		IF SELF:oTypeListBox:Items:Count != 0
 			SELF:oTypeListBox:SelectedIndex := 0
-		END IF
+      END IF
+      // we need the xfile object to get to the XProject and read the files from the database
+      if xfile == NULL
+         SELF:oCloneButton:Visible := FALSE
+      endif
 
 	RETURN
 
@@ -4514,7 +4527,7 @@ RETURN
 
 METHOD CloneButtonClick(sender AS System.Object , e AS System.EventArgs) AS System.Void
 	LOCAL oDlg AS WindowCloneSelectDlg
-	oDlg := WindowCloneSelectDlg{}
+	oDlg := WindowCloneSelectDlg{SELF:xfile, SELF:cDefaultFileName}
 	IF oDlg:ShowDialog() == DialogResult.OK
 		SELF:cCloneFrom := oDlg:cSelected
 		SELF:DialogResult := DialogResult.OK
@@ -4539,13 +4552,18 @@ CLASS WindowCloneSelectDlg INHERIT System.Windows.Forms.Form
 	PROTECT oFilesList AS System.Windows.Forms.ListBox
 	// User code starts here (DO NOT remove this line)  ##USER##
 	EXPORT cSelected := NULL AS STRING
-	CONSTRUCTOR()
+	CONSTRUCTOR(file as XFile, cFileName as STRING)
 
 		SUPER()
-
 		SELF:InitializeForm()
 		
-		SELF:oFilesList:Items:AddRange(Directory.GetFiles("C:\xSharp\Users\test" , "*.xsfrm"))
+      VAR fileNames := file:Project:GetFilesOfType(XFileType.VOForm, TRUE)
+      FOREACH var filename in fileNames
+         // Suppress the frm that we are adding !
+         IF !String.Equals(filename, cFileName,StringComparison.OrdinalIgnoreCase)
+		      SELF:oFilesList:Items:Add(filename)
+         ENDIF
+      NEXT
 
 	RETURN
 	METHOD InitializeForm() AS VOID
@@ -4565,6 +4583,7 @@ CLASS WindowCloneSelectDlg INHERIT System.Windows.Forms.Form
 		SELF:MinimizeBox := FALSE
 		SELF:Name := "WindowCloneSelectDlg"
 		SELF:Text := "Choose source window to duplicate:"
+   	SELF:StartPosition := FormStartPosition.CenterParent
 
 		SELF:AcceptButton := SELF:oOKButton
 		SELF:CancelButton := SELF:oCancelButton

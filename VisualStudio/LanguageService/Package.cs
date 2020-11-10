@@ -45,8 +45,8 @@ namespace XSharp.LanguageService
     [ProvideLanguageExtension(typeof(XSharpLanguageService), ".xh")]
     [ProvideLanguageExtension(typeof(XSharpLanguageService), ".ch")]
     [ProvideLanguageService(typeof(XSharpLanguageService),
-                         LanguageName,
-                         languageResourceID: 1,                            // resource ID of localized language name
+                         "XSharp",
+                         languageResourceID: 1,        // resource ID of localized language name. This sets the name to X#
                          RequestStockColors = true,   
                          ShowDropDownOptions = true    // Supports NavigationBar
                  )]
@@ -59,13 +59,9 @@ namespace XSharp.LanguageService
          SearchPaths = @"%InstallRoot%\Common7\IDE\Extensions\XSharp\Snippets\%LCID%\Snippets;" +
                   @"\%MyDocs%\Code Snippets\XSharp\My Code Snippets"
          )]
-    [ProvideLanguageEditorOptionPage(
-                 typeof(IntellisenseOptionsPage),  // GUID of property page
-                 LanguageName,  // Language Name
-                 null,          // Page Category
-                 "Intellisense",// Page name
-                 pageNameResourceId: "201"         // Localized name of property page
-                 )]
+    //Note that the name of the entry in Tools/Options/TextEditor is defined in VsPackage.Resx in item #1 as X#
+    [ProvideLanguageEditorOptionPage(typeof(IntellisenseOptionsPage), "XSharp", null, "Intellisense", pageNameResourceId: "201")]  // keywordlistresourceid
+    [ProvideLanguageEditorOptionPage(typeof(FormattingOptionsPage), "XSharp", null, "Formatting", pageNameResourceId: "202")]       // keywordlistresourceid
     public sealed class XSharpLanguageService : AsyncPackage, IVsShellPropertyEvents, IVsDebuggerEvents, IOleComponent
     {
         private static XSharpLanguageService instance;
@@ -90,11 +86,16 @@ namespace XSharp.LanguageService
         }
 
         IntellisenseOptionsPage _intellisensePage;
-        internal IntellisenseOptionsPage GetIntellisenseSettings()
+        FormattingOptionsPage _formattingPage;
+        internal void GetIntellisenseSettings()
         {
             if (_intellisensePage == null)
             {
                 _intellisensePage = (IntellisenseOptionsPage)GetDialogPage(typeof(IntellisenseOptionsPage));
+            }
+            if (_formattingPage == null)
+            {
+                _formattingPage = (FormattingOptionsPage)GetDialogPage(typeof(FormattingOptionsPage));
             }
             if (_intellisensePage.SettingsChanged)
             {
@@ -131,7 +132,6 @@ namespace XSharp.LanguageService
                 XSettings.EditorCommitChars = _intellisensePage.CommitChars;
                 XSettings.EditorCompletionAutoPairs = _intellisensePage.AutoPairs;
                 XSettings.EditorCompletionListAfterEachChar = _intellisensePage.ShowAfterChar;
-                XSettings.EditorIndentFactor = _intellisensePage.MultiFactor;
                 XSettings.EditorKeywordsInAll = _intellisensePage.KeywordsInAll;
                 XSettings.EditorUseDotAsUniversalSelector = _intellisensePage.UseDotAsUniversalSelector;
 
@@ -155,12 +155,17 @@ namespace XSharp.LanguageService
                     XSettings.EditorIndentSize = (int) languagePreferences[0].uIndentSize;
                     XSettings.EditorTabsAsSpaces  = languagePreferences[0].fInsertTabs == 0;
                 }
-                
 
-                XSettings.KeywordCase = _intellisensePage.KeywordCase;
+                XSettings.EditorIndentFactor = _formattingPage.MultiFactor;
+                XSettings.EditorFormatAlignDoCase = _formattingPage.AlignDoCase;
+                XSettings.EditorFormatAlignMethod = _formattingPage.AlignMethod;
+                XSettings.IdentifierCase = _formattingPage.IdentifierCase;
+                XSettings.KeywordCase = _formattingPage.KeywordCase;
+
+                _formattingPage.SettingsChanged = false;
                 _intellisensePage.SettingsChanged = false;
             }
-            return _intellisensePage;
+            return ;
         }
 
         protected override async System.Threading.Tasks.Task InitializeAsync(CancellationToken cancellationToken, IProgress<ServiceProgressData> progress)

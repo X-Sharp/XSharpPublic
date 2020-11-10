@@ -2,7 +2,7 @@
 <PackageManifest Version="2.0.0" xmlns="http://schemas.microsoft.com/developer/vsx-schema/2011" xmlns:d="http://schemas.microsoft.com/developer/vsx-schema-design/2011">
     <Metadata>
         <Identity Id="XSharp.ProjectSystem" Version="2.6.3.2" Language="en-US" Publisher="XSharp BV" />
-        <DisplayName>XSharp Visual Studio Project System</DisplayName>
+        <DisplayName>XSharp Project System and Language Service</DisplayName>
         <Description xml:space="preserve">X# Visual Studio Project System.
 Includes support for Windows Form Editor, WPF Editor, VO Compatible form and menu Editors etc.</Description>
         <MoreInfo>http://www.xsharp.info</MoreInfo>

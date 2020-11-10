@@ -96,11 +96,20 @@
     <Compile Include="LightBulb\CreateStubProvider.cs" />
     <Compile Include="LightBulb\ImplementInterfaceAction.cs" />
     <Compile Include="LightBulb\ImplementInterfaceProvider.cs" />
+    <Compile Include="OptionsPages\FormattingOptionsControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="OptionsPages\FormattingOptionsControl.Designer.cs">
+      <DependentUpon>FormattingOptionsControl.cs</DependentUpon>
+    </Compile>
     <Compile Include="OptionsPages\IntellisenseOptionsControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="OptionsPages\IntellisenseOptionsControl.Designer.cs">
       <DependentUpon>IntellisenseOptionsControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="OptionsPages\FormattingOptionsPage.cs">
+      <SubType>Component</SubType>
     </Compile>
     <Compile Include="OptionsPages\IntellisenseOptionsPage.cs">
       <SubType>Component</SubType>
@@ -177,11 +186,17 @@
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="OptionsPages\FormattingOptionsControl.resx">
+      <DependentUpon>FormattingOptionsControl.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="OptionsPages\IntellisenseOptionsControl.resx">
       <DependentUpon>IntellisenseOptionsControl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="OptionsPages\XSharpSpecialOptions.resx">
       <DependentUpon>XSharpSpecialOptions.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="VSPackage.resx">
+      <SubType>Designer</SubType>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

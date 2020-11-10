@@ -247,6 +247,8 @@
       <DependentUpon>XSharpSLEPropertyForm.cs</DependentUpon>
     </Compile>
     <Compile Include="PropertyPages\XSharpUITypeEditors.cs" />
+    <ZipProject Include="Templates\Projects\Windows\ConsoleCoreNet\Program.prg" />
+    <ZipProject Include="Templates\Projects\Windows\ConsoleCoreNet\AssemblyInfo.prg" />
     <ZipProject Include="Templates\Projects\Windows\VOSdiApp\cavoded.tpl" />
     <ZipProject Include="Templates\Projects\Windows\VOSdiApp\cavofed.tpl" />
     <ZipProject Include="Templates\Projects\Windows\VOSdiApp\cavowed.tpl" />
@@ -422,6 +424,9 @@
       <SubType>Designer</SubType>
     </ZipProject>
     <ZipProject Include="Templates\Projects\ClassLibraries\ClassLibraryVulcan\VulcanClassLibrary.xsproj" />
+    <ZipProject Include="Templates\Projects\Windows\ConsoleCoreNet\ConsoleApplication.png" />
+    <ZipProject Include="Templates\Projects\Windows\ConsoleCoreNet\ConsoleApplication.vstemplate" />
+    <ZipProject Include="Templates\Projects\Windows\ConsoleCoreNet\ConsoleApplication.xsproj" />
     <Content Include="XSharp.png" />
     <VSCTCompile Include="XSharpProjectPackage.vsct">
       <ResourceName>Menus.ctmenu</ResourceName>
@@ -779,6 +784,12 @@
     <ProjectReference Include="..\XSharpCodeModelXs\XSharpModelXs.xsproj">
       <Project>{eed6843b-b727-4f08-aa32-ca0f48fdde3f}</Project>
       <Name>XSharpModelXs</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\XSharpDebugger\XSharpDebugger.csproj">
+      <Project>{16272550-75E6-4B9D-91E3-653BD141C755}</Project>
+      <Name>XSharpDebugger</Name>
+      <IncludeOutputGroupsInVSIX>BuiltProjectOutputGroup%3bBuiltProjectOutputGroupDependencies%3bGetCopyToOutputDirectoryItems%3bSatelliteDllsProjectOutputGroup%3b</IncludeOutputGroupsInVSIX>
+      <IncludeOutputGroupsInVSIXLocalOnly>DebugSymbolsProjectOutputGroup%3b</IncludeOutputGroupsInVSIXLocalOnly>
     </ProjectReference>
     <ProjectReference Include="..\XSharpVoEditors\XSharpVoEditors.xsproj">
       <Project>{7619db88-6286-4ef1-8273-2a08cc8ac70e}</Project>

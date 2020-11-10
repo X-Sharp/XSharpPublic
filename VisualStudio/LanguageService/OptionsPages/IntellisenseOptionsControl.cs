@@ -30,32 +30,12 @@ namespace XSharp.LanguageService.OptionsPages
             chkKeywordsInAll.Checked = optionsPage.KeywordsInAll;
             chkDotAsUniversalSelector.Checked = optionsPage.UseDotAsUniversalSelector;
             chkShowAfterChar.Checked = optionsPage.ShowAfterChar;
-            grpCase.Enabled = true;
-            switch (optionsPage.KeywordCase)
-            {
-                case KeywordCase.Upper:
-                    rbUpper.Checked = true;
-                    break;
-                case KeywordCase.Lower:
-                    rbLower.Checked = true;
-                    break;
-                case KeywordCase.Title:
-                    rbTitle.Checked = true;
-                    break;
-                default:
-                    rbNone.Checked = true;
-                    break;
-            }
             //
-            chkIdentifierCase.Checked = optionsPage.IdentifierCase;
-            chkAlignDoCase.Checked = optionsPage.AlignDoCase;
-            chkAlignMethod.Checked = optionsPage.AlignMethod;
             chkIncludeFields.Checked = optionsPage.IncludeFieldsInNavigationBars;
             chkSortNavBar.Checked = optionsPage.SortNavigationBars;
             chkShowMembersOfCurrentType.Checked = optionsPage.ShowMembersOfCurrentTypeOnly;
             commitChars.Text = optionsPage.CommitChars;
             chkAutoPairs.Checked = optionsPage.AutoPairs;
-            multiFactor.Text = optionsPage.MultiFactor.ToString();
             chkExcludeMembersFromOtherfiles.Checked = optionsPage.ExcludeMembersFromOtherFiles;
             _loading = false;
 
@@ -70,41 +50,6 @@ namespace XSharp.LanguageService.OptionsPages
         private void chkKeywordsInAll_CheckedChanged(object sender, EventArgs e)
         {
             optionsPage.KeywordsInAll = chkKeywordsInAll.Checked;
-        }
-
-        private void kwCaseChanged(object sender, EventArgs e)
-        {
-            if (rbNone.Checked)
-            {
-                optionsPage.KeywordCase = KeywordCase.None;
-            }
-            else if (rbUpper.Checked)
-            {
-                optionsPage.KeywordCase = KeywordCase.Upper;
-            }
-            else if (rbLower.Checked)
-            {
-                optionsPage.KeywordCase = KeywordCase.Lower;
-            }
-            else if (rbTitle.Checked)
-            {
-                optionsPage.KeywordCase = KeywordCase.Title;
-            }
-        }
-
-        private void chkIdentifierCase_CheckedChanged(object sender, EventArgs e)
-        {
-            //optionsPage.IdentifierCase = chkIdentifierCase.Checked;
-        }
-
-        private void chkAlignDoCase_CheckedChanged(object sender, EventArgs e)
-        {
-            optionsPage.AlignDoCase = chkAlignDoCase.Checked;
-        }
-
-        private void chkAlignMethod_CheckedChanged(object sender, EventArgs e)
-        {
-            optionsPage.AlignMethod = chkAlignMethod.Checked;
         }
 
         private void chkDotAsUniversalSelector_CheckedChanged(object sender, EventArgs e)
@@ -214,12 +159,6 @@ namespace XSharp.LanguageService.OptionsPages
             optionsPage.AutoPairs = chkAutoPairs.Checked;
         }
 
-        private void multiFactor_TextChanged(object sender, EventArgs e)
-        {
-            int factor = 0;
-            int.TryParse(multiFactor.Text, out factor);
-            optionsPage.MultiFactor = factor;
-        }
 
         private void chkIncludeMembersFromOtherfiles_CheckedChanged(object sender, EventArgs e)
         {

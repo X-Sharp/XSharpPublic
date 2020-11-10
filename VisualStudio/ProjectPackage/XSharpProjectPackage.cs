@@ -274,6 +274,7 @@ namespace XSharp.Project
                 XEditorSettings.GridY = woptions.GridX;
                 XEditorSettings.PasteOffSetX = woptions.PasteOffSetX;
                 XEditorSettings.PasteOffSetY = woptions.PasteOffSetY;
+                XEditorSettings.PartialLasso = woptions.PartialLasso;
 
                 var options = await Options.OtherEditorOptions.GetLiveInstanceAsync();
                 XEditorSettings.DbServerDefaultRDD = options.DbServerDefaultRDD;

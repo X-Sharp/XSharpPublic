@@ -36,7 +36,7 @@ BEGIN NAMESPACE XSharpModel
             SELF:Namespace    := typedef:DeclaringType:FullName
          ENDIF
          IF typedef:BaseType != NULL
-            SELF:BaseType     := typedef:BaseType:FullName
+            SELF:BaseType     := RemoveGenericParameters(typedef:BaseType:FullName)
          ELSE
             SELF:BaseType     := ""
          ENDIF

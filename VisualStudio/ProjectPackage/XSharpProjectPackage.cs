@@ -103,8 +103,8 @@ namespace XSharp.Project
         @".NullPath", LanguageVsTemplate = "XSharp", NewProjectRequireNewFolderVsTemplate = false)]
 
 
-    [ProvideOptionPage(typeof(Options.DialogPageProvider.WindowEditor), "XSharp Custom Editors", "Window Editor", 0, 0, true,Sort = 1)]
-    [ProvideOptionPage(typeof(Options.DialogPageProvider.OtherEditor), "XSharp Custom Editors", "Other Editors", 0, 0, true, Sort = 2)]
+    [ProvideOptionPage(typeof(Options.DialogPageProvider.WindowEditor), "X# Custom Editors", "Window Editor", 0, 0, true,Sort = 1)]
+    [ProvideOptionPage(typeof(Options.DialogPageProvider.OtherEditor), "X# Custom Editors", "Other Editors", 0, 0, true, Sort = 2)]
 
     [ProvideLanguageCodeExpansionAttribute(
          typeof(XSharpLanguageService),

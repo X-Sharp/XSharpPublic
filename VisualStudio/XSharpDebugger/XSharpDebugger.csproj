@@ -35,7 +35,7 @@
     <ExtensionInstallationFolder>XSharp\Debugger</ExtensionInstallationFolder>
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
-    <VsixType>v3</VsixType>
+    <!--<VsixType>v3</VsixType>-->
     <DeployExtension Condition=" '$(Configuration)' == 'Release' ">false</DeployExtension>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -51,6 +51,8 @@
     </DocumentationFile>
     <RunCodeAnalysis>false</RunCodeAnalysis>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <CreateVsixContainer>True</CreateVsixContainer>
+    <DeployExtension>True</DeployExtension>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -113,9 +115,6 @@
     </VSIXSourceItem>
   </ItemGroup>
   <ItemGroup>
-    <None Include="source.extension.vsixmanifest" />
-  </ItemGroup>
-  <ItemGroup>
     <Content Include="readme.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -123,6 +122,7 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
+    <None Include="source.extension.vsixmanifest" />
     <Content Include="System.Collections.Immutable.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <IncludeInVSIX>true</IncludeInVSIX>

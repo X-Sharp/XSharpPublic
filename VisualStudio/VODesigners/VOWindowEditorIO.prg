@@ -63,11 +63,11 @@ PARTIAL CLASS VOWindowEditor INHERIT WindowDesignerBase
 		LOCAL oDlg AS WindowTypeSelectDlg
 		LOCAL lSuccess AS LOGIC
 
-		oDlg := WindowTypeSelectDlg{}
+		oDlg := WindowTypeSelectDlg{SELF:XFile, SELF:cDefaultFileName}
 		IF oDlg:ShowDialog() == System.Windows.Forms.DialogResult.OK
 			
 			IF oDlg:cCloneFrom != NULL
-				System.Windows.Forms.MessageBox.show(oDlg:cCloneFrom)
+				//System.Windows.Forms.MessageBox.show(oDlg:cCloneFrom)
 				lSuccess := SELF:CloneFromXml(oDlg:cCloneFrom , cName)
 				RETURN lSuccess
 			END IF

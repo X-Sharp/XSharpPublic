@@ -17,7 +17,7 @@ BEGIN NAMESPACE XSharpModel
 	STATIC PRIVATE oConn   AS SQLiteConnection     // In memory database !
 	STATIC PRIVATE lastWritten := DateTime.MinValue AS DateTime
 	STATIC PRIVATE currentFile AS STRING
-	PRIVATE CONST CurrentDbVersion := 0.4 AS System.Double
+	PRIVATE CONST CurrentDbVersion := 0.5 AS System.Double
 		
 		STATIC METHOD CreateOrOpenDatabase(cFileName AS STRING) AS VOID
 			LOCAL lValid := FALSE AS LOGIC
@@ -324,7 +324,7 @@ BEGIN NAMESPACE XSharpModel
 				cmd:Parameters:Clear()
 				
 				#region views
-				stmt := " CREATE VIEW ProjectFiles AS SELECT fp.IdFile, f.FileName, f.LastChanged, f.Size, fp.IdProject, p.ProjectFileName " + ;
+				stmt := " CREATE VIEW ProjectFiles AS SELECT fp.IdFile, f.FileName, f.FileType, f.LastChanged, f.Size, fp.IdProject, p.ProjectFileName " + ;
 				" FROM Files f JOIN FilesPerProject fp ON f.Id = fp.IdFile JOIN Projects p ON fp.IdProject = P.Id"
 				cmd:CommandText := stmt
 				cmd:ExecuteNonQuery()		
@@ -989,6 +989,26 @@ BEGIN NAMESPACE XSharpModel
 			Log(i"GetCommentTasks returns {result.Count} matches")
 		RETURN result     
 		
+      STATIC METHOD GetFilesOfType(type as XFileType, sProjectIds as STRING) AS IList<STRING>
+         VAR stmt := "Select distinct FileName from ProjectFiles where FileType = $type AND IdProject in ("+sProjectIds+")"
+         VAR result := List<String>{}
+			IF IsDbOpen
+				BEGIN LOCK oConn
+					TRY
+							BEGIN USING VAR oCmd := SQLiteCommand{stmt, oConn}
+                        oCmd:Parameters:AddWithValue("$type",(INT) type)
+								BEGIN USING VAR rdr := oCmd:ExecuteReader()
+									DO WHILE rdr:Read()
+                              result:Add(DbToString(rdr[0]))
+									ENDDO
+								END USING
+						END USING
+					CATCH e AS Exception
+						Log("Exception: "+e:ToString())
+					END TRY            
+				END LOCK
+			ENDIF         
+         RETURN result
 		
 		STATIC METHOD GetNamespaces(sProjectIds AS STRING) AS IList<XDbResult>
 			VAR stmt := "Select distinct Namespace from ProjectTypes where Namespace is not null and IdProject in ("+sProjectIds+")"

@@ -1877,10 +1877,12 @@ namespace XSharp.Project
             {
                 try
                 {
-                    if (this.Site != null)
+                    return ThreadHelper.JoinableTaskFactory.Run(async delegate
                     {
-                        return VsShellUtilities.IsSolutionBuilding(this.Site);
-                    }
+                        await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+                        return VsShellUtilities.IsSolutionBuilding(XSharpProjectPackage.Instance);
+                    });
+
                 }
                 catch (Exception e)
                 {

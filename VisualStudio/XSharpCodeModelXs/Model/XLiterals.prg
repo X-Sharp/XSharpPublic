@@ -89,3 +89,10 @@ BEGIN NAMESPACE XSharpModel
    END CLASS
    
 END NAMESPACE
+
+INTERNAL FUNCTION RemoveGenericParameters(typeName as STRING) AS STRING
+   var pos := typeName:IndexOf('<')
+   IF pos > 0
+      typeName := typeName:Substring(0, pos)
+   ENDIF
+   RETURN typeName

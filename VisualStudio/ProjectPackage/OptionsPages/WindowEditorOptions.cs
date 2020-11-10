@@ -32,6 +32,13 @@ namespace XSharp.Project.Options
         [Description("The vertical distance between the original control and the pasted control in dots.")]
         [DefaultValue(8)]
         public int PasteOffSetY { get; set; } = 8;
+
+        [Category("Miscellaneous")]
+        [DisplayName("Allow Partial Lasso")]
+        [Description("Allow Partial Control Lassoing (The Shift Key toggles the behavior).")]
+        [DefaultValue(false)]
+        public bool PartialLasso { get; set; } = false;
+
     }
 
 

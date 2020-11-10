@@ -262,7 +262,7 @@ CLASS VOWEDControl INHERIT Panel
          SaveLocation((STRING) form:Tag, size, pos)
     RETURN
     STATIC METHOD SaveLocation(name AS STRING, size AS System.Drawing.Size, point AS System.Drawing.Point) AS VOID
-/*         VAR keyName := "VOED_"+name
+         VAR keyName := "VOED_"+name
          VAR key     := Microsoft.Win32.Registry.CurrentUser
          VAR subkey  := key:OpenSubKey(Constants.RegistryKey, TRUE)
          IF (subkey == NULL)
@@ -272,10 +272,10 @@ CLASS VOWEDControl INHERIT Panel
          subkey:SetValue(keyName+"_H", size:Height)
          subkey:SetValue(keyName+"_X", point:X)
          subkey:SetValue(keyName+"_Y", point:Y)
-         subkey:Close()*/
+         subkey:Close()
 
     STATIC METHOD RestoreLocation(name AS STRING, size REF System.Drawing.Size, point REF System.Drawing.Point) AS VOID
-/*         LOCAL key     := Microsoft.Win32.Registry.CurrentUser AS Microsoft.Win32.RegistryKey
+         LOCAL key     := Microsoft.Win32.Registry.CurrentUser AS Microsoft.Win32.RegistryKey
          LOCAL subkey  := key:OpenSubKey(Constants.RegistryKey, TRUE) AS Microsoft.Win32.RegistryKey
          VAR keyName := "VOED_"+name
          IF (subkey == NULL)
@@ -314,7 +314,7 @@ CLASS VOWEDControl INHERIT Panel
             subkey:DeleteValue(keyName+"_X")
             subkey:DeleteValue(keyName+"_X")
          END TRY
-         subkey:Close()*/
+         subkey:Close()
          RETURN
 END CLASS
 

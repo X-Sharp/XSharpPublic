@@ -323,7 +323,7 @@ namespace Microsoft.VisualStudio.Project.Automation
                     if (this.configurationManager == null)
                     {
                         IVsExtensibility3 extensibility = this.project.Site.GetService(typeof(IVsExtensibility)) as IVsExtensibility3;
-                        Assumes.Present(extensibility);
+                            Assumes.Present(extensibility);
 
 
                         object configurationManagerAsObject;

@@ -149,7 +149,7 @@ CLASS SQLConnection
 
 	METHOD Connect( uConnStr, uUserID, uPassword ) 
 		
-		LOCAL lRet        AS LOGIC
+		LOCAL lRet    := FALSE   AS LOGIC
 		LOCAL ex          AS Exception
 		LOCAL cConnStr AS STRING
 		LOCAL cUserID AS STRING
@@ -251,7 +251,7 @@ CLASS SQLConnection
 	
 	METHOD DriverConnect( hWindow, nDriverCompletion, cConnStrIn )
         LOCAL cResult AS STRING
-        LOCAL lRet    AS LOGIC
+        LOCAL lRet    := FALSE AS LOGIC
         IF IsNil(cConnStrIn)
             cConnStrIn := SELF:cConnectString
         ENDIF
@@ -312,8 +312,8 @@ CLASS SQLConnection
 	#region .NET Extensions
 	METHOD GetSchemaTable(cSchema AS STRING, aFilter AS STRING[]) AS DataTable
 		LOCAL oTable AS DataTable
-		LOCAL lFound AS LOGIC
-		LOCAL nRestrictions AS LONG
+		LOCAL lFound := FALSE AS LOGIC
+		LOCAL nRestrictions := 0 AS LONG
 		TRY
 			SELF:oErrInfo:ErrorFlag := FALSE
 			oTable := SELF:NetConn:GetSchema("MetadataCollections",NULL)
@@ -720,15 +720,16 @@ CLASS SQLConnection
 			SELF:cConnectString := value
 			SELF:_ParseConnectionString()
 		END SET
-	END PROPERTY
-	ACCESS ErrInfo 
+    END PROPERTY
+    
+	ACCESS ErrInfo AS SQLErrorInfo
 		IF oErrInfo:ErrorFlag
 			RETURN oErrInfo
 		ENDIF
-		RETURN NIL
+		RETURN NULL
 	
-	ACCESS HyperLabel 
-		LOCAL oHL AS HyperLabel
+	ACCESS HyperLabel AS HyperLabel
+		LOCAL oHL := NULL AS HyperLabel
 		IF SLen( SELF:cDatabase ) > 0
 			oHL := HyperLabel{  cDatabase, ;
 			cDatabase, ;
@@ -762,7 +763,7 @@ CLASS SQLConnection
 	
 	PROPERTY Status AS HyperLabel
 		GET
-			LOCAL oStatus AS HyperLabel
+			LOCAL oStatus := NULL AS HyperLabel
 			 
 			IF oErrInfo:ErrorFlag
 				oStatus := HyperLabel{  oErrInfo:FuncSym,  ;
@@ -1055,7 +1056,7 @@ CLASS SQLConnection
 	// Schickt ein SQL-Select an den Server und gibt das erste Feld zurück
 	LOCAL oRetVal AS OBJECT
 	LOCAL uRetVal AS USUAL
-	LOCAL oCmd AS DbCommand
+	LOCAL oCmd  := NULL AS DbCommand
 	TRY
 		oCmd := SELF:_CreateCommand()
 		oCmd:CommandText := cSelect

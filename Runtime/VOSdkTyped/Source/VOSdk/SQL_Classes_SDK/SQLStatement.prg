@@ -93,9 +93,9 @@ CLASS SQLStatement
     // Hier ist der Einsprungpunkt für den Translator
     METHOD Execute( uParm )
         LOCAL nCount     AS DWORD
-        LOCAL aArg       AS ARRAY
+        LOCAL aArg       := NULL_ARRAY AS ARRAY
         LOCAL lRet       AS LOGIC
-        LOCAL lNewParams AS LOGIC
+        LOCAL lNewParams := FALSE AS LOGIC
         
         IF SELF:oNetCmd == NULL 
             SELF:__AllocStmt()
@@ -129,7 +129,7 @@ CLASS SQLStatement
         IF ALen(SELF:aParams) > 0 .AND. ! lPrepFlag
             SELF:Prepare()
         ENDIF
-        LOCAL oDataReader AS DbDataReader
+        LOCAL oDataReader := NULL AS DbDataReader
         TRY
                 SELF:oNetCmd:CommandText  := oConn:Factory:TranslateStatement(cStatement)
                 //		IF translator != NULL
@@ -272,7 +272,7 @@ CLASS SQLStatement
             RETURN SELF:oErrInfo
             
         METHOD Prepare()
-            LOCAL lRet     AS LOGIC
+            LOCAL lRet     := FALSE AS LOGIC
             LOCAL nPar     AS DWORD
             
             IF SELF:oNetCmd == NULL_OBJECT
@@ -332,7 +332,7 @@ CLASS SQLStatement
     
     #region Internal Methods
     METHOD __AllocStmt() AS LOGIC STRICT
-        LOCAL lRet AS LOGIC
+        LOCAL lRet := FALSE AS LOGIC
         TRY
             IF oNetCmd == NULL_OBJECT
                 oNetCmd := SELF:oConn:_CreateCommand()
@@ -368,7 +368,7 @@ CLASS SQLStatement
         RETURN TRUE
         
     METHOD __FreeStmt( nOption AS WORD) AS LOGIC STRICT
-        LOCAL lRet     AS LOGIC
+        LOCAL lRet     := FALSE AS LOGIC
         IF SELF:oNetCmd != NULL
             TRY
                 oNetCmd:Parameters:Clear()
@@ -545,7 +545,7 @@ CLASS SQLStatement
     
     PROPERTY Status AS HyperLabel
         GET
-            LOCAL   oRet    AS HyperLabel
+            LOCAL   oRet  := NULL  AS HyperLabel
             
             IF SELF:oErrInfo:ErrorFlag
                 oRet := HyperLabel{ oErrInfo:FuncSym,                           ;

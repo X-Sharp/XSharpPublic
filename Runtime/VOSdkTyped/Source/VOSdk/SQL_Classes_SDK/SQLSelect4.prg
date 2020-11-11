@@ -167,7 +167,7 @@ PARTIAL CLASS SQLSelect INHERIT DataServer
 	METHOD SetDataField( nFieldPosition AS USUAL, oDataField AS DataField) AS LOGIC
 		// override method in DataServer class because it does not allow
 		// to change size/decimals for numeric columns
-		LOCAL lRetVal AS LOGIC
+		LOCAL lRetVal := FALSE AS LOGIC
 		LOCAL wFieldPosition := nFieldPosition AS WORD
 		LOCAL oField := oDataField AS DataField
 		LOCAL oDF   AS DataField
@@ -207,7 +207,7 @@ PARTIAL CLASS SQLSelect INHERIT DataServer
 
 	METHOD SetPrimaryKey( uFieldPos ) AS LOGIC
 		LOCAL nIndex    AS DWORD
-		LOCAL lRet      AS LOGIC
+		LOCAL lRet      := FALSE AS LOGIC
 
 		nIndex := SELF:__GetColIndex( uFieldPos, TRUE )
 		IF nIndex = 0

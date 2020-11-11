@@ -72,7 +72,7 @@ CLASS MinMaxInfoEvent INHERIT @@Event
 	ACCESS MaxPosition AS Point STRICT 
 		LOCAL sMinMax AS _WINMINMAXINFO
 
-		sMinMax := PTR(_CAST, lParam)
+		sMinMax := IntPtr{lParam}
 		RETURN Point{sMinMax:ptMaxPosition:X, sMinMax:ptMaxPosition:Y}
 
 	ASSIGN MaxPosition(oPoint AS Point)  STRICT 
@@ -80,7 +80,7 @@ CLASS MinMaxInfoEvent INHERIT @@Event
 		LOCAL sMinMax  AS _WINMINMAXINFO
 
 		oMaxPos  := oPoint
-		sMinMax  := PTR(_CAST, lParam)
+		sMinMax  := IntPtr{lParam}
 		sMinMax:ptMaxPosition:X := oMaxPos:X
 		sMinMax:ptMaxPosition:Y := oMaxPos:Y
 		RETURN 
@@ -88,7 +88,7 @@ CLASS MinMaxInfoEvent INHERIT @@Event
 	ACCESS MaxSize AS Dimension STRICT 
 		LOCAL sMinMax AS _WINMINMAXINFO
 
-		sMinMax := PTR(_CAST, lParam)
+		sMinMax := IntPtr{lParam}
 		RETURN Dimension{sMinMax:ptMaxSize:X, sMinMax:ptMaxSize:Y}
 
 	ASSIGN MaxSize(oSize AS Dimension)  STRICT 
@@ -96,7 +96,7 @@ CLASS MinMaxInfoEvent INHERIT @@Event
 		LOCAL sMinMax  AS _WINMINMAXINFO
 
 		oMaxSize := oSize
-		sMinMax  := PTR(_CAST, lParam)
+		sMinMax  := IntPtr{lParam}
 		sMinMax:ptMaxSize:X := oMaxSize:Width
 		sMinMax:ptMaxSize:Y := oMaxSize:Height
 		RETURN 
@@ -104,7 +104,7 @@ CLASS MinMaxInfoEvent INHERIT @@Event
 	ACCESS MaxTrackSize AS Dimension STRICT 
 		LOCAL sMinMax AS _WINMINMAXINFO
 
-		sMinMax := PTR(_CAST, lParam)
+		sMinMax := IntPtr{lParam}
 		RETURN Dimension{sMinMax:ptMaxTrackSize:X, sMinMax:ptMaxTrackSize:Y}
 
 	ASSIGN MaxTrackSize(oSize AS Dimension)  STRICT 
@@ -112,7 +112,7 @@ CLASS MinMaxInfoEvent INHERIT @@Event
 		LOCAL sMinMax  AS _WINMINMAXINFO
 
 		oMaxSize := oSize
-		sMinMax  := PTR(_CAST, lParam)
+		sMinMax  := IntPtr{lParam}
 		sMinMax:ptMaxTrackSize:X := oMaxSize:Width
 		sMinMax:ptMaxTrackSize:Y := oMaxSize:Height
 		RETURN 
@@ -120,7 +120,7 @@ CLASS MinMaxInfoEvent INHERIT @@Event
 	ACCESS MinTrackSize AS Dimension STRICT 
 		LOCAL sMinMax AS _WINMINMAXINFO
 
-		sMinMax := PTR(_CAST, lParam)
+		sMinMax := IntPtr{lParam}
 		RETURN Dimension{sMinMax:ptMinTrackSize:X, sMinMax:ptMinTrackSize:Y}
 
 	ASSIGN MinTrackSize(oSize AS Dimension)  STRICT 
@@ -128,7 +128,7 @@ CLASS MinMaxInfoEvent INHERIT @@Event
 		LOCAL sMinMax  AS _WINMINMAXINFO
 
 		oMinSize := oSize
-		sMinMax  := PTR(_CAST, lParam)
+		sMinMax  := IntPtr{lParam}
 		sMinMax:ptMinTrackSize:X := oMinSize:Width
 		sMinMax:ptMinTrackSize:Y := oMinSize:Height
 		RETURN 
@@ -317,7 +317,7 @@ CLASS AppCommandEvent INHERIT @@Event
 		RETURN _AND(WORD(AppCommandEvent.Get_KeyState_lParam(DWORD(_CAST,SELF:lParam))),MK_XBUTTON2) > 0
 
 	ACCESS oTarget AS OBJECT STRICT 
-		RETURN WC.GetObjectByHandle(PTR(_CAST,SELF:wParam))
+		RETURN WC.GetObjectByHandle(IntPtr{SELF:wParam})
 
 
 END CLASS

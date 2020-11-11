@@ -58,19 +58,19 @@
     <Folder Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Runtime\MacroCompiler\MacroCompiler.csproj">
+    <ProjectReference Include="..\..\Runtime\MacroCompiler\MacroCompiler.csproj">
       <Name>MacroCompiler (Macrocompiler\MacroCompiler)</Name>
       <Project>{eb3f3142-07f7-48ca-b38d-f611c45a9511}</Project>
       <Private>True</Private>
     </ProjectReference>
-    <ProjectReference Include="..\Runtime\XSharp.Core\XSharp.Core.xsproj">
+    <ProjectReference Include="..\..\Runtime\XSharp.Core\XSharp.Core.xsproj">
       <Name>XSharp.Core</Name>
       <Project>{535dff14-efb7-43f5-a4e1-71c1c4280040}</Project>
       <Private>True</Private>
     </ProjectReference>
-    <ProjectReference Include="..\Runtime\XSharp.Rdd\XSharp.RDD.xsproj">
-      <Name>XSharp.RDD</Name>
-      <Project>{e83c6c8c-773f-4b01-a597-3d38398a9362}</Project>
+    <ProjectReference Include="..\..\Runtime\XSharp.RT\XSharp.RT.xsproj">
+      <Name>XSharp.RT</Name>
+      <Project>{ef8d2bf2-e81a-479a-ba4f-294c4c348b66}</Project>
       <Private>True</Private>
     </ProjectReference>
   </ItemGroup>

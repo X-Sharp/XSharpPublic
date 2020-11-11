@@ -1,5 +1,4 @@
 
-#include "VOWin32APILibrary.vh"
 
 
 PARTIAL CLASS Window

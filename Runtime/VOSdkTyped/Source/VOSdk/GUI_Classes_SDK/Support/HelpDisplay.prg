@@ -1,7 +1,6 @@
 
 
 
-#include "VOWin32APILibrary.vh"
 CLASS HelpDisplay INHERIT VObject
 	PROTECT cFileName AS STRING
 	PROTECT wError AS LONGINT				        //RvdH 070205 changed from WORD to LONG

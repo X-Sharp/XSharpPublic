@@ -2,7 +2,6 @@
 // Contains the 'empty' event handlers of the window class
 
 
-#include "VOWin32APILibrary.vh"
 #USING System.Windows.Forms
 
 PARTIAL CLASS Window INHERIT @@EventContext

@@ -69,6 +69,8 @@ namespace XSharp.Project
         internal const string DefDescription = "Defines for the preprocessor (/define)";
         internal const string captPrefer32Bit = "\tPrefer 32 Bit";
         internal const string descPrefer32Bit = "Prefer 32 bit when AnyCpu platform is selected. (/platform)";
+        internal const string SuppressRCWarningsCaption = "Suppress Resource Compiler warnings";
+        internal const string SuppressRCWarningsDescription = "Suppress warnings from the Native Resource Compiler about duplicate defines (RC4005)";
 
 
         internal const string defaultOutputPath = @"bin\$(Configuration)\";
@@ -93,6 +95,7 @@ namespace XSharp.Project
         private Platform platformtarget;
         private bool prefer32bit;
         private bool registerForComInterop;
+        private bool suppressRcWarnings;
 
         #endregion Fields
 
@@ -257,6 +260,14 @@ namespace XSharp.Project
             set { this.warningAsErrors = value; this.IsDirty = true; }
         }
 
+        [Category(catWarnings), DisplayName(SuppressRCWarningsCaption), Description(SuppressRCWarningsDescription)]
+        public bool SuppressRCWarnings
+        {
+            get { return this.suppressRcWarnings; }
+            set { this.suppressRcWarnings = value; this.IsDirty = true; }
+        }
+
+
         [Category(catSigning)]
         [DisplayName(captSignAssembly)]
         [Description(descSignAssembly)]
@@ -342,6 +353,8 @@ namespace XSharp.Project
             warningLevel= getCfgInteger(nameof(WarningLevel), 4);
             warningLevel = ValidateWarningLevel(warningLevel);
             warningAsErrors = getCfgLogic(nameof(TreatWarningsAsErrors), false);
+            suppressRcWarnings = getCfgLogic(nameof(SuppressRCWarnings), false);
+
             signassembly = getCfgLogic(nameof(SignAssembly), false);
             delaysign = getCfgLogic(nameof(DelaySign), false);
             registerForComInterop = getCfgLogic(nameof(RegisterForComInterop), false);
@@ -390,6 +403,8 @@ namespace XSharp.Project
             this.SetConfigProperty(nameof(UseSharedCompilation), this.usesharedcompilation.ToString().ToLower());
             this.SetConfigProperty(nameof(DisabledWarnings), this.disabledwarnings?.ToString());
             this.SetConfigProperty(nameof(WarningLevel), this.warningLevel.ToString().ToLower());
+            this.SetConfigProperty(nameof(SuppressRCWarnings), this.suppressRcWarnings.ToString().ToLower());
+
             this.SetConfigProperty(nameof(TreatWarningsAsErrors), this.warningAsErrors.ToString().ToLower());
             this.SetConfigProperty(nameof(SignAssembly), this.signassembly.ToString().ToLower());
             this.SetConfigProperty(nameof(DelaySign), this.delaysign.ToString().ToLower());

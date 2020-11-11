@@ -1,6 +1,5 @@
 
 
-#include "VOWin32APILibrary.vh"
 CLASS IpcClientErrorEvent INHERIT @@Event
 
 ACCESS ErrorType 

@@ -97,7 +97,7 @@ END CLASS
 CLASS VORadioButton INHERIT System.Windows.Forms.RadioButton IMPLEMENTS IVOControl, IVOControlInitialize
 	
 	#include "PropControl.vh"
-	PUBLIC lBlockCheckedChanged AS LOGIC
+	EXPORT lBlockCheckedChanged AS LOGIC
 	
 	METHOD Initialize() AS VOID STRICT
 			SELF:FlatStyle := FlatStyle.System

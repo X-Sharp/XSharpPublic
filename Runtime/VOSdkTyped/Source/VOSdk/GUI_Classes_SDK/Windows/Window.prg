@@ -1,6 +1,5 @@
 
 
-#include "VOWin32APILibrary.vh"
 
 using System.Collections.Generic
 USING VOSDK := XSharp.VO.SDK

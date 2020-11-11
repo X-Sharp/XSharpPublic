@@ -338,3 +338,100 @@ DEFINE WINDOWNONSIZINGBORDER := 2
 DEFINE WINDOWSIZINGBORDER := 1
 DEFINE WM_WCHelp := 0XBFFF
 #endregion
+
+#region DDE Defines
+DEFINE     XTYPF_NOBLOCK            := 0x0002
+DEFINE     XTYPF_NODATA             := 0x0004
+DEFINE     XTYPF_ACKREQ             := 0x0008
+DEFINE     XCLASS_MASK              := 0xFC00
+DEFINE     XCLASS_BOOL              := 0x1000
+DEFINE     XCLASS_DATA              := 0x2000
+DEFINE     XCLASS_FLAGS             := 0x4000
+DEFINE     XCLASS_NOTIFICATION      := 0x8000
+DEFINE     XTYP_ERROR              := 0x8002
+DEFINE     XTYP_ADVDATA            := 0x4010
+DEFINE     XTYP_ADVREQ             := 0x2022
+DEFINE     XTYP_ADVSTART           := 0x1030
+DEFINE     XTYP_ADVSTOP            := 0x8040
+DEFINE     XTYP_EXECUTE            := 0x4050
+DEFINE     XTYP_CONNECT            := 0x1062
+DEFINE     XTYP_CONNECT_CONFIRM    := 0x8072
+DEFINE     XTYP_XACT_COMPLETE      := 0x8080
+DEFINE     XTYP_POKE               := 0x4090
+DEFINE     XTYP_REGISTER           := 0x80A2
+DEFINE     XTYP_REQUEST            := 0x20B0
+DEFINE     XTYP_DISCONNECT         := 0x80c2
+DEFINE     XTYP_UNREGISTER         := 0x80d2
+DEFINE     XTYP_WILDCONNECT        := 0x20e2
+DEFINE     XTYP_MASK                := 0x00F0
+DEFINE     XTYP_SHIFT               := 4
+
+#endregion
+
+
+#region HtmlHelp defines
+DEFINE HH_DISPLAY_TOPIC        := 0x0000
+DEFINE HH_HELP_FINDER          := 0x0000  // WinHelp equivalent
+DEFINE HH_DISPLAY_TOC          := 0x0001  // not currently implemented
+DEFINE HH_DISPLAY_INDEX        := 0x0002  // not currently implemented
+DEFINE HH_DISPLAY_SEARCH       := 0x0003  // not currently implemented
+DEFINE HH_SET_WIN_TYPE         := 0x0004
+DEFINE HH_GET_WIN_TYPE         := 0x0005
+DEFINE HH_GET_WIN_HANDLE       := 0x0006
+DEFINE HH_ENUM_INFO_TYPE       := 0x0007  // Get Info type name, call repeatedly to enumerate, -1 at end
+DEFINE HH_SET_INFO_TYPE        := 0x0008  // Add Info type to filter.
+DEFINE HH_SYNC                 := 0x0009
+DEFINE HH_RESERVED1            := 0x000A
+DEFINE HH_RESERVED2            := 0x000B
+DEFINE HH_RESERVED3            := 0x000C
+DEFINE HH_KEYWORD_LOOKUP       := 0x000D
+DEFINE HH_DISPLAY_TEXT_POPUP   := 0x000E  // display string resource id or text in a popup window
+DEFINE HH_HELP_CONTEXT         := 0x000F  // display mapped numeric value in dwData
+DEFINE HH_TP_HELP_CONTEXTMENU  := 0x0010  // text popup help, same as WinHelp HELP_CONTEXTMENU
+DEFINE HH_TP_HELP_WM_HELP      := 0x0011  // text popup help, same as WinHelp HELP_WM_HELP
+DEFINE HH_CLOSE_ALL            := 0x0012  // close all windows opened directly or indirectly by the caller
+DEFINE HH_ALINK_LOOKUP         := 0x0013  // ALink version of HH_KEYWORD_LOOKUP
+DEFINE HH_GET_LAST_ERROR       := 0x0014  // not currently implemented // See HHERROR.h
+DEFINE HH_ENUM_CATEGORY        := 0x0015	// Get category name, call repeatedly to enumerate, -1 at end
+DEFINE HH_ENUM_CATEGORY_IT     := 0x0016  // Get category info type members, call repeatedly to enumerate, -1 at end
+DEFINE HH_RESET_IT_FILTER      := 0x0017  // Clear the info type filter of all info types.
+DEFINE HH_SET_INCLUSIVE_FILTER := 0x0018  // set inclusive filtering method for untyped topics to be included in display
+DEFINE HH_SET_EXCLUSIVE_FILTER := 0x0019  // set exclusive filtering method for untyped topics to be excluded from display
+DEFINE HH_INITIALIZE            := 0x001C  // Initializes the help system.
+DEFINE HH_UNINITIALIZE          := 0x001D  // Uninitializes the help system.
+DEFINE HH_PRETRANSLATEMESSAGE  := 0x00fd  // Pumps messages. (NULL, NULL, MSG*).
+DEFINE HH_SET_GLOBAL_PROPERTY  := 0x00fc  // Set a global property. (NULL, NULL, HH_GPROP)
+#endregion
+
+#region Notification defines
+DEFINE NIN_BALLOONSHOW := (WM_USER + 2)
+DEFINE NIN_BALLOONHIDE := (WM_USER + 3)
+DEFINE NIN_BALLOONTIMEOUT := (WM_USER + 4)
+DEFINE NIN_BALLOONUSERCLICK := (WM_USER + 5)
+DEFINE NIM_ADD := 0x00000000
+DEFINE NIM_MODIFY := 0x00000001
+DEFINE NIM_DELETE := 0x00000002
+DEFINE NIM_SETFOCUS    := 0x00000003
+DEFINE NIM_SETVERSION := 0x00000004
+DEFINE NOTIFYICON_VERSION := 0x00000003
+DEFINE NIF_MESSAGE := 0x00000001
+DEFINE NIF_ICON := 0x00000002
+DEFINE NIF_TIP := 0x00000004
+DEFINE NIF_STATE       := 0x00000008
+DEFINE NIF_INFO := 0x00000010
+DEFINE NIF_GUID        := 0x00000020
+DEFINE NIS_HIDDEN              := 0x00000001
+DEFINE NIS_SHAREDICON          := 0x00000002
+DEFINE NIIF_NONE := 0x00
+// icon flags are mutually exclusive
+// and take only the lowest 2 bits
+DEFINE NIIF_INFO := 0x01
+DEFINE NIIF_WARNING := 0x02
+DEFINE NIIF_ERROR := 0x03
+DEFINE NIIF_USER       := 0x00000004
+DEFINE NIIF_ICON_MASK := 0x0000000F
+DEFINE NIIF_NOSOUND := 0x00000010
+#endregion
+
+DEFINE S_OK                                   := 0x00000000L
+DEFINE S_FALSE                                := 0x00000001L

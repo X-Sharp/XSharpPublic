@@ -18,7 +18,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         PRIVATE _sorter AS CdxSortHelper
         
         // Methods for Creating Indices
-        PUBLIC METHOD Create(createInfo AS DbOrderCreateInfo ) AS LOGIC
+        INTERNAL METHOD Create(createInfo AS DbOrderCreateInfo ) AS LOGIC
             LOCAL isOk AS LOGIC
             LOCAL hasForCond AS LOGIC
             SELF:_ordCondInfo := SELF:_oRdd:OrderCondInfo:Clone()
@@ -454,7 +454,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             RETURN TRUE
 
 
-        PUBLIC METHOD Truncate() AS LOGIC
+        INTERNAL METHOD Truncate() AS LOGIC
             // Find all pages of the tag and delete them
             // then also delete the tag header and return everything to the OrderBag 
             RETURN TRUE

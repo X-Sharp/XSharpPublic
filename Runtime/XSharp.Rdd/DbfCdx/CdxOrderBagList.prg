@@ -12,18 +12,18 @@ BEGIN NAMESPACE XSharp.RDD.CDX
     /// <summary>
     /// List of OrderBags (an Orderbag = CDX file)
     /// </summary>
-    INTERNAL CLASS CdxOrderBagList
+    INTERNAL SEALED CLASS CdxOrderBagList
         PRIVATE _oRdd AS DBFCDX
         PRIVATE _bags AS List<CdxOrderBag>
         
         INTERNAL PROPERTY CurrentOrder AS CdxTag AUTO
         INTERNAL PROPERTY First AS CdxOrderBag GET IIF(_bags:Count > 0, _bags[0], NULL)
-        CONSTRUCTOR(oRdd AS DBFCDX)
+        INTERNAL CONSTRUCTOR(oRdd AS DBFCDX)
             _oRdd := oRdd
             _bags := List<CdxOrderBag>{}
             RETURN
 
-        METHOD Add(info AS DbOrderInfo, lStructural := FALSE AS LOGIC) AS LOGIC
+        INTERNAL METHOD Add(info AS DbOrderInfo, lStructural := FALSE AS LOGIC) AS LOGIC
             LOCAL oBag := NULL AS CdxOrderBag
             LOCAL isOk := FALSE AS LOGIC
             // add Existing order bag to the list.
@@ -70,7 +70,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             _bags:Add(oBag)
             RETURN oBag
 
-        METHOD Create(info AS DbOrderCreateInfo) AS LOGIC
+        INTERNAL METHOD Create(info AS DbOrderCreateInfo) AS LOGIC
                 LOCAL oBag AS CdxOrderBag
                 //
                 TRY
@@ -112,7 +112,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                     RETURN FALSE
                 END TRY
             
-        METHOD Close(orderInfo AS DbOrderInfo) AS LOGIC
+        INTERNAL METHOD Close(orderInfo AS DbOrderInfo) AS LOGIC
             // close the bag that matches the orderinfo. Structural indexes are also closed. Is that correct ?
             IF SELF:FindOrder(orderInfo, OUT VAR oTag)
                 IF oTag != NULL
@@ -130,7 +130,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             ENDIF
             RETURN lOk
 
-        METHOD Delete(orderInfo AS DbOrderInfo, lCloseStructural AS LOGIC) AS LOGIC
+        INTERNAL METHOD Delete(orderInfo AS DbOrderInfo, lCloseStructural AS LOGIC) AS LOGIC
             LOCAL oStruct := NULL AS CdxOrderBag
             LOCAL lOk := TRUE AS LOGIC
             SELF:CurrentOrder := NULL
@@ -166,7 +166,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             ENDIF
             RETURN lOk
             
-        METHOD Destroy(orderInfo AS DbOrderInfo) AS LOGIC
+        INTERNAL METHOD Destroy(orderInfo AS DbOrderInfo) AS LOGIC
             // destroy the first bag that matches the orderInfo.
             // when 2 bags exist with the same tag name then the first one will be destroyed.
             IF SELF:FindOrder(orderInfo, OUT VAR oTag)
@@ -179,7 +179,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             ENDIF
             RETURN FALSE
             
-        PROPERTY IsHot AS LOGIC
+        INTERNAL PROPERTY IsHot AS LOGIC
             GET
                 // return TRUE as soon as one bag is hot
                 FOREACH oBag AS CdxOrderBag IN _bags
@@ -191,7 +191,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             END GET
         END PROPERTY
         
-        METHOD GoCold() AS LOGIC
+        INTERNAL METHOD GoCold() AS LOGIC
             LOCAL lOk AS LOGIC
             // Process all even of one fails
             lOk := TRUE
@@ -202,7 +202,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             NEXT
             RETURN lOk
             
-        METHOD GoHot() AS LOGIC
+        INTERNAL METHOD GoHot() AS LOGIC
             LOCAL lOk AS LOGIC
             // Process all even of one fails
             lOk := TRUE
@@ -213,7 +213,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             NEXT
             RETURN lOk
             
-        METHOD Flush() AS LOGIC
+        INTERNAL METHOD Flush() AS LOGIC
             LOCAL lOk AS LOGIC
             // Process all even of one fails
             lOk := TRUE
@@ -224,7 +224,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             NEXT
             RETURN lOk
             
-        METHOD Rebuild() AS LOGIC
+        INTERNAL METHOD Rebuild() AS LOGIC
             LOCAL lOk AS LOGIC
             lOk := TRUE
             FOREACH oBag AS CdxOrderBag IN _bags
@@ -235,12 +235,12 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             SELF:GoCold()
             RETURN lOk
             
-        METHOD Focus(orderinfo AS DbOrderInfo) AS LOGIC
+        INTERNAL METHOD Focus(orderinfo AS DbOrderInfo) AS LOGIC
             VAR result := FindOrder(orderinfo, OUT VAR oOrder)
             SELF:CurrentOrder := oOrder
             RETURN result
 
-        METHOD FindOrderBag(cBagName AS STRING) AS CdxOrderBag
+        INTERNAL METHOD FindOrderBag(cBagName AS STRING) AS CdxOrderBag
             IF ! String.IsNullOrEmpty(cBagName)
                 FOREACH oBag AS CdxOrderBag IN _bags
                     IF oBag:MatchesFileName(cBagName)
@@ -250,7 +250,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             ENDIF
             RETURN NULL
 
-        METHOD FindOrderByName(cBagName AS STRING, cName AS STRING, tag OUT CdxTag) AS LOGIC
+        INTERNAL METHOD FindOrderByName(cBagName AS STRING, cName AS STRING, tag OUT CdxTag) AS LOGIC
             // Return first match even if a tag with the same name exists in other bags
             tag  := NULL_OBJECT
             FOREACH oBag AS CdxOrderBag IN _bags
@@ -264,7 +264,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             NEXT
             RETURN FALSE
 
-        METHOD FindOrder(orderinfo AS DbOrderInfo, tag OUT CdxTag) AS LOGIC
+        INTERNAL METHOD FindOrder(orderinfo AS DbOrderInfo, tag OUT CdxTag) AS LOGIC
             tag := NULL
             IF orderinfo:Order IS STRING VAR name
                 RETURN FindOrderByName(orderinfo:BagName, name, OUT tag)
@@ -285,7 +285,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             ENDIF
             RETURN FALSE
             
-        PROPERTY Count AS INT 
+        INTERNAL PROPERTY Count AS INT 
             GET
                 LOCAL nResult := 0 AS LONG
                 FOREACH oBag AS CdxOrderBag IN _bags
@@ -295,7 +295,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             END GET
         END PROPERTY
         
-        METHOD OrderPos(oTagToFind AS CdxTag) AS LONG
+        INTERNAL METHOD OrderPos(oTagToFind AS CdxTag) AS LONG
             LOCAL nPos := 0 AS LONG
             // return relative position over all the orderbags
             IF oTagToFind != NULL

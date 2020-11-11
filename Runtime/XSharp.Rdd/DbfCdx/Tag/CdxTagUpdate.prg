@@ -320,7 +320,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             IF oParent:NumKeys >= oParent:MaxKeys
                 VAR tmp := CdxAction.AddBranch(oParent, oPage:PageNo, oLast:Recno,oLast:KeyBytes )
                 result := SELF:AddBranch(tmp)
-                IF ! result.IsOk()
+                IF ! result.IsOk
                     RETURN SELF:DoAction(result)
                 ENDIF
             ENDIF
@@ -697,12 +697,12 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             oPageL:AddRightSibling(oPageR)
             SELF:SetLeafProperties(oPageL)
             result := oPageL:SetLeaves(leaves, 0, nHalf)
-            IF ! result:IsOk()
+            IF ! result:IsOk
                 result := SELF:DoAction(result)
             ENDIF
             SELF:SetLeafProperties(oPageR)
             result := oPageR:SetLeaves(leaves, nHalf, leaves:Count - nHalf)
-            IF ! result:IsOk()
+            IF ! result:IsOk
                 result := SELF:DoAction(result)
             ENDIF
             VAR pos := action:Pos
@@ -723,7 +723,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             ELSE
                 result := oPageR:Add(action:Recno, action:Key)
             ENDIF
-            IF ! result:IsOk()
+            IF ! result:IsOk
                 result := SELF:DoAction(result)
             ENDIF
             action := CdxAction.ChangeParent(oPageL, oPageR)

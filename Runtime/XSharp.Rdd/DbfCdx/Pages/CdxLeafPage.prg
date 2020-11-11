@@ -52,7 +52,7 @@ LEAF Page
 
 */
 
-#include "CdxDebug.xh"
+#include "CdxDebug.xh" 
 USING System.Runtime.CompilerServices
 USING System.Runtime.InteropServices
 USING System
@@ -61,7 +61,7 @@ USING System.Text
 USING System.IO
 USING System.Diagnostics
 
-BEGIN NAMESPACE XSharp.RDD.CDX
+BEGIN NAMESPACE XSharp.RDD.CDX 
     [DebuggerDisplay("{DebuggerDisplay,nq}")];
     INTERNAL SEALED CLASS CdxLeaf
         INTERNAL Recno  AS LONG
@@ -156,8 +156,8 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 TrailByte := 32
             ENDIF
 
-        PROTECTED VIRTUAL METHOD _setTag(newTag AS CdxTag) AS VOID
-            _tag := newTag
+        INTERNAL VIRTUAL METHOD _setTag(newTag AS CdxTag) AS VOID
+            SUPER:_setTag(newTag)
             IF SELF IS CdxTagList
                 TrailByte := 0
             ELSEIF newTag != NULL
@@ -212,7 +212,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         INTERNAL PROPERTY ValidLeaves AS LOGIC GET _leaves != NULL .AND. _leaves:Count == SELF:NumKeys
 #region ICdxKeyValue
 
-        PUBLIC METHOD GetRecno(nPos AS Int32) AS Int32
+        INTERNAL METHOD GetRecno(nPos AS Int32) AS Int32
             IF SELF:ValidLeaves
                 RETURN _leaves[nPos]:Recno
             ENDIF
@@ -228,13 +228,13 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             nRecno      := _AND( nRecno , SELF:RecnoMask)
             RETURN nRecno
 
-        PUBLIC METHOD GetChildPage(nPos AS Int32) AS Int32
+        INTERNAL METHOD GetChildPage(nPos AS Int32) AS Int32
             RETURN 0
 
-        PUBLIC METHOD GetChildren as IList<LONG>
+        INTERNAL METHOD GetChildren as IList<LONG>
             RETURN List<LONG>{}
 
-        PUBLIC METHOD GetKey(nPos AS Int32) AS BYTE[]
+        INTERNAL METHOD GetKey(nPos AS Int32) AS BYTE[]
             System.Diagnostics.Debug.Assert(nPos >= 0 .AND. nPos < SELF:NumKeys)
             IF nPos >= 0 .AND. nPos < SELF:NumKeys
                 SELF:_ExpandLeaves(FALSE)
@@ -301,7 +301,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             ENDIF
             RETURN TRUE
 
-        PROTECTED INTERNAL OVERRIDE METHOD Write() AS LOGIC
+        INTERNAL OVERRIDE METHOD Write() AS LOGIC
             SELF:Compress()
             RETURN SUPER:Write()
             
@@ -324,7 +324,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 #region Properties
         // We read the values from our cache but write back to the cache and the buffer at the same time
         // The _Set.. methods set the IsHot flag of the page automatically
-		PUBLIC PROPERTY NumKeys  AS WORD	GET _numKeys;
+		INTERNAL PROPERTY NumKeys  AS WORD	GET _numKeys;
 			SET _SetWord(CDXLEAF_OFFSET_NUMKEYS, value), _numKeys := value
 
 		INTERNAL PROPERTY LeftPtr AS Int32  GET _leftPtr;

@@ -21,9 +21,9 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 
     // MEthods for walking indices, so GoTop, GoBottom, Skip and Seek
 
-        PROPERTY EmptyResultSet as LOGIC GET SELF:_oRdd:EoF .AND. SELF:_oRdd:BoF
+        INTERNAL PROPERTY EmptyResultSet as LOGIC GET SELF:_oRdd:EoF .AND. SELF:_oRdd:BoF
 
-        PUBLIC METHOD GoBottom() AS LOGIC
+        INTERNAL METHOD GoBottom() AS LOGIC
             LOCAL locked AS LOGIC
             LOCAL result AS LOGIC
             IF SELF:EmptyResultSet
@@ -65,7 +65,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 ENDIF
             END TRY
 
-        PUBLIC METHOD GoTop() AS LOGIC
+        INTERNAL METHOD GoTop() AS LOGIC
             LOCAL locked AS LOGIC
             LOCAL result AS LOGIC
             IF SELF:EmptyResultSet
@@ -121,7 +121,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             ENDIF
             RETURN SELF:__Compare(bLhs, _Scopes[nScope]:Buffer, nLen , 0, 0)
             
-        PUBLIC METHOD Seek(seekInfo AS DbSeekInfo ) AS LOGIC
+        INTERNAL METHOD Seek(seekInfo AS DbSeekInfo ) AS LOGIC
             LOCAL uiRealLen AS LONG
             LOCAL byteArray AS BYTE[]
             LOCAL nLen      AS LONG
@@ -159,7 +159,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             RETURN SELF:_Seek(seekInfo, byteArray)
             
             
-        PUBLIC METHOD SkipRaw(nToSkip AS LONG ) AS LOGIC
+        INTERNAL METHOD SkipRaw(nToSkip AS LONG ) AS LOGIC
             LOCAL recno AS LONG
             LOCAL isBof AS LOGIC
             LOCAL isEof AS LOGIC

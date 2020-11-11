@@ -10,7 +10,7 @@ USING System.Text
 USING System.IO
 USING System.Runtime.CompilerServices
 
-BEGIN NAMESPACE XSharp.RDD.CDX
+BEGIN NAMESPACE XSharp.RDD.CDX 
 
 	/// <summary>
 	/// The CdxHeader class. = Class that maps the File Header to memory
@@ -23,13 +23,13 @@ BEGIN NAMESPACE XSharp.RDD.CDX
   	/// The freepage points to the list of free pages at BAG level.
     /// </remarks>
 
-	INTERNAL SEALED  CLASS CdxFileHeader INHERIT CdxTagHeader
+	INTERNAL SEALED CLASS CdxFileHeader INHERIT CdxTagHeader
     PRIVATE CONST CDXFILEHEADER_VERSION     := 8 AS LONG
 	PRIVATE CONST CDXFILEHEADER_FREELIST	:= 0x04	AS WORD		// Byte offset to next free block
 
     PRIVATE _freeList       AS LONG
     
-    PROTECTED INTERNAL PROPERTY FreeList AS LONG GET _freeList SET _SetLong(CDXFILEHEADER_FREELIST, value), _freeList  := value
+    INTERNAL PROPERTY FreeList AS LONG GET _freeList SET _SetLong(CDXFILEHEADER_FREELIST, value), _freeList  := value
 
 
     PRIVATE METHOD _getValues AS VOID
@@ -48,7 +48,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         SUPER(bag, 0, "__ROOT__",NULL)
         
 
-    PROPERTY RootVersion AS DWORD GET _GetDWord(CDXFILEHEADER_VERSION) SET _SetDWord(CDXFILEHEADER_VERSION, value)
+    INTERNAL PROPERTY RootVersion AS DWORD GET _GetDWord(CDXFILEHEADER_VERSION) SET _SetDWord(CDXFILEHEADER_VERSION, value)
 
         METHOD Initialize() AS VOID
             SELF:FreeList   := 0

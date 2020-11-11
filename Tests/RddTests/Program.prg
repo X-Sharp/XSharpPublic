@@ -1,7 +1,7 @@
 ﻿//
 // Start.prg
 //
-#include "dbcmds.vh"
+//#include "dbcmds.vh"
 USING XSharp.RDD
 USING System.IO
 USING System.Threading
@@ -17,15 +17,15 @@ END class
 FUNCTION Start() AS VOID
     TRY
         //ReadVfpTableWithInfo()
-        ReadDbcProperties()
+        //ReadDbcProperties()
         //OrdDescTest2()
             //        VAR x := MemAlloc(80000)
             //        ? PtrLen(x)
             //        ? PtrLenWrite(x)
         //DeleteAllOrders()
         //TestZapJune()
-        //TestChrisCorrupt2()
         //TestChrisCorrupt()
+        TestChrisCorrupt2()
         //DumpKeesFiles()
         //TestIndexKey()
         //TestDateTimeAndCurrency()
@@ -422,12 +422,12 @@ function FoxToShort(b as byte[], pos as int) as Short
 
 #pragma options ("az", default)
 FUNCTION TestChrisCorrupt2() AS VOID
-	DbfTest1.RunTest1()
-	DbfTest1.RunTest2()
-	DbfTest1.RunTest3()
-	DbfTest1.RunTest4()
+	//DbfTest1.RunTest1()
+	//DbfTest1.RunTest2()
+	//DbfTest1.RunTest3()
+	//DbfTest1.RunTest4()
 	DbfTest1.RunTest5()
-//	DbfTest1.RunTest6()
+	//DbfTest1.RunTest6()
 RETURN
 
 
@@ -585,12 +585,14 @@ CLASS DbfTest1
 	STATIC PROTECT lUseCommit AS LOGIC
 	STATIC PROTECT cDbf AS STRING
 	STATIC PROTECT nKeyLength AS DWORD
+    STATIC PROTECT lShared AS LOGIC
 	
 	STATIC METHOD RunTest1() AS VOID
 		? "Running test1"
 		cDbf := gcPath + __FUNCTION__
 		TRY
-			nKeyLength := 60
+			nKeyLength := 20
+            lShared := FALSE
 			ResetFile()
 			nIterations := 100_000
 			lUseCommit := FALSE
@@ -606,6 +608,7 @@ CLASS DbfTest1
 		cDbf := gcPath + __FUNCTION__
 		TRY
 			nKeyLength := 1
+            lShared := FALSE
 			ResetFile()
 			nIterations := 300
 			lUseCommit := TRUE
@@ -620,10 +623,11 @@ CLASS DbfTest1
 		? "Running test3"
 		cDbf := gcPath + __FUNCTION__
 		TRY
-			ResetFile()
-			nIterations := 1_000
-			lUseCommit := TRUE
 			nKeyLength := 60
+            lShared := FALSE
+			ResetFile()
+			nIterations := 10_000
+			lUseCommit := TRUE
 			Test()
 			CheckResults()
 		CATCH e AS Exception
@@ -636,6 +640,7 @@ CLASS DbfTest1
 		cDbf := gcPath + __FUNCTION__
 		TRY
 			nKeyLength := 60
+            lShared := FALSE
 			ResetFile()
 			nIterations := 100_000
 			lUseCommit := TRUE
@@ -653,7 +658,7 @@ CLASS DbfTest1
 		nIterations := 100
 		lUseCommit := TRUE
 		nKeyLength := 60
-
+        lShared := TRUE
 		TRY
 			ResetFile()
 			LOCAL aThreads AS Thread[]
@@ -685,7 +690,7 @@ CLASS DbfTest1
 		nIterations := 10_000
 		lUseCommit := TRUE
 		nKeyLength := 10
-
+        lShared := TRUE
 		TRY
 			ResetFile()
 			LOCAL aThreads AS Thread[]
@@ -731,41 +736,37 @@ CLASS DbfTest1
 	STATIC METHOD Test() AS VOID
 		LOCAL oRand AS Random
 		
-		oRand := Random{1}
-		DbUseArea(,"DBFCDX",cDbf,,TRUE)
+		oRand := Random{112233}
+		DbUseArea(,"DBFCDX",cDbf,,lShared)
+                    cDbf := DbInfo(DBI_FULLPATH)
+        VAR cFile := cDbf:ToUpper():Replace(".DBF",".CDX_RUNTEST1.DMP")
+        DbSetOrder(1)
 		TRY
             ? ProcName(1), nIterations, "iterations"
 		FOR LOCAL n := 1 AS DWORD UPTO nIterations
 			IF n % 1000 == 0
 				? n, System.Threading.Thread.CurrentThread.Name
-			END IF
+            END IF
+            LOCAL nGoto AS LONG
 			IF n % 31 == 0
 				DbAppend()
-			ELSE
-				DbGoto(oRand:@@Next() % (INT)LastRec() + 1)
+                nGoto := LastRec()
+            ELSE
+                nGoto := oRand:@@Next() % (INT)LastRec() + 1
+				DbGoto(nGoto)
 				IF .NOT. RLock()
 					LOOP
 				ENDIF
-			END IF
-			FieldPut(1, oRand:@@Next() % 100)
-			FieldPut(2, Replicate( Chr(n % 10 + 65) + Chr(n % 13 + 65) + Chr(n % 15 + 65) , nKeyLength ))
+            END IF
+            VAR num := oRand:@@Next() % 100
+            VAR str := left(Replicate( Chr(n % 10 + 65) + Chr(n % 13 + 65) + Chr(n % 15 + 65) , nKeyLength ),nKeyLength)
+			FieldPut(1, num)
+			FieldPut(2, str)
+            //? recno(), num, str
 			IF lUseCommit
 				DbCommit()
 			END IF
 			DbUnLock()
-//			IF n %100 == 0
-//                //DbOrderInfo(DBOI_DUMP)
-//                VAR oRes := DbOrderInfo(DBOI_VALIDATE)
-//                IF (OBJECT) oRes IS LOGIC VAR lRes .AND. !lRes
-//                    ? "Error after iteration ", n, "Record", Recno()
-//                    Altd()
-//                    EXIT
-//                ELSEIF ! ((OBJECT) oRes IS LOGIC)
-//                    ? "Error after iteration ", n, "result of DborderInfo is not logic"
-//                    Altd()
-//                    EXIT
-//                ENDIF
-//            ENDIF
         NEXT
         CATCH e AS Exception
             ? e:ToString()
@@ -781,6 +782,8 @@ CLASS DbfTest1
 		cOld := ""
 		
 		DbUseArea(,"DBFCDX",cDbf,,FALSE)
+        OrdSetFocus(1)
+        DbOrderInfo(DBOI_USER+42)
 		nRecords := LastRec()
 		DbGoTop()
 		DO WHILE !Eof()
@@ -6490,7 +6493,7 @@ FUNCTION TestCdxCreate() AS VOID
 LOCAL cDBF AS STRING
 LOCAL cIndex AS STRING
 LOCAL aTags AS ARRAY
-LOCAL aClone AS ARRAY
+LOCAL aClon AS ARRAY
 LOCAL i AS DWORD
 LOCAL f AS FLOAT
 f := Seconds()
@@ -6502,9 +6505,9 @@ cIndex := cDBF
 Ferase(cIndex+".CDX")
 FOR i := 1 TO ALen(aTags)
 	VODBUSEAREA(TRUE,"DBFCDX",cDBF,"Test",FALSE,FALSE)
-	aClone := AClone(aTags)
-	ASize(aClone, i)
-	AEval(aClone , {|cTag|  OrdCreate(cIndex, cTag, cTag) })
+	aClon := AClone(aTags)
+	ASize(aClon, i)
+	AEval(aClon , {|cTag|  OrdCreate(cIndex, cTag, cTag) })
 	DBCLOSEAREA()
 NEXT
 VODBUSEAREA(TRUE,"DBFCDX",cDBF,"Test",FALSE,FALSE)
@@ -7169,3 +7172,4 @@ FUNCTION DumpDbfCdx(cFile AS STRING) AS VOID
 FUNCTION DumpKeesFiles() AS STRING
 DumpDbfCdx("c:\download\KeesB\ORDERS.DBF")
 DumpDbfCdx("c:\download\KeesB\Seek_ORDERS.DBF")
+RETURN ""

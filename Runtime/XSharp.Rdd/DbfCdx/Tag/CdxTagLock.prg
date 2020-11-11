@@ -20,13 +20,13 @@ BEGIN NAMESPACE XSharp.RDD.CDX
     INTERNAL PARTIAL CLASS CdxTag
         // Methods for NTX Locking
     
-        METHOD Slock AS LOGIC
+        INTERNAL METHOD Slock AS LOGIC
             RETURN SELF:_bag:SLock()
 
-        METHOD Xlock AS LOGIC
+        INTERNAL METHOD Xlock AS LOGIC
             RETURN SELF:_bag:XLock()
 
-        METHOD UnLock AS LOGIC
+        INTERNAL METHOD UnLock AS LOGIC
             SELF:_bag:UnLock()
             RETURN TRUE
             

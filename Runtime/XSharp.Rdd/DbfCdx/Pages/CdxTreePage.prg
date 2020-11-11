@@ -19,9 +19,9 @@ BEGIN NAMESPACE XSharp.RDD.CDX
     [DebuggerDisplay(e"{DebuggerDisplay,nq}")];
 	INTERNAL ABSTRACT CLASS CdxTreePage INHERIT CdxPage 
 
-        PROTECTED CONST CDXPAGE_TYPE	:= 0	AS WORD // WORD
+        INTERNAL CONST CDXPAGE_TYPE	:= 0	AS WORD // WORD
 
-	    PROTECTED INTERNAL CONSTRUCTOR( oBag AS CdxOrderBag, nPage AS Int32, buffer AS BYTE[] )
+	    INTERNAL CONSTRUCTOR( oBag AS CdxOrderBag, nPage AS Int32, buffer AS BYTE[] )
             SUPER(oBag, nPage, buffer)
             SELF:_getValues()
             RETURN
@@ -36,8 +36,8 @@ BEGIN NAMESPACE XSharp.RDD.CDX
           SET _SetWord(CDXPAGE_TYPE, value), IsHot := TRUE, _pageType := value
 
         // FoxPro stores empty pointers as -1, FoxBASE as 0
-        PROPERTY HasLeft    AS LOGIC GET LeftPtr    != 0 .AND. LeftPtr  != -1
-        PROPERTY HasRight   AS LOGIC GET RightPtr   != 0 .AND. RightPtr != -1
+        INTERNAL PROPERTY HasLeft    AS LOGIC GET LeftPtr    != 0 .AND. LeftPtr  != -1
+        INTERNAL PROPERTY HasRight   AS LOGIC GET RightPtr   != 0 .AND. RightPtr != -1
 
         // Retrieve an index node in the current Page, at the specified position
         INTERNAL VIRTUAL PROPERTY SELF[ index AS WORD ] AS CdxPageNode
@@ -48,7 +48,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 
         ABSTRACT INTERNAL PROPERTY LeftPtr		AS Int32 GET SET    // FoxPro stores empty pointers as -1, FoxBASE as 0
         ABSTRACT INTERNAL PROPERTY RightPtr		AS Int32 GET SET    // FoxPro stores empty pointers as -1, FoxBASE as 0
-        ABSTRACT PUBLIC   PROPERTY NumKeys      AS WORD  GET
+        ABSTRACT INTERNAL PROPERTY NumKeys      AS WORD  GET
         ABSTRACT INTERNAL PROPERTY LastNode     AS CdxPageNode GET
         INTERNAL PROPERTY NextFree              AS LONG GET LeftPtr SET LeftPtr := value // alias for LeftPtr
         // For debugging
@@ -117,10 +117,10 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         #endregion
         
         ABSTRACT INTERNAL METHOD InitBlank(oTag AS CdxTag) AS VOID
-        ABSTRACT PUBLIC METHOD GetRecno(nPos AS Int32) AS Int32
-        ABSTRACT PUBLIC METHOD GetChildPage(nPos AS Int32) AS Int32
-        ABSTRACT PUBLIC METHOD GetKey(nPos AS Int32) AS BYTE[]
-        ABSTRACT PUBLIC METHOD GetChildren as IList<LONG>
+        ABSTRACT INTERNAL METHOD GetRecno(nPos AS Int32) AS Int32
+        ABSTRACT INTERNAL METHOD GetChildPage(nPos AS Int32) AS Int32
+        ABSTRACT INTERNAL METHOD GetKey(nPos AS Int32) AS BYTE[]
+        ABSTRACT INTERNAL METHOD GetChildren as IList<LONG>
 
          INTERNAL VIRTUAL METHOD Read() AS LOGIC
             LOCAL lOk AS LOGIC
@@ -130,7 +130,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             ENDIF
             RETURN lOk
 
-        PROTECTED INTERNAL VIRTUAL METHOD Write() AS LOGIC
+        INTERNAL VIRTUAL METHOD Write() AS LOGIC
             IF SELF:LeftPtr == 0
                 SELF:LeftPtr := -1
             ENDIF
@@ -149,16 +149,16 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 #ifdef TESTCDX
         ABSTRACT METHOD Validate AS VOID
 #endif
-        METHOD SetRoot() AS VOID
+        INTERNAL METHOD SetRoot() AS VOID
             SELF:PageType |= CdxPageType.Root
             RETURN
 
-        METHOD ClearRoot() AS VOID
+        INTERNAL METHOD ClearRoot() AS VOID
             SELF:PageType := _AND(SELF:PageType, _NOT(CdxPageType.Root))
             RETURN
 
 
-        PROPERTY IsRoot AS LOGIC GET SELF:PageType:HasFlag(CdxPageType.Root)
+        INTERNAL PROPERTY IsRoot AS LOGIC GET SELF:PageType:HasFlag(CdxPageType.Root)
 
 
        INTERNAL METHOD AddRightSibling(oNewRight AS CdxTreePage) AS VOID

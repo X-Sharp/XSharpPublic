@@ -1,28 +1,8 @@
-﻿// Cdx.vh
-// Created by    : robert
-// Creation Date : 10/30/2020 9:27:06 AM
-// Created for   : 
-// WorkStation   : ARTEMIS
-
+﻿
 #undef TESTCDX
 #ifndef TESTCDX
-#define DUMP( a )                  NOP
-#define DUMP( a, b )               NOP
-#define DUMP( a, b, c )            NOP
-#define DUMP( a, b, c,d)           NOP
-#define DUMP( a, b, c,d,e )        NOP
-#define DUMP( a, b, c,d,e,f )      NOP
-#define DUMP( a, b, c,d,e,f,g )    NOP
-#define DUMP( a, b, c,d,e,f,g,h )  NOP
+#translate DUMP( [<list,...>] ) => NOP
 #else
-#define DUMP( a )                  Self:Debug( a)
-#define DUMP( a, b )               Self:Debug( a,b)
-#define DUMP( a, b, c )            Self:Debug( a,b,c)
-#define DUMP( a, b, c,d)           Self:Debug( a,b,c,d)
-#define DUMP( a, b, c,d,e )        Self:Debug( a,b,c,d,e)
-#define DUMP( a, b, c,d,e,f )      Self:Debug( a,b,c,d,e,f)
-#define DUMP( a, b, c,d,e,f,g )    Self:Debug( a,b,c,d,e,f,g)
-#define DUMP( a, b, c,d,e,f,g,h )  Self:Debug( a ,b,c,d,e,f,g,h)
-
+#translate DUMP( [<list,...>] ) => Self:Debug(<list>)
 #endif
  

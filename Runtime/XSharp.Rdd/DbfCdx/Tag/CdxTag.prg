@@ -140,7 +140,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             SELF:IsOpen := SELF:Open()
 
 
-         METHOD ReadHeader AS VOID
+         INTERNAL METHOD ReadHeader AS VOID
             SELF:_Header:Read()
             SELF:_keySize       := SELF:_Header:KeySize
             SELF:Options        := SELF:_Header:Options
@@ -155,7 +155,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             RETURN
 
 
-	    METHOD Open() AS LOGIC
+	    INTERNAL METHOD Open() AS LOGIC
             SELF:_oRdd:GoTo(1)
             SELF:_Hot := FALSE
             SELF:ClearStack()
@@ -300,7 +300,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 
             RETURN isOk
 
-        PUBLIC METHOD Flush() AS LOGIC
+        INTERNAL METHOD Flush() AS LOGIC
 //           
 //            IF !SELF:Shared .AND. SELF:_Hot 
 //                SELF:GoCold()
@@ -313,7 +313,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 //            FFlush( SELF:_hFile )
             RETURN TRUE
 
-        PUBLIC METHOD Commit() AS LOGIC
+        INTERNAL METHOD Commit() AS LOGIC
             //SELF:GoCold()
 //            IF !SELF:_Shared .AND. SELF:_Hot .AND. SELF:_hFile != F_ERROR
 //                SELF:_Header:IndexingVersion        := 1
@@ -324,7 +324,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 //            FFlush( SELF:_hFile )
             RETURN TRUE
             
-        PUBLIC METHOD Close() AS LOGIC
+        INTERNAL METHOD Close() AS LOGIC
             LOCAL lOk AS LOGIC
             lOk := SELF:GoCold()
             IF lOk
@@ -332,7 +332,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             ENDIF
             RETURN TRUE
 
-        PUBLIC METHOD GoCold() AS LOGIC
+        INTERNAL METHOD GoCold() AS LOGIC
             IF SELF:_oRdd:IsHot
                 RETURN SELF:_keyUpdate( SELF:_RecNo, SELF:_oRdd:IsNewRecord )
             ENDIF
@@ -387,7 +387,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             NEXT
             RETURN _compareRecno(recnoLHS, recnoRHS)
 
-        PUBLIC METHOD SetOffLine() AS VOID
+        INTERNAL METHOD SetOffLine() AS VOID
             SELF:ClearStack()
 
         PRIVATE METHOD _saveCurrentRecord( node AS CdxNode) AS VOID
@@ -454,7 +454,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             RETURN TRUE
 
  
-        METHOD SetOrderScope(itmScope AS OBJECT , uiScope AS DbOrder_Info ) AS LOGIC
+        INTERNAL METHOD SetOrderScope(itmScope AS OBJECT , uiScope AS DbOrder_Info ) AS LOGIC
             LOCAL uiRealLen AS LONG
             LOCAL result AS LOGIC
             uiRealLen := 0

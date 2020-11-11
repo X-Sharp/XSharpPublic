@@ -107,40 +107,40 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 #endregion
 #region properties
 
-        PROTECTED INTERNAL PROPERTY RootPage AS LONG GET _rootPage;
+        INTERNAL PROPERTY RootPage AS LONG GET _rootPage;
             SET _SetLong(CDXTAGHEADER_ROOT, value), _rootPage := value
             
-		PROTECTED INTERNAL PROPERTY KeySize		AS WORD	GET _keyLength;
+		INTERNAL PROPERTY KeySize		AS WORD	GET _keyLength;
 			SET _SetWord(CDXTAGHEADER_KEYLENGTH, value), _keyLength := value
 
-        PROTECTED INTERNAL PROPERTY Options	AS CdxOptions GET _options;
+        INTERNAL PROPERTY Options	AS CdxOptions GET _options;
 			SET Buffer[CDXTAGHEADER_OPTIONS] := value, _options := value
 
-		PROTECTED INTERNAL PROPERTY Signature  AS BYTE GET _GetByte(CDXTAGHEADER_SIG) ;
+		INTERNAL PROPERTY Signature  AS BYTE GET _GetByte(CDXTAGHEADER_SIG) ;
             SET _SetByte(CDXTAGHEADER_SIG, value)
 
-	    PROTECTED INTERNAL PROPERTY KeyExprPos AS WORD GET _keyExprPos;
+	    INTERNAL PROPERTY KeyExprPos AS WORD GET _keyExprPos;
 			SET _SetWord(CDXTAGHEADER_KEYEXPRPOS, value), _keyExprPos := value
 
-	    PROTECTED INTERNAL PROPERTY KeyExprLen	AS WORD GET _keyExprLen;
+	    INTERNAL PROPERTY KeyExprLen	AS WORD GET _keyExprLen;
 			SET _SetWord(CDXTAGHEADER_KEYEXPRLEN, value), _keyExprLen := value
 
-        PROTECTED INTERNAL PROPERTY ForExprPos	AS WORD	GET _forExprPos ;
+        INTERNAL PROPERTY ForExprPos	AS WORD	GET _forExprPos ;
 			SET _SetWord(CDXTAGHEADER_FOREXPRPOS, value), _forExprPos  := value
 
-	    PROTECTED INTERNAL PROPERTY ForExprLen	AS WORD	GET _forExprLen ;
+	    INTERNAL PROPERTY ForExprLen	AS WORD	GET _forExprLen ;
 			SET _SetWord(CDXTAGHEADER_FOREXPRLEN, value), _forExprLen := value
 
-		PROTECTED INTERNAL PROPERTY Descending	AS LOGIC  GET _descending ;
+		INTERNAL PROPERTY Descending	AS LOGIC  GET _descending ;
 			SET _SetWord( CDXTAGHEADER_DESCENDING, (WORD) IIF(value,1,0) ), _descending := value
 
-        PROTECTED INTERNAL PROPERTY KeyExpression AS STRING GET _keyExpression ;
+        INTERNAL PROPERTY KeyExpression AS STRING GET _keyExpression ;
             SET _SetString(KeyExprPos+CDXPAGE_SIZE, KeyExprLen, value) , _keyExpression := value
 
-        PROTECTED INTERNAL PROPERTY ForExpression AS STRING GET _forExpression ;
+        INTERNAL PROPERTY ForExpression AS STRING GET _forExpression ;
             SET _SetString(ForExprPos+CDXPAGE_SIZE, ForExprLen, value) , _forExpression := value
 
-        PROTECTED INTERNAL PROPERTY VFPCollation AS STRING GET _vfpCollation ;
+        INTERNAL PROPERTY VFPCollation AS STRING GET _vfpCollation ;
             SET _SetString(CDXTAGHEADER_VFPCOLLATION, 8, value) , _vfpCollation := value
 
 

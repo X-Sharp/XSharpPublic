@@ -28,7 +28,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         INTERNAL KeyBinary as LOGIC 
         INTERNAL PROPERTY KeyText AS STRING GET SELF:Key:ToAscii(KeyBinary)
         INTERNAL PROPERTY DebuggerDisplay AS STRING GET  String.Format("{0,6} {1,6:X} {2}",   Recno, ChildPage, KeyText)
-        CONSTRUCTOR (nRecno AS LONG, nChild AS LONG, bKey AS BYTE[],binary as LOGIC)
+        INTERNAL CONSTRUCTOR (nRecno AS LONG, nChild AS LONG, bKey AS BYTE[],binary as LOGIC)
             SELF:Recno := nRecno
             SELF:ChildPage := nChild
             SELF:Key   := (BYTE[]) bKey:Clone()
@@ -102,19 +102,19 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             ENDIF
             RETURN lOk
             
-        PUBLIC METHOD GetKey(nPos AS Int32) AS BYTE[]
+        INTERNAL METHOD GetKey(nPos AS Int32) AS BYTE[]
             LOCAL nStart AS INT
             System.Diagnostics.Debug.Assert(nPos >= 0 .AND. nPos < SELF:NumKeys)
             nStart := CDXBRANCH_HEADERLEN + nPos * _dataLen
             RETURN _GetBytes( nStart, _keyLen)
             
-        PUBLIC METHOD GetRecno(nPos AS Int32) AS Int32
+        INTERNAL METHOD GetRecno(nPos AS Int32) AS Int32
             LOCAL nStart AS INT
             System.Diagnostics.Debug.Assert(nPos >= 0 .AND. nPos < SELF:NumKeys)
             nStart := CDXBRANCH_HEADERLEN + nPos * _dataLen
             RETURN _GetLongLE(nStart+_keyLen)
             
-        PUBLIC METHOD SetData(nPos as Int32, nRecord as Int32, nPage as Int32, key as Byte[]) AS CdxAction
+        INTERNAL METHOD SetData(nPos as Int32, nRecord as Int32, nPage as Int32, key as Byte[]) AS CdxAction
             LOCAL nStart AS INT
             System.Diagnostics.Debug.Assert(nPos >= 0 .AND. nPos < SELF:NumKeys)
             nStart := CDXBRANCH_HEADERLEN + nPos * _dataLen
@@ -123,12 +123,12 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             _SetLongLE(nStart+_pageNoOffSet, nPage)
             return CdxAction.Ok
             
-        METHOD GetChildPage(nPos AS Int32) AS Int32
+        INTERNAL METHOD GetChildPage(nPos AS Int32) AS Int32
             LOCAL nStart AS INT
             nStart := CDXBRANCH_HEADERLEN + nPos * _dataLen
             RETURN _GetLongLE(nStart+_pageNoOffSet)
             
-        PUBLIC METHOD GetChildren as IList<LONG>
+        INTERNAL METHOD GetChildren as IList<LONG>
             // used in the dump routine to avoid recursion
             VAR oList := List<LONG>{}
             FOR VAR i := 0 to SELF:NumKeys - 1
@@ -141,7 +141,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         // We read the values from our cache but write back to the cache and the buffer at the same time
         // The _Set.. methods set the isHot flag of the page automatically
             
-        PUBLIC PROPERTY NumKeys AS WORD     GET _numKeys ;
+        INTERNAL PROPERTY NumKeys AS WORD     GET _numKeys ;
             SET _SetWord(CDXBRANCH_OFFSET_NUMKEYS, value),  _numKeys := value
             
         INTERNAL PROPERTY LeftPtr AS Int32  GET _leftPtr ;
@@ -445,7 +445,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 #endif            
 
 
-        METHOD IsDuplicate(nRecno AS LONG, nChildPage AS LONG, cKey AS BYTE[]) AS LOGIC
+        INTERNAL METHOD IsDuplicate(nRecno AS LONG, nChildPage AS LONG, cKey AS BYTE[]) AS LOGIC
             IF SELF:NumKeys > 0
                 FOR VAR i := 0 TO SELF:NumKeys -1
                     VAR nRec  := SELF:GetRecno(i)

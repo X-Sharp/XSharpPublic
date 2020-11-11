@@ -18,7 +18,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 	/// </summary>
 	INTERNAL SEALED CLASS CdxTagList INHERIT CdxLeafPage
         PRIVATE _tags AS List<CdxTag>
-        PROPERTY Encoding as System.Text.Encoding GET _bag:Encoding
+        INTERNAL PROPERTY Encoding as System.Text.Encoding GET _bag:Encoding
 
         INTERNAL CONSTRUCTOR( bag AS CdxOrderBag , nPage AS Int32 , buffer AS BYTE[], nKeyLen AS WORD)
             SUPER(bag, nPage, buffer, nKeyLen)
@@ -49,7 +49,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             ENDIF
             RETURN _tags
 
-        PROPERTY Tags AS IList<CdxTag> GET _tags
+        INTERNAL PROPERTY Tags AS IList<CdxTag> GET _tags
 
         INTERNAL METHOD Initialize(keyLength AS WORD) AS VOID
             SUPER:Initialize(keyLength)
@@ -107,7 +107,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                     SELF:SetRecordBits(fileSize)
                     SELF:SetLeaves(leaves, 0, leaves:Count)
                     action := SELF:Add(tag:Header:PageNo, bytes)
-                    Debug.Assert(action:IsOk())
+                    Debug.Assert(action:IsOk)
                 ENDIF
             NEXT
             SELF:Compress()
@@ -118,7 +118,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             _tags:AddRange(aTags)
             RETURN TRUE
 
-        METHOD Add(oTag AS CdxTag) AS LOGIC
+        INTERNAL METHOD Add(oTag AS CdxTag) AS LOGIC
             SELF:_tags:Add(oTag)
             SELF:_WriteTags(_tags)
             RETURN TRUE

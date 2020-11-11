@@ -41,7 +41,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         PROTECTED wValue := WordStruct{} AS WordStruct
         PROTECTED liValue := LongStruct{} AS LongStruct
 
-        PROTECTED VIRTUAL METHOD _setTag(newTag AS CdxTag) AS VOID
+        INTERNAL VIRTUAL METHOD _setTag(newTag AS CdxTag) AS VOID
             _tag := newTag
 
         PROTECTED INTERNAL CONSTRUCTOR( bag AS CdxOrderBag )
@@ -59,11 +59,11 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 		    RETURN
         #region Read/Write
 
-        PROTECTED METHOD SetBuffer(buffer AS BYTE[]) AS VOID
+        INTERNAL METHOD SetBuffer(buffer AS BYTE[]) AS VOID
             _buffer := buffer
 
 			
-		PROTECTED INTERNAL VIRTUAL METHOD Write() AS LOGIC
+		INTERNAL VIRTUAL METHOD Write() AS LOGIC
             IF ! Self:IsHot
                 return TRUE
             ENDIF

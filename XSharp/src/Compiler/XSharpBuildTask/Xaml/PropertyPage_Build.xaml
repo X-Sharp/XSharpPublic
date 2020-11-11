@@ -52,7 +52,7 @@
         <EnumValue Name="3" DisplayName="3" />
         <EnumValue Name="4" DisplayName="4" />
     </EnumProperty>
-
+    <BoolProperty 	Category="Warnings" Name="SuppressRCWarnings"  DisplayName="Suppress Resource Compiler warnings"  Description="Suppress warnings from the Resource Compiler about duplicate defines." Default="True" />
     <BoolProperty   	Category="XML" Name="DocumentationFile" DisplayName="Generate XML doc comments file" Default="False" Switch="xml"/>
 
 

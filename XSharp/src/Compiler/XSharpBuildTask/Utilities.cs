@@ -75,7 +75,10 @@ namespace XSharp.Build
                 else
                     key = @"HKEY_LOCAL_MACHINE\SOFTWARE\Grafx\Vulcan.NET";
                 vulcanIncludeDir = (string)Registry.GetValue(key, "InstallPath", "");
-                vulcanIncludeDir = Path.Combine(vulcanIncludeDir, "Include");
+                if (! string.IsNullOrEmpty(vulcanIncludeDir))
+                    vulcanIncludeDir = Path.Combine(vulcanIncludeDir, "Include");
+                else
+                    vulcanIncludeDir = "";
             }
             catch (Exception)
             {

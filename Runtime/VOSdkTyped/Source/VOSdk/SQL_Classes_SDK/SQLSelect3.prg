@@ -12,7 +12,7 @@ PARTIAL CLASS SQLSelect INHERIT DataServer
 
 	METHOD FieldHyperLabel  ( uFieldPos AS USUAL) AS HyperLabel
 		LOCAL nIndex    AS DWORD
-		LOCAL oRet      AS HyperLabel
+		LOCAL oRet      := NULL AS HyperLabel
 
 		nIndex := SELF:__GetColIndex( uFieldPos, TRUE )
 		IF ( nIndex = 0 .OR. nIndex > nNumCols )
@@ -36,7 +36,7 @@ PARTIAL CLASS SQLSelect INHERIT DataServer
 		//  DBS_ALIAS   := 6
 		//
 		LOCAL nIndex    AS DWORD
-		LOCAL xRet      AS USUAL
+		LOCAL xRet      := NIL AS USUAL
 		LOCAL oColumn	AS SQLColumn
 		LOCAL oFs       AS FieldSpec
 		nIndex := SELF:__GetColIndex( uFieldPos, TRUE )
@@ -172,7 +172,7 @@ PARTIAL CLASS SQLSelect INHERIT DataServer
 
 	METHOD FieldStatus( uFieldPos AS USUAL) AS HyperLabel
 		LOCAL nIndex AS DWORD
-		LOCAL oRet   AS HyperLabel
+		LOCAL oRet   := NULL AS HyperLabel
 		nIndex := SELF:__GetColIndex( uFieldPos, TRUE )
 		IF nIndex = 0 .OR. nIndex > nNumCols
 			oStmt:__GenerateSQLError( __CavoStr( __CAVOSTR_SQLCLASS__BADFLD ), #FieldStatus )
@@ -186,7 +186,7 @@ PARTIAL CLASS SQLSelect INHERIT DataServer
 
 	METHOD FieldSym( uFieldPos AS USUAL)  AS SYMBOL
 		LOCAL nIndex        AS DWORD
-		LOCAL symRet        AS SYMBOL
+		LOCAL symRet    := NULL_SYMBOL   AS SYMBOL
 		nIndex := SELF:__GetColIndex( uFieldPos, TRUE )
 		IF nIndex = 0 .OR. nIndex > nNumCols
 			oStmt:__GenerateSQLError( __CavoStr( __CAVOSTR_SQLCLASS__BADFLD ), #FieldSym )
@@ -200,7 +200,7 @@ PARTIAL CLASS SQLSelect INHERIT DataServer
 
 	METHOD FieldValidate( uField AS USUAL, uValue AS USUAL) AS LOGIC
 		LOCAL nIndex    AS DWORD
-		LOCAL lRet      AS LOGIC
+		LOCAL lRet    := FALSE  AS LOGIC
 
 		nIndex := SELF:__GetColIndex( uField, TRUE )
 		IF nIndex = 0 .OR. nIndex > nNumCols
@@ -233,8 +233,8 @@ PARTIAL CLASS SQLSelect INHERIT DataServer
 		RETURN oStmt:FreeStmt( fOption )
 
 	METHOD GetData( uFieldID AS USUAL )  AS USUAL
-		LOCAL wField AS LONG
-		LOCAL uValue AS USUAL
+		LOCAL wField := 0 AS LONG
+		LOCAL uValue := NIL AS USUAL
 		SELF:lErrorFlag := FALSE
 		TRY
 			uValue := NIL
@@ -265,8 +265,8 @@ PARTIAL CLASS SQLSelect INHERIT DataServer
 		RETURN uValue
 
 	METHOD GetdateVal( uFieldPos AS USUAL) AS DATE
-		LOCAL cVal AS STRING
-		LOCAL dVal AS DATE
+		LOCAL cVal  AS STRING
+		LOCAL dVal := NULL_DATE AS DATE
 
 		cVal := SELF:GetTimeStamp( uFieldPos )
 		IF !IsNil( cVal )

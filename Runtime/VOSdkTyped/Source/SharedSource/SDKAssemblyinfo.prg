@@ -10,7 +10,7 @@
 #undef  COPYRIGHT_STR
 #define COPYRIGHT_STR "Copyright © 1993-2020 Computer Associates & XSharp BV, All rights reserved"
 
-[assembly: AssemblyConfigurationAttribute( ASSEMBLY_CONFIGURATION )]
+[assembly: AssemblyConfigurationAttribute( ASSEMBLY_CONFIGURATION )] 
 [assembly: AssemblyCompanyAttribute( COMPANY_NAME )]
 [assembly: AssemblyProductAttribute( PRODUCT_NAME )]
 [assembly: AssemblyCopyrightAttribute( COPYRIGHT_STR )]

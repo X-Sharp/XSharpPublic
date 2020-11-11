@@ -515,9 +515,9 @@ FUNCTION DotNetType2VOType(oSchema AS DataTable, oColumn AS DataColumn, cFieldNa
 			oFs	    := DateFS{oHL}
 			
 		CASE TypeCode.Object
-			LOCAL lIsDate AS LOGIC
+			LOCAL lIsDate := FALSE AS LOGIC
 			LOCAL oMems AS MethodInfo[]
-			LOCAL lFound AS LOGIC
+			LOCAL lFound := FALSE AS LOGIC
 			// check to see if the datatype has a dbType
 			oMems := oType:GetMethods(BindingFlags.Public|BindingFlags.Static)
 			FOREACH oMem AS MethodInfo IN oMems

@@ -63,7 +63,7 @@ PARTIAL CLASS SQLSelect INHERIT DataServer
 
 	METHOD Append(lReleaseLocks AS LOGIC)  AS LOGIC 
 		LOCAL oRow AS DataRow
-		LOCAL lOk AS LOGIC
+		LOCAL lOk := FALSE AS LOGIC
 		IF SELF:__PrepareForRecordMovement()
 			SELF:lChanges := TRUE
 			oRow := oTable:NewRow()
@@ -181,7 +181,7 @@ PARTIAL CLASS SQLSelect INHERIT DataServer
 
 	METHOD Column( siCol AS USUAL ) AS SQLColumn
 		LOCAL nIndex    AS DWORD
-		LOCAL oColumn   AS SQLColumn
+		LOCAL oColumn   := NULL AS SQLColumn
 		nIndex := SELF:__GetColIndex( siCol, TRUE )
 		IF nIndex = 0 .OR. nIndex > nNumCols
 			oStmt:__GenerateSQLError( __CavoStr( __CAVOSTR_SQLCLASS__BADCOL ), #Column )
@@ -247,7 +247,7 @@ PARTIAL CLASS SQLSelect INHERIT DataServer
 
 	METHOD DataField( uFieldPos AS USUAL) AS DataField 
 		LOCAL nIndex        AS DWORD
-		LOCAL oRet          AS DataField
+		LOCAL oRet         := NULL  AS DataField
 
 		nIndex := SELF:__GetColIndex( uFieldPos, TRUE )
 		IF nIndex = 0 .OR. nIndex > nNumCols
@@ -260,7 +260,7 @@ PARTIAL CLASS SQLSelect INHERIT DataServer
 		RETURN oRet
 
 	METHOD Delete() AS LOGIC CLIPPER
-		LOCAL lOk AS LOGIC
+		LOCAL lOk := FALSE AS LOGIC
 		IF SELF:__PrepareForRecordMovement()
 			IF oCurrentRow != NULL
 				SELF:lChanges := TRUE
@@ -281,7 +281,7 @@ METHOD Execute( uParam ) AS LOGIC
 	LOCAL nCount        AS DWORD
 	LOCAL lRet          AS LOGIC
 	LOCAL i             AS DWORD
-	LOCAL aArgs         AS ARRAY
+	LOCAL aArgs       := NULL_ARRAY   AS ARRAY
 
 	IF oStmt:StatementHandle == NULL_OBJECT
 		SELF:__AllocStmt()
@@ -346,7 +346,7 @@ METHOD Execute( uParam ) AS LOGIC
 		RETURN !SELF:EoF
 
 	METHOD FieldGet( uFieldID AS USUAL ) AS USUAL
-		LOCAL uValue   AS USUAL
+		LOCAL uValue   := NIL AS USUAL
 		LOCAL cType    AS STRING
 		LOCAL wField   AS DWORD
 		LOCAL oFs      AS FieldSpec
@@ -384,7 +384,7 @@ METHOD Execute( uParam ) AS LOGIC
 
 	METHOD FieldGetFormatted( uFieldPos AS USUAL ) STRICT
 		LOCAL nIndex    AS DWORD
-		LOCAL xRet      AS USUAL
+		LOCAL xRet     := NIL  AS USUAL
 		LOCAL oFs      AS FieldSpec
 		LOCAL oCol     AS SQLColumn
 		nIndex := SELF:__GetColIndex( uFieldPos, TRUE )

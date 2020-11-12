@@ -180,4 +180,11 @@
   <data name="TargetFrameworkMonikerDescription" xml:space="preserve">
     <value>The version of the Common Language Runtime to use for output assembly.</value>
   </data>
+  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="XSharpDocument" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Images\XSharpDocument.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="XSharpProject" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Images\XSharpProject.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
 </root>

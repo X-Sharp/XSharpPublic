@@ -99,6 +99,21 @@ namespace XSharp.LanguageService
             // Find and attach the X# document when we have it, or a null to indicate that we have searched
             // and not found it
             var file = XSolution.FindFile(path);
+            if (file == null)
+            {
+                var type = XFileTypeHelpers.GetFileType(path);
+                switch (type)
+                {
+                    case XFileType.SourceCode:
+                    case XFileType.Header:
+                        file = XSolution.AddOrphan(path);
+                        break;
+                    default:
+                        if (type.IsVOBinary())
+                            file = XSolution.AddOrphan(path);
+                        break;
+                }
+            }
             if (file != null)
             {
                 file.Interactive = true;

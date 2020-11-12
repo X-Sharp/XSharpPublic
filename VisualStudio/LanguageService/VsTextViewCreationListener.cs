@@ -104,11 +104,17 @@ namespace XSharp.LanguageService
                     else
                     {
                         file = XSharpModel.XSolution.FindFile(fileName);
+                        if (file == null)
+                        {
+                            XSolution.OrphanedFilesProject.AddFile(fileName);
+                            file = XSharpModel.XSolution.FindFile(fileName);
+                        }
                         if (file != null)
                         {
                             textView.TextBuffer.Properties.AddProperty(typeof(XFile), file);
                         }
                     }
+                    
                     if (file != null)
                     {
                         file.Interactive = true;

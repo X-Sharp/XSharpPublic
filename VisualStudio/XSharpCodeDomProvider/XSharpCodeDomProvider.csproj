@@ -84,17 +84,8 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="EnvDTE">
-      <Version>16.7.30328.74</Version>
-    </PackageReference>
-    <PackageReference Include="Microsoft.VisualStudio.Designer.Interfaces">
-      <Version>1.1.4323</Version>
-    </PackageReference>
     <PackageReference Include="Microsoft.VisualStudio.Shell.Design">
-      <Version>16.0.28729</Version>
-    </PackageReference>
-    <PackageReference Include="System.Collections.Immutable">
-      <Version>1.7.1</Version>
+      <Version>16.7.30329.88</Version>
     </PackageReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

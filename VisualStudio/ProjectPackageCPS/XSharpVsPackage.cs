@@ -73,13 +73,12 @@ namespace XSharp.ProjectSystem
                                       ProjectCapability.EditAndContinue + "; " +
                                       ProjectCapability.OpenProjectFile + "; " +
                                       ProjectCapability.PreserveFormatting + "; " +
-                                      ProjectCapability.ProjectConfigurationsDeclaredDimensions + "; " +
+                                      /*ProjectCapability.ProjectConfigurationsDeclaredDimensions + "; " +*/
                                       ProjectCapability.LanguageService + "; " +
                                       ProjectCapability.DotNet;
         public const string XSharp = Default + "; " +
                                      ProjectCapability.XSharp + "; " +
-                                     ProjectCapability.SortByDisplayOrder + "; " +
-                                     ProjectCapability.EditableDisplayOrder;
+                                     ProjectCapability.SortByDisplayOrder ;
 
     }
 
@@ -115,11 +114,6 @@ namespace XSharp.ProjectSystem
         /// </summary>
         public const string SortByDisplayOrder = ProjectCapabilities.SortByDisplayOrder;
 
-        /// <summary>
-        /// Enables commands and behaviour that allows reordering items in the tree.
-        /// Used by F# projects, for which item order is significant to compilation.
-        /// </summary>
-        public const string EditableDisplayOrder = nameof(EditableDisplayOrder);
 
         public const string DotNet = ".NET";
         public const string WindowsForms = nameof(WindowsForms);

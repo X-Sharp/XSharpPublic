@@ -43,7 +43,7 @@
     <VulcanCompatibleResources>False</VulcanCompatibleResources>
     <StartupObject />
     <ApplicationIcon />
-    <XSharpProjectversion>2.6.1.0</XSharpProjectversion>
+    <XSharpProjectversion>2.6.3.0</XSharpProjectversion>
     <Includepaths>$(Solutiondir)common</Includepaths>
     <Nostandarddefs>false</Nostandarddefs>
     <IntermediateOutputPath>$(SolutionDir)Binaries\obj\$(Configuration)\$(ProjectName)\</IntermediateOutputPath>

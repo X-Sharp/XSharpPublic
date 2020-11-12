@@ -1,10 +1,10 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Rule
 	Name="Dialect"
-	DisplayName="Language"
+	DisplayName="Dialect"
 	PageTemplate="generic"
 	Description="Dialect Settings"
-    Order="2"
+    Order="3"
     SwitchPrefix="/"
     xmlns="http://schemas.microsoft.com/build/2009/properties">
     <Rule.DataSource>

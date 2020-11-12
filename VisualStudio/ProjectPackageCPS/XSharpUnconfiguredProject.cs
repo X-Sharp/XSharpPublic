@@ -4,12 +4,15 @@
 // See License.txt in the project root for license information.
 //
 
+using System;
 using System.ComponentModel.Composition;
+using System.Threading.Tasks.Dataflow;
 using Microsoft.VisualStudio.ProjectSystem;
 using Microsoft.VisualStudio.ProjectSystem.VS;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
-
+using System.Threading.Tasks;
+using XSharpModel;
 namespace XSharp.ProjectSystem
 {
     [Export]
@@ -20,17 +23,20 @@ namespace XSharp.ProjectSystem
         PossibleProjectExtensions = XSharpConstants.ProjectExtensions,
         ProjectTemplatesDir = @"..\..\Templates\Projects\XSharp")]
     [ProvideProjectItem(XSharpConstants.CpsProjectTypeGuid, "XSharp Items", @"..\..\Templates\ProjectItems", 500)]
-    internal class XSharpUnconfiguredProject
+    internal class XSharpUnconfiguredProject 
     {
         /// <summary>
         /// The file extension used by your project type.
         /// This does not include the leading period.
         /// </summary>
+
+
         [ImportingConstructor]
         public XSharpUnconfiguredProject(UnconfiguredProject unconfiguredProject)
         {
             this.ProjectHierarchies = new OrderPrecedenceImportCollection<IVsHierarchy>(projectCapabilityCheckProvider: unconfiguredProject);
         }
+
 
         [Import]
         internal UnconfiguredProject UnconfiguredProject { get; }

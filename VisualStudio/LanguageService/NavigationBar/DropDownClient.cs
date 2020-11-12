@@ -622,8 +622,11 @@ namespace XSharp.LanguageService
         {
             _dropDownBar = dropdownBar;
             RefreshDropDownAsync(needsUI: false);
-            _dropDownBar.RefreshCombo(0,1);
-            _dropDownBar.RefreshCombo(1,1);
+            if (_dropDownBar != null)
+            {
+                _dropDownBar.RefreshCombo(0, 1);
+                _dropDownBar.RefreshCombo(1, 1);
+            }
             return VSConstants.S_OK;
         }
 

@@ -70,7 +70,10 @@ BEGIN NAMESPACE XSharpModel
          endif
          ModelWalker.Start()
          
-            
+      STATIC METHOD AddOrphan(fileName as STRING) AS XFile
+            OrphanedFilesProject:AddFile(fileName)
+            return OrphanedFilesProject:FindXFile(fileName)
+        
 
       INTERNAL STATIC METHOD Add(project AS XProject) AS LOGIC
          RETURN @@Add(project:Name, project)

@@ -181,24 +181,24 @@ BEGIN NAMESPACE XSharpModel
                END LOCK
             ENDIF
             
-         METHOD AddAssemblyReference(reference AS VSLangProj.Reference) AS VOID
-            //LOCAL assemblyInfo AS AssemblyInfo
-            IF reference != NULL
-               IF XSettings.EnableReferenceInfoLog
-                  SELF:WriteOutputMessage("AddAssemblyReference (VSLangProj.Reference) "+reference:Path)
-               ENDIF
-               SELF:_clearTypeCache()
-               IF ! XSettings.DisableAssemblyReferences
-                  IF ! String.IsNullOrEmpty(reference:Path)
-                     AddAssemblyReference(reference:Path)
-                     //                        ELSE
-                     //                            // create an assembly reference with the reference object and no real contents
-                     //                            assemblyInfo := SystemTypeController.LoadAssembly(reference)
-                     //                            SELF:_AssemblyReferences:Add(assemblyInfo)
-                     //                            assemblyInfo:AddProject(SELF)
-                  ENDIF
-               ENDIF
-            ENDIF
+//         METHOD AddAssemblyReference(reference AS VSLangProj.Reference) AS VOID
+//            //LOCAL assemblyInfo AS AssemblyInfo
+//            IF reference != NULL
+//               IF XSettings.EnableReferenceInfoLog
+//                  SELF:WriteOutputMessage("AddAssemblyReference (VSLangProj.Reference) "+reference:Path)
+//               ENDIF
+//               SELF:_clearTypeCache()
+//               IF ! XSettings.DisableAssemblyReferences
+//                  IF ! String.IsNullOrEmpty(reference:Path)
+//                     AddAssemblyReference(reference:Path)
+//                     //                        ELSE
+//                     //                            // create an assembly reference with the reference object and no real contents
+//                     //                            assemblyInfo := SystemTypeController.LoadAssembly(reference)
+//                     //                            SELF:_AssemblyReferences:Add(assemblyInfo)
+//                     //                            assemblyInfo:AddProject(SELF)
+//                  ENDIF
+//               ENDIF
+//            ENDIF
             
          METHOD ClearAssemblyReferences() AS VOID
             IF XSettings.EnableReferenceInfoLog
@@ -566,7 +566,7 @@ BEGIN NAMESPACE XSharpModel
       #region 'Normal' Files
       
       
-      METHOD AddFile(filePath AS STRING) AS LOGIC
+      METHOD AddFile(filePath AS STRING) AS VOID
          LOCAL xamlCodeBehindFile AS STRING
          // DO NOT read the file ID from the database here.
          // This is called during startup of the solution, we try to do as little as possible
@@ -581,7 +581,7 @@ BEGIN NAMESPACE XSharpModel
          ELSE
             SELF:_OtherFilesDict:Add(filePath)
          ENDIF
-         RETURN TRUE
+         RETURN 
       
       
       METHOD FindXFile(fullPath AS STRING) AS XFile

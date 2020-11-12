@@ -26,7 +26,6 @@
       These are the items which will show up when a new project is created using the custom project system.
       Items referenced in here must also be referenced in the project file.
       -->
-      <ProjectItem ReplaceParameters="true" TargetFileName="Properties\AssemblyInfo.prg">AssemblyInfo.prg</ProjectItem>
       <ProjectItem OpenInEditor="true" ReplaceParameters="true">Program.prg</ProjectItem>
     </Project>
   </TemplateContent>

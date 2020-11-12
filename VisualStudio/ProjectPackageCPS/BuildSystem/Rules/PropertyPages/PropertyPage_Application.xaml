@@ -1,17 +1,15 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Rule Name="Application"
-	Description="General"
+<Rule 
+	Name="Application"
 	DisplayName="Application"
+    	Order="1"
 	PageTemplate="generic"
+	Description="Application properties"
 	xmlns="http://schemas.microsoft.com/build/2009/properties">
 
     <Rule.Categories>
-    <Category Name="General"
-              Description="General"
-              DisplayName="General" />
-    <Category Name="Resources"
-              Description="Resources"
-              DisplayName="Resources" />
+    <Category Name="General" Description="General" DisplayName="General" />
+    <Category Name="Resources" Description="Resources" DisplayName="Resources" />
   </Rule.Categories>
 
     <Rule.DataSource>
@@ -19,15 +17,13 @@
                 SourceOfDefaultValue="AfterContext"
                 HasConfigurationCondition="False" />
     </Rule.DataSource>
-  <StringProperty Name="AssemblyName"
-                  DisplayName="Assembly name"
-                  Category="General" />
+    <StringProperty Name="AssemblyName" DisplayName="Assembly Name" Category="General" Description="File Name of the output assembly"/>
 
-  <StringProperty Name="RootNamespace"
-                  DisplayName="Default namespace"
-                  Category="General" />
 
-  <DynamicEnumProperty Name="TargetFrameworkMoniker"
+    <StringProperty Name="RootNamespace" DisplayName="Root namespace" Category="General" 
+    	Description="This name will be used when generating new source files and will be added to classes without namespace when you select the /ns compiler switch" />
+
+    <DynamicEnumProperty Name="TargetFrameworkMoniker"
                        DisplayName="Target framework"
                        Category="General"
                        EnumProvider="SupportedTargetFrameworksEnumProvider"
@@ -38,15 +34,10 @@
     </DynamicEnumProperty.DataSource>
   </DynamicEnumProperty>
 
-  <EnumProperty Name="OutputType"
-                DisplayName="Output type"
-                Category="General">
-    <EnumValue Name="Library"
-               DisplayName="Class Library" />
-    <EnumValue Name="Exe"
-               DisplayName="Console Application" />
-    <EnumValue Name="WinExe"
-               DisplayName="Windows Application" />
+  <EnumProperty Name="OutputType" DisplayName="Output type" Category="General">
+    <EnumValue Name="Library" DisplayName="Class Library" /> 
+    <EnumValue Name="Exe" DisplayName="Console Application" /> 
+      <EnumValue Name="WinExe" DisplayName="Windows Application" />
   </EnumProperty>
 
   <DynamicEnumProperty Name="StartupObject"
@@ -54,10 +45,7 @@
                        Category="General"
                        EnumProvider="StartupObjectsEnumProvider" />
 
-  <StringProperty Name="ApplicationIcon"
-                  DisplayName="Icon"
-                  Category="Resources"
-                  Subtype="file" />
+    <StringProperty Name="ApplicationIcon" DisplayName="Application Icon" Category="Resources"   />
 
   <EnumProperty Name="ApplicationManifest"
                 DisplayName="Manifest"

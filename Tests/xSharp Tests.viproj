@@ -86878,7 +86878,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   Optimize=0
 ENDApplication = R741 - Allow M DOT prefix in LOCAL and PRIVATE declarations
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = 43A04886-532C-4DC6-A4FB-751288B40D7A
 ; ************** APPLICATION C746 - Problem with macro on left side of equation with the single "=" operator *************
 Application = C746 - Problem with macro on left side of equation with the single "=" operator
 IDEVersion = 1.06
@@ -87368,9 +87368,9 @@ FileType = Code
 CopyToBin = 0
 [C748 - Problem using REF parameters when /fox2 (Locals visible to macrocompiler) option is enabled References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
-ReferenceGAC = CLR4,XSharp.Core,1,0,2.6.0.0
-ReferenceGAC = CLR4,XSharp.RT,1,0,2.6.0.0
-ReferenceGAC = CLR4,XSharp.VFP,1,0,2.6.0.0
+ReferenceGAC = XSharp.Core,1,0,2.6.0.0
+ReferenceGAC = XSharp.RT,1,0,2.6.0.0
+ReferenceGAC = XSharp.VFP,1,0,2.6.0.0
 [C748 - Problem using REF parameters when /fox2 (Locals visible to macrocompiler) option is enabled Resources]
 [C748 - Problem using REF parameters when /fox2 (Locals visible to macrocompiler) option is enabled Native Resources]
 [C748 - Problem using REF parameters when /fox2 (Locals visible to macrocompiler) option is enabled License files]

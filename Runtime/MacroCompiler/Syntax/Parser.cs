@@ -495,10 +495,10 @@ namespace XSharp.MacroCompiler
             {
                 switch ((t as IdExpr).Name.ToUpperInvariant())
                 {
-                    case "ALTD":
-                        throw Error(Lt(), ErrorCode.NotSupported, (t as IdExpr).Name);
-                    case "_GETINST":
-                        throw Error(Lt(), ErrorCode.NotSupported, (t as IdExpr).Name);
+                    //case "ALTD":
+                    //    throw Error(Lt(), ErrorCode.NotSupported, (t as IdExpr).Name);
+                    //case "_GETINST":
+                    //    throw Error(Lt(), ErrorCode.NotSupported, (t as IdExpr).Name);
                     case "CHR":
                     case "_CHR":
                         {

@@ -1,14 +1,11 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Rule
     Name="BuildOptions"
+      Description="Specifies properties that control how the project builds."
 	DisplayName="Build"
 	PageTemplate="generic"
-    Order="3"
-	Description="Build options"
+	    Order="4"
 	xmlns="http://schemas.microsoft.com/build/2009/properties">
-    <Rule.DataSource>
-        <DataSource Persistence="ProjectFile" Label="Configuration" HasConfigurationCondition="True" />
-    </Rule.DataSource>
     <Rule.Categories>
         <Category Name="Output"     DisplayName="Output"  Description="Output" />
         <Category Name="Signing"  	DisplayName="Code Signing" Description="Set Codesigning properties" />
@@ -18,17 +15,26 @@
         <Category Name="XML"  	    DisplayName="XML Output" Description="XML Output" />
     </Rule.Categories>
 
-    <EnumProperty Name="PlatformTarget" DisplayName="Platform Target" Category="Output" Default="AnyCPU" >
-        <EnumValue Name="x86" DisplayName="x86" />
-        <EnumValue Name="AnyCPU" DisplayName="Any Cpu" />
-        <EnumValue Name="x64" DisplayName="x64" />
+    <EnumProperty Name="PlatformTarget" 
+    	DisplayName="Platform Target" 
+        Description="Specifies the processor to be targeted by the output file. Choose 'x86' for any 32-bit Intel-compatible processor, choose 'x64' for any 64-bit Intel-compatible processor, or choose 'Any CPU' to specify that any processor is acceptable. 'Any CPU' is the default value for projects, because it allows the application to run on the broadest range of hardware."
+    	HelpUrl="https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/compiler-options/define-compiler-option"
+	Default="AnyCPU" 
+	Category="Output">
+    <EnumValue Name="AnyCPU"
+               DisplayName="Any CPU" />
+    <EnumValue Name="x64"
+               DisplayName="x64" />
+    <EnumValue Name="x86"
+               DisplayName="x86" />
+  </EnumProperty>
         <EnumProperty.DataSource>
             <DataSource Persistence="ProjectFile" Label="Configuration" HasConfigurationCondition="true" />
         </EnumProperty.DataSource>
     </EnumProperty>
-    <BoolProperty	Category="Output" Name="Prefer 32 Bit" Description="Prefer 32 Bit when the AnyCpu target is selected?" Switch="Prefer32Bit"/>
-    <StringProperty Category="Output" Name="IntermediateOutputPath" DisplayName ="Intermediate Output Path" Subtype="file" />
-    <StringProperty Category="Output" Name="OutPutPath" DisplayName="Output Path" Subtype="file"  Switch="o"/>
+    <BoolProperty      Category="Output" Name="Prefer32Bit" DisplayName="Prefer 32 Bit" Description="Prefer 32 Bit when the AnyCpu target is selected?" Switch="Prefer32Bit"/>
+    <StringProperty    Category="Output" Name="IntermediateOutputPath" DisplayName ="Intermediate Output Path" Subtype="file" />
+    <StringProperty    Category="Output" Name="OutPutPath" DisplayName="Output Path" Subtype="file"  Switch="o"/>
 
     <BoolProperty 	Category="Signing"  Name="SignAssembly"           DisplayName="Sign the output assembly" Description="Sign the assembly  (/sign)" Default="True" />
     <BoolProperty 	Category="Signing"  Name="DelaySign"              DisplayName="Delayed sign only" Description="Delayed signing (/delaysign)" Default="True" />
@@ -45,6 +51,7 @@
 
     <BoolProperty 	Category="Warnings" Name="TreatWarningsAsErrors"  DisplayName="Warnings As Errors"  Description="Treat warnings as errors (/warnaserror)" Default="True" />
     <StringListProperty Category="Warnings" Name="DisabledWarnings"  DisplayName="Suppress Warnings"  Description="Specify a list of warnings to suppress (/nowarn)" Subtype="CommandLine"/>
+    
     <EnumProperty 	Category="Warnings" Name="WarningLevel" DisplayName="Warning Level" Description="Set the warning level to a value between 0 and 4 (/warn)" Default="4" >
         <EnumValue Name="0" DisplayName="0" />
         <EnumValue Name="1" DisplayName="1" />

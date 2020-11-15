@@ -30,6 +30,10 @@
     <ItemType Name="NativeResource" DisplayName="NativeResource"/>
     <ItemType Name="VOBinary" DisplayName="VOBinary"/>
 
+    <ItemType Name="AdditionalFiles" DisplayName="C# analyzer additional file"/>
+    <ItemType Name="EditorConfigFiles" DisplayName=".editorconfig file" />
+
+
     <FileExtension Name=".prg" ContentType="XSharpFile"/>
     <FileExtension Name=".xs"  ContentType="XSharpFile"/>
     <FileExtension Name=".vh"  ContentType="XSharpHeader"/>

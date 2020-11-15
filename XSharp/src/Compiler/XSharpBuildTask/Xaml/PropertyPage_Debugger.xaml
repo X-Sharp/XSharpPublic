@@ -3,7 +3,7 @@
 	Name="XSharpDebugger"
 	DisplayName="XSharp Debugger"
 	PageTemplate="debugger"
-	Order="4"
+	Order="5"
     	Description="XSharpDebugger Debugger options"
 	xmlns="http://schemas.microsoft.com/build/2009/properties">
     <Rule.DataSource>

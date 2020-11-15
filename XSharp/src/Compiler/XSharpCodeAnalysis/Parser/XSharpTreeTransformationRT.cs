@@ -710,7 +710,109 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         #endregion
 
-        #region MemVar and Fields
+        #region Expression Statement
+        protected override StatementSyntax HandleExpressionStmt(IList<XP.ExpressionContext> expressions)
+        {
+            var statements = _pool.Allocate<StatementSyntax>();
+            StatementSyntax result;
+            foreach (var exprCtx in expressions)
+            {
+                // check because there may already be statements in here, such as the IF statement generated for AltD()
+                var node = exprCtx.CsNode;
+                if (node is StatementSyntax)
+                {
+                    statements.Add((StatementSyntax)node);
+                }
+                else
+                {
+                    // check for binary expression with '=' operator.
+                    // convert to assignment and add a warning when not in FoxPro dialect
+                    // please note that the expression
+                    // x = y = z
+                    // is represented as
+                    //    Binary Expression
+                    //       Left = Binary Expression x == y
+                    //       Op   = ==
+                    //       Right = Simple Name z
+                    // so we need to 'rebuild' the expression
+                    exprCtx.SetSequencePoint(exprCtx.Start, exprCtx.Stop);
+                    var expr = exprCtx.Get<ExpressionSyntax>();
+                    if (expr is BinaryExpressionSyntax bin)
+                    {
+                        bool nestedAssign = false;
+                        var xNode1 = bin.XNode as XP.BinaryExpressionContext;
+                        var oldStyleAssign = bin.OperatorToken.Kind == SyntaxKind.EqualsEqualsToken && xNode1 != null && xNode1.Op.Type == XP.EQ;
+                        if (bin.Left is BinaryExpressionSyntax binLeft)
+                        {
+                            if (binLeft.OperatorToken.Kind == SyntaxKind.EqualsEqualsToken)
+                            {
+                                var xNode2 = binLeft.XNode as XP.BinaryExpressionContext;
+                                nestedAssign = xNode2 != null && xNode2.Op.Type == XP.EQ;
+                            }
+
+                        }
+                        if (oldStyleAssign || nestedAssign)
+                        {
+                            ExpressionSyntax RHS = bin.Right;
+                            ExpressionSyntax LHS = bin.Left;
+                            if (nestedAssign)
+                            {
+                                // check for x = y = z, but also x = y > z
+                                var Left = (BinaryExpressionSyntax)LHS;
+                                LHS = Left.Left;
+                                RHS = _syntaxFactory.BinaryExpression(
+                                                    bin.Kind,
+                                                    Left.Right,
+                                                    bin.OperatorToken,
+                                                    bin.Right);
+                            }
+                            // check to see if the LHS is Late bound access
+                            // because we need to generate a IVarPut() then
+                            var left = LHS.XNode;
+                            if (left is XP.AccessMemberLateContext || left is XP.AccessMemberLateNameContext)
+                            {
+                                // lhs is then an InvocationExpression
+                                var invoke = LHS as InvocationExpressionSyntax;
+                                string putMethod = _options.XSharpRuntime ? XSharpQualifiedFunctionNames.IVarPut : VulcanQualifiedFunctionNames.IVarPut;
+                                var obj = invoke.ArgumentList.Arguments[0];
+                                var varName = invoke.ArgumentList.Arguments[1];
+                                var args = MakeArgumentList(obj, varName, MakeArgument(RHS));
+                                expr = GenerateMethodCall(putMethod, args, true);
+                            }
+                            else if (left is XP.PrimaryExpressionContext pec && pec.Expr is XP.MacroNameContext macro)
+                            {
+                                expr = GenerateMemVarPut(getMacroNameExpression(macro.Name), RHS);
+                            }
+                            else
+                            {
+                                expr = MakeSimpleAssignment(bin.Left, bin.Right);
+                            }
+                        }
+                        if (_options.Dialect != XSharpDialect.FoxPro)
+                        {
+                            expr = expr.WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.WRN_AssignmentOperatorExpected));
+                        }
+                    }
+                    var stmt = GenerateExpressionStatement(expr);
+                    stmt.XNode = exprCtx;
+                    statements.Add(stmt);
+                }
+            }
+
+            if (statements.Count == 1)
+            {
+                result = statements[0];
+            }
+            else
+            {
+                result = MakeBlock(statements);
+            }
+            _pool.Free(statements);
+            return result;
+        }
+        #endregion
+
+            #region MemVar and Fields
         internal ExpressionSyntax GenerateMemVarPut(ExpressionSyntax memvar, ExpressionSyntax right)
         {
             var arg1 = MakeArgument(memvar);

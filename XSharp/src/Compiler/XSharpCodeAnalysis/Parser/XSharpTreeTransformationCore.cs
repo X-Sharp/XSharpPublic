@@ -6500,7 +6500,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
         }
 
-        protected StatementSyntax HandleExpressionStmt(IList<XP.ExpressionContext> expressions)
+        protected virtual StatementSyntax HandleExpressionStmt(IList<XP.ExpressionContext> expressions)
         {
             var statements = _pool.Allocate<StatementSyntax>();
             StatementSyntax result;
@@ -6555,23 +6555,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                                                     bin.OperatorToken,
                                                     bin.Right);
                             }
-                            // check to see if the LHS is Late bound access
-                            // because we need to generate a IVarPut() then
-                            var left = LHS.XNode;
-                            if (left is XP.AccessMemberLateContext || left is XP.AccessMemberLateNameContext)
-                            {
-                                // lhs is then an InvocationExpression
-                                var invoke = LHS as InvocationExpressionSyntax;
-                                string putMethod = _options.XSharpRuntime ? XSharpQualifiedFunctionNames.IVarPut : VulcanQualifiedFunctionNames.IVarPut;
-                                var obj = invoke.ArgumentList.Arguments[0];
-                                var varName = invoke.ArgumentList.Arguments[1];
-                                var args = MakeArgumentList(obj, varName, MakeArgument(RHS));
-                                expr = GenerateMethodCall(putMethod, args, true);
-                            }
-                            else
-                            {
-                                expr = MakeSimpleAssignment(bin.Left, bin.Right);
-                            }
+                            // other LHS to do a fieldput or memvar put are handled in XSharpTreeTransformationRT
+                            expr = MakeSimpleAssignment(bin.Left, bin.Right);
                         }
                         if (_options.Dialect != XSharpDialect.FoxPro)
                         {

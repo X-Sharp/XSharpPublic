@@ -10,8 +10,8 @@ USING System.Text
 USING XUnit
 USING System.Globalization
 
-define FTRUE  := TRUE
-define FFALSE := FALSE
+DEFINE FTRUE  := TRUE
+DEFINE FFALSE := FALSE
 BEGIN NAMESPACE XSharp.VO.Tests
 
 	CLASS VoConversionTests
@@ -238,6 +238,33 @@ BEGIN NAMESPACE XSharp.VO.Tests
             Assert.Equal(1, BYTE(_CAST, TRUE))
             Assert.Equal(0, BYTE(_CAST, FALSE))
             
+		[Fact, Trait("Category", "VariousConversions")];
+		METHOD VariousConversions() AS VOID
+			LOCAL deci,thou,digit,decimal,fixed_,digitfixed AS USUAL
+			deci := SetDecimalSep(Asc(","))
+			thou := SetThousandSep(Asc("."))
+			digit := SetDigit()
+			decimal := SetDecimal(5)
+			fixed_ := SetFixed()
+			digitfixed := SetDigitFixed()
+			
+			LOCAL r AS REAL8
+			LOCAL u AS USUAL
+			LOCAL f AS FLOAT
+			r := 123.456
+			u := r
+			Assert.Equal( "123,45600", NTrim(u) )
+			f := 12.3400000
+			Assert.Equal( "12,3400000", NTrim(f) )
+			Assert.Equal( "12,3400000", NTrim( AbsFloat(f)) )
+
+			SetDecimalSep(deci)
+			SetThousandSep(thou)
+			SetDigit(digit)
+			SetDecimal(decimal)
+			SetFixed(fixed_)
+			SetDigitFixed(digitfixed)
+		RETURN
 
 	END CLASS
 END NAMESPACE // XSharp.Runtime.Tests

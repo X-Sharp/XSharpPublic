@@ -6,7 +6,7 @@
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/absfloat/*" />
 FUNCTION AbsFloat(fValue AS FLOAT) AS FLOAT
-	RETURN FLOAT{Math.Abs(fValue:Value)}
+	RETURN FLOAT{Math.Abs(fValue:Value) , fValue:Digits, fValue:Decimals}
 
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/fact/*" />

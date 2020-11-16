@@ -488,7 +488,10 @@ BEGIN NAMESPACE XSharp.VO.Tests
 		METHOD ArrayVOSpecialHandling() AS VOID
             LOCAL aValues := {1,2,4} AS ARRAY
             RuntimeState.Dialect := XSharpDialect.VO
-			Assert.True(  aValues[1,1] == NIL)
+            EnableArrayIndexCheck(FALSE)
+            Assert.True( aValues[1,1] == NIL )
+            EnableArrayIndexCheck(TRUE)
+            Assert.ThrowsAny<Error>({ =>aValues[1,1] == NIL})
 
 		[Fact, Trait("Category", "Hacks")];
 		METHOD ArrayXPPSpecialHandling() AS VOID

@@ -70,7 +70,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             if (conversion.IsExplicit && expression.Type != targetType)
             {
                 // silently convert integral types
-                if (XsHasImplicitCast(expression , targetType, diagnostics) || conversion.IsNullable)
+                if (XsHasImplicitCast(expression , targetType, diagnostics) )
                 {
                     BoundExpression result;
                     if (targetType.IsIntegralType() && expression.Type.IsIntegralType())

@@ -70,7 +70,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     sig.Type = new XP.DatatypeContext(func,0);
                     sig.Type.Start = new XSharpToken(XP.AS, "AS");
                     sig.Type.Stop = new XSharpToken(XP.VOID, "VOID");
-                    sig.Type.Put(_voidType);
+                    sig.Type.Put(voidType);
                     sig.AddChild(sig.Type);
                 }
                 func.Attributes = new XP.AttributesContext(func,0);
@@ -711,7 +711,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     body.XGenerated = true;
                     var mods = TokenList(SyntaxKind.ProtectedKeyword, SyntaxKind.OverrideKeyword);
                     var id = SyntaxFactory.MakeIdentifier(XSharpSpecialNames.InitProperties);
-                    var mem = _syntaxFactory.MethodDeclaration(MakeCompilerGeneratedAttribute(), mods, _voidType, null, id,
+                    var mem = _syntaxFactory.MethodDeclaration(MakeCompilerGeneratedAttribute(), mods, voidType, null, id,
                         null, EmptyParameterList(), null, body, null, SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken));
                     members.Add(mem);
                     stmts.Clear();
@@ -906,6 +906,172 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             return;
         }
 
+        public override void EnterFoxdll([NotNull] XP.FoxdllContext context)
+        {
+            if (context._Params?.Count > 0)
+            {
+                CurrentEntity.Data.HasFormalParameters = true;
+            }
+        }
+
+        TypeSyntax foxdllGetType(XSharpParser.DatatypeContext type)
+        {
+            TypeSyntax result;
+            if (type != null)
+            {
+                switch (type.GetText().ToLower())
+                {
+                    case "integer":
+                        result = intType;
+                        break;
+                    case "single":
+                        result = floatType;
+                        break;
+                    case "double":
+                        result = doubleType;
+                        break;
+                    case "string":
+                        result = stringType;
+                        break;
+                    default:
+                        result = type.Get<TypeSyntax>();
+                        break;
+                }
+            }
+            else
+            {
+                result = voidType;
+            }
+            result.XVoDecl = true;
+            return result;
+        }
+
+        public override void ExitFoxdllparam([NotNull] XP.FoxdllparamContext context)
+        {
+
+            var attributeList = context.Attributes?.GetList<AttributeListSyntax>() ?? EmptyList<AttributeListSyntax>();
+            TypeSyntax type = foxdllGetType(context.Type);  // handle integer, single, double etc.
+            var modifiers = EmptyList<SyntaxToken>();
+
+            if (context.Address != null)
+            {
+                SyntaxListBuilder list = _pool.Allocate();
+                list.Add(SyntaxFactory.MakeToken(SyntaxKind.RefKeyword, context.Address.Text));
+                modifiers = list.ToList();
+                _pool.Free(list);
+            }
+            var foxdll = context.Parent as XP.FoxdllContext;
+            var pos = foxdll._Params.IndexOf(context)+1;
+            SyntaxToken id;
+            if (context.Name != null)
+                id = context.Name.Get<SyntaxToken>();
+            else
+                id = SyntaxFactory.MakeIdentifier("$param" + pos.ToString());
+
+            var par = _syntaxFactory.Parameter(
+                attributeLists: attributeList,
+                modifiers: modifiers,
+                type: type,
+                identifier: id,
+                @default: null);
+
+            if (type == stringType && context.Address != null)
+            {
+                par = par.WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.ERR_FoxDeclareDLLStringByReference));
+            }
+
+            context.Put(par);
+        }
+
+
+        private AttributeSyntax _foxdllImportAttribute(XP.FoxdllContext context, ExpressionSyntax dllExpr, ExpressionSyntax entrypointExpr)
+        {
+            AttributeArgumentSyntax charset;
+            SyntaxToken id;
+            id = SyntaxFactory.Identifier("Ansi");
+            charset = _syntaxFactory.AttributeArgument(GenerateNameEquals("CharSet"), null,
+                             MakeSimpleMemberAccess(GenerateQualifiedName(SystemQualifiedNames.CharSet),
+                                  _syntaxFactory.IdentifierName(id)));
+            var attribs = new List<AttributeArgumentSyntax>() { _syntaxFactory.AttributeArgument(null, null, dllExpr), charset };
+            if (entrypointExpr != null)
+            {
+                attribs.Add(_syntaxFactory.AttributeArgument(GenerateNameEquals("EntryPoint"), null, entrypointExpr));
+                attribs.Add(_syntaxFactory.AttributeArgument(GenerateNameEquals("ExactSpelling"), null, GenerateLiteral(true)));
+            }
+            else
+            {
+                attribs.Add(_syntaxFactory.AttributeArgument(GenerateNameEquals("ExactSpelling"), null, GenerateLiteral(false)));
+            }
+            attribs.Add(_syntaxFactory.AttributeArgument(GenerateNameEquals("SetLastError"), null, GenerateLiteral(true)));
+            return _syntaxFactory.Attribute(
+                name: GenerateQualifiedName(SystemQualifiedNames.DllImport),
+                argumentList: MakeAttributeArgumentList(MakeSeparatedList(attribs.ToArray())));
+
+        }
+
+        public override void ExitFoxdll([NotNull] XP.FoxdllContext context)
+        {
+            // todo: declare and process attributes 
+            string dllName = context.Dll.GetText();
+            if (context.Extension != null)
+            {
+                dllName += "." + context.Extension.GetText();
+            }
+
+            ExpressionSyntax dllExpr = GenerateLiteral(dllName);
+            SyntaxToken id = context.Id.Get<SyntaxToken>();
+            ExpressionSyntax entrypoint = null;
+            // When the AS Alias=identifier clause is used then we want to use that as the Id of the function.
+            if (context.Alias != null)
+            {
+                id = context.Alias.Get<SyntaxToken>();
+                entrypoint = GenerateLiteral(context.Id.GetText());
+            }
+            var returnType = foxdllGetType(context.Type);// handle integer, single, double etc.
+
+            ParameterListSyntax parameters;
+            if (context._Params.Count > 0)
+            {
+                var @params = _pool.AllocateSeparated<ParameterSyntax>();
+                foreach (var paramCtx in context._Params)
+                {
+                    if (@params.Count > 0)
+                        @params.AddSeparator(SyntaxFactory.MakeToken(SyntaxKind.CommaToken));
+
+                    var par = paramCtx.Get<ParameterSyntax>();
+ 
+                    @params.Add(par);
+                    
+                }
+                parameters = _syntaxFactory.ParameterList(
+                    SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
+                    @params,
+                    SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken));
+                _pool.Free(@params);
+            }
+            else
+            {
+                parameters = EmptyParameterList();
+            }
+            var modifiers = context.Modifiers?.GetList<SyntaxToken>() ?? TokenListWithDefaultVisibility(false, SyntaxKind.StaticKeyword, SyntaxKind.ExternKeyword);
+            var attributes = MakeSeparatedList(_unmanagedCodeAttribute(),
+                                                _foxdllImportAttribute(context, dllExpr, entrypoint)
+                                              );
+            var attList = MakeList(MakeAttributeList(target: null, attributes: attributes));
+
+            context.Put(_syntaxFactory.MethodDeclaration(
+                attributeLists: attList,
+                modifiers: modifiers,
+                returnType: returnType,
+                explicitInterfaceSpecifier: null,
+                identifier: id,
+                typeParameterList: null,
+                parameterList: parameters,
+                constraintClauses: default(SyntaxList<TypeParameterConstraintClauseSyntax>),
+                body: null,
+                expressionBody: null,
+                semicolonToken: SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)));
+        }
         public override void ExitFoxtextoutStmt([NotNull] XP.FoxtextoutStmtContext context)
         {
             var sourceText = context.String.Text;

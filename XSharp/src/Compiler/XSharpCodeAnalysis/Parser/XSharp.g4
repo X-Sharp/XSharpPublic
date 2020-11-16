@@ -66,6 +66,7 @@ entity              : namespace_
                     | destructor                // Destructor Class xxx syntax
                     | filewidememvar            // memvar declared at file level
                     | pragma                    // #pragma warning
+                    | foxdll                    // FoxPro style of declaring Functions in External DLLs
                     | eos                       // Blank Lines between entities
                     ;
 
@@ -119,7 +120,7 @@ callingconvention	: Convention=(CLIPPER | STRICT | PASCAL | ASPEN | WINCALL | CA
                     // and Finally we also parse the @Num
                     // 
 
-vodll               : (Attributes=attributes)? (Modifiers=funcprocModifiers)? // Optional
+vodll               : (Modifiers=funcprocModifiers)? // Optional
                       D=DLL T=(FUNCTION|PROCEDURE) Id=identifier ParamList=parameterList (AS Type=datatype)? 
                       (CallingConvention=dllcallconv)? COLON
                       Dll=identifierString (DOT Extension=identifierString)?
@@ -132,6 +133,19 @@ vodll               : (Attributes=attributes)? (Modifiers=funcprocModifiers)? //
                     ;
 
 dllcallconv         : Cc=( CLIPPER | STRICT | PASCAL | THISCALL | FASTCALL | ASPEN | WINCALL | CALLBACK)
+                    ;
+
+
+
+                    // Note that when an alias is specified (AS) then that is the name that we should use and then the Id is the entrypoint
+foxdll              : (Modifiers=funcprocModifiers)? // Optional
+                      DECLARE (Type=datatype)? Id=identifier IN Dll=identifier (DOT Extension=identifierString)? (AS Alias=identifier)? 
+                      ( Params+=foxdllparam (COMMA Params+=foxdllparam)* )?
+                      EOS  
+                    ;
+
+
+foxdllparam         : (Attributes=attributes)? Type=datatype (Address=ADDROF)? (Name=identifier)?
                     ;
 
 

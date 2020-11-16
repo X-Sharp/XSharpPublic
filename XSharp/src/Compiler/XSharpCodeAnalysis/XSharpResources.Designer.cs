@@ -5156,6 +5156,15 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to DECLARE DLL Statements in .Net cannot have a STRING parameter by reference because .Net strings are immutable. Use a System.Text.StringBuilder argument instead..
+        /// </summary>
+        internal static string ERR_FoxDeclareDLLStringByReference {
+            get {
+                return ResourceManager.GetString("ERR_FoxDeclareDLLStringByReference", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Friend assembly reference &apos;{0}&apos; is invalid. InternalsVisibleTo declarations cannot have a version, culture, public key token, or processor architecture specified..
         /// </summary>
         internal static string ERR_FriendAssemblyBadArgs {

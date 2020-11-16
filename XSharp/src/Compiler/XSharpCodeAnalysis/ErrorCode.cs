@@ -1736,6 +1736,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         WRN_FoxUnsupportedClause = 9230,
         ERR_FoxAsClauseMandatory = 9231,
         ERR_FoxCtorDtor = 9232,
+        ERR_FoxDeclareDLLStringByReference = 9233,
         ERR_Internal = 9999
         #endregion X#-only messages
     }

@@ -477,6 +477,14 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
         }
 
+        public override void ExitFoxdll( XSharpParser.FoxdllContext context)
+        {
+            if (_options.Dialect != XSharpDialect.FoxPro)
+            {
+                NotInDialect(context, "DECLARE - DLL command");
+            }
+        }
+
         public override void ExitFielddecl(XSharpParser.FielddeclContext context)
         {
            NotInCore(context, "FIELD statement");

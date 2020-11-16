@@ -746,6 +746,17 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             public String ShortName => this.Vars._Var.FirstOrDefault().Id.GetText();
             public FuncprocModifiersContext FuncProcModifiers => Modifiers;
         }
+        public partial class FoxdllContext : IEntityContext, IGlobalEntityContext
+        {
+            EntityData data = new EntityData();
+            public EntityData Data => data;
+            public ParameterListContext Params => null;
+            public DatatypeContext ReturnType => this.Type;
+            public String Name => this.Id.GetText();
+            public String ShortName => this.Id.GetText();
+            public FuncprocModifiersContext FuncProcModifiers => Modifiers;
+        }
+
         public partial class FuncprocModifiersContext
         {
             public bool IsStaticVisible { get; set; }

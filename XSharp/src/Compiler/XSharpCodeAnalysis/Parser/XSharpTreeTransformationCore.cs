@@ -150,10 +150,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         protected readonly XSharpParser _parser;
         protected readonly CSharpParseOptions _options;
         protected readonly TypeSyntax _ptrType;
-        protected readonly TypeSyntax _objectType;
-        protected readonly TypeSyntax _voidType;
         protected readonly TypeSyntax _impliedType;
-        protected readonly TypeSyntax _stringType;
         protected readonly TypeSyntax _intType;
         protected readonly TypeSyntax _dateTimeType;
         protected readonly ArrayTypeSyntax _byteArrayType;
@@ -171,14 +168,17 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         #endregion
 
         #region Static Fields
-        static TypeSyntax intType = null;
-        static TypeSyntax uintType = null;
-        static TypeSyntax floatType = null;
-        static TypeSyntax decimalType = null;
-        static TypeSyntax doubleType = null;
-        static TypeSyntax ulongType = null;
-        static TypeSyntax longType = null;
-        static TypeSyntax stringType = null;
+        protected static TypeSyntax intType = null;
+        protected static TypeSyntax uintType = null;
+        protected static TypeSyntax floatType = null;
+        protected static TypeSyntax decimalType = null;
+        protected static TypeSyntax doubleType = null;
+        protected static TypeSyntax ulongType = null;
+        protected static TypeSyntax longType = null;
+        protected static TypeSyntax stringType = null;
+        protected static TypeSyntax voidType;
+        protected static TypeSyntax objectType;
+
         static readonly object oGate = new object();
         #endregion  
 
@@ -246,9 +246,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             GlobalClassName = GetGlobalClassName(_options.TargetDLL);
             GlobalEntities = CreateEntities();
             _ptrType = GenerateQualifiedName(SystemQualifiedNames.IntPtr);
-            _objectType = _syntaxFactory.PredefinedType(SyntaxFactory.MakeToken(SyntaxKind.ObjectKeyword));
-            _voidType = _syntaxFactory.PredefinedType(SyntaxFactory.MakeToken(SyntaxKind.VoidKeyword));
-            _stringType = _syntaxFactory.PredefinedType(SyntaxFactory.MakeToken(SyntaxKind.StringKeyword));
             _intType = _syntaxFactory.PredefinedType(SyntaxFactory.MakeToken(SyntaxKind.IntKeyword));
             _dateTimeType = GenerateQualifiedName("System.DateTime");
             var emptysizes = _pool.AllocateSeparated<ExpressionSyntax>();
@@ -743,12 +740,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         protected TypeSyntax VoidType()
         {
-            return _voidType;
+            return voidType;
         }
 
         protected TypeSyntax MissingType()
         {
-            return _objectType
+            return objectType
                 .WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.ERR_TypeExpected));
         }
 
@@ -766,6 +763,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     stringType = _syntaxFactory.PredefinedType(SyntaxFactory.MakeToken(SyntaxKind.StringKeyword));
                     ulongType = _syntaxFactory.PredefinedType(SyntaxFactory.MakeToken(SyntaxKind.ULongKeyword));
                     longType = _syntaxFactory.PredefinedType(SyntaxFactory.MakeToken(SyntaxKind.LongKeyword));
+                    objectType = _syntaxFactory.PredefinedType(SyntaxFactory.MakeToken(SyntaxKind.ObjectKeyword));
+                    voidType = _syntaxFactory.PredefinedType(SyntaxFactory.MakeToken(SyntaxKind.VoidKeyword));
                 }
 
 
@@ -803,11 +802,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         else if (val.Value is long)
                             type = longType;
                         else
-                            type = _objectType;
+                            type = objectType;
                         break;
 
                     case XP.INVALID_NUMBER:
-                        type = _objectType;
+                        type = objectType;
                         break;
                     case XP.CHAR_CONST:
                         type = _syntaxFactory.PredefinedType(SyntaxFactory.MakeToken(SyntaxKind.CharKeyword));
@@ -940,7 +939,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 isConst = leftIsConst && rightIsConst;
                 if (type != type2 && type.ToFullString() != type2.ToFullString())
                 {
-                    if (type == _objectType)
+                    if (type == objectType)
                     {
                         type = type2;
                     }
@@ -956,7 +955,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 isConst = leftIsConst && rightIsConst;
                 if (type != type2 && type.ToFullString() != type2.ToFullString())
                 {
-                    if (type == _objectType)
+                    if (type == objectType)
                     {
                         type = type2;
                     }
@@ -967,13 +966,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 var e = expr as XP.PrefixExpressionContext;
                 type = GetExpressionType(e.Expr, ref isConst);
                 if (e.Op.Type == XP.ADDROF)
-                    type = _syntaxFactory.PointerType(_voidType, SyntaxFactory.MakeToken(SyntaxKind.AmpersandToken));
+                    type = _syntaxFactory.PointerType(voidType, SyntaxFactory.MakeToken(SyntaxKind.AmpersandToken));
                 else
                     type = GetExpressionType(e.Expr, ref isConst);
             }
             if (type == null)
             {
-                type = _objectType;
+                type = objectType;
             }
             if (type is PredefinedTypeSyntax)
             {
@@ -1618,7 +1617,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             else
             {
                 suffix = XSharpSpecialNames.AssignSuffix;
-                returntype = _voidType;
+                returntype = voidType;
             }
             var name = SyntaxFactory.Identifier(context.Id.GetText() + suffix);
             var parameters = context.ParamList?.Get<ParameterListSyntax>() ?? EmptyParameterList();
@@ -4762,7 +4761,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             return parameters;
         }
 
-        private AttributeSyntax _unmanagedCodeAttribute()
+        protected AttributeSyntax _unmanagedCodeAttribute()
         {
             var attrargs = _pool.AllocateSeparated<AttributeArgumentSyntax>();
             var attrib = _syntaxFactory.Attribute(
@@ -4792,9 +4791,15 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                                   _syntaxFactory.IdentifierName(id)));
             var attribs = new List<AttributeArgumentSyntax>() { _syntaxFactory.AttributeArgument(null, null, dllExpr), charset };
             if (entrypointExpr != null)
+            {
                 attribs.Add(_syntaxFactory.AttributeArgument(GenerateNameEquals("EntryPoint"), null, entrypointExpr));
+                attribs.Add(_syntaxFactory.AttributeArgument(GenerateNameEquals("ExactSpelling"), null, GenerateLiteral(true)));
+            }
+            else
+            {
+                attribs.Add(_syntaxFactory.AttributeArgument(GenerateNameEquals("ExactSpelling"), null, GenerateLiteral(false)));
+            }
             attribs.Add(_syntaxFactory.AttributeArgument(GenerateNameEquals("SetLastError"), null, GenerateLiteral(true)));
-            attribs.Add(_syntaxFactory.AttributeArgument(GenerateNameEquals("ExactSpelling"), null, GenerateLiteral(true)));
             if (context.CallingConvention != null)
                 attribs.Add(context.CallingConvention.Get<AttributeArgumentSyntax>());
             return _syntaxFactory.Attribute(
@@ -4804,7 +4809,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         }
         public override void ExitVodll([NotNull] XP.VodllContext context)
         {
-            // The Parser Rule has attributes but these are ignored for now.
+            // todo: declare and process attributes 
             string dllName = context.Dll.GetText();
             if (context.Extension != null)
             {
@@ -4830,6 +4835,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             var attributes = MakeSeparatedList(_unmanagedCodeAttribute(),
                                                 _dllImportAttribute(context, dllExpr, entrypointExpr)
                                               );
+           
             var attList = MakeList(MakeAttributeList(target: null, attributes: attributes));
 
             context.Put(_syntaxFactory.MethodDeclaration(
@@ -5062,12 +5068,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     }
                     else
                     {
-                        returntype = _voidType;
+                        returntype = voidType;
                     }
                 }
                 else if (context.Data.IsEntryPoint)
                 {
-                    returntype = _voidType;
+                    returntype = voidType;
                 }
             }
 
@@ -5645,9 +5651,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         _syntaxFactory.FieldDeclaration(
                             EmptyList<AttributeListSyntax>(),
                             TokenList(SyntaxKind.StaticKeyword, SyntaxKind.InternalKeyword),
-                            _syntaxFactory.VariableDeclaration(_objectType,
+                            _syntaxFactory.VariableDeclaration(objectType,
                                 MakeSeparatedList(GenerateVariable(SyntaxFactory.Identifier(staticName + XSharpSpecialNames.StaticLocalLockFieldNameSuffix),
-                                        CreateObject(_objectType, EmptyArgumentList())))),
+                                        CreateObject(objectType, EmptyArgumentList())))),
                             SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken))
                         );
                 }
@@ -7266,7 +7272,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             if (argList.Arguments.Count != 1)
                 return false;
             expr = argList.Arguments[0].Expression;
-            expr = MakeCastTo(_stringType, expr);
+            expr = MakeCastTo(stringType, expr);
             var cond = _syntaxFactory.BinaryExpression(SyntaxKind.EqualsExpression,
                         expr,
                         SyntaxFactory.MakeToken(SyntaxKind.EqualsEqualsToken),

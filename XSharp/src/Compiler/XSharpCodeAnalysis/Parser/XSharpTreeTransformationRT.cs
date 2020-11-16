@@ -195,7 +195,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                                 SyntaxFactory.MakeToken(SyntaxKind.CloseBracketToken));
                 _pool.Free(emptysizes);
                 arrayOfUsual = _syntaxFactory.ArrayType(_usualType, emptyrank);
-                arrayOfString = _syntaxFactory.ArrayType(_stringType, emptyrank);
+                arrayOfString = _syntaxFactory.ArrayType(stringType, emptyrank);
             }
         }
         private static XSharpTreeTransformationRT getTransform(CSharpParseOptions options)
@@ -346,7 +346,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             var mods = TokenList(isApp ? SyntaxKind.InternalKeyword : SyntaxKind.PublicKeyword, SyntaxKind.StaticKeyword);
             var pars = EmptyParameterList();
             var m = SyntaxFactory.MethodDeclaration(MakeCompilerGeneratedAttribute(), mods,
-                _voidType, /*explicitif*/null,
+                voidType, /*explicitif*/null,
                 SyntaxFactory.Identifier(functionName), /*typeparams*/null, pars,/* constraints*/null, MakeBlock(stmts),/*exprbody*/null,
                 SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken));
 
@@ -412,7 +412,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
             var appExit = _syntaxFactory.MethodDeclaration(
                 MakeCompilerGeneratedAttribute(), modifiers,
-                _voidType, null, appId, null, EmptyParameterList(),
+                voidType, null, appId, null, EmptyParameterList(),
                 null, body, null, SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken));
             appExit.XGenerated = true;
             return appExit;
@@ -425,7 +425,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             var modifiers = TokenList(SyntaxKind.PublicKeyword, SyntaxKind.StaticKeyword);
             var initProcs = _syntaxFactory.MethodDeclaration(
                 MakeCompilerGeneratedAttribute(), modifiers,
-                _voidType, null, appId, null, EmptyParameterList(),
+                voidType, null, appId, null, EmptyParameterList(),
                 null, body, null, SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken));
             initProcs.XGenerated = true;
             return initProcs;
@@ -491,7 +491,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
             var appInit = _syntaxFactory.MethodDeclaration(
                 MakeCompilerGeneratedAttribute(), modifiers,
-                _voidType, null, appId, null, EmptyParameterList(),
+                voidType, null, appId, null, EmptyParameterList(),
                 null, body, null, SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken));
             _pool.Free(stmts);
             appInit.XGenerated = true;
@@ -519,7 +519,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
             var stmts = new List<StatementSyntax>();
             BlockSyntax epcall;
-            var returntype = context.ReturnType.Get<TypeSyntax>() ?? _voidType;
+            var returntype = context.ReturnType.Get<TypeSyntax>() ?? voidType;
             // XPP dialect has a procedure main as entrypoint
             if (context.Data.HasClipperCallingConvention && _options.Dialect == XSharpDialect.XPP)
             {
@@ -646,7 +646,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     SyntaxList<AttributeListSyntax> attributeList, ParameterListSyntax parList)
         {
             // only
-            var returntype = context.ReturnType.Get<TypeSyntax>() ?? _voidType;
+            var returntype = context.ReturnType.Get<TypeSyntax>() ?? voidType;
             if (parList.Parameters.Count > 0)
             {
                 var parameter = parList.Parameters[0];
@@ -1270,7 +1270,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             if (type == null)
             {
-                type = NotInDialect(_objectType, context.Token.Text);
+                type = NotInDialect(objectType, context.Token.Text);
             }
             context.Put(type);
         }
@@ -2794,7 +2794,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             var arg2 = MakeArgument(MakeTypeOf(tname));
             var args = MakeArgumentList(arg1, arg2);
             ExpressionSyntax expr = GenerateMethodCall(SystemQualifiedNames.GetDelegate, args);
-            expr = MakeCastTo(_objectType, expr);
+            expr = MakeCastTo(objectType, expr);
             expr = MakeCastTo(tname, expr);
             var stmt = GenerateReturn(expr);
             var block = MakeBlock(stmt);
@@ -2847,7 +2847,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 var pname = SyntaxFactory.Identifier("$param" + i.ToString());
                 var param = _syntaxFactory.Parameter(EmptyList<AttributeListSyntax>(),
                     EmptyList<SyntaxToken>(),
-                    _objectType,
+                    objectType,
                     pname,
                     null);
                 @params.Add(param);
@@ -2977,7 +2977,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             // Return type and parameters should match the method prototype that the first parameter
             // For now we default to a return type of _objectType
             // points to. This is resolved in the binder and rewriter
-            return AddPCallDelegate(context, XSharpSpecialNames.PCallPrefix, _objectType);
+            return AddPCallDelegate(context, XSharpSpecialNames.PCallPrefix, objectType);
         }
         private bool GeneratePCallNative(XP.MethodCallContext context)
         {

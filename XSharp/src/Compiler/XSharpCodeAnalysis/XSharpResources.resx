@@ -5727,6 +5727,9 @@ To remove the warning, you can use /reference instead (set the Embed Interop Typ
   <data name="WRN_TryWithoutCatch" xml:space="preserve">
     <value>TRY statement found without CATCH clause and without FINALLY clause. The compiler will generate a default CATCH clause that catches and ignores all exceptions.</value>
   </data>
-  
+  <data name="ERR_FoxDeclareDLLStringByReference" xml:space="preserve">
+    <value>DECLARE DLL Statements in .Net cannot have a STRING parameter by reference because .Net strings are immutable. Use a System.Text.StringBuilder argument instead.</value>
+  </data>
 
+  
 </root>

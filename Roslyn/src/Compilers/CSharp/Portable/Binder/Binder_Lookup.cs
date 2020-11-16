@@ -738,7 +738,13 @@ namespace Microsoft.CodeAnalysis.CSharp
                 {
                     break;
                 }
-
+#if XSHARP
+                // in the VO dialect the constructor call does not have to be chained.
+                // When resolving SUPER() calls we only want to consider the immediate parent level
+                // These are compiled into method calls like SUPER:.ctor(......)
+                if (name == WellKnownMemberNames.InstanceConstructorName) 
+                    break;
+#endif
                 currentType = currentType.GetNextBaseTypeNoUseSiteDiagnostics(basesBeingResolved, this.Compilation, ref visited);
                 if ((object)currentType != null)
                 {

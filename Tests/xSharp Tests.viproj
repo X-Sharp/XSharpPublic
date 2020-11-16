@@ -87437,7 +87437,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   Optimize=0
 ENDApplication = C748 - Problem using REF parameters when /fox2 (Locals visible to macrocompiler) option is enabled
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = A95A4D23-3574-40FD-B873-22D28ACCA212
 ; ************** APPLICATION R744 - Constructor Chaining *************
 Application = R744 - Constructor Chaining
 IDEVersion = 1.06
@@ -87445,7 +87445,7 @@ GalleryName =
 GalleryPage = 
 GalleryDefaultName = 
 Target = 0
-Platform = AnyCPU
+Platform = x86
 Language = XSharp
 Runtime = CLR4
 Dialect = VO

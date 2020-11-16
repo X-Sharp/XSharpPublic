@@ -40,8 +40,8 @@ CONSTRUCTOR(test1 AS STRING) AS VOID STRICT
 	
 	Print()
 	
-	//invalid super call
-	SUPER()
+	
+	SUPER()  //invalid super call. This should report an error
 	
 	RETURN 
 	   

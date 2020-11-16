@@ -40,7 +40,7 @@ namespace XSharp
         public const string LegacyXSharpGuid = "AA6C8D78-22FF-423A-9C7C-5F2393824E04";
         public const string ProjectSelectorGuid = "5F81BD32-54BC-4245-9EBA-FA00F3DA9A35";
 
-        public const string CPSPackageGuid = "D79AA3F8-FE25-42C0-854D-CF22EBE83818";
+        public const string CPSPackageGuid = "1460504D-9003-404C-A78A-57E9A2F59358";
         public const string CpsProjectTypeGuid = "286E78A2-2FBA-47EA-A12B-EAEC3D38BC7C";
 
 

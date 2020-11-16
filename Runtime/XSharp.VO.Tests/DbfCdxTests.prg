@@ -3850,6 +3850,204 @@ RETURN
 
 			DbCloseArea()
 
+        [Fact, Trait("Category", "DBF")];
+		METHOD SetRelation_test() AS VOID
+			LOCAL cParent,cChild,cTemp AS STRING
+			LOCAL cbExpression AS USUAL
+			LOCAL u1,u2 AS USUAL
+			RddSetDefault("DBFCDX")
+			cTemp := GetTempFileName()
+			cParent := cTemp + "_parent"
+			cChild := cTemp + "_child"
+
+			DbCreate(cParent , {{"FLD" , "N" , 3 , 0}})
+			DbCreate(cChild  , {{"FLD" , "N" , 3 , 0}})
+			
+			DbUseArea(TRUE,"DBFCDX", cParent, "parent" , TRUE)
+			parent->DbAppend()
+			parent->FieldPut(1,3)
+			
+			DbUseArea(TRUE,"DBFCDX", cChild, "child" , TRUE)
+			child->DbCreateIndex(cChild,"FLD")
+			FOR LOCAL n := 1 AS INT UPTO 5
+			child->DbAppend()
+			child->FieldPut(1,n)
+			NEXT
+			
+			cbExpression := &( "{ || FLD }")
+			child->DbGoBottom()
+			? "evaluate in bottom, must be 5:", child->Eval( cbExpression ) // 3
+			Assert.Equal(5 , (INT)child->Eval( cbExpression ))
+			
+			Assert.True( parent->VoDbSetRelation("child" , cbExpression ,"FLD") )
+			parent->DbGoTop()
+			
+			child->DbSkip(0) // this throws a runtime error in __FieldGet()
+			
+			? "Recno must be 3:",child->RecNo()
+			Assert.Equal(3 , child->RecNo() )
+			?
+			? "evaluate after SetRelation(), must be 3:", child->Eval( cbExpression )
+			Assert.Equal(3 , (INT)child->Eval( cbExpression ))
+			? "Recno should be 3:", child->RecNo()
+			Assert.Equal(3 , child->RecNo() )
+			
+			u1 := u2 := 3
+			Assert.True( child->VoDbOrderInfo( DBOI_SCOPETOP	 , "", NIL, REF u1 ) )
+			Assert.True( child->VoDbOrderInfo( DBOI_SCOPEBottom, "", NIL, REF u2 ) )
+			parent->DbGoTop()
+			
+			
+			child->DbGoTop()
+			? "recno after set scope, must be 3:", child->RecNo()
+			Assert.Equal(3 , child->RecNo() )
+			
+			? "Skipping forward, all must be 6 , FALSE, TRUE"
+			child->DbSkip(+1)
+			? child->RecNo() , child->Bof() , child->Eof()
+			Assert.Equal(6 , child->RecNo() )
+			Assert.False(child->Bof())
+			Assert.True(child->Eof())
+
+			child->DbSkip(+1)
+			? child->RecNo() , child->Bof() , child->Eof()
+			Assert.Equal(6 , child->RecNo() )
+			Assert.False(child->Bof())
+			Assert.True(child->Eof())
+
+			child->DbSkip(+1)
+			? child->RecNo() , child->Bof() , child->Eof()
+			Assert.Equal(6 , child->RecNo() )
+			Assert.False(child->Bof())
+			Assert.True(child->Eof())
+			
+			? "Skipping backward"
+			child->DbSkip(-1)
+			? child->RecNo() , child->Bof() , child->Eof() // must be 3, false, false
+			Assert.Equal(3 , child->RecNo() )
+			Assert.False(child->Bof())
+			Assert.False(child->Eof())
+
+			child->DbSkip(-1)
+			? child->RecNo() , child->Bof() , child->Eof() // must be 3, TRUE, false
+			Assert.Equal(3 , child->RecNo() )
+			Assert.True(child->Bof())
+			Assert.False(child->Eof())
+
+			child->DbSkip(-1)
+			? child->RecNo() , child->Bof() , child->Eof() // must be 3, TRUE, false
+			Assert.Equal(3 , child->RecNo() )
+			Assert.True(child->Bof())
+			Assert.False(child->Eof())
+
+			child->DbSkip(-1)
+			? child->RecNo() , child->Bof() , child->Eof() // must be 3, TRUE, false
+			Assert.Equal(3 , child->RecNo() )
+			Assert.True(child->Bof())
+			Assert.False(child->Eof())
+
+			child->DbCloseArea()
+			parent->DbCloseArea()
+
+        [Fact, Trait("Category", "DBF")];
+		METHOD SetRelation_test_larger() AS VOID
+			LOCAL cParent,cChild,cTemp AS STRING
+			LOCAL cbExpression AS USUAL
+			LOCAL u1,u2 AS USUAL
+			RddSetDefault("DBFCDX")
+			cTemp := GetTempFileName()
+			cParent := cTemp + "_parent"
+			cChild := cTemp + "_child"
+
+			DbCreate(cParent , {{"FLD" , "N" , 3 , 0}})
+			DbCreate(cChild  , {{"FLD" , "N" , 3 , 0}})
+			
+			DbUseArea(TRUE,"DBFCDX", cParent, "parent2" , TRUE)
+			parent2->DbAppend()
+			parent2->FieldPut(1,3)
+			
+			DbUseArea(TRUE,"DBFCDX", cChild, "child2" , TRUE)
+			child2->DbCreateIndex(cChild,"FLD")
+			FOR LOCAL n := 1 AS INT UPTO 15
+			child2->DbAppend()
+			child2->FieldPut(1,n)
+			NEXT
+			
+			cbExpression := &( "{ || FLD }")
+			child2->DbGoBottom()
+			? "evaluate in bottom, must be 5:", child2->Eval( cbExpression ) // 3
+			Assert.Equal(5 , (INT)child2->Eval( cbExpression ))
+			
+			Assert.True( parent2->VoDbSetRelation("child" , cbExpression ,"FLD") )
+			parent2->DbGoTop()
+			
+//			child2->DbSkip(0) // this throws a runtime error in __FieldGet()
+			
+			? "Recno must be 3:",child2->RecNo()
+			Assert.Equal(3 , child2->RecNo() )
+			?
+			? "evaluate after SetRelation(), must be 3:", child2->Eval( cbExpression )
+//			Assert.Equal(3 , (INT)child2->Eval( cbExpression ))
+			? "Recno should be 3:", child2->RecNo()
+			Assert.Equal(3 , child2->RecNo() )
+			
+			u1 := u2 := 3
+			Assert.True( child2->VoDbOrderInfo( DBOI_SCOPETOP	 , "", NIL, REF u1 ) )
+			Assert.True( child2->VoDbOrderInfo( DBOI_SCOPEBottom, "", NIL, REF u2 ) )
+			parent2->DbGoTop()
+			
+			
+			child2->DbGoTop()
+			? "recno after set scope, must be 3:", child2->RecNo()
+			Assert.Equal(3 , child2->RecNo() )
+			
+			? "Skipping forward, all must be 16 , FALSE, TRUE"
+			child2->DbSkip(+1)
+			? child2->RecNo() , child2->Bof() , child2->Eof()
+			Assert.Equal(16 , child2->RecNo() )
+			Assert.False(child2->Bof())
+			Assert.True(child2->Eof())
+
+			child2->DbSkip(+1)
+			? child2->RecNo() , child2->Bof() , child2->Eof()
+			Assert.Equal(16 , child2->RecNo() )
+			Assert.False(child2->Bof())
+			Assert.True(child2->Eof())
+
+			child2->DbSkip(+1)
+			? child2->RecNo() , child2->Bof() , child2->Eof()
+			Assert.Equal(16 , child2->RecNo() )
+			Assert.False(child2->Bof())
+			Assert.True(child2->Eof())
+			
+			? "Skipping backward"
+			child2->DbSkip(-1)
+			? child2->RecNo() , child2->Bof() , child2->Eof() // must be 3, false, false
+			Assert.Equal(3 , child2->RecNo() )
+			Assert.False(child2->Bof())
+			Assert.False(child2->Eof())
+
+			child2->DbSkip(-1)
+			? child2->RecNo() , child2->Bof() , child2->Eof() // must be 3, TRUE, false
+			Assert.Equal(3 , child2->RecNo() )
+			Assert.True(child2->Bof())
+			Assert.False(child2->Eof())
+
+			child2->DbSkip(-1)
+			? child2->RecNo() , child2->Bof() , child2->Eof() // must be 3, TRUE, false
+			Assert.Equal(3 , child2->RecNo() )
+			Assert.True(child2->Bof())
+			Assert.False(child2->Eof())
+
+			child2->DbSkip(-1)
+			? child2->RecNo() , child2->Bof() , child2->Eof() // must be 3, TRUE, false
+			Assert.Equal(3 , child2->RecNo() )
+			Assert.True(child2->Bof())
+			Assert.False(child2->Eof())
+
+			child2->DbCloseArea()
+			parent2->DbCloseArea()
+
 		STATIC PRIVATE METHOD GetTempFileName() AS STRING
            STATIC nCounter AS LONG
             ++nCounter

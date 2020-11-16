@@ -150,9 +150,9 @@ namespace Microsoft.CodeAnalysis.CSharp
             BoundExpression opCall = null;
             ImmutableArray<Symbol> symbols;
             if (node.OperatorToken.Kind() == SyntaxKind.MinusToken)
-                symbols = Binder.GetCandidateMembers(usualType, "op_Subtraction", LookupOptions.MustNotBeInstance, this);
+                symbols = Binder.GetCandidateMembers(usualType, WellKnownMemberNames.SubtractionOperatorName, LookupOptions.MustNotBeInstance, this);
             else
-                symbols = Binder.GetCandidateMembers(usualType, "op_Addition", LookupOptions.MustNotBeInstance, this);
+                symbols = Binder.GetCandidateMembers(usualType, WellKnownMemberNames.AdditionOperatorName, LookupOptions.MustNotBeInstance, this);
             if (symbols.Length == 1)
             {
                 MethodSymbol opMeth = (MethodSymbol)symbols[0];

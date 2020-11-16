@@ -19,7 +19,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         // Cache the Usual2Ptr conversion since it may be used quite often and there are 43 overloads for op_Implicit.
         private MethodSymbol getImplicitOperator(TypeSymbol srcType, TypeSymbol destType)
         {
-            var members = srcType.GetMembers("op_Implicit");
+            var members = srcType.GetMembers(WellKnownMemberNames.ImplicitConversionName);
             foreach (MethodSymbol m in members)
             {
                 if (m.ReturnType == destType)
@@ -32,7 +32,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         }
         private MethodSymbol getExplicitOperator(TypeSymbol srcType, TypeSymbol destType)
         {
-            var members = srcType.GetMembers("op_Explicit");
+            var members = srcType.GetMembers(WellKnownMemberNames.ExplicitConversionName);
             foreach (MethodSymbol m in members)
             {
                 if (m.ReturnType == destType)
@@ -69,7 +69,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 // Implementation here
                 if (nts != null && nts.IsInterface && rewrittenType == usualType)
                 {
-                    var members = usualType.GetMembers("op_Implicit");
+                    var members = usualType.GetMembers(WellKnownMemberNames.ImplicitConversionName);
                     foreach (var m in members)
                     {
                         var pt = m.GetParameterTypes()[0] as TypeSymbol;

@@ -6,8 +6,8 @@
 // After the error happens once, then _ALL_ following compiles result to the same error
 // (btw, this was occuring also in the past from time to time, but in beta10 it is always reproducible)
 
-#include "VOSystemLibrary.vh"
-#include "VOSystemClasses.vh"
+//#include "VOSystemLibrary.vh"
+//#include "VOSystemClasses.vh"
 
 FUNCTION Start() AS VOID
 ? "just something to keep the compiler parsing"

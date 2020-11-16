@@ -1,7 +1,12 @@
 // 312. PCALL with class field 
 // note: vulcan does not require /vo6 for this to compile. But it's not a big deal if we do require it in x#
 
-#include "VOWin32APILibrary.vh"
+#define ICC_DATE_CLASSES 0x00000100
+#define ICC_USEREX_CLASSES 0x00000200
+#define ICC_COOL_CLASSES 0x00000400
+#define ICC_INTERNET_CLASSES 0x00000800
+#define ICC_LINK_CLASS 0x00008000
+
 
 FUNCTION Start() AS VOID
 	TestClass{}:DoTest()

@@ -17,7 +17,7 @@ Typically reported for directives like the following one, found in the DBCmds.vh
 
 */
 
-#include "DBCmds.vh"
+#include "DBCmd.xh"
 FUNCTION Start( ) AS VOID
 	LOCAL cDbf AS STRING
 	cDbf := System.Environment.CurrentDirectory + "\C584.dbf"

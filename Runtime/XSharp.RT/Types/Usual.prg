@@ -173,7 +173,7 @@ BEGIN NAMESPACE XSharp
                 //  decode type from typecode
                 VAR typeCode := System.Type.GetTypeCode(vartype)
                 SWITCH typeCode
-                CASE  System.TypeCode.DBNull
+                CASE System.TypeCode.DBNull
                     // do nothing
                     NOP
 
@@ -2685,8 +2685,8 @@ BEGIN NAMESPACE XSharp
             /// <inheritdoc />
         PUBLIC METHOD IConvertible.ToChar(provider AS System.IFormatProvider) AS CHAR
             VAR o := __Usual.ToObject(SELF)
-            IF o IS IConvertible
-                RETURN ((IConvertible)o):ToChar(provider)
+            IF o IS IConvertible var ic
+                RETURN ic:ToChar(provider)
             ENDIF
             THROW InvalidCastException{}
 
@@ -2813,8 +2813,8 @@ BEGIN NAMESPACE XSharp
                 VAR o := __Usual:ToObject(SELF)
                 IF conversionType:IsAssignableFrom(o:GetType())
                     RETURN o
-                ELSEIF o IS IConvertible
-                    RETURN ((IConvertible) o):ToType(conversionType, provider)
+                ELSEIF o IS IConvertible VAR ic
+                    RETURN ic:ToType(conversionType, provider)
                 ELSE
                     RETURN o
                 ENDIF
@@ -2951,8 +2951,7 @@ BEGIN NAMESPACE XSharp
                  ENDIF
               ELSEIF (SELF:IsString .OR. SELF:IsLong) .AND. RuntimeState.Dialect  == XSharpDialect.XPP .AND. index:Length == 1
                  RETURN SELF:XppUsualIndex(index[1])
-              ELSEIF SELF:IsObject .AND. _refData IS IIndexedProperties
-                  VAR props := (IIndexedProperties) _refData
+              ELSEIF SELF:IsObject .AND. _refData IS IIndexedProperties VAR props
                   IF index:Length == 1
                       LOCAL pos AS LONG
                       pos := index[1]
@@ -2966,8 +2965,7 @@ BEGIN NAMESPACE XSharp
               IF SELF:IsArray
                  SELF:_arrayValue:__SetElement(value, index)
                  RETURN
-              ELSEIF SELF:IsObject .AND. _refData IS IIndexedProperties
-                  VAR props := (IIndexedProperties) _refData
+              ELSEIF SELF:IsObject .AND. _refData IS IIndexedProperties VAR props
                   IF index:Length == 1
                       LOCAL pos AS LONG
                       pos := index[1]
@@ -3004,6 +3002,18 @@ BEGIN NAMESPACE XSharp
 		/// <returns>The element stored at the indicated location in the collection.</returns>
         /// <remarks>When the contents of the USUAL is not an array or does not support indexed access then a runtime error is generated.</remarks>
 
+        INTERNAL PROPERTY IsIndexed AS LOGIC
+            GET
+                IF SELF:IsArray
+                    RETURN TRUE
+                ENDIF
+                IF (SELF:IsString .OR. SELF:IsLong) .AND. RuntimeState.Dialect  == XSharpDialect.XPP
+                    RETURN TRUE
+                ENDIF
+                RETURN FALSE
+            END GET
+        END PROPERTY
+
         PROPERTY SELF[index AS INT ] AS USUAL
             GET
                 IF SELF:IsArray
@@ -3016,7 +3026,8 @@ BEGIN NAMESPACE XSharp
 
                 VAR indexer := _refData ASTYPE IIndexedProperties
                 IF indexer == NULL
-                    THROW InvalidCastException{VO_Sprintf(VOErrors.USUALNOTINDEXED, typeof(IIndexedProperties):FullName)}
+                    var error := Error{VO_Sprintf(VOErrors.USUALNOTINDEXED, typeof(IIndexedProperties):FullName)}
+                    THROW error
                 ENDIF
                 RETURN indexer[index]                    
             END GET

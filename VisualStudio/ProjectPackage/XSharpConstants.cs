@@ -11,14 +11,7 @@ using System.Threading.Tasks;
 using XSharp.LanguageService;
 namespace XSharp.Project
 {
-    public static class XSharpProjectFileConstants
-    {
-
-        public const string NativeResource = "NativeResource";
-        public const string VOBinary = "VOBinary";
-        public const string Settings = "Settings";
-
-    }
+ 
 	  /// <summary>
         /// Indexes to the embedded ImageList .bmp
         /// </summary>

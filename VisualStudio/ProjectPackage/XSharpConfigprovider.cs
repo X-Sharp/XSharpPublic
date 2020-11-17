@@ -164,7 +164,7 @@ namespace XSharp.Project
             return VSConstants.S_OK;
         }
 
-        internal override OutputGroup CreateOutputGroup(ProjectNode project, KeyValuePair<string, string> group)
+        protected override OutputGroup CreateOutputGroup(ProjectNode project, KeyValuePair<string, string> group)
         {
             OutputGroup outputGroup = new XSharpOutputGroup(group.Key, group.Value, project, this);
             return outputGroup;

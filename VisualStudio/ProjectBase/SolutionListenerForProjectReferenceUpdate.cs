@@ -17,8 +17,8 @@ using System.Runtime.InteropServices;
 using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Shell.Interop;
 using IServiceProvider = System.IServiceProvider;
-using XSharp.Project;
 using XSharpModel;
+
 
 namespace Microsoft.VisualStudio.Project
 {

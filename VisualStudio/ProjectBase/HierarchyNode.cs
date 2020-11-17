@@ -29,7 +29,6 @@ using ShellConstants = Microsoft.VisualStudio.Shell.Interop.Constants;
 using VsCommands = Microsoft.VisualStudio.VSConstants.VSStd97CmdID;
 using VsCommands2K = Microsoft.VisualStudio.VSConstants.VSStd2KCmdID;
 using IOleServiceProvider = Microsoft.VisualStudio.OLE.Interop.IServiceProvider;
-using XSharp.Project;
 using XSharpModel;
 
 namespace Microsoft.VisualStudio.Project
@@ -253,7 +252,7 @@ namespace Microsoft.VisualStudio.Project
         /// Returns an object that is a special view over this object; this is the value
         /// returned by the Object property of the automation objects.
         /// </summary>
-        internal virtual object Object
+        public virtual object Object
         {
             get { return this; }
         }
@@ -521,14 +520,14 @@ namespace Microsoft.VisualStudio.Project
             this.hierarchyId = this.projectMgr.ItemIdMap.Add(this);
             this.oleServiceProvider.AddService(typeof(IVsHierarchy), root, false);
       }
-      #endregion
+        #endregion
 
-      #region static methods
-      /// <summary>
-      /// Get the outer IVsHierarchy implementation.
-      /// This is used for scenario where a flavor may be modifying the behavior
-      /// </summary>
-      internal static IVsHierarchy GetOuterHierarchy(HierarchyNode node)
+        #region static methods
+        /// <summary>
+        /// Get the outer IVsHierarchy implementation.
+        /// This is used for scenario where a flavor may be modifying the behavior
+        /// </summary>
+        public static IVsHierarchy GetOuterHierarchy(HierarchyNode node)
       {
          IVsHierarchy hierarchy = null;
          // The hierarchy of a node is its project node hierarchy
@@ -754,14 +753,10 @@ namespace Microsoft.VisualStudio.Project
                 case __VSHPROPID.VSHPROPID_ParentHierarchyItemid:
                     if(parentHierarchy != null)
                     {
-#if XSHARP
                         unchecked
                         {
                             result = (IntPtr) (int)parentHierarchyItemId; // VS requires VT_I4 | VT_INT_PTR
                         }
-#else
-                        result = (int)parentHierarchyItemId; // VS requires VT_I4 | VT_INT_PTR
-#endif
                     }
                     break;
 
@@ -1373,7 +1368,7 @@ namespace Microsoft.VisualStudio.Project
         /// </summary>
         /// <returns>null object, since a hierarchy node does not know its kind of document</returns>
         /// <remarks>Must be overriden by derived node classes if a document manager is needed</remarks>
-        protected internal virtual DocumentManager GetDocumentManager()
+        public virtual DocumentManager GetDocumentManager()
         {
             return null;
         }
@@ -3179,7 +3174,7 @@ namespace Microsoft.VisualStudio.Project
 #endregion
 
 #region helper methods
-	    internal virtual HierarchyNode FindChild(string name)
+	    public virtual HierarchyNode FindChild(string name)
         {
             if(String.IsNullOrEmpty(name))
             {
@@ -3227,7 +3222,7 @@ namespace Microsoft.VisualStudio.Project
         /// <typeparam name="T">The type of hierachy node being serched for</typeparam>
         /// <param name="nodes">A list of nodes of type T</param>
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-        internal void FindNodesOfType<T>(List<T> nodes)
+        public void FindNodesOfType<T>(List<T> nodes)
             where T : HierarchyNode
         {
             for (HierarchyNode n = this.FirstChild; n != null; n = n.NextSibling)

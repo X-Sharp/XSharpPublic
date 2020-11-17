@@ -21,8 +21,8 @@ using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using OleConstants = Microsoft.VisualStudio.OLE.Interop.Constants;
 using VsCommands2K = Microsoft.VisualStudio.VSConstants.VSStd2KCmdID;
-using XSharp.Project;
 using XSharpModel;
+
 
 namespace Microsoft.VisualStudio.Project
 {

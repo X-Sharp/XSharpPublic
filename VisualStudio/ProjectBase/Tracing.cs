@@ -10,12 +10,12 @@
  * ***************************************************************************/
 
 using System.Diagnostics;
-using XSharp.Project;
 using XSharpModel;
+
 
 namespace Microsoft.VisualStudio.Project
 {
-    internal class CCITracing
+    public  class CCITracing
     {
         private CCITracing() { }
 

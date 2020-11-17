@@ -112,7 +112,7 @@ namespace XSharp.Project
         /// DependentFileNodes node cannot be dragged.
         /// </summary>
         /// <returns>null</returns>
-        protected internal override StringBuilder PrepareSelectedNodesForClipBoard()
+        protected override StringBuilder PrepareSelectedNodesForClipBoard()
         {
             return null;
         }
@@ -121,7 +121,7 @@ namespace XSharp.Project
         /// Redraws the state icon if the node is not excluded from source control.
         /// </summary>
         [SuppressMessage("Microsoft.Naming", "CA1704:IdentifiersShouldBeSpelledCorrectly", MessageId = "Scc")]
-        protected internal override void UpdateSccStateIcons()
+        protected override void UpdateSccStateIcons()
         {
             if (!this.ExcludeNodeFromScc)
             {

@@ -27,6 +27,7 @@ namespace Microsoft.VisualStudio.Project
     [CLSCompliant(false)]
     public abstract class AsyncProjectPackage : Microsoft.VisualStudio.Shell.AsyncPackage
     {
+        public static AsyncProjectPackage Instance = null;
         #region fields
         /// <summary>
         /// This is the place to register all the solution listeners.
@@ -38,7 +39,7 @@ namespace Microsoft.VisualStudio.Project
         /// <summary>
         /// Add your listener to this list. They should be added in the overridden Initialize befaore calling the base.
         /// </summary>
-        internal IList<SolutionListener> SolutionListeners
+        public IList<SolutionListener> SolutionListeners
         {
             get
             {
@@ -52,6 +53,7 @@ namespace Microsoft.VisualStudio.Project
         #region ctor
         protected AsyncProjectPackage()
         {
+            Instance = this;
         }
 
         #endregion

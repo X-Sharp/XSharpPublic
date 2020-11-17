@@ -699,11 +699,12 @@ namespace Microsoft.VisualStudio.Project
             get
             {
                 string value = this.Node.ItemNode.GetEvaluatedMetadata(ProjectFileConstants.CopyToOutputDirectory);
-                if (String.IsNullOrEmpty(value))
+                VSPackage.CopyToOutputDirectory result;
+                if (! Enum.TryParse(value, true, out result))
                 {
-                    return VSPackage.CopyToOutputDirectory.DoNotCopy;
+                    result = VSPackage.CopyToOutputDirectory.DoNotCopy;
                 }
-                return (VSPackage.CopyToOutputDirectory)Enum.Parse(typeof(VSPackage.CopyToOutputDirectory), value);
+                return result;
             }
             set
             {
@@ -818,13 +819,13 @@ namespace Microsoft.VisualStudio.Project
         #endregion
 
         #region custom tool events
-        internal event EventHandler<HierarchyNodeEventArgs> OnCustomToolChanged
+        public event EventHandler<HierarchyNodeEventArgs> OnCustomToolChanged
         {
             add { onCustomToolChanged += value; }
             remove { onCustomToolChanged -= value; }
         }
 
-        internal event EventHandler<HierarchyNodeEventArgs> OnCustomToolNameSpaceChanged
+        public event EventHandler<HierarchyNodeEventArgs> OnCustomToolNameSpaceChanged
         {
             add { onCustomToolNameSpaceChanged += value; }
             remove { onCustomToolNameSpaceChanged -= value; }
@@ -1079,7 +1080,7 @@ namespace Microsoft.VisualStudio.Project
         {
             get
             {
-                var project = this.Node.ProjectMgr as XSharp.Project.XSharpProjectNode;
+                var project = this.Node.ProjectMgr as ProjectNode;
                 string parentName = (string)project.GetProperty((int)__VSHPROPID.VSHPROPID_DefaultNamespace);
                 string relativePath = project.GetRelativePath(this.Node.Url);
                 if (relativePath.EndsWith("\\"))

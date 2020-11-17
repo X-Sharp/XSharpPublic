@@ -92,12 +92,6 @@ namespace XSharp.Project
     [ProvideAutoLoad(VSConstants.UICONTEXT.SolutionExistsAndFullyLoaded_string, PackageAutoLoadFlags.BackgroundLoad)]
     // -- Async Package
     [DefaultRegistryRoot("Software\\Microsoft\\VisualStudio\\14.0")]
-    [ProvideObject(typeof(XSharpGeneralPropertyPage))]
-    [ProvideObject(typeof(XSharpLanguagePropertyPage))]
-    [ProvideObject(typeof(XSharpDialectPropertyPage))]
-    [ProvideObject(typeof(XSharpBuildPropertyPage))]
-    [ProvideObject(typeof(XSharpBuildEventsPropertyPage))]
-    [ProvideObject(typeof(XSharpDebugPropertyPage))]
     [ProvideProjectFactory(typeof(XSharpProjectFactory),
         LanguageName, ProjectFileMask, ProjectExtension, ProjectExtensions,
         @".NullPath", LanguageVsTemplate = "XSharp", NewProjectRequireNewFolderVsTemplate = false)]
@@ -172,6 +166,7 @@ namespace XSharp.Project
         private XSharpProjectSelector _projectSelector = null;
         private uint shellCookie;
 
+        public static XSharpProjectPackage XInstance = null;
         private XSharpLanguageService _langservice;
 
         // =========================================================================================
@@ -181,12 +176,10 @@ namespace XSharp.Project
         internal ITaskList TaskList => _taskList;
         internal IErrorList ErrorList => _errorList;
 
-        /// <summary>
-        /// Gets the singleton XSharpProjectPackage instance.
-        /// </summary>
-        public static XSharpProjectPackage Instance
+
+        public XSharpProjectPackage() : base()
         {
-            get { return XSharpProjectPackage.instance; }
+            XInstance = this;
         }
 
         public void OpenInBrowser(string url)

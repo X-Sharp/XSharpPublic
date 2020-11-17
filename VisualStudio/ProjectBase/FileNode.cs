@@ -19,11 +19,11 @@ using System.Globalization;
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Text;
-using XSharpModel;
+
 using OleConstants = Microsoft.VisualStudio.OLE.Interop.Constants;
 using VsCommands = Microsoft.VisualStudio.VSConstants.VSStd97CmdID;
 using VsCommands2K = Microsoft.VisualStudio.VSConstants.VSStd2KCmdID;
-
+using XSharpModel;
 namespace Microsoft.VisualStudio.Project
 {
     internal class Transactional
@@ -555,7 +555,7 @@ namespace Microsoft.VisualStudio.Project
         /// Returns a specific Document manager to handle files
         /// </summary>
         /// <returns>Document manager object</returns>
-        protected internal override DocumentManager GetDocumentManager()
+        public override DocumentManager GetDocumentManager()
         {
             return new FileDocumentManager(this);
         }
@@ -1263,7 +1263,7 @@ namespace Microsoft.VisualStudio.Project
         /// </summary>
         /// <param name="sender">FileNode sending it</param>
         /// <param name="e">Node event args</param>
-        internal virtual void OnCustomToolChanged(object sender, HierarchyNodeEventArgs e)
+        protected internal virtual void OnCustomToolChanged(object sender, HierarchyNodeEventArgs e)
         {
             this.RunGenerator();
         }
@@ -1273,7 +1273,7 @@ namespace Microsoft.VisualStudio.Project
         /// </summary>
         /// <param name="sender">FileNode sending it</param>
         /// <param name="e">Node event args</param>
-        internal virtual void OnCustomToolNameSpaceChanged(object sender, HierarchyNodeEventArgs e)
+        protected internal virtual void OnCustomToolNameSpaceChanged(object sender, HierarchyNodeEventArgs e)
         {
             this.RunGenerator();
         }

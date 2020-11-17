@@ -33,7 +33,7 @@ namespace Microsoft.VisualStudio.Project.Automation
         #endregion
 
         #region ctors
-        internal OAVSProject(ProjectNode project)
+        public OAVSProject(ProjectNode project)
         {
             this.project = project;
         }

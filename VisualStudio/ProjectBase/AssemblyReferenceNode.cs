@@ -48,20 +48,14 @@ namespace Microsoft.VisualStudio.Project
 
         #region properties
 
-        internal string AssemblyPath
+        public string AssemblyPath
         {
             get { return assemblyPath; }
             set
             {
-                if (! String.IsNullOrEmpty(assemblyPath))
-                {
-                    this.fileChangeListener.StopObservingItem(this.assemblyPath);
-                }
+                this.StopObservingItem(assemblyPath);
                 assemblyPath = value;
-                if (File.Exists(this.assemblyPath))
-                {
-                    this.fileChangeListener.ObserveItem(this.assemblyPath);
-                }
+                this.ObserveItem(assemblyPath);
             }
 
         }
@@ -69,7 +63,7 @@ namespace Microsoft.VisualStudio.Project
         /// The name of the assembly this reference represents.
         /// </summary>
         /// <value></value>
-        internal System.Reflection.AssemblyName AssemblyName
+        public System.Reflection.AssemblyName AssemblyName
         {
             get { return this.assemblyName; }
             set { this.assemblyName = value; }
@@ -80,7 +74,7 @@ namespace Microsoft.VisualStudio.Project
         /// machine. It can be different from the AssemblyName property because it can
         /// be more specific.
         /// </summary>
-        internal System.Reflection.AssemblyName ResolvedAssembly
+        public System.Reflection.AssemblyName ResolvedAssembly
         {
             get { return resolvedAssemblyName; }
             set { resolvedAssemblyName = value; }
@@ -91,7 +85,7 @@ namespace Microsoft.VisualStudio.Project
         public override string Caption => this.assemblyName.Name;
 
         private Automation.OAAssemblyReference assemblyRef;
-        internal override object Object
+        public override object Object
         {
             get
             {
@@ -108,17 +102,15 @@ namespace Microsoft.VisualStudio.Project
         /// <summary>
         /// Constructor for the ReferenceNode
         /// </summary>
-        internal AssemblyReferenceNode(ProjectNode root, ProjectElement element)
+        public AssemblyReferenceNode(ProjectNode root, ProjectElement element)
             : base(root, element)
         {
             this.GetPathNameFromProjectFile();
 
             this.InitializeFileChangeEvents();
 
-            if (File.Exists(this.assemblyPath))
-            {
-                this.fileChangeListener.ObserveItem(this.assemblyPath);
-            }
+            this.ObserveItem(assemblyPath);
+
             string include = this.ItemNode.GetMetadata(ProjectFileConstants.Include);
 
             this.CreateFromAssemblyName(new System.Reflection.AssemblyName(include));
@@ -127,7 +119,7 @@ namespace Microsoft.VisualStudio.Project
         /// <summary>
         /// Constructor for the AssemblyReferenceNode
         /// </summary>
-        internal AssemblyReferenceNode(ProjectNode root, string assemblyPath)
+        public AssemblyReferenceNode(ProjectNode root, string assemblyPath)
             : base(root)
         {
             // Validate the input parameters.
@@ -151,7 +143,8 @@ namespace Microsoft.VisualStudio.Project
 
                 // We register with listening to changes on the path here.
                 // The rest of the cases will call into resolving the assembly and registration is done there.
-                this.fileChangeListener.ObserveItem(this.assemblyPath);
+                this.ObserveItem(assemblyPath);
+
             }
             else
             {
@@ -372,8 +365,11 @@ namespace Microsoft.VisualStudio.Project
         }
 
 
+        protected internal virtual void SetHintPathAndPrivateValue(ProjectInstance instance, ProjectItemInstance iteminstance)
+        {
 
-        internal protected virtual void SetHintPathAndPrivateValue(ProjectInstance instance)
+        }
+        protected internal virtual void SetHintPathAndPrivateValue(ProjectInstance instance)
 		{
 
             // Private means local copy; we want to know if it is already set to not override the default
@@ -419,7 +415,7 @@ namespace Microsoft.VisualStudio.Project
         }
 
         // no loggers
-        internal static bool BuildInstance(ProjectNode projectNode, ProjectInstance instance, string target)
+        public static bool BuildInstance(ProjectNode projectNode, ProjectInstance instance, string target)
 		{
 			BuildSubmission submission = projectNode.DoMSBuildSubmission(BuildKind.Sync, target, ref instance, null);
             if (submission == null)
@@ -464,7 +460,7 @@ namespace Microsoft.VisualStudio.Project
         /// Does the actual job of resolving an assembly reference. We need a private method that does not violate
         /// calling virtual method from the constructor.
         /// </summary>
-        internal virtual void ResolveAssemblyReference()
+        protected internal virtual void ResolveAssemblyReference()
 		{
             if (this.ProjectMgr == null || this.ProjectMgr.IsClosed)
             {
@@ -500,7 +496,8 @@ namespace Microsoft.VisualStudio.Project
                             this.assemblyPath = fullPath;
 
                             // We have a new item to listen too, since the assembly reference is resolved from a different place.
-                            this.fileChangeListener.ObserveItem(this.assemblyPath);
+                            this.ObserveItem(assemblyPath);
+
                         }
                         this.resolvedAssemblyName = name;
                         // No hint path is needed since the assembly path will always be resolved.
@@ -570,6 +567,33 @@ namespace Microsoft.VisualStudio.Project
 		{
 			return VSConstants.guidCOMPLUSLibrary;
 		}
+
+        public string GetMsBuildProperty(string propName)
+        {
+            if (resolvedProperties != null && prjitem != null)
+            {
+                if (resolvedProperties.Contains(propName))
+                    return prjitem.GetMetadataValue(propName);
+            }
+            return "";
+
+        }
+
+        protected void ObserveItem(string url)
+        {
+            if (File.Exists(url) && fileChangeListener != null)
+            {
+                this.fileChangeListener.ObserveItem(url);
+            }
+        }
+
+        protected void StopObservingItem(string url)
+        {
+            if (! String.IsNullOrEmpty(url) && fileChangeListener != null)
+            {
+                this.fileChangeListener.StopObservingItem(url);
+            }
+        }
 
         #endregion
     }

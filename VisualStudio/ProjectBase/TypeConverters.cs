@@ -346,9 +346,16 @@ namespace Microsoft.VisualStudio.Project
             }
             Array frameworks;
             Marshal.ThrowExceptionForHR(multiTargetService.GetSupportedFrameworks(out frameworks));
-            return new StandardValuesCollection(
-                frameworks.Cast<string>().Select(fx => new FrameworkName(fx)).ToArray()
-            );
+            var result = new List<string>();
+            foreach (string name in frameworks)
+            {
+                if (name.ToLower().IndexOf("profile") == -1)
+                {
+                    result.Add(name);
+                }
+
+            }
+            return new StandardValuesCollection(result.Select(x => new FrameworkName(x)).ToArray());
         }
     }
 }

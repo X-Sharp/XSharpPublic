@@ -14,6 +14,7 @@ using System.Diagnostics;
 using System.Globalization;
 using System.Runtime.InteropServices;
 using Microsoft.VisualStudio;
+using Microsoft.VisualStudio.Shell;
 
 namespace Microsoft.VisualStudio.Project
 {

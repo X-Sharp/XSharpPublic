@@ -126,7 +126,7 @@ namespace XSharp.Project
                && string.Compare(wrapperTool, this.WrapperTool, true) == 0);
         }
         XSharpOAComReference comReference;
-        internal override object Object
+        public override object Object
         {
             get
             {

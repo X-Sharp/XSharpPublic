@@ -29,7 +29,7 @@ using Microsoft.VisualStudio.Shell.Interop;
 using Microsoft.VisualStudio.Shell.Settings;
 using Microsoft.Win32;
 using IOleServiceProvider = Microsoft.VisualStudio.OLE.Interop.IServiceProvider;
-using XSharp.Project;
+
 
 namespace Microsoft.VisualStudio.Project
 {
@@ -37,7 +37,7 @@ namespace Microsoft.VisualStudio.Project
     /// This class implements an MSBuild logger that output events to VS outputwindow and tasklist.
     /// </summary>
     [SuppressMessage("Microsoft.Naming", "CA1709:IdentifiersShouldBeCasedCorrectly", MessageId = "IDE")]
-    internal class IDEBuildLogger : Logger, IDisposable
+    public class IDEBuildLogger : Logger, IDisposable
     {
         #region fields
 

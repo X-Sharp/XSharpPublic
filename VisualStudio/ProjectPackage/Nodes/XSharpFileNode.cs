@@ -103,7 +103,7 @@ namespace XSharp.Project
         }
 
         #endregion
-        protected internal override void DeleteFromStorage(string path)
+        protected override void DeleteFromStorage(string path)
         {
             if (File.Exists(path))
             {
@@ -398,7 +398,7 @@ namespace XSharp.Project
 
 
 
-        internal override void SetSpecialProperties()
+        protected override void SetSpecialProperties()
         {
             var type = this.FileType;
             switch (type)
@@ -653,6 +653,7 @@ namespace XSharp.Project
         }
 
 
+
         /// <summary>
         /// Gets the automation object for the file node.
         /// </summary>
@@ -677,7 +678,7 @@ namespace XSharp.Project
             base.Dispose(disposing);
         }
 
-        protected internal override DocumentManager GetDocumentManager()
+        public override DocumentManager GetDocumentManager()
         {
             return new XSharpFileDocumentManager(this);
         }
@@ -700,7 +701,7 @@ namespace XSharp.Project
             {
                 viewGuid = VSConstants.LOGVIEWID.Code_guid;
             }
-            else if (projectItemType == XSharpProjectFileConstants.NativeResource)
+            else if (projectItemType == ProjectFileConstants.NativeResource)
             {
                 viewGuid = VSConstants.LOGVIEWID.Code_guid;
             }

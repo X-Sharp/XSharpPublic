@@ -15,8 +15,8 @@ using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Shell.Interop;
 using Microsoft.VisualStudio.Project.Automation;
 using IServiceProvider = System.IServiceProvider;
-using XSharp.Project;
 using XSharpModel;
+
 
 namespace Microsoft.VisualStudio.Project
 {

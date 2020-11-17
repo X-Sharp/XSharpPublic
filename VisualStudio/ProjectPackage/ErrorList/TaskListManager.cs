@@ -40,7 +40,7 @@ namespace XSharp.Project
         {
             _projects = new Dictionary<Guid, TaskListManager>();
             _gate = new object();
-            _taskList = XSharpProjectPackage.Instance.TaskList;
+            _taskList = XSharpProjectPackage.XInstance.TaskList;
             _manager = _taskList.TableControl.Manager;
             _provider = new TaskListProvider(_manager);
         }

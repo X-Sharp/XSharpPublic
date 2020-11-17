@@ -42,7 +42,7 @@ namespace Microsoft.VisualStudio.Project
         /// <param name="msBuildTargetName">MSBuild target name</param>
         /// <param name="projectManager">Project that produce this output</param>
         /// <param name="configuration">Configuration that produce this output</param>
-        internal OutputGroup(string outputName, string msBuildTargetName, ProjectNode projectManager, ProjectConfig configuration)
+        protected internal OutputGroup(string outputName, string msBuildTargetName, ProjectNode projectManager, ProjectConfig configuration)
         {
             Utilities.ArgumentNotNull("outputName", outputName);
             Utilities.ArgumentNotNull("msBuildTargetName", msBuildTargetName);
@@ -68,7 +68,7 @@ namespace Microsoft.VisualStudio.Project
         /// <summary>
         /// Get the project object that produces this output group.
         /// </summary>
-        internal ProjectNode Project
+        protected internal ProjectNode Project
         {
             get { return _project; }
         }
@@ -77,7 +77,7 @@ namespace Microsoft.VisualStudio.Project
         /// Gets the msbuild target name which is assciated to the outputgroup.
         /// ProjectNode defines a static collection of output group names and their associated MsBuild target
         /// </summary>
-        protected string TargetName
+        protected internal string TargetName
         {
             get { return _targetName; }
         }
@@ -85,7 +85,7 @@ namespace Microsoft.VisualStudio.Project
         /// <summary>
         /// Easy access to the canonical name of the group.
         /// </summary>
-        internal string Name
+        protected internal string Name
 		{
             get {
                 string canonicalName;
@@ -144,7 +144,7 @@ namespace Microsoft.VisualStudio.Project
         #endregion
 
         #region event handlers
-        internal void OnProjectPropertyChanged(object sender, ProjectPropertyChangedArgs args)
+        public void OnProjectPropertyChanged(object sender, ProjectPropertyChangedArgs args)
         {
             // In theory here we should decide if we have to invalidate the group according with the kind of property
             // that is changed.
@@ -274,9 +274,8 @@ namespace Microsoft.VisualStudio.Project
 
         #endregion
 
-#if XSHARP
-        internal List<Output> Outputs => _outputs;
-        internal Output KeyOutput
+        protected internal List<Output> Outputs => _outputs;
+        protected internal Output KeyOutput
         {
             get
             {
@@ -284,6 +283,5 @@ namespace Microsoft.VisualStudio.Project
             }
             set { _keyOutput = value; }
         }
-#endif
     }
 }

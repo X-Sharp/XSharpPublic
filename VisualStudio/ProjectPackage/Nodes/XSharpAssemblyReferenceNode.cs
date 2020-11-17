@@ -21,14 +21,14 @@ namespace XSharp.Project
         private HashSet<string> resolvedProperties; // the names of the properties that MsBuild has resolved
         private ProjectItemInstance prjitem; // the project item that contains the properties from resolvedProperties
 
-        internal XSharpAssemblyReferenceNode(ProjectNode root, ProjectElement element)
+        public XSharpAssemblyReferenceNode(ProjectNode root, ProjectElement element)
          : base(root, element)
       {
          //Binding reference data at startup will cause a 'project has changed' method
          //BindReferenceData();
 
       }
-        internal XSharpAssemblyReferenceNode(ProjectNode root, string assemblyPath)
+        public XSharpAssemblyReferenceNode(ProjectNode root, string assemblyPath)
            : base(root, assemblyPath)
         {
             //Binding reference data at startup will cause a 'project has changed' method
@@ -54,7 +54,7 @@ namespace XSharp.Project
             return new XSharpAssemblyReferenceNodeProperties(this);
         }
 
-        internal void SetHintPathAndPrivateValue(ProjectInstance instance,ProjectItemInstance iteminstance)
+        protected override void SetHintPathAndPrivateValue(ProjectInstance instance,ProjectItemInstance iteminstance)
         {
 
             // Private means local copy; we want to know if it is already set to not override the default
@@ -89,17 +89,7 @@ namespace XSharp.Project
             }
 
         }
-        internal string GetMsBuildProperty(string propName)
-        {
-            if (resolvedProperties != null && prjitem != null)
-            {
-                if (resolvedProperties.Contains(propName))
-                    return prjitem.GetMetadataValue(propName);
-            }
-            return "";
-
-        }
-        internal override void ResolveAssemblyReference()
+        protected override void ResolveAssemblyReference()
         {
             if (this.ProjectMgr == null || this.ProjectMgr.IsClosed)
             {
@@ -128,7 +118,7 @@ namespace XSharp.Project
                             this.AssemblyPath = fullPath;
 
                             // We have a new item to listen too, since the assembly reference is resolved from a different place.
-                            this.fileChangeListener.ObserveItem(this.AssemblyPath);
+                            base.ObserveItem(this.AssemblyPath);
                         }
                         this.ResolvedAssembly = name;
                         // No hint path is needed since the assembly path will always be resolved.

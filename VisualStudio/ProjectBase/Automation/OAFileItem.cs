@@ -32,7 +32,7 @@ namespace Microsoft.VisualStudio.Project.Automation
     public class OAFileItem : OAProjectItem<FileNode>
     {
         #region ctors
-        internal OAFileItem(OAProject project, FileNode node)
+        public OAFileItem(OAProject project, FileNode node)
             : base(project, node)
         {
         }

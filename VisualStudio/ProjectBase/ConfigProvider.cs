@@ -54,7 +54,7 @@ namespace Microsoft.VisualStudio.Project
         /// <summary>
         /// The associated project.
         /// </summary>
-        internal ProjectNode ProjectMgr
+        protected internal ProjectNode ProjectMgr
         {
             get
             {
@@ -83,7 +83,7 @@ namespace Microsoft.VisualStudio.Project
         #endregion
 
         #region ctors
-        internal ConfigProvider(ProjectNode manager)
+        protected internal ConfigProvider(ProjectNode manager)
         {
             this.project = manager;
         }

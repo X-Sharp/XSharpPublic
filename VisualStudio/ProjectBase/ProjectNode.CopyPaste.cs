@@ -26,8 +26,8 @@ using IOleDataObject = Microsoft.VisualStudio.OLE.Interop.IDataObject;
 using OleConstants = Microsoft.VisualStudio.OLE.Interop.Constants;
 
 using System.Windows.Forms;
-using XSharp.Project;
 using XSharpModel;
+
 
 namespace Microsoft.VisualStudio.Project
 {
@@ -1257,7 +1257,7 @@ internal static DropDataType QueryDropDataType(IOleDataObject pDataObject)
         /// <param name="targetNode">the targetHandler node</param>
         /// <param name="projectReferences">List of projectref string</param>
         /// <returns>true if succeeded</returns>
-      internal virtual bool AddFilesFromProjectReferences(HierarchyNode targetNode, string[] projectReferences, uint dropEffect)
+      protected internal virtual bool AddFilesFromProjectReferences(HierarchyNode targetNode, string[] projectReferences, uint dropEffect)
       {
          //Validate input
 		 Utilities.ArgumentNotNull("projectReferences", projectReferences);

@@ -23,8 +23,8 @@ using MSBuild = Microsoft.Build.Evaluation;
 using MSBuildExecution = Microsoft.Build.Execution;
 using MSBuildConstruction = Microsoft.Build.Construction;
 using System.Diagnostics.CodeAnalysis;
-using XSharp.Project;
 using XSharpModel;
+
 
 namespace Microsoft.VisualStudio.Project
 {
@@ -412,7 +412,7 @@ namespace Microsoft.VisualStudio.Project
         #endregion
 
         #region methods
-        internal virtual OutputGroup CreateOutputGroup(ProjectNode project, KeyValuePair<string, string> group)
+        protected internal virtual OutputGroup CreateOutputGroup(ProjectNode project, KeyValuePair<string, string> group)
         {
             OutputGroup outputGroup = new OutputGroup(group.Key, group.Value, project, this);
             return outputGroup;

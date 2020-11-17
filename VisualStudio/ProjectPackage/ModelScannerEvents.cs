@@ -57,7 +57,7 @@ namespace XSharp.Project
             if (! string.IsNullOrEmpty(solutionFile))
             {
                 XSharpModel.XSolution.Open(solutionFile);
-                XSharpProjectPackage.Instance.SetCommentTokens();
+                XSharpProjectPackage.XInstance.SetCommentTokens();
             }
             projectfiles.Clear();
 

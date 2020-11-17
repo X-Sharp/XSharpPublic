@@ -129,6 +129,12 @@ namespace Microsoft.VisualStudio.Project
 		public const string TargetDir = "TargetDir";
         public const string Aliases = "Aliases";
         public const string CurrentSolutionConfigurationContents = "CurrentSolutionConfigurationContents";
+
+        // XSharp additions
+        public const string NativeResource = "NativeResource";
+        public const string VOBinary = "VOBinary";
+        public const string Settings = "Settings";
+
     }
 
     public static class ProjectFileAttributeValue
@@ -165,5 +171,20 @@ namespace Microsoft.VisualStudio.Project
         public const int VOBinaryNode = 750;
         public const int HierarchyNode = 1000;
     }
+    public static class XSharpImageListIndex
+    {
+        public const int Project = 0;
+        public const int Source = 1;
+        public const int Form = 2;
+        public const int Server = 3;
+        public const int FieldSpec = 4;
+        public const int Menu = 5;
+        public const int VO = 6;
+        public const int Grid = 7;
+        public const int Test = 8;
+        public const int Properties = 9;
+        public const int Reference = 10;
+        public const int DanglingReference = 11;
 
+    }
 }

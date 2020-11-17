@@ -19,7 +19,6 @@ using System.Security.Permissions;
 using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.OLE.Interop;
 using Microsoft.VisualStudio.Shell;
-using XSharp.Project;
 
 namespace Microsoft.VisualStudio.Project
 {

@@ -8,7 +8,7 @@
     SwitchPrefix="/"
     xmlns="http://schemas.microsoft.com/build/2009/properties">
     <Rule.DataSource>
-        <DataSource Persistence="ProjectFile" Label="Configuration" HasConfigurationCondition="True" />
+        <DataSource Persistence="ProjectFile" Label="Configuration" HasConfigurationCondition="False" />
     </Rule.DataSource>
 
     <Rule.Categories>

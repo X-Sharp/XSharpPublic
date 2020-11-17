@@ -43,7 +43,6 @@ namespace XSharp
         public const string CPSPackageGuid = "1460504D-9003-404C-A78A-57E9A2F59358";
         public const string CpsProjectTypeGuid = "286E78A2-2FBA-47EA-A12B-EAEC3D38BC7C";
 
-
         internal const string ProjectExtension = "xsproj";
         internal const string ProjectExtensions = "xsproj;xsprj";   // the first version of X# has .xsprj (without o) as extension
         internal const string ProjectFileMask = LanguageName + " Project Files (*." + ProjectExtension + ");*." + ProjectExtension;

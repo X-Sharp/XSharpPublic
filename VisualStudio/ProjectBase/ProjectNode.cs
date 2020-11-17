@@ -38,8 +38,8 @@ using OleConstants = Microsoft.VisualStudio.OLE.Interop.Constants;
 using VsCommands = Microsoft.VisualStudio.VSConstants.VSStd97CmdID;
 using VsCommands2K = Microsoft.VisualStudio.VSConstants.VSStd2KCmdID;
 using System.Reflection;
-using XSharp.Project;
 using XSharpModel;
+
 
 namespace Microsoft.VisualStudio.Project
 {
@@ -621,6 +621,70 @@ namespace Microsoft.VisualStudio.Project
         #endregion
 
         #region virtual properties
+
+
+        /// <summary>
+        /// Gets the current project configuration.
+        /// </summary>
+        public virtual ProjectConfig CurrentConfig
+        {
+            get
+            {
+                EnvDTE.Project automationObject = this.GetAutomationObject() as EnvDTE.Project;
+                if (automationObject != null)
+                {
+                    var platform = Utilities.GetActivePlatformName(automationObject);
+                    var name = new ConfigCanonicalName(Utilities.GetActiveConfigurationName(automationObject), platform);
+                    return new ProjectConfig(this, name);
+                }
+                return null;
+            }
+        }
+
+
+        // Gets the output file name depending on current OutputType.
+        // View GeneralProperyPage
+        string _outputFile;
+        string _configName;
+        public string OutputFile
+        {
+            get
+            {
+                if (_outputFile == null && _configName != CurrentConfig.ConfigName)
+                {
+                    _outputFile = this.GetProjectProperty(ProjectFileConstants.TargetPath);
+                    _configName = CurrentConfig.ConfigName;
+                }
+                return _outputFile;
+            }
+            set
+            {
+                _outputFile = value;
+            }
+        }
+
+        string _rootNamespace = null;
+
+        public string RootNameSpace
+        {
+            get
+            {
+                if (_rootNamespace == null)
+                {
+                    lock (this)
+                    {
+                        if (_rootNamespace == null)
+                            _rootNamespace = GetProjectProperty(ProjectFileConstants.RootNamespace, false);
+                    }
+                }
+                return _rootNamespace;
+            }
+            set
+            {
+                _rootNamespace = value;
+            }
+        }
+
         /// <summary>
         /// This is the project instance guid that is peristed in the project file
         /// </summary>
@@ -1305,7 +1369,7 @@ namespace Microsoft.VisualStudio.Project
         /// <summary>
         /// Defines the build project that has loaded the project file.
         /// </summary>
-        protected internal MSBuild.Project BuildProject
+        public MSBuild.Project BuildProject
         {
             get
             {
@@ -1915,7 +1979,7 @@ namespace Microsoft.VisualStudio.Project
         /// Returns a specific Document manager to handle opening and closing of the Project(Application) Designer if projectdesigner is supported.
         /// </summary>
         /// <returns>Document manager object</returns>
-        protected internal override DocumentManager GetDocumentManager()
+        public override DocumentManager GetDocumentManager()
         {
             if (this.SupportsProjectDesigner)
             {
@@ -3385,7 +3449,7 @@ namespace Microsoft.VisualStudio.Project
             }
         }
 
-        internal virtual IDEBuildLogger CreateBuildLogger(IVsOutputWindowPane output, TaskProvider taskProvider, IVsHierarchy hierarchy)
+        protected internal virtual IDEBuildLogger CreateBuildLogger(IVsOutputWindowPane output, TaskProvider taskProvider, IVsHierarchy hierarchy)
         {
             var logger = new IDEBuildLogger(output, this.TaskProvider, hierarchy);
             logger.ErrorString = ErrorString;
@@ -4013,7 +4077,7 @@ namespace Microsoft.VisualStudio.Project
         /// This does not get persisted and is used to evaluate msbuild conditions
         /// which are based on the $(Configuration) property.
         /// </summary>
-        protected internal virtual void SetCurrentConfiguration()
+        public virtual void SetCurrentConfiguration()
         {
             if (this.BuildInProgress)
             {
@@ -4034,7 +4098,7 @@ namespace Microsoft.VisualStudio.Project
         /// which are based on the $(Configuration) property.
         /// </summary>
         /// <param name="config">Configuration name</param>
-        protected internal virtual void SetConfiguration(ConfigCanonicalName configCanonicalName)
+        public virtual void SetConfiguration(ConfigCanonicalName configCanonicalName)
         {
             // Can't ask for the active config until the project is opened, so do nothing in that scenario
             if (!projectOpened)
@@ -4152,13 +4216,11 @@ namespace Microsoft.VisualStudio.Project
             // Define a set for our build items. The value does not really matter here.
             Dictionary<String, MSBuild.ProjectItem> items = new Dictionary<String, MSBuild.ProjectItem>();
 
-#if XSHARP
             // It seems that the AddIndependentFileNode() Method call is changing the this.buildProject.Items collection
             // as we are receiving a "collection was modified enumeration operation may not execute" exception
             // So, let's store the items in a List<> and do the job after.
             var prjItems = new List<MSBuild.ProjectItem>();
             var duplicates = new List<MSBuild.ProjectItem>();
-#endif
 
             // Process Files
             foreach (MSBuild.ProjectItem item in this.buildProject.Items)
@@ -4197,11 +4259,7 @@ namespace Microsoft.VisualStudio.Project
 
                 if (!this.CanFileNodesHaveChilds || String.IsNullOrEmpty(dependentOf))
                 {
-#if XSHARP
                     prjItems.Add(item);
-#else
-                    AddIndependentFileNode(item);
-#endif
                 }
                 else
                 {
@@ -4213,7 +4271,6 @@ namespace Microsoft.VisualStudio.Project
                 }
             }
 
-#if XSHARP
             // Remove the duplicates
             if (duplicates.Count > 0)
             {
@@ -4243,7 +4300,6 @@ namespace Microsoft.VisualStudio.Project
                         Debug.WriteLine(ex.ToString());
                 }
             }
-#endif
 
             // Now process the dependent items.
             if (this.CanFileNodesHaveChilds)
@@ -4617,7 +4673,7 @@ namespace Microsoft.VisualStudio.Project
         /// Note that exact behavior can also be affected based on the SCC
         /// settings under Tools->Options.
         /// </summary>
-        internal bool QueryEditProjectFile(bool suppressUI)
+        public bool QueryEditProjectFile(bool suppressUI)
         {
             bool result = true;
             if (this.site == null)
@@ -4852,7 +4908,7 @@ namespace Microsoft.VisualStudio.Project
         /// <param name="type">Type of the object for which you want the CATID</param>
         /// <returns>CATID</returns>
         [SuppressMessage("Microsoft.Naming", "CA1709:IdentifiersShouldBeCasedCorrectly", MessageId = "CATID")]
-        protected internal Guid GetCATIDForType(Type type)
+        public Guid GetCATIDForType(Type type)
         {
             if (type == null)
                 throw new ArgumentNullException("type");
@@ -6905,7 +6961,7 @@ namespace Microsoft.VisualStudio.Project
             return this.buildProject.GetProperty(propertyName);
         }
 
-        internal string _outputPath;
+        protected internal string _outputPath;
         private string GetOutputPath()
         {
             if (_outputPath != null)
@@ -6993,7 +7049,7 @@ namespace Microsoft.VisualStudio.Project
         }
 
         [SuppressMessage("Microsoft.Security", "CA2109:ReviewVisibleEventHandlers")]
-        internal virtual void OnAfterProjectOpen(object sender, AfterProjectFileOpenedEventArgs e)
+        public virtual void OnAfterProjectOpen(object sender, AfterProjectFileOpenedEventArgs e)
         {
             this.projectOpened = true;
         }
@@ -7412,5 +7468,41 @@ namespace Microsoft.VisualStudio.Project
             node.ItemNode.SetMetadata(ProjectFileConstants.HintPath, relPath);
          }
       }
-   }
+
+
+        public virtual string GetRelativePath(string path)
+        {
+            return _GetRelativePath(this.ProjectFolder, path);
+        }
+        private static string _GetRelativePath(string basePath, string subPath)
+        {
+
+            if (!Path.IsPathRooted(basePath))
+            {
+                throw new ArgumentException("The 'basePath' is not rooted.");
+            }
+
+            if (!Path.IsPathRooted(subPath))
+            {
+                return subPath;
+            }
+
+            if (!String.Equals(Path.GetPathRoot(basePath), Path.GetPathRoot(subPath), StringComparison.OrdinalIgnoreCase))
+            {
+                // both paths have different roots so we can't make them relative
+                return subPath;
+            }
+
+            // Url.MakeRelative method requires the base path to be ended with a '\' if it is a folder,
+            // otherwise it considers it as a file so we need to make sure that the folder path is right
+            basePath = basePath.Trim();
+            if (! basePath.EndsWith(Path.DirectorySeparatorChar.ToString()))
+            {
+                basePath += Path.DirectorySeparatorChar;
+            }    
+
+            Url url = new Url(basePath);
+            return url.MakeRelative(new Url(subPath));
+        }
+    }
 }

@@ -25,8 +25,8 @@ namespace XSharp.Project
             types.Add(ProjectFileConstants.Compile);
             types.Add(ProjectFileConstants.EmbeddedResource);
             types.Add(ProjectFileConstants.Content);
-            types.Add(XSharpProjectFileConstants.NativeResource);
-            types.Add(XSharpProjectFileConstants.VOBinary);
+            types.Add(ProjectFileConstants.NativeResource);
+            types.Add(ProjectFileConstants.VOBinary);
             types.Add(ProjectFileConstants.ApplicationDefinition);
             types.Add(ProjectFileConstants.Page);
             types.Add(ProjectFileConstants.Resource);

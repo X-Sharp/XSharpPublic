@@ -99,7 +99,7 @@ namespace Microsoft.VisualStudio.Project
             }
         }
 
-        internal MSBuild.ProjectItem Item
+        public MSBuild.ProjectItem Item
         {
             get
             {
@@ -107,7 +107,7 @@ namespace Microsoft.VisualStudio.Project
             }
         }
 
-        internal bool IsVirtual
+        public bool IsVirtual
         {
             get
             {

@@ -20,7 +20,6 @@ using Microsoft.VisualStudio.Project.Automation;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using MSBuild = Microsoft.Build.Evaluation;
-using XSharp.Project;
 using XSharpModel;
 
 namespace Microsoft.VisualStudio.Project
@@ -77,7 +76,7 @@ namespace Microsoft.VisualStudio.Project
         /// <summary>
         /// This is the object that will be returned by EnvDTE.Project.Object for this project
         /// </summary>
-        internal override object Object
+        public override object Object
         {
             get { return new OASolutionFolder<ProjectContainerNode>(this); }
         }

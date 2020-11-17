@@ -307,7 +307,7 @@ namespace Microsoft.VisualStudio.Project
             }
             isRegistered = false;
         }
-        internal virtual void Project_OnProjectPropertyChanged(object sender, ProjectPropertyChangedArgs e)
+        protected virtual void Project_OnProjectPropertyChanged(object sender, ProjectPropertyChangedArgs e)
         {
 
         }

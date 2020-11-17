@@ -18,15 +18,15 @@ using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.OLE.Interop;
 using Microsoft.VisualStudio.Shell.Interop;
 using Microsoft.VisualStudio.TextManager.Interop;
-using XSharp.Project;
 using XSharpModel;
+
 
 namespace Microsoft.VisualStudio.Project
 {
     /// <summary>
     /// Provides support for single file generator.
     /// </summary>
-    internal class SingleFileGenerator : ISingleFileGenerator, IVsGeneratorProgress
+    public class SingleFileGenerator : ISingleFileGenerator, IVsGeneratorProgress
     {
 
         #region fields
@@ -40,7 +40,7 @@ namespace Microsoft.VisualStudio.Project
         /// Overloadde ctor.
         /// </summary>
         /// <param name="ProjectNode">The associated project</param>
-        internal SingleFileGenerator(ProjectNode projectMgr)
+        protected internal SingleFileGenerator(ProjectNode projectMgr)
         {
             this.projectMgr = projectMgr;
         }

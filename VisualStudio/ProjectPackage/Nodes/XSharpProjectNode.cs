@@ -79,11 +79,9 @@ namespace XSharp.Project
 
         #region Fields
         private XSharpProjectPackage package;
-        internal static int imageOffset;
         private static ImageList imageList;
         private VSLangProj.VSProject vsProject;
         bool isLoading = false;
-        private FileChangeManager filechangemanager = null;
         XSharpModel.XProject projectModel;
 
 
@@ -115,12 +113,12 @@ namespace XSharp.Project
 
         }
 
-        private void Filechangemanager_FileChangedOnDisk(object sender, FileChangedOnDiskEventArgs e)
+        protected override void OnFileChanged(string url)
         {
             //XSettings.DisplayOutputMessage("FileChangedOnDisk " + e.FileName);
-            if (IsXamlFile(e.FileName) || IsCodeFile(e.FileName))
+            if (IsXamlFile(url) || IsCodeFile(url))
             {
-                XFile file = this.ProjectModel.FindXFile(e.FileName);
+                XFile file = this.ProjectModel.FindXFile(url);
                 if (file != null)
                 {
                     this.ProjectModel.WalkFile(file,true);
@@ -226,26 +224,7 @@ namespace XSharp.Project
             }
         }
 
-        // Gets the output file name depending on current OutputType.
-        // View GeneralProperyPage
-        string _outputFile;
-        string _configName;
-        public string OutputFile
-        {
-            get
-            {
-                if (_outputFile == null && _configName != CurrentConfig.ConfigName)
-                {
-                    _outputFile = this.GetProjectProperty(ProjectFileConstants.TargetPath);
-                    _configName = CurrentConfig.ConfigName;
-                }
-                return _outputFile;
-            }
-            internal set
-            {
-                _outputFile = value;
-            }
-        }
+
         #endregion
 
         #region Overriden implementation
@@ -280,7 +259,7 @@ namespace XSharp.Project
             }
         }
 
-        internal override object Object
+        public override object Object
         {
             get
             {
@@ -302,7 +281,7 @@ namespace XSharp.Project
         private void invalidateOptions()
         {
             this.options = null;
-            this._outputFile = null;
+            this.OutputFile = null;
             this._outputPath = null;
 
         }
@@ -449,7 +428,7 @@ namespace XSharp.Project
         /// <param name="element">MSBuild element.</param>
         /// <returns>Returns newly created Folder Node object.</returns>
         [SuppressMessage("Microsoft.Naming", "CA1725:ParameterNamesShouldMatchBaseDeclaration", MessageId = "1#")]
-        protected internal override FolderNode CreateFolderNode(string path, ProjectElement element)
+        protected override FolderNode CreateFolderNode(string path, ProjectElement element)
         {
             Utilities.ArgumentNotNull("element", element);
             FolderNode folderNode;
@@ -950,18 +929,12 @@ namespace XSharp.Project
             return base.IsItemTypeFileType(type);
         }
 
-        internal override void OnAfterProjectOpen(object sender, AfterProjectFileOpenedEventArgs e)
+        public override void OnAfterProjectOpen(object sender, AfterProjectFileOpenedEventArgs e)
         {
             base.OnAfterProjectOpen(sender, e);
 
             // initialize the parser
 
-            if (filechangemanager == null)
-            {
-                filechangemanager = new FileChangeManager(this.Site);
-                filechangemanager.FileChangedOnDisk += Filechangemanager_FileChangedOnDisk;
-
-            }
             if (this.isLoading)
             {
                 // Run the background Walker/Listener, to fill the Model
@@ -976,7 +949,7 @@ namespace XSharp.Project
                             if (File.Exists(url))
                             {
                                 this.ProjectModel.AddFile(url);
-                            	filechangemanager.ObserveItem(url);
+                            	base.ObserveItem(url);
                             }
                         }
                     }
@@ -1252,11 +1225,7 @@ namespace XSharp.Project
                         this.ProjectModel.AddFile(url);
                         if (IsXamlFile(url))
                         {
-                            if (filechangemanager != null)
-                            {
-                                filechangemanager.ObserveItem(url);
-                            }
-
+                            base.ObserveItem(url);
                         }
                     }
                 }
@@ -1367,14 +1336,10 @@ namespace XSharp.Project
                     var node = this.FindChild(url) as XSharpFileNode;
                     if (node != null && !node.IsNonMemberItem)
                     {
-                        if (filechangemanager != null)
+                        if (IsXamlFile(url) ||node.IsDependent)
                         {
-                            if (IsXamlFile(url) ||
-                                node.IsDependent)
-
-                                filechangemanager.StopObservingItem(url);
+                            base.StopObservingItem(url);
                         }
-
                         this.ProjectModel.RemoveFile(url);
                     }
                 }
@@ -1585,27 +1550,7 @@ namespace XSharp.Project
             }
 
         }
-        string _rootNamespace = null;
-
-        public string RootNameSpace
-        {
-            get
-            {
-                if (_rootNamespace == null)
-                {
-                    lock (this)
-                    {
-                        if (_rootNamespace == null)
-                            _rootNamespace = GetProjectProperty(ProjectFileConstants.RootNamespace, false);
-                    }
-                }
-                return _rootNamespace;
-            }
-            internal set
-            {
-                _rootNamespace = value;
-            }
-        }
+        
 
         #endregion
 
@@ -1665,7 +1610,7 @@ namespace XSharp.Project
             return bMoved;
         }
 
-        internal override bool AddFilesFromProjectReferences(HierarchyNode targetNode, string[] projectReferences, uint dropEffect)
+        protected override bool AddFilesFromProjectReferences(HierarchyNode targetNode, string[] projectReferences, uint dropEffect)
         {
             bool bOk = base.AddFilesFromProjectReferences(targetNode, projectReferences, dropEffect);
             if (bOk)
@@ -1781,7 +1726,7 @@ namespace XSharp.Project
         private DesignTimeAssemblyResolution designTimeAssemblyResolution;
         private ConfigCanonicalName _config = new ConfigCanonicalName("Debug", "AnyCPU");
 
-        protected internal override void SetConfiguration(ConfigCanonicalName config)
+        public override void SetConfiguration(ConfigCanonicalName config)
         {
             _config = config;
             base.SetConfiguration(config);
@@ -1835,7 +1780,7 @@ namespace XSharp.Project
         }
         XSharpIDEBuildLogger logger = null;
 
-        internal override IDEBuildLogger CreateBuildLogger(IVsOutputWindowPane output, TaskProvider taskProvider, IVsHierarchy hierarchy)
+        protected override IDEBuildLogger CreateBuildLogger(IVsOutputWindowPane output, TaskProvider taskProvider, IVsHierarchy hierarchy)
         {
             logger = new XSharpIDEBuildLogger(output, this.TaskProvider, hierarchy);
             logger.ProjectNode = this;
@@ -1937,11 +1882,6 @@ namespace XSharp.Project
         protected override void Dispose(bool disposing)
         {
             projectModel = null;
-            if (filechangemanager != null)
-            {
-                filechangemanager.Dispose();
-                filechangemanager = null;
-            }
             base.Dispose(disposing);
         }
 
@@ -1951,12 +1891,8 @@ namespace XSharp.Project
             {
                 var prop = GetProjectProperty("Dialect");
                 XSharpDialect dialect = XSharpDialect.Core;
-                try
-                {
-                    dialect = (XSharpDialect)Enum.Parse(typeof(XSharpDialect), prop);
-                }
-                catch
-                {
+                if (! Enum.TryParse(prop, true, out dialect))
+                { 
                     dialect = XSharpDialect.Core;
                 }
                 return dialect;
@@ -2599,7 +2535,7 @@ namespace XSharp.Project
         }
         internal int ShowMessageBox(string message)
         {
-            return XSharpProjectPackage.Instance.ShowMessageBox(message);
+            return XSharpProjectPackage.XInstance.ShowMessageBox(message);
         }
 
         #region IVsProject5

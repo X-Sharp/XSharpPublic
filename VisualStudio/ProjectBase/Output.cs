@@ -15,7 +15,7 @@ using Microsoft.Build.Execution;
 using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
-using XSharp.Project;
+
 namespace Microsoft.VisualStudio.Project
 {
     //
@@ -23,7 +23,7 @@ namespace Microsoft.VisualStudio.Project
     //       we therefore retrieve all the info through the ProjectNode in stead.
     //
     //
-    class Output : IVsOutput2
+    public class Output : IVsOutput2
     {
         private ProjectNode project;
         //private ProjectItemInstance output;
@@ -67,10 +67,9 @@ namespace Microsoft.VisualStudio.Project
         public virtual int get_DeploySourceURL(out string pbstrDeploySourceURL)
         {
             string path = string.Empty; ;
-            if (this.project is XProjectNode)
+            if (this.project is ProjectNode)
             {
-                var xproject = project as XProjectNode;
-                path = project.GetOutputAssembly(xproject.CurrentConfig.ConfigCanonicalName);
+                path = project.GetOutputAssembly(project.CurrentConfig.ConfigCanonicalName);
             }
             if (String.IsNullOrEmpty(path))
             {

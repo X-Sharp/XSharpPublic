@@ -14,7 +14,7 @@ namespace Microsoft.VisualStudio.Project
 {
     public partial class ProjectNode
     {
-        internal event EventHandler<ProjectPropertyChangedArgs> OnProjectPropertyChanged;
+        public event EventHandler<ProjectPropertyChangedArgs> OnProjectPropertyChanged;
 
         protected virtual void RaiseProjectPropertyChanged(string propertyName, string oldValue, string newValue)
 		{

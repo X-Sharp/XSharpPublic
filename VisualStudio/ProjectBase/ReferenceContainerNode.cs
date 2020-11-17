@@ -23,8 +23,8 @@ using MSBuild = Microsoft.Build.Evaluation;
 using OleConstants = Microsoft.VisualStudio.OLE.Interop.Constants;
 using VsCommands = Microsoft.VisualStudio.VSConstants.VSStd97CmdID;
 using VsCommands2K = Microsoft.VisualStudio.VSConstants.VSStd2KCmdID;
-using XSharp.Project;
 using XSharpModel;
+using Microsoft.VisualStudio.Shell;
 
 namespace Microsoft.VisualStudio.Project
 {
@@ -32,9 +32,9 @@ namespace Microsoft.VisualStudio.Project
     public class ReferenceContainerNodeProperties : NodeProperties
     {
       #region properties
-       [Microsoft.VisualStudio.Project.SRCategoryAttribute(Microsoft.VisualStudio.Project.SR.Misc)]
-       [Microsoft.VisualStudio.Project.LocDisplayName(Microsoft.VisualStudio.Project.SR.FolderName)]
-       [Microsoft.VisualStudio.Project.SRDescriptionAttribute(Microsoft.VisualStudio.Project.SR.FolderNameDescription)]
+       [SRCategoryAttribute(Microsoft.VisualStudio.Project.SR.Misc)]
+       [LocDisplayName(Microsoft.VisualStudio.Project.SR.FolderName)]
+       [SRDescriptionAttribute(Microsoft.VisualStudio.Project.SR.FolderNameDescription)]
       [AutomationBrowsable( false )]
       public string FolderName
       {
@@ -69,7 +69,7 @@ namespace Microsoft.VisualStudio.Project
         #endregion
 
         #region ctor
-        internal ReferenceContainerNode(ProjectNode root)
+        public ReferenceContainerNode(ProjectNode root)
             : base(root)
         {
             this.VirtualNodeName = ReferencesNodeVirtualName;
@@ -126,7 +126,7 @@ namespace Microsoft.VisualStudio.Project
 
 
         private Automation.OAReferences references;
-        internal override object Object
+        public override object Object
         {
             get
             {
@@ -352,9 +352,9 @@ namespace Microsoft.VisualStudio.Project
                 string name = Path.GetFileNameWithoutExtension(fullName);
                 foreach (var child in children)
                 {
-                    if (child is XSharpAssemblyReferenceNode && child.Caption == name)
+                    if (child is AssemblyReferenceNode && child.Caption == name)
                     {
-                        var xChild = child as XSharpAssemblyReferenceNode;
+                        var xChild = child as AssemblyReferenceNode;
                         xChild.AssemblyPath = fullName;
                         xChild.SetHintPathAndPrivateValue(buildResult.ProjectInstance, reference);
                     }

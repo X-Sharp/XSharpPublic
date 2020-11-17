@@ -21,7 +21,7 @@ namespace Microsoft.VisualStudio.Project.Automation
     [CLSCompliant(false), ComVisible(true)]
     public class OAComReference : OAReferenceBase<ComReferenceNode>
     {
-        internal OAComReference(ComReferenceNode comReference) :
+        public OAComReference(ComReferenceNode comReference) :
             base(comReference)
         {
         }

@@ -17,12 +17,11 @@ using System.Text;
 using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.OLE.Interop;
 using Microsoft.VisualStudio.TextManager.Interop;
-using XSharp.Project;
 using XSharpModel;
 
 namespace Microsoft.VisualStudio.Project
 {
-    internal static class NativeMethods
+    public static class NativeMethods
     {
         public static IntPtr InvalidIntPtr = ((IntPtr)((int)(-1)));
         // IIDS

@@ -41,7 +41,7 @@ namespace Microsoft.VisualStudio.Project.Automation
         #endregion
 
         #region ctor
-        internal OAProject(ProjectNode project)
+        public OAProject(ProjectNode project)
         {
             this.project = project;
 

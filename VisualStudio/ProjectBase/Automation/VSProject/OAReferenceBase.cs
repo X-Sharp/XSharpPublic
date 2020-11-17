@@ -38,7 +38,7 @@ namespace Microsoft.VisualStudio.Project.Automation
         #endregion
 
         #region properties
-        internal RT BaseReferenceNode
+        public RT BaseReferenceNode
         {
             get { return referenceNode; }
         }

@@ -3885,12 +3885,12 @@ RETURN
 			child->DbSkip(0) // this throws a runtime error in __FieldGet()
 			
 			? "Recno must be 3:",child->RecNo()
-			Assert.Equal(3 , child->RecNo() )
+			Assert.Equal(3U , child->RecNo() )
 			?
 			? "evaluate after SetRelation(), must be 3:", child->Eval( cbExpression )
-			Assert.Equal(3 , (INT)child->Eval( cbExpression ))
+			Assert.Equal(3 , (Int) child->Eval( cbExpression ))
 			? "Recno should be 3:", child->RecNo()
-			Assert.Equal(3 , child->RecNo() )
+			Assert.Equal(3U , child->RecNo() )
 			
 			u1 := u2 := 3
 			Assert.True( child->VoDbOrderInfo( DBOI_SCOPETOP	 , "", NIL, REF u1 ) )
@@ -3900,49 +3900,49 @@ RETURN
 			
 			child->DbGoTop()
 			? "recno after set scope, must be 3:", child->RecNo()
-			Assert.Equal(3 , child->RecNo() )
+			Assert.Equal(3U , child->RecNo() )
 			
 			? "Skipping forward, all must be 6 , FALSE, TRUE"
 			child->DbSkip(+1)
 			? child->RecNo() , child->Bof() , child->Eof()
-			Assert.Equal(6 , child->RecNo() )
+			Assert.Equal(6U , child->RecNo() )
 			Assert.False(child->Bof())
 			Assert.True(child->Eof())
 
 			child->DbSkip(+1)
 			? child->RecNo() , child->Bof() , child->Eof()
-			Assert.Equal(6 , child->RecNo() )
+			Assert.Equal(6U ,  child->RecNo() )
 			Assert.False(child->Bof())
 			Assert.True(child->Eof())
 
 			child->DbSkip(+1)
 			? child->RecNo() , child->Bof() , child->Eof()
-			Assert.Equal(6 , child->RecNo() )
+			Assert.Equal(6U , child->RecNo() )
 			Assert.False(child->Bof())
 			Assert.True(child->Eof())
 			
 			? "Skipping backward"
 			child->DbSkip(-1)
 			? child->RecNo() , child->Bof() , child->Eof() // must be 3, false, false
-			Assert.Equal(3 , child->RecNo() )
+			Assert.Equal(3U , child->RecNo() )
 			Assert.False(child->Bof())
 			Assert.False(child->Eof())
 
 			child->DbSkip(-1)
 			? child->RecNo() , child->Bof() , child->Eof() // must be 3, TRUE, false
-			Assert.Equal(3 , child->RecNo() )
+			Assert.Equal(3U , child->RecNo() )
 			Assert.True(child->Bof())
 			Assert.False(child->Eof())
 
 			child->DbSkip(-1)
 			? child->RecNo() , child->Bof() , child->Eof() // must be 3, TRUE, false
-			Assert.Equal(3 , child->RecNo() )
+			Assert.Equal(3U , child->RecNo() )
 			Assert.True(child->Bof())
 			Assert.False(child->Eof())
 
 			child->DbSkip(-1)
 			? child->RecNo() , child->Bof() , child->Eof() // must be 3, TRUE, false
-			Assert.Equal(3 , child->RecNo() )
+			Assert.Equal(3U , child->RecNo() )
 			Assert.True(child->Bof())
 			Assert.False(child->Eof())
 
@@ -3976,20 +3976,20 @@ RETURN
 			cbExpression := &( "{ || FLD }")
 			child2->DbGoBottom()
 			? "evaluate in bottom, must be 5:", child2->Eval( cbExpression ) // 3
-			Assert.Equal(5 , (INT)child2->Eval( cbExpression ))
+			Assert.Equal(15 , (INT)child2->Eval( cbExpression ))
 			
-			Assert.True( parent2->VoDbSetRelation("child" , cbExpression ,"FLD") )
+			Assert.True( parent2->VoDbSetRelation("child2" , cbExpression ,"FLD") )
 			parent2->DbGoTop()
 			
 //			child2->DbSkip(0) // this throws a runtime error in __FieldGet()
 			
 			? "Recno must be 3:",child2->RecNo()
-			Assert.Equal(3 , child2->RecNo() )
+			Assert.Equal(3U , child2->RecNo() )
 			?
 			? "evaluate after SetRelation(), must be 3:", child2->Eval( cbExpression )
 //			Assert.Equal(3 , (INT)child2->Eval( cbExpression ))
 			? "Recno should be 3:", child2->RecNo()
-			Assert.Equal(3 , child2->RecNo() )
+			Assert.Equal(3U , child2->RecNo() )
 			
 			u1 := u2 := 3
 			Assert.True( child2->VoDbOrderInfo( DBOI_SCOPETOP	 , "", NIL, REF u1 ) )
@@ -3999,49 +3999,49 @@ RETURN
 			
 			child2->DbGoTop()
 			? "recno after set scope, must be 3:", child2->RecNo()
-			Assert.Equal(3 , child2->RecNo() )
+			Assert.Equal(3U , child2->RecNo() )
 			
 			? "Skipping forward, all must be 16 , FALSE, TRUE"
 			child2->DbSkip(+1)
 			? child2->RecNo() , child2->Bof() , child2->Eof()
-			Assert.Equal(16 , child2->RecNo() )
+			Assert.Equal(16U , child2->RecNo() )
 			Assert.False(child2->Bof())
 			Assert.True(child2->Eof())
 
 			child2->DbSkip(+1)
 			? child2->RecNo() , child2->Bof() , child2->Eof()
-			Assert.Equal(16 , child2->RecNo() )
+			Assert.Equal(16U , child2->RecNo() )
 			Assert.False(child2->Bof())
 			Assert.True(child2->Eof())
 
 			child2->DbSkip(+1)
 			? child2->RecNo() , child2->Bof() , child2->Eof()
-			Assert.Equal(16 , child2->RecNo() )
+			Assert.Equal(16U , child2->RecNo() )
 			Assert.False(child2->Bof())
 			Assert.True(child2->Eof())
 			
 			? "Skipping backward"
 			child2->DbSkip(-1)
 			? child2->RecNo() , child2->Bof() , child2->Eof() // must be 3, false, false
-			Assert.Equal(3 , child2->RecNo() )
+			Assert.Equal(3U , child2->RecNo() )
 			Assert.False(child2->Bof())
 			Assert.False(child2->Eof())
 
 			child2->DbSkip(-1)
 			? child2->RecNo() , child2->Bof() , child2->Eof() // must be 3, TRUE, false
-			Assert.Equal(3 , child2->RecNo() )
+			Assert.Equal(3U , child2->RecNo() )
 			Assert.True(child2->Bof())
 			Assert.False(child2->Eof())
 
 			child2->DbSkip(-1)
 			? child2->RecNo() , child2->Bof() , child2->Eof() // must be 3, TRUE, false
-			Assert.Equal(3 , child2->RecNo() )
+			Assert.Equal(3U , child2->RecNo() )
 			Assert.True(child2->Bof())
 			Assert.False(child2->Eof())
 
 			child2->DbSkip(-1)
 			? child2->RecNo() , child2->Bof() , child2->Eof() // must be 3, TRUE, false
-			Assert.Equal(3 , child2->RecNo() )
+			Assert.Equal(3U , child2->RecNo() )
 			Assert.True(child2->Bof())
 			Assert.False(child2->Eof())
 

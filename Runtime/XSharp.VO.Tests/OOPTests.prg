@@ -293,6 +293,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
         	Assert.True( IsMethod(o , #meth_exp) )
         	Assert.True( IsMethod(o , #meth_prot) )
         	Assert.True( IsMethod(o , #meth_priv) )
+            Assert.True( IsMethod(o , #methodoverloaded) )
 
         [Fact, Trait("Category", "OOP")];
         METHOD IsAccessAssignMethod_Nulltests() AS VOID
@@ -581,7 +582,13 @@ CLASS GeneralLBTestClass
 	RETURN NIL
 	PRIVATE METHOD meth_priv(a,b,c,d)
 	RETURN NIL
-	
+
+    METHOD MethodOverloaded as LOGIC
+        RETURN TRUE
+
+    METHOD MethodOverloaded(lParam as LOGIC) as LOGIC
+        RETURN lParam
+
 	METHOD MethodPtr() AS PTR
 		LOCAL n AS INT
 	RETURN @n

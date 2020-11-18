@@ -10,6 +10,7 @@ USING XSharp.RDD.Support
 USING XSharp.RDD.CDX
 USING System.Diagnostics
 USING System.IO
+USING STATIC XSharp.Conversions
 BEGIN NAMESPACE XSharp.RDD
     /// <summary>DBFFPT RDD. For DBF/FPT. No index support at this level</summary>
     CLASS DBFFPT INHERIT DBF 
@@ -241,13 +242,13 @@ BEGIN NAMESPACE XSharp.RDD
             CASE FlexFieldType.Byte
                 RETURN (BYTE) bData[8]
             CASE FlexFieldType.Short
-                RETURN FoxToShort(bData, 8)
+                RETURN BuffToShortFox(bData, 8)
             CASE FlexFieldType.Word
-                RETURN FoxToWord(bData, 8)
+                RETURN BuffToWordFox(bData, 8)
             CASE FlexFieldType.Long
-                RETURN FoxToLong(bData, 8)
+                RETURN BuffToLongFox(bData, 8)
             CASE FlexFieldType.Dword
-                RETURN FoxToDword(bData, 8)
+                RETURN BuffToDwordFox(bData, 8)
             CASE FlexFieldType.Double
                 RETURN BitConverter.ToDouble(bData, 8)
             CASE FlexFieldType.Double10
@@ -259,7 +260,7 @@ BEGIN NAMESPACE XSharp.RDD
             CASE FlexFieldType.ItemClipper
                 RETURN NULL
             CASE FlexFieldType.LogicLong
-                RETURN FoxToLong(bData, 8) != 0
+                RETURN BuffToLongFox(bData, 8) != 0
             CASE FlexFieldType.StringEmpty
                 RETURN ""
             CASE FlexFieldType.Illegal

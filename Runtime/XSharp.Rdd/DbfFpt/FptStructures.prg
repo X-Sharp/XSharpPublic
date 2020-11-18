@@ -12,6 +12,7 @@ USING XSharp.RDD.Support
 USING XSharp.RDD.CDX
 USING System.Runtime.InteropServices
 USING System.IO
+USING STATIC XSharp.Conversions
 BEGIN NAMESPACE XSharp.RDD
     INTERNAL STRUCTURE FtpMemoToken
         PRIVATE Buffer AS BYTE[]
@@ -21,20 +22,20 @@ BEGIN NAMESPACE XSharp.RDD
             
         INTERNAL PROPERTY DataType AS FlexFieldType
             GET
-                RETURN (FlexFieldType) FoxToLong(Buffer, 0)
+                RETURN (FlexFieldType) BuffToLongFox(Buffer, 0)
             END GET
             SET
-                LongToFox((LONG) value, Buffer, 0)
+                LongToBuffFox((LONG) value, Buffer, 0)
             END SET
         END PROPERTY
         
         /// This includes the length of the token
         INTERNAL PROPERTY Length AS LONG       
             GET
-                RETURN FoxToLong(Buffer, 4)
+                RETURN BuffToLongFox(Buffer, 4)
             END GET
             SET
-                LongToFox(VALUE, Buffer, 4)
+                LongToBuffFox(VALUE, Buffer, 4)
             END SET
         END PROPERTY
         

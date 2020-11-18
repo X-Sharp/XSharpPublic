@@ -935,6 +935,8 @@ DEFINE EDB_DBSTRUCT        := Subcodes.EDB_DBSTRUCT
 DEFINE EDB_NOTABLE         := Subcodes.EDB_NOTABLE       
 /// <include file="CoreComments.xml" path="Comments/RDDError/*" />
 DEFINE EDB_NOORDER         := Subcodes.EDB_NOORDER       
+/// <include file="CoreComments.xml" path="Comments/RDDError/*" />
+DEFINE EDB_NODB            := Subcodes.EDB_NODB
 
 /// <include file="CoreComments.xml" path="Comments/RDDError/*" />
 DEFINE EDB_ASSERTION       := Subcodes.EDB_ASSERTION     

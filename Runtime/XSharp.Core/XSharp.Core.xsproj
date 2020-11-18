@@ -70,6 +70,7 @@
     <Compile Include="Functions\DT.prg" />
     <Compile Include="Functions\File.prg" />
     <Compile Include="Functions\FileIO.prg" />
+    <Compile Include="Functions\Conversions.prg" />
     <Compile Include="Functions\Macro.prg" />
     <Compile Include="Functions\Memo.prg" />
     <Compile Include="Functions\Numeric.prg" />

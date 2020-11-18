@@ -9,6 +9,7 @@ USING XSharp.RDD.Support
 USING System.IO
 USING System.Collections.Generic
 USING System.Diagnostics
+USING STATIC XSharp.Conversions
 
 BEGIN NAMESPACE XSharp.RDD
 /// <summary>DBFVFP RDD. DBFCDX with support for the FoxPro field types.</summary>
@@ -180,102 +181,38 @@ CLASS DBFVFP INHERIT DBFCDX
         RETURN
 
     PROTECTED METHOD _ReadDbcFieldNames() AS VOID
-        LOCAL oDbc AS DBFVFP
-        LOCAL oi   AS DbOpenInfo
-        LOCAL nTable := 0 AS LONG
-        LOCAL nType AS LONG
-        LOCAL nName AS LONG
-        LOCAL nParent AS LONG
-        LOCAL nProp AS LONG
-        LOCAL fields AS List<STRING>
-        LOCAL props  AS List<byte[]>
-        LOCAL cFile AS STRING
-        LOCAL lOk AS LOGIC
-        LOCAL lOld AS LOGIC
-        oDbc := DBFVFP{}
-        oi := DbOpenInfo{}
-        oi:FileName  := SELF:DbcName
-        oi:Extension := System.IO.Path.GetExtension(SELF:DbcName)
-        oi:Shared   := TRUE
-        oi:ReadOnly := TRUE
-        cFile := System.IO.Path.GetFileNameWithoutExtension(SELF:_FileName)
-        lOld := XSharp.RuntimeState.AutoOpen
-        XSharp.RuntimeState.AutoOpen := FALSE
-        TRY
-            lOk := oDbc:Open(oi)
-        CATCH as Exception
-            lOk := FALSE
-        END TRY
-        XSharp.RuntimeState.AutoOpen := lOld
-        IF lOk
-            nType   := oDbc:FieldIndex("OBJECTTYPE")
-            nName   := oDbc:FieldIndex("OBJECTNAME")
-            nParent := oDbc:FieldIndex("PARENTID")
-            nProp   := oDbc:FieldIndex("PROPERTY")
-            oDbc:GoTop()
-            DO WHILE ! oDbc:EoF
-                IF ((STRING)oDbc:GetValue(nType)):StartsWith("Table") 
-                    LOCAL cName := (STRING) oDbc:GetValue(nName)  AS STRING
-                    cName := cName:Trim()
-                    IF String.Compare(cName, cFile, TRUE) == 0
-                        nTable := (INT) oDbc:GetValue(oDbc:FieldIndex("OBJECTID"))
-                        EXIT
-                    ENDIF
-                ENDIF
-                oDbc:Skip(1)
-            ENDDO
-            fields := List<STRING>{}
-            props  := List<byte[]>{}
-            
-            IF nTable != 0
-                oDbc:GoTop()
-                DO WHILE ! oDbc:EoF
-                    VAR n1 := (LONG) oDbc:GetValue(nParent)
-                    VAR c1 := (STRING) oDbc:GetValue(nType)
-                    IF n1== nTable .AND.  c1:StartsWith("Field")
-                        VAR cAlias := (STRING) oDbc:GetValue(nName) 
-                        VAR b1 := (BYTE[]) oDbc:Memo:GetValue(nProp)
-                        fields:Add(cAlias:Trim())
-                        props:Add(b1)
-                    ENDIF
-                    oDbc:Skip(1)
-                ENDDO
-            ENDIF
-            oDbc:Close()
-            IF SELF:FieldCount == fields:Count
+        local cDbcFile as STRING
+        cDbcFile := SELF:DbcName
+        IF !System.IO.Path.IsPathRooted(cDbcFile)
+            VAR cPath := System.IO.Path.GetDirectoryName(SELF:FileName)
+            cDbcFile := System.IO.Path.Combine(cPath, cDbcFile)
+        ENDIF
+        Dbc.Open(cDbcFile, TRUE, TRUE, FALSE)
+        VAR oDb := Dbc.FindDatabase(cDbcFile)
+        IF oDb != NULL
+            var base := System.IO.Path.GetFileNameWithoutExtension(SELF:FileName)
+            var oTable := oDb:FindTable(System.IO.Path.GetFileName(base))
+            IF oTable != NULL
                 // assign aliases
-                LOCAL nPos AS LONG
-                FOR nPos := 1 TO SELF:FieldCount
-                    LOCAL oColumn AS DbfColumn
-                    oColumn := SELF:_GetColumn(nPos) ASTYPE DbfColumn
-                    SetColumnProperties(oColumn, props[nPos-1])
-                    oColumn:Alias := fields[nPos-1]
-                    oColumn:ColumnName := fields[nPos-1]
-                    IF String.Compare(oColumn:Name, oColumn:Alias, TRUE) != 0
-                        // We add the alias as alternative to the fieldname.
-                        // As a result we can call FieldIndex with the alias AND the fieldName
-                        SELF:_fieldNames:Add(oColumn:Alias:ToUpper(), nPos-1)
-                    ENDIF
-                NEXT
+                IF SELF:FieldCount == oTable:Fields:Count
+                    LOCAL nPos AS LONG
+                    FOR nPos := 1 TO SELF:FieldCount
+                        LOCAL oColumn AS DbfColumn
+                        VAR oField := oTable:Fields[nPos-1]
+                        oColumn := SELF:_GetColumn(nPos) ASTYPE DbfColumn
+                        oColumn:Properties  := oField:Properties
+                        oColumn:Alias       := oField:ObjectName
+                        oColumn:ColumnName  := oField:ObjectName
+                        IF String.Compare(oColumn:Name, oColumn:Alias, TRUE) != 0
+                            // We add the alias as alternative to the fieldname.
+                            // As a result we can call FieldIndex with the alias AND the fieldName
+                            SELF:_fieldNames:Add(oColumn:Alias:ToUpper(), nPos-1)
+                        ENDIF
+                    NEXT
+                ENDIF
             ENDIF
         ENDIF
 
-    PRIVATE METHOD SetColumnProperties(oColumn as RddFieldInfo, bProps AS BYTE[]) AS VOID
-        VAR token  := FtpMemoToken{bProps}
-        VAR length := token:Length
-        Debug.Assert(token.DataType == FlexFieldType.String )
-        Debug.Assert(length == bProps.Length-8)
-        VAR pos := 8
-        DO WHILE pos < bProps:Length
-            VAR len  := (LONG) bProps[pos]
-            VAR type := FoxToLong(bProps, pos+1)
-            Debug.Assert(type == FlexFieldType.String )
-            VAR prop := (LONG) FoxToShort(bProps, pos+5)
-            VAR strValue := SELF:_Encoding:GetString(bProps, pos+7, len-8)
-            pos += len
-            oColumn:Properties:Add((DatabasePropertyType) prop, strValue)
-        ENDDO
-        RETURN 
 
     /// <inheritdoc />
     METHOD AddField(info AS RddFieldInfo) AS LOGIC

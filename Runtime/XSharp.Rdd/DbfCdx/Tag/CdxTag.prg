@@ -14,7 +14,7 @@ USING System.Text
 USING System.Threading
 USING XSharp.RDD.Enums
 USING XSharp.RDD.Support
-
+USING STATIC XSharp.Conversions
 BEGIN NAMESPACE XSharp.RDD.CDX
 
     INTERNAL DELEGATE CompareFunc(aLHS AS BYTE[], aRHS AS BYTE[], nLength AS LONG, recnoLHS AS LONG, recnoRHS AS LONG) AS LONG

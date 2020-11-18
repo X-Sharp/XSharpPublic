@@ -11,6 +11,7 @@ USING System.Linq
 USING System.Runtime.CompilerServices
 USING XSharp.RDD.Enums
 USING XSharp.RDD.Support
+USING STATIC XSharp.Conversions
 BEGIN NAMESPACE XSharp.RDD
     /// <summary>Class for DBF Column reading / writing </summary>
     CLASS DbfColumn INHERIT RddFieldInfo

@@ -12,6 +12,7 @@ USING System.Runtime.CompilerServices
 USING System.Reflection
 USING System.Reflection.Emit
 USING System.Runtime.InteropServices
+USING STATIC XSharp.Conversions
 #include "CdxDebug.xh"
 BEGIN NAMESPACE XSharp.RDD.CDX
 
@@ -37,10 +38,8 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         // For debugging
         INTERNAL PROPERTY PageNoX AS STRING GET _nPage:ToString("X8")
 
-        // Helper fields
-        PROTECTED wValue := WordStruct{} AS WordStruct
-        PROTECTED liValue := LongStruct{} AS LongStruct
-
+        INTERNAL wValue as __WordStruct
+        INTERNAL liValue AS __LongStruct
         INTERNAL VIRTUAL METHOD _setTag(newTag AS CdxTag) AS VOID
             _tag := newTag
 

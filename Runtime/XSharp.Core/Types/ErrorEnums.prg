@@ -53,7 +53,7 @@ BEGIN NAMESPACE XSharp
         MEMBER EG_APPENDLOCK   := 40
         MEMBER EG_LOCK		   := 41
         MEMBER EG_TOOMANYTHREADS := 42
-        MEMBER EG_RESERVED_43  := 43
+        MEMBER EG_DB           := 43
         MEMBER EG_RESERVED_44  := 44
         MEMBER EG_LOCK_ERROR   := 45
         MEMBER EG_LOCK_TIMEOUT := 46
@@ -73,7 +73,7 @@ BEGIN NAMESPACE XSharp
         MEMBER EG_SEND_MISSINGARG  := 57
         MEMBER EG_SEND_TOOMANYARGS := 58
         MEMBER EG_EXCEPTION		   := 59
-        
+
         // Last Member
         MEMBER EG_MAX          := 59
         
@@ -96,7 +96,7 @@ BEGIN NAMESPACE XSharp
     ENUM Subcodes
         MEMBER ENOERROR := 0
         // Database errors - HOST side
-        
+        // Synchronize these error with the VOErrors enum for lookup of errors in the stringtables
         MEMBER EDB		:= 1000
         MEMBER EDB_SEEK := EDB + 1
         MEMBER EDB_SKIP :=EDB + 2
@@ -137,14 +137,15 @@ BEGIN NAMESPACE XSharp
         // Generic no table error
         MEMBER EDB_NOTABLE := EDB + 50
         MEMBER EDB_NOORDER := EDB + 51
+        MEMBER EDB_NODB    := EDB + 52
         MEMBER EDB_ASSERTION := EDB + 53
         
         
         
-        MEMBER ERDD := 1100
-        
-        MEMBER ERDD_OPEN_ORDER := ERDD + 03
-        // 02
+        MEMBER ERDD             := 1100
+        MEMBER ERDD_OPEN_FILE   := ERDD + 01
+        MEMBER ERDD_OPEN_MEMO   := ERDD + 02
+        MEMBER ERDD_OPEN_ORDER  := ERDD + 03
         MEMBER ERDD_CREATE_FILE := ERDD + 04
         MEMBER ERDD_CREATE_MEMO := ERDD + 05
         MEMBER ERDD_CREATE_ORDER := ERDD + 06
@@ -334,6 +335,8 @@ DEFINE EG_SEND_MISSINGARG	:= Gencode.EG_SEND_MISSINGARG
 DEFINE EG_SEND_TOOMANYARGS	:= Gencode.EG_SEND_TOOMANYARGS
 /// <exclude />
 DEFINE EG_EXCEPTION			:= Gencode.EG_EXCEPTION
+/// <exclude />
+DEFINE EG_DB                 := Gencode.EG_DB
 /// <exclude />
 
 DEFINE EG_MAX            := Gencode.EG_MAX

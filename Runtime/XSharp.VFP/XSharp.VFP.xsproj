@@ -14,7 +14,7 @@
     <NS>true</NS>
     <vo15>true</vo15>
     <VulcanCompatibleResources>True</VulcanCompatibleResources>
-    <XSharpProjectversion>2.6.1.0</XSharpProjectversion>
+    <XSharpProjectversion>2.6.3.0</XSharpProjectversion>
     <IncludePaths>$(CommonInclude)</IncludePaths>
     <Nostandarddefs>true</Nostandarddefs>
     <StandardDefs />
@@ -57,6 +57,7 @@
     <Compile Include="ClassFunctions.prg" />
     <Compile Include="BitFunctions.prg" />
     <Compile Include="Cursors\DbFunctions.prg" />
+    <Compile Include="Database\DbFunctions.prg" />
     <Compile Include="Database\DatabaseEnums.prg" />
     <Compile Include="Defines.prg" />
     <Compile Include="FileFunctions.prg" />

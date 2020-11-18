@@ -10,6 +10,7 @@ USING XSharp.RDD.Support
 USING XSharp.RDD.CDX
 USING System.Runtime.InteropServices
 USING System.IO
+USING STATIC XSharp.Conversions
 BEGIN NAMESPACE XSharp.RDD
 INTERNAL CLASS FptHeader
     // FoxPro memo Header:
@@ -28,36 +29,35 @@ INTERNAL CLASS FptHeader
     INTERNAL CONST FOXHEADER_OFFSET := 0 AS LONG
     
     INTERNAL PROPERTY Size AS LONG GET FOXHEADER_LENGTH
-
     INTERNAL CONSTRUCTOR()
         SELF:Buffer := BYTE[]{FOXHEADER_LENGTH}
 
     INTERNAL PROPERTY BlockSize AS WORD
         GET
-            RETURN FoxToWord(Buffer, OFFSET_BLOCKSIZE)
+            RETURN BuffToWordFox(Buffer, OFFSET_BLOCKSIZE)
         END GET
         SET
             IF value >= FPTMemo.MIN_FOXPRO_BLOCKSIZE
-                WordToFox(value, Buffer, OFFSET_BLOCKSIZE)
+                WordToBuffFox(value, Buffer, OFFSET_BLOCKSIZE)
             ELSE
-                WordToFox(0, Buffer, OFFSET_BLOCKSIZE)
+                WordToBuffFox(0, Buffer, OFFSET_BLOCKSIZE)
             ENDIF
         END SET
     END PROPERTY
     INTERNAL PROPERTY NextFree AS LONG
         GET
-            RETURN FoxToLong(Buffer, OFFSET_NEXTFREE)
+            RETURN BuffToLongFox(Buffer, OFFSET_NEXTFREE)
         END GET
         SET
-            LongToFox(VALUE, Buffer, OFFSET_NEXTFREE)
+            LongToBuffFox(VALUE, Buffer, OFFSET_NEXTFREE)
         END SET
     END PROPERTY
     INTERNAL PROPERTY UnUsed AS WORD
         GET
-            RETURN FoxToWord(Buffer, OFFSET_UNUSED)
+            RETURN BuffToWordFox(Buffer, OFFSET_UNUSED)
         END GET
         SET
-            WordToFox(value, Buffer, OFFSET_UNUSED)
+            WordToBuffFox(value, Buffer, OFFSET_UNUSED)
         END SET
     END PROPERTY
 

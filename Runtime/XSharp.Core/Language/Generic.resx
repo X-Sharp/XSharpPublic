@@ -222,6 +222,9 @@
   <data name="EDB_NOORDER" xml:space="preserve">
     <value>No order specified</value>
   </data>
+  <data name="EDB_NODB" xml:space="preserve">
+    <value>No database is opened</value>
+  </data>
   <data name="EDB_ASSERTION" xml:space="preserve">
     <value>Assertion failed</value>
   </data>
@@ -2293,7 +2296,7 @@
     <value>Too many threads</value>
   </data>
   <data name="RT_MSG_ERR_43" xml:space="preserve">
-    <value>Reserved error number</value>
+    <value>Database error</value>
   </data>
   <data name="RT_MSG_ERR_44" xml:space="preserve">
     <value>Reserved error number</value>

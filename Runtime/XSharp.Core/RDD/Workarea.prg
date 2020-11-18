@@ -649,7 +649,8 @@ BEGIN NAMESPACE XSharp.RDD
             GET
                 var result := Dictionary<String, Object>{}
                 FOR var i := 1 to SELF:FieldCount
-                    result:Add(SELF:FieldName(i), SELF:GetValue(i))
+                    var columnName := (string) FieldInfo(i, DBS_CAPTION, NULL)
+                    result:Add(columnName, SELF:GetValue(i))
                 NEXT
                 RETURN result
             END GET

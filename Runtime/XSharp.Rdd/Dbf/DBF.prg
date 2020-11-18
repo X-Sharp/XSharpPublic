@@ -107,6 +107,7 @@ INTERNAL METHOD _SetEOF(lNewValue as LOGIC) AS VOID
         SELF:EoF := lNewValue
         IF lNewValue
             Array.Copy(SELF:_BlankBuffer, SELF:_RecordBuffer, SELF:_RecordLength)
+            SELF:_RecNo := SELF:_RecCount+1
         ENDIF
     ENDIF
     

@@ -364,6 +364,10 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             RETURN _compareBin(aLHS, aRHS, nLength, recnoLHS, recnoRHS)
 
         INTERNAL STATIC METHOD _compareRecno(recnoLHS AS LONG, recnoRHS AS LONG) AS LONG
+            IF recnoLHS == 0 .or. recnoRHS == 0
+                // no record to compare against
+                RETURN 0
+            ENDIF
             IF recnoLHS < recnoRHS
                 RETURN -1
             ELSEIF recnoLHS > recnoRHS

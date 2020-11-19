@@ -189,7 +189,7 @@
          [<rest:REST>]                                                  ;
          [ALL]                                                          ;
          [TYPE] [<type: FOXPLUS,FOX2X,DIF,MOD,SDF,SYLK,WK1,WKS,WR1,WRK,CSV,XLS,XL5,XL8 >] ;
-         [SHEET <sheet>]                                           ;
+         [SHEET <sheet>]                                                ;
          [AS <nCodePage>]                                               ;
                                                                         ;
       => DbAppFox(                                                      ;
@@ -200,7 +200,7 @@
 
 
 
-#command APPEND FROM ARRAY <arrayName> [FIELDS <f1> [,<fn> ] ]              ;
+#command APPEND FROM ARRAY <arrayName> [FIELDS <f1> [,<fn> ] ]          ;
          [LIKE <%include%>] [EXCEPT <%exclude%> ]                       ;
          [FOR <for>]                                                    ;
                                                                         ;
@@ -209,6 +209,32 @@
                         <{for}> )
 
 
+#command OPEN DATABASE <(db)>                                            ;
+             [<ex: EXCLUSIVE >]                                          ;
+             [<sh: SHARED> ]                                             ;
+             [<ro: NOUPDATE> ]                                           ;
+             [<val: VALIDATE>]                                           ;
+         ;
+        => XSharp.RDD.Dbc.Open( <(db)>, iif(<.sh.> .or. <.ex.>, !<.ex.>, .T.), <.ro.>, <.val.>)
+
+#command SET DATABASE TO [<(db)>]                                        ;
+        => XSharp.RDD.Dbc.Select( <(db)>)
+
+#command CREATE DATABASE <(db)>                                          ;
+        => XSharp.RDD.Dbc.Create( <(db)>)
+
+
+
+#command ASSERT <expression> [MESSAGE <cMessageText>]  ;
+        => __FoxAssert( <expression> , <"expression">, <cMessageText> )
+
+#command SET ASSERTS <x:ON,OFF>           =>  Set(Set.Asserts, upper(<(x)>)=="ON" )
+#command SET ASSERTS (<x>)                =>  Set(Set.Asserts, <x> )
+#command SET SAFETY <x:ON,OFF>            =>  Set(Set.Safety, upper(<(x)>)=="ON" )
+#command SET SAFETY (<x>)                 =>  Set(Set.Safety, <x> )
+
+
+// Unsupported commands
 
 #command SCATTER [<options,...>] FIELDS <f1> [<otherfields,...>] <clause:LIKE,EXCEPT>  <*otherclause*> => __FIELDSERROR__
 #command GATHER  [<options,...>] FIELDS <f1> [<otherfields,...>] <clause:LIKE,EXCEPT>  <*otherclause*> => __FIELDSERROR__

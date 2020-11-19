@@ -80,20 +80,20 @@ pragma                : P=PRAGMA (Tokens += ~EOS)*? EOS
 
 
 funcproc              : (Attributes=attributes)? (Modifiers=funcprocModifiers)?   
-                      T=(FUNCTION|PROCEDURE) Sig=signature
-                      InitExit=(INIT1|INIT2|INIT3|EXIT)?                        
-                      vodummyclauses
-                      end=eos   
-                      StmtBlk=statementBlock
-                      (END T2=(FUNCTION|PROCEDURE)   EOS )?
-                    ;
+                        T=(FUNCTION|PROCEDURE) Sig=signature
+                        InitExit=(INIT1|INIT2|INIT3|EXIT)?                        
+                        vodummyclauses
+                        end=eos   
+                        StmtBlk=statementBlock
+                        (END T2=(FUNCTION|PROCEDURE)   EOS )?
+                      ;
 
 signature             : Id=identifier                             
-                      TypeParameters=typeparameters?                            
-                      (ParamList=parameterList)?                                
-                      (AS Type=datatype)?                                       
-                      (ConstraintsClauses+=typeparameterconstraintsclause)*     
-                      (CallingConvention=callingconvention)?
+                        TypeParameters=typeparameters?                            
+                        (ParamList=parameterList)?                                
+                        (AS Type=datatype)?                                       
+                        (ConstraintsClauses+=typeparameterconstraintsclause)*     
+                        (CallingConvention=callingconvention)?
                       ;
 
 
@@ -543,7 +543,7 @@ statement           : Decl=localdecl                        #declarationStmt
                       UNTIL Expr=expression
                       eos                                                 #repeatStmt
                     | (f=FOREACH | f=FOR EACH)
-                      (IMPLIED Id=identifier | Id=identifier AS Type=datatype| VAR Id=identifier)
+                      (IMPLIED Id=varidentifier | Id=varidentifier AS Type=datatype|(VAR Id=varidentifier) )
                       IN Container=expression end=eos
                       StmtBlk=statementBlock
                       ((e=NEXT |e=END FOR)? eos)?	    #foreachStmt
@@ -588,7 +588,7 @@ statement           : Decl=localdecl                        #declarationStmt
 
 
                     // some statements that are only valid in FoxPro dialect
-                    | TEXT (TO Id=identifier (Add=ADDITIVE)? (Merge=TEXTMERGE)? (NoShow=NOSHOW)? (FLAGS Flags=expression)? (PRETEXT Pretext=expression)? )? end=EOS
+                    | TEXT (TO Id=varidentifier (Add=ADDITIVE)? (Merge=TEXTMERGE)? (NoShow=NOSHOW)? (FLAGS Flags=expression)? (PRETEXT Pretext=expression)? )? end=EOS
                        String=TEXT_STRING_CONST
                        ENDTEXT e=eos                                                  #foxtextStmt   
                     | Eq=EQ Exprs+=expression  end=eos		                            #foxexpressionStmt
@@ -620,23 +620,23 @@ caseBlock           : Key=CASE Cond=expression end=eos StmtBlk=statementBlock Ne
 // Note that literalValue is not enough. We also need to support members of enums
 switchBlock         : (
                       Key=CASE Const=expression (W=WHEN whenexpr=expression)? 
-                    | Key=CASE Id=identifier AS DataType=datatype (W=WHEN whenexpr=expression)? 
+                    | Key=CASE Id=varidentifier AS DataType=datatype (W=WHEN whenexpr=expression)? 
                     | Key=OTHERWISE
                     )
                     end=eos StmtBlk=statementBlock
                     ;
 
-catchBlock          : (Id=identifier)? (AS Type=datatype)? (W=WHEN whenexpr=expression)? end=eos StmtBlk=statementBlock
+catchBlock          : (TO)? Id=varidentifier? (AS Type=datatype)? (W=WHEN whenexpr=expression)? end=eos StmtBlk=statementBlock
                     ;
 
-recoverBlock        : (USING Id=identifier)? end=eos StmtBlock=statementBlock
+recoverBlock        : (USING Id=varidentifier)? end=eos StmtBlock=statementBlock
                     ;
 
 variableDeclaration	: (LOCAL? Var=IMPLIED | Var=VAR) Decl+=variableDeclarator (COMMA Decl+=variableDeclarator)*
                     | LOCAL Decl+=variableDeclarator (COMMA Decl+=variableDeclarator)* (AS Type=datatype)?
                     ;
 
-variableDeclarator  : Id=identifier Op=assignoperator Expr=expression
+variableDeclarator  : Id=varidentifier Op=assignoperator Expr=expression
                     ;
 
 // Variable declarations
@@ -669,11 +669,11 @@ localdecl          : LOCAL (Static=STATIC)? LocalVars+=localvar (COMMA LocalVars
                    | T=(DIMENSION|DECLARE) DimVars += dimensionVar (COMMA DimVars+=dimensionVar)*    end=eos  #foxDimensionDecl
                    ;
 
-localvar           : (Const=CONST)? ( Dim=DIM )? (FOX_M DOT)? Id=identifier (LBRKT ArraySub=arraysub RBRKT)?  
+localvar           : (Const=CONST)? ( Dim=DIM )? Id=varidentifier (LBRKT ArraySub=arraysub RBRKT)?  
                      (Op=assignoperator Expression=expression)? (As=(AS | IS) DataType=datatype)?
                    ;
 
-impliedvar         : (Const=CONST)? Id=identifier Op=assignoperator Expression=expression
+impliedvar         : (Const=CONST)? Id=varidentifier Op=assignoperator Expression=expression
                    ;
 
 
@@ -700,7 +700,7 @@ xbasedecltype       : AS Type=datatype (OF ClassLib=identifierName)?
                     ;  // parseed but ignored . FoxPro uses this only for intellisense. We can/should do that to in the editor
                     
 
-xbasevar            : (Amp=AMP)?  (FOX_M DOT)? Id=identifierName (LBRKT ArraySub=arraysub RBRKT)? (Op=assignoperator Expression=expression)?
+xbasevar            : (Amp=AMP)?  Id=identifierName (LBRKT ArraySub=arraysub RBRKT)? (Op=assignoperator Expression=expression)?
                     ;
 
 dimensionVar        : Id=identifierName  ( LBRKT ArraySub=arraysub RBRKT | LPAREN ArraySub=arraysub RPAREN ) (AS DataType=datatype)?
@@ -743,7 +743,7 @@ expression          : Expr=expression Op=(DOT | COLON) Name=simpleName          
                     | Expr=expression Op=(INC | DEC)                            #postfixExpression      // expr ++/--
                     | Op=AWAIT Expr=expression                                  #awaitExpression        // AWAIT expr
                     | Op=(PLUS | MINUS | TILDE| ADDROF | INC | DEC) Expr=expression #prefixExpression   // +/-/~/&/++/-- expr
-                    | Expr=expression Op=IS Type=datatype (VAR Id=identifier)?  #typeCheckExpression    // expr IS typeORid [VAR identifier] 
+                    | Expr=expression Op=IS Type=datatype (VAR Id=varidentifier)? #typeCheckExpression    // expr IS typeORid [VAR identifier] 
                     | Expr=expression Op=ASTYPE Type=datatype                   #typeCheckExpression    // expr AS TYPE typeORid
                     | Left=expression Op=EXP Right=expression                   #binaryExpression       // expr ^ expr
                     | Left=expression Op=(MULT | DIV | MOD) Right=expression    #binaryExpression       // expr * expr
@@ -876,8 +876,8 @@ argumentList        :  Args+=namedArgument (COMMA Args+=namedArgument)*
 
                     // NOTE: Expression is optional so we can skip arguments for VO/Vulcan compatibility
 namedArgument       :  {AllowNamedArgs}?  Name=identifierName Op=assignoperator  ( RefOut=(REF | OUT) )? Expr=expression?
-                    |   RefOut=OUT Var=VAR  Id=identifier
-                    |   RefOut=OUT Id=identifier AS Type=datatype
+                    |   RefOut=OUT Var=VAR Id=varidentifier
+                    |   RefOut=OUT Id=varidentifier AS Type=datatype
                     |   RefOut=OUT Null=NULL
                     |  ( RefOut=(REF | OUT) )? Expr=expression?
                     ;
@@ -906,6 +906,9 @@ genericArgumentList : LT GenericArgs+=datatype (COMMA GenericArgs+=datatype)* GT
                     ;
 
 identifierName      : Id=identifier
+                    ;
+
+varidentifier       : (FOX_M DOT)? Id=identifier
                     ;
 
 datatype            : ARRAY OF TypeName=typeName                                    #arrayOfType

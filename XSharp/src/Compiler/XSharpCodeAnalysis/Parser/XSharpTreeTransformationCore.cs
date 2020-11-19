@@ -7870,10 +7870,14 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             context.Put(_syntaxFactory.IdentifierName(context.Id.Get<SyntaxToken>()));
         }
 
-
         public override void ExitIdentifierString([NotNull] XP.IdentifierStringContext context)
         {
             context.Put(GenerateLiteral(context.Start.Text));
+        }
+
+        public override void ExitVaridentifier([NotNull] XP.VaridentifierContext context)
+        {
+            context.Put(context.Id.Get<SyntaxToken>());
         }
 
         public override void ExitIdentifier([NotNull] XP.IdentifierContext context)

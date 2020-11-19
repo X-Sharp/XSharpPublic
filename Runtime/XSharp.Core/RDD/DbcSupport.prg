@@ -6,7 +6,7 @@
 USING System.Collections.Generic
 USING System.Diagnostics
 USING XSharp.RDD.Support
-BEGIN NAMESPACE XSharp.RDD
+BEGIN NAMESPACE XSharp.RDD.DBC
 
     /// <summary>This classes manages open database. Both databases that are opened explicitely and also databases that are opened
     /// for "free" tables that have a backlink to a database</summary>

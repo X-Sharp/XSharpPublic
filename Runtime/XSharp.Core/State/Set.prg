@@ -223,11 +223,11 @@ FUNCTION SetEpoch(nNewSetting AS DWORD) AS DWORD
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/seterrorlog/*" />
 FUNCTION SetErrorLog() AS LOGIC
-	GETSTATE LOGIC Set.Errrorlog 
+	GETSTATE LOGIC Set.Errorlog 
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/seterrorlog/*" />
 FUNCTION SetErrorLog(lNewSetting AS LOGIC) AS LOGIC
-	SETSTATE LOGIC Set.Errrorlog lNewSetting
+	SETSTATE LOGIC Set.Errorlog lNewSetting
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/setexact/*" />
 FUNCTION SetExact() AS LOGIC

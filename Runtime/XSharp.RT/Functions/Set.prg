@@ -24,10 +24,17 @@ FUNCTION Set(nDefine, newValue) AS USUAL CLIPPER
     LOCAL state AS XSharp.RuntimeState
     LOCAL oOld  := NULL AS OBJECT
     LOCAL nSetting AS XSharp.Set
-    IF ! IsNumeric(nDefine)
-        RETURN NIL
+    IF IsString(nDefine)
+        local cDefine := nDefine as STRING
+        IF ! Enum.TryParse(cDefine, TRUE, OUT nSetting)
+            throw Error.ArgumentError(__FUNCTION__,nameof(nDefine), "Invalid argument: "+cDefine+". This could not be translated to a valid setting in the Set enum")
+        ENDIF
+    ELSEIF ! IsNumeric(nDefine)
+        throw Error.ArgumentError(__FUNCTION__, nameof(nDefine), "Invalid argument: "+AsString(nDefine)+". This should be a number, Set Enum value or a string")
+    ELSE
+        nSetting := nDefine
     ENDIF
-    nSetting := nDefine
+    
 
     IF PCount() > 1
         // Some settings are not simply written but have side effects

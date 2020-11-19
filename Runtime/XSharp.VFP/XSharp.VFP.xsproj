@@ -35,6 +35,11 @@
     <Reference Include="System.Core" />
     <Reference Include="System.Data" />
     <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Drawing">
+      <Name>System.Drawing</Name>
+      <SpecificVersion>False</SpecificVersion>
+      <AssemblyName>System.Drawing.dll</AssemblyName>
+    </Reference>
     <Reference Include="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
       <Name>System.Windows.Forms</Name>
       <AssemblyName>System.Windows.Forms.dll</AssemblyName>
@@ -93,6 +98,8 @@
     <Compile Include="SystemVariables.prg" />
     <Compile Include="TextOutPut.prg" />
     <Compile Include="UIFunctions.prg" />
+    <Compile Include="UI\Assert.prg" />
+    <Compile Include="UI\AssertDialog.prg" />
     <Compile Include="UI\AutoCloseMessageBox.prg" />
     <Compile Include="Win32.prg" />
   </ItemGroup>
@@ -143,6 +150,11 @@
     <None Include="VFPFileStructures\VFP6Report.pdf" />
     <None Include="VFPFileStructures\VFP6Report2.pdf" />
     <None Include="VfpRuntimeDocs.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="UI\AssertDialog.resx">
+      <DependentUpon>AssertDialog.prg</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   <!-- This next bit is required unless the macro used to Import your targets is defined in an MSBuild toolset. -->
   <ProjectExtensions>

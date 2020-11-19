@@ -18,4 +18,5 @@ using XSharp
 // in the core dialect the next attributes are not included automatically
 [assembly: ClassLibrary("XSharp.Core.Functions","XSharp")]
 [assembly: ImplicitNamespace("XSharp")]
+[assembly: ImplicitNamespace("XSharp.RDD")]
 [assembly: CompilerVersionAttribute("X# "+__VERSION__ +" - dialect:"+__DIALECT__ )] 

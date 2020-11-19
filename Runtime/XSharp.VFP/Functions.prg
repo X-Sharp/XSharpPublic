@@ -25,7 +25,7 @@ FUNCTION CreateObjectEx(cClsIdOrcProgId, cComputerName , cIID ) AS OBJECT CLIPPE
 INTERNAL PROCEDURE RddInit() AS VOID _INIT3
     // Make sure that the VFP dialect has the DBFVFP driver as default RDD
     RddSetDefault("DBFVFP")
-    RuntimeState.SetValue(Set.FoxCollate,"")
+    RuntimeState.SetValue(Set.CollateFox,"MACHINE")
     RuntimeState.SetValue(Set.MemoWidth, 50)
     RuntimeState.SetValue(Set.Near, FALSE)
     RuntimeState.SetValue(Set.SqlAnsi, FALSE)
@@ -38,7 +38,7 @@ RETURN
 
 
 Function SetFoxCollation(cCollation as STRING) AS STRING
-    local cOld := RuntimeState.GetValue<STRING>(Set.FoxCollate) AS STRING
+    local cOld := RuntimeState.GetValue<STRING>(Set.CollateFox) AS STRING
     local aAllowed as STRING[]
     LOCAL lOk := FALSE as LOGIC
     LOCAL cValue := cCollation as STRING
@@ -51,7 +51,7 @@ Function SetFoxCollation(cCollation as STRING) AS STRING
         ENDIF
     NEXT
     IF lOk
-        RuntimeState.SetValue(Set.FoxCollate,cValue)
+        RuntimeState.SetValue(Set.CollateFox,cValue)
     ELSE
         local oError as Error
         oError := Error.ArgumentError(__FUNCTION__, nameof(cCollation), 1, {cCollation})

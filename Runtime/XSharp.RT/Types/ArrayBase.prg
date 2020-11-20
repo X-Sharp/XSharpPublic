@@ -15,7 +15,7 @@ BEGIN NAMESPACE XSharp
 	/// </summary>
 	PUBLIC CLASS __ArrayBase<T> IMPLEMENTS INamedIndexer, IEnumerable<T> WHERE T IS NEW()
         [DebuggerBrowsable(DebuggerBrowsableState.Never)];
-		INTERNAL _internalList AS List<T>
+		PROTECTED INTERNAL _internalList AS List<T>
         [DebuggerBrowsable(DebuggerBrowsableState.Never)];
 		PRIVATE _islocked AS LOGIC
 		#region constructors
@@ -315,7 +315,7 @@ BEGIN NAMESPACE XSharp
 			RETURN
 
         /// <exclude />
-		PUBLIC METHOD Resize(newSize AS INT) AS VOID
+		PUBLIC VIRTUAL METHOD Resize(newSize AS INT) AS VOID
 			IF SELF:CheckLock()
 				IF newSize == 0
 					_internalList:Clear()

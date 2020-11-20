@@ -218,6 +218,25 @@ CLASS XSharp.RuntimeState
         GET GetValue<Exception>(Set.FileException);
         SET SetValue<Exception>(Set.FileException, value)
 
+	/// <summary>The current Alternate setting.</summary>
+    /// <include file="CoreComments.xml" path="Comments/PerThread/*" />
+    /// <seealso cref="M:XSharp.RT.Functions.SetAlternate" />
+    /// <seealso cref="M:XSharp.RT.Functions.SetAlternate(System.Boolean)" />
+    /// <seealso cref="F:XSharp.Set.Alternate" />
+   STATIC PROPERTY Alternate AS LOGIC ;
+        GET GetValue<LOGIC>(Set.Alternate);
+        SET SetValue<LOGIC>(Set.Alternate, value)
+
+    /// <summary>The current AltFile setting.</summary>
+    /// <include file="CoreComments.xml" path="Comments/PerThread/*" />
+    /// <seealso cref="M:XSharp.RT.Functions.SetAltFile" />
+    /// <seealso cref="M:XSharp.RT.Functions.SetAltFile(System.String)" />
+    /// <seealso cref="F:XSharp.Set.AltFile" />
+   STATIC PROPERTY AltFile AS STRING ;
+        GET GetValue<STRING>(Set.AltFile);
+        SET SetValue<STRING>(Set.AltFile, value)
+
+
 	/// <summary>The current ANSI setting</summary>
     /// <include file="CoreComments.xml" path="Comments/PerThread/*" />
     /// <seealso cref="M:XSharp.Core.Functions.SetAnsi" />
@@ -248,6 +267,7 @@ CLASS XSharp.RuntimeState
 	/// <summary>The current AutoShareMode setting (used by the RDD system).</summary>
     /// <seealso cref="P:XSharp.RuntimeState.AutoOpen" />
     /// <seealso cref="P:XSharp.RuntimeState.AutoOrder" />
+    /// <seealso cref="F:XSharp.Set.Autoshare" />
     /// <include file="CoreComments.xml" path="Comments/PerThread/*" />
     STATIC PROPERTY AutoShareMode AS LONG ;
         GET (LONG) GetValue<AutoShareMode>(Set.Autoshare);
@@ -258,10 +278,19 @@ CLASS XSharp.RuntimeState
     /// <include file="CoreComments.xml" path="Comments/PerThread/*" />
     /// <seealso cref="M:XSharp.Core.Functions.SetCompatible" />
     /// <seealso cref="M:XSharp.Core.Functions.SetCompatible(System.Boolean)" />
-    /// <seealso cref="F:XSharp.Set.Century" />
+    /// <seealso cref="F:XSharp.Set.Compatible" />
    STATIC PROPERTY Compatible AS LOGIC ;
         GET GetValue<LOGIC>(Set.Compatible);
         SET SetValue<LOGIC>(Set.Compatible, value)
+
+	/// <summary>The current Console setting.</summary>
+    /// <include file="CoreComments.xml" path="Comments/PerThread/*" />
+    /// <seealso cref="M:XSharp.RT.Functions.SetConsole" />
+    /// <seealso cref="M:XSharp.RT.Functions.SetConsole(System.Boolean)" />
+    /// <seealso cref="F:XSharp.Set.Console" />
+   STATIC PROPERTY Console AS LOGIC ;
+        GET GetValue<LOGIC>(Set.Console);
+        SET SetValue<LOGIC>(Set.Console, value)
 
 	/// <summary>The current Century setting (used in DATE &lt;-&gt; STRING conversions).</summary>
     /// <include file="CoreComments.xml" path="Comments/PerThread/*" />

@@ -55,10 +55,12 @@
     <Compile Include="..\..\Common\constants.prg">
       <Link>constants.prg</Link>
     </Compile>
+    <Compile Include="ArrayFunctions.prg" />
     <Compile Include="Classes\Collection.prg" />
     <Compile Include="Classes\Empty.prg" />
     <Compile Include="Classes\Custom.prg" />
     <Compile Include="Classes\Abstract.prg" />
+    <Compile Include="Classes\Array.prg" />
     <Compile Include="ClassFunctions.prg" />
     <Compile Include="BitFunctions.prg" />
     <Compile Include="Cursors\DbFunctions.prg" />

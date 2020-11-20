@@ -18,7 +18,7 @@ BEGIN NAMESPACE XSharp
     /// <include file="RTComments.xml" path="Comments/ZeroBasedIndex/*" /> 
     //[DebuggerTypeProxy(TYPEOF(ArrayDebugView))];
     [DebuggerDisplay("{DebuggerString(),nq}", Type := "ARRAY")] ;
-    PUBLIC SEALED CLASS __Array INHERIT __ArrayBase<USUAL> IMPLEMENTS IIndexer
+    PUBLIC CLASS __Array INHERIT __ArrayBase<USUAL> IMPLEMENTS IIndexer
 
         INTERNAL STATIC SuppressArrayIndexErrors := FALSE AS LOGIC  // used for Get_Element to emulate strange VO behaviour
 
@@ -183,7 +183,7 @@ BEGIN NAMESPACE XSharp
         NEW INTERNAL METHOD Swap(position AS INT, element AS USUAL) AS USUAL
             RETURN SUPER:Swap(position, element)
 
-        PRIVATE METHOD __CheckArrayElement(a as ARRAY, index AS INT, name as string, pos as int) AS VOID
+        PROTECTED METHOD __CheckArrayElement(a as ARRAY, index AS INT, name as string, pos as int) AS VOID
             IF index < 0 .OR. index >= a:_internalList:Count
                 VAR err := Error.BoundError(ProcName(1),name, (DWORD) pos, {index+1})
                 err:Stack   := ErrorStack(1)

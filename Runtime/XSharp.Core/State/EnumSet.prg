@@ -54,10 +54,7 @@ BEGIN NAMESPACE XSharp
         MEMBER AltFile     := 19		// STRING
         /// <summary>Directs output from @ ... SAY to the screen, a printer, or a file.</summary>
         MEMBER Device      := 20		// STRING
-        /// <summary></summary>
-        MEMBER Extra       := 21		// LOGIC
-        /// <summary></summary>
-        MEMBER ExtraFile   := 22		// STRING
+        // 21 and 22 missing
         /// <summary>Enables or disables output to the printer or routes output to a file, port, or network printer. </summary>
         MEMBER Printer     := 23		// LOGIC
         /// <summary>Output filename for printer output.</summary>
@@ -136,8 +133,6 @@ BEGIN NAMESPACE XSharp
         MEMBER DateCountry  := 59	// INT
         /// <summary></summary>
         MEMBER DefaultDir   := 60   // STRING location of error log file
-
-        // 61 - 69 unused
 
         // X# helper state
         /// <summary>Determines how Microsoft Visual FoxPro interprets dates that specify only 2 digit years.</summary>
@@ -437,10 +432,6 @@ DEFINE _SET_ALTFILE     := Set.AltFile
 /// <include file="CoreComments.xml" path="Comments/Set/*" />
 DEFINE _SET_DEVICE      := Set.Device      	
 /// <include file="CoreComments.xml" path="Comments/Set/*" />
-DEFINE _SET_EXTRA       := Set.Extra       	
-/// <include file="CoreComments.xml" path="Comments/Set/*" />
-DEFINE _SET_EXTRAFILE   := Set.ExtraFile
-/// <include file="CoreComments.xml" path="Comments/Set/*" />
 DEFINE _SET_PRINTER     := Set.Printer     	
 /// <include file="CoreComments.xml" path="Comments/Set/*" />
 DEFINE _SET_PRINTFILE   := Set.PrintFile   	
@@ -721,9 +712,7 @@ INTERNAL FUNCTION RuntimeStateDefaultValue(nSet AS XSharp.Set) AS OBJECT
         CASE Set.Deleted     	
         CASE Set.Cancel      	
         CASE Set.Debug     
-        CASE Set.Console     	
         CASE Set.Alternate   	
-        CASE Set.Extra       	
         CASE Set.Printer     	
         CASE Set.Confirm     	
         CASE Set.Escape      	
@@ -765,6 +754,7 @@ INTERNAL FUNCTION RuntimeStateDefaultValue(nSet AS XSharp.Set) AS OBJECT
 
         CASE Set.Ansi           
         CASE Set.Bell
+        CASE Set.Console
         CASE Set.Exclusive   	
         CASE Set.Optimize     
         CASE Set.AutoOpen
@@ -835,7 +825,6 @@ INTERNAL FUNCTION RuntimeStateDefaultValue(nSet AS XSharp.Set) AS OBJECT
         CASE Set.Path        	
         CASE Set.AltFile     	
         CASE Set.Device      	
-        CASE Set.ExtraFile   	
         CASE Set.PrintFile   	
         CASE Set.DelimChars  	
         CASE Set.AmExt		

@@ -6,7 +6,7 @@
 USING System.Collections.Generic
 USING System.Text
 
-
+/*
 INTERNAL CLASS NestedMacroHandler
 
 INTERNAL STATIC METHOD IsNested(cTemp AS STRING) AS LOGIC
@@ -184,3 +184,4 @@ INTERNAL STATIC METHOD ConvertToExtended(cMacro AS STRING) AS STRING
 END CLASS
 
 
+*/

@@ -46,9 +46,14 @@ FUNCTION Set(nDefine, newValue) AS USUAL CLIPPER
                 RETURN SetDateFormat(newValue)
             ENDIF
         CASE Set.Default
-            // Special handling, validaion on path for FoxPro and this also resets the path array
+            // Special handling, validation on path for FoxPro and this also resets the path array
             IF IsString(newValue)
                 RETURN SetDefault(newValue)
+            ENDIF
+        CASE Set.Path
+            // Special handling, clear path arrat
+            IF IsString(newValue) 
+                RETURN SetPath(newValue)
             ENDIF
         CASE Set.CharSet 
             // Map SET_CHARSET to SetAnsi
@@ -95,6 +100,7 @@ FUNCTION Set(nDefine, newValue) AS USUAL CLIPPER
             IF IsString(newValue) .OR. IsSymbol(newValue)
                 RETURN SetInternational(newValue)
             ENDIF
+                
         END SWITCH 
     ENDIF
 
@@ -123,4 +129,60 @@ FUNCTION Set(nDefine, newValue) AS USUAL CLIPPER
             
     
 
+FUNCTION SetAltFile() AS STRING
+	RETURN RuntimeState.AltFile
 
+FUNCTION SetAltFile(cFileName as STRING, lAdditive := FALSE as LOGIC) AS STRING
+    var old := RuntimeState.AltFile
+    IF String.IsNullOrEmpty(cFileName)
+        SetAlternate(FALSE)
+        AltFileClose()
+    ENDIF
+	RuntimeState.AltFile := cFileName
+    IF ! String.IsNullOrEmpty(cFileName)
+        AltFileOpen(lAdditive)
+        SetAlternate(TRUE)
+    ENDIF
+    RETURN old
+
+FUNCTION SetAlternate(lNewSetting AS LOGIC) AS LOGIC
+	VAR lOld := RuntimeState.Alternate
+    RuntimeState.Alternate := lNewSetting
+    RETURN lOld
+
+FUNCTION SetAlternate() AS LOGIC
+	RETURN RuntimeState.Alternate
+
+FUNCTION SetConsole() AS LOGIC
+	RETURN RuntimeState.Console
+
+FUNCTION SetConsole(lNewSetting AS LOGIC) AS LOGIC
+	VAR lOld := RuntimeState.Console
+    RuntimeState.Console := lNewSetting
+    RETURN lOld
+
+
+//FUNCTION SetPrintFile() AS STRING
+//	RETURN RuntimeState.PrintFile
+//
+//FUNCTION SetPrintFile(cFileName as STRING, lAdditive := FALSE as LOGIC) AS STRING
+//    var old := RuntimeState.PrintFile
+//    IF String.IsNullOrEmpty(cFileName)
+//        SetPrinter(FALSE)
+//        PrintFileClose()
+//    ENDIF
+//	RuntimeState.PrintFile := cFileName
+//    IF ! String.IsNullOrEmpty(cFileName)
+//        PrintFileOpen(lAdditive)
+//        SetPrinter(TRUE)
+//    ENDIF
+//    RETURN old
+//
+//FUNCTION SetPrinter(lNewSetting AS LOGIC) AS LOGIC
+//	VAR lOld := RuntimeState.Printer
+//    RuntimeState.Printer := lNewSetting
+//    RETURN lOld
+//
+//
+//FUNCTION SetPrinter() AS LOGIC
+//	RETURN RuntimeState.Printer

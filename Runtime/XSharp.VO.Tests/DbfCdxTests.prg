@@ -3685,7 +3685,6 @@ RETURN
 
 		METHOD PackZapReindexTest_helper(nWitch AS INT) AS VOID
 			LOCAL cDbf AS STRING
-			LOCAL nCount AS INT
 
 			RddSetDefault("DBFCDX")
 			SetCollation(#CLIPPER)
@@ -3888,7 +3887,7 @@ RETURN
 			Assert.Equal(3U , child->RecNo() )
 			?
 			? "evaluate after SetRelation(), must be 3:", child->Eval( cbExpression )
-			Assert.Equal(3 , (Int) child->Eval( cbExpression ))
+			Assert.Equal(3 , (INT) child->Eval( cbExpression ))
 			? "Recno should be 3:", child->RecNo()
 			Assert.Equal(3U , child->RecNo() )
 			
@@ -4047,6 +4046,95 @@ RETURN
 
 			child2->DbCloseArea()
 			parent2->DbCloseArea()
+
+        [Fact, Trait("Category", "DBF")];
+		METHOD SetRelation_test_for_526() AS VOID
+			LOCAL cParent,cChild,cTemp AS STRING
+			RddSetDefault("DBFCDX")
+			cTemp := GetTempFileName()
+			cParent := cTemp + "_parent"
+			cChild := cTemp + "_child"
+
+			DbCreate(cParent , {{"FLD" , "N" , 3 , 0}})
+			DbCreate(cChild , {{"FLD" , "N" , 3 , 0}})
+			
+			DbUseArea(TRUE,"DBFCDX", cParent, "parentnew" , TRUE)
+			parentnew->DbAppend()
+			parentnew->FieldPut(1,1)
+			parentnew->DbAppend()
+			parentnew->FieldPut(1,2)
+			
+			DbUseArea(TRUE,"DBFCDX", cChild, "childnew" , TRUE)
+			childnew->DbCreateIndex(cChild,"FLD")
+			childnew->DbAppend()
+			childnew->FieldPut(1,1)
+			childnew->DbAppend()
+			childnew->FieldPut(1,2)
+			
+			DbCloseAll()
+			
+			DbUseArea(TRUE,"DBFCDX", cChild, "childnew" , TRUE)
+			DbUseArea(TRUE,"DBFCDX", cParent, "parentnew" , TRUE)
+			parentnew->VoDbSetRelation("childnew" , &( "{ ||FLD}") ,"FLD")
+			
+			FOR LOCAL nMode := 0 AS INT UPTO 2
+			
+//			In the next two, childnew EoF() is false as expected
+			// ? "move parent to first record"
+			parentnew->DbGoTop()
+			DoRelation(nMode)
+			Assert.False(childnew->Eof())
+			Assert.Equal(1U , childnew->RecNo() )
+			
+			// ? "move parent to second record"
+			parentnew->DbSkip(+1)
+			DoRelation(nMode)
+			Assert.False(childnew->Eof())
+			Assert.Equal(2U , childnew->RecNo() )
+			
+//			Here, childnew EoF() becomes true, correct
+			// ? "move parent to EoF"
+			parentnew->DbSkip(+1)
+			DoRelation(nMode)
+			Assert.True(childnew->Eof())
+			Assert.Equal(3U , childnew->RecNo() )
+			
+//			In all the below, childnew EoF() remains TRUE, should had turned to false. Also RecNo remains at 3 (above the last rec)
+			// ? "move parent back to last record"
+			parentnew->DbSkip(-1)
+			DoRelation(nMode)
+			Assert.False(childnew->Eof())
+			Assert.Equal(2U , childnew->RecNo() )
+			
+			// ? "move parent to top"
+			parentnew->DbGoTop()
+			DoRelation(nMode)
+			Assert.False(childnew->Eof())
+			Assert.Equal(1U , childnew->RecNo() )
+			
+			// ? "move parent to bottom"
+			parentnew->DbGoBottom()
+			DoRelation(nMode)
+			Assert.False(childnew->Eof())
+			Assert.Equal(2U , childnew->RecNo() )
+			
+			NEXT
+			
+			DbCloseAll()
+
+		INTERNAL STATIC METHOD DoRelation(nMode := 0 AS INT) AS VOID
+			LOCAL u1,u2 AS USUAL
+			? "Parent value:", u1 := u2 := parentnew->FieldGet(1)
+			childnew->VoDbOrderInfo( DBOI_SCOPETOP	 , "", NIL, REF u1 )
+			childnew->VoDbOrderInfo( DBOI_SCOPEBOTTOM, "", NIL, REF u2 )
+			IF nMode == 1
+				childnew->DbGoBottom() // no problem with this instead
+			ELSEIF nMode == 2
+				childnew->DbGoTop() // <---------- this is what makes the problem manifest itself
+			END IF
+			? "Child Eof, RecNo:", childnew->Eof(), childnew->RecNo()
+		RETURN
+
 
 		STATIC PRIVATE METHOD GetTempFileName() AS STRING
            STATIC nCounter AS LONG

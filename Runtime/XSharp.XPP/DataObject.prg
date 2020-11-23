@@ -25,7 +25,7 @@ CLASS XSharp.XPP.DataObject INHERIT XSharp.XPP.Abstract IMPLEMENTS IDynamicPrope
     /// Checks if the object has a particular member variable 
     /// </summary>
     /// <param name="cName">is a character string containing the symbolic identifier of a member variable.</param>
-    /// <returns>The return value is .T. (true) if the object has the member variable <cVarName>, otherwise it returns .F. (false). </returns>
+    /// <returns>The return value is .T. (true) if the object has the member variable &lt;cVarName&gt;, otherwise it returns .F. (false). </returns>
     PUBLIC METHOD IsMemberVar(cName AS STRING) AS LOGIC
         IF SELF:_fields:ContainsKey(cName)
             RETURN TRUE

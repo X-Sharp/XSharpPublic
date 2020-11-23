@@ -15,12 +15,14 @@ BEGIN NAMESPACE XSharp.RDD
     /// and restores the original datasession. This way you can seek, evaluate macros etc without disturbing the normal opened cursors.</remarks>
     CLASS DbcManager
         
-        STATIC PRIVATE PROPERTY Databases       AS List<DbcDatabase> AUTO
+        STATIC PRIVATE _databases               AS List<DbcDatabase> 
         STATIC PRIVATE PROPERTY DbcDataSession  AS DataSession AUTO
         STATIC INTERNAL PROPERTY ActiveDatabase  AS DbcDatabase AUTO
-            
+
+        STATIC PROPERTY Databases AS IList<DbcDatabase>  GET _databases
+
         STATIC CONSTRUCTOR
-            Databases      := List<DbcDatabase>{}
+            _databases     := List<DbcDatabase>{}
             DbcDataSession := DataSession{"DBC"}
 
         /// <summary>Enhance the DBC name. Adds the extension and path when needed.</summary>
@@ -143,7 +145,6 @@ BEGIN NAMESPACE XSharp.RDD
             NEXT
             RETURN NULL_OBJECT
 
-        /// <summary></summary>
         INTERNAL STATIC METHOD DoForDatabase<T>(action AS @@Func<T>) AS T
             LOCAL old as DataSession
             old := RuntimeState.Workareas
@@ -176,7 +177,9 @@ BEGIN NAMESPACE XSharp.RDD
             ENDIF
             RETURN old
 
-        /// <summary></summary>
+        /// <summary>Create a new DBC file</summary>
+        /// <param name="cFileName">The fully qualified filename to create.</param>
+        /// <returns>TRUE when the database file was created successfully.</returns>
         STATIC METHOD CreateDatabase(cFileName as STRING) AS LOGIC
             IF FindDatabase(cFileName) != NULL_OBJECT
                 RETURN FALSE
@@ -211,7 +214,7 @@ BEGIN NAMESPACE XSharp.RDD
                 ENDIF
                 IF lOk
                     _writeRecord(<OBJECT>{1,1,"Database","Database"})
-                    var props := PropertyCollection{}
+                    var props := DatabasePropertyCollection{}
                     props:Add(DatabasePropertyType.Version, 10)
                     props:Add(DatabasePropertyType.Comment,"This database was created with X#")
                     CoreDb.FieldPutBytes(5, props:SaveToMemo())
@@ -311,13 +314,18 @@ BEGIN NAMESPACE XSharp.RDD
                 ENDIF
             NEXT
             RETURN NULL
+        /// <summary>Find a connection in the Database container.</summary>
+        /// <param name="cConnection">The connection name to look for.</param>
+        PUBLIC METHOD FindConnection(cConnection as STRING) AS DbcConnection
+            RETURN FindObject(SELF:_connections, cConnection)
 
-        PUBLIC METHOD FindConnection(cTable as STRING) AS DbcConnection
-            RETURN FindObject(SELF:_connections, cTable)
-
+        /// <summary>Find a table in the Database container.</summary>
+        /// <param name="cTable">The table name to look for.</param>
         PUBLIC METHOD FindTable(cTable as STRING) AS DbcTable
             RETURN FindObject(SELF:_tables, cTable)
 
+        /// <summary>Find a view in the Database container.</summary>
+        /// <param name="cView">The view name to look for.</param>
         PUBLIC METHOD FindView(cView as STRING) AS DbcView 
             RETURN FindObject(SELF:_views, cView)
 
@@ -343,7 +351,8 @@ BEGIN NAMESPACE XSharp.RDD
             NEXT
 
 
-  
+        /// <summary>Worker method for DbGetProp() </summary>
+        /// <inheritdoc cRef='M:XSharp.VFP.Functions.DbGetProp(System.String,System.String,System.String)' />
         PUBLIC METHOD GetProp(cName as STRING, cType as STRING, cProp as STRING) AS OBJECT
             SWITCH cType:ToLower()
             CASE "connection"
@@ -397,7 +406,10 @@ BEGIN NAMESPACE XSharp.RDD
             END SWITCH
             RETURN NULL
         
-        PUBLIC METHOD SetProp(cName as STRING, cType as STRING, cProp as STRING, oValue as OBJECT) AS LOGIC
+        /// <summary>-- todo --</summary>
+        /// <summary>Worker method for DbSetProp() </summary>
+        /// <inheritdoc cRef='M:XSharp.VFP.Functions.DbSetProp(System.String,System.String,System.String,XSharp.__Usual)' />
+        PUBLIC METHOD SetProp(cName as STRING, cType as STRING, cProp as STRING, ePropertyValue as OBJECT) AS LOGIC
             // check for readonly
             // check for shared. When shared make sure that DBC has not been changed in the meantime
             // finally set/add the property and persist the property to the DBC file.
@@ -409,11 +421,16 @@ BEGIN NAMESPACE XSharp.RDD
     /// <summary>Class that stores information about a table in a DBC</summary>
     /// <remarks>When opened the Fields, Indexes and Relations are not read. They need to be explicitely loaded with a call to GetData()</remarks>
     CLASS DbcTable INHERIT DbcObject
+        /// <summary>The collection of fields</summary>
         PROPERTY Fields     AS List<DbcField> AUTO
+        /// <summary>The collection of indexes</summary>
         PROPERTY Indexes    AS List<DbcIndex> AUTO
+        /// <summary>The collection of relations</summary>
         PROPERTY Relations  AS List<DbcRelation> AUTO
         PRIVATE _loaded     AS LOGIC
+        /// <summary>The database in which this table is defined.</summary>
         PROPERTY Database   As DbcDatabase GET (DbcDatabase) SELF:Parent
+        /// <summary>The Table path as stored in the DBC file.</summary>
         PROPERTY Path       as STRING GET Properties:GetValue<STRING>(DatabasePropertyType.Path)
         CONSTRUCTOR()
             SUPER()
@@ -446,7 +463,9 @@ BEGIN NAMESPACE XSharp.RDD
     /// <summary>Class that stores information about a view in a DBC</summary>
     /// <remarks>When opened the Fields etc are not read. They need to be explicitely loaded with a call to GetData()</remarks>
     CLASS DbcView INHERIT DbcObject
+        /// <summary>The collection of fields</summary>
         PROPERTY Fields     AS List<DbcField> AUTO
+        /// <summary>The database in which this table is defined.</summary>
         PROPERTY Database   As DbcDatabase GET (DbcDatabase) SELF:Parent
             
         PRIVATE _loaded     AS LOGIC
@@ -489,6 +508,7 @@ BEGIN NAMESPACE XSharp.RDD
 
     /// <summary>Class that stores information about a relation in a DBC</summary>
     CLASS DbcRelation INHERIT DbcObject
+       /// <summary>The relational rules for Insert, Update, Delete.</summary>
         PROPERTY RIInfo AS STRING AUTO
         CONSTRUCTOR
             SUPER()
@@ -549,12 +569,12 @@ BEGIN NAMESPACE XSharp.RDD
         PROPERTY ParentID AS LONG AUTO
         PROPERTY ObjectType AS STRING AUTO
         PROPERTY ObjectName AS STRING AUTO
-        PROPERTY Properties AS PropertyCollection AUTO
+        PROPERTY Properties AS DatabasePropertyCollection AUTO
         PROPERTY Parent     AS OBJECT AUTO
         PROPERTY ObjectKey  AS STRING GET ObjectID:ToString():PadLeft(10,' ')
         
         CONSTRUCTOR
-            Properties := PropertyCollection{}
+            Properties := DatabasePropertyCollection{}
         VIRTUAL METHOD Read() AS LOGIC
             // Assume current area is the DBC
             TRY
@@ -640,8 +660,10 @@ BEGIN NAMESPACE XSharp.RDD
 END NAMESPACE
 
 
+/// <summary>Helper class to open, close and select a database</summary>
 STATIC CLASS XSharp.RDD.Dbc
 
+    /// <summary>Open a database.</summary>
     STATIC METHOD Open(cFileName AS STRING, lShared AS LOGIC, lReadOnly as LOGIC, lValidate as LOGIC) AS LOGIC
         LOCAL lOpen := FALSE as LOGIC
         cFileName := DbcManager.ExtendDbName(cFileName)
@@ -650,40 +672,48 @@ STATIC CLASS XSharp.RDD.Dbc
         ENDIF
         RETURN lOpen
 
+    /// <summary>Find a database by name.</summary>
     STATIC METHOD FindDatabase(cFileName as STRING) AS DbcDatabase
         LOCAL oDb as DbcDatabase
         oDb := DbcManager.FindDatabase(cFileName)
         RETURN oDb
         
 
+    /// <summary>Create a database.</summary>
     STATIC METHOD Create(cFileName as STRING) AS LOGIC
         cFileName := DbcManager.ExtendDbName(cFileName)
         RETURN DbcManager.CreateDatabase(cFileName)
 
 
+    /// <summary>Select a database.</summary>
     STATIC METHOD Select(cDatabaseName as STRING) AS DbcDatabase
         LOCAL oDb as DbcDatabase
         oDb := DbcManager.FindDatabaseByName(cDatabaseName)
         DbcManager.Activate(oDb)
         RETURN oDb
 
+    /// <summary>DeSelect a database.</summary>
     STATIC METHOD Select() AS VOID
         DbcManager.Activate(NULL)
         RETURN
 
+    /// <summary>Check if a database is used/opened.</summary>
     STATIC METHOD IsUsed(cDatabaseName as STRING) AS LOGIC
         VAR oDb := DbcManager.FindDatabaseByName(cDatabaseName)
         RETURN oDb != NULL
 
 
+    /// <summary>Get the current active database.</summary>
     STATIC METHOD GetCurrent() AS DbcDatabase
         RETURN DbcManager.ActiveDatabase
 
 
+    /// <summary>Validate a property name.</summary>
     STATIC METHOD IsValidPropertyName(cProp as STRING) AS LOGIC
-        RETURN GetDatabasePropertyNumber(cProp) > 0
+        RETURN DatabasePropertyCollection.IsValidProperty(cProp)
 
 
+    /// <summary>Validate a property type.</summary>
     STATIC METHOD IsValidObjectType(cType as STRING) AS LOGIC
     SWITCH cType:ToLower()
         CASE "connection"
@@ -696,11 +726,14 @@ STATIC CLASS XSharp.RDD.Dbc
     RETURN FALSE
 
     STATIC METHOD Close(lAll AS LOGIC) AS LOGIC
+        // todo: close all DBC files.
         RETURN TRUE
 
+    /// <summary>Close a database.</summary>
     STATIC METHOD Close(cName as STRING) AS LOGIC
         RETURN DbcManager.Close(cName)
     
+    /// <summary>Dump a database to the terminal window.</summary>
     STATIC METHOD Dump(cName as STRING) AS LOGIC
     VAR oDb := DbcManager.FindDatabaseByName(cName)
     IF oDb != NULL
@@ -757,7 +790,8 @@ STATIC CLASS XSharp.RDD.Dbc
     ENDIF
     RETURN oDb != NULL
     
-    STATIC METHOD DumpProperties(nSpace as LONG, Properties AS PropertyCollection) AS VOID
+    /// <summary>Dump the conents of a properties collection.</summary>
+    STATIC METHOD DumpProperties(nSpace as LONG, Properties AS DatabasePropertyCollection) AS VOID
         var ws := String{' ', nSpace}
         FOREACH VAR oProp in Properties
             ? ws,oProp:Key, oProp:Value

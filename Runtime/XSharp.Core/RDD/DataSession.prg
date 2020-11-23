@@ -7,6 +7,12 @@
 USING System.Collections.Generic
 USING System.Threading
 
+/// <summary>The DataSession class contains a list of workareas/cursors</summary>
+/// <remarks>This class also manages the life time of all opened datasessions <br/>
+/// When it detects that a datasession for a thread is no longer needed (because the thread has stopped)
+/// then it will close that datasession and all tables that are opened by it. <br/>
+/// At application shutdown it will also close all opened datasessions including private
+/// datasessions that could be opened by forms or reports.</remarks>
 CLASS XSharp.RDD.DataSession INHERIT Workareas
     #region Static Fields
     PRIVATE STATIC gnSessionId AS LONG
@@ -23,8 +29,9 @@ CLASS XSharp.RDD.DataSession INHERIT Workareas
         timer:Elapsed += OnTimer
         timer:AutoReset := TRUE
         
-
-    STATIC METHOD AddSession(session as DataSession) AS VOID
+    /// <summary>Add a DataSession to the list of open datasessions</summary>
+    /// <param name="session">The DataSession to add </param>
+    STATIC METHOD Add(session as DataSession) AS VOID
         BEGIN LOCK sessions
             sessions:Add(session)
             if sessions:Count > 1
@@ -32,7 +39,20 @@ CLASS XSharp.RDD.DataSession INHERIT Workareas
             endif
         END LOCK
 
-    STATIC METHOD OnTimer(source as OBJECT, e as System.Timers.ElapsedEventArgs) AS VOID
+    /// <summary>Remove a DataSession from the list of open datasessions</summary>
+    /// <param name="session">The DataSession to remove </param>
+     STATIC METHOD Close(session as DataSession) AS VOID
+         var old := RuntimeState:SetDataSession(session)
+         TRY
+             session:CloseAll()
+         CATCH ex as Exception
+             System.Diagnostics.Debug.WriteLine("Error in CloseOneSession: "+ex:ToString())
+         FINALLY
+            RuntimeState:SetDataSession(old)
+         END TRY
+         RETURN
+
+    PRIVATE STATIC METHOD OnTimer(source as OBJECT, e as System.Timers.ElapsedEventArgs) AS VOID
         LOCAL deleted := NULL as List<DataSession>
         //
         // please note that the OnTimer runs on its own thread.
@@ -45,7 +65,7 @@ CLASS XSharp.RDD.DataSession INHERIT Workareas
                 CASE ThreadState.Aborted
                 CASE ThreadState.Stopped
                     // Close session
-                    CloseOneSession(session)
+                    Close(session)
                     if deleted == null
                         deleted := List<DataSession>{}
                     endif
@@ -70,23 +90,12 @@ CLASS XSharp.RDD.DataSession INHERIT Workareas
             END LOCK
         endif
 
-     STATIC METHOD CloseOneSession(session as DataSession) AS VOID
-         var old := RuntimeState:SetDataSession(session)
-         TRY
-             session:CloseAll()
-         CATCH ex as Exception
-             System.Diagnostics.Debug.WriteLine("Error in CloseOneSession: "+ex:ToString())
-         FINALLY
-            RuntimeState:SetDataSession(old)
-         END TRY
-         RETURN
-   
     PRIVATE STATIC METHOD _CloseSessionsAtProcessExit(sender AS OBJECT, e AS EventArgs)  AS VOID
         // This runs at process exit in the GC Thread
         IF sessions != NULL
             BEGIN LOCK sessions
                 FOREACH var session in sessions:ToArray()
-                    CloseOneSession(session)
+                    Close(session)
                 NEXT
                 RuntimeState:SetDataSession(NULL)
                 sessions:Clear()
@@ -95,15 +104,20 @@ CLASS XSharp.RDD.DataSession INHERIT Workareas
         RETURN
 
     #endregion
-
-    PUBLIC PROPERTY Id   AS INT AUTO GET PRIVATE SET
+    #region Properties
     PRIVATE PROPERTY Thread as Thread AUTO
+    /// <summary>The unique id for the datasession</summary>
+    PUBLIC PROPERTY Id   AS INT AUTO GET PRIVATE SET
+    /// <summary>The name for the datasession.</summary>
     PUBLIC PROPERTY Name as STRING AUTO
+    #endregion
+    /// <summary>Construct a new datasession</summary>
+    /// <param name="cName">The name for this datasession.</param> 
     PUBLIC CONSTRUCTOR(cName as STRING)
         SUPER()
         SELF:Name   := cName
         SELF:Id     := ++gnSessionId
         SELF:Thread := Thread.CurrentThread
-        AddSession(SELF)
+        DataSession.Add(SELF)
         
 END CLASS

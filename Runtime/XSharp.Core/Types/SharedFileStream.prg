@@ -10,6 +10,9 @@ USING System.Runtime.InteropServices
 USING System.Collections.Generic
 
 BEGIN NAMESPACE XSharp.IO
+    /// <summary>This class is used for Shared diskaccess on Windows. </summary>
+    /// <remarks>The class bypasses some of the default methods in the FileStraem class and directly uses calls to OS functions to make
+    /// sure that changes made by other users are visible and not hidden because of caching in the .Net FileStream class.</remarks>
     CLASS XsSharedFileStream INHERIT XsFileStream
     PRIVATE hFile AS IntPtr
     PRIVATE smallBuff AS BYTE[]
@@ -19,6 +22,7 @@ BEGIN NAMESPACE XSharp.IO
             smallBuff := BYTE[]{1}
         RETURN
         /// <inheritdoc />
+        /// <remarks>This method calls the Windows SetFilePointerEx() function directly.</remarks>
         PUBLIC OVERRIDE METHOD Seek(offset AS INT64, origin AS SeekOrigin) AS INT64
             LOCAL result AS INT64
             LOCAL lOk AS LOGIC
@@ -26,14 +30,17 @@ BEGIN NAMESPACE XSharp.IO
             IF lOk
                 RETURN result
             ENDIF
-        THROW System.IO.IOException{"Error moving file pointer"}
+            THROW System.IO.IOException{"Error moving file pointer"}
+            
         /// <inheritdoc />
+        /// <remarks>This method calls the Windows SetEndOfFile() function directly.</remarks>
         PUBLIC OVERRIDE METHOD SetLength(length AS INT64 ) AS VOID
             // warning: does not restore original file pos
             SELF:Seek(length, SeekOrigin.Begin)
             SetEndOfFile(hFile)
         RETURN
         /// <inheritdoc />
+        /// <remarks>This method calls the Windows GetFileSize() function directly.</remarks>
         PUBLIC PROPERTY Length AS INT64
             GET
                 
@@ -48,6 +55,7 @@ BEGIN NAMESPACE XSharp.IO
             END GET
         END PROPERTY
         /// <inheritdoc />
+        /// <remarks>This method calls the Windows ReadFile() function directly.</remarks>
         PUBLIC OVERRIDE METHOD Read(bytes AS BYTE[] , offset AS INT, count AS INT) AS INT
             LOCAL ret := FALSE AS LOGIC
             LOCAL bytesRead := 0 AS INT
@@ -64,6 +72,7 @@ BEGIN NAMESPACE XSharp.IO
             ENDIF
         RETURN bytesRead
         /// <inheritdoc />
+        /// <remarks>This method calls the Windows WriteFile() function directly.</remarks>
         PUBLIC OVERRIDE METHOD Write(bytes AS BYTE[] , offset AS INT , count AS INT) AS VOID
             LOCAL ret := FALSE AS LOGIC
             LOCAL bytesWritten := 0 AS INT
@@ -83,10 +92,12 @@ BEGIN NAMESPACE XSharp.IO
             ENDIF
         RETURN
         /// <inheritdoc />
+        /// <remarks>This method calls the Windows WriteFile() function directly.</remarks>
         PUBLIC OVERRIDE METHOD WriteByte(b AS BYTE ) AS VOID
             SELF:smallBuff[0] := b
-        SELF:Write(SELF:smallBuff , 0 , 1)
+            SELF:Write(SELF:smallBuff , 0 , 1)
         /// <inheritdoc />
+        /// <remarks>This method calls the Windows LockFile() function directly.</remarks>
         PUBLIC OVERRIDE METHOD Lock(position AS INT64, length AS INT64)  AS VOID
             
             LOCAL ret := FALSE AS LOGIC
@@ -96,6 +107,7 @@ BEGIN NAMESPACE XSharp.IO
             ENDIF
         RETURN 
         /// <inheritdoc />
+        /// <remarks>This method calls the Windows UnlockFile() function directly.</remarks>
         PUBLIC OVERRIDE METHOD Unlock( position AS INT64, length AS INT64)  AS VOID
             LOCAL ret := FALSE AS LOGIC
             ret := UnlockFile(SELF:hFile, (INT)position, (INT)(position >> 32), (INT)(length), (INT)(length >> 32))
@@ -104,6 +116,7 @@ BEGIN NAMESPACE XSharp.IO
             ENDIF
         RETURN
         /// <inheritdoc />
+        /// <remarks>This method calls the Windows FlushFileBuffers() function directly.</remarks>
         PUBLIC OVERRIDE METHOD Flush(lCommit AS LOGIC) AS VOID
             IF lCommit
                 FlushFileBuffers(SELF:hFile)

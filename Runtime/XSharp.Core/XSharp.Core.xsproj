@@ -89,7 +89,7 @@
     <Compile Include="RDD\DbFloat.prg" />
     <Compile Include="RDD\DatabaseProperties.prg" />
     <Compile Include="RDD\IDbRow.prg" />
-    <Compile Include="RDD\PropertyCollection.prg" />
+    <Compile Include="RDD\DatabasePropertyCollection.prg" />
     <Compile Include="RDD\RddFieldInfo.prg" />
     <Compile Include="RDD\RDDNotifications.prg" />
     <Compile Include="RDD\RDDDefines.prg" />

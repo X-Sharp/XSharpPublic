@@ -21,7 +21,7 @@ BEGIN NAMESPACE XSharp.XPP
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "15.0.0.0")] ;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()] ;
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()] ;
-    PUBLIC CLASS Collations
+    PUBLIC CLASS XPPCollations
         PRIVATE static resourceMan AS global::System.Resources.ResourceManager
         PRIVATE static resourceCulture AS global::System.Globalization.CultureInfo
         [global::System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")] ;

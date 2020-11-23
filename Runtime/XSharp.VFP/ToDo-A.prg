@@ -12,11 +12,7 @@ FUNCTION AClass(ArrayName, oExpression)
     THROW NotImplementedException{}
     //RETURN 0 
      
-/// <summary>-- todo --</summary>
-/// <include file="VFPDocs.xml" path="Runtimefunctions/adatabases/*" />
-FUNCTION ADatabases(ArrayName) 
-    THROW NotImplementedException{}
-    //RETURN 0
+
 
 /// <summary>-- todo --</summary>
 /// <include file="VFPDocs.xml" path="Runtimefunctions/adbobjects/*" />

@@ -32,7 +32,7 @@ BEGIN NAMESPACE XSharp
         OVERRIDE METHOD GetHashCode() AS INT
             RETURN _value:GetHashCode()
             
-       /// <inheritdoc />
+       /// <exclude />
 	    METHOD GetTypeCode() AS TypeCode
             RETURN TypeCode.Boolean
 

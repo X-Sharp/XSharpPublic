@@ -9,7 +9,6 @@ BEGIN NAMESPACE XSharp
     /// This interface defines Compile time and runtime codeblocks
     /// </summary>
     /// <seealso cref="T:XSharp.Codeblock"/>
-    /// <seealso cref="T:XSharp._Codeblock"/>
     INTERFACE ICodeblock
         /// <summary>Evaluate the codeblock</summary>
         METHOD	EvalBlock( args PARAMS OBJECT[]) AS OBJECT

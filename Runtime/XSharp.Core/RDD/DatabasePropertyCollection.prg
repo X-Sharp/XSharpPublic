@@ -9,23 +9,37 @@ USING System.IO
 USING STATIC XSharp.Conversions
 
 /// <summary>This collection is used to store additional properties for fields and servers
-/// such as captions, descriptions etc.<summary>
+/// such as captions, descriptions etc.</summary>
+/// <seealso cref="O:XSharp.VFP.Functions.DbGetProp" />
+/// <seealso cref="O:XSharp.VFP.Functions.DbSetProp" />
+/// <seealso cref="T:XSharp.RDD.DatabasePropertyType" />
+
 [DebuggerDisplay("Properties: {Count}")];
-CLASS XSharp.RDD.PropertyCollection INHERIT Dictionary<DatabasePropertyType, OBJECT>
+CLASS XSharp.RDD.DatabasePropertyCollection INHERIT Dictionary<DatabasePropertyType, OBJECT>
     CONSTRUCTOR()
         SUPER()
 
+    /// <summary>Add a property - value pair to the collection.</summary>
+    /// <param name="key">Propery to store.</param>
+    /// <param name="val">Value to store</param>
     NEW METHOD Add(key as DatabasePropertyType, val as OBJECT) AS VOID
         // Duplicate keys simply replace the existing value
         SELF[key] := val
         RETURN
 
+    /// <summary>Get the value for a property or an empty value when the property has not been defined </summary>
+    /// <param name="key">Property to look for.</param>
+    /// <typeparam name="T">Expected return type for the value</typeparam>
+    /// <returns>The value from the collection or an empty value of the right type.</returns>
     METHOD GetValue<T> (key as DatabasePropertyType) AS T
         IF SELF:ContainsKey(key)
             return (T) SELF[key]
         ENDIF
         RETURN default(T)
         
+    /// <summary>Get the value for a property</summary>
+    /// <param name="cProp">Property name to look for.</param>
+    /// <returns>The value from the collection or an empty value of the right type.</returns>
     METHOD GetValue(cProp as STRING) AS OBJECT
         var prop := GetDatabasePropertyNumber(cProp)
         if prop != 0
@@ -44,8 +58,8 @@ CLASS XSharp.RDD.PropertyCollection INHERIT Dictionary<DatabasePropertyType, OBJ
             END SWITCH
         ENDIF
         RETURN NULL
-
-    METHOD FillFromMemo(bProps as BYTE[]) AS VOID
+    
+    INTERNAL METHOD FillFromMemo(bProps as BYTE[]) AS VOID
         TRY
             SELF:Clear()
             VAR pos := 8
@@ -84,7 +98,7 @@ CLASS XSharp.RDD.PropertyCollection INHERIT Dictionary<DatabasePropertyType, OBJ
             THROW
         END TRY
 
-        METHOD SaveToMemo() AS BYTE[]
+        INTERNAL METHOD SaveToMemo() AS BYTE[]
             // starts with normal 8 byte header containing 1 and length of byte []
             // then for each property:
             // 4 byte length
@@ -154,5 +168,100 @@ CLASS XSharp.RDD.PropertyCollection INHERIT Dictionary<DatabasePropertyType, OBJ
             oStream:Close()
             RETURN result
 
+INTERNAL STATIC databasePropertyNames AS Dictionary<STRING, LONG>
+
+INTERNAL STATIC METHOD GetDatabasePropertyNumber(propertyName as STRING) AS LONG
+    IF databasePropertyNames == NULL
+        databasePropertyNames := Dictionary<STRING, LONG>{StringComparer.OrdinalIgnoreCase}
+        var values := System.Enum.GetValues(typeof(XSharp.RDD.DatabasePropertyType))
+        FOREACH var enumvalue in values
+            var name := System.Enum.GetName(typeof(XSharp.RDD.DatabasePropertyType), enumvalue)
+            databasePropertyNames:Add(name, (LONG) enumvalue)
+        NEXT
+    ENDIF
+    IF databasePropertyNames:ContainsKey(propertyName)
+        return databasePropertyNames[propertyName]
+    ENDIF
+    RETURN -1
+
+
+INTERNAL STATIC METHOD DatabasePropertyValType(nType as LONG) AS STRING
+    SWITCH  (DatabasePropertyType) nType
+    CASE DatabasePropertyType.Comment
+    CASE DatabasePropertyType.ConnectString    
+    CASE DatabasePropertyType.Database
+    CASE DatabasePropertyType.DataSource       
+    CASE DatabasePropertyType.Password         
+    CASE DatabasePropertyType.UserId           
+    CASE DatabasePropertyType.DBCEventFileName
+    CASE DatabasePropertyType.Caption          
+    CASE DatabasePropertyType.DisplayClass
+    CASE DatabasePropertyType.DisplayClassLibrary
+    CASE DatabasePropertyType.InputMask        
+    CASE DatabasePropertyType.Format           
+    CASE DatabasePropertyType.RuleExpression   
+    CASE DatabasePropertyType.RuleText         
+    CASE DatabasePropertyType.DataType         
+    CASE DatabasePropertyType.DefaultValue     
+    CASE DatabasePropertyType.UpdateName       
+    CASE DatabasePropertyType.Path                
+    CASE DatabasePropertyType.InsertTrigger    
+    CASE DatabasePropertyType.UpdateTrigger    
+    CASE DatabasePropertyType.DeleteTrigger    
+    CASE DatabasePropertyType.PrimaryKey       
+    CASE DatabasePropertyType.ConnectName      
+    CASE DatabasePropertyType.ParameterList    
+    CASE DatabasePropertyType.SQL              
+    CASE DatabasePropertyType.Tables           
+        RETURN "C"        
+    CASE DatabasePropertyType.ConnectTimeout   
+    CASE DatabasePropertyType.DispLogin        
+    CASE DatabasePropertyType.IdleTimeout      
+    CASE DatabasePropertyType.PacketSize
+    CASE DatabasePropertyType.QueryTimeOut     
+    CASE DatabasePropertyType.Transactions     
+    CASE DatabasePropertyType.WaitTime         
+    CASE DatabasePropertyType.Version          
+    CASE DatabasePropertyType.BatchUpdateCount 
+    CASE DatabasePropertyType.FetchSize        
+    CASE DatabasePropertyType.MaxRecords       
+    CASE DatabasePropertyType.SourceType       
+    CASE DatabasePropertyType.UpdateType       
+    CASE DatabasePropertyType.UseMemoSize      
+    CASE DatabasePropertyType.WhereType        
+    CASE DatabasePropertyType.OfflineRecs
+    CASE DatabasePropertyType.OfflineRemRecs
+        RETURN "N"        
+    CASE DatabasePropertyType.Asynchronous
+    CASE DatabasePropertyType.BatchMode        
+    CASE DatabasePropertyType.DisconnectRollback
+    CASE DatabasePropertyType.DispWarnings     
+    CASE DatabasePropertyType.DBCEvents
+    CASE DatabasePropertyType.KeyField         
+    CASE DatabasePropertyType.Updatable
+    CASE DatabasePropertyType.AllowSimultaneousFetch
+    CASE DatabasePropertyType.CompareMemo
+    CASE DatabasePropertyType.FetchAsNeeded
+    CASE DatabasePropertyType.FetchMemo        
+    CASE DatabasePropertyType.Prepared
+    CASE DatabasePropertyType.SendUpdates      
+    CASE DatabasePropertyType.ShareConnection  
+    CASE DatabasePropertyType.IsUnique
+        RETURN "L"        
+
+    // we have added this one
+    CASE DatabasePropertyType.ColumnName
+        RETURN "C"
+    // internal for foxpro
+    CASE DatabasePropertyType.Class            
+        RETURN "C"
+    // no idea
+    CASE DatabasePropertyType.TimeStamp        
+        RETURN "L"        
+    // Unknown numbers for now
+    END SWITCH
+    RETURN "C"
+    STATIC METHOD IsValidProperty(cProp as STRING) AS LOGIC
+        RETURN GetDatabasePropertyNumber(cProp) > 0
             
 END CLASS

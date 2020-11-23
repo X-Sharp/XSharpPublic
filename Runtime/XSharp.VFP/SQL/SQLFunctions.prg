@@ -230,18 +230,25 @@ FUNCTION SqlRollBack( nStatementHandle AS LONG) AS LONG
 #region Properties
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/sqlgetprop/*" />
-
+/// <seealso cref="T:XSharp.RDD.SQLProperty" />
 FUNCTION SqlGetProp( nStatementHandle AS LONG, cSetting AS STRING ) AS USUAL
     RETURN SQLSupport.GetSetProperty(nStatementHandle, cSetting,NULL)
 
+/// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/sqlgetprop/*" />
+/// <param name="nSetting">Specifies the setting. For a list of the settings you can specify see the <see cref='T:XSharp.RDD.SQLProperty' >SQLProperty Enum</see>.</param>
+/// <seealso cref="T:XSharp.RDD.SQLProperty" />
 FUNCTION SqlGetProp( nStatementHandle AS LONG, nSetting AS LONG ) AS USUAL
     var cSetting := System.Enum.GetName(typeof(SQLProperty), nSetting)
     RETURN SQLSupport.GetSetProperty(nStatementHandle, cSetting,NULL)
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/sqlsetprop/*" />
+/// <seealso cref="T:XSharp.RDD.SQLProperty" />
 FUNCTION SqlSetProp( nStatementHandle AS LONG, cSetting AS STRING, eExpression AS USUAL) AS LONG
     RETURN (INT) SQLSupport.GetSetProperty(nStatementHandle, cSetting,eExpression)
 
+/// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/sqlsetprop/*" />
+/// <param name="nSetting">Specifies the setting. For a list of the settings you can specify see the <see cref='T:XSharp.RDD.SQLProperty'>SQLProperty Enum</see>.</param>
+/// <seealso cref="T:XSharp.RDD.SQLProperty" />
 FUNCTION SqlSetProp( nStatementHandle AS LONG, nSetting AS LONG, eExpression AS USUAL) AS LONG
     var cSetting := System.Enum.GetName(typeof(SQLProperty), nSetting)
     RETURN (INT) SQLSupport.GetSetProperty(nStatementHandle, cSetting,eExpression)

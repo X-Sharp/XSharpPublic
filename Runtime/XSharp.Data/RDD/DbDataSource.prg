@@ -193,14 +193,14 @@ CLASS XSharp.DbDataSource IMPLEMENTS IBindingList
     VIRTUAL METHOD Add( value AS OBJECT ) AS INT
         THROW NotImplementedException{}
 
-    /// <inheritdoc>
+    /// <inheritdoc />
     /// <remarks>This method will call Zap() on the workarea, so it requires exclusive use.</remarks>
     VIRTUAL METHOD Clear() AS VOID STRICT
         IF ! SELF:_shared
             SELF:_oRDD:Zap()
         ENDIF
 
-    /// <inheritdoc>
+    /// <inheritdoc />
     VIRTUAL METHOD Contains( oValue AS OBJECT ) AS LOGIC
         IF oValue  IS DbRecord
             VAR oRec := (DbRecord) oValue
@@ -208,7 +208,7 @@ CLASS XSharp.DbDataSource IMPLEMENTS IBindingList
         ENDIF
         RETURN FALSE
 
-    /// <inheritdoc>
+    /// <inheritdoc />
     VIRTUAL METHOD IndexOf( oValue AS OBJECT ) AS INT
         RETURN  ((DbRecord) oValue):RecNo
 
@@ -216,10 +216,10 @@ CLASS XSharp.DbDataSource IMPLEMENTS IBindingList
     VIRTUAL METHOD Insert(index AS INT,value AS OBJECT) AS VOID
         THROW NotImplementedException{}
 
-    /// <inheritdoc>
+    /// <inheritdoc />
     VIRTUAL PROPERTY IsFixedSize AS LOGIC GET FALSE
     
-    /// <inheritdoc>
+    /// <inheritdoc />
     VIRTUAL METHOD Remove(item AS OBJECT) AS VOID
         IF item  IS DbRecord
             VAR oRec := (DbRecord) item
@@ -233,7 +233,7 @@ CLASS XSharp.DbDataSource IMPLEMENTS IBindingList
         ENDIF
         RETURN 
        
-    /// <inheritdoc>
+    /// <inheritdoc />
     VIRTUAL METHOD RemoveAt(index AS INT) AS VOID
         LOCAL oRec := ( DbRecord) SELF[index] AS DbRecord
         SELF:GoTo(oRec:RecNo)

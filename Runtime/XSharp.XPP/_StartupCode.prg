@@ -8,7 +8,7 @@ PROCEDURE InitCollation INIT3
     SetCollation(XppCollations.System)
     SetAnsi(TRUE)       // This also sets the Set.CharSet
     RETURN
-
+ 
 
 PROCEDURE InitDateCountry INIT3
    SetDateCountry(DateCountry.System)

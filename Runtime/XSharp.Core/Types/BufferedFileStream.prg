@@ -168,7 +168,7 @@ BEGIN NAMESPACE XSharp.IO
             
     END CLASS
     
-    
+    /// <summary>This class performs buffered IO to files opened exclusively</summary>
     CLASS XsBufferedFileStream INHERIT XsFileStream
     
         PUBLIC CONST BUFF_SIZE  := 1024 AS LONG
@@ -183,21 +183,24 @@ BEGIN NAMESPACE XSharp.IO
             SELF:_length := SUPER:Length
             SELF:Position := 0
             SELF:_callOriginalMethods := FALSE
-            
+
+        /// <summary>Bypass the buffered Read mechanism and call the original Read() method in the base class</summary>
         PUBLIC METHOD XRead(page AS INT64,bytes AS BYTE[] , count AS INT) AS INT
             SELF:_callOriginalMethods := TRUE
             SELF:Position := page
             VAR result := SUPER:Read(bytes, 0, count)
             SELF:_callOriginalMethods := FALSE
             RETURN result
-        
+
+        /// <summary>Bypass the buffered Write mechanism and call the original Write() method in the base class</summary>
         PUBLIC METHOD XWrite(page AS INT64, bytes AS BYTE[] , count AS INT) AS LOGIC
             SELF:_callOriginalMethods := TRUE
             SELF:Position := page
             SUPER:Write(bytes, 0, count)
             SELF:_callOriginalMethods := FALSE
             RETURN TRUE
-        
+
+        /// <inheritdoc />
         PUBLIC OVERRIDE PROPERTY Position AS INT64
             GET
                 IF SELF:_callOriginalMethods
@@ -213,6 +216,7 @@ BEGIN NAMESPACE XSharp.IO
                 ENDIF
             END SET
         END PROPERTY
+        /// <inheritdoc />
         PUBLIC OVERRIDE PROPERTY Length   AS INT64
             GET
                 IF SELF:_callOriginalMethods
@@ -223,12 +227,16 @@ BEGIN NAMESPACE XSharp.IO
             
         END PROPERTY
         
+        /// <inheritdoc />
+        
         PUBLIC OVERRIDE METHOD SetLength (newLength AS INT64) AS VOID
             IF SELF:_callOriginalMethods
                 SUPER:SetLength(newLength)
             ENDIF
             _length := newLength
-        
+
+        /// <inheritdoc />
+        /// <remarks>This method overrides the normal behavior of the FileStream class and reads the data from an inmemory cache, when possible </remarks>
         PUBLIC OVERRIDE METHOD Read(bytes AS BYTE[] , offset AS INT, count AS INT) AS INT
             // pages in the cache are 1 K
             IF SELF:_callOriginalMethods
@@ -255,6 +263,8 @@ BEGIN NAMESPACE XSharp.IO
             SELF:Position += count
         RETURN read
         
+        /// <inheritdoc />
+        /// <remarks>This method overrides the normal behavior of the FileStream class and writed the data to an inmemory cache, when possible </remarks>
         PUBLIC OVERRIDE METHOD Write(bytes AS BYTE[] , offset AS INT, count AS INT) AS VOID
             IF SELF:_callOriginalMethods
                 SUPER:Write(bytes, offset, count)
@@ -282,6 +292,8 @@ BEGIN NAMESPACE XSharp.IO
             SELF:_length := Math.Max(SELF:_length, pos+count)
         RETURN
         
+        /// <inheritdoc />
+        /// <remarks>This method overrides the normal behavior of the FileStream class and writed the data to an inmemory cache, when possible </remarks>
         PUBLIC OVERRIDE METHOD WriteByte(b AS BYTE ) AS VOID
             IF SELF:_callOriginalMethods
                 SUPER:WriteByte(b)
@@ -296,6 +308,8 @@ BEGIN NAMESPACE XSharp.IO
             SELF:Position += 1
         RETURN
         
+        /// <inheritdoc />
+        /// <remarks>This method overrides the normal behavior of the FileStream class and flushes the cached data to disk before calling the parent Flush() method.</remarks>
         PUBLIC OVERRIDE METHOD Flush(lCommit as LOGIC) AS VOID
             PageBuffers.PageFlush(SELF, TRUE)
             SUPER:Flush(lCommit)
@@ -305,6 +319,8 @@ BEGIN NAMESPACE XSharp.IO
             SELF:Position := _length
         RETURN 
         
+        /// <inheritdoc />
+        /// <remarks>This method overrides the normal behavior of the FileStream class and flushes the cached data to disk before calling the parent Close() method.</remarks>
         PUBLIC OVERRIDE METHOD Close( ) AS VOID
             IF ! SELF:_closed
                 PageBuffers.PageFlush(SELF, FALSE)
@@ -316,6 +332,7 @@ BEGIN NAMESPACE XSharp.IO
             SUPER:Close()
             RETURN
         
+        /// <inheritdoc />
         PUBLIC OVERRIDE METHOD Seek(offset AS INT64, origin AS SeekOrigin) AS INT64
             IF SELF:_callOriginalMethods
                 RETURN SUPER:Seek(offset, origin)

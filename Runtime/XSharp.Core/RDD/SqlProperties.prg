@@ -1,7 +1,7 @@
 ﻿USING System.Collections.Generic
 /// <summary>Enum that matches the various FoxPro Sql properties, used in SqlGetProp() and SqlSetProp()</summary>
-/// <seealso "O:XSharp.VFP.Functions.SqlGetProp" />
-/// <seealso "O:XSharp.VFP.Functions.SqlSetProp" />
+/// <seealso cref="O:XSharp.VFP.Functions.SqlGetProp" />
+/// <seealso cref="O:XSharp.VFP.Functions.SqlSetProp" />
 
 ENUM XSharp.RDD.SQLProperty
     /// <summary>Specifies whether result sets are returned synchronously.</summary>

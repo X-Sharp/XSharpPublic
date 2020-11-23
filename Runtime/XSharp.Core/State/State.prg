@@ -785,8 +785,12 @@ CLASS XSharp.RuntimeState
 
 	PRIVATE _Workareas AS DataSession
 	/// <summary>The Workarea information for the current Thread.</summary>
+    /// <remarks>This property is a backward compatible alias for the DataSession property</remarks>
+    /// <seealso cref="P:XSharp.RuntimeState.DataSession" />
+    PUBLIC STATIC PROPERTY Workareas AS DataSession GET DataSession
+	/// <summary>The DataSession information for the current Thread.</summary>
     /// <include file="CoreComments.xml" path="Comments/PerThread/*" />
-	PUBLIC STATIC PROPERTY Workareas AS DataSession
+	PUBLIC STATIC PROPERTY DataSession AS DataSession
 	GET
         LOCAL inst AS RuntimeState
         inst := GetInstance()

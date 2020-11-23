@@ -19,9 +19,16 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 
     INTERNAL PARTIAL SEALED CLASS CdxTag
 
-    // MEthods for walking indices, so GoTop, GoBottom, Skip and Seek
+        // Methods for walking indices, so GoTop, GoBottom, Skip and Seek
 
-        INTERNAL PROPERTY EmptyResultSet as LOGIC GET SELF:_oRdd:EoF .AND. SELF:_oRdd:BoF
+        INTERNAL PROPERTY EmptyResultSet as LOGIC
+            GET
+                IF SELF:_oRdd:MustForceRel
+                    RETURN FALSE
+                ENDIF
+                RETURN SELF:_oRdd:EoF .AND. SELF:_oRdd:BoF
+            END GET
+        END PROPERTY
 
         INTERNAL METHOD GoBottom() AS LOGIC
             LOCAL locked AS LOGIC

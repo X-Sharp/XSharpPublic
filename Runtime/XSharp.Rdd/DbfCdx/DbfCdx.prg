@@ -27,7 +27,8 @@ BEGIN NAMESPACE XSharp.RDD
         INTERNAL _indexList  AS CdxOrderBagList
         INTERNAL PROPERTY CurrentOrder AS CdxTag GET _indexList:CurrentOrder
         VIRTUAL PROPERTY Driver  AS STRING GET "DBFCDX"
-        
+        INTERNAL PROPERTY MustForceRel AS LOGIC GET _RelInfoPending != NULL
+
         
         CONSTRUCTOR()
             SUPER()

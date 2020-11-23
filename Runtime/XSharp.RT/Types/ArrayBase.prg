@@ -13,6 +13,7 @@ BEGIN NAMESPACE XSharp
 	/// <summary>Internal type that implements the new TYPED ARRAY type.<br/>
 	/// This type has methods and properties that normally are never directly called from user code.
 	/// </summary>
+    /// <typeparam name="T">Type of the elements inside the array </typeparam>
 	PUBLIC CLASS __ArrayBase<T> IMPLEMENTS INamedIndexer, IEnumerable<T> WHERE T IS NEW()
         [DebuggerBrowsable(DebuggerBrowsableState.Never)];
 		PROTECTED INTERNAL _internalList AS List<T>
@@ -282,7 +283,7 @@ BEGIN NAMESPACE XSharp
 
 		#region Insert and Delete elements
         /// <exclude />
-		PUBLIC METHOD Add(u AS T) AS VOID
+		PUBLIC VIRTUAL METHOD Add(u AS T) AS VOID
 			IF SELF:CheckLock()
 				_internalList:Add(u)
 			ENDIF

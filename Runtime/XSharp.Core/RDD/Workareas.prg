@@ -10,7 +10,7 @@ USING System.Diagnostics
 #translate IsValidArea (<nArea>) => (<nArea> > 0 .and. <nArea> <= MaxWorkareas)
 
 /// <summary>Class that contains the list of open Workareas. Each thread will have its own list.</summary>
-CLASS XSharp.RDD.Workareas
+ABSTRACT CLASS XSharp.RDD.Workareas
     // Not static because every thread can have its own Workareas structure
     #region Constants
     [DebuggerBrowsable(DebuggerBrowsableState.Never)];

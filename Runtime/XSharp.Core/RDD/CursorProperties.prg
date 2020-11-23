@@ -1,8 +1,8 @@
 ﻿USING System.Collections.Generic
 USING System.Reflection
 /// <summary>Enum that matches the various FoxPro cursor properties, used in CursorGetProp() and CursorSetProp()</summary>
-/// <seealso "O:XSharp.VFP.Functions.CursorGetProp" />
-/// <seealso "O:XSharp.VFP.Functions.CursorSetProp" />
+/// <seealso cref="O:XSharp.VFP.Functions.CursorGetProp" />
+/// <seealso cref="O:XSharp.VFP.Functions.CursorSetProp" />
 
 ENUM XSharp.RDD.CursorProperty 
     MEMBER ADOBookmark               

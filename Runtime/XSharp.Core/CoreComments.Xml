@@ -1,211 +1,230 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <Comments>
-  <ansi2oem>
-    <span>
-      <note type="warning">
-        The Ansi2Oem() and Oem2Ansi() family of functions are compatibility functions. Do not use them unless you really have to.
-        X# is a Unicode language and conversions from Unicode - Ansi - Oem - Unicode will take place
-        if you use these functions. <br/>
-        You should also realize that Ansi2Oem(Oem2Ansi(cSource)) will not always return cSource. Some characters may
-        not be available in the OEM codepage and could be translated to other characters.
-        For example: Windows codepage 1252 has Capital E Umlaut (Ë) on position 203.
-        When translated to OEM codepage 437 this will become capital E without umlaut (69). Converting back to Ansi
-        this will remain a E without umlaut.
-      </note>
-    </span>
-  </ansi2oem>
-  <StringCompare>
-    <summary>
-      Compare 2 strings. This function is used by the compiler for string comparisons.
-    </summary>
-    <returns>
-      This function returns a numeric value to indicate the order in which the strings should be sorted: <br/>
-      <table>
-        <tr>
-          <td>-1</td>
-          <td>LHS precedes RHS in the sort order. </td>
-        </tr>
-        <tr>
-          <td>0</td>
-          <td>LHS occurs in the same position as RHS in the sort order.</td>
-        </tr>
-        <tr>
-          <td>1</td>
-          <td>LHS follows RHS in the sort order.</td>
-        </tr>
-      </table>
-    </returns>
-  </StringCompare>
-  <File>
-    <remarks>
-      <note type="tip">
-        The low level File IO functions in the X# runtime are using .Net filestreams in the background. <br/>
-        That means that the file handles returned by FOpen() and FCreate() are not 'normal' file handles,
-        but unique identifiers that are used to find the underlying stream object in a collection of
-        streams in the runtime. <br/>
-        That also means that you can't use file handles for functions such as FRead() and FWrite() that were not
-        created in the X# runtime.<br/>
-        If you want to access the underlying FileStream, then you should call the
-        function <see cref="M:XSharp.Core.Functions.FGetStream(System.IntPtr)">FGetStream() </see>
-      </note>
-    </remarks>
-  </File>
-  <PtrBin>
-    <remarks>
-      <note type="warning">
-        This is a compatibility function that only works in x86 mode. The function will throw an exception when running in x64 mode.
-      </note>
-    </remarks>
-  </PtrBin>
-  <FileHandle>
-    <span>
-      The handle of the file. <em>Please see the remark below about the compatibility of X# Runtime file handles and Win32 file handles.</em>
-    </span>
-  </FileHandle>
-  <Oem2AnsiFileIO>
-    <span>
-      <note type="tip">
-        Conversions between OEM en Ansi were relevant in an Ansi environment like Visual Objects.
-        In a Unicode environment this conversion is noto much a conversion between OEM and Ansi but a
-        conversion between either Unicode and Ansi or Unicode and OEM. <br/>
-        For these conversions the runtime uses the current values of the
-        <see cref="P:XSharp.RuntimeState.WinCodePage">Windows Codepage</see>
-        and
-        <see cref="P:XSharp.RuntimeState.DosCodePage">DOS Codepage</see>.
-      </note>
-    </span>
-  </Oem2AnsiFileIO>
+    <ansi2oem>
+        <span>
+            <note type="warning">
+                The Ansi2Oem() and Oem2Ansi() family of functions are compatibility functions. Do not use them unless you really have to.
+                X# is a Unicode language and conversions from Unicode - Ansi - Oem - Unicode will take place
+                if you use these functions. <br/>
+                You should also realize that Ansi2Oem(Oem2Ansi(cSource)) will not always return cSource. Some characters may
+                not be available in the OEM codepage and could be translated to other characters.
+                For example: Windows codepage 1252 has Capital E Umlaut (Ë) on position 203.
+                When translated to OEM codepage 437 this will become capital E without umlaut (69). Converting back to Ansi
+                this will remain a E without umlaut.
+            </note>
+        </span>
+    </ansi2oem>
+    <StringCompare>
+        <summary>
+            Compare 2 strings. This function is used by the compiler for string comparisons.
+        </summary>
+        <returns>
+            This function returns a numeric value to indicate the order in which the strings should be sorted: <br/>
+            <table>
+                <tr>
+                    <td>-1</td>
+                    <td>LHS precedes RHS in the sort order. </td>
+                </tr>
+                <tr>
+                    <td>0</td>
+                    <td>LHS occurs in the same position as RHS in the sort order.</td>
+                </tr>
+                <tr>
+                    <td>1</td>
+                    <td>LHS follows RHS in the sort order.</td>
+                </tr>
+            </table>
+        </returns>
+    </StringCompare>
+    <File>
+        <remarks>
+            <note type="tip">
+                The low level File IO functions in the X# runtime are using .Net filestreams in the background. <br/>
+                That means that the file handles returned by FOpen() and FCreate() are not 'normal' file handles,
+                but unique identifiers that are used to find the underlying stream object in a collection of
+                streams in the runtime. <br/>
+                That also means that you can't use file handles for functions such as FRead() and FWrite() that were not
+                created in the X# runtime.<br/>
+                If you want to access the underlying FileStream, then you should call the
+                function <see cref="M:XSharp.Core.Functions.FGetStream(System.IntPtr)">FGetStream() </see>
+            </note>
+        </remarks>
+    </File>
+    <PtrBin>
+        <remarks>
+            <note type="warning">
+                This is a compatibility function that only works in x86 mode. The function will throw an exception when running in x64 mode.
+            </note>
+        </remarks>
+    </PtrBin>
+    <FileHandle>
+        <span>
+            The handle of the file. <em>Please see the remark below about the compatibility of X# Runtime file handles and Win32 file handles.</em>
+        </span>
+    </FileHandle>
+    <Oem2AnsiFileIO>
+        <span>
+            <note type="tip">
+                Conversions between OEM en Ansi were relevant in an Ansi environment like Visual Objects.
+                In a Unicode environment this conversion is noto much a conversion between OEM and Ansi but a
+                conversion between either Unicode and Ansi or Unicode and OEM. <br/>
+                For these conversions the runtime uses the current values of the
+                <see cref="P:XSharp.RuntimeState.WinCodePage">Windows Codepage</see>
+                and
+                <see cref="P:XSharp.RuntimeState.DosCodePage">DOS Codepage</see>.
+            </note>
+        </span>
+    </Oem2AnsiFileIO>
 
-  <BLOBImportExport>
-    <summary>BLOB Import/Export define.</summary>
-  </BLOBImportExport>
-  <OptLevel>
-    <summary>DBOI_OPTLEVEL define.</summary>
-  </OptLevel>
-  <IndexType>
-    <summary>DBOI_INDEXTYPE define.</summary>
-  </IndexType>
-  <LockScheme>
-    <summary>LockScheme define.</summary>
-  </LockScheme>
-  <BlockSize>
-    <summary>BlockSize define.</summary>
-  </BlockSize>
-  <RDDError>
-    <summary>RDD Error Number.</summary>
-    <seealso cref='T:XSharp.Subcodes'>Subcodes Enum</seealso>
-    <seealso cref='P:XSharp.Error.SubCode'>Subcode field in Error object</seealso>
-    <remarks>This define has the same value as a member of the Subcodes enum. You can use either the define or the enum value in your code.</remarks>
-  </RDDError>
-  <Directory>
-    <seealso cref="M:XSharp.RT.Functions.Directory(System.String,XSharp.__Usual)">Directory Function</seealso>
-    <remarks>
-      Compared to Clipper and Visual Objects the return value of Directory() has changed.
-      Each subarray returned from Directory() now contains some extra  values, such as creation date and
-      last access date. The normal Date and Time elements represent the last written date and time.
-    </remarks>
-  </Directory>
-  <Set>
-    <summary>Set() define</summary>
-    <seealso cref='T:XSharp.Set'>Set Enum</seealso>
-    <seealso cref='M:XSharp.RT.Functions.Set(XSharp.__Usual,XSharp.__Usual)' >Set() function</seealso>
-    <remarks>
-      This define has the same value as a member of the Set enum. You can use either the define or the enum value in your code.
-      If you are coming from XHarbour or Xbase++ please don't use SET.CH. The values in the Set enum may be different:
-      we have merged the SET defines from various dialects and there were some conflicting values.
-    </remarks>
-  </Set>
-  <DateCountry>
-    <summary>DateFormat define</summary>
-    <seealso cref='T:XSharp.DateCountry'>DateCountry Enum</seealso>
-    <remarks>This define has the same value as a member of the DateCountry enum. You can use either the define or the enum value in your code.</remarks>
-  </DateCountry>
-  <NationMessage>
-    <summary>Nation message define</summary>
-    <seealso cref='T:XSharp.VOErrors'>VOErrors Enum</seealso>
-    <remarks>This define has the same value as a member of the VOErrors enum. You can use either the define or the enum value in your code.</remarks>
-  </NationMessage>
-  <TrueOrFalse>
-    <span>
-      TRUE when the operation succeeded or FALSE when the operation failed. <br/>
-      Some RDD operations do not really return FALSE but throw an exception to indicate failure.<br/>
-      These exceptions are caught in the higher level code and registered in
-      the <see cref="P:XSharp.RuntimeState.LastRddError">LastRddError property in the runtime state.</see>.
-    </span>
-  </TrueOrFalse>
-  <ScopeInfo>
-    <summary>Scope value for <c>DbScope()</c>, <c>DbSetScope()</c> and <c>DbClearScope()</c>.</summary>
-    <seealso cref='M:XSharp.RT.Functions.DbScope(XSharp.__Usual)' >DbScope()</seealso>
-    <seealso cref='M:XSharp.RT.Functions.DbSetScope(System.Int32,XSharp.__Usual)' >DbSetScope()</seealso>
-    <seealso cref='M:XSharp.RT.Functions.DbClearScope(XSharp.__Usual)' >DbClearScope()</seealso>
-  </ScopeInfo>
-  <LastError>
-    <span>
-      <br/><br/>This function, however, does not call the error
-      handler and will therefore not produce a runtime error message or create an error object if it fails.<br/>
-      Therefore it is important to check the return value to determine if the function succeeded.<br/><br/>
-      The <see cref="P:XSharp.RuntimeState.LastRddError">LastRddError property in the runtimestate</see>
-      will contain needed information about any error that occurs.<br/>
-    </span>
-  </LastError>
-  <Collation>
-    <span>
-      The Core dialect always compares according to the Unicode rules.
-      The other dialects use the rules defined with SetCollation for string comparison. There are 4 possible values:
-      <list type="table">
-        <listheader>
-          <term>Parameter</term>
-          <description>Description</description>
-        </listheader>
-        <item>
-          <term>Windows (the default)</term>
-          <description>
-            This uses the normal windows Ansi comparison mechanism that Visual Objects uses as well.
-            That means that the Unicode strings from .Net are converted to Ansi first and then compared with the Ansi comparison rules.
+    <BLOBImportExport>
+        <summary>BLOB Import/Export define.</summary>
+    </BLOBImportExport>
+    <OptLevel>
+        <summary>DBOI_OPTLEVEL define.</summary>
+    </OptLevel>
+    <IndexType>
+        <summary>DBOI_INDEXTYPE define.</summary>
+    </IndexType>
+    <LockScheme>
+        <summary>LockScheme define.</summary>
+    </LockScheme>
+    <BlockSize>
+        <summary>BlockSize define.</summary>
+    </BlockSize>
+    <RDDError>
+        <summary>RDD Error Number.</summary>
+        <seealso cref='T:XSharp.Subcodes'>Subcodes Enum</seealso>
+        <seealso cref='P:XSharp.Error.SubCode'>Subcode field in Error object</seealso>
+        <remarks>This define has the same value as a member of the Subcodes enum. You can use either the define or the enum value in your code.</remarks>
+    </RDDError>
+    <Directory>
+        <seealso cref="M:XSharp.RT.Functions.Directory(System.String,XSharp.__Usual)">Directory Function</seealso>
+        <remarks>
+            Compared to Clipper and Visual Objects the return value of Directory() has changed.
+            Each subarray returned from Directory() now contains some extra  values, such as creation date and
+            last access date. The normal Date and Time elements represent the last written date and time.
+        </remarks>
+    </Directory>
+    <Set>
+        <summary>Set() define</summary>
+        <seealso cref='T:XSharp.Set'>Set Enum</seealso>
+        <seealso cref='M:XSharp.RT.Functions.Set(XSharp.__Usual,XSharp.__Usual)' >Set() function</seealso>
+        <remarks>
+            This define has the same value as a member of the Set enum. You can use either the define or the enum value in your code.
+            If you are coming from XHarbour or Xbase++ please don't use SET.CH. The values in the Set enum may be different:
+            we have merged the SET defines from various dialects and there were some conflicting values.
+        </remarks>
+    </Set>
+    <DateCountry>
+        <summary>DateFormat define</summary>
+        <seealso cref='T:XSharp.DateCountry'>DateCountry Enum</seealso>
+        <remarks>This define has the same value as a member of the DateCountry enum. You can use either the define or the enum value in your code.</remarks>
+    </DateCountry>
+    <NationMessage>
+        <summary>Nation message define</summary>
+        <seealso cref='T:XSharp.VOErrors'>VOErrors Enum</seealso>
+        <remarks>This define has the same value as a member of the VOErrors enum. You can use either the define or the enum value in your code.</remarks>
+    </NationMessage>
+    <TrueOrFalse>
+        <span>
+            TRUE when the operation succeeded or FALSE when the operation failed. <br/>
+            Some RDD operations do not really return FALSE but throw an exception to indicate failure.<br/>
+            These exceptions are caught in the higher level code and registered in
+            the <see cref="P:XSharp.RuntimeState.LastRddError">LastRddError property in the runtime state.</see>.
+        </span>
+    </TrueOrFalse>
+    <ScopeInfo>
+        <summary>
+            Scope value for <c>DbScope()</c>, <c>DbSetScope()</c> and <c>DbClearScope()</c>.
+        </summary>
+        <seealso cref='M:XSharp.RT.Functions.DbScope(XSharp.__Usual)' >DbScope()</seealso>
+        <seealso cref='M:XSharp.RT.Functions.DbSetScope(System.Int32,XSharp.__Usual)' >DbSetScope()</seealso>
+        <seealso cref='M:XSharp.RT.Functions.DbClearScope(XSharp.__Usual)' >DbClearScope()</seealso>
+    </ScopeInfo>
+    <LastError>
+        <span>
+            <br/><br/>This function, however, does not call the error
+            handler and will therefore not produce a runtime error message or create an error object if it fails.<br/>
+            Therefore it is important to check the return value to determine if the function succeeded.<br/><br/>
+            The <see cref="P:XSharp.RuntimeState.LastRddError">LastRddError property in the runtimestate</see>
+            will contain needed information about any error that occurs.<br/>
+        </span>
+    </LastError>
+    <Collation>
+        <span>
+            The Core dialect always compares according to the Unicode rules.
+            The other dialects use the rules defined with SetCollation for string comparison. There are 4 possible values:
+            <list type="table">
+                <listheader>
+                    <term>Parameter</term>
+                    <description>Description</description>
+                </listheader>
+                <item>
+                    <term>Windows (the default)</term>
+                    <description>
+                        This uses the normal windows Ansi comparison mechanism that Visual Objects uses as well.
+                        That means that the Unicode strings from .Net are converted to Ansi first and then compared with the Ansi comparison rules.
 
-            In most cases characters that are not available in the Ansi codepage are translated to a question mark '?' and are therefore all seen as equal. <br/>
-            If you want true unicode comparison you need the Unicode value for SetCollation.
-          </description>
-        </item>
-        <item>
-          <term>Clipper</term>
-          <description>
-            This uses string comparison tables that are the same as the character comparison tables in the Visual Objects
-            nation modules. Each character from the unicode string is converted to a character from the OEM codepage first using the
-            DosCodePage from the runtime state. the resulting OEM characters are then looked up in the 256 character weight tables that
-            are part of the runtime dll. You can switch to a different table by using SetNatDLL().
-          </description>
-        </item>
-        <item>
-          <term>Unicode</term>
-          <description>
-            This uses the normal Unicode String.Compare routines for string comparisons.
-          </description>
-        </item>
-        <item>
-          <term>Ordinal</term>
-          <description>
-            This uses the normal Ordinal String.Compare routines from DotNet. This is the fastest.
-          </description>
-        </item>
-      </list>
+                        In most cases characters that are not available in the Ansi codepage are translated to a question mark '?' and are therefore all seen as equal. <br/>
+                        If you want true unicode comparison you need the Unicode value for SetCollation.
+                    </description>
+                </item>
+                <item>
+                    <term>Clipper</term>
+                    <description>
+                        This uses string comparison tables that are the same as the character comparison tables in the Visual Objects
+                        nation modules. Each character from the unicode string is converted to a character from the OEM codepage first using the
+                        DosCodePage from the runtime state. the resulting OEM characters are then looked up in the 256 character weight tables that
+                        are part of the runtime dll. You can switch to a different table by using SetNatDLL().
+                    </description>
+                </item>
+                <item>
+                    <term>Unicode</term>
+                    <description>
+                        This uses the normal Unicode String.Compare routines for string comparisons.
+                    </description>
+                </item>
+                <item>
+                    <term>Ordinal</term>
+                    <description>
+                        This uses the normal Ordinal String.Compare routines from DotNet. This is the fastest.
+                    </description>
+                </item>
+            </list>
 
-    </span>
-  </Collation>  
-  <PerThread>
-    <remarks>
-      <note type="tip">This value is 'per thread'. New threads inherit the settings from the main thread. Changes to this setting are visible to code in the same thread only.</note>
-    </remarks>
-  </PerThread>
-  <CompilerOptions>
-     <remarks> This value gets assigned in the startup code for applications that are not in the Core dialect.<br/>
-     If your main app is not written in XSharp then this setting will have its default value.<br/>
-      <note type="tip">This value is NOT 'per thread' but global for all threads.</note>
-    </remarks>
-    <seealso cref="P:XSharp.RuntimeState.CompilerOptionVO11" />
-    <seealso cref="P:XSharp.RuntimeState.CompilerOptionVO13" />
-    <seealso cref="P:XSharp.RuntimeState.CompilerOptionOVF" />
-    <seealso cref="P:XSharp.RuntimeState.CompilerOptionFOVF" />
-    <seealso cref="P:XSharp.RuntimeState.Dialect" />
-  </CompilerOptions>
+        </span>
+    </Collation>
+    <PerThread>
+        <remarks>
+            <note type="tip">This value is 'per thread'. New threads inherit the settings from the main thread. Changes to this setting are visible to code in the same thread only.</note>
+        </remarks>
+    </PerThread>
+    <CompilerOptions>
+        <remarks>
+            This value gets assigned in the startup code for applications that are not in the Core dialect.<br/>
+            If your main app is not written in XSharp then this setting will have its default value.<br/>
+            <note type="tip">This value is NOT 'per thread' but global for all threads.</note>
+        </remarks>
+        <seealso cref="P:XSharp.RuntimeState.CompilerOptionVO11" />
+        <seealso cref="P:XSharp.RuntimeState.CompilerOptionVO13" />
+        <seealso cref="P:XSharp.RuntimeState.CompilerOptionOVF" />
+        <seealso cref="P:XSharp.RuntimeState.CompilerOptionFOVF" />
+        <seealso cref="P:XSharp.RuntimeState.Dialect" />
+    </CompilerOptions>
+    <StreamRead>
+            <param name="oStream">The stream to read from.</param>
+            <param name="pos">Location where to start reading.</param>
+            <param name="buffer">Buffer that must be read.</param>
+            <param name="length"># of bytes to read.</param>
+            <param name="lread"># of bytes actually read.</param>
+            <returns>TRUE when succesfull, FALSE when an exception occurred or when a parameter was incorrect.</returns>
+    </StreamRead>
+    <StreamWrite>
+            <param name="oStream">The stream to write to.</param>
+            <param name="pos">Location where to start writing.</param>
+            <param name="buffer">Buffer that must be written.</param>
+            <param name="length"># of bytes to write</param>
+            <param name="b">Byte to write.</param>
+            <returns>TRUE when succesfull, FALSE when an exception occurred or when a parameter was incorrect.</returns>
+    </StreamWrite>
 </Comments>

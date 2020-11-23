@@ -14,7 +14,7 @@
     <NS>true</NS>
     <vo15>true</vo15>
     <VulcanCompatibleResources>True</VulcanCompatibleResources>
-    <XSharpProjectversion>2.6.0.0</XSharpProjectversion>
+    <XSharpProjectversion>2.6.3.0</XSharpProjectversion>
     <IncludePaths>$(CommonInclude)</IncludePaths>
     <Nostandarddefs>true</Nostandarddefs>
     <StartupObject />
@@ -55,8 +55,8 @@
     </Compile>
     <Compile Include="Abstract.prg" />
     <Compile Include="DbFunctions.prg" />
-    <Compile Include="Collations.Designer.prg">
-      <DependentUpon>Collations.resx</DependentUpon>
+    <Compile Include="XPPCollations.Designer.prg">
+      <DependentUpon>XPPCollations.resx</DependentUpon>
     </Compile>
     <Compile Include="International.prg" />
     <Compile Include="DataObject.prg" />
@@ -118,7 +118,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Collations.resx">
+    <EmbeddedResource Include="XPPCollations.resx">
       <Generator>ResXFileCodeGenerator</Generator>
     </EmbeddedResource>
   </ItemGroup>

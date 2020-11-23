@@ -1,8 +1,8 @@
 ﻿USING System.Collections.Generic
 USING XSharp.RDD
 /// <summary>Enum that matches the various FoxPro database properties, used in DbGetProp() and DbSetProp()</summary>
-/// <seealso "O:XSharp.VFP.Functions.DbGetProp" />
-/// <seealso "O:XSharp.VFP.Functions.DbSetProp" />
+/// <seealso cref="O:XSharp.VFP.Functions.DbGetProp" />
+/// <seealso cref="O:XSharp.VFP.Functions.DbSetProp" />
 ENUM XSharp.RDD.DatabasePropertyType
     /// <summary>Null (Internal) </summary>
     MEMBER Null             := 0
@@ -30,7 +30,7 @@ ENUM XSharp.RDD.DatabasePropertyType
     MEMBER DefaultValue     := 11
     /// <summary>The WHERE clause parameters. The format for the parameters is ''ParameterName1, 'Type1'; ParameterName2, 'Type2'; ...'' </summary>
     MEMBER ParameterList    := 12
-    /// <summary></summary>
+    /// <summary>ChildTag for a Relation Object</summary>
     MEMBER RelatedChild     := 13
     /// <summary>The Insert trigger expression.</summary>
     MEMBER InsertTrigger    := 14
@@ -38,11 +38,11 @@ ENUM XSharp.RDD.DatabasePropertyType
     MEMBER UpdateTrigger    := 15
     /// <summary>The Delete trigger expression.</summary>
     MEMBER DeleteTrigger    := 16
-    /// <summary></summary>
-    MEMBER Unique           := 17
-    /// <summary></summary>
+    /// <summary>The IsUnique flag for an Index Object</summary>
+    MEMBER IsUnique         := 17
+    /// <summary>Related table for a Relation Object</summary>
     MEMBER RelatedTable     := 18
-    /// <summary></summary>
+    /// <summary>Related tag for a Relatin Object</summary>
     MEMBER RelatedTag       := 19
     /// <summary>The tag name of the primary key. (C) </summary>
     MEMBER PrimaryKey       := 20
@@ -184,106 +184,9 @@ ENUM XSharp.RDD.DatabasePropertyType
     MEMBER AllowSimultaneousFetch := 88
     /// <summary>Specifies if a pending transaction is committed or rolled back when SQLDISCONNECT( ) is called for the last connection handle.</summary>
     MEMBER DisconnectRollback := 89
-    /// <summary></summary>
-
     /// <summary>Is the table offline (this is not stored as a real property but derived from the extistence of the properties OfflineRecs, OfflineRemRecs and Path.</summary>
     MEMBER OffLine          := 99
-
-    // Own properties
-    /// <summary></summary>
+    /// <summary>X# Column Name property (not persisted in DBC)</summary>
     MEMBER ColumnName   := 100
 END ENUM
 
-INTERNAL GLOBAL databasePropertyNames AS Dictionary<STRING, LONG>
-
-FUNCTION GetDatabasePropertyNumber(propertyName as STRING) AS LONG
-    IF databasePropertyNames == NULL
-        databasePropertyNames := Dictionary<STRING, LONG>{StringComparer.OrdinalIgnoreCase}
-        var values := System.Enum.GetValues(typeof(XSharp.RDD.DatabasePropertyType))
-        FOREACH var enumvalue in values
-            var name := System.Enum.GetName(typeof(XSharp.RDD.DatabasePropertyType), enumvalue)
-            databasePropertyNames:Add(name, (LONG) enumvalue)
-        NEXT
-    ENDIF
-    IF databasePropertyNames:ContainsKey(propertyName)
-        return databasePropertyNames[propertyName]
-    ENDIF
-    RETURN -1
-
-
-FUNCTION DatabasePropertyValType(nType as LONG) AS STRING
-    SWITCH  (DatabasePropertyType) nType
-    CASE DatabasePropertyType.Comment
-    CASE DatabasePropertyType.ConnectString    
-    CASE DatabasePropertyType.Database
-    CASE DatabasePropertyType.DataSource       
-    CASE DatabasePropertyType.Password         
-    CASE DatabasePropertyType.UserId           
-    CASE DatabasePropertyType.DBCEventFileName
-    CASE DatabasePropertyType.Caption          
-    CASE DatabasePropertyType.DisplayClass
-    CASE DatabasePropertyType.DisplayClassLibrary
-    CASE DatabasePropertyType.InputMask        
-    CASE DatabasePropertyType.Format           
-    CASE DatabasePropertyType.RuleExpression   
-    CASE DatabasePropertyType.RuleText         
-    CASE DatabasePropertyType.DataType         
-    CASE DatabasePropertyType.DefaultValue     
-    CASE DatabasePropertyType.UpdateName       
-    CASE DatabasePropertyType.Path                
-    CASE DatabasePropertyType.InsertTrigger    
-    CASE DatabasePropertyType.UpdateTrigger    
-    CASE DatabasePropertyType.DeleteTrigger    
-    CASE DatabasePropertyType.PrimaryKey       
-    CASE DatabasePropertyType.ConnectName      
-    CASE DatabasePropertyType.ParameterList    
-    CASE DatabasePropertyType.SQL              
-    CASE DatabasePropertyType.Tables           
-        RETURN "C"        
-    CASE DatabasePropertyType.ConnectTimeout   
-    CASE DatabasePropertyType.DispLogin        
-    CASE DatabasePropertyType.IdleTimeout      
-    CASE DatabasePropertyType.PacketSize
-    CASE DatabasePropertyType.QueryTimeOut     
-    CASE DatabasePropertyType.Transactions     
-    CASE DatabasePropertyType.WaitTime         
-    CASE DatabasePropertyType.Version          
-    CASE DatabasePropertyType.BatchUpdateCount 
-    CASE DatabasePropertyType.FetchSize        
-    CASE DatabasePropertyType.MaxRecords       
-    CASE DatabasePropertyType.SourceType       
-    CASE DatabasePropertyType.UpdateType       
-    CASE DatabasePropertyType.UseMemoSize      
-    CASE DatabasePropertyType.WhereType        
-    CASE DatabasePropertyType.OfflineRecs
-    CASE DatabasePropertyType.OfflineRemRecs
-        RETURN "N"        
-    CASE DatabasePropertyType.Asynchronous
-    CASE DatabasePropertyType.BatchMode        
-    CASE DatabasePropertyType.DisconnectRollback
-    CASE DatabasePropertyType.DispWarnings     
-    CASE DatabasePropertyType.DBCEvents
-    CASE DatabasePropertyType.KeyField         
-    CASE DatabasePropertyType.Updatable
-    CASE DatabasePropertyType.AllowSimultaneousFetch
-    CASE DatabasePropertyType.CompareMemo
-    CASE DatabasePropertyType.FetchAsNeeded
-    CASE DatabasePropertyType.FetchMemo        
-    CASE DatabasePropertyType.Prepared
-    CASE DatabasePropertyType.SendUpdates      
-    CASE DatabasePropertyType.ShareConnection  
-    CASE DatabasePropertyType.Unique
-        RETURN "L"        
-
-    // we have added this one
-    CASE DatabasePropertyType.ColumnName
-        RETURN "C"
-    // internal for foxpro
-    CASE DatabasePropertyType.Class            
-        RETURN "C"
-    // no idea
-    CASE DatabasePropertyType.TimeStamp        
-        RETURN "L"        
-    // Unknown numbers for now
-    END SWITCH
-    RETURN "C"

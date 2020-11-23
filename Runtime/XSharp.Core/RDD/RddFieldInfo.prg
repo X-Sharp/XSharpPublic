@@ -32,7 +32,7 @@ CLASS RddFieldInfo
     /// <summary>1 based Ordinal position in the RDD.</summary>
 	PUBLIC Ordinal      AS LONG
     /// <summary>Dynamic list of optional properties, such as Caption, Description.</summary>
-    PUBLIC Properties   := PropertyCollection{} AS PropertyCollection
+    PUBLIC Properties   := DatabasePropertyCollection{} AS DatabasePropertyCollection
     
     /// <summary>Construct a RddFieldInfo object.</summary>
     /// <param name="sName">Name</param>

@@ -11,9 +11,13 @@ USING System.Reflection
 USING System.Text
 USING XSharp
 BEGIN NAMESPACE XSharp
-    /// <summary>Internal type that implements the VO Compatible ARRAY type.<br/>
+    /// <summary>Internal type that implements the FoxPro Compatible ARRAY type.<br/>
     /// This type has methods and properties that normally are never directly called from user code.
     /// </summary>
+    /// <remarks>FoxPro arrays can be one dimensional or two dimensional. Two dimensional arrays are implemented as a projection
+    /// on top of a one dimensional array. <br/>
+    /// So a two dimensional array of 4 x 3 elements will be implemented as an array of 12 elements.
+    /// The elements 1-3 represent row 1, 4-6 row 2 etc. </remarks>
     /// <seealso cref='T:XSharp.IIndexer' />
     /// <include file="RTComments.xml" path="Comments/ZeroBasedIndex/*" /> 
     //[DebuggerTypeProxy(TYPEOF(ArrayDebugView))];
@@ -150,12 +154,17 @@ BEGIN NAMESPACE XSharp
             END SET
         END PROPERTY
 
+
+        /// <summary>Redimension the array. Existing data will be saved if the # of cells in the new array &lt;= the # of cells in the old array. </summary>
         METHOD ReDim(nRows as INT, nCols := 1 as INT) AS __FoxArray
             _nCols := (DWORD) nCols
             SELF:Resize(nRows * nCols)
             RETURN SELF
 
 
+       /// <summary>Delete a row from a multi dimensional array.</summary>
+        /// <param name="nRow">1 based row number to delete</param>
+        /// <remarks>Deleting rows will shift other rows up and will add a blank row at the bottom of the array</remarks>
         METHOD DeleteRow(nRow as INT) AS __FoxArray
             // __GetIndex expects 0 based indices. DeleteRow works with 1 based rows
             VAR nStart := SELF:__GetIndex(nRow-1, 0)              // first element on the row
@@ -164,6 +173,13 @@ BEGIN NAMESPACE XSharp
             NEXT
             RETURN SELF
 
+       /// <summary>Delete a column from a multi dimensional array.</summary>
+        /// <param name="nColumn">1 based column number to delete</param>
+       /// <remarks>When no columns are defined then nothing happens. <br/>
+        /// When an array has columns then the elements are deleted and shifted.<br/>
+        /// Assume a 4 x 4 array. When DeleteColumn() is called with column 2 then the elements 2,6,10 and 14 are deleted
+        /// and the elements 3 &amp; 4, 7 &amp; 8, 11 &amp; 12 and 15 &amp; 16 are shifted to the left.
+        /// New empty elements are inserted on locations 4,8,12 and 16.</remarks>
        METHOD DeleteColumn(nColumn as INT) AS __FoxArray
             IF SELF:_nCols > 1 .and. nColumn > 0 .and. nColumn <= _nCols
                 LOCAL nRowStart := 0 AS INT
@@ -181,6 +197,9 @@ BEGIN NAMESPACE XSharp
             RETURN SELF
 
 
+        /// <summary>Insert a row into a multi dimensional array.</summary>
+        /// <param name="nRow">1 based row number to insert</param>
+        /// <remarks>Inserting rows deletes rows at the end of the array.</remarks>
         METHOD InsertRow(nRow as INT) AS __FoxArray
             IF nRow <= SELF:Rows .and. nRow > 0
                 // # of elements to insert is SELF:Columns
@@ -193,6 +212,9 @@ BEGIN NAMESPACE XSharp
             ENDIF
             RETURN SELF
 
+        /// <summary>Insert a column into a multi dimensional array.</summary>
+        /// <param name="nColumn">1 based column number to insert</param>
+        /// <remarks>Inserting columns deletes columns at the end of each row.</remarks>
         METHOD InsertColumn(nColumn as INT) AS __FoxArray
             IF nColumn <= SELF:Columns .and. nColumn > 0
                 // this is more difficult to do
@@ -215,6 +237,7 @@ BEGIN NAMESPACE XSharp
             ENDIF
             RETURN SELF
 
+        /// <exclude />
         PUBLIC OVERRIDE METHOD Resize(newSize AS INT) AS VOID
             // Make sure we have a multiple of the # of columns
             // Assume we have a 3 column array and we resize to 10
@@ -237,7 +260,7 @@ BEGIN NAMESPACE XSharp
             var nZeroBased := nElement -1
             RETURN (nZeroBased % (int) SELF:Columns) +1
             
-        METHOD GetSubScript(nElement as LONG) AS STRING
+        INTERNAL METHOD GetSubScript(nElement as LONG) AS STRING
             IF !SELF:MultiDimensional
                 RETURN "["+nElement:ToString()+"]"
             ELSE
@@ -245,7 +268,7 @@ BEGIN NAMESPACE XSharp
             ENDIF
 
 
-        METHOD DebuggerString() AS STRING
+        INTERNAL METHOD DebuggerString() AS STRING
             LOCAL sb AS StringBuilder
             sb := StringBuilder{}
             sb:Append("Array[")
@@ -269,6 +292,11 @@ BEGIN NAMESPACE XSharp
                 RETURN result:ToArray()
             END GET
         END PROPERTY
+
+        // <summary>Overridden method to disable Adding to a FoxArray </summary>
+		PUBLIC OVERRIDE METHOD Add(u AS USUAL) AS VOID
+            var err     := Error{NotSupportedException{"The FoxPro array type does not support the Add functionality"}}
+            throw err            
 
     END CLASS
 END NAMESPACE

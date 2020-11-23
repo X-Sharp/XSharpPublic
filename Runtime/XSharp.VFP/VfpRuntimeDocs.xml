@@ -3077,4 +3077,134 @@
       </code>
     </example>
   </week>
+    <adel>
+        <summary>
+            Deletes an element from a one-dimensional array, or a row or column from a two-dimensional array.
+        </summary>
+        <param name="ArrayName">
+
+            Specifies the array from which the element, row, or column is deleted.
+
+        </param>
+        <param name="nElementNumber">
+
+            Specifies the number of the element, row, or column to delete from the array. If the array is multidimensional, nElementNumber will specify the row. You must include the optional 2 argument to delete a column from the array.
+            For more information on how to reference elements in an array, see DIMENSION Command.
+            2
+            Deletes a column from the array.
+        </param>
+        <returns>
+            Numeric
+        </returns>
+        <remarks>
+            Deleting an element or row from an array doesn't change the size of the array; instead, the trailing elements, rows, or columns are moved towards the start of the array, and the last element, row, or column in the array is set to False (.F.). If you delete a column, values of the elements in the deleted column are set to False (.F.), but trailing elements are not moved.
+            If the element, row, or column is successfully deleted, 1 is returned.
+        </remarks>
+        <example>
+             <code language="X#">
+                CLOSE DATABASES
+                OPEN DATABASE (HOME(2) + 'Data\testdata')
+                USE customer     &amp;&amp; Open customer table
+                SELECT company FROM customer ;
+                WHERE country = 'UK' ;
+                INTO ARRAY gaCompanies
+                gnCount = _TALLY
+                gcName = 'Seven Seas Imports'
+                CLEAR
+                DISPLAY MEMORY LIKE gaCompanies
+                gnPos = ASCAN(gaCompanies, gcName)   &amp;&amp; Search for company
+                IF gnPos != 0
+                * Company found, remove it from the array
+                = ADEL(gaCompanies, gnPos)
+                gnCount = gnCount - 1
+                ENDIF
+                DISPLAY MEMORY LIKE gaCompanies
+            </code>
+        </example>
+    </adel>
+    <ains>
+        <summary>
+            Inserts an element into a one-dimensional array, or a row or column into a two-dimensional array.
+        </summary>
+        <param name="ArrayName">
+
+            Specifies the name of the array into which the element is inserted.
+
+        </param>
+        <param name="nElementNumber">
+
+            Specifies where the new element, row, or column is inserted into the array.
+            To insert an element into a one-dimensional array, include ArrayName and the element nElementNumber where the insertion occurs. The new element is inserted just before element nElementNumber. To insert a row into a two-dimensional array, include ArrayName and the number of the row nElementNumber where the insertion occurs. The new row is inserted just before row nElementNumber.
+            For more information on referencing an array element by its subscripts, see DIMENSION Command.
+            2
+            Inserts a column into a two-dimensional array. The new column is inserted just before the column specified with nElementNumber.
+        </param>
+        <returns>
+            Numeric
+        </returns>
+        <remarks>
+            Inserting an element, row, or column into an array does not change the size of the array. The trailing elements, rows, or columns are shifted toward the end of the array and the last element, row, or column in the array is dropped from it. The newly inserted element, row, or column is initialized to false (.F.).
+            AINS( ) returns 1 if the element, row, or column is successfully inserted.
+        </remarks>
+        <example>
+             <code language="X#">
+                CLOSE DATABASES
+                OPEN DATABASE (HOME(2) + 'Data\testdata')
+                USE customer     &amp;&amp; Open customer table
+                SELECT company FROM customer ;
+                WHERE country = 'Germany' ;
+                INTO ARRAY gaCompanies
+                gnCount = _TALLY
+                gcName = 'Seven Seas Imports'
+                CLEAR
+                DISPLAY MEMORY LIKE gaCompanies
+                IF ASCAN(gaCompanies, gcName) = 0  &amp;&amp; Search for company
+                *** Company not found-add it ***
+                DIMENSION gaCompanies[gnCount+1,1]
+                = AINS(gaCompanies, gnCount-1)
+                gaCompanies[gnCount-1] = gcName
+                ENDIF
+                DISPLAY MEMORY LIKE gaCompanies
+            </code>
+        </example>
+    </ains>
+    <alen>
+        <summary>
+            Returns the number of elements, rows, or columns in an array.
+        </summary>
+        <param name="ArrayName">
+
+            Specifies the name of the array. If you include only the array name, ALEN( ) returns the number of elements in the array.
+
+        </param>
+        <param name="nArrayAttribute">
+
+            Determines whether ALEN( ) returns the number of elements, rows or columns in the array according to the following values for nArrayAttribute:
+            0
+            Returns the number of elements in the array. Omitting nArrayAttribute is identical to specifying 0.
+            1
+            Returns the number of rows in the array.
+            2
+            Returns the number of columns in the array. If the array is a one-dimensional array, ALEN( ) returns 0 (no columns).
+        </param>
+        <returns>
+            Numeric
+        </returns>
+        <example>
+             <code language="X#">
+                CLEAR
+                =AFONT(gaFontArray)  &amp;&amp; Array containing font names
+                gnNumFonts= ALEN(gaFontArray)  &amp;&amp; Number of fonts
+                IF gnNumFonts &gt; 10
+                gnNumFonts = 10  &amp;&amp; Display first 10 fonts
+                ENDIF
+                FOR nCount = 1 TO gnNumFonts
+                ? ALLTRIM(gaFontArray(nCount))  &amp;&amp; Display font name
+                ?? '  This is an example of ' ;
+                + ALLTRIM(gaFontArray(nCount)) FONT gaFontArray(nCount), 8
+                ENDFOR
+            </code>
+        </example>
+    </alen>
+
 </Runtimefunctions>

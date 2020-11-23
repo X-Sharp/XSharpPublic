@@ -73,7 +73,7 @@ BEGIN NAMESPACE XSharp.RDD
 		/// <summary>Result of the last Block evaluation.</summary>
 		PROTECTED _EvalResult    AS OBJECT
 
-        PROTECTED Properties   := PropertyCollection{} AS PropertyCollection
+        PROTECTED Properties   := DatabasePropertyCollection{} AS DatabasePropertyCollection
 		#endregion
 		
 		#region Static Properties that point to Runtime state ?
@@ -964,10 +964,10 @@ BEGIN NAMESPACE XSharp.RDD
         PRIVATE STATIC METHOD FindCbType AS VOID
             FOREACH VAR asm IN AppDomain.CurrentDomain:GetAssemblies()
                 IF asm:GetName():Name:ToLower() == "xsharp.rt"
-                    oCbType := asm:GetType("XSharp._Codeblock")
+                    oCbType := asm:GetType("XSharp.__Codeblock")
                     IF oCbType == NULL
                         FOREACH VAR oT IN asm:GetTypes()
-                            IF oT:FullName:ToLower() == "xsharp._codeblock"
+                            IF oT:FullName:ToLower() == "xsharp.__codeblock"
                                 oCbType := oT
                                 EXIT
                             ENDIF

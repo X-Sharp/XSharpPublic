@@ -59,7 +59,7 @@ FUNCTION SetCollationTable(nCollation, aTable) AS ARRAY CLIPPER
                     tableName := "Oem"+tableName
                 ENDIF
             ENDIF
-            LOCAL oType := typeof(XSharp.XPP.Collations) AS System.Type
+            LOCAL oType := typeof(XSharp.XPP.XPPCollations) AS System.Type
             LOCAL oProp := oType:GetProperty(tableName, BindingFlags.Static| BindingFlags.Public | BindingFlags.NonPublic| BindingFlags.IgnoreCase) AS PropertyInfo
             IF oProp != NULL
                 aBytes := (BYTE[]) oProp:GetValue(NULL)

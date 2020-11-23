@@ -143,7 +143,7 @@ FUNCTION ErrorStack(oStackTrace AS System.Diagnostics.StackTrace, wActivation :=
     ENDIF
 	RETURN cResult
 
-/// <summary>This function allows you to enable or disable the VO compatible Errorstack format.<summary/>
+/// <summary>This function allows you to enable or disable the VO compatible Errorstack format.</summary>
 /// <param name="lNew">Specify TRUE to enable the new format.</param>
 /// <returns>The current setting for the ErrorStack format.</returns>
 /// <remarks>The default setting for the format is based on the dialect of the main application.

@@ -9,7 +9,7 @@ FUNCTION FoxArrayCreate(nRows as DWORD, nCols := 1 as DWORD) AS __FoxArray
     RETURN __FoxArray{nRows , nCols, TRUE}
 
 
-/// <include file="VFPDocs.xml" path="Runtimefunctions/alen/*" />
+/// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/alen/*" />
 FUNCTION ALen(a as __FoxArray, nArrayAttribute as LONG) AS DWORD
     SWITCH nArrayAttribute
     CASE 1
@@ -25,11 +25,11 @@ FUNCTION ALen(a as __FoxArray, nArrayAttribute as LONG) AS DWORD
     END SWITCH
 
 
-/// <include file="VFPDocs.xml" path="Runtimefunctions/alen/*" />
+/// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/alen/*" />
 FUNCTION ALen(a as __FoxArray) AS DWORD
     RETURN ALen(a, 0)
 
-/// <include file="VFPDocs.xml" path="Runtimefunctions/aelement/*" />
+/// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/aelement/*" />
 FUNCTION AElement(ArrayName as __FoxArray, nRowSubscript as DWORD, nColumnSubscript := 1 as DWORD) AS USUAL
     IF ArrayName:MultiDimensional
         RETURN ArrayName[nRowSubscript, nColumnSubscript]
@@ -39,7 +39,7 @@ FUNCTION AElement(ArrayName as __FoxArray, nRowSubscript as DWORD, nColumnSubscr
         THROW ArrayName:__GetDimensionError()
     ENDIF
 
-/// <include file="VFPDocs.xml" path="Runtimefunctions/adel/*" />
+/// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/adel/*" />
 FUNCTION ADel(ArrayName as __FoxArray, nElementNumber as DWORD, nDeleteType := 2 as LONG) AS DWORD
     IF ! ArrayName:MultiDimensional
         ArrayName:Delete((LONG) nElementNumber)
@@ -53,7 +53,7 @@ FUNCTION ADel(ArrayName as __FoxArray, nElementNumber as DWORD, nDeleteType := 2
     RETURN 1
 
 
-/// <include file="VFPDocs.xml" path="Runtimefunctions/asubscript/*" />
+/// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/asubscript/*" />
 FUNCTION ASubScript(ArrayName as __FoxArray, nElementNumber AS DWORD, nSubscript := 1 as DWORD) AS DWORD
     IF !ArrayName:MultiDimensional
         IF nSubscript == 1 .and. nElementNumber <= (DWORD) ArrayName:Count
@@ -76,7 +76,7 @@ FUNCTION ASubScript(ArrayName as __FoxArray, nElementNumber AS DWORD, nSubscript
     ENDIF
     RETURN 0
 
-/// <include file="VFPDocs.xml" path="Runtimefunctions/ains/*" />
+/// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/ains/*" />
 FUNCTION AIns(ArrayName as __FoxArray, nElementNumber as DWORD, nInsertType := 1 as DWORD) AS DWORD
     IF !ArrayName:MultiDimensional
         IF nInsertType == 1 .and. nElementNumber <= (DWORD) ArrayName:Count
@@ -91,6 +91,7 @@ FUNCTION AIns(ArrayName as __FoxArray, nElementNumber as DWORD, nInsertType := 1
     ENDIF
     RETURN 0
     
+/// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/asize/*" />
 FUNCTION ASize(ArrayName as __FoxArray, nSize as DWORD) AS __FoxArray
     ArrayName:Resize((LONG) nSize)
     RETURN ArrayName

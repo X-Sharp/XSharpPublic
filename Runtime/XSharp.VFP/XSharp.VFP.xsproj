@@ -27,6 +27,8 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Documentation|AnyCPU'">
     <DocumentationFile>XSharp.VFP.Xml</DocumentationFile>
+    <PreBuildEvent>copy $(Solutiondir)Runtime\XSharp.RT\VoFunctionDocs.xml $(Solutiondir)Runtime\XSharp.Core\VoFunctionDocs.xml &gt;NUL</PreBuildEvent>
+    <PostBuildEvent>erase $(Solutiondir)Runtime\XSharp.Core\VoFunctionDocs.xml &gt;NUL</PostBuildEvent>
   </PropertyGroup>
   <Import Project="$(XSharpMsBuildDir)\XSharp.targets" />
   <ItemGroup>
@@ -65,7 +67,6 @@
     <Compile Include="BitFunctions.prg" />
     <Compile Include="Cursors\DbFunctions.prg" />
     <Compile Include="Database\DbFunctions.prg" />
-    <Compile Include="Database\DatabaseEnums.prg" />
     <Compile Include="Defines.prg" />
     <Compile Include="FileFunctions.prg" />
     <Compile Include="GatherScatter.prg" />
@@ -109,6 +110,7 @@
     <Folder Include="Classes" />
     <Folder Include="Cursors" />
     <Folder Include="Database" />
+    <Folder Include="TestData\" />
     <Folder Include="UI" />
     <Folder Include="SQL" />
     <Folder Include="Properties\" />
@@ -134,6 +136,39 @@
   <ItemGroup>
     <None Include="functionsToImplement.txt" />
     <None Include="NotUsedFunctions.xml" />
+    <None Include="TestData\Categories.CDX" />
+    <None Include="TestData\categories.dbf" />
+    <None Include="TestData\categories.fpt" />
+    <None Include="TestData\customercustomerdemo.cdx" />
+    <None Include="TestData\customercustomerdemo.dbf" />
+    <None Include="TestData\customerdemographics.cdx" />
+    <None Include="TestData\customerdemographics.dbf" />
+    <None Include="TestData\customerdemographics.fpt" />
+    <None Include="TestData\Customers.CDX" />
+    <None Include="TestData\customers.dbf" />
+    <None Include="TestData\employees.cdx" />
+    <None Include="TestData\employees.dbf" />
+    <None Include="TestData\employees.fpt" />
+    <None Include="TestData\employeeterritories.cdx" />
+    <None Include="TestData\employeeterritories.dbf" />
+    <None Include="TestData\northwind.dbc" />
+    <None Include="TestData\northwind.dct" />
+    <None Include="TestData\northwind.dcx" />
+    <None Include="TestData\orderdetails.cdx" />
+    <None Include="TestData\orderdetails.dbf" />
+    <None Include="TestData\orders.cdx" />
+    <None Include="TestData\orders.dbf" />
+    <None Include="TestData\products.cdx" />
+    <None Include="TestData\products.dbf" />
+    <None Include="TestData\region.cdx" />
+    <None Include="TestData\region.dbf" />
+    <None Include="TestData\shippers.cdx" />
+    <None Include="TestData\shippers.dbf" />
+    <None Include="TestData\suppliers.cdx" />
+    <None Include="TestData\suppliers.dbf" />
+    <None Include="TestData\suppliers.fpt" />
+    <None Include="TestData\territories.cdx" />
+    <None Include="TestData\territories.dbf" />
     <None Include="VFPDocs.xml" />
     <None Include="VFPFileStructures\VFP26Form-2.pdf" />
     <None Include="VFPFileStructures\VFP26Form.pdf" />
@@ -173,5 +208,10 @@
     <PreBuildEvent />
     <PostBuildEvent />
     <RunPostBuildEvent />
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Documentation|AnyCPU'">
+    <PreBuildEvent>copy $(Solutiondir)Runtime\XSharp.RT\VoFunctionDocs.xml $(Solutiondir)Runtime\XSharp.VFP\VoFunctionDocs.xml &gt;NUL</PreBuildEvent>
+    <PostBuildEvent>erase $(Solutiondir)Runtime\XSharp.VFP\VoFunctionDocs.xml &gt;NUL</PostBuildEvent>
+    <RunPostBuildEvent>Always</RunPostBuildEvent>
   </PropertyGroup>
 </Project>

@@ -298,6 +298,13 @@ PARTIAL CLASS VOWindowEditor INHERIT WindowDesignerBase
 RETURN
 
 	METHOD GetCodeContents() AS CodeContents
+		IF FALSE
+			RETURN SELF:GetCodeContentsTyped()
+		ELSE
+			RETURN SELF:GetCodeContentsUnTyped()
+		END IF
+	END METHOD
+	METHOD GetCodeContentsUnTyped() AS CodeContents
 		LOCAL oCode AS CodeContents
 		LOCAL cLine AS STRING
 		LOCAL aDesign AS ArrayList
@@ -617,6 +624,532 @@ RETURN
 				cLine += String.Format(", Point{{{0} , {1}}} " , oRect:Left , oWinRect:Height - oRect:Bottom)
 				cLine += String.Format(", Dimension{{{0} , {1}}} " , oRect:Width , oRect:Height)
 			ENDIF
+			cLine += "}"
+			aConstructor:Add(cLine)
+			SELF:GetCode(oDesign , "SELF:" + oDesign:cPrefix + oDesign:Name + ":" , aConstructor , lFontUsed)
+			IF oDesign:cFullClass:ToUpper():StartsWith("CONTROL:TEXTCONTROL:RADIOBUTTONGROUP")
+				SELF:GetRadioGroupCode(oDesign , "SELF:" + oDesign:cPrefix + oDesign:Name , aRadioGroups)
+			ENDIF
+			aConstructor:Add("")
+		NEXT
+
+		IF lFontUsed
+			aConstructor:Insert(1 , e"\tLOCAL oFont AS Font")
+		ENDIF
+		
+		FOR n := 0 UPTO aRadioGroups:Count - 1
+			aConstructor:Add(aRadioGroups[n])
+		NEXT
+
+		// Now all properties are being used, so no need to do that
+		oProp := SELF:oWindowDesign:GetProperty("Caption")
+//		IF oProp != NULL .or. oProp:lMultiple // not in classmate
+		IF oProp != NULL .AND. oProp:lMultiple // not in classmate
+//			cLine := String.Format(e"\tSELF:Caption := \"{0}\"" , oProp:TextValue)
+			cLine := String.Format(e"\tSELF:Caption := {0}" , Funcs.TranslateCaption(oProp:TextValue , TRUE))
+			aConstructor:Add(cLine)
+		END IF
+
+		SELF:GetCode(SELF:oWindowDesign , "SELF:" , aConstructor , lFontUsed)
+
+		oProp := SELF:oWindowDesign:GetProperty("Data Server")
+		IF oProp != NULL .AND. (SELF:oWindowDesign:cFullClass:IndexOf("FORM:DATAWINDOW") == 0 .OR. SELF:oWindowDesign:cFullClass:IndexOf("FORM:DATADIALOG") == 0)
+			aConstructor:Add(e"\tIF !IsNil(oServer)")
+			aConstructor:Add(e"\t\tSELF:Use(oServer)")
+			IF !oProp:IsAuto
+				lHasServer := TRUE
+				aConstructor:Add(e"\tELSE")
+				IF oProp:TextValue:ToUpper():Contains("<SHARE")
+					aConstructor:Add(String.Format(e"\t\tSELF:Use(SELF:Owner:Server)"))
+				ELSE
+					aConstructor:Add(String.Format(e"\t\tSELF:Use({0}{{}})" , oProp:TextValue))
+				END IF
+			END IF
+			aConstructor:Add(e"\tENDIF")
+			aConstructor:Add("")
+		END IF
+
+
+// databrowser - columns
+		IF eViewMode != ViewMode.Auto
+			cLine := e"\tSELF:Browser := " + cBrowserInherit + "{SELF}"
+			aConstructor:Add(cLine)
+			aConstructor:Add("")
+			
+//			FOR n := 0 UPTO aDesign:Count - 1
+//				oDesign := (DesignWindowItem)aDesign[n]
+			FOR n := 0 UPTO aColumns:Count - 1
+				oDesign := (DesignWindowItem)aColumns[n]
+				IF oDesign:Column == NULL .OR. oDesign:BrowseIndex == -1
+					LOOP
+				ENDIF
+				LOCAL cColumn AS STRING
+				
+				cColumn := e"\tSELF:oDB" + oDesign:Name
+	
+				cLine := cColumn
+				cLine += " := "
+				cLine += cColumnsInherit
+				cLine += "{"
+				oProp := oDesign:GetPropertyByMember("FieldSpec")
+				IF oProp == NULL .OR. oProp:IsAuto
+					cLine += oDesign:BrowseSize:ToString()
+				ELSE
+					cLine += oProp:TextValue + "{}"
+				END IF
+				cLine += "}"
+				aConstructor:Add(cLine)
+				aConstructor:Add(cColumn + ":Width := " + oDesign:BrowseSize:ToString())
+				cLine := cColumn + ":HyperLabel := "
+				IF oDesign:Deleted != 0
+					cLine += "HyperLabel{"
+					cLine += "#" + oDesign:Name + ","
+					oProp := oDesign:GetProperty("Caption")
+					IF oProp == NULL .OR. oProp:TextValue:Length == 0
+						cLine += "NULL_STRING, "
+					ELSE
+						cLine += e"\"" + oProp:TextValue + e"\", "
+					END IF
+					oProp := oDesign:GetProperty("Description")
+					IF oProp == NULL .OR. oProp:TextValue:Length == 0
+						cLine += "NULL_STRING, "
+					ELSE
+						cLine += e"\"" + oProp:TextValue + e"\", "
+					END IF
+					oProp := oDesign:GetProperty("Help Context")
+					IF oProp == NULL .OR. oProp:TextValue:Length == 0
+						cLine += "NULL_STRING"
+					ELSE
+						cLine += e"\"" + oProp:TextValue + e"\""
+					END IF
+					cLine += "}"
+				ELSE
+					cLine += "SELF:" + oDesign:cPrefix + oDesign:Name + ":HyperLabel"
+				END IF
+				aConstructor:Add(cLine)
+
+				oProp := oDesign:GetProperty("Caption")
+				IF oProp != NULL
+					cLine := cColumn + e":Caption := \"" + oProp:TextValue + e"\""
+					aConstructor:Add(cLine)
+				END IF
+				
+				oProp := oDesign:GetProperty("Block")
+				IF oProp != NULL .AND. !oProp:TextValue:Trim():Length == 0
+					cLine := cColumn + ":Block := " + oProp:TextValue:Trim()
+					aConstructor:Add(cLine)
+				END IF
+				oProp := oDesign:GetProperty("Block Owner")
+				IF oProp != NULL .AND. !oProp:TextValue:Trim():Length == 0
+					cLine := cColumn + ":BlockOwner := " + oProp:TextValue:Trim()
+					aConstructor:Add(cLine)
+				END IF
+				
+				cLine := e"\tSELF:Browser:AddColumn(SELF:oDB" + oDesign:Name + ")"
+				aConstructor:Add(cLine)
+				
+				aConstructor:Add("")
+			NEXT
+			
+			cLine := e"\tSELF:ViewAs(" + SELF:oWindowDesign:GetProperty("View As"):TextValue + ")"
+			aConstructor:Add(cLine)
+			aConstructor:Add("")
+		END IF
+		
+
+// subforms
+		FOR n := 0 UPTO aDesign:Count - 1
+			oDesign := (DesignWindowItem)aDesign[n]
+			IF !oDesign:IsSubForm
+				LOOP
+			ENDIF
+			IF oDesign:GetProperty("_GenCode"):TextValue:ToUpper() == "NO"
+				LOOP
+			ENDIF
+			cLine := e"\t"
+			cLine += "SELF:oSF"
+			cLine += oDesign:Name
+			cLine += " := "
+			cLine += oDesign:Name
+			cLine += "{"
+			cLine += "SELF , " + oDesign:GetVODefine(SELF:oWindowDesign:Name) + " "
+			cLine += "}"
+			aConstructor:Add(cLine)
+			cLine := e"\tSELF:oSF" + oDesign:Name + ":Show()"
+			aConstructor:Add(cLine)
+			IF lHasServer
+				oProp := oDesign:GetProperty("Order")
+				IF !oProp:IsAuto
+					aConstructor:Add(String.Format(e"\tIF SELF:oSF{0}:Server != NIL" , oDesign:Name))
+					aConstructor:Add(String.Format(e"\t\tSELF:oSF{0}:Server:SetOrder(\"{1}\")" , oDesign:Name , oProp:TextValue))
+					aConstructor:Add(e"\tENDIF")
+				ENDIF
+				oProp := oDesign:GetProperty("Relation String")
+				IF !oProp:IsAuto
+					aConstructor:Add(String.Format(e"\tSELF:SetSelectiveRelation(SELF:oSF{0} , {1})" , oDesign:Name , oProp:TextValue))
+				ENDIF
+			ENDIF
+		NEXT
+
+
+		FOR n := 0 UPTO aTabPages:Count - 1
+			aConstructor:Add(aTabPages[n])
+		NEXT
+		
+
+		aConstructor:Add("")
+		cLine := e"\tSELF:PostInit(" + SELF:oWindowDesign:cInitMethod + e")"
+		aConstructor:Add(cLine)
+		aConstructor:Add("")
+		aConstructor:Add(e"RETURN")
+
+		aConstructor:Add("")
+//		aConstructor:Add("END CLASS")
+		
+	RETURN oCode
+
+	METHOD GetCodeContentsTyped() AS CodeContents
+		LOCAL oCode AS CodeContents
+		LOCAL cLine AS STRING
+		LOCAL aDesign AS ArrayList
+		LOCAL aColumns AS ArrayList
+		LOCAL oDesign AS DesignWindowItem
+		LOCAL cTemp AS STRING
+		LOCAL lPixPos AS LOGIC
+		LOCAL lExpCtls AS LOGIC
+		LOCAL oRect AS Rectangle
+		LOCAL oWinRect AS Rectangle
+		LOCAL oProp AS VODesignProperty
+		LOCAL lHasServer AS LOGIC
+		LOCAL oTabControl AS DesignTabControl
+		LOCAL oPageOptions AS VOTabPageOptions
+		LOCAL n,m AS INT
+
+		LOCAL aDefines AS List<STRING>
+		LOCAL aDefineValues AS List<STRING>
+		LOCAL aResource AS List<STRING>
+		LOCAL aClass AS List<STRING>
+		LOCAL aConstructor AS List<STRING>
+		LOCAL aTabPages AS List<STRING>
+		LOCAL aRadioGroups AS List<STRING>
+		
+//		LOCAL rDivX , rDivY AS REAL8
+		LOCAL oFont AS Font
+		LOCAL oGraphics AS Graphics
+		LOCAL nBaseUnits AS INT
+		LOCAL hDC , hOldFont AS IntPtr
+		LOCAL sTextMetric AS _winTEXTMETRIC
+		LOCAL sSize AS _winSIZE
+		LOCAL oInfo AS UnitTranslateInfo
+		LOCAL cStyle AS STRING
+		LOCAL lFontUsed AS LOGIC
+		
+		LOCAL eViewMode AS ViewMode
+		LOCAL cColumnsInherit AS STRING
+		LOCAL cBrowserInherit AS STRING
+		eViewMode := SELF:ViewMode
+		cColumnsInherit := SELF:oWindowDesign:ColumnsInheritClassName
+		cBrowserInherit := SELF:oWindowDesign:BrowserInheritClassName
+
+		oProp := SELF:oWindowDesign:GetProperty("Font")
+		IF oProp != NULL .AND. !oProp:IsAuto .AND. oProp:Value != NULL .AND. oProp:Value:GetType() == TypeOf(Font)
+			oFont := (Font)oProp:Value
+		ELSE
+			oFont := SELF:oWindow:Font
+		ENDIF
+		nBaseUnits := GetDialogBaseUnits()
+		oInfo:nBaseUnitX := nBaseUnits & (INT)0xFFFF
+		oInfo:nBaseUnitY := nBaseUnits >> 16
+		oGraphics := SELF:oWindow:CreateGraphics()
+		hDC := oGraphics:GetHdc()
+		hOldFont := SelectObject(hDC, oFont:ToHfont())
+		GetTextMetrics(hDC, sTextMetric)
+		cLine := "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"
+		GetTextExtentPoint32(hDC, cLine, cLine:Length, sSize)
+		oInfo:tmWidth := (sSize:cx / 26 + 1) / 2
+		oInfo:tmHeight := sTextMetric:tmHeight
+		SelectObject(hDC, hOldFont)
+		//ReleaseDC(IntPtr.Zero, hdc)
+		oGraphics:ReleaseHdc(hDC)
+		oGraphics:Dispose()
+
+/*		rDivY := (REAL8)oFont:Height / (REAL8)8.0
+		cLine := "ABCDabcdefghiklmnopqrstuvwxyz" // TODO
+		cLine := cLine + cLine + cLine + cLine
+		rDivX := (REAL8)oGraphics:MeasureString(cLine , oFont):Width / (REAL8)cLine:Length  / (REAL4)4.0*/
+
+
+		oCode := CodeContents{}
+
+		aDefines := oCode:aDefines
+		aDefineValues := oCode:aDefineValues
+		aResource := oCode:aResource
+		aClass := oCode:aClass
+		aConstructor := oCode:aConstructor
+		aTabPages := List<STRING>{}
+		aRadioGroups := List<STRING>{}
+
+		SELF:ArrangeControlOrder()
+		aDesign := SELF:GetAllDesignItemsByCreationOrder()
+		FOR n := 0 UPTO aDesign:Count - 1
+			oDesign := (DesignWindowItem)aDesign[n]
+//			aDefines:Add("#define " + oDesign:GetVODefine(SELF:oWindowDesign:Name) + " " + (100 + n):ToString())
+			aDefines:Add(oDesign:GetVODefine(SELF:oWindowDesign:Name))
+			aDefineValues:Add((100 + n):ToString())
+		NEXT
+		
+		IF SELF:ViewMode != ViewMode.Auto
+			aColumns := SELF:GetAllColumnDesignItemsByIndex(TRUE)
+		END IF
+
+// resource
+		oDesign := SELF:oWindowDesign
+		IF oDesign:lCreateResource
+			oRect := SELF:oWindowDesign:GetRect()
+			cLine := e"RESOURCE "
+			cLine := e""
+			cLine += SELF:oWindowDesign:Name + " DIALOGEX "
+/*			cLine += ((INT)(oRect:Left / rDivX)):ToString() + ", "
+			cLine += ((INT)(oRect:Top / rDivY)):ToString() + ", "
+			cLine += ((INT)(oRect:Width / rDivX)):ToString() + ", "
+			cLine += ((INT)(oRect:Height / rDivY)):ToString()*/
+			oRect:Width -= 2
+			oRect:Height -= 2
+			oRect := Funcs.PixelsToUnits(oRect , oInfo)
+			cLine += oRect:Left:ToString() + ", "
+			cLine += oRect:Top:ToString() + ", "
+			cLine += oRect:Width:ToString() + ", "
+			cLine += oRect:Height:ToString()
+			aResource:Add(cLine)
+			
+//			aResource:Add(e"STYLE WS_CHILD")
+			cStyle := oDesign:GetVOStylesString(VOStyle.Style)
+			aResource:Add( "STYLE " + cStyle)
+			IF cStyle:ToUpper():IndexOf("WS_CAPTION") != -1 .AND. SELF:oWindowDesign:GetProperty("Caption") != NULL
+				aResource:Add( e"CAPTION \"" + Funcs.TranslateCaption(SELF:oWindowDesign:Caption , FALSE) + e"\"")
+			ENDIF
+			oProp := oDesign:GetProperty("Font")
+			IF oProp != NULL .AND. !oProp:IsAuto
+				aResource:Add("FONT " + oProp:CodeValue:Substring(3)) // TODO ugly hack
+			ELSE
+				aResource:Add(e"FONT 8, \"MS Shell Dlg\"")
+			ENDIF
+			aResource:Add(e"BEGIN")
+			FOR n := 0 UPTO aDesign:Count - 1
+				oDesign := (DesignWindowItem)aDesign[n]
+				IF oDesign:Deleted != 0
+					LOOP
+				END IF
+				oRect := oDesign:GetRect()
+				cLine := e"\t"
+				cLine += e"CONTROL "
+				cLine += e"\"" + Funcs.TranslateCaption(oDesign:Caption , FALSE) + e"\", "
+				cLine += oDesign:GetVODefine(SELF:oWindowDesign:Name) + ", "
+				cLine += e"\"" + oDesign:cWinClass:ToUpper() + e"\", "
+				cLine += oDesign:GetVOStylesString(VOStyle.Style)
+				oProp := oDesign:GetProperty("_Visible")
+				IF oProp != NULL .AND. oProp:TextValue:ToUpper() == "NO"
+					cLine += "|NOT WS_VISIBLE"
+				ENDIF
+				cLine += ", "
+/*				cLine += ((INT)(oRect:Left / rDivX)):ToString() + ", "
+				cLine += ((INT)(oRect:Top / rDivY)):ToString() + ", "
+				cLine += ((INT)(oRect:Width / rDivX)):ToString() + ", "
+				cLine += ((INT)(oRect:Height / rDivY)):ToString()*/
+				oRect := Funcs.PixelsToUnits(oRect , oInfo)
+				cLine += oRect:Left:ToString() + ", "
+				cLine += oRect:Top:ToString() + ", "
+				cLine += oRect:Width:ToString() + ", "
+				cLine += oRect:Height:ToString()
+				cTemp := oDesign:GetVOStylesString(VOStyle.ExStyle)
+				IF cTemp:Length != 0
+					cLine += ", " + cTemp
+				ENDIF
+				aResource:Add(cLine)
+			NEXT
+			aResource:Add("END")
+		END IF
+		
+		oProp := SELF:oWindowDesign:GetPropertyByMember("ExpCtls")
+		IF oProp != NULL .AND. oProp:TextValue:ToUpper() == "YES"
+			lExpCtls := TRUE
+		ENDIF
+		
+
+// class declaration
+		cLine := "CLASS " + SELF:oWindowDesign:Name + " INHERIT " + SELF:oWindowDesign:InheritClassName
+		aClass:Add(cLine)
+		IF eViewMode != ViewMode.Auto
+//			FOR n := 0 UPTO aDesign:Count - 1
+			FOR n := 0 UPTO aColumns:Count - 1
+//				oDesign := (DesignWindowItem)aDesign[n]
+				oDesign := (DesignWindowItem)aColumns[n]
+				IF oDesign:Column != NULL .AND. oDesign:BrowseIndex != -1
+					cLine := e"\t"
+					IF lExpCtls
+						cLine += "EXPORT "
+					ELSE
+						cLine += "PROTECT "
+					END IF
+					cLine += "oDB" + oDesign:Name + " AS "
+					cLine += cColumnsInherit
+					aClass:Add(cLine)
+				END IF
+			NEXT
+		END IF
+		FOR n := 0 UPTO aDesign:Count - 1
+			oDesign := (DesignWindowItem)aDesign[n]
+			IF oDesign:Deleted != 0
+				LOOP
+			END IF
+			IF oDesign:GetProperty("_GenCode"):TextValue:ToUpper() == "NO"
+				LOOP
+			ENDIF
+			cLine := e"\t"
+			IF lExpCtls
+				cLine += "EXPORT "
+			ELSE
+				cLine += "PROTECT "
+			END IF
+			cLine += oDesign:cPrefix + oDesign:Name + " AS "
+			IF oDesign:IsSubForm
+				cLine += oDesign:Name
+			ELSE
+				cLine += oDesign:InheritClassName
+			END IF
+			aClass:Add(cLine)
+			IF oDesign:IsTabControl
+				oTabControl := (DesignTabControl)oDesign:Control
+				LOCAL cSelectedTab := "" AS STRING
+				FOR m := 1 UPTO oTabControl:TabPages:Count
+					oPageOptions := oTabControl:GetTabPageOptions(m)
+					IF oPageOptions:cCaption == "Page" // TODO Should check if page window exists
+						LOOP
+					ENDIF
+					cLine := e"\t"
+					IF lExpCtls
+						cLine += "EXPORT "
+					ELSE
+						cLine += "PROTECT "
+					END IF
+					cLine += "oTP" + oPageOptions:cName + " AS " + oPageOptions:cName
+					aClass:Add(cLine)
+					
+					cLine := e"\t"
+					cLine += "SELF:oTP" + oPageOptions:cName + " := " + oPageOptions:cName
+					cLine += "{SELF , " + /*(m - 1):ToString()*/"0" + "}"
+					aTabPages:Add(cLine)
+					cLine := e"\t"
+					cLine += "SELF:" + oDesign:cPrefix + oDesign:Name + ":AppendTab(#" + oPageOptions:cName
+//					cLine += e" , \""  + oPageOptions:cCaption + e"\" , SELF:oTP" + oPageOptions:cName
+					cLine += " , "  + Funcs.TranslateCaption(oPageOptions:cCaption , TRUE) + " , SELF:oTP" + oPageOptions:cName
+					cLine += " , " + /*(m - 1):ToString()*/"0" + ")"
+					aTabPages:Add(cLine)
+					IF oTabControl:SelectedIndex == m - 1
+						cLine := e"\t"
+						cLine += "SELF:" + oDesign:cPrefix + oDesign:Name + ":SelectTab(#" + oPageOptions:cName
+						cLine += ")"
+						cSelectedTab := cLine
+					END IF
+				NEXT
+				aTabPages:Add(cSelectedTab)
+			ENDIF
+		NEXT
+		aClass:Add("")
+//		aClass:Add(e"\t//{{%UC%}} USER CODE STARTS HERE (do NOT remove this line)")
+//		aClass:Add("")
+		
+
+
+// constructor
+		oProp := SELF:oWindowDesign:GetProperty("Pixel Positions")
+		IF oProp != NULL .AND. oProp:TextValue:ToUpper() == "YES"
+			lPixPos := TRUE
+		ENDIF
+		
+		cLine := "CONSTRUCTOR(" + SELF:oWindowDesign:cInitMethod + e")"
+		aConstructor:Add(cLine)
+		aConstructor:Add("")
+		cLine := e"\tSELF:PreInit(" + SELF:oWindowDesign:cInitMethod + e")"
+		aConstructor:Add(cLine)
+		aConstructor:Add("")
+		
+		IF SELF:HasRichEdit
+			aConstructor:Add(e"\tLoadLibrary(String2Psz(\"RICHED32.DLL\"))")
+			aConstructor:Add("")
+		ENDIF
+
+		cLine := ""
+		DO CASE
+		CASE TRUE
+			cLine := String.Format(e"\tSUPER(oParent , NIL , TRUE)" , SELF:oWindowDesign:Name)
+		CASE SELF:oWindowDesign:cFullClass:IndexOf("FORM:DATAWINDOW") == 0
+			cLine += String.Format(e"\tSUPER(oWindow , ResourceID{{\"{0}\" , _GetInst()}},iCtlID)" , SELF:oWindowDesign:Name)
+		CASE SELF:oWindowDesign:cFullClass:IndexOf("FORM:DATADIALOG") == 0
+			cLine += String.Format(e"\tSUPER(oWindow , ResourceID{{\"{0}\" , _GetInst()}},iCtlID)" , SELF:oWindowDesign:Name)
+		CASE SELF:oWindowDesign:cFullClass:IndexOf("FORM:DIALOGWINDOW") == 0
+			LOCAL cModal AS STRING
+			oProp := SELF:oWindowDesign:GetProperty("Modeless")
+			IF oProp != NULL .AND. oProp:TextValue:ToUpper() == "YES" // null in classmate
+				cModal := "FALSE"
+			ELSE
+				cModal := "TRUE"
+			ENDIF
+			cLine += String.Format(e"\tSUPER(oParent , ResourceID{{\"{0}\" , _GetInst()}} , {1})" , SELF:oWindowDesign:Name , cModal)
+		END CASE
+		aConstructor:Add(cLine)
+		
+		cStyle := oDesign:GetVOStylesString(VOStyle.Style)
+		cLine := String.Format(e"\tSELF:SetStyle({0}, TRUE)" , cStyle)
+		aConstructor:Add(cLine)
+
+		oProp := oDesign:GetProperty("Font") // not working for some reason, need to check
+//		MessageBox.Show(oProp:Name, oProp:TextValue)
+		LOCAL cFont AS STRING
+		IF oProp != NULL .AND. !oProp:IsAuto
+			cFont := oProp:CodeValue //:Substring(3)
+		ELSE
+			cFont := e", 8, \"MS Shell Dlg\""
+		ENDIF
+		cLine := String.Format(e"\tSELF:Font := Font{{{0}}}" , cFont)
+		aConstructor:Add(cLine)
+		
+		oWinRect := SELF:oWindowDesign:GetRect()
+		cLine := String.Format(e"\tSELF:Size := Dimension{{{0} , {1}}} " , oWinRect:Width , oWinRect:Height)
+		aConstructor:Add(cLine)
+
+		aConstructor:Add("")
+		FOR n := 0 UPTO aDesign:Count - 1
+			oDesign := (DesignWindowItem)aDesign[n]
+			IF oDesign:GetProperty("_GenCode"):TextValue:ToUpper() == "NO"
+				LOOP
+			ENDIF
+			IF oDesign:Deleted != 0
+				LOOP
+			END IF
+			IF oDesign:IsSubForm
+				LOOP
+			ENDIF
+
+//			IF oDesign:cPrefix == "oDC"
+			IF oDesign:lAccessAssign
+				oCode:aAccessAssign:Add(oDesign:Name)
+			ENDIF
+
+			cLine := e"\t"
+			cLine += "SELF:" + oDesign:cPrefix
+			cLine += oDesign:Name
+			cLine += " := "
+			cLine += oDesign:InheritClassName
+			cLine += "{"
+			cLine += "SELF , " + oDesign:GetVODefine(SELF:oWindowDesign:Name)
+			IF lPixPos .or. TRUE
+				oWinRect := SELF:oWindowDesign:GetRect()
+				oRect := oDesign:GetRect()
+				cLine += String.Format(", Point{{{0} , {1}}} " , oRect:Left , oWinRect:Height - oRect:Bottom)
+				cLine += String.Format(", Dimension{{{0} , {1}}} " , oRect:Width , oRect:Height)
+			ENDIF
+			cLine += ", " + oDesign:GetVOStylesString(VOStyle.Style)
 			cLine += "}"
 			aConstructor:Add(cLine)
 			SELF:GetCode(oDesign , "SELF:" + oDesign:cPrefix + oDesign:Name + ":" , aConstructor , lFontUsed)

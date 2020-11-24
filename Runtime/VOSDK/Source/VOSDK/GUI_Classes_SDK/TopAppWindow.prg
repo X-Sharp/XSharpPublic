@@ -78,7 +78,7 @@ METHOD Resize(oResizeEvent)
    SUPER:Resize(oResizeEvent)
    SELF:__ResizeChild()
    RETURN SELF
-
+/// <inheritdoc />
 METHOD ToolBarHeightChanged() 
    SELF:__ResizeChild()
    RETURN SELF

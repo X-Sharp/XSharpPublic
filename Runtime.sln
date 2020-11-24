@@ -133,7 +133,7 @@ Project("{AA6C8D78-22FF-423A-9C7C-5F2393824E04}") = "TestBed", "Tests\BinaryTest
 EndProject
 Project("{AA6C8D78-22FF-423A-9C7C-5F2393824E04}") = "AppendSpeed", "Tests\AppendSpeed\AppendSpeed.xsproj", "{E6A86E45-AE23-4422-BBDB-F84BF9EF100E}"
 EndProject
-Project("{AA6C8D78-22FF-423A-9C7C-5F2393824E04}") = "DbcTest", "Tests\DbcTest\DbcTest.xsproj", "{4BC29963-3419-4D9A-A301-BB63870381AE}"
+Project("{AA6C8D78-22FF-423A-9C7C-5F2393824E04}") = "FoxTest", "Tests\DbcTest\FoxTest.xsproj", "{4BC29963-3419-4D9A-A301-BB63870381AE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

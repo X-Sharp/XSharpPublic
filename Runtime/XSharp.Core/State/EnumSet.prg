@@ -22,7 +22,7 @@ BEGIN NAMESPACE XSharp
         MEMBER Decimals    := 3			// INT
         /// <summary>Specifies the format for the display of Date and DateTime expressions.</summary>
         MEMBER DateFormat  := 4			// STRING
-        /// <summary></summary>
+        /// <summary>Change the setting that determines how dates without century digits are interpreted.</summary>
         MEMBER Epoch       := 5			// INT
         /// <summary>Specifies a path for file searches.</summary>
         MEMBER Path        := 6			// STRING
@@ -36,13 +36,13 @@ BEGIN NAMESPACE XSharp
         MEMBER Unique      := 10		// LOGIC
         /// <summary>Specifies whether Visual FoxPro processes records marked for deletion and whether they are available for use with other commands.</summary>
         MEMBER Deleted     := 11		// LOGIC
-        /// <summary></summary>
+        /// <summary>--- not used ---</summary>
         MEMBER Cancel      := 12		// LOGIC
-        /// <summary></summary>
+        /// <summary>--- not used ---</summary>
         MEMBER @@Debug     := 13	
-        /// <summary></summary>
+        /// <summary>--- not used ---</summary>
         MEMBER Typeahead   := 14		// INT
-        /// <summary></summary>
+        /// <summary>Sets the colors used on the console output</summary>
         MEMBER Color       := 15		// STRING
         /// <summary>Determines whether the insertion point is displayed when Visual FoxPro waits for input.</summary>
         MEMBER Cursor      := 16		// INT
@@ -67,63 +67,61 @@ BEGIN NAMESPACE XSharp
         MEMBER Confirm     := 27		// LOGIC
         /// <summary>Determines whether pressing the ESC key interrupts program and command execution.</summary>
         MEMBER Escape      := 28		// LOGIC
-        /// <summary></summary>
+        /// <summary>--- not used ---</summary>
         MEMBER Insert      := 29		// LOGIC
-        /// <summary></summary>
+        /// <summary>--- not used ---</summary>
         MEMBER Exit        := 30		// LOGIC
-        /// <summary>Determines whether or not FoxPro uses the enhanced screen color attribute for the display of editing fields.</summary>
+        /// <summary>--- not used ---</summary>
         MEMBER Intensity   := 31		// LOGIC
-        /// <summary></summary>
+        /// <summary>--- not used ---</summary>
         MEMBER Scoreboard  := 32		// LOGIC
         /// <summary></summary>
         MEMBER Delimiters  := 33		// STRING
-        /// <summary></summary>
-        MEMBER DelimChars  := 34		// STRING   // note: used for @ Say .. GET in Clipper
-        /// <summary></summary>
+        /// <summary>--- not used ---</summary>
+        MEMBER DelimChars  := 34		// STRING   
+        /// <summary>--- not used ---</summary>
         MEMBER Wrap        := 35		// LOGIC
-        /// <summary></summary>
+        /// <summary>--- not used ---</summary>
         MEMBER Message     := 36		// INT
-        /// <summary></summary>
+        /// <summary>--- not used ---</summary>
         MEMBER Mcenter     := 37		// LOGIC
-        /// <summary></summary>
+        /// <summary>--- not used ---</summary>
         MEMBER ScrollBreak := 38		// LOGIC
-        /// <summary></summary>
+        /// <summary>--- not used ---</summary>
         MEMBER Errorlog    := 39		// LOGIC
         /// <summary></summary>
-
-        /// <summary></summary>
         MEMBER Neterr      	:= 40	// LOGIC
-        /// <summary></summary>
+        /// <summary>The setting that determines the number of digits that will be shown to the left of the decimal point when a number is displayed.</summary>
         MEMBER Digits      	:= 41	// INT   
-        /// <summary></summary>
+        /// <summary>A string representing the morning extension for time strings in 12-hour format.</summary>
         MEMBER AmExt		:= 42	// STRING
-        /// <summary></summary>
+        /// <summary>A string representing the evening extension for time strings in 12-hour format.</summary>
         MEMBER PmExt	    := 43	// STRING
-        /// <summary></summary>
+        /// <summary>The setting that determines whether database files are created using ANSI or OEM format and whether certain text file operations convert between the two character sets.</summary>
         MEMBER Ansi      	:= 44	// LOGIC 
         /// <summary></summary>
         MEMBER Yield     	:= 45	// LOGIC 
-        /// <summary></summary>
+        /// <summary>The number of times certain lock operations are retried</summary>
         MEMBER Locktries   	:= 46	// INT   
-        /// <summary></summary>
+        /// <summary>The setting that determines whether time strings are in 12-hour or 24-hour format.</summary>
         MEMBER AmPm		    := 47	// LOGIC
-        /// <summary>Determines whether Microsoft Visual FoxPro displays the century portion of date expressions.</summary>
+        /// <summary>Determines whether the century portion of date expressions is displaid.</summary>
         MEMBER Century	    := 48	// LOGIC
-        /// <summary></summary>
+        /// <summary>The setting that fixes the number of digits used to display numeric output.</summary>
         MEMBER DigitFixed  	:= 49	// LOGIC
         /// <summary>Determines the decimal point character used in the display of numeric and currency expressions.</summary>
         MEMBER DecimalSep  	:= 50	// DWORD
         /// <summary>Specifies the character that separates each group of three digits to the left of the decimal point when displaying a formatted numeric or currency value. </summary>
         MEMBER ThousandSep 	:= 51	// DWORD
-        /// <summary></summary>
+        /// <summary>The current separation character used in time strings.</summary>
         MEMBER Timesep     	:= 52	// DWORD
-        /// <summary></summary>
+        /// <summary>The setting that determines whether assignments are made to fields or to memory variables.</summary>
         MEMBER Fieldstore  	:= 53   // Logic
-        /// <summary></summary>
+        /// <summary>The setting that controls if numbers are displaid in scientific notation.</summary>
         MEMBER Science     	:= 54	// LOGIC
         /// <summary></summary>
         MEMBER Cpu			:= 55	// INT
-        /// <summary></summary>
+        /// <summary>The setting that determines the point at which 2 floating point numbers would be considered equal even though they are different.</summary>
         MEMBER Floatdelta	:= 56	// System.Double
         /// <summary></summary>
         MEMBER Math			:= 57	// INT
@@ -139,32 +137,32 @@ BEGIN NAMESPACE XSharp
         MEMBER EpochCent     := 70		// Numeric
         /// <summary>Determines how Microsoft Visual FoxPro interprets dates that specify only 2 digit years.</summary>
         MEMBER EpochYear     := 71		// Numeric
-        /// <summary></summary>
+        /// <summary>The current dateformat in .Net format.</summary>
         MEMBER DateFormatNet := 72		// String
-        /// <summary></summary>
+        /// <summary>The empty representation of the current date format.</summary>
         MEMBER DateFormatEmpty := 73    // String
         // 74 - 75 unused
-        /// <summary></summary>
+        /// <summary>The last method called with a late bound send operator that was not found in the object that was used.</summary>
         MEMBER NoMethod		:= 76	// STRING
         // 77 unused 
-        /// <summary></summary>
+        /// <summary>The current path setting as an array of strings.</summary>
         MEMBER Patharray    := 78	// String[]
         /// <summary>Determines the name of the current Nation DLL.</summary>
         MEMBER NatDLL		:= 79   // string
         /// <summary>Determines the collation array read from the current Nation DLL</summary>
         MEMBER CollationTable := 80  // byte[]
-        /// <summary></summary>
+        /// <summary>--- not used ---</summary>
         MEMBER ErrorLevel   := 81  // DWORD
-        /// <summary></summary>
+        /// <summary>The codeblock set for the current error handler.</summary>
         MEMBER ErrorBlock   := 82  // Codeblock
-        /// <summary></summary>
+        /// <summary>The last error that occurred for a RDD operation.</summary>
         MEMBER LastRddError := 84   // Exception object
         // 85 unused
-        /// <summary></summary>
+        /// <summary>The last file found with File()</summary>
         MEMBER LastFound    := 86   // Last file found with File()
-        /// <summary></summary>
+        /// <summary>The last File error code</summary>
         MEMBER FileError    := 87   // Last File error code
-        /// <summary></summary>
+        /// <summary>The last File exception</summary>
         MEMBER FileException:= 88   // Last File exception
 
         /// <summary>Determines the name of the current Delim RDD.</summary>

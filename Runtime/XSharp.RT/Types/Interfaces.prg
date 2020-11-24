@@ -60,13 +60,13 @@ BEGIN NAMESPACE XSharp
         /// <param name="isCodeblock">will be set to TRUE when the string was a real codeblock (with {|..| }).</param>
         /// <param name="addsMemVars">will be set to TRUE when the macro contains code that may result in adding new MemVars).</param>
         /// <returns>A compiled codeblock</returns>
-        /// <seealso cref="T:XSharp.XSharp._Codeblock"/>
+        /// <seealso cref="T:XSharp._Codeblock"/>
     	PUBLIC METHOD CompileCodeblock(macro AS STRING , lAllowSingleQuotes AS LOGIC, module AS System.Reflection.Module) AS XSharp._Codeblock
 
         /// <summary>Compile a string into a runtime codeblock.</summary>
 	    /// <param name="macro">String to compile</param>
 	    /// <returns>A compiled codeblock</returns>
-	    /// <seealso cref="T:XSharp.XSharp._Codeblock"/>
+	    /// <seealso cref="T:XSharp._Codeblock"/>
         /// <remarks>This overload of the CompileCodeBlock assumes that single quotes are allowed, and that no memvars are used.</remarks>
         PUBLIC METHOD CompileCodeblock(macro AS STRING ) AS XSharp._Codeblock
        

@@ -3222,7 +3222,7 @@
     </example>
     <seealso cref='O:XSharp.RT.Functions.BLOBRootGet'>BLOBRootGet</seealso>
     <seealso cref='O:XSharp.RT.Functions.BLOBRootPut'>BLOBRootPut</seealso>
-    <seealso cref='O:XSharp.RT.Functions.BLOBRootUnLock'>BLOBRootUnLock</seealso>
+    <seealso cref='O:XSharp.RT.Functions.BLOBRootUnlock'>BLOBRootUnLock</seealso>
     <seealso cref='O:XSharp.RT.Functions.DbRLock'>DBRLock</seealso>
     <seealso cref='O:XSharp.RT.Functions.DbUseArea'>DBUseArea</seealso>
   </blobrootlock>
@@ -8341,9 +8341,9 @@
       </code>
       For a more complete example of DecodeBase64(), including how to parse an e-mail message, see the Mime Decoding sample application (CAVOxx\SAMPLES\INTERNET\MIME\MDECODE.AEF).
     </example>
-    <seealso>CLASS CEmail</seealso>
-    <seealso>CLASS CMailAbstract</seealso>
-    <seealso>CLASS CSmtp</seealso>
+    <seealso cref="T:VO.CEmail">CLASS CEmail</seealso>
+    <seealso cref="T:VO.CMailAbstract">CLASS CMailAbstract</seealso>
+    <seealso cref="T:VO.CSmtp">CLASS CSmtp</seealso>
     <seealso cref='O:XSharp.Core.Functions.EncodeBase64'>EncodeBase64</seealso>
   </decodebase64>
   <default>
@@ -8400,7 +8400,7 @@
         &#0009;RETURN TRUE
       </code>
     </example>
-    <seealso cref='O:XSharp.RT.Functions.DEFAULT'>DEFAULT</seealso>
+    <seealso cref='O:XSharp.RT.Functions.Default'>Default</seealso>
     <seealso cref='O:XSharp.RT.Functions.EmptyUsual'>EmptyUsual</seealso>
     <seealso cref='O:XSharp.RT.Functions.EnforceNumeric'>EnforceNumeric</seealso>
     <seealso cref='O:XSharp.RT.Functions.EnforceType'>EnforceType</seealso>
@@ -9291,7 +9291,7 @@
         &#0009;? Empty(EmptyUsual(SYMBOL))  &#0009;// TRUE
       </code>
     </example>
-    <seealso cref='O:XSharp.RT.Functions.DEFAULT'>Default</seealso>
+    <seealso cref='O:XSharp.RT.Functions.Default'>Default</seealso>
     <seealso cref='O:XSharp.RT.Functions.Empty'>Empty</seealso>
     <seealso cref='O:XSharp.RT.Functions.EnforceNumeric'>EnforceNumeric</seealso>
     <seealso cref='O:XSharp.RT.Functions.EnforceType'>EnforceType</seealso>
@@ -9387,7 +9387,7 @@
         &#0009;Default(@nTwo, 100)&#0009;&#0009;// Assigns 100 since NIL
       </code>
     </example>
-    <seealso cref='O:XSharp.RT.Functions.DEFAULT'>Default</seealso>
+    <seealso cref='O:XSharp.RT.Functions.Default'>Default</seealso>
     <seealso cref='O:XSharp.RT.Functions.EmptyUsual'>EmptyUsual</seealso>
     <seealso cref='O:XSharp.RT.Functions.EnforceType'>EnforceType</seealso>
     <seealso cref='O:XSharp.RT.Functions.IsNil'>IsNil</seealso>
@@ -9424,7 +9424,7 @@
         &#0009;EnforceType(@nOne, SHORTINT)&#0009;// Assigns 0 if NIL
       </code>
     </example>
-    <seealso cref='O:XSharp.RT.Functions.DEFAULT'>Default</seealso>
+    <seealso cref='O:XSharp.RT.Functions.Default'>Default</seealso>
     <seealso cref='O:XSharp.RT.Functions.EmptyUsual'>EmptyUsual</seealso>
     <seealso cref='O:XSharp.RT.Functions.EnforceNumeric'>EnforceNumeric</seealso>
     <seealso cref='O:XSharp.RT.Functions.IsArray'>IsArray</seealso>
@@ -9655,7 +9655,7 @@
     <example>
     </example>
     <seealso cref='O:XSharp.Core.Functions.DosError'>DOSError</seealso>
-    <seealso>QUIT</seealso>
+    <seealso cref='O:XSharp.Core.Functions._Quit'>QUIT</seealso>
   </errorlevel>
   <errornew>
     <summary>
@@ -10001,7 +10001,6 @@
         // 33 is FC_READONLY + FC_ARCHIVED
       </code>
     </example>
-    <seealso>_Or</seealso>
     <seealso cref='O:XSharp.Core.Functions.FDate'>FDate</seealso>
     <seealso cref='O:XSharp.Core.Functions.FFCount'>FFCount</seealso>
     <seealso cref='O:XSharp.Core.Functions.FFirst'>FFirst</seealso>
@@ -10128,12 +10127,17 @@
     <remarks>
       FCopy() is the functional form of the COPY FILE command.
     </remarks>
-    <example>
-      This example copies a file from the default drive and directory into MYDIR directory on the D drive:
-      <code language="X#">? FCopy("thisfile.txt",; "d:\mydir\thisfile.txt")</code>
-    </example>
-    <seealso>COPY FILE</seealso>
-    <seealso cref='O:XSharp.Core.Functions.DiskSpace'>DiskSpace</seealso>
+      <example>
+          This example copies a file from the default drive and directory into MYDIR directory on the D drive:
+          <code language="X#">? FCopy("thisfile.txt",; "d:\mydir\thisfile.txt")</code>
+      </example>
+      <seealso >COPY FILE</seealso>
+    <!--<seealso href="XSharp.chm::/command_copy_file.html" >COPY FILE</seealso>
+    <seealso href="ms-its:XSharp.chm::/command_copy_file.html" >COPY FILE</seealso>
+    <seealso href="MSITStore:XSharp.chm::/command_copy_file.html" >COPY FILE</seealso>
+    <seealso href="mk:@ms-its:XSharp.chm::/command_copy_file.html" >COPY FILE</seealso>
+    <seealso href="mk:MSITStore::XSharp.chm::/command_copy_file.html" >COPY FILE</seealso>-->
+      <seealso cref='O:XSharp.Core.Functions.DiskSpace'>DiskSpace</seealso>
     <seealso cref='O:XSharp.Core.Functions.SetDefault'>SetDefault</seealso>
     <seealso cref='O:XSharp.Core.Functions.SetPath'>SetPath</seealso>
   </fcopy>
@@ -13830,7 +13834,7 @@
         ENDCASE
       </code>
     </example>
-    <seealso cref='O:XSharp.RT.Functions.DEFAULT'>Default</seealso>
+    <seealso cref='O:XSharp.RT.Functions.Default'>Default</seealso>
     <seealso cref='O:XSharp.RT.Functions.EnforceType'>EnforceType</seealso>
     <seealso cref='O:XSharp.RT.Functions.IsClass'>IsClass</seealso>
     <seealso cref='O:XSharp.RT.Functions.IsCodeBlock'>IsCodeBlock</seealso>
@@ -14021,7 +14025,7 @@
         ENDIF
       </code>
     </example>
-    <seealso cref='O:XSharp.RT.Functions.DEFAULT'>Default</seealso>
+    <seealso cref='O:XSharp.RT.Functions.Default'>Default</seealso>
     <seealso cref='O:XSharp.RT.Functions.EnforceType'>EnforceType</seealso>
     <seealso cref='O:XSharp.RT.Functions.IsArray'>IsArray</seealso>
     <seealso cref='O:XSharp.RT.Functions.IsFloat'>IsFloat</seealso>
@@ -14083,7 +14087,7 @@
         ? Str(uValue, 10, nDecimal)
       </code>
     </example>
-    <seealso cref='O:XSharp.RT.Functions.DEFAULT'>Default</seealso>
+    <seealso cref='O:XSharp.RT.Functions.Default'>Default</seealso>
     <seealso cref='O:XSharp.RT.Functions.EnforceType'>EnforceType</seealso>
     <seealso cref='O:XSharp.RT.Functions.IsArray'>IsArray</seealso>
     <seealso cref='O:XSharp.RT.Functions.IsDate'>IsDate</seealso>
@@ -14212,7 +14216,7 @@
         ENDIF
       </code>
     </example>
-    <seealso cref='O:XSharp.RT.Functions.DEFAULT'>Default</seealso>
+    <seealso cref='O:XSharp.RT.Functions.Default'>Default</seealso>
     <seealso cref='O:XSharp.RT.Functions.EnforceType'>EnforceType</seealso>
     <seealso cref='O:XSharp.RT.Functions.IsArray'>IsArray</seealso>
     <seealso cref='O:XSharp.RT.Functions.IsDate'>IsDate</seealso>
@@ -14247,7 +14251,7 @@
         ENDIF
       </code>
     </example>
-    <seealso cref='O:XSharp.RT.Functions.DEFAULT'>Default</seealso>
+    <seealso cref='O:XSharp.RT.Functions.Default'>Default</seealso>
     <seealso cref='O:XSharp.RT.Functions.EnforceType'>EnforceType</seealso>
     <seealso cref='O:XSharp.RT.Functions.IsArray'>IsArray</seealso>
     <seealso cref='O:XSharp.RT.Functions.IsDate'>IsDate</seealso>
@@ -14447,7 +14451,7 @@
         &#0009;ENDIF
       </code>
     </example>
-    <seealso cref='O:XSharp.RT.Functions.DEFAULT'>Default</seealso>
+    <seealso cref='O:XSharp.RT.Functions.Default'>Default</seealso>
     <seealso cref='O:XSharp.RT.Functions.EnforceNumeric'>EnforceNumeric</seealso>
     <seealso cref='O:XSharp.RT.Functions.EnforceType'>EnforceType</seealso>
     <seealso cref='O:XSharp.RT.Functions.IsArray'>IsArray</seealso>
@@ -14485,7 +14489,7 @@
         ENDIF
       </code>
     </example>
-    <seealso cref='O:XSharp.RT.Functions.DEFAULT'>Default</seealso>
+    <seealso cref='O:XSharp.RT.Functions.Default'>Default</seealso>
     <seealso cref='O:XSharp.RT.Functions.EnforceType'>EnforceType</seealso>
     <seealso cref='O:XSharp.RT.Functions.IsArray'>IsArray</seealso>
     <seealso cref='O:XSharp.RT.Functions.IsDate'>IsDate</seealso>
@@ -14529,7 +14533,7 @@
         &#0009;RETURN lSuccess
       </code>
     </example>
-    <seealso cref='O:XSharp.RT.Functions.DEFAULT'>Default</seealso>
+    <seealso cref='O:XSharp.RT.Functions.Default'>Default</seealso>
     <seealso cref='O:XSharp.RT.Functions.EnforceType'>EnforceType</seealso>
     <seealso cref='O:XSharp.RT.Functions.IsArray'>IsArray</seealso>
     <seealso cref='O:XSharp.RT.Functions.IsClass'>IsClass</seealso>
@@ -14564,7 +14568,7 @@
         ENDIF
       </code>
     </example>
-    <seealso cref='O:XSharp.RT.Functions.DEFAULT'>Default</seealso>
+    <seealso cref='O:XSharp.RT.Functions.Default'>Default</seealso>
     <seealso cref='O:XSharp.RT.Functions.EnforceType'>EnforceType</seealso>
     <seealso cref='O:XSharp.RT.Functions.IsArray'>IsArray</seealso>
     <seealso cref='O:XSharp.RT.Functions.IsDate'>IsDate</seealso>
@@ -14627,7 +14631,7 @@
       </code>
     </example>
     <seealso cref='O:XSharp.RT.Functions.AsString'>AsString</seealso>
-    <seealso cref='O:XSharp.RT.Functions.DEFAULT'>Default</seealso>
+    <seealso cref='O:XSharp.RT.Functions.Default'>Default</seealso>
     <seealso cref='O:XSharp.RT.Functions.EnforceType'>EnforceType</seealso>
     <seealso cref='O:XSharp.RT.Functions.IsArray'>IsArray</seealso>
     <seealso cref='O:XSharp.RT.Functions.IsDate'>IsDate</seealso>
@@ -14662,7 +14666,7 @@
       </code>
     </example>
     <seealso cref='O:XSharp.RT.Functions.AsSymbol'>AsSymbol</seealso>
-    <seealso cref='O:XSharp.RT.Functions.DEFAULT'>Default</seealso>
+    <seealso cref='O:XSharp.RT.Functions.Default'>Default</seealso>
     <seealso cref='O:XSharp.RT.Functions.EnforceType'>EnforceType</seealso>
     <seealso cref='O:XSharp.RT.Functions.IsArray'>IsArray</seealso>
     <seealso cref='O:XSharp.RT.Functions.IsClass'>IsClass</seealso>
@@ -19761,7 +19765,7 @@
         &#0009;RETURN (NetErr())
       </code>
     </example>
-    <seealso cref='O:XSharp.RT.Functions.DEFAULT'>Default</seealso>
+    <seealso cref='O:XSharp.RT.Functions.Default'>Default</seealso>
     <seealso cref='O:XSharp.RT.Functions.IsNil'>IsNil</seealso>
     <seealso cref='O:XSharp.RT.Functions.EnforceNumeric'>EnforceNumeric</seealso>
     <seealso cref='O:XSharp.RT.Functions.EnforceType'>EnforceType</seealso>
@@ -22261,6 +22265,12 @@
     <seealso cref='O:XSharp.Core.Functions.SetDateCountry'>SetDateCountry</seealso>
     <seealso cref='O:XSharp.Core.Functions.SetDateFormat'>SetDateFormat</seealso>
     <seealso cref='O:XSharp.RT.Functions.Today'>Today</seealso>
+    <seealso cref="F:XSharp.Set.Epoch" />
+    <seealso cref="F:XSharp.Set.EpochYear" />
+    <seealso cref="F:XSharp.Set.EpochCent" />
+    <seealso cref="P:XSharp.RuntimeState.EpochCent" />
+    <seealso cref="P:XSharp.RuntimeState.EpochYear" />
+    <seealso cref="P:XSharp.RuntimeState.Epoch" />
   </setepoch>
   <seterrorlog>
     <summary>
@@ -27671,12 +27681,12 @@
     <param name="scope">Scope information for the current workarea</param>
       <returns>TRUE if successful; otherwise, FALSE.</returns>
     <remarks>Please note that this scope information is NOT the order scope, but a class that stores information about LOCATE operations and other workarea operations.</remarks>
-    <seealso cref="T:XSharp.RDD.Support.DBScopeInfo"/>
+    <seealso cref="T:XSharp.RDD.Support.DbScopeInfo"/>
   </vodbsetscope>
     <vodbgetscope>
       <summary>Gets the current locate condition.</summary>
 	<returns>Scope information for the current workarea.</returns>
 	<remarks>Please note that this scope information is NOT the order scope, but a class that stores information about LOCATE operations and other workarea operations.</remarks>
-	<seealso cref="T:XSharp.RDD.Support.DBScopeInfo"/>
+	<seealso cref="T:XSharp.RDD.Support.DbScopeInfo"/>
    </vodbgetscope>
 </Runtimefunctions>

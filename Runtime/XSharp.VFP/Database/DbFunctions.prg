@@ -66,7 +66,7 @@ FUNCTION DbUsed( cDatabaseName AS STRING) AS LOGIC
 /// <include file="VFPDocs.xml" path="Runtimefunctions/dbalias/*" />
 /// <seealso cref="O:XSharp.VFP.Functions.DbUsed" />
 /// <seealso cref="O:XSharp.VFP.Functions.Dbc" />
-FUNCTION DBAlias () AS STRING
+FUNCTION DbAlias () AS STRING
     LOCAL oDb := Dbc.GetCurrent() as DbcDatabase
     IF oDb != NULL
         RETURN oDb:Name

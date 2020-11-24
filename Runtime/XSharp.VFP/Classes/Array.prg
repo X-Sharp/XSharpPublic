@@ -293,7 +293,7 @@ BEGIN NAMESPACE XSharp
             END GET
         END PROPERTY
 
-        // <summary>Overridden method to disable Adding to a FoxArray </summary>
+        /// <exclude />
 		PUBLIC OVERRIDE METHOD Add(u AS USUAL) AS VOID
             var err     := Error{NotSupportedException{"The FoxPro array type does not support the Add functionality"}}
             throw err            

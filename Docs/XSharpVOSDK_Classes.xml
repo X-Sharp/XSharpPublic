@@ -37522,8 +37522,8 @@
         If SQLConnectErrorMsg() is set to TRUE, which is the default, a connection error message is displayed in a message box.
       </remarks>
       <example></example>
-      <seealso cref="O:XSharp.VO.SDK.SQLConnection.Connect">SQLConnection:Connect</seealso>
-      <seealso cref="O:XSharp.VO.SDK.SQLConnection.DriverConnect">SQLConnection:DriverConnect</seealso>
+      <seealso cref="O:XSharp.VO.SQLConnection.Connect">SQLConnection:Connect</seealso>
+      <seealso cref="O:XSharp.VO.SQLConnection.DriverConnect">SQLConnection:DriverConnect</seealso>
     </member>
     <member name="M:XSharp_VOSQLClasses.Functions.SqlDeleteWhiteSpace(System.String)">
       <summary>**Missing documentation **</summary>

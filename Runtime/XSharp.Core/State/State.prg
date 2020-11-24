@@ -194,8 +194,8 @@ CLASS XSharp.RuntimeState
 
 	/// <summary>The last file found with File(). This is the name that FPathName() returns.</summary>
     /// <include file="CoreComments.xml" path="Comments/PerThread/*" />
-    /// <seealso cref="M:XSharp.Core.Functions.File(System.String)" />
-    /// <seealso cref="M:XSharp.Core.Functions.FPathName" />
+    /// <seealso cref="O:XSharp.Core.Functions.File" />
+    /// <seealso cref="O:XSharp.Core.Functions.FPathName" />
     /// <seealso cref="F:XSharp.Set.LastFound" />
     STATIC PROPERTY LastFound AS STRING ;
         GET GetValue<STRING>(Set.LastFound);
@@ -203,8 +203,7 @@ CLASS XSharp.RuntimeState
 
 	/// <summary>The last File IO error number</summary>
     /// <include file="CoreComments.xml" path="Comments/PerThread/*" />
-    /// <seealso cref="M:XSharp.Core.Functions.FError" />
-    /// <seealso cref="M:XSharp.Core.Functions.FError(System.UInt32)" />
+    /// <seealso cref="O:XSharp.Core.Functions.FError" />
     /// <seealso cref="F:XSharp.Set.FileError" />
     STATIC PROPERTY FileError AS DWORD ;
         GET GetValue<DWORD>(Set.FileError);
@@ -212,7 +211,7 @@ CLASS XSharp.RuntimeState
 
 	/// <summary>The last file IO Exception</summary>
     /// <include file="CoreComments.xml" path="Comments/PerThread/*" />
-    /// <seealso cref="M:XSharp.Core.Functions.FException" />
+    /// <seealso cref="O:XSharp.Core.Functions.FException" />
     /// <seealso cref="F:XSharp.Set.FileException" />
     STATIC PROPERTY FileException AS Exception ;
         GET GetValue<Exception>(Set.FileException);
@@ -220,8 +219,8 @@ CLASS XSharp.RuntimeState
 
 	/// <summary>The current Alternate setting.</summary>
     /// <include file="CoreComments.xml" path="Comments/PerThread/*" />
-    /// <seealso cref="M:XSharp.RT.Functions.SetAlternate" />
-    /// <seealso cref="M:XSharp.RT.Functions.SetAlternate(System.Boolean)" />
+    /// <seealso cref="O:XSharp.RT.Functions.SetAlternate" />
+    /// <seealso cref="O:XSharp.RT.Functions.SetAltFile" />
     /// <seealso cref="F:XSharp.Set.Alternate" />
    STATIC PROPERTY Alternate AS LOGIC ;
         GET GetValue<LOGIC>(Set.Alternate);
@@ -229,8 +228,8 @@ CLASS XSharp.RuntimeState
 
     /// <summary>The current AltFile setting.</summary>
     /// <include file="CoreComments.xml" path="Comments/PerThread/*" />
-    /// <seealso cref="M:XSharp.RT.Functions.SetAltFile" />
-    /// <seealso cref="M:XSharp.RT.Functions.SetAltFile(System.String)" />
+    /// <seealso cref="O:XSharp.RT.Functions.SetAlternate" />
+    /// <seealso cref="O:XSharp.RT.Functions.SetAltFile" />
     /// <seealso cref="F:XSharp.Set.AltFile" />
    STATIC PROPERTY AltFile AS STRING ;
         GET GetValue<STRING>(Set.AltFile);
@@ -239,8 +238,7 @@ CLASS XSharp.RuntimeState
 
 	/// <summary>The current ANSI setting</summary>
     /// <include file="CoreComments.xml" path="Comments/PerThread/*" />
-    /// <seealso cref="M:XSharp.Core.Functions.SetAnsi" />
-    /// <seealso cref="M:XSharp.Core.Functions.SetAnsi(System.Boolean)" />
+    /// <seealso cref="O:XSharp.Core.Functions.SetAnsi" />
     /// <seealso cref="F:XSharp.Set.Ansi" />
     STATIC PROPERTY Ansi AS LOGIC ;
         GET GetValue<LOGIC>(Set.Ansi);
@@ -276,8 +274,7 @@ CLASS XSharp.RuntimeState
 
 	/// <summary>The current Compatible setting.</summary>
     /// <include file="CoreComments.xml" path="Comments/PerThread/*" />
-    /// <seealso cref="M:XSharp.Core.Functions.SetCompatible" />
-    /// <seealso cref="M:XSharp.Core.Functions.SetCompatible(System.Boolean)" />
+    /// <seealso cref="O:XSharp.Core.Functions.SetCompatible" />
     /// <seealso cref="F:XSharp.Set.Compatible" />
    STATIC PROPERTY Compatible AS LOGIC ;
         GET GetValue<LOGIC>(Set.Compatible);
@@ -285,8 +282,7 @@ CLASS XSharp.RuntimeState
 
 	/// <summary>The current Console setting.</summary>
     /// <include file="CoreComments.xml" path="Comments/PerThread/*" />
-    /// <seealso cref="M:XSharp.RT.Functions.SetConsole" />
-    /// <seealso cref="M:XSharp.RT.Functions.SetConsole(System.Boolean)" />
+    /// <seealso cref="O:XSharp.RT.Functions.SetConsole" />
     /// <seealso cref="F:XSharp.Set.Console" />
    STATIC PROPERTY Console AS LOGIC ;
         GET GetValue<LOGIC>(Set.Console);
@@ -294,8 +290,7 @@ CLASS XSharp.RuntimeState
 
 	/// <summary>The current Century setting (used in DATE &lt;-&gt; STRING conversions).</summary>
     /// <include file="CoreComments.xml" path="Comments/PerThread/*" />
-    /// <seealso cref="M:XSharp.Core.Functions.SetCentury" />
-    /// <seealso cref="M:XSharp.Core.Functions.SetCentury(System.Boolean)" />
+    /// <seealso cref="O:XSharp.Core.Functions.SetCentury" />
     /// <seealso cref="F:XSharp.Set.Century" />
    STATIC PROPERTY Century AS LOGIC ;
         GET GetValue<LOGIC>(Set.Century);
@@ -319,8 +314,7 @@ CLASS XSharp.RuntimeState
 	/// <summary>The current DateCountry setting mode (used in DATE &lt;-&gt; STRING conversions).</summary>
     /// <seealso cref="P:XSharp.RuntimeState.DateFormat" />
     /// <include file="CoreComments.xml" path="Comments/PerThread/*" />
-    /// <seealso cref="M:XSharp.Core.Functions.SetDateCountry" />
-    /// <seealso cref="M:XSharp.Core.Functions.SetDateCountry(System.UInt32)" />
+    /// <seealso cref="O:XSharp.Core.Functions.SetDateCountry" />
     /// <seealso cref="F:XSharp.Set.DateCountry" />
    STATIC PROPERTY DateCountry AS DWORD ;
         GET (DWORD) GetValue<XSharp.DateCountry>(Set.DateCountry);
@@ -333,8 +327,8 @@ CLASS XSharp.RuntimeState
     /// <note>This value is 'per thread' </note></remarks>
     /// <seealso cref="P:XSharp.RuntimeState.DateCountry" />
     /// <include file="CoreComments.xml" path="Comments/PerThread/*" />
-    /// <seealso cref="M:XSharp.Core.Functions.GetDateFormat" />
-    /// <seealso cref="M:XSharp.Core.Functions.SetDateFormat(System.String)" />
+    /// <seealso cref="O:XSharp.Core.Functions.GetDateFormat" />
+    /// <seealso cref="O:XSharp.Core.Functions.SetDateFormat" />
     /// <seealso cref="F:XSharp.Set.DateFormat" />
     STATIC PROPERTY DateFormat AS STRING ;
         GET GetValue<STRING>(Set.DateFormat);
@@ -347,8 +341,7 @@ CLASS XSharp.RuntimeState
 
 	/// <summary>The default number of decimals for new FLOAT values that are created without explicit decimals.</summary>
     /// <include file="CoreComments.xml" path="Comments/PerThread/*" />
-    /// <seealso cref="M:XSharp.Core.Functions.SetDecimal" />
-    /// <seealso cref="M:XSharp.Core.Functions.SetDecimal(System.UInt32)" />
+    /// <seealso cref="O:XSharp.Core.Functions.SetDecimal" />
     /// <seealso cref="F:XSharp.Set.Decimals" />
     STATIC PROPERTY Decimals AS DWORD ;
         GET GetValue<DWORD>(Set.Decimals);
@@ -358,8 +351,7 @@ CLASS XSharp.RuntimeState
 	/// <summary>The default number of decimals for new FLOAT values that are created without explicit decimals.</summary>
     /// <seealso cref="P:XSharp.RuntimeState.ThousandSep" />
     /// <include file="CoreComments.xml" path="Comments/PerThread/*" />
-    /// <seealso cref="M:XSharp.Core.Functions.SetDecimalSep" />
-    /// <seealso cref="M:XSharp.Core.Functions.SetDecimalSep(System.UInt32)" />
+    /// <seealso cref="O:XSharp.Core.Functions.SetDecimalSep" />
     /// <seealso cref="F:XSharp.Set.DecimalSep" />
     STATIC PROPERTY DecimalSep AS DWORD ;
         GET GetValue<DWORD>(Set.DecimalSep);
@@ -367,7 +359,7 @@ CLASS XSharp.RuntimeState
 
 	/// <summary>The default RDD.</summary>
     /// <remarks><note>This value is 'per thread' </note></remarks>
-    /// <seealso cref="M:XSharp.Core.Functions.SetDefault" />
+    /// <seealso cref="O:XSharp.Core.Functions.RDDSetDefault" />
     STATIC PROPERTY DefaultRDD AS STRING ;
         GET GetValue<STRING>(Set.DefaultRdd);
         SET SetValue<STRING>(Set.DefaultRdd, value)
@@ -375,8 +367,7 @@ CLASS XSharp.RuntimeState
 
 	/// <summary>RDD Deleted Flag that determines whether to ignore or include records that are marked for deletion.</summary>
     /// <include file="CoreComments.xml" path="Comments/PerThread/*" />
-    /// <seealso cref="M:XSharp.Core.Functions.SetDeleted" />
-    /// <seealso cref="M:XSharp.Core.Functions.SetDeleted(System.Boolean)" />
+    /// <seealso cref="O:XSharp.Core.Functions.SetDeleted" />
     /// <seealso cref="F:XSharp.Set.Deleted" />
     STATIC PROPERTY Deleted AS LOGIC ;
         GET GetValue<LOGIC>(Set.Deleted);
@@ -402,8 +393,7 @@ CLASS XSharp.RuntimeState
 
 	/// <summary>The default number of digits for new FLOAT values that are created without explicit decimals</summary>
     /// <include file="CoreComments.xml" path="Comments/PerThread/*" />
-    /// <seealso cref="M:XSharp.Core.Functions.SetDigit" />
-    /// <seealso cref="M:XSharp.Core.Functions.SetDigit(System.UInt32)" />
+    /// <seealso cref="O:XSharp.Core.Functions.SetDigit" />
     /// <seealso cref="F:XSharp.Set.Digits" />
     STATIC PROPERTY Digits AS DWORD ;
         GET GetValue<DWORD>(Set.Digits);
@@ -411,8 +401,7 @@ CLASS XSharp.RuntimeState
 
     /// <summary>Logical setting that fixes the number of digits used to display numeric output.</summary>
     /// <include file="CoreComments.xml" path="Comments/PerThread/*" />
-    /// <seealso cref="M:XSharp.Core.Functions.SetDigitFixed" />
-    /// <seealso cref="M:XSharp.Core.Functions.SetDigitFixed(System.Boolean)" />
+    /// <seealso cref="O:XSharp.Core.Functions.SetDigitFixed" />
     /// <seealso cref="F:XSharp.Set.DigitFixed" />
     STATIC PROPERTY DigitsFixed AS LOGIC ;
         GET GetValue<LOGIC>(Set.DigitFixed);
@@ -452,8 +441,7 @@ CLASS XSharp.RuntimeState
 
 	/// <summary>Date Epoch value that determines how dates without century digits are interpreted.</summary>
     /// <include file="CoreComments.xml" path="Comments/PerThread/*" />
-    /// <seealso cref="M:XSharp.Core.Functions.SetEpoch" />
-    /// <seealso cref="M:XSharp.Core.Functions.SetEpoch(System.UInt32)" />
+    /// <seealso cref="O:XSharp.Core.Functions.SetEpoch" />
     /// <seealso cref="F:XSharp.Set.Epoch" />
 
     STATIC PROPERTY Epoch AS DWORD ;
@@ -462,16 +450,14 @@ CLASS XSharp.RuntimeState
 
 	/// <summary>Date Epoch Year value. This gets set by the SetEpoch() function to the Epoch year % 100.</summary>
     /// <include file="CoreComments.xml" path="Comments/PerThread/*" />
-    /// <seealso cref="M:XSharp.Core.Functions.SetEpoch" />
-    /// <seealso cref="M:XSharp.Core.Functions.SetEpoch(System.UInt32)" />
+    /// <seealso cref="O:XSharp.Core.Functions.SetEpoch" />
     /// <seealso cref="F:XSharp.Set.EpochYear" />
     STATIC PROPERTY EpochYear AS DWORD ;
         GET Convert.ToUInt32(GetValue<OBJECT>(Set.EpochYear));
 
 	/// <summary>Date Epoch Century value. This gets set by the SetEpoch() function to the century in which the Epoch year falls.</summary>
     /// <include file="CoreComments.xml" path="Comments/PerThread/*" />
-    /// <seealso cref="M:XSharp.Core.Functions.SetEpoch" />
-    /// <seealso cref="M:XSharp.Core.Functions.SetEpoch(System.UInt32)" />
+    /// <seealso cref="O:XSharp.Core.Functions.SetEpoch" />
     /// <seealso cref="F:XSharp.Set.EpochCent" />
     STATIC PROPERTY EpochCent AS DWORD ;
         GET Convert.ToUInt32(GetValue<OBJECT>(Set.EpochCent));
@@ -479,8 +465,7 @@ CLASS XSharp.RuntimeState
 
 	/// <summary>String comparison Exact flag that determines how comparisons with the single '=' characters should be done.</summary>
     /// <include file="CoreComments.xml" path="Comments/PerThread/*" />
-    /// <seealso cref="M:XSharp.Core.Functions.SetExact" />
-    /// <seealso cref="M:XSharp.Core.Functions.SetExact(System.Boolean)" />
+    /// <seealso cref="O:XSharp.Core.Functions.SetExact" />
     /// <seealso cref="F:XSharp.Set.Exact" />
     STATIC PROPERTY Exact AS LOGIC ;
         GET GetValue<LOGIC>(Set.Exact);
@@ -488,8 +473,7 @@ CLASS XSharp.RuntimeState
 
     /// <summary>Logical setting that fixes the number of decimal digits used to display numbers.</summary>
     /// <include file="CoreComments.xml" path="Comments/PerThread/*" />
-    /// <seealso cref="M:XSharp.Core.Functions.SetFixed" />
-    /// <seealso cref="M:XSharp.Core.Functions.SetFixed(System.Boolean)" />
+    /// <seealso cref="O:XSharp.Core.Functions.SetFixed" />
     /// <seealso cref="F:XSharp.Set.Fixed" />
     STATIC PROPERTY Fixed AS LOGIC ;
         GET GetValue<LOGIC>(Set.Fixed);
@@ -499,8 +483,7 @@ CLASS XSharp.RuntimeState
 
 	/// <summary>Numeric value that controls the precision of Float comparisons.</summary>
     /// <include file="CoreComments.xml" path="Comments/PerThread/*" />
-    /// <seealso cref="M:XSharp.RT.Functions.SetFloatDelta" />
-    /// <seealso cref="M:XSharp.RT.Functions.SetFloatDelta(System.Double)" />
+    /// <seealso cref="O:XSharp.RT.Functions.SetFloatDelta" />
     /// <seealso cref="F:XSharp.Set.Floatdelta" />
    STATIC PROPERTY FloatDelta AS REAL8 ;
         GET GetValue<REAL8>(Set.Floatdelta);
@@ -508,8 +491,7 @@ CLASS XSharp.RuntimeState
 
 	/// <summary>Current SetInternational Setting.</summary>
     /// <include file="CoreComments.xml" path="Comments/PerThread/*" />
-    /// <seealso cref="M:XSharp.Core.Functions.SetInternational" />
-    /// <seealso cref="M:XSharp.Core.Functions.SetInternational(System.String)" />
+    /// <seealso cref="O:XSharp.Core.Functions.SetInternational" />
     /// <seealso cref="F:XSharp.Set.Intl" />
      STATIC PROPERTY International AS CollationMode ;
         GET GetValue<CollationMode>(Set.Intl);
@@ -524,8 +506,7 @@ CLASS XSharp.RuntimeState
 
 	/// <summary>Number of tries that were done when the last lock operation failed.</summary>
     /// <include file="CoreComments.xml" path="Comments/PerThread/*" />
-    /// <seealso cref="M:XSharp.Core.Functions.SetEpoch" />
-    /// <seealso cref="M:XSharp.Core.Functions.SetEpoch(System.UInt32)" />
+    /// <seealso cref="O:XSharp.Core.Functions.SetEpoch" />
     /// <seealso cref="F:XSharp.Set.EpochCent" />
     STATIC PROPERTY LockTries AS DWORD ;
         GET Convert.ToUInt32(GetValue<OBJECT>(Set.Locktries));
@@ -570,16 +551,15 @@ CLASS XSharp.RuntimeState
 
 	/// <summary>The current SetSafety flag.</summary>
     /// <include file="CoreComments.xml" path="Comments/PerThread/*" />
-    /// <seealso cref="M:XSharp.Core.Functions.SetSafety" />
-    /// <seealso cref="M:XSharp.Core.Functions.SetSafety(System.Boolean)" />
+    /// <seealso cref="O:XSharp.Core.Functions.SetSafety" />
+    /// <seealso cref="F:XSharp.Set.Safety" />
     STATIC PROPERTY Safety AS LOGIC ;
         GET GetValue<LOGIC>(Set.Safety);
         SET SetValue<LOGIC>(Set.Safety, value)
 
 	/// <summary>The current SetSoftSeek flag.</summary>
     /// <include file="CoreComments.xml" path="Comments/PerThread/*" />
-    /// <seealso cref="M:XSharp.Core.Functions.SetSoftSeek" />
-    /// <seealso cref="M:XSharp.Core.Functions.SetSoftSeek(System.Boolean)" />
+    /// <seealso cref="O:XSharp.Core.Functions.SetSoftSeek" />
     /// <seealso cref="F:XSharp.Set.Softseek" />
     STATIC PROPERTY SoftSeek AS LOGIC ;
         GET GetValue<LOGIC>(Set.Softseek);
@@ -588,8 +568,7 @@ CLASS XSharp.RuntimeState
 	/// <summary>The Thousand separator</summary>
     /// <seealso cref="P:XSharp.RuntimeState.DecimalSep" />
     /// <include file="CoreComments.xml" path="Comments/PerThread/*" />
-    /// <seealso cref="M:XSharp.Core.Functions.SetThousandSep" />
-    /// <seealso cref="M:XSharp.Core.Functions.SetThousandSep(System.UInt32)" />
+    /// <seealso cref="O:XSharp.Core.Functions.SetThousandSep" />
     /// <seealso cref="F:XSharp.Set.ThousandSep" />
     STATIC PROPERTY ThousandSep AS DWORD ;
         GET Convert.ToUInt32(GetValue<OBJECT>(Set.ThousandSep));
@@ -598,8 +577,7 @@ CLASS XSharp.RuntimeState
 
 	/// <summary>Should indexes by default be created with the 'Unique setting'.</summary>
     /// <include file="CoreComments.xml" path="Comments/PerThread/*" />
-    /// <seealso cref="M:XSharp.Core.Functions.SetUnique" />
-    /// <seealso cref="M:XSharp.Core.Functions.SetUnique(System.Boolean)" />
+    /// <seealso cref="O:XSharp.Core.Functions.SetUnique" />
     /// <seealso cref="F:XSharp.Set.Unique" />
     STATIC PROPERTY Unique AS LOGIC ;
         GET GetValue<LOGIC>(Set.Unique);
@@ -1002,9 +980,8 @@ CLASS XSharp.RuntimeState
     /// <param name="nLen">The # of bytes to compare.</param>
     /// <remarks>This method works on BYTE arrays and is used by the RDD system. <br/>
     /// This method respects the current setting of SetCollation(): <br/>
-    /// - When the current collationmode is Clipper or Windows then no Ansi - Unicode conversions will be done.<br/>
-    /// - When the current collationmode is Unicode or Ordinal then the byte arrays will be converted to Unicode before
-    /// the comparison is executed. 
+    /// - When the current collationmode is Clipper or Windows then no Ansi - Unicode conversions will be done.The comparisons will be done on the byte arrays.<br/>
+    /// - When the current collationmode is Unicode or Ordinal then the byte arrays will be converted to Unicode before the comparison is executed. 
     /// </remarks>
     STATIC METHOD StringCompare(aLHS AS BYTE[], aRHS AS BYTE[], nLen AS INT) AS INT
         SWITCH CollationMode

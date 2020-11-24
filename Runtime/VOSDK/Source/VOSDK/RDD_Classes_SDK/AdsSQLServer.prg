@@ -23,9 +23,9 @@
 
 //#include "VOSystemLibrary.vh"
 // #include "dbfaxs.vh"
-
+/// <summary>ADS Compatible DbServer class that received a Sql Select statement in its constructor</summary>
 CLASS AdsSQLServer INHERIT DBServer
-
+/// <inheritdoc />
 CONSTRUCTOR( oFile, lShareMode, lReadOnlyMode, xDriver, aRdd )
     LOCAL cTemp AS STRING
     LOCAL cFileName AS STRING

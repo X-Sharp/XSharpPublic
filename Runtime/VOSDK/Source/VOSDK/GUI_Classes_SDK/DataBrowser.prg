@@ -4978,8 +4978,11 @@ FUNCTION __DrawFldData(hWnd AS PTR, strucFieldInfo AS _WinFieldInfo, strucRecord
 
    RETURN (glContainerDllLoaded := TRUE)
    #ifdef __VULCAN__
+      /// <exclude />
       DELEGATE __CellEditProcDelegate( hWnd AS PTR, uMsg AS DWORD, wParam AS DWORD, lParam AS LONGINT ) AS INT
+      /// <exclude />
       DELEGATE __DrawFldDataDelegate( hWnd AS PTR, strucFieldInfo AS _WinFieldInfo, strucRecordCore AS _WinRecordCore, ptrData AS PTR, hDC AS PTR, iX AS INT, iY AS INT, dwOptions AS DWORD, ptrRect AS _WINRECT, pszData AS /*PSZ*/ PTR, dwLength AS DWORD ) AS INT
+      /// <exclude />
       DELEGATE __WCGBChildProcDelegate( hWnd AS PTR, uMsg AS DWORD, wParam AS DWORD, lParam AS LONGINT ) AS LONGINT
    #endif
 

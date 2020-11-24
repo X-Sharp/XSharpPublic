@@ -352,7 +352,6 @@ BEGIN NAMESPACE XSharp.RDD
 
 
         /// <summary>Worker method for DbGetProp() </summary>
-        /// <inheritdoc cRef='M:XSharp.VFP.Functions.DbGetProp(System.String,System.String,System.String)' />
         PUBLIC METHOD GetProp(cName as STRING, cType as STRING, cProp as STRING) AS OBJECT
             SWITCH cType:ToLower()
             CASE "connection"
@@ -408,7 +407,6 @@ BEGIN NAMESPACE XSharp.RDD
         
         /// <summary>-- todo --</summary>
         /// <summary>Worker method for DbSetProp() </summary>
-        /// <inheritdoc cRef='M:XSharp.VFP.Functions.DbSetProp(System.String,System.String,System.String,XSharp.__Usual)' />
         PUBLIC METHOD SetProp(cName as STRING, cType as STRING, cProp as STRING, ePropertyValue as OBJECT) AS LOGIC
             // check for readonly
             // check for shared. When shared make sure that DBC has not been changed in the meantime

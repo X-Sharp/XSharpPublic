@@ -13,7 +13,7 @@
     <GenerateFullPaths>true</GenerateFullPaths>
     <Dialect>VO</Dialect>
     <OutputName>ConsoleApplication2</OutputName>
-    <XSharpProjectversion>2.6.0.0</XSharpProjectversion>
+    <XSharpProjectversion>2.6.3.0</XSharpProjectversion>
     <StartupObject />
     <ApplicationIcon />
     <VulcanCompatibleResources>False</VulcanCompatibleResources>
@@ -68,7 +68,8 @@
     <SignAssembly>false</SignAssembly>
     <DelaySign>false</DelaySign>
     <AssemblyOriginatorKeyFile />
-    <CommandLineOption>/noclipcall</CommandLineOption>
+    <CommandLineOption>
+    </CommandLineOption>
     <PPO>false</PPO>
     <Prefer32Bit>True</Prefer32Bit>
     <RegisterForComInterop>False</RegisterForComInterop>
@@ -89,9 +90,6 @@
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Data" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="System.Xml" />
-    <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.prg">
@@ -105,12 +103,29 @@
     <Folder Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="app.manifest" />
-  </ItemGroup>
-  <ItemGroup>
+    <ProjectReference Include="..\..\Runtime\MacroCompiler\MacroCompiler.csproj">
+      <Name>MacroCompiler (Macrocompiler\MacroCompiler)</Name>
+      <Project>{eb3f3142-07f7-48ca-b38d-f611c45a9511}</Project>
+      <Private>True</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Runtime\VOSDK\Source\VOSDK\RDD_Classes_SDK\VORDDClasses.xsproj">
+      <Name>VORDDClasses</Name>
+      <Project>{d7079298-1712-4b03-ad76-4ec53bfe8356}</Project>
+      <Private>True</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Runtime\VOSDK\Source\VOSDK\System_Classes_SDK\VOSystemClasses.xsproj">
+      <Name>VOSystemClasses</Name>
+      <Project>{ac2aebff-69ff-405d-b7d9-6e5cb1db914c}</Project>
+      <Private>True</Private>
+    </ProjectReference>
     <ProjectReference Include="..\..\Runtime\XSharp.Core\XSharp.Core.xsproj">
       <Name>XSharp.Core</Name>
       <Project>{535dff14-efb7-43f5-a4e1-71c1c4280040}</Project>
+      <Private>True</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Runtime\XSharp.Rdd\XSharp.RDD.xsproj">
+      <Name>XSharp.RDD</Name>
+      <Project>{e83c6c8c-773f-4b01-a597-3d38398a9362}</Project>
       <Private>True</Private>
     </ProjectReference>
     <ProjectReference Include="..\..\Runtime\XSharp.RT\XSharp.RT.xsproj">

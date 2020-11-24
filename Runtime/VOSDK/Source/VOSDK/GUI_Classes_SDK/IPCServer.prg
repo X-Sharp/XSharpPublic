@@ -206,6 +206,7 @@ METHOD Destroy()  AS USUAL CLIPPER
 
 	RETURN SELF
 
+/// <inheritdoc />
 METHOD Dispatch(oEvent) 
 	LOCAL oE AS IpcEvent
 	LOCAL dwType AS DWORD

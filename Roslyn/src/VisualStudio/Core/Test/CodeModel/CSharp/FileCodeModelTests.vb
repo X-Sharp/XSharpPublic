@@ -1,4 +1,6 @@
-﻿' Copyright (c) Microsoft.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
+﻿' Licensed to the .NET Foundation under one or more agreements.
+' The .NET Foundation licenses this file to you under the MIT license.
+' See the LICENSE file in the project root for more information.
 
 Imports System.Threading.Tasks
 Imports Microsoft.CodeAnalysis
@@ -54,7 +56,7 @@ delegate void D();
             End Using
         End Sub
 
-        <ConditionalFact(GetType(x86)), Trait(Traits.Feature, Traits.Features.CodeModel)>
+        <ConditionalWpfFact(GetType(x86)), Trait(Traits.Feature, Traits.Features.CodeModel)>
         Public Sub TestAssemblyLevelAttribute()
             Dim code =
 <Code>
@@ -1011,7 +1013,7 @@ class D
 </Workspace>
 
             Using originalWorkspaceAndFileCodeModel = CreateCodeModelTestState(GetWorkspaceDefinition(oldCode))
-                Using changedworkspace = TestWorkspace.Create(changedDefinition, exportProvider:=VisualStudioTestExportProvider.Factory.CreateExportProvider())
+                Using changedworkspace = TestWorkspace.Create(changedDefinition, composition:=VisualStudioTestCompositions.LanguageServices)
 
                     Dim originalDocument = originalWorkspaceAndFileCodeModel.Workspace.CurrentSolution.GetDocument(originalWorkspaceAndFileCodeModel.Workspace.Documents(0).Id)
                     Dim originalTree = Await originalDocument.GetSyntaxTreeAsync()
@@ -1229,6 +1231,29 @@ class C
                 Next
             End Using
         End Function
+
+        <WorkItem(31735, "https://github.com/dotnet/roslyn/issues/31735")>
+        <ConditionalWpfFact(GetType(x86)), Trait(Traits.Feature, Traits.Features.CodeModel)>
+        Public Sub RenameShouldWorkAndElementsShouldBeUsableAfter()
+            Dim code =
+<code>
+class C
+{
+}
+</code>
+
+            TestOperation(code,
+                Sub(fileCodeModel)
+                    Dim codeElement = DirectCast(fileCodeModel.CodeElements(0), EnvDTE80.CodeElement2)
+                    Assert.Equal("C", codeElement.Name)
+
+                    codeElement.RenameSymbol("D")
+
+                    ' This not only asserts that the rename happened successfully, but that the element was correctly updated
+                    ' so the underlying node key is still valid.
+                    Assert.Equal("D", codeElement.Name)
+                End Sub)
+        End Sub
 
         Protected Overrides ReadOnly Property LanguageName As String
             Get

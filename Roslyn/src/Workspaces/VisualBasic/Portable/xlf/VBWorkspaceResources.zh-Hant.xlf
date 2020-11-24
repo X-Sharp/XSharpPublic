@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="1.2" xsi:schemaLocation="urn:oasis:names:tc:xliff:document:1.2 xliff-core-1.2-transitional.xsd">
-  <file datatype="xml" source-language="en" target-language="zh-Hant" original="../VBWorkspaceResources.resx">
+  <file datatype="xml" source-language="en" target-language="zh-HANT" original="../VBWorkspaceResources.resx">
     <body>
       <trans-unit id="Namespace_can_not_be_added_in_this_destination">
         <source>Namespace can not be added in this destination.</source>
@@ -10,6 +10,16 @@
       <trans-unit id="Only_attributes_expressions_or_statements_can_be_made_explicit">
         <source>Only attributes, expressions or statements can be made explicit</source>
         <target state="translated">只有屬性、運算式或陳述式可以設為明確</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="Remove_and_Sort_Imports">
+        <source>R&amp;emove and Sort Imports</source>
+        <target state="translated">移除及排序匯入(&amp;E)</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="Sort_Imports">
+        <source>&amp;Sort Imports</source>
+        <target state="translated">排序 Import(&amp;S)</target>
         <note />
       </trans-unit>
       <trans-unit id="event_">

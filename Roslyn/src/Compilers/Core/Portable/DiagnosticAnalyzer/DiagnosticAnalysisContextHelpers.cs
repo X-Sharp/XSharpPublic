@@ -1,7 +1,12 @@
-﻿// Copyright (c) Microsoft.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
+﻿// Licensed to the .NET Foundation under one or more agreements.
+// The .NET Foundation licenses this file to you under the MIT license.
+// See the LICENSE file in the project root for more information.
+
+#nullable enable
 
 using System;
 using System.Collections.Immutable;
+using System.Diagnostics;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Threading;
@@ -31,7 +36,13 @@ namespace Microsoft.CodeAnalysis.Diagnostics
             VerifySyntaxKinds(syntaxKinds);
         }
 
-        internal static void VerifyArguments(Diagnostic diagnostic, Compilation compilationOpt, Func<Diagnostic, bool> isSupportedDiagnostic)
+        internal static void VerifyArguments<TContext>(Action<TContext> action, ImmutableArray<OperationKind> operationKinds)
+        {
+            VerifyAction(action);
+            VerifyOperationKinds(operationKinds);
+        }
+
+        internal static void VerifyArguments(Diagnostic diagnostic, Compilation? compilation, Func<Diagnostic, bool> isSupportedDiagnostic)
         {
             if (diagnostic is DiagnosticWithInfo)
             {
@@ -44,9 +55,9 @@ namespace Microsoft.CodeAnalysis.Diagnostics
                 throw new ArgumentNullException(nameof(diagnostic));
             }
 
-            if (compilationOpt != null)
+            if (compilation != null)
             {
-                VerifyDiagnosticLocationsInCompilation(diagnostic, compilationOpt);
+                VerifyDiagnosticLocationsInCompilation(diagnostic, compilation);
             }
 
             if (!isSupportedDiagnostic(diagnostic))
@@ -83,6 +94,7 @@ namespace Microsoft.CodeAnalysis.Diagnostics
                 return;
             }
 
+            Debug.Assert(location.SourceTree != null);
             if (!compilation.ContainsSyntaxTree(location.SourceTree))
             {
                 // Disallow diagnostics with source locations outside this compilation.
@@ -104,7 +116,8 @@ namespace Microsoft.CodeAnalysis.Diagnostics
             }
 
             // Disallow async methods to be registered.
-            if (action.GetMethodInfo().IsDefined(typeof(AsyncStateMachineAttribute)))
+            // Suppression due to bug fixed in .NET 5: https://github.com/dotnet/runtime/issues/30968
+            if (action.GetMethodInfo()!.IsDefined(typeof(AsyncStateMachineAttribute)))
             {
                 throw new ArgumentException(CodeAnalysisResources.AsyncAnalyzerActionCannotBeRegistered, nameof(action));
             }
@@ -137,6 +150,19 @@ namespace Microsoft.CodeAnalysis.Diagnostics
             }
         }
 
+        private static void VerifyOperationKinds(ImmutableArray<OperationKind> operationKinds)
+        {
+            if (operationKinds.IsDefault)
+            {
+                throw new ArgumentNullException(nameof(operationKinds));
+            }
+
+            if (operationKinds.IsEmpty)
+            {
+                throw new ArgumentException(CodeAnalysisResources.ArgumentCannotBeEmpty, nameof(operationKinds));
+            }
+        }
+
         internal static void VerifyArguments<TKey, TValue>(TKey key, AnalysisValueProvider<TKey, TValue> valueProvider)
             where TKey : class
         {
@@ -151,11 +177,11 @@ namespace Microsoft.CodeAnalysis.Diagnostics
             }
         }
 
-        internal static ControlFlowGraph GetControlFlowGraph(IOperation operation, Func<IOperation, ControlFlowGraph> getControlFlowGraphOpt, CancellationToken cancellationToken)
+        internal static ControlFlowGraph GetControlFlowGraph(IOperation operation, Func<IOperation, ControlFlowGraph>? getControlFlowGraph, CancellationToken cancellationToken)
         {
             IOperation rootOperation = operation.GetRootOperation();
-            return getControlFlowGraphOpt != null ?
-                getControlFlowGraphOpt(rootOperation) :
+            return getControlFlowGraph != null ?
+                getControlFlowGraph(rootOperation) :
                 ControlFlowGraph.CreateCore(rootOperation, nameof(rootOperation), cancellationToken);
         }
     }

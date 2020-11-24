@@ -1,11 +1,15 @@
-﻿// Copyright (c) Microsoft.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
+﻿// Licensed to the .NET Foundation under one or more agreements.
+// The .NET Foundation licenses this file to you under the MIT license.
+// See the LICENSE file in the project root for more information.
 
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Composition;
+using System.Diagnostics;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.CodeAnalysis.Host.Mef;
 using Roslyn.Utilities;
@@ -78,6 +82,7 @@ namespace Microsoft.CodeAnalysis.Shared.TestHooks
             s_enableDiagnosticTokens = diagnostics;
         }
 
+        [ImportingConstructor]
         [Obsolete(MefConstruction.ImportingConstructorMessage, error: true)]
         public AsynchronousOperationListenerProvider()
         {
@@ -109,9 +114,7 @@ namespace Microsoft.CodeAnalysis.Shared.TestHooks
         /// Get Waiters for listeners for test
         /// </summary>
         public IAsynchronousOperationWaiter GetWaiter(string featureName)
-        {
-            return (IAsynchronousOperationWaiter)GetListener(featureName);
-        }
+            => (IAsynchronousOperationWaiter)GetListener(featureName);
 
         /// <summary>
         /// Wait for all of the <see cref="IAsynchronousOperationWaiter"/> instances to finish their
@@ -122,15 +125,16 @@ namespace Microsoft.CodeAnalysis.Shared.TestHooks
         /// loop, dig into the waiters and see all of the active <see cref="IAsyncToken"/> values 
         /// representing the remaining work.
         /// </remarks>
-        public async Task WaitAllAsync(string[] featureNames = null, Action eventProcessingAction = null)
+        public async Task WaitAllAsync(string[] featureNames = null, Action eventProcessingAction = null, TimeSpan? timeout = null)
         {
+            var startTime = Stopwatch.StartNew();
             var smallTimeout = TimeSpan.FromMilliseconds(10);
 
             Task[] tasks = null;
             while (true)
             {
                 var waiters = GetCandidateWaiters(featureNames);
-                tasks = waiters.Select(x => x.CreateWaitTask()).Where(t => !t.IsCompleted).ToArray();
+                tasks = waiters.Select(x => x.ExpeditedWaitAsync()).Where(t => !t.IsCompleted).ToArray();
 
                 if (tasks.Length == 0)
                 {
@@ -155,6 +159,11 @@ namespace Microsoft.CodeAnalysis.Shared.TestHooks
                     // in unit test where it uses fake foreground task scheduler such as StaTaskScheduler
                     // we need to yield for the scheduler to run inlined tasks
                     await Task.Yield();
+
+                    if (startTime.Elapsed > timeout && timeout != Timeout.InfiniteTimeSpan)
+                    {
+                        throw new TimeoutException();
+                    }
                 } while (true);
             }
 
@@ -177,9 +186,7 @@ namespace Microsoft.CodeAnalysis.Shared.TestHooks
         /// Get all saved DiagnosticAsyncToken to investigate tests failure easier
         /// </summary>
         public List<AsynchronousOperationListener.DiagnosticAsyncToken> GetTokens()
-        {
-            return _singletonListeners.Values.Where(l => l.TrackActiveTokens).SelectMany(l => l.ActiveDiagnosticTokens).ToList();
-        }
+            => _singletonListeners.Values.Where(l => l.TrackActiveTokens).SelectMany(l => l.ActiveDiagnosticTokens).ToList();
 
         private static bool IsEnabled
         {
@@ -228,16 +235,22 @@ namespace Microsoft.CodeAnalysis.Shared.TestHooks
             return _singletonListeners.Where(kv => featureNames.Contains(kv.Key)).Select(kv => (IAsynchronousOperationWaiter)kv.Value);
         }
 
-        private class NullOperationListener : IAsynchronousOperationListener
+        private sealed class NullOperationListener : IAsynchronousOperationListener
         {
             public IAsyncToken BeginAsyncOperation(
                 string name,
                 object tag = null,
                 [CallerFilePath] string filePath = "",
                 [CallerLineNumber] int lineNumber = 0) => EmptyAsyncToken.Instance;
+
+            public async Task<bool> Delay(TimeSpan delay, CancellationToken cancellationToken)
+            {
+                await Task.Delay(delay, cancellationToken).ConfigureAwait(false);
+                return true;
+            }
         }
 
-        private class NullListenerProvider : IAsynchronousOperationListenerProvider
+        private sealed class NullListenerProvider : IAsynchronousOperationListenerProvider
         {
             public IAsynchronousOperationListener GetListener(string featureName) => NullListener;
         }

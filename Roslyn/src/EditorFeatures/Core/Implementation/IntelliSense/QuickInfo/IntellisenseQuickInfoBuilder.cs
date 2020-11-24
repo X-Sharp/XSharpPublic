@@ -1,15 +1,19 @@
-﻿// Copyright (c) Microsoft.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
+﻿// Licensed to the .NET Foundation under one or more agreements.
+// The .NET Foundation licenses this file to you under the MIT license.
+// See the LICENSE file in the project root for more information.
 
+using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.CodeAnalysis.Classification;
+using Microsoft.CodeAnalysis.Editor.Host;
 using Microsoft.CodeAnalysis.Editor.Shared.Extensions;
+using Microsoft.CodeAnalysis.Editor.Shared.Utilities;
 using Microsoft.CodeAnalysis.Formatting;
 using Microsoft.CodeAnalysis.QuickInfo;
-using Microsoft.CodeAnalysis.Text.Shared.Extensions;
 using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Text.Adornments;
 
@@ -20,10 +24,10 @@ namespace Microsoft.CodeAnalysis.Editor.Implementation.IntelliSense.QuickInfo
 {
     internal static class IntellisenseQuickInfoBuilder
     {
-        internal static async Task<IntellisenseQuickInfoItem> BuildItemAsync(ITrackingSpan trackingSpan,
-            CodeAnalysisQuickInfoItem quickInfoItem,
-            ITextSnapshot snapshot,
+        private static async Task<ContainerElement> BuildInteractiveContentAsync(CodeAnalysisQuickInfoItem quickInfoItem,
             Document document,
+            IThreadingContext threadingContext,
+            Lazy<IStreamingFindUsagesPresenter> streamingPresenter,
             CancellationToken cancellationToken)
         {
             // Build the first line of QuickInfo item, the images and the Description section should be on the first line with Wrapped style
@@ -41,21 +45,58 @@ namespace Microsoft.CodeAnalysis.Editor.Implementation.IntelliSense.QuickInfo
                 firstLineElements.Add(new ImageElement(warningGlyph.GetImageId()));
             }
 
+            var elements = new List<object>();
             var descSection = quickInfoItem.Sections.FirstOrDefault(s => s.Kind == QuickInfoSectionKinds.Description);
             if (descSection != null)
             {
-                firstLineElements.Add(BuildClassifiedTextElement(descSection));
+                var isFirstElement = true;
+                foreach (var element in Helpers.BuildInteractiveTextElements(descSection.TaggedParts, document, threadingContext, streamingPresenter))
+                {
+                    if (isFirstElement)
+                    {
+                        isFirstElement = false;
+                        firstLineElements.Add(element);
+                    }
+                    else
+                    {
+                        // If the description section contains multiple paragraphs, the second and additional paragraphs
+                        // are not wrapped in firstLineElements (they are normal paragraphs).
+                        elements.Add(element);
+                    }
+                }
             }
 
-            var elements = new List<object>
+            elements.Insert(0, new ContainerElement(ContainerElementStyle.Wrapped, firstLineElements));
+
+            var documentationCommentSection = quickInfoItem.Sections.FirstOrDefault(s => s.Kind == QuickInfoSectionKinds.DocumentationComments);
+            if (documentationCommentSection != null)
             {
-                new ContainerElement(ContainerElementStyle.Wrapped, firstLineElements)
-            };
+                var isFirstElement = true;
+                foreach (var element in Helpers.BuildInteractiveTextElements(documentationCommentSection.TaggedParts, document, threadingContext, streamingPresenter))
+                {
+                    if (isFirstElement)
+                    {
+                        isFirstElement = false;
+
+                        // Stack the first paragraph of the documentation comments with the last line of the description
+                        // to avoid vertical padding between the two.
+                        var lastElement = elements[elements.Count - 1];
+                        elements[elements.Count - 1] = new ContainerElement(
+                            ContainerElementStyle.Stacked,
+                            lastElement,
+                            element);
+                    }
+                    else
+                    {
+                        elements.Add(element);
+                    }
+                }
+            }
 
             // Add the remaining sections as Stacked style
             elements.AddRange(
-                quickInfoItem.Sections.Where(s => s.Kind != QuickInfoSectionKinds.Description)
-                                      .Select(BuildClassifiedTextElement));
+                quickInfoItem.Sections.Where(s => s.Kind != QuickInfoSectionKinds.Description && s.Kind != QuickInfoSectionKinds.DocumentationComments)
+                                      .SelectMany(s => Helpers.BuildInteractiveTextElements(s.TaggedParts, document, threadingContext, streamingPresenter)));
 
             // build text for RelatedSpan
             if (quickInfoItem.RelatedSpans.Any())
@@ -63,14 +104,14 @@ namespace Microsoft.CodeAnalysis.Editor.Implementation.IntelliSense.QuickInfo
                 var classifiedSpanList = new List<ClassifiedSpan>();
                 foreach (var span in quickInfoItem.RelatedSpans)
                 {
-                    var classifiedSpans = await EditorClassifier.GetClassifiedSpansAsync(document, span, cancellationToken).ConfigureAwait(false);
+                    var classifiedSpans = await ClassifierHelper.GetClassifiedSpansAsync(document, span, cancellationToken).ConfigureAwait(false);
                     classifiedSpanList.AddRange(classifiedSpans);
                 }
 
                 var tabSize = document.Project.Solution.Workspace.Options.GetOption(FormattingOptions.TabSize, document.Project.Language);
-                var text = await document.GetTextAsync().ConfigureAwait(false);
+                var text = await document.GetTextAsync(cancellationToken).ConfigureAwait(false);
                 var spans = IndentationHelper.GetSpansWithAlignedIndentation(text, classifiedSpanList.ToImmutableArray(), tabSize);
-                var textRuns = spans.Select(s => new ClassifiedTextRun(s.ClassificationType, snapshot.GetText(s.TextSpan.ToSpan())));
+                var textRuns = spans.Select(s => new ClassifiedTextRun(s.ClassificationType, text.GetSubText(s.TextSpan).ToString(), ClassifiedTextRunStyle.UseClassificationFont));
 
                 if (textRuns.Any())
                 {
@@ -78,17 +119,36 @@ namespace Microsoft.CodeAnalysis.Editor.Implementation.IntelliSense.QuickInfo
                 }
             }
 
-            var content = new ContainerElement(
-                                ContainerElementStyle.Stacked,
+            return new ContainerElement(
+                                ContainerElementStyle.Stacked | ContainerElementStyle.VerticalPadding,
                                 elements);
+        }
+
+        internal static async Task<IntellisenseQuickInfoItem> BuildItemAsync(
+            ITrackingSpan trackingSpan,
+            CodeAnalysisQuickInfoItem quickInfoItem,
+            Document document,
+            IThreadingContext threadingContext,
+            Lazy<IStreamingFindUsagesPresenter> streamingPresenter,
+            CancellationToken cancellationToken)
+        {
+            var content = await BuildInteractiveContentAsync(quickInfoItem, document, threadingContext, streamingPresenter, cancellationToken).ConfigureAwait(false);
 
             return new IntellisenseQuickInfoItem(trackingSpan, content);
         }
 
-        private static ClassifiedTextElement BuildClassifiedTextElement(QuickInfoSection section)
+        /// <summary>
+        /// Builds the classified hover content without navigation actions and requiring
+        /// an instance of <see cref="IStreamingFindUsagesPresenter"/>
+        /// TODO - This can be removed once LSP supports colorization in markupcontent
+        /// https://devdiv.visualstudio.com/DevDiv/_workitems/edit/918138
+        /// </summary>
+        internal static Task<ContainerElement> BuildContentWithoutNavigationActionsAsync(
+            CodeAnalysisQuickInfoItem quickInfoItem,
+            Document document,
+            CancellationToken cancellationToken)
         {
-            return new ClassifiedTextElement(section.TaggedParts.Select(
-                    part => new ClassifiedTextRun(part.Tag.ToClassificationTypeName(), part.Text)));
+            return BuildInteractiveContentAsync(quickInfoItem, document, threadingContext: null, streamingPresenter: null, cancellationToken);
         }
     }
 }

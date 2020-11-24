@@ -1,6 +1,11 @@
-﻿// Copyright (c) Microsoft.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
+﻿// Licensed to the .NET Foundation under one or more agreements.
+// The .NET Foundation licenses this file to you under the MIT license.
+// See the LICENSE file in the project root for more information.
+
+#nullable enable
 
 using System;
+using System.Diagnostics.CodeAnalysis;
 using Microsoft.CodeAnalysis.Host;
 using Roslyn.Utilities;
 
@@ -23,7 +28,7 @@ namespace Microsoft.CodeAnalysis.Extensions
 
     internal struct InfoBarUI
     {
-        public readonly string Title;
+        public readonly string? Title;
         public readonly UIKind Kind;
         public readonly Action Action;
         public readonly bool CloseAfterAction;
@@ -38,6 +43,7 @@ namespace Microsoft.CodeAnalysis.Extensions
             CloseAfterAction = closeAfterAction;
         }
 
+        [MemberNotNullWhen(false, nameof(Title))]
         public bool IsDefault => Title == null;
 
         internal enum UIKind

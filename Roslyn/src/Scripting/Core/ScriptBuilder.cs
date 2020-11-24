@@ -1,4 +1,6 @@
-﻿// Copyright (c) Microsoft.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
+﻿// Licensed to the .NET Foundation under one or more agreements.
+// The .NET Foundation licenses this file to you under the MIT license.
+// See the LICENSE file in the project root for more information.
 
 using System;
 using System.Diagnostics;
@@ -44,7 +46,7 @@ namespace Microsoft.CodeAnalysis.Scripting
 
         private readonly InteractiveAssemblyLoader _assemblyLoader;
 
-        private static EmitOptions s_EmitOptionsWithDebuggingInformation = new EmitOptions(
+        private static readonly EmitOptions s_EmitOptionsWithDebuggingInformation = new EmitOptions(
             debugInformationFormat: PdbHelpers.GetPlatformSpecificDebugInformationFormat(),
             pdbChecksumAlgorithm: default(HashAlgorithmName));
 
@@ -77,7 +79,7 @@ namespace Microsoft.CodeAnalysis.Scripting
             try
             {
                 // get compilation diagnostics first.
-                diagnostics.AddRange(compilation.GetParseDiagnostics());
+                diagnostics.AddRange(compilation.GetParseDiagnostics(cancellationToken));
                 ThrowIfAnyCompilationErrors(diagnostics, compiler.DiagnosticFormatter);
                 diagnostics.Clear();
 
@@ -120,7 +122,7 @@ namespace Microsoft.CodeAnalysis.Scripting
         /// </summary>
         private Func<object[], Task<T>> Build<T>(
             Compilation compilation,
-            DiagnosticBag diagnostics, 
+            DiagnosticBag diagnostics,
             bool emitDebugInformation,
             CancellationToken cancellationToken)
         {
@@ -169,8 +171,8 @@ namespace Microsoft.CodeAnalysis.Scripting
 
         // internal for testing
         internal static EmitResult Emit(
-            Stream peStream, 
-            Stream pdbStreamOpt, 
+            Stream peStream,
+            Stream pdbStreamOpt,
             Compilation compilation,
             EmitOptions options,
             CancellationToken cancellationToken)

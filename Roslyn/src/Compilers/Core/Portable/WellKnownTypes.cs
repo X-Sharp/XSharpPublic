@@ -1,8 +1,11 @@
-﻿// Copyright (c) Microsoft.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
+﻿// Licensed to the .NET Foundation under one or more agreements.
+// The .NET Foundation licenses this file to you under the MIT license.
+// See the LICENSE file in the project root for more information.
+
+#nullable enable
 
 using System.Collections.Generic;
 using System.Diagnostics;
-using Microsoft.CodeAnalysis.Text;
 
 namespace Microsoft.CodeAnalysis
 {
@@ -248,22 +251,26 @@ namespace Microsoft.CodeAnalysis
 
         CSharp7Sentinel = System_IFormatProvider, // all types that were known before CSharp7 should remain above this sentinel
 
+        System_ValueTuple,
         System_ValueTuple_T1,
         System_ValueTuple_T2,
         System_ValueTuple_T3,
-        System_ValueTuple_T4,
-        System_ValueTuple_T5,
-        System_ValueTuple_T6,
 
         ExtSentinel, // Not a real type, just a marker for types above 255 and strictly below 512
 
+        System_ValueTuple_T4,
+        System_ValueTuple_T5,
+        System_ValueTuple_T6,
         System_ValueTuple_T7,
         System_ValueTuple_TRest,
 
         System_Runtime_CompilerServices_TupleElementNamesAttribute,
 
         Microsoft_CodeAnalysis_Runtime_Instrumentation,
-		System_Runtime_CompilerServices_ReferenceAssemblyAttribute,
+        System_Runtime_CompilerServices_NullableAttribute,
+        System_Runtime_CompilerServices_NullableContextAttribute,
+        System_Runtime_CompilerServices_NullablePublicOnlyAttribute,
+        System_Runtime_CompilerServices_ReferenceAssemblyAttribute,
 
         System_Runtime_CompilerServices_IsReadOnlyAttribute,
         System_Runtime_CompilerServices_IsByRefLikeAttribute,
@@ -275,6 +282,38 @@ namespace Microsoft.CodeAnalysis
         System_Runtime_CompilerServices_IsUnmanagedAttribute,
 
         Microsoft_VisualBasic_Conversion,
+        System_Runtime_CompilerServices_NonNullTypesAttribute,
+        System_AttributeTargets,
+        Microsoft_CodeAnalysis_EmbeddedAttribute,
+        System_Runtime_CompilerServices_ITuple,
+
+        System_Index,
+        System_Range,
+
+        System_Runtime_CompilerServices_AsyncIteratorStateMachineAttribute,
+        System_IAsyncDisposable,
+        System_Collections_Generic_IAsyncEnumerable_T,
+        System_Collections_Generic_IAsyncEnumerator_T,
+        System_Threading_Tasks_Sources_ManualResetValueTaskSourceCore_T,
+        System_Threading_Tasks_Sources_ValueTaskSourceStatus,
+        System_Threading_Tasks_Sources_ValueTaskSourceOnCompletedFlags,
+        System_Threading_Tasks_Sources_IValueTaskSource_T,
+        System_Threading_Tasks_Sources_IValueTaskSource,
+        System_Threading_Tasks_ValueTask_T,
+        System_Threading_Tasks_ValueTask,
+        System_Runtime_CompilerServices_AsyncIteratorMethodBuilder,
+        System_Threading_CancellationToken,
+        System_Threading_CancellationTokenSource,
+
+        System_InvalidOperationException,
+        System_Runtime_CompilerServices_SwitchExpressionException,
+        System_Collections_Generic_IEqualityComparer_T,
+        System_Runtime_CompilerServices_NativeIntegerAttribute,
+
+        System_Runtime_CompilerServices_IsExternalInit,
+        System_Runtime_InteropServices_OutAttribute,
+
+        System_Text_StringBuilder,
 
 #if XSHARP
         System_Runtime_CompilerServices_IsConst,
@@ -313,6 +352,8 @@ namespace Microsoft.CodeAnalysis
 #endif
 
         NextAvailable,
+
+        // Remember to update the AllWellKnownTypes tests when making changes here
     }
 
     internal static class WellKnownTypes
@@ -553,15 +594,16 @@ namespace Microsoft.CodeAnalysis
 
             "System.IFormatProvider",
 
+            "System.ValueTuple",
             "System.ValueTuple`1",
             "System.ValueTuple`2",
             "System.ValueTuple`3",
-            "System.ValueTuple`4",
-            "System.ValueTuple`5",
-            "System.ValueTuple`6",
 
             "", // extension marker
 
+            "System.ValueTuple`4",
+            "System.ValueTuple`5",
+            "System.ValueTuple`6",
             "System.ValueTuple`7",
             "System.ValueTuple`8",
 
@@ -569,6 +611,9 @@ namespace Microsoft.CodeAnalysis
 
             "Microsoft.CodeAnalysis.Runtime.Instrumentation",
 
+            "System.Runtime.CompilerServices.NullableAttribute",
+            "System.Runtime.CompilerServices.NullableContextAttribute",
+            "System.Runtime.CompilerServices.NullablePublicOnlyAttribute",
             "System.Runtime.CompilerServices.ReferenceAssemblyAttribute",
 
             "System.Runtime.CompilerServices.IsReadOnlyAttribute",
@@ -579,7 +624,40 @@ namespace Microsoft.CodeAnalysis
             "System.ReadOnlySpan`1",
             "System.Runtime.InteropServices.UnmanagedType",
             "System.Runtime.CompilerServices.IsUnmanagedAttribute",
+
             "Microsoft.VisualBasic.Conversion",
+            "System.Runtime.CompilerServices.NonNullTypesAttribute",
+            "System.AttributeTargets",
+            "Microsoft.CodeAnalysis.EmbeddedAttribute",
+            "System.Runtime.CompilerServices.ITuple",
+
+            "System.Index",
+            "System.Range",
+
+            "System.Runtime.CompilerServices.AsyncIteratorStateMachineAttribute",
+            "System.IAsyncDisposable",
+            "System.Collections.Generic.IAsyncEnumerable`1",
+            "System.Collections.Generic.IAsyncEnumerator`1",
+            "System.Threading.Tasks.Sources.ManualResetValueTaskSourceCore`1",
+            "System.Threading.Tasks.Sources.ValueTaskSourceStatus",
+            "System.Threading.Tasks.Sources.ValueTaskSourceOnCompletedFlags",
+            "System.Threading.Tasks.Sources.IValueTaskSource`1",
+            "System.Threading.Tasks.Sources.IValueTaskSource",
+            "System.Threading.Tasks.ValueTask`1",
+            "System.Threading.Tasks.ValueTask",
+            "System.Runtime.CompilerServices.AsyncIteratorMethodBuilder",
+            "System.Threading.CancellationToken",
+            "System.Threading.CancellationTokenSource",
+
+            "System.InvalidOperationException",
+            "System.Runtime.CompilerServices.SwitchExpressionException",
+            "System.Collections.Generic.IEqualityComparer`1",
+
+            "System.Runtime.CompilerServices.NativeIntegerAttribute",
+            "System.Runtime.CompilerServices.IsExternalInit",
+            "System.Runtime.InteropServices.OutAttribute",
+
+            "System.Text.StringBuilder",
 
 #if XSHARP
             "System.Runtime.CompilerServices.IsConst",
@@ -618,7 +696,7 @@ namespace Microsoft.CodeAnalysis
 #endif
         };
 
-        private readonly static Dictionary<string, WellKnownType> s_nameToTypeIdMap = new Dictionary<string, WellKnownType>((int)Count);
+        private static readonly Dictionary<string, WellKnownType> s_nameToTypeIdMap = new Dictionary<string, WellKnownType>((int)Count);
 
         static WellKnownTypes()
         {
@@ -654,14 +732,12 @@ namespace Microsoft.CodeAnalysis
                         break;
                     case WellKnownType.ExtSentinel:
                         typeIdName = "";
-                        continue;
-                    case (WellKnownType.NextAvailable - 1):
+                        break;
 #if XSHARP
+                    case XSharp___WinBool:
                         typeIdName = "XSharp.__WinBool";
-#else
-                        typeIdName = "Microsoft.CodeAnalysis.Runtime.Instrumentation";
+                        break;
 #endif
-                        continue;
                     default:
                         typeIdName = typeId.ToString().Replace("__", "+").Replace('_', '.');
 #if XSHARP
@@ -686,12 +762,12 @@ namespace Microsoft.CodeAnalysis
                 Debug.Assert(name == "Microsoft.VisualBasic.CompilerServices.ObjectFlowControl+ForLoopControl"
                           || name == typeIdName,"'" + name + "' != '" + typeIdName + "'");
 #else
-                Debug.Assert(name == typeIdName);
+                Debug.Assert(name == typeIdName, "Enum name and type name must match");
 #endif
             }
 
             Debug.Assert((int)WellKnownType.ExtSentinel == 255);
-            Debug.Assert((int)WellKnownType.NextAvailable <= 512);
+            Debug.Assert((int)WellKnownType.NextAvailable <= 512, "Time for a new sentinel");
         }
 
         public static bool IsWellKnownType(this WellKnownType typeId)
@@ -703,7 +779,7 @@ namespace Microsoft.CodeAnalysis
         public static bool IsValueTupleType(this WellKnownType typeId)
         {
             Debug.Assert(typeId != WellKnownType.ExtSentinel);
-            return typeId >= WellKnownType.System_ValueTuple_T1 && typeId <= WellKnownType.System_ValueTuple_TRest;
+            return typeId >= WellKnownType.System_ValueTuple && typeId <= WellKnownType.System_ValueTuple_TRest;
         }
 
         public static bool IsValid(this WellKnownType typeId)

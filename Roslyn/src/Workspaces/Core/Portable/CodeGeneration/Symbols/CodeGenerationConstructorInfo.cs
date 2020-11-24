@@ -1,4 +1,6 @@
-﻿// Copyright (c) Microsoft.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
+﻿// Licensed to the .NET Foundation under one or more agreements.
+// The .NET Foundation licenses this file to you under the MIT license.
+// See the LICENSE file in the project root for more information.
 
 using System.Collections.Immutable;
 using System.Runtime.CompilerServices;
@@ -10,17 +12,20 @@ namespace Microsoft.CodeAnalysis.CodeGeneration
         private static readonly ConditionalWeakTable<IMethodSymbol, CodeGenerationConstructorInfo> s_constructorToInfoMap =
             new ConditionalWeakTable<IMethodSymbol, CodeGenerationConstructorInfo>();
 
+        private readonly bool _isUnsafe;
         private readonly string _typeName;
         private readonly ImmutableArray<SyntaxNode> _baseConstructorArguments;
         private readonly ImmutableArray<SyntaxNode> _thisConstructorArguments;
         private readonly ImmutableArray<SyntaxNode> _statements;
 
         private CodeGenerationConstructorInfo(
+            bool isUnsafe,
             string typeName,
             ImmutableArray<SyntaxNode> statements,
             ImmutableArray<SyntaxNode> baseConstructorArguments,
             ImmutableArray<SyntaxNode> thisConstructorArguments)
         {
+            _isUnsafe = isUnsafe;
             _typeName = typeName;
             _statements = statements;
             _baseConstructorArguments = baseConstructorArguments;
@@ -29,12 +34,13 @@ namespace Microsoft.CodeAnalysis.CodeGeneration
 
         public static void Attach(
             IMethodSymbol constructor,
+            bool isUnsafe,
             string typeName,
             ImmutableArray<SyntaxNode> statements,
             ImmutableArray<SyntaxNode> baseConstructorArguments,
             ImmutableArray<SyntaxNode> thisConstructorArguments)
         {
-            var info = new CodeGenerationConstructorInfo(typeName, statements, baseConstructorArguments, thisConstructorArguments);
+            var info = new CodeGenerationConstructorInfo(isUnsafe, typeName, statements, baseConstructorArguments, thisConstructorArguments);
             s_constructorToInfoMap.Add(constructor, info);
         }
 
@@ -56,6 +62,9 @@ namespace Microsoft.CodeAnalysis.CodeGeneration
         public static string GetTypeName(IMethodSymbol constructor)
             => GetTypeName(GetInfo(constructor), constructor);
 
+        public static bool GetIsUnsafe(IMethodSymbol constructor)
+            => GetIsUnsafe(GetInfo(constructor));
+
         private static ImmutableArray<SyntaxNode> GetThisConstructorArgumentsOpt(CodeGenerationConstructorInfo info)
             => info?._thisConstructorArguments ?? default;
 
@@ -67,5 +76,8 @@ namespace Microsoft.CodeAnalysis.CodeGeneration
 
         private static string GetTypeName(CodeGenerationConstructorInfo info, IMethodSymbol constructor)
             => info == null ? constructor.ContainingType.Name : info._typeName;
+
+        private static bool GetIsUnsafe(CodeGenerationConstructorInfo info)
+            => info?._isUnsafe ?? false;
     }
 }

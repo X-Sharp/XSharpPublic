@@ -1,7 +1,10 @@
-﻿// Copyright (c) Microsoft.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
+﻿// Licensed to the .NET Foundation under one or more agreements.
+// The .NET Foundation licenses this file to you under the MIT license.
+// See the LICENSE file in the project root for more information.
+
+#nullable enable
 
 using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Diagnostics;
@@ -9,237 +12,220 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.CodeAnalysis.Diagnostics.EngineV2;
 using Microsoft.CodeAnalysis.Diagnostics.Telemetry;
 using Microsoft.CodeAnalysis.ErrorReporting;
-using Microsoft.CodeAnalysis.Execution;
-using Microsoft.CodeAnalysis.Options;
 using Microsoft.CodeAnalysis.Remote;
 using Microsoft.CodeAnalysis.Shared.TestHooks;
 using Microsoft.CodeAnalysis.Workspaces.Diagnostics;
 using Roslyn.Utilities;
 
-namespace Microsoft.CodeAnalysis.Diagnostics.EngineV2
+namespace Microsoft.CodeAnalysis.Diagnostics
 {
-    internal partial class DiagnosticIncrementalAnalyzer
+    internal class InProcOrRemoteHostAnalyzerRunner
     {
-        // internal for testing
-        internal class InProcOrRemoteHostAnalyzerRunner
+        private readonly IAsynchronousOperationListener _asyncOperationListener;
+        private readonly IDocumentTrackingService? _documentTrackingService;
+        public DiagnosticAnalyzerInfoCache AnalyzerInfoCache { get; }
+
+        public InProcOrRemoteHostAnalyzerRunner(
+            DiagnosticAnalyzerInfoCache analyzerInfoCache,
+            Workspace workspace,
+            IAsynchronousOperationListener? operationListener = null)
         {
-            private readonly DiagnosticAnalyzerService _owner;
-            private readonly AbstractHostDiagnosticUpdateSource _hostDiagnosticUpdateSourceOpt;
+            AnalyzerInfoCache = analyzerInfoCache;
+            _asyncOperationListener = operationListener ?? AsynchronousOperationListenerProvider.NullListener;
+            _documentTrackingService = workspace.Services.GetService<IDocumentTrackingService>();
+        }
 
-            // TODO: this should be removed once we move options down to compiler layer
-            private readonly ConcurrentDictionary<string, ValueTuple<OptionSet, CustomAsset>> _lastOptionSetPerLanguage;
+        public Task<DiagnosticAnalysisResultMap<DiagnosticAnalyzer, DiagnosticAnalysisResult>> AnalyzeDocumentAsync(
+            DocumentAnalysisScope documentAnalysisScope,
+            CompilationWithAnalyzers compilationWithAnalyzers,
+            bool logPerformanceInfo,
+            bool getTelemetryInfo,
+            CancellationToken cancellationToken)
+            => AnalyzeAsync(documentAnalysisScope, documentAnalysisScope.TextDocument.Project, compilationWithAnalyzers,
+                forceExecuteAllAnalyzers: false, logPerformanceInfo, getTelemetryInfo, cancellationToken);
 
-            public InProcOrRemoteHostAnalyzerRunner(DiagnosticAnalyzerService owner, AbstractHostDiagnosticUpdateSource hostDiagnosticUpdateSource)
+        public Task<DiagnosticAnalysisResultMap<DiagnosticAnalyzer, DiagnosticAnalysisResult>> AnalyzeProjectAsync(
+            Project project,
+            CompilationWithAnalyzers compilationWithAnalyzers,
+            bool forceExecuteAllAnalyzers,
+            bool logPerformanceInfo,
+            bool getTelemetryInfo,
+            CancellationToken cancellationToken)
+            => AnalyzeAsync(documentAnalysisScope: null, project, compilationWithAnalyzers,
+                forceExecuteAllAnalyzers, logPerformanceInfo, getTelemetryInfo, cancellationToken);
+
+        private async Task<DiagnosticAnalysisResultMap<DiagnosticAnalyzer, DiagnosticAnalysisResult>> AnalyzeAsync(
+            DocumentAnalysisScope? documentAnalysisScope,
+            Project project,
+            CompilationWithAnalyzers compilationWithAnalyzers,
+            bool forceExecuteAllAnalyzers,
+            bool logPerformanceInfo,
+            bool getTelemetryInfo,
+            CancellationToken cancellationToken)
+        {
+            var result = await AnalyzeCoreAsync().ConfigureAwait(false);
+            Debug.Assert(getTelemetryInfo || result.TelemetryInfo.IsEmpty);
+            return result;
+
+            async Task<DiagnosticAnalysisResultMap<DiagnosticAnalyzer, DiagnosticAnalysisResult>> AnalyzeCoreAsync()
             {
-                _owner = owner;
-                _hostDiagnosticUpdateSourceOpt = hostDiagnosticUpdateSource;
+                Contract.ThrowIfFalse(!compilationWithAnalyzers.Analyzers.IsEmpty);
 
-                // currently option is a bit wierd since it is not part of snapshot and 
-                // we can't load all options without loading all language specific dlls.
-                // we have tracking issue for this.
-                // https://github.com/dotnet/roslyn/issues/13643
-                _lastOptionSetPerLanguage = new ConcurrentDictionary<string, ValueTuple<OptionSet, CustomAsset>>();
+                var remoteHostClient = await RemoteHostClient.TryGetClientAsync(project, cancellationToken).ConfigureAwait(false);
+                if (remoteHostClient != null)
+                {
+                    return await AnalyzeOutOfProcAsync(documentAnalysisScope, project, compilationWithAnalyzers, remoteHostClient,
+                        forceExecuteAllAnalyzers, logPerformanceInfo, getTelemetryInfo, cancellationToken).ConfigureAwait(false);
+                }
+
+                return await AnalyzeInProcAsync(documentAnalysisScope, project, compilationWithAnalyzers,
+                    client: null, logPerformanceInfo, getTelemetryInfo, cancellationToken).ConfigureAwait(false);
             }
+        }
 
-            public async Task<DiagnosticAnalysisResultMap<DiagnosticAnalyzer, DiagnosticAnalysisResult>> AnalyzeAsync(CompilationWithAnalyzers analyzerDriver, Project project, bool forcedAnalysis, CancellationToken cancellationToken)
+        private async Task<DiagnosticAnalysisResultMap<DiagnosticAnalyzer, DiagnosticAnalysisResult>> AnalyzeInProcAsync(
+            DocumentAnalysisScope? documentAnalysisScope,
+            Project project,
+            CompilationWithAnalyzers compilationWithAnalyzers,
+            RemoteHostClient? client,
+            bool logPerformanceInfo,
+            bool getTelemetryInfo,
+            CancellationToken cancellationToken)
+        {
+            var version = await DiagnosticIncrementalAnalyzer.GetDiagnosticVersionAsync(project, cancellationToken).ConfigureAwait(false);
+
+            var (analysisResult, additionalPragmaSuppressionDiagnostics) = await compilationWithAnalyzers.GetAnalysisResultAsync(
+                documentAnalysisScope, project, AnalyzerInfoCache, cancellationToken).ConfigureAwait(false);
+
+            if (logPerformanceInfo)
             {
-                var workspace = project.Solution.Workspace;
-                if (!workspace.Options.GetOption(RemoteFeatureOptions.DiagnosticsEnabled))
-                {
-                    // diagnostic service running on remote host is disabled. just run things in in proc
-                    return await AnalyzeInProcAsync(analyzerDriver, project, cancellationToken).ConfigureAwait(false);
-                }
-
-                var service = project.Solution.Workspace.Services.GetService<IRemoteHostClientService>();
-                if (service == null)
-                {
-                    // host doesn't support RemoteHostService such as under unit test
-                    return await AnalyzeInProcAsync(analyzerDriver, project, cancellationToken).ConfigureAwait(false);
-                }
-
-                var remoteHostClient = await service.TryGetRemoteHostClientAsync(cancellationToken).ConfigureAwait(false);
-                if (remoteHostClient == null)
-                {
-                    // remote host is not running. this can happen if remote host is disabled.
-                    return await AnalyzeInProcAsync(analyzerDriver, project, cancellationToken).ConfigureAwait(false);
-                }
-
-                // due to OpenFileOnly analyzer, we need to run inproc as well for such analyzers
-                var inProcResultTask = AnalyzeInProcAsync(CreateAnalyzerDriver(analyzerDriver, a => a.IsOpenFileOnly(project.Solution.Workspace)), project, remoteHostClient, cancellationToken);
-                var outOfProcResultTask = AnalyzeOutOfProcAsync(remoteHostClient, analyzerDriver, project, forcedAnalysis, cancellationToken);
-
-                // run them concurrently in vs and remote host
-                await Task.WhenAll(inProcResultTask, outOfProcResultTask).ConfigureAwait(false);
-
-                // make sure things are not cancelled
-                cancellationToken.ThrowIfCancellationRequested();
-
-                // merge 2 results
-                return DiagnosticAnalysisResultMap.Create(
-                    inProcResultTask.Result.AnalysisResult.AddRange(outOfProcResultTask.Result.AnalysisResult),
-                    inProcResultTask.Result.TelemetryInfo.AddRange(outOfProcResultTask.Result.TelemetryInfo));
-            }
-
-            private Task<DiagnosticAnalysisResultMap<DiagnosticAnalyzer, DiagnosticAnalysisResult>> AnalyzeInProcAsync(
-                CompilationWithAnalyzers analyzerDriver, Project project, CancellationToken cancellationToken)
-            {
-                return AnalyzeInProcAsync(analyzerDriver, project, client: null, cancellationToken);
-            }
-
-            private async Task<DiagnosticAnalysisResultMap<DiagnosticAnalyzer, DiagnosticAnalysisResult>> AnalyzeInProcAsync(
-                CompilationWithAnalyzers analyzerDriver, Project project, RemoteHostClient client, CancellationToken cancellationToken)
-            {
-                if (analyzerDriver == null ||
-                    analyzerDriver.Analyzers.Length == 0)
-                {
-                    // quick bail out
-                    return DiagnosticAnalysisResultMap.Create(ImmutableDictionary<DiagnosticAnalyzer, DiagnosticAnalysisResult>.Empty, ImmutableDictionary<DiagnosticAnalyzer, AnalyzerTelemetryInfo>.Empty);
-                }
-
-                var version = await DiagnosticIncrementalAnalyzer.GetDiagnosticVersionAsync(project, cancellationToken).ConfigureAwait(false);
-
-                // PERF: Run all analyzers at once using the new GetAnalysisResultAsync API.
-                var analysisResult = await analyzerDriver.GetAnalysisResultAsync(cancellationToken).ConfigureAwait(false);
-
                 // if remote host is there, report performance data
-                var asyncToken = _owner?.Listener.BeginAsyncOperation(nameof(AnalyzeInProcAsync));
-                var _ = FireAndForgetReportAnalyzerPerformanceAsync(project, client, analysisResult, cancellationToken).CompletesAsyncOperation(asyncToken);
-
-                // get compiler result builder map
-                var builderMap = analysisResult.ToResultBuilderMap(project, version, analyzerDriver.Compilation, analyzerDriver.Analyzers, cancellationToken);
-
-                return DiagnosticAnalysisResultMap.Create(builderMap.ToImmutableDictionary(kv => kv.Key, kv => new DiagnosticAnalysisResult(kv.Value)), analysisResult.AnalyzerTelemetryInfo);
+                var asyncToken = _asyncOperationListener.BeginAsyncOperation(nameof(AnalyzeInProcAsync));
+                var _ = FireAndForgetReportAnalyzerPerformanceAsync(documentAnalysisScope, project, client, analysisResult, cancellationToken).CompletesAsyncOperation(asyncToken);
             }
 
-            private async Task FireAndForgetReportAnalyzerPerformanceAsync(Project project, RemoteHostClient client, AnalysisResult analysisResult, CancellationToken cancellationToken)
+            var analyzers = documentAnalysisScope?.Analyzers ?? compilationWithAnalyzers.Analyzers;
+            var skippedAnalyzersInfo = project.GetSkippedAnalyzersInfo(AnalyzerInfoCache);
+
+            // get compiler result builder map
+            var builderMap = await analysisResult.ToResultBuilderMapAsync(
+                additionalPragmaSuppressionDiagnostics, documentAnalysisScope, project, version,
+                compilationWithAnalyzers.Compilation, analyzers, skippedAnalyzersInfo,
+                compilationWithAnalyzers.AnalysisOptions.ReportSuppressedDiagnostics, cancellationToken).ConfigureAwait(false);
+
+            var result = builderMap.ToImmutableDictionary(kv => kv.Key, kv => DiagnosticAnalysisResult.CreateFromBuilder(kv.Value));
+            var telemetry = getTelemetryInfo
+                ? analysisResult.AnalyzerTelemetryInfo
+                : ImmutableDictionary<DiagnosticAnalyzer, AnalyzerTelemetryInfo>.Empty;
+            return DiagnosticAnalysisResultMap.Create(result, telemetry);
+        }
+
+        private async Task FireAndForgetReportAnalyzerPerformanceAsync(
+            DocumentAnalysisScope? documentAnalysisScope,
+            Project project,
+            RemoteHostClient? client,
+            AnalysisResult analysisResult,
+            CancellationToken cancellationToken)
+        {
+            if (client == null)
             {
-                if (client == null)
-                {
-                    return;
-                }
-
-                try
-                {
-                    await client.TryRunCodeAnalysisRemoteAsync(
-                        nameof(IRemoteDiagnosticAnalyzerService.ReportAnalyzerPerformance),
-                        new object[]
-                        {
-                            analysisResult.AnalyzerTelemetryInfo.ToAnalyzerPerformanceInfo(_owner),
-                            // +1 for project itself
-                            project.DocumentIds.Count + 1
-                        },
-                        cancellationToken).ConfigureAwait(false);
-                }
-                catch (Exception ex) when (FatalError.ReportWithoutCrashUnlessCanceled(ex))
-                {
-                    // ignore all, this is fire and forget method
-                }
+                return;
             }
 
-            private async Task<DiagnosticAnalysisResultMap<DiagnosticAnalyzer, DiagnosticAnalysisResult>> AnalyzeOutOfProcAsync(
-                RemoteHostClient client, CompilationWithAnalyzers analyzerDriver, Project project, bool forcedAnalysis, CancellationToken cancellationToken)
+            try
             {
-                var solution = project.Solution;
-                var snapshotService = solution.Workspace.Services.GetService<IRemotableDataService>();
+                // +1 for project itself
+                var count = documentAnalysisScope != null ? 1 : project.DocumentIds.Count + 1;
 
-                using (var pooledObject = SharedPools.Default<Dictionary<string, DiagnosticAnalyzer>>().GetPooledObject())
-                {
-                    var analyzerMap = pooledObject.Object;
-
-                    analyzerMap.AppendAnalyzerMap(analyzerDriver.Analyzers.Where(a => !a.IsOpenFileOnly(project.Solution.Workspace)));
-                    if (analyzerMap.Count == 0)
-                    {
-                        return DiagnosticAnalysisResultMap.Create(ImmutableDictionary<DiagnosticAnalyzer, DiagnosticAnalysisResult>.Empty, ImmutableDictionary<DiagnosticAnalyzer, AnalyzerTelemetryInfo>.Empty);
-                    }
-
-                    var optionAsset = GetOptionsAsset(solution, project.Language, cancellationToken);
-
-                    var argument = new DiagnosticArguments(
-                        forcedAnalysis, analyzerDriver.AnalysisOptions.ReportSuppressedDiagnostics, analyzerDriver.AnalysisOptions.LogAnalyzerExecutionTime,
-                        project.Id, optionAsset.Checksum, analyzerMap.Keys.ToArray());
-
-                    using (var session = await client.TryCreateCodeAnalysisSessionAsync(solution, cancellationToken).ConfigureAwait(false))
-                    {
-                        if (session == null)
-                        {
-                            // session is not available
-                            return DiagnosticAnalysisResultMap.Create(ImmutableDictionary<DiagnosticAnalyzer, DiagnosticAnalysisResult>.Empty, ImmutableDictionary<DiagnosticAnalyzer, AnalyzerTelemetryInfo>.Empty);
-                        }
-
-                        session.AddAdditionalAssets(optionAsset);
-
-                        var result = await session.InvokeAsync(
-                            nameof(IRemoteDiagnosticAnalyzerService.CalculateDiagnosticsAsync),
-                            new object[] { argument },
-                            (s, c) => GetCompilerAnalysisResultAsync(s, analyzerMap, project, c), cancellationToken).ConfigureAwait(false);
-
-                        ReportAnalyzerExceptions(project, result.Exceptions);
-
-                        return result;
-                    }
-                }
+                await client.RunRemoteAsync(
+                    WellKnownServiceHubService.CodeAnalysis,
+                    nameof(IRemoteDiagnosticAnalyzerService.ReportAnalyzerPerformance),
+                    solution: null,
+                    new object[] { analysisResult.AnalyzerTelemetryInfo.ToAnalyzerPerformanceInfo(AnalyzerInfoCache), count },
+                    callbackTarget: null,
+                    cancellationToken).ConfigureAwait(false);
             }
-
-            private CompilationWithAnalyzers CreateAnalyzerDriver(CompilationWithAnalyzers analyzerDriver, Func<DiagnosticAnalyzer, bool> predicate)
+            catch (Exception ex) when (FatalError.ReportWithoutCrashUnlessCanceled(ex))
             {
-                var analyzers = analyzerDriver.Analyzers.Where(predicate).ToImmutableArray();
-                if (analyzers.Length == 0)
-                {
-                    // return null since we can't create CompilationWithAnalyzers with 0 analyzers
-                    return null;
-                }
-
-                return analyzerDriver.Compilation.WithAnalyzers(analyzers, analyzerDriver.AnalysisOptions);
+                // ignore all, this is fire and forget method
             }
+        }
 
-            private CustomAsset GetOptionsAsset(Solution solution, string language, CancellationToken cancellationToken)
+        private async Task<DiagnosticAnalysisResultMap<DiagnosticAnalyzer, DiagnosticAnalysisResult>> AnalyzeOutOfProcAsync(
+            DocumentAnalysisScope? documentAnalysisScope,
+            Project project,
+            CompilationWithAnalyzers compilationWithAnalyzers,
+            RemoteHostClient client,
+            bool forceExecuteAllAnalyzers,
+            bool logPerformanceInfo,
+            bool getTelemetryInfo,
+            CancellationToken cancellationToken)
+        {
+            var solution = project.Solution;
+
+            using var pooledObject = SharedPools.Default<Dictionary<string, DiagnosticAnalyzer>>().GetPooledObject();
+            var analyzerMap = pooledObject.Object;
+
+            var analyzers = documentAnalysisScope?.Analyzers ??
+                compilationWithAnalyzers.Analyzers.Where(a => forceExecuteAllAnalyzers || !a.IsOpenFileOnly(solution.Options));
+            analyzerMap.AppendAnalyzerMap(analyzers);
+
+            if (analyzerMap.Count == 0)
             {
-                // TODO: we need better way to deal with options. optionSet itself is green node but
-                //       it is not part of snapshot and can't save option to solution since we can't use language
-                //       specific option without loading related language specific dlls
-                var options = solution.Options;
-
-                // we have cached options
-                if (_lastOptionSetPerLanguage.TryGetValue(language, out var value) && value.Item1 == options)
-                {
-                    return value.Item2;
-                }
-
-                // otherwise, we need to build one.
-                var assetBuilder = new CustomAssetBuilder(solution);
-                var asset = assetBuilder.Build(options, language, cancellationToken);
-
-                _lastOptionSetPerLanguage[language] = ValueTuple.Create(options, asset);
-                return asset;
+                return DiagnosticAnalysisResultMap<DiagnosticAnalyzer, DiagnosticAnalysisResult>.Empty;
             }
 
-            private async Task<DiagnosticAnalysisResultMap<DiagnosticAnalyzer, DiagnosticAnalysisResult>> GetCompilerAnalysisResultAsync(Stream stream, Dictionary<string, DiagnosticAnalyzer> analyzerMap, Project project, CancellationToken cancellationToken)
+            // Use high priority if we are force executing all analyzers for user action OR serving an active document request.
+            var isHighPriority = forceExecuteAllAnalyzers ||
+                documentAnalysisScope != null && _documentTrackingService?.TryGetActiveDocument() == documentAnalysisScope.TextDocument.Id;
+
+            var argument = new DiagnosticArguments(
+                isHighPriority,
+                compilationWithAnalyzers.AnalysisOptions.ReportSuppressedDiagnostics,
+                logPerformanceInfo,
+                getTelemetryInfo,
+                documentAnalysisScope?.TextDocument.Id,
+                documentAnalysisScope?.Span,
+                documentAnalysisScope?.Kind,
+                project.Id,
+                analyzerMap.Keys.ToArray());
+
+            return await client.RunRemoteAsync(
+                WellKnownServiceHubService.CodeAnalysis,
+                nameof(IRemoteDiagnosticAnalyzerService.CalculateDiagnosticsAsync),
+                solution,
+                new object[] { argument },
+                callbackTarget: null,
+                (s, c) => ReadCompilerAnalysisResultAsync(s, analyzerMap, documentAnalysisScope, project, c),
+                cancellationToken).ConfigureAwait(false);
+        }
+
+        private static async Task<DiagnosticAnalysisResultMap<DiagnosticAnalyzer, DiagnosticAnalysisResult>> ReadCompilerAnalysisResultAsync(
+            Stream stream,
+            Dictionary<string, DiagnosticAnalyzer> analyzerMap,
+            DocumentAnalysisScope? documentAnalysisScope,
+            Project project,
+            CancellationToken cancellationToken)
+        {
+            // handling of cancellation and exception
+            var version = await DiagnosticIncrementalAnalyzer.GetDiagnosticVersionAsync(project, cancellationToken).ConfigureAwait(false);
+
+            using var reader = ObjectReader.TryGetReader(stream, leaveOpen: true, cancellationToken);
+
+            // We only get a reader for data transmitted between live processes.
+            // This data should always be correct as we're never persisting the data between sessions.
+            Contract.ThrowIfNull(reader);
+
+            if (!DiagnosticResultSerializer.TryReadDiagnosticAnalysisResults(reader, analyzerMap,
+                    documentAnalysisScope, project, version, cancellationToken, out var result))
             {
-                // handling of cancellation and exception
-                var version = await DiagnosticIncrementalAnalyzer.GetDiagnosticVersionAsync(project, cancellationToken).ConfigureAwait(false);
-
-                using (var reader = ObjectReader.TryGetReader(stream))
-                {
-                    Debug.Assert(reader != null,
-    @"We only ge a reader for data transmitted between live processes.
-This data should always be correct as we're never persisting the data between sessions.");
-                    return DiagnosticResultSerializer.Deserialize(reader, analyzerMap, project, version, cancellationToken);
-                }
+                return DiagnosticAnalysisResultMap<DiagnosticAnalyzer, DiagnosticAnalysisResult>.Empty;
             }
 
-            private void ReportAnalyzerExceptions(Project project, ImmutableDictionary<DiagnosticAnalyzer, ImmutableArray<DiagnosticData>> exceptions)
-            {
-                foreach (var kv in exceptions)
-                {
-                    var analyzer = kv.Key;
-                    foreach (var diagnostic in kv.Value)
-                    {
-                        _hostDiagnosticUpdateSourceOpt?.ReportAnalyzerDiagnostic(analyzer, diagnostic, project);
-                    }
-                }
-            }
+            return result.Value;
         }
     }
 }

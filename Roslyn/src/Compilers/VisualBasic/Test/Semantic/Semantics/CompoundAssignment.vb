@@ -1,8 +1,11 @@
-﻿' Copyright (c) Microsoft.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
+﻿' Licensed to the .NET Foundation under one or more agreements.
+' The .NET Foundation licenses this file to you under the MIT license.
+' See the LICENSE file in the project root for more information.
 
 Imports System.IO
 Imports Microsoft.CodeAnalysis
 Imports Microsoft.CodeAnalysis.SpecialType
+Imports Microsoft.CodeAnalysis.Test.Extensions
 Imports Microsoft.CodeAnalysis.Test.Utilities
 Imports Microsoft.CodeAnalysis.Text
 Imports Microsoft.CodeAnalysis.VisualBasic
@@ -65,7 +68,7 @@ End Class
 
             Dim compilation = CompilationUtils.CreateCompilationWithMscorlib40AndVBRuntime(compilationDef, TestOptions.ReleaseExe)
 
-            Dim verifier = CompileAndVerify(compilation, expectedOutput:="2" & vbCrLf & "4" & vbCrLf & "6" & vbCrLf & "7")
+            Dim verifier = CompileAndVerify(compilation, expectedOutput:="2" & Environment.NewLine & "4" & Environment.NewLine & "6" & Environment.NewLine & "7")
 
             CompilationUtils.AssertTheseDiagnostics(compilation, <expected></expected>)
 
@@ -561,7 +564,7 @@ End Module
 
             Dim compilation = CompilationUtils.CreateCompilationWithMscorlib40AndVBRuntime(compilationDef, TestOptions.ReleaseExe)
 
-            Dim verifier = CompileAndVerify(compilation, expectedOutput:="123" & vbCrLf & "123")
+            Dim verifier = CompileAndVerify(compilation, expectedOutput:="123" & Environment.NewLine & "123")
 
             verifier.VerifyIL("Program.Main",
             <![CDATA[
@@ -585,7 +588,7 @@ End Module
 
         End Sub
 
-        <ConditionalFact(GetType(WindowsDesktopOnly), Skip:="https://github.com/dotnet/roslyn/issues/28044")>
+        <ConditionalFact(GetType(WindowsDesktopOnly), Reason:="https://github.com/dotnet/roslyn/issues/28044")>
         Public Sub MidAssignment1()
 
             Dim compilationDef =
@@ -1064,7 +1067,7 @@ End Class
         End Sub
 
         <WorkItem(642269, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/642269")>
-        <ConditionalFact(GetType(WindowsDesktopOnly), Skip:="https://github.com/dotnet/roslyn/issues/28044")>
+        <ConditionalFact(GetType(WindowsDesktopOnly), Reason:="https://github.com/dotnet/roslyn/issues/28044")>
         Public Sub Bug642269()
 
             Dim compilationDef =

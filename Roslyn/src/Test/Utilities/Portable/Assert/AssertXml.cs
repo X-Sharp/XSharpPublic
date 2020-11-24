@@ -1,4 +1,6 @@
-﻿// Copyright (c) Microsoft.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
+﻿// Licensed to the .NET Foundation under one or more agreements.
+// The .NET Foundation licenses this file to you under the MIT license.
+// See the LICENSE file in the project root for more information.
 
 using System;
 using System.Collections.Generic;
@@ -11,6 +13,7 @@ using System.Xml;
 using System.Xml.Linq;
 using Roslyn.Utilities;
 using Xunit;
+using ReferenceEqualityComparer = Roslyn.Utilities.ReferenceEqualityComparer;
 
 namespace Roslyn.Test.Utilities
 {
@@ -45,12 +48,12 @@ namespace Roslyn.Test.Utilities
         {
             if (!CheckEqual(expectedRoot, actualRoot, ShallowElementComparer.Instance, out var firstMismatch))
             {
-                Assert.True(false, message + 
+                Assert.True(false, message +
                     GetAssertText(
-                        GetXmlString(expectedRoot, expectedIsXmlLiteral), 
-                        GetXmlString(actualRoot, expectedIsXmlLiteral), 
+                        GetXmlString(expectedRoot, expectedIsXmlLiteral),
+                        GetXmlString(actualRoot, expectedIsXmlLiteral),
                         expectedRoot,
-                        firstMismatch, 
+                        firstMismatch,
                         expectedValueSourcePath,
                         expectedValueSourceLine,
                         expectedIsXmlLiteral));
@@ -169,7 +172,6 @@ namespace Roslyn.Test.Utilities
                 {
                     return false;
                 }
-
 
                 HashSet<XElement> children2Used = new HashSet<XElement>(ReferenceEqualityComparer.Instance);
                 foreach (XElement child1 in children1)

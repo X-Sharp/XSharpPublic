@@ -1,17 +1,13 @@
-﻿// Copyright (c) Microsoft.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
+﻿// Licensed to the .NET Foundation under one or more agreements.
+// The .NET Foundation licenses this file to you under the MIT license.
+// See the LICENSE file in the project root for more information.
 
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
-using System.Diagnostics;
 using System.IO;
-using System.IO.Compression;
 using System.Linq;
-using System.Reflection;
-using System.Reflection.Emit;
 using System.Reflection.PortableExecutable;
-using System.Text;
-using System.Threading;
 using System.Xml.Linq;
 using Microsoft.CodeAnalysis.CodeGen;
 using Microsoft.CodeAnalysis.CSharp.Symbols.Metadata.PE;
@@ -111,7 +107,7 @@ namespace Microsoft.CodeAnalysis.Test.Utilities
             return CompileAndVerifyCommon(compilation, assemblyValidator: (assembly) => MetadataValidation.MarshalAsMetadataValidator(assembly, getExpectedBlob, isField));
         }
 
-        static internal void RunValidators(CompilationVerifier verifier, Action<PEAssembly> assemblyValidator, Action<IModuleSymbol> symbolValidator)
+        internal static void RunValidators(CompilationVerifier verifier, Action<PEAssembly> assemblyValidator, Action<IModuleSymbol> symbolValidator)
         {
             Assert.True(assemblyValidator != null || symbolValidator != null);
 
@@ -178,9 +174,10 @@ namespace Microsoft.CodeAnalysis.Test.Utilities
             bool appendDefaultHeader,
             bool includePdb,
             out ImmutableArray<byte> assemblyBytes,
-            out ImmutableArray<byte> pdbBytes)
+            out ImmutableArray<byte> pdbBytes,
+            bool autoInherit = true)
         {
-            IlasmUtilities.IlasmTempAssembly(ilSource, appendDefaultHeader, includePdb, out var assemblyPath, out var pdbPath);
+            IlasmUtilities.IlasmTempAssembly(ilSource, appendDefaultHeader, includePdb, autoInherit, out var assemblyPath, out var pdbPath);
 
             Assert.NotNull(assemblyPath);
             Assert.Equal(pdbPath != null, includePdb);
@@ -203,9 +200,9 @@ namespace Microsoft.CodeAnalysis.Test.Utilities
             }
         }
 
-        internal static MetadataReference CompileIL(string ilSource, bool prependDefaultHeader = true, bool embedInteropTypes = false)
+        internal static MetadataReference CompileIL(string ilSource, bool prependDefaultHeader = true, bool embedInteropTypes = false, bool autoInherit = true)
         {
-            EmitILToArray(ilSource, prependDefaultHeader, includePdb: false, assemblyBytes: out var assemblyBytes, pdbBytes: out var pdbBytes);
+            EmitILToArray(ilSource, prependDefaultHeader, includePdb: false, assemblyBytes: out var assemblyBytes, pdbBytes: out var pdbBytes, autoInherit: autoInherit);
             return AssemblyMetadata.CreateFromImage(assemblyBytes).GetReference(embedInteropTypes: embedInteropTypes);
         }
 
@@ -298,7 +295,7 @@ namespace Microsoft.CodeAnalysis.Test.Utilities
 
             if (parseOptions == null)
             {
-                parseOptions = CSharp.CSharpParseOptions.Default.WithDocumentationMode(DocumentationMode.None);
+                parseOptions = CSharp.CSharpParseOptions.Default.WithLanguageVersion(CSharp.LanguageVersion.Default).WithDocumentationMode(DocumentationMode.None);
             }
 
             if (compilationOptions == null)
@@ -394,11 +391,19 @@ namespace Microsoft.CodeAnalysis.Test.Utilities
             }
         }
 
+        internal static MetadataReference AsReference(Compilation comp, bool useCompilationReference)
+        {
+            return useCompilationReference ? comp.ToMetadataReference() : comp.EmitToImageReference();
+        }
+
+        public static string WithWindowsLineBreaks(string source)
+            => source.Replace(Environment.NewLine, "\r\n");
+
         #endregion
 
         #region IL Verification
 
-        internal abstract string VisualizeRealIL(IModuleSymbol peModule, CompilationTestData.MethodData methodData, IReadOnlyDictionary<int, string> markers);
+        internal abstract string VisualizeRealIL(IModuleSymbol peModule, CompilationTestData.MethodData methodData, IReadOnlyDictionary<int, string> markers, bool areLocalsZeroed);
 
         #endregion
 
@@ -602,6 +607,38 @@ namespace Microsoft.CodeAnalysis.Test.Utilities
                 node = node.Parent;
             }
         }
+
+        #endregion
+
+        #region Theory Helpers
+
+        public static IEnumerable<object[]> ExternalPdbFormats
+        {
+            get
+            {
+                if (ExecutionConditionUtil.IsWindows)
+                {
+                    return new List<object[]>()
+                    {
+                        new object[] { DebugInformationFormat.Pdb },
+                        new object[] { DebugInformationFormat.PortablePdb }
+                    };
+                }
+                else
+                {
+                    return new List<object[]>()
+                    {
+                        new object[] { DebugInformationFormat.PortablePdb }
+                    };
+                }
+            }
+        }
+
+        public static IEnumerable<object[]> PdbFormats =>
+            new List<object[]>(ExternalPdbFormats)
+            {
+                new object[] { DebugInformationFormat.Embedded }
+            };
 
         #endregion
     }

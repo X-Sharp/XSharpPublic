@@ -1,6 +1,9 @@
-﻿' Copyright (c) Microsoft.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
+﻿' Licensed to the .NET Foundation under one or more agreements.
+' The .NET Foundation licenses this file to you under the MIT license.
+' See the LICENSE file in the project root for more information.
 
 Imports System.Composition
+Imports System.Diagnostics.CodeAnalysis
 Imports System.Threading
 Imports Microsoft.CodeAnalysis.CodeFixes
 Imports Microsoft.CodeAnalysis.Editing
@@ -13,11 +16,24 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.UseAutoProperty
     Friend Class VisualBasicUseAutoPropertyCodeFixProvider
         Inherits AbstractUseAutoPropertyCodeFixProvider(Of TypeBlockSyntax, PropertyBlockSyntax, ModifiedIdentifierSyntax, ConstructorBlockSyntax, ExpressionSyntax)
 
+        <ImportingConstructor>
+        <SuppressMessage("RoslynDiagnosticsReliability", "RS0033:Importing constructor should be [Obsolete]", Justification:="Used in test code: https://github.com/dotnet/roslyn/issues/42814")>
+        Public Sub New()
+        End Sub
+
+        Protected Overrides Function GetPropertyDeclaration(node As SyntaxNode) As PropertyBlockSyntax
+            If TypeOf node Is PropertyStatementSyntax Then
+                node = node.Parent
+            End If
+
+            Return DirectCast(node, PropertyBlockSyntax)
+        End Function
+
         Protected Overrides Function GetNodeToRemove(identifier As ModifiedIdentifierSyntax) As SyntaxNode
             Return Utilities.GetNodeToRemove(identifier)
         End Function
 
-        Protected Overrides Function GetFormattingRules(document As Document) As IEnumerable(Of IFormattingRule)
+        Protected Overrides Function GetFormattingRules(document As Document) As IEnumerable(Of AbstractFormattingRule)
             Return Nothing
         End Function
 
@@ -29,14 +45,18 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.UseAutoProperty
                                                          isWrittenToOutsideOfConstructor As Boolean,
                                                          cancellationToken As CancellationToken) As Task(Of SyntaxNode)
             Dim statement = propertyDeclaration.PropertyStatement
-            If Not isWrittenToOutsideOfConstructor AndAlso Not propertyDeclaration.Accessors.Any(SyntaxKind.SetAccessorBlock) Then
-                Dim generator = SyntaxGenerator.GetGenerator(propertyDocument.Project)
-                statement = DirectCast(generator.WithModifiers(statement, generator.GetModifiers(propertyDeclaration).WithIsReadOnly(True)), PropertyStatementSyntax)
-            End If
 
-            Dim initializer = Await GetFieldInitializer(fieldSymbol, cancellationToken).ConfigureAwait(False)
+            Dim generator = SyntaxGenerator.GetGenerator(propertyDocument.Project)
+            Dim canBeReadOnly = Not isWrittenToOutsideOfConstructor AndAlso Not propertyDeclaration.Accessors.Any(SyntaxKind.SetAccessorBlock)
+
+            statement = DirectCast(generator.WithModifiers(statement, generator.GetModifiers(propertyDeclaration).WithIsReadOnly(canBeReadOnly)), PropertyStatementSyntax)
+
+            Dim initializer = Await GetFieldInitializerAsync(fieldSymbol, cancellationToken).ConfigureAwait(False)
             If initializer.equalsValue IsNot Nothing Then
-                statement = statement.WithInitializer(initializer.equalsValue)
+                statement = statement.WithTrailingTrivia(SyntaxFactory.Space) _
+                    .WithInitializer(initializer.equalsValue) _
+                    .WithTrailingTrivia(statement.GetTrailingTrivia.Where(Function(x) x.Kind <> SyntaxKind.EndOfLineTrivia)) _
+                    .WithAppendedTrailingTrivia(initializer.equalsValue.GetTrailingTrivia())
             End If
 
             If initializer.asNewClause IsNot Nothing Then
@@ -46,7 +66,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.UseAutoProperty
             Return statement
         End Function
 
-        Private Async Function GetFieldInitializer(fieldSymbol As IFieldSymbol, cancellationToken As CancellationToken) As Task(Of (equalsValue As EqualsValueSyntax, asNewClause As AsNewClauseSyntax))
+        Private Shared Async Function GetFieldInitializerAsync(fieldSymbol As IFieldSymbol, cancellationToken As CancellationToken) As Task(Of (equalsValue As EqualsValueSyntax, asNewClause As AsNewClauseSyntax))
             Dim identifier = TryCast(Await fieldSymbol.DeclaringSyntaxReferences(0).GetSyntaxAsync(cancellationToken).ConfigureAwait(False), ModifiedIdentifierSyntax)
             Dim declarator = TryCast(identifier?.Parent, VariableDeclaratorSyntax)
             Dim initializer = declarator?.Initializer

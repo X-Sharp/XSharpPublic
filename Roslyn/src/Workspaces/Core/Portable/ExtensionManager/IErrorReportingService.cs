@@ -1,4 +1,8 @@
-﻿// Copyright (c) Microsoft.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
+﻿// Licensed to the .NET Foundation under one or more agreements.
+// The .NET Foundation licenses this file to you under the MIT license.
+// See the LICENSE file in the project root for more information.
+
+#nullable enable
 
 using System;
 using Microsoft.CodeAnalysis.Host;
@@ -7,6 +11,11 @@ namespace Microsoft.CodeAnalysis.Extensions
 {
     internal interface IErrorReportingService : IWorkspaceService
     {
+        /// <summary>
+        /// Name of the host to be used in error messages (e.g. "Visual Studio").
+        /// </summary>
+        string HostDisplayName { get; }
+
         /// <summary>
         /// Show error info in an active view.
         ///
@@ -23,5 +32,16 @@ namespace Microsoft.CodeAnalysis.Extensions
         void ShowGlobalErrorInfo(string message, params InfoBarUI[] items);
 
         void ShowDetailedErrorInfo(Exception exception);
+
+        /// <summary>
+        /// Shows info-bar reporting ServiceHub process crash.
+        /// "Unfortunately a process used by Visual Studio has encountered an unrecoverable error".
+        /// 
+        /// Obsolete - will remove once we remove JsonRpcConnection.
+        /// https://github.com/dotnet/roslyn/issues/45859
+        /// </summary>
+        void ShowRemoteHostCrashedErrorInfo(Exception? exception);
+
+        void ShowFeatureNotAvailableErrorInfo(string message, Exception? exception);
     }
 }

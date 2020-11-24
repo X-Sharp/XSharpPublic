@@ -1,15 +1,13 @@
-﻿// Copyright (c) Microsoft.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
+﻿// Licensed to the .NET Foundation under one or more agreements.
+// The .NET Foundation licenses this file to you under the MIT license.
+// See the LICENSE file in the project root for more information.
 
+using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Diagnostics;
-using System.Threading;
-using Microsoft.CodeAnalysis.CSharp.Symbols;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.PooledObjects;
-using Microsoft.CodeAnalysis.Text;
 using Roslyn.Utilities;
-using System.Collections.Generic;
-using System;
 
 namespace Microsoft.CodeAnalysis.CSharp.Symbols
 {
@@ -18,26 +16,26 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
         private ImmutableArray<ParameterSymbol> _parameters;
 #if XSHARP
         // HACK: To allow PCall we changed the variable from readonly to read/write
-        private TypeSymbol _returnType;
+        private TypeWithAnnotations _returnType;
 #else
-        private readonly TypeSymbol _returnType;
+        private readonly TypeWithAnnotations _returnType;
 #endif
         protected SourceDelegateMethodSymbol(
             SourceMemberContainerTypeSymbol delegateType,
-            TypeSymbol returnType,
+            TypeWithAnnotations returnType,
             DelegateDeclarationSyntax syntax,
             MethodKind methodKind,
             DeclarationModifiers declarationModifiers)
-            : base(delegateType, syntax.GetReference(), location: syntax.Identifier.GetLocation())
+            : base(delegateType, syntax.GetReference(), location: syntax.Identifier.GetLocation(), isIterator: false)
         {
             _returnType = returnType;
-            this.MakeFlags(methodKind, declarationModifiers, _returnType.SpecialType == SpecialType.System_Void, isExtensionMethod: false);
+            this.MakeFlags(methodKind, declarationModifiers, _returnType.IsVoidType(), isExtensionMethod: false);
         }
 
 #if XSHARP
         // HACK: we added setters for the Return type so we can change the generated
         // delegates for PCALL and PCALLNATIVE during the binding phase
-        internal void SetReturnType(TypeSymbol newType)
+        internal void SetReturnType(TypeWithAnnotations newType)
         {
             _returnType = newType;
             SetReturnsVoid((newType.SpecialType == SpecialType.System_Void));
@@ -61,20 +59,22 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             DelegateDeclarationSyntax syntax,
             DiagnosticBag diagnostics)
         {
+            var compilation = delegateType.DeclaringCompilation;
             Binder binder = delegateType.GetBinder(syntax.ParameterList);
             RefKind refKind;
             TypeSyntax returnTypeSyntax = syntax.ReturnType.SkipRef(out refKind);
-            TypeSymbol returnType = binder.BindType(returnTypeSyntax, diagnostics);
+            var returnType = binder.BindType(returnTypeSyntax, diagnostics);
 
             // reuse types to avoid reporting duplicate errors if missing:
-            var voidType = binder.GetSpecialType(SpecialType.System_Void, diagnostics, syntax);
-            var objectType = binder.GetSpecialType(SpecialType.System_Object, diagnostics, syntax);
-            var intPtrType = binder.GetSpecialType(SpecialType.System_IntPtr, diagnostics, syntax);
+            var voidType = TypeWithAnnotations.Create(binder.GetSpecialType(SpecialType.System_Void, diagnostics, syntax));
+            // https://github.com/dotnet/roslyn/issues/30079: Should the 'object', IAsyncResult and AsyncCallback parameters be considered nullable or not nullable?
+            var objectType = TypeWithAnnotations.Create(binder.GetSpecialType(SpecialType.System_Object, diagnostics, syntax));
+            var intPtrType = TypeWithAnnotations.Create(binder.GetSpecialType(SpecialType.System_IntPtr, diagnostics, syntax));
 
             if (returnType.IsRestrictedType(ignoreSpanLikeTypes: true))
             {
-                // Method or delegate cannot return type '{0}'
-                diagnostics.Add(ErrorCode.ERR_MethodReturnCantBeRefAny, returnTypeSyntax.Location, returnType);
+                // The return type of a method, delegate, or function pointer cannot be '{0}'
+                diagnostics.Add(ErrorCode.ERR_MethodReturnCantBeRefAny, returnTypeSyntax.Location, returnType.Type);
             }
 
             // A delegate has the following members: (see CLI spec 13.6)
@@ -91,8 +91,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                 // WinRT delegates don't have Begin/EndInvoke methods
                 !delegateType.IsCompilationOutputWinMdObj())
             {
-                var iAsyncResultType = binder.GetSpecialType(SpecialType.System_IAsyncResult, diagnostics, syntax);
-                var asyncCallbackType = binder.GetSpecialType(SpecialType.System_AsyncCallback, diagnostics, syntax);
+                var iAsyncResultType = TypeWithAnnotations.Create(binder.GetSpecialType(SpecialType.System_IAsyncResult, diagnostics, syntax));
+                var asyncCallbackType = TypeWithAnnotations.Create(binder.GetSpecialType(SpecialType.System_AsyncCallback, diagnostics, syntax));
 
                 // (3) BeginInvoke
                 symbols.Add(new BeginInvokeMethod(invoke, iAsyncResultType, objectType, asyncCallbackType, syntax));
@@ -108,7 +108,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
 
             HashSet<DiagnosticInfo> useSiteDiagnostics = null;
 
-            if (!delegateType.IsNoMoreVisibleThan(invoke.ReturnType, ref useSiteDiagnostics))
+            if (!delegateType.IsNoMoreVisibleThan(invoke.ReturnTypeWithAnnotations, ref useSiteDiagnostics))
             {
                 // Inconsistent accessibility: return type '{1}' is less accessible than delegate '{0}'
                 diagnostics.Add(ErrorCode.ERR_BadVisDelegateReturn, delegateType.Locations[0], delegateType, invoke.ReturnType);
@@ -116,7 +116,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
 
             foreach (var parameter in invoke.Parameters)
             {
-                if (!parameter.Type.IsAtLeastAsVisibleAs(delegateType, ref useSiteDiagnostics))
+                if (!parameter.TypeWithAnnotations.IsAtLeastAsVisibleAs(delegateType, ref useSiteDiagnostics))
                 {
                     // Inconsistent accessibility: parameter type '{1}' is less accessible than delegate '{0}'
                     diagnostics.Add(ErrorCode.ERR_BadVisDelegateParam, delegateType.Locations[0], delegateType, parameter.Type);
@@ -155,10 +155,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             }
         }
 
-        public override ImmutableArray<TypeParameterConstraintClause> TypeParameterConstraintClauses
+        public override ImmutableArray<TypeParameterConstraintClause> GetTypeParameterConstraintClauses(bool canIgnoreNullableContext)
             => ImmutableArray<TypeParameterConstraintClause>.Empty;
 
-        public sealed override TypeSymbol ReturnType
+        public sealed override TypeWithAnnotations ReturnTypeWithAnnotations
         {
             get
             {
@@ -213,9 +213,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
         {
             internal Constructor(
                 SourceMemberContainerTypeSymbol delegateType,
-                TypeSymbol voidType,
-                TypeSymbol objectType,
-                TypeSymbol intPtrType,
+                TypeWithAnnotations voidType,
+                TypeWithAnnotations objectType,
+                TypeWithAnnotations intPtrType,
                 DelegateDeclarationSyntax syntax)
                 : base(delegateType, voidType, syntax, MethodKind.Constructor, DeclarationModifiers.Public)
             {
@@ -260,7 +260,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             internal InvokeMethod(
                 SourceMemberContainerTypeSymbol delegateType,
                 RefKind refKind,
-                TypeSymbol returnType,
+                TypeWithAnnotations returnType,
                 DelegateDeclarationSyntax syntax,
                 Binder binder,
                 DiagnosticBag diagnostics)
@@ -320,15 +320,35 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
 
             internal override void AfterAddingTypeMembersChecks(ConversionsBase conversions, DiagnosticBag diagnostics)
             {
+                var syntax = (DelegateDeclarationSyntax)SyntaxRef.GetSyntax();
+                var location = syntax.ReturnType.GetLocation();
+                var compilation = DeclaringCompilation;
+
+                Debug.Assert(location != null);
+
                 base.AfterAddingTypeMembersChecks(conversions, diagnostics);
 
                 if (_refKind == RefKind.RefReadOnly)
                 {
-                    var syntax = (DelegateDeclarationSyntax)SyntaxRef.GetSyntax();
-                    DeclaringCompilation.EnsureIsReadOnlyAttributeExists(diagnostics, syntax.ReturnType.GetLocation(), modifyCompilationForRefReadOnly: true);
+                    compilation.EnsureIsReadOnlyAttributeExists(diagnostics, location, modifyCompilation: true);
                 }
 
-                ParameterHelpers.EnsureIsReadOnlyAttributeExists(Parameters, diagnostics, modifyCompilationForRefReadOnly: true);
+                ParameterHelpers.EnsureIsReadOnlyAttributeExists(compilation, Parameters, diagnostics, modifyCompilation: true);
+
+                if (ReturnType.ContainsNativeInteger())
+                {
+                    compilation.EnsureNativeIntegerAttributeExists(diagnostics, location, modifyCompilation: true);
+                }
+
+                ParameterHelpers.EnsureNativeIntegerAttributeExists(compilation, Parameters, diagnostics, modifyCompilation: true);
+
+                if (compilation.ShouldEmitNullableAttributes(this) &&
+                    ReturnTypeWithAnnotations.NeedsNullableAttribute())
+                {
+                    compilation.EnsureNullableAttributeExists(diagnostics, location, modifyCompilation: true);
+                }
+
+                ParameterHelpers.EnsureNullableAttributeExists(compilation, this, Parameters, diagnostics, modifyCompilation: true);
             }
 
             public override ImmutableArray<CustomModifier> RefCustomModifiers => _refCustomModifiers;
@@ -338,9 +358,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
         {
             internal BeginInvokeMethod(
                 InvokeMethod invoke,
-                TypeSymbol iAsyncResultType,
-                TypeSymbol objectType,
-                TypeSymbol asyncCallbackType,
+                TypeWithAnnotations iAsyncResultType,
+                TypeWithAnnotations objectType,
+                TypeWithAnnotations asyncCallbackType,
                 DelegateDeclarationSyntax syntax)
                 : base((SourceNamedTypeSymbol)invoke.ContainingType, iAsyncResultType, syntax, MethodKind.Ordinary, DeclarationModifiers.Virtual | DeclarationModifiers.Public)
             {
@@ -383,9 +403,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
 
             internal EndInvokeMethod(
                 InvokeMethod invoke,
-                TypeSymbol iAsyncResultType,
+                TypeWithAnnotations iAsyncResultType,
                 DelegateDeclarationSyntax syntax)
-                : base((SourceNamedTypeSymbol)invoke.ContainingType, invoke.ReturnType, syntax, MethodKind.Ordinary, DeclarationModifiers.Virtual | DeclarationModifiers.Public)
+                : base((SourceNamedTypeSymbol)invoke.ContainingType, invoke.ReturnTypeWithAnnotations, syntax, MethodKind.Ordinary, DeclarationModifiers.Virtual | DeclarationModifiers.Public)
             {
                 _invoke = invoke;
 

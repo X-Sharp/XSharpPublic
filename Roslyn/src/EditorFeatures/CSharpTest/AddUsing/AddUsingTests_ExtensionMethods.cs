@@ -1,6 +1,9 @@
-﻿// Copyright (c) Microsoft.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
+﻿// Licensed to the .NET Foundation under one or more agreements.
+// The .NET Foundation licenses this file to you under the MIT license.
+// See the LICENSE file in the project root for more information.
 
 using System.Threading.Tasks;
+using Microsoft.CodeAnalysis.Remote.Testing;
 using Microsoft.CodeAnalysis.Test.Utilities;
 using Roslyn.Test.Utilities;
 using Xunit;
@@ -9,7 +12,7 @@ namespace Microsoft.CodeAnalysis.Editor.CSharp.UnitTests.AddUsing
 {
     public partial class AddUsingTests
     {
-        [Fact, Trait(Traits.Feature, Traits.Features.CodeActionsAddImport)]
+        [Fact]
         public async Task TestWhereExtension()
         {
             await TestInRegularAndScriptAsync(
@@ -34,7 +37,7 @@ class Program
 }");
         }
 
-        [Fact, Trait(Traits.Feature, Traits.Features.CodeActionsAddImport)]
+        [Fact]
         public async Task TestSelectExtension()
         {
             await TestInRegularAndScriptAsync(
@@ -59,7 +62,7 @@ class Program
 }");
         }
 
-        [Fact, Trait(Traits.Feature, Traits.Features.CodeActionsAddImport)]
+        [Fact]
         public async Task TestGroupByExtension()
         {
             await TestInRegularAndScriptAsync(
@@ -84,7 +87,7 @@ class Program
 }");
         }
 
-        [Fact, Trait(Traits.Feature, Traits.Features.CodeActionsAddImport)]
+        [Fact]
         public async Task TestJoinExtension()
         {
             await TestInRegularAndScriptAsync(
@@ -109,7 +112,7 @@ class Program
 }");
         }
 
-        [Fact, Trait(Traits.Feature, Traits.Features.CodeActionsAddImport)]
+        [Fact]
         public async Task RegressionFor8455()
         {
             await TestMissingInRegularAndScriptAsync(
@@ -123,7 +126,7 @@ class Program
         }
 
         [WorkItem(772321, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/772321")]
-        [Fact, Trait(Traits.Feature, Traits.Features.CodeActionsAddImport)]
+        [Fact]
         public async Task TestExtensionWithThePresenceOfTheSameNameNonExtensionMethod()
         {
             await TestInRegularAndScriptAsync(
@@ -187,7 +190,7 @@ namespace NS2
 
         [WorkItem(772321, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/772321")]
         [WorkItem(920398, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/920398")]
-        [Fact, Trait(Traits.Feature, Traits.Features.CodeActionsAddImport)]
+        [Fact]
         public async Task TestExtensionWithThePresenceOfTheSameNameNonExtensionPrivateMethod()
         {
             await TestInRegularAndScriptAsync(
@@ -251,7 +254,7 @@ namespace NS2
 
         [WorkItem(772321, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/772321")]
         [WorkItem(920398, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/920398")]
-        [Fact, Trait(Traits.Feature, Traits.Features.CodeActionsAddImport)]
+        [Fact]
         public async Task TestExtensionWithThePresenceOfTheSameNameExtensionPrivateMethod()
         {
             await TestInRegularAndScriptAsync(
@@ -331,7 +334,7 @@ namespace NS3
         }
 
         [WorkItem(269, "https://github.com/dotnet/roslyn/issues/269")]
-        [Fact, Trait(Traits.Feature, Traits.Features.CodeActionsAddImport)]
+        [Fact]
         public async Task TestAddUsingForAddExtentionMethod()
         {
             await TestAsync(
@@ -382,7 +385,7 @@ parseOptions: null);
         }
 
         [WorkItem(269, "https://github.com/dotnet/roslyn/issues/269")]
-        [Fact, Trait(Traits.Feature, Traits.Features.CodeActionsAddImport)]
+        [Fact]
         public async Task TestAddUsingForAddExtentionMethod2()
         {
             await TestAsync(
@@ -433,7 +436,7 @@ parseOptions: null);
         }
 
         [WorkItem(269, "https://github.com/dotnet/roslyn/issues/269")]
-        [Fact, Trait(Traits.Feature, Traits.Features.CodeActionsAddImport)]
+        [Fact]
         public async Task TestAddUsingForAddExtentionMethod3()
         {
             await TestAsync(
@@ -484,7 +487,7 @@ parseOptions: null);
         }
 
         [WorkItem(269, "https://github.com/dotnet/roslyn/issues/269")]
-        [Fact, Trait(Traits.Feature, Traits.Features.CodeActionsAddImport)]
+        [Fact]
         public async Task TestAddUsingForAddExtentionMethod4()
         {
             await TestAsync(
@@ -535,7 +538,7 @@ parseOptions: null);
         }
 
         [WorkItem(269, "https://github.com/dotnet/roslyn/issues/269")]
-        [Fact, Trait(Traits.Feature, Traits.Features.CodeActionsAddImport)]
+        [Fact]
         public async Task TestAddUsingForAddExtentionMethod5()
         {
             await TestAsync(
@@ -586,7 +589,7 @@ parseOptions: null);
         }
 
         [WorkItem(269, "https://github.com/dotnet/roslyn/issues/269")]
-        [Fact, Trait(Traits.Feature, Traits.Features.CodeActionsAddImport)]
+        [Fact]
         public async Task TestAddUsingForAddExtentionMethod6()
         {
             await TestAsync(
@@ -637,7 +640,7 @@ parseOptions: null);
         }
 
         [WorkItem(269, "https://github.com/dotnet/roslyn/issues/269")]
-        [Fact, Trait(Traits.Feature, Traits.Features.CodeActionsAddImport)]
+        [Fact]
         public async Task TestAddUsingForAddExtentionMethod7()
         {
             await TestAsync(
@@ -688,7 +691,7 @@ parseOptions: null);
         }
 
         [WorkItem(269, "https://github.com/dotnet/roslyn/issues/269")]
-        [Fact, Trait(Traits.Feature, Traits.Features.CodeActionsAddImport)]
+        [Fact]
         public async Task TestAddUsingForAddExtentionMethod8()
         {
             await TestAsync(
@@ -739,7 +742,7 @@ parseOptions: null);
         }
 
         [WorkItem(269, "https://github.com/dotnet/roslyn/issues/269")]
-        [Fact, Trait(Traits.Feature, Traits.Features.CodeActionsAddImport)]
+        [Fact]
         public async Task TestAddUsingForAddExtentionMethod9()
         {
             await TestAsync(
@@ -790,7 +793,7 @@ parseOptions: null);
         }
 
         [WorkItem(269, "https://github.com/dotnet/roslyn/issues/269")]
-        [Fact, Trait(Traits.Feature, Traits.Features.CodeActionsAddImport)]
+        [Fact]
         public async Task TestAddUsingForAddExtentionMethod10()
         {
             await TestAsync(
@@ -861,7 +864,7 @@ parseOptions: null);
         }
 
         [WorkItem(269, "https://github.com/dotnet/roslyn/issues/269")]
-        [Fact, Trait(Traits.Feature, Traits.Features.CodeActionsAddImport)]
+        [Fact]
         public async Task TestAddUsingForAddExtentionMethod11()
         {
             await TestAsync(
@@ -933,7 +936,7 @@ parseOptions: null);
         }
 
         [WorkItem(3818, "https://github.com/dotnet/roslyn/issues/3818")]
-        [Fact, Trait(Traits.Feature, Traits.Features.CodeActionsAddImport)]
+        [Fact]
         public async Task InExtensionMethodUnderConditionalAccessExpression()
         {
             var initialText =
@@ -987,7 +990,7 @@ namespace Sample
         }
 
         [WorkItem(3818, "https://github.com/dotnet/roslyn/issues/3818")]
-        [Fact, Trait(Traits.Feature, Traits.Features.CodeActionsAddImport)]
+        [Fact]
         public async Task InExtensionMethodUnderMultipleConditionalAccessExpressions()
         {
             var initialText =
@@ -1033,7 +1036,7 @@ public class C
         }
 
         [WorkItem(3818, "https://github.com/dotnet/roslyn/issues/3818")]
-        [Fact, Trait(Traits.Feature, Traits.Features.CodeActionsAddImport)]
+        [Fact]
         public async Task InExtensionMethodUnderMultipleConditionalAccessExpressions2()
         {
             var initialText =
@@ -1078,7 +1081,7 @@ public class C
             await TestInRegularAndScriptAsync(initialText, expectedText);
         }
 
-        [Fact, Trait(Traits.Feature, Traits.Features.CodeActionsAddImport)]
+        [Fact]
         public async Task TestDeconstructExtension()
         {
             await TestAsync(
@@ -1119,9 +1122,10 @@ namespace N
 parseOptions: null);
         }
 
+        [Theory]
+        [CombinatorialData]
         [WorkItem(16547, "https://github.com/dotnet/roslyn/issues/16547")]
-        [Fact, Trait(Traits.Feature, Traits.Features.CodeActionsAddImport)]
-        public async Task TestAddUsingForAddExtentionMethodWithSameNameAsProperty()
+        public async Task TestAddUsingForAddExtentionMethodWithSameNameAsProperty(TestHost testHost)
         {
             await TestAsync(
 @"
@@ -1179,7 +1183,227 @@ namespace A.Extensions
             return foo;
         }
     }
-}");
+}", testHost);
+        }
+
+        [Theory]
+        [CombinatorialData]
+        [WorkItem(39155, "https://github.com/dotnet/roslyn/issues/39155")]
+        public async Task TestExtensionGetAwaiterOverload(TestHost testHost)
+        {
+            await TestAsync(
+@"
+using System;
+using System.Runtime.CompilerServices;
+
+namespace A
+{
+    public class Foo
+    {
+        async void M(Foo foo)
+        {
+            [|await foo|];
+        }
+    }
+
+    public static class BarExtensions
+    {
+        public static Extension.FooAwaiter GetAwaiter(this string s) => default;
+    }
+}
+
+namespace A.Extension
+{
+    public static class FooExtensions
+    {
+        public static FooAwaiter GetAwaiter(this Foo foo) => default;
+    }
+
+    public struct FooAwaiter : INotifyCompletion
+    {
+        public bool IsCompleted { get; }
+
+        public void OnCompleted(Action continuation)
+        {
+        }
+
+        public void GetResult()
+        {
+        }
+    }
+}
+",
+@"
+using System;
+using System.Runtime.CompilerServices;
+using A.Extension;
+
+namespace A
+{
+    public class Foo
+    {
+        async void M(Foo foo)
+        {
+            await foo;
+        }
+    }
+
+    public static class BarExtensions
+    {
+        public static Extension.FooAwaiter GetAwaiter(this string s) => default;
+    }
+}
+
+namespace A.Extension
+{
+    public static class FooExtensions
+    {
+        public static FooAwaiter GetAwaiter(this Foo foo) => default;
+    }
+
+    public struct FooAwaiter : INotifyCompletion
+    {
+        public bool IsCompleted { get; }
+
+        public void OnCompleted(Action continuation)
+        {
+        }
+
+        public void GetResult()
+        {
+        }
+    }
+}
+", testHost);
+        }
+
+        [Theory]
+        [CombinatorialData]
+        [WorkItem(39155, "https://github.com/dotnet/roslyn/issues/39155")]
+        public async Task TestExtensionSelectOverload(TestHost testHost)
+        {
+            await TestAsync(
+@"
+using System;
+using System.Collections.Generic;
+
+namespace A
+{
+    public class Foo
+    {
+        void M(Foo foo)
+        {
+            _ = [|from x in foo|] select x;
+        }
+    }
+
+    public static class BarExtensions
+    {
+        public static IEnumerable<int> Select(this string foo, Func<int, int> f) => null;
+    }
+}
+
+namespace A.Extension
+{
+    public static class FooExtensions
+    {
+        public static IEnumerable<int> Select(this Foo foo, Func<int, int> f) => null;
+    }
+}
+",
+@"
+using System;
+using System.Collections.Generic;
+using A.Extension;
+
+namespace A
+{
+    public class Foo
+    {
+        void M(Foo foo)
+        {
+            _ = from x in foo select x;
+        }
+    }
+
+    public static class BarExtensions
+    {
+        public static IEnumerable<int> Select(this string foo, Func<int, int> f) => null;
+    }
+}
+
+namespace A.Extension
+{
+    public static class FooExtensions
+    {
+        public static IEnumerable<int> Select(this Foo foo, Func<int, int> f) => null;
+    }
+}
+", testHost);
+        }
+
+        [Fact]
+        public async Task TestExtensionDeconstructOverload()
+        {
+            await TestAsync(
+@"
+using System;
+using System.Collections.Generic;
+
+namespace A
+{
+    public class Foo
+    {
+        void M(Foo foo)
+        {
+            var (x, y) = [|foo|];
+        }
+    }
+
+    public static class BarExtensions
+    {
+        public static void Deconstruct(this string foo, out int a, out int b) => throw null;
+    }
+}
+
+namespace A.Extension
+{
+    public static class FooExtensions
+    {
+        public static void Deconstruct(this Foo foo, out int a, out int b) => throw null;
+    }
+}
+",
+@"
+using System;
+using System.Collections.Generic;
+using A.Extension;
+
+namespace A
+{
+    public class Foo
+    {
+        void M(Foo foo)
+        {
+            var (x, y) = foo;
+        }
+    }
+
+    public static class BarExtensions
+    {
+        public static void Deconstruct(this string foo, out int a, out int b) => throw null;
+    }
+}
+
+namespace A.Extension
+{
+    public static class FooExtensions
+    {
+        public static void Deconstruct(this Foo foo, out int a, out int b) => throw null;
+    }
+}
+",
+parseOptions: null);
         }
     }
 }

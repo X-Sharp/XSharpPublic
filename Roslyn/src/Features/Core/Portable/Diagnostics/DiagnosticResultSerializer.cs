@@ -1,115 +1,175 @@
-﻿// Copyright (c) Microsoft.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
+﻿// Licensed to the .NET Foundation under one or more agreements.
+// The .NET Foundation licenses this file to you under the MIT license.
+// See the LICENSE file in the project root for more information.
+
+#nullable enable
 
 using System;
+using System.Diagnostics;
 using System.Collections.Generic;
 using System.Collections.Immutable;
-using System.Runtime.CompilerServices;
 using System.Threading;
-using Microsoft.CodeAnalysis.Diagnostics;
 using Microsoft.CodeAnalysis.Diagnostics.Telemetry;
+using Microsoft.CodeAnalysis.Host;
 using Microsoft.CodeAnalysis.Shared.Extensions;
 using Microsoft.CodeAnalysis.Workspaces.Diagnostics;
 using Roslyn.Utilities;
+using System.Diagnostics.CodeAnalysis;
+using Microsoft.CodeAnalysis.ErrorReporting;
 
 namespace Microsoft.CodeAnalysis.Diagnostics
 {
     internal static class DiagnosticResultSerializer
     {
-        public static (int diagnostics, int telemetry, int exceptions) Serialize(
-            ObjectWriter writer, DiagnosticAnalysisResultMap<string, DiagnosticAnalysisResultBuilder> result, CancellationToken cancellationToken)
+        public static (int diagnostics, int telemetry) WriteDiagnosticAnalysisResults(
+            ObjectWriter writer,
+            AnalysisKind? analysisKind,
+            DiagnosticAnalysisResultMap<string, DiagnosticAnalysisResultBuilder> result,
+            CancellationToken cancellationToken)
         {
             var diagnosticCount = 0;
             var diagnosticSerializer = new DiagnosticDataSerializer(VersionStamp.Default, VersionStamp.Default);
 
-            var analysisResult = result.AnalysisResult;
-
-            writer.WriteInt32(analysisResult.Count);
-            foreach (var kv in analysisResult)
+            writer.WriteInt32(result.AnalysisResult.Count);
+            foreach (var (analyzerId, analyzerResults) in result.AnalysisResult)
             {
-                writer.WriteString(kv.Key);
+                writer.WriteString(analyzerId);
 
-                diagnosticCount += Serialize(writer, diagnosticSerializer, kv.Value.SyntaxLocals, cancellationToken);
-                diagnosticCount += Serialize(writer, diagnosticSerializer, kv.Value.SemanticLocals, cancellationToken);
-                diagnosticCount += Serialize(writer, diagnosticSerializer, kv.Value.NonLocals, cancellationToken);
+                switch (analysisKind)
+                {
+                    case AnalysisKind.Syntax:
+                        diagnosticCount += WriteDiagnosticDataMap(writer, diagnosticSerializer, analyzerResults.SyntaxLocals, cancellationToken);
+                        break;
 
-                diagnosticSerializer.WriteTo(writer, kv.Value.Others, cancellationToken);
-                diagnosticCount += kv.Value.Others.Length;
+                    case AnalysisKind.Semantic:
+                        diagnosticCount += WriteDiagnosticDataMap(writer, diagnosticSerializer, analyzerResults.SemanticLocals, cancellationToken);
+                        break;
+
+                    case null:
+                        diagnosticCount += WriteDiagnosticDataMap(writer, diagnosticSerializer, analyzerResults.SyntaxLocals, cancellationToken);
+                        diagnosticCount += WriteDiagnosticDataMap(writer, diagnosticSerializer, analyzerResults.SemanticLocals, cancellationToken);
+                        diagnosticCount += WriteDiagnosticDataMap(writer, diagnosticSerializer, analyzerResults.NonLocals, cancellationToken);
+
+                        diagnosticSerializer.WriteDiagnosticData(writer, analyzerResults.Others, cancellationToken);
+                        diagnosticCount += analyzerResults.Others.Length;
+                        break;
+
+                    default:
+                        throw ExceptionUtilities.UnexpectedValue(analysisKind.Value);
+                }
             }
 
-            var telemetryInfo = result.TelemetryInfo;
-
-            writer.WriteInt32(telemetryInfo.Count);
-            foreach (var kv in telemetryInfo)
+            writer.WriteInt32(result.TelemetryInfo.Count);
+            foreach (var (analyzerId, analyzerTelemetry) in result.TelemetryInfo)
             {
-                writer.WriteString(kv.Key);
-                Serialize(writer, kv.Value, cancellationToken);
-            }
-
-            var exceptions = result.Exceptions;
-
-            writer.WriteInt32(exceptions.Count);
-            foreach (var kv in exceptions)
-            {
-                writer.WriteString(kv.Key);
-                diagnosticSerializer.WriteTo(writer, kv.Value, cancellationToken);
+                writer.WriteString(analyzerId);
+                WriteTelemetry(writer, analyzerTelemetry, cancellationToken);
             }
 
             // report how many data has been sent
-            return (diagnosticCount, telemetryInfo.Count, exceptions.Count);
+            return (diagnosticCount, result.TelemetryInfo.Count);
         }
 
-        public static DiagnosticAnalysisResultMap<DiagnosticAnalyzer, DiagnosticAnalysisResult> Deserialize(
-            ObjectReader reader, IDictionary<string, DiagnosticAnalyzer> analyzerMap, Project project, VersionStamp version, CancellationToken cancellationToken)
+        public static bool TryReadDiagnosticAnalysisResults(
+            ObjectReader reader,
+            IDictionary<string, DiagnosticAnalyzer> analyzerMap,
+            DocumentAnalysisScope? documentAnalysisScope,
+            Project project,
+            VersionStamp version,
+            CancellationToken cancellationToken,
+            [NotNullWhen(returnValue: true)] out DiagnosticAnalysisResultMap<DiagnosticAnalyzer, DiagnosticAnalysisResult>? result)
         {
-            var diagnosticDataSerializer = new DiagnosticDataSerializer(VersionStamp.Default, VersionStamp.Default);
+            result = null;
 
-            var analysisMap = ImmutableDictionary.CreateBuilder<DiagnosticAnalyzer, DiagnosticAnalysisResult>();
-
-            var analysisCount = reader.ReadInt32();
-            for (var i = 0; i < analysisCount; i++)
+            try
             {
-                var analyzer = analyzerMap[reader.ReadString()];
+                var diagnosticDataSerializer = new DiagnosticDataSerializer(VersionStamp.Default, VersionStamp.Default);
 
-                var syntaxLocalMap = Deserialize(reader, diagnosticDataSerializer, project, cancellationToken);
-                var semanticLocalMap = Deserialize(reader, diagnosticDataSerializer, project, cancellationToken);
-                var nonLocalMap = Deserialize(reader, diagnosticDataSerializer, project, cancellationToken);
+                var analysisMap = ImmutableDictionary.CreateBuilder<DiagnosticAnalyzer, DiagnosticAnalysisResult>();
+                var documentIds = documentAnalysisScope != null ? ImmutableHashSet.Create(documentAnalysisScope.TextDocument.Id) : null;
 
-                var others = diagnosticDataSerializer.ReadFrom(reader, project, cancellationToken);
+                var analysisCount = reader.ReadInt32();
+                for (var i = 0; i < analysisCount; i++)
+                {
+                    var analyzer = analyzerMap[reader.ReadString()];
 
-                var analysisResult = new DiagnosticAnalysisResult(
-                    project.Id, version,
-                    syntaxLocalMap, semanticLocalMap, nonLocalMap, GetOrDefault(others),
-                    documentIds: null, fromBuild: false);
+                    DiagnosticAnalysisResult analysisResult;
+                    if (documentAnalysisScope != null)
+                    {
+                        ImmutableDictionary<DocumentId, ImmutableArray<DiagnosticData>>? syntaxLocalMap, semanticLocalMap;
+                        if (documentAnalysisScope.Kind == AnalysisKind.Syntax)
+                        {
+                            if (!TryReadDiagnosticDataMap(reader, diagnosticDataSerializer, project, cancellationToken, out syntaxLocalMap))
+                            {
+                                return false;
+                            }
 
-                analysisMap.Add(analyzer, analysisResult);
+                            semanticLocalMap = ImmutableDictionary<DocumentId, ImmutableArray<DiagnosticData>>.Empty;
+                        }
+                        else
+                        {
+                            Debug.Assert(documentAnalysisScope.Kind == AnalysisKind.Semantic);
+                            if (!TryReadDiagnosticDataMap(reader, diagnosticDataSerializer, project, cancellationToken, out semanticLocalMap))
+                            {
+                                return false;
+                            }
+
+                            syntaxLocalMap = ImmutableDictionary<DocumentId, ImmutableArray<DiagnosticData>>.Empty;
+                        }
+
+                        analysisResult = DiagnosticAnalysisResult.Create(
+                            project,
+                            version,
+                            syntaxLocalMap,
+                            semanticLocalMap,
+                            nonLocalMap: ImmutableDictionary<DocumentId, ImmutableArray<DiagnosticData>>.Empty,
+                            others: ImmutableArray<DiagnosticData>.Empty,
+                            documentIds);
+                    }
+                    else
+                    {
+                        if (!TryReadDiagnosticDataMap(reader, diagnosticDataSerializer, project, cancellationToken, out var syntaxLocalMap) ||
+                            !TryReadDiagnosticDataMap(reader, diagnosticDataSerializer, project, cancellationToken, out var semanticLocalMap) ||
+                            !TryReadDiagnosticDataMap(reader, diagnosticDataSerializer, project, cancellationToken, out var nonLocalMap) ||
+                            !diagnosticDataSerializer.TryReadDiagnosticData(reader, project, document: null, cancellationToken, out var others))
+                        {
+                            return false;
+                        }
+
+                        analysisResult = DiagnosticAnalysisResult.Create(
+                            project,
+                            version,
+                            syntaxLocalMap,
+                            semanticLocalMap,
+                            nonLocalMap,
+                            others.NullToEmpty(),
+                            documentIds: null);
+                    }
+
+                    analysisMap.Add(analyzer, analysisResult);
+                }
+
+                var telemetryMap = ImmutableDictionary.CreateBuilder<DiagnosticAnalyzer, AnalyzerTelemetryInfo>();
+
+                var telemetryCount = reader.ReadInt32();
+                for (var i = 0; i < telemetryCount; i++)
+                {
+                    var analyzer = analyzerMap[reader.ReadString()];
+                    var telemetryInfo = ReadTelemetry(reader, cancellationToken);
+
+                    telemetryMap.Add(analyzer, telemetryInfo);
+                }
+
+                result = DiagnosticAnalysisResultMap.Create(analysisMap.ToImmutable(), telemetryMap.ToImmutable());
+                return true;
             }
-
-            var telemetryMap = ImmutableDictionary.CreateBuilder<DiagnosticAnalyzer, AnalyzerTelemetryInfo>();
-
-            var telemetryCount = reader.ReadInt32();
-            for (var i = 0; i < telemetryCount; i++)
+            catch (Exception ex) when (FatalError.ReportWithoutCrashUnlessCanceled(ex))
             {
-                var analyzer = analyzerMap[reader.ReadString()];
-                var telemetryInfo = Deserialize(reader, cancellationToken);
-
-                telemetryMap.Add(analyzer, telemetryInfo);
+                return false;
             }
-
-            var exceptionMap = ImmutableDictionary.CreateBuilder<DiagnosticAnalyzer, ImmutableArray<DiagnosticData>>();
-
-            var exceptionCount = reader.ReadInt32();
-            for (var i = 0; i < exceptionCount; i++)
-            {
-                var analyzer = analyzerMap[reader.ReadString()];
-                var exceptions = diagnosticDataSerializer.ReadFrom(reader, project, cancellationToken);
-
-                exceptionMap.Add(analyzer, GetOrDefault(exceptions));
-            }
-
-            return DiagnosticAnalysisResultMap.Create(analysisMap.ToImmutable(), telemetryMap.ToImmutable(), exceptionMap.ToImmutable());
         }
 
-        private static int Serialize(
+        private static int WriteDiagnosticDataMap(
             ObjectWriter writer,
             DiagnosticDataSerializer serializer,
             ImmutableDictionary<DocumentId, ImmutableArray<DiagnosticData>> diagnostics,
@@ -118,37 +178,52 @@ namespace Microsoft.CodeAnalysis.Diagnostics
             var count = 0;
 
             writer.WriteInt32(diagnostics.Count);
-            foreach (var kv in diagnostics)
+            foreach (var (documentId, data) in diagnostics)
             {
-                kv.Key.WriteTo(writer);
-                serializer.WriteTo(writer, kv.Value, cancellationToken);
+                documentId.WriteTo(writer);
+                serializer.WriteDiagnosticData(writer, data, cancellationToken);
 
-                count += kv.Value.Length;
+                count += data.Length;
             }
 
             return count;
         }
 
-        private static ImmutableDictionary<DocumentId, ImmutableArray<DiagnosticData>> Deserialize(
+        private static bool TryReadDiagnosticDataMap(
             ObjectReader reader,
             DiagnosticDataSerializer serializer,
             Project project,
-            CancellationToken cancellationToken)
+            CancellationToken cancellationToken,
+            [NotNullWhen(returnValue: true)] out ImmutableDictionary<DocumentId, ImmutableArray<DiagnosticData>>? dataMap)
         {
             var count = reader.ReadInt32();
+
             var map = ImmutableDictionary.CreateBuilder<DocumentId, ImmutableArray<DiagnosticData>>();
             for (var i = 0; i < count; i++)
             {
                 var documentId = DocumentId.ReadFrom(reader);
-                var diagnostics = serializer.ReadFrom(reader, project.GetDocument(documentId), cancellationToken);
+                var document = project.GetDocument(documentId);
 
-                map.Add(documentId, GetOrDefault(diagnostics));
+                if (!serializer.TryReadDiagnosticData(reader, project, document, cancellationToken, out var diagnostics))
+                {
+                    dataMap = null;
+                    return false;
+                }
+
+                // drop diagnostics for non-null document that doesn't support diagnostics
+                if (diagnostics.IsDefault || document?.SupportsDiagnostics() == false)
+                {
+                    continue;
+                }
+
+                map.Add(documentId, diagnostics);
             }
 
-            return map.ToImmutable();
+            dataMap = map.ToImmutable();
+            return true;
         }
 
-        private static void Serialize(ObjectWriter writer, AnalyzerTelemetryInfo telemetryInfo, CancellationToken cancellationToken)
+        private static void WriteTelemetry(ObjectWriter writer, AnalyzerTelemetryInfo telemetryInfo, CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
 
@@ -156,8 +231,11 @@ namespace Microsoft.CodeAnalysis.Diagnostics
             writer.WriteInt32(telemetryInfo.CompilationEndActionsCount);
             writer.WriteInt32(telemetryInfo.CompilationActionsCount);
             writer.WriteInt32(telemetryInfo.SyntaxTreeActionsCount);
+            writer.WriteInt32(telemetryInfo.AdditionalFileActionsCount);
             writer.WriteInt32(telemetryInfo.SemanticModelActionsCount);
             writer.WriteInt32(telemetryInfo.SymbolActionsCount);
+            writer.WriteInt32(telemetryInfo.SymbolStartActionsCount);
+            writer.WriteInt32(telemetryInfo.SymbolEndActionsCount);
             writer.WriteInt32(telemetryInfo.SyntaxNodeActionsCount);
             writer.WriteInt32(telemetryInfo.CodeBlockStartActionsCount);
             writer.WriteInt32(telemetryInfo.CodeBlockEndActionsCount);
@@ -166,11 +244,12 @@ namespace Microsoft.CodeAnalysis.Diagnostics
             writer.WriteInt32(telemetryInfo.OperationBlockActionsCount);
             writer.WriteInt32(telemetryInfo.OperationBlockStartActionsCount);
             writer.WriteInt32(telemetryInfo.OperationBlockEndActionsCount);
+            writer.WriteInt32(telemetryInfo.SuppressionActionsCount);
             writer.WriteInt64(telemetryInfo.ExecutionTime.Ticks);
             writer.WriteBoolean(telemetryInfo.Concurrent);
         }
 
-        private static AnalyzerTelemetryInfo Deserialize(ObjectReader reader, CancellationToken cancellationToken)
+        private static AnalyzerTelemetryInfo ReadTelemetry(ObjectReader reader, CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
 
@@ -178,8 +257,11 @@ namespace Microsoft.CodeAnalysis.Diagnostics
             var compilationEndActionsCount = reader.ReadInt32();
             var compilationActionsCount = reader.ReadInt32();
             var syntaxTreeActionsCount = reader.ReadInt32();
+            var additionalFileActionsCount = reader.ReadInt32();
             var semanticModelActionsCount = reader.ReadInt32();
             var symbolActionsCount = reader.ReadInt32();
+            var symbolStartActionsCount = reader.ReadInt32();
+            var symbolEndActionsCount = reader.ReadInt32();
             var syntaxNodeActionsCount = reader.ReadInt32();
             var codeBlockStartActionsCount = reader.ReadInt32();
             var codeBlockEndActionsCount = reader.ReadInt32();
@@ -188,6 +270,7 @@ namespace Microsoft.CodeAnalysis.Diagnostics
             var operationBlockActionsCount = reader.ReadInt32();
             var operationBlockStartActionsCount = reader.ReadInt32();
             var operationBlockEndActionsCount = reader.ReadInt32();
+            var suppressionActionsCount = reader.ReadInt32();
             var executionTime = new TimeSpan(reader.ReadInt64());
             var concurrent = reader.ReadBoolean();
 
@@ -198,8 +281,11 @@ namespace Microsoft.CodeAnalysis.Diagnostics
                 CompilationActionsCount = compilationActionsCount,
 
                 SyntaxTreeActionsCount = syntaxTreeActionsCount,
+                AdditionalFileActionsCount = additionalFileActionsCount,
                 SemanticModelActionsCount = semanticModelActionsCount,
                 SymbolActionsCount = symbolActionsCount,
+                SymbolStartActionsCount = symbolStartActionsCount,
+                SymbolEndActionsCount = symbolEndActionsCount,
                 SyntaxNodeActionsCount = syntaxNodeActionsCount,
 
                 CodeBlockStartActionsCount = codeBlockStartActionsCount,
@@ -211,15 +297,12 @@ namespace Microsoft.CodeAnalysis.Diagnostics
                 OperationBlockEndActionsCount = operationBlockEndActionsCount,
                 OperationBlockActionsCount = operationBlockActionsCount,
 
+                SuppressionActionsCount = suppressionActionsCount,
+
                 ExecutionTime = executionTime,
 
                 Concurrent = concurrent
             };
-        }
-
-        private static ImmutableArray<T> GetOrDefault<T>(StrongBox<ImmutableArray<T>> items)
-        {
-            return items?.Value ?? default;
         }
     }
 }

@@ -1,4 +1,6 @@
-﻿// Copyright (c) Microsoft.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
+﻿// Licensed to the .NET Foundation under one or more agreements.
+// The .NET Foundation licenses this file to you under the MIT license.
+// See the LICENSE file in the project root for more information.
 
 using Microsoft.CodeAnalysis;
 using Microsoft.VisualStudio.IntegrationTest.Utilities;
@@ -10,8 +12,8 @@ namespace Roslyn.VisualStudio.IntegrationTests.VisualBasic
 {
     public class BasicErrorListCommon : AbstractEditorTest
     {
-        public BasicErrorListCommon(VisualStudioInstanceFactory instanceFactor, string templateName)
-            : base(instanceFactor, nameof(BasicErrorListCommon), templateName)
+        public BasicErrorListCommon(VisualStudioInstanceFactory instanceFactory, string templateName)
+            : base(instanceFactory, nameof(BasicErrorListCommon), templateName)
         {
         }
 
@@ -37,14 +39,14 @@ End Module
                 new ErrorListItem(
                     severity: "Error",
                     description: "Type 'P' is not defined.",
-                    project: "TestProj.vbproj",
+                    project: "TestProj",
                     fileName: "Class1.vb",
                     line: 4,
                     column: 24),
                 new ErrorListItem(
                     severity: "Error",
                     description: "'Goo' is not declared. It may be inaccessible due to its protection level.",
-                    project: "TestProj.vbproj",
+                    project: "TestProj",
                     fileName: "Class1.vb",
                     line: 9,
                     column: 9)
@@ -53,7 +55,7 @@ End Module
             Assert.Equal(expectedContents, actualContents);
             VisualStudio.ErrorList.NavigateToErrorListItem(0);
             VisualStudio.Editor.Verify.CaretPosition(43);
-            VisualStudio.SolutionExplorer.BuildSolution(waitForBuildToFinish: true);
+            VisualStudio.SolutionExplorer.BuildSolution();
             VisualStudio.ErrorList.ShowErrorList();
             actualContents = VisualStudio.ErrorList.GetErrorListContents();
             Assert.Equal(expectedContents, actualContents);
@@ -86,7 +88,7 @@ End Namespace
                 new ErrorListItem(
                     severity: "Error",
                     description: "'FF' is not declared. It may be inaccessible due to its protection level.",
-                    project: "TestProj.vbproj",
+                    project: "TestProj",
                     fileName: "Class1.vb",
                     line: 6,
                     column: 13)

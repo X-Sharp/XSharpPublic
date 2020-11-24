@@ -1,6 +1,9 @@
-﻿// Copyright (c) Microsoft.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
+﻿// Licensed to the .NET Foundation under one or more agreements.
+// The .NET Foundation licenses this file to you under the MIT license.
+// See the LICENSE file in the project root for more information.
 
 using System;
+using System.ComponentModel;
 using System.Diagnostics;
 
 namespace Microsoft.CodeAnalysis.Remote
@@ -16,7 +19,7 @@ namespace Microsoft.CodeAnalysis.Remote
         /// <summary>
         /// Used to distinguish the default instance from one created by <see cref="Boost()"/>.
         /// </summary>
-        private bool _isBoosted;
+        private readonly bool _isBoosted;
 
         private UserOperationBooster(bool isBoosted)
         {
@@ -31,8 +34,12 @@ namespace Microsoft.CodeAnalysis.Remote
 
                 if (s_count == 1)
                 {
-                    // boost to normal priority
-                    Process.GetCurrentProcess().PriorityClass = ProcessPriorityClass.Normal;
+                    // try boosting to normal priority
+                    if (!Process.GetCurrentProcess().TrySetPriorityClass(ProcessPriorityClass.Normal))
+                    {
+                        // The runtime does not support changing process priority, so just return a NOP booster.
+                        return new UserOperationBooster();
+                    }
                 }
 
                 return new UserOperationBooster(isBoosted: true);
@@ -53,8 +60,8 @@ namespace Microsoft.CodeAnalysis.Remote
 
                 if (s_count == 0)
                 {
-                    // when boost is done, set process back to below normal priority
-                    Process.GetCurrentProcess().PriorityClass = ProcessPriorityClass.BelowNormal;
+                    // when boost is done, try setting process back to below normal priority
+                    Process.GetCurrentProcess().TrySetPriorityClass(ProcessPriorityClass.BelowNormal);
                 }
             }
         }

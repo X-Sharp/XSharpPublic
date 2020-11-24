@@ -1,10 +1,14 @@
-﻿// Copyright (c) Microsoft.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
+﻿// Licensed to the .NET Foundation under one or more agreements.
+// The .NET Foundation licenses this file to you under the MIT license.
+// See the LICENSE file in the project root for more information.
 
+using System.Threading;
+using System.Threading.Tasks;
 using Roslyn.Utilities;
 
 namespace Microsoft.CodeAnalysis.AddImport
 {
-    internal abstract partial class AbstractAddImportCodeFixProvider
+    internal abstract partial class AbstractAddImportFeatureService<TSimpleNameSyntax>
     {
         /// <summary>
         /// Code action for adding an import when we find a symbol in source in either our
@@ -25,19 +29,22 @@ namespace Microsoft.CodeAnalysis.AddImport
             private bool ShouldAddProjectReference()
                 => FixData.ProjectReferenceToAdd != null && FixData.ProjectReferenceToAdd != OriginalDocument.Project.Id;
 
-            internal override bool PerformFinalApplicabilityCheck
-                => ShouldAddProjectReference();
-
-            internal override bool IsApplicable(Workspace workspace)
-                => ShouldAddProjectReference() &&
-                   workspace.CanAddProjectReference(
-                    OriginalDocument.Project.Id, FixData.ProjectReferenceToAdd);
-
-            protected override Project UpdateProject(Project project)
+            protected override async Task<Project> UpdateProjectAsync(Project project, bool isPreview, CancellationToken cancellationToken)
             {
-                return ShouldAddProjectReference()
-                    ? project.AddProjectReference(new ProjectReference(FixData.ProjectReferenceToAdd))
-                    : project;
+                if (!ShouldAddProjectReference())
+                {
+                    return project;
+                }
+
+                if (!isPreview)
+                {
+                    if (!await project.Solution.Workspace.CanAddProjectReferenceAsync(OriginalDocument.Project.Id, FixData.ProjectReferenceToAdd, cancellationToken).ConfigureAwait(false))
+                    {
+                        return project;
+                    }
+                }
+
+                return project.AddProjectReference(new ProjectReference(FixData.ProjectReferenceToAdd));
             }
         }
     }

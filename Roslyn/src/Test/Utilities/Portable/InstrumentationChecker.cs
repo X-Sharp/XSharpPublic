@@ -1,4 +1,6 @@
-﻿// Copyright (c) Microsoft.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
+﻿// Licensed to the .NET Foundation under one or more agreements.
+// The .NET Foundation licenses this file to you under the MIT license.
+// See the LICENSE file in the project root for more information.
 
 using System.Collections.Generic;
 using System.Collections.Immutable;
@@ -153,7 +155,7 @@ namespace Microsoft.CodeAnalysis.Runtime
     /// </summary>
     public sealed class VBInstrumentationChecker : BaseInstrumentationChecker
     {
-        private string tab = "    ";
+        private readonly string tab = "    ";
 
         public XCData ExpectedOutput { get { return new XCData(_consoleExpectations.ToString()); } }
 
@@ -272,7 +274,7 @@ End Namespace
     public abstract class BaseInstrumentationChecker
     {
         protected StringBuilder _consoleExpectations = new StringBuilder();
-        private Dictionary<int /*method*/, MethodChecker> _spanExpectations = new Dictionary<int, MethodChecker>();
+        private readonly Dictionary<int /*method*/, MethodChecker> _spanExpectations = new Dictionary<int, MethodChecker>();
 
         protected BaseInstrumentationChecker()
         {
@@ -346,15 +348,18 @@ End Namespace
 
             return actualSpans.SelectAsArray((span, lines) =>
             {
-                if (span.StartLine >= lines.Length) { return null; }
+                if (span.StartLine >= lines.Length)
+                {
+                    return null;
+                }
                 return lines[span.StartLine].Substring(span.StartColumn).TrimEnd(new[] { '\r', '\n', ' ' });
             }, sourceLines);
         }
 
         public class MethodChecker
         {
-            private List<string> _snippetExpectations;
-            private BaseInstrumentationChecker _checker;
+            private readonly List<string> _snippetExpectations;
+            private readonly BaseInstrumentationChecker _checker;
 
             public MethodChecker(BaseInstrumentationChecker checker, bool noSnippets = false)
             {

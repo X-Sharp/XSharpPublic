@@ -1,6 +1,9 @@
-﻿// Copyright (c) Microsoft.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
+﻿// Licensed to the .NET Foundation under one or more agreements.
+// The .NET Foundation licenses this file to you under the MIT license.
+// See the LICENSE file in the project root for more information.
 
-using System.Collections.Generic;
+#nullable enable
+
 using Microsoft.CodeAnalysis.Shared.Extensions;
 
 namespace Microsoft.CodeAnalysis
@@ -16,20 +19,16 @@ namespace Microsoft.CodeAnalysis
                 visitor.WriteString(symbol.Identity.Name);
             }
 
-            public static SymbolKeyResolution Resolve(SymbolKeyReader reader)
+            public static SymbolKeyResolution Resolve(SymbolKeyReader reader, out string? failureReason)
             {
                 var assemblyName = reader.ReadString();
+                var compilation = reader.Compilation;
+                var ignoreAssemblyKey = reader.IgnoreAssemblyKey;
 
-                return CreateSymbolInfo(GetAssemblySymbols(
-                    assemblyName, reader.Compilation, reader.IgnoreAssemblyKey));
-            }
-
-            private static IEnumerable<IAssemblySymbol> GetAssemblySymbols(
-                string assemblyName, Compilation compilation, bool ignoreAssemblyKey)
-            {
+                using var result = PooledArrayBuilder<IAssemblySymbol>.GetInstance();
                 if (ignoreAssemblyKey || compilation.Assembly.Identity.Name == assemblyName)
                 {
-                    yield return compilation.Assembly;
+                    result.AddIfNotNull(compilation.Assembly);
                 }
 
                 // Might need keys for symbols from previous script compilations.
@@ -37,9 +36,11 @@ namespace Microsoft.CodeAnalysis
                 {
                     if (ignoreAssemblyKey || assembly.Identity.Name == assemblyName)
                     {
-                        yield return assembly;
+                        result.AddIfNotNull(assembly);
                     }
                 }
+
+                return CreateResolution(result, $"({nameof(AssemblySymbolKey)} '{assemblyName}' not found)", out failureReason);
             }
         }
     }

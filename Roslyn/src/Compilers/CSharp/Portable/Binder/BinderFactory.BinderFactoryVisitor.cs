@@ -473,13 +473,12 @@ namespace Microsoft.CodeAnalysis.CSharp
                     case SyntaxKind.PropertyDeclaration:
                         var propertyDecl = (PropertyDeclarationSyntax)basePropertyDeclarationSyntax;
                         return ExplicitInterfaceHelpers.GetMemberName(outerBinder, explicitInterfaceSpecifierSyntax, propertyDecl.Identifier.ValueText);
-#if XSHARP
                     case SyntaxKind.IndexerDeclaration:
+#if XSHARP
                         // X# allows indexers with another name than This
                         var indexerDecl = (IndexerDeclarationSyntax)basePropertyDeclarationSyntax;
                         return ExplicitInterfaceHelpers.GetMemberName(outerBinder, explicitInterfaceSpecifierSyntax, string.IsNullOrEmpty(indexerDecl.ThisKeyword.ValueText) ? WellKnownMemberNames.Indexer : indexerDecl.ThisKeyword.ValueText);
 #else
-                    case SyntaxKind.IndexerDeclaration:
                         return ExplicitInterfaceHelpers.GetMemberName(outerBinder, explicitInterfaceSpecifierSyntax, WellKnownMemberNames.Indexer);
 #endif
                     case SyntaxKind.EventDeclaration:

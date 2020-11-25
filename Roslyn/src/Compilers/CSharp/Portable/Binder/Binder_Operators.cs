@@ -264,8 +264,8 @@ namespace Microsoft.CodeAnalysis.CSharp
                     Error(diagnostics, ErrorCode.ERR_LamdaWithCodeblockSyntax, right.Syntax, delegateType);
                 }
             }
-
 #endif
+
             BoundExpression argument = CreateConversion(right, argumentConversion, delegateType, diagnostics);
 
             bool isAddition = opKind == BinaryOperatorKind.Addition;
@@ -568,7 +568,6 @@ namespace Microsoft.CodeAnalysis.CSharp
                 leftType = left.Type;
                 rightType = right.Type;
             }
-
 #endif
             LookupResultKind resultKind;
             ImmutableArray<MethodSymbol> originalUserDefinedOperators;
@@ -623,7 +622,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 var expectedResultType = resultType;
                 
 #endif
-                resultConstant = FoldBinaryOperator(node, resultOperatorKind, resultLeft, resultRight, resultType.SpecialType, diagnostics, ref compoundStringLength);
+                resultConstant = FoldBinaryOperator(node, resultOperatorKind, resultLeft, resultRight, resultType.SpecialType, diagnostics);
 #if XSHARP
                 if (integralTypes && resultConstant != null && resultConstant.SpecialType.IsIntegralType() && expectedResultType.IsIntegralType())
                 {
@@ -645,7 +644,6 @@ namespace Microsoft.CodeAnalysis.CSharp
                 // Otherwise, we'll have reported the problem in ReportBinaryOperatorError.
                 resultLeft = BindToNaturalType(resultLeft, diagnostics, reportNoTargetType: false);
                 resultRight = BindToNaturalType(resultRight, diagnostics, reportNoTargetType: false);
-
 #endif
             }
 
@@ -676,11 +674,10 @@ namespace Microsoft.CodeAnalysis.CSharp
                     result = new BoundConversion(node, result, Conversion.ImplicitNumeric, false, false, null, chosenType) { WasCompilerGenerated = true };
                 }
             }
-
-#endif
             return result;
+#endif
         }
-		
+
         private bool BindSimpleBinaryOperatorParts(BinaryExpressionSyntax node, DiagnosticBag diagnostics, BoundExpression left, BoundExpression right, BinaryOperatorKind kind,
             out LookupResultKind resultKind, out ImmutableArray<MethodSymbol> originalUserDefinedOperators,
             out BinaryOperatorSignature resultSignature, out BinaryOperatorAnalysisResult best)
@@ -849,21 +846,10 @@ namespace Microsoft.CodeAnalysis.CSharp
 
             Debug.Assert(kind == BinaryOperatorKind.LogicalAnd || kind == BinaryOperatorKind.LogicalOr);
 
-
 #if XSHARP
             // Logical Operators on USUALS require a conversion
             AdjustVOUsualLogicOperands(node, ref left, ref right, diagnostics);
 #endif
-            // If either operand is bad, don't try to do binary operator overload resolution; that will just
-            // make cascading errors.
-
-            if (left.HasAnyErrors || right.HasAnyErrors)
-            {
-                // NOTE: no candidate user-defined operators.
-                return new BoundBinaryOperator(node, kind, left, right, ConstantValue.NotAvailable, methodOpt: null,
-                    resultKind: LookupResultKind.Empty, type: GetBinaryOperatorErrorType(kind, diagnostics, node), hasErrors: true);
-            }
-
             // Let's take an easy out here. The vast majority of the time the operands will
             // both be bool. This is the only situation in which the expression can be a
             // constant expression, so do the folding now if we can.
@@ -2422,8 +2408,8 @@ namespace Microsoft.CodeAnalysis.CSharp
             diagnostics.Add(node.Location, useSiteDiagnostics);
 
             bool allowManagedAddressOf = Flags.Includes(BinderFlags.AllowManagedAddressOf);
-
 #if XSHARP
+
             if (Compilation.Options.HasOption(CompilerOption.ImplicitCastsAndConversions, node))
                 allowManagedAddressOf = true;
             if (Compilation.Options.HasRuntime && Compilation.Options.AllowUnsafe)
@@ -2671,6 +2657,9 @@ namespace Microsoft.CodeAnalysis.CSharp
             UnaryOperatorKind resultOperatorKind = signature.Kind;
             var resultMethod = signature.Method;
             var resultConstant = FoldUnaryOperator(node, resultOperatorKind, resultOperand, resultType.SpecialType, diagnostics);
+
+            CheckNativeIntegerFeatureAvailability(resultOperatorKind, node, diagnostics);
+
 #if XSHARP
             BoundExpression res = new BoundUnaryOperator(
                 node,

@@ -78,13 +78,14 @@ namespace Microsoft.CodeAnalysis.CommandLine
                                           string? tempDirectory = null,
                                           string? compilerHash = null,
                                           string? keepAlive = null,
-                                          string? libDirectory = null
 #if XSHARP
+                                        string? libDirectory = null,
                                         string? includeDir = null,
                                         string? winDir = null,
-                                        string? systemDir = null
+                                        string? systemDir = null)
+#else
+                                          string? libDirectory = null)
 #endif
-            )
         {
             Debug.Assert(!string.IsNullOrWhiteSpace(compilerHash), "CompilerHash is required to send request to the build server");
 
@@ -423,11 +424,13 @@ Creating BuildRequest
 
         public CompletedBuildResponse(int returnCode,
                                       bool utf8output,
-                                      string? output
 #if XSHARP
-                                     , string? outputFileName = ""
+                                      string? output,
+                                      string? outputFileName)
+#else
+                                      string? output)
+
 #endif
-            )
         {
             ReturnCode = returnCode;
             Utf8Output = utf8output;
@@ -438,7 +441,7 @@ Creating BuildRequest
             // protocol semantics.
             ErrorOutput = string.Empty;
 #if XSHARP
-            OutputFileName = outputFileName ?? string.Empty;;
+            OutputFileName = outputFileName ?? string.Empty;
 #endif
         }
 

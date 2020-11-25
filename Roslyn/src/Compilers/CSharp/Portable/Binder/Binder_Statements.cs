@@ -1521,6 +1521,10 @@ namespace Microsoft.CodeAnalysis.CSharp
                 }
 
 #endif
+                else
+                {
+                    op2 = BindToNaturalType(op2, diagnostics);
+                }
 
                 if (isRef)
                 {
@@ -1842,7 +1846,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
             else if (!conversion.IsImplicit || !conversion.IsValid)
             {
-                // We suppress conversion errors on default parameters; eg, 
+                // We suppress conversion errors on default parameters; eg,
                 // if someone says "void M(string s = 123) {}". We will report
                 // a special error in the default parameter binder.
 #if XSHARP

@@ -1175,11 +1175,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
 
                 Debug.Assert(s_emptyTypeMembers.Count == 0);
                 return symbols.Count > 0 ?
-#if XSHARP				
+#if XSHARP
 					symbols.ToDictionary(s => s.Name, XSharpString.Comparer) : 
 #else
                     symbols.ToDictionary(s => s.Name, StringOrdinalComparer.Instance) :
-#endif					
+#endif
                     s_emptyTypeMembers;
             }
             finally
@@ -1332,10 +1332,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                 // NOTE: members were added in a single pass over the syntax, so they're already
                 // in lexical order.
 
-#if !XSHARP
-                var membersByName = membersAndInitializers.NonTypeNonIndexerMembers.ToDictionary(s => s.Name);
-#else
+#if XSHARP
                 var membersByName = membersAndInitializers.NonTypeNonIndexerMembers.ToDictionary(s => s.Name, XSharpString.Comparer);
+#else
+                var membersByName = membersAndInitializers.NonTypeNonIndexerMembers.ToDictionary(s => s.Name);
 #endif
                 AddNestedTypesToDictionary(membersByName, GetTypeMembersDictionary());
 

@@ -72,9 +72,9 @@ namespace Microsoft.CodeAnalysis.CSharp
             get
             {
 #if XSHARP
-				return "XS";
+                return "XS";
 #else
-				return "CS";
+                return "CS";
 #endif
 			}
         }

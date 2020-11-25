@@ -400,7 +400,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                             // of a type with the same name (regardless of arity), then we want a constructor,
                             // as long as there were parens after the member name.
 
-                            NamedTypeSymbol binderContainingType = this.ContainingType;
+                            NamedTypeSymbol? binderContainingType = this.ContainingType;
 #if XSHARP
                             if ((object?)binderContainingType != null && XSharpString.Equals(memberName, binderContainingType.Name))
 #else

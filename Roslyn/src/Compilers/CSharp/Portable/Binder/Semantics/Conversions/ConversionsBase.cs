@@ -124,7 +124,23 @@ namespace Microsoft.CodeAnalysis.CSharp
 #endif
             }
 
-            return GetImplicitUserDefinedConversion(sourceExpression, sourceType, destination, ref useSiteDiagnostics);
+            conversion = GetImplicitUserDefinedConversion(sourceExpression, sourceType, destination, ref useSiteDiagnostics);
+            if (conversion.Exists)
+            {
+                return conversion;
+            }
+
+            // The switch expression conversion is "lowest priority", so that if there is a conversion from the expression's
+            // type it will be preferred over the switch expression conversion.  Technically, we would want the language
+            // specification to say that the switch expression conversion only "exists" if there is no implicit conversion
+            // from the type, and we accomplish that by making it lowest priority.  The same is true for the conditional
+            // expression conversion.
+            conversion = GetSwitchExpressionConversion(sourceExpression, destination, ref useSiteDiagnostics);
+            if (conversion.Exists)
+            {
+                return conversion;
+            }
+            return GetConditionalExpressionConversion(sourceExpression, destination, ref useSiteDiagnostics);
         }
 
         /// <summary>
@@ -1176,10 +1192,10 @@ namespace Microsoft.CodeAnalysis.CSharp
                 return true;
             }
 
-#if !XSHARP
-            return false;
-#else
+#if XSHARP
             return HasImplicitVOConstantExpressionConversion(source, destination);
+#else
+            return false;
 #endif
         }
 
@@ -1402,10 +1418,10 @@ namespace Microsoft.CodeAnalysis.CSharp
             return IsAnonymousFunctionCompatibleWithDelegate(anonymousFunction, delegateType);
         }
 
-#if !XSHARP
-        public static LambdaConversionResult IsAnonymousFunctionCompatibleWithType(UnboundLambda anonymousFunction, TypeSymbol type)
-#else
+#if XSHARP
         public virtual LambdaConversionResult IsAnonymousFunctionCompatibleWithType(UnboundLambda anonymousFunction, TypeSymbol type)
+#else
+        public static LambdaConversionResult IsAnonymousFunctionCompatibleWithType(UnboundLambda anonymousFunction, TypeSymbol type)
 #endif
         {
             Debug.Assert((object)anonymousFunction != null);
@@ -1423,10 +1439,10 @@ namespace Microsoft.CodeAnalysis.CSharp
             return LambdaConversionResult.BadTargetType;
         }
 
-#if !XSHARP
-        private static bool HasAnonymousFunctionConversion(BoundExpression source, TypeSymbol destination)
-#else
+#if XSHARP
         private bool HasAnonymousFunctionConversion(BoundExpression source, TypeSymbol destination)
+#else
+        private static bool HasAnonymousFunctionConversion(BoundExpression source, TypeSymbol destination)
 #endif
         {
             Debug.Assert(source != null);

@@ -231,7 +231,7 @@ namespace Microsoft.CodeAnalysis.CSharp
 #if XSHARP
                 return Hash.Combine(thisDecl.Name.ToLower().GetHashCode(),
 #else
-                    return Hash.Combine(thisDecl.Name.GetHashCode(),
+                return Hash.Combine(thisDecl.Name.GetHashCode(),
 #endif
                     Hash.Combine(thisDecl.Arity.GetHashCode(),
                     (int)thisDecl.Kind));

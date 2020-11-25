@@ -45,7 +45,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 else
                 {
 #if ! XSHARP				
-                    Debug.Assert(!pinnedTemp.Type.IsManagedType);
+                    Debug.Assert(!pinnedTemp.Type.IsManagedTypeNoUseSiteDiagnostics);
 #endif					
 
                     // temp = ref *default(T*);

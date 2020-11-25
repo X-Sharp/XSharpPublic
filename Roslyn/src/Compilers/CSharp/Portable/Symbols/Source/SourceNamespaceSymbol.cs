@@ -238,7 +238,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
 #if XSHARP
             var dictionary = new Dictionary<String, ImmutableArray<NamedTypeSymbol>>(XSharpString.Comparer);
 #else
-            var dictionary = new Dictionary<String, ImmutableArray<NamedTypeSymbol>>(StringOrdinalComparer.Instance);
+            var dictionary = new Dictionary<string, ImmutableArray<NamedTypeSymbol>>(StringOrdinalComparer.Instance);
 #endif
 
             foreach (var kvp in map)

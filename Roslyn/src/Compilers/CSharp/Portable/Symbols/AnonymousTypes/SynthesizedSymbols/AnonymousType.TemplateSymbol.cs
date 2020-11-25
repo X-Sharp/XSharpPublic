@@ -187,12 +187,15 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                     new AnonymousTypeToStringMethodSymbol(this));
             }
 
+            protected override NamedTypeSymbol WithTupleDataCore(TupleExtraData newData)
+                => throw ExceptionUtilities.Unreachable;
+
             internal AnonymousTypeKey GetAnonymousTypeKey()
             {
 #if XSHARP
                 var properties = this.Properties.SelectAsArray(p => new AnonymousTypeKeyField(p.Name, isKey: false, ignoreCase: XSharpString.IgnoreCase));
 #else
-                var properties = this.Properties.SelectAsArray(p => new AnonymousTypeKeyField(p.Name, isKey: false, ignoreCase: false));
+                var properties = Properties.SelectAsArray(p => new AnonymousTypeKeyField(p.Name, isKey: false, ignoreCase: false));
 #endif
                 return new AnonymousTypeKey(properties);
             }
@@ -406,14 +409,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                 return ImmutableArray<NamedTypeSymbol>.Empty;
             }
 
-            internal override NamedTypeSymbol BaseTypeNoUseSiteDiagnostics
-            {
 #if XSHARP
-                get { return _baseType; }
+            internal override NamedTypeSymbol BaseTypeNoUseSiteDiagnostics => _baseType;
 #else
-                get { return this.Manager.System_Object; }
+            internal override NamedTypeSymbol BaseTypeNoUseSiteDiagnostics => this.Manager.System_Object;
 #endif
-            }
 
             public override TypeKind TypeKind
             {
@@ -448,7 +448,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                 get { return this; }
             }
 
-            internal override NamedTypeSymbol GetDeclaredBaseType(ConsList<Symbol> basesBeingResolved)
+            internal override NamedTypeSymbol GetDeclaredBaseType(ConsList<TypeSymbol> basesBeingResolved)
             {
 #if XSHARP
                 return _baseType;

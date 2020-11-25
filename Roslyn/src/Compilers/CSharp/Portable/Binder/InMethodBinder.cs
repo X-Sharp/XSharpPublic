@@ -226,6 +226,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 }
 #else
                 result.MergeEqual(originalBinder.CheckViability(parameterSymbol, arity, options, null, diagnose, ref useSiteDiagnostics));
+            }
 #endif
         }
 

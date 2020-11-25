@@ -153,6 +153,8 @@ namespace Microsoft.CodeAnalysis.CSharp
 #else
             Debug.Assert(initializer.AddMethod.Name == "Add");
 #endif
+           Debug.Assert(addMethod.Parameters
+                .Skip(addMethod.IsExtensionMethod ? 1 : 0)
                 .All(p => p.RefKind == RefKind.None || p.RefKind == RefKind.In));
             Debug.Assert(initializer.Arguments.Any());
             Debug.Assert(rewrittenReceiver != null || _inExpressionLambda);

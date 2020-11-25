@@ -672,7 +672,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                     diagnostics.Add(ErrorCode.ERR_NewVirtualInSealed, location, this, ContainingType);
                 }
 #else
-                // '{0}' is a new virtual member in sealed class '{1}'
+                // '{0}' is a new virtual member in sealed type '{1}'
                 diagnostics.Add(ErrorCode.ERR_NewVirtualInSealed, location, this, ContainingType);
 #endif
             }
@@ -693,6 +693,21 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             {
                 // Static member '{0}' cannot be marked 'readonly'.
                 diagnostics.Add(ErrorCode.ERR_StaticMemberCantBeReadOnly, location, this);
+            }
+            else if (LocalDeclaredReadOnly && IsInitOnly)
+            {
+                // 'init' accessors cannot be marked 'readonly'. Mark '{0}' readonly instead.
+                diagnostics.Add(ErrorCode.ERR_InitCannotBeReadonly, location, _property);
+            }
+            else if (LocalDeclaredReadOnly && _isAutoPropertyAccessor && MethodKind == MethodKind.PropertySet)
+            {
+                // Auto-implemented accessor '{0}' cannot be marked 'readonly'.
+                diagnostics.Add(ErrorCode.ERR_AutoSetterCantBeReadOnly, location, this);
+            }
+            else if (_usesInit && IsStatic)
+            {
+                // The 'init' accessor is not valid on static members
+                diagnostics.Add(ErrorCode.ERR_BadInitAccessor, location);
             }
         }
 

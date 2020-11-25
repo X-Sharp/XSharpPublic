@@ -51,7 +51,8 @@ namespace Microsoft.CodeAnalysis.CSharp
                 case Deconstruction:
                 case StackAllocToPointerType:
                 case StackAllocToSpanType:
-
+                case ImplicitPointer:
+                case ObjectCreation:
 #if XSHARP
                 case ExplicitIntegerToPointer:
                 case IntPtr:

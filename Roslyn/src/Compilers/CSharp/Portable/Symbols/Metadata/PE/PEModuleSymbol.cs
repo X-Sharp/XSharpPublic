@@ -425,7 +425,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols.Metadata.PE
         /// <returns>The attributes on the token, minus any ExtensionAttributes.</returns>
         internal ImmutableArray<CSharpAttributeData> GetCustomAttributesFilterCompilerAttributes(EntityHandle token, out bool foundExtension, out bool foundReadOnly)
         {
-            CustomAttributeHandle extensionAttribute;
 #if XSHARP
             var result = GetCustomAttributesForToken(
                 token,

@@ -94,7 +94,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             Debug.Assert(syntaxReferenceOpt != null);
             return (ConstructorDeclarationSyntax)syntaxReferenceOpt.GetSyntax();
         }
-
+        protected override ParameterListSyntax GetParameterList()
+        {
+            return GetSyntax().ParameterList;
+        }
+/*
+TODO RvdH
         internal override int ParameterCount
         {
             get
@@ -126,7 +131,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                 return _lazyParameters;
             }
         }
-
+*/
         protected override CSharpSyntaxNode GetInitializer()
         {
             return GetSyntax().Initializer;

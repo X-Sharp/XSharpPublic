@@ -23,8 +23,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
         private readonly TypeSymbol _explicitInterfaceType;
 #if XSHARP
         private string _name;
-#else
-        private readonly string _name;
 #endif
         private readonly bool _isExpressionBodied;
         private readonly bool _hasAnyBody;
@@ -268,7 +266,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             }
         }
 
-
+        protected override MethodSymbol FindExplicitlyImplementedMethod(DiagnosticBag diagnostics)
+        {
+            var syntax = GetSyntax();
+            return this.FindExplicitlyImplementedMethod(_explicitInterfaceType, syntax.Identifier.ValueText, syntax.ExplicitInterfaceSpecifier, diagnostics);
+        }
+/*
+TODO RVDH
 #if XSHARP
                     // additional checks to see if we are overriding clipper with non clipper etc.
                     overriddenMethod = validateMethod(overriddenMethod, diagnostics, location);
@@ -281,137 +285,27 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                                                                       out _lazyParameters, alsoCopyParamsModifier: true);
                     }
 #endif
+*/
 
+        protected override Location ReturnTypeLocation => GetSyntax().ReturnType.Location;
 
-                }
-                else if (_refKind == RefKind.RefReadOnly)
-                {
-                    var modifierType = withTypeParamsBinder.GetWellKnownType(WellKnownType.System_Runtime_InteropServices_InAttribute, diagnostics, syntax.ReturnType);
+        protected override TypeSymbol ExplicitInterfaceType => _explicitInterfaceType;
 
-                    _lazyCustomModifiers = CustomModifiersTuple.Create(
-                        typeCustomModifiers: ImmutableArray<CustomModifier>.Empty,
-                        refCustomModifiers: ImmutableArray.Create(CSharpCustomModifier.CreateRequired(modifierType)));
-                }
-            }
-            else if ((object)_explicitInterfaceType != null)
-            {
-                //do this last so that it can assume the method symbol is constructed (except for ExplicitInterfaceImplementation)
-                MethodSymbol implementedMethod = this.FindExplicitlyImplementedMethod(_explicitInterfaceType, syntax.Identifier.ValueText, syntax.ExplicitInterfaceSpecifier, diagnostics);
+        protected override bool HasAnyBody => _hasAnyBody;
 
-                if ((object)implementedMethod != null)
-                {
-                    Debug.Assert(_lazyExplicitInterfaceImplementations.IsDefault);
-                    _lazyExplicitInterfaceImplementations = ImmutableArray.Create<MethodSymbol>(implementedMethod);
-
-                    CustomModifierUtils.CopyMethodCustomModifiers(implementedMethod, this, out _lazyReturnType,
-                                                                  out _lazyCustomModifiers,
-                                                                  out _lazyParameters, alsoCopyParamsModifier: false);
-                }
-                else
-                {
-                    Debug.Assert(_lazyExplicitInterfaceImplementations.IsDefault);
-                    _lazyExplicitInterfaceImplementations = ImmutableArray<MethodSymbol>.Empty;
-                }
-            }
-
-            CheckModifiers(_hasAnyBody, location, diagnostics);
-        }
-
-        // This is also used for async lambdas.  Probably not the best place to locate this method, but where else could it go?
-        internal static void ReportAsyncParameterErrors(ImmutableArray<ParameterSymbol> parameters, DiagnosticBag diagnostics, Location location)
+        internal MethodDeclarationSyntax GetSyntax()
         {
-            foreach (var parameter in parameters)
-            {
-                var loc = parameter.Locations.Any() ? parameter.Locations[0] : location;
-                if (parameter.RefKind != RefKind.None)
-                {
-                    diagnostics.Add(ErrorCode.ERR_BadAsyncArgType, loc);
-                }
-                else if (parameter.Type.IsUnsafe())
-                {
-                    diagnostics.Add(ErrorCode.ERR_UnsafeAsyncArgType, loc);
-                }
-                else if (parameter.Type.IsRestrictedType())
-                {
-                    diagnostics.Add(ErrorCode.ERR_BadSpecialByRefLocal, loc, parameter.Type);
-                }
-            }
+            Debug.Assert(syntaxReferenceOpt != null);
+            return (MethodDeclarationSyntax)syntaxReferenceOpt.GetSyntax();
         }
 
-        protected sealed override void LazyAsyncMethodChecks(CancellationToken cancellationToken)
+        protected override void CompleteAsyncMethodChecksBetweenStartAndFinish()
         {
-            Debug.Assert(this.IsPartial == state.HasComplete(CompletionPart.FinishMethodChecks),
-                "Partial methods complete method checks during construction.  " +
-                "Other methods can't complete method checks before executing this method.");
-
-            if (!this.IsAsync)
+            if (IsPartialDefinition)
             {
-                CompleteAsyncMethodChecks(diagnosticsOpt: null, cancellationToken: cancellationToken);
-                return;
-            }
-
-            DiagnosticBag diagnostics = DiagnosticBag.GetInstance();
-            Location errorLocation = this.Locations[0];
-
-            if (this.RefKind != RefKind.None)
-            {
-                var returnTypeSyntax = GetSyntax().ReturnType;
-                if (!returnTypeSyntax.HasErrors)
-                {
-                    var refKeyword = returnTypeSyntax.GetFirstToken();
-                    diagnostics.Add(ErrorCode.ERR_UnexpectedToken, refKeyword.GetLocation(), refKeyword.ToString());
-                }
-            }
-            else if (!this.IsGenericTaskReturningAsync(this.DeclaringCompilation) && !this.IsTaskReturningAsync(this.DeclaringCompilation) && !this.IsVoidReturningAsync())
-            {
-                // The return type of an async method must be void, Task or Task<T>
-                diagnostics.Add(ErrorCode.ERR_BadAsyncReturn, errorLocation);
-            }
-
-            for (NamedTypeSymbol curr = this.ContainingType; (object)curr != null; curr = curr.ContainingType)
-            {
-                var sourceNamedTypeSymbol = curr as SourceNamedTypeSymbol;
-                if ((object)sourceNamedTypeSymbol != null && sourceNamedTypeSymbol.HasSecurityCriticalAttributes)
-                {
-                    diagnostics.Add(ErrorCode.ERR_SecurityCriticalOrSecuritySafeCriticalOnAsyncInClassOrStruct, errorLocation);
-                    break;
-                }
-            }
-
-            if ((this.ImplementationAttributes & System.Reflection.MethodImplAttributes.Synchronized) != 0)
-            {
-                diagnostics.Add(ErrorCode.ERR_SynchronizedAsyncMethod, errorLocation);
-            }
-
-            if (diagnostics.IsEmptyWithoutResolution)
-            {
-                ReportAsyncParameterErrors(_lazyParameters, diagnostics, errorLocation);
-            }
-
-            CompleteAsyncMethodChecks(diagnostics, cancellationToken);
-            diagnostics.Free();
-        }
-
-        private void CompleteAsyncMethodChecks(DiagnosticBag diagnosticsOpt, CancellationToken cancellationToken)
-        {
-            if (state.NotePartComplete(CompletionPart.StartAsyncMethodChecks))
-            {
-                if (diagnosticsOpt != null)
-                {
-                    AddDeclarationDiagnostics(diagnosticsOpt);
-                }
-                if (IsPartialDefinition)
-                {
-                    DeclaringCompilation.SymbolDeclaredEvent(this);
-                }
-                state.NotePartComplete(CompletionPart.FinishAsyncMethodChecks);
-            }
-            else
-            {
-                state.SpinWaitComplete(CompletionPart.FinishAsyncMethodChecks, cancellationToken);
+                DeclaringCompilation.SymbolDeclaredEvent(this);
             }
         }
-
 
         public override ImmutableArray<TypeParameterConstraintClause> GetTypeParameterConstraintClauses(bool canIgnoreNullableContext)
         {
@@ -687,7 +581,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
 
             return result.ToImmutableAndFree();
         }
-
+/*
+	TODO RVDH 
         private void CheckModifiers(bool hasBody, Location location, DiagnosticBag diagnostics)
         {
             const DeclarationModifiers partialMethodInvalidModifierMask = (DeclarationModifiers.AccessibilityMask & ~DeclarationModifiers.Private) |
@@ -807,7 +702,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                 diagnostics.Add(ErrorCode.ERR_VarargsAsync, location);
             }
         }
-
+*/
         internal override void ForceComplete(SourceLocation locationOpt, CancellationToken cancellationToken)
         {
             var implementingPart = this.SourcePartialImplementation;

@@ -314,7 +314,7 @@ namespace Microsoft.CodeAnalysis.CSharp
 #if XSHARP
             var symbol = BindNamespaceOrTypeOrAliasSymbol(syntax, diagnostics, basesBeingResolved, basesBeingResolved != null, includeNameSpace: false);
 #else
-            var symbol = BindNamespaceOrTypeOrAliasSymbol(syntax, diagnostics, basesBeingResolved, basesBeingResolved != null);
+            var symbol = BindNamespaceOrTypeOrAliasSymbol(syntax, diagnostics, basesBeingResolved, basesBeingResolved != null || suppressUseSiteDiagnostics);
 #endif
             // symbol must be a TypeSymbol or an Alias to a TypeSymbol
             if (symbol.IsType ||
@@ -873,12 +873,11 @@ namespace Microsoft.CodeAnalysis.CSharp
             DiagnosticBag diagnostics,
             ConsList<TypeSymbol> basesBeingResolved,
             bool suppressUseSiteDiagnostics,
-            NamespaceOrTypeSymbol qualifierOpt)
 #if XSHARP
-            ArrayBuilder<Symbol> symbols = null,
+            NamespaceOrTypeSymbol qualifierOpt,
             bool includeNameSpace = true)
 #else
-            ArrayBuilder<Symbol> symbols = null)
+            NamespaceOrTypeSymbol qualifierOpt)
 #endif
         {
             var identifierValueText = node.Identifier.ValueText;
@@ -926,13 +925,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                     if ((node.Parent == null ||
                           node.Parent.Kind() != SyntaxKind.Attribute && // dynamic not allowed as attribute type
                           SyntaxFacts.IsInTypeOnlyContext(node)) &&
-#if XSHARP
-                XSharpString.Compare(node.Identifier.ValueText, "dynamic") == 0 &&
-#else
-                node.Identifier.ValueText == "dynamic" &&
-#endif
-                !IsViableType(result) &&
-                ((CSharpParseOptions)node.SyntaxTree.Options).LanguageVersion >= MessageID.IDS_FeatureDynamic.RequiredVersion())
+                         Compilation.LanguageVersion >= MessageID.IDS_FeatureDynamic.RequiredVersion())
                     {
                         bindingResult = Compilation.DynamicType;
                         ReportUseSiteDiagnosticForDynamic(diagnostics, node);
@@ -962,6 +955,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             result.Free();
             return NamespaceOrTypeOrAliasSymbolWithAnnotations.CreateUnannotated(AreNullableAnnotationsEnabled(node.Identifier), bindingResult);
         }
+
         /// <summary>
         /// If the node is "nint" or "nuint" and not alone inside nameof, return the corresponding native integer symbol.
         /// Otherwise return null.
@@ -2060,14 +2054,9 @@ namespace Microsoft.CodeAnalysis.CSharp
                         // Single viable result.
                         var singleResult = symbols[0];
 
-#if !XSHARP
                         // Cannot reference System.Void directly.
                         var singleType = singleResult as TypeSymbol;
-#if XSHARP
-                    if ((object)singleType != null && singleType.PrimitiveTypeCode == Cci.PrimitiveTypeCode.Void && XSharpString.Equals(simpleName, "Void"))
-#else
                         if ((object)singleType != null && singleType.PrimitiveTypeCode == Cci.PrimitiveTypeCode.Void && simpleName == "Void")
-#endif
                         {
                             wasError = true;
                             var errorInfo = new CSDiagnosticInfo(ErrorCode.ERR_SystemVoid);
@@ -2076,7 +2065,6 @@ namespace Microsoft.CodeAnalysis.CSharp
                         }
                         // Check for bad symbol.
                         else
-#endif
                         {
                             if (singleResult.Kind == SymbolKind.NamedType &&
                                 ((SourceModuleSymbol)this.Compilation.SourceModule).AnyReferencedAssembliesAreLinked)

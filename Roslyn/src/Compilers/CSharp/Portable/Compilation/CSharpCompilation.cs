@@ -3172,11 +3172,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 {
                     var newDocument = new Cci.DebugSourceDocument(
                         normalizedPath,
-#if XSHARP
-                        Cci.DebugSourceDocument.CorSymLanguageTypeXSharp,
-#else
                         Cci.DebugSourceDocument.CorSymLanguageTypeCSharp,
-#endif                                    
                         MakeChecksumBytes(checksumText),
                         Guid.Parse(checksumDirective.Guid.ValueText));
 
@@ -3223,11 +3219,8 @@ namespace Microsoft.CodeAnalysis.CSharp
 
             return builder.ToImmutableAndFree();
         }
-#if XSHARP
-        internal override Guid DebugSourceDocumentLanguageId => Cci.DebugSourceDocument.CorSymLanguageTypeXSharp;
-#else
+
         internal override Guid DebugSourceDocumentLanguageId => Cci.DebugSourceDocument.CorSymLanguageTypeCSharp;
-#endif
 
         internal override bool HasCodeToEmit()
         {

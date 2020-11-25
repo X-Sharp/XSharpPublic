@@ -584,20 +584,20 @@ namespace Microsoft.CodeAnalysis.Emit
 
 #else
 
-            AddTopLevelType(names, _rootModuleType);
-            VisitTopLevelType(noPiaIndexer, _rootModuleType);
-            yield return _rootModuleType;
+            AddTopLevelType(names, RootModuleType);
+            VisitTopLevelType(typeReferenceIndexer, RootModuleType);
+            yield return RootModuleType;
 
 #endif
 
-            foreach (var type in this.GetAnonymousTypes(context))
+            foreach (var typeDef in GetAnonymousTypeDefinitions(context))
             {
-                AddTopLevelType(names, type);
-                VisitTopLevelType(noPiaIndexer, type);
-                yield return type;
+                AddTopLevelType(names, typeDef);
+                VisitTopLevelType(typeReferenceIndexer, typeDef);
+                yield return typeDef;
             }
 
-            foreach (var type in this.GetTopLevelTypesCore(context))
+            foreach (var typeDef in GetTopLevelTypeDefinitionsCore(context))
             {
 #if XSHARP
                 // Skip when class has been included as top level
@@ -608,9 +608,9 @@ namespace Microsoft.CodeAnalysis.Emit
                     yield return type;
                 }
 #else
-                AddTopLevelType(names, type);
-                VisitTopLevelType(noPiaIndexer, type);
-                yield return type;
+                AddTopLevelType(names, typeDef);
+                VisitTopLevelType(typeReferenceIndexer, typeDef);
+                yield return typeDef;
 #endif
             }
 

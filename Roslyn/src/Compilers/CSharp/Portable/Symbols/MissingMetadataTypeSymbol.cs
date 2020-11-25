@@ -384,7 +384,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                     _containingModule.Equals(other._containingModule);
 #else
 
-
                 return string.Equals(MetadataName, other.MetadataName, StringComparison.Ordinal) &&
                     arity == other.arity &&
                     string.Equals(_namespaceName, other.NamespaceName, StringComparison.Ordinal) &&
@@ -460,7 +459,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                 return (object?)other != null && XSharpString.Equals(MetadataName, other.MetadataName) &&
                     arity == other.arity &&
                     _containingType.Equals(other._containingType, comparison, isValueTypeOverrideOpt);
-#else
+#endif
                 return (object?)other != null && string.Equals(MetadataName, other.MetadataName, StringComparison.Ordinal) &&
                     arity == other.arity &&
                     _containingType.Equals(other._containingType, comparison, isValueTypeOverrideOpt);

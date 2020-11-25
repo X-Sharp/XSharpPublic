@@ -361,6 +361,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             {
                 return CheckNotNamespaceOrType(expr, diagnostics);
             }
+
             // constants/literals are strictly RValues
             // void is not even an RValue
             if ((expr.ConstantValue != null) || (expr.Type.GetSpecialTypeSafe() == SpecialType.System_Void))

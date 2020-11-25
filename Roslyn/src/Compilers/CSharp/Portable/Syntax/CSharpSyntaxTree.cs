@@ -499,16 +499,16 @@ namespace Microsoft.CodeAnalysis.CSharp
                 //tree.VerifySource();
                 if (options.SaveAsCSharp)
                 {
-                path = System.IO.Path.ChangeExtension(path, ".cs");
-                string source = compilationUnit.ToString();
-                source = source.Replace(";", ";\r\n");
-                source = source.Replace("{", "\r\n{\r\n");
-                source = source.Replace("}", "\r\n}\r\n");
-                source = source.Replace(" . ", ".");
-                source = source.Replace(" :: ", "::");
-                source = source.Replace("}", "}\r\n");
-                source = source.Replace("$", "_");
-                System.IO.File.WriteAllText(path, source);
+                   path = System.IO.Path.ChangeExtension(path, ".cs");
+                   string source = compilationUnit.ToString();
+                   source = source.Replace(";", ";\r\n");
+                   source = source.Replace("{", "\r\n{\r\n");
+                   source = source.Replace("}", "\r\n}\r\n");
+                   source = source.Replace(" . ", ".");
+                   source = source.Replace(" :: ", "::");
+                   source = source.Replace("}", "}\r\n");
+                   source = source.Replace("$", "_");
+                   System.IO.File.WriteAllText(path, source);
                 }
                 return tree;
             }

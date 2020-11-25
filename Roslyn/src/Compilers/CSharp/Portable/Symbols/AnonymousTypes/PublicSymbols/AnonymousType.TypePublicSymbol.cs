@@ -20,9 +20,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
         /// In emit phase it is being substituted with implementation symbol.
         /// </summary>
 #if XSHARP
-        private class AnonymousTypePublicSymbol : NamedTypeSymbol
+        internal class AnonymousTypePublicSymbol : NamedTypeSymbol
 #else
-        private sealed class AnonymousTypePublicSymbol : NamedTypeSymbol
+        internal sealed class AnonymousTypePublicSymbol : NamedTypeSymbol
 #endif
         {
 #if XSHARP
@@ -81,6 +81,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                     _nameToSymbols.Add(symbol.Name, symbol);
                 }
             }
+
+            protected override NamedTypeSymbol WithTupleDataCore(TupleExtraData newData)
+                => throw ExceptionUtilities.Unreachable;
+			
 #if XSHARP
             internal bool IsCodeblock { get; } = false;
 

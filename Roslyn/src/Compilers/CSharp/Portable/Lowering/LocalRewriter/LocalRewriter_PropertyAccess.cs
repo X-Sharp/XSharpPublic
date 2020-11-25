@@ -32,7 +32,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             LookupResultKind resultKind,
             TypeSymbol type,
             bool isLeftOfAssignment,
-            BoundPropertyAccess oldNodeOpt = null)
+            BoundPropertyAccess? oldNodeOpt = null)
         {
 #if XSHARP
             if (propertySymbol is XsVariableSymbol xsvar)

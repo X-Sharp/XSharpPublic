@@ -99,7 +99,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                         SyntaxReference syntaxRef = initializer.Syntax;
 
                         switch (syntaxRef.GetSyntax())
-
+						{
 #if XSHARP
                         if (syntaxRef.GetSyntax().IsKind(SyntaxKind.VariableDeclarator) || syntaxRef.GetSyntax().IsKind(SyntaxKind.PropertyDeclaration))
                         {

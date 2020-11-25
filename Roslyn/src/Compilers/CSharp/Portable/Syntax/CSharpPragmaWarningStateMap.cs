@@ -9,6 +9,7 @@ using System.Collections.Immutable;
 using System.Diagnostics;
 using Microsoft.CodeAnalysis.PooledObjects;
 using Microsoft.CodeAnalysis.Syntax;
+using Roslyn.Utilities;
 #if XSHARP
 using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
 #endif

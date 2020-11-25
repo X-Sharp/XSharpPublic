@@ -143,7 +143,6 @@ namespace Microsoft.CodeAnalysis.CSharp
             analyzedArguments.Free();
             return result;
         }
-#if !XSHARP
         /// <summary>
         /// Bind an expression as a method invocation.
         /// </summary>
@@ -152,6 +151,11 @@ namespace Microsoft.CodeAnalysis.CSharp
             DiagnosticBag diagnostics)
         {
             BoundExpression result;
+#if XSHARP
+            result = BindXsInvocationExpression(node, diagnostics);
+            if (result != null)
+               return result;
+#endif
             if (TryBindNameofOperator(node, diagnostics, out result))
             {
                 return result; // all of the binding is done by BindNameofOperator
@@ -178,7 +182,6 @@ namespace Microsoft.CodeAnalysis.CSharp
             analyzedArguments.Free();
             return result;
         }
-#endif
         private BoundExpression BindArgListOperator(InvocationExpressionSyntax node, DiagnosticBag diagnostics, AnalyzedArguments analyzedArguments)
         {
             bool hasErrors = analyzedArguments.HasErrors;
@@ -524,7 +527,7 @@ namespace Microsoft.CodeAnalysis.CSharp
 
                         Error(diagnostics, ErrorCode.ERR_BadDynamicMethodArg, arg.Syntax, arg.Type);
                         hasErrors = true;
-                	}
+                    }
                 }
             }
             return hasErrors;

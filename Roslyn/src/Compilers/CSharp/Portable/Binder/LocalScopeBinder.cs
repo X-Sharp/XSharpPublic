@@ -317,13 +317,6 @@ namespace Microsoft.CodeAnalysis.CSharp
                 var localSymbol = MakeLocalFunction(decl);
                 locals.Add(localSymbol);
             }
-
-            if (locals != null)
-            {
-                return locals.ToImmutableAndFree();
-            }
-
-            return ImmutableArray<LocalFunctionSymbol>.Empty;
         }
 
         protected SourceLocalSymbol MakeLocal(VariableDeclarationSyntax declaration, VariableDeclaratorSyntax declarator, LocalDeclarationKind kind, Binder initializerBinderOpt = null)

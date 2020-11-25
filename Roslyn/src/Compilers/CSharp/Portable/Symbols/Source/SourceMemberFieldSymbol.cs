@@ -377,7 +377,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             {
                 if (_lazyType != null)
                 {
-#if !XSHARP
                     bool isPointerType = _lazyType.Value.DefaultType.Kind switch
                     {
                         SymbolKind.PointerType => true,

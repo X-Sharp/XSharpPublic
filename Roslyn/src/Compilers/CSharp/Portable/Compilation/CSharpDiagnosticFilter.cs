@@ -226,7 +226,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                     hasPragmaSuppression = true;
                 }
             }
-#else
+#endif
             var pragmaWarningState = tree?.GetPragmaDirectiveWarningState(id, position) ?? Syntax.PragmaWarningState.Default;
             if (pragmaWarningState == Syntax.PragmaWarningState.Disabled)
             {

@@ -45,9 +45,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 return;
             }
 #endif
-            // We can do a table lookup for well-known problems in overload resolution.
-
-            BinaryOperatorEasyOut(underlyingKind, left, right, result)
+            BinaryOperatorEasyOut(underlyingKind, left, right, result);
         }
 
         internal void BinaryOperatorOverloadResolution_NoEasyOut(BinaryOperatorKind kind, BoundExpression left, BoundExpression right, BinaryOperatorOverloadResolutionResult result, ref HashSet<DiagnosticInfo> useSiteDiagnostics)

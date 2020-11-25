@@ -23,7 +23,7 @@ namespace Microsoft.CodeAnalysis.CSharp
 #if XSHARP
     internal sealed partial class Imports
 #else
-        internal sealed class Imports
+    internal sealed class Imports
 #endif
     {
         internal static readonly Imports Empty = new Imports(

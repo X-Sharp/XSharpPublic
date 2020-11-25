@@ -699,8 +699,8 @@ namespace Microsoft.CodeAnalysis.CSharp
                 {
 
 #endif
-                    // generate error
-                    diagnostics.Add(ErrorCode.ERR_AttributeOnBadSymbolType, node.Name.Location, node.GetErrorDisplayName(), attributeUsageInfo.GetValidTargetsErrorArgument());
+                // generate error
+                diagnostics.Add(ErrorCode.ERR_AttributeOnBadSymbolType, node.Name.Location, node.GetErrorDisplayName(), attributeUsageInfo.GetValidTargetsErrorArgument());
                 return false;
 #if XSHARP
                 }

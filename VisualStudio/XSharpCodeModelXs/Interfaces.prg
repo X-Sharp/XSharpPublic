@@ -14,7 +14,7 @@ USING System.Threading.Tasks
 BEGIN NAMESPACE XSharpModel
    INTERFACE IXSharpProject
       METHOD AddFileNode(fileName AS STRING) AS VOID
-      METHOD AddIntellisenseError(file AS STRING, line AS LONG, column AS LONG, Length AS LONG, errCode AS STRING, message AS STRING, sev AS DiagnosticSeverity) AS VOID
+      //METHOD AddIntellisenseError(file AS STRING, line AS LONG, column AS LONG, Length AS LONG, errCode AS STRING, message AS STRING, sev AS DiagnosticSeverity) AS VOID
       METHOD ClearIntellisenseErrors(file AS STRING) AS VOID
       METHOD DeleteFileNode(fileName AS STRING) AS VOID
       METHOD DocumentGetText(file AS STRING, IsOpen REF LOGIC) AS STRING

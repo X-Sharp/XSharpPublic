@@ -70,14 +70,9 @@ namespace Microsoft.CodeAnalysis.CSharp
                         }
                     }
 
-                    BoundExpression boundExpression = BindMethodGroup(node.Expression, invoked: true, indexed: false, diagnostics: diagnostics);
-                    boundExpression = CheckValue(boundExpression, BindValueKind.RValueOrMethodGroup, diagnostics);
-                    string name = boundExpression.Kind == BoundKind.MethodGroup ? GetName(node.Expression) : null;
-                    result = BindInvocationExpression(node, node.Expression, name, boundExpression, analyzedArguments, diagnostics);
-                }
             }
             analyzedArguments.Free();
-            return result;
+            return null;
 
         }
 

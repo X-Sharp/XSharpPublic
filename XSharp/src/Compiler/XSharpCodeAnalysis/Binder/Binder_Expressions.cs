@@ -600,7 +600,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             SimpleNameSyntax node,
             bool invoked,
             DiagnosticBag diagnostics,
-            bool bindMethod
+            bool bindMethod 
             )
         {
             // This method replaced the standard C# BindIdentifier

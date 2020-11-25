@@ -19,7 +19,7 @@ namespace XSharp.Project
     /// Property page for the build events.
     /// </summary>
     [ComVisible(true)]
-    [Guid("49306259-9119-466E-8780-486CFBE2597D")]
+    [Guid(XSharpConstants.BuildEventsPropertiesPage)]
     [ProvideObject(typeof(XSharpBuildEventsPropertyPage))]
     public class XSharpBuildEventsPropertyPage : XPropertyPage
     {

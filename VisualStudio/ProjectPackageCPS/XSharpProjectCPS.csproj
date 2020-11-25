@@ -73,7 +73,20 @@
     <Compile Include="..\..\Common\Constants.cs">
       <Link>Constants.cs</Link>
     </Compile>
+    <Compile Include="AppDesigner\AbstractProjectConfigurationProperties.cs" />
+    <Compile Include="AppDesigner\ProjectDesignerPageMetadata.cs" />
+    <Compile Include="AppDesigner\XSharpProjectConfigurationProperties.cs" />
+    <Compile Include="AppDesigner\XSharpProjectDesignerPage.cs" />
+    <Compile Include="AppDesigner\XSharpProjectDesignerPageProvider.cs" />
     <Compile Include="Debugging\XSharpDebuggerLaunchProvider.cs" />
+    <Compile Include="PooledObjects\InternPool.cs" />
+    <Compile Include="PooledObjects\ObjectPool.cs" />
+    <Compile Include="PooledObjects\PooledArray.cs" />
+    <Compile Include="PooledObjects\PooledArray.DebuggerProxy.cs" />
+    <Compile Include="PooledObjects\PooledArray.Enumerator.cs" />
+    <Compile Include="PooledObjects\PooledDictionary.cs" />
+    <Compile Include="PooledObjects\PooledHashSet.cs" />
+    <Compile Include="PooledObjects\PooledStringBuilder.cs" />
     <Compile Include="XSharpConfiguredProject.cs" />
     <Compile Include="XSharpUnconfiguredProject.cs" />
     <Compile Include="Images\XSharpImagesMonikers.cs" />
@@ -365,6 +378,16 @@
   </ItemGroup>
   <ItemGroup>
     <XamlPropertyRule Include="BuildSystem\Rules\Items\NativeResource.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </XamlPropertyRule>
+  </ItemGroup>
+  <ItemGroup>
+    <XamlPropertyRule Include="BuildSystem\Rules\Items\GeneralBrowseObject.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </XamlPropertyRule>
+    <XamlPropertyRule Include="BuildSystem\Rules\Items\GeneralConfiguredBrowseObject.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </XamlPropertyRule>

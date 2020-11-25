@@ -24,10 +24,16 @@ namespace XSharp.Project
     public abstract class XSharpSettingsPage : SettingsPage, IInternalExtenderProvider
     {
 
+
+        public virtual string GetClassName()
+        {
+            return this.GetType().FullName;
+        }
+
         #region IInternalExtenderProvider Members
         public object GetExtenderNames(string ExtenderCATID, object ExtendeeObject)
         {
-            IVsHierarchy outerHierarchy = HierarchyNode.GetOuterHierarchy(ProjectMgr);
+            IVsHierarchy outerHierarchy = ProjectMgr as IVsHierarchy;//HierarchyNode.GetOuterHierarchy(ProjectMgr);
 
             if (outerHierarchy is IInternalExtenderProvider)
                 return ((IInternalExtenderProvider)outerHierarchy).GetExtenderNames(ExtenderCATID, ExtendeeObject);
@@ -37,7 +43,7 @@ namespace XSharp.Project
 
         public object GetExtender(string ExtenderCATID, string ExtenderName, object ExtendeeObject, IExtenderSite ExtenderSite, int Cookie)
         {
-            IVsHierarchy outerHierarchy = HierarchyNode.GetOuterHierarchy(ProjectMgr);
+            IVsHierarchy outerHierarchy = ProjectMgr as IVsHierarchy; //HierarchyNode.GetOuterHierarchy(ProjectMgr);
 
             if (outerHierarchy is IInternalExtenderProvider)
                 return ((IInternalExtenderProvider)outerHierarchy).GetExtender(
@@ -49,7 +55,7 @@ namespace XSharp.Project
         public bool CanExtend(string ExtenderCATID, string ExtenderName, object ExtendeeObject)
         {
             //
-            IVsHierarchy outerHierarchy = HierarchyNode.GetOuterHierarchy(ProjectMgr);
+            IVsHierarchy outerHierarchy = ProjectMgr as IVsHierarchy; // HierarchyNode.GetOuterHierarchy(ProjectMgr);
 
             if (outerHierarchy is IInternalExtenderProvider)
                 return ((IInternalExtenderProvider)outerHierarchy).CanExtend(
@@ -67,10 +73,11 @@ namespace XSharp.Project
         {
             get
             {
-                Guid catid = ProjectMgr.ProjectMgr.GetCATIDForType(GetType());
-                if (Guid.Empty.CompareTo(catid) == 0)
-                    throw new NotImplementedException();
-                return catid.ToString("B");
+                //Guid catid = ProjectMgr.GetCATIDForType(GetType());
+                //if (Guid.Empty.CompareTo(catid) == 0)
+                //    throw new NotImplementedException();
+                //return catid.ToString("B");
+                return "";
             }
         }
 
@@ -80,15 +87,17 @@ namespace XSharp.Project
         {
             get
             {
-                ObjectExtenders extenderService = (ObjectExtenders)ProjectMgr.GetService(typeof(ObjectExtenders));
-                return extenderService.GetExtenderNames(ExtenderCATID, this);
+                //ObjectExtenders extenderService = (ObjectExtenders)ProjectMgr.GetService(typeof(ObjectExtenders));
+                //return extenderService.GetExtenderNames(ExtenderCATID, this);
+                return null;
             }
         }
 
         public object get_Extender(string extenderName)
         {
-            ObjectExtenders extenderService = (ObjectExtenders)ProjectMgr.GetService(typeof(ObjectExtenders));
-            return extenderService.GetExtender(ExtenderCATID, extenderName, this);
+            //ObjectExtenders extenderService = (ObjectExtenders)ProjectMgr.GetService(typeof(ObjectExtenders));
+            //return extenderService.GetExtender(ExtenderCATID, extenderName, this);
+            return null;
         }
 
         #endregion
@@ -111,12 +120,12 @@ namespace XSharp.Project
         }
         internal bool getPrjLogic(String Name,  bool defaultValue = false)
         {
-            bool property;
-            string value = this.ProjectMgr.GetProjectProperty(Name, true);
-            if (value != null)
-                property = (value.ToLower() == "true");
-            else
-                property = defaultValue;
+            bool property = false;
+            //string value = this.ProjectMgr.GetProjectProperty(Name, true);
+            //if (value != null)
+            //    property = (value.ToLower() == "true");
+            //else
+            //    property = defaultValue;
             return property;
         }
 
@@ -134,12 +143,12 @@ namespace XSharp.Project
 
         internal string getPrjString(String Name, string defaultValue = "", bool unevaluated = false)
         {
-            string property;
-            string value = this.ProjectMgr.GetProjectProperty(Name, true, unevaluated);
-            if (!String.IsNullOrEmpty(value))
-                property = value;
-            else
-                property = defaultValue;
+            string property = "";
+            //string value = this.ProjectMgr.GetProjectProperty(Name, true, unevaluated);
+            //if (!String.IsNullOrEmpty(value))
+            //    property = value;
+            //else
+            //    property = defaultValue;
             return property;
         }
         internal string getCfgString(String Name,  string defaultValue = "")
@@ -169,7 +178,7 @@ namespace XSharp.Project
         internal int getPrjInteger(String Name, int defaultValue)
         {
             int property;
-            string value = this.ProjectMgr.GetProjectProperty(Name,true);
+            string value = ""; // this.ProjectMgr.GetProjectProperty(Name,true);
             bool ok = false;
             int result;
             ok = int.TryParse(value, out result);
@@ -182,9 +191,9 @@ namespace XSharp.Project
 
         internal void RemovePrjProperty(String Name)
         {
-            var prop = this.ProjectMgr.BuildProject.GetProperty(Name);
-            if (prop != null)
-                this.ProjectMgr.BuildProject.RemoveProperty(prop);
+            //var prop = this.ProjectMgr.BuildProject.GetProperty(Name);
+            //if (prop != null)
+            //    this.ProjectMgr.BuildProject.RemoveProperty(prop);
         }
 
         internal static string AddSlash(string folderName)

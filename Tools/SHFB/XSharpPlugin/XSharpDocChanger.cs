@@ -864,16 +864,18 @@ namespace XSharpDocs
             string ArrayBase = "ArrayBase";
             string Date = "Date";
             string Float = "Float";
+            string FoxArray = "FoxArray";
             string Symbol = "Symbol";
             string Psz = "Psz";
             string Usual = "Usual";
             string Binary = "Binary";
             string Currency = "Currency";
             string ArrayReplace = "Array";
+            string FoxArrayReplace = "FoxArray";
             string ArrayBaseReplace = "Array Of";
             string DateReplace = "Date";
             string SymbolReplace = "Symbol";
-            string UsualReplace = "Usual";
+            string UsualReplace = "Usual"; 
             string BinaryReplace = "Binary";
             string CurrencyReplace = "Currency";
             string PszReplace = "Psz";
@@ -883,6 +885,7 @@ namespace XSharpDocs
             replacements.Add(Array, ArrayReplace);
             replacements.Add(Date, DateReplace);
             replacements.Add(Float, FloatReplace);
+            replacements.Add(FoxArray, FoxArrayReplace);
             replacements.Add(Symbol, SymbolReplace);
             replacements.Add(Psz, PszReplace);
             replacements.Add(Usual, UsualReplace);

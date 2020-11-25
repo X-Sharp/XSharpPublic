@@ -24,7 +24,7 @@ namespace XSharp.Project
     /// </summary>
     /// 
     [ComVisible(true)]
-    [Guid("2955A638-C389-4675-BB1C-6B2BC173C1E7")]
+    [Guid(XSharpConstants.DebugPropertiesPage)]
     [ClassInterface(ClassInterfaceType.AutoDual)]
     [ProvideObject(typeof(XSharpDebugPropertyPage))]
     public class XSharpDebugPropertyPage : XSharpSettingsPage

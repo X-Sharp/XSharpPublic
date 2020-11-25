@@ -23,7 +23,7 @@ namespace XSharp.Project
     /// This class implements dialect property page for the project type.
     /// </summary>
     [ComVisible(true)]
-    [Guid("2652FCA6-1C45-4D25-942D-4C5D5EDE9539")]
+    [Guid(XSharpConstants.DialectPropertiesPage)]
     [ClassInterface(ClassInterfaceType.AutoDual)]
     [ProvideObject(typeof(XSharpDialectPropertyPage))]
     public class XSharpDialectPropertyPage : XSharpSettingsPage
@@ -323,7 +323,7 @@ namespace XSharp.Project
 			xpp1 = getPrjLogic(nameof(XPP1), false);
             fox1 = getPrjLogic(nameof(FOX1), false);
             fox2 = getPrjLogic(nameof(FOX2), false);
-            EnableDialectOptions(this.ProjectMgr.GetProjectProperty("Dialect"));
+            //EnableDialectOptions(this.ProjectMgr.GetProjectProperty("Dialect"));
         }
 
         /// <summary>
@@ -337,7 +337,7 @@ namespace XSharp.Project
                 return VSConstants.E_INVALIDARG;
             }
             saving = true;
-
+            /*
             this.ProjectMgr.SetProjectProperty(nameof(VO1), this.vo1.ToString().ToLower());
             this.ProjectMgr.SetProjectProperty(nameof(VO2), this.vo2.ToString().ToLower());
             this.ProjectMgr.SetProjectProperty(nameof(VO3), this.vo3.ToString().ToLower());
@@ -357,7 +357,7 @@ namespace XSharp.Project
 			this.ProjectMgr.SetProjectProperty(nameof(XPP1), this.xpp1.ToString().ToLower());
             this.ProjectMgr.SetProjectProperty(nameof(FOX1), this.fox1.ToString().ToLower());
             this.ProjectMgr.SetProjectProperty(nameof(FOX2), this.fox2.ToString().ToLower());
-
+            */
             this.IsDirty = false;
             saving = false;
             return VSConstants.S_OK;

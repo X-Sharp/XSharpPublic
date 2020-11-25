@@ -78,19 +78,31 @@
     <Compile Include="PropertyPages\XSharpBuildEventsPropertyPagePanel.Designer.cs">
       <DependentUpon>XSharpBuildEventsPropertyPagePanel.cs</DependentUpon>
     </Compile>
-    <Compile Include="PropertyPages\XSharpBuildPropertyPage.cs" />
-    <Compile Include="PropertyPages\XSharpDebugPropertyPage.cs" />
-    <Compile Include="PropertyPages\XSharpDialectPropertyPage.cs" />
+    <Compile Include="PropertyPages\XSharpBuildPropertyPage.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="PropertyPages\XSharpDebugPropertyPage.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="PropertyPages\XSharpDialectPropertyPage.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="PropertyPages\XSharpFileNameEditor.cs" />
-    <Compile Include="PropertyPages\XSharpGeneralPropertyPage.cs" />
-    <Compile Include="PropertyPages\XSharpLanguagePropertyPage.cs" />
+    <Compile Include="PropertyPages\XSharpGeneralPropertyPage.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="PropertyPages\XSharpLanguagePropertyPage.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="PropertyPages\XSharpMLEPropertyForm.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="PropertyPages\XSharpMLEPropertyForm.Designer.cs">
       <DependentUpon>XSharpMLEPropertyForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="PropertyPages\XSharpSettingsPage.cs" />
+    <Compile Include="PropertyPages\XSharpSettingsPage.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="PropertyPages\XSharpSLEPropertyForm.cs">
       <SubType>Form</SubType>
     </Compile>

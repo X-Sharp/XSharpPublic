@@ -22,6 +22,7 @@ using Microsoft.VisualStudio.Designer.Interfaces;
 using Microsoft.VisualStudio.OLE.Interop;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
+using static Microsoft.VisualStudio.VSConstants;
 
 namespace Microsoft.VisualStudio.Project
 {
@@ -31,7 +32,7 @@ namespace Microsoft.VisualStudio.Project
     /// </summary>
     [CLSCompliant(false), ComVisible(true)]
     public abstract class SettingsPage :
-        LocalizableProperties,
+        DialogPage,
         IPropertyPage,
         IDisposable
     {
@@ -40,12 +41,13 @@ namespace Microsoft.VisualStudio.Project
         private bool active;
         private bool dirty = false;
         private IPropertyPageSite site;
-        private ProjectNode project;
-        private ProjectConfig[] projectConfigs;
-        private IVSMDPropertyGrid grid;
+        private EnvDTE.Project envproject;
+        private IVsProject4 project;
+        private IVsProjectCfg2[] projectConfigs;
+        private IVSMDPropertyGrid grid = null;
         private string name;
         private static volatile object Mutex = new object();
-        private bool isDisposed;
+       //private bool isDisposed;
         #endregion
 
         #region properties
@@ -68,7 +70,7 @@ namespace Microsoft.VisualStudio.Project
 
         [Browsable(false)]
         [AutomationBrowsable(false)]
-        public ProjectNode ProjectMgr
+        public IVsProject4 ProjectMgr
         {
             get
             {
@@ -143,16 +145,16 @@ namespace Microsoft.VisualStudio.Project
 
         public string GetProperty(string propertyName)
         {
-            if(this.ProjectMgr != null)
-            {
-                string property;
-                bool found = this.ProjectMgr.BuildProject.GlobalProperties.TryGetValue(propertyName, out property);
-
-                if(found)
-                {
-                    return property;
-                }
-            }
+            //if(this.ProjectMgr != null)
+            //{
+            //    string property;
+            //    //bool found = this.ProjectMgr.BuildProject.GlobalProperties.TryGetValue(propertyName, out property);
+                
+            //    if(found)
+            //    {
+            //        return property;
+            //    }
+            //}
 
             return String.Empty;
         }
@@ -167,11 +169,12 @@ namespace Microsoft.VisualStudio.Project
 
                 for(int i = 0; i < this.projectConfigs.Length; i++)
                 {
-                    ProjectConfig config = projectConfigs[i];
-                    string property = config.GetConfigurationProperty(propertyName, cacheNeedReset);
+                    IVsProjectCfg2 config = projectConfigs[i];
+                    //string property = config.GetConfigurationProperty(propertyName, cacheNeedReset);
+                    string property = null;
                     cacheNeedReset = false;
 
-                    if(property != null)
+                    if(property != null && cacheNeedReset)
                     {
                         string text = property.Trim();
 
@@ -196,8 +199,9 @@ namespace Microsoft.VisualStudio.Project
 
                 for (int i = 0; i < this.projectConfigs.Length; i++)
                 {
-                    ProjectConfig config = projectConfigs[i];
-                    string property = config.GetUnevaluatedConfigurationProperty(propertyName);
+                    var config = projectConfigs[i];
+                    //string property = config.GetUnevaluatedConfigurationProperty(propertyName);
+                    string property = null;
 
                     if (property != null)
                     {
@@ -231,17 +235,17 @@ namespace Microsoft.VisualStudio.Project
                 value = String.Empty;
             }
 
-            if(this.ProjectMgr != null)
-            {
-                for(int i = 0, n = this.projectConfigs.Length; i < n; i++)
-                {
-                    ProjectConfig config = projectConfigs[i];
+            //if(this.ProjectMgr != null)
+            //{
+            //    for(int i = 0, n = this.projectConfigs.Length; i < n; i++)
+            //    {
+            //        IVsProjectCfg2 config = projectConfigs[i];
 
-                    config.SetConfigurationProperty(name, value);
-                }
+            //        config.SetConfigurationProperty(name, value);
+            //    }
 
-                this.ProjectMgr.SetProjectFileDirty(true);
-            }
+            //    this.ProjectMgr.SetProjectFileDirty(true);
+            //}
         }
 
         #endregion
@@ -265,12 +269,13 @@ namespace Microsoft.VisualStudio.Project
                 NativeMethods.SetParent(this.panel.Handle, parent);
             }
 
-            if(this.grid == null && this.project != null && this.project.Site != null)
-            {
-                IVSMDPropertyBrowser pb = this.project.Site.GetService(typeof(IVSMDPropertyBrowser)) as IVSMDPropertyBrowser;
-                Assumes.Present(pb);
-                this.grid = pb.CreatePropertyGrid();
-            }
+            //if(this.grid == null && this.project != null && this.project.Site != null)
+            //{
+                
+            //    IVSMDPropertyBrowser pb = this.project.Site.GetService(typeof(IVSMDPropertyBrowser)) as IVSMDPropertyBrowser;
+            //    Assumes.Present(pb);
+            //    this.grid = pb.CreatePropertyGrid();
+            //}
 
             if (this.grid != null)
             {
@@ -290,22 +295,22 @@ namespace Microsoft.VisualStudio.Project
             }
             RegisterProjectEvents();
         }
-        private bool isRegistered = false;
+        //private bool isRegistered = false;
         private void RegisterProjectEvents()
         {
-            if (this.project != null && ! isRegistered)
-            {
-                this.project.OnProjectPropertyChanged += Project_OnProjectPropertyChanged;
-                isRegistered = true;
-            }
+            //if (this.project != null && ! isRegistered)
+            //{
+            //    this.project.OnProjectPropertyChanged += Project_OnProjectPropertyChanged;
+            //    isRegistered = true;
+            //}
         }
         private void UnRegisterProjectEvents()
         {
-            if (this.project != null)
-            {
-                this.project.OnProjectPropertyChanged -= Project_OnProjectPropertyChanged;
-            }
-            isRegistered = false;
+            //if (this.project != null)
+            //{
+            //    this.project.OnProjectPropertyChanged -= Project_OnProjectPropertyChanged;
+            //}
+            //isRegistered = false;
         }
         protected virtual void Project_OnProjectPropertyChanged(object sender, ProjectPropertyChangedArgs e)
         {
@@ -384,18 +389,18 @@ namespace Microsoft.VisualStudio.Project
 
             if(count > 0)
             {
-                if(punk[0] is ProjectConfig)
+                if (punk[0] is ProjectConfig)
                 {
                     ArrayList configs = new ArrayList();
 
-                    for(int i = 0; i < count; i++)
+                    for (int i = 0; i < count; i++)
                     {
                         ProjectConfig config = (ProjectConfig)punk[i];
 
-                        if(this.project == null || (this.project != (punk[0] as ProjectConfig).ProjectMgr))
+                        if (this.project == null || (this.project != (punk[0] as ProjectConfig).ProjectMgr))
                         {
                             UnRegisterProjectEvents();
-                            this.project = config.ProjectMgr;
+                            //this.project = config.ProjectMgr;
                             RegisterProjectEvents();
                         }
 
@@ -403,17 +408,49 @@ namespace Microsoft.VisualStudio.Project
                     }
 
                     this.projectConfigs = (ProjectConfig[])configs.ToArray(typeof(ProjectConfig));
+            
+                }
+                else if (punk[0] is IVsCfgBrowseObject cfgbrowseobject)
+                {
+                    cfgbrowseobject.GetProjectItem(out var hier, out var itemid);
+                    var hr = hier.GetProperty((uint) VSITEMID.Root, (int) __VSHPROPID.VSHPROPID_ExtObject, out var obj);
+                    if (obj is EnvDTE.Project dteproject)
+                    {
+                        envproject = dteproject;
+                        obj = dteproject.Object;
+                        if (obj is VSLangProj.VSProject prj4)
+                        {
+                            project = prj4;
+                        }
+                    }
+
+
+
+                }
+                else if (punk[0] is IVsBrowseObject browseobject)
+                {
+                    browseobject.GetProjectItem(out var hier, out var itemid);
+                    var hr = hier.GetProperty((uint) VSITEMID.Root, (int) __VSHPROPID.VSHPROPID_ExtObject, out var obj);
+                    if (obj is EnvDTE.Project dteproject)
+                    {
+                        envproject = dteproject;
+                        obj = dteproject.Object;
+                        if (obj is IVsProject4 prj4)
+                        {
+                            project = prj4;
+                        }
+                    }
                 }
                 else if(punk[0] is NodeProperties)
                 {
                     if (this.project == null || (this.project != (punk[0] as NodeProperties).Node.ProjectMgr))
                     {
                         UnRegisterProjectEvents();
-                        this.project = (punk[0] as NodeProperties).Node.ProjectMgr;
+                        //this.project = (punk[0] as NodeProperties).Node.ProjectMgr;
                         RegisterProjectEvents();
                     }
 
-                    Dictionary<string, ProjectConfig> configsMap = new Dictionary<string, ProjectConfig>();
+                    var configsMap = new Dictionary<string, IVsProjectCfg2>();
                     ThreadHelper.JoinableTaskFactory.Run(async delegate
                     {
                         await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
@@ -493,10 +530,10 @@ namespace Microsoft.VisualStudio.Project
 
         #region helper methods
 
-        protected ProjectConfig[] GetProjectConfigurations()
-        {
-            return this.projectConfigs;
-        }
+        //protected IVsProjectCfg2[] GetProjectConfigurations()
+        //{
+        //    return this.projectConfigs;
+        //}
 
         protected void UpdateObjects()
         {
@@ -535,28 +572,28 @@ namespace Microsoft.VisualStudio.Project
         /// <summary>
         /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
         /// </summary>
-        public void Dispose()
-        {
-            this.Dispose(true);
-            GC.SuppressFinalize(this);
-        }
+        //public void Dispose()
+        //{
+        //    this.Dispose(true);
+        //    GC.SuppressFinalize(this);
+        //}
 
 
         #endregion
 
-        private void Dispose(bool disposing)
-        {
-            if(!this.isDisposed)
-            {
-                lock(Mutex)
-                {
-                    if(disposing)
-                    {
-                        this.panel.Dispose();
-                    }
-                    this.isDisposed = true;
-                }
-            }
-        }
+        //private void Dispose(bool disposing)
+        //{
+        //    if(!this.isDisposed)
+        //    {
+        //        lock(Mutex)
+        //        {
+        //            if(disposing)
+        //            {
+        //                this.panel.Dispose();
+        //            }
+        //            this.isDisposed = true;
+        //        }
+        //    }
+        //}
     }
 }

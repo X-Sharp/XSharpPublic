@@ -19,8 +19,8 @@ namespace XSharpVs
     /// <summary>
     /// This contains the definition for the Visual Studio 2013 presentation style
     /// </summary>
-    [PresentationStyleExport("VS2013XSharp", "VS2013XSharp", Version = AssemblyInfo.ProductVersion,
-      Copyright = AssemblyInfo.Copyright, Description = "This style is similar to the one used for Visual " +
+    [PresentationStyleExport("VS2013XSharp", "VS2013XSharp", Version = XSharp.Constants.ProductVersion,
+      Copyright = XSharp.Constants.Copyright, Description = "This style is similar to the one used for Visual " +
         "Studio and MSDN online content but slighly adapter for X# documentation purposes.")]
     public sealed class VisualStudio2013Xs : PresentationStyleSettings
     {

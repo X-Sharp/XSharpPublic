@@ -183,8 +183,6 @@ namespace Microsoft.VisualStudio.Project
 
     [CLSCompliant(false), ComVisible(true)]
     public partial class ProjectConfig :
-        IVsCfg,
-        IVsProjectCfg,
         IVsProjectCfg2,
         IVsProjectFlavorCfg,
         ISpecifyPropertyPages,

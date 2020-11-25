@@ -24,7 +24,7 @@ namespace XSharp.Project
     /// </summary>
     ///
     [ComVisible(true)]
-    [Guid("E994C210-9D6D-4CF4-A061-EBBEA2BC626B")]
+    [Guid(XSharpConstants.BuildPropertiesPage)]
     [ClassInterface(ClassInterfaceType.AutoDual)]
     [ProvideObject(typeof(XSharpBuildPropertyPage))]
     public class XSharpBuildPropertyPage : XSharpSettingsPage
@@ -425,8 +425,8 @@ namespace XSharp.Project
             {
                 if (String.IsNullOrEmpty(DocumentationFile))
                 {
-                    var asmName = this.ProjectMgr.GetProjectProperty("AssemblyName", true);
-                    documentationFile = asmName+ ".Xml";
+                    //var asmName = this.ProjectMgr.GetProjectProperty("AssemblyName", true);
+                    //documentationFile = asmName+ ".Xml";
                 }
             }
             else

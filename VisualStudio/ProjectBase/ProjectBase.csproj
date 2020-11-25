@@ -84,7 +84,9 @@
     <Compile Include="Automation\VSProject\OAVSProject.cs" />
     <Compile Include="Automation\VSProject\OAVSProjectItem.cs" />
     <Compile Include="BuildDependency.cs" />
-    <Compile Include="BuildPropertyPage.cs" />
+    <Compile Include="BuildPropertyPage.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="ComReferenceNode.cs" />
     <Compile Include="ConfigProvider.cs" />
     <Compile Include="ConfigurationProperties.cs" />
@@ -148,7 +150,9 @@
     <Compile Include="ReferenceNode.cs" />
     <Compile Include="RegisteredProjectType.cs" />
     <Compile Include="SelectionListener.cs" />
-    <Compile Include="SettingsPage.cs" />
+    <Compile Include="SettingsPage.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="SingleFileGenerator.cs" />
     <Compile Include="SingleFileGeneratorFactory.cs" />
     <Compile Include="SolutionListener.cs" />

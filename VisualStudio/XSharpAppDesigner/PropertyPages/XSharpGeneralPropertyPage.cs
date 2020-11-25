@@ -24,7 +24,7 @@ namespace XSharp.Project
     /// This class implements general property page for the project type.
     /// </summary>
     [ComVisible(true)]
-    [Guid("53651BEA-799A-45EB-B58C-C884F5417219")]
+    [Guid(XSharpConstants.GeneralPropertiesPage)]
     [ClassInterface(ClassInterfaceType.AutoDual)]
     [ProvideObject(typeof(XSharpGeneralPropertyPage))]
     public class XSharpGeneralPropertyPage : XSharpSettingsPage
@@ -104,6 +104,7 @@ namespace XSharp.Project
             {
                 this.dialect = value;
                 this.IsDirty = true;
+                /*
                 this.ProjectMgr.SetProjectProperty(nameof(Dialect), this.dialect.ToString());
                 this.ProjectMgr.SetProjectProperty("NamedArgs", "False");
                 switch (dialect)
@@ -114,6 +115,7 @@ namespace XSharp.Project
                         this.ProjectMgr.SetProjectProperty("Undeclared", "False");
                         break;
                 }
+                */
             }
         }
 
@@ -184,29 +186,29 @@ namespace XSharp.Project
             set { this.applicationIcon = value; this.IsDirty = true; }
         }
 
-        [ResourcesCategory(Resources.Project)]
-        [LocDisplayName(Resources.ProjectFile)]
-        [ResourcesDescription(Resources.ProjectFileDescription)]
+        //[ResourcesCategory(Resources.Project)]
+        //[LocDisplayName(Resources.ProjectFile)]
+        //[ResourcesDescription(Resources.ProjectFileDescription)]
         /// <summary>
         /// Gets the path to the project file.
         /// </summary>
         /// <remarks>IsDirty flag was switched to true.</remarks>
-        public string ProjectFile
-        {
-            get { return Path.GetFileName(this.ProjectMgr.ProjectFile); }
-        }
+        //public string ProjectFile
+        //{
+        //    get { return Path.GetFileName(this.ProjectMgr.ProjectFile); }
+        //}
 
-        [ResourcesCategory(Resources.Project)]
-        [LocDisplayName(Resources.ProjectFolder)]
-        [ResourcesDescription(Resources.ProjectFolderDescription)]
-        /// <summary>
-        /// Gets the path to the project folder.
-        /// </summary>
-        /// <remarks>IsDirty flag was switched to true.</remarks>
-        public string ProjectFolder
-        {
-            get { return Path.GetDirectoryName(this.ProjectMgr.ProjectFolder); }
-        }
+        //[ResourcesCategory(Resources.Project)]
+        //[LocDisplayName(Resources.ProjectFolder)]
+        //[ResourcesDescription(Resources.ProjectFolderDescription)]
+        ///// <summary>
+        ///// Gets the path to the project folder.
+        ///// </summary>
+        ///// <remarks>IsDirty flag was switched to true.</remarks>
+        //public string ProjectFolder
+        //{
+        //    get { return Path.GetDirectoryName(this.ProjectMgr.ProjectFolder); }
+        //}
 
         [ResourcesCategory(Resources.Project)]
         [LocDisplayName(Resources.OutputFile)]
@@ -270,38 +272,38 @@ namespace XSharp.Project
                 return;
             }
 
-            this.assemblyName = this.ProjectMgr.GetProjectProperty(nameof(AssemblyName), true);
-            string soutputType = this.ProjectMgr.GetProjectProperty(nameof(OutputType), false);
-            this.rootNamespace = this.ProjectMgr.GetProjectProperty(nameof(RootNamespace), false);
-            this.startupObject = this.ProjectMgr.GetProjectProperty(nameof(StartupObject), false);
-            this.applicationIcon = this.ProjectMgr.GetProjectProperty(nameof(ApplicationIcon), false);
+            //this.assemblyName = this.ProjectMgr.GetProjectProperty(nameof(AssemblyName), true);
+            //string soutputType = this.ProjectMgr.GetProjectProperty(nameof(OutputType), false);
+            //this.rootNamespace = this.ProjectMgr.GetProjectProperty(nameof(RootNamespace), false);
+            //this.startupObject = this.ProjectMgr.GetProjectProperty(nameof(StartupObject), false);
+            //this.applicationIcon = this.ProjectMgr.GetProjectProperty(nameof(ApplicationIcon), false);
             this.vulcanCompatibleResources = getCfgLogic(nameof(VulcanCompatibleResources), false);
             this.noWin32Manifest = getCfgLogic(nameof(NoWin32Manifest), false);
             usenativeversion = getPrjLogic(nameof(UseNativeVersion), false);
 
-            if (!Enum.TryParse(soutputType, true, out this.outputType))
-            {
-                this.outputType = OutputType.Library;
-            }
+            //if (!Enum.TryParse(soutputType, true, out this.outputType))
+            //{
+            //    this.outputType = OutputType.Library;
+            //}
 
-            try
-            {
-                this.targetFrameworkMoniker = this.ProjectMgr.TargetFrameworkMoniker;
-            }
-            catch (ArgumentException)
-            {
-                foreach (FrameworkName item in new FrameworkNameConverter().GetStandardValues())
-                {
-                    this.targetFrameworkMoniker = item;
-                    break;
-                }
-            }
+            //try
+            //{
+            //    this.targetFrameworkMoniker = this.ProjectMgr.TargetFrameworkMoniker;
+            //}
+            //catch (ArgumentException)
+            //{
+            //    foreach (FrameworkName item in new FrameworkNameConverter().GetStandardValues())
+            //    {
+            //        this.targetFrameworkMoniker = item;
+            //        break;
+            //    }
+            //}
 
-            string strdialect = this.ProjectMgr.GetProjectProperty(nameof(Dialect), false);
-            if (! Enum.TryParse(strdialect, out dialect))
-            {
-                this.dialect = Dialect.Core;
-            }
+            //string strdialect = this.ProjectMgr.GetProjectProperty(nameof(Dialect), false);
+            //if (! Enum.TryParse(strdialect, out dialect))
+            //{
+            //    this.dialect = Dialect.Core;
+            //}
 
         }
 
@@ -316,39 +318,39 @@ namespace XSharp.Project
                 return VSConstants.E_INVALIDARG;
             }
 
-            IVsPropertyPageFrame propertyPageFrame = (IVsPropertyPageFrame)this.ProjectMgr.Site.GetService((typeof(SVsPropertyPageFrame)));
-            Assumes.Present(propertyPageFrame);
-            bool reloadRequired = this.ProjectMgr.TargetFrameworkMoniker != this.targetFrameworkMoniker;
+            //IVsPropertyPageFrame propertyPageFrame = (IVsPropertyPageFrame)this.ProjectMgr.Site.GetService((typeof(SVsPropertyPageFrame)));
+            //Assumes.Present(propertyPageFrame);
+            //bool reloadRequired = this.ProjectMgr.TargetFrameworkMoniker != this.targetFrameworkMoniker;
 
-            this.ProjectMgr.SetProjectProperty(nameof(AssemblyName), this.assemblyName);
-            this.ProjectMgr.SetProjectProperty(nameof(OutputType), this.outputType.ToString());
-            this.ProjectMgr.SetProjectProperty(nameof(RootNamespace), this.rootNamespace);
-            this.ProjectMgr.SetProjectProperty(nameof(StartupObject), this.startupObject);
-            this.ProjectMgr.SetProjectProperty(nameof(ApplicationIcon), this.applicationIcon);
-            this.ProjectMgr.SetProjectProperty(nameof(Dialect), this.dialect.ToString());
-            this.ProjectMgr.SetProjectProperty(nameof(VulcanCompatibleResources), this.vulcanCompatibleResources.ToString());
-            this.ProjectMgr.SetProjectProperty(nameof(NoWin32Manifest), this.noWin32Manifest.ToString());
-            this.ProjectMgr.SetProjectProperty(nameof(UseNativeVersion), this.usenativeversion.ToString().ToLower());
+            //this.ProjectMgr.SetProjectProperty(nameof(AssemblyName), this.assemblyName);
+            //this.ProjectMgr.SetProjectProperty(nameof(OutputType), this.outputType.ToString());
+            //this.ProjectMgr.SetProjectProperty(nameof(RootNamespace), this.rootNamespace);
+            //this.ProjectMgr.SetProjectProperty(nameof(StartupObject), this.startupObject);
+            //this.ProjectMgr.SetProjectProperty(nameof(ApplicationIcon), this.applicationIcon);
+            //this.ProjectMgr.SetProjectProperty(nameof(Dialect), this.dialect.ToString());
+            //this.ProjectMgr.SetProjectProperty(nameof(VulcanCompatibleResources), this.vulcanCompatibleResources.ToString());
+            //this.ProjectMgr.SetProjectProperty(nameof(NoWin32Manifest), this.noWin32Manifest.ToString());
+            //this.ProjectMgr.SetProjectProperty(nameof(UseNativeVersion), this.usenativeversion.ToString().ToLower());
 
-            // reset properties for projectnode
-            this.ProjectMgr.OutputFile = null;
-            this.ProjectMgr.RootNameSpace = this.rootNamespace;
-            if (reloadRequired)
-            {
-                if (MessageBox.Show(SR.GetString(SR.ReloadPromptOnTargetFxChanged), SR.GetString(SR.ReloadPromptOnTargetFxChangedCaption), MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
-                {
-                    this.ProjectMgr.TargetFrameworkMoniker = this.targetFrameworkMoniker;
-                }
-            }
+            //// reset properties for projectnode
+            //this.ProjectMgr.OutputFile = null;
+            //this.ProjectMgr.RootNameSpace = this.rootNamespace;
+            //if (reloadRequired)
+            //{
+            //    if (MessageBox.Show(SR.GetString(SR.ReloadPromptOnTargetFxChanged), SR.GetString(SR.ReloadPromptOnTargetFxChangedCaption), MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+            //    {
+            //        this.ProjectMgr.TargetFrameworkMoniker = this.targetFrameworkMoniker;
+            //    }
+            //}
 
             this.IsDirty = false;
 
-            if (reloadRequired)
-            {
-                // This prevents the property page from displaying bad data from the zombied (unloaded) project
-                propertyPageFrame.HideFrame();
-                propertyPageFrame.ShowFrame(this.GetType().GUID);
-            }
+            //if (reloadRequired)
+            //{
+            //    // This prevents the property page from displaying bad data from the zombied (unloaded) project
+            //    propertyPageFrame.HideFrame();
+            //    propertyPageFrame.ShowFrame(this.GetType().GUID);
+            //}
 
             return VSConstants.S_OK;
         }

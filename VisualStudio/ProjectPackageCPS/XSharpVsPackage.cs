@@ -70,11 +70,17 @@ namespace XSharp.ProjectSystem
     internal static class ProjectTypeCapabilities
     {
         public const string Default = ProjectCapability.AppDesigner + "; " +
+                                      ProjectCapability.DependenciesTree + "; " +
                                       ProjectCapability.EditAndContinue + "; " +
                                       ProjectCapability.OpenProjectFile + "; " +
                                       ProjectCapability.PreserveFormatting + "; " +
                                       /*ProjectCapability.ProjectConfigurationsDeclaredDimensions + "; " +*/
                                       ProjectCapability.LanguageService + "; " +
+                                    ProjectCapabilities.SdkReferences + "; "+
+                                    ProjectCapabilities.ProjectReferences + "; " +
+                                    ProjectCapabilities.AssemblyReferences + "; " +
+                                    ProjectCapabilities.ComReferences + "; " +
+                                    ProjectCapabilities.WinRTReferences+ "; " +
                                       ProjectCapability.DotNet;
         public const string XSharp = Default + "; " +
                                      ProjectCapability.XSharp + "; " +

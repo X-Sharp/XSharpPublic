@@ -53,7 +53,7 @@ namespace Microsoft.VisualStudio.Project
         #endregion
 
         #region overridden methods
-        public override string GetClassName()
+        public virtual string GetClassName()
         {
             return this.GetType().FullName;
         }

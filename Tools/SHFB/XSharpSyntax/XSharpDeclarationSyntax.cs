@@ -120,11 +120,23 @@ namespace Microsoft.Ddue.Tools
 
             string name = (string)reflection.Evaluate(apiNameExpression);
             bool isSerializable = (bool)reflection.Evaluate(apiIsSerializableTypeExpression);
+            bool isReadOnlyStruct = (bool)reflection.Evaluate(apiIsReadOnlyStructExpression);
+            bool isRefStruct = (bool)reflection.Evaluate(apiIsRefStructExpression);
 
             if(isSerializable)
                 WriteAttribute("T:System.SerializableAttribute", true, writer);
-            WriteAttributes(reflection, writer);
+            WriteAttributes(reflection, writer, ignoreObsoleteAttribute:isRefStruct);
             WriteVisibility(reflection, writer);
+			if(isReadOnlyStruct)
+            {
+                writer.WriteString(" ");
+            writer.WriteKeyword("READONLY");
+            }
+            else if(isRefStruct)
+            {
+                writer.WriteString(" ");
+                writer.WriteKeyword("REF");
+            }
             writer.WriteString(" ");
             writer.WriteKeyword("STRUCTURE");
             writer.WriteString(" ");
@@ -198,6 +210,8 @@ namespace Microsoft.Ddue.Tools
         /// <inheritdoc />
         public override void WriteConstructorSyntax(XPathNavigator reflection, SyntaxWriter writer)
         {
+
+            //string name = (string)reflection.Evaluate(apiContainingTypeNameExpression);
             bool isStatic = (bool)reflection.Evaluate(apiIsStaticExpression);
 
             WriteAttributes(reflection, writer);
@@ -340,6 +354,10 @@ namespace Microsoft.Ddue.Tools
                 case "T:Vulcan.__Array":
                 case "T:XSharp.__Array":
                     writer.WriteKeyword("ARRAY");
+                    break;
+
+                case "T:XSharp.__FoxArray":
+                    writer.WriteKeyword("FOXARRAY");
                     break;
 
                 case "T:XSharp.__ArrayBase`1":
@@ -752,17 +770,20 @@ namespace Microsoft.Ddue.Tools
 
             if(isStatic)
             {
-                if (InFunctionsClass) {
-                    if(isLiteral)
+                if (InFunctionsClass)
+                {
+                    if (isLiteral)
                         writer.WriteKeyword("DEFINE");
                     else
                         writer.WriteKeyword("GLOBAL");
 
                 }
-                else
-                    if(isLiteral) {
+                else if (isLiteral)
+                {
                     writer.WriteKeyword("CONST");
-                } else {
+                }
+                else
+                {
                     writer.WriteKeyword("STATIC");
                 }
 
@@ -864,7 +885,7 @@ namespace Microsoft.Ddue.Tools
         // !EFW - Added indent parameter for property getter/setter attributes.  Added parameterAttributes to
         // suppress line feeds for method parameter attributes.
         private void WriteAttributes(XPathNavigator reflection, SyntaxWriter writer, string indent = null,
-            bool parameterAttributes = false)
+            bool parameterAttributes = false, bool ignoreObsoleteAttribute = false)
         {
             // Handle interop attributes first as they are output in metadata
             if(!parameterAttributes)
@@ -1159,6 +1180,8 @@ namespace Microsoft.Ddue.Tools
                             break;
                         case "T:Vulcan.__Array":
                         case "T:XSharp.__Array":
+                        case "T:XSharp.__ArrayBase":
+                        case "T:XSharp.__FoxArray":
                             writer.WriteKeyword("NULL_ARRAY");
                             break;
                         default:
@@ -1463,6 +1486,7 @@ namespace Microsoft.Ddue.Tools
                 string name = (string)parameter.Evaluate(parameterNameExpression);
                 XPathNavigator type = parameter.SelectSingleNode(parameterTypeExpression);
                 bool isOut = (bool)parameter.Evaluate(parameterIsOutExpression);
+                bool isIn = (bool)parameter.Evaluate(parameterIsInExpression);
                 bool isRef = (bool)parameter.Evaluate(parameterIsRefExpression);
                 bool isParamArray = (bool)parameter.Evaluate(parameterIsParamArrayExpression);
 
@@ -1486,15 +1510,19 @@ namespace Microsoft.Ddue.Tools
 
                 writer.WriteParameter(name);
                 writer.WriteString(" ");
-                if(isParamArray) 
+                if (isParamArray)
                 {
                     writer.WriteKeyword("PARAMS");
                 }
-                else if(isRef)
+                else if (isRef)
                 {
-                    if(isOut)
+                    if (isOut)
                     {
                         writer.WriteKeyword("OUT");
+                    }
+                    else if (isIn)
+                    {
+                        writer.WriteKeyword("IN");
                     }
                     else
                     {

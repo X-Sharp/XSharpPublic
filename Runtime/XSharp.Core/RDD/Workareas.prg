@@ -18,7 +18,9 @@ ABSTRACT CLASS XSharp.RDD.Workareas
     #endregion
     
     STATIC PROTECTED _AllRDDs   AS Dictionary<IRdd, Workareas>
-    
+
+
+
     STATIC CONSTRUCTOR()
         _AllRDDs  := Dictionary<IRdd, Workareas>{}
     RETURN
@@ -27,8 +29,8 @@ ABSTRACT CLASS XSharp.RDD.Workareas
     STATIC METHOD _Add(oRDD AS IRdd, oWA AS Workareas) AS VOID
         BEGIN LOCK _AllRDDs
             IF _AllRDDs:ContainsKey(oRDD)
-                    // this can happen when a RDD was created in a backgroundthread
-                    // and is moved to the main thread for example
+                // this can happen when a RDD was created in a backgroundthread
+                // and is moved to the main thread for example
                 _AllRDDs[oRDD] := oWA
             ELSE
                 _AllRDDs.Add(oRDD, oWA)
@@ -64,14 +66,17 @@ ABSTRACT CLASS XSharp.RDD.Workareas
         
         #region Fields
         PRIVATE Aliases            AS Dictionary<STRING, DWORD>	// 1 based area numbers !
-        PRIVATE RDDs	            AS Dictionary<DWORD, IRdd>
+        PRIVATE RDDs	           AS Dictionary<DWORD, IRdd>
         [DebuggerBrowsable(DebuggerBrowsableState.Never)];
         PRIVATE iCurrentWorkarea    AS DWORD
         PRIVATE WorkareaStack       AS Stack<DWORD>
+        // xbase++ has a cargo slot per Workarea
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)];
+        PRIVATE cargo    := Dictionary<DWORD, OBJECT>{} AS Dictionary<DWORD, OBJECT>      // 1 based area number and value
         
         INTERNAL METHOD PushCurrentWorkarea(dwNew AS DWORD) AS VOID
             WorkareaStack:Push(iCurrentWorkarea)
-        iCurrentWorkarea := dwNew
+            iCurrentWorkarea := dwNew
         
         INTERNAL METHOD PopCurrentWorkarea() AS DWORD
             IF WorkareaStack:Count > 0
@@ -89,6 +94,7 @@ ABSTRACT CLASS XSharp.RDD.Workareas
         WorkareaStack       := Stack<DWORD>{}
     
     ///<summary>Close All RDDs referenced by this Workarea list</summary>
+    /// <returns>TRUE when all areas were closed succesfully. When one or more areas failed to close then FALSE is returned.</returns>
     PUBLIC METHOD CloseAll() AS LOGIC
         LOCAL lResult := TRUE AS LOGIC
         BEGIN LOCK RDDs      
@@ -98,8 +104,8 @@ ABSTRACT CLASS XSharp.RDD.Workareas
                 IF RDDs:ContainsKey(nArea) .AND. RDDs[nArea] != NULL
                     VAR oRdd := RDDs[nArea]
                     TRY
-                            IF ! oRdd:Close()
-                                lResult := FALSE
+                        IF ! oRdd:Close()
+                            lResult := FALSE
                         ENDIF
                     CATCH e AS Exception
                         lResult := FALSE
@@ -115,6 +121,7 @@ ABSTRACT CLASS XSharp.RDD.Workareas
         RETURN lResult 
     
     ///<summary>Commit changes in all workares in this Workarea list</summary>
+    /// <returns>TRUE when all areas were committed succesfully. When one or more areas failed to commit then FALSE is returned.</returns>
     PUBLIC METHOD CommitAll() AS LOGIC
         LOCAL lResult := TRUE AS LOGIC
         BEGIN LOCK RDDs      
@@ -134,6 +141,8 @@ ABSTRACT CLASS XSharp.RDD.Workareas
         RETURN lResult 
     
     ///<summary>Close area with 1 based Workarea number</summary>
+    /// <param name="nArea">1 based Area number for which to find the alias</param>
+    /// <returns>TRUE when the area was closed succesfully.</returns>
     PUBLIC METHOD CloseArea( nArea AS DWORD) AS LOGIC
         LOCAL lResult := FALSE AS LOGIC
         IF IsValidArea(nArea)
@@ -161,12 +170,18 @@ ABSTRACT CLASS XSharp.RDD.Workareas
         ENDIF
         RETURN lResult
     
+    /// <summary>Close the area where this RDD object is used.</summary>
+    /// <param name="oRDD">Object of te RDD that needs to be closed.</param>
+    /// <returns>TRUE when the area was closed.</returns>
+    /// <remarks>This will close the area, even when the method is called from another thread.</remarks>
     PUBLIC METHOD CloseArea(oRDD AS IRdd) AS LOGIC
         // This can be called from any thread and will close the RDD
         // in the right Workarea even if that area is from another thread
         RETURN Workareas._CloseArea(oRDD)
     
-    ///<summary> Return 1 based Workarea Number for Alias or 0 when no found</summary>
+    /// <summary> Return 1 based Workarea Number for Alias or 0 when no found</summary>
+    /// <param name="sAlias">Alias of area to look for. Case INsensitive </param>
+    /// <returns>Area number of an the table with the given alias.</returns>
     PUBLIC METHOD FindAlias(sAlias AS STRING) AS DWORD
         BEGIN LOCK RDDs
             IF !String.IsNullOrEmpty(sAlias)
@@ -178,6 +193,8 @@ ABSTRACT CLASS XSharp.RDD.Workareas
         RETURN 0  
     
     ///<summary> Return 1 based empty Workarea</summary>
+    /// <param name="fromStart">Do we start to search from the start (TRUE) or the end (FALSE)</param>
+    /// <returns>Area number of an area where no table is open.</returns>
     PUBLIC METHOD FindEmptyArea(fromStart AS LOGIC) AS DWORD
         LOCAL i AS DWORD
         BEGIN LOCK RDDs                                  
@@ -197,7 +214,9 @@ ABSTRACT CLASS XSharp.RDD.Workareas
         END LOCK  
         RETURN 0
     
-    ///<summary>Get Alias for 1 based Workarea Number</summary>
+    /// <summary>Get Alias for 1 based Workarea Number</summary>
+    /// <param name="nArea">1 based Area number for which to find the alias</param>
+    /// <returns>Alias or an empty string when there is no table open in the area</returns>
     PUBLIC METHOD GetAlias( nArea AS DWORD) AS STRING
         IF IsValidArea(nArea) 
             BEGIN LOCK RDDs
@@ -283,9 +302,6 @@ ABSTRACT CLASS XSharp.RDD.Workareas
         END GET
     END PROPERTY
 
-    // xbase++ has a cargo slot per Workarea
-
-    PRIVATE cargo    := Dictionary<DWORD, OBJECT>{} AS Dictionary<DWORD, OBJECT>      // 1 based area number and value
 
     PUBLIC METHOD GetCargo(nArea AS DWORD) AS OBJECT
         IF IsValidArea(nArea)

@@ -3,6 +3,7 @@
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
+#ifdef NOTDEFINED
 USING System.Collections
 USING System.Collections.Generic
 USING System.Linq
@@ -301,3 +302,4 @@ BEGIN NAMESPACE XSharp
     END CLASS
 END NAMESPACE
 
+#endif

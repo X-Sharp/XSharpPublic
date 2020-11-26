@@ -6,6 +6,7 @@
 
 USING System.Collections.Generic
 USING System.Threading
+USING SD := System.Diagnostics
 
 /// <summary>The DataSession class contains a list of workareas/cursors</summary>
 /// <remarks>This class also manages the life time of all opened datasessions <br/>
@@ -13,11 +14,17 @@ USING System.Threading
 /// then it will close that datasession and all tables that are opened by it. <br/>
 /// At application shutdown it will also close all opened datasessions including private
 /// datasessions that could be opened by forms or reports.</remarks>
+[SD.DebuggerDisplay("{DebuggerDisplay(),nq}")];
 CLASS XSharp.RDD.DataSession INHERIT Workareas
     #region Static Fields
+    [SD.DebuggerBrowsable(SD.DebuggerBrowsableState.Collapsed)] ;
     PRIVATE STATIC gnSessionId AS LONG
+    [SD.DebuggerBrowsable(SD.DebuggerBrowsableState.Collapsed)] ;
     PRIVATE STATIC sessions    AS List<DataSession>
+    [SD.DebuggerBrowsable(SD.DebuggerBrowsableState.Collapsed)] ;
     PRIVATE STATIC timer       AS System.Timers.Timer
+    /// <summary>List of all open DataSessions</summary>
+    PUBLIC STATIC PROPERTY Sessions   AS DataSession[] GET sessions:ToArray()
     #endregion
     #region Static methods
     STATIC CONSTRUCTOR
@@ -119,5 +126,24 @@ CLASS XSharp.RDD.DataSession INHERIT Workareas
         SELF:Id     := ++gnSessionId
         SELF:Thread := Thread.CurrentThread
         DataSession.Add(SELF)
-        
+
+    /// <summary>Construct a new datasession</summary>
+    /// <param name="cName">The name for this datasession.</param>
+    /// <param name="nId">The ID for the datasession.</param> 
+    PUBLIC CONSTRUCTOR(nId AS LONG, cName as STRING)
+        SUPER()
+        SELF:Name   := cName
+        SELF:Id     := nId
+        IF nId > gnSessionId
+            gnSessionId := nId
+        ENDIF
+        SELF:Thread := Thread.CurrentThread
+        DataSession.Add(SELF)
+    INTERNAL METHOD DebuggerDisplay() AS STRING
+        IF Name:IndexOf("DataSession", StringComparison.OrdinalIgnoreCase) >= 0
+            return i"{Name} Id: {Id}"
+        else
+            return i"DataSession {Name} Id: {Id}"
+        endif
+
 END CLASS

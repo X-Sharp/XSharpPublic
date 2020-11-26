@@ -35,15 +35,21 @@ USING System.Text
 
 #command  CLOSE ALTERNATE            =>  SetAltfile( "" , FALSE)
 
+
+#command  SET COLOR TO [<*spec*>]                     =>  SetColor( #<spec> )
+#command  SET COLOR TO ( <c> )                        =>  SetColor( <c> )
+#command  SET COLOUR TO [<*spec*>]                    =>  SET COLOR TO [<spec>]
+#command CLEAR SCREEN                                 =>  Cls(); SetPos(0,0)
+
 BEGIN NAMESPACE ConsoleApplication1
 
-
-    FUNCTION Start() AS VOID STRICT
+/*
+    FUNCTION Start2() AS VOID STRICT
         TRY
         local aTest as __FoxArray
         aTest := FoxArrayCreate(5,3)
         LOCAL nI AS INT
-        SetColor("W+/B")
+        SET COLOR TO W+/b
         Cls()
         FOR nI = 1 to 15
             aTest[nI] = nI
@@ -89,15 +95,18 @@ BEGIN NAMESPACE ConsoleApplication1
         END TRY
         _Wait()
         RETURN
-        
+  */      
 
-	FUNCTION StartDbc() AS VOID STRICT 
+	FUNCTION Start() AS VOID STRICT 
         TRY
         SET ASSERT OFF
         SET ASSERT ON
         SET ASSERT (.T.)
-        ASSERT 1==0 
-        ASSERT 1==2 MESSAGE "stil not equal"
+        SET COLOR TO gr+/br
+        CLEAR SCREEN
+
+        //ASSERT 1==0 
+        //ASSERT 1==2 MESSAGE "stil not equal"
         CoreDb.RddSetDefault("DBFVFP")
         SetDefault("c:\VFF\Samples\data")
         ? "Opening database SHARED R/W NOVAL"

@@ -1658,7 +1658,7 @@ RETURN
 FUNCTION TestLndRel() AS VOID
     LOCAL nFld AS DWORD
     RddSetDefault("DBFNTX")
-    SetCollationTable(XppCollations.American)
+    SetCollationTable(Collations.American)
     DbUseArea(TRUE,"DBFNTX","c:\Descartes\LndRel\lndrel.dbf","LNDREL")
     DbSetIndex("c:\Descartes\LndRel\lndrel1.ntx")
     ? DbSeek("BAV01IT")

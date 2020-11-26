@@ -323,10 +323,10 @@ STATIC CLASS SqlFunctions
 		oError:Severity		:= ES_ERROR
 		oError:Tries 	 	:= 1
 		RETURN oError
-	STATIC PRIVATE INITONLY cErlaubt AS STRING
+	STATIC PRIVATE INITONLY cAllowed AS STRING
 	STATIC PRIVATE INITONLY aFieldNames AS System.Collections.Generic.Dictionary<STRING, STRING>
 	STATIC CONSTRUCTOR
-		cErlaubt   := "ABCDEFGHIJKLMNOPQRSTUVWXYZ_0123456789_abcdefghijklmnopqrstuvwxyz"	
+		cAllowed   := "ABCDEFGHIJKLMNOPQRSTUVWXYZ_0123456789_abcdefghijklmnopqrstuvwxyz"	
 		aFieldNames := System.Collections.Generic.Dictionary<STRING, STRING>{}
 
     STATIC METHOD  CleanupColumnName( cColumnName AS  STRING ) AS STRING
@@ -351,7 +351,7 @@ STATIC CLASS SqlFunctions
 		cWork := cWork:Replace(",", "")
 		lLastWasOk := FALSE
 		FOREACH IMPLIED cZeichen IN cWork
-			IF cErlaubt:IndexOf(cZeichen) >= 0
+			IF cAllowed:IndexOf(cZeichen) >= 0
 				sb:Append(cZeichen)
 				lLastWasOk := TRUE
 			ELSEIF lLastWasOk
@@ -365,7 +365,7 @@ STATIC CLASS SqlFunctions
 			cWork := cWork:Replace("(", "")
 			cWork := cWork:Replace(")", "")
 			FOREACH IMPLIED cZeichen IN cWork
-				IF cErlaubt:IndexOf(cZeichen) >= 0
+				IF cAllowed:IndexOf(cZeichen) >= 0
 					sb:Append(cZeichen)
 					lLastWasOk := TRUE
 				ELSEIF lLastWasOk

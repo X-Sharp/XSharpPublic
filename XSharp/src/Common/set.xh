@@ -86,7 +86,7 @@
 #command  SET ALTERNATE (<x>)                         =>  Set( Set.Alternate, <x> )
 #command  SET ALTERNATE TO                            =>  SetAltfile( "" , FALSE)
 #command  SET ALTERNATE TO <(file)> [<add: ADDITIVE>] =>  SetAltfile( <(file)>, <.add.> )
-#command  CLOSE ALTERNATE            =>  SetAltfile( "" , FALSE)
+#command  CLOSE ALTERNATE                             =>  SetAltfile( "" , FALSE)
 
 #command  SET PRINTER <x:ON,OFF,&>                    =>  Set( Set.Printer, <(x)> )
 #command  SET PRINTER (<x>)                           =>  Set( Set.Printer, <x> )
@@ -98,6 +98,11 @@
 #command  SET MARGIN TO <x>                           =>  Set( Set.Margin, <(x)> )
 #command  SET MARGIN TO                               =>  Set( Set.Margin, 0 )
 
+#command  SET COLOR TO [<*spec*>]                     =>  SetColor( #<spec> )
+#command  SET COLOR TO ( <c> )                        =>  SetColor( <c> )
+#command  SET COLOUR TO [<*spec*>]                    =>  SET COLOR TO [<spec>]
+
+#command CLEAR SCREEN                                 =>  Cls(); SetPos(0,0)
 
 
 

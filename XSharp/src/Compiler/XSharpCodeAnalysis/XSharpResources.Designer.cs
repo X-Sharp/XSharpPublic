@@ -15976,7 +15976,7 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to &apos;{0}&apos; is ambiguous. Could be  {1} &apos;{2}&apos; or {3} &apos;{4}&apos;. Using the first one..
+        ///   Looks up a localized string similar to &apos;{0}&apos; is ambiguous. Could be  {1} &apos;{2}&apos; in {3} or {4} &apos;{5}&apos; in {6}. Using the first one..
         /// </summary>
         internal static string WRN_VulcanAmbiguous {
             get {

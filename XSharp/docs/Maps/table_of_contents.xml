@@ -101,6 +101,15 @@
     <topicref type="topic" id="437327618609533" modified="2019-10-11T16:34:56.493Z" icon="0" href="__While">
       <caption translate="true">__While</caption>
     </topicref>
+    <topicref type="topic" id="441613804842838" modified="2020-11-26T11:39:20.785Z" icon="0" href="__IncludeLibVFP">
+      <caption translate="true">__IncludeLibVFP</caption>
+    </topicref>
+    <topicref type="topic" id="441614740747067" build="ALL" modified="2020-11-26T11:20:03.991Z" icon="0" href="__ConsoleExample">
+      <caption translate="true">__ConsoleExample</caption>
+    </topicref>
+    <topicref type="topic" id="441615025972125" build="ALL" modified="2020-11-26T11:51:48.948Z" icon="0" href="__TextMerge-Example">
+      <caption translate="true">__TextMerge Example</caption>
+    </topicref>
   </topicref>
   <topicref type="topic" id="423886812341331" build="ALL" modified="2019-06-14T18:30:32.542Z" icon="0" href="XSharp">
     <caption translate="true">X# Documentation</caption>
@@ -1232,9 +1241,6 @@
           <topicref type="topic" id="43701717101438" build="ALL" modified="2019-09-24T14:19:27.440Z" icon="0" href="command_SWITCH">
             <caption translate="true">SWITCH Statement</caption>
           </topicref>
-          <topicref type="topic" id="436998364558141" build="ALL" modified="2019-09-24T14:19:27.446Z" icon="0" href="command_TEXT">
-            <caption translate="true">TEXT Statement</caption>
-          </topicref>
           <topicref type="topic" id="423887467190100" build="ALL" modified="2020-02-06T15:39:30.825Z" icon="0" href="command_THROW">
             <caption translate="true">THROW Statement</caption>
           </topicref>
@@ -1256,8 +1262,23 @@
           <topicref type="topic" id="436968219137144" build="ALL" modified="2019-09-24T14:19:41.739Z" icon="0" href="command_ACCEPT">
             <caption translate="true">ACCEPT Command</caption>
           </topicref>
+          <topicref type="topic" id="441613443425482" build="ALL" modified="2020-11-26T11:10:54.189Z" icon="0" href="Command_CLEAR_SCREEN">
+            <caption translate="true">CLEAR SCREEN Command</caption>
+          </topicref>
+          <topicref type="topic" id="441614645996510" build="ALL" modified="2020-11-26T11:08:31.512Z" icon="0" href="Command_SET_ALTERNATE">
+            <caption translate="true">SET ALTERNATE Command</caption>
+          </topicref>
           <topicref type="topic" id="436967895211580" build="ALL" modified="2019-09-24T14:19:41.745Z" icon="0" href="command_SET_COLOR">
             <caption translate="true">SET COLOR Command</caption>
+          </topicref>
+          <topicref type="topic" id="441616197923658" build="ALL" modified="2020-11-26T11:07:48.664Z" icon="0" href="Command_SET_CONSOLE">
+            <caption translate="true">SET CONSOLE Command</caption>
+          </topicref>
+          <topicref type="topic" id="441614633390246" modified="2020-11-26T12:00:37.680Z" icon="0" href="Command_SET_TEXTMERGE">
+            <caption translate="true">SET TEXTMERGE Command</caption>
+          </topicref>
+          <topicref type="topic" id="441615750279407" build="ALL" modified="2020-11-26T11:49:09.842Z" icon="0" href="command_TEXT">
+            <caption translate="true">TEXT Statement</caption>
           </topicref>
           <topicref type="topic" id="436966366054767" build="ALL" modified="2019-09-24T14:19:41.752Z" icon="0" href="command_WAIT">
             <caption translate="true">WAIT Command</caption>

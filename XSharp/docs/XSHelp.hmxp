@@ -191,6 +191,7 @@
       <config-value name="make3includeskin">OPT_PARENTHOME,OPT_TOPICFOOTER</config-value>
       <config-value name="make5include">PRINT</config-value>
       <config-value name="make5status">*</config-value>
+      <config-group name="bookmarks"/>
     </config-group>
     <config-group name="pdf">
       <config-value name="style">0</config-value>
@@ -768,6 +769,8 @@
       <file-mod href="Unsafe-Code-and-Pointers.xml"/>
       <file-mod href="Strong-Typing.xml"/>
       <file-mod href="Debugger.xml"/>
+      <file-mod href="__IncludeLibVFP.xml"/>
+      <file-mod href="Command_SET_TEXTMERGE.xml"/>
     </file>
     <file href="Baggage/*.*" build="ALL" filetype="baggage"/>
   </project-files>

@@ -392,12 +392,19 @@ BEGIN NAMESPACE XSharpModel
 								lOk := FALSE
 								EXIT
 							ENDIF
-						NEXT
-						cmd:CommandText := "SELECT Max(Version) from Db_version"
-						VAR vers := (System.Double) cmd:ExecuteScalar()
-						IF vers != CurrentDbVersion
-							lOk := FALSE
-						ENDIF			
+                  NEXT
+                  IF lOk
+						   cmd:CommandText := "SELECT Max(Version) from Db_version"
+                     var vers := (System.Double) 0.0 
+                     TRY
+						      vers := (System.Double) cmd:ExecuteScalar()
+                     CATCH  as Exception
+                        vers := (System.Double) 0.0 
+                     END TRY
+						   IF vers != CurrentDbVersion
+							   lOk := FALSE
+                     ENDIF			
+                  ENDIF
 					END USING
 					EXIT
 				ENDDO		

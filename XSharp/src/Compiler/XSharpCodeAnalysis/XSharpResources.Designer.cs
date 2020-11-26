@@ -15922,6 +15922,15 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to {0} is unsupported and will be ignored..
+        /// </summary>
+        internal static string WRN_Unsupported {
+            get {
+                return ResourceManager.GetString("WRN_Unsupported", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Comparison to integral constant is useless; the constant is outside the range of type &apos;{0}&apos;.
         /// </summary>
         internal static string WRN_VacuousIntegralComp {

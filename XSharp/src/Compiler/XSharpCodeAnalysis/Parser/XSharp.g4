@@ -120,7 +120,7 @@ callingconvention	: Convention=(CLIPPER | STRICT | PASCAL | ASPEN | WINCALL | CA
                     // and Finally we also parse the @Num
                     // 
 
-vodll               : (Modifiers=funcprocModifiers)? // Optional
+vodll               : (Attributes=attributes)? (Modifiers=funcprocModifiers)? // Optional
                       D=DLL T=(FUNCTION|PROCEDURE) Id=identifier ParamList=parameterList (AS Type=datatype)? 
                       (CallingConvention=dllcallconv)? COLON
                       Dll=identifierString (DOT Extension=identifierString)?
@@ -138,7 +138,7 @@ dllcallconv         : Cc=( CLIPPER | STRICT | PASCAL | THISCALL | FASTCALL | ASP
 
 
                     // Note that when an alias is specified (AS) then that is the name that we should use and then the Id is the entrypoint
-foxdll              : (Modifiers=funcprocModifiers)? // Optional
+foxdll              : (Attributes=attributes)? (Modifiers=funcprocModifiers)? // Optional
                       DECLARE (Type=datatype)? Id=identifier IN Dll=identifier (DOT Extension=identifierString)? (AS Alias=identifier)? 
                       ( Params+=foxdllparam (COMMA Params+=foxdllparam)* )?
                       EOS  
@@ -687,9 +687,9 @@ fielddecl          : FIELD Fields+=identifierName (COMMA Fields+=identifierName)
 // In FoxPro PUBLIC can also have an ARRAY clause. This must be combined with array indices. We should check for that.
 // In FoxPro there is also PRIVATE ALL [Like skeleton | Except skeleton] This is not implemented yet
 
-xbasedecl           : T=MEMVAR Vars+=identifierName (COMMA Vars+=identifierName  )* end=eos  // MEMVAR  Foo, Bar 
+xbasedecl           : T=MEMVAR Vars+=varidentifierName (COMMA Vars+=varidentifierName  )* end=eos  // MEMVAR  Foo, Bar 
                     | T=(PARAMETERS|LPARAMETERS)    // PARAMETERS Foo, Bar  LPARAMETERS Foo AS Bar OF BarLib
-                      Vars+=identifierName XT=xbasedecltype? (COMMA Vars+=identifierName XT=xbasedecltype? )* end=eos
+                      Vars+=varidentifierName XT=xbasedecltype? (COMMA Vars+=varidentifierName XT=xbasedecltype? )* end=eos
                     | T=PRIVATE XVars+=xbasevar (COMMA XVars+=xbasevar)*  end=eos      // PRIVATE Foo := 123
                     | T=PUBLIC Array=ARRAY? XVars+=xbasevar XT=xbasedecltype?
                       (COMMA XVars+=xbasevar XT=xbasedecltype? )* end=eos   // PUBLIC Bar, PUBLIC MyArray[5,2]
@@ -700,7 +700,7 @@ xbasedecltype       : AS Type=datatype (OF ClassLib=identifierName)?
                     ;  // parseed but ignored . FoxPro uses this only for intellisense. We can/should do that to in the editor
                     
 
-xbasevar            : (Amp=AMP)?  Id=identifierName (LBRKT ArraySub=arraysub RBRKT)? (Op=assignoperator Expression=expression)?
+xbasevar            : (Amp=AMP)?  Id=varidentifierName (LBRKT ArraySub=arraysub RBRKT)? (Op=assignoperator Expression=expression)?
                     ;
 
 dimensionVar        : Id=identifierName  ( LBRKT ArraySub=arraysub RBRKT | LPAREN ArraySub=arraysub RPAREN ) (AS DataType=datatype)?
@@ -910,6 +910,11 @@ identifierName      : Id=identifier
 
 varidentifier       : (FOX_M DOT)? Id=identifier
                     ;
+
+
+varidentifierName   : (FOX_M DOT)? Id=identifierName
+                    ;
+
 
 datatype            : ARRAY OF TypeName=typeName                                    #arrayOfType
                     | TypeName=typeName PTR                                         #ptrDatatype

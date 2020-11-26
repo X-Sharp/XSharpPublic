@@ -5730,6 +5730,9 @@ To remove the warning, you can use /reference instead (set the Embed Interop Typ
   <data name="ERR_FoxDeclareDLLStringByReference" xml:space="preserve">
     <value>DECLARE DLL Statements in .Net cannot have a STRING parameter by reference because .Net strings are immutable. Use a System.Text.StringBuilder argument instead.</value>
   </data>
-
+  <data name="WRN_Unsupported" xml:space="preserve">
+    <value>{0} is unsupported and will be ignored.</value>
+  </data>
   
+
 </root>

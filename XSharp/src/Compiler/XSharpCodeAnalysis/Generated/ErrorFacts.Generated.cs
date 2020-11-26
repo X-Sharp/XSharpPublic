@@ -249,6 +249,7 @@
                 case ErrorCode.WRN_UndeclaredMember:
                 case ErrorCode.WRN_ChrInDefine:
                 case ErrorCode.WRN_TryWithoutCatch:
+                case ErrorCode.WRN_Unsupported:
                 case ErrorCode.WRN_XPPSuperIVarsAlwaysShared:
                 case ErrorCode.WRN_XPPFrozedNotSupported:
                 case ErrorCode.WRN_XPPVarIsInNotSupported:

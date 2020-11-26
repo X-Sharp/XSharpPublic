@@ -1182,12 +1182,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         if (memvar.Amp != null)     
                         {
                             // PUBLIC &cVarName or PRIVATE &cVarName
-                            varname = getMacroNameExpression(memvar.Id);
+                            varname = getMacroNameExpression(memvar.Id.Id);
                         }
                         else
                         {
                             // PUBLIC Foo or PRIVATE Bar
-                            varname = GenerateLiteral(memvar.Id.GetText());
+                            varname = GenerateLiteral(memvar.Id.Id.GetText());
                         }
 
                         var exp = GenerateMemVarDecl(varname, isprivate);

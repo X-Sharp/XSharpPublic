@@ -3,7 +3,7 @@
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
-
+#ifdef NOTDEFINED
 
 FUNCTION FoxArrayCreate(nRows as DWORD, nCols := 1 as DWORD) AS __FoxArray
     RETURN __FoxArray{nRows , nCols, TRUE}
@@ -95,3 +95,4 @@ FUNCTION AIns(ArrayName as __FoxArray, nElementNumber as DWORD, nInsertType := 1
 FUNCTION ASize(ArrayName as __FoxArray, nSize as DWORD) AS __FoxArray
     ArrayName:Resize((LONG) nSize)
     RETURN ArrayName
+#endif

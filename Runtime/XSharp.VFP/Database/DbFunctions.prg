@@ -74,7 +74,7 @@ FUNCTION DbAlias () AS STRING
     RETURN String.Empty
 
 
-
+#ifdef NOTDEFINED
 /// <include file="VFPDocs.xml" path="Runtimefunctions/adatabases/*" />
 FUNCTION ADatabases(ArrayName REF __FoxArray) 
     local result := DbcManager.Databases:Count AS LONG
@@ -90,3 +90,4 @@ FUNCTION ADatabases(ArrayName REF __FoxArray)
         NEXT
     ENDIF
     RETURN result
+#endif

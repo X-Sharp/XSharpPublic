@@ -761,7 +761,7 @@ CLASS XSharp.RuntimeState
         SELF:_SetThreadValue(Set.DateCountry, country)
         RETURN
 
-	PRIVATE _Workareas AS DataSession
+	PRIVATE _dataSession AS DataSession
 	/// <summary>The Workarea information for the current Thread.</summary>
     /// <remarks>This property is a backward compatible alias for the DataSession property</remarks>
     /// <seealso cref="P:XSharp.RuntimeState.DataSession" />
@@ -772,26 +772,34 @@ CLASS XSharp.RuntimeState
 	GET
         LOCAL inst AS RuntimeState
         inst := GetInstance()
-		IF inst:_Workareas == NULL_OBJECT
-            local name as string
+		IF inst:_dataSession == NULL_OBJECT
+            LOCAL name AS STRING
             var thread := System.Threading.Thread.CurrentThread
             if String.IsNullOrEmpty(thread:Name)
                 name := thread:ManagedThreadId:ToString()
             else
                 name := thread:Name
             endif
-			inst:_Workareas := DataSession{"DataSession for Thread "+name}
+            if inst == initialState
+			    inst:_dataSession := DataSession{1, "Global datasession"}
+            else
+                inst:_dataSession := DataSession{"DataSession for Thread "+name}
+            endif
 		ENDIF
-		RETURN inst:_Workareas
+		RETURN inst:_dataSession
 	END GET
     END PROPERTY
-
-    INTERNAL STATIC METHOD SetDataSession (session as DataSession) AS DataSession
+        
+    /// <summary>This method can be used to switch the active DataSession in the runtime state.</summary>
+    /// <returns>The previous active datasession</returns>
+    /// <param name="session">The datasession that needs to be set as the new active datasession</param>
+    /// <remarks>This sets the DataSession in the <em>current thread</em>.</remarks>
+    STATIC METHOD SetDataSession (session as DataSession) AS DataSession
         LOCAL inst AS RuntimeState
         LOCAL old  as DataSession
         inst := GetInstance()
-        old := inst:_Workareas
-        inst:_Workareas := session
+        old := inst:_dataSession
+        inst:_dataSession := session
         RETURN old
 
     /// <exclude />

@@ -23,7 +23,7 @@ BEGIN NAMESPACE XSharp.RDD
 
         STATIC CONSTRUCTOR
             _databases     := List<DbcDatabase>{}
-            DbcDataSession := DataSession{"DBC"}
+            DbcDataSession := DataSession{0, "Datasession for Database Containers"}
 
         /// <summary>Enhance the DBC name. Adds the extension and path when needed.</summary>
         /// <param name="cFileName">Name of the file. The extension and path are optional.</param>

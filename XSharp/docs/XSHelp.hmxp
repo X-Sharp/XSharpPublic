@@ -104,7 +104,7 @@
       </styleclass>
       <styleclass name="Heading3" parentclass="Heading2" nextclass="Normal" shortcut="41011">
         <style-set media="screen" type="para">border:none;</style-set>
-        <style-set media="screen" type="text">font-size:12pt;</style-set>
+        <style-set media="screen" type="text">font-size:12pt; color:#00a8d2;</style-set>
       </styleclass>
       <styleclass name="Image Caption" parentclass="Normal" shortcut="0">
         <style-set media="screen" type="text">font-style:italic;</style-set>
@@ -770,6 +770,14 @@
       <file-mod href="Debugger.xml"/>
       <file-mod href="__IncludeLibVFP.xml"/>
       <file-mod href="Command_SET_TEXTMERGE.xml"/>
+      <file-mod href="__FieldList.xml"/>
+      <file-mod href="__FoxFieldList.xml"/>
+      <file-mod href="__IncludeTypeParameterConstraints.xml"/>
+      <file-mod href="__IncludeTypeParameters.xml"/>
+      <file-mod href="Command-translate.xml"/>
+      <file-mod href="__VsDialect.xml"/>
+      <file-mod href="__ConsoleExample.xml"/>
+      <file-mod href="__TextMerge-Example.xml"/>
     </file>
     <file href="Baggage/*.*" build="ALL" filetype="baggage"/>
   </project-files>

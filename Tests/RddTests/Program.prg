@@ -315,82 +315,7 @@ Function ReadVfpTableWithInfo() as VOID
         NEXT
         DbCloseArea()
     NEXT
-FUNCTION ReadDbcProperties() AS VOID
-    var records := List<LONG>{}
-    RddSetDefault("DBFVFP")
-    //DbUseArea(TRUE, "DBFVFP", "c:\VFF\Samples\data\northwind.dbc")
-    DbUseArea(TRUE, "DBFVFP", "c:\Temp\testdb.DBC")
-    
-    OrdSetFocus("OBJECTID")
-    Set filter to FIELD->PARENTID == 1
-    DO WHILE ! Eof()
-        records:Add(recno())
-        skip
-    ENDDO
-    SET FILTER TO 
-    FOREACH var recno in records
-        DbGoto(recno) 
-		? "" 
-        var nparentId := FieldGetSym("ObjectID")
-        ? FieldGetSym("ObjectType"), Trim(FieldGetSym("ObjectName"))
-        var props := FieldGetBytes(FieldPos("Property"))
-		var sCode  := FieldGetSym("CODE")
-        DecodeProps(10, props)
-		if IsString(sCode) .and. ! empty(sCode) .and. "Source" $ Trim(FieldGetSym("ObjectName"))
-		//	? sCode
-		endif
-		if nparentId == 1
-			loop
-        endif
-        set filter to FIELD->Parentid == nparentId
-        DbGoTop()
-        DO WHILE ! Eof()
-            ? Space(10), FieldGetSym("ObjectType"), Trim(FieldGetSym("ObjectName"))
-            props := FieldGetBytes(FieldPos("Property"))
-            DecodeProps(20, props)
-            skip
-        ENDDO
-        SET FILTER TO
-    NEXT
-    DbCloseArea()
 
-#pragma options ("az", on)
-FUNCTION DecodeProps(indent as long, bProps as byte[])
-    if bProps:Length > 0
-        VAR pos := 8
-        DO WHILE pos < bProps:Length
-            VAR len  := FoxToLong(bProps, pos)
-            if len + pos > bProps:Length
-                EXIT
-            endif
-            VAR type := FoxToShort(bProps, pos+4)
-            VAR prop := (LONG) bProps[pos+6]
-            var ctype := DatabasePropertyValType(prop)
-            local oValue := "" as usual
-            var dbProp = (XSharp.RDD.DatabasePropertyType) prop
-            DO CASE
-            CASE ctype == "C"
-                oValue := System.Text.Encoding.Default:GetString(bProps, pos+7, len-8)
-                CASE ctype == "N"
-                    if len == 8
-                        oValue := bProps[pos+7]
-                    else
-                        oValue := FoxValue(bProps, pos+7)
-                    endif
-            CASE ctype == "L"
-                oValue := bProps[pos+7] != 0
-            ENDCASE
-			var skip := dbProp == DatabasePropertyType.Class 
-            if ! skip
-				skip := IsString(oValue) .and. empty(oValue)
-			endif
-			if ! skip
-                ? space(indent), "*"+padr(dbProp:ToString(),15) , oValue
-            endif
-            pos += len
-        ENDDO
-    ENDIF
-    RETURN     
 
 
 function FoxToLong(b as byte[], pos as int) as LONG
@@ -1658,7 +1583,7 @@ RETURN
 FUNCTION TestLndRel() AS VOID
     LOCAL nFld AS DWORD
     RddSetDefault("DBFNTX")
-    SetCollationTable(Collations.American)
+    SetCollationTable(COLLAT_AMERICAN)
     DbUseArea(TRUE,"DBFNTX","c:\Descartes\LndRel\lndrel.dbf","LNDREL")
     DbSetIndex("c:\Descartes\LndRel\lndrel1.ntx")
     ? DbSeek("BAV01IT")

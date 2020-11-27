@@ -29,13 +29,13 @@
 #command SAVE ALL LIKE <skel> TO <(file)>                               ;
       => _MSave( <(file)>, <(skel)>, TRUE )
 
-#command SAVE TO <(file)> ALL LIKE <skel>                               ;
+#command SAVE TO <(file)> ALL LIKE <%skel%>                               ;
       => _MSave( <(file)>, <(skel)>, TRUE )
 
-#command SAVE ALL EXCEPT <skel> TO <(file)>                             ;
+#command SAVE ALL EXCEPT <%skel%> TO <(file)>                             ;
       => _MSave( <(file)>, <(skel)>, FALSE )
 
-#command SAVE TO <(file)> ALL EXCEPT <skel>                             ;
+#command SAVE TO <(file)> ALL EXCEPT <%skel%>                             ;
       => _MSave( <(file)>, <(skel)>, FALSE )
 
 #command SAVE [TO <(file)>] [ALL]                                       ;

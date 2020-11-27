@@ -87,6 +87,8 @@ FUNCTION ReadCommandLine(asParams AS STRING[]) AS VOID
 			CASE cUpper:StartsWith("/NOWARNING")
 				NoWarningScreen := TRUE
 			END CASE
+		CATCH 
+			NOP
 		END TRY
 	NEXT
 
@@ -131,6 +133,8 @@ FUNCTION ReadIni() AS VOID
 									ENDIF
 								END IF
 							NEXT
+						CATCH 
+							NOP
 						END TRY
 					CASE "USEWINFORMSIVARPREFIX"
 						xPorter.UseWinFormsIVarPrefix := cValue == "1"
@@ -164,6 +168,8 @@ FUNCTION ReadIni() AS VOID
 				NEXT
 			ENDIF
 		END IF
+	CATCH 
+		NOP
 	END TRY
 
 RETURN
@@ -216,6 +222,8 @@ FUNCTION ShowWarningScreen() AS VOID
 	TRY
 		oForm := WarningDialog{File.ReadAllText("ReadMe.rtf")}
 		oForm:ShowDialog()
+	CATCH 
+		NOP
 	END TRY
 RETURN
 
@@ -228,6 +236,8 @@ CLASS VOFolder
 		LOCAL lValid := FALSE AS LOGIC
 		TRY
 			lValid := .NOT. (String.IsNullOrEmpty(_scFolder) .OR. .NOT. Directory.Exists(_scFolder))
+		CATCH 
+			NOP
 		END TRY
 	RETURN lValid
 	STATIC METHOD Get() AS STRING
@@ -329,6 +339,8 @@ CLASS xPorter
 				_aSDKDefines:Add("VOVER_DEVELOPMENT", e"\"\"")
 				_aSDKDefines:Add("VOVER_DEVWEBSITE", e"\"\"")
 				_aSDKDefines:Add("VOVER_WEBSITE", e"\"\"")
+			CATCH 
+				NOP
 			END TRY
 		CATCH e AS Exception
 			MessageBox.Show(e:ToString())
@@ -486,6 +498,8 @@ CLASS xPorter
 			IF Clipboard.ContainsText()
 				cClipboard := Clipboard.GetText()
 			END IF
+		CATCH 
+			NOP
 		END TRY
 		LOCAL cUpper AS STRING
 		cUpper := cClipboard:ToUpper()
@@ -517,6 +531,8 @@ CLASS xPorter
 					sCode:Append(CRLF)
 				NEXT
 				Clipboard.SetText(sCode:ToString())
+			CATCH 
+				NOP
 			END TRY
 		END IF
 	RETURN TRUE
@@ -843,6 +859,8 @@ CLASS ApplicationDescriptor
 					lAddAsDll := TRUE
 				END IF
 			END IF
+		CATCH 
+			NOP
 		END TRY
 		IF .NOT. lAddAsDll
 			SELF:_aGACReferences:Add(cReference)
@@ -1152,6 +1170,8 @@ CLASS ApplicationDescriptor
 					IF File.Exists(cWedFile)
 						File.Delete(cWedFile)
 					END IF
+				CATCH 
+					NOP
 				END TRY
 			ENDIF
 
@@ -1226,6 +1246,8 @@ CLASS ApplicationDescriptor
 									File.WriteAllBytes(cBinary , oDesigner:Bytes)
 									aFilesToDel:Add(cBinary)
 								END CASE
+							CATCH 
+								NOP
 							END TRY
 						END IF
 						IF xPorter.GenerateWinForms
@@ -2839,17 +2861,23 @@ FUNCTION SafeFileExists(cFileName AS STRING) AS LOGIC
 	LOCAL lRet := FALSE AS LOGIC
 	TRY
 		lRet := File.Exists(cFileName)
+	CATCH 
+		NOP
 	END TRY
 RETURN lRet
 FUNCTION SafeFolderExists(cFolder AS STRING) AS LOGIC
 	LOCAL lRet := FALSE AS LOGIC
 	TRY
 		lRet := Directory.Exists(cFolder)
+	CATCH 
+		NOP
 	END TRY
 RETURN lRet
 PROCEDURE SafeFileDelete(cFileName AS STRING)
 	TRY
 		File.Delete(cFileName)
+	CATCH 
+		NOP
 	END TRY
 RETURN
 PROCEDURE SafeDirectoryDelete(cFolder AS STRING)
@@ -2858,6 +2886,8 @@ PROCEDURE SafeDirectoryDelete(cFolder AS STRING)
 			SafeFileDelete(cFileName)
 		NEXT
 		Directory.Delete(cFolder)
+	CATCH 
+		NOP
 	END TRY
 RETURN
 

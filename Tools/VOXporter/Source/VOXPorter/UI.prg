@@ -62,6 +62,8 @@ CLASS xPorterUI INHERIT System.Windows.Forms.Form IMPLEMENTS IProgressBar
 				ELSEIF SafeFolderExists(DefaultSourceFolder)
 					SELF:oRadioFromAefsInFolder:Checked := TRUE
 				END IF
+			CATCH 
+				NOP
 			END TRY
 		END IF
 		SELF:oTextOutput:Text := DefaultOutputFolder
@@ -481,6 +483,8 @@ CLASS xPorterUI INHERIT System.Windows.Forms.Form IMPLEMENTS IProgressBar
 					ELSEIF Directory.Exists(FileInfo{cInitFolder}:DirectoryName)
 						oDlg:InitialDirectory := FileInfo{cInitFolder}:DirectoryName
 					END IF
+				CATCH 
+					NOP
 				END TRY
 			END IF
 
@@ -499,6 +503,8 @@ CLASS xPorterUI INHERIT System.Windows.Forms.Form IMPLEMENTS IProgressBar
 					oFile := FileInfo{oDlg:FileName}
 					SELF:oTextOutput:Text := oFile:DirectoryName
 					SELF:oTextSource:Text := oFile:Name
+				CATCH 
+					NOP
 				END TRY
 			ENDIF
 		ELSE

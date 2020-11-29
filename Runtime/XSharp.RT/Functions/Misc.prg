@@ -4,8 +4,6 @@
 // See License.txt in the project root for license information.
 //
 
-
-
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/between/*" />
 FUNCTION Between(uValue AS USUAL,uMin AS USUAL,uMax AS USUAL) AS LOGIC
 	RETURN uValue >=uMin .AND.  uValue<=uMax
@@ -110,13 +108,6 @@ FUNCTION Min(uValue1 AS USUAL,uValue2 AS USUAL) AS USUAL
 FUNCTION PaletteRGB(bR AS USUAL,bG AS USUAL,bB AS BYTE) AS INT
 	RETURN (INT) RGB(bR, bG, bB)
 	
-
-/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/pause/*" />
-FUNCTION Pause() AS DWORD
-    RETURN (DWORD) System.Windows.Forms.MessageBox.Show("Pause","Waiting")
-	
-
-
 
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/tone/*" />

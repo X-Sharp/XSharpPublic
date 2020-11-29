@@ -4,11 +4,13 @@
 // See License.txt in the project root for license information.
 //
 
-using System.Windows.Forms
 using System.Collections.Generic
+using System.Runtime.InteropServices
 
-    
-#define MB_TOPMOST 0x40000
+
+#define PM_NOREMOVE   0x0000
+#define MB_TOPMOST              0x00040000
+#define MB_ICONEXCLAMATION      0x00000030
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/_accept/*" />
 FUNCTION _accept() AS STRING STRICT
@@ -197,16 +199,18 @@ FUNCTION _wait( uValuePrompt AS STRING ) AS STRING
         info   := Console.ReadKey()
         retval := info:KeyChar:ToString()
     CATCH AS System.InvalidOperationException
-        MessageBox.Show( uValuePrompt + chr(10) + chr(10) + "Wait", "Wait", MessageBoxButtons.OK, MessageBoxIcon.Exclamation, MessageBoxDefaultButton.Button1, (MessageBoxOptions)(INT) MB_TOPMOST )
+        UnSafeNativeMethods.MessageBox(IntPtr.Zero,  uValuePrompt + chr(10) + chr(10) + "Wait", "Wait", MB_ICONEXCLAMATION| MB_TOPMOST )
         retval := ""
     END TRY
     
     RETURN retval
     
 /// <exclude/>
-FUNCTION DoEvents() AS VOID
-    System.Windows.Forms.Application.DoEvents()
 
+FUNCTION DoEvents() AS VOID
+    UnSafeNativeMethods.DoEvents()
+    
+    
 /// <summary>Dump the contents of an array to the terminal window</summary>
 /// <param name="aTest">Array to dump</param>
 /// <param name="cPrefix">Name to show before the array brackets. Defaults to 'a'</param>
@@ -309,7 +313,12 @@ FUNCTION ShowPublics() AS VOID
     NEXT
     RETURN
     
-    
+
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/pause/*" />
+FUNCTION Pause() AS DWORD
+    RETURN (DWORD) UnSafeNativeMethods.MessageBox(IntPtr.Zero, "Pause","Waiting",0)
+	
+
 FUNCTION GetColor() AS STRING
     RETURN ConsoleHelpers.ColNum2String(Console.ForegroundColor)+"/"+ConsoleHelpers.ColNum2String(Console.BackgroundColor)
 
@@ -389,5 +398,50 @@ INTERNAL STATIC CLASS ConsoleHelpers
         NEXT
         nBack	   := nColor + nHigh
         nColor := (nBack<< 4) + nFore 			
-        RETURN nColor	
+        RETURN nColor
+        
 END CLASS
+
+
+INTERNAL CLASS UnSafeNativeMethods
+
+    [DllImport("User32.dll", CharSet := CharSet.Ansi)];
+    STATIC METHOD MessageBox(hwnd AS IntPtr, lpText AS STRING, lpCaption AS STRING, uType AS DWORD) AS INT
+
+    STATIC METHOD DoEvents() AS VOID
+        local msg    as xMessage
+        local handle as HandleRef
+        msg     := xMessage{}
+        handle  := HandleRef{}
+        DO WHILE UnSafeNativeMethods.PeekMessage( REF msg,handle, 0,0, PM_NOREMOVE)
+            IF UnSafeNativeMethods.GetMessage( REF msg, handle,0,0 )
+                UnSafeNativeMethods.TranslateMessage(REF msg)
+                UnSafeNativeMethods.DispatchMessage(REF msg)
+            ENDIF
+        ENDDO
+        RETURN
+    PRIVATE STRUCT xMessage
+        PRIVATE hWnd   AS IntPtr
+        PRIVATE msg    AS LONG
+        PRIVATE wParam as IntPtr
+        PRIVATE lParam as IntPtr
+        PRIVATE result as IntPtr
+    END STRUCT
+
+    // Private Helper methods
+    [DllImport("User32.dll", CharSet := CharSet.Ansi)];
+    PRIVATE STATIC METHOD PeekMessage(msg REF xMessage, hwnd as HandleRef, msgMin as INT, msgMax as INT, iremove as Int) AS LOGIC
+    [DllImport("User32.dll", CharSet := CharSet.Unicode)];
+    PRIVATE STATIC METHOD PostMessage(msg AS xMessage, hwnd as HandleRef, imsg as INT, wParam AS IntPtr, lParam as IntPtr) AS LOGIC
+    [DllImport("User32.dll", CharSet := CharSet.Unicode)];
+    PRIVATE STATIC METHOD GetMessage(msg REF xMessage, hwnd as HandleRef, msgMin as INT, msgMax as INT) AS LOGIC
+    [DllImport("User32.dll", CharSet := CharSet.Unicode)];
+    PRIVATE STATIC METHOD TranslateMessage(msg REF xMessage) AS LOGIC
+    [DllImport("User32.dll", CharSet := CharSet.Unicode)];
+    PRIVATE STATIC METHOD DispatchMessage(msg REF xMessage) AS LOGIC
+
+
+END CLASS
+
+
+

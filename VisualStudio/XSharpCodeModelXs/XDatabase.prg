@@ -17,7 +17,7 @@ BEGIN NAMESPACE XSharpModel
 	STATIC PRIVATE oConn   AS SQLiteConnection     // In memory database !
 	STATIC PRIVATE lastWritten := DateTime.MinValue AS DateTime
 	STATIC PRIVATE currentFile AS STRING
-	PRIVATE CONST CurrentDbVersion := 0.4 AS System.Double
+	PRIVATE CONST CurrentDbVersion := 0.5 AS System.Double
 		
 		STATIC METHOD CreateOrOpenDatabase(cFileName AS STRING) AS VOID
 			LOCAL lValid := FALSE AS LOGIC
@@ -127,7 +127,6 @@ BEGIN NAMESPACE XSharpModel
 						//XSolution.SetStatusBarAnimation(TRUE, 2)
 						Log("Starting backup to "+currentFile)
 						SaveToDisk(oConn, currentFile )
-					Log("Completed backup to "+currentFile)
 				CATCH e AS Exception
 					Log("Exception: "+e:ToString())
 				FINALLY
@@ -136,6 +135,7 @@ BEGIN NAMESPACE XSharpModel
                NOP
 				END TRY
 			END LOCK
+    		Log("Completed backup to "+currentFile)
 		RETURN
 		
 		STATIC METHOD CreateSchema(connection AS SQLiteConnection) AS VOID
@@ -324,7 +324,7 @@ BEGIN NAMESPACE XSharpModel
 				cmd:Parameters:Clear()
 				
 				#region views
-				stmt := " CREATE VIEW ProjectFiles AS SELECT fp.IdFile, f.FileName, f.LastChanged, f.Size, fp.IdProject, p.ProjectFileName " + ;
+				stmt := " CREATE VIEW ProjectFiles AS SELECT fp.IdFile, f.FileName, f.FileType, f.LastChanged, f.Size, fp.IdProject, p.ProjectFileName " + ;
 				" FROM Files f JOIN FilesPerProject fp ON f.Id = fp.IdFile JOIN Projects p ON fp.IdProject = P.Id"
 				cmd:CommandText := stmt
 				cmd:ExecuteNonQuery()		
@@ -392,12 +392,19 @@ BEGIN NAMESPACE XSharpModel
 								lOk := FALSE
 								EXIT
 							ENDIF
-						NEXT
-						cmd:CommandText := "SELECT Max(Version) from Db_version"
-						VAR vers := (System.Double) cmd:ExecuteScalar()
-						IF vers != CurrentDbVersion
-							lOk := FALSE
-						ENDIF			
+                  NEXT
+                  IF lOk
+						   cmd:CommandText := "SELECT Max(Version) from Db_version"
+                     var vers := (System.Double) 0.0 
+                     TRY
+						      vers := (System.Double) cmd:ExecuteScalar()
+                     CATCH  as Exception
+                        vers := (System.Double) 0.0 
+                     END TRY
+						   IF vers != CurrentDbVersion
+							   lOk := FALSE
+                     ENDIF			
+                  ENDIF
 					END USING
 					EXIT
 				ENDDO		
@@ -560,10 +567,10 @@ BEGIN NAMESPACE XSharpModel
 			IF ! IsDbOpen
 				RETURN
 			ENDIF
+			Log(i"Update File info for file {oFile.FullPath}")
 			BEGIN LOCK oConn
 				TRY
                IF System.IO.File.Exists(oFile:FullPath)  // for files from SCC the physical file does not always exist
-						Log(i"Update File info for file {oFile.FullPath}")
 						BEGIN USING VAR oCmd := SQLiteCommand{"SELECT 1", oConn}
 							oCmd:CommandText := "UPDATE Files SET LastChanged = $last, Size = $size WHERE id = "+oFile:Id:ToString()
 							VAR fi            := FileInfo{oFile:FullPath}
@@ -614,9 +621,9 @@ BEGIN NAMESPACE XSharpModel
 			IF ! IsDbOpen
 				RETURN
 			ENDIF
+			Log(i"Update File contents for file {oFile.FullPath}")
 			BEGIN LOCK oConn
 				TRY
-						Log(i"Update File contents for file {oFile.FullPath}")
 						BEGIN USING VAR oCmd := SQLiteCommand{"DELETE FROM Members WHERE IdFile = "+oFile:Id:ToString(), oConn}
 							oCmd:ExecuteNonQuery()
 							
@@ -816,9 +823,9 @@ BEGIN NAMESPACE XSharpModel
 			IF ! IsDbOpen .OR. String.IsNullOrEmpty(oAssembly:FullName) .OR. String.IsNullOrEmpty(oAssembly:FileName)
 				RETURN
 			ENDIF   
+			Log(i"Update Assembly info for assembly {oAssembly.FileName}")
 			BEGIN LOCK oConn
 				TRY
-						Log(i"Update Assembly info for assembly {oAssembly.FileName}")
 						BEGIN USING VAR oCmd := SQLiteCommand{"SELECT 1", oConn}
 							// Updated TypeReferences
 							//	   "Create Table ReferencedTypes ("
@@ -989,6 +996,26 @@ BEGIN NAMESPACE XSharpModel
 			Log(i"GetCommentTasks returns {result.Count} matches")
 		RETURN result     
 		
+      STATIC METHOD GetFilesOfType(type as XFileType, sProjectIds as STRING) AS IList<STRING>
+         VAR stmt := "Select distinct FileName from ProjectFiles where FileType = $type AND IdProject in ("+sProjectIds+")"
+         VAR result := List<String>{}
+			IF IsDbOpen
+				BEGIN LOCK oConn
+					TRY
+							BEGIN USING VAR oCmd := SQLiteCommand{stmt, oConn}
+                        oCmd:Parameters:AddWithValue("$type",(INT) type)
+								BEGIN USING VAR rdr := oCmd:ExecuteReader()
+									DO WHILE rdr:Read()
+                              result:Add(DbToString(rdr[0]))
+									ENDDO
+								END USING
+						END USING
+					CATCH e AS Exception
+						Log("Exception: "+e:ToString())
+					END TRY            
+				END LOCK
+			ENDIF         
+         RETURN result
 		
 		STATIC METHOD GetNamespaces(sProjectIds AS STRING) AS IList<XDbResult>
 			VAR stmt := "Select distinct Namespace from ProjectTypes where Namespace is not null and IdProject in ("+sProjectIds+")"

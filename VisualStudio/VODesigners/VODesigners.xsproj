@@ -43,7 +43,7 @@
     <VulcanCompatibleResources>False</VulcanCompatibleResources>
     <StartupObject />
     <ApplicationIcon />
-    <XSharpProjectversion>2.6.0.0</XSharpProjectversion>
+    <XSharpProjectversion>2.6.3.0</XSharpProjectversion>
     <Includepaths>$(Solutiondir)common</Includepaths>
     <Nostandarddefs>false</Nostandarddefs>
     <IntermediateOutputPath>$(SolutionDir)Binaries\obj\$(Configuration)\$(ProjectName)\</IntermediateOutputPath>
@@ -165,6 +165,13 @@
     <None Include="Templates\cavofed.tpl" />
     <None Include="Templates\cavowed.inf" />
     <None Include="Templates\cavowed.tpl" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\XSharpCodeModelXs\XSharpModelXs.xsproj">
+      <Name>XSharpModelXs</Name>
+      <Project>{eed6843b-b727-4f08-aa32-ca0f48fdde3f}</Project>
+      <Private>True</Private>
+    </ProjectReference>
   </ItemGroup>
   <!-- This next bit is required unless the macro used to Import your targets is defined in an MSBuild toolset. -->
   <ProjectExtensions>

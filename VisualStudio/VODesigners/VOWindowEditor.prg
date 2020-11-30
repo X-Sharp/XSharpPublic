@@ -1,8 +1,9 @@
-#using System.Windows.Forms
-#using System.Drawing
-#using System.Collections.Generic
-#using System.Collections
-#using System.IO
+USING System.Windows.Forms
+USING System.Drawing
+USING System.Collections.Generic
+USING System.Collections
+USING System.IO
+USING XSharpModel
 
 ENUM ViewMode
 	MEMBER Auto
@@ -70,6 +71,11 @@ PARTIAL CLASS VOWindowEditor INHERIT WindowDesignerBase
 			ENDIF
 		NEXT
 	RETURN FALSE
+
+	ACCESS XFile AS XSharpModel.XFile
+      // Implemented in the Subclass
+	   RETURN NULL
+
 
 	METHOD CanDoAction(eAction AS DesignerActionType) AS LOGIC
 		
@@ -292,6 +298,13 @@ PARTIAL CLASS VOWindowEditor INHERIT WindowDesignerBase
 RETURN
 
 	METHOD GetCodeContents() AS CodeContents
+		IF FALSE
+			RETURN SELF:GetCodeContentsTyped()
+		ELSE
+			RETURN SELF:GetCodeContentsUnTyped()
+		END IF
+	END METHOD
+	METHOD GetCodeContentsUnTyped() AS CodeContents
 		LOCAL oCode AS CodeContents
 		LOCAL cLine AS STRING
 		LOCAL aDesign AS ArrayList
@@ -612,6 +625,539 @@ RETURN
 				cLine += String.Format(", Dimension{{{0} , {1}}} " , oRect:Width , oRect:Height)
 			ENDIF
 			cLine += "}"
+			aConstructor:Add(cLine)
+			SELF:GetCode(oDesign , "SELF:" + oDesign:cPrefix + oDesign:Name + ":" , aConstructor , lFontUsed)
+			IF oDesign:cFullClass:ToUpper():StartsWith("CONTROL:TEXTCONTROL:RADIOBUTTONGROUP")
+				SELF:GetRadioGroupCode(oDesign , "SELF:" + oDesign:cPrefix + oDesign:Name , aRadioGroups)
+			ENDIF
+			aConstructor:Add("")
+		NEXT
+
+		IF lFontUsed
+			aConstructor:Insert(1 , e"\tLOCAL oFont AS Font")
+		ENDIF
+		
+		FOR n := 0 UPTO aRadioGroups:Count - 1
+			aConstructor:Add(aRadioGroups[n])
+		NEXT
+
+		// Now all properties are being used, so no need to do that
+		oProp := SELF:oWindowDesign:GetProperty("Caption")
+//		IF oProp != NULL .or. oProp:lMultiple // not in classmate
+		IF oProp != NULL .AND. oProp:lMultiple // not in classmate
+//			cLine := String.Format(e"\tSELF:Caption := \"{0}\"" , oProp:TextValue)
+			cLine := String.Format(e"\tSELF:Caption := {0}" , Funcs.TranslateCaption(oProp:TextValue , TRUE))
+			aConstructor:Add(cLine)
+		END IF
+
+		SELF:GetCode(SELF:oWindowDesign , "SELF:" , aConstructor , lFontUsed)
+
+		oProp := SELF:oWindowDesign:GetProperty("Data Server")
+		IF oProp != NULL .AND. (SELF:oWindowDesign:cFullClass:IndexOf("FORM:DATAWINDOW") == 0 .OR. SELF:oWindowDesign:cFullClass:IndexOf("FORM:DATADIALOG") == 0)
+			aConstructor:Add(e"\tIF !IsNil(oServer)")
+			aConstructor:Add(e"\t\tSELF:Use(oServer)")
+			IF !oProp:IsAuto
+				lHasServer := TRUE
+				aConstructor:Add(e"\tELSE")
+				IF oProp:TextValue:ToUpper():Contains("<SHARE")
+					aConstructor:Add(String.Format(e"\t\tSELF:Use(SELF:Owner:Server)"))
+				ELSE
+					aConstructor:Add(String.Format(e"\t\tSELF:Use({0}{{}})" , oProp:TextValue))
+				END IF
+			END IF
+			aConstructor:Add(e"\tENDIF")
+			aConstructor:Add("")
+		END IF
+
+
+// databrowser - columns
+		IF eViewMode != ViewMode.Auto
+			cLine := e"\tSELF:Browser := " + cBrowserInherit + "{SELF}"
+			aConstructor:Add(cLine)
+			aConstructor:Add("")
+			
+//			FOR n := 0 UPTO aDesign:Count - 1
+//				oDesign := (DesignWindowItem)aDesign[n]
+			FOR n := 0 UPTO aColumns:Count - 1
+				oDesign := (DesignWindowItem)aColumns[n]
+				IF oDesign:Column == NULL .OR. oDesign:BrowseIndex == -1
+					LOOP
+				ENDIF
+				LOCAL cColumn AS STRING
+				
+				cColumn := e"\tSELF:oDB" + oDesign:Name
+	
+				cLine := cColumn
+				cLine += " := "
+				cLine += cColumnsInherit
+				cLine += "{"
+				oProp := oDesign:GetPropertyByMember("FieldSpec")
+				IF oProp == NULL .OR. oProp:IsAuto
+					cLine += oDesign:BrowseSize:ToString()
+				ELSE
+					cLine += oProp:TextValue + "{}"
+				END IF
+				cLine += "}"
+				aConstructor:Add(cLine)
+				aConstructor:Add(cColumn + ":Width := " + oDesign:BrowseSize:ToString())
+				cLine := cColumn + ":HyperLabel := "
+				IF oDesign:Deleted != 0
+					cLine += "HyperLabel{"
+					cLine += "#" + oDesign:Name + ","
+					oProp := oDesign:GetProperty("Caption")
+					IF oProp == NULL .OR. oProp:TextValue:Length == 0
+						cLine += "NULL_STRING, "
+					ELSE
+						cLine += e"\"" + oProp:TextValue + e"\", "
+					END IF
+					oProp := oDesign:GetProperty("Description")
+					IF oProp == NULL .OR. oProp:TextValue:Length == 0
+						cLine += "NULL_STRING, "
+					ELSE
+						cLine += e"\"" + oProp:TextValue + e"\", "
+					END IF
+					oProp := oDesign:GetProperty("Help Context")
+					IF oProp == NULL .OR. oProp:TextValue:Length == 0
+						cLine += "NULL_STRING"
+					ELSE
+						cLine += e"\"" + oProp:TextValue + e"\""
+					END IF
+					cLine += "}"
+				ELSE
+					cLine += "SELF:" + oDesign:cPrefix + oDesign:Name + ":HyperLabel"
+				END IF
+				aConstructor:Add(cLine)
+
+				oProp := oDesign:GetProperty("Caption")
+				IF oProp != NULL
+					cLine := cColumn + e":Caption := \"" + oProp:TextValue + e"\""
+					aConstructor:Add(cLine)
+				END IF
+				
+				oProp := oDesign:GetProperty("Block")
+				IF oProp != NULL .AND. !oProp:TextValue:Trim():Length == 0
+					cLine := cColumn + ":Block := " + oProp:TextValue:Trim()
+					aConstructor:Add(cLine)
+				END IF
+				oProp := oDesign:GetProperty("Block Owner")
+				IF oProp != NULL .AND. !oProp:TextValue:Trim():Length == 0
+					cLine := cColumn + ":BlockOwner := " + oProp:TextValue:Trim()
+					aConstructor:Add(cLine)
+				END IF
+				
+				cLine := e"\tSELF:Browser:AddColumn(SELF:oDB" + oDesign:Name + ")"
+				aConstructor:Add(cLine)
+				
+				aConstructor:Add("")
+			NEXT
+			
+			cLine := e"\tSELF:ViewAs(" + SELF:oWindowDesign:GetProperty("View As"):TextValue + ")"
+			aConstructor:Add(cLine)
+			aConstructor:Add("")
+		END IF
+		
+
+// subforms
+		FOR n := 0 UPTO aDesign:Count - 1
+			oDesign := (DesignWindowItem)aDesign[n]
+			IF !oDesign:IsSubForm
+				LOOP
+			ENDIF
+			IF oDesign:GetProperty("_GenCode"):TextValue:ToUpper() == "NO"
+				LOOP
+			ENDIF
+			cLine := e"\t"
+			cLine += "SELF:oSF"
+			cLine += oDesign:Name
+			cLine += " := "
+			cLine += oDesign:Name
+			cLine += "{"
+			cLine += "SELF , " + oDesign:GetVODefine(SELF:oWindowDesign:Name) + " "
+			cLine += "}"
+			aConstructor:Add(cLine)
+			cLine := e"\tSELF:oSF" + oDesign:Name + ":Show()"
+			aConstructor:Add(cLine)
+			IF lHasServer
+				oProp := oDesign:GetProperty("Order")
+				IF !oProp:IsAuto
+					aConstructor:Add(String.Format(e"\tIF SELF:oSF{0}:Server != NIL" , oDesign:Name))
+					aConstructor:Add(String.Format(e"\t\tSELF:oSF{0}:Server:SetOrder(\"{1}\")" , oDesign:Name , oProp:TextValue))
+					aConstructor:Add(e"\tENDIF")
+				ENDIF
+				oProp := oDesign:GetProperty("Relation String")
+				IF !oProp:IsAuto
+					aConstructor:Add(String.Format(e"\tSELF:SetSelectiveRelation(SELF:oSF{0} , {1})" , oDesign:Name , oProp:TextValue))
+				ENDIF
+			ENDIF
+		NEXT
+
+
+		FOR n := 0 UPTO aTabPages:Count - 1
+			aConstructor:Add(aTabPages[n])
+		NEXT
+		
+
+		aConstructor:Add("")
+		cLine := e"\tSELF:PostInit(" + SELF:oWindowDesign:cInitMethod + e")"
+		aConstructor:Add(cLine)
+		aConstructor:Add("")
+		aConstructor:Add(e"RETURN")
+
+		aConstructor:Add("")
+//		aConstructor:Add("END CLASS")
+		
+	RETURN oCode
+
+	METHOD GetCodeContentsTyped() AS CodeContents
+		LOCAL oCode AS CodeContents
+		LOCAL cLine AS STRING
+		LOCAL aDesign AS ArrayList
+		LOCAL aColumns AS ArrayList
+		LOCAL oDesign AS DesignWindowItem
+		LOCAL cTemp AS STRING
+		LOCAL lPixPos AS LOGIC
+		LOCAL lExpCtls AS LOGIC
+		LOCAL oRect AS Rectangle
+		LOCAL oWinRect AS Rectangle
+		LOCAL oProp AS VODesignProperty
+		LOCAL lHasServer AS LOGIC
+		LOCAL oTabControl AS DesignTabControl
+		LOCAL oPageOptions AS VOTabPageOptions
+		LOCAL n,m AS INT
+
+		LOCAL aDefines AS List<STRING>
+		LOCAL aDefineValues AS List<STRING>
+		LOCAL aResource AS List<STRING>
+		LOCAL aClass AS List<STRING>
+		LOCAL aConstructor AS List<STRING>
+		LOCAL aTabPages AS List<STRING>
+		LOCAL aRadioGroups AS List<STRING>
+		
+//		LOCAL rDivX , rDivY AS REAL8
+		LOCAL oFont AS Font
+		LOCAL oGraphics AS Graphics
+		LOCAL nBaseUnits AS INT
+		LOCAL hDC , hOldFont AS IntPtr
+		LOCAL sTextMetric AS _winTEXTMETRIC
+		LOCAL sSize AS _winSIZE
+		LOCAL oInfo AS UnitTranslateInfo
+		LOCAL cStyle AS STRING
+		LOCAL lFontUsed AS LOGIC
+		
+		LOCAL eViewMode AS ViewMode
+		LOCAL cColumnsInherit AS STRING
+		LOCAL cBrowserInherit AS STRING
+		eViewMode := SELF:ViewMode
+		cColumnsInherit := SELF:oWindowDesign:ColumnsInheritClassName
+		cBrowserInherit := SELF:oWindowDesign:BrowserInheritClassName
+
+		oProp := SELF:oWindowDesign:GetProperty("Font")
+		IF oProp != NULL .AND. !oProp:IsAuto .AND. oProp:Value != NULL .AND. oProp:Value:GetType() == TypeOf(Font)
+			oFont := (Font)oProp:Value
+		ELSE
+			oFont := SELF:oWindow:Font
+		ENDIF
+		nBaseUnits := GetDialogBaseUnits()
+		oInfo:nBaseUnitX := nBaseUnits & (INT)0xFFFF
+		oInfo:nBaseUnitY := nBaseUnits >> 16
+		oGraphics := SELF:oWindow:CreateGraphics()
+		hDC := oGraphics:GetHdc()
+		hOldFont := SelectObject(hDC, oFont:ToHfont())
+		GetTextMetrics(hDC, sTextMetric)
+		cLine := "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"
+		GetTextExtentPoint32(hDC, cLine, cLine:Length, sSize)
+		oInfo:tmWidth := (sSize:cx / 26 + 1) / 2
+		oInfo:tmHeight := sTextMetric:tmHeight
+		SelectObject(hDC, hOldFont)
+		//ReleaseDC(IntPtr.Zero, hdc)
+		oGraphics:ReleaseHdc(hDC)
+		oGraphics:Dispose()
+
+/*		rDivY := (REAL8)oFont:Height / (REAL8)8.0
+		cLine := "ABCDabcdefghiklmnopqrstuvwxyz" // TODO
+		cLine := cLine + cLine + cLine + cLine
+		rDivX := (REAL8)oGraphics:MeasureString(cLine , oFont):Width / (REAL8)cLine:Length  / (REAL4)4.0*/
+
+
+		oCode := CodeContents{}
+
+		aDefines := oCode:aDefines
+		aDefineValues := oCode:aDefineValues
+		aResource := oCode:aResource
+		aClass := oCode:aClass
+		aConstructor := oCode:aConstructor
+		aTabPages := List<STRING>{}
+		aRadioGroups := List<STRING>{}
+
+		SELF:ArrangeControlOrder()
+		aDesign := SELF:GetAllDesignItemsByCreationOrder()
+		FOR n := 0 UPTO aDesign:Count - 1
+			oDesign := (DesignWindowItem)aDesign[n]
+//			aDefines:Add("#define " + oDesign:GetVODefine(SELF:oWindowDesign:Name) + " " + (100 + n):ToString())
+			aDefines:Add(oDesign:GetVODefine(SELF:oWindowDesign:Name))
+			aDefineValues:Add((100 + n):ToString())
+		NEXT
+		
+		IF SELF:ViewMode != ViewMode.Auto
+			aColumns := SELF:GetAllColumnDesignItemsByIndex(TRUE)
+		END IF
+
+// resource
+		oDesign := SELF:oWindowDesign
+		IF oDesign:lCreateResource
+			oRect := SELF:oWindowDesign:GetRect()
+			cLine := e"RESOURCE "
+			cLine := e""
+			cLine += SELF:oWindowDesign:Name + " DIALOGEX "
+/*			cLine += ((INT)(oRect:Left / rDivX)):ToString() + ", "
+			cLine += ((INT)(oRect:Top / rDivY)):ToString() + ", "
+			cLine += ((INT)(oRect:Width / rDivX)):ToString() + ", "
+			cLine += ((INT)(oRect:Height / rDivY)):ToString()*/
+			oRect:Width -= 2
+			oRect:Height -= 2
+			oRect := Funcs.PixelsToUnits(oRect , oInfo)
+			cLine += oRect:Left:ToString() + ", "
+			cLine += oRect:Top:ToString() + ", "
+			cLine += oRect:Width:ToString() + ", "
+			cLine += oRect:Height:ToString()
+			aResource:Add(cLine)
+			
+//			aResource:Add(e"STYLE WS_CHILD")
+			cStyle := oDesign:GetVOStylesString(VOStyle.Style)
+			aResource:Add( "STYLE " + cStyle)
+			IF cStyle:ToUpper():IndexOf("WS_CAPTION") != -1 .AND. SELF:oWindowDesign:GetProperty("Caption") != NULL
+				aResource:Add( e"CAPTION \"" + Funcs.TranslateCaption(SELF:oWindowDesign:Caption , FALSE) + e"\"")
+			ENDIF
+			oProp := oDesign:GetProperty("Font")
+			IF oProp != NULL .AND. !oProp:IsAuto
+				aResource:Add("FONT " + oProp:CodeValue:Substring(3)) // TODO ugly hack
+			ELSE
+				aResource:Add(e"FONT 8, \"MS Shell Dlg\"")
+			ENDIF
+			aResource:Add(e"BEGIN")
+			FOR n := 0 UPTO aDesign:Count - 1
+				oDesign := (DesignWindowItem)aDesign[n]
+				IF oDesign:Deleted != 0
+					LOOP
+				END IF
+				oRect := oDesign:GetRect()
+				cLine := e"\t"
+				cLine += e"CONTROL "
+				cLine += e"\"" + Funcs.TranslateCaption(oDesign:Caption , FALSE) + e"\", "
+				cLine += oDesign:GetVODefine(SELF:oWindowDesign:Name) + ", "
+				cLine += e"\"" + oDesign:cWinClass:ToUpper() + e"\", "
+				cLine += oDesign:GetVOStylesString(VOStyle.Style)
+				oProp := oDesign:GetProperty("_Visible")
+				IF oProp != NULL .AND. oProp:TextValue:ToUpper() == "NO"
+					cLine += "|NOT WS_VISIBLE"
+				ENDIF
+				cLine += ", "
+/*				cLine += ((INT)(oRect:Left / rDivX)):ToString() + ", "
+				cLine += ((INT)(oRect:Top / rDivY)):ToString() + ", "
+				cLine += ((INT)(oRect:Width / rDivX)):ToString() + ", "
+				cLine += ((INT)(oRect:Height / rDivY)):ToString()*/
+				oRect := Funcs.PixelsToUnits(oRect , oInfo)
+				cLine += oRect:Left:ToString() + ", "
+				cLine += oRect:Top:ToString() + ", "
+				cLine += oRect:Width:ToString() + ", "
+				cLine += oRect:Height:ToString()
+				cTemp := oDesign:GetVOStylesString(VOStyle.ExStyle)
+				IF cTemp:Length != 0
+					cLine += ", " + cTemp
+				ENDIF
+				aResource:Add(cLine)
+			NEXT
+			aResource:Add("END")
+		END IF
+		
+		oProp := SELF:oWindowDesign:GetPropertyByMember("ExpCtls")
+		IF oProp != NULL .AND. oProp:TextValue:ToUpper() == "YES"
+			lExpCtls := TRUE
+		ENDIF
+		
+
+// class declaration
+		cLine := "CLASS " + SELF:oWindowDesign:Name + " INHERIT " + SELF:oWindowDesign:InheritClassName
+		aClass:Add(cLine)
+		IF eViewMode != ViewMode.Auto
+//			FOR n := 0 UPTO aDesign:Count - 1
+			FOR n := 0 UPTO aColumns:Count - 1
+//				oDesign := (DesignWindowItem)aDesign[n]
+				oDesign := (DesignWindowItem)aColumns[n]
+				IF oDesign:Column != NULL .AND. oDesign:BrowseIndex != -1
+					cLine := e"\t"
+					IF lExpCtls
+						cLine += "EXPORT "
+					ELSE
+						cLine += "PROTECT "
+					END IF
+					cLine += "oDB" + oDesign:Name + " AS "
+					cLine += cColumnsInherit
+					aClass:Add(cLine)
+				END IF
+			NEXT
+		END IF
+		FOR n := 0 UPTO aDesign:Count - 1
+			oDesign := (DesignWindowItem)aDesign[n]
+			IF oDesign:Deleted != 0
+				LOOP
+			END IF
+			IF oDesign:GetProperty("_GenCode"):TextValue:ToUpper() == "NO"
+				LOOP
+			ENDIF
+			cLine := e"\t"
+			IF lExpCtls
+				cLine += "EXPORT "
+			ELSE
+				cLine += "PROTECT "
+			END IF
+			cLine += oDesign:cPrefix + oDesign:Name + " AS "
+			IF oDesign:IsSubForm
+				cLine += oDesign:Name
+			ELSE
+				cLine += oDesign:InheritClassName
+			END IF
+			aClass:Add(cLine)
+			IF oDesign:IsTabControl
+				oTabControl := (DesignTabControl)oDesign:Control
+				LOCAL cSelectedTab := "" AS STRING
+				FOR m := 1 UPTO oTabControl:TabPages:Count
+					oPageOptions := oTabControl:GetTabPageOptions(m)
+					IF oPageOptions:cCaption == "Page" // TODO Should check if page window exists
+						LOOP
+					ENDIF
+					cLine := e"\t"
+					IF lExpCtls
+						cLine += "EXPORT "
+					ELSE
+						cLine += "PROTECT "
+					END IF
+					cLine += "oTP" + oPageOptions:cName + " AS " + oPageOptions:cName
+					aClass:Add(cLine)
+					
+					cLine := e"\t"
+					cLine += "SELF:oTP" + oPageOptions:cName + " := " + oPageOptions:cName
+					cLine += "{SELF , " + /*(m - 1):ToString()*/"0" + "}"
+					aTabPages:Add(cLine)
+					cLine := e"\t"
+					cLine += "SELF:" + oDesign:cPrefix + oDesign:Name + ":AppendTab(#" + oPageOptions:cName
+//					cLine += e" , \""  + oPageOptions:cCaption + e"\" , SELF:oTP" + oPageOptions:cName
+					cLine += " , "  + Funcs.TranslateCaption(oPageOptions:cCaption , TRUE) + " , SELF:oTP" + oPageOptions:cName
+					cLine += " , " + /*(m - 1):ToString()*/"0" + ")"
+					aTabPages:Add(cLine)
+					IF oTabControl:SelectedIndex == m - 1
+						cLine := e"\t"
+						cLine += "SELF:" + oDesign:cPrefix + oDesign:Name + ":SelectTab(#" + oPageOptions:cName
+						cLine += ")"
+						cSelectedTab := cLine
+					END IF
+				NEXT
+				aTabPages:Add(cSelectedTab)
+			ENDIF
+		NEXT
+		aClass:Add("")
+//		aClass:Add(e"\t//{{%UC%}} USER CODE STARTS HERE (do NOT remove this line)")
+//		aClass:Add("")
+		
+
+
+// constructor
+		oProp := SELF:oWindowDesign:GetProperty("Pixel Positions")
+		IF oProp != NULL .AND. oProp:TextValue:ToUpper() == "YES"
+			lPixPos := TRUE
+		ENDIF
+		
+		cLine := "CONSTRUCTOR(" + SELF:oWindowDesign:cInitMethod + e")"
+		aConstructor:Add(cLine)
+		aConstructor:Add("")
+		cLine := e"\tSELF:PreInit(" + SELF:oWindowDesign:cInitMethod + e")"
+		aConstructor:Add(cLine)
+		aConstructor:Add("")
+		
+		IF SELF:HasRichEdit
+			aConstructor:Add(e"\tLoadLibrary(String2Psz(\"RICHED32.DLL\"))")
+			aConstructor:Add("")
+		ENDIF
+
+		cLine := ""
+		DO CASE
+		CASE TRUE
+			cLine := String.Format(e"\tSUPER(oParent , \"IDD_DEFDLG2\" , TRUE)" , SELF:oWindowDesign:Name)
+		CASE SELF:oWindowDesign:cFullClass:IndexOf("FORM:DATAWINDOW") == 0
+			cLine += String.Format(e"\tSUPER(oWindow , ResourceID{{\"{0}\" , _GetInst()}},iCtlID)" , SELF:oWindowDesign:Name)
+		CASE SELF:oWindowDesign:cFullClass:IndexOf("FORM:DATADIALOG") == 0
+			cLine += String.Format(e"\tSUPER(oWindow , ResourceID{{\"{0}\" , _GetInst()}},iCtlID)" , SELF:oWindowDesign:Name)
+		CASE SELF:oWindowDesign:cFullClass:IndexOf("FORM:DIALOGWINDOW") == 0
+			LOCAL cModal AS STRING
+			oProp := SELF:oWindowDesign:GetProperty("Modeless")
+			IF oProp != NULL .AND. oProp:TextValue:ToUpper() == "YES" // null in classmate
+				cModal := "FALSE"
+			ELSE
+				cModal := "TRUE"
+			ENDIF
+			cLine += String.Format(e"\tSUPER(oParent , ResourceID{{\"{0}\" , _GetInst()}} , {1})" , SELF:oWindowDesign:Name , cModal)
+		END CASE
+		aConstructor:Add(cLine)
+		
+		cStyle := oDesign:GetVOStylesString(VOStyle.Style)
+		cLine := String.Format(e"\tSELF:SetStyle({0}, TRUE)" , cStyle)
+		aConstructor:Add(cLine)
+
+		oProp := oDesign:GetProperty("Font") // not working for some reason, need to check
+//		MessageBox.Show(oProp:Name, oProp:TextValue)
+		LOCAL cFont AS STRING
+		IF oProp != NULL .AND. !oProp:IsAuto
+			cFont := oProp:CodeValue //:Substring(3)
+		ELSE
+			cFont := e", 8, \"MS Shell Dlg\""
+		ENDIF
+		cLine := String.Format(e"\tSELF:Font := Font{{{0}}}" , cFont)
+		aConstructor:Add(cLine)
+		
+		oWinRect := SELF:oWindowDesign:GetRect()
+		cLine := String.Format(e"\tSELF:Size := Dimension{{{0} , {1}}} " , oWinRect:Width , oWinRect:Height)
+		aConstructor:Add(cLine)
+
+		aConstructor:Add("")
+		FOR n := 0 UPTO aDesign:Count - 1
+			oDesign := (DesignWindowItem)aDesign[n]
+			IF oDesign:GetProperty("_GenCode"):TextValue:ToUpper() == "NO"
+				LOOP
+			ENDIF
+			IF oDesign:Deleted != 0
+				LOOP
+			END IF
+			IF oDesign:IsSubForm
+				LOOP
+			ENDIF
+
+//			IF oDesign:cPrefix == "oDC"
+			IF oDesign:lAccessAssign
+				oCode:aAccessAssign:Add(oDesign:Name)
+			ENDIF
+
+			cLine := e"\t"
+			cLine += "SELF:" + oDesign:cPrefix
+			cLine += oDesign:Name
+			cLine += " := "
+			cLine += oDesign:InheritClassName
+			cLine += "{"
+			cLine += "SELF , " + oDesign:GetVODefine(SELF:oWindowDesign:Name)
+			IF lPixPos .or. TRUE
+				oWinRect := SELF:oWindowDesign:GetRect()
+				oRect := oDesign:GetRect()
+				cLine += String.Format(", Point{{{0} , {1}}} " , oRect:Left , oWinRect:Height - oRect:Bottom)
+				cLine += String.Format(", Dimension{{{0} , {1}}} " , oRect:Width , oRect:Height)
+			ENDIF
+//			cLine += ", " + oDesign:GetVOStylesString(VOStyle.Style)
+			cLine += "}"
+			aConstructor:Add(cLine)
+			cLine := e"\t"
+			cLine += "SELF:" + oDesign:cPrefix
+			cLine += oDesign:Name
+			cLine += ":SetStyle("
+			cLine += oDesign:GetVOStylesString(VOStyle.Style)
+			cLine += ")"
 			aConstructor:Add(cLine)
 			SELF:GetCode(oDesign , "SELF:" + oDesign:cPrefix + oDesign:Name + ":" , aConstructor , lFontUsed)
 			IF oDesign:cFullClass:ToUpper():StartsWith("CONTROL:TEXTCONTROL:RADIOBUTTONGROUP")
@@ -3613,6 +4159,8 @@ CLASS DesignWindowItem INHERIT DesignItem
 	INTERNAL oColumn AS DesignDataColumn
 	EXPORT lBrowseView AS LOGIC
 	PROTECT oBIProp,oBSProp,oDelProp AS DesignProperty
+	EXPORT lForceCommandControl AS LOGIC
+	EXPORT cRawStyles AS STRING
 	
 	CONSTRUCTOR(_oDesigner AS VOWindowEditor , oTemplate AS VOControlTemplate)
 
@@ -3630,7 +4178,9 @@ CLASS DesignWindowItem INHERIT DesignItem
 		SELF:cWinClass := oTemplate:cWinClass
 		SELF:cFullClass := oTemplate:cFullClass
 		SELF:cInitMethod := oTemplate:cInitMethod
+		SELF:cRawStyles := oTemplate:cRawStyles
 		SELF:lCreateResource := oTemplate:lCreateResource
+		SELF:lForceCommandControl := oTemplate:lForceCommandControl
 		SELF:lForm := oTemplate:lForm
 		
 		SELF:cPrefix := "oDC"
@@ -3651,6 +4201,17 @@ CLASS DesignWindowItem INHERIT DesignItem
 		CASE SELF:cFullClass:IndexOf("CONTROL:TEXTCONTROL:BUTTON:RADIOBUTTON") == 0
 			SELF:oControl := DesignRadioButton{SELF}
 			SELF:cPrefix := "oCC"
+
+			CASE SELF:cFullClass:IndexOf("CONTROL:TEXTCONTROL:BUTTON") == 0 .and. SELF:cRawStyles:Contains("BS_CHECKBOX")
+				SELF:oControl := DesignCheckBox{SELF}
+				SELF:oColumn := DesignDataColumn{SELF}
+			CASE SELF:cFullClass:IndexOf("CONTROL:TEXTCONTROL:BUTTON") == 0 .and. SELF:cRawStyles:Contains("BS_RADIOBUTTON")
+				SELF:oControl := DesignRadioButton{SELF}
+				SELF:cPrefix := "oCC"
+			CASE SELF:cFullClass:IndexOf("CONTROL:TEXTCONTROL:BUTTON") == 0
+				SELF:oControl := DesignPushButton{SELF}
+				SELF:cPrefix := "oCC"
+
 		CASE SELF:cFullClass:IndexOf("CONTROL:TEXTCONTROL:EDIT") == 0 .OR. ;
 					SELF:cFullClass:IndexOf("CONTROL:TEXTCONTROL:IPADDRESS") == 0 .OR. ;
 					SELF:cFullClass:IndexOf("CONTROL:TEXTCONTROL:DATETIMEPICKER") == 0 .OR. ;
@@ -3664,6 +4225,10 @@ CLASS DesignWindowItem INHERIT DesignItem
 			SELF:oControl := DesignComboBox{SELF}
 		CASE SELF:cFullClass:IndexOf("CONTROL:TEXTCONTROL:BASELISTBOX:LISTBOX") == 0
 			SELF:oControl := DesignListBox{SELF}
+
+			CASE SELF:cFullClass:IndexOf("CONTROL:TEXTCONTROL:BASELISTBOX") == 0 .and. SELF:cRawStyles:Contains("CBS_")
+				SELF:oControl := DesignComboBox{SELF}
+
 		CASE SELF:cFullClass:IndexOf("CONTROL:COMMONCONTROL:LISTVIEW") == 0
 			SELF:oControl := DesignListView{SELF}
 		CASE SELF:cFullClass:IndexOf("CONTROL:COMMONCONTROL:TREEVIEW") == 0
@@ -3701,6 +4266,10 @@ CLASS DesignWindowItem INHERIT DesignItem
 			SELF:oControl := DesignEmpty{SELF}
 		END CASE
 		
+		IF SELF:lForceCommandControl
+			SELF:cPrefix := "oCC"
+		END IF
+
 		SELF:lAccessAssign := SELF:cFullClass:IndexOf("CONTROL:TEXTCONTROL:BUTTON:CHECKBOX") == 0 .OR. ;
 						SELF:cFullClass:IndexOf("CONTROL:TEXTCONTROL:EDIT:SINGLELINEEDIT") == 0 .OR. ;
 						SELF:cFullClass:IndexOf("CONTROL:TEXTCONTROL:EDIT:MULTILINEEDIT") == 0 .OR. ;
@@ -4381,15 +4950,20 @@ END CLASS
 INTERNAL CLASS WindowTypeSelectDlg INHERIT Form
 	PROTECT oCancelButton AS System.Windows.Forms.Button
 	PROTECT oOKButton AS System.Windows.Forms.Button
+	PROTECT oCloneButton AS System.Windows.Forms.Button
 	PROTECT oGroupBox1 AS System.Windows.Forms.GroupBox
 	PROTECT oTypeListBox AS System.Windows.Forms.ListBox
 	
 	EXPORT cName AS STRING
+	EXPORT cCloneFrom := NULL AS STRING
+   PROTECT xfile AS XFile
+   PROTECT cDefaultFileName AS STRING
 	
-	CONSTRUCTOR()
+	CONSTRUCTOR(file AS XFile, cFileName AS STRING)
 
 		SUPER()
-
+      xfile := file
+      cDefaultFileName := cFileName
 		LOCAL oTemplate AS VOControlTemplate
 		LOCAL n AS INT
 
@@ -4405,7 +4979,11 @@ INTERNAL CLASS WindowTypeSelectDlg INHERIT Form
 		
 		IF SELF:oTypeListBox:Items:Count != 0
 			SELF:oTypeListBox:SelectedIndex := 0
-		END IF
+      END IF
+      // we need the xfile object to get to the XProject and read the files from the database
+      IF xfile == NULL
+         SELF:oCloneButton:Visible := FALSE
+      ENDIF
 
 	RETURN
 
@@ -4413,6 +4991,7 @@ INTERNAL CLASS WindowTypeSelectDlg INHERIT Form
 	
 	SELF:oCancelButton := System.Windows.Forms.Button{}
 	SELF:oOKButton := System.Windows.Forms.Button{}
+	SELF:oCloneButton := System.Windows.Forms.Button{}
 	SELF:oGroupBox1 := System.Windows.Forms.GroupBox{}
 	SELF:oTypeListBox := System.Windows.Forms.ListBox{}
 
@@ -4420,7 +4999,7 @@ INTERNAL CLASS WindowTypeSelectDlg INHERIT Form
 
 	SELF:AutoScaleDimensions := System.Drawing.SizeF{ 6 , 13 }
 	SELF:AutoScaleMode := System.Windows.Forms.AutoScaleMode.Font
-	SELF:ClientSize := System.Drawing.Size{174 , 203}
+	SELF:ClientSize := System.Drawing.Size{174 , 233}
 	SELF:FormBorderStyle := FormBorderStyle.FixedDialog
 	SELF:Location := System.Drawing.Point{100 , 100}
 	SELF:MaximizeBox := FALSE
@@ -4433,7 +5012,7 @@ INTERNAL CLASS WindowTypeSelectDlg INHERIT Form
 
 	SELF:AcceptButton := SELF:oOKButton
 	SELF:CancelButton := SELF:oCancelButton
-	SELF:oCancelButton:Location := System.Drawing.Point{91 , 172}
+	SELF:oCancelButton:Location := System.Drawing.Point{91 , 202}
 	SELF:oCancelButton:Name := "CancelButton"
 	SELF:oCancelButton:Size := System.Drawing.Size{75 , 23}
 	SELF:oCancelButton:TabIndex := 2
@@ -4441,15 +5020,23 @@ INTERNAL CLASS WindowTypeSelectDlg INHERIT Form
 	SELF:Controls:Add(SELF:oCancelButton)
 	
 	SELF:oOKButton:Click += System.EventHandler{ SELF , @OKButtonClick() }
-	SELF:oOKButton:Location := System.Drawing.Point{8 , 172}
+	SELF:oOKButton:Location := System.Drawing.Point{8 , 202}
 	SELF:oOKButton:Name := "OKButton"
 	SELF:oOKButton:Size := System.Drawing.Size{75 , 23}
 	SELF:oOKButton:TabIndex := 1
 	SELF:oOKButton:Text := "&OK"
 	SELF:Controls:Add(SELF:oOKButton)
 	
+	SELF:oCloneButton:Click += System.EventHandler{ SELF , @CloneButtonClick() }
+	SELF:oCloneButton:Location := System.Drawing.Point{8 , 8}
+	SELF:oCloneButton:Name := "CloneButton"
+	SELF:oCloneButton:Size := System.Drawing.Size{158 , 23}
+	SELF:oCloneButton:TabIndex := 3
+	SELF:oCloneButton:Text := "C&lone from another window"
+	SELF:Controls:Add(SELF:oCloneButton)
+	
 	SELF:oGroupBox1:SuspendLayout()
-	SELF:oGroupBox1:Location := System.Drawing.Point{8 , 3}
+	SELF:oGroupBox1:Location := System.Drawing.Point{8 , 33}
 	SELF:oGroupBox1:Name := "GroupBox1"
 	SELF:oGroupBox1:Size := System.Drawing.Size{158 , 164}
 	SELF:oGroupBox1:TabIndex := 0
@@ -4478,6 +5065,15 @@ METHOD OKButtonClick(sender AS System.Object , e AS System.EventArgs) AS System.
 	SELF:SelectTemplate()
 RETURN
 
+METHOD CloneButtonClick(sender AS System.Object , e AS System.EventArgs) AS System.Void
+	LOCAL oDlg AS WindowCloneSelectDlg
+	oDlg := WindowCloneSelectDlg{SELF:xfile, SELF:cDefaultFileName}
+	IF oDlg:ShowDialog() == DialogResult.OK
+		SELF:cCloneFrom := oDlg:cSelected
+		SELF:DialogResult := DialogResult.OK
+	ENDIF
+RETURN
+
 METHOD SelectTemplate() AS VOID
 	IF SELF:oTypeListBox:SelectedIndex == -1
 		RETURN
@@ -4485,5 +5081,89 @@ METHOD SelectTemplate() AS VOID
 	SELF:cName := SELF:oTypeListBox:Text
 	SELF:DialogResult := DialogResult.OK
 RETURN
+
+END CLASS
+
+
+CLASS WindowCloneSelectDlg INHERIT System.Windows.Forms.Form
+
+	PROTECT oCancelButton AS System.Windows.Forms.Button
+	PROTECT oOKButton AS System.Windows.Forms.Button
+	PROTECT oFilesList AS System.Windows.Forms.ListBox
+	// User code starts here (DO NOT remove this line)  ##USER##
+	EXPORT cSelected := NULL AS STRING
+	CONSTRUCTOR(file AS XFile, cFileName AS STRING)
+
+		SUPER()
+		SELF:InitializeForm()
+		
+      VAR fileNames := file:Project:GetFilesOfType(XFileType.VOForm, TRUE)
+      FOREACH VAR filename IN fileNames
+         // Suppress the frm that we are adding !
+         IF !String.Equals(filename, cFileName,StringComparison.OrdinalIgnoreCase)
+		      SELF:oFilesList:Items:Add(filename)
+         ENDIF
+      NEXT
+
+	RETURN
+	PRIVATE METHOD InitializeForm() AS VOID
+	
+	// IDE generated code (please DO NOT modify)
+	
+		SELF:oCancelButton := System.Windows.Forms.Button{}
+		SELF:oOKButton := System.Windows.Forms.Button{}
+		SELF:oFilesList := System.Windows.Forms.ListBox{}
+
+		SELF:SuspendLayout()
+
+		SELF:ClientSize := System.Drawing.Size{473 , 385}
+		SELF:FormBorderStyle := System.Windows.Forms.FormBorderStyle.Sizable
+		SELF:Location := System.Drawing.Point{100 , 100}
+		SELF:MaximizeBox := FALSE
+		SELF:MinimizeBox := FALSE
+		SELF:Name := "WindowCloneSelectDlg"
+		SELF:Text := "Choose source window to duplicate:"
+		SELF:StartPosition := FormStartPosition.CenterParent
+
+		SELF:AcceptButton := SELF:oOKButton
+		SELF:CancelButton := SELF:oCancelButton
+		SELF:oCancelButton:Anchor := System.Windows.Forms.AnchorStyles.Right + System.Windows.Forms.AnchorStyles.Bottom
+		SELF:oCancelButton:Location := System.Drawing.Point{346 , 355}
+		SELF:oCancelButton:Name := "CancelButton"
+		SELF:oCancelButton:Size := System.Drawing.Size{115 , 23}
+		SELF:oCancelButton:TabIndex := 2
+		SELF:oCancelButton:Text := "&Cancel"
+		SELF:Controls:Add(SELF:oCancelButton)
+		
+		SELF:oOKButton:Anchor := System.Windows.Forms.AnchorStyles.Left + System.Windows.Forms.AnchorStyles.Bottom
+		SELF:oOKButton:Click += System.EventHandler{ SELF , @OKButtonClick() }
+		SELF:oOKButton:Location := System.Drawing.Point{12 , 355}
+		SELF:oOKButton:Name := "OKButton"
+		SELF:oOKButton:Size := System.Drawing.Size{115 , 23}
+		SELF:oOKButton:TabIndex := 1
+		SELF:oOKButton:Text := "&OK"
+		SELF:Controls:Add(SELF:oOKButton)
+		
+		SELF:oFilesList:Anchor := System.Windows.Forms.AnchorStyles.Top + System.Windows.Forms.AnchorStyles.Left + System.Windows.Forms.AnchorStyles.Right + System.Windows.Forms.AnchorStyles.Bottom
+		SELF:oFilesList:DoubleClick += EventHandler{ SELF , @OKButtonClick() }
+		SELF:oFilesList:Location := System.Drawing.Point{12 , 10}
+		SELF:oFilesList:Name := "FilesList"
+		SELF:oFilesList:Size := System.Drawing.Size{449 , 339}
+		SELF:oFilesList:TabIndex := 0
+		SELF:Controls:Add(SELF:oFilesList)
+		
+		SELF:ResumeLayout()
+
+	RETURN
+
+	PRIVATE METHOD OKButtonClick(sender AS System.Object , e AS System.EventArgs) AS VOID
+		IF SELF:oFilesList:SelectedIndex == -1
+			SELF:DialogResult := System.Windows.Forms.DialogResult.Cancel
+			RETURN
+		END IF
+		SELF:cSelected := SELF:oFilesList:SelectedItem:ToString()
+		SELF:DialogResult := System.Windows.Forms.DialogResult.OK
+	RETURN
+
 
 END CLASS

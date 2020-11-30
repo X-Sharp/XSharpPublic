@@ -9,8 +9,8 @@ if "%msbuilddir%" == "" goto NotFound
 :found
 
 Echo Building VsIntegration and Tools %1 Configuration
-"%msbuilddir%msbuild" VsIntegration.sln  /fl1 /flp1:Append /p:Configuration=%1 /p:Platform=x86     /t:Build  /m /v:q /nologo 
-"%msbuilddir%msbuild" Tools.sln 		   /fl2 /flp1:Append /p:Configuration=%1 /p:Platform="Any CPU" /t:Build  /m /v:q /nologo 
+"%msbuilddir%msbuild" VsIntegration.sln  /fl1 /flp1:Append;Verbosity=diag /p:Configuration=%1 /p:Platform=x86     /t:Build  /m /v:q /nologo 
+"%msbuilddir%msbuild" Tools.sln 		   /fl2 /flp1:Append;Verbosity=diag /p:Configuration=%1 /p:Platform="Any CPU" /t:Build  /v:q /m /nologo 
 if exist build-%1.log del build-%1.log
 if exist tools-%1.log del tools-%1.log
 rename msbuild1.log build-%1.log

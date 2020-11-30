@@ -228,20 +228,42 @@ namespace XSharp.CodeDom
             }
             else
             {
-                // Standard Array declaration
-                base.Output.Write(this.GetBaseTypeOutput(e.CreateType));
-                base.Output.Write("[");
-                if (e.SizeExpression != null)
+                if (e.SizeExpression == null && e.Size == 0)
                 {
-                    base.GenerateExpression(e.SizeExpression);
+                    // the syntax is something like <int>{}
+                    this.Output.Write("<");
+                    // Is a specific type indicated ?
+                    if (e.CreateType.ArrayElementType != null)
+                    {
+                        this.OutputType(e.CreateType.ArrayElementType);
+                    }
+                    else
+                    {
+                        this.OutputType(e.CreateType);
+                    }
+                    //
+                    this.Output.Write(">{");
+                    this.Output.Write("}");
+
                 }
                 else
                 {
-                    base.Output.Write(e.Size);
+                    // Standard Array declaration
+                    base.Output.Write(this.GetBaseTypeOutput(e.CreateType));
+                    base.Output.Write("[");
+                    if (e.SizeExpression != null)
+                    {
+                        base.GenerateExpression(e.SizeExpression);
+                    }
+                    else
+                    {
+                        base.Output.Write(e.Size);
+                    }
+                    base.Output.Write("]");
                 }
-                base.Output.Write("]");
             }
         }
+
 
         protected override void GenerateArrayIndexerExpression(CodeArrayIndexerExpression e)
         {

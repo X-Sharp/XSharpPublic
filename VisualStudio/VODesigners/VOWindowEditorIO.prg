@@ -63,8 +63,15 @@ PARTIAL CLASS VOWindowEditor INHERIT WindowDesignerBase
 		LOCAL oDlg AS WindowTypeSelectDlg
 		LOCAL lSuccess AS LOGIC
 
-		oDlg := WindowTypeSelectDlg{}
+		oDlg := WindowTypeSelectDlg{SELF:XFile, SELF:cDefaultFileName}
 		IF oDlg:ShowDialog() == System.Windows.Forms.DialogResult.OK
+			
+			IF oDlg:cCloneFrom != NULL
+				//System.Windows.Forms.MessageBox.show(oDlg:cCloneFrom)
+				lSuccess := SELF:CloneFromXml(oDlg:cCloneFrom , cName)
+				RETURN lSuccess
+			END IF
+			
 			lSuccess := SELF:CreateNewWindow(oDlg:cName , cName)
 			IF lSuccess
 				LOCAL oTemplate AS VOControlTemplate
@@ -89,7 +96,7 @@ PARTIAL CLASS VOWindowEditor INHERIT WindowDesignerBase
 		LOCAL oDocument AS XmlDocument
 		LOCAL lNewWindow AS LOGIC
 		LOCAL lSuccess AS LOGIC
-
+		
 		IF ! File.Exists(cFileName)
 			RETURN FALSE
 		END IF
@@ -97,8 +104,8 @@ PARTIAL CLASS VOWindowEditor INHERIT WindowDesignerBase
 		TRY
 			oDocument:Load(cFileName)
 			lSuccess := TRUE
-      CATCH
-         NOP
+		CATCH
+			NOP
 		END TRY
 		IF .not. lSuccess
 			RETURN FALSE
@@ -115,24 +122,25 @@ PARTIAL CLASS VOWindowEditor INHERIT WindowDesignerBase
 		IF oNode == NULL
 			RETURN FALSE
 		END IF
-
+		
 		SELF:Reset()
 		SELF:BeginAction()
 		SELF:lLoading := TRUE
-
+		
 		oWindowNode := oNode:FirstChild
 		
 		IF oWindowNode != NULL .and. oWindowNode:Name:ToUpper() == "VOWINDOW" .and. oWindowNode:ChildNodes:Count == 0 // empty template
-
-				TRY
-					lSuccess := SELF:InitializeNew(oWindowNode:Attributes:GetNamedItem("Name"):InnerText)
-            CATCH
-               NOP
-				END TRY
-				lNewWindow := TRUE
-
+			
+			TRY
+				lSuccess := SELF:InitializeNew(oWindowNode:Attributes:GetNamedItem("Name"):InnerText)
+			CATCH
+				NOP
+			END TRY
+			lNewWindow := TRUE
+//			SELF:CloneFromXml("C:\xSharp\Users\Meinhard\RP2Test\RP2Test\Help About.HELPABOUT.xsfrm")
+			
 		ELSE
-		
+			
 			DO WHILE oWindowNode != NULL
 				IF oWindowNode:Name:ToUpper() == "VOWINDOW"
 					lSuccess := SELF:OpenXml(oWindowNode)
@@ -140,9 +148,9 @@ PARTIAL CLASS VOWindowEditor INHERIT WindowDesignerBase
 				END IF
 				oWindowNode := oWindowNode:NextSibling
 			END DO
-
+			
 		END IF
-
+		
 		IF lSuccess
 			IF .not. SELF:lAlreadySavedBefore
 				SELF:AutoAdjustDialogHeight()
@@ -159,9 +167,56 @@ PARTIAL CLASS VOWindowEditor INHERIT WindowDesignerBase
 		ELSE
 			SELF:Reset()
 		ENDIF
-
+		
 	RETURN lSuccess
-
+	
+	METHOD CloneFromXml(cFileName AS STRING, cName AS STRING) AS LOGIC
+		LOCAL oNode , oWindowNode AS XmlNode
+		LOCAL oDocument AS XmlDocument
+		LOCAL lSuccess AS LOGIC
+		
+		IF ! File.Exists(cFileName)
+			RETURN FALSE
+		END IF
+		oDocument := XmlDocument{}
+		TRY
+			oDocument:Load(cFileName)
+			lSuccess := TRUE
+		CATCH
+			NOP
+		END TRY
+		IF .not. lSuccess
+			RETURN FALSE
+		END IF
+		
+		oNode := oDocument:FirstChild
+		DO WHILE oNode != NULL
+			IF oNode:Name:ToUpper() == "DESIGNERS"
+				EXIT
+			END IF
+			oNode := oNode:NextSibling
+		END DO
+		IF oNode == NULL
+			RETURN FALSE
+		END IF
+		
+		oWindowNode := oNode:FirstChild
+		
+		IF oWindowNode != NULL .and. oWindowNode:Name:ToUpper() == "VOWINDOW" .and. oWindowNode:ChildNodes:Count == 0 // empty template
+			RETURN FALSE
+		ELSE
+			DO WHILE oWindowNode != NULL
+				IF oWindowNode:Name:ToUpper() == "VOWINDOW"
+					lSuccess := SELF:OpenXml(oWindowNode)
+					SELF:StartAction(DesignerBasicActionType.SetProperty , ActionData{SELF:oWindowDesign:cGuid , "Name" , cName})
+					EXIT
+				END IF
+				oWindowNode := oWindowNode:NextSibling
+			END DO
+		END IF
+		
+	RETURN lSuccess
+	
 	METHOD OpenXml(oBaseNode AS XmlNode) AS LOGIC
 		LOCAL oDesign AS DesignWindowItem
 		LOCAL oItem AS VOWEDItem

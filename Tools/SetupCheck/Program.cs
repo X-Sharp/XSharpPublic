@@ -68,7 +68,7 @@ internal class Program
         {
             // Try to get the class object using app-local call.
             ISetupConfiguration query;
-            var result = GetSetupConfiguration(out query, IntPtr.Zero);
+            var result = NativeMethods.GetSetupConfiguration(out query, IntPtr.Zero);
 
             if (result < 0)
             {
@@ -124,8 +124,12 @@ internal class Program
         }
     }
 
+}
+internal static class NativeMethods
+{
     [DllImport("Microsoft.VisualStudio.Setup.Configuration.Native.dll", ExactSpelling = true, PreserveSig = true)]
-    private static extern int GetSetupConfiguration(
+    internal static extern int GetSetupConfiguration(
         [MarshalAs(UnmanagedType.Interface), Out] out ISetupConfiguration configuration,
         IntPtr reserved);
+
 }

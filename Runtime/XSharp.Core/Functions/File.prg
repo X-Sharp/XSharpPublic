@@ -390,7 +390,7 @@ BEGIN NAMESPACE XSharp.IO
 		
 		INTERNAL STATIC METHOD Seek(pFile AS IntPtr,lOffset AS INT64,dwOrigin AS DWORD) AS INT64
 			LOCAL oStream AS Stream
-			LOCAL iResult AS INT64
+			LOCAL iResult := -1 AS INT64
 			oStream := XSharp.IO.File.findStream(pFile)
             IF oStream IS XsFileStream
                 iResult := oStream:Seek(lOffset, (SeekOrigin) dwOrigin)
@@ -412,7 +412,7 @@ BEGIN NAMESPACE XSharp.IO
 				END TRY
 				RETURN iResult 
 			ENDIF
-			RETURN -1
+			RETURN iResult
 		
 		INTERNAL STATIC METHOD Write( pFile AS IntPtr, c AS STRING, nLength AS INT, lAnsi AS LOGIC ) AS INT
 			LOCAL aBytes := String2Bytes(c) AS BYTE[]

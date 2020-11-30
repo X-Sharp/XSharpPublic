@@ -537,11 +537,11 @@ namespace XSharp.CodeDom
             // expr should have a value here
             if (lhs != null)
             {
+                IXType memberType = null;
                 for (int i = 0; i < elements.Count; i++)
                 {
                     amc = elements[i];
                     var rhs = amc.Name.GetCleanText();
-                    IXType memberType = null;
                     if (i == 0)
                     {
                         if (isSelf)
@@ -716,8 +716,13 @@ namespace XSharp.CodeDom
             }
             else if (ctx is XSharpParser.LiteralExpressionContext)
             {
-                XSharpParser.LiteralExpressionContext lit = (XSharpParser.LiteralExpressionContext)ctx;
+                var lit = (XSharpParser.LiteralExpressionContext)ctx;
                 expr = BuildLiteralValue(lit.Literal);
+            }
+            else if (ctx is XSharpParser.LiteralArrayExpressionContext)
+            {
+                var lit = (XSharpParser.LiteralArrayExpressionContext)ctx;
+                expr = BuildLiteralArray(lit);
             }
             else if (ctx is XSharpParser.LiteralArrayExpressionContext) // { expr [, expr] }
             {
@@ -896,7 +901,30 @@ namespace XSharp.CodeDom
             return expr;
         }
 
-
+        private CodeExpression BuildLiteralArray(XSharpParser.LiteralArrayExpressionContext context)
+        {
+            CodeArrayCreateExpression ac = null;
+            var array = context.LiteralArray;
+            var elements = new List<CodeExpression>();
+            if (array._Elements.Count > 0)
+            {
+                foreach (var expr in array._Elements)
+                {
+                    elements.Add(BuildExpression(expr.Expr, false));
+                }
+            }
+            XCodeTypeReference typeRef = null;
+            if (array.Type != null)
+            {
+                typeRef = BuildDataType(array.Type);
+            }
+            else
+            {
+                typeRef = new XCodeTypeReference("XSharp.__Array");
+            }
+            ac = new CodeArrayCreateExpression(typeRef, elements.ToArray());
+            return ac;
+        }
         private CodeExpression BuildLiteralValue(XSharpParser.LiteralValueContext context)
         {
             CodeExpression expr = null;
@@ -1517,8 +1545,26 @@ namespace XSharp.CodeDom
         }
 
 
+        private string simplifyType(string typeName)
+        {
+            var index = typeName.IndexOf("<");
+            var name = typeName;
+            if (index > 0)
+            {
+                name = typeName.Substring(0, index);
+                if (name.IndexOf("`") == -1)
+                {
+                    var parts = typeName.Substring(index);
+                    var genargs = parts.Split(",".ToCharArray());
+                    name = name + "`" + genargs.Length.ToString();
+                }
+            }
+            return name;
+        }
+
         protected IXType findType(string typeName, IList<string> usings = null)
         {
+            typeName = simplifyType(typeName);
             typeName = typeName.GetSystemTypeName(_projectNode.ParseOptions.XSharpRuntime);
             if (_types.ContainsKey(typeName))
             {
@@ -1548,16 +1594,17 @@ namespace XSharp.CodeDom
 
         protected IXType findParentType(IXType xtype)
         {
-            var result = findInCache(xtype.BaseType);
+            var name = simplifyType(xtype.BaseType);
+            var result = findInCache(name);
             if (result != null)
                 return result;
-            var xparent = findType(xtype.BaseType, xtype.FileUsings);
+            var xparent = findType(name, xtype.FileUsings);
             if (xparent != null)
                 return xparent;
-            var parent = findType(xtype.BaseType);
+            var parent = findType(name);
             if (parent == null)
             {
-                parent = _projectNode.ResolveXType(xtype.BaseType, xtype.FileUsings.ToArray());
+                parent = _projectNode.ResolveXType(name, xtype.FileUsings.ToArray());
             }
             return parent;
 

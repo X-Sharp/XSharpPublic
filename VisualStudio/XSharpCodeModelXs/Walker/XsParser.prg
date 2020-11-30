@@ -156,7 +156,7 @@ BEGIN NAMESPACE XSharpModel
 
          DO WHILE ! SELF:Eoi()
             VAR tokenBefore := LastToken
-            VAR first := SELF:Lt1
+            LOCAL first := (XSharpToken) SELF:Lt1  AS XSharpToken
             IF ParsePPLine()
                LOOP
             ENDIF
@@ -168,7 +168,12 @@ BEGIN NAMESPACE XSharpModel
             VAR vis  := _AND(mods, Modifiers.VisibilityMask)
             IF IsStartOfEntity(OUT VAR entityKind, mods)
                IF _hasXmlDoc
-                  cXmlDoc := GetXmlDoc( (XSharpToken) first)
+                  VAR cDoc := first:XmlComments
+                  IF ! String.IsNullOrEmpty(cDoc)
+                     cXmlDoc := "<doc>"+cDoc+"</doc>"
+                  ELSE
+                     cXmlDoc := NULL
+                  ENDIF
                ENDIF
                // note: do not set this before the IsStartOfEntity check to make sure that 
                // single identifiers on a line are not matched with the ClassVar rule
@@ -303,29 +308,6 @@ BEGIN NAMESPACE XSharpModel
             _file:SaveToDatabase()
          ENDIF
          
-      
-      PRIVATE METHOD GetXmlDoc(startToken AS XSharpToken) AS STRING
-         VAR sb         := StringBuilder{}
-         VAR startindex := startToken:OriginalTokenIndex
-         startindex     -= 1
-         DO WHILE startindex >= 0
-            VAR token := _tokens[startindex]
-            SWITCH token:Channel
-            CASE XSharpLexer.XMLDOCCHANNEL
-               VAR text := token.Text.Substring(3)
-               sb:Insert(0, text + e"\r\n")
-            CASE XSharpLexer.DefaultTokenChannel
-               // exit the loop
-               startindex := 0
-            END SWITCH
-            startindex -= 1
-         ENDDO
-         VAR result := sb:ToString()
-         IF result:Length > 0
-            result := "<doc>"+result+"</doc>"
-         ENDIF
-         RETURN result
-      
          
       PRIVATE METHOD ParsePPLine() AS LOGIC
          VAR token := SELF:La1

@@ -73,7 +73,11 @@ CLASS BinaryEntity
 						oItem := VOWEDItem.ReadVNFrmControl(oBinary)
 						aItems:Add(oItem)
 					END DO
+				CATCH 
+					NOP
 				END TRY
+			CATCH 
+				NOP
 			END TRY
 			oBinary:Close()
 			oMemory:Dispose()
@@ -229,6 +233,8 @@ CLASS BinaryEntity
 				aLines:Add("ButtonToolTip=" + oItem:cButtonTooltip)
 				aLines:Add("ButtonPos=" + oItem:nButtonPosition:ToString())
 			END DO
+		CATCH 
+			NOP
 		END TRY
 		
 		FOR n := 1 UPTO nDepth
@@ -373,6 +379,8 @@ CLASS BinaryEntity
 		SaveMenuToXml(oDescr , oDocument)
 		TRY
 			oDocument:Save(cBinaryFileName)
+		CATCH 
+			NOP
 		END TRY
 	RETURN
 

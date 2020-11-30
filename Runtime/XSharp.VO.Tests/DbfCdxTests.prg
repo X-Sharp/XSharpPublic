@@ -4135,6 +4135,90 @@ RETURN
 			? "Child Eof, RecNo:", childnew->Eof(), childnew->RecNo()
 		RETURN
 
+        [Fact, Trait("Category", "DBF")];
+		METHOD SetScope_test() AS VOID
+			LOCAL cDbf AS STRING
+			RddSetDefault("DBFCDX")
+			cDbf := GetTempFileName()
+			DbfTests.CreateDatabase(cDbf , { { "FLD" , "N" , 4 , 0 } } )
+			DbUseArea(TRUE, "DBFCDX", cDbf)
+		
+			DbAppend()
+			FieldPut(1,101)
+			DbAppend()
+			FieldPut(1,202)
+			DbAppend()
+			FieldPut(1,301)
+			DbAppend()
+			FieldPut(1,402)
+			
+			DbCreateIndex(cDbf,"FLD")
+			
+			Assert.Equal( 1 , TestScope(101,110,FALSE) )
+			Assert.Equal( 1 , TestScope(201,210,FALSE) )
+			Assert.Equal( 1 , TestScope(301,310,FALSE) )
+			Assert.Equal( 1 , TestScope(401,410,FALSE) )
+			Assert.Equal( 1 , TestScope(101,110,FALSE) )
+			Assert.Equal( 0 , TestScope(501,510,TRUE)  )
+			Assert.Equal( 1 , TestScope(101,110,FALSE) )
+			Assert.Equal( 0 , TestScope(601,610,TRUE)  )
+		
+			DbAppend()
+			FieldPut(1,103)
+			DbAppend()
+			FieldPut(1,201)
+			DbAppend()
+			FieldPut(1,501)
+			DbAppend()
+			FieldPut(1,403)
+		
+			Assert.Equal( 2 , TestScope(101,110,FALSE) )
+			Assert.Equal( 2 , TestScope(201,210,FALSE) )
+			Assert.Equal( 1 , TestScope(301,310,FALSE) )
+			Assert.Equal( 2 , TestScope(401,410,FALSE) )
+			Assert.Equal( 2 , TestScope(101,110,FALSE) )
+			Assert.Equal( 1 , TestScope(501,510,FALSE) )
+			Assert.Equal( 2 , TestScope(101,110,FALSE) )
+			Assert.Equal( 0 , TestScope(601,610,TRUE)  )
+		
+			DbAppend()
+			FieldPut(1,110)
+			DbAppend()
+			FieldPut(1,205)
+			DbAppend()
+			FieldPut(1,321)
+			DbAppend()
+			FieldPut(1,503)
+		
+			Assert.Equal( 3 , TestScope(101,110,FALSE) )
+			Assert.Equal( 3 , TestScope(201,210,FALSE) )
+			Assert.Equal( 1 , TestScope(301,310,FALSE) )
+			Assert.Equal( 2 , TestScope(401,410,FALSE) )
+			Assert.Equal( 3 , TestScope(101,110,FALSE) )
+			Assert.Equal( 2 , TestScope(501,510,FALSE) )
+			Assert.Equal( 3 , TestScope(101,110,FALSE) )
+			Assert.Equal( 0 , TestScope(601,610,TRUE)  )
+		
+			DbCloseArea()
+
+		INTERNAL STATIC METHOD TestScope(first AS INT,last AS INT,expected AS LOGIC) AS INT
+			LOCAL uValue1,uValue2 AS USUAL
+			LOCAL nRecords AS INT
+			uValue1 := first
+			uValue2 := last
+			VoDbOrderInfo( DBOI_SCOPETOP,    "", NIL, REF uValue1 )
+			DbGoTop() // without this, the problem does not happen
+			VoDbOrderInfo( DBOI_SCOPEBOTTOM, "", NIL, REF uValue2 )
+			DbGoTop()
+			Assert.Equal(expected , Eof() )
+			nRecords := 0
+			DO WHILE .not. EoF()
+				nRecords ++
+				DbSkip()
+			END DO
+		RETURN nRecords
+
+
 
 		STATIC PRIVATE METHOD GetTempFileName() AS STRING
            STATIC nCounter AS LONG

@@ -16,63 +16,57 @@ namespace Microsoft.CodeAnalysis.CSharp
 {
     internal partial class Binder
     {
+
+
+
         internal Symbol XSharpResolveEqualSymbols(Symbol first, Symbol second, ImmutableArray<Symbol> originalSymbols, CSharpSyntaxNode where, DiagnosticBag diagnostics)
         {
             CSDiagnosticInfo info;
+            bool usefirst = false;
             if (first.IsFromCompilation(Compilation) && !second.IsFromCompilation(Compilation))
             {
-                info = new CSDiagnosticInfo(ErrorCode.WRN_VulcanAmbiguous, originalSymbols,
-                    new object[] {
-                                        where,
-                                        first.Kind.ToString(),
-                                        new FormattedSymbol(first, SymbolDisplayFormat.CSharpErrorMessageFormat),
-                                        second.Kind.ToString(),
-                                        new FormattedSymbol(second, SymbolDisplayFormat.CSharpErrorMessageFormat)
-                    });
-                diagnostics.Add(info, where.Location);
-                return first;
+                usefirst = true;
             }
             else if (second.IsFromCompilation(Compilation) && !first.IsFromCompilation(Compilation))
             {
-                info = new CSDiagnosticInfo(ErrorCode.WRN_VulcanAmbiguous, originalSymbols,
-                    new object[] {
-                                        where,
-                                        first.Kind.ToString(),
-                                        new FormattedSymbol(second, SymbolDisplayFormat.CSharpErrorMessageFormat),
-                                        second.Kind.ToString(),
-                                        new FormattedSymbol(first, SymbolDisplayFormat.CSharpErrorMessageFormat)
-                                        });
-                diagnostics.Add(info, where.Location);
-                return second;
+                usefirst = false;
             }
             else if (first.Kind == second.Kind &&
                 !string.Equals(first.Name, second.Name) &&
                 string.Equals(first.Name, second.Name, StringComparison.OrdinalIgnoreCase))
             {
-                // they only differ in case
-                info = new CSDiagnosticInfo(ErrorCode.WRN_VulcanAmbiguous, originalSymbols,
-                    new object[] {
-                                    where,
-                                    first.Kind.ToString(),
-                                    new FormattedSymbol(first, SymbolDisplayFormat.CSharpErrorMessageFormat),
-                                    second.Kind.ToString(),
-                                    new FormattedSymbol(second, SymbolDisplayFormat.CSharpErrorMessageFormat)
-                                    });
+                usefirst = true;
+            }
+            else
+            {
+                usefirst = true;
+            }
+            if (usefirst)
+            {
+                info = GenerateWarning(first, second);
                 diagnostics.Add(info, where.Location);
                 return first;
             }
             else
             {
-                info = new CSDiagnosticInfo(ErrorCode.WRN_VulcanAmbiguous, originalSymbols,
-                    new object[] {
-                                        where,
-                                        first.Kind.ToString(),
-                                        new FormattedSymbol(first, SymbolDisplayFormat.CSharpErrorMessageFormat),
-                                        second.Kind.ToString(),
-                                        new FormattedSymbol(second, SymbolDisplayFormat.CSharpErrorMessageFormat)
-                                        });
+                info = GenerateWarning(second, first);
                 diagnostics.Add(info, where.Location);
-                return first;
+                return second;
+            }
+
+
+            CSDiagnosticInfo GenerateWarning(Symbol s1, Symbol s2)
+            {
+                return new CSDiagnosticInfo(ErrorCode.WRN_VulcanAmbiguous, originalSymbols,
+                new object[] {
+                        where,
+                        s1.Kind.ToString(),
+                        new FormattedSymbol(s1, SymbolDisplayFormat.CSharpErrorMessageFormat),
+                        s1.ContainingAssembly.Name,
+                        s2.Kind.ToString(),
+                        new FormattedSymbol(s2, SymbolDisplayFormat.CSharpErrorMessageFormat),
+                        s2.ContainingAssembly.Name
+                });
 
             }
         }

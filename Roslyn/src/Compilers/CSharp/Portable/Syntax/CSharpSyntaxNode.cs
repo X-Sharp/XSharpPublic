@@ -174,14 +174,14 @@ namespace Microsoft.CodeAnalysis.CSharp
                 return result;
             }
             // Generate special source code for entities that we want to ignore.
-            if (this.XGenerated && node == null)
-            {
-                var source = Text.SourceText.From("/// <exclude/>");
-                var lexer = new Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax.Lexer(source, CSharpParseOptions.Default);
-                var list = lexer.LexSyntaxLeadingTrivia();
-                lexer.Dispose();
-                return list;
-            }
+            //if (this.XGenerated && node == null )
+            //{
+            //    var source = Text.SourceText.From("/// <exclude/>");
+            //    var lexer = new Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax.Lexer(source, CSharpParseOptions.Default);
+            //    var list = lexer.LexSyntaxLeadingTrivia();
+            //    lexer.Dispose();
+            //    return list;
+            //}
 #endif
             var firstToken = this.GetFirstToken(includeZeroWidth: true);
             return firstToken.LeadingTrivia;

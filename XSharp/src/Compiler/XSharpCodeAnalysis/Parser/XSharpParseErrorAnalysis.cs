@@ -477,6 +477,19 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
         }
 
+        public override void ExitFoxdll( XSharpParser.FoxdllContext context)
+        {
+            if (_options.Dialect != XSharpDialect.FoxPro)
+            {
+                NotInDialect(context, "DECLARE - DLL command");
+            }
+            if (context.Attributes != null)
+            {
+                _parseErrors.Add(new ParseErrorData(context, ErrorCode.WRN_Unsupported, "Adding Attributes to a DECLARE - DLL declaration"));
+            }
+
+        }
+
         public override void ExitFielddecl(XSharpParser.FielddeclContext context)
         {
            NotInCore(context, "FIELD statement");
@@ -591,7 +604,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         public override void ExitVodll([NotNull] XSharpParser.VodllContext context)
         {
-          
+            if (context.Attributes != null)
+            {
+                _parseErrors.Add(new ParseErrorData(context, ErrorCode.WRN_Unsupported, "Adding Attributes to a _DLL declaration"));
+            }
+
             if (context.Ordinal != null)
             {
                 _parseErrors.Add(new ParseErrorData(context, ErrorCode.ERR_InvalidDLLEntryPoint,

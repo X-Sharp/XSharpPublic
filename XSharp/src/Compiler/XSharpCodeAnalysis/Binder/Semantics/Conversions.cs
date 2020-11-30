@@ -120,7 +120,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 var nts = destination as NamedTypeSymbol;
                 if ( nts.ConstructedFrom == usualType)
                 {
-                    var op = usualType.GetOperators("op_Implicit")
+                    var op = usualType.GetOperators(WellKnownMemberNames.ImplicitConversionName)
                         .WhereAsArray(o => o.ParameterCount == 1 && o.ParameterTypes[0].IsObjectType() && o.ReturnType == usualType)
                         .AsSingleton() as MethodSymbol;
                     if (op != null)

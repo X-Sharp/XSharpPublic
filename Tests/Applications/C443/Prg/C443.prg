@@ -1,4 +1,4 @@
-#include "VOWin32APILibrary.vh"
+#include "test.xh"
 #define dddd 1
 
 // 443. error XS9003: Pre-processor: Identifier expected

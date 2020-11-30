@@ -5156,6 +5156,15 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to DECLARE DLL Statements in .Net cannot have a STRING parameter by reference because .Net strings are immutable. Use a System.Text.StringBuilder argument instead..
+        /// </summary>
+        internal static string ERR_FoxDeclareDLLStringByReference {
+            get {
+                return ResourceManager.GetString("ERR_FoxDeclareDLLStringByReference", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Friend assembly reference &apos;{0}&apos; is invalid. InternalsVisibleTo declarations cannot have a version, culture, public key token, or processor architecture specified..
         /// </summary>
         internal static string ERR_FriendAssemblyBadArgs {
@@ -15913,6 +15922,15 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to {0} is unsupported and will be ignored..
+        /// </summary>
+        internal static string WRN_Unsupported {
+            get {
+                return ResourceManager.GetString("WRN_Unsupported", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Comparison to integral constant is useless; the constant is outside the range of type &apos;{0}&apos;.
         /// </summary>
         internal static string WRN_VacuousIntegralComp {
@@ -15958,7 +15976,7 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to &apos;{0}&apos; is ambiguous. Could be  {1} &apos;{2}&apos; or {3} &apos;{4}&apos;. Using the first one..
+        ///   Looks up a localized string similar to &apos;{0}&apos; is ambiguous. Could be  {1} &apos;{2}&apos; in {3} or {4} &apos;{5}&apos; in {6}. Using the first one..
         /// </summary>
         internal static string WRN_VulcanAmbiguous {
             get {

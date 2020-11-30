@@ -63,14 +63,13 @@ namespace XSharp.Build
 
 
         protected override  void LogToolCommand(string message) {
-            //base.LogToolCommand(message);
-            //base.LogToolCommand(message.Substring(0, message.IndexOf("\n")));
             base.Log.LogMessageFromText(message, MessageImportance.Normal);
         }
         /// <summary>
         /// /i = include directory
         /// /fo = output directory
         /// /v  = verbose (output only shown with diagnostic logging)
+        /// /x  = do not use the INCLUDE environment variable to search for files
         /// /d DEBUG for conditional compilation
         /// rest is passed through a response file
         /// </summary>
@@ -289,6 +288,7 @@ namespace XSharp.Build
 
         public string DefineConstants { get; set; }
 
+        public bool SuppressRCWarnings { get; set; }
         /// <summary>
         /// Compile with Debug Info ?
         /// </summary>
@@ -349,6 +349,20 @@ namespace XSharp.Build
                 return Path.Combine(Utilities.XSharpIncludeDir(), defines);
             }
         }
+
+        protected override void LogEventsFromTextOutput(string singleLine, MessageImportance messageImportance)
+        {
+            bool isWarning = singleLine.IndexOf(" warning RC4005") != -1;
+            if (SuppressRCWarnings && isWarning )
+            {
+                ; // do nothing
+            }
+            else
+            { 
+                base.LogEventsFromTextOutput(singleLine, messageImportance);
+            }
+        }
+        
     }
 }
 

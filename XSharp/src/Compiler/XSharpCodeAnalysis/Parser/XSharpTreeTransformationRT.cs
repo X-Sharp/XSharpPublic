@@ -195,7 +195,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                                 SyntaxFactory.MakeToken(SyntaxKind.CloseBracketToken));
                 _pool.Free(emptysizes);
                 arrayOfUsual = _syntaxFactory.ArrayType(_usualType, emptyrank);
-                arrayOfString = _syntaxFactory.ArrayType(_stringType, emptyrank);
+                arrayOfString = _syntaxFactory.ArrayType(stringType, emptyrank);
             }
         }
         private static XSharpTreeTransformationRT getTransform(CSharpParseOptions options)
@@ -346,7 +346,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             var mods = TokenList(isApp ? SyntaxKind.InternalKeyword : SyntaxKind.PublicKeyword, SyntaxKind.StaticKeyword);
             var pars = EmptyParameterList();
             var m = SyntaxFactory.MethodDeclaration(MakeCompilerGeneratedAttribute(), mods,
-                _voidType, /*explicitif*/null,
+                voidType, /*explicitif*/null,
                 SyntaxFactory.Identifier(functionName), /*typeparams*/null, pars,/* constraints*/null, MakeBlock(stmts),/*exprbody*/null,
                 SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken));
 
@@ -412,7 +412,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
             var appExit = _syntaxFactory.MethodDeclaration(
                 MakeCompilerGeneratedAttribute(), modifiers,
-                _voidType, null, appId, null, EmptyParameterList(),
+                voidType, null, appId, null, EmptyParameterList(),
                 null, body, null, SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken));
             appExit.XGenerated = true;
             return appExit;
@@ -425,7 +425,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             var modifiers = TokenList(SyntaxKind.PublicKeyword, SyntaxKind.StaticKeyword);
             var initProcs = _syntaxFactory.MethodDeclaration(
                 MakeCompilerGeneratedAttribute(), modifiers,
-                _voidType, null, appId, null, EmptyParameterList(),
+                voidType, null, appId, null, EmptyParameterList(),
                 null, body, null, SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken));
             initProcs.XGenerated = true;
             return initProcs;
@@ -491,7 +491,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
             var appInit = _syntaxFactory.MethodDeclaration(
                 MakeCompilerGeneratedAttribute(), modifiers,
-                _voidType, null, appId, null, EmptyParameterList(),
+                voidType, null, appId, null, EmptyParameterList(),
                 null, body, null, SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken));
             _pool.Free(stmts);
             appInit.XGenerated = true;
@@ -519,7 +519,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
             var stmts = new List<StatementSyntax>();
             BlockSyntax epcall;
-            var returntype = context.ReturnType.Get<TypeSyntax>() ?? _voidType;
+            var returntype = context.ReturnType.Get<TypeSyntax>() ?? voidType;
             // XPP dialect has a procedure main as entrypoint
             if (context.Data.HasClipperCallingConvention && _options.Dialect == XSharpDialect.XPP)
             {
@@ -646,7 +646,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     SyntaxList<AttributeListSyntax> attributeList, ParameterListSyntax parList)
         {
             // only
-            var returntype = context.ReturnType.Get<TypeSyntax>() ?? _voidType;
+            var returntype = context.ReturnType.Get<TypeSyntax>() ?? voidType;
             if (parList.Parameters.Count > 0)
             {
                 var parameter = parList.Parameters[0];
@@ -710,7 +710,109 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         #endregion
 
-        #region MemVar and Fields
+        #region Expression Statement
+        protected override StatementSyntax HandleExpressionStmt(IList<XP.ExpressionContext> expressions)
+        {
+            var statements = _pool.Allocate<StatementSyntax>();
+            StatementSyntax result;
+            foreach (var exprCtx in expressions)
+            {
+                // check because there may already be statements in here, such as the IF statement generated for AltD()
+                var node = exprCtx.CsNode;
+                if (node is StatementSyntax)
+                {
+                    statements.Add((StatementSyntax)node);
+                }
+                else
+                {
+                    // check for binary expression with '=' operator.
+                    // convert to assignment and add a warning when not in FoxPro dialect
+                    // please note that the expression
+                    // x = y = z
+                    // is represented as
+                    //    Binary Expression
+                    //       Left = Binary Expression x == y
+                    //       Op   = ==
+                    //       Right = Simple Name z
+                    // so we need to 'rebuild' the expression
+                    exprCtx.SetSequencePoint(exprCtx.Start, exprCtx.Stop);
+                    var expr = exprCtx.Get<ExpressionSyntax>();
+                    if (expr is BinaryExpressionSyntax bin)
+                    {
+                        bool nestedAssign = false;
+                        var xNode1 = bin.XNode as XP.BinaryExpressionContext;
+                        var oldStyleAssign = bin.OperatorToken.Kind == SyntaxKind.EqualsEqualsToken && xNode1 != null && xNode1.Op.Type == XP.EQ;
+                        if (bin.Left is BinaryExpressionSyntax binLeft)
+                        {
+                            if (binLeft.OperatorToken.Kind == SyntaxKind.EqualsEqualsToken)
+                            {
+                                var xNode2 = binLeft.XNode as XP.BinaryExpressionContext;
+                                nestedAssign = xNode2 != null && xNode2.Op.Type == XP.EQ;
+                            }
+
+                        }
+                        if (oldStyleAssign || nestedAssign)
+                        {
+                            ExpressionSyntax RHS = bin.Right;
+                            ExpressionSyntax LHS = bin.Left;
+                            if (nestedAssign)
+                            {
+                                // check for x = y = z, but also x = y > z
+                                var Left = (BinaryExpressionSyntax)LHS;
+                                LHS = Left.Left;
+                                RHS = _syntaxFactory.BinaryExpression(
+                                                    bin.Kind,
+                                                    Left.Right,
+                                                    bin.OperatorToken,
+                                                    bin.Right);
+                            }
+                            // check to see if the LHS is Late bound access
+                            // because we need to generate a IVarPut() then
+                            var left = LHS.XNode;
+                            if (left is XP.AccessMemberLateContext || left is XP.AccessMemberLateNameContext)
+                            {
+                                // lhs is then an InvocationExpression
+                                var invoke = LHS as InvocationExpressionSyntax;
+                                string putMethod = _options.XSharpRuntime ? XSharpQualifiedFunctionNames.IVarPut : VulcanQualifiedFunctionNames.IVarPut;
+                                var obj = invoke.ArgumentList.Arguments[0];
+                                var varName = invoke.ArgumentList.Arguments[1];
+                                var args = MakeArgumentList(obj, varName, MakeArgument(RHS));
+                                expr = GenerateMethodCall(putMethod, args, true);
+                            }
+                            else if (left is XP.PrimaryExpressionContext pec && pec.Expr is XP.MacroNameContext macro)
+                            {
+                                expr = GenerateMemVarPut(getMacroNameExpression(macro.Name), RHS);
+                            }
+                            else
+                            {
+                                expr = MakeSimpleAssignment(bin.Left, bin.Right);
+                            }
+                        }
+                        if (_options.Dialect != XSharpDialect.FoxPro)
+                        {
+                            expr = expr.WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.WRN_AssignmentOperatorExpected));
+                        }
+                    }
+                    var stmt = GenerateExpressionStatement(expr);
+                    stmt.XNode = exprCtx;
+                    statements.Add(stmt);
+                }
+            }
+
+            if (statements.Count == 1)
+            {
+                result = statements[0];
+            }
+            else
+            {
+                result = MakeBlock(statements);
+            }
+            _pool.Free(statements);
+            return result;
+        }
+        #endregion
+
+            #region MemVar and Fields
         internal ExpressionSyntax GenerateMemVarPut(ExpressionSyntax memvar, ExpressionSyntax right)
         {
             var arg1 = MakeArgument(memvar);
@@ -1080,12 +1182,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         if (memvar.Amp != null)     
                         {
                             // PUBLIC &cVarName or PRIVATE &cVarName
-                            varname = getMacroNameExpression(memvar.Id);
+                            varname = getMacroNameExpression(memvar.Id.Id);
                         }
                         else
                         {
                             // PUBLIC Foo or PRIVATE Bar
-                            varname = GenerateLiteral(memvar.Id.GetText());
+                            varname = GenerateLiteral(memvar.Id.Id.GetText());
                         }
 
                         var exp = GenerateMemVarDecl(varname, isprivate);
@@ -1168,7 +1270,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             if (type == null)
             {
-                type = NotInDialect(_objectType, context.Token.Text);
+                type = NotInDialect(objectType, context.Token.Text);
             }
             context.Put(type);
         }
@@ -2692,7 +2794,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             var arg2 = MakeArgument(MakeTypeOf(tname));
             var args = MakeArgumentList(arg1, arg2);
             ExpressionSyntax expr = GenerateMethodCall(SystemQualifiedNames.GetDelegate, args);
-            expr = MakeCastTo(_objectType, expr);
+            expr = MakeCastTo(objectType, expr);
             expr = MakeCastTo(tname, expr);
             var stmt = GenerateReturn(expr);
             var block = MakeBlock(stmt);
@@ -2745,7 +2847,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 var pname = SyntaxFactory.Identifier("$param" + i.ToString());
                 var param = _syntaxFactory.Parameter(EmptyList<AttributeListSyntax>(),
                     EmptyList<SyntaxToken>(),
-                    _objectType,
+                    objectType,
                     pname,
                     null);
                 @params.Add(param);
@@ -2875,7 +2977,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             // Return type and parameters should match the method prototype that the first parameter
             // For now we default to a return type of _objectType
             // points to. This is resolved in the binder and rewriter
-            return AddPCallDelegate(context, XSharpSpecialNames.PCallPrefix, _objectType);
+            return AddPCallDelegate(context, XSharpSpecialNames.PCallPrefix, objectType);
         }
         private bool GeneratePCallNative(XP.MethodCallContext context)
         {

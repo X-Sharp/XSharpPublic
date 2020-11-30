@@ -2,7 +2,7 @@
 <Rule
     Name="AdvancedOptions"
     DisplayName="Advanced"
-    Order="5"
+    Order="99"
     PageTemplate="Generic"
 	Description="Advanced Build Options"
 	xmlns="http://schemas.microsoft.com/build/2009/properties">

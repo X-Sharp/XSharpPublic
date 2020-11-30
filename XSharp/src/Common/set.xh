@@ -23,24 +23,24 @@
 // SET commands for directories
 ///////////////////////////////////////////////////////////////////////////
 
-#command  SET DEFAULT TO <*path*>   =>  SetDefault(<(path)> )
-#command  SET DEFAULT TO            =>  SetDefault( "" )
+#command  SET DEFAULT TO <*path*>   =>  Set(Set.Default, <(path)> )
+#command  SET DEFAULT TO            =>  Set(Set.Default, "" )
 
-#command  SET PATH TO <*path*>      =>  SetPath( <(path)> )
-#command  SET PATH TO               =>  SetPath( "" )
+#command  SET PATH TO <*path*>      =>  Set(Set.Path, <(path)> )
+#command  SET PATH TO               =>  Set(Set.Path, "" )
 
 ///////////////////////////////////////////////////////////////////////////
 // SET commands for string comparison, date and numeric formats
 ///////////////////////////////////////////////////////////////////////////
 
-#command  SET EXACT <x:ON,OFF,&>    =>  SetExact( upper(<(x)>)=="ON" )
-#command  SET EXACT (<x>)           =>  SetExact( <x> )
+#command  SET EXACT <x:ON,OFF,&>    =>  Set( Set.Exact, <(x)> )
+#command  SET EXACT (<x>)           =>  Set( Set.Exact, <x> )
 
-#command  SET FIXED <x:ON,OFF,&>    =>  SetFixed( upper(<(x)>)=="ON")
-#command  SET FIXED (<x>)           =>  SetFixed(  <x> )
+#command  SET FIXED <x:ON,OFF,&>    =>  Set( Set.Fixed, <(x)> )
+#command  SET FIXED (<x>)           =>  Set( Set.Fixed, <x> )
 
-#command  SET DECIMALS TO <x>       =>  SetDecimals( <x> )
-#command  SET DECIMALS TO           =>  SetDecimals( 0 )
+#command  SET DECIMALS TO <x>       =>  Set(Set.Decimals, <x> )
+#command  SET DECIMALS TO           =>  Set(Set.Decimals, 0 )
 
 #command  SET DATE [TO] <x:AMERICAN,MDY>        =>  SetDateCountry(DateCountry.American)
 #command  SET DATE [TO] ANSI                    =>  SetDateCountry(DateCountry.Ansi)
@@ -55,24 +55,55 @@
 #command  SET TIME TO <*x*>         =>  SetTimeFormat( <(x)> )
 #command  SET TIME TO SYSTEM        =>  SetTimeFormat( "" )
 
-#command  SET CENTURY <x:ON,OFF,&>  =>  SetCentury( upper(<(x)>)=="ON")
-#command  SET CENTURY (<x>)         =>  SetCentury(  <x> )
-#command  SET EPOCH TO <year>       =>  SetEpoch( <year> )
+#command  SET CENTURY <x:ON,OFF,&>  =>  Set(Set.Century, <(x)> )
+#command  SET CENTURY (<x>)         =>  Set(Set.Century,  <x> )
+#command  SET EPOCH TO <year>       =>  Set(Set.Epoch, <year> )
 
 ///////////////////////////////////////////////////////////////////////////
 //  DB SETs
 ///////////////////////////////////////////////////////////////////////////
 
-#command SET EXCLUSIVE <x:ON,OFF,&>     =>  SetExclusive(upper(<(x)>)=="ON" )
-#command SET EXCLUSIVE (<x>)            =>  SetExclusive( <x> )
+#command SET EXCLUSIVE <x:ON,OFF,&>     =>  Set(Set.Exclusive, <(x)> ) 
+#command SET EXCLUSIVE (<x>)            =>  Set(Set.Exclusive, <x> )
 
-#command SET SOFTSEEK <x:ON,OFF,&>      =>  SetSoftSeek( upper(<(x)>)=="ON" )
-#command SET SOFTSEEK (<x>)             =>  SetSoftSeek( <x> )
+#command SET SOFTSEEK <x:ON,OFF,&>      =>  Set(Set.SoftSeek, <(x)> ) 
+#command SET SOFTSEEK (<x>)             =>  Set(Set.SoftSeek, <x> )
 
-#command SET UNIQUE <x:ON,OFF,&>        =>  SetUnique( upper(<(x)>)=="ON" )
-#command SET UNIQUE (<x>)               =>  SetUnique( <x> )
+#command SET UNIQUE <x:ON,OFF,&>        =>  Set(Set.Unique, <(x)> ) 
+#command SET UNIQUE (<x>)               =>  Set(Set.Unique, <x> )
 
-#command SET DELETED <x:ON,OFF,&>       =>  SetDeleted( upper(<(x)>)=="ON" )
-#command SET DELETED (<x>)              =>  SetDeleted( <x> )
+#command SET DELETED <x:ON,OFF,&>       =>  Set(Set.Deleted, <(x)> ) 
+#command SET DELETED (<x>)              =>  Set(Set.Deleted, <x> )
+
+///////////////////////////////////////////////////////////////////////////
+//  Console SETs
+///////////////////////////////////////////////////////////////////////////
+
+#command  SET CONSOLE <x:ON,OFF,&>                    =>  Set( Set.Console, <(x)> )
+#command  SET CONSOLE (<x>)                           =>  Set( Set.Console, <x> )
+
+#command  SET ALTERNATE <x:ON,OFF,&>                  =>  Set( Set.Alternate, <(x)> )
+#command  SET ALTERNATE (<x>)                         =>  Set( Set.Alternate, <x> )
+#command  SET ALTERNATE TO                            =>  SetAltfile( "" , FALSE)
+#command  SET ALTERNATE TO <(file)> [<add: ADDITIVE>] =>  SetAltfile( <(file)>, <.add.> )
+#command  CLOSE ALTERNATE                             =>  SetAltfile( "" , FALSE)
+
+#command  SET PRINTER <x:ON,OFF,&>                    =>  Set( Set.Printer, <(x)> )
+#command  SET PRINTER (<x>)                           =>  Set( Set.Printer, <x> )
+
+// SET PRINTER TO is not supported yet.
+//#command  SET PRINTER TO                              =>  SetPrintfile( "" , FALSE)
+//#command  SET PRINTER TO <(file)> [<add: ADDITIVE>]   =>  SetPrintfile( <(file)>, <.add.> )
+
+#command  SET MARGIN TO <x>                           =>  Set( Set.Margin, <(x)> )
+#command  SET MARGIN TO                               =>  Set( Set.Margin, 0 )
+
+#command  SET COLOR TO [<*spec*>]                     =>  SetColor( #<spec> )
+#command  SET COLOR TO ( <c> )                        =>  SetColor( <c> )
+#command  SET COLOUR TO [<*spec*>]                    =>  SET COLOR TO [<spec>]
+
+#command CLEAR SCREEN                                 =>  Cls(); SetPos(0,0)
+
+
 
 #endif

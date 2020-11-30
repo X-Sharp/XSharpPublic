@@ -45,7 +45,7 @@
 #xcommand ENDDEFINE <*any*> => ENDDEFINE 
 #xcommand ENDCLASS <*any*> => ENDCLASS 
 
-#endif	
+#endif
 
 #ifdef __DIALECT_XBASEPP__
 #include "XbasePPCmd.xh"
@@ -60,5 +60,6 @@
 
 // Various DBF related commands
 #include "dbcmd.xh"
-
+// Include (optional) custom UDCs
+#include "CustomDefs.xh"
 #endif

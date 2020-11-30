@@ -42,14 +42,16 @@
   </ItemGroup>
 
   <ItemGroup>
-	<PropertyPageSchema Include="
-			$(XamlResourcesDirectory)PropertyPage_Application.xaml;
+      <PropertyPageSchema Include="
+      $(XamlResourcesDirectory)PropertyPage_Application.xaml;
       $(XamlResourcesDirectory)PropertyPage_Language.xaml;
       $(XamlResourcesDirectory)PropertyPage_Dialect.xaml;
-			$(XamlResourcesDirectory)PropertyPage_Build.xaml;
+      $(XamlResourcesDirectory)PropertyPage_Build.xaml;
       $(XamlResourcesDirectory)PropertyPage_Debugger.xaml;
-			$(XamlResourcesDirectory)PropertyPage_Advanced.xaml;
-			">
+      $(XamlResourcesDirectory)PropertyPage_Advanced.xaml;
+      $(XamlResourcesDirectory)PropertyPage_Package.xaml;
+      $(XamlResourcesDirectory)PropertyPage_Signing.xaml;
+      ">
   <Context>Project</Context>
 	</PropertyPageSchema>
 

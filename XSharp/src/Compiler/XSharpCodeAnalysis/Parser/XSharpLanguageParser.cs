@@ -167,36 +167,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             return msg;
         }
 
-        private void _bindXmlDocTokens()
-        {
-            // Find xml comment nodes in the list and link them as a string 
-            // to the first non white space token that follows them
-            // this is usually the begin of an entity but could also be in the middle of 
-            // an entity
-            var comments = new System.Text.StringBuilder();
-            var tokens = _lexerTokenStream.GetTokens();
-            for (int itoken = 0; itoken < tokens.Count; itoken++)
-            {
-                var token = (XSharpToken)tokens[itoken];
-                switch (token.Channel)
-                {
-                    case XSharpLexer.XMLDOCCHANNEL:
-                        comments.AppendLine(token.Text);
-                        break;
-                    case XSharpLexer.DEFOUTCHANNEL:
-                    case XSharpLexer.PREPROCESSORCHANNEL:
-                    case XSharpLexer.Hidden:
-                        break;
-                    default:
-                        if (comments.Length > 0)
-                        {
-                            token.XmlComments = comments.ToString();
-                            comments.Clear();
-                        }
-                        break;
-                }
-            }
-        }
+        
 
         internal CompilationUnitSyntax ParseCompilationUnitCore()
         {
@@ -218,9 +189,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 lexer = XSharpLexer.Create(sourceText, _fileName, _options);
                 lexer.Options = _options;
                 _lexerTokenStream = lexer.GetTokenStream();
-                if (_options.DocumentationMode != DocumentationMode.None && lexer.HasDocComments)
+                if (_options.DocumentationMode != DocumentationMode.None )
                 {
-                    _bindXmlDocTokens();
+                    lexer.BindXmlDocTokens(_lexerTokenStream);
                 }
 
             }

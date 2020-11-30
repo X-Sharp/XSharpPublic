@@ -144,10 +144,21 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             return elementSize;
         }
 
-        
+
+        public static bool IsRTDLL(this AssemblySymbol _asm, XSharpTargetDLL wantedTarget)
+        {
+            XSharpTargetDLL target;
+            if (!dictionary.TryGetValue(_asm.Name, out target))
+            {
+                IsRT(_asm);
+                dictionary.TryGetValue(_asm.Name, out target);
+            }
+            return target == wantedTarget;
+        }
+
         public static bool IsRT(this AssemblySymbol _asm)
         {
-            if ((object) _asm == null)  // cast to null to prevent calling equals operator on AssemblySymbol
+            if ((object) _asm == null)  // cast to object to prevent calling equals operator on AssemblySymbol
                 return false;
             XSharpTargetDLL target;
             if (dictionary.TryGetValue(_asm.Name, out target))
@@ -185,7 +196,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
 
         public static bool HasVODefaultParameter(this ParameterSymbol param)
         {
-            if ((object)param != null)
+            if ((object)param != null) // cast to object to prevent calling equals operator on ParameterSymbol
             {
                 var attrs = param.GetAttributes();
                 foreach (var attr in attrs)
@@ -200,7 +211,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
 
         public static bool HasLateBindingAttribute(this TypeSymbol type)
         {
-            while ((object)type != null)
+            while ((object)type != null) // cast to object to prevent calling equals operator on TypeSymbol
             {
                 var attrs = type.GetAttributes();
                 foreach (var attr in attrs)
@@ -217,7 +228,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
 
         public static ConstantValue GetVODefaultParameter(this ParameterSymbol param)
         {
-            if ((object)param != null)
+            if ((object)param != null) // cast to object to prevent calling equals operator on ParameterSymbol
             {
                 var attrs = param.GetAttributes();
                 foreach (var attr in attrs)
@@ -347,6 +358,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                 case "xsharp.__usual":
                 case "vulcan.__usual":
                     strType = "usual";
+                    break;
+                case "xsharp.__currency":
+                    strType = "currency";
+                    break;
+                case "xsharp.__binary":
+                    strType = "binary";
                     break;
                 default:
                     // just display the type                        

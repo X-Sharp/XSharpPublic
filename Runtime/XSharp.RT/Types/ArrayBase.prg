@@ -84,10 +84,10 @@ BEGIN NAMESPACE XSharp
 
 		#region Enumerators
 		PUBLIC METHOD IEnumerable<T>.GetEnumerator() AS IEnumerator<T>
-			RETURN _internalList:GetEnumerator()
+            RETURN ((IList<T> ) _internalList:ToArray()):GetEnumerator()
 
 		PUBLIC METHOD IEnumerable.GetEnumerator() AS IEnumerator
-			RETURN _internalList:GetEnumerator()
+			RETURN _internalList:ToArray():GetEnumerator()
 
 			#endregion
 

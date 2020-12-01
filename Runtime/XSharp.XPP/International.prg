@@ -70,9 +70,9 @@ FUNCTION SetCollationTable(nCollation, aTable) AS ARRAY CLIPPER
 //         ENDIF
     ENDIF
     IF aBytes != NULL
-        aCollation := {}
+        aCollation := ArrayNew((DWORD) aBytes:Length)
         FOR VAR nI := 1 TO aBytes:Length
-            AAdd(aCollation, aBytes[nI])
+            aCollation[nI] := aBytes[nI]
         NEXT
     ELSE
         // Create aCollation from Windows Sort Routine

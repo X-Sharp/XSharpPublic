@@ -467,17 +467,20 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             CASE DbOrder_Info.DBOI_SCOPETOPCLEAR
                 SELF:_Scopes[SELF:TopScopeNo]:Clear()
                 SELF:_scopeEmpty := FALSE
+                SELF:_mustCheckEof := TRUE
             CASE DbOrder_Info.DBOI_SCOPEBOTTOMCLEAR
                 SELF:_Scopes[SELF:BottomScopeNo]:Clear()
                 SELF:_scopeEmpty := FALSE
+                SELF:_mustCheckEof := TRUE
             CASE DbOrder_Info.DBOI_SCOPETOP
-                if (itmScope != SELF:_Scopes[SELF:TopScopeNo]:Value)
+                IF (itmScope != SELF:_Scopes[SELF:TopScopeNo]:Value)
                     SELF:_scopeEmpty := FALSE
                     SELF:_Scopes[SELF:TopScopeNo]:Value := itmScope
                     IF itmScope != NULL
                         SELF:_ToString(itmScope, SELF:_keySize,  SELF:_Scopes[SELF:TopScopeNo]:Buffer, REF uiRealLen)
                         SELF:_Scopes[SELF:TopScopeNo]:Size := uiRealLen
                     ENDIF
+                    SELF:_mustCheckEof := TRUE
                 ENDIF
             CASE DbOrder_Info.DBOI_SCOPEBOTTOM
                 IF (itmScope != SELF:_Scopes[SELF:BottomScopeNo]:Value)
@@ -487,6 +490,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                         SELF:_ToString(itmScope, SELF:_keySize, SELF:_Scopes[SELF:BottomScopeNo]:Buffer, REF uiRealLen)
                         SELF:_Scopes[SELF:BottomScopeNo]:Size := uiRealLen
                     ENDIF
+                    SELF:_mustCheckEof := TRUE
                 ENDIF
             OTHERWISE
                 result := FALSE

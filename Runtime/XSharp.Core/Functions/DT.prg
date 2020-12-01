@@ -80,6 +80,8 @@ FUNCTION NToCMonth(dwMonthNum AS DWORD) AS STRING
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/secs/*" />
 FUNCTION Secs(cTime AS STRING) AS DWORD
+	// Note that VO "accepts" practically any format, even say "0:#23:&1" and returns semi random results, but we will not emulate all that
+	// Instead, we support formats that make sense, like "HH", "HH:MM" and "HH:MM:SS". And, oh, we do support also "10:99:99" that VO allows as well..
 	LOCAL cSeparator AS STRING
 	LOCAL nHours AS INT
 	LOCAL nMinutes AS INT
@@ -91,21 +93,25 @@ FUNCTION Secs(cTime AS STRING) AS DWORD
 	ENDIF
 	cSeparator := Chr(GetTimeSep())
 	nExpectedLength := 6 + 2 * cSeparator:Length
-	IF cTime:Length >= nExpectedLength
-		LOCAL nOffSet := 0 AS INT
-		TRY
-			nHours   := Int32.Parse(cTime:Substring(nOffSet,2))
-			nOffSet += cSeparator:Length +2
-			nMinutes := Int32.Parse(cTime:Substring(nOffSet,2))
-			nOffSet += cSeparator:Length +2
-			nSeconds := Int32.Parse(cTime:Substring(nOffSet,2))
-			result := (DWORD) (nHours * 3600 + nMinutes * 60 + nSeconds)
-		CATCH 
-			result := 0
-		END TRY
-	ELSE
-		result := 0
-	ENDIF
+	LOCAL nOffSet := 0 AS INT
+	TRY
+		nHours   := Int32.Parse(cTime:Substring(nOffSet,2))
+	CATCH
+		nHours   := 0
+	END TRY
+	nOffSet += cSeparator:Length +2
+	TRY
+		nMinutes := Int32.Parse(cTime:Substring(nOffSet,2))
+	CATCH
+		nMinutes := 0
+	END TRY
+	nOffSet += cSeparator:Length +2
+	TRY
+		nSeconds := Int32.Parse(cTime:Substring(nOffSet,2))
+	CATCH
+		nSeconds := 0
+	END TRY
+	result := (DWORD) (nHours * 3600 + nMinutes * 60 + nSeconds)
 	RETURN result
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/days/*" />

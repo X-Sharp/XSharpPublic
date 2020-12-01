@@ -20,10 +20,10 @@ BEGIN NAMESPACE XSharp.RDD.CDX
     INTERNAL PARTIAL SEALED CLASS CdxTag
 
         // Methods for walking indices, so GoTop, GoBottom, Skip and Seek
-
+        PRIVATE _mustCheckEof AS LOGIC
         INTERNAL PROPERTY EmptyResultSet as LOGIC
             GET
-                IF SELF:_oRdd:MustForceRel
+                IF _mustCheckEof .OR. SELF:_oRdd:MustForceRel 
                     RETURN FALSE
                 ENDIF
                 RETURN SELF:_oRdd:EoF .AND. SELF:_oRdd:BoF
@@ -36,7 +36,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             IF SELF:EmptyResultSet
                 return TRUE
             ENDIF
-            
+            SELF:_mustCheckEof := FALSE
             locked := FALSE
             TRY
                 IF SELF:HasBottomScope
@@ -79,6 +79,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 return TRUE
             ENDIF
             locked := FALSE
+            SELF:_mustCheckEof := FALSE
             TRY
                 SELF:_oRdd:GoCold()
                 IF SELF:HasTopScope
@@ -136,6 +137,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 SELF:_oRdd:Found := FALSE
                 RETURN TRUE
             ENDIF
+            SELF:_mustCheckEof := FALSE
             uiRealLen := 0
             byteArray := BYTE[]{ _keySize }
             // Convert the key to a byte Array
@@ -177,6 +179,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             IF SELF:EmptyResultSet
                 RETURN TRUE
             ENDIF
+            SELF:_mustCheckEof := FALSE
             // Default Position = Current Record
             IF nToSkip == 0
                 recno := SELF:_RecNo

@@ -43,6 +43,9 @@ BEGIN NAMESPACE XSharp.Core.Tests
 			Assert.Equal(sText , sToWrite +e"\r\n")
 			hFile := FCreate2(sFile,FC_NORMAL)
 			FWriteLine(hFile, sToWrite,10)
+            Assert.Equal((INT) FSeek3(hFile, 0, FS_SET) , 0)
+            Assert.Equal((INT) FSeek3(hFile, 1, FS_RELATIVE) , 1)
+            Assert.Equal((INT) FSeek3(hFile, 0, FS_END) , (INT) FTell(hFile))
 
 
 			FClose(hFile)

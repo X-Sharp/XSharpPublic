@@ -2654,8 +2654,18 @@ namespace Microsoft.CodeAnalysis.CSharp
                         //CONSIDER: Return a bad expression so that HasErrors is true?
                     }
 #if XSHARP
-                    bool cast = (argument.Syntax is CastExpressionSyntax);
-                    arguments[arg] = CreateConversion(argument.Syntax, argument, kind, cast, type, diagnostics);
+                    // Do not add Conversions for BoundAddressOf operator when compiling with /vo7+
+                    if (argument is BoundAddressOfOperator bad && 
+                        this.Compilation.Options.HasOption(CompilerOption.ImplicitCastsAndConversions, argument.Syntax) &&
+                        ! bad.Operand.Type.IsVoStructOrUnion())
+                    {
+                        ; // leave unchanged
+                    }
+                    else
+                    {
+                        bool cast = (argument.Syntax is CastExpressionSyntax);
+                        arguments[arg] = CreateConversion(argument.Syntax, argument, kind, cast, type, diagnostics);
+                    }
 #else
                     arguments[arg] = CreateConversion(argument.Syntax, argument, kind, false, type, diagnostics);
 #endif

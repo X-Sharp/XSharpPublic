@@ -1424,8 +1424,8 @@ namespace XSharp.CodeDom
                 case "system.char":
                     return formatKeyword("CHAR");
 
-                case "system.object":
-                    return formatKeyword("OBJECT");
+                case "system.object":       // keep because it is used as in System.Object.ReferenceEquals
+                    return "System.Object";
 
                 case "system.boolean":
                     return formatKeyword("LOGIC");

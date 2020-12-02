@@ -350,7 +350,7 @@ namespace Microsoft.VisualStudio.Project
             // Get base namespace from the project
             string namespce = node.GetProjectProperty("RootNamespace");
             if(String.IsNullOrEmpty(namespce))
-                namespce = Path.GetFileNameWithoutExtension(fileFullPath); ;
+                namespce = Path.GetFileNameWithoutExtension(fileFullPath); 
 
             // If the item is added to a sub folder, the name space should reflect this.
             // This is done so that class names from 2 files with the same name but different

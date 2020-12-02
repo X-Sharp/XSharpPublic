@@ -724,7 +724,14 @@ namespace XSharp.Project
                 throw new FileLoadException("Failed to add template file to project", target, e);
             }
         }
-
+        internal bool WizardIsRunning { get; set; } = false;
+        public override VSADDRESULT RunWizard(HierarchyNode parentNode, string itemName, string wizardToRun, IntPtr dlgOwner)
+        {
+            WizardIsRunning = true;
+            var result = base.RunWizard(parentNode, itemName, wizardToRun, dlgOwner);
+            WizardIsRunning = false;
+            return result;
+        }
 
 
         protected override HierarchyNode AddDependentFileNode(IDictionary<String, MSBuild.ProjectItem> subitems, string key)

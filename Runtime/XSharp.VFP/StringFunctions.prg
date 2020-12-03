@@ -400,3 +400,8 @@ STATIC FUNCTION Trim_helper(TrimLeft AS Boolean, TrimRight AS Boolean, Expressio
 
 END FUNCTION
 
+
+/// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/transform/*" />
+FUNCTION Transform( uValue AS USUAL ) AS STRING
+    RETURN AsString(uValue)	
+

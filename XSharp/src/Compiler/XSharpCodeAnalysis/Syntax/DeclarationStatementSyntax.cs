@@ -15,12 +15,5 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax
                 return this.Modifiers.Any(SyntaxKind.RefKeyword);
             }
         }
-        public bool IsStatic
-        {
-            get
-            {
-                return this.Modifiers.Any(SyntaxKind.StaticKeyword);
-            }
-        }
     }
 }

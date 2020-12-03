@@ -39,7 +39,8 @@ namespace Microsoft.CodeAnalysis.CSharp
         // {
         //   static public void Start() 
         //   {
-        //      Console.ReadLine(); return;
+        //      Console.ReadLine();
+        //      return;
         //   }
         // }
         // so where the actual position in the source for the function start is 0

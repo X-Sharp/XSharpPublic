@@ -80,10 +80,15 @@ FUNCTION DoTest(cExe AS STRING) AS LOGIC
 		oType := oAssembly:GetType("Functions")
 	END IF
 	LOCAL oMethod AS MethodInfo
-	oMethod := oType:GetMethod("Start")
-	TRY
-		oMethod:Invoke(NULL , NULL)
+	oMethod := oType:GetMethod("Start",BindingFlags.IgnoreCase+BindingFlags.Static+BindingFlags.Public)
+	TRY                          
+	    IF oMethod == NULL
+	        ? "Could not find Start method in assembly "+oAssembly:GetName():FullName
+    		lSucces := FALSE
+	    ELSE
+	       oMethod:Invoke(NULL , NULL)
 		lSucces := TRUE
+	    ENDIF
 	CATCH e AS Exception
 		? e:ToString()
 		#ifdef GUI

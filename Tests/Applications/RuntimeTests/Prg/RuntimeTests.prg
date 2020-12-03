@@ -26,7 +26,7 @@ FUNCTION Start() AS INT
 	 "C724", "C703", ;
 	 "R678", "R681", "R690", "R698", "R699", "R700" ,"R701", "R702", /*"R705" ,*/"R710",;
 	 "R711", "R712", "R725", "R729", "R730", "R732","R735", "R736","R741","R742","R743",; 
-	 "R750", "R751";
+	 "R750", "R751", "R752";
 	 }
 	 
 	#ifdef GUI
@@ -80,10 +80,15 @@ FUNCTION DoTest(cExe AS STRING) AS LOGIC
 		oType := oAssembly:GetType("Functions")
 	END IF
 	LOCAL oMethod AS MethodInfo
-	oMethod := oType:GetMethod("Start")
-	TRY
-		oMethod:Invoke(NULL , NULL)
+	oMethod := oType:GetMethod("Start",BindingFlags.IgnoreCase+BindingFlags.Static+BindingFlags.Public)
+	TRY                          
+	    IF oMethod == NULL
+	        ? "Could not find Start method in assembly "+oAssembly:GetName():FullName
+    		lSucces := FALSE
+	    ELSE
+	       oMethod:Invoke(NULL , NULL)
 		lSucces := TRUE
+	    ENDIF
 	CATCH e AS Exception
 		? e:ToString()
 		#ifdef GUI

@@ -131,6 +131,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         internal const string MemVarPrefix = "Xs$MemVar";
         internal const string FieldPrefix = "Xs$Field";
         internal const string ClipperParamPrefix = "Xs$Par";
+        internal const string ParenExprSuffix = "$ParenExpr$";
 
         internal const string FunctionsClass = "Functions";
         internal const string VOExeFunctionsClass = ".Exe.Functions";

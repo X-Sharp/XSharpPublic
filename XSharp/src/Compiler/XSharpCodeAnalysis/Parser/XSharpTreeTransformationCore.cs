@@ -743,6 +743,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             return voidType;
         }
 
+
+        protected virtual TypeSyntax DefaultType()
+        {
+            return objectType; ;
+        }
+
         protected TypeSyntax MissingType()
         {
             return objectType
@@ -3150,11 +3156,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         public override void ExitEventAccessor([NotNull] XP.EventAccessorContext context)
         {
             context.StmtBlk.SetSequencePoint();
+            var body = context.StmtBlk.Get<BlockSyntax>();
+            body = AddLocalFunctions(body, context.LocalFunctions);
             context.Put(_syntaxFactory.AccessorDeclaration(context.Key.AccessorKind(),
                 attributeLists: context.Attributes?.GetList<AttributeListSyntax>() ?? EmptyList<AttributeListSyntax>(),
                 modifiers: context.Modifiers?.GetList<SyntaxToken>() ?? EmptyList<SyntaxToken>(),
                 keyword: context.Key.SyntaxKeyword(),
-                body: context.StmtBlk.Get<BlockSyntax>(),
+                body: body,
                 expressionBody: null,
                 semicolonToken: SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)));
         }
@@ -3667,6 +3675,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             var attributes = context.Attributes?.GetList<AttributeListSyntax>() ?? EmptyList<AttributeListSyntax>();
             var parameters = context.ParamList?.Get<ParameterListSyntax>() ?? EmptyParameterList();
             var body = context.StmtBlk?.Get<BlockSyntax>();
+            body = this.AddLocalFunctions(body, context.LocalFunctions);
             var mods = context.Modifiers?.GetList<SyntaxToken>() ?? TokenListWithDefaultVisibility();
             TypeSyntax returntype = null;
             ImplementClipperAndPSZ(context, ref attributes, ref parameters, ref body, ref returntype);
@@ -3736,13 +3745,15 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 parentId = SyntaxFactory.MakeIdentifier("unknown");
                 missingParent = true;
             }
+            var body = context.StmtBlk.Get<BlockSyntax>();
+            body = this.AddLocalFunctions(body, context.LocalFunctions);
             var dtor = _syntaxFactory.DestructorDeclaration(
                 attributeLists: context.Attributes?.GetList<AttributeListSyntax>() ?? EmptyList<AttributeListSyntax>(),
                 modifiers: context.Modifiers?.GetList<SyntaxToken>() ?? EmptyList<SyntaxToken>(),
                 tildeToken: SyntaxFactory.MakeToken(SyntaxKind.TildeToken),
                 identifier: parentId,
                 parameterList: EmptyParameterList(),
-                body: context.StmtBlk.Get<BlockSyntax>(),
+                body: body,
                 expressionBody: null,
                 semicolonToken: (context.StmtBlk != null) ? null : SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken));
             if (missingParent)
@@ -3772,6 +3783,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             var attributes = context.Attributes?.GetList<AttributeListSyntax>() ?? EmptyList<AttributeListSyntax>();
             ParameterListSyntax parameters = null;
             var body = context.StmtBlk.Get<BlockSyntax>();
+            body = this.AddLocalFunctions(body, context.LocalFunctions);
             TypeSyntax returntype = null;
             ImplementClipperAndPSZ(context, ref attributes, ref parameters, ref body, ref returntype);
 
@@ -4004,6 +4016,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             var oldbody = body;
             ImplementClipperAndPSZ(context, ref attributes, ref parameters, ref body, ref returntype);
+            body = this.AddLocalFunctions(body, context.LocalFunctions);
             if (body != oldbody)
             {
                 context.StmtBlk.Put(body);
@@ -4128,6 +4141,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         public override void ExitOperator_([NotNull] XP.Operator_Context context)
         {
             context.SetSequencePoint(context.end);
+            var body = context.StmtBlk.Get<BlockSyntax>();
+            body = this.AddLocalFunctions(body, context.LocalFunctions);
+
             if (context.Conversion != null)
                 context.Put(_syntaxFactory.ConversionOperatorDeclaration(
                     attributeLists: context.Attributes?.GetList<AttributeListSyntax>() ?? EmptyList<AttributeListSyntax>(),
@@ -4136,7 +4152,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     operatorKeyword: SyntaxFactory.MakeToken(SyntaxKind.OperatorKeyword),
                     type: context.Type?.Get<TypeSyntax>() ?? MissingType(),
                     parameterList: context.ParamList?.Get<ParameterListSyntax>() ?? EmptyParameterList(),
-                    body: context.StmtBlk.Get<BlockSyntax>(),
+                    body: body,
                     expressionBody: null, // TODO: (grammar) expressionBody methods
                     semicolonToken: (context.StmtBlk != null) ? null : SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)));
             else
@@ -4165,7 +4181,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     operatorKeyword: SyntaxFactory.MakeToken(SyntaxKind.OperatorKeyword),
                     operatorToken: opToken,
                     parameterList: context.ParamList?.Get<ParameterListSyntax>() ?? EmptyParameterList(),
-                    body: context.StmtBlk.Get<BlockSyntax>(),
+                    body: body,
                     expressionBody: null, // TODO: (grammar) expressionBody methods
                     semicolonToken: (context.StmtBlk != null) ? null : SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)));
             }
@@ -5027,6 +5043,28 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         }
 
 
+        protected BlockSyntax AddLocalFunctions(BlockSyntax body, IList<object> localFunctions) 
+        {
+            if (body != null && localFunctions?.Count > 0 )
+            {
+                var stmts = _pool.Allocate<StatementSyntax>();
+                stmts.AddRange(body.Statements);
+                foreach (LocalFunctionStatementSyntax local in localFunctions)
+                {
+                    stmts.Add(local);
+                }
+                var newbody = body.Update(body.OpenBraceToken, stmts, body.CloseBraceToken);
+                _pool.Free(stmts);
+
+                if (body.XNode != null)
+                {
+                    body.XNode.Put(newbody);
+                }
+                body = newbody;
+            }
+            return body;
+        }
+
         public override void ExitFuncproc([NotNull] XP.FuncprocContext context)
         {
             if (context.T != null && context.end  != null)
@@ -5056,7 +5094,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 parameters = UpdateVODLLParameters(parameters);
             }
             var body = hasnobody ? null : context.StmtBlk.Get<BlockSyntax>();
- 
+            body = AddLocalFunctions(body, context.LocalFunctions);
             var returntype = context.Type?.Get<TypeSyntax>() ?? _getMissingType();
             if (isprocedure)
             {
@@ -7410,10 +7448,100 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         public override void ExitParenExpression([NotNull] XP.ParenExpressionContext context)
         {
-            context.Put(_syntaxFactory.ParenthesizedExpression(
-                SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
-                context.Expr.Get<ExpressionSyntax>(),
-                SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken)));
+
+            if (context._Exprs.Count == 1)
+            {
+                context.Put(_syntaxFactory.ParenthesizedExpression(
+                    SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
+                    context.Expr.Get<ExpressionSyntax>(),
+                    SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken)));
+            }
+            else
+            {
+                // move the expressions into a local function
+                // and call this local function here
+                var statements = new List<StatementSyntax>();
+                var last = context._Exprs.Last();
+                ExpressionSyntax expr;
+                // create statements too so we can set breakpoint info
+                var decl = GenerateLocalDecl("_", objectType);
+                statements.Add(decl);
+                var name = GenerateSimpleName("_");
+                statements.Add(GenerateExpressionStatement(MakeSimpleAssignment(name, GenerateLiteralNull())));
+                foreach (var e in context._Exprs)
+                {
+                    StatementSyntax stmt;
+                    expr = e.Get<ExpressionSyntax>();
+                    var stmtctx = new XP.StatementContext(context, 0);
+                    stmtctx.Start = e.Start;
+                    stmtctx.Stop = e.Stop;
+                    
+                    if (e == last)
+                    {
+                        var ctx = new XP.ReturnStmtContext(stmtctx) { Expr = e };
+                        stmt = GenerateReturn(expr);
+                        ctx.Put(stmt);
+                        stmtctx = ctx;
+                    }
+                    else
+                    {
+                        var ctx = new XP.ExpressionStmtContext(stmtctx);
+                        ctx._Exprs.Add(e);
+                        switch (expr)
+                        {
+                            case BinaryExpressionSyntax _:
+                            case InvocationExpressionSyntax _:
+                            case PostfixUnaryExpressionSyntax _:
+                            case PrefixUnaryExpressionSyntax _:
+                            case AssignmentExpressionSyntax _:
+                                break;
+                            case LiteralExpressionSyntax _:
+                            default:
+                                expr = MakeSimpleAssignment(name, expr);
+                                break;
+                        }
+                        stmt = GenerateExpressionStatement(expr);
+
+                        ctx.Put(stmt);
+                        stmtctx = ctx;
+                    }
+                    stmtctx.SetSequencePoint(e.Start);
+                    statements.Add(stmt);
+                }
+                var mods = TokenList(SyntaxKind.PrivateKeyword);
+                IList<object> localFunctions ;
+                if (CurrentEntity is XP.IBodyWithLocalFunctions ieb)
+                {
+                    if (ieb.LocalFunctions == null)
+                    {
+                        ieb.LocalFunctions = new List<object>();
+                    }
+                    localFunctions = ieb.LocalFunctions;
+                }
+                else
+                {
+                    localFunctions = new List<object>();
+                }
+                var fname = CurrentEntity.ShortName + XSharpSpecialNames.ParenExprSuffix+ (localFunctions.Count + 1).ToString();
+                var id = SyntaxFactory.MakeIdentifier(fname);
+                var func = _syntaxFactory.LocalFunctionStatement(
+                                    mods,
+                                    DefaultType(),
+                                    id,
+                                    typeParameterList: null,
+                                    parameterList: EmptyParameterList(),
+                                    constraintClauses: null,
+                                    MakeBlock(statements),
+                                    expressionBody: null,
+                                    SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken));
+                localFunctions.Add(func);
+                expr = GenerateMethodCall(fname, false);
+                context.Put(_syntaxFactory.ParenthesizedExpression(
+                    SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
+                    expr,
+                    SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken)));
+
+            }
         }
 
         public override void ExitIntrinsicExpression([NotNull] XP.IntrinsicExpressionContext context)

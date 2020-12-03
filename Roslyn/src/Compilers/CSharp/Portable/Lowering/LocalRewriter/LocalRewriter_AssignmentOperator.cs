@@ -291,7 +291,7 @@ namespace Microsoft.CodeAnalysis.CSharp
 #if XSHARP
             if (property is XsVariableSymbol xsvar)
             {
-                return MemVarFieldAssign(xsvar, rewrittenRight);
+                return MemVarFieldAssign(syntax, xsvar, rewrittenRight);
             }
 #endif
             // We have already lowered each argument, but we may need some additional rewriting for the arguments,

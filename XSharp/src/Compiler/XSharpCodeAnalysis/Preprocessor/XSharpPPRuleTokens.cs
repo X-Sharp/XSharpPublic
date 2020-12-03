@@ -26,6 +26,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         protected string _key;
         #endregion
         #region Properties
+        internal int Index { get; set; }
         internal string Key { get { return _key; } }
         internal XSharpToken Token { get { return _token; } }
         internal bool IsMarker
@@ -140,7 +141,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         internal XSharpToken[] StopTokens { get => Tokens; set => Tokens = value; }
         // For optional tokens this contains the list of tokens inside the option block
         internal PPMatchToken[] Children { get; set; }
-        internal int Index { get; set; } // Index in the flattened matchmarker list
         #endregion
         internal PPMatchToken(XSharpToken token, PPTokenType type) : base(token, type)
         {

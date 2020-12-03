@@ -366,9 +366,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             for (int r = 0; r < results.Length; r++)
             {
                 var restoken = results[r];
+                restoken.Index = r;
                 if (restoken.IsMarker)
                 {
-                    var token = restoken.Token;
                     var name = restoken.Key;
                     if (markers.ContainsKey(name))
                     {
@@ -1571,21 +1571,19 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             return result;
         }
 
-        void tokenResult(PPResultToken rule, IList<XSharpToken> tokens, PPMatchRange[] matchInfo, IList<XSharpToken> result, int offset)
+        void tokenResult(PPResultToken resultToken, IList<XSharpToken> tokens, PPMatchRange[] matchInfo, IList<XSharpToken> result, int offset)
         {
-
-            var newToken = new XSharpToken(rule.Token)
-            {
-                SourceSymbol = tokens[0]
-            };
+            // Link the new token to the first token of the UDC
+            // so for the command #xcommand WAIT [<msg>]                  => _wait( <msg> )
+            // the LPAREN and RPAREN will also be linked to the WAIT keyword in the source.
+           var newToken = new XSharpToken(resultToken.Token) {SourceSymbol = tokens[0]};
             result.Add(newToken);
-
         }
-        void repeatedResult(PPResultToken rule, IList<XSharpToken> tokens, PPMatchRange[] matchInfo, IList<XSharpToken> result, int offset)
+        void repeatedResult(PPResultToken resultToken, IList<XSharpToken> tokens, PPMatchRange[] matchInfo, IList<XSharpToken> result, int offset)
         {
-            if (rule.MatchMarker != null)
+            if (resultToken.MatchMarker != null)
             {
-                var index = rule.MatchMarker.Index;
+                var index = resultToken.MatchMarker.Index;
                 var mm = matchInfo[index];
                 if (mm.MatchCount > 0)
                 {
@@ -1594,20 +1592,14 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         int repeats = mm.MatchCount;
                         for (int i = 0; i < repeats; i++)
                         {
-                            var block = Replace(rule.OptionalElements, tokens, matchInfo, i);
-                            foreach (var e in block)
-                            {
-                                result.Add(e);
-                            }
+                            var block = Replace(resultToken.OptionalElements, tokens, matchInfo, i);
+                            result.AddRange(block);
                         }
                     }
                     else
                     {
-                        var block = Replace(rule.OptionalElements, tokens, matchInfo, 0);
-                        foreach (var e in block)
-                        {
-                            result.Add(e);
-                        }
+                        var block = Replace(resultToken.OptionalElements, tokens, matchInfo, 0);
+                        result.AddRange(block);
                     }
                 }
             }
@@ -1615,13 +1607,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         }
 
 
-        void regularResult(PPResultToken rule, IList<XSharpToken> tokens, PPMatchRange[] matchInfo, IList<XSharpToken> result, int offset)
+        void regularResult(PPResultToken resultToken, IList<XSharpToken> tokens, PPMatchRange[] matchInfo, IList<XSharpToken> result, int offset)
         {
             // write input text to the result text without no changes
             // for example:
             // #command SET CENTURY (<x>) => __SetCentury( <x> )
             // the output written is the literal text for x, so the token(s) x
-            var range = matchInfo[rule.MatchMarker.Index];
+            var range = matchInfo[resultToken.MatchMarker.Index];
             if (!range.Empty)
             {
                 // No special handling for List markers. Everything is copied including commas etc.
@@ -1638,7 +1630,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             return;
         }
 
-        void blockifySingleResult(PPResultToken rule, IList<XSharpToken> tokens, PPMatchRange range, IList<XSharpToken> result)
+        void blockifySingleResult(PPResultToken resultToken, IList<XSharpToken> tokens, PPMatchRange range, IList<XSharpToken> result)
         {
             int start = range.Start;
             int end = range.End;
@@ -1695,30 +1687,30 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         }
 
 
-        void blockifyResult(PPResultToken rule, IList<XSharpToken> tokens, PPMatchRange[] matchInfo, IList<XSharpToken> result, int offset)
+        void blockifyResult(PPResultToken resultToken, IList<XSharpToken> tokens, PPMatchRange[] matchInfo, IList<XSharpToken> result, int offset)
         {
             // write output text as codeblock
             // so prefixes with "{||"and suffixes with "}
             // if the input is already a code block then nothing is changed
             // when the input is a list then each element in the list will be
             // converted to a code block
-            var range = matchInfo[rule.MatchMarker.Index];
+            var range = matchInfo[resultToken.MatchMarker.Index];
             if (!range.Empty)
             {
                 if (range.MatchCount > 1)
                 {
                     range = range.Children[offset];
                 }
-                if (rule.MatchMarker.RuleTokenType == PPTokenType.MatchList && range.IsList)
+                if (resultToken.MatchMarker.RuleTokenType == PPTokenType.MatchList && range.IsList)
                 {
                     foreach (var element in range.Children)
                     {
-                        blockifySingleResult(rule, tokens, element, result);
+                        blockifySingleResult(resultToken, tokens, element, result);
                     }
                 }
                 else
                 {
-                    blockifySingleResult(rule, tokens, range, result);
+                    blockifySingleResult(resultToken, tokens, range, result);
                 }
             }
             return;

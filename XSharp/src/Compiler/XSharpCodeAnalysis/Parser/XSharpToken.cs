@@ -22,6 +22,26 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
         internal int MappedLine = -1;
         internal XSharpToken SourceSymbol;
         private XSharpToken _original = null;
+        public string XmlComments { get; set; } = null;
+        public bool HasXmlComments => XmlComments?.Length > 0;
+        //public IList<XSharpToken> Trivia { get; set; } = null;
+        //public bool HasTrivia => Trivia?.Count > 0;
+        //public string TriviaAsText
+        //{
+        //    get
+        //    {
+        //        if (HasTrivia)
+        //        {
+        //            var sb = new StringBuilder();
+        //            foreach (var tr in Trivia)
+        //            {
+        //                sb.Append(tr.Text);
+        //            }
+        //            return sb.ToString();
+        //        }
+        //        return String.Empty;
+        //    }
+        //}
 
         internal XSharpToken(IToken t) : base(t)
         {
@@ -53,7 +73,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             StopIndex = token.StopIndex;
             SourceSymbol = token;
             XmlComments = token.XmlComments;
-
+            Trivia = token.Trivia;
         }
         internal XSharpToken(int type, string text, XSharpToken token) : base(type, text)
         {
@@ -64,6 +84,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             StopIndex = token.StopIndex;
             SourceSymbol = token;
             XmlComments = token.XmlComments;
+            Trivia = token.Trivia;
         }
 
         internal XSharpToken(Tuple<ITokenSource, ICharStream> source, int type, int channel, int start, int stop) :
@@ -142,7 +163,5 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
         {
             return this.Text;
         }
-        public string XmlComments { get; set; } = null;
-        public bool HasXmlComments => XmlComments?.Length > 0;
     }
 }

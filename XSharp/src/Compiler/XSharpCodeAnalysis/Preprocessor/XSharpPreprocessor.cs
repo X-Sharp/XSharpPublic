@@ -379,7 +379,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 // We cannot use the interval and fetch the text from the source stream,
                 // because some tokens may come out of an include file or otherwise
                 // so concatenate text on the fly
-                var bld = new System.Text.StringBuilder(1024);
+                var bld = new StringBuilder(1024);
                 if (prefix)
                 {
                     bld.Append(PPOPrefix);
@@ -438,7 +438,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             _checksumAlgorithm = checksumAlgorithm;
             _parseErrors = parseErrors;
             includeDirs = new List<string>(options.IncludePaths);
-            if (!String.IsNullOrEmpty(fileName) && File.Exists(fileName))
+            if (!string.IsNullOrEmpty(fileName) && File.Exists(fileName))
             {
                 includeDirs.Add(Path.GetDirectoryName(fileName));
                 var ppoFile = FileNameUtilities.ChangeExtension(fileName, ".ppo");
@@ -468,7 +468,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 }
             }
             // Add default IncludeDirs;
-            if (!String.IsNullOrEmpty(options.DefaultIncludeDir))
+            if (!string.IsNullOrEmpty(options.DefaultIncludeDir))
             {
                 string[] paths = options.DefaultIncludeDir.Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
                 foreach (var path in paths)
@@ -1923,7 +1923,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             Debug.Assert(line?.Count > 0);
             var res = rule.Replace(line, matchInfo);
             rulesApplied += 1;
-            List<XSharpToken> result = new List<XSharpToken>();
+            var result = new List<XSharpToken>();
             result.AddRange(res);
             if (_options.Verbose)
             {

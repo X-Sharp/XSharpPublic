@@ -340,6 +340,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             var parameters = context.ParamList?.Get<ParameterListSyntax>() ?? EmptyParameterList();
             var body = hasNoBody ? null : context.StmtBlk.Get<BlockSyntax>();
+            body = this.AddLocalFunctions(body, context.LocalFunctions);
+
             var returntype = context.Type?.Get<TypeSyntax>();
             if (returntype == null)
             {

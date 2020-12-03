@@ -591,6 +591,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             SyntaxList<SyntaxToken> modifiers, ParameterListSyntax parameters, TypeSyntax returnType)
         {
             var body = context.Statements.Get<BlockSyntax>();
+            body = this.AddLocalFunctions(body, context.LocalFunctions);
+
             var oldbody = body;
             ImplementClipperAndPSZ(context, ref attributes, ref parameters, ref body, ref returnType);
             if (body != oldbody)

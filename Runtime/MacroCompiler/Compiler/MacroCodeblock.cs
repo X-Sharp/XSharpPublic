@@ -25,7 +25,7 @@ namespace XSharp.MacroCompiler.ObjectMacro
     {
         public override object EvalBlock(params object[] args)
         {
-            int nLevel = __MemVarInit();
+            int nLevel = __MemVarInit(true);
             try
             {
                 return base.EvalBlock();
@@ -66,7 +66,7 @@ namespace XSharp.MacroCompiler.UsualMacro
     {
         public override __Usual Eval(params __Usual[] args)
         {
-            int nLevel = __MemVarInit();
+            int nLevel = __MemVarInit(true);
             try
             {
                 return base.Eval();

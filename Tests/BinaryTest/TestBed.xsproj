@@ -11,7 +11,7 @@
     <Name>TestBed</Name>
     <Nologo>true</Nologo>
     <GenerateFullPaths>true</GenerateFullPaths>
-    <Dialect>VO</Dialect>
+    <Dialect>FoxPro</Dialect>
     <na>false</na>
     <az>false</az>
     <nostddef>false</nostddef>
@@ -30,13 +30,13 @@
     <vo15>true</vo15>
     <vo16>true</vo16>
     <lb>true</lb>
-    <memvar>False</memvar>
-    <undeclared>False</undeclared>
+    <memvar>true</memvar>
+    <undeclared>false</undeclared>
     <initlocals>true</initlocals>
     <fox1>true</fox1>
-    <fox2>false</fox2>
+    <fox2>true</fox2>
     <OutputName>BinaryTest</OutputName>
-    <XSharpProjectversion>2.6.0.0</XSharpProjectversion>
+    <XSharpProjectversion>2.7.0.0</XSharpProjectversion>
     <VO1>false</VO1>
     <VO8>false</VO8>
     <VO11>false</VO11>
@@ -47,6 +47,12 @@
     <ApplicationIcon />
     <VulcanCompatibleResources>False</VulcanCompatibleResources>
     <NoWin32Manifest>False</NoWin32Manifest>
+    <CS>false</CS>
+    <OVF>false</OVF>
+    <NS>false</NS>
+    <NoStandardDefs>false</NoStandardDefs>
+    <IncludePaths />
+    <StandardDefs />
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'" Label="Configuration">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -90,14 +96,29 @@
     <Folder Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\Runtime\MacroCompiler\MacroCompiler.csproj">
+      <Name>MacroCompiler (Macrocompiler\MacroCompiler)</Name>
+      <Project>{eb3f3142-07f7-48ca-b38d-f611c45a9511}</Project>
+      <Private>True</Private>
+    </ProjectReference>
     <ProjectReference Include="..\..\Runtime\XSharp.Core\XSharp.Core.xsproj">
       <Name>XSharp.Core</Name>
       <Project>{535dff14-efb7-43f5-a4e1-71c1c4280040}</Project>
       <Private>True</Private>
     </ProjectReference>
+    <ProjectReference Include="..\..\Runtime\XSharp.Rdd\XSharp.RDD.xsproj">
+      <Name>XSharp.RDD</Name>
+      <Project>{e83c6c8c-773f-4b01-a597-3d38398a9362}</Project>
+      <Private>True</Private>
+    </ProjectReference>
     <ProjectReference Include="..\..\Runtime\XSharp.RT\XSharp.RT.xsproj">
       <Name>XSharp.RT</Name>
       <Project>{ef8d2bf2-e81a-479a-ba4f-294c4c348b66}</Project>
+      <Private>True</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Runtime\XSharp.XPP\XSharp.XPP.xsproj">
+      <Name>XSharp.XPP</Name>
+      <Project>{c5d7be20-038e-4b42-a90a-b13bab83d8e5}</Project>
       <Private>True</Private>
     </ProjectReference>
   </ItemGroup>

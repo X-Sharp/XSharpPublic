@@ -147,7 +147,25 @@ BEGIN NAMESPACE XSharp.Internal
 			SUPER()
 		
 	END CLASS
-	
+
+    /// <summary>
+	/// This class is used to mark methods, properties etc. that want access to Local Variables by name.
+	/// </summary>
+    /// <remarks>
+    /// In FoxPro several built-in functions have access to locals "by name". We can't do that because it violates
+    /// the normal rules of encapsulation. However we can "emulate" this behavior by adding this attribute to a function or
+    /// method that wants access to locals.
+    /// At runtime we will then populate a table in the runtime with the names and values of local variables
+	/// And we can access this table with the normal MemVarGet() and MemVarPut() functions.
+    /// <remarks>
+	[AttributeUsage(AttributeTargets.Method | AttributeTargets.Property | AttributeTargets.Constructor) ];
+	SEALED CLASS NeedsAccessToLocalsAttribute INHERIT Attribute
+		CONSTRUCTOR()
+			SUPER()
+		
+	END CLASS
+
+
 END NAMESPACE
 
 

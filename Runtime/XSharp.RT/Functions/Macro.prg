@@ -4,13 +4,17 @@
 // See License.txt in the project root for license information.
 //
 USING System.Reflection
-		
+USING System.Globalization
+
+USING XSharp.Internal		
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/evaluate/*" />
+[NeedsAccessToLocals];
 FUNCTION Evaluate(cString AS STRING) AS USUAL
 	RETURN Evaluate(cString, TRUE) 
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/evaluate/*" />	
 /// <param name="lAllowSingleQuotes">Should single quotes be allowed as string delimiters.</param>
+[NeedsAccessToLocals];
 FUNCTION Evaluate(cString AS STRING, lAllowSingleQuotes AS LOGIC) AS USUAL
 	LOCAL oMacro AS XSharp._Codeblock 
 	LOCAL uRes   AS USUAL
@@ -34,7 +38,6 @@ FUNCTION MCompile(cString AS STRING) AS XSharp._Codeblock
 /// <param name="lAllowSingleQuotes">Should single quotes be allowed as string delimiters</param>
 /// <seealso cref="T:XSharp._Codeblock" />
 FUNCTION MCompile(cString AS STRING, lAllowSingleQuotes AS LOGIC) AS XSharp._Codeblock
-	
 	VAR oMC := XSharp.RuntimeState.MacroCompiler
 	IF oMC != NULL_OBJECT
 		VAR oMod := XSharp.RuntimeState.AppModule
@@ -58,27 +61,79 @@ FUNCTION MCompile(cString AS STRING, lAllowSingleQuotes AS LOGIC) AS XSharp._Cod
 	RETURN NULL_OBJECT	
 
 
-//
-//INTERNAL FUNCTION MPrepare(cString AS STRING) AS STRING
-//    IF !cString:Trim():StartsWith("{")
-//        RETURN cString
-//    ENDIF
-//    IF ! NestedMacroHandler.IsNested(cString)
-//        RETURN cString
-//    ENDIF
-//    RETURN NestedMacroHandler.Expand(cString)
-
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/mexec/*" />	
 /// <note type="caution">MCompile returns a STRING containing PCode tokens in VO.
 /// It returns a XSharp._Codeblock in .Net. Therefore the parameter of MExec is a Codeblock</note>
 /// <seealso cref="T:XSharp._Codeblock" />
 /// <seealso cref="O:XSharp.RT.Functions.MCompile" />
+[NeedsAccessToLocals];
 FUNCTION MExec(oBlock AS CODEBLOCK) AS USUAL
 	RETURN Eval(oBlock)
 	
+
+
+// Copied from the Roslyn Lexer and Macro Lexer
+INTERNAL FUNCTION _IsLetterChar(cat AS UnicodeCategory ) AS LOGIC
+    SWITCH cat
+    CASE UnicodeCategory.UppercaseLetter
+    CASE UnicodeCategory.LowercaseLetter
+    CASE UnicodeCategory.TitlecaseLetter
+    CASE UnicodeCategory.ModifierLetter
+    CASE UnicodeCategory.OtherLetter
+    CASE UnicodeCategory.LetterNumber
+        RETURN TRUE
+    END SWITCH
+    RETURN FALSE
+
+
+// Copied from the Roslyn Lexer and Macro Lexer
+INTERNAL FUNCTION _IsIdentifierStartChar(cChar AS CHAR) AS LOGIC
+    IF cChar >= c'A' .AND. cChar <= c'Z'
+        RETURN TRUE
+    ENDIF        
+    IF cChar >= c'a' .AND. cChar <= c'z'
+        RETURN TRUE
+    ENDIF
+    IF cChar == '_'
+        RETURN TRUE
+    ENDIF
+    IF cChar < 0x7F
+        // All other lower ascii are not allowed
+        RETURN FALSE
+    ENDIF
+    RETURN _IsLetterChar(CharUnicodeInfo.GetUnicodeCategory(cChar));
+
+INTERNAL FUNCTION _IsIdentifierPartChar(cChar AS CHAR) AS LOGIC
+    IF _IsIdentifierStartChar(cChar)
+        RETURN TRUE
+    ENDIF
+    VAR cat := CharUnicodeInfo.GetUnicodeCategory(cChar)
+    RETURN cat == UnicodeCategory.DecimalDigitNumber .OR. ;
+                cat == UnicodeCategory.ConnectorPunctuation .OR. ;
+                cat == UnicodeCategory.NonSpacingMark .OR. ;
+                cat == UnicodeCategory.SpacingCombiningMark .OR. ;
+                (cChar > 127 .AND. cat == UnicodeCategory.Format)
+    
+
+
+INTERNAL FUNCTION _IsIdentifier(cName AS STRING) AS LOGIC
+    LOCAL lFirst := TRUE AS LOGIC
+    FOREACH VAR c IN cName
+        IF lFirst
+            IF ! _IsIdentifierStartChar(c)
+                RETURN FALSE
+            ENDIF
+        ELSE
+            IF ! _IsIdentifierPartChar(c)
+                RETURN FALSE
+            ENDIF
+        ENDIF
+        lFirst := FALSE
+    NEXT
+    RETURN TRUE
 	
-	
-/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/type/*" />	
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/type/*" />
+[NeedsAccessToLocals];
 FUNCTION Type(cString AS STRING) AS STRING
 	LOCAL uValue AS USUAL
 	LOCAL cRet	 AS STRING
@@ -86,8 +141,14 @@ FUNCTION Type(cString AS STRING) AS STRING
 		cRet := "UE"
 	ELSE
 		TRY
-			uValue := Evaluate(cString)
-			cRet   := ValType(uValue)
+            // do not use the macro compiler to find "simple" memvar or local names
+            IF _IsIdentifier(cString) .AND. MemVarTryGet(cString, OUT uValue)
+                cRet   := ValType(uValue)
+            ELSE
+                // Ok, this is not a memvar or local name. Let's evaluate it
+                uValue := Evaluate(cString)
+			    cRet   := ValType(uValue)
+            ENDIF
 		CATCH  AS Exception
 			cRet  := "UE" 
 		END TRY
@@ -97,6 +158,7 @@ FUNCTION Type(cString AS STRING) AS STRING
 	
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/strevaluate/*" />
+[NeedsAccessToLocals];
 FUNCTION StrEvaluate( cString AS STRING ) AS STRING
 	IF cString:IndexOf("&") > 0
         LOCAL cVariableName AS STRING

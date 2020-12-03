@@ -24,7 +24,11 @@ FUNCTION MemVarBlock(cMemvarName AS STRING) AS OBJECT
 FUNCTION MemVarGet(cVarName AS STRING) AS USUAL
     RETURN XSharp.MemVar.Get(cVarName)
     
-    
+
+FUNCTION MemVarTryGet(cVarName AS STRING, uValue OUT USUAL) AS LOGIC
+    RETURN XSharp.MemVar.TryGet(cVarName, OUT uValue)
+
+
     
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/memvarput/*" />
 /// <include file="RTComments.xml" path="Comments/Memvar/*" />

@@ -9,8 +9,8 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>XSharp.Build</RootNamespace>
     <AssemblyName>XSharp.Build</AssemblyName>
+    <TargetFramework>netstandard1.3</TargetFramework>
     <DefaultLanguage>en-US</DefaultLanguage>
-    <TargetFrameworks>$(RoslynPortableTargetFrameworks)</TargetFrameworks>
     <GenerateMicrosoftCodeAnalysisCommitHashAttribute>false</GenerateMicrosoftCodeAnalysisCommitHashAttribute>
     <DebugSymbols>true</DebugSymbols>
     <ErrorReport>prompt</ErrorReport>

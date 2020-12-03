@@ -38,7 +38,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
             if (ctor != null)
             {
-                return new BoundObjectCreationExpression(expr.Syntax, ctor, null, expr, _makeLogic(expr.Syntax, true));
+                return new BoundObjectCreationExpression(expr.Syntax, ctor, null, expr, _factory.Literal(true));
             }
             return expr;
         }
@@ -154,23 +154,11 @@ namespace Microsoft.CodeAnalysis.CSharp
                         if (boundProperties[i].PropertySymbol is XsFoxMemberAccessSymbol foxAccess)
                         {
                             // fore now handle special FoxPro member assign here
-                            var arg = arguments[i].Syntax;
                             var method = foxAccess.SetMethod;
-                            var alias = _makeString(arg, foxAccess.Alias);
-                            var field = _makeString(arg, foxAccess.Name);
-                            var undecl = _makeLogic(arg, _compilation.Options.HasOption(CompilerOption.UndeclaredMemVars, arguments[0].Syntax));
-                            var args = ImmutableArray.Create<BoundExpression>(alias, field, elem, undecl);
-                            var call = new BoundCall(arg, null, method, arguments: args,
-                                argumentNamesOpt: default,
-                                argumentRefKindsOpt: default,
-                                expanded: false,
-                                argsToParamsOpt: default,
-                                binderOpt: null,
-                                isDelegateCall: false,
-                                invokedAsExtensionMethod: false,
-                                resultKind: LookupResultKind.Viable,
-                                type: method.ReturnType,
-                                hasErrors: false);
+                            var alias = _factory.Literal(foxAccess.Alias);
+                            var field = _factory.Literal(foxAccess.Name);
+                            var undecl = _factory.Literal(_compilation.Options.HasOption(CompilerOption.UndeclaredMemVars, arguments[0].Syntax));
+                            var call = _factory.StaticCall(null, method, alias, field, elem, undecl);
                             exprs.Add(call);
                         }
                         else
@@ -202,16 +190,20 @@ namespace Microsoft.CodeAnalysis.CSharp
             {
 
                 if (a.Type == null && !a.Syntax.XIsCodeBlock)
-                    convArgs.Add(new BoundDefaultExpression(a.Syntax, usualType));
+                {
+                    convArgs.Add(_factory.Default(usualType));
+                }
                 else
+                {
                     convArgs.Add(MakeConversionNode(a, usualType, false));
+                }
             }
             var aArgs = _factory.Array(usualType, convArgs.ToImmutableAndFree());
 
              // Note: Make sure the first parameter in __InternalSend() in the runtime is a USUAL!
             var expr = _factory.StaticCall(_compilation.RuntimeFunctionsType(), ReservedNames.InternalSend,
                         MakeConversionNode(loweredReceiver, usualType, false),
-                        new BoundLiteral(loweredReceiver.Syntax, ConstantValue.Create(name), _compilation.GetSpecialType(SpecialType.System_String)),
+                        _factory.Literal(name),
                         aArgs);
 
             if (expr is BoundCall bc && bc.Arguments.Length == 3)       // object, name, param array

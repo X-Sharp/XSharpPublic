@@ -73,7 +73,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             StopIndex = token.StopIndex;
             SourceSymbol = token;
             XmlComments = token.XmlComments;
-            Trivia = token.Trivia;
+            //Trivia = token.Trivia;
         }
         internal XSharpToken(int type, string text, XSharpToken token) : base(type, text)
         {
@@ -84,7 +84,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             StopIndex = token.StopIndex;
             SourceSymbol = token;
             XmlComments = token.XmlComments;
-            Trivia = token.Trivia;
+            //Trivia = token.Trivia;
         }
 
         internal XSharpToken(Tuple<ITokenSource, ICharStream> source, int type, int channel, int start, int stop) :

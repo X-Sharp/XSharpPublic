@@ -17,7 +17,7 @@ namespace Microsoft.CodeAnalysis.CSharp
     {
 
         // Cache the Usual2Ptr conversion since it may be used quite often and there are 43 overloads for op_Implicit.
-        private MethodSymbol getImplicitOperator(TypeSymbol srcType, TypeSymbol destType)
+        private MethodSymbol getImplicitOperatorByReturnType(TypeSymbol srcType, TypeSymbol destType)
         {
             var members = srcType.GetMembers(WellKnownMemberNames.ImplicitConversionName);
             foreach (MethodSymbol m in members)
@@ -30,6 +30,25 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
             return null;
         }
+
+        private MethodSymbol getImplicitOperatorByParameterType(TypeSymbol srcType, TypeSymbol destType)
+        {
+            var members = srcType.GetMembers(WellKnownMemberNames.ImplicitConversionName);
+            foreach (MethodSymbol m in members)
+            {
+                if (m.ParameterCount > 0)
+                {
+                    var pt = m.GetParameterTypes()[0] as TypeSymbol;
+                    if (pt == destType)
+                    {
+                        return m;
+                    }
+                }
+
+            }
+            return null;
+        }
+
         private MethodSymbol getExplicitOperator(TypeSymbol srcType, TypeSymbol destType)
         {
             var members = srcType.GetMembers(WellKnownMemberNames.ExplicitConversionName);
@@ -49,8 +68,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             if ((rewrittenType.IsPointerType()  || rewrittenType.IsPsz() )
                 && rewrittenOperand.Type.IsObjectType() && _compilation.Options.Dialect.AllowPointerMagic())
             {
-                rewrittenOperand = new BoundConversion(rewrittenOperand.Syntax, rewrittenOperand,
-                                        Conversion.Unboxing, false, false, null, _compilation.GetSpecialType(SpecialType.System_IntPtr));
+                rewrittenOperand = _factory.Convert(_compilation.GetSpecialType(SpecialType.System_IntPtr), rewrittenOperand, Conversion.Unboxing);
                 conversionKind = ConversionKind.Identity;
                 return conversionKind;
             }
@@ -69,16 +87,13 @@ namespace Microsoft.CodeAnalysis.CSharp
                 // Implementation here
                 if (nts != null && nts.IsInterface && rewrittenType == usualType)
                 {
-                    var members = usualType.GetMembers(WellKnownMemberNames.ImplicitConversionName);
-                    foreach (var m in members)
+
+                    var m = getImplicitOperatorByParameterType(usualType, _compilation.GetSpecialType(SpecialType.System_Object));
+                    if (m != null)
                     {
-                        var pt = m.GetParameterTypes()[0] as TypeSymbol;
-                        if (pt == _compilation.GetSpecialType(SpecialType.System_Object))
-                        { 
-                            rewrittenOperand = _factory.StaticCall(rewrittenType, (MethodSymbol) m, rewrittenOperand);
-                            rewrittenOperand.WasCompilerGenerated = true;
-                            return ConversionKind.Identity;
-                        }
+                        rewrittenOperand = _factory.StaticCall(rewrittenType, (MethodSymbol)m, rewrittenOperand);
+                        rewrittenOperand.WasCompilerGenerated = true;
+                        return ConversionKind.Identity;
                     }
                 }
 
@@ -87,8 +102,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                     // USUAL -> WINBOOL, use LOGIC as intermediate type
                     if (rewrittenType== _compilation.WinBoolType())
                     {
-                        MethodSymbol m = null;
-                        m = getImplicitOperator(usualType, _compilation.GetSpecialType(SpecialType.System_Boolean));
+                        MethodSymbol m = getImplicitOperatorByReturnType(usualType, _compilation.GetSpecialType(SpecialType.System_Boolean));
                         rewrittenOperand = _factory.StaticCall(rewrittenType, m, rewrittenOperand);
                         rewrittenOperand.WasCompilerGenerated = true;
                         return ConversionKind.Identity;
@@ -99,10 +113,10 @@ namespace Microsoft.CodeAnalysis.CSharp
                         // Pointer types are not really boxed
                         // we call the appropriate implicit operator here
                         MethodSymbol m = null;
-                        m = getImplicitOperator(usualType, rewrittenType);
+                        m = getImplicitOperatorByReturnType(usualType, rewrittenType);
                         if (m == null)
                         {
-                            m = getImplicitOperator(usualType, _compilation.GetSpecialType(SpecialType.System_IntPtr));
+                            m = getImplicitOperatorByReturnType(usualType, _compilation.GetSpecialType(SpecialType.System_IntPtr));
                         }
                         if (m != null)
                         {
@@ -169,7 +183,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                         rewrittenOperand.WasCompilerGenerated = true;
                         return ConversionKind.Identity;
                     }
-                    m = getImplicitOperator(floatType, rewrittenType as NamedTypeSymbol);
+                    m = getImplicitOperatorByReturnType(floatType, rewrittenType as NamedTypeSymbol);
                     if (m != null)
                     {
                         rewrittenOperand = _factory.StaticCall(rewrittenType, m, rewrittenOperand);
@@ -184,7 +198,7 @@ namespace Microsoft.CodeAnalysis.CSharp
 
                     }
                     // what else, any other numeric type Convert to Double first and then to destination type
-                    m = getImplicitOperator(floatType, _compilation.GetSpecialType(SpecialType.System_Double));
+                    m = getImplicitOperatorByReturnType(floatType, _compilation.GetSpecialType(SpecialType.System_Double));
                     if (m != null)  // this should never happen. This is an implicit converter
                     {
                         rewrittenOperand = _factory.StaticCall(rewrittenType, m, rewrittenOperand);

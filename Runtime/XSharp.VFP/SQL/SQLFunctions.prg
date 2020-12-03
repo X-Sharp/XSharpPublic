@@ -96,6 +96,7 @@ FUNCTION SqlDisconnect( nStatementHandle AS LONG) AS LONG
     RETURN -1  
      
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/sqlexec/*" />
+[NeedsAccessToLocals];
 FUNCTION SqlExec( nStatementHandle AS LONG, cSQLCommand := "" AS STRING, cCursorName := "SQLRESULT" AS STRING, aCountInfo := NULL_ARRAY  AS ARRAY) AS LONG
     LOCAL aInfo AS ARRAY
     LOCAL prepared := FALSE AS LOGIC
@@ -150,7 +151,8 @@ FUNCTION SqlMoreResults( nStatementHandle AS LONG, cCursorName := NIL AS USUAL ,
     RETURN 0
         
 
-/// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/sqlprepare/*" /> 
+/// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/sqlprepare/*" />
+[NeedsAccessToLocals];
 FUNCTION SqlPrepare( nStatementHandle AS LONG, cSQLCommand AS STRING, cCursorName := "SQLRESULT" AS STRING) AS LONG
     VAR oStmt := GetStatement(nStatementHandle)    
     IF oStmt != NULL
@@ -252,7 +254,6 @@ FUNCTION SqlSetProp( nStatementHandle AS LONG, cSetting AS STRING, eExpression A
 FUNCTION SqlSetProp( nStatementHandle AS LONG, nSetting AS LONG, eExpression AS USUAL) AS LONG
     var cSetting := System.Enum.GetName(typeof(SQLProperty), nSetting)
     RETURN (INT) SQLSupport.GetSetProperty(nStatementHandle, cSetting,eExpression)
-
 
 #endregion
 

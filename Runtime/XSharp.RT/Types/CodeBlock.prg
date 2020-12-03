@@ -116,7 +116,7 @@ PUBLIC CLASS XSharp._Codeblock INHERIT XSharp.Codeblock IMPLEMENTS IRtCodeblock
 		LOCAL oRes      AS OBJECT
         LOCAL iLevel    AS INT
         IF _addsMemVars
-            iLevel := XSharp.MemVar.InitPrivates()
+            iLevel := XSharp.MemVar.InitPrivates(TRUE)
         ELSE
             iLevel := 0
         ENDIF

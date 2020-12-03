@@ -328,6 +328,19 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             }
             return type;
         }
+        public static bool NeedAccessToLocals(this MethodSymbol method)
+        {
+            var attrs = method.GetAttributes();
+            foreach (var attr in attrs)
+            {
+                var atype = attr.AttributeClass;
+                if (atype.IsOurAttribute(OurTypeNames.NeedAccessToLocals))
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
 
         public static string GetDisplayName(this TypeSymbol type)
         {

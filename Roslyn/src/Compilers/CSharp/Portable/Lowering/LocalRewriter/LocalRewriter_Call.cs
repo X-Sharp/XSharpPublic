@@ -274,7 +274,9 @@ namespace Microsoft.CodeAnalysis.CSharp
                     value: rewrittenBoundCall,
                     type: type);
             }
-
+#if XSHARP
+            rewrittenBoundCall = XsAdjustBoundCall(rewrittenBoundCall);
+#endif
             return rewrittenBoundCall;
         }
 

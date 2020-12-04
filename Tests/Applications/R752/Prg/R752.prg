@@ -12,7 +12,7 @@ FUNCTION start() AS VOID
     xAssert(iif (l, (v := Upper(v), Left(v,3)), (v := Lower(v), Left(v,4)))  == "abcd")
     xAssert(Test{}:Foo(TRUE) == 3)
     xAssert(Test{}:Foo(FALSE) == 42)
-    wait
+
 RETURN 
 
 

@@ -26,7 +26,7 @@ FUNCTION Start() AS INT
 	 "C724", "C703", ;
 	 "R678", "R681", "R690", "R698", "R699", "R700" ,"R701", "R702", /*"R705" ,*/"R710",;
 	 "R711", "R712", "R725", "R729", "R730", "R732","R735", "R736","R741","R742","R743",; 
-	 "R750", "R751", "R752";
+	 "R750", "R751", "R752", "R753";
 	 }
 	 
 	#ifdef GUI
@@ -72,7 +72,10 @@ RETURN nFail
 FUNCTION DoTest(cExe AS STRING) AS LOGIC
 	LOCAL lSucces := FALSE AS LOGIC
 	LOCAL oAssembly AS Assembly
-	? "Running test" , cExe
+	? "Running test" , cExe     
+	IF cExe == "R753"
+	    NOP
+	ENDIF
 	oAssembly := Assembly.LoadFile(Application.StartupPath + "\" + cExe + ".exe")
 	LOCAL oType AS Type
 	oType := oAssembly:GetType(cExe + ".Exe.Functions")

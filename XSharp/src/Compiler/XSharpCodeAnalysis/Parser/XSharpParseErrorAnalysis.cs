@@ -145,6 +145,50 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             checkMissingKeyword(context.e, context, "END [WITH]");
         }
 
+
+        public override void ExitLocalfuncproc([NotNull] XSharpParser.LocalfuncprocContext context)
+        {
+            if (context.T2 != null)
+            {
+                var endToken = context.T2 as XSharpToken;
+                if (endToken != null && endToken.Type != context.T.Type)
+                {
+                    _parseErrors.Add(new ParseErrorData(endToken, ErrorCode.ERR_UnExpectedExpected, endToken.Text, context.T.Text));
+                }
+            }
+            if (context.T.Type == XSharpParser.PROCEDURE)
+            {
+                if (context.Sig.Type != null)
+                {
+                    _parseErrors.Add(new ParseErrorData(context.Sig.Type.Start, ErrorCode.ERR_UnexpectedToken, context.Sig.Type.GetText()));
+                }
+            }
+            else
+            {
+                // local function should have type
+                if (context.Sig.Type == null)
+                {
+                    _parseErrors.Add(new ParseErrorData(context.Sig.Stop, ErrorCode.ERR_TypeExpected));
+                }
+            }
+            if (context.Sig.ParamList != null)
+            {
+                foreach (var param in context.Sig.ParamList._Params)
+                {
+                    // parameters for local functions should have type
+                    if (param.Type == null)
+                    {
+                        _parseErrors.Add(new ParseErrorData(param.Stop, ErrorCode.ERR_TypeExpected));
+
+                    }
+                    if (param.Attributes != null)
+                    {
+                        _parseErrors.Add(new ParseErrorData(param.Stop, ErrorCode.ERR_AttributesInLocalFuncDecl));
+                    }
+                }
+            }
+        }
+
         public override void ExitFuncproc([NotNull] XSharpParser.FuncprocContext context)
         {
             if (context.InitExit != null)
@@ -172,7 +216,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 var endToken = context.T2 as XSharpToken;
                 if (endToken != null && endToken.Type != context.T.Type)
                 {
-                    _parseErrors.Add(new ParseErrorData(endToken, ErrorCode.ERR_UnexpectedToken, endToken.Text));
+                    _parseErrors.Add(new ParseErrorData(endToken, ErrorCode.ERR_UnExpectedExpected, endToken.Text, context.T.Text));
                 }
             }
         }
@@ -631,7 +675,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 var text = context.CharSet.Text.ToUpper();
                 if (text != "AUTO" && text != "ANSI" && text != "UNICODE")
                 {
-                    _parseErrors.Add(new ParseErrorData(context, ErrorCode.ERR_UnexpectedToken, context.CharSet.Text));
+                    _parseErrors.Add(new ParseErrorData(context, ErrorCode.ERR_UnExpectedExpected, context.CharSet.Text, "AUTO', 'ANSI' or 'UNICODE"));
                 }
             }
         }

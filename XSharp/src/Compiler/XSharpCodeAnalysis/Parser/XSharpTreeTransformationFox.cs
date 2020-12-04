@@ -244,7 +244,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         public override void ExitFoxclassvars([NotNull] XP.FoxclassvarsContext context)
         {
-            var varType = context.DataType?.Get<TypeSyntax>() ?? _getMissingType();
+            var varType = getDataType(context.DataType);
             varType.XVoDecl = true;
             var list = new List<MemberDeclarationSyntax>();
             foreach (var varCtx in context._Vars)
@@ -309,7 +309,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             idName = SyntaxFactory.MakeIdentifier(mName);
             bool isAccessAssign = this.isAccessAssign(context.RealType);
-            var attributes = context.Attributes?.GetList<AttributeListSyntax>() ?? EmptyList<AttributeListSyntax>();
+            var attributes = getAttributes(context.Attributes);
             bool hasExtensionAttribute = false;
             if (isAccessAssign)
             {
@@ -338,9 +338,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 mods = m1.ToList<SyntaxToken>();
                 _pool.Free(m1);
             }
-            var parameters = context.ParamList?.Get<ParameterListSyntax>() ?? EmptyParameterList();
-            var body = hasNoBody ? null : context.StmtBlk.Get<BlockSyntax>();
-            body = this.AddLocalFunctions(body, context.LocalFunctions);
+            var parameters = getParameters(context.ParamList);
+            var body = hasNoBody ? null : processEntityBody(context);
 
             var returntype = context.Type?.Get<TypeSyntax>();
             if (returntype == null)
@@ -381,9 +380,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 returnType: returntype,
                 explicitInterfaceSpecifier: null ,
                 identifier: idName,
-                typeParameterList: context.TypeParameters?.Get<TypeParameterListSyntax>(),
+                typeParameterList: getTypeParameters(context.TypeParameters),
                 parameterList: parameters,
-                constraintClauses: MakeList<TypeParameterConstraintClauseSyntax>(context._ConstraintsClauses),
+                constraintClauses: getTypeConstraints(context._ConstraintsClauses),
                 body: body,
                 expressionBody: null, // TODO: (grammar) expressionBody methods
                 semicolonToken: (!hasNoBody && context.StmtBlk != null) ? null : SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken));
@@ -527,13 +526,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 members.Add(ctor);
             }
             MemberDeclarationSyntax m = _syntaxFactory.ClassDeclaration(
-                attributeLists: context.Attributes?.GetList<AttributeListSyntax>() ?? EmptyList<AttributeListSyntax>(),
+                attributeLists: getAttributes(context.Attributes),
                 modifiers: mods,
                 keyword: SyntaxFactory.MakeToken(SyntaxKind.ClassKeyword),
                 identifier: context.Id.Get<SyntaxToken>(),
-                typeParameterList: context.TypeParameters?.Get<TypeParameterListSyntax>(),
+                typeParameterList: getTypeParameters(context.TypeParameters),
                 baseList: _syntaxFactory.BaseList(SyntaxFactory.MakeToken(SyntaxKind.ColonToken), baseTypes),
-                constraintClauses: MakeList<TypeParameterConstraintClauseSyntax>(context._ConstraintsClauses),
+                constraintClauses: getTypeConstraints(context._ConstraintsClauses),
                 openBraceToken: SyntaxFactory.MakeToken(SyntaxKind.OpenBraceToken),
                 members: members,
                 closeBraceToken: SyntaxFactory.MakeToken(SyntaxKind.CloseBraceToken),
@@ -951,7 +950,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         public override void ExitFoxdllparam([NotNull] XP.FoxdllparamContext context)
         {
 
-            var attributeList = context.Attributes?.GetList<AttributeListSyntax>() ?? EmptyList<AttributeListSyntax>();
+            var attributeList = getAttributes(context.Attributes);
             TypeSyntax type = foxdllGetType(context.Type);  // handle integer, single, double etc.
             var modifiers = EmptyList<SyntaxToken>();
 

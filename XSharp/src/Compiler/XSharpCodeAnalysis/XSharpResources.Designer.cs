@@ -10313,6 +10313,15 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Unexpected token &apos;{0}&apos;, expected &apos;{1}&apos;..
+        /// </summary>
+        internal static string ERR_UnExpectedExpected {
+            get {
+                return ResourceManager.GetString("ERR_UnExpectedExpected", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Unexpected use of a generic name.
         /// </summary>
         internal static string ERR_UnexpectedGenericName {

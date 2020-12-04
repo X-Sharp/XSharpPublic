@@ -195,6 +195,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         }
         #endregion
 
+        #region Global ClassNames
         public static string GlobalFunctionClassName(XSharpTargetDLL targetDLL)
         {
             string className;
@@ -233,6 +234,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
             return GlobalFunctionClassName(targetDLL);
         }
+        #endregion
 
         #region Construction and destruction
         public XSharpTreeTransformationCore(XSharpParser parser, CSharpParseOptions options, SyntaxListPool pool,
@@ -1019,6 +1021,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         #region Code Generation Helpers
 
+
         protected ArrayRankSpecifierSyntax MakeArrayRankSpecifier(int ranks)
         {
             var sizes = _pool.AllocateSeparated<ExpressionSyntax>();
@@ -1196,9 +1199,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             var decl = _syntaxFactory.VariableDeclaration(type,
                         MakeSeparatedList<VariableDeclaratorSyntax>(GenerateVariable(name, initexpr)));
             decl.XGenerated = true;
-            var result = _syntaxFactory.LocalDeclarationStatement(
-                        TokenList(), decl,
-                        SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken));
+            var result = _syntaxFactory.LocalDeclarationStatement(TokenList(), decl,SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken));
             result.XGenerated = true;
             return result;
         }
@@ -1618,7 +1619,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             if (Access)
             {
                 suffix = XSharpSpecialNames.AccessSuffix;
-                returntype = context.Type?.Get<TypeSyntax>() ?? _getMissingType();
+                returntype = getReturnType(context);
             }
             else
             {
@@ -1626,7 +1627,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 returntype = voidType;
             }
             var name = SyntaxFactory.Identifier(context.Id.GetText() + suffix);
-            var parameters = context.ParamList?.Get<ParameterListSyntax>() ?? EmptyParameterList();
+            var parameters = getParameters(context.ParamList);
             SyntaxList<SyntaxToken> mods;
             if (Static)
                 mods = TokenList(SyntaxKind.PrivateKeyword, SyntaxKind.StaticKeyword);
@@ -1641,9 +1642,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                  returnType: returntype,
                  explicitInterfaceSpecifier: null,
                  identifier: name,
-                 typeParameterList: context.TypeParameters?.Get<TypeParameterListSyntax>(),
+                 typeParameterList: getTypeParameters(context.TypeParameters),
                  parameterList: parameters,
-                 constraintClauses: MakeList<TypeParameterConstraintClauseSyntax>(context._ConstraintsClauses),
+                 constraintClauses: getTypeConstraints(context._ConstraintsClauses),
                  body: body,
                  expressionBody: null, // TODO: (grammar) expressionBody methods
                  semicolonToken: SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)
@@ -1808,16 +1809,16 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             var typeMatch = true;
             if (AssMet != null && AssMet.ParamList != null && AssMet.ParamList._Params?.Count > 0)
             {
-                voPropType = AssMet.ParamList._Params[0].Type?.Get<TypeSyntax>() ?? _getMissingType();
+                voPropType = getDataType(AssMet.ParamList._Params[0].Type);
                 if (AccMet != null)
                 {
-                    var accType = AccMet.Type?.Get<TypeSyntax>() ?? _getMissingType();
+                    var accType = getReturnType(AccMet);
                     typeMatch = IsTypeEqual(voPropType, accType);
                 }
             }
             else if (AccMet != null)
             {
-                voPropType = AccMet.Type?.Get<TypeSyntax>() ?? _getMissingType();
+                voPropType = getReturnType(AccMet);
             }
             else
             {
@@ -1897,8 +1898,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         {
                             var name1 = AccMet.ParamList._Params[iParam].Id.GetText();
                             var name2 = AssMet.ParamList._Params[iParam + 1].Id.GetText();
-                            var type1 = AccMet.ParamList._Params[iParam].Type?.Get<TypeSyntax>() ?? _getMissingType();
-                            var type2 = AssMet.ParamList._Params[iParam + 1].Type?.Get<TypeSyntax>() ?? _getMissingType();
+                            var type1 = getDataType(AccMet.ParamList._Params[iParam].Type);
+                            var type2 = getDataType(AssMet.ParamList._Params[iParam + 1].Type);
                             if (XSharpString.Compare(name1, name2) != 0
                                 || !IsTypeEqual(type1, type2))
                             {
@@ -2389,6 +2390,68 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
 
         }
+        protected BlockSyntax processEntityBody(XP.IEntityWithBodyContext entity)
+        {
+            if (entity.Statements == null)
+                return null;
+            entity.Statements.SetSequencePoint();
+            var body = entity.Statements.Get<BlockSyntax>();
+            if (entity is XP.IBodyWithLocalFunctions iblf)
+            {
+                if (iblf.LocalFunctions?.Count > 0)
+                {
+                    var stmts = _pool.Allocate<StatementSyntax>();
+                    stmts.AddRange(body.Statements);
+                    foreach (LocalFunctionStatementSyntax local in iblf.LocalFunctions)
+                    {
+                        stmts.Add(local);
+                    }
+                    var newbody = body.Update(body.OpenBraceToken, stmts, body.CloseBraceToken);
+                    _pool.Free(stmts);
+
+                    if (body.XNode != null)
+                    {
+                        body.XNode.Put(newbody);
+                    }
+                    body = newbody;
+                }
+            }
+            return body;
+        }
+
+
+        protected ParameterListSyntax getParameters(XP.ParameterListContext context)
+        {
+            return context?.Get<ParameterListSyntax>() ?? EmptyParameterList();
+        }
+        protected SyntaxList<AttributeListSyntax> getAttributes (XP.AttributesContext attributes)
+        {
+            return attributes?.GetList<AttributeListSyntax>() ?? EmptyList<AttributeListSyntax>();
+        }
+
+
+        protected TypeParameterListSyntax getTypeParameters(XP.TypeparametersContext context)
+        {
+            if (context != null)
+                return context.Get<TypeParameterListSyntax>();
+            return null;
+
+        }
+        protected SyntaxList<TypeParameterConstraintClauseSyntax>  getTypeConstraints(IList<XP.TypeparameterconstraintsclauseContext> context)
+        {
+            return MakeList<TypeParameterConstraintClauseSyntax>(context);
+        }
+
+        protected TypeSyntax getDataType(XP.DatatypeContext context)
+        {
+            if (context != null)
+                return context.Get<TypeSyntax>();
+            return _getMissingType();
+        }
+        protected TypeSyntax getReturnType(XP.IEntityContext context)
+        {
+            return getDataType(context.ReturnType);
+        }
         protected void finishCompilationUnit(SyntaxListBuilder<MemberDeclarationSyntax> globalTypes)
         {
             FinalizeGlobalEntities();
@@ -2402,14 +2465,16 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
             if (!string.IsNullOrEmpty(_options.DefaultNamespace))
             {
-                GlobalEntities.Members.Add(_syntaxFactory.NamespaceDeclaration(SyntaxFactory.MakeToken(SyntaxKind.NamespaceKeyword),
-                    name: GenerateQualifiedName(_options.DefaultNamespace),
-                    openBraceToken: SyntaxFactory.MakeToken(SyntaxKind.OpenBraceToken),
-                    externs: MakeList<ExternAliasDirectiveSyntax>(),
-                    usings: MakeList<UsingDirectiveSyntax>(),
-                    members: globalTypes,
-                    closeBraceToken: SyntaxFactory.MakeToken(SyntaxKind.CloseBraceToken),
-                    semicolonToken: SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)));
+                GlobalEntities.Members.Add(
+                    _syntaxFactory.NamespaceDeclaration(SyntaxFactory.MakeToken(SyntaxKind.NamespaceKeyword),
+                        name: GenerateQualifiedName(_options.DefaultNamespace),
+                        openBraceToken: SyntaxFactory.MakeToken(SyntaxKind.OpenBraceToken),
+                        externs: MakeList<ExternAliasDirectiveSyntax>(),
+                        usings: MakeList<UsingDirectiveSyntax>(),
+                        members: globalTypes,
+                        closeBraceToken: SyntaxFactory.MakeToken(SyntaxKind.CloseBraceToken),
+                        semicolonToken: SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken))
+                    );
 
                 AddUsingWhenMissing(GlobalEntities.Usings, _options.DefaultNamespace, false, null);
             }
@@ -2697,7 +2762,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             _exitEntity(context);
         }
         #endregion
-        #region Types
+        
 
         #region User Defined Types
         public override void EnterInterface_([NotNull] XP.Interface_Context context)
@@ -2741,13 +2806,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 baseTypes.Add(_syntaxFactory.SimpleBaseType(pCtx.Get<TypeSyntax>()));
             }
             MemberDeclarationSyntax m = _syntaxFactory.InterfaceDeclaration(
-                attributeLists: context.Attributes?.GetList<AttributeListSyntax>() ?? EmptyList<AttributeListSyntax>(),
+                attributeLists: getAttributes(context.Attributes),
                 modifiers: mods,
                 keyword: SyntaxFactory.MakeToken(SyntaxKind.InterfaceKeyword),
                 identifier: context.Id.Get<SyntaxToken>(),
-                typeParameterList: context.TypeParameters?.Get<TypeParameterListSyntax>(),
+                typeParameterList: getTypeParameters(context.TypeParameters),
                 baseList: _syntaxFactory.BaseList(SyntaxFactory.MakeToken(SyntaxKind.ColonToken), baseTypes),
-                constraintClauses: MakeList<TypeParameterConstraintClauseSyntax>(context._ConstraintsClauses),
+                constraintClauses: getTypeConstraints(context._ConstraintsClauses),
                 openBraceToken: SyntaxFactory.MakeToken(SyntaxKind.OpenBraceToken),
                 members: members,
                 closeBraceToken: SyntaxFactory.MakeToken(SyntaxKind.CloseBraceToken),
@@ -2827,13 +2892,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
 
             MemberDeclarationSyntax m = _syntaxFactory.ClassDeclaration(
-                attributeLists: context.Attributes?.GetList<AttributeListSyntax>() ?? EmptyList<AttributeListSyntax>(),
+                attributeLists: getAttributes(context.Attributes),
                 modifiers: mods,
                 keyword: SyntaxFactory.MakeToken(SyntaxKind.ClassKeyword),
                 identifier: context.Id.Get<SyntaxToken>(),
-                typeParameterList: context.TypeParameters?.Get<TypeParameterListSyntax>(),
+                typeParameterList: getTypeParameters(context.TypeParameters),
                 baseList: _syntaxFactory.BaseList(SyntaxFactory.MakeToken(SyntaxKind.ColonToken), baseTypes),
-                constraintClauses: MakeList<TypeParameterConstraintClauseSyntax>(context._ConstraintsClauses),
+                constraintClauses: getTypeConstraints(context._ConstraintsClauses),
                 openBraceToken: SyntaxFactory.MakeToken(SyntaxKind.OpenBraceToken),
                 members: members,
                 closeBraceToken: SyntaxFactory.MakeToken(SyntaxKind.CloseBraceToken),
@@ -2898,13 +2963,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
 
             MemberDeclarationSyntax m = _syntaxFactory.StructDeclaration(
-                attributeLists: context.Attributes?.GetList<AttributeListSyntax>() ?? EmptyList<AttributeListSyntax>(),
+                attributeLists: getAttributes(context.Attributes),
                 modifiers: mods,
                 keyword: SyntaxFactory.MakeToken(SyntaxKind.StructKeyword),
                 identifier: context.Id.Get<SyntaxToken>(),
-                typeParameterList: context.TypeParameters?.Get<TypeParameterListSyntax>(),
+                typeParameterList: getTypeParameters(context.TypeParameters),
                 baseList: _syntaxFactory.BaseList(SyntaxFactory.MakeToken(SyntaxKind.ColonToken), baseTypes),
-                constraintClauses: MakeList<TypeParameterConstraintClauseSyntax>(context._ConstraintsClauses),
+                constraintClauses: getTypeConstraints(context._ConstraintsClauses),
                 openBraceToken: SyntaxFactory.MakeToken(SyntaxKind.OpenBraceToken),
                 members: members,
                 closeBraceToken: SyntaxFactory.MakeToken(SyntaxKind.CloseBraceToken),
@@ -2930,14 +2995,14 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
             context.SetSequencePoint(context.D, context.e);
             MemberDeclarationSyntax m = _syntaxFactory.DelegateDeclaration(
-                attributeLists: context.Attributes?.GetList<AttributeListSyntax>() ?? EmptyList<AttributeListSyntax>(),
+                attributeLists: getAttributes(context.Attributes),
                 modifiers: context.Modifiers?.GetList<SyntaxToken>() ?? TokenListWithDefaultVisibility(),
                 delegateKeyword: SyntaxFactory.MakeToken(SyntaxKind.DelegateKeyword),
-                returnType: context.Type?.Get<TypeSyntax>() ?? MissingType(),
+                returnType: getReturnType(context),
                 identifier: context.Id.Get<SyntaxToken>(),
-                typeParameterList: context.TypeParameters?.Get<TypeParameterListSyntax>(),
-                parameterList: context.ParamList?.Get<ParameterListSyntax>() ?? EmptyParameterList(),
-                constraintClauses: MakeList<TypeParameterConstraintClauseSyntax>(context._ConstraintsClauses),
+                typeParameterList: getTypeParameters(context.TypeParameters),
+                parameterList: getParameters(context.ParamList),
+                constraintClauses: getTypeConstraints(context._ConstraintsClauses),
                 semicolonToken: SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken));
             if (context.Namespace != null)
             {
@@ -2965,7 +3030,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
             }
             MemberDeclarationSyntax m = _syntaxFactory.EnumDeclaration(
-                attributeLists: context.Attributes?.GetList<AttributeListSyntax>() ?? EmptyList<AttributeListSyntax>(),
+                attributeLists: getAttributes(context.Attributes),
                 modifiers: context.Modifiers?.GetList<SyntaxToken>() ?? TokenListWithDefaultVisibility(),
                 enumKeyword: SyntaxFactory.MakeToken(SyntaxKind.EnumKeyword),
                 identifier: context.Id.Get<SyntaxToken>(),
@@ -2985,14 +3050,14 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         public override void ExitEnummember([NotNull] XP.EnummemberContext context)
         {
             context.Put(_syntaxFactory.EnumMemberDeclaration(
-                attributeLists: context.Attributes?.GetList<AttributeListSyntax>() ?? EmptyList<AttributeListSyntax>(),
+                attributeLists: getAttributes(context.Attributes),
                 identifier: context.Id.Get<SyntaxToken>(),
                 equalsValue: context.Expr == null ? null : _syntaxFactory.EqualsValueClause(SyntaxFactory.MakeToken(SyntaxKind.EqualsToken),
                     context.Expr.Get<ExpressionSyntax>())));
         }
 
         #endregion
-
+        
         #region Events
         public override void ExitEvent_([NotNull] XP.Event_Context context)
         {
@@ -3002,8 +3067,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             else
                 context.SetSequencePoint(context.E, context.end);
 
-            var attrLists = context.Attributes?.GetList<AttributeListSyntax>() ?? EmptyList<AttributeListSyntax>();
-            var type_ = context.Type?.Get<TypeSyntax>() ?? MissingType();
+            var attrLists = getAttributes(context.Attributes);
+            var type_ = getReturnType(context);
             var singleLine = context._LineAccessors != null && context._LineAccessors.Count > 0;
             var multiLine = context.Multi != null && context._Accessors.Count > 0;
             ExplicitInterfaceSpecifierSyntax explif = null;
@@ -3075,7 +3140,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         _syntaxFactory.FieldDeclaration(
                             EmptyList<AttributeListSyntax>(),
                             TokenList(SyntaxKind.StaticKeyword, SyntaxKind.InternalKeyword),
-                            _syntaxFactory.VariableDeclaration(context.Type?.Get<TypeSyntax>() ?? MissingType(),
+                            _syntaxFactory.VariableDeclaration(getReturnType(context),
                                 MakeSeparatedList(GenerateVariable(evtFldName))),
                             SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken))
                         );
@@ -3123,11 +3188,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 else
                 {
                     context.Put(_syntaxFactory.EventFieldDeclaration(
-                        attributeLists: context.Attributes?.GetList<AttributeListSyntax>() ?? EmptyList<AttributeListSyntax>(),
+                        attributeLists: getAttributes(context.Attributes),
                         modifiers: context.Modifiers?.GetList<SyntaxToken>() ?? DefaultMethodModifiers(context.isInInterface(), context.isInStructure()),
                         eventKeyword: context.E.SyntaxKeyword(),
                         declaration: _syntaxFactory.VariableDeclaration(
-                            context.Type?.Get<TypeSyntax>() ?? MissingType(),
+                            getReturnType(context),
                             MakeSeparatedList<VariableDeclaratorSyntax>(
                                 GenerateVariable(context.Id.Get<SyntaxToken>()))),
                         semicolonToken: SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)));
@@ -3141,7 +3206,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 context.ExprList.SetSequencePoint();
                 context.Put(_syntaxFactory.AccessorDeclaration(context.Key.AccessorKind(),
-                attributeLists: context.Attributes?.GetList<AttributeListSyntax>() ?? EmptyList<AttributeListSyntax>(),
+                attributeLists: getAttributes(context.Attributes),
                 modifiers: context.Modifiers?.GetList<SyntaxToken>() ?? EmptyList<SyntaxToken>(),
                 keyword: context.Key.SyntaxKeyword(),
                 body: MakeBlock(context.ExprList?.GetList<StatementSyntax>() ?? EmptyList<StatementSyntax>()),
@@ -3155,11 +3220,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         }
         public override void ExitEventAccessor([NotNull] XP.EventAccessorContext context)
         {
-            context.StmtBlk.SetSequencePoint();
-            var body = context.StmtBlk.Get<BlockSyntax>();
-            body = AddLocalFunctions(body, context.LocalFunctions);
+            var body = processEntityBody(context);
             context.Put(_syntaxFactory.AccessorDeclaration(context.Key.AccessorKind(),
-                attributeLists: context.Attributes?.GetList<AttributeListSyntax>() ?? EmptyList<AttributeListSyntax>(),
+                attributeLists: getAttributes(context.Attributes),
                 modifiers: context.Modifiers?.GetList<SyntaxToken>() ?? EmptyList<SyntaxToken>(),
                 keyword: context.Key.SyntaxKeyword(),
                 body: body,
@@ -3183,7 +3246,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         public override void ExitClassvars([NotNull] XP.ClassvarsContext context)
         {
             var varList = _pool.AllocateSeparated<VariableDeclaratorSyntax>();
-            var varType = context.Vars?.DataType?.Get<TypeSyntax>() ?? _getMissingType();
+            var varType = getDataType(context.Vars?.DataType);
             bool isFixed = context.Modifiers?._FIXED != null;
             varType.XVoDecl = true;
             if (context.Vars?.As?.Type == XP.IS)
@@ -3198,7 +3261,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     if (isFixed)
                     {
                         ClassEntities.Peek().Members.Add(_syntaxFactory.FieldDeclaration(
-                            attributeLists: context.Attributes?.GetList<AttributeListSyntax>() ?? EmptyList<AttributeListSyntax>(),
+                            attributeLists: getAttributes(context.Attributes),
                             modifiers: context.Modifiers?.GetList<SyntaxToken>() ?? TokenListWithDefaultVisibility(),
                             declaration: _syntaxFactory.VariableDeclaration(
                                 type: varType,
@@ -3208,7 +3271,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     else
                     {
                         ClassEntities.Peek().Members.Add(_syntaxFactory.FieldDeclaration(
-                            attributeLists: context.Attributes?.GetList<AttributeListSyntax>() ?? EmptyList<AttributeListSyntax>(),
+                            attributeLists: getAttributes(context.Attributes),
                             modifiers: context.Modifiers?.GetList<SyntaxToken>() ?? TokenListWithDefaultVisibility(),
                             declaration: _syntaxFactory.VariableDeclaration(
                                 type: _syntaxFactory.ArrayType(varType, MakeArrayRankSpecifier(varCtx.ArraySub._ArrayIndex.Count)),
@@ -3228,7 +3291,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 var decl = _syntaxFactory.VariableDeclaration(
                         type: varType,
                         variables: varList);
-                var attributeList = context.Attributes?.GetList<AttributeListSyntax>() ?? EmptyList<AttributeListSyntax>();
+                var attributeList = getAttributes(context.Attributes);
                 if (_options.HasRuntime)
                 {
 
@@ -3292,7 +3355,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             var initExpr = context.Initializer?.Get<ExpressionSyntax>();
             bool isFixed = (context.Parent.Parent as XP.ClassvarsContext)?.Modifiers?._FIXED != null;
             var dataType = ((XP.ClassVarListContext)context.Parent).DataType;
-            var varType = dataType?.Get<TypeSyntax>() ?? _getMissingType();
+            var varType = getDataType(dataType);
 
             if (isDim)
             {
@@ -3359,9 +3422,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 _pool.Free(m);
             }
             var isExtern = mods.Any((int) SyntaxKind.ExternKeyword);
-            var type = context.Type?.Get<TypeSyntax>() ?? _getMissingType();
+            var type = getReturnType(context);
             type.XVoDecl = true;
-            var atts = context.Attributes?.GetList<AttributeListSyntax>() ?? EmptyList<AttributeListSyntax>();
+            var atts = getAttributes(context.Attributes);
             var id = context.Id.Get<SyntaxToken>();
             // check for a property with a just a set accessor and no get accessor
             // when its body is empty then we cannot generate a property so we have to add
@@ -3530,7 +3593,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         public override void ExitPropertyAutoAccessor([NotNull] XP.PropertyAutoAccessorContext context)
         {
             context.Put(_syntaxFactory.AccessorDeclaration(context.Key.AccessorKind(),
-                attributeLists: context.Attributes?.GetList<AttributeListSyntax>() ?? EmptyList<AttributeListSyntax>(),
+                attributeLists: getAttributes(context.Attributes),
                 modifiers: context.Modifiers?.GetList<SyntaxToken>() ?? EmptyList<SyntaxToken>(),
                 keyword: context.Key.SyntaxKeyword(),
                 body: null,
@@ -3564,7 +3627,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 context.Expr.SetSequencePoint();
             }
-            var attList = context.Attributes?.GetList<AttributeListSyntax>() ?? EmptyList<AttributeListSyntax>();
+            var attList = getAttributes(context.Attributes);
             var mods = context.Modifiers?.GetList<SyntaxToken>() ?? EmptyList<SyntaxToken>();
             var key = context.Key.SyntaxKeyword();
             var kind = context.Key.AccessorKind();
@@ -3672,10 +3735,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         public override void ExitConstructor([NotNull] XP.ConstructorContext context)
         {
             context.SetSequencePoint(context.end);
-            var attributes = context.Attributes?.GetList<AttributeListSyntax>() ?? EmptyList<AttributeListSyntax>();
-            var parameters = context.ParamList?.Get<ParameterListSyntax>() ?? EmptyParameterList();
-            var body = context.StmtBlk?.Get<BlockSyntax>();
-            body = this.AddLocalFunctions(body, context.LocalFunctions);
+            var attributes = getAttributes(context.Attributes);
+            var parameters = getParameters(context.ParamList);
+            var body = processEntityBody(context);
             var mods = context.Modifiers?.GetList<SyntaxToken>() ?? TokenListWithDefaultVisibility();
             TypeSyntax returntype = null;
             ImplementClipperAndPSZ(context, ref attributes, ref parameters, ref body, ref returntype);
@@ -3745,10 +3807,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 parentId = SyntaxFactory.MakeIdentifier("unknown");
                 missingParent = true;
             }
-            var body = context.StmtBlk.Get<BlockSyntax>();
-            body = this.AddLocalFunctions(body, context.LocalFunctions);
+            var body = processEntityBody(context);
             var dtor = _syntaxFactory.DestructorDeclaration(
-                attributeLists: context.Attributes?.GetList<AttributeListSyntax>() ?? EmptyList<AttributeListSyntax>(),
+                attributeLists: getAttributes(context.Attributes),
                 modifiers: context.Modifiers?.GetList<SyntaxToken>() ?? EmptyList<SyntaxToken>(),
                 tildeToken: SyntaxFactory.MakeToken(SyntaxKind.TildeToken),
                 identifier: parentId,
@@ -3780,10 +3841,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         public override void ExitPropertyAccessor([NotNull] XP.PropertyAccessorContext context)
         {
             context.SetSequencePoint(context.end);
-            var attributes = context.Attributes?.GetList<AttributeListSyntax>() ?? EmptyList<AttributeListSyntax>();
+            var attributes = getAttributes(context.Attributes);
             ParameterListSyntax parameters = null;
-            var body = context.StmtBlk.Get<BlockSyntax>();
-            body = this.AddLocalFunctions(body, context.LocalFunctions);
+            var body = processEntityBody(context);
             TypeSyntax returntype = null;
             ImplementClipperAndPSZ(context, ref attributes, ref parameters, ref body, ref returntype);
 
@@ -3914,7 +3974,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 idName = SyntaxFactory.MakeIdentifier(mName);
             }
             bool isAccessAssign = this.isAccessAssign(context.RealType);
-            var attributes = context.Attributes?.GetList<AttributeListSyntax>() ?? EmptyList<AttributeListSyntax>();
+            var attributes = getAttributes(context.Attributes);
             bool hasExtensionAttribute = false;
             if (isAccessAssign)
             {
@@ -3948,7 +4008,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                             ExitParameter(par);
                             ExitParameterList(context.ParamList);
                             removeAttribute(context.Attributes, "Extension");
-                            attributes = context.Attributes.GetList<AttributeListSyntax>();
+                            attributes = getAttributes(context.Attributes);
                         }
                     }
 
@@ -3991,12 +4051,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 mods = m1.ToList<SyntaxToken>();
                 _pool.Free(m1);
             }
-            var parameters = context.ParamList?.Get<ParameterListSyntax>() ?? EmptyParameterList();
+            var parameters = getParameters(context.ParamList);
             if (isExtern)
             {
                 parameters = UpdateVODLLParameters(parameters);
             }
-            var body = hasNoBody ? null : context.StmtBlk.Get<BlockSyntax>();
+
+            var body = hasNoBody ? null : processEntityBody(context);
             var returntype = context.Type?.Get<TypeSyntax>();
             if (returntype == null)
             {
@@ -4016,7 +4077,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             var oldbody = body;
             ImplementClipperAndPSZ(context, ref attributes, ref parameters, ref body, ref returntype);
-            body = this.AddLocalFunctions(body, context.LocalFunctions);
             if (body != oldbody)
             {
                 context.StmtBlk.Put(body);
@@ -4039,9 +4099,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     name: context.ExplicitIface.Get<NameSyntax>(),
                     dotToken: SyntaxFactory.MakeToken(SyntaxKind.DotToken)),
                 identifier: idName,
-                typeParameterList: context.TypeParameters?.Get<TypeParameterListSyntax>(),
+                typeParameterList: getTypeParameters(context.TypeParameters),
                 parameterList: parameters,
-                constraintClauses: MakeList<TypeParameterConstraintClauseSyntax>(context._ConstraintsClauses),
+                constraintClauses: getTypeConstraints(context._ConstraintsClauses),
                 body: body,
                 expressionBody: null, // TODO: (grammar) expressionBody methods
                 semicolonToken: (!hasNoBody && context.StmtBlk != null) ? null : SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken));
@@ -4141,17 +4201,15 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         public override void ExitOperator_([NotNull] XP.Operator_Context context)
         {
             context.SetSequencePoint(context.end);
-            var body = context.StmtBlk.Get<BlockSyntax>();
-            body = this.AddLocalFunctions(body, context.LocalFunctions);
-
+            var body = processEntityBody(context);
             if (context.Conversion != null)
                 context.Put(_syntaxFactory.ConversionOperatorDeclaration(
-                    attributeLists: context.Attributes?.GetList<AttributeListSyntax>() ?? EmptyList<AttributeListSyntax>(),
+                    attributeLists: getAttributes(context.Attributes),
                     modifiers: context.Modifiers?.GetList<SyntaxToken>() ?? TokenListWithDefaultVisibility(false, SyntaxKind.StaticKeyword),
                     implicitOrExplicitKeyword: context.Conversion.Get<SyntaxToken>(),
                     operatorKeyword: SyntaxFactory.MakeToken(SyntaxKind.OperatorKeyword),
-                    type: context.Type?.Get<TypeSyntax>() ?? MissingType(),
-                    parameterList: context.ParamList?.Get<ParameterListSyntax>() ?? EmptyParameterList(),
+                    type: getReturnType(context),
+                    parameterList: getParameters(context.ParamList),
                     body: body,
                     expressionBody: null, // TODO: (grammar) expressionBody methods
                     semicolonToken: (context.StmtBlk != null) ? null : SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)));
@@ -4175,12 +4233,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     opToken = context.Operation.Token.SyntaxPrefixOp();
                 }
                 context.Put(_syntaxFactory.OperatorDeclaration(
-                    attributeLists: context.Attributes?.GetList<AttributeListSyntax>() ?? EmptyList<AttributeListSyntax>(),
+                    attributeLists: getAttributes(context.Attributes),
                     modifiers: context.Modifiers?.GetList<SyntaxToken>() ?? TokenListWithDefaultVisibility(false, SyntaxKind.StaticKeyword),
-                    returnType: context.Type?.Get<TypeSyntax>() ?? MissingType(),
+                    returnType: getReturnType(context),
                     operatorKeyword: SyntaxFactory.MakeToken(SyntaxKind.OperatorKeyword),
                     operatorToken: opToken,
-                    parameterList: context.ParamList?.Get<ParameterListSyntax>() ?? EmptyParameterList(),
+                    parameterList: getParameters(context.ParamList),
                     body: body,
                     expressionBody: null, // TODO: (grammar) expressionBody methods
                     semicolonToken: (context.StmtBlk != null) ? null : SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)));
@@ -4249,7 +4307,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         public override void ExitTypeparameter([NotNull] XP.TypeparameterContext context)
         {
             context.Put(_syntaxFactory.TypeParameter(
-                attributeLists: context.Attributes?.GetList<AttributeListSyntax>() ?? EmptyList<AttributeListSyntax>(),
+                attributeLists: getAttributes(context.Attributes),
                 varianceKeyword: context.VarianceKeyword?.SyntaxKeyword(),
                 identifier: context.Id.Get<SyntaxToken>()));
         }
@@ -4608,7 +4666,524 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         #endregion  
 
-        #region VO Compatible GLobal types and fields
+        #region Local Functions
+        public override void EnterLocalfuncproc([NotNull] XP.LocalfuncprocContext context)
+        {
+            if (context.T != null && context.T.Type == XP.PROCEDURE)
+            {
+                context.Data.MustBeVoid = true;
+            }
+        }
+        public override void ExitLocalfuncproc([NotNull] XP.LocalfuncprocContext context)
+        {
+            if (context.T != null && context.end != null)
+            {
+                context.SetSequencePoint(context.T, context.end.Stop);
+            }
+            var isprocedure = context.T != null && context.T.Type == XP.PROCEDURE;
+            SyntaxListBuilder modifiers = _pool.Allocate();
+            modifiers.Add(SyntaxFactory.MakeToken(SyntaxKind.PrivateKeyword));
+            if (context.Modifiers != null)
+            {
+                var list = context.Modifiers.GetList<SyntaxToken>();
+                modifiers.AddRange(list);
+            }
+            var mods = modifiers.ToList();
+            var parameters = getParameters(context.ParamList);
+            var body = processEntityBody(context);
+            var returntype = isprocedure ? voidType : context.Type.Get<TypeSyntax>();
+            returntype.XVoDecl = true;
+            var id = context.Id.Get<SyntaxToken>();
+            var attributes = EmptyList<AttributeListSyntax>();
+            ImplementClipperAndPSZ(context, ref attributes, ref parameters, ref body, ref returntype);
+            if (!isprocedure)
+            {
+                body = AddMissingReturnStatement(body, context.StmtBlk, returntype);
+            }
+            var localfuncdecl = _syntaxFactory.LocalFunctionStatement(
+                modifiers: mods,
+                returnType: returntype,
+                identifier: id,
+                typeParameterList: getTypeParameters(context.TypeParameters),
+                parameterList: parameters,
+                constraintClauses: getTypeConstraints(context._ConstraintsClauses),
+                body: body,
+                expressionBody: null,
+                semicolonToken: SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken));
+            context.Put(localfuncdecl);
+        }
+ 
+
+        // This is actually a statement rule but it logically belongs to the local functions
+        public override void ExitLocalFunctionStmt([NotNull] XP.LocalFunctionStmtContext context)
+        {
+            context.Put(context.Decl.Get<StatementSyntax>());
+        }
+
+
+        #endregion
+        #region Parameters
+        private static ParameterListSyntax _emptyParameterList = null;
+        protected ParameterListSyntax EmptyParameterList()
+        {
+            if (_emptyParameterList == null)
+            {
+                lock (gate)
+                {
+                    if (_emptyParameterList == null)
+                    {
+
+                        _emptyParameterList = _syntaxFactory.ParameterList(
+                            SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
+                            EmptySeparatedList<ParameterSyntax>(),
+                            SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken));
+                    }
+                }
+
+            }
+            return _emptyParameterList;
+        }
+
+        protected ParameterListSyntax MakeParameterList (IList<ParameterSyntax> parameters)
+        {
+            if (parameters == null || parameters.Count == 0)
+                return EmptyParameterList();
+            var @params = _pool.AllocateSeparated<ParameterSyntax>();
+            foreach (var param in parameters)
+            {
+                if (@params.Count > 0)
+                    @params.AddSeparator(SyntaxFactory.MakeToken(SyntaxKind.CommaToken));
+                @params.Add(param);
+            }
+            var result = _syntaxFactory.ParameterList(
+                SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
+                @params,
+                SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken));
+            _pool.Free(@params);
+            return result;
+        }
+
+        public override void EnterParameterList([NotNull] XP.ParameterListContext context)
+        {
+            if (context._Params?.Count > 0)
+            {
+                CurrentEntity.Data.HasFormalParameters = true;
+            }
+        }
+        public override void ExitParameterList([NotNull] XP.ParameterListContext context)
+        {
+            var @params = _pool.AllocateSeparated<ParameterSyntax>();
+            foreach (var paramCtx in context._Params)
+            {
+                if (@params.Count > 0)
+                    @params.AddSeparator(SyntaxFactory.MakeToken(SyntaxKind.CommaToken));
+                @params.Add(paramCtx.Get<ParameterSyntax>());
+            }
+            context.Put(_syntaxFactory.ParameterList(
+                SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
+                @params,
+                SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken)));
+            _pool.Free(@params);
+        }
+
+        public override void EnterParameter([NotNull] XP.ParameterContext context)
+        {
+            if (context.Self != null)
+            {
+                context.Modifiers._Tokens.Add(context.Self);
+            }
+        }
+
+        protected virtual TypeSyntax _getParameterType([NotNull] XP.ParameterContext context)
+        {
+            TypeSyntax type = context.Type?.Get<TypeSyntax>();
+            if (type == null)
+            {
+                type = _getMissingType();
+            }
+            return type;
+        }
+
+        public override void ExitParameter([NotNull] XP.ParameterContext context)
+        {
+            bool hasParamArrayAttribute = false;
+            var attributeList = getAttributes(context.Attributes);
+
+            if (hasAttribute(attributeList, "ParamArray"))
+            {
+                hasParamArrayAttribute = true;
+                removeAttribute(context.Attributes, "ParamArray");
+                attributeList = getAttributes(context.Attributes);
+                foreach (XSharpToken t in context.Modifiers._Tokens)
+                {
+                    // replace any AS, IS, REF or OUT with PARAMS. Leave CONST
+                    if (t.Type != XP.CONST)
+                    {
+                        t.Type = XP.PARAMS;
+                        t.Text = "PARAMS";
+                    }
+                }
+                ExitParameterDeclMods(context.Modifiers);
+            }
+
+            if (context.Ellipsis != null)
+            {
+                context.Put(_syntaxFactory.Parameter(
+                    EmptyList<AttributeListSyntax>(),
+                    EmptyList<SyntaxToken>(),
+                    null,
+                    context.Ellipsis.SyntaxLiteralValue(_options), null));
+                return;
+            }
+            TypeSyntax type = _getParameterType(context);
+            type.XVoDecl = true;
+            if (context.Modifiers != null && context.Modifiers._Tokens != null)
+            {
+                foreach (var token in context.Modifiers._Tokens)
+                {
+                    if (token.Type == XP.IS)
+                    {
+                        type.XVoIsDecl = true;
+                        break;
+                    }
+                }
+            }
+
+            var par = _syntaxFactory.Parameter(
+                attributeLists: attributeList,
+                modifiers: context.Modifiers?.GetList<SyntaxToken>() ?? EmptyList<SyntaxToken>(),
+                type: type,
+                identifier: context.Id.Get<SyntaxToken>(),
+                @default: context.Default == null ? null : _syntaxFactory.EqualsValueClause(
+                    SyntaxFactory.MakeToken(SyntaxKind.EqualsToken),
+                    context.Default.Get<ExpressionSyntax>()));
+
+            if (hasParamArrayAttribute)
+            {
+                par = par.WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.ERR_ExplicitParamArray));
+            }
+            context.Put(par);
+        }
+
+        #endregion
+
+        #region Modifiers
+
+        protected void HandleDefaultTypeModifiers(XSharpParserRuleContext context, IList<IToken> tokens, bool fixDefault = false)
+        {
+            SyntaxListBuilder modifiers = _pool.Allocate();
+            AddUniqueModifiers(modifiers, tokens, fixDefault, false);
+            context.PutList(modifiers.ToList<SyntaxToken>());
+            _pool.Free(modifiers);
+        }
+
+        private void AddUniqueModifiers(SyntaxListBuilder modifiers, IList<IToken> tokens, bool fixDefault, bool isInInterface)
+        {
+            foreach (var m in tokens)
+            {
+                var kw = m.SyntaxKeyword();
+                if (isInInterface)
+                {
+                    if (kw.Kind != SyntaxKind.PublicKeyword)
+                        modifiers.AddCheckUnique(kw);
+                }
+                else
+                    modifiers.AddCheckUnique(kw);
+            }
+            if (fixDefault)
+            {
+                modifiers.FixDefaultVisibility();
+            }
+        }
+        public override void ExitAccessorModifiers([NotNull] XP.AccessorModifiersContext context)
+        {
+            SyntaxListBuilder modifiers = _pool.Allocate();
+            bool isInInterface = context.isInInterface();
+            AddUniqueModifiers(modifiers, context._Tokens, false, isInInterface);
+            context.PutList(modifiers.ToList<SyntaxToken>());
+            _pool.Free(modifiers);
+        }
+        public override void ExitClassModifiers([NotNull] XP.ClassModifiersContext context)
+        {
+            HandleDefaultTypeModifiers(context, context._Tokens, true); 
+        }
+        public override void ExitClassvarModifiers([NotNull] XP.ClassvarModifiersContext context)
+        {
+            SyntaxListBuilder modifiers = _pool.Allocate();
+            foreach (var m in context._Tokens)
+            {
+                modifiers.AddCheckUnique(m.SyntaxKeyword());
+                if (m.Type == XP.FIXED && context._FIXED == null)
+                    context._FIXED = m;
+            }
+            modifiers.FixDefaultVisibility();
+            context.PutList(modifiers.ToList<SyntaxToken>());
+            _pool.Free(modifiers);
+        }
+
+        public override void ExitConstructorModifiers([NotNull] XP.ConstructorModifiersContext context)
+        {
+            SyntaxListBuilder modifiers = _pool.Allocate();
+            AddUniqueModifiers(modifiers, context._Tokens, false, false);
+            if (!modifiers.Any((int)SyntaxKind.StaticKeyword))
+                modifiers.FixDefaultVisibility();
+            context.PutList(modifiers.ToList<SyntaxToken>());
+            _pool.Free(modifiers);
+        }
+
+
+
+        public override void ExitDestructorModifiers([NotNull] XP.DestructorModifiersContext context)
+        {
+            HandleDefaultTypeModifiers(context, context._Tokens, true);
+        }
+        public override void ExitFuncprocModifiers([NotNull] XP.FuncprocModifiersContext context)
+        {
+            SyntaxListBuilder modifiers = _pool.Allocate();
+            AddUniqueModifiers(modifiers, context._Tokens, false, false);
+            // STATIC FUNCTION is implemented as INTERNAL and will be moved to a special class
+            if (modifiers.Any((int)SyntaxKind.StaticKeyword))
+            {
+                // in this context static has to do with visibility
+                modifiers.Add(SyntaxFactory.MakeToken(SyntaxKind.InternalKeyword));
+                context.IsStaticVisible = true;
+            }
+            else
+            {
+                // in this context static means that .Net static = class method as opposed to instance method
+                context.IsStaticVisible = false;
+                modifiers.Add(SyntaxFactory.MakeToken(SyntaxKind.StaticKeyword));
+                modifiers.FixDefaultVisibility();
+            }
+            context.PutList(modifiers.ToList<SyntaxToken>());
+            _pool.Free(modifiers);
+        }
+
+ 
+        public override void ExitLocalfuncprocModifiers([NotNull] XP.LocalfuncprocModifiersContext context)
+        {
+            SyntaxListBuilder modifiers = _pool.Allocate();
+            AddUniqueModifiers(modifiers, context._Tokens, false, false);
+            context.PutList(modifiers.ToList<SyntaxToken>());
+            _pool.Free(modifiers);
+        }
+        public override void ExitMemberModifiers([NotNull] XP.MemberModifiersContext context)
+        {
+            SyntaxListBuilder modifiers = _pool.Allocate();
+            bool genericParent = false;
+            // Membermodifiers are used for Methods and Properties
+            if (context.Parent is XP.MethodContext mc)
+            {
+                genericParent = mc.TypeParameters != null || mc._ConstraintsClauses.Count > 0;
+            }
+            bool isInInterface = context.isInInterface();
+            AddUniqueModifiers(modifiers, context._Tokens, false, isInInterface);
+            if (!isInInterface)
+            {
+                modifiers.FixDefaultVisibility();
+                if (_options.VirtualInstanceMethods && !context.isInStructure())
+                    modifiers.FixDefaultVirtual();
+                else if (!genericParent)
+                {
+                    modifiers.FixDefaultMethod();
+                }
+            }
+            context.PutList(modifiers.ToList<SyntaxToken>());
+            _pool.Free(modifiers);
+        }
+
+        public override void ExitOperatorModifiers([NotNull] XP.OperatorModifiersContext context)
+        {
+            SyntaxListBuilder modifiers = _pool.Allocate();
+            AddUniqueModifiers(modifiers, context._Tokens, false, false);
+            if (!modifiers.Any((int)SyntaxKind.StaticKeyword))
+                modifiers.Add(SyntaxFactory.MakeToken(SyntaxKind.StaticKeyword));
+            modifiers.FixDefaultVisibility();
+            context.PutList(modifiers.ToList<SyntaxToken>());
+            _pool.Free(modifiers);
+        }
+         
+        public override void ExitParameterDeclMods([NotNull] XP.ParameterDeclModsContext context)
+        {
+            SyntaxListBuilder modifiers = _pool.Allocate();
+            foreach (var m in context._Tokens)
+            {
+                if (m.Type != XP.AS && m.Type != XP.IS)
+                    modifiers.AddCheckUnique(m.SyntaxKeyword());
+            }
+            //modifiers.FixDefaultVisibility();
+            context.PutList(modifiers.ToList<SyntaxToken>());
+            _pool.Free(modifiers);
+        }
+
+  
+
+
+        public override void ExitVotypeModifiers([NotNull] XP.VotypeModifiersContext context)
+        {
+            IList<IToken> tokens = context._Tokens;
+            if (tokens != null)
+            {
+                foreach (XSharpToken t in tokens)
+                {
+                    if (t.Type == XSharpLexer.STATIC)
+                    {
+                        t.Type = XSharpLexer.INTERNAL;
+                        t.Text = "INTERNAL";
+                    }
+                }
+            }
+
+            HandleDefaultTypeModifiers(context, tokens, true); 
+        }
+
+        SyntaxList<SyntaxToken> GetFuncProcModifiers(XP.FuncprocModifiersContext context, bool isExtern, bool isInInterface)
+        {
+            if (isExtern)
+                return context?.GetList<SyntaxToken>() ?? TokenListWithDefaultVisibility(isInInterface, SyntaxKind.StaticKeyword, SyntaxKind.ExternKeyword);
+            else
+                return context?.GetList<SyntaxToken>() ?? TokenListWithDefaultVisibility(isInInterface, SyntaxKind.StaticKeyword);
+
+        }
+
+        #endregion
+        #region Functions and Procedures
+        public override void EnterFuncproc([NotNull] XP.FuncprocContext context)
+        {
+            if (context.T != null && context.T.Type == XP.PROCEDURE )
+            {
+                context.Data.MustBeVoid = _options.Dialect != XSharpDialect.FoxPro ;
+            }
+            string name = context.Id.GetText();
+            context.Data.IsEntryPoint = XSharpString.Equals(name, _entryPoint)
+                    && _options.CommandLineArguments.CompilationOptions.OutputKind.IsApplication();
+            if (context.Data.IsEntryPoint && context.Type == null)
+            {
+                context.Data.MustBeVoid = true;
+            }
+        }
+
+        private void handleInitExit([NotNull] XP.FuncprocContext context)
+        {
+            if (context.InitExit != null)
+            {
+                int level = 0;
+                switch (context.InitExit.Type)
+                {
+                    case XP.INIT1:
+                        level = 1;
+                        break;
+                    case XP.INIT2:
+                        level = 2;
+                        break;
+                    case XP.INIT3:
+                        level = 3;
+                        break;
+                    case XP.EXIT:
+                        level = -1;
+                        break;
+                }
+                GlobalEntities.InitProcedures.Add(new Tuple<int, string>(level, context.Id.GetText()));
+                context.Data.IsInitProcedure = true;
+                context.Data.HasClipperCallingConvention = false;
+            }
+        }
+
+        public override void ExitFuncproc([NotNull] XP.FuncprocContext context)
+        {
+            if (context.T != null && context.end  != null)
+            {
+                context.SetSequencePoint(context.T, context.end.Stop);
+            }
+            // FUNCTION and PROCEDURE for FoxPro are implemented in the Method Rule, so FUNCTION is never inside an interface
+
+            var isprocedure = context.T != null && context.T.Type == XP.PROCEDURE;
+            if (isprocedure)
+            {
+                handleInitExit(context);
+            }
+
+            var isInInterface = false;      
+            var attributes = getAttributes(context.Attributes);
+            bool isextern = hasDllImport(attributes);
+            var modifiers = GetFuncProcModifiers(context.Modifiers, isextern, isInInterface);
+            if (!isextern)
+            {
+                isextern = modifiers.Any((int)SyntaxKind.ExternKeyword);
+            }
+            var hasnobody = (isInInterface || isextern);
+            var parameters = getParameters(context.ParamList);
+            if (isextern)
+            {
+                parameters = UpdateVODLLParameters(parameters);
+            }
+            var body = hasnobody ? null : processEntityBody(context);
+            var returntype = getReturnType(context);
+            if (isprocedure)
+            {
+                if (_options.Dialect != XSharpDialect.FoxPro)
+                {
+                    if (context.Type != null && context.Type.GetText().ToLower() != "void")
+                    {
+                        returntype = NotInDialect(returntype, "Procedure with non VOID return type");
+                    }
+                    else
+                    {
+                        returntype = voidType;
+                    }
+                }
+                else if (context.Data.IsEntryPoint)
+                {
+                    returntype = voidType;
+                }
+            }
+
+            returntype.XVoDecl = true;
+            var id = context.Id.Get<SyntaxToken>();
+
+            if (!hasnobody)
+            {
+                ImplementClipperAndPSZ(context, ref attributes, ref parameters, ref body, ref returntype);
+                // Functions and FoxPro procedures must have a return value
+                bool addreturn = !isprocedure;
+                if (_options.Dialect == XSharpDialect.FoxPro && isprocedure)
+                {
+                    addreturn = !context.Data.IsEntryPoint;
+                }
+                if (addreturn)
+                {
+                    body = AddMissingReturnStatement(body, context.StmtBlk, returntype);
+                }
+                // Special Handling of EntryPoint
+                if (context.Data.IsEntryPoint)
+                {
+                    body = GenerateEntryPoint(modifiers, context, body, attributes, parameters);
+                }
+            }
+            context.Put(_syntaxFactory.MethodDeclaration(
+                attributeLists: attributes,
+                modifiers: modifiers,
+                returnType: returntype,
+                explicitInterfaceSpecifier: null,
+                identifier: id,
+                typeParameterList: getTypeParameters(context.TypeParameters),
+                parameterList: parameters,
+                constraintClauses: getTypeConstraints(context._ConstraintsClauses),
+                body: body,
+                expressionBody: null,
+                semicolonToken: (body != null) ? null : SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)));
+
+        }
+     
+
+        public override void ExitCallingconvention([NotNull] XP.CallingconventionContext context)
+        {
+            // TODO nvk (calling convention is silently ignored for now)
+        }
+
+        #endregion
+
+        #region VO Compatible Global types and fields
 
 
         public override void ExitVodefine([NotNull] XP.VodefineContext context)
@@ -4705,7 +5280,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         public override void ExitVoglobal([NotNull] XP.VoglobalContext context)
         {
             var varList = _pool.AllocateSeparated<VariableDeclaratorSyntax>();
-            var varType = context.Vars.DataType?.Get<TypeSyntax>() ?? _getMissingType();
+            var varType = getDataType(context.Vars.DataType);
             context.SetSequencePoint(context.end);
             varType.XVoDecl = true;
             if (context.Vars?.As?.Type == XP.IS)
@@ -4728,7 +5303,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 if (isDim)
                 {
                     var global = _syntaxFactory.FieldDeclaration(
-                        attributeLists: context.Attributes?.GetList<AttributeListSyntax>() ?? EmptyList<AttributeListSyntax>(),
+                        attributeLists: getAttributes(context.Attributes),
                         modifiers: mods,
                         declaration: _syntaxFactory.VariableDeclaration(
                             type: _syntaxFactory.ArrayType(varType, MakeArrayRankSpecifier(varCtx.ArraySub._ArrayIndex.Count)),
@@ -4747,7 +5322,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             if (varList.Count > 0)
             {
                 var global = _syntaxFactory.FieldDeclaration(
-                    attributeLists: context.Attributes?.GetList<AttributeListSyntax>() ?? EmptyList<AttributeListSyntax>(),
+                    attributeLists: getAttributes(context.Attributes),
                     modifiers: mods,
                     declaration: _syntaxFactory.VariableDeclaration(
                         type: varType,
@@ -4845,7 +5420,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             var returnType = context.Type?.Get<TypeSyntax>() ?? (context.T.Type == XP.FUNCTION ? _getMissingType() : VoidType());
             returnType.XVoDecl = true;
 
-            var parameters = context.ParamList?.Get<ParameterListSyntax>() ?? EmptyParameterList();
+            var parameters = getParameters(context.ParamList);
             parameters = UpdateVODLLParameters(parameters);
             var modifiers = context.Modifiers?.GetList<SyntaxToken>() ?? TokenListWithDefaultVisibility(false, SyntaxKind.StaticKeyword, SyntaxKind.ExternKeyword);
             var attributes = MakeSeparatedList(_unmanagedCodeAttribute(),
@@ -5001,486 +5576,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             return false;
         }
 
-        public override void EnterFuncproc([NotNull] XP.FuncprocContext context)
-        {
-            if (context.T != null && context.T.Type == XP.PROCEDURE )
-            {
-                context.Data.MustBeVoid = _options.Dialect != XSharpDialect.FoxPro ;
-            }
-            string name = context.Id.GetText();
-            context.Data.IsEntryPoint = XSharpString.Equals(name, _entryPoint)
-                    && _options.CommandLineArguments.CompilationOptions.OutputKind.IsApplication();
-            if (context.Data.IsEntryPoint && context.Type == null)
-            {
-                context.Data.MustBeVoid = true;
-            }
-        }
-
-        private void handleInitExit([NotNull] XP.FuncprocContext context)
-        {
-            if (context.InitExit != null)
-            {
-                        int level = 0;
-                        switch (context.InitExit.Type)
-                        {
-                            case XP.INIT1:
-                                level = 1;
-                                break;
-                            case XP.INIT2:
-                                level = 2;
-                                break;
-                            case XP.INIT3:
-                                level = 3;
-                                break;
-                            case XP.EXIT:
-                                level = -1;
-                                break;
-                        }
-                        GlobalEntities.InitProcedures.Add(new Tuple<int, string>(level, context.Id.GetText()));
-                        context.Data.IsInitProcedure = true;
-                        context.Data.HasClipperCallingConvention = false;
-            }
-        }
-
-
-        protected BlockSyntax AddLocalFunctions(BlockSyntax body, IList<object> localFunctions) 
-        {
-            if (body != null && localFunctions?.Count > 0 )
-            {
-                var stmts = _pool.Allocate<StatementSyntax>();
-                stmts.AddRange(body.Statements);
-                foreach (LocalFunctionStatementSyntax local in localFunctions)
-                {
-                    stmts.Add(local);
-                }
-                var newbody = body.Update(body.OpenBraceToken, stmts, body.CloseBraceToken);
-                _pool.Free(stmts);
-
-                if (body.XNode != null)
-                {
-                    body.XNode.Put(newbody);
-                }
-                body = newbody;
-            }
-            return body;
-        }
-
-        public override void ExitFuncproc([NotNull] XP.FuncprocContext context)
-        {
-            if (context.T != null && context.end  != null)
-            {
-                context.SetSequencePoint(context.T, context.end.Stop);
-            }
-            // FUNCTION and PROCEDURE for FoxPro are implemented in the Method Rule, so FUNCTION is never inside an interface
-
-            var isprocedure = context.T != null && context.T.Type == XP.PROCEDURE;
-            if (isprocedure)
-            {
-                handleInitExit(context);
-            }
-
-            var isInInterface = false;      
-            var attributes = context.Attributes?.GetList<AttributeListSyntax>() ?? EmptyList<AttributeListSyntax>();
-            bool isextern = hasDllImport(attributes);
-            var modifiers = GetFuncProcModifiers(context.Modifiers, isextern, isInInterface);
-            if (!isextern)
-            {
-                isextern = modifiers.Any((int)SyntaxKind.ExternKeyword);
-            }
-            var hasnobody = (isInInterface || isextern);
-            var parameters = context.ParamList?.Get<ParameterListSyntax>() ?? EmptyParameterList();
-            if (isextern)
-            {
-                parameters = UpdateVODLLParameters(parameters);
-            }
-            var body = hasnobody ? null : context.StmtBlk.Get<BlockSyntax>();
-            body = AddLocalFunctions(body, context.LocalFunctions);
-            var returntype = context.Type?.Get<TypeSyntax>() ?? _getMissingType();
-            if (isprocedure)
-            {
-                if (_options.Dialect != XSharpDialect.FoxPro)
-                {
-                    if (context.Type != null && context.Type.GetText().ToLower() != "void")
-                    {
-                        returntype = NotInDialect(returntype, "Procedure with non VOID return type");
-                    }
-                    else
-                    {
-                        returntype = voidType;
-                    }
-                }
-                else if (context.Data.IsEntryPoint)
-                {
-                    returntype = voidType;
-                }
-            }
-
-            returntype.XVoDecl = true;
-            var id = context.Id.Get<SyntaxToken>();
-
-            if (!hasnobody)
-            {
-                ImplementClipperAndPSZ(context, ref attributes, ref parameters, ref body, ref returntype);
-                // Functions and FoxPro procedures must have a return value
-                bool addreturn = !isprocedure;
-                if (_options.Dialect == XSharpDialect.FoxPro && isprocedure)
-                {
-                    addreturn = !context.Data.IsEntryPoint;
-                }
-                if (addreturn)
-                {
-                    body = AddMissingReturnStatement(body, context.StmtBlk, returntype);
-                }
-                // Special Handling of EntryPoint
-                if (context.Data.IsEntryPoint)
-                {
-                    body = GenerateEntryPoint(modifiers, context, body, attributes, parameters);
-                }
-            }
-            context.Put(_syntaxFactory.MethodDeclaration(
-                attributeLists: attributes,
-                modifiers: modifiers,
-                returnType: returntype,
-                explicitInterfaceSpecifier: null,
-                identifier: id,
-                typeParameterList: context.TypeParameters?.Get<TypeParameterListSyntax>(),
-                parameterList: parameters,
-                constraintClauses: MakeList<TypeParameterConstraintClauseSyntax>(context._ConstraintsClauses),
-                body: body,
-                expressionBody: null,
-                semicolonToken: (body != null) ? null : SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)));
-
-        }
-     
-
-        public override void ExitCallingconvention([NotNull] XP.CallingconventionContext context)
-        {
-            // TODO nvk (calling convention is silently ignored for now)
-        }
-
-        #endregion
-
-        #region Parameters
-        private static ParameterListSyntax _emptyParameterList = null;
-        protected ParameterListSyntax EmptyParameterList()
-        {
-            if (_emptyParameterList == null)
-            {
-                lock (gate)
-                {
-                    if (_emptyParameterList == null)
-                    {
-
-                        _emptyParameterList = _syntaxFactory.ParameterList(
-                            SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
-                            EmptySeparatedList<ParameterSyntax>(),
-                            SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken));
-                    }
-                }
-
-            }
-            return _emptyParameterList;
-        }
-
-        protected ParameterListSyntax MakeParameterList (IList<ParameterSyntax> parameters)
-        {
-            if (parameters == null || parameters.Count == 0)
-                return EmptyParameterList();
-            var @params = _pool.AllocateSeparated<ParameterSyntax>();
-            foreach (var param in parameters)
-            {
-                if (@params.Count > 0)
-                    @params.AddSeparator(SyntaxFactory.MakeToken(SyntaxKind.CommaToken));
-                @params.Add(param);
-            }
-            var result = _syntaxFactory.ParameterList(
-                SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
-                @params,
-                SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken));
-            _pool.Free(@params);
-            return result;
-        }
-
-        public override void EnterParameterList([NotNull] XP.ParameterListContext context)
-        {
-            if (context._Params?.Count > 0)
-            {
-                CurrentEntity.Data.HasFormalParameters = true;
-            }
-        }
-        public override void ExitParameterList([NotNull] XP.ParameterListContext context)
-        {
-            var @params = _pool.AllocateSeparated<ParameterSyntax>();
-            foreach (var paramCtx in context._Params)
-            {
-                if (@params.Count > 0)
-                    @params.AddSeparator(SyntaxFactory.MakeToken(SyntaxKind.CommaToken));
-                @params.Add(paramCtx.Get<ParameterSyntax>());
-            }
-            context.Put(_syntaxFactory.ParameterList(
-                SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
-                @params,
-                SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken)));
-            _pool.Free(@params);
-        }
-
-        public override void EnterParameter([NotNull] XP.ParameterContext context)
-        {
-            if (context.Self != null)
-            {
-                context.Modifiers._Tokens.Add(context.Self);
-            }
-        }
-
-        protected virtual TypeSyntax _getParameterType([NotNull] XP.ParameterContext context)
-        {
-            TypeSyntax type = context.Type?.Get<TypeSyntax>();
-            if (type == null)
-            {
-                type = _getMissingType();
-            }
-            return type;
-        }
-
-        public override void ExitParameter([NotNull] XP.ParameterContext context)
-        {
-            bool hasParamArrayAttribute = false;
-            var attributeList = context.Attributes?.GetList<AttributeListSyntax>() ?? EmptyList<AttributeListSyntax>();
-
-            if (hasAttribute(attributeList, "ParamArray"))
-            {
-                hasParamArrayAttribute = true;
-                removeAttribute(context.Attributes, "ParamArray");
-                attributeList = context.Attributes.GetList<AttributeListSyntax>();
-                foreach (XSharpToken t in context.Modifiers._Tokens)
-                {
-                    // replace any AS, IS, REF or OUT with PARAMS. Leave CONST
-                    if (t.Type != XP.CONST)
-                    {
-                        t.Type = XP.PARAMS;
-                        t.Text = "PARAMS";
-                    }
-                }
-                ExitParameterDeclMods(context.Modifiers);
-            }
-
-            if (context.Ellipsis != null)
-            {
-                context.Put(_syntaxFactory.Parameter(
-                    EmptyList<AttributeListSyntax>(),
-                    EmptyList<SyntaxToken>(),
-                    null,
-                    context.Ellipsis.SyntaxLiteralValue(_options), null));
-                return;
-            }
-            TypeSyntax type = _getParameterType(context);
-            type.XVoDecl = true;
-            if (context.Modifiers != null && context.Modifiers._Tokens != null)
-            {
-                foreach (var token in context.Modifiers._Tokens)
-                {
-                    if (token.Type == XP.IS)
-                    {
-                        type.XVoIsDecl = true;
-                        break;
-                    }
-                }
-            }
-
-            var par = _syntaxFactory.Parameter(
-                attributeLists: attributeList,
-                modifiers: context.Modifiers?.GetList<SyntaxToken>() ?? EmptyList<SyntaxToken>(),
-                type: type,
-                identifier: context.Id.Get<SyntaxToken>(),
-                @default: context.Default == null ? null : _syntaxFactory.EqualsValueClause(
-                    SyntaxFactory.MakeToken(SyntaxKind.EqualsToken),
-                    context.Default.Get<ExpressionSyntax>()));
-
-            if (hasParamArrayAttribute)
-            {
-                par = par.WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.ERR_ExplicitParamArray));
-            }
-            context.Put(par);
-        }
-
-        #endregion
-
-        #region Modifiers
-
-        protected void HandleDefaultTypeModifiers(XSharpParserRuleContext context, IList<IToken> tokens, bool fixDefault = false)
-        {
-            SyntaxListBuilder modifiers = _pool.Allocate();
-            AddUniqueModifiers(modifiers, tokens, fixDefault, false);
-            context.PutList(modifiers.ToList<SyntaxToken>());
-            _pool.Free(modifiers);
-        }
-
-        private void AddUniqueModifiers(SyntaxListBuilder modifiers, IList<IToken> tokens, bool fixDefault, bool isInInterface)
-        {
-            foreach (var m in tokens)
-            {
-                var kw = m.SyntaxKeyword();
-                if (isInInterface)
-                {
-                    if (kw.Kind != SyntaxKind.PublicKeyword)
-                        modifiers.AddCheckUnique(kw);
-                }
-                else
-                    modifiers.AddCheckUnique(kw);
-            }
-            if (fixDefault)
-            {
-                modifiers.FixDefaultVisibility();
-            }
-        }
-
-        public override void ExitClassModifiers([NotNull] XP.ClassModifiersContext context)
-        {
-            HandleDefaultTypeModifiers(context, context._Tokens, true); 
-        }
-        public override void ExitClassvarModifiers([NotNull] XP.ClassvarModifiersContext context)
-        {
-            SyntaxListBuilder modifiers = _pool.Allocate();
-            foreach (var m in context._Tokens)
-            {
-                modifiers.AddCheckUnique(m.SyntaxKeyword());
-                if (m.Type == XP.FIXED && context._FIXED == null)
-                    context._FIXED = m;
-            }
-            modifiers.FixDefaultVisibility();
-            context.PutList(modifiers.ToList<SyntaxToken>());
-            _pool.Free(modifiers);
-        }
-
-        public override void ExitConstructorModifiers([NotNull] XP.ConstructorModifiersContext context)
-        {
-            SyntaxListBuilder modifiers = _pool.Allocate();
-            AddUniqueModifiers(modifiers, context._Tokens, false, false);
-            if (!modifiers.Any((int)SyntaxKind.StaticKeyword))
-                modifiers.FixDefaultVisibility();
-            context.PutList(modifiers.ToList<SyntaxToken>());
-            _pool.Free(modifiers);
-        }
-
-
-
-        public override void ExitDestructorModifiers([NotNull] XP.DestructorModifiersContext context)
-        {
-            HandleDefaultTypeModifiers(context, context._Tokens, true);
-        }
-
-        public override void ExitAccessorModifiers([NotNull] XP.AccessorModifiersContext context)
-        {
-            SyntaxListBuilder modifiers = _pool.Allocate();
-            bool isInInterface = context.isInInterface();
-            AddUniqueModifiers(modifiers, context._Tokens, false, isInInterface);
-            context.PutList(modifiers.ToList<SyntaxToken>());
-            _pool.Free(modifiers);
-        }
-
-        public override void ExitMemberModifiers([NotNull] XP.MemberModifiersContext context)
-        {
-            SyntaxListBuilder modifiers = _pool.Allocate();
-            bool genericParent = false;
-            // Membermodifiers are used for Methods and Properties
-            if (context.Parent is XP.MethodContext mc)
-            {
-                genericParent = mc.TypeParameters != null || mc._ConstraintsClauses.Count > 0;
-            }
-            bool isInInterface = context.isInInterface();
-            AddUniqueModifiers(modifiers, context._Tokens, false, isInInterface);
-            if (!isInInterface)
-            {
-                modifiers.FixDefaultVisibility();
-                if (_options.VirtualInstanceMethods && !context.isInStructure())
-                    modifiers.FixDefaultVirtual();
-                else if (!genericParent)
-                {
-                    modifiers.FixDefaultMethod();
-                }
-            }
-            context.PutList(modifiers.ToList<SyntaxToken>());
-            _pool.Free(modifiers);
-        }
-
-        public override void ExitOperatorModifiers([NotNull] XP.OperatorModifiersContext context)
-        {
-            SyntaxListBuilder modifiers = _pool.Allocate();
-            AddUniqueModifiers(modifiers, context._Tokens, false, false);
-            if (!modifiers.Any((int)SyntaxKind.StaticKeyword))
-                modifiers.Add(SyntaxFactory.MakeToken(SyntaxKind.StaticKeyword));
-            modifiers.FixDefaultVisibility();
-            context.PutList(modifiers.ToList<SyntaxToken>());
-            _pool.Free(modifiers);
-        }
-         
-        public override void ExitParameterDeclMods([NotNull] XP.ParameterDeclModsContext context)
-        {
-            SyntaxListBuilder modifiers = _pool.Allocate();
-            foreach (var m in context._Tokens)
-            {
-                if (m.Type != XP.AS && m.Type != XP.IS)
-                    modifiers.AddCheckUnique(m.SyntaxKeyword());
-            }
-            //modifiers.FixDefaultVisibility();
-            context.PutList(modifiers.ToList<SyntaxToken>());
-            _pool.Free(modifiers);
-        }
-
-        public override void ExitFuncprocModifiers([NotNull] XP.FuncprocModifiersContext context)
-        {
-            SyntaxListBuilder modifiers = _pool.Allocate();
-            AddUniqueModifiers(modifiers, context._Tokens, false, false);
-            // STATIC FUNCTION is implemented as INTERNAL and will be moved to a special class
-            if (modifiers.Any((int)SyntaxKind.StaticKeyword))
-            {
-                // in this context static has to do with visibility
-                modifiers.Add(SyntaxFactory.MakeToken(SyntaxKind.InternalKeyword));
-                context.IsStaticVisible = true;
-            }
-            else
-            {
-                // in this context static means that .Net static = class method as opposed to instance method
-                context.IsStaticVisible = false;
-                modifiers.Add(SyntaxFactory.MakeToken(SyntaxKind.StaticKeyword));
-                modifiers.FixDefaultVisibility();
-            }
-            context.PutList(modifiers.ToList<SyntaxToken>());
-            _pool.Free(modifiers);
-        }
-
-
-
-        public override void ExitVotypeModifiers([NotNull] XP.VotypeModifiersContext context)
-        {
-            IList<IToken> tokens = context._Tokens;
-            if (tokens != null)
-            {
-                foreach (XSharpToken t in tokens)
-                {
-                    if (t.Type == XSharpLexer.STATIC)
-                    {
-                        t.Type = XSharpLexer.INTERNAL;
-                        t.Text = "INTERNAL";
-                    }
-                }
-            }
-
-            HandleDefaultTypeModifiers(context, tokens, true); 
-        }
-
-        SyntaxList<SyntaxToken> GetFuncProcModifiers(XP.FuncprocModifiersContext context, bool isExtern, bool isInInterface)
-        {
-            if (isExtern)
-                return context?.GetList<SyntaxToken>() ?? TokenListWithDefaultVisibility(isInInterface, SyntaxKind.StaticKeyword, SyntaxKind.ExternKeyword);
-            else
-                return context?.GetList<SyntaxToken>() ?? TokenListWithDefaultVisibility(isInInterface, SyntaxKind.StaticKeyword);
-
-        }
-
-        #endregion
         #endregion
         #region Statements
+
 
         #region Declaration Statements
 
@@ -5625,12 +5723,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             var initExpr = context.Expression?.Get<ExpressionSyntax>();
 
-            if (context.DataType != null)
-                varType = context.DataType?.Get<TypeSyntax>();
-            else
-            {
-                varType = _getMissingType();
-            }
+            varType = getDataType(context.DataType);
             bool simpleInit = false;
             varType.XVoDecl = true;
             if (context.As?.Type == XP.IS)

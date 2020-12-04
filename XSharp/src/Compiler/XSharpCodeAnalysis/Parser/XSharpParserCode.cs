@@ -467,6 +467,28 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             public StatementBlockContext Statements { get { return StmtBlk; } }
         }
 
+
+        public partial class LocalfuncprocContext : IEntityWithBodyContext, IBodyWithLocalFunctions
+        {
+
+            public IdentifierContext Id => this.Sig.Id;
+            public TypeparametersContext TypeParameters => Sig.TypeParameters;
+            public IList<TypeparameterconstraintsclauseContext> _ConstraintsClauses => Sig._ConstraintsClauses;
+            public ParameterListContext ParamList => Sig.ParamList;
+            public DatatypeContext Type => Sig.Type; 
+            public CallingconventionContext CallingConvention => Sig.CallingConvention;
+            EntityData data = new EntityData();
+            public EntityData Data => data;
+            public ParameterListContext Params => this.ParamList;
+            public DatatypeContext ReturnType => this.Type;
+            public String Name => ParentName + ShortName;
+            public String ShortName => this.Id.GetText();
+            public LocalfuncprocModifiersContext LocalFuncProcModifiers => Modifiers;
+            public StatementBlockContext Statements => StmtBlk;
+            public IList<object> LocalFunctions { get; set; } = null;
+        }
+
+
         public partial class FuncprocContext : IEntityWithBodyContext, IGlobalEntityContext, IBodyWithLocalFunctions
         {
 

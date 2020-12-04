@@ -503,6 +503,7 @@ filewidememvar      : Token=MEMVAR Vars+=identifierName (COMMA Vars+=identifierN
 
 
 statement           : Decl=localdecl                        #declarationStmt
+                    | Decl=localfuncproc                    #localFunctionStmt
                     | Decl=xbasedecl                        #xbasedeclStmt
                     | Decl=fielddecl                        #fieldStmt
                     | DO? w=WHILE Expr=expression end=eos
@@ -705,6 +706,16 @@ xbasevar            : (Amp=AMP)?  Id=varidentifierName (LBRKT ArraySub=arraysub 
 
 dimensionVar        : Id=identifierName  ( LBRKT ArraySub=arraysub RBRKT | LPAREN ArraySub=arraysub RPAREN ) (AS DataType=datatype)?
                     ;
+
+localfuncproc       :  (Modifiers=localfuncprocModifiers)?   
+                        LOCAL T=(FUNCTION|PROCEDURE) Sig=signature
+                        end=eos   
+                        StmtBlk=statementBlock
+                        END T2=(FUNCTION|PROCEDURE)   EOS 
+                     ;
+
+localfuncprocModifiers : ( Tokens+=(UNSAFE | ASYNC) )+
+                       ; // make sure all tokens are also in the IsModifier method inside XSharpLexerCode.cs
 
 
 // The operators in VO have the following precedence level:

@@ -1432,7 +1432,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             switch (keyword)
             {
                 // Some keywords are impossible to use as ID
-                 case SELF:
+                case SELF:
                 case SUPER:
                 case STATIC:
                 case DIM:
@@ -1596,6 +1596,12 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                             else
                                 return ID;
 
+                        case LOCAL:
+                            if (keyword == FUNCTION || keyword == PROCEDURE)    // local function and procedure statement
+                                return keyword;
+                            return ID;
+
+
                         // After these keywords we expect an ID
                         // Some of these also have a possible SELF, DIM, CONST or STATIC clause but these have been excluded above
 
@@ -1612,7 +1618,6 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                         case ENUM:
                         case MEMBER:
                         case DIM:
-                        case LOCAL:
                         case VAR:
                         case IMPLIED:
                         // Linq

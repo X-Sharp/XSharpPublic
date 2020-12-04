@@ -88221,6 +88221,118 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
   Optimize=0
 ENDApplication = R752 - Paren expression with embedded expressionlist
+
+ApplicationGroup = E53B4BB3-0391-43DA-BD2E-CC1D2B02A8E9
+; ************** APPLICATION R753 - Local functions and procedures *************
+Application = R753 - Local functions and procedures
+IDEVersion = 1.06
+GalleryName = 
+GalleryPage = 
+GalleryDefaultName = 
+Target = 0
+Platform = x86
+Language = XSharp
+Runtime = CLR4
+Dialect = VO
+Folder = %ProjectPath%\Applications\R753\
+PrgSubFolder = \Prg
+ResourcesSubFolder = \Resources
+Description = An x# application using the X# runtime
+NameSpace = 
+Assembly = R753
+Extension = 
+ApplicationIcon = 
+OutputFolder = 
+Frameworks = 1
+GUID = 6ED62475-13E0-41B6-BEB9-2120A975EA3A
+IncludeInProjectBuild = 1
+IncludeInProjectSearch = 1
+IncludeInProjectExport = 1
+IncludePath = 
+StdDefsFile = 
+AppToRun = 
+SignAssembly = 0
+KeyFile = 
+
+[ExportOptions]
+ExportResources = 0
+ExportImages = 0
+[R753 - Local functions and procedures FileGroups]
+[R753 - Local functions and procedures Files]
+File = %AppPath%\Prg\R753.prg
+FileGUID = E7BAAA11-C2F3-4D92-B3FE-FA19DD4871FC
+FileType = Code
+CopyToBin = 0
+[R753 - Local functions and procedures References]
+ReferenceGAC = CLR4,System,1,0,4.0.0.0
+ReferenceGAC = CLR4,XSharp.Core,1,0,2.6.0.0
+ReferenceGAC = CLR4,XSharp.RT,1,0,2.6.0.0
+ReferenceGAC = CLR4,XSharp.VO,1,0,2.6.0.0
+[R753 - Local functions and procedures Resources]
+[R753 - Local functions and procedures Native Resources]
+[R753 - Local functions and procedures License files]
+[R753 - Local functions and procedures General Options]
+Switches=
+ZeroArrays=0
+CaseSensitive=0
+ImplicitNamespace=0
+VO1=0
+VO2=0
+VO3=0
+VO4=0
+VO5=0
+VO6=0
+VO7=0
+VO8=0
+VO9=0
+VO10=0
+VO11=0
+VO12=0
+VO13=0
+VO14=0
+VO16=0
+FOX1=0
+FOX2=0
+XPP1=0
+LateBound=0
+Unsafe=0
+Undeclared=0
+UseNativeVersion=0
+MemVar=0
+IgnoreStdDefs=1
+Ovf=0
+FOvf=0
+ResponseOnly=0
+[R753 - Local functions and procedures Configurations]
+AppConfig = Debug,11111111-1111-1111-1111-111111111111
+  Switches=
+  SwitchesCF=
+  CommandLine=
+  CommandLineCF=
+  Debug=1
+  DebugInit=1
+  DefineDebug=1
+  DefineTrace=0
+  SyntaxOnly=0
+  WarningsErrors=1
+  ForceConsole=0
+  ForceX86=0
+  Optimize=0
+AppConfig = Release,22222222-2222-2222-2222-222222222222
+  Switches=
+  SwitchesCF=
+  CommandLine=
+  CommandLineCF=
+  Debug=0
+  DebugInit=0
+  DefineDebug=0
+  DefineTrace=0
+  SyntaxOnly=0
+  WarningsErrors=1
+  ForceConsole=0
+  ForceX86=0
+  Optimize=0
+ENDApplication = R753 - Local functions and procedures
 [EndApplications]
 
 [Configurations]

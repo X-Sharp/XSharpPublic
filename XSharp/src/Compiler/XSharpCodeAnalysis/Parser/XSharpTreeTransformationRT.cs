@@ -1290,9 +1290,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             bool isInInterface = false,
             IList<object> localFunctions = null)
         {
-            var attributes = atts?.GetList<AttributeListSyntax>() ?? EmptyList<AttributeListSyntax>();
-            var parameters = paramlist?.Get<ParameterListSyntax>() ?? EmptyParameterList();
-            var body = stmtblock?.Get<BlockSyntax>();
+            var attributes = getAttributes(atts);
+            var parameters = getParameters(paramlist);
+            var body = processEntityBody(context);
             TypeSyntax returntype = null;
             if (chain != null && context.Data.HasClipperCallingConvention)
             {
@@ -1306,7 +1306,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 chain = null;
             }
             ImplementClipperAndPSZ(context, ref attributes, ref parameters, ref body, ref returntype);
-            body = AddLocalFunctions(body, localFunctions);
             SyntaxToken typeId = null;
             if (context is XP.MethodContext)
             {
@@ -1358,7 +1357,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         }
 
         protected DestructorDeclarationSyntax createDestructor(
-            XP.IEntityContext context,
+            XP.IEntityWithBodyContext context,
             SyntaxList<SyntaxToken> modifiers,
             XP.AttributesContext atts,
             XP.StatementBlockContext stmtblock,
@@ -1385,11 +1384,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             if (parentId == null)
                 return null;
-            var body = stmtblock.Get<BlockSyntax>();
-            body = AddLocalFunctions(body, localFunctions);
+            var body = processEntityBody(context);
 
             return _syntaxFactory.DestructorDeclaration(
-                attributeLists: atts?.GetList<AttributeListSyntax>() ?? EmptyList<AttributeListSyntax>(),
+                attributeLists: getAttributes(atts),
                 modifiers: modifiers,
                 tildeToken: SyntaxFactory.MakeToken(SyntaxKind.TildeToken),
                 identifier: parentId,
@@ -2690,7 +2688,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             base.ExitParameter(context);
             // Only apply the default parameter attribute when there
             // are no Attributes on the parameter, such as [CallerMember]
-            if (context.Default != null && context.Attributes == null )
+            var inLocalFuncProc = CurrentEntity is XP.LocalfuncprocContext;
+            // For local function we cannot use the VO compatible defaults and also no attributes
+            if (!inLocalFuncProc && context.Default != null && context.Attributes == null )
             {
                 if (CurrentEntity.Data.HasClipperCallingConvention)
                 {
@@ -3330,6 +3330,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             ref TypeSyntax dataType)
         {
             var prc = (XSharpParserRuleContext)context;
+            var inLocalFuncProc = context is XP.LocalfuncprocContext;
             InitializeArrayTypes();
             if (context.Data.HasTypedParameter && context.Data.HasClipperCallingConvention)
             {

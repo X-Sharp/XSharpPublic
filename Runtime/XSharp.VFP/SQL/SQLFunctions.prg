@@ -8,6 +8,7 @@ USING System
 USING XSharp.VFP
 USING XSharp.Data
 USING XSharp.RDD
+USING XSharp.Internal
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/sqlconnect/*" />
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/sqlconnectoverload/*" />

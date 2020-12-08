@@ -1002,18 +1002,8 @@ namespace XSharp.MacroCompiler
                         break;
                     case AssocType.PostfixDot:
                         this.assoc = AssocType.Postfix;
-                        // In FoxPro there are no dotted qualifiers.
-                        // The Dot is the member access operator
-                        if (RuntimeState.Dialect == XSharpDialect.FoxPro)
-                        {
-                            Parse = _parse_postfix_colon;
-                            Combine = _combine_postfix_colon;
-                        }
-                        else
-                        {
-                            Parse = _parse_postfix_dot;
-                            Combine = _combine_postfix_dot;
-                        }
+                        Parse = _parse_postfix_dot;
+                        Combine = _combine_postfix_dot;
                         break;
                     case AssocType.PostfixColon:
                         this.assoc = AssocType.Postfix;
@@ -1023,16 +1013,7 @@ namespace XSharp.MacroCompiler
                     case AssocType.BinaryDot:
                         this.assoc = AssocType.BinaryLeft;
                         Parse = _parse;
-                        // In FoxPro there are no dotted qualifiers.
-                        // The Dot is the member access operator
-                        if (RuntimeState.Dialect == XSharpDialect.FoxPro)
-                        {
-                            Combine = _combine_binary_colon;
-                        }
-                        else
-                        {
-                            Combine = _combine_binary_dot;
-                        }
+                        Combine = _combine_binary_dot;
                         break;
                     case AssocType.BinaryColon:
                         this.assoc = AssocType.BinaryLeft;
@@ -1209,7 +1190,7 @@ namespace XSharp.MacroCompiler
             Expr _combine_binary_substr(Parser p, Expr l, Node o, Expr r) => new SubstrExpr(l, o.Token, r);
             Expr _combine_postfix_dot(Parser p, Expr l, Node o, Expr r) => new QualifiedNameExpr(p.Require((l as TypeExpr), l.Token, ErrorCode.Expected, "type"), (NameExpr)o);
             Expr _combine_postfix_colon(Parser p, Expr l, Node o, Expr r) => new MemberAccessExpr(l, o.Token, (NameExpr)o);
-            Expr _combine_binary_dot(Parser p, Expr l, Node o, Expr r) => (l is TypeExpr && r is NameExpr) ? new QualifiedNameExpr(l as TypeExpr, r as NameExpr) as Expr : new MemberAccessExpr(l, o.Token, r);
+            Expr _combine_binary_dot(Parser p, Expr l, Node o, Expr r) => (l is TypeExpr t && t.Datatype != null  && r is NameExpr) ? new QualifiedNameExpr(l as TypeExpr, r as NameExpr) as Expr : new MemberAccessExpr(l, o.Token, r);
             Expr _combine_binary_colon(Parser p, Expr l, Node o, Expr r) => new MemberAccessExpr(l, o.Token, r);
             Expr _combine_postfix_call(Parser p, Expr l, Node o, Expr r) => new MethodCallExpr(l, (ArgList)o);
             Expr _combine_postfix_index(Parser p, Expr l, Node o, Expr r) => new ArrayAccessExpr(l, (ArgList)o);

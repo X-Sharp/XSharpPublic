@@ -24,24 +24,24 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
         private XSharpToken _original = null;
         public string XmlComments { get; set; } = null;
         public bool HasXmlComments => XmlComments?.Length > 0;
-        //public IList<XSharpToken> Trivia { get; set; } = null;
-        //public bool HasTrivia => Trivia?.Count > 0;
-        //public string TriviaAsText
-        //{
-        //    get
-        //    {
-        //        if (HasTrivia)
-        //        {
-        //            var sb = new StringBuilder();
-        //            foreach (var tr in Trivia)
-        //            {
-        //                sb.Append(tr.Text);
-        //            }
-        //            return sb.ToString();
-        //        }
-        //        return String.Empty;
-        //    }
-        //}
+        public IList<XSharpToken> Trivia { get; set; } = null;
+        public bool HasTrivia => Trivia?.Count > 0;
+        public string TriviaAsText
+        {
+            get
+            {
+                if (HasTrivia)
+                {
+                    var sb = new StringBuilder();
+                    foreach (var tr in Trivia)
+                    {
+                        sb.Append(tr.Text);
+                    }
+                    return sb.ToString();
+                }
+                return String.Empty;
+            }
+        }
 
         internal XSharpToken(IToken t) : base(t)
         {

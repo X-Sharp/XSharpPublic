@@ -117,7 +117,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
         bool _onTextLine = false;
         XSharpToken _lastToken = new XSharpToken(NL);
         IList<ParseErrorData> _lexErrors = new List<ParseErrorData>();
-        //IList<XSharpToken> _trivia = new List<XSharpToken>();
+        IList<XSharpToken> _trivia = new List<XSharpToken>();
 
         System.Text.StringBuilder _textSb = new System.Text.StringBuilder();
         int _lineStartCharIndex;
@@ -1345,21 +1345,21 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                     }
                 }
             }
-            //switch (t.Channel)
-            //{
-            //    case TokenConstants.DefaultChannel:
-            //    case PREPROCESSORCHANNEL:
-            //        if (_trivia.Count > 0)
-            //        {
-            //            t.Trivia = _trivia.ToImmutableArray();
-            //            _trivia.Clear();
-            //        }
-            //        break;
-            //    case TokenConstants.HiddenChannel:
-            //    case XMLDOCCHANNEL:
-            //        _trivia.Add(t);
-            //        break;
-            //}
+            switch (t.Channel)
+            {
+                case TokenConstants.DefaultChannel:
+                case PREPROCESSORCHANNEL:
+                    if (_trivia.Count > 0)
+                    {
+                        t.Trivia = _trivia.ToImmutableArray();
+                        _trivia.Clear();
+                    }
+                    break;
+                case TokenConstants.HiddenChannel:
+                case XMLDOCCHANNEL:
+                    _trivia.Add(t);
+                    break;
+            }
             return t;
         }
 

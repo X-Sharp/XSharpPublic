@@ -384,9 +384,16 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 {
                     bld.Append(PPOPrefix);
                 }
+                bool first = !prefix;
                 foreach (var t in tokens)
                 {
+                    // Copy the trivia from the original first symbol on the line so the UDC has the proper indentlevel
+                    if (first && t.SourceSymbol!= null && t.SourceSymbol.HasTrivia && t.SourceSymbol.Type == XSharpLexer.UDC_KEYWORD)
+                    {
+                        bld.Append(t.SourceSymbol.TriviaAsText); 
+                    }
                     bld.Append(t.Text);
+                    first = false;
                 }
                 if (prefixNewLines)
                 {

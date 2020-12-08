@@ -1291,16 +1291,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             // XPP addition
             // add all normal tokens and operators until whitespace
             var first = tokens[iSource];
-            var nextpos = first.Position + first.FullWidth;
             var iEnd = iSource + 1;
-            while (iEnd < tokens.Count)
+            while (iEnd < tokens.Count && ! tokens[iEnd].HasTrivia)
             {
-                first = tokens[iEnd];
-                if (first.Position > nextpos)
-                {
-                    break;
-                }
-                nextpos = first.Position + first.FullWidth;
                 iEnd++;
             }
             iEnd -= 1;
@@ -1831,7 +1824,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         void stringifySingleResult(PPResultToken rule, IList<XSharpToken> tokens, PPMatchRange range, IList<XSharpToken> result)
         {
-            XSharpToken newToken;
             var start = range.Start;
             var end = range.End;
             if (range.Length == 1)
@@ -1841,6 +1833,39 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 {
                     result.Add(tokens[start]);
                     return;
+                }
+            }
+
+            XSharpToken JoinTokens(IList<XSharpToken> toks, int s, int e)
+            {
+                var sb = new System.Text.StringBuilder();
+                sb.Append('"');
+                for (int i = s; i <= e; i++)
+                {
+                    var token = toks[i];
+                    if (i > s && token.HasTrivia)
+                    {
+                        sb.Append(token.TriviaAsText);
+                    }
+                    sb.Append(token.Text);
+                }
+                sb.Append('"');
+                var t = new XSharpToken(toks[s], XSharpLexer.STRING_CONST, sb.ToString())
+                {
+                    Channel = XSharpLexer.DefaultTokenChannel
+                };
+                return t;
+            }
+            void addTokens(IList<XSharpToken> res, IList<XSharpToken> toks, int s, int e)
+            {
+                for (int i = s ; i <= e; i++)
+                {
+                    var token = toks[i];
+                    if (i > start + 1 && token.HasTrivia)
+                    {
+                        res.AddRange(token.Trivia);
+                    }
+                    res.Add(token);
                 }
             }
 
@@ -1856,20 +1881,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     // change type of token to STRING_CONST;
                     if (!range.Empty)
                     {
-                        // we cannot take an interval and the source stream. That will not work if a transformation has been done already
-                        var sb = new System.Text.StringBuilder();
-                        sb.Append('"');
-                        for (int i = start; i <= end; i++)
-                        {
-                            var token = tokens[i];
-                            sb.Append(token.Text);
-                        }
-                        sb.Append('"');
-                        var nt = new XSharpToken(tokens[start], XSharpLexer.STRING_CONST, sb.ToString())
-                        {
-                            Channel = XSharpLexer.DefaultTokenChannel
-                        };
-                        result.Add(nt);
+                        result.Add(JoinTokens(tokens, start, end));
                     }
                     else
                     {
@@ -1885,20 +1897,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     // Delimit the input with string delimiters
                     if (!range.Empty)
                     {
-                        // we cannot take an interval and the source stream. That will not work if a transformation has been done already
-                        var sb = new System.Text.StringBuilder();
-                        sb.Append('"');
-                        for (int i = start; i <= end; i++)
-                        {
-                            var token = tokens[i];
-                            sb.Append(token.Text);
-                        }
-                        sb.Append('"');
-                        var nt = new XSharpToken(tokens[start], XSharpLexer.STRING_CONST, sb.ToString())
-                        {
-                            Channel = XSharpLexer.DefaultTokenChannel
-                        };
-                        result.Add(nt);
+                        result.Add(JoinTokens(tokens, start, end));
                     }
                     break;
 
@@ -1922,12 +1921,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                             }
                             else
                             {
-                                newToken = new XSharpToken(token, XSharpLexer.STRING_CONST, token.Text)
-                                {
-                                    Text = "\"" + token.Text + "\"",
-                                    Channel = XSharpLexer.DefaultTokenChannel
-                                };
-                                result.Add(newToken);
+                                result.Add(JoinTokens(tokens, start, end));
                             }
                         }
                         else
@@ -1935,35 +1929,18 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                             if (tokens[start].Type == XSharpLexer.AMP )
                             {
                                 // do not include the &
-                                for (int i = start+1; i <= end; i++)
-                                {
-                                    result.Add(tokens[i]);
-                                }
+                                addTokens(result, tokens, start + 1, end);
                             }
                             else if (tokens[start].Type == XSharpLexer.LPAREN &&
                                 tokens[end].Type == XSharpLexer.RPAREN)
                             {
                                 // do not include ( and )
-                                for (int i = start + 1; i < end; i++)
-                                {
-                                    result.Add(tokens[i]);
-                                }
+                                addTokens(result, tokens, start + 1, end - 1);
                             }
                             else
                             {
-                                var sb = new System.Text.StringBuilder();
-                                sb.Append('"');
-                                for (int i = start; i <= end; i++)
-                                {
-                                    var token = tokens[i];
-                                    sb.Append(token.Text);
-                                }
-                                sb.Append('"');
-                                newToken = new XSharpToken(tokens[start], XSharpLexer.STRING_CONST, sb.ToString())
-                                {
-                                    Channel = XSharpLexer.DefaultTokenChannel
-                                };
-                                result.Add(newToken);
+                                var nt = JoinTokens(tokens, start, end);
+                                result.Add(nt);
                             }
                         }
                     }

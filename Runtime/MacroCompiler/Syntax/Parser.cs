@@ -472,10 +472,14 @@ namespace XSharp.MacroCompiler
         internal NameExpr ParseQualifiedName()
         {
             NameExpr n = ParseName();
-            while (La() == TokenType.DOT && (La(2) == TokenType.ID || TokenAttr.IsSoftKeyword(La(2))))
+            // In FoxPro there are no dotted qualifiers. The Dot is the member access operator
+            if (RuntimeState.Dialect != XSharpDialect.FoxPro)
             {
-                Consume();
-                n = new QualifiedNameExpr(n, ParseName());
+                while (La() == TokenType.DOT && (La(2) == TokenType.ID || TokenAttr.IsSoftKeyword(La(2))))
+                {
+                    Consume();
+                    n = new QualifiedNameExpr(n, ParseName());
+                }
             }
             return n;
         }
@@ -998,8 +1002,18 @@ namespace XSharp.MacroCompiler
                         break;
                     case AssocType.PostfixDot:
                         this.assoc = AssocType.Postfix;
-                        Parse = _parse_postfix_dot;
-                        Combine = _combine_postfix_dot;
+                        // In FoxPro there are no dotted qualifiers.
+                        // The Dot is the member access operator
+                        if (RuntimeState.Dialect == XSharpDialect.FoxPro)
+                        {
+                            Parse = _parse_postfix_colon;
+                            Combine = _combine_postfix_colon;
+                        }
+                        else
+                        {
+                            Parse = _parse_postfix_dot;
+                            Combine = _combine_postfix_dot;
+                        }
                         break;
                     case AssocType.PostfixColon:
                         this.assoc = AssocType.Postfix;
@@ -1009,7 +1023,16 @@ namespace XSharp.MacroCompiler
                     case AssocType.BinaryDot:
                         this.assoc = AssocType.BinaryLeft;
                         Parse = _parse;
-                        Combine = _combine_binary_dot;
+                        // In FoxPro there are no dotted qualifiers.
+                        // The Dot is the member access operator
+                        if (RuntimeState.Dialect == XSharpDialect.FoxPro)
+                        {
+                            Combine = _combine_binary_colon;
+                        }
+                        else
+                        {
+                            Combine = _combine_binary_dot;
+                        }
                         break;
                     case AssocType.BinaryColon:
                         this.assoc = AssocType.BinaryLeft;

@@ -86,13 +86,11 @@ FUNCTION Secs(cTime AS STRING) AS DWORD
 	LOCAL nHours AS INT
 	LOCAL nMinutes AS INT
 	LOCAL nSeconds AS INT
-	LOCAL nExpectedLength AS INT
 	LOCAL result AS DWORD
 	IF String.IsNullOrEmpty(cTime)
 		RETURN 0
 	ENDIF
 	cSeparator := Chr(GetTimeSep())
-	nExpectedLength := 6 + 2 * cSeparator:Length
 	LOCAL nOffSet := 0 AS INT
 	TRY
 		nHours   := Int32.Parse(cTime:Substring(nOffSet,2))
@@ -378,22 +376,27 @@ FUNCTION DtToS(dDate AS DateTime) AS STRING
 FUNCTION SToDt(cDate AS STRING) AS DateTime
 	LOCAL convertedDate AS DateTime
 	TRY
-		IF cDate:Length == 8 .AND. cDate[0] == c'0' .AND. cDate[1] == c'0'
-			// VO adjusts date strings like "00yyMMdd" to epoch-based year
-			LOCAL dwY AS DWORD
-			dwY := UInt32.Parse(cDate:Substring(0,4))
+        IF String.IsNullOrEmpty(cDate)
+            convertedDate := DateTime.MinValue
+        ELSE
+            IF cDate:Length == 8 .AND. cDate[0] == c'0' .AND. cDate[1] == c'0'
+			    // VO adjusts date strings like "00yyMMdd" to epoch-based year
+			    LOCAL dwY AS DWORD
+			    dwY := UInt32.Parse(cDate:Substring(0,4))
 			
-			// same code as in ConDate(), probably better adjust SToD() to use ConDate() directly
-			LOCAL lAfter AS LOGIC
-			lAfter := dwY > XSharp.RuntimeState.EpochYear
-			dwY += XSharp.RuntimeState.EpochCent
-			IF lAfter
-				dwY -= 100
-			ENDIF
+			    // same code as in ConDate(), probably better adjust SToD() to use ConDate() directly
+			    LOCAL lAfter AS LOGIC
+			    lAfter := dwY > XSharp.RuntimeState.EpochYear
+			    dwY += XSharp.RuntimeState.EpochCent
+			    IF lAfter
+				    dwY -= 100
+			    ENDIF
 			
-			cDate := dwY:ToString():PadLeft(4 , c'0') + cDate:Substring(4)
-		END IF
-		convertedDate := DateTime.ParseExact(cDate, "yyyyMMdd", System.Globalization.CultureInfo.InvariantCulture)
+			    cDate := dwY:ToString():PadLeft(4 , c'0') + cDate:Substring(4)
+    		END IF
+	    	convertedDate := DateTime.ParseExact(cDate, "yyyyMMdd", System.Globalization.CultureInfo.InvariantCulture)
+        ENDIF
+        
 	CATCH
 		convertedDate := DateTime.MinValue
 	END TRY

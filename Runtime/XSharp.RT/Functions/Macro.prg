@@ -72,19 +72,6 @@ FUNCTION MExec(oBlock AS CODEBLOCK) AS USUAL
 	
 
 
-// Copied from the Roslyn Lexer and Macro Lexer
-INTERNAL FUNCTION _IsLetterChar(cat AS UnicodeCategory ) AS LOGIC
-    SWITCH cat
-    CASE UnicodeCategory.UppercaseLetter
-    CASE UnicodeCategory.LowercaseLetter
-    CASE UnicodeCategory.TitlecaseLetter
-    CASE UnicodeCategory.ModifierLetter
-    CASE UnicodeCategory.OtherLetter
-    CASE UnicodeCategory.LetterNumber
-        RETURN TRUE
-    END SWITCH
-    RETURN FALSE
-
 
 // Copied from the Roslyn Lexer and Macro Lexer
 INTERNAL FUNCTION _IsIdentifierStartChar(cChar AS CHAR) AS LOGIC
@@ -101,34 +88,42 @@ INTERNAL FUNCTION _IsIdentifierStartChar(cChar AS CHAR) AS LOGIC
         // All other lower ascii are not allowed
         RETURN FALSE
     ENDIF
-    RETURN _IsLetterChar(CharUnicodeInfo.GetUnicodeCategory(cChar));
+    VAR cat := CharUnicodeInfo.GetUnicodeCategory(cChar)
+    SWITCH cat
+    CASE UnicodeCategory.UppercaseLetter
+    CASE UnicodeCategory.LowercaseLetter
+    CASE UnicodeCategory.TitlecaseLetter
+    CASE UnicodeCategory.ModifierLetter
+    CASE UnicodeCategory.OtherLetter
+    CASE UnicodeCategory.LetterNumber
+        RETURN TRUE
+    END SWITCH
+    RETURN FALSE
 
 INTERNAL FUNCTION _IsIdentifierPartChar(cChar AS CHAR) AS LOGIC
     IF _IsIdentifierStartChar(cChar)
         RETURN TRUE
     ENDIF
     VAR cat := CharUnicodeInfo.GetUnicodeCategory(cChar)
-    RETURN cat == UnicodeCategory.DecimalDigitNumber .OR. ;
-                cat == UnicodeCategory.ConnectorPunctuation .OR. ;
-                cat == UnicodeCategory.NonSpacingMark .OR. ;
-                cat == UnicodeCategory.SpacingCombiningMark .OR. ;
-                (cChar > 127 .AND. cat == UnicodeCategory.Format)
-    
-
+    SWITCH cat
+        CASE UnicodeCategory.DecimalDigitNumber
+        CASE UnicodeCategory.ConnectorPunctuation
+        CASE UnicodeCategory.NonSpacingMark
+        CASE UnicodeCategory.SpacingCombiningMark
+            RETURN TRUE
+        CASE UnicodeCategory.Format
+            RETURN cChar > 127 
+    END SWITCH
+    RETURN FALSE
 
 INTERNAL FUNCTION _IsIdentifier(cName AS STRING) AS LOGIC
-    LOCAL lFirst := TRUE AS LOGIC
-    FOREACH VAR c IN cName
-        IF lFirst
-            IF ! _IsIdentifierStartChar(c)
-                RETURN FALSE
-            ENDIF
-        ELSE
-            IF ! _IsIdentifierPartChar(c)
-                RETURN FALSE
-            ENDIF
+    IF cName:Length=0 .OR. ! _IsIdentifierStartChar(cName[0])
+       RETURN FALSE
+    ENDIF
+    FOR VAR nChar := 1 TO cName:Length-1 
+        IF ! _IsIdentifierPartChar(cName[nChar])
+            RETURN FALSE
         ENDIF
-        lFirst := FALSE
     NEXT
     RETURN TRUE
 	

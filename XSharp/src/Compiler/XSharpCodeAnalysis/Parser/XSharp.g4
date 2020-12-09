@@ -94,6 +94,7 @@ signature             : Id=identifier
                         (AS Type=datatype)?                                       
                         (ConstraintsClauses+=typeparameterconstraintsclause)*     
                         (CallingConvention=callingconvention)?
+                        (UDCSEP ExpressionBody=expression)?                       // New: Expression Body
                       ;
 
 
@@ -327,7 +328,10 @@ eventLineAccessor   : Attributes=attributes? Modifiers=accessorModifiers?
                     ;
 eventAccessor       : Attributes=attributes? Modifiers=accessorModifiers?
                       ( Key=ADD     end=eos StmtBlk=statementBlock END ADD?
-                      | Key=REMOVE  end=eos StmtBlk=statementBlock END REMOVE? )
+                      | Key=ADD     UDCSEP ExpressionBody=expression              // New: Expression Body
+                      | Key=REMOVE  end=eos StmtBlk=statementBlock END REMOVE?
+                      | Key=REMOVE  UDCSEP ExpressionBody=expression              // New: Expression Body
+                      )
                       end=eos
                     ;
 
@@ -371,9 +375,11 @@ propertyAutoAccessor: Attributes=attributes? Modifiers=accessorModifiers? Key=(G
                     ;
 
 propertyLineAccessor: Attributes=attributes? Modifiers=accessorModifiers?
-                      ( {InputStream.La(2) != SET}? Key=GET Expr=expression?
-                      | {InputStream.La(2) != GET}? Key=SET ExprList=expressionList?
-                      | Key=(GET|SET) )
+                      ( {InputStream.La(2) != SET}? Key=GET    Expr=expression?
+                      | {InputStream.La(2) != SET}? Key=UDCSEP Expr=expression?           // New: UDCSep instead of GET
+                      | {InputStream.La(2) != GET}? Key=SET    ExprList=expressionList?
+                      | Key=(GET|SET)
+                      )
                     ;
 
 accessorModifiers	: ( Tokens+=(PRIVATE | HIDDEN | PROTECTED | PUBLIC | EXPORT | INTERNAL ) )+
@@ -384,7 +390,10 @@ expressionList	    : Exprs+=expression (COMMA Exprs+=expression)*
 
 propertyAccessor    : Attributes=attributes? Modifiers=accessorModifiers?
                       ( Key=GET end=eos StmtBlk=statementBlock END GET?
-                      | Key=SET end=eos StmtBlk=statementBlock END SET? )
+                      | Key=GET UDCSEP ExpressionBody=expression              // New: Expression Body
+                      | Key=SET end=eos StmtBlk=statementBlock END SET?
+                      | Key=SET UDCSEP ExpressionBody=expression              // New: Expression Body
+                      )
                       end=eos
                     ;
 
@@ -409,7 +418,8 @@ classmember         : Member=method                                 #clsmethod
 constructor         :  (Attributes=attributes)? (Modifiers=constructorModifiers)?
                       c1=CONSTRUCTOR (ParamList=parameterList)? (AS VOID)? // As Void is allowed but ignored
                         (CallingConvention=callingconvention)? 
-                        (CLASS (Namespace=nameDot)? ClassId=identifier)?		
+                        (CLASS (Namespace=nameDot)? ClassId=identifier)?
+                        (UDCSEP ExpressionBody=expression)?               // New: Expression Body
                         end=eos
                       (Chain=constructorchain)?
                       StmtBlk=statementBlock
@@ -431,6 +441,7 @@ vodeclare           : DECLARE (ACCESS | ASSIGN | METHOD )  (~EOS)? eos
 destructor          : (Attributes=attributes)? (Modifiers=destructorModifiers)?
                       d1=DESTRUCTOR (LPAREN RPAREN)? 
                       (CLASS (Namespace=nameDot)? ClassId=identifier)?
+                      (UDCSEP ExpressionBody=expression)?               // New: Expression Body
                       end=eos
                       StmtBlk=statementBlock
                       (END d2=DESTRUCTOR EOS)?
@@ -462,6 +473,7 @@ operator_           : Attributes=attributes? Modifiers=operatorModifiers?
                       o1=OPERATOR (Operation=overloadedOps | Conversion=conversionOps) Gt=GT?
                       ParamList=parameterList
                       (AS Type=datatype)?
+                      (UDCSEP ExpressionBody=expression)?             // New: Expression Body
                       end=eos
                       StmtBlk=statementBlock
                      (END o1=OPERATOR EOS)?
@@ -711,7 +723,7 @@ localfuncproc       :  (Modifiers=localfuncprocModifiers)?
                         LOCAL T=(FUNCTION|PROCEDURE) Sig=signature
                         end=eos   
                         StmtBlk=statementBlock
-                        END T2=(FUNCTION|PROCEDURE)   EOS 
+                        END T2=(FUNCTION|PROCEDURE)  EOS 
                      ;
 
 localfuncprocModifiers : ( Tokens+=(UNSAFE | ASYNC) )+
@@ -1253,6 +1265,7 @@ xppmethod           : (Attributes=attributes)?                              // N
                       (AS Type=datatype)?                                   // NEW Optional return type
                       // no type constraints
                       // no calling convention
+                      (UDCSEP ExpressionBody=expression)?                   // New: Expression Body
                       end=eos
                       StmtBlk=statementBlock
                       (END METHOD eos)?
@@ -1267,6 +1280,7 @@ xppinlineMethod     : (Attributes=attributes)?                               // 
                       (AS Type=datatype)?                                   // NEW Optional return type
                       // no type constraints
                       // no calling convention
+                      (UDCSEP ExpressionBody=expression)?                   // New: Expression Body
                       end=eos
                       StmtBlk=statementBlock
                       (END METHOD eos)?

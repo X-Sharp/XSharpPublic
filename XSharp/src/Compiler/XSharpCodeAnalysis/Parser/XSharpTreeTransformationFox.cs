@@ -297,7 +297,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             var mods = context.Modifiers?.GetList<SyntaxToken>() ?? DefaultMethodModifiers(false, false, context.TypeParameters != null);
             var isExtern = mods.Any((int)SyntaxKind.ExternKeyword);
             var isAbstract = mods.Any((int)SyntaxKind.AbstractKeyword);
-            var hasNoBody = isExtern || isAbstract;
+            var hasNoBody = isExtern || isAbstract || context.Sig.ExpressionBody != null;
             var mName = idName.Text;
             if (mName.EndsWith("_ACCESS", StringComparison.OrdinalIgnoreCase))
             {
@@ -340,7 +340,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             var parameters = getParameters(context.ParamList);
             var body = hasNoBody ? null : processEntityBody(context);
-
+            var expressionBody = GetExpressionBody(context.Sig.ExpressionBody);
             var returntype = context.Type?.Get<TypeSyntax>();
             if (returntype == null)
             {
@@ -384,7 +384,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 parameterList: parameters,
                 constraintClauses: getTypeConstraints(context._ConstraintsClauses),
                 body: body,
-                expressionBody: null, // TODO: (grammar) expressionBody methods
+                expressionBody: expressionBody, 
                 semicolonToken: (!hasNoBody && context.StmtBlk != null) ? null : SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken));
             if (hasExtensionAttribute)
             {

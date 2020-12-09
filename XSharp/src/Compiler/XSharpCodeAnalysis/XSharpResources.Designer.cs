@@ -4526,6 +4526,15 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to An Expression Body return expression is not supported for methods / functions with untyped parameters..
+        /// </summary>
+        internal static string ERR_ExpressionBodyClipperCallingConvention {
+            get {
+                return ResourceManager.GetString("ERR_ExpressionBodyClipperCallingConvention", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Expected expression.
         /// </summary>
         internal static string ERR_ExpressionExpected {

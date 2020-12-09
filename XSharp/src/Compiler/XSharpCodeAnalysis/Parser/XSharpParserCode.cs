@@ -53,7 +53,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             if (InputStream.La(1) != LPAREN)
                 return false;
             // Quick check for (DWORD) or similar with type keyword
-            if (InputStream.La(3) == RPAREN && XSharpLexer.IsType(InputStream.La(2)) )
+            if (InputStream.La(3) == RPAREN && XSharpLexer.IsType(InputStream.La(2)))
             {
                 return true;
             }
@@ -211,6 +211,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             InternalSyntax.XppDeclaredMethodInfo Info { get; }
             ParameterListContext Parameters { get; }
             new StatementBlockContext Statements { get; set; }
+            ExpressionContext ExprBody { get; }
         }
         #endregion
         #region Flags
@@ -243,7 +244,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             HasUndeclared = 1 << 21,    // member property
             HasMemVarLevel = 1 << 22,   // member property
             UsesPCount = 1 << 23,       // member property
-            ParameterAssign = 1 <<24, // member property
+            ParameterAssign = 1 << 24, // member property
         }
         #endregion
 
@@ -400,7 +401,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             }
 
             internal Dictionary<string, MemVarFieldInfo> Fields = null;
-            internal MemVarFieldInfo AddField(string Name, string Alias,XSharpParserRuleContext context)
+            internal MemVarFieldInfo AddField(string Name, string Alias, XSharpParserRuleContext context)
             {
                 if (Fields == null)
                 {
@@ -475,7 +476,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             public TypeparametersContext TypeParameters => Sig.TypeParameters;
             public IList<TypeparameterconstraintsclauseContext> _ConstraintsClauses => Sig._ConstraintsClauses;
             public ParameterListContext ParamList => Sig.ParamList;
-            public DatatypeContext Type => Sig.Type; 
+            public DatatypeContext Type => Sig.Type;
             public CallingconventionContext CallingConvention => Sig.CallingConvention;
             EntityData data = new EntityData();
             public EntityData Data => data;
@@ -516,15 +517,16 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             TypeparametersContext TypeParameters { get; }
             IList<TypeparameterconstraintsclauseContext> _ConstraintsClauses { get; }
             ParameterListContext ParamList { get; }
-            DatatypeContext Type  { get; }
+            DatatypeContext Type { get; }
             MemberModifiersContext Mods { get; }
+            ExpressionContext ExpressionBody { get; }
             bool IsInInterface { get; }
             bool IsInStructure { get; }
             int RealType { get; }
         }
         public partial class MethodContext : IMethodContext, IBodyWithLocalFunctions
         {
-            public IdentifierContext Id => Sig.Id; 
+            public IdentifierContext Id => Sig.Id;
             public TypeparametersContext TypeParameters => Sig.TypeParameters;
             public IList<TypeparameterconstraintsclauseContext> _ConstraintsClauses => Sig._ConstraintsClauses;
             public ParameterListContext ParamList => Sig.ParamList;
@@ -538,6 +540,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             public DatatypeContext ReturnType => this.Type;
             public MemberModifiersContext Mods => this.Modifiers;
             public String ShortName => this.Id.GetText();
+            public ExpressionContext ExpressionBody => Sig.ExpressionBody;
             public String Name
             {
                 get
@@ -575,6 +578,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             public ParameterListContext Params => this.Sig.ParamList;
             public DatatypeContext ReturnType => this.Sig.Type;
             public String ShortName => this.Sig.Id.GetText();
+            public ExpressionContext ExpressionBody => Sig.ExpressionBody;
             public String Name
             {
                 get
@@ -721,17 +725,17 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
         {
             EntityData data = new EntityData();
             List<IMethodContext> partialProperties = null;
-            public  List<IMethodContext> PartialProperties
+            public List<IMethodContext> PartialProperties
             {
                 get { return partialProperties; }
                 set { partialProperties = value; }
-            } 
+            }
             public EntityData Data => data;
             public ParameterListContext Params => null;
             public DatatypeContext ReturnType => null;
             public String Name => ParentName + ShortName;
             public String ShortName => this.Id.GetText();
-            
+
         }
         public partial class Class_Context : IPartialPropertyContext, IEntityContext
         {
@@ -800,7 +804,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             public bool IsStaticVisible { get; set; }
         }
 
-        public partial class VounionContext : IEntityContext 
+        public partial class VounionContext : IEntityContext
         {
             EntityData data = new EntityData();
             public EntityData Data => data;
@@ -845,7 +849,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             {
                 get
                 {
-                    string name = this.Id.GetText() +"()";
+                    string name = this.Id.GetText() + "()";
                     return ParentName + name;
                 }
             }
@@ -855,6 +859,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             public StatementBlockContext Statements { get { return this.StmtBlk; } set { this.StmtBlk = value; } }
             public ParameterListContext Parameters => this.ParamList;
             public IList<object> LocalFunctions { get; set; } = null;
+            public ExpressionContext ExprBody { get { return this.ExpressionBody; } }
         }
         public partial class XppinlineMethodContext : IXPPEntityContext, IBodyWithLocalFunctions
         {
@@ -877,6 +882,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             public StatementBlockContext Statements { get { return this.StmtBlk; } set { this.StmtBlk = value; } }
             public ParameterListContext Parameters => this.ParamList;
             public IList<object> LocalFunctions { get; set; } = null;
+            public ExpressionContext ExprBody { get { return this.ExpressionBody; } }
         }
 
         public partial class WithBlockContext
@@ -898,7 +904,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             {
                 get
                 {
-                    string name = this.Id.GetText() ;
+                    string name = this.Id.GetText();
                     return ParentName + name;
                 }
             }
@@ -927,11 +933,11 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
         }
         public partial class UnnamedArgumentContext
         {
-            internal bool IsMissing => Expr == null ;
+            internal bool IsMissing => Expr == null;
         }
 
         [Flags]
-        internal enum FoxFlags: byte
+        internal enum FoxFlags : byte
         {
             None = 0,
             MemberAccess = 1,
@@ -967,7 +973,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                 return Code.ToString() + " " + xterm.Symbol.Line.ToString() + " " + xterm.Symbol.Text;
             if (Node.SourceSymbol != null)
                 return Code.ToString() + " " + Node.SourceSymbol.Line.ToString() + " " + Node.SourceSymbol.Text;
-             return Code.ToString();
+            return Code.ToString();
         }
         //internal ParseErrorData(ErrorCode code) :
         //    this(node: null, code: code, args: Array.Empty<object>())
@@ -1114,7 +1120,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             {
                 if (VarType == vartype.MacroMemvar)
                 {
-                    var name = Name.Substring(0, Name.IndexOf(":") );
+                    var name = Name.Substring(0, Name.IndexOf(":"));
                     return Alias + "->" + name;
                 }
                 if (Alias != null)
@@ -1128,7 +1134,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             }
         }
 
-        public bool IsClipperParameter=> _varType == vartype.ClipperParameter;
+        public bool IsClipperParameter => _varType == vartype.ClipperParameter;
         public bool IsFileWidePublic { get; private set; }
         public bool IsParameter { get; set; }
         public bool IsWritten { get; set; }
@@ -1319,7 +1325,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             else
                 return parent.isInInterface();
         }
-        
+
         internal static bool IsInLambdaOrCodeBlock([NotNull] this RuleContext context)
         {
             var parent = context.Parent;

@@ -1626,6 +1626,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 suffix = XSharpSpecialNames.AssignSuffix;
                 returntype = voidType;
             }
+            var nobody = context.ExpressionBody != null;
             var name = SyntaxFactory.Identifier(context.Id.GetText() + suffix);
             var parameters = getParameters(context.ParamList);
             SyntaxList<SyntaxToken> mods;
@@ -1635,7 +1636,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 mods = TokenList(SyntaxKind.PrivateKeyword);
 
 
-            var body = context.Statements.Get<BlockSyntax>();
+            var body = nobody ? null : context.Statements.Get<BlockSyntax>();
+            var expressionBody = GetExpressionBody(context.ExpressionBody);
+
             MemberDeclarationSyntax m = _syntaxFactory.MethodDeclaration(
                  attributeLists: null,
                  modifiers: mods,
@@ -1646,7 +1649,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                  parameterList: parameters,
                  constraintClauses: getTypeConstraints(context._ConstraintsClauses),
                  body: body,
-                 expressionBody: null, // TODO: (grammar) expressionBody methods
+                 expressionBody: expressionBody, 
                  semicolonToken: SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)
                  );
             var rule = context as XSharpParserRuleContext;
@@ -1879,7 +1882,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     outerMods.Any((int)SyntaxKind.ExternKeyword);
                 var m = AccMet.Get<MethodDeclarationSyntax>();
                 var args = MakeArgumentList(voPropArgs);
-                BlockSyntax block = isInInterfaceOrAbstract ? null : m.Body;
+                var nobody = isInInterfaceOrAbstract || AccMet.ExpressionBody != null;
+                BlockSyntax block = nobody ? null : m.Body;
+                var expressionBody = GetExpressionBody(AccMet.ExpressionBody);
                 if (AssMet != null)
                 {
                     // When both Access and Assign exist, then check the parameter names and types
@@ -1935,8 +1940,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 var accessor = _syntaxFactory.AccessorDeclaration(SyntaxKind.GetAccessorDeclaration,
                         EmptyList<AttributeListSyntax>(), getMods.ToList<SyntaxToken>(),
                         SyntaxFactory.MakeToken(SyntaxKind.GetKeyword),
-                        isInInterfaceOrAbstract ? null : block,
-                        null,
+                        nobody ? null : block,
+                        expressionBody,
                         isInInterfaceOrAbstract ? null : m.SemicolonToken);
                 accessor.XGenerated = mergePartialDeclarations;
                 if (vop.DupAccess != null)
@@ -1980,7 +1985,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     outerMods.Any((int)SyntaxKind.AbstractKeyword) ||
                     outerMods.Any((int)SyntaxKind.ExternKeyword);
                 var m = AssMet.Get<MethodDeclarationSyntax>();
-                BlockSyntax block = null;
+                var nobody = isInInterfaceOrAbstract || AssMet.ExpressionBody != null;
+                var expressionBody = GetExpressionBody(AssMet.ExpressionBody);
+                BlockSyntax block = nobody ? null : m.Body;
                 if (!isInInterfaceOrAbstract)
                 {
                     if (mergePartialDeclarations)
@@ -2033,8 +2040,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 var accessor = _syntaxFactory.AccessorDeclaration(SyntaxKind.SetAccessorDeclaration,
                         EmptyList<AttributeListSyntax>(), setMods.ToList<SyntaxToken>(),
                         SyntaxFactory.MakeToken(SyntaxKind.SetKeyword),
-                        isInInterfaceOrAbstract ? null : block,
-                        null,
+                        nobody ? null : block,
+                        expressionBody,
                         isInInterfaceOrAbstract ? null : m.SemicolonToken);
                 accessor.XGenerated = mergePartialDeclarations;
                 if (vop.DupAssign != null)
@@ -3220,13 +3227,15 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         }
         public override void ExitEventAccessor([NotNull] XP.EventAccessorContext context)
         {
-            var body = processEntityBody(context);
+            var nobody = context.ExpressionBody != null;
+            var body = nobody ? null : processEntityBody(context);
+            var expressionBody = GetExpressionBody(context.ExpressionBody);
             context.Put(_syntaxFactory.AccessorDeclaration(context.Key.AccessorKind(),
                 attributeLists: getAttributes(context.Attributes),
                 modifiers: context.Modifiers?.GetList<SyntaxToken>() ?? EmptyList<SyntaxToken>(),
                 keyword: context.Key.SyntaxKeyword(),
                 body: body,
-                expressionBody: null,
+                expressionBody: expressionBody,
                 semicolonToken: SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)));
         }
         #endregion
@@ -3604,10 +3613,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         public override void ExitPropertyLineAccessor([NotNull] XP.PropertyLineAccessorContext context)
         {
             bool forceBody = false;
+            int type = context.Key.Type;
             var property = context.Parent as XP.PropertyContext;
             var isExtern = property.Modifiers?.EXTERN().Count() > 0;
             var isAbstract = property.Modifiers?.ABSTRACT().Count() > 0;
-            if (context.Key.Type == XP.SET)
+            if (type == XP.SET)
             {
                 if (context.ExprList == null)
                 {
@@ -3623,7 +3633,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 }
             }
 
-            if (context.Key.Type == XP.GET && context.Expr != null)
+            if ((type == XP.GET || type == XP.UDCSEP) && context.Expr != null)
             {
                 context.Expr.SetSequencePoint();
             }
@@ -3633,13 +3643,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             var kind = context.Key.AccessorKind();
             ArrowExpressionClauseSyntax expressionBody = null;
             BlockSyntax body = null;
-            if (context.Key.Type == XP.GET)
+            if (type == XP.GET || type == XP.UDCSEP)
             {
-                if (context.Expr != null)
-                {
-                    expressionBody = _syntaxFactory.ArrowExpressionClause(
-                        SyntaxFactory.MakeToken(SyntaxKind.EqualsGreaterThanToken), context.Expr.Get<ExpressionSyntax>());
-                }
+                expressionBody = GetExpressionBody(context.Expr);
             }
             else // SET
             {
@@ -3737,7 +3743,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             context.SetSequencePoint(context.end);
             var attributes = getAttributes(context.Attributes);
             var parameters = getParameters(context.ParamList);
-            var body = processEntityBody(context);
+            var nobody = context.ExpressionBody != null;
+            var body = nobody ? null : processEntityBody(context);
             var mods = context.Modifiers?.GetList<SyntaxToken>() ?? TokenListWithDefaultVisibility();
             TypeSyntax returntype = null;
             ImplementClipperAndPSZ(context, ref attributes, ref parameters, ref body, ref returntype);
@@ -3756,6 +3763,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 parentId = SyntaxFactory.MakeIdentifier("unknown");
                 missingParent = true;
             }
+            var expressionBody = GetExpressionBody(context.ExpressionBody);
             var ctor = _syntaxFactory.ConstructorDeclaration(
                 attributeLists: attributes,
                 modifiers: mods,
@@ -3763,7 +3771,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 parameterList: parameters,
                 initializer: createInitializer(context.Chain),
                 body: body,
-                expressionBody: null,
+                expressionBody: expressionBody,
                 semicolonToken: (context.StmtBlk?._Stmts?.Count > 0) ? null : SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken));
             if (context.Chain != null)
             {
@@ -3796,6 +3804,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             // body = AddMissingReturnStatement(body, context.StmtBlk, null);
             bool missingParent = false;
             bool genClass = false;
+            var nobody = context.ExpressionBody != null;
             var parentId = getParentId(context);
             if (parentId == null && context.ClassId != null)
             {
@@ -3807,7 +3816,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 parentId = SyntaxFactory.MakeIdentifier("unknown");
                 missingParent = true;
             }
-            var body = processEntityBody(context);
+            var body = nobody ? null :processEntityBody(context);
+            var expressionBody = GetExpressionBody(context.ExpressionBody);
             var dtor = _syntaxFactory.DestructorDeclaration(
                 attributeLists: getAttributes(context.Attributes),
                 modifiers: context.Modifiers?.GetList<SyntaxToken>() ?? EmptyList<SyntaxToken>(),
@@ -3815,7 +3825,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 identifier: parentId,
                 parameterList: EmptyParameterList(),
                 body: body,
-                expressionBody: null,
+                expressionBody: expressionBody,
                 semicolonToken: (context.StmtBlk != null) ? null : SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken));
             if (missingParent)
             {
@@ -3843,7 +3853,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             context.SetSequencePoint(context.end);
             var attributes = getAttributes(context.Attributes);
             ParameterListSyntax parameters = null;
-            var body = processEntityBody(context);
+            var nobody = context.ExpressionBody != null;
+            var body = nobody ? null : processEntityBody(context);
+            var expressionBody = GetExpressionBody(context.ExpressionBody);
             TypeSyntax returntype = null;
             ImplementClipperAndPSZ(context, ref attributes, ref parameters, ref body, ref returntype);
 
@@ -3852,7 +3864,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 modifiers: context.Modifiers?.GetList<SyntaxToken>() ?? EmptyList<SyntaxToken>(),
                 keyword: context.Key.SyntaxKeyword(),
                 body: body,
-                expressionBody: null,
+                expressionBody: expressionBody,
                 semicolonToken: SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)));
         }
         public override void EnterMethod([NotNull] XP.MethodContext context)
@@ -3959,7 +3971,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             var mods = context.Modifiers?.GetList<SyntaxToken>() ?? DefaultMethodModifiers(isInInterface, context.isInStructure(), context.TypeParameters != null);
             var isExtern = mods.Any((int)SyntaxKind.ExternKeyword);
             var isAbstract = mods.Any((int)SyntaxKind.AbstractKeyword);
-            var hasNoBody = isInInterface || isExtern || isAbstract;
+            var hasNoBody = isInInterface || isExtern || isAbstract | context.Sig.ExpressionBody != null;
+            var expressionBody = GetExpressionBody(context.Sig.ExpressionBody);
             if (_options.Dialect == XSharpDialect.FoxPro)
             {
                 var mName = idName.Text;
@@ -4103,7 +4116,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 parameterList: parameters,
                 constraintClauses: getTypeConstraints(context._ConstraintsClauses),
                 body: body,
-                expressionBody: null, // TODO: (grammar) expressionBody methods
+                expressionBody: expressionBody, 
                 semicolonToken: (!hasNoBody && context.StmtBlk != null) ? null : SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken));
             if (hasExtensionAttribute)
             {
@@ -4201,7 +4214,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         public override void ExitOperator_([NotNull] XP.Operator_Context context)
         {
             context.SetSequencePoint(context.end);
-            var body = processEntityBody(context);
+            var nobody = context.ExpressionBody != null;
+            var body = nobody ? null : processEntityBody(context);
+            var expressionBody = GetExpressionBody(context.ExpressionBody);
             if (context.Conversion != null)
                 context.Put(_syntaxFactory.ConversionOperatorDeclaration(
                     attributeLists: getAttributes(context.Attributes),
@@ -4211,7 +4226,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     type: getReturnType(context),
                     parameterList: getParameters(context.ParamList),
                     body: body,
-                    expressionBody: null, // TODO: (grammar) expressionBody methods
+                    expressionBody: expressionBody,  
                     semicolonToken: (context.StmtBlk != null) ? null : SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)));
             else
             {
@@ -4240,7 +4255,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     operatorToken: opToken,
                     parameterList: getParameters(context.ParamList),
                     body: body,
-                    expressionBody: null, // TODO: (grammar) expressionBody methods
+                    expressionBody: expressionBody, 
                     semicolonToken: (context.StmtBlk != null) ? null : SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)));
             }
         }
@@ -4690,7 +4705,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             var mods = modifiers.ToList();
             var parameters = getParameters(context.ParamList);
-            var body = processEntityBody(context);
+            var nobody = context.Sig.ExpressionBody != null;
+            var body = nobody ? null : processEntityBody(context);
+            var expressionBody = GetExpressionBody(context.Sig.ExpressionBody);
             var returntype = isprocedure ? voidType : context.Type.Get<TypeSyntax>();
             returntype.XVoDecl = true;
             var id = context.Id.Get<SyntaxToken>();
@@ -4708,7 +4725,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 parameterList: parameters,
                 constraintClauses: getTypeConstraints(context._ConstraintsClauses),
                 body: body,
-                expressionBody: null,
+                expressionBody: expressionBody,
                 semicolonToken: SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken));
             context.Put(localfuncdecl);
         }
@@ -5089,6 +5106,18 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
         }
 
+        protected virtual ArrowExpressionClauseSyntax GetExpressionBody([NotNull] XP.ExpressionContext context)
+        {
+            ArrowExpressionClauseSyntax expressionBody = null;
+            if (context!= null)
+            {
+                expressionBody = _syntaxFactory.ArrowExpressionClause(
+                    SyntaxFactory.MakeToken(SyntaxKind.EqualsGreaterThanToken),
+                    context.Get<ExpressionSyntax>());
+            }
+            return expressionBody;
+        }
+
         public override void ExitFuncproc([NotNull] XP.FuncprocContext context)
         {
             if (context.T != null && context.end  != null)
@@ -5111,13 +5140,14 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 isextern = modifiers.Any((int)SyntaxKind.ExternKeyword);
             }
-            var hasnobody = (isInInterface || isextern);
+            var hasnobody = (isInInterface || isextern || context.Sig.ExpressionBody != null);
             var parameters = getParameters(context.ParamList);
             if (isextern)
             {
                 parameters = UpdateVODLLParameters(parameters);
             }
             var body = hasnobody ? null : processEntityBody(context);
+            var expressionBody =  GetExpressionBody(context.Sig.ExpressionBody);
             var returntype = getReturnType(context);
             if (isprocedure)
             {
@@ -5170,7 +5200,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 parameterList: parameters,
                 constraintClauses: getTypeConstraints(context._ConstraintsClauses),
                 body: body,
-                expressionBody: null,
+                expressionBody: expressionBody,
                 semicolonToken: (body != null) ? null : SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)));
 
         }

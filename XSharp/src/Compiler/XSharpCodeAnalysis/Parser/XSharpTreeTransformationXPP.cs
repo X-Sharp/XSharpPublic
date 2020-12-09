@@ -582,7 +582,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         MemberDeclarationSyntax XppCreateMethod(XP.IXPPEntityContext context, SyntaxToken idName, SyntaxList<AttributeListSyntax> attributes,
             SyntaxList<SyntaxToken> modifiers, ParameterListSyntax parameters, TypeSyntax returnType)
         {
-            var body = processEntityBody(context);
+            var nobody = context.ExprBody != null;
+            var body = nobody ? null : processEntityBody(context);
+            var expressionBody = GetExpressionBody(context.ExprBody);
             var oldbody = body;
             ImplementClipperAndPSZ(context, ref attributes, ref parameters, ref body, ref returnType);
             if (body != oldbody)
@@ -607,7 +609,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                   parameterList: parameters,
                   constraintClauses: null,
                   body: body,
-                  expressionBody: null, // TODO: (grammar) expressionBody methods
+                  expressionBody: expressionBody, 
                   semicolonToken: SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken));
             return m;
         }

@@ -66,10 +66,10 @@ namespace XSharp.Parser
             // so we can show UDC keywords and inactive PP regions
             if (lexer.HasPreprocessorTokens || !options.NoStdDef)
             {
-	            var pp = new XSharpPreprocessor(lexer, tokens, options, fileName, Encoding.Unicode, SourceHashAlgorithm.None, parseErrors);
-    	        var ppTokens = pp.PreProcess();
-        	    ppStream = new CommonTokenStream(new XSharpListTokenSource(lexer, ppTokens));
-			}
+                var pp = new XSharpPreprocessor(lexer, tokens, options, fileName, Encoding.Unicode, SourceHashAlgorithm.None, parseErrors);
+                var ppTokens = pp.PreProcess();
+                ppStream = new CommonTokenStream(new XSharpListTokenSource(lexer, ppTokens));
+            }
             else
             {
                 ppStream = new CommonTokenStream(new XSharpListTokenSource(lexer, stream.GetTokens()));

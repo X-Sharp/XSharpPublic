@@ -5736,5 +5736,10 @@ To remove the warning, you can use /reference instead (set the Embed Interop Typ
   <data name="ERR_UnExpectedExpected" xml:space="preserve">
     <value>Unexpected token '{0}', expected '{1}'.</value>
   </data>
+  <data name="ERR_ExpressionBodyClipperCallingConvention" xml:space="preserve">
+    <value>An Expression Body is not supported for methods / functions with untyped parameters.</value>
+  </data>
+
+  
 
 </root>

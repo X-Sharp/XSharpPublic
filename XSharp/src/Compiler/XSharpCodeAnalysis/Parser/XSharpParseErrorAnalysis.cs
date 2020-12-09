@@ -158,7 +158,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             if (context.T.Type == XSharpParser.PROCEDURE)
             {
-                if (context.Sig.Type != null)
+                if (context.Sig.Type != null && context.Sig.Type.Start.Type != XSharpLexer.VOID)
                 {
                     _parseErrors.Add(new ParseErrorData(context.Sig.Type.Start, ErrorCode.ERR_UnexpectedToken, context.Sig.Type.GetText()));
                 }
@@ -184,6 +184,39 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     if (param.Attributes != null)
                     {
                         _parseErrors.Add(new ParseErrorData(param.Stop, ErrorCode.ERR_AttributesInLocalFuncDecl));
+                    }
+                }
+            }
+        }
+
+        public override void ExitSignature([NotNull] XSharpParser.SignatureContext context)
+        {
+            if (context.ExpressionBody != null)
+            {
+                var parent = context.Parent as XSharpParser.IEntityWithBodyContext;
+                if (parent != null && parent.Statements != null)
+                {
+                    if (parent.Statements._Stmts.Count > 0)
+                    {
+                        _parseErrors.Add(new ParseErrorData(context.ExpressionBody, ErrorCode.ERR_BlockBodyAndExpressionBody));
+                    }
+                }
+                // Clipper calling convention is not supported
+                if (context.ParamList?._Params?.Count > 0)
+                {
+                    bool hasClipper = false;
+                    foreach (XSharpParser.ParameterContext param in context.ParamList._Params)
+                    {
+                        if (param.Type == null)
+                        {
+                            hasClipper = true;
+                            break;
+                        }
+                    }
+                    if (hasClipper)
+                    {
+                        _parseErrors.Add(new ParseErrorData(context.ExpressionBody, ErrorCode.ERR_ExpressionBodyClipperCallingConvention));
+                        
                     }
                 }
             }
@@ -611,8 +644,14 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 _parseErrors.Add(new ParseErrorData(context.c1, ErrorCode.ERR_InterfacesCantContainConstructors));
             }
+            if (context.ExpressionBody != null && context.Statements != null)
+            {
+                if (context.Statements._Stmts.Count > 0)
+                {
+                    _parseErrors.Add(new ParseErrorData(context.ExpressionBody, ErrorCode.ERR_BlockBodyAndExpressionBody));
+                }
+            }
         }
-
         public override void ExitOperator_([NotNull] XSharpParser.Operator_Context context)
         {
             if (context.Modifiers?.EXTERN().Length > 0)
@@ -620,6 +659,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 if (context.StmtBlk?._Stmts?.Count > 0)
                 {
                     _parseErrors.Add(new ParseErrorData(context.StmtBlk, ErrorCode.ERR_ExternHasBody, "Operator"));
+                }
+            }
+            if (context.ExpressionBody != null && context.Statements != null)
+            {
+                if (context.Statements._Stmts.Count > 0)
+                {
+                    _parseErrors.Add(new ParseErrorData(context.ExpressionBody, ErrorCode.ERR_BlockBodyAndExpressionBody));
                 }
             }
 
@@ -715,6 +761,14 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 _parseErrors.Add(new ParseErrorData(context.d1, ErrorCode.ERR_InterfacesCantContainConstructors));
             }
+            if (context.ExpressionBody != null && context.Statements != null)
+            {
+                if (context.Statements._Stmts.Count > 0)
+                {
+                    _parseErrors.Add(new ParseErrorData(context.ExpressionBody, ErrorCode.ERR_BlockBodyAndExpressionBody));
+                }
+            }
+
         }
 
 
@@ -829,6 +883,29 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 NotInDialect(context, "Xbase++ METHOD Syntax");
             }
+            else if (context.ExpressionBody != null && context.Statements != null)
+            {
+                if (context.Statements._Stmts.Count > 0)
+                {
+                    _parseErrors.Add(new ParseErrorData(context.ExpressionBody, ErrorCode.ERR_BlockBodyAndExpressionBody));
+                }
+            }
+
+        }
+        public override void ExitXppinlineMethod([NotNull] XSharpParser.XppinlineMethodContext context)
+        {
+            if (_options.Dialect != XSharpDialect.XPP)
+            {
+                NotInDialect(context, "Xbase++ METHOD Syntax");
+            }
+            else if (context.ExpressionBody != null && context.Statements != null)
+            {
+                if (context.Statements._Stmts.Count > 0)
+                {
+                    _parseErrors.Add(new ParseErrorData(context.ExpressionBody, ErrorCode.ERR_BlockBodyAndExpressionBody));
+                }
+            }
+
         }
 
         public override void ExitXppclassvars([NotNull] XSharpParser.XppclassvarsContext context)
@@ -1043,6 +1120,27 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             if (isAbstract && isExtern)
             {
                 _parseErrors.Add(new ParseErrorData(context.Modifiers, ErrorCode.ERR_AbstractAndExtern));
+            }
+        } 
+
+        public override void ExitPropertyAccessor([NotNull] XSharpParser.PropertyAccessorContext context)
+        {
+            if (context.ExpressionBody != null && context.StmtBlk != null)
+            {
+                if (context.StmtBlk._Stmts.Count > 0)
+                {
+                    _parseErrors.Add(new ParseErrorData(context.ExpressionBody, ErrorCode.ERR_BlockBodyAndExpressionBody));
+                }
+            }
+        }
+        public override void ExitEventAccessor([NotNull] XSharpParser.EventAccessorContext context)
+        {
+            if (context.ExpressionBody != null && context.StmtBlk != null)
+            {
+                if (context.StmtBlk._Stmts.Count > 0)
+                {
+                    _parseErrors.Add(new ParseErrorData(context.ExpressionBody, ErrorCode.ERR_BlockBodyAndExpressionBody));
+                }
             }
         }
         public override void ExitJumpStmt([NotNull] XSharpParser.JumpStmtContext context)

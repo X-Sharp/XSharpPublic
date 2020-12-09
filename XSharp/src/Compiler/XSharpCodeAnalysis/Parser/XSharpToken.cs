@@ -22,8 +22,26 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
         internal int MappedLine = -1;
         internal XSharpToken SourceSymbol;
         private XSharpToken _original = null;
-        public string XmlComments { get; set; } = null;
-        public bool HasXmlComments => XmlComments?.Length > 0;
+        public string XmlComments
+        {
+            get
+            {
+                if (HasTrivia)
+                {
+                    var sb = new StringBuilder();
+                    foreach (var t in Trivia)
+                    {
+                        if (t.Channel == XSharpLexer.XMLDOCCHANNEL)
+                            sb.Append(t.Text);
+                    }
+                    return sb.ToString();
+                }
+                return "";
+
+            }
+
+        }
+        public bool HasXmlComments => HasTrivia && Trivia.Any(t => t.Channel == XSharpLexer.XMLDOCCHANNEL);
         public IList<XSharpToken> Trivia { get; set; } = null;
         public bool HasTrivia => Trivia?.Count > 0;
         public string TriviaAsText
@@ -72,8 +90,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             StartIndex = token.StartIndex;
             StopIndex = token.StopIndex;
             SourceSymbol = token;
-            XmlComments = token.XmlComments;
-            //Trivia = token.Trivia;
+            Trivia = token.Trivia;
         }
         internal XSharpToken(int type, string text, XSharpToken token) : base(type, text)
         {
@@ -83,8 +100,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             StartIndex = token.StartIndex;
             StopIndex = token.StopIndex;
             SourceSymbol = token;
-            XmlComments = token.XmlComments;
-            //Trivia = token.Trivia;
+            Trivia = token.Trivia;
         }
 
         internal XSharpToken(Tuple<ITokenSource, ICharStream> source, int type, int channel, int start, int stop) :

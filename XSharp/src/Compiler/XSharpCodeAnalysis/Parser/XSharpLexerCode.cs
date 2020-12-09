@@ -143,42 +143,6 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
         #endregion
 
 
-        internal void BindXmlDocTokens(BufferedTokenStream stream)
-        {
-            // Find xml comment nodes in the list and link them as a string 
-            // to the first non white space token that follows them
-            // this is usually the begin of an entity but could also be in the middle of 
-            // an entity
-            if (!HasDocComments)
-            {
-                return;
-            }
-            var comments = new System.Text.StringBuilder();
-            var tokens = stream.GetTokens();
-            for (int itoken = 0; itoken < tokens.Count; itoken++)
-            {
-                var token = (XSharpToken)tokens[itoken];
-                switch (token.Channel)
-                {
-                    case XSharpLexer.XMLDOCCHANNEL:
-                        comments.AppendLine(token.Text);
-                        break;
-                    case XSharpLexer.DEFOUTCHANNEL:
-                    case XSharpLexer.PREPROCESSORCHANNEL:
-                    case XSharpLexer.Hidden:
-                        break;
-                    default:
-                        if (comments.Length > 0)
-                        {
-                            token.XmlComments = comments.ToString();
-                            comments.Clear();
-                        }
-                        break;
-                }
-            }
-        }
-
-
         private Tuple<ITokenSource, ICharStream> _sourcePair;
         public Tuple<ITokenSource, ICharStream> SourcePair
         {

@@ -189,10 +189,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 lexer = XSharpLexer.Create(sourceText, _fileName, _options);
                 lexer.Options = _options;
                 _lexerTokenStream = lexer.GetTokenStream();
-                if (_options.DocumentationMode != DocumentationMode.None )
-                {
-                    lexer.BindXmlDocTokens(_lexerTokenStream);
-                }
 
             }
             catch (Exception e)

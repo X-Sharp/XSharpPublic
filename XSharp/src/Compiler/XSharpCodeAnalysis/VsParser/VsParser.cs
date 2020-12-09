@@ -60,7 +60,6 @@ namespace XSharp.Parser
             tokens = stream;
             stream.Fill();
             GetLexerErrors(lexer, stream, parseErrors);
-            lexer.BindXmlDocTokens(stream);
 
             // do we need to preprocess?
             // we are not interested in the pp output but we want the pp to modify the tokens from the lexer

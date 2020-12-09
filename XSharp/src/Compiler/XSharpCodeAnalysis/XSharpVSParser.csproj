@@ -58,6 +58,11 @@
     <Compile Remove="Antlr4.Runtime\Misc\DoubleKeyMap`3.cs" />
     <Compile Remove="Antlr4.Runtime\Misc\RuleDependencyProcessor.cs" />
     <Compile Remove="Antlr4.Runtime\Misc\TestRig.cs" />
+    <Compile Remove="Parser\XSharpLanguageParser.cs" />
+    <Compile Remove="Parser\XSharpParseErrorAnalysis.cs" />
+    <Compile Remove="Parser\XSharpClearSequences.cs" />
+    <Compile Remove="Parser\XSharpTokenExtensions.cs" />
+    <Compile Remove="Parser\XSharpSyntaxTree.cs" />
     <Compile Remove="Properties\AssemblyInfo.cs" />
     <Compile Remove="Properties\AssemblyInfoPortable.cs" />
     <Compile Remove="XSharpResources.Designer.cs" />

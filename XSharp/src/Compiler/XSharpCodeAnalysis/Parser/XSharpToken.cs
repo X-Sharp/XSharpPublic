@@ -61,14 +61,24 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             }
         }
 
+        private void copyToken(XSharpToken token)
+        {
+            type = token.Type;
+            text = token.Text;
+            line = token.Line;
+            Column = token.Column;
+            source = token.source;
+            StartIndex = token.StartIndex;
+            StopIndex = token.StopIndex;
+            Trivia = token.Trivia;
+
+        }
+
         internal XSharpToken(IToken t) : base(t)
         {
-            if (t is XSharpToken && t != this)
+            if (t is XSharpToken xt && t != this)
             {
-                var t2 = t as XSharpToken;
-                _original = t2.Original;
-                OriginalChannel = t2.OriginalChannel;
-                Channel = t2.OriginalChannel;
+                copyToken(xt);
             }
         }
         internal XSharpToken(IToken t, int type, string text) : base(t)
@@ -84,23 +94,17 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
         }
         internal XSharpToken(int type, XSharpToken token) : base(type)
         {
-            line = token.Line;
-            Column = token.Column;
-            source = token.source;
-            StartIndex = token.StartIndex;
-            StopIndex = token.StopIndex;
+            copyToken(token);
+            this.type = type;
             SourceSymbol = token;
-            Trivia = token.Trivia;
+
         }
         internal XSharpToken(int type, string text, XSharpToken token) : base(type, text)
         {
-            line = token.Line;
-            Column = token.Column;
-            source = token.source;
-            StartIndex = token.StartIndex;
-            StopIndex = token.StopIndex;
+            copyToken(token);
+            this.type = type;
+            this.text = text;
             SourceSymbol = token;
-            Trivia = token.Trivia;
         }
 
         internal XSharpToken(Tuple<ITokenSource, ICharStream> source, int type, int channel, int start, int stop) :

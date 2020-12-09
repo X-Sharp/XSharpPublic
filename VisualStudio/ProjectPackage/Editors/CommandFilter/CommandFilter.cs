@@ -969,19 +969,15 @@ namespace XSharp.Project
                         }
                         else
                         {
-                            switch (kind)
+                            if (kind == Kind.Constructor)
                             {
-                                case Kind.Method:
-                                case Kind.Function:
-                                case Kind.Procedure:
-                                case Kind.VODLL:
-                                    moveBack = true;
-                                    completion.InsertionText += "()";
-                                    break;
-                                case Kind.Constructor:
-                                    moveBack = true;
-                                    completion.InsertionText += "{}";
-                                    break;
+                                moveBack = true;
+                                completion.InsertionText += "{}";
+                            }
+                            if (kind.HasParameters())
+                            {
+                                moveBack = true;
+                                completion.InsertionText += "()";
                             }
                         }
                     }

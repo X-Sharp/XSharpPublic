@@ -391,20 +391,20 @@ namespace XSharp.Project
                 {
                     List<Inline> content = new List<Inline>();
 
-                    if (this.Modifiers != XSharpModel.Modifiers.None)
+                    if (this.Type.Modifiers != XSharpModel.Modifiers.None)
                     {
-                        content.addKeyword(XSettings.FormatKeyword(this.Modifiers) + " ");
+                        content.addKeyword(XSettings.FormatKeyword(this.Type.ModifiersKeyword) + " ");
                     }
-                    content.addKeyword(XSettings.FormatKeyword(this.Visibility) + " ");
+                    content.addKeyword(XSettings.FormatKeyword(this.Type.VisibilityKeyword) + " ");
                     //
                     if (this.IsStatic)
                     {
                         content.addKeyword(XSettings.FormatKeyword("STATIC "));
                     }
                     //
-                    if (this.Kind != XSharpModel.Kind.Field)
+                    if (this.Type.Kind != XSharpModel.Kind.Field)
                     {
-                        content.addKeyword(XSettings.FormatKeyword(this.Kind) + " ");
+                        content.addKeyword(XSettings.FormatKeyword(this.Type.KindKeyword) + " ");
                     }
                     //
                     content.addText(this.Prototype);
@@ -425,12 +425,10 @@ namespace XSharp.Project
 
         internal class QuickInfoMemberAnalysis : XSharpLanguage.MemberAnalysis
         {
-            IXMember _member;
             internal QuickInfoMemberAnalysis(IXMember member, Brush kw, Brush txt) : base(member)
             {
                 QuickInfoHelpers.kwBrush = kw;
                 QuickInfoHelpers.txtBrush = txt;
-                _member = member;
             }
 
             public List<Inline> WPFDescription
@@ -439,20 +437,20 @@ namespace XSharp.Project
                 {
                     List<Inline> content = new List<Inline>();
 
-                    if (this.Modifiers != XSharpModel.Modifiers.None)
+                    if (this.Member.Modifiers != XSharpModel.Modifiers.None)
                     {
-                        content.addKeyword(XSettings.FormatKeyword(this.Modifiers) + " ");
+                        content.addKeyword(XSettings.FormatKeyword(this.Member.ModifiersKeyword) + " ");
                     }
-                    content.addKeyword(XSettings.FormatKeyword(this.Visibility) + " ");
+                    content.addKeyword(XSettings.FormatKeyword(this.Member.VisibilityKeyword) + " ");
                     //
-                    if ((this.IsStatic) && ((this.Kind != Kind.Function) && (this.Kind != Kind.Procedure)))
+                    if ((this.Member.IsStatic) && ((this.Member.Kind != Kind.Function) && (this.Member.Kind != Kind.Procedure)))
                     {
                         content.addKeyword(XSettings.FormatKeyword("STATIC "));
                     }
                     //
-                    if ((this.Kind != XSharpModel.Kind.Field) && (this.Kind != XSharpModel.Kind.Constructor))
+                    if ((this.Member.Kind != XSharpModel.Kind.Field) && (this.Member.Kind != XSharpModel.Kind.Constructor))
                     {
-                        content.addKeyword(XSettings.FormatKeyword(this.Kind) + " ");
+                        content.addKeyword(XSettings.FormatKeyword(this.Member.KindKeyword) + " ");
                     }
                     //
                     content.AddRange(this.WPFPrototype);
@@ -467,12 +465,12 @@ namespace XSharp.Project
                 get
                 {
                     List<Inline> content = new List<Inline>();
-                    if (this.Kind.HasParameters())
+                    if (this.Member.Kind.HasParameters())
                     {
                         content.addText(this.Name);
-                        content.addKeyword(this.Kind == XSharpModel.Kind.Constructor ? "{" : "(");
+                        content.addKeyword(this.Member.Kind == XSharpModel.Kind.Constructor ? "{" : "(");
                         bool first = true;
-                        foreach (var var in this.Parameters)
+                        foreach (var var in this.Member.Parameters)
                         {
                             if (! first)
                             {
@@ -483,14 +481,14 @@ namespace XSharp.Project
                             content.addKeyword(var.ParamTypeDesc + " ");
                             content.addKeyword(var.TypeName);
                         }
-                        content.addKeyword(this.Kind == XSharpModel.Kind.Constructor ? "}" : ")");
+                        content.addKeyword(this.Member.Kind == XSharpModel.Kind.Constructor ? "}" : ")");
                     }
                     //
                     if (!String.IsNullOrEmpty(this.Value))
                     {
                         content.addText(" := " + this.Value);
                     }
-                    if (this.Kind.HasReturnType())
+                    if (this.Member.Kind.HasReturnType())
                     {
                         content.addReturnType(this.TypeName);
                     }
@@ -559,22 +557,17 @@ namespace XSharp.Project
                     int len = 0;
                     if (this.typeMember.Modifiers != Modifiers.None)
                     {
-                        text = XSettings.FormatKeyword(this.typeMember.Modifiers) + " ";
+                        text = XSettings.FormatKeyword(this.typeMember.ModifiersKeyword) + " ";
                         content.addKeyword(text);
                         len += text.Length;
                     }
-                    text = XSettings.FormatKeyword(this.typeMember.Visibility) + " ";
+                    text = XSettings.FormatKeyword(this.typeMember.VisibilityKeyword) + " ";
                     len += text.Length;
                     content.addKeyword(text);
                     //
                     if (this.typeMember.Kind != XSharpModel.Kind.Field)
                     {
-                        string kind = this.typeMember.Kind.ToString();
-                        if (kind.StartsWith("vo", StringComparison.OrdinalIgnoreCase))
-                        {
-                            kind = kind.Substring(2);
-                        }
-                        text = XSettings.FormatKeyword(kind) + " ";
+                        text = XSettings.FormatKeyword(this.typeMember.KindKeyword) + " ";
                         len += text.Length;
                         content.addKeyword(text);
                     }

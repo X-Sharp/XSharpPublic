@@ -850,7 +850,7 @@ namespace XSharpLanguage
                 }
                 ImageSource icon = _provider.GlyphService.GetGlyph(elt.getGlyphGroup(), elt.getGlyphItem());
                 string toAdd = "";
-                if ((elt.Kind == Kind.Method) || (elt.Kind == Kind.Function) || (elt.Kind == Kind.Procedure))
+                if (elt.Kind.HasParameters() && elt.Kind != Kind.Constructor)
                 {
                     toAdd = "(";
                 }
@@ -958,7 +958,7 @@ namespace XSharpLanguage
                 //
                 ImageSource icon = _provider.GlyphService.GetGlyph(elt.getGlyphGroup(), elt.getGlyphItem());
                 string toAdd = "";
-                if ((elt.Kind == Kind.Method) || (elt.Kind == Kind.Function) || (elt.Kind == Kind.Procedure))
+                if (elt.Kind.HasParameters() && elt.Kind != Kind.Constructor)
                 {
                     toAdd = "(";
                 }
@@ -1063,15 +1063,10 @@ namespace XSharpLanguage
       
         }
 
-
         public string Name { get; private set; }
-        public Modifiers Modifiers  { get; private set; }
-        public Modifiers Visibility { get; private set; }
-        public Kind Kind { get; private set; }
-        public bool IsStatic { get; private set; }
         public string TypeName { get; private set; }
-        public IList<IXVariable> Parameters { get; private set; }
         public string Value { get; private set; }
+        public IXMember Member;
 
         /// <summary>
         /// Process a MemberInfo in order to provide usable informations ( TypeName, Glyph, ... )
@@ -1079,11 +1074,7 @@ namespace XSharpLanguage
         internal MemberAnalysis(IXMember member)
         {
             this.Name = member.Name;
-            this.Kind = member.Kind;
-            this.Modifiers = member.Modifiers;
-            this.Visibility = member.Visibility;
             this.TypeName = "";
-            this.Parameters = member.Parameters;
             this.Value = member.Value;
         }
       
@@ -1095,25 +1086,15 @@ namespace XSharpLanguage
     public class TypeAnalysis
     {
         public string Name { get; private set; }
-        public Modifiers Modifiers { get; private set; }
-        public Modifiers Visibility { get; private set; }
-        public Kind Kind { get; private set; }
-        public bool IsStatic { get; private set; }
-
+        public bool IsStatic => this.Type.IsStatic;
+        public IXType Type { get; private set; }
         internal TypeAnalysis(IXType typeInfo)
         {
             //
             if (typeInfo == null)
                 return;
+            this.Type = typeInfo;
             this.Name = typeInfo.FullName;
-            this.Kind = typeInfo.Kind;
-            this.Modifiers = typeInfo.Modifiers;
-            this.Visibility = typeInfo.Visibility;
-            if (Visibility == Modifiers.None)
-            {
-                Visibility = Modifiers.Public;
-            }
-            this.IsStatic = typeInfo.IsStatic;
             //
            
             //
@@ -1157,7 +1138,7 @@ namespace XSharpLanguage
             {
                 StandardGlyphGroup imgG;
                 //
-                switch (this.Kind)
+                switch (this.Type.Kind)
                 {
                     case Kind.Class:
                     default:
@@ -1189,7 +1170,7 @@ namespace XSharpLanguage
             {
                 StandardGlyphItem imgI;
                 //
-                switch (this.Visibility)
+                switch (this.Type.Visibility)
                 {
                     case Modifiers.Public:
                     default:
@@ -1277,6 +1258,8 @@ namespace XSharpLanguage
                     case Kind.Procedure:
                     case Kind.Operator:
                     case Kind.VODLL:
+                    case Kind.LocalFunc:
+                    case Kind.LocalProc:
                         HasMethods = true;
                         break;
                     case Kind.Event:
@@ -1890,17 +1873,12 @@ namespace XSharpLanguage
 
                 if (eltType.Interval.ContainsInclusive(position))
                 {
-                    switch (eltType.Kind)
+                    if (eltType.Kind.IsType())
                     {
-                        case Kind.Namespace:
-                            return eltType;
-                        case Kind.Class:
-                        case Kind.Interface:
-                        case Kind.Structure:
-                        case Kind.Enum:
-                            found = eltType;
-                            break;
+                        found = eltType;
                     }
+                    if (eltType.Kind == Kind.Namespace)
+                        return eltType;
                 }
             }
             //
@@ -3093,7 +3071,7 @@ namespace XSharpLanguage
             if (xMethod?.Parent != null)
             {
                 // Parent is a XElement, so one of our Types
-                return new CompletionType((xMethod.Parent as XTypeDefinition).Clone);
+                return new CompletionType((xMethod.ParentType as XTypeDefinition).Clone);
             }
             //
             return cType;
@@ -3243,6 +3221,8 @@ namespace XSharpLanguage
                 case Kind.Method:
                 case Kind.Function:
                 case Kind.Procedure:
+                case Kind.LocalFunc:
+                case Kind.LocalProc:
                     imgG = StandardGlyphGroup.GlyphGroupMethod;
                     break;
                 case Kind.Structure:

@@ -119,7 +119,17 @@ BEGIN NAMESPACE XSharpModel
          END GET
       END PROPERTY
          
-      PROPERTY ParentType     AS IXType   GET SELF:Parent ASTYPE IXType
+      PROPERTY ParentType     AS IXType   
+      GET 
+         IF SELF:Parent IS IXType
+            RETURN (IXType) SELF:Parent
+         ENDIF
+         IF SELF:Parent IS IXMember
+            RETURN ((IXMember) SELF:Parent):ParentType
+         ENDIF
+         RETURN NULL
+      END GET
+      END PROPERTY
       PROPERTY IsExtension    AS LOGIC    GET _signature:IsExtension
       PROPERTY XMLSignature   AS STRING GET SELF:GetXmlSignature()
       PROPERTY OriginalTypeName  AS STRING               GET SELF:TypeName
@@ -128,7 +138,28 @@ BEGIN NAMESPACE XSharpModel
       PROPERTY TypeParameterConstraints as IList<STRING> GET SELF:_signature:TypeParameterContraints:ToArray()
       PROPERTY TypeParameterConstraintsList AS STRING    GET SELF:_signature:TypeParameterConstraintsList
       PROPERTY Location       AS STRING GET SELF:File:FullPath
-      PROPERTY Glyph                   AS LONG     
+      
+      PROPERTY ModifiersKeyword as STRING
+         GET
+            IF SELF:Kind:IsLocal()
+               RETURN ""
+            ELSE
+               RETURN SUPER:ModifiersKeyword
+            ENDIF
+         END GET
+      END PROPERTY
+
+      PROPERTY VisibilityKeyword as STRING
+         GET
+            IF SELF:Kind:IsLocal()
+               RETURN "PRIVATE"
+            ELSE
+               RETURN SUPER:VisibilityKeyword
+            ENDIF
+         END GET
+      END PROPERTY
+         
+      PROPERTY Glyph                   AS LONG
          GET 
             VAR glyph := SUPER:Glyph
             IF SELF:Name:EndsWith(XLiterals.XppDeclaration)

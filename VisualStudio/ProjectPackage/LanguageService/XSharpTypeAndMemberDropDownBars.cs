@@ -104,7 +104,11 @@ namespace XSharp.LanguageService
             // check if we are on the same type. When not then we need to reload the members.
             // Note that the first item in the members combo can also be a type (Classname)
             XTypeDefinition parentType = null;
-            if (selectedElement is XMemberDefinition)
+            if (selectedElement is XMemberDefinition && selectedElement.Kind.IsLocal())
+            {
+                parentType = (XTypeDefinition)(selectedElement.Parent.Parent);
+            }
+            if (selectedElement is XMemberDefinition && selectedElement.Parent is XTypeDefinition)
             {
                 parentType = (XTypeDefinition) selectedElement.Parent;
             }
@@ -190,8 +194,13 @@ namespace XSharp.LanguageService
 
             XMemberDefinition currentMember = null;
             XTypeDefinition currentType = null;
+            if ( selectedElement is XMemberDefinition  && selectedElement.Kind.IsLocal() )
+            {
+                currentMember = selectedElement as XMemberDefinition;
+                currentType = (XTypeDefinition)(currentMember.Parent.Parent);
 
-            if (selectedElement is XMemberDefinition)
+            }
+            else if (selectedElement is XMemberDefinition && selectedElement.Parent is XTypeDefinition)
             {
                 currentMember = selectedElement as XMemberDefinition;
                 currentType = (XTypeDefinition) currentMember.Parent;
@@ -242,6 +251,7 @@ namespace XSharp.LanguageService
             {
                 nSelMbr = 0;
                 var members = new List<XEntityDefinition>();
+                var locals = file.EntityList.Where(m => m.Kind.IsLocal());
                 if (currentTypeOnly)
                 {
                     if (currentType != typeGlobal && currentType.IsPartial)
@@ -261,8 +271,8 @@ namespace XSharp.LanguageService
                             members.Add(child);
                             members.AddRange(child.XMembers);
                         }
-
                     }
+                    members.AddRange(locals.Where(m => members.Contains(m.Parent)));
                 }
                 else
                 {
@@ -358,6 +368,10 @@ namespace XSharp.LanguageService
                                 prototype = parent.ComboPrototype + "." + prototype;
                             else
                                 prototype = parent.ComboPrototype + ":" + prototype;
+                        }
+                        if (member.Kind.IsLocal())
+                        {
+                            prototype = member.Parent.Name + "." + prototype;
                         }
                         if (otherFile)
                         {

@@ -219,6 +219,10 @@ FUNCTION AsHexString(uValue AS USUAL) AS STRING
         ELSE
             result := ""
         ENDIF
+    ELSEIF uValue:IsPtr
+        LOCAL i64 := (UIntPtr)uValue AS UIntPtr
+        LOCAL u64 := i64:ToUInt64() AS UInt64
+        result := String.Format( iif( u64 > System.UInt32.MaxValue, "{0:X16}", "{0:X8}" ), u64 )
     ELSE
         result := ""
     ENDIF
@@ -246,6 +250,10 @@ FUNCTION AsString(uValue AS USUAL) AS STRING
             result := Symbol2String( (SYMBOL) uValue)
         CASE uValue:IsDate
             result := DToC( (DATE) uValue)
+        CASE uValue:IsPtr
+            LOCAL i64 := (UIntPtr)uValue AS UIntPtr
+            LOCAL u64 := i64:ToUInt64() AS UInt64
+            result := String.Format( iif( u64 > System.UInt32.MaxValue, "0x{0:X16}", "0x{0:X8}" ), u64 )
         CASE uValue:IsArray
             VAR aValue := (ARRAY) uValue
             //  {[0000000003]0x025400FC}

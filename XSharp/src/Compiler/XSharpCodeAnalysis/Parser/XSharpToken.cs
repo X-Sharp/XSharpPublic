@@ -32,7 +32,9 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                     foreach (var t in Trivia)
                     {
                         if (t.Channel == XSharpLexer.XMLDOCCHANNEL)
-                            sb.Append(t.Text);
+                        { 
+                            sb.AppendLine(t.Text.Trim());
+                        }
                     }
                     return sb.ToString();
                 }

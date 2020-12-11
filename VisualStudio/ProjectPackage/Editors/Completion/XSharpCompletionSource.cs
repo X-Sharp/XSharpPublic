@@ -171,11 +171,6 @@ namespace XSharpLanguage
                 }
                 ////////////////////////////////////////////
                 SnapshotPoint start = triggerPoint;
-                //while (start > line.Start && !char.IsWhiteSpace((start - 1).GetChar()))
-                //{
-                //    start -= 1;
-                //}
-                //
                 var applicableTo = snapshot.CreateTrackingSpan(new SnapshotSpan(start, triggerPoint), SpanTrackingMode.EdgeInclusive);
                 //
                 if (_file == null)
@@ -199,7 +194,8 @@ namespace XSharpLanguage
                 XMemberDefinition member = XSharpTokenTools.FindMember(currentLine, this._file);
                 XTypeDefinition currentNamespace = XSharpTokenTools.FindNamespace(triggerPoint.Position, this._file);
                 // Standard TokenList Creation (based on colon Selector )
-                List<string> tokenList = XSharpTokenTools.GetTokenList(triggerPoint.Position, currentLine, _buffer.CurrentSnapshot, out _stopToken, false, _file, false, member);
+                var caretPos = triggerPoint.Position;
+                var tokenList = XSharpTokenTools.GetTokenList(caretPos, currentLine, _buffer.CurrentSnapshot, out _stopToken, _file, false, member);
                 // We might be here due to a COMPLETEWORD command, so we have no typedChar
                 // but we "may" have a incomplete word like System.String.To
                 // Try to Guess what TypedChar could be
@@ -254,7 +250,7 @@ namespace XSharpLanguage
                 // Alternative Token list (dot is a selector)
                 List<string> altTokenList;
                 if (dotSelector && _dotUniversal)
-                    altTokenList = XSharpTokenTools.GetTokenList(triggerPoint.Position, currentLine, _buffer.CurrentSnapshot, out _stopToken, false, _file, true, member);
+                    altTokenList = XSharpTokenTools.GetTokenList(caretPos, currentLine, _buffer.CurrentSnapshot, out _stopToken, _file, true, member);
                 else
                     altTokenList = tokenList;
 
@@ -1393,14 +1389,14 @@ namespace XSharpLanguage
         /// <param name="fromMember">The Member containing the position</param>
         /// <returns></returns>
         public static List<string> GetTokenList(int triggerPointPosition, int triggerPointLineNumber,
-            ITextSnapshot snapshot, out IToken stopToken, bool fromGotoDefn, XFile file, bool dotAsSelector, XMemberDefinition fromMember)
+            ITextSnapshot snapshot, out IToken stopToken, XFile file, bool dotAsSelector, XMemberDefinition fromMember)
         {
             var bufferText = snapshot.GetText();
-            return GetTokenList(triggerPointPosition, triggerPointLineNumber, bufferText, out stopToken, fromGotoDefn, file, dotAsSelector, fromMember);
+            return GetTokenList(triggerPointPosition, triggerPointLineNumber, bufferText, out stopToken, file, dotAsSelector, fromMember);
         }
 
         public static List<string> GetTokenList(int triggerPointPosition, int triggerPointLineNumber,
-            string bufferText, out IToken stopToken, bool fromGotoDefn, XFile file, bool dotAsSelector, XMemberDefinition fromMember)
+            string bufferText, out IToken stopToken,  XFile file, bool dotAsSelector, XMemberDefinition fromMember)
         {
             //////////////////////////////////////
             //////////////////////////////////////
@@ -1422,8 +1418,8 @@ namespace XSharpLanguage
                 nWidth = Math.Min(nWidth, bufferText.Length - fromMember.Interval.Start);
                 bufferText = bufferText.Substring(fromMember.Interval.Start, nWidth);
                 // Adapt the positions.
-                triggerPointPosition = triggerPointPosition - fromMember.Interval.Start;
-                triggerPointLineNumber = triggerPointLineNumber - (fromMember.Range.StartLine - 1);
+                triggerPointPosition = triggerPointPosition - fromMember.Interval.Start+1;
+                triggerPointLineNumber = triggerPointLineNumber - (fromMember.Range.StartLine );
             }
             else
             {
@@ -1456,407 +1452,145 @@ namespace XSharpLanguage
 
             bool ok = Lex(bufferText, fileName, parseoptions, reporter, out tokenStream);
             var stream = tokenStream as BufferedTokenStream;
-            return GetTokenList(triggerPointPosition, triggerPointLineNumber, stream, out stopToken, fromGotoDefn, file, dotAsSelector, fromMember);
+            return GetTokenList(triggerPointPosition, triggerPointLineNumber, stream, out stopToken,  file, dotAsSelector, fromMember);
         }
 
 
         public static List<string> GetTokenList(int triggerPointPosition, int triggerPointLineNumber,
-            BufferedTokenStream tokens, out IToken stopToken, bool fromGotoDefn, XFile file, bool dotAsSelector, XMemberDefinition fromMember)
+            BufferedTokenStream tokens, out IToken stopToken, XFile file, bool dotAsSelector, XMemberDefinition fromMember)
         {
             List<string> tokenList = new List<string>();
-            string token;
-            IToken lastToken = null;
             //
             stopToken = null;
             if (tokens == null)
                 return tokenList;
 
-            // locate the last token before the trigger point
-            // Use binary search in stead of linear search
-            var list = tokens.GetTokens();
+            var list = tokens.GetTokens().Where ( t=> t.Channel == XSharpLexer.DefaultTokenChannel).ToList();
+            if (list.Count == 0)
+                return tokenList;
             int current = 0;
             int bottom = 0;
             int top = list.Count;
+            // locate the right line in the list of tokens
+            // the line numbers in the IToken are 1 based. Vs is 0 based.
+            int oneBasedLineNumber = triggerPointLineNumber + 1;
             while (top - bottom > 1)
             {
                 // determine middle
                 current = (bottom + top) / 2;
-                var check = list[current];
-                if (check.StartIndex > triggerPointPosition)
+                var check = list[current].Line;
+                if (check == oneBasedLineNumber)
+                {
+                    break;
+                }
+                else if (check > oneBasedLineNumber)
                 {
                     top = current;
                 }
-                else if (check.StartIndex < triggerPointPosition)
+                else  // < 
                 {
                     bottom = current;
-                }
-                else
-                {
-                    break;
                 }
             }
             if (current > list.Count - 1 || current < 0)
                 return tokenList;
             // on the right row now. Find the first token on the row
-            for (int iToken = current; iToken >= 0; iToken--)
+            while (current > 0 && list[current-1].Line == oneBasedLineNumber)
             {
-                // Out tokens line numbers are 1 based
-                if (list[iToken].Line != triggerPointLineNumber + 1)
-                    break;
-                current = iToken;
+                current --;
+            }
+            // collect the tokens on the line
+            var line = new List<IToken>();
+            for (int iToken = current; iToken < list.Count; iToken++)
+            {
+                if (list[iToken].StartIndex <= triggerPointPosition)
+                    line.Add(list[iToken]);
+            }
+            if (line.Count == 0)
+            {
+                return tokenList;   // empty list
             }
             // now look forward and find the first token that is on or after the triggerpoint
-            IToken nextToken = list[current];
-            while (true)
+            var last = XSharpLexer.Eof;
+            foreach (var token in line)
             {
-                current++;
-                if (list[current].StartIndex < triggerPointPosition)
-                    nextToken = list[current];
-                else
-                    break;
-            }
-            // nextToken now points to the first token that has its startindex >= triggerPointPosition
-
-            //////////////////////////////////////
-            // We are looking at line
-            // Out tokens line numbers are 1 based
-            int lineTP = triggerPointLineNumber + 1;
-            // And we are on line
-            int lineNT = nextToken.Line;
-            //
-            if (lineNT != lineTP)
-            {
-                // should not happen.
-                //return tokenList;
-            }
-            // Not a CRLF ? Ok, should be the next one...except if the next one is CRLF !!
-            if (nextToken.Type != XSharpLexer.EOS)
-            {
-                //if ( list[((XSharpToken)nextToken).OriginalTokenIndex + 1].Type != XSharpLexer.EOS )
-                nextToken = list[((XSharpToken)nextToken).OriginalTokenIndex + 1];
-                while (nextToken.Channel != XSharpLexer.DefaultTokenChannel && nextToken.Type != XSharpLexer.EOS)
+                string stop = null;
+                switch (token.Type)
                 {
-                    nextToken = list[((XSharpToken)nextToken).OriginalTokenIndex + 1];
-                }
-            }
-            if (stopToken == null)
-            {
-                stopToken = nextToken;
-            }
-            // Now, let's build the Token chain, so we can guess what to add in the CompletionList
-            IToken triggerToken = null;
-            token = "";
-            switch (nextToken.Type)
-            {
-                case XSharpLexer.LPAREN:
-                    token = "()";
-                    break;
-                case XSharpLexer.LCURLY:
-                    token = "{}";
-                    break;
-                case XSharpLexer.LBRKT:
-                    token = "[]";
-                    break;
-            }
-            if (!string.IsNullOrEmpty(token))
-                tokenList.Add(token);
-            triggerToken = GetPreviousToken(tokens, nextToken);
-            //
-            bool inCtor = false;
-            while (triggerToken != null)
-            {
-                lastToken = triggerToken;
-                token = triggerToken.Text;
-                if (triggerToken.Channel != XSharpLexer.DefaultTokenChannel)
-                {
-                    triggerToken = GetPreviousToken(tokens, triggerToken);
-                    continue;
-                }
-                switch (triggerToken.Type)
-                {
-                    // For ) ] }, we will search the counter part, and remove all stuff in between
-                    case XSharpLexer.RPAREN:
-                        // Search for the Left Parenthesis
-                        triggerToken = XSharpTokenTools.ProcessBounds(tokens, triggerToken, XSharpLexer.LPAREN, XSharpLexer.RPAREN);
-                        // we had a trouble in the previous process ?
-                        if (triggerToken == null)
-                            break;
-                        // ...
-                        token = "()";
+                    case XSharpLexer.LCURLY:
+                    case XSharpLexer.LPAREN:
+                    case XSharpLexer.LBRKT:
+                        if (last == XSharpLexer.ID)
+                        {
+                           tokenList[tokenList.Count - 1] += token.Text;
+                        }
+                        else
+                        {
+                            tokenList.Add(token.Text);
+                        }
                         break;
-                    case XSharpLexer.RBRKT:
-                        // Search for the Left Bracket
-                        triggerToken = XSharpTokenTools.ProcessBounds(tokens, triggerToken, XSharpLexer.LBRKT, XSharpLexer.RBRKT);
-                        // we had a trouble in the previous process ?
-                        if (triggerToken == null)
-                            break;
-                        // ...
-                        token = "[]";
+                    case XSharpLexer.ID:
+                        if (token.Text.StartsWith("@@"))
+                            tokenList.Add(token.Text.Substring(2));
+                        else
+                            tokenList.Add(token.Text);
                         break;
                     case XSharpLexer.RCURLY:
-                        // Search for the Left Curly
-                        triggerToken = XSharpTokenTools.ProcessBounds(tokens, triggerToken, XSharpLexer.LCURLY, XSharpLexer.RCURLY);
-                        // we had a trouble in the previous process ?
-                        if (triggerToken == null)
-                            break;
-                        // ...
-                        token = "{}";
-                        inCtor = true;
+                        stop = "{";
                         break;
+                    case XSharpLexer.RPAREN:
+                        stop = "(";
+                        break;
+                    case XSharpLexer.RBRKT:
+                        stop = "[";
+                        break;
+                    case XSharpLexer.COMMA:
                     case XSharpLexer.ASSIGN_OP:
-                    //case XSharpLexer.COMMA:
                     case XSharpLexer.USING:
                     case XSharpLexer.AS:
                     case XSharpLexer.IS:
                     case XSharpLexer.REF:
                     case XSharpLexer.IMPLEMENTS:
                     case XSharpLexer.INHERIT:
-                    case XSharpLexer.LPAREN:
-                    case XSharpLexer.LCURLY:
-                    case XSharpLexer.LBRKT:
-                    case XSharpLexer.SL_COMMENT:
-                    case XSharpLexer.ML_COMMENT:
-                    case XSharpLexer.DOC_COMMENT:
-                        //case XSharpLexer.VAR:
-                        //case XSharpLexer.IMPLIED:
-                        // Stop here
-                        stopToken = triggerToken;
-                        token = null;
-                        if (fromGotoDefn)
-                        {
-                            switch (triggerToken.Type)
-                            {
-                                case XSharpLexer.LPAREN:
-                                    token = "()";
-                                    break;
-                                case XSharpLexer.LCURLY:
-                                    token = "{}";
-                                    inCtor = true;
-                                    break;
-                                case XSharpLexer.LBRKT:
-                                    token = "[]";
-                                    break;
-                                default:
-                                    token = null;
-                                    triggerToken = null;
-                                    break;
-                            }
-                            // One shot
-                            fromGotoDefn = false;
-                        }
-                        else
-                            triggerToken = null;
-                        break;
                     case XSharpLexer.DOT:
                     case XSharpLexer.COLON:
                     case XSharpLexer.COLONCOLON:
                     case XSharpLexer.SELF:
                     case XSharpLexer.SUPER:
+                        tokenList.Add(token.Text);
                         break;
                     default:
-                        // allow FLoat{} or String{}
-                        if (XSharpLexer.IsType(triggerToken.Type))
-                            break;
-                        else if (XSharpLexer.IsKeyword(triggerToken.Type))
+                        if (XSharpLexer.IsOperator(token.Type))
                         {
-                            token = null;
-                            triggerToken = null;
-                            break;
+                            tokenList.Add(token.Text);
                         }
-                        else if (XSharpLexer.IsOperator(triggerToken.Type) && !inCtor)
+                        if (XSharpLexer.IsKeyword(token.Type))
                         {
-                            token = null;
-                            triggerToken = null;
-                        }
-                        // Simple EQUAL in FoxPro could mean ASSIGN_OP
-                        else if ((triggerToken.Type == XSharpLexer.EQ) && (file.Project.Dialect == XSharpDialect.FoxPro))
-                        {
-                            // Stop here
-                            stopToken = triggerToken;
-                            token = null;
-                            triggerToken = null;
+                            tokenList.Add(token.Text);
                         }
                         break;
                 }
-                //
-                if (token != null)
-                    tokenList.Add(token);
-                //
-                if (triggerToken != null)
+                last = token.Type;
+                // find open token on the list and remove everything in between
+                if (stop != null)
                 {
-                    var last = triggerToken;
-                    triggerToken = GetPreviousToken(tokens, triggerToken);
-                    // BOF reached
-                    if (last == triggerToken)
-                        break;
-                }
-
-            }
-            // Hack to hanlde :: / COLONCOLON with something in front
-            if ((tokenList.Count > 1) && (tokenList[0] == "::"))
-            {
-                tokenList[0] = ":";
-            }
-            //
-            tokenList.Reverse();
-            if (tokenList.Count > 0)
-            {
-                // First token
-                token = tokenList[0];
-                // Could be a COLON or a DOT, it will could be the case in a WITH...END construct
-                if ((token.CompareTo(":") == 0) || (token.CompareTo(".") == 0))
-                {
-                    bool inWith = false;
-                    IToken lastID = null;
-                    XSharpToken temp;
-                    int withLine = -1;
-                    int indexWith;
-                    // We stopped there
-                    triggerToken = lastToken;
-                    // search for WITH....
-                    while (triggerToken != null)
+                    var iLast = tokenList.Count - 1;
+                    while (iLast >= 0)
                     {
-                        triggerToken = GetPreviousToken(tokens, triggerToken, false);
-                        // We should check that we are not getting out of the current member.....
-                        if (triggerToken.StartIndex < fromMember.Interval.Start)
+                        if (tokenList[iLast].EndsWith(stop))
                         {
-                            triggerToken = null;
+                            if (iLast < tokenList.Count -1)
+                            {
+                                tokenList.RemoveRange(iLast + 1, tokenList.Count - iLast-1);
+                            }
+                            tokenList[iLast] += token.Text;
                             break;
                         }
-                        switch (triggerToken.Type)
-                        {
-                            case XSharpLexer.WITH:
-                                inWith = true;
-                                withLine = triggerToken.Line;
-                                temp = (XSharpToken)triggerToken;
-                                indexWith = temp.OriginalTokenIndex;
-                                triggerToken = null;
-                                break;
-                            case XSharpLexer.ID:
-                                lastID = triggerToken;
-                                break;
-                        }
-                    }
-                    //
-                    if (inWith)
-                    {
-                        // So now, get the ID associated with WITH
-                        if (lastID != null)
-                        {
-                            // Guess that the ID is on the same line as the WITH
-                            if (lastID.Line == withLine)
-                            {
-                                temp = (XSharpToken)lastID;
-                                //indexWith = temp.OriginalTokenIndex;
-                                // Ok, let's guess that the LastID is the one used by WITH
-                                // SO, inject it in the beginning of the list
-                                tokenList.Insert(0, lastID.Text);
-                            }
-                        }
+                        iLast -= 1;
                     }
                 }
             }
-            // Now, we may have some post-treatment
-            List<string> returnList = new List<string>();
-            int i = 0;
-            bool prevWasDot = false;
-            while (i < tokenList.Count)
-            {
-                token = tokenList[i];
-                if ((token.CompareTo("()") == 0) || (token.CompareTo("{}") == 0) || (token.CompareTo("[]") == 0))
-                {
-                    if (returnList.Count > 0)
-                    {
-                        string prevToken = returnList[returnList.Count - 1];
-                        if (prevToken == ">")
-                        {
-                            // Do we have a "<" ?
-                            int leftGen = 0;
-                            while (leftGen < returnList.Count)
-                            {
-                                if (returnList[leftGen] == "<")
-                                {
-                                    break;
-                                }
-                                leftGen++;
-                            }
-                            if ((leftGen < returnList.Count) && (leftGen > 0))
-                            {
-                                List<string> dummyList = new List<string>();
-                                for (int j = 0; j < leftGen; j++)
-                                    dummyList.Add(returnList[j]);
-                                // Now, concat up to ">"
-                                string genType = "";
-                                for (int j = leftGen; j <= returnList.Count - 1; j++)
-                                {
-                                    genType += returnList[j];
-                                }
-                                //
-                                genType += token;
-                                dummyList[dummyList.Count - 1] = dummyList[dummyList.Count - 1] + genType;
-                                returnList = dummyList;
-                            }
-                        }
-                        else
-                        {
-                            prevToken = prevToken + token;
-                            returnList[returnList.Count - 1] = prevToken;
-                        }
-                    }
-                }
-                else if ((file.Project.Dialect == XSharpDialect.XPP) && (token.CompareTo("::") == 0))
-                {
-                    returnList.Add("SELF");
-                    returnList.Add(":");
-                }
-                else if (file.Project.Dialect == XSharpDialect.FoxPro)
-                {
-                    string lowerToken = token.ToLower();
-                    switch (lowerToken)
-                    {
-                        case "this":
-                            // THIS will turn to a SELF
-                            returnList.Add("SELF");
-                            break;
-                        case ".":
-                            // dot in first place will mean SELF.
-                            if (returnList.Count == 0)
-                            {
-                                returnList.Add("SELF");
-                            }
-                            returnList.Add(token);
-                            break;
-                        default:
-                            returnList.Add(token);
-                            break;
-                    }
-                }
-                else if ((token.CompareTo(".") == 0) && !dotAsSelector)
-                {
-                    if (returnList.Count > 0)
-                    {
-                        string prevToken = returnList[returnList.Count - 1];
-                        prevToken = prevToken + token;
-                        returnList[returnList.Count - 1] = prevToken;
-                        prevWasDot = true;
-                    }
-                }
-                else
-                {
-                    if (prevWasDot)
-                    {
-                        string prevToken = returnList[returnList.Count - 1];
-                        prevToken = prevToken + token;
-                        returnList[returnList.Count - 1] = prevToken;
-                        prevWasDot = false;
-                    }
-                    else
-                        returnList.Add(token);
-                }
-                i++;
-            }
-            //
-            return returnList;
+            return tokenList;
         }
         public static XTypeDefinition FindNamespace(int position, XFile file)
         {
@@ -1986,7 +1720,7 @@ namespace XSharpLanguage
         /// <param name="foundElement"></param>
         /// <returns></returns>
         public static CompletionType RetrieveType(XFile file, List<string> tokenList, XMemberDefinition currentMember, string currentNS,
-            IToken stopToken, out CompletionElement foundElement, ITextSnapshot snapshot, int currentLine, XSharpDialect dialect)
+            IToken stopToken, out CompletionElement foundElement, ITextSnapshot snapshot, int currentLine, XSharpDialect dialect, bool stopAtOpenToken = false)
         {
             //
 #if TRACE
@@ -2095,14 +1829,26 @@ namespace XSharpLanguage
             // Context Type....
             cType = new CompletionType((currentMember.ParentType as XTypeDefinition).Clone);
             Modifiers visibility = Modifiers.Private;
-            //
-            while (currentPos < tokenList.Count)
+            int lastopentoken = tokenList.Count-1;
+            if (stopAtOpenToken)
+            {
+                for (int i = 0; i < tokenList.Count; i++)
+                {
+                    var token = tokenList[i];
+                    switch (token[token.Length - 1])
+                    {
+                        case '(':
+                        case '{':
+                        case '[':
+                            lastopentoken = i;
+                            break;
+                    }
+                }
+            }
+            while (currentPos <= lastopentoken)
             {
                 currentToken = tokenList[currentPos];
-                // Remove the @@ marker
-                if (currentToken.StartsWith("@@",StringComparison.Ordinal))
-                    currentToken = currentToken.Substring(2);
-                //
+                //Debug.WriteLine("currentToken " + currentToken);
                 var lastToken = currentToken;
                 //
                 int dotPos = currentToken.LastIndexOf(".");
@@ -2167,10 +1913,17 @@ namespace XSharpLanguage
                     }
                 }
                 //
-                if (currentToken.EndsWith("{}"))
+                if (currentToken.EndsWith("{}") || currentToken.EndsWith("{"))
                 {
                     // Look for a type
-                    currentToken = currentToken.Substring(0, currentToken.Length - 2);
+                    if (currentToken.EndsWith("}"))
+                    {
+                        currentToken = currentToken.Substring(0, currentToken.Length - 2);
+                    }
+                    else
+                    {
+                        currentToken = currentToken.Substring(0, currentToken.Length - 1);
+                    }
 
                     SearchType(currentMember.File, currentToken, out foundElement, currentMember.Parent.Namespace);
 
@@ -2212,10 +1965,18 @@ namespace XSharpLanguage
                         }
                     }
                 }
-                else if (currentToken.EndsWith("()"))
+                else if (currentToken.EndsWith("()") || currentToken.EndsWith("("))
                 {
                     // this a Method call
-                    currentToken = currentToken.Substring(0, currentToken.Length - 2);
+                    if (currentToken.EndsWith(")"))
+                    {
+                        currentToken = currentToken.Substring(0, currentToken.Length - 2);
+                    }
+                    else
+                    {
+                        currentToken = currentToken.Substring(0, currentToken.Length - 1);
+                    }
+
                     // Do we already know in which Type we are ?
                     if (currentToken.ToLower() == "self")
                     {
@@ -2227,13 +1988,11 @@ namespace XSharpLanguage
                     }
                     // The first token in the list can be a Function or a Procedure
                     // Except if we already have a Type
-                    if ((currentPos == 0) && (startOfExpression))
+                    if (currentPos == 0 || startOfExpression)
                     {
                         var globType = SearchFunctionIn(currentMember.File, currentToken, out foundElement);
-                        if ((foundElement != null) && (foundElement.IsInitialized))
-                        {
+                        if (currentPos == lastopentoken)
                             return globType;
-                        }
                     }
                     if (!cType.IsEmpty())
                     {
@@ -2271,9 +2030,16 @@ namespace XSharpLanguage
                 else
                 {
                     bool hasBracket = false;
-                    if (currentToken.EndsWith("[]"))
+                    if (currentToken.EndsWith("[]") || currentToken.EndsWith("["))
                     {
-                        currentToken = currentToken.Substring(0, currentToken.Length - 2);
+                        if (currentToken.EndsWith("]"))
+                        {
+                            currentToken = currentToken.Substring(0, currentToken.Length - 2);
+                        }
+                        else
+                        {
+                            currentToken = currentToken.Substring(0, currentToken.Length - 1);
+                        }
                         hasBracket = true;
                     }
                     else if (currentToken.EndsWith("."))
@@ -2369,13 +2135,26 @@ namespace XSharpLanguage
                         break;
                     }
                 }
-                if (lastToken.EndsWith("(") || lastToken.EndsWith(")") || lastToken.EndsWith("{") || lastToken.EndsWith("}"))
+                switch (lastToken[lastToken.Length-1])
                 {
-                    startOfExpression = true;
-                }
-                else
-                {
-                    startOfExpression = false;
+                    case '(':
+                    case '{':
+                    case '[':
+                    case ',':
+                    case '+':
+                    case '-':
+                    case '*':
+                    case '/':
+                    case '=':
+                    case '<':
+                    case '>':
+                        startOfExpression = true;
+                        break;
+                    case '.':
+                    case ':':
+                    default:
+                        startOfExpression = false;
+                        break;
                 }
                 //
                 visibility = Modifiers.Public;
@@ -3198,6 +2977,33 @@ namespace XSharpLanguage
             {
                 XSettings.DisplayOutputMessage("XSharp.Codecompletion :" + message);
             }
+        }
+
+        static internal SnapshotPoint FindEndOfCurrentToken(SnapshotPoint ssp, ITextSnapshot snapshot)
+        {
+            var done = false;
+            while (ssp.Position < snapshot.Length && !done)
+            {
+                var c = ssp.GetChar();
+                switch (c)
+                {
+                    case '(':
+                    case '{':
+                    case '[':
+                    case ':':
+                    case '.':
+                        done = true;
+                        ssp -= 1;
+                        break;
+                    default:
+                        if (char.IsLetterOrDigit(c) || c == '_')
+                            ssp += 1;
+                        else
+                            done = true;
+                        break;
+                }
+            }
+            return ssp;
         }
 
     }

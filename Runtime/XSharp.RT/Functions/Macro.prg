@@ -8,12 +8,14 @@ USING System.Globalization
 
 USING XSharp.Internal		
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/evaluate/*" />
+/// <seealso cref="T:XSharp.Internal.NeedsAccessToLocalsAttribute" />
 [NeedsAccessToLocals];
 FUNCTION Evaluate(cString AS STRING) AS USUAL
 	RETURN Evaluate(cString, TRUE) 
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/evaluate/*" />	
 /// <param name="lAllowSingleQuotes">Should single quotes be allowed as string delimiters.</param>
+/// <seealso cref="T:XSharp.Internal.NeedsAccessToLocalsAttribute" />
 [NeedsAccessToLocals];
 FUNCTION Evaluate(cString AS STRING, lAllowSingleQuotes AS LOGIC) AS USUAL
 	LOCAL oMacro AS XSharp._Codeblock 
@@ -66,6 +68,7 @@ FUNCTION MCompile(cString AS STRING, lAllowSingleQuotes AS LOGIC) AS XSharp._Cod
 /// It returns a XSharp._Codeblock in .Net. Therefore the parameter of MExec is a Codeblock</note>
 /// <seealso cref="T:XSharp._Codeblock" />
 /// <seealso cref="O:XSharp.RT.Functions.MCompile" />
+/// <seealso cref="T:XSharp.Internal.NeedsAccessToLocalsAttribute" />
 [NeedsAccessToLocals];
 FUNCTION MExec(oBlock AS CODEBLOCK) AS USUAL
 	RETURN Eval(oBlock)
@@ -128,6 +131,7 @@ INTERNAL FUNCTION _IsIdentifier(cName AS STRING) AS LOGIC
     RETURN TRUE
 	
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/type/*" />
+/// <seealso cref="T:XSharp.Internal.NeedsAccessToLocalsAttribute" />
 [NeedsAccessToLocals];
 FUNCTION Type(cString AS STRING) AS STRING
 	LOCAL uValue AS USUAL
@@ -153,6 +157,7 @@ FUNCTION Type(cString AS STRING) AS STRING
 	
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/strevaluate/*" />
+/// <seealso cref="T:XSharp.Internal.NeedsAccessToLocalsAttribute" />
 [NeedsAccessToLocals];
 FUNCTION StrEvaluate( cString AS STRING ) AS STRING
 	IF cString:IndexOf("&") > 0

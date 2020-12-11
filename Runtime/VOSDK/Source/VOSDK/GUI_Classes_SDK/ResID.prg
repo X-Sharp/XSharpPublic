@@ -15,7 +15,7 @@ METHOD Address()
 		//RvdH 070615 Make sure the string is STATIC. We can't control the lifetime of the return variable
 		//lpAddress := PTR(_CAST, Cast2Psz(sID))
 #ifdef __VULCAN__
-         IF SELF:_lpAddress == NULL
+         IF SELF:_lpAddress == NULL_PSZ
              SELF:_lpAddress := lpAddress := StringAlloc(sID)
              GC.ReRegisterForFinalize( SELF )
          ELSE

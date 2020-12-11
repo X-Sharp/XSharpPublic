@@ -730,7 +730,6 @@ INTERNAL CLASS XSharp.VFP.SQLStatement
                 ENDIF
                 
             CASE c'?'
-            CASE c':'
                 inParam := TRUE
                 lParamByRef := FALSE
                 sb:Append(cParamChar)
@@ -775,8 +774,6 @@ INTERNAL CLASS XSharp.VFP.SQLStatement
 
 
 END CLASS
-
-INTERNAL DELEGATE SqlGetData() AS OBJECT[]
 
 INTERNAL ENUM XSharp.VFP.AsyncState
     MEMBER Idle         := 0

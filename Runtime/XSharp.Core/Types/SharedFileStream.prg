@@ -13,10 +13,10 @@ BEGIN NAMESPACE XSharp.IO
     /// <summary>This class is used for Shared diskaccess on Windows. </summary>
     /// <remarks>The class bypasses some of the default methods in the FileStraem class and directly uses calls to OS functions to make
     /// sure that changes made by other users are visible and not hidden because of caching in the .Net FileStream class.</remarks>
-    CLASS XsSharedFileStream INHERIT XsFileStream
-    PRIVATE hFile AS IntPtr
-    PRIVATE smallBuff AS BYTE[]
-        PRIVATE CONSTRUCTOR(path AS STRING, mode AS FileMode, faccess AS FileAccess, share AS FileShare, bufferSize AS LONG, options AS FileOptions) 
+    CLASS XsWin32FileStream INHERIT XsFileStream
+        PRIVATE hFile AS IntPtr
+        PRIVATE smallBuff AS BYTE[]
+        INTERNAL CONSTRUCTOR(path AS STRING, mode AS FileMode, faccess AS FileAccess, share AS FileShare, bufferSize AS LONG, options AS FileOptions) 
             SUPER(path, mode, faccess, share, bufferSize, options)
             hFile := SELF:SafeFileHandle:DangerousGetHandle()
             smallBuff := BYTE[]{1}
@@ -131,28 +131,28 @@ BEGIN NAMESPACE XSharp.IO
         #region External methods
         /// <exclude />
         [DllImport("kernel32.dll", SetLastError := TRUE, EntryPoint := "ReadFile")];
-        STATIC EXTERN METHOD ReadFile(hFile AS IntPtr, bytes AS BYTE[], numbytes AS INT, numbytesread OUT INT , mustbezero AS IntPtr) AS LOGIC
+        PRIVATE STATIC EXTERN METHOD ReadFile(hFile AS IntPtr, bytes AS BYTE[], numbytes AS INT, numbytesread OUT INT , mustbezero AS IntPtr) AS LOGIC
         /// <exclude />
         [DllImport("kernel32.dll", SetLastError := TRUE, EntryPoint := "WriteFile")];
-        STATIC EXTERN METHOD WriteFile(hFile AS IntPtr, bytes AS BYTE[], numbytes AS INT, numbyteswritten OUT INT , lpOverlapped AS INT) AS LOGIC
+        PRIVATE STATIC EXTERN METHOD WriteFile(hFile AS IntPtr, bytes AS BYTE[], numbytes AS INT, numbyteswritten OUT INT , lpOverlapped AS INT) AS LOGIC
         /// <exclude />
         [DllImport("kernel32.dll", SetLastError := TRUE, EntryPoint := "SetFilePointerEx")];
-        STATIC EXTERN METHOD SetFilePointerEx(handle AS IntPtr, distance AS INT64 , newAddress OUT INT64, origin AS SeekOrigin ) AS LOGIC
+        PRIVATE STATIC EXTERN METHOD SetFilePointerEx(handle AS IntPtr, distance AS INT64 , newAddress OUT INT64, origin AS SeekOrigin ) AS LOGIC
         /// <exclude />
         [DllImport("kernel32.dll", SetLastError := TRUE,EntryPoint := "LockFile")];
-        STATIC EXTERN METHOD LockFile(hFile AS IntPtr , dwFileOffsetLow AS INT , dwFileOffsetHigh AS INT , nNumberOfBytesToLockLow AS INT , nNumberOfBytesToLockHigh AS INT ) AS LOGIC
+        PRIVATE STATIC EXTERN METHOD LockFile(hFile AS IntPtr , dwFileOffsetLow AS INT , dwFileOffsetHigh AS INT , nNumberOfBytesToLockLow AS INT , nNumberOfBytesToLockHigh AS INT ) AS LOGIC
         /// <exclude />
         [DllImport("kernel32.dll", SetLastError := TRUE,EntryPoint := "UnlockFile")];
-        STATIC EXTERN METHOD UnlockFile(hFile AS IntPtr , dwFileOffsetLow AS INT , dwFileOffsetHigh AS INT , nNumberOfBytesToLockLow AS INT , nNumberOfBytesToLockHigh AS INT ) AS LOGIC
+        PRIVATE STATIC EXTERN METHOD UnlockFile(hFile AS IntPtr , dwFileOffsetLow AS INT , dwFileOffsetHigh AS INT , nNumberOfBytesToLockLow AS INT , nNumberOfBytesToLockHigh AS INT ) AS LOGIC
         /// <exclude />
         [DllImport("kernel32.dll", SetLastError := TRUE,EntryPoint := "FlushFileBuffers")];
-        STATIC EXTERN METHOD FlushFileBuffers(hFile AS IntPtr ) AS LOGIC
+        PRIVATE STATIC EXTERN METHOD FlushFileBuffers(hFile AS IntPtr ) AS LOGIC
         /// <exclude />
         [DllImport("kernel32.dll", SetLastError := TRUE,EntryPoint := "SetEndOfFile")];
-        STATIC EXTERN METHOD SetEndOfFile(hFile AS IntPtr ) AS LOGIC
+        PRIVATE STATIC EXTERN METHOD SetEndOfFile(hFile AS IntPtr ) AS LOGIC
         /// <exclude />
         [DllImport("kernel32.dll", SetLastError := TRUE,EntryPoint := "GetFileSize")];
-            STATIC EXTERN METHOD GetFileSize(hFile AS IntPtr , highSize OUT INT) AS DWORD
+        PRIVATE STATIC EXTERN METHOD GetFileSize(hFile AS IntPtr , highSize OUT INT) AS DWORD
         #endregion
         
     END CLASS

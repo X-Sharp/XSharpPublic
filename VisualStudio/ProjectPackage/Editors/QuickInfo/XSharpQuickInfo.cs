@@ -18,6 +18,7 @@ using System.Windows.Media;
 using XSharpModel;
 using System.Windows.Controls;
 using Microsoft.VisualStudio.Text.Classification;
+using XSharpLanguage;
 //using Microsoft.VisualStudio.Text.Adornments;
 namespace XSharp.Project
 {
@@ -122,33 +123,30 @@ namespace XSharp.Project
                 TextExtent extent = navigator.GetExtentOfWord(subjectTriggerPoint.Value);
                 string searchText = extent.Span.GetText();
 
-                // First, where are we ?
-                int caretPos = subjectTriggerPoint.Value.Position;
-                int lineNumber = subjectTriggerPoint.Value.GetContainingLine().LineNumber;
+                // find next delimiter, so we will include the whole word in the search
+                var ssp = XSharpTokenTools.FindEndOfCurrentToken(subjectTriggerPoint.Value, currentSnapshot);
+                int caretPos = ssp.Position+1;
+
+                int lineNumber = ssp.GetContainingLine().LineNumber;
                 var snapshot = session.TextView.TextBuffer.CurrentSnapshot;
                 if (_file == null)
                     return;
                 // Then, the corresponding Type/Element if possible
                 IToken stopToken;
                 //ITokenStream tokenStream;
-                XMemberDefinition member = XSharpLanguage.XSharpTokenTools.FindMember(lineNumber, _file);
-                XTypeDefinition currentNamespace = XSharpLanguage.XSharpTokenTools.FindNamespace(caretPos, _file);
+                XMemberDefinition member = XSharpTokenTools.FindMember(lineNumber, _file);
+                XTypeDefinition currentNamespace = XSharpTokenTools.FindNamespace(caretPos, _file);
                 // adjust caretpos, for other completions we need to stop before the caret. Now we include the caret
-                List<String> tokenList = XSharpLanguage.XSharpTokenTools.GetTokenList(caretPos + 1, lineNumber, tokens.TokenStream, out stopToken, true, _file, false, member);
-                // Check if we can get the member where we are
-                //if (tokenList.Count > 1)
-                //{
-                //    tokenList.RemoveRange(0, tokenList.Count - 1);
-                //}
+                var tokenList = XSharpTokenTools.GetTokenList(caretPos , lineNumber, tokens.TokenStream, out stopToken, _file, false, member);
                 // LookUp for the BaseType, reading the TokenList (From left to right)
-                XSharpLanguage.CompletionElement gotoElement;
+                CompletionElement gotoElement;
                 string currentNS = "";
                 if (currentNamespace != null)
                 {
                     currentNS = currentNamespace.Name;
                 }
 
-                XSharpModel.CompletionType cType = XSharpLanguage.XSharpTokenTools.RetrieveType(_file, tokenList, member, currentNS, stopToken, out gotoElement, snapshot, lineNumber, _file.Project.Dialect);
+                var cType = XSharpTokenTools.RetrieveType(_file, tokenList, member, currentNS, stopToken, out gotoElement, snapshot, lineNumber, _file.Project.Dialect);
                 //
                 //
                 if ((gotoElement != null) && (gotoElement.IsInitialized))

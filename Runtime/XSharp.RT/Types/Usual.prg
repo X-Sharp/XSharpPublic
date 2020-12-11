@@ -6,6 +6,7 @@
 USING System
 USING System.Runtime.InteropServices
 USING System.Runtime.CompilerServices
+USING System.Runtime.Serialization
 USING System.Diagnostics
 USING System.Text
 USING XSharp.Internal
@@ -16,13 +17,15 @@ BEGIN NAMESPACE XSharp
     [DebuggerDisplay("{ToDebuggerString(),nq}", Type := "USUAL")];
     [AllowLateBinding];
     [StructLayout(LayoutKind.Sequential, Pack := 4)];
+    [Serializable];
     PUBLIC STRUCTURE __Usual IMPLEMENTS IConvertible, ;
         IComparable, ;
         IComparable<__Usual>, ;
         IEquatable<__Usual>, ;
         IIndexedProperties, ;
         IIndexer, ;
-        IDisposable
+        IDisposable,;
+        ISerializable
          
         #region STATIC fields
         /// <exclude />
@@ -2021,6 +2024,8 @@ BEGIN NAMESPACE XSharp
 	            END IF
             CASE __UsualType.Symbol
                 RETURN u:ToString()
+            CASE __UsualType.Binary
+                RETURN u:_binaryValue:ToString()
             OTHERWISE
                 THROW ConversionError(STRING, TYPEOF(STRING), u)
             END SWITCH
@@ -2815,6 +2820,8 @@ BEGIN NAMESPACE XSharp
                     RETURN o
                 ELSEIF o IS IConvertible VAR ic
                     RETURN ic:ToType(conversionType, provider)
+                ELSEIF conversionType == Typeof(STRING)
+                    RETURN o:ToString()
                 ELSE
                     RETURN o
                 ENDIF
@@ -2835,6 +2842,7 @@ BEGIN NAMESPACE XSharp
             /// <inheritdoc/>
         PUBLIC METHOD GetTypeCode() AS System.TypeCode
             SWITCH _usualType
+            // RETURN TypeCode.Object here for our custom types !
             CASE __UsualType.Array	    ; RETURN TypeCode.Object
             CASE __UsualType.Binary	    ; RETURN TypeCode.Object
             CASE __UsualType.Codeblock  ; RETURN TypeCode.Object
@@ -3067,6 +3075,33 @@ BEGIN NAMESPACE XSharp
             END SET
         END PROPERTY
         #endregion
+
+        #region ISerializable
+        /// <inheritdoc/>
+        PUBLIC METHOD GetObjectData(info AS SerializationInfo, context AS StreamingContext) AS VOID
+            IF info == NULL
+                THROW System.ArgumentException{"info"}
+            ENDIF
+            info:AddValue("Flags", SELF:_flags:Flags)
+            info:AddValue("Type",  SELF:Value:GetType():FullName)
+            info:AddValue("Value", SELF:Value)
+            RETURN
+            
+        /// <include file="RTComments.xml" path="Comments/SerializeConstructor/*" />
+        CONSTRUCTOR (info AS SerializationInfo, context AS StreamingContext)
+            IF info == NULL
+                THROW System.ArgumentException{"info"}
+            ENDIF
+            SELF:_flags          := UsualFlags{ __UsualType.Void }
+            SELF:_flags:Flags    := info:GetInt32("Flags")
+            VAR name             := info:GetString("Type")
+            VAR type             := System.Type.GetType(name)
+            VAR oValue           := info:GetValue("Value", type)
+            VAR uTemp            := USUAL{oValue}
+            SELF:_refData        := uTemp:_refData
+            SELF:_valueData      := uTemp:_valueData
+            
+            #endregion  
         #region Special methods used BY the compiler
         /// <summary>This method is used by the compiler for code that does an inexact comparison between two usuals.</summary>
         STATIC METHOD __InexactEquals( lhs AS __Usual, rhs AS __Usual ) AS LOGIC
@@ -3155,6 +3190,7 @@ BEGIN NAMESPACE XSharp
 
     [StructLayout(LayoutKind.Explicit, Pack := 1)];
     INTERNAL STRUCTURE UsualFlags
+        [FieldOffset(0)] EXPORT Flags       AS Int32
         [FieldOffset(0)] EXPORT UsualType   AS __UsualType
         [FieldOffset(1)] EXPORT Width       AS SByte
         [FieldOffset(2)] EXPORT Decimals    AS SByte
@@ -3163,6 +3199,7 @@ BEGIN NAMESPACE XSharp
 
         [DebuggerStepThroughAttribute];
         CONSTRUCTOR(type AS __UsualType)
+            Flags       := 0
             UsualType   := type
             Width	    := 0
             Decimals    := 0

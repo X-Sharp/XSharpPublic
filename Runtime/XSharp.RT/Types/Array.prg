@@ -9,6 +9,7 @@ USING System.Linq
 USING System.Diagnostics
 USING System.Reflection
 USING System.Text
+USING System.Runtime.Serialization
 USING XSharp
 BEGIN NAMESPACE XSharp
     /// <summary>Internal type that implements the VO Compatible ARRAY type.<br/>
@@ -18,7 +19,8 @@ BEGIN NAMESPACE XSharp
     /// <include file="RTComments.xml" path="Comments/ZeroBasedIndex/*" /> 
     //[DebuggerTypeProxy(TYPEOF(ArrayDebugView))];
     [DebuggerDisplay("{DebuggerString(),nq}", Type := "ARRAY")] ;
-    PUBLIC CLASS __Array INHERIT __ArrayBase<USUAL> IMPLEMENTS IIndexer
+    [Serializable];
+    PUBLIC CLASS __Array INHERIT __ArrayBase<USUAL> IMPLEMENTS IIndexer, ISerializable
 
         INTERNAL STATIC SuppressArrayIndexErrors := FALSE AS LOGIC  // used for Get_Element to emulate strange VO behaviour
 
@@ -63,6 +65,16 @@ BEGIN NAMESPACE XSharp
             NEXT
             RETURN
 
+        #region ISerializable
+        /// <inheritdoc/>
+        PUBLIC OVERRIDE METHOD GetObjectData(info AS SerializationInfo, context AS StreamingContext) AS VOID
+            SUPER:GetObjectData(info, context)
+            RETURN
+            
+        /// <include file="RTComments.xml" path="Comments/SerializeConstructor/*" />
+        CONSTRUCTOR (info AS SerializationInfo, context AS StreamingContext)
+            SUPER(info, context)
+        #endregion    
         INTERNAL STATIC METHOD ArrayCreate(dimensions PARAMS INT[] ) AS ARRAY
             LOCAL count := dimensions:Length AS INT
             IF count <= 0

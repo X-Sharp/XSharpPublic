@@ -46,7 +46,7 @@
     <VO15>true</VO15>
     <VO16>false</VO16>
     <TargetFrameworkProfile />
-    <XSharpProjectversion>2.6.2.0</XSharpProjectversion>
+    <XSharpProjectversion>2.7.0.0</XSharpProjectversion>
     <Includepaths />
     <Nostandarddefs>true</Nostandarddefs>
   </PropertyGroup>
@@ -101,6 +101,13 @@
       <AssemblyName>Microsoft.CSharp.dll</AssemblyName>
       <SpecificVersion>False</SpecificVersion>
     </Reference>
+    <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed">
+      <Name>Newtonsoft.Json</Name>
+      <AssemblyName>Newtonsoft.Json.dll</AssemblyName>
+      <SpecificVersion>False</SpecificVersion>
+      <Private>True</Private>
+      <HintPath>..\..\packages\Newtonsoft.Json.12.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="XSharp.MacroCompiler, Version=2.0.0.8, Culture=neutral, PublicKeyToken=ed555a0467764586">
       <Name>XSharp.MacroCompiler</Name>
@@ -146,6 +153,7 @@
     <Compile Include="DateTests.prg" />
     <Compile Include="DbfTests.prg" />
     <Compile Include="OOPTests.prg" />
+    <Compile Include="Serializing.prg" />
     <Compile Include="StringTests.prg" />
     <Compile Include="MiscTests.prg" />
     <Compile Include="ErrorTests.prg" />

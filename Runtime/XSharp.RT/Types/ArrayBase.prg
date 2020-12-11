@@ -9,12 +9,16 @@ USING System.Linq
 USING System.Diagnostics
 USING System.Reflection
 USING XSharp
+USING System.Runtime.Serialization
 BEGIN NAMESPACE XSharp 
 	/// <summary>Internal type that implements the new TYPED ARRAY type.<br/>
 	/// This type has methods and properties that normally are never directly called from user code.
 	/// </summary>
     /// <typeparam name="T">Type of the elements inside the array </typeparam>
-	PUBLIC CLASS __ArrayBase<T> IMPLEMENTS INamedIndexer, IEnumerable<T> WHERE T IS NEW()
+    [Serializable];
+	PUBLIC CLASS __ArrayBase<T> ;
+        IMPLEMENTS INamedIndexer, IEnumerable<T>, ISerializable;
+        WHERE T IS NEW()
         [DebuggerBrowsable(DebuggerBrowsableState.Never)];
 		PROTECTED INTERNAL _internalList AS List<T>
         [DebuggerBrowsable(DebuggerBrowsableState.Never)];
@@ -431,6 +435,31 @@ BEGIN NAMESPACE XSharp
 			RETURN aResult:ToArray()
 
     #endregion
+    #region ISerializable
+        /// <inheritdoc/>
+        PUBLIC VIRTUAL METHOD GetObjectData(info AS SerializationInfo, context AS StreamingContext) AS VOID
+            IF info == NULL
+                THROW System.ArgumentException{"info"}
+            ENDIF
+            info:AddValue("Count", SELF:Count)
+            FOR VAR i := 1 TO SELF:Count
+                info:AddValue("Item"+i:ToString(), _internalList[i-1])
+            NEXT
+            RETURN
+            
+        /// <include file="RTComments.xml" path="Comments/SerializeConstructor/*" />
+        CONSTRUCTOR (info AS SerializationInfo, context AS StreamingContext)
+            IF info == NULL
+                THROW System.ArgumentException{"info"}
+            ENDIF
+            VAR count := info:GetInt32("Count")
+            _internalList := List<T>{  }
+            FOR VAR i := 1 TO count
+                _internalList:Add( (T) info:GetValue("Item"+i:ToString(), typeof(T)))
+            NEXT
+            
+            
+            #endregion    
 
 	END	CLASS
 END NAMESPACE

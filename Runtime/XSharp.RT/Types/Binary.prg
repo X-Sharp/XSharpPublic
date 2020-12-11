@@ -8,6 +8,7 @@ USING System.Text
 USING System.Runtime.InteropServices
 USING System.Runtime.CompilerServices
 USING System.Diagnostics
+USING System.Runtime.Serialization
 #pragma options ("az", on)
 BEGIN NAMESPACE XSharp
     // use explicit layout so we can compact the size into 12 bytes
@@ -17,10 +18,12 @@ BEGIN NAMESPACE XSharp
     /// The data in this type is stored as an array of Bytes<br/>
     /// Conversions from and to String are supported and they use the current active windows codepage.
     /// </summary>
+    [Serializable];
     PUBLIC STRUCTURE __Binary IMPLEMENTS IFormattable, ;
         IComparable<__Binary>, ;
         IEquatable<__Binary>, ;
-        IComparable
+        IComparable,           ;
+        ISerializable
     
         [DebuggerBrowsable(DebuggerBrowsableState.Never)];
         PRIVATE INITONLY _value AS BYTE[]
@@ -239,7 +242,104 @@ BEGIN NAMESPACE XSharp
         PUBLIC METHOD ToString(format AS STRING, provider AS System.IFormatProvider) AS STRING
             RETURN ToString(format)
             #endregion
+        #region ISerializable
+        /// <inheritdoc/>
+        
+        PUBLIC METHOD GetObjectData(info AS SerializationInfo, context AS StreamingContext) AS VOID
+            IF info == NULL
+                THROW System.ArgumentException{"info"}
+            ENDIF
+            info:AddValue("Value", SELF:ToString(""))
+            RETURN
+        /// <include file="RTComments.xml" path="Comments/SerializeConstructor/*" />
+        CONSTRUCTOR (info AS SerializationInfo, context AS StreamingContext)
+            IF info == NULL
+                THROW System.ArgumentException{"info"}
+            ENDIF
+            _value := NULL
+            VAR s := info:GetString("Value")
+            IF s:ToLower():StartsWith("0h")
+                _value := BYTE[]{(s:Length -2)/2} // subtract 2 for 0h
+                LOCAL current := 0 AS INT
+                FOR VAR i := 2 TO s:Length-1 STEP 2
+                    VAR nibble := s:Substring(i,2)
+                    _value[current] := Val("0x"+nibble)
+                    current += 1
+                NEXT
+            ENDIF
+        #endregion
+        /*
+        #region IConvertible
+			// forward most methods to the DateTime class so there will
+			// be a proper (localized) error message
+			/// <inheritdoc />
+			METHOD IConvertible.ToBoolean(provider AS System.IFormatProvider) AS LOGIC
+				THROW NotImplementedException{}
 
+			/// <inheritdoc />
+			METHOD IConvertible.ToByte(provider AS System.IFormatProvider) AS BYTE
+				THROW NotImplementedException{}
+
+			/// <inheritdoc />
+			METHOD IConvertible.ToChar(provider AS System.IFormatProvider) AS CHAR
+				THROW NotImplementedException{}
+
+			/// <inheritdoc />
+			METHOD IConvertible.ToDateTime(provider AS System.IFormatProvider) AS System.DateTime
+				THROW NotImplementedException{}
+
+			/// <inheritdoc />
+			METHOD IConvertible.ToDecimal(provider AS System.IFormatProvider) AS DECIMAL
+				THROW NotImplementedException{}
+
+			/// <inheritdoc />
+			METHOD IConvertible.ToDouble(provider AS System.IFormatProvider) AS REAL8
+				THROW NotImplementedException{}
+
+			/// <inheritdoc />
+			METHOD IConvertible.ToInt16(provider AS System.IFormatProvider) AS SHORT
+				THROW NotImplementedException{}
+
+			/// <inheritdoc />
+			METHOD IConvertible.ToInt32(provider AS System.IFormatProvider) AS LONG
+				THROW NotImplementedException{}
+
+			/// <inheritdoc />
+			METHOD IConvertible.ToInt64(provider AS System.IFormatProvider) AS INT64
+				THROW NotImplementedException{}
+
+			/// <inheritdoc />
+			METHOD IConvertible.ToSByte(provider AS System.IFormatProvider) AS SByte
+				THROW NotImplementedException{}
+
+			/// <inheritdoc />
+			METHOD IConvertible.ToSingle(provider AS System.IFormatProvider) AS REAL4
+				THROW NotImplementedException{}
+
+
+			/// <inheritdoc />
+			METHOD IConvertible.ToUInt16(provider AS System.IFormatProvider) AS WORD
+				THROW NotImplementedException{}
+
+			/// <inheritdoc />
+			METHOD IConvertible.ToUInt32(provider AS System.IFormatProvider) AS DWORD
+				THROW NotImplementedException{}
+
+			/// <inheritdoc />
+			METHOD IConvertible.ToUInt64(provider AS System.IFormatProvider) AS UINT64
+				THROW NotImplementedException{}
+
+            METHOD IConvertible.ToType(conversionType AS System.Type, provider AS System.IFormatProvider) AS OBJECT
+				IF conversionType == TYPEOF(STRING)
+					RETURN SELF:ToString("")
+				ENDIF
+				THROW NotImplementedException{}
+                
+		    METHOD IConvertible.ToString(provider AS System.IFormatProvider) AS STRING
+			    RETURN SELF:ToString("")
+        
+        #endregion
+        */
     END STRUCTURE
     
 END NAMESPACE

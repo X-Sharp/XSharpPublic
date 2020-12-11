@@ -7,6 +7,7 @@ USING System
 USING System.Runtime.InteropServices
 USING System.Runtime.CompilerServices
 USING System.Diagnostics
+USING System.Runtime.Serialization
 
 BEGIN NAMESPACE XSharp
     // use explicit layout so we can compact the size into 12 bytes
@@ -17,11 +18,13 @@ BEGIN NAMESPACE XSharp
     /// </summary>
     /// <seealso cref="T:XSharp.__Float"/>
     /// <seealso cref="T:System.Decimal"/>
+    [Serializable];
     PUBLIC STRUCTURE __Currency IMPLEMENTS IConvertible,; 
         IFormattable, ;
         IComparable<__Currency>, ;
         IEquatable<__Currency>, ;
-        IComparable
+        IComparable,            ;
+        ISerializable
     
         PRIVATE INITONLY _value AS System.Decimal
         
@@ -433,6 +436,24 @@ BEGIN NAMESPACE XSharp
         PUBLIC METHOD CompareTo(rhs AS OBJECT) AS INT
             RETURN SELF:CompareTo( (CURRENCY) rhs)
             #endregion
+            
+        #region ISerializable
+        /// <inheritdoc/>
+        PUBLIC METHOD GetObjectData(info AS SerializationInfo, context AS StreamingContext) AS VOID
+            IF info == NULL
+                THROW System.ArgumentException{"info"}
+            ENDIF
+            info:AddValue("Value", SELF:_value)
+            RETURN
+        /// <include file="RTComments.xml" path="Comments/SerializeConstructor/*" />
+        CONSTRUCTOR (info AS SerializationInfo, context AS StreamingContext)
+            IF info == NULL
+                THROW System.ArgumentException{"info"}
+            ENDIF
+            SELF:_value   := info:GetDecimal("Value")
+        #endregion
+
+
             
     END STRUCTURE
     

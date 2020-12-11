@@ -5,6 +5,7 @@
 //
 USING System.Collections.Generic
 USING System.Runtime.InteropServices
+USING System.Runtime.Serialization
 USING System.Diagnostics
 USING System.Text
 USING System.Reflection
@@ -15,7 +16,8 @@ BEGIN NAMESPACE XSharp
 	/// </summary>
     /// <include file="RTComments.xml" path="Comments/PSZ/*" />
 	[DebuggerDisplay( "{DebuggerString(),nq}", Type := "PSZ" ) ] ;
-	STRUCTURE __Psz IMPLEMENTS  IEquatable<__Psz>
+    [Serializable];
+	STRUCTURE __Psz IMPLEMENTS  IEquatable<__Psz>, ISerializable
 		PRIVATE _value AS BYTE PTR
 		/// <exclude />	
 		STATIC PROPERTY _NULL_PSZ AS __Psz GET (__Psz) IntPtr.Zero
@@ -343,7 +345,22 @@ BEGIN NAMESPACE XSharp
 				RETURN (DWORD) p:_value			
 		#endregion
 		
-		
+       #region ISerializable
+        /// <inheritdoc/>
+        PUBLIC METHOD GetObjectData(info AS SerializationInfo, context AS StreamingContext) AS VOID
+            IF info == NULL
+                THROW System.ArgumentException{"info"}
+            ENDIF
+            info:AddValue("Value", SELF:ToString())
+            RETURN
+        /// <include file="RTComments.xml" path="Comments/SerializeConstructor/*" />
+        CONSTRUCTOR (info AS SerializationInfo, context AS StreamingContext)
+            IF info == NULL
+                THROW System.ArgumentException{"info"}
+            ENDIF
+            _value := String2Mem(info:GetString("Value"))
+            RegisterPsz(_value)
+        #endregion		
 	END STRUCTURE
 	
 END NAMESPACE

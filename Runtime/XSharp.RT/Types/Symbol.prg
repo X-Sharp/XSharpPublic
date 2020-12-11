@@ -9,6 +9,7 @@ USING System.Collections
 USING System.Collections.Generic
 USING System.Diagnostics
 USING System.Runtime.CompilerServices
+USING System.Runtime.Serialization
 
 BEGIN NAMESPACE XSharp
     /// <summary>Internal type that implements the VO Compatible SYMBOL type.<br/>
@@ -18,13 +19,15 @@ BEGIN NAMESPACE XSharp
     /// <include file="RTComments.xml" path="Comments/Symbol/*" />
     //[DebuggerTypeProxy(TYPEOF(SymbolDebugView))];
     [DebuggerDisplay("{ToDebugString(),nq}",Type := "SYMBOL")];
+    [Serializable];
     PUBLIC STRUCTURE __Symbol ;
-    IMPLEMENTS IEqualityComparer<__Symbol>, ;
-    IEquatable<__Symbol>,;
-    IComparable<__Symbol>, ;
-    IComparable, ;
-    ICloneable , ;
-    IConvertible
+        IMPLEMENTS IEqualityComparer<__Symbol>, ;
+        IEquatable<__Symbol>,;
+        IComparable<__Symbol>, ;
+        IComparable, ;
+        ICloneable , ;
+        IConvertible,;
+        ISerializable
 
         #region fields
         [DebuggerBrowsable(DebuggerBrowsableState.Never)];
@@ -390,6 +393,23 @@ BEGIN NAMESPACE XSharp
             #endregion
 
             #region IEnumerable
+        #region ISerializable
+        /// <inheritdoc/>
+        PUBLIC METHOD GetObjectData(info AS SerializationInfo, context AS StreamingContext) AS VOID
+            IF info == NULL
+                THROW System.ArgumentException{"info"}
+            ENDIF
+            info:AddValue("Value", SymbolTable.GetString(SELF:_index))
+            RETURN
+            
+        /// <include file="RTComments.xml" path="Comments/SerializeConstructor/*" />
+        CONSTRUCTOR (info AS SerializationInfo, context AS StreamingContext)
+            IF info == NULL
+                THROW System.ArgumentException{"info"}
+            ENDIF
+            _index := SymbolTable.Add(info:GetString("Value"))
+            #endregion
+
             // Vulcan.Symbol
             //METHOD GetEnumerator() as IEnumerator
             //return SymbolTable.strings.GetEnumerator()

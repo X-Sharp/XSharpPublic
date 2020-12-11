@@ -6,6 +6,7 @@
 USING System
 USING System.Runtime.InteropServices
 USING System.Runtime.CompilerServices
+USING System.Runtime.Serialization
 USING System.Diagnostics
 
 
@@ -20,12 +21,14 @@ BEGIN NAMESPACE XSharp
     /// <seealso cref="T:XSharp.RDD.DbFloat"/>
     [DebuggerDisplay("{ToDebugString(),nq}", Type := "FLOAT" )];
     [StructLayout(LayoutKind.Explicit, Pack := 4)];
+    [Serializable];
     PUBLIC STRUCTURE __Float IMPLEMENTS IFloat, ;
         IConvertible,; 
         IFormattable, ;
         IComparable<__Float>, ;
         IEquatable<__Float>, ;
-        IComparable
+        IComparable,            ;
+        ISerializable
 
         [DebuggerBrowsable(DebuggerBrowsableState.Never)];
         [FieldOffset(0)]  PRIVATE INITONLY _value AS REAL8
@@ -524,6 +527,28 @@ BEGIN NAMESPACE XSharp
         PUBLIC METHOD CompareTo(rhs AS OBJECT) AS INT
             RETURN SELF:CompareTo( (FLOAT) rhs)
             #endregion
+
+        #region ISerializable
+        /// <inheritdoc/>
+        PUBLIC METHOD GetObjectData(info AS SerializationInfo, context AS StreamingContext) AS VOID
+            IF info == NULL
+                THROW System.ArgumentException{"info"}
+            ENDIF
+            info:AddValue("Value", SELF:_value)
+            info:AddValue("Length", SELF:_length)
+            info:AddValue("Decimals", SELF:_decimals)
+            RETURN
+            
+        /// <include file="RTComments.xml" path="Comments/SerializeConstructor/*" />
+        CONSTRUCTOR (info AS SerializationInfo, context AS StreamingContext)
+            IF info == NULL
+                THROW System.ArgumentException{"info"}
+            ENDIF
+            SELF:_value     := info:GetDouble("Value")
+            SELF:_length    := info:GetInt16("Length")
+            SELF:_decimals  := info:GetInt16("Decimals")
+        #endregion
+
 
         PUBLIC OVERRIDE METHOD ToDebugString() AS STRING
             RETURN SELF:Value:ToString()

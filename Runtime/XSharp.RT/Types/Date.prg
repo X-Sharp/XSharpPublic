@@ -7,9 +7,11 @@ USING System
 USING System.Runtime.Serialization
 USING System.Globalization
 USING System.Runtime.InteropServices
+USING System.Runtime.Serialization
 USING System.Runtime.CompilerServices
 USING XSharp
 USING System.Diagnostics
+
 BEGIN NAMESPACE XSharp
 	/// <summary>Internal type that implements the VO Compatible DATE type<br/>
 	/// This type has many operators and implicit converters that normally are never directly called from user code.
@@ -21,12 +23,14 @@ BEGIN NAMESPACE XSharp
 	//[DebuggerTypeProxy(TYPEOF(DateDebugView))];
 	[DebuggerDisplay("{ToDebugString(),nq}", Type := "DATE" )];
 	[StructLayout(LayoutKind.Explicit,Pack := 1)];
+    [Serializable];
 	PUBLIC STRUCTURE __Date IMPLEMENTS System.IComparable, ;
 		System.IFormattable, ;
 		System.IConvertible, ;
 		IDate, ;
 		IComparable<__Date>, ;
-		IEquatable<__Date>
+		IEquatable<__Date>,;
+        ISerializable 
 		// This structure uses an explicit layout to map
 		// year, month and date into 32 bits
 		// the _ymd field is for convenience, so we can do a single numeric comparison
@@ -566,6 +570,8 @@ BEGIN NAMESPACE XSharp
 			METHOD IConvertible.ToType(conversionType AS System.Type, provider AS System.IFormatProvider) AS OBJECT
 				IF conversionType == TYPEOF(DATE)
 					RETURN SELF
+                ELSEIF conversionType == TYPEOF(STRING)
+                    RETURN SELF:ToString()
 				ELSEIF conversionType == TYPEOF(System.DateTime)
 					RETURN SELF:Value
 				ENDIF
@@ -614,7 +620,25 @@ BEGIN NAMESPACE XSharp
 				ENDIF
 				RETURN SELF:Value:ToString(s, fp)
 		#endregion
-		#region properties
+
+        #region ISerializable
+        /// <inheritdoc/>
+        PUBLIC METHOD GetObjectData(info AS SerializationInfo, context AS StreamingContext) AS VOID
+            IF info == NULL
+                THROW System.ArgumentException{"info"}
+            ENDIF
+            info:AddValue("Value", SELF:ToString())
+            RETURN
+        /// <include file="RTComments.xml" path="Comments/SerializeConstructor/*" />
+        CONSTRUCTOR (info AS SerializationInfo, context AS StreamingContext)
+            _ymd := _year := _month := _day := 0
+            IF info == NULL
+                THROW System.ArgumentException{"info"}
+            ENDIF
+            SELF := CToD(info:GetString("Value"))
+        #endregion
+
+        #region properties
 
 			/// <inheritdoc />
             [DebuggerBrowsable(DebuggerBrowsableState.Never)];
@@ -643,17 +667,7 @@ BEGIN NAMESPACE XSharp
                 ENDIF
                 RETURN SELF:Value:ToShortDateString()
                 
-//			INTERNAL CLASS DateDebugView
-//				PRIVATE _value AS DATE
-//				PUBLIC CONSTRUCTOR (d AS DATE)
-//					_value := d
-//
-//				PUBLIC PROPERTY Year	AS INT GET _value:Year
-//				PUBLIC PROPERTY Month	AS INT GET _value:Month
-//				PUBLIC PROPERTY Day		AS INT GET _value:Day
-//
-//			END CLASS
-//
+
 		#endregion
 
 		#region STATIC Properties
@@ -664,5 +678,6 @@ BEGIN NAMESPACE XSharp
 
 
 		#endregion
+
 	END STRUCTURE
 END NAMESPACE

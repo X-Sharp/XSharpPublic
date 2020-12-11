@@ -157,7 +157,13 @@ BEGIN NAMESPACE XSharp.Internal
     /// method that wants access to locals.
     /// At runtime we will then populate a table in the runtime with the names and values of local variables
 	/// And we can access this table with the normal MemVarGet() and MemVarPut() functions.
-    /// <remarks>
+    /// </remarks>
+    /// <seealso cref="O:XSharp.RT.Functions.Type" />
+    /// <seealso cref="O:XSharp.RT.Functions.MExec" />
+    /// <seealso cref="O:XSharp.RT.Functions.Evaluate" />
+    /// <seealso cref="O:XSharp.RT.Functions.StrEvaluate" />
+    /// <seealso cref="O:XSharp.VFP.Functions.SqlExec" />
+    /// <seealso cref="O:XSharp.VFP.Functions.SqlPrepare" />
 	[AttributeUsage(AttributeTargets.Method | AttributeTargets.Property | AttributeTargets.Constructor) ];
 	SEALED CLASS NeedsAccessToLocalsAttribute INHERIT Attribute
 		CONSTRUCTOR()

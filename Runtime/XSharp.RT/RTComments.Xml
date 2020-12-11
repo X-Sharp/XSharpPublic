@@ -143,4 +143,9 @@
       </list>
     </span>
   </ScopeReturn>
+    <SerializeConstructor>
+        <summary>Construct a value from serialized data</summary>
+        <param name="info">A SerializationInfo object containing information required to construct value.</param>
+        <param name="context">A StreamingContext object containing the source and destination of the serialized stream associated with the value.</param>
+    </SerializeConstructor>
 </Comments>

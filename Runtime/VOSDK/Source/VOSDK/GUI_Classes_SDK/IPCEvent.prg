@@ -123,7 +123,7 @@ CONSTRUCTOR(wT, wF, hC, h1, h2, hD, dwD1, dwD2, oIpc)
 ACCESS Item 
 	LOCAL cBuf AS STRING
 	LOCAL dwLen AS DWORD
-	LOCAL pszBuf := NULL AS PSZ
+	LOCAL pszBuf := NULL_PSZ AS PSZ
 
 	
 
@@ -143,7 +143,7 @@ ACCESS Item
 ACCESS Topic 
 	LOCAL cBuf AS STRING
 	LOCAL dwLen AS DWORD
-	LOCAL pszBuf := NULL AS PSZ
+	LOCAL pszBuf := NULL_PSZ AS PSZ
 
 	
 

@@ -1992,6 +1992,8 @@ namespace Microsoft.VisualStudio.Project
 
         #region virtual methods
 
+        internal bool WizardIsRunning { get; set; } = false;
+
         /// <summary>
         /// Executes a wizard.
         /// </summary>
@@ -2005,127 +2007,134 @@ namespace Microsoft.VisualStudio.Project
         {
             Debug.Assert(!String.IsNullOrEmpty(itemName), "The Add item dialog was passing in a null or empty item to be added to the hierrachy.");
             Debug.Assert(!String.IsNullOrEmpty(this.ProjectFolder), "The Project Folder is not specified for this project.");
-
-            if (parentNode == null)
+            try
             {
-                throw new ArgumentNullException("parentNode");
-            }
-
-            if (String.IsNullOrEmpty(itemName))
-            {
-                throw new ArgumentNullException("itemName");
-            }
-
-            // We just validate for length, since we assume other validation has been performed by the dlgOwner.
-            if (this.ProjectFolder.Length + itemName.Length + 1 > NativeMethods.MAX_PATH)
-            {
-                string errorMessage = String.Format(CultureInfo.CurrentCulture, SR.GetString(SR.PathTooLong, CultureInfo.CurrentUICulture), itemName);
-                if (!Utilities.IsInAutomationFunction(this.Site))
+                WizardIsRunning = true;
+                if (parentNode == null)
                 {
-                    string title = null;
-                    OLEMSGICON icon = OLEMSGICON.OLEMSGICON_CRITICAL;
-                    OLEMSGBUTTON buttons = OLEMSGBUTTON.OLEMSGBUTTON_OK;
-                    OLEMSGDEFBUTTON defaultButton = OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST;
-                    Utilities.ShowMessageBox(this.Site, title, errorMessage, icon, buttons, defaultButton);
-                    return VSADDRESULT.ADDRESULT_Failure;
+                    throw new ArgumentNullException("parentNode");
+                }
+
+                if (String.IsNullOrEmpty(itemName))
+                {
+                    throw new ArgumentNullException("itemName");
+                }
+
+                // We just validate for length, since we assume other validation has been performed by the dlgOwner.
+                if (this.ProjectFolder.Length + itemName.Length + 1 > NativeMethods.MAX_PATH)
+                {
+                    string errorMessage = String.Format(CultureInfo.CurrentCulture, SR.GetString(SR.PathTooLong, CultureInfo.CurrentUICulture), itemName);
+                    if (!Utilities.IsInAutomationFunction(this.Site))
+                    {
+                        string title = null;
+                        OLEMSGICON icon = OLEMSGICON.OLEMSGICON_CRITICAL;
+                        OLEMSGBUTTON buttons = OLEMSGBUTTON.OLEMSGBUTTON_OK;
+                        OLEMSGDEFBUTTON defaultButton = OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST;
+                        Utilities.ShowMessageBox(this.Site, title, errorMessage, icon, buttons, defaultButton);
+                        return VSADDRESULT.ADDRESULT_Failure;
+                    }
+                    else
+                    {
+                        throw new InvalidOperationException(errorMessage);
+                    }
+                }
+
+
+                // Build up the ContextParams safearray
+                //  [0] = Wizard type guid  (bstr)
+                //  [1] = Project name  (bstr)
+                //  [2] = ProjectItems collection (bstr)
+                //  [3] = Local Directory (bstr)
+                //  [4] = Filename the user typed (bstr)
+                //  [5] = Product install Directory (bstr)
+                //  [6] = Run silent (bool)
+
+                object[] contextParams = new object[7];
+                contextParams[0] = EnvDTE.Constants.vsWizardAddItem;
+                contextParams[1] = this.Caption;
+                object automationObject = parentNode.GetAutomationObject();
+                if (automationObject is EnvDTE.Project)
+                {
+                    EnvDTE.Project project = (EnvDTE.Project)automationObject;
+                    contextParams[2] = project.ProjectItems;
                 }
                 else
                 {
-                    throw new InvalidOperationException(errorMessage);
+                    // This would normally be a folder unless it is an item with subitems
+                    EnvDTE.ProjectItem item = (EnvDTE.ProjectItem)automationObject;
+                    contextParams[2] = item.ProjectItems;
                 }
-            }
 
+                contextParams[3] = this.ProjectFolder;
 
-            // Build up the ContextParams safearray
-            //  [0] = Wizard type guid  (bstr)
-            //  [1] = Project name  (bstr)
-            //  [2] = ProjectItems collection (bstr)
-            //  [3] = Local Directory (bstr)
-            //  [4] = Filename the user typed (bstr)
-            //  [5] = Product install Directory (bstr)
-            //  [6] = Run silent (bool)
+                contextParams[4] = itemName;
 
-            object[] contextParams = new object[7];
-            contextParams[0] = EnvDTE.Constants.vsWizardAddItem;
-            contextParams[1] = this.Caption;
-            object automationObject = parentNode.GetAutomationObject();
-            if (automationObject is EnvDTE.Project)
-            {
-                EnvDTE.Project project = (EnvDTE.Project)automationObject;
-                contextParams[2] = project.ProjectItems;
-            }
-            else
-            {
-                // This would normally be a folder unless it is an item with subitems
-                EnvDTE.ProjectItem item = (EnvDTE.ProjectItem)automationObject;
-                contextParams[2] = item.ProjectItems;
-            }
+                object objInstallationDir = null;
+                IVsShell shell = (IVsShell)this.GetService(typeof(IVsShell));
+                ErrorHandler.ThrowOnFailure(shell.GetProperty((int)__VSSPROPID.VSSPROPID_InstallDirectory, out objInstallationDir));
+                string installDir = (string)objInstallationDir;
 
-            contextParams[3] = this.ProjectFolder;
-
-            contextParams[4] = itemName;
-
-            object objInstallationDir = null;
-            IVsShell shell = (IVsShell)this.GetService(typeof(IVsShell));
-            ErrorHandler.ThrowOnFailure(shell.GetProperty((int)__VSSPROPID.VSSPROPID_InstallDirectory, out objInstallationDir));
-            string installDir = (string)objInstallationDir;
-
-            // append a '\' to the install dir to mimic what the shell does (though it doesn't add one to destination dir)
-            if (!installDir.EndsWith("\\", StringComparison.Ordinal))
-            {
-                installDir += "\\";
-            }
-
-            contextParams[5] = installDir;
-
-            contextParams[6] = true;
-
-            IVsExtensibility3 ivsExtensibility = this.GetService(typeof(IVsExtensibility)) as IVsExtensibility3;
-            Debug.Assert(ivsExtensibility != null, "Failed to get IVsExtensibility3 service");
-            if (ivsExtensibility == null)
-            {
-                return VSADDRESULT.ADDRESULT_Failure;
-            }
-
-            // Determine if we have the trust to run this wizard.
-            IVsDetermineWizardTrust wizardTrust = this.GetService(typeof(SVsDetermineWizardTrust)) as IVsDetermineWizardTrust;
-            if (wizardTrust != null)
-            {
-                Guid guidProjectAdding = Guid.Empty;
-                object guidProjectAddingAsObject = this.GetProperty((int)__VSHPROPID2.VSHPROPID_AddItemTemplatesGuid);
-                wizardTrust.OnWizardInitiated(wizardToRun, ref guidProjectAdding);
-            }
-
-            int wizResultAsInt;
-            try
-            {
-                Array contextParamsAsArray = contextParams;
-
-                int result = ivsExtensibility.RunWizardFile(wizardToRun, (int)dlgOwner, ref contextParamsAsArray, out wizResultAsInt);
-
-                if (!ErrorHandler.Succeeded(result) && result != VSConstants.OLE_E_PROMPTSAVECANCELLED)
+                // append a '\' to the install dir to mimic what the shell does (though it doesn't add one to destination dir)
+                if (!installDir.EndsWith("\\", StringComparison.Ordinal))
                 {
-                    ErrorHandler.ThrowOnFailure(result);
+                    installDir += "\\";
+                }
+
+                contextParams[5] = installDir;
+
+                contextParams[6] = true;
+
+                IVsExtensibility3 ivsExtensibility = this.GetService(typeof(IVsExtensibility)) as IVsExtensibility3;
+                Debug.Assert(ivsExtensibility != null, "Failed to get IVsExtensibility3 service");
+                if (ivsExtensibility == null)
+                {
+                    return VSADDRESULT.ADDRESULT_Failure;
+                }
+
+                // Determine if we have the trust to run this wizard.
+                IVsDetermineWizardTrust wizardTrust = this.GetService(typeof(SVsDetermineWizardTrust)) as IVsDetermineWizardTrust;
+                if (wizardTrust != null)
+                {
+                    Guid guidProjectAdding = Guid.Empty;
+                    object guidProjectAddingAsObject = this.GetProperty((int)__VSHPROPID2.VSHPROPID_AddItemTemplatesGuid);
+                    wizardTrust.OnWizardInitiated(wizardToRun, ref guidProjectAdding);
+                }
+
+                int wizResultAsInt;
+                try
+                {
+                    Array contextParamsAsArray = contextParams;
+
+                    int result = ivsExtensibility.RunWizardFile(wizardToRun, (int)dlgOwner, ref contextParamsAsArray, out wizResultAsInt);
+
+                    if (!ErrorHandler.Succeeded(result) && result != VSConstants.OLE_E_PROMPTSAVECANCELLED)
+                    {
+                        ErrorHandler.ThrowOnFailure(result);
+                    }
+                }
+                finally
+                {
+                    if (wizardTrust != null)
+                    {
+                        wizardTrust.OnWizardCompleted();
+                    }
+                }
+
+                EnvDTE.wizardResult wizardResult = (EnvDTE.wizardResult)wizResultAsInt;
+
+                switch (wizardResult)
+                {
+                    default:
+                        return VSADDRESULT.ADDRESULT_Cancel;
+                    case wizardResult.wizardResultSuccess:
+                        return VSADDRESULT.ADDRESULT_Success;
+                    case wizardResult.wizardResultFailure:
+                        return VSADDRESULT.ADDRESULT_Failure;
                 }
             }
             finally
             {
-                if (wizardTrust != null)
-                {
-                    wizardTrust.OnWizardCompleted();
-                }
-            }
-
-            EnvDTE.wizardResult wizardResult = (EnvDTE.wizardResult)wizResultAsInt;
-
-            switch (wizardResult)
-            {
-                default:
-                    return VSADDRESULT.ADDRESULT_Cancel;
-                case wizardResult.wizardResultSuccess:
-                    return VSADDRESULT.ADDRESULT_Success;
-                case wizardResult.wizardResultFailure:
-                    return VSADDRESULT.ADDRESULT_Failure;
+                WizardIsRunning = false;
             }
         }
 

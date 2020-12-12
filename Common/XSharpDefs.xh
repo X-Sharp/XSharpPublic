@@ -16,9 +16,9 @@
 
 // The following UDCs require the xBase Runtime
 #ifndef __DIALECT_CORE__
-#command ACCEPT [<msg>] TO <v>         	=> <v> := _Accept( <msg> ) 
-#xcommand WAIT [<msg>]                  => _Wait( <msg> )
-#xcommand WAIT [<msg>] TO <v>           => <v> := _Wait( <msg> )
+#command ACCEPT [<msg>] TO <v>         	=> <v> := _accept( <msg> ) 
+#xcommand WAIT [<msg>]                  => _wait( <msg> )
+#xcommand WAIT [<msg>] TO <v>           => <v> := _wait( <msg> )
 #xcommand QUIT                   		=> _Quit()
 
 #xcommand DEFAULT <v1> TO <x1> [, <vn> TO <xn> ]  => ;
@@ -62,5 +62,3 @@
 #include "dbcmd.xh"
 
 #endif
-
-

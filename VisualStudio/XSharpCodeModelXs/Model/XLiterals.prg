@@ -76,14 +76,23 @@ BEGIN NAMESPACE XSharpModel
       END SWITCH
    
    STATIC METHOD ToDisplayString(SELF kind as Kind) AS STRING
+      VAR result := kind:DisplayName()
       SWITCH XSettings.KeywordCase
       CASE KeywordCase.Lower
          RETURN kind:ToString():ToLower()
       CASE KeywordCase.Title
-         VAR s := kind:ToString()
-         RETURN s:Substring(0,1):ToUpper()+s:Substring(1):ToLower()
+         IF result:Contains(" ")
+            var parts := result:Split(<CHAR>{' '})
+            result := ""
+            FOREACH VAR s IN parts
+               result += s:Substring(0,1):ToUpper()+s:Substring(1):ToLower()+" "
+            NEXT
+            RETURN result:Substring(0, result:Length-1)
+         ELSE
+            RETURN result:Substring(0,1):ToUpper()+result:Substring(1):ToLower()
+         ENDIF
       OTHERWISE
-         RETURN kind:ToString():ToUpper()
+         RETURN result:ToUpper()
       END SWITCH
 
    END CLASS

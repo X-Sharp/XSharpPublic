@@ -36,7 +36,7 @@
     <VO14>false</VO14>
     <VO15>false</VO15>
     <VO16>false</VO16>
-    <XSharpProjectversion>2.6.0.0</XSharpProjectversion>
+    <XSharpProjectversion>2.6.3.0</XSharpProjectversion>
     <Includepaths>$(SolutionDir)Common</Includepaths>
     <Nostandarddefs>false</Nostandarddefs>
   </PropertyGroup>
@@ -85,6 +85,12 @@
     <Reference Include="System" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\..\..\..\Common\commonAssemblyInfo.prg">
+      <Link>commonAssemblyInfo.prg</Link>
+    </Compile>
+    <Compile Include="..\..\..\..\Common\constants.prg">
+      <Link>constants.prg</Link>
+    </Compile>
     <Compile Include="AEF File.prg" />
     <Compile Include="Application Abstract.prg" />
     <Compile Include="Base Object.prg" />

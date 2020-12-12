@@ -679,6 +679,7 @@ BEGIN NAMESPACE XSharpModel
 									Log("Exception: "+e:ToString())
 									Log("File   : "+oFile:FullPath+" "+oFile:Id:ToString())
 									Log("Typedef: "+typedef:Name)
+									Log("Kind   : "+typedef:Kind:ToString())
 								END TRY
 							NEXT
 						/*
@@ -735,11 +736,41 @@ BEGIN NAMESPACE XSharpModel
 									Log("File   : "+oFile:FullPath+" "+oFile:Id:ToString())
 									Log("Typedef: "+typedef:Name+" "+typedef:Id:ToString())
 									Log("Member : "+xmember:Name)
+									Log("Kind   : "+xmember:Kind:ToString())
 									Log("Line :   "+xmember:Range:StartLine:ToString())
 									Log("Column : "+xmember:Range:StartColumn:ToString())
 								END TRY
 							NEXT
-						NEXT
+                  NEXT
+                  // Save local functions and procedure
+                  FOREACH xmember as XMemberDefinition in oFile:EntityList:Where ( {m => m.Kind.IsLocal() } )
+								TRY
+										// file is constant
+										pars[ 0]:Value := oFile:Id
+										pars[ 1]:Value := ((XTypeDefinition) xmember:ParentType):Id
+										pars[ 2]:Value := xmember:Name
+										pars[ 3]:Value := (INT) xmember:Kind
+										pars[ 4]:Value := (INT) xmember:Attributes
+										pars[ 5]:Value := xmember:Range:StartLine
+										pars[ 6]:Value := xmember:Range:StartColumn
+										pars[ 7]:Value := xmember:Range:EndLine
+										pars[ 8]:Value := xmember:Range:EndColumn
+										pars[ 9]:Value := xmember:Interval:Start
+										pars[10]:Value := xmember:Interval:Stop
+										pars[11]:Value := xmember:SourceCode
+										pars[12]:Value := xmember:XmlComments
+										VAR id := (INT64) oCmd:ExecuteScalar()
+									xmember:Id := id
+								CATCH e AS Exception
+									Log("Exception: "+e:ToString())
+									Log("File   : "+oFile:FullPath+" "+oFile:Id:ToString())
+									Log("Member : "+xmember:Name)
+									Log("Kind   : "+xmember:Kind:ToString())
+									Log("Line :   "+xmember:Range:StartLine:ToString())
+									Log("Column : "+xmember:Range:StartColumn:ToString())
+								END TRY
+                  NEXT
+                  
 						oCmd:CommandText := "INSERT INTO CommentTasks (idFile, Line, Column, Priority,Comment) " +;
 						" VALUES ($file, $line, $column, $priority, $comment) ;" +;
 						" SELECT last_insert_rowid()"
@@ -881,12 +912,14 @@ BEGIN NAMESPACE XSharpModel
 					TRY
 							BEGIN USING VAR oCmd := SQLiteCommand{"SELECT 1", oConn}
 								oCmd:CommandText := "SELECT * FROM ProjectMembers WHERE name = $name AND TypeName = $typename " + ;
-								" AND Kind in ($kind1, $kind2, $kind3, $kind4) AND IdProject in ("+sProjectIds+")"
+								" AND Kind in ($kind1, $kind2, $kind3, $kind4,$kind5,$kind6) AND IdProject in ("+sProjectIds+")"
 								oCmd:Parameters:AddWithValue("$name", sName)
 								oCmd:Parameters:AddWithValue("$kind1", (INT) Kind.Function)
 								oCmd:Parameters:AddWithValue("$kind2", (INT) Kind.Procedure)
 								oCmd:Parameters:AddWithValue("$kind3", (INT) Kind.Method)
 								oCmd:Parameters:AddWithValue("$kind4", (INT) Kind.VODLL)
+								oCmd:Parameters:AddWithValue("$kind5", (INT) Kind.LocalFunc)
+								oCmd:Parameters:AddWithValue("$kind6", (INT) Kind.LocalProc)
 								oCmd:Parameters:AddWithValue("$typename", XLiterals.GlobalName)
 								BEGIN USING VAR rdr := oCmd:ExecuteReader()
 									DO WHILE rdr:Read()
@@ -1170,7 +1203,6 @@ BEGIN NAMESPACE XSharpModel
 			ENDIF
 			Log(i"GetFunctions returns {result.Count} matches")
 		RETURN result			
-
 
 		STATIC METHOD CreateTypeInfo(rdr AS SQLiteDataReader) AS XDbResult
 			VAR res := XDbResult{}

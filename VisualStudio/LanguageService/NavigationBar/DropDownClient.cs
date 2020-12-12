@@ -409,7 +409,10 @@ namespace XSharp.LanguageService
                         else
                             prototype = parent.ComboPrototype + ":" + prototype;
                     }
-
+                    if (member.Kind.IsLocal())
+                    {
+                        prototype = member.Parent.Name + "." + prototype;
+                    }
                     if (otherFile)
                     {
                         AddSourceFile(member.File.SourcePath);

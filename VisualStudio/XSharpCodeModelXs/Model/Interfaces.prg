@@ -5,6 +5,7 @@ BEGIN NAMESPACE XSharpModel
    INTERFACE IXElement
       PROPERTY Name        as STRING GET
       PROPERTY Kind        as Kind   GET
+      PROPERTY KindKeyword AS STRING GET
       PROPERTY TypeName    AS STRING GET SET
       PROPERTY Parent      AS IXEntity GET SET
    END INTERFACE
@@ -14,7 +15,9 @@ BEGIN NAMESPACE XSharpModel
       PROPERTY Description AS STRING GET
       PROPERTY ModVis      AS STRING GET
       PROPERTY Modifiers   AS Modifiers GET
+      PROPERTY ModifiersKeyword as STRING GET
       PROPERTY Visibility  AS Modifiers GET
+      PROPERTY VisibilityKeyword as STRING GET
       PROPERTY IsStatic    AS LOGIC     GET
       PROPERTY Prototype   AS STRING    GET         
       PROPERTY FileUsings  AS IList<String> GET

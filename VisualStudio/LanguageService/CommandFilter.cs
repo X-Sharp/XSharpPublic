@@ -669,6 +669,7 @@ namespace XSharp.LanguageService
                                     case ')':
                                     case '}':
                                         CancelSignatureSession();
+                                        StartSignatureSession(false);
                                         break;
                                     case ',':
                                         StartSignatureSession(true);
@@ -739,9 +740,14 @@ namespace XSharp.LanguageService
                 WriteOutputMessage("CommandFilter.GotoDefn()");
                 XSharpModel.ModelWalker.Suspend();
                 // First, where are we ?
-                int caretPos = this.TextView.Caret.Position.BufferPosition.Position;
-                int lineNumber = this.TextView.Caret.Position.BufferPosition.GetContainingLine().LineNumber;
+
+                var ssp = this.TextView.Caret.Position.BufferPosition;
+                // find next delimiter, so we will include the '{' or '(' in the search
+                
                 var snapshot = this.TextView.TextBuffer.CurrentSnapshot;
+                ssp = XSharpTokenTools.FindEndOfCurrentToken(ssp, snapshot);
+                int caretPos = ssp.Position+1;
+                int lineNumber = ssp.GetContainingLine().LineNumber;
                 XSharpModel.XFile file = this.TextView.TextBuffer.GetFile();
                 if (file == null)
                     return;
@@ -762,7 +768,7 @@ namespace XSharp.LanguageService
                         return;
                 }
 
-                List<String> tokenList = XSharpTokenTools.GetTokenList(caretPos, lineNumber, tokens.TokenStream, out stopToken, true, file, false, member);
+                var tokenList = XSharpTokenTools.GetTokenList(caretPos, lineNumber, tokens.TokenStream, out stopToken, file, false, member);
 
                 // LookUp for the BaseType, reading the TokenList (From left to right)
                 CompletionElement gotoElement;
@@ -873,6 +879,7 @@ namespace XSharp.LanguageService
 
         private void FilterCompletionSession(char ch)
         {
+
             WriteOutputMessage("CommandFilter.FilterCompletionSession()");
             if (_completionSession == null)
                 return;
@@ -959,19 +966,15 @@ namespace XSharp.LanguageService
                         }
                         else
                         {
-                            switch (kind)
+                            if (kind == Kind.Constructor)
                             {
-                                case Kind.Method:
-                                case Kind.Function:
-                                case Kind.Procedure:
-                                case Kind.VODLL:
-                                    moveBack = true;
-                                    completion.InsertionText += "()";
-                                    break;
-                                case Kind.Constructor:
-                                    moveBack = true;
-                                    completion.InsertionText += "{}";
-                                    break;
+                                moveBack = true;
+                                completion.InsertionText += "{}";
+                            }
+                            if (kind.HasParameters())
+                            {
+                                moveBack = true;
+                                completion.InsertionText += "()";
                             }
                         }
                     }
@@ -1162,31 +1165,42 @@ namespace XSharp.LanguageService
             // when coming from the completion list then there is no need to check a lot of stuff
             // we can then simply lookup the method and that is it.
             // Also no need to filter on visibility since that has been done in the completionlist already !
-            CompletionElement gotoElement = null;
+            CompletionElement currentElement = null;
             // First, where are we ?
             int caretPos;
-            int lineNumber = startLineNumber;
-            //
+            int Level = 0;
             do
             {
-                if (ssp.Position == 0)
-                    break;
                 ssp = ssp - 1;
                 char leftCh = ssp.GetChar();
-                if ((leftCh == '(') || (leftCh == '{'))
+                bool done = false;
+                switch (leftCh)
+                {
+                    case ')':
+                    case '}':
+                        Level += 1;
+                        break;
+                    case '(':
+                    case '{':
+                        Level -= 1;
+                        done = Level < 0;
+                        break;
+                }
+                if (done)
                     break;
-                lineNumber = ssp.GetContainingLine().LineNumber;
-            } while (startLineNumber == lineNumber);
+            } while (ssp.Position > 0);
             //
             caretPos = ssp.Position;
+            // When we have a multi line source line this is the line where the open paren or open curly is
+            int lineNumber = ssp.GetContainingLine().LineNumber; 
             var snapshot = this.TextView.TextBuffer.CurrentSnapshot;
-            XSharpModel.XFile file = this.TextView.TextBuffer.GetFile();
+            var file = this.TextView.TextBuffer.GetFile();
             if (file == null)
                 return false;
             //
             if (cType != null && methodName != null)
             {
-                XSharpTokenTools.SearchMethodTypeIn(cType, methodName, XSharpModel.Modifiers.Private, false, out gotoElement, file.Project.Dialect);
+                XSharpTokenTools.SearchMethodTypeIn(cType, methodName, XSharpModel.Modifiers.Private, false, out currentElement, file.Project.Dialect);
             }
             else
             {
@@ -1197,35 +1211,18 @@ namespace XSharp.LanguageService
 
                 XMemberDefinition member = XSharpTokenTools.FindMember(lineNumber, file);
                 XTypeDefinition currentNamespace = XSharpTokenTools.FindNamespace(caretPos, file);
-                List<String> tokenList = XSharpTokenTools.GetTokenList(caretPos, lineNumber, snapshot, out stopToken, true, file, false, member);
-                // LookUp for the BaseType, reading the TokenList (From left to right)
+                var tokenList = XSharpTokenTools.GetTokenList(caretPos, lineNumber, snapshot, out stopToken, file, false, member);
                 string currentNS = "";
                 if (currentNamespace != null)
                 {
                     currentNS = currentNamespace.Name;
                 }
-                // We don't care of the corresponding Type, we are looking for the gotoElement
-                XSharpTokenTools.RetrieveType(file, tokenList, member, currentNS, stopToken, out gotoElement, snapshot, startLineNumber, file.Project.Dialect);
+                // We don't care of the corresponding Type, we are looking for the currentElement
+                XSharpTokenTools.RetrieveType(file, tokenList, member, currentNS, stopToken, out currentElement, snapshot, startLineNumber, file.Project.Dialect,true);
             }
             //
-            if ((gotoElement != null) && (gotoElement.IsInitialized))
+            if ((currentElement != null) && (currentElement.IsInitialized))
             {
-                // Not sure that this if() is still necessary ...
-                //if (gotoElement.Result?.Kind == Kind.Class)
-                //{
-                //    XType xType = gotoElement.Result as XType;
-                //    if (xType != null)
-                //    {
-                //        foreach (XMemberDefinition mbr in xType.Members)
-                //        {
-                //            if (string.Compare(mbr.Name, "constructor", true) == 0)
-                //            {
-                //                gotoElement = new CompletionElement(mbr);
-                //                break;
-                //            }
-                //        }
-                //    }
-                //}
 
                 SnapshotPoint caret = TextView.Caret.Position.BufferPosition;
                 ITextSnapshot caretsnapshot = caret.Snapshot;
@@ -1240,9 +1237,9 @@ namespace XSharp.LanguageService
                 }
 
                 _signatureSession.Dismissed += OnSignatureSessionDismiss;
-                if (gotoElement.Result != null)
+                if (currentElement.Result != null)
                 {
-                    _signatureSession.Properties["Element"] = gotoElement.Result;
+                    _signatureSession.Properties["Element"] = currentElement.Result;
                 }
                
                 _signatureSession.Properties["Line"] = startLineNumber;

@@ -129,12 +129,15 @@ namespace XSharp.LanguageService
                     {
                         int commentpos = ScanToNonWhitespaceChar(line);
                         string text = GetLine(line);
-                        if (text.Substring(commentpos, len) == commentStart)
+                        if (text.Length >= len)
                         {
-                            if (text.Length > len )
-                                SetText(line, commentpos, line, commentpos + len, "");
-                            else
-                                SetText(line, commentpos, line, commentpos + len, spaces);
+                            if (text.Substring(commentpos, len) == commentStart)
+                            {
+                                if (text.Length > len)
+                                    SetText(line, commentpos, line, commentpos + len, "");
+                                else
+                                    SetText(line, commentpos, line, commentpos + len, spaces);
+                            }
                         }
                     }
                 }

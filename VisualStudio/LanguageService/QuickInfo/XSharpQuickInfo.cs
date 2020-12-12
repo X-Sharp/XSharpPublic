@@ -4,7 +4,6 @@
 // See License.txt in the project root for license information.
 //
 using System;
-using System.Linq;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using Microsoft.VisualStudio.Language.Intellisense;
@@ -20,7 +19,6 @@ using System.Windows.Controls;
 using Microsoft.VisualStudio.Text.Classification;
 using Microsoft.VisualStudio.Text.Adornments;
 //using Microsoft.VisualStudio.Text.Adornments;
-
 namespace XSharp.LanguageService
 {
     internal class XSharpQuickInfoSource : IQuickInfoSource
@@ -46,7 +44,7 @@ namespace XSharp.LanguageService
         private int lastVersion = -1;
 
 
-        
+
 
 
         internal void WriteOutputMessage(string message)
@@ -57,9 +55,20 @@ namespace XSharp.LanguageService
             }
         }
 
+        //static bool skipFirst = true;
+
         public void AugmentQuickInfoSession(IQuickInfoSession session, IList<object> qiContent, out ITrackingSpan applicableToSpan)
         {
             applicableToSpan = null;
+            //if (skipFirst)
+            //{
+            //    skipFirst = false;
+            //    return;
+            //}
+            //else
+            //{
+            //    skipFirst = true;
+            //}
             if (XSettings.DebuggerIsRunning)
             {
                 return;
@@ -113,9 +122,11 @@ namespace XSharp.LanguageService
                 TextExtent extent = navigator.GetExtentOfWord(subjectTriggerPoint.Value);
                 string searchText = extent.Span.GetText();
 
-                // First, where are we ?
-                int caretPos = subjectTriggerPoint.Value.Position;
-                int lineNumber = subjectTriggerPoint.Value.GetContainingLine().LineNumber;
+                // find next delimiter, so we will include the whole word in the search
+                var ssp = XSharpTokenTools.FindEndOfCurrentToken(subjectTriggerPoint.Value, currentSnapshot);
+                int caretPos = ssp.Position+1;
+
+                int lineNumber = ssp.GetContainingLine().LineNumber;
                 var snapshot = session.TextView.TextBuffer.CurrentSnapshot;
                 if (_file == null)
                     return;
@@ -125,12 +136,7 @@ namespace XSharp.LanguageService
                 XMemberDefinition member = XSharpTokenTools.FindMember(lineNumber, _file);
                 XTypeDefinition currentNamespace = XSharpTokenTools.FindNamespace(caretPos, _file);
                 // adjust caretpos, for other completions we need to stop before the caret. Now we include the caret
-                List<String> tokenList = XSharpTokenTools.GetTokenList(caretPos + 1, lineNumber, tokens.TokenStream, out stopToken, true, _file, false, member);
-                // Check if we can get the member where we are
-                //if (tokenList.Count > 1)
-                //{
-                //    tokenList.RemoveRange(0, tokenList.Count - 1);
-                //}
+                var tokenList = XSharpTokenTools.GetTokenList(caretPos , lineNumber, tokens.TokenStream, out stopToken, _file, false, member);
                 // LookUp for the BaseType, reading the TokenList (From left to right)
                 CompletionElement gotoElement;
                 string currentNS = "";
@@ -139,7 +145,7 @@ namespace XSharp.LanguageService
                     currentNS = currentNamespace.Name;
                 }
 
-                XSharpModel.CompletionType cType = XSharpTokenTools.RetrieveType(_file, tokenList, member, currentNS, stopToken, out gotoElement, snapshot, lineNumber, _file.Project.Dialect);
+                var cType = XSharpTokenTools.RetrieveType(_file, tokenList, member, currentNS, stopToken, out gotoElement, snapshot, lineNumber, _file.Project.Dialect);
                 //
                 //
                 if ((gotoElement != null) && (gotoElement.IsInitialized))
@@ -368,14 +374,12 @@ namespace XSharp.LanguageService
 
         internal class QuickInfoTypeAnalysis : TypeAnalysis
         {
-            Brush kwBrush;
-            Brush txtBrush;
             IXType _type;
 
             internal QuickInfoTypeAnalysis(IXType type, Brush fg, Brush txt) : base(type)
             {
-                this.kwBrush = fg;
-                this.txtBrush = txt;
+                QuickInfoHelpers.kwBrush = fg;
+                QuickInfoHelpers.txtBrush = txt;
                 _type = type;
             }
             public List<Inline> WPFDescription
@@ -384,73 +388,32 @@ namespace XSharp.LanguageService
                 {
                     List<Inline> content = new List<Inline>();
 
-                    Run temp;
-
-                    if (this.Modifiers != XSharpModel.Modifiers.None)
+                    if (this.Type.Modifiers != XSharpModel.Modifiers.None)
                     {
-                        temp = new Run(XSettings.FormatKeyword(this.Modifiers) + " ");
-                        temp.Foreground = this.kwBrush;
-                        content.Add(temp);
+                        content.addKeyword(XSettings.FormatKeyword(this.Type.ModifiersKeyword) + " ");
                     }
-                    temp = new Run(XSettings.FormatKeyword(this.Visibility) + " ");
-                    temp.Foreground = this.kwBrush;
-                    content.Add(temp);
+                    content.addKeyword(XSettings.FormatKeyword(this.Type.VisibilityKeyword) + " ");
                     //
                     if (this.IsStatic)
                     {
-                        temp = new Run(XSettings.FormatKeyword("STATIC "));
-                        temp.Foreground = this.kwBrush;
-                        content.Add(temp);
+                        content.addKeyword(XSettings.FormatKeyword("STATIC "));
                     }
                     //
-                    if (this.Kind != XSharpModel.Kind.Field)
+                    if (this.Type.Kind != XSharpModel.Kind.Field)
                     {
-                        temp = new Run(XSettings.FormatKeyword(this.Kind) + " ");
-                        temp.Foreground = this.kwBrush;
-                        content.Add(temp);
+                        content.addKeyword(XSettings.FormatKeyword(this.Type.KindKeyword) + " ");
                     }
                     //
-                    temp = new Run(this.Prototype);
-                    temp.Foreground = txtBrush;
-                    content.Add(temp);
+                    content.addText(this.Prototype);
 
-                    
                     //
                     string returns;
                     string remarks;
                     var xmldesc = XSharpXMLDocMember.GetTypeSummary(this._type, null, out returns, out remarks);
-                    if (!String.IsNullOrEmpty(xmldesc))
-                    {
-                        temp = new Run("\r\r" + xmldesc);
-                        temp.Foreground = this.txtBrush;
-                        content.Add(temp);
-                        if (!string.IsNullOrEmpty(returns))
-                        {
-                            temp = new Run("\rReturns: ");
-                            temp.Foreground = this.kwBrush;
-                            content.Add(temp);
-
-                            temp = new Run(" " + returns);
-                            temp.Foreground = this.txtBrush;
-                            content.Add(temp);
-                        }
-                        if (!string.IsNullOrEmpty(remarks))
-                        {
-                            temp = new Run("\rRemarks:");
-                            temp.Foreground = this.kwBrush;
-                            content.Add(temp);
-                            
-                            temp = new Run(" " + remarks);
-                            temp.Foreground = this.txtBrush;
-                            content.Add(temp);
-                        }
-                    }
-                    temp = new Run("\rLocation: ");
-                    temp.Foreground = this.kwBrush;
-                    content.Add(temp);
-                    temp = new Run( _type.Location);
-                    temp.Foreground = this.txtBrush;
-                    content.Add(temp);
+                    content.addSummary(xmldesc);
+                    content.addReturns(returns);
+                    content.addRemarks(remarks);
+                    content.addLocation( _type.Location);
                     return content;
                 }
 
@@ -459,14 +422,10 @@ namespace XSharp.LanguageService
 
         internal class QuickInfoMemberAnalysis : MemberAnalysis
         {
-            Brush kwBrush;
-            Brush txtBrush;
-            IXMember _member;
             internal QuickInfoMemberAnalysis(IXMember member, Brush kw, Brush txt) : base(member)
             {
-                this.kwBrush = kw;
-                this.txtBrush = txt;
-                _member = member;
+                QuickInfoHelpers.kwBrush = kw;
+                QuickInfoHelpers.txtBrush = txt;
             }
 
             public List<Inline> WPFDescription
@@ -475,29 +434,20 @@ namespace XSharp.LanguageService
                 {
                     List<Inline> content = new List<Inline>();
 
-                    Run temp;
-                    if (this.Modifiers != XSharpModel.Modifiers.None)
+                    if (this.Member.Modifiers != XSharpModel.Modifiers.None)
                     {
-                        temp = new Run(XSettings.FormatKeyword(this.Modifiers) + " ");
-                        temp.Foreground = this.kwBrush;
-                        content.Add(temp);
+                        content.addKeyword(XSettings.FormatKeyword(this.Member.ModifiersKeyword) + " ");
                     }
-                    temp = new Run(XSettings.FormatKeyword(this.Visibility) + " ");
-                    temp.Foreground = this.kwBrush;
-                    content.Add(temp);
+                    content.addKeyword(XSettings.FormatKeyword(this.Member.VisibilityKeyword) + " ");
                     //
-                    if ((this.IsStatic) && ((this.Kind != Kind.Function) && (this.Kind != Kind.Procedure)))
+                    if ((this.Member.IsStatic) && ((this.Member.Kind != Kind.Function) && (this.Member.Kind != Kind.Procedure)))
                     {
-                        temp = new Run(XSettings.FormatKeyword("STATIC "));
-                        temp.Foreground = this.kwBrush;
-                        content.Add(temp);
+                        content.addKeyword(XSettings.FormatKeyword("STATIC "));
                     }
                     //
-                    if ((this.Kind != XSharpModel.Kind.Field) && (this.Kind != XSharpModel.Kind.Constructor))
+                    if ((this.Member.Kind != XSharpModel.Kind.Field) && (this.Member.Kind != XSharpModel.Kind.Constructor))
                     {
-                        temp = new Run(XSettings.FormatKeyword(this.Kind) + " ");
-                        temp.Foreground = this.kwBrush;
-                        content.Add(temp);
+                        content.addKeyword(XSettings.FormatKeyword(this.Member.KindKeyword) + " ");
                     }
                     //
                     content.AddRange(this.WPFPrototype);
@@ -512,62 +462,33 @@ namespace XSharp.LanguageService
                 get
                 {
                     List<Inline> content = new List<Inline>();
-                    Run temp;
-                    List<Inline> vars = new List<Inline>();
-                    if (this.Kind.HasParameters())
+                    if (this.Member.Kind.HasParameters())
                     {
-                        temp = new Run(this.Kind == XSharpModel.Kind.Constructor ? "{" : "(");
-                        temp.Foreground = this.kwBrush;
-                        vars.Add(temp);
-
-                        foreach (var var in this.Parameters)
+                        content.addText(this.Name);
+                        content.addKeyword(this.Member.Kind == XSharpModel.Kind.Constructor ? "{" : "(");
+                        bool first = true;
+                        foreach (var var in this.Member.Parameters)
                         {
-                            if (vars.Count > 1)
+                            if (! first)
                             {
-                                temp = new Run(", ");
-                                temp.Foreground = txtBrush;
-                                vars.Add(temp);
+                                content.addText(", ");
                             }
-                            temp = new Run(var.Name + " ");
-                            temp.Foreground = txtBrush;
-                            vars.Add(temp);
-                            temp = new Run(var.ParamTypeDesc + " ");
-                            temp.Foreground = this.kwBrush;
-                            vars.Add(temp);
-                            temp = new Run(var.TypeName);
-                            temp.Foreground = this.kwBrush;
-                            vars.Add(temp);
+                            first = false;
+                            content.addText(var.Name + " ");
+                            content.addKeyword(var.ParamTypeDesc + " ");
+                            content.addKeyword(var.TypeName);
                         }
-                        temp = new Run(this.Kind == XSharpModel.Kind.Constructor ? "}" : ")");
-                        temp.Foreground = this.kwBrush;
-                        vars.Add(temp);
+                        content.addKeyword(this.Member.Kind == XSharpModel.Kind.Constructor ? "}" : ")");
                     }
-                    //
-                    temp = new Run(this.Name);
-                    temp.Foreground = txtBrush;
-                    content.Add(temp);
-                    // Todo: For Vs 2017 and later add wrapping
-                    // In Vs2017 and later we can put this in a container to handle wrapping
-                    //var element = new ContainerElement(ContainerElementStyle.Wrapped, vars);
-
-                    content.AddRange(vars);
                     //
                     if (!String.IsNullOrEmpty(this.Value))
                     {
-                        temp = new Run(" := " + this.Value);
-                        temp.Foreground = this.txtBrush;
-                        content.Add(temp);
+                        content.addText(" := " + this.Value);
                     }
-                    if (this.Kind.HasReturnType())
+                    if (this.Member.Kind.HasReturnType())
                     {
-                        temp = new Run(" "+ XSettings.FormatKeyword("AS "));
-                        temp.Foreground = this.kwBrush;
-                        content.Add(temp);
-                        temp = new Run(this.TypeName);
-                        temp.Foreground = this.txtBrush;
-                        content.Add(temp);
+                        content.addReturnType(this.TypeName);
                     }
-                     //
                     return content;
                 }
             }
@@ -575,19 +496,16 @@ namespace XSharp.LanguageService
 
         internal class QuickInfoBase
         {
-            internal Brush kwBrush;
-            internal Brush txtBrush;
-
             internal QuickInfoBase(Brush kw, Brush txt)
             {
-                this.kwBrush = kw;
-                this.txtBrush = txt;
+                QuickInfoHelpers.kwBrush = kw;
+                QuickInfoHelpers.txtBrush = txt;
             }
 
-            internal void AddVarInfo(List<Inline> list, IXVariable var)
+            protected void addVarInfo(List<Inline> list, IXVariable var, out int len)
             {
-                Run temp;
                 var name = var.Name;
+                len = 0;
                 var hasValue = !string.IsNullOrEmpty(var.Value);
                 if (var.Kind == Kind.DbField)
                 {
@@ -596,27 +514,22 @@ namespace XSharp.LanguageService
                         name = var.Value + "->" + name;
                     }
                 }
-                temp = new Run(name + " ");
-                temp.Foreground = txtBrush;
-                list.Add(temp);
+                len += name.Length + 1;
+                list.addText(name + " ");
                 if (hasValue && var.Kind != Kind.DbField) // default value
                 {
-                    temp = new Run(" :=  "+var.Value +" ");
-                    temp.Foreground = txtBrush;
-                    list.Add(temp);
+                    var text = " :=  " + var.Value + " ";
+                    list.addText(text);
+                    len += text.Length;
 
                 }
-                temp = new Run(XSettings.FormatKeyword(var.ParamTypeDesc) + " ");
-                temp.Foreground = this.kwBrush;
-                list.Add(temp);
-                temp = new Run(var.TypeName);
-                temp.Foreground = this.txtBrush;
-                list.Add(temp);
+                list.addPair(var.ParamTypeDesc + " ", var.TypeName);
+                len += var.ParamTypeDesc.Length + 1;
+                len += var.TypeName.Length;
                 if (var.IsArray)
                 {
-                    temp = new Run("[] ");
-                    temp.Foreground = this.txtBrush;
-                    list.Add(temp);
+                    list.addText("[] ");
+                    len += 2;
                 }
             }
 
@@ -625,8 +538,8 @@ namespace XSharp.LanguageService
         internal class QuickInfoTypeMember : QuickInfoBase
         {
             IXMember typeMember;
- 
-            internal QuickInfoTypeMember(IXMember tm, Brush kw, Brush txt) : base(kw,txt)
+
+            internal QuickInfoTypeMember(IXMember tm, Brush kw, Brush txt) : base(kw, txt)
             {
                 this.typeMember = tm;
             }
@@ -637,120 +550,95 @@ namespace XSharp.LanguageService
                 {
                     List<Inline> content = new List<Inline>();
 
-                    Run temp;
+                    string text;
+                    int len = 0;
                     if (this.typeMember.Modifiers != Modifiers.None)
                     {
-                        temp = new Run(XSettings.FormatKeyword(this.typeMember.Modifiers) + " ");
-                        temp.Foreground = this.kwBrush;
-                        content.Add(temp);
+                        text = XSettings.FormatKeyword(this.typeMember.ModifiersKeyword) + " ";
+                        content.addKeyword(text);
+                        len += text.Length;
                     }
-                    temp = new Run(XSettings.FormatKeyword(this.typeMember.Visibility) + " ");
-                    temp.Foreground = this.kwBrush;
-                    content.Add(temp);
+                    text = XSettings.FormatKeyword(this.typeMember.VisibilityKeyword) + " ";
+                    len += text.Length;
+                    content.addKeyword(text);
                     //
                     if (this.typeMember.Kind != XSharpModel.Kind.Field)
                     {
-                        string kind = this.typeMember.Kind.ToString();
-                        if (kind.StartsWith("vo",StringComparison.OrdinalIgnoreCase))
-                        {
-                            kind = kind.Substring(2);
-                        }
-                        temp = new Run(XSettings.FormatKeyword(kind) + " ");
-                        temp.Foreground = this.kwBrush;
-                        content.Add(temp);
+                        text = XSettings.FormatKeyword(this.typeMember.KindKeyword) + " ";
+                        len += text.Length;
+                        content.addKeyword(text);
                     }
                     //
-                    content.AddRange(this.WPFPrototype);
+                    content.AddRange(this.WPFPrototype(len));
                     //
                     return content;
                 }
 
             }
 
-            public List<Inline> WPFPrototype
+            private void checkLen(List<Inline> elements, ref int len)
             {
-                get
+                if (len > 80)
                 {
-                    List<Inline> content = new List<Inline>();
-                    Run temp;
-                    List<Inline> vars = new List<Inline>();
-                    if (this.typeMember.Kind.HasParameters())
-                    {
-                        temp = new Run(this.typeMember.Kind == XSharpModel.Kind.Constructor ? "{" : "(");
-                        temp.Foreground = this.kwBrush;
-                        vars.Add(temp);
-
-                        foreach (var var in this.typeMember.Parameters)
-                        {
-                            if (vars.Count > 1)
-                            {
-                                temp = new Run(", ");
-                                temp.Foreground = txtBrush;
-                                vars.Add(temp);
-                            }
-                            AddVarInfo(vars, var);
-                        }
-                        temp = new Run(this.typeMember.Kind == XSharpModel.Kind.Constructor ? "}" : ")");
-                        temp.Foreground = this.kwBrush;
-                        vars.Add(temp);
-                    }
-                    //
-                    temp = new Run(this.typeMember.Name);
-                    temp.Foreground = txtBrush;
-                    content.Add(temp);
-                    content.AddRange(vars);
-                    //
-                    if (!String.IsNullOrEmpty(this.typeMember.Value))
-                    {
-                        temp = new Run(" := " + this.typeMember.Value);
-                        temp.Foreground = this.txtBrush;
-                        content.Add(temp);
-                    }
-                    if (this.typeMember.Kind.HasReturnType() && !String.IsNullOrEmpty(this.typeMember.TypeName))
-                    {
-                        temp = new Run(" " + XSettings.FormatKeyword("AS "));
-                        temp.Foreground = this.kwBrush;
-                        content.Add(temp);
-                        temp = new Run(this.typeMember.TypeName);
-                        temp.Foreground = this.txtBrush;
-                        content.Add(temp);
-                    }
-
-                    string returns;
-                    string remarks;
-                    var xmldesc = XSharpXMLDocMember.GetMemberSummary(this.typeMember, null, out returns, out remarks);
-                    if (!String.IsNullOrEmpty(xmldesc))
-                    {
-                        temp = new Run("\r\r" + xmldesc);
-                        temp.Foreground = this.txtBrush;
-                        content.Add(temp);
-                        if (!string.IsNullOrEmpty(returns))
-                        {
-                            temp = new Run("\rReturns: " );
-                            temp.Foreground = this.kwBrush;
-                            content.Add(temp);
-                            temp = new Run(" "+returns);
-                            temp.Foreground = this.txtBrush;
-                            content.Add(temp);
-                        }
-                        if (!string.IsNullOrEmpty(remarks))
-                        {
-                            temp = new Run("\rRemarks:" );
-                            temp.Foreground = this.kwBrush;
-                            content.Add(temp);
-                            temp = new Run(" " + remarks);
-                            temp.Foreground = this.txtBrush;
-                            content.Add(temp);
-                        }
-                    }
-                    temp = new Run("\rLocation: ");
-                    temp.Foreground = this.kwBrush;
-                    content.Add(temp);
-                    temp = new Run(typeMember.Location);
-                    temp.Foreground = this.txtBrush;
-                    content.Add(temp);
-                    return content;
+                    // New line starts with indent
+                    elements.addText("\r\t");
+                    len = 0;
                 }
+            }
+
+
+            public List<Inline> WPFPrototype(int len)
+            {
+                List<Inline> content = new List<Inline>();
+                content.addText(this.typeMember.Name);
+                if (this.typeMember.Kind.HasParameters())
+                {
+                    content.addKeyword(this.typeMember.Kind == XSharpModel.Kind.Constructor ? "{" : "(");
+                    len += 1;
+                    bool first = true;
+                    foreach (var var in this.typeMember.Parameters)
+                    {
+                        if (!first)
+                        {
+                            content.addText(", ");
+                            len += 2;
+                        }
+                        first = false;
+                        checkLen(content, ref len);
+                        int varlen;
+                        addVarInfo(content, var, out varlen);
+                        len += varlen;
+                    }
+                    content.addKeyword(this.typeMember.Kind == XSharpModel.Kind.Constructor ? "}" : ")");
+                }
+                //
+                //
+                if (!String.IsNullOrEmpty(this.typeMember.Value))
+                {
+                    var text = " := " + this.typeMember.Value;
+                    len += text.Length;
+                    checkLen(content, ref len);
+                    if (len == 0)
+                    {
+                        len = text.Length;
+                    }
+                    content.addText(text);
+                }
+                if (this.typeMember.Kind.HasReturnType() && !String.IsNullOrEmpty(this.typeMember.TypeName))
+                {
+                    len += this.typeMember.TypeName.Length + 4;
+                    checkLen(content, ref len);
+                    content.addReturnType(typeMember.TypeName);
+                }
+
+                string returns;
+                string remarks;
+                var xmldesc = XSharpXMLDocMember.GetMemberSummary(this.typeMember, null, out returns, out remarks);
+                content.addSummary(xmldesc);
+                content.addReturns(returns);
+                content.addRemarks(remarks);
+                content.addLocation(typeMember.Location);
+                return content;
             }
 
         }
@@ -760,7 +648,7 @@ namespace XSharp.LanguageService
         {
             IXVariable xVar;
 
-            internal QuickInfoVariable(IXVariable var, Brush kw, Brush txt) : base(kw,txt)
+            internal QuickInfoVariable(IXVariable var, Brush kw, Brush txt) : base(kw, txt)
             {
                 this.xVar = var;
             }
@@ -770,25 +658,79 @@ namespace XSharp.LanguageService
                 get
                 {
                     List<Inline> content = new List<Inline>();
-
-                    Run temp;
+                    int len;
                     var kind = xVar.Kind.ToString();
                     if (xVar.Kind == Kind.DbField)
                         kind = "Field";
-                    temp = new Run(XSettings.FormatKeyword( kind + " "));
-                    temp.Foreground = this.kwBrush;
-                    content.Add(temp);
-                    AddVarInfo(content, xVar);
+                    content.addKeyword( XSettings.FormatKeyword(kind + " "));
+                    addVarInfo(content, xVar, out len);
                     return content;
                 }
 
             }
 
         }
-
     }
-    static class KeywordExtensions
+    static class QuickInfoHelpers
     {
+        static internal Brush kwBrush { get; set; }
+        static internal Brush txtBrush { get; set; }
+        static string replaceCRLF(string text)
+        {
+            text = text.Replace("\r", "\r\t");
+            return text;
+        }
+        static internal void addKeyword(this List<Inline> content, string kw)
+        {
+            var temp = new Run(kw);
+            temp.Foreground = kwBrush;
+            content.Add(temp);
+        }
+        static internal void addText(this List<Inline> content, string kw)
+        {
+            var temp = new Run(kw);
+            temp.Foreground = txtBrush;
+            content.Add(temp);
+        }
+        static internal void addPair(this List<Inline> content, string kw, string text)
+        {
+            // add pair of KW - Text
+            addKeyword(content, kw);
+            addText(content, text);
+        }
+        static internal void addRemarks(this List<Inline> content, string remarks)
+        {
+            if (!string.IsNullOrEmpty(remarks))
+            {
+                addPair(content, "\rRemarks:", " " + replaceCRLF(remarks));
+
+            }
+        }
+        static internal void addReturns(this List<Inline> content, string returns)
+        {
+            if (!string.IsNullOrEmpty(returns))
+            {
+                addPair(content, "\rReturns:", " " + replaceCRLF(returns));
+            }
+        }
+        static internal void addSummary(this List<Inline> content, string xmldesc)
+        {
+            if (!String.IsNullOrEmpty(xmldesc))
+            {
+                content.addPair("\rSummary:", " " + replaceCRLF(xmldesc));
+            }
+        }
+        static internal void addLocation(this List<Inline> content, string location)
+        {
+            if (!String.IsNullOrEmpty(location))
+            {
+                content.addPair("\r\rLocation:", " " + location);
+            }
+        }
+        static internal void addReturnType(this List<Inline> content, string typeName)
+        {
+            content.addPair(" " + XSettings.FormatKeyword("AS "), typeName);
+        }
     }
 }
 

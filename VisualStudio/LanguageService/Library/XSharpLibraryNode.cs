@@ -220,6 +220,8 @@ namespace XSharp.LanguageService
                 case Kind.Method:
                 case Kind.Function:
                 case Kind.Procedure:
+                case Kind.LocalFunc:
+                case Kind.LocalProc:
                 case Kind.VODLL:
                     iImage = (int)IconImageIndex._Method;
                     break;
@@ -438,16 +440,16 @@ namespace XSharp.LanguageService
                     {
                         descText = member.Name;
                     }
-                    if ((tm.Kind == Kind.Method) || (tm.Kind == Kind.Function) || (tm.Kind == Kind.Procedure) || (tm.Kind == Kind.Constructor))
+                    if (tm.Kind.HasParameters())
                     {
-                        descText += "( ";
+                        descText +=  tm.Kind == Kind.Constructor ? "{" : "( ";
                         if (tm.HasParameters)
                         {
 
                             //
                             descText += tm.ParameterList;
                         }
-                        descText += ")";
+                        descText +=  tm.Kind == Kind.Constructor ? "}" : ") ";
                     }
                 }
                 else if (member is XTypeDefinition)

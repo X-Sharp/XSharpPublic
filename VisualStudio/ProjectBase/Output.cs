@@ -67,9 +67,10 @@ namespace Microsoft.VisualStudio.Project
         public virtual int get_DeploySourceURL(out string pbstrDeploySourceURL)
         {
             string path = string.Empty; ;
-            if (this.project is ProjectNode)
+            if (this.project is XProjectNode)
             {
-                path = project.GetOutputAssembly(project.CurrentConfig.ConfigCanonicalName);
+                var xproject = project as XProjectNode;
+                path = project.GetOutputAssembly(xproject.CurrentConfig.ConfigCanonicalName);
             }
             if (String.IsNullOrEmpty(path))
             {

@@ -88,11 +88,10 @@
   </PropertyGroup>
   <Import Project="$(XSharpMsBuildDir)\XSharp.targets" />
   <ItemGroup>
-    <Reference Include="EnvDTE, Version=8.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+    <Reference Include="EnvDTE">
       <Name>EnvDTE</Name>
-      <AssemblyName>envdte.dll</AssemblyName>
       <SpecificVersion>False</SpecificVersion>
-      <Private>True</Private>
+      <AssemblyName>EnvDTE.dll</AssemblyName>
       <HintPath>..\..\..\..\Program Files (x86)\Common Files\Microsoft Shared\MSEnv\PublicAssemblies\envdte.dll</HintPath>
       <EmbedInteropTypes>True</EmbedInteropTypes>
     </Reference>

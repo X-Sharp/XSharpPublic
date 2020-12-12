@@ -726,12 +726,10 @@ BEGIN NAMESPACE XSharpModel
          SELF:ResolveReferences()
          VAR type := SystemTypeController.FindType(name, usings, SELF:_AssemblyReferences)
          IF XSettings.EnableTypelookupLog
-            IF XSettings.EnableTypelookupLog    
-                IF type != NULL
-                   WriteOutputMessage("FindSystemType() "+name+" found "+type:FullName)
-                ELSE
-                   WriteOutputMessage("FindSystemType() "+name+" not found ")
-                ENDIF
+            IF type != NULL
+               WriteOutputMessage("FindSystemType() "+name+" found "+type:FullName)
+            ELSE
+               WriteOutputMessage("FindSystemType() "+name+" not found ")
             ENDIF
          ENDIF
          RETURN type

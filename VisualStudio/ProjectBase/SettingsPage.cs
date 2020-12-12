@@ -420,7 +420,8 @@ namespace Microsoft.VisualStudio.Project
                         obj = dteproject.Object;
                         if (obj is VSLangProj.VSProject prj4)
                         {
-                            project = prj4;
+                            //project = prj4;
+                            project = null;
                         }
                     }
 

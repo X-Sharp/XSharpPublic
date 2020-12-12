@@ -38,8 +38,8 @@ BEGIN NAMESPACE XSharpModel
       METHOD AddFileNode(strFileName AS STRING) AS VOID
          RETURN
          
-      METHOD AddIntellisenseError(file AS STRING, line AS LONG, column AS LONG, Length AS LONG, errCode AS STRING, message AS STRING, sev AS DiagnosticSeverity) AS VOID
-         RETURN
+//      METHOD AddIntellisenseError(file AS STRING, line AS LONG, column AS LONG, Length AS LONG, errCode AS STRING, message AS STRING, sev AS DiagnosticSeverity) AS VOID
+//         RETURN
          
          
       METHOD ClearIntellisenseErrors(file AS STRING) AS VOID

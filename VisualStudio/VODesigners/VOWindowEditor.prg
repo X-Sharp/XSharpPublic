@@ -1082,7 +1082,7 @@ RETURN
 		cLine := ""
 		DO CASE
 		CASE TRUE
-			cLine := String.Format(e"\tSUPER(oParent , NIL , TRUE)" , SELF:oWindowDesign:Name)
+			cLine := String.Format(e"\tSUPER(oParent , \"IDD_DEFDLG2\" , TRUE)" , SELF:oWindowDesign:Name)
 		CASE SELF:oWindowDesign:cFullClass:IndexOf("FORM:DATAWINDOW") == 0
 			cLine += String.Format(e"\tSUPER(oWindow , ResourceID{{\"{0}\" , _GetInst()}},iCtlID)" , SELF:oWindowDesign:Name)
 		CASE SELF:oWindowDesign:cFullClass:IndexOf("FORM:DATADIALOG") == 0
@@ -1149,8 +1149,15 @@ RETURN
 				cLine += String.Format(", Point{{{0} , {1}}} " , oRect:Left , oWinRect:Height - oRect:Bottom)
 				cLine += String.Format(", Dimension{{{0} , {1}}} " , oRect:Width , oRect:Height)
 			ENDIF
-			cLine += ", " + oDesign:GetVOStylesString(VOStyle.Style)
+//			cLine += ", " + oDesign:GetVOStylesString(VOStyle.Style)
 			cLine += "}"
+			aConstructor:Add(cLine)
+			cLine := e"\t"
+			cLine += "SELF:" + oDesign:cPrefix
+			cLine += oDesign:Name
+			cLine += ":SetStyle("
+			cLine += oDesign:GetVOStylesString(VOStyle.Style)
+			cLine += ")"
 			aConstructor:Add(cLine)
 			SELF:GetCode(oDesign , "SELF:" + oDesign:cPrefix + oDesign:Name + ":" , aConstructor , lFontUsed)
 			IF oDesign:cFullClass:ToUpper():StartsWith("CONTROL:TEXTCONTROL:RADIOBUTTONGROUP")

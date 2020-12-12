@@ -450,6 +450,8 @@ INTERNAL CLASS WedDescriptor
 								IF aFont:Length >= 2
 									SELF:Font := aFont
 								END IF
+							CATCH 
+								NOP
 							END TRY
 					END SWITCH
 				END IF
@@ -470,6 +472,8 @@ INTERNAL CLASS WedDescriptor
 					cRet := String.Format("{0}, {1}, {2}" , aColors[1], aColors[2], aColors[3])
 				END IF
 			END IF
+		CATCH 
+			NOP
 		END TRY
 	RETURN cRet
 	

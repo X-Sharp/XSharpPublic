@@ -132,6 +132,8 @@ BEGIN NAMESPACE XSharpModel
       MEMBER @@Ignore      :=  28
       MEMBER @@MemVar      :=  29
       MEMBER @@DbField     :=  30
+      MEMBER @@LocalFunc   :=  31
+      MEMBER @@LocalProc   :=  32
    END ENUM                   
    
    [Flags];

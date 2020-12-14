@@ -542,11 +542,13 @@ namespace Microsoft.CodeAnalysis.CSharp
                 newDialect = XSharpDialect.VO;  // the runtime uses the VO syntax for classes
             }
             if (newDialect.HasRuntime()) {
-                if (options.VulcanRTFuncsIncluded && options.VulcanRTIncluded) {
+                if (options.VulcanRTFuncsIncluded && options.VulcanRTIncluded && options.Dialect != XSharpDialect.XPP && options.Dialect != XSharpDialect.FoxPro)
+                {
                     // Ok;
                     withRT = true;
                 }
-                else if (options.XSharpRTIncluded  && options.XSharpCoreIncluded ) {
+                else if (options.XSharpRTIncluded  && options.XSharpCoreIncluded )
+                {
                     // Ok;
                     withRT = true;
                 }
@@ -556,9 +558,18 @@ namespace Microsoft.CodeAnalysis.CSharp
                     // Ok
                     withRT = true;
                 }
-                else {
-                    AddDiagnostic(diagnostics, ErrorCode.ERR_DialectRequiresReferenceToRuntime, options.Dialect.ToString(),
-                        "XSharp.Core.DLL and XSharp.RT.DLL or VulcanRT.DLL and VulcanRTFuncs.DLL");
+                else
+                {
+                    if (options.Dialect == XSharpDialect.XPP || options.Dialect == XSharpDialect.FoxPro)
+                    {
+                        AddDiagnostic(diagnostics, ErrorCode.ERR_DialectRequiresReferenceToRuntime, options.Dialect.ToString(),
+                            "XSharp.Core.DLL and XSharp.RT.DLL");
+                    }
+                    else
+                    {
+                        AddDiagnostic(diagnostics, ErrorCode.ERR_DialectRequiresReferenceToRuntime, options.Dialect.ToString(),
+                            "XSharp.Core.DLL and XSharp.RT.DLL or VulcanRT.DLL and VulcanRTFuncs.DLL");
+                    }
                     newDialect = XSharpDialect.Core;
                 }
             }
@@ -627,17 +638,17 @@ namespace Microsoft.CodeAnalysis.CSharp
                     AddDiagnostic(diagnostics, ErrorCode.ERR_IllegalCombinationOfCommandLineOptions, "/undeclared requires the use of the X# Runtime", options.Dialect.ToString());
                     options.UndeclaredMemVars = false;
                 }
-                if (options.Fox2 && options.ExplicitOptions.HasFlag(CompilerOption.Fox2) && !options.XSharpRTIncluded)
-                {
-                    AddDiagnostic(diagnostics, ErrorCode.ERR_IllegalCombinationOfCommandLineOptions, "/fox2 requires the use of the X# Runtime", options.Dialect.ToString());
-                    options.Fox2 = false;
-                }
                 if (!options.ExplicitOptions.HasFlag(CompilerOption.Vo15))
                 {
                     options.Vo15 = true;            // Untyped allowed
                 }
                 if (options.Dialect == XSharpDialect.FoxPro)
                 {
+                    if (!options.XSharpRTIncluded)
+                    {
+                        AddDiagnostic(diagnostics, ErrorCode.ERR_IllegalCombinationOfCommandLineOptions, "The FoxPro dialect requires the use of the X# Runtime");
+                        options.Fox2 = false;
+                    }
                     if (!options.ExplicitOptions.HasFlag(CompilerOption.Vo9))
                     {
                         options.Vo9 = true;             // generate default return values
@@ -650,16 +661,25 @@ namespace Microsoft.CodeAnalysis.CSharp
                     {
                         options.Fox1 = true;             // inherit from Custom
                     }
+                    if (options.Fox2 && !options.MemVars)
+                    {
+                        AddDiagnostic(diagnostics, ErrorCode.ERR_IllegalCombinationOfCommandLineOptions, "/fox2 must be combined /memvars");
+                    }
                 }
-            }
-            if (options.Fox2)
-            {
-                // this requires the FoxPro dialect and Memvars enabled
-                if (newDialect != XSharpDialect.FoxPro || !options.MemVars)
+                else
                 {
-                    AddDiagnostic(diagnostics, ErrorCode.ERR_IllegalCombinationOfCommandLineOptions, "/fox2 must be combined with the FoxPro dialect and /memvars");
+                    if (options.Fox1 || options.Fox2)
+                    {
+                        AddDiagnostic(diagnostics, ErrorCode.ERR_IllegalCombinationOfCommandLineOptions, "/fox1 and /fox2 are only valid for the FoxPro dialect");
+                    }
                 }
             }
+            if (options.Xpp1 ||options.Xpp2)
+            {
+                if (options.Dialect != XSharpDialect.XPP)
+                    AddDiagnostic(diagnostics, ErrorCode.ERR_IllegalCombinationOfCommandLineOptions, "/xpp1 and /xpp2 are only valid for the Xbase++ dialect");
+            }    
+
             if (options.UndeclaredMemVars && ! options.MemVars)
             {
                 AddDiagnostic(diagnostics, ErrorCode.ERR_IllegalCombinationOfCommandLineOptions, "/undeclared must be combined /memvars");

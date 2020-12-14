@@ -22,15 +22,65 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
         internal int MappedLine = -1;
         internal XSharpToken SourceSymbol;
         private XSharpToken _original = null;
+        public string XmlComments
+        {
+            get
+            {
+                if (HasTrivia)
+                {
+                    var sb = new StringBuilder();
+                    foreach (var t in Trivia)
+                    {
+                        if (t.Channel == XSharpLexer.XMLDOCCHANNEL)
+                        { 
+                            sb.AppendLine(t.Text.Trim());
+                        }
+                    }
+                    return sb.ToString();
+                }
+                return "";
+
+            }
+
+        }
+        public bool HasXmlComments => HasTrivia && Trivia.Any(t => t.Channel == XSharpLexer.XMLDOCCHANNEL);
+        public IList<XSharpToken> Trivia { get; set; } = null;
+        public bool HasTrivia => Trivia?.Count > 0;
+        public string TriviaAsText
+        {
+            get
+            {
+                if (HasTrivia)
+                {
+                    var sb = new StringBuilder();
+                    foreach (var tr in Trivia)
+                    {
+                        sb.Append(tr.Text);
+                    }
+                    return sb.ToString();
+                }
+                return String.Empty;
+            }
+        }
+
+        private void copyToken(XSharpToken token)
+        {
+            type = token.Type;
+            text = token.Text;
+            line = token.Line;
+            Column = token.Column;
+            source = token.source;
+            StartIndex = token.StartIndex;
+            StopIndex = token.StopIndex;
+            Trivia = token.Trivia;
+
+        }
 
         internal XSharpToken(IToken t) : base(t)
         {
-            if (t is XSharpToken && t != this)
+            if (t is XSharpToken xt && t != this)
             {
-                var t2 = t as XSharpToken;
-                _original = t2.Original;
-                OriginalChannel = t2.OriginalChannel;
-                Channel = t2.OriginalChannel;
+                copyToken(xt);
             }
         }
         internal XSharpToken(IToken t, int type, string text) : base(t)
@@ -46,24 +96,17 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
         }
         internal XSharpToken(int type, XSharpToken token) : base(type)
         {
-            line = token.Line;
-            Column = token.Column;
-            source = token.source;
-            StartIndex = token.StartIndex;
-            StopIndex = token.StopIndex;
+            copyToken(token);
+            this.type = type;
             SourceSymbol = token;
-            XmlComments = token.XmlComments;
 
         }
         internal XSharpToken(int type, string text, XSharpToken token) : base(type, text)
         {
-            line = token.Line;
-            Column = token.Column;
-            source = token.source;
-            StartIndex = token.StartIndex;
-            StopIndex = token.StopIndex;
+            copyToken(token);
+            this.type = type;
+            this.text = text;
             SourceSymbol = token;
-            XmlComments = token.XmlComments;
         }
 
         internal XSharpToken(Tuple<ITokenSource, ICharStream> source, int type, int channel, int start, int stop) :
@@ -142,7 +185,5 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
         {
             return this.Text;
         }
-        public string XmlComments { get; set; } = null;
-        public bool HasXmlComments => XmlComments?.Length > 0;
     }
 }

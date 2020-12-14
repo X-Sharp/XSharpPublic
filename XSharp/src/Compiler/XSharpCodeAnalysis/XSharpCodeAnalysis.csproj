@@ -25,25 +25,22 @@
     <!--Use the C# compiler created in this solution-->
     <CscToolPath>$(GeneratedCompilerPath)</CscToolPath>
     <CheckForOverflowUnderflow>true</CheckForOverflowUnderflow>
-    <GenericDefines>COMPILERCORE;NET45;NET45PLUS;NET40PLUS;NET35PLUS;PORTABLE</GenericDefines>
+    <GenericDefines>COMPILERCORE;NET45PLUS;NET40PLUS;NET35PLUS;PORTABLE</GenericDefines>
     <Configurations>Debug;Release;Public</Configurations>
   </PropertyGroup>
   
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DefineConstants>$(Genericdefines);XSHARP;DEBUG;TRACE;</DefineConstants>
-  <DefineConstants Condition="'$(TargetFramework)' == 'net46'">$(DefineConstants);NET46;</DefineConstants>
   </PropertyGroup>
   
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Public|AnyCPU'">
     <DefineConstants>$(Genericdefines);XSHARP;TRACE;</DefineConstants>
-    <DefineConstants Condition="'$(TargetFramework)' == 'net46'">$(DefineConstants);NET46;</DefineConstants>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <DebugSymbols>true</DebugSymbols>
     <RunPostBuildEvent>OnOutputUpdated</RunPostBuildEvent>
     <DefineConstants>$(Genericdefines);XSHARP;NDEBUG;TRACE;</DefineConstants>
-    <DefineConstants Condition="'$(TargetFramework)' == 'net46'">$(DefineConstants);NET46;</DefineConstants>
   </PropertyGroup>
   <ItemGroup Label="Project References">
     <PackageReference Include="System.Threading.Tasks.Parallel" Version="$(SystemThreadingTasksParallelVersion)" />

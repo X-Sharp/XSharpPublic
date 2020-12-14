@@ -298,25 +298,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             for (int iOpt = 0; iOpt < flags.Length; iOpt++)
             {
                 string flagName = String.Format("__VO{0}__", iOpt + 1);
-                if (flags[iOpt])
-                    macroDefines.Add(flagName, (token) => new XSharpToken(XSharpLexer.TRUE_CONST, token));
-                else
-                    macroDefines.Add(flagName, (token) => new XSharpToken(XSharpLexer.FALSE_CONST, token));
+                macroDefines.Add(flagName, (token) => new XSharpToken(flags[iOpt] ? XSharpLexer.TRUE_CONST: XSharpLexer.FALSE_CONST, token));
             }
-            if (options.Dialect == XSharpDialect.XPP)
-            {
-                if (options.xpp1)
-                    macroDefines.Add("__XPP1__", (token) => new XSharpToken(XSharpLexer.TRUE_CONST, token));
-                else
-                    macroDefines.Add("__XPP1__", (token) => new XSharpToken(XSharpLexer.FALSE_CONST, token));
-            }
-            if (options.Dialect == XSharpDialect.FoxPro)
-            {
-                if (options.fox1)
-                    macroDefines.Add("__FOX1__", (token) => new XSharpToken(XSharpLexer.TRUE_CONST, token));
-                else
-                    macroDefines.Add("__FOX1__", (token) => new XSharpToken(XSharpLexer.FALSE_CONST, token));
-            }
+            macroDefines.Add("__XPP1__", (token) => new XSharpToken(options.xpp1 ? XSharpLexer.TRUE_CONST: XSharpLexer.FALSE_CONST, token));
+            macroDefines.Add("__XPP2__", (token) => new XSharpToken(options.xpp2 ? XSharpLexer.TRUE_CONST : XSharpLexer.FALSE_CONST, token));
+            macroDefines.Add("__FOX1__", (token) => new XSharpToken(options.fox1 ? XSharpLexer.TRUE_CONST : XSharpLexer.FALSE_CONST, token));
+            macroDefines.Add("__FOX2__", (token) => new XSharpToken(options.fox2 ? XSharpLexer.TRUE_CONST : XSharpLexer.FALSE_CONST, token));
             if (!options.NoStdDef && options.Kind != SourceCodeKind.Script)
             {
                 // Todo: when the compiler option nostddefs is not set: read XSharpDefs.xh from the XSharp Include folder,//
@@ -379,14 +366,21 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 // We cannot use the interval and fetch the text from the source stream,
                 // because some tokens may come out of an include file or otherwise
                 // so concatenate text on the fly
-                var bld = new System.Text.StringBuilder(1024);
+                var bld = new StringBuilder(1024);
                 if (prefix)
                 {
                     bld.Append(PPOPrefix);
                 }
+                bool first = !prefix;
                 foreach (var t in tokens)
                 {
+                    // Copy the trivia from the original first symbol on the line so the UDC has the proper indentlevel
+                    if (first && t.SourceSymbol!= null && t.SourceSymbol.HasTrivia && t.SourceSymbol.Type == XSharpLexer.UDC_KEYWORD)
+                    {
+                        bld.Append(t.SourceSymbol.TriviaAsText); 
+                    }
                     bld.Append(t.Text);
+                    first = false;
                 }
                 if (prefixNewLines)
                 {
@@ -438,7 +432,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             _checksumAlgorithm = checksumAlgorithm;
             _parseErrors = parseErrors;
             includeDirs = new List<string>(options.IncludePaths);
-            if (!String.IsNullOrEmpty(fileName) && File.Exists(fileName))
+            if (!string.IsNullOrEmpty(fileName) && File.Exists(fileName))
             {
                 includeDirs.Add(Path.GetDirectoryName(fileName));
                 var ppoFile = FileNameUtilities.ChangeExtension(fileName, ".ppo");
@@ -468,7 +462,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 }
             }
             // Add default IncludeDirs;
-            if (!String.IsNullOrEmpty(options.DefaultIncludeDir))
+            if (!string.IsNullOrEmpty(options.DefaultIncludeDir))
             {
                 string[] paths = options.DefaultIncludeDir.Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
                 foreach (var path in paths)
@@ -1923,7 +1917,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             Debug.Assert(line?.Count > 0);
             var res = rule.Replace(line, matchInfo);
             rulesApplied += 1;
-            List<XSharpToken> result = new List<XSharpToken>();
+            var result = new List<XSharpToken>();
             result.AddRange(res);
             if (_options.Verbose)
             {

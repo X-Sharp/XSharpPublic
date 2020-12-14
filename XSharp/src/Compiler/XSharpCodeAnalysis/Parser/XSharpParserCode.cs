@@ -15,6 +15,7 @@ using Antlr4.Runtime;
 using Antlr4.Runtime.Misc;
 using Microsoft.CodeAnalysis;
 using System.Diagnostics;
+using Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax;
 #if !VSPARSER
 using MCT = Microsoft.CodeAnalysis.Text;
 using CoreInternalSyntax = Microsoft.CodeAnalysis.Syntax.InternalSyntax;
@@ -52,7 +53,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             if (InputStream.La(1) != LPAREN)
                 return false;
             // Quick check for (DWORD) or similar with type keyword
-            if (InputStream.La(3) == RPAREN && XSharpLexer.IsType(InputStream.La(2)) )
+            if (InputStream.La(3) == RPAREN && XSharpLexer.IsType(InputStream.La(2)))
             {
                 return true;
             }
@@ -183,6 +184,12 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
         {
             StatementBlockContext Statements { get; }
         }
+
+        internal interface IBodyWithLocalFunctions
+        {
+            IList<object> LocalFunctions { get; set; }
+        }
+
         public interface ISourceContext
         {
             IList<PragmaOption> PragmaOptions { get; set; }
@@ -194,16 +201,17 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             EntityData Data { get; }
             ParameterListContext Params { get; }
             DatatypeContext ReturnType { get; }
-            String Name { get; }
-            String ShortName { get; }
+            string Name { get; }
+            string ShortName { get; }
         }
-        internal interface IXPPEntityContext : IEntityWithBodyContext
+        internal interface IXPPEntityContext : IEntityWithBodyContext, IBodyWithLocalFunctions
         {
             XppmemberModifiersContext Mods { get; }
             AttributesContext Atts { get; }
             InternalSyntax.XppDeclaredMethodInfo Info { get; }
             ParameterListContext Parameters { get; }
             new StatementBlockContext Statements { get; set; }
+            ExpressionContext ExprBody { get; }
         }
         #endregion
         #region Flags
@@ -236,7 +244,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             HasUndeclared = 1 << 21,    // member property
             HasMemVarLevel = 1 << 22,   // member property
             UsesPCount = 1 << 23,       // member property
-            ParameterAssign = 1 <<24, // member property
+            ParameterAssign = 1 << 24, // member property
         }
         #endregion
 
@@ -393,7 +401,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             }
 
             internal Dictionary<string, MemVarFieldInfo> Fields = null;
-            internal MemVarFieldInfo AddField(string Name, string Alias,XSharpParserRuleContext context)
+            internal MemVarFieldInfo AddField(string Name, string Alias, XSharpParserRuleContext context)
             {
                 if (Fields == null)
                 {
@@ -460,7 +468,29 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             public StatementBlockContext Statements { get { return StmtBlk; } }
         }
 
-        public partial class FuncprocContext : IEntityWithBodyContext, IGlobalEntityContext
+
+        public partial class LocalfuncprocContext : IEntityWithBodyContext, IBodyWithLocalFunctions
+        {
+
+            public IdentifierContext Id => this.Sig.Id;
+            public TypeparametersContext TypeParameters => Sig.TypeParameters;
+            public IList<TypeparameterconstraintsclauseContext> _ConstraintsClauses => Sig._ConstraintsClauses;
+            public ParameterListContext ParamList => Sig.ParamList;
+            public DatatypeContext Type => Sig.Type;
+            public CallingconventionContext CallingConvention => Sig.CallingConvention;
+            EntityData data = new EntityData();
+            public EntityData Data => data;
+            public ParameterListContext Params => this.ParamList;
+            public DatatypeContext ReturnType => this.Type;
+            public String Name => ParentName + ShortName;
+            public String ShortName => this.Id.GetText();
+            public LocalfuncprocModifiersContext LocalFuncProcModifiers => Modifiers;
+            public StatementBlockContext Statements => StmtBlk;
+            public IList<object> LocalFunctions { get; set; } = null;
+        }
+
+
+        public partial class FuncprocContext : IEntityWithBodyContext, IGlobalEntityContext, IBodyWithLocalFunctions
         {
 
             public IdentifierContext Id => this.Sig.Id;
@@ -478,6 +508,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             public FuncprocModifiersContext FuncProcModifiers => Modifiers;
             public StatementBlockContext Statements => StmtBlk;
             public int RealType { get; set; } // fox FoxPro Function and Procedure will be come method, access or assign
+            public IList<object> LocalFunctions { get; set; } = null;
         }
 
         public interface IMethodContext : IEntityWithBodyContext
@@ -486,15 +517,16 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             TypeparametersContext TypeParameters { get; }
             IList<TypeparameterconstraintsclauseContext> _ConstraintsClauses { get; }
             ParameterListContext ParamList { get; }
-            DatatypeContext Type  { get; }
+            DatatypeContext Type { get; }
             MemberModifiersContext Mods { get; }
+            ExpressionContext ExpressionBody { get; }
             bool IsInInterface { get; }
             bool IsInStructure { get; }
             int RealType { get; }
         }
-        public partial class MethodContext : IMethodContext
+        public partial class MethodContext : IMethodContext, IBodyWithLocalFunctions
         {
-            public IdentifierContext Id => Sig.Id; 
+            public IdentifierContext Id => Sig.Id;
             public TypeparametersContext TypeParameters => Sig.TypeParameters;
             public IList<TypeparameterconstraintsclauseContext> _ConstraintsClauses => Sig._ConstraintsClauses;
             public ParameterListContext ParamList => Sig.ParamList;
@@ -508,6 +540,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             public DatatypeContext ReturnType => this.Type;
             public MemberModifiersContext Mods => this.Modifiers;
             public String ShortName => this.Id.GetText();
+            public ExpressionContext ExpressionBody => Sig.ExpressionBody;
             public String Name
             {
                 get
@@ -524,9 +557,11 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             }
             public StatementBlockContext Statements => StmtBlk;
             public int RealType { get; set; } // fox FoxPro Function and Procedure will be come method, access or assign
+            public IList<object> LocalFunctions { get; set; } = null;
+
         }
- 
-        public partial class FoxmethodContext : IMethodContext
+
+        public partial class FoxmethodContext : IMethodContext, IBodyWithLocalFunctions
         {
             public IdentifierContext Id => Sig.Id;
             public TypeparametersContext TypeParameters => Sig.TypeParameters;
@@ -543,25 +578,22 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             public ParameterListContext Params => this.Sig.ParamList;
             public DatatypeContext ReturnType => this.Sig.Type;
             public String ShortName => this.Sig.Id.GetText();
+            public ExpressionContext ExpressionBody => Sig.ExpressionBody;
             public String Name
             {
                 get
                 {
                     string name = this.Id.GetText();
-                    if (this.T.Token.Type == XSharpParser.ACCESS)
-                        name += ":Access";
-                    else if (this.T.Token.Type == XSharpParser.ASSIGN)
-                        name += ":Assign";
-                    else
-                        name += "()";
+                    name += "()";
                     return ParentName + name;
                 }
             }
             public StatementBlockContext Statements => StmtBlk;
             public int RealType { get; set; } // fox FoxPro Function and Procedure will be come method, access or assign
+            public IList<object> LocalFunctions { get; set; } = null;
         }
 
-        public partial class EventAccessorContext : IEntityWithBodyContext
+        public partial class EventAccessorContext : IEntityWithBodyContext, IBodyWithLocalFunctions
         {
             EntityData data = new EntityData();
             public EntityData Data => data;
@@ -571,10 +603,10 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             public String ShortName => ParentName + Key.Text;
             public StatementBlockContext Statements => StmtBlk;
             public bool HasReturnValue => false;
-
+            public IList<object> LocalFunctions { get; set; } = null;
         }
 
-        public partial class PropertyAccessorContext : IEntityWithBodyContext
+        public partial class PropertyAccessorContext : IEntityWithBodyContext, IBodyWithLocalFunctions
         {
             EntityData data = new EntityData();
             public EntityData Data => data;
@@ -583,6 +615,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             public String Name => ParentName + Key.Text;
             public String ShortName => ParentName + Key.Text;
             public StatementBlockContext Statements => StmtBlk;
+            public IList<object> LocalFunctions { get; set; } = null;
         }
         public partial class PropertyLineAccessorContext : IEntityContext
         {
@@ -593,7 +626,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             public String Name => ParentName + Key.Text;
             public String ShortName => ParentName + Key.Text;
         }
-        public partial class ConstructorContext : IEntityWithBodyContext
+        public partial class ConstructorContext : IEntityWithBodyContext, IBodyWithLocalFunctions
         {
             EntityData data = new EntityData();
             public EntityData Data => data;
@@ -602,8 +635,9 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             public String Name => ParentName + ShortName;
             public String ShortName => "ctor";
             public StatementBlockContext Statements => StmtBlk;
+            public IList<object> LocalFunctions { get; set; } = null;
         }
-        public partial class DestructorContext : IEntityWithBodyContext
+        public partial class DestructorContext : IEntityWithBodyContext, IBodyWithLocalFunctions
         {
             EntityData data = new EntityData();
             public EntityData Data => data;
@@ -612,6 +646,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             public String Name => ParentName + ShortName;
             public String ShortName => "Finalize";
             public StatementBlockContext Statements => StmtBlk;
+            public IList<object> LocalFunctions { get; set; } = null;
         }
         public partial class Event_Context : IEntityContext
         {
@@ -621,6 +656,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             public DatatypeContext ReturnType => this.Type;
             public String Name => ParentName + ShortName;
             public String ShortName => Id.GetText();
+            public IList<object> LocalFunctions { get; set; } = null;
         }
         public partial class VodefineContext : IEntityContext, IGlobalEntityContext
         {
@@ -648,7 +684,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                 }
             }
         }
-        public partial class Operator_Context : IEntityWithBodyContext
+        public partial class Operator_Context : IEntityWithBodyContext, IBodyWithLocalFunctions
         {
             EntityData data = new EntityData();
             public EntityData Data => data;
@@ -669,6 +705,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
 
             }
             public StatementBlockContext Statements => StmtBlk;
+            public IList<object> LocalFunctions { get; set; } = null;
         }
         public partial class Delegate_Context : IEntityContext
         {
@@ -683,17 +720,17 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
         {
             EntityData data = new EntityData();
             List<IMethodContext> partialProperties = null;
-            public  List<IMethodContext> PartialProperties
+            public List<IMethodContext> PartialProperties
             {
                 get { return partialProperties; }
                 set { partialProperties = value; }
-            } 
+            }
             public EntityData Data => data;
             public ParameterListContext Params => null;
             public DatatypeContext ReturnType => null;
             public String Name => ParentName + ShortName;
             public String ShortName => this.Id.GetText();
-            
+
         }
         public partial class Class_Context : IPartialPropertyContext, IEntityContext
         {
@@ -762,7 +799,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             public bool IsStaticVisible { get; set; }
         }
 
-        public partial class VounionContext : IEntityContext 
+        public partial class VounionContext : IEntityContext
         {
             EntityData data = new EntityData();
             public EntityData Data => data;
@@ -807,7 +844,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             {
                 get
                 {
-                    string name = this.Id.GetText() +"()";
+                    string name = this.Id.GetText() + "()";
                     return ParentName + name;
                 }
             }
@@ -816,9 +853,10 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             public AttributesContext Atts => this.Attributes;
             public StatementBlockContext Statements { get { return this.StmtBlk; } set { this.StmtBlk = value; } }
             public ParameterListContext Parameters => this.ParamList;
-
+            public IList<object> LocalFunctions { get; set; } = null;
+            public ExpressionContext ExprBody { get { return this.ExpressionBody; } }
         }
-        public partial class XppinlineMethodContext : IXPPEntityContext
+        public partial class XppinlineMethodContext : IXPPEntityContext, IBodyWithLocalFunctions
         {
             EntityData data = new EntityData();
             public EntityData Data => data;
@@ -838,7 +876,8 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             public AttributesContext Atts => this.Attributes;
             public StatementBlockContext Statements { get { return this.StmtBlk; } set { this.StmtBlk = value; } }
             public ParameterListContext Parameters => this.ParamList;
-
+            public IList<object> LocalFunctions { get; set; } = null;
+            public ExpressionContext ExprBody { get { return this.ExpressionBody; } }
         }
 
         public partial class WithBlockContext
@@ -860,7 +899,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             {
                 get
                 {
-                    string name = this.Id.GetText() ;
+                    string name = this.Id.GetText();
                     return ParentName + name;
                 }
             }
@@ -889,11 +928,11 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
         }
         public partial class UnnamedArgumentContext
         {
-            internal bool IsMissing => Expr == null ;
+            internal bool IsMissing => Expr == null;
         }
 
         [Flags]
-        internal enum FoxFlags: byte
+        internal enum FoxFlags : byte
         {
             None = 0,
             MemberAccess = 1,
@@ -929,7 +968,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                 return Code.ToString() + " " + xterm.Symbol.Line.ToString() + " " + xterm.Symbol.Text;
             if (Node.SourceSymbol != null)
                 return Code.ToString() + " " + Node.SourceSymbol.Line.ToString() + " " + Node.SourceSymbol.Text;
-             return Code.ToString();
+            return Code.ToString();
         }
         //internal ParseErrorData(ErrorCode code) :
         //    this(node: null, code: code, args: Array.Empty<object>())
@@ -1076,7 +1115,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             {
                 if (VarType == vartype.MacroMemvar)
                 {
-                    var name = Name.Substring(0, Name.IndexOf(":") );
+                    var name = Name.Substring(0, Name.IndexOf(":"));
                     return Alias + "->" + name;
                 }
                 if (Alias != null)
@@ -1090,7 +1129,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             }
         }
 
-        public bool IsClipperParameter=> _varType == vartype.ClipperParameter;
+        public bool IsClipperParameter => _varType == vartype.ClipperParameter;
         public bool IsFileWidePublic { get; private set; }
         public bool IsParameter { get; set; }
         public bool IsWritten { get; set; }
@@ -1281,7 +1320,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             else
                 return parent.isInInterface();
         }
-        
+
         internal static bool IsInLambdaOrCodeBlock([NotNull] this RuleContext context)
         {
             var parent = context.Parent;

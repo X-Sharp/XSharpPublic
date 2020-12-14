@@ -99,7 +99,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         private TypeSyntax voStructMemberDataType(XP.VostructmemberContext context)
         {
-            var varType = context.DataType?.Get<TypeSyntax>() ?? MissingType();
+            var varType = getDataType(context.DataType);
             if (context.DataType is XP.SimpleDatatypeContext)
             {
                 var sdt = context.DataType as XP.SimpleDatatypeContext;

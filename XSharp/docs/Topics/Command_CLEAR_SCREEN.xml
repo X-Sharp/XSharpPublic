@@ -1,0 +1,26 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>CLEAR SCREEN Command</title>
+  <keywords>
+    <keyword>CLEAR SCREEN Command</keyword>
+    <keyword>Commands</keyword>
+    <keyword>Terminal Window</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">CLEAR SCREEN Command</para>
+    </header>
+    <para styleclass="Normal"><snippet src="__CommandInclude" inline="false"/></para>
+    <para styleclass="Heading1">Purpose</para>
+    <para styleclass="Normal">Take input from the keyboard and assign it to a memory variable.</para>
+    <para styleclass="Heading1">Syntax</para>
+    <para styleclass="Normal">CLEAR SCREEN</para>
+    <para styleclass="Heading1">Description</para>
+    <para styleclass="Body Text">The command CLEAR erases the screen. <br/>After execution of the CLEAR command, the cursor is positioned at 0, 0 and the functions Row() and Col() are updated. </para>
+    <para styleclass="Heading1">Examples</para>
+    <para styleclass="Normal">This example uses ACCEPT to get keyboard input from the user:</para>
+    <para styleclass="Code Example"><text style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">FUNCTION</text><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;"> Start </text><text style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">AS</text><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">VOID</text><br/><text style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">SET</text><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">COLOR</text><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">TO</text><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;"> gr+/B &#160;</text><text style="font-weight:bold; font-style:italic; text-decoration:none; color:#339966;">// Yellow on Blue</text><br/><text style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">CLEAR</text><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">SCREEN</text><br/><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;">? &quot;Hello world&quot;</text></para>
+    <para styleclass="Normal"><snippet src="__IncludeLibRT" inline="false"/></para>
+  </body>
+</topic>

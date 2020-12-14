@@ -366,9 +366,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             for (int r = 0; r < results.Length; r++)
             {
                 var restoken = results[r];
+                restoken.Index = r;
                 if (restoken.IsMarker)
                 {
-                    var token = restoken.Token;
                     var name = restoken.Key;
                     if (markers.ContainsKey(name))
                     {
@@ -1291,16 +1291,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             // XPP addition
             // add all normal tokens and operators until whitespace
             var first = tokens[iSource];
-            var nextpos = first.Position + first.FullWidth;
             var iEnd = iSource + 1;
-            while (iEnd < tokens.Count)
+            while (iEnd < tokens.Count && ! tokens[iEnd].HasTrivia)
             {
-                first = tokens[iEnd];
-                if (first.Position > nextpos)
-                {
-                    break;
-                }
-                nextpos = first.Position + first.FullWidth;
                 iEnd++;
             }
             iEnd -= 1;
@@ -1571,21 +1564,19 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             return result;
         }
 
-        void tokenResult(PPResultToken rule, IList<XSharpToken> tokens, PPMatchRange[] matchInfo, IList<XSharpToken> result, int offset)
+        void tokenResult(PPResultToken resultToken, IList<XSharpToken> tokens, PPMatchRange[] matchInfo, IList<XSharpToken> result, int offset)
         {
-
-            var newToken = new XSharpToken(rule.Token)
-            {
-                SourceSymbol = tokens[0]
-            };
+            // Link the new token to the first token of the UDC
+            // so for the command #xcommand WAIT [<msg>]                  => _wait( <msg> )
+            // the LPAREN and RPAREN will also be linked to the WAIT keyword in the source.
+           var newToken = new XSharpToken(resultToken.Token) {SourceSymbol = tokens[0]};
             result.Add(newToken);
-
         }
-        void repeatedResult(PPResultToken rule, IList<XSharpToken> tokens, PPMatchRange[] matchInfo, IList<XSharpToken> result, int offset)
+        void repeatedResult(PPResultToken resultToken, IList<XSharpToken> tokens, PPMatchRange[] matchInfo, IList<XSharpToken> result, int offset)
         {
-            if (rule.MatchMarker != null)
+            if (resultToken.MatchMarker != null)
             {
-                var index = rule.MatchMarker.Index;
+                var index = resultToken.MatchMarker.Index;
                 var mm = matchInfo[index];
                 if (mm.MatchCount > 0)
                 {
@@ -1594,20 +1585,14 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         int repeats = mm.MatchCount;
                         for (int i = 0; i < repeats; i++)
                         {
-                            var block = Replace(rule.OptionalElements, tokens, matchInfo, i);
-                            foreach (var e in block)
-                            {
-                                result.Add(e);
-                            }
+                            var block = Replace(resultToken.OptionalElements, tokens, matchInfo, i);
+                            result.AddRange(block);
                         }
                     }
                     else
                     {
-                        var block = Replace(rule.OptionalElements, tokens, matchInfo, 0);
-                        foreach (var e in block)
-                        {
-                            result.Add(e);
-                        }
+                        var block = Replace(resultToken.OptionalElements, tokens, matchInfo, 0);
+                        result.AddRange(block);
                     }
                 }
             }
@@ -1615,13 +1600,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         }
 
 
-        void regularResult(PPResultToken rule, IList<XSharpToken> tokens, PPMatchRange[] matchInfo, IList<XSharpToken> result, int offset)
+        void regularResult(PPResultToken resultToken, IList<XSharpToken> tokens, PPMatchRange[] matchInfo, IList<XSharpToken> result, int offset)
         {
             // write input text to the result text without no changes
             // for example:
             // #command SET CENTURY (<x>) => __SetCentury( <x> )
             // the output written is the literal text for x, so the token(s) x
-            var range = matchInfo[rule.MatchMarker.Index];
+            var range = matchInfo[resultToken.MatchMarker.Index];
             if (!range.Empty)
             {
                 // No special handling for List markers. Everything is copied including commas etc.
@@ -1638,7 +1623,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             return;
         }
 
-        void blockifySingleResult(PPResultToken rule, IList<XSharpToken> tokens, PPMatchRange range, IList<XSharpToken> result)
+        void blockifySingleResult(PPResultToken resultToken, IList<XSharpToken> tokens, PPMatchRange range, IList<XSharpToken> result)
         {
             int start = range.Start;
             int end = range.End;
@@ -1695,30 +1680,30 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         }
 
 
-        void blockifyResult(PPResultToken rule, IList<XSharpToken> tokens, PPMatchRange[] matchInfo, IList<XSharpToken> result, int offset)
+        void blockifyResult(PPResultToken resultToken, IList<XSharpToken> tokens, PPMatchRange[] matchInfo, IList<XSharpToken> result, int offset)
         {
             // write output text as codeblock
             // so prefixes with "{||"and suffixes with "}
             // if the input is already a code block then nothing is changed
             // when the input is a list then each element in the list will be
             // converted to a code block
-            var range = matchInfo[rule.MatchMarker.Index];
+            var range = matchInfo[resultToken.MatchMarker.Index];
             if (!range.Empty)
             {
                 if (range.MatchCount > 1)
                 {
                     range = range.Children[offset];
                 }
-                if (rule.MatchMarker.RuleTokenType == PPTokenType.MatchList && range.IsList)
+                if (resultToken.MatchMarker.RuleTokenType == PPTokenType.MatchList && range.IsList)
                 {
                     foreach (var element in range.Children)
                     {
-                        blockifySingleResult(rule, tokens, element, result);
+                        blockifySingleResult(resultToken, tokens, element, result);
                     }
                 }
                 else
                 {
-                    blockifySingleResult(rule, tokens, range, result);
+                    blockifySingleResult(resultToken, tokens, range, result);
                 }
             }
             return;
@@ -1839,7 +1824,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         void stringifySingleResult(PPResultToken rule, IList<XSharpToken> tokens, PPMatchRange range, IList<XSharpToken> result)
         {
-            XSharpToken newToken;
             var start = range.Start;
             var end = range.End;
             if (range.Length == 1)
@@ -1849,6 +1833,39 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 {
                     result.Add(tokens[start]);
                     return;
+                }
+            }
+
+            XSharpToken JoinTokens(IList<XSharpToken> toks, int s, int e)
+            {
+                var sb = new System.Text.StringBuilder();
+                sb.Append('"');
+                for (int i = s; i <= e; i++)
+                {
+                    var token = toks[i];
+                    if (i > s && token.HasTrivia)
+                    {
+                        sb.Append(token.TriviaAsText);
+                    }
+                    sb.Append(token.Text);
+                }
+                sb.Append('"');
+                var t = new XSharpToken(toks[s], XSharpLexer.STRING_CONST, sb.ToString())
+                {
+                    Channel = XSharpLexer.DefaultTokenChannel
+                };
+                return t;
+            }
+            void addTokens(IList<XSharpToken> res, IList<XSharpToken> toks, int s, int e)
+            {
+                for (int i = s ; i <= e; i++)
+                {
+                    var token = toks[i];
+                    if (i > start + 1 && token.HasTrivia)
+                    {
+                        res.AddRange(token.Trivia);
+                    }
+                    res.Add(token);
                 }
             }
 
@@ -1864,20 +1881,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     // change type of token to STRING_CONST;
                     if (!range.Empty)
                     {
-                        // we cannot take an interval and the source stream. That will not work if a transformation has been done already
-                        var sb = new System.Text.StringBuilder();
-                        sb.Append('"');
-                        for (int i = start; i <= end; i++)
-                        {
-                            var token = tokens[i];
-                            sb.Append(token.Text);
-                        }
-                        sb.Append('"');
-                        var nt = new XSharpToken(tokens[start], XSharpLexer.STRING_CONST, sb.ToString())
-                        {
-                            Channel = XSharpLexer.DefaultTokenChannel
-                        };
-                        result.Add(nt);
+                        result.Add(JoinTokens(tokens, start, end));
                     }
                     else
                     {
@@ -1893,20 +1897,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     // Delimit the input with string delimiters
                     if (!range.Empty)
                     {
-                        // we cannot take an interval and the source stream. That will not work if a transformation has been done already
-                        var sb = new System.Text.StringBuilder();
-                        sb.Append('"');
-                        for (int i = start; i <= end; i++)
-                        {
-                            var token = tokens[i];
-                            sb.Append(token.Text);
-                        }
-                        sb.Append('"');
-                        var nt = new XSharpToken(tokens[start], XSharpLexer.STRING_CONST, sb.ToString())
-                        {
-                            Channel = XSharpLexer.DefaultTokenChannel
-                        };
-                        result.Add(nt);
+                        result.Add(JoinTokens(tokens, start, end));
                     }
                     break;
 
@@ -1930,12 +1921,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                             }
                             else
                             {
-                                newToken = new XSharpToken(token, XSharpLexer.STRING_CONST, token.Text)
-                                {
-                                    Text = "\"" + token.Text + "\"",
-                                    Channel = XSharpLexer.DefaultTokenChannel
-                                };
-                                result.Add(newToken);
+                                result.Add(JoinTokens(tokens, start, end));
                             }
                         }
                         else
@@ -1943,35 +1929,18 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                             if (tokens[start].Type == XSharpLexer.AMP )
                             {
                                 // do not include the &
-                                for (int i = start+1; i <= end; i++)
-                                {
-                                    result.Add(tokens[i]);
-                                }
+                                addTokens(result, tokens, start + 1, end);
                             }
                             else if (tokens[start].Type == XSharpLexer.LPAREN &&
                                 tokens[end].Type == XSharpLexer.RPAREN)
                             {
                                 // do not include ( and )
-                                for (int i = start + 1; i < end; i++)
-                                {
-                                    result.Add(tokens[i]);
-                                }
+                                addTokens(result, tokens, start + 1, end - 1);
                             }
                             else
                             {
-                                var sb = new System.Text.StringBuilder();
-                                sb.Append('"');
-                                for (int i = start; i <= end; i++)
-                                {
-                                    var token = tokens[i];
-                                    sb.Append(token.Text);
-                                }
-                                sb.Append('"');
-                                newToken = new XSharpToken(tokens[start], XSharpLexer.STRING_CONST, sb.ToString())
-                                {
-                                    Channel = XSharpLexer.DefaultTokenChannel
-                                };
-                                result.Add(newToken);
+                                var nt = JoinTokens(tokens, start, end);
+                                result.Add(nt);
                             }
                         }
                     }

@@ -80,12 +80,15 @@ pragma                : P=PRAGMA (Tokens += ~EOS)*? EOS
 
 
 funcproc              : (Attributes=attributes)? (Modifiers=funcprocModifiers)?   
-                        T=(FUNCTION|PROCEDURE) Sig=signature
+                        T=funcproctype Sig=signature
                         InitExit=(INIT1|INIT2|INIT3|EXIT)?                        
                         vodummyclauses
                         end=eos   
                         StmtBlk=statementBlock
-                        (END T2=(FUNCTION|PROCEDURE)   EOS )?
+                        (END T2=funcproctype EOS )?
+                      ;
+
+funcproctype          : Token=(FUNCTION|PROCEDURE)
                       ;
 
 signature             : Id=identifier                             
@@ -94,6 +97,7 @@ signature             : Id=identifier
                         (AS Type=datatype)?                                       
                         (ConstraintsClauses+=typeparameterconstraintsclause)*     
                         (CallingConvention=callingconvention)?
+                        (UDCSEP ExpressionBody=expression)?                       // New: Expression Body
                       ;
 
 
@@ -120,8 +124,8 @@ callingconvention	: Convention=(CLIPPER | STRICT | PASCAL | ASPEN | WINCALL | CA
                     // and Finally we also parse the @Num
                     // 
 
-vodll               : (Modifiers=funcprocModifiers)? // Optional
-                      D=DLL T=(FUNCTION|PROCEDURE) Id=identifier ParamList=parameterList (AS Type=datatype)? 
+vodll               : (Attributes=attributes)? (Modifiers=funcprocModifiers)? // Optional
+                      D=DLL T=funcproctype Id=identifier ParamList=parameterList (AS Type=datatype)? 
                       (CallingConvention=dllcallconv)? COLON
                       Dll=identifierString (DOT Extension=identifierString)?
                       (	Ordinal=REAL_CONST 
@@ -138,7 +142,7 @@ dllcallconv         : Cc=( CLIPPER | STRICT | PASCAL | THISCALL | FASTCALL | ASP
 
 
                     // Note that when an alias is specified (AS) then that is the name that we should use and then the Id is the entrypoint
-foxdll              : (Modifiers=funcprocModifiers)? // Optional
+foxdll              : (Attributes=attributes)? (Modifiers=funcprocModifiers)? // Optional
                       DECLARE (Type=datatype)? Id=identifier IN Dll=identifier (DOT Extension=identifierString)? (AS Alias=identifier)? 
                       ( Params+=foxdllparam (COMMA Params+=foxdllparam)* )?
                       EOS  
@@ -327,7 +331,10 @@ eventLineAccessor   : Attributes=attributes? Modifiers=accessorModifiers?
                     ;
 eventAccessor       : Attributes=attributes? Modifiers=accessorModifiers?
                       ( Key=ADD     end=eos StmtBlk=statementBlock END ADD?
-                      | Key=REMOVE  end=eos StmtBlk=statementBlock END REMOVE? )
+                      | Key=ADD     UDCSEP ExpressionBody=expression              // New: Expression Body
+                      | Key=REMOVE  end=eos StmtBlk=statementBlock END REMOVE?
+                      | Key=REMOVE  UDCSEP ExpressionBody=expression              // New: Expression Body
+                      )
                       end=eos
                     ;
 
@@ -371,9 +378,11 @@ propertyAutoAccessor: Attributes=attributes? Modifiers=accessorModifiers? Key=(G
                     ;
 
 propertyLineAccessor: Attributes=attributes? Modifiers=accessorModifiers?
-                      ( {InputStream.La(2) != SET}? Key=GET Expr=expression?
-                      | {InputStream.La(2) != GET}? Key=SET ExprList=expressionList?
-                      | Key=(GET|SET) )
+                      ( {InputStream.La(2) != SET}? Key=GET    Expr=expression?
+                      | {InputStream.La(2) != SET}? Key=UDCSEP Expr=expression?           // New: UDCSep instead of GET
+                      | {InputStream.La(2) != GET}? Key=SET    ExprList=expressionList?
+                      | Key=(GET|SET)
+                      )
                     ;
 
 accessorModifiers	: ( Tokens+=(PRIVATE | HIDDEN | PROTECTED | PUBLIC | EXPORT | INTERNAL ) )+
@@ -384,7 +393,10 @@ expressionList	    : Exprs+=expression (COMMA Exprs+=expression)*
 
 propertyAccessor    : Attributes=attributes? Modifiers=accessorModifiers?
                       ( Key=GET end=eos StmtBlk=statementBlock END GET?
-                      | Key=SET end=eos StmtBlk=statementBlock END SET? )
+                      | Key=GET UDCSEP ExpressionBody=expression              // New: Expression Body
+                      | Key=SET end=eos StmtBlk=statementBlock END SET?
+                      | Key=SET UDCSEP ExpressionBody=expression              // New: Expression Body
+                      )
                       end=eos
                     ;
 
@@ -409,7 +421,8 @@ classmember         : Member=method                                 #clsmethod
 constructor         :  (Attributes=attributes)? (Modifiers=constructorModifiers)?
                       c1=CONSTRUCTOR (ParamList=parameterList)? (AS VOID)? // As Void is allowed but ignored
                         (CallingConvention=callingconvention)? 
-                        (CLASS (Namespace=nameDot)? ClassId=identifier)?		
+                        (CLASS (Namespace=nameDot)? ClassId=identifier)?
+                        (UDCSEP ExpressionBody=expression)?               // New: Expression Body
                         end=eos
                       (Chain=constructorchain)?
                       StmtBlk=statementBlock
@@ -431,6 +444,7 @@ vodeclare           : DECLARE (ACCESS | ASSIGN | METHOD )  (~EOS)? eos
 destructor          : (Attributes=attributes)? (Modifiers=destructorModifiers)?
                       d1=DESTRUCTOR (LPAREN RPAREN)? 
                       (CLASS (Namespace=nameDot)? ClassId=identifier)?
+                      (UDCSEP ExpressionBody=expression)?               // New: Expression Body
                       end=eos
                       StmtBlk=statementBlock
                       (END d2=DESTRUCTOR EOS)?
@@ -462,6 +476,7 @@ operator_           : Attributes=attributes? Modifiers=operatorModifiers?
                       o1=OPERATOR (Operation=overloadedOps | Conversion=conversionOps) Gt=GT?
                       ParamList=parameterList
                       (AS Type=datatype)?
+                      (UDCSEP ExpressionBody=expression)?             // New: Expression Body
                       end=eos
                       StmtBlk=statementBlock
                      (END o1=OPERATOR EOS)?
@@ -503,6 +518,7 @@ filewidememvar      : Token=MEMVAR Vars+=identifierName (COMMA Vars+=identifierN
 
 
 statement           : Decl=localdecl                        #declarationStmt
+                    | Decl=localfuncproc                    #localFunctionStmt
                     | Decl=xbasedecl                        #xbasedeclStmt
                     | Decl=fielddecl                        #fieldStmt
                     | DO? w=WHILE Expr=expression end=eos
@@ -687,9 +703,9 @@ fielddecl          : FIELD Fields+=identifierName (COMMA Fields+=identifierName)
 // In FoxPro PUBLIC can also have an ARRAY clause. This must be combined with array indices. We should check for that.
 // In FoxPro there is also PRIVATE ALL [Like skeleton | Except skeleton] This is not implemented yet
 
-xbasedecl           : T=MEMVAR Vars+=identifierName (COMMA Vars+=identifierName  )* end=eos  // MEMVAR  Foo, Bar 
+xbasedecl           : T=MEMVAR Vars+=varidentifierName (COMMA Vars+=varidentifierName  )* end=eos  // MEMVAR  Foo, Bar 
                     | T=(PARAMETERS|LPARAMETERS)    // PARAMETERS Foo, Bar  LPARAMETERS Foo AS Bar OF BarLib
-                      Vars+=identifierName XT=xbasedecltype? (COMMA Vars+=identifierName XT=xbasedecltype? )* end=eos
+                      Vars+=varidentifierName XT=xbasedecltype? (COMMA Vars+=varidentifierName XT=xbasedecltype? )* end=eos
                     | T=PRIVATE XVars+=xbasevar (COMMA XVars+=xbasevar)*  end=eos      // PRIVATE Foo := 123
                     | T=PUBLIC Array=ARRAY? XVars+=xbasevar XT=xbasedecltype?
                       (COMMA XVars+=xbasevar XT=xbasedecltype? )* end=eos   // PUBLIC Bar, PUBLIC MyArray[5,2]
@@ -700,11 +716,21 @@ xbasedecltype       : AS Type=datatype (OF ClassLib=identifierName)?
                     ;  // parseed but ignored . FoxPro uses this only for intellisense. We can/should do that to in the editor
                     
 
-xbasevar            : (Amp=AMP)?  Id=identifierName (LBRKT ArraySub=arraysub RBRKT)? (Op=assignoperator Expression=expression)?
+xbasevar            : (Amp=AMP)?  Id=varidentifierName (LBRKT ArraySub=arraysub RBRKT)? (Op=assignoperator Expression=expression)?
                     ;
 
 dimensionVar        : Id=identifierName  ( LBRKT ArraySub=arraysub RBRKT | LPAREN ArraySub=arraysub RPAREN ) (AS DataType=datatype)?
                     ;
+
+localfuncproc       :  (Modifiers=localfuncprocModifiers)?   
+                        LOCAL T=funcproctype Sig=signature
+                        end=eos   
+                        StmtBlk=statementBlock
+                        END T2=funcproctype  EOS 
+                     ;
+
+localfuncprocModifiers : ( Tokens+=(UNSAFE | ASYNC) )+
+                       ; // make sure all tokens are also in the IsModifier method inside XSharpLexerCode.cs
 
 
 // The operators in VO have the following precedence level:
@@ -784,8 +810,7 @@ primary             : Key=SELF                                                  
                     | Type=datatype LCURLY RCURLY  Init=objectOrCollectioninitializer?  #ctorCall   // id{  } with optional { Name1 := Expr1, [Name<n> := Expr<n>]}
                     | Type=datatype LCURLY ArgList=argumentList  RCURLY	
                                                    Init=objectOrCollectioninitializer?  #ctorCall				// id{ expr [, expr...] } with optional { Name1 := Expr1, [Name<n> := Expr<n>]}
-                    | ch=CHECKED LPAREN ( Expr=expression ) RPAREN              #checkedExpression		// checked( expression )
-                    | ch=UNCHECKED LPAREN ( Expr=expression ) RPAREN            #checkedExpression		// unchecked( expression )
+                    | ch=(CHECKED|UNCHECKED) LPAREN Expr=expression  RPAREN     #checkedExpression		// checked( expression )
                     | TYPEOF LPAREN Type=datatype RPAREN                        #typeOfExpression		// typeof( typeORid )
                     | SIZEOF LPAREN Type=datatype RPAREN                        #sizeOfExpression		// sizeof( typeORid )
                     | DEFAULT LPAREN Type=datatype RPAREN                       #defaultExpression		// default( typeORid )
@@ -910,6 +935,11 @@ identifierName      : Id=identifier
 
 varidentifier       : (FOX_M DOT)? Id=identifier
                     ;
+
+
+varidentifierName   : (FOX_M DOT)? Id=identifierName
+                    ;
+
 
 datatype            : ARRAY OF TypeName=typeName                                    #arrayOfType
                     | TypeName=typeName PTR                                         #ptrDatatype
@@ -1237,6 +1267,7 @@ xppmethod           : (Attributes=attributes)?                              // N
                       (AS Type=datatype)?                                   // NEW Optional return type
                       // no type constraints
                       // no calling convention
+                      (UDCSEP ExpressionBody=expression)?                   // New: Expression Body
                       end=eos
                       StmtBlk=statementBlock
                       (END METHOD eos)?
@@ -1251,6 +1282,7 @@ xppinlineMethod     : (Attributes=attributes)?                               // 
                       (AS Type=datatype)?                                   // NEW Optional return type
                       // no type constraints
                       // no calling convention
+                      (UDCSEP ExpressionBody=expression)?                   // New: Expression Body
                       end=eos
                       StmtBlk=statementBlock
                       (END METHOD eos)?
@@ -1306,15 +1338,12 @@ foxclassmember      : Member=foxclassvars          #foxclsvars
 
 
 foxmethod           : (Attributes=attributes)? (Modifiers=memberModifiers)?
-                      T=foxmethodtype  Sig=signature
+                      T=funcproctype  Sig=signature
                       (HelpString=HELPSTRING HelpText=expression)?          	
                       (ThisAccess=THISACCESS LPAREN MemberId=identifier RPAREN)?
                       end=eos
                       StmtBlk=statementBlock
-                      (END T2=foxmethodtype  EOS)?
-                    ;
-
-foxmethodtype       : Token=(FUNCTION | PROCEDURE)
+                      (END T2=funcproctype  EOS)?
                     ;
 
 foxclassvars        : (Attributes=attributes)? (Modifiers=classvarModifiers)? 

@@ -43,6 +43,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             return BetterResult.Neither;
         }
 
+
         private bool VOBetterFunctionMember<TMember>(
             MemberResolutionResult<TMember> m1,
             MemberResolutionResult<TMember> m2,
@@ -77,6 +78,42 @@ namespace Microsoft.CodeAnalysis.CSharp
                             return true;
                         }
                         else if (asm2.IsRT())
+                        {
+                            result = BetterResult.Left;
+                            return true;
+                        }
+                    }
+                    if (asm1.IsRTDLL(XSharpTargetDLL.Core))
+                    {
+                        if (asm2.IsRTDLL(XSharpTargetDLL.VFP))
+                        {
+                            result = BetterResult.Right;
+                            return true;
+                        }
+                        if (asm2.IsRTDLL(XSharpTargetDLL.XPP))
+                        {
+                            result = BetterResult.Right;
+                            return true;
+                        }
+                        if (asm2.IsRTDLL(XSharpTargetDLL.VO))
+                        {
+                            result = BetterResult.Right;
+                            return true;
+                        }
+                    }
+                    if (asm2.IsRTDLL(XSharpTargetDLL.Core))
+                    {
+                        if (asm1.IsRTDLL(XSharpTargetDLL.VFP))
+                        {
+                            result = BetterResult.Left;
+                            return true;
+                        }
+                        if (asm1.IsRTDLL(XSharpTargetDLL.XPP))
+                        {
+                            result = BetterResult.Left;
+                            return true;
+                        }
+                        if (asm1.IsRTDLL(XSharpTargetDLL.VO))
                         {
                             result = BetterResult.Left;
                             return true;
@@ -398,14 +435,8 @@ namespace Microsoft.CodeAnalysis.CSharp
                                 r2 = m1.Member;
                             }
 
-                            var info = new CSDiagnosticInfo(ErrorCode.WRN_VulcanAmbiguous,
-                                new object[] {
-                                        r1.Name,
-                                        r1.Kind.ToString(),
-                                        new FormattedSymbol(r1, SymbolDisplayFormat.CSharpErrorMessageFormat),
-                                        r2.Kind.ToString(),
-                                        new FormattedSymbol(r2, SymbolDisplayFormat.CSharpErrorMessageFormat)
-                                        });
+                            var info = GenerateAmbiguousWarning(r1, r2);
+
                             useSiteDiagnostics = new HashSet<DiagnosticInfo>();
                             useSiteDiagnostics.Add(info);
                             return true;
@@ -413,38 +444,55 @@ namespace Microsoft.CodeAnalysis.CSharp
                     }
                 }
             }
-          
+
 
             // generate warning that function takes precedence over static method
-            var func1 = m1.Member.ContainingType.Name.EndsWith("Functions");
-            var func2 = m2.Member.ContainingType.Name.EndsWith("Functions");
+            var ftype1 = m1.Member.ContainingType;
+            var ftype2 = m2.Member.ContainingType;
+            var func1 = ftype1.Name.EndsWith("Functions");
+            var func2 = ftype2.Name.EndsWith("Functions");
             if (func1 && !func2)
             {
                 result = BetterResult.Left;
-                var info = new CSDiagnosticInfo(ErrorCode.WRN_FunctionsTakePrecedenceOverMethods,
-                    new object[] {
-                            m1.Member.Name,
-                            new FormattedSymbol(m1.Member, SymbolDisplayFormat.CSharpErrorMessageFormat),
-                            new FormattedSymbol(m2.Member, SymbolDisplayFormat.CSharpErrorMessageFormat),
-                            m1.Member.Kind.ToString()});
+                var info = GenerateFuncMethodWarning(m1.Member, m2.Member);
+
                 useSiteDiagnostics = new HashSet<DiagnosticInfo>();
                 useSiteDiagnostics.Add(info);
 
             }
-            if (func2 && !func1)
+            else if (func2 && !func1)
             {
                 result = BetterResult.Right;
-                var info = new CSDiagnosticInfo(ErrorCode.WRN_FunctionsTakePrecedenceOverMethods,
-                    new object[] {
-                            m2.Member.Name,
-                            new FormattedSymbol(m2.Member, SymbolDisplayFormat.CSharpErrorMessageFormat),
-                            new FormattedSymbol(m1.Member, SymbolDisplayFormat.CSharpErrorMessageFormat),
-                            m2.Member.Kind.ToString()});
+                var info = GenerateFuncMethodWarning(m2.Member, m1.Member);
                 useSiteDiagnostics = new HashSet<DiagnosticInfo>();
                 useSiteDiagnostics.Add(info);
 
             }
             return false;
+	       CSDiagnosticInfo GenerateAmbiguousWarning(Symbol r1, Symbol r2) 
+	        {
+	            var info = new CSDiagnosticInfo(ErrorCode.WRN_VulcanAmbiguous,
+	                    new object[] {
+	                    r1.Name,
+	                    r1.Kind.ToString(),
+	                    new FormattedSymbol(r1, SymbolDisplayFormat.CSharpErrorMessageFormat),
+	                    r1.ContainingAssembly.Name,
+	                    r2.Kind.ToString(),
+	                    new FormattedSymbol(r2, SymbolDisplayFormat.CSharpErrorMessageFormat),
+	                    r2.ContainingAssembly.Name,
+	                    });
+	            return info;
+	        }
+            CSDiagnosticInfo GenerateFuncMethodWarning(Symbol s1, Symbol s2)
+            {
+                return new CSDiagnosticInfo(ErrorCode.WRN_FunctionsTakePrecedenceOverMethods,
+                new object[] {
+                    s1.Name,
+                    new FormattedSymbol(s1, SymbolDisplayFormat.CSharpErrorMessageFormat),
+                    new FormattedSymbol(s2, SymbolDisplayFormat.CSharpErrorMessageFormat),
+                    s1.Kind.ToString()}); 
+            }
+
         }
 
         private BetterResult VoBetterOperator(BinaryOperatorSignature op1, BinaryOperatorSignature op2, BoundExpression left, BoundExpression right, ref HashSet<DiagnosticInfo> useSiteDiagnostics)

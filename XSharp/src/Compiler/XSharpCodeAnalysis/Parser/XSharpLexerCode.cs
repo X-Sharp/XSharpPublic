@@ -17,7 +17,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
     // best choose a separate spot
     // - add it to the _GetIds() routine below for that dialect
     // - make sure that the FixPositionalKeyword code does not turn it back into an ID
-	// - if the keyword has to appear before a DOT check the _inDottedIdentifier logic
+    // - if the keyword has to appear before a DOT check the _inDottedIdentifier logic
     // - add it to the keyword<dialect> rule in XSharp.g4 (so it will become a positional keyword)
     // - add it to the grammar in XSharp.g4 
 
@@ -117,6 +117,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
         bool _onTextLine = false;
         XSharpToken _lastToken = new XSharpToken(NL);
         IList<ParseErrorData> _lexErrors = new List<ParseErrorData>();
+        IList<XSharpToken> _trivia = new List<XSharpToken>();
 
         System.Text.StringBuilder _textSb = new System.Text.StringBuilder();
         int _lineStartCharIndex;
@@ -141,7 +142,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
 
         #endregion
 
- 
+
         private Tuple<ITokenSource, ICharStream> _sourcePair;
         public Tuple<ITokenSource, ICharStream> SourcePair
         {
@@ -1308,7 +1309,22 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                     }
                 }
             }
-             return t;
+            switch (t.Channel)
+            {
+                case TokenConstants.DefaultChannel:
+                case PREPROCESSORCHANNEL:
+                    if (_trivia.Count > 0)
+                    {
+                        t.Trivia = _trivia.ToImmutableArray();
+                        _trivia.Clear();
+                    }
+                    break;
+                case TokenConstants.HiddenChannel:
+                case XMLDOCCHANNEL:
+                    _trivia.Add(t);
+                    break;
+            }
+            return t;
         }
 
         private bool StartOfLine(int iToken)
@@ -1380,7 +1396,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             switch (keyword)
             {
                 // Some keywords are impossible to use as ID
-                 case SELF:
+                case SELF:
                 case SUPER:
                 case STATIC:
                 case DIM:
@@ -1544,6 +1560,12 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                             else
                                 return ID;
 
+                        case LOCAL:
+                            if (keyword == FUNCTION || keyword == PROCEDURE)    // local function and procedure statement
+                                return keyword;
+                            return ID;
+
+
                         // After these keywords we expect an ID
                         // Some of these also have a possible SELF, DIM, CONST or STATIC clause but these have been excluded above
 
@@ -1560,7 +1582,6 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                         case ENUM:
                         case MEMBER:
                         case DIM:
-                        case LOCAL:
                         case VAR:
                         case IMPLIED:
                         // Linq
@@ -1683,7 +1704,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                     {"_OR", VO_OR},
                     {"_XOR", VO_XOR},
 
-			        // Predefined types
+                    // Predefined types
                     {"ARRAY", ARRAY},
                     {"BYTE", BYTE},
                     {"CODEBLOCK", CODEBLOCK},
@@ -1705,8 +1726,8 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                     {"VOID", VOID},
                     {"WORD", WORD},
 
-			        // Null types
-			        {"NIL", NIL},
+                    // Null types
+                    {"NIL", NIL},
                     {"NULL", NULL},
                     {"NULL_ARRAY", NULL_ARRAY},
                     {"NULL_CODEBLOCK", NULL_CODEBLOCK},
@@ -1717,8 +1738,8 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                     {"NULL_STRING", NULL_STRING},
                     {"NULL_SYMBOL", NULL_SYMBOL},
 
-			        // Consts
-			        {"FALSE", FALSE_CONST},
+                    // Consts
+                    {"FALSE", FALSE_CONST},
                     {"TRUE", TRUE_CONST},
 
                 };
@@ -1807,7 +1828,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                 {"WHILE", WHILE},
                 {"_XOR", VO_XOR},
 
-			    // Predefined types
+                // Predefined types
                 {"ARRAY", ARRAY},
                 {"BINARY", BINARY},
                 {"BYTE", BYTE},
@@ -1832,8 +1853,8 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                 {"VOID", VOID},
                 {"WORD", WORD},
 
-			    // Null types
-			    {"NIL", NIL},
+                // Null types
+                {"NIL", NIL},
                 {"NULL", NULL},
                 {"NULL_ARRAY", NULL_ARRAY},
                 {"NULL_CODEBLOCK", NULL_CODEBLOCK},
@@ -1844,8 +1865,8 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                 {"NULL_STRING", NULL_STRING},
                 {"NULL_SYMBOL", NULL_SYMBOL},
 
-			    // Consts
-			    {"FALSE", FALSE_CONST},
+                // Consts
+                {"FALSE", FALSE_CONST},
                 {"TRUE", TRUE_CONST},
 
 
@@ -2021,19 +2042,19 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                     {"SIZEOF", SIZEOF},
                     {"TYPEOF", TYPEOF},
 
-			        // XSharp keywords
+                    // XSharp keywords
                     {"ASTYPE", ASTYPE},
                     {"ASYNC", ASYNC},
                     {"AWAIT", AWAIT},
                     {"CHECKED", CHECKED},
                     {"UNCHECKED", UNCHECKED},
 
-			        // Vulcan types
-			        {"INT64", INT64},
+                    // Vulcan types
+                    {"INT64", INT64},
                     {"UINT64", UINT64},
 
-			        // XSharp types
-			        {"DYNAMIC", DYNAMIC},
+                    // XSharp types
+                    {"DYNAMIC", DYNAMIC},
 
                     // No support for LINQ
 
@@ -2052,10 +2073,10 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                     { "INIT2", INIT2},
                     { "INIT3", INIT3},
                     { "_SIZEOF", SIZEOF},
-                    { "_TYPEOF", TYPEOF},  
+                    { "_TYPEOF", TYPEOF},
                 
                     // Vulcan keywords
-			        { "ABSTRACT", ABSTRACT},
+                    { "ABSTRACT", ABSTRACT},
                     { "AUTO", AUTO},
                     { "__CASTCLASS", CASTCLASS},
                     { "CATCH", CATCH},
@@ -2102,8 +2123,8 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                     { "VIRTUAL", VIRTUAL},
                     { "VOSTRUCT", VOSTRUCT},
 
-			        // XSharp keywords
-			        { "__ARGLIST", ARGLIST},
+                    // XSharp keywords
+                    { "__ARGLIST", ARGLIST},
                     { "ADD", ADD},
                     { "ASCENDING", ASCENDING},
                     { "ASTYPE", ASTYPE},
@@ -2137,15 +2158,15 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                     // From FoxPro: WITH .. [END WITH]
                     {"WITH",      WITH },
 
-			        // Vulcan types
-			        { "INT64", INT64},
+                    // Vulcan types
+                    { "INT64", INT64},
                     { "UINT64", UINT64},
 
-			        // XSharp types
-			        { "DYNAMIC", DYNAMIC},
+                    // XSharp types
+                    { "DYNAMIC", DYNAMIC},
 
-			        // Macros
-			        { "__ARRAYBASE__", MACRO},
+                    // Macros
+                    { "__ARRAYBASE__", MACRO},
                     { "__CLR2__", MACRO},
                     { "__CLR4__", MACRO},
                     { "__CLRVERSION__", MACRO},
@@ -2195,7 +2216,9 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                     { "__XSHARP__", MACRO},
                     { "__XSHARP_RT__", MACRO},
                     { "__XPP1__", MACRO},
+                    { "__XPP2__", MACRO},
                     { "__FOX1__", MACRO},
+                    { "__FOX2__", MACRO},
                 };
 
             }
@@ -2237,22 +2260,22 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             var symIds = new Dictionary<string, int>(Microsoft.CodeAnalysis.CaseInsensitiveComparison.Comparer)
             {
                 {"#COMMAND", PP_COMMAND},		// #command   <matchPattern> => <resultPattern>
-			    {"#DEFINE", PP_DEFINE},			// #define <idConstant> [<resultText>] or #define <idFunction>([<arg list>]) [<exp>]
-			    {"#ELSE", PP_ELSE},				// #ifdef <identifier>   <statements>...[#else]   <statements>...#endif
-			    {"#ENDIF", PP_ENDIF},			// #ifdef <identifier>   <statements>...[#else]   <statements>...#endif
-			    {"#ENDREGION", PP_ENDREGION},	// #region [description]sourceCode#endregion
-			    {"#ERROR", PP_ERROR},			// #error [errorMessage]
-			    {"#IFDEF", PP_IFDEF},			// #ifdef <identifier>   <statements>...[#else]   <statements>...#endif
-			    {"#IFNDEF", PP_IFNDEF},			// #ifndef <identifier>   <statements>...[#else]   <statements>...#endif
-			    {"#INCLUDE", PP_INCLUDE},		// #include "<headerfilename>"
-			    {"#LINE", PP_LINE},				// #line <number> [FileName] or #line default
-			    {"#REGION", PP_REGION},			// #region [description]sourceCode#endregion
-			    {"#TRANSLATE", PP_TRANSLATE},	// #translate <matchPattern> => <resultPattern>
-			    {"#UNDEF", PP_UNDEF},			// #undef <identifier>
-			    {"#WARNING", PP_WARNING},		// #warning [warningMessage]
-			    {"#XCOMMAND", PP_COMMAND},		// #xcommand   <matchPattern> => <resultPattern>  // alias for #command   , no 4 letter abbrev
-			    {"#XTRANSLATE", PP_TRANSLATE},	// #xtranslate <matchPattern> => <resultPattern>  // alias for #translate , no 4 letter abbrev
-		    };
+                {"#DEFINE", PP_DEFINE},			// #define <idConstant> [<resultText>] or #define <idFunction>([<arg list>]) [<exp>]
+                {"#ELSE", PP_ELSE},				// #ifdef <identifier>   <statements>...[#else]   <statements>...#endif
+                {"#ENDIF", PP_ENDIF},			// #ifdef <identifier>   <statements>...[#else]   <statements>...#endif
+                {"#ENDREGION", PP_ENDREGION},	// #region [description]sourceCode#endregion
+                {"#ERROR", PP_ERROR},			// #error [errorMessage]
+                {"#IFDEF", PP_IFDEF},			// #ifdef <identifier>   <statements>...[#else]   <statements>...#endif
+                {"#IFNDEF", PP_IFNDEF},			// #ifndef <identifier>   <statements>...[#else]   <statements>...#endif
+                {"#INCLUDE", PP_INCLUDE},		// #include "<headerfilename>"
+                {"#LINE", PP_LINE},				// #line <number> [FileName] or #line default
+                {"#REGION", PP_REGION},			// #region [description]sourceCode#endregion
+                {"#TRANSLATE", PP_TRANSLATE},	// #translate <matchPattern> => <resultPattern>
+                {"#UNDEF", PP_UNDEF},			// #undef <identifier>
+                {"#WARNING", PP_WARNING},		// #warning [warningMessage]
+                {"#XCOMMAND", PP_COMMAND},		// #xcommand   <matchPattern> => <resultPattern>  // alias for #command   , no 4 letter abbrev
+                {"#XTRANSLATE", PP_TRANSLATE},	// #xtranslate <matchPattern> => <resultPattern>  // alias for #translate , no 4 letter abbrev
+            };
             if (Dialect == XSharpDialect.XPP)
             {
                 symIds.Add("#XTRANS", PP_TRANSLATE);

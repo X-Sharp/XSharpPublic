@@ -1182,12 +1182,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         if (memvar.Amp != null)     
                         {
                             // PUBLIC &cVarName or PRIVATE &cVarName
-                            varname = getMacroNameExpression(memvar.Id);
+                            varname = getMacroNameExpression(memvar.Id.Id);
                         }
                         else
                         {
                             // PUBLIC Foo or PRIVATE Bar
-                            varname = GenerateLiteral(memvar.Id.GetText());
+                            varname = GenerateLiteral(memvar.Id.Id.GetText());
                         }
 
                         var exp = GenerateMemVarDecl(varname, isprivate);
@@ -1287,11 +1287,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             XSharpParserRuleContext errorcontext,
             XP.ConstructorchainContext chain = null,
             XP.ArgumentListContext args = null,
-            bool isInInterface = false)
+            bool isInInterface = false,
+            IList<object> localFunctions = null)
         {
-            var attributes = atts?.GetList<AttributeListSyntax>() ?? EmptyList<AttributeListSyntax>();
-            var parameters = paramlist?.Get<ParameterListSyntax>() ?? EmptyParameterList();
-            var body = stmtblock?.Get<BlockSyntax>();
+            var attributes = getAttributes(atts);
+            var parameters = getParameters(paramlist);
+            var body = processEntityBody(context);
             TypeSyntax returntype = null;
             if (chain != null && context.Data.HasClipperCallingConvention)
             {
@@ -1356,12 +1357,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         }
 
         protected DestructorDeclarationSyntax createDestructor(
-            XP.IEntityContext context,
+            XP.IEntityWithBodyContext context,
             SyntaxList<SyntaxToken> modifiers,
             XP.AttributesContext atts,
             XP.StatementBlockContext stmtblock,
             XSharpParserRuleContext errorcontext,
-            bool isInInterface = false)
+            bool isInInterface = false,
+            IList<object> localFunctions = null)
         {
             // this is not caught in the ParserErrorAnalysis because this is an Axit method
             // no return statement needed in DESTRUCTOR
@@ -1382,13 +1384,15 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             if (parentId == null)
                 return null;
+            var body = processEntityBody(context);
+
             return _syntaxFactory.DestructorDeclaration(
-                attributeLists: atts?.GetList<AttributeListSyntax>() ?? EmptyList<AttributeListSyntax>(),
+                attributeLists: getAttributes(atts),
                 modifiers: modifiers,
                 tildeToken: SyntaxFactory.MakeToken(SyntaxKind.TildeToken),
                 identifier: parentId,
                 parameterList: EmptyParameterList(),
-                body: stmtblock.Get<BlockSyntax>(),
+                body: body,
                 expressionBody: null,
                 semicolonToken: (stmtblock != null) ? null : SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken));
         }
@@ -1410,6 +1414,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     type = _getMissingType();
             }
             return type;
+        }
+
+        protected override TypeSyntax DefaultType()
+        {
+            return _usualType; ;
         }
 
         protected override TypeSyntax _getMissingType()
@@ -1534,7 +1543,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 context.Data.HasClipperCallingConvention = false;
             }
             var ctor = createConstructor(context, mods, context.Attributes, context.ParamList, context.StmtBlk, context,
-                context.Chain, context.Chain?.ArgList, context.isInInterface());
+                context.Chain, context.Chain?.ArgList, context.isInInterface(), context.LocalFunctions);
             if (ctor != null)
             {
                 context.Put(ctor);
@@ -1550,7 +1559,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
             var modifiers = context.Modifiers?.GetList<SyntaxToken>() ?? EmptyList<SyntaxToken>();
             var dtor = createDestructor(context, modifiers,
-                context.Attributes, context.StmtBlk, context, context.isInInterface());
+                context.Attributes, context.StmtBlk, context, context.isInInterface(), context.LocalFunctions);
             if (dtor != null)
             {
                 context.Put(dtor);
@@ -1585,7 +1594,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     // Convert method to constructor
                     var mods = context.Modifiers?.GetList<SyntaxToken>() ?? MakeList<SyntaxToken>(SyntaxFactory.MakeToken(SyntaxKind.PublicKeyword));
                     var ctor = createConstructor(context,
-                        mods, context.Attributes, context.ParamList, context.StmtBlk, context);
+                        mods, context.Attributes, context.ParamList, context.StmtBlk, context,null, null,false,context.LocalFunctions);
                     if (ctor != null)
                     {
                         if (!context.isInClass() && context.ClassId != null)
@@ -1609,7 +1618,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     // Convert method to destructor
                     var mods = context.Modifiers?.GetList<SyntaxToken>() ?? EmptyList<SyntaxToken>();
                     var dtor = createDestructor(context,
-                        mods, context.Attributes, context.StmtBlk, context);
+                        mods, context.Attributes, context.StmtBlk, context,false, context.LocalFunctions);
                     if (dtor != null)
                     {
                         if (!context.isInClass() && context.ClassId != null)
@@ -2679,7 +2688,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             base.ExitParameter(context);
             // Only apply the default parameter attribute when there
             // are no Attributes on the parameter, such as [CallerMember]
-            if (context.Default != null && context.Attributes == null )
+            var inLocalFuncProc = CurrentEntity is XP.LocalfuncprocContext;
+            // For local function we cannot use the VO compatible defaults and also no attributes
+            if (!inLocalFuncProc && context.Default != null && context.Attributes == null )
             {
                 if (CurrentEntity.Data.HasClipperCallingConvention)
                 {
@@ -3319,6 +3330,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             ref TypeSyntax dataType)
         {
             var prc = (XSharpParserRuleContext)context;
+            var inLocalFuncProc = context is XP.LocalfuncprocContext;
             InitializeArrayTypes();
             if (context.Data.HasTypedParameter && context.Data.HasClipperCallingConvention)
             {

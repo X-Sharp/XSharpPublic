@@ -4526,6 +4526,15 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to An Expression Body return expression is not supported for methods / functions with untyped parameters..
+        /// </summary>
+        internal static string ERR_ExpressionBodyClipperCallingConvention {
+            get {
+                return ResourceManager.GetString("ERR_ExpressionBodyClipperCallingConvention", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Expected expression.
         /// </summary>
         internal static string ERR_ExpressionExpected {
@@ -10313,6 +10322,15 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Unexpected token &apos;{0}&apos;, expected &apos;{1}&apos;..
+        /// </summary>
+        internal static string ERR_UnExpectedExpected {
+            get {
+                return ResourceManager.GetString("ERR_UnExpectedExpected", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Unexpected use of a generic name.
         /// </summary>
         internal static string ERR_UnexpectedGenericName {
@@ -15922,6 +15940,15 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to {0} is unsupported and will be ignored..
+        /// </summary>
+        internal static string WRN_Unsupported {
+            get {
+                return ResourceManager.GetString("WRN_Unsupported", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Comparison to integral constant is useless; the constant is outside the range of type &apos;{0}&apos;.
         /// </summary>
         internal static string WRN_VacuousIntegralComp {
@@ -15967,7 +15994,7 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to &apos;{0}&apos; is ambiguous. Could be  {1} &apos;{2}&apos; or {3} &apos;{4}&apos;. Using the first one..
+        ///   Looks up a localized string similar to &apos;{0}&apos; is ambiguous. Could be  {1} &apos;{2}&apos; in {3} or {4} &apos;{5}&apos; in {6}. Using the first one..
         /// </summary>
         internal static string WRN_VulcanAmbiguous {
             get {

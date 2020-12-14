@@ -3,18 +3,20 @@
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
-#if !VSPARSER
 using System;
 using System.Collections.Generic;
 using Microsoft.CodeAnalysis.Text;
 using CoreInternalSyntax = Microsoft.CodeAnalysis.Syntax.InternalSyntax;
 using Antlr4.Runtime;
 using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
+using System.Collections.Concurrent;
+
 namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 {
     internal static partial class SyntaxFactory
     {
         readonly static internal SyntaxTrivia WS = Whitespace(" ");
+        readonly static internal ConcurrentDictionary<SyntaxKind, SyntaxToken> tokens = new ConcurrentDictionary<SyntaxKind, SyntaxToken>();
 
         internal static SyntaxToken MakeTokenNoWs(SyntaxKind kind)
         {
@@ -22,7 +24,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         }
         internal static SyntaxToken MakeToken(SyntaxKind kind)
         {
-            return Token(WS, kind, WS);
+            if (tokens.TryGetValue(kind, out var token))
+            {
+                return token;
+            }
+            token = Token(WS, kind, WS);
+            tokens.TryAdd(kind, token);
+            return token;
         }
 
         internal static SyntaxToken MakeToken(SyntaxKind kind, string text)
@@ -219,4 +227,3 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax
 }
 
 
-#endif

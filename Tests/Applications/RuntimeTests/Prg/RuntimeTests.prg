@@ -21,11 +21,12 @@ FUNCTION Start() AS INT
  	 "C616", "C617", "C618", "C621", "C628", "C629", "C630", "C631", "C632", "C635", ;
 	 "C636", "C641", "C643", "C644", "C646", "C647", "C648", "C650", "C651", "C656", ;
 	 "C657", "C659", "C661", "C668", "C669", "C671", "C672", "C673", "C675", "C686", ; 
-	 "C689", "C697", "C698", "C699", "C709", "C710", "C711", "C712", "C714", "C717", ;
-	 "C718", "C323", "C728", "C738", "C739", "C740", "C741", "C742", "C743",;
-	 ;
+	 "C689", "C697", "C698", "C699", "C707", "C709", "C710", "C711", "C712", "C714", ;
+	 "C717", "C718", "C323", "C728", "C738", "C739", "C740", "C741", "C742", "C743",;
+	 "C724", "C703", "C729",;
 	 "R678", "R681", "R690", "R698", "R699", "R700" ,"R701", "R702", /*"R705" ,*/"R710",;
-	 "R711", "R712", "R725", "R729", "R730", "R732","R735", "R736","R741","R742","R743";
+	 "R711", "R712", "R725", "R729", "R730", "R732","R735", "R736","R741","R742","R743",; 
+	 "R750", "R751", "R752", "R753", "R754";
 	 }
 	 
 	#ifdef GUI
@@ -71,7 +72,10 @@ RETURN nFail
 FUNCTION DoTest(cExe AS STRING) AS LOGIC
 	LOCAL lSucces := FALSE AS LOGIC
 	LOCAL oAssembly AS Assembly
-	? "Running test" , cExe
+	? "Running test" , cExe     
+	IF cExe == "R753"
+	    NOP
+	ENDIF
 	oAssembly := Assembly.LoadFile(Application.StartupPath + "\" + cExe + ".exe")
 	LOCAL oType AS Type
 	oType := oAssembly:GetType(cExe + ".Exe.Functions")
@@ -79,10 +83,15 @@ FUNCTION DoTest(cExe AS STRING) AS LOGIC
 		oType := oAssembly:GetType("Functions")
 	END IF
 	LOCAL oMethod AS MethodInfo
-	oMethod := oType:GetMethod("Start")
-	TRY
-		oMethod:Invoke(NULL , NULL)
+	oMethod := oType:GetMethod("Start",BindingFlags.IgnoreCase+BindingFlags.Static+BindingFlags.Public)
+	TRY                          
+	    IF oMethod == NULL
+	        ? "Could not find Start method in assembly "+oAssembly:GetName():FullName
+    		lSucces := FALSE
+	    ELSE
+	       oMethod:Invoke(NULL , NULL)
 		lSucces := TRUE
+	    ENDIF
 	CATCH e AS Exception
 		? e:ToString()
 		#ifdef GUI

@@ -230,7 +230,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
 
             MemberDeclarationSyntax m = _syntaxFactory.ClassDeclaration(
-                attributeLists: context.Attributes?.GetList<AttributeListSyntax>() ?? EmptyList<AttributeListSyntax>(),
+                attributeLists: getAttributes(context.Attributes),
                 modifiers: mods,
                 keyword: SyntaxFactory.MakeToken(SyntaxKind.ClassKeyword),
                 identifier: context.Id.Get<SyntaxToken>(),
@@ -360,7 +360,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             var varList = _pool.AllocateSeparated<VariableDeclaratorSyntax>();
             // Check to see if the variables have not been also declared as property
             // when they are we do not generate variables
-            var varType = context.DataType?.Get<TypeSyntax>() ?? _getMissingType();
+            var varType = getDataType(context.DataType);
             varType.XVoDecl = true;
             var fieldList = new List<FieldDeclarationSyntax>();
             var attributeLists = _pool.Allocate<AttributeListSyntax>();
@@ -456,14 +456,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 implementConstructor(context);
                 return;
             }
-            var attributes = context.Attributes?.GetList<AttributeListSyntax>() ?? EmptyList<AttributeListSyntax>();
+            var attributes = getAttributes(context.Attributes);
             var modifiers = decodeXppMemberModifiers(context.Info.Visibility, false, context.Modifiers?._Tokens);
-            TypeSyntax returnType = context.Type?.Get<TypeSyntax>();
-            if (returnType == null)
-            {
-                returnType = _getMissingType();
-            }
-            var parameters = context.ParamList?.Get<ParameterListSyntax>() ?? EmptyParameterList();
+            TypeSyntax returnType = getReturnType(context);
+            var parameters = getParameters(context.ParamList);
             var method = XppCreateMethod(context, context.Id.Get<SyntaxToken>(), attributes, modifiers, parameters, returnType );
             context.Put(method);
         }
@@ -571,13 +567,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 modifiers = decodeXppMemberModifiers(context.Info.Visibility, false, context.Modifiers?._Tokens);
             }
 
-            TypeSyntax returnType = context.Type?.Get<TypeSyntax>();
-            if (returnType == null)
-            {
-                returnType = _getMissingType();
-            }
-            var attributes = context.Attributes?.GetList<AttributeListSyntax>() ?? EmptyList<AttributeListSyntax>();
-            var parameters = context.ParamList?.Get<ParameterListSyntax>() ?? EmptyParameterList();
+            TypeSyntax returnType = getDataType(context.Type);
+            var attributes = getAttributes(context.Attributes);
+            var parameters = getParameters(context.ParamList);
             var name = context.Id.Get<SyntaxToken>();
             if (context.Info.IsProperty && !context.Info.HasVarName)
             {
@@ -590,7 +582,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         MemberDeclarationSyntax XppCreateMethod(XP.IXPPEntityContext context, SyntaxToken idName, SyntaxList<AttributeListSyntax> attributes,
             SyntaxList<SyntaxToken> modifiers, ParameterListSyntax parameters, TypeSyntax returnType)
         {
-            var body = context.Statements.Get<BlockSyntax>();
+            var nobody = context.ExprBody != null;
+            var body = nobody ? null : processEntityBody(context);
+            var expressionBody = GetExpressionBody(context.ExprBody);
             var oldbody = body;
             ImplementClipperAndPSZ(context, ref attributes, ref parameters, ref body, ref returnType);
             if (body != oldbody)
@@ -615,7 +609,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                   parameterList: parameters,
                   constraintClauses: null,
                   body: body,
-                  expressionBody: null, // TODO: (grammar) expressionBody methods
+                  expressionBody: expressionBody, 
                   semicolonToken: SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken));
             return m;
         }
@@ -645,22 +639,19 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 accName = accName + XSharpSpecialNames.PropertySuffix;
             if (assName != null && !propDecl.HasVarName)
                 assName = assName + XSharpSpecialNames.PropertySuffix;
-            var propType = propctxt.Type?.Get<TypeSyntax>();
-            if (propType == null)
-            {
-                propType = _getMissingType();
-            }
+            var propType = getDataType(propctxt.Type);
+            
             var method = propDecl.Entity as XP.XppmethodContext;
             var accessors = _pool.Allocate<AccessorDeclarationSyntax>();
             var modifiers = decodeXppMemberModifiers(propDecl.Visibility, false, method.Modifiers?._Tokens);
             var attributes = EmptyList<AttributeListSyntax>();
             if (method.Attributes != null && propctxt.Attributes == null)
             {
-                attributes = method.Attributes.GetList<AttributeListSyntax>();
+                attributes = getAttributes(method.Attributes);
             }
             else if (method.Attributes == null && propctxt.Attributes != null)
             {
-                attributes = propctxt.Attributes.GetList<AttributeListSyntax>();
+                attributes = getAttributes(propctxt.Attributes);
             }
 
             #region Accessor

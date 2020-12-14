@@ -58,7 +58,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 func.Sig = sig;
                 token.line = 1;
                 token.charPositionInLine = 1;
-                func.T = token;
+                func.T = new XP.FuncproctypeContext(func, 0);
+                func.T.Token = token;
                 token = new XSharpToken(XP.ID, name);
                 token.line = 1;
                 token.charPositionInLine = 1;
@@ -244,7 +245,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         public override void ExitFoxclassvars([NotNull] XP.FoxclassvarsContext context)
         {
-            var varType = context.DataType?.Get<TypeSyntax>() ?? _getMissingType();
+            var varType = getDataType(context.DataType);
             varType.XVoDecl = true;
             var list = new List<MemberDeclarationSyntax>();
             foreach (var varCtx in context._Vars)
@@ -292,12 +293,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
  
         public override void ExitFoxmethod([NotNull] XP.FoxmethodContext context)
         {
-            context.SetSequencePoint(context.T.Start, context.end.Stop);
+            context.SetSequencePoint(context.T.Token, context.end.Stop);
             var idName = context.Id.Get<SyntaxToken>();
             var mods = context.Modifiers?.GetList<SyntaxToken>() ?? DefaultMethodModifiers(false, false, context.TypeParameters != null);
             var isExtern = mods.Any((int)SyntaxKind.ExternKeyword);
             var isAbstract = mods.Any((int)SyntaxKind.AbstractKeyword);
-            var hasNoBody = isExtern || isAbstract;
+            var hasNoBody = isExtern || isAbstract || context.Sig.ExpressionBody != null;
             var mName = idName.Text;
             if (mName.EndsWith("_ACCESS", StringComparison.OrdinalIgnoreCase))
             {
@@ -309,7 +310,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             idName = SyntaxFactory.MakeIdentifier(mName);
             bool isAccessAssign = this.isAccessAssign(context.RealType);
-            var attributes = context.Attributes?.GetList<AttributeListSyntax>() ?? EmptyList<AttributeListSyntax>();
+            var attributes = getAttributes(context.Attributes);
             bool hasExtensionAttribute = false;
             if (isAccessAssign)
             {
@@ -338,8 +339,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 mods = m1.ToList<SyntaxToken>();
                 _pool.Free(m1);
             }
-            var parameters = context.ParamList?.Get<ParameterListSyntax>() ?? EmptyParameterList();
-            var body = hasNoBody ? null : context.StmtBlk.Get<BlockSyntax>();
+            var parameters = getParameters(context.ParamList);
+            var body = hasNoBody ? null : processEntityBody(context);
+            var expressionBody = GetExpressionBody(context.Sig.ExpressionBody);
             var returntype = context.Type?.Get<TypeSyntax>();
             if (returntype == null)
             {
@@ -379,11 +381,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 returnType: returntype,
                 explicitInterfaceSpecifier: null ,
                 identifier: idName,
-                typeParameterList: context.TypeParameters?.Get<TypeParameterListSyntax>(),
+                typeParameterList: getTypeParameters(context.TypeParameters),
                 parameterList: parameters,
-                constraintClauses: MakeList<TypeParameterConstraintClauseSyntax>(context._ConstraintsClauses),
+                constraintClauses: getTypeConstraints(context._ConstraintsClauses),
                 body: body,
-                expressionBody: null, // TODO: (grammar) expressionBody methods
+                expressionBody: expressionBody, 
                 semicolonToken: (!hasNoBody && context.StmtBlk != null) ? null : SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken));
             if (hasExtensionAttribute)
             {
@@ -525,13 +527,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 members.Add(ctor);
             }
             MemberDeclarationSyntax m = _syntaxFactory.ClassDeclaration(
-                attributeLists: context.Attributes?.GetList<AttributeListSyntax>() ?? EmptyList<AttributeListSyntax>(),
+                attributeLists: getAttributes(context.Attributes),
                 modifiers: mods,
                 keyword: SyntaxFactory.MakeToken(SyntaxKind.ClassKeyword),
                 identifier: context.Id.Get<SyntaxToken>(),
-                typeParameterList: context.TypeParameters?.Get<TypeParameterListSyntax>(),
+                typeParameterList: getTypeParameters(context.TypeParameters),
                 baseList: _syntaxFactory.BaseList(SyntaxFactory.MakeToken(SyntaxKind.ColonToken), baseTypes),
-                constraintClauses: MakeList<TypeParameterConstraintClauseSyntax>(context._ConstraintsClauses),
+                constraintClauses: getTypeConstraints(context._ConstraintsClauses),
                 openBraceToken: SyntaxFactory.MakeToken(SyntaxKind.OpenBraceToken),
                 members: members,
                 closeBraceToken: SyntaxFactory.MakeToken(SyntaxKind.CloseBraceToken),
@@ -949,7 +951,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         public override void ExitFoxdllparam([NotNull] XP.FoxdllparamContext context)
         {
 
-            var attributeList = context.Attributes?.GetList<AttributeListSyntax>() ?? EmptyList<AttributeListSyntax>();
+            var attributeList = getAttributes(context.Attributes);
             TypeSyntax type = foxdllGetType(context.Type);  // handle integer, single, double etc.
             var modifiers = EmptyList<SyntaxToken>();
 
@@ -1106,186 +1108,21 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             return;
         }
         #endregion
-        #region Expose Local names support
-
-        protected StatementSyntax GenerateLocalRegister(string name, IToken anchor, bool assign = true)
-        {
-            string cb;
-            if (assign)
-            {
-                if (name.ToLower() == "x")
-                    cb = "{|y| iif( y == NIL, " + name + ", " + name + " := y)}";
-                else
-                    cb = "{|x| iif( x == NIL, " + name + ", " + name + " := x)}";
-            }
-            else
-            {
-                cb = "{|| " + name + "}";
-            }
-            var cbtree = ParseSubExpression(cb, out var _, anchor);
-            cbtree.XGenerated = true;
-            var arg1 = MakeArgument(GenerateLiteral(name));
-            var arg2 = MakeArgument(cbtree);
-            var args = MakeArgumentList(arg1, arg2);
-            var mcall = GenerateMethodCall(ReservedNames.LocalRegister, args, true);
-            var exprstmt = GenerateExpressionStatement(mcall,true);
-            return exprstmt;
-        }
-        protected StatementSyntax GenerateLocalUnRegister(string name)
-        {
-            var args = MakeArgumentList(MakeArgument(GenerateLiteral(name)));
-            var mcall = GenerateMethodCall(ReservedNames.LocalUnRegister, args,true);
-            var exprstmt = GenerateExpressionStatement(mcall,true);
-            return exprstmt;
-        }
 
         public override void ExitStatementBlock([NotNull] XP.StatementBlockContext context)
         {
             base.ExitStatementBlock(context);
             if (_options.HasOption(CompilerOption.FoxExposeLocals, context, PragmaOptions))
             {
-                // detect if there are declarations
-                var block = context.Get<BlockSyntax>();
-                var stmts = new List<StatementSyntax>();    // new statement list. (Un)Declaration lines will be added
-                var names = new List<string>();             // list of names that need to undeclared at the end of this block
-                if (block != null)
+                // Make sure we have a privates level in case we want to
+                // keep track of locals for the macro compiler or Type() 
+                if (CurrentEntity != null)
                 {
-                    // forblock
-                    if (context.Parent is XP.ForStmtContext forstmt && forstmt.ForDecl != null)
-                    {
-                        string name = forstmt.ForIter.GetText();
-                        var exprstmt = GenerateLocalRegister(name, forstmt.ForIter.Start);
-                        stmts.Add(exprstmt);
-                    }
-                    //foreach block
-                    else if (context.Parent is XP.ForeachStmtContext foreachstmt)
-                    {
-                        string name = foreachstmt.Id.GetText();
-                        stmts.Add(GenerateLocalRegister(name, foreachstmt.Id.Start, false));
-                    }
-                    // Catch block with variable name
-                    else if (context.Parent is XP.CatchBlockContext cbc && cbc.Id != null)
-                    {
-                        string name = cbc.Id.GetText();
-                        names.Add(name);
-                        stmts.Add(GenerateLocalRegister(name, (XSharpToken)cbc.Id.Start));
-
-                    }
-                    // Begin Using and Begin Fixed with declaration
-                    else if (context.Parent is XP.BlockStmtContext bsc && bsc.VarDecl != null)
-                    {
-                        // locals declared with begin using and begin fixed cannot be used in codeblock
-                    }
-                    // IF with typeCheckExpression with VAR keyword
-                    else if (context.Parent is XP.IfElseBlockContext iebc)
-                    {
-                        if (iebc.Cond is XP.TypeCheckExpressionContext tcec && tcec.Id != null)
-                        {
-                            string name = tcec.Id.GetText();
-                            names.Add(name);
-                            stmts.Add(GenerateLocalRegister(name, tcec.Id.Start));
-
-                        }
-                    }
-                    // When parent is an entity we need to add the declared parameters
-                    else if (context.Parent is XP.IEntityWithBodyContext iec)
-                    {
-                        // for parameters we use the original tree because that is easier
-                        if (iec.Data.HasLParametersStmt)
-                        {
-                            foreach (var xpstmt in iec.Statements._Stmts)
-                            {
-                                if (xpstmt is XP.XbasedeclStmtContext xbdecl)
-                                {
-                                    var decl = xbdecl.Decl;
-                                    if (decl.T.Type == XP.LPARAMETERS)
-                                    {
-                                        foreach (var variable in decl._Vars)
-                                        {
-                                            var id = variable.Id;
-                                            var name = id.GetText();
-                                            names.Add(name);
-                                            stmts.Add(GenerateLocalRegister(name, variable.Start));
-                                        }
-                                        break;
-                                    }
-                                }
-                            }
-                        }
-                        else 
-                        {
-                            for (int i = 0; i < context.Parent.ChildCount; i++)
-                            {
-                                var child = context.Parent.GetChild(i);
-                                if (child is XP.SignatureContext sig )
-                                {
-                                    if (sig.ParamList != null)
-                                    {
-                                        foreach (var par in sig.ParamList._Params)
-                                        {
-                                            var id = par.Id;
-                                            var name = id.GetText();
-                                            names.Add(name);
-                                            stmts.Add(GenerateLocalRegister(name, par.Start));
-                                        }
-                                    }
-                                    break;
-                                }
-                            }
-                        }
-                    }
-                    foreach (var stmt in block.Statements)
-                    {
-                        stmts.Add(stmt);
-                        if (stmt is LocalDeclarationStatementSyntax localdecl)
-                        {
-                            // declare locals after declaration statement
-                            var vars = localdecl.Declaration.Variables;
-                            for (int i = 0; i < vars.Count; i++)
-                            {
-                                var variable = vars[i];
-                                var id = variable.Identifier;
-                                var name = id.Text;
-                                names.Add(name);
-                                var xnode = id.XNode as XSharpParserRuleContext;
-                                stmts.Add(GenerateLocalRegister(name, xnode.Start));
-                            }
-                        }
-                        else if (stmt.XNode is XP.ForStmtContext forstmt1 && forstmt1.ForDecl != null)
-                        {
-                            // undeclare iterator after loop
-                            string name = forstmt1.ForIter.GetText();
-                            stmts.Add(GenerateLocalUnRegister(name));
-                        }
-                        else if (stmt.XNode is XP.ForeachStmtContext foreachstmt1)
-                        {
-                            // undeclare iterator after loop
-                            string name = foreachstmt1.Id.GetText();
-                            stmts.Add(GenerateLocalUnRegister(name));
-                        }
-
-
-                    }
-                }
-                if (stmts.Count != block.Statements.Count || names.Count() > 0)
-                {
-                    CurrentEntity.Data.HasMemVarLevel = true;
                     CurrentEntity.Data.HasMemVars = true;
-                    // we can suppress this when the parent of the statement block is an entity, since the locals will go out of scope
-                    // when the entity finishes
-                    if (names.Count > 0 && !(context.Parent is XP.IEntityContext))
-                    {
-                        foreach (var name in names)
-                        {
-                            var exprstmt = GenerateLocalUnRegister(name);
-                            stmts.Add(exprstmt);
-                        }
-                    }
-                    context.Put(MakeBlock(stmts));
                 }
             }
         }
-        #endregion 
+
     }
 }
 

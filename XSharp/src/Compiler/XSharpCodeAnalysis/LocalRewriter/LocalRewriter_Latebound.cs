@@ -37,15 +37,6 @@ namespace Microsoft.CodeAnalysis.CSharp
             return false;
         }
 
-        BoundLiteral _makeString(SyntaxNode node, string name)
-        {
-            return new BoundLiteral(node, ConstantValue.Create(name), _compilation.GetSpecialType(SpecialType.System_String));
-        }
-        BoundLiteral _makeLogic(SyntaxNode node, bool value)
-        {
-            return new BoundLiteral(node, ConstantValue.Create(value), _compilation.GetSpecialType(SpecialType.System_Boolean));
-        }
-
         public BoundExpression MakeVODynamicGetMember(BoundExpression loweredReceiver, string name)
         {
             // check for FoxPro late access, such as Customer.LastName
@@ -53,12 +44,12 @@ namespace Microsoft.CodeAnalysis.CSharp
             var allowLB = _compilation.Options.LateBindingOrFox(syntax);
             if (!allowLB || loweredReceiver.HasDynamicType())
                 return null;
-            var nameExpr = _makeString(syntax, name);
+            var nameExpr = _factory.Literal( name);
             if (IsFoxAccessMember(loweredReceiver, out var areaName))
             {
                 string method = ReservedNames.FieldGetWaUndeclared;
-                var exprUndeclared = _makeLogic(syntax, _compilation.Options.HasOption(CompilerOption.UndeclaredMemVars, syntax));
-                var areaExpr = _makeString(syntax, areaName);
+                var exprUndeclared = _factory.Literal(_compilation.Options.HasOption(CompilerOption.UndeclaredMemVars, syntax));
+                var areaExpr = _factory.Literal(areaName);
                 var expr = _factory.StaticCall(_compilation.RuntimeFunctionsType(), method, areaExpr, nameExpr, exprUndeclared);
                 return expr;
             }
@@ -82,16 +73,16 @@ namespace Microsoft.CodeAnalysis.CSharp
 
         bool allowLateBound(SyntaxNode syntax, TypeSymbol type)
         {
-            bool allowLateBound = false;
+            bool allowLB ;
             if (_compilation.Options.Dialect.AllowLateBindingForTypesWithTheAttribute() && type.HasLateBindingAttribute() )
             {
-                allowLateBound = true;
+                allowLB = true;
             }
             else
             {
-                allowLateBound = _compilation.Options.HasOption(CompilerOption.LateBinding, syntax);
+                allowLB = _compilation.Options.HasOption(CompilerOption.LateBinding, syntax);
             }
-            return allowLateBound;
+            return allowLB;
         }
 
         public BoundExpression MakeVODynamicSetMember(BoundExpression loweredReceiver, string name, BoundExpression loweredValue)
@@ -103,12 +94,12 @@ namespace Microsoft.CodeAnalysis.CSharp
             var usualType = _compilation.UsualType();
             var value = loweredValue.Type == null ? new BoundDefaultExpression(syntax, usualType)
                 : MakeConversionNode(loweredValue, usualType, false);
-            var nameExpr = _makeString(syntax, name);
+            var nameExpr = _factory.Literal(name);
             if (IsFoxAccessMember(loweredReceiver, out var areaName))
             {
                 string method =  ReservedNames.FieldSetWaUndeclared;
-                var exprUndeclared = _makeLogic(syntax, _compilation.Options.HasOption(CompilerOption.UndeclaredMemVars,syntax));
-                var areaExpr = _makeString(syntax, areaName);
+                var exprUndeclared = _factory.Literal(_compilation.Options.HasOption(CompilerOption.UndeclaredMemVars,syntax));
+                var areaExpr = _factory.Literal(areaName);
                 var expr = _factory.StaticCall(_compilation.RuntimeFunctionsType(), method, areaExpr, nameExpr,value, exprUndeclared);
                 return expr;
             }
@@ -143,7 +134,6 @@ namespace Microsoft.CodeAnalysis.CSharp
             {
                 if (_compilation.Options.Dialect.AllowASend())
                 { 
-                    
                     return MakeASend(loweredReceiver, name, args);
                 }
                 // This should not happen because we are not converting the method call to a dynamic call, but better safe than sorry.
@@ -171,17 +161,21 @@ namespace Microsoft.CodeAnalysis.CSharp
             var usualType = _compilation.UsualType();
             foreach (var a in args)
             {
-                
                 if (a.Type == null && ! a.Syntax.XIsCodeBlock)
-                    convArgs.Add(new BoundDefaultExpression(a.Syntax, usualType));
+                {
+                    convArgs.Add(_factory.Default(usualType));
+                }
                 else
-                   convArgs.Add(MakeConversionNode(a, usualType, false));
+                {
+                    convArgs.Add(MakeConversionNode(a, usualType, false));
+                }
             }
             var aArgs = _factory.Array(usualType, convArgs.ToImmutableAndFree());
             // Note: Make sure the first parameter in __InternalSend() in the runtime is a USUAL!
+            loweredReceiver = MakeConversionNode(loweredReceiver, usualType, false);
             return _factory.StaticCall(_compilation.RuntimeFunctionsType(), ReservedNames.InternalSend,
-                    MakeConversionNode(loweredReceiver, usualType, false),
-                    new BoundLiteral(loweredReceiver.Syntax, ConstantValue.Create(name), _compilation.GetSpecialType(SpecialType.System_String)),
+                    loweredReceiver,
+                    _factory.Literal(name),
                     aArgs);
 
         }
@@ -190,18 +184,22 @@ namespace Microsoft.CodeAnalysis.CSharp
         {
             var convArgs = new ArrayBuilder<BoundExpression>();
             var usualType = _compilation.UsualType();
-            var arrayType = _compilation.ArrayType();
             foreach (var a in args)
             {
                 if (a.Type == null)
-                    convArgs.Add(new BoundDefaultExpression(a.Syntax, usualType));
+                {
+                    convArgs.Add(_factory.Default(usualType));
+                }
                 else
+                {
                     convArgs.Add(MakeConversionNode(a, usualType, false));
+                }
             }
             var aArgs = _factory.Array(usualType, convArgs.ToImmutableAndFree());
+            loweredReceiver = MakeConversionNode(loweredReceiver, _compilation.ArrayType(), false);
             var expr = _factory.StaticCall(_compilation.RuntimeFunctionsType(), ReservedNames.ASend,
-                    MakeConversionNode(loweredReceiver, arrayType, false),
-                    new BoundLiteral(loweredReceiver.Syntax, ConstantValue.Create(name), _compilation.GetSpecialType(SpecialType.System_String)),
+                    loweredReceiver,
+                    _factory.Literal(name),
                     aArgs);
             _diagnostics.Add(new CSDiagnostic(new CSDiagnosticInfo(ErrorCode.WRN_ASend, name), loweredReceiver.Syntax.Location));
             return expr;

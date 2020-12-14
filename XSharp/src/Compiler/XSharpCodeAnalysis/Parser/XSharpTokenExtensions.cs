@@ -3,7 +3,6 @@
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
-#if !VSPARSER
 using System;
 using System.Collections.Generic;
 using System.Collections.Concurrent;
@@ -932,6 +931,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     r = SyntaxFactory.MakeToken(SyntaxKind.ForEachKeyword, text);
                     break;
                 case XSharpParser.GET:
+                case XSharpParser.UDCSEP:
                     r = SyntaxFactory.MakeToken(SyntaxKind.GetKeyword, text);
                     break;
                 case XSharpParser.SET:
@@ -1103,6 +1103,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             switch (token.Type)
             {
                 case XSharpParser.GET:
+                case XSharpParser.UDCSEP:
                     r = SyntaxKind.GetAccessorDeclaration;
                     break;
                 case XSharpParser.SET:
@@ -1591,4 +1592,3 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         
     }
 }
-#endif

@@ -3,7 +3,7 @@
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
-#if !VSPARSER
+
 using Antlr4.Runtime;
 using Antlr4.Runtime.Misc;
 using Antlr4.Runtime.Tree;
@@ -26,4 +26,3 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
 }
 
-#endif

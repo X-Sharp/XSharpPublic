@@ -20,7 +20,7 @@ namespace Microsoft.CodeAnalysis.CSharp
     internal partial class LocalRewriter
     {
 
-        public BoundExpression MakePsz(BoundExpression value)
+        internal BoundExpression MakePsz(BoundExpression value)
         {
             var type = _compilation.PszType();
             if (value.Type == type)
@@ -28,7 +28,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             bool isString;
             if (value.Type == _compilation.UsualType())
             {
-                var op = getImplicitOperator(value.Type, type);
+                var op = getImplicitOperatorByReturnType(value.Type, type);
                 var result = _factory.StaticCall(value.Type, (MethodSymbol)op, value);
                 result.WasCompilerGenerated = true;
                 this._diagnostics.Add(ErrorCode.WRN_CompilerGeneratedPSZConversionGeneratesMemoryleak, value.Syntax.Location);
@@ -58,13 +58,12 @@ namespace Microsoft.CodeAnalysis.CSharp
                     if (found)
                     {
                         return new BoundObjectCreationExpression(value.Syntax, ctor, binderOpt: null, new BoundExpression[] { value });
-
                     }
                 }
             }
             return value;
         }
-        static IEnumerable<ISymbol> FindMembers(CSharpCompilation compilation, string name)
+        private static IEnumerable<ISymbol> FindMembers(CSharpCompilation compilation, string name)
         {
             Func<string, bool> predicate = n => StringComparer.Ordinal.Equals(name, n);
             SymbolFilter filter = SymbolFilter.Member;
@@ -128,7 +127,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         }
 
 
-        public static BoundStatement RewriteAppExit(
+        internal static BoundStatement RewriteAppExit(
                  MethodSymbol method,
                  BoundStatement statement,
                  DiagnosticBag diagnostics)
@@ -213,7 +212,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             return stmt;
         }
 
-        public static BoundStatement RewriteAppInit(
+        internal static BoundStatement RewriteAppInit(
             MethodSymbol method,
             BoundStatement statement,
             DiagnosticBag diagnostics)
@@ -354,7 +353,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
             return newstatements;
         }
-        public static BoundStatement RewriteRunInitProc(
+        internal static BoundStatement RewriteRunInitProc(
             MethodSymbol method,
             BoundStatement statement,
             DiagnosticBag diagnostics)
@@ -374,7 +373,7 @@ namespace Microsoft.CodeAnalysis.CSharp
 
 
 
-        public static BoundStatement RewriteExit(
+        internal static BoundStatement RewriteExit(
                  MethodSymbol method,
                  BoundStatement statement,
                  DiagnosticBag diagnostics)
@@ -433,7 +432,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             //return newbody;
         }
 
-        public static BoundStatement RemoveUnusedVars(
+        internal static BoundStatement RemoveUnusedVars(
                  XSharpParser.EntityData data,
                  BoundStatement statement,
                  DiagnosticBag diagnostics)

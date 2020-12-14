@@ -54,32 +54,28 @@ namespace XSharp.Parser
             List<ParseErrorData> parseErrors, out ITokenStream tokens, out BufferedTokenStream ppStream)
         {
             ppStream = null;
-            tokens = null;
             var lexer = XSharpLexer.Create(sourceText, fileName, options);
             lexer.Options = options;
-            BufferedTokenStream tokenStream = lexer.GetTokenStream();
-            tokenStream.Fill();
-            tokens = (ITokenStream)tokenStream;
-            GetLexerErrors(lexer, tokenStream, parseErrors);
-            // do we need to preprocess
-            #region Determine if we really need the preprocessor
-            var mustPreprocess = !options.MacroScript && (lexer.HasPreprocessorTokens || !options.NoStdDef);
-            #endregion
-            XSharpPreprocessor pp = null;
-            pp = new XSharpPreprocessor(lexer, tokenStream, options, fileName, Encoding.Unicode, SourceHashAlgorithm.None, parseErrors);
-            if (mustPreprocess)
+            var stream = lexer.GetTokenStream();
+            tokens = stream;
+            stream.Fill();
+            GetLexerErrors(lexer, stream, parseErrors);
+
+            // do we need to preprocess?
+            // we are not interested in the pp output but we want the pp to modify the tokens from the lexer
+            // so we can show UDC keywords and inactive PP regions
+            if (lexer.HasPreprocessorTokens || !options.NoStdDef)
             {
+                var pp = new XSharpPreprocessor(lexer, tokens, options, fileName, Encoding.Unicode, SourceHashAlgorithm.None, parseErrors);
                 var ppTokens = pp.PreProcess();
                 ppStream = new CommonTokenStream(new XSharpListTokenSource(lexer, ppTokens));
             }
             else
             {
-                // No Standard Defs and no preprocessor tokens in the lexer
-                // so we bypass the preprocessor and use the lexer token stream
-                ppStream = new CommonTokenStream(new XSharpListTokenSource(lexer, tokenStream.GetTokens()));
+                ppStream = new CommonTokenStream(new XSharpListTokenSource(lexer, stream.GetTokens()));
             }
             ppStream.Fill();
-            return ppStream != null && tokens != null;
+            return tokens != null;
         }
 
         public static bool Parse(string sourceText, string fileName, CSharpParseOptions options, IErrorListener listener,

@@ -24,6 +24,7 @@
     <para styleclass="Normal"><tab />[AS &lt;<text styleclass="Italic">idType</text>&gt;]</para>
     <para styleclass="Normal"><tab />[TypeparameterConstraints]</para>
     <para styleclass="Normal"><tab />[&lt;<text styleclass="Italic">idConvention</text>&gt;]<br/><tab />[CLASS &lt;<text styleclass="Italic">idClass</text>&gt;]</para>
+    <para styleclass="Normal"><tab />[=&gt; &lt;expression&gt;] <br/><tab /><text style="font-weight:bold;">CRLF</text></para>
     <para styleclass="Normal"><tab />[&lt;<text styleclass="Italic">Body</text>&gt;]</para>
     <para styleclass="Normal"><tab />[END METHOD]</para>
     <para styleclass="Heading1">Arguments</para>

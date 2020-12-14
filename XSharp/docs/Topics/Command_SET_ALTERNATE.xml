@@ -1,0 +1,39 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>SET ALTERNATE Command</title>
+  <keywords>
+    <keyword>Commands</keyword>
+    <keyword>SET ALTERNATE command</keyword>
+    <keyword>Terminal Window</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">SET ALTERNATE Command</para>
+    </header>
+    <para styleclass="Normal"><snippet src="__CommandInclude" inline="false"/></para>
+    <para styleclass="Heading1">Purpose</para>
+    <para styleclass="Normal">Write screen output to a text file.</para>
+    <para styleclass="Heading1">Syntax</para>
+    <para styleclass="Normal">SET ALTERNATE TO [&lt;cFileName&gt; [ADDITIVE] ] </para>
+    <para styleclass="Normal">SET ALTERNATE ON | OFF | &lt;lToggle&gt; </para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Heading1">Arguments</para>
+    <para styleclass="List">&lt;cFileName&gt;<tab />Specifies the name of the ASCII file where screen output is recorded. The name must contain the drive and path. The file name can be specified either as a literal file name or as a character expression in parentheses. When the file name is specified without a file extension, the extension &quot;.TXT&quot; is used by default. <br/></para>
+    <para styleclass="List">ADDITIVE<tab />The option ADDITIVE adds the screen output to the current contents of the file &lt;cFileName&gt; . Without this option, the contents of the file are deleted if the file already exists. If a file with the name &lt;cFileName&gt; does not exist, it is created. </para>
+    <para styleclass="List"></para>
+    <para styleclass="List">&lt;lToggle&gt;<tab />&lt;lToggle&gt; is a logical expression which must appear in parentheses. Instead of the logical expression, the option ON can be specified for the value .T. (true) or OFF for the value .F. (false). When .T. or ON is specified, screen output is recorded in the file &lt;cFileName&gt; . </para>
+    <para styleclass="Heading1">Description</para>
+    <para styleclass="Body Text">The command SET ALTERNATE opens an ASCII file to record screen output. Only screen output performed using commands like ? or LIST and functions like QOut() and QQOut() is written into the file. Commands containing the option TO FILE work like SET ALTERNATE. . </para>
+    <para styleclass="Body Text"></para>
+    <para styleclass="Body Text">The alternate file (the ASCII file &lt;cFileName&gt; ) is not tied to a single work area, but can be used from all work areas. Output to the file is turned on or off by the options ON | OFF or the logical value of &lt;lToggle&gt; . An alternate file is defined by including a file name in the command SET ALTERNATE. When SET ALTERNATE TO is called without a specified file name, the currently open alternate file is closed and recording screen output to a file is no longer possible. The alternate file is also closed by the commands CLOSE ALTERNATE and CLOSE ALL. </para>
+    <para styleclass="Heading1">Examples</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><snippet src="__ConsoleExample" inline="false"/></para>
+    <para styleclass="Normal">&#32;</para>
+    <para styleclass="Normal"><snippet src="__IncludeLibRT" inline="false"/></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Heading1">See Also</para>
+    <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="html\M_XSharp_RT_Functions_SetAlternate.htm" domain="XSharpRef.chm" styleclass="link" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">SetAlternate()</link><text styleclass="link" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">,</text><link displaytype="text" defaultstyle="true" type="topiclink" href="html\M_XSharp_RT_Functions_SetAltFile.htm" domain="XSharpRef.chm" styleclass="link" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">SetAltFile()</link><text styleclass="link" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="Command_SET_CONSOLE" styleclass="link" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">SET CONSOLE</link></para>
+  </body>
+</topic>

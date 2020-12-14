@@ -13,6 +13,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 {
     internal static class XSharpPPTokenExtensions
     {
+        internal static void AddRange<T>(this IList<T> tokens, IList<T> toadd)
+        {
+            foreach (var token in toadd)
+            {
+                tokens.Add(token);
+            }
+        }
         internal static int La(this XSharpToken[] tokens, int pos)
         {
             if (pos >= 0 && pos < tokens.Length)

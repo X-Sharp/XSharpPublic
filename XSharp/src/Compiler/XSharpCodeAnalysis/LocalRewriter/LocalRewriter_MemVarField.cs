@@ -18,53 +18,43 @@ namespace Microsoft.CodeAnalysis.CSharp
 {
     internal partial class LocalRewriter
     {
-
-        //private MethodSymbol FindUsualObjectCtor()
-        //{
-        //    var objectType = _compilation.GetSpecialType(SpecialType.System_Object);
-
-        //    var ctor = _compilation.UsualType().GetMembers(".ctor").Where(c => c.GetParameterCount() == 1 && c.GetParameterTypes()[0] == objectType).FirstOrDefault();
-        //    return (MethodSymbol) ctor;
-        //}
+        // DO NOT use _Factory.StaticCall() here. We need the original syntaxnode here
+        // so we can check later in IsFoxMemberAccess that we want to
+        // handle the cursor.FieldName syntax
+        //
         private BoundExpression MemVarFieldAccess(SyntaxNode syntax, XsVariableSymbol property)
         {
             var getMethod = property.GetMethod;
             Debug.Assert((object)getMethod != null);
             if (property.HasAlias)
             {
-                var stringType = _compilation.GetSpecialType(SpecialType.System_String);
-                var lit = new BoundLiteral(syntax, ConstantValue.Create(property.Alias), stringType);
-                
-                var arg1 = MakeConversionNode(lit, getMethod.ParameterTypes[0], false);
-                var arg2 = new BoundLiteral(syntax, ConstantValue.Create(property.Name), stringType);
+                var arg1 = MakeConversionNode(_factory.Literal(property.Alias), getMethod.ParameterTypes[0], false);
+                var arg2 = MakeConversionNode(_factory.Literal(property.Name), getMethod.ParameterTypes[1], false);
                 return BoundCall.Synthesized(syntax, null, getMethod, arg1, arg2);
-
             }
             else
             {
-                var arg1 = new BoundLiteral(syntax, ConstantValue.Create(property.Name), _compilation.GetSpecialType(SpecialType.System_String));
+                var arg1 = MakeConversionNode(_factory.Literal(property.Name), getMethod.ParameterTypes[0], false);
                 return BoundCall.Synthesized(syntax, null, getMethod, arg1);
             }
         }
-        private BoundExpression MemVarFieldAssign(SyntaxNode syntax,XsVariableSymbol property, BoundExpression rewrittenRight)
+        private BoundExpression MemVarFieldAssign(SyntaxNode syntax, XsVariableSymbol property, BoundExpression rewrittenRight)
         {
             var setMethod = property.SetMethod;
             if (property.HasAlias)
             {
-                var stringType = _compilation.GetSpecialType(SpecialType.System_String);
-
-                var lit = new BoundLiteral(syntax, ConstantValue.Create(property.Alias), stringType);
-
-                var arg1 = MakeConversionNode(lit, setMethod.ParameterTypes[0], false);
-                var arg2 = new BoundLiteral(syntax, ConstantValue.Create(property.Name), stringType);
+                var arg1 = MakeConversionNode(_factory.Literal(property.Alias), setMethod.ParameterTypes[0], false);
+                var arg2 = MakeConversionNode(_factory.Literal(property.Name), setMethod.ParameterTypes[1], false);
                 var arg3 = MakeConversionNode(rewrittenRight, setMethod.ParameterTypes[2], false);
-                return BoundCall.Synthesized(syntax, null, setMethod, ImmutableArray.Create(arg1, arg2, arg3));
+                return BoundCall.Synthesized(syntax, null, setMethod, ImmutableArray.Create(arg1, arg2,arg3));
 
             }
             else
             {
-                var arg1 = new BoundLiteral(syntax, ConstantValue.Create(property.Name), _compilation.GetSpecialType(SpecialType.System_String));
-                return BoundCall.Synthesized(syntax, null, setMethod, arg1, MakeConversionNode(rewrittenRight, _compilation.UsualType(), false));
+                var arg1 = _factory.Literal(property.Name);
+                var arg2 = MakeConversionNode(rewrittenRight, _compilation.UsualType(), false);
+                return BoundCall.Synthesized(syntax, null, setMethod, arg1, arg2);
+
             }
 
         }

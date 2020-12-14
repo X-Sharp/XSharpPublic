@@ -1,4 +1,5 @@
-// 745. error XS0121: The call is ambiguous between the following methods or properties: 'Child.Test(ref int, int, logic, string)' and 'Parent.Test(ref int, int, string)'
+// 745. error XS0121: The call is ambiguous between the following methods or properties: 'Child.Test(ref int, int, logic, string)' 
+// and 'Parent.Test(ref int, int, string)'
 // Previous builds than 2.6 compiled this without errors and called the "child" method.
 // c# does the same thing (calls the child method)
 // Also not that this method hierarchy is a very used one in MVVM, see method Set() of class ObservableObject and class ViewModelBase : ObservableObject

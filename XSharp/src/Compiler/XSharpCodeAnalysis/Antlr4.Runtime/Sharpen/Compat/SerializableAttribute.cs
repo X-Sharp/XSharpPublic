@@ -1,5 +1,5 @@
-﻿#if PORTABLE || NETSTANDARD
-
+﻿#if !NETSTANDARD20
+#if PORTABLE || NETSTANDARD 
 namespace System
 {
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct | AttributeTargets.Enum | AttributeTargets.Delegate, Inherited = false)]
@@ -7,5 +7,5 @@ namespace System
     {
     }
 }
-
+#endif
 #endif

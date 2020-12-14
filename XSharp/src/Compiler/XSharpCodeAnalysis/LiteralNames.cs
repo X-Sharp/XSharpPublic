@@ -23,6 +23,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         internal const string ActualTypeAttribute = "ActualTypeAttribute";
         internal const string ClipperCallingConventionAttribute = "ClipperCallingConventionAttribute";
         internal const string AllowLateBindingAttribute = "AllowLateBindingAttribute";
+        internal const string NeedAccessToLocals = "NeedsAccessToLocalsAttribute";
     }
     internal static class VulcanQualifiedTypeNames
     {
@@ -130,6 +131,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         internal const string MemVarPrefix = "Xs$MemVar";
         internal const string FieldPrefix = "Xs$Field";
         internal const string ClipperParamPrefix = "Xs$Par";
+        internal const string ParenExprSuffix = "$ParenExpr$";
 
         internal const string FunctionsClass = "Functions";
         internal const string VOExeFunctionsClass = ".Exe.Functions";
@@ -208,8 +210,10 @@ namespace Microsoft.CodeAnalysis.CSharp
         internal const string NIL = "._NIL";
         internal const string WrapRawExceptionVn = "._WrapRawException";
         internal const string WrapRawExceptionXs = ".WrapRawException";
-        internal const string LocalRegister = "__LocalRegister";
-        internal const string LocalUnRegister = "__LocalUnRegister";
+        internal const string LocalPut = "__LocalPut";
+        internal const string LocalGet = "__LocalGet";
+        internal const string LocalsUpdated = "__LocalsUpdated";
+        internal const string LocalsClear = "__LocalsClear";
     }
     internal static class VulcanQualifiedFunctionNames
     {

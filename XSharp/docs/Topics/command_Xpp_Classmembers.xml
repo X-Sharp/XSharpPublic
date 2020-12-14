@@ -17,7 +17,8 @@
     <para styleclass="Body Text"><tab />[Attributes] ACCESS | ASSIGN [CLASS] METHOD &lt;MethodName&gt; [VAR &lt;VarName&gt;] &#160;<text styleclass="Normal">[AS &lt;</text><text styleclass="Italic">idType</text><text styleclass="Normal">&gt;]</text></para>
     <para styleclass="Body Text"></para>
     <para styleclass="Body Text"><tab /><text styleclass="Normal" style="font-weight:bold;">Method inline declaration</text></para>
-    <para styleclass="Body Text"><tab />[Attributes] INLINE [CLASS] METHOD &lt;MethodName&gt;[ <text styleclass="Normal">[([&lt;</text><text styleclass="Italic">idParam</text><text styleclass="Normal">&gt; [AS|REF|OUT|IN &lt;</text><text styleclass="Italic">idType</text><text styleclass="Normal">&gt;] [, ...])] </text>) <text styleclass="Normal">[AS &lt;</text><text styleclass="Italic">idType</text><text styleclass="Normal">&gt;]</text><br/><tab /><text styleclass="Normal">[&lt;</text><text styleclass="Italic">Body</text><text styleclass="Normal">&gt;]</text><br/><tab /><text styleclass="Normal">[END METHOD]</text></para>
+    <para styleclass="Body Text"><tab />[Attributes] INLINE [CLASS] METHOD &lt;MethodName&gt;[ <text styleclass="Normal">[([&lt;</text><text styleclass="Italic">idParam</text><text styleclass="Normal">&gt; [AS|REF|OUT|IN &lt;</text><text styleclass="Italic">idType</text><text styleclass="Normal">&gt;] [, ...])] </text>) <text styleclass="Normal">[AS &lt;</text><text styleclass="Italic">idType</text><text styleclass="Normal">&gt;]</text><br/><tab /><text styleclass="Normal">[=&gt; &lt;expression&gt;] </text><br/><tab /><text styleclass="Normal" style="font-weight:bold;">CRLF</text></para>
+    <para styleclass="Normal"><tab />[&lt;<text styleclass="Italic">Body</text>&gt;]<br/><tab />[END METHOD]</para>
     <para styleclass="Heading1">Arguments</para>
     <para styleclass="List">Modifiers<tab />An optional list of modifiers that specify info about the method. (DEFERRED , FINAL , INTRODUCE , OVERRIDE , CLASS , SYNC).</para>
     <para styleclass="List"></para>
@@ -38,7 +39,7 @@
     <para styleclass="List">INLINE<tab />Specifies that the whole method is included between the CLASS .. ENDCLASS keywords (other methods are so called forward declarations)</para>
     <para styleclass="List"></para>
     <para styleclass="List"><snippet src="__IncludeParameters" inline="false"/></para>
-    <para styleclass="List"></para>
+    <para styleclass="List"><snippet src="__IncludeExpressionBody" inline="false"/></para>
     <para styleclass="List"><snippet src="__IncludeBody" inline="false"/></para>
     <para styleclass="List"><snippet src="__IncludeEndMethod" inline="false"/></para>
     <para styleclass="Heading1">Note</para>

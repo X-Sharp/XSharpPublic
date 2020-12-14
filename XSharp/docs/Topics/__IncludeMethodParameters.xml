@@ -8,7 +8,7 @@
     <para styleclass="List"><snippet src="__asType" inline="false"/></para>
     <para styleclass="List"><snippet src="__IncludeTypeParameterConstraints" inline="false"/></para>
     <para styleclass="List"><snippet src="__callingconvention" inline="false"/></para>
-    <para styleclass="List">CLASS &lt;idClass&gt;<tab />The class to which this method belongs. This clause is mandatory for entities declared outside of a CLASS .. END CLASS construct</para>
-    <para styleclass="List"></para>
+    <para styleclass="List">CLASS &lt;idClass&gt;<tab/>The class to which this method belongs. This clause is mandatory for entities declared outside of a CLASS .. END CLASS construct</para>
+    <para styleclass="List"><snippet src="__IncludeExpressionBody" inline="false"/></para>
   </body>
 </topic>

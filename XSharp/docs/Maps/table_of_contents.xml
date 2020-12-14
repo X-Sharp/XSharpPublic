@@ -107,8 +107,14 @@
     <topicref type="topic" id="441614740747067" modified="2020-11-26T20:46:32.005Z" icon="0" href="__ConsoleExample">
       <caption translate="true">__ConsoleExample</caption>
     </topicref>
+    <topicref type="topic" id="441766075457870" modified="2020-12-11T15:19:19.258Z" icon="0" href="__IncludeLocalFunctionParameters">
+      <caption translate="true">__IncludeLocalFunctionParameters</caption>
+    </topicref>
     <topicref type="topic" id="441615025972125" modified="2020-11-26T20:46:32.013Z" icon="0" href="__TextMerge-Example">
       <caption translate="true">__TextMerge Example</caption>
+    </topicref>
+    <topicref type="topic" id="44178055698880" build="ALL" modified="2020-12-14T11:27:22.098Z" icon="0" href="__IncludeExpressionBody">
+      <caption translate="true">__IncludeExpressionBody</caption>
     </topicref>
   </topicref>
   <topicref type="topic" id="423886812341331" build="ALL" modified="2019-06-14T18:30:32.542Z" icon="0" href="XSharp">
@@ -740,6 +746,12 @@
           <topicref type="topic" id="423890664256386" build="ALL" modified="2019-10-15T14:09:03.068Z" icon="0" href="command_BEGIN-USING">
             <caption translate="true">BEGIN USING</caption>
           </topicref>
+          <topicref type="topic" id="441767688590616" build="ALL" modified="2020-12-11T15:40:05.275Z" icon="0" href="command_LOCAL-FUNCTION">
+            <caption translate="true">LOCAL FUNCTION</caption>
+          </topicref>
+          <topicref type="topic" id="441765218688099" build="ALL" modified="2020-12-11T15:40:00.209Z" icon="0" href="command_LOCAL-PROCEDURE">
+            <caption translate="true">LOCAL PROCEDURE</caption>
+          </topicref>
           <topicref type="topic" id="423886791199984" build="ALL" modified="2016-01-19T21:17:02.341Z" icon="0" href="USING">
             <caption translate="true">USING</caption>
           </topicref>
@@ -988,6 +1000,12 @@
           </topicref>
           <topicref type="topic" id="436995949548839" build="ALL" modified="2019-09-24T14:17:26.175Z" icon="0" href="command_INTERFACE">
             <caption translate="true">INTERFACE Statement</caption>
+          </topicref>
+          <topicref type="topic" id="441767194784056" build="ALL" modified="2020-12-11T15:40:05.276Z" icon="0" href="command_LOCAL-FUNCTION">
+            <caption translate="true">LOCAL FUNCTION Statement</caption>
+          </topicref>
+          <topicref type="topic" id="441768159581787" build="ALL" modified="2020-12-11T15:40:00.210Z" icon="0" href="command_LOCAL-PROCEDURE">
+            <caption translate="true">LOCAL PROCEDURE Statement</caption>
           </topicref>
           <topicref type="topic" id="384615026623733" build="ALL" modified="2019-09-24T14:17:26.236Z" icon="0" href="command_PROCEDURE">
             <caption translate="true">PROCEDURE Statement</caption>

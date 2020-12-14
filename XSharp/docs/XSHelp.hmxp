@@ -778,6 +778,7 @@
       <file-mod href="__VsDialect.xml"/>
       <file-mod href="__ConsoleExample.xml"/>
       <file-mod href="__TextMerge-Example.xml"/>
+      <file-mod href="__IncludeLocalFunctionParameters.xml"/>
     </file>
     <file href="Baggage/*.*" build="ALL" filetype="baggage"/>
   </project-files>

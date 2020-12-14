@@ -203,11 +203,25 @@ BEGIN NAMESPACE XSharpModel
                      ENDIF
                      _EntityList:Add(entity)
                   
-                     IF _EntityStack:Count > 0 .AND. (!CurrentEntityKind:HasMembers() .OR. !(CurrentEntity IS XTypeDefinition ) )
+                     LOCAL mustPop as LOGIC
+                     IF _EntityStack:Count == 0
+                        mustPop := FALSE
+                     ELSEIF CurrentEntityKind:HasMembers()
+                        mustPop := FALSE
+                     ELSEIF CurrentEntity IS XTypeDefinition 
+                        mustPop := FALSE
+                     ELSEIF CurrentEntityKind:HasBody() .and. entity:Kind:IsLocal()
+                        mustPop := FALSE
+                     ELSE
+                        mustPop := TRUE
+                     ENDIF
+                     IF mustPop 
                         _EntityStack:Pop()
                      ENDIF
                      IF entity:Kind:IsGlobalType() .AND. entity IS XMemberDefinition VAR xGlobalMember
                         SELF:_globalType:AddMember(xGlobalMember)
+                     ELSEIF entity:Kind:IsLocal()
+                        entity:Parent := CurrentEntity
                      ELSE
                         IF CurrentEntityKind:HasMembers() .AND. CurrentEntity IS XTypeDefinition VAR xEnt
                            IF entity IS XMemberDefinition VAR xMember .AND. xMember:Parent == NULL
@@ -220,6 +234,7 @@ BEGIN NAMESPACE XSharpModel
                               xChild:Namespace := xTypeDef:FullName
                            ENDIF
                         ENDIF
+                        
                      ENDIF
                      IF ! entity:SingleLine                        
                         _EntityStack:Push(entity)
@@ -234,7 +249,12 @@ BEGIN NAMESPACE XSharpModel
                // match la2 with current entity
                DO WHILE _EntityStack:Count > 0
                   VAR top := _EntityStack:Pop()
-                  IF top:Kind != endKind
+                  // END PROCEDURE and END FUNCTION may indicate normal procedure and local procedure
+                  IF top:Kind == Kind.LocalFunc .and. endKind == Kind.Function
+                     NOP // Ok
+                  ELSEIF top:Kind == Kind.LocalProc .and. endKind == Kind.Procedure
+                     NOP // Ok
+                  ELSEIF top:Kind != endKind
                      top:Range       := top:Range:WithEnd(tokenBefore)
                      top:Interval    := top:Interval:WithEnd(tokenBefore)
                      LOOP
@@ -611,6 +631,12 @@ attributeParam      : Name=identifierName Op=assignoperator Expr=expression     
          CASE XSharpLexer.INLINE
             IF _dialect == XSharpDialect.XPP
                entityKind := Kind.Method // Not really a field but handled later
+            ENDIF
+         CASE XSharpLexer.LOCAL
+            IF SELF:La2 == XSharpLexer.FUNCTION 
+               entityKind := Kind.LocalFunc 
+            ELSEIF SELF:La2 == XSharpLexer.PROCEDURE
+               entityKind := Kind.LocalProc
             ENDIF
          CASE XSharpLexer.GET
          CASE XSharpLexer.SET
@@ -1172,6 +1198,9 @@ attributeParam      : Name=identifierName Op=assignoperator Expr=expression     
             ELSE
                result := SELF:ParseClassVars()   
             ENDIF
+         CASE Kind.LocalFunc
+         CASE Kind.LocalProc
+               result := SELF:ParseLocalFuncProc()     
          END SWITCH            
          RETURN result
          
@@ -2009,7 +2038,6 @@ signature             : Id=identifier
          RETURN oSig
          
          
-         
       PRIVATE METHOD ParseTypeParameters AS List<STRING>
          IF SELF:La1 != XSharpLexer.LT
             RETURN NULL
@@ -2102,8 +2130,7 @@ signature             : Id=identifier
             Consume()
          ENDIF
          RETURN aResult
-         
-         
+
       PRIVATE METHOD ParseTypeParameterConstraints() AS STRING
       
          IF SELF:La1 != XSharpLexer.WHERE
@@ -2157,6 +2184,40 @@ callingconvention	: Convention=(CLIPPER | STRICT | PASCAL | ASPEN | WINCALL | CA
             RETURN result
          END SWITCH
          RETURN CallingConvention.None
+
+
+      PRIVATE METHOD ParseLocalFuncProc() AS IList<XEntityDefinition>
+         /*
+
+         localfuncproc       :  (Modifiers=localfuncprocModifiers)?   
+                                 LOCAL T=(FUNCTION|PROCEDURE) Sig=signature
+                                 end=eos   
+                                 StmtBlk=statementBlock
+                                 END T2=(FUNCTION|PROCEDURE)   EOS 
+                     ;
+         
+         */
+            LOCAL kind AS Kind 
+            IF SELF:La2 == XSharpLexer.FUNCTION 
+               kind := Kind.LocalFunc
+            ELSEIF SELF:La2 == XSharpLexer.PROCEDURE
+               kind := Kind.LocalProc
+            ELSE
+               RETURN NULL
+            ENDIF
+            SELF:Consume()
+            SELF:Consume()
+            VAR sig := SELF:ParseSignature()
+            
+            SELF:GetSourceInfo(_start, LastToken, OUT VAR range, OUT VAR interval, OUT VAR source)  
+            SELF:ReadLine()
+            _attributes |= Modifiers.Private
+            _attributes &= (~Modifiers.Export)
+            VAR xMember := XMemberDefinition{sig, kind, _attributes, range, interval, false}
+            xMember:SourceCode := source
+            xMember:File := SELF:_file
+            RETURN <XEntityDefinition>{xMember}        
+         
          
          
       PRIVATE METHOD IsAssignOp (nToken AS LONG) AS LOGIC

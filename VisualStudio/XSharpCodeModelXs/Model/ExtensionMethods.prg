@@ -36,6 +36,10 @@ BEGIN NAMESPACE XSharpModel
 					RETURN "DEFINE"
 				CASE Kind.EnumMember
 					RETURN "MEMBER"
+				CASE Kind.LocalFunc
+					RETURN "LOCAL FUNCTION"
+				CASE Kind.LocalProc
+					RETURN "LOCAL PROCEDURE"
 			END SWITCH
 			RETURN elementKind:ToString()
 		
@@ -51,6 +55,8 @@ BEGIN NAMESPACE XSharpModel
 				CASE Kind.Operator 
 				CASE Kind.Delegate 
 				CASE Kind.VODLL 
+				CASE Kind.LocalFunc 
+				CASE Kind.LocalProc 
 					//
 					RETURN TRUE
 			END SWITCH
@@ -71,6 +77,7 @@ BEGIN NAMESPACE XSharpModel
 				CASE Kind.Delegate 
 				CASE Kind.VOGlobal 
 				CASE Kind.VODefine 
+				CASE Kind.LocalFunc 
 					RETURN TRUE
 			END SWITCH
 			RETURN FALSE
@@ -185,6 +192,16 @@ BEGIN NAMESPACE XSharpModel
 				CASE Kind.Operator
 				CASE Kind.Constructor
 				CASE Kind.Destructor
+				CASE Kind.LocalFunc 
+				CASE Kind.LocalProc
+					RETURN TRUE
+			END SWITCH
+			RETURN FALSE
+
+        STATIC METHOD IsLocal(SELF eKind AS Kind) AS LOGIC
+			SWITCH eKind
+				CASE Kind.LocalFunc 
+				CASE Kind.LocalProc
 					RETURN TRUE
 			END SWITCH
 			RETURN FALSE
@@ -250,6 +267,8 @@ BEGIN NAMESPACE XSharpModel
 						imgK := ImageListKind.Class
 					CASE Kind.Function 
 					CASE Kind.Procedure 
+					CASE Kind.LocalFunc 
+					CASE Kind.LocalProc
 						imgK := ImageListKind.Overload
 					CASE Kind.Constructor 
 					CASE Kind.Destructor 

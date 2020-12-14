@@ -58,7 +58,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 func.Sig = sig;
                 token.line = 1;
                 token.charPositionInLine = 1;
-                func.T = token;
+                func.T = new XP.FuncproctypeContext(func, 0);
+                func.T.Token = token;
                 token = new XSharpToken(XP.ID, name);
                 token.line = 1;
                 token.charPositionInLine = 1;
@@ -292,7 +293,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
  
         public override void ExitFoxmethod([NotNull] XP.FoxmethodContext context)
         {
-            context.SetSequencePoint(context.T.Start, context.end.Stop);
+            context.SetSequencePoint(context.T.Token, context.end.Stop);
             var idName = context.Id.Get<SyntaxToken>();
             var mods = context.Modifiers?.GetList<SyntaxToken>() ?? DefaultMethodModifiers(false, false, context.TypeParameters != null);
             var isExtern = mods.Any((int)SyntaxKind.ExternKeyword);

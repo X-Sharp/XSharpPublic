@@ -584,12 +584,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                 get
                 {
                     string name = this.Id.GetText();
-                    if (this.T.Token.Type == XSharpParser.ACCESS)
-                        name += ":Access";
-                    else if (this.T.Token.Type == XSharpParser.ASSIGN)
-                        name += ":Assign";
-                    else
-                        name += "()";
+                    name += "()";
                     return ParentName + name;
                 }
             }

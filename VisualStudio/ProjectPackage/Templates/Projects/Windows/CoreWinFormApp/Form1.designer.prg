@@ -1,6 +1,6 @@
 ﻿begin namespace $safeprojectname$
 
-    partial class Form1 inherit System.Windows.Forms.Form
+    partial class Form1 
 
         /// <summary>
         /// Required designer variable.
@@ -17,7 +17,7 @@
                 components:Dispose()
             endif
             Super:Dispose(disposing)
-			return
+            return
 
         #region Windows Form Designer generated code
 
@@ -29,7 +29,7 @@
             self:components := System.ComponentModel.Container{}
             self:AutoScaleMode := System.Windows.Forms.AutoScaleMode.Font
             self:Text := "$safeitemrootname$"
-			return
+            return
 
         #endregion
     end class

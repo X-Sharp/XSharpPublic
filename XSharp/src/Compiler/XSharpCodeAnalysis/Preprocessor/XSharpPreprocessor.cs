@@ -298,25 +298,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             for (int iOpt = 0; iOpt < flags.Length; iOpt++)
             {
                 string flagName = String.Format("__VO{0}__", iOpt + 1);
-                if (flags[iOpt])
-                    macroDefines.Add(flagName, (token) => new XSharpToken(XSharpLexer.TRUE_CONST, token));
-                else
-                    macroDefines.Add(flagName, (token) => new XSharpToken(XSharpLexer.FALSE_CONST, token));
+                macroDefines.Add(flagName, (token) => new XSharpToken(flags[iOpt] ? XSharpLexer.TRUE_CONST: XSharpLexer.FALSE_CONST, token));
             }
-            if (options.Dialect == XSharpDialect.XPP)
-            {
-                if (options.xpp1)
-                    macroDefines.Add("__XPP1__", (token) => new XSharpToken(XSharpLexer.TRUE_CONST, token));
-                else
-                    macroDefines.Add("__XPP1__", (token) => new XSharpToken(XSharpLexer.FALSE_CONST, token));
-            }
-            if (options.Dialect == XSharpDialect.FoxPro)
-            {
-                if (options.fox1)
-                    macroDefines.Add("__FOX1__", (token) => new XSharpToken(XSharpLexer.TRUE_CONST, token));
-                else
-                    macroDefines.Add("__FOX1__", (token) => new XSharpToken(XSharpLexer.FALSE_CONST, token));
-            }
+            macroDefines.Add("__XPP1__", (token) => new XSharpToken(options.xpp1 ? XSharpLexer.TRUE_CONST: XSharpLexer.FALSE_CONST, token));
+            macroDefines.Add("__XPP2__", (token) => new XSharpToken(options.xpp2 ? XSharpLexer.TRUE_CONST : XSharpLexer.FALSE_CONST, token));
+            macroDefines.Add("__FOX1__", (token) => new XSharpToken(options.fox1 ? XSharpLexer.TRUE_CONST : XSharpLexer.FALSE_CONST, token));
+            macroDefines.Add("__FOX2__", (token) => new XSharpToken(options.fox2 ? XSharpLexer.TRUE_CONST : XSharpLexer.FALSE_CONST, token));
             if (!options.NoStdDef && options.Kind != SourceCodeKind.Script)
             {
                 // Todo: when the compiler option nostddefs is not set: read XSharpDefs.xh from the XSharp Include folder,//

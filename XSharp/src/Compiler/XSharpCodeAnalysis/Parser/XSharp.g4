@@ -807,8 +807,7 @@ primary             : Key=SELF                                                  
                     | Type=datatype LCURLY RCURLY  Init=objectOrCollectioninitializer?  #ctorCall   // id{  } with optional { Name1 := Expr1, [Name<n> := Expr<n>]}
                     | Type=datatype LCURLY ArgList=argumentList  RCURLY	
                                                    Init=objectOrCollectioninitializer?  #ctorCall				// id{ expr [, expr...] } with optional { Name1 := Expr1, [Name<n> := Expr<n>]}
-                    | ch=CHECKED LPAREN ( Expr=expression ) RPAREN              #checkedExpression		// checked( expression )
-                    | ch=UNCHECKED LPAREN ( Expr=expression ) RPAREN            #checkedExpression		// unchecked( expression )
+                    | ch=(CHECKED|UNCHECKED) LPAREN Expr=expression  RPAREN     #checkedExpression		// checked( expression )
                     | TYPEOF LPAREN Type=datatype RPAREN                        #typeOfExpression		// typeof( typeORid )
                     | SIZEOF LPAREN Type=datatype RPAREN                        #sizeOfExpression		// sizeof( typeORid )
                     | DEFAULT LPAREN Type=datatype RPAREN                       #defaultExpression		// default( typeORid )

@@ -208,11 +208,11 @@ namespace Microsoft.VisualStudio.Project
         {
             get
             {
-                if(this.baseGeneratorRegistryKey == null)
+                if (this.baseGeneratorRegistryKey == null)
                 {
-                    using(RegistryKey root = VSRegistry.RegistryRoot(__VsLocalRegistryType.RegType_Configuration))
+                    using (RegistryKey root = VSRegistry.RegistryRoot(__VsLocalRegistryType.RegType_Configuration))
                     {
-                        if(null != root)
+                        if (null != root)
                         {
                             string regPath = "Generators\\" + this.ProjectGuid.ToString("B");
                             baseGeneratorRegistryKey = root.OpenSubKey(regPath);
@@ -251,20 +251,20 @@ namespace Microsoft.VisualStudio.Project
             Guid genGuid;
             ErrorHandler.ThrowOnFailure(this.GetGeneratorInformation(progId, out generatesDesignTimeSource, out generatesSharedDesignTimeSource, out useTempPEFlag, out genGuid));
 
-			//Create the single file generator and pass it out. Check to see if it is in the cache
-         if (genGuid.CompareTo(Guid.Empty) == 0)
-         {
-            generate = null;
-            return VSConstants.S_FALSE;
-         }
-            if(!this.generatorsMap.ContainsKey(progId) || ((this.generatorsMap[progId]).Generator == null))
+            //Create the single file generator and pass it out. Check to see if it is in the cache
+            if (genGuid.CompareTo(Guid.Empty) == 0)
+            {
+                generate = null;
+                return VSConstants.S_FALSE;
+            }
+            if (!this.generatorsMap.ContainsKey(progId) || ((this.generatorsMap[progId]).Generator == null))
             {
                 Guid riid = VSConstants.IID_IUnknown;
                 uint dwClsCtx = (uint)CLSCTX.CLSCTX_INPROC_SERVER;
                 IntPtr genIUnknown = IntPtr.Zero;
                 //create a new one.
                 ErrorHandler.ThrowOnFailure(this.LocalRegistry.CreateInstance(genGuid, null, ref riid, dwClsCtx, out genIUnknown));
-                if(genIUnknown != IntPtr.Zero)
+                if (genIUnknown != IntPtr.Zero)
                 {
                     try
                     {
@@ -322,51 +322,30 @@ namespace Microsoft.VisualStudio.Project
                 return VSConstants.S_FALSE;
 
             //Create the single file generator and pass it out.
-            if(!this.generatorsMap.ContainsKey(progId))
+            if (!this.generatorsMap.ContainsKey(progId))
             {
                 // We have to check whether the BaseGeneratorkey returns null.
                 RegistryKey tempBaseGeneratorKey = this.BaseGeneratorsKey;
-                //////////////////
-                ////////////////// Fab ugly Hack
-                if (progId == "TextTemplatingFileGenerator")
+                if (tempBaseGeneratorKey == null || (genKey = tempBaseGeneratorKey.OpenSubKey(progId)) == null)
                 {
-                    GeneratorMetaData genData = new GeneratorMetaData();
-
-                    genData.GeneratorClsid = guidGenerator = new Guid("{b9c665d2-0451-4ae2-a38c-443b85d634f2}");
-                    //Get the GeneratesDesignTimeSource flag. Assume 0 if not present.
-                    genData.GeneratesDesignTimeSource = generatesDesignTimeSource = 1;
-                    //Get the GeneratesSharedDesignTimeSource flag. Assume 0 if not present.
-                    genData.GeneratesSharedDesignTimeSource = generatesSharedDesignTimeSource = 0;
-                    //Get the UseDesignTimeCompilationFlag flag. Assume 0 if not present.
-                    genData.UseDesignTimeCompilationFlag = useTempPEFlag = 0;
-                    this.generatorsMap.Add(progId, genData);
+                    return VSConstants.S_FALSE;
                 }
-                else
-                {
 
-                    /////////////////
-                    ////////////////
-                    if (tempBaseGeneratorKey == null || (genKey = tempBaseGeneratorKey.OpenSubKey(progId)) == null)
-                    {
-                        return VSConstants.S_FALSE;
-                    }
+                //Get the CLSID
+                string guid = (string)genKey.GetValue(GeneratorClsid, "");
+                if (String.IsNullOrEmpty(guid))
+                    return VSConstants.S_FALSE;
 
-                    //Get the CLSID
-                    string guid = (string)genKey.GetValue(GeneratorClsid, "");
-                    if (String.IsNullOrEmpty(guid))
-                        return VSConstants.S_FALSE;
+                GeneratorMetaData genData = new GeneratorMetaData();
 
-                    GeneratorMetaData genData = new GeneratorMetaData();
-
-                    genData.GeneratorClsid = guidGenerator = new Guid(guid);
-                    //Get the GeneratesDesignTimeSource flag. Assume 0 if not present.
-                    genData.GeneratesDesignTimeSource = generatesDesignTimeSource = (int)genKey.GetValue(this.GeneratesDesignTimeSource, 0);
-                    //Get the GeneratesSharedDesignTimeSource flag. Assume 0 if not present.
-                    genData.GeneratesSharedDesignTimeSource = generatesSharedDesignTimeSource = (int)genKey.GetValue(GeneratesSharedDesignTimeSource, 0);
-                    //Get the UseDesignTimeCompilationFlag flag. Assume 0 if not present.
-                    genData.UseDesignTimeCompilationFlag = useTempPEFlag = (int)genKey.GetValue(UseDesignTimeCompilationFlag, 0);
-                    this.generatorsMap.Add(progId, genData);
-                }
+                genData.GeneratorClsid = guidGenerator = new Guid(guid);
+                //Get the GeneratesDesignTimeSource flag. Assume 0 if not present.
+                genData.GeneratesDesignTimeSource = generatesDesignTimeSource = (int)genKey.GetValue(this.GeneratesDesignTimeSource, 0);
+                //Get the GeneratesSharedDesignTimeSource flag. Assume 0 if not present.
+                genData.GeneratesSharedDesignTimeSource = generatesSharedDesignTimeSource = (int)genKey.GetValue(GeneratesSharedDesignTimeSource, 0);
+                //Get the UseDesignTimeCompilationFlag flag. Assume 0 if not present.
+                genData.UseDesignTimeCompilationFlag = useTempPEFlag = (int)genKey.GetValue(UseDesignTimeCompilationFlag, 0);
+                this.generatorsMap.Add(progId, genData);
             }
             else
             {

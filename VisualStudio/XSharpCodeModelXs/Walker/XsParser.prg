@@ -1230,20 +1230,19 @@ attributeParam      : Name=identifierName Op=assignoperator Expr=expression     
          PRIVATE METHOD ParseFuncProc() AS IList<XEntityDefinition>
 /*
 funcproc      : (Attributes=attributes)? (Modifiers=funcprocModifiers)?   
-              T=(FUNCTION|PROCEDURE) Sig=signature
+              T=funcproctype Sig=signature
               InitExit=(INIT1|INIT2|INIT3|EXIT)?                        
               vodummyclauses
               end=eos   
               StmtBlk=statementBlock
-              (END T2=(FUNCTION|PROCEDURE)   EOS )?
+              (END T2=funcproctype   EOS )?
               ;
+funcproctype        : Token=(FUNCTION | PROCEDURE)
+                ;
+                
 */
-            LOCAL kind AS Kind 
-            IF SELF:La1 == XSharpLexer.FUNCTION 
-               kind := Kind.Function
-            ELSEIF SELF:La1 == XSharpLexer.PROCEDURE
-               kind := Kind.Procedure
-            ELSE
+            LOCAL kind AS Kind
+            IF ! ParseFuncProcType (OUT kind)
                RETURN NULL
             ENDIF
             SELF:Consume()
@@ -1480,6 +1479,7 @@ propertyAutoAccessor: Attributes=attributes? Modifiers=accessorModifiers? Key=(G
 
 propertyLineAccessor: Attributes=attributes? Modifiers=accessorModifiers?
                       ( {InputStream.La(2) != SET}? Key=GET Expr=expression?
+                      | {InputStream.La(2) != SET}? Key=UDCSEP Expr=expression?           // New: UDCSep instead of GET
                       | {InputStream.La(2) != GET}? Key=SET ExprList=expressionList?
                       | Key=(GET|SET) )
                     ;
@@ -1488,7 +1488,9 @@ expressionList	    : Exprs+=expression (COMMA Exprs+=expression)*
 
 propertyAccessor    : Attributes=attributes? Modifiers=accessorModifiers?
                       ( Key=GET end=eos StmtBlk=statementBlock END GET?
+                      | Key=GET UDCSEP ExpressionBody=expression              // New: Expression Body
                       | Key=SET end=eos StmtBlk=statementBlock END SET? )
+                      | Key=SET UDCSEP ExpressionBody=expression              // New: Expression Body
                       end=eos
                     ;
                     
@@ -1508,7 +1510,7 @@ propertyAccessor    : Attributes=attributes? Modifiers=accessorModifiers?
          VAR sType := SELF:ParseAsIsType()
          LOCAL lSingleLine AS LOGIC
          DO WHILE ! SELF:Eos()
-            IF Matches(XSharpLexer.AUTO, XSharpLexer.GET,XSharpLexer.SET)
+            IF Matches(XSharpLexer.AUTO, XSharpLexer.GET,XSharpLexer.SET, XSharpLexer.UDCSEP)
                lSingleLine := TRUE
             ENDIF
             Consume()
@@ -1544,8 +1546,10 @@ eventLineAccessor   : Attributes=attributes? Modifiers=accessorModifiers?
                       | Key=(ADD|REMOVE) )
                     ;
 eventAccessor       : Attributes=attributes? Modifiers=accessorModifiers?
-                      ( Key=ADD     end=eos StmtBlk=statementBlock END ADD?
-                      | Key=REMOVE  end=eos StmtBlk=statementBlock END REMOVE? )
+                      ( Key=ADD     END=eos StmtBlk=statementBlock END ADD?
+                      | Key=ADD     UDCSEP ExpressionBody=expression              // New: Expression Body
+                      | Key=REMOVE  END=eos StmtBlk=statementBlock END REMOVE? )
+                      | Key=REMOVE  UDCSEP ExpressionBody=expression              // New: Expression Body
                       end=eos
                     ;                    
 */         
@@ -1568,10 +1572,10 @@ eventAccessor       : Attributes=attributes? Modifiers=accessorModifiers?
          RETURN <XEntityDefinition>{xMember}
 
          PRIVATE _operatortokens := <LONG> {XSharpLexer.PLUS , XSharpLexer.MINUS , XSharpLexer.NOT , XSharpLexer.TILDE , XSharpLexer.INC, ;
-            XSharpLexer.DEC ,XSharpLexer.TRUE_CONST ,XSharpLexer.FALSE_CONST , XSharpLexer.MULT , ;
-            XSharpLexer.DIV ,XSharpLexer.MOD ,XSharpLexer.AMP ,XSharpLexer.PIPE ,XSharpLexer.LSHIFT ,XSharpLexer.RSHIFT, ;
-            XSharpLexer.EEQ , XSharpLexer.NEQ , XSharpLexer.NEQ2 ,XSharpLexer.GT , XSharpLexer.LT ,;
-            XSharpLexer.GTE , XSharpLexer.LTE , XSharpLexer.AND , XSharpLexer.OR, XSharpLexer.IMPLICIT, XSharpLexer.EXPLICIT}  AS LONG[]
+                                            XSharpLexer.DEC ,XSharpLexer.TRUE_CONST ,XSharpLexer.FALSE_CONST , XSharpLexer.MULT , ;
+                                            XSharpLexer.DIV ,XSharpLexer.MOD ,XSharpLexer.AMP ,XSharpLexer.PIPE ,XSharpLexer.LSHIFT ,XSharpLexer.RSHIFT, ;
+                                            XSharpLexer.EEQ , XSharpLexer.NEQ , XSharpLexer.NEQ2 ,XSharpLexer.GT , XSharpLexer.LT ,;
+                                            XSharpLexer.GTE , XSharpLexer.LTE , XSharpLexer.AND , XSharpLexer.OR, XSharpLexer.IMPLICIT, XSharpLexer.EXPLICIT}  AS LONG[]
 
 
       PRIVATE METHOD ParseOperator() AS IList<XEntityDefinition>
@@ -1593,6 +1597,7 @@ operator_           : Attributes=attributes? Modifiers=operatorModifiers?
                       o1=OPERATOR (Operation=overloadedOps | Conversion=conversionOps) Gt=GT?
                       ParamList=parameterList
                       (AS Type=datatype)?
+                      (UDCSEP ExpressionBody=expression)?             // New: Expression Body
                       end=eos
                       StmtBlk=statementBlock
                      (END o1=OPERATOR EOS)?
@@ -1610,7 +1615,7 @@ operator_           : Attributes=attributes? Modifiers=operatorModifiers?
          ENDIF
          VAR aParams     := SELF:ParseParameterList(FALSE, OUT VAR _)
          VAR sType       := SELF:ParseAsIsType()
-         
+         SELF:ParseExpressionBody()
          SELF:GetSourceInfo(_start, LastToken, OUT VAR range, OUT VAR interval, OUT VAR source)  
          
          VAR id := t1:GetText()+ IIF(t2 != NULL, t2:GetText(),"")
@@ -1630,6 +1635,7 @@ operator_           : Attributes=attributes? Modifiers=operatorModifiers?
                       c1=CONSTRUCTOR (ParamList=parameterList)? (AS VOID)? // As Void is allowed but ignored
                         (CallingConvention=callingconvention)? 
                         (CLASS (Namespace=nameDot)? ClassId=identifier)?		
+                        (UDCSEP ExpressionBody=expression)?               // New: Expression Body
                         end=eos
                       (Chain=constructorchain)?
                       StmtBlk=statementBlock
@@ -1644,6 +1650,7 @@ operator_           : Attributes=attributes? Modifiers=operatorModifiers?
          VAR asType      := SELF:ParseAsIsType()
          VAR callconv    := SELF:ParseCallingConvention()
          VAR classClause := SELF:ParseOptionalClassClause()
+         SELF:ParseExpressionBody()
          SELF:GetSourceInfo(_start, LastToken, OUT VAR range, OUT VAR interval, OUT VAR source)  
          SELF:ReadLine()
          VAR xMember := XMemberDefinition{id, Kind.Constructor, _attributes, range, interval,""}
@@ -1660,6 +1667,7 @@ operator_           : Attributes=attributes? Modifiers=operatorModifiers?
 destructor          : (Attributes=attributes)? (Modifiers=destructorModifiers)?
                       d1=DESTRUCTOR (LPAREN RPAREN)? 
                       (CLASS (Namespace=nameDot)? ClassId=identifier)?
+                      (UDCSEP ExpressionBody=expression)?               // New: Expression Body
                       end=eos
                       StmtBlk=statementBlock
                       (END d2=DESTRUCTOR EOS)?
@@ -1676,6 +1684,7 @@ destructor          : (Attributes=attributes)? (Modifiers=destructorModifiers)?
             Consume()
          ENDIF
          VAR classClause := SELF:ParseOptionalClassClause()
+         SELF:ParseExpressionBody()
          SELF:GetSourceInfo(_start, LastToken, OUT VAR range, OUT VAR interval, OUT VAR source)  
          SELF:ReadLine()
          VAR xMember := XMemberDefinition{id, Kind.Destructor, _attributes, range, interval,"VOID"}
@@ -1854,7 +1863,7 @@ vounion             : (Modifiers=votypeModifiers)?
 /*
 
 vodll               : (Attributes=attributes)? (Modifiers=funcprocModifiers)? // Optional
-                      D=DLL T=(FUNCTION|PROCEDURE) Id=identifier ParamList=parameterList (AS Type=datatype)? 
+                      D=DLL T=funcproctype Id=identifier ParamList=parameterList (AS Type=datatype)? 
                       (CallingConvention=dllcallconv)? COLON
                       Dll=identifierString (DOT Extension=identifierString)?
                       (	Ordinal=REAL_CONST 
@@ -1869,8 +1878,9 @@ vodll               : (Attributes=attributes)? (Modifiers=funcprocModifiers)? //
          IF ! Expect(XSharpLexer.DLL)
             RETURN NULL
          ENDIF
-
-         VAR t := ConsumeAndGet()
+         IF ! ParseFuncProcType (OUT VAR kind)
+            RETURN NULL
+         ENDIF
          VAR sig     := SELF:ParseSignature()
          VAR colon   := SELF:ConsumeAndGetText()
          VAR dllName := SELF:ConsumeAndGetText()
@@ -1880,7 +1890,7 @@ vodll               : (Attributes=attributes)? (Modifiers=funcprocModifiers)? //
          ENDIF
          SELF:GetSourceInfo(_start, LastToken, OUT VAR range, OUT VAR interval, OUT VAR source)  
          SELF:ReadLine()
-         VAR xMember := XMemberDefinition{sig, Kind.VODLL, _attributes, range, interval, _attributes:HasFlag(Modifiers.Static)} {SubType := IIF(t:Type == XSharpLexer.FUNCTION, Kind.Function, Kind.Procedure)} 
+         VAR xMember := XMemberDefinition{sig, Kind.VODLL, _attributes, range, interval, _attributes:HasFlag(Modifiers.Static)} {SubType := kind } 
          xMember:File := SELF:_file
          xMember:SourceCode := source          
          RETURN <XEntityDefinition>{xMember}
@@ -2016,6 +2026,7 @@ signature             : Id=identifier
                       (AS Type=datatype)?                                       
                       (ConstraintsClauses+=typeparameterconstraintsclause)*     
                       (CallingConvention=callingconvention)?
+                      (UDCSEP ExpressionBody=expression)? 
                       ;
 
 
@@ -2035,6 +2046,7 @@ signature             : Id=identifier
             oSig:TypeParameterContraints:Add(SELF:ParseTypeParameterConstraints())
          ENDDO
          oSig:CallingConvention  := SELF:ParseCallingConvention()
+         SELF:ParseExpressionBody()
          RETURN oSig
          
          
@@ -2164,7 +2176,15 @@ signature             : Id=identifier
             RETURN SELF:ParseTypeName()
          ENDIF
          RETURN ""
+            
+      PRIVATE METHOD ParseExpressionBody() AS STRING
+         IF SELF:La1 != XSharpLexer.UDCSEP
+            RETURN ""
+         ENDIF
+         SELF:Consume()
+         RETURN SELF:ParseExpression()
          
+          
       PRIVATE METHOD ParseCallingConvention() AS CallingConvention
 /*
 callingconvention	: Convention=(CLIPPER | STRICT | PASCAL | ASPEN | WINCALL | CALLBACK | FASTCALL | THISCALL)
@@ -2186,23 +2206,30 @@ callingconvention	: Convention=(CLIPPER | STRICT | PASCAL | ASPEN | WINCALL | CA
          RETURN CallingConvention.None
 
 
-      PRIVATE METHOD ParseLocalFuncProc() AS IList<XEntityDefinition>
-         /*
-
-         localfuncproc       :  (Modifiers=localfuncprocModifiers)?   
-                                 LOCAL T=(FUNCTION|PROCEDURE) Sig=signature
-                                 end=eos   
-                                 StmtBlk=statementBlock
-                                 END T2=(FUNCTION|PROCEDURE)   EOS 
-                     ;
-         
-         */
-            LOCAL kind AS Kind 
+      PRIVATE METHOD ParseFuncProcType( kind OUT Kind) AS LOGIC
             IF SELF:La2 == XSharpLexer.FUNCTION 
                kind := Kind.LocalFunc
             ELSEIF SELF:La2 == XSharpLexer.PROCEDURE
                kind := Kind.LocalProc
             ELSE
+               kind := Kind.Unknown
+                RETURN FALSE
+            ENDIF
+            RETURN TRUE
+
+      PRIVATE METHOD ParseLocalFuncProc() AS IList<XEntityDefinition>
+         /*
+
+         localfuncproc       :  (Modifiers=localfuncprocModifiers)?   
+                                 LOCAL T=funcproctype Sig=signature
+                                 end=eos   
+                                 StmtBlk=statementBlock
+                                 END T2=funcproctype   EOS 
+                     ;
+         
+         */
+            LOCAL kind AS Kind
+            IF ! ParseFuncProcType (OUT kind)
                RETURN NULL
             ENDIF
             SELF:Consume()
@@ -2878,13 +2905,13 @@ callingconvention	: Convention=(CLIPPER | STRICT | PASCAL | ASPEN | WINCALL | CA
                                StmtBlk=statementBlock
                                (END T2=foxmethodtype  EOS)?
                                ;
-         foxmethodtype        : Token=(FUNCTION | PROCEDURE)
+         funcproctype        : Token=(FUNCTION | PROCEDURE)
                               ;
            
             */
             LOCAL hs := "" AS STRING
             LOCAL thisId := "" AS STRING
-            IF ! ExpectAny(XSharpLexer.FUNCTION, XSharpLexer.PROCEDURE)
+            IF ! ParseFuncProcType (OUT VAR kind)
                RETURN NULL
             ENDIF
             VAR sig := SELF:ParseSignature()
@@ -2897,7 +2924,7 @@ callingconvention	: Convention=(CLIPPER | STRICT | PASCAL | ASPEN | WINCALL | CA
             ENDIF
             SELF:GetSourceInfo(_start, LastToken, OUT VAR range, OUT VAR interval, OUT VAR source)  
             SELF:ReadLine()
-            VAR kind := Kind.Method
+            kind := Kind.Method
             // Check for _ACCESS or _ASSIGN
             VAR id := sig:Id
             IF id:EndsWith("_access", StringComparison.OrdinalIgnoreCase)
@@ -3336,7 +3363,7 @@ xppclassMember      : Member=xppmethodvis                           #xppclsvisib
                                      (ParamList=parameterList)?                            // Optional Parameters
                                      (AS Type=datatype)?                                   // NEW Optional return type
                                      // no type constraints
-                                     // no calling convention
+                                     (UDCSEP ExpressionBody=expression)?                   // New: Expression Body
                                      end=eos
                                      StmtBlk=statementBlock
                                      (END METHOD eos)?
@@ -3388,6 +3415,7 @@ xppclassMember      : Member=xppmethodvis                           #xppclsvisib
                                      (AS Type=datatype)?                                   // NEW Optional return type
                                      // no type constraints
                                      // no calling convention
+                                     (UDCSEP ExpressionBody=expression)?                   // New: Expression Body
                                      END=eos
                                      StmtBlk=statementBlock
                                      (END METHOD eos)?

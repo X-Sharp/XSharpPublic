@@ -18,6 +18,7 @@ using System.Windows.Media;
 using XSharpModel;
 using System.Windows.Controls;
 using Microsoft.VisualStudio.Text.Classification;
+using XSharpLanguage;
 //using Microsoft.VisualStudio.Text.Adornments;
 namespace XSharp.Project
 {
@@ -122,33 +123,30 @@ namespace XSharp.Project
                 TextExtent extent = navigator.GetExtentOfWord(subjectTriggerPoint.Value);
                 string searchText = extent.Span.GetText();
 
-                // First, where are we ?
-                int caretPos = subjectTriggerPoint.Value.Position;
-                int lineNumber = subjectTriggerPoint.Value.GetContainingLine().LineNumber;
+                // find next delimiter, so we will include the whole word in the search
+                var ssp = XSharpTokenTools.FindEndOfCurrentToken(subjectTriggerPoint.Value, currentSnapshot);
+                int caretPos = ssp.Position+1;
+
+                int lineNumber = ssp.GetContainingLine().LineNumber;
                 var snapshot = session.TextView.TextBuffer.CurrentSnapshot;
                 if (_file == null)
                     return;
                 // Then, the corresponding Type/Element if possible
                 IToken stopToken;
                 //ITokenStream tokenStream;
-                XMemberDefinition member = XSharpLanguage.XSharpTokenTools.FindMember(lineNumber, _file);
-                XTypeDefinition currentNamespace = XSharpLanguage.XSharpTokenTools.FindNamespace(caretPos, _file);
+                XMemberDefinition member = XSharpTokenTools.FindMember(lineNumber, _file);
+                XTypeDefinition currentNamespace = XSharpTokenTools.FindNamespace(caretPos, _file);
                 // adjust caretpos, for other completions we need to stop before the caret. Now we include the caret
-                List<String> tokenList = XSharpLanguage.XSharpTokenTools.GetTokenList(caretPos + 1, lineNumber, tokens.TokenStream, out stopToken, true, _file, false, member);
-                // Check if we can get the member where we are
-                //if (tokenList.Count > 1)
-                //{
-                //    tokenList.RemoveRange(0, tokenList.Count - 1);
-                //}
+                var tokenList = XSharpTokenTools.GetTokenList(caretPos , lineNumber, tokens.TokenStream, out stopToken, _file, false, member);
                 // LookUp for the BaseType, reading the TokenList (From left to right)
-                XSharpLanguage.CompletionElement gotoElement;
+                CompletionElement gotoElement;
                 string currentNS = "";
                 if (currentNamespace != null)
                 {
                     currentNS = currentNamespace.Name;
                 }
 
-                XSharpModel.CompletionType cType = XSharpLanguage.XSharpTokenTools.RetrieveType(_file, tokenList, member, currentNS, stopToken, out gotoElement, snapshot, lineNumber, _file.Project.Dialect);
+                var cType = XSharpTokenTools.RetrieveType(_file, tokenList, member, currentNS, stopToken, out gotoElement, snapshot, lineNumber, _file.Project.Dialect);
                 //
                 //
                 if ((gotoElement != null) && (gotoElement.IsInitialized))
@@ -391,20 +389,20 @@ namespace XSharp.Project
                 {
                     List<Inline> content = new List<Inline>();
 
-                    if (this.Modifiers != XSharpModel.Modifiers.None)
+                    if (this.Type.Modifiers != XSharpModel.Modifiers.None)
                     {
-                        content.addKeyword(XSettings.FormatKeyword(this.Modifiers) + " ");
+                        content.addKeyword(XSettings.FormatKeyword(this.Type.ModifiersKeyword) + " ");
                     }
-                    content.addKeyword(XSettings.FormatKeyword(this.Visibility) + " ");
+                    content.addKeyword(XSettings.FormatKeyword(this.Type.VisibilityKeyword) + " ");
                     //
                     if (this.IsStatic)
                     {
                         content.addKeyword(XSettings.FormatKeyword("STATIC "));
                     }
                     //
-                    if (this.Kind != XSharpModel.Kind.Field)
+                    if (this.Type.Kind != XSharpModel.Kind.Field)
                     {
-                        content.addKeyword(XSettings.FormatKeyword(this.Kind) + " ");
+                        content.addKeyword(XSettings.FormatKeyword(this.Type.KindKeyword) + " ");
                     }
                     //
                     content.addText(this.Prototype);
@@ -425,12 +423,10 @@ namespace XSharp.Project
 
         internal class QuickInfoMemberAnalysis : XSharpLanguage.MemberAnalysis
         {
-            IXMember _member;
             internal QuickInfoMemberAnalysis(IXMember member, Brush kw, Brush txt) : base(member)
             {
                 QuickInfoHelpers.kwBrush = kw;
                 QuickInfoHelpers.txtBrush = txt;
-                _member = member;
             }
 
             public List<Inline> WPFDescription
@@ -439,20 +435,20 @@ namespace XSharp.Project
                 {
                     List<Inline> content = new List<Inline>();
 
-                    if (this.Modifiers != XSharpModel.Modifiers.None)
+                    if (this.Member.Modifiers != XSharpModel.Modifiers.None)
                     {
-                        content.addKeyword(XSettings.FormatKeyword(this.Modifiers) + " ");
+                        content.addKeyword(XSettings.FormatKeyword(this.Member.ModifiersKeyword) + " ");
                     }
-                    content.addKeyword(XSettings.FormatKeyword(this.Visibility) + " ");
+                    content.addKeyword(XSettings.FormatKeyword(this.Member.VisibilityKeyword) + " ");
                     //
-                    if ((this.IsStatic) && ((this.Kind != Kind.Function) && (this.Kind != Kind.Procedure)))
+                    if ((this.Member.IsStatic) && ((this.Member.Kind != Kind.Function) && (this.Member.Kind != Kind.Procedure)))
                     {
                         content.addKeyword(XSettings.FormatKeyword("STATIC "));
                     }
                     //
-                    if ((this.Kind != XSharpModel.Kind.Field) && (this.Kind != XSharpModel.Kind.Constructor))
+                    if ((this.Member.Kind != XSharpModel.Kind.Field) && (this.Member.Kind != XSharpModel.Kind.Constructor))
                     {
-                        content.addKeyword(XSettings.FormatKeyword(this.Kind) + " ");
+                        content.addKeyword(XSettings.FormatKeyword(this.Member.KindKeyword) + " ");
                     }
                     //
                     content.AddRange(this.WPFPrototype);
@@ -467,12 +463,12 @@ namespace XSharp.Project
                 get
                 {
                     List<Inline> content = new List<Inline>();
-                    if (this.Kind.HasParameters())
+                    if (this.Member.Kind.HasParameters())
                     {
                         content.addText(this.Name);
-                        content.addKeyword(this.Kind == XSharpModel.Kind.Constructor ? "{" : "(");
+                        content.addKeyword(this.Member.Kind == XSharpModel.Kind.Constructor ? "{" : "(");
                         bool first = true;
-                        foreach (var var in this.Parameters)
+                        foreach (var var in this.Member.Parameters)
                         {
                             if (! first)
                             {
@@ -483,14 +479,14 @@ namespace XSharp.Project
                             content.addKeyword(var.ParamTypeDesc + " ");
                             content.addKeyword(var.TypeName);
                         }
-                        content.addKeyword(this.Kind == XSharpModel.Kind.Constructor ? "}" : ")");
+                        content.addKeyword(this.Member.Kind == XSharpModel.Kind.Constructor ? "}" : ")");
                     }
                     //
                     if (!String.IsNullOrEmpty(this.Value))
                     {
                         content.addText(" := " + this.Value);
                     }
-                    if (this.Kind.HasReturnType())
+                    if (this.Member.Kind.HasReturnType())
                     {
                         content.addReturnType(this.TypeName);
                     }
@@ -559,22 +555,17 @@ namespace XSharp.Project
                     int len = 0;
                     if (this.typeMember.Modifiers != Modifiers.None)
                     {
-                        text = XSettings.FormatKeyword(this.typeMember.Modifiers) + " ";
+                        text = XSettings.FormatKeyword(this.typeMember.ModifiersKeyword) + " ";
                         content.addKeyword(text);
                         len += text.Length;
                     }
-                    text = XSettings.FormatKeyword(this.typeMember.Visibility) + " ";
+                    text = XSettings.FormatKeyword(this.typeMember.VisibilityKeyword) + " ";
                     len += text.Length;
                     content.addKeyword(text);
                     //
                     if (this.typeMember.Kind != XSharpModel.Kind.Field)
                     {
-                        string kind = this.typeMember.Kind.ToString();
-                        if (kind.StartsWith("vo", StringComparison.OrdinalIgnoreCase))
-                        {
-                            kind = kind.Substring(2);
-                        }
-                        text = XSettings.FormatKeyword(kind) + " ";
+                        text = XSettings.FormatKeyword(this.typeMember.KindKeyword) + " ";
                         len += text.Length;
                         content.addKeyword(text);
                     }

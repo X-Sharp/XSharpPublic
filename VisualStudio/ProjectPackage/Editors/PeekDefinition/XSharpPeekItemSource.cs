@@ -38,23 +38,26 @@ namespace XSharp.Project
                 }
                 //
                 var triggerPoint = tp.Value;
+                // Make sure we include the  closing ( or {
+                triggerPoint = XSharpTokenTools.FindEndOfCurrentToken(triggerPoint, _textBuffer.CurrentSnapshot);
+                var lineNumber = triggerPoint.GetContainingLine().LineNumber;
+                var caretPos = triggerPoint.Position ;
                 IToken stopToken;
                 //
                 // Check if we can get the member where we are
-                XMemberDefinition member = XSharpLanguage.XSharpTokenTools.FindMember(triggerPoint.GetContainingLine().LineNumber, _file);
-                XTypeDefinition currentNamespace = XSharpLanguage.XSharpTokenTools.FindNamespace(triggerPoint.Position, _file);
+                XMemberDefinition member = XSharpTokenTools.FindMember(triggerPoint.GetContainingLine().LineNumber, _file);
+                XTypeDefinition currentNamespace = XSharpTokenTools.FindNamespace(triggerPoint.Position, _file);
 
-                var lineNumber = triggerPoint.GetContainingLine().LineNumber;
                 var snapshot = _textBuffer.CurrentSnapshot;
-                List<String> tokenList = XSharpTokenTools.GetTokenList(triggerPoint.Position, lineNumber, snapshot, out stopToken, true, _file, false, member);
+                var tokenList = XSharpTokenTools.GetTokenList(caretPos, lineNumber, snapshot, out stopToken, _file, false, member);
                 // LookUp for the BaseType, reading the TokenList (From left to right)
                 CompletionElement gotoElement;
-                String currentNS = "";
+                string currentNS = "";
                 if (currentNamespace != null)
                 {
                     currentNS = currentNamespace.Name;
                 }
-                CompletionType cType = XSharpLanguage.XSharpTokenTools.RetrieveType(_file, tokenList, member, currentNS, stopToken, out gotoElement, snapshot, lineNumber, _file.Project.Dialect);
+                CompletionType cType = XSharpTokenTools.RetrieveType(_file, tokenList, member, currentNS, stopToken, out gotoElement, snapshot, lineNumber, _file.Project.Dialect);
                 //
                 if ((gotoElement != null) && (gotoElement.IsSourceElement))
                 {

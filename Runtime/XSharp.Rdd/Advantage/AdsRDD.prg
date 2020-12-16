@@ -209,6 +209,9 @@ PROTECTED METHOD _FieldSub() AS LOGIC
         CASE AdsFieldType.NCHAR
         CASE AdsFieldType.NVARCHAR
             fi:FieldType := DbFieldType.Character
+        CASE AdsFieldType.GUID
+            fi:FieldType := DbFieldType.Character
+            fi:Length := 36
         CASE AdsFieldType.MEMO
         CASE AdsFieldType.BINARY
         CASE AdsFieldType.IMAGE

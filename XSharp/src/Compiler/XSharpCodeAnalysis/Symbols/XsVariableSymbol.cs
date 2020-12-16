@@ -54,12 +54,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
 
         public override RefKind RefKind => RefKind.None;
 
-        public override TypeSymbol Type => _type;
+        public override TypeWithAnnotations TypeWithAnnotations => _type;
         public override string Name => _name;
         public string Alias => _alias;
         public bool HasAlias => !string.IsNullOrEmpty(_alias);
 
-        public override ImmutableArray<CustomModifier> TypeCustomModifiers => ImmutableArray<CustomModifier>.Empty;
+        //public override ImmutableArray<CustomModifier> TypeCustomModifiers => ImmutableArray<CustomModifier>.Empty;
 
         public override ImmutableArray<CustomModifier> RefCustomModifiers => ImmutableArray<CustomModifier>.Empty;
 

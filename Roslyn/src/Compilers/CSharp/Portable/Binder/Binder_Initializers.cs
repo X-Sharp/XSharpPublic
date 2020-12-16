@@ -99,28 +99,25 @@ namespace Microsoft.CodeAnalysis.CSharp
                         SyntaxReference syntaxRef = initializer.Syntax;
 
                         switch (syntaxRef.GetSyntax())
-						{
-#if XSHARP
-                        if (syntaxRef.GetSyntax().IsKind(SyntaxKind.VariableDeclarator) || syntaxRef.GetSyntax().IsKind(SyntaxKind.PropertyDeclaration))
                         {
-                            // note that inside SourceMemberContailerSymbol we have added initializers of the wrong type
-                            // we handle that here and create the BoundFieldEqualValue wanted by Roslyn
-                            var variable = (CSharpSyntaxNode)syntaxRef.GetSyntax();
-                            if (binderFactory == null) binderFactory = compilation.GetBinderFactory(syntaxRef.SyntaxTree);
-                            Binder pb = binderFactory.GetBinder(variable);
-                            Debug.Assert(pb.ContainingMemberOrLambda == fieldSymbol.ContainingType || fieldSymbol.ContainingType.IsImplicitClass);
-                            if (firstDebugImports == null) firstDebugImports = pb.ImportChain;
-                            TypeSymbol type = fieldSymbol.Type;
-                            var cv = ConstantValue.Create("", type.SpecialType);
+#if XSHARP
+                        	case VariableDeclaratorSyntax variable:
+                                // note that inside SourceMemberContainerSymbol we have added initializers of the wrong type
+                                // we handle that here and create the BoundFieldEqualValue wanted by Roslyn
+                                if (binderFactory == null) binderFactory = compilation.GetBinderFactory(syntaxRef.SyntaxTree);
+	                            Binder pb = binderFactory.GetBinder(variable);
+	                            Debug.Assert(pb.ContainingMemberOrLambda == fieldSymbol.ContainingType || fieldSymbol.ContainingType.IsImplicitClass);
+	                            if (firstDebugImports == null) firstDebugImports = pb.ImportChain;
+	                            TypeSymbol type = fieldSymbol.Type;
+	                            var cv = ConstantValue.Create("", type.SpecialType);
                             
-                            var eqvalue = new BoundFieldEqualsValue(variable,
-                                fieldSymbol,
-                                ImmutableArray<LocalSymbol>.Empty,
-                                new BoundLiteral(variable, cv, type) { WasCompilerGenerated = true }
-                                ) { WasCompilerGenerated = true };
-                            boundInitializers.Add(eqvalue);
-                            continue;
-                        }
+	                            var eqvalue = new BoundFieldEqualsValue(variable,
+	                                fieldSymbol,
+	                                ImmutableArray<LocalSymbol>.Empty,
+	                                new BoundLiteral(variable, cv, type) { WasCompilerGenerated = true }
+	                                ) { WasCompilerGenerated = true };
+	                            boundInitializers.Add(eqvalue);
+	                            break;
 #endif
                             case EqualsValueClauseSyntax initializerNode:
                                 if (binderFactory == null)

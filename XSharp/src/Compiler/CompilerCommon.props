@@ -8,7 +8,6 @@
 
   <PropertyGroup>
     <Platform Condition="'$(Platform)' == ''">AnyCPU</Platform>
-    <PlatformTarget>AnyCPU</PlatformTarget>
     <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
     <!-- Note: All directories in this list end with a back slash, with the exception of the ZipsDir -->
     <DevPublicDir>$(Solutiondir)..\..\DevPublic\</DevPublicDir>
@@ -21,17 +20,14 @@
     <CscSource>$(RoslynSrc)Compilers\CSharp\csc\</CscSource>
     <ServerSource>$(RoslynSrc)Compilers\Server\</ServerSource>
     <CSharpSource>$(RoslynSrc)Compilers\CSharp\Portable\</CSharpSource>
-    <PlatformTarget>AnyCPU</PlatformTarget>
     <AssemblyOriginatorKeyFile>$(Solutiondir)src\commmon\XSharp.snk</AssemblyOriginatorKeyFile>
-    <Langversion>latest</Langversion>
-    <RoslynProjectType>XSharp</RoslynProjectType>
-    <DeveloperBuild>true</DeveloperBuild>
-    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <Langversion>preview</Langversion>
+    <GenerateAssemblyInfo>true</GenerateAssemblyInfo>
     <UseRoslynAnalyzers>false</UseRoslynAnalyzers>
-    <GenerateMicrosoftCodeAnalysisCommitHashAttribute>false</GenerateMicrosoftCodeAnalysisCommitHashAttribute>
-    <BinariesDir>$(Solutiondir)Binaries\$(Configuration)\</BinariesDir>
-    <ZipsDir>$(Solutiondir)Binaries\Zips</ZipsDir>
-    <GeneratedCompilerPath>$(Solutiondir)Binaries\$(Configuration)\Exes\csc\net46\</GeneratedCompilerPath>
+    <GenerateMicrosoftCodeAnalysisCommitHashAttribute>true</GenerateMicrosoftCodeAnalysisCommitHashAttribute>
+    <BinariesDir>$(Solutiondir)Artifacts\bin\</BinariesDir>
+    <ZipsDir>$(Solutiondir)Artifacts\Zips</ZipsDir>
+    <GeneratedCompilerPath>$(BinariesDir)csc\$(Configuration)\net472\</GeneratedCompilerPath>
     <XscToolPath Condition="'$(XscToolPath)' == '' ">$(BinariesDir)Exes\xsc\net46\</XscToolPath>
     <EnableBaseIntermediateOutputPathMismatchWarning>false</EnableBaseIntermediateOutputPathMismatchWarning>
 	<RuntimeFilesDir Condition="'$(RuntimeFilesDir)' == '' ">$(DevRtDir)Binaries\Debug\</RuntimeFilesDir>

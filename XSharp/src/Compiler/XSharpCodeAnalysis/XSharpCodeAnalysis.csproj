@@ -3,13 +3,13 @@
   <Import Project="..\CompilerCommon.props" />
   <PropertyGroup>
     <OutputType>Library</OutputType>
+    <TargetFrameworks>netcoreapp3.1;netstandard2.0</TargetFrameworks>
     <RootNamespace>LanguageService.CodeAnalysis</RootNamespace>
     <AssemblyName>XSharp.CodeAnalysis</AssemblyName>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <TargetFramework>netstandard1.3</TargetFramework>
-    <ServiceablePackage>true</ServiceablePackage>
     <NoWarn>1591,CS0649,CS8032,CS3021,RS0008,CS1574,CS0419,CS3008,CS3005,CS3001,CS3002,CS3015,</NoWarn> 
     <!--<CodeAnalysisRuleSet>$(RoslynSrc)\Compilers\CSharp\CSharpCodeAnalysisRules.ruleset</CodeAnalysisRuleSet>-->
+    <NoStdLib>true</NoStdLib>
     <GenerateMicrosoftCodeAnalysisCommitHashAttribute>false</GenerateMicrosoftCodeAnalysisCommitHashAttribute>
     <!-- This is required to prevent downgrade references from CscCore/VbcCode since we must
          reference Microsoft.NETCore.App to target the shared framework (bug
@@ -25,7 +25,7 @@
     <!--Use the C# compiler created in this solution-->
     <CscToolPath>$(GeneratedCompilerPath)</CscToolPath>
     <CheckForOverflowUnderflow>true</CheckForOverflowUnderflow>
-    <GenericDefines>COMPILERCORE;NET45PLUS;NET40PLUS;NET35PLUS;PORTABLE</GenericDefines>
+    <GenericDefines>COMPILERCORE;NET45PLUS;NET40PLUS;NET35PLUS;PORTABLE;NETSTANDARD20</GenericDefines>
     <Configurations>Debug;Release;Public</Configurations>
   </PropertyGroup>
   
@@ -42,11 +42,7 @@
     <RunPostBuildEvent>OnOutputUpdated</RunPostBuildEvent>
     <DefineConstants>$(Genericdefines);XSHARP;NDEBUG;TRACE;</DefineConstants>
   </PropertyGroup>
-  <ItemGroup Label="Project References">
-    <PackageReference Include="System.Threading.Tasks.Parallel" Version="$(SystemThreadingTasksParallelVersion)" />
-    <PackageReference Include="System.Linq.Expressions" Version="$(SystemLinqExpressionsVersion)" />
-  </ItemGroup>
-  
+   
   <ItemGroup>
     <Compile Include="..\..\Common\CommonAssemblyInfo.cs">
       <Link>Properties\CommonAssemblyInfo.cs</Link>
@@ -86,10 +82,6 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>XSharpResources.resx</DependentUpon>
     </Compile>
-    <Compile Include="$(SharedSource)CoreClrShim.cs" Link="InternalUtilities\CoreClrShim.cs" />
-    <Compile Include="$(SharedSource)DesktopShim.cs">
-      <Link>DesktopShim.cs</Link>
-    </Compile>
     <Compile Update="CodeAnalysisResources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -97,15 +89,13 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Microsoft.DiaSymReader.Native" Version="$(MicrosoftDiaSymReaderNativeVersion)" />
-    <PackageReference Include="System.Diagnostics.FileVersionInfo" Version="$(SystemDiagnosticsFileVersionInfoVersion)" />
-    <PackageReference Include="System.Xml.XmlDocument" Version="$(SystemXmlXmlDocumentVersion)" />
-    <PackageReference Include="System.Xml.XPath.XDocument" Version="$(SystemXmlXPathXDocumentVersion)" />
+    <PackageReference Include="Microsoft.CodeAnalysis.Analyzers" Version="$(MicrosoftCodeAnalysisAnalyzersVersion)" Condition="'$(DotNetBuildFromSource)' != 'true'" PrivateAssets="ContentFiles" />
     <PackageReference Include="System.Collections.Immutable" Version="$(SystemCollectionsImmutableVersion)" />
+    <PackageReference Include="System.Memory" Version="$(SystemMemoryVersion)" />
     <PackageReference Include="System.Reflection.Metadata" Version="$(SystemReflectionMetadataVersion)" />
-    <PackageReference Include="System.Text.Encoding.CodePages" Version="$(SystemTextEncodingCodePagesVersion)" />
+    <PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="$(SystemRuntimeCompilerServicesUnsafeVersion)" />
     <PackageReference Include="System.Threading.Tasks.Extensions" Version="$(SystemThreadingTasksExtensionsVersion)" />
-    <PackageReference Include="System.ValueTuple" Version="$(SystemValueTupleVersion)" />
+    <PackageReference Include="System.Text.Encoding.CodePages" Version="$(SystemTextEncodingCodePagesVersion)" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="$(CSharpSource)BoundTree\BoundNodes.xml" />
@@ -113,7 +103,6 @@
     <Content Include="$(CSharpSource)UseSiteDiagnosticsCheckEnforcer\BaseLine.txt" />
     <Content Include="$(CSharpSource)UseSiteDiagnosticsCheckEnforcer\Run.bat" />
     <None Include="$(CSharpSource)FlowAnalysis\Flow Analysis Design.docx" />
-    <None Include="$(CSharpSource)Symbols\PublicSymbolTable.cd" />
     <None Include="$(CSharpSource)..\CSharpCodeAnalysisRules.ruleset">
       <SubType>Designer</SubType>
     </None>

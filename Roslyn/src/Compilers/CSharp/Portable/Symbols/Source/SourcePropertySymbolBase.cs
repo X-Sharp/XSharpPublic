@@ -13,10 +13,16 @@ using Microsoft.CodeAnalysis.CSharp.Emit;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.PooledObjects;
 using Roslyn.Utilities;
-
+#if XSHARP
+using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
+#endif
 namespace Microsoft.CodeAnalysis.CSharp.Symbols
 {
+#if XSHARP
+    internal abstract partial class SourcePropertySymbolBase : PropertySymbol, IAttributeTargetSymbol
+#else
     internal abstract class SourcePropertySymbolBase : PropertySymbol, IAttributeTargetSymbol
+#endif	
     {
         /// <summary>
         /// Condensed flags storing useful information about the <see cref="SourcePropertySymbolBase"/>
@@ -278,7 +284,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
 
                 _refCustomModifiers = ImmutableArray.Create(CSharpCustomModifier.CreateRequired(modifierType));
             }
-
+#if XSHARP
+	            else /*if (this.IsVirtual)*/ {
+	                _modifiers &= ~DeclarationModifiers.Override;
+	            }
+                validateProperty(overriddenOrImplementedProperty, diagnostics,location);
+#endif
             if (!hasAccessorList && arrowExpression != null)
             {
                 Debug.Assert(arrowExpression is object);
@@ -677,7 +688,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
 
         internal bool IsAutoProperty
             => (_propertyFlags & Flags.IsAutoProperty) != 0;
+#if XSHARP
 
+        public override bool IsIndexedProperty
+        {
+            get { return _isIndexedProperty; }
+        }
+#endif
         /// <summary>
         /// Backing field for automatically implemented property, or
         /// for a property with an initializer.
@@ -787,16 +804,22 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                 // Static member '{0}' cannot be marked 'readonly'.
                 diagnostics.Add(ErrorCode.ERR_StaticMemberCantBeReadOnly, location, this);
             }
+#if XSHARP
+            else if (IsOverride && IsNew)
+#else
             else if (IsOverride && (IsNew || IsVirtual))
+#endif
             {
                 // A member '{0}' marked as override cannot be marked as new or virtual
                 diagnostics.Add(ErrorCode.ERR_OverrideNotNew, location, this);
             }
+#if !XSHARP // TODO nvk: Possibly add this check after the other errors have been added, only if /vo3 is not used (it is a warning in X#)
             else if (IsSealed && !IsOverride && !(IsAbstract && isExplicitInterfaceImplementationInInterface))
             {
                 // '{0}' cannot be sealed because it is not an override
                 diagnostics.Add(ErrorCode.ERR_SealedNonOverride, location, this);
             }
+#endif
             else if (IsAbstract && ContainingType.TypeKind == TypeKind.Struct)
             {
                 // The modifier '{0}' is not valid for this item

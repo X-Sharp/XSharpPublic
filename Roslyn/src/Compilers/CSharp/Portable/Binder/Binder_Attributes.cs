@@ -179,7 +179,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 {
                     Error(diagnostics, ErrorCode.ERR_AttributeCtorInParameter, node, attributeConstructor.ToDisplayString(SymbolDisplayFormat.CSharpErrorMessageFormat));
                 }
-
+             }
 #if XSHARP
             if (attributeType == Compilation.GetWellKnownType(WellKnownType.XSharp_Internal_DefaultParameterValueAttribute) && analyzedArguments.ConstructorArguments.Arguments.Count == 2)
             {
@@ -193,8 +193,8 @@ namespace Microsoft.CodeAnalysis.CSharp
                         ca[1] = new BoundLiteral(ca[1].Syntax, ConstantValue.Create(5), Compilation.GetSpecialType(SpecialType.System_Int32));
                     }
                 }
-#endif
             }
+#endif
             var constructorArguments = analyzedArguments.ConstructorArguments;
             ImmutableArray<BoundExpression> boundConstructorArguments = constructorArguments.Arguments.ToImmutableAndFree();
             ImmutableArray<string> boundConstructorArgumentNamesOpt = constructorArguments.GetNames();

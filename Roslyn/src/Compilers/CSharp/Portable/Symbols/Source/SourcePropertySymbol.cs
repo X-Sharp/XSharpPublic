@@ -250,13 +250,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                 diagnostics);
         }
 
-#if XSHARP
-	// TODO RvdH
-	            else /*if (this.IsVirtual)*/ {
-	                _modifiers &= ~DeclarationModifiers.Override;
-	            }
-                validateProperty(overriddenOrImplementedProperty, diagnostics,location);
-#endif
 
         private static DeclarationModifiers MakeModifiers(
             NamedTypeSymbol containingType,
@@ -502,68 +495,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
 
             return parameters;
         }
-/*
-TODO RvdH
-        private void CheckModifiers(Location location, bool isIndexer, DiagnosticBag diagnostics)
-        {
-            if (this.DeclaredAccessibility == Accessibility.Private && (IsVirtual || IsAbstract || IsOverride))
-            {
-                diagnostics.Add(ErrorCode.ERR_VirtualPrivate, location, this);
-            }
-            else if (IsStatic && (IsOverride || IsVirtual || IsAbstract))
-            {
-                // A static member '{0}' cannot be marked as override, virtual, or abstract
-                diagnostics.Add(ErrorCode.ERR_StaticNotVirtual, location, this);
-            }
-#if XSHARP
-            else if (IsOverride && IsNew)
-#else
-            else if (IsOverride && (IsNew || IsVirtual))
-#endif
-            {
-                // A member '{0}' marked as override cannot be marked as new or virtual
-                diagnostics.Add(ErrorCode.ERR_OverrideNotNew, location, this);
-            }
-#if !XSHARP // TODO nvk: Possibly add this check after the other errors have been added, only if /vo3 is not used (it is a warning in X#)
-            else if (IsSealed && !IsOverride)
-            {
-                // '{0}' cannot be sealed because it is not an override
-                diagnostics.Add(ErrorCode.ERR_SealedNonOverride, location, this);
-            }
-#endif
-            else if (IsAbstract && ContainingType.TypeKind == TypeKind.Struct)
-            {
-                // The modifier '{0}' is not valid for this item
-                diagnostics.Add(ErrorCode.ERR_BadMemberFlag, location, SyntaxFacts.GetText(SyntaxKind.AbstractKeyword));
-            }
-            else if (IsVirtual && ContainingType.TypeKind == TypeKind.Struct)
-            {
-                // The modifier '{0}' is not valid for this item
-                diagnostics.Add(ErrorCode.ERR_BadMemberFlag, location, SyntaxFacts.GetText(SyntaxKind.VirtualKeyword));
-            }
-            else if (IsAbstract && IsExtern)
-            {
-                diagnostics.Add(ErrorCode.ERR_AbstractAndExtern, location, this);
-            }
-            else if (IsAbstract && IsSealed)
-            {
-                diagnostics.Add(ErrorCode.ERR_AbstractAndSealed, location, this);
-            }
-            else if (IsAbstract && IsVirtual)
-            {
-                diagnostics.Add(ErrorCode.ERR_AbstractNotVirtual, location, this.Kind.Localize(), this);
-            }
-            else if (ContainingType.IsSealed && this.DeclaredAccessibility.HasProtected() && !this.IsOverride)
-            {
-                diagnostics.Add(AccessCheck.GetProtectedMemberInSealedTypeError(ContainingType), location, this);
-            }
-            else if (ContainingType.IsStatic && !IsStatic)
-            {
-                ErrorCode errorCode = isIndexer ? ErrorCode.ERR_IndexerInStaticClass : ErrorCode.ERR_InstanceMemberInStaticClass;
-                diagnostics.Add(errorCode, location, this);
-            }
-        }
-*/
         protected override ImmutableArray<ParameterSymbol> ComputeParameters(Binder? binder, CSharpSyntaxNode syntax, DiagnosticBag diagnostics)
         {
             binder ??= CreateBinderForTypeAndParameters();

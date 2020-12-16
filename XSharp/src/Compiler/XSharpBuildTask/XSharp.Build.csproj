@@ -1,19 +1,21 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk">
+   <Import Project="$(RepositoryEngineeringDir)targets\GenerateCompilerExecutableBindingRedirects.targets" />
   <Import Project="..\CompilerCommon.props" />
   <PropertyGroup>
-    <MinimumVisualStudioVersion>14.0</MinimumVisualStudioVersion>
+    <MinimumVisualStudioVersion>15.0</MinimumVisualStudioVersion>
     <Platform Condition="'$(Platform)' == ''">AnyCPU</Platform>
     <PlatformTarget>AnyCPU</PlatformTarget>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>XSharp.Build</RootNamespace>
     <AssemblyName>XSharp.Build</AssemblyName>
-    <TargetFramework>net46</TargetFramework>
+    <TargetFramework>net472</TargetFramework>
     <DefaultLanguage>en-US</DefaultLanguage>
     <GenerateMicrosoftCodeAnalysisCommitHashAttribute>false</GenerateMicrosoftCodeAnalysisCommitHashAttribute>
     <DebugSymbols>true</DebugSymbols>
     <ErrorReport>prompt</ErrorReport>
+    <Nullable>disable</Nullable>
     <Configurations>Debug;Release;Public</Configurations>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -33,6 +35,12 @@
     </Compile>
     <Compile Include="$(CoreSource)InternalUtilities\CompilerOptionParseUtilities.cs">
       <Link>CompilerOptionParseUtilities.cs</Link>
+    </Compile>
+    <Compile Include="$(CoreSource)InternalUtilities\RoslynString.cs">
+      <Link>RoslynString.cs</Link>
+    </Compile>
+    <Compile Include="$(CoreSource)InternalUtilities\NullableAttributes.cs">
+      <Link>NullableAttributes.cs</Link>
     </Compile>
 
   </ItemGroup>
@@ -118,11 +126,11 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Microsoft.Build" Version="$(MicrosoftBuildFixedVersion)" />
-    <PackageReference Include="Microsoft.Build.Tasks.Core" Version="$(MicrosoftBuildTasksCoreFixedVersion)" />
-    <PackageReference Include="Microsoft.Win32.Registry" Version="4.3.0" />
-    <PackageReference Include="System.IO.Pipes.AccessControl" Version="$(SystemIOPipesAccessControlVersion)" Condition="'$(TargetFramework)' == 'netcoreapp2.0'" />
-    <PackageReference Include="System.Security.AccessControl" Version="$(SystemSecurityAccessControlVersion)" Condition="'$(TargetFramework)' == 'netcoreapp2.0'" />
+    <PackageReference Include="Microsoft.Build.Framework" Version="$(MicrosoftBuildFrameworkVersion)" ExcludeAssets="Runtime" />
+    <PackageReference Include="Microsoft.Build.Tasks.Core" Version="$(MicrosoftBuildTasksCoreVersion)" ExcludeAssets="Runtime" />
+    <PackageReference Include="System.IO.Pipes.AccessControl" Version="$(SystemIOPipesAccessControlVersion)" Condition="'$(TargetFramework)' == 'netcoreapp3.1'" />
+     <PackageReference Include="Microsoft.Win32.Registry" Version="4.3.0" />
+    <PackageReference Include="System.Security.AccessControl" Version="$(SystemSecurityAccessControlVersion)" Condition="'$(TargetFramework)' == 'netcoreapp3.1'" />
   </ItemGroup>
   <Target Name="DeleteMsFiles" AfterTargets="Build">
     <ItemGroup>

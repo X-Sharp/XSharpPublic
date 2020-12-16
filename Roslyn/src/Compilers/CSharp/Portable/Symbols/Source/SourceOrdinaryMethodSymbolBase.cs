@@ -166,12 +166,18 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                     // on the assumption that they will be updated appropriately.
                     overriddenOrExplicitlyImplementedMethod = this.OverriddenMethod;
 
+#if XSHARP
+                    // additional checks to see if we are overriding clipper with non clipper etc.
+                    overriddenOrExplicitlyImplementedMethod = validateMethod(overriddenOrExplicitlyImplementedMethod, diagnostics, location);
+
+#else
                     if ((object)overriddenOrExplicitlyImplementedMethod != null)
                     {
                         CustomModifierUtils.CopyMethodCustomModifiers(overriddenOrExplicitlyImplementedMethod, this, out _lazyReturnType,
                                                                       out _lazyRefCustomModifiers,
                                                                       out _lazyParameters, alsoCopyParamsModifier: true);
                     }
+#endif
                 }
                 else if (RefKind == RefKind.RefReadOnly)
                 {
@@ -525,16 +531,22 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                 // A static member '{0}' cannot be marked as override, virtual, or abstract
                 diagnostics.Add(ErrorCode.ERR_StaticNotVirtual, location, this);
             }
+#if XSHARP
+            else if (IsOverride && IsNew)
+#else
             else if (IsOverride && (IsNew || IsVirtual))
+#endif
             {
                 // A member '{0}' marked as override cannot be marked as new or virtual
                 diagnostics.Add(ErrorCode.ERR_OverrideNotNew, location, this);
             }
+#if !XSHARP // TODO nvk: Possibly add this check after the other errors have been added, only if /vo3 is not used (it is a warning in X#)
             else if (IsSealed && !IsOverride && !(isExplicitInterfaceImplementationInInterface && IsAbstract))
             {
                 // '{0}' cannot be sealed because it is not an override
                 diagnostics.Add(ErrorCode.ERR_SealedNonOverride, location, this);
             }
+#endif
             else if (IsSealed && ContainingType.TypeKind == TypeKind.Struct)
             {
                 // The modifier '{0}' is not valid for this item
@@ -579,8 +591,17 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             }
             else if (IsVirtual && ContainingType.IsSealed)
             {
+#if XSHARP
+                // Disable warning when compiling with /vo3
+                if (!this.DeclaringCompilation.Options.VirtualInstanceMethods)
+                {
                 // '{0}' is a new virtual member in sealed type '{1}'
                 diagnostics.Add(ErrorCode.ERR_NewVirtualInSealed, location, this, ContainingType);
+                }
+#else
+                    // '{0}' is a new virtual member in sealed class '{1}'
+                diagnostics.Add(ErrorCode.ERR_NewVirtualInSealed, location, this, ContainingType);
+#endif
             }
             else if (!hasBody && IsAsync)
             {

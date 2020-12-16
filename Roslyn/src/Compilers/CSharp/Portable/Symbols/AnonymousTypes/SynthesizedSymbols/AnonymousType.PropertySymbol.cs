@@ -217,9 +217,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
 #if XSHARP
                 return ((object)other != null) && XSharpString.Equals(other.Name, this.Name)
                     && other.ContainingType.Equals(this.ContainingType, compareKind);
-#endif
+#else
                 return ((object)other != null) && other.Name == this.Name
                     && other.ContainingType.Equals(this.ContainingType, compareKind);
+#endif
             }
 
             public override int GetHashCode()

@@ -10,7 +10,6 @@
 
 namespace LanguageService.CodeAnalysis {
     using System;
-    using System.Reflection;
     
     
     /// <summary>
@@ -40,7 +39,7 @@ namespace LanguageService.CodeAnalysis {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("LanguageService.CodeAnalysis.XSharpResources", typeof(XSharpResources).GetTypeInfo().Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("LanguageService.CodeAnalysis.XSharpResources", typeof(XSharpResources).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -4526,7 +4525,7 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to An Expression Body return expression is not supported for methods / functions with untyped parameters..
+        ///   Looks up a localized string similar to An Expression Body is not supported for methods / functions with untyped parameters..
         /// </summary>
         internal static string ERR_ExpressionBodyClipperCallingConvention {
             get {

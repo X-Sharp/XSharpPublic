@@ -1,22 +1,17 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<!-- Copyright (c)  Microsoft.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information. -->
+<!-- Licensed to the .NET Foundation under one or more agreements. The .NET Foundation licenses this file to you under the MIT license. See the LICENSE file in the project root for more information. -->
 <Project Sdk="Microsoft.NET.Sdk">
-  <Import Project="..\..\..\build\Targets\GenerateCompilerExecutableBindingRedirects.targets" />
+  <Import Project="$(RepositoryEngineeringDir)targets\GenerateCompilerExecutableBindingRedirects.targets" />
   <Import Project="..\..\Compiler\CompilerCommon.props" />
   <PropertyGroup>
-    <ProductVersion>8.0.30703</ProductVersion>
     <OutputType>Exe</OutputType>
-    <RootNamespace>Microsoft.CodeAnalysis.CompilerServer</RootNamespace>
-    <AssemblyName>CSCompiler</AssemblyName>
     <LargeAddressAware>true</LargeAddressAware>
-    <TargetFrameworks>$(RoslynPortableTargetFrameworks)</TargetFrameworks>
-    <RuntimeIdentifiers>$(RoslynPortableRuntimeIdentifiers)</RuntimeIdentifiers>
-    <DefineConstants Condition="'$(TargetFramework)' == 'net46'">$(DefineConstants)NET46</DefineConstants>
-
+    <TargetFrameworks>netcoreapp3.1;net472</TargetFrameworks>
     <UseVSHostingProcess>false</UseVSHostingProcess>
     <ServerGarbageCollection>true</ServerGarbageCollection>
     <Configurations>Debug;Release;Public</Configurations>
-
+    <UseAppHost>false</UseAppHost>
+    <GenerateMicrosoftCodeAnalysisCommitHashAttribute>true</GenerateMicrosoftCodeAnalysisCommitHashAttribute>
   </PropertyGroup>
   <ItemGroup Label="Project References">
     <ProjectReference Include="..\CSharpCodeAnalysis\CSharpCodeAnalysis.csproj" />
@@ -31,39 +26,24 @@
     <DefineConstants>$(DefineConstants);XSHARPPRE;</DefineConstants>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="System.Configuration" Condition="'$(TargetFramework)' != 'netcoreapp2.0'" />
-    <PackageReference Include="System.IO.Pipes.AccessControl" Version="$(SystemIOPipesAccessControlVersion)" Condition="'$(TargetFramework)' == 'netcoreapp2.0'" />
+    <Reference Include="System.Configuration" Condition="'$(TargetFramework)' != 'netcoreapp3.1'" />
+    <PackageReference Include="System.IO.Pipes.AccessControl" Version="$(SystemIOPipesAccessControlVersion)" Condition="'$(TargetFramework)' == 'netcoreapp3.1'" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="$(SharedSource)BuildClient.cs">
-      <Link>BuildClient.cs</Link>
-    </Compile>
-    <Compile Include="$(SharedSource)BuildServerConnection.cs">
-      <Link>BuildServerConnection.cs</Link>
-    </Compile>
-    <Compile Include="$(SharedSource)CoreClrAnalyzerAssemblyLoader.cs">
-      <Link>CoreClrAnalyzerAssemblyLoader.cs</Link>
-    </Compile>
-    <Compile Include="$(SharedSource)DesktopAnalyzerAssemblyLoader.cs">
-      <Link>DesktopAnalyzerAssemblyLoader.cs</Link>
-    </Compile>
-    <Compile Include="$(SharedSource)DesktopBuildClient.cs">
-      <Link>DesktopBuildClient.cs</Link>
-    </Compile>
-    <Compile Include="$(SharedSource)ExitingTraceListener.cs">
-      <Link>ExitingTraceListener.cs</Link>
-    </Compile>
-    <Compile Include="$(SharedSource)ShadowCopyAnalyzerAssemblyLoader.cs">
-      <Link>ShadowCopyAnalyzerAssemblyLoader.cs</Link>
-    </Compile>
+    <Compile Include="$(SharedSource)RuntimeHostInfo.cs" />
+    <Compile Include="$(SharedSource)NamedPipeUtil.cs" />
+    <Compile Include="$(SharedSource)BuildClient.cs" />
+    <Compile Include="$(SharedSource)BuildServerConnection.cs" />
+    <Compile Include="$(SharedSource)ExitingTraceListener.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-	<Compile Include="$(ServerSource)VBCSCompiler\**\*.cs">
-		<Link>Server\%(RecursiveDir)\%(Filename).%(Extension)</Link>
-	</Compile>
+  <Compile Include="$(ServerSource)VBCSCompiler\**\*.cs">
+    <Link>Server\%(RecursiveDir)\%(Filename).%(Extension)</Link>
+  </Compile>
   </ItemGroup>
   <Import Project="$(CoreSource)..\CommandLine\CommandLine.projitems" Label="Shared" />
+  <Import Project="$(RepositoryEngineeringDir)targets\DiaSymReaderNative.targets" />
 </Project>

@@ -217,14 +217,17 @@ namespace Microsoft.CodeAnalysis.CSharp
                 _lazyParameterMap = parameterMap;
             }
 
+#if XSHARP
             foreach (var parameterSymbol in parameterMap[name])
             {
-#if XSHARP
                 if ((options & LookupOptions.MustBeInvocableIfMember) == 0 || parameterSymbol.Type.TypeKind == TypeKind.Delegate)
                 {
                     result.MergeEqual(originalBinder.CheckViability(parameterSymbol, arity, options, null, diagnose, ref useSiteDiagnostics));
                 }
+            }
 #else
+            foreach (var parameterSymbol in parameterMap[name])
+            {
                 result.MergeEqual(originalBinder.CheckViability(parameterSymbol, arity, options, null, diagnose, ref useSiteDiagnostics));
             }
 #endif

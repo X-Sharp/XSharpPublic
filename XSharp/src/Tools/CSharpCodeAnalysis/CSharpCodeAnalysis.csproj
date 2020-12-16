@@ -1,107 +1,64 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<!-- Copyright (c)  Microsoft.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information. -->
+<!-- Licensed to the .NET Foundation under one or more agreements. The .NET Foundation licenses this file to you under the MIT license. See the LICENSE file in the project root for more information. -->
 <Project Sdk="Microsoft.NET.Sdk">
   <Import Project="..\..\Compiler\CompilerCommon.props" />
   <PropertyGroup>
-    <Platform Condition="'$(Platform)' == ''">AnyCPU</Platform>
-    <PlatformTarget>AnyCPU</PlatformTarget>
     <OutputType>Library</OutputType>
+    <TargetFrameworks>netcoreapp3.1;netstandard2.0</TargetFrameworks>
     <RootNamespace>Microsoft.CodeAnalysis.CSharp</RootNamespace>
     <AssemblyName>CSharp.CodeAnalysis</AssemblyName>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <TargetFramework>netstandard1.3</TargetFramework>
-    <ServiceablePackage>true</ServiceablePackage>
     <DefineConstants>$(DefineConstants);COMPILERCORE;XSHARPPRE</DefineConstants>
-    <UseRoslynAnalyzers>false</UseRoslynAnalyzers>
     <CodeAnalysisRuleSet>$(CSharpSource)..\CSharpCodeAnalysisRules.ruleset</CodeAnalysisRuleSet>
+    <NoStdLib>true</NoStdLib>
     <GenerateMicrosoftCodeAnalysisCommitHashAttribute>true</GenerateMicrosoftCodeAnalysisCommitHashAttribute>
-    <!-- This is required to prevent downgrade references from CscCore/VbcCode since we must
-         reference Microsoft.NETCore.App to target the shared framework (bug
-         https://github.com/dotnet/sdk/issues/1159) and NETCore.App
-         contains a reference to C# + VB CodeAnalysis. This ensures that the project
-         reference is a higher version than the NuGet reference. -->
-    <Version>$(NuGetPerBuildPreReleaseVersion)</Version>
-    <Configurations>Debug;Release;Public</Configurations>
+    <ApplyNgenOptimization Condition="'$(TargetFramework)' == 'netstandard2.0'">partial</ApplyNgenOptimization>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'" />
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Public|AnyCPU'" />
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'" />
-  <ItemGroup Label="Project References">
-    <PackageReference Include="System.Threading.Tasks.Parallel" Version="$(SystemThreadingTasksParallelVersion)" />
-    <PackageReference Include="System.Linq.Expressions" Version="$(SystemLinqExpressionsVersion)" />
-  </ItemGroup>
+<ItemGroup>
+    <!--
+      Analyzers that will be used to analyze projects that references 
+      Microsoft.CodeAnalysis project or Microsoft.CodeAnalysis.Common package.
+      
+      Note: PrivateAssets="ContentFiles" ensures that projects referencing Microsoft.CodeAnalysis.Common package 
+      will import everything but content files from Microsoft.CodeAnalysis.Analyzers, specifically, analyzers.
+    -->
+    <PackageReference Include="Microsoft.CodeAnalysis.Analyzers" Version="$(MicrosoftCodeAnalysisAnalyzersVersion)" Condition="'$(DotNetBuildFromSource)' != 'true'" PrivateAssets="ContentFiles" />
+    <PackageReference Include="System.Collections.Immutable" Version="$(SystemCollectionsImmutableVersion)" />
+    <PackageReference Include="System.Memory" Version="$(SystemMemoryVersion)" />
+    <PackageReference Include="System.Reflection.Metadata" Version="$(SystemReflectionMetadataVersion)" />
+    <PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="$(SystemRuntimeCompilerServicesUnsafeVersion)" />
+    <PackageReference Include="System.Threading.Tasks.Extensions" Version="$(SystemThreadingTasksExtensionsVersion)" />
+    <PackageReference Include="System.Text.Encoding.CodePages" Version="$(SystemTextEncodingCodePagesVersion)" />
+  </ItemGroup>  
   <ItemGroup>
-    <Content Include="$(NuGetPackageRoot)\microsoft.diasymreader.native\$(MicrosoftDiaSymReaderNativeVersion)\runtimes\win\native\Microsoft.DiaSymReader.Native.x86.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      <Visible>false</Visible>
-    </Content>
-    <Content Include="$(NuGetPackageRoot)\microsoft.diasymreader.native\$(MicrosoftDiaSymReaderNativeVersion)\runtimes\win\native\Microsoft.DiaSymReader.Native.amd64.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      <Visible>false</Visible>
-    </Content>
-  </ItemGroup>
-  <ItemGroup>
-   <Compile Update="$(CSharpSource)CSharpResources.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>CSharpResources.resx</DependentUpon>
-    </Compile>
     <Compile Include="$(CoreSource)..\..\Shared\CoreClrShim.cs" Link="InternalUtilities\CoreClrShim.cs" />
-    <Compile Include="$(CoreSource)..\..\Shared\DesktopShim.cs">
-      <Link>DesktopShim.cs</Link>
-    </Compile>
-    <Compile Update="$(CoreSource)CodeAnalysisResources.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>CodeAnalysisResources.resx</DependentUpon>
-    </Compile>
  
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Microsoft.DiaSymReader.Native" Version="$(MicrosoftDiaSymReaderNativeVersion)" />
-    <PackageReference Include="System.Diagnostics.FileVersionInfo" Version="$(SystemDiagnosticsFileVersionInfoVersion)" />
-    <PackageReference Include="System.Xml.XmlDocument" Version="$(SystemXmlXmlDocumentVersion)" />
-    <PackageReference Include="System.Xml.XPath.XDocument" Version="$(SystemXmlXPathXDocumentVersion)" />
-    <PackageReference Include="System.Collections.Immutable" Version="$(SystemCollectionsImmutableVersion)" />
-    <PackageReference Include="System.Reflection.Metadata" Version="$(SystemReflectionMetadataVersion)" />
-    <PackageReference Include="System.Text.Encoding.CodePages" Version="$(SystemTextEncodingCodePagesVersion)" />
-    <PackageReference Include="System.Threading.Tasks.Extensions" Version="$(SystemThreadingTasksExtensionsVersion)" />
-    <PackageReference Include="System.ValueTuple" Version="$(SystemValueTupleVersion)" />
-  </ItemGroup>
-  
-  <ItemGroup>
     <Content Include="$(CSharpSource)BoundTree\BoundNodes.xml" />
+    <None Include="$(CSharpSource)BoundTree\BoundNodes.xsd" />
+    <None Include="$(CSharpSource)Generated\CSharp.Generated.g4" />
     <Content Include="$(CSharpSource)Syntax\Syntax.xml" />
+    <None Include="$(CSharpSource)SSyntax\Syntax.xsd" />
     <Content Include="$(CSharpSource)UseSiteDiagnosticsCheckEnforcer\BaseLine.txt" />
     <Content Include="$(CSharpSource)UseSiteDiagnosticsCheckEnforcer\Run.bat" />
     <None Include="$(CSharpSource)FlowAnalysis\Flow Analysis Design.docx" />
-    <None Include="$(CSharpSource)Symbols\PublicSymbolTable.cd" />
     <None Include="$(CSharpSource)..\CSharpCodeAnalysisRules.ruleset">
       <SubType>Designer</SubType>
     </None>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Update="$(CSharpSource)CSharpResources.resx">
-      <SubType>Designer</SubType>
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>CSharpResources.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Update="$(CoreSource)CodeAnalysisResources.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <SubType>Designer</SubType>
-      <LastGenOutput>CodeAnalysisResources.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
+    <EmbeddedResource Update="CSharpResources.resx" GenerateSource="false" />
+    <EmbeddedResource Update="CodeAnalysisResources.resx" GenerateSource="false" />
     <EmbeddedResource Include="$(CoreSource)Resources\default.win32manifest" />
   </ItemGroup>
   <ItemGroup>
   	<Compile Include="$(CSharpSource)**\*.cs">
 		<Link>CSharp\%(RecursiveDir)\%(Filename)%(Extension)</Link>
 	  </Compile>
-    <EmbeddedResource Include="$(CSharpSource)**\*.resx" />
     <Compile Include="$(CoreSource)**\*.cs">
 		<Link>Core\%(RecursiveDir)\%(Filename)%(Extension)</Link>
-	</Compile>
-    <EmbeddedResource Include="$(CoreSource)**\*.resx" />
+      </Compile>
   </ItemGroup>
   <ItemGroup>
     <None Include="$(CoreSource)..\CodeAnalysisRules.ruleset">
@@ -115,4 +72,13 @@
   <Import Project="$(CoreSource)..\AnalyzerDriver\AnalyzerDriver.projitems" Label="Shared" />
   <Import Project="$(CoreSource)..\..\..\Dependencies\CodeAnalysis.Debugging\Microsoft.CodeAnalysis.Debugging.projitems" Label="Shared" />
   <Import Project="$(CoreSource)..\..\..\Dependencies\PooledObjects\Microsoft.CodeAnalysis.PooledObjects.projitems" Label="Shared" />
+  <ItemGroup>
+    <AdditionalFiles Remove="C:\XSharp\Dev\XSharp\build\Targets\..\config\BannedSymbols.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <AdditionalFiles Remove="C:\XSharp\Dev\XSharp\build\Targets\..\config\BannedSymbols.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Remove="C:\XSharp\Dev\XSharp\..\Roslyn\Src\Compilers\CSharp\Portable\SSyntax\Syntax.xsd" />
+  </ItemGroup>
 </Project>

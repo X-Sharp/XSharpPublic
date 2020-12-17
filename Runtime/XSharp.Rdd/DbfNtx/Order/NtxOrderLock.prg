@@ -37,7 +37,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
         PRIVATE _tagNumber AS DWORD
         PRIVATE _maxLockTries AS INT
         PRIVATE _parkPlace AS DWORD
-        INTERNAL _LockOffset AS LONG
+        INTERNAL _LockOffset AS INT64
         #endregion
 
         PRIVATE METHOD _initLockValues() as VOID
@@ -84,7 +84,10 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             LOCAL unlocked AS LOGIC
             unlocked := _oStream:SafeUnlock( nOffset, nLong )
             IF ! unlocked
-                Trace.WriteLine("UnLock Error:" + FException():Message)
+                VAR oEx := FException()
+                IF oEx != NULL
+                    Trace.WriteLine("UnLock Error:" + oEx:Message)
+                ENDIF
             ENDIF
             RETURN unlocked
             

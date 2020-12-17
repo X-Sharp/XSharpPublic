@@ -173,11 +173,11 @@ BEGIN NAMESPACE XSharp
 			/// <inheritdoc />
 			METHOD CompareTo(o AS OBJECT) AS LONG
 				VAR rhs := (DATE)o
-				RETURN _ymd:CompareTo(rhs:_ymd)
+                RETURN SELF:YMD:CompareTo(rhs:YMD)
 
 			/// <inheritdoc />
 			METHOD CompareTo(rhs AS DATE) AS LONG
-				RETURN _ymd:CompareTo(rhs:_ymd)
+                RETURN SELF:YMD:CompareTo(rhs:YMD)
 
 			/// <inheritdoc />
 			OVERRIDE METHOD GetHashCode() AS LONG
@@ -656,11 +656,17 @@ BEGIN NAMESPACE XSharp
 			// Next properties for easy access in right type
             [DebuggerBrowsable(DebuggerBrowsableState.Never)];
 			INTERNAL PROPERTY DYear		AS DWORD GET _year
+
             [DebuggerBrowsable(DebuggerBrowsableState.Never)];
 			INTERNAL PROPERTY DMonth	AS DWORD GET _month
+                
             [DebuggerBrowsable(DebuggerBrowsableState.Never)];
 			INTERNAL PROPERTY DDay		AS DWORD GET _day
-
+                
+            [DebuggerBrowsable(DebuggerBrowsableState.Never)];
+			INTERNAL PROPERTY YMD AS DWORD GET ;
+                (SELF:DYear * 0xFFFF)  + (SELF:DMonth *0xFF) + _day
+                
             INTERNAL METHOD ToDebugString() AS STRING
 				IF (_ymd == 0)
 					RETURN "NULL_DATE"

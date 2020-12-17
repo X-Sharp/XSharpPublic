@@ -410,6 +410,9 @@ namespace XSharp.Project
                 case XFileType.Settings:
                     this.Generator = "SettingsSingleFileGenerator";
                     break;
+                case XFileType.TextTemplate:
+                    this.Generator = "TextTemplatingFileGenerator";
+                    break;
                 default:
                     DetermineSubType();
                     break;

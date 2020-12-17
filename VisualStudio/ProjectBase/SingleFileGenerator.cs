@@ -19,6 +19,7 @@ using Microsoft.VisualStudio.OLE.Interop;
 using Microsoft.VisualStudio.Shell.Interop;
 using Microsoft.VisualStudio.TextManager.Interop;
 using XSharpModel;
+using System.Text.RegularExpressions;
 
 
 namespace Microsoft.VisualStudio.Project
@@ -74,12 +75,12 @@ namespace Microsoft.VisualStudio.Project
             // the generated output should be already up to date.
             uint itemid = VSConstants.VSITEMID_NIL;
             IVsHierarchy hier = (IVsHierarchy)this.projectMgr;
-            if(document != null && hier != null && ErrorHandler.Succeeded(hier.ParseCanonicalName((string)document, out itemid)))
+            if (document != null && hier != null && ErrorHandler.Succeeded(hier.ParseCanonicalName((string)document, out itemid)))
             {
                 IVsHierarchy rdtHier;
                 IVsPersistDocData perDocData;
                 uint cookie;
-                if(this.VerifyFileDirtyInRdt((string)document, out rdtHier, out perDocData, out cookie))
+                if (this.VerifyFileDirtyInRdt((string)document, out rdtHier, out perDocData, out cookie))
                 {
                     // Run the generator on the indicated document
                     FileNode node = (FileNode)this.projectMgr.NodeFromItemId(itemid);
@@ -96,19 +97,19 @@ namespace Microsoft.VisualStudio.Project
         /// <param name="fileNode">The node on which to invoke the generator.</param>
         protected internal virtual void InvokeGenerator(FileNode fileNode)
         {
-            if(fileNode == null)
+            if (fileNode == null)
             {
                 throw new ArgumentNullException("fileNode");
             }
 
             SingleFileGeneratorNodeProperties nodeproperties = fileNode.NodeProperties as SingleFileGeneratorNodeProperties;
-            if(nodeproperties == null)
+            if (nodeproperties == null)
             {
                 throw new InvalidOperationException();
             }
 
             string customToolProgID = nodeproperties.CustomTool;
-			if (String.IsNullOrEmpty(customToolProgID))
+            if (String.IsNullOrEmpty(customToolProgID))
             {
                 return;
             }
@@ -117,7 +118,7 @@ namespace Microsoft.VisualStudio.Project
 
             try
             {
-                if(!this.runningGenerator)
+                if (!this.runningGenerator)
                 {
                     //Get the buffer contents for the current node
                     string moniker = fileNode.GetMkDocument();
@@ -134,13 +135,13 @@ namespace Microsoft.VisualStudio.Project
 
                     //Check to see if the generator supports siting
                     IObjectWithSite objWithSite = generator as IObjectWithSite;
-                    if(objWithSite != null)
+                    if (objWithSite != null)
                     {
                         objWithSite.SetSite(fileNode.OleServiceProvider);
                     }
 
                     //Determine the namespace
-					if (String.IsNullOrEmpty(customToolNamespace))
+                    if (String.IsNullOrEmpty(customToolNamespace))
                     {
                         customToolNamespace = this.ComputeNamespace(moniker);
                     }
@@ -148,23 +149,55 @@ namespace Microsoft.VisualStudio.Project
                     //Run the generator
                     IntPtr[] output = new IntPtr[1];
                     output[0] = IntPtr.Zero;
-	                uint outPutSize = 0;
-	                string extension = String.Empty;
-					try
-					{
-					  ErrorHandler.ThrowOnFailure(generator.DefaultExtension(out extension));
-					}
-					catch (Exception e)
-					{
+                    uint outPutSize = 0;
+                    string extension = String.Empty;
+                    try
+                    {
+                        ErrorHandler.ThrowOnFailure(generator.DefaultExtension(out extension));
+                    }
+                    catch (Exception e)
+                    {
                         if (System.Diagnostics.Debugger.IsAttached)
                             Debug.WriteLine("generator.DefaultExtension failed: " + e.Message);
-					}
-	                    //Find if any dependent node exists
+                    }
+                    //
+                    IVsTextStream stream;
+                    string inputFileContents = this.GetBufferContents(moniker, out stream);
+                    //
+                    // HACK To support T4 Template
+                    //
+                    //bool utf8 = false;
+                    if (String.Compare(Path.GetExtension(fileNode.FileName), ".tt", true) == 0)
+                    {
+                        // Per default, for a T4 template, convert to UTF8
+                        // utf8 = true; ? to be done ??
+                        // The Output Extension may be modified by the Template. Check it
+                        Regex t4ParsingRegex = new Regex("output.*\\sextension\\s*=\\s*\"(?<pvalue>.*?)(?<=[^\\\\](\\\\\\\\)*)\"", RegexOptions.IgnorePatternWhitespace | RegexOptions.Singleline | RegexOptions.ExplicitCapture);
+                        MatchCollection matchs = t4ParsingRegex.Matches(inputFileContents);
+                        if (matchs.Count > 0)
+                        {
+                            Match match = matchs[0];
+                            Group group = match.Groups["pvalue"];
+                            extension = group.Value;
+                        }
+                        // Any Encoding in the Template ?
+                        t4ParsingRegex = new Regex("output.*\\sencoding\\s*=\\s*\"(?<pvalue>.*?)(?<=[^\\\\](\\\\\\\\)*)\"", RegexOptions.IgnorePatternWhitespace | RegexOptions.Singleline | RegexOptions.ExplicitCapture);
+                        matchs = t4ParsingRegex.Matches(inputFileContents);
+                        if (matchs.Count > 0)
+                        {
+                            Match match = matchs[0];
+                            Group group = match.Groups["pvalue"];
+                            //utf8 = false;
+                        }
+
+                    }
+
+                    //Find if any dependent node exists
                     string dependentNodeName = Path.GetFileNameWithoutExtension(fileNode.FileName) + extension;
                     HierarchyNode dependentNode = fileNode.FirstChild;
-                    while(dependentNode != null)
+                    while (dependentNode != null)
                     {
-						if (String.Compare(dependentNode.ItemNode.GetMetadata(ProjectFileConstants.DependentUpon), fileNode.FileName, StringComparison.OrdinalIgnoreCase) == 0)
+                        if (String.Compare(dependentNode.ItemNode.GetMetadata(ProjectFileConstants.DependentUpon), fileNode.FileName, StringComparison.OrdinalIgnoreCase) == 0)
                         {
                             dependentNodeName = ((FileNode)dependentNode).FileName;
                             break;
@@ -174,10 +207,10 @@ namespace Microsoft.VisualStudio.Project
                     }
 
                     //If you found a dependent node.
-                    if(dependentNode != null)
+                    if (dependentNode != null)
                     {
                         //Then check out the node and dependent node from SCC
-                        if(!this.CanEditFile(dependentNode.GetMkDocument()))
+                        if (!this.CanEditFile(dependentNode.GetMkDocument()))
                         {
                             throw Marshal.GetExceptionForHR(VSConstants.OLE_E_PROMPTSAVECANCELLED);
                         }
@@ -185,37 +218,55 @@ namespace Microsoft.VisualStudio.Project
                     else //It is a new node to be added to the project
                     {
                         // Check out the project file if necessary.
-                        if(!this.projectMgr.QueryEditProjectFile(false))
+                        if (!this.projectMgr.QueryEditProjectFile(false))
                         {
                             throw Marshal.GetExceptionForHR(VSConstants.OLE_E_PROMPTSAVECANCELLED);
                         }
                     }
-                    IVsTextStream stream;
-                    string inputFileContents = this.GetBufferContents(moniker, out stream);
-               try
-               {
 
-                  ErrorHandler.ThrowOnFailure(generator.Generate(moniker, inputFileContents, customToolNamespace, output, out outPutSize, this));
-               }
-               catch (Exception e)
-               {
+
+                    try
+                    {
+
+                        ErrorHandler.ThrowOnFailure(generator.Generate(moniker, inputFileContents, customToolNamespace, output, out outPutSize, this));
+                    }
+                    catch (Exception e)
+                    {
                         if (System.Diagnostics.Debugger.IsAttached)
                             Debug.WriteLine("generator.Generate failed: " + e.Message);
-               }
-               if (outPutSize > 0)
-               {
-                  byte[] data = new byte[outPutSize];
+                    }
+                    if (outPutSize > 0)
+                    {
+                        byte[] data = new byte[outPutSize];
 
-                  if(output[0] != IntPtr.Zero)
-                  {
-                     Marshal.Copy(output[0], data, 0, (int)outPutSize);
-                     Marshal.FreeCoTaskMem(output[0]);
-                  }
-                  //Todo - Create a file and add it to the Project
-				  string fileToAdd = this.UpdateGeneratedCodeFile(fileNode, data, (int)outPutSize, dependentNodeName);
-               }
+                        if (output[0] != IntPtr.Zero)
+                        {
+                            Marshal.Copy(output[0], data, 0, (int)outPutSize);
+                            Marshal.FreeCoTaskMem(output[0]);
+                        }
+                        // HACK T4 Support
+                        /*
+                        utf8 = false;
+                        if (utf8)
+                        {
+                            System.Text.StringBuilder sb = new System.Text.StringBuilder();
+                            sb.Append(System.Text.Encoding.ASCII.GetString(data, 0, (int)outPutSize));
+                            //
+                            System.Text.Encoding enc = new System.Text.UTF8Encoding(true);
+                            byte[] preamble = enc.GetPreamble();
+                            byte[] encData = enc.GetBytes(sb.ToString());
+                            //
+                            outPutSize = (uint)encData.Length + (uint)preamble.Length;
+                            data = new byte[outPutSize];
+                            Array.Copy(preamble, data, preamble.Length);
+                            Array.Copy(encData, 0, data, preamble.Length, encData.Length);
+                        }
+                        */
+                        //Todo - Create a file and add it to the Project
+                        string fileToAdd = this.UpdateGeneratedCodeFile(fileNode, data, (int)outPutSize, dependentNodeName);
+                    }
+                }
             }
-         }
             finally
             {
                 this.runningGenerator = false;
@@ -229,7 +280,7 @@ namespace Microsoft.VisualStudio.Project
         /// <returns>Returns the computed name space</returns>
         protected virtual string ComputeNamespace(string projectItemPath)
         {
-            if(String.IsNullOrEmpty(projectItemPath))
+            if (String.IsNullOrEmpty(projectItemPath))
             {
                 throw new ArgumentException(SR.GetString(SR.ParameterCannotBeNullOrEmpty, CultureInfo.CurrentUICulture), "projectItemPath");
             }
@@ -238,7 +289,7 @@ namespace Microsoft.VisualStudio.Project
             string nspace = "";
             string filePath = Path.GetDirectoryName(projectItemPath);
             string[] toks = filePath.Split(new char[] { ':', '\\' });
-            foreach(string tok in toks)
+            foreach (string tok in toks)
             {
                 if (!String.IsNullOrEmpty(tok))
                 {
@@ -264,7 +315,7 @@ namespace Microsoft.VisualStudio.Project
             IVsRunningDocumentTable rdt = this.projectMgr.GetService(typeof(SVsRunningDocumentTable)) as IVsRunningDocumentTable;
 
             // (kberes) Shouldn't this be an InvalidOperationException instead with some not to annoying errormessage to the user?
-            if(rdt == null)
+            if (rdt == null)
             {
                 ErrorHandler.ThrowOnFailure(VSConstants.E_FAIL);
             }
@@ -274,16 +325,16 @@ namespace Microsoft.VisualStudio.Project
             uint itemid;
             IntPtr docData = IntPtr.Zero;
             ErrorHandler.ThrowOnFailure(rdt.FindAndLockDocument((uint)(_VSRDTFLAGS.RDT_NoLock), filePath, out hier, out itemid, out docData, out cookie));
-            if(docData != IntPtr.Zero)
+            if (docData != IntPtr.Zero)
             {
                 Marshal.Release(docData);
-	            IVsTextStream srpStream;
-	            string inputFileContents = this.GetBufferContents(filePath, out srpStream);
-                if(srpStream != null)
+                IVsTextStream srpStream;
+                string inputFileContents = this.GetBufferContents(filePath, out srpStream);
+                if (srpStream != null)
                 {
                     int oldLen = 0;
                     int hr = srpStream.GetSize(out oldLen);
-                    if(ErrorHandler.Succeeded(hr))
+                    if (ErrorHandler.Succeeded(hr))
                     {
                         IntPtr dest = IntPtr.Zero;
                         try
@@ -294,7 +345,7 @@ namespace Microsoft.VisualStudio.Project
                         }
                         finally
                         {
-                            if(dest != IntPtr.Zero)
+                            if (dest != IntPtr.Zero)
                             {
                                 Marshal.Release(dest);
                             }
@@ -304,14 +355,14 @@ namespace Microsoft.VisualStudio.Project
             }
             else
             {
-                using(FileStream generatedFileStream = File.Open(filePath, FileMode.OpenOrCreate))
+                using (FileStream generatedFileStream = File.Open(filePath, FileMode.OpenOrCreate))
                 {
                     generatedFileStream.Write(data, 0, size);
                     generatedFileStream.SetLength(size);
                 }
 
                 EnvDTE.ProjectItem projectItem = fileNode.GetAutomationObject() as EnvDTE.ProjectItem;
-                if(projectItem != null && (this.projectMgr.FindChild(fileNode.FileName) == null))
+                if (projectItem != null && (this.projectMgr.FindChild(fileNode.FileName) == null))
                 {
                     projectItem.ProjectItems.AddFromFile(filePath);
                 }
@@ -332,7 +383,7 @@ namespace Microsoft.VisualStudio.Project
             srpStream = null;
 
             IVsRunningDocumentTable rdt = this.projectMgr.GetService(typeof(SVsRunningDocumentTable)) as IVsRunningDocumentTable;
-            if(rdt != null)
+            if (rdt != null)
             {
                 IVsHierarchy hier;
                 IVsPersistDocData persistDocData;
@@ -344,7 +395,7 @@ namespace Microsoft.VisualStudio.Project
                 {
                     //Getting a read lock on the document. Must be released later.
                     hr = rdt.FindAndLockDocument((uint)_VSRDTFLAGS.RDT_ReadLock, fileName, out hier, out itemid, out docData, out cookie);
-                    if(ErrorHandler.Failed(hr) || docData == IntPtr.Zero)
+                    if (ErrorHandler.Failed(hr) || docData == IntPtr.Zero)
                     {
                         Guid iid = VSConstants.IID_IUnknown;
                         cookie = 0;
@@ -357,7 +408,7 @@ namespace Microsoft.VisualStudio.Project
                 }
                 finally
                 {
-                    if(docData != IntPtr.Zero)
+                    if (docData != IntPtr.Zero)
                     {
                         Marshal.Release(docData);
                     }
@@ -365,30 +416,30 @@ namespace Microsoft.VisualStudio.Project
 
                 //Try to get the Text lines
                 IVsTextLines srpTextLines = persistDocData as IVsTextLines;
-                if(srpTextLines == null)
+                if (srpTextLines == null)
                 {
                     // Try getting a text buffer provider first
                     IVsTextBufferProvider srpTextBufferProvider = persistDocData as IVsTextBufferProvider;
-                    if(srpTextBufferProvider != null)
+                    if (srpTextBufferProvider != null)
                     {
                         hr = srpTextBufferProvider.GetTextBuffer(out srpTextLines);
                     }
                 }
 
-                if(ErrorHandler.Succeeded(hr))
+                if (ErrorHandler.Succeeded(hr))
                 {
                     srpStream = srpTextLines as IVsTextStream;
-                    if(srpStream != null)
+                    if (srpStream != null)
                     {
                         // QI for IVsBatchUpdate and call FlushPendingUpdates if they support it
                         IVsBatchUpdate srpBatchUpdate = srpStream as IVsBatchUpdate;
-                        if(srpBatchUpdate != null)
+                        if (srpBatchUpdate != null)
                             srpBatchUpdate.FlushPendingUpdates(0);
 
                         int lBufferSize = 0;
                         hr = srpStream.GetSize(out lBufferSize);
 
-                        if(ErrorHandler.Succeeded(hr))
+                        if (ErrorHandler.Succeeded(hr))
                         {
                             IntPtr dest = IntPtr.Zero;
                             try
@@ -401,7 +452,7 @@ namespace Microsoft.VisualStudio.Project
                             }
                             finally
                             {
-                                if(dest != IntPtr.Zero)
+                                if (dest != IntPtr.Zero)
                                     Marshal.FreeCoTaskMem(dest);
                             }
                         }
@@ -409,12 +460,12 @@ namespace Microsoft.VisualStudio.Project
 
                 }
                 // Unlock the document in the RDT if necessary
-                if(docInRdt && rdt != null)
+                if (docInRdt && rdt != null)
                 {
                     ErrorHandler.ThrowOnFailure(rdt.UnlockDocument((uint)(_VSRDTFLAGS.RDT_ReadLock | _VSRDTFLAGS.RDT_Unlock_NoSave), cookie));
                 }
 
-                if(ErrorHandler.Failed(hr))
+                if (ErrorHandler.Failed(hr))
                 {
                     // If this failed then it's probably not a text file.  In that case,
                     // we just read the file as a binary
@@ -443,7 +494,7 @@ namespace Microsoft.VisualStudio.Project
             cookie = 0;
 
             IVsRunningDocumentTable rdt = this.projectMgr.GetService(typeof(IVsRunningDocumentTable)) as IVsRunningDocumentTable;
-            if(rdt != null)
+            if (rdt != null)
             {
                 IntPtr docData;
                 uint dwCookie = 0;
@@ -452,7 +503,7 @@ namespace Microsoft.VisualStudio.Project
 
                 ErrorHandler.ThrowOnFailure(rdt.FindAndLockDocument((uint)_VSRDTFLAGS.RDT_NoLock, document, out srpHier, out itemid, out docData, out dwCookie));
                 IVsPersistHierarchyItem srpIVsPersistHierarchyItem = srpHier as IVsPersistHierarchyItem;
-                if(srpIVsPersistHierarchyItem != null)
+                if (srpIVsPersistHierarchyItem != null)
                 {
                     // Found in the RDT. See if it is dirty
                     try
@@ -463,7 +514,7 @@ namespace Microsoft.VisualStudio.Project
                     }
                     finally
                     {
-                        if(docData != IntPtr.Zero)
+                        if (docData != IntPtr.Zero)
                         {
                             Marshal.Release(docData);
                         }
@@ -489,7 +540,7 @@ namespace Microsoft.VisualStudio.Project
             XSettings.DisplayOutputMessage(String.Format(CultureInfo.CurrentCulture, "\t**** CanEditFile called ****"));
 
             // Check the status of the recursion guard
-            if(this.gettingCheckoutStatus)
+            if (this.gettingCheckoutStatus)
             {
                 return false;
             }
@@ -520,7 +571,7 @@ namespace Microsoft.VisualStudio.Project
                     out outFlags    // Additional flags
                 );
 
-                if(ErrorHandler.Succeeded(hr) && (result == (uint)tagVSQueryEditResult.QER_EditOK))
+                if (ErrorHandler.Succeeded(hr) && (result == (uint)tagVSQueryEditResult.QER_EditOK))
                 {
                     // In this case (and only in this case) we can return true from this function.
                     return true;

@@ -188,7 +188,8 @@ BEGIN NAMESPACE XSharpModel
       MEMBER Settings         :=12
       MEMBER License          :=13
       MEMBER Resource         := 14
-      MEMBER Template         := 15       // tpl and inf 
+      MEMBER Template         := 15       // tpl and inf
+      MEMBER TextTemplate     := 16     // tt
    END ENUM
    
    ENUM ParamType AS BYTE

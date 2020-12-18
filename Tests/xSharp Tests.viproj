@@ -88448,8 +88448,8 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
 ENDApplication = R754 - Preprocessor join multiple tokens with whitespace
 
 ApplicationGroup = E53B4BB3-0391-43DA-BD2E-CC1D2B02A8E9
-; ************** APPLICATION R755 *************
-Application = R755
+; ************** APPLICATION R755 - STATIC LOCAL and PCALL() syntax *************
+Application = R755 - STATIC LOCAL and PCALL() syntax
 IDEVersion = 1.06
 GalleryName = 
 GalleryPage = 
@@ -88482,20 +88482,20 @@ KeyFile =
 [ExportOptions]
 ExportResources = 0
 ExportImages = 0
-[R755 FileGroups]
-[R755 Files]
+[R755 - STATIC LOCAL and PCALL() syntax FileGroups]
+[R755 - STATIC LOCAL and PCALL() syntax Files]
 File = %AppPath%\Prg\R755.prg
 FileGUID = 481D54BE-582E-4C04-911D-C49DE05F3566
 FileType = Code
 CopyToBin = 0
-[R755 References]
+[R755 - STATIC LOCAL and PCALL() syntax References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
 ReferenceBrowse = C:\XSharp\DevRt\Binaries\Debug\XSharp.Core.dll,1,1
 ReferenceBrowse = C:\XSharp\DevRt\Binaries\Debug\XSharp.RT.dll,1,1
-[R755 Resources]
-[R755 Native Resources]
-[R755 License files]
-[R755 General Options]
+[R755 - STATIC LOCAL and PCALL() syntax Resources]
+[R755 - STATIC LOCAL and PCALL() syntax Native Resources]
+[R755 - STATIC LOCAL and PCALL() syntax License files]
+[R755 - STATIC LOCAL and PCALL() syntax General Options]
 Switches=
 ZeroArrays=0
 CaseSensitive=0
@@ -88527,7 +88527,7 @@ IgnoreStdDefs=0
 Ovf=0
 FOvf=0
 ResponseOnly=0
-[R755 Configurations]
+[R755 - STATIC LOCAL and PCALL() syntax Configurations]
 AppConfig = Debug,11111111-1111-1111-1111-111111111111
   Switches=
   SwitchesCF=
@@ -88556,7 +88556,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceConsole=0
   ForceX86=0
   Optimize=0
-ENDApplication = R755
+ENDApplication = R755 - STATIC LOCAL and PCALL() syntax
 [EndApplications]
 
 [Configurations]

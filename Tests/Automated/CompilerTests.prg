@@ -85,7 +85,7 @@ FUNCTION DoRuntimeTests(oXide AS XideHelper, cConfigName AS STRING) AS INT
 	oApp := oProject:GetAppFromGuid("B098889A-A74F-46CE-8771-3AAEEECA0F99")
 	gaCompilerMessages := List<STRING>{}
 	oApp:aCompilerMessages := gaCompilerMessages
-	Message("Performing test: " + oApp:cName) 
+	Message("Compiling test: " + oApp:cName) 
 	oOptions := oXide:GetCompileOptions(oApp, cConfigName)
 	
 	oProcess := CreateProcess()

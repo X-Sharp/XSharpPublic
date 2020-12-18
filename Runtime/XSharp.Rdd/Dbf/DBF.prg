@@ -222,7 +222,7 @@ METHOD GoToId(oRec AS OBJECT) AS LOGIC
 			VAR nRec := Convert.ToInt32( oRec )
 			result := SELF:GoTo( nRec )
 		CATCH ex AS Exception
-			SELF:_dbfError(ex, Subcodes.EDB_GOTO,Gencode.EG_DATATYPE,  "DBF.GoToId") 
+			SELF:_dbfError(ex, Subcodes.EDB_GOTO,Gencode.EG_DATATYPE,  "DBF.GoToId",FALSE) 
 			result := FALSE
 		END TRY
     END LOCK
@@ -303,7 +303,7 @@ METHOD Append(lReleaseLock AS LOGIC) AS LOGIC
             //
 				IF SELF:_ReadOnly 
                 // Error !! Cannot be written !
-					SELF:_dbfError( ERDD.READONLY, XSharp.Gencode.EG_READONLY )
+					SELF:_dbfError( ERDD.READONLY, XSharp.Gencode.EG_READONLY ,FALSE)
 					isOK := FALSE
 				ENDIF
 				IF  SELF:Shared 
@@ -442,7 +442,8 @@ METHOD HeaderLock( lockMode AS DbLockMode ) AS LOGIC
             //? CurrentThreadId, "Header UnLock", unlocked
 		CATCH ex AS Exception
 			SELF:_HeaderLocked := FALSE
-			SELF:_dbfError(ex, Subcodes.ERDD_WRITE_UNLOCK,Gencode.EG_LOCK_ERROR,  "DBF.HeaderLock") 
+			SELF:_dbfError(ex, Subcodes.ERDD_WRITE_UNLOCK,Gencode.EG_LOCK_ERROR,  "DBF.HeaderLock",FALSE)
+            RETURN FALSE
         END TRY
         RETURN TRUE 
 	ENDIF
@@ -465,7 +466,8 @@ METHOD UnLock(oRecId AS OBJECT) AS LOGIC
 				recordNbr := Convert.ToInt32( oRecId )
 			CATCH ex AS Exception
 				recordNbr := 0
-				SELF:_dbfError(ex, Subcodes.ERDD_DATATYPE,Gencode.EG_LOCK_ERROR,  "DBF.UnLock") 
+				SELF:_dbfError(ex, Subcodes.ERDD_DATATYPE,Gencode.EG_LOCK_ERROR,  "DBF.UnLock",FALSE)
+                RETURN FALSE
 			END TRY
         //
 			isOK := TRUE
@@ -506,7 +508,7 @@ PROTECT METHOD _unlockFile( ) AS LOGIC
 
 	unlocked := _oStream:SafeUnlock(SELF:_lockScheme:FileLockOffSet, SELF:_lockScheme:FileSize)
 	IF ! unlocked
-		SELF:_dbfError(FException(), Subcodes.ERDD_WRITE_UNLOCK,Gencode.EG_LOCK_ERROR,  "DBF._unlockFile") 
+		SELF:_dbfError(FException(), Subcodes.ERDD_WRITE_UNLOCK,Gencode.EG_LOCK_ERROR,  "DBF._unlockFile", FALSE) 
 	ENDIF
 RETURN unlocked
 
@@ -522,7 +524,7 @@ PROTECT METHOD _unlockRecord( recordNbr AS LONG ) AS LOGIC
 	iOffset := SELF:_lockScheme:RecnoOffSet(recordNbr, SELF:_RecordLength , SELF:_HeaderLength )
 	unlocked :=  _oStream:SafeUnlock(iOffset, SELF:_lockScheme:RecordSize)
 	IF ! unlocked    
-		SELF:_dbfError(FException(), Subcodes.ERDD_WRITE_UNLOCK,Gencode.EG_LOCK_ERROR,  "DBF._unlockRecord") 
+		SELF:_dbfError(FException(), Subcodes.ERDD_WRITE_UNLOCK,Gencode.EG_LOCK_ERROR,  "DBF._unlockRecord", FALSE) 
 	ENDIF
 	IF( unlocked )
 		SELF:_Locks:Remove( recordNbr )
@@ -538,7 +540,7 @@ PROTECT METHOD _lockFile( ) AS LOGIC
 	
 	locked := _oStream:SafeLock(SELF:_lockScheme:FileLockOffSet, SELF:_lockScheme:FileSize )
 	IF ! locked
-		SELF:_dbfError(FException(), Subcodes.ERDD_WRITE_LOCK,Gencode.EG_LOCK_ERROR,  "DBF._lockFile") 
+		SELF:_dbfError(FException(), Subcodes.ERDD_WRITE_LOCK,Gencode.EG_LOCK_ERROR,  "DBF._lockFile", FALSE) 
 	ENDIF
 RETURN locked
 
@@ -568,7 +570,7 @@ PROTECTED METHOD _tryLock( nOffset AS INT64, nLong AS INT64, lGenError AS LOGIC)
 		ENDIF
 	UNTIL ( locked .OR. (nTries==0) )
     IF (! locked .AND. lGenError)
-		 SELF:_dbfError(lockEx, Subcodes.ERDD_WRITE_LOCK,Gencode.EG_LOCK_ERROR,  "DBF._tryLock") 
+		 SELF:_dbfError(lockEx, Subcodes.ERDD_WRITE_LOCK,Gencode.EG_LOCK_ERROR,  "DBF._tryLock", FALSE) 
     ENDIF
 
 RETURN locked
@@ -614,7 +616,7 @@ PROTECTED METHOD _lockRecord( recordNbr AS LONG ) AS LOGIC
         //? CurrentThreadId, "Locked record ", recordNbr
     ELSE
         //? CurrentThreadId, "Failed to Lock record ", recordNbr
-		SELF:_dbfError( Subcodes.ERDD_WRITE_LOCK,Gencode.EG_LOCK_ERROR,  "DBF._lockRecord") 
+		SELF:_dbfError( Subcodes.ERDD_WRITE_LOCK,Gencode.EG_LOCK_ERROR,  "DBF._lockRecord", FALSE) 
 	ENDIF
 RETURN locked
 
@@ -635,7 +637,7 @@ PROTECTED METHOD _lockRecord( lockInfo REF DbLockInfo ) AS LOGIC
 		TRY
 			nToLock := Convert.ToUInt64( lockInfo:RecId )
         CATCH ex AS Exception
-			SELF:_dbfError( ex, ERDD.DATATYPE, XSharp.Gencode.EG_DATATYPE )
+			SELF:_dbfError( ex, ERDD.DATATYPE, XSharp.Gencode.EG_DATATYPE, FALSE)
 			isOK := FALSE
 		END TRY
 		IF isOK
@@ -1224,12 +1226,12 @@ PROTECT OVERRIDE METHOD _checkFields(info AS RddFieldInfo) AS LOGIC
 		info:Name := info:Name:Substring(0,10)
 	ENDIF
 	IF ! info:Validate()
-		SELF:_dbfError( ERDD.CORRUPT_HEADER, XSharp.Gencode.EG_ARG,"ValidateDbfStructure", i"Field '{info.Name}' is not valid"  )
+		SELF:_dbfError( ERDD.CORRUPT_HEADER, XSharp.Gencode.EG_ARG,"ValidateDbfStructure", i"Field '{info.Name}' is not valid"  , FALSE)
 		RETURN FALSE
 	ENDIF
 	VAR cType := Chr( (BYTE) info:FieldType)
 	IF ! cType $ SELF:_AllowedFieldTypes
-		SELF:_dbfError( ERDD.CORRUPT_HEADER, XSharp.Gencode.EG_ARG,"ValidateDbfStructure", i"Field Type '{cType}' for field '{info.Name}' is not allowed for RDD '{SELF:Driver}'" )
+		SELF:_dbfError( ERDD.CORRUPT_HEADER, XSharp.Gencode.EG_ARG,"ValidateDbfStructure", i"Field Type '{cType}' for field '{info.Name}' is not allowed for RDD '{SELF:Driver}'" , FALSE)
 	ENDIF
 
 RETURN TRUE
@@ -1367,28 +1369,28 @@ VIRTUAL PROTECTED METHOD _writeRecord() AS LOGIC
 RETURN isOK
 
 
-INTERNAL METHOD _dbfError(ex AS Exception, iSubCode AS DWORD, iGenCode AS DWORD) AS VOID
-	SELF:_dbfError(ex, iSubCode, iGenCode, String.Empty, ex?:Message, XSharp.Severity.ES_ERROR)
+INTERNAL METHOD _dbfError(ex AS Exception, iSubCode AS DWORD, iGenCode AS DWORD, lThrow := TRUE AS LOGIC) AS VOID
+	SELF:_dbfError(ex, iSubCode, iGenCode, String.Empty, ex?:Message, XSharp.Severity.ES_ERROR, lThrow)
 	
-INTERNAL METHOD _dbfError(iSubCode AS DWORD, iGenCode AS DWORD) AS VOID
-	SELF:_dbfError(NULL, iSubCode, iGenCode, String.Empty, String.Empty, XSharp.Severity.ES_ERROR)
+INTERNAL METHOD _dbfError(iSubCode AS DWORD, iGenCode AS DWORD, lThrow := TRUE AS LOGIC) AS VOID
+	SELF:_dbfError(NULL, iSubCode, iGenCode, String.Empty, String.Empty, XSharp.Severity.ES_ERROR, lThrow )
 	
-INTERNAL METHOD _dbfError(ex AS Exception,iSubCode AS DWORD, iGenCode AS DWORD, iSeverity AS DWORD) AS VOID
-	SELF:_dbfError(ex, iSubCode, iGenCode, String.Empty, String.Empty, iSeverity)
+INTERNAL METHOD _dbfError(ex AS Exception,iSubCode AS DWORD, iGenCode AS DWORD, iSeverity AS DWORD, lThrow := TRUE AS LOGIC) AS VOID
+	SELF:_dbfError(ex, iSubCode, iGenCode, String.Empty, String.Empty, iSeverity, lThrow)
 	
-INTERNAL METHOD _dbfError(iSubCode AS DWORD, iGenCode AS DWORD, iSeverity AS DWORD) AS VOID
-	SELF:_dbfError(NULL, iSubCode, iGenCode, String.Empty, String.Empty, iSeverity)
+INTERNAL METHOD _dbfError(iSubCode AS DWORD, iGenCode AS DWORD, iSeverity AS DWORD, lThrow := TRUE AS LOGIC) AS VOID
+	SELF:_dbfError(NULL, iSubCode, iGenCode, String.Empty, String.Empty, iSeverity, lThrow)
 	
-INTERNAL METHOD _dbfError(iSubCode AS DWORD, iGenCode AS DWORD, strFunction AS STRING) AS VOID
-	SELF:_dbfError(NULL, iSubCode, iGenCode, strFunction, String.Empty, XSharp.Severity.ES_ERROR)
+INTERNAL METHOD _dbfError(iSubCode AS DWORD, iGenCode AS DWORD, strFunction AS STRING, lThrow := TRUE AS LOGIC) AS VOID
+	SELF:_dbfError(NULL, iSubCode, iGenCode, strFunction, String.Empty, XSharp.Severity.ES_ERROR, lThrow)
 	
-INTERNAL METHOD _dbfError(ex AS Exception, iSubCode AS DWORD, iGenCode AS DWORD, strFunction AS STRING) AS VOID
-	SELF:_dbfError(ex, iSubCode, iGenCode, strFunction, String.Empty, XSharp.Severity.ES_ERROR)
+INTERNAL METHOD _dbfError(ex AS Exception, iSubCode AS DWORD, iGenCode AS DWORD, strFunction AS STRING, lThrow := TRUE AS LOGIC) AS VOID
+	SELF:_dbfError(ex, iSubCode, iGenCode, strFunction, String.Empty, XSharp.Severity.ES_ERROR, lThrow)
 	
-INTERNAL METHOD _dbfError(iSubCode AS DWORD, iGenCode AS DWORD, strFunction AS STRING, strMessage AS STRING) AS VOID
-	SELF:_dbfError(NULL, iSubCode, iGenCode, strFunction,strMessage, XSharp.Severity.ES_ERROR)
+INTERNAL METHOD _dbfError(iSubCode AS DWORD, iGenCode AS DWORD, strFunction AS STRING, strMessage AS STRING, lThrow := TRUE AS LOGIC) AS VOID
+	SELF:_dbfError(NULL, iSubCode, iGenCode, strFunction,strMessage, XSharp.Severity.ES_ERROR, lThrow)
 	
-INTERNAL METHOD _dbfError(ex AS Exception, iSubCode AS DWORD, iGenCode AS DWORD, strFunction AS STRING, strMessage AS STRING, iSeverity AS DWORD) AS VOID
+INTERNAL METHOD _dbfError(ex AS Exception, iSubCode AS DWORD, iGenCode AS DWORD, strFunction AS STRING, strMessage AS STRING, iSeverity AS DWORD, lThrow := TRUE AS LOGIC) AS VOID
 	LOCAL oError AS RddError
     //
 	IF ex != NULL
@@ -1414,7 +1416,10 @@ INTERNAL METHOD _dbfError(ex AS Exception, iSubCode AS DWORD, iGenCode AS DWORD,
     ENDIF
 	RuntimeState.LastRddError := oError
     //
-	THROW oError
+    IF lThrow
+	    THROW oError
+    ENDIF
+    RETURN
 	
 INTERNAL METHOD _getUsualType(oValue AS OBJECT) AS __UsualType
 	LOCAL typeCde AS TypeCode
@@ -1820,8 +1825,8 @@ METHOD ForceRel() AS LOGIC
 				gotoRec := Convert.ToInt32( SELF:_EvalResult )
 			CATCH ex AS InvalidCastException
 				gotoRec := 0
-				SELF:_dbfError(ex, Subcodes.ERDD_DATATYPE,Gencode.EG_DATATYPE,  "DBF.ForceRel") 
-				
+				SELF:_dbfError(ex, Subcodes.ERDD_DATATYPE,Gencode.EG_DATATYPE,  "DBF.ForceRel", FALSE) 
+				RETURN FALSE
 			END TRY
 		ENDIF
 		isOK := SELF:GoTo( gotoRec )

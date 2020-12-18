@@ -36,9 +36,8 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 LOCAL cName     := SELF:Encoding:GetString( bName, 0, bName:Length) AS STRING
                 cName           := cName:TrimEnd(<CHAR>{'\0'})
                 VAR tag         := CdxTag{_bag,  nRecno, cName:Trim()}
-                if tag:IsOpen
-                    _tags:Add(tag)
-                ELSEIF oError == NULL
+                _tags:Add(tag)
+                IF !tag:IsOpen
                     oError := RuntimeState.LastRddError
                 ENDIF
             NEXT

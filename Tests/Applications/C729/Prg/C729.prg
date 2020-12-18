@@ -17,7 +17,14 @@ static System.Void fox.Exe.Functions.Start()
 */
 
 FUNCTION Start() AS VOID
-LOCAL obj
+LOCAL obj                            
+&("1=1")               
+// make sure macro compiler is initialized correctly when running in the test suite                  
+VAR mc := (XSharp.Runtime.MacroCompiler) RuntimeState.MacroCompiler
+IF mc != NULL .and. !mc:Options:AllowDotAccess                                     
+    ?" Reinitializing Macro compiler"
+    SetMacroCompiler(typeof(XSharp.Runtime.MacroCompiler))
+ENDIF    
 obj = createobject("empty")
 AddProperty(obj,"MyName","Loy")
 ? obj.MyName  // prints "Loy" - this works

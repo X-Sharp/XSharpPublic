@@ -1553,15 +1553,18 @@ namespace Microsoft.CodeAnalysis.CSharp
             bool hasAnyRefOmittedArgument1 = m1.Result.HasAnyRefOmittedArgument;
             bool hasAnyRefOmittedArgument2 = m2.Result.HasAnyRefOmittedArgument;
 #if XSHARP
-            // X# does not prefer non ref over ref
-            bool allowImplicit;
-            if (arguments.Count > 0)
+            // X# does not prefer non ref over ref but if one or the other ends with param arrays then we force explicit use of REF or @
+            bool allowImplicit = false;
+            if (!m1.Member.HasParamsParameter() && !m2.Member.HasParamsParameter())
             {
-                allowImplicit = Compilation.Options.HasOption(CompilerOption.ImplicitCastsAndConversions, arguments[0].Syntax);
-            }
-            else
-            {
-                allowImplicit = Compilation.Options.HasOption(CompilerOption.ImplicitCastsAndConversions, null);
+                if (arguments.Count > 0)
+                {
+                    allowImplicit = Compilation.Options.HasOption(CompilerOption.ImplicitCastsAndConversions, arguments[0].Syntax);
+                }
+                else
+                {
+                    allowImplicit = Compilation.Options.HasOption(CompilerOption.ImplicitCastsAndConversions, null);
+                }
             }
 
             if (hasAnyRefOmittedArgument1 != hasAnyRefOmittedArgument2 && !allowImplicit)

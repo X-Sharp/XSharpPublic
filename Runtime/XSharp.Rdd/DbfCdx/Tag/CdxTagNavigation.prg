@@ -23,6 +23,10 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         PRIVATE _mustCheckEof AS LOGIC
         INTERNAL PROPERTY EmptyResultSet as LOGIC
             GET
+                IF !SELF:_Valid
+                    SELF:_oRdd:_SetEOF(TRUE)
+                    RETURN TRUE
+                ENDIF
                 IF _mustCheckEof .OR. SELF:_oRdd:MustForceRel 
                     RETURN FALSE
                 ENDIF

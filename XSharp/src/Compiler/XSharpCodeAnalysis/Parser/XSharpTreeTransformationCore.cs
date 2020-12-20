@@ -5739,6 +5739,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             bool isStatic = (context.Parent as XP.CommonLocalDeclContext).Static != null;
             bool isDim = context.Dim != null && context.ArraySub != null;
             string staticName = null;
+            string initName = null;
+            string lockName = null;
             TypeSyntax varType;
             if (context.DataType is null && context.Expression is XP.TypeCheckExpressionContext tcec)
             {
@@ -5778,50 +5780,62 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             if (isStatic)
             {
+                var currentclass = ClassEntities.Peek();
                 staticName = XSharpSpecialNames.StaticLocalFieldNamePrefix + CurrentEntity.ShortName+"$"+context.Id.Get<SyntaxToken>().Text + UniqueNameSuffix(context);
+                initName = staticName + XSharpSpecialNames.StaticLocalInitFieldNameSuffix;
+                lockName = staticName + XSharpSpecialNames.StaticLocalLockFieldNameSuffix;
                 if (initExpr == null)
                 {
                 	// no filtering on InitLocals here. That is done inside GenerateInitializer
                     initExpr = GenerateInitializer(context.DataType);
                 }
                 simpleInit = (initExpr is LiteralExpressionSyntax);
-                ClassEntities.Peek().Members.Add(
-                    _syntaxFactory.FieldDeclaration(
+                var field = _syntaxFactory.FieldDeclaration(
                         EmptyList<AttributeListSyntax>(),
                         TokenList(SyntaxKind.StaticKeyword, SyntaxKind.InternalKeyword),
                         _syntaxFactory.VariableDeclaration(varType,
-                            MakeSeparatedList(GenerateVariable(SyntaxFactory.Identifier(staticName),simpleInit ? initExpr : null))),
-                        SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken))
-                    );
+                            MakeSeparatedList(GenerateVariable(SyntaxFactory.Identifier(staticName), simpleInit ? initExpr : null))),
+                        SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken));
+                field.XNode = context;
+                currentclass.Members.Add(field); 
                 if (initExpr != null && ! simpleInit)
                 {
-                    ClassEntities.Peek().Members.Add(
-                        _syntaxFactory.FieldDeclaration(
+                    field = _syntaxFactory.FieldDeclaration(
                             EmptyList<AttributeListSyntax>(),
                             TokenList(SyntaxKind.StaticKeyword, SyntaxKind.InternalKeyword),
                             _syntaxFactory.VariableDeclaration(_syntaxFactory.PredefinedType(SyntaxFactory.MakeToken(SyntaxKind.BoolKeyword)),
                                 MakeSeparatedList(
-                                        GenerateVariable(SyntaxFactory.Identifier(staticName + XSharpSpecialNames.StaticLocalInitFieldNameSuffix),
+                                        GenerateVariable(SyntaxFactory.Identifier(initName),
                                         GenerateLiteral(true)))),
-                            SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken))
-                        );
-                    ClassEntities.Peek().Members.Add(
-                        _syntaxFactory.FieldDeclaration(
+                            SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken));
+                    field.XNode = context;
+                    currentclass.Members.Add(field);
+                    field = _syntaxFactory.FieldDeclaration(
                             EmptyList<AttributeListSyntax>(),
                             TokenList(SyntaxKind.StaticKeyword, SyntaxKind.InternalKeyword),
                             _syntaxFactory.VariableDeclaration(objectType,
-                                MakeSeparatedList(GenerateVariable(SyntaxFactory.Identifier(staticName + XSharpSpecialNames.StaticLocalLockFieldNameSuffix),
+                                MakeSeparatedList(GenerateVariable(SyntaxFactory.Identifier(lockName),
                                         CreateObject(objectType, EmptyArgumentList())))),
-                            SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken))
-                        );
+                            SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken));
+                    field.XNode = context;
+                    currentclass.Members.Add(field);
                 }
             }
             var variables = _pool.AllocateSeparated<VariableDeclaratorSyntax>();
-            var vardecl = _syntaxFactory.VariableDeclarator(context.Id.Get<SyntaxToken>(), null,
-                isStatic ? _syntaxFactory.EqualsValueClause(SyntaxFactory.MakeToken(SyntaxKind.EqualsToken),
-                    _syntaxFactory.RefExpression(SyntaxFactory.MakeToken(SyntaxKind.RefKeyword), GenerateSimpleName(staticName)))
-                : (initExpr == null) ? null : _syntaxFactory.EqualsValueClause(SyntaxFactory.MakeToken(SyntaxKind.EqualsToken), initExpr));
+            VariableDeclaratorSyntax vardecl;
+            if (isStatic)
+            {
+                var refexpr = _syntaxFactory.RefExpression(SyntaxFactory.MakeToken(SyntaxKind.RefKeyword), GenerateSimpleName(staticName));
+                var eqvalue = _syntaxFactory.EqualsValueClause(SyntaxFactory.MakeToken(SyntaxKind.EqualsToken), refexpr);
+                vardecl = _syntaxFactory.VariableDeclarator(context.Id.Get<SyntaxToken>(), null,eqvalue); 
+            }
+            else
+            {
+                var eqvalue = (initExpr == null) ? null : _syntaxFactory.EqualsValueClause(SyntaxFactory.MakeToken(SyntaxKind.EqualsToken), initExpr);
+                vardecl = _syntaxFactory.VariableDeclarator(context.Id.Get<SyntaxToken>(), null,eqvalue);
+            }
             vardecl.XVoIsDim = isDim;
+            vardecl.XNode = context;
             var name = context.Id.GetText();
             if (CurrentEntity?.Data.GetField(name) != null)
             {
@@ -5844,29 +5858,26 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             else
             {
                 var decl = _pool.Allocate<StatementSyntax>();
+                var refType = _syntaxFactory.RefType(SyntaxFactory.MakeToken(SyntaxKind.RefKeyword), null, varType);
                 var ldecl = _syntaxFactory.LocalDeclarationStatement(
-                    modifiers.ToList<SyntaxToken>(),
-                    _syntaxFactory.VariableDeclaration(
-                        _syntaxFactory.RefType(SyntaxFactory.MakeToken(SyntaxKind.RefKeyword), null, varType), variables),
-                    SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken));
+                        modifiers.ToList<SyntaxToken>(),_syntaxFactory.VariableDeclaration(refType, variables),
+                        SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken));
                 decl.Add(ldecl);
                 if (initExpr != null && ! simpleInit)
                 {
-                    decl.Add(GenerateIfStatement(
-                        GenerateSimpleName(staticName + XSharpSpecialNames.StaticLocalInitFieldNameSuffix),
-
-                        MakeLock(GenerateSimpleName(staticName + XSharpSpecialNames.StaticLocalLockFieldNameSuffix),
-                            GenerateIfStatement(GenerateSimpleName(staticName + XSharpSpecialNames.StaticLocalInitFieldNameSuffix),
-
-                                MakeBlock(MakeList<StatementSyntax>(
+                    var block = MakeBlock(MakeList<StatementSyntax>(
                                         GenerateExpressionStatement(MakeSimpleAssignment(GenerateSimpleName(staticName), initExpr)),
-                                        GenerateExpressionStatement(
-                                            MakeSimpleAssignment(
-                                                GenerateSimpleName(staticName + XSharpSpecialNames.StaticLocalInitFieldNameSuffix),
-                                                GenerateLiteral(false)))
-                                        ))))));
+                                        GenerateExpressionStatement(MakeSimpleAssignment(GenerateSimpleName(initName), GenerateLiteral(false)))
+                                        ));
+                    decl.Add(GenerateIfStatement(
+                        GenerateSimpleName(initName),
+                        MakeLock(GenerateSimpleName(lockName),
+                            GenerateIfStatement(GenerateSimpleName(initName),block))));
                 }
-                context.PutList<StatementSyntax>(decl);
+                if (decl.Count > 1)
+                    context.PutList<StatementSyntax>(decl);
+                else
+                    context.Put(decl[0]);
                 _pool.Free(decl);
             }
             _pool.Free(variables);

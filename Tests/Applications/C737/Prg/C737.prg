@@ -1,20 +1,30 @@
 // 737. error XS9999: An internal compiler error has occurred: 'Unexpected value 'Worst' of type 'LanguageService.CodeAnalysis.XSharp.MemberResolutionKind''
-
+// The compiler has been changed now to make sure that /vo7 does not affect 
+// argument - parameter matching when one or both methods have a PARAMS array
 // /vo7+ must be enabled!
 FUNCTION Start() AS VOID STRICT
-	Test.Exec("MyFunc", 1)
+	xAssert(Test.Exec("MyFunc", 1) == 42)
 	RETURN
 	
 PUBLIC STATIC CLASS Test
 
 	PUBLIC STATIC METHOD Exec(cName AS STRING, uReturnValue OUT USUAL, aParameters PARAMS OBJECT[]) AS LOGIC
 		uReturnValue := NIL
-		RETURN FALSE
+		RETURN TRUE
 
 	PUBLIC STATIC METHOD Exec(cName AS STRING, aParameters PARAMS OBJECT[]) AS USUAL
-		RETURN NIL
+	    XAssert(cName == "MyFunc")
+	    XAssert((INT) aParameters[1] == 1)
+		RETURN 42
 
 END CLASS
+                 
+PROC xAssert(l AS LOGIC) 
+IF .NOT. l
+	THROW Exception{"Incorrect result in line " + System.Diagnostics.StackTrace{TRUE}:GetFrame(1):GetFileLineNumber():ToString()}
+END IF
+? "Assertion passed"   
+RETURN   
 
 /*
 error XS9999: An internal compiler error has occurred: 'Unexpected value 'Worst' of type 'LanguageService.CodeAnalysis.XSharp.MemberResolutionKind'',    at LanguageService.CodeAnalysis.XSharp.OverloadResolutionResult`1.ReportDiagnostics[T](Binder binder, Location location, SyntaxNode nodeOpt, DiagnosticBag diagnostics, String name, BoundExpression receiver, SyntaxNode invokedExpression, AnalyzedArguments arguments, ImmutableArray`1 memberGroup, NamedTypeSymbol typeContainingConstructor, NamedTypeSymbol delegateTypeBeingInvoked, XSharpSyntaxNode queryClause, Boolean isMethodGroupConversion, Nullable`1 returnRefKind, TypeSymbol delegateType) in D:\a\XSharpDev\XSharpDev\Roslyn\Src\Compilers\CSharp\Portable\Binder\Semantics\OverloadResolution\OverloadResolutionResult.cs:line 210

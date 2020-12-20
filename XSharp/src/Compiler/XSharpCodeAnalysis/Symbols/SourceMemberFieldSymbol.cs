@@ -24,41 +24,34 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             var xNode = this.SyntaxNode.XNode;
             if (compilation.Options.HasOption(CompilerOption.ResolveTypedFunctionPointersToPtr,this.SyntaxNode))
             {
+                XP.DatatypeContext dt = null;
                 if (xNode is XP.ClassvarContext &&
                     xNode.Parent is XP.ClassVarListContext)
                 {
                     var cvl = xNode.Parent as XP.ClassVarListContext;
-                    var dt = cvl.DataType;
-                    if (dt is XP.PtrDatatypeContext)
-                    {
-                        // So we have a global as typed ptr
-                        // change the type from typed ptr to just ptr
-                        var ptrdtc = dt as XP.PtrDatatypeContext;
-                        if (ptrdtc.TypeName.Name != null)           // User Define Typename PTR
-                        {
-                            string name = ptrdtc.TypeName.Name.GetText();
-                            // Lookup name ?
-                            return compilation.GetSpecialType(SpecialType.System_IntPtr);
-                        }
-
-                    }
+                    dt = cvl.DataType;
+                    // This is a typed PTR in a Class Var / VO Global
                 }
                 if (xNode is XP.VostructmemberContext smc)
                 {
-                    var dt = smc.DataType;
-                    if (dt is XP.PtrDatatypeContext)
-                    {
-                        // So we have a global as typed ptr
-                        // change the type from typed ptr to just ptr
-                        var ptrdtc = dt as XP.PtrDatatypeContext;
-                        if (ptrdtc.TypeName.Name != null)           // User Define Typename PTR
-                        {
-                            string name = ptrdtc.TypeName.Name.GetText();
-                            // Lookup name ?
-                            return compilation.GetSpecialType(SpecialType.System_IntPtr);
-                        }
-                    }
+                    dt = smc.DataType;
+                    // This is a typed PTR in a Structure or Union Member
                 }
+                if (xNode is XP.LocalvarContext lvc)
+                {
+                    dt = lvc.DataType;
+                    // This is a typed PTR in a Local Variable
+                }
+                // User Define Typename PTR
+                // change the type from typed ptr to just ptr
+                if (dt is XP.PtrDatatypeContext ptrdtc && ptrdtc.TypeName.Name != null)
+                {
+                    // So we have a global as typed ptr
+                    string name = ptrdtc.TypeName.Name.GetText();
+                    // Lookup name ?
+                    return compilation.GetSpecialType(SpecialType.System_IntPtr);
+                }
+
             }
             TypeSymbol type = null;
             if (xNode is XP.VodefineContext && ! this.IsConst)

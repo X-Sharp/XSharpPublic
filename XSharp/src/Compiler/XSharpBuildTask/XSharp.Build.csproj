@@ -12,6 +12,7 @@
     <AssemblyName>XSharp.Build</AssemblyName>
     <TargetFramework>net472</TargetFramework>
     <DefaultLanguage>en-US</DefaultLanguage>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <GenerateMicrosoftCodeAnalysisCommitHashAttribute>false</GenerateMicrosoftCodeAnalysisCommitHashAttribute>
     <DebugSymbols>true</DebugSymbols>
     <ErrorReport>prompt</ErrorReport>

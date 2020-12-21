@@ -1185,6 +1185,13 @@ namespace Microsoft.CodeAnalysis.CSharp
 
         internal static ConstantValue GetConstantSizeOf(TypeSymbol type)
         {
+#if XSHARP
+            if (type.IsVoStructOrUnion())
+            {
+                return ConstantValue.Create(type.VoStructOrUnionSizeInBytes());
+
+            }
+#endif
             return ConstantValue.CreateSizeOf((type.GetEnumUnderlyingType() ?? type).SpecialType);
         }
 

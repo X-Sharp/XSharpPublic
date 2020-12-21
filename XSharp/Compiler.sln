@@ -107,7 +107,12 @@ Global
 		..\Roslyn\src\Dependencies\PooledObjects\Microsoft.CodeAnalysis.PooledObjects.projitems*{7b774abc-83a0-4fd8-91fb-1dbe8829765b}*SharedItemsImports = 5
 		..\Roslyn\src\Compilers\Core\CommandLine\CommandLine.projitems*{9508f118-f62e-4c16-a6f4-7c3b56e166ad}*SharedItemsImports = 5
 		..\Roslyn\src\Compilers\Core\CommandLine\CommandLine.projitems*{ad6f474e-e6d4-4217-91f3-b7af1be31ccc}*SharedItemsImports = 13
+		..\Roslyn\src\Compilers\Core\CommandLine\CommandLine.projitems*{aebebc71-1fde-4901-91e0-5667f9bb211a}*SharedItemsImports = 5
 		..\Roslyn\src\Compilers\Core\AnalyzerDriver\AnalyzerDriver.projitems*{d0bc9be7-24f6-40ca-8dc6-fcb93bd44b34}*SharedItemsImports = 13
+		..\Roslyn\src\Compilers\Core\AnalyzerDriver\AnalyzerDriver.projitems*{f738fd65-ffaf-4f52-8efc-5affd1c42846}*SharedItemsImports = 5
+		..\Roslyn\src\Compilers\CSharp\CSharpAnalyzerDriver\CSharpAnalyzerDriver.projitems*{f738fd65-ffaf-4f52-8efc-5affd1c42846}*SharedItemsImports = 5
+		..\Roslyn\Src\Dependencies\CodeAnalysis.Debugging\Microsoft.CodeAnalysis.Debugging.projitems*{f738fd65-ffaf-4f52-8efc-5affd1c42846}*SharedItemsImports = 5
+		..\Roslyn\src\Dependencies\PooledObjects\Microsoft.CodeAnalysis.PooledObjects.projitems*{f738fd65-ffaf-4f52-8efc-5affd1c42846}*SharedItemsImports = 5
 	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU

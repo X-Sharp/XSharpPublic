@@ -229,15 +229,15 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
             if (type == compilation.ArrayType())
                 return true;
-            if (type == compilation.CodeBlockType())
+            if (type.IsCodeBlock())
                 return true;
-            if (type == compilation.DateType())
+            if (type.IsDate())
                 return true;
-            if (type == compilation.FloatType())
+            if (type.IsFloat())
                 return true;
-            if (type == compilation.SymbolType())
+            if (type.IsSymbol())
                 return true;
-            if (type == compilation.PszType())
+            if (type.IsPsz())
                 return true;
             return false;
         }

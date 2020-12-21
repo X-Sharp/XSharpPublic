@@ -601,11 +601,11 @@ namespace Microsoft.CodeAnalysis.Emit
             {
 #if XSHARP
                 // Skip when class has been included as top level
-                if (type != topType)
+                if (typeDef != topType)
                 {
-                    AddTopLevelType(names, type);
-                    VisitTopLevelType(noPiaIndexer, type);
-                    yield return type;
+                    AddTopLevelType(names, typeDef);
+                    VisitTopLevelType(typeReferenceIndexer, typeDef);
+                    yield return typeDef;
                 }
 #else
                 AddTopLevelType(names, typeDef);

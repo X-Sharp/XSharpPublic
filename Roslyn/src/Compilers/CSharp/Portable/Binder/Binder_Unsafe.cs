@@ -39,7 +39,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         internal bool ReportUnsafeIfNotAllowed(Location location, DiagnosticBag diagnostics)
         {
 #if XSHARP 
-            var diagnosticInfo = Compilation.Options.HasRuntime && Compilation.Options.AllowUnsafe  ? null : GetUnsafeDiagnosticInfo(sizeOfTypeOpt);
+            var diagnosticInfo = Compilation.Options.HasRuntime && Compilation.Options.AllowUnsafe  ? null : GetUnsafeDiagnosticInfo(sizeOfTypeOpt: null);
 #else
             var diagnosticInfo = GetUnsafeDiagnosticInfo(sizeOfTypeOpt: null);
 #endif
@@ -50,8 +50,6 @@ namespace Microsoft.CodeAnalysis.CSharp
 
             diagnostics.Add(new CSDiagnostic(diagnosticInfo, location));
 #if XSHARP
-            if ((object)sizeOfTypeOpt != null)
-                return false;
             if (ErrorFacts.IsWarning(diagnosticInfo.Code))
                 return false;
 #endif

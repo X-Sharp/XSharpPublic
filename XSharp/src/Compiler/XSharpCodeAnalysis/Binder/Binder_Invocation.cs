@@ -206,7 +206,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 {
                     lookupResult.Clear();
                     var ts = FindPCallDelegateType(type as IdentifierNameSyntax);
-                    if (ts != null && ts.IsDelegateType())
+                    if (((object)ts )!= null && ts.IsDelegateType())
                     {
                         SourceDelegateMethodSymbol delmeth = ts.DelegateInvokeMethod() as SourceDelegateMethodSymbol;
                         // clone the parameters from the methodSym
@@ -262,7 +262,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 if (ok)
                 {
                     var argType = args[0].Type;
-                    ok = argType == Compilation.GetSpecialType(SpecialType.System_IntPtr);
+                    ok = TypeSymbol.Equals(argType , Compilation.GetSpecialType(SpecialType.System_IntPtr));
                     ok = ok | argType.IsVoidPointer();
                     ok = ok | argType.IsPointerType();
                 }
@@ -275,57 +275,57 @@ namespace Microsoft.CodeAnalysis.CSharp
 
         private void BindPCallNativeAndDelegate(InvocationExpressionSyntax node, ArrayBuilder<BoundExpression> args,
                 DiagnosticBag diagnostics, TypeSyntax type)
+        {
+            var XNode = node.XNode as XP.MethodCallContext;
+            string method = XNode?.Expr.GetText();
+            if (string.IsNullOrEmpty(method))
+                method = "PCALLNATIVE";
+            if (!ValidatePCallArguments(node, args, diagnostics, method))
+                return;
+            // Our parent is the invocation expression of the delegate
+            AnalyzedArguments analyzedArguments = AnalyzedArguments.GetInstance();
+            try
             {
-                var XNode = node.XNode as XP.MethodCallContext;
-                string method = XNode?.Expr.GetText();
-                if (string.IsNullOrEmpty(method))
-                    method = "PCALLNATIVE";
-                if (!ValidatePCallArguments(node, args, diagnostics, method))
-                    return;
-                // Our parent is the invocation expression of the delegate
-                AnalyzedArguments analyzedArguments = AnalyzedArguments.GetInstance();
-                try
+                var ts = FindPCallDelegateType(type as IdentifierNameSyntax);
+                if (!object.ReferenceEquals(ts, null) && ts.IsDelegateType())
                 {
-                    var ts = FindPCallDelegateType(type as IdentifierNameSyntax);
-                    if (ts != null && ts.IsDelegateType())
+                    SourceDelegateMethodSymbol delmeth = ts.DelegateInvokeMethod() as SourceDelegateMethodSymbol;
+                    // create new parameters based on the parameters from out parent call
+                    var invoke = node.Parent as InvocationExpressionSyntax;
+                    var realargs = invoke.ArgumentList;
+                    var delparams = ts.DelegateParameters();
+                    BindArgumentsAndNames(realargs, diagnostics, analyzedArguments);
+                    var builder = ArrayBuilder<ParameterSymbol>.GetInstance();
+                    int i = 0;
+                    foreach (var expr in analyzedArguments.Arguments)
                     {
-                        SourceDelegateMethodSymbol delmeth = ts.DelegateInvokeMethod() as SourceDelegateMethodSymbol;
-                        // create new parameters based on the parameters from out parent call
-                        var invoke = node.Parent as InvocationExpressionSyntax;
-                        var realargs = invoke.ArgumentList;
-                        var delparams = ts.DelegateParameters();
-                        BindArgumentsAndNames(realargs, diagnostics, analyzedArguments);
-                        var builder = ArrayBuilder<ParameterSymbol>.GetInstance();
-                        int i = 0;
-                        foreach (var expr in analyzedArguments.Arguments)
-                        {
-                            var ptype = expr.Type;
-                            if (ptype == null)
-                                ptype = new PointerTypeSymbol(Compilation.GetSpecialType(SpecialType.System_Void));
-                            var parameter = new SourceSimpleParameterSymbol(
-                                delmeth,
-                                ptype,
-                                i,
-                                delparams[i].RefKind,
-                                delparams[i].Name,
-                                delparams[i].Locations);
-                            builder.Add(parameter);
-                            i++;
-                        }
-                        delmeth.InitializeParameters(builder.ToImmutableAndFree());
+                        var ptype = expr.Type;
+                        if (object.ReferenceEquals(ptype, null))
+                            ptype = new PointerTypeSymbol(Compilation.GetSpecialType(SpecialType.System_Void));
+                        var parameter = new SourceSimpleParameterSymbol(
+                            delmeth,
+                            ptype,
+                            i,
+                            delparams[i].RefKind,
+                            delparams[i].Name,
+                            delparams[i].Locations);
+                        builder.Add(parameter);
+                        i++;
                     }
-                    else
-                    {
-                        Error(diagnostics, ErrorCode.ERR_PCallResolveGeneratedDelegate, node, method, type.ToString());
-                    }
+                    delmeth.InitializeParameters(builder.ToImmutableAndFree());
+                }
+                else
+                {
+                    Error(diagnostics, ErrorCode.ERR_PCallResolveGeneratedDelegate, node, method, type.ToString());
+                }
 
-                    return;
-                }
-                finally
-                {
-                    analyzedArguments.Free();
-                }
+                return;
             }
+            finally
+            {
+                analyzedArguments.Free();
+            }
+        }
 
         internal void RemoveNamespacesFromResult(LookupResult result)
             {

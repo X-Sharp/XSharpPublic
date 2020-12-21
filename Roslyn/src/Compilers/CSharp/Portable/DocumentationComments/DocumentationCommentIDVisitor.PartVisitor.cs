@@ -90,7 +90,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                             {
                                 builder.Append(',');
                             }
-                            if (type != null)
+                            if (!type.IsNull())
                             {
                                 Visit(type.ElementType, builder);
                             }

@@ -153,7 +153,7 @@ namespace Microsoft.CodeAnalysis
         internal static string GetProductVersion(Type type)
         {
 #if XSHARP
-            string assemblyVersion = assembly.GetCustomAttribute<AssemblyFileVersionAttribute>()?.Version;
+            string assemblyVersion = type.Assembly.GetCustomAttribute<AssemblyFileVersionAttribute>()?.Version;
             string hash = GetShortCommitHash(type);
 #else
             string assemblyVersion = GetInformationalVersionWithoutHash(type);
@@ -1240,6 +1240,7 @@ namespace Microsoft.CodeAnalysis
 #if XSHARP
                     catch (Exception e)
                     {
+                        success = false;
                         var info = new CSharp.CSDiagnosticInfo(CSharp.ErrorCode.ERR_Internal,e.Message, e.StackTrace);
                         diagnostics.Add(Diagnostic.Create(info));
                     }

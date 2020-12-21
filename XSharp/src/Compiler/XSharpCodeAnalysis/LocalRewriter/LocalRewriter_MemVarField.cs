@@ -28,13 +28,13 @@ namespace Microsoft.CodeAnalysis.CSharp
             Debug.Assert((object)getMethod != null);
             if (property.HasAlias)
             {
-                var arg1 = MakeConversionNode(_factory.Literal(property.Alias), getMethod.ParameterTypes[0], false);
-                var arg2 = MakeConversionNode(_factory.Literal(property.Name), getMethod.ParameterTypes[1], false);
+                var arg1 = MakeConversionNode(_factory.Literal(property.Alias), getMethod.Parameters[0].Type, false);
+                var arg2 = MakeConversionNode(_factory.Literal(property.Name), getMethod.Parameters[1].Type, false);
                 return BoundCall.Synthesized(syntax, null, getMethod, arg1, arg2);
             }
             else
             {
-                var arg1 = MakeConversionNode(_factory.Literal(property.Name), getMethod.ParameterTypes[0], false);
+                var arg1 = MakeConversionNode(_factory.Literal(property.Name), getMethod.Parameters[0].Type, false);
                 return BoundCall.Synthesized(syntax, null, getMethod, arg1);
             }
         }
@@ -43,9 +43,9 @@ namespace Microsoft.CodeAnalysis.CSharp
             var setMethod = property.SetMethod;
             if (property.HasAlias)
             {
-                var arg1 = MakeConversionNode(_factory.Literal(property.Alias), setMethod.ParameterTypes[0], false);
-                var arg2 = MakeConversionNode(_factory.Literal(property.Name), setMethod.ParameterTypes[1], false);
-                var arg3 = MakeConversionNode(rewrittenRight, setMethod.ParameterTypes[2], false);
+                var arg1 = MakeConversionNode(_factory.Literal(property.Alias), setMethod.Parameters[0].Type, false);
+                var arg2 = MakeConversionNode(_factory.Literal(property.Name), setMethod.Parameters[1].Type, false);
+                var arg3 = MakeConversionNode(rewrittenRight, setMethod.Parameters[2].Type, false);
                 return BoundCall.Synthesized(syntax, null, setMethod, ImmutableArray.Create(arg1, arg2,arg3));
 
             }

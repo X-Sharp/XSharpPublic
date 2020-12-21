@@ -40,7 +40,7 @@ namespace Microsoft.CodeAnalysis
             if (_caseSensitive)
             {
                 _compare = string.Compare;
-                Comparer = StringOrdinalComparer.Instance;
+                Comparer = StringComparer.Ordinal;
                 Comparison = StringComparison.Ordinal;
             }
             else
@@ -55,7 +55,7 @@ namespace Microsoft.CodeAnalysis
 
         public static bool Equals(string lhs, string rhs) =>  _compare(lhs, rhs) == 0;
         public static int Compare(string lhs, string rhs) => _compare(lhs, rhs);
-        public static IEqualityComparer<string> Comparer { get; private set; }
+        public static StringComparer Comparer { get; private set; }
         public static StringComparison Comparison { get; private set; }
         public static bool IgnoreCase => !CaseSensitive;
     }

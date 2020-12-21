@@ -41,7 +41,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             return binder;
         }
         private Binder XSLookupSymbolsInternal(
-            LookupResult result, string name, int arity, ConsList<Symbol> basesBeingResolved, LookupOptions options, bool diagnose, ref HashSet<DiagnosticInfo> useSiteDiagnostics)
+            LookupResult result, string name, int arity, ConsList<TypeSymbol> basesBeingResolved, LookupOptions options, bool diagnose, ref HashSet<DiagnosticInfo> useSiteDiagnostics)
         {
             Debug.Assert(result.IsClear);
             Debug.Assert(options.AreValid());
@@ -58,7 +58,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                     Binder scope = this;
                     while (scope != null)
                     {
-                        if (scope is InContainerBinder && scope.ContainingType == null) // at the namespace level, so outside of all types
+                        if (scope is InContainerBinder && scope.ContainingType.IsNull()) // at the namespace level, so outside of all types
                         {
                             scope.LookupSymbolsInSingleBinder(result, name, arity, basesBeingResolved, funcOptions, this, diagnose, ref useSiteDiagnostics);
                             FilterResults(result, options);

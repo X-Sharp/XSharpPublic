@@ -78,18 +78,6 @@
     <Content Include="Preprocessor\preprocessor.txt" />
   </ItemGroup>
   <ItemGroup>
-   <Compile Update="XSharpResources.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>XSharpResources.resx</DependentUpon>
-    </Compile>
-    <Compile Update="CodeAnalysisResources.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>CodeAnalysisResources.resx</DependentUpon>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
     <PackageReference Include="Microsoft.CodeAnalysis.Analyzers" Version="$(MicrosoftCodeAnalysisAnalyzersVersion)" Condition="'$(DotNetBuildFromSource)' != 'true'" PrivateAssets="ContentFiles" />
     <PackageReference Include="System.Collections.Immutable" Version="$(SystemCollectionsImmutableVersion)" />
     <PackageReference Include="System.Memory" Version="$(SystemMemoryVersion)" />
@@ -100,7 +88,10 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="$(CSharpSource)BoundTree\BoundNodes.xml" />
+    <None Include="$(CSharpSource)BoundTree\BoundNodes.xsd" />
+    <None Include="$(CSharpSource)Generated\CSharp.Generated.g4" />
     <Content Include="$(CSharpSource)Syntax\Syntax.xml" />
+    <None Include="$(CSharpSource)SSyntax\Syntax.xsd" />
     <Content Include="$(CSharpSource)UseSiteDiagnosticsCheckEnforcer\BaseLine.txt" />
     <Content Include="$(CSharpSource)UseSiteDiagnosticsCheckEnforcer\Run.bat" />
     <None Include="$(CSharpSource)FlowAnalysis\Flow Analysis Design.docx" />
@@ -109,17 +100,8 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Update="XSharpResources.resx"> 
-      <SubType>Designer</SubType>
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>XSharpResources.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Update="CodeAnalysisResources.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <SubType>Designer</SubType>
-      <LastGenOutput>CodeAnalysisResources.Designer.cs</LastGenOutput>
-      <CustomToolNamespace>Microsoft.CodeAnalysis</CustomToolNamespace>
-    </EmbeddedResource>
+    <EmbeddedResource Update="XSharpResources.resx" GenerateSource="true" />
+    <EmbeddedResource Update="CodeAnalysisResources.resx" GenerateSource="false" />
     <EmbeddedResource Include="$(CoreSource)Resources\default.win32manifest" />
   </ItemGroup>
   <ItemGroup>

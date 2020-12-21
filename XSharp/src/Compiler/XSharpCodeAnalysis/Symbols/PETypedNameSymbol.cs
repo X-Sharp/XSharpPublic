@@ -30,8 +30,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols.Metadata.PE
 
                     if (getMethods != ImmutableArray<Symbol>.Empty && setMethods != ImmutableArray<Symbol>.Empty)
                     {
-                        var getOne = (from PEMethodSymbol m in getMethods where !m.ParameterTypes[0].IsArray() select m).FirstOrDefault();
-                        var setOne = (from PEMethodSymbol m in setMethods where !m.ParameterTypes[1].IsArray() select m).FirstOrDefault();
+                        var getOne = (from PEMethodSymbol m in getMethods where !m.Parameters[0].Type.IsArray() select m).FirstOrDefault();
+                        var setOne = (from PEMethodSymbol m in setMethods where !m.Parameters[1].Type.IsArray() select m).FirstOrDefault();
 
                         if (((object)getOne != null) || ((object)setOne != null))
                         {
@@ -62,8 +62,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols.Metadata.PE
 
                     if (getMethods != ImmutableArray<Symbol>.Empty && setMethods != ImmutableArray<Symbol>.Empty)
                     {
-                        var getMany = (from PEMethodSymbol m in getMethods where m.ParameterTypes[0].IsArray() select m).FirstOrDefault();
-                        var setMany = (from PEMethodSymbol m in setMethods where m.ParameterTypes[1].IsArray() select m).FirstOrDefault();
+                        var getMany = (from PEMethodSymbol m in getMethods where m.Parameters[0].Type.IsArray() select m).FirstOrDefault();
+                        var setMany = (from PEMethodSymbol m in setMethods where m.Parameters[1].Type.IsArray() select m).FirstOrDefault();
                         if (((object)getMany != null) || ((object)setMany != null))
                         {
                             PropertyDefinitionHandle h = new PropertyDefinitionHandle();

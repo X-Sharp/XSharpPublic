@@ -848,9 +848,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                 if (explicitImpl.Count == 1)
                 {
 #if XSHARP
-                    if (interfaceMember.HasClipperCallingConvention() != currTypeExplicitImpl.HasClipperCallingConvention())
+                    if (interfaceMember.HasClipperCallingConvention() != explicitImpl.HasClipperCallingConvention())
                     {
-                        diagnostics.Add(ErrorCode.ERR_InterfaceImplementationDifferentCallingConvention, currTypeExplicitImpl.Locations[0], interfaceMember, currTypeExplicitImpl, implementingType);
+                        diagnostics.Add(ErrorCode.ERR_InterfaceImplementationDifferentCallingConvention, explicitImpl.Locations[0], interfaceMember, explicitImpl, implementingType);
                     }
 #endif
                     implementationInInterfacesMightChangeResult = false;

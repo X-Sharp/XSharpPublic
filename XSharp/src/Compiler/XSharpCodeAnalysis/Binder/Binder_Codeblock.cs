@@ -28,7 +28,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 return null;
 
             Conversion conv = Conversion.ImplicitReference;
-            if (destination != Compilation.CodeBlockType() && !destination.IsObjectType())
+            if (!TypeSymbol.Equals(destination , Compilation.CodeBlockType()) && !destination.IsObjectType())
             {
                 HashSet<DiagnosticInfo> useSiteDiagnostics = null;
                 conv = Conversions.ClassifyConversionFromType(Compilation.CodeBlockType(), destination, ref useSiteDiagnostics);
@@ -36,7 +36,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
             if (Compilation.Options.HasRuntime)
             {
-                Debug.Assert(destination == Compilation.CodeBlockType()|| conv.Exists);
+                Debug.Assert(TypeSymbol.Equals(destination , Compilation.CodeBlockType())|| conv.Exists);
             }
             //if (!syntax.XIsCodeBlock && !Compilation.Options.MacroScript && !syntax.XNode.IsAliasExpression())
             //{
@@ -103,7 +103,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         {
             // check for a Lambda that returns a USUAL
             var usualType = lambdaBodyBinder.Compilation.UsualType();
-            if (lambdaSymbol.ReturnType != usualType)
+            if (!TypeSymbol.Equals(lambdaSymbol.ReturnType , usualType))
                 return block;
             // handle 2 problems:
             // 1) no statements, then add a return statement
@@ -131,7 +131,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                     {
                         var boundConv = expr as BoundConversion;
                         var operand = boundConv.Operand;
-                        if (boundConv.Type == usualType && operand.Type.SpecialType == SpecialType.System_Void)
+                        if (TypeSymbol.Equals(boundConv.Type ,usualType) && operand.Type.SpecialType == SpecialType.System_Void)
                         {
                             diagnostics.Clear();
                             for (int i = 0; i < block.Statements.Length - 1; i++)

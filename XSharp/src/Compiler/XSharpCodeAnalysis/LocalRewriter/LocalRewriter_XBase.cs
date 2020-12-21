@@ -22,11 +22,10 @@ namespace Microsoft.CodeAnalysis.CSharp
 
         internal BoundExpression MakePsz(BoundExpression value)
         {
-            var type = _compilation.PszType();
-            if (value.Type == type)
+            if (value.Type.IsPsz())
                 return value;
-            bool isString;
-            if (value.Type == _compilation.UsualType())
+            var type = _compilation.PszType();
+            if (value.Type.IsUsual())
             {
                 var op = getImplicitOperatorByReturnType(value.Type, type);
                 var result = _factory.StaticCall(value.Type, (MethodSymbol)op, value);
@@ -34,7 +33,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 this._diagnostics.Add(ErrorCode.WRN_CompilerGeneratedPSZConversionGeneratesMemoryleak, value.Syntax.Location);
                 return result;
             }
-            isString = value.Type.SpecialType == SpecialType.System_String;
+            var isString = value.Type.SpecialType == SpecialType.System_String;
             var ctors = type.Constructors;
             foreach (var ctor in ctors)
             {
@@ -507,7 +506,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                             if (newfinStatements.Count > 0  || tryStmt.CatchBlocks.Length > 0)
                             {
                                 finBlock = finBlock.Update(finBlock.Locals, finBlock.LocalFunctions, newfinStatements.ToImmutableArray());
-                                tryStmt = tryStmt.Update(tryStmt.TryBlock, tryStmt.CatchBlocks, finBlock, tryStmt.PreferFaultHandler);
+                                tryStmt = tryStmt.Update(tryStmt.TryBlock, tryStmt.CatchBlocks, finBlock, tryStmt.FinallyLabelOpt, tryStmt.PreferFaultHandler);
                                 newStmts.Add(tryStmt);
                             }
                             else

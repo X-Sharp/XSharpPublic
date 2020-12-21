@@ -74,14 +74,15 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                     foreach (var member in members)
                     {
                         var metSym = member as MethodSymbol;
-                        bool equalSignature = metSym.ParameterCount == this.ParameterCount && this.ReturnType == metSym.ReturnType;
+                        bool equalSignature = metSym.ParameterCount == this.ParameterCount && 
+                            TypeSymbol.Equals(this.ReturnType, metSym.ReturnType);
                         if (equalSignature)
                         {
-                            var thisTypes = this.ParameterTypes;
-                            var theirTypes = metSym.ParameterTypes;
+                            var thisTypes = this.Parameter;
+                            var theirTypes = metSym.Parameters;
                             for (int i = 0; i < thisTypes.Length; i++)
                             {
-                                if (thisTypes[i] != theirTypes[i])
+                                if (thisTypes[i].Type != theirTypes[i].Type)
                                 {
                                     equalSignature = false;
                                     break;

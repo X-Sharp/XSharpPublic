@@ -106,7 +106,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                                 // we handle that here and create the BoundFieldEqualValue wanted by Roslyn
                                 if (binderFactory == null) binderFactory = compilation.GetBinderFactory(syntaxRef.SyntaxTree);
 	                            Binder pb = binderFactory.GetBinder(variable);
-	                            Debug.Assert(pb.ContainingMemberOrLambda == fieldSymbol.ContainingType || fieldSymbol.ContainingType.IsImplicitClass);
+	                            Debug.Assert(TypeSymbol.Equals(pb.ContainingMemberOrLambda ,fieldSymbol.ContainingType) || fieldSymbol.ContainingType.IsImplicitClass);
 	                            if (firstDebugImports == null) firstDebugImports = pb.ImportChain;
 	                            TypeSymbol type = fieldSymbol.Type;
 	                            var cv = ConstantValue.Create("", type.SpecialType);

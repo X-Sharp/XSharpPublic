@@ -29,8 +29,8 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
 
         }
-        internal static bool HandleXSharpImport(UsingDirectiveSyntax usingDirective, Binder usingsBinder, 
-            ArrayBuilder<NamespaceOrTypeAndUsingDirective>  usings, PooledHashSet<NamespaceOrTypeSymbol> uniqueUsings, 
+        internal static bool HandleXSharpImport(UsingDirectiveSyntax usingDirective, Binder usingsBinder,
+            ArrayBuilder<NamespaceOrTypeAndUsingDirective>  usings, PooledHashSet<NamespaceOrTypeSymbol> uniqueUsings,
             ConsList<Symbol> basesBeingResolved, CSharpCompilation compilation)
         {
             // The usingDirective name contains spaces when it is nested and the GlobalClassName not , so we must eliminate them here
@@ -89,10 +89,10 @@ namespace Microsoft.CodeAnalysis.CSharp
                     foreach (var n in defNs)
                     {
                         var name = Syntax.InternalSyntax.XSharpTreeTransformationCore.ExtGenerateQualifiedName(n);
-                        var imported = declbinder.BindNamespaceOrTypeSymbol(name, diagnostics, basesBeingResolved);
+                        var imported = declbinder.BindNamespaceOrTypeSymbol(name, diagnostics, basesBeingResolved).NamespaceOrTypeSymbol;
                         if (imported.Kind == SymbolKind.Namespace)
                         {
-                            AddNs(usingDirective, imported, usings, uniqueUsings);
+                            AddNs(usingDirective, imported.NamespaceOrTypeSymbol, usings, uniqueUsings);
                         }
                         else if (imported.Kind == SymbolKind.NamedType)
                         {
@@ -108,7 +108,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                         foreach (var attr in r.GetAttributes())
                         {
                             // Check for VulcanImplicitNameSpace attribute
-                            if (attr.AttributeClass.ConstructedFrom == vins && compilation.Options.ImplicitNameSpace)
+                            if (TypeSymbol.Equals(attr.AttributeClass.ConstructedFrom, vins) && compilation.Options.ImplicitNameSpace)
                             {
                                 var args = attr.CommonConstructorArguments;
                                 if (args != null && args.Length == 1)

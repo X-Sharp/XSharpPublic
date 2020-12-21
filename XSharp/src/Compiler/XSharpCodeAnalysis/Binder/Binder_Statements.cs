@@ -55,7 +55,7 @@ namespace Microsoft.CodeAnalysis.CSharp
 
         BoundExpression XsHandleNullPsz(TypeSymbol targetType, BoundExpression expression)
         {
-            if (Compilation.Options.HasRuntime && targetType == Compilation.PszType())
+            if (Compilation.Options.HasRuntime && TypeSymbol.Equals(targetType , Compilation.PszType()))
             {
                 if (IsNullNode(expression))
                 {
@@ -67,7 +67,7 @@ namespace Microsoft.CodeAnalysis.CSharp
 
         BoundExpression XsHandleExplicitConversion(TypeSymbol targetType, BoundExpression expression, DiagnosticBag diagnostics, Conversion conversion)
         {
-            if (conversion.IsExplicit && expression.Type != targetType)
+            if (conversion.IsExplicit && !TypeSymbol.Equals(expression.Type , targetType))
             {
                 // silently convert integral types
                 if (XsHasImplicitCast(expression , targetType, diagnostics) )
@@ -173,7 +173,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 return;
 
             var rhsType = expression.Type;
-            if (targetType != rhsType && 
+            if (!TypeSymbol.Equals(targetType,rhsType) && 
                 targetType.SpecialType.IsIntegralType() &&
                 rhsType.SpecialType.IsIntegralType() 
                 )
@@ -200,7 +200,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                         sourceType = binop.LargestOperand(this.Compilation);
                         sourceSize = sourceType.SpecialType.SizeInBytes();
                     }
-                    if (sourceType != targetType && !expression.Syntax.HasErrors)
+                    if (!TypeSymbol.Equals(sourceType,targetType) && !expression.Syntax.HasErrors)
                     {
                         // Find sources that do not fit in the target
                         if (expression is BoundConditionalOperator bco && XsLiteralIIfFitsInTarget(bco, targetType))

@@ -1072,7 +1072,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 }
             }
 #if XSHARP
-            if (source.Type == null  &&
+            if (source.Type.IsNull() &&
                 source.Kind != BoundKind.MethodGroup && 
                 (destination.GetSpecialTypeSafe() == SpecialType.System_IntPtr 
                 || destination.GetSpecialTypeSafe() == SpecialType.System_UIntPtr ))
@@ -1263,7 +1263,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             if (!validType)
             {
 #if XSHARP
-                if(source.Type != null && (source.Type.IsEnumType() || source.Type.IsNullableType() && source.Type.GetNullableUnderlyingType().IsEnumType())) {
+                if(!source.Type.IsNull() && (source.Type.IsEnumType() || source.Type.IsNullableType() && source.Type.GetNullableUnderlyingType().IsEnumType())) {
                     return IsNumericType(destination.GetSpecialTypeSafe());
                 }
 #endif

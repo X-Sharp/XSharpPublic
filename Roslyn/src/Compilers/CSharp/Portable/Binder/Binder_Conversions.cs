@@ -1478,9 +1478,6 @@ namespace Microsoft.CodeAnalysis.CSharp
                             case SpecialType.System_Single: return (double)(float)uint32Value;
                             case SpecialType.System_Double: return (double)uint32Value;
                             case SpecialType.System_Decimal: return (decimal)uint32Value;
-#if XSHARP
-                            case SpecialType.System_IntPtr: return (System.IntPtr)uint32Value;
-#endif
                             default: throw ExceptionUtilities.UnexpectedValue(destinationType);
                         }
                     case ConstantValueTypeDiscriminator.UInt64:
@@ -1580,9 +1577,6 @@ namespace Microsoft.CodeAnalysis.CSharp
                             case SpecialType.System_Single: return (double)(float)int32Value;
                             case SpecialType.System_Double: return (double)int32Value;
                             case SpecialType.System_Decimal: return (decimal)int32Value;
-#if XSHARP
-                            case SpecialType.System_IntPtr: return (System.IntPtr)int32Value;
-#endif
                             default: throw ExceptionUtilities.UnexpectedValue(destinationType);
                         }
                     case ConstantValueTypeDiscriminator.Int64:

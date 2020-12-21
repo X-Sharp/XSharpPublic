@@ -100,16 +100,16 @@ namespace Microsoft.CodeAnalysis.CSharp
                 {
                     Conversions conv = this as Conversions;
                     bool usePointer = source.IsPointerType();
-                    if (conv.Compilation.Options.HasRuntime && target == conv.Compilation.UsualType())
+                    if (conv.Compilation.Options.HasRuntime && target.IsUsual())
                     {
                         for( int i = 0; i < u.Length; i++)
                         {
                             var x = u[i];
-                            if (usePointer && x.ToType == target && x.FromType.IsVoidPointer())
+                            if (usePointer && TypeSymbol.Equals(x.ToType,target) && x.FromType.IsVoidPointer())
                             {
                                 return UserDefinedConversionResult.Valid(u, i);
                             }
-                            if (!usePointer  && x.ToType == target && x.FromType == conv.Compilation.GetSpecialType(SpecialType.System_Object))
+                            if (!usePointer  && TypeSymbol.Equals(x.ToType,target) && x.FromType.IsObjectType())
                             {
                                 return UserDefinedConversionResult.Valid(u, i);
                             }

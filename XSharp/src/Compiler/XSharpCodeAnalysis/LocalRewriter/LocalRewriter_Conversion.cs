@@ -22,7 +22,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             var members = srcType.GetMembers(WellKnownMemberNames.ImplicitConversionName);
             foreach (MethodSymbol m in members)
             {
-                if (m.ReturnType == destType)
+                if (TypeSymbol.EQuals(m.ReturnType, destType))
                 {
                     return m;
                 }
@@ -39,7 +39,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 if (m.ParameterCount > 0)
                 {
                     var pt = m.GetParameterTypes()[0] as TypeSymbol;
-                    if (pt == destType)
+                    if (TypeSymbol.Equals(pt, destType))
                     {
                         return m;
                     }
@@ -54,7 +54,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             var members = srcType.GetMembers(WellKnownMemberNames.ExplicitConversionName);
             foreach (MethodSymbol m in members)
             {
-                if (m.ReturnType == destType)
+                if (TypeSymbol.Equals(m.ReturnType, destType))
                 {
                     return m;
                 }
@@ -78,14 +78,14 @@ namespace Microsoft.CodeAnalysis.CSharp
             if (_compilation.Options.HasRuntime)
             {
                 var usualType = _compilation.UsualType();
-                if (nts != null)
+                if (!nts.IsNull())
                 {
                     nts = nts.ConstructedFrom;
                 }
                 // Ticket C575: Assign Interface to USUAL
                 // Marked as Boxing in Conversions.cs
                 // Implementation here
-                if (nts != null && nts.IsInterface && rewrittenType == usualType)
+                if (!nts.IsNull()&& nts.IsInterface && rewrittenType.IsUsual() )
                 {
 
                     var m = getImplicitOperatorByParameterType(usualType, _compilation.GetSpecialType(SpecialType.System_Object));
@@ -97,10 +97,10 @@ namespace Microsoft.CodeAnalysis.CSharp
                     }
                 }
 
-                if (nts == usualType)
+                if (nts.IsUsual())
                 {
                     // USUAL -> WINBOOL, use LOGIC as intermediate type
-                    if (rewrittenType== _compilation.WinBoolType())
+                    if (rewrittenType.IsWinBool())
                     {
                         MethodSymbol m = getImplicitOperatorByReturnType(usualType, _compilation.GetSpecialType(SpecialType.System_Boolean));
                         rewrittenOperand = _factory.StaticCall(rewrittenType, m, rewrittenOperand);
@@ -138,7 +138,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                         {
                             foreach (var interf in usualType.AllInterfacesNoUseSiteDiagnostics)
                             {
-                                if (interf == rewrittenType)
+                                if (TypeSymbol.Equals(interf, rewrittenType))
                                 {
                                     return ConversionKind.ImplicitReference;
                                 }
@@ -148,7 +148,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                         var xnode = rewrittenOperand.Syntax.Parent?.XNode as LanguageService.CodeAnalysis.XSharp.SyntaxParser.XSharpParserRuleContext;
                         if (xnode != null && xnode.IsCastClass())
                         {
-                            if (rewrittenType == _compilation.UsualType())
+                            if (rewrittenType.IsUsual())
                                 conversionKind = ConversionKind.Unboxing;
                             else
                                 conversionKind = ConversionKind.Boxing;
@@ -174,7 +174,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                     }
                 }
                 var floatType = _compilation.FloatType();
-                if (nts == floatType && rewrittenType is NamedTypeSymbol)
+                if (nts.IsFloat() && rewrittenType is NamedTypeSymbol)
                 {
                     MethodSymbol m = getExplicitOperator(floatType, rewrittenType as NamedTypeSymbol);
                     if (m != null)
@@ -191,8 +191,8 @@ namespace Microsoft.CodeAnalysis.CSharp
                         return ConversionKind.Identity;
 
                     }
-                    if (rewrittenType == _compilation.GetSpecialType(SpecialType.System_Object) ||
-                        rewrittenType == _compilation.UsualType())
+                    if (rewrittenType.GetSpecialTypeSafe() == SpecialType.System_Object ||
+                        rewrittenType.IsUsual())
                     {
                         return ConversionKind.Boxing;
 

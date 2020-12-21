@@ -559,7 +559,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 if (res != null)
                     return res;
             }
-            bool integralTypes = leftType != null && rightType != null &&
+            bool integralTypes = ((object) leftType )!= null && ((object) rightType )!= null &&
                 leftType.IsIntegralType() && rightType.IsIntegralType();
             if (! integralTypes)
             {
@@ -626,7 +626,7 @@ namespace Microsoft.CodeAnalysis.CSharp
 #if XSHARP
                 if (integralTypes && resultConstant != null && resultConstant.SpecialType.IsIntegralType() && expectedResultType.IsIntegralType())
                 {
-                    if (resultType != expectedResultType)
+                    if (!TypeSymbol.Equals(resultType , expectedResultType))
                     {
                         resultConstant = XsConvertConstant(resultConstant, expectedResultType.SpecialType);
                     }
@@ -648,7 +648,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
 
             hasErrors = hasErrors || resultConstant != null && resultConstant.IsBad;
-
+#if !XSHARP
             return new BoundBinaryOperator(
                 node,
                 resultOperatorKind.WithOverflowChecksIfApplicable(CheckOverflowAtRuntime),
@@ -661,7 +661,19 @@ namespace Microsoft.CodeAnalysis.CSharp
                 resultType,
                 hasErrors);
 
-#if XSHARP
+#else
+            BoundExpression result = new BoundBinaryOperator(
+                           node,
+                resultOperatorKind.WithOverflowChecksIfApplicable(CheckOverflowAtRuntime),
+                resultLeft,
+                resultRight,
+                resultConstant,
+                signature.Method,
+                resultKind,
+                originalUserDefinedOperators,
+                resultType,
+                hasErrors);
+
             if (Compilation.Options.Dialect != XSharpDialect.Core && integralTypes && resultConstant == null)
             {
                 // SHORT(_CAST, expression) has been converted to a _AND() operation. In that case we want the type of the RHS of the operation.
@@ -669,7 +681,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 if (resultLeft.ConstantValue != null || result.Syntax.XIsVoCast)
                     chosenType = rightType;
 
-                if (resultType.IsIntegralType() && resultType != chosenType)// C277 ByteValue >> 2 should not return int but byte.
+                if (resultType.IsIntegralType() && !TypeSymbol.Equals(resultType , chosenType))// C277 ByteValue >> 2 should not return int but byte.
                 {
                     result = new BoundConversion(node, result, Conversion.ImplicitNumeric, false, false, null, chosenType) { WasCompilerGenerated = true };
                 }
@@ -1254,7 +1266,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             result.Free();
 #if XSHARP
             // When failed, then try again if RHS is < 4 bytes. Some method in Vulcan have only overloads for Int32 and UInt32 and higher
-            if (!possiblyBest.HasValue && Compilation.Options.HasRuntime && right.Type != null)
+            if (!possiblyBest.HasValue && Compilation.Options.HasRuntime && ((object)right.Type )!= null)
             {
                 var st = right.Type.SpecialType;
                 bool tryAgain = false;
@@ -1272,7 +1284,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                         tryAgain = true;
                     }
                 }
-                if (! tryAgain && left.Type != null)
+                if (! tryAgain && ((object)left.Type )!= null)
                 {
                     // convert LHS from 8 or 16 bits to 32 bits
                     st = left.Type.SpecialType;
@@ -2669,7 +2681,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 resultMethod,
                 resultKind,
                 resultType);
-            if (resultType != operand.Type )
+            if (TypeSymbol.Equals(resultType, operand.Type ))
             {
                 var newType = VOGetType(operand);
                 if (resultOperatorKind.IsUnaryMinus())
@@ -2690,7 +2702,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                             break;
                     }
                 }
-                if (newType != resultType)
+                if (!TypeSymbol.Equals(newType, resultType))
                 {
                     res = CreateConversion(res, newType, diagnostics);
                     res.WasCompilerGenerated = true;
@@ -3129,7 +3141,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             // try binding as a type, but back off to binding as an expression if that does not work.
             bool wasUnderscore = IsUnderscore(node.Right);
 #if XSHARP
-            if (operand.Type == Compilation.UsualType())
+            if (operand.Type.IsUsual())
             {
                 // this triggers the boxing of the contents of the usual into an object
                 operand = new BoundConversion(node, operand, Conversion.Boxing, false, false, null, GetSpecialType(SpecialType.System_Object, diagnostics, node));
@@ -4122,7 +4134,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             BoundExpression falseExpr = BindValue(whenFalse, diagnostics, BindValueKind.RValue);
 
 #if XSHARP
-            VODetermineIIFTypes(node, diagnostics, ref trueExpr, ref falseExpr, ref trueType, ref falseType);
+            VODetermineIIFTypes(node, diagnostics, ref trueExpr, ref falseExpr);
 #endif
 
             HashSet<DiagnosticInfo> useSiteDiagnostics = null;

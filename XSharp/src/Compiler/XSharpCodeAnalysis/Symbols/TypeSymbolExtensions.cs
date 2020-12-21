@@ -35,17 +35,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
 
         }
 
-        public static bool IsPsz(this TypeSymbol _type)
-        {
-            if (_type == null)
-                return false;
-            return _type.Name == OurTypeNames.PszType;
-        }
         public static bool IsVoStructOrUnion(this TypeSymbol _type)
         {
             // TODO (nvk): there must be a better way!
             NamedTypeSymbol type = null;
-            if (_type != null)
+            if (!_type.IsNull())
                 type = _type.OriginalDefinition as NamedTypeSymbol;
             if (type is SourceNamedTypeSymbol)
             {
@@ -71,9 +65,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
         {
             // TODO (nvk): there must be a better way!
             NamedTypeSymbol type = null;
-            if (_type != null)
+            if (!_type.IsNull())
                 type = _type.OriginalDefinition as NamedTypeSymbol;
-            if ((object)type != null && type.Arity == 0 && !type.MangleName)
+            if (!type.IsNull() && type.Arity == 0 && !type.MangleName)
             {
                 if (type is SourceNamedTypeSymbol)
                 {
@@ -103,9 +97,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
         {
             // TODO (nvk): there must be a better way!
             NamedTypeSymbol type = null;
-            if (_type != null)
+            if (!_type.IsNull())
                 type = _type.OriginalDefinition as NamedTypeSymbol;
-            if ((object)type != null && type.Arity == 0 && !type.MangleName)
+            if (!type.IsNull() && type.Arity == 0 && !type.MangleName)
             {
                 if (type is SourceNamedTypeSymbol)
                 {
@@ -293,12 +287,67 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             }
             return ConstantValue.Bad;
         }
+        public static bool IsNull(this TypeSymbol type)
+        {
+            return type is null;
+        }
+
+        public static bool IsUsual( this TypeSymbol type)
+        {
+            if (type is null)
+                return false;
+            return TypeSymbol.Equals(type, type.DeclaringCompilation.UsualType());
+        }
+        public static bool IsPsz(this TypeSymbol type)
+        {
+            if (type is null)
+                return false;
+            return TypeSymbol.Equals(type, type.DeclaringCompilation.PszType());
+        }
+
+        public static bool IsDate(this TypeSymbol type)
+        {
+            if (type is null)
+                return false;
+            return TypeSymbol.Equals(type, type.DeclaringCompilation.DateType());
+        }
+
+        public static bool IsFloat(this TypeSymbol type)
+        {
+            if (type is null)
+                return false;
+            return TypeSymbol.Equals(type, type.DeclaringCompilation.FloatType());
+        }
+        public static bool IsSymbol(this TypeSymbol type)
+        {
+            if (type is null)
+                return false;
+            return TypeSymbol.Equals(type, type.DeclaringCompilation.SymbolType());
+        }
+        public static bool IsCodeBlock(this TypeSymbol type)
+        {
+            if (type is null)
+                return false;
+            return TypeSymbol.Equals(type, type.DeclaringCompilation.CodeBlockType()); ;
+        }
+        public static bool IsObject(this TypeSymbol type)
+        {
+            if (type is null)
+                return false;
+            return type.GetSpecialTypeSafe() == SpecialType.System_Object;
+        }
+        public static bool IsWinBool(this TypeSymbol type)
+        {
+            if (type is null)
+                return false;
+            return TypeSymbol.Equals(type, type.DeclaringCompilation.WinBoolType());
+        }
 
         public static bool HasMembers(this TypeSymbol type, string name)
         {
             TypeSymbol sym;
             sym = type;
-            while (sym != null)
+            while (!sym.IsNull())
             {
                 if (sym.GetMembers(name).Length > 0)
                     return true;

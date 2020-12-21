@@ -160,7 +160,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                         {
                             var parLeft = parsLeft[i];
                             var arg = arguments[i];
-                            if (parLeft.Type != arg.Type)
+                            if (!TypeSymbol.Equals(parLeft.Type,arg.Type))
                             {
                                 equalLeft = false;
                                 break;
@@ -174,7 +174,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                         {
                             var parRight = parsRight[i];
                             var arg = arguments[i];
-                            if (parRight.Type != arg.Type)
+                            if (!TypeSymbol.Equals(parRight.Type, arg.Type))
                             {
                                 equalRight = false;
                                 break;
@@ -210,23 +210,23 @@ namespace Microsoft.CodeAnalysis.CSharp
                         if (parLeft.Type != parRight.Type || refLeft != refRight)
                         {
                             // Prefer the method with a more specific parameter which is not an array type over USUAL
-                            if (parLeft.Type == usualType && argType != usualType && !parRight.Type.IsArray())
+                            if (TypeSymbol.Equals(parLeft.Type , usualType) && !TypeSymbol.Equals(argType, usualType) && !parRight.Type.IsArray())
                             {
                                 result = BetterResult.Right;
                                 return true;
                             }
-                            if (parRight.Type == usualType && argType != usualType && !parLeft.Type.IsArray())
+                            if (TypeSymbol.Equals(parRight.Type ,usualType) && !TypeSymbol.Equals(argType ,usualType) && !parLeft.Type.IsArray())
                             {
                                 result = BetterResult.Left;
                                 return true;
                             }
                             // Prefer the method with Object type over the one with Object[] type
-                            if (parLeft.Type == objectType && parRight.Type.IsArray() && ((ArrayTypeSymbol)parRight.Type).ElementType == objectType)
+                            if (TypeSymbol.Equals(parLeft.Type,objectType) && parRight.Type.IsArray() && ((ArrayTypeSymbol)parRight.Type).ElementType.IsObject())
                             {
                                 result = BetterResult.Left;
                                 return true;
                             }
-                            if (parRight.Type == objectType && parLeft.Type.IsArray() && ((ArrayTypeSymbol)parLeft.Type).ElementType == objectType)
+                            if (TypeSymbol.Equals(parRight.Type,objectType) && parLeft.Type.IsArray() && ((ArrayTypeSymbol)parLeft.Type).ElementType.IsObject())
                             {
                                 result = BetterResult.Right;
                                 return true;
@@ -236,12 +236,12 @@ namespace Microsoft.CodeAnalysis.CSharp
                             {
                                 var op = arg as BoundAddressOfOperator;
                                 var opType = op?.Operand?.Type;
-                                if (refLeft == RefKind.Ref && opType == parLeft.Type)
+                                if (refLeft == RefKind.Ref && TypeSymbol.Equals(opType, parLeft.Type))
                                 {
                                     result = BetterResult.Left;
                                     return true;
                                 }
-                                if (refRight == RefKind.Ref && opType == parRight.Type)
+                                if (refRight == RefKind.Ref && TypeSymbol.Equals(opType, parRight.Type))
                                 {
                                     result = BetterResult.Right;
                                     return true;
@@ -262,22 +262,22 @@ namespace Microsoft.CodeAnalysis.CSharp
                             }
                             if (refLeft != refRight)
                             {
-                                if (parLeft.Type == argType && refLeft != RefKind.None && argCanBeByRef)
+                                if (TypeSymbol.Equals(parLeft.Type ,argType) && refLeft != RefKind.None && argCanBeByRef)
                                 {
                                     result = BetterResult.Left;
                                     return true;
                                 }
-                                if (parRight.Type == argType && refRight != RefKind.None && argCanBeByRef)
+                                if (TypeSymbol.Equals(parRight.Type, argType) && refRight != RefKind.None && argCanBeByRef)
                                 {
                                     result = BetterResult.Right;
                                     return true;
                                 }
-                                if (parLeft.Type == argType && refLeft == RefKind.None && !argCanBeByRef)
+                                if (TypeSymbol.Equals(parLeft.Type , argType) && refLeft == RefKind.None && !argCanBeByRef)
                                 {
                                     result = BetterResult.Left;
                                     return true;
                                 }
-                                if (parRight.Type == argType && refRight == RefKind.None && !argCanBeByRef)
+                                if (TypeSymbol.Equals(parRight.Type , argType) && refRight == RefKind.None && !argCanBeByRef)
                                 {
                                     result = BetterResult.Right;
                                     return true;
@@ -289,49 +289,49 @@ namespace Microsoft.CodeAnalysis.CSharp
                             if (argType?.TypeKind == TypeKind.Enum)
                             {
                                 // First check if they have the enum type itself
-                                if (argType == parLeft.Type)
+                                if (TypeSymbol.Equals(argType ,parLeft.Type))
                                 {
                                     result = BetterResult.Left;
                                     return true;
                                 }
-                                if (argType == parRight.Type)
+                                if (TypeSymbol.Equals(argType , parRight.Type))
                                 {
                                     result = BetterResult.Right;
                                     return true;
                                 }
                                 // Then check the underlying type
                                 argType = argType.EnumUnderlyingType();
-                                if (argType == parLeft.Type)
+                                if (TypeSymbol.Equals(argType, parLeft.Type))
                                 {
                                     result = BetterResult.Left;
                                     return true;
                                 }
-                                if (argType == parRight.Type)
+                                if (TypeSymbol.Equals(argType, parRight.Type))
                                 {
                                     result = BetterResult.Right;
                                     return true;
                                 }
                             }
-                            if (argType == parLeft.Type)
+                            if (TypeSymbol.Equals(argType , parLeft.Type))
                             {
                                 result = BetterResult.Left;
                                 return true;
                             }
-                            if (argType == parRight.Type)
+                            if (TypeSymbol.Equals(argType , parRight.Type))
                             {
                                 result = BetterResult.Right;
                                 return true;
                             }
                             // VoFloat prefers overload with double over all other conversions
-                            if (argType == Compilation.FloatType())
+                            if (TypeSymbol.Equals(argType , Compilation.FloatType()))
                             {
                                 var doubleType = Compilation.GetSpecialType(SpecialType.System_Double);
-                                if (parLeft.Type == doubleType)
+                                if (TypeSymbol.Equals(parLeft.Type ,doubleType))
                                 {
                                     result = BetterResult.Left;
                                     return true;
                                 }
-                                if (parRight.Type == doubleType)
+                                if (TypeSymbol.Equals(parRight.Type , doubleType))
                                 {
                                     result = BetterResult.Right;
                                     return true;
@@ -339,7 +339,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                             }
                             // if argument is numeric and one of the two types is also and the other not
                             // then prefer the numeric type
-                            if (argType?.SpecialType != null && (argType.SpecialType.IsNumericType() || argType == Compilation.FloatType()))
+                            if (argType?.SpecialType != null && (argType.SpecialType.IsNumericType() || TypeSymbol.Equals(argType , Compilation.FloatType())))
                             {
                                 if (parLeft.Type.SpecialType.IsNumericType() && !parRight.Type.SpecialType.IsNumericType())
                                 {
@@ -351,12 +351,12 @@ namespace Microsoft.CodeAnalysis.CSharp
                                     result = BetterResult.Right;
                                     return true;
                                 }
-                                if (parLeft.Type == Compilation.FloatType() && parRight.Type != Compilation.FloatType())
+                                if (TypeSymbol.Equals(parLeft.Type ,Compilation.FloatType()) && !TypeSymbol.Equals(parRight.Type , Compilation.FloatType()))
                                 {
                                     result = BetterResult.Left;
                                     return true;
                                 }
-                                if (parRight.Type == Compilation.FloatType() && parLeft.Type != Compilation.FloatType())
+                                if (TypeSymbol.Equals(parRight.Type ,Compilation.FloatType()) && !TypeSymbol.Equals(parLeft.Type ,Compilation.FloatType()))
                                 {
                                     result = BetterResult.Right;
                                     return true;
@@ -379,10 +379,10 @@ namespace Microsoft.CodeAnalysis.CSharp
 
                             // handle case where argument is usual and the method is not usual
                             // prefer method with "native VO" parameter type
-                            if (argType == Compilation.UsualType())
+                            if (TypeSymbol.Equals(argType, Compilation.UsualType()))
                             {
                                 // no need to check if parleft or parright are usual that was checked above
-                                if (parLeft.Type != parRight.Type)
+                                if (!TypeSymbol.Equals(parLeft.Type ,parRight.Type))
                                 {
                                     // is there an VO style conversion possible ?
                                     var leftConvert = parLeft.Type.IsValidVOUsualType(Compilation);
@@ -535,7 +535,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                             return BetterResult.Right;
                     }
                 }
-                if (left.Type != null && right.Type != null)
+                if (!object.ReferenceEquals(left.Type , null) && !object.ReferenceEquals(right.Type , null))
                 {
                     bool enumL = left.Type.IsEnumType() || left.Type.IsNullableType() && left.Type.GetNullableUnderlyingType().IsEnumType();
                     bool enumR = right.Type.IsEnumType() || right.Type.IsNullableType() && right.Type.GetNullableUnderlyingType().IsEnumType();
@@ -638,10 +638,10 @@ namespace Microsoft.CodeAnalysis.CSharp
                         if (op2.LeftType.IsVoidPointer() && op2.RightType.IsVoidPointer())
                             return BetterResult.Right;
                     }
-                    // Prefer Date over DateTime, becuse when one of the two is date then we know that we can't compare the time parts
-                    if (left.Type.SpecialType == SpecialType.System_DateTime && right.Type == Compilation.DateType())
+                    // Prefer Date over DateTime, because when one of the two is date then we know that we can't compare the time parts
+                    if (left.Type.SpecialType == SpecialType.System_DateTime && TypeSymbol.Equals(right.Type , Compilation.DateType()))
                         return BetterResult.Right;
-                    if (right.Type.SpecialType == SpecialType.System_DateTime && left.Type == Compilation.DateType())
+                    if (right.Type.SpecialType == SpecialType.System_DateTime && TypeSymbol.Equals(left.Type , Compilation.DateType()))
                         return BetterResult.Left;
 
 
@@ -655,7 +655,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 var unop = (BoundUnaryOperator)right;
                 literal = unop.Operand.Kind == BoundKind.Literal;
             }
-            if (literal  && op1.LeftType == left.Type)
+            if (literal  && TypeSymbol.Equals(op1.LeftType , left.Type))
             {
                 if (left.Type.SpecialType.IsSignedIntegralType())     // When signed, always Ok
                     return BetterResult.Left;
@@ -679,7 +679,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 var unop = (BoundUnaryOperator)left;
                 literal = unop.Operand.Kind == BoundKind.Literal;
             }
-            if (literal && op1.RightType == right.Type)
+            if (literal && TypeSymbol.Equals(op1.RightType , right.Type))
             {
                 if (right.Type.SpecialType.IsSignedIntegralType())     // When signed, always Ok
                     return BetterResult.Left;
@@ -700,18 +700,18 @@ namespace Microsoft.CodeAnalysis.CSharp
             if (Compilation.Options.HasRuntime)
             {
                 var usualType = Compilation.UsualType();
-                if (left.Type != usualType)
+                if (!TypeSymbol.Equals(left.Type , usualType))
                 {
-                    if (op1.RightType != usualType && op2.RightType == usualType)
+                    if (!TypeSymbol.Equals(op1.RightType ,usualType) && TypeSymbol.Equals(op2.RightType , usualType))
                         return BetterResult.Left;
-                    if (op2.RightType != usualType && op1.RightType == usualType)
+                    if (!TypeSymbol.Equals(op2.RightType , usualType) && TypeSymbol.Equals(op1.RightType , usualType))
                         return BetterResult.Right;
                 }
-                if (right.Type != usualType)
+                if (!TypeSymbol.Equals(right.Type , usualType))
                 {
-                    if (op1.LeftType != usualType && op2.LeftType == usualType)
+                    if (!TypeSymbol.Equals(op1.LeftType, usualType) && TypeSymbol.Equals(op2.LeftType, usualType))
                         return BetterResult.Left;
-                    if (op2.LeftType != usualType && op1.LeftType == usualType)
+                    if (!TypeSymbol.Equals(op2.LeftType, usualType) && TypeSymbol.Equals(op1.LeftType, usualType))
                         return BetterResult.Right;
                 }
             }
@@ -719,7 +719,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         }
         private bool VOStructBinaryOperatorComparison(BinaryOperatorKind kind, BoundExpression left, BoundExpression right, BinaryOperatorOverloadResolutionResult result)
         {
-            if (left.Type == right.Type)
+            if (TypeSymbol.Equals(left.Type , right.Type))
             {
                 bool isVoStruct = false;
                 if (left.Type.IsPointerType())

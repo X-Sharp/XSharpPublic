@@ -697,9 +697,9 @@ namespace Microsoft.CodeAnalysis.CSharp
             TypeWithAnnotations declType = BindVariableTypeWithAnnotations(node.Declaration, diagnostics, typeSyntax, ref isConst, isVar: out isVar, alias: out alias);
 
 #if XSHARP
-            if (declType.IsPointerType() && Compilation.Options.HasOption(CompilerOption.ResolveTypedFunctionPointersToPtr,node))
+            if (declType.Type.IsPointerType() && Compilation.Options.HasOption(CompilerOption.ResolveTypedFunctionPointersToPtr,node))
             {
-                var pt = declType as PointerTypeSymbol;
+                var pt = declType.Type as PointerTypeSymbol;
                 // Check if pointing at Method
                 if (pt.PointedAtType.Kind == SymbolKind.ErrorType)
                 {
@@ -1332,7 +1332,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
 
 #if XSHARP
-            if (elementType.IsManagedType && !Compilation.Options.AllowUnsafe)
+            if (elementType.IsManagedTypeNoUseSiteDiagnostics && !Compilation.Options.AllowUnsafe)
 #else
             if (CheckManagedAddr(Compilation, elementType, initializerSyntax.Location, diagnostics))
 #endif
@@ -1515,7 +1515,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 }
 #if XSHARP
                 //Dynamic operation for VO & Latebinding -> use conversion
-                else if (Compilation.Options.LateBindingOrFox(node)  && op1.Type == Compilation.UsualType())
+                else if (Compilation.Options.LateBindingOrFox(node) && TypeSymbol.Equals(op1.Type, Compilation.UsualType()))
                 {
                     op2 = conversion;
                 }

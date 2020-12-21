@@ -329,17 +329,17 @@ namespace Microsoft.CodeAnalysis.CSharp
 #if XSHARP
                 if (syntax.XVoDecl)
                 {
-                    if ((symbol as TypeSymbol)?.IsVoStructOrUnion() == true)
+                    if ((symbol.Type as TypeSymbol)?.IsVoStructOrUnion() == true)
                     {
                         if (!syntax.XVoIsDecl)
                         {
-                            symbol = new PointerTypeSymbol((TypeSymbol)symbol);
+                            symbol = new PointerTypeSymbol((TypeSymbol)symbol.Type);
                         }
                     }
                     else if (syntax.XVoIsDecl)
                     {
-                        var _diagnosticInfo = diagnostics.Add(ErrorCode.ERR_BadSKknown, syntax.Location, syntax, symbol.GetKindText(), "VOSTRUCT/UNION");
-                        symbol = new ExtendedErrorTypeSymbol(GetContainingNamespaceOrType(symbol), symbol, LookupResultKind.NotATypeOrNamespace, _diagnosticInfo);
+                        var _diagnosticInfo = diagnostics.Add(ErrorCode.ERR_BadSKknown, syntax.Location, syntax, symbol.Type.GetKindText(), "VOSTRUCT/UNION");
+                        symbol = new ExtendedErrorTypeSymbol(GetContainingNamespaceOrType(symbol.Type), symbol, LookupResultKind.NotATypeOrNamespace, _diagnosticInfo);
                     }
                 }
 #endif

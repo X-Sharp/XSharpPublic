@@ -62,7 +62,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                             {
                                 elsz = f.Type.VoStructOrUnionLargestElementSizeInBytes();
                             }
-                            else if (f.Type == DeclaringCompilation.WinBoolType())
+                            else if (f.Type.IsWinBool())
                             {
                                 elsz = sz = 4;
                             }

@@ -34,16 +34,16 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
         private readonly string _alias;
         private readonly MethodSymbol _getMethod;
         private readonly MethodSymbol _setMethod;
-        private TypeSymbol _type;
+        private TypeWithAnnotations _type;
 
-        internal XsVariableSymbol(string name, MethodSymbol getMethod, MethodSymbol setMethod, TypeSymbol type)
+        internal XsVariableSymbol(string name, MethodSymbol getMethod, MethodSymbol setMethod, TypeWithAnnotations type)
         {
             _name = name;
             _getMethod = getMethod;
             _setMethod = setMethod;
             _type = type;
         }
-        internal XsVariableSymbol(string alias, string name, MethodSymbol getMethod, MethodSymbol setMethod, TypeSymbol type)
+        internal XsVariableSymbol(string alias, string name, MethodSymbol getMethod, MethodSymbol setMethod, TypeWithAnnotations type)
         {
             _alias = alias;
             _name = name;

@@ -56,26 +56,26 @@ namespace Microsoft.CodeAnalysis.CSharp
         {
             bool result = base.HasBoxingConversion(source, destination, ref useSiteDiagnostics);
 
-            if (!result && _binder.Compilation.Options.HasRuntime && destination != null && source is NamedTypeSymbol)
+            if (!result && _binder.Compilation.Options.HasRuntime && ((object) destination )!= null && source is NamedTypeSymbol)
             {
                 var nts = source as NamedTypeSymbol;
-                if (nts.ConstructedFrom == _binder.Compilation.UsualType())
+                if (nts.ConstructedFrom.IsUsual())
                 {
                     var destFrom = (destination as NamedTypeSymbol)?.ConstructedFrom;
                     if (destination.IsReferenceType)
                     {
                         // do not box string, array, codeblock  and clipperargs
-                        result = destination.SpecialType != SpecialType.System_String 
-                            && destFrom != null
-                            && destFrom != _binder.Compilation.ArrayType()
-                            && destFrom != _binder.Compilation.CodeBlockType()
-                            && ! destination.IsIFormatProvider()
+                        result = destination.SpecialType != SpecialType.System_String
+                            && ((object)destFrom) != null
+                            && !TypeSymbol.Equals(destFrom, _binder.Compilation.ArrayType())
+                            && !TypeSymbol.Equals(destFrom, _binder.Compilation.CodeBlockType())
+                            && !destination.IsIFormatProvider()
                             && destFrom.IsDerivedFrom(_binder.Compilation.CodeBlockType(), TypeCompareKind.IgnoreDynamicAndTupleNames, ref useSiteDiagnostics) != true
                             && !IsClipperArgsType(destination);
                     }
                     else if (destination.IsPointerType())
                     {
-                       return true;
+                        return true;
                     }
                     else if (destination.SpecialType == SpecialType.System_DateTime)
                     {
@@ -85,16 +85,16 @@ namespace Microsoft.CodeAnalysis.CSharp
                     {
                         // do not box symbol, psz, vofloat, vodate
                         result = destination.SpecialType == SpecialType.None
-                            && destFrom != null
-                            && destFrom != _binder.Compilation.SymbolType()
-                            && destFrom != _binder.Compilation.PszType()
-                            && destFrom != _binder.Compilation.FloatType()
-                            && destFrom != _binder.Compilation.DateType();
+                            && ((object)destFrom) != null
+                            && !TypeSymbol.Equals(destFrom, _binder.Compilation.SymbolType())
+                            && !TypeSymbol.Equals(destFrom, _binder.Compilation.PszType())
+                            && !TypeSymbol.Equals(destFrom, _binder.Compilation.FloatType())
+                            && !TypeSymbol.Equals(destFrom, _binder.Compilation.DateType());
                     }
                 }
-                else if (nts.ConstructedFrom == _binder.Compilation.FloatType())
+                else if (TypeSymbol.Equals(nts.ConstructedFrom, _binder.Compilation.FloatType()))
                 {
-                    if (destination != null && destination.SpecialType.IsNumericType())
+                    if (((object)destination )!= null && destination.SpecialType.IsNumericType())
                     {
                         result = true;
                     }
@@ -102,7 +102,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
             // Ticket C575: Assign Interface to USUAL
             // Implementation in LocalRewriter_Conversion.cs
-            if (destination == Compilation.UsualType())
+            if (destination.IsUsual())
             {
                 if (source.IsInterfaceType())
                 {
@@ -118,10 +118,10 @@ namespace Microsoft.CodeAnalysis.CSharp
             {
                 var usualType = _binder.Compilation.UsualType();
                 var nts = destination as NamedTypeSymbol;
-                if ( nts.ConstructedFrom == usualType)
+                if (TypeSymbol.Equals(nts.ConstructedFrom, usualType))
                 {
                     var op = usualType.GetOperators(WellKnownMemberNames.ImplicitConversionName)
-                        .WhereAsArray(o => o.ParameterCount == 1 && o.ParameterTypes[0].IsObjectType() && o.ReturnType == usualType)
+                        .WhereAsArray(o => o.ParameterCount == 1 && o.Parameters[0].Type.IsObjectType() && TypeSymbol.Equals(o.ReturnType, usualType))
                         .AsSingleton() as MethodSymbol;
                     if (op != null)
                     {
@@ -143,7 +143,7 @@ namespace Microsoft.CodeAnalysis.CSharp
 
             if (res == LambdaConversionResult.BadTargetType && _binder.Compilation.Options.HasRuntime)
             {
-                if (type == Compilation.CodeBlockType() || type == Compilation.UsualType() || type.IsObjectType())
+                if (type.IsCodeBlock() || type.IsUsual() || type.IsObjectType())
                 {
                     return LambdaConversionResult.Success;
                 }
@@ -263,7 +263,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             if (expression is BoundBinaryOperator binop && targetType.SpecialType.IsIntegralType())
             {
                 var sourceType = binop.LargestOperand(this.Compilation,false);
-                if (sourceType == targetType)
+                if (TypeSymbol.Equals(sourceType, targetType))
                 {
                     return true;
                 }
@@ -336,7 +336,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             if (voCast && source.CanVOCast() && destination.CanVOCast())
             {
                 // No _CAST on USUAL
-                if (source == Compilation.UsualType())
+                if (source.IsUsual())
                 {
                     return Conversion.NoConversion;
                 }
@@ -403,13 +403,13 @@ namespace Microsoft.CodeAnalysis.CSharp
                     {
                         return Conversion.Identity;
                     }
-                    if (source == Compilation.PszType())
+                    if (source.IsPsz())
                     {
                         return Conversion.Identity;
                     }
                 }
                 // Allow cast -> PSZ
-                if (destination == Compilation.PszType())
+                if (destination.IsPsz())
                 {
                     return Conversion.Identity;
                 }
@@ -426,10 +426,10 @@ namespace Microsoft.CodeAnalysis.CSharp
                     return Conversion.ImplicitNumeric;
                 }
             }
-            if (source == Compilation.UsualType())
+            if (source.IsUsual())
             {
                 // Usual -> Decimal. Get the object out of the Usual and let the rest be done by Roslyn
-                if (destination == Compilation.UsualType())
+                if (destination.IsUsual())
                     return Conversion.NoConversion;
                 if (dstType == SpecialType.System_Decimal)
                     return Conversion.Boxing;
@@ -457,7 +457,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             if (voCast && srcType == SpecialType.System_Object)
             {
                 var xnode = sourceExpression.Syntax.XNode as XSharpParserRuleContext;
-                if (xnode.IsCastClass() && destination == Compilation.UsualType() )
+                if (xnode.IsCastClass() && destination.IsUsual() )
                 {
                     // __CASTCLASS(USUAL, OBJECT)
                     // not really boxing, but this is handled in UnBoxXSharpType 
@@ -532,8 +532,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                     return Conversion.ImplicitNumeric;
                 }
             }
-            if (destination == Compilation.PszType() || 
-                destination.IsVoidPointer())
+            if (destination.IsPsz()|| destination.IsVoidPointer())
             {
                 if (source.SpecialType == SpecialType.System_String)
                 {
@@ -558,7 +557,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         }
         protected override Conversion ClassifyXSImplicitBuiltInConversionFromExpression(BoundExpression sourceExpression, TypeSymbol source, TypeSymbol destination, ref HashSet<DiagnosticInfo> useSiteDiagnostics)
         {
-            if (source == null || destination == null)
+            if (source.IsNull() || destination.IsNull())
             {
                 return ClassifyNullConversionFromExpression(sourceExpression, source, destination, ref useSiteDiagnostics);
             }
@@ -576,7 +575,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 var ats = args as ArrayTypeSymbol;
                 if (Compilation.Options.HasRuntime)
                 {
-                    result = (ats.ElementType == Compilation.UsualType());
+                    result = ats.ElementType.IsUsual();
                 }
             }
             return result;

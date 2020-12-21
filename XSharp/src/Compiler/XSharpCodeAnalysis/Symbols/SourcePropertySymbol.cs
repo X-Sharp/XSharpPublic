@@ -33,14 +33,14 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                     foreach (var member in members)
                     {
                         var propSym = member as PropertySymbol;
-                        bool equalSignature = propSym.ParameterCount == this.ParameterCount && this.Type == propSym.Type;
+                        bool equalSignature = propSym.ParameterCount == this.ParameterCount && TypeSymbol.Equals(this.Type, propSym.Type);
                         if (equalSignature)
                         {
-                            var thisTypes = this.ParameterTypes;
-                            var theirTypes = propSym.ParameterTypes;
+                            var thisTypes = this.Parameters;
+                            var theirTypes = propSym.Parameters;
                             for (int i = 0; i < thisTypes.Length; i++)
                             {
-                                if (thisTypes[i] != theirTypes[i])
+                                if (thisTypes[i].Type != theirTypes[i].Type)
                                 {
                                     equalSignature = false;
                                     break;

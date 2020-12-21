@@ -675,10 +675,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         private void interfacesCannotHaveTypes([NotNull] XSharpParser.ClassmemberContext context)
         {
-            if (context.isInInterface())
-            {
-                _parseErrors.Add(new ParseErrorData(context, ErrorCode.ERR_InterfacesCannotContainTypes));
-            }
+            //if (context.isInInterface())
+            //{
+            //    _parseErrors.Add(new ParseErrorData(context, ErrorCode.ERR_InterfacesCannotContainTypes));
+            //}
         }
 
         public override void ExitVodllmethod([NotNull] XSharpParser.VodllmethodContext context)
@@ -806,14 +806,14 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 _parseErrors.Add(new ParseErrorData(context.T2, ErrorCode.ERR_SyntaxError, t.Text));
 
             }
-           if (isInInterface && hasbody)
-            {
-                _parseErrors.Add(new ParseErrorData(context.Sig.Id, ErrorCode.ERR_InterfaceMemberHasBody));
-            }
-            if (isInInterface && context.ClassId != null)
-            {
-                _parseErrors.Add(new ParseErrorData(context.ClassId, ErrorCode.ERR_InterfacesCannotContainTypes));
-            }
+           //if (isInInterface && hasbody)
+           // {
+           //     _parseErrors.Add(new ParseErrorData(context.Sig.Id, ErrorCode.ERR_InterfaceMemberHasBody));
+           // }
+            //if (isInInterface && context.ClassId != null)
+            //{
+            //    _parseErrors.Add(new ParseErrorData(context.ClassId, ErrorCode.ERR_InterfacesCannotContainTypes));
+            //}
             if (isInInterface && _options.VoInitAxitMethods)
             {
                 var name = context.Sig.Id.GetText().ToLower();
@@ -1099,10 +1099,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             if (HasBody)
             {
-                if (isInInterface)
-                {
-                    _parseErrors.Add(new ParseErrorData(context.Start, ErrorCode.ERR_InterfaceMemberHasBody, "Property"));
-                }
+                //if (isInInterface)
+                //{
+                //    _parseErrors.Add(new ParseErrorData(context.Start, ErrorCode.ERR_InterfaceMemberHasBody, "Property"));
+                //}
                 if (isExtern)
                 {
                     _parseErrors.Add(new ParseErrorData(context.Start, ErrorCode.ERR_ExternHasBody, "Property"));

@@ -18,7 +18,7 @@ using Roslyn.Utilities;
 
 namespace Microsoft.CodeAnalysis.CSharp.Symbols
 {
-    internal  sealed partial class SourceOrdinaryMethodSymbol : SourceMemberMethodSymbol
+    internal  sealed partial class SourceOrdinaryMethodSymbol 
     {
 
         private bool XsGenerateDebugInfo

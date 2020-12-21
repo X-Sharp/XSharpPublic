@@ -404,7 +404,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 #if !VSPARSER
             // use the filter mechanism in the compiler to only add errors that are not suppressed.
             var d = Diagnostic.Create(new SyntaxDiagnosticInfo(error.Code));
-            d = _options.CommandLineArguments.CompilationOptions.FilterDiagnostic(d);
+            d = _options.CommandLineArguments.CompilationOptions.FilterDiagnostic(d,cancellationToken: default);
             if (d != null)
             {
                _parseErrors.Add(error);

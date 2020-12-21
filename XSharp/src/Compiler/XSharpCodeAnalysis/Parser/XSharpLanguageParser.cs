@@ -631,7 +631,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 else
                     nsName = defaultNamespace;
                 members.Add(member);
-                member  = _syntaxFactory.NamespaceDeclaration(SyntaxFactory.MakeToken(SyntaxKind.NamespaceKeyword),
+                member  = _syntaxFactory.NamespaceDeclaration(
+                    attributeLists: default,
+                    modifiers: default, 
+                    SyntaxFactory.MakeToken(SyntaxKind.NamespaceKeyword),
                     name: trans.GenerateQualifiedName(nsName),
                     openBraceToken: SyntaxFactory.MakeToken(SyntaxKind.OpenBraceToken),
                     externs: null,

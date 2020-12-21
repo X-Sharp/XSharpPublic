@@ -43,21 +43,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                 get { return this.DeclaringCompilation.CodeBlockType(); }
             }
 
-            internal override NamedTypeSymbol GetDeclaredBaseType(ConsList<Symbol> basesBeingResolved)
+            internal override NamedTypeSymbol GetDeclaredBaseType(ConsList<TypeSymbol> basesBeingResolved)
             {
                 return this.DeclaringCompilation.CodeBlockType();
             }
 
-            internal override bool Equals(TypeSymbol t2, TypeCompareKind comparison)
-            {
-                if (ReferenceEquals(this, t2))
-                {
-                    return true;
-                }
-
-                var other = t2 as CodeblockTypePublicSymbol;
-                return (object)other != null && this.TypeDescriptor.Equals(other.TypeDescriptor, comparison);
-            }
         }
 
         private sealed partial class CodeblockEvalMethod : SynthesizedMethodBase
@@ -98,7 +88,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                 get { return RefKind.None; }
             }
 
-            public override TypeSymbol ReturnType
+            public override TypeWithAnnotations ReturnTypeWithAnnotations
             {
                 get { return this.Manager.UsualType; }
             }
@@ -185,12 +175,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
 
             public SynthesizedParamsParameterSymbol(
                 MethodSymbol container,
-                TypeSymbol type,
+                TypeWithAnnotations type,
                 int ordinal,
                 RefKind refKind,
                 string name = "",
                 ImmutableArray<CustomModifier> customModifiers = default(ImmutableArray<CustomModifier>))
-                    : base (container, type, ordinal, refKind, name)
+                    : base(container, type, ordinal, refKind, name)
             {
                 _customModifiers = customModifiers;
             }
@@ -200,16 +190,23 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                 get { return true; }
             }
 
-            public override ImmutableArray<CustomModifier> CustomModifiers
-            {
-                get { return _customModifiers.NullToEmpty(); }
-            }
+            //public override ImmutableArray<CustomModifier> CustomModifiers
+            //{
+            //    get { return _customModifiers.NullToEmpty(); }
+            //}
 
             public override ImmutableArray<CustomModifier> RefCustomModifiers
             {
                 get { return ImmutableArray<CustomModifier>.Empty; }
             }
-
+            internal override MarshalPseudoCustomAttributeData MarshallingInformation
+            {
+                get
+                {
+                    //todo
+                    return null;
+                }
+            }
             internal sealed override void AddSynthesizedAttributes(Emit.PEModuleBuilder modulebuilder, ref ArrayBuilder<SynthesizedAttributeData> attributes)
             {
                 base.AddSynthesizedAttributes(modulebuilder, ref attributes);

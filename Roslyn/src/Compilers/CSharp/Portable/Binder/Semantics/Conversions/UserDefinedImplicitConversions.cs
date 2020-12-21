@@ -98,7 +98,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 {
                     Conversions conv = this as Conversions;
                     bool usePointer = source.IsPointerType();
-                    if (conv.Compilation.Options.HasRuntime && target == conv.Compilation.UsualType())
+                    if (conv.Compilation.Options.HasRuntime && target.IsUsualType(conv.Compilation))
                     {
                         for( int i = 0; i < u.Length; i++)
                         {
@@ -107,7 +107,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                             {
                                 return UserDefinedConversionResult.Valid(u, i);
                             }
-                            if (!usePointer  && x.ToType == target && x.FromType == conv.Compilation.GetSpecialType(SpecialType.System_Object))
+                            if (!usePointer  && x.ToType == target && x.FromType.IsObjectType())
                             {
                                 return UserDefinedConversionResult.Valid(u, i);
                             }

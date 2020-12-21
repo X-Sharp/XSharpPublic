@@ -173,10 +173,9 @@ namespace Microsoft.CodeAnalysis.CSharp
                 return;
 
             var rhsType = expression.Type;
-            if (targetType != rhsType && 
-                targetType.SpecialType.IsIntegralType() &&
-                rhsType.SpecialType.IsIntegralType() 
-                )
+            var st = targetType.GetSpecialTypeSafe();
+            var rt = rhsType.GetSpecialTypeSafe();
+            if (targetType != rhsType && st.IsIntegralType() && rt.IsIntegralType() )
             {
                 bool ok = false;
                 if (expression.ConstantValue != null)

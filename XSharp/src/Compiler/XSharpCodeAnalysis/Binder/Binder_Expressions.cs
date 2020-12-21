@@ -123,18 +123,13 @@ namespace Microsoft.CodeAnalysis.CSharp
             {
                 var arrayType = Compilation.ArrayType();
                 var usualType = Compilation.UsualType();
-                var pszType = Compilation.PszType();
                 var cf = ((NamedTypeSymbol)expr.Type).ConstructedFrom;
-                if (cf == pszType )
+                if (cf.IsPszType(Compilation) )
                 {
                     ArrayBuilder<BoundExpression> argsBuilder = ArrayBuilder<BoundExpression>.GetInstance();
                     foreach (var arg in analyzedArguments.Arguments)
                     {
-                        var specialType = SpecialType.System_UInt32;
-                        if (Compilation.Options.XSharpRuntime)
-                        {
-                            specialType = SpecialType.System_Int32;
-                        }
+                        var specialType = Compilation.Options.XSharpRuntime ? SpecialType.System_Int32 : SpecialType.System_UInt32;
                         BoundExpression newarg = arg ;
                         if (arg.Type.SpecialType != specialType)
                         {
@@ -166,7 +161,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 bool numericParams = false;
                 bool mustcast = false;
                 HashSet<DiagnosticInfo> useSiteDiagnostics = null;
-                if (cf != arrayType && (cf == usualType
+                if (cf != arrayType && (cf.IsUsualType(Compilation)
                     || cf.ConstructedFrom == arrayBaseType
                     || cf.ImplementsInterface(indexedPropsType, ref useSiteDiagnostics)
                     || cf.ImplementsInterface(indexerType, ref useSiteDiagnostics)))
@@ -212,7 +207,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                         numericParams = true;
                     }
                 }
-                if (cf == arrayType || numericParams ) 
+                if (cf.IsArrayType(Compilation) || numericParams ) 
                 {
                     ImmutableArray<BoundExpression> args;
                     ArrayBuilder<BoundExpression> argsBuilder = ArrayBuilder<BoundExpression>.GetInstance();
@@ -432,8 +427,8 @@ namespace Microsoft.CodeAnalysis.CSharp
                         if (leftType is NamedTypeSymbol)
                         {
                             var nts = leftType as NamedTypeSymbol;
-                            isUsual = nts.ConstructedFrom == usualType;
-                            isArray = nts.ConstructedFrom == arrayType;
+                            isUsual = nts.ConstructedFrom.IsUsualType(Compilation);
+                            isArray = nts.ConstructedFrom.IsArrayType(Compilation);
                         }
                     }
                     // Late bound will only work for OBJECT or USUAL
@@ -566,7 +561,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         private bool BindStringToPsz(CSharpSyntaxNode syntax, ref BoundExpression source, TypeSymbol destination,DiagnosticBag diagnostics)
         {
             TypeSymbol psz = Compilation.PszType();
-            if (source.Type != null && source.Type.SpecialType == SpecialType.System_String &&
+            if (source.Type != null && source.Type.IsStringType() &&
                 Compilation.Options.HasRuntime &&
                 (destination == psz || destination.IsVoidPointer()))
             {
@@ -577,7 +572,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 foreach (MethodSymbol ctor in ctors)
                 {
                     var pars = ctor.GetParameters();
-                    if (pars.Length == 1 && pars[0].Type.SpecialType == SpecialType.System_String)
+                    if (pars.Length == 1 && pars[0].Type.IsStringType())
                     {
                         stringctor = ctor;
                     }

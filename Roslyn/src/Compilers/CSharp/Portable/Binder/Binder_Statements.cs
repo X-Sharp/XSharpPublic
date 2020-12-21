@@ -1417,7 +1417,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 }
 #if XSHARP
                 //Dynamic operation for VO & Latebinding -> use conversion
-                else if (Compilation.Options.LateBindingOrFox(node)  && op1.Type == Compilation.UsualType())
+                else if (Compilation.Options.LateBindingOrFox(node)  && op1.Type.IsUsualType(Compilation))
                 {
                     op2 = conversion;
                 }

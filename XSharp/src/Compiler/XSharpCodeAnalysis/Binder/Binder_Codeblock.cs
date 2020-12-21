@@ -102,9 +102,9 @@ namespace Microsoft.CodeAnalysis.CSharp
         internal static BoundBlock FixCodeBlockProblems(LambdaSymbol lambdaSymbol, Binder lambdaBodyBinder, BoundBlock block, DiagnosticBag diagnostics)
         {
             // check for a Lambda that returns a USUAL
-            var usualType = lambdaBodyBinder.Compilation.UsualType();
-            if (lambdaSymbol.ReturnType != usualType)
+            if (!lambdaSymbol.ReturnType.IsUsualType(lambdaBodyBinder.Compilation))
                 return block;
+            var usualType = lambdaBodyBinder.Compilation.UsualType();
             // handle 2 problems:
             // 1) no statements, then add a return statement
             // 2) last statement is a void expression. Then the conversion to USUAL fails
@@ -131,7 +131,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                     {
                         var boundConv = expr as BoundConversion;
                         var operand = boundConv.Operand;
-                        if (boundConv.Type == usualType && operand.Type.SpecialType == SpecialType.System_Void)
+                        if (boundConv.Type.IsUsualType(lambdaBodyBinder.Compilation) && operand.Type.SpecialType == SpecialType.System_Void)
                         {
                             diagnostics.Clear();
                             for (int i = 0; i < block.Statements.Length - 1; i++)

@@ -77,11 +77,11 @@ namespace Microsoft.CodeAnalysis.CSharp
             TypeSymbol type;
             BoundCall opCall = null;
             var stringType = Compilation.GetSpecialType(SpecialType.System_String);
-            if (left.Type.SpecialType != SpecialType.System_String)
+            if (left.Type != null && !left.Type.IsStringType())
             {
                 left = CreateConversion(left, stringType, diagnostics);
             }
-            if (right.Type.SpecialType != SpecialType.System_String)
+            if (right.Type != null && !right.Type.IsStringType())
             {
                 right = CreateConversion(right, stringType, diagnostics);
             }
@@ -156,11 +156,11 @@ namespace Microsoft.CodeAnalysis.CSharp
             if (symbols.Length == 1)
             {
                 MethodSymbol opMeth = (MethodSymbol)symbols[0];
-                if (right.Type != usualType)
+                if (!right.Type.IsUsualType(Compilation))
                 {
                     right = CreateConversion(right, usualType, diagnostics);
                 }
-                if (left.Type != usualType)
+                if (!left.Type.IsUsualType(Compilation))
                 {
                     left = CreateConversion(left, usualType, diagnostics);
                 }
@@ -203,7 +203,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 ref BoundExpression left, ref BoundExpression right)
         {
             var pszType = Compilation.PszType();
-            if (right.Type != pszType)
+            if (!right.Type.IsPszType(Compilation))
             {
                 if (IsNullNode(right))
                 {
@@ -214,7 +214,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                     right = CreateConversion(right, pszType, diagnostics);
                 }
             }
-            if (left.Type != pszType)
+            if (!left.Type.IsPszType(Compilation))
             {
                 if (IsNullNode(left))
                 {
@@ -231,11 +231,11 @@ namespace Microsoft.CodeAnalysis.CSharp
                 ref BoundExpression left, ref BoundExpression right)
         {
             var symType = Compilation.SymbolType();
-            if (right.Type != symType)
+            if (!right.Type.IsSymbolType(Compilation))
             {
                 right = CreateConversion(right, symType, diagnostics);
             }
-            if (left.Type != symType)
+            if (!left.Type.IsSymbolType(Compilation))
             {
                 left = CreateConversion(left, symType, diagnostics);
             }
@@ -269,7 +269,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 // public static bool __InexactEquals(__Usual uL, __Usual uR)
                 // Switch to overload with string when RHS = STRING
                 opMeth = (MethodSymbol)symbols[0];
-                if (right.Type?.SpecialType == SpecialType.System_String)
+                if (right.Type != null && right.Type.IsStringType())
                 {
                     if (right.Type != opMeth.Parameters[0].Type)
                         opMeth = (MethodSymbol)symbols[1];
@@ -277,14 +277,14 @@ namespace Microsoft.CodeAnalysis.CSharp
                 else
                 {
                     // When RHS != USUAL then switch
-                    if (opMeth.Parameters[0].Type != usualType)
+                    if (opMeth.Parameters[0].Type.IsUsualType(Compilation))
                         opMeth = (MethodSymbol)symbols[1];
-                    if (right.Type != usualType)
+                    if (!right.Type.IsUsualType(Compilation))
                     {
                         right = CreateConversion(right, usualType, diagnostics);
                     }
                 }
-                if (left.Type != usualType)
+                if (!left.Type.IsUsualType(Compilation))
                 {
                     left = CreateConversion(left, usualType, diagnostics);
                 }
@@ -313,7 +313,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 // public static bool __InexactNotEquals(__Usual uL, __Usual uR)
                 // Switch to overload with string when RHS = STRING
                 opMeth = (MethodSymbol)symbols[0];
-                if (right.Type?.SpecialType == SpecialType.System_String)
+                if (right.Type != null && right.Type.IsStringType())
                 {
                     if (right.Type != opMeth.Parameters[0].Type)
                         opMeth = (MethodSymbol)symbols[1];
@@ -321,14 +321,14 @@ namespace Microsoft.CodeAnalysis.CSharp
                 else
                 {
                     // When RHS != USUAL then switch
-                    if (opMeth.Parameters[0].Type != usualType)
+                    if (opMeth.Parameters[0].Type.IsUsualType(Compilation))
                         opMeth = (MethodSymbol)symbols[1];
-                    if (right.Type != usualType)
+                    if (!right.Type.IsUsualType(Compilation))
                     {
                         right = CreateConversion(right, usualType, diagnostics);
                     }
                 }
-                if (left.Type != usualType)
+                if (!left.Type.IsUsualType(Compilation))
                 {
                     left = CreateConversion(left, usualType, diagnostics);
                 }
@@ -353,11 +353,11 @@ namespace Microsoft.CodeAnalysis.CSharp
             {
                 opMeth = (MethodSymbol)symbols[0];
                 var stringType = Compilation.GetSpecialType(SpecialType.System_String);
-                if (left.Type != stringType)
+                if (left.Type != null && !left.Type.IsStringType())
                 {
                     left = CreateConversion(left, stringType, diagnostics);
                 }
-                if (right.Type != stringType)
+                if (right.Type != null && !right.Type.IsStringType())
                 {
                     right = CreateConversion(right, stringType, diagnostics);
                 }
@@ -420,20 +420,17 @@ namespace Microsoft.CodeAnalysis.CSharp
 
             TypeSymbol leftType = left.Type;
             TypeSymbol rightType = right.Type;
-            var leftString = leftType?.SpecialType == SpecialType.System_String;
-            var rightString = rightType?.SpecialType == SpecialType.System_String;
+            var leftString = leftType.GetSpecialTypeSafe() == SpecialType.System_String;
+            var rightString = rightType.GetSpecialTypeSafe() == SpecialType.System_String;
 
             if (Compilation.Options.HasRuntime && xnode != null)
             {
-                var typeUsual = Compilation.UsualType();
-                var typePSZ = Compilation.PszType();
-                var typeSym = Compilation.SymbolType();
-                var leftUsual = leftType == typeUsual;
-                var rightUsual = rightType == typeUsual;
-                var leftSym = leftType == typeSym;
-                var rightSym = rightType == typeSym;
-                var leftPSZ = leftType == typePSZ;
-                var rightPSZ = rightType == typePSZ;
+                var leftUsual = leftType.IsUsualType(Compilation);
+                var rightUsual = rightType.IsUsualType(Compilation);
+                var leftSym = leftType.IsSymbolType(Compilation);
+                var rightSym = rightType.IsSymbolType(Compilation);
+                var leftPSZ = leftType.IsPszType(Compilation);
+                var rightPSZ = rightType.IsPszType(Compilation);
 
                 switch (xnode.Op.Type)
                 {
@@ -524,7 +521,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                             // STRING - STRING 
                             // STRING -- USUAL
                             // USUAL  - STRING
-                            if (leftString && (rightString || rightType == typeUsual))
+                            if (leftString && (rightString || rightUsual))
                             {
                                 opType = VOOperatorType.SubtractString;
                                 break;
@@ -538,21 +535,18 @@ namespace Microsoft.CodeAnalysis.CSharp
     
                         if (opType == VOOperatorType.None)
                         { 
-                            var typeDate = Compilation.DateType();
-                            var typeFloat = Compilation.FloatType();
-
                             // Add or Subtract USUAL with other type
                             // LHS   - RHS 
                             // Usual - Date
                             // Date  - Usual
                             // Usual - Float
                             // Float - Usual
-                            if (leftUsual && (rightType == typeDate || rightType == typeFloat))
+                            if (leftUsual && (rightType.IsDateType(Compilation) || rightType.IsFloatType(Compilation)))
                             {
                                 opType = VOOperatorType.UsualOther;
                                 break;
                             }
-                            if (rightUsual && (leftType == typeDate || leftType == typeFloat))
+                            if (rightUsual && (leftType.IsDateType(Compilation) || leftType.IsFloatType(Compilation)))
                             {
                                 opType = VOOperatorType.UsualOther;
                                 break;
@@ -640,14 +634,13 @@ namespace Microsoft.CodeAnalysis.CSharp
                 case XSharpParser.FOX_XOR:
                 case XSharpParser.AND:
                 case XSharpParser.OR:
-                    var usualType = Compilation.UsualType();
                     var boolType = this.GetSpecialType(SpecialType.System_Boolean,diagnostics, node);
-                    if (left.Type == usualType)
+                    if (left.Type.IsUsualType(Compilation))
                     {
                         left = CreateConversion(left, boolType, diagnostics);
                     }
 
-                    if (right.Type == usualType)
+                    if (right.Type.IsUsualType(Compilation))
                     {
                         right = CreateConversion(right, boolType, diagnostics);
                     }
@@ -720,15 +713,16 @@ namespace Microsoft.CodeAnalysis.CSharp
                 if (unary.OperatorKind.IsUnaryMinus())
                 {
                     // see if we must change unsigned into signed
-                    if (type == Compilation.GetSpecialType(SpecialType.System_Byte))
+                    var st = type.GetSpecialTypeSafe();
+                    if (st == SpecialType.System_Byte)
                     {
                         type = Compilation.GetSpecialType(SpecialType.System_Int16);
                     }
-                    else if (type == Compilation.GetSpecialType(SpecialType.System_UInt16))
+                    else if (st == SpecialType.System_UInt16)
                     {
                         type = Compilation.GetSpecialType(SpecialType.System_Int32);
                     }
-                    else if (type == Compilation.GetSpecialType(SpecialType.System_UInt32))
+                    else if (st == SpecialType.System_UInt32)
                     {
                         type = Compilation.GetSpecialType(SpecialType.System_Int64);  
                     }
@@ -874,12 +868,12 @@ namespace Microsoft.CodeAnalysis.CSharp
                 {
                     // convert to usual when one of the two is a usual
                     var usualType = Compilation.UsualType();
-                    if (trueType == usualType)
+                    if (trueType.IsUsualType(Compilation))
                     {
                         falseType = trueType;
                         falseExpr = CreateConversion(falseExpr, usualType, diagnostics);
                     }
-                    else if (falseType == usualType)
+                    else if (falseType.IsUsualType(Compilation))
                     {
                         trueType = falseType;
                         trueExpr = CreateConversion(trueExpr, usualType, diagnostics);

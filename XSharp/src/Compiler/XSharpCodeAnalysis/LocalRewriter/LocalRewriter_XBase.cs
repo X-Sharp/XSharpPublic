@@ -22,27 +22,26 @@ namespace Microsoft.CodeAnalysis.CSharp
 
         internal BoundExpression MakePsz(BoundExpression value)
         {
-            var type = _compilation.PszType();
-            if (value.Type == type)
+            if (value.Type.IsPszType(_compilation))
                 return value;
-            bool isString;
-            if (value.Type == _compilation.UsualType())
+            var psz = _compilation.PszType();
+            if (value.Type.IsUsualType(_compilation))
             {
-                var op = getImplicitOperatorByReturnType(value.Type, type);
+                var op = getImplicitOperatorByReturnType(value.Type, psz);
                 var result = _factory.StaticCall(value.Type, (MethodSymbol)op, value);
                 result.WasCompilerGenerated = true;
                 this._diagnostics.Add(ErrorCode.WRN_CompilerGeneratedPSZConversionGeneratesMemoryleak, value.Syntax.Location);
                 return result;
             }
-            isString = value.Type.SpecialType == SpecialType.System_String;
-            var ctors = type.Constructors;
+            var isString = value.Type != null && value.Type.IsStringType();
+            var ctors = psz.Constructors;
             foreach (var ctor in ctors)
             {
                 if (ctor.ParameterCount == 1) // there should only be constructors with one or zero parameters.
                 {
                     bool found = false;
                     var partype = ctor.GetParameterTypes()[0];
-                    if (isString && partype.SpecialType == SpecialType.System_String)
+                    if (isString && partype != null && partype.IsStringType())
                     {
                         found = true;
                     }

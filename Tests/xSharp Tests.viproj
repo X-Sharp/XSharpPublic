@@ -88558,7 +88558,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   Optimize=0
 ENDApplication = R755 - STATIC LOCAL and PCALL() syntax
 
-ApplicationGroup = 
+ApplicationGroup = A95A4D23-3574-40FD-B873-22D28ACCA212
 ; ************** APPLICATION C749 - ICE with incorrect assigning of NULL to numeric var *************
 Application = C749 - ICE with incorrect assigning of NULL to numeric var
 IDEVersion = 1.06

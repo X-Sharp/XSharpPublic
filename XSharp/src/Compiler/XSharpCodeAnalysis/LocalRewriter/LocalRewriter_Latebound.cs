@@ -130,7 +130,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 return null;
             if (loweredReceiver.HasDynamicType())
                 return null;
-            if (loweredReceiver.Type == _compilation.ArrayType())
+            if (loweredReceiver.Type.IsArrayType(_compilation))
             {
                 if (_compilation.Options.Dialect.AllowASend())
                 { 

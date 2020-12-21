@@ -145,8 +145,6 @@ namespace Microsoft.CodeAnalysis.CSharp
                     // we have different / extended rules compared to C#
                     var parsLeft = m1.Member.GetParameters();
                     var parsRight = m2.Member.GetParameters();
-                    var usualType = Compilation.UsualType();
-                    var objectType = Compilation.GetSpecialType(SpecialType.System_Object);
                     var len = parsLeft.Length;
                     if (arguments.Count < len)
                         len = arguments.Count;
@@ -210,23 +208,23 @@ namespace Microsoft.CodeAnalysis.CSharp
                         if (parLeft.Type != parRight.Type || refLeft != refRight)
                         {
                             // Prefer the method with a more specific parameter which is not an array type over USUAL
-                            if (parLeft.Type == usualType && argType != usualType && !parRight.Type.IsArray())
+                            if (parLeft.Type.IsUsualType(_binder.Compilation) && !argType.IsUsualType(_binder.Compilation) && !parRight.Type.IsArray())
                             {
                                 result = BetterResult.Right;
                                 return true;
                             }
-                            if (parRight.Type == usualType && argType != usualType && !parLeft.Type.IsArray())
+                            if (parRight.Type.IsUsualType(_binder.Compilation) && !argType.IsUsualType(_binder.Compilation) && !parLeft.Type.IsArray())
                             {
                                 result = BetterResult.Left;
                                 return true;
                             }
                             // Prefer the method with Object type over the one with Object[] type
-                            if (parLeft.Type == objectType && parRight.Type.IsArray() && ((ArrayTypeSymbol)parRight.Type).ElementType == objectType)
+                            if (parLeft.Type.IsObjectType() && parRight.Type.IsArray() && ((ArrayTypeSymbol)parRight.Type).ElementType.IsObjectType())
                             {
                                 result = BetterResult.Left;
                                 return true;
                             }
-                            if (parRight.Type == objectType && parLeft.Type.IsArray() && ((ArrayTypeSymbol)parLeft.Type).ElementType == objectType)
+                            if (parRight.Type.IsObjectType() && parLeft.Type.IsArray() && ((ArrayTypeSymbol)parLeft.Type).ElementType.IsObjectType())
                             {
                                 result = BetterResult.Right;
                                 return true;
@@ -323,7 +321,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                                 return true;
                             }
                             // VoFloat prefers overload with double over all other conversions
-                            if (argType == Compilation.FloatType())
+                            if (argType.IsFloatType(_binder.Compilation))
                             {
                                 var doubleType = Compilation.GetSpecialType(SpecialType.System_Double);
                                 if (parLeft.Type == doubleType)
@@ -339,7 +337,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                             }
                             // if argument is numeric and one of the two types is also and the other not
                             // then prefer the numeric type
-                            if (argType?.SpecialType != null && (argType.SpecialType.IsNumericType() || argType == Compilation.FloatType()))
+                            if (argType?.SpecialType != null && (argType.SpecialType.IsNumericType() || argType.IsFloatType(_binder.Compilation)))
                             {
                                 if (parLeft.Type.SpecialType.IsNumericType() && !parRight.Type.SpecialType.IsNumericType())
                                 {
@@ -351,12 +349,12 @@ namespace Microsoft.CodeAnalysis.CSharp
                                     result = BetterResult.Right;
                                     return true;
                                 }
-                                if (parLeft.Type == Compilation.FloatType() && parRight.Type != Compilation.FloatType())
+                                if (parLeft.Type.IsFloatType(_binder.Compilation) && !parRight.Type.IsFloatType(_binder.Compilation))
                                 {
                                     result = BetterResult.Left;
                                     return true;
                                 }
-                                if (parRight.Type == Compilation.FloatType() && parLeft.Type != Compilation.FloatType())
+                                if (parRight.Type.IsFloatType(_binder.Compilation) && !parLeft.Type.IsFloatType(_binder.Compilation))
                                 {
                                     result = BetterResult.Right;
                                     return true;
@@ -379,7 +377,7 @@ namespace Microsoft.CodeAnalysis.CSharp
 
                             // handle case where argument is usual and the method is not usual
                             // prefer method with "native VO" parameter type
-                            if (argType == Compilation.UsualType())
+                            if (argType.IsUsualType(_binder.Compilation))
                             {
                                 // no need to check if parleft or parright are usual that was checked above
                                 if (parLeft.Type != parRight.Type)
@@ -699,19 +697,18 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
             if (Compilation.Options.HasRuntime)
             {
-                var usualType = Compilation.UsualType();
-                if (left.Type != usualType)
+                if (!left.Type.IsUsualType(_binder.Compilation))
                 {
-                    if (op1.RightType != usualType && op2.RightType == usualType)
+                    if (!op1.RightType.IsUsualType(_binder.Compilation) && op2.RightType.IsUsualType(_binder.Compilation))
                         return BetterResult.Left;
-                    if (op2.RightType != usualType && op1.RightType == usualType)
+                    if (!op2.RightType.IsUsualType(_binder.Compilation) && op1.RightType.IsUsualType(_binder.Compilation))
                         return BetterResult.Right;
                 }
-                if (right.Type != usualType)
+                if (!right.Type.IsUsualType(_binder.Compilation))
                 {
-                    if (op1.LeftType != usualType && op2.LeftType == usualType)
+                    if (!op1.LeftType.IsUsualType(_binder.Compilation) && op2.LeftType.IsUsualType(_binder.Compilation))
                         return BetterResult.Left;
-                    if (op2.LeftType != usualType && op1.LeftType == usualType)
+                    if (!op2.LeftType.IsUsualType(_binder.Compilation) && op1.LeftType.IsUsualType(_binder.Compilation))
                         return BetterResult.Right;
                 }
             }
@@ -721,7 +718,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         {
             if (left.Type == right.Type)
             {
-                bool isVoStruct = false;
+                bool isVoStruct ;
                 if (left.Type.IsPointerType())
                 {
                     var pt = left.Type as PointerTypeSymbol;

@@ -517,8 +517,8 @@ namespace Microsoft.CodeAnalysis.CSharp
                     }
                 }
 
-                // If params arg is USUAL prefer the epanded form
-                if (paramsArg?.Type == Compilation.UsualType())
+                // If params arg is USUAL prefer the expanded form
+                if (paramsArg != null && paramsArg.Type.IsUsualType(_binder.Compilation))
                 {
                     if (arguments.RefKinds.Count == 0 || arguments.RefKinds[0] == RefKind.None)
                     {
@@ -803,8 +803,8 @@ namespace Microsoft.CodeAnalysis.CSharp
                     }
                 }
 
-                // If params arg is USUAL prefer the epanded form
-                if (paramsArg?.Type == Compilation.UsualType())
+                // If params arg is USUAL prefer the expanded form
+                if (paramsArg!= null & paramsArg.Type.IsUsualType(_binder.Compilation))
                 {
                     if (arguments.RefKinds.Count == 0 || arguments.RefKinds[0] == RefKind.None)
                     {
@@ -2553,11 +2553,9 @@ namespace Microsoft.CodeAnalysis.CSharp
 #if XSHARP
             if (Conversions.Compilation.Options.HasRuntime)
             {
-                if (type1 == Conversions.Compilation.UsualType()
-                    && type2.SpecialType == SpecialType.System_Object)
+                if (type1.IsUsualType(_binder.Compilation) && type2.IsObjectType())
                     return BetterResult.Right;
-                if (type1.SpecialType == SpecialType.System_Object && 
-                    type2 == Conversions.Compilation.UsualType())
+                if (type1.IsObjectType() && type2.IsUsualType(_binder.Compilation))
                     return BetterResult.Left;
             }
 

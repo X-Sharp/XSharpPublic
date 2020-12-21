@@ -23,7 +23,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             dictionary = new ConcurrentDictionary<string, XSharpTargetDLL>(XSharpString.Comparer);
         }
 
-        public static bool IsOurAttribute(this NamedTypeSymbol atype, String name)
+        public static bool IsOurAttribute(this NamedTypeSymbol atype, string name)
         {
             if (atype == null)
                 return false;
@@ -34,12 +34,33 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             return false;
 
         }
-
-        public static bool IsPsz(this TypeSymbol _type)
+        static internal bool IsUsualType(this TypeSymbol type, CSharpCompilation compilation)
         {
-            if (_type == null)
-                return false;
-            return _type.Name == OurTypeNames.PszType;
+            return type != null && type == compilation.UsualType();
+        }
+        static internal bool IsSymbolType(this TypeSymbol type, CSharpCompilation compilation)
+        {
+            return type != null && type == compilation.SymbolType();
+        }
+        static internal bool IsArrayType(this TypeSymbol type, CSharpCompilation compilation)
+        {
+            return type != null && type == compilation.ArrayType();
+        }
+        static internal bool IsFloatType(this TypeSymbol type, CSharpCompilation compilation)
+        {
+            return type != null && type == compilation.FloatType();
+        }
+        static internal bool IsCodeblockType(this TypeSymbol type, CSharpCompilation compilation)
+        {
+            return type != null && type == compilation.CodeBlockType();
+        }
+        static internal bool IsPszType(this TypeSymbol type, CSharpCompilation compilation)
+        {
+            return type != null && type == compilation.PszType();
+        }
+        static internal bool IsDateType(this TypeSymbol type, CSharpCompilation compilation)
+        {
+            return type != null && type == compilation.DateType();
         }
         public static bool IsVoStructOrUnion(this TypeSymbol _type)
         {

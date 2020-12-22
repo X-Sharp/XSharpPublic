@@ -227,17 +227,17 @@ namespace Microsoft.CodeAnalysis.CSharp
                     return true;
                 
             }
-            if (type.IsArrayType(compilation))
+            if (type.IsArrayType())
                 return true;
-            if (type.IsCodeblockType(compilation))
+            if (type.IsCodeblockType())
                 return true;
-            if (type.IsDateType(compilation))
+            if (type.IsDateType())
                 return true;
-            if (type.IsFloatType(compilation))
+            if (type.IsFloatType())
                 return true;
-            if (type.IsSymbolType(compilation))
+            if (type.IsSymbolType())
                 return true;
-            if (type.IsPszType(compilation))
+            if (type.IsPszType())
                 return true;
             return false;
         }

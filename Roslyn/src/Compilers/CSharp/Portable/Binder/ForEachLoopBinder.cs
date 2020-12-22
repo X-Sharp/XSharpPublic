@@ -442,7 +442,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             Debug.Assert((object)builder.CollectionConversion.Method == null,
                 "Conversion from collection expression to collection type should not be user-defined");
 #if XSHARP
-            if (collectionExpr.Type is ArrayTypeSymbol ats && ats.ElementType.IsUsualType(Compilation))
+            if (collectionExpr.Type is ArrayTypeSymbol ats && ats.ElementType.IsUsualType())
             {
                 ; // ok
             }

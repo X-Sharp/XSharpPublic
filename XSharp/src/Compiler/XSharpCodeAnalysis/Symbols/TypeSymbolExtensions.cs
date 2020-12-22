@@ -34,33 +34,45 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             return false;
 
         }
-        static internal bool IsUsualType(this TypeSymbol type, CSharpCompilation compilation)
+        static internal bool IsUsualType(this TypeSymbol type)
         {
-            return type != null && type == compilation.UsualType();
+            return type != null && type.Name == OurTypeNames.UsualType;
         }
-        static internal bool IsSymbolType(this TypeSymbol type, CSharpCompilation compilation)
+        static internal bool IsNotUsualType(this TypeSymbol type)
         {
-            return type != null && type == compilation.SymbolType();
+            return !IsUsualType(type);
         }
-        static internal bool IsArrayType(this TypeSymbol type, CSharpCompilation compilation)
+        static internal bool IsSymbolType(this TypeSymbol type)
         {
-            return type != null && type == compilation.ArrayType();
+            return type != null && type.Name == OurTypeNames.SymbolType;
         }
-        static internal bool IsFloatType(this TypeSymbol type, CSharpCompilation compilation)
+        static internal bool IsNotSymbolType(this TypeSymbol type)
         {
-            return type != null && type == compilation.FloatType();
+            return !IsSymbolType(type);
         }
-        static internal bool IsCodeblockType(this TypeSymbol type, CSharpCompilation compilation)
+        static internal bool IsArrayType(this TypeSymbol type)
         {
-            return type != null && type == compilation.CodeBlockType();
+            return type != null && type.Name == OurTypeNames.ArrayType;
         }
-        static internal bool IsPszType(this TypeSymbol type, CSharpCompilation compilation)
+        static internal bool IsFloatType(this TypeSymbol type)
         {
-            return type != null && type == compilation.PszType();
+            return type != null && (type.Name == OurTypeNames.FloatType || type.Name == OurTypeNames.VnFloatType);
         }
-        static internal bool IsDateType(this TypeSymbol type, CSharpCompilation compilation)
+        static internal bool IsCodeblockType(this TypeSymbol type)
         {
-            return type != null && type == compilation.DateType();
+            return type != null && type.Name == OurTypeNames.CodeBlockType;
+        }
+        static internal bool IsPszType(this TypeSymbol type)
+        {
+            return type != null && type.Name == OurTypeNames.PszType;
+        }
+        static internal bool IsNotPszType(this TypeSymbol type)
+        {
+            return !IsPszType(type);
+        }
+        static internal bool IsDateType(this TypeSymbol type)
+        {
+            return type != null && (type.Name == OurTypeNames.DateType || type.Name == OurTypeNames.VnDateType);
         }
         public static bool IsVoStructOrUnion(this TypeSymbol _type)
         {
@@ -157,7 +169,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             int elementSize = type.SpecialType.FixedBufferElementSizeInBytes();
             if (elementSize == 0)
             {
-                if (type.IsPointerType())
+                if (type.Name == OurTypeNames.PszType || type.IsPointerType()) 
                     elementSize = 4;
                 else
                     elementSize = type.VoStructOrUnionSizeInBytes();

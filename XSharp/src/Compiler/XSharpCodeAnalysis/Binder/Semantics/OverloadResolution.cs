@@ -208,12 +208,12 @@ namespace Microsoft.CodeAnalysis.CSharp
                         if (parLeft.Type != parRight.Type || refLeft != refRight)
                         {
                             // Prefer the method with a more specific parameter which is not an array type over USUAL
-                            if (parLeft.Type.IsUsualType(_binder.Compilation) && !argType.IsUsualType(_binder.Compilation) && !parRight.Type.IsArray())
+                            if (parLeft.Type.IsUsualType() && argType.IsNotUsualType() && !parRight.Type.IsArray())
                             {
                                 result = BetterResult.Right;
                                 return true;
                             }
-                            if (parRight.Type.IsUsualType(_binder.Compilation) && !argType.IsUsualType(_binder.Compilation) && !parLeft.Type.IsArray())
+                            if (parRight.Type.IsUsualType() && argType.IsNotUsualType() && !parLeft.Type.IsArray())
                             {
                                 result = BetterResult.Left;
                                 return true;
@@ -321,7 +321,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                                 return true;
                             }
                             // VoFloat prefers overload with double over all other conversions
-                            if (argType.IsFloatType(_binder.Compilation))
+                            if (argType.IsFloatType())
                             {
                                 var doubleType = Compilation.GetSpecialType(SpecialType.System_Double);
                                 if (parLeft.Type == doubleType)
@@ -337,7 +337,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                             }
                             // if argument is numeric and one of the two types is also and the other not
                             // then prefer the numeric type
-                            if (argType?.SpecialType != null && (argType.SpecialType.IsNumericType() || argType.IsFloatType(_binder.Compilation)))
+                            if (argType?.SpecialType != null && (argType.SpecialType.IsNumericType() || argType.IsFloatType()))
                             {
                                 if (parLeft.Type.SpecialType.IsNumericType() && !parRight.Type.SpecialType.IsNumericType())
                                 {
@@ -349,15 +349,18 @@ namespace Microsoft.CodeAnalysis.CSharp
                                     result = BetterResult.Right;
                                     return true;
                                 }
-                                if (parLeft.Type.IsFloatType(_binder.Compilation) && !parRight.Type.IsFloatType(_binder.Compilation))
-                                {
-                                    result = BetterResult.Left;
-                                    return true;
-                                }
-                                if (parRight.Type.IsFloatType(_binder.Compilation) && !parLeft.Type.IsFloatType(_binder.Compilation))
-                                {
-                                    result = BetterResult.Right;
-                                    return true;
+                                if (parLeft.Type != parRight.Type)
+                                { 
+                                    if (parLeft.Type.IsFloatType() )
+                                    {
+                                        result = BetterResult.Left;
+                                        return true;
+                                    }
+                                    if (parRight.Type.IsFloatType() )
+                                    {
+                                        result = BetterResult.Right;
+                                        return true;
+                                    }
                                 }
                                 var leftIntegral = parLeft.Type.IsIntegralType();
                                 var rightIntegral = parRight.Type.IsIntegralType();
@@ -377,7 +380,7 @@ namespace Microsoft.CodeAnalysis.CSharp
 
                             // handle case where argument is usual and the method is not usual
                             // prefer method with "native VO" parameter type
-                            if (argType.IsUsualType(_binder.Compilation))
+                            if (argType.IsUsualType())
                             {
                                 // no need to check if parleft or parright are usual that was checked above
                                 if (parLeft.Type != parRight.Type)
@@ -697,18 +700,18 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
             if (Compilation.Options.HasRuntime)
             {
-                if (!left.Type.IsUsualType(_binder.Compilation))
+                if (left.Type.IsNotUsualType())
                 {
-                    if (!op1.RightType.IsUsualType(_binder.Compilation) && op2.RightType.IsUsualType(_binder.Compilation))
+                    if (op1.RightType.IsNotUsualType() && op2.RightType.IsUsualType())
                         return BetterResult.Left;
-                    if (!op2.RightType.IsUsualType(_binder.Compilation) && op1.RightType.IsUsualType(_binder.Compilation))
+                    if (op2.RightType.IsNotUsualType() && op1.RightType.IsUsualType())
                         return BetterResult.Right;
                 }
-                if (!right.Type.IsUsualType(_binder.Compilation))
+                if (right.Type.IsNotUsualType())
                 {
-                    if (!op1.LeftType.IsUsualType(_binder.Compilation) && op2.LeftType.IsUsualType(_binder.Compilation))
+                    if (op1.LeftType.IsNotUsualType() && op2.LeftType.IsUsualType())
                         return BetterResult.Left;
-                    if (!op2.LeftType.IsUsualType(_binder.Compilation) && op1.LeftType.IsUsualType(_binder.Compilation))
+                    if (op2.LeftType.IsNotUsualType() && op1.LeftType.IsUsualType())
                         return BetterResult.Right;
                 }
             }

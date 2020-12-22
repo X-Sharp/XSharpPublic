@@ -17,7 +17,13 @@ namespace Microsoft.CodeAnalysis.CSharp
         internal const string CodeBlockType = "Codeblock";
         internal const string UsualType = "__Usual";
         internal const string ArrayBase = "__ArrayBase";
+        internal const string ArrayType = "__Array";
         internal const string PszType = "__Psz";
+        internal const string SymbolType = "__Symbol";
+        internal const string FloatType = "__Float";
+        internal const string VnFloatType = "__VOFloat";
+        internal const string DateType = "__Date";
+        internal const string VnDateType = "__VODate";
         internal const string VOStructAttribute = "VoStructAttribute";
         internal const string DefaultParameterAttribute = "DefaultParameterValueAttribute";
         internal const string ActualTypeAttribute = "ActualTypeAttribute";

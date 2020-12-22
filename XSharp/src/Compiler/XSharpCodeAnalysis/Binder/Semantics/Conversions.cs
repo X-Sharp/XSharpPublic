@@ -59,7 +59,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             if (!result && _binder.Compilation.Options.HasRuntime && destination != null && source is NamedTypeSymbol)
             {
                 var nts = source as NamedTypeSymbol;
-                if (nts.ConstructedFrom.IsUsualType(_binder.Compilation))
+                if (nts.ConstructedFrom.IsUsualType())
                 {
                     var destFrom = (destination as NamedTypeSymbol)?.ConstructedFrom;
                     if (destination.IsReferenceType)
@@ -102,7 +102,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
             // Ticket C575: Assign Interface to USUAL
             // Implementation in LocalRewriter_Conversion.cs
-            if (destination.IsUsualType(_binder.Compilation))
+            if (destination.IsUsualType())
             {
                 if (source.IsInterfaceType())
                 {
@@ -118,10 +118,10 @@ namespace Microsoft.CodeAnalysis.CSharp
             {
                 var usualType = _binder.Compilation.UsualType();
                 var nts = destination as NamedTypeSymbol;
-                if ( nts.ConstructedFrom.IsUsualType(_binder.Compilation))
+                if ( nts.ConstructedFrom.IsUsualType())
                 {
                     var op = usualType.GetOperators(WellKnownMemberNames.ImplicitConversionName)
-                        .WhereAsArray(o => o.ParameterCount == 1 && o.ParameterTypes[0].IsObjectType() && o.ReturnType.IsUsualType(_binder.Compilation))
+                        .WhereAsArray(o => o.ParameterCount == 1 && o.ParameterTypes[0].IsObjectType() && o.ReturnType.IsUsualType())
                         .AsSingleton() as MethodSymbol;
                     if (op != null)
                     {
@@ -143,7 +143,7 @@ namespace Microsoft.CodeAnalysis.CSharp
 
             if (res == LambdaConversionResult.BadTargetType && _binder.Compilation.Options.HasRuntime)
             {
-                if (type.IsCodeblockType(_binder.Compilation) || type.IsUsualType(_binder.Compilation) || type.IsObjectType())
+                if (type.IsCodeblockType() || type.IsUsualType() || type.IsObjectType())
                 {
                     return LambdaConversionResult.Success;
                 }
@@ -204,7 +204,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                     return Conversion.Boxing;
                 }
             }
-            else if (source.IsPointerType() || source.IsPszType(Compilation))
+            else if (source.IsPointerType() || source.IsPszType())
             {
                 if (destination.SpecialType == SpecialType.System_Object)
                 {
@@ -336,7 +336,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             if (voCast && source.CanVOCast() && destination.CanVOCast())
             {
                 // No _CAST on USUAL
-                if (source.IsUsualType(Compilation))
+                if (source.IsUsualType())
                 {
                     return Conversion.NoConversion;
                 }
@@ -403,13 +403,13 @@ namespace Microsoft.CodeAnalysis.CSharp
                     {
                         return Conversion.Identity;
                     }
-                    if (source.IsPszType(Compilation))
+                    if (source.IsPszType())
                     {
                         return Conversion.Identity;
                     }
                 }
                 // Allow cast -> PSZ
-                if (destination.IsPszType(Compilation))
+                if (destination.IsPszType())
                 {
                     return Conversion.Identity;
                 }
@@ -426,9 +426,9 @@ namespace Microsoft.CodeAnalysis.CSharp
                     return Conversion.ImplicitNumeric;
                 }
             }
-            if (source.IsUsualType(_binder.Compilation))
+            if (source.IsUsualType())
             {
-                if (destination.IsUsualType(_binder.Compilation))
+                if (destination.IsUsualType())
                     return Conversion.NoConversion;
                 if (dstType == SpecialType.System_Decimal)
                     // Usual -> Decimal. Get the object out of the Usual and let the rest be done by Roslyn
@@ -457,7 +457,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             if (voCast && srcType == SpecialType.System_Object)
             {
                 var xnode = sourceExpression.Syntax.XNode as XSharpParserRuleContext;
-                if (xnode.IsCastClass() && destination.IsUsualType(_binder.Compilation))
+                if (xnode.IsCastClass() && destination.IsUsualType())
                 {
                     // __CASTCLASS(USUAL, OBJECT)
                     // not really boxing, but this is handled in UnBoxXSharpType 
@@ -475,7 +475,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                         // except when converting to array of usuals
                         return Conversion.ImplicitReference;
                     }
-                    if (destination.IsPointerType() || destination.SpecialType == SpecialType.System_IntPtr || destination.IsPszType(Compilation))
+                    if (destination.IsPointerType() || destination.SpecialType == SpecialType.System_IntPtr || destination.IsPszType())
                     {
                         if (Compilation.Options.Dialect.AllowPointerMagic())
                         {
@@ -532,7 +532,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                     return Conversion.ImplicitNumeric;
                 }
             }
-            if (destination.IsPszType(Compilation) || destination.IsVoidPointer())
+            if (destination.IsPszType() || destination.IsVoidPointer())
             {
                 if (source.IsStringType())
                 {
@@ -574,7 +574,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             {
                 if (Compilation.Options.HasRuntime)
                 {
-                    result = ats.ElementType.IsUsualType(Compilation);
+                    result = ats.ElementType.IsUsualType();
                 }
             }
             return result;

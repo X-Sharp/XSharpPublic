@@ -29,7 +29,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 if (c.GetParameterCount() == 2)
                 {
                     var types = c.GetParameterTypes();
-                    if (types[0].IsUsualType(_compilation) && types[1].SpecialType == SpecialType.System_Boolean)
+                    if (types[0].IsUsualType() && types[1].SpecialType == SpecialType.System_Boolean)
                     {
                         ctor = (MethodSymbol)c;
                         break;

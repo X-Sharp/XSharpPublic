@@ -186,7 +186,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             Debug.Assert(visited == null || visited.HasErrors || ReferenceEquals(visited.Type, node.Type) 
 				|| visited.Type.Equals(node.Type, TypeCompareKind.IgnoreDynamicAndTupleNames)
 				|| IsUnusedDeconstruction(node)
-                ||  (_compilation.Options.HasRuntime && node != null && node.Type.IsUsualType(_compilation)));
+                ||  (_compilation.Options.HasRuntime && node != null && node.Type.IsUsualType()));
 #else
             Debug.Assert(visited == null || visited.HasErrors || ReferenceEquals(visited.Type, node.Type) ||
                     visited.Type.Equals(node.Type, TypeCompareKind.IgnoreDynamicAndTupleNames) ||

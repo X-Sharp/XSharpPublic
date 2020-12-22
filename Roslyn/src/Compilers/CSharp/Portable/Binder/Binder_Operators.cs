@@ -2929,7 +2929,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             var isTypeDiagnostics = DiagnosticBag.GetInstance();
             targetType = BindType(node.Right, isTypeDiagnostics, out alias);
 #if XSHARP
-            if (operand.Type.IsUsualType(Compilation))
+            if (operand.Type.IsUsualType())
             {
                 // this triggers the boxing of the contents of the usual into an object
                 operand = new BoundConversion(node, operand, Conversion.Boxing, false, false, null, GetSpecialType(SpecialType.System_Object, diagnostics, node));

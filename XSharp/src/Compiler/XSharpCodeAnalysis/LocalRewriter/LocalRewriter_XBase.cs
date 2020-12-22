@@ -22,10 +22,10 @@ namespace Microsoft.CodeAnalysis.CSharp
 
         internal BoundExpression MakePsz(BoundExpression value)
         {
-            if (value.Type.IsPszType(_compilation))
+            if (value.Type.IsPszType())
                 return value;
             var psz = _compilation.PszType();
-            if (value.Type.IsUsualType(_compilation))
+            if (value.Type.IsUsualType())
             {
                 var op = getImplicitOperatorByReturnType(value.Type, psz);
                 var result = _factory.StaticCall(value.Type, (MethodSymbol)op, value);

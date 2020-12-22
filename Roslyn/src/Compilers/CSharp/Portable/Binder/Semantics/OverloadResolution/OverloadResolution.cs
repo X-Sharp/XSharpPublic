@@ -518,7 +518,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 }
 
                 // If params arg is USUAL prefer the expanded form
-                if (paramsArg != null && paramsArg.Type.IsUsualType(_binder.Compilation))
+                if (paramsArg != null && paramsArg.Type.IsUsualType())
                 {
                     if (arguments.RefKinds.Count == 0 || arguments.RefKinds[0] == RefKind.None)
                     {
@@ -804,7 +804,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 }
 
                 // If params arg is USUAL prefer the expanded form
-                if (paramsArg!= null & paramsArg.Type.IsUsualType(_binder.Compilation))
+                if (paramsArg!= null & paramsArg.Type.IsUsualType())
                 {
                     if (arguments.RefKinds.Count == 0 || arguments.RefKinds[0] == RefKind.None)
                     {
@@ -2553,9 +2553,9 @@ namespace Microsoft.CodeAnalysis.CSharp
 #if XSHARP
             if (Conversions.Compilation.Options.HasRuntime)
             {
-                if (type1.IsUsualType(_binder.Compilation) && type2.IsObjectType())
+                if (type1.IsUsualType() && type2.IsObjectType())
                     return BetterResult.Right;
-                if (type1.IsObjectType() && type2.IsUsualType(_binder.Compilation))
+                if (type1.IsObjectType() && type2.IsUsualType())
                     return BetterResult.Left;
             }
 

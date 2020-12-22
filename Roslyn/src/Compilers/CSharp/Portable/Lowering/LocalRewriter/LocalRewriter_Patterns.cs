@@ -177,7 +177,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         {
             var type = loweredTarget.Type;
 #if XSHARP
-            if (loweredInput.Type.IsUsualType(_compilation) && type.IsReferenceType)
+            if (loweredInput.Type.IsUsualType() && type.IsReferenceType)
             {
                 // Avoid boxing the USUAL; convert to OBJECT instead
                 loweredInput = _factory.StaticCall(_compilation.UsualType(), ReservedNames.ToObject, loweredInput);

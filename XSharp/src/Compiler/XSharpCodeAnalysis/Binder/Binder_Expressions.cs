@@ -124,7 +124,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 var arrayType = Compilation.ArrayType();
                 var usualType = Compilation.UsualType();
                 var cf = ((NamedTypeSymbol)expr.Type).ConstructedFrom;
-                if (cf.IsPszType(Compilation) )
+                if (cf.IsPszType() )
                 {
                     ArrayBuilder<BoundExpression> argsBuilder = ArrayBuilder<BoundExpression>.GetInstance();
                     foreach (var arg in analyzedArguments.Arguments)
@@ -161,7 +161,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 bool numericParams = false;
                 bool mustcast = false;
                 HashSet<DiagnosticInfo> useSiteDiagnostics = null;
-                if (cf != arrayType && (cf.IsUsualType(Compilation)
+                if (cf != arrayType && (cf.IsUsualType()
                     || cf.ConstructedFrom == arrayBaseType
                     || cf.ImplementsInterface(indexedPropsType, ref useSiteDiagnostics)
                     || cf.ImplementsInterface(indexerType, ref useSiteDiagnostics)))
@@ -207,7 +207,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                         numericParams = true;
                     }
                 }
-                if (cf.IsArrayType(Compilation) || numericParams ) 
+                if (cf.IsArrayType() || numericParams ) 
                 {
                     ImmutableArray<BoundExpression> args;
                     ArrayBuilder<BoundExpression> argsBuilder = ArrayBuilder<BoundExpression>.GetInstance();
@@ -427,8 +427,8 @@ namespace Microsoft.CodeAnalysis.CSharp
                         if (leftType is NamedTypeSymbol)
                         {
                             var nts = leftType as NamedTypeSymbol;
-                            isUsual = nts.ConstructedFrom.IsUsualType(Compilation);
-                            isArray = nts.ConstructedFrom.IsArrayType(Compilation);
+                            isUsual = nts.ConstructedFrom.IsUsualType();
+                            isArray = nts.ConstructedFrom.IsArrayType();
                         }
                     }
                     // Late bound will only work for OBJECT or USUAL

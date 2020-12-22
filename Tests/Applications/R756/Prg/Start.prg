@@ -5,7 +5,6 @@ FUNCTION Start( ) AS VOID
 	? BUF_SIZE
 	xAssert(_sizeof(_test) == 12)
 	xAssert(BUF_SIZE == 120)
-	WAIt
 RETURN
 
 

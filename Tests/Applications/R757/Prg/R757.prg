@@ -10,7 +10,6 @@ FUNCTION Start( ) AS VOID
     xAssert(_sizeof(_WINDEVMODE)= 156)
     xAssert(_sizeof(_WINSECURITY_DESCRIPTOR)= 20)
     xAssert(_sizeof(_WINACL)= 8)
-	WAIT
 RETURN
 
 

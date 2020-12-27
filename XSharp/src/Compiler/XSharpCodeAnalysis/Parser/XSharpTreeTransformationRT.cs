@@ -3935,20 +3935,19 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     expr = MakeSimpleMemberAccess(_ptrType, GenerateSimpleName("Zero"));
                     break;
                 case XP.NULL_PSZ:
-                    expr = CreateObject(_pszType, MakeArgumentList(MakeArgument(GenerateLiteral(0))));
+                    expr = MakeDefault(_pszType);
                     break;
                 case XP.NULL_ARRAY:
-                    expr = MakeCastTo(_arrayType, GenerateLiteralNull());
+                    expr = MakeDefault(_arrayType);
                     break;
                 case XP.NULL_CODEBLOCK:
-                    expr = MakeCastTo(_codeblockType, GenerateLiteralNull());
+                    expr = MakeDefault(_codeblockType);
                     break;
                 case XP.NULL_DATE:
                     expr = GenerateMethodCall(_options.XSharpRuntime ? XSharpQualifiedFunctionNames.NullDate : VulcanQualifiedFunctionNames.NullDate, EmptyArgumentList(),true);
                     break;
                 case XP.NULL_SYMBOL:
-                    arg0 = MakeArgument(GenerateLiteral(""));
-                    expr = CreateObject(_symbolType, MakeArgumentList(arg0));
+                    expr = MakeDefault(_symbolType);
                     break;
                 case XP.BINARY_CONST:
                     base.ExitLiteralValue(context);

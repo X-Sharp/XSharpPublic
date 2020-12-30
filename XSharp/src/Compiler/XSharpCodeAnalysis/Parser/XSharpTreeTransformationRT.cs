@@ -1148,7 +1148,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         public override void ExitXbasedeclStmt([NotNull] XP.XbasedeclStmtContext context)
         {
-            context.Put(context.Decl.Get<StatementSyntax>());
+            context.CsNode = context.Decl.CsNode; // in the case of script LPARAMEWTERS this is a list
         }
         public override void ExitXbasedecl([NotNull] XP.XbasedeclContext context)
         {
@@ -1224,6 +1224,24 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     // handled in the Enter method
                     break;
                 case XP.LPARAMETERS:
+                    if (IsScript && CurrentEntity == null)
+                    {
+                        var prc = (XSharpParserRuleContext)context;
+                        int p_i = 1;
+                        foreach (var p in context._Vars)
+                        {
+                            var name = p.Id.GetText();
+                            var decl = GenerateLocalDecl(name, _usualType, GenerateGetClipperParamNamed(GenerateLiteral(p_i), prc, "ArgValues", "ArgCount"));
+                            decl.XGenerated = true;
+                            var variable = decl.Declaration.Variables[0];
+                            variable.XGenerated = true;
+                            stmts.Add(decl);
+                            p_i++;
+                        }
+                        context.PutList(stmts.ToList());
+                    }
+//                    else
+//                        context.Put(_syntaxFactory.EmptyStatement(SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)));
                     break;
                 default:
                     break;
@@ -3603,16 +3621,16 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
         }
 
-        private ExpressionSyntax GenerateGetClipperParam(ExpressionSyntax expr, XSharpParserRuleContext context)
+        private ExpressionSyntax GenerateGetClipperParamNamed(ExpressionSyntax expr, XSharpParserRuleContext context, string argsName, string pcountName)
         {
             // Note that the expr must result into a 1 based offset or (with /az) a 0 based offset
             // XS$PCount > ..
             BinaryExpressionSyntax cond;
-            CurrentEntity.Data.UsesPCount = true;
+            if (CurrentEntity != null) CurrentEntity.Data.UsesPCount = true;
             // no changes to expr for length comparison, even with /az
             cond = _syntaxFactory.BinaryExpression(
                                 SyntaxKind.GreaterThanOrEqualExpression,
-                                GenerateSimpleName(XSharpSpecialNames.ClipperPCount),
+                                GenerateSimpleName(pcountName),
                                 SyntaxFactory.MakeToken(SyntaxKind.GreaterThanToken),
                                 expr);
             // XS$Args[..]
@@ -3624,7 +3642,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             var indices = _pool.AllocateSeparated<ArgumentSyntax>();
             indices.Add(MakeArgument(expr));
             var left = _syntaxFactory.ElementAccessExpression(
-                GenerateSimpleName(XSharpSpecialNames.ClipperArgs),
+                GenerateSimpleName(argsName),
                 _syntaxFactory.BracketedArgumentList(
                     SyntaxFactory.MakeToken(SyntaxKind.OpenBracketToken),
                     indices,
@@ -3634,6 +3652,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             _pool.Free(indices);
             return result;
         }
+        private ExpressionSyntax GenerateGetClipperParam(ExpressionSyntax expr, XSharpParserRuleContext context) => GenerateGetClipperParamNamed(expr, context, XSharpSpecialNames.ClipperArgs, XSharpSpecialNames.ClipperPCount);
+
         private StatementSyntax GenerateGetClipperByRefAssignParam(List<string> paramNames,  XP.EntityData data, XSharpParserRuleContext context)
         {
             // Note that the expr must result into a 1 based offset or (with /az) a 0 based offset

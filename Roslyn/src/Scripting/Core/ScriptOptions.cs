@@ -132,9 +132,12 @@ namespace Microsoft.CodeAnalysis.Scripting
             SourceResolver = sourceResolver;
             EmitDebugInformation = emitDebugInformation;
             FileEncoding = fileEncoding;
-        }
+#if XSHARP
+            XsOptions = new CSharp.XSharpSpecificCompilationOptions() { Dialect = CSharp.XSharpDialect.VO, NoStdDef = true, LateBinding = true, UndeclaredMemVars = true };
+#endif
+    }
 
-        private ScriptOptions(ScriptOptions other)
+    private ScriptOptions(ScriptOptions other)
             : this(filePath: other.FilePath,
                    references: other.MetadataReferences,
                    namespaces: other.Imports,
@@ -143,12 +146,21 @@ namespace Microsoft.CodeAnalysis.Scripting
                    emitDebugInformation: other.EmitDebugInformation,
                    fileEncoding: other.FileEncoding)
         {
+#if XSHARP
+            XsOptions = other.XsOptions;
+#endif
         }
 
         // a reference to an assembly should by default be equivalent to #r, which applies recursive global alias:
         private static readonly MetadataReferenceProperties s_assemblyReferenceProperties =
             MetadataReferenceProperties.Assembly.WithRecursiveAliases(true);
 
+#if XSHARP
+        public CSharp.XSharpSpecificCompilationOptions XsOptions { get; private set; }
+
+        public ScriptOptions WithXSharpSpecificOptions(CSharp.XSharpSpecificCompilationOptions xsOptions)
+            => new ScriptOptions(this) { XsOptions = xsOptions };
+#endif
         /// <summary>
         /// Creates a new <see cref="ScriptOptions"/> with the <see cref="FilePath"/> changed.
         /// </summary>

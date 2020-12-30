@@ -40,7 +40,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Scripting
             // TODO: report diagnostics
             diagnostics.Free();
 
+#if !XSHARP
             var tree = SyntaxFactory.ParseSyntaxTree(script.SourceText, s_defaultOptions, script.Options.FilePath);
+#else
+            var tree = SyntaxFactory.ParseSyntaxTree(script.SourceText, s_defaultOptions.WithXSharpSpecificOptions(script.Options.XsOptions), script.Options.FilePath);
+#endif
 
             string assemblyName, submissionTypeName;
             script.Builder.GenerateSubmissionId(out assemblyName, out submissionTypeName);
@@ -63,7 +67,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Scripting
                     sourceReferenceResolver: script.Options.SourceResolver,
                     metadataReferenceResolver: script.Options.MetadataResolver,
                     assemblyIdentityComparer: DesktopAssemblyIdentityComparer.Default
-                ).WithTopLevelBinderFlags(BinderFlags.IgnoreCorLibraryDuplicatedTypes),
+                ).WithTopLevelBinderFlags(BinderFlags.IgnoreCorLibraryDuplicatedTypes)
+#if XSHARP
+                .WithXSharpSpecificOptions(script.Options.XsOptions)
+#endif
+                ,
                 previousSubmission,
                 script.ReturnType,
                 script.GlobalsType

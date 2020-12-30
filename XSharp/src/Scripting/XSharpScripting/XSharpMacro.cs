@@ -9,6 +9,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Scripting
 {
     public static class XSharpMacro 
     {
+        public readonly static XSharpSpecificCompilationOptions XsCoreOptions = new XSharpSpecificCompilationOptions() { Dialect = XSharpDialect.Core, NoStdDef = true, LateBinding = true, UndeclaredMemVars = true, RuntimeAssemblies = RuntimeAssemblies.XSharpRT };
+        public readonly static XSharpSpecificCompilationOptions XsVoOptions = new XSharpSpecificCompilationOptions() { Dialect = XSharpDialect.VO, NoStdDef = true, LateBinding = true, UndeclaredMemVars = true, RuntimeAssemblies = RuntimeAssemblies.XSharpRT };
+        public readonly static XSharpSpecificCompilationOptions XsVulcanOptions = new XSharpSpecificCompilationOptions() { Dialect = XSharpDialect.Vulcan, NoStdDef = true, LateBinding = true, UndeclaredMemVars = true, RuntimeAssemblies = RuntimeAssemblies.XSharpRT };
+        public readonly static XSharpSpecificCompilationOptions XsFoxOptions = new XSharpSpecificCompilationOptions() { Dialect = XSharpDialect.FoxPro, NoStdDef = true, LateBinding = true, UndeclaredMemVars = true, RuntimeAssemblies = RuntimeAssemblies.XSharpRT };
+
         /// <summary>
         /// Create a new C# script.
         /// </summary>

@@ -1231,7 +1231,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         foreach (var p in context._Vars)
                         {
                             var name = p.Id.GetText();
-                            var decl = GenerateLocalDecl(name, _usualType, GenerateGetClipperParamNamed(GenerateLiteral(p_i), prc, "ArgValues", "ArgCount"));
+                            var decl = GenerateLocalDecl(name, _usualType, GenerateGetClipperParamNamed(GenerateLiteral(p_i), prc, XSharpSpecialNames.ScriptClipperArgs, XSharpSpecialNames.ScriptClipperPCount));
                             decl.XGenerated = true;
                             var variable = decl.Declaration.Variables[0];
                             variable.XGenerated = true;
@@ -1240,8 +1240,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         }
                         context.PutList(stmts.ToList());
                     }
-//                    else
-//                        context.Put(_syntaxFactory.EmptyStatement(SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)));
+                    else
+                        context.Put(_syntaxFactory.EmptyStatement(SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)));
                     break;
                 default:
                     break;
@@ -3582,6 +3582,17 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 expr = CreateObject(this._pszType, args);
                 return expr;
             }
+            else if (IsScript)
+            {
+                NameSyntax pszlist = GenerateSimpleName(XSharpSpecialNames.ScriptVoPszList);
+                var argList = MakeArgumentList(MakeArgument(expr), MakeArgument(pszlist));
+                expr = GenerateMethodCall(
+                    _options.XSharpRuntime ? XSharpQualifiedFunctionNames.String2Psz : VulcanQualifiedFunctionNames.String2Psz,
+                    argList, true);
+                var args = MakeArgumentList(MakeArgument(expr));
+                expr = CreateObject(this._pszType, args);
+                return expr;
+            }
             return null;
         }
 
@@ -3599,7 +3610,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 argList = EmptyArgumentList();
             }
-            if (CurrentEntity != null)
+            if (CurrentEntity != null || IsScript)
             {
                 // Add reference to compiler generated List<IntPtr> to the argList
                 if (argList.Arguments.Count != 1)

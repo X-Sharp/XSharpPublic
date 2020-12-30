@@ -160,7 +160,10 @@ namespace Microsoft.CodeAnalysis.CSharp
         internal const string SetProperty = "_SetProperty";
         internal const string InitProperties = "_InitProperties";
 
-
+        internal const string ScriptClipperArgs = "__XSHARP__Args";
+        internal const string ScriptClipperPCount = "__XSHARP__PCount";
+        internal const string ScriptVoPszList = "__XSHARP__PszList";
+        internal const string ScriptPrivatesLevel = "__XSHARP__PrivatesLevel";
     }
 
     internal static class ReservedNames

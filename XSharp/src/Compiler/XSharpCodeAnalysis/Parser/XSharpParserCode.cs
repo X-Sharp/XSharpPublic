@@ -425,6 +425,16 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
 
         }
 
+        public partial class ScriptContext : IEntityContext
+        {
+            EntityData data = new EntityData();
+            public EntityData Data => data;
+            public ParameterListContext Params => null;
+            public DatatypeContext ReturnType => null;
+            public String Name => null;
+            public String ShortName => null;
+        }
+
         public partial class MethodCallContext
         {
             public bool HasRefArguments;
@@ -1189,6 +1199,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
     internal static class RuleExtensions
     {
 #if !VSPARSER
+        internal static bool isScript([NotNull] this XSharpParser.IEntityContext entitty) => entitty is XSharpParser.ScriptContext;
 
         internal static bool IsStatic(this InternalSyntax.ClassDeclarationSyntax classdecl)
         {
@@ -1361,6 +1372,5 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             else
                 return parent.isInStructure();
         }
-
     }
 }

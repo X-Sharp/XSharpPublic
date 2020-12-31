@@ -1224,7 +1224,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     // handled in the Enter method
                     break;
                 case XP.LPARAMETERS:
-                    if (IsScript && CurrentEntity == null)
+                    if (CurrentEntity?.isScript() == true)
                     {
                         var prc = (XSharpParserRuleContext)context;
                         int p_i = 1;
@@ -3570,6 +3570,17 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         private ExpressionSyntax _GenerateString2Psz(XSharpParserRuleContext context, ExpressionSyntax expr)
         {
+            if (CurrentEntity?.isScript() == true)
+            {
+                NameSyntax pszlist = GenerateSimpleName(XSharpSpecialNames.ScriptVoPszList);
+                var argList = MakeArgumentList(MakeArgument(expr), MakeArgument(pszlist));
+                expr = GenerateMethodCall(
+                    _options.XSharpRuntime ? XSharpQualifiedFunctionNames.String2Psz : VulcanQualifiedFunctionNames.String2Psz,
+                    argList, true);
+                var args = MakeArgumentList(MakeArgument(expr));
+                expr = CreateObject(this._pszType, args);
+                return expr;
+            }
             if (CurrentEntity != null )
             {
                 CurrentEntity.Data.UsesPSZ = true;
@@ -3578,17 +3589,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 expr = GenerateMethodCall(
                     _options.XSharpRuntime ? XSharpQualifiedFunctionNames.String2Psz : VulcanQualifiedFunctionNames.String2Psz, 
                     argList,true);
-                var args = MakeArgumentList(MakeArgument(expr));
-                expr = CreateObject(this._pszType, args);
-                return expr;
-            }
-            else if (IsScript)
-            {
-                NameSyntax pszlist = GenerateSimpleName(XSharpSpecialNames.ScriptVoPszList);
-                var argList = MakeArgumentList(MakeArgument(expr), MakeArgument(pszlist));
-                expr = GenerateMethodCall(
-                    _options.XSharpRuntime ? XSharpQualifiedFunctionNames.String2Psz : VulcanQualifiedFunctionNames.String2Psz,
-                    argList, true);
                 var args = MakeArgumentList(MakeArgument(expr));
                 expr = CreateObject(this._pszType, args);
                 return expr;
@@ -3610,7 +3610,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 argList = EmptyArgumentList();
             }
-            if (CurrentEntity != null || IsScript)
+            if (CurrentEntity != null)
             {
                 // Add reference to compiler generated List<IntPtr> to the argList
                 if (argList.Arguments.Count != 1)

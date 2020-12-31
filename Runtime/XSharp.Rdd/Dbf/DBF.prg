@@ -1546,11 +1546,6 @@ METHOD Flush() 			AS LOGIC
 	IF ! SELF:IsOpen
 		RETURN FALSE
 	ENDIF
-	IF SELF:_ReadOnly 
-        // Error !! Cannot be written !
-		SELF:_dbfError( ERDD.READONLY, XSharp.Gencode.EG_READONLY )
-		RETURN FALSE
-	ENDIF
 	isOK := SELF:GoCold()
 
 	IF isOK .and. SELF:_wasChanged

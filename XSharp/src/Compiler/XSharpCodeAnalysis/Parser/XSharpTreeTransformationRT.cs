@@ -1222,6 +1222,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                
                 case XP.MEMVAR:
                     // handled in the Enter method
+                    context.Put(_syntaxFactory.EmptyStatement(SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)));
                     break;
                 case XP.LPARAMETERS:
                     if (CurrentEntity?.isScript() == true)
@@ -1231,7 +1232,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         foreach (var p in context._Vars)
                         {
                             var name = p.Id.GetText();
-                            var decl = GenerateLocalDecl(name, _usualType, GenerateGetClipperParamNamed(GenerateLiteral(p_i), prc, XSharpSpecialNames.ScriptClipperArgs, XSharpSpecialNames.ScriptClipperPCount));
+                            var decl = GenerateLocalDecl(name, _usualType, GenerateGetClipperParam(GenerateLiteral(p_i), prc));
                             decl.XGenerated = true;
                             var variable = decl.Declaration.Variables[0];
                             variable.XGenerated = true;
@@ -3632,7 +3633,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
         }
 
-        private ExpressionSyntax GenerateGetClipperParamNamed(ExpressionSyntax expr, XSharpParserRuleContext context, string argsName, string pcountName)
+        private ExpressionSyntax GenerateGetClipperParam(ExpressionSyntax expr, XSharpParserRuleContext context)
         {
             // Note that the expr must result into a 1 based offset or (with /az) a 0 based offset
             // XS$PCount > ..
@@ -3641,7 +3642,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             // no changes to expr for length comparison, even with /az
             cond = _syntaxFactory.BinaryExpression(
                                 SyntaxKind.GreaterThanOrEqualExpression,
-                                GenerateSimpleName(pcountName),
+                                GenerateSimpleName(CurrentEntity?.isScript() != true ? XSharpSpecialNames.ClipperPCount : XSharpSpecialNames.ScriptClipperPCount),
                                 SyntaxFactory.MakeToken(SyntaxKind.GreaterThanToken),
                                 expr);
             // XS$Args[..]
@@ -3653,7 +3654,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             var indices = _pool.AllocateSeparated<ArgumentSyntax>();
             indices.Add(MakeArgument(expr));
             var left = _syntaxFactory.ElementAccessExpression(
-                GenerateSimpleName(argsName),
+                GenerateSimpleName(CurrentEntity?.isScript() != true ? XSharpSpecialNames.ClipperArgs : XSharpSpecialNames.ScriptClipperArgs),
                 _syntaxFactory.BracketedArgumentList(
                     SyntaxFactory.MakeToken(SyntaxKind.OpenBracketToken),
                     indices,
@@ -3663,7 +3664,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             _pool.Free(indices);
             return result;
         }
-        private ExpressionSyntax GenerateGetClipperParam(ExpressionSyntax expr, XSharpParserRuleContext context) => GenerateGetClipperParamNamed(expr, context, XSharpSpecialNames.ClipperArgs, XSharpSpecialNames.ClipperPCount);
 
         private StatementSyntax GenerateGetClipperByRefAssignParam(List<string> paramNames,  XP.EntityData data, XSharpParserRuleContext context)
         {
@@ -3750,7 +3750,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             if (name == XSharpIntrinsicNames.ClipperArgs)
             {
-                context.Put(GenerateSimpleName(XSharpSpecialNames.ClipperArgs));
+                context.Put(GenerateSimpleName(CurrentEntity?.isScript() != true ? XSharpSpecialNames.ClipperArgs : XSharpSpecialNames.ScriptClipperArgs));
                 return true;
             }
             if (name == XSharpIntrinsicNames.ArgCount)
@@ -3797,7 +3797,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     {
                         CurrentEntity.Data.UsesPCount = true;
                     }
-                    expr = GenerateSimpleName(XSharpSpecialNames.ClipperPCount);
+                    expr = GenerateSimpleName(CurrentEntity?.isScript() != true ? XSharpSpecialNames.ClipperPCount : XSharpSpecialNames.ScriptClipperPCount);
                     if (argList.Arguments.Count != 0)
                     {
                         expr = expr.WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.ERR_BadArgCount, name, argList.Arguments.Count));

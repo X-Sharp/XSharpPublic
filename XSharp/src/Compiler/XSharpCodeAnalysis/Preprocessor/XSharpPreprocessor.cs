@@ -403,8 +403,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
 #if !VSPARSER
             // use the filter mechanism in the compiler to only add errors that are not suppressed.
-            var d = Diagnostic.Create(new SyntaxDiagnosticInfo(error.Code));
-            d = _options.CommandLineArguments.CompilationOptions.FilterDiagnostic(d);
+            var d = Diagnostic.Create(new SyntaxDiagnosticInfo(error.Code));   
+            if (_options.CommandLineArguments != null)
+            {
+                d = _options.CommandLineArguments.CompilationOptions.FilterDiagnostic(d);
+            }
             if (d != null)
             {
                _parseErrors.Add(error);
@@ -1063,6 +1066,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 dirs.Add(p);
             }
+            var path = PathUtilities.GetDirectoryName(fileNameToken.SourceName);
+            if (!dirs.Contains(path))
+                dirs.Add(path);
             if (_options.Verbose)
             {
                 DebugOutput("Process include file: {0}", includeFileName);

@@ -97,6 +97,93 @@ namespace Microsoft.CodeAnalysis.CSharp
         public bool UseNativeVersion { get; internal set; } = false;
         public string PreviousArgument { get; internal set; } = string.Empty;
         public TextWriter ConsoleOutput { get; internal set; }
+
+
+        public void SetOption(CompilerOption option, bool value)
+        {
+            switch (option)
+            {
+                case CompilerOption.Vo1:
+                    Vo1 = value;
+                    break;
+                case CompilerOption.Vo2:
+                    Vo2 = value;
+                    break;
+                case CompilerOption.Vo3:
+                    Vo3 = value;
+                    break;
+                case CompilerOption.Vo4:
+                    Vo4 = value;
+                    break;
+                case CompilerOption.Vo5:
+                    Vo5 = value;
+                    break;
+                case CompilerOption.Vo6:
+                    Vo6 = value;
+                    break;
+                case CompilerOption.Vo7:
+                    Vo7 = value;
+                    break;
+                case CompilerOption.Vo8:
+                    Vo8 = value;
+                    break;
+                case CompilerOption.Vo9:
+                    Vo9 = value;
+                    break;
+                case CompilerOption.Vo10:
+                    Vo10 = value;
+                    break;
+                case CompilerOption.Vo11:
+                    Vo11 = value;
+                    break;
+                case CompilerOption.Vo12:
+                    Vo12 = value;
+                    break;
+                case CompilerOption.Vo13:
+                    Vo13 = value;
+                    break;
+                case CompilerOption.Vo14:
+                    Vo14 = value;
+                    break;
+                case CompilerOption.Vo15:
+                    Vo15 = value;
+                    break;
+                case CompilerOption.Vo16:
+                    Vo16 = value;
+                    break;
+                case CompilerOption.Fox1:
+                    Fox1 = value;
+                    break;
+                case CompilerOption.Fox2:
+                    Fox2 = value;
+                    break;
+                case CompilerOption.Xpp1:
+                    Xpp1 = value;
+                    break;
+                case CompilerOption.Xpp2:
+                    Xpp2= value;
+                    break;
+                case CompilerOption.MemVars:
+                    MemVars = value;
+                    break;
+                case CompilerOption.UndeclaredMemVars:
+                    UndeclaredMemVars = value;
+                    break;
+                case CompilerOption.LateBinding:
+                    LateBinding = value;
+                    break;
+                case CompilerOption.ImplicitNamespace:
+                    ImplicitNameSpace = value;
+                    break;
+                case CompilerOption.ArrayZero:
+                    ArrayZero = value;
+                    break;
+                case CompilerOption.Overflow:
+                    Overflow = value;
+                    break;
+            }
+        }
+
     }
 
     public class PragmaBase

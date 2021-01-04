@@ -477,11 +477,14 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                             case "memvar":
                             case "memvars":
                             case "undeclared":
+                            // case "vo1": // Init/axit
                             case "vo2":     // Initialize string variables with empty strings
+                            // case "vo3": // All methods Virtual
                             case "vo4":     // SignedUnsignedConversion
                             case "vo5":     // Implicit Clipper Calling convention
                             case "vo6":     // ResolveTypedFunctionPointersToPtr
                             case "vo7":     // Implicit Casts and Conversions
+                            // case "vo8": // Compatible preprocessor
                             case "vo9":     // Allow missing return statements or missing return values
                             case "vo10":     // Compatible IIF
                             case "vo11":    // ArithmeticConversions
@@ -490,7 +493,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                             case "vo14":    // Embed real constants as float
                             case "vo15":    // Untyped allowed
                             case "vo16":    // Add Clipper CC Missing constructors
+                            // case "fox1": // Classes inherit from unknown
                             case "fox2":    // Expose local names to macro compiler
+                                            //case "xpp1":    // classes inherit from XPP.Abstract
+                                            //case "xpp2":    // stronly typed entry point
                                 context.Pragma = new PragmaOption(context, state, CompilerOptionDecoder.Decode(opt));
                                 break;
                             default:

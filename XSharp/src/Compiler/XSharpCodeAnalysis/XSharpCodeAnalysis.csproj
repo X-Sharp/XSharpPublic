@@ -43,6 +43,7 @@
     <DefineConstants>$(Genericdefines);XSHARP;NDEBUG;TRACE;</DefineConstants>
   </PropertyGroup>
   <ItemGroup Label="Project References">
+    <PackageReference Include="System.Resources.Reader" Version="4.3.0" />
     <PackageReference Include="System.Threading.Tasks.Parallel" Version="$(SystemThreadingTasksParallelVersion)" />
     <PackageReference Include="System.Linq.Expressions" Version="$(SystemLinqExpressionsVersion)" />
   </ItemGroup>
@@ -119,6 +120,9 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Update="Preprocessor\StandardHeaders.resx">
+      <Generator></Generator>
+    </EmbeddedResource>
     <EmbeddedResource Update="XSharpResources.resx"> 
       <SubType>Designer</SubType>
       <Generator>ResXFileCodeGenerator</Generator>
@@ -128,7 +132,7 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <SubType>Designer</SubType>
       <LastGenOutput>CodeAnalysisResources.Designer.cs</LastGenOutput>
-      <CustomToolNamespace>Microsoft.CodeAnalysis</CustomToolNamespace>
+      <CustomToolNamespace></CustomToolNamespace>
     </EmbeddedResource>
     <EmbeddedResource Include="$(CoreSource)Resources\default.win32manifest" />
   </ItemGroup>
@@ -163,9 +167,7 @@
   <ItemGroup>
     <Folder Include="Antlr4.Runtime\Properties\" />
     <Folder Include="Declarations\" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\Tools\CSharpCodeAnalysis\CSharpCodeAnalysis.csproj" />
+    <Folder Include="Resources\" />
   </ItemGroup>
   <Import Project="$(CSharpSource)..\CSharpAnalyzerDriver\CSharpAnalyzerDriver.projitems" Label="Shared" />
   <Import Project="$(CoreSource)..\AnalyzerDriver\AnalyzerDriver.projitems" Label="Shared" />

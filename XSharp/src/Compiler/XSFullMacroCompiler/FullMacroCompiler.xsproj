@@ -22,9 +22,9 @@
     <ApplicationIcon />
     <XSharpProjectversion>2.7.0.0</XSharpProjectversion>
     <AZ>false</AZ>
-    <CS>false</CS>
+    <CS>true</CS>
     <LB>false</LB>
-    <NamedArgs>False</NamedArgs>
+    <NamedArgs>false</NamedArgs>
     <OVF>false</OVF>
     <Unsafe>false</Unsafe>
     <INS>false</INS>

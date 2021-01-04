@@ -9,10 +9,62 @@ namespace Microsoft.CodeAnalysis.CSharp.Scripting
 {
     public static class XSharpMacro 
     {
-        public readonly static XSharpSpecificCompilationOptions XsCoreOptions = new XSharpSpecificCompilationOptions() { Dialect = XSharpDialect.Core, NoStdDef = true, LateBinding = true, UndeclaredMemVars = true, MemVars = true, RuntimeAssemblies = RuntimeAssemblies.XSharpRT };
-        public readonly static XSharpSpecificCompilationOptions XsVoOptions = new XSharpSpecificCompilationOptions() { Dialect = XSharpDialect.VO, NoStdDef = true, LateBinding = true, UndeclaredMemVars = true, MemVars = true, RuntimeAssemblies = RuntimeAssemblies.XSharpRT };
-        public readonly static XSharpSpecificCompilationOptions XsVulcanOptions = new XSharpSpecificCompilationOptions() { Dialect = XSharpDialect.Vulcan, NoStdDef = true, LateBinding = true, UndeclaredMemVars = true, MemVars = true, RuntimeAssemblies = RuntimeAssemblies.XSharpRT };
-        public readonly static XSharpSpecificCompilationOptions XsFoxOptions = new XSharpSpecificCompilationOptions() { Dialect = XSharpDialect.FoxPro, NoStdDef = true, LateBinding = true, UndeclaredMemVars = true, MemVars = true, RuntimeAssemblies = RuntimeAssemblies.XSharpRT };
+        public readonly static XSharpSpecificCompilationOptions XsCoreOptions = GetOptions((int) XSharpDialect.Core);
+        public readonly static XSharpSpecificCompilationOptions XsVoOptions = GetOptions((int)XSharpDialect.VO);
+        public readonly static XSharpSpecificCompilationOptions XsVulcanOptions = GetOptions((int)XSharpDialect.Vulcan);
+        public readonly static XSharpSpecificCompilationOptions XsFoxOptions = GetOptions((int)XSharpDialect.FoxPro);
+        public readonly static XSharpSpecificCompilationOptions XsXppOptions = GetOptions((int)XSharpDialect.XPP);
+        public readonly static XSharpSpecificCompilationOptions XsHbOptions = GetOptions((int)XSharpDialect.Harbour);
+
+        public static XSharpSpecificCompilationOptions GetOptions(int numdialect)
+        {
+            XSharpDialect dialect = (XSharpDialect)numdialect;
+            var notcore = dialect != XSharpDialect.Core;
+            var result = new XSharpSpecificCompilationOptions { Dialect = dialect };
+            result.ImplicitNameSpace = true;
+            result.NoStdDef = false;
+            result.MemVars = dialect.SupportsMemvars();
+            result.UndeclaredMemVars = dialect == XSharpDialect.FoxPro;
+            result.InitLocals = notcore;
+            result.LateBinding = notcore;
+            result.Vo1 = false; // Init/Axit
+            result.Vo2 = true;  // Initialize strings
+            result.Vo3 = true;  // virtual methods
+            result.Vo4 = notcore;  // implicit Signed/Unsigned
+            result.Vo5 = notcore;  // implicit CLIPPER calling convention
+            result.Vo6 = dialect.AllowPointerMagic();  // implicit pointer conversions
+            result.Vo7 = notcore;  // implicit casts
+            result.Vo8 = false; // compatible preprocessor
+            result.Vo9 = dialect != XSharpDialect.Core;  // allow missing returns
+            result.Vo10 = notcore; // Compatible IIF
+            result.Vo11 = notcore; // Compatible numeric conversions
+            result.Vo12 = notcore; // Compatible Integer divisions
+            result.Vo13 = notcore; // Compatible string Comparisons
+            result.Vo14 = notcore; // Float Literals
+            result.Vo15 = notcore; // Missing types as USUAL
+            result.Vo16 = notcore; // Generate Clipper constructors
+            result.Fox1 = dialect == XSharpDialect.FoxPro; // Inherit from abstract class
+            result.Fox2 = dialect == XSharpDialect.FoxPro; // Expose Locals
+            result.Xpp1 = dialect == XSharpDialect.XPP; // Inherit from Custom class
+            result.RuntimeAssemblies = RuntimeAssemblies.XSharpRT | RuntimeAssemblies.XSharpCore;
+            switch (dialect)
+            {
+                case XSharpDialect.VO:
+                case XSharpDialect.Vulcan:
+                case XSharpDialect.Harbour:
+                    result.RuntimeAssemblies |= RuntimeAssemblies.XSharpVO;
+                    break;
+                case XSharpDialect.XPP:
+                    result.RuntimeAssemblies |= RuntimeAssemblies.XSharpXPP;
+                    break;
+                case XSharpDialect.FoxPro:
+                    result.RuntimeAssemblies |= RuntimeAssemblies.XSharpVFP;
+                    break;
+                default:
+                    break;
+            }
+            return result;
+        }
 
         /// <summary>
         /// Create a new C# script.

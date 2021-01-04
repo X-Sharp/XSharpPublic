@@ -1,4 +1,4 @@
-﻿//
+//
 // Copyright (c) XSharp B.V.  All Rights Reserved.
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
@@ -18,6 +18,9 @@ using System.Diagnostics;
 using System.Collections.Immutable;
 using System.Collections.Concurrent;
 using Microsoft.CodeAnalysis;
+using System.Reflection;
+using System.Runtime;
+using System.Collections;
 
 namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 {
@@ -57,7 +60,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 {
                     if (cache.TryGetValue(fileName, out file))
                     {
-                        if (file.LastWritten != FileUtilities.GetFileTimeStamp(fileName))
+                        DateTime timeStamp;
+                        if (System.IO.File.Exists(fileName))
+                            timeStamp = FileUtilities.GetFileTimeStamp(fileName);
+                        else
+                            timeStamp = DateTime.MinValue;
+                        if (file.LastWritten != timeStamp)
                         {
                             cache.TryRemove(fileName, out file);
                             file = null;
@@ -108,10 +116,16 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 this.FileName = name;
                 this.Text = text;
                 this.LastUsed = DateTime.Now;
-                this.LastWritten = FileUtilities.GetFileTimeStamp(this.FileName);
+                if (File.Exists(this.FileName))
+                {
+                    this.LastWritten = FileUtilities.GetFileTimeStamp(this.FileName);
+                }
+                else
+                {
+                    this.LastWritten = DateTime.MinValue;
+                }
                 this.Tokens = tokens.ToImmutableArray();
                 this.MustBeProcessed = mustBeProcessed;
-
             }
             internal PPIncludeFile Clone()
             {
@@ -304,7 +318,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             macroDefines.Add("__XPP2__", (token) => new XSharpToken(options.xpp2 ? XSharpLexer.TRUE_CONST : XSharpLexer.FALSE_CONST, token));
             macroDefines.Add("__FOX1__", (token) => new XSharpToken(options.fox1 ? XSharpLexer.TRUE_CONST : XSharpLexer.FALSE_CONST, token));
             macroDefines.Add("__FOX2__", (token) => new XSharpToken(options.fox2 ? XSharpLexer.TRUE_CONST : XSharpLexer.FALSE_CONST, token));
-            if (!options.NoStdDef && options.Kind != SourceCodeKind.Script)
+            if (!options.NoStdDef )
             {
                 // Todo: when the compiler option nostddefs is not set: read XSharpDefs.xh from the XSharp Include folder,//
                 // and automatically include it.
@@ -1066,9 +1080,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 dirs.Add(p);
             }
-            var path = PathUtilities.GetDirectoryName(fileNameToken.SourceName);
-            if (!dirs.Contains(path))
-                dirs.Add(path);
+            if (fileNameToken != null)
+            { 
+                var path = PathUtilities.GetDirectoryName(fileNameToken.SourceName);
+                if (! String.IsNullOrEmpty(path) && !dirs.Contains(path))
+                    dirs.Add(path);
+            }
             if (_options.Verbose)
             {
                 DebugOutput("Process include file: {0}", includeFileName);
@@ -1129,6 +1146,25 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         break;
 
                 }
+            }
+            if (nfp == null)
+            {
+                var baseName = Path.GetFileNameWithoutExtension(includeFileName).ToLower();
+                var asm = typeof(XSharpPreprocessor).GetTypeInfo().Assembly;
+                var res = asm.GetManifestResourceNames();
+                var strm = asm.GetManifestResourceStream("LanguageService.CodeAnalysis.Preprocessor.StandardHeaders.resources");
+                var rdr = new System.Resources.ResourceReader(strm);
+                foreach (DictionaryEntry item in rdr)
+                {
+                    if (String.Compare((string) item.Key, baseName,true) == 0)
+                    {
+                        var source = (String)item.Value;
+                        text = SourceText.From(source);
+                        nfp = includeFileName;
+                        break;
+                    }
+                }
+
             }
             if (nfp == null)
             {
@@ -1198,7 +1234,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         DebugOutput("Bummer: include file was already added to cache by another thread {0}", nfp);
                     }
                 }
-
             }
             nfp = includeFile.FileName;
             if (_options.ParseLevel == ParseLevel.Complete || includeFile.MustBeProcessed || _lexer.HasPPIfdefs)

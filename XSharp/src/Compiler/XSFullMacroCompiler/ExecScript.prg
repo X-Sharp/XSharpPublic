@@ -54,7 +54,7 @@ FUNCTION _ExecScript(source AS STRING, args PARAMS USUAL[]) AS USUAL
         CATCH e AS Exception
             THROW  e
         END TRY
-        CompiledScripts:TryAdd(source,script)
+        //CompiledScripts:TryAdd(source,script)
     END
     LOCAL res AS USUAL
     VAR ScriptArgs := ScriptParameters{}

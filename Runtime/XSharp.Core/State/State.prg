@@ -164,7 +164,7 @@ CLASS XSharp.RuntimeState
  
 	/// <summary>The current compiler setting for the VO13 compiler option.</summary>
     /// <include file="CoreComments.xml" path="Comments/CompilerOptions/*" />
-    /// <value>The default vale for this option is 'False'.</value>
+    /// <value>The default value for this option is 'False'.</value>
 	STATIC PROPERTY CompilerOptionVO13 AS LOGIC AUTO
 	/// <summary>Gets / Sets the current Workarea number.</summary>
     /// <include file="CoreComments.xml" path="Comments/PerThread/*" />

@@ -1,4 +1,4 @@
-//
+﻿//
 // Copyright (c) XSharp B.V.  All Rights Reserved.
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
@@ -1133,7 +1133,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         try
                         {
                             var contents = System.IO.File.ReadAllText(fp);
-                            text = new SourceText(contents);
+                            text = SourceText.From(contents);
                             nfp = fp;
                         }
                         catch (Exception e)
@@ -1151,8 +1151,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 var baseName = Path.GetFileNameWithoutExtension(includeFileName).ToLower();
                 var asm = typeof(XSharpPreprocessor).GetTypeInfo().Assembly;
-                var res = asm.GetManifestResourceNames();
+#if VSPARSER
+                var strm = asm.GetManifestResourceStream("XSharp.VSParser.Preprocessor.StandardHeaders.resources");
+#else
                 var strm = asm.GetManifestResourceStream("LanguageService.CodeAnalysis.Preprocessor.StandardHeaders.resources");
+#endif
                 var rdr = new System.Resources.ResourceReader(strm);
                 foreach (DictionaryEntry item in rdr)
                 {
@@ -1328,7 +1331,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             return true;
         }
-        #region Preprocessor Directives
+#region Preprocessor Directives
 
 
         private void checkForUnexpectedPPInput(IList<XSharpToken> line, int nMax)
@@ -1950,7 +1953,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
         }
 
-        #endregion
+#endregion
 
 
         private List<XSharpToken> doReplace(IList<XSharpToken> line, PPRule rule, PPMatchRange[] matchInfo)

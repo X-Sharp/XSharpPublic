@@ -36,6 +36,15 @@ xAssert(AsHexString(@u) == cRet)
 xAssert(u == 2)
 
 
+// same problem with OBJECT, STRING, ARRAY
+LOCAL a := {} AS ARRAY
+LOCAL c := "abc" AS STRING
+LOCAL obj := 123 AS OBJECT
+o:UnTypedByRef(@a,@obj)
+o:UnTypedByRef(@a,@obj,@c)
+o:UnTypedByRef(@c)
+o:UnTypedByRef(@o)
+
 
 CLASS TestClass
 	METHOD UnTypedByRef(a)

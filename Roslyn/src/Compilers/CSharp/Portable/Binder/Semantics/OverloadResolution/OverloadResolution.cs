@@ -3492,7 +3492,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                             argumentRefKind = parameterRefKind;
                             arguments.SetRefKind(argumentPosition, argumentRefKind);
                             if (!implicitCastsAndConversions)
-                            { 
+                            {
                                 useSiteDiagnostics = new HashSet<DiagnosticInfo>();
                                 var info = new CSDiagnosticInfo(ErrorCode.ERR_BadArgExtraRef,
                                                                 new object[] { argumentPosition + 1, argumentRefKind.ToParameterDisplayString() });
@@ -3505,13 +3505,15 @@ namespace Microsoft.CodeAnalysis.CSharp
                         {
                             conversion = Conversion.Identity;
                         }
-                        if (argumentRefKind == RefKind.None && argument is BoundAddressOfOperator b && candidate.HasClipperCallingConvention())
+
+                        if (implicitCastsAndConversions && argumentRefKind == RefKind.None && 
+                            argument is BoundAddressOfOperator b && candidate.HasClipperCallingConvention())
                         {
                             argumentRefKind = RefKind.Ref;
                         }
                     }
                     if (conversion.Kind == ConversionKind.NoConversion)
-                    { 
+                    {
 #endif
                         bool forExtensionMethodThisArg = arguments.IsExtensionMethodThisArgument(argumentPosition);
 

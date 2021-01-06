@@ -1331,7 +1331,27 @@ namespace XSharp.CodeDom
         {
             this.OutputIdentifier(e.VariableName);
         }
+        protected override void GeneratePrimitiveExpression(CodePrimitiveExpression e)
+        {
+            if (e.Value is char )
+            {
+                var c = (char)e.Value;
+                if ((int) c < 127)
+                {
+                    base.Output.Write("c'" + c.ToString() + "'");
+                }
+                else
+                {
+                    var i = (int)c;
+                    base.Output.Write("c'\\x" + i.ToString("X")+"'");
+                }
 
+            }
+            else
+            {
+                base.GeneratePrimitiveExpression(e);
+            }
+        }
         protected override void GenerateParameterDeclarationExpression(CodeParameterDeclarationExpression e)
         {
             if (e.CustomAttributes.Count > 0)

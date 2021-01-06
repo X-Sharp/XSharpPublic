@@ -1373,7 +1373,7 @@ namespace XSharp.CodeDom
             {
                 double d;
                 if (value.EndsWith("m", StringComparison.OrdinalIgnoreCase) ||
-                    value.EndsWith("r", StringComparison.OrdinalIgnoreCase) ||
+                    value.EndsWith("s", StringComparison.OrdinalIgnoreCase) ||
                     value.EndsWith("d", StringComparison.OrdinalIgnoreCase))
                 {
                     value = value.Substring(0, value.Length - 1);

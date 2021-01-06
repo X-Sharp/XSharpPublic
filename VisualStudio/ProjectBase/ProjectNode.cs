@@ -4025,13 +4025,20 @@ namespace Microsoft.VisualStudio.Project
             {
                 return true;
             }
-
-            DBGMODE dbgMode = VsShellUtilities.GetDebugMode(this.Site) & ~DBGMODE.DBGMODE_EncMask;
-            if (dbgMode == DBGMODE.DBGMODE_Run || dbgMode == DBGMODE.DBGMODE_Break)
+            try
             {
-                return true;
+                DBGMODE dbgMode = VsShellUtilities.GetDebugMode(this.Site) & ~DBGMODE.DBGMODE_EncMask;
+                if (dbgMode == DBGMODE.DBGMODE_Run || dbgMode == DBGMODE.DBGMODE_Break)
+                {
+                    return true;
+                }
             }
+            catch (Exception )
+            {
+                
+                //XSettings.DisplayException(e);
 
+            }
             return false;
 
         }

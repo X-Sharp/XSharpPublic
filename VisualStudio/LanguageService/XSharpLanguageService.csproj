@@ -41,12 +41,12 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <DefineConstants>
-    </DefineConstants>
+    <OutputPath>$(BaseOutputPath)\$(Configuration)</OutputPath>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <DeployExtension>False</DeployExtension>
     <CreateVsixContainer>False</CreateVsixContainer>
+    <NoWarn>618;4014;VSTHRD001;VSTHRD010;VSTHRD105;VSTHRD110</NoWarn>
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="..\..\Common\CommonAssemblyInfo.cs">

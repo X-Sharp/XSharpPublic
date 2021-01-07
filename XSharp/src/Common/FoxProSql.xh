@@ -55,7 +55,10 @@
 
 // SQL Insert commands
     
-#command INSERT INTO <*dbfAndFields*> VALUES [<values,...>]    => ;
+#command INSERT INTO <*dbfAndFields*> VALUES <*values*>    => ;
+    __FoxSqlCommand(<"udc">)
+
+#command INSERT INTO <*dbfAndFields*> SELECT <*selectClause*>   => ;
     __FoxSqlCommand(<"udc">)
     
 #command INSERT INTO <*dbfAndFields*> FROM MEMVAR => ;

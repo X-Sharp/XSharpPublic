@@ -186,6 +186,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     resultTokens.Add(rtoken);
                 }
             }
+            var udctoken = new PPMatchToken(new XSharpToken(XSharpLexer.ID, "udc"), PPTokenType.MatchWholeUDC);
+            addToDict(markers, udctoken);
+            matchTokens.Add(udctoken);
+
             _matchtokens = matchTokens.ToArray();
             var linearlist = new List<PPMatchToken>();
             addMatchTokens(_matchtokens, linearlist);
@@ -674,19 +678,16 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     case PPTokenType.MatchRestricted:
                         foreach (var token in next.Tokens)
                         {
-                            if (token.Type != XSharpLexer.COMMA)
-                            { 
-                                if (!hasStopToken(stoptokens, next.Token))
-                                {
-                                    stoptokens.Add(next.Token);
-                                }
+                            if (canAddStopToken(stoptokens, next.Token))
+                            {
+                                stoptokens.Add(next.Token);
                             }
                         }
                         break;
                     case PPTokenType.MatchSingle:
                     case PPTokenType.Token:
-                        if (! hasStopToken(stoptokens, next.Token))
-                        { 
+                        if (canAddStopToken(stoptokens, next.Token))
+                        {
                             stoptokens.Add(next.Token);
                         }
                         if (onlyFirstNonOptional)
@@ -695,16 +696,18 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 }
             }
         }
-        bool hasStopToken(IList<XSharpToken> stoptokens, XSharpToken token)
+        bool canAddStopToken(IList<XSharpToken> stoptokens, XSharpToken token)
         {
+            if (token.Type == XSharpLexer.COMMA)
+                return false;
             foreach (var element in stoptokens)
             {
                 if (tokenEquals(element, token))
                 {
-                    return true;
+                    return false;
                 }
             }
-            return false;
+            return true;
         }
         List<XSharpToken> getNestedTokens(int start, int max, XSharpToken[] tokens)
         {
@@ -1298,10 +1301,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             while (iSource < tokens.Count)
             {
                 var token = tokens[iSource];
-                stopTokenFound = IsStopToken(mToken, token);
-                if (stopTokenFound)
+                if (token.Type != XSharpLexer.COMMA)
                 {
-                    break;
+                    stopTokenFound = IsStopToken(mToken, token);
+                    if (stopTokenFound)
+                    {
+                        break;
+                    }
                 }
                 // after matchExpresssion iLastUsed points to the last token of the expression
                 if (matchExpression(iSource, tokens, null, out int iLastUsed))

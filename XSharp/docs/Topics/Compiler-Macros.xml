@@ -12,11 +12,15 @@
     <keyword>__DEBUG__</keyword>
     <keyword>__DIALECT__</keyword>
     <keyword>__DIALECT_CORE__</keyword>
+    <keyword>__DIALECT_FOXPRO__</keyword>
     <keyword>__DIALECT_HARBOUR__</keyword>
     <keyword>__DIALECT_VO__</keyword>
     <keyword>__DIALECT_VULCAN__</keyword>
+    <keyword>__DIALECT_XBASEPP__</keyword>
     <keyword>__ENTITY__</keyword>
     <keyword>__FILE__</keyword>
+    <keyword>__FOX1__</keyword>
+    <keyword>__FOX2__</keyword>
     <keyword>__FUNCTION__</keyword>
     <keyword>__LINE__</keyword>
     <keyword>__MODULE__</keyword>
@@ -43,6 +47,8 @@
     <keyword>__VO9__</keyword>
     <keyword>__WINDIR__</keyword>
     <keyword>__WINDRIVE__</keyword>
+    <keyword>__XPP__</keyword>
+    <keyword>__XPP1__</keyword>
     <keyword>__XSHARP__</keyword>
   </keywords>
   <body>
@@ -240,13 +246,13 @@
       </tr>
       <tr style="vertical-align:top">
         <td>
-          <para styleclass="Normal">__FOX1__</para>
+          <para styleclass="Normal">__FOX1__, __FOX2__</para>
         </td>
         <td>
           <para styleclass="Normal">Logical</para>
         </td>
         <td>
-          <para styleclass="Normal">Current value of the matching FOX compatibility compiler option. Only defined in the FoxPro dialect.</para>
+          <para styleclass="Normal">Current value of the matching FoxPro compatibility compiler option</para>
         </td>
       </tr>
       <tr style="vertical-align:top">

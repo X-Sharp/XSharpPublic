@@ -5,16 +5,25 @@
   <keywords>
     <keyword>#pragma</keyword>
     <keyword>#pragma options</keyword>
-    <keyword>az</keyword>
-    <keyword>lb</keyword>
-    <keyword>options</keyword>
-    <keyword>pragma</keyword>
-    <keyword>vo12</keyword>
-    <keyword>vo14</keyword>
-    <keyword>vo2</keyword>
-    <keyword>vo5</keyword>
-    <keyword>vo7</keyword>
-    <keyword>vo9</keyword>
+    <keyword>-az</keyword>
+    <keyword>-lb</keyword>
+    <keyword>-memvars</keyword>
+    <keyword>-options</keyword>
+    <keyword>-pragma</keyword>
+    <keyword>-undeclared</keyword>
+    <keyword>-vo10</keyword>
+    <keyword>-vo11</keyword>
+    <keyword>-vo12</keyword>
+    <keyword>-vo13</keyword>
+    <keyword>-vo14</keyword>
+    <keyword>-vo15</keyword>
+    <keyword>-vo16</keyword>
+    <keyword>-vo2</keyword>
+    <keyword>-vo4</keyword>
+    <keyword>-vo5</keyword>
+    <keyword>-vo6</keyword>
+    <keyword>-vo7</keyword>
+    <keyword>-vo9</keyword>
   </keywords>
   <body>
     <header>
@@ -28,7 +37,7 @@
     <para styleclass="Normal"></para>
     <para styleclass="Normal">&quot;option&quot; can be one of the following (please note that not all compiler options can be used)</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"><table styleclass="Default" rowcount="18" colcount="2" style="width:auto; page-break-inside:avoid;">
+    <para styleclass="Normal"><table styleclass="Default" rowcount="25" colcount="2" style="width:auto; page-break-inside:avoid;">
       <tr style="vertical-align:top">
         <td style="width:95px;">
           <para styleclass="Normal"><text style="font-weight:bold;">Option</text></para>
@@ -79,10 +88,26 @@
       </tr>
       <tr style="vertical-align:top">
         <td style="width:95px;">
+          <para styleclass="Normal"><text style="font-weight:bold; color:#ff0000;">&quot;vo1&quot;</text></para>
+        </td>
+        <td style="width:1152px;">
+          <para styleclass="Normal"><text style="font-weight:bold; color:#ff0000;">This option cannot be set with the #pragma keyword</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:95px;">
           <para styleclass="Normal">&quot;vo2&quot;</para>
         </td>
         <td style="width:1152px;">
           <para styleclass="Normal">Initialize string variables with empty strings</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:95px;">
+          <para styleclass="Normal"><text style="font-weight:bold; color:#ff0000;">&quot;vo3&quot;</text></para>
+        </td>
+        <td style="width:1152px;">
+          <para styleclass="Normal"><text style="font-weight:bold; color:#ff0000;">This option cannot be set with the #pragma keyword</text></para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -115,6 +140,14 @@
         </td>
         <td style="width:1152px;">
           <para styleclass="Normal">Implicit Casts and Conversions</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:95px;">
+          <para styleclass="Normal"><text style="font-weight:bold; color:#ff0000;">&quot;vo8&quot;</text></para>
+        </td>
+        <td style="width:1152px;">
+          <para styleclass="Normal"><text style="font-weight:bold; color:#ff0000;">This option cannot be set with the #pragma keyword</text></para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -167,10 +200,42 @@
       </tr>
       <tr style="vertical-align:top">
         <td style="width:95px;">
+          <para styleclass="Normal">&quot;vo15&quot;</para>
+        </td>
+        <td style="width:1152px;">
+          <para styleclass="Normal">Allow untyped locals</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:95px;">
+          <para styleclass="Normal">&quot;vo16&quot;</para>
+        </td>
+        <td style="width:1152px;">
+          <para styleclass="Normal">Generate Clipper calling convention constructors</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:95px;">
+          <para styleclass="Normal"><text style="font-weight:bold; color:#ff0000;">&quot;fox1&quot;</text></para>
+        </td>
+        <td style="width:1152px;">
+          <para styleclass="Normal"><text style="font-weight:bold; color:#ff0000;">This option cannot be set with the #pragma keyword</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:95px;">
           <para styleclass="Normal">&quot;fox2&quot;</para>
         </td>
         <td style="width:1152px;">
           <para styleclass="Normal">Make local variables visible to the macro compiler</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:95px;">
+          <para styleclass="Normal"><text style="font-weight:bold; color:#ff0000;">&quot;xpp1&quot;</text></para>
+        </td>
+        <td style="width:1152px;">
+          <para styleclass="Normal"><text style="font-weight:bold; color:#ff0000;">This option cannot be set with the #pragma keyword</text></para>
         </td>
       </tr>
     </table></para>

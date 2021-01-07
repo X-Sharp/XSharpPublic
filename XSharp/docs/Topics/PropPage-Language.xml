@@ -3,56 +3,43 @@
 <topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>Language</title>
   <keywords>
-    <keyword>/az</keyword>
-    <keyword>/cs</keyword>
-    <keyword>/i</keyword>
-    <keyword>/initlocals</keyword>
-    <keyword>/ins</keyword>
-    <keyword>/lb</keyword>
-    <keyword>/memvar</keyword>
-    <keyword>/namedargs</keyword>
-    <keyword>/nostddef</keyword>
-    <keyword>/ns:&lt;Namespace&gt;</keyword>
-    <keyword>/ovf</keyword>
-    <keyword>/stddefs</keyword>
-    <keyword>/undeclared</keyword>
-    <keyword>/unsafe</keyword>
     <keyword>Additional Include paths</keyword>
     <keyword>Allow Late Binding</keyword>
     <keyword>Allow Named Arguments</keyword>
     <keyword>Allow Unsafe Code</keyword>
     <keyword>Alternate standard header file</keyword>
-    <keyword>az</keyword>
+    <keyword>-az</keyword>
     <keyword>Case Sensitive</keyword>
-    <keyword>cs</keyword>
+    <keyword>-cs</keyword>
     <keyword>Enable Implicit Namespace lookup</keyword>
     <keyword>Enable Memvar support</keyword>
     <keyword>Enable Undeclared variables support</keyword>
-    <keyword>i</keyword>
+    <keyword>-i</keyword>
     <keyword>Implicit Namespace lookup</keyword>
     <keyword>Include paths</keyword>
     <keyword>Initialize Local variables</keyword>
-    <keyword>initlocals</keyword>
-    <keyword>ins</keyword>
-    <keyword>lb</keyword>
+    <keyword>-initlocals</keyword>
+    <keyword>-ins</keyword>
+    <keyword>-lb</keyword>
     <keyword>Local variables</keyword>
-    <keyword>memvar</keyword>
+    <keyword>-memvar</keyword>
     <keyword>Memvar support</keyword>
-    <keyword>namedargs</keyword>
+    <keyword>-namedargs</keyword>
     <keyword>NAMESPACE</keyword>
     <keyword>Namespace lookup</keyword>
-    <keyword>nostddef</keyword>
+    <keyword>-nostddef</keyword>
     <keyword>ns</keyword>
+    <keyword>-ns:&lt;Namespace&gt;</keyword>
     <keyword>Overflow Exceptions</keyword>
-    <keyword>ovf</keyword>
+    <keyword>-ovf</keyword>
     <keyword>Prefix classes</keyword>
     <keyword>Prefix classes with default Namespace</keyword>
     <keyword>standard header file</keyword>
-    <keyword>stddefs</keyword>
+    <keyword>-stddefs</keyword>
     <keyword>Suppress standard header file</keyword>
-    <keyword>undeclared</keyword>
+    <keyword>-undeclared</keyword>
     <keyword>Undeclared variables support</keyword>
-    <keyword>unsafe</keyword>
+    <keyword>-unsafe</keyword>
     <keyword>Unsafe Code</keyword>
     <keyword>Use Zero Based Arrays</keyword>
     <keyword>Zero Based Arrays</keyword>

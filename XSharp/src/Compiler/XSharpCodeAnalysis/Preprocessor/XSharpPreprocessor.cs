@@ -26,6 +26,27 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 {
     internal class XSharpPreprocessor
     {
+        static Dictionary<string, string> embeddedHeaders = null;
+
+        static void loadResources()
+        {
+            if (embeddedHeaders == null)
+            {
+                embeddedHeaders = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+                var asm = typeof(XSharpPreprocessor).GetTypeInfo().Assembly;
+#if VSPARSER
+                var strm = asm.GetManifestResourceStream("XSharp.VSParser.Preprocessor.StandardHeaders.resources");
+#else
+                var strm = asm.GetManifestResourceStream("LanguageService.CodeAnalysis.Preprocessor.StandardHeaders.resources");
+#endif
+                var rdr = new System.Resources.ResourceReader(strm);
+                foreach (DictionaryEntry item in rdr)
+                {
+                    embeddedHeaders.Add((string)item.Key, (string)item.Value);
+                }
+            }
+        }
+
         const string PPOPrefix = "//PP ";
 
         #region IncludeCache
@@ -1149,25 +1170,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             if (nfp == null)
             {
+                loadResources();
                 var baseName = Path.GetFileNameWithoutExtension(includeFileName).ToLower();
-                var asm = typeof(XSharpPreprocessor).GetTypeInfo().Assembly;
-#if VSPARSER
-                var strm = asm.GetManifestResourceStream("XSharp.VSParser.Preprocessor.StandardHeaders.resources");
-#else
-                var strm = asm.GetManifestResourceStream("LanguageService.CodeAnalysis.Preprocessor.StandardHeaders.resources");
-#endif
-                var rdr = new System.Resources.ResourceReader(strm);
-                foreach (DictionaryEntry item in rdr)
+                if (embeddedHeaders.TryGetValue(baseName, out var source))
                 {
-                    if (String.Compare((string) item.Key, baseName,true) == 0)
-                    {
-                        var source = (String)item.Value;
-                        text = SourceText.From(source);
-                        nfp = includeFileName;
-                        break;
-                    }
+                    text = SourceText.From(source);
+                    nfp = includeFileName;
                 }
-
             }
             if (nfp == null)
             {

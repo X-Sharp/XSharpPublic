@@ -43,6 +43,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 }
             }
         }
+        internal bool IsWholeUDC => _type == PPTokenType.MatchWholeUDC;
         internal bool IsOptional { get { return _type.IsOptional(); } }
         internal bool IsToken { get { return _type == PPTokenType.Token; } }
         internal bool IsRepeat { get; set; }
@@ -75,6 +76,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         break;
                     case PPTokenType.MatchLike:
                         sResult = "<%" + Key + "%>";
+                        break;
+                    case PPTokenType.MatchWholeUDC:
+                        sResult = "<<udc>>";
                         break;
                     case PPTokenType.ResultRegular:
                         sResult = "<" + Key + ">";

@@ -41,6 +41,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 case PPTokenType.MatchList:
                 case PPTokenType.MatchLike:
+                case PPTokenType.MatchWild:
                     return true; ;
             }
             return false;
@@ -206,7 +207,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         internal static bool IsOptional(this PPTokenType type)
         {
             return type == PPTokenType.MatchOptional ||
-                type == PPTokenType.ResultOptional;
+                type == PPTokenType.ResultOptional ||
+                type == PPTokenType.MatchWholeUDC;
         }
 
         internal static bool IsLiteral(this IToken token)

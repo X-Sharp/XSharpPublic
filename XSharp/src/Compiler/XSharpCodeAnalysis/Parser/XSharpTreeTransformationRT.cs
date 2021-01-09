@@ -3085,6 +3085,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                                 return;
                         }
 
+                        if (CurrentEntity?.isScript() == true)
+                        {
+                            if (GenerateClipCallFunc(context, name))
+                                return;
+                        }
+
                         if (CurrentEntity is XP.MethodContext mc)
                         {
                             if (mc.T.Token.Type == XP.ACCESS || mc.T.Token.Type == XP.ASSIGN)

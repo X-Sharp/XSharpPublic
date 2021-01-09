@@ -262,7 +262,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             _byteArrayType = _syntaxFactory.ArrayType(_syntaxFactory.PredefinedType(SyntaxFactory.MakeToken(SyntaxKind.ByteKeyword)), emptyrank);
             _impliedType = GenerateSimpleName(XSharpSpecialNames.ImpliedTypeName);
             _fileName = fileName;
-            _entryPoint = "Start";
+            _entryPoint = !_isScript ? "Start" : null;
             initTypes();
             PragmaOptions = new List<PragmaOption>();
             PragmaWarnings = new List<PragmaWarningDirectiveTriviaSyntax>();

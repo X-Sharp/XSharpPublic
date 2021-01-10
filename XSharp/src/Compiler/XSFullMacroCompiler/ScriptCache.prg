@@ -1,9 +1,8 @@
-﻿// Cache.prg
-// Created by    : neek
-// Creation Date : 1/10/2021 3:21:40 PM
-// Created for   : 
-// WorkStation   : I7
-
+﻿//
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
+// See License.txt in the project root for license information.
+//
 
 USING System
 USING System.Collections.Generic
@@ -34,9 +33,8 @@ NEW PUBLIC METHOD TryAdd(key as STRING, value AS Script) AS LOGIC
     DO WHILE _keys:Count > _maxItems
         LOCAL oldKey AS STRING
         IF _keys:TryDequeue(OUT oldKey)
-            LOCAL oldValue AS Script
-            SUPER:TryRemove(oldKey,oldValue)
-        END
+            SUPER:TryRemove(oldKey, OUT VAR _)
+        ENDIF
     END
     RETURN res
 

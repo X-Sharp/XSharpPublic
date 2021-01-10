@@ -42,7 +42,16 @@ INTERNAL FUNCTION CompileScript(xsource AS STRING) AS Script
     RETURN xscript
 
 INTERNAL GLOBAL CompiledScripts := ScriptCache{200} AS ScriptCache
-INTERNAL GLOBAL InitialScript := CompileScript("") AS Script
+INTERNAL GLOBAL InitialScript := NULL AS Script
+
+INTERNAL FUNCTION GetInitialScript() AS Script
+    VAR s := InitialScript
+    DO WHILE s == NULL
+        s := CompileScript("")
+        System.Threading.Interlocked.CompareExchange(REF InitialScript, s, NULL)
+        s := InitialScript
+    END
+    RETURN s
 
 FUNCTION _ExecScript(source AS STRING, args PARAMS USUAL[]) AS USUAL
     LOCAL script AS Script
@@ -50,7 +59,7 @@ FUNCTION _ExecScript(source AS STRING, args PARAMS USUAL[]) AS USUAL
         script := CompiledScripts[source]
     ELSE                  
         TRY
-            script := InitialScript:ContinueWith(source)
+            script := GetInitialScript():ContinueWith(source)
             //script := CompileScript(source)
         CATCH e AS Exception
             THROW  e

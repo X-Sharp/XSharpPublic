@@ -10,6 +10,7 @@ USING System.Text
 USING XUnit
 // These test require late binding, that is why we enable late binding for this file only
 #pragma options ("lb", ON)
+#pragma warnings(169, off)  // unused field
 
 BEGIN NAMESPACE XSharp.VO.Tests
 	

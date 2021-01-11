@@ -9,7 +9,8 @@ USING System.Linq
 USING System.Text
 USING XUnit
 
-
+#pragma warnings(219, off)  // assigned but not used
+#pragma warnings(165, off)  // unassigned variables
 
 BEGIN NAMESPACE XSharp.VO.Tests
 

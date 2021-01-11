@@ -31,7 +31,7 @@ NEW PUBLIC METHOD TryAdd(key as STRING, value AS Script) AS LOGIC
         _keys:Enqueue(key)
     END
     DO WHILE _keys:Count > _maxItems
-        LOCAL oldKey AS STRING
+        LOCAL oldKey := NULL AS STRING
         IF _keys:TryDequeue(OUT oldKey)
             SUPER:TryRemove(oldKey, OUT VAR _)
         ENDIF

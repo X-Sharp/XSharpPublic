@@ -3,12 +3,12 @@
 
 
 /// <include file="VFPDocs.xml" path="Runtimefunctions/dbgetprop/*" />
-/// <seealso cref="O:XSharp.VFP.Functions.DbSetProp" />
-/// <seealso cref="T:XSharp.RDD.DbcDatabase" />
-/// <seealso cref="T:XSharp.RDD.DbcTable" />
-/// <seealso cref="T:XSharp.RDD.DbcView" />
-/// <seealso cref="T:XSharp.RDD.DbcConnection" />
-/// <seealso cref="T:XSharp.RDD.DbcField" />
+/// <seealso cref="DbSetProp" />
+/// <seealso cref="DbcDatabase" />
+/// <seealso cref="DbcTable" />
+/// <seealso cref="DbcView" />
+/// <seealso cref="DbcConnection" />
+/// <seealso cref="DbcField" />
 FUNCTION DbGetProp( cName AS STRING, cType AS STRING, cProperty AS STRING)  AS USUAL
     IF ! Dbc.IsValidObjectType(cType)
         THROW Error.ArgumentError(__FUNCTION__, nameof(cType), "Database object type '"+cType+"' is invalid")
@@ -26,12 +26,12 @@ FUNCTION DbGetProp( cName AS STRING, cType AS STRING, cProperty AS STRING)  AS U
     
 
 /// <include file="VFPDocs.xml" path="Runtimefunctions/dbsetprop/*" />
-/// <seealso cref="O:XSharp.VFP.Functions.DbGetProp" />
-/// <seealso cref="T:XSharp.RDD.DbcDatabase" />
-/// <seealso cref="T:XSharp.RDD.DbcTable" />
-/// <seealso cref="T:XSharp.RDD.DbcView" />
-/// <seealso cref="T:XSharp.RDD.DbcConnection" />
-/// <seealso cref="T:XSharp.RDD.DbcField" />
+/// <seealso cref="DbGetProp" />
+/// <seealso cref="DbcDatabase" />
+/// <seealso cref="DbcTable" />
+/// <seealso cref="DbcView" />
+/// <seealso cref="DbcConnection" />
+/// <seealso cref="DbcField" />
 FUNCTION DbSetProp(cName AS STRING, cType AS STRING, cProperty AS STRING, ePropertyValue AS USUAL)
     IF ! Dbc.IsValidObjectType(cType)
         THROW Error.ArgumentError(__FUNCTION__, nameof(cType), "Database object type '"+cType+"' is invalid")
@@ -47,8 +47,8 @@ FUNCTION DbSetProp(cName AS STRING, cType AS STRING, cProperty AS STRING, ePrope
 
     
 /// <include file="VFPDocs.xml" path="Runtimefunctions/dbc/*" />
-/// <seealso cref="O:XSharp.VFP.Functions.DbAlias" />
-/// <seealso cref="O:XSharp.VFP.Functions.DbUsed" />
+/// <seealso cref="DbAlias" />
+/// <seealso cref="DbUsed" />
 
 FUNCTION Dbc() AS STRING
     LOCAL oDb := Dbc.GetCurrent() as DbcDatabase
@@ -58,14 +58,14 @@ FUNCTION Dbc() AS STRING
     RETURN String.Empty
     
 /// <include file="VFPDocs.xml" path="Runtimefunctions/dbused/*" />
-/// <seealso cref="O:XSharp.VFP.Functions.DbAlias" />
-/// <seealso cref="O:XSharp.VFP.Functions.Dbc" />
+/// <seealso cref="DbAlias" />
+/// <seealso cref="Dbc" />
 FUNCTION DbUsed( cDatabaseName AS STRING) AS LOGIC
     RETURN Dbc.IsUsed(cDatabaseName)
 
 /// <include file="VFPDocs.xml" path="Runtimefunctions/dbalias/*" />
-/// <seealso cref="O:XSharp.VFP.Functions.DbUsed" />
-/// <seealso cref="O:XSharp.VFP.Functions.Dbc" />
+/// <seealso cref="DbUsed" />
+/// <seealso cref="Dbc" />
 FUNCTION DbAlias () AS STRING
     LOCAL oDb := Dbc.GetCurrent() as DbcDatabase
     IF oDb != NULL

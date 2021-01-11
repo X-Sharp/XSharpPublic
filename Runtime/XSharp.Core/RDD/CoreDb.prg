@@ -286,14 +286,14 @@ CLASS XSharp.CoreDb
         /// <returns>TRUE if successful; otherwise, FALSE.</returns>
         /// <seealso cref="O:XSharp.RT.Functions.VoDbBlobInfo" >VoDbBlobInfo overloads </seealso>
         /// <seealso cref="O:XSharp.VoDb.BlobInfo" >BlobInfo overloads in VoDb</seealso>
-        /// <seealso cref="O:XSharp.CoreDb.BlobInfo" >BlobInfo overloads in CoreDb</seealso>
+        /// <seealso cref="BlobInfo" >BlobInfo overloads in CoreDb</seealso>
          
     STATIC METHOD BlobInfo(nOrdinal AS DWORD,nPos AS DWORD,oRet AS OBJECT) AS LOGIC
         RETURN CoreDb.Do ({ =>
         RETURN CoreDb.BlobInfo(nOrdinal, nPos, REF oRet)
         })
         
-    /// <inheritdoc cref="M:XSharp.CoreDb.BlobInfo(System.UInt32,System.UInt32,System.Object)" />
+    /// <inheritdoc cref="BlobInfo(System.UInt32,System.UInt32,System.Object)" />
     /// <param name="oRet">The returnvalue is returned through this parameter. When set on entry this is the new value of the setting.</param>
     STATIC METHOD BlobInfo(nOrdinal AS DWORD,nPos AS DWORD,oRet REF OBJECT) AS LOGIC
         var oTemp := oRet
@@ -481,7 +481,7 @@ CLASS XSharp.CoreDb
         RETURN oRdd:Continue()
         })
         
-    /// <inheritdoc cref="M:XSharp.CoreDb.Create(System.String,XSharp.RDD.Support.RddFieldInfo[],System.Type,System.Boolean,System.String,System.String,System.Boolean,System.Boolean)" />
+    /// <inheritdoc cref="Create(System.String,XSharp.RDD.Support.RddFieldInfo[],System.Type,System.Boolean,System.String,System.String,System.Boolean,System.Boolean)" />
     /// <param name="cRddName">Name of RDD to use</param>
     
     STATIC METHOD Create( cName AS STRING, aStruct AS RddFieldInfo[], cRddName AS STRING, lNew AS LOGIC, cAlias AS STRING, cDelim AS STRING, lKeep AS LOGIC, lJustOpen AS LOGIC ) AS LOGIC
@@ -495,7 +495,7 @@ CLASS XSharp.CoreDb
         ENDIF
         })
         
-    /// <inheritdoc cref="M:XSharp.CoreDb.Create(System.String,XSharp.RDD.Support.RddFieldInfo[],System.Type,System.Boolean,System.String,System.String,System.Boolean,System.Boolean)" />
+    /// <inheritdoc cref="Create(System.String,XSharp.RDD.Support.RddFieldInfo[],System.Type,System.Boolean,System.String,System.String,System.Boolean,System.Boolean)" />
     /// <param name="rddList">List of RDDs to use when creating the file</param>
     STATIC METHOD Create( cName AS STRING, aStruct AS RddFieldInfo[], rddList AS _RddList, lNew AS LOGIC, cAlias AS STRING, cDelim AS STRING, lKeep AS LOGIC, lJustOpen AS LOGIC ) AS LOGIC
         LOCAL oRdd := NULL  AS RegisteredRDD
@@ -527,7 +527,6 @@ CLASS XSharp.CoreDb
         /// <returns>TRUE when succesfull, otherwise FALSE. When an error has occurred then you can retrieve that error from RuntimeState.LastRddError.</returns>
         /// <seealso cref="M:XSharp.RT.Functions.DbCreate(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)" >DbCreate() function </seealso>
         /// <seealso cref="O:XSharp.RT.Functions.VoDbCreate" >VoDbCreate overloads</seealso>
-        /// <seealso cref="O:XSharp.CoreDb.Create" >Create overloads in CoreDb</seealso>
     
     STATIC METHOD Create( cName AS STRING, aStruct AS RddFieldInfo[], rddType AS System.Type, lNew AS LOGIC, cAlias AS STRING, cDelim AS STRING, lKeep AS LOGIC, lJustOpen AS LOGIC ) AS LOGIC
         RETURN CoreDb.Do ({ =>
@@ -827,21 +826,20 @@ CLASS XSharp.CoreDb
             RETURN FALSE
         })
         return lResult
-        /// <inheritdoc cref="M:XSharp.RDD.IRdd.FieldInfo(System.Int32,System.Int32,System.Object)" />
+        /// <inheritdoc cref="IRdd.FieldInfo" />
         /// <returns>TRUE if successful; otherwise, FALSE.</returns>
         /// <remarks>This function is like DBFieldInfo().
         /// <include file="CoreComments.xml" path="Comments/LastError/*" />
         /// </remarks>
         /// <seealso cref='O:XSharp.RT.Functions.VoDbFieldInfo' >VoDbFieldInfo overloads </seealso>
         /// <seealso cref='O:XSharp.VoDb.FieldInfo' >FieldInfo overloads in CoreDb</seealso>
-        /// <seealso cref='O:XSharp.CoreDb.FieldInfo' >FieldInfo overloads in CoreDb</seealso>
         
     STATIC METHOD FieldInfo(nOrdinal AS DWORD,nFldPos AS DWORD,oValue AS OBJECT) AS LOGIC
         RETURN CoreDb.Do ({ =>
         RETURN CoreDb.FieldInfo(nOrdinal, nFldPos, REF oValue)
         })
         
-    /// <inheritdoc cref="M:XSharp.CoreDb.FieldInfo(System.UInt32,System.UInt32,System.Object)" />
+    /// <inheritdoc cref="FieldInfo(System.UInt32,System.UInt32,System.Object)" />
     /// <param name="oRet">The returnvalue is returned through this parameter. When set on entry this is the new value of the setting.</param>
     STATIC METHOD FieldInfo(nOrdinal AS DWORD,nFldPos AS DWORD,oRet REF OBJECT) AS LOGIC
         VAR oTemp := oRet
@@ -1048,7 +1046,6 @@ CLASS XSharp.CoreDb
         /// <returns>TRUE if successful; otherwise, FALSE.</returns>
         /// <seealso cref='O:XSharp.RT.Functions.VoDbInfo' >VoDbInfo overloads </seealso>
         /// <seealso cref='O:XSharp.VoDb.Info' >Info overloads in VoDb</seealso>
-        /// <seealso cref='O:XSharp.CoreDb.Info' >Info overloads in CoreDb</seealso>
     
     STATIC METHOD Info(nOrdinal AS DWORD,oValue AS OBJECT) AS LOGIC
         RETURN CoreDb.Do ({ =>
@@ -1056,7 +1053,7 @@ CLASS XSharp.CoreDb
         })
         
         
-    /// <inheritdoc cref="M:XSharp.CoreDb.Info(System.UInt32,System.Object)" />
+    /// <inheritdoc cref="Info" />
     /// <param name="oValue">If specified, this parameter is used to change the value of a setting. This parameter also receives the return value.</param>
 
     STATIC METHOD Info(nOrdinal AS DWORD,oValue REF OBJECT) AS LOGIC
@@ -1278,14 +1275,13 @@ CLASS XSharp.CoreDb
         /// </remarks>
         /// <seealso cref='O:XSharp.RT.Functions.VoDbOrderInfo' >VoDbOrderInfo overloads </seealso>
         /// <seealso cref='O:XSharp.VoDb.OrderInfo' >OrderInfo overloads in VoDb</seealso>
-        /// <seealso cref='O:XSharp.CoreDb.OrderInfo' >OrderInfo overloads in CoreDb</seealso>
     
         STATIC METHOD OrderInfo(nOrdinal AS DWORD,cBagName AS STRING,oOrder AS OBJECT,oValue AS OBJECT) AS LOGIC
         RETURN CoreDb.Do ({ =>
         RETURN CoreDb.OrderInfo(nOrdinal, cBagName, oOrder, REF oValue)
         })
         
-    /// <inheritdoc cref="M:XSharp.CoreDb.OrderInfo(System.UInt32,System.String,System.Object,System.Object)" />
+    /// <inheritdoc cref="OrderInfo" />
     /// <param name="oValue">If specified, this parameter is used to change the value of a setting and retrieve the current setting. </param>
     STATIC METHOD OrderInfo(nOrdinal AS DWORD,cBagName AS STRING,oOrder AS OBJECT,oValue REF OBJECT) AS LOGIC
         VAR oTemp := oValue
@@ -1470,7 +1466,6 @@ CLASS XSharp.CoreDb
         /// <returns>TRUE if successful; otherwise, FALSE.</returns>
         /// <seealso cref='O:XSharp.RT.Functions.VoDbRddInfo' >VoDbRddInfo overloads </seealso>
         /// <seealso cref='O:XSharp.VoDb.RddInfo' >RddInfo overloads in VoDb</seealso>
-        /// <seealso cref='O:XSharp.CoreDb.RddInfo' >RddInfo overloads in CoreDb</seealso>
         
     STATIC METHOD RddInfo(nOrdinal AS DWORD,oValue REF OBJECT) AS LOGIC
         VAR oTemp := oValue
@@ -1487,7 +1482,7 @@ CLASS XSharp.CoreDb
         RETURN result
         
         
-    /// <inheritdoc cref="M:XSharp.CoreDb.RddInfo(System.UInt32,System.Object@)" />
+    /// <inheritdoc cref="RddInfo" />
     STATIC METHOD RddInfo(nOrdinal AS DWORD,oValue AS OBJECT) AS LOGIC
         RETURN CoreDb.Do ({ =>
         RuntimeState.SetValue((XSharp.Set) nOrdinal, oValue)
@@ -1604,15 +1599,14 @@ CLASS XSharp.CoreDb
         /// <returns>TRUE if successful; otherwise, FALSE.</returns>
         /// <seealso cref='O:XSharp.RT.Functions.VoDbRecordInfo'  >VoDbRecordInfo overloads</seealso>
         /// <seealso cref='O:XSharp.VoDb.RecordInfo'  >RecordInfo overloads in VoDb</seealso>
-        /// <seealso cref='O:XSharp.CoreDb.RecordInfo'  >RecordInfo overloads in CoreDb</seealso>
-        /// <seealso cref='T:XSharp.RDD.Enums.DbRecordInfo'>DbRecordInfo ENUM</seealso>
+        /// <seealso cref='DbRecordInfo'>DbRecordInfo ENUM</seealso>
         
     STATIC METHOD RecordInfo(nOrdinal AS DWORD,oRecID AS OBJECT,oValue AS OBJECT) AS LOGIC
         RETURN CoreDb.Do ({ =>
         RETURN CoreDb.RecordInfo(nOrdinal, oRecID, REF oValue)
         }) 
         
-    /// <inheritdoc cref="M:XSharp.CoreDb.RecordInfo(System.UInt32,System.Object,System.Object)" />
+    /// <inheritdoc cref="RecordInfo(System.UInt32,System.Object,System.Object)" />
     /// <param name="oRet">The returnvalue is returned through this parameter. When set on entry this is the new value of the setting.</param>
     STATIC METHOD RecordInfo(nOrdinal AS DWORD,oRecID AS OBJECT,oValue REF OBJECT) AS LOGIC
         VAR oTemp := oValue
@@ -2105,7 +2099,7 @@ CLASS XSharp.CoreDb
         ENDIF
         RETURN FALSE
         })
-        /// <inheritdoc cref='M:XSharp.CoreDb.UseArea(System.Boolean,XSharp._RddList,System.String,System.String,System.Boolean,System.Boolean)' />
+        /// <inheritdoc cref='UseArea(System.Boolean,XSharp._RddList,System.String,System.String,System.Boolean,System.Boolean)' />
         /// <param name="rddName">Name of the RDD to use.</param>
         
         
@@ -2121,7 +2115,7 @@ CLASS XSharp.CoreDb
         })
         
         
-        /// <inheritdoc cref='M:XSharp.CoreDb.UseArea(System.Boolean,XSharp._RddList,System.String,System.String,System.Boolean,System.Boolean)' />
+        /// <inheritdoc cref='UseArea(System.Boolean,XSharp._RddList,System.String,System.String,System.Boolean,System.Boolean)' />
         /// <param name="rddType">Type of the RDD to use.</param>
         
     STATIC METHOD UseArea(lNew AS LOGIC,rddType AS System.Type,cName AS STRING,cAlias AS STRING,lShare AS LOGIC,lReadOnly AS LOGIC) AS LOGIC

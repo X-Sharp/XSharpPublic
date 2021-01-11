@@ -17,8 +17,8 @@ BEGIN NAMESPACE XSharp
     /// <summary>Internal type that implements the VO Compatible FLOAT type.
     /// This type has many operators and implicit converters that normally are never directly called from user code.
     /// </summary>
-    /// <seealso cref="T:XSharp.IFloat"/>
-    /// <seealso cref="T:XSharp.RDD.DbFloat"/>
+    /// <seealso cref="IFloat"/>
+    /// <seealso cref="RDD.DbFloat"/> 
     [DebuggerDisplay("{ToDebugString(),nq}", Type := "FLOAT" )];
     [StructLayout(LayoutKind.Explicit, Pack := 4)];
     [Serializable];
@@ -510,7 +510,7 @@ BEGIN NAMESPACE XSharp
         PUBLIC OVERRIDE METHOD ToString() AS STRING
             RETURN Str1(SELF)
             
-        /// <inheritdoc cref="M:System.Double.ToString(System.String)"/>
+        /// <inheritdoc cref="System.Double.ToString(System.String)"/>
         PUBLIC METHOD ToString(sFormat AS STRING) AS STRING
             RETURN _value:ToString(sFormat)
             

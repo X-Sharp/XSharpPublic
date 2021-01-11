@@ -3,15 +3,14 @@
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
+USING System.Collections.Generic
 
 /// <summary>Creates an object from a class definition or an Automation-enabled application.</summary>
 /// <param name="cClassName">Specifies the class or OLE object from which the new object is created.</param>
 /// <param name="_args">These optional parameters are used to pass values to the Init event procedure for the class.
 /// The Init event is executed when you issue CREATEOBJECT( ) and allows you to initialize the object.</param>
 /// <returns>The object that was created</returns>
-/// <seealso cref='O:XSharp.RT.Functions.CreateInstance' >CreateInstance</seealso>
-using System.Collections.Generic
-
+/// <seealso cref='CreateInstance' >CreateInstance</seealso>
 FUNCTION CreateObject(cClassName, _args ) AS OBJECT CLIPPER
     // The pseudo function _ARGS() returns the Clipper arguments array
     RETURN CreateInstance(_ARGS())

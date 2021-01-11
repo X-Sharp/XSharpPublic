@@ -15,7 +15,7 @@ BEGIN NAMESPACE XSharp
     /// <summary>A string representing the name of the subsystem generating the error.</summary>
     VIRTUAL PROPERTY SubSystem AS STRING AUTO  := "BASE"
     /// <summary>An integer numeric value representing a Visual Objects generic error code.</summary>
-    /// <Seealso cref="T:XSharp.Gencode"/>
+    /// <Seealso cref="Gencode"/>
     VIRTUAL PROPERTY Gencode AS DWORD AUTO    := EG_UNKNOWN
     /// <summary>An string containing the description of the Gencode.</summary>
     VIRTUAL PROPERTY GenCodeText AS STRING GET IIF (Gencode != 0, ErrString(Gencode), "Unknown GenCode")
@@ -29,7 +29,7 @@ BEGIN NAMESPACE XSharp
     /// <summary>A string representing the name used to open the file associated with the error condition.</summary>
     VIRTUAL PROPERTY FileName AS STRING AUTO  := ""
     /// <summary>A constant indicating the severity of the error condition.</summary>
-    /// <Seealso cref="T:XSharp.Severity"/>
+    /// <Seealso cref="Severity"/>
     VIRTUAL PROPERTY Severity AS DWORD AUTO   := ES_ERROR
     /// <summary>A string that describes the error condition.</summary>
     VIRTUAL PROPERTY Description		AS STRING AUTO := ""

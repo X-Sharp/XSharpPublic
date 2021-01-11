@@ -519,13 +519,13 @@ FUNCTION AScan(aTarget AS ARRAY, uSearch AS USUAL,nStart := NIL AS USUAL,nCount 
     RETURN ArrayHelpers.AScan( aTarget, uSearch, nStart, nCount, SetExact()) 
     
     
-    /// <inheritdoc cref='M:XSharp.RT.Functions.AScan(XSharp.__Array,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)'/>
+    /// <inheritdoc cref='AScan(XSharp.__Array,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)'/>
 FUNCTION AScan(aTarget AS ARRAY, uSearch AS USUAL,nStart AS USUAL) AS DWORD 
     ARRAYNULL_RETURNZERO aTarget
     RETURN ArrayHelpers.AScan( aTarget, uSearch, nStart, NIL, SetExact()) 
     
     
-    /// <inheritdoc cref='M:XSharp.RT.Functions.AScan(XSharp.__Array,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)'/>
+    /// <inheritdoc cref='AScan(XSharp.__Array,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)'/>
 FUNCTION AScan(aTarget AS ARRAY, uSearch AS USUAL) AS DWORD 
     ARRAYNULL_RETURNZERO aTarget
     RETURN ArrayHelpers.AScan( aTarget, uSearch, 1, NIL, SetExact()) 

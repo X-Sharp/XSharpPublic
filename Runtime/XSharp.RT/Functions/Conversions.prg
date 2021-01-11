@@ -191,8 +191,8 @@ INTERNAL STATIC CLASS XSharp.ConversionHelpers
 END CLASS
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/ashexstring/*" /> 
-/// <seealso cref='M:XSharp.Core.Functions.C2Hex(System.String)' >C2Hex</seealso>
-/// <seealso cref='M:XSharp.Core.Functions._C2Hex(System.String,System.Boolean)' >_C2Hex</seealso>
+/// <seealso cref='C2Hex(System.String)' >C2Hex</seealso>
+/// <seealso cref='_C2Hex(System.String,System.Boolean)' >_C2Hex</seealso>
 FUNCTION AsHexString(uValue AS USUAL) AS STRING
     LOCAL result AS STRING
     IF uValue:IsString
@@ -349,7 +349,7 @@ FUNCTION NTrim(nNum AS USUAL) AS STRING
 FUNCTION Pad( uValue AS USUAL, nLength AS INT, cFillChar := " " AS STRING ) AS STRING
     RETURN PadR( uValue, nLength, cFillChar )
 
-/// <inheritdoc cref="M:XSharp.RT.Functions.Pad(XSharp.__Usual,System.Int32,System.String)" />
+/// <inheritdoc cref="Pad(XSharp.__Usual,System.Int32,System.String)" />
 FUNCTION Pad( uValue AS USUAL, nLength AS DWORD, cFillChar := " " AS STRING ) AS STRING
     RETURN PadR( uValue, (INT) nLength, cFillChar )
 
@@ -383,7 +383,7 @@ FUNCTION PadC( uValue AS USUAL, nLength AS INT, cFillChar := " " AS STRING ) AS 
 
     RETURN ret
 
-/// <inheritdoc cref="M:XSharp.RT.Functions.PadC(XSharp.__Usual,System.Int32,System.String)" />
+/// <inheritdoc cref="PadC(XSharp.__Usual,System.Int32,System.String)" />
 FUNCTION PadC( uValue AS USUAL, nLength AS DWORD, cFillChar := " " AS STRING ) AS STRING
     RETURN PadC( uValue, (INT) nLength, cFillChar )
 
@@ -404,7 +404,7 @@ FUNCTION PadL( uValue AS USUAL, nLength AS INT, cFillChar := " " AS STRING ) AS 
     ENDIF
     RETURN IIF( ret:Length > nLength, ret:Remove( nLength ), ret:PadLeft( nLength, cFillChar[0] ) )
 
-/// <inheritdoc cref="M:XSharp.RT.Functions.PadL(XSharp.__Usual,System.Int32,System.String)" />
+/// <inheritdoc cref="PadL(XSharp.__Usual,System.Int32,System.String)" />
 FUNCTION PadL( uValue AS USUAL, nLength AS DWORD, cFillChar := " " AS STRING ) AS STRING
     RETURN PadL( uValue, (INT) nLength, cFillChar )
 
@@ -413,7 +413,7 @@ FUNCTION PadL( uValue AS USUAL, nLength AS DWORD, cFillChar := " " AS STRING ) A
 FUNCTION PadR( uValue AS USUAL, nLength AS DWORD, cFillChar := " " AS STRING ) AS STRING
     RETURN PadR( uValue, (INT) nLength, cFillChar )
 
-/// <inheritdoc cref="M:XSharp.RT.Functions.PadR(XSharp.__Usual,System.UInt32,System.String)" />
+/// <inheritdoc cref="PadR(XSharp.__Usual,System.UInt32,System.String)" />
 FUNCTION PadR( uValue AS USUAL, nLength AS INT, cFillChar := " " AS STRING ) AS STRING
     // If they send in an empty string then change to " "
     IF cFillChar == NULL .OR. cFillChar:Length == 0
@@ -497,7 +497,7 @@ FUNCTION Str(nNumber ,nLength ,nDecimals ) AS STRING CLIPPER
     RETURN ConversionHelpers.AdjustDecimalSeparator(result)
 
 
-/// <inheritdoc cref="M:XSharp.RT.Functions.Str(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)" />
+/// <inheritdoc cref="Str" />
 /// <returns>The returned string with always have a DOT as decimal separator.</returns>
 FUNCTION _Str(nValue ,uLen ,uDec ) AS STRING CLIPPER
     LOCAL nLen,  nDec AS LONG
@@ -680,9 +680,9 @@ INTERNAL FUNCTION _Str1(f AS FLOAT) AS STRING
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/str2/*" />
 /// <returns>A string representation of the value.</returns>
-/// <seealso cref="M:XSharp.RT.Functions.Str(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)" />
-/// <seealso cref="M:XSharp.RT.Functions.Str1(XSharp.__Usual)" />
-/// <seealso cref="M:XSharp.RT.Functions.Str3(XSharp.__Float,System.UInt32,System.UInt32)" />
+/// <seealso cref="Str" />
+/// <seealso cref="Str1" />
+/// <seealso cref="Str3" />
 FUNCTION Str2(fNumber AS FLOAT,dwLength AS DWORD) AS STRING
     RETURN ConversionHelpers.AdjustDecimalSeparator(_Str2(fNumber, dwLength))
 
@@ -701,13 +701,13 @@ INTERNAL FUNCTION _Str2(f AS FLOAT,dwLen AS DWORD) AS STRING
 
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/str3/*" />
-/// <seealso cref="M:XSharp.RT.Functions.Str(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)" />
-/// <seealso cref="M:XSharp.RT.Functions.Str1(XSharp.__Usual)" />
-/// <seealso cref="M:XSharp.RT.Functions.Str2(XSharp.__Float,System.UInt32)" />
+/// <seealso cref="Str" />
+/// <seealso cref="Str1" />
+/// <seealso cref="Str2" />
 FUNCTION Str3(fNumber AS FLOAT,dwLength AS DWORD,dwDecimals AS DWORD) AS STRING
     RETURN ConversionHelpers.AdjustDecimalSeparator(_Str3(fNumber, dwLength, dwDecimals))
 
-/// <inheritdoc cref="M:XSharp.RT.Functions.Str3(XSharp.__Float,System.UInt32,System.UInt32)" />
+/// <inheritdoc cref="Str3" />
 /// <returns>A string with DOT as decimal separator.</returns>
 FUNCTION _Str3(f AS FLOAT,dwLen AS DWORD,dwDec AS DWORD) AS STRING
 
@@ -753,7 +753,7 @@ FUNCTION _Str3(f AS FLOAT,dwLen AS DWORD,dwDec AS DWORD) AS STRING
    RETURN ConversionHelpers.FormatNumber(f, (INT) dwLen, (INT) dwDec)
 
 
-/// <inheritdoc cref="M:XSharp.RT.Functions.Val(System.String)" />
+/// <inheritdoc cref="Val" />
 /// <returns>The numeric value as a FLOAT.</returns>
 FUNCTION StrToFloat(c AS STRING) AS FLOAT
     RETURN (FLOAT) Val(c)
@@ -941,7 +941,7 @@ INTERNAL FUNCTION _VOVal(cNumber AS STRING) AS USUAL
 /// </summary>
 /// <param name="oValue">Object containing the numeric value to convert.</param>
 /// <returns>The value in the form of a float. </returns>
-/// <exception cref='T:System.InvalidCastException'> Thrown when the parameter oValue cannot be converted to a FLOAT.</exception>
+/// <exception cref='System.InvalidCastException'> Thrown when the parameter oValue cannot be converted to a FLOAT.</exception>
 FUNCTION Object2Float(oValue AS OBJECT) AS FLOAT
     LOCAL typ := oValue:GetType() AS System.Type
     IF typ == typeof(FLOAT)

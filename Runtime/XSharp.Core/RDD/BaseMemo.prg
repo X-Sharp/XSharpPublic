@@ -7,7 +7,7 @@ USING System.Text
 USING XSharp.RDD.Support
 
 /// <summary>Base Memo class. Does not implement anything. </summary>
-/// <seealso cref="T:XSharp.RDD.IMemo"/>
+/// <seealso cref="IMemo"/>
 CLASS XSharp.RDD.BaseMemo IMPLEMENTS IMemo
     PROTECTED _oArea AS Workarea
     

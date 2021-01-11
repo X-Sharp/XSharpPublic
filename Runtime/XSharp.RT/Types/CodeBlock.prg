@@ -12,7 +12,7 @@ USING System.Runtime.CompilerServices
 /// <summary>Internal type that implements the VO Compatible CODEBLOCK type<br/>
 /// This type has methods that normally are never directly called from user code.
 /// </summary>
-/// <seealso cref="T:XSharp.ICodeblock"/>
+/// <seealso cref="ICodeblock"/>
 [DebuggerDisplay( "{ToString(),nq}", Type := "CODEBLOCK" )] ;
 ABSTRACT CLASS XSharp.Codeblock IMPLEMENTS ICodeblock
 	PRIVATE INITONLY _pcount AS INT
@@ -73,9 +73,9 @@ ABSTRACT CLASS XSharp.Codeblock IMPLEMENTS ICodeblock
 		
 /// <summary>Internal type that is the base class for macro compiled codeblocks.
 /// </summary>
-/// <seealso cref="T:XSharp.ICodeblock"/>
-/// <seealso cref="T:XSharp.IMacroCompiler"/>
-/// <seealso cref="T:XSharp.Codeblock"/>
+/// <seealso cref="ICodeblock"/>
+/// <seealso cref="IMacroCompiler"/>
+/// <seealso cref="Codeblock"/>
 [DebuggerDisplay( "{_cMacro}", Type := "_Codeblock" )] ;
 PUBLIC CLASS XSharp._Codeblock INHERIT XSharp.Codeblock IMPLEMENTS IRtCodeblock
 	/// <exclude />

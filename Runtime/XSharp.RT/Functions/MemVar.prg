@@ -74,27 +74,27 @@ FUNCTION VarPut(cVarName AS STRING,uValue AS USUAL) AS USUAL
     RETURN __VarPut(cVarName, uValue)
     
 
-/// <inheritdoc cref='M:XSharp.RT.Functions.VarGet(System.String)' />
+/// <inheritdoc cref='VarGet' />
 /// <param name="symVar">The name of the variable .</param>
 FUNCTION VarGetSym(symVar AS SYMBOL) AS USUAL
     RETURN __VarGet(symVar)
     
-/// <inheritdoc cref='M:XSharp.RT.Functions.VarPut(System.String,XSharp.__Usual)' />
+/// <inheritdoc cref='VarPut' />
 /// <param name="symVar">The name of the variable .</param>
 FUNCTION VarPutSym(symVar AS SYMBOL,uValue AS USUAL) AS USUAL
     RETURN __VarPut(symVar, uValue)
     
-/// <inheritdoc cref='M:XSharp.RT.Functions.MemVarBlock(System.String)' />
+/// <inheritdoc cref='MemVarBlock' />
 /// <param name="symVar">The name of the variable .</param>
 FUNCTION MemVarBlockSym(symMemvarName AS SYMBOL) AS OBJECT
     RETURN {| uValue| IIF (uValue == NIL, MemVarGetSym(symMemvarName), MemVarPutSym(symMemvarName, uValue))} 
     
-/// <inheritdoc cref='M:XSharp.RT.Functions.MemVarGet(System.String)' />
+/// <inheritdoc cref='MemVarGet' />
 /// <param name="symVar">The name of the variable .</param>
 FUNCTION MemVarGetSym(symVar AS SYMBOL) AS USUAL 
     RETURN XSharp.MemVar.Get(symVar)
     
-/// <inheritdoc cref='M:XSharp.RT.Functions.MemVarPut(System.String,XSharp.__Usual)' /> 
+/// <inheritdoc cref='MemVarPut' /> 
 /// <param name="symVar">The name of the variable you want to assign to.</param>
 FUNCTION MemVarPutSym(symVar AS SYMBOL, uValue AS USUAL) AS USUAL  
     RETURN XSharp.MemVar.Put(symVar, uValue) 

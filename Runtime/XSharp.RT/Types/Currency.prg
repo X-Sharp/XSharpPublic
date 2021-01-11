@@ -16,8 +16,8 @@ BEGIN NAMESPACE XSharp
     /// This type has many operators and implicit converters that normally are never directly called from user code.
     /// The data in this type is stored as a System.Decimal with 4 decimal places
     /// </summary>
-    /// <seealso cref="T:XSharp.__Float"/>
-    /// <seealso cref="T:System.Decimal"/>
+    /// <seealso cref="__Float"/>
+    /// <seealso cref="System.Decimal"/>
     [Serializable];
     PUBLIC STRUCTURE __Currency IMPLEMENTS IConvertible,; 
         IFormattable, ;
@@ -415,11 +415,11 @@ BEGIN NAMESPACE XSharp
             RETURN ((IConvertible) _value):ToString(provider)
             #endregion
         #region IFormattable
-        /// <inheritdoc />
+        /// <inheritdoc cref="System.Double.ToString"/>
         PUBLIC OVERRIDE METHOD ToString() AS STRING
             RETURN ToString("0.0000")
             
-        /// <inheritdoc cref="M:System.Double.ToString(System.String)"/>
+        /// <inheritdoc cref="System.Double.ToString"/>
         PUBLIC METHOD ToString(sFormat AS STRING) AS STRING
             RETURN _value:ToString(sFormat)
             

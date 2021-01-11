@@ -435,7 +435,7 @@ FUNCTION DbLocate(cbForCondition, cbWhileCondition, nNext, nRecord, lRest ) AS L
     
     
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/dborderinfo/*" />
-/// <seealso cref='T:XSharp.RDD.Enums.DbOrder_Info'>DbOrder_Info ENUM</seealso>
+/// <seealso cref='XSharp.RDD.Enums.DbOrder_Info'>DbOrder_Info ENUM</seealso>
 FUNCTION DbOrderInfo(kInfoType,cIndexFile, uOrder, uNewSetting) AS USUAL CLIPPER
     LOCAL lKeyVal  := FALSE  AS LOGIC
     
@@ -470,7 +470,7 @@ FUNCTION DbOrderInfo(kInfoType,cIndexFile, uOrder, uNewSetting) AS USUAL CLIPPER
     
     
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/dbrecordinfo/*" />
-/// <seealso cref='T:XSharp.RDD.Enums.DbRecordInfo'>DbRecordInfo ENUM</seealso>
+/// <seealso cref='XSharp.RDD.Enums.DbRecordInfo'>DbRecordInfo ENUM</seealso>
 FUNCTION DbRecordInfo(kInfoType, uRecId, uNewValue) AS USUAL CLIPPER
     VoDb.RecordInfo(kInfoType, uRecId, REF uNewValue)
     RETURN uNewValue

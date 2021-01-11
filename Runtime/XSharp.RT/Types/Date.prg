@@ -18,7 +18,7 @@ BEGIN NAMESPACE XSharp
 	/// It holds year, month, day in 32 bits. For date calculations it uses the System.DateTime calculation logic.
 	/// There are implicit converters between Date and DateTime.
 	/// </summary>
-	/// <seealso cref="T:XSharp.IDate"/>
+	/// <seealso cref="IDate"/>
 	/// <seealso cref="T:XSharp.RDD.DbDate"/>
 	//[DebuggerTypeProxy(TYPEOF(DateDebugView))];
 	[DebuggerDisplay("{ToDebugString(),nq}", Type := "DATE" )];

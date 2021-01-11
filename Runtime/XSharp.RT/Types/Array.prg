@@ -15,7 +15,7 @@ BEGIN NAMESPACE XSharp
     /// <summary>Internal type that implements the VO Compatible ARRAY type.<br/>
     /// This type has methods and properties that normally are never directly called from user code.
     /// </summary>
-    /// <seealso cref='T:XSharp.IIndexer' />
+    /// <seealso cref='IIndexer' />
     /// <include file="RTComments.xml" path="Comments/ZeroBasedIndex/*" /> 
     //[DebuggerTypeProxy(TYPEOF(ArrayDebugView))];
     [DebuggerDisplay("{DebuggerString(),nq}", Type := "ARRAY")] ;

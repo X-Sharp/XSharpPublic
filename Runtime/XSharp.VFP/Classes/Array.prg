@@ -19,7 +19,7 @@ BEGIN NAMESPACE XSharp
     /// on top of a one dimensional array. <br/>
     /// So a two dimensional array of 4 x 3 elements will be implemented as an array of 12 elements.
     /// The elements 1-3 represent row 1, 4-6 row 2 etc. </remarks>
-    /// <seealso cref='T:XSharp.IIndexer' />
+    /// <seealso cref='IIndexer' />
     /// <include file="RTComments.xml" path="Comments/ZeroBasedIndex/*" /> 
     //[DebuggerTypeProxy(TYPEOF(ArrayDebugView))];
     [DebuggerDisplay("{DebuggerString(),nq}", Type := "FOXARRAY")] ;

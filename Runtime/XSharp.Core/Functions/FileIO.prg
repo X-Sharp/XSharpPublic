@@ -66,7 +66,7 @@ FUNCTION FCopy(cSourceFile AS STRING,cTargetFile AS STRING) AS LOGIC
 	RETURN FCopy(cSourceFile, cTargetFile, TRUE)
 
 
-/// <inheritdoc cref="M:XSharp.Core.Functions.FCopy(System.String,System.String)" />	
+/// <inheritdoc cref="FCopy" />	
 /// <param name="lOverWrite">Should the target file be overwritten.</param>
 FUNCTION FCopy(cSourceFile AS STRING,cTargetFile AS STRING, lOverWrite AS LOGIC) AS LOGIC
 	LOCAL IsCopied := FALSE AS LOGIC

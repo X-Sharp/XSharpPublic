@@ -7,13 +7,13 @@ CLASS XSharp.VOWinFormApp INHERIT App
     PRIVATE winForms := HashTable{} AS HashTable
 
     /// <summary>Register a windows forms form. This method is automatically called from the ChildWinForm:WinForm property</summary>
-    /// <seealso cref='T:XSharp.ChildWinForm'>ChildWinForm class</seealso>
+    /// <seealso cref='ChildWinForm'>ChildWinForm class</seealso>
     METHOD RegisterWinForm(form AS System.Windows.Forms.Form) AS VOID
         winForms:Add(form:Handle:ToString(),form)
         RETURN
 
     /// <summary>UnRegister a windows forms form. This method is automatically called from the ChildWinForm:Close() method.</summary>
-    /// <seealso cref='T:XSharp.ChildWinForm'>ChildWinForm class</seealso>
+    /// <seealso cref='ChildWinForm'>ChildWinForm class</seealso>
     METHOD UnRegisterWinForm(form AS System.Windows.Forms.Form) AS VOID
         winForms:Remove(form:Handle:ToString())
         RETURN

@@ -251,7 +251,7 @@ CLASS XSharp.DbDataSource IMPLEMENTS IBindingList
     
     /// <summary>Retrieve the DbRecordObject for the record at the given position</summary>
     /// <remarks>This property is READ ONLY. Assigning to the property will throw an exception</remarks>
-    /// <seealso cref='T:XSharp.DbRecord'>DbRecord class</seealso>
+    /// <seealso cref='DbRecord'>DbRecord class</seealso>
     VIRTUAL PROPERTY  SELF[index AS INT] AS OBJECT
         GET
             LOCAL record AS DbRecord

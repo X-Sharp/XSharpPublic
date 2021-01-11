@@ -4,7 +4,7 @@
 // See License.txt in the project root for license information.
 //
 USING XSharp.RDD
-BEGIN NAMESPACE XSharp
+BEGIN NAMESPACE XSharp  
 
 	/// <summary>
 	/// This interface defines Date values

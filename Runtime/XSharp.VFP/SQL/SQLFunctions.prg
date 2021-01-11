@@ -97,7 +97,7 @@ FUNCTION SqlDisconnect( nStatementHandle AS LONG) AS LONG
     RETURN -1  
      
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/sqlexec/*" />
-/// <seealso cref="T:XSharp.Internal.NeedsAccessToLocalsAttribute" />
+/// <seealso cref="NeedsAccessToLocalsAttribute" />
 [NeedsAccessToLocals];
 FUNCTION SqlExec( nStatementHandle AS LONG, cSQLCommand := "" AS STRING, cCursorName := "SQLRESULT" AS STRING, aCountInfo := NULL_ARRAY  AS ARRAY) AS LONG
     LOCAL aInfo AS ARRAY
@@ -154,7 +154,7 @@ FUNCTION SqlMoreResults( nStatementHandle AS LONG, cCursorName := NIL AS USUAL ,
         
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/sqlprepare/*" />
-/// <seealso cref="T:XSharp.Internal.NeedsAccessToLocalsAttribute" />
+/// <seealso cref="NeedsAccessToLocalsAttribute" />
 [NeedsAccessToLocals];
 FUNCTION SqlPrepare( nStatementHandle AS LONG, cSQLCommand AS STRING, cCursorName := "SQLRESULT" AS STRING) AS LONG
     VAR oStmt := GetStatement(nStatementHandle)    
@@ -235,25 +235,25 @@ FUNCTION SqlRollBack( nStatementHandle AS LONG) AS LONG
 #region Properties
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/sqlgetprop/*" />
-/// <seealso cref="T:XSharp.RDD.SQLProperty" />
+/// <seealso cref="SQLProperty" />
 FUNCTION SqlGetProp( nStatementHandle AS LONG, cSetting AS STRING ) AS USUAL
     RETURN SQLSupport.GetSetProperty(nStatementHandle, cSetting,NULL)
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/sqlgetprop/*" />
-/// <param name="nSetting">Specifies the setting. For a list of the settings you can specify see the <see cref='T:XSharp.RDD.SQLProperty' >SQLProperty Enum</see>.</param>
-/// <seealso cref="T:XSharp.RDD.SQLProperty" />
+/// <param name="nSetting">Specifies the setting. For a list of the settings you can specify see the <see cref='SQLProperty' >SQLProperty Enum</see>.</param>
+/// <seealso cref="SQLProperty" />
 FUNCTION SqlGetProp( nStatementHandle AS LONG, nSetting AS LONG ) AS USUAL
     var cSetting := System.Enum.GetName(typeof(SQLProperty), nSetting)
     RETURN SQLSupport.GetSetProperty(nStatementHandle, cSetting,NULL)
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/sqlsetprop/*" />
-/// <seealso cref="T:XSharp.RDD.SQLProperty" />
+/// <seealso cref="SQLProperty" />
 FUNCTION SqlSetProp( nStatementHandle AS LONG, cSetting AS STRING, eExpression AS USUAL) AS LONG
     RETURN (INT) SQLSupport.GetSetProperty(nStatementHandle, cSetting,eExpression)
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/sqlsetprop/*" />
-/// <param name="nSetting">Specifies the setting. For a list of the settings you can specify see the <see cref='T:XSharp.RDD.SQLProperty'>SQLProperty Enum</see>.</param>
-/// <seealso cref="T:XSharp.RDD.SQLProperty" />
+/// <param name="nSetting">Specifies the setting. For a list of the settings you can specify see the <see cref='SQLProperty'>SQLProperty Enum</see>.</param>
+/// <seealso cref="SQLProperty" />
 FUNCTION SqlSetProp( nStatementHandle AS LONG, nSetting AS LONG, eExpression AS USUAL) AS LONG
     var cSetting := System.Enum.GetName(typeof(SQLProperty), nSetting)
     RETURN (INT) SQLSupport.GetSetProperty(nStatementHandle, cSetting,eExpression)

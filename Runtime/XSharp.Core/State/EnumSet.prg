@@ -10,9 +10,9 @@ BEGIN NAMESPACE XSharp
     /// <remarks>Global settings are stored in the RuntimeState and are thread specific.
     /// The numeric value of these sets indicate the key of the setting in the settings dictionary on the runtimestate.
     /// </remarks>
-    /// <seealso cref='T:XSharp.RuntimeState'>RuntimeState</seealso>
-    /// <seealso cref='M:XSharp.RuntimeState.GetValue``1(XSharp.Set)'>RuntimeState.GetValue</seealso>
-    /// <seealso cref='M:XSharp.RuntimeState.SetValue``1(XSharp.Set,``0)'>RuntimeState.SetValue</seealso>
+    /// <seealso cref='RuntimeState'>RuntimeState</seealso>
+    /// <seealso cref='RuntimeState.GetValue``1(XSharp.Set)'>RuntimeState.GetValue</seealso>
+    /// <seealso cref='RuntimeState.SetValue``1(XSharp.Set,``0)'>RuntimeState.SetValue</seealso>
     ENUM Set
         /// <summary>Specifies rules that Visual FoxPro uses when comparing two strings of different lengths.</summary>
         MEMBER Exact       := 1			// LOGIC

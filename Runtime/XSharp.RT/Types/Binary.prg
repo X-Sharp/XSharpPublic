@@ -227,7 +227,7 @@ BEGIN NAMESPACE XSharp
         PUBLIC OVERRIDE METHOD ToString() AS STRING
             RETURN ToString("")
             
-        /// <inheritdoc cref="M:System.Double.ToString(System.String)"/>
+        /// <inheritdoc cref="System.Double.ToString"/>
         PUBLIC METHOD ToString(sFormat AS STRING) AS STRING
             if sFormat == "G"
                 return RuntimeState:WinEncoding:GetString(self:Value)

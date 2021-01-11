@@ -11,7 +11,7 @@ USING System.IO
 USING System.Text
 USING XUnit
 USING NewtonSoft.Json
-
+#pragma warnings(168, off)  // unused variables
 // Array tests are not working correctly yet with the current build
 BEGIN NAMESPACE XSharp.VO.Tests
 

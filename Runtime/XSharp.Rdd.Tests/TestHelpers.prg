@@ -15,7 +15,7 @@ STATIC GLOBAL rand AS Random
 FUNCTION LoremIpsum( maxLength AS LONG  ) AS STRING
     RETURN LoremIpsum( maxLength, 1, Int32.MaxValue , 1 , Int32.MaxValue , Int32.MaxValue )
     
-    
+#pragma warnings (162, off)
 FUNCTION LoremIpsum( maxLength AS LONG , minWords AS LONG , maxWords AS LONG , minSentences AS LONG , maxSentences AS LONG , numParagraphs AS LONG ) AS STRING
     LOCAL words AS STRING[]
     LOCAL numSentences AS LONG
@@ -86,3 +86,4 @@ FUNCTION LoremIpsum( maxLength AS LONG , minWords AS LONG , maxWords AS LONG , m
         result:Append(Environment.NewLine)
     NEXT
     RETURN result:ToString()
+#pragma warnings (162, default)

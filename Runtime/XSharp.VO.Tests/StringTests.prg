@@ -9,6 +9,8 @@ USING System.Linq
 USING System.Text
 USING XUnit
 
+#pragma warnings(165, off)  // unassigned variables
+#pragma warnings(219, off)  // assigned but not used
 
 // Array tests are not working correctly yet with the current build
 BEGIN NAMESPACE XSharp.VO.Tests

@@ -20,14 +20,14 @@ BEGIN NAMESPACE XSharp.RDD.Tests
 	/// The TestDbfNtx class.
 	/// </summary>
 	PUBLIC CLASS TestDbfNtx
-
+        #pragma warnings (219, off)
         METHOD InitTest() AS VOID
            // the next line ensures that we have included XSharp.RT as reference
             LOCAL d := __Date{0,0,0} AS __Date
             SetMacroCompiler(typeof(XSharp.Runtime.MacroCompiler))
 
             RETURN
-	
+	    #pragma warnings (219, default)
 		[Fact, Trait("DbfNtx", "Create")];
 		METHOD CreateDBFNtx() AS VOID
 			LOCAL fieldDefs := "ID,N,5,0;NAME,C,20,0;MAN,L,1,0;BIRTHDAY,D,8,0" AS STRING

@@ -350,7 +350,7 @@ namespace XSharp.MacroCompiler
         {
             if (!Eoi())
             {
-                if (La() != c1 && La(2) == c2)
+                if (La() != c1 || La(2) != c2)
                 {
                     Consume();
                     return false;

@@ -57,22 +57,4 @@ BEGIN NAMESPACE XSharp
             isCodeblock OUT LOGIC, addsMemVars OUT LOGIC) AS ICodeblock
     END INTERFACE
 
-    /// <summary>Delegate used for Runtime Codeblocks </summary>
-    DELEGATE RuntimeCodeblockDelegate(args PARAMS OBJECT[]) AS OBJECT
-
-    /// <summary>Class wrapper used for Runtime Codeblocks </summary>
-    PUBLIC CLASS RuntimeCodeblock IMPLEMENTS ICodeblock
-        PRIVATE _eval AS RuntimeCodeblockDelegate
-        PRIVATE _pcount AS INT
-
-        PUBLIC METHOD EvalBlock(args PARAMS OBJECT[]) AS Object
-            RETURN _eval(args)
-
-        PUBLIC METHOD PCount() AS INT
-            RETURN _pcount
-
-        PUBLIC CONSTRUCTOR(evalMethod AS RuntimeCodeblockDelegate, pCount AS INT)
-            _eval := evalMethod
-            _pcount := pCount
-    END CLASS
 END NAMESPACE

@@ -169,8 +169,8 @@ CLASS TestWithItem2
     PROPERTY Nested AS USUAL GET TestWithItem2{}
 END CLASS
 
-GLOBAL tsi := teststruct{1} AS teststruct
 
+GLOBAL tsi := teststruct{1} AS teststruct
 GLOBAL tci := testclass{1} AS testclass
 
 global wag := "" as string
@@ -281,12 +281,17 @@ END CLASS
 
 FUNCTION TestByRef(s REF STRING) AS STRING
    RETURN s
+    
+GLOBAL TEST := 123 AS LONG
 
 BEGIN NAMESPACE MacroCompilerTest
 
 	FUNCTION Start() AS VOID
 	    SetMacroCompiler(typeof(XSharp.Runtime.MacroCompiler))
-
+        DbCreate("Test",{{"TEST","C",10,0}})
+        DbUseArea(TRUE,,"TEST")
+        DbCreateIndex("test","UPPER(Test)")
+        
         ReportMemory("initial")
         VAR mc := CreateMacroCompiler()
         //EvalMacro(mc, "{|| 0000.00.00 }" ,NULL_DATE)
@@ -344,7 +349,7 @@ BEGIN NAMESPACE MacroCompilerTest
         TestMacro(mc, e"{|v|(v := upper(v), left(v,3))}", Args("ABCDE"), "ABC", typeof(STRING))
         TestMacro(mc, e"{|l, v|iif (l, (v := upper(v), left(v,3)), (v := lower(v), left(v,4))) }", Args(TRUE, "ABCDE"), "ABC", typeof(STRING))
         TestMacro(mc, e"{|l, v|iif (l, (v := upper(v), left(v,3)), (v := lower(v), left(v,4))) }", Args(FALSE, "ABCDE"), "abcd", typeof(STRING))
-        TestMacro(mc, e"{|a,b| asdgfafd(123) }", Args(), NULL, NULL,ErrorCode.NotAMethod)
+        TestMacro(mc, e"{|a,b| asdgfafd(123) /*aaa*/ }", Args(), NULL, NULL,ErrorCode.NotAMethod)
 
         mc:Options:UndeclaredVariableResolution := VariableResolution.Error
         TestMacro(mc, e"{|a,b| testtest__() }", Args(1,2,3), NULL, NULL, ErrorCode.IdentifierNotFound)
@@ -406,7 +411,7 @@ BEGIN NAMESPACE MacroCompilerTest
         TestMacro(mc, "null", Args(), NULL, typeof(OBJECT))
         TestMacro(mc, "null_object", Args(), NULL_OBJECT, NULL)
         TestMacro(mc, "null_string", Args(), null_string, NULL)
-        TestMacro(mc, "null_psz = psz._NULL_PSZ", Args(), TRUE, typeof(LOGIC))
+        //TestMacro(mc, "null_psz = psz._NULL_PSZ", Args(), TRUE, typeof(LOGIC))
         TestMacro(mc, "null_symbol", Args(), NULL_SYMBOL, typeof(SYMBOL))
         TestMacro(mc, "null_date", Args(), NULL_DATE, typeof(DATE))
         TestMacro(mc, "null_codeblock", Args(), NULL_CODEBLOCK, NULL)
@@ -476,6 +481,9 @@ BEGIN NAMESPACE MacroCompilerTest
         TestMacro(mc, e"{|a| a := teststruct{222}, a:v1 }", Args(), 222, typeof(INT))
         TestMacro(mc, e"{|a| a := testclass{}, a:prop := 111 }", Args(), 111, typeof(INT))
         TestMacro(mc, e"{|a,b| b := testclass{}, b:prop := a, ++b:prop }", Args(55), 56, typeof(INT))
+
+        // RvdH VO does not allow to access GLOBAL and DEFINE values in the macro compiler
+        /*
         TestMacro(mc, e"{|| tsi:v1 }", Args(), 1, typeof(INT))
         TestMacro(mc, e"{|| ++tsi:v1 }", Args(), 2, typeof(INT))
 //        TestMacro(mc, e"{|| tsi:v1 := 10, tsi:v1 }", Args(), 10, typeof(int)) // FAIL because tsi is boxed by value for IVarPut()
@@ -484,6 +492,22 @@ BEGIN NAMESPACE MacroCompilerTest
         TestMacro(mc, e"{|| ++tci:v1 }", Args(), 2, typeof(INT))
         TestMacro(mc, e"{|| ++tci:prop }", Args(), 2, typeof(INT))
         TestMacro(mc, e"{|| tci:v1 := 10, tci:v1++, tci:v1 }", Args(), 11, typeof(INT))
+        TestMacro(mc, e"-tsi", Args(), NULL, NULL, ErrorCode.UnaryOperationNotFound)
+        TestMacro(mc, e"tsi+1", Args(), NULL, NULL, ErrorCode.BinaryOperationNotFound)
+        TestMacro(mc, e"tsi[2]", Args(), NULL, NULL, ErrorCode.NoConversion)
+        TestMacro(mc, e"{|| tci:GetHashCode() }", Args(), tci:GetHashCode(), typeof(INT))
+        TestMacro(mc, e"{|| tsi:GetHashCode() }", Args(), tsi:GetHashCode(), typeof(INT))
+        TestMacro(mc, e"{|| tci:ToString() }", Args(), "testclass", typeof(STRING))
+        TestMacro(mc, e"{|| tsi:ToString() }", Args(), "teststruct", typeof(STRING))
+        TestMacro(mc, e"{|| tsi:FString() }", Args(), "1", typeof(STRING))
+        TestMacro(mc, e"{|| tci:FString('fff') }", Args(), "fff1", typeof(STRING))
+        TestMacro(mc, e"{|| tsi:FString('fff') }", Args(), "fff1", typeof(STRING))
+        TestMacro(mc, e"{|| ((testbase)tci):FString() }", Args(), "1", typeof(STRING))
+        TestMacro(mc, e"{|a| tci:&a := 1 }", Args("v1"), 1, typeof(INT))
+        TestMacro(mc, e"{|a| tci:&a }", Args("v1"), 1, typeof(INT))
+        TestMacro(mc, e"{|a| tci:&(a) }", Args("v1"), 1, typeof(INT))
+        TestMacro(mc, e"{|a| tci:(&a) }", Args("v1"), 1, typeof(INT))
+        */
         TestMacro(mc, e"{|a| IIF(a>10,123,1.23) }", Args(100), 123, typeof(FLOAT))
         TestMacro(mc, e"{|a| IIF(a>10,123,1.23) }", Args(1), 1.23, typeof(FLOAT))
         TestMacro(mc, e"{|a| IIF(a>10,1) }", Args(100), 1, typeof(INT))
@@ -570,9 +594,6 @@ BEGIN NAMESPACE MacroCompilerTest
         TestMacro(mc, e"{|a| (int)a }", Args(7), 7, typeof(INT))
         TestMacro(mc, e"999999999999999999999999", Args(), NULL, NULL, ErrorCode.LiteralIntegerOverflow)
         TestMacro(mc, e"9.99999e999999999999999999", Args(), NULL, NULL, ErrorCode.LiteralFloatOverflow)
-        TestMacro(mc, e"-tsi", Args(), NULL, NULL, ErrorCode.UnaryOperationNotFound)
-        TestMacro(mc, e"tsi+1", Args(), NULL, NULL, ErrorCode.BinaryOperationNotFound)
-        TestMacro(mc, e"tsi[2]", Args(), NULL, NULL, ErrorCode.NoConversion)
         TestMacro(mc, e"{|a,b| 1[2]}", Args(), NULL, NULL, ErrorCode.UnExpected)
         TestMacro(mc, "ArgCount(1,nil)", Args(), NULL, NULL, ErrorCode.BadNumArgs)
         TestMacro(mc, "ArgCount()", Args(), 0, typeof(INT))
@@ -626,26 +647,18 @@ BEGIN NAMESPACE MacroCompilerTest
         TestMacro(mc, e"{|a,b,c|DoTestS(a,b,c)}", Args(1, TRUE, teststruct{222}), 222, typeof(INT))
         TestMacro(mc, e"{|a| AScan(a, \"12\") }", Args({"135454","54376","123","53"}, NIL), 3, typeof(DWORD))
         TestMacro(mc, e"{|a| ALen(a) }", Args({"1235454","54376","12","53"},NIL), 4, typeof(DWORD))
-        TestMacro(mc, e"{|a| (testclass)a }",Args(tci), tci, typeof(testclass))
+        //TestMacro(mc, e"{|a| (testclass)a }",Args(tci), tci, typeof(testclass))
         TestMacro(mc, e"{|a| ((int)a):GetHashCode() }", Args(8), 8, typeof(INT))
         TestMacro(mc, e"{|a| a:GetHashCode() }", Args(8), 8, typeof(INT))
         TestMacro(mc, e"{|a| a:GetHashCode() }", Args(tci), tci:GetHashCode(), typeof(INT))
         TestMacro(mc, e"{|a| a:GetHashCode() }", Args(tsi), tsi:GetHashCode(), typeof(INT))
-        TestMacro(mc, e"{|| tci:GetHashCode() }", Args(), tci:GetHashCode(), typeof(INT))
-        TestMacro(mc, e"{|| tsi:GetHashCode() }", Args(), tsi:GetHashCode(), typeof(INT))
         TestMacro(mc, e"{|a| ((int)a):ToString() }", Args(8), "8", typeof(STRING))
         TestMacro(mc, e"{|a| a:ToString() }", Args(8), "8", typeof(STRING))
         TestMacro(mc, e"{|a| a:ToString() }", Args(tci), "testclass", typeof(STRING))
         TestMacro(mc, e"{|a| a:ToString() }", Args(tsi), "teststruct", typeof(STRING))
-        TestMacro(mc, e"{|| tci:ToString() }", Args(), "testclass", typeof(STRING))
-        TestMacro(mc, e"{|| tsi:ToString() }", Args(), "teststruct", typeof(STRING))
         TestMacro(mc, e"{|a| a:UString() }", Args(tci), "1", typeof(STRING))
         TestMacro(mc, e"{|a| a:UString() }", Args(tsi), "1", typeof(STRING))
         TestMacro(mc, e"{|| testbase{}:FString() }", Args(), "base", typeof(STRING))
-        TestMacro(mc, e"{|| ((testbase)tci):FString() }", Args(), "1", typeof(STRING))
-        TestMacro(mc, e"{|| tsi:FString() }", Args(), "1", typeof(STRING))
-        TestMacro(mc, e"{|| tci:FString('fff') }", Args(), "fff1", typeof(STRING))
-        TestMacro(mc, e"{|| tsi:FString('fff') }", Args(), "fff1", typeof(STRING))
         TestMacro(mc, e"{|| testbase{}:NString((byte)1) }", Args(), "base", typeof(STRING))
         TestMacro(mc, e"{|| testclass{}:NString((byte)1) }", Args(), "child", typeof(STRING))
         TestMacro(mc, e"{|| ((testbase)testclass{}):NString((byte)1) }", Args(), "base", typeof(STRING))
@@ -683,14 +696,10 @@ BEGIN NAMESPACE MacroCompilerTest
         TestMacro(mc, 'e"a\\bc" + e"def"', Args(), e"a\\bc" + e"def", typeof(string))
         TestMacro(mc, 'e"a\"bc" + e"def"', Args(), e"a\"bc" + e"def", typeof(string))
         TestMacro(mc, 'e"a\"bc" + e"d\\ef"', Args(), e"a\"bc" + e"d\\ef", typeof(string))
-        TestMacro(mc, "SubStr3('Test', 1 , SLen('abc') + 1)", Args(), "Test", typeof(string)) // should raise warning
+        TestMacro(mc, "SubStr3('Test', 1 , SLen('abc') + 1)", Args(), "Test", typeof(STRING)) // should raise warning
         TestMacro(mc, "SubStr3('Test', 1 , Len('abc') - 1)", Args(), "Te", typeof(string)) // should raise warning
         TestMacro(mc, "TestInt32(TestDWord(1))", Args(), 1, typeof(int)) // should raise warning
         TestMacro(mc, "TestDWord(TestInt32(1))", Args(), 1, typeof(dword)) // should raise warning
-        TestMacro(mc, e"{|a| tci:&a := 1 }", Args("v1"), 1, typeof(INT))
-        TestMacro(mc, e"{|a| tci:&a }", Args("v1"), 1, typeof(INT))
-        TestMacro(mc, e"{|a| tci:&(a) }", Args("v1"), 1, typeof(INT))
-        TestMacro(mc, e"{|a| tci:(&a) }", Args("v1"), 1, typeof(INT))
         TestMacro(mc, e"{|a,b| a := \"abcdef\", a:(&b)() }", Args(8,"ToUpperInvariant"), "ABCDEF", typeof(STRING))
         TestMacro(mc, e"{|a,b| a := \"abcdef\", (a:&b)() }", Args(8,"ToUpperInvariant"), "ABCDEF", typeof(STRING))
         TestMacro(mc, e"{|a,b| a := \"abcdef\", a:&(b)() }", Args(8,"ToUpperInvariant"), NULL, NULL, ErrorCode.Expected)

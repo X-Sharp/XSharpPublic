@@ -241,6 +241,9 @@ namespace XSharp.MacroCompiler
                     return new MethodSymbol(contType, (MethodInfo)member);
                 case MemberTypes.Field:
                     {
+                        // Do not store Globals and Defines from the Functions classes
+                        if (contType.FullName.EndsWith("Functions"))
+                            return null;
                         var field = (FieldInfo)member;
                         if (field.IsLiteral)
                         {

@@ -88,12 +88,25 @@ namespace Microsoft.CodeAnalysis.CSharp
                 {
                     XmlCrefAttributeSyntax crefAttr = (XmlCrefAttributeSyntax)node;
                     CrefSyntax cref = crefAttr.Cref;
-#if XXXSHARP
-                    var xnode = cref.XNode as LanguageService.CodeAnalysis.XSharp.SyntaxParser.XSharpParserRuleContext;
-                    var syntaxNode = xnode.CSharpSyntaxNode.CreateRed();
-                    var tree = unit.SyntaxTree;
-                    BinderFactory factory = _compilation.GetBinderFactory(tree);
-                    Binder binder = factory.GetBinder(syntaxNode);
+#if XSHARP
+                    // the Roslyn XML Comment nodes are part of the syntaxtree
+                    // Our xmlnodes are not part of this tree. 
+                    // We have added a reference to the node in the tree in the OriginalNode fields of the DocumentationCommentTriviaSyntax
+                    var parent = cref.Parent;
+                    while (parent != null)
+                    {
+                        if (parent is DocumentationCommentTriviaSyntax)
+                            break;
+                        parent = parent.Parent;
+                    }
+                    var dcts = parent as DocumentationCommentTriviaSyntax;
+                    if (dcts == null)
+                        return;
+                    var onode = dcts.OriginalNode;
+                    BinderFactory factory = _compilation.GetBinderFactory(onode.SyntaxTree);
+                    Binder binder = factory.GetBinder(onode);
+
+
 #else
                     BinderFactory factory = _compilation.GetBinderFactory(cref.SyntaxTree);
                     Binder binder = factory.GetBinder(cref);

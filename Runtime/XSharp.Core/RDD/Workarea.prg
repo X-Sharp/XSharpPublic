@@ -964,10 +964,10 @@ BEGIN NAMESPACE XSharp.RDD
         PRIVATE STATIC METHOD FindCbType AS VOID
             FOREACH VAR asm IN AppDomain.CurrentDomain:GetAssemblies()
                 IF asm:GetName():Name:ToLower() == "xsharp.rt"
-                    oCbType := asm:GetType("XSharp.__Codeblock")
+                    oCbType := asm:GetType("XSharp._Codeblock")
                     IF oCbType == NULL
                         FOREACH VAR oT IN asm:GetTypes()
-                            IF oT:FullName:ToLower() == "xsharp.__codeblock"
+                            IF oT:FullName:ToLower() == "xsharp._codeblock"
                                 oCbType := oT
                                 EXIT
                             ENDIF
@@ -992,7 +992,17 @@ BEGIN NAMESPACE XSharp.RDD
                     LOCAL addsMemvars   AS LOGIC
 					oBlock := oC:Compile(sBlock, TRUE, oType:Module, OUT isBlock, OUT addsMemvars)
                     // Convert to _CodeBlock when needed
-                    IF oBlock IS XSharp.RuntimeCodeblock
+                    VAR is_CodeBlock := FALSE
+                    LOCAL type := oBlock:GetType() AS System.Type
+                    DO WHILE type != NULL
+                        IF type.FullName != "XSharp._Codeblock"
+                            type := type:BaseType
+                        ELSE
+                            is_CodeBlock := TRUE
+                            EXIT
+                        ENDIF
+                    ENDDO
+                    IF ! is_CodeBlock
                         IF (oCbType == NULL)
                             FindCbType()
                         ENDIF

@@ -332,7 +332,6 @@ namespace XSharp.MacroCompiler
         internal static Symbol LookupName(string name)
         {
             Symbol v = Global.Lookup(name);
-            // prevent returning GLOBAL or DEFINE
 
             foreach (var u in Usings)
                 v = Symbol.Join(v, u.Lookup(name));
@@ -340,14 +339,6 @@ namespace XSharp.MacroCompiler
             {
                 foreach (var u in RuntimeFunctions)
                     v = Symbol.Join(v, u.Lookup(name));
-            }
-            if (v is MemberSymbol m)
-            {
-                if (m.MemberType == System.Reflection.MemberTypes.Field && m.DeclaringType.FullName.EndsWith("Functions"))
-                {
-                    if (name.IndexOf(".") == -1)
-                        v = null;
-                }
             }
             return v;
         }

@@ -627,7 +627,7 @@ BEGIN NAMESPACE XSharp
             IF info == NULL
                 THROW System.ArgumentException{"info"}
             ENDIF
-            info:AddValue("Value", SELF:ToString())
+            info:AddValue("Value", DToS(SELF))
             RETURN
         /// <include file="RTComments.xml" path="Comments/SerializeConstructor/*" />
         CONSTRUCTOR (info AS SerializationInfo, context AS StreamingContext)
@@ -635,7 +635,7 @@ BEGIN NAMESPACE XSharp
             IF info == NULL
                 THROW System.ArgumentException{"info"}
             ENDIF
-            SELF := CToD(info:GetString("Value"))
+            SELF := SToD(info:GetString("Value"))
         #endregion
 
         #region properties

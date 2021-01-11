@@ -27,28 +27,39 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
 
         }
 #if !VSPARSER
+        public SyntaxTriviaList ParseTrivia(String comments)
+        {
+            var source = MCT.SourceText.From(comments);
+            using (var lexer = new InternalSyntax.Lexer(source, CSharpParseOptions.Default))
+            {
+                return lexer.LexSyntaxLeadingTrivia();
+            }
+
+        }
+        public SyntaxTriviaList GetFunctionDoc(CSharpSyntaxNode node)
+        {
+            if (node.XGenerated && node is ClassDeclarationSyntax cds && cds.Identifier.Text.EndsWith("Functions") && cds.Location != Location.None)
+            {
+                return ParseTrivia("/// <summary>Compiler generated Functions Class that holds the functions, Globals and Defines.</summary>");
+            }
+            return default;
+        }
         public SyntaxTriviaList GetLeadingTrivia(CSharpSyntaxNode parent, CompilationUnitSyntax cu)
         {
-            var list = new SyntaxTriviaList();
-            if (cu == null || cu.XTokens == null)
+            if (cu != null && cu.XTokens != null)
             {
-                return list;
+                var options = ((CSharpParseOptions)cu.SyntaxTree.Options);
+                if (cu.HasDocComments ||options.TargetDLL != XSharpTargetDLL.Other)
+                {
+                    XSharpToken start = this.Start as XSharpToken;
+                    // we have stored the XML comments of an entity in the first token of the ContextNode
+                    if (start.HasXmlComments)
+                    {
+                        return ParseTrivia(start.XmlComments);
+                    }
+                }
             }
-            var options = ((CSharpParseOptions)cu.SyntaxTree.Options);
-            if (!cu.HasDocComments && options.TargetDLL == XSharpTargetDLL.Other)
-            {
-                return list;
-            }
-            XSharpToken start = this.Start as XSharpToken;
-            // we have stored the XML comments of an entity in the first token of the ContextNode
-            if (start.HasXmlComments)
-            {
-                var source = MCT.SourceText.From(start.XmlComments);
-                var lexer = new Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax.Lexer(source, CSharpParseOptions.Default);
-                list = lexer.LexSyntaxLeadingTrivia();
-                lexer.Dispose();
-            }
-            return list;
+            return default;
         }
 
 #endif

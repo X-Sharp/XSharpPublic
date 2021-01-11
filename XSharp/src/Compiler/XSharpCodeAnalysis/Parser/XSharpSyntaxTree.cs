@@ -207,7 +207,11 @@ namespace Microsoft.CodeAnalysis
 
 namespace Microsoft.CodeAnalysis.CSharp.Syntax
 {
-
+    public sealed partial class DocumentationCommentTriviaSyntax
+    {
+        // Add field so we can resolve the cref nodes
+        internal CSharpSyntaxNode OriginalNode;
+    }
     public sealed partial class CompilationUnitSyntax
     {
         private InternalSyntax.CompilationUnitSyntax internalUnit => (InternalSyntax.CompilationUnitSyntax) this.CsGreen;

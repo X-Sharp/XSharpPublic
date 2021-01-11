@@ -227,7 +227,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
              Assert.True (o IS USUAL)
              u2 := o
              Assert.True (u1 == u2)
-             u1 := "someday I will fly away"
+             u1 := "one day I will fly away"
              o := BinarySaveRestore(u1)
              Assert.True (o IS USUAL)
              u2 := o

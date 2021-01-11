@@ -282,16 +282,21 @@ END CLASS
 FUNCTION TestByRef(s REF STRING) AS STRING
    RETURN s
     
-GLOBAL TEST := 123 AS LONG
+GLOBAL TEST := 123 
+DEFINE TEST2 := 123 
 
 BEGIN NAMESPACE MacroCompilerTest
 
 	FUNCTION Start() AS VOID
 	    SetMacroCompiler(typeof(XSharp.Runtime.MacroCompiler))
-        DbCreate("Test",{{"TEST","C",10,0}})
+        // test conflict between field name and global/define
+        /*
+        DbCreate("Test",{{"TEST","C",10,0},{"TEST2","C",10,0}})
         DbUseArea(TRUE,,"TEST")
         DbCreateIndex("test","UPPER(Test)")
-        
+        DbCreateIndex("test2","UPPER(Test2)")
+        DbCloseArea()
+        */        
         ReportMemory("initial")
         VAR mc := CreateMacroCompiler()
         //EvalMacro(mc, "{|| 0000.00.00 }" ,NULL_DATE)
@@ -410,8 +415,8 @@ BEGIN NAMESPACE MacroCompilerTest
         TestMacro(mc, "0000.00.00 == NULL_DATE", Args(), TRUE, typeof(LOGIC))
         TestMacro(mc, "null", Args(), NULL, typeof(OBJECT))
         TestMacro(mc, "null_object", Args(), NULL_OBJECT, NULL)
-        TestMacro(mc, "null_string", Args(), null_string, NULL)
-        //TestMacro(mc, "null_psz = psz._NULL_PSZ", Args(), TRUE, typeof(LOGIC))
+        TestMacro(mc, "null_string", Args(), NULL_STRING, NULL)
+        TestMacro(mc, "null_psz = psz{IntPtr.Zero}", Args(), TRUE, typeof(LOGIC))
         TestMacro(mc, "null_symbol", Args(), NULL_SYMBOL, typeof(SYMBOL))
         TestMacro(mc, "null_date", Args(), NULL_DATE, typeof(DATE))
         TestMacro(mc, "null_codeblock", Args(), NULL_CODEBLOCK, NULL)
@@ -707,10 +712,10 @@ BEGIN NAMESPACE MacroCompilerTest
         TestMacro(mc, e"{|a,b| a := \"abcdef\", a:&testRet(b)() }", Args(8,"ToUpperInvariant"), NULL, NULL, ErrorCode.ArgumentsNotMatch)
         TestMacro(mc, e"{|a,b| a := \"abcdef\", a:(&b[1])() }", Args(8,{"ToUpperInvariant"}), "ABCDEF", typeof(STRING))
         TestMacro(mc, e"{|a,b| a := \"abcdef\", (a:&b[1])() }", Args(8,{"ToUpperInvariant"}), "ABCDEF", typeof(STRING))
-        TestMacro(mc, e"{|| Error}", Args(), 321, typeof(int))
+        //TestMacro(mc, e"{|| Error}", Args(), 321, typeof(int))
         TestMacro(mc, e"{|| Error{\"TEST\"}:Message}", Args(), "TEST", typeof(string))
         TestMacro(mc, e"{|| Error := 123}", Args(), 123, typeof(int))
-        TestMacro(mc, e"{|| ErrorLevel}", Args(), 1, typeof(int))
+        //TestMacro(mc, e"{|| ErrorLevel}", Args(), 1, typeof(int))
         TestMacro(mc, e"{|| ErrorLevel()}", Args(), 0, typeof(dword))
         TestMacro(mc, e"{|| ErrString(0)}", Args(), "", typeof(string))
         TestMacro(mc, e"{|| ErrString.V}", Args(), 333, typeof(int))

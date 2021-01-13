@@ -3171,40 +3171,51 @@ namespace Microsoft.VisualStudio.Project
         {
             return VSConstants.E_NOTIMPL;
         }
-#endregion
+        #endregion
 
-#region helper methods
-	    public virtual HierarchyNode FindChild(string name)
+        #region helper methods
+        public virtual HierarchyNode FindChild(string name)
         {
-            if(String.IsNullOrEmpty(name))
+            if (String.IsNullOrEmpty(name))
             {
                 return null;
             }
 
             HierarchyNode result;
-            for(HierarchyNode child = this.firstChild; child != null; child = child.NextSibling)
+            for (HierarchyNode child = this.firstChild; child != null; child = child.NextSibling)
             {
-                if(!String.IsNullOrEmpty(child.VirtualNodeName) && String.Compare(child.VirtualNodeName, name, StringComparison.OrdinalIgnoreCase) == 0)
+                if (!String.IsNullOrEmpty(child.VirtualNodeName) && String.Compare(child.VirtualNodeName, name, StringComparison.OrdinalIgnoreCase) == 0)
                 {
                     return child;
                 }
                 // If it is a foldernode then it has a virtual name but we want to find folder nodes by the document moniker or url
-                else if((String.IsNullOrEmpty(child.VirtualNodeName) || (child is FolderNode)) &&
+                else if ((String.IsNullOrEmpty(child.VirtualNodeName) || (child is FolderNode)) &&
                   (NativeMethods.IsSamePath(child.GetMkDocument(), name) || NativeMethods.IsSamePath(child.Url, name)))
-	            {
-	               return child;
-	            }
-	            else
-	            {
-	               FileNode fileNode = child as FileNode;
-	               if (fileNode != null && fileNode.IsLink)
-	               {
-	                  string linkUrl = Path.Combine(this.ProjectMgr.ProjectFolder, fileNode.ItemNode.GetMetadata(ProjectFileConstants.Link));
-	                  if (NativeMethods.IsSamePath(linkUrl, name))
-	                  {
-	                     return child;
-	                  }
-	               }
+                {
+                    return child;
+                }
+                else
+                {
+                    FileNode fileNode = child as FileNode;
+                    if (fileNode != null)
+                    {
+                        if (fileNode.IsLink)
+                        {
+                            string linkUrl = Path.Combine(this.ProjectMgr.ProjectFolder, fileNode.ItemNode.GetMetadata(ProjectFileConstants.Link));
+                            if (NativeMethods.IsSamePath(linkUrl, name))
+                            {
+                                return child;
+                            }
+                        }
+                        else
+                        {
+                            if (NativeMethods.IsSamePath(child.Url, name))
+                            {
+                                return child;
+                            }
+
+                        }
+                    }
 	            }
 
                 result = child.FindChild(name);

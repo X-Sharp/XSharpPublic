@@ -59,6 +59,8 @@ namespace XSharp.Project
             dependencies.Add(".designer.prg", ".prg");
             dependencies.Add(".xaml.prg", ".xaml");
             dependencies.Add(".vh", ".prg");
+            dependencies.Add(".xh", ".prg");
+            dependencies.Add(".resx", ".prg");
             try
             {
                 imageList = Utilities.GetImageList(typeof(XSharpProjectNode).Assembly.GetManifestResourceStream("XSharp.Project.Resources.XSharpProjectImageList.bmp"));
@@ -824,17 +826,18 @@ namespace XSharp.Project
             var path = System.IO.Path.GetDirectoryName(fileName);
             fileName = System.IO.Path.GetFileName(fileName);
             int dotPos = fileName.IndexOf(".");
-            string parentFile = "";
-            if (dotPos >0)
-            { 
-                parentFile = Path.Combine(path, fileName.Substring(0, dotPos));
-            }
             string extension = System.IO.Path.GetExtension(originalfileName);
-            //
-            if (dependencies.ContainsKey(extension) && !String.IsNullOrEmpty(parentFile))
+            if (dotPos >0)
             {
-                //
-                HierarchyNode newParent = parentNode.FindChild(parentFile + dependencies[extension]);
+                extension = fileName.Substring(dotPos);
+            }
+            var parentFile = fileName.Substring(0, fileName.Length - extension.Length ) ;
+            parentFile = Path.Combine(path, parentFile);
+            var parentExtension = ".prg";
+            if (dependencies.ContainsKey(extension) )
+            {
+                parentExtension = dependencies[extension];
+                HierarchyNode newParent = parentNode.FindChild(parentFile +parentExtension);
                 if (newParent != null)
                 {
                     parentNode = newParent;
@@ -859,7 +862,7 @@ namespace XSharp.Project
                 case XFileType.VOOrder:
                 case XFileType.VOIndex:
                     // dependent file
-                    HierarchyNode newParent = parentNode.FindChild(parentFile + ".prg");
+                    HierarchyNode newParent = parentNode.FindChild(parentFile + parentExtension);
                     if (newParent != null)
                     {
                         parentNode = newParent;

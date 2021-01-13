@@ -236,6 +236,11 @@ namespace XSharp.Project
                     }
                 }
             }
+            if (this.FileType == XFileType.TextTemplate)
+            {
+                this.ItemNode.SetMetadata(ProjectFileConstants.Generator, "TextTemplatingFileGenerator");
+                this.ItemNode.RefreshProperties();
+            }
             return;
         }
 

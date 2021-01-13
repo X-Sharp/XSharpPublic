@@ -7582,12 +7582,22 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         public override void ExitParenExpression([NotNull] XP.ParenExpressionContext context)
         {
 
-            if (context._Exprs.Count == 1)
+            if (context._Exprs.Count == 1 ) 
             {
                 context.Put(_syntaxFactory.ParenthesizedExpression(
                     SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
                     context.Expr.Get<ExpressionSyntax>(),
                     SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken)));
+                
+            }
+            else if (context.IsInLambdaOrCodeBlock())
+            {
+                var node = _syntaxFactory.ParenthesizedExpression(
+                    SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
+                    context.Expr.Get<ExpressionSyntax>(),
+                    SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken));
+                node = node.WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.ERR_ParenthesizedInsideCodeblock, context.GetText()));
+                context.Put(node);
             }
             else
             {
@@ -7595,6 +7605,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 // and call this local function here
                 var statements = new List<StatementSyntax>();
                 var last = context._Exprs.Last();
+                bool usesDiscard = false;
                 ExpressionSyntax expr;
                 // create statements too so we can set breakpoint info
                 var decl = GenerateLocalDecl("_", objectType);
@@ -7603,7 +7614,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 statements.Add(GenerateExpressionStatement(MakeSimpleAssignment(name, GenerateLiteralNull())));
                 foreach (var e in context._Exprs)
                 {
-                    StatementSyntax stmt;
+                    StatementSyntax stmt= null;
                     expr = e.Get<ExpressionSyntax>();
                     var stmtctx = new XP.StatementContext(context, 0);
                     stmtctx.Start = e.Start;
@@ -7618,28 +7629,41 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     }
                     else
                     {
-                        var ctx = new XP.ExpressionStmtContext(stmtctx);
+                        var ctx = new XP.ExpressionStmtContext(stmtctx); 
                         ctx._Exprs.Add(e);
                         switch (expr)
                         {
-                            case BinaryExpressionSyntax _:
+                            case BinaryExpressionSyntax _:  
                             case InvocationExpressionSyntax _:
                             case PostfixUnaryExpressionSyntax _:
                             case PrefixUnaryExpressionSyntax _:
                             case AssignmentExpressionSyntax _:
                                 break;
                             case LiteralExpressionSyntax _:
+                                expr = null;
+                                break;
                             default:
+                                usesDiscard = true;
                                 expr = MakeSimpleAssignment(name, expr);
                                 break;
                         }
-                        stmt = GenerateExpressionStatement(expr);
-
-                        ctx.Put(stmt);
-                        stmtctx = ctx;
+                        if (expr != null)
+                        { 
+                            stmt = GenerateExpressionStatement(expr);
+                            ctx.Put(stmt);
+                            stmtctx = ctx;
+                        }
                     }
-                    stmtctx.SetSequencePoint(e.Start);
-                    statements.Add(stmt);
+                    if (stmt != null)
+                    { 
+                        stmtctx.SetSequencePoint(e.Start);
+                        statements.Add(stmt);
+                    }
+                }
+                if (! usesDiscard)
+                {
+                    statements.RemoveAt(1);
+                    statements.RemoveAt(0);
                 }
                 var mods = TokenList(SyntaxKind.PrivateKeyword);
                 IList<object> localFunctions ;

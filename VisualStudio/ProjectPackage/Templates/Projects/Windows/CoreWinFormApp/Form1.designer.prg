@@ -1,6 +1,6 @@
 ﻿begin namespace $safeprojectname$
 
-    partial class Form1 inherit System.Windows.Forms.Form
+    partial class Form1 
 
         /// <summary>
         /// Required designer variable.

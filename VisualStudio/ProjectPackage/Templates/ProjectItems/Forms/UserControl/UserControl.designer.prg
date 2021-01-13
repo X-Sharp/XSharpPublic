@@ -1,6 +1,6 @@
 ﻿begin namespace $rootnamespace$
 
-    partial class $safeitemrootname$ inherit System.Windows.Forms.UserControl
+    partial class $safeitemrootname$ 
        /// <summary>
        /// Required designer variable.
        /// </summary>

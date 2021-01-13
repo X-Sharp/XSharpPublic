@@ -824,10 +824,14 @@ namespace XSharp.Project
             var path = System.IO.Path.GetDirectoryName(fileName);
             fileName = System.IO.Path.GetFileName(fileName);
             int dotPos = fileName.IndexOf(".");
-            string parentFile = Path.Combine(path, fileName.Substring(0, dotPos));
-            string extension = fileName.Substring(dotPos);
+            string parentFile = "";
+            if (dotPos >0)
+            { 
+                parentFile = Path.Combine(path, fileName.Substring(0, dotPos));
+            }
+            string extension = System.IO.Path.GetExtension(originalfileName);
             //
-            if (dependencies.ContainsKey(extension))
+            if (dependencies.ContainsKey(extension) && !String.IsNullOrEmpty(parentFile))
             {
                 //
                 HierarchyNode newParent = parentNode.FindChild(parentFile + dependencies[extension]);

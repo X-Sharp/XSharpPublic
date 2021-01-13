@@ -331,6 +331,10 @@
     <ZipProject Include="Templates\Projects\Windows\ConsoleCoreNet\ConsoleApplication.png" />
     <ZipProject Include="Templates\Projects\Windows\ConsoleCoreNet\ConsoleApplication.vstemplate" />
     <ZipProject Include="Templates\Projects\Windows\ConsoleCoreNet\ConsoleApplication.xsproj" />
+    <ZipItem Include="Templates\ProjectItems\Code\TextTemplate\TextTemplate.tt">
+      <LastGenOutput>TextTemplate.cs</LastGenOutput>
+    </ZipItem>
+    <ZipItem Include="Templates\ProjectItems\Code\TextTemplate\TextTemplate.vstemplate" />
     <Content Include="XSharp.png" />
     <VSCTCompile Include="XSharpProjectPackage.vsct">
       <ResourceName>Menus.ctmenu</ResourceName>

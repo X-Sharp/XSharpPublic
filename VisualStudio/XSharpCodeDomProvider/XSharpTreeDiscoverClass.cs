@@ -63,7 +63,7 @@ namespace XSharp.CodeDom
     {
         private XCodeMemberMethod initComponent;
 
-        public XSharpClassDiscover(IProjectTypeHelper projectNode) : base(projectNode)
+        public XSharpClassDiscover(IProjectTypeHelper projectNode, CodeTypeDeclaration typeInOtherFile) : base(projectNode, typeInOtherFile)
         {
             // The default (empty) CodeCompileUnit, so we can work if none is provided
             this.CodeCompileUnit = new XCodeCompileUnit();

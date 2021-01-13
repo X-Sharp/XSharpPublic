@@ -2460,30 +2460,43 @@ namespace XSharp.LanguageService
 
         private static string BuildTokenString(IList<IToken> tokens, int start = 0)
         {
-            var res = getDelimitedTokens(tokens, start, XSharpLexer.LPAREN, XSharpLexer.RPAREN);
-            if (res.Length > 0)
-            {
-                return res + "()";
-            }
-            res = getDelimitedTokens(tokens, start, XSharpLexer.LCURLY, XSharpLexer.RCURLY);
-            if (res.Length > 0)
-            {
-                return res + "{}";
-            }
-            res = getDelimitedTokens(tokens, start, XSharpLexer.LBRKT, XSharpLexer.RBRKT);
-            if (res.Length > 0)
-            {
-                return res + "[]";
-            }
-            return "";
-        }
-
-        static string getDelimitedTokens(IList<IToken> tokens, int start, int leftToken, int rightToken)
-        {
             var sb = new StringBuilder();
             bool left = false, right = false;
             int nested = 0;
             bool done = false;
+            int leftToken = 0;
+            int rightToken = 0;
+            string leftStr = "";
+            string rightStr = "";
+            for (int i = start; i < tokens.Count && !done; i++)
+            {
+                var t = tokens[i];
+                switch (t.Type)
+                {
+                    case XSharpLexer.LPAREN:
+                        leftToken = t.Type;
+                        rightToken = XSharpLexer.RPAREN;
+                        leftStr = "(";
+                        rightStr = ")";
+                        break;
+                    case XSharpLexer.LCURLY:
+                        leftToken = t.Type;
+                        rightToken = XSharpLexer.RCURLY;
+                        leftStr = "{";
+                        rightStr = "}";
+                        break;
+                    case XSharpLexer.LBRKT:
+                        leftToken = t.Type;
+                        rightToken = XSharpLexer.RBRKT;
+                        leftStr = "[";
+                        rightStr = "]";
+                        break;
+                }
+                if (leftToken != 0)
+                    break;
+            }
+            if (leftToken == 0 || rightToken == 0)
+                return "";
             for (int i = start; i < tokens.Count && !done; i++)
             {
                 var t = tokens[i];
@@ -2497,7 +2510,9 @@ namespace XSharp.LanguageService
                     right = true;
                     nested--;
                     if (nested == 0)
+                    {
                         done = true;
+                    }
                 }
                 else
                 {
@@ -2509,7 +2524,7 @@ namespace XSharp.LanguageService
             }
             if (left && right)
             {
-                return sb.ToString();
+                return sb.ToString() + leftStr + rightStr;
             }
             return "";
         }

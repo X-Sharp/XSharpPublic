@@ -954,7 +954,20 @@ namespace XSharp.CodeDom
                     break;
                 case XSharpParser.CHAR_CONST:
                     value = context.GetText();
-                    value = value.Substring(1, value.Length - 2);
+                    if (value[0] == 'C' || value[0] == 'c')
+                    {
+                        value = value.Substring(1);
+                    }
+                    if (value.Length == 3)
+                    { 
+                        value = value.Substring(1, 1);
+                    }
+                    else  // escaped notation
+                    {
+                        value = value.Substring(0, value.Length - 1);
+                        value = BuildUnEscapedString(value);
+                    }
+
                     if (value.Length >= 1)
                         expr = new CodePrimitiveExpression(value[0]);
                     break;
@@ -972,6 +985,7 @@ namespace XSharp.CodeDom
                 case XSharpParser.NULL_SYMBOL:
                 case XSharpParser.SYMBOL_CONST:
                 case XSharpParser.DATE_CONST:
+                case XSharpParser.BINARY_CONST:
                 default:
                     expr = BuildSnippetExpression(context.Token.Text);
                     break;
@@ -1372,9 +1386,9 @@ namespace XSharp.CodeDom
             else
             {
                 double d;
-                if (value.EndsWith("m", StringComparison.OrdinalIgnoreCase) ||
-                    value.EndsWith("s", StringComparison.OrdinalIgnoreCase) ||
-                    value.EndsWith("d", StringComparison.OrdinalIgnoreCase))
+                if (value.EndsWith("m", StringComparison.OrdinalIgnoreCase) ||      // money
+                    value.EndsWith("s", StringComparison.OrdinalIgnoreCase) ||      // single
+                    value.EndsWith("d", StringComparison.OrdinalIgnoreCase))        // double
                 {
                     value = value.Substring(0, value.Length - 1);
                 }

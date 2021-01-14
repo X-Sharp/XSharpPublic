@@ -75,7 +75,7 @@ CLASS ListView INHERIT TextControl
 		RETURN NULL_OBJECT
 
 	METHOD __CreateDragImageList(nItem AS DWORD) AS OBJECT STRICT 
-		//Todo
+		//Todo __CreateDragImageList
 		//LOCAL hImageList AS PTR
 		//LOCAL strucPoint IS _winPoint
 		//// create an ImageList handle from a ListView item
@@ -356,11 +356,11 @@ CLASS ListView INHERIT TextControl
 		RETURN lDragDropEnabled
 
 	ACCESS DragImageList AS ImageList
-		//Todo		
+		//Todo	 DragImageList	
 		RETURN NULL_OBJECT
 
 	ASSIGN DragImageList(oNewDragImageList AS ImageList) 
-		//Todo		
+		//Todo	 DragImageList	
 		RETURN 
 
 	METHOD EditItemLabel(nItem AS LONG) 
@@ -674,7 +674,7 @@ CLASS ListView INHERIT TextControl
 		RETURN __ListView:Items:Count
 
 	ACCESS ItemsPerPage AS LONG
-		//tODO
+		//tODO ItemsPerPage
 		RETURN 0
 	
 
@@ -706,7 +706,7 @@ CLASS ListView INHERIT TextControl
 		RETURN LOGIC(_CAST, ListView_Scroll(SELF:Handle(), oDimension:Width, -oDimension:Height))
 
 	ACCESS SearchString AS STRING
-		//Todo
+		//Todo SearchString
 		//LOCAL pszSearchString AS PSZ
 		//LOCAL cSearchString AS STRING
 		//LOCAL DIM aBuf[257] AS BYTE
@@ -718,7 +718,7 @@ CLASS ListView INHERIT TextControl
 		RETURN "" 
 		
 	METHOD Seek(uValue, kSeekType, nStart, lWrap, lPartial) 
-		//Todo
+		//Todo Seek
 		LOCAL oPoint AS Point
 		//LOCAL aValList AS ARRAY
 		//LOCAL dwIndex, dwCount AS DWORD
@@ -800,7 +800,7 @@ CLASS ListView INHERIT TextControl
 		RETURN TRUE
 
 	METHOD SetBackgroundImage(uImage,dwFlags,xOffSet,yOffSet) 
-		//Todo
+		//Todo SetBackgroundImage
 		RETURN FALSE
 	// Requires a call to CoInitialize() or the OLE library linked in. If CoInitialize() call CoUnitialize() later.
 	//LOCAL pLVBKI IS _WINLVBKIMAGE
@@ -961,7 +961,7 @@ CLASS ListView INHERIT TextControl
 		RETURN FALSE
 
 	METHOD SetSelectedColumn(nIndex AS LONG) AS LOGIC
-		//Todo			
+		//Todo	 SetSelectedColumn		
 		//SendMessage(SELF:handle(), LVM_SETSELECTEDCOLUMN, nIndex-1, 0)
 
 		//InvalidateRect(SELF:handle(),NULL,TRUE)
@@ -1056,7 +1056,7 @@ CLASS ListView INHERIT TextControl
 		RETURN 
 
 	ACCESS ViewBoundingBox AS BoundingBox
-		//Todo
+		//Todo ViewBoundingBox
 		//LOCAL strucRect IS _winRect
 		//LOCAL oOrigin AS Point
 		//LOCAL oSize AS Dimension
@@ -1072,7 +1072,7 @@ CLASS ListView INHERIT TextControl
 		RETURN NULL_OBJECT
 
 	ACCESS ViewOrigin AS Point
-		//Todo
+		//Todo ViewOrigin
 		//LOCAL strucPoint IS _winPoint
 		//// this call is only meaningful if the current view is list or report
 		//IF ListView_GetOrigin(SELF:Handle(),  @strucPoint)
@@ -1261,11 +1261,11 @@ CLASS ListViewItem INHERIT VObject
 		lDisabled := lEnabled
 
 	ACCESS DropTarget  AS LOGIC
-		//Todo
+		//Todo DropTarget
 		RETURN lDropTarget
 
 	ASSIGN DropTarget(lEnabled AS LOGIC) 
-		//Todo
+		//Todo DropTarget
 		lDropTarget := lEnabled
 
 	ACCESS Focused  AS LOGIC
@@ -1354,7 +1354,7 @@ CLASS ListViewItem INHERIT VObject
 		RETURN 0
 
 	ACCESS OverlayImageIndex AS LONG
-		//todo
+		//todo OverlayImageIndex
 		// see http://www.hightechtalks.com/dotnet-framework-winforms-controls/overlay-image-listview-221468.html
 		RETURN nOverlayImage
 

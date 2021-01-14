@@ -87,7 +87,7 @@ CLASS ChildWinForm INHERIT ChildAppWindow
 		RETURN u
 		
 	PROTECT METHOD ActivateWinForm() STRICT
-		//Todo
+		//Todo ActivateWinForm
 		//PostMessage(SELF:form:Handle,WM_SETFOCUS,0,0)
 
 		//IF SELF:form:Controls:Count > 0

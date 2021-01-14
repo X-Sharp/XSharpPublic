@@ -135,7 +135,7 @@ CLASS WinFormVOWindowHost INHERIT Component
 		RETURN result
 		
 	METHOD AdjustVOWindow() AS VOID STRICT
-		//Todo
+		//Todo AdjustVOWindow
 		//IF ! window == NULL
 		//    LOCAL windowRect IS _winRect
 		//    GetWindowRect(window:Handle(),@windowRect)

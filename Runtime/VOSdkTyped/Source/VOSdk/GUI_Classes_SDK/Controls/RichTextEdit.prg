@@ -90,7 +90,7 @@ CLASS RichEdit INHERIT MultiLineEdit
 		RETURN SELF
 
 	//ACCESS Font 
-		//Todo
+		//Todo Font
 	//	RETURN  NULL_OBJECT
 	////PP-040322 Update from S Ebert
 	//LOCAL oFont AS Font
@@ -136,7 +136,7 @@ CLASS RichEdit INHERIT MultiLineEdit
 	//RETURN oFont
 
 	//ASSIGN Font (oNewFont) 
-		//Todo
+		//Todo Font
 		//LOCAL strucCharFormat IS _winCHARFORMAT
 		//LOCAL cFaceName AS STRING
 
@@ -327,7 +327,7 @@ CLASS RichEdit INHERIT MultiLineEdit
 		__RichEdit:SelectionIndent := nIndent
 
 	METHOD Print(oPrintingDevice, oRange) 
-		//Todo
+		//Todo Print
 		//LOCAL strucFormatRange IS _winFormatRange
 		//LOCAL strucPrintDlg IS _winPrintDlg
 		//LOCAL strucDocInfo IS _winDocInfo

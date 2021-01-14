@@ -17,7 +17,7 @@ BEGIN NAMESPACE XSharpModel
 	STATIC PRIVATE oConn   AS SQLiteConnection     // In memory database !
 	STATIC PRIVATE lastWritten := DateTime.MinValue AS DateTime
 	STATIC PRIVATE currentFile AS STRING
-	PRIVATE CONST CurrentDbVersion := 0.5 AS System.Double
+	PRIVATE CONST CurrentDbVersion := 0.6 AS System.Double
 		
 		STATIC METHOD CreateOrOpenDatabase(cFileName AS STRING) AS VOID
 			LOCAL lValid := FALSE AS LOGIC
@@ -143,31 +143,22 @@ BEGIN NAMESPACE XSharpModel
 				VAR cmd := SQLiteCommand{"SELECT 1",connection}
 				Log("Creating new database schema")
 				#region Drop Existing Tables
-				cmd:CommandText := "DROP TABLE IF EXISTS Projects"
-				cmd:ExecuteNonQuery()		
-				cmd:CommandText := "DROP TABLE IF EXISTS FilesPerProject"
-				cmd:ExecuteNonQuery()		
-				cmd:CommandText := "DROP TABLE IF EXISTS Files"
-				cmd:ExecuteNonQuery()		
-				cmd:CommandText := "DROP TABLE IF EXISTS Types"
-				cmd:ExecuteNonQuery()		
-				cmd:CommandText := "DROP TABLE IF EXISTS Members"
-				cmd:ExecuteNonQuery()		
-				cmd:CommandText := "DROP TABLE IF EXISTS Assemblies"
-				cmd:ExecuteNonQuery()		
-				cmd:CommandText := "DROP TABLE IF EXISTS ReferencedTypes"
-				cmd:ExecuteNonQuery()		
-				cmd:CommandText := "DROP TABLE IF EXISTS CommentTasks"
+				cmd:CommandText := "DROP TABLE IF EXISTS Projects ;"
+				cmd:CommandText += "DROP TABLE IF EXISTS FilesPerProject ;"
+				cmd:CommandText += "DROP TABLE IF EXISTS Files ;"
+				cmd:CommandText += "DROP TABLE IF EXISTS Types ;"
+				cmd:CommandText += "DROP TABLE IF EXISTS Members ;"
+				cmd:CommandText += "DROP TABLE IF EXISTS Assemblies ;"
+				cmd:CommandText += "DROP TABLE IF EXISTS ReferencedTypes ;"
+				cmd:CommandText += "DROP TABLE IF EXISTS CommentTasks ;"
 				cmd:ExecuteNonQuery()		
 				#endregion
 				#region Table Projects
 				VAR stmt	:= "Create Table Projects ("
 				stmt     	+= " Id integer NOT NULL PRIMARY KEY, ProjectFileName text NOT NULL COLLATE NOCASE "
-				stmt		+= " )"
-				cmd:CommandText := stmt
-				cmd:ExecuteNonQuery()				
-				
-				stmt	:= "CREATE INDEX Project_Name on Projects (ProjectFileName) "
+				stmt		+= " ) ;"
+                stmt	    += "CREATE UNIQUE INDEX Projects_Pk ON Projects (Id) ;"
+				stmt	    += "CREATE INDEX Projects_Name      ON Projects (ProjectFileName) "
 				cmd:CommandText := stmt
 				cmd:ExecuteNonQuery()				
 				#endregion
@@ -175,87 +166,59 @@ BEGIN NAMESPACE XSharpModel
 				stmt  		:= "CREATE TABLE Files ("
 				stmt     	+= " Id integer NOT NULL PRIMARY KEY, FileName text NOT NULL COLLATE NOCASE,  "
 				stmt     	+= " FileType integer NOT NULL, LastChanged DateTime NOT NULL, Size integer"
-				stmt		   += " )"
-				cmd:CommandText := stmt
-				cmd:ExecuteNonQuery()		
-				
-				stmt	:= "CREATE INDEX File_Name on Files (FileName) "
+				stmt		+= " ) ;"
+                stmt	    += "CREATE UNIQUE INDEX Files_Pk    ON Files (Id) ;"
+				stmt	    += "CREATE INDEX Files_Name         ON Files (FileName) "
 				cmd:CommandText := stmt
 				cmd:ExecuteNonQuery()				
 				#endregion
 				#region Table FilesPerProject
 				
-				stmt  	:=  "CREATE TABLE FilesPerProject ("
-				stmt	   +=  " idFile integer NOT NULL, idProject integer NOT NULL, " 
-				stmt     +=  " PRIMARY KEY (idFile, idProject), " 
-				stmt	   +=  " FOREIGN KEY (idFile) 	  REFERENCES Files (Id)    ON DELETE CASCADE ON UPDATE CASCADE, " 
-				stmt     +=  " FOREIGN KEY (idProject) REFERENCES Projects (Id) ON DELETE CASCADE ON UPDATE CASCADE "
-				stmt	   +=  " )"
-				
+				stmt    := "CREATE TABLE FilesPerProject ("
+				stmt	+= " idFile integer NOT NULL, idProject integer NOT NULL, " 
+				stmt    += " PRIMARY KEY (idFile, idProject), " 
+				stmt	+= " FOREIGN KEY (idFile) 	  REFERENCES Files (Id)    ON DELETE CASCADE ON UPDATE CASCADE, " 
+				stmt    += " FOREIGN KEY (idProject) REFERENCES Projects (Id) ON DELETE CASCADE ON UPDATE CASCADE "
+				stmt	+= " ) ;"
+				stmt	+= "CREATE UNIQUE INDEX FilesPerProject_Pk  ON FilesPerProject (idFile, idProject); "
+				stmt	+= "CREATE INDEX FilesPerProject_File       ON FilesPerProject (idFile) ;"
+				stmt	+= "CREATE INDEX FilesPerProject_Project    ON FilesPerProject (idProject) "
 				cmd:CommandText := stmt
 				cmd:ExecuteNonQuery()				
-				
-				stmt	:= "CREATE INDEX FilesPerProject_File on FilesPerProject (idFile) "
-				cmd:CommandText := stmt
-				cmd:ExecuteNonQuery()				
-				
-				stmt	:= "CREATE INDEX FilesPerProject_Project on FilesPerProject (idProject) "
-				cmd:CommandText := stmt
-				cmd:ExecuteNonQuery()				
-				
+
+
 				#endregion
 				#region Table Types
 				
-				stmt  	:=  "CREATE TABLE Types ("
-				stmt	   +=  " Id integer NOT NULL PRIMARY KEY, idFile integer NOT NULL, Name text NOT NULL COLLATE NOCASE, Namespace text NOT NULL COLLATE NOCASE, "
-				stmt     +=  " Kind integer NOT NULL, BaseTypeName text COLLATE NOCASE, Attributes integer NOT NULL, "
-				stmt     +=  " StartLine integer , StartColumn integer, EndLine integer , EndColumn integer, Start integer , Stop integer,  "
-				stmt	   +=  " Sourcecode text , XmlComments text, ClassType integer NOT NULL, "
-				stmt     +=  " FOREIGN KEY (idFile) REFERENCES Files (Id) ON DELETE CASCADE ON UPDATE CASCADE"
-				stmt	   += ")"
-				
-				cmd:CommandText := stmt
-				cmd:ExecuteNonQuery()	
-				
-				stmt	:= "CREATE INDEX Type_Name on Types (Name) "
-				cmd:CommandText := stmt
-				cmd:ExecuteNonQuery()				
-				stmt	:= "CREATE INDEX Type_BaseTypeName on Types (BaseTypeName) "
-				cmd:CommandText := stmt
-				cmd:ExecuteNonQuery()				
-				
-				stmt	:= "CREATE INDEX Type_Kind on Types (Kind) "
+				stmt  	:= "CREATE TABLE Types ("
+				stmt	+= " Id integer NOT NULL PRIMARY KEY, idFile integer NOT NULL, Name text NOT NULL COLLATE NOCASE, Namespace text NOT NULL COLLATE NOCASE, "
+				stmt    += " Kind integer NOT NULL, BaseTypeName text COLLATE NOCASE, Attributes integer NOT NULL, "
+				stmt    += " StartLine integer , StartColumn integer, EndLine integer , EndColumn integer, Start integer , Stop integer,  "
+				stmt	+= " Sourcecode text , XmlComments text, ClassType integer NOT NULL, "
+				stmt    += " FOREIGN KEY (idFile) REFERENCES Files (Id) ON DELETE CASCADE ON UPDATE CASCADE"
+				stmt	+= ") ;"
+				stmt	+= "CREATE UNIQUE INDEX Types_Pk    ON Types (Id); "
+				stmt	+= "CREATE INDEX Types_Name         ON Types (Name); "
+				stmt	+= "CREATE INDEX Types_BaseTypeName ON Types (BaseTypeName); "
+				stmt	+= "CREATE INDEX Types_Kind         ON Types (Kind) "
 				cmd:CommandText := stmt
 				cmd:ExecuteNonQuery()				
 				
 				#endregion
 				#region Table Members
 				
-				stmt  	:=  "CREATE TABLE Members ("
-				stmt	   +=  " Id integer NOT NULL PRIMARY KEY, IdType integer NOT NULL , IdFile integer NOT NULL, "
-				stmt	   +=  " Name text COLLATE NOCASE, Kind integer, Attributes integer NOT NULL, StartLine integer , StartColumn integer ,  "
-				stmt	   +=  " EndLine integer , EndColumn integer , Start integer , Stop integer , Sourcecode text , XmlComments text,"
-				stmt	   +=  " FOREIGN KEY (idType) REFERENCES Types (Id) ON DELETE CASCADE ON UPDATE CASCADE, " 
-				stmt     +=  " FOREIGN KEY (idFile) REFERENCES Files (Id) ON DELETE CASCADE ON UPDATE CASCADE"
-				stmt	   += ")"
-				cmd:CommandText := stmt
-				cmd:ExecuteNonQuery()		
-				
-				
-				stmt	:= "CREATE INDEX Member_Name on Members (Name) "
-				cmd:CommandText := stmt
-				cmd:ExecuteNonQuery()		
-				
-				stmt	:= "CREATE INDEX Member_Type on Members (idType) "
-				cmd:CommandText := stmt
-				cmd:ExecuteNonQuery()		
-				
-				
-				stmt	:= "CREATE INDEX Member_File on Members (idFile) "
-				cmd:CommandText := stmt
-				cmd:ExecuteNonQuery()		
-				
-				stmt	:= "CREATE INDEX Member_Kind on Members (Kind) "
+				stmt    := "CREATE TABLE Members ("
+				stmt	+= " Id integer NOT NULL PRIMARY KEY, IdType integer NOT NULL , IdFile integer NOT NULL, "
+				stmt	+= " Name text COLLATE NOCASE, Kind integer, Attributes integer NOT NULL, StartLine integer , StartColumn integer ,  "
+				stmt	+= " EndLine integer , EndColumn integer , Start integer , Stop integer , Sourcecode text , XmlComments text,"
+				stmt	+= " FOREIGN KEY (idType) REFERENCES Types (Id) ON DELETE CASCADE ON UPDATE CASCADE, " 
+				stmt    += " FOREIGN KEY (idFile) REFERENCES Files (Id) ON DELETE CASCADE ON UPDATE CASCADE"
+				stmt	+= ");"
+				stmt	+= "CREATE UNIQUE INDEX Members_Pk  ON Members (Id); "
+				stmt	+= "CREATE INDEX Members_Name       ON Members (Name); "
+				stmt	+= "CREATE INDEX Members_Type       ON Members (idType); "
+				stmt	+= "CREATE INDEX Members_File       ON Members (idFile); "
+				stmt	+= "CREATE INDEX Members_Kind       ON Members (Kind) "
 				cmd:CommandText := stmt
 				cmd:ExecuteNonQuery()		
 				
@@ -263,59 +226,40 @@ BEGIN NAMESPACE XSharpModel
 				
 				
 				#region Table Assemblies
-				stmt  	:=  "CREATE TABLE Assemblies ("
-				stmt	   +=  " Id integer NOT NULL PRIMARY KEY, Name text NOT NULL COLLATE NOCASE, AssemblyFileName text NOT NULL COLLATE NOCASE, "
-				stmt     +=  " LastChanged DateTime NOT NULL, Size integer "
-				stmt	   += ")"
-				cmd:CommandText := stmt
-				cmd:ExecuteNonQuery()			
-				
-				stmt	:= "CREATE INDEX Assemblies_Name on Assemblies (Name) "
-				cmd:CommandText := stmt
-				cmd:ExecuteNonQuery()				
-				
-				stmt	:= "CREATE INDEX Assemblies_FileName on Assemblies (AssemblyFileName) "
+				stmt  	:= "CREATE TABLE Assemblies ("
+				stmt	+= " Id integer NOT NULL PRIMARY KEY, Name text NOT NULL COLLATE NOCASE, AssemblyFileName text NOT NULL COLLATE NOCASE, "
+				stmt    += " LastChanged DateTime NOT NULL, Size integer "
+				stmt	+= ") ;"
+				stmt	+= "CREATE UNIQUE INDEX Assemblies_Pk   ON Assemblies (Id);"
+				stmt	+= "CREATE INDEX Assemblies_Name        ON Assemblies (Name);"
+				stmt	+= "CREATE INDEX Assemblies_FileName    ON Assemblies (AssemblyFileName) "
 				cmd:CommandText := stmt
 				cmd:ExecuteNonQuery()				
 				
 				#endregion
 				#region Table ReferencedTypes
-				stmt  	:=  "CREATE TABLE ReferencedTypes ("
-				stmt	   +=  " Id integer NOT NULL PRIMARY KEY, idAssembly integer NOT NULL, Name text NOT NULL COLLATE NOCASE, Namespace text NOT NULL COLLATE NOCASE, "
-				stmt     +=  " FullName text NOT NULL, Kind integer NOT NULL, BaseTypeName text COLLATE NOCASE, Attributes integer NOT NULL, "
-				stmt     +=  " FOREIGN KEY (idAssembly) REFERENCES Assemblies (Id) ON DELETE CASCADE ON UPDATE CASCADE"
-				stmt	   += ")"
-				
-				cmd:CommandText := stmt
-				cmd:ExecuteNonQuery()	
-				
-				stmt	:= "CREATE INDEX ReferencedTypes_Name on ReferencedTypes (Name) "
-				cmd:CommandText := stmt
-				cmd:ExecuteNonQuery()				
-				
-				stmt	:= "CREATE INDEX ReferencedTypes_BaseTypeName on ReferencedTypes (BaseTypeName) "
-				cmd:CommandText := stmt
-				cmd:ExecuteNonQuery()				
-				
-				stmt	:= "CREATE INDEX ReferencedTypes_FullName on ReferencedTypes (FullName) "
-				cmd:CommandText := stmt
-				cmd:ExecuteNonQuery()				
-				
-				stmt	:= "CREATE INDEX ReferencedTypes_Kind on ReferencedTypes (Kind) "
+				stmt  	:= "CREATE TABLE ReferencedTypes ("
+				stmt	+= " Id integer NOT NULL PRIMARY KEY, idAssembly integer NOT NULL, Name text NOT NULL COLLATE NOCASE, Namespace text NOT NULL COLLATE NOCASE, "
+				stmt    += " FullName text NOT NULL, Kind integer NOT NULL, BaseTypeName text COLLATE NOCASE, Attributes integer NOT NULL, "
+				stmt    += " FOREIGN KEY (idAssembly) REFERENCES Assemblies (Id) ON DELETE CASCADE ON UPDATE CASCADE"
+				stmt	+= ") ;"
+				stmt	+= "CREATE UNIQUE INDEX ReferencedTypes_Pk      ON ReferencedTypes (Id); "
+				stmt	+= "CREATE INDEX ReferencedTypes_Name           ON ReferencedTypes (Name); "
+				stmt	+= "CREATE INDEX ReferencedTypes_BaseTypeName   ON ReferencedTypes (BaseTypeName); "
+				stmt	+= "CREATE INDEX ReferencedTypes_FullName       ON ReferencedTypes (FullName); "
+				stmt	+= "CREATE INDEX ReferencedTypes_Kind           ON ReferencedTypes (Kind); "
 				cmd:CommandText := stmt
 				cmd:ExecuteNonQuery()		         
 				#endregion
 				
 				#region Table CommentTasks
 				stmt  	:=  "CREATE TABLE CommentTasks ("
-				stmt	   +=  " Id integer NOT NULL PRIMARY KEY, idFile integer NOT NULL, Line integer, Column integer, Priority integer,  "
-				stmt     +=  " Comment text NOT NULL, "
-				stmt     +=  " FOREIGN KEY (idFile) REFERENCES Files (Id) ON DELETE CASCADE ON UPDATE CASCADE"
-				stmt	   += ")"
-				cmd:CommandText := stmt
-				cmd:ExecuteNonQuery()		         
-				
-				stmt	:= "CREATE INDEX CommentTasks_File on CommentTasks (idFile) "
+				stmt	+=  " Id integer NOT NULL PRIMARY KEY, idFile integer NOT NULL, Line integer, Column integer, Priority integer,  "
+				stmt    +=  " Comment text NOT NULL, "
+				stmt    +=  " FOREIGN KEY (idFile) REFERENCES Files (Id) ON DELETE CASCADE ON UPDATE CASCADE"
+				stmt	+= ") ;"
+				stmt	+= "CREATE UNIQUE INDEX CommentTasks_Pk ON ReferencedTypes (Id); "
+                stmt	+= "CREATE INDEX CommentTasks_File      ON CommentTasks (idFile) "
 				cmd:CommandText := stmt
 				cmd:ExecuteNonQuery()				
 				
@@ -329,7 +273,7 @@ BEGIN NAMESPACE XSharpModel
 				cmd:CommandText := stmt
 				cmd:ExecuteNonQuery()		
 				
-				
+
 				stmt := "CREATE VIEW TypeMembers AS SELECT m.*, t.Name AS TypeName, t.Namespace, t.BaseTypeName, t.ClassType " + ;
 				"FROM members m JOIN Types t ON m.IdType = t.Id"
 				cmd:CommandText := stmt

@@ -75,7 +75,7 @@ BEGIN NAMESPACE XSharpModel
                         // If we don't set Interactive, the EntityList will be emptied after the Parse() operation
                         file:Interactive := TRUE
                         file:Id        := element:IdFile
-                        VAR members := XDatabase.GetMembers(idType)
+                        VAR members := XDatabase.GetMembers(idType, idProject)
                         // now create a temporary source for the parser
                         VAR source     := GetTypeSource(element, members)
                         VAR walker := SourceWalker{file}

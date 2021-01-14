@@ -168,7 +168,8 @@ BEGIN NAMESPACE XSharpModel
             VAR vis  := _AND(mods, Modifiers.VisibilityMask)
             IF IsStartOfEntity(OUT VAR entityKind, mods)
                IF _hasXmlDoc
-                  VAR cDoc := first:XmlComments
+                  LOCAL cDoc := first:XmlComments AS STRING
+                  cDoc := cDoc:Replace("///","")
                   IF ! String.IsNullOrEmpty(cDoc)
                      cXmlDoc := "<doc>"+cDoc+"</doc>"
                   ELSE

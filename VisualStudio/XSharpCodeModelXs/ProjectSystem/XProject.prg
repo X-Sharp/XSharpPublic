@@ -878,7 +878,7 @@ BEGIN NAMESPACE XSharpModel
             VAR file       := XFile{element:FileName,SELF}
             file:Virtual   := TRUE
             file:Id        := element:IdFile
-            VAR members := XDatabase.GetMembers(idType):ToArray()
+            VAR members := XDatabase.GetMembers(idType,idProject):ToArray()
             // now create a temporary source for the parser
             VAR source     := GetTypeSource(element, members)
             VAR walker     := SourceWalker{file}

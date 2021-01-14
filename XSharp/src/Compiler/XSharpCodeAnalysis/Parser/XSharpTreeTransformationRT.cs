@@ -134,12 +134,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             string name = _options.CommandLineArguments?.CompilationOptions.ModuleName;
             string firstSource = _options.CommandLineArguments?.SourceFiles.FirstOrDefault().Path;
-            if (String.IsNullOrEmpty(name))
+            if (string.IsNullOrEmpty(name))
             {
                 name = firstSource;
             }
 
-            if (!String.IsNullOrEmpty(name))
+            if (!string.IsNullOrEmpty(name))
             {
                 string filename = PathUtilities.GetFileName(name);
                 filename = PathUtilities.RemoveExtension(filename);
@@ -664,7 +664,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                               emptysizes,
                               SyntaxFactory.MakeToken(SyntaxKind.CloseBracketToken));
                         atype = _syntaxFactory.ArrayType(stringtype, emptyrank);
-                        parameter = parameter.Update(EmptyList<AttributeListSyntax>(), EmptyList<SyntaxToken>(),
+                        parameter = parameter.Update(
+                            default,
+                            default,
                             atype, parameter.Identifier, null);
                         parList = _syntaxFactory.ParameterList(parList.OpenParenToken, MakeSeparatedList(parameter), parList.CloseParenToken);
                         _pool.Free(emptysizes);
@@ -1576,7 +1578,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         public override void ExitDestructor([NotNull] XP.DestructorContext context)
         {
-            var modifiers = context.Modifiers?.GetList<SyntaxToken>() ?? EmptyList<SyntaxToken>();
+            var modifiers = context.Modifiers?.GetList<SyntaxToken>() ?? default;
             var dtor = createDestructor(context, modifiers,
                 context.Attributes, context.StmtBlk, context, context.isInInterface(), context.LocalFunctions);
             if (dtor != null)
@@ -1635,7 +1637,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 else if (XSharpString.Equals(idName, XSharpIntrinsicNames.AxitMethod))
                 {
                     // Convert method to destructor
-                    var mods = context.Modifiers?.GetList<SyntaxToken>() ?? EmptyList<SyntaxToken>();
+                    var mods = context.Modifiers?.GetList<SyntaxToken>() ?? default;
                     var dtor = createDestructor(context,
                         mods, context.Attributes, context.StmtBlk, context,false, context.LocalFunctions);
                     if (dtor != null)
@@ -2837,8 +2839,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             var mods = TokenList(SyntaxKind.InternalKeyword, SyntaxKind.StaticKeyword);
             var @params = new List<ParameterSyntax>();
             @params.Add(_syntaxFactory.Parameter(
-                EmptyList<AttributeListSyntax>(),
-                EmptyList<SyntaxToken>(),
+                default,
+                default,
                 _ptrType,
                 p,
                 null));
@@ -2874,12 +2876,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             var @params = new List<ParameterSyntax>();
             for (int i = 1; i < context.ArgList._Args.Count; i++)
             {
-                var pname = SyntaxFactory.Identifier("$param" + i.ToString());
-                var param = _syntaxFactory.Parameter(EmptyList<AttributeListSyntax>(),
-                    EmptyList<SyntaxToken>(),
-                    objectType,
-                    pname,
-                    null);
+                var param = MakeParameter("$param" + i.ToString(), objectType);
                 @params.Add(param);
             }
             var paramList = MakeParameterList(@params); 
@@ -3341,8 +3338,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 {
                     var parm = parameters.Parameters[i];
                     var par = _syntaxFactory.Parameter(
-                          attributeLists: EmptyList<AttributeListSyntax>(), //attrlist,
-                          modifiers: EmptyList<SyntaxToken>(),
+                          attributeLists: default, //attrlist,
+                          modifiers: default,
                           type: _usualType,
                           identifier: parm.Identifier,@default: defExpr);
                     @params.Add(par);
@@ -4192,11 +4189,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         arrowToken: SyntaxFactory.MakeToken(SyntaxKind.EqualsGreaterThanToken),
                         body: MakeBlock(MakeList<StatementSyntax>(
                             pushStmt,
-                            _syntaxFactory.TryStatement(SyntaxFactory.MakeToken(SyntaxKind.TryKeyword),
-                                MakeBlock(MakeList<StatementSyntax>(GenerateReturn(expr))),
-                                EmptyList<CatchClauseSyntax>(),
-                                _syntaxFactory.FinallyClause(SyntaxFactory.MakeToken(SyntaxKind.FinallyKeyword),
-                                    MakeBlock(MakeList<StatementSyntax>(popStmt))
+                            _syntaxFactory.TryStatement(
+                                    SyntaxFactory.MakeToken(SyntaxKind.TryKeyword),
+                                    MakeBlock(MakeList<StatementSyntax>(GenerateReturn(expr))),
+                                    default,
+                                    _syntaxFactory.FinallyClause(
+                                            SyntaxFactory.MakeToken(SyntaxKind.FinallyKeyword),
+                                            MakeBlock(MakeList<StatementSyntax>(popStmt))
                                     )
                                 )
                             ))

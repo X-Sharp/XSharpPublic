@@ -8144,15 +8144,6 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Parenthesized expressions with multiple expressions separated with commas are not supported inside Lambda expressions or Codeblocks. We recommend to extract the expression {0} into a separate (local) function or method..
-        /// </summary>
-        internal static string ERR_ParenthesizedInsideCodeblock {
-            get {
-                return ResourceManager.GetString("ERR_ParenthesizedInsideCodeblock", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Parser: {0}.
         /// </summary>
         internal static string ERR_ParserError {

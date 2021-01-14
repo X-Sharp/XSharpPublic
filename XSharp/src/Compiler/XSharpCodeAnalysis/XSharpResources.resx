@@ -5739,10 +5739,4 @@ To remove the warning, you can use /reference instead (set the Embed Interop Typ
   <data name="ERR_ExpressionBodyClipperCallingConvention" xml:space="preserve">
     <value>An Expression Body is not supported for methods / functions with untyped parameters.</value>
   </data>
-  <data name="ERR_ParenthesizedInsideCodeblock" xml:space="preserve">
-    <value>Parenthesized expressions with multiple expressions separated with commas are not supported inside Lambda expressions or Codeblocks. We recommend to extract the expression {0} into a separate (local) function or method.</value>
-  </data>
-  
-
-
 </root>

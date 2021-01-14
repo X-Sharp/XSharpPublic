@@ -63,28 +63,24 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 var lit = GenerateLiteral(context.Alignment);
                 attargs.Add(_syntaxFactory.AttributeArgument(GenerateNameEquals("Pack"), null, lit));
             }
-
-            MemberDeclarationSyntax m = _syntaxFactory.StructDeclaration(
-                attributeLists: MakeList(
-                    MakeAttributeList(
-                        target: null,
-                        attributes: MakeSeparatedList(
+            var atts = MakeSeparatedList(
                             _syntaxFactory.Attribute(
                                 name: GenerateQualifiedName(SystemQualifiedNames.StructLayout),
                                 argumentList: MakeAttributeArgumentList(MakeSeparatedList(attargs.ToArrayAndFree()))
                                 )
-                            ))
-                    ),
+                            );
+            MemberDeclarationSyntax m = _syntaxFactory.StructDeclaration(
+                attributeLists: MakeList( MakeAttributeList(default, atts)),
                 modifiers: mods,
                 keyword: SyntaxFactory.MakeToken(SyntaxKind.StructKeyword),
                 identifier: context.Id.Get<SyntaxToken>(),
-                typeParameterList: null,
-                baseList: null,
-                constraintClauses: null,
+                typeParameterList: default,
+                baseList: default,
+                constraintClauses: default,
                 openBraceToken: SyntaxFactory.MakeToken(SyntaxKind.OpenBraceToken),
-                members: (context._Members?.Count > 0) ? MakeList<MemberDeclarationSyntax>(context._Members) : EmptyList<MemberDeclarationSyntax>(),
+                members: (context._Members?.Count > 0) ? MakeList<MemberDeclarationSyntax>(context._Members) : default,
                 closeBraceToken: SyntaxFactory.MakeToken(SyntaxKind.CloseBraceToken),
-                semicolonToken: null);
+                semicolonToken: default);
             m.XVoDecl = true;
             if (context.Namespace != null)
             {
@@ -92,7 +88,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             else
             {
-                m = (MemberDeclarationSyntax)CheckTypeName(context, "VOSTRUCT", m);
+                m = (MemberDeclarationSyntax)CheckForConflictBetweenTypeNameAndNamespaceName(context, "VOSTRUCT", m);
             }
             context.Put(m);
         }
@@ -130,7 +126,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 voStructHasDim = true;
             }
 
-            SyntaxList<AttributeListSyntax> atts = null;
+            SyntaxList<AttributeListSyntax> atts = default;
             if (isUnionMember)
             {
                 var args = MakeSeparatedList(
@@ -142,10 +138,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                                 name: GenerateQualifiedName(SystemQualifiedNames.FieldOffset),
                                 argumentList: arglist));
                 atts = MakeAttributeList(null, att);
-            }
-            else
-            {
-                atts = EmptyList<AttributeListSyntax>();
             }
             context.Put(_syntaxFactory.FieldDeclaration(
                 atts,
@@ -195,7 +187,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 baseList: null,
                 constraintClauses: null,
                 openBraceToken: SyntaxFactory.MakeToken(SyntaxKind.OpenBraceToken),
-                members: (context._Members?.Count > 0) ? MakeList<MemberDeclarationSyntax>(context._Members) : EmptyList<MemberDeclarationSyntax>(),
+                members: (context._Members?.Count > 0) ? MakeList<MemberDeclarationSyntax>(context._Members) : default,
                 closeBraceToken: SyntaxFactory.MakeToken(SyntaxKind.CloseBraceToken),
                 semicolonToken: null);
             m.XVoDecl = true;
@@ -205,7 +197,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             else
             {
-                m = (MemberDeclarationSyntax)CheckTypeName(context, "UNION", m);
+                m = (MemberDeclarationSyntax)CheckForConflictBetweenTypeNameAndNamespaceName(context, "UNION", m);
             }
             context.Put(m);
         }

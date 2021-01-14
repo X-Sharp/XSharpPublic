@@ -655,13 +655,15 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
 
             #region Accessor
-            if (!String.IsNullOrEmpty(accName))
+            if (!string.IsNullOrEmpty(accName))
             {
                 var methodCall = GenerateMethodCall(accName, true);
                 var block = MakeBlock(GenerateReturn(methodCall));
                 block.XGenerated = true;
-                var accessor = _syntaxFactory.AccessorDeclaration(SyntaxKind.GetAccessorDeclaration,
-                        EmptyList<AttributeListSyntax>(), EmptyList<SyntaxToken>(),
+                var accessor = _syntaxFactory.AccessorDeclaration(
+                        SyntaxKind.GetAccessorDeclaration,
+                        default,
+                        default,
                         SyntaxFactory.MakeToken(SyntaxKind.GetKeyword),
                         block, null, SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken));
                 accessor.XNode = method;
@@ -669,7 +671,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             #endregion
             #region Assign
-            if (!String.IsNullOrEmpty(assName))
+            if (!string.IsNullOrEmpty(assName))
             {
                 method = propDecl.SetEntity as XP.XppmethodContext;
                 var args = MakeArgumentList(MakeArgument(GenerateSimpleName("value")));
@@ -677,8 +679,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 var stmt = GenerateExpressionStatement(methodCall);
                 var block = MakeBlock(stmt);
                 block.XGenerated = true;
-                var accessor = _syntaxFactory.AccessorDeclaration(SyntaxKind.SetAccessorDeclaration,
-                        EmptyList<AttributeListSyntax>(), EmptyList<SyntaxToken>(),
+                var accessor = _syntaxFactory.AccessorDeclaration(
+                        SyntaxKind.SetAccessorDeclaration,
+                        default, default,
                         SyntaxFactory.MakeToken(SyntaxKind.SetKeyword),
                         block, null, SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken));
                 accessor.XNode = method;

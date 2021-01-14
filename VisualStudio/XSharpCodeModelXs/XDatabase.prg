@@ -1095,19 +1095,19 @@ BEGIN NAMESPACE XSharpModel
 			Log(i"GetReferenceTypes '{sName}' returns {result.Count} matches")
 		RETURN result         
 		
-		STATIC METHOD GetMembers(idType AS INT64) AS IList<XDbResult>
-			VAR stmt := "Select * from ProjectMembers where IdType ="+idType:ToString()
+		STATIC METHOD GetMembers(idType AS INT64, idProject AS INT64) AS IList<XDbResult>
+			VAR stmt := "Select * from ProjectMembers where IdType ="+idType:ToString()+" AND IdProject = "+idProject:ToString()
 			stmt     += " order by idFile, idType" 
 			VAR result := List<XDbResult>{}
 			IF IsDbOpen
 				BEGIN LOCK oConn
 					TRY
-							BEGIN USING VAR oCmd := SQLiteCommand{stmt, oConn}
-								BEGIN USING VAR rdr := oCmd:ExecuteReader()
-									DO WHILE rdr:Read()
-										result:Add(CreateMemberInfo(rdr))
-									ENDDO
-								END USING
+					    BEGIN USING VAR oCmd := SQLiteCommand{stmt, oConn}
+						    BEGIN USING VAR rdr := oCmd:ExecuteReader()
+							    DO WHILE rdr:Read()
+								    result:Add(CreateMemberInfo(rdr))
+							    ENDDO
+						    END USING
 						END USING
 					CATCH e AS Exception
 						Log("Exception: "+e:ToString())

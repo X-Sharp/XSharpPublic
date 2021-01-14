@@ -45,8 +45,8 @@ CLASS StatusBar INHERIT Control
 
     PROPERTY ControlType AS ControlType GET ControlType.StatusBar
 
-	METHOD OnControlCreated(oC AS System.Windows.Forms.Control) AS VOID
-		VAR oControl := (VOStatusStrip) oC
+	METHOD OnControlCreated(oC AS IVOControl) AS VOID
+		VAR oControl := (IVOStatusBar) oC
 		oControl:Stretch := TRUE
 		oControl:ShowItemToolTips := TRUE
 		oControl:CanOverflow := TRUE
@@ -76,11 +76,11 @@ CLASS StatusBar INHERIT Control
 
 
 
-	ACCESS __StatusStrip AS VOStatusStrip
+	ACCESS __StatusStrip AS IVOStatusBar
 		IF oCtrl == NULL_OBJECT
 			SELF:Create()
 		ENDIF
-		RETURN (VOStatusStrip) oCtrl
+		RETURN (IVOStatusBar) oCtrl
 
 
 	

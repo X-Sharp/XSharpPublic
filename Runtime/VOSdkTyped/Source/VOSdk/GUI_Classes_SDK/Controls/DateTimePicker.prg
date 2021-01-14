@@ -16,8 +16,8 @@ CLASS DateTimePicker INHERIT TextControl
 		SUPER(oOwner, xID, oPoint, oDimension, "SysDateTimePick32", dwStyle, lDataAware)
 		RETURN 
 
-    METHOD OnControlCreated(oC AS System.Windows.Forms.Control) AS VOID
-        VAR oDT := (VODateTimePicker) oC
+    METHOD OnControlCreated(oC AS IVOControl) AS VOID
+        VAR oDT := (IVODateTimePicker) oC
         oDT:ShowCheckBox:= TRUE
     	oDT:MinDate     := DateTime.MinValue
 	    oDT:MaxDate     := DateTime.MaxValue
@@ -25,8 +25,8 @@ CLASS DateTimePicker INHERIT TextControl
         RETURN
 
 
-	ACCESS __DateTimePicker AS VODateTimePicker
-		RETURN (VODateTimePicker) oCtrl
+	ACCESS __DateTimePicker AS IVODateTimePicker
+		RETURN (IVODateTimePicker) oCtrl
 
 	METHOD __Gather() AS LOGIC STRICT 
 		LOCAL lReturn AS LOGIC

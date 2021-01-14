@@ -10,7 +10,7 @@ USING System.Drawing
 USING System.Collections.Generic
 USING VOSDK := XSharp.VO.SDK
 
-CLASS VOButton INHERIT System.Windows.Forms.Button IMPLEMENTS IVOControl, IVOControlInitialize
+CLASS VOButton INHERIT System.Windows.Forms.Button IMPLEMENTS IVOButton
 
 	#include "PropControl.vh"
 
@@ -54,7 +54,7 @@ CLASS VOButton INHERIT System.Windows.Forms.Button IMPLEMENTS IVOControl, IVOCon
 	END PROPERTY
 END CLASS
 
-CLASS VOCheckBox INHERIT System.Windows.Forms.CheckBox IMPLEMENTS IVOControl, IVOControlInitialize
+CLASS VOCheckBox INHERIT System.Windows.Forms.CheckBox IMPLEMENTS IVOCheckBox
 	#include "PropControl.vh"
 	
 	METHOD Initialize() AS VOID STRICT
@@ -94,16 +94,16 @@ CLASS VOCheckBox INHERIT System.Windows.Forms.CheckBox IMPLEMENTS IVOControl, IV
 
 END CLASS
 	
-CLASS VORadioButton INHERIT System.Windows.Forms.RadioButton IMPLEMENTS IVOControl, IVOControlInitialize
+CLASS VORadioButton INHERIT System.Windows.Forms.RadioButton IMPLEMENTS IVORadioButton
 	
 	#include "PropControl.vh"
-	EXPORT lBlockCheckedChanged AS LOGIC
+	PROPERTY SuppressCheckedChanged AS LOGIC AUTO := FALSE
 	
 	METHOD Initialize() AS VOID STRICT
-			SELF:FlatStyle := FlatStyle.System
-			SELF:UseCompatibleTextRendering := TRUE
-			SELF:Margin := Padding{0,0,0,0}
-			SELF:SetStyle(ControlStyles.StandardClick, TRUE)
+		SELF:FlatStyle := FlatStyle.System
+		SELF:UseCompatibleTextRendering := TRUE
+		SELF:Margin := Padding{0,0,0,0}
+		SELF:SetStyle(ControlStyles.StandardClick, TRUE)
 		RETURN
 	
 	CONSTRUCTOR(Owner AS VOSDK.Control, dwStyle AS LONG, dwExStyle AS LONG)
@@ -113,34 +113,37 @@ CLASS VORadioButton INHERIT System.Windows.Forms.RadioButton IMPLEMENTS IVOContr
 		SELF:SetVisualStyle()
 		SELF:ForeColor := System.Drawing.Color.Black
 
-	PUBLIC METHOD myCheckedChanged(sender AS OBJECT, e AS EventArgs) AS VOID
-		IF SELF:oProperties != NULL .AND. !lBlockCheckedChanged
-			SELF:oProperties:OnClick(sender, e)
-		ENDIF
-		RETURN
-
-
 	METHOD SetVisualStyle AS VOID STRICT
 		IF oProperties != NULL_OBJECT
 			SELF:TabStop := (_AND(oProperties:Style, WS_TABSTOP) == WS_TABSTOP)
-				LOCAL dwStyle AS LONG
-				dwStyle := _AND(oProperties:Style , _NOT(oProperties:NotStyle))
-				SELF:AutoCheck := _AND(dwStyle, BS_AUTORADIOBUTTON) == BS_AUTORADIOBUTTON
-				IF _AND(dwStyle, BS_LEFTTEXT) == BS_LEFTTEXT
-					SELF:CheckAlign := ContentAlignment.MiddleRight
-				ELSE
-					SELF:CheckAlign := ContentAlignment.MiddleLeft
-				ENDIF
-				SELF:TextAlign := oProperties:TextAlignment
+			LOCAL dwStyle AS LONG
+			dwStyle := _AND(oProperties:Style , _NOT(oProperties:NotStyle))
+			SELF:AutoCheck := _AND(dwStyle, BS_AUTORADIOBUTTON) == BS_AUTORADIOBUTTON
+			IF _AND(dwStyle, BS_LEFTTEXT) == BS_LEFTTEXT
+				SELF:CheckAlign := ContentAlignment.MiddleRight
+			ELSE
+				SELF:CheckAlign := ContentAlignment.MiddleLeft
+			ENDIF
+			SELF:TextAlign := oProperties:TextAlignment
 		ENDIF		
 		SELF:AutoSize := FALSE
 		
 END CLASS
 
-CLASS VOGroupBox INHERIT System.Windows.Forms.GroupBox IMPLEMENTS IVOControl, IVOControlInitialize
+CLASS VOGroupBox INHERIT System.Windows.Forms.GroupBox IMPLEMENTS IVOGroupBox
 	#include "PropControl.vh"
 	PROPERTY IsRadioGroup AS LOGIC AUTO
 	PROTECTED lFound AS LOGIC
+
+    METHOD SetChildIndex(oCtrl AS IVOControl, nIndex AS LONG) AS VOID
+        IF oCtrl IS System.Windows.Forms.Control VAR oC
+            SELF:Controls:SetChildIndex(oC,nIndex)
+        ENDIF
+
+    METHOD AddControl(oCtrl AS IVOControl) AS VOID
+        IF oCtrl IS System.Windows.Forms.Control VAR oC
+            SELF:Controls:Add(oC)
+        ENDIF
 
 	METHOD Initialize AS VOID STRICT
 		SELF:Margin := Padding{0}		
@@ -267,24 +270,24 @@ CLASS VOGroupBox INHERIT System.Windows.Forms.GroupBox IMPLEMENTS IVOControl, IV
 		ENDIF
 		RETURN		
 
-	METHOD getAllChildren(aChildren AS System.Collections.Generic.List<IVOControl>) AS System.Collections.Generic.List<IVOControl>
+	METHOD GetAllChildren(aChildren AS IList<IVOControl>) AS IList<IVOControl>
 		
-		IF aChildren=NULL
+		IF aChildren =NULL
 			aChildren := System.Collections.Generic.List<IVOControl>{}
 		ENDIF
 		FOREACH oC AS System.Windows.Forms.Control IN SELF:Controls
 			IF oC IS IVoControl VAR oVOC
 				aChildren:add(oVOC)
 			ENDIF
-			IF oC IS VOGroupBox VAR oGroup
-				aChildren := oGroup:getAllChildren(aChildren)
+			IF oC IS IVOGroupBox VAR oGroup
+				aChildren := oGroup:GetAllChildren(aChildren)
 			ENDIF
 		NEXT
 		RETURN aChildren
 
 END CLASS
 
-CLASS VOLabel INHERIT System.Windows.Forms.Label IMPLEMENTS IVOControl, IVOControlInitialize
+CLASS VOLabel INHERIT System.Windows.Forms.Label IMPLEMENTS IVOLabel
 
 	#include "PropControl.vh"
 	PROPERTY FixedText AS VOSDK.FixedText GET (VOSDK.FixedText) oProperties:Control
@@ -309,7 +312,7 @@ CLASS VOLabel INHERIT System.Windows.Forms.Label IMPLEMENTS IVOControl, IVOContr
 		
 END CLASS
 
-CLASS VOOwnerDrawnLabel INHERIT VOLabel IMPLEMENTS IVOControl
+CLASS VOOwnerDrawnLabel INHERIT VOLabel IMPLEMENTS IVOLabel
 	PROPERTY FixedText AS VOSDK.FixedText GET (VOSDK.FixedText) oProperties:Control
 	// No need to include because inherits from VOLabel
 	
@@ -337,7 +340,7 @@ CLASS VOOwnerDrawnLabel INHERIT VOLabel IMPLEMENTS IVOControl
 
 END CLASS
 
-CLASS VOImageLabel INHERIT System.Windows.Forms.Label IMPLEMENTS IVOControl, IVOControlInitialize
+CLASS VOImageLabel INHERIT System.Windows.Forms.Label IMPLEMENTS IVOLabel
 	#include "PropControl.vh"
 	
 	METHOD Initialize() AS VOID STRICT
@@ -358,7 +361,7 @@ CLASS VOImageLabel INHERIT System.Windows.Forms.Label IMPLEMENTS IVOControl, IVO
 	
 END CLASS
 
-CLASS VOLinkLabel INHERIT System.Windows.Forms.LinkLabel IMPLEMENTS IVOControl, IVOControlInitialize
+CLASS VOLinkLabel INHERIT System.Windows.Forms.LinkLabel IMPLEMENTS IVOLinkLabel
 	#include "PropControl.vh"
 
 	METHOD Initialize() AS VOID STRICT
@@ -380,7 +383,7 @@ CLASS VOLinkLabel INHERIT System.Windows.Forms.LinkLabel IMPLEMENTS IVOControl, 
 END CLASS
 
 
-CLASS VOProgressBar INHERIT System.Windows.Forms.ProgressBar IMPLEMENTS IVOControl
+CLASS VOProgressBar INHERIT System.Windows.Forms.ProgressBar IMPLEMENTS IVOProgressBar
 
 	#include "PropControl.vh"
 
@@ -399,7 +402,7 @@ END CLASS
 
 
 
-CLASS VOHScrollBar INHERIT System.Windows.Forms.HScrollBar IMPLEMENTS IVOControl
+CLASS VOHScrollBar INHERIT System.Windows.Forms.HScrollBar IMPLEMENTS IVOScrollBar
 
 	#include "PropControl.vh"
 	CONSTRUCTOR(Owner AS VOSDK.Control, dwStyle AS LONG, dwExStyle AS LONG)
@@ -415,7 +418,7 @@ CLASS VOHScrollBar INHERIT System.Windows.Forms.HScrollBar IMPLEMENTS IVOControl
 
 END CLASS
 
-CLASS VOVScrollBar INHERIT System.Windows.Forms.VScrollBar IMPLEMENTS IVOControl
+CLASS VOVScrollBar INHERIT System.Windows.Forms.VScrollBar IMPLEMENTS IVOScrollBar
 	#include "PropControl.vh"
 	CONSTRUCTOR(Owner AS VOSDK.Control, dwStyle AS LONG, dwExStyle AS LONG)
 		oProperties := VOControlProperties{SELF, Owner, dwStyle, dwExStyle}
@@ -429,7 +432,7 @@ CLASS VOVScrollBar INHERIT System.Windows.Forms.VScrollBar IMPLEMENTS IVOControl
 
 END CLASS
 
-CLASS VOSlider INHERIT System.Windows.Forms.TrackBar IMPLEMENTS IVOControl
+CLASS VOSlider INHERIT System.Windows.Forms.TrackBar IMPLEMENTS IVOSlider
 	#include "PropControl.vh"
 	CONSTRUCTOR(Owner AS VOSDK.Control, dwStyle AS LONG, dwExStyle AS LONG)
 		oProperties := VOControlProperties{SELF, Owner, dwStyle, dwExStyle}
@@ -443,7 +446,7 @@ CLASS VOSlider INHERIT System.Windows.Forms.TrackBar IMPLEMENTS IVOControl
 
 END CLASS
 
-CLASS VOStatusStrip INHERIT System.Windows.Forms.StatusStrip IMPLEMENTS IVOControl
+CLASS VOStatusBar INHERIT System.Windows.Forms.StatusStrip IMPLEMENTS IVOStatusBar
 	PRIVATE oTm AS System.Windows.Forms.Timer
 	#include "PropControl.vh"
 	CONSTRUCTOR(Owner AS VOSDK.Control, dwStyle AS LONG, dwExStyle AS LONG)
@@ -475,7 +478,7 @@ CLASS VOStatusStrip INHERIT System.Windows.Forms.StatusStrip IMPLEMENTS IVOContr
 	
 END CLASS
 
-CLASS VODateTimePicker  INHERIT System.Windows.Forms.DateTimePicker IMPLEMENTS IVOControl
+CLASS VODateTimePicker  INHERIT System.Windows.Forms.DateTimePicker IMPLEMENTS IVODateTimePicker
 	#include "PropControl.vh"
 	CONSTRUCTOR(Owner AS VOSDK.Control, dwStyle AS LONG, dwExStyle AS LONG)
 		oProperties := VOControlProperties{SELF, Owner, dwStyle, dwExStyle}
@@ -507,7 +510,7 @@ CLASS VODateTimePicker  INHERIT System.Windows.Forms.DateTimePicker IMPLEMENTS I
 	 
 END CLASS
 
-CLASS VOMonthCalendar  INHERIT System.Windows.Forms.MonthCalendar IMPLEMENTS IVOControl
+CLASS VOMonthCalendar  INHERIT System.Windows.Forms.MonthCalendar IMPLEMENTS IVOMonthCalendar
 	#include "PropControl.vh"
 	CONSTRUCTOR(Owner AS VOSDK.Control, dwStyle AS LONG, dwExStyle AS LONG)
 		oProperties := VOControlProperties{SELF, Owner, dwStyle, dwExStyle}

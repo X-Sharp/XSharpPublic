@@ -89,7 +89,7 @@ CLASS HotKeyEdit INHERIT TextControl
 
 		RETURN GuiWin32.SendMessage(oWindow:Handle(), WM_SETHOTKEY, dwHotKey, 0)
 
-	METHOD Create() AS System.Windows.Forms.Control
+	METHOD Create() AS IVOControl STRICT
 		IF (SUPER:Create() != NULL_OBJECT)
 			IF oHotKeyRule != NULL_OBJECT
 				SELF:__SetRule(oHotKeyRule)

@@ -14,7 +14,7 @@ CLASS DataListView INHERIT ListView
 
     PROPERTY ControlType AS ControlType GET ControlType.DataListView
 
-	METHOD OnControlCreated(oC AS System.Windows.Forms.Control) AS VOID
+	METHOD OnControlCreated(oC AS IVOControl) AS VOID
 		VAR oGrid := (VODataListView) oC
 		oGrid:RetrieveVirtualItem	+= __RetrieveVirtualItems
 		oGrid:CacheVirtualItems	+= __CacheVirtualItems

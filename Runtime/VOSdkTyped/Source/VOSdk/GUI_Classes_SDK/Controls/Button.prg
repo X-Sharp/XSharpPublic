@@ -25,8 +25,8 @@ CLASS Button INHERIT TextControl
         ENDIF
 
 
-	ACCESS __Button AS VOButton
-		RETURN (VOButton) oCtrl
+	ACCESS __Button AS IVOButton
+		RETURN (IVOButton) oCtrl
 		
 
 	METHOD __GetImage()  AS VObject

@@ -8,7 +8,7 @@
 USING System.Windows.Forms
 USING VOSDK := XSharp.VO.SDK
 
-CLASS VOTabControl INHERIT System.Windows.Forms.TabControl IMPLEMENTS IVOControl, IVOControlInitialize
+CLASS VOTabControl INHERIT System.Windows.Forms.TabControl IMPLEMENTS IVOControl,IVOControlInitialize
 	#include "PropControl.vh"
 	PROPERTY BounceFocus AS LOGIC AUTO := FALSE
     PROPERTY VOTab AS VOSDK.TabControl GET (VOSDK.TabControl) SELF:Control

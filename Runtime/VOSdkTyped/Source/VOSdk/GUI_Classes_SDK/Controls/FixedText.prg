@@ -41,8 +41,8 @@ CLASS FixedText INHERIT TextControl
 		RETURN 
 
 
-	ACCESS __Label AS VOOwnerDrawnLabel
-		RETURN (VOOwnerDrawnLabel) oCtrl
+	ACCESS __Label AS IVOLabel
+		RETURN (IVOLabel) oCtrl
 
 	[Obsolete];
 	METHOD __SetColors(_hDC AS IntPtr) AS IntPtr STRICT 

@@ -19,7 +19,7 @@ CLASS TabControl INHERIT TextControl
 
     PROPERTY ControlType AS Controltype GET Controltype.TabControl
 
-	METHOD OnControlCreated(oC AS System.Windows.Forms.Control) AS VOID
+	METHOD OnControlCreated(oC AS IVOControl) AS VOID
 		oC:Resize += OnReSize
 		RETURN 
 
@@ -68,7 +68,7 @@ CLASS TabControl INHERIT TextControl
 		LOCAL oOldPage        AS Window
 		LOCAL lSelfFocus      AS LOGIC
 		LOCAL oTabPage		  as System.Windows.Forms.TabPage
-		LOCAL oPanel			AS VOPanel
+		LOCAL oPanel			AS IVOPanel
 		IF ! SELF:__IsValid
 			RETURN
 		ENDIF

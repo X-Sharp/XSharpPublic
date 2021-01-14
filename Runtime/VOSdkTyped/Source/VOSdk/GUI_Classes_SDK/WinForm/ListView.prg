@@ -8,7 +8,7 @@
 USING System.Windows.Forms
 USING VOSDK := XSharp.VO.SDK
 
-CLASS VOListView INHERIT System.Windows.Forms.ListView IMPLEMENTS IVOControl, IVOControlInitialize
+CLASS VOListView INHERIT System.Windows.Forms.ListView IMPLEMENTS IVOListView
 	PROPERTY ListView     AS VOSDK.ListView GET (VOSDK.ListView) oProperties:Control
 	#include "PropControl.vh"
 

@@ -196,7 +196,7 @@ CLASS SplitWindow INHERIT ChildAppWindow
         SELF:__ResizeSplitView()
 		RETURN 
 
-	METHOD ToolBarHeightChanged(oControlNotifyEvent)
+	METHOD ToolBarHeightChanged(oControlNotifyEvent AS ControlNotifyEvent)
         SELF:__ResizeSplitView()
 		RETURN SELF
 

@@ -89,16 +89,17 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
 	ACCESS __HasSurface AS LOGIC
 		RETURN SELF:__Surface != oWnd
 		
-	ACCESS __Surface AS System.Windows.Forms.Control STRICT
+	ACCESS __Surface AS IVOControlContainer STRICT
 		IF SELF:__IsValid 
 			LOCAL IMPLIED aList := oWnd:GetAllControls()
-			FOREACH oC AS System.Windows.Forms.Control IN aList
-				IF oc IS VOPanel
+			FOREACH oC AS OBJECT IN aList
+				IF oc IS IVOPanel
 					RETURN oC
 				ENDIF
 			NEXT
 		ENDIF
 		RETURN oWnd
+        
 	METHOD __SetupDataControl(oDC AS VOSDK.Control) AS VOID
 		RETURN 
 	
@@ -154,7 +155,7 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
 				oRect:Location 	:= oControl:Origin
 				oRect:Size     	:= oForm:Size
 			ELSE
-				LOCAL oCtrl AS System.Windows.Forms.Control
+				LOCAL oCtrl AS IVOControl
 				oCtrl			:= ((VOSDK.Control) oControl):__Control
 				oRect			:= oCtrl:DisplayRectangle
 				oRect:Location  := oCtrl:Location
@@ -192,10 +193,10 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
 			ENDIF
 		ENDIF
 		IF SELF:__Surface IS VOPanel VAR oPanel
-			oPanel:ShowToolTip(oControl:__Control, cMessage)
+			oPanel:ShowToolTip((System.Windows.Forms.Control) oControl:__Control, cMessage)
 		ENDIF
 
-	METHOD __AlignControl(	oCtl AS System.Windows.Forms.Control, nX AS LONG, nY AS LONG, nW AS LONG, nH AS LONG) AS VOID 
+	METHOD __AlignControl(	oCtl AS IVOUIObject, nX AS LONG, nY AS LONG, nW AS LONG, nH AS LONG) AS VOID 
 		oCtl:Location := System.Drawing.Point{nX, nY}
 		oCtl:Size     := System.Drawing.Size{nW, nH}
 		RETURN
@@ -234,7 +235,7 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
 		//          IF you use the Factor/Divisor-Mode you can't use the proportinal alignment
 		//          simultaneously for this control (window).
 		LOCAL oRect		 AS System.Drawing.Rectangle
-		LOCAL oCtl       AS System.Windows.Forms.Control
+		LOCAL oCtl       AS IVOUIObject
 		LOCAL uType      AS USUAL
 		LOCAL dwType     AS DWORD
 		LOCAL liMulDiv   AS LONG
@@ -1437,7 +1438,7 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
 		RETURN 0L
 	
 
-	METHOD DeActivate(oEvent) 
+	METHOD DeActivate(oEvent AS Event) 
 		SELF:DeactivateAllOLEObjects()
 		RETURN SELF:Default(oEvent)
 	
@@ -1468,7 +1469,7 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
 	
 	
 
-	METHOD Default(oEvent) 
+	METHOD Default(oEvent AS Event) 
 		SELF:EventReturnValue := 1L
 		RETURN SELF
 	
@@ -1740,22 +1741,22 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
 				ELSEIF control IS VOToolbar
 					// Skip
 					NOP
-				ELSEIF control IS VOStatusStrip
+				ELSEIF control IS IVOStatusBar
 					// Skip
 					NOP
-				ELSEIF control IS VOLabel
+				ELSEIF control IS IVOLabel
 					// Skip
 					NOP
 				ELSEIF control IS IVOControl
-					VAR oControl := control ASTYPE IVOControl
+					VAR oControl := control ASTYPE IVOControlProperties
 					aRet:Add(oControl:Control)
-					// Kinder der Gruppe müssen auch mitkommen
-					IF oControl IS VOGroupBox
-						LOCAL aGroupChilds AS List<IVOControl>
-						VAR oGroup :=  control ASTYPE VOGroupBox
-						aGroupChilds := oGroup:getAllChildren(NULL)
-						FOREACH oc AS IVOCOntrol IN aGroupChilds
-							AADD(aRet,(USUAL) oC:Control)
+					// Get the children of the group boxes also in this list
+					IF oControl IS IVOGroupBox 
+						LOCAL aGroupChildren AS IList<IVOControl>
+						VAR oGroup :=  control ASTYPE IVOGroupBox
+						aGroupChildren := oGroup:getAllChildren(NULL)
+						FOREACH oc AS IVOCOntrolProperties IN aGroupChildren
+							AAdd(aRet,oC:Control)
 						NEXT
 					ENDIF
 				ENDIF

@@ -148,8 +148,7 @@ ACCESS LabelRight AS Fixedtext
 ACCESS ListView AS ListView
 	RETURN oListView
 
-METHOD ListViewColumnClick(oEvt) 
-	
+METHOD ListViewColumnClick(oEvt AS ListViewColumnClickEvent) 
 
 	IF IsInstanceOf(oListView, #__ExplorerLV)
 		IVarPut(oListView, #symSortCol, oEvt:ListViewColumn:NameSym)

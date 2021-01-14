@@ -32,7 +32,7 @@ CLASS DataWindow INHERIT ChildAppWindow IMPLEMENTS ILastFocus
 
 	PROTECT oHLStatus AS HyperLabel
 	PROTECT oSurface AS VOSurfacePanel
-	PROTECT oFrame	 as VOFramePanel
+	PROTECT oFrame	 AS IVOFramePanel
 	PROTECT oAttachedServer AS DataServer
 	PROTECT oDCCurrentControl AS OBJECT
 	PROTECT oDCInvalidControl AS Control
@@ -64,7 +64,7 @@ CLASS DataWindow INHERIT ChildAppWindow IMPLEMENTS ILastFocus
 		RETURN (VODataForm) SELF:__Form
 
 
-	ACCESS __Frame AS VOFramePanel
+	ACCESS __Frame AS IVOFramePanel
 		RETURN SELF:oFrame 
 
 
@@ -85,7 +85,7 @@ CLASS DataWindow INHERIT ChildAppWindow IMPLEMENTS ILastFocus
 		IF oGBrowse == NULL_OBJECT
 			IF symBrowserClass == #DataBrowser
 				oGBrowse := DataBrowser{SELF}
-				SELF:__DataForm:DataBrowser := oGBrowse:__Control
+				SELF:__DataForm:DataBrowser := (System.Windows.Forms.Control) oGBrowse:__Control
 				//ELSEIF symBrowserClass == #DataListView
 				//	oGBrowse := DataListView{SELF}
 			ELSE
@@ -577,7 +577,7 @@ CLASS DataWindow INHERIT ChildAppWindow IMPLEMENTS ILastFocus
 
 	METHOD __RegisterSubform(oSubForm AS DataWindow) AS DataWindow STRICT 
 		AAdd(aSubForms, oSubForm)
-		SELF:oSurface:Controls:Add(oSubForm:__Frame)
+		SELF:oSurface:AddControl(oSubForm:__Frame)
 		// Set the parent of the __DataForm of the Subwindow to our parent
 		oSubForm:__DataForm:Owner := SELF:__DataForm:Owner
 		RETURN SELF
@@ -657,7 +657,7 @@ CLASS DataWindow INHERIT ChildAppWindow IMPLEMENTS ILastFocus
 	ACCESS __HasSurface AS LOGIC
 		RETURN TRUE
 
-	ACCESS __Surface AS System.Windows.Forms.Control
+	ACCESS __Surface AS IVOControlContainer
 		RETURN oSurface
 
 	METHOD __Unlink() AS LOGIC STRICT 
@@ -821,7 +821,7 @@ CLASS DataWindow INHERIT ChildAppWindow IMPLEMENTS ILastFocus
 		
 		RETURN TRUE
 	
-	METHOD Activate (oEvent)
+	METHOD Activate (oEvent  AS Event)
 		IF (oFrame != NULL_OBJECT)
 			WC.AppSetDialogWindow(oFrame)
 		ENDIF	
@@ -906,7 +906,7 @@ CLASS DataWindow INHERIT ChildAppWindow IMPLEMENTS ILastFocus
 		symBrowserClass := symNewClass
 	
 
-	METHOD ButtonClick(oControlEvent) 
+	METHOD ButtonClick(oControlEvent AS ControlEvent) 
 		LOCAL oButton AS Control
 		LOCAL oWindow AS Window
 		LOCAL dwI, dwCount AS DWORD
@@ -1303,7 +1303,7 @@ CLASS DataWindow INHERIT ChildAppWindow IMPLEMENTS ILastFocus
 		RETURN SELF
 	
 
-	METHOD DeActivate(oEvent) 
+	METHOD DeActivate(oEvent AS Event) 
 		//RvdH 030825 Call to DeactivateAllOLEObjects moved to Window
 		RETURN SUPER:DeActivate(oEvent)
 	
@@ -1449,7 +1449,7 @@ CLASS DataWindow INHERIT ChildAppWindow IMPLEMENTS ILastFocus
 		
 		RETURN SELF
 
-	METHOD EditChange(oControlEvent) 
+	METHOD EditChange(oControlEvent AS ControlEvent) 
 		LOCAL oCurrentControl := NULL_OBJECT AS OBJECT
 		LOCAL oCE := oControlEvent AS ControlEvent
 		
@@ -1464,7 +1464,7 @@ CLASS DataWindow INHERIT ChildAppWindow IMPLEMENTS ILastFocus
 		SUPER:EditChange(oControlEvent)
 		RETURN SELF
 	
-	METHOD EditFocusChange(oEditFocusChangeEvent) 
+	METHOD EditFocusChange(oEditFocusChangeEvent AS EditFocusChangeEvent) 
 		LOCAL uRetCode AS USUAL
 		LOCAL oEFCE AS EditFocusChangeEvent
 		oEFCE := oEditFocusChangeEvent 
@@ -1513,7 +1513,7 @@ CLASS DataWindow INHERIT ChildAppWindow IMPLEMENTS ILastFocus
 		RETURN SELF
 	
 
-	METHOD Expose(oExposeEvent) 
+	METHOD Expose(oExposeEvent AS ExposeEvent) 
 		
 		
 		SUPER:Expose(oExposeEvent)
@@ -1611,7 +1611,7 @@ CLASS DataWindow INHERIT ChildAppWindow IMPLEMENTS ILastFocus
 		RETURN uRetVal
 	
 
-	METHOD FocusChange(oFocusChangeEvent) 
+	METHOD FocusChange(oFocusChangeEvent AS FocusChangeEvent) 
 		IF oFocusChangeEvent:GotFocus  .and. __DataForm != NULL_OBJECT
 			__DataForm:SetFocusToForm()
 		ENDIF
@@ -1826,7 +1826,7 @@ CLASS DataWindow INHERIT ChildAppWindow IMPLEMENTS ILastFocus
 		RETURN SELF
 	
 
-	METHOD ListBoxClick(oControlEvent) 
+	METHOD ListBoxClick(oControlEvent AS ControlEvent) 
 		LOCAL oListBox AS ListBox
 		LOCAL oCE := oControlEvent AS ControlEvent
 		oListBox := (OBJECT) oCE:Control
@@ -1836,7 +1836,7 @@ CLASS DataWindow INHERIT ChildAppWindow IMPLEMENTS ILastFocus
 		RETURN SELF
 	
 
-	METHOD ListBoxSelect(oControlEvent) 
+	METHOD ListBoxSelect(oControlEvent AS ControlEvent) 
 		LOCAL oListBox AS BaseListBox
 		LOCAL oCE := oControlEvent AS ControlEvent
 		oListBox := (OBJECT) oCE:Control
@@ -1855,7 +1855,7 @@ CLASS DataWindow INHERIT ChildAppWindow IMPLEMENTS ILastFocus
 		RETURN 
 	
 
-	METHOD MouseButtonDown(oMouseEvent) 
+	METHOD MouseButtonDown(oMouseEvent AS MouseEvent) 
 		//RvdH 030825 Method moved from Ole Classes
 		
 		SELF:DeactivateAllOLEObjects()
@@ -2134,12 +2134,10 @@ CLASS DataWindow INHERIT ChildAppWindow IMPLEMENTS ILastFocus
 		RETURN 
 	
 
-	METHOD QueryClose(oQCE) 
+	METHOD QueryClose(oQCE AS Event) AS LOGIC
 		// If there are outstanding changes which have not
 		// been written to the dataServer - ask the user.
 		LOCAL oTB AS TextBox
-		
-		
 		
 		IF oAttachedServer==NULL_OBJECT
 			RETURN TRUE

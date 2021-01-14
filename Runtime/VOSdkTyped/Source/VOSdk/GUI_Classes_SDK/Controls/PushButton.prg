@@ -11,8 +11,8 @@ CLASS PushButton INHERIT Button
 
 		RETURN 
 
-	ACCESS __Button AS VOButton 
-		RETURN (VOButton) oCtrl
+	ACCESS __Button AS IVOButton 
+		RETURN (IVOButton) oCtrl
 
 	
 	ACCESS Value() 

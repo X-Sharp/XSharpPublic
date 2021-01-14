@@ -173,7 +173,7 @@ CLASS ListBox INHERIT BaseListBox
 
 		RETURN FALSE
 
-	METHOD Create() AS System.Windows.Forms.Control
+	METHOD Create() AS IVOControl STRICT
 		IF oCtrl ==  NULL_OBJECT  .AND. !IsInstanceOf(SELF, #ComboBox)
 			SELF:SetStyle(_OR(LBS_Notify, LBS_NoIntegralHeight))
 		ENDIF

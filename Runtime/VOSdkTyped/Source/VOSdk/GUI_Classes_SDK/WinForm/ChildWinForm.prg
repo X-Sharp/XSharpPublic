@@ -77,7 +77,7 @@ CLASS ChildWinForm INHERIT ChildAppWindow
 		
 		RETURN NIL
 		
-	METHOD Activate(o)
+	METHOD Activate(o  AS Event) 
 		LOCAL u AS USUAL
 		
 		u := SUPER:Activate(o)
@@ -102,7 +102,7 @@ CLASS ChildWinForm INHERIT ChildAppWindow
 
 		RETURN NIL
 
-	METHOD DeActivate(o)
+	METHOD DeActivate(o  AS Event)
 		LOCAL u AS USUAL
 
 		SELF:DeActivateWinForm()

@@ -84,7 +84,9 @@ FUNCTION ProcName(wActivation AS INT) AS STRING
    
    RETURN name
 
-/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/errorstack/*" />
+/// <summary>Return the error stack as a string.</summary> 
+/// <param name="wActivation">Starting level. Defaults to 1.</param> 
+/// <returns>The error stack with line numbers. In the VO and Vulcan dialect the stack is in "VO Format"</returns> 
 FUNCTION ErrorStack(wActivation := 1 AS DWORD) AS STRING
 	LOCAL oStackTrace AS System.Diagnostics.StackTrace
 	oStackTrace := System.Diagnostics.StackTrace{TRUE}
@@ -100,9 +102,11 @@ INTERNAL STATIC CLASS XSharp.ErrorStackSettings
 END CLASS
 
 
-INTERNAL GLOBAL ErrorStackVOFormat := FALSE AS LOGIC
-
-/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/errorstack/*" />
+/// <summary>Return the error stack as a string.</summary> 
+/// <param name="oStackTrace">StackTrace object to convert to an error stack string</param> 
+/// <param name="wActivation">Starting level. Defaults to 1.</param> 
+/// <returns>The error stack with line numbers. In the VO and Vulcan dialect the stack is in "VO Format"</returns> 
+/// <seealso cref='SetErrorStackVOFormat' />
 FUNCTION ErrorStack(oStackTrace AS System.Diagnostics.StackTrace, wActivation := 1 AS DWORD) AS STRING
 	LOCAL cResult := "" AS STRING
     LOCAL wStart  AS DWORD
@@ -149,6 +153,7 @@ FUNCTION ErrorStack(oStackTrace AS System.Diagnostics.StackTrace, wActivation :=
 /// <remarks>The default setting for the format is based on the dialect of the main application.
 /// When the main dialect is VO or Vulcan then the VO format is used. Otherwise the normal .Net format is used.
 /// </remarks>
+/// <seealso cref='ErrorStack' />
 FUNCTION SetErrorStackVOFormat(lNew AS LOGIC) AS LOGIC
     LOCAL lPrevious := ErrorStackSettings.ErrorStackVOFormat AS LOGIC
     ErrorStackSettings.ErrorStackVOFormat := lNew
@@ -156,8 +161,7 @@ FUNCTION SetErrorStackVOFormat(lNew AS LOGIC) AS LOGIC
 
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/altd/*" />
-/// <param name="nMode">This parameter is ignored in X#</param>
-/// <remarks>This function is inlined by the compiler </remarks>
+/// <remarks>This function is inlined by the compiler, but is included so it can be used in Macros as well.</remarks>
 FUNCTION AltD() AS VOID
 	IF System.Diagnostics.Debugger.IsAttached
 		System.Diagnostics.Debugger.Break()
@@ -167,7 +171,7 @@ FUNCTION AltD() AS VOID
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/altd/*" />
 /// <param name="nMode">This parameter is ignored in X#</param>
-/// <remarks>This function is inlined by the compiler </remarks>
+/// <remarks>This function is inlined by the compiler, but is included so it can be used in Macros as well.</remarks>
 FUNCTION AltD(nMode AS INT) AS VOID
 	IF System.Diagnostics.Debugger.IsAttached
 		System.Diagnostics.Debugger.Break()

@@ -317,7 +317,6 @@ FUNCTION ASqlHandles (ArrayName AS ARRAY, nStatementHandle := NIL AS USUAL) AS D
     RETURN ALen(aResult)
     
 
-/// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/sqlparameters/*" />
 FUNCTION SqlParameters( nStatementHandle AS LONG, oParams AS OBJECT) AS LONG
     VAR oStmt := GetStatement(nStatementHandle)    
     IF oStmt != NULL

@@ -996,32 +996,12 @@
   </alltrim>
   <altd>
     <summary>
-      Either determine whether the Debugger can be invoked manually or programmatically define a breakpoint in an application.
+      Programmatically define a breakpoint in an application.
     </summary>
-
-    <param name="nMode">Enables or disables your ability to invoke the Debugger manually, as defined in the table below:</param>
-    <param name="Value">Result&#0009;</param>
-    <param name="0">Disables the ability to invoke the Debugger manually with Ctrl+Alt+SysRq&#0009;</param>
-    <param name="Other">Enables the ability to invoke the Debugger manually with Ctrl+Alt+SysRq (this is the default)&#0009;</param>
-    <returns>
-    </returns>
     <remarks>
-      AltD() is operational only if the application is being executed by the Debugger (that is, using the Trace Expression toolbar button or Debug Run menu command).
-      Note:<br/>
-      AltD(0) has no effect on breakpoints set from within the Debugger or programmatic breakpoints set with AltD().  Breakpoints will always return control to the Debugger, regardless of the status of Ctrl+Alt+SysRq.
+      AltD() is operational only if the application is being executed by the Debugger.
     </remarks>
     <example>
-      This example shows how to temporarily disable Ctrl+Alt+SysRq for one function:
-      <code language="X#">
-        DEFINE ALTD_ENABLE  := 1
-        DEFINE ALTD_DISABLE := 0
-        FUNCTION Good()
-        &#0009;...
-        &#0009;AltD(ALTD_DISABLE)
-        &#0009;...
-        &#0009;AltD(ALTD_ENABLE)
-        &#0009;RETURN Value
-      </code>
       This example shows how to define a breakpoint in a function using AltD():
       <code language="X#">
         FUNCTION Bad()
@@ -20190,13 +20170,13 @@
       HKEY_CURRENT_USER
       \\Software
       \\ComputerAssociates
-      \\X# Applications
+      \\CA-Visual Objects Applications
       \\&lt;cSubkey&gt;
       Or:
       HKEY_LOCAL_MACHINE
       \\Software
       \\ComputerAssociates
-      \\X# Applications
+      \\CA-Visual Objects Applications
       \\&lt;cSubkey&gt;
       QueryRTRegInt() tries to read from the HKEY_CURRENT_USER first. When the key is not found under HKEY_CURRENT_USER then it tries to read from HKEY_LOCAL_MACHINE
     </remarks>
@@ -20236,13 +20216,13 @@
       HKEY_CURRENT_USER
       \\Software
       \\ComputerAssociates
-      \\X# Applications
+      \\CA-Visual Objects Applications
       \\&lt;cSubkey&gt;
       Or:
       HKEY_LOCAL_MACHINE
       \\Software
       \\ComputerAssociates
-      \\X# Applications
+      \\CA-Visual Objects Applications
       \\&lt;cSubkey&gt;
       QueryRTRegInt() tries to read from the HKEY_CURRENT_USER first. When the key is not found under HKEY_CURRENT_USER then it tries to read from HKEY_LOCAL_MACHINE
     </remarks>
@@ -22765,19 +22745,19 @@
       HKEY_CURRENT_USER
       \\Software
       \\ComputerAssociates
-      \\X# Applications
+      \\CA-Visual Objects Applications
       \\&lt;cSubkey&gt;
       and optionally under
       HKEY_LOCAL_MACHINE
       \\Software
       \\ComputerAssociates
-      \\X# Applications
+      \\CA-Visual Objects Applications
       \\&lt;cSubkey&gt;
       If &lt;cSubkey&gt; is empty (NULL_STRING), the Registry entry will be saved without a subkey under:
       HKEY_LOCAL_MACHINE
       \\Software
       \\ComputerAssociates
-      \\X# Applications
+      \\CA-Visual Objects Applications
       SetRtRegInt()  only writes to HKEY_LOCAL_MACHINE if the key already exists (and ignores write errors). It always writes to HKEY_CURRENT_USER as well. The return value reflects the result of the write operation to HKEY_CURRENT_USER
     </remarks>
     <example>
@@ -22802,6 +22782,40 @@
     <seealso cref='O:XSharp.VO.Functions.QueryRTRegString'>QueryRTRegString</seealso>
     <seealso cref='O:XSharp.VO.Functions.SetRTRegString'>SetRTRegString</seealso>
   </setrtregint>
+  <deletertregkey>
+    <summary>
+      Delete a subtree from the VO registry branches
+    </summary>
+
+    <param name="cSubkey">The subkey that you want to delete.</param>
+    <returns>
+      TRUE if successful; otherwise, FALSE.
+    </returns>
+    <remarks>
+      DeleteRtRegKey() can be used to clear settings into the Registry.<br/>
+      it will clear the following subkeys:
+      HKEY_CURRENT_USER
+      \\Software
+      \\ComputerAssociates
+      \\CA-Visual Objects Applications
+      \\&lt;cSubkey&gt;
+      and optionally under
+      HKEY_LOCAL_MACHINE
+      \\Software
+      \\ComputerAssociates
+      \\CA-Visual Objects Applications
+      \\&lt;cSubkey&gt;
+      If &lt;cSubkey&gt; is empty (NULL_STRING), the Registry entry will be saved without a subkey under:
+      HKEY_LOCAL_MACHINE
+      \\Software
+      \\ComputerAssociates
+      \\CA-Visual Objects Applications
+   </remarks>
+    <seealso cref='O:XSharp.VO.Functions.QueryRTRegInt'>QueryRTRegInt</seealso>
+    <seealso cref='O:XSharp.VO.Functions.QueryRTRegString'>QueryRTRegString</seealso>
+    <seealso cref='O:XSharp.VO.Functions.SetRTRegString'>SetRTRegString</seealso>
+    <seealso cref='O:XSharp.VO.Functions.SetRTRegInt'>SetRTRegInt</seealso>
+  </deletertregkey>
   <setrtregstring>
     <summary>
       Save a string value to the Registry.
@@ -22819,19 +22833,19 @@
       HKEY_CURRENT_USER
       \\Software
       \\ComputerAssociates
-      \\X# Applications
+      \\CA-Visual Objects Applications
       \\&lt;cSubkey&gt;
       and optionally under
       HKEY_LOCAL_MACHINE
       \\Software
       \\ComputerAssociates
-      \\X# Applications
+      \\CA-Visual Objects Applications
       \\&lt;cSubkey&gt;
       If &lt;cSubkey&gt; is empty (NULL_STRING), the Registry entry will be saved without a subkey under:
       HKEY_LOCAL_MACHINE
       \\Software
       \\ComputerAssociates
-      \\X# Applications
+      \\CA-Visual Objects Applications
       SetRTRegString()  only writes to HKEY_LOCAL_MACHINE if the key already exists (and ignores write errors). It always writes to HKEY_CURRENT_USER as well. The return value reflects the result of the write operation to HKEY_CURRENT_USER
     </remarks>
     <example>

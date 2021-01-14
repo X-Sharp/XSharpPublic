@@ -3206,5 +3206,34 @@
             </code>
         </example>
     </alen>
+  <target>
+        <summary>
+            Returns the alias of a table that is the target for a relation as specified in the Into clause of Set RELATION.
+        </summary>
+        <param name="nRelationshipNumber">
+            Specifies the number of a relationship. Include a number from 1 to the number of relationships out of the specified work area.
+            The aliases of the target tables are returned (in no specific order) until nRelationshipNumber is greater than the number of relationships.
+            When nRelationshipNumber is greater than the number of relationships, the empty string is returned.<br/>
+        </param>
+        <param name="uArea">
+            Returns the alias of the target table in another work area. uArea specifies a work area number and specifies a table alias.
+            By default, the alias of the target table from the current work area is returned if you don't specify the work area or alias.
+        </param>
+        <returns>
+            Character
+        </returns>
+        <example>
+            ┬á<code language="X#">
+                Close Databases
+                Open Database (HOME(2) + 'Data\testdata')
+                Use orders IN 0 Order order_id
+                Use customer IN 0 Order cust_id
+                Select orders
+                Set RELATION TO cust_id Into customer
+                ? TARGET(1)  &amp;&amp; Displays customer
+                ? TARGET(2)  &amp;&amp; Empty string
+            </code>
+        </example>
+    </target>
 
 </Runtimefunctions>

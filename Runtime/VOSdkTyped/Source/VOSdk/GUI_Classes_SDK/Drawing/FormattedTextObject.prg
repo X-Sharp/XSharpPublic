@@ -11,7 +11,7 @@ CLASS FormattedTextObject INHERIT TextObject
 	#ifdef DONOTINCLUDE
 
 	METHOD Draw() 
-		// Todo
+		// Todo FormattedTextObject:Draw()
 		//RvdH 070205 changed variables from WORD to LONG 
 		//	and use typed byte pointer in stead of casting
 		LOCAL hDC 			AS PTR

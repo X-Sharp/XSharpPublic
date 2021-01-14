@@ -521,24 +521,21 @@ CLASS DataWindow INHERIT ChildAppWindow IMPLEMENTS ILastFocus
 		RETURN SELF
 	
 
-	METHOD __HandleScrolling(oEvent AS OBJECT) AS DataWindow STRICT 
-		LOCAL oControl AS OBJECT
-		
+	METHOD __HandleScrolling(oEvent AS Event) AS DataWindow STRICT 
 		DO CASE
-		CASE oEvent IS ScrollEvent
-			oControl := ((ScrollEvent)oEvent):ScrollBar
-		CASE oEvent IS SpinnerEvent
-			oControl := ((SpinnerEvent)oEvent):Spinner
-		CASE oEvent IS SliderEvent
-			oControl := ((SliderEvent)oEvent):Slider
+		CASE oEvent IS ScrollEvent VAR oScroll
+			oScroll:ScrollBar:ThumbPosition := oScroll:Position
+			SELF:__DoValidate(oScroll:ScrollBar)
+
+        CASE oEvent IS SpinnerEvent VAR oSpin
+			oSpin:Spinner:ThumbPosition := oSpin:Position
+            SELF:__DoValidate(oSpin:Spinner)
+            
+		CASE oEvent IS SliderEvent VAR oSlide
+			oSlide:Slider:ThumbPosition := oSlide:Position
+            SELF:__DoValidate(oSlide:Slider)
 		ENDCASE
-		
-		IF (oControl != NULL_OBJECT)
-			oControl:ThumbPosition := oEvent:Position
-			oControl:Modified := TRUE // assume its modified
-			SELF:__DoValidate(oControl)
-		ENDIF
-		
+	
 		RETURN SELF
 	
 
@@ -1442,7 +1439,7 @@ CLASS DataWindow INHERIT ChildAppWindow IMPLEMENTS ILastFocus
 	
 
 	METHOD Draw(oDrawObject) 
-		//  Todo ?
+		//  Todo Draw
 		IF oSurface != NULL_OBJECT
 			//oSurface:Draw(oDrawObject)
 		ENDIF
@@ -1686,16 +1683,16 @@ CLASS DataWindow INHERIT ChildAppWindow IMPLEMENTS ILastFocus
 		ENDIF
 	
 
-	METHOD HorizontalScroll(oScrollEvent) 
+	METHOD HorizontalScroll(oScrollEvent AS ScrollEvent) 
 		SELF:__HandleScrolling(oScrollEvent)
 		RETURN SELF:Default(oScrollEvent)
 	
 
-	METHOD HorizontalSlide(oSlideEvent) 
+	METHOD HorizontalSlide(oSlideEvent AS SliderEvent) 
 		SELF:__HandleScrolling(oSlideEvent)
 		RETURN SELF:Default(oSlideEvent)
 	
-	METHOD HorizontalSpin(oSpinEvent) 
+	METHOD HorizontalSpin(oSpinEvent AS SpinnerEvent) 
 		SELF:__HandleScrolling(oSpinEvent)
 		RETURN SELF:Default(oSpinEvent)
 	
@@ -1818,7 +1815,7 @@ CLASS DataWindow INHERIT ChildAppWindow IMPLEMENTS ILastFocus
 	
 
 	METHOD LineTo(uPoint) 
-		//Todo	
+		//Todo	LineTo
 		
 		IF (oSurface != NULL_OBJECT)
 			//oSurface:LineTo(uPoint)
@@ -1864,7 +1861,7 @@ CLASS DataWindow INHERIT ChildAppWindow IMPLEMENTS ILastFocus
 	
 
 	METHOD MoveTo(oPoint AS Point)  AS Point
-		//Todo	
+		//Todo	 MoveTo
 		
 		IF (oSurface != NULL_OBJECT)
 			//oSurface:MoveTo(oPoint)
@@ -2052,7 +2049,7 @@ CLASS DataWindow INHERIT ChildAppWindow IMPLEMENTS ILastFocus
 	
 
 	METHOD PaintBoundingBox(oBB,kPM) 
-		//Todo		
+		//Todo	 PaintBoundingBox	
 		IF oSurface != NULL_OBJECT
 			//oSurface:PaintBackground(oBB,kPM)
 		ENDIF
@@ -2431,7 +2428,7 @@ CLASS DataWindow INHERIT ChildAppWindow IMPLEMENTS ILastFocus
 
 
 	METHOD TextPrint(cText, oPoint) 
-		// Todo		
+		// Todo	 TextPrint	
 		IF oSurface != NULL_OBJECT
 			//oSurface:TextPrint(cText, oPoint)
 		ENDIF
@@ -2537,17 +2534,17 @@ CLASS DataWindow INHERIT ChildAppWindow IMPLEMENTS ILastFocus
 		RETURN TRUE
 
 
-	METHOD VerticalScroll(oScrollEvent) 
+	METHOD VerticalScroll(oScrollEvent AS ScrollEvent) 
 		SELF:__HandleScrolling(oScrollEvent)
 		RETURN SELF:Default(oScrollEvent)
 	
 
-	METHOD VerticalSlide(oSlideEvent) 
+	METHOD VerticalSlide(oSlideEvent AS SliderEvent) 
 		SELF:__HandleScrolling(oSlideEvent)
 		RETURN SELF:Default(oSlideEvent)
 	
 
-	METHOD VerticalSpin(oSpinEvent) 
+	METHOD VerticalSpin(oSpinEvent AS SpinnerEvent) 
 		SELF:__HandleScrolling(oSpinEvent)
 		RETURN SELF:Default(oSpinEvent)
 	

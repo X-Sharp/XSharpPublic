@@ -894,7 +894,7 @@ CLASS TreeViewItem INHERIT VObject
 
 END CLASS
 
-//Todo
+//Todo tree view comparison code
 //#ifdef __VULCAN__
 //INTERNAL DELEGATE TreeView_CompareDelegate( lParam1 AS LONGINT, lParam2 AS LONGINT, lHandle AS LONGINT) AS INT 
 

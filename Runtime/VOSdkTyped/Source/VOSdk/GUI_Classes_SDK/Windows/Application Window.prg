@@ -62,7 +62,7 @@ CLASS AppWindow INHERIT Window
 		RETURN SELF
 	
 	METHOD Dispatch(oEvt) 
-		//Todo
+		//Todo Dispatch ?
 		//LOCAL oEvt := oEvent AS @@Event
 		//LOCAL dwMsg AS DWORD
 		

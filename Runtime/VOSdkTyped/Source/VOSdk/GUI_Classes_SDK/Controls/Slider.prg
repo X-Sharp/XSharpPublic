@@ -40,7 +40,7 @@ CLASS SelectionSlider INHERIT Slider
 
 
 	METHOD ClearSelection() AS VOID
-		// Todo
+		// Todo ClearSelection
 		//IF (hWnd != NULL_PTR)
 		//	SELF:SelectionRange := Range{}
 		//	SendMessage(hWnd, TBM_CLEARSEL, 0, 0)
@@ -53,7 +53,7 @@ CLASS SelectionSlider INHERIT Slider
 		RETURN 
 
 	ACCESS SelectionRange as Range
-		// Todo
+		// Todo SelectionRange
 		//LOCAL hSlider AS PTR
 		//LOCAL nMin AS LONGINT
 		//LOCAL nMax AS LONGINT
@@ -66,7 +66,7 @@ CLASS SelectionSlider INHERIT Slider
 		RETURN Range{}
 
 	ASSIGN SelectionRange(oNewSelectionRange as Range) 
-		// Todo
+		// Todo SelectionRange
 		//SendMessage(SELF:Handle(), TBM_SETSELSTART, DWORD(_CAST, FALSE), oNewSelectionRange:Min)
 		//SendMessage(SELF:Handle(), TBM_SETSELEND, DWORD(_CAST, TRUE), oNewSelectionRange:Max)
 
@@ -93,12 +93,12 @@ CLASS Slider INHERIT ScrollBar
 		RETURN SELF:__TrackBar:Bounds
 
 	METHOD ClearTicks() AS VOID
-		// Todo
+		// Todo ClearTicks
 		RETURN
 
 
 	METHOD GetTickPos(nIndex) AS LONG
-		//Todo
+		//Todo GetTickPos
 		//RETURN SendMessage(SELF:__TrackBar:hWnd, TBM_GETTIC, 0, nIndex)
 		RETURN 0
 
@@ -115,7 +115,7 @@ CLASS Slider INHERIT ScrollBar
 		RETURN __TrackBar:Value := nPosition
 
 	ACCESS ThumbBoundingBox 
-		// Todo
+		// Todo ThumbBoundingBox
 		//LOCAL strucRect IS _winRect
 		//LOCAL oOrigin AS Point
 		//LOCAL oSize AS Dimension
@@ -128,12 +128,12 @@ CLASS Slider INHERIT ScrollBar
 		RETURN BoundingBox{}
 
 	ACCESS ThumbLength  AS LONG
-		// Todo
+		// Todo ThumbLength
 		//RETURN SendMessage(SELF:Handle(), TBM_GETTHUMBLENGTH, 0, 0)
 		RETURN 0
 
 	ASSIGN ThumbLength(nThumbLength AS LONG) 
-		// Todo
+		// Todo ThumbLength
 		//SendMessage(SELF:Handle(), TBM_SETTHUMBLENGTH, nThumbLength, 0)
 		RETURN 
 
@@ -169,7 +169,7 @@ CLASS Slider INHERIT ScrollBar
 		RETURN 
 
 	ACCESS TickCount AS LONG
-		// Todo
+		// Todo TickCount
 		//IF __TrackBar != NULL_OBJECT
 		//	RETURN SendMessage(__TrackBar:hWnd, TBM_GETNUMTICS, 0, 0)
 		//ENDIF

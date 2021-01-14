@@ -239,7 +239,7 @@ CLASS ListBox INHERIT BaseListBox
 		RETURN FALSE
 
 	METHOD EnableItemDrag() AS VOID
-		//Todo
+		//Todo EnableItemDrag
 		//IF IsInstanceOf(oFormSurface, #DialogWindow)
 		//	Send(oFormSurface, #__SubClassForDragList)
 		//ENDIF
@@ -365,7 +365,7 @@ CLASS ListBox INHERIT BaseListBox
 		RETURN (LONG) SELF:__Items:Count
 	
 	METHOD ListFiles(sStartDir, oFixedText, FileTypes) 
-		//Todo
+		//Todo ListFiles
 		RETURN SELF
 		//LOCAL pPath AS PSZ
 		//LOCAL i,iRet AS INT
@@ -437,7 +437,7 @@ CLASS ListBox INHERIT BaseListBox
 		RETURN liNumSelected
 
 	ACCESS SelectedFile AS STRING
-		//Todo
+		//Todo SelectedFile
 		//LOCAL pPath AS PSZ
 		//LOCAL sRet AS STRING
 		//pPath := MemAlloc(261)

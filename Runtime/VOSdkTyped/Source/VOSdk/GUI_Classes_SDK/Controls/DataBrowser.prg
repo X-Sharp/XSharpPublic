@@ -1543,7 +1543,7 @@ CLASS DataBrowser INHERIT VOSDK.Control
 	
 
 	METHOD ChangeBackground ( oBrush AS USUAL, kWhere AS INT ) 
-		// Todo
+		// Todo ChangeBackground
 		LOCAL oNewBrush AS VOSDK.Brush
 		IF ! SELF:__IsValid 
 			RETURN SELF

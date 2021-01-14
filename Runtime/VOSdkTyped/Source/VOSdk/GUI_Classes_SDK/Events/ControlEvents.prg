@@ -173,7 +173,7 @@ END CLASS
 
 
 CLASS RichEditProtectEvent INHERIT ControlNotifyEvent
-	//Todo
+	//Todo RichEditProtectEvent
 	CONSTRUCTOR(oC AS Control) STRICT
 		SUPER(oC)
 	/*
@@ -206,7 +206,7 @@ CLASS RichEditProtectEvent INHERIT ControlNotifyEvent
 END CLASS
 
 CLASS RichEditSelectionEvent INHERIT ControlNotifyEvent
-	//Todo
+	//Todo RichEditSelectionEvent
 	CONSTRUCTOR(oC AS Control) STRICT
 		SUPER(oC)
 	/*
@@ -243,7 +243,7 @@ END CLASS
 
 
 CLASS ScrollEvent INHERIT @@Event
-	//Todo
+	//Todo ScrollEvent
 	PROPERTY ScrollBar AS ScrollBar Auto
 	PROPERTY Position AS LONG Auto
 	
@@ -252,7 +252,7 @@ END CLASS
 
 
 CLASS SliderEvent INHERIT @@Event
-	//Todo
+	//Todo SliderEvent
 	PROPERTY Slider AS Slider Auto
 	PROPERTY Position AS LONG Auto
 	PROPERTY IsWindowScroll AS LOGIC GET FALSE
@@ -260,7 +260,7 @@ CLASS SliderEvent INHERIT @@Event
 END CLASS
 
 CLASS SpinnerEvent INHERIT @@Event
-	//Todo
+	//Todo SpinnerEvent
 	PROPERTY Spinner AS Spinner Auto
 	PROPERTY Position AS LONG Auto
 
@@ -385,7 +385,7 @@ END CLASS
 
 
 CLASS SysLinkSelectEvent INHERIT ControlNotifyEvent
-	//Todo
+	//Todo SysLinkSelectEvent
 	CONSTRUCTOR(oC AS Control)
 		SUPER(oC)
 	//RvdH 061218 Declared properties for performance

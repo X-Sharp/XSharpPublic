@@ -94,7 +94,7 @@ CLASS Control INHERIT VObject IMPLEMENTS IGuiObject, ITimer
 		RETURN oDataField
 	
 	METHOD __EnsureVisibity() AS LOGIC STRICT 
-		//Todo
+		//Todo __EnsureVisibity
 		/*
 		LOCAL rCtl, rParent IS _winRECT
 		LOCAL oPoint AS Point
@@ -253,7 +253,7 @@ CLASS Control INHERIT VObject IMPLEMENTS IGuiObject, ITimer
 
 	[Obsolete];
 	METHOD __ToolTipHandle() AS IntPtr STRICT 
-		// Todo
+		// Todo __EnsureVisibity
 		//	RETURN oParent:__ToolTipHandle()
 		RETURN IntPtr.Zero
 
@@ -507,7 +507,7 @@ CLASS Control INHERIT VObject IMPLEMENTS IGuiObject, ITimer
 		RETURN 
 	
 	METHOD Default(oEvent) 		
-		//Todo
+		//Todo Default
 		// LOCAL oEvt := oEvent AS @@event
 		// SELF:EventReturnValue := CallWindowProc(SELF:__lpfnDefaultProc, oCtrl, oEvt:umsg, oEvt:wParam, oEvt:lParam)
 
@@ -543,7 +543,7 @@ CLASS Control INHERIT VObject IMPLEMENTS IGuiObject, ITimer
 	
 
 	METHOD DisableTheme() AS VOID STRICT
-		//Todo
+		//Todo DisableTheme
 		//RETURN SetWindowTheme(SELF:handle(),"","")
 		
 	METHOD Dispatch(oEvent) 

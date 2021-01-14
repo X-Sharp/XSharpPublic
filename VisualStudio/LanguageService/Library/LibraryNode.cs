@@ -26,6 +26,7 @@ using Microsoft.VisualStudio.Shell.Interop;
 using Microsoft.VisualStudio.Shell;
 using ErrorHandler = Microsoft.VisualStudio.ErrorHandler;
 using VSConstants = Microsoft.VisualStudio.VSConstants;
+using XSharpModel;
 
 namespace XSharp.LanguageService
 {
@@ -492,19 +493,23 @@ namespace XSharp.LanguageService
         int IVsSimpleObjectList2.GetCategoryField2(uint index, int Category, out uint pfCatField)
         {
             LibraryNode node;
-            if (NullIndex == index)
+            pfCatField = 0u;
+            if ( !XSolution.IsClosing)
             {
-                node = this;
+                if (NullIndex == index)
+                {
+                    node = this;
+                }
+                else if (index < (uint)children.Count)
+                {
+                    node = children[(int)index];
+                }
+                else
+                {
+                    throw new ArgumentOutOfRangeException("index");
+                }
+                pfCatField = node.CategoryField((LIB_CATEGORY)Category);
             }
-            else if (index < (uint)children.Count)
-            {
-                node = children[(int)index];
-            }
-            else
-            {
-                throw new ArgumentOutOfRangeException("index");
-            }
-            pfCatField = node.CategoryField((LIB_CATEGORY)Category);
             return VSConstants.S_OK;
         }
 
@@ -515,31 +520,41 @@ namespace XSharp.LanguageService
 
         int IVsSimpleObjectList2.GetContextMenu(uint index, out Guid pclsidActive, out int pnMenuId, out IOleCommandTarget ppCmdTrgtActive)
         {
-            if (index >= (uint)children.Count)
+            ppCmdTrgtActive = null;
+            pnMenuId = 0;
+            pclsidActive = Guid.Empty;
+            if (!XSolution.IsClosing)
             {
-                throw new ArgumentOutOfRangeException("index");
+
+                if (index >= (uint)children.Count)
+                {
+                    throw new ArgumentOutOfRangeException("index");
+                }
+                CommandID commandId = children[(int)index].contextMenuID;
+                if (null == commandId)
+                {
+                    pclsidActive = Guid.Empty;
+                    pnMenuId = 0;
+                    ppCmdTrgtActive = null;
+                    return VSConstants.E_NOTIMPL;
+                }
+                pclsidActive = commandId.Guid;
+                pnMenuId = commandId.ID;
+                ppCmdTrgtActive = children[(int)index] as IOleCommandTarget;
             }
-            CommandID commandId = children[(int)index].contextMenuID;
-            if (null == commandId)
-            {
-                pclsidActive = Guid.Empty;
-                pnMenuId = 0;
-                ppCmdTrgtActive = null;
-                return VSConstants.E_NOTIMPL;
-            }
-            pclsidActive = commandId.Guid;
-            pnMenuId = commandId.ID;
-            ppCmdTrgtActive = children[(int)index] as IOleCommandTarget;
             return VSConstants.S_OK;
         }
 
         int IVsSimpleObjectList2.GetDisplayData(uint index, VSTREEDISPLAYDATA[] pData)
         {
-            if (index >= (uint)children.Count)
+            if (!XSolution.IsClosing)
             {
-                throw new ArgumentOutOfRangeException("index");
+                if (index >= (uint)children.Count)
+                {
+                    throw new ArgumentOutOfRangeException("index");
+                }
+                pData[0] = children[(int)index].displayData;
             }
-            pData[0] = children[(int)index].displayData;
             return VSConstants.S_OK;
         }
 
@@ -565,18 +580,26 @@ namespace XSharp.LanguageService
 
         int IVsSimpleObjectList2.GetItemCount(out uint pCount)
         {
-            pCount = (uint)children.Count;
+            pCount = 0;
+            if (!XSolution.IsClosing)
+            {
+                pCount = (uint)children.Count;
+            }
             return VSConstants.S_OK;
         }
 
         int IVsSimpleObjectList2.GetList2(uint index, uint ListType, uint flags, VSOBSEARCHCRITERIA2[] pobSrch, out IVsSimpleObjectList2 ppIVsSimpleObjectList2)
         {
             // TODO: Use the flags and list type to actually filter the result.
-            if (index >= (uint)children.Count)
+            ppIVsSimpleObjectList2 = null;
+            if (!XSolution.IsClosing)
             {
-                throw new ArgumentOutOfRangeException("index");
+                if (index >= (uint)children.Count)
+                {
+                    throw new ArgumentOutOfRangeException("index");
+                }
+                ppIVsSimpleObjectList2 = children[(int)index].FilterView((LibraryNodeType)ListType);
             }
-            ppIVsSimpleObjectList2 = children[(int)index].FilterView((LibraryNodeType)ListType);
             return VSConstants.S_OK;
         }
 
@@ -593,11 +616,15 @@ namespace XSharp.LanguageService
 
         int IVsSimpleObjectList2.GetNavInfoNode(uint index, out IVsNavInfoNode ppNavInfoNode)
         {
-            if (index >= (uint)children.Count)
+            ppNavInfoNode = null;
+            if (!XSolution.IsClosing)
             {
-                throw new ArgumentOutOfRangeException("index");
+                if (index >= (uint)children.Count)
+                {
+                    throw new ArgumentOutOfRangeException("index");
+                }
+                ppNavInfoNode = children[(int)index] as IVsNavInfoNode;
             }
-            ppNavInfoNode = children[(int)index] as IVsNavInfoNode;
             return VSConstants.S_OK;
         }
 

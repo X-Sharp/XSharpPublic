@@ -188,7 +188,7 @@ namespace XSharp.LanguageService
                 };
             }
             //
-            this.buildImageData(scope.Kind, scope.Modifiers);
+            this.buildImageData(scope.Kind, scope.Visibility);
             this.initText(scope);
             this.initDescription(scope);
         }

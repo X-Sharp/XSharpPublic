@@ -116,7 +116,7 @@ CLASS DataBrowser INHERIT VOSDK.Control
 
     PROPERTY ControlType AS ControlType GET ControlType.DataBrowser
 
-	METHOD OnControlCreated(oC AS System.Windows.Forms.Control) AS VOID
+	METHOD OnControlCreated(oC AS IVOControl) AS VOID
 		LOCAL oGrid AS VODataGridView
 		oGrid := (VODataGridView) oC
 		// Event Handlers
@@ -302,7 +302,7 @@ CLASS DataBrowser INHERIT VOSDK.Control
 		IF SELF:CurrentColumn != NULL .AND. TypeOf(System.Windows.Forms.TextBox):isAssignableFrom(e:Control:GetType())
 			e:Control:PreviewKeyDown += OnEditControlPreviewKeyDown
 			SELF:oVOEditControl := SingleLineEdit{e:Control}
-			SELF:oVOEditControl:RegisterEvents(e:Control)
+			SELF:oVOEditControl:RegisterEvents((IVOTextBox)e:Control)
 			chilf := SELF:oVOEditControl:TextValue
 			SELF:oVOEditControl:FieldSpec := SELF:CurrentColumn:FieldSpec
 			SELF:oVOEditControl:TextValue := chilf

@@ -35,7 +35,7 @@ CLASS SelectionSlider INHERIT Slider
 
     PROPERTY Controltype AS ControlType GET ControlType.Slider
 
-	METHOD __CreateControl(liStyle AS LONG, liExStyle AS LONG) AS System.Windows.Forms.Control
+	METHOD __CreateControl(liStyle AS LONG, liExStyle AS LONG) AS IVOControl
 		RETURN SUPER:__CreateControl(liStyle| (LONG) TBS_ENABLESELRANGE, liExStyle)
 
 
@@ -189,7 +189,7 @@ CLASS VerticalSelectionSlider INHERIT SelectionSlider
 		oControl:Orientation := System.Windows.Forms.Orientation.Vertical
 		RETURN 
 
-	METHOD __CreateControl(liStyle AS LONG, liExStyle AS LONG) AS System.Windows.Forms.Control
+	METHOD __CreateControl(liStyle AS LONG, liExStyle AS LONG) AS IVOControl
 		RETURN SUPER:__CreateControl(liStyle| (LONG) TBS_VERT, liExStyle) 
 
 	CONSTRUCTOR(oOwner, xID, oPoint, oDimension) 

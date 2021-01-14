@@ -80,7 +80,7 @@ CLASS DialogWindow INHERIT Window IMPLEMENTS ILastFocus
 	ACCESS __HasSurface AS LOGIC
 		RETURN TRUE
 
-	ACCESS __Surface AS System.Windows.Forms.Control
+	ACCESS __Surface AS IVOControlContainer
 		RETURN oSurface
 	
 	METHOD __SetupDataControl(oDC AS Control) AS VOID 
@@ -97,14 +97,14 @@ CLASS DialogWindow INHERIT Window IMPLEMENTS ILastFocus
 		ENDIF
 		RETURN 
 
-	METHOD Activate(oEvent) 
+	METHOD Activate(oEvent  AS Event) 
 		WC.AppSetDialogWindow(SELF:oSurface)
 		RETURN SUPER:Activate(oEvent)
 	
 	METHOD Active() AS LOGIC
 		RETURN __Dialog:IsShown
 	
-	METHOD ButtonClick(oControlEvent)  
+	METHOD ButtonClick(oControlEvent AS ControlEvent)  
 		LOCAL oButton AS Control
 		LOCAL dwI, dwCount AS DWORD
 		LOCAL oRBG AS RadioButtonGroup 
@@ -150,11 +150,11 @@ CLASS DialogWindow INHERIT Window IMPLEMENTS ILastFocus
 		ENDIF
 		RETURN NIL
 
-	METHOD DeActivate(oEvent) 
+	METHOD DeActivate(oEvent  AS Event) 
 		RETURN SUPER:DeActivate(oEvent)
 	
 
-	METHOD Default(oEvent) 
+	METHOD Default(oEvent AS Event) 
 		SELF:EventReturnValue := 0
 		RETURN SELF
 	
@@ -172,7 +172,7 @@ CLASS DialogWindow INHERIT Window IMPLEMENTS ILastFocus
 		SUPER:Destroy()
 		RETURN NIL
 	
-	METHOD EditFocusChange(oEditFocusChangeEvent) 
+	METHOD EditFocusChange(oEditFocusChangeEvent AS EditFocusChangeEvent) 
 		LOCAL uRetCode AS USUAL
 		LOCAL oEFCE AS EditFocusChangeEvent
 		oEFCE := oEditFocusChangeEvent 
@@ -264,7 +264,7 @@ CLASS DialogWindow INHERIT Window IMPLEMENTS ILastFocus
 		ENDIF
 		oLastFocus := oControl
 	
-	METHOD ListBoxClick(oControlEvent) 
+	METHOD ListBoxClick(oControlEvent AS ControlEvent) 
 		LOCAL oListBox := NULL_OBJECT AS ListBox
 		LOCAL oCE AS ControlEvent
 		oCE := oControlEvent
@@ -273,7 +273,7 @@ CLASS DialogWindow INHERIT Window IMPLEMENTS ILastFocus
 		oListBox:__Update()
 		RETURN SELF
 
-	METHOD ListBoxSelect(oControlEvent) 
+	METHOD ListBoxSelect(oControlEvent AS ControlEvent) 
 		LOCAL oListBox := NULL_OBJECT AS ListBox
 		LOCAL oCE AS ControlEvent
 		oCE := oControlEvent

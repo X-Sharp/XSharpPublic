@@ -22,8 +22,8 @@ PARTIAL ABSTRACT CLASS FixedImage INHERIT Control
 		RETURN 
 
 
-	ACCESS __Label AS VOImageLabel
-		RETURN (VOImageLabel) oCtrl
+	ACCESS __Label AS IVOLabel
+		RETURN (IVOLabel) oCtrl
 
 	ABSTRACT METHOD __SetImage(uResId AS USUAL) AS OBJECT STRICT 
 

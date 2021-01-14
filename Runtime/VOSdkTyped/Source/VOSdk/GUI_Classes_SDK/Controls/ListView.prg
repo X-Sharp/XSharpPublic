@@ -63,8 +63,8 @@ CLASS ListView INHERIT TextControl
 	#endregion
 
 
-	ACCESS __ListView AS VOListView
-		RETURN (VOListView) oCtrl
+	ACCESS __ListView AS IVOListView
+		RETURN (IVOListView) oCtrl
 
 	METHOD __GetItemAtIndex(nIndex AS LONG) AS ListViewItem
 		IF SELF:__IsValid

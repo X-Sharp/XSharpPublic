@@ -122,15 +122,15 @@ CLASS DateTimeSelectionEvent INHERIT ControlEvent
 
 
 	ACCESS SelectedDate AS DATE STRICT 
-		LOCAL oDT AS VODateTimePicker
-		oDT := (VODateTimePicker) SELF:Control:__Control
+		LOCAL oDT AS IVODateTimePicker
+		oDT := (IVODateTimePicker) SELF:Control:__Control
 		RETURN (DATE) oDT:Value
 
 	ACCESS SelectedTime AS STRING STRICT 
 		LOCAL dt AS DateTime
-		LOCAL oDT AS VODateTimePicker
+		LOCAL oDT AS IVODateTimePicker
 		LOCAL sReturn AS STRING
-		oDT := (VODateTimePicker) SELF:Control:__Control
+		oDT := (IVODateTimePicker) SELF:Control:__Control
 		dt := oDT:Value
 		sReturn := ConTime((DWORD)dt:Hour, (DWORD)dt:Minute, (DWORD)dt:Second)
 		RETURN sReturn

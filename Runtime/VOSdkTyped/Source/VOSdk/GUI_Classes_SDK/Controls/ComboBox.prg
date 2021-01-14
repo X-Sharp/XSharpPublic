@@ -7,7 +7,7 @@ CLASS ComboBox INHERIT ListBox
     PROPERTY ControlType AS ControlType GET ControlType.ComboBox
 
 
-    METHOD OnControlCreated(oC AS System.Windows.Forms.Control) AS VOID
+    METHOD OnControlCreated(oC AS IVOControl) AS VOID
 		VAR oCombo := (VOComboBox) oC
 		oCombo:DropDownHeight := oSize:Height
 		RETURN 
@@ -94,8 +94,8 @@ CLASS ComboBox INHERIT ListBox
 		RETURN uRet
 
 
-	METHOD Create() AS System.Windows.Forms.Control
-		LOCAL oWnd AS System.Windows.Forms.Control
+	METHOD Create() AS IVOControl STRICT
+		LOCAL oWnd AS IVOControl
 		oWnd := SUPER:Create()
 		SELF:__SetComboStyle()
 		RETURN oWnd

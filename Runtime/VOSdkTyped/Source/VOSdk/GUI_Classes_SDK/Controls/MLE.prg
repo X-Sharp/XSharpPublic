@@ -16,8 +16,8 @@ CLASS MultiLineEdit INHERIT Edit
 		ENDIF
 		RETURN cText
 
-	ACCESS __MultiLineEdit AS VOMLETextBox
-		RETURN (VOMLETextBox) oCtrl
+	ACCESS __MultiLineEdit AS IVOMLETextBox
+		RETURN (IVOMLETextBox) oCtrl
 	
 	METHOD GetLine(nLineNumber, nMaxLength) 
 		LOCAL dwIndex AS LONG

@@ -8,7 +8,7 @@ USING System.Collections.Generic
 USING VOSDK := XSharp.VO.SDK
 
 [DebuggerDisplay("{Text}, {Size}")];
-CLASS VOPanel INHERIT System.Windows.Forms.Panel 
+CLASS VOPanel INHERIT System.Windows.Forms.Panel IMPLEMENTS IVOPanel
 	PROPERTY Window AS VOSDK.Window AUTO
 	PROPERTY SuppressMovingControls AS LOGIC AUTO
 	PROPERTY ReturnAllKeys	AS LOGIC AUTO
@@ -16,10 +16,19 @@ CLASS VOPanel INHERIT System.Windows.Forms.Panel
 	PROTECT lToolTipsEnabled AS LOGIC
 	PROTECT oLastControl AS OBJECT
 	PROTECT _lNoUpdateUIState:=FALSE AS LOGIC
-	PROTECT _aGroups AS System.Collections.Generic.SortedList<INT,VOGroupBox>
-	PROTECT _aRBGroups AS System.Collections.Generic.SortedList<INT,VOGroupBox>
-	PROTECT _aFramepanels AS System.Collections.Generic.SortedList<INT,VOFramepanel>
+	PROTECT _aGroups        AS SortedList<INT,VOGroupBox>
+	PROTECT _aRBGroups      AS SortedList<INT,VOGroupBox>
+	PROTECT _aFramepanels   AS SortedList<INT,VOFramepanel>
 
+   METHOD AddControl (oCtrl AS IVOControl) AS VOID
+        IF oCtrl IS System.Windows.Forms.Control VAR oC
+            SELF:Controls:Add( oC)
+        ENDIF
+
+   METHOD SetChildIndex(oCtrl AS IVOControl, nIndex AS LONG) AS VOID
+        IF oCtrl IS System.Windows.Forms.Control VAR oC
+            SELF:Controls:SetChildIndex(oC,nIndex)
+        ENDIF
 
 	METHOD CleanUp() AS VOID STRICT
 		// Tooltip wurde im original Dispose nicht sauber entfernt und führte zu Abstürzen
@@ -157,8 +166,8 @@ CLASS VOPanel INHERIT System.Windows.Forms.Panel
 		LOCAL lSortGroups := SELF:_aGroups == NULL AS LOGIC 
 		LOCAL nKey AS INT
 		IF lSortGroups
-			SELF:_aGroups   := System.Collections.Generic.SortedList<INT,VOGroupBox>{}
-			SELF:_aRBGroups := System.Collections.Generic.SortedList<INT,VOGroupBox>{}
+			SELF:_aGroups   := SortedList<INT,VOGroupBox>{}
+			SELF:_aRBGroups := SortedList<INT,VOGroupBox>{}
 		ENDIF
 		IF SELF:Controls:Count > 0 
 			SELF:SuspendLayout()
@@ -203,9 +212,9 @@ CLASS VOPanel INHERIT System.Windows.Forms.Panel
 
 	METHOD SortGroups() AS VOID STRICT
 		LOCAL nKey AS INT
-		SELF:_aGroups       := System.Collections.Generic.SortedList<INT,VOGroupBox>{}
-		SELF:_aRBGroups     := System.Collections.Generic.SortedList<INT,VOGroupBox>{}
-		SELF:_aFramepanels  := System.Collections.Generic.SortedList<INT,VOFramepanel>{}
+		SELF:_aGroups       := SortedList<INT,VOGroupBox>{}
+		SELF:_aRBGroups     := SortedList<INT,VOGroupBox>{}
+		SELF:_aFramepanels  := SortedList<INT,VOFramepanel>{}
 		FOREACH oC AS System.Windows.Forms.Control IN SELF:Controls
 			IF oc IS VOGroupBox VAR oGroup
 				nKey := ((oGroup:Location:Y + oGroup:Height)*10000 + oGroup:Location:X)*(-1) // untere kante berechnen (oben>unten , links > rechts)
@@ -339,7 +348,7 @@ CLASS VOSurfacePanel INHERIT VOPanel
 
 END CLASS
 
-CLASS VOFramePanel INHERIT VOPanel
+CLASS VOFramePanel INHERIT VOPanel IMPLEMENTS IVOFramePanel
 	PROTECT oSurfacePanel	AS VOSurfacePanel
 	PROTECT oDwForm		AS VODataForm
 	PROTECT lShown		AS LOGIC
@@ -361,7 +370,7 @@ CLASS VOFramePanel INHERIT VOPanel
         SELF:BackColor   := System.Drawing.Color.Beige
         SELF:Text        := "FramePanel"
 #endif        
-		RETURN
+		RETURN 
 
 	VIRTUAL PROTECTED PROPERTY CreateParams AS System.Windows.Forms.CreateParams 
 		GET

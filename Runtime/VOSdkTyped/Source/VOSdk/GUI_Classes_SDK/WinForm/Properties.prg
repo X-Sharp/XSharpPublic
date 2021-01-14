@@ -113,9 +113,7 @@ CLASS VOControlProperties INHERIT VOProperties
 	METHOD LinkTo(oOwner AS VOSDK.Control) AS VOID STRICT
 		Control := oOwner
 		Window := oOwner:Owner
-		IF oWFC is IVOControl
-			LOCAL oVOC AS IVOControl
-			oVOC := (IVOControl) oWFC
+		IF oWFC IS IVOControlProperties VAR oVOC
 			SELF:StyleChanged += oVOC:SetVisualStyle
 		ENDIF
 

@@ -132,7 +132,7 @@ CLASS SplitView INHERIT Control
         RETURN NULL_OBJECT
          
 
-    PRIVATE METHOD __GetPaneObject(oObject AS IGUIObject) AS System.Windows.Forms.Control
+    PRIVATE METHOD __GetPaneObject(oObject AS IGUIObject) AS IVOUIObject
         IF oObject IS Control VAR oCtrl
             RETURN oCtrl:__Control
         ELSEIF oObject IS DataWindow VAR oDW
@@ -148,7 +148,7 @@ CLASS SplitView INHERIT Control
             VAR oObj := __GetPaneObject(oObject)
             oPanel:Controls:Clear()
             IF oObj != NULL
-                oPanel:Controls:Add(oObj)
+                oPanel:Controls:Add((System.Windows.Forms.Control) oObj)
                 oObj:Dock := System.Windows.Forms.DockStyle.Fill
             ENDIF
         ENDIF
@@ -192,7 +192,7 @@ CLASS SplitView INHERIT Control
 
 
 
-	METHOD Create() AS System.Windows.Forms.Control
+	METHOD Create() AS IVOControl STRICT
 		VAR oMain := SUPER:Create()
         SELF:__AdjustSize()
         RETURN oMain

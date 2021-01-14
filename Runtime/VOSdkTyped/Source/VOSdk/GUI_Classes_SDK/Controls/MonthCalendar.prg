@@ -18,17 +18,16 @@ END CLASS
 CLASS MonthCalendar INHERIT TextControl
 
 	
-	ACCESS __Calendar AS VOMonthCalendar
-		RETURN (VOMonthCalendar) oCtrl
+	ACCESS __Calendar AS IVOMonthCalendar
+		RETURN (IVOMonthCalendar) oCtrl
 
     PROPERTY ControlType AS ControlType GET ControlType.MonthCalendar
 
-	
 	METHOD __GetColor(dwColorID AS DWORD) AS Color STRICT 
 		LOCAL cr AS LONG
 		cr := GuiWin32.SendMessage(oCtrl:Handle, MCM_GETCOLOR, dwColorID, 0L)
 		RETURN Color.FromColorRef((DWORD) cr)
-
+  
 	METHOD __SetColor(oColor AS Color, dwColorID AS DWORD) AS Color STRICT 
 		GuiWin32.SendMessage(oCtrl:Handle, MCM_SETCOLOR, dwColorID, (LONG) oColor:ColorRef)
 		RETURN oColor
@@ -91,10 +90,15 @@ CLASS MonthCalendar INHERIT TextControl
 
 
 	ACCESS MonthBackgroundColor  AS Color
-		RETURN SELF:__GetColor(MCSC_MONTHBK)
+		IF SELF:ValidateControl()
+			RETURN __Calendar:BackColor
+        ENDIF
+        RETURN System.Drawing.Color.White
 
 	ASSIGN MonthBackgroundColor(oColor AS Color) 
-		SELF:__SetColor(oColor, MCSC_MONTHBK)
+		IF SELF:ValidateControl()
+			__Calendar:BackColor := oColor
+		ENDIF
 
 	ACCESS MonthDelta 
 		RETURN GuiWin32.SendMessage(SELF:Handle(), MCM_GETMONTHDELTA, 0, 0)

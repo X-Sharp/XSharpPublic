@@ -11,8 +11,8 @@ CLASS RadioButton INHERIT Button
 		GuiWin32.SetWindowLong(SELF:hWnd, GWL_EXSTYLE, dwExStyle)
 		RETURN
 
-	ACCESS __RadioButton AS VORadioButton
-		RETURN (VORadioButton ) oCtrl
+	ACCESS __RadioButton AS IVORadioButton
+		RETURN (IVORadioButton ) oCtrl
 
 	METHOD Destroy() AS USUAL CLIPPER
 		IF oCtrl != NULL_OBJECT .and. !oCtrl:IsDisposed
@@ -41,10 +41,7 @@ CLASS RadioButton INHERIT Button
 	ASSIGN Pressed(lPressed AS LOGIC) 
 
 		IF SELF:ValidateControl()
-			LOCAL lhilf := __RadioButton:lBlockCheckedChanged AS LOGIC
-			__RadioButton:lBlockCheckedChanged :=  TRUE
 			__RadioButton:Checked := lPressed
-			__RadioButton:lBlockCheckedChanged :=  lhilf
 			__RadioButton:TabStop := lPressed
 			SELF:Value := lPressed
 		ENDIF

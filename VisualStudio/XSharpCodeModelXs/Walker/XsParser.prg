@@ -1129,13 +1129,13 @@ attributeParam      : Name=identifierName Op=assignoperator Expr=expression     
          CASE Kind.Delegate
             result := SELF:ParseDelegate()
          CASE Kind.Access
-            IF InXppClass
+            IF InXppClass .AND. _dialect == XSharpDialect.XPP
                result := SELF:ParseXppProperty()
             ELSE
                result := SELF:ParseMethod()
             ENDIF
          CASE Kind.Assign
-            IF InXppClass
+            IF InXppClass .AND. _dialect == XSharpDialect.XPP
                result := SELF:ParseXppProperty()
             ELSE
                result := SELF:ParseMethod()
@@ -1148,7 +1148,7 @@ attributeParam      : Name=identifierName Op=assignoperator Expr=expression     
             ENDIF
          CASE Kind.Function
          CASE Kind.Procedure
-            IF InFoxClass
+            IF InFoxClass .AND. _dialect == XSharpDialect.FoxPro
                result := SELF:ParseFoxMethod()
             ELSE
                result := SELF:ParseFuncProc()
@@ -1187,13 +1187,13 @@ attributeParam      : Name=identifierName Op=assignoperator Expr=expression     
             result := SELF:ParseDestructor()
             
          CASE Kind.Field
-            IF InXppClass
+            IF InXppClass .AND. _dialect == XSharpDialect.XPP
                IF SELF:La1 == XSharpLexer.COLON
                   result := SELF:ParseXppVisibility()
                ELSE
                   result := SELF:ParseXppClassVars()
                ENDIF
-            ELSEIF InFoxClass
+            ELSEIF InFoxClass .AND. _dialect == XSharpDialect.FoxPro
                result := SELF:ParseFoxFields()   
             ELSE
                result := SELF:ParseClassVars()   
@@ -2207,12 +2207,13 @@ callingconvention	: Convention=(CLIPPER | STRICT | PASCAL | ASPEN | WINCALL | CA
 
 
       PRIVATE METHOD ParseFuncProcType( kind OUT Kind) AS LOGIC
-            IF SELF:La2 == XSharpLexer.FUNCTION 
-               kind := Kind.LocalFunc
-            ELSEIF SELF:La2 == XSharpLexer.PROCEDURE
-               kind := Kind.LocalProc
+            
+            IF SELF:La1 == XSharpLexer.FUNCTION 
+                kind := Kind.Function
+            ELSEIF SELF:La1 == XSharpLexer.PROCEDURE
+                kind := Kind.Procedure
             ELSE
-               kind := Kind.Unknown
+                kind := Kind.Unknown
                 RETURN FALSE
             ENDIF
             RETURN TRUE
@@ -2229,13 +2230,20 @@ callingconvention	: Convention=(CLIPPER | STRICT | PASCAL | ASPEN | WINCALL | CA
          
          */
             LOCAL kind AS Kind
+            IF SELF:La1 != XSharpLexer.LOCAL
+                RETURN NULL
+            ENDIF
+            SELF:Consume()      // Local
             IF ! ParseFuncProcType (OUT kind)
                RETURN NULL
             ENDIF
-            SELF:Consume()
-            SELF:Consume()
+            SELF:Consume()      // Function or Procedure
+            IF kind == Kind.Function
+                kind := Kind.LocalFunc
+            ELSEIF kind == Kind.Procedure
+                kind := Kind.LocalProc
+            ENDIF
             VAR sig := SELF:ParseSignature()
-            
             SELF:GetSourceInfo(_start, LastToken, OUT VAR range, OUT VAR interval, OUT VAR source)  
             SELF:ReadLine()
             _attributes |= Modifiers.Private
@@ -3345,7 +3353,7 @@ xppclassMember      : Member=xppmethodvis                           #xppclsvisib
             // detect if we're inside the class definition
             IF SELF:La1 == XSharpLexer.INLINE
                RETURN SELF:ParseXppMethodInLine()
-            ELSEIF SELF:InXppClass 
+            ELSEIF SELF:InXppClass  
                RETURN SELF:ParseXppMethodDeclaration()
             ELSE
                RETURN SELF:ParseXppMethodImplementation()

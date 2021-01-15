@@ -1292,15 +1292,12 @@ CLASS ListViewItem INHERIT VObject
 		RETURN NULL_STRING
 
 
-	METHOD GetValue() AS USUAL STRICT
-		// Gets the default value
-		RETURN NIL
-
-	METHOD GetValue(symColumnName AS SYMBOL) AS USUAL
-		IF aColumnValue:ContainsKey( symColumnName)
-			RETURN aColumnValue[symColumnName]
-		ENDIF	
-
+	METHOD GetValue(symColumnName := NULL_SYMBOL AS SYMBOL) AS USUAL
+        IF symColumnName != NULL_SYMBOL
+		    IF aColumnValue:ContainsKey( symColumnName)
+			    RETURN aColumnValue[symColumnName]
+		    ENDIF	
+        ENDIF
 		RETURN NIL
 
 	ACCESS ImageIndex AS LONG
@@ -1412,7 +1409,7 @@ END CLASS
 #using System.Reflection
 CLASS ListViewItemComparer IMPLEMENTS IComparer
 	PROTECT oListView AS ListView
-	PROTECT symMethod AS SYMBOL	  
+	PROTECT symMethod AS SYMBOL
 	CONSTRUCTOR(oLv AS ListView)
 		oListView := oLv
 	
@@ -1422,10 +1419,10 @@ CLASS ListViewItemComparer IMPLEMENTS IComparer
 				IF IsMethod(oListView, oListView:__SortRoutineName)
 					symMethod := oListView:__SortRoutineName
 				ENDIF
-			ENDIF
-			IF symMethod != NULL_SYMBOL
-				VAR oItem1 := (VOListViewItem) x
-				VAR oItem2 := (VOListViewItem) y
+            ENDIF
+        	IF symMethod != NULL_SYMBOL
+			    VAR oItem1 := (VOListViewItem) x
+			    VAR oItem2 := (VOListViewItem) y
                 RETURN __InternalSend(oListview, symMethod, oItem1:Item, oItem2:Item)
 			ENDIF
 		ENDIF

@@ -747,7 +747,7 @@ METHOD SetFilter( cbFilterBlock , cFilterText ) AS LOGIC CLIPPER
 METHOD SetIndex( oFSIndexFile AS FileSpec) AS LOGIC
     RETURN SetIndex(oFSIndexFile:FullPath)
     
-METHOD SetIndex( cIndexFile := "" AS STRING ) AS LOGIC
+METHOD SetIndex( cIndexFileName := "" AS STRING ) AS LOGIC
 	// oFSIndexFile is a a FileSpec object for the index file,
 	// or the filename of the index file as a string,
 	// with or without file type.
@@ -756,7 +756,6 @@ METHOD SetIndex( cIndexFile := "" AS STRING ) AS LOGIC
 	// If oFSIndexFile is omitted all currently opened indexes are closed.
 	//
 	LOCAL lRetCode          AS LOGIC
-	LOCAL cIndexFileName    AS STRING
 	LOCAL oError            AS USUAL
 	LOCAL dwCurrentWorkArea := 0 AS DWORD
 	LOCAL nTries            AS DWORD

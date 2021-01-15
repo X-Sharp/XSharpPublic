@@ -17,7 +17,6 @@ END CLASS
 
 CLASS MonthCalendar INHERIT TextControl
 
-	
 	ACCESS __Calendar AS IVOMonthCalendar
 		RETURN (IVOMonthCalendar) oCtrl
 

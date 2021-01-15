@@ -19,7 +19,7 @@ METHOD DefaultSort(oLVItem1, oLVItem2)
 		RETURN 1
 	ENDIF
 
-METHOD Dispatch(oEvent) 
+METHOD Dispatch(oEvent  AS @@Event) 
 	LOCAL oEvt := oEvent AS @@Event	
 		
 
@@ -39,7 +39,7 @@ END CLASS
 
 CLASS __ExplorerTV INHERIT TreeView
 
-METHOD Dispatch(oEvent) 
+METHOD Dispatch(oEvent AS @@Event) 
 	LOCAL oEvt := oEvent AS @@Event	
 	
 	IF (oEvt:uMsg == WM_CHAR)	.AND. (oEvt:wParam == 0x00000009)

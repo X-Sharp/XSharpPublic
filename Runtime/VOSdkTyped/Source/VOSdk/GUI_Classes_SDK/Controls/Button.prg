@@ -54,7 +54,7 @@ CLASS Button INHERIT TextControl
 		RETURN FALSE
 
 
-    METHOD Dispatch (oEvent)
+    METHOD Dispatch (oEvent AS @@Event)
         
         RETURN SUPER:Dispatch(oEvent)
 

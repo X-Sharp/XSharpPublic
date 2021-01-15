@@ -2,7 +2,6 @@
 
 CLASS GroupBox INHERIT TextControl
 
-
     PROPERTY ControlType AS ControlType GET ControlType.GroupBox
 
     METHOD OnControlCreated(oC AS IVOControl) AS VOID
@@ -13,9 +12,9 @@ CLASS GroupBox INHERIT TextControl
 
 
 	METHOD OnVisibleChanged(sender AS OBJECT, e AS EventArgs) AS VOID
-		IF oCtrl != NULL_OBJECT .and. oCtrl:Visible
+        // Set timer to refresh all child controls after 1 second
+		IF oCtrl != NULL_OBJECT .AND. oCtrl:Visible
 			SELF:RegisterTimer(1, TRUE)
-			
 		ENDIF
 		
 	METHOD Timer() AS USUAL CLIPPER

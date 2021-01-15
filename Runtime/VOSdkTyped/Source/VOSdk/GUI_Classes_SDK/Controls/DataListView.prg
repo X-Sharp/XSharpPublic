@@ -17,8 +17,8 @@ CLASS DataListView INHERIT ListView
 	METHOD OnControlCreated(oC AS IVOControl) AS VOID
 		VAR oGrid := (VODataListView) oC
 		oGrid:RetrieveVirtualItem	+= __RetrieveVirtualItems
-		oGrid:CacheVirtualItems	+= __CacheVirtualItems
-		oGrid:SearchForVirtualItem += __SearchForVirtualItems
+		oGrid:CacheVirtualItems	    += __CacheVirtualItems
+		oGrid:SearchForVirtualItem  += __SearchForVirtualItems
 		RETURN 
 
 	PROTECTED METHOD __RetrieveVirtualItems(sender AS OBJECT, e AS RetrieveVirtualItemEventArgs) AS VOID

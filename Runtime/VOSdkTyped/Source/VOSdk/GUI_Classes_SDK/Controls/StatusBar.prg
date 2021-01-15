@@ -1,6 +1,3 @@
-
-
-
 #define SBGRIPSIZE 15
 #define SBMAXITEMS 255
 #define SBMAXMESSAGE 512

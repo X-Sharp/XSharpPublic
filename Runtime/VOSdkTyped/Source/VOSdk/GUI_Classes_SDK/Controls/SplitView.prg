@@ -300,18 +300,18 @@ CLASS SplitView INHERIT Control
                 ENDIF
             NEXT
         ENDIF
-        _aPanes  := NULL_OBJECT
-        _aSplits := NULL_OBJECT
-		oPanes  := NULL_OBJECT
+        _aPanes         := NULL_OBJECT
+        _aSplits        := NULL_OBJECT
+		oPanes          := NULL_OBJECT
 		oBackgroundBrush := NULL_OBJECT
-		oBarBrush := NULL_OBJECT
-		oBarFrameBrush := NULL_OBJECT
+		oBarBrush       := NULL_OBJECT
+		oBarFrameBrush  := NULL_OBJECT
 
 		SUPER:Destroy()
 
 		RETURN SELF
 
-	METHOD Dispatch(oEvent) 
+	METHOD Dispatch(oEvent  AS @@Event) 
 		//LOCAL oSize 	AS Dimension
 		//LOCAL lResize 	AS LOGIC
 		//LOCAL oEvt := oEvent AS @@Event

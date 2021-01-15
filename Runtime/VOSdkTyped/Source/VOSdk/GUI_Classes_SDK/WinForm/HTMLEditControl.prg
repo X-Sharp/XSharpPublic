@@ -7,7 +7,6 @@ CLASS VOHtmlEditorControl INHERIT WebBrowser IMPLEMENTS IVOControl
 	#include "PropControl.vh"
 	PROPERTY oHTML		AS VOSDK.HTMLControl GET (VOSDK.HTMLControl) SELF:Control
 
-
 	CONSTRUCTOR(Owner AS VOSDK.Control, dwStyle AS LONG, dwExStyle AS LONG)
 		oProperties := VOControlProperties{SELF, Owner, dwStyle, dwExStyle}
 		SUPER()

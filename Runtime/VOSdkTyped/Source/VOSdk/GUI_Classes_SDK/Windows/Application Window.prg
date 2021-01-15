@@ -61,7 +61,7 @@ CLASS AppWindow INHERIT Window
 		SUPER:Destroy()
 		RETURN SELF
 	
-	METHOD Dispatch(oEvt) 
+	METHOD Dispatch(oEvt AS @@Event) 
 		//Todo Dispatch ?
 		//LOCAL oEvt := oEvent AS @@Event
 		//LOCAL dwMsg AS DWORD

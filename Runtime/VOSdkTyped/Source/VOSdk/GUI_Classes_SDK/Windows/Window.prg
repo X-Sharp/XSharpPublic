@@ -2826,7 +2826,7 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
 		LOCAL oScrollBar AS ScrollBar
 		LOCAL oEvt	:= oScrollEvent AS ScrollEvent
 		
-		oScrollBar := OBJECT(oEvt:ScrollBar)
+		oScrollBar := oEvt:ScrollBar
 		IF (oScrollBar != NULL_OBJECT)
 			oScrollBar:ThumbPosition:=oEvt:Position
 		ENDIF

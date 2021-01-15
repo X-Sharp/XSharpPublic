@@ -184,13 +184,13 @@ CLASS VOControlProperties INHERIT VOProperties
 	
 	METHOD OnKeyDown(s AS OBJECT, e AS KeyEventArgs) AS VOID	
 		IF SELF:Control != NULL_OBJECT
-				LOCAL k AS KeyEvent
-				k := KeyEvent{e}
-				SELF:Control:EventReturnValue := 0
-				SELF:Control:KeyDown(k)
-				IF SELF:Window != NULL_OBJECT .AND. SELF:Control:EventReturnValue == 0
-					SELF:Window:KeyDown(k)					
-				ENDIF
+			LOCAL k AS KeyEvent
+			k := KeyEvent{e}
+			SELF:Control:EventReturnValue := 0
+			SELF:Control:KeyDown(k)
+			IF SELF:Window != NULL_OBJECT .AND. SELF:Control:EventReturnValue == 0
+				SELF:Window:KeyDown(k)					
+			ENDIF
 		ENDIF
 		RETURN		
 	

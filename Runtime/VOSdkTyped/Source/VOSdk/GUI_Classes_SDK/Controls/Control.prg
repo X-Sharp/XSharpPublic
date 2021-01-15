@@ -546,7 +546,7 @@ CLASS Control INHERIT VObject IMPLEMENTS IGuiObject, ITimer
 		//Todo DisableTheme
 		//RETURN SetWindowTheme(SELF:handle(),"","")
 		
-	METHOD Dispatch(oEvent) 
+	METHOD Dispatch(oEvent AS @@Event) 
 		/*
 		LOCAL oEvt := oEvent AS @@event
 		LOCAL msg AS DWORD

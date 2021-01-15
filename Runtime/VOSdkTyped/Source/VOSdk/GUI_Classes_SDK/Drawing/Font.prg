@@ -6,7 +6,7 @@
 #USING System.Runtime.InteropServices
 CLASS Font INHERIT VObject
 	PROTECT oFont 			AS System.Drawing.Font
-	PROTECT oLogFont		AS Font.LOGFONT
+	INTERNAL oLogFont		AS Font.LOGFONT
 	PROTECT lStdFont 		AS LOGIC
 	PROTECT iStdFontType	AS INT
 	PROTECT bFontChanged	AS LOGIC
@@ -421,7 +421,7 @@ CLASS Font INHERIT VObject
 		RETURN oLogFont:Width
 	
 	[StructLayout(LayoutKind.Sequential, CharSet:=System.Runtime.InteropServices.CharSet.Auto)];
-	PUBLIC class LOGFONT
+	INTERNAL CLASS LOGFONT
 		PUBLIC Height := 0         AS INT
 		PUBLIC Width := 0          AS INT
 		PUBLIC Escapement := 0     AS INT
@@ -487,7 +487,7 @@ CLASS Font INHERIT VObject
 		iPointsize := uValue
 	
 	#endregion
-	ENUM FontWeight
+	INTERNAL ENUM FontWeight
 		MEMBER Heavy := 700
 		MEMBER Light := 200
 		MEMBER Normal := 400

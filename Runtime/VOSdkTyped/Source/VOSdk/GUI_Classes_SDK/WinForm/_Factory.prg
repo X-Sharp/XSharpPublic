@@ -55,6 +55,9 @@ CLASS GuiFactory
         CASE ControlType.ListBox
             oRes := VOListBox{owner, liStyle, liExStyle}
 
+        CASE ControlType.ComboBox
+            oRes := VOComboBox{owner, liStyle, liExStyle}
+
         CASE ControlType.ListView
             oRes := VOListView{owner, liStyle, liExStyle}
 
@@ -67,6 +70,12 @@ CLASS GuiFactory
         CASE ControlType.VerticalScrollBar
             oRes := VOVScrollBar{owner, liStyle, liExStyle}
 
+        CASE ControlType.VerticalSpinner
+            oRes := VOVSpinner{owner, liStyle, liExStyle}
+                
+        CASE ControlType.HorizontalSpinner
+            oRes := VOHSpinner{owner, liStyle, liExStyle}
+                
         CASE ControlType.Slider
 		    oRes := VOSlider{owner, liStyle, liExStyle}
 
@@ -169,6 +178,8 @@ ENUM ControlType
     MEMBER IPAddress
     MEMBER HorizontalScrollBar
     MEMBER VerticalScrollBar
+    MEMBER HorizontalSpinner
+    MEMBER VerticalSpinner
     MEMBER Slider
     MEMBER StatusBar
     MEMBER SysLink

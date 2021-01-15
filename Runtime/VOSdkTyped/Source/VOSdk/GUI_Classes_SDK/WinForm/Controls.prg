@@ -403,6 +403,7 @@ END CLASS
 
 
 CLASS VOHScrollBar INHERIT System.Windows.Forms.HScrollBar IMPLEMENTS IVOScrollBar
+    PROPERTY ScrollBar AS ScrollBar GET (ScrollBar) SELF:Control
 
 	#include "PropControl.vh"
 	CONSTRUCTOR(Owner AS VOSDK.Control, dwStyle AS LONG, dwExStyle AS LONG)
@@ -415,11 +416,53 @@ CLASS VOHScrollBar INHERIT System.Windows.Forms.HScrollBar IMPLEMENTS IVOScrollB
 			SELF:TabStop := (_AND(oProperties:Style, WS_TABSTOP) == WS_TABSTOP)
 		ENDIF		
 
+    PROTECTED METHOD OnValueChanged (e AS EventArgs) AS VOID
+	    LOCAL oWindow AS Window
+		LOCAL oEvent AS ScrollEvent
+		//Debout("TextBox:OnGotFocus", SELF:Control:NameSym,SELF:Control:ControlID, CRLF)
+		SUPER:OnValueChanged(e)
+		IF oProperties != NULL_OBJECT 
+			oEvent := ScrollEvent{SELF:Scrollbar}
+			IF oProperties:Window != NULL_OBJECT
+                oProperties:Window:HorizontalScroll(oEvent)
+    		ENDIF
+		ENDIF
+		RETURN    
+END CLASS
+
+CLASS VOHSpinner INHERIT System.Windows.Forms.HScrollBar IMPLEMENTS IVOScrollBar
+    PROPERTY Spinner AS Spinner GET (Spinner) SELF:Control
+
+	#include "PropControl.vh"
+	CONSTRUCTOR(Owner AS VOSDK.Control, dwStyle AS LONG, dwExStyle AS LONG)
+		oProperties := VOControlProperties{SELF, Owner, dwStyle, dwExStyle}
+		SUPER()
+		SELF:SetVisualStyle()
+
+	METHOD SetVisualStyle AS VOID STRICT
+		IF oProperties != NULL_OBJECT
+			SELF:TabStop := (_AND(oProperties:Style, WS_TABSTOP) == WS_TABSTOP)
+		ENDIF		
+
+    PROTECTED METHOD OnValueChanged (e AS EventArgs) AS VOID
+	    LOCAL oWindow AS Window
+		LOCAL oEvent AS SpinnerEvent
+		//Debout("TextBox:OnGotFocus", SELF:Control:NameSym,SELF:Control:ControlID, CRLF)
+		SUPER:OnValueChanged(e)
+		IF oProperties != NULL_OBJECT 
+			oEvent := SpinnerEvent{SELF:Spinner}
+			IF oProperties:Window != NULL_OBJECT
+                oProperties:Window:HorizontalSpin(oEvent)
+    		ENDIF
+		ENDIF
+		RETURN    
 
 END CLASS
 
 CLASS VOVScrollBar INHERIT System.Windows.Forms.VScrollBar IMPLEMENTS IVOScrollBar
 	#include "PropControl.vh"
+    PROPERTY ScrollBar AS ScrollBar GET (ScrollBar) SELF:Control
+    
 	CONSTRUCTOR(Owner AS VOSDK.Control, dwStyle AS LONG, dwExStyle AS LONG)
 		oProperties := VOControlProperties{SELF, Owner, dwStyle, dwExStyle}
 		SUPER()
@@ -430,10 +473,57 @@ CLASS VOVScrollBar INHERIT System.Windows.Forms.VScrollBar IMPLEMENTS IVOScrollB
 			SELF:TabStop := (_AND(oProperties:Style, WS_TABSTOP) == WS_TABSTOP)
 		ENDIF		
 
+    PROTECTED METHOD OnValueChanged (e AS EventArgs) AS VOID
+	    LOCAL oWindow AS Window
+		LOCAL oEvent AS ScrollEvent
+		//Debout("TextBox:OnGotFocus", SELF:Control:NameSym,SELF:Control:ControlID, CRLF)
+		SUPER:OnValueChanged(e)
+		IF oProperties != NULL_OBJECT 
+			oEvent := ScrollEvent{SELF:Scrollbar}
+			IF oProperties:Window != NULL_OBJECT
+                oProperties:Window:VerticalScroll(oEvent)
+    		ENDIF
+		ENDIF
+		RETURN    
+
 END CLASS
+
+CLASS VOVSpinner INHERIT System.Windows.Forms.NumericUpDown IMPLEMENTS IVOScrollBar
+	#include "PropControl.vh"
+    PROPERTY Spinner AS Spinner GET (Spinner) SELF:Control
+    
+	CONSTRUCTOR(Owner AS VOSDK.Control, dwStyle AS LONG, dwExStyle AS LONG)
+		oProperties := VOControlProperties{SELF, Owner, dwStyle, dwExStyle}
+		SUPER()
+		SELF:SetVisualStyle()
+		
+	METHOD SetVisualStyle AS VOID STRICT
+		IF oProperties != NULL_OBJECT
+			SELF:TabStop := (_AND(oProperties:Style, WS_TABSTOP) == WS_TABSTOP)
+		ENDIF		
+
+	
+
+        
+    PROTECTED METHOD OnValueChanged (e AS EventArgs) AS VOID
+	    LOCAL oWindow AS Window
+		LOCAL oEvent AS SpinnerEvent
+		//Debout("TextBox:OnGotFocus", SELF:Control:NameSym,SELF:Control:ControlID, CRLF)
+		SUPER:OnValueChanged(e)
+		IF oProperties != NULL_OBJECT 
+			oEvent := SpinnerEvent{SELF:Spinner}
+			IF oProperties:Window != NULL_OBJECT
+                oProperties:Window:VerticalSpin(oEvent)
+    		ENDIF
+		ENDIF
+		RETURN    
+END CLASS
+
 
 CLASS VOSlider INHERIT System.Windows.Forms.TrackBar IMPLEMENTS IVOSlider
 	#include "PropControl.vh"
+    PROPERTY Slider AS Slider GET (Slider) SELF:Control
+
 	CONSTRUCTOR(Owner AS VOSDK.Control, dwStyle AS LONG, dwExStyle AS LONG)
 		oProperties := VOControlProperties{SELF, Owner, dwStyle, dwExStyle}
 		SUPER()
@@ -443,6 +533,23 @@ CLASS VOSlider INHERIT System.Windows.Forms.TrackBar IMPLEMENTS IVOSlider
 		IF oProperties != NULL_OBJECT
 			SELF:TabStop := (_AND(oProperties:Style, WS_TABSTOP) == WS_TABSTOP)
 		ENDIF		
+
+    PROTECTED METHOD OnValueChanged (e AS EventArgs) AS VOID
+	    LOCAL oWindow AS Window
+		LOCAL oEvent AS SliderEvent
+		//Debout("TextBox:OnGotFocus", SELF:Control:NameSym,SELF:Control:ControlID, CRLF)
+		SUPER:OnValueChanged(e)
+		IF oProperties != NULL_OBJECT 
+			oEvent := SliderEvent{SELF:Slider}
+			IF oProperties:Window != NULL_OBJECT
+                IF SELF:Orientation == Orientation.Horizontal
+				    oProperties:Window:HorizontalSlide(oEvent)
+                ELSE
+                    oProperties:Window:VerticalSlide(oEvent)
+                ENDIF
+			ENDIF
+		ENDIF
+		RETURN        
 
 END CLASS
 

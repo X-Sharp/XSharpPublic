@@ -528,7 +528,7 @@ CLASS DataWindow INHERIT ChildAppWindow IMPLEMENTS ILastFocus
 			SELF:__DoValidate(oScroll:ScrollBar)
 
         CASE oEvent IS SpinnerEvent VAR oSpin
-			oSpin:Spinner:ThumbPosition := oSpin:Position
+			oSpin:Spinner:ThumbPosition := oSpin:Value
             SELF:__DoValidate(oSpin:Spinner)
             
 		CASE oEvent IS SliderEvent VAR oSlide

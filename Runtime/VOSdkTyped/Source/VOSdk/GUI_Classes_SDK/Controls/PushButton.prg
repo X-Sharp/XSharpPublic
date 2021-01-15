@@ -8,13 +8,11 @@ CLASS PushButton INHERIT Button
 		IF IsInstanceOfUsual(xID,#ResourceID)
 			SELF:SetStyle(BS_PushButton)
 		ENDIF
-
 		RETURN 
 
 	ACCESS __Button AS IVOButton 
 		RETURN (IVOButton) oCtrl
 
-	
 	ACCESS Value() 
 		RETURN FALSE
 

@@ -3,7 +3,7 @@
 
 PARTIAL CLASS Window
 
-	METHOD Dispatch(oEvent) 
+	METHOD Dispatch(oEvent AS @@Event) 
 		RETURN SELF:EventReturnValue
 		
 	//LOCAL msg IS _winMSG

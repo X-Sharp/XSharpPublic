@@ -45,8 +45,6 @@ PROTECTED METHOD OnVScrolled(sender AS OBJECT, se AS System.Windows.Forms.Scroll
 
 
 
-ACCESS __ListBox AS VoListBox
-	RETURN (VoListBox) oCtrl
 
 ASSIGN __ForceModFlag2True(lNewValue AS LOGIC)  STRICT 
 	lForceModFlag2True := lNewValue
@@ -108,19 +106,19 @@ ACCESS Margins  AS Dimension
 	LOCAL nLeft AS LONG
 	LOCAL nTop AS LONG
 	IF SELF:ValidateControl()
-		nLeft := __ListBox:Margin:Left
-		nTop  := __ListBox:Margin:Top
+		nLeft := _oWebBrowser:Margin:Left
+		nTop  := _oWebBrowser:Margin:Top
 	ENDIF
 	RETURN Dimension{nLeft, nTop}
 	
 ASSIGN Margins(oNewMargins AS Dimension) 
 		IF SELF:ValidateControl()
 			LOCAL oPadding AS System.Windows.Forms.Padding
-			oPadding := __ListBox:Margin
+			oPadding := _oWebBrowser:Margin
 			IF oPadding:Left != oNewMargins:Width .or. oPadding:Right != oNewMargins:Height
 				oPadding:Left := oNewMargins:Width
 				oPadding:Right := oNewMargins:Height
-				__ListBox:Margin := oPadding
+				_oWebBrowser:Margin := oPadding
 			ENDIF
 		ENDIF
 

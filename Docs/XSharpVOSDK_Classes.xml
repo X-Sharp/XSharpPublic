@@ -9509,18 +9509,23 @@
     </member>
     <member name="M:XSharp.VO.SDK.DataWindow.FocusChange(XSharp.__Usual)">
       <summary>
-        Provide a method that is invoked when the input focus changes from the current data window to another window (or vice versa).
+        Provide a method that is invoked when the input focus changes from the current 
+		data window to another window (or vice versa).
         <br />Important!  This is a callback method used by X#.  Normally, it should not be called in your application code.
       </summary>
       <param name="oFocusChangeEvent">The FocusChangeEvent object that identifies whether the focus is being gained or lost.</param>
       <remarks>
-        If your data window uses cursors, you should hide the data window's cursor when the focus is changed to a different data window, and then show the cursor when the data window receives focus again.  This should be used in conjunction with the Activate() and Deactivate() event handlers.
+        If your data window uses cursors, you should hide the data window's cursor 
+		when the focus is changed to a different data window, and then show the cursor 
+		when the data window receives focus again.  This should be used in conjunction 
+		with the Activate() and Deactivate() event handlers.
       </remarks>
       <example>
-        This example demonstrates how FocusChange() displays the cursor at the specified cursor position when focus is gained.  If the focus is lost, the cursor is hidden:
+        This example demonstrates how FocusChange() displays the cursor at the specified 
+		cursor position when focus is gained.  If the focus is lost, the cursor is hidden:
         <code language="X#">
           METHOD FocusChange(oFocusChangeEvt) CLASS MyDataWindow
-            IF(oFocusChangeEvt:GotFocus())       // Gaining focus
+            IF oFocusChangeEvt:GotFocus       // Gaining focus
                oMyCursor:Show()
                oMyCursor:ChangePos(oMyCursorPos)
             ELSE                     // Losing focus

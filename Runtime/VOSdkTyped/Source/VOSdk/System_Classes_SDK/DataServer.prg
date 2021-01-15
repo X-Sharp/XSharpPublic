@@ -300,7 +300,10 @@ METHOD RegisterClient( oForm AS OBJECT) AS LOGIC
             __CavoStr(__CAVOSTR_DBFCLASS_BADFIELDPOSITION), nFieldPosition, "nFieldPosition" }
     ELSE
         LOCAL oExisting := aDataFields[ nFieldPosition ] AS DataField
-        IF oDataField:Name == oExisting:Name .AND.    ;
+        IF oExisting == NULL
+            aDataFields[ nFieldPosition ] := oDataField
+            RETURN TRUE
+        ELSEIF oDataField:Name == oExisting:Name .AND.    ;
             oDataField:FieldSpec:UsualType == oExisting:FieldSpec:UsualType .AND.     ;
             oDataField:FieldSpec:Length    == oExisting:FieldSpec:Length .AND.   ;
             oDataField:FieldSpec:Decimals  == oExisting:FieldSpec:Decimals

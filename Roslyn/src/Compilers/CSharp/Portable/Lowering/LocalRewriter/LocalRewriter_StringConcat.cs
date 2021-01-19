@@ -15,6 +15,10 @@ namespace Microsoft.CodeAnalysis.CSharp
 {
     internal sealed partial class LocalRewriter
     {
+
+		// TODO RVDH
+		// Check for String concat. Only allow strings to be added to eachother
+		//
         /// <summary>
         /// The strategy of this rewrite is to do rewrite "locally".
         /// We analyze arguments of the concat in a shallow fashion assuming that 

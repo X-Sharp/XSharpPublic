@@ -2421,7 +2421,6 @@ namespace Microsoft.CodeAnalysis.CSharp
 
             bool allowManagedAddressOf = Flags.Includes(BinderFlags.AllowManagedAddressOf);
 #if XSHARP
-
             if (Compilation.Options.HasOption(CompilerOption.ImplicitCastsAndConversions, node))
                 allowManagedAddressOf = true;
             if (Compilation.Options.HasRuntime && Compilation.Options.AllowUnsafe)
@@ -3141,7 +3140,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             // try binding as a type, but back off to binding as an expression if that does not work.
             bool wasUnderscore = IsUnderscore(node.Right);
 #if XSHARP
-            if (operand.Type.IsUsual())
+            if (operand.Type.IsUsualType())
             {
                 // this triggers the boxing of the contents of the usual into an object
                 operand = new BoundConversion(node, operand, Conversion.Boxing, false, false, null, GetSpecialType(SpecialType.System_Object, diagnostics, node));

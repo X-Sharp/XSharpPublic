@@ -746,7 +746,16 @@ namespace Microsoft.CodeAnalysis
                     typeIdName = typeIdName.Substring(0, separator);
                 }
 
+#if XSHARP
+                typeIdName = (new System.Text.RegularExpressions.Regex(@"^Microsoft\.CodeAnalysis\.")).Replace(typeIdName, "LanguageService.CodeAnalysis.");
+                typeIdName = (new System.Text.RegularExpressions.Regex(@"\.T(\d+)$")).Replace(typeIdName, "`$1");
+                typeIdName = (new System.Text.RegularExpressions.Regex(@"\.T$")).Replace(typeIdName, "`1");
+                typeIdName = (new System.Text.RegularExpressions.Regex(@"\.KV$")).Replace(typeIdName, "`2");
+                Debug.Assert(name == "Microsoft.VisualBasic.CompilerServices.ObjectFlowControl+ForLoopControl"
+                          || name == typeIdName,"'" + name + "' != '" + typeIdName + "'");
+#else
                 Debug.Assert(name == typeIdName, "Enum name and type name must match");
+#endif
             }
 
             Debug.Assert((int)WellKnownType.ExtSentinel == 255);

@@ -107,10 +107,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                                     TypeSymbol elementType = ((PointerTypeSymbol)this.Type).PointedAtType;
                                     int elementSize = elementType.FixedBufferElementSizeInBytes();
 #if XSHARP
-									if (DeclaringCompilation.Options.HasRuntime)
-									{
-	                                    elementSize =  elementType.VoFixedBufferElementSizeInBytes() ;
-									}
+                                    if (DeclaringCompilation.Options.HasRuntime)
+                                    {
+                                        elementSize =  elementType.VoFixedBufferElementSizeInBytes() ;
+                                    }
 #endif
                                     long totalSize = elementSize * 1L * int32Value;
                                     if (totalSize > int.MaxValue)

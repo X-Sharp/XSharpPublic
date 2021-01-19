@@ -383,7 +383,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                         SymbolKind.FunctionPointerType => true,
                         _ => false
                     };
+#if !XSHARP
                     Debug.Assert(isPointerType == IsPointerFieldSyntactically());
+#endif
                     return isPointerType;
                 }
 

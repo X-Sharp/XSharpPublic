@@ -469,6 +469,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                     var functionPointerTypeSyntax = (FunctionPointerTypeSyntax)syntax;
 #if XSHARP
 					// TODO allow to take the address of managed pointer.
+					// Original Binder_Symbols 444
 #endif					
                     if (GetUnsafeDiagnosticInfo(sizeOfTypeOpt: null) is CSDiagnosticInfo info)
                     {
@@ -600,7 +601,10 @@ namespace Microsoft.CodeAnalysis.CSharp
                 var node = (PointerTypeSyntax)syntax;
                 var elementType = BindType(node.ElementType, diagnostics, basesBeingResolved);
                 ReportUnsafeIfNotAllowed(node, diagnostics);
-
+#if XSHARP
+				// TODO Insert X# code for managed pointers and Unsafe
+				// Original Binder_Symbols 444
+#endif
                 if (!Flags.HasFlag(BinderFlags.SuppressConstraintChecks))
                 {
                     CheckManagedAddr(Compilation, elementType.Type, node.Location, diagnostics);
@@ -2054,9 +2058,14 @@ namespace Microsoft.CodeAnalysis.CSharp
                         // Single viable result.
                         var singleResult = symbols[0];
 
+#if !XSHARP
                         // Cannot reference System.Void directly.
                         var singleType = singleResult as TypeSymbol;
+#if XSHARP
+                        if ((object)singleType != null && singleType.PrimitiveTypeCode == Cci.PrimitiveTypeCode.Void && XSharpString.Equals(simpleName, "Void"))
+#else
                         if ((object)singleType != null && singleType.PrimitiveTypeCode == Cci.PrimitiveTypeCode.Void && simpleName == "Void")
+#endif
                         {
                             wasError = true;
                             var errorInfo = new CSDiagnosticInfo(ErrorCode.ERR_SystemVoid);
@@ -2065,6 +2074,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                         }
                         // Check for bad symbol.
                         else
+#endif
                         {
                             if (singleResult.Kind == SymbolKind.NamedType &&
                                 ((SourceModuleSymbol)this.Compilation.SourceModule).AnyReferencedAssembliesAreLinked)

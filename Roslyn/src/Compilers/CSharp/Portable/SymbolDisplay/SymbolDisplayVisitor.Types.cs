@@ -611,6 +611,10 @@ namespace Microsoft.CodeAnalysis.CSharp
                     return "int";
                 case SpecialType.System_Int64:
                     return "int64";
+                case SpecialType.System_IntPtr when symbol.IsNativeIntegerType:
+                    return "nint";
+                case SpecialType.System_UIntPtr when symbol.IsNativeIntegerType:
+                    return "nuint";
                 case SpecialType.System_Byte:
                     return "byte";
                 case SpecialType.System_UInt16:
@@ -633,10 +637,6 @@ namespace Microsoft.CodeAnalysis.CSharp
                     return "string";
                 case SpecialType.System_Object:
                     return "object";
-                case SpecialType.System_IntPtr when symbol.IsNativeIntegerType:
-                    return "nint";
-                case SpecialType.System_UIntPtr when symbol.IsNativeIntegerType:
-                    return "nuint";
                 default:
                     return null;
 #else

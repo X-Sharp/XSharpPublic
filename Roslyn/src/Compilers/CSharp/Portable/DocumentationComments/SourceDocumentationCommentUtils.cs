@@ -85,9 +85,11 @@ namespace Microsoft.CodeAnalysis.CSharp
                                 {
                                     builder = ArrayBuilder<DocumentationCommentTriviaSyntax>.GetInstance();
                                 }
-#if XXXSHARP
+#if XSHARP
+                                // our Trivia nodes are not part of the Syntaxtree. 
+                                // Store a reference to the syntaxNode so we can locate the tree later to resolve cref nodes
                                 var element = (DocumentationCommentTriviaSyntax)trivia.GetStructure();
-                                element.CsGreen.XNode = syntaxNode.XNode;
+                                element.OriginalNode = syntaxNode;
                                 builder.Add(element);
 #else
                                 builder.Add((DocumentationCommentTriviaSyntax)trivia.GetStructure());

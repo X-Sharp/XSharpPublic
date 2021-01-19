@@ -12,6 +12,8 @@ using Microsoft.CodeAnalysis.PooledObjects;
 
 namespace Microsoft.CodeAnalysis.CSharp
 {
+	// TODO RVDH Check where old code was calling UsualToObject and insert into new code
+	// See LocalRewriter_Patterns.csold 
     internal partial class LocalRewriter
     {
         /// <summary>

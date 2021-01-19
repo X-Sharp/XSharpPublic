@@ -16,12 +16,14 @@ namespace Microsoft.Cci
     internal sealed class DebugSourceDocument
     {
 #if XSHARP
-        internal static readonly Guid CorSymLanguageTypeCSharp = new Guid("{f579403a-d3d3-47a0-bf03-9709575bee69}");
-        internal static readonly Guid CorSymLanguageTypeBasic = new Guid("{3a12d0b8-c26c-11d0-b442-00a0244a1dd2}");
-        private static readonly Guid s_corSymLanguageVendorMicrosoft = new Guid("{363398fa-76ad-44bb-a750-0abdc02bf4de}");
+        internal static readonly Guid CorSymLanguageTypeXSharp = new Guid("{f579403a-d3d3-47a0-bf03-9709575bee69}");
 #else
         internal static readonly Guid CorSymLanguageTypeCSharp = new Guid("{3f5162f8-07c6-11d3-9053-00c04fa302a1}");
+#endif
         internal static readonly Guid CorSymLanguageTypeBasic = new Guid("{3a12d0b8-c26c-11d0-b442-00a0244a1dd2}");
+#if XSHARP
+        private static readonly Guid s_corSymLanguageVendorXSharp = new Guid("{363398fa-76ad-44bb-a750-0abdc02bf4de}");
+#else
         private static readonly Guid s_corSymLanguageVendorMicrosoft = new Guid("{994b45c4-e6e9-11d2-903f-00c04fa302a1}");
 #endif
         private static readonly Guid s_corSymDocumentTypeText = new Guid("{5a869d0b-6611-11d3-bd2a-0000f80849bd}");
@@ -70,7 +72,11 @@ namespace Microsoft.Cci
 
         public Guid LanguageVendor
         {
+#if XSHARP
+            get { return s_corSymLanguageVendorXSharp; }
+#else
             get { return s_corSymLanguageVendorMicrosoft; }
+#endif
         }
 
         public string Location

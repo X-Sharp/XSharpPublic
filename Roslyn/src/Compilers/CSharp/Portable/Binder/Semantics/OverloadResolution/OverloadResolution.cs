@@ -705,6 +705,41 @@ outerDefault:
 
             var normalResult = IsConstructorApplicableInNormalForm(constructor, arguments, completeResults, ref useSiteDiagnostics);
             var result = normalResult;
+#if XSHARP
+            if (normalResult.IsValid && IsValidParams(constructor) && Compilation.Options.HasRuntime)
+            {
+                // Find Params argument
+                BoundExpression paramsArg = null;
+                var parameters = constructor.Parameters;
+                for (int arg = 0; arg < arguments.Arguments.Count; ++arg)
+                {
+                    int parm = normalResult.ParameterFromArgument(arg);
+                    if (parm >= parameters.Length)
+                        continue;
+                    var parameter = parameters[parm];
+                    if (parameter.IsParams)
+                    {
+                        paramsArg = arguments.Argument(arg);
+                    }
+                }
+
+                // If params arg is USUAL prefer the expanded form
+                if (paramsArg != null && paramsArg.Type.IsUsualType())
+                {
+                    if (arguments.RefKinds.Count == 0 || arguments.RefKinds[0] == RefKind.None)
+                    {
+                        if (!constructor.HasUseSiteError)
+                        {
+                            var expandedResult = IsConstructorApplicableInExpandedForm(constructor, arguments, completeResults, ref useSiteDiagnostics);
+                            if (expandedResult.IsValid || completeResults)
+                            {
+                                result = expandedResult;
+                            }
+                        }
+                    }
+                }
+            }
+#endif
             if (!normalResult.IsValid)
             {
                 if (IsValidParams(constructor))
@@ -742,6 +777,15 @@ outerDefault:
                 return MemberAnalysisResult.UseSiteError();
             }
 
+#if XSHARP
+            var effectiveParameters = GetEffectiveParametersInNormalForm(
+                constructor, 
+                arguments.Arguments.Count, 
+                argumentAnalysis.ArgsToParamsOpt, 
+                arguments.RefKinds, 
+                isMethodGroupConversion: false, 
+                allowRefOmittedArguments: true);
+#else
             var effectiveParameters = GetEffectiveParametersInNormalForm(
                 constructor,
                 arguments.Arguments.Count,
@@ -749,6 +793,7 @@ outerDefault:
                 arguments.RefKinds,
                 isMethodGroupConversion: false,
                 allowRefOmittedArguments: false);
+#endif
 
             return IsApplicable(
                 constructor,
@@ -934,6 +979,41 @@ outerDefault:
                     useSiteDiagnostics: ref useSiteDiagnostics)
                 : default(MemberResolutionResult<TMember>);
 
+#if XSHARP
+            // when calling a USUAL[] function we allow 1 usual param and wrap it as params as well
+            // REF USUAL is not allowed
+            if (allowUnexpandedForm && normalResult.Result.IsValid && IsValidParams(leastOverriddenMember) && Compilation.Options.HasRuntime)
+            {
+                // Find Params argument
+                BoundExpression paramsArg = null;
+                var parameters = member.GetParameters();
+                for (int arg = 0; arg < arguments.Arguments.Count; ++arg)
+                {
+                    int parm = normalResult.Result.ParameterFromArgument(arg);
+                    if (parm >= parameters.Length)
+                        continue;
+                    var parameter = parameters[parm];
+                    if (parameter.IsParams)
+                    {
+                        paramsArg = arguments.Argument(arg);
+                    }
+                }
+
+                // If params arg is USUAL prefer the expanded form
+                if (paramsArg!= null & paramsArg.Type.IsUsualType())
+                {
+                    if (arguments.RefKinds.Count == 0 || arguments.RefKinds[0] == RefKind.None)
+                    {
+                        // We have seen an example where the customer is mixing different versions of the Vulcan runtime.
+                        // when we set allowUnexpandedForm to false then strange errors will happen later.
+                        if (!member.HasUseSiteError)
+                        {
+                            normalResult = default(MemberResolutionResult<TMember>);
+                        }
+                    }
+                }
+            }
+#endif
             var result = normalResult;
             if (!normalResult.Result.IsValid)
             {
@@ -1261,6 +1341,10 @@ outerDefault:
                 // work necessary to eliminate methods on base types of Mammal when we eliminated
                 // methods on base types of Cat.
 
+#if XSHARP
+                // For constructor calls we do not want to change the C# method of locating the right overload
+                if (result.Member.Name == ".ctor")
+#endif
                 if (IsLessDerivedThanAny(result.LeastOverriddenMember.ContainingType, results, ref useSiteDiagnostics))
                 {
                     results[f] = new MemberResolutionResult<TMember>(result.Member, result.LeastOverriddenMember, MemberAnalysisResult.LessDerived());
@@ -1741,6 +1825,13 @@ outerDefault:
             // and get the correspond parameter types.
 
             BetterResult result = BetterResult.Neither;
+#if XSHARP
+            var found = VOBetterFunctionMember(m1, m2, arguments, out result, out useSiteDiagnostics);
+            if (found)
+            {
+                return result;
+            }
+#endif
             bool okToDowngradeResultToNeither = false;
             bool ignoreDowngradableToNeither = false;
 
@@ -2122,8 +2213,17 @@ outerDefault:
                 return (m1ModifierCount < m2ModifierCount) ? BetterResult.Left : BetterResult.Right;
             }
 
+#if XSHARP
+            result = PreferValOverInParameters(arguments, m1, m1LeastOverriddenParameters, m2, m2LeastOverriddenParameters);
+            if (result == BetterResult.Neither)
+            {
+                result = PreferMostDerived(m1, m2, ref useSiteDiagnostics);
+            }
+            return result;
+#else
             // Otherwise, prefer methods with 'val' parameters over 'in' parameters.
             return PreferValOverInParameters(arguments, m1, m1LeastOverriddenParameters, m2, m2LeastOverriddenParameters);
+#endif
         }
 
         private static BetterResult PreferValOverInParameters<TMember>(
@@ -2371,9 +2471,13 @@ outerDefault:
                 // NOTE:    Native compiler does not explicitly implement the above algorithm, but gets it by default. This is due to the fact that the RefKind of a parameter
                 // NOTE:    gets considered while classifying conversions between parameter types when computing better conversion target in the native compiler.
                 // NOTE:    Roslyn correctly follows the specification and ref kinds are not considered while classifying conversions between types, see method BetterConversionTarget.
-
+#if XSHARP
+                Debug.Assert(refKind1 == RefKind.None || refKind1.IsByRef());
+                Debug.Assert(refKind2 == RefKind.None || refKind2.IsByRef());
+#else
                 Debug.Assert(refKind1 == RefKind.None || refKind1 == RefKind.Ref);
                 Debug.Assert(refKind2 == RefKind.None || refKind2 == RefKind.Ref);
+#endif
 
                 if (refKind1 != refKind2)
                 {
@@ -2386,7 +2490,11 @@ outerDefault:
                         return conv2.Kind == ConversionKind.Identity ? BetterResult.Right : BetterResult.Neither;
                     }
                 }
+#if XSHARP
+                else if (refKind1 == RefKind.Ref || refKind1 == RefKind.Out)
+#else
                 else if (refKind1 == RefKind.Ref)
+#endif
                 {
                     return BetterResult.Neither;
                 }
@@ -2689,7 +2797,16 @@ outerDefault:
                 // Both types are the same type.
                 return BetterResult.Neither;
             }
+#if XSHARP
+            if (Conversions.Compilation.Options.HasRuntime)
+            {
+                if (type1.IsUsualType() && type2.IsObjectType())
+                    return BetterResult.Right;
+                if (type1.IsObjectType() && type2.IsUsualType())
+                    return BetterResult.Left;
+            }
 
+#endif
             // Given two different types T1 and T2, T1 is a better conversion target than T2 if no implicit conversion from T2 to T1 exists,
             // and at least one of the following holds:
             bool type1ToType2 = Conversions.ClassifyImplicitConversionFromType(type1, type2, ref useSiteDiagnostics).IsImplicit;
@@ -3075,7 +3192,11 @@ outerDefault:
             if (argumentCount == parameterCount && argToParamMap.IsDefaultOrEmpty)
             {
                 ImmutableArray<RefKind> parameterRefKinds = member.GetParameterRefKinds();
+#if XSHARP
+                if (parameterRefKinds.IsDefaultOrEmpty || !parameterRefKinds.Any(refKind => refKind.IsByRef()))
+#else
                 if (parameterRefKinds.IsDefaultOrEmpty)
+#endif
                 {
                     return new EffectiveParameters(member.GetParameterTypes(), parameterRefKinds);
                 }
@@ -3142,6 +3263,14 @@ outerDefault:
                 hasAnyRefOmittedArgument = true;
                 return RefKind.None;
             }
+
+#if XSHARP
+            if (allowRefOmittedArguments && paramRefKind == RefKind.Out && (argRefKind == RefKind.None || argRefKind == RefKind.Ref || argRefKind == RefKind.In) && !binder.InAttributeArgument)
+            {
+                hasAnyRefOmittedArgument = argRefKind == RefKind.None;
+                return argRefKind;
+            }
+#endif
 
             return paramRefKind;
         }
@@ -3574,8 +3703,11 @@ outerDefault:
             for (int argumentPosition = 0; argumentPosition < paramCount; argumentPosition++)
             {
                 BoundExpression argument = arguments.Argument(argumentPosition);
-                Conversion conversion;
-
+#if XSHARP
+                Conversion conversion = Conversion.NoConversion;
+#else
+                Conversion conversion ;
+#endif
                 if (isVararg && argumentPosition == paramCount - 1)
                 {
                     // Only an __arglist() expression is convertible.
@@ -3592,8 +3724,77 @@ outerDefault:
                 }
                 else
                 {
+#if XSHARP
+                    if (argument.Syntax.XIsMissingArgument)
+                    {
+                        conversion = Conversion.Identity;
+                    }
+#endif
                     RefKind argumentRefKind = arguments.RefKind(argumentPosition);
                     RefKind parameterRefKind = parameters.ParameterRefKinds.IsDefault ? RefKind.None : parameters.ParameterRefKinds[argumentPosition];
+
+#if XSHARP
+                    bool literalNullForRefParameter = false;
+                    bool implicitCastsAndConversions = Compilation.Options.HasOption(CompilerOption.ImplicitCastsAndConversions, argument.Syntax);
+                    if (conversion.Kind == ConversionKind.NoConversion)
+                    {
+                        if (implicitCastsAndConversions)
+                        {
+                            // C590 Allow NULL as argument for REF parameters
+                            var paramRefKinds = (candidate is MethodSymbol) ? (candidate as MethodSymbol).ParameterRefKinds
+                                : (candidate is PropertySymbol) ? (candidate as PropertySymbol).ParameterRefKinds
+                                : default(ImmutableArray<RefKind>);
+                            RefKind realParamRefKind = paramRefKinds.IsDefault ? RefKind.None : paramRefKinds[argsToParameters.IsDefault ? argumentPosition : argsToParameters[argumentPosition]];
+                            if (realParamRefKind == RefKind.Ref && argument.Kind == BoundKind.Literal && ((BoundLiteral)argument).IsLiteralNull())
+                            {
+                                literalNullForRefParameter = true;
+                            }
+                            if (!literalNullForRefParameter)
+                            {
+                                if (realParamRefKind != RefKind.None && argumentRefKind == RefKind.None /*&& argument.Syntax.Kind() == SyntaxKind.AddressOfExpression*/ && argument is BoundAddressOfOperator)
+                                {
+                                    argument = (argument as BoundAddressOfOperator).Operand;
+                                }
+                            }
+                        }
+                        if (parameterRefKind == RefKind.Out && argumentRefKind == RefKind.Ref)
+                        {
+                            argumentRefKind = parameterRefKind;
+                            arguments.SetRefKind(argumentPosition, argumentRefKind);
+                            useSiteDiagnostics = new HashSet<DiagnosticInfo>();
+                            var info = new CSDiagnosticInfo(ErrorCode.WRN_ArgumentRefParameterOut,
+                                                            new object[] { argumentPosition + 1, parameterRefKind.ToParameterDisplayString() });
+                            useSiteDiagnostics = new HashSet<DiagnosticInfo>();
+                            useSiteDiagnostics.Add(info);
+                        }
+                        if (parameterRefKind.IsByRef() && argumentRefKind == RefKind.None)
+                        {
+                            argumentRefKind = parameterRefKind;
+                            arguments.SetRefKind(argumentPosition, argumentRefKind);
+                            if (!implicitCastsAndConversions)
+                            {
+                                useSiteDiagnostics = new HashSet<DiagnosticInfo>();
+                                var info = new CSDiagnosticInfo(ErrorCode.ERR_BadArgExtraRef,
+                                                                new object[] { argumentPosition + 1, argumentRefKind.ToParameterDisplayString() });
+                                useSiteDiagnostics = new HashSet<DiagnosticInfo>();
+                                useSiteDiagnostics.Add(info);
+                            }
+                        }
+
+                        if (literalNullForRefParameter)
+                        {
+                            conversion = Conversion.Identity;
+                        }
+
+                        if (implicitCastsAndConversions && argumentRefKind == RefKind.None && 
+                            argument is BoundAddressOfOperator b && candidate.HasClipperCallingConvention())
+                        {
+                            argumentRefKind = RefKind.Ref;
+                        }
+                    }
+                    if (conversion.Kind == ConversionKind.NoConversion)
+                    {
+#endif
                     bool forExtensionMethodThisArg = arguments.IsExtensionMethodThisArgument(argumentPosition);
 
                     if (forExtensionMethodThisArg)
@@ -3629,7 +3830,10 @@ outerDefault:
                         Debug.Assert(badArguments == null);
                         Debug.Assert(conversions == null);
                         return MemberAnalysisResult.BadArgumentConversions(argsToParameters, ImmutableArray.Create(argumentPosition), ImmutableArray.Create(conversion));
+                        }
+#if XSHARP
                     }
+#endif
 
                     if (!conversion.Exists)
                     {
@@ -3686,6 +3890,16 @@ outerDefault:
             //   exists from the argument to the type of the corresponding parameter, or
             // - for a ref or out parameter, the type of the argument is identical to the type of the corresponding parameter. 
 
+#if XSHARP
+            if (argRefKind != parRefKind && argRefKind == RefKind.Ref && candidate.HasClipperCallingConvention())
+            {
+                argRefKind = RefKind.None;
+                if (argument is BoundAddressOfOperator b)
+                {
+                    argument = b.Operand;
+                }
+            }
+#endif
             // effective RefKind has to match unless argument expression is of the type dynamic. 
             // This is a bug in Dev11 which we also implement. 
             //       The spec is correct, this is not an intended behavior. We don't fix the bug to avoid a breaking change.

@@ -1624,8 +1624,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                                 if (Locations.Length == 1 || IsPartial)
                                 {
 #if XSHARP
-									// Properties that are generated from an ACCESS and ASSIGN need special handling
-									// for their location
+                                    // Properties that are generated from an ACCESS and ASSIGN need special handling
+                                    // for their location
                                     if (symbol is SourcePropertySymbol ps)
                                     {
                                         diagnostics.Add(ErrorCode.ERR_DuplicateNameInClass, ps.ErrorLocation, this, symbol.Name);
@@ -2343,9 +2343,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                             (f.Type as Symbols.Metadata.PE.PENamedTypeSymbol)?.IsVoStructOrUnion() == true ||
                             (f.Type.SpecialType == SpecialType.System_IntPtr )||
                             (f.Type.SpecialType == SpecialType.System_UIntPtr) ||
-                                (f.Type.IsPsz()) ||
-                                (f.Type.IsWinBool())||
-                                (f.Type.IsSymbol())||
+                            (f.Type as NamedTypeSymbol) == DeclaringCompilation.PszType() ||
+                            (f.Type as NamedTypeSymbol) == DeclaringCompilation.WinBoolType() ||
+                            (f.Type as NamedTypeSymbol) == DeclaringCompilation.SymbolType() ||
                             f.Type.FixedBufferElementSizeInBytes() != 0))
                         {
                             diagnostics.Add(ErrorCode.ERR_IllegalVoStructMemberType, f.Locations[0]);

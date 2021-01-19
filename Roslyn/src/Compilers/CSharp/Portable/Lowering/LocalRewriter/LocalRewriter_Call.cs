@@ -1326,7 +1326,9 @@ namespace Microsoft.CodeAnalysis.CSharp
             // to pass this information, and this might be a big task. We should consider doing this when the time permits.
 
             TypeSymbol parameterType = parameter.Type;
+#if !XSHARP
             Debug.Assert(parameter.IsOptional);
+#endif
             ConstantValue defaultConstantValue = parameter.ExplicitDefaultConstantValue;
             BoundExpression defaultValue;
             SourceLocation? callerSourceLocation;

@@ -23,7 +23,17 @@ namespace Microsoft.CodeAnalysis.CSharp
         {
             Debug.Assert(TypeSymbol.Equals(node.Right.Type, node.Operator.RightType, TypeCompareKind.ConsiderEverything2));
             BoundExpression loweredRight = VisitExpression(node.Right);
+            // TODO RvdH Insert code from LocalRewriter_CompoundAssignmentOperator.cs
+            // to disable isPossibleEventHandlerOperation
+            /*
+            #if XSHARP
+            if (isPossibleEventHandlerOperation && _compilation.Options.LateBindingOrFox(node.Syntax) && !node.Left.HasDynamicType())
+            {
+                isPossibleEventHandlerOperation = false;
+            }
+            #endif
 
+            */
             var temps = ArrayBuilder<LocalSymbol>.GetInstance();
             var stores = ArrayBuilder<BoundExpression>.GetInstance();
 
@@ -337,8 +347,11 @@ namespace Microsoft.CodeAnalysis.CSharp
             // compound assignments, but for deconstructions we use the setter if the getter is missing.)
             var accessor = indexer.GetOwnOrInheritedGetMethod() ?? indexer.GetOwnOrInheritedSetMethod();
             Debug.Assert(accessor is not null);
+#if XSHARP
+            XsInsertMissingOptionalArguments(syntax, accessor.Parameters, actualArguments, refKinds, temps );
+#else
             InsertMissingOptionalArguments(syntax, accessor.Parameters, actualArguments, refKinds);
-
+#endif        
             // For a call, step four would be to optimize away some of the temps.  However, we need them all to prevent
             // duplicate side-effects, so we'll skip that step.
 

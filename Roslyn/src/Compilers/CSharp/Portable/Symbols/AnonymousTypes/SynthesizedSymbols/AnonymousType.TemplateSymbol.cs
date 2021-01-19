@@ -193,7 +193,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             internal AnonymousTypeKey GetAnonymousTypeKey()
             {
 #if XSHARP
-                var properties = this.Properties.SelectAsArray(p => new AnonymousTypeKeyField(p.Name, isKey: false, ignoreCase: XSharpString.IgnoreCase));
+                var properties = Properties.SelectAsArray(p => new AnonymousTypeKeyField(p.Name, isKey: false, ignoreCase: XSharpString.IgnoreCase));
 #else
                 var properties = Properties.SelectAsArray(p => new AnonymousTypeKeyField(p.Name, isKey: false, ignoreCase: false));
 #endif

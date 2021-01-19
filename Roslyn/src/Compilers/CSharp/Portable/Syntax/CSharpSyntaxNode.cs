@@ -170,20 +170,22 @@ namespace Microsoft.CodeAnalysis.CSharp
         {
 #if XSHARP
             XSharpParserRuleContext node = this.XNode as XSharpParserRuleContext;
-            if (node != null && ! this.XGenerated)
+            if (node != null) 
             {
-                var result = node.GetLeadingTrivia(this, this.SyntaxTree.GetRoot() as CompilationUnitSyntax);
-                return result;
+                if (!this.XGenerated)
+                { 
+                    var result = node.GetLeadingTrivia(this, this.SyntaxTree.GetRoot() as CompilationUnitSyntax);
+                    return result;
+                }
+                else
+                {
+                    // Generate trivia for generated functions class
+                    var list = node.GetFunctionDoc(this);
+                    if (!list.IsEmpty())
+                        return list;
+
+                }
             }
-            // Generate special source code for entities that we want to ignore.
-            //if (this.XGenerated && node == null )
-            //{
-            //    var source = Text.SourceText.From("/// <exclude/>");
-            //    var lexer = new Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax.Lexer(source, CSharpParseOptions.Default);
-            //    var list = lexer.LexSyntaxLeadingTrivia();
-            //    lexer.Dispose();
-            //    return list;
-            //}
 #endif
             var firstToken = this.GetFirstToken(includeZeroWidth: true);
             return firstToken.LeadingTrivia;

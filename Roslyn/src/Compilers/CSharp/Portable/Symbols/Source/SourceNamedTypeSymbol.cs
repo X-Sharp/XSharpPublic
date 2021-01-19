@@ -99,6 +99,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                 // Nested types are never unified.
                 _lazyIsExplicitDefinitionOfNoPiaLocalType = ThreeState.False;
             }
+#if XSHARP
+            if (((CSharpSyntaxNode)declaration.SyntaxReferences.FirstOrDefault()?.GetSyntax()).XVoDecl == true)
+            {
+                _isVoStructOrUnion = true;
+            }
+#endif
         }
 
         protected override NamedTypeSymbol WithTupleDataCore(TupleExtraData newData)

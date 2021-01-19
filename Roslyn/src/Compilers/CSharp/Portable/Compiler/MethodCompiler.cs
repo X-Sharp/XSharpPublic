@@ -2088,7 +2088,11 @@ namespace Microsoft.CodeAnalysis.CSharp
 
         private static Cci.DebugSourceDocument CreateDebugDocumentForFile(string normalizedPath)
         {
+#if XSHARP
+            return new Cci.DebugSourceDocument(normalizedPath, Cci.DebugSourceDocument.CorSymLanguageTypeXSharp);
+#else
             return new Cci.DebugSourceDocument(normalizedPath, Cci.DebugSourceDocument.CorSymLanguageTypeCSharp);
+#endif
         }
 
         private static bool PassesFilter(Predicate<Symbol> filterOpt, Symbol symbol)

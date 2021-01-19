@@ -648,6 +648,12 @@ namespace Microsoft.CodeAnalysis.CSharp
                 }
 
                 var local = variable as LocalSymbol;
+#if XSHARP
+                if ((object)local != null && local.IsXsCompilerGenerated() )
+                {
+                    _usedVariables.Add(local);
+                }
+#else
                 if ((object)local != null && read && WriteConsideredUse(local.Type, value))
                 {
                     // A local variable that is written to is considered to also be read,
@@ -676,7 +682,7 @@ namespace Microsoft.CodeAnalysis.CSharp
 
                     _usedVariables.Add(local);
                 }
-
+#endif
                 CheckCaptured(variable);
             }
         }
@@ -726,7 +732,11 @@ namespace Microsoft.CodeAnalysis.CSharp
                 case BoundKind.ConvertedTupleLiteral:
                     return false;
                 default:
+#if XSHARP
+                    return false;
+#else
                     return true;
+#endif
             }
         }
 
@@ -1719,6 +1729,9 @@ namespace Microsoft.CodeAnalysis.CSharp
         {
             var initiallyAssigned =
                 symbol.IsConst ||
+#if XSHARP
+                symbol.RefKind != RefKind.None ||
+#endif
                 // When data flow analysis determines that the variable is sometimes used without being assigned
                 // first, we want to treat that variable, during region analysis, as assigned where it is introduced.
                 initiallyAssignedVariables?.Contains(symbol) == true;
@@ -1735,6 +1748,12 @@ namespace Microsoft.CodeAnalysis.CSharp
 
         private void ReportIfUnused(LocalSymbol symbol, bool assigned)
         {
+#if XSHARP
+            if (symbol.IsXsCompilerGenerated())
+            {
+                return;
+            }
+#endif
             if (!_usedVariables.Contains(symbol))
             {
                 if (symbol.DeclarationKind != LocalDeclarationKind.PatternVariable && !string.IsNullOrEmpty(symbol.Name)) // avoid diagnostics for parser-inserted names
@@ -1948,7 +1967,10 @@ namespace Microsoft.CodeAnalysis.CSharp
 
                 if (!_unsafeAddressTakenVariables.ContainsKey(variable))
                 {
-                    _unsafeAddressTakenVariables.Add(variable, node.Syntax.Location);
+#if XSHARP
+                    if (!compilation.Options.HasOption(CompilerOption.ImplicitCastsAndConversions, node.Syntax))
+#endif
+                       _unsafeAddressTakenVariables.Add(variable, node.Syntax.Location);
                 }
             }
 
@@ -2095,7 +2117,10 @@ namespace Microsoft.CodeAnalysis.CSharp
                     CheckCaptured(receiver);
                     if (!_unsafeAddressTakenVariables.ContainsKey(receiver))
                     {
-                        _unsafeAddressTakenVariables.Add(receiver, node.Syntax.Location);
+#if XSHARP
+                        if ( !compilation.Options.HasOption(CompilerOption.ImplicitCastsAndConversions, node.Syntax))
+#endif
+                           _unsafeAddressTakenVariables.Add(receiver, node.Syntax.Location);
                     }
                 }
             }

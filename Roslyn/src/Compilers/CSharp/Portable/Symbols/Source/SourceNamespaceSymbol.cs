@@ -236,7 +236,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
         private static Dictionary<string, ImmutableArray<NamedTypeSymbol>> GetTypesFromMemberMap(Dictionary<string, ImmutableArray<NamespaceOrTypeSymbol>> map)
         {
 #if XSHARP
-            var dictionary = new Dictionary<String, ImmutableArray<NamedTypeSymbol>>(XSharpString.Comparer);
+            var dictionary = new Dictionary<string, ImmutableArray<NamedTypeSymbol>>(XSharpString.Comparer);
 #else
             var dictionary = new Dictionary<string, ImmutableArray<NamedTypeSymbol>>(StringOrdinalComparer.Instance);
 #endif

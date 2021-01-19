@@ -478,7 +478,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
         /// method A.M. Note also that constructed generic methods are not considered to
         /// override anything.
         /// </summary>
+#if XSHARP
+        // This is now subclassed in SourcePropertySymbol
+        public virtual MethodSymbol OverriddenMethod
+#else
         public MethodSymbol OverriddenMethod
+#endif
         {
             get
             {

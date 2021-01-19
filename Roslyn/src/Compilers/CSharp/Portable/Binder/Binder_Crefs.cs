@@ -924,7 +924,11 @@ namespace Microsoft.CodeAnalysis.CSharp
             // crefs, in order to match dev11's behavior (Changeset #829014).  Unfortunately, it turns out
             // that dev11 does not suppress these members when performing lookup within parameter and return
             // types, within crefs (DevDiv #586815, #598371).
+#if !XSHARP
+            // Our Documentation Trivia is not part of the SyntaxTree. This
+            // may throw an assertion error
             Debug.Assert(InCrefButNotParameterOrReturnType);
+#endif
             Binder parameterOrReturnTypeBinder = this.WithAdditionalFlags(BinderFlags.CrefParameterOrReturnType);
 
             // It would be nice to pull this binder out of the factory so we wouldn't have to worry about them getting out

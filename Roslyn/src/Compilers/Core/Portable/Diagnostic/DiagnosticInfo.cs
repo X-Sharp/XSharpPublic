@@ -345,6 +345,8 @@ namespace Microsoft.CodeAnalysis
             result = result.Replace("'XSharp.__Date'", "'DATE'");
             result = result.Replace("'XSharp.__Float'", "'FLOAT'");
             result = result.Replace("'XSharp.__Array'", "'ARRAY'");
+            result = result.Replace("'XSharp.__Currency'", "'CURRENCY'");
+            result = result.Replace("'XSharp.__Binary'", "'BINARY'");
             result = result.Replace("'XSharp.__Symbol'", "'SYMBOL'");
             result = result.Replace("'XSharp.__Psz'", "'PSZ'");
             return result;

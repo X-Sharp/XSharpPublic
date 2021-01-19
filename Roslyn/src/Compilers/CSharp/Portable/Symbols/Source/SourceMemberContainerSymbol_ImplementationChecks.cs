@@ -1047,6 +1047,15 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                         !IsValidOverrideReturnType(overridingProperty, overridingMemberType, overriddenMemberType, diagnostics) :
                         !overridingMemberType.Equals(overriddenMemberType, TypeCompareKind.AllIgnoreOptions))
                     {
+#if XSHARP
+                        if ( overriddenProperty.ContainingType.TypesChanged())
+                        {
+                            diagnostics.Add(ErrorCode.WRN_PropertyTypeChangedInParentType, overridingMemberLocation, overridingMember, overriddenMember, overriddenMemberType);
+                            var sp = overridingProperty as SourcePropertySymbol;
+                            sp.SetChangedParentType(overriddenMemberType);
+                        }
+                        else
+#endif
                         // if the type is or contains an error type, the type must be fixed before the override can be found, so suppress error
                         if (!IsOrContainsErrorType(overridingMemberType.Type))
                         {

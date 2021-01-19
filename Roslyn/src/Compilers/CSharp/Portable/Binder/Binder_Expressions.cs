@@ -50,12 +50,13 @@ namespace Microsoft.CodeAnalysis.CSharp
             var containingType = memberOpt?.ContainingType;
             bool inTopLevelScriptMember = (object)containingType != null && containingType.IsScriptClass;
 
+#if !XSHARP
             // "this" is not allowed in field initializers (that are not script variable initializers):
             if (InFieldInitializer && !inTopLevelScriptMember)
             {
                 return false;
             }
-
+#endif
             // top-level script code only allows implicit "this" reference:
             return !inTopLevelScriptMember || !isExplicit;
         }
@@ -544,7 +545,11 @@ namespace Microsoft.CodeAnalysis.CSharp
                 case SyntaxKind.BaseExpression:
                     return BindBase((BaseExpressionSyntax)node, diagnostics);
                 case SyntaxKind.InvocationExpression:
+#if XSHARP
+                    return BindXsInvocationExpression((InvocationExpressionSyntax)node, diagnostics);
+#else
                     return BindInvocationExpression((InvocationExpressionSyntax)node, diagnostics);
+#endif
                 case SyntaxKind.ArrayInitializerExpression:
                     return BindUnexpectedArrayInitializer((InitializerExpressionSyntax)node, diagnostics, ErrorCode.ERR_ArrayInitInBadPlace);
                 case SyntaxKind.ArrayCreationExpression:
@@ -1346,7 +1351,17 @@ namespace Microsoft.CodeAnalysis.CSharp
             TypeWithAnnotations typeWithAnnotations = this.BindType(typeSyntax, diagnostics, out alias);
             TypeSymbol type = typeWithAnnotations.Type;
 
+#if XSHARP
+            bool typeHasErrors = type.IsErrorType();
+            if (!typeHasErrors && type.IsManagedType && ! Compilation.Options.HasRuntime)
+            {
+                diagnostics.Add(ErrorCode.ERR_ManagedAddr, node.Location, type);
+                typeHasErrors = true;
+            }
+			
+#else
             bool typeHasErrors = type.IsErrorType() || CheckManagedAddr(Compilation, type, node.Location, diagnostics);
+#endif
 
             BoundTypeExpression boundType = new BoundTypeExpression(typeSyntax, alias, typeWithAnnotations, typeHasErrors);
             ConstantValue constantValue = GetConstantSizeOf(type);
@@ -1387,6 +1402,13 @@ namespace Microsoft.CodeAnalysis.CSharp
 
         internal static ConstantValue GetConstantSizeOf(TypeSymbol type)
         {
+#if XSHARP
+            if (type.IsVoStructOrUnion())
+            {
+                return ConstantValue.Create(type.VoStructOrUnionSizeInBytes());
+
+            }
+#endif
             return ConstantValue.CreateSizeOf((type.GetEnumUnderlyingType() ?? type).SpecialType);
         }
 
@@ -4206,6 +4228,13 @@ namespace Microsoft.CodeAnalysis.CSharp
 
                     ReportDiagnosticsIfObsolete(diagnostics, resultMember, nonNullSyntax, hasBaseReceiver: isBaseConstructorInitializer);
 
+#if XSHARP
+                    if (voDefaultCtorCall && resultMember?.ParameterCount > 0)
+                    {
+                        
+                        diagnostics.Add(ErrorCode.WRN_ImplicitParentConstructorInitializer, nonNullSyntax.GetLocation());
+                    }
+#endif
                     var arguments = analyzedArguments.Arguments.ToImmutable();
                     var refKinds = analyzedArguments.RefKinds.ToImmutableOrNull();
                     var argsToParamsOpt = memberResolutionResult.Result.ArgsToParamsOpt;
@@ -4665,7 +4694,11 @@ namespace Microsoft.CodeAnalysis.CSharp
             var initializers = ArrayBuilder<BoundExpression>.GetInstance(initializerSyntax.Expressions.Count);
 
             // Member name map to report duplicate assignments to a field/property.
+#if XSHARP
+            var memberNameMap = new HashSet<string>(XSharpString.Comparer);
+#else
             var memberNameMap = PooledHashSet<string>.GetInstance();
+#endif			
             foreach (var memberInitializer in initializerSyntax.Expressions)
             {
                 BoundExpression boundMemberInitializer = BindInitializerMemberAssignment(
@@ -8532,6 +8565,16 @@ namespace Microsoft.CodeAnalysis.CSharp
                     returnType,
                     isFunctionPointerResolution,
                     callingConvention);
+
+
+#if XSHARP
+                if (result.Succeeded && result.ValidResult.Result.HasAnyRefOmittedArgument && !methodGroup.Receiver.IsExpressionOfComImportType())
+                {
+                    DiagnosticBag diagnostics = DiagnosticBag.GetInstance();
+                    CheckValidRefOmittedArguments(result, analyzedArguments, diagnostics);
+                    sealedDiagnostics = diagnostics.ToReadOnlyAndFree();
+                }
+#endif
 
                 // Note: the MethodGroupResolution instance is responsible for freeing its copy of analyzed arguments
                 return new MethodGroupResolution(methodGroup, null, result, AnalyzedArguments.GetInstance(analyzedArguments), methodGroup.ResultKind, sealedDiagnostics);

@@ -1023,7 +1023,11 @@ namespace Microsoft.CodeAnalysis.CSharp
 
             public void HoistLocal(LocalSymbol local, SyntheticBoundNodeFactory F)
             {
+#if XSHARP
+                if (!_hoistedLocals.Keys.Any(l => XSharpString.Equals(l.Name,local.Name) && TypeSymbol.Equals(l.Type, local.Type, TypeCompareKind.ConsiderEverything2)))
+#else
                 if (!_hoistedLocals.Keys.Any(l => l.Name == local.Name && TypeSymbol.Equals(l.Type, local.Type, TypeCompareKind.ConsiderEverything2)))
+#endif
                 {
                     _hoistedLocals.Add(local, local);
                     _orderedHoistedLocals.Add(local);

@@ -1,5 +1,11 @@
-#pragma warnings(165, off)
+//
+// Copyright (c) XSharp B.V.  All Rights Reserved.  
+// Licensed under the Apache License, Version 2.0.  
+// See License.txt in the project root for license information.
+//
 
+#pragma warnings(165, off)
+[XSharp.Internal.TypesChanged];
 PARTIAL CLASS DbServer INHERIT DataServer
 	PROTECT lShared AS LOGIC
 	PROTECT lReadOnly AS LOGIC
@@ -273,9 +279,7 @@ METHOD __InitRecordBuf( ) AS VOID STRICT
 	LOCAL i AS DWORD
 	LOCAL x AS USUAL
 
-	
-
-	FOR i := 1 TO SELF:wFieldCount
+    FOR i := 1 TO SELF:wFieldCount
 		IF VoDbFieldGet( i, REF x )
 			//Mark as BLOB when fieldtype = 'M' and not string
 			aOriginalBuffer[BUFFER_VALUE, i] 			:= x                                                       
@@ -446,8 +450,6 @@ METHOD __ProcessConcurrency( lBreak AS LOGIC) AS LOGIC STRICT
 	IF lBreak .AND. (lError .OR. ! lRetCode) .AND. CanBreak()
 		BREAK ErrorBuild( _VoDbErrInfoPtr( ) )
 	ENDIF
-
-	
 	
 	RETURN lRetCode
 

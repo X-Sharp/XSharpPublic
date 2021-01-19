@@ -6,6 +6,7 @@
 
 USING System.Data
 using System.Diagnostics
+[XSharp.Internal.TypesChanged];
 [DebuggerDisplay( "SQLCatalog {Collection,nq}" )] ;
 CLASS SQLCatalogQuery INHERIT SQLSelect
     PROTECT oCatalog    AS DataTable    

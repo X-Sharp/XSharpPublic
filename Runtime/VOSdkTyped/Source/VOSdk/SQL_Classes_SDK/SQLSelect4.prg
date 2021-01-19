@@ -203,8 +203,6 @@ PARTIAL CLASS SQLSelect INHERIT DataServer
 	METHOD SetPos( nPos, nOption, nLock )
 		RETURN TRUE
 
-
-
 	METHOD SetPrimaryKey( uFieldPos ) AS LOGIC
 		LOCAL nIndex    AS DWORD
 		LOCAL lRet      := FALSE AS LOGIC

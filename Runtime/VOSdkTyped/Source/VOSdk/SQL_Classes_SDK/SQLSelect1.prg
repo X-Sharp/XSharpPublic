@@ -10,6 +10,7 @@ USING System.Collections.Generic
 USING System.Reflection
 USING System.Diagnostics
 
+[XSharp.Internal.TypesChanged];
 [DebuggerDisplay( "SqlSelect {TableName,nq}" )] ;
 PARTIAL CLASS SQLSelect INHERIT DataServer 
 	PROTECT oStmt           AS SQLStatement   // Statement object
@@ -156,8 +157,6 @@ PARTIAL CLASS SQLSelect INHERIT DataServer
 	
 	
 	#endregion
-	
-	
 	
 	METHOD __GetFieldName( uFieldPosition AS USUAL) AS STRING STRICT
 		LOCAL nIndex AS DWORD
@@ -361,8 +360,6 @@ PARTIAL CLASS SQLSelect INHERIT DataServer
 		
 		RETURN
 	
-	
-	
 	#region Dummy Methods
 	
 	[Obsolete];
@@ -425,8 +422,6 @@ PARTIAL CLASS SQLSelect INHERIT DataServer
 	METHOD __SetNullData( nODBCType AS SHORTINT, nIndex AS DWORD, aData AS ARRAY) AS VOID STRICT
 		RETURN
 	
-	
-	
 	[Obsolete];
 	METHOD __SetScrollOptions( nConcurrency AS DWORD, nKeySet AS DWORD, lAsync AS LOGIC) AS LOGIC STRICT
 		RETURN TRUE
@@ -439,8 +434,6 @@ PARTIAL CLASS SQLSelect INHERIT DataServer
 	METHOD __UpdateLongData( lAppend AS LOGIC ) AS VOID STRICT
 		RETURN
 	#endregion
-	
-	
 	
 	
 END CLASS

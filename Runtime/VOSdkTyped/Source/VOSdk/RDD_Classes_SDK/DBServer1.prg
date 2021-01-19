@@ -1,3 +1,9 @@
+//
+// Copyright (c) XSharp B.V.  All Rights Reserved.  
+// Licensed under the Apache License, Version 2.0.  
+// See License.txt in the project root for license information.
+//
+
 #pragma warnings(165, off)
 PARTIAL CLASS DbServer
 
@@ -7,8 +13,6 @@ METHOD Append( lReleaseLocks AS LOGIC) AS LOGIC
 	LOCAL dwCurrentWorkArea := 0 AS DWORD
 	LOCAL lLocks AS LOGIC
 	LOCAL nTries AS DWORD
-
-	
 
 	lErrorFlag := FALSE
 	nTries := SELF:nRetries
@@ -43,8 +47,6 @@ METHOD Append( lReleaseLocks AS LOGIC) AS LOGIC
 		lRetCode := FALSE
 	END SEQUENCE
 
-	
-
 	RETURN lRetCode
 
 METHOD AppendDB( oFSSource, aFieldList, cbForBlock, cbWhileBlock, uScope, cDriver, aRdd )  AS LOGIC CLIPPER
@@ -57,8 +59,6 @@ METHOD AppendDB( oFSSource, aFieldList, cbForBlock, cbWhileBlock, uScope, cDrive
 	LOCAL oError 			AS USUAL
 	LOCAL dwCurrentWorkArea := 0 AS DWORD
 	LOCAL wLen 				AS DWORD
-
-	
 
 	lErrorFlag := FALSE
 	BEGIN SEQUENCE
@@ -150,8 +150,6 @@ METHOD AppendDB( oFSSource, aFieldList, cbForBlock, cbWhileBlock, uScope, cDrive
 		__DBSSetSelect( dwCurrentWorkArea )  
 		lRetCode := FALSE
 	END SEQUENCE
-
-
 	
 	RETURN lRetCode
 
@@ -165,8 +163,6 @@ METHOD AppendDelimited( oFSSource, cDelimiter, aFieldList, cbForBlock, cbWhileBl
 	LOCAL oError AS USUAL
 	LOCAL dwCurrentWorkArea := 0 AS DWORD
 	LOCAL wLen AS DWORD
-
-	
 
 	lErrorFlag := FALSE
 	BEGIN SEQUENCE
@@ -251,8 +247,6 @@ METHOD AppendDelimited( oFSSource, cDelimiter, aFieldList, cbForBlock, cbWhileBl
 		lRetCode := FALSE
 	END SEQUENCE
 
-
-	
 	RETURN lRetCode
 
 METHOD AppendSDF(oFSSource,aFieldList,cbForBlock,cbWhileBlock,uScope) AS LOGIC CLIPPER
@@ -266,8 +260,6 @@ METHOD AppendSDF(oFSSource,aFieldList,cbForBlock,cbWhileBlock,uScope) AS LOGIC C
 	LOCAL oError AS USUAL
 	LOCAL dwCurrentWorkArea := 0 AS DWORD
 	LOCAL wLen AS DWORD
-
-	
 
 	lErrorFlag := FALSE
 
@@ -364,8 +356,6 @@ METHOD AppendSDF(oFSSource,aFieldList,cbForBlock,cbWhileBlock,uScope) AS LOGIC C
 		lRetCode := FALSE
 
 	END SEQUENCE
-
-
 	
 	RETURN lRetCode
 
@@ -382,8 +372,6 @@ METHOD Average( acbExpression AS USUAL, cbForBlock := NIL AS USUAL, cbWhileBlock
 	LOCAL oError AS USUAL
 	LOCAL dwCurrentWorkArea := 0 AS DWORD
 	LOCAL oHLTemp AS HyperLabel
-
-	
 
 	lErrorFlag := FALSE
 	BEGIN SEQUENCE
@@ -453,7 +441,7 @@ METHOD Average( acbExpression AS USUAL, cbForBlock := NIL AS USUAL, cbWhileBlock
 				{| | Eval( cbKey ) = uValue },  ;
 				NIL,                   ;
 				NIL,                   ;
-				TRUE,  ;
+				TRUE,  ;    
 				DBCCON,  ;
 				DBCCUPDATE )
 			siSelectionStatus := DBSELECTIONNULL
@@ -522,13 +510,11 @@ METHOD BLOBDirectExport( nPointer AS LONG, oFSTarget AS FileSpec, kMode := BLOB_
     RETURN BLOBDirectExport(nPointer, oFSTarget:FullPath, kMode)
     
 METHOD BLOBDirectExport( nPointer AS LONG, cTarget AS STRING, kMode := BLOB_EXPORT_OVERWRITE AS LONG) AS USUAL
-	
 	LOCAL dwCurrentWorkArea := 0 AS DWORD
 	LOCAL uRetCode AS USUAL
 	LOCAL oError AS USUAL
-	
 
-	VoDbSelect( wWorkArea, OUT dwCurrentWorkArea )
+    VoDbSelect( wWorkArea, OUT dwCurrentWorkArea )
 
 	lErrorFlag := FALSE
 	BEGIN SEQUENCE
@@ -543,8 +529,6 @@ METHOD BLOBDirectExport( nPointer AS LONG, cTarget AS STRING, kMode := BLOB_EXPO
 	END SEQUENCE
 
    __DBSSetSelect( dwCurrentWorkArea ) 
-
-
 	
 	RETURN uRetCode
 
@@ -553,8 +537,6 @@ METHOD BLOBDirectGet( nPointer AS LONG, nStart AS LONG, nCount AS LONG) AS USUAL
 	LOCAL dwCurrentWorkArea := 0 AS DWORD
 	LOCAL uRetVal AS USUAL
 	LOCAL oError AS USUAL
-
-	
 
 	lErrorFlag := FALSE
 	BEGIN SEQUENCE
@@ -571,8 +553,6 @@ METHOD BLOBDirectGet( nPointer AS LONG, nStart AS LONG, nCount AS LONG) AS USUAL
 		uRetVal := NIL
 	END SEQUENCE
 
-
-	
 	RETURN uRetVal
 
 METHOD BLOBDirectImport( nPointer AS LONG, oFSSource AS FileSpec) AS USUAL
@@ -600,17 +580,13 @@ METHOD BLOBDirectImport( nPointer AS LONG, cTarget AS STRING) AS USUAL
 		uRetVal := NIL
 	END SEQUENCE
 
-
-	
 	RETURN uRetVal
 
 METHOD BLOBDirectPut( nPointer AS LONG, uBlob AS USUAL ) AS USUAL
 	
-   LOCAL dwCurrentWorkArea := 0 AS DWORD
+    LOCAL dwCurrentWorkArea := 0 AS DWORD
 	LOCAL uRetVal AS USUAL
 	LOCAL oError AS USUAL
-
-	
 
 	lErrorFlag := FALSE
 	BEGIN SEQUENCE
@@ -626,12 +602,8 @@ METHOD BLOBDirectPut( nPointer AS LONG, uBlob AS USUAL ) AS USUAL
 		SELF:Error( oErrorInfo, #BLOBDirectPut )
 		uRetVal := NIL
 	END SEQUENCE
-
-
 	
 	RETURN uRetVal
-
-
 
 METHOD BLOBExport( uField AS USUAL, oFSTarget AS FileSpec, kMode := BLOB_EXPORT_OVERWRITE AS LONG) AS LOGIC
         RETURN SELF:BLOBExport(uField, oFSTarget:FullPath, kMode)
@@ -642,8 +614,6 @@ METHOD BLOBExport( uField AS USUAL, cTarget AS STRING, kMode := BLOB_EXPORT_OVER
 	LOCAL oError AS USUAL
 	LOCAL wPos AS DWORD
 	LOCAL dwCurrentWorkArea := 0 AS DWORD
-
-	
 
 	lErrorFlag := FALSE
 	BEGIN SEQUENCE
@@ -672,8 +642,6 @@ METHOD BLOBExport( uField AS USUAL, cTarget AS STRING, kMode := BLOB_EXPORT_OVER
 		lRetCode := FALSE
 	END SEQUENCE
 
-
-	
 	RETURN lRetCode
 
 METHOD BLOBGet( uField AS USUAL, nStart AS LONG, nCount AS LONG) AS USUAL
@@ -715,8 +683,6 @@ METHOD BLOBImport( uField, oFSSource ) AS LOGIC CLIPPER
 	LOCAL dwCurrentWorkArea := 0 AS DWORD
 	LOCAL nCurRec AS LONGINT
 	LOCAL xNewVal AS USUAL
-
-	
 
 	lErrorFlag := FALSE
 	BEGIN SEQUENCE
@@ -765,8 +731,6 @@ METHOD BLOBImport( uField, oFSSource ) AS LOGIC CLIPPER
 		lRetCode := FALSE
 	END SEQUENCE
 
-
-	
 	RETURN lRetCode
 
 METHOD BLOBRootGet( ) AS USUAL STRICT
@@ -774,8 +738,6 @@ METHOD BLOBRootGet( ) AS USUAL STRICT
    LOCAL dwCurrentWorkArea := 0 AS DWORD
 	LOCAL uRetVal AS USUAL
 	LOCAL oError AS USUAL
-
-	
 
 	lErrorFlag := FALSE
 	BEGIN SEQUENCE
@@ -791,8 +753,6 @@ METHOD BLOBRootGet( ) AS USUAL STRICT
 		uRetVal := NIL
 	END SEQUENCE
 
-
-	
 	RETURN uRetVal
 
 METHOD BLOBRootLock( ) AS USUAL STRICT
@@ -800,8 +760,6 @@ METHOD BLOBRootLock( ) AS USUAL STRICT
    LOCAL dwCurrentWorkArea := 0 AS DWORD
 	LOCAL uRetCode AS USUAL
 	LOCAL oError AS USUAL
-
-	
 
 	VoDbSelect( wWorkArea, OUT dwCurrentWorkArea )
 
@@ -819,16 +777,12 @@ METHOD BLOBRootLock( ) AS USUAL STRICT
 
 	__DBSSetSelect( dwCurrentWorkArea ) 
 
-
-	
 	RETURN uRetCode
 
 METHOD BLOBRootPut( uBlob AS USUAL) AS USUAL STRICT
 	
    LOCAL dwCurrentWorkArea := 0 AS DWORD
 	LOCAL oError AS USUAL
-
-	
 
 	VoDbSelect( wWorkArea, OUT dwCurrentWorkArea )
 
@@ -846,17 +800,13 @@ METHOD BLOBRootPut( uBlob AS USUAL) AS USUAL STRICT
 
 	__DBSSetSelect( dwCurrentWorkArea ) 
 
-
-	
 	RETURN uBlob
 
 METHOD BLOBRootUnlock( ) AS USUAL STRICT
 	
-   LOCAL dwCurrentWorkArea := 0 AS DWORD
+    LOCAL dwCurrentWorkArea := 0 AS DWORD
 	LOCAL uRetVal AS USUAL
 	LOCAL oError AS USUAL
-
-	
 
 	lErrorFlag := FALSE
 	BEGIN SEQUENCE
@@ -872,17 +822,12 @@ METHOD BLOBRootUnlock( ) AS USUAL STRICT
 		uRetVal := NIL
 	END SEQUENCE
 
-
-	
 	RETURN uRetVal
 
 METHOD ClearFilter( ) AS LOGIC STRICT
-	
-   LOCAL dwCurrentWorkArea := 0 AS DWORD
+    LOCAL dwCurrentWorkArea := 0 AS DWORD
 	LOCAL lRetCode AS LOGIC
 	LOCAL oError AS USUAL
-
-	
 
 	VoDbSelect( wWorkArea, OUT dwCurrentWorkArea )
 
@@ -900,8 +845,6 @@ METHOD ClearFilter( ) AS LOGIC STRICT
 
    __DBSSetSelect( dwCurrentWorkArea ) 
 
-
-	
 	RETURN lRetCode
 
 METHOD ClearIndex( uOrder AS USUAL, cOrdBag := "" AS STRING) AS LOGIC 
@@ -928,8 +871,6 @@ METHOD ClearIndex( uOrder AS USUAL, cOrdBag := "" AS STRING) AS LOGIC
 
 	__DBSSetSelect( dwCurrentWorkArea ) 
 
-
-	
 	RETURN lRetCode
 
 METHOD ClearLocate( ) AS LOGIC STRICT
@@ -937,8 +878,6 @@ METHOD ClearLocate( ) AS LOGIC STRICT
    LOCAL dwCurrentWorkArea := 0 AS DWORD
 	LOCAL lRetCode AS LOGIC
 	LOCAL oError AS USUAL
-
-	
 
 	VoDbSelect( wWorkArea, OUT dwCurrentWorkArea )
 
@@ -956,8 +895,6 @@ METHOD ClearLocate( ) AS LOGIC STRICT
 
    __DBSSetSelect( dwCurrentWorkArea ) 
 
-
-	
 	RETURN lRetCode
 
 METHOD ClearOrderScope( ) AS LOGIC STRICT
@@ -974,8 +911,6 @@ METHOD ClearRelation( ) AS LOGIC STRICT
    LOCAL dwCurrentWorkArea := 0 AS DWORD
 	LOCAL lRetCode AS LOGIC
 	LOCAL oError AS USUAL
-
-	
 
 	VoDbSelect( wWorkArea, OUT dwCurrentWorkArea )
 
@@ -1000,13 +935,9 @@ METHOD ClearRelation( ) AS LOGIC STRICT
 
    __DBSSetSelect( dwCurrentWorkArea ) 
 
-
-	
 	RETURN lRetCode
 
 METHOD ClearScope( ) AS LOGIC STRICT
-
-	
 
 	cbStoredForBlock := NIL
 	cbStoredWhileBlock := NIL
@@ -1023,8 +954,6 @@ METHOD Close( ) AS LOGIC STRICT
 	LOCAL dwCurrentWorkArea := 0 AS DWORD
 	LOCAL lRetCode AS LOGIC
 	LOCAL oError AS USUAL
-
-	
 
 	lErrorFlag := FALSE
 	BEGIN SEQUENCE
@@ -1064,8 +993,6 @@ METHOD Close( ) AS LOGIC STRICT
 
 	END SEQUENCE
 
-
-	
 	RETURN lRetCode
 
 METHOD Commit( ) AS LOGIC STRICT
@@ -1074,8 +1001,6 @@ METHOD Commit( ) AS LOGIC STRICT
 	LOCAL dwCurrentWorkArea := 0 AS DWORD
 	LOCAL oHLTemp AS HyperLabel
 	LOCAL nTries AS DWORD
-
-	
 
 	lErrorFlag := FALSE
 	nTries := SELF:nRetries
@@ -1128,8 +1053,6 @@ METHOD Continue( ) AS LOGIC STRICT
 	LOCAL dwCurrentWorkArea := 0 AS DWORD
 	LOCAL oError AS USUAL
 	LOCAL oHLTemp AS HyperLabel
-
-	
 
 	lErrorFlag := FALSE
 	BEGIN SEQUENCE

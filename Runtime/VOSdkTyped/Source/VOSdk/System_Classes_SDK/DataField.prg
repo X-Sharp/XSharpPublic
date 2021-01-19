@@ -1,3 +1,10 @@
+//
+// Copyright (c) XSharp B.V.  All Rights Reserved.  
+// Licensed under the Apache License, Version 2.0.  
+// See License.txt in the project root for license information.
+//
+
+[XSharp.Internal.TypesChanged];
 CLASS DataField
 	PROTECT oFieldSpec		AS FieldSpec
 	PROTECT oHyperLabel	    AS HyperLabel
@@ -17,11 +24,8 @@ PROPERTY HyperLabel AS HyperLabel   GET oHyperLabel
 PROPERTY Name AS STRING             GET oHyperLabel:Name
 PROPERTY NameSym AS SYMBOL          GET oHyperLabel:NameSym
 
-
 METHOD AsString( ) AS STRING STRICT
 	RETURN oHyperLabel:AsString( )
-
-
 
 END CLASS
 

@@ -1,3 +1,10 @@
+//
+// Copyright (c) XSharp B.V.  All Rights Reserved.  
+// Licensed under the Apache License, Version 2.0.  
+// See License.txt in the project root for license information.
+//
+
+[XSharp.Internal.TypesChanged];
 CLASS FileSpec
 	// The FileSpec class contains the identification of a disk file
 	// ( its drive, path and filename ), as well as a few useful methods.
@@ -1192,8 +1199,6 @@ FUNCTION __GetPath      (cPath AS STRING) AS STRING
     ENDIF
 	RETURN cNewPath
 
-
-
 FUNCTION __NewName      (cFullPath AS STRING) AS STRING
 	//
 	// cFullPath: a fully qualified PATH such as C:\TEMP\FILENAME.DBF
@@ -1293,8 +1298,6 @@ FUNCTION __SplitPath    (oFS AS FileSpec, cString AS STRING, aFullPath AS ARRAY)
 
 	RETURN NIL
 
-
-
 FUNCTION __Normalize        (cPath AS STRING) AS STRING 
 	LOCAL nPos  AS DWORD
 	LOCAL cFile AS STRING
@@ -1319,6 +1322,4 @@ FUNCTION __Normalize        (cPath AS STRING) AS STRING
 	ENDIF
 
 	RETURN cRet
-
-
 

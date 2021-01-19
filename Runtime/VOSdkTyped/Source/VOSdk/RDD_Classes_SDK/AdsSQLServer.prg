@@ -58,7 +58,3 @@ CONSTRUCTOR( oFile, lShareMode, lReadOnlyMode, xDriver, aRdd ) CLIPPER
 RETURN
 
 END CLASS
-
-
-
-

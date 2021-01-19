@@ -8,6 +8,7 @@ USING System.Data
 USING System.Data.Common
 USING System.Diagnostics
 
+[XSharp.Internal.TypesChanged];
 [DebuggerDisplay( "SqlParameter({Value})" )] ;
 CLASS SqlParameter
 	EXPORT IO				AS SHORTINT

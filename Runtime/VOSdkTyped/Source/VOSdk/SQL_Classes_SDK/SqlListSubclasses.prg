@@ -3,7 +3,7 @@
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
 //
-
+[XSharp.Internal.TypesChanged];
 CLASS SQLListColumnPrivileges INHERIT SQLCatalogQuery
     CONSTRUCTOR( cQualifier, cOwner, cTableName, cColName, oSQLConnection ) 
         SUPER(oSQLConnection)
@@ -11,7 +11,7 @@ CLASS SQLListColumnPrivileges INHERIT SQLCatalogQuery
         RETURN
         
 END CLASS
-
+[XSharp.Internal.TypesChanged];
 CLASS SQLListColumns INHERIT SQLCatalogQuery
     CONSTRUCTOR( cQualifier, cOwner, cTableName, cColName, oSQLConnection) 
         SUPER(oSQLConnection)
@@ -20,7 +20,7 @@ CLASS SQLListColumns INHERIT SQLCatalogQuery
 END CLASS
 
 
-
+[XSharp.Internal.TypesChanged];
 CLASS SQLListDatabases INHERIT SQLCatalogQuery
     CONSTRUCTOR( cQualifier, cDbName, oSQLConnection) 
         SUPER(oSQLConnection)
@@ -28,8 +28,7 @@ CLASS SQLListDatabases INHERIT SQLCatalogQuery
         RETURN
 END CLASS
 
-
-
+[XSharp.Internal.TypesChanged];
 CLASS SQLListForeignKeys INHERIT SQLCatalogQuery
     CONSTRUCTOR( cPQualifier, cpOwner, cPTableName, cFQualifier, cFOwner, cFTableName, oSQLConnection ) 
         SUPER(oSQLConnection)
@@ -37,6 +36,7 @@ CLASS SQLListForeignKeys INHERIT SQLCatalogQuery
         RETURN
 END CLASS
 
+[XSharp.Internal.TypesChanged];
 CLASS SQLListIndexes INHERIT SQLCatalogQuery
     CONSTRUCTOR(  cQualifier, cOwner, cTableName, oSQLConnection ) 
         SUPER(oSQLConnection)
@@ -45,6 +45,7 @@ CLASS SQLListIndexes INHERIT SQLCatalogQuery
 END CLASS
 
 
+[XSharp.Internal.TypesChanged];
 CLASS SQLListIndexColumns INHERIT SQLCatalogQuery
     CONSTRUCTOR(  cQualifier, cOwner, cTableName, cConstraint, cColumn, oSQLConnection ) 
         SUPER(oSQLConnection)
@@ -54,8 +55,7 @@ END CLASS
 
 
 
-
-
+[XSharp.Internal.TypesChanged];
 CLASS SQLListPrimaryKeys INHERIT SQLCatalogQuery
     CONSTRUCTOR( cQualifier, cOwner, cTableName, oSQLConnection ) 
         SUPER(oSQLConnection)
@@ -65,6 +65,7 @@ CLASS SQLListPrimaryKeys INHERIT SQLCatalogQuery
 END CLASS
 
 
+[XSharp.Internal.TypesChanged];
 CLASS SQLListProcedures INHERIT SQLCatalogQuery
     CONSTRUCTOR( cQualifier, cOwner, cProcName, cType, oSQLConnection ) 
         SUPER(oSQLConnection)
@@ -73,6 +74,7 @@ CLASS SQLListProcedures INHERIT SQLCatalogQuery
         
 END CLASS
 
+[XSharp.Internal.TypesChanged];
 CLASS SQLListProcedureColumns INHERIT SQLCatalogQuery
     CONSTRUCTOR( cQualifier, cOwner, cProcName, cColName, oSQLConnection ) 
         SUPER(oSQLConnection)
@@ -82,6 +84,7 @@ CLASS SQLListProcedureColumns INHERIT SQLCatalogQuery
 END CLASS
 
 
+[XSharp.Internal.TypesChanged];
 CLASS SQLListProcedureParameters INHERIT SQLCatalogQuery
     CONSTRUCTOR( cQualifier, cOwner, cProcName, cParamName, oSQLConnection ) 
         SUPER(oSQLConnection)
@@ -90,6 +93,7 @@ CLASS SQLListProcedureParameters INHERIT SQLCatalogQuery
         
 END CLASS
 
+[XSharp.Internal.TypesChanged];
 CLASS SQLListReservedWords INHERIT SQLCatalogQuery
     CONSTRUCTOR( oSQLConnection ) 
         SUPER(oSQLConnection)
@@ -98,6 +102,7 @@ CLASS SQLListReservedWords INHERIT SQLCatalogQuery
         
 END CLASS
 
+[XSharp.Internal.TypesChanged];
 CLASS SQLListRestrictions INHERIT SQLCatalogQuery
     CONSTRUCTOR( oSQLConnection ) 
         SUPER(oSQLConnection)
@@ -107,6 +112,7 @@ CLASS SQLListRestrictions INHERIT SQLCatalogQuery
 END CLASS
 
 
+[XSharp.Internal.TypesChanged];
 CLASS SQLListSpecialColumns INHERIT SQLCatalogQuery
     CONSTRUCTOR( nColType, cQualifier, cOwner, cTableName, nScope, nNullable, oSQLConnection ) 
         SUPER(oSQLConnection)
@@ -114,6 +120,7 @@ CLASS SQLListSpecialColumns INHERIT SQLCatalogQuery
         RETURN
 END CLASS
 
+[XSharp.Internal.TypesChanged];
 CLASS SQLListStatistics INHERIT SQLCatalogQuery
     CONSTRUCTOR( cQualifier, cOwner, cTableName, nUnique, nAccuracy, oSQLConnection ) 
         SUPER(oSQLConnection)
@@ -121,8 +128,7 @@ CLASS SQLListStatistics INHERIT SQLCatalogQuery
         RETURN
 END CLASS
 
-
-
+[XSharp.Internal.TypesChanged];
 CLASS SQLListTables INHERIT SQLCatalogQuery
     CONSTRUCTOR( cQualifier, cOwner, cTableName, cTableType, oSQLConnection ) 
         SUPER(oSQLConnection)
@@ -131,6 +137,7 @@ CLASS SQLListTables INHERIT SQLCatalogQuery
         
 END CLASS
 
+[XSharp.Internal.TypesChanged];
 CLASS SQLListTablePrivileges INHERIT SQLCatalogQuery
     CONSTRUCTOR( cQualifier, cOwner, cTableName, oSQLConnection ) 
         SUPER(oSQLConnection)
@@ -138,6 +145,7 @@ CLASS SQLListTablePrivileges INHERIT SQLCatalogQuery
         RETURN
 END CLASS
 
+[XSharp.Internal.TypesChanged];
 CLASS SQLListTriggers INHERIT SQLCatalogQuery
     CONSTRUCTOR( cQualifier, cOwner, cTableName, oSQLConnection) 
         SUPER(oSQLConnection)
@@ -146,6 +154,7 @@ CLASS SQLListTriggers INHERIT SQLCatalogQuery
 END CLASS
 
 
+[XSharp.Internal.TypesChanged];
 CLASS SQLListTypeInfo INHERIT SQLCatalogQuery
     CONSTRUCTOR( nSqlType, oSQLConnection ) 
         SUPER(oSQLConnection)
@@ -154,6 +163,7 @@ CLASS SQLListTypeInfo INHERIT SQLCatalogQuery
         
 END CLASS
 
+[XSharp.Internal.TypesChanged];
 CLASS SQLListUsers INHERIT SQLCatalogQuery
     CONSTRUCTOR( cUserName, oSQLConnection) 
         SUPER(oSQLConnection)
@@ -161,8 +171,7 @@ CLASS SQLListUsers INHERIT SQLCatalogQuery
         RETURN
 END CLASS
 
-
-
+[XSharp.Internal.TypesChanged];
 CLASS SQLListViews INHERIT SQLCatalogQuery
     CONSTRUCTOR( cQualifier, cOwner, cTableName, oSQLConnection) 
         SUPER(oSQLConnection)
@@ -171,6 +180,7 @@ CLASS SQLListViews INHERIT SQLCatalogQuery
 END CLASS
 
 
+[XSharp.Internal.TypesChanged];
 CLASS SQLListViewColumns INHERIT SQLCatalogQuery
     CONSTRUCTOR( cQualifier, cOwner, cTableName, cColumnName, oSQLConnection) 
         SELF:_OpenTable("ViewColumns", oSQLConnection, {cQualifier, cOwner, cTableName, cColumnName})

@@ -5,8 +5,9 @@
 //
 
 USING System.Data
-using System.Reflection
+USING System.Reflection
 
+[XSharp.Internal.TypesChanged];
 CLASS SQLValue INHERIT DataField
 	PROPERTY Type         AS System.Type       AUTO
 	PROPERTY Scale        AS SHORT             AUTO

@@ -10,6 +10,7 @@ USING System.Reflection
 USING System.Runtime.InteropServices
 USING System.Diagnostics
 
+[XSharp.Internal.TypesChanged];
 [DebuggerDisplay( "{SQLString}" )] ;
 CLASS SQLStatement
     #region VO compatible Ivars
@@ -260,8 +261,6 @@ CLASS SQLStatement
         //			ENDIF
         //		ENDIF	
         //		RETURN 		
-        
-        
         
         
         METHOD FreeStmt( fOption := SQL_CLOSE AS WORD) AS LOGIC

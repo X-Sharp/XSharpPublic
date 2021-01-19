@@ -65,7 +65,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                         if (expression.Kind != BoundKind.BadExpression)
                         {
                             var type = expression.Type;
-                            if (TypeSymbol.Equals(type, Compilation.ArrayType()) || TypeSymbol.Equals(type, Compilation.UsualType()))
+                            if (type.IsArrayType() || type.IsUsualType())
                                 return BindIndexerOrVOArrayAccess(node.Expression, expression, analyzedArguments, diagnostics);
                         }
                     }

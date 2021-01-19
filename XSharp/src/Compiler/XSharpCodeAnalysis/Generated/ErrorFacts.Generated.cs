@@ -56,6 +56,7 @@
                 case ErrorCode.WRN_BadRefCompareLeft:
                 case ErrorCode.WRN_BadRefCompareRight:
                 case ErrorCode.WRN_PatternIsAmbiguous:
+                case ErrorCode.WRN_PatternStaticOrInaccessible:
                 case ErrorCode.WRN_PatternBadSignature:
                 case ErrorCode.WRN_SequentialOnPartialClass:
                 case ErrorCode.WRN_MainCantBeGeneric:
@@ -249,6 +250,7 @@
                 case ErrorCode.WRN_ChrInDefine:
                 case ErrorCode.WRN_TryWithoutCatch:
                 case ErrorCode.WRN_Unsupported:
+                case ErrorCode.WRN_PropertyTypeChangedInParentType:
                 case ErrorCode.WRN_XPPSuperIVarsAlwaysShared:
                 case ErrorCode.WRN_XPPFrozedNotSupported:
                 case ErrorCode.WRN_XPPVarIsInNotSupported:

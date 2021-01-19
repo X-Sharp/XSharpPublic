@@ -17,13 +17,20 @@ namespace Microsoft.CodeAnalysis.CSharp
         internal const string CodeBlockType = "Codeblock";
         internal const string UsualType = "__Usual";
         internal const string ArrayBase = "__ArrayBase";
+        internal const string ArrayType = "__Array";
         internal const string PszType = "__Psz";
+        internal const string SymbolType = "__Symbol";
+        internal const string FloatType = "__Float";
+        internal const string VnFloatType = "__VOFloat";
+        internal const string DateType = "__Date";
+        internal const string VnDateType = "__VODate";
         internal const string VOStructAttribute = "VoStructAttribute";
         internal const string DefaultParameterAttribute = "DefaultParameterValueAttribute";
         internal const string ActualTypeAttribute = "ActualTypeAttribute";
         internal const string ClipperCallingConventionAttribute = "ClipperCallingConventionAttribute";
         internal const string AllowLateBindingAttribute = "AllowLateBindingAttribute";
         internal const string NeedAccessToLocals = "NeedsAccessToLocalsAttribute";
+        internal const string TypesChanged = "TypesChangedAttribute";
     }
     internal static class VulcanQualifiedTypeNames
     {
@@ -67,6 +74,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         internal const string ClassLibrary = "global::XSharp.Internal.ClassLibraryAttribute";
         internal const string CompilerVersion = "global::XSharp.Internal.CompilerVersion";
         internal const string IsInstance = "global::XSharp.Internal.IsInstanceAttribute";
+        internal const string TypesChanged = "global::XSharp.Internal.TypesChangedAttribute";
         internal const string XppAbstract = "global::XSharp.XPP.Abstract";
     }
     internal static class XSharpIntrinsicNames
@@ -154,7 +162,10 @@ namespace Microsoft.CodeAnalysis.CSharp
         internal const string SetProperty = "_SetProperty";
         internal const string InitProperties = "_InitProperties";
 
-
+        internal const string ScriptClipperArgs = "__XSHARP__Args";
+        internal const string ScriptClipperPCount = "__XSHARP__PCount";
+        internal const string ScriptVoPszList = "__XSHARP__PszList";
+        internal const string ScriptPrivatesLevel = "__XSHARP__PrivatesLevel";
     }
 
     internal static class ReservedNames

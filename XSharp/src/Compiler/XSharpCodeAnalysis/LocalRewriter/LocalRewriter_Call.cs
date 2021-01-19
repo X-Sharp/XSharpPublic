@@ -127,7 +127,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             if (defaultConstantValue == null)
                 return null;
             if (parameterType is NamedTypeSymbol &&
-                ((NamedTypeSymbol)parameterType).ConstructedFrom.IsPsz())
+                ((NamedTypeSymbol)parameterType).ConstructedFrom.IsPszType())
             {
 
                 if (defaultConstantValue.StringValue != null)
@@ -173,7 +173,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 {
                     ParameterSymbol parameter = parameters[p];
                     BoundExpression expr = GetDefaultParameterValue(syntax, parameter, enableCallerInfo) ;
-                    if (expr is BoundDefaultExpression && parameter.Type.IsUsual())
+                    if (expr is BoundDefaultExpression && parameter.Type.IsUsualType())
                     {
                         var flds = _compilation.UsualType().GetMembers("_NIL");
                         var type = _factory.Type(_compilation.UsualType());

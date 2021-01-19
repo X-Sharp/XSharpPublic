@@ -18,11 +18,35 @@ using System.Diagnostics;
 using System.Collections.Immutable;
 using System.Collections.Concurrent;
 using Microsoft.CodeAnalysis;
+using System.Reflection;
+using System.Runtime;
+using System.Collections;
 
 namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 {
     internal class XSharpPreprocessor
     {
+        static Dictionary<string, string> embeddedHeaders = null;
+
+        static void loadResources()
+        {
+            if (embeddedHeaders == null)
+            {
+                embeddedHeaders = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+                var asm = typeof(XSharpPreprocessor).GetTypeInfo().Assembly;
+#if VSPARSER
+                var strm = asm.GetManifestResourceStream("XSharp.VSParser.Preprocessor.StandardHeaders.resources");
+#else
+                var strm = asm.GetManifestResourceStream("LanguageService.CodeAnalysis.Preprocessor.StandardHeaders.resources");
+#endif
+                var rdr = new System.Resources.ResourceReader(strm);
+                foreach (DictionaryEntry item in rdr)
+                {
+                    embeddedHeaders.Add((string)item.Key, (string)item.Value);
+                }
+            }
+        }
+
         const string PPOPrefix = "//PP ";
 
         #region IncludeCache
@@ -57,7 +81,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 {
                     if (cache.TryGetValue(fileName, out file))
                     {
-                        if (file.LastWritten != FileUtilities.GetFileTimeStamp(fileName))
+                        DateTime timeStamp;
+                        if (System.IO.File.Exists(fileName))
+                            timeStamp = FileUtilities.GetFileTimeStamp(fileName);
+                        else
+                            timeStamp = DateTime.MinValue;
+                        if (file.LastWritten != timeStamp)
                         {
                             cache.TryRemove(fileName, out file);
                             file = null;
@@ -108,7 +137,14 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 this.FileName = name;
                 this.Text = text;
                 this.LastUsed = DateTime.Now;
+                if (File.Exists(this.FileName))
+                {
                 this.LastWritten = FileUtilities.GetFileTimeStamp(this.FileName);
+                }
+                else
+                {
+                    this.LastWritten = DateTime.MinValue;
+                }
                 this.Tokens = tokens.ToImmutableArray();
                 this.MustBeProcessed = mustBeProcessed;
 
@@ -304,7 +340,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             macroDefines.Add("__XPP2__", (token) => new XSharpToken(options.xpp2 ? XSharpLexer.TRUE_CONST : XSharpLexer.FALSE_CONST, token));
             macroDefines.Add("__FOX1__", (token) => new XSharpToken(options.fox1 ? XSharpLexer.TRUE_CONST : XSharpLexer.FALSE_CONST, token));
             macroDefines.Add("__FOX2__", (token) => new XSharpToken(options.fox2 ? XSharpLexer.TRUE_CONST : XSharpLexer.FALSE_CONST, token));
-            if (!options.NoStdDef && options.Kind != SourceCodeKind.Script)
+            if (!options.NoStdDef )
             {
                 // Todo: when the compiler option nostddefs is not set: read XSharpDefs.xh from the XSharp Include folder,//
                 // and automatically include it.
@@ -404,7 +440,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 #if !VSPARSER
             // use the filter mechanism in the compiler to only add errors that are not suppressed.
             var d = Diagnostic.Create(new SyntaxDiagnosticInfo(error.Code));
-            d = _options.CommandLineArguments.CompilationOptions.FilterDiagnostic(d,cancellationToken: default);
+            if (_options.CommandLineArguments != null)
+            {
+                d = _options.CommandLineArguments.CompilationOptions.FilterDiagnostic(d);
+            }
             if (d != null)
             {
                _parseErrors.Add(error);
@@ -1063,6 +1102,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 dirs.Add(p);
             }
+            if (fileNameToken != null)
+            { 
+                var path = PathUtilities.GetDirectoryName(fileNameToken.SourceName);
+                if (! String.IsNullOrEmpty(path) && !dirs.Contains(path))
+                    dirs.Add(path);
+            }
             if (_options.Verbose)
             {
                 DebugOutput("Process include file: {0}", includeFileName);
@@ -1110,7 +1155,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         try
                         {
                             var contents = System.IO.File.ReadAllText(fp);
-                            text = new SourceText(contents);
+                            text = SourceText.From(contents);
                             nfp = fp;
                         }
                         catch (Exception e)
@@ -1122,6 +1167,16 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     if (rooted || nfp != null)
                         break;
 
+                }
+            }
+            if (nfp == null)
+            {
+                loadResources();
+                var baseName = Path.GetFileNameWithoutExtension(includeFileName).ToLower();
+                if (embeddedHeaders.TryGetValue(baseName, out var source))
+                {
+                    text = SourceText.From(source);
+                    nfp = includeFileName;
                 }
             }
             if (nfp == null)

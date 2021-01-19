@@ -38,6 +38,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         MatchSingle = 8,                   // <#idMarker>
         // X# addition
         MatchLike = 9,                     // <%idMarker%>          
+        MatchWholeUDC = 10,                // all tokens in the UDC. Is always added as last match marker with the key UDC
 
         ResultRegular = 0x81,                // <idMarker>           
         ResultDumbStringify = 0x82,          // #<idMarker>          

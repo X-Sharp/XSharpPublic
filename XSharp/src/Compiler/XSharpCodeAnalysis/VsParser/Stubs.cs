@@ -7,9 +7,6 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Microsoft.CodeAnalysis.CSharp;
 
 namespace System.Collections.Immutable
@@ -78,7 +75,11 @@ namespace Microsoft.CodeAnalysis.Text
     public class SourceText
     {
         public string Text { get; set; }
-        public SourceText(string source)
+        public static SourceText From(string source)
+        {
+            return new SourceText(source);
+        }
+        private SourceText(string source)
         {
             Text = source;
         }

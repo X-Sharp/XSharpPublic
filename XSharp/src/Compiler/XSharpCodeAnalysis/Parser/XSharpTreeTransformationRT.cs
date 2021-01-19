@@ -134,12 +134,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             string name = _options.CommandLineArguments?.CompilationOptions.ModuleName;
             string firstSource = _options.CommandLineArguments?.SourceFiles.FirstOrDefault().Path;
-            if (String.IsNullOrEmpty(name))
+            if (string.IsNullOrEmpty(name))
             {
                 name = firstSource;
             }
 
-            if (!String.IsNullOrEmpty(name))
+            if (!string.IsNullOrEmpty(name))
             {
                 string filename = PathUtilities.GetFileName(name);
                 filename = PathUtilities.RemoveExtension(filename);
@@ -1161,7 +1161,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         public override void ExitXbasedeclStmt([NotNull] XP.XbasedeclStmtContext context)
         {
-            context.Put(context.Decl.Get<StatementSyntax>());
+            context.CsNode = context.Decl.CsNode; // in the case of script LPARAMEWTERS this is a list
         }
         public override void ExitXbasedecl([NotNull] XP.XbasedeclContext context)
         {
@@ -1235,8 +1235,27 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                
                 case XP.MEMVAR:
                     // handled in the Enter method
+                    context.Put(_syntaxFactory.EmptyStatement(SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)));
                     break;
                 case XP.LPARAMETERS:
+                    if (CurrentEntity?.isScript() == true)
+                    {
+                        var prc = (XSharpParserRuleContext)context;
+                        int p_i = 1;
+                        foreach (var p in context._Vars)
+                        {
+                            var name = p.Id.GetText();
+                            var decl = GenerateLocalDecl(name, _usualType, GenerateGetClipperParam(GenerateLiteral(p_i), prc));
+                            decl.XGenerated = true;
+                            var variable = decl.Declaration.Variables[0];
+                            variable.XGenerated = true;
+                            stmts.Add(decl);
+                            p_i++;
+                        }
+                        context.PutList(stmts.ToList());
+                    }
+                    else
+                        context.Put(_syntaxFactory.EmptyStatement(SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)));
                     break;
                 default:
                     break;
@@ -1570,7 +1589,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         public override void ExitDestructor([NotNull] XP.DestructorContext context)
         {
-            var modifiers = context.Modifiers?.GetList<SyntaxToken>() ?? EmptyList<SyntaxToken>();
+            var modifiers = context.Modifiers?.GetList<SyntaxToken>() ?? default;
             var dtor = createDestructor(context, modifiers,
                 context.Attributes, context.StmtBlk, context, context.isInInterface(), context.LocalFunctions);
             if (dtor != null)
@@ -1629,7 +1648,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 else if (XSharpString.Equals(idName, XSharpIntrinsicNames.AxitMethod))
                 {
                     // Convert method to destructor
-                    var mods = context.Modifiers?.GetList<SyntaxToken>() ?? EmptyList<SyntaxToken>();
+                    var mods = context.Modifiers?.GetList<SyntaxToken>() ?? default;
                     var dtor = createDestructor(context,
                         mods, context.Attributes, context.StmtBlk, context,false, context.LocalFunctions);
                     if (dtor != null)
@@ -2839,8 +2858,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             var mods = TokenList(SyntaxKind.InternalKeyword, SyntaxKind.StaticKeyword);
             var @params = new List<ParameterSyntax>();
             @params.Add(_syntaxFactory.Parameter(
-                EmptyList<AttributeListSyntax>(),
-                EmptyList<SyntaxToken>(),
+                default,
+                default,
                 _ptrType,
                 p,
                 null));
@@ -2876,12 +2895,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             var @params = new List<ParameterSyntax>();
             for (int i = 1; i < context.ArgList._Args.Count; i++)
             {
-                var pname = SyntaxFactory.Identifier("$param" + i.ToString());
-                var param = _syntaxFactory.Parameter(EmptyList<AttributeListSyntax>(),
-                    EmptyList<SyntaxToken>(),
-                    objectType,
-                    pname,
-                    null);
+                var param = MakeParameter("$param" + i.ToString(), objectType);
                 @params.Add(param);
             }
             var paramList = MakeParameterList(@params); 
@@ -3087,6 +3101,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                                 return;
                         }
 
+                        if (CurrentEntity?.isScript() == true)
+                        {
+                            if (GenerateClipCallFunc(context, name))
+                                return;
+                        }
                         if (CurrentEntity is XP.MethodContext mc)
                         {
                             if (mc.T.Token.Type == XP.ACCESS || mc.T.Token.Type == XP.ASSIGN)
@@ -3337,8 +3356,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 {
                     var parm = parameters.Parameters[i];
                     var par = _syntaxFactory.Parameter(
-                          attributeLists: EmptyList<AttributeListSyntax>(), //attrlist,
-                          modifiers: EmptyList<SyntaxToken>(),
+                          attributeLists: default, //attrlist,
+                          modifiers: default,
                           type: _usualType,
                           identifier: parm.Identifier,@default: defExpr);
                     @params.Add(par);
@@ -3456,6 +3475,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     var len = MakeConditional(notnull, argLen, GenerateLiteral(0));
 
                     var decl = GenerateLocalDecl(XSharpSpecialNames.ClipperPCount, _intType, len);
+                    decl.XGenerated = true;
                     stmts.Add(decl);
                     // Now Change argument to X$Args PARAMS USUAL[]
                     var newparameters = GetClipperParameters();
@@ -3575,6 +3595,17 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         private ExpressionSyntax _GenerateString2Psz(XSharpParserRuleContext context, ExpressionSyntax expr)
         {
+            if (CurrentEntity?.isScript() == true)
+            {
+                NameSyntax pszlist = GenerateSimpleName(XSharpSpecialNames.ScriptVoPszList);
+                var argList = MakeArgumentList(MakeArgument(expr), MakeArgument(pszlist));
+                expr = GenerateMethodCall(
+                    _options.XSharpRuntime ? XSharpQualifiedFunctionNames.String2Psz : VulcanQualifiedFunctionNames.String2Psz,
+                    argList, true);
+                var args = MakeArgumentList(MakeArgument(expr));
+                expr = CreateObject(this._pszType, args);
+                return expr;
+            }
             if (CurrentEntity != null )
             {
                 CurrentEntity.Data.UsesPSZ = true;
@@ -3631,11 +3662,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             // Note that the expr must result into a 1 based offset or (with /az) a 0 based offset
             // XS$PCount > ..
             BinaryExpressionSyntax cond;
-            CurrentEntity.Data.UsesPCount = true;
+            if (CurrentEntity != null) CurrentEntity.Data.UsesPCount = true;
             // no changes to expr for length comparison, even with /az
             cond = _syntaxFactory.BinaryExpression(
                                 SyntaxKind.GreaterThanOrEqualExpression,
-                                GenerateSimpleName(XSharpSpecialNames.ClipperPCount),
+                                GenerateSimpleName(CurrentEntity?.isScript() != true ? XSharpSpecialNames.ClipperPCount : XSharpSpecialNames.ScriptClipperPCount),
                                 SyntaxFactory.MakeToken(SyntaxKind.GreaterThanToken),
                                 expr);
             // XS$Args[..]
@@ -3647,7 +3678,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             var indices = _pool.AllocateSeparated<ArgumentSyntax>();
             indices.Add(MakeArgument(expr));
             var left = _syntaxFactory.ElementAccessExpression(
-                GenerateSimpleName(XSharpSpecialNames.ClipperArgs),
+                GenerateSimpleName(CurrentEntity?.isScript() != true ? XSharpSpecialNames.ClipperArgs : XSharpSpecialNames.ScriptClipperArgs),
                 _syntaxFactory.BracketedArgumentList(
                     SyntaxFactory.MakeToken(SyntaxKind.OpenBracketToken),
                     indices,
@@ -3742,7 +3773,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             if (name == XSharpIntrinsicNames.ClipperArgs)
             {
-                context.Put(GenerateSimpleName(XSharpSpecialNames.ClipperArgs));
+                context.Put(GenerateSimpleName(CurrentEntity?.isScript() != true ? XSharpSpecialNames.ClipperArgs : XSharpSpecialNames.ScriptClipperArgs));
                 return true;
             }
             if (name == XSharpIntrinsicNames.ArgCount)
@@ -3789,7 +3820,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     {
                         CurrentEntity.Data.UsesPCount = true;
                     }
-                    expr = GenerateSimpleName(XSharpSpecialNames.ClipperPCount);
+                    expr = GenerateSimpleName(CurrentEntity?.isScript() != true ? XSharpSpecialNames.ClipperPCount : XSharpSpecialNames.ScriptClipperPCount);
                     if (argList.Arguments.Count != 0)
                     {
                         expr = expr.WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.ERR_BadArgCount, name, argList.Arguments.Count));
@@ -3958,20 +3989,19 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     expr = MakeSimpleMemberAccess(_ptrType, GenerateSimpleName("Zero"));
                     break;
                 case XP.NULL_PSZ:
-                    expr = CreateObject(_pszType, MakeArgumentList(MakeArgument(GenerateLiteral(0))));
+                    expr = MakeDefault(_pszType);
                     break;
                 case XP.NULL_ARRAY:
-                    expr = MakeCastTo(_arrayType, GenerateLiteralNull());
+                    expr = MakeDefault(_arrayType);
                     break;
                 case XP.NULL_CODEBLOCK:
-                    expr = MakeCastTo(_codeblockType, GenerateLiteralNull());
+                    expr = MakeDefault(_codeblockType);
                     break;
                 case XP.NULL_DATE:
                     expr = GenerateMethodCall(_options.XSharpRuntime ? XSharpQualifiedFunctionNames.NullDate : VulcanQualifiedFunctionNames.NullDate, EmptyArgumentList(),true);
                     break;
                 case XP.NULL_SYMBOL:
-                    arg0 = MakeArgument(GenerateLiteral(""));
-                    expr = CreateObject(_symbolType, MakeArgumentList(arg0));
+                    expr = MakeDefault(_symbolType);
                     break;
                 case XP.BINARY_CONST:
                     base.ExitLiteralValue(context);

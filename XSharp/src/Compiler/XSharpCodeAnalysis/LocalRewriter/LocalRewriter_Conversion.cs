@@ -65,7 +65,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         private ConversionKind UnBoxXSharpType(ref BoundExpression rewrittenOperand, ConversionKind conversionKind, TypeSymbol rewrittenType)
         {
 
-            if ((rewrittenType.IsPointerType()  || rewrittenType.IsPsz() )
+            if ((rewrittenType.IsPointerType()  || rewrittenType.IsPszType() )
                 && rewrittenOperand.Type.IsObjectType() && _compilation.Options.Dialect.AllowPointerMagic())
             {
                 rewrittenOperand = _factory.Convert(_compilation.GetSpecialType(SpecialType.System_IntPtr), rewrittenOperand, Conversion.Unboxing);
@@ -85,7 +85,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 // Ticket C575: Assign Interface to USUAL
                 // Marked as Boxing in Conversions.cs
                 // Implementation here
-                if (!nts.IsNull()&& nts.IsInterface && rewrittenType.IsUsual() )
+                if (!nts.IsNull()&& nts.IsInterface && rewrittenType.IsUsualType() )
                 {
 
                     var m = getImplicitOperatorByParameterType(usualType, _compilation.GetSpecialType(SpecialType.System_Object));
@@ -97,10 +97,10 @@ namespace Microsoft.CodeAnalysis.CSharp
                     }
                 }
 
-                if (nts.IsUsual())
+                if (nts.IsUsualType())
                 {
                     // USUAL -> WINBOOL, use LOGIC as intermediate type
-                    if (rewrittenType.IsWinBool())
+                    if (rewrittenType.IsWinBoolType())
                     {
                         MethodSymbol m = getImplicitOperatorByReturnType(usualType, _compilation.GetSpecialType(SpecialType.System_Boolean));
                         rewrittenOperand = _factory.StaticCall(rewrittenType, m, rewrittenOperand);
@@ -148,7 +148,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                         var xnode = rewrittenOperand.Syntax.Parent?.XNode as LanguageService.CodeAnalysis.XSharp.SyntaxParser.XSharpParserRuleContext;
                         if (xnode != null && xnode.IsCastClass())
                         {
-                            if (rewrittenType.IsUsual())
+                            if (rewrittenType.IsUsualType())
                                 conversionKind = ConversionKind.Unboxing;
                             else
                                 conversionKind = ConversionKind.Boxing;
@@ -173,9 +173,9 @@ namespace Microsoft.CodeAnalysis.CSharp
                         }
                     }
                 }
-                var floatType = _compilation.FloatType();
-                if (nts.IsFloat() && rewrittenType is NamedTypeSymbol)
+                if (nts.IsFloatType() && rewrittenType is NamedTypeSymbol)
                 {
+                    var floatType = _compilation.FloatType();
                     MethodSymbol m = getExplicitOperator(floatType, rewrittenType as NamedTypeSymbol);
                     if (m != null)
                     {
@@ -191,8 +191,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                         return ConversionKind.Identity;
 
                     }
-                    if (rewrittenType.GetSpecialTypeSafe() == SpecialType.System_Object ||
-                        rewrittenType.IsUsual())
+                    if (rewrittenType.IsObjectType() ||rewrittenType.IsUsualType())
                     {
                         return ConversionKind.Boxing;
 
@@ -216,7 +215,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                     }
 
                 }
-                if ((rewrittenOperand.Type.IsPointerType() || rewrittenOperand.Type.IsPsz())
+                if ((rewrittenOperand.Type.IsPointerType() || rewrittenOperand.Type.IsPszType())
                     && _compilation.Options.Dialect.AllowPointerMagic())
                 {
                     rewrittenOperand = new BoundConversion(rewrittenOperand.Syntax, rewrittenOperand,

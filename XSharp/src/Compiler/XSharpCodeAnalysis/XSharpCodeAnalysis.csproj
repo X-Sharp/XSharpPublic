@@ -6,6 +6,7 @@
     <OutputType>Library</OutputType>
     <TargetFrameworks>netcoreapp3.1;netstandard2.0</TargetFrameworks>
     <AssemblyName>XSharp.CodeAnalysis</AssemblyName>
+    <RootNamespace>LanguageService.CodeAnalysis.XSharp</RootNamespace>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <NoWarn>1591,CS0649,CS8032,CS3021,RS0008,CS1574,CS0419,CS3008,CS3005,CS3001,CS3002,CS3015,</NoWarn> 
     <!--<CodeAnalysisRuleSet>$(RoslynSrc)\Compilers\CSharp\CSharpCodeAnalysisRules.ruleset</CodeAnalysisRuleSet>-->
@@ -23,7 +24,7 @@
     <AntlrInputDir>$(MSBuildThisFileDirectory)Parser\</AntlrInputDir>
     <AntlrParams>-long-messages  -message-format vs2005 -Dlanguage=CSharp_v4_5 $(AntlrPackage) -listener -o $(AntlrOutputdir)</AntlrParams>
     <!--Use the C# compiler created in this solution-->
-    <!--<CscToolPath>$(GeneratedCompilerPath)</CscToolPath>-->
+    <CscToolPath>$(GeneratedCompilerPath)</CscToolPath>
     <CheckForOverflowUnderflow>true</CheckForOverflowUnderflow>
     <GenericDefines>COMPILERCORE;NET45PLUS;NET40PLUS;NET35PLUS;PORTABLE;NETSTANDARD20;NETSTANDARD</GenericDefines>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
@@ -103,10 +104,6 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Update="XSharpResources.resx" GenerateSource="true" />
-    <EmbeddedResource Update="CodeAnalysisResources.resx" GenerateSource="false">
-      <Generator>MSBuild:_GenerateResxSource</Generator>
-      <CustomToolNamespace>LanguageService.CodeAnalysis.CodeAnalysisResources</CustomToolNamespace>
-    </EmbeddedResource>
     <EmbeddedResource Include="$(CoreSource)Resources\default.win32manifest" />
   </ItemGroup>
   <ItemGroup>
@@ -128,6 +125,9 @@
   <ItemGroup>
     <Compile Remove="VsParser\**" />
     <EmbeddedResource Remove="VsParser\**" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Remove="CodeAnalysisResources.resx" />
   </ItemGroup>
   <ItemGroup>
     <None Include="$(CoreSource)..\CodeAnalysisRules.ruleset">

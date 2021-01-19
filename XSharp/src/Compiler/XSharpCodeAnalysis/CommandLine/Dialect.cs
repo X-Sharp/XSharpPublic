@@ -47,18 +47,7 @@ namespace Microsoft.CodeAnalysis.CSharp
 
         public static bool AllowXBaseVariables(this XSharpDialect dialect)
         {
-            switch (dialect)
-            {
-                case XSharpDialect.VO:
-                case XSharpDialect.Harbour:
-                case XSharpDialect.XPP:
-                case XSharpDialect.FoxPro:
-                    return true;
-                case XSharpDialect.Core:
-                case XSharpDialect.Vulcan:
-                default:
-                    return false;
-            }
+            return SupportsMemvars(dialect);
         }
         public static bool AllowFourLetterAbbreviations(this XSharpDialect dialect)
         {

@@ -425,6 +425,16 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
 
         }
 
+        public partial class ScriptContext : IEntityContext
+        {
+            EntityData data = new EntityData();
+            public EntityData Data => data;
+            public ParameterListContext Params => null;
+            public DatatypeContext ReturnType => null;
+            public String Name => null;
+            public String ShortName => null;
+        }
+
         public partial class MethodCallContext
         {
             public bool HasRefArguments;
@@ -1189,6 +1199,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
     internal static class RuleExtensions
     {
 #if !VSPARSER
+        internal static bool isScript([NotNull] this XSharpParser.IEntityContext entitty) => entitty is XSharpParser.ScriptContext;
 
         internal static bool IsStatic(this InternalSyntax.ClassDeclarationSyntax classdecl)
         {
@@ -1321,16 +1332,22 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                 return parent.isInInterface();
         }
 
-        internal static bool IsInLambdaOrCodeBlock([NotNull] this RuleContext context)
+        internal static XSharpParser.CodeblockContext GetParentCodeBlock([NotNull] this RuleContext context)
         {
             var parent = context.Parent;
             if (parent == null)
-                return false;
+                return null;
             if (parent is XSharpParser.CodeblockContext cbc)
             {
-                return cbc.lambda != null || cbc.Or != null || cbc.P1 != null;
+                if (cbc.lambda != null || cbc.Or != null || cbc.P1 != null)
+                    return cbc;
             }
-            return parent.IsInLambdaOrCodeBlock();
+            return parent.GetParentCodeBlock();
+
+        }
+        internal static bool IsInLambdaOrCodeBlock([NotNull] this RuleContext context)
+        {
+            return context.GetParentCodeBlock() != null;
         }
         internal static bool isInClass([NotNull] this RuleContext context)
         {

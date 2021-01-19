@@ -59,13 +59,13 @@ namespace Microsoft.CodeAnalysis.CSharp
             if (!result && _binder.Compilation.Options.HasRuntime && ((object) destination )!= null && source is NamedTypeSymbol)
             {
                 var nts = source as NamedTypeSymbol;
-                if (nts.ConstructedFrom.IsUsual())
+                if (nts.ConstructedFrom.IsUsualType())
                 {
                     var destFrom = (destination as NamedTypeSymbol)?.ConstructedFrom;
                     if (destination.IsReferenceType)
                     {
                         // do not box string, array, codeblock  and clipperargs
-                        result = destination.SpecialType != SpecialType.System_String
+                        result = !destination.IsStringType()
                             && ((object)destFrom) != null
                             && !TypeSymbol.Equals(destFrom, _binder.Compilation.ArrayType())
                             && !TypeSymbol.Equals(destFrom, _binder.Compilation.CodeBlockType())
@@ -102,7 +102,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
             // Ticket C575: Assign Interface to USUAL
             // Implementation in LocalRewriter_Conversion.cs
-            if (destination.IsUsual())
+            if (destination.IsUsualType())
             {
                 if (source.IsInterfaceType())
                 {
@@ -118,7 +118,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             {
                 var usualType = _binder.Compilation.UsualType();
                 var nts = destination as NamedTypeSymbol;
-                if (TypeSymbol.Equals(nts.ConstructedFrom, usualType))
+                if ( nts.ConstructedFrom.IsUsualType())
                 {
                     var op = usualType.GetOperators(WellKnownMemberNames.ImplicitConversionName)
                         .WhereAsArray(o => o.ParameterCount == 1 && o.Parameters[0].Type.IsObjectType() && TypeSymbol.Equals(o.ReturnType, usualType))
@@ -143,7 +143,7 @@ namespace Microsoft.CodeAnalysis.CSharp
 
             if (res == LambdaConversionResult.BadTargetType && _binder.Compilation.Options.HasRuntime)
             {
-                if (type.IsCodeBlock() || type.IsUsual() || type.IsObjectType())
+                if (type.IsCodeblockType() || type.IsUsualType() || type.IsObjectType())
                 {
                     return LambdaConversionResult.Success;
                 }
@@ -204,7 +204,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                     return Conversion.Boxing;
                 }
             }
-            else if (source.IsPointerType() || source.IsPsz())
+            else if (source.IsPointerType() || source.IsPszType())
             {
                 if (destination.SpecialType == SpecialType.System_Object)
                 {
@@ -336,7 +336,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             if (voCast && source.CanVOCast() && destination.CanVOCast())
             {
                 // No _CAST on USUAL
-                if (source.IsUsual())
+                if (source.IsUsualType())
                 {
                     return Conversion.NoConversion;
                 }
@@ -403,13 +403,13 @@ namespace Microsoft.CodeAnalysis.CSharp
                     {
                         return Conversion.Identity;
                     }
-                    if (source.IsPsz())
+                    if (source.IsPszType())
                     {
                         return Conversion.Identity;
                     }
                 }
                 // Allow cast -> PSZ
-                if (destination.IsPsz())
+                if (destination.IsPszType())
                 {
                     return Conversion.Identity;
                 }
@@ -426,12 +426,12 @@ namespace Microsoft.CodeAnalysis.CSharp
                     return Conversion.ImplicitNumeric;
                 }
             }
-            if (source.IsUsual())
+            if (source.IsUsualType())
             {
-                // Usual -> Decimal. Get the object out of the Usual and let the rest be done by Roslyn
-                if (destination.IsUsual())
+                if (destination.IsUsualType())
                     return Conversion.NoConversion;
                 if (dstType == SpecialType.System_Decimal)
+                    // Usual -> Decimal. Get the object out of the Usual and let the rest be done by Roslyn
                     return Conversion.Boxing;
                 // Usual -> OBJECT. Get the object out of the Usual 
                 // Our special call will call in UnBoxXSharpType will
@@ -457,7 +457,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             if (voCast && srcType == SpecialType.System_Object)
             {
                 var xnode = sourceExpression.Syntax.XNode as XSharpParserRuleContext;
-                if (xnode.IsCastClass() && destination.IsUsual() )
+                if (xnode.IsCastClass() && destination.IsUsualType())
                 {
                     // __CASTCLASS(USUAL, OBJECT)
                     // not really boxing, but this is handled in UnBoxXSharpType 
@@ -475,7 +475,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                         // except when converting to array of usuals
                         return Conversion.ImplicitReference;
                     }
-                    if (destination.IsPointerType() || destination.SpecialType == SpecialType.System_IntPtr || destination.IsPsz())
+                    if (destination.IsPointerType() || destination.SpecialType == SpecialType.System_IntPtr || destination.IsPszType())
                     {
                         if (Compilation.Options.Dialect.AllowPointerMagic())
                         {
@@ -532,9 +532,9 @@ namespace Microsoft.CodeAnalysis.CSharp
                     return Conversion.ImplicitNumeric;
                 }
             }
-            if (destination.IsPsz()|| destination.IsVoidPointer())
+            if (destination.IsPszType() || destination.IsVoidPointer())
             {
-                if (source.SpecialType == SpecialType.System_String)
+                if (source.IsStringType())
                 {
                     return Conversion.ImplicitReference;
                 }
@@ -570,12 +570,11 @@ namespace Microsoft.CodeAnalysis.CSharp
         protected override bool IsClipperArgsType(TypeSymbol args)
         {
             bool result = false;
-            if (args is ArrayTypeSymbol)
+            if (args is ArrayTypeSymbol ats)
             {
-                var ats = args as ArrayTypeSymbol;
                 if (Compilation.Options.HasRuntime)
                 {
-                    result = ats.ElementType.IsUsual();
+                    result = ats.ElementType.IsUsualType();
                 }
             }
             return result;

@@ -122,18 +122,13 @@ namespace Microsoft.CodeAnalysis.CSharp
             {
                 var arrayType = Compilation.ArrayType();
                 var usualType = Compilation.UsualType();
-                var pszType = Compilation.PszType();
                 var cf = ((NamedTypeSymbol)expr.Type).ConstructedFrom;
-                if (TypeSymbol.Equals(cf , pszType ))
+                if (cf.IsPszType() )
                 {
                     ArrayBuilder<BoundExpression> argsBuilder = ArrayBuilder<BoundExpression>.GetInstance();
                     foreach (var arg in analyzedArguments.Arguments)
                     {
-                        var specialType = SpecialType.System_UInt32;
-                        if (Compilation.Options.XSharpRuntime)
-                        {
-                            specialType = SpecialType.System_Int32;
-                        }
+                        var specialType = Compilation.Options.XSharpRuntime ? SpecialType.System_Int32 : SpecialType.System_UInt32;
                         BoundExpression newarg = arg ;
                         if (arg.Type.SpecialType != specialType)
                         {
@@ -165,7 +160,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 bool numericParams = false;
                 bool mustcast = false;
                 HashSet<DiagnosticInfo> useSiteDiagnostics = null;
-                if (!TypeSymbol.Equals(cf , arrayType) && (TypeSymbol.Equals(cf , usualType)
+                if (!TypeSymbol.Equals(cf , arrayType) && (cf.IsUsualType()
                     || TypeSymbol.Equals(cf.ConstructedFrom , arrayBaseType)
                     || cf.ImplementsInterface(indexedPropsType, ref useSiteDiagnostics)
                     || cf.ImplementsInterface(indexerType, ref useSiteDiagnostics)))
@@ -211,7 +206,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                         numericParams = true;
                     }
                 }
-                if (TypeSymbol.Equals(cf ,arrayType) || numericParams ) 
+                if (cf.IsArrayType() || numericParams ) 
                 {
                     ImmutableArray<BoundExpression> args;
                     ArrayBuilder<BoundExpression> argsBuilder = ArrayBuilder<BoundExpression>.GetInstance();
@@ -431,22 +426,22 @@ namespace Microsoft.CodeAnalysis.CSharp
                         if (leftType is NamedTypeSymbol)
                         {
                             var nts = leftType as NamedTypeSymbol;
-                            isUsual = TypeSymbol.Equals(nts.ConstructedFrom , usualType);
-                            isArray = TypeSymbol.Equals(nts.ConstructedFrom , arrayType);
+                            isUsual = nts.ConstructedFrom.IsUsualType();
+                            isArray = nts.ConstructedFrom.IsArrayType();
                         }
                     }
                     // Late bound will only work for OBJECT or USUAL
                     if (isObject || isUsual || isArray)
                     {
                         var returnType = Compilation.UsualType();
-                        if (isArray)
+                        if (isArray )
                         {
                             // When method does not exist then do a late bound ASend()
                             if (Compilation.Options.Dialect.AllowASend())
                             {
                                 var m = arrayType.GetMembers(propName);
                                 earlyBound = m.Length > 0;
-                                if (!earlyBound && Compilation.Options.XSharpRuntime)
+                                if (! earlyBound && Compilation.Options.XSharpRuntime)
                                 {
                                     m = arrayType.BaseTypeNoUseSiteDiagnostics.GetMembers(propName);
                                     earlyBound = m.Length > 0;
@@ -565,7 +560,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         private bool BindStringToPsz(CSharpSyntaxNode syntax, ref BoundExpression source, TypeSymbol destination,DiagnosticBag diagnostics)
         {
             TypeSymbol psz = Compilation.PszType();
-            if (!object.ReferenceEquals(source.Type,null) && source.Type.SpecialType == SpecialType.System_String &&
+            if (source.Type != null && source.Type.IsStringType() &&
                 Compilation.Options.HasRuntime &&
                 (TypeSymbol.Equals(destination , psz) || destination.IsVoidPointer()))
             {
@@ -576,7 +571,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 foreach (MethodSymbol ctor in ctors)
                 {
                     var pars = ctor.GetParameters();
-                    if (pars.Length == 1 && pars[0].Type.SpecialType == SpecialType.System_String)
+                    if (pars.Length == 1 && pars[0].Type.IsStringType())
                     {
                         stringctor = ctor;
                     }
@@ -1039,7 +1034,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         {
             if (argument.Kind == BoundKind.Literal)
             {
-                if (TypeSymbol.Equals(type ,Compilation.PszType()))
+                if (type == Compilation.PszType())
                 {
                     var lit = argument as BoundLiteral;
                     if (lit.IsLiteralNull())

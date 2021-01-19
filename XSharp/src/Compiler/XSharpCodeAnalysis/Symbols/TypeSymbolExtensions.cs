@@ -34,7 +34,46 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             return false;
 
         }
-
+        static internal bool IsUsualType(this TypeSymbol type)
+        {
+            return type != null && type.Name == OurTypeNames.UsualType;
+        }
+        static internal bool IsNotUsualType(this TypeSymbol type)
+        {
+            return !IsUsualType(type);
+        }
+        static internal bool IsSymbolType(this TypeSymbol type)
+        {
+            return type != null && type.Name == OurTypeNames.SymbolType;
+        }
+        static internal bool IsNotSymbolType(this TypeSymbol type)
+        {
+            return !IsSymbolType(type);
+        }
+        static internal bool IsArrayType(this TypeSymbol type)
+        {
+            return type != null && type.Name == OurTypeNames.ArrayType;
+        }
+        static internal bool IsFloatType(this TypeSymbol type)
+        {
+            return type != null && (type.Name == OurTypeNames.FloatType || type.Name == OurTypeNames.VnFloatType);
+        }
+        static internal bool IsCodeblockType(this TypeSymbol type)
+        {
+            return type != null && type.Name == OurTypeNames.CodeBlockType;
+        }
+        static internal bool IsPszType(this TypeSymbol type)
+        {
+            return type != null && type.Name == OurTypeNames.PszType;
+        }
+        static internal bool IsNotPszType(this TypeSymbol type)
+        {
+            return !IsPszType(type);
+        }
+        static internal bool IsDateType(this TypeSymbol type)
+        {
+            return type != null && (type.Name == OurTypeNames.DateType || type.Name == OurTypeNames.VnDateType);
+        }
         public static bool IsVoStructOrUnion(this TypeSymbol _type)
         {
             // TODO (nvk): there must be a better way!
@@ -130,7 +169,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             int elementSize = type.SpecialType.FixedBufferElementSizeInBytes();
             if (elementSize == 0)
             {
-                if (type.IsPointerType())
+                if (type.IsPszType()|| type.IsPointerType()) 
                     elementSize = 4;
                 else
                     elementSize = type.VoStructOrUnionSizeInBytes();
@@ -287,61 +326,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             }
             return ConstantValue.Bad;
         }
-        public static bool IsNull(this TypeSymbol type)
-        {
-            return type is null;
-        }
-
-        public static bool IsUsual( this TypeSymbol type)
-        {
-            if (type is null)
-                return false;
-            return TypeSymbol.Equals(type, type.DeclaringCompilation.UsualType());
-        }
-        public static bool IsPsz(this TypeSymbol type)
-        {
-            if (type is null)
-                return false;
-            return TypeSymbol.Equals(type, type.DeclaringCompilation.PszType());
-        }
-
-        public static bool IsDate(this TypeSymbol type)
-        {
-            if (type is null)
-                return false;
-            return TypeSymbol.Equals(type, type.DeclaringCompilation.DateType());
-        }
-
-        public static bool IsFloat(this TypeSymbol type)
-        {
-            if (type is null)
-                return false;
-            return TypeSymbol.Equals(type, type.DeclaringCompilation.FloatType());
-        }
-        public static bool IsSymbol(this TypeSymbol type)
-        {
-            if (type is null)
-                return false;
-            return TypeSymbol.Equals(type, type.DeclaringCompilation.SymbolType());
-        }
-        public static bool IsCodeBlock(this TypeSymbol type)
-        {
-            if (type is null)
-                return false;
-            return TypeSymbol.Equals(type, type.DeclaringCompilation.CodeBlockType()); ;
-        }
-        public static bool IsObject(this TypeSymbol type)
-        {
-            if (type is null)
-                return false;
-            return type.GetSpecialTypeSafe() == SpecialType.System_Object;
-        }
-        public static bool IsWinBool(this TypeSymbol type)
-        {
-            if (type is null)
-                return false;
-            return TypeSymbol.Equals(type, type.DeclaringCompilation.WinBoolType());
-        }
 
         public static bool HasMembers(this TypeSymbol type, string name)
         {
@@ -383,11 +367,28 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             foreach (var attr in attrs)
             {
                 var atype = attr.AttributeClass;
-                if (atype.IsOurAttribute(OurTypeNames.NeedAccessToLocals))
+                if (atype.Name == OurTypeNames.NeedAccessToLocals)
                 {
                     return true;
                 }
             }
+            return false;
+        }
+
+        public static bool TypesChanged(this TypeSymbol type)
+        {
+            var attrs = type.GetAttributes();
+            foreach (var attr in attrs)
+            {
+                var atype = attr.AttributeClass;
+                if (atype.Name == OurTypeNames.TypesChanged)
+                {
+                    return true;
+                }
+            }
+            var bt = type.BaseTypeNoUseSiteDiagnostics;
+            if (bt != null && bt.SpecialType != SpecialType.System_Object)
+                return bt.TypesChanged();
             return false;
         }
 

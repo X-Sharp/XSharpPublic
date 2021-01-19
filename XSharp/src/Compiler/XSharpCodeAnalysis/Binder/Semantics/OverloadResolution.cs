@@ -210,23 +210,23 @@ namespace Microsoft.CodeAnalysis.CSharp
                         if (parLeft.Type != parRight.Type || refLeft != refRight)
                         {
                             // Prefer the method with a more specific parameter which is not an array type over USUAL
-                            if (TypeSymbol.Equals(parLeft.Type , usualType) && !TypeSymbol.Equals(argType, usualType) && !parRight.Type.IsArray())
+                            if (parLeft.Type.IsUsualType() && argType.IsNotUsualType() && !parRight.Type.IsArray())
                             {
                                 result = BetterResult.Right;
                                 return true;
                             }
-                            if (TypeSymbol.Equals(parRight.Type ,usualType) && !TypeSymbol.Equals(argType ,usualType) && !parLeft.Type.IsArray())
+                            if (parRight.Type.IsUsualType() && argType.IsNotUsualType() && !parLeft.Type.IsArray())
                             {
                                 result = BetterResult.Left;
                                 return true;
                             }
                             // Prefer the method with Object type over the one with Object[] type
-                            if (TypeSymbol.Equals(parLeft.Type,objectType) && parRight.Type.IsArray() && ((ArrayTypeSymbol)parRight.Type).ElementType.IsObject())
+                            if (parLeft.Type.IsObjectType() && parRight.Type.IsArray() && ((ArrayTypeSymbol)parRight.Type).ElementType.IsObjectType())
                             {
                                 result = BetterResult.Left;
                                 return true;
                             }
-                            if (TypeSymbol.Equals(parRight.Type,objectType) && parLeft.Type.IsArray() && ((ArrayTypeSymbol)parLeft.Type).ElementType.IsObject())
+                            if (parRight.Type.IsObjectType() && parLeft.Type.IsArray() && ((ArrayTypeSymbol)parLeft.Type).ElementType.IsObjectType())
                             {
                                 result = BetterResult.Right;
                                 return true;
@@ -351,15 +351,18 @@ namespace Microsoft.CodeAnalysis.CSharp
                                     result = BetterResult.Right;
                                     return true;
                                 }
-                                if (TypeSymbol.Equals(parLeft.Type ,Compilation.FloatType()) && !TypeSymbol.Equals(parRight.Type , Compilation.FloatType()))
-                                {
-                                    result = BetterResult.Left;
-                                    return true;
-                                }
-                                if (TypeSymbol.Equals(parRight.Type ,Compilation.FloatType()) && !TypeSymbol.Equals(parLeft.Type ,Compilation.FloatType()))
-                                {
-                                    result = BetterResult.Right;
-                                    return true;
+                                if (parLeft.Type != parRight.Type)
+                                { 
+                                    if (parLeft.Type.IsFloatType() )
+                                    {
+                                        result = BetterResult.Left;
+                                        return true;
+                                    }
+                                    if (parRight.Type.IsFloatType() )
+                                    {
+                                        result = BetterResult.Right;
+                                        return true;
+                                    }
                                 }
                                 var leftIntegral = parLeft.Type.IsIntegralType();
                                 var rightIntegral = parRight.Type.IsIntegralType();
@@ -379,7 +382,7 @@ namespace Microsoft.CodeAnalysis.CSharp
 
                             // handle case where argument is usual and the method is not usual
                             // prefer method with "native VO" parameter type
-                            if (TypeSymbol.Equals(argType, Compilation.UsualType()))
+                            if (argType.IsUsualType())
                             {
                                 // no need to check if parleft or parright are usual that was checked above
                                 if (!TypeSymbol.Equals(parLeft.Type ,parRight.Type))
@@ -699,19 +702,18 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
             if (Compilation.Options.HasRuntime)
             {
-                var usualType = Compilation.UsualType();
-                if (!TypeSymbol.Equals(left.Type , usualType))
+                if (left.Type.IsNotUsualType())
                 {
-                    if (!TypeSymbol.Equals(op1.RightType ,usualType) && TypeSymbol.Equals(op2.RightType , usualType))
+                    if (op1.RightType.IsNotUsualType() && op2.RightType.IsUsualType())
                         return BetterResult.Left;
-                    if (!TypeSymbol.Equals(op2.RightType , usualType) && TypeSymbol.Equals(op1.RightType , usualType))
+                    if (op2.RightType.IsNotUsualType() && op1.RightType.IsUsualType())
                         return BetterResult.Right;
                 }
-                if (!TypeSymbol.Equals(right.Type , usualType))
+                if (right.Type.IsNotUsualType())
                 {
-                    if (!TypeSymbol.Equals(op1.LeftType, usualType) && TypeSymbol.Equals(op2.LeftType, usualType))
+                    if (op1.LeftType.IsNotUsualType() && op2.LeftType.IsUsualType())
                         return BetterResult.Left;
-                    if (!TypeSymbol.Equals(op2.LeftType, usualType) && TypeSymbol.Equals(op1.LeftType, usualType))
+                    if (op2.LeftType.IsNotUsualType() && op1.LeftType.IsUsualType())
                         return BetterResult.Right;
                 }
             }
@@ -721,7 +723,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         {
             if (TypeSymbol.Equals(left.Type , right.Type))
             {
-                bool isVoStruct = false;
+                bool isVoStruct ;
                 if (left.Type.IsPointerType())
                 {
                     var pt = left.Type as PointerTypeSymbol;

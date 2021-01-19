@@ -172,6 +172,19 @@ BEGIN NAMESPACE XSharp.Internal
 	END CLASS
 
 
+    /// <summary>
+	/// This class is used to mark a class and indicate that the property types and or parameter types in this class were changed.
+    /// When the compiler detects that a subclass does not have the right parameter or property types then the subclass will be automatically
+    /// adjusted to preserved the types from the parent class.
+	/// </summary>
+    [AttributeUsage(AttributeTargets.Class) ];
+    SEALED CLASS TypesChangedAttribute INHERIT Attribute
+		CONSTRUCTOR()
+			SUPER()
+	END CLASS
+    
+
+
 END NAMESPACE
 
 

@@ -8,27 +8,20 @@
     <PlatformTarget>AnyCPU</PlatformTarget>
     <OutputType>Exe</OutputType>
     <RootNamespace>XSharpInteractive</RootNamespace>
-    <TargetFrameworks>$(RoslynPortableTargetFrameworks)</TargetFrameworks>
-    <RuntimeIdentifiers>$(RoslynPortableRuntimeIdentifiers)</RuntimeIdentifiers>
+    <TargetFrameworks>netcoreapp3.1;net472</TargetFrameworks>
     <!--Use the C# compiler created in this solution-->
     <CscToolPath>$(GeneratedCompilerPath)</CscToolPath>
+    <DefineConstants Condition="'$(TargetFramework)' == 'net472'">$(DefineConstants);NET46;NET472;</DefineConstants>
     <Configurations>Debug;Release;Public</Configurations>
-
   </PropertyGroup>
-  <ItemGroup Label="Project References">
-    <ProjectReference Include="..\XSharpScripting\XSharpScripting.csproj" />
-  </ItemGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'" />
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Public|AnyCPU'" />
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'" />
-  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net46|AnyCPU'">
-    <DefineConstants>TRACE</DefineConstants>
+ <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DefineConstants>$(Genericdefines);TRACE;DEBUG;XSHARP;</DefineConstants>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net46|AnyCPU'">
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Public|AnyCPU'">
+    <DefineConstants>$(Genericdefines);TRACE;XSHARP;</DefineConstants>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Public|net46|AnyCPU'">
-    <DefineConstants>DEBUG</DefineConstants>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DefineConstants>$(Genericdefines);NDEBUG;XSHARP;</DefineConstants>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="System.ValueTuple" Version="$(SystemValueTupleVersion)" />

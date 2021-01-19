@@ -1,6 +1,6 @@
 @echo off
 set xsoldpath=%path%
-set xsdotnetpath=%~dp0\Binaries\Tools\dotnet
+set xsdotnetpath=%~dp0\Artifacts\Tools\dotnet
 set path=%xsdotnetpath%;%PATH%
 if "%VSVERSION%" == "" SET VSVERSION=2019
 if "%VSEDITION%" == "" SET VSEDITION=Enterprise
@@ -15,7 +15,7 @@ goto Error
 :All
 Echo Restore nuget packages once for all builds
 
-powershell  -noprofile -executionPolicy RemoteSigned -file "%~dp0\build\scripts\dotnet-install.ps1" --version 3.1.402 --InstallDir %xsdotnetpath%
+powershell  -noprofile -executionPolicy RemoteSigned -file "%~dp0\eng\common\dotnet-install.ps1" --version 5.0.102 --InstallDir %xsdotnetpath%
 dotnet restore Compiler.sln 
 SET XSHARPBUILDNESTED=1
 call Build Debug

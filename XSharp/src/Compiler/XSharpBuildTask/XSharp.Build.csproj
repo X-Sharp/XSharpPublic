@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk">
-   <Import Project="$(RepositoryEngineeringDir)targets\GenerateCompilerExecutableBindingRedirects.targets" />
-  <Import Project="..\CompilerCommon.props" />
+  <Import Project="$(Solutiondir)src\Compiler\CompilerCommon.props" />
+  <Import Project="$(RepositoryEngineeringDir)targets\GenerateCompilerExecutableBindingRedirects.targets" />
   <PropertyGroup>
     <MinimumVisualStudioVersion>15.0</MinimumVisualStudioVersion>
     <Platform Condition="'$(Platform)' == ''">AnyCPU</Platform>
@@ -17,7 +17,6 @@
     <DebugSymbols>true</DebugSymbols>
     <ErrorReport>prompt</ErrorReport>
     <Nullable>disable</Nullable>
-    <Configurations>Debug;Release;Public</Configurations>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DefineConstants>$(GenericDefines);TRACE;DEBUG</DefineConstants>

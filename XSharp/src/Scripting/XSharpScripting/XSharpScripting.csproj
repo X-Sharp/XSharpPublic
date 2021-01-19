@@ -3,19 +3,14 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <Import Project="..\..\Compiler\CompilerCommon.props" />
   <PropertyGroup>
-    <Platform Condition="'$(Platform)' == ''">AnyCPU</Platform>
-    <PlatformTarget>AnyCPU</PlatformTarget>
     <OutputType>Library</OutputType>
     <RootNamespace>LanguageService.CodeAnalysis.XSharp.Scripting</RootNamespace>
     <AssemblyName>XSharp.Scripting</AssemblyName>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <TargetFramework>netstandard1.3</TargetFramework>
+    <TargetFrameworks>netcoreapp3.1;netstandard2.0</TargetFrameworks>
     <DefineConstants>TRACE;SCRIPTING;XSHARP</DefineConstants>
     <!--Use the C# compiler created in this solution-->
 
     <CscToolPath>$(GeneratedCompilerPath)</CscToolPath>
-
-    <Configurations>Debug;Release;Public</Configurations>
 
   </PropertyGroup>
   <ItemGroup Label="Project References">
@@ -25,8 +20,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Public|AnyCPU'" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'" />
   <ItemGroup>
-    <PackageReference Include="RoslynTools.LightUp.System.Runtime.Loader" Version="$(RoslynToolsLightUpSystemRuntimeLoaderFixedVersion)" />
-    <PackageReference Include="System.Diagnostics.StackTrace" Version="$(SystemDiagnosticsStackTraceVersion)" />
+    <PackageReference Include="Microsoft.CSharp" Version="$(MicrosoftCSharpVersion)" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="$(CoreSource)FileSystem\RelativePathResolver.cs">

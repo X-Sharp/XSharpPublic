@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk">
-  <Import Project="..\..\..\build\Targets\GenerateCompilerExecutableBindingRedirects.targets" />
   <Import Project="..\CompilerCommon.props" />
+  <Import Project="$(EngineDir)Targets\GenerateCompilerExecutableBindingRedirects.targets" />
   <PropertyGroup>
     <!--The following line controls how the output is copied. Custom says: do not create DLLs or EXes folder-->
     <OutputType>Exe</OutputType>
@@ -9,13 +9,13 @@
     <Prefer32Bit>false</Prefer32Bit>
     <LargeAddressAware>true</LargeAddressAware>
     <!--<StartupObject>Microsoft.CodeAnalysis.CSharp.CommandLine.Program</StartupObject>-->
-    <TargetFrameworks>$(RoslynPortableTargetFrameworks)</TargetFrameworks>
-    <RuntimeIdentifiers>$(RoslynPortableRuntimeIdentifiers)</RuntimeIdentifiers>
+    <TargetFrameworks>netcoreapp3.1;net472</TargetFrameworks>
     <ServerGarbageCollection>true</ServerGarbageCollection>
+    <UseAppHost>false</UseAppHost>
+    <GenerateMicrosoftCodeAnalysisCommitHashAttribute>true</GenerateMicrosoftCodeAnalysisCommitHashAttribute>
     <!--Use the C# compiler created in this solution-->
     <CscToolPath>$(GeneratedCompilerPath)</CscToolPath>
-    <DefineConstants Condition="'$(TargetFramework)' == 'net46'">$(DefineConstants);NET46;</DefineConstants>
-    <Configurations>Debug;Release;Public</Configurations>
+    <DefineConstants Condition="'$(TargetFramework)' == 'net472'">$(DefineConstants);NET46;NET472;</DefineConstants>
   </PropertyGroup>
   <ItemGroup Label="Project References">
     <ProjectReference Include="..\..\Tools\CSCompiler\CSCompiler.csproj" />
@@ -28,7 +28,6 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DefineConstants>$(Genericdefines);TRACE;DEBUG;XSHARP;</DefineConstants>
   </PropertyGroup>
-  
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Public|AnyCPU'">
     <DefineConstants>$(Genericdefines);TRACE;XSHARP;</DefineConstants>
   </PropertyGroup>
@@ -80,6 +79,8 @@
     <Compile Remove="$(CscSource)Program.cs" />
   </ItemGroup>
   <Import Project="$(CoreSource)..\CommandLine\CommandLine.projitems" Label="Shared" />
+  <Import Project="$(RepositoryEngineeringDir)targets\DiaSymReaderNative.targets" />
+  
   <Target Name="DeleteCSFiles" AfterTargets="Build" Condition="'$(TargetFramework)' != ''">
     <ItemGroup>
         <FilesToDelete Include="$(OutputPath)\CS*.*" />

@@ -1,10 +1,10 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk">
-  <Import Project="..\CompilerCommon.props" />
+  <Import Project="$(Solutiondir)src\Compiler\CompilerCommon.props" />
+  <Import Project="$(RepositoryEngineeringDir)targets\GenerateCompilerExecutableBindingRedirects.targets" />
   <PropertyGroup>
     <OutputType>Library</OutputType>
     <TargetFrameworks>netcoreapp3.1;netstandard2.0</TargetFrameworks>
-    <RootNamespace>LanguageService.CodeAnalysis</RootNamespace>
     <AssemblyName>XSharp.CodeAnalysis</AssemblyName>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <NoWarn>1591,CS0649,CS8032,CS3021,RS0008,CS1574,CS0419,CS3008,CS3005,CS3001,CS3002,CS3015,</NoWarn> 
@@ -23,7 +23,7 @@
     <AntlrInputDir>$(MSBuildThisFileDirectory)Parser\</AntlrInputDir>
     <AntlrParams>-long-messages  -message-format vs2005 -Dlanguage=CSharp_v4_5 $(AntlrPackage) -listener -o $(AntlrOutputdir)</AntlrParams>
     <!--Use the C# compiler created in this solution-->
-    <CscToolPath>$(GeneratedCompilerPath)</CscToolPath>
+    <!--<CscToolPath>$(GeneratedCompilerPath)</CscToolPath>-->
     <CheckForOverflowUnderflow>true</CheckForOverflowUnderflow>
     <GenericDefines>COMPILERCORE;NET45PLUS;NET40PLUS;NET35PLUS;PORTABLE;NETSTANDARD20;NETSTANDARD</GenericDefines>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
@@ -52,12 +52,14 @@
       <Link>Properties\Constants.cs</Link>
     </Compile>
     <Compile Remove="Antlr4.Runtime\Properties\AssemblyInfo.cs" />
+    <Compile Remove="CodeAnalysisResources.Designer.cs" />
     <Compile Remove="ParserTest.cs" />
     <Compile Remove="Antlr4.Runtime\Misc\Array2DHashSet`1.cs" />
     <Compile Remove="Antlr4.Runtime\Misc\DoubleKeyMap`3.cs" />
     <Compile Remove="Antlr4.Runtime\Misc\RuleDependencyProcessor.cs" />
     <Compile Remove="Antlr4.Runtime\Misc\TestRig.cs" />
     <Compile Remove="Properties\AssemblyInfoPortable.cs" />
+    <Compile Remove="XSharpResources.Designer.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Antlr4.Runtime\Tree\Xpath\XPathLexer.g4" />
@@ -101,7 +103,10 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Update="XSharpResources.resx" GenerateSource="true" />
-    <EmbeddedResource Update="CodeAnalysisResources.resx" GenerateSource="false" />
+    <EmbeddedResource Update="CodeAnalysisResources.resx" GenerateSource="false">
+      <Generator>MSBuild:_GenerateResxSource</Generator>
+      <CustomToolNamespace>LanguageService.CodeAnalysis.CodeAnalysisResources</CustomToolNamespace>
+    </EmbeddedResource>
     <EmbeddedResource Include="$(CoreSource)Resources\default.win32manifest" />
   </ItemGroup>
   <ItemGroup>
@@ -135,9 +140,6 @@
   <ItemGroup>
     <Folder Include="Antlr4.Runtime\Properties\" />
     <Folder Include="Declarations\" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\Tools\CSharpCodeAnalysis\CSharpCodeAnalysis.csproj" />
   </ItemGroup>
   <Import Project="$(CSharpSource)..\CSharpAnalyzerDriver\CSharpAnalyzerDriver.projitems" Label="Shared" />
   <Import Project="$(CoreSource)..\AnalyzerDriver\AnalyzerDriver.projitems" Label="Shared" />

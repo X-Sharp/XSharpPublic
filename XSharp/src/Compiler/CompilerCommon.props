@@ -27,8 +27,8 @@
     <GenerateMicrosoftCodeAnalysisCommitHashAttribute>true</GenerateMicrosoftCodeAnalysisCommitHashAttribute>
     <BinariesDir>$(Solutiondir)Artifacts\bin\</BinariesDir>
     <ZipsDir>$(Solutiondir)Artifacts\Zips</ZipsDir>
-    <GeneratedCompilerPath>$(BinariesDir)csc\$(Configuration)\net472\</GeneratedCompilerPath>
-    <XscToolPath Condition="'$(XscToolPath)' == '' ">$(BinariesDir)Exes\xsc\net46\</XscToolPath>
+    <GeneratedCompilerPath>$(BinariesDir)csc\$(Configuration)\net472</GeneratedCompilerPath>
+    <XscToolPath Condition="'$(XscToolPath)' == '' ">$(BinariesDir)xsc\$(Configuration)\net472</XscToolPath>
     <EnableBaseIntermediateOutputPathMismatchWarning>false</EnableBaseIntermediateOutputPathMismatchWarning>
 	<RuntimeFilesDir Condition="'$(RuntimeFilesDir)' == '' ">$(DevRtDir)Binaries\Debug\</RuntimeFilesDir>
   </PropertyGroup>

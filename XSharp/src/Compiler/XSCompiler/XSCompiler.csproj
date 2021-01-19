@@ -1,25 +1,19 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk">
-  <Import Project="..\..\..\build\Targets\GenerateCompilerExecutableBindingRedirects.targets" />
   <Import Project="..\CompilerCommon.props" />
-
+  <Import Project="$(EngineDir)Targets\GenerateCompilerExecutableBindingRedirects.targets" />
   <PropertyGroup>
-    <ProductVersion>8.0.30703</ProductVersion>
     <OutputType>Exe</OutputType>
-    <RootNamespace>LanguageService.CodeAnalysis.CompilerServer</RootNamespace>
     <AssemblyName>XSCompiler</AssemblyName>
     <LargeAddressAware>true</LargeAddressAware>
-    <TargetFrameworks>$(RoslynPortableTargetFrameworks)</TargetFrameworks>
-    <RuntimeIdentifiers>$(RoslynPortableRuntimeIdentifiers)</RuntimeIdentifiers>
-    <DefineConstants Condition="'$(TargetFramework)' == 'net46'">$(DefineConstants)NET46</DefineConstants>
+    <TargetFrameworks>netcoreapp3.1;net472</TargetFrameworks>
+    <DefineConstants Condition="'$(TargetFramework)' == 'net472'">$(DefineConstants)NET46;NET472</DefineConstants>
     <DefineConstants>$(DefineConstants);XSHARP</DefineConstants>
     <UseVSHostingProcess>false</UseVSHostingProcess>
     <ServerGarbageCollection>true</ServerGarbageCollection>
     <!--Use the C# compiler created in this solution-->
     <CscToolPath>$(GeneratedCompilerPath)</CscToolPath>
     <GenerateMicrosoftCodeAnalysisCommitHashAttribute>false</GenerateMicrosoftCodeAnalysisCommitHashAttribute>
-    <Configurations>Debug;Release;Public</Configurations>
-  
   </PropertyGroup>
   <ItemGroup Label="Project References">
     <ProjectReference Include="..\..\Tools\CSCompiler\CSCompiler.csproj" />

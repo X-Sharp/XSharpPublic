@@ -1,6 +1,7 @@
 USING System.Reflection
 USING System.Windows.Forms
 USING System.Collections.Generic
+USING System.Linq
 
 FUNCTION Start() AS INT
 	LOCAL aTests AS List<STRING>
@@ -23,10 +24,10 @@ FUNCTION Start() AS INT
 	 "C657", "C659", "C661", "C668", "C669", "C671", "C672", "C673", "C675", "C686", ; 
 	 "C689", "C697", "C698", "C699", "C707", "C709", "C710", "C711", "C712", "C714", ;
 	 "C717", "C718", "C323", "C728", "C738", "C739", "C740", "C741", "C742", "C743",;
-	 "C724", "C703", "C729", "C737",;
+	 "C724", "C703", "C729", "C737", "C750", "C751",;
 	 "R678", "R681", "R690", "R698", "R699", "R700" ,"R701", "R702", /*"R705" ,*/"R710",;
 	 "R711", "R712", "R725", "R729", "R730", "R732","R735", "R736","R741","R742","R743",; 
-	 "R750", "R751", "R752", "R753", "R754", "R755";
+	 "R750", "R751", "R752", "R753", "R754", "R755","R756", "R757","R759";
 	 }
 	 
 	#ifdef GUI
@@ -77,13 +78,25 @@ FUNCTION DoTest(cExe AS STRING) AS LOGIC
 	    NOP
 	ENDIF
 	oAssembly := Assembly.LoadFile(Application.StartupPath + "\" + cExe + ".exe")
-	LOCAL oType AS Type
-	oType := oAssembly:GetType(cExe + ".Exe.Functions")
+	LOCAL cType := ""  AS STRING
+	FOREACH oCustAtt AS CustomAttributeData IN oAssembly:CustomAttributes
+	    IF oCustAtt:AttributeType:Name == "ClassLibraryAttribute"
+	        cType := (STRING) oCustAtt:ConstructorArguments:First():Value
+            EXIT
+	    ELSEIF oCustAtt:AttributeType:Name == "VulcanClassLibraryAttribute"
+	        cType := (STRING) oCustAtt:ConstructorArguments:First():Value
+	        EXIT
+	    ENDIF
+	NEXT
+	LOCAL oType AS Type      
+    IF String.IsNullOrEmpty(cType)
+        cType := cExe + ".Exe.Functions"
+    ENDIF
+	oType := oAssembly:GetType(cType)
 	IF oType == NULL // Core
 		oType := oAssembly:GetType("Functions")
 	END IF
 	LOCAL oMethod AS MethodInfo       
-	LOCAL oModuleType AS Type              
 
 	// todo: set the correct dialect by calling 
 	

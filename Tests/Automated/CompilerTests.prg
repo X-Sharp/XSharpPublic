@@ -160,7 +160,7 @@ PROCEDURE DoTests(oXide AS XideHelper, aGroupsToBuild AS List<STRING>, cConfigNa
 		gaCompilerMessages := List<STRING>{}
 		oApp:aCompilerMessages := gaCompilerMessages
 		IF IsAppInGroups(oApp, aGroupsToBuild)
-			Message("Performing test: " + oApp:cName) 
+			Message("Compiling test: " + oApp:cName) 
 			IF oApp:eLanguage == ApplicationLanguage.VulcanNet
 				IF oApp:cName:ToUpper():Contains("HELPER")
 					LOOP

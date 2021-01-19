@@ -4796,7 +4796,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 return EmptyParameterList();
             var result = _syntaxFactory.ParameterList(
                 SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
-                MakeSeparatedList<ParameterSyntax>(parameters),
+                MakeSeparatedList<ParameterSyntax>(parameters.ToArray()),
                 SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken));
             return result;
         }

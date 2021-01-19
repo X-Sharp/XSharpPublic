@@ -367,11 +367,28 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             foreach (var attr in attrs)
             {
                 var atype = attr.AttributeClass;
-                if (atype.IsOurAttribute(OurTypeNames.NeedAccessToLocals))
+                if (atype.Name == OurTypeNames.NeedAccessToLocals)
                 {
                     return true;
                 }
             }
+            return false;
+        }
+
+        public static bool TypesChanged(this TypeSymbol type)
+        {
+            var attrs = type.GetAttributes();
+            foreach (var attr in attrs)
+            {
+                var atype = attr.AttributeClass;
+                if (atype.Name == OurTypeNames.TypesChanged)
+                {
+                    return true;
+                }
+            }
+            var bt = type.BaseTypeNoUseSiteDiagnostics;
+            if (bt != null && bt.SpecialType != SpecialType.System_Object)
+                return bt.TypesChanged();
             return false;
         }
 

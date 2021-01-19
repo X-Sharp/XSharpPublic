@@ -3456,6 +3456,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     var len = MakeConditional(notnull, argLen, GenerateLiteral(0));
 
                     var decl = GenerateLocalDecl(XSharpSpecialNames.ClipperPCount, _intType, len);
+                    decl.XGenerated = true;
                     stmts.Add(decl);
                     // Now Change argument to X$Args PARAMS USUAL[]
                     var newparameters = GetClipperParameters();

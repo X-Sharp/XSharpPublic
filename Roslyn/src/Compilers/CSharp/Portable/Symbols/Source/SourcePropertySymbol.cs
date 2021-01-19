@@ -521,7 +521,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                     }
                     diagnostics.Free();
                 }
-
+#if XSHARP
+                if (this._newPropertyType != null)
+                    return this._newPropertyType;
+#endif
                 return _lazyType;
             }
         }
@@ -680,7 +683,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
 
         public override bool IsOverride
         {
+#if XSHARP
+            get { return _typeChanged || (_modifiers & DeclarationModifiers.Override) != 0; }
+#else
             get { return (_modifiers & DeclarationModifiers.Override) != 0; }
+#endif
         }
 
         public override bool IsSealed
@@ -695,7 +702,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
 
         internal bool IsNew
         {
+#if XSHARP
+            get { return  !_typeChanged && (_modifiers & DeclarationModifiers.New) != 0; }
+#else
             get { return (_modifiers & DeclarationModifiers.New) != 0; }
+#endif
         }
 
         public override MethodSymbol GetMethod

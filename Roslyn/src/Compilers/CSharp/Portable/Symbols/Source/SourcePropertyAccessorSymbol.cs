@@ -12,7 +12,11 @@ using Roslyn.Utilities;
 
 namespace Microsoft.CodeAnalysis.CSharp.Symbols
 {
+#if XSHARP
+    internal sealed partial class SourcePropertyAccessorSymbol : SourceMemberMethodSymbol
+#else
     internal sealed class SourcePropertyAccessorSymbol : SourceMemberMethodSymbol
+#endif
     {
         private readonly SourcePropertySymbol _property;
         private ImmutableArray<ParameterSymbol> _lazyParameters;
@@ -340,6 +344,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             get
             {
                 LazyMethodChecks();
+#if XSHARP
+                if (_signatureChanged)
+                    return _changedParameters;
+#endif
                 return _lazyParameters;
             }
         }
@@ -362,6 +370,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             get
             {
                 LazyMethodChecks();
+#if XSHARP
+                if (_signatureChanged)
+                    return _changedReturnType;
+#endif
                 return _lazyReturnType;
             }
         }

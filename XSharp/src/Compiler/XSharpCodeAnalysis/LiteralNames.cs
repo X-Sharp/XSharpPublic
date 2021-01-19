@@ -30,6 +30,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         internal const string ClipperCallingConventionAttribute = "ClipperCallingConventionAttribute";
         internal const string AllowLateBindingAttribute = "AllowLateBindingAttribute";
         internal const string NeedAccessToLocals = "NeedsAccessToLocalsAttribute";
+        internal const string TypesChanged = "TypesChangedAttribute";
     }
     internal static class VulcanQualifiedTypeNames
     {
@@ -73,6 +74,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         internal const string ClassLibrary = "global::XSharp.Internal.ClassLibraryAttribute";
         internal const string CompilerVersion = "global::XSharp.Internal.CompilerVersion";
         internal const string IsInstance = "global::XSharp.Internal.IsInstanceAttribute";
+        internal const string TypesChanged = "global::XSharp.Internal.TypesChangedAttribute";
         internal const string XppAbstract = "global::XSharp.XPP.Abstract";
     }
     internal static class XSharpIntrinsicNames

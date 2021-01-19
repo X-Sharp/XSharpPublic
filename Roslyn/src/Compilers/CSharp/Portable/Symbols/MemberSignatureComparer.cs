@@ -398,6 +398,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                 return true;
             if (member1.GetParameterCount() != member2.GetParameterCount())
                 return false;
+            // when one of the two has the TypesChanged attribute then we will merge the parameter and return types later
+            if (member1.ContainingType.TypesChanged() || member2.ContainingType.TypesChanged())
+                return true;
 #else
             if ((member1.GetMemberArity() != member2.GetMemberArity()) ||
                 (member1.GetParameterCount() != member2.GetParameterCount()))
@@ -415,7 +418,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                 return false;
             }
 
-            if (member1.GetParameterCount() > 0 && !HaveSameParameterTypes(member1.GetParameters(), typeMap1, member2.GetParameters(), typeMap2,
+
+                if (member1.GetParameterCount() > 0 && !HaveSameParameterTypes(member1.GetParameters(), typeMap1, member2.GetParameters(), typeMap2,
                                                                            _considerRefKindDifferences, _considerCustomModifiers, _ignoreDynamic, _ignoreTupleNames))
             {
                 return false;

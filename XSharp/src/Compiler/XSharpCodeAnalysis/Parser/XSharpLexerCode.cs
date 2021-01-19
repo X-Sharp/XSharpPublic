@@ -10,6 +10,8 @@ using Microsoft.CodeAnalysis.CSharp;
 using System;
 using Antlr4.Runtime;
 using static Roslyn.Utilities.UnicodeCharacterUtilities;
+
+
 namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
 {
     // Notes: If you want to add a dialect specific keyword then do this:
@@ -86,6 +88,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
 
         #region Properties and Fields
         // Properties to set the behavior of the Lexer
+        private List<XSharpToken> pendingTokens = new List<XSharpToken>();
         public CSharpParseOptions Options { get; set; }
         public XSharpDialect Dialect => Options.Dialect;
         private bool AllowOldStyleComments => Dialect.AllowOldStyleComments();
@@ -625,6 +628,84 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             return t;
         }
 
+        private XSharpToken parseSemiColon()
+        {
+            // Semi colon can be:
+            // - statement delimiter character. In that case its type is SEMI and it is on the normal token channel
+            // - line continuation character. In that case its type is LINE_CONT and it is on the hidden channel.
+            //   the second case happens when the token is followed by whitespace - EOL and optional comments between the SEMI and the EOL
+            //   for the syntax highlighting in VS we want to mark the comments in the proper color, so we generate separate tokens for the
+            //   comments. These tokens are added to a list, because we are collecting them while determining the true nature of the SEMI token.
+            parseOne(SEMI);
+            var t = TokenFactory.Create(this.SourcePair, _tokenType, _textSb.ToString(), _tokenChannel, _startCharIndex, CharIndex - 1, _startLine, _startColumn) as XSharpToken;
+            parseInit();
+            do
+            {
+                while (La_1 == ' ' || La_1 == '\t')
+                    parseOne();
+                // push possible whitespace token
+                pushToken(WS, TokenConstants.HiddenChannel);
+                if (La_1 == '/' && La_2 == '*')
+                {
+                    parseOne();
+                    parseOne();
+                    parseMlComment();
+                    pushToken(ML_COMMENT, TokenConstants.HiddenChannel);
+                }
+            } while (La_1 == ' ' || La_1 == '\t');
+            if (La_1 == '/' && La_2 == '/')
+            {
+                parseToEol();
+                pushToken(SL_COMMENT, TokenConstants.HiddenChannel);
+
+            }
+            else if (AllowOldStyleComments && La_1 == '&' && La_2 == '&')
+            {
+                parseToEol();
+                pushToken(SL_COMMENT, TokenConstants.HiddenChannel);
+            }
+            if (tryParseNewLine())
+            {
+                // make sure to push the CRLF as WS, so it will not be recognized as EOS
+                pushToken(WS, TokenConstants.HiddenChannel);
+                t.Type = LINE_CONT;
+                t.Channel = TokenConstants.HiddenChannel;
+                return t;
+            }
+            // when we get here then the semi colon was a statement delimiter
+            if (_currentLineHasEos)
+            {
+                t.Channel = t.OriginalChannel = TokenConstants.HiddenChannel;
+            }
+            else
+            { 
+                _currentLineHasEos = true;
+                t.Type = EOS;
+            }
+            
+            return t;
+
+        }
+
+        private void handleTrivia(XSharpToken t)
+        {
+            switch (t.Channel)
+            {
+                case TokenConstants.DefaultChannel:
+                case PREPROCESSORCHANNEL:
+                    if (_trivia.Count > 0)
+                    {
+                        t.Trivia = _trivia.ToImmutableArray();
+                        _trivia.Clear();
+                    }
+                    break;
+                case TokenConstants.HiddenChannel:
+                case XMLDOCCHANNEL:
+                    _trivia.Add(t);
+                    break;
+            }
+
+        }
         private void handleSpecialFunctions()
         {
             // Handle function names that are the same as keywords
@@ -643,13 +724,15 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                     break;
             }
         }
-        private void handleSpecialClasses()
-        {
-            // Handle class names that are the same as keywords
-        }
-
+        
         public override IToken NextToken()
         {
+            if (pendingTokens.Count > 0)
+            {
+                var token = popToken();
+                handleTrivia(token);
+                return token;
+            }
             XSharpToken t;
             {
                 parseInit();
@@ -668,7 +751,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                 {
                     case '(':
                         parseOne(LPAREN);
-                        handleSpecialFunctions();
+                        handleSpecialFunctions();   // Handle function names that are the same as keywords
                         break;
                     case ')':
                         parseOne(RPAREN);
@@ -681,7 +764,6 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                         else
                         { 
                             parseOne(LCURLY);
-                            handleSpecialClasses();
                         }
                         break;
                     case '}':
@@ -894,33 +976,9 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                             parseOne(NEQ);
                         break;
                     case ';':
-                        parseOne(SEMI);
-                        do
-                        {
-                            while (La_1 == ' ' || La_1 == '\t')
-                                parseOne();
-                            if (La_1 == '/' && La_2 == '*')
-                            {
-                                parseOne();
-                                parseOne();
-                                parseMlComment();
-                            }
-                        } while (La_1 == ' ' || La_1 == '\t');
-                        if (La_1 == '/' && La_2 == '/')
-                            parseToEol();
-                        else if (AllowOldStyleComments && La_1 == '&' && La_2 == '&')
-                            parseToEol();
-                        if (tryParseNewLine())
-                        {
-                            parseType(LINE_CONT);
-                            _tokenChannel = TokenConstants.HiddenChannel;
-                        }
-                        if (parseType() == SEMI && _textSb.Length > 1)
-                        {
-                            _textSb.Remove(1, _textSb.Length - 1);
-                            InputStream.Seek(_startCharIndex + 1);
-                        }
-                        break;
+                        t = parseSemiColon();
+                        handleTrivia(t);
+                        return t;
                     case '.':
                         if (La_2 >= '0' && La_2 <= '9')
                         {
@@ -1150,7 +1208,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             {
                 type = t.Type;
                 // this happens in FoxPro dialect only, because only there the TEXT keyword is available
-                // but should only happen when TEXT is the first non ws token on a line
+                // and this should only happen when TEXT is the first non ws token on a line
                 if (type == TEXT && StartOfLine(LastToken))
                 {
                     _onStartOfTextBlock = true;
@@ -1246,21 +1304,11 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                     }
                 }
             }
-            if (type == NL || type == SEMI)
+            if (type == NL )    // Semi colon EOS is handled in parseSemi()
             {
                 if (_currentLineHasEos)
                 {
-                    if (type == SEMI)
-                    {
-                        if (LastToken != SEMI)
-                        {
-                            t.Channel = t.OriginalChannel = TokenConstants.HiddenChannel;
-                        }
-                    }
-                    else
-                    {
-                        t.Channel = t.OriginalChannel = TokenConstants.HiddenChannel;
-                    }
+                    t.Channel = t.OriginalChannel = TokenConstants.HiddenChannel;
                 }
                 else
                 {
@@ -1309,24 +1357,31 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                     }
                 }
             }
-            switch (t.Channel)
-            {
-                case TokenConstants.DefaultChannel:
-                case PREPROCESSORCHANNEL:
-                    if (_trivia.Count > 0)
-                    {
-                        t.Trivia = _trivia.ToImmutableArray();
-                        _trivia.Clear();
-                    }
-                    break;
-                case TokenConstants.HiddenChannel:
-                case XMLDOCCHANNEL:
-                    _trivia.Add(t);
-                    break;
-            }
+            handleTrivia(t);
             return t;
         }
 
+        private XSharpToken popToken()
+        {
+            if (pendingTokens.Count > 0)
+            { 
+                var t = pendingTokens[0];
+                pendingTokens.RemoveAt(0);
+                return t;
+            }
+            return null;
+
+        }
+
+        private void pushToken(int type, int channel)
+        {
+            if (_textSb.Length > 0)
+            { 
+                var token = TokenFactory.Create(this.SourcePair, type, _textSb.ToString(), channel, _startCharIndex, CharIndex - 1, _startLine, _startColumn) as XSharpToken;
+                pendingTokens.Add(token);
+                parseInit();
+            }
+        }
         private bool StartOfLine(int iToken)
         {
             switch (iToken)

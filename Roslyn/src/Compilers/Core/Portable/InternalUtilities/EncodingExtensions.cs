@@ -28,12 +28,16 @@ namespace Roslyn.Utilities
                 return maxCharCount;
             }
 
+#if XSHARP
+            throw new IOException(LanguageService.CodeAnalysis.XSharp.XSharpResources.StreamIsTooLong);
+#else
 #if CODE_STYLE
             throw new IOException(CodeStyleResources.Stream_is_too_long);
 #elif WORKSPACE
             throw new IOException(WorkspacesResources.Stream_is_too_long);
 #else
             throw new IOException(CodeAnalysisResources.StreamIsTooLong);
+#endif
 #endif
         }
 

@@ -462,7 +462,6 @@ namespace Microsoft.CodeAnalysis
                 case SpecialType.System_DateTime: return ConstantValueTypeDiscriminator.DateTime;
                 case SpecialType.System_String: return ConstantValueTypeDiscriminator.String;
 #if XSHARP
-                case SpecialType.System_IntPtr: return ConstantValueTypeDiscriminator.IntPtr;
                 case SpecialType.System_Void: return ConstantValueTypeDiscriminator.Void;
 #endif
             }

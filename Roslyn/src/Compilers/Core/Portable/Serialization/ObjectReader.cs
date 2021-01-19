@@ -14,7 +14,9 @@ using Microsoft.CodeAnalysis;
 
 namespace Roslyn.Utilities
 {
-#if COMPILERCORE
+#if XSHARP
+    // do nothing. "(Resources.") is translated by the customized csc process
+#elif COMPILERCORE
     using Resources = CodeAnalysisResources;
 #elif CODE_STYLE
     using Resources = CodeStyleResources;

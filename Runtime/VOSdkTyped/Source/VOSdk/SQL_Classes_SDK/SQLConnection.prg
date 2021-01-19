@@ -13,6 +13,8 @@ USING System.Runtime.ConstrainedExecution
 USING System.Runtime.InteropServices
 USING System.Collections.Generic
 USING XSharp.Data
+
+[XSharp.Internal.TypesChanged];
 CLASS SQLConnection
 	#region IVars
 	// VO Compatible Ivars
@@ -245,8 +247,6 @@ CLASS SQLConnection
 		UnRegisterAxit( SELF )
 		
 		RETURN TRUE
-	
-	
 	
 	
 	METHOD DriverConnect( hWindow, nDriverCompletion, cConnStrIn )
@@ -1072,8 +1072,6 @@ CLASS SQLConnection
 
 	RETURN uRetVal
 
-	
-	
 END CLASS
 
 
@@ -1094,8 +1092,6 @@ FUNCTION SQLOpenConnection()  AS SQLConnection
 	oConn:DriverConnect()
 	RETURN oConn
 	
-
-
 #endregion
 
 FUNCTION SQLSetConnection( oSQLConnection ) AS SQLConnection
@@ -1109,6 +1105,4 @@ FUNCTION SQLConnectErrorMsg( lValue ) AS LOGIC
 	@@Default( REF lValue, FALSE )
 	SQLConnection.lConnErrMsg := lValue
 	RETURN SQLConnection.lConnErrMsg
-
-
 

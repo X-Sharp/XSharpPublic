@@ -5,6 +5,7 @@
 //
 
 using System.Diagnostics
+[XSharp.Internal.TypesChanged];
 [DebuggerDisplay( "SqlColumnAttribute {ColName,nq}" )] ;
 CLASS SQLColumnAttributes INHERIT SQLColumn
 	PROPERTY Unsigned      AS LOGIC   AUTO

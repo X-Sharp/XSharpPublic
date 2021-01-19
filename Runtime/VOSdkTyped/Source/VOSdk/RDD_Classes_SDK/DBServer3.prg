@@ -1,3 +1,9 @@
+//
+// Copyright (c) XSharp B.V.  All Rights Reserved.  
+// Licensed under the Apache License, Version 2.0.  
+// See License.txt in the project root for license information.
+//
+
 #pragma warnings(165, off)
 PARTIAL CLASS DbServer
 
@@ -120,8 +126,6 @@ METHOD GetLocate ( ) AS USUAL
 	LOCAL oError AS USUAL
 	LOCAL uInfo AS USUAL
 
-	
-
 	lErrorFlag := FALSE
 	BEGIN SEQUENCE
 		VoDbSelect( wWorkArea, OUT dwCurrentWorkArea )
@@ -134,8 +138,6 @@ METHOD GetLocate ( ) AS USUAL
 		__DBSSetSelect( dwCurrentWorkArea )
 		SELF:Error( oErrorInfo, #Info )
 	END SEQUENCE
-
-	
 
 	RETURN uInfo
 
@@ -266,8 +268,6 @@ METHOD GoBottom( )   AS LOGIC
 	LOCAL oHLTemp AS HyperLabel
 	LOCAL nTries AS DWORD
 
-	
-
 	lErrorFlag := FALSE
 	nTries := SELF:nRetries
 
@@ -397,8 +397,6 @@ METHOD GoTop( ) AS LOGIC
 	LOCAL dwCurrentWorkArea := 0 AS DWORD
 	LOCAL nTries AS DWORD
 
-	
-
 	lErrorFlag := FALSE
 	nTries     := SELF:nRetries
 
@@ -470,8 +468,6 @@ METHOD IndexOrd( ) AS USUAL
 	LOCAL oError AS USUAL
 	LOCAL uOrdVal AS USUAL
 
-	
-
 	lErrorFlag := FALSE
 	BEGIN SEQUENCE
 		VoDbSelect( wWorkArea, OUT dwCurrentWorkArea )
@@ -507,8 +503,6 @@ METHOD Info( kInfoType AS LONG, uInfo := NIL AS USUAL) AS USUAL
 		SELF:Error( oErrorInfo, #Info )
 	END SEQUENCE
 
-
-	
 	RETURN uInfo
 
 METHOD Join( oDBSource, oFSTarget, aFieldList, cbForBlock ) AS LOGIC CLIPPER
@@ -714,8 +708,6 @@ METHOD LockCurrentRecord( ) AS LOGIC
 	LOCAL oError AS USUAL
 	LOCAL dwCurrentWorkArea := 0 AS DWORD
 
-	
-
 	lErrorFlag := FALSE
 	BEGIN SEQUENCE
 		VoDbSelect( wWorkArea, OUT dwCurrentWorkArea )
@@ -743,8 +735,6 @@ METHOD LockSelection( )  AS LOGIC
 	LOCAL lRetCode := FALSE AS LOGIC
 	LOCAL dwCurrentWorkArea := 0 AS DWORD
 	LOCAL oError AS USUAL
-
-	
 
 	lErrorFlag := FALSE
 	BEGIN SEQUENCE
@@ -1020,8 +1010,6 @@ METHOD Notify( kNotification AS LONG, uDescription := NIL AS USUAL) AS USUAL
 	
 	RETURN uRetValue
 	
-
-
 METHOD OrderDescend( uOrder AS USUAL, oFSIndex AS FileSpec, lNew := NIL AS USUAL) AS LONG
     RETURN SELF:OrderDescend(uOrder, oFSIndex:FullPath, lNew)
 
@@ -1050,8 +1038,6 @@ METHOD OrderInfo( kOrderInfoType, oFSIndex, uOrder, uOrdVal ) AS USUAL CLIPPER
 	LOCAL oError AS USUAL
 	LOCAL cTarget AS STRING
 	LOCAL lKeyVal AS LOGIC
-
-	
 
 	lErrorFlag := FALSE
 	BEGIN SEQUENCE
@@ -1108,8 +1094,6 @@ METHOD OrderIsUnique( uOrder AS USUAL, cTarget := "" AS STRING) AS LONG
    LOCAL dwCurrentWorkArea := 0 AS DWORD
 	LOCAL lRetVal AS USUAL
 	LOCAL oError AS USUAL
-
-	
 
 	lErrorFlag := FALSE
 	BEGIN SEQUENCE
@@ -1290,8 +1274,6 @@ METHOD OrderScope( nScope := TOPSCOPE AS LONG, uValue := NIL AS USUAL) AS USUAL
 	LOCAL oError AS USUAL
 	LOCAL n AS DWORD
 
-	
-
 	lErrorFlag := FALSE
 	BEGIN SEQUENCE
 
@@ -1333,8 +1315,6 @@ METHOD OrderSkipUnique( nDirection AS USUAL)  AS LOGIC
 	LOCAL oError AS USUAL
 	LOCAL dwCurrentWorkArea := 0 AS DWORD
 
-	
-
 	lErrorFlag := FALSE
 	BEGIN SEQUENCE
 		VoDbSelect( wWorkArea, OUT dwCurrentWorkArea )
@@ -1369,8 +1349,6 @@ METHOD Pack( ) AS LOGIC
    LOCAL dwCurrentWorkArea := 0 AS DWORD
 	LOCAL lRetCode := FALSE AS LOGIC
 	LOCAL oError AS USUAL
-
-	
 
 	lErrorFlag := FALSE
 	BEGIN SEQUENCE

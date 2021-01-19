@@ -1,3 +1,10 @@
+//
+// Copyright (c) XSharp B.V.  All Rights Reserved.  
+// Licensed under the Apache License, Version 2.0.  
+// See License.txt in the project root for license information.
+//
+
+[XSharp.Internal.TypesChanged];
 CLASS HyperLabel
 	PROPERTY NameSym AS SYMBOL AUTO         // A programmer's identifier
 	PROPERTY Caption AS STRING AUTO         // A human-readable identifier, used for things such as field labels on forms
@@ -17,8 +24,6 @@ METHOD Error( oError AS Error, symMethod AS SYMBOL ) AS VOID
     oErr:FuncSym := symMethod
 	Eval( ErrorBlock( ), oErr)
 	RETURN 
-
-
 
 CONSTRUCTOR( uName AS SYMBOL, uCaption := "" AS STRING, uDescription := "" AS STRING, uHelpContext := ""  AS STRING)  
 	SELF:NameSym := uName

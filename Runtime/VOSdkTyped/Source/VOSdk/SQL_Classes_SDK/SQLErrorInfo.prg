@@ -7,6 +7,7 @@
 
 USING System.Data.Common
 USING System.Collections
+[XSharp.Internal.TypesChanged];
 CLASS SQLErrorInfo  INHERIT Error
 	PROPERTY SQLState           AS STRING AUTO
 	PROPERTY NativeError        AS LONG   AUTO

@@ -1,4 +1,11 @@
+//
+// Copyright (c) XSharp B.V.  All Rights Reserved.  
+// Licensed under the Apache License, Version 2.0.  
+// See License.txt in the project root for license information.
+//
+
 #pragma warnings(165, off)
+[XSharp.Internal.TypesChanged];
 CLASS DbFileSpec INHERIT FileSpec
 	PROTECT DBF AS ARRAY
 	PROTECT cMemFileName AS STRING

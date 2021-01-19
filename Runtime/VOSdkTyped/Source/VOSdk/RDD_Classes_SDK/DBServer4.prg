@@ -1,3 +1,9 @@
+//
+// Copyright (c) XSharp B.V.  All Rights Reserved.  
+// Licensed under the Apache License, Version 2.0.  
+// See License.txt in the project root for license information.
+//
+
 #pragma warnings(165, off)
 
 PARTIAL CLASS DbServer
@@ -6,8 +12,6 @@ METHOD RddInfo( kRDDInfoType AS LONG, uRDDVal := NIL AS USUAL) AS USUAL
 	
    LOCAL dwCurrentWorkArea := 0 AS DWORD
 	LOCAL oError AS USUAL
-
-	
 
 	lErrorFlag := FALSE
 	BEGIN SEQUENCE
@@ -22,8 +26,6 @@ METHOD RddInfo( kRDDInfoType AS LONG, uRDDVal := NIL AS USUAL) AS USUAL
 		SELF:Error( oErrorInfo, #RDDINFO )
 	END SEQUENCE
 
-
-	
 	RETURN uRDDVal
 
 METHOD Recall( cbForBlock := NIL AS USUAL, cbWhileBlock := NIL AS USUAL, uScope  := NIL AS USUAL) AS LOGIC
@@ -35,8 +37,6 @@ METHOD Recall( cbForBlock := NIL AS USUAL, cbWhileBlock := NIL AS USUAL, uScope 
 	LOCAL nCurrRec AS LONGINT
 	LOCAL lFLock AS LOGIC
 	LOCAL uVoRet AS USUAL
-
-	
 
 	lErrorFlag := FALSE
 	BEGIN SEQUENCE
@@ -126,8 +126,6 @@ METHOD Recall( cbForBlock := NIL AS USUAL, cbWhileBlock := NIL AS USUAL, uScope 
 		lRetCode := FALSE
 	END SEQUENCE
 
-
-	
 	RETURN lRetCode
 
 METHOD RecallAll() AS LOGIC
@@ -137,8 +135,6 @@ METHOD RecallAll() AS LOGIC
 	LOCAL dwCurrentWorkArea := 0 AS DWORD
 	LOCAL oError AS USUAL
 	LOCAL lSetDeleted AS LOGIC
-
-	
 
 	lErrorFlag := FALSE
 	BEGIN SEQUENCE
@@ -196,16 +192,12 @@ METHOD RecallAll() AS LOGIC
 		lRetCode := FALSE
 	END SEQUENCE
 
-
-	
 	RETURN lRetCode
 
 METHOD RecordInfo( kRecInfoType AS LONG, nRecordNumber:= 0 AS LONG, uRecVal := NIL AS USUAL) AS USUAL
 	
    LOCAL dwCurrentWorkArea := 0 AS DWORD
 	LOCAL oError AS USUAL
-
-	
 
 	lErrorFlag := FALSE
 	BEGIN SEQUENCE
@@ -225,8 +217,6 @@ METHOD RecordInfo( kRecInfoType AS LONG, nRecordNumber:= 0 AS LONG, uRecVal := N
 		SELF:Error( oErrorInfo, #RecordInfo )
 	END SEQUENCE
 
-
-	
 	RETURN uRecVal
 
 METHOD Refresh() AS LOGIC STRICT
@@ -237,8 +227,6 @@ METHOD Refresh() AS LOGIC STRICT
 	LOCAL dwCurrentWorkArea := 0 AS DWORD
 	LOCAL nRec AS LONGINT
 	LOCAL lRelease AS LOGIC
-
-	
 
 	lErrorFlag := FALSE
 	BEGIN SEQUENCE
@@ -333,8 +321,6 @@ METHOD Reindex() AS LOGIC STRICT
 		lRetCode := FALSE
 	END SEQUENCE
 
-
-	
 	RETURN lRetCode
 
 METHOD Relation( nRelation := 0 AS LONG) AS STRING
@@ -342,8 +328,6 @@ METHOD Relation( nRelation := 0 AS LONG) AS STRING
     LOCAL dwCurrentWorkArea := 0 AS DWORD
 	LOCAL cRelation AS STRING
 	LOCAL oError AS USUAL
-
-	
 
 	lErrorFlag := FALSE
 	BEGIN SEQUENCE
@@ -360,8 +344,6 @@ METHOD Relation( nRelation := 0 AS LONG) AS STRING
 
    __DBSSetSelect( dwCurrentWorkArea )
 
-
-	
 	RETURN cRelation
 
 METHOD Replace( acbExpression, aFieldList, cbForBlock, cbWhileBlock, uScope ) AS LOGIC CLIPPER
@@ -377,8 +359,6 @@ METHOD Replace( acbExpression, aFieldList, cbForBlock, cbWhileBlock, uScope ) AS
 	LOCAL dwCurrentWorkArea := 0 AS DWORD
 	LOCAL oError AS USUAL
 	LOCAL oHLTemp AS HyperLabel
-
-	
 
 	lErrorFlag := FALSE
 	BEGIN SEQUENCE
@@ -513,8 +493,6 @@ METHOD RLock( nRecordNumber AS LONG ) AS LOGIC
 	LOCAL dwCurrentWorkArea := 0 AS DWORD
 	LOCAL nTries AS DWORD
 
-	
-
 	lErrorFlag := FALSE
 	nTries := SELF:nRetries
 
@@ -532,16 +510,12 @@ METHOD RLock( nRecordNumber AS LONG ) AS LOGIC
 		lRetCode := FALSE
 	END SEQUENCE
 
-
-	
 	RETURN lRetCode
 
 METHOD RLockVerify() AS LOGIC
 	LOCAL lRetCode AS LOGIC
 	LOCAL oError AS USUAL
 	LOCAL dwCurrentWorkArea := 0 AS DWORD
-
-	
 
 	
 	IF nEffectiveCCMode != ccOptimistic
@@ -565,8 +539,6 @@ METHOD RLockVerify() AS LOGIC
 		lRetCode := FALSE
 	END SEQUENCE
 
-
-	
 	RETURN lRetCode
 
 METHOD Seek( uSearchExpr , lSoftSeek, lLast ) AS LOGIC CLIPPER
@@ -625,8 +597,6 @@ METHOD Seek( uSearchExpr , lSoftSeek, lLast ) AS LOGIC CLIPPER
 		lRetCode := FALSE
 	END SEQUENCE
 
-
-	
 	RETURN lRetCode
 
 METHOD Select() AS DWORD
@@ -634,14 +604,10 @@ METHOD Select() AS DWORD
 	VoDbSelect( wWorkArea, OUT dwCurrentWorkArea )
 	RETURN dwCurrentWorkArea
 
-
-
 METHOD SetDataField( nFieldPosition AS LONG, oDataField AS DataField) AS LOGIC
 	LOCAL wFieldPosition := nFieldPosition  AS DWORD
 	LOCAL lRetCode AS LOGIC
 	LOCAL oError AS USUAL
-
-	
 
 	lErrorFlag := FALSE
 	BEGIN SEQUENCE
@@ -670,11 +636,7 @@ METHOD SetDataField( nFieldPosition AS LONG, oDataField AS DataField) AS LOGIC
 		lRetCode 	:= FALSE
 	END SEQUENCE
 
-
-	
 	RETURN lRetCode
-
-
 
 METHOD SetFilter( cbFilterBlock , cFilterText ) AS LOGIC CLIPPER
 	
@@ -684,8 +646,6 @@ METHOD SetFilter( cbFilterBlock , cFilterText ) AS LOGIC CLIPPER
 	LOCAL lClearFilter		AS LOGIC
 	LOCAL cFilter				AS STRING
 	LOCAL oErr					AS Error
-
-	
 
 	lErrorFlag := FALSE
 
@@ -739,8 +699,6 @@ METHOD SetFilter( cbFilterBlock , cFilterText ) AS LOGIC CLIPPER
 
    __DBSSetSelect( dwCurrentWorkArea )
 
-
-	
 	RETURN lRetCode
 	
 
@@ -761,15 +719,13 @@ METHOD SetIndex( cIndexFileName := "" AS STRING ) AS LOGIC
 	LOCAL nTries            AS DWORD
 
 
-	
-
 	lErrorFlag := FALSE
 	nTries := SELF:nRetries
 
 	BEGIN SEQUENCE
 		VoDbSelect( wWorkArea, OUT dwCurrentWorkArea )
 		IF SELF:Notify( NOTIFYINTENTTOMOVE )
-			IF String.IsNullOrEmpty(cIndexFile)
+			IF String.IsNullOrEmpty(cIndexFileName)
 				lRetCode := __DBSOrdListClear("", NIL, nTries)
 			ELSE
 				lRetCode := __DBSOrdListAdd(cIndexFileName, NIL, nTries)
@@ -825,8 +781,6 @@ METHOD SetOrder( uOrder AS USUAL, cIndexFileName := "" AS STRING) AS LOGIC
 		lRetCode := FALSE
 	END SEQUENCE
 
-
-	
 	RETURN lRetCode
 
 METHOD SetOrderCondition(   cFor,           ;
@@ -852,8 +806,6 @@ METHOD SetOrderCondition(   cFor,           ;
 	LOCAL cTemp         AS STRING
 
 	
-
-
 	lErrorFlag := FALSE
 	BEGIN SEQUENCE
       VoDbSelect( wWorkArea, OUT dwCurrentWorkArea )
@@ -894,11 +846,7 @@ METHOD SetOrderCondition(   cFor,           ;
 		SELF:Error( oErrorInfo, #SetOrderCondition )
 	END SEQUENCE
 
-
-	
 	RETURN lRetCode
-
-
 
 METHOD SetRelation(oDBChild := NULL_OBJECT AS DbServer,uRelation AS USUAL,cRelation := "" AS STRING,lSelective := FALSE AS LOGIC) AS LOGIC
 	// Sets a relation from this server to the child server.
@@ -921,8 +869,6 @@ METHOD SetRelation(oDBChild := NULL_OBJECT AS DbServer,uRelation AS USUAL,cRelat
 	LOCAL cRelationExpression   AS STRING
 	LOCAL cbRelationExpression  AS USUAL // AS CODEBLOCK
 	LOCAL oError                AS USUAL
-
-	
 
 	lErrorFlag := FALSE
 	BEGIN SEQUENCE
@@ -980,11 +926,7 @@ METHOD SetRelation(oDBChild := NULL_OBJECT AS DbServer,uRelation AS USUAL,cRelat
 		lRetCode := FALSE
 	END SEQUENCE
 
-
-	
 	RETURN lRetCode
-
-
 
 METHOD SetSelectiveRelation(oDBChild := NULL_OBJECT AS DbServer,uRelation AS USUAL,cRelation := "" AS STRING) AS LOGIC
 	RETURN SELF:SetRelation( oDBChild, uRelation, cRelation, TRUE )
@@ -1077,8 +1019,6 @@ METHOD Skip( nRecordCount := 1 AS LONG) AS LOGIC
 	END SEQUENCE
 	
 	RETURN lRetCode
-
-
 
 METHOD Sort(oFSTarget AS FileSpec,aFieldList AS ARRAY, cbForBlock := NIL AS USUAL, cbWhileBlock := NIL AS USUAL,uScope := NIL AS USUAL) AS LOGIC
    RETURN SELF:Sort(oFSTarget:FullPath, aFieldList,  cbForBlock, cbWhileBlock, uScope)
@@ -1222,8 +1162,6 @@ METHOD Sum(acbExpression := NIL AS USUAL,cbForBlock := NIL  AS USUAL,cbWhileBloc
 	LOCAL dwCurrentWorkArea := 0 AS DWORD
 	LOCAL oHLTemp               AS HyperLabel
 
-	
-
 	lErrorFlag := FALSE
 	BEGIN SEQUENCE
 		VoDbSelect( wWorkArea, OUT dwCurrentWorkArea )
@@ -1336,11 +1274,7 @@ METHOD Sum(acbExpression := NIL AS USUAL,cbForBlock := NIL  AS USUAL,cbWhileBloc
 		ENDIF
 	ENDIF
 
-
-	
 	RETURN aResults
-
-
 
 METHOD SuspendNotification() AS LONG
 
@@ -1517,8 +1451,6 @@ METHOD UnLock( nRecordNumber := 0 AS LONG) AS LOGIC
 	LOCAL oError            AS USUAL
 	LOCAL dwCurrentWorkArea := 0 AS DWORD
 
-	
-
 	lErrorFlag := FALSE
 	BEGIN SEQUENCE
 
@@ -1538,11 +1470,7 @@ METHOD UnLock( nRecordNumber := 0 AS LONG) AS LOGIC
 		lRetCode := FALSE
 	END SEQUENCE
 
-
-	
 	RETURN lRetCode
-
-
 
 METHOD Update(oDbServer,cbKey,lRandomFlag,cbReplace) AS LOGIC CLIPPER
 	// Like the DbUpdate function
@@ -1599,8 +1527,6 @@ METHOD Update(oDbServer,cbKey,lRandomFlag,cbReplace) AS LOGIC CLIPPER
 
 	DbSetRestoreWorkarea(lRestore )
 
-	
-
 	RETURN lRetCode
 
 METHOD Zap() AS LOGIC
@@ -1611,8 +1537,6 @@ METHOD Zap() AS LOGIC
    LOCAL dwCurrentWorkArea := 0 AS DWORD
 	LOCAL lRetCode              AS LOGIC
 	LOCAL oError                AS USUAL
-
-	
 
 	lErrorFlag := FALSE
 	BEGIN SEQUENCE
@@ -1629,8 +1553,6 @@ METHOD Zap() AS LOGIC
 		oErrorInfo := oError
 		lRetCode := FALSE
 	END SEQUENCE
-
-	
 
 	RETURN lRetCode
 END CLASS

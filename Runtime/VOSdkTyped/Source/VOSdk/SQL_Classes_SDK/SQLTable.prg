@@ -4,6 +4,7 @@
 // See License.txt in the project root for license information.
 //
 
+[XSharp.Internal.TypesChanged];
 CLASS SQLTable INHERIT SQLSelect
     
     PROTECT cTblStmt            AS STRING
@@ -606,8 +607,6 @@ CLASS SQLTable INHERIT SQLSelect
         ENDIF
         
         RETURN TRUE
-    
-    
     
     METHOD SetSelectiveRelation( oChild, uRelation, cRelation )
         RETURN SELF:SetRelation( oChild, uRelation, cRelation )

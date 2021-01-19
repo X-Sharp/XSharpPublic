@@ -4,8 +4,6 @@
 // See License.txt in the project root for license information.
 //
 
-
-
 USING System.Data.Common
 using System.Data
 
@@ -57,8 +55,6 @@ PARTIAL CLASS SQLSelect INHERIT DataServer
 		ENDIF
 		cVal := cDate + " " + cTime
 		SELF:SetTimeStamp( uFieldPos, cVal )
-
-
 
 
 	METHOD Append(lReleaseLocks AS LOGIC)  AS LOGIC 

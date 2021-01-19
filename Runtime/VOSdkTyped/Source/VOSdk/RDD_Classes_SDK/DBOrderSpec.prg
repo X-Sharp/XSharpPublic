@@ -1,4 +1,11 @@
+//
+// Copyright (c) XSharp B.V.  All Rights Reserved.  
+// Licensed under the Apache License, Version 2.0.  
+// See License.txt in the project root for license information.
+//
+
 #pragma warnings(165, off)
+[XSharp.Internal.TypesChanged];
 CLASS OrderSpec
 	PROTECT oDBF            AS DbFileSpec
 
@@ -177,7 +184,6 @@ ACCESS All  AS LOGIC
 ASSIGN All( lLogic AS LOGIC)      
 	SELF:lAll := lLogic
 	SELF:lIsCond := TRUE
-
 	RETURN 
 
 ACCESS AutoOpen AS LOGIC    
@@ -239,11 +245,9 @@ ASSIGN EvalBlock( cbCodeBlock AS USUAL)
 	// conditional index
 	IF Empty( cbCodeBlock ) .OR. !__CanEval( cbCodeBlock )
 		SELF:uEvalBlock := NIL
-
 	ELSE
 		SELF:uEvalBlock := cbCodeBlock
 		SELF:lIsCond := TRUE
-
 	ENDIF
 
 	RETURN 
@@ -276,7 +280,6 @@ ASSIGN FileName( cName AS STRING)
 		ENDIF
 
 		SELF:cFileName := Upper( cFileName )
-
 	ENDIF
 
 	RETURN 
@@ -304,13 +307,10 @@ ASSIGN ForCond( cForCondition AS USUAL)
 	// conditional index
 	IF Empty( cForCondition ) .OR. !IsString( cForCondition )
 		SELF:uForCond := NULL_STRING
-
 	ELSE
 		SELF:uForCond := cForCondition
 		SELF:lIsCond := TRUE
-
 	ENDIF
-
 	RETURN 
 
 ACCESS HPLock AS LOGIC 
@@ -363,7 +363,6 @@ ACCESS KeyInfo AS ARRAY
 	RETURN SELF:aKeyInfo
 
 ASSIGN KeyInfo( aKeyInfo AS ARRAY)        
-
 	SELF:aKeyInfo := aKeyInfo
 	RETURN 
 
@@ -404,24 +403,18 @@ METHOD OrderAdd( oFS, uOrder ) AS LOGIC   CLIPPER
 		// default drive and path to where DBF file is
 		IF Empty( cDrive )
 			cDrive := SELF:oDBF:Drive
-
 		ENDIF
 
 		IF Empty( cPath )
 			cPath := SELF:oDBF:Path
-
 		ENDIF
-
 
 		// build full path
 		IF SubStr2( cPath, SLen( cPath ) ) == "\"
 			cFile := cDrive + cPath + cFile + cExt
-
 		ELSE
 			cFile := cDrive + cPath + "\" + cFile + cExt
-
 		ENDIF
-
 	ELSE
 		IF Empty( oFS ) .OR. !IsString( oFS )
 			RETURN FALSE
@@ -440,12 +433,9 @@ METHOD OrderAdd( oFS, uOrder ) AS LOGIC   CLIPPER
 		// build full path
 		IF SubStr2( cPath, SLen( cPath ) ) == "\"
 			cFile := cDrive + cPath + cFile + cExt
-
 		ELSE
 			cFile := cDrive + cPath + "\" + cFile + cExt
-
 		ENDIF
-
 	ENDIF
 
 	cRDD  := SELF:oDBF:RDD_Name
@@ -454,41 +444,29 @@ METHOD OrderAdd( oFS, uOrder ) AS LOGIC   CLIPPER
 	cAlias := Symbol2String( __ConstructUniqueAlias( SELF:oDBF:FileName ) )
 
 	IF cRDD != "DBFNTX"
-
 		IF SELF:__OpenDb( cAlias )
 			// auto-open index file
 			IF ( cAlias )->( DbOrderInfo( DBOI_FILEHANDLE ) ) > 0
 				lRetCode := ( cAlias )->( DbSetOrder ( uOrder ) )
-
 			ELSE
 				( cAlias )->( OrdListAdd( cFile ) )
 				lRetCode := ( cAlias )->( DbSetOrder( uOrder ) ) 
-
 			ENDIF
 
 			IF lRetCode
 				SELF:__OrderSetInfo( cAlias )
-
 			ENDIF
-
 			( cAlias )->( DbCloseArea() ) 
-
 		ENDIF
 
 	ELSE
 		IF SELF:__OpenDb( NULL_STRING )
-
 			lRetCode := ( cAlias )->( DbSetIndex( cFile ) )
-
 			IF lRetCode
 				SELF:__OrderSetInfo( cAlias )
-
 			ENDIF
-
 			( cAlias )->( DbCloseArea() ) 
-
 		ENDIF
-
 	ENDIF
 
 	RETURN lRetCode
@@ -738,7 +716,6 @@ METHOD OrderDelete( uOrder )  AS LOGIC CLIPPER
 
 
 ACCESS OrderExpr AS STRING       
-
 	RETURN SELF:cOrdExpr
 
 ASSIGN OrderExpr( cExpression AS STRING)           

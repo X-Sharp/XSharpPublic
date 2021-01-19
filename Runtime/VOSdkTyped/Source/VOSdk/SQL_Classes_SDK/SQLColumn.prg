@@ -6,7 +6,7 @@
 
 USING System.Data
 USING System.Diagnostics
-
+[XSharp.Internal.TypesChanged];
 [DebuggerDisplay( "SqlColumn {ColName,nq}" )] ;
 CLASS SQLColumn    INHERIT SQLValue
 	PROPERTY DisplaySize  AS DWORD       AUTO

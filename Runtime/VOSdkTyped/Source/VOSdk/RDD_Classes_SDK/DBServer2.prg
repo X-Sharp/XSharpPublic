@@ -1,3 +1,9 @@
+//
+// Copyright (c) XSharp B.V.  All Rights Reserved.  
+// Licensed under the Apache License, Version 2.0.  
+// See License.txt in the project root for license information.
+//
+
 #pragma warnings(165, off)
 PARTIAL CLASS DbServer
 
@@ -445,8 +451,6 @@ METHOD CopyStructure( cFileName AS STRING, aFieldList := NULL AS ARRAY )   AS LO
 	LOCAL aRdds AS ARRAY
 	LOCAL rddList AS _RddList
 	
-	
-	
 	lErrorFlag := FALSE
 	BEGIN SEQUENCE
 		cTarget := cFileName
@@ -527,8 +531,6 @@ METHOD Count( cbForBlock := NIL AS USUAL, cbWhileBlock := NIL AS USUAL, uScope :
 	LOCAL oError AS USUAL
 	LOCAL dwCurrentWorkArea := 0 AS DWORD
 	LOCAL oHLTemp AS HyperLabel
-	
-	
 	
 	lErrorFlag := FALSE
 	BEGIN SEQUENCE
@@ -789,8 +791,6 @@ METHOD CreateOrder( cOrderName, cIndexFileName, cExpr, cbExpr, lUnique )  AS LOG
 	ENDIF
 	DbSetRestoreWorkarea(lRestore)
 	
-	
-	
 	RETURN lRetCode
 	
 
@@ -941,8 +941,6 @@ METHOD DeleteAll( )   AS LOGIC STRICT
 	LOCAL dwCurrentWorkArea := 0 AS DWORD
 	LOCAL oHLTemp AS HyperLabel
 	
-	
-	
 	lErrorFlag := FALSE
 	BEGIN SEQUENCE
 		VoDbSelect( wWorkArea, OUT dwCurrentWorkArea )
@@ -1027,8 +1025,6 @@ METHOD DeleteOrder( uOrder, cIndexFileName )  AS LOGIC CLIPPER
 	LOCAL cOrdBag AS STRING
 	LOCAL dwCurrentWorkArea := 0 AS DWORD
 	
-	
-	
 	lErrorFlag := FALSE
 	BEGIN SEQUENCE
 		VoDbSelect( wWorkArea, OUT dwCurrentWorkArea )
@@ -1058,8 +1054,6 @@ METHOD DeleteOrder( uOrder, cIndexFileName )  AS LOGIC CLIPPER
 		__DBSSetSelect( dwCurrentWorkArea )  
 		lRetCode := FALSE
 	END SEQUENCE
-	
-	
 	
 	RETURN lRetCode
 	
@@ -1117,8 +1111,6 @@ METHOD Eval( cbBlock, cbForBlock, cbWhileBlock, uScope )   AS LOGIC CLIPPER
 	LOCAL dwCurrentWorkArea := 0 AS DWORD
 	LOCAL oError AS USUAL
 	LOCAL oHLTemp AS HyperLabel
-	
-	
 	
 	lErrorFlag := FALSE
 	BEGIN SEQUENCE
@@ -1234,8 +1226,6 @@ METHOD FieldGet( uField AS USUAL) AS USUAL
 	LOCAL wPos AS DWORD
 	LOCAL dwCurrentWorkArea := 0 AS DWORD
 	
-	
-	
 	lErrorFlag := FALSE
 	BEGIN SEQUENCE
 		VoDbSelect( wWorkArea, OUT dwCurrentWorkArea )
@@ -1263,8 +1253,6 @@ METHOD FieldGet( uField AS USUAL) AS USUAL
 		SELF:Error( oErrorInfo, #FIELDGET )
 	END SEQUENCE
 	
-	
-	
 	RETURN uRetVal
 
 METHOD FieldGetBytes( uField AS USUAL ) AS BYTE[]
@@ -1272,8 +1260,6 @@ METHOD FieldGetBytes( uField AS USUAL ) AS BYTE[]
 	LOCAL oError AS USUAL
 	LOCAL wPos AS DWORD
 	LOCAL dwCurrentWorkArea := 0 AS DWORD
-	
-	
 	
 	lErrorFlag := FALSE
 	BEGIN SEQUENCE
@@ -1294,8 +1280,6 @@ METHOD FieldGetBytes( uField AS USUAL ) AS BYTE[]
 		SELF:Error( oErrorInfo, #FieldGetBytes )
 	END SEQUENCE
 	
-	
-	
 	RETURN bRetVal
 		
 METHOD FieldGetFormatted( uField AS USUAL) AS USUAL
@@ -1304,8 +1288,6 @@ METHOD FieldGetFormatted( uField AS USUAL) AS USUAL
 	LOCAL wPos AS DWORD
 	LOCAL oError AS USUAL
 	LOCAL dwCurrentWorkArea := 0 AS DWORD
-	
-	
 	
 	lErrorFlag := FALSE
 	BEGIN SEQUENCE
@@ -1337,8 +1319,6 @@ METHOD FieldGetFormatted( uField AS USUAL) AS USUAL
 		RETURN NULL_STRING
 	END SEQUENCE
 	
-	
-	
 	RETURN uRetVal
 	
 
@@ -1348,8 +1328,6 @@ METHOD FieldHyperLabel( uField AS USUAL) AS HyperLabel
 	LOCAL uRetVal AS USUAL
 	LOCAL oError AS USUAL
 	LOCAL dwCurrentWorkArea := 0 AS DWORD
-	
-	
 	
 	lErrorFlag := FALSE
 	BEGIN SEQUENCE
@@ -1373,8 +1351,6 @@ METHOD FieldHyperLabel( uField AS USUAL) AS HyperLabel
 		uRetVal := NULL_OBJECT
 	END SEQUENCE
 	
-	
-	
 	RETURN uRetVal
 	
 
@@ -1383,8 +1359,6 @@ METHOD FieldInfo( kFieldInfoType, uField, uFieldVal ) AS USUAL CLIPPER
 	LOCAL nPos AS DWORD
 	LOCAL oError AS USUAL
 	LOCAL dwCurrentWorkArea := 0 AS DWORD
-	
-	
 	
 	lErrorFlag := FALSE
 	BEGIN SEQUENCE
@@ -1408,8 +1382,6 @@ METHOD FieldInfo( kFieldInfoType, uField, uFieldVal ) AS USUAL CLIPPER
 		uFieldVal := NIL
 	END SEQUENCE
 	
-	
-	
 	RETURN uFieldVal
 	
 
@@ -1418,8 +1390,6 @@ METHOD FieldName( nFieldPosition AS USUAL ) AS STRING
 	LOCAL dwCurrentWorkArea := 0 AS DWORD
 	LOCAL uRetVal AS USUAL
 	LOCAL oError AS USUAL
-	
-	
 	
 	VoDbSelect( wWorkArea, OUT dwCurrentWorkArea )
 	
@@ -1440,8 +1410,6 @@ METHOD FieldName( nFieldPosition AS USUAL ) AS STRING
 	
 	__DBSSetSelect( dwCurrentWorkArea ) 
 	
-	
-	
 	RETURN uRetVal
 	
 
@@ -1449,8 +1417,6 @@ METHOD FieldPos( cFieldName AS USUAL) AS DWORD
 	LOCAL uRetVal AS USUAL
 	LOCAL oError AS USUAL
 	LOCAL dwCurrentWorkArea := 0 AS DWORD
-	
-	
 	
 	lErrorFlag := FALSE
 	BEGIN SEQUENCE
@@ -1464,8 +1430,6 @@ METHOD FieldPos( cFieldName AS USUAL) AS DWORD
 		__DBSSetSelect( dwCurrentWorkArea )  
 		uRetVal := 0
 	END SEQUENCE
-	
-	
 	
 	RETURN uRetVal
 	
@@ -1521,8 +1485,6 @@ METHOD FieldPut( uField AS USUAL, uValue AS USUAL)  AS USUAL
 		uValue := NIL
 	END SEQUENCE
 	
-	
-	
 	RETURN uValue
 	
 
@@ -1553,8 +1515,6 @@ METHOD FieldPutBytes( uField AS USUAL, bValue AS BYTE[])  AS BYTE[]
 		bValue := NULL
 	END SEQUENCE
 	
-	
-	
 	RETURN bValue
 
 METHOD FieldSpec( uField AS USUAL)  AS FieldSpec
@@ -1563,8 +1523,6 @@ METHOD FieldSpec( uField AS USUAL)  AS FieldSpec
 	LOCAL uRetVal AS USUAL
 	LOCAL oError AS USUAL
 	LOCAL dwCurrentWorkArea := 0 AS DWORD
-	
-	
 	
 	lErrorFlag := FALSE
 	BEGIN SEQUENCE
@@ -1588,8 +1546,6 @@ METHOD FieldSpec( uField AS USUAL)  AS FieldSpec
 		uRetVal := NULL_OBJECT
 	END SEQUENCE
 	
-	
-	
 	RETURN uRetVal
 	
 
@@ -1599,8 +1555,6 @@ METHOD FieldStatus( uField AS USUAL) AS HyperLabel
 	LOCAL uRetVal AS USUAL
 	LOCAL oError AS USUAL
 	LOCAL dwCurrentWorkArea := 0 AS DWORD
-	
-	
 	
 	lErrorFlag := FALSE
 	BEGIN SEQUENCE
@@ -1624,8 +1578,6 @@ METHOD FieldStatus( uField AS USUAL) AS HyperLabel
 		uRetVal := NULL_OBJECT
 	END SEQUENCE
 	
-	
-	
 	RETURN uRetVal
 	
 
@@ -1635,8 +1587,6 @@ METHOD FieldSym( uField AS USUAL) AS SYMBOL
 	LOCAL uRetVal AS USUAL
 	LOCAL oError AS USUAL
 	LOCAL dwCurrentWorkArea := 0 AS DWORD
-	
-	
 	
 	lErrorFlag := FALSE
 	BEGIN SEQUENCE
@@ -1656,8 +1606,6 @@ METHOD FieldSym( uField AS USUAL) AS SYMBOL
 		uRetVal := NULL_SYMBOL
 	END SEQUENCE
 	
-	
-	
 	RETURN uRetVal
 	
 
@@ -1667,8 +1615,6 @@ METHOD FieldValidate( uField AS USUAL, uValue AS USUAL) AS LOGIC
 	LOCAL uRetVal AS USUAL
 	LOCAL oError AS USUAL
 	LOCAL dwCurrentWorkArea := 0 AS DWORD
-	
-	
 	
 	lErrorFlag := FALSE
 	BEGIN SEQUENCE
@@ -1692,8 +1638,6 @@ METHOD FieldValidate( uField AS USUAL, uValue AS USUAL) AS LOGIC
 		uRetVal := FALSE
 	END SEQUENCE
 	
-	
-	
 	RETURN uRetVal
 	
 
@@ -1702,8 +1646,6 @@ METHOD FLock( )  AS LOGIC STRICT
 	LOCAL oError AS USUAL
 	LOCAL dwCurrentWorkArea := 0 AS DWORD
 	LOCAL nTries AS DWORD
-	
-	
 	
 	lErrorFlag := FALSE
 	nTries := SELF:nRetries
@@ -1721,11 +1663,7 @@ METHOD FLock( )  AS LOGIC STRICT
 		lRetCode := FALSE
 	END SEQUENCE
 	
-	
-	
 	RETURN lRetCode
-	
-	
 	
 END CLASS
 

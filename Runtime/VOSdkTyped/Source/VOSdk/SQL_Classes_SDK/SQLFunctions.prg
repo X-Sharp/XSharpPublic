@@ -21,14 +21,10 @@ FUNCTION __GetSymString( uString AS USUAL ) AS STRING STRICT
 	END SWITCH
 	RETURN cRet
 
-
-
 FUNCTION DToCSQL( dDate AS DATE ) AS STRING
 	LOCAL dDT           AS DateTime
 	dDT := dDate
 	RETURN dDT:ToString("yyyy-MM-dd")
-
-
 
 
 [Obsolete];
@@ -136,8 +132,6 @@ FUNCTION SqlDeleteWhiteSpace( cString AS STRING ) AS STRING STRICT
 	//MemFree( pString )
 	RETURN cString
 
-
-
 FUNCTION SQLThrowOutOfMemoryError() AS VOID STRICT
 	LOCAL oError AS Error
 	oError:=Error{}
@@ -149,8 +143,6 @@ FUNCTION SQLThrowOutOfMemoryError() AS VOID STRICT
 [Obsolete];
 FUNCTION _SLen( c AS STRING ) AS SHORTINT STRICT
 	RETURN (SHORT) SLen( c ) 
-
-
 
 
 STATIC CLASS SqlFunctions
@@ -302,8 +294,6 @@ STATIC CLASS SqlFunctions
 		AAdd(aFldNames, Upper(cName))
 		RETURN cName
 
-
-       
 	STATIC METHOD CreateError(nErrCode AS DWORD, cMessage AS STRING)
 		LOCAL oError AS Error
 		oError 				:= Error{}

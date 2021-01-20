@@ -747,8 +747,22 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                             }
                             else if (!overridingMemberType.Equals(overriddenMemberType, TypeCompareKind.AllIgnoreOptions))
                             {
+
+#if XSHARP
+                                if ( overriddenProperty.ContainingType.TypesChanged())
+                                {
+                                    diagnostics.Add(ErrorCode.WRN_PropertyTypeChangedInParentType, overridingMemberLocation, overridingMember, overriddenMember, overriddenMemberType);
+                                    var sp = overridingProperty as SourcePropertySymbol;
+                                    sp.SetChangedParentType(overriddenMemberType);
+                                }
+                                else
+                                {
+#endif
                                 diagnostics.Add(ErrorCode.ERR_CantChangeTypeOnOverride, overridingMemberLocation, overridingMember, overriddenMember, overriddenMemberType);
                                 suppressAccessors = true; //we get really unhelpful errors from the accessor if the type is mismatched
+#if XSHARP
+                                }
+#endif
                             }
 
                             // If the overriding property is sealed, then the overridden accessors cannot be inaccessible, since we

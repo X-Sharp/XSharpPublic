@@ -1332,16 +1332,22 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                 return parent.isInInterface();
         }
 
-        internal static bool IsInLambdaOrCodeBlock([NotNull] this RuleContext context)
+        internal static XSharpParser.CodeblockContext GetParentCodeBlock([NotNull] this RuleContext context)
         {
             var parent = context.Parent;
             if (parent == null)
-                return false;
+                return null;
             if (parent is XSharpParser.CodeblockContext cbc)
             {
-                return cbc.lambda != null || cbc.Or != null || cbc.P1 != null;
+                if (cbc.lambda != null || cbc.Or != null || cbc.P1 != null)
+                    return cbc;
             }
-            return parent.IsInLambdaOrCodeBlock();
+            return parent.GetParentCodeBlock();
+
+        }
+        internal static bool IsInLambdaOrCodeBlock([NotNull] this RuleContext context)
+        {
+            return context.GetParentCodeBlock() != null;
         }
         internal static bool isInClass([NotNull] this RuleContext context)
         {

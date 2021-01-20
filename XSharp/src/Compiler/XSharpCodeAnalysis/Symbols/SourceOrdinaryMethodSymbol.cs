@@ -51,13 +51,21 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             {
                 if (this.HasClipperCallingConvention() != overriddenMethod.HasClipperCallingConvention())
                 {
-                    if (this.HasClipperCallingConvention())
+
+                    if (overriddenMethod.ContainingType.TypesChanged())
                     {
-                        diagnostics.Add(ErrorCode.ERR_ClipperInSubClass, location, this.Name);
+                        diagnostics.Add(ErrorCode.ERR_MethodSignatureChanged, this.Locations[0], this, overriddenMethod );
                     }
                     else
-                    {
-                        diagnostics.Add(ErrorCode.ERR_ClipperInParentClass, location, this.Name);
+                    { 
+                        if (this.HasClipperCallingConvention())
+                        {
+                            diagnostics.Add(ErrorCode.ERR_ClipperInSubClass, location, this.Name);
+                        }
+                        else
+                        {
+                            diagnostics.Add(ErrorCode.ERR_ClipperInParentClass, location, this.Name);
+                        }
                     }
                     overriddenMethod = null;
                 }

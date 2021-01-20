@@ -22,27 +22,36 @@ CLASS ScriptParameters
 END CLASS
 
 INTERNAL FUNCTION CompileScript(xsource AS STRING) AS Script          
-LOCAL options AS XSharpSpecificCompilationOptions
-options := XSharpMacro.GetOptions((INT) RuntimeState.Dialect)
-options:SetOption(CompilerOption.Vo11, RuntimeState.CompilerOptionVO11)
-options:SetOption(CompilerOption.Vo13, RuntimeState.CompilerOptionVO13)
-options:SetOption(CompilerOption.Overflow, RuntimeState.CompilerOptionOVF)
+    LOCAL options AS XSharpSpecificCompilationOptions
+    options := XSharpMacro.GetOptions((INT) RuntimeState.Dialect)
+    options:SetOption(CompilerOption.Vo11, RuntimeState.CompilerOptionVO11)
+    options:SetOption(CompilerOption.Vo13, RuntimeState.CompilerOptionVO13)
+    options:SetOption(CompilerOption.Overflow, RuntimeState.CompilerOptionOVF)
 
 
-VAR references := System.AppDomain.CurrentDomain:GetAssemblies() ;
-    :Where({a => !String.IsNullOrEmpty(a:Location)})
-LOCAL scoptions AS ScriptOptions    
-scoptions := ScriptOptions.Default ;
-    :WithXSharpSpecificOptions(options) ;
-    :WithReferences(references) ;
-    :WithImports(<STRING>{"System","System.Text","System.Collections.Generic","System.Linq"})
-   
+    VAR references := System.AppDomain.CurrentDomain:GetAssemblies() ;
+        :Where({a => !String.IsNullOrEmpty(a:Location)})
+    LOCAL scoptions AS ScriptOptions    
+    scoptions := ScriptOptions.Default ;
+        :WithXSharpSpecificOptions(options) ;
+        :WithReferences(references) ;
+        :WithImports(<STRING>{"System","System.Text","System.Collections.Generic","System.Linq"})
 
-VAR xscript := XSharpScript.Create(xsource, scoptions, typeof(ScriptParameters))
-xscript:Compile()
-RETURN xscript
+    VAR xscript := XSharpScript.Create(xsource, scoptions, typeof(ScriptParameters))
+    xscript:Compile()
+    RETURN xscript
 
-GLOBAL CompiledScripts := ConcurrentDictionary<STRING,Script>{} AS ConcurrentDictionary<STRING,Script>
+INTERNAL GLOBAL CompiledScripts := ScriptCache{200} AS ScriptCache
+INTERNAL GLOBAL InitialScript := NULL AS Script
+
+INTERNAL FUNCTION GetInitialScript() AS Script
+    VAR s := InitialScript
+    DO WHILE s == NULL
+        s := CompileScript("")
+        System.Threading.Interlocked.CompareExchange(REF InitialScript, s, NULL)
+        s := InitialScript
+    END
+    RETURN s
 
 FUNCTION _ExecScript(source AS STRING, args PARAMS USUAL[]) AS USUAL
     LOCAL script AS Script
@@ -50,11 +59,12 @@ FUNCTION _ExecScript(source AS STRING, args PARAMS USUAL[]) AS USUAL
         script := CompiledScripts[source]
     ELSE                  
         TRY
-            script := CompileScript(source)
+            script := GetInitialScript():ContinueWith(source)
+            //script := CompileScript(source)
         CATCH e AS Exception
             THROW  e
         END TRY
-        //CompiledScripts:TryAdd(source,script)
+        CompiledScripts:TryAdd(source,script)
     END
     LOCAL res AS USUAL
     VAR ScriptArgs := ScriptParameters{}

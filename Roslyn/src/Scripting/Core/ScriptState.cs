@@ -316,12 +316,34 @@ namespace Microsoft.CodeAnalysis.Scripting
                     var method = FindMatchingMethod(type, name, delegateInvokeMethod);
                     if (method != null)
                     {
-                        return (TDelegate)(object)method.CreateDelegate(typeof(TDelegate), sub);
+                        if (method.IsStatic)
+                            return (TDelegate)(object)method.CreateDelegate(typeof(TDelegate));
+                        else
+                            return (TDelegate)(object)method.CreateDelegate(typeof(TDelegate), sub);
                     }
                 }
             }
 
             return default(TDelegate);
+        }
+
+        public (MethodInfo,object)[] GetMethodsNamed(string name)
+        {
+            var res = new ArrayBuilder< (MethodInfo, object) >();
+            for (int i = ExecutionState.SubmissionStateCount - 1; i >= 0; i--)
+            {
+                var sub = ExecutionState.GetSubmissionState(i);
+                if (sub != null)
+                {
+                    var type = sub.GetType();
+                    foreach(var mi in type.GetTypeInfo().GetDeclaredMethods(name))
+                    {
+                        res.Add((mi, sub));
+                    }
+                }
+            }
+
+            return res.ToArray();
         }
 
         private MethodInfo FindMatchingMethod(Type instanceType, string name, MethodInfo delegateInvokeMethod)

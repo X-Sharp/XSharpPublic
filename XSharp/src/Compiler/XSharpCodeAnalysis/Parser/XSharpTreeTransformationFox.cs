@@ -547,7 +547,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             else
             {
-                m = (MemberDeclarationSyntax)CheckTypeName(context, "CLASS", m);
+                m = (MemberDeclarationSyntax)CheckForConflictBetweenTypeNameAndNamespaceName(context, "CLASS", m);
             }
             
             context.Put(m);
@@ -563,7 +563,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             var decl = _syntaxFactory.VariableDeclaration(type, list);
             var mods = modifiers?.GetList<SyntaxToken>() ?? DefaultMethodModifiers(false, false, true);
             var fdecl = _syntaxFactory.FieldDeclaration(
-                                    attributeLists: EmptyList<AttributeListSyntax>(),
+                                    attributeLists: default,
                                     modifiers: mods,
                                     declaration: decl,
                                     semicolonToken: SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken));
@@ -581,7 +581,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 body.XGenerated = true;
             }
             var accessor = _syntaxFactory.AccessorDeclaration(SyntaxKind.GetAccessorDeclaration,
-                    EmptyList<AttributeListSyntax>(), EmptyList<SyntaxToken>(),
+                    default, default,
                     SyntaxFactory.MakeToken(SyntaxKind.GetKeyword),
                     body,
                     null,
@@ -596,7 +596,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 body.XGenerated = true;
             }
             accessor = _syntaxFactory.AccessorDeclaration(SyntaxKind.SetAccessorDeclaration,
-                    EmptyList<AttributeListSyntax>(), EmptyList<SyntaxToken>(),
+                    default, default,
                     SyntaxFactory.MakeToken(SyntaxKind.SetKeyword),
                     body,
                     null,
@@ -610,7 +610,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             _pool.Free(accessors);
             var mods = modifiers?.GetList<SyntaxToken>() ?? DefaultMethodModifiers(false, false, false);
             var prop = _syntaxFactory.PropertyDeclaration(
-                   attributeLists: EmptyList<AttributeListSyntax>(),
+                   attributeLists: default,
                    modifiers: mods,
                    type: type,
                    explicitInterfaceSpecifier: null,

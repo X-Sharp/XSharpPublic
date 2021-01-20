@@ -4526,7 +4526,7 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to An Expression Body return expression is not supported for methods / functions with untyped parameters..
+        ///   Looks up a localized string similar to An Expression Body is not supported for methods / functions with untyped parameters..
         /// </summary>
         internal static string ERR_ExpressionBodyClipperCallingConvention {
             get {
@@ -6808,6 +6808,15 @@ namespace LanguageService.CodeAnalysis {
         internal static string ERR_MethodReturnCantBeRefAny {
             get {
                 return ResourceManager.GetString("ERR_MethodReturnCantBeRefAny", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &apos;{0}&apos;: The method signature was changed in the method &apos;{1}&apos;. You will have to update the parameter types and/or return type in the method of the subclass too..
+        /// </summary>
+        internal static string ERR_MethodSignatureChanged {
+            get {
+                return ResourceManager.GetString("ERR_MethodSignatureChanged", resourceCulture);
             }
         }
         
@@ -15185,6 +15194,15 @@ namespace LanguageService.CodeAnalysis {
         internal static string WRN_PreProcessorWarning {
             get {
                 return ResourceManager.GetString("WRN_PreProcessorWarning", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &apos;{0}&apos;: Type was changed to &apos;{2}&apos; in the parenttype &apos;{1}&apos;. The compiler will automatically propagate the new type &apos;{2}&apos; to the subclass..
+        /// </summary>
+        internal static string WRN_PropertyTypeChangedInParentType {
+            get {
+                return ResourceManager.GetString("WRN_PropertyTypeChangedInParentType", resourceCulture);
             }
         }
         

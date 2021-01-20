@@ -122,6 +122,9 @@
     <Compile Include="MacroCompiler.prg">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="ScriptCache.prg">
+      <SubType>Code</SubType>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Properties\" />

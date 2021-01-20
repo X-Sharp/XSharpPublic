@@ -1,0 +1,26 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2013/05/nuspec.xsd">
+  <metadata>
+    <id>Microsoft.Metadata.Visualizer</id>
+    <version>1.0.0-beta3.20174.1</version>
+    <authors>Microsoft</authors>
+    <owners>Microsoft</owners>
+    <requireLicenseAcceptance>true</requireLicenseAcceptance>
+    <license type="expression">Apache-2.0</license>
+    <licenseUrl>https://licenses.nuget.org/Apache-2.0</licenseUrl>
+    <icon>Icon.png</icon>
+    <projectUrl>https://github.com/dotnet/metadata-tools</projectUrl>
+    <description>Tool for diagnosing and displaying content of ECMA335 metadata files and Portable PDBs.</description>
+    <copyright>© Microsoft Corporation. All rights reserved.</copyright>
+    <tags>EMCA-335 metadata Portable PDB visualizer</tags>
+    <serviceable>true</serviceable>
+    <repository type="git" url="https://github.com/dotnet/metadata-tools" commit="3ebbcfc16aa9b4110f287770a324e12377f3c4e4" />
+    <dependencies>
+      <group targetFramework=".NETStandard2.0">
+        <dependency id="System.Collections.Immutable" version="1.5.0" exclude="Build,Analyzers" />
+        <dependency id="System.Reflection.Metadata" version="1.6.0" exclude="Build,Analyzers" />
+        <dependency id="System.ValueTuple" version="4.5.0" exclude="Build,Analyzers" />
+      </group>
+    </dependencies>
+  </metadata>
+</package>

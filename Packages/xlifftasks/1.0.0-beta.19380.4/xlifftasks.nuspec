@@ -1,0 +1,21 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd">
+  <metadata>
+    <id>XliffTasks</id>
+    <version>1.0.0-beta.19380.4</version>
+    <authors>Microsoft</authors>
+    <owners>Microsoft</owners>
+    <requireLicenseAcceptance>true</requireLicenseAcceptance>
+    <license type="expression">MIT</license>
+    <licenseUrl>https://licenses.nuget.org/MIT</licenseUrl>
+    <projectUrl>https://github.com/dotnet/xliff-tasks</projectUrl>
+    <description>Package Description</description>
+    <copyright>© Microsoft Corporation. All rights reserved.</copyright>
+    <serviceable>true</serviceable>
+    <repository type="git" url="https://github.com/dotnet/xliff-tasks" commit="66e24e60cee6937970983fe5a113fbdb6d15b2fb" />
+    <dependencies>
+      <group targetFramework=".NETFramework4.6" />
+      <group targetFramework=".NETCoreApp2.0" />
+    </dependencies>
+  </metadata>
+</package>

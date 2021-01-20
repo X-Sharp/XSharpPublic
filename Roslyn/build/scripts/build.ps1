@@ -197,9 +197,9 @@ function Restore-Packages() {
     $logFilePath = if ($binaryLog) { Join-Path $logsDir "Restore-RepoToolset.binlog" } else { "" }
     Run-MSBuild "build\Targets\RepoToolset\Build.proj" "/p:Restore=true /bl:$logFilePath" -summary:$false
 
-    Write-Host "Restoring Roslyn"
+    Write-Host "Restoring Compilers"
     $logFilePath = if ($binaryLog) { Join-Path $logsDir "Restore-Roslyn.binlog" } else { "" }
-    Restore-Project $dotnet "Roslyn.sln" $logFilePath
+    Restore-Project $dotnet "Compilers.sln" $logFilePath
 }
 
 # Create a bootstrap build of the compiler.  Returns the directory where the bootstrap build

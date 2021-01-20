@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2011/10/nuspec.xsd">
+  <metadata>
+    <id>RoslynTools.Microsoft.VSIXExpInstaller</id>
+    <version>0.4.0-beta</version>
+    <authors>Microsoft</authors>
+    <owners>Microsoft</owners>
+    <requireLicenseAcceptance>true</requireLicenseAcceptance>
+    <licenseUrl>http://go.microsoft.com/fwlink/?LinkId=529443</licenseUrl>
+    <projectUrl>http://msdn.com/roslyn</projectUrl>
+    <description>VSIX Installer for the non-root hive</description>
+    <summary>VSIX Installer for the non-root hive</summary>
+    <releaseNotes></releaseNotes>
+    <language>en-US</language>
+    <tags>Roslyn Build Tool</tags>
+  </metadata>
+</package>

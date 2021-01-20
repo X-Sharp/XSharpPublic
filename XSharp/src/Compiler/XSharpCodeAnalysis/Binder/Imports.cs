@@ -31,7 +31,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         }
         internal static bool HandleXSharpImport(UsingDirectiveSyntax usingDirective, Binder usingsBinder,
             ArrayBuilder<NamespaceOrTypeAndUsingDirective>  usings, PooledHashSet<NamespaceOrTypeSymbol> uniqueUsings,
-            ConsList<Symbol> basesBeingResolved, CSharpCompilation compilation)
+            ConsList<TypeSymbol> basesBeingResolved, CSharpCompilation compilation)
         {
             // The usingDirective name contains spaces when it is nested and the GlobalClassName not , so we must eliminate them here
             // nvk: usingDirective.Name.ToString() ONLY has spaces if it is nested. This is not supposed to be nested, as it is "Functions" even for the non-core dialects !!!

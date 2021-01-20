@@ -7589,7 +7589,11 @@ To remove the warning, you can use /reference instead (set the Embed Interop Typ
   <data name="ERR_ExpressionBodyClipperCallingConvention" xml:space="preserve">
     <value>An Expression Body is not supported for methods / functions with untyped parameters.</value>
   </data>
-
-  
+  <data name="WRN_PropertyTypeChangedInParentType" xml:space="preserve">
+    <value>'{0}': Type was changed to '{2}' in the parenttype '{1}'. The compiler will automatically propagate the new type '{2}' to the subclass.</value>
+  </data>
+  <data name="ERR_MethodSignatureChanged" xml:space="preserve">
+    <value>'{0}': The method signature was changed in the method '{1}'. You will have to update the parameter types and/or return type in the method of the subclass too.</value>
+  </data>
 
 </root>

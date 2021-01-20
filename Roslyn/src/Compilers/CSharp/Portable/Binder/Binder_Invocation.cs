@@ -263,7 +263,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             // Bind Late bound call.
             else if (Compilation.Options.LateBindingOrFox(node) &&
                 boundExpression.Kind != BoundKind.MethodGroup && !boundExpression.Type.IsNull() && 
-                (boundExpression.Type.IsObjectType() || ((NamedTypeSymbol)boundExpression.Type).ConstructedFrom.IsUsual()) &&
+                (boundExpression.Type.IsObjectType() || ((NamedTypeSymbol)boundExpression.Type).ConstructedFrom.IsUsualType()) &&
                 !(expression.IsKind(SyntaxKind.SimpleMemberAccessExpression) && GetName((ExpressionSyntax)expression) == ".ctor"))
             {
                 ImmutableArray<BoundExpression> argArray = BuildArgumentsForDynamicInvocation(analyzedArguments, diagnostics);

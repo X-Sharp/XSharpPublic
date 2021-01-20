@@ -97,8 +97,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                     .ToImmutableArray(), location);
                 var codeblockDelegate = manager.SynthesizeDelegate(codeblockParams.Length-1, default(BitVector), false, 0).Construct(codeblockParams);
                 this.Properties = new[] {
-                    new AnonymousTypePropertySymbol(this, new AnonymousTypeField("Cb$Eval$", location, codeblockDelegate)),
-                    new AnonymousTypePropertySymbol(this, new AnonymousTypeField("Cb$Source$", location, manager.System_String))
+                    new AnonymousTypePropertySymbol(this, new AnonymousTypeField("Cb$Eval$", location, codeblockDelegate),0),
+                    new AnonymousTypePropertySymbol(this, new AnonymousTypeField("Cb$Source$", location, manager.System_String),1)
                 }.AsImmutableOrNull();
 
                 Symbol[] members = new Symbol[4];

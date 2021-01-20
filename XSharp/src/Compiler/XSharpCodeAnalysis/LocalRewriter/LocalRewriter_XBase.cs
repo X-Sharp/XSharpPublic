@@ -154,7 +154,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                                 TypeSymbol type = r.GetTypeByMetadataName(functionsClassName) as TypeSymbol;
                                 // If we can find the $Exit method then call that method
                                 // Otherwise find the public globals and clear them from our code
-                                if (type != null)
+                                if (!type.IsNull())
                                 {
                                     var members = type.GetMembers(XSharpSpecialNames.ExitProc);
                                     if (members.Length > 0)

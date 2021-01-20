@@ -18,7 +18,7 @@ using Roslyn.Utilities;
 
 namespace Microsoft.CodeAnalysis.CSharp.Symbols
 {
-    internal sealed partial class SourcePropertyAccessorSymbol
+    internal partial class SourcePropertyAccessorSymbol
     {
         private TypeSymbol _changedReturnType = null;
         private ImmutableArray<ParameterSymbol> _changedParameters = default;

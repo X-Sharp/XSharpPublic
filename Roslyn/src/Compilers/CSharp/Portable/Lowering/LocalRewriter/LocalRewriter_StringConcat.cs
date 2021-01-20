@@ -311,7 +311,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             var method = UnsafeGetSpecialTypeMethod(syntax, SpecialMember.System_String__ConcatStringString);
             Debug.Assert((object)method != null);
 #if XSHARP
-            if (member == SpecialMember.System_String__ConcatObjectObject)
+            if (method == SpecialMember.System_String__ConcatObjectObject)
             {
                 ReportStringConcatError(syntax, loweredLeft, loweredRight);
             }
@@ -328,7 +328,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             var method = UnsafeGetSpecialTypeMethod(syntax, SpecialMember.System_String__ConcatStringStringString);
             Debug.Assert((object)method != null);
 #if XSHARP
-            if (member == SpecialMember.System_String__ConcatObjectObjectObject)
+            if (method == SpecialMember.System_String__ConcatObjectObjectObject)
             {
                 ReportStringConcatError(syntax, loweredFirst, loweredSecond, loweredThird);
             }
@@ -358,7 +358,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             var method = UnsafeGetSpecialTypeMethod(syntax, SpecialMember.System_String__ConcatStringArray);
             Debug.Assert((object)method != null);
 #if XSHARP
-                if (member == SpecialMember.System_String__ConcatObjectArray)
+                if (method == SpecialMember.System_String__ConcatObjectArray)
                 {
                     BoundExpression[] args = loweredArgs.ToArray();
                     ReportStringConcatError(syntax, args);

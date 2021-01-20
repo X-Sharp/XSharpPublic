@@ -353,12 +353,12 @@ namespace Microsoft.CodeAnalysis.CSharp
                                 }
                                 if (parLeft.Type != parRight.Type)
                                 { 
-                                    if (parLeft.Type.IsFloatType() )
+                                    if (parLeft.Type.IsFloatType())
                                     {
                                         result = BetterResult.Left;
                                         return true;
                                     }
-                                    if (parRight.Type.IsFloatType() )
+                                    if (parRight.Type.IsFloatType())
                                     {
                                         result = BetterResult.Right;
                                         return true;

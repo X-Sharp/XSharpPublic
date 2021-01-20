@@ -2064,7 +2064,9 @@ namespace Microsoft.CodeAnalysis.CSharp
         WRN_TryWithoutCatch = 9101,
         WRN_Unsupported = 9102,
         ERR_UnExpectedExpected = 9103,
-        ERR_ExpressionBodyClipperCallingConvention=9104,
+        ERR_ExpressionBodyClipperCallingConvention = 9104,
+        WRN_PropertyTypeChangedInParentType = 9105,
+        ERR_MethodSignatureChanged = 9106,
 
         // XPP dialect Error messages
         ERR_XPPMultipleInheritance = 9200,

@@ -1353,7 +1353,7 @@ namespace Microsoft.CodeAnalysis.CSharp
 
 #if XSHARP
             bool typeHasErrors = type.IsErrorType();
-            if (!typeHasErrors && type.IsManagedType && ! Compilation.Options.HasRuntime)
+            if (!typeHasErrors && type.IsManagedType() && ! Compilation.Options.HasRuntime)
             {
                 diagnostics.Add(ErrorCode.ERR_ManagedAddr, node.Location, type);
                 typeHasErrors = true;
@@ -2258,7 +2258,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 return expression;
             }
             // WE do not want (USUAL) <object> to unbox the object !
-            if (operand.Type.IsObjectType() && targetType.IsUsual())
+            if (operand.Type.IsObjectType() && targetType.IsUsualType())
             {
                 return operand;
             }

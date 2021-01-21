@@ -1353,12 +1353,11 @@ namespace Microsoft.CodeAnalysis.CSharp
 
 #if XSHARP
             bool typeHasErrors = type.IsErrorType();
-            if (!typeHasErrors && type.IsManagedType() && ! Compilation.Options.HasRuntime)
+            if (!typeHasErrors && type.IsManagedTypeNoUseSiteDiagnostics && !Compilation.Options.HasRuntime)
             {
                 diagnostics.Add(ErrorCode.ERR_ManagedAddr, node.Location, type);
                 typeHasErrors = true;
             }
-			
 #else
             bool typeHasErrors = type.IsErrorType() || CheckManagedAddr(Compilation, type, node.Location, diagnostics);
 #endif
@@ -2236,12 +2235,12 @@ namespace Microsoft.CodeAnalysis.CSharp
             var pe = node.XNode as XSharpParser.PrimaryExpressionContext;
             if (pe.IsVoCast())
             {
-                if (targetType.SpecialType == SpecialType.System_Object && ! operand.Type.IsReferenceType && !pe.IsCastClass())
+                if (targetType.SpecialType == SpecialType.System_Object && !operand.Type.IsReferenceType && !pe.IsCastClass())
                 {
                     diagnostics.Add(ErrorCode.ERR_NoExplicitCast, node.Location, operand.Type, targetType);
                 }
                 // LOGIC(_CAST, numeric)  => change conversion to <numeric> != 0
-                if (targetType.SpecialType == SpecialType.System_Boolean && operand.Type.IsIntegralType() )
+                if (targetType.SpecialType == SpecialType.System_Boolean && operand.Type.IsIntegralType())
                 {
                     if (operand is BoundLiteral)
                     {
@@ -2249,11 +2248,19 @@ namespace Microsoft.CodeAnalysis.CSharp
                         return new BoundLiteral(node, ConstantValue.Create(result), targetType);
                     }
                     var right = new BoundLiteral(node, ConstantValue.Create(0), Compilation.GetSpecialType(SpecialType.System_Int32));
-                    return new BoundBinaryOperator(node, BinaryOperatorKind.NotEqual, operand, right, null, null, LookupResultKind.Viable, targetType);
+                    return new BoundBinaryOperator(
+                        syntax: node,
+                        operatorKind: BinaryOperatorKind.NotEqual,
+                        left: operand,
+                        right: right,
+                        constantValueOpt: default,
+                        methodOpt: default,
+                        resultKind: LookupResultKind.Viable,
+                        type: targetType);
                 }
             }
             BoundExpression expression;
-            if (BindVOPointerDereference(node, targetType, operand, diagnostics, out expression))
+            if (BindVOPointerDereference(node, TypeWithAnnotations.Create(targetType), operand, diagnostics, out expression))
             {
                 return expression;
             }
@@ -3092,8 +3099,8 @@ namespace Microsoft.CodeAnalysis.CSharp
                 if (!kind.IsIdentity)
                 {
 #if XSHARP
-                    TypeSymbol type = XsGetCorrespondingParameterType(ref result, parameterTypes, arg);
-                    argument = XsFixPszArgumentProblems(argument, type, ref kind);
+                    TypeWithAnnotations parameterTypeWithAnnotations = XsGetCorrespondingParameterType(ref result, parameterTypes, arg);
+                    argument = XsFixPszArgumentProblems(argument, parameterTypeWithAnnotations, ref kind);
 #else
                     TypeWithAnnotations parameterTypeWithAnnotations = GetCorrespondingParameterTypeWithAnnotations(ref result, parameters, arg);
 #endif
@@ -3115,7 +3122,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                     else
                     {
                         bool cast = (argument.Syntax is CastExpressionSyntax);
-                        arguments[arg] = CreateConversion(argument.Syntax, argument, kind, cast, type, diagnostics);
+                        arguments[arg] = CreateConversion(argument.Syntax, argument, kind, isCast: cast, conversionGroupOpt: null, parameterTypeWithAnnotations.Type, diagnostics);
                     }
 #else
                     arguments[arg] = CreateConversion(argument.Syntax, argument, kind, isCast: false, conversionGroupOpt: null, parameterTypeWithAnnotations.Type, diagnostics);

@@ -10,6 +10,8 @@ using Microsoft.CodeAnalysis.CSharp;
 using System;
 using Antlr4.Runtime;
 using static Roslyn.Utilities.UnicodeCharacterUtilities;
+
+
 namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
 {
     // Notes: If you want to add a dialect specific keyword then do this:
@@ -112,7 +114,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
 
         bool _inDottedIdentifier = false;
         bool _currentLineIsPreprocessorDefinition = false;
-        bool _currentLineHasEos = true;
+        bool _beginOfStatement = true; 
         bool _onStartOfTextBlock = false;
         bool _inTextBlock = false;
         bool _onTextLine = false;
@@ -671,16 +673,16 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                 return t;
             }
             // when we get here then the semi colon was a statement delimiter
-            if (_currentLineHasEos)
+            if (_beginOfStatement)
             {
                 t.Channel = t.OriginalChannel = TokenConstants.HiddenChannel;
             }
             else
-            { 
-                _currentLineHasEos = true;
+            {
+                _beginOfStatement = true;
                 t.Type = EOS;
             }
-            
+            _inDottedIdentifier = false;
             return t;
 
         }
@@ -722,13 +724,22 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                     break;
             }
         }
-        
+
+        private void setLastToken(XSharpToken t)
+        {
+            if (t.Channel == TokenConstants.DefaultChannel)
+                _lastToken = t;
+        }
+
         public override IToken NextToken()
         {
             if (pendingTokens.Count > 0)
             {
                 var token = popToken();
                 handleTrivia(token);
+                if (_beginOfStatement && (token.Channel == DefaultTokenChannel || token.Channel == PREPROCESSORCHANNEL))
+                    _beginOfStatement = false;
+                setLastToken(token);
                 return token;
             }
             XSharpToken t;
@@ -749,7 +760,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                 {
                     case '(':
                         parseOne(LPAREN);
-                        handleSpecialFunctions();
+                        handleSpecialFunctions();   // Handle function names that are the same as keywords
                         break;
                     case ')':
                         parseOne(RPAREN);
@@ -976,6 +987,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                     case ';':
                         t = parseSemiColon();
                         handleTrivia(t);
+                        setLastToken(t);
                         return t;
                     case '.':
                         if (La_2 >= '0' && La_2 <= '9')
@@ -1206,7 +1218,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             {
                 type = t.Type;
                 // this happens in FoxPro dialect only, because only there the TEXT keyword is available
-                // but should only happen when TEXT is the first non ws token on a line
+                // and this should only happen when TEXT is the first non ws token on a line
                 if (type == TEXT && StartOfLine(LastToken))
                 {
                     _onStartOfTextBlock = true;
@@ -1302,28 +1314,29 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                     }
                 }
             }
-            if (type == NL )    // Semi colon EOS is handled in parseSemi()
+            
+            if (type == NL)    // Semi colon EOS is handled in parseSemi()
             {
-                if (_currentLineHasEos)
+                if (_beginOfStatement)
                 {
                     t.Channel = t.OriginalChannel = TokenConstants.HiddenChannel;
                 }
                 else
                 {
                     t.Type = EOS;
-                    _currentLineHasEos = true;
+                    _beginOfStatement = true;
                 }
             }
-            else if (_currentLineHasEos && t.Channel == TokenConstants.DefaultChannel)
+            else if (_beginOfStatement && t.Channel == TokenConstants.DefaultChannel)
             {
-                _currentLineHasEos = false;
+                _beginOfStatement = false;
             }
-            else if (!_currentLineHasEos && type == TokenConstants.Eof)
+            else if (!_beginOfStatement && type == TokenConstants.Eof)   
             {
                 t.Type = EOS;
-                _currentLineHasEos = true;
+                _beginOfStatement = true;
             }
-            if (t.Type == ALIAS )
+            if (t.Type == ALIAS)
             {
                 // ALIAS after keyword, then the keyword should be the name of a workarea. For example EVENT->DATE
                 if (IsKeyword(LastToken) && LastToken != FIELD && LastToken != MEMVAR)
@@ -1331,11 +1344,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                     _lastToken.Type = ID;
                 }
             }
-            if (t.Channel == TokenConstants.DefaultChannel)
-            {
-                _lastToken = t; // nvk: Note that this is the type before any modifications!!!
-            }
-
+            setLastToken(t);
             if (_currentLineIsPreprocessorDefinition)
             {
                 // this is how a list of tokens for a #define will look like:

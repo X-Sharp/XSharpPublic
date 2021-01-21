@@ -564,22 +564,22 @@ namespace Microsoft.CodeAnalysis.Emit
             // Replace generation of the _rootModule with the generated
             // <Module> class when available
             Cci.INamespaceTypeDefinition topType = null;
-            foreach (var type in this.GetTopLevelTypesCore(context))
+            foreach (var type in this.GetTopLevelTypeDefinitions(context))
             {
-                if (String.Equals(type.Name, _rootModuleType.Name))
+                if (String.Equals(type.Name, RootModuleType.Name))
                 {
                     topType = type;
                     AddTopLevelType(names, type);
-                    VisitTopLevelType(noPiaIndexer, type);
+                    VisitTopLevelType(typeReferenceIndexer, type);
                     yield return type;
                 }
 
             }
             if (topType == null)
             {
-                AddTopLevelType(names, _rootModuleType);
-                VisitTopLevelType(noPiaIndexer, _rootModuleType);
-                yield return _rootModuleType;
+                AddTopLevelType(names, RootModuleType);
+                VisitTopLevelType(typeReferenceIndexer, RootModuleType);
+                yield return RootModuleType;
             }
 
 #else

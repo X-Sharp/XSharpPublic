@@ -113,7 +113,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             {
                 _diagnostics.Add(new CSDiagnostic(new CSDiagnosticInfo(ErrorCode.WRN_UndeclaredMember, constructedFrom, name,"property","assign" ), loweredReceiver.Syntax.Location));
             }
-            if (TypeSymbol.Equals(constructedFrom , usualType))
+            if ( constructedFrom .IsUsualType())
             {
                 loweredReceiver = _factory.StaticCall(usualType, ReservedNames.ToObject, loweredReceiver);
             }

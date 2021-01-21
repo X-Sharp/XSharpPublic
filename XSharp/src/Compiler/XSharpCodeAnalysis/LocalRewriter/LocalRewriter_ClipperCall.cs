@@ -113,7 +113,8 @@ namespace Microsoft.CodeAnalysis.CSharp
                         var rtType = _compilation.RuntimeFunctionsType();
                         get = rtType.GetMembers(ReservedNames.FieldGetWaUndeclared);
                         set = rtType.GetMembers(ReservedNames.FieldSetWaUndeclared);
-                        var varSym = new XsFoxMemberAccessSymbol(amc.AreaName, amc.FieldName, (MethodSymbol) get[0], (MethodSymbol)set[0], _compilation.UsualType());
+                        var usual = TypeWithAnnotations.Create(_compilation.UsualType());
+                        var varSym = new XsFoxMemberAccessSymbol(amc.AreaName, amc.FieldName, (MethodSymbol) get[0], (MethodSymbol)set[0], usual);
                         if (get.Length > 0 && set.Length > 0)
                         {
                             boundProperties[i] = new BoundPropertyAccess(a.Syntax, null, varSym, LookupResultKind.Viable, varSym.Type);
@@ -183,13 +184,12 @@ namespace Microsoft.CodeAnalysis.CSharp
 
         internal BoundExpression RewriteLateBoundCallWithRefParams(BoundExpression loweredReceiver, string name, BoundDynamicInvocation node, ImmutableArray<BoundExpression> arguments)
         {
-            
             var convArgs = new ArrayBuilder<BoundExpression>();
             var usualType = _compilation.UsualType();
             foreach (var a in arguments)
             {
 
-                if (a.Type == null && !a.Syntax.XIsCodeBlock)
+                if (a.Type.IsNull() && !a.Syntax.XIsCodeBlock)
                 {
                     convArgs.Add(_factory.Default(usualType));
                 }
@@ -326,7 +326,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             BoundExpression rewrittenObjectCreation = node.UpdateArgumentsAndInitializer(rewrittenArguments, argumentRefKindsOpt, newInitializerExpression: null, changeTypeOpt: node.Constructor.ContainingType);
             if (node.Type.IsInterfaceType())
             {
-                Debug.Assert(rewrittenObjectCreation.Type == ((NamedTypeSymbol)node.Type).ComImportCoClass);
+                Debug.Assert(TypeSymbol.Equals(rewrittenObjectCreation.Type, ((NamedTypeSymbol)node.Type).ComImportCoClass));
                 rewrittenObjectCreation = MakeConversionNode(rewrittenObjectCreation, node.Type, false, false);
             }
             BoundExpression objectAssignment = _factory.AssignmentExpression(boundObjTemp, rewrittenObjectCreation);
@@ -337,7 +337,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             {
                 return rewrittenObjectCreation;
             }
-            return MakeObjectCreationWithInitializer(node.Syntax, rewrittenObjectCreation, node.InitializerExpressionOpt, node.Type);
+            return MakeExpressionWithInitializer(node.Syntax, rewrittenObjectCreation, node.InitializerExpressionOpt, node.Type);
         }
 
         internal BoundNode VisitCallClipperConvention(BoundCall node)

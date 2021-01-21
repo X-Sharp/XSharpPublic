@@ -6,7 +6,7 @@ root = true
 
 # default settings for all file types.
 # load the EditorConfig extension for VS 2015 to use this automatically
-# no need to load anything in VS2017. The IDE takes care of this automatically.
+# no need to load anything in VS2017 or VS2019. The IDE takes care of this automatically.
 [*]
 # Use Windows End of Line Setting
 end_of_line = crlf
@@ -17,9 +17,11 @@ indent_style = space
 
 # Code files
 [*.{cs,csx,vb,vbx,prg,prgx,vh.xh,xs,rc}]
-indent_size = 4
-insert_final_newline = true
+# use utf8 with byte order mark
 charset = utf-8-bom
+insert_final_newline = true
+trim_trailing_whitespace =  true
+indent_size = 4
 
 # binary files opened in XML mode
 [*.{xsmnu,xsfrm,xsdbs,xsfs}]

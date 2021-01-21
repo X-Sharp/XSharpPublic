@@ -59,15 +59,17 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             {
                 if (this.Manager.Compilation.Options.XSharpRuntime)
                 {
+                    var usualArray = TypeWithAnnotations.Create(this.Manager.UsualArrayType);
                     _parameters = ImmutableArray.Create<ParameterSymbol>(
-                            new SynthesizedParamsParameterSymbol(this, this.Manager.Compilation.CreateArrayTypeSymbol(this.Manager.UsualType), 0, RefKind.None, "args")
+                            new SynthesizedParamsParameterSymbol(this, usualArray, 0, RefKind.None, "args")
                     );
 
                 }
                 else
                 {
+                    var usualArray = TypeWithAnnotations.Create(this.Manager.UsualArrayType);
                     _parameters = ImmutableArray.Create<ParameterSymbol>(
-                            new SynthesizedParamsParameterSymbol(this, this.Manager.Compilation.CreateArrayTypeSymbol(this.Manager.UsualType), 0, RefKind.None, "args",
+                            new SynthesizedParamsParameterSymbol(this, usualArray, 0, RefKind.None, "args",
                                 customModifiers: new[] { CSharpCustomModifier.CreateOptional(this.Manager.Compilation.GetWellKnownType(WellKnownType.System_Runtime_CompilerServices_IsConst)) }.ToImmutableArray())
                         );
                 }
@@ -90,7 +92,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
 
             public override TypeWithAnnotations ReturnTypeWithAnnotations
             {
-                get { return this.Manager.UsualType; }
+                get { return TypeWithAnnotations.Create(this.Manager.UsualType); }
             }
 
             public override ImmutableArray<ParameterSymbol> Parameters

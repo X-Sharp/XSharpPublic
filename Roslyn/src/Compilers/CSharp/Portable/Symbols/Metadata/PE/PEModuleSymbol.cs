@@ -429,12 +429,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols.Metadata.PE
             var result = GetCustomAttributesForToken(
                 token,
                 filteredOutAttribute1: out CustomAttributeHandle extensionAttribute,
-                filterOut1: XSharpString.IgnoreCase ? AttributeDescription.CaseInSensitiveExtensionAttribute : AttributeDescription.CaseSensitiveExtensionAttribute,
+                filterOut1: XSharpString.IgnoreCase ? AttributeDescription.CaseInsensitiveExtensionAttribute : AttributeDescription.CaseSensitiveExtensionAttribute,
                 filteredOutAttribute2: out CustomAttributeHandle isReadOnlyAttribute,
                 filterOut2: AttributeDescription.IsReadOnlyAttribute,
                 filteredOutAttribute3: out _, filterOut3: default,
                 filteredOutAttribute4: out _, filterOut4: default);
-           
 #else
             var result = GetCustomAttributesForToken(
                 token,

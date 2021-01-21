@@ -21,9 +21,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
 #endif
     {
         private readonly TypeSymbol _explicitInterfaceType;
-#if XSHARP
-        private string _name;
-#endif
         private readonly bool _isExpressionBodied;
         private readonly bool _hasAnyBody;
         private readonly RefKind _refKind;

@@ -301,8 +301,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                     if (concurrentTypeResolutions >= 50)
                     {
                         Binder typeBinder = this.TypeSyntaxBinder;
-                        var type = typeBinder.CreateErrorType("var");
-                        SetType(type);
+                        var type = TypeWithAnnotations.Create(typeBinder.CreateErrorType("var"));
+                        SetTypeWithAnnotations(type);
                         return type;
                     }
 #elif DEBUG

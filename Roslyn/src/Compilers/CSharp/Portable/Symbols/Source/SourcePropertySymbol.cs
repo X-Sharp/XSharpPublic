@@ -371,21 +371,21 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                     if (GetMethod != null)
                     {
                         var xnode = GetMethod.GetNonNullSyntaxNode().XNode;
-						if (xnode != null)
-						{
-	                        return xnode.GetLocation();
-						}
+                        if (xnode != null)
+                        {
+                            return xnode.GetLocation();
+                        }
                     }
                     if (SetMethod != null)
                     {
                         var xnode = SetMethod.GetNonNullSyntaxNode().XNode;
                         if (xnode != null)
-						{
-	                    	return xnode.GetLocation();
-						}
+                        {
+                            return xnode.GetLocation();
+                        }
                     }
                 }
-                return _location;
+                return base.Location;
             }
         }
 
@@ -409,7 +409,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                 diagnostics);
         }
 #if XSHARP
-
         public override bool IsIndexedProperty
         {
             get { return _isIndexedProperty; }

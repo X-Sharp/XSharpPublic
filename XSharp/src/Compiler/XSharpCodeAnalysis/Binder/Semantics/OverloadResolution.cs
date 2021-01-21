@@ -207,7 +207,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                             argType = bao.Operand.Type;
                         }
 
-                        if (parLeft.Type != parRight.Type || refLeft != refRight)
+                        if (!TypeSymbol.Equals(parLeft.Type,parRight.Type) || refLeft != refRight)
                         {
                             // Prefer the method with a more specific parameter which is not an array type over USUAL
                             if (parLeft.Type.IsUsualType() && argType.IsNotUsualType() && !parRight.Type.IsArray())
@@ -300,7 +300,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                                     return true;
                                 }
                                 // Then check the underlying type
-                                argType = argType.EnumUnderlyingType();
+                                argType = argType.GetEnumUnderlyingType();
                                 if (TypeSymbol.Equals(argType, parLeft.Type))
                                 {
                                     result = BetterResult.Left;
@@ -323,7 +323,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                                 return true;
                             }
                             // VoFloat prefers overload with double over all other conversions
-                            if (TypeSymbol.Equals(argType , Compilation.FloatType()))
+                            if (argType.IsFloatType())
                             {
                                 var doubleType = Compilation.GetSpecialType(SpecialType.System_Double);
                                 if (TypeSymbol.Equals(parLeft.Type ,doubleType))
@@ -351,7 +351,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                                     result = BetterResult.Right;
                                     return true;
                                 }
-                                if (parLeft.Type != parRight.Type)
+                                if (!TypeSymbol.Equals(parLeft.Type ,parRight.Type))
                                 { 
                                     if (parLeft.Type.IsFloatType())
                                     {
@@ -642,9 +642,9 @@ namespace Microsoft.CodeAnalysis.CSharp
                             return BetterResult.Right;
                     }
                     // Prefer Date over DateTime, because when one of the two is date then we know that we can't compare the time parts
-                    if (left.Type.SpecialType == SpecialType.System_DateTime && TypeSymbol.Equals(right.Type , Compilation.DateType()))
+                    if (left.Type.SpecialType == SpecialType.System_DateTime && right.Type.IsDateType())
                         return BetterResult.Right;
-                    if (right.Type.SpecialType == SpecialType.System_DateTime && TypeSymbol.Equals(left.Type , Compilation.DateType()))
+                    if (right.Type.SpecialType == SpecialType.System_DateTime && left.Type.IsDateType())
                         return BetterResult.Left;
 
 

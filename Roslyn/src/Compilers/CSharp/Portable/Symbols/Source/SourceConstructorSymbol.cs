@@ -99,7 +99,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             return GetSyntax().ParameterList;
         }
 /*
-TODO RvdH
+TODO RvdH Check ParammeterCount
         internal override int ParameterCount
         {
             get

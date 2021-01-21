@@ -1,14 +1,16 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <UseXSharpKey>true</UseXSharpKey>
+  </PropertyGroup>
   <Import Project="$(Solutiondir)src\Compiler\CompilerCommon.props" />
   <Import Project="$(RepositoryEngineeringDir)targets\GenerateCompilerExecutableBindingRedirects.targets" />
   <PropertyGroup>
     <OutputType>Library</OutputType>
-    <TargetFrameworks>netcoreapp3.1;netstandard2.0</TargetFrameworks>
     <AssemblyName>XSharp.CodeAnalysis</AssemblyName>
     <RootNamespace>LanguageService.CodeAnalysis.XSharp</RootNamespace>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <NoWarn>1591,CS0649,CS8032,CS3021,RS0008,CS1574,CS0419,CS3008,CS3005,CS3001,CS3002,CS3015,</NoWarn> 
+    <NoWarn>1591,1573,1701,3021</NoWarn> 
     <!--<CodeAnalysisRuleSet>$(RoslynSrc)\Compilers\CSharp\CSharpCodeAnalysisRules.ruleset</CodeAnalysisRuleSet>-->
     <NoStdLib>true</NoStdLib>
     <GenerateMicrosoftCodeAnalysisCommitHashAttribute>false</GenerateMicrosoftCodeAnalysisCommitHashAttribute>
@@ -31,14 +33,14 @@
     <Configurations>Debug;Release;Public</Configurations>
   </PropertyGroup>
   
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+  <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
     <DefineConstants>$(Genericdefines);XSHARP;DEBUG;TRACE;</DefineConstants>
   </PropertyGroup>
   
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Public|AnyCPU'">
+  <PropertyGroup Condition="'$(Configuration)'=='Public'">
     <DefineConstants>$(Genericdefines);XSHARP;TRACE;</DefineConstants>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+  <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
     <DebugType>pdbonly</DebugType>
     <DebugSymbols>true</DebugSymbols>
     <RunPostBuildEvent>OnOutputUpdated</RunPostBuildEvent>
@@ -123,7 +125,9 @@
 
   </ItemGroup>
   <ItemGroup>
+    <Compile Remove="Declarations\**" />
     <Compile Remove="VsParser\**" />
+    <EmbeddedResource Remove="Declarations\**" />
     <EmbeddedResource Remove="VsParser\**" />
   </ItemGroup>
   <ItemGroup>
@@ -139,7 +143,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Antlr4.Runtime\Properties\" />
-    <Folder Include="Declarations\" />
   </ItemGroup>
   <Import Project="$(CSharpSource)..\CSharpAnalyzerDriver\CSharpAnalyzerDriver.projitems" Label="Shared" />
   <Import Project="$(CoreSource)..\AnalyzerDriver\AnalyzerDriver.projitems" Label="Shared" />

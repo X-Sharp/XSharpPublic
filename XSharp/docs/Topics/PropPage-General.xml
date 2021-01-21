@@ -3,34 +3,26 @@
 <topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>General</title>
   <keywords>
-    <keyword>/main</keyword>
-    <keyword>/nowin32manifest</keyword>
-    <keyword>/rootnamespace</keyword>
-    <keyword>/usenativeversion</keyword>
-    <keyword>/win32icon</keyword>
     <keyword>Application Icon</keyword>
     <keyword>Assembly Name</keyword>
     <keyword>Default Namespace</keyword>
     <keyword>Dialect</keyword>
-    <keyword>main</keyword>
-    <keyword>main</keyword>
-    <keyword>nowin32manifest</keyword>
-    <keyword>nowin32manifest</keyword>
+    <keyword>-main</keyword>
+    <keyword>-nowin32manifest</keyword>
     <keyword>Output File</keyword>
     <keyword>Output Type</keyword>
     <keyword>Prefer native resource</keyword>
     <keyword>Prefer native resource over managed resource</keyword>
     <keyword>Project File</keyword>
     <keyword>Project Folder</keyword>
-    <keyword>rootnamespace</keyword>
-    <keyword>rootnamespace</keyword>
+    <keyword>-rootnamespace</keyword>
     <keyword>Startup Object</keyword>
     <keyword>Suppress default Win32</keyword>
     <keyword>Suppress default Win32 manifest</keyword>
     <keyword>Target Framework Moniker</keyword>
-    <keyword>usenativeversion</keyword>
+    <keyword>-usenativeversion</keyword>
     <keyword>Vulcan Compatible Managed Resources</keyword>
-    <keyword>win32icon</keyword>
+    <keyword>-win32icon</keyword>
   </keywords>
   <body>
     <header>
@@ -71,7 +63,7 @@
           <para styleclass="Normal">Select the compiler dialect to use when compiling this project. Changing the dialect may also change the &apos;Allow NamedArguments&apos; setting on the Language page.&quot;</para>
         </td>
         <td style="height:19px;">
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-dialect">/dialect</link></para>
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-dialect">-dialect</link></para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -94,7 +86,7 @@
           <para styleclass="Normal">You can override this setting by specifying another classname here.</para>
         </td>
         <td style="height:19px;">
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-main">/main:</link></para>
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-main">-main:</link></para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -116,7 +108,7 @@
           <para styleclass="Normal">The name of the output file that will hold assembly metadata.</para>
         </td>
         <td style="height:19px;">
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-out">/out</link></para>
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-out">-out</link></para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -160,7 +152,7 @@
           <para styleclass="Normal">Sets the .ico file to use as your application icon. Please note that if your application contains native resources then this value will be ignored.</para>
         </td>
         <td style="height:19px;">
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-win32icon">/win32icon</link></para>
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-win32icon">-win32icon</link></para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -171,7 +163,7 @@
           <para styleclass="Normal">When your application includes a native resource, use this native resource and do not generate a resource based on the global assembly properties such as AssemblyTitle, AssemblyVersion etc.</para>
         </td>
         <td style="height:19px;">
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Opt-usenativeversion">/usenativeversion</link></para>
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Opt-usenativeversion">-usenativeversion</link></para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -182,7 +174,7 @@
           <para styleclass="Normal">Suppress default Win32 manifest. You will have to supply your own Win32 manifest if you suppress the default one.</para>
         </td>
         <td style="height:19px;">
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-nowin32manifest">/nowin32manifest</link></para>
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-nowin32manifest">-nowin32manifest</link></para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -193,7 +185,7 @@
           <para styleclass="Normal">Use Vulcan Compatible Managed Resources (when &apos;True&apos; then resources files are included in the assembly without namespace prefix. When &apos;False&apos; then the resource files are prefixed with the namespace of the app, just like in other .Net languages, such as C#)</para>
         </td>
         <td style="height:19px;">
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-resource">/resource</link></para>
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-resource">-resource</link></para>
         </td>
       </tr>
     </table></para>

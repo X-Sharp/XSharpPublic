@@ -71,7 +71,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             return false;
         }
         private BoundExpression BindVOCompareString(BinaryExpressionSyntax node, DiagnosticBag diagnostics,
-            BoundExpression left, BoundExpression right, ref int compoundStringLength)
+            BoundExpression left, BoundExpression right)
         {
             MethodSymbol opMeth = null;
             TypeSymbol type;
@@ -109,8 +109,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 opCall = BoundCall.Synthesized(node, null, opMeth, left, right);
             }
             return BindSimpleBinaryOperator(node, diagnostics, opCall,
-                new BoundLiteral(node, ConstantValue.Create((int)0), GetSpecialType(SpecialType.System_Int32, diagnostics, node)),
-                ref compoundStringLength);
+                new BoundLiteral(node, ConstantValue.Create((int)0), GetSpecialType(SpecialType.System_Int32, diagnostics, node)));
         }
 
 
@@ -249,8 +248,8 @@ namespace Microsoft.CodeAnalysis.CSharp
             var intType = Compilation.GetSpecialType(SpecialType.System_Int32);
             var lit0 = new BoundLiteral(node, ConstantValue.Create(0), intType);
             var lit1 = new BoundLiteral(node, ConstantValue.Create(1), intType);
-            left = new BoundConditionalOperator(node, false, left, lit1, lit0, null, intType);
-            right = new BoundConditionalOperator(node, false, right, lit1, lit0, null, intType);
+            left = new BoundConditionalOperator(node, false, left, lit1, lit0, constantValueOpt: default, wasTargetTyped: false, type: intType, naturalTypeOpt: default);
+            right = new BoundConditionalOperator(node, false, right, lit1, lit0, constantValueOpt: default, wasTargetTyped: false, type: intType, naturalTypeOpt: default);
             return null;
         }
 
@@ -371,7 +370,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         }
 
         private BoundExpression BindVOBinaryOperator(BinaryExpressionSyntax node, DiagnosticBag diagnostics,
-            ref BoundExpression left, ref BoundExpression right, ref int compoundStringLength, VOOperatorType opType)
+            ref BoundExpression left, ref BoundExpression right,VOOperatorType opType)
         {
             switch (opType)
             {
@@ -384,7 +383,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 case VOOperatorType.SubtractString:
                     return BindVOSubtractString(node, diagnostics, left, right);
                 case VOOperatorType.CompareString:
-                    return BindVOCompareString(node, diagnostics, left, right, ref compoundStringLength);
+                    return BindVOCompareString(node, diagnostics, left, right);
                 case VOOperatorType.UsualOther:
                     return BindVOUsualOther(node, diagnostics, left, right);
                 case VOOperatorType.PSZCompare:
@@ -535,7 +534,6 @@ namespace Microsoft.CodeAnalysis.CSharp
     
                         if (opType == VOOperatorType.None)
                         { 
-
                             // Add or Subtract USUAL with other type
                             // LHS   - RHS 
                             // Usual - Date
@@ -596,7 +594,13 @@ namespace Microsoft.CodeAnalysis.CSharp
                                if (xnode != null  && xnode.Parent is XSharpParser.VodefineContext)
                                {
                                     // convert RHS to type of LHS inside a VODefine
-                                    right = new BoundConversion(right.Syntax, right, Conversion.ImplicitNumeric, false, false, right.ConstantValue, leftType) { WasCompilerGenerated = true };
+                                    right = new BoundConversion(right.Syntax, right,
+                                        Conversion.ImplicitNumeric,
+                                        false,
+                                        false,
+                                        conversionGroupOpt: default, 
+                                        constantValueOpt: right.ConstantValue,
+                                        type: leftType) { WasCompilerGenerated = true };
                                 }
 
                             }
@@ -657,13 +661,12 @@ namespace Microsoft.CodeAnalysis.CSharp
                 var kind = BinaryOperatorKind.Subtraction;
                 var left = index;
                 var right = new BoundLiteral(syntax, ConstantValue.Create(1), index.Type) { WasCompilerGenerated = true };
-                int compoundStringLength = 0;
                 var leftType = left.Type;
                 var opKind = leftType.SpecialType == SpecialType.System_Int32 ? BinaryOperatorKind.IntSubtraction
                     : leftType.SpecialType == SpecialType.System_Int64 ? BinaryOperatorKind.LongSubtraction
                     : leftType.SpecialType == SpecialType.System_UInt32 ? BinaryOperatorKind.UIntSubtraction
                     : BinaryOperatorKind.ULongSubtraction;
-                var resultConstant = FoldBinaryOperator(syntax, opKind, left, right, left.Type.SpecialType, diagnostics, ref compoundStringLength);
+                var resultConstant = FoldBinaryOperator(syntax, opKind, left, right, left.Type.SpecialType, diagnostics);
                 var sig = this.Compilation.builtInOperators.GetSignature(opKind);
                 index = new BoundBinaryOperator(syntax, kind, left, right, resultConstant, sig.Method,
                     resultKind: LookupResultKind.Viable,
@@ -791,7 +794,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 }
                 var bfa = expr as BoundFieldAccess;
                 // Externally defined fixed Field. Could be a DIM field in a VoStruct class
-                if (bfa.FieldSymbol.IsFixed)
+                if (bfa.FieldSymbol.IsFixedSizeBuffer)
                 {
                     var type = bfa.FieldSymbol.ContainingType;
                     if (type.IsVoStructOrUnion())
@@ -841,7 +844,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                         aindex.Add(new BoundLiteral(node, ConstantValue.Create(0), intType));
                     }
                     var bacc = new BoundArrayAccess(node.Operand, expr, aindex.ToImmutableAndFree(), elType, false);
-                    TypeSymbol ptrType = new PointerTypeSymbol(elType.Type);
+                    TypeSymbol ptrType = new PointerTypeSymbol(TypeWithAnnotations.Create(elType));
                     return new BoundAddressOfOperator(node, bacc, false, ptrType, hasErrors: false);
                 }
             }

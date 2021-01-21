@@ -41,7 +41,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 expressions);
         }
 
-        private bool BindVOPointerDereference(CastExpressionSyntax node, TypeSymbol targetType, BoundExpression operand, 
+        private bool BindVOPointerDereference(CastExpressionSyntax node, TypeWithAnnotations targetType, BoundExpression operand, 
             DiagnosticBag diagnostics, out BoundExpression expression)
         {
             // Type(pPointer) -> Dereference pointer
@@ -57,8 +57,8 @@ namespace Microsoft.CodeAnalysis.CSharp
                     // Convert INT(<ptr>) to ((INT PTR) <ptr>)[0]
                     // No need to worry about /AZ. This has been handled already
                     // make sure that PSZ(ptr) is not dereferenced !
-                    bool canConvert = operand.Type.IsVoidPointer() && !TypeSymbol.Equals(targetType , Compilation.PszType());
-                    if ( ! canConvert)
+                    bool canConvert = operand.Type.IsVoidPointer() && targetType.Type.IsPszType();
+                    if (!canConvert)
                     {
                         PointerTypeSymbol pt = operand.Type as PointerTypeSymbol;
                         canConvert = TypeSymbol.Equals(pt.PointedAtType, targetType);
@@ -70,8 +70,11 @@ namespace Microsoft.CodeAnalysis.CSharp
                         HashSet<DiagnosticInfo> useSiteDiagnostics = null;
                         //var newConv = Conversions.ClassifyConversionForCast(operand, ptrtype, ref useSiteDiagnostics);
                         var newConv = Conversions.ClassifyConversionFromExpression(operand, ptrtype, ref useSiteDiagnostics, forCast: true);
-                        var ptrconv = new BoundConversion(node, operand, newConv, true, true, null, ptrtype) { WasCompilerGenerated = true };
-                        expression = new BoundPointerElementAccess(node, ptrconv, index, false, targetType) { WasCompilerGenerated = true };
+                        var ptrconv = new BoundConversion(node, operand, newConv, true, true,
+                            conversionGroupOpt: default,
+                            constantValueOpt: default,
+                            type: ptrtype) { WasCompilerGenerated = true };
+                        expression = new BoundPointerElementAccess(node, ptrconv, index, false, targetType.Type) { WasCompilerGenerated = true };
                         return true;
                     }
                 }
@@ -196,12 +199,12 @@ namespace Microsoft.CodeAnalysis.CSharp
                         }
                         if (mustcast)
                         {
-                            expr = BindCastCore(node, expr, cf, wasCompilerGenerated: true, diagnostics: diagnostics);
+                            expr = BindCastCore(node, expr, TypeWithAnnotations.Create(cf), wasCompilerGenerated: true, diagnostics: diagnostics);
                         }
                     }
                     else
                     {
-                        expr = BindCastCore(node, expr, arrayType, wasCompilerGenerated: true, diagnostics: diagnostics);
+                        expr = BindCastCore(node, expr, TypeWithAnnotations.Create(arrayType), wasCompilerGenerated: true, diagnostics: diagnostics);
                         cf = arrayType;
                         numericParams = true;
                     }
@@ -259,12 +262,13 @@ namespace Microsoft.CodeAnalysis.CSharp
                             // this will make sure that the proper GetIndex calls is chosen
                             var exprs = SeparatedSyntaxListBuilder<ExpressionSyntax>.Create();
                             argsBuilder = ArrayBuilder<BoundExpression>.GetInstance();
+                            var tint32 = TypeWithAnnotations.Create(Compilation.GetSpecialType(SpecialType.System_Int32));
                             foreach (var arg in args)
                             {
                                 if (exprs.Count > 0)
                                     exprs.AddSeparator(SyntaxFactory.MissingToken(SyntaxKind.CommaToken));
                                 exprs.Add(arg.Syntax as ExpressionSyntax);
-                                argsBuilder.Add(BindCastCore(arg.Syntax as ExpressionSyntax, arg, Compilation.GetSpecialType(SpecialType.System_Int32), wasCompilerGenerated: true, diagnostics: diagnostics));
+                                argsBuilder.Add(BindCastCore(arg.Syntax as ExpressionSyntax, arg, tint32, wasCompilerGenerated: true, diagnostics: diagnostics));
                                 args = argsBuilder.ToImmutable();
                             }
                             var initSyntax = SyntaxFactory.InitializerExpression(SyntaxKind.ArrayInitializerExpression, exprs);
@@ -272,7 +276,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                             argsBuilder.Add(BindArrayCreationWithInitializer(diagnostics,
                                 creationSyntax: null,
                                 initSyntax: initSyntax,
-                                type: ArrayTypeSymbol.CreateCSharpArray(this.Compilation.Assembly, Compilation.GetSpecialType(SpecialType.System_Int32), ImmutableArray<CustomModifier>.Empty),
+                                type: ArrayTypeSymbol.CreateCSharpArray(this.Compilation.Assembly, tint32, default),
                                 sizes: ImmutableArray<BoundExpression>.Empty,
                                 boundInitExprOpt: args));
                             args = argsBuilder.ToImmutableAndFree();
@@ -413,7 +417,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             if (Compilation.Options.LateBindingOrFox(node) && right.Kind() != SyntaxKind.GenericName && boundLeft.Kind != BoundKind.TypeExpression )
             {
                 string propName = right.Identifier.ValueText;
-                if (((object)leftType ) != null)
+                if (!leftType.IsNull())
                 {
                     bool earlyBound = propName == ".ctor";
                     bool isObject = leftType.IsObjectType();
@@ -468,7 +472,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                             return new BoundDynamicMemberAccess(
                                 syntax: node,
                                 receiver: boundLeft,
-                                typeArgumentsOpt: default(ImmutableArray<TypeSymbol>),
+                                typeArgumentsOpt: default,
                                 name: propName,
                                 invoked: invoked,
                                 indexed: indexed,
@@ -560,9 +564,9 @@ namespace Microsoft.CodeAnalysis.CSharp
         private bool BindStringToPsz(CSharpSyntaxNode syntax, ref BoundExpression source, TypeSymbol destination,DiagnosticBag diagnostics)
         {
             TypeSymbol psz = Compilation.PszType();
-            if (source.Type != null && source.Type.IsStringType() &&
+            if (!source.Type.IsNull() && source.Type.IsStringType() &&
                 Compilation.Options.HasRuntime &&
-                (TypeSymbol.Equals(destination , psz) || destination.IsVoidPointer()))
+                (destination.IsPszType() || destination.IsVoidPointer()))
             {
                 // Note this calls the constructor for __PSZ with a string.
                 // The allocated pointer inside the PSZ is never freed by Vulcan and X# !
@@ -594,7 +598,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             SimpleNameSyntax node,
             bool invoked,
             DiagnosticBag diagnostics,
-            bool bindMethod 
+            bool bindMethod
             )
         {
             // This method replaced the standard C# BindIdentifier
@@ -643,9 +647,7 @@ namespace Microsoft.CodeAnalysis.CSharp
 
             Debug.Assert(arity == typeArgumentList.Count);
 
-            var typeArguments = hasTypeArguments ?
-                BindTypeArguments(typeArgumentList, diagnostics) :
-                default(ImmutableArray<TypeSymbol>);
+            var typeArguments = hasTypeArguments ? BindTypeArguments(typeArgumentList, diagnostics) : default;
 
             var lookupResult = LookupResult.GetInstance();
             LookupOptions options = LookupOptions.AllMethodsOnArityZero;
@@ -914,13 +916,14 @@ namespace Microsoft.CodeAnalysis.CSharp
                     if (get.Length == 1 && set.Length == 1 && get[0] is MethodSymbol && set[0] is MethodSymbol)
                     {
                         XsVariableSymbol ps;
+                        var tUsual = TypeWithAnnotations.Create(Compilation.UsualType());
                         if (!String.IsNullOrEmpty(alias))
                         {
-                            ps = new XsVariableSymbol(alias, name, (MethodSymbol)get[0], (MethodSymbol)set[0], Compilation.UsualType());
+                            ps = new XsVariableSymbol(alias, name, (MethodSymbol)get[0], (MethodSymbol)set[0], tUsual);
                         }
                         else
                         {
-                            ps = new XsVariableSymbol(name, (MethodSymbol)get[0], (MethodSymbol)set[0], Compilation.UsualType());
+                            ps = new XsVariableSymbol(name, (MethodSymbol)get[0], (MethodSymbol)set[0], tUsual);
                         }
 
                         expression = new BoundPropertyAccess(node, null, ps, LookupResultKind.Viable, Compilation.UsualType());
@@ -1021,20 +1024,21 @@ namespace Microsoft.CodeAnalysis.CSharp
             return;
         }
 
-        private static TypeSymbol XsGetCorrespondingParameterType(ref MemberAnalysisResult result, ImmutableArray<TypeWithAnnotations> parameterTypes, int arg)
+        private static TypeWithAnnotations XsGetCorrespondingParameterType(ref MemberAnalysisResult result, ImmutableArray<TypeWithAnnotations> parameterTypes, int arg)
         {
             int paramNum = result.ParameterFromArgument(arg);
-            var type =
-                (paramNum == parameterTypes.Length - 1 && result.Kind == MemberResolutionKind.ApplicableInExpandedForm) ?
-                ((ArrayTypeSymbol)parameterTypes[paramNum]).Type.ElementType :
-                parameterTypes[paramNum].Type;
-            return type;
+            TypeSymbol type = parameterTypes[paramNum].Type;
+            if (paramNum == parameterTypes.Length - 1 && result.Kind == MemberResolutionKind.ApplicableInExpandedForm)
+            {
+                type = ((ArrayTypeSymbol)type).ElementType;
+            }
+            return TypeWithAnnotations.Create(type);
         }
-        private BoundExpression XsFixPszArgumentProblems (BoundExpression argument, TypeSymbol type, ref Conversion kind)
+        private BoundExpression XsFixPszArgumentProblems (BoundExpression argument, TypeWithAnnotations type, ref Conversion kind)
         {
             if (argument.Kind == BoundKind.Literal)
             {
-                if (type == Compilation.PszType())
+                if (type.Type.IsPszType())
                 {
                     var lit = argument as BoundLiteral;
                     if (lit.IsLiteralNull())

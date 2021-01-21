@@ -921,6 +921,20 @@ namespace Microsoft.CodeAnalysis.CSharp
                 }
 
             }
+            NamedTypeSymbol target = null;
+            if (code == ErrorCode.ERR_BadCtorArgCount)
+            {
+                target = typeContainingConstructor;
+            }
+            else if (code == ErrorCode.ERR_BadDelArgCount)
+            {
+                target = delegateTypeBeingInvoked;
+            }
+            else
+            {
+                target = symbols[0] as NamedTypeSymbol;
+            }
+
 #else
             FunctionPointerMethodSymbol functionPointerMethodBeingInvoked = symbols.IsDefault || symbols.Length != 1
                 ? null

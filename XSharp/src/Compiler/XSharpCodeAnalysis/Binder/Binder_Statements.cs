@@ -48,7 +48,14 @@ namespace Microsoft.CodeAnalysis.CSharp
             else
             {
                 // call (type) Expression to truncate the result
-                return CreateConversion(expression.Syntax, expression, conversion, false, targetType, diagnostics);
+                return CreateConversion(
+                    syntax: expression.Syntax,
+                    source: expression,
+                    conversion: conversion,
+                    isCast: false,
+                    conversionGroupOpt: default,
+                    destination: targetType,
+                    diagnostics: diagnostics);
             }
 
         }
@@ -75,7 +82,16 @@ namespace Microsoft.CodeAnalysis.CSharp
                     BoundExpression result;
                     if (targetType.IsIntegralType() && expression.Type.IsIntegralType())
                     {
-                        result=  CreateConversion(expression.Syntax, expression, conversion, false, targetType, diagnostics);
+
+
+                        result = CreateConversion(
+                            syntax: expression.Syntax,
+                            source: expression,
+                            conversion: conversion,
+                            isCast: false,
+                            conversionGroupOpt: default,
+                            destination: targetType,
+                            diagnostics: diagnostics);
                     }
                     else
                     {

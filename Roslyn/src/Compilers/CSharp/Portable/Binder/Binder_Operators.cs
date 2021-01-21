@@ -555,7 +555,7 @@ namespace Microsoft.CodeAnalysis.CSharp
 
             if (opType != VOOperatorType.None)
             {
-                var res =  BindVOBinaryOperator(node, diagnostics, ref left, ref right, ref compoundStringLength,opType);
+                var res =  BindVOBinaryOperator(node, diagnostics, ref left, ref right, opType);
                 if (res != null)
                     return res;
             }
@@ -683,7 +683,10 @@ namespace Microsoft.CodeAnalysis.CSharp
 
                 if (resultType.IsIntegralType() && !TypeSymbol.Equals(resultType , chosenType))// C277 ByteValue >> 2 should not return int but byte.
                 {
-                    result = new BoundConversion(node, result, Conversion.ImplicitNumeric, false, false, null, chosenType) { WasCompilerGenerated = true };
+                    result = new BoundConversion(node, result, Conversion.ImplicitNumeric, false, false, 
+                        conversionGroupOpt: default,
+                        constantValueOpt: default, 
+                        type: chosenType) { WasCompilerGenerated = true };
                 }
             }
             return result;
@@ -3143,7 +3146,10 @@ namespace Microsoft.CodeAnalysis.CSharp
             if (operand.Type.IsUsualType())
             {
                 // this triggers the boxing of the contents of the usual into an object
-                operand = new BoundConversion(node, operand, Conversion.Boxing, false, false, null, GetSpecialType(SpecialType.System_Object, diagnostics, node));
+                operand = new BoundConversion(node, operand, Conversion.Boxing, false, false,
+                    conversionGroupOpt: default,
+                    constantValueOpt: default, 
+                    type: GetSpecialType(SpecialType.System_Object, diagnostics, node));
             }
 #endif
             if (!tryBindAsType(node.Right, out DiagnosticBag isTypeDiagnostics, out BoundTypeExpression typeExpression) &&

@@ -7,6 +7,7 @@
 
 using Microsoft.CodeAnalysis.CSharp.Symbols;
 using System.Collections.Generic;
+using System.Linq;
 using XP = LanguageService.CodeAnalysis.XSharp.SyntaxParser.XSharpParser;
 using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
 
@@ -51,7 +52,6 @@ namespace Microsoft.CodeAnalysis.CSharp
     }
     internal sealed partial class Conversions
     {
-    
         override public bool HasBoxingConversion(TypeSymbol source, TypeSymbol destination, ref HashSet<DiagnosticInfo> useSiteDiagnostics)
         {
             bool result = base.HasBoxingConversion(source, destination, ref useSiteDiagnostics);
@@ -121,8 +121,9 @@ namespace Microsoft.CodeAnalysis.CSharp
                 if ( nts.ConstructedFrom.IsUsualType())
                 {
                     var op = usualType.GetOperators(WellKnownMemberNames.ImplicitConversionName)
-                        .WhereAsArray(o => o.ParameterCount == 1 && o.Parameters[0].Type.IsObjectType() && TypeSymbol.Equals(o.ReturnType, usualType))
-                        .AsSingleton() as MethodSymbol;
+                        .WhereAsArray(o => o.ParameterCount == 1 && o.Parameters[0].Type.IsObjectType()
+                        && TypeSymbol.Equals(o.ReturnType, usualType))
+                        .First() as MethodSymbol;
                     if (op != null)
                     {
                         var sourceType = _binder.Compilation.GetSpecialType(SpecialType.System_Object);
@@ -147,12 +148,16 @@ namespace Microsoft.CodeAnalysis.CSharp
                 {
                     return LambdaConversionResult.Success;
                 }
-
-                var conv = Compilation.ClassifyConversion(Compilation.CodeBlockType(), type);
+                // Todo RvdH Check of can be converted
+                /*
+                TypeSymbol cb = Compilation.CodeBlockType();
+                var conv = Compilation.ClassifyConversion(cb, type);
                 if (conv.Exists)
                 {
                     return LambdaConversionResult.Success;
                 }
+                */
+                return LambdaConversionResult.Success;
             }
 
             return res;

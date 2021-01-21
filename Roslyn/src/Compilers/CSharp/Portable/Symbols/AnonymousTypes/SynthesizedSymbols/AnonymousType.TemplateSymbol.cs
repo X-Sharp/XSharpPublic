@@ -87,6 +87,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                 _baseType = IsCodeblock ? manager.CodeblockType : manager.System_Object;
                 if (IsCodeblock)
                 {
+
+
                     _baseType = manager.CodeblockType;
 
                     int cbParamCount = typeDescr.Fields.Length;
@@ -100,10 +102,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                     Symbol[] cbMembers = new Symbol[7];
                     int cbMemberIndex = 0;
 
-                    var eval = new AnonymousTypePropertySymbol(this, new AnonymousTypeField("Cb$Eval$", typeDescr.Location, cbDelegate), cbDelegate);
-                    var source = new AnonymousTypePropertySymbol(this, new AnonymousTypeField("Cb$Src$", typeDescr.Location, manager.System_String), manager.System_String);
+                    var tDelegate = TypeWithAnnotations.Create(cbDelegate);
+                    var tSource = TypeWithAnnotations.Create(manager.System_String);
+                    // Add properties
+                    var eval = new AnonymousTypePropertySymbol(this, new AnonymousTypeField("Cb$Eval$", typeDescr.Location, tDelegate), tDelegate , 0);
+                    var source = new AnonymousTypePropertySymbol(this, new AnonymousTypeField("Cb$Src$", typeDescr.Location, tSource), tSource, 1);
 
-                    this.Properties = new[] { source }.ToImmutableArray();
+                    this.Properties = new[] { eval, source }.ToImmutableArray();
 
                     // Property related symbols
                     cbMembers[cbMemberIndex++] = eval;

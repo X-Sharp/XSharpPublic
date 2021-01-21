@@ -25,12 +25,21 @@ namespace Microsoft.CodeAnalysis.CSharp
         internal bool ReportUnsafeIfNotAllowed(SyntaxNode node, DiagnosticBag diagnostics, TypeSymbol sizeOfTypeOpt = null)
         {
             Debug.Assert((node.Kind() == SyntaxKind.SizeOfExpression) == ((object)sizeOfTypeOpt != null), "Should have a type for (only) sizeof expressions.");
+#if XSHARP 
+            var diagnosticInfo = Compilation.Options.HasRuntime && Compilation.Options.AllowUnsafe ? null : GetUnsafeDiagnosticInfo(sizeOfTypeOpt);
+#else
             var diagnosticInfo = GetUnsafeDiagnosticInfo(sizeOfTypeOpt);
+#endif
             if (diagnosticInfo == null)
             {
                 return false;
             }
-
+#if XSHARP
+            if ((object)sizeOfTypeOpt != null)
+                return false;
+            if (ErrorFacts.IsWarning(diagnosticInfo.Code))
+                return false;
+#endif
             diagnostics.Add(new CSDiagnostic(diagnosticInfo, node.Location));
             return true;
         }
@@ -38,23 +47,16 @@ namespace Microsoft.CodeAnalysis.CSharp
         /// <returns>True if a diagnostic was reported</returns>
         internal bool ReportUnsafeIfNotAllowed(Location location, DiagnosticBag diagnostics)
         {
-#if XSHARP 
-            var diagnosticInfo = Compilation.Options.HasRuntime && Compilation.Options.AllowUnsafe  ? null : GetUnsafeDiagnosticInfo(sizeOfTypeOpt: null);
-#else
             var diagnosticInfo = GetUnsafeDiagnosticInfo(sizeOfTypeOpt: null);
-#endif
             if (diagnosticInfo == null)
             {
                 return false;
             }
-
-            diagnostics.Add(new CSDiagnostic(diagnosticInfo, location));
 #if XSHARP
-            if ((object)sizeOfTypeOpt != null)
-                return false;
             if (ErrorFacts.IsWarning(diagnosticInfo.Code))
                 return false;
 #endif
+            diagnostics.Add(new CSDiagnostic(diagnosticInfo, location));
             return true;
         }
 

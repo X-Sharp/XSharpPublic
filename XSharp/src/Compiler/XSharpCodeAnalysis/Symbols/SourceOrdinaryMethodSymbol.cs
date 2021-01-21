@@ -18,10 +18,10 @@ using Roslyn.Utilities;
 
 namespace Microsoft.CodeAnalysis.CSharp.Symbols
 {
-    internal  sealed partial class SourceOrdinaryMethodSymbol 
+    internal abstract partial class SourceOrdinaryMethodSymbolBase 
     {
 
-        private bool XsGenerateDebugInfo
+        protected bool XsGenerateDebugInfo
         {
             get
             {
@@ -53,17 +53,17 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                 {
                     if (overriddenMethod.ContainingType.TypesChanged())
                     {
-                        diagnostics.Add(ErrorCode.ERR_MethodSignatureChanged, this.Locations[0], this, overriddenMethod );
-                    }
-                    else
-                    { 
-                    if (this.HasClipperCallingConvention())
-                    {
-                        diagnostics.Add(ErrorCode.ERR_ClipperInSubClass, location, this.Name);
+                        diagnostics.Add(ErrorCode.ERR_MethodSignatureChanged, this.Locations[0], this, overriddenMethod);
                     }
                     else
                     {
-                        diagnostics.Add(ErrorCode.ERR_ClipperInParentClass, location, this.Name);
+                        if (this.HasClipperCallingConvention())
+                        {
+                            diagnostics.Add(ErrorCode.ERR_ClipperInSubClass, location, this.Name);
+                        }
+                        else
+                        {
+                            diagnostics.Add(ErrorCode.ERR_ClipperInParentClass, location, this.Name);
                         }
                     }
                     overriddenMethod = null;
@@ -85,11 +85,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                             TypeSymbol.Equals(this.ReturnType, metSym.ReturnType);
                         if (equalSignature)
                         {
-                            var thisTypes = this.Parameter;
+                            var thisTypes = this.ParameterTypesWithAnnotations;
                             var theirTypes = metSym.Parameters;
                             for (int i = 0; i < thisTypes.Length; i++)
                             {
-                                if (thisTypes[i].Type != theirTypes[i].Type)
+                                if (!TypeSymbol.Equals(thisTypes[i].Type,theirTypes[i].Type))
                                 {
                                     equalSignature = false;
                                     break;
@@ -112,10 +112,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             if ((object)overriddenMethod != null)
             {
                 CustomModifierUtils.CopyMethodCustomModifiers(overriddenMethod, this, out _lazyReturnType,
-                                                              out _lazyCustomModifiers,
+                                                              out _lazyRefCustomModifiers,
                                                               out _lazyParameters, alsoCopyParamsModifier: true);
             }
             var node = this.SyntaxNode.Green as Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax.MethodDeclarationSyntax;
+            // todo RvdH Changes flags
+            /*
             var mods = flags.DeclarationModifiers;
             if ((object)overriddenMethod != null)
             {
@@ -132,7 +134,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                     }
                 }
 
-                flags = new Flags(flags.MethodKind, mods, flags.ReturnsVoid, flags.IsExtensionMethod, flags.IsMetadataVirtual(true));
+                flags = new Flags(flags.MethodKind, mods, this.ReturnsVoid, flags.IsExtensionMethod, flags.IsMetadataVirtual(true));
             }
             else
             {
@@ -144,9 +146,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                         mods = mods & ~DeclarationModifiers.Override;
                     }
                 }
-                flags = new Flags(flags.MethodKind, mods, flags.ReturnsVoid, flags.IsExtensionMethod, flags.IsMetadataVirtual(true));
+                flags = new Flags(flags.MethodKind, mods, this.ReturnsVoid, flags.IsExtensionMethod, flags.IsMetadataVirtual(true));
             }
-
+            */
             return overriddenMethod;
         }
     }

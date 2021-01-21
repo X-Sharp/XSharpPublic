@@ -189,7 +189,10 @@ namespace Microsoft.CodeAnalysis.CSharp
                     if (bcv.Operand.Type.SpecialType == SpecialType.System_IntPtr && bfa.FieldSymbol.IsConst == true && ca[1].ConstantValue?.Int32Value == 0)
                     {
                         var dv = new BoundLiteral(ca[0].Syntax, ConstantValue.Create(0L), Compilation.GetSpecialType(SpecialType.System_Int64));
-                        ca[0] = new BoundConversion(ca[0].Syntax, dv, Conversion.Boxing, false, false, null, Compilation.ObjectType);
+                        ca[0] = new BoundConversion(ca[0].Syntax, dv, Conversion.Boxing, false, false,
+                            conversionGroupOpt: default, 
+                            constantValueOpt: default,
+                            Compilation.ObjectType);
                         ca[1] = new BoundLiteral(ca[1].Syntax, ConstantValue.Create(5), Compilation.GetSpecialType(SpecialType.System_Int32));
                     }
                 }

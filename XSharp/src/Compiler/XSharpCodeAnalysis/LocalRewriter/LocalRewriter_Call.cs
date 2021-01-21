@@ -188,7 +188,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                   
 
                     arguments[p] = expr;
-                    Debug.Assert(arguments[p].Type == parameter.Type);
+                    Debug.Assert(TypeSymbol.Equals(arguments[p].Type, parameter.Type));
 
                     if (parameters[p].RefKind == RefKind.In)
                     {

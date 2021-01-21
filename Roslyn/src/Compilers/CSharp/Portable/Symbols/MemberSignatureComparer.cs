@@ -406,7 +406,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             if (member1.GetParameterCount() != member2.GetParameterCount())
                 return false;
             // when one of the two has the TypesChanged attribute then we will merge the parameter and return types later
-            if (member1.ContainingType != member2.ContainingType && (member1.ContainingType.TypesChanged() || member2.ContainingType.TypesChanged()))
+            if (!TypeSymbol.Equals(member1.ContainingType,member2.ContainingType) && (member1.ContainingType.TypesChanged() || member2.ContainingType.TypesChanged()))
                 return true;
 #else
             if ((arity != member2.GetMemberArity()) ||

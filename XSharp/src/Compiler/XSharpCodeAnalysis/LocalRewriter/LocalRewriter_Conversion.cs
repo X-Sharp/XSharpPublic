@@ -22,7 +22,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             var members = srcType.GetMembers(WellKnownMemberNames.ImplicitConversionName);
             foreach (MethodSymbol m in members)
             {
-                if (TypeSymbol.EQuals(m.ReturnType, destType))
+                if (TypeSymbol.Equals(m.ReturnType, destType))
                 {
                     return m;
                 }
@@ -38,7 +38,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             {
                 if (m.ParameterCount > 0)
                 {
-                    var pt = m.GetParameterTypes()[0] as TypeSymbol;
+                    var pt = m.GetParameterTypes()[0].Type as TypeSymbol;
                     if (TypeSymbol.Equals(pt, destType))
                     {
                         return m;
@@ -122,7 +122,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                         {
                             rewrittenOperand = _factory.StaticCall(rewrittenType, m, rewrittenOperand);
                             rewrittenOperand.WasCompilerGenerated = true;
-                            return ConversionKind.PointerToPointer;
+                            return ConversionKind.ExplicitPointerToPointer;
                         }
                     }
                     else if (rewrittenType.SpecialType == SpecialType.System_DateTime)
@@ -219,7 +219,10 @@ namespace Microsoft.CodeAnalysis.CSharp
                     && _compilation.Options.Dialect.AllowPointerMagic())
                 {
                     rewrittenOperand = new BoundConversion(rewrittenOperand.Syntax, rewrittenOperand,
-                        Conversion.Identity, false, false, null, _compilation.GetSpecialType(SpecialType.System_IntPtr));
+                        Conversion.Identity, false, false,
+                        conversionGroupOpt: default,
+                        constantValueOpt: default, 
+                        type: _compilation.GetSpecialType(SpecialType.System_IntPtr));
                 }
             }
             return conversionKind;

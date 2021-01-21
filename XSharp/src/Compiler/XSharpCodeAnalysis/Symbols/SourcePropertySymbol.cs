@@ -14,34 +14,37 @@ using System.Threading;
 using Microsoft.CodeAnalysis.Collections;
 using Microsoft.CodeAnalysis.CSharp.Symbols;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Microsoft.CodeAnalysis.PooledObjects;
 using Roslyn.Utilities;
 
 namespace Microsoft.CodeAnalysis.CSharp.Symbols
 {
     internal partial class SourcePropertyAccessorSymbol
     {
-        private TypeSymbol _changedReturnType = null;
+        private TypeWithAnnotations _changedReturnType = default;
         private ImmutableArray<ParameterSymbol> _changedParameters = default;
         private bool _signatureChanged = false;
         private MethodSymbol _parentMethod;
 
-        internal void ChangeSignature(TypeSymbol returnType, ImmutableArray<ParameterSymbol> parameters)
+        internal void ChangeSignature(TypeWithAnnotations returnType, ImmutableArray<ParameterSymbol> parameters)
         {
             _changedReturnType = returnType;
 
             var newparameters = ArrayBuilder<ParameterSymbol>.GetInstance(parameters.Length);
             foreach (var p in parameters)
             {
-                newparameters.Add(new SynthesizedAccessorValueParameterSymbol(this, p.Type, newparameters.Count, p.CustomModifiers));
+                var type = TypeWithAnnotations.Create(p.Type);
+                newparameters.Add(new SynthesizedAccessorValueParameterSymbol(this, type, newparameters.Count));
 
             }
             _changedParameters = newparameters.ToImmutableAndFree();
             _signatureChanged = true;
-            this.flags = new Flags(flags.MethodKind,
-                flags.DeclarationModifiers | DeclarationModifiers.Override,
-                flags.ReturnsVoid,
-                flags.IsExtensionMethod,
-                flags.IsMetadataVirtual());
+            // Todo RvdH Update flags to add Override
+            //this.flags = new Flags(flags.MethodKind,
+            //    flags.DeclarationModifiers | DeclarationModifiers.Override,
+            //    this.ReturnsVoid,
+            //    flags.IsExtensionMethod,
+            //    flags.IsMetadataVirtual());
                 
         }
         internal void SetOverriddenMethod(MethodSymbol m)
@@ -61,8 +64,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
     }
     internal sealed partial class SourcePropertySymbol
     {
-        private TypeSymbol _newPropertyType = null;
+        private TypeWithAnnotations _newPropertyType = default;
         private bool _typeChanged = false;
+
+
+
         internal PropertySymbol validateProperty(PropertySymbol overriddenProperty, DiagnosticBag diagnostics, Location location)
         {
             if (overriddenProperty == null && XSharpString.CaseSensitive)
@@ -83,7 +89,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                             var theirTypes = propSym.Parameters;
                             for (int i = 0; i < thisTypes.Length; i++)
                             {
-                                if (thisTypes[i].Type != theirTypes[i].Type)
+                                if (!TypeSymbol.Equals(thisTypes[i].Type,theirTypes[i].Type))
                                 {
                                     equalSignature = false;
                                     break;
@@ -101,7 +107,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             }
             return this;
         }
-        internal void SetChangedParentType(TypeSymbol type)
+        internal void SetChangedParentType(TypeWithAnnotations type)
         {
             _newPropertyType = type;
             _typeChanged = true;
@@ -109,14 +115,14 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             {
                 var m = (SourcePropertyAccessorSymbol)this.GetMethod;
                 var m2 = this.OverriddenProperty.GetMethod;
-                m.ChangeSignature(m2.ReturnType, m2.Parameters);
+                m.ChangeSignature(TypeWithAnnotations.Create(m2.ReturnType), m2.Parameters);
                 m.SetOverriddenMethod(m2);
             }
             if (this.SetMethod != null && this.OverriddenProperty.SetMethod != null)
             {
                 var m = (SourcePropertyAccessorSymbol)this.SetMethod;
                 var m2 = this.OverriddenProperty.SetMethod;
-                m.ChangeSignature(m2.ReturnType, m2.Parameters);
+                m.ChangeSignature(TypeWithAnnotations.Create(m2.ReturnType), m2.Parameters);
                 m.SetOverriddenMethod(m2);
             }
         }

@@ -16,6 +16,27 @@ using Roslyn.Utilities;
 
 namespace Microsoft.CodeAnalysis.CSharp
 {
+#if XSHARP
+    internal sealed class AliasAndUsingDirectiveComparer : IEqualityComparer<String>
+    {
+        public bool Equals(String x, String y)
+        {
+            return XSharpString.Compare(x, y) == 0;
+        }
+
+        public int GetHashCode(String obj)
+        {
+            if (XSharpString.IgnoreCase)
+            {
+                return ((string)obj).ToLower().GetHashCode();
+            }
+            else
+            {
+                return ((string)obj).GetHashCode();
+            }
+        }
+    }
+#endif
     /// <summary>
     /// Represents symbols imported to the binding scope via using namespace, using alias, and extern alias.
     /// </summary>

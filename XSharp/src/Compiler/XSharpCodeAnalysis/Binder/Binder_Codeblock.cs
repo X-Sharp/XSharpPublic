@@ -28,7 +28,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 return null;
 
             Conversion conv = Conversion.ImplicitReference;
-            if (!TypeSymbol.Equals(destination , Compilation.CodeBlockType()) && !destination.IsObjectType())
+            if (destination.IsCodeblockType() && !destination.IsObjectType())
             {
                 HashSet<DiagnosticInfo> useSiteDiagnostics = null;
                 conv = Conversions.ClassifyConversionFromType(Compilation.CodeBlockType(), destination, ref useSiteDiagnostics);
@@ -36,7 +36,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
             if (Compilation.Options.HasRuntime)
             {
-                Debug.Assert(TypeSymbol.Equals(destination , Compilation.CodeBlockType())|| conv.Exists);
+                Debug.Assert(destination.IsCodeblockType()|| conv.Exists);
             }
             //if (!syntax.XIsCodeBlock && !Compilation.Options.MacroScript && !syntax.XNode.IsAliasExpression())
             //{
@@ -60,6 +60,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 conversion,
                 @checked: false,
                 explicitCastInCode: false,
+                conversionGroupOpt: default, 
                 constantValueOpt: ConstantValue.NotAvailable,
                 type: delType)
             { WasCompilerGenerated = unboundLambda.WasCompilerGenerated };
@@ -71,7 +72,11 @@ namespace Microsoft.CodeAnalysis.CSharp
             { WasCompilerGenerated = unboundLambda.WasCompilerGenerated }; ;
             if (conv != Conversion.ImplicitReference)
             {
-                cbInst = new BoundConversion(syntax, cbInst, Conversion.ImplicitReference, false, false, ConstantValue.NotAvailable, Compilation.CodeBlockType())
+                cbInst = new BoundConversion(syntax,
+                    cbInst,
+                    Conversion.ImplicitReference, false, false,
+                    conversionGroupOpt: default,
+                    ConstantValue.NotAvailable, Compilation.CodeBlockType())
                 { WasCompilerGenerated = unboundLambda.WasCompilerGenerated }; ;
             }
             if (!conv.IsValid || (!isCast && conv.IsExplicit))
@@ -84,6 +89,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                     conv,
                     false,
                     explicitCastInCode: isCast,
+                    conversionGroupOpt: default,
                     constantValueOpt: ConstantValue.NotAvailable,
                     type: destination,
                     hasErrors: true)
@@ -95,6 +101,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 conv,
                 false,
                 explicitCastInCode: isCast,
+                conversionGroupOpt: default, 
                 constantValueOpt: ConstantValue.NotAvailable,
                 type: destination)
             { WasCompilerGenerated = unboundLambda.WasCompilerGenerated };

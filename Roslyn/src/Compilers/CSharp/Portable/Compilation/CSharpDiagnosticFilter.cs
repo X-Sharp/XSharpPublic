@@ -220,8 +220,8 @@ namespace Microsoft.CodeAnalysis.CSharp
             if (location != null && location.SourceTree != null)
             {
                 var line = location.GetLineSpan().StartLinePosition.Line;
-                var tree = ((SyntaxTree)location.SourceTree);
-                if (tree.GetPragmaDirectiveWarningState(id, line) == ReportDiagnostic.Suppress)
+                var stree = ((SyntaxTree)location.SourceTree);
+                if (stree.GetPragmaDirectiveWarningState(id, line) == Syntax.PragmaWarningState.Disabled)
                 {
                     hasPragmaSuppression = true;
                 }

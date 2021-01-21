@@ -12,8 +12,10 @@
     <!--Use the C# compiler created in this solution-->
     <CscToolPath>$(GeneratedCompilerPath)</CscToolPath>
     <DefineConstants Condition="'$(TargetFramework)' == 'net472'">$(DefineConstants);NET46;NET472;</DefineConstants>
-    <Configurations>Debug;Release;Public</Configurations>
   </PropertyGroup>
+  <ItemGroup Label="Project References">
+    <ProjectReference Include="..\XSharpScripting\XSharpScripting.csproj" />
+  </ItemGroup>
  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DefineConstants>$(Genericdefines);TRACE;DEBUG;XSHARP;</DefineConstants>
   </PropertyGroup>

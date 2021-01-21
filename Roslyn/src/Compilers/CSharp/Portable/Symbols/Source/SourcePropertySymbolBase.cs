@@ -285,10 +285,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                 _refCustomModifiers = ImmutableArray.Create(CSharpCustomModifier.CreateRequired(modifierType));
             }
 #if XSHARP
-	            else /*if (this.IsVirtual)*/ {
-	                _modifiers &= ~DeclarationModifiers.Override;
-	            }
-                validateProperty(overriddenOrImplementedProperty, diagnostics,location);
+            else /*if (this.IsVirtual)*/
+            {
+                // Todo RvdH adjust modifiers
+                //_refCustomModifiers &= ~DeclarationModifiers.Override;
+	        }
 #endif
             if (!hasAccessorList && arrowExpression != null)
             {
@@ -688,13 +689,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
 
         internal bool IsAutoProperty
             => (_propertyFlags & Flags.IsAutoProperty) != 0;
-#if XSHARP
 
-        public override bool IsIndexedProperty
-        {
-            get { return _isIndexedProperty; }
-        }
-#endif
         /// <summary>
         /// Backing field for automatically implemented property, or
         /// for a property with an initializer.

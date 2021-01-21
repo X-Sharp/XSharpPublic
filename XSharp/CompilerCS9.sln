@@ -5,6 +5,9 @@ VisualStudioVersion = 16.0.29728.190
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "xsc", "src\Compiler\xsc\xsc.csproj", "{AEBEBC71-1FDE-4901-91E0-5667F9BB211A}"
 	ProjectSection(ProjectDependencies) = postProject
+		{4B45CA0C-03A0-400F-B454-3D4BCB16AF38} = {4B45CA0C-03A0-400F-B454-3D4BCB16AF38}
+		{9508F118-F62E-4C16-A6F4-7C3B56E166AD} = {9508F118-F62E-4C16-A6F4-7C3B56E166AD}
+		{7B774ABC-83A0-4FD8-91FB-1DBE8829765B} = {7B774ABC-83A0-4FD8-91FB-1DBE8829765B}
 		{9D02E3F9-7157-46B7-9E97-F62010E4B3F2} = {9D02E3F9-7157-46B7-9E97-F62010E4B3F2}
 	EndProjectSection
 EndProject
@@ -30,6 +33,9 @@ EndProject
 Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "AnalyzerDriver", "..\Roslyn\src\Compilers\Core\AnalyzerDriver\AnalyzerDriver.shproj", "{D0BC9BE7-24F6-40CA-8DC6-FCB93BD44B34}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Compiler", "Compiler", "{0881BB9F-A799-47B2-9D39-1F218C037DE5}"
+	ProjectSection(SolutionItems) = preProject
+		src\Compiler\CompilerCommon.props = src\Compiler\CompilerCommon.props
+	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CSharpCodeAnalysis", "src\Tools\CSharpCodeAnalysis\CSharpCodeAnalysis.csproj", "{7B774ABC-83A0-4FD8-91FB-1DBE8829765B}"
 EndProject
@@ -57,7 +63,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "XSharpScripting", "src\Scri
 		{4B45CA0C-03A0-400F-B454-3D4BCB16AF38} = {4B45CA0C-03A0-400F-B454-3D4BCB16AF38}
 	EndProjectSection
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = " Solution Items", " Solution Items", "{2BB506D4-7596-4F79-9B25-1FAAE084BBA8}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{2BB506D4-7596-4F79-9B25-1FAAE084BBA8}"
 	ProjectSection(SolutionItems) = preProject
 		.editorconfig = .editorconfig
 		src\Common\BuildNumber.h = src\Common\BuildNumber.h
@@ -96,8 +102,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "XSharp.Build", "src\Compile
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Roslyn", "Roslyn", "{D1CB8BBE-E753-4CFF-912E-EB11466EC85F}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tools", "Tools", "{279F0619-C14C-44EB-9101-7731E9D69BE2}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tools", "Tools", "{7DD48273-5486-442A-A91E-3AF3C2B5E247}"
 EndProject
 Global
@@ -109,7 +113,9 @@ Global
 		..\Roslyn\Src\Dependencies\CodeAnalysis.Debugging\Microsoft.CodeAnalysis.Debugging.projitems*{7b774abc-83a0-4fd8-91fb-1dbe8829765b}*SharedItemsImports = 5
 		..\Roslyn\Src\Dependencies\PooledObjects\Microsoft.CodeAnalysis.PooledObjects.projitems*{7b774abc-83a0-4fd8-91fb-1dbe8829765b}*SharedItemsImports = 5
 		..\Roslyn\Src\Compilers\Core\CommandLine\CommandLine.projitems*{9508f118-f62e-4c16-a6f4-7c3b56e166ad}*SharedItemsImports = 5
+		..\Roslyn\Src\Compilers\Core\CommandLine\CommandLine.projitems*{9d02e3f9-7157-46b7-9e97-f62010e4b3f2}*SharedItemsImports = 5
 		..\Roslyn\Src\Compilers\Core\CommandLine\CommandLine.projitems*{ad6f474e-e6d4-4217-91f3-b7af1be31ccc}*SharedItemsImports = 13
+		..\Roslyn\Src\Compilers\Core\CommandLine\CommandLine.projitems*{aebebc71-1fde-4901-91e0-5667f9bb211a}*SharedItemsImports = 5
 		..\Roslyn\Src\Compilers\Core\AnalyzerDriver\AnalyzerDriver.projitems*{d0bc9be7-24f6-40ca-8dc6-fcb93bd44b34}*SharedItemsImports = 13
 		..\Roslyn\Src\Compilers\Core\AnalyzerDriver\AnalyzerDriver.projitems*{f738fd65-ffaf-4f52-8efc-5affd1c42846}*SharedItemsImports = 5
 		..\Roslyn\Src\Compilers\CSharp\CSharpAnalyzerDriver\CSharpAnalyzerDriver.projitems*{f738fd65-ffaf-4f52-8efc-5affd1c42846}*SharedItemsImports = 5
@@ -293,9 +299,9 @@ Global
 		{0ADD894E-77AB-4B93-B395-B7D0A315E748} = {D1CB8BBE-E753-4CFF-912E-EB11466EC85F}
 		{D0BC9BE7-24F6-40CA-8DC6-FCB93BD44B34} = {0E3865DD-590B-4C77-9AAF-E78A9D68473B}
 		{0881BB9F-A799-47B2-9D39-1F218C037DE5} = {1C104221-6CDB-4227-A304-DA1377A2AA1D}
-		{7B774ABC-83A0-4FD8-91FB-1DBE8829765B} = {279F0619-C14C-44EB-9101-7731E9D69BE2}
-		{4B45CA0C-03A0-400F-B454-3D4BCB16AF38} = {279F0619-C14C-44EB-9101-7731E9D69BE2}
-		{9508F118-F62E-4C16-A6F4-7C3B56E166AD} = {279F0619-C14C-44EB-9101-7731E9D69BE2}
+		{7B774ABC-83A0-4FD8-91FB-1DBE8829765B} = {7DD48273-5486-442A-A91E-3AF3C2B5E247}
+		{4B45CA0C-03A0-400F-B454-3D4BCB16AF38} = {7DD48273-5486-442A-A91E-3AF3C2B5E247}
+		{9508F118-F62E-4C16-A6F4-7C3B56E166AD} = {7DD48273-5486-442A-A91E-3AF3C2B5E247}
 		{9D02E3F9-7157-46B7-9E97-F62010E4B3F2} = {0881BB9F-A799-47B2-9D39-1F218C037DE5}
 		{AD6F474E-E6D4-4217-91F3-B7AF1BE31CCC} = {0E3865DD-590B-4C77-9AAF-E78A9D68473B}
 		{CC5C64CB-F448-4C25-88EB-E22B4A5C9504} = {1C104221-6CDB-4227-A304-DA1377A2AA1D}
@@ -303,7 +309,7 @@ Global
 		{F738FD65-FFAF-4F52-8EFC-5AFFD1C42846} = {0881BB9F-A799-47B2-9D39-1F218C037DE5}
 		{014963AE-D6D1-4FF8-8D8A-8D417F5D8D1F} = {CC5C64CB-F448-4C25-88EB-E22B4A5C9504}
 		{9F37697B-9FCA-4D91-B8E4-AA34880CFD88} = {7DD48273-5486-442A-A91E-3AF3C2B5E247}
-		{CD315B80-8E6F-4EF3-AE9B-ED39795EDF9B} = {7DD48273-5486-442A-A91E-3AF3C2B5E247}
+		{CD315B80-8E6F-4EF3-AE9B-ED39795EDF9B} = {0881BB9F-A799-47B2-9D39-1F218C037DE5}
 		{7DD48273-5486-442A-A91E-3AF3C2B5E247} = {1C104221-6CDB-4227-A304-DA1377A2AA1D}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution

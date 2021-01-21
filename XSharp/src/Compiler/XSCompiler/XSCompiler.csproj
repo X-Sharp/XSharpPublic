@@ -1,7 +1,10 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk">
-  <Import Project="..\CompilerCommon.props" />
-  <Import Project="$(EngineDir)Targets\GenerateCompilerExecutableBindingRedirects.targets" />
+  <PropertyGroup>
+    <UseXSharpKey>true</UseXSharpKey>
+  </PropertyGroup>
+  <Import Project="$(Solutiondir)src\Compiler\CompilerCommon.props" />
+  <Import Project="$(RepositoryEngineeringDir)targets\GenerateCompilerExecutableBindingRedirects.targets" />
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <AssemblyName>XSCompiler</AssemblyName>
@@ -14,6 +17,8 @@
     <!--Use the C# compiler created in this solution-->
     <CscToolPath>$(GeneratedCompilerPath)</CscToolPath>
     <GenerateMicrosoftCodeAnalysisCommitHashAttribute>false</GenerateMicrosoftCodeAnalysisCommitHashAttribute>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+
   </PropertyGroup>
   <ItemGroup Label="Project References">
     <ProjectReference Include="..\..\Tools\CSCompiler\CSCompiler.csproj" />
@@ -38,30 +43,11 @@
     <Compile Include="..\..\Common\CommonAssemblyInfo.cs">
       <Link>Properties\CommonAssemblyInfo.cs</Link>
     </Compile>
-    <!--<Compile Include="..\..\Common\Constants.cs">
-      <Link>Properties\Constants.cs</Link>
-    </Compile>-->
-    <Compile Include="$(SharedSource)BuildClient.cs">
-      <Link>BuildClient.cs</Link>
-    </Compile>
-    <Compile Include="$(SharedSource)BuildServerConnection.cs">
-      <Link>BuildServerConnection.cs</Link>
-    </Compile>
-    <Compile Include="$(SharedSource)CoreClrAnalyzerAssemblyLoader.cs">
-      <Link>CoreClrAnalyzerAssemblyLoader.cs</Link>
-    </Compile>
-    <Compile Include="$(SharedSource)DesktopAnalyzerAssemblyLoader.cs">
-      <Link>DesktopAnalyzerAssemblyLoader.cs</Link>
-    </Compile>
-    <Compile Include="$(SharedSource)DesktopBuildClient.cs">
-      <Link>DesktopBuildClient.cs</Link>
-    </Compile>
-    <Compile Include="$(SharedSource)ExitingTraceListener.cs">
-      <Link>ExitingTraceListener.cs</Link>
-    </Compile>
-    <Compile Include="$(SharedSource)ShadowCopyAnalyzerAssemblyLoader.cs">
-      <Link>ShadowCopyAnalyzerAssemblyLoader.cs</Link>
-    </Compile>
+    <Compile Include="$(SharedSource)RuntimeHostInfo.cs" />
+    <Compile Include="$(SharedSource)NamedPipeUtil.cs" />
+    <Compile Include="$(SharedSource)BuildClient.cs" />
+    <Compile Include="$(SharedSource)BuildServerConnection.cs" />
+    <Compile Include="$(SharedSource)ExitingTraceListener.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
@@ -72,6 +58,7 @@
 	</Compile>
   </ItemGroup>
   <Import Project="$(CoreSource)..\CommandLine\CommandLine.projitems" Label="Shared" />
+  <Import Project="$(RepositoryEngineeringDir)targets\DiaSymReaderNative.targets" />
   <PropertyGroup>
     <PreBuildEvent>taskkill  /f /t /fi "IMAGENAME eq XSCompiler.exe" &gt; NUL</PreBuildEvent>
 </PropertyGroup>

@@ -1440,13 +1440,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
 #endif
             }
 #if XSHARP
-            if (overriddenOrHiddenMembers.OverriddenMembers.Any() || overriddenOrHiddenMembers.RuntimeOverriddenMembers.Any()) // nvk: can happen due to override flag mangling!
+            if (overriddenOrHiddenMembers.OverriddenMembers.Any() || overriddenOrHiddenMembers.OverriddenMembers.Any()) // nvk: can happen due to override flag mangling!
             {
                 if (!hidingMemberIsNew && !diagnosticAddedX && !hidingMember.IsAccessor() && !hidingMember.IsOperator())
                 {
                     diagnostics.Add(ErrorCode.WRN_NewRequired, hidingMemberLocation, hidingMember,
                         overriddenOrHiddenMembers.OverriddenMembers.Any() ? overriddenOrHiddenMembers.OverriddenMembers[0] 
-                        : overriddenOrHiddenMembers.RuntimeOverriddenMembers[0]);
+                        : overriddenOrHiddenMembers.OverriddenMembers[0]);
                 }
             }
 #endif

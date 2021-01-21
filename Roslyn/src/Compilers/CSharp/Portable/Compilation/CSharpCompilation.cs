@@ -30,6 +30,9 @@ using Microsoft.CodeAnalysis.Symbols;
 using Microsoft.CodeAnalysis.Text;
 using Roslyn.Utilities;
 using static Microsoft.CodeAnalysis.CSharp.Binder;
+#if XSHARP
+using InternalSyntax = Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax;
+#endif
 
 namespace Microsoft.CodeAnalysis.CSharp
 {

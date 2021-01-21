@@ -459,10 +459,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                 return (object?)other != null && XSharpString.Equals(MetadataName, other.MetadataName) &&
                     arity == other.arity &&
                     _containingType.Equals(other._containingType, comparison, isValueTypeOverrideOpt);
-#endif
+#else
+
                 return (object?)other != null && string.Equals(MetadataName, other.MetadataName, StringComparison.Ordinal) &&
                     arity == other.arity &&
                     _containingType.Equals(other._containingType, comparison, isValueTypeOverrideOpt);
+#endif
             }
         }
     }

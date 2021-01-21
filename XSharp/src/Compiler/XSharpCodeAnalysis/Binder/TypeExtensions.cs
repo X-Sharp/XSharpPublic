@@ -11,9 +11,10 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 namespace Microsoft.CodeAnalysis.CSharp
 {
     // Extension methods responsible for looking up 'our' types
-    static internal class TypeExtensions
+
+    internal static class TypeExtensions
     {
-        static internal NamedTypeSymbol PszType(this CSharpCompilation compilation)
+        internal static NamedTypeSymbol PszType(this CSharpCompilation compilation)
         {
             if (compilation.Options.XSharpRuntime)
             {
@@ -24,7 +25,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 return compilation.GetWellKnownType(WellKnownType.Vulcan___Psz);
             }
         }
-        static internal NamedTypeSymbol UsualType(this CSharpCompilation compilation)
+        internal static NamedTypeSymbol UsualType(this CSharpCompilation compilation)
         {
             if (compilation.Options.XSharpRuntime)
             {
@@ -35,7 +36,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 return compilation.GetWellKnownType(WellKnownType.Vulcan___Usual);
             }
         }
-        static internal NamedTypeSymbol SymbolType(this CSharpCompilation compilation)
+        internal static NamedTypeSymbol SymbolType(this CSharpCompilation compilation)
         {
             if (compilation.Options.XSharpRuntime)
             {
@@ -47,7 +48,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
         }
 
-        static internal NamedTypeSymbol WinBoolType(this CSharpCompilation compilation)
+        internal static NamedTypeSymbol WinBoolType(this CSharpCompilation compilation)
         {
             if (compilation.Options.XSharpRuntime)
             {
@@ -59,7 +60,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
         }
 
-        static internal NamedTypeSymbol DateType(this CSharpCompilation compilation)
+        internal static NamedTypeSymbol DateType(this CSharpCompilation compilation)
         {
             if (compilation.Options.XSharpRuntime)
             {
@@ -71,7 +72,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
         }
 
-        static internal NamedTypeSymbol FloatType(this CSharpCompilation compilation)
+        internal static NamedTypeSymbol FloatType(this CSharpCompilation compilation)
         {
             if (compilation.Options.XSharpRuntime)
             {
@@ -82,7 +83,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 return compilation.GetWellKnownType(WellKnownType.Vulcan___VOFloat);
             }
         }
-        static internal NamedTypeSymbol ArrayType(this CSharpCompilation compilation)
+        internal static NamedTypeSymbol ArrayType(this CSharpCompilation compilation)
         {
             if (compilation.Options.XSharpRuntime)
             {
@@ -93,7 +94,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 return compilation.GetWellKnownType(WellKnownType.Vulcan___Array);
             }
         }
-        static internal NamedTypeSymbol ArrayBaseType(this CSharpCompilation compilation)
+        internal static NamedTypeSymbol ArrayBaseType(this CSharpCompilation compilation)
         {
             if (compilation.Options.XSharpRuntime)
             {
@@ -104,20 +105,19 @@ namespace Microsoft.CodeAnalysis.CSharp
                 return compilation.GetWellKnownType(WellKnownType.Vulcan___Array);
             }
         }
-
-        static internal NamedTypeSymbol IndexerType(this CSharpCompilation compilation)
+        internal static NamedTypeSymbol IndexerType(this CSharpCompilation compilation)
         {
             if (compilation.Options.XSharpRuntime)
                 return compilation.GetWellKnownType(WellKnownType.XSharp_IIndexer);
             return null;
         }
-        static internal NamedTypeSymbol NamedIndexerType(this CSharpCompilation compilation)
+        internal static NamedTypeSymbol NamedIndexerType(this CSharpCompilation compilation)
         {
             if (compilation.Options.XSharpRuntime)
                 return compilation.GetWellKnownType(WellKnownType.XSharp_INamedIndexer);
             return null;
         }
-        static internal NamedTypeSymbol IndexedPropertiesType(this CSharpCompilation compilation)
+        internal static NamedTypeSymbol IndexedPropertiesType(this CSharpCompilation compilation)
         {
             if (compilation.Options.XSharpRuntime)
                 return compilation.GetWellKnownType(WellKnownType.XSharp_IIndexedProperties);
@@ -125,7 +125,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         }
 
 
-        static internal NamedTypeSymbol CodeBlockType(this CSharpCompilation compilation)
+        internal static NamedTypeSymbol CodeBlockType(this CSharpCompilation compilation)
         {
             if (compilation.Options.XSharpRuntime)
             {
@@ -136,7 +136,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 return compilation.GetWellKnownType(WellKnownType.Vulcan_Codeblock);
             }
         }
-        static internal NamedTypeSymbol ClassLibraryType(this CSharpCompilation compilation)
+        internal static NamedTypeSymbol ClassLibraryType(this CSharpCompilation compilation)
         {
             if (compilation.Options.XSharpRuntime)
             {
@@ -147,7 +147,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 return compilation.GetWellKnownType(WellKnownType.Vulcan_Internal_VulcanClassLibraryAttribute);
             }
         }
-        static internal NamedTypeSymbol ImplicitNamespaceType(this CSharpCompilation compilation)
+        internal static NamedTypeSymbol ImplicitNamespaceType(this CSharpCompilation compilation)
         {
             if (compilation.Options.XSharpRuntime)
             {
@@ -159,7 +159,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
         }
 
-        static internal NamedTypeSymbol RuntimeFunctionsType(this CSharpCompilation compilation)
+        internal static NamedTypeSymbol RuntimeFunctionsType(this CSharpCompilation compilation)
         {
             if (compilation.Options.XSharpRuntime)
             {
@@ -170,7 +170,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 return compilation.GetWellKnownType(WellKnownType.VulcanRTFuncs_Functions);
             }
         }
-        static internal NamedTypeSymbol CompilerServicesType(this CSharpCompilation compilation)
+        internal static NamedTypeSymbol CompilerServicesType(this CSharpCompilation compilation)
         {
             if (compilation.Options.XSharpRuntime)
             {
@@ -181,7 +181,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 return compilation.GetWellKnownType(WellKnownType.Vulcan_Internal_CompilerServices);
             }
         }
-        static internal NamedTypeSymbol VOStructAttributeType(this CSharpCompilation compilation)
+        internal static NamedTypeSymbol VOStructAttributeType(this CSharpCompilation compilation)
         {
             if (compilation.Options.XSharpRuntime)
             {
@@ -193,7 +193,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
         }
 
-        static internal bool IsXsCompilerGenerated(this Symbol symbol) 
+        internal static bool IsXsCompilerGenerated(this Symbol symbol) 
         {
             if (symbol.Kind == SymbolKind.Local || symbol.Kind == SymbolKind.Parameter)
             {
@@ -212,7 +212,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             return false;
         }
 
-        static internal bool IsValidVOUsualType(this TypeSymbol type, CSharpCompilation compilation)
+        internal static bool IsValidVOUsualType(this TypeSymbol type, CSharpCompilation compilation)
         {
             switch (type.SpecialType)
             {
@@ -241,7 +241,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 return true;
             return false;
         }
-        static internal TypeSymbol LargestOperand(this BoundBinaryOperator binop, Compilation compilation, bool checkConversions = true)
+        internal static TypeSymbol LargestOperand(this BoundBinaryOperator binop, Compilation compilation, bool checkConversions = true)
         {
             if (binop.OperatorKind.IsComparison() || !binop.Type.IsIntegralType())
                 return binop.Type;
@@ -277,7 +277,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             return rightType;
         }
 
-        static internal TypeSymbol ConstantType(this BoundExpression expression, Compilation compilation)
+        internal static TypeSymbol ConstantType(this BoundExpression expression, Compilation compilation)
         {
             var type = expression.Type;
             if (expression.ConstantValue == null)

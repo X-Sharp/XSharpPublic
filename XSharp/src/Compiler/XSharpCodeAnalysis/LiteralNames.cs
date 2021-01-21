@@ -12,7 +12,7 @@ namespace Microsoft.CodeAnalysis.CSharp
     {
         internal const string ClipperArgs = "$args";
     }
-    internal static class OurTypeNames
+    internal static class OurTypeNames 
     {
         internal const string CodeBlockType = "Codeblock";
         internal const string UsualType = "__Usual";
@@ -24,6 +24,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         internal const string VnFloatType = "__VOFloat";
         internal const string DateType = "__Date";
         internal const string VnDateType = "__VODate";
+        internal const string WinBoolType = "__WinBool";
         internal const string VOStructAttribute = "VoStructAttribute";
         internal const string DefaultParameterAttribute = "DefaultParameterValueAttribute";
         internal const string ActualTypeAttribute = "ActualTypeAttribute";

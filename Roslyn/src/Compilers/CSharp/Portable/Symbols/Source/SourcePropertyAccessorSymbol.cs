@@ -400,12 +400,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
 #if XSHARP
                 /*if (this.IsVirtual)*/
                 {
-                    if ((object)overriddenMethod != null)
-                    {
-                        flags = new Flags(flags.MethodKind, flags.DeclarationModifiers & ~DeclarationModifiers.Virtual, flags.ReturnsVoid, flags.IsExtensionMethod, flags.IsMetadataVirtual(true));
-                    }
-                    else
-                        flags = new Flags(flags.MethodKind, flags.DeclarationModifiers & ~DeclarationModifiers.Override, flags.ReturnsVoid, flags.IsExtensionMethod, flags.IsMetadataVirtual(true));
+                    //Todo RvdH Updated Flags
+                    //if ((object)overriddenMethod != null)
+                    //{
+                    //    flags = new Flags(flags.MethodKind, flags.DeclarationModifiers & ~DeclarationModifiers.Virtual, this.ReturnsVoid, flags.IsExtensionMethod, flags.IsMetadataVirtual(true));
+                    //}
+                    //else
+                    //    flags = new Flags(flags.MethodKind, flags.DeclarationModifiers & ~DeclarationModifiers.Override, this.ReturnsVoid, flags.IsExtensionMethod, flags.IsMetadataVirtual(true));
                 }
 #endif
             }

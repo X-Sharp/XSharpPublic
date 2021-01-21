@@ -271,14 +271,14 @@ namespace Microsoft.CodeAnalysis.CSharp
 
                 bool hasErrors = ReportBadDynamicArguments(node, argArray, refKindsArray, diagnostics, queryClause, lateBound : true);
                 result = new BoundDynamicInvocation(
-                    node,
-                    boundExpression,
-                    argArray,
-                    analyzedArguments.GetNames(),
-                    analyzedArguments.RefKinds.ToImmutableOrNull(),
-                    ImmutableArray<MethodSymbol>.Empty,
-                    Compilation.UsualType(),
-                    hasErrors);
+                    syntax: node,
+                    expression: boundExpression,
+                    arguments: argArray,
+                    argumentNamesOpt:analyzedArguments.GetNames(),
+                    argumentRefKindsOpt: analyzedArguments.RefKinds.ToImmutableOrNull(),
+                    applicableMethods: default,
+                    type: Compilation.UsualType(),
+                    hasErrors: hasErrors);
             }
 #endif
             else if (boundExpression.Kind == BoundKind.MethodGroup)

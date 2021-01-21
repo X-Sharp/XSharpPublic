@@ -33,7 +33,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 this._diagnostics.Add(ErrorCode.WRN_CompilerGeneratedPSZConversionGeneratesMemoryleak, value.Syntax.Location);
                 return result;
             }
-            var isString = value.Type != null && value.Type.IsStringType();
+            var isString = !value.Type.IsNull() && value.Type.IsStringType();
             var ctors = psz.Constructors;
             foreach (var ctor in ctors)
             {
@@ -41,7 +41,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 {
                     bool found = false;
                     var partype = ctor.GetParameterTypes()[0];
-                    if (isString && partype != null && partype.IsStringType())
+                    if (isString && partype != null && partype.Type.IsStringType())
                     {
                         found = true;
                     }
@@ -50,9 +50,17 @@ namespace Microsoft.CodeAnalysis.CSharp
                         found = true;
                         if (value.Type.SpecialType != SpecialType.System_IntPtr)
                         {
-                            value = new BoundConversion(value.Syntax, value, Conversion.Identity, false, false, null, partype, false);
+                            value = new BoundConversion(
+                                syntax: value.Syntax,
+                                operand: value,
+                                conversion:Conversion.Identity,
+                                @checked: false,
+                                explicitCastInCode: false,
+                                constantValueOpt: default,
+                                conversionGroupOpt: default,
+                                type: partype.Type,
+                                hasErrors: false);
                         }
-                        
                     }
                     if (found)
                     {
@@ -140,10 +148,10 @@ namespace Microsoft.CodeAnalysis.CSharp
 
             foreach (var rkv in refMan.GetReferencedAssemblies())
             {
-                var r = rkv.Value;
+                var r = (IAssemblySymbol)rkv.Value;
                 foreach (var attr in r.GetAttributes())
                 {
-                    if ((Symbol)attr.AttributeClass.ConstructedFrom == vcla)
+                    if (TypeSymbol.Equals(attr.AttributeClass.ConstructedFrom, vcla))
                     {
                         var attargs = attr.CommonConstructorArguments;
                         if (attargs.Length == 2)
@@ -232,7 +240,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             var vrt = comp.GetBoundReferenceManager().GetReferencedAssemblies().Where(x => x.Value.Name == "VulcanRT");
             if (vrt.Count() != 0)
             {
-                var vulcanrt = vrt.First().Value;
+                var vulcanrt = (IAssemblySymbol) vrt.First().Value;
                 var type = vulcanrt.GetTypeByMetadataName("Vulcan.Runtime.State");
                 if (type != null)
                 {
@@ -256,7 +264,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             var xc = comp.GetBoundReferenceManager().GetReferencedAssemblies().Where(x => x.Value.Name == "XSharp.Core");
             if (xc.Count() != 0)
             {
-                var xsrt = xc.First().Value;
+                var xsrt = (IAssemblySymbol)xc.First().Value;
                 var type = xsrt.GetTypeByMetadataName("XSharp.RuntimeState");
                 if (type != null)
                 {
@@ -283,7 +291,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             newstatements.AddRange(initstmts);
             tryblock = tryblock.Update(tryblock.Locals, ImmutableArray<LocalFunctionSymbol>.Empty, newstatements.ToImmutableArray<BoundStatement>());
             tryblock.WasCompilerGenerated = true;
-            trystmt = trystmt.Update(tryblock, trystmt.CatchBlocks, trystmt.FinallyBlockOpt, trystmt.PreferFaultHandler);
+            trystmt = trystmt.Update(tryblock, trystmt.CatchBlocks, trystmt.FinallyBlockOpt, trystmt.FinallyLabelOpt, trystmt.PreferFaultHandler);
             trystmt.WasCompilerGenerated = true;
             newstatements.Clear();
             newstatements.Add(trystmt);
@@ -307,14 +315,14 @@ namespace Microsoft.CodeAnalysis.CSharp
             var init1 = new List<ISymbol>();
             var init2 = new List<ISymbol>();
             var init3 = new List<ISymbol>();
-            if (! localOnly)
+            if (!localOnly)
             {
                 foreach (var rkv in refMan.GetReferencedAssemblies())
                 {
-                    var r = rkv.Value;
+                    var r = (IAssemblySymbol) rkv.Value;
                     foreach (var attr in r.GetAttributes())
                     {
-                        if ((Symbol)attr.AttributeClass.ConstructedFrom == vcla)
+                        if ( TypeSymbol.Equals(attr.AttributeClass.ConstructedFrom,vcla))
                         {
                             var attargs = attr.CommonConstructorArguments;
                             if (attargs.Length == 2)

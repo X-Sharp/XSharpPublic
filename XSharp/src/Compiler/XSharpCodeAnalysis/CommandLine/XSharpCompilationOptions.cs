@@ -268,32 +268,20 @@ namespace Microsoft.CodeAnalysis.CSharp
                 !string.IsNullOrEmpty(args.Win32Icon) ||
                 !string.IsNullOrEmpty(args.Win32Manifest))
             {
-                var file = System.IO.Path.Combine(args.OutputDirectory, args.OutputFileName);
-                if (System.IO.File.Exists(file))
+                var file = Path.Combine(args.OutputDirectory, args.OutputFileName);
+                if (File.Exists(file))
                 {
                     var hRes = BeginUpdateResource(file, false);
                     if (hRes != IntPtr.Zero)
                     {
                         var res = EndUpdateResource(hRes, false);
                     }
-                    
                     if (compilation.HasStrongName)
                     {
                         // We have to resign the assembly because updating the resources
                         // may have invalidated the signature.
                         var provider = new DesktopStrongNameProvider();
-                        using (var inputstream = provider.CreateInputStream())
-                        {
-                            using (var fs = new FileStream(file, FileMode.Open, FileAccess.Read, FileShare.Read))
-                            {
-                                fs.CopyTo(inputstream);
-                            }
-                            using (var outputstream = new FileStream(file, FileMode.Create, FileAccess.Write, FileShare.Write))
-                            {
-                                provider.SignStream(compilation.StrongNameKeys, inputstream, outputstream);
-                                outputstream.Flush();
-                            }
-                        }
+                        provider.SignFile(compilation.StrongNameKeys, file);
                     }
                 }
             }

@@ -21,7 +21,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
 {
     internal class XsFoxMemberAccessSymbol : XsVariableSymbol
     {
-        internal XsFoxMemberAccessSymbol(string alias, string name, MethodSymbol getMethod, MethodSymbol setMethod, TypeSymbol type):
+        internal XsFoxMemberAccessSymbol(string alias, string name, MethodSymbol getMethod, MethodSymbol setMethod, TypeWithAnnotations type):
             base(alias, name, getMethod, setMethod, type)
         {
         }
@@ -34,7 +34,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
         private readonly string _alias;
         private readonly MethodSymbol _getMethod;
         private readonly MethodSymbol _setMethod;
-        private TypeWithAnnotations _type;
+        private readonly TypeWithAnnotations _type;
 
         internal XsVariableSymbol(string name, MethodSymbol getMethod, MethodSymbol setMethod, TypeWithAnnotations type)
         {

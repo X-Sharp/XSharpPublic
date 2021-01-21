@@ -129,7 +129,12 @@ End {request.Language} Compilation complete.
 Return code: {returnCode}
 Output:
 {outputString}");
+#if XSHARP
+            // Todo RvdH OutputFileName
+            return new CompletedBuildResponse(returnCode, utf8output, null, outputString);
+#else
             return new CompletedBuildResponse(returnCode, utf8output, outputString);
+#endif
         }
     }
 }

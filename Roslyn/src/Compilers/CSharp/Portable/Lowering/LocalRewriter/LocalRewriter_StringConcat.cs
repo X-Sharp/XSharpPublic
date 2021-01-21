@@ -16,9 +16,6 @@ namespace Microsoft.CodeAnalysis.CSharp
     internal sealed partial class LocalRewriter
     {
 
-		// TODO RVDH
-		// Check for String concat. Only allow strings to be added to eachother
-		//
         /// <summary>
         /// The strategy of this rewrite is to do rewrite "locally".
         /// We analyze arguments of the concat in a shallow fashion assuming that 
@@ -311,10 +308,10 @@ namespace Microsoft.CodeAnalysis.CSharp
             var method = UnsafeGetSpecialTypeMethod(syntax, SpecialMember.System_String__ConcatStringString);
             Debug.Assert((object)method != null);
 #if XSHARP
-            if (method == SpecialMember.System_String__ConcatObjectObject)
-            {
-                ReportStringConcatError(syntax, loweredLeft, loweredRight);
-            }
+            //if (method == (MethodSymbol) SpecialMember.System_String__ConcatObjectObject)
+            //{
+            //    ReportStringConcatError(syntax, loweredLeft, loweredRight);
+            //}
 #endif
             return (BoundExpression)BoundCall.Synthesized(syntax, null, method, loweredLeft, loweredRight);
         }
@@ -328,10 +325,10 @@ namespace Microsoft.CodeAnalysis.CSharp
             var method = UnsafeGetSpecialTypeMethod(syntax, SpecialMember.System_String__ConcatStringStringString);
             Debug.Assert((object)method != null);
 #if XSHARP
-            if (method == SpecialMember.System_String__ConcatObjectObjectObject)
-            {
-                ReportStringConcatError(syntax, loweredFirst, loweredSecond, loweredThird);
-            }
+            //if (method == (MethodSymbol) SpecialMember.System_String__ConcatObjectObjectObject)
+            //{
+            //    ReportStringConcatError(syntax, loweredFirst, loweredSecond, loweredThird);
+            //}
 #endif
 
             return BoundCall.Synthesized(syntax, null, method, ImmutableArray.Create(loweredFirst, loweredSecond, loweredThird));
@@ -358,11 +355,11 @@ namespace Microsoft.CodeAnalysis.CSharp
             var method = UnsafeGetSpecialTypeMethod(syntax, SpecialMember.System_String__ConcatStringArray);
             Debug.Assert((object)method != null);
 #if XSHARP
-                if (method == SpecialMember.System_String__ConcatObjectArray)
-                {
-                    BoundExpression[] args = loweredArgs.ToArray();
-                    ReportStringConcatError(syntax, args);
-                }
+//            if (method == (MethodSymbol)SpecialMember.System_String__ConcatObjectArray)
+//            {
+//                BoundExpression[] args = loweredArgs.ToArray();
+//                ReportStringConcatError(syntax, args);
+//            }
 #endif
             var array = _factory.ArrayOrEmpty(_factory.SpecialType(SpecialType.System_String), loweredArgs);
 
@@ -382,10 +379,10 @@ namespace Microsoft.CodeAnalysis.CSharp
             var method = UnsafeGetSpecialTypeMethod(syntax, member);
             Debug.Assert((object)method != null);
 #if XSHARP
-            if (member == SpecialMember.System_String__ConcatObjectObject)
-            {
-                ReportStringConcatError(syntax, loweredLeft, loweredRight);
-            }
+            //if (member == SpecialMember.System_String__ConcatObjectObject)
+            //{
+            //    ReportStringConcatError(syntax, loweredLeft, loweredRight);
+            //}
 #endif
             return new BoundBinaryOperator(syntax, operatorKind, constantValueOpt: null, method, default(LookupResultKind), loweredLeft, loweredRight, type);
         }

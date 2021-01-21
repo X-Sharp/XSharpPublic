@@ -704,7 +704,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 if (pt.PointedAtType.Kind == SymbolKind.ErrorType)
                 {
                     diagnostics.Clear();
-                    declType = Compilation.GetSpecialType(SpecialType.System_IntPtr);
+                    declType = TypeWithAnnotations.Create(Compilation.GetSpecialType(SpecialType.System_IntPtr));
                 }
             }
 #endif
@@ -1063,7 +1063,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 {
                     initializerOpt = BindPossibleArrayInitializer(
                         SyntaxFactory.LiteralExpression(SyntaxKind.StringLiteralExpression, SyntaxFactory.Literal("")), 
-                        declTypeOpt, valueKind, new DiagnosticBag());
+                        declTypeOpt.Type, valueKind, new DiagnosticBag());
                     initializerOpt.WasCompilerGenerated = true;
                 }
 #endif

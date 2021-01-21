@@ -333,13 +333,14 @@ namespace Microsoft.CodeAnalysis.CSharp
                     {
                         if (!syntax.XVoIsDecl)
                         {
-                            symbol = new PointerTypeSymbol(symbol.TypeWithAnnotations);
+                            symbol = NamespaceOrTypeOrAliasSymbolWithAnnotations.CreateUnannotated(false,new PointerTypeSymbol(symbol.TypeWithAnnotations));
                         }
                     }
                     else if (syntax.XVoIsDecl)
                     {
-                        var _diagnosticInfo = diagnostics.Add(ErrorCode.ERR_BadSKknown, syntax.Location, syntax, symbol.TypeWithAnnotations.GetKindText(), "VOSTRUCT/UNION");
-                        symbol = new ExtendedErrorTypeSymbol(GetContainingNamespaceOrType(symbol.TypeWithAnnotations), symbol, LookupResultKind.NotATypeOrNamespace, _diagnosticInfo);
+                        var _diagnosticInfo = diagnostics.Add(ErrorCode.ERR_BadSKknown, syntax.Location, syntax, symbol.NamespaceOrTypeSymbol.GetKindText(), "VOSTRUCT/UNION");
+                        var errsymbol = new ExtendedErrorTypeSymbol(GetContainingNamespaceOrType(symbol.Symbol), symbol.Symbol, LookupResultKind.NotATypeOrNamespace, _diagnosticInfo);
+                        symbol = NamespaceOrTypeOrAliasSymbolWithAnnotations.CreateUnannotated(false, errsymbol);
                     }
                 }
 #endif
@@ -1418,7 +1419,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         {
             Debug.Assert(!typeArguments.IsEmpty);
 #if XSHARP
-            if (type.TypeArgumentsNoUseSiteDiagnostics.Length == 0)
+            if (type.GetMemberTypeArgumentsNoUseSiteDiagnostics().Length == 0)
             {
                 diagnostics.Add(ErrorCode.ERR_TypeArgsNotAllowed, typeSyntax.Location, type.Kind.ToString(),  type.Name);
                 return type;

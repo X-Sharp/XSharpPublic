@@ -106,7 +106,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 }
             }
             if (wasGenerated && fieldInit.Field.Type.IsStringType() 
-                && boundReceiver != null 
+                && boundReceiver != null
                 && fieldInit.Field.DeclaringCompilation.Options.HasOption(CompilerOption.NullStrings, boundReceiver.Syntax))
             {
                 var fldaccess = new BoundFieldAccess(syntax,
@@ -114,11 +114,12 @@ namespace Microsoft.CodeAnalysis.CSharp
                                                     fieldInit.Field,
                                                     constantValueOpt: null)
                 { WasCompilerGenerated = true };
-                initValue = new BoundNullCoalescingOperator(syntax,
-                                                    fldaccess,
-                                                    initValue,
-                                                    Conversion.Identity,
-                                                    fieldInit.Field.Type)
+                initValue = new BoundNullCoalescingOperator(syntax: syntax,
+                                                    leftOperand: fldaccess,
+                                                    rightOperand: initValue,
+                                                    leftConversion: Conversion.Identity,
+                                                    operatorResultKind: BoundNullCoalescingOperatorResultKind.LeftType,
+                                                    type: fieldInit.Field.Type)
                 { WasCompilerGenerated = true };
             }
             BoundStatement boundStatement =

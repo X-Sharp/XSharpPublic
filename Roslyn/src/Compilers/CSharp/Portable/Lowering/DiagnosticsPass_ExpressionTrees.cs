@@ -686,7 +686,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                     }
                     break;
 #if XSHARP
-                case ConversionKind.IntegerToPointer:
+                case ConversionKind.ExplicitIntegerToPointer:
                     VOCheckIntegerToPointer(node);
                     break;
 #endif

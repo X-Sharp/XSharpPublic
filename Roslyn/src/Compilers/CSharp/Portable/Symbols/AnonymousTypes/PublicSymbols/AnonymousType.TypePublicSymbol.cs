@@ -7,9 +7,13 @@ using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
+using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.PooledObjects;
 using Roslyn.Utilities;
+#if XSHARP
+using System.Linq;
+#endif
 
 namespace Microsoft.CodeAnalysis.CSharp.Symbols
 {
@@ -93,12 +97,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                 Debug.Assert(codeblockParams.Length > 0);
 
                 this.Manager = manager;
-                this.TypeDescriptor = new AnonymousTypeDescriptor(codeblockParams.Select((t, i) => new AnonymousTypeField("Cb$Param$" + i, location, t))
+                this.TypeDescriptor = new AnonymousTypeDescriptor(codeblockParams.Select((t, i) => new AnonymousTypeField("Cb$Param$" + i, location, TypeWithAnnotations.Create(t)))
                     .ToImmutableArray(), location);
-                var codeblockDelegate = manager.SynthesizeDelegate(codeblockParams.Length-1, default(BitVector), false, 0).Construct(codeblockParams);
+                var codeblockDelegate = manager.SynthesizeDelegate(codeblockParams.Length - 1, default(BitVector), false, 0).Construct(codeblockParams);
                 this.Properties = new[] {
-                    new AnonymousTypePropertySymbol(this, new AnonymousTypeField("Cb$Eval$", location, codeblockDelegate),0),
-                    new AnonymousTypePropertySymbol(this, new AnonymousTypeField("Cb$Source$", location, manager.System_String),1)
+                    new AnonymousTypePropertySymbol(this, new AnonymousTypeField("Cb$Eval$", location, TypeWithAnnotations.Create(codeblockDelegate)),0),
+                    new AnonymousTypePropertySymbol(this, new AnonymousTypeField("Cb$Source$", location, TypeWithAnnotations.Create(manager.System_String)),1)
                 }.AsImmutableOrNull();
 
                 Symbol[] members = new Symbol[4];

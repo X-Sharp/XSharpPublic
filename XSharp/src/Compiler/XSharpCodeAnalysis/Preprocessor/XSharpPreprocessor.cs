@@ -21,6 +21,7 @@ using Microsoft.CodeAnalysis;
 using System.Reflection;
 using System.Runtime;
 using System.Collections;
+using System.Threading;
 
 namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 {
@@ -168,8 +169,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             internal string SymbolName;
             internal XSharpToken Symbol;
             internal InputState parent;
-            internal string MappedFileName;
-            internal PPRule udc;
+            //internal string MappedFileName;
+            //internal PPRule udc;
 
 
             internal InputState(ITokenStream tokens)
@@ -442,7 +443,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             var d = Diagnostic.Create(new SyntaxDiagnosticInfo(error.Code));
             if (_options.CommandLineArguments != null)
             {
-                d = _options.CommandLineArguments.CompilationOptions.FilterDiagnostic(d);
+                d = _options.CommandLineArguments.CompilationOptions.FilterDiagnostic(d,CancellationToken.None);
             }
             if (d != null)
             {
@@ -707,8 +708,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
             if (inputs.MappedLineDiff != 0)
                 token.MappedLine = token.Line + inputs.MappedLineDiff;
-            if (!string.IsNullOrEmpty(inputs.MappedFileName))
-                token.MappedFileName = inputs.MappedFileName;
+            //if (!string.IsNullOrEmpty(inputs.MappedFileName))
+            //    token.MappedFileName = inputs.MappedFileName;
             //if (!string.IsNullOrEmpty(inputs.SourceFileName))
             //    token.SourceFileName = inputs.SourceFileName;
             if (inputs.isSymbol)

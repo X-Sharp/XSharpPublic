@@ -1264,7 +1264,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             {
 #if XSHARP
                 if(!source.Type.IsNull() && (source.Type.IsEnumType() || source.Type.IsNullableType() && source.Type.GetNullableUnderlyingType().IsEnumType())) {
-                    return IsNumericType(destination.GetSpecialTypeSafe());
+                    return IsNumericType(destination);
                 }
 #endif
                 return false;

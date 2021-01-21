@@ -24,7 +24,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             dictionary = new ConcurrentDictionary<string, XSharpTargetDLL>(XSharpString.Comparer);
         }
 
-        public static bool IsOurAttribute(this NamedTypeSymbol atype, String name)
+        public static bool IsOurAttribute(this NamedTypeSymbol atype, string name)
         {
             if (atype.IsNull())
                 return false;
@@ -72,6 +72,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
         internal static bool IsNotPszType(this TypeSymbol type)
         {
             return !IsPszType(type);
+        }
+        internal static bool IsWinBoolType(this TypeSymbol type)
+        {
+            return !type.IsNull() && type.Name == OurTypeNames.WinBoolType;
         }
         public static bool IsNull(this TypeSymbol type)
         {
@@ -354,7 +358,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             }
             return false;
         }
-        public static TypeSymbol GetActualType(this ParameterSymbol parameter)
+        public static TypeWithAnnotations GetActualType(this ParameterSymbol parameter)
         {
             var type = parameter.Type;
             if (type.SpecialType == SpecialType.System_IntPtr)
@@ -374,7 +378,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                     }
                 }
             }
-            return type;
+            return TypeWithAnnotations.Create(type);
         }
         public static bool NeedAccessToLocals(this MethodSymbol method)
         {
@@ -473,5 +477,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
         {
             get { return this.Compilation.UsualType(); }
         }
+        public ArrayTypeSymbol UsualArrayType
+        {
+            get { return this.Compilation.CreateArrayTypeSymbol(this.Compilation.UsualType()); }
+        }
+
     }
 }

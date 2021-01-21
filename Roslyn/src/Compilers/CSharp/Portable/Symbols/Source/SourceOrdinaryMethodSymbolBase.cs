@@ -19,11 +19,18 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
     /// on any specific kind of syntax node associated with it. Any syntax node is good enough
     /// for it.
     /// </summary>
+#if XSHARP
+    internal abstract partial class SourceOrdinaryMethodSymbolBase : SourceMemberMethodSymbol
+#else
     internal abstract class SourceOrdinaryMethodSymbolBase : SourceMemberMethodSymbol
+#endif
     {
         private readonly ImmutableArray<TypeParameterSymbol> _typeParameters;
+#if XSHARP
+        private string _name;
+#else
         private readonly string _name;
-
+#endif
         private ImmutableArray<MethodSymbol> _lazyExplicitInterfaceImplementations;
         private ImmutableArray<CustomModifier> _lazyRefCustomModifiers;
         private ImmutableArray<ParameterSymbol> _lazyParameters;

@@ -464,9 +464,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                 {
 #if XSHARP
                     type = GetVOGlobalType(compilation, typeSyntax, binder, fieldsBeingBound);
-                    if (type.IsNull() )
+                    if (type.Type.IsNull())
                     {
-                    type = binder.BindType(typeSyntax, diagnosticsForFirstDeclarator);
+                        type = binder.BindType(typeSyntax, diagnosticsForFirstDeclarator);
                     }
 #else
                     type = binder.BindType(typeSyntax, diagnosticsForFirstDeclarator);

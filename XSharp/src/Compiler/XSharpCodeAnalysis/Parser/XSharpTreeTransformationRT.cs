@@ -677,7 +677,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                               emptysizes,
                               SyntaxFactory.MakeToken(SyntaxKind.CloseBracketToken));
                         atype = _syntaxFactory.ArrayType(stringtype, emptyrank);
-                        parameter = parameter.Update(EmptyList<AttributeListSyntax>(), EmptyList<SyntaxToken>(),
+                        parameter = parameter.Update(
+                            default,
+                            default,
                             atype, parameter.Identifier, null);
                         parList = _syntaxFactory.ParameterList(parList.OpenParenToken, MakeSeparatedList(parameter), parList.CloseParenToken);
                         _pool.Free(emptysizes);
@@ -1235,7 +1237,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                
                 case XP.MEMVAR:
                     // handled in the Enter method
-                    context.Put(_syntaxFactory.EmptyStatement(SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)));
+                    context.Put(_syntaxFactory.EmptyStatement(
+                        attributeLists: default, 
+                        SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)));
                     break;
                 case XP.LPARAMETERS:
                     if (CurrentEntity?.isScript() == true)
@@ -1255,7 +1259,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         context.PutList(stmts.ToList());
                     }
                     else
-                        context.Put(_syntaxFactory.EmptyStatement(SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)));
+                        context.Put(_syntaxFactory.EmptyStatement(attributeLists: default, SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)));
                     break;
                 default:
                     break;
@@ -3106,6 +3110,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                             if (GenerateClipCallFunc(context, name))
                                 return;
                         }
+
                         if (CurrentEntity is XP.MethodContext mc)
                         {
                             if (mc.T.Token.Type == XP.ACCESS || mc.T.Token.Type == XP.ASSIGN)

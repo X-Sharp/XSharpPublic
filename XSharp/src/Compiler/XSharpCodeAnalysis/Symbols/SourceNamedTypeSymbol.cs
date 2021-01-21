@@ -46,7 +46,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                     {
                         var f = (FieldSymbol)m;
                         int sz, elsz;
-                        if (f.IsFixed == true)
+                        if (f.IsFixedSizeBuffer == true)
                         {
                             elsz = (f.Type as PointerTypeSymbol).PointedAtType.VoFixedBufferElementSizeInBytes();
                             sz = f.FixedSize * elsz;

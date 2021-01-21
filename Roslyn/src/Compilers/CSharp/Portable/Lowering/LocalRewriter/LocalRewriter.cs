@@ -215,10 +215,12 @@ namespace Microsoft.CodeAnalysis.CSharp
             // Dynamic type will be erased in emit phase. It is considered equivalent to Object in lowered bound trees.
             // Unused deconstructions are lowered to produce a return value that isn't a tuple type.
 #if XSHARP
-            Debug.Assert(visited == null || visited.HasErrors || ReferenceEquals(visited.Type, node.Type) 
-				|| visited.Type.Equals(node.Type, TypeCompareKind.IgnoreDynamicAndTupleNames)
-				|| IsUnusedDeconstruction(node)
-                ||  (_compilation.Options.HasRuntime && node?.Type.IsUsualType()));
+            Debug.Assert(visited == null
+                         || visited.HasErrors
+                         || ReferenceEquals(visited.Type, node.Type)
+                         || visited.Type.Equals(node.Type, TypeCompareKind.IgnoreDynamicAndTupleNames)
+                         || IsUnusedDeconstruction(node)
+                         || (_compilation.Options.HasRuntime && (node != null && node.Type.IsUsualType())));
 #else
             Debug.Assert(visited == null || visited.HasErrors || ReferenceEquals(visited.Type, node.Type) ||
                     visited.Type is { } && visited.Type.Equals(node.Type, TypeCompareKind.IgnoreDynamicAndTupleNames | TypeCompareKind.IgnoreNullableModifiersForReferenceTypes) ||

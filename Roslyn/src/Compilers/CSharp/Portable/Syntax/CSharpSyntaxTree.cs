@@ -496,7 +496,17 @@ namespace Microsoft.CodeAnalysis.CSharp
             using (var parser = new InternalSyntax.XSharpLanguageParser(path, text, options, oldTree: null, changes: null, cancellationToken: cancellationToken))
             {
                 var compilationUnit = (CompilationUnitSyntax)parser.ParseCompilationUnit().CreateRed();
-                var tree = new ParsedSyntaxTree(text, text.Encoding, text.ChecksumAlgorithm, path, options, compilationUnit, default(InternalSyntax.DirectiveStack));
+                var tree = new ParsedSyntaxTree(
+                    textOpt: text, 
+                    encodingOpt: text.Encoding, 
+                    checksumAlgorithm: text.ChecksumAlgorithm, 
+                    path: path, 
+                    options: options, 
+                    root: compilationUnit, 
+                    directives: default,
+                    diagnosticOptions: default,
+                    cloneRoot: false
+                    );
                 //tree.VerifySource();
                 if (options.SaveAsCSharp)
                 {

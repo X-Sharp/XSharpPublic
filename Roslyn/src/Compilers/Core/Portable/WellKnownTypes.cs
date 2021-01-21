@@ -751,8 +751,8 @@ namespace Microsoft.CodeAnalysis
                 typeIdName = (new System.Text.RegularExpressions.Regex(@"\.T(\d+)$")).Replace(typeIdName, "`$1");
                 typeIdName = (new System.Text.RegularExpressions.Regex(@"\.T$")).Replace(typeIdName, "`1");
                 typeIdName = (new System.Text.RegularExpressions.Regex(@"\.KV$")).Replace(typeIdName, "`2");
-                Debug.Assert(name == "Microsoft.VisualBasic.CompilerServices.ObjectFlowControl+ForLoopControl"
-                          || name == typeIdName,"'" + name + "' != '" + typeIdName + "'");
+                //Debug.Assert(name == "Microsoft.VisualBasic.CompilerServices.ObjectFlowControl+ForLoopControl"
+                //          || name == typeIdName,"'" + name + "' != '" + typeIdName + "'");
 #else
                 Debug.Assert(name == typeIdName, "Enum name and type name must match");
 #endif

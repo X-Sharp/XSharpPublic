@@ -38,7 +38,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 #if VSPARSER
                 var strm = asm.GetManifestResourceStream("XSharp.VSParser.Preprocessor.StandardHeaders.resources");
 #else
-                var strm = asm.GetManifestResourceStream("LanguageService.CodeAnalysis.Preprocessor.StandardHeaders.resources");
+                var strm = asm.GetManifestResourceStream("LanguageService.CodeAnalysis.XSharp.Preprocessor.StandardHeaders.resources");
 #endif
                 var rdr = new System.Resources.ResourceReader(strm);
                 foreach (DictionaryEntry item in rdr)

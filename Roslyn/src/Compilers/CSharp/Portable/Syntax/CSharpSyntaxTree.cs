@@ -493,39 +493,11 @@ namespace Microsoft.CodeAnalysis.CSharp
             options = options ?? CSharpParseOptions.Default;
 
 #if XSHARP
-            using (var parser = new InternalSyntax.XSharpLanguageParser(path, text, options, oldTree: null, changes: null, cancellationToken: cancellationToken))
-            {
-                var compilationUnit = (CompilationUnitSyntax)parser.ParseCompilationUnit().CreateRed();
-                var tree = new ParsedSyntaxTree(
-                    textOpt: text, 
-                    encodingOpt: text.Encoding, 
-                    checksumAlgorithm: text.ChecksumAlgorithm, 
-                    path: path, 
-                    options: options, 
-                    root: compilationUnit, 
-                    directives: default,
-                    diagnosticOptions: default,
-                    cloneRoot: false
-                    );
-                //tree.VerifySource();
-                if (options.SaveAsCSharp)
-                {
-                   path = System.IO.Path.ChangeExtension(path, ".cs");
-                   string source = compilationUnit.ToString();
-                   source = source.Replace(";", ";\r\n");
-                   source = source.Replace("{", "\r\n{\r\n");
-                   source = source.Replace("}", "\r\n}\r\n");
-                   source = source.Replace(" . ", ".");
-                   source = source.Replace(" :: ", "::");
-                   source = source.Replace("}", "}\r\n");
-                   source = source.Replace("$", "_");
-                   System.IO.File.WriteAllText(path, source);
-                }
-                return tree;
-            }
+            using var parser = new InternalSyntax.XSharpLanguageParser(path, text, options, oldTree: null, changes: null, cancellationToken: cancellationToken);
 #else
             using var lexer = new InternalSyntax.Lexer(text, options);
             using var parser = new InternalSyntax.LanguageParser(lexer, oldTree: null, changes: null, cancellationToken: cancellationToken);
+#endif
             var compilationUnit = (CompilationUnitSyntax)parser.ParseCompilationUnit().CreateRed();
             var tree = new ParsedSyntaxTree(
                 text,
@@ -534,17 +506,39 @@ namespace Microsoft.CodeAnalysis.CSharp
                 path,
                 options,
                 compilationUnit,
+#if XSHARP
+                directives: default,
+                diagnosticOptions: diagnosticOptions,
+#else
                 parser.Directives,
                 diagnosticOptions: diagnosticOptions,
-                cloneRoot: true);
-            tree.VerifySource();
-            return tree;
 #endif
+                cloneRoot: true); ;
+#if XSHARP
+            if (options.SaveAsCSharp)
+            {
+                path = System.IO.Path.ChangeExtension(path, ".cs");
+                string source = compilationUnit.ToString();
+                source = source.Replace(";", ";\r\n");
+                source = source.Replace("{", "\r\n{\r\n");
+                source = source.Replace("}", "\r\n}\r\n");
+                source = source.Replace(" . ", ".");
+                source = source.Replace(" :: ", "::");
+                source = source.Replace("}", "}\r\n");
+                source = source.Replace("$", "_");
+                System.IO.File.WriteAllText(path, source);
+            }
+            return tree;
+
+#else
+            tree.VerifySource();
+#endif
+            return tree;
         }
 
-        #endregion
+#endregion
 
-        #region Changes
+#region Changes
 
         /// <summary>
         /// Creates a new syntax based off this tree using a new source text.
@@ -642,9 +636,9 @@ namespace Microsoft.CodeAnalysis.CSharp
             return SyntaxDiffer.GetTextChanges(oldTree, this);
         }
 
-        #endregion
+#endregion
 
-        #region LinePositions and Locations
+#region LinePositions and Locations
 
         /// <summary>
         /// Gets the location in terms of path, line and column for a given span.
@@ -833,9 +827,9 @@ namespace Microsoft.CodeAnalysis.CSharp
             return new SourceLocation(this, span);
         }
 
-        #endregion
+#endregion
 
-        #region Diagnostics
+#region Diagnostics
 
         /// <summary>
         /// Gets a list of all the diagnostics in the sub tree that has the specified node as its root.
@@ -939,9 +933,9 @@ namespace Microsoft.CodeAnalysis.CSharp
             return this.GetDiagnostics(this.GetRoot(cancellationToken));
         }
 
-        #endregion
+#endregion
 
-        #region SyntaxTree
+#region SyntaxTree
 
         protected override SyntaxNode GetRootCore(CancellationToken cancellationToken)
         {
@@ -975,7 +969,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
         }
 
-        #endregion
+#endregion
 
         // 3.3 BACK COMPAT OVERLOAD -- DO NOT MODIFY
         [EditorBrowsable(EditorBrowsableState.Never)]

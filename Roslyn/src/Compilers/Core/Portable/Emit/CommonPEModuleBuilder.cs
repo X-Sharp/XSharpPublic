@@ -560,7 +560,7 @@ namespace Microsoft.CodeAnalysis.Emit
                 // The purpose is to trigger Translate on all types.
                 Dispatch(typeReferenceIndexer);
             }
-#if XSHARP
+#if XXSHARP
             // Replace generation of the _rootModule with the generated
             // <Module> class when available
             Cci.INamespaceTypeDefinition topType = null;
@@ -599,7 +599,7 @@ namespace Microsoft.CodeAnalysis.Emit
 
             foreach (var typeDef in GetTopLevelTypeDefinitionsCore(context))
             {
-#if XSHARP
+#if XXSHARP
                 // Skip when class has been included as top level
                 if (typeDef != topType)
                 {

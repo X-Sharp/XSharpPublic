@@ -139,7 +139,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         }
         #endregion
 
-       
 
         #region Fields
         protected static object gate = new object();

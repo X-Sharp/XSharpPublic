@@ -13,7 +13,8 @@
     <RootNamespace>Microsoft.CodeAnalysis.CSharp.CommandLine</RootNamespace>
     <Prefer32Bit>false</Prefer32Bit>
     <LargeAddressAware>true</LargeAddressAware>
-    <TargetFrameworks>netcoreapp3.1;net472</TargetFrameworks>
+    <!--<TargetFrameworks>netcoreapp3.1;net472</TargetFrameworks>-->
+    <TargetFrameworks>net472</TargetFrameworks>
     <ServerGarbageCollection>true</ServerGarbageCollection>
     <UseAppHost>false</UseAppHost>
     <DefineConstants Condition="'$(TargetFramework)' == 'net472'">$(DefineConstants);NET46;NET472;</DefineConstants>

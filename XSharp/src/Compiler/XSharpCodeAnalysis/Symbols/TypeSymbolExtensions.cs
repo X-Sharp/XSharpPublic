@@ -43,7 +43,17 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
         {
             return !IsUsualType(type);
         }
-        
+        public static MethodSymbol MethodSymbol(this IMethodSymbol sym)
+        {
+            if (sym is Symbols.PublicModel.MethodSymbol pms)
+            {
+                return pms.UnderlyingMethodSymbol;
+            }
+            else
+            {
+                return (MethodSymbol)sym;
+            }
+        }
         internal static bool IsSymbolType(this TypeSymbol type)
         {
             return !type.IsNull() && type.Name == OurTypeNames.SymbolType;
@@ -396,6 +406,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
 
         public static bool TypesChanged(this TypeSymbol type)
         {
+            if (type.IsNull())
+                return false;
             var attrs = type.GetAttributes();
             foreach (var attr in attrs)
             {
@@ -481,6 +493,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
         {
             get { return this.Compilation.CreateArrayTypeSymbol(this.Compilation.UsualType()); }
         }
+
+        
 
     }
 }

@@ -14,6 +14,7 @@ using Roslyn.Utilities;
 using Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax;
 using Microsoft.CodeAnalysis.CSharp.Emit;
 using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
+using Microsoft.CodeAnalysis.CSharp.Symbols.Metadata.PE;
 
 namespace Microsoft.CodeAnalysis.CSharp
 {
@@ -148,7 +149,7 @@ namespace Microsoft.CodeAnalysis.CSharp
 
             foreach (var rkv in refMan.GetReferencedAssemblies())
             {
-                var r = (IAssemblySymbol)rkv.Value;
+                var r = (AssemblySymbol)rkv.Value;
                 foreach (var attr in r.GetAttributes())
                 {
                     if (TypeSymbol.Equals(attr.AttributeClass.ConstructedFrom, vcla))
@@ -167,9 +168,9 @@ namespace Microsoft.CodeAnalysis.CSharp
                                     var members = type.GetMembers(XSharpSpecialNames.ExitProc);
                                     if (members.Length > 0)
                                     {
-                                        foreach (MethodSymbol sym in members)
+                                        foreach (Symbol sym in members)
                                         {
-                                            CreateMethodCall(method.DeclaringCompilation, statement.Syntax, sym, newstatements);
+                                            CreateMethodCall(method.DeclaringCompilation, statement.Syntax, ((IMethodSymbol)sym.ISymbol).MethodSymbol(), newstatements);
                                         }
                                     }
                                     else
@@ -187,9 +188,9 @@ namespace Microsoft.CodeAnalysis.CSharp
             // Now clear the globals in this assembly by calling $Exit
 
             var symbols = FindMembers(method.DeclaringCompilation, XSharpSpecialNames.ExitProc);
-            foreach (MethodSymbol sym in symbols)
+            foreach (IMethodSymbol sym in symbols)
             {
-                CreateMethodCall(method.DeclaringCompilation, statement.Syntax, sym, newstatements);
+                CreateMethodCall(method.DeclaringCompilation, statement.Syntax, sym.MethodSymbol(), newstatements);
             }
             newstatements.Add(new BoundReturnStatement(statement.Syntax, RefKind.None, null));
             var oldbody = statement as BoundBlock;
@@ -240,9 +241,9 @@ namespace Microsoft.CodeAnalysis.CSharp
             var vrt = comp.GetBoundReferenceManager().GetReferencedAssemblies().Where(x => x.Value.Name == "VulcanRT");
             if (vrt.Count() != 0)
             {
-                var vulcanrt = (IAssemblySymbol) vrt.First().Value;
+                var vulcanrt = (AssemblySymbol) vrt.First().Value;
                 var type = vulcanrt.GetTypeByMetadataName("Vulcan.Runtime.State");
-                if (type != null)
+                if (!type.IsNull())
                 {
                     string[] names = { XSharpSpecialNames.RTCompilerOptionOvf,
                                     XSharpSpecialNames.RTCompilerOptionOvf,
@@ -264,9 +265,9 @@ namespace Microsoft.CodeAnalysis.CSharp
             var xc = comp.GetBoundReferenceManager().GetReferencedAssemblies().Where(x => x.Value.Name == "XSharp.Core");
             if (xc.Count() != 0)
             {
-                var xsrt = (IAssemblySymbol)xc.First().Value;
+                var xsrt = (AssemblySymbol)xc.First().Value;
                 var type = xsrt.GetTypeByMetadataName("XSharp.RuntimeState");
-                if (type != null)
+                if (!type.IsNull())
                 {
                     string[] names = { XSharpSpecialNames.RTCompilerOptionOvf,
                                     XSharpSpecialNames.RTCompilerOptionVO11,
@@ -319,7 +320,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             {
                 foreach (var rkv in refMan.GetReferencedAssemblies())
                 {
-                    var r = (IAssemblySymbol) rkv.Value;
+                    var r = (AssemblySymbol) rkv.Value;
                     foreach (var attr in r.GetAttributes())
                     {
                         if ( TypeSymbol.Equals(attr.AttributeClass.ConstructedFrom,vcla))
@@ -331,11 +332,20 @@ namespace Microsoft.CodeAnalysis.CSharp
                                 if (!string.IsNullOrEmpty(functionsClassName))
                                 {
                                     var type = r.GetTypeByMetadataName(functionsClassName);
-                                    if (type != null)
+                                    if (!type.IsNull())
                                     {
-                                        init1.AddRange(type.GetMembers(XSharpSpecialNames.InitProc1));
-                                        init2.AddRange(type.GetMembers(XSharpSpecialNames.InitProc2));
-                                        init3.AddRange(type.GetMembers(XSharpSpecialNames.InitProc3));
+                                        foreach (var mem in type.GetMembers(XSharpSpecialNames.InitProc1))
+                                        {
+                                            init1.Add(mem.ISymbol);
+                                        }
+                                        foreach (var mem in type.GetMembers(XSharpSpecialNames.InitProc2))
+                                        {
+                                            init2.Add(mem.ISymbol);
+                                        }
+                                        foreach (var mem in type.GetMembers(XSharpSpecialNames.InitProc3))
+                                        {
+                                            init3.Add(mem.ISymbol);
+                                        }
                                     }
                                 }
                             }
@@ -344,19 +354,25 @@ namespace Microsoft.CodeAnalysis.CSharp
                 }
             }
 
-            var members = FindMembers(compilation, XSharpSpecialNames.InitProc1);
-            init1.AddRange(members);
-            members = FindMembers(compilation, XSharpSpecialNames.InitProc2);
-            init2.AddRange(members);
-            members = FindMembers(compilation, XSharpSpecialNames.InitProc3);
-            init3.AddRange(members);
+            foreach (var mem in FindMembers(compilation, XSharpSpecialNames.InitProc1))
+            {
+                init1.Add(mem);
+            }
+            foreach (var mem in FindMembers(compilation, XSharpSpecialNames.InitProc2))
+            {
+                init2.Add(mem);
+            }
+            foreach (var mem in FindMembers(compilation, XSharpSpecialNames.InitProc3))
+            {
+                init3.Add(mem);
+            }
             // Now join all 3 lists to one list
             init1.AddRange(init2);
             init1.AddRange(init3);
 
-            foreach (MethodSymbol sym in init1)
+            foreach (IMethodSymbol sym in init1)
             {
-                CreateMethodCall(compilation, statement.Syntax, sym, newstatements);
+                CreateMethodCall(compilation, statement.Syntax, sym.MethodSymbol(), newstatements);
             }
             return newstatements;
         }

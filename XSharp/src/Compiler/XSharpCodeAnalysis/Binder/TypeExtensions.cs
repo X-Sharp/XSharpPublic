@@ -340,7 +340,8 @@ namespace Microsoft.CodeAnalysis.CSharp
                 else
                     stype = SpecialType.System_UInt64;
             }
-            return (TypeSymbol) compilation.GetSpecialType(stype);
+            var sym = ((CSharpCompilation)compilation).GetSpecialType(stype);
+            return sym;
         }
     }
 }

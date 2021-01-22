@@ -966,7 +966,11 @@ namespace Microsoft.CodeAnalysis.CSharp
                     return Conversion.ObjectCreation;
             }
 
+#if !XSHARP
             return Conversion.NoConversion;
+#else
+            return ClassifyXSImplicitBuiltInConversionFromExpression(sourceExpression, source, destination, ref useSiteDiagnostics);
+#endif
         }
 
         private Conversion GetSwitchExpressionConversion(BoundExpression source, TypeSymbol destination, ref HashSet<DiagnosticInfo> useSiteDiagnostics)

@@ -41,7 +41,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
         private readonly SourceMemberContainerTypeSymbol _containingType;
         private readonly string _name;
         private readonly SyntaxReference _syntaxRef;
+#if XSHARP
+        protected DeclarationModifiers _modifiers;
+#else
         protected readonly DeclarationModifiers _modifiers;
+#endif
         private readonly ImmutableArray<CustomModifier> _refCustomModifiers;
         private readonly SourcePropertyAccessorSymbol _getMethod;
         private readonly SourcePropertyAccessorSymbol _setMethod;
@@ -277,6 +281,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
 
                     _lazyParameters = CustomModifierUtils.CopyParameterCustomModifiers(overriddenOrImplementedProperty.Parameters, _lazyParameters, alsoCopyParamsModifier: isOverride);
                 }
+#if XSHARP
+                else
+                {
+                    this._modifiers &= ~DeclarationModifiers.Override;
+                }
+#endif
             }
             else if (_refKind == RefKind.RefReadOnly)
             {
@@ -284,13 +294,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
 
                 _refCustomModifiers = ImmutableArray.Create(CSharpCustomModifier.CreateRequired(modifierType));
             }
-#if XSHARP
-            else /*if (this.IsVirtual)*/
-            {
-                // Todo RvdH adjust modifiers
-                //_refCustomModifiers &= ~DeclarationModifiers.Override;
-	        }
-#endif
+
             if (!hasAccessorList && arrowExpression != null)
             {
                 Debug.Assert(arrowExpression is object);
@@ -991,7 +995,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             }
         }
 
-        #region Attributes
+#region Attributes
 
         public abstract SyntaxList<AttributeListSyntax> AttributeDeclarationSyntaxList { get; }
 
@@ -1339,9 +1343,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             }
         }
 
-        #endregion
+#endregion
 
-        #region Completion
+#region Completion
 
         internal sealed override bool RequiresCompletion
         {
@@ -1447,7 +1451,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             }
         }
 
-        #endregion
+#endregion
 
 #nullable enable
         protected abstract ImmutableArray<ParameterSymbol> ComputeParameters(Binder? binder, CSharpSyntaxNode syntax, DiagnosticBag diagnostics);

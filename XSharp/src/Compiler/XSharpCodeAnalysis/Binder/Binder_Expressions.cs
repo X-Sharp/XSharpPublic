@@ -51,17 +51,18 @@ namespace Microsoft.CodeAnalysis.CSharp
                 PrimaryExpressionContext pe = (PrimaryExpressionContext)node.XNode;
                 if (pe.Expr is VoConversionExpressionContext && operand.Type.IsPointerType())
                 {
+                    var tType = targetType.Type;
                     // Dereference pointer
                     // only allowed when source is Void Ptr
                     // or source is <TargetType> PTR
                     // Convert INT(<ptr>) to ((INT PTR) <ptr>)[0]
                     // No need to worry about /AZ. This has been handled already
                     // make sure that PSZ(ptr) is not dereferenced !
-                    bool canConvert = operand.Type.IsVoidPointer() && targetType.Type.IsPszType();
+                    bool canConvert = operand.Type.IsVoidPointer() && tType.IsPszType();
                     if (!canConvert)
                     {
                         PointerTypeSymbol pt = operand.Type as PointerTypeSymbol;
-                        canConvert = TypeSymbol.Equals(pt.PointedAtType, targetType);
+                        canConvert = TypeSymbol.Equals(pt.PointedAtType, tType);
                     }
                     if (canConvert)
                     {
@@ -70,11 +71,11 @@ namespace Microsoft.CodeAnalysis.CSharp
                         HashSet<DiagnosticInfo> useSiteDiagnostics = null;
                         //var newConv = Conversions.ClassifyConversionForCast(operand, ptrtype, ref useSiteDiagnostics);
                         var newConv = Conversions.ClassifyConversionFromExpression(operand, ptrtype, ref useSiteDiagnostics, forCast: true);
-                        var ptrconv = new BoundConversion(node, operand, newConv, true, true,
+                        var ptrconv = new BoundConversion(node, operand, newConv, true, false,
                             conversionGroupOpt: default,
                             constantValueOpt: default,
                             type: ptrtype) { WasCompilerGenerated = true };
-                        expression = new BoundPointerElementAccess(node, ptrconv, index, false, targetType.Type) { WasCompilerGenerated = true };
+                        expression = new BoundPointerElementAccess(node, ptrconv, index, false, tType) { WasCompilerGenerated = true };
                         return true;
                     }
                 }

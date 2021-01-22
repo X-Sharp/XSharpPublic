@@ -2265,7 +2265,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 return expression;
             }
             // WE do not want (USUAL) <object> to unbox the object !
-            if (operand.Type.IsObjectType() && targetType.IsUsualType())
+            if (operand.Type?.SpecialType == SpecialType.System_Object && targetType.IsUsualType())
             {
                 return operand;
             }
@@ -3113,16 +3113,23 @@ namespace Microsoft.CodeAnalysis.CSharp
                     }
 #if XSHARP
                     // Do not add Conversions for BoundAddressOf operator when compiling with /vo7+
-                    if (argument is BoundAddressOfOperator bad && 
+                    if (argument is BoundAddressOfOperator bad &&
                         this.Compilation.Options.HasOption(CompilerOption.ImplicitCastsAndConversions, argument.Syntax) &&
-                        ! bad.Operand.Type.IsVoStructOrUnion())
+                        !bad.Operand.Type.IsVoStructOrUnion())
                     {
                         ; // leave unchanged
                     }
                     else
                     {
                         bool cast = (argument.Syntax is CastExpressionSyntax);
-                        arguments[arg] = CreateConversion(argument.Syntax, argument, kind, isCast: cast, conversionGroupOpt: null, parameterTypeWithAnnotations.Type, diagnostics);
+                        arguments[arg] = CreateConversion(
+                            syntax: argument.Syntax,
+                            source: argument,
+                            conversion: kind,
+                            isCast: cast,
+                            conversionGroupOpt: new ConversionGroup(kind, parameterTypeWithAnnotations),
+                            destination: parameterTypeWithAnnotations.Type,
+                            diagnostics: diagnostics);
                     }
 #else
                     arguments[arg] = CreateConversion(argument.Syntax, argument, kind, isCast: false, conversionGroupOpt: null, parameterTypeWithAnnotations.Type, diagnostics);

@@ -197,12 +197,14 @@ namespace Microsoft.CodeAnalysis.CSharp
 #if DEBUG
         protected override void VisitRvalue(BoundExpression node, bool isKnownToBeAnLvalue = false)
         {
+#if !XSHARP
             Debug.Assert(
                 node is null ||
                 !_shouldCheckConverted ||
                 isKnownToBeAnLvalue ||
                 !node.NeedsToBeConverted() ||
                 node.WasCompilerGenerated, "expressions should have been converted");
+#endif
             base.VisitRvalue(node, isKnownToBeAnLvalue);
         }
 #endif

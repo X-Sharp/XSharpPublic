@@ -39,13 +39,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             }
             _changedParameters = newparameters.ToImmutableAndFree();
             _signatureChanged = true;
-            // Todo RvdH Update flags to add Override
-            //this.flags = new Flags(flags.MethodKind,
-            //    flags.DeclarationModifiers | DeclarationModifiers.Override,
-            //    this.ReturnsVoid,
-            //    flags.IsExtensionMethod,
-            //    flags.IsMetadataVirtual());
-                
+            this.DeclarationModifiers |= DeclarationModifiers.Override;
+            this.flags = new Flags(flags.MethodKind, this.DeclarationModifiers , this.ReturnsVoid,flags.IsExtensionMethod, flags.IsMetadataVirtual());
+
         }
         internal void SetOverriddenMethod(MethodSymbol m)
         {

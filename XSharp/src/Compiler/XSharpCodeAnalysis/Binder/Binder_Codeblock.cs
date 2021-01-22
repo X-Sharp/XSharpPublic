@@ -60,8 +60,8 @@ namespace Microsoft.CodeAnalysis.CSharp
                 conversion,
                 @checked: false,
                 explicitCastInCode: false,
-                conversionGroupOpt: default, 
-                constantValueOpt: ConstantValue.NotAvailable,
+                conversionGroupOpt: default,
+                constantValueOpt: default,
                 type: delType)
             { WasCompilerGenerated = unboundLambda.WasCompilerGenerated };
             var cbSrc = new BoundLiteral(syntax, ConstantValue.Create(syntax.XCodeBlockSource), Compilation.GetSpecialType(SpecialType.System_String));
@@ -74,9 +74,12 @@ namespace Microsoft.CodeAnalysis.CSharp
             {
                 cbInst = new BoundConversion(syntax,
                     cbInst,
-                    Conversion.ImplicitReference, false, false,
+                    Conversion.ImplicitReference,
+                    @checked: false,
+                    explicitCastInCode: false,
                     conversionGroupOpt: default,
-                    ConstantValue.NotAvailable, Compilation.CodeBlockType())
+                    constantValueOpt: default,
+                    type: Compilation.CodeBlockType())
                 { WasCompilerGenerated = unboundLambda.WasCompilerGenerated }; ;
             }
             if (!conv.IsValid || (!isCast && conv.IsExplicit))
@@ -89,8 +92,8 @@ namespace Microsoft.CodeAnalysis.CSharp
                     conv,
                     false,
                     explicitCastInCode: isCast,
-                    conversionGroupOpt: default,
-                    constantValueOpt: ConstantValue.NotAvailable,
+                    conversionGroupOpt: isCast ? new ConversionGroup(conv) : default,
+                    constantValueOpt: default,
                     type: destination,
                     hasErrors: true)
                 { WasCompilerGenerated = unboundLambda.WasCompilerGenerated };
@@ -101,8 +104,8 @@ namespace Microsoft.CodeAnalysis.CSharp
                 conv,
                 false,
                 explicitCastInCode: isCast,
-                conversionGroupOpt: default, 
-                constantValueOpt: ConstantValue.NotAvailable,
+                conversionGroupOpt: new ConversionGroup(conv), 
+                constantValueOpt: default,
                 type: destination)
             { WasCompilerGenerated = unboundLambda.WasCompilerGenerated };
         }

@@ -398,15 +398,16 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                                                                   out _lazyParameters, alsoCopyParamsModifier: true);
                 }
 #if XSHARP
-                /*if (this.IsVirtual)*/
+                if (this.IsVirtual)
                 {
-                    //Todo RvdH Updated Flags
-                    //if ((object)overriddenMethod != null)
-                    //{
-                    //    flags = new Flags(flags.MethodKind, flags.DeclarationModifiers & ~DeclarationModifiers.Virtual, this.ReturnsVoid, flags.IsExtensionMethod, flags.IsMetadataVirtual(true));
-                    //}
-                    //else
-                    //    flags = new Flags(flags.MethodKind, flags.DeclarationModifiers & ~DeclarationModifiers.Override, this.ReturnsVoid, flags.IsExtensionMethod, flags.IsMetadataVirtual(true));
+                    if ((object)overriddenMethod != null)
+                    {
+                        this.DeclarationModifiers &= ~DeclarationModifiers.Virtual;
+                    }
+                    else
+                        this.DeclarationModifiers &= ~DeclarationModifiers.Override;
+
+                    flags = new Flags(flags.MethodKind, this.DeclarationModifiers , this.ReturnsVoid, flags.IsExtensionMethod, flags.IsMetadataVirtual(true));
                 }
 #endif
             }

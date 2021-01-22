@@ -555,13 +555,13 @@ namespace Microsoft.CodeAnalysis.CSharp
 
             if (opType != VOOperatorType.None)
             {
-                var res =  BindVOBinaryOperator(node, diagnostics, ref left, ref right, opType);
+                var res = BindVOBinaryOperator(node, diagnostics, ref left, ref right, opType);
                 if (res != null)
                     return res;
             }
             bool integralTypes = ((object) leftType )!= null && ((object) rightType )!= null &&
                 leftType.IsIntegralType() && rightType.IsIntegralType();
-            if (! integralTypes)
+            if (!integralTypes)
             {
                 // Logical Operators on USUALS require a conversion
                 AdjustVOUsualLogicOperands(node, ref left, ref right, diagnostics);
@@ -620,7 +620,6 @@ namespace Microsoft.CodeAnalysis.CSharp
                 resultRight = CreateConversion(right, best.RightConversion, signature.RightType, diagnostics);
 #if XSHARP
                 var expectedResultType = resultType;
-                
 #endif
                 resultConstant = FoldBinaryOperator(node, resultOperatorKind, resultLeft, resultRight, resultType.SpecialType, diagnostics);
 #if XSHARP
@@ -681,12 +680,13 @@ namespace Microsoft.CodeAnalysis.CSharp
                 if (resultLeft.ConstantValue != null || result.Syntax.XIsVoCast)
                     chosenType = rightType;
 
-                if (resultType.IsIntegralType() && !TypeSymbol.Equals(resultType , chosenType))// C277 ByteValue >> 2 should not return int but byte.
+                if (resultType.IsIntegralType() && !TypeSymbol.Equals(resultType, chosenType))// C277 ByteValue >> 2 should not return int but byte.
                 {
-                    result = new BoundConversion(node, result, Conversion.ImplicitNumeric, false, false, 
+                    result = new BoundConversion(node, result, Conversion.ImplicitNumeric, false, false,
                         conversionGroupOpt: default,
-                        constantValueOpt: default, 
-                        type: chosenType) { WasCompilerGenerated = true };
+                        constantValueOpt: default,
+                        type: chosenType)
+                    { WasCompilerGenerated = true };
                 }
             }
             return result;

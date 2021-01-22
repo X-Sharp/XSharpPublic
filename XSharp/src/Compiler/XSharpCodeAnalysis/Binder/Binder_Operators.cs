@@ -107,9 +107,14 @@ namespace Microsoft.CodeAnalysis.CSharp
                 // Standard String Comparison using .Net String Compare
                 TryGetSpecialTypeMember(Compilation, SpecialMember.System_String__Compare, node, diagnostics, out opMeth);
                 opCall = BoundCall.Synthesized(node, null, opMeth, left, right);
+                opCall.WasCompilerGenerated = true;
             }
-            return BindSimpleBinaryOperator(node, diagnostics, opCall,
-                new BoundLiteral(node, ConstantValue.Create((int)0), GetSpecialType(SpecialType.System_Int32, diagnostics, node)));
+            var op = BindSimpleBinaryOperator(node, diagnostics, opCall,
+                new BoundLiteral(node, ConstantValue.Create((int)0), GetSpecialType(SpecialType.System_Int32, diagnostics, node))) ;
+            op.WasCompilerGenerated = true;
+            var res = CreateConversion(op, Compilation.GetSpecialType(SpecialType.System_Boolean), diagnostics);
+            res.WasCompilerGenerated = true;
+            return res;
         }
 
 
@@ -134,6 +139,9 @@ namespace Microsoft.CodeAnalysis.CSharp
                     left = CreateConversion(left, stringType, diagnostics);
                 }
                 opCall = BoundCall.Synthesized(node, null, opMeth, left, right);
+                opCall.WasCompilerGenerated = true;
+                opCall = CreateConversion(opCall, Compilation.GetSpecialType(SpecialType.System_Boolean), diagnostics);
+                opCall.WasCompilerGenerated = true;
             }
             else
             {

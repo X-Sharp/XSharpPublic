@@ -116,9 +116,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                                                               out _lazyParameters, alsoCopyParamsModifier: true);
             }
             var node = this.SyntaxNode.Green as Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax.MethodDeclarationSyntax;
-            // todo RvdH Changes flags
-            /*
-            var mods = flags.DeclarationModifiers;
+            var mods = this.DeclarationModifiers;
             if ((object)overriddenMethod != null)
             {
                 if (this.Name != overriddenMethod.Name)
@@ -148,7 +146,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                 }
                 flags = new Flags(flags.MethodKind, mods, this.ReturnsVoid, flags.IsExtensionMethod, flags.IsMetadataVirtual(true));
             }
-            */
+            this.DeclarationModifiers = mods;
             return overriddenMethod;
         }
     }

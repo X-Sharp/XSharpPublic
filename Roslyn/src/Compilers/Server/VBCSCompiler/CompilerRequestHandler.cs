@@ -107,7 +107,6 @@ Run Compilation
             {
                 return new RejectedBuildResponse("Missing temp directory");
             }
-
             CommonCompiler compiler;
             if (!TryCreateCompiler(request, out compiler))
             {
@@ -129,12 +128,9 @@ End {request.Language} Compilation complete.
 Return code: {returnCode}
 Output:
 {outputString}");
-#if XSHARP
-            // Todo RvdH OutputFileName
-            return new CompletedBuildResponse(returnCode, utf8output, null, outputString);
-#else
+
             return new CompletedBuildResponse(returnCode, utf8output, outputString);
-#endif
+
         }
     }
 }

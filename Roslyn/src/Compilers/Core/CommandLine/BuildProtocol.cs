@@ -417,20 +417,12 @@ Creating BuildRequest
         public readonly int ReturnCode;
         public readonly bool Utf8Output;
         public readonly string Output;
-        public readonly string ErrorOutput;
-#if XSHARP
-        public readonly string OutputFileName;
-#endif
+        public readonly string ErrorOutput; 
 
         public CompletedBuildResponse(int returnCode,
                                       bool utf8output,
-#if XSHARP
-                                      string? output,
-                                      string? outputFileName)
-#else
                                       string? output)
 
-#endif
         {
             ReturnCode = returnCode;
             Utf8Output = utf8output;
@@ -440,9 +432,6 @@ Creating BuildRequest
             // this field or Console.Error.  This field is only kept around in order to maintain the existing
             // protocol semantics.
             ErrorOutput = string.Empty;
-#if XSHARP
-            OutputFileName = outputFileName ?? string.Empty;
-#endif
         }
 
         public override ResponseType Type => ResponseType.Completed;
@@ -457,15 +446,8 @@ Creating BuildRequest
             {
                 throw new InvalidOperationException();
             }
-#if XSHARP
-            var outputFileName = ReadLengthPrefixedString(reader);
-#endif
 
-#if XSHARP
-            return new CompletedBuildResponse(returnCode, utf8Output, output, outputFileName);
-#else
             return new CompletedBuildResponse(returnCode, utf8Output, output);
-#endif
         }
 
         protected override void AddResponseBody(BinaryWriter writer)
@@ -474,9 +456,6 @@ Creating BuildRequest
             writer.Write(Utf8Output);
             WriteLengthPrefixedString(writer, Output);
             WriteLengthPrefixedString(writer, ErrorOutput);
-#if XSHARP
-            WriteLengthPrefixedString(writer, OutputFileName);
-#endif
         }
     }
 

@@ -185,7 +185,7 @@ namespace Microsoft.CodeAnalysis.CompilerServer
                 try
                 {
 #if XSHARP
-                    XSharpString.CaseSensitive = pipeName != null && pipeName.EndsWith("__CS");
+                    XSharpString.CaseSensitive = pipeName.EndsWith("__CS"); 
 #endif
                     // Create the pipe and begin waiting for a connection. This 
                     // doesn't block, but could fail in certain circumstances, such

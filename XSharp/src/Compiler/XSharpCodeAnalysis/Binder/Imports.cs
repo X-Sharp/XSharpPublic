@@ -67,7 +67,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                         var diagnostics = DiagnosticBag.GetInstance();
                         var name = Syntax.InternalSyntax.XSharpTreeTransformationCore.ExtGenerateQualifiedName(functionsClass);
                         var imported = declbinder.BindNamespaceOrTypeSymbol(name, diagnostics, basesBeingResolved);
-                        if (imported.NamespaceOrTypeSymbol.Kind == SymbolKind.Namespace)
+                        if (imported.NamespaceOrTypeSymbol.Kind == SymbolKind.NamedType)
                         {
                             var importedType = (NamedTypeSymbol)imported.NamespaceOrTypeSymbol;
                             AddNs(usingDirective, importedType, usings, uniqueUsings);

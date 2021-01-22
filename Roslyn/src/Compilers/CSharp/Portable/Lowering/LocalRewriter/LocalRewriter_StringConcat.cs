@@ -47,7 +47,12 @@ namespace Microsoft.CodeAnalysis.CSharp
             {
                 return RewriteStringConcatInExpressionLambda(syntax, operatorKind, loweredLeft, loweredRight, type);
             }
-
+#if XSHARP
+            if (operatorKind != BinaryOperatorKind.StringConcatenation)
+            {
+                ReportStringConcatError(syntax, loweredLeft, loweredRight);
+            }
+#endif
             // Convert both sides to a string (calling ToString if necessary)
             loweredLeft = ConvertConcatExprToString(syntax, loweredLeft);
             loweredRight = ConvertConcatExprToString(syntax, loweredRight);
@@ -307,12 +312,6 @@ namespace Microsoft.CodeAnalysis.CSharp
 
             var method = UnsafeGetSpecialTypeMethod(syntax, SpecialMember.System_String__ConcatStringString);
             Debug.Assert((object)method != null);
-#if XSHARP
-            //if (method == (MethodSymbol) SpecialMember.System_String__ConcatObjectObject)
-            //{
-            //    ReportStringConcatError(syntax, loweredLeft, loweredRight);
-            //}
-#endif
             return (BoundExpression)BoundCall.Synthesized(syntax, null, method, loweredLeft, loweredRight);
         }
 
@@ -324,12 +323,6 @@ namespace Microsoft.CodeAnalysis.CSharp
 
             var method = UnsafeGetSpecialTypeMethod(syntax, SpecialMember.System_String__ConcatStringStringString);
             Debug.Assert((object)method != null);
-#if XSHARP
-            //if (method == (MethodSymbol) SpecialMember.System_String__ConcatObjectObjectObject)
-            //{
-            //    ReportStringConcatError(syntax, loweredFirst, loweredSecond, loweredThird);
-            //}
-#endif
 
             return BoundCall.Synthesized(syntax, null, method, ImmutableArray.Create(loweredFirst, loweredSecond, loweredThird));
         }
@@ -354,13 +347,6 @@ namespace Microsoft.CodeAnalysis.CSharp
 
             var method = UnsafeGetSpecialTypeMethod(syntax, SpecialMember.System_String__ConcatStringArray);
             Debug.Assert((object)method != null);
-#if XSHARP
-//            if (method == (MethodSymbol)SpecialMember.System_String__ConcatObjectArray)
-//            {
-//                BoundExpression[] args = loweredArgs.ToArray();
-//                ReportStringConcatError(syntax, args);
-//            }
-#endif
             var array = _factory.ArrayOrEmpty(_factory.SpecialType(SpecialType.System_String), loweredArgs);
 
             return (BoundExpression)BoundCall.Synthesized(syntax, null, method, array);
@@ -378,12 +364,6 @@ namespace Microsoft.CodeAnalysis.CSharp
 
             var method = UnsafeGetSpecialTypeMethod(syntax, member);
             Debug.Assert((object)method != null);
-#if XSHARP
-            //if (member == SpecialMember.System_String__ConcatObjectObject)
-            //{
-            //    ReportStringConcatError(syntax, loweredLeft, loweredRight);
-            //}
-#endif
             return new BoundBinaryOperator(syntax, operatorKind, constantValueOpt: null, method, default(LookupResultKind), loweredLeft, loweredRight, type);
         }
 
@@ -427,7 +407,9 @@ namespace Microsoft.CodeAnalysis.CSharp
             {
                 return expr;
             }
-
+#if XSHARP
+            ReportStringConcatError(syntax, expr);
+#endif
             // Evaluate toString at the last possible moment, to avoid spurious diagnostics if it's missing.
             // All code paths below here use it.
             var objectToStringMethod = UnsafeGetSpecialTypeMethod(syntax, SpecialMember.System_Object__ToString);
@@ -535,7 +517,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             int element = 1;
             var type = expressions[0].Type;
             var location = syntax.Location;
-            for (int i = expressions.Length-1; i >= 0; i--)
+            for (int i = expressions.Length - 1; i >= 0; i--)
             {
                 if (expressions[i].Type.SpecialType != SpecialType.System_String)
                 {

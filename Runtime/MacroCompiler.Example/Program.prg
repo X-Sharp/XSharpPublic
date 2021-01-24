@@ -325,6 +325,11 @@ BEGIN NAMESPACE MacroCompilerTest
         Console.WriteLine("Press any key to exit...")
         Console.ReadKey()
 
+    FUNCTION ParseScript(mc AS XSharp.Runtime.MacroCompiler, src AS STRING) AS VOID
+        Console.WriteLine("Parsing script ...")
+        VAR ast := mc:GetObjectCompiler(true):ParseScript(src)
+        Console.WriteLine(ast)
+
     FUNCTION ParseMacro(mc AS XSharp.Runtime.MacroCompiler, src AS STRING) AS VOID
         Console.WriteLine("Parsing macro ...")
         VAR ast := mc:GetObjectCompiler(true):Parse(src)

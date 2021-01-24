@@ -678,7 +678,7 @@ namespace XSharp.MacroCompiler
                                     if (KwIds.TryGetValue(value, out tt))
                                     {
                                         t = tt;
-                                        if (IsSoftKeyword(tt))
+                                        if (IsSoftKeyword(tt) || _inDottedIdentifier)
                                         { 
                                             st = TokenType.ID;
                                             if (_lastToken == TokenType.COLON ||_lastToken == TokenType.DOT)

@@ -98,9 +98,18 @@ namespace XSharp.MacroCompiler
 
         internal Syntax.Codeblock Parse(string source)
         {
+            options.ParseMode = ParseMode.Expression;
             var lexer = new Lexer(source, options);
             var parser = new Parser(lexer, options);
             return parser.ParseMacro();
+        }
+
+        internal Syntax.StmtBlock ParseScript(string source)
+        {
+            options.ParseMode = ParseMode.Statements;
+            var lexer = new Lexer(source, options);
+            var parser = new Parser(lexer, options);
+            return parser.ParseScript();
         }
     }
 }

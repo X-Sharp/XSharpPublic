@@ -91,8 +91,11 @@
     <Compile Include="Binder\Intrinsic.cs" />
     <Compile Include="Syntax\Lexer.cs" />
     <Compile Include="Syntax\Literal.cs" />
+    <Compile Include="Syntax\Node.Syntax.Stmt.cs" />
     <Compile Include="Syntax\Parser.cs" />
     <Compile Include="Syntax\Node.Syntax.cs" />
+    <Compile Include="Syntax\Parser.Expr.cs" />
+    <Compile Include="Syntax\Parser.Stmt.cs" />
     <Compile Include="Syntax\SyntaxToken.cs" />
   </ItemGroup>
   <ItemGroup>

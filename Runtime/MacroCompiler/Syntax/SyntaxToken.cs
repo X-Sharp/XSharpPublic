@@ -26,8 +26,8 @@ namespace XSharp.MacroCompiler.Syntax
         FIRST_KEYWORD,
 
         // Entity keywords [entity]
-        ACCESS, ALIGN, ASPEN, ASSIGN, CALLBACK, CLASS, CLIPPER, DECLARE, DEFINE, DLL, DLLEXPORT, EXPORT, FASTCALL, 
-        FUNC, FUNCTION, GLOBAL, HIDDEN, INHERIT, INIT1, INIT2, INIT3, INSTANCE, MEMBER, METHOD, PARAMETERS, PASCAL,
+        ACCESS, ALIGN, ASPEN, ASSIGN, CALLBACK, CLASS, CLIPPER, DEFINE, DLL, DLLEXPORT, EXPORT, FASTCALL, 
+        FUNC, FUNCTION, GLOBAL, HIDDEN, INHERIT, INIT1, INIT2, INIT3, INSTANCE, MEMBER, METHOD, PARAMETERS, LPARAMETERS, PASCAL,
         PRIVATE, PROC, PROCEDURE, PROTECTED, PUBLIC, STRICT, THISCALL, UNION,
         USING, WINCALL,
 
@@ -36,12 +36,13 @@ namespace XSharp.MacroCompiler.Syntax
         FOR, IN, LOCAL, LOOP, NAMEOF, NEXT, OTHERWISE,
         RECOVER, RETURN, SEQUENCE, STATIC, STEP, TO,
         UPTO, WHILE,
+        DECLARE, DIMENSION,
 
         // Vulcan stmt keywords [statement]
         CATCH, FINALLY, THROW,
 
         // Expression keywords
-        IIF, IF, AS, SELF, SUPER, SIZEOF, TYPEOF, FIELD, CAST, IS, MEMVAR,
+        IIF, IF, AS, OF, SELF, SUPER, SIZEOF, TYPEOF, FIELD, CAST, IS, MEMVAR,
 
 
         FIRST_POSITIONAL_KEYWORD,
@@ -60,7 +61,7 @@ namespace XSharp.MacroCompiler.Syntax
 
         //// New XSharp Keywords (no 4 letter abbreviations) [statement]
         ARGLIST, ASCENDING, BY, DESCENDING, EQUALS, FROM, GROUP, INTO, JOIN, LET, NOP,
-        ON, ORDERBY, SELECT, SWITCH, VAR, VOLATILE, WHERE, YIELD,
+        ON, ORDERBY, SELECT, SWITCH, VAR, VOLATILE, WHERE, YIELD, WITH,
 
         //// New XSharp expr Keywords (no 4 letter abbreviations)
         AWAIT, ASYNC, ASTYPE, CHECKED, UNCHECKED,
@@ -218,7 +219,6 @@ namespace XSharp.MacroCompiler.Syntax
                 {"CALLBACK", TokenType.CALLBACK},
                 {"CLASS", TokenType.CLASS},
                 {"CLIPPER", TokenType.CLIPPER},
-                {"DECLARE", TokenType.DECLARE},
                 {"DEFINE", TokenType.DEFINE},
                 {"_DLL", TokenType.DLL},
                 {"DLLEXPORT", TokenType.DLLEXPORT},
@@ -232,11 +232,10 @@ namespace XSharp.MacroCompiler.Syntax
                 {"MEMBER", TokenType.MEMBER},
                 {"METHOD", TokenType.METHOD},
                 {"PARAMETERS", TokenType.PARAMETERS},
+                {"LPARAMETERS", TokenType.LPARAMETERS},
                 {"PASCAL", TokenType.PASCAL},
-                {"PRIVATE", TokenType.PRIVATE},
                 {"PROCEDURE", TokenType.PROCEDURE},
                 {"PROTECTED", TokenType.PROTECTED},
-                {"PUBLIC", TokenType.PUBLIC},
                 {"STRICT", TokenType.STRICT},
                 {"THISCALL", TokenType.THISCALL},
                 {"UNION", TokenType.UNION},
@@ -250,7 +249,9 @@ namespace XSharp.MacroCompiler.Syntax
                 {"BEGIN", TokenType.BEGIN},
                 {"BREAK", TokenType.BREAK},
                 {"CASE", TokenType.CASE},
+                {"DECLARE", TokenType.DECLARE},
                 {"DIM", TokenType.DIM},
+                {"DIMENSION", TokenType.DIMENSION},
                 {"DO", TokenType.DO},
                 {"DOWNTO", TokenType.DOWNTO},
                 {"ELSE", TokenType.ELSE},
@@ -266,7 +267,10 @@ namespace XSharp.MacroCompiler.Syntax
                 {"LOOP", TokenType.LOOP},
                 {"MEMVAR", TokenType.MEMVAR},
                 {"NEXT", TokenType.NEXT},
+                {"OF", TokenType.OF},
                 {"OTHERWISE", TokenType.OTHERWISE},
+                {"PRIVATE", TokenType.PRIVATE},
+                {"PUBLIC", TokenType.PUBLIC},
                 {"RECOVER", TokenType.RECOVER},
                 {"RETURN", TokenType.RETURN},
                 {"SELF", TokenType.SELF},
@@ -472,6 +476,7 @@ namespace XSharp.MacroCompiler.Syntax
                 {"VOLATILE", TokenType.VOLATILE},
                 {"WHERE", TokenType.WHERE},
                 {"YIELD", TokenType.YIELD},
+                {"WITH", TokenType.WITH},
 
 			    // XSharp types
 			    {"DYNAMIC", TokenType.DYNAMIC},
@@ -706,6 +711,7 @@ namespace XSharp.MacroCompiler.Syntax
             softKws[(int)TokenType.DATE] = true;
             softKws[(int)TokenType.DATETIME] = true;
             softKws[(int)TokenType.ARRAY] = true;
+            softKws[(int)TokenType.OF] = true;
 
             //vulcan soft KWs
             softKws[(int)TokenType.ABSTRACT] = true;
@@ -773,9 +779,11 @@ namespace XSharp.MacroCompiler.Syntax
             softKws[(int)TokenType.VOLATILE] = true;
             softKws[(int)TokenType.WHERE] = true;
             softKws[(int)TokenType.YIELD] = true;
+            softKws[(int)TokenType.WITH] = true;
             softKws[(int)TokenType.CHAR] = true;
             softKws[(int)TokenType.MEMVAR] = true;
             softKws[(int)TokenType.PARAMETERS] = true;
+            softKws[(int)TokenType.LPARAMETERS] = true;
             softKws[(int)TokenType.DEFINE] = true;
             softKws[(int)TokenType.DELEGATE] = true;
             softKws[(int)TokenType.ENUM] = true;
@@ -791,6 +799,7 @@ namespace XSharp.MacroCompiler.Syntax
             softKws[(int)TokenType.CLIPPER] = true;
             softKws[(int)TokenType.DECLARE] = true;
             softKws[(int)TokenType.DIM] = true;
+            softKws[(int)TokenType.DIMENSION] = true;
             softKws[(int)TokenType.DOWNTO] = true;
             softKws[(int)TokenType.DLLEXPORT] = true;
             softKws[(int)TokenType.EVENT] = true;
@@ -811,7 +820,10 @@ namespace XSharp.MacroCompiler.Syntax
             softKws[(int)TokenType.USING] = true;
             softKws[(int)TokenType.WINCALL] = true;
 
-            for(var i = (int)TokenType.FIRST_POSITIONAL_KEYWORD+1; i < (int)TokenType.LAST_POSITIONAL_KEYWORD; i++)
+            // fox soft KWs
+            softKws[(int)TokenType.M] = true;
+
+            for (var i = (int)TokenType.FIRST_POSITIONAL_KEYWORD+1; i < (int)TokenType.LAST_POSITIONAL_KEYWORD; i++)
             {
                 softKws[i] = true;
             }

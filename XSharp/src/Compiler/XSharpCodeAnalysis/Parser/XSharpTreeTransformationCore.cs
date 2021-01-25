@@ -9075,7 +9075,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 //paramList = paramList.WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.ERR_CodeBlockWithTypeParameters));
                 updateparams = true;
-                
             }
             if (context.lambda != null)
             {
@@ -9172,20 +9171,31 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 {
                     newstmts.Add(GenerateReturn(expr, true));
                     body = MakeBlock(newstmts);
-
-
                 }
             }
+            if (body is BlockSyntax)
+            {
+                var node = _syntaxFactory.ParenthesizedLambdaExpression(
+                    modifiers: default,
+                    parameterList: paramList,
+                    arrowToken: SyntaxFactory.MakeToken(SyntaxKind.EqualsGreaterThanToken),
+                    block: (BlockSyntax)body,
+                    expressionBody: default
+                    );
+                context.Put(node);
+            }
+            else
+            {
+                var node = _syntaxFactory.ParenthesizedLambdaExpression(
+                    modifiers: default,
+                    parameterList: paramList,
+                    arrowToken: SyntaxFactory.MakeToken(SyntaxKind.EqualsGreaterThanToken),
+                    block: default,
+                    expressionBody: (ExpressionSyntax)body
+                    );
+                context.Put(node);
 
-
-            var node = _syntaxFactory.ParenthesizedLambdaExpression(
-                modifiers: default,
-                parameterList: paramList,
-                arrowToken: SyntaxFactory.MakeToken(SyntaxKind.EqualsGreaterThanToken),
-                block: (BlockSyntax) body,
-                expressionBody: default
-                );
-            context.Put(node);
+            }
 
         }
 

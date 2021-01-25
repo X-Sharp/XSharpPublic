@@ -22,11 +22,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
 #endif
     {
         private const string DefaultIndexerName = "Item";
-
-    
 #if XSHARP
-        private bool _isIndexedProperty;
-        private bool _isGeneratedProperty;
+        private readonly bool _isIndexedProperty;
+        private readonly bool _isGeneratedProperty;
 #endif
         internal static SourcePropertySymbol Create(SourceMemberContainerTypeSymbol containingType, Binder bodyBinder, PropertyDeclarationSyntax syntax, DiagnosticBag diagnostics)
         {
@@ -60,6 +58,14 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                 out var setSyntax);
             // This has the value that IsIndexer will ultimately have, once we've populated the fields of this object.
             bool isIndexer = syntax.Kind() == SyntaxKind.IndexerDeclaration;
+#if XSHARP
+            var originalIndexer = isIndexer;
+            if (isIndexer && !string.IsNullOrEmpty((syntax as IndexerDeclarationSyntax).ThisKeyword.ValueText))
+            {
+                name = (syntax as IndexerDeclarationSyntax).ThisKeyword.ValueText;
+                isIndexer = false;
+            }
+#endif
             var explicitInterfaceSpecifier = GetExplicitInterfaceSpecifier(syntax);
             var modifiers = MakeModifiers(
                 containingType,
@@ -71,7 +77,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                 diagnostics,
                 out _);
             return new SourcePropertySymbol(
-                containingType,
+            containingType,
                 bodyBinder,
                 syntax,
                 getSyntax: getSyntax,
@@ -84,6 +90,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                 isInitOnly: isInitOnly,
                 name,
                 location,
+#if XSHARP
+                originalIndexer,
+#endif
                 diagnostics);
         }
 
@@ -101,6 +110,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             bool isInitOnly,
            string name,
            Location location,
+#if XSHARP
+           bool originalIndexer,
+#endif
            DiagnosticBag diagnostics)
            : base(
                 containingType,
@@ -126,10 +138,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
 #if XSHARP
             _isIndexedProperty = false;
             _isGeneratedProperty = false;
-            if (isIndexer && !string.IsNullOrEmpty((syntax as IndexerDeclarationSyntax).ThisKeyword.ValueText))
+            if (originalIndexer && !string.IsNullOrEmpty((syntax as IndexerDeclarationSyntax).ThisKeyword.ValueText))
             {
-                name = (syntax as IndexerDeclarationSyntax).ThisKeyword.ValueText;
-                isIndexer = false;
                 _isIndexedProperty = true;
             }
             if (syntax.XNode is XSharpParser.MethodContext)

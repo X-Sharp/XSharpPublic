@@ -4093,6 +4093,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             var block = context.CsNode as BlockSyntax;
             if (block == null )
             {
+                // No need to do anything. We now support codeblocks with an expression body
+                /*
                 var cbc = context.Parent as XP.CodeblockContext;
                 if (cbc?.lambda == null)
                 {
@@ -4102,6 +4104,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         context.Put(block);
                     }
                 }
+                */
             }
             if (context.Expr == null && context.ExprList == null && context.StmtBlk == null)
             {
@@ -4109,8 +4112,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 var cbcontext = context.Parent as XP.CodeblockContext;
                 if (cbcontext?.lambda == null)
                 {
-                    block = MakeBlock(GenerateReturn(GenerateNIL()));
-                    context.Put(block);
+                    //block = MakeBlock(GenerateReturn(GenerateNIL()));
+                    //context.Put(block);
+                    // We now support codeblocks with an expression body
+                    context.Put(GenerateNIL());
                 }
             }
         }

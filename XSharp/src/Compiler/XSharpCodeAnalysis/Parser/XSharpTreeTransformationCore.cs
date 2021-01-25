@@ -9126,7 +9126,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 {
                     var param = paramList.Parameters[i];
                     var id = param.Identifier.Text;
-                    var newid = XSharpSpecialNames.ClipperParamPrefix + "_"+id;
+                    var newid = XSharpSpecialNames.ClipperParamPrefix + "_" + id;
                     var newparam = _syntaxFactory.Parameter(
                         attributeLists: param.AttributeLists,
                         modifiers: param.Modifiers,
@@ -9165,38 +9165,21 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     {
                         newstmts.Add(stmt);
                     }
-                    body = MakeBlock(newstmts);
                 }
                 else if (body is ExpressionSyntax expr)
                 {
                     newstmts.Add(GenerateReturn(expr, true));
-                    body = MakeBlock(newstmts);
                 }
+                body = MakeBlock(newstmts);
             }
-            if (body is BlockSyntax)
-            {
-                var node = _syntaxFactory.ParenthesizedLambdaExpression(
-                    modifiers: default,
-                    parameterList: paramList,
-                    arrowToken: SyntaxFactory.MakeToken(SyntaxKind.EqualsGreaterThanToken),
-                    block: (BlockSyntax)body,
-                    expressionBody: default
-                    );
-                context.Put(node);
-            }
-            else
-            {
-                var node = _syntaxFactory.ParenthesizedLambdaExpression(
-                    modifiers: default,
-                    parameterList: paramList,
-                    arrowToken: SyntaxFactory.MakeToken(SyntaxKind.EqualsGreaterThanToken),
-                    block: default,
-                    expressionBody: (ExpressionSyntax)body
-                    );
-                context.Put(node);
-
-            }
-
+            var node = _syntaxFactory.ParenthesizedLambdaExpression(
+                modifiers: default,
+                parameterList: paramList,
+                arrowToken: SyntaxFactory.MakeToken(SyntaxKind.EqualsGreaterThanToken),
+                block: body as BlockSyntax,
+                expressionBody: body as ExpressionSyntax
+                );
+            context.Put(node);
         }
 
         public override void ExitCodeblockParamList([NotNull] XP.CodeblockParamListContext context)

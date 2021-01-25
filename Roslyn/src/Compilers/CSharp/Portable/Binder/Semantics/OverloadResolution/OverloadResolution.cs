@@ -3783,7 +3783,7 @@ outerDefault:
 
                         if (literalNullForRefParameter)
                         {
-                            conversion = Conversion.Identity;
+                            conversion = Conversion.NullLiteral;
                         }
 
                         if (implicitCastsAndConversions && argumentRefKind == RefKind.None && 

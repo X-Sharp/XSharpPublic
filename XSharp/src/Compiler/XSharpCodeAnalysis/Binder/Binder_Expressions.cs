@@ -58,7 +58,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                     // Convert INT(<ptr>) to ((INT PTR) <ptr>)[0]
                     // No need to worry about /AZ. This has been handled already
                     // make sure that PSZ(ptr) is not dereferenced !
-                    bool canConvert = operand.Type.IsVoidPointer() && tType.IsPszType();
+                    bool canConvert = operand.Type.IsVoidPointer() && !tType.IsPszType();
                     if (!canConvert)
                     {
                         PointerTypeSymbol pt = operand.Type as PointerTypeSymbol;
@@ -277,7 +277,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                             argsBuilder.Add(BindArrayCreationWithInitializer(diagnostics,
                                 creationSyntax: null,
                                 initSyntax: initSyntax,
-                                type: ArrayTypeSymbol.CreateCSharpArray(this.Compilation.Assembly, tint32, default),
+                                type: ArrayTypeSymbol.CreateCSharpArray(this.Compilation.Assembly, tint32),
                                 sizes: ImmutableArray<BoundExpression>.Empty,
                                 boundInitExprOpt: args));
                             args = argsBuilder.ToImmutableAndFree();

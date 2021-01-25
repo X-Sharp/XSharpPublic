@@ -9029,8 +9029,11 @@ namespace Microsoft.CodeAnalysis.CSharp
             var receiver = node.Receiver;
             VisitRvalue(receiver);
             _ = CheckPossibleNullReceiver(receiver);
-
+#if XSHARP
+            Debug.Assert(node.Type.IsDynamic() || compilation.Options.LateBindingOrFox(node.Syntax));
+#else
             Debug.Assert(node.Type.IsDynamic());
+#endif
             var result = TypeWithAnnotations.Create(node.Type);
             SetLvalueResultType(node, result);
             return null;
@@ -9049,8 +9052,12 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
 
             VisitArgumentsEvaluate(node.Syntax, node.Arguments, node.ArgumentRefKindsOpt, parametersOpt: default, argsToParamsOpt: default, expanded: false);
+#if XSHARP
+            Debug.Assert(node.Type.IsDynamic() || compilation.Options.LateBindingOrFox(node.Syntax));
+#else
             Debug.Assert(node.Type.IsDynamic());
             Debug.Assert(node.Type.IsReferenceType);
+#endif
             var result = TypeWithAnnotations.Create(node.Type, NullableAnnotation.Oblivious);
             SetLvalueResultType(node, result);
             return null;

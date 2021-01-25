@@ -276,7 +276,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                     arguments: argArray,
                     argumentNamesOpt:analyzedArguments.GetNames(),
                     argumentRefKindsOpt: analyzedArguments.RefKinds.ToImmutableOrNull(),
-                    applicableMethods: default,
+                    applicableMethods: ImmutableArray<MethodSymbol>.Empty,
                     type: Compilation.UsualType(),
                     hasErrors: hasErrors);
             }

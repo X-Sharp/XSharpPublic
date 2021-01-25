@@ -1077,10 +1077,10 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
 #if XSHARP
             if (source.Type.IsNull() &&
-                source.Kind != BoundKind.MethodGroup && 
-                (destination.GetSpecialTypeSafe() == SpecialType.System_IntPtr 
-                || destination.GetSpecialTypeSafe() == SpecialType.System_UIntPtr ))
-                return Conversion.Identity;
+                source.Kind != BoundKind.MethodGroup &&
+                (destination.GetSpecialTypeSafe() == SpecialType.System_IntPtr
+                || destination.GetSpecialTypeSafe() == SpecialType.System_UIntPtr))
+                return Conversion.NullToPointer;
 #endif                        
 
             return Conversion.NoConversion;

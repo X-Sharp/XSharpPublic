@@ -1783,13 +1783,13 @@ namespace Microsoft.CodeAnalysis.CSharp
                             {
                                 arg0 = srcSymbol.Locations.First().SourceTree.FilePath;
 #if XSHARP
-                            // suppress warnings if mdSymbol was an internal exposed to us
-                            if (mdSymbol.DeclaredAccessibility == Accessibility.Friend)
-                            {
-                                return originalSymbols[best.Index];
+                                // suppress warnings if mdSymbol was an internal exposed to us
+                                if (mdSymbol.DeclaredAccessibility == Accessibility.Friend)
+                                {
+                                    return originalSymbols[best.Index];
+                                }
+#endif
                             }
-#endif       
-                        }
                             else
                             {
                                 Debug.Assert(best.IsFromAddedModule);
@@ -1982,9 +1982,9 @@ namespace Microsoft.CodeAnalysis.CSharp
                                 //    first,
                                 //    second);
 #if XSHARP
-                            xresult = XSharpResolveEqualSymbols(first, second, originalSymbols, where as CSharpSyntaxNode, diagnostics);
-                            if (xresult != null)
-                                return xresult;
+                                xresult = XSharpResolveEqualSymbols(first, second, originalSymbols, where as CSharpSyntaxNode, diagnostics);
+                                if (xresult != null)
+                                    return xresult;
 #endif
                                 // CS0229: Ambiguity between '{0}' and '{1}'
                                 info = new CSDiagnosticInfo(ErrorCode.ERR_AmbigMember, originalSymbols,
@@ -2016,12 +2016,6 @@ namespace Microsoft.CodeAnalysis.CSharp
                                     info = new CSDiagnosticInfo(ErrorCode.ERR_AmbiguousAttribute, originalSymbols,
                                         new object[] { (where as NameSyntax)?.ErrorDisplayName() ?? simpleName, first, second });
                                 }
-#if XSHARP
-                            else if ( (xresult = XSharpResolveEqualSymbols(first, second, originalSymbols, where as CSharpSyntaxNode, diagnostics)) != null)
-                            {
-                               return xresult;
-                            }
-#endif
                                 else
                                 {
                                     // '{0}' is an ambiguous reference between '{1}' and '{2}'
@@ -2032,6 +2026,12 @@ namespace Microsoft.CodeAnalysis.CSharp
                                         new FormattedSymbol(second, SymbolDisplayFormat.CSharpErrorMessageFormat) });
                                 }
                             }
+#if XSHARP
+                            else if ((xresult = XSharpResolveEqualSymbols(first, second, originalSymbols, where as CSharpSyntaxNode, diagnostics)) != null)
+                            {
+                                return xresult;
+                            }
+#endif
                             else
                             {
                                 // CS0229: Ambiguity between '{0}' and '{1}'

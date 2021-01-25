@@ -1480,7 +1480,8 @@ namespace Microsoft.CodeAnalysis.CSharp
         protected override int MakeSlot(BoundExpression node)
         {
             int result = makeSlot(node);
-#if DEBUG
+#if DEBUG && ! XSHARP
+
             if (result != -1)
             {
                 // Check that the slot represents a value of an equivalent type to the node
@@ -1488,6 +1489,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 TypeSymbol? nodeType = node.Type;
                 HashSet<DiagnosticInfo>? discardedUseSiteDiagnostics = null;
                 var conversionsWithoutNullability = this.compilation.Conversions;
+
                 Debug.Assert(node.HasErrors || nodeType!.IsErrorType() ||
                        conversionsWithoutNullability.HasIdentityOrImplicitReferenceConversion(slotType, nodeType, ref discardedUseSiteDiagnostics) ||
                        conversionsWithoutNullability.HasBoxingConversion(slotType, nodeType, ref discardedUseSiteDiagnostics));

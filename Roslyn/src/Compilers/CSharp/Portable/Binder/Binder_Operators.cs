@@ -2674,7 +2674,7 @@ namespace Microsoft.CodeAnalysis.CSharp
 
             CheckNativeIntegerFeatureAvailability(resultOperatorKind, node, diagnostics);
 
-#if XSHARP
+#if XXSHARP
             BoundExpression res = new BoundUnaryOperator(
                 node,
                 resultOperatorKind.WithOverflowChecksIfApplicable(CheckOverflowAtRuntime),

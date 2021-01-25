@@ -1386,6 +1386,10 @@ namespace Microsoft.CodeAnalysis.CSharp
             switch (managedKind)
             {
                 case ManagedKind.Managed:
+#if XSHARP
+                    if (compilation.Options.HasRuntime && compilation.Options.AllowUnsafe)
+                        return false;
+#endif
                     diagnostics.Add(ErrorCode.ERR_ManagedAddr, location, type);
                     return true;
                 case ManagedKind.UnmanagedWithGenerics when MessageID.IDS_FeatureUnmanagedConstructedTypes.GetFeatureAvailabilityDiagnosticInfo(compilation) is CSDiagnosticInfo diagnosticInfo:

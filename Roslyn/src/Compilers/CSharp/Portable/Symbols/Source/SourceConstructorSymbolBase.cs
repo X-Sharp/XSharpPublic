@@ -108,8 +108,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                 return base.IsImplicitlyDeclared;
             }
         }
-
+#if XSHARP
+        internal override int ParameterCount
+#else
         internal sealed override int ParameterCount
+#endif
         {
             get
             {
@@ -121,8 +124,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                 return GetParameterList().ParameterCount;
             }
         }
-
+#if XSHARP
+        public override ImmutableArray<ParameterSymbol> Parameters
+#else
         public sealed override ImmutableArray<ParameterSymbol> Parameters
+#endif
         {
             get
             {

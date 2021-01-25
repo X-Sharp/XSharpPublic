@@ -2,6 +2,9 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
+#if XSHARP
+using System.Collections.Immutable;
+#endif
 using System.Diagnostics;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Roslyn.Utilities;
@@ -98,40 +101,31 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
         {
             return GetSyntax().ParameterList;
         }
-/*
-TODO RvdH Check ParammeterCount
+
+#if XSHARP
         internal override int ParameterCount
         {
             get
             {
-#if XSHARP
+
                 if (_noParams)
                     return 0;
-#endif
-                if (!_lazyParameters.IsDefault)
-                {
-                    return _lazyParameters.Length;
-                }
 
-                return GetSyntax().ParameterList.ParameterCount;
+                return base.ParameterCount;
             }
         }
-
         public override ImmutableArray<ParameterSymbol> Parameters
         {
             get
             {
-#if XSHARP
                 if (_noParams)
                 {
                     return ImmutableArray<ParameterSymbol>.Empty;
                 }
-#endif
-                LazyMethodChecks();
-                return _lazyParameters;
+                return base.Parameters;
             }
         }
-*/
+#endif
         protected override CSharpSyntaxNode GetInitializer()
         {
             return GetSyntax().Initializer;

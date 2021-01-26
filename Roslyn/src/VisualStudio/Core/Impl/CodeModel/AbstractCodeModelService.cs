@@ -2,6 +2,8 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
+#nullable disable
+
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -570,7 +572,6 @@ namespace Microsoft.VisualStudio.LanguageServices.Implementation.CodeModel
             //     1. Prefer source files that we don't heuristically flag as generated code.
             //     2. If all of the source files are generated code, pick the first one.
 
-            Compilation compilation = null;
             Tuple<DocumentId, Location> generatedCode = null;
 
             DocumentId chosenDocumentId = null;
@@ -580,22 +581,19 @@ namespace Microsoft.VisualStudio.LanguageServices.Implementation.CodeModel
             {
                 if (location.IsInSource)
                 {
-                    compilation ??= project.GetCompilationAsync(CancellationToken.None).WaitAndGetResult_CodeModel(CancellationToken.None);
+                    var document = project.GetDocument(location.SourceTree);
+                    if (document is null)
+                        continue;
 
-                    if (compilation.ContainsSyntaxTree(location.SourceTree))
+                    if (!document.IsGeneratedCode(CancellationToken.None))
                     {
-                        var document = project.GetDocument(location.SourceTree);
-
-                        if (!document.IsGeneratedCode(CancellationToken.None))
-                        {
-                            chosenLocation = location;
-                            chosenDocumentId = document.Id;
-                            break;
-                        }
-                        else
-                        {
-                            generatedCode ??= Tuple.Create(document.Id, location);
-                        }
+                        chosenLocation = location;
+                        chosenDocumentId = document.Id;
+                        break;
+                    }
+                    else
+                    {
+                        generatedCode ??= Tuple.Create(document.Id, location);
                     }
                 }
             }

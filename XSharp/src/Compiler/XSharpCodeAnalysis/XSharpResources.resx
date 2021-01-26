@@ -1,17 +1,17 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
-  <!-- 
-    Microsoft ResX Schema 
-    
+  <!--
+    Microsoft ResX Schema
+
     Version 2.0
-    
-    The primary goals of this format is to allow a simple XML format  
-    that is mostly human readable. The generation and parsing of the 
-    various data types are done through the TypeConverter classes 
+
+    The primary goals of this format is to allow a simple XML format
+    that is mostly human readable. The generation and parsing of the
+    various data types are done through the TypeConverter classes
     associated with the data types.
-    
+
     Example:
-    
+
     ... ado.net/XML headers & schema ...
     <resheader name="resmimetype">text/microsoft-resx</resheader>
     <resheader name="version">2.0</resheader>
@@ -26,36 +26,36 @@
         <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
         <comment>This is a comment</comment>
     </data>
-                
-    There are any number of "resheader" rows that contain simple 
+
+    There are any number of "resheader" rows that contain simple
     name/value pairs.
-    
-    Each data row contains a name, and value. The row also contains a 
-    type or mimetype. Type corresponds to a .NET class that support 
-    text/value conversion through the TypeConverter architecture. 
-    Classes that don't support this are serialized and stored with the 
+
+    Each data row contains a name, and value. The row also contains a
+    type or mimetype. Type corresponds to a .NET class that support
+    text/value conversion through the TypeConverter architecture.
+    Classes that don't support this are serialized and stored with the
     mimetype set.
-    
-    The mimetype is used for serialized objects, and tells the 
-    ResXResourceReader how to depersist the object. This is currently not 
+
+    The mimetype is used for serialized objects, and tells the
+    ResXResourceReader how to depersist the object. This is currently not
     extensible. For a given mimetype the value must be set accordingly:
-    
-    Note - application/x-microsoft.net.object.binary.base64 is the format 
-    that the ResXResourceWriter will generate, however the reader can 
+
+    Note - application/x-microsoft.net.object.binary.base64 is the format
+    that the ResXResourceWriter will generate, however the reader can
     read any of the formats listed below.
-    
+
     mimetype: application/x-microsoft.net.object.binary.base64
-    value   : The object must be serialized with 
+    value   : The object must be serialized with
             : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
             : and then encoded with base64 encoding.
-    
+
     mimetype: application/x-microsoft.net.object.soap.base64
-    value   : The object must be serialized with 
+    value   : The object must be serialized with
             : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
             : and then encoded with base64 encoding.
 
     mimetype: application/x-microsoft.net.object.bytearray.base64
-    value   : The object must be serialized into a byte array 
+    value   : The object must be serialized into a byte array
             : using a System.ComponentModel.TypeConverter
             : and then encoded with base64 encoding.
     -->
@@ -1768,7 +1768,7 @@
     <value>Cannot implicitly convert type '{0}' to '{1}'. An explicit conversion exists (are you missing a cast?)</value>
   </data>
   <data name="ERR_PartialMisplaced" xml:space="preserve">
-    <value>The 'partial' modifier can only appear immediately before 'class', 'record', 'struct', 'interface', or 'void'</value>
+    <value>The 'partial' modifier can only appear immediately before 'class', 'record', 'struct', 'interface', or a method return type.</value>
   </data>
   <data name="ERR_ImportedCircularBase" xml:space="preserve">
     <value>Imported type '{0}' is invalid. It contains a circular base type dependency.</value>
@@ -2206,6 +2206,9 @@ If such a class is used as a base class and if the deriving class defines a dest
   </data>
   <data name="ERR_DuplicateInterfaceWithTupleNamesInBaseList" xml:space="preserve">
     <value>'{0}' is already listed in the interface list on type '{2}' with different tuple element names, as '{1}'.</value>
+  </data>
+  <data name="ERR_DuplicateInterfaceWithDifferencesInBaseList" xml:space="preserve">
+    <value>'{0}' is already listed in the interface list on type '{2}' as '{1}'.</value>
   </data>
   <data name="ERR_CycleInInterfaceInheritance" xml:space="preserve">
     <value>Inherited interface '{1}' causes a cycle in the interface hierarchy of '{0}'</value>
@@ -5232,11 +5235,15 @@ To remove the warning, you can use /reference instead (set the Embed Interop Typ
   <data name="IDS_LogoLine2" xml:space="preserve">
     <value>Copyright (C) XSharp BV</value>
   </data>
+  <data name="IDS_LangVersions" xml:space="preserve">
+    <value>Supported language versions:</value>
+  </data>
+  
   <data name="IDS_CSCHelp" xml:space="preserve">
     <value>
                               X# Compiler Options
 
-                        - OUTPUT FILES -
+                       - OUTPUT FILES -
 -out:&lt;file&gt;                   Specify output file name (default: base name of
                               file with main class or first file)
 -target:exe                   Build a console executable (default) (Short
@@ -5256,7 +5263,7 @@ To remove the warning, you can use /reference instead (set the Embed Interop Typ
                               Itanium, x64, arm, arm64, anycpu32bitpreferred, or
                               anycpu. The default is anycpu.
 
-                        - INPUT FILES -
+                       - INPUT FILES -
 -recurse:&lt;wildcard&gt;           Include all files in the current directory and
                               subdirectories according to the wildcard
                               specifications
@@ -5287,7 +5294,7 @@ To remove the warning, you can use /reference instead (set the Embed Interop Typ
 -usenativeversion             Do not generate a managed version resource from Assembly attributes 
                               but use the native version resource supplied in the Win32 resource file.
 
-                        - CODE GENERATION -
+                       - CODE GENERATION -
 -debug[+|-]                   Emit debugging information
 -debug:{full|pdbonly|portable|embedded}
                               Specify debugging type ('full' is default,
@@ -5302,7 +5309,7 @@ To remove the warning, you can use /reference instead (set the Embed Interop Typ
                               coverage information
 -sourcelink:&lt;file&gt;            Source link info to embed into PDB.
 
-                        - ERRORS AND WARNINGS -
+                       - ERRORS AND WARNINGS -
 -warnaserror[+|-]             Report all warnings as errors
 -warnaserror[+|-]:&lt;warn list&gt; Report specific warnings as errors
                               (use "nullable" for all nullability warnings)
@@ -5320,12 +5327,12 @@ To remove the warning, you can use /reference instead (set the Embed Interop Typ
                               execution time.
 -skipanalyzers[+|-]           Skip execution of diagnostic analyzers.
 
-                        - LANGUAGE -
+                       - LANGUAGE -
 -checked[+|-]                 Generate overflow checks
 -unsafe[+|-]                  Allow 'unsafe' code
 -define:&lt;symbol list&gt;         Define conditional compilation symbol(s) (Short
                               form: -d)
- -langversion:?                Display the allowed values for language version
+-langversion:?                Display the allowed values for language version
 -langversion:&lt;string&gt;         Specify language version such as
                               `latest` (latest version, including minor versions),
                               `default` (same as `latest`),
@@ -5380,7 +5387,7 @@ To remove the warning, you can use /reference instead (set the Embed Interop Typ
 -showdefs[+|-]                 Show the defines that were added from the #define commands and their usage
 -stddefs:&lt;file&gt;                  Override the name of the standard defines file (default = XSharpDefs.xh)
 
-                        - SECURITY -
+                       - SECURITY -
 -delaysign[+|-]               Delay-sign the assembly using only the public
                               portion of the strong name key
 -publicsign[+|-]              Public-sign the assembly using only the public
@@ -5397,7 +5404,7 @@ To remove the warning, you can use /reference instead (set the Embed Interop Typ
 -parallel[+|-]                Concurrent build.
 -version                      Display the compiler version number and exit.
 
-                        - ADVANCED -
+                       - ADVANCED -
 -baseaddress:&lt;address&gt;        Base address for the library to be built
 -checksumalgorithm:&lt;alg&gt;      Specify algorithm for calculating source file
                               checksum stored in PDB. Supported values are:
@@ -5410,7 +5417,7 @@ To remove the warning, you can use /reference instead (set the Embed Interop Typ
                               form: -m)
 -fullpaths                    Compiler generates fully qualified paths
 -filealign:&lt;n&gt;                Specify the alignment used for output file
-                               sections
+                              sections
 -pathmap:&lt;K1&gt;=&lt;V1&gt;,&lt;K2&gt;=&lt;V2&gt;,...
                               Specify a mapping for source path names output by
                               the compiler.
@@ -6884,16 +6891,16 @@ To remove the warning, you can use /reference instead (set the Embed Interop Typ
   <data name="ERR_ImplicitRangeIndexerWithName" xml:space="preserve">
     <value>Invocation of implicit Range Indexer cannot name the argument.</value>
   </data>
-  <data name="ERR_TypelessNewIllegalTargetType" xml:space="preserve">
+  <data name="ERR_ImplicitObjectCreationIllegalTargetType" xml:space="preserve">
     <value>The type '{0}' may not be used as the target type of new()</value>
   </data>
-  <data name="ERR_TypelessNewNotValid" xml:space="preserve">
+  <data name="ERR_ImplicitObjectCreationNotValid" xml:space="preserve">
     <value>Use of new() is not valid in this context</value>
   </data>
-  <data name="ERR_TypelessNewNoTargetType" xml:space="preserve">
+  <data name="ERR_ImplicitObjectCreationNoTargetType" xml:space="preserve">
     <value>There is no target type for '{0}'</value>
   </data>
-  <data name="IDS_FeatureTargetTypedObjectCreation" xml:space="preserve">
+  <data name="IDS_FeatureImplicitObjectCreation" xml:space="preserve">
     <value>target-typed object creation</value>
   </data>
   <data name="ERR_ExpressionTreeContainsPatternIndexOrRangeIndexer" xml:space="preserve">
@@ -6955,6 +6962,9 @@ To remove the warning, you can use /reference instead (set the Embed Interop Typ
   </data>
   <data name="IDS_FeatureExtendedPartialMethods" xml:space="preserve">
     <value>extended partial methods</value>
+  </data>
+  <data name="IDS_FeatureConstantInterpolatedStrings" xml:space="preserve">
+    <value>constant interpolated strings</value>
   </data>
   <data name="ERR_PartialMethodWithNonVoidReturnMustHaveAccessMods" xml:space="preserve">
     <value>Partial method '{0}' must have accessibility modifiers because it has a non-void return type.</value>
@@ -7224,12 +7234,36 @@ To remove the warning, you can use /reference instead (set the Embed Interop Typ
   <data name="IDS_FeatureVarianceSafetyForStaticInterfaceMembers" xml:space="preserve">
     <value>variance safety for static interface members</value>
   </data>
+  <data name="ERR_EqualityContractRequiresGetter" xml:space="preserve">
+    <value>Record equality contract property '{0}' must have a get accessor.</value>
+  </data>
   <data name="WRN_AnalyzerReferencesFramework" xml:space="preserve">
     <value>The assembly '{0}' containing type '{1}' references .NET Framework, which is not supported.</value>
     <comment>{1} is the type that was loaded, {0} is the containing assembly.</comment>
   </data>
   <data name="WRN_AnalyzerReferencesFramework_Title" xml:space="preserve">
     <value>The loaded assembly references .NET Framework, which is not supported.</value>
+  </data>
+  <data name="ERR_BadFieldTypeInRecord" xml:space="preserve">
+    <value>The type '{0}' may not be used for a field of a record.</value>
+  </data>
+  <data name="ERR_FunctionPointersCannotBeCalledWithNamedArguments" xml:space="preserve">
+    <value>A function pointer cannot be called with named arguments.</value>
+  </data>
+  <data name="WRN_UnreadRecordParameter" xml:space="preserve">
+    <value>Parameter '{0}' is unread. Did you forget to use it to initialize the property with that name?</value>
+  </data>
+  <data name="WRN_UnreadRecordParameter_Title" xml:space="preserve">
+    <value>Parameter is unread. Did you forget to use it to initialize the property with that name?</value>
+  </data>
+  <data name="ERR_RecordAmbigCtor" xml:space="preserve">
+    <value>The primary constructor conflicts with the synthesized copy constructor.</value>
+  </data>
+  <data name="WRN_DoNotCompareFunctionPointers" xml:space="preserve">
+    <value>Comparison of function pointers might yield an unexpected result, since pointers to the same function may be distinct.</value>
+  </data>
+  <data name="WRN_DoNotCompareFunctionPointers_Title" xml:space="preserve">
+    <value>Do not compare function pointer values</value>
   </data>
   <data name="WRN_UnsafeImplied" xml:space="preserve">
     <value>Use of pointers and fixed-size buffers should be marked as unsafe</value>
@@ -7595,5 +7629,4 @@ To remove the warning, you can use /reference instead (set the Embed Interop Typ
   <data name="ERR_MethodSignatureChanged" xml:space="preserve">
     <value>'{0}': The method signature was changed in the method '{1}'. You will have to update the parameter types and/or return type in the method of the subclass too.</value>
   </data>
-
 </root>

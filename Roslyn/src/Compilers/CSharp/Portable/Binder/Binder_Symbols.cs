@@ -2,6 +2,8 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
+#nullable disable
+
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
@@ -469,7 +471,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 case SyntaxKind.FunctionPointerType:
                     var functionPointerTypeSyntax = (FunctionPointerTypeSyntax)syntax;
 #if XSHARP
-					// TODO allow to take the address of managed pointer.
+					// TODO RvdH allow to take the address of managed pointer.
 					// Original Binder_Symbols 444
 #endif					
                     if (GetUnsafeDiagnosticInfo(sizeOfTypeOpt: null) is CSDiagnosticInfo info)
@@ -602,10 +604,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 var node = (PointerTypeSyntax)syntax;
                 var elementType = BindType(node.ElementType, diagnostics, basesBeingResolved);
                 ReportUnsafeIfNotAllowed(node, diagnostics);
-#if XSHARP
-				// TODO Insert X# code for managed pointers and Unsafe
-				// Original Binder_Symbols 444
-#endif
+
                 if (!Flags.HasFlag(BinderFlags.SuppressConstraintChecks))
                 {
                     CheckManagedAddr(Compilation, elementType.Type, node.Location, diagnostics);
@@ -635,7 +634,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
             return null;
         }
-#nullable restore
+#nullable disable
 
         private TypeWithAnnotations BindArrayType(
             ArrayTypeSyntax node,
@@ -926,11 +925,10 @@ namespace Microsoft.CodeAnalysis.CSharp
             {
                 if (node.Identifier.ValueText == "dynamic")
                 {
-
                     if ((node.Parent == null ||
                           node.Parent.Kind() != SyntaxKind.Attribute && // dynamic not allowed as attribute type
                           SyntaxFacts.IsInTypeOnlyContext(node)) &&
-                         Compilation.LanguageVersion >= MessageID.IDS_FeatureDynamic.RequiredVersion())
+                        Compilation.LanguageVersion >= MessageID.IDS_FeatureDynamic.RequiredVersion())
                     {
                         bindingResult = Compilation.DynamicType;
                         ReportUseSiteDiagnosticForDynamic(diagnostics, node);
@@ -980,12 +978,18 @@ namespace Microsoft.CodeAnalysis.CSharp
                     return null;
             }
 
-            if (IsInsideNameof && node.Parent is ArgumentSyntax &&
-                node.Parent?.Parent?.Parent is InvocationExpressionSyntax invocation &&
-                (invocation.Expression as IdentifierNameSyntax)?.Identifier.ContextualKind() == SyntaxKind.NameOfKeyword)
+            switch (node.Parent)
             {
-                // Don't bind nameof(nint) or nameof(nuint) so that ERR_NameNotInContext is reported.
-                return null;
+                case AttributeSyntax parent when parent.Name == node: // [nint]
+                    return null;
+                case UsingDirectiveSyntax parent when parent.Name == node: // using nint; using A = nuint;
+                    return null;
+                case ArgumentSyntax parent when // nameof(nint)
+                    (IsInsideNameof &&
+                        parent.Parent?.Parent is InvocationExpressionSyntax invocation &&
+                        (invocation.Expression as IdentifierNameSyntax)?.Identifier.ContextualKind() == SyntaxKind.NameOfKeyword):
+                    // Don't bind nameof(nint) or nameof(nuint) so that ERR_NameNotInContext is reported.
+                    return null;
             }
 
             CheckFeatureAvailability(node, MessageID.IDS_FeatureNativeInt, diagnostics);
@@ -1200,6 +1204,10 @@ namespace Microsoft.CodeAnalysis.CSharp
                 {
                     resultType = unconstructedType.AsUnboundGenericType();
                 }
+            }
+            else if ((Flags & BinderFlags.SuppressTypeArgumentBinding) != 0)
+            {
+                resultType = unconstructedType.Construct(PlaceholderTypeArgumentSymbol.CreateTypeArguments(unconstructedType.TypeParameters));
             }
             else
             {

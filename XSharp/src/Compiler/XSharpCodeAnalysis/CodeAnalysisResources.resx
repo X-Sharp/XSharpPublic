@@ -218,7 +218,6 @@
   </data>
   <data name="AbsolutePathExpected" xml:space="preserve">
     <value>Absolute path expected.</value>
-    <comment> </comment>
   </data>
   <data name="EmptyKeyInPathMap" xml:space="preserve">
     <value>A key in the pathMap is empty.</value>
@@ -721,6 +720,9 @@
   </data>
   <data name="WRN_InvalidGlobalSectionName_Title" xml:space="preserve">
     <value>Global analyzer config section name is invalid as it is not an absolute path. Section will be ignored.</value>
+  </data>
+  <data name="ChangesMustBeWithinBoundsOfSourceText" xml:space="preserve">
+    <value>Changes must be within bounds of SourceText</value>
   </data>
   <data name="Credits" xml:space="preserve">
     <value>

@@ -2,6 +2,8 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
+#nullable disable
+
 using Microsoft.CodeAnalysis.CSharp.Symbols;
 using Microsoft.CodeAnalysis.Emit;
 using Microsoft.CodeAnalysis.PooledObjects;
@@ -56,9 +58,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Emit
 
         public override Cci.IDefinition MapDefinition(Cci.IDefinition definition)
         {
-            if (definition is Symbol symbol)
+            if (definition?.GetInternalSymbol() is Symbol symbol)
             {
-                return (Cci.IDefinition)_symbols.Visit(symbol);
+                return (Cci.IDefinition)_symbols.Visit(symbol)?.GetCciAdapter();
             }
 
             return _defs.VisitDef(definition);
@@ -66,14 +68,14 @@ namespace Microsoft.CodeAnalysis.CSharp.Emit
 
         public override Cci.INamespace MapNamespace(Cci.INamespace @namespace)
         {
-            return (Cci.INamespace)_symbols.Visit((NamespaceSymbol)@namespace);
+            return (Cci.INamespace)_symbols.Visit((NamespaceSymbol)@namespace?.GetInternalSymbol())?.GetCciAdapter();
         }
 
         public override Cci.ITypeReference MapReference(Cci.ITypeReference reference)
         {
-            if (reference is Symbol symbol)
+            if (reference?.GetInternalSymbol() is Symbol symbol)
             {
-                return (Cci.ITypeReference)_symbols.Visit(symbol);
+                return (Cci.ITypeReference)_symbols.Visit(symbol)?.GetCciAdapter();
             }
 
             return null;
@@ -120,11 +122,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Emit
                     {
                         return null;
                     }
-#if XSHARP	
+#if XSHARP
                     return VisitTypeMembers(otherContainer, nestedType, GetNestedTypes, (a, b) => s_nameComparer.Equals(a.Name, b.Name));
 #else
                     return VisitTypeMembers(otherContainer, nestedType, GetNestedTypes, (a, b) => StringOrdinalComparer.Equals(a.Name, b.Name));
-#endif					
+#endif
                 }
 
                 var member = def as Cci.ITypeDefinitionMember;
@@ -139,11 +141,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Emit
                     var field = def as Cci.IFieldDefinition;
                     if (field != null)
                     {
-#if XSHARP					
+#if XSHARP
                         return VisitTypeMembers(otherContainer, field, GetFields, (a, b) => s_nameComparer.Equals(a.Name, b.Name));
 #else
                         return VisitTypeMembers(otherContainer, field, GetFields, (a, b) => StringOrdinalComparer.Equals(a.Name, b.Name));
-#endif						
+#endif
                     }
                 }
 
@@ -249,7 +251,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Emit
                     }
                     else
                     {
-                        builder.Add((Cci.INamespaceTypeDefinition)member);
+                        builder.Add((Cci.INamespaceTypeDefinition)member.GetCciAdapter());
                     }
                 }
             }
@@ -409,11 +411,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Emit
                     var otherModule = otherAssembly.Modules[i];
 
                     // use case sensitive comparison -- modules whose names differ in casing are considered distinct:
-#if XSHARP					
+#if XSHARP
                     if (s_nameComparer.Equals(otherModule.Name, module.Name))
 #else
                     if (StringComparer.Ordinal.Equals(otherModule.Name, module.Name))
-#endif					
+#endif
                     {
                         return otherModule;
                     }
@@ -543,7 +545,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Emit
                         {
                             Debug.Assert((object)otherContainer == (object)_otherAssembly.GlobalNamespace);
                             TryFindAnonymousType(template, out var value);
-                            return (NamedTypeSymbol)value.Type;
+                            return (NamedTypeSymbol)value.Type?.GetInternalSymbol();
                         }
 
                         if (sourceType.IsAnonymousType)
@@ -770,7 +772,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Emit
                     return method;
                 }
 
-                return method.Construct(IndexedTypeParameterSymbol.Take(n).Cast<TypeParameterSymbol, TypeSymbol>());
+                return method.Construct(IndexedTypeParameterSymbol.Take(n));
             }
 
             private bool AreNamedTypesEqual(NamedTypeSymbol type, NamedTypeSymbol other)

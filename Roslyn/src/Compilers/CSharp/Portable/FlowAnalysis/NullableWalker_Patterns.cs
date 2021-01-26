@@ -2,6 +2,8 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
+#nullable disable
+
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -457,18 +459,18 @@ namespace Microsoft.CodeAnalysis.CSharp
                                 {
                                     var value = TypeWithState.Create(tempType, tempState);
                                     var inferredType = value.ToTypeWithAnnotations(compilation, asAnnotatedType: boundLocal.DeclarationKind == BoundLocalDeclarationKind.WithInferredType);
-                                    if (_variableTypes.TryGetValue(local, out var existingType))
+                                    if (_variables.TryGetType(local, out var existingType))
                                     {
                                         // merge inferred nullable annotation from different branches of the decision tree
-                                        _variableTypes[local] = TypeWithAnnotations.Create(inferredType.Type, existingType.NullableAnnotation.Join(inferredType.NullableAnnotation));
+                                        inferredType = TypeWithAnnotations.Create(inferredType.Type, existingType.NullableAnnotation.Join(inferredType.NullableAnnotation));
                                     }
-                                    else
-                                    {
-                                        _variableTypes[local] = inferredType;
-                                    }
+                                    _variables.SetType(local, inferredType);
 
                                     int localSlot = GetOrCreateSlot(local, forceSlotEvenIfEmpty: true);
-                                    this.State[localSlot] = tempState;
+                                    if (localSlot > 0)
+                                    {
+                                        this.State[localSlot] = tempState;
+                                    }
                                 }
                                 else
                                 {
@@ -684,8 +686,8 @@ namespace Microsoft.CodeAnalysis.CSharp
             VisitPatternForRewriting(node.Pattern);
             var expressionState = VisitRvalueWithState(node.Expression);
             var labelStateMap = LearnFromDecisionDag(node.Syntax, node.DecisionDag, node.Expression, expressionState, ref this.State);
-            var trueState = labelStateMap.TryGetValue(node.WhenTrueLabel, out var s1) ? s1.state : UnreachableState();
-            var falseState = labelStateMap.TryGetValue(node.WhenFalseLabel, out var s2) ? s2.state : UnreachableState();
+            var trueState = labelStateMap.TryGetValue(node.IsNegated ? node.WhenFalseLabel : node.WhenTrueLabel, out var s1) ? s1.state : UnreachableState();
+            var falseState = labelStateMap.TryGetValue(node.IsNegated ? node.WhenTrueLabel : node.WhenFalseLabel, out var s2) ? s2.state : UnreachableState();
             labelStateMap.Free();
             SetConditionalState(trueState, falseState);
             SetNotNullResult(node);

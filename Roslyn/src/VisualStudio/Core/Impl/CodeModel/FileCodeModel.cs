@@ -2,6 +2,8 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
+#nullable disable
+
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -404,16 +406,12 @@ namespace Microsoft.VisualStudio.LanguageServices.Implementation.CodeModel
 
         internal SyntaxTree GetSyntaxTree()
         {
-            return GetDocument()
-                .GetSyntaxTreeAsync(CancellationToken.None)
-                .WaitAndGetResult_CodeModel(CancellationToken.None);
+            return GetDocument().GetSyntaxTreeSynchronously(CancellationToken.None);
         }
 
         internal SyntaxNode GetSyntaxRoot()
         {
-            return GetDocument()
-                .GetSyntaxRootAsync(CancellationToken.None)
-                .WaitAndGetResult_CodeModel(CancellationToken.None);
+            return GetDocument().GetSyntaxRootSynchronously(CancellationToken.None);
         }
 
         internal SemanticModel GetSemanticModel()

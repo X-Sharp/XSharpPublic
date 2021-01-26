@@ -2,8 +2,6 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
-#nullable enable
-
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
@@ -536,9 +534,9 @@ namespace Microsoft.CodeAnalysis.CSharp
             return tree;
         }
 
-#endregion
+        #endregion
 
-#region Changes
+        #region Changes
 
         /// <summary>
         /// Creates a new syntax based off this tree using a new source text.
@@ -636,9 +634,9 @@ namespace Microsoft.CodeAnalysis.CSharp
             return SyntaxDiffer.GetTextChanges(oldTree, this);
         }
 
-#endregion
+        #endregion
 
-#region LinePositions and Locations
+        #region LinePositions and Locations
 
         /// <summary>
         /// Gets the location in terms of path, line and column for a given span.
@@ -774,11 +772,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         internal NullableContextState GetNullableContextState(int position)
             => GetNullableContextStateMap().GetContextState(position);
 
-        /// <summary>
-        /// Returns true if there are any nullable directives that enable annotations, warnings, or both.
-        /// This does not include any restore directives.
-        /// </summary>
-        internal bool HasNullableEnables() => GetNullableContextStateMap().HasNullableEnables();
+        internal bool? IsNullableAnalysisEnabled(TextSpan span) => GetNullableContextStateMap().IsNullableAnalysisEnabled(span);
 
         internal bool IsGeneratedCode(SyntaxTreeOptionsProvider? provider, CancellationToken cancellationToken)
         {
@@ -827,9 +821,9 @@ namespace Microsoft.CodeAnalysis.CSharp
             return new SourceLocation(this, span);
         }
 
-#endregion
+        #endregion
 
-#region Diagnostics
+        #region Diagnostics
 
         /// <summary>
         /// Gets a list of all the diagnostics in the sub tree that has the specified node as its root.
@@ -933,9 +927,9 @@ namespace Microsoft.CodeAnalysis.CSharp
             return this.GetDiagnostics(this.GetRoot(cancellationToken));
         }
 
-#endregion
+        #endregion
 
-#region SyntaxTree
+        #region SyntaxTree
 
         protected override SyntaxNode GetRootCore(CancellationToken cancellationToken)
         {
@@ -969,7 +963,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
         }
 
-#endregion
+        #endregion
 
         // 3.3 BACK COMPAT OVERLOAD -- DO NOT MODIFY
         [EditorBrowsable(EditorBrowsableState.Never)]

@@ -7,7 +7,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>XSharp.VSParser</RootNamespace>
     <AssemblyName>XSharp.VSParser</AssemblyName>
-    <TargetFramework>net472</TargetFramework>
+    <TargetFrameworks>net472</TargetFrameworks>
     <AntlrCall>java -jar $(SolutionDir).\build\antlr4-csharp-4.6.1-SNAPSHOT-complete.jar</AntlrCall> 
     <AntlrPackage>-package LanguageService.CodeAnalysis.XSharp.SyntaxParser</AntlrPackage>
     <AntlrOutputDir>$(MSBuildThisFileDirectory)Generated\</AntlrOutputDir>
@@ -20,7 +20,7 @@
     <DebugSymbols>true</DebugSymbols>
     <ErrorReport>prompt</ErrorReport>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
-    <GenericDefines>COMPILERCORE;XSHARP;NET45;NET45PLUS;NET40PLUS;NET35PLUS;NET30PLUS;NET20PLUS;VSPARSER</GenericDefines>
+    <GenericDefines>COMPILERCORE;XSHARP;NET45;NET45PLUS;NET40PLUS;NET35PLUS;NET30PLUS;NET20PLUS;VSPARSER;NETSTANDARD20</GenericDefines>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DefineConstants>$(GenericDefines);TRACE;DEBUG</DefineConstants>

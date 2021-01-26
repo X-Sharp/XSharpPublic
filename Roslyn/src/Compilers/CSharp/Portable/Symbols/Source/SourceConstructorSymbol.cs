@@ -2,9 +2,8 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
-#if XSHARP
-using System.Collections.Immutable;
-#endif
+#nullable disable
+
 using System.Diagnostics;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Roslyn.Utilities;
@@ -14,6 +13,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
     internal sealed class SourceConstructorSymbol : SourceConstructorSymbolBase
     {
         private readonly bool _isExpressionBodied;
+        private readonly bool _hasThisInitializer;
 #if XSHARP
         private readonly bool _noParams;       
 #endif
@@ -21,10 +21,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
         public static SourceConstructorSymbol CreateConstructorSymbol(
             SourceMemberContainerTypeSymbol containingType,
             ConstructorDeclarationSyntax syntax,
+            bool isNullableAnalysisEnabled,
             DiagnosticBag diagnostics)
         {
             var methodKind = syntax.Modifiers.Any(SyntaxKind.StaticKeyword) ? MethodKind.StaticConstructor : MethodKind.Constructor;
-            return new SourceConstructorSymbol(containingType, syntax.Identifier.GetLocation(), syntax, methodKind, diagnostics);
+            return new SourceConstructorSymbol(containingType, syntax.Identifier.GetLocation(), syntax, methodKind, isNullableAnalysisEnabled, diagnostics);
         }
 
         private SourceConstructorSymbol(
@@ -32,6 +33,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
              Location location,
              ConstructorDeclarationSyntax syntax,
              MethodKind methodKind,
+            bool isNullableAnalysisEnabled,
              DiagnosticBag diagnostics) :
              base(containingType, location, syntax, SyntaxFacts.HasYieldOperations(syntax))
         {
@@ -39,9 +41,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             _isExpressionBodied = !hasBlockBody && syntax.ExpressionBody != null;
             bool hasBody = hasBlockBody || _isExpressionBodied;
 
+            _hasThisInitializer = syntax.Initializer?.Kind() == SyntaxKind.ThisConstructorInitializer;
+
             bool modifierErrors;
             var declarationModifiers = this.MakeModifiers(syntax.Modifiers, methodKind, hasBody, location, diagnostics, out modifierErrors);
-            this.MakeFlags(methodKind, declarationModifiers, returnsVoid: true, isExtensionMethod: false);
+            this.MakeFlags(methodKind, declarationModifiers, returnsVoid: true, isExtensionMethod: false, isNullableAnalysisEnabled: isNullableAnalysisEnabled);
 #if XSHARP
             // if we have generated a constructor for a subtype of a class without a 
             // clipper calling convention constructor then we must return an empty
@@ -97,6 +101,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             Debug.Assert(syntaxReferenceOpt != null);
             return (ConstructorDeclarationSyntax)syntaxReferenceOpt.GetSyntax();
         }
+
         protected override ParameterListSyntax GetParameterList()
         {
             return GetSyntax().ParameterList;
@@ -195,6 +200,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             {
                 return _isExpressionBodied;
             }
+        }
+
+        internal override bool IsNullableAnalysisEnabled()
+        {
+            return _hasThisInitializer ?
+                flags.IsNullableAnalysisEnabled :
+                ((SourceMemberContainerTypeSymbol)ContainingType).IsNullableEnabledForConstructorsAndInitializers(IsStatic);
         }
 
         protected override bool AllowRefOrOut

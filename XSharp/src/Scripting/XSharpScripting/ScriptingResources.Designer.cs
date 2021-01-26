@@ -106,6 +106,15 @@ namespace Microsoft.CodeAnalysis.Scripting {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Cannot set {0} specific option {1} because the options were already configured for a different language..
+        /// </summary>
+        internal static string CannotSetLanguageSpecificOption {
+            get {
+                return ResourceManager.GetString("CannotSetLanguageSpecificOption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Cannot set a read-only variable.
         /// </summary>
         internal static string CannotSetReadOnlyVariable {

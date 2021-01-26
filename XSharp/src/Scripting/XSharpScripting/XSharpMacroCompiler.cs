@@ -9,7 +9,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Scripting
     internal sealed class XSharpMacroCompiler : ScriptCompiler
     {
         private static XSharpSpecificCompilationOptions xsOptions = new XSharpSpecificCompilationOptions() { Dialect = XSharpDialect.VO, NoStdDef = true, LateBinding = true, UndeclaredMemVars = true };
-        private static ScriptCompiler[] compilers = {null,null};    // first = VO, second = Vulcan
+        private static ScriptCompiler[] compilers = { null, null };    // first = VO, second = Vulcan
 
         private XSharpSpecificCompilationOptions xoptions;
         private CSharpParseOptions options;
@@ -34,22 +34,22 @@ namespace Microsoft.CodeAnalysis.CSharp.Scripting
             }
             else
             {
-                xoptions = new XSharpSpecificCompilationOptions() { Dialect = XSharpDialect.Vulcan, LateBinding = true, NoStdDef = true, UndeclaredMemVars = false};
+                xoptions = new XSharpSpecificCompilationOptions() { Dialect = XSharpDialect.Vulcan, LateBinding = true, NoStdDef = true, UndeclaredMemVars = false };
             }
             xoptions.RuntimeAssemblies = RuntimeAssemblies.XSharpCore | RuntimeAssemblies.XSharpRT;
             options = new CSharpParseOptions(kind: SourceCodeKind.Script)
                 .WithMacroScript(true)
                 .WithXSharpSpecificOptions(xoptions);
 
-    }
+        }
 
-    public override DiagnosticFormatter DiagnosticFormatter => CSharpDiagnosticFormatter.Instance;
+        public override DiagnosticFormatter DiagnosticFormatter => CSharpDiagnosticFormatter.Instance;
 
         public override StringComparer IdentifierComparer => StringComparer.Ordinal;
 
         public override bool IsCompleteSubmission(SyntaxTree tree) => SyntaxFactory.IsCompleteSubmission(tree);
 
-        public override SyntaxTree ParseSubmission(SourceText text, CancellationToken cancellationToken) =>
+        public override SyntaxTree ParseSubmission(SourceText text, ParseOptions options, CancellationToken cancellationToken) =>
             SyntaxFactory.ParseSyntaxTree(text, options, cancellationToken: cancellationToken);
 
         public override Compilation CreateSubmission(Script script)
@@ -70,7 +70,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Scripting
 
             string assemblyName, submissionTypeName;
             script.Builder.GenerateSubmissionId(out assemblyName, out submissionTypeName);
-            
+
             var compilation = CSharpCompilation.CreateScriptCompilation(
                 assemblyName,
                 tree,

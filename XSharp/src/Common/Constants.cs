@@ -14,7 +14,7 @@ namespace XSharp
         internal const string Product = "XSharp";
         // NOTE: DO NOT FORGET THE VERSION NUMBER IN THE BUILDNUMBER.H FILE
         internal const string Version = "2.8.0.0";
-        internal const string FileVersion = "2.7.9.1"; 
+        internal const string FileVersion = "2.8.0.1"; 
         internal const string ProductVersion = "2.8 beta1";
         internal const string PublicKey = "ed555a0467764586";
         internal const string Copyright = "Copyright © XSharp BV 2015-2021";

@@ -21,8 +21,8 @@
     <CscSource>$(RoslynSrc)Compilers\CSharp\csc\</CscSource>
     <ServerSource>$(RoslynSrc)Compilers\Server\</ServerSource>
     <CSharpSource>$(RoslynSrc)Compilers\CSharp\Portable\</CSharpSource>
-    <PlatformTarget>AnyCPU</PlatformTarget>
     <AssemblyOriginatorKeyFile>$(Solutiondir)src\commmon\XSharp.snk</AssemblyOriginatorKeyFile>
+    <Configurations>Debug;Release;Public</Configurations>
     <Langversion>latest</Langversion>
     <RoslynProjectType>XSharp</RoslynProjectType>
     <DeveloperBuild>true</DeveloperBuild>
@@ -36,6 +36,4 @@
     <EnableBaseIntermediateOutputPathMismatchWarning>false</EnableBaseIntermediateOutputPathMismatchWarning>
 	<RuntimeFilesDir Condition="'$(RuntimeFilesDir)' == '' ">$(DevRtDir)Binaries\Debug\</RuntimeFilesDir>
   </PropertyGroup>
-
-
 </Project>

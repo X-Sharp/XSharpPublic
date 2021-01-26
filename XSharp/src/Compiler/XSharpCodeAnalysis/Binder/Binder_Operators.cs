@@ -677,7 +677,7 @@ namespace Microsoft.CodeAnalysis.CSharp
 
         public TypeSymbol VOGetType(BoundExpression expr)
         {
-            if (expr.Kind == BoundKind.Literal )
+            if (expr.Kind == BoundKind.Literal)
             {
                 var lit = expr as BoundLiteral;
                 var xnode = lit?.Syntax.XNode as XSharpParser.PrimaryExpressionContext;
@@ -706,7 +706,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 }
                 return lit.ConstantType(Compilation);
             }
-            else if (expr.Kind ==BoundKind.UnaryOperator)
+            else if (expr.Kind == BoundKind.UnaryOperator)
             {
                 var unary = expr as BoundUnaryOperator;
                 var type = VOGetType(unary.Operand);
@@ -724,10 +724,10 @@ namespace Microsoft.CodeAnalysis.CSharp
                     }
                     else if (st == SpecialType.System_UInt32)
                     {
-                        type = Compilation.GetSpecialType(SpecialType.System_Int64);  
+                        type = Compilation.GetSpecialType(SpecialType.System_Int64);
                     }
                 }
-                else if (unary.OperatorKind.HasFlag(UnaryOperatorKind.LogicalNegation ))
+                else if (unary.OperatorKind.HasFlag(UnaryOperatorKind.LogicalNegation))
                 {
                     type = Compilation.GetSpecialType(SpecialType.System_Boolean);
                 }

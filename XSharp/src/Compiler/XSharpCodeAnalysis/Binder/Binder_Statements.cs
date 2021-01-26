@@ -55,7 +55,7 @@ namespace Microsoft.CodeAnalysis.CSharp
 
         BoundExpression XsHandleNullPsz(TypeSymbol targetType, BoundExpression expression)
         {
-            if (Compilation.Options.HasRuntime && targetType == Compilation.PszType())
+            if (Compilation.Options.HasRuntime && targetType.IsPszType())
             {
                 if (IsNullNode(expression))
                 {

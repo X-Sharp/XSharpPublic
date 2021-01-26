@@ -18,7 +18,7 @@ using Roslyn.Utilities;
 
 namespace Microsoft.CodeAnalysis.CSharp.Symbols
 {
-    internal  sealed partial class SourceOrdinaryMethodSymbol : SourceMemberMethodSymbol
+    internal  sealed partial class SourceOrdinaryMethodSymbol 
     {
 
         private bool XsGenerateDebugInfo
@@ -51,7 +51,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             {
                 if (this.HasClipperCallingConvention() != overriddenMethod.HasClipperCallingConvention())
                 {
-
                     if (overriddenMethod.ContainingType.TypesChanged())
                     {
                         diagnostics.Add(ErrorCode.ERR_MethodSignatureChanged, this.Locations[0], this, overriddenMethod );
@@ -82,7 +81,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                     foreach (var member in members)
                     {
                         var metSym = member as MethodSymbol;
-                        bool equalSignature = metSym.ParameterCount == this.ParameterCount && this.ReturnType == metSym.ReturnType;
+                        bool equalSignature = metSym.ParameterCount == this.ParameterCount && 
+                        	this.ReturnType == metSym.ReturnType;
                         if (equalSignature)
                         {
                             var thisTypes = this.ParameterTypes;

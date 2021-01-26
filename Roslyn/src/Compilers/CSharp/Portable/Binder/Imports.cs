@@ -24,7 +24,7 @@ namespace Microsoft.CodeAnalysis.CSharp
 
         public int GetHashCode(String obj)
         {
-#if XSHARP
+
             if (XSharpString.IgnoreCase)
             {
                 return ((string)obj).ToLower().GetHashCode();
@@ -33,9 +33,6 @@ namespace Microsoft.CodeAnalysis.CSharp
             {
                 return ((string)obj).GetHashCode();
             }
-#else
-            return ((string)obj).GetHashCode();
-#endif
         }
     }
 #endif

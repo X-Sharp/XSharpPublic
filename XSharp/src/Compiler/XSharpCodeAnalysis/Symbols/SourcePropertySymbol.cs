@@ -60,7 +60,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             }
         }
     }
-
     internal sealed partial class SourcePropertySymbol
     {
         private TypeSymbol _newPropertyType = null;

@@ -82,7 +82,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                         }
                     }
                 }
-                if (type == null)
+                if (type.IsNull())
                 {
                     type = compilation.GetSpecialType(SpecialType.System_Object);
                 }

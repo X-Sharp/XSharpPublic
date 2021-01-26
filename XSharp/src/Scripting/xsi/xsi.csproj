@@ -12,8 +12,6 @@
     <RuntimeIdentifiers>$(RoslynPortableRuntimeIdentifiers)</RuntimeIdentifiers>
     <!--Use the C# compiler created in this solution-->
     <CscToolPath>$(GeneratedCompilerPath)</CscToolPath>
-    <Configurations>Debug;Release;Public</Configurations>
-
   </PropertyGroup>
   <ItemGroup Label="Project References">
     <ProjectReference Include="..\XSharpScripting\XSharpScripting.csproj" />

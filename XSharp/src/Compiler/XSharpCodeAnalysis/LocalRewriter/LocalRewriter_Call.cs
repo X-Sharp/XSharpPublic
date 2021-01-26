@@ -127,7 +127,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             if (defaultConstantValue == null)
                 return null;
             if (parameterType is NamedTypeSymbol &&
-                ((NamedTypeSymbol)parameterType).ConstructedFrom == compilation.PszType())
+                ((NamedTypeSymbol)parameterType).ConstructedFrom.IsPszType())
             {
 
                 if (defaultConstantValue.StringValue != null)

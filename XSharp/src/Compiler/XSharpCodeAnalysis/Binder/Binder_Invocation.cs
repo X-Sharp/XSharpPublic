@@ -300,7 +300,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                     foreach (var expr in analyzedArguments.Arguments)
                     {
                         var ptype = expr.Type;
-                        if (ptype == null)
+                        if (ptype.IsNull())
                             ptype = new PointerTypeSymbol(Compilation.GetSpecialType(SpecialType.System_Void));
                         var parameter = new SourceSimpleParameterSymbol(
                             delmeth,

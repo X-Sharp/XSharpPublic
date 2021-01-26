@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk">
-  <Import Project="..\CompilerCommon.props" />
+  <Import Project="$(Solutiondir)src\Compiler\CompilerCommon.props" />
   <PropertyGroup>
     <OutputType>Library</OutputType>
     <RootNamespace>LanguageService.CodeAnalysis</RootNamespace>

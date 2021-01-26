@@ -351,12 +351,12 @@ namespace Microsoft.CodeAnalysis.CSharp
                                 }
                                 if (parLeft.Type != parRight.Type)
                                 { 
-                                    if (parLeft.Type.IsFloatType() )
+                                    if (parLeft.Type.IsFloatType())
                                     {
                                         result = BetterResult.Left;
                                         return true;
                                     }
-                                    if (parRight.Type.IsFloatType() )
+                                    if (parRight.Type.IsFloatType())
                                     {
                                         result = BetterResult.Right;
                                         return true;
@@ -640,9 +640,9 @@ namespace Microsoft.CodeAnalysis.CSharp
                             return BetterResult.Right;
                     }
                     // Prefer Date over DateTime, becuse when one of the two is date then we know that we can't compare the time parts
-                    if (left.Type.SpecialType == SpecialType.System_DateTime && right.Type == Compilation.DateType())
+                    if (left.Type.SpecialType == SpecialType.System_DateTime && right.Type.IsDateType())
                         return BetterResult.Right;
-                    if (right.Type.SpecialType == SpecialType.System_DateTime && left.Type == Compilation.DateType())
+                    if (right.Type.SpecialType == SpecialType.System_DateTime && left.Type.IsDateType())
                         return BetterResult.Left;
 
 

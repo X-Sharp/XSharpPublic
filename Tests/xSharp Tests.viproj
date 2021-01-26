@@ -33,9 +33,7 @@ ApplicationGroup = BUGS,E440B545-3C18-4457-A54F-4F3256349ABE,7A4D68CC-1F6B-46FA-
 ApplicationGroup = Runtime issues,D2167BBF-156A-4E64-861D-753C3894EE87,E440B545-3C18-4457-A54F-4F3256349ABE
 ApplicationGroup = MUST REPORT ERROR,A95A4D23-3574-40FD-B873-22D28ACCA212,7A4D68CC-1F6B-46FA-B99B-A8CD8EA65C11
 ApplicationGroup = FIXED,715D7617-320E-41FF-B82F-E314D950CD23,7A4D68CC-1F6B-46FA-B99B-A8CD8EA65C11
-ApplicationGroup = C200-C249,AFC1C415-FAD6-4C6F-B86D-3D981AB09BAD,715D7617-320E-41FF-B82F-E314D950CD23
 ApplicationGroup = C250-C299,F5307DDC-4DCD-4576-89C9-1B07F6C6D655,715D7617-320E-41FF-B82F-E314D950CD23
-ApplicationGroup = C150-C199,EBE227D6-3F55-4251-A268-C654F38F1FAF,715D7617-320E-41FF-B82F-E314D950CD23
 ApplicationGroup = C350-C399,CB2E170B-0122-4D3B-8692-FF0130BAE231,715D7617-320E-41FF-B82F-E314D950CD23
 ApplicationGroup = C400-C449,C8A205F1-7289-4E5A-A714-71E5A29AFFCE,715D7617-320E-41FF-B82F-E314D950CD23
 ApplicationGroup = C450-C499,6E592304-313A-42E3-8A1D-C66384522531,715D7617-320E-41FF-B82F-E314D950CD23
@@ -52,8 +50,11 @@ ApplicationGroup = C100-C149,62CDEEEA-3C4C-4E5E-9B0A-FD8DF7D670BC,715D7617-320E-
 ApplicationGroup = C300-C349,DBAFC850-8A63-413C-9C9F-0450290A3721,715D7617-320E-41FF-B82F-E314D950CD23
 ApplicationGroup = R750-R799,E53B4BB3-0391-43DA-BD2E-CC1D2B02A8E9,715D7617-320E-41FF-B82F-E314D950CD23
 ApplicationGroup = C750-C799,09F25645-7429-41B4-8D41-DFD5B355DD87,715D7617-320E-41FF-B82F-E314D950CD23
+ApplicationGroup = C200-C249,AFC1C415-FAD6-4C6F-B86D-3D981AB09BAD,715D7617-320E-41FF-B82F-E314D950CD23
+ApplicationGroup = C150-C199,EBE227D6-3F55-4251-A268-C654F38F1FAF,715D7617-320E-41FF-B82F-E314D950CD23
 ApplicationGroup = NEW,B9CFE839-D401-428D-94E9-E9D21E9F772D,7A4D68CC-1F6B-46FA-B99B-A8CD8EA65C11
 ApplicationGroup = Known Incompatibilities with VO,40E29AF9-85EE-4D50-BADC-953EE318D423,7A4D68CC-1F6B-46FA-B99B-A8CD8EA65C11
+ApplicationGroup = Broken,B7F6C4E3-31FD-40FC-B820-C57110817A58,7A4D68CC-1F6B-46FA-B99B-A8CD8EA65C11
 
 [Applications]
 
@@ -1381,9 +1382,9 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   Optimize=0
 ENDApplication = C209
 
-ApplicationGroup = 601137E1-03A5-45B4-994E-BFD3410FDE72
-; ************** APPLICATION C210 *************
-Application = C210
+ApplicationGroup = AFC1C415-FAD6-4C6F-B86D-3D981AB09BAD
+; ************** APPLICATION C210 - Latebound, local of type Object *************
+Application = C210 - Latebound, local of type Object
 IDEVersion = 1.06
 GalleryName = 
 GalleryPage = 
@@ -1416,20 +1417,20 @@ KeyFile =
 [ExportOptions]
 ExportResources = 0
 ExportImages = 0
-[C210 FileGroups]
-[C210 Files]
+[C210 - Latebound, local of type Object FileGroups]
+[C210 - Latebound, local of type Object Files]
 File = %AppPath%\Prg\C210.prg
 FileGUID = 111D773B-B334-437F-A76E-C9E2F2D5EC2F
 FileType = Code
 CopyToBin = 0
-[C210 References]
+[C210 - Latebound, local of type Object References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
 ReferenceGAC = CLR4,VulcanRT,1,0,4.0.401.0
 ReferenceGAC = CLR4,VulcanRTFuncs,1,0,4.0.401.0
-[C210 Resources]
-[C210 Native Resources]
-[C210 License files]
-[C210 General Options]
+[C210 - Latebound, local of type Object Resources]
+[C210 - Latebound, local of type Object Native Resources]
+[C210 - Latebound, local of type Object License files]
+[C210 - Latebound, local of type Object General Options]
 Switches=
 ZeroArrays=0
 CaseSensitive=0
@@ -1461,7 +1462,7 @@ IgnoreStdDefs=0
 Ovf=0
 FOvf=0
 ResponseOnly=0
-[C210 Configurations]
+[C210 - Latebound, local of type Object Configurations]
 AppConfig = Debug,11111111-1111-1111-1111-111111111111
   Switches=
   SwitchesCF=
@@ -1490,7 +1491,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceConsole=0
   ForceX86=0
   Optimize=0
-ENDApplication = C210
+ENDApplication = C210 - Latebound, local of type Object
 
 ApplicationGroup = F5307DDC-4DCD-4576-89C9-1B07F6C6D655
 ; ************** APPLICATION C264 - Cannot pass PTR as USUAL argument *************
@@ -2712,8 +2713,8 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
 ENDApplication = C254
 
 ApplicationGroup = F5307DDC-4DCD-4576-89C9-1B07F6C6D655
-; ************** APPLICATION C253 *************
-Application = C253
+; ************** APPLICATION C253 - Assign to property late bound *************
+Application = C253 - Assign to property late bound
 IDEVersion = 1.06
 GalleryName = 
 GalleryPage = 
@@ -2746,20 +2747,20 @@ KeyFile =
 [ExportOptions]
 ExportResources = 0
 ExportImages = 0
-[C253 FileGroups]
-[C253 Files]
+[C253 - Assign to property late bound FileGroups]
+[C253 - Assign to property late bound Files]
 File = %AppPath%\Prg\C253.prg
 FileGUID = D76383D3-39BC-428E-9B78-2E2E2BF8D7E6
 FileType = Code
 CopyToBin = 0
-[C253 References]
+[C253 - Assign to property late bound References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
 ReferenceGAC = CLR4,VulcanRT,1,0,4.0.401.0
 ReferenceGAC = CLR4,VulcanRTFuncs,1,0,4.0.401.0
-[C253 Resources]
-[C253 Native Resources]
-[C253 License files]
-[C253 General Options]
+[C253 - Assign to property late bound Resources]
+[C253 - Assign to property late bound Native Resources]
+[C253 - Assign to property late bound License files]
+[C253 - Assign to property late bound General Options]
 Switches=
 ZeroArrays=0
 CaseSensitive=0
@@ -2791,7 +2792,7 @@ IgnoreStdDefs=0
 Ovf=0
 FOvf=0
 ResponseOnly=0
-[C253 Configurations]
+[C253 - Assign to property late bound Configurations]
 AppConfig = Debug,11111111-1111-1111-1111-111111111111
   Switches=
   SwitchesCF=
@@ -2820,7 +2821,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceConsole=0
   ForceX86=0
   Optimize=0
-ENDApplication = C253
+ENDApplication = C253 - Assign to property late bound
 
 ApplicationGroup = F5307DDC-4DCD-4576-89C9-1B07F6C6D655
 ; ************** APPLICATION C252 - Problem using codeblock param with same name local used in RECOVER USING *************
@@ -5377,8 +5378,8 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
 ENDApplication = C225
 
 ApplicationGroup = AFC1C415-FAD6-4C6F-B86D-3D981AB09BAD
-; ************** APPLICATION C226 *************
-Application = C226
+; ************** APPLICATION C226 - Crash in late bound method call and/or assign *************
+Application = C226 - Crash in late bound method call and/or assign
 IDEVersion = 1.06
 GalleryName = 
 GalleryPage = 
@@ -5411,20 +5412,20 @@ KeyFile =
 [ExportOptions]
 ExportResources = 0
 ExportImages = 0
-[C226 FileGroups]
-[C226 Files]
+[C226 - Crash in late bound method call and/or assign FileGroups]
+[C226 - Crash in late bound method call and/or assign Files]
 File = %AppPath%\Prg\C226.prg
 FileGUID = D8393BF7-7EB9-475A-ACDD-19B910561236
 FileType = Code
 CopyToBin = 0
-[C226 References]
+[C226 - Crash in late bound method call and/or assign References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
 ReferenceGAC = CLR4,VulcanRT,1,0,4.0.401.0
 ReferenceGAC = CLR4,VulcanRTFuncs,1,0,4.0.401.0
-[C226 Resources]
-[C226 Native Resources]
-[C226 License files]
-[C226 General Options]
+[C226 - Crash in late bound method call and/or assign Resources]
+[C226 - Crash in late bound method call and/or assign Native Resources]
+[C226 - Crash in late bound method call and/or assign License files]
+[C226 - Crash in late bound method call and/or assign General Options]
 Switches=
 ZeroArrays=0
 CaseSensitive=0
@@ -5456,7 +5457,7 @@ IgnoreStdDefs=0
 Ovf=0
 FOvf=0
 ResponseOnly=0
-[C226 Configurations]
+[C226 - Crash in late bound method call and/or assign Configurations]
 AppConfig = Debug,11111111-1111-1111-1111-111111111111
   Switches=
   SwitchesCF=
@@ -5485,7 +5486,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceConsole=0
   ForceX86=0
   Optimize=0
-ENDApplication = C226
+ENDApplication = C226 - Crash in late bound method call and/or assign
 
 ApplicationGroup = AFC1C415-FAD6-4C6F-B86D-3D981AB09BAD
 ; ************** APPLICATION C227 *************
@@ -35671,7 +35672,7 @@ ReferenceGAC = CLR4,VulcanRTFuncs,1,0,4.0.401.0
 [C324 - Conversion errors without /vo4 Native Resources]
 [C324 - Conversion errors without /vo4 License files]
 [C324 - Conversion errors without /vo4 General Options]
-Switches=
+Switches=/debug:full
 ZeroArrays=0
 CaseSensitive=0
 ImplicitNamespace=0
@@ -39453,7 +39454,7 @@ ReferenceGAC = CLR4,VulcanRTFuncs,1,0,4.0.401.0
 [C357 - Problem with PSZ(_CAST,ptrVar) Native Resources]
 [C357 - Problem with PSZ(_CAST,ptrVar) License files]
 [C357 - Problem with PSZ(_CAST,ptrVar) General Options]
-Switches=
+Switches=/debug:embedded
 ZeroArrays=0
 CaseSensitive=0
 ImplicitNamespace=0
@@ -47198,7 +47199,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   Optimize=0
 ENDApplication = C421 - RETURN inside body ignored in Start() function
 
-ApplicationGroup = 601137E1-03A5-45B4-994E-BFD3410FDE72
+ApplicationGroup = C8A205F1-7289-4E5A-A714-71E5A29AFFCE
 ; ************** APPLICATION C422 - Runtime problem converting (INT in) USUAL to PTR *************
 Application = C422 - Runtime problem converting (INT in) USUAL to PTR
 IDEVersion = 1.06
@@ -47309,7 +47310,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   Optimize=0
 ENDApplication = C422 - Runtime problem converting (INT in) USUAL to PTR
 
-ApplicationGroup = 601137E1-03A5-45B4-994E-BFD3410FDE72
+ApplicationGroup = C8A205F1-7289-4E5A-A714-71E5A29AFFCE
 ; ************** APPLICATION C423 - Runtime problem comparing (NIL in) USUAL to SYMBOL *************
 Application = C423 - Runtime problem comparing (NIL in) USUAL to SYMBOL
 IDEVersion = 1.06
@@ -49758,7 +49759,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   Optimize=0
 ENDApplication = C445 - Cannot use SizeOf(USUAL) also DATE, FLOAT etc
 
-ApplicationGroup = C8A205F1-7289-4E5A-A714-71E5A29AFFCE
+ApplicationGroup = 6E592304-313A-42E3-8A1D-C66384522531
 ; ************** APPLICATION C446 - VO incompatibility with missing constructors *************
 Application = C446 - VO incompatibility with missing constructors
 IDEVersion = 1.06
@@ -50872,7 +50873,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   Optimize=0
 ENDApplication = C455 - #xcommand problem with ARRAY literals
 
-ApplicationGroup = 6E592304-313A-42E3-8A1D-C66384522531
+ApplicationGroup = C8A205F1-7289-4E5A-A714-71E5A29AFFCE
 ; ************** APPLICATION C456 - Compiler crash with empty codeblock in command *************
 Application = C456 - Compiler crash with empty codeblock in command
 IDEVersion = 1.06
@@ -62490,7 +62491,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   Optimize=0
 ENDApplication = C556 - Cannot declare fixed buffer field in structure/Core
 
-ApplicationGroup = 601137E1-03A5-45B4-994E-BFD3410FDE72
+ApplicationGroup = EFF5B9B4-0F2A-45E0-87BB-24AC86F3D3DB
 ; ************** APPLICATION C557 - Incorrect multi dim array indexing with usual subscripts *************
 Application = C557 - Incorrect multi dim array indexing with usual subscripts
 IDEVersion = 1.06
@@ -71277,9 +71278,9 @@ FileGUID = 81056867-CE75-4691-956E-B63EA6F48535
 FileType = Code
 CopyToBin = 0
 [C631 - Incorrect results with iif() and USUAL arguments (sample with /vo10 disabled) References]
-ReferenceGAC = XSharp.Core,1,0,2.0.0.7
-ReferenceGAC = XSharp.VO,1,0,2.0.0.7
-ReferenceGAC = XSharp.RT,1,0,
+ReferenceBrowse = C:\XSharp\DevRt\Binaries\Debug\XSharp.Core.dll,1,1
+ReferenceBrowse = C:\XSharp\DevRt\Binaries\Debug\XSharp.RT.dll,1,1
+ReferenceBrowse = C:\XSharp\DevRt\Binaries\Debug\XSharp.VO.dll,1,1
 [C631 - Incorrect results with iif() and USUAL arguments (sample with /vo10 disabled) Resources]
 [C631 - Incorrect results with iif() and USUAL arguments (sample with /vo10 disabled) Native Resources]
 [C631 - Incorrect results with iif() and USUAL arguments (sample with /vo10 disabled) License files]
@@ -79663,7 +79664,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   Optimize=0
 ENDApplication = R702
 
-ApplicationGroup = 43A04886-532C-4DC6-A4FB-751288B40D7A
+ApplicationGroup = 7D1C4D98-F0BB-48B3-932B-B3AECEE395BA
 ; ************** APPLICATION C703 - Name conflicts between memvars and class name *************
 Application = C703 - Name conflicts between memvars and class name
 IDEVersion = 1.06
@@ -82661,7 +82662,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   Optimize=0
 ENDApplication = R709 TEXT ENDText and MessageBox()
 
-ApplicationGroup = 962BFCBC-0AA0-4B6C-90C7-F389146CC3FA
+ApplicationGroup = E53B4BB3-0391-43DA-BD2E-CC1D2B02A8E9
 ; ************** APPLICATION R710 Codeblock variations *************
 Application = R710 Codeblock variations
 IDEVersion = 1.06
@@ -84329,7 +84330,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   Optimize=0
 ENDApplication = R729 - Passing arguments by reference
 
-ApplicationGroup = 962BFCBC-0AA0-4B6C-90C7-F389146CC3FA
+ApplicationGroup = 09F25645-7429-41B4-8D41-DFD5B355DD87
 ; ************** APPLICATION R730 - USUAL notequals for strings *************
 Application = R730 - USUAL notequals for strings
 IDEVersion = 1.06

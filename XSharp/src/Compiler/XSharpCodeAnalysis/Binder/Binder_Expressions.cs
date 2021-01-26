@@ -57,7 +57,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                     // Convert INT(<ptr>) to ((INT PTR) <ptr>)[0]
                     // No need to worry about /AZ. This has been handled already
                     // make sure that PSZ(ptr) is not dereferenced !
-                    bool canConvert = operand.Type.IsVoidPointer() && targetType != Compilation.PszType();
+                    bool canConvert = operand.Type.IsVoidPointer() && targetType.IsPszType();
                     if ( ! canConvert)
                     {
                         PointerTypeSymbol pt = operand.Type as PointerTypeSymbol;
@@ -414,7 +414,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             if (Compilation.Options.LateBindingOrFox(node) && right.Kind() != SyntaxKind.GenericName && boundLeft.Kind != BoundKind.TypeExpression )
             {
                 string propName = right.Identifier.ValueText;
-                if (leftType != null)
+                if (!leftType.IsNull())
                 {
                     bool earlyBound = propName == ".ctor";
                     bool isObject = leftType.IsObjectType();
@@ -498,7 +498,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                             var result = new BoundDynamicMemberAccess(
                                     syntax: node,
                                     receiver: boundLeft,
-                                    typeArgumentsOpt: default(ImmutableArray<TypeSymbol>),
+                                    typeArgumentsOpt: default,
                                     name: propName,
                                     invoked: invoked,
                                     indexed: indexed,
@@ -563,7 +563,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             TypeSymbol psz = Compilation.PszType();
             if (source.Type != null && source.Type.IsStringType() &&
                 Compilation.Options.HasRuntime &&
-                (destination == psz || destination.IsVoidPointer()))
+                (destination.IsPszType() || destination.IsVoidPointer()))
             {
                 // Note this calls the constructor for __PSZ with a string.
                 // The allocated pointer inside the PSZ is never freed by Vulcan and X# !

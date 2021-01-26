@@ -28,7 +28,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 return null;
 
             Conversion conv = Conversion.ImplicitReference;
-            if (destination != Compilation.CodeBlockType() && !destination.IsObjectType())
+            if (destination.IsCodeblockType() && !destination.IsObjectType())
             {
                 HashSet<DiagnosticInfo> useSiteDiagnostics = null;
                 conv = Conversions.ClassifyConversionFromType(Compilation.CodeBlockType(), destination, ref useSiteDiagnostics);
@@ -36,12 +36,17 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
             if (Compilation.Options.HasRuntime)
             {
-                Debug.Assert(destination == Compilation.CodeBlockType()|| conv.Exists);
+                Debug.Assert(destination.IsCodeblockType()|| conv.Exists);
             }
-            //if (!syntax.XIsCodeBlock && !Compilation.Options.MacroScript && !syntax.XNode.IsAliasExpression())
-            //{
-            //    Error(diagnostics, ErrorCode.ERR_CodeblockWithLambdaSyntax, syntax);
-            //}
+            // Codeblocks are implemented as a special anonymous type (like CLASS {Name := "Robert"}
+            // This type inherits from Codeblock and not from System.Object like the normal anonymous types
+            // It gets the following members
+            // 1) a Property for the lambda expression to evaluate
+            // 2) a Property for the "original" string, so the codeblock can be shown in the debugger
+            // 3) a Constructor
+            // 4) an Eval method that overrides the eval method in the Codeblock class
+            // The deletage (for 1) has a USUAL return value and USUAL parameters.
+            // When there are 2 or more codeblocks with the same # of parameters then they share the delegate
 
             AnonymousTypeManager manager = this.Compilation.AnonymousTypeManager;
             var delegateSignature = new TypeSymbol[unboundLambda.ParameterCount + 1];
@@ -50,6 +55,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             {
                 delegateSignature[i] = usualType;
             }
+            // Create the delegate for the Lambda Property
             NamedTypeSymbol cbType = manager.ConstructCodeblockTypeSymbol(delegateSignature, syntax.Location);
             var delType = manager.GetCodeblockDelegateType(cbType);
             var _boundLambda = unboundLambda.Bind(delType);
@@ -63,16 +69,19 @@ namespace Microsoft.CodeAnalysis.CSharp
                 constantValueOpt: ConstantValue.NotAvailable,
                 type: delType)
             { WasCompilerGenerated = unboundLambda.WasCompilerGenerated };
+            // Construct the ToString()
             var cbSrc = new BoundLiteral(syntax, ConstantValue.Create(syntax.XCodeBlockSource), Compilation.GetSpecialType(SpecialType.System_String));
+            // Instantiate the codeblock
             BoundExpression cbInst = new BoundAnonymousObjectCreationExpression(syntax,
                 cbType.InstanceConstructors[0],
                 new BoundExpression[] { cbDel, cbSrc }.ToImmutableArrayOrEmpty(),
                 System.Collections.Immutable.ImmutableArray<BoundAnonymousPropertyDeclaration>.Empty, cbType)
-            { WasCompilerGenerated = unboundLambda.WasCompilerGenerated }; ;
+            { WasCompilerGenerated = unboundLambda.WasCompilerGenerated }; 
+
             if (conv != Conversion.ImplicitReference)
             {
                 cbInst = new BoundConversion(syntax, cbInst, Conversion.ImplicitReference, false, false, ConstantValue.NotAvailable, Compilation.CodeBlockType())
-                { WasCompilerGenerated = unboundLambda.WasCompilerGenerated }; ;
+                { WasCompilerGenerated = unboundLambda.WasCompilerGenerated }; 
             }
             if (!conv.IsValid || (!isCast && conv.IsExplicit))
             {

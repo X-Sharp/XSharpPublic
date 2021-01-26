@@ -1,10 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<!-- Copyright (c)  Microsoft.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information. -->
 <Project Sdk="Microsoft.NET.Sdk">
   <Import Project="..\..\..\build\Targets\GenerateCompilerExecutableBindingRedirects.targets" />
-  <Import Project="..\..\Compiler\CompilerCommon.props" />
+  <Import Project="$(Solutiondir)src\Compiler\CompilerCommon.props" />
   <PropertyGroup>
-    <ProductVersion>8.0.30703</ProductVersion>
     <OutputType>Exe</OutputType>
     <RootNamespace>Microsoft.CodeAnalysis.CompilerServer</RootNamespace>
     <AssemblyName>CSCompiler</AssemblyName>
@@ -15,8 +13,6 @@
 
     <UseVSHostingProcess>false</UseVSHostingProcess>
     <ServerGarbageCollection>true</ServerGarbageCollection>
-    <Configurations>Debug;Release;Public</Configurations>
-
   </PropertyGroup>
   <ItemGroup Label="Project References">
     <ProjectReference Include="..\CSharpCodeAnalysis\CSharpCodeAnalysis.csproj" />
@@ -61,9 +57,9 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-	<Compile Include="$(ServerSource)VBCSCompiler\**\*.cs">
-		<Link>Server\%(RecursiveDir)\%(Filename).%(Extension)</Link>
-	</Compile>
+  <Compile Include="$(ServerSource)VBCSCompiler\**\*.cs">
+    <Link>Server\%(RecursiveDir)\%(Filename).%(Extension)</Link>
+  </Compile>
   </ItemGroup>
   <Import Project="$(CoreSource)..\CommandLine\CommandLine.projitems" Label="Shared" />
 </Project>

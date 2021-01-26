@@ -637,7 +637,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     finallyblock);
             var trystmt = _syntaxFactory.TryStatement(SyntaxFactory.MakeToken(SyntaxKind.TryKeyword),
                  tryblock,
-                 null,
+                 catches: default,
                  finallyclause);
             return MakeBlock(trystmt);
         }
@@ -2111,7 +2111,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 _options.XSharpRuntime ? XSharpQualifiedFunctionNames.ExitSequence : VulcanQualifiedFunctionNames.ExitSequence, true)));
             var innerTry = _syntaxFactory.TryStatement(SyntaxFactory.MakeToken(SyntaxKind.TryKeyword),
                  tryBlock,
-                 null,
+                 catches: default,
                  _syntaxFactory.FinallyClause(SyntaxFactory.MakeToken(SyntaxKind.FinallyKeyword),
                      MakeBlock(stmts)));
             stmts.Clear();
@@ -3668,7 +3668,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             _pool.Free(indices);
             return result;
         }
-
         private StatementSyntax GenerateGetClipperByRefAssignParam(List<string> paramNames,  XP.EntityData data, XSharpParserRuleContext context)
         {
             // Note that the expr must result into a 1 based offset or (with /az) a 0 based offset
@@ -4185,8 +4184,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             MakeSimpleMemberAccess(
                 MakeCastTo(_codeblockType,
                     _syntaxFactory.ParenthesizedLambdaExpression(
-                        asyncKeyword: null,
-                        parameterList: EmptyParameterList(),
+                        asyncKeyword: default,
+                        parameterList: default,
                         arrowToken: SyntaxFactory.MakeToken(SyntaxKind.EqualsGreaterThanToken),
                         body: MakeBlock(MakeList<StatementSyntax>(
                             pushStmt,

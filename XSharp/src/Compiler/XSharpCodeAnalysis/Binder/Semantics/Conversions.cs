@@ -56,7 +56,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         {
             bool result = base.HasBoxingConversion(source, destination, ref useSiteDiagnostics);
 
-            if (!result && _binder.Compilation.Options.HasRuntime && ((object) destination )!= null && source is NamedTypeSymbol)
+            if (!result && _binder.Compilation.Options.HasRuntime && ! (destination  is null) && source is NamedTypeSymbol)
             {
                 var nts = source as NamedTypeSymbol;
                 if (nts.ConstructedFrom.IsUsualType())
@@ -66,9 +66,9 @@ namespace Microsoft.CodeAnalysis.CSharp
                     {
                         // do not box string, array, codeblock  and clipperargs
                         result = !destination.IsStringType()
-                            && ((object)destFrom) != null
-                            && !TypeSymbol.Equals(destFrom, _binder.Compilation.ArrayType())
-                            && !TypeSymbol.Equals(destFrom, _binder.Compilation.CodeBlockType())
+                            && ! (destFrom is null )
+                            && !Equals(destFrom, _binder.Compilation.ArrayType())
+                            && !Equals(destFrom, _binder.Compilation.CodeBlockType())
                             && !destination.IsIFormatProvider()
                             && destFrom.IsDerivedFrom(_binder.Compilation.CodeBlockType(), TypeCompareKind.IgnoreDynamicAndTupleNames, ref useSiteDiagnostics) != true
                             && !IsClipperArgsType(destination);
@@ -85,16 +85,16 @@ namespace Microsoft.CodeAnalysis.CSharp
                     {
                         // do not box symbol, psz, vofloat, vodate
                         result = destination.SpecialType == SpecialType.None
-                            && ((object)destFrom) != null
-                            && !TypeSymbol.Equals(destFrom, _binder.Compilation.SymbolType())
-                            && !TypeSymbol.Equals(destFrom, _binder.Compilation.PszType())
-                            && !TypeSymbol.Equals(destFrom, _binder.Compilation.FloatType())
-                            && !TypeSymbol.Equals(destFrom, _binder.Compilation.DateType());
+                            && !( destFrom is null )
+                            && !Equals(destFrom, _binder.Compilation.SymbolType())
+                            && !Equals(destFrom, _binder.Compilation.PszType())
+                            && !Equals(destFrom, _binder.Compilation.FloatType())
+                            && !Equals(destFrom, _binder.Compilation.DateType());
                     }
                 }
-                else if (TypeSymbol.Equals(nts.ConstructedFrom, _binder.Compilation.FloatType()))
+                else if (Equals(nts.ConstructedFrom, _binder.Compilation.FloatType()))
                 {
-                    if (((object)destination )!= null && destination.SpecialType.IsNumericType())
+                    if (!(destination is null) && destination.SpecialType.IsNumericType())
                     {
                         result = true;
                     }
@@ -122,7 +122,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 {
                     var op = usualType.GetOperators(WellKnownMemberNames.ImplicitConversionName)
                         .WhereAsArray(o => o.ParameterCount == 1 && o.Parameters[0].Type.IsObjectType()
-                        && TypeSymbol.Equals(o.ReturnType, usualType))
+                        && Equals(o.ReturnType, usualType))
                         .First() as MethodSymbol;
                     if (op != null)
                     {
@@ -148,7 +148,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 {
                     return LambdaConversionResult.Success;
                 }
-                // Todo RvdH Check of can be converted
+                // Todo RvdH Check if can be converted
                 /*
                 TypeSymbol cb = Compilation.CodeBlockType();
                 var conv = Compilation.ClassifyConversion(cb, type);
@@ -562,7 +562,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         }
         protected override Conversion ClassifyXSImplicitBuiltInConversionFromExpression(BoundExpression sourceExpression, TypeSymbol source, TypeSymbol destination, ref HashSet<DiagnosticInfo> useSiteDiagnostics)
         {
-            if (source.IsNull() || destination.IsNull())
+            if (source is null || destination is null )
             {
                 return ClassifyNullConversionFromExpression(sourceExpression, source, destination, ref useSiteDiagnostics);
             }

@@ -24,16 +24,15 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             private readonly AnonymousTypePropertyGetAccessorSymbol _getMethod;
             private readonly FieldSymbol _backingField;
 
+
             internal AnonymousTypePropertySymbol(AnonymousTypeTemplateSymbol container, AnonymousTypeField field, TypeWithAnnotations fieldTypeWithAnnotations, int index) :
                 this(container, field, fieldTypeWithAnnotations, index, ImmutableArray<Location>.Empty, includeBackingField: true)
             {
             }
-
             internal AnonymousTypePropertySymbol(AnonymousTypePublicSymbol container, AnonymousTypeField field, int index) :
                 this(container, field, field.TypeWithAnnotations, index, ImmutableArray.Create<Location>(field.Location), includeBackingField: false)
             {
             }
-
             private AnonymousTypePropertySymbol(
                 NamedTypeSymbol container,
                 AnonymousTypeField field,
@@ -56,9 +55,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                 _getMethod = new AnonymousTypePropertyGetAccessorSymbol(this);
                 _backingField = includeBackingField ? new AnonymousTypeFieldSymbol(this) : null;
             }
-
             internal override int? MemberIndexOpt => _index;
-
             public override RefKind RefKind
             {
                 get { return RefKind.None; }

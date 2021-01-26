@@ -74,10 +74,10 @@ namespace Microsoft.CodeAnalysis.CSharp
 
         BoundExpression XsHandleExplicitConversion(TypeSymbol targetType, BoundExpression expression, DiagnosticBag diagnostics, Conversion conversion)
         {
-            if (conversion.IsExplicit && !TypeSymbol.Equals(expression.Type , targetType))
+            if (conversion.IsExplicit && !TypeSymbol.Equals(expression.Type, targetType))
             {
                 // silently convert integral types
-                if (XsHasImplicitCast(expression , targetType, diagnostics) )
+                if (XsHasImplicitCast(expression, targetType, diagnostics))
                 {
                     BoundExpression result;
                     if (targetType.IsIntegralType() && expression.Type.IsIntegralType())

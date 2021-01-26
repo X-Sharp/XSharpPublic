@@ -5,15 +5,12 @@
 //
 
 using System;
-using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Diagnostics;
 using Microsoft.CodeAnalysis.CSharp.Symbols;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.PooledObjects;
-using Roslyn.Utilities;
 using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
-using Microsoft.CodeAnalysis.CSharp;
 namespace Microsoft.CodeAnalysis.CSharp
 {
     internal partial class Binder
@@ -33,15 +30,15 @@ namespace Microsoft.CodeAnalysis.CSharp
             LogicCompare
         }
 
-        private bool XsHasImplicitCast(BoundExpression expression , TypeSymbol targetType, DiagnosticBag diagnostics)
+        private bool XsHasImplicitCast(BoundExpression expression, TypeSymbol targetType, DiagnosticBag diagnostics)
         {
             var sourceType = expression.Type;
             var syntax = expression.Syntax;
-			if (TypeSymbol.Equals(sourceType, targetType))
-				return true;
-				
+            if (Equals(sourceType, targetType))
+                return true;
+
             // do not silently cast one enum to another !
-            if (sourceType.IsEnumType() || targetType.IsEnumType() )
+            if (sourceType.IsEnumType() || targetType.IsEnumType())
                 return false;
 
             // do not throw an warnings for IIF() expressions with types that are too big
@@ -50,7 +47,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             {
                 return true;
             }
-            if (Conversions.XsIsImplicitBinaryOperator(expression, targetType,this))
+            if (Conversions.XsIsImplicitBinaryOperator(expression, targetType, this))
             {
                 return true;
             }
@@ -59,7 +56,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             {
                 sourceType = binop.LargestOperand(this.Compilation);
             }
-            if (TypeSymbol.Equals(sourceType , targetType))
+            if (Equals(sourceType, targetType))
             {
                 return true;
             }
@@ -73,7 +70,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         private BoundExpression BindVOCompareString(BinaryExpressionSyntax node, DiagnosticBag diagnostics,
             BoundExpression left, BoundExpression right)
         {
-            MethodSymbol opMeth = null;
+            MethodSymbol opMeth;
             TypeSymbol type;
             BoundCall opCall = null;
             var stringType = Compilation.GetSpecialType(SpecialType.System_String);
@@ -86,11 +83,11 @@ namespace Microsoft.CodeAnalysis.CSharp
                 right = CreateConversion(right, stringType, diagnostics);
             }
 
-            if (Compilation.Options.HasRuntime && this.Compilation.Options.HasOption(CompilerOption.StringComparisons,node))
+            if (Compilation.Options.HasRuntime && this.Compilation.Options.HasOption(CompilerOption.StringComparisons, node))
             {
                 // VO Style String Comparison
                 type = Compilation.RuntimeFunctionsType();
-                string methodName = ReservedNames.StringCompare ;
+                string methodName = ReservedNames.StringCompare;
                 var symbols = Binder.GetCandidateMembers(type, methodName, LookupOptions.MustNotBeInstance, this);
                 if (symbols.Length == 1)
                 {
@@ -110,7 +107,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 opCall.WasCompilerGenerated = true;
             }
             var op = BindSimpleBinaryOperator(node, diagnostics, opCall,
-                new BoundLiteral(node, ConstantValue.Create((int)0), GetSpecialType(SpecialType.System_Int32, diagnostics, node))) ;
+                new BoundLiteral(node, ConstantValue.Create(0), GetSpecialType(SpecialType.System_Int32, diagnostics, node)));
             op.WasCompilerGenerated = true;
             var res = CreateConversion(op, Compilation.GetSpecialType(SpecialType.System_Boolean), diagnostics);
             res.WasCompilerGenerated = true;

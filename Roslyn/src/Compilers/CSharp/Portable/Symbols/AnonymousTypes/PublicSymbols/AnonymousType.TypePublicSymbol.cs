@@ -88,7 +88,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
 
             protected override NamedTypeSymbol WithTupleDataCore(TupleExtraData newData)
                 => throw ExceptionUtilities.Unreachable;
-			
 #if XSHARP
             internal bool IsCodeblock { get; } = false;
 
@@ -97,12 +96,19 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                 Debug.Assert(codeblockParams.Length > 0);
 
                 this.Manager = manager;
-                this.TypeDescriptor = new AnonymousTypeDescriptor(codeblockParams.Select((t, i) => new AnonymousTypeField("Cb$Param$" + i, location, TypeWithAnnotations.Create(t)))
-                    .ToImmutableArray(), location);
-                var codeblockDelegate = manager.SynthesizeDelegate(codeblockParams.Length - 1, default(BitVector), false, 0).Construct(codeblockParams);
+                var fields = ArrayBuilder<AnonymousTypeField>.GetInstance(codeblockParams.Length + 2);
+                for (int i = 0; i < codeblockParams.Length; i++)
+                {
+                    fields.Add(new AnonymousTypeField(XSharpSpecialNames.CodeBlockParameter + i, location, TypeWithAnnotations.Create(codeblockParams[i])));
+                }
+                this.TypeDescriptor = new AnonymousTypeDescriptor(fields.ToImmutable(), location);
+
+                var codeblockDelegate = manager.SynthesizeDelegate(codeblockParams.Length - 1, default, false, 0).Construct(codeblockParams);
+                var lambda = new AnonymousTypeField(XSharpSpecialNames.CodeBlockLamda, location, TypeWithAnnotations.Create(codeblockDelegate));
+                var source = new AnonymousTypeField(XSharpSpecialNames.CodeBlockSource, location, TypeWithAnnotations.Create(manager.System_String));
                 this.Properties = new[] {
-                    new AnonymousTypePropertySymbol(this, new AnonymousTypeField("Cb$Eval$", location, TypeWithAnnotations.Create(codeblockDelegate)),0),
-                    new AnonymousTypePropertySymbol(this, new AnonymousTypeField("Cb$Source$", location, TypeWithAnnotations.Create(manager.System_String)),1)
+                    new AnonymousTypePropertySymbol(this, lambda,0),
+                    new AnonymousTypePropertySymbol(this, source,0)
                 }.AsImmutableOrNull();
 
                 Symbol[] members = new Symbol[4];

@@ -2674,7 +2674,7 @@ namespace Microsoft.CodeAnalysis.CSharp
 
             CheckNativeIntegerFeatureAvailability(resultOperatorKind, node, diagnostics);
 
-#if XXSHARP
+#if XSHARP
             BoundExpression res = new BoundUnaryOperator(
                 node,
                 resultOperatorKind.WithOverflowChecksIfApplicable(CheckOverflowAtRuntime),
@@ -2683,7 +2683,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 resultMethod,
                 resultKind,
                 resultType);
-            if (TypeSymbol.Equals(resultType, operand.Type ))
+            if (! TypeSymbol.Equals(resultType, operand.Type ))
             {
                 var newType = VOGetType(operand);
                 if (resultOperatorKind.IsUnaryMinus())

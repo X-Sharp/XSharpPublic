@@ -47,7 +47,18 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             {
                 return this.DeclaringCompilation.CodeBlockType();
             }
+            /*
+            internal override bool Equals(TypeSymbol t2, TypeCompareKind comparison)
+            {
+                if (ReferenceEquals(this, t2))
+                {
+                    return true;
+                }
 
+                var other = t2 as CodeblockTypePublicSymbol;
+                return (object)other != null && this.TypeDescriptor.Equals(other.TypeDescriptor, comparison);
+            }
+            */
         }
 
         private sealed partial class CodeblockEvalMethod : SynthesizedMethodBase
@@ -57,22 +68,20 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             internal CodeblockEvalMethod(NamedTypeSymbol container)
                 : base(container, "Eval")
             {
+                ImmutableArray<CustomModifier> customModifiers;
                 if (this.Manager.Compilation.Options.XSharpRuntime)
                 {
-                    var usualArray = TypeWithAnnotations.Create(this.Manager.UsualArrayType);
-                    _parameters = ImmutableArray.Create<ParameterSymbol>(
-                            new SynthesizedParamsParameterSymbol(this, usualArray, 0, RefKind.None, "args")
-                    );
-
+                    customModifiers = default;
                 }
                 else
                 {
-                    var usualArray = TypeWithAnnotations.Create(this.Manager.UsualArrayType);
-                    _parameters = ImmutableArray.Create<ParameterSymbol>(
-                            new SynthesizedParamsParameterSymbol(this, usualArray, 0, RefKind.None, "args",
-                                customModifiers: new[] { CSharpCustomModifier.CreateOptional(this.Manager.Compilation.GetWellKnownType(WellKnownType.System_Runtime_CompilerServices_IsConst)) }.ToImmutableArray())
-                        );
+                    customModifiers = new[] { CSharpCustomModifier.CreateOptional(this.Manager.Compilation.GetWellKnownType(WellKnownType.System_Runtime_CompilerServices_IsConst)) }.ToImmutableArray();
                 }
+                _parameters = ImmutableArray.Create<ParameterSymbol>(
+                        new CodeBlockEvalMethodParameterSymbol(this, TypeWithAnnotations.Create(this.Manager.Compilation.CreateArrayTypeSymbol(this.Manager.UsualType)), 0, RefKind.None, XSharpSpecialNames.ClipperArgs,
+                            customModifiers: customModifiers)
+                    );
+
             }
 
             public override MethodKind MethodKind
@@ -131,7 +140,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             {
                 AnonymousTypeManager manager = ((AnonymousTypeTemplateSymbol)this.ContainingType).Manager;
                 SyntheticBoundNodeFactory F = this.CreateBoundNodeFactory(compilationState, diagnostics);
-
+                // The lambda expression has a fixed number of arguments.
+                // The parameters are received an an array of usuals. This array may be to long or to short
+                // The runtime function _BlockArg() extract the right element from the array or NIL when the
+                // array is not long enough.
                 //  Method body:
                 //
                 //  {
@@ -145,7 +157,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                 AnonymousTypeTemplateSymbol anonymousType = (AnonymousTypeTemplateSymbol)this.ContainingType;
                 var cbDel = (anonymousType.GetMembers()[0] as AnonymousTypePropertySymbol).BackingField;
                 MethodSymbol invokeMethod = cbDel.Type.GetDelegateType().DelegateInvokeMethod();
-                MethodSymbol argMethod = DeclaringCompilation.CodeBlockType().GetMembers("_BlockArg").First() as MethodSymbol;
+                MethodSymbol argMethod = DeclaringCompilation.CodeBlockType().GetMembers(ReservedNames.BlockArg).First() as MethodSymbol;
 
                 BoundExpression paramArr = F.Parameter(_parameters[0]);
 
@@ -171,20 +183,21 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             }
         }
 
-        internal sealed class SynthesizedParamsParameterSymbol: SynthesizedParameterSymbolBase
+        internal sealed class CodeBlockEvalMethodParameterSymbol: SynthesizedParameterSymbolBase
         {
             ImmutableArray<CustomModifier> _customModifiers;
 
-            public SynthesizedParamsParameterSymbol(
+            public CodeBlockEvalMethodParameterSymbol(
                 MethodSymbol container,
                 TypeWithAnnotations type,
                 int ordinal,
                 RefKind refKind,
                 string name = "",
-                ImmutableArray<CustomModifier> customModifiers = default(ImmutableArray<CustomModifier>))
+                ImmutableArray<CustomModifier> customModifiers = default)
                     : base(container, type, ordinal, refKind, name)
             {
                 _customModifiers = customModifiers;
+
             }
 
             public override bool IsParams
@@ -192,20 +205,15 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                 get { return true; }
             }
 
-            //public override ImmutableArray<CustomModifier> CustomModifiers
-            //{
-            //    get { return _customModifiers.NullToEmpty(); }
-            //}
 
             public override ImmutableArray<CustomModifier> RefCustomModifiers
             {
-                get { return ImmutableArray<CustomModifier>.Empty; }
+                get { return _customModifiers.NullToEmpty(); }
             }
             internal override MarshalPseudoCustomAttributeData MarshallingInformation
             {
                 get
                 {
-                    //todo
                     return null;
                 }
             }

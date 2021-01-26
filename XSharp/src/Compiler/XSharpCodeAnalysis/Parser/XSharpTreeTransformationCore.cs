@@ -3418,7 +3418,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     if (initExpr == null)
                     {
                         var arrayType = _syntaxFactory.ArrayType(varType, context.ArraySub.Get<ArrayRankSpecifierSyntax>());
-                        initExpr = GenerateDimArrayInitExpression(arrayType, context.ArraySub );
+                        initExpr = GenerateDimArrayInitExpression(ref arrayType, context.ArraySub);
                     }
                 }
             }
@@ -5689,7 +5689,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             return MissingType();
         }
 
-        protected ExpressionSyntax GenerateDimArrayInitExpression(ArrayTypeSyntax arrayType, XP.ArraysubContext sub)
+        protected ExpressionSyntax GenerateDimArrayInitExpression(ref ArrayTypeSyntax arrayType, XP.ArraysubContext sub)
         {
             InitializerExpressionSyntax init = null;
             var dims = _syntaxFactory.ArrayCreationExpression(SyntaxFactory.MakeToken(SyntaxKind.NewKeyword),arrayType, null);
@@ -5700,7 +5700,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
             }
             if (!isstring)
+            {
                 return dims;
+            }
+            var rank = MakeArrayRankSpecifier(sub._ArrayIndex.Count);
+            var returnType = _syntaxFactory.ArrayType(arrayType.ElementType, rank);
             if (sub._ArrayIndex.Count == 1)
             {
                 // for single dim indexes we inline the initialization
@@ -5726,13 +5730,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             // this function creates the array, initializes it and returns it.
             // StringArrayInit has no return type because it can handle arrays of different dimensions
             // 
-            var funcname = "$StringArrayInit" + UniqueNameSuffix(sub);
+            var funcname = "$" + ReservedNames.StringArrayInit + UniqueNameSuffix(sub);
             var stmts = _pool.Allocate<StatementSyntax>();
-            StatementSyntax stmt = GenerateLocalDecl(XSharpSpecialNames.ArrayName, arrayType, dims);
+            StatementSyntax stmt = GenerateLocalDecl(XSharpSpecialNames.ArrayName, returnType, dims);
             stmt.XNode = sub.Parent as XSharpParserRuleContext;
             stmt.XGenerated = true;
             stmts.Add(stmt);
-
             var varname = GenerateSimpleName(XSharpSpecialNames.ArrayName);
             var args = MakeArgumentList(MakeArgument(varname));
             stmt = GenerateExpressionStatement(GenerateMethodCall(
@@ -5742,7 +5745,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             stmt.XNode = sub.Parent as XSharpParserRuleContext;
             stmts.Add(stmt);
 
-            stmt = GenerateReturn(varname,true);
+            stmt = GenerateReturn(varname, true);
             stmt.XNode = sub.Parent as XSharpParserRuleContext;
             stmts.Add(stmt);
             var body = MakeBlock(stmts);
@@ -5753,7 +5756,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             var funcdecl = _syntaxFactory.MethodDeclaration(
                     attributeLists: attributes,
                     modifiers: modifiers,
-                    returnType: arrayType,
+                    returnType: returnType,
                     explicitInterfaceSpecifier: default,
                     identifier: SyntaxFactory.MakeIdentifier(funcname),
                     typeParameterList: default,
@@ -5765,9 +5768,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             funcdecl.XNode = sub.Parent as XSharpParserRuleContext;
             GlobalClassEntities.Members.Add(funcdecl);
             var expr = GenerateMethodCall(funcname);
+            arrayType = returnType;                     // remove the sizes
             return expr;
         }
-    
 
         protected virtual void VisitLocalvar([NotNull] XP.LocalvarContext context)
         {
@@ -5807,7 +5810,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 var arrayType = _syntaxFactory.ArrayType(varType, context.ArraySub.Get<ArrayRankSpecifierSyntax>());            // with dimensions      string[10,10]
                 varType = _syntaxFactory.ArrayType(varType, MakeArrayRankSpecifier(context.ArraySub._ArrayIndex.Count));        // without dimensions   string[,]
-                initExpr = GenerateDimArrayInitExpression(arrayType, context.ArraySub );
+                initExpr = GenerateDimArrayInitExpression(ref arrayType, context.ArraySub);
             }
             if (_options.HasOption(CompilerOption.InitLocals, context, PragmaOptions) && initExpr == null)
             {

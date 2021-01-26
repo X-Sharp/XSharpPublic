@@ -424,8 +424,18 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                 return false;
             }
 
+#if XSHARP
+            TypeCompareKind compareKind = _typeComparison;
+            if (member1.Name == "Eval" && (member1.ContainingType.Name == "Codeblock" || member2.ContainingType.Name == "Codeblock"))
+            {
+                compareKind |= TypeCompareKind.IgnoreCustomModifiersAndArraySizesAndLowerBounds;
+            }
+            if (member1.GetParameterCount() > 0 && !HaveSameParameterTypes(member1.GetParameters(), typeMap1, member2.GetParameters(), typeMap2,
+                                                                           _considerRefKindDifferences, compareKind ))
+#else
             if (member1.GetParameterCount() > 0 && !HaveSameParameterTypes(member1.GetParameters(), typeMap1, member2.GetParameters(), typeMap2,
                                                                            _considerRefKindDifferences, _typeComparison))
+#endif
             {
                 return false;
             }
@@ -522,7 +532,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             return hash;
         }
 
-        #endregion
+#endregion
 
         private static bool HaveSameReturnTypes(Symbol member1, TypeMap typeMap1, Symbol member2, TypeMap typeMap2, TypeCompareKind typeComparison)
         {

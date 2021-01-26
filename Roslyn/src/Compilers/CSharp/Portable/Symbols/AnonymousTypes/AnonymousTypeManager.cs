@@ -66,7 +66,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             Debug.Assert(type.IsAnonymousType);
 
             var anonymous = (AnonymousTypePublicSymbol)type;
+#if XSHARP
+            if (anonymous.IsCodeblock)
+                return anonymous;
+#endif
             return anonymous.Manager.ConstructAnonymousTypeSymbol(anonymous.TypeDescriptor.WithNewFieldsTypes(newFieldTypes));
+
         }
     }
 }

@@ -61,9 +61,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
     internal sealed partial class SourcePropertySymbol
     {
         private TypeWithAnnotations _newPropertyType = default;
-        private bool _typeChanged = false;
-
-
 
         internal PropertySymbol validateProperty(PropertySymbol overriddenProperty, DiagnosticBag diagnostics, Location location)
         {
@@ -106,7 +103,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
         internal void SetChangedParentType(TypeWithAnnotations type)
         {
             _newPropertyType = type;
-            _typeChanged = true;
             if (this.GetMethod != null && this.OverriddenProperty.GetMethod != null)
             {
                 var m = (SourcePropertyAccessorSymbol)this.GetMethod;

@@ -64,7 +64,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                 {
                     AnonymousTypeTemplateSymbol anonymousType = (AnonymousTypeTemplateSymbol)this.ContainingType;
 #if XSHARP
-                    Debug.Assert((!anonymousType.IsCodeblock && anonymousType.Properties.Length == paramCount) || (anonymousType.IsCodeblock && paramCount == 2 && anonymousType.Properties.Length == 1));
+                    Debug.Assert((!anonymousType.IsCodeblock && anonymousType.Properties.Length == paramCount) ||
+                        (anonymousType.IsCodeblock && paramCount == 2 && anonymousType.Properties.Length == 2));
 #else
                     Debug.Assert(anonymousType.Properties.Length == paramCount);
 #endif
@@ -271,7 +272,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
 #if XSHARP
                 if ((ContainingType as AnonymousTypeTemplateSymbol)?.IsCodeblock == true)
                 {
-                    AnonymousTypePropertySymbol property = anonymousType.Properties[0];
+                    AnonymousTypePropertySymbol property = anonymousType.Properties[1];
                     retExpression = F.Field(F.This(), property.BackingField);
                 }
                 else

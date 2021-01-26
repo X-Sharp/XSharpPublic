@@ -83,7 +83,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                 _nameAndIndex = null;
 
 #if XSHARP
-                IsCodeblock = typeDescr.Fields.Length > 0 && typeDescr.Fields[0].Name.StartsWith("Cb$Param$");
+                IsCodeblock = typeDescr.Fields.Length > 0 && typeDescr.Fields[0].Name.StartsWith(XSharpSpecialNames.CodeBlockParameter);
                 _baseType = IsCodeblock ? manager.CodeblockType : manager.System_Object;
                 if (IsCodeblock)
                 {
@@ -97,7 +97,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                     {
                         cbParameters[i] = manager.UsualType;
                     }
-                    var cbDelegate = manager.SynthesizeDelegate(typeDescr.Fields.Length - 1, default(BitVector), false, 0).Construct(cbParameters);
+                    var cbDelegate = manager.SynthesizeDelegate(typeDescr.Fields.Length - 1, default , false, 0).Construct(cbParameters);
 
                     Symbol[] cbMembers = new Symbol[7];
                     int cbMemberIndex = 0;
@@ -105,8 +105,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                     var tDelegate = TypeWithAnnotations.Create(cbDelegate);
                     var tSource = TypeWithAnnotations.Create(manager.System_String);
                     // Add properties
-                    var eval = new AnonymousTypePropertySymbol(this, new AnonymousTypeField("Cb$Eval$", typeDescr.Location, tDelegate), tDelegate , 0);
-                    var source = new AnonymousTypePropertySymbol(this, new AnonymousTypeField("Cb$Src$", typeDescr.Location, tSource), tSource, 1);
+                    var eval = new AnonymousTypePropertySymbol(this, new AnonymousTypeField("Cb$Eval$", typeDescr.Location, tDelegate), tDelegate, 0);
+                    var source = new AnonymousTypePropertySymbol(this, new AnonymousTypeField("Cb$Src$", typeDescr.Location, tSource), tSource, 0);
 
                     this.Properties = new[] { eval, source }.ToImmutableArray();
 

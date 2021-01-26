@@ -105,7 +105,7 @@ namespace Microsoft.CodeAnalysis.CSharp
     internal static class XSharpSpecialNames
     {
         internal const string ImpliedTypeName = "Xs$var";
-        internal const string ScriptDummy = "XS$dummy";                      
+        internal const string ScriptDummy = "XS$dummy";
         internal const string StaticLocalFieldNamePrefix = "Xs$StaticLocal$";
         internal const string StaticLocalInitFieldNameSuffix = "$init";
         internal const string StaticLocalLockFieldNameSuffix = "$lock";
@@ -113,6 +113,10 @@ namespace Microsoft.CodeAnalysis.CSharp
         internal const string AccessSuffix = "$Access";
         internal const string AssignSuffix = "$Assign";
         internal const string PropertySuffix = "$Method";
+
+        internal const string CodeBlockParameter = "Cb$Param$";
+        internal const string CodeBlockLamda = "Cb$Eval$";
+        internal const string CodeBlockSource = "Cb$Source$";
 
         internal const string DelegateNameSpace = "Xs$Delegates";
         internal const string PCallPrefix = "$PCall";
@@ -172,6 +176,7 @@ namespace Microsoft.CodeAnalysis.CSharp
     internal static class ReservedNames
     {
         // these are all expected in the VO Function type
+        internal const string BlockArg = "_BlockArg";
         internal const string StringCompare = "__StringCompare";
         internal const string StringEquals = "__StringEquals";
         internal const string StringSubtract = "StringSubtract";

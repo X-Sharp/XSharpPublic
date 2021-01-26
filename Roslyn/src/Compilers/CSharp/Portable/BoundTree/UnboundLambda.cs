@@ -1267,23 +1267,32 @@ namespace Microsoft.CodeAnalysis.CSharp
 
         protected override BoundBlock BindLambdaBody(LambdaSymbol lambdaSymbol, Binder lambdaBodyBinder, DiagnosticBag diagnostics)
         {
+#if XSHARP
+            BoundBlock block;
+            if (this.IsExpressionLambda)
+            {
+                block = lambdaBodyBinder.BindLambdaExpressionAsBlock((ExpressionSyntax)this.Body, diagnostics);
+            }
+            else
+            {
+                block = lambdaBodyBinder.BindEmbeddedBlock((BlockSyntax)this.Body, diagnostics);
+            }
+            if (lambdaBodyBinder.Compilation.Options.HasRuntime)
+            {
+                block = Binder.FixCodeBlockProblems(lambdaSymbol, lambdaBodyBinder, block, diagnostics);
+            }
+            return block;
+
+#else
             if (this.IsExpressionLambda)
             {
                 return lambdaBodyBinder.BindLambdaExpressionAsBlock((ExpressionSyntax)this.Body, diagnostics);
             }
             else
             {
-#if XSHARP
-                BoundBlock block = lambdaBodyBinder.BindEmbeddedBlock((BlockSyntax)this.Body, diagnostics);
-                if (lambdaBodyBinder.Compilation.Options.HasRuntime)
-                {
-                    block = Binder.FixCodeBlockProblems(lambdaSymbol, lambdaBodyBinder, block, diagnostics);
-                }
-                return block;
-#else
                 return lambdaBodyBinder.BindEmbeddedBlock((BlockSyntax)this.Body, diagnostics);
-#endif
             }
+#endif
         }
     }
 }

@@ -8,7 +8,9 @@ using System.Collections.Immutable;
 using System.Collections.Generic;
 using System.IO;
 using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
+#if !VSPARSER
 using Microsoft.CodeAnalysis.CodeGen;
+#endif
 
 namespace Microsoft.CodeAnalysis.CSharp
 {
@@ -16,7 +18,7 @@ namespace Microsoft.CodeAnalysis.CSharp
     [Flags]
     public enum RuntimeAssemblies : int
     {
-        None = 0 ,
+        None = 0,
         VulcanRT = 0x01,
         VulcanRTFuncs = 0x02,
         XSharpCore = 0x04,
@@ -47,16 +49,16 @@ namespace Microsoft.CodeAnalysis.CSharp
 
     public enum XSharpTargetDLL : Byte
     {
-        Other =0,
+        Other = 0,
         Core = 1,
         Data = 2,
         RDD = 3,
         RT = 4,
         VO = 5,
         XPP = 6,
-        VFP = 7, 
+        VFP = 7,
         VulcanRT = 8,    // strictly not a target but we use this in the OverloadResolution
-        VulcanRTFuncs= 9,  // strictly not a target but we use this in the OverloadResolution
+        VulcanRTFuncs = 9,  // strictly not a target but we use this in the OverloadResolution
         VOWin32Api = 10,
         VOSystemClasses = 11,
         VORDDClasses = 12,
@@ -74,7 +76,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         // Other options have flags, for the preprocessor macros, such as __VO1__
         const LanguageVersion defaultLanguageVersion = LanguageVersion.CSharp9;
         #region private fields (need to be access with HasOption)
-        private bool ArrayZero= false;
+        private bool ArrayZero = false;
         private bool FoxInheritUnknown = false;
         private bool InitLocals = false;
         private bool VOAllowMissingReturns = false;
@@ -106,7 +108,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         public bool DumpAST { get; private set; }
         public bool ShowDefs { get; private set; }
         public bool ShowIncludes { get; private set; }
-        public bool NoClipCall { get; internal set; } 
+        public bool NoClipCall { get; internal set; }
         public ParseLevel ParseLevel { get; set; } = ParseLevel.Complete;
         public bool AllowNamedArguments { get; private set; }
         public bool PreprocessorOutput { get; private set; }
@@ -115,7 +117,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         public bool Verbose { get; private set; }
         public bool VirtualInstanceMethods { get; private set; }
         public bool VOArithmeticConversions { get; private set; }
-        public bool VOClipperConstructors{ get; private set; }
+        public bool VOClipperConstructors { get; private set; }
 
         public bool VoInitAxitMethods { get; private set; }
         public bool VOCompatibleIIF { get; private set; }
@@ -336,7 +338,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             return result;
         }
 
-        public bool HasOption (CompilerOption option, XSharpParserRuleContext context, IList<PragmaOption> options )
+        public bool HasOption(CompilerOption option, XSharpParserRuleContext context, IList<PragmaOption> options)
         {
             switch (option)
             {

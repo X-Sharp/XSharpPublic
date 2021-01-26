@@ -2794,6 +2794,12 @@ namespace Microsoft.CodeAnalysis.CSharp
             {
                 return true;
             }
+#if XSHARP
+            if (typeA.IsUsualType() || typeB.IsUsualType())
+            { 
+                return true;
+            }
+#endif
             if (typeA is null || typeB is null)
             {
                 return typeA?.IsErrorType() != false && typeB?.IsErrorType() != false;

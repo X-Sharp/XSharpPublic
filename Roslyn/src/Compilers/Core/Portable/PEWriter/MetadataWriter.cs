@@ -3317,7 +3317,13 @@ namespace Microsoft.Cci
             }
             else
             {
+#if XSHARP
+                // Vulcan parameters for Eval() have IsConst modifier !
+                Debug.Assert(parameterTypeInformation.RefCustomModifiers.Length == 0 || parameterTypeInformation.IsByReference  
+                    || parameterTypeInformation is AnonymousTypeManager.CodeBlockEvalMethodParameterSymbol);
+#else
                 Debug.Assert(parameterTypeInformation.RefCustomModifiers.Length == 0 || parameterTypeInformation.IsByReference);
+#endif
                 SerializeCustomModifiers(encoder.CustomModifiers(), parameterTypeInformation.RefCustomModifiers);
 
                 var typeEncoder = encoder.Type(parameterTypeInformation.IsByReference);

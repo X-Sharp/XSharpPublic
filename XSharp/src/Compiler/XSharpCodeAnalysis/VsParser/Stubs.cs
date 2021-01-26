@@ -184,7 +184,8 @@ namespace Microsoft.CodeAnalysis.CSharp
 
     public enum LanguageVersion
     {
-        CSharp7_3
+        CSharp7_3,
+        CSharp9
     }
     internal static partial class ErrorFacts
     {

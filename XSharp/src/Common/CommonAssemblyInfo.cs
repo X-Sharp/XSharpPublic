@@ -10,13 +10,18 @@ using System.Reflection;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 
+#if COMMITHASH
 #if DEBUG
 [assembly: Microsoft.CodeAnalysis.CommitHashAttribute("debug")]
+#else
+[assembly: Microsoft.CodeAnalysis.CommitHashAttribute("release")]
+#endif
+#endif
+
+#if DEBUG
 [assembly: AssemblyConfiguration("Debug")]
 #else
 [assembly: AssemblyConfiguration("Release")]
-[assembly: Microsoft.CodeAnalysis.CommitHashAttribute("release")]
-
 #endif	
 [assembly: AssemblyProduct(XSharp.Constants.Product)]
 [assembly: AssemblyCompany(XSharp.Constants.Company)]

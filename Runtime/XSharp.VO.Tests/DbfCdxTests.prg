@@ -10,6 +10,9 @@ USING System.Text
 USING XUnit
 USING System.Globalization
 
+DEFINE GLOBAL_FLD := 123
+GLOBAL DEFINE_FLD := "abc"
+
 BEGIN NAMESPACE XSharp.VO.Tests
 
 	CLASS DbfCdxTests
@@ -4218,6 +4221,28 @@ RETURN
 			END DO
 		RETURN nRecords
 
+        [Fact, Trait("Category", "DBF")];
+		METHOD CreateOrder_fieldname_conflict() AS VOID
+			LOCAL cDbf AS STRING
+			RddSetDefault("DBFCDX")
+			cDbf := GetTempFileName()
+			DbfTests.CreateDatabase(cDbf , { { "DEFINE_FLD" , "C" , 10 , 0 } , { "GLOBAL_FLD" , "D" , 8 , 0 } } )
+			DbUseArea(TRUE, "DBFCDX", cDbf, , FALSE)
+			Assert.True( DbCreateOrder("TEST1" , cDbf , "Left(DEFINE_FLD,5)") )
+			Assert.True( DbCreateOrder("TEST2" , cDbf , "DToS(GLOBAL_FLD)")   )
+			DbCloseArea()
+
+        [Fact, Trait("Category", "DBF")];
+		METHOD Empty_Filter_test() AS VOID
+			LOCAL cDbf AS STRING
+			cDbf := GetTempFileName()
+			DbfTests.CreateDatabase(cDbf , { { "TESTFLD" , "C" , 10 , 0 } } )
+			DbUseArea(TRUE, "DBFCDX", cDbf, , FALSE)
+			LOCAL uInfo AS USUAL
+			VoDbInfo(DBI_DBFILTER, REF uInfo)
+			Assert.False( IsNil(uInfo) )
+			Assert.True( uInfo == "" )
+			DbCloseArea()
 
 
 		STATIC PRIVATE METHOD GetTempFileName() AS STRING

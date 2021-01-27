@@ -1756,8 +1756,10 @@ CLASS XSharp.CoreDb
         RETURN CoreDb.Do ({ =>
         LOCAL oRdd := CoreDb.CWA(__FUNCTION__) AS IRdd
         VAR info 		 := DbFilterInfo{}
-        info:FilterBlock := oBlock         
-        info:FilterText  := cFilter
+        info:FilterBlock := oBlock
+        IF ! String.IsNullOrEmpty(cFilter)
+            info:FilterText  := cFilter
+        ENDIF
         BEFOREBULK
         VAR result := oRdd:SetFilter(info)
         AFTERBULK 

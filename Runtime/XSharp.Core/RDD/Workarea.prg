@@ -1079,8 +1079,12 @@ BEGIN NAMESPACE XSharp.RDD
 				CASE DbInfo.DBI_EOF           
 					oResult := SELF:EoF   
 				CASE DbInfo.DBI_DBFILTER
-                    IF SELF:_FilterInfo != NULL
-					    oResult := SELF:_FilterInfo:FilterText
+                    IF SELF:_FilterInfo != NULL 
+                        IF String.IsNullOrEmpty(SELF:_FilterInfo:FilterText)
+                            oResult := String.Empty
+                        ELSE
+					        oResult := SELF:_FilterInfo:FilterText
+                        ENDIF
                     ELSE
                         oResult := String.Empty
                     ENDIF
@@ -1136,7 +1140,7 @@ BEGIN NAMESPACE XSharp.RDD
 		VIRTUAL PROPERTY FieldCount AS LONG GET (LONG) _Fields?:Length
 		
 		/// <inheritdoc />
-		VIRTUAL PROPERTY FilterText AS STRING GET _FilterInfo?:FilterText
+		VIRTUAL PROPERTY FilterText AS STRING GET _FilterInfo?:FilterText DEFAULT String.Empty
 		
 		/// <inheritdoc />
 		VIRTUAL PROPERTY Found AS LOGIC GET _Found SET _Found := value

@@ -54,14 +54,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                 out bool isInitOnly,
                 out var getSyntax,
                 out var setSyntax);
-#if XSHARP
-            var originalIndexer = isIndexer;
-            if (isIndexer && !string.IsNullOrEmpty((syntax as IndexerDeclarationSyntax).ThisKeyword.ValueText))
-            {
-                name = (syntax as IndexerDeclarationSyntax).ThisKeyword.ValueText;
-                isIndexer = false;
-            }
-#endif
             var explicitInterfaceSpecifier = GetExplicitInterfaceSpecifier(syntax);
             SyntaxTokenList modifiersTokenList = GetModifierTokensSyntax(syntax);
             bool isExplicitInterfaceImplementation = explicitInterfaceSpecifier is object;
@@ -69,7 +61,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                 containingType,
                 modifiersTokenList,
                 isExplicitInterfaceImplementation,
+#if XSHARP
+                isIndexer: syntax.Kind() == SyntaxKind.IndexerDeclaration && !string.IsNullOrEmpty((syntax as IndexerDeclarationSyntax)?.ThisKeyword.ValueText),
+#else
                 isIndexer: syntax.Kind() == SyntaxKind.IndexerDeclaration,
+#endif
                 accessorsHaveImplementation: accessorsHaveImplementation,
                 location,
                 diagnostics,
@@ -96,9 +92,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                 isInitOnly: isInitOnly,
                 memberName,
                 location,
-#if XSHARP
-                originalIndexer,
-#endif
                 diagnostics);
         }
 
@@ -116,9 +109,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             bool isInitOnly,
             string memberName,
             Location location,
-#if XSHARP
-           bool originalIndexer,
-#endif
             DiagnosticBag diagnostics)
             : base(
                 containingType,
@@ -141,7 +131,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
 #if XSHARP
             _isIndexedProperty = false;
             _isGeneratedProperty = false;
-            if (originalIndexer && !string.IsNullOrEmpty((syntax as IndexerDeclarationSyntax).ThisKeyword.ValueText))
+             var isIndexer = syntax.Kind() == SyntaxKind.IndexerDeclaration;
+            if (isIndexer && !string.IsNullOrEmpty((syntax as IndexerDeclarationSyntax)?.ThisKeyword.ValueText))
             {
                 _isIndexedProperty = true;
             }
@@ -166,7 +157,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                 diagnostics);
         }
 
-        }
         private TypeSyntax GetTypeSyntax(SyntaxNode syntax) => ((BasePropertyDeclarationSyntax)syntax).Type;
 
         protected override Location TypeLocation
@@ -458,7 +448,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                 return base.Location;
             }
         }
-
+#endif
         private SourcePropertyAccessorSymbol CreateExpressionBodiedAccessor(
             ArrowExpressionClauseSyntax syntax,
             PropertySymbol? explicitlyImplementedPropertyOpt,

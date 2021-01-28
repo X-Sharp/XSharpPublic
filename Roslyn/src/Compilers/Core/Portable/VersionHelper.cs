@@ -149,7 +149,9 @@ namespace Microsoft.CodeAnalysis
 
             version = new Version(values[0], values[1], values[2], values[3]);
 #if XSHARP
-            version = GenerateVersionFromPatternAndCurrentTime(DateTime.Now, version);
+            var newvers = GenerateVersionFromPatternAndCurrentTime(DateTime.Now, version); ;
+            if (newvers != null)
+                version = newvers;
 #endif
             return !parseError;
         }

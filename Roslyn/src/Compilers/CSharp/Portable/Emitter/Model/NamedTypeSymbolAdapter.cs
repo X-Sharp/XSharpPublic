@@ -293,7 +293,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             }
 #if XSHARP
             // The <Module> type has no base class
-            if (this.Name == XSharpSpecialNames.ModuleName)
+            if (AdaptedNamedTypeSymbol.Name == XSharpSpecialNames.ModuleName)
                 return null;
 #endif
             return ((object)baseType != null) ? moduleBeingBuilt.Translate(baseType,

@@ -197,7 +197,7 @@ namespace Microsoft.CodeAnalysis.CompilerServer
             try
             {
 #if XSHARP
-                XSharpString.CaseSensitive = pipeName != null && pipeName.EndsWith("__CS");
+                XSharpString.CaseSensitive = pipeName.EndsWith("__CS");
 #endif
                 var realTimeout = timeout != null
                     ? (int)timeout.Value.TotalMilliseconds

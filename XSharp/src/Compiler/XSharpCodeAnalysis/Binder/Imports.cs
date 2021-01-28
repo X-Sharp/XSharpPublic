@@ -3,7 +3,7 @@
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
-
+#nullable disable
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
@@ -82,9 +82,9 @@ namespace Microsoft.CodeAnalysis.CSharp
                     var diagnostics = DiagnosticBag.GetInstance();
                     string[] defNs;
                     if (compilation.Options.XSharpRuntime)
-                        defNs = new string[]{ OurNameSpaces.XSharp}; 
+                        defNs = new string[]{ OurNameSpaces.XSharp};
                     else
-                        defNs = new string[]{ OurNameSpaces.Vulcan}; 
+                        defNs = new string[]{ OurNameSpaces.Vulcan};
 
                     foreach (var n in defNs)
                     {
@@ -114,7 +114,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                                 if (args != null && args.Length == 1)
                                 {
                                     // only one argument, must be default namespace
-                                    var defaultNamespace = args[0].Value.ToString();
+                                    var defaultNamespace = args[0].Value?.ToString() ?? "";
                                     if (!string.IsNullOrEmpty(defaultNamespace))
                                     {
                                         var name = Syntax.InternalSyntax.XSharpTreeTransformationCore.ExtGenerateQualifiedName(defaultNamespace);
@@ -133,7 +133,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                                 if (args != null && args.Length == 2)
                                 {
                                     // first element is the Functions class
-                                    var globalClassName = args[0].Value.ToString();
+                                    var globalClassName = args[0].Value?.ToString() ?? "";
                                     if (!string.IsNullOrEmpty(globalClassName))
                                     {
                                         var name = Syntax.InternalSyntax.XSharpTreeTransformationCore.ExtGenerateQualifiedName(globalClassName);
@@ -144,7 +144,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                                         }
                                     }
                                     // second element is the default namespace
-                                    var defaultNamespace = args[1].Value.ToString();
+                                    var defaultNamespace = args[1].Value?.ToString() ?? "";
                                     if (!string.IsNullOrEmpty(defaultNamespace) && compilation.Options.ImplicitNameSpace)
                                     {
                                         var name = Syntax.InternalSyntax.XSharpTreeTransformationCore.ExtGenerateQualifiedName(defaultNamespace);

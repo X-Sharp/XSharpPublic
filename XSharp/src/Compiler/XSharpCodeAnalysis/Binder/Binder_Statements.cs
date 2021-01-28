@@ -3,7 +3,7 @@
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
-
+#nullable disable
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using Microsoft.CodeAnalysis.CSharp.Symbols;
@@ -41,9 +41,21 @@ namespace Microsoft.CodeAnalysis.CSharp
 
                 var args = new List<BoundExpression>();
                 args.Add(expression);
-                return new BoundCall(expression.Syntax, expression, (MethodSymbol)mem,
-                    args.ToImmutableArray(), default(ImmutableArray<string>), default(ImmutableArray<RefKind>), false, false,
-                    false, default(ImmutableArray<int>), LookupResultKind.Viable, null, targetType);
+                return new BoundCall(syntax: expression.Syntax,
+                    receiverOpt: expression,
+                    method: (MethodSymbol)mem,
+                    arguments: args.ToImmutableArray(),
+                    argumentNamesOpt: default,
+                    argumentRefKindsOpt: default,
+                    isDelegateCall: false,
+                    expanded: false,
+                    invokedAsExtensionMethod: false,
+                    argsToParamsOpt: default,
+                    defaultArguments: default,
+                    resultKind: LookupResultKind.Viable,
+                    type: targetType,
+                    hasErrors: false);
+
             }
             else
             {
@@ -53,7 +65,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                     source: expression,
                     conversion: conversion,
                     isCast: false,
-                    conversionGroupOpt: default,
+                    conversionGroupOpt: null,
                     destination: targetType,
                     diagnostics: diagnostics);
             }

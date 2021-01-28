@@ -113,11 +113,12 @@ namespace Microsoft.CodeAnalysis.CSharp
                 Debug.Assert(getMethod.ParameterCount == rewrittenArguments.Length);
                 Debug.Assert(getMethodOpt is null || ReferenceEquals(getMethod, getMethodOpt));
 #else
-                if (getMethod == null)
+                if (getMethod == null && rewrittenReceiver != null)
                 {
                     _diagnostics.Add(new CSDiagnosticInfo(ErrorCode.ERR_PropertyLacksGet, property.Name), syntax.Location);
                     return BadExpression(rewrittenReceiver);
                 }
+                Debug.Assert(getMethod is { });
 #endif
                 return BoundCall.Synthesized(
                     syntax,

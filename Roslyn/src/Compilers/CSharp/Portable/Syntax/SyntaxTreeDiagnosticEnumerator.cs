@@ -20,18 +20,12 @@ namespace Microsoft.CodeAnalysis.CSharp
         private Diagnostic? _current;
         private int _position;
         private const int DefaultStackCapacity = 8;
-#if XSHARP
-        private GreenNode _node;
-#endif
 
         internal SyntaxTreeDiagnosticEnumerator(SyntaxTree syntaxTree, GreenNode? node, int position)
         {
             _syntaxTree = null;
             _current = null;
             _position = position;
-#if XSHARP
-            _node = node;
-#endif
             if (node != null && node.ContainsDiagnostics)
             {
                 _syntaxTree = syntaxTree;
@@ -80,10 +74,12 @@ namespace Microsoft.CodeAnalysis.CSharp
 
                     _current = new CSDiagnostic(sdi, new SourceLocation(_syntaxTree, new TextSpan(spanStart, spanWidth)));
 #if XSHARP
-                    var n = node as Syntax.InternalSyntax.CSharpSyntaxNode;
-                    if (n.XNode != null)
+                    if (node is Syntax.InternalSyntax.CSharpSyntaxNode n)
                     {
-                        _current = new CSDiagnostic(sdi, n.XNode.GetLocation());
+                        if (n.XNode != null)
+                        {
+                            _current = new CSDiagnostic(sdi, n.XNode.GetLocation());
+                        }
                     }
 #endif
                     _stack.UpdateDiagnosticIndexForStackTop(diagIndex);
@@ -258,6 +254,7 @@ tryAgain:
            }
            return new LinePosition(iLine, iCol);
         }
+        /*
         internal static Location GetLocation(this IXParseTree node)
         {
 
@@ -292,6 +289,7 @@ tryAgain:
             return new ExternalFileLocation(node.SourceFileName, span, lspan);
 
         }
+        */
     }
 #endif
 }

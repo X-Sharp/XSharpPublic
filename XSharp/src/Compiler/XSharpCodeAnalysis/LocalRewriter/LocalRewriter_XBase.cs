@@ -3,6 +3,7 @@
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
+#nullable disable
 
 using System;
 using System.Linq;
@@ -65,7 +66,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                     }
                     if (found)
                     {
-                        return new BoundObjectCreationExpression(value.Syntax, ctor, binderOpt: null, new BoundExpression[] { value });
+                        return new BoundObjectCreationExpression(value.Syntax, ctor, new BoundExpression[] { value });
                     }
                 }
             }
@@ -116,16 +117,16 @@ namespace Microsoft.CodeAnalysis.CSharp
         {
             var args = ImmutableArray<BoundExpression>.Empty;
             var rettype = compilation.GetSpecialType(SpecialType.System_Void);
-            var call = new BoundCall(node, null, sym,
+            var call = new BoundCall(syntax: node, receiverOpt: null, method: sym,
                 arguments: args,
                 argumentNamesOpt: default(ImmutableArray<string>),
                 argumentRefKindsOpt: default(ImmutableArray<RefKind>),
                 isDelegateCall: false,
                 expanded: false,
                 invokedAsExtensionMethod: false,
-                argsToParamsOpt: default(ImmutableArray<int>),
+                argsToParamsOpt: default,
+                defaultArguments: default,
                 resultKind: LookupResultKind.Viable,
-                binderOpt:null,
                 type: rettype,
                 hasErrors: false)
             { WasCompilerGenerated = true };

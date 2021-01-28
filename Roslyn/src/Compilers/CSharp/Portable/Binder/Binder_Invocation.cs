@@ -1355,7 +1355,11 @@ namespace Microsoft.CodeAnalysis.CSharp
             {
                 if (!visitedParameters[parameter.Ordinal])
                 {
+#if XSHARP
+                    Debug.Assert(parameter.IsOptional || parameter.GetAttributes().Length > 0 || !assertMissingParametersAreOptional);
+#else
                     Debug.Assert(parameter.IsOptional || !assertMissingParametersAreOptional);
+#endif
 
                     defaultArguments[argumentsBuilder.Count] = true;
                     argumentsBuilder.Add(bindDefaultArgument(node, parameter, containingMember, enableCallerInfo, diagnostics));
@@ -1380,6 +1384,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             BoundExpression bindDefaultArgument(SyntaxNode syntax, ParameterSymbol parameter, Symbol containingMember, bool enableCallerInfo, DiagnosticBag diagnostics)
             {
                 TypeSymbol parameterType = parameter.Type;
+
                 if (Flags.Includes(BinderFlags.ParameterDefaultValue))
                 {
                     // This is only expected to occur in recursive error scenarios, for example: `object F(object param = F()) { }`
@@ -1394,7 +1399,12 @@ namespace Microsoft.CodeAnalysis.CSharp
                     var constantValue => constantValue
                 };
                 Debug.Assert((object?)defaultConstantValue != ConstantValue.Unset);
-
+#if XSHARP
+                if (!parameter.IsOptional && (defaultConstantValue == null || defaultConstantValue.IsBad))
+                {
+                    defaultConstantValue = XsDefaultValue(parameter);
+                }
+#endif
                 var callerSourceLocation = enableCallerInfo ? GetCallerLocation(syntax) : null;
                 BoundExpression defaultValue;
                 if (callerSourceLocation is object && parameter.IsCallerLineNumber)

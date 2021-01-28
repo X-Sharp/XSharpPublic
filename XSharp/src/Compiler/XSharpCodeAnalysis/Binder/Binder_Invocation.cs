@@ -3,7 +3,7 @@
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
-
+#nullable disable
 
 using System;
 using System.Collections.Generic;
@@ -20,12 +20,52 @@ using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
 using Microsoft.CodeAnalysis.PooledObjects;
 namespace Microsoft.CodeAnalysis.CSharp
 {
-    /// <summary>
+
+     /// <summary>
     /// This portion of the binder converts an <see cref="ExpressionSyntax"/> into a <see cref="BoundExpression"/>.
     /// </summary>
     internal partial class Binder
     {
 
+
+        private static ConstantValue XsDefaultValue(ParameterSymbol parameter)
+        {
+            TypeSymbol parameterType = parameter.Type;
+            var defaultConstantValue = parameter.GetVODefaultParameter();
+            if (defaultConstantValue == null)
+                return null;
+            if (parameterType is NamedTypeSymbol &&
+                ((NamedTypeSymbol)parameterType).ConstructedFrom.IsPszType())
+            {
+
+                if (defaultConstantValue.StringValue != null)
+                {
+                    // ToDo
+                    // when the parameter is of type PSZ and there was a literal default string
+                    // then Vulcan generates a special literal array in the calling code.
+                    // For example Foo(s := "abcë" AS PSZ) becomes a
+                    // Foo([DefaultParameterValue("abc\x00eb", 0)] __Psz s)
+                    //
+                    // and in the calling code the default parameter is stored as a field of the <Module> class
+                    //
+                    // .field assembly static valuetype $ArrayType$5 䌤㘲␵$PSZ$_15_1 = ((61 62 63 EB 00))
+                    //
+                    // and a type is declared for the array size of 5 bytes. This type is declared in the global namespace:
+                    //
+                    // [StructLayout(LayoutKind.Explicit, Size=5, Pack=1)]
+                    //    public struct $ArrayType$5
+                    //    {
+                    //    }
+                    //
+                    // The call to the function becomes
+                    // Foo((__Psz) &䌤㘲␵$PSZ$_15_1);
+                    // Nikos can you implement something like this ?
+                    //
+                    defaultConstantValue = ConstantValue.Null;
+                }
+            }
+            return defaultConstantValue;
+        }
         private BoundExpression BindXsInvocationExpression(
             InvocationExpressionSyntax node,
             DiagnosticBag diagnostics)
@@ -36,7 +76,6 @@ namespace Microsoft.CodeAnalysis.CSharp
             {
                 return result; // all of the binding is done by BindNameofOperator
             }
-
             // M(__arglist()) is legal, but M(__arglist(__arglist()) is not!
             bool isArglist = node.Expression.Kind() == SyntaxKind.ArgListExpression;
             AnalyzedArguments analyzedArguments = AnalyzedArguments.GetInstance();
@@ -74,59 +113,83 @@ namespace Microsoft.CodeAnalysis.CSharp
                     boundExpression = CheckValue(boundExpression, BindValueKind.RValueOrMethodGroup, diagnostics);
                     string name = boundExpression.Kind == BoundKind.MethodGroup ? GetName(node.Expression) : null;
                     result = BindInvocationExpression(node, node.Expression, name, boundExpression, analyzedArguments, diagnostics);
+                    if (result is BoundCall bc)
+                    {
+                        // check if MethodSymbol has the NeedAccessToLocals attribute combined with /fox2
+                        if (Compilation.Options.Dialect == XSharpDialect.FoxPro &&
+                            Compilation.Options.HasOption(CompilerOption.FoxExposeLocals, node) &&
+                            bc.Method.NeedAccessToLocals())
+                        {
+                            var localsymbols = new List<LocalSymbol>();
+                            var binder = this;
+                            while (binder != null)
+                            {
+                                localsymbols.AddRange(binder.Locals);
+                                if (binder is InMethodBinder)
+                                    break;
+                                binder = binder.Next;
+                            }
+                            var root = node.SyntaxTree.GetRoot() as CompilationUnitSyntax;
+                            if (localsymbols.Count > 0)
+                            {
+                                root.RegisterFunctionThatNeedsAccessToLocals(node.CsNode, localsymbols);
+                            }
+                        }
+                    }
                 }
             }
-                analyzedArguments.Free();
+            analyzedArguments.Free();
             return result;
 
-            }
+        }
 
+  
         private void BindPCall(InvocationExpressionSyntax node, DiagnosticBag diagnostics, AnalyzedArguments analyzedArguments)
+        {
+            if (node.XPCall && node.Expression is GenericNameSyntax)
             {
-                if (node.XPCall && node.Expression is GenericNameSyntax)
+                var gns = node.Expression as GenericNameSyntax;
+                var arg = gns.TypeArgumentList.Arguments[0];
+                var method = arg.ToFullString();
+                bool pcallnative = method.IndexOf(XSharpSpecialNames.PCallNativePrefix, XSharpString.Comparison) >= 0;
+                if (pcallnative)
                 {
-                    var gns = node.Expression as GenericNameSyntax;
-                    var arg = gns.TypeArgumentList.Arguments[0];
-                    var method = arg.ToFullString();
-                    bool pcallnative = method.IndexOf(XSharpSpecialNames.PCallNativePrefix, XSharpString.Comparison) >= 0;
-                    if (pcallnative)
-                    {
-                        BindPCallNativeAndDelegate(node, analyzedArguments.Arguments, diagnostics, arg);
-                    }
-                    else
-                    {
-                        BindPCallAndDelegate(node, analyzedArguments.Arguments, diagnostics, arg);
-                    }
-
+                    BindPCallNativeAndDelegate(node, analyzedArguments.Arguments, diagnostics, arg);
+                }
+                else
+                {
+                    BindPCallAndDelegate(node, analyzedArguments.Arguments, diagnostics, arg);
                 }
 
             }
+
+        }
         private string GetTypedPtrName(IXParseTree xNode)
+        {
+            // GLobals and Instance variables are all of type ClassvarContext
+            if (xNode is XP.ClassvarContext && xNode.Parent is XP.ClassVarListContext cvl)
             {
-                // GLobals and Instance variables are all of type ClassvarContext
-                if (xNode is XP.ClassvarContext && xNode.Parent is XP.ClassVarListContext cvl)
-                {
-                    var pdtc = cvl.DataType as XP.PtrDatatypeContext;
-                    if (pdtc != null)
+                var pdtc = cvl.DataType as XP.PtrDatatypeContext;
+                if (pdtc != null)
                     return pdtc.TypeName.GetText();
 
-                }
-                // Locals are of type LocalVarContext
-                else if (xNode is XP.LocalvarContext lvc)
-                {
-                    var pdtc = lvc.DataType as XP.PtrDatatypeContext;
-                    if (pdtc != null)
-                        return pdtc.TypeName.GetText();
-                }
-                else if (xNode is XP.VostructmemberContext smc)
-                {
-                    var pdtc = smc.DataType as XP.PtrDatatypeContext;
-                    if (pdtc != null)
-                        return pdtc.TypeName.GetText();
-
-                }
-                return null;
             }
+            // Locals are of type LocalVarContext
+            else if (xNode is XP.LocalvarContext lvc)
+            {
+                var pdtc = lvc.DataType as XP.PtrDatatypeContext;
+                if (pdtc != null)
+                    return pdtc.TypeName.GetText();
+            }
+            else if (xNode is XP.VostructmemberContext smc)
+            {
+                var pdtc = smc.DataType as XP.PtrDatatypeContext;
+                if (pdtc != null)
+                    return pdtc.TypeName.GetText();
+
+            }
+            return null;
+        }
         private void BindPCallAndDelegate(InvocationExpressionSyntax node, ArrayBuilder<BoundExpression> args,
                 DiagnosticBag diagnostics, TypeSyntax type)
         {
@@ -219,7 +282,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                             par.Ordinal,
                             par.RefKind,
                             par.Name,
-                            isDiscard: false, 
+                            isDiscard: false,
                             par.Locations);
                         builder.Add(parameter);
                     }
@@ -352,6 +415,6 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
         }
 
-        }
     }
+}
 

@@ -511,18 +511,18 @@ namespace Microsoft.CodeAnalysis.CSharp
 #if XSHARP
         private void ReportStringConcatError(SyntaxNode syntax, params BoundExpression[] expressions)
         {
-            if (expressions?.Length == 0)
+            if (expressions.Length == 0)
                 return; // should not happen...
             int element = 1;
             var type = expressions[0].Type;
             var location = syntax.Location;
             for (int i = expressions.Length - 1; i >= 0; i--)
             {
-                if (expressions[i].Type.SpecialType != SpecialType.System_String)
+                if (expressions[i].Type?.SpecialType != SpecialType.System_String)
                 {
                     element = i + 1;
                     var expr = expressions[i];
-                    if (expr is BoundConversion bc && expr.Type.SpecialType == SpecialType.System_Object)
+                    if (expr is BoundConversion bc && bc.Type.SpecialType == SpecialType.System_Object)
                     {
                         type = bc.Operand.Type;
                     }

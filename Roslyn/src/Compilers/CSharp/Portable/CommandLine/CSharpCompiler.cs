@@ -133,9 +133,13 @@ namespace Microsoft.CodeAnalysis.CSharp
                     trees[i] = null;
                 }
 #if XSHARP
-                else if (parseOptions.PreprocessorOutput && Arguments.TouchedFilesPath != null)
+                else if (parseOptions.PreprocessorOutput && Arguments.TouchedFilesPath != null && touchedFilesLogger != null)
                 {
-                    touchedFilesLogger.AddWritten(FileNameUtilities.ChangeExtension(normalizedFilePath, ".ppo"));
+                    var ppoFile = FileNameUtilities.ChangeExtension(normalizedFilePath, ".ppo");
+                    if (ppoFile != null )
+                    { 
+                        touchedFilesLogger.AddWritten(ppoFile);
+                    }
                 }
 #endif
             }

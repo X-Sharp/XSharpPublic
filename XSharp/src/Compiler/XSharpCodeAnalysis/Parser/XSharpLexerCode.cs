@@ -4,6 +4,7 @@
 // See License.txt in the project root for license information.
 //
 
+#nullable disable
 using System.Collections.Immutable;
 using System.Collections.Generic;
 using Microsoft.CodeAnalysis.CSharp;

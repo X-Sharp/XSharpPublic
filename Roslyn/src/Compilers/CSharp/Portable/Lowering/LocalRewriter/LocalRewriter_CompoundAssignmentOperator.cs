@@ -346,9 +346,6 @@ namespace Microsoft.CodeAnalysis.CSharp
             // compound assignments, but for deconstructions we use the setter if the getter is missing.)
             var accessor = indexer.GetOwnOrInheritedGetMethod() ?? indexer.GetOwnOrInheritedSetMethod();
             Debug.Assert(accessor is not null);
-#if XSHARP
-            XsInsertMissingOptionalArguments(syntax, accessor.Parameters, actualArguments, refKinds, temps );
-#endif        
             // For a call, step four would be to optimize away some of the temps.  However, we need them all to prevent
             // duplicate side-effects, so we'll skip that step.
 

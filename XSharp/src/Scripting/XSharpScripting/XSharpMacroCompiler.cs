@@ -3,7 +3,7 @@ using System.Text;
 using System.Threading;
 using Microsoft.CodeAnalysis.Scripting;
 using Microsoft.CodeAnalysis.Text;
-
+#nullable disable
 namespace Microsoft.CodeAnalysis.CSharp.Scripting
 {
     internal sealed class XSharpMacroCompiler : ScriptCompiler

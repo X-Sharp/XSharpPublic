@@ -4,7 +4,7 @@ using System.Threading;
 using Microsoft.CodeAnalysis.Scripting;
 using Microsoft.CodeAnalysis.Scripting.Hosting;
 using Microsoft.CodeAnalysis.Text;
-
+#nullable disable
 namespace Microsoft.CodeAnalysis.CSharp.Scripting
 {
     public static class XSharpMacro 

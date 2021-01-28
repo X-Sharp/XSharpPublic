@@ -4,7 +4,7 @@
 // See License.txt in the project root for license information.
 //
 
-
+#nullable disable
 
 using System;
 using System.Linq;

@@ -862,7 +862,7 @@ namespace Microsoft.CodeAnalysis.CSharp
 #if XSHARP
             if (!trees.IsEmpty() && ! Options.HasDefaultTree && !this.IsSubmission)
             {
-                SyntaxTree def = null ;
+                SyntaxTree? def = null ;
                 bool isApp = Options.OutputKind.IsApplication();
                 if (Options.HasRuntime)
                 {

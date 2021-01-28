@@ -6,6 +6,7 @@
 
 // Uncomment this define to dump the AST to the debug console.
 //#define DUMP_TREE
+#nullable disable
 
 using System;
 using System.Linq;

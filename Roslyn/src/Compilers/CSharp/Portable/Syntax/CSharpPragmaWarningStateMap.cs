@@ -61,18 +61,22 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax
         private static void GetAllPragmaWarningDirectives(SyntaxTree syntaxTree, ArrayBuilder<DirectiveTriviaSyntax> directiveList)
         {
 #if XSHARP
-            var unit = syntaxTree.GetRoot() as CompilationUnitSyntax;
-            if (unit.PragmaWarnings != null)
+            if (syntaxTree.GetRoot() is CompilationUnitSyntax unit && unit.PragmaWarnings != null)
             {
                 foreach (var warning in unit.PragmaWarnings)
                 {
-                    var xNode = warning.XNode as XSharpParserRuleContext;
-                    // X# does not include the pragma directives in the SyntaxTree
-                    // That is why we can't compare positions, but we use line numbers in stead.
-                    directiveList.Add((PragmaWarningDirectiveTriviaSyntax)warning.CreateRed(null, xNode.Start.Line));
+                    if (warning.XNode is XSharpParserRuleContext xNode)
+                    {
+                        // X# does not include the pragma directives in the SyntaxTree
+                        // That is why we can't compare positions, but we use line numbers in stead.
+                        var node = warning.CreateRed(null, xNode.Start.Line);
+                        if (node is PragmaWarningDirectiveTriviaSyntax pragma)
+                        {
+                            directiveList.Add(pragma);
+                        }
+                    }
                 }
             }
-
 #else
 
             foreach (var d in syntaxTree.GetRoot().GetDirectives())

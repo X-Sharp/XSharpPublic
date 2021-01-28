@@ -10,6 +10,9 @@ using System.IO;
 using System.Runtime.InteropServices;
 using System.Threading;
 using Microsoft.CodeAnalysis.CommandLine;
+#if XSHARP
+using Microsoft.CodeAnalysis.CSharp;
+#endif
 
 namespace Microsoft.CodeAnalysis.CompilerServer
 {
@@ -55,8 +58,8 @@ namespace Microsoft.CodeAnalysis.CompilerServer
                 else if (arg.ArgumentId == BuildProtocolConstants.ArgumentId.LibEnvVariable)
                 {
 #if XSHARP
-                    string tmp = arg.Value;
-                    if (arg.Value.Contains(":::"))
+                    string tmp = arg.Value ?? "";
+                    if (tmp.Contains(":::"))
                     {
                         var values = tmp.Split(new string[] { ":::" }, StringSplitOptions.None);
                         libDirectory = values[0];

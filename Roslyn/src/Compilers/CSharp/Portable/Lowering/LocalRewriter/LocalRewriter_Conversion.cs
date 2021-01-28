@@ -30,7 +30,8 @@ namespace Microsoft.CodeAnalysis.CSharp
 #if XSHARP
             if (rewrittenType.IsPszType() )
             {
-                if (rewrittenOperand.Type.SpecialType != SpecialType.System_Object)
+                if (rewrittenOperand is { } && rewrittenOperand.Type is { } && 
+                    rewrittenOperand.Type.SpecialType != SpecialType.System_Object)
                 {
                     return this.MakePsz(rewrittenOperand);
                 }

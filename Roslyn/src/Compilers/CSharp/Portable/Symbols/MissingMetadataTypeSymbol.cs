@@ -456,7 +456,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
 #if XSHARP
                 return (object?)other != null && XSharpString.Equals(MetadataName, other.MetadataName) &&
                     arity == other.arity &&
-                    _containingType.Equals(other._containingType, comparison, isValueTypeOverrideOpt);
+                    _containingType.Equals(other._containingType, comparison);
 #else
 
                 return (object?)other != null && string.Equals(MetadataName, other.MetadataName, StringComparison.Ordinal) &&

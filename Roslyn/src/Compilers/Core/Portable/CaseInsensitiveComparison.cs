@@ -49,12 +49,12 @@ namespace Microsoft.CodeAnalysis
             }
         }
         delegate int stringCompare(string lhs, string rhs);
-        private static stringCompare _compare;
+        private static stringCompare _compare = string.Compare;
 
         public static bool Equals(string lhs, string rhs) =>  _compare(lhs, rhs) == 0;
         public static int Compare(string lhs, string rhs) => _compare(lhs, rhs);
-        public static StringComparer Comparer { get; private set; }
-        public static StringComparison Comparison { get; private set; }
+        public static StringComparer Comparer { get; private set; } = StringComparer.Ordinal;
+        public static StringComparison Comparison { get; private set; } = StringComparison.Ordinal;
         public static bool IgnoreCase => !CaseSensitive;
     }
 

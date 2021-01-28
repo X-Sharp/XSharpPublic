@@ -439,7 +439,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                                         ((MethodSymbol)methodOrIndexer).Parameters[0].Type as NamedTypeSymbol :
                                         methodOrIndexer.ContainingType;
 
-                isComReceiver = (object)receiverNamedType != null && receiverNamedType.IsComImport;
+                isComReceiver = receiverNamedType is object && receiverNamedType.IsComImport;
             }
 #endif
             // We have:
@@ -523,7 +523,8 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
 
 #if XSHARP
-            XsInsertMissingOptionalArguments(syntax, optionalParametersMethod.Parameters, actualArguments, refKinds,  temporariesBuilder, enableCallerInfo);
+            // Todo RvdH : Is this still needed ?
+            //XsInsertMissingOptionalArguments(syntax, optionalParametersMethod.Parameters, actualArguments, refKinds,  temporariesBuilder, enableCallerInfo);
 #endif
 
             if (isComReceiver)

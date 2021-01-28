@@ -101,9 +101,9 @@ namespace Microsoft.CodeAnalysis.CSharp
         public XSharpTargetDLL TargetDLL { get; private set; }
         public bool DebugEnabled { get; private set; }
         public XSharpDialect Dialect { get; private set; }
-        public string DefaultIncludeDir { get; private set; }
-        public string WindowsDir { get; private set; }
-        public string SystemDir { get; private set; }
+        public string DefaultIncludeDir { get; private set; } = "";
+        public string WindowsDir { get; private set; } = "";
+        public string SystemDir { get; private set; } = "";
         public bool NoStdDef { get; private set; }
         public bool DumpAST { get; private set; }
         public bool ShowDefs { get; private set; }
@@ -113,7 +113,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         public bool AllowNamedArguments { get; private set; }
         public bool PreprocessorOutput { get; private set; }
         public bool SaveAsCSharp { get; private set; }
-        public string StdDefs { get; private set; }
+        public string StdDefs { get; private set; } = "";
         public bool Verbose { get; private set; }
         public bool VirtualInstanceMethods { get; private set; }
         public bool VOArithmeticConversions { get; private set; }
@@ -124,7 +124,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         public bool VOPreprocessorBehaviour { get; private set; }
         public bool VOResolveTypedFunctionPointersToPtr { get; private set; }
         public bool VOSignedUnsignedConversion { get; private set; }
-        public string DefaultNamespace { get; private set; }
+        public string DefaultNamespace { get; private set; } = "";
         public bool ImplicitNamespace { get; private set; }
         public bool HasRuntime { get { return this.Dialect.HasRuntime(); } }
         public bool SupportsMemvars { get { return this.Dialect.SupportsMemvars() && MemVars; } }
@@ -141,8 +141,8 @@ namespace Microsoft.CodeAnalysis.CSharp
 
         public RuntimeAssemblies RuntimeAssemblies { get; private set; } = RuntimeAssemblies.None;
         public bool Overflow { get; private set; }
-        public CSharpCommandLineArguments CommandLineArguments { get; private set; }
-        public TextWriter ConsoleOutput { get; private set; }
+        public CSharpCommandLineArguments? CommandLineArguments { get; private set; }
+        public TextWriter? ConsoleOutput { get; private set; } 
         public bool cs => CaseSensitive;
         public bool vo1 => VoInitAxitMethods;
         public bool vo2 => VONullStrings;

@@ -3,7 +3,7 @@
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
-
+#nullable disable
 
 using System;
 using System.Collections.Generic;
@@ -27,19 +27,6 @@ namespace Microsoft.CodeAnalysis.CSharp
     /// </summary>
     internal partial class Binder
     {
-
-        private static InitializerExpressionSyntax s_constructInitializerFromArguments(AnalyzedArguments analyzedArguments)
-        {
-            var expressions = SeparatedSyntaxListBuilder<ExpressionSyntax>.Create();
-            foreach (var arg in analyzedArguments.Arguments)
-            {
-                if (expressions.Count > 0)
-                    expressions.AddSeparator(SyntaxFactory.MissingToken(SyntaxKind.CommaToken));
-                expressions.Add(arg.Syntax as ExpressionSyntax);
-            }
-            return SyntaxFactory.InitializerExpression(SyntaxKind.ArrayInitializerExpression,
-                expressions);
-        }
 
         private bool BindVOPointerDereference(CastExpressionSyntax node, TypeWithAnnotations targetType, BoundExpression operand, 
             DiagnosticBag diagnostics, out BoundExpression expression)
@@ -301,8 +288,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                             argumentRefKindsOpt: default(ImmutableArray<RefKind>),
                             expanded: false,
                             argsToParamsOpt: default(ImmutableArray<int>),
-                            binderOpt: this,
-                            useSetterForDefaultArgumentGeneration:false ,
+                            defaultArguments: default,
                             type: usualType,
                             hasErrors: false)
                         { WasCompilerGenerated = true };
@@ -585,7 +571,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 if (stringctor != null)
                 {
                     diagnostics.Add(ErrorCode.WRN_CompilerGeneratedPSZConversionGeneratesMemoryleak, syntax.Location);
-                    source = new BoundObjectCreationExpression(syntax, stringctor, binderOpt: null, new BoundExpression[] { source });
+                    source = new BoundObjectCreationExpression(syntax, stringctor,  new BoundExpression[] { source });
                     return true;
                 }
             }

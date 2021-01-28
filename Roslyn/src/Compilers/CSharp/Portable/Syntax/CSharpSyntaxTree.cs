@@ -530,8 +530,8 @@ namespace Microsoft.CodeAnalysis.CSharp
 
 #else
             tree.VerifySource();
-#endif
             return tree;
+#endif
         }
 
         #endregion

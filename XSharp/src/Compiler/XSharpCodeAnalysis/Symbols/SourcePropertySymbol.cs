@@ -24,7 +24,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
         private TypeWithAnnotations _changedReturnType = default;
         private ImmutableArray<ParameterSymbol> _changedParameters = default;
         private bool _signatureChanged = false;
-        private MethodSymbol _parentMethod;
+        private MethodSymbol? _parentMethod;
 
         internal void ChangeSignature(TypeWithAnnotations returnType, ImmutableArray<ParameterSymbol> parameters)
         {
@@ -69,29 +69,31 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                 // check if we have a base type and if the base type has a method with the same name but different casing
                 var baseType = this.ContainingType.BaseTypeNoUseSiteDiagnostics;
                 var members = baseType.GetMembersUnordered().Where(
-                        member => member.Kind == SymbolKind.Property && member.IsVirtual && String.Equals(member.Name, this.Name, StringComparison.OrdinalIgnoreCase) );
+                        member => member.Kind == SymbolKind.Property && member.IsVirtual && string.Equals(member.Name, this.Name, StringComparison.OrdinalIgnoreCase) );
                 if (members.Count() > 0)
                 {
                     foreach (var member in members)
                     {
-                        var propSym = member as PropertySymbol;
-                        bool equalSignature = propSym.ParameterCount == this.ParameterCount && TypeSymbol.Equals(this.Type, propSym.Type);
-                        if (equalSignature)
+                        if (member is PropertySymbol propSym)
                         {
-                            var thisTypes = this.Parameters;
-                            var theirTypes = propSym.Parameters;
-                            for (int i = 0; i < thisTypes.Length; i++)
+                            bool equalSignature = propSym.ParameterCount == this.ParameterCount && Equals(this.Type, propSym.Type);
+                            if (equalSignature)
                             {
-                                if (!TypeSymbol.Equals(thisTypes[i].Type,theirTypes[i].Type))
+                                var thisTypes = this.Parameters;
+                                var theirTypes = propSym.Parameters;
+                                for (int i = 0; i < thisTypes.Length; i++)
                                 {
-                                    equalSignature = false;
-                                    break;
+                                    if (!Equals(thisTypes[i].Type, theirTypes[i].Type))
+                                    {
+                                        equalSignature = false;
+                                        break;
+                                    }
                                 }
                             }
-                        }
-                        if (equalSignature)
-                        {
-                            diagnostics.Add(ErrorCode.ERR_CaseDifference, location, baseType.Name, "property", member.Name, this.Name);
+                            if (equalSignature)
+                            {
+                                diagnostics.Add(ErrorCode.ERR_CaseDifference, location, baseType.Name, "property", member.Name, this.Name);
+                            }
                         }
 
                     }

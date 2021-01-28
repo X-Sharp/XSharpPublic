@@ -11,6 +11,7 @@
     <RootNamespace>LanguageService.CodeAnalysis.XSharp</RootNamespace>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <NoWarn>1591,1573,1701,3021</NoWarn> 
+    <TargetFrameworks>net472;netcoreapp3.1</TargetFrameworks>
     <!--<CodeAnalysisRuleSet>$(RoslynSrc)\Compilers\CSharp\CSharpCodeAnalysisRules.ruleset</CodeAnalysisRuleSet>-->
     <NoStdLib>true</NoStdLib>
     <GenerateMicrosoftCodeAnalysisCommitHashAttribute>false</GenerateMicrosoftCodeAnalysisCommitHashAttribute>
@@ -88,13 +89,13 @@
     <PackageReference Include="System.Text.Encoding.CodePages" Version="$(SystemTextEncodingCodePagesVersion)" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="$(CSharpSource)BoundTree\BoundNodes.xml" />
+    <None Include="$(CSharpSource)BoundTree\BoundNodes.xml" />
     <None Include="$(CSharpSource)BoundTree\BoundNodes.xsd" />
     <None Include="$(CSharpSource)Generated\CSharp.Generated.g4" />
-    <Content Include="$(CSharpSource)Syntax\Syntax.xml" />
+    <AdditionalFiles Include="$(CSharpSource)Syntax\Syntax.xml" />
     <None Include="$(CSharpSource)SSyntax\Syntax.xsd" />
-    <Content Include="$(CSharpSource)UseSiteDiagnosticsCheckEnforcer\BaseLine.txt" />
-    <Content Include="$(CSharpSource)UseSiteDiagnosticsCheckEnforcer\Run.bat" />
+    <None Include="$(CSharpSource)UseSiteDiagnosticsCheckEnforcer\BaseLine.txt" />
+    <None Include="$(CSharpSource)UseSiteDiagnosticsCheckEnforcer\Run.bat" />
     <None Include="$(CSharpSource)FlowAnalysis\Flow Analysis Design.docx" />
     <None Include="$(CSharpSource)..\CSharpCodeAnalysisRules.ruleset">
       <SubType>Designer</SubType>

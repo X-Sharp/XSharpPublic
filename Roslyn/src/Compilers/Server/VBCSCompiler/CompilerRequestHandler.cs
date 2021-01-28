@@ -71,7 +71,7 @@ namespace Microsoft.CodeAnalysis.CompilerServer
             return AnalyzerConsistencyChecker.Check(baseDirectory, analyzers, AnalyzerAssemblyLoader, logger: Logger);
         }
 
-        public bool TryCreateCompiler(RunRequest request, BuildPaths buildPaths, [NotNullWhen(true)] out CommonCompiler? compiler)
+        public bool TryCreateCompiler(RunRequest request, BuildPaths buildPaths,[NotNullWhen(true)] out CommonCompiler? compiler)
         {
             switch (request.Language)
             {

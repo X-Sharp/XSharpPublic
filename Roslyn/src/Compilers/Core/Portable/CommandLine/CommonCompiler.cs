@@ -1067,8 +1067,7 @@ namespace Microsoft.CodeAnalysis
             }
 
 #if XSHARP
-            var parseOptions = Arguments.ParseOptions as CSharp.CSharpParseOptions;
-            if (parseOptions.ParseLevel < CSharp.ParseLevel.Complete)
+            if (Arguments.ParseOptions is CSharp.CSharpParseOptions opt && opt.ParseLevel < CSharp.ParseLevel.Complete)
             {
                 return;
             }

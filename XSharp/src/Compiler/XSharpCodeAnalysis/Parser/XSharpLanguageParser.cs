@@ -6,6 +6,7 @@
 
 // Uncomment this define to dump time profiling info of the parsing phases.
 //#define DUMP_TIMES
+#nullable disable
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;

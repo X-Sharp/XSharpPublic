@@ -1,4 +1,5 @@
-﻿namespace Antlr4.Runtime.Sharpen
+﻿#nullable disable
+namespace Antlr4.Runtime.Sharpen
 {
     using System.Collections.Generic;
     using System.Linq;

@@ -167,8 +167,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         public new SyntaxTriviaList GetLeadingTrivia()
         {
 #if XSHARP
-            XSharpParserRuleContext node = this.XNode as XSharpParserRuleContext;
-            if (node != null) 
+            if (this.XNode is XSharpParserRuleContext node )
             {
                 if (!this.XGenerated)
                 { 

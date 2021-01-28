@@ -35,11 +35,11 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
-    <None Include="xsi.coreclr.rsp" Condition="'$(TargetFramework)' == 'netcoreapp2.0'">
+    <None Include="xsi.coreclr.rsp" Condition="'$(TargetFramework)' == 'netcoreapp3.1'">
       <Link>xsi.rsp</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="xsi.desktop.rsp" Condition="'$(TargetFramework)' != 'netcoreapp2.0'">
+    <None Include="xsi.desktop.rsp" Condition="'$(TargetFramework)' != 'netcoreapp3.1'">
       <Link>xsi.rsp</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

@@ -22,17 +22,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         {
             Debug.Assert(TypeSymbol.Equals(node.Right.Type, node.Operator.RightType, TypeCompareKind.ConsiderEverything2));
             BoundExpression loweredRight = VisitExpression(node.Right);
-            // TODO RvdH Insert code from LocalRewriter_CompoundAssignmentOperator.cs
-            // to disable isPossibleEventHandlerOperation
-            /*
-            #if XSHARP
-            if (isPossibleEventHandlerOperation && _compilation.Options.LateBindingOrFox(node.Syntax) && !node.Left.HasDynamicType())
-            {
-                isPossibleEventHandlerOperation = false;
-            }
-            #endif
 
-            */
             var temps = ArrayBuilder<LocalSymbol>.GetInstance();
             var stores = ArrayBuilder<BoundExpression>.GetInstance();
 
@@ -41,14 +31,26 @@ namespace Microsoft.CodeAnalysis.CSharp
             bool isDynamic = kind.IsDynamic();
             var binaryOperator = kind.Operator();
 
+#if XSHARP
+            bool isPossibleEventHandlerOperation = node.Left.Kind == BoundKind.DynamicMemberAccess &&
+                (binaryOperator == BinaryOperatorKind.Addition || binaryOperator == BinaryOperatorKind.Subtraction);
+            if (isPossibleEventHandlerOperation && _compilation.Options.LateBindingOrFox(node.Syntax) && !node.Left.HasDynamicType())
+            {
+                isPossibleEventHandlerOperation = false;
+            }
+#endif
+
             // This will be filled in with the LHS that uses temporaries to prevent
             // double-evaluation of side effects.
             BoundExpression transformedLHS = TransformCompoundAssignmentLHS(node.Left, stores, temps, isDynamic);
             var lhsRead = MakeRValue(transformedLHS);
             BoundExpression rewrittenAssignment;
-
+#if XSHARP
+			if (isPossibleEventHandlerOperation)
+#else
             if (node.Left.Kind == BoundKind.DynamicMemberAccess &&
                 (binaryOperator == BinaryOperatorKind.Addition || binaryOperator == BinaryOperatorKind.Subtraction))
+#endif
             {
                 // If this could be an event assignment at runtime, we need to rewrite to the following form:
                 // Original:

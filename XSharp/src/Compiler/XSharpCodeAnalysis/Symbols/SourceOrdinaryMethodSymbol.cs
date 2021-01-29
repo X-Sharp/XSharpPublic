@@ -69,6 +69,18 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                     overriddenMethod = null;
                 }
             }
+            else if (this.HasClipperCallingConvention())
+            {
+                var baseType = this.ContainingType.BaseTypeNoUseSiteDiagnostics;
+                var members = baseType.GetMembersUnordered().Where(member =>
+                   member.Kind == SymbolKind.Method && String.Equals(member.Name, this.Name, StringComparison.OrdinalIgnoreCase));
+                if (members.Count() > 0)
+                {
+                    diagnostics.Add(ErrorCode.ERR_ClipperInSubClass, location, this.Name);
+                }
+            }
+
+
             else if (XSharpString.CaseSensitive && !this.DeclarationModifiers.HasFlag(DeclarationModifiers.New) &&
                 (this.DeclarationModifiers.HasFlag(DeclarationModifiers.Virtual) || this.DeclarationModifiers.HasFlag(DeclarationModifiers.Override)))
             {
@@ -104,20 +116,20 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                     }
                 }
             }
-            if ((object)overriddenMethod != null)
-                _overrideState = 2;  // checked and has a (correct) override
-            else
-                _overrideState = 1; // checked and does not have an override
 
-            if ((object)overriddenMethod != null)
+            if (overriddenMethod is null )
+                _overrideState = 1; // checked and does not have an override
+            else
             {
+                _overrideState = 2;  // checked and has a (correct) override
+
                 CustomModifierUtils.CopyMethodCustomModifiers(overriddenMethod, this, out _lazyReturnType,
                                                               out _lazyRefCustomModifiers,
                                                               out _lazyParameters, alsoCopyParamsModifier: true);
             }
             var node = this.SyntaxNode.Green as Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax.MethodDeclarationSyntax;
             var mods = this.DeclarationModifiers;
-            if ((object)overriddenMethod != null)
+            if (_overrideState ==2)
             {
                 if (this.Name != overriddenMethod.Name)
                 {

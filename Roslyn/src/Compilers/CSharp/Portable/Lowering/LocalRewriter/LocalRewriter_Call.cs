@@ -522,11 +522,6 @@ namespace Microsoft.CodeAnalysis.CSharp
                 actualArguments[actualArguments.Length - 1] = BuildParamsArray(syntax, methodOrIndexer, argsToParamsOpt, rewrittenArguments, parameters, actualArguments[actualArguments.Length - 1]);
             }
 
-#if XSHARP
-            // Todo RvdH : Is this still needed ?
-            //XsInsertMissingOptionalArguments(syntax, optionalParametersMethod.Parameters, actualArguments, refKinds,  temporariesBuilder, enableCallerInfo);
-#endif
-
             if (isComReceiver)
             {
                 RewriteArgumentsForComCall(parameters, actualArguments, refKinds, temporariesBuilder);

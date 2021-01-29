@@ -453,7 +453,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
         {
             foreach (var p in currentParameters)
             {
+#if XSHARP
+                if (XSharpString.Compare(p.Name, name) == 0)
+#else
                 if (string.CompareOrdinal(p.Name, name) == 0)
+#endif
                 {
                     return false;
                 }

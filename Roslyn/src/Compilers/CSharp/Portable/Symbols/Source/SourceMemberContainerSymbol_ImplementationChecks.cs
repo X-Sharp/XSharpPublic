@@ -1158,6 +1158,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                 bool checkReturnType,
                 bool checkParameters)
             {
+#if XSHARP
+                // When we added a warning about CLIPPER methods that override a STRICT method we do not want additional
+                // warnings
+                if (diagnostics.Count > 0) 
+                    return;
+#endif
+
                 CheckValidNullableMethodOverride(overridingMethod.DeclaringCompilation, overriddenMethod, overridingMethod, diagnostics,
                                                  checkReturnType ? ReportBadReturn : null,
                                                  checkParameters ? ReportBadParameter : null,

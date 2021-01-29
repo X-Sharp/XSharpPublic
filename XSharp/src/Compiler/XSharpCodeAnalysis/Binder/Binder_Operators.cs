@@ -861,21 +861,27 @@ namespace Microsoft.CodeAnalysis.CSharp
             var trueType = trueExpr.Type;
             var falseType = falseExpr.Type;
             // do nothing when the types null
-            if ( ((object)trueType )!= null && ((object) falseType) != null)
+            if (trueType is { } && falseType is { })
             {
                 // Determine underlying types. For literal numbers this may be Byte, Short, Int or Long
                 trueType = VOGetType(trueExpr);
                 falseType = VOGetType(falseExpr);
-                if (!TypeSymbol.Equals(trueType ,falseType) && trueType.IsIntegralType() && falseType.IsIntegralType())
+                if (!Equals(trueType, falseType) && trueType.IsIntegralType() && falseType.IsIntegralType())
                 {
                     // Determine the largest of the two integral types and scale up
                     if (trueType.SpecialType.SizeInBytes() > falseType.SpecialType.SizeInBytes())
+                    {
                         falseType = trueType;
+                        falseExpr = CreateConversion(falseExpr, trueType, diagnostics);
+                    }
                     else
+                    {
                         trueType = falseType;
+                        trueExpr = CreateConversion(trueExpr, falseType, diagnostics);
+                    }
                 }
 
-                if (!TypeSymbol.Equals(trueType ,falseType) && Compilation.Options.HasRuntime)
+                if (!Equals(trueType, falseType) && Compilation.Options.HasRuntime)
                 {
                     // convert to usual when one of the two is a usual
                     var usualType = Compilation.UsualType();
@@ -897,7 +903,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                         trueType = falseType = usualType;
                     }
                 }
-                if (!TypeSymbol.Equals(trueType, falseType))
+                if (!Equals(trueType, falseType))
                 {
                     if (trueType.IsVoidPointer())
                     {

@@ -27,12 +27,15 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         }
         internal static SyntaxToken MakeToken(SyntaxKind kind)
         {
-            if (tokens.TryGetValue(kind, out var token))
+            if (kind != SyntaxKind.NullKeyword && tokens.TryGetValue(kind, out var token))
             {
                 return token;
             }
             token = Token(WS, kind, WS);
-            tokens.TryAdd(kind, token);
+            if (kind != SyntaxKind.NullKeyword)
+            { 
+                tokens.TryAdd(kind, token);
+            }
             return token;
         }
 

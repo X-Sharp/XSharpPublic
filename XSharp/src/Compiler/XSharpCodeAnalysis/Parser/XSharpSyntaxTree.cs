@@ -19,7 +19,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
     internal static partial class SyntaxFactory
     {
         internal static readonly SyntaxTrivia WS = Whitespace(" ");
-        internal static readonly ConcurrentDictionary<SyntaxKind, SyntaxToken> tokens = new ConcurrentDictionary<SyntaxKind, SyntaxToken>();
+        //internal static readonly ConcurrentDictionary<SyntaxKind, SyntaxToken> tokens = new ConcurrentDictionary<SyntaxKind, SyntaxToken>();
 
         internal static SyntaxToken MakeTokenNoWs(SyntaxKind kind)
         {
@@ -27,15 +27,15 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         }
         internal static SyntaxToken MakeToken(SyntaxKind kind)
         {
-            if (kind != SyntaxKind.NullKeyword && tokens.TryGetValue(kind, out var token))
-            {
-                return token;
-            }
-            token = Token(WS, kind, WS);
-            if (kind != SyntaxKind.NullKeyword)
-            { 
-                tokens.TryAdd(kind, token);
-            }
+            //if (kind != SyntaxKind.NullKeyword && tokens.TryGetValue(kind, out var token))
+            //{
+            //    return token;
+            //}
+            var token = Token(WS, kind, WS);
+            //if (kind != SyntaxKind.NullKeyword)
+            //{ 
+            //    tokens.TryAdd(kind, token);
+            //}
             return token;
         }
 

@@ -3473,7 +3473,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     var accessor = context._LineAccessors[0];
                     if (accessor.Key.Type == XSharpLexer.SET && accessor.ExprList == null)
                     {
-                        // create a Get Accessor
+                        // If there is a property with just a SET Accessor then create a Get Accessor
                         var newaccessor = new XP.PropertyLineAccessorContext(context, 0);
                         newaccessor.CopyFrom(accessor);
                         newaccessor.Key = new XSharpToken(XSharpLexer.GET, "GET");
@@ -3481,8 +3481,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                             attributeLists: default,
                             modifiers: default,
                             keyword: SyntaxFactory.Identifier("get"),
-                            body: default,
-                            expressionBody: default,
+                            body: null,
+                            expressionBody: null,
                             semicolonToken: SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken));
                         decl = decl.WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.WRN_GeneratingGetAccessor));
                         newaccessor.Put(decl);
@@ -3525,7 +3525,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         break;
                     }
                 }
-                
+
                 if (!hasBody && ! isExtern)
                 {
                     emulateAuto = true;
@@ -3537,8 +3537,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 var initValue = context.Initializer.Get<ExpressionSyntax>();
                 if (initValue == null && (context.Auto != null || emulateAuto) && ! isInStruct)
                 {
-                	// no filtering on InitLocals here. That is done inside GenerateInitializer
-            		initValue = GenerateInitializer(context.Type);
+                    // no filtering on InitLocals here. That is done inside GenerateInitializer
+                    initValue = GenerateInitializer(context.Type);
                 }
                 var initializer = initValue == null ? null :
                     _syntaxFactory.EqualsValueClause(SyntaxFactory.MakeToken(SyntaxKind.EqualsToken), initValue) ;
@@ -3550,7 +3550,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                      explicitInterfaceSpecifier: explicitif,
                      identifier: id,
                      accessorList: accessorList,
-                     expressionBody: default,
+                     expressionBody: null,
                      initializer: initializer,
                      semicolonToken: SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken));
                 context.Put(propertydecl);
@@ -3567,7 +3567,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     thisKeyword: SyntaxFactory.MakeToken(SyntaxKind.ThisKeyword, context.Id?.Start.Text ?? ""),
                     parameterList: context.ParamList?.Get<BracketedParameterListSyntax>(),
                     accessorList: accessorList,
-                    expressionBody: default, // TODO: (grammar) expressionBody methods
+                    expressionBody: null, // TODO: (grammar) expressionBody methods
                     semicolonToken: SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken));
                 context.Put(indexer);
             }
@@ -3673,7 +3673,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             BlockSyntax body = null;
             if (type == XP.GET || type == XP.UDCSEP)
             {
-                expressionBody = GetExpressionBody(context.Expr);
+                body = MakeBlock(GenerateReturn(context.Expr.Get<ExpressionSyntax>()));
             }
             else // SET
             {

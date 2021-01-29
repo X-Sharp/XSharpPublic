@@ -364,8 +364,8 @@ property            : (Attributes=attributes)? (Modifiers=memberModifiers)?
                       (ParamList=propertyParameterList)?
                       (AS Type=datatype)?
                       ( Auto=AUTO (AutoAccessors+=propertyAutoAccessor)* (Op=assignoperator Initializer=expression)? end=EOS	// Auto
-                        | (LineAccessors+=propertyLineAccessor)+ end=EOS													// Single Line
-                        | Multi=eos (Accessors+=propertyAccessor)+  END PROPERTY? EOS				// Multi Line
+                        | (LineAccessors+=propertyLineAccessor)+ end=EOS                     // Single Line
+                        | Multi=eos (Accessors+=propertyAccessor)+  END PROPERTY? EOS        // Multi Line
                       )
                     ;
 

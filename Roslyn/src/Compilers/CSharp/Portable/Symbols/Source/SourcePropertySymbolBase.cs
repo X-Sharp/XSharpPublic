@@ -49,6 +49,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
         private readonly SyntaxReference _syntaxRef;
 #if XSHARP
         protected DeclarationModifiers _modifiers;
+        // Is this an indexed property with another name than SELF ?
+        protected readonly bool _isIndexedProperty;
+        protected readonly bool _IsGeneratedFromAccessAssign;
 #else
         protected readonly DeclarationModifiers _modifiers;
 #endif
@@ -110,6 +113,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             _refKind = refKind;
             _modifiers = modifiers;
             _explicitInterfaceType = explicitInterfaceType;
+#if XSHARP
+            _isIndexedProperty = IsIndexer && !string.IsNullOrEmpty((syntax as IndexerDeclarationSyntax)?.ThisKeyword.ValueText);
+            _IsGeneratedFromAccessAssign = syntax.XNode is XSharpParser.MethodContext;
+            
+#endif
 
             if (isExplicitInterfaceImplementation)
             {
@@ -172,7 +180,18 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             }
 
             _sourceName = _sourceName ?? memberName; // _sourceName may have been set while loading attributes
+#if XSHARP
+            if (_isIndexedProperty)
+            {
+                _name = _sourceName = (syntax as IndexerDeclarationSyntax)?.ThisKeyword.ValueText;
+            }
+            else
+            { 
+                _name = isIndexer ? ExplicitInterfaceHelpers.GetMemberName(WellKnownMemberNames.Indexer, _explicitInterfaceType, aliasQualifierOpt) : _sourceName;
+            }
+#else
             _name = isIndexer ? ExplicitInterfaceHelpers.GetMemberName(WellKnownMemberNames.Indexer, _explicitInterfaceType, aliasQualifierOpt) : _sourceName;
+#endif
 
             if ((isAutoProperty && hasGetAccessor) || hasInitializer)
             {
@@ -184,6 +203,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                                                                       hasInitializer);
             }
         }
+#if XSHARP
+        internal virtual void validateProperty(PropertySymbol overriddenProperty, DiagnosticBag diagnostics)
+        {
+            // implemented in SourcePropertySymbol
+        }
+#endif
 
         private void EnsureSignatureGuarded(DiagnosticBag diagnostics)
         {
@@ -251,12 +276,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
 
                     _lazyParameters = CustomModifierUtils.CopyParameterCustomModifiers(overriddenOrImplementedProperty.Parameters, _lazyParameters, alsoCopyParamsModifier: isOverride);
                 }
-#if XSHARP
-                else
-                {
-                    this._modifiers &= ~DeclarationModifiers.Override;
-                }
-#endif
             }
             else if (_refKind == RefKind.RefReadOnly)
             {
@@ -322,7 +341,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             }
         }
 
-#nullable enable 
+#nullable enable
 
         private void EnsureSignature()
         {
@@ -1063,7 +1082,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             }
         }
 
-        #region Attributes
+#region Attributes
 
         public abstract SyntaxList<AttributeListSyntax> AttributeDeclarationSyntaxList { get; }
 
@@ -1411,9 +1430,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             }
         }
 
-        #endregion
+#endregion
 
-        #region Completion
+#region Completion
 
         internal sealed override bool RequiresCompletion
         {
@@ -1549,7 +1568,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             }
         }
 
-        #endregion
+#endregion
 
 #nullable enable
 

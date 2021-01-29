@@ -20,10 +20,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
 #endif
     {
         private const string DefaultIndexerName = "Item";
-#if XSHARP
-        private readonly bool _isIndexedProperty;
-        private readonly bool _isGeneratedProperty;
-#endif
         internal static SourcePropertySymbol Create(SourceMemberContainerTypeSymbol containingType, Binder bodyBinder, PropertyDeclarationSyntax syntax, DiagnosticBag diagnostics)
         {
             var nameToken = syntax.Identifier;
@@ -61,11 +57,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                 containingType,
                 modifiersTokenList,
                 isExplicitInterfaceImplementation,
-#if XSHARP
-                isIndexer: syntax.Kind() == SyntaxKind.IndexerDeclaration && !string.IsNullOrEmpty((syntax as IndexerDeclarationSyntax)?.ThisKeyword.ValueText),
-#else
                 isIndexer: syntax.Kind() == SyntaxKind.IndexerDeclaration,
-#endif
                 accessorsHaveImplementation: accessorsHaveImplementation,
                 location,
                 diagnostics,
@@ -128,19 +120,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                 syntax.AttributeLists,
                 location)
         {
-#if XSHARP
-            _isIndexedProperty = false;
-            _isGeneratedProperty = false;
-             var isIndexer = syntax.Kind() == SyntaxKind.IndexerDeclaration;
-            if (isIndexer && !string.IsNullOrEmpty((syntax as IndexerDeclarationSyntax)?.ThisKeyword.ValueText))
-            {
-                _isIndexedProperty = true;
-            }
-            if (syntax.XNode is XSharpParser.MethodContext)
-            {
-                _isGeneratedProperty = true;
-            }
-#endif
             if (IsAutoProperty)
             {
                 Binder.CheckFeatureAvailability(
@@ -421,12 +400,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                 diagnostics);
         }
 #if XSHARP
-		// The error location for properties generated from an ACCESS and ASSIGN is read from the first GET or SET method.
+        // The error location for properties generated from an ACCESS and ASSIGN is read from the first GET or SET method.
         internal Location ErrorLocation
         {
             get
             {
-                if (_isGeneratedProperty)
+                if (_IsGeneratedFromAccessAssign)
                 {
                     if (GetMethod != null)
                     {

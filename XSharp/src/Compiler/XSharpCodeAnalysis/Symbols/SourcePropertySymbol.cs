@@ -43,6 +43,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             this.flags = new Flags(flags.MethodKind, this.DeclarationModifiers , this.ReturnsVoid,flags.IsExtensionMethod, flags.IsNullableAnalysisEnabled, flags.IsMetadataVirtual());
 
         }
+        internal void RemoveModifier(DeclarationModifiers mod)
+        {
+            this.DeclarationModifiers &= ~mod;
+        }
         internal void SetOverriddenMethod(MethodSymbol m)
         {
             _parentMethod = m;
@@ -62,7 +66,24 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
     {
         private TypeWithAnnotations _newPropertyType = default;
 
-        internal PropertySymbol validateProperty(PropertySymbol overriddenProperty, DiagnosticBag diagnostics, Location location)
+        internal void RemoveModifier(DeclarationModifiers mod)
+        {
+            this._modifiers &= ~mod;
+            if (this.GetMethod is SourcePropertyAccessorSymbol gm)
+            {
+                gm.RemoveModifier(mod);
+            }
+            if (this.SetMethod is SourcePropertyAccessorSymbol sm)
+            {
+                sm.RemoveModifier(mod);
+            }
+        }
+        public override bool IsIndexer
+        {
+            get { return base.IsIndexer && !_isIndexedProperty; }
+        }
+
+        internal override void validateProperty(PropertySymbol overriddenProperty, DiagnosticBag diagnostics)
         {
             if (overriddenProperty == null && XSharpString.CaseSensitive)
             {
@@ -92,7 +113,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                             }
                             if (equalSignature)
                             {
-                                diagnostics.Add(ErrorCode.ERR_CaseDifference, location, baseType.Name, "property", member.Name, this.Name);
+                                diagnostics.Add(ErrorCode.ERR_CaseDifference, this.Location, baseType.Name, "property", member.Name, this.Name);
                             }
                         }
 
@@ -100,7 +121,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                 }
 
             }
-            return this;
+            return;
         }
         internal void SetChangedParentType(TypeWithAnnotations type)
         {

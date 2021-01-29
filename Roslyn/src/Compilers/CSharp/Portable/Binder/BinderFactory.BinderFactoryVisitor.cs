@@ -479,7 +479,7 @@ namespace Microsoft.CodeAnalysis.CSharp
 #if XSHARP
                         // X# allows indexers with another name than This
                         var indexerDecl = (IndexerDeclarationSyntax)basePropertyDeclarationSyntax;
-                        var indexerName   = indexerDecl.ThisKeyword.ValueText;
+                        var indexerName = indexerDecl.ThisKeyword.ValueText;
                         return ExplicitInterfaceHelpers.GetMemberName(outerBinder, explicitInterfaceSpecifierSyntax, string.IsNullOrEmpty(indexerName) ? WellKnownMemberNames.Indexer : indexerName);
 #else
                         return ExplicitInterfaceHelpers.GetMemberName(outerBinder, explicitInterfaceSpecifierSyntax, WellKnownMemberNames.Indexer);

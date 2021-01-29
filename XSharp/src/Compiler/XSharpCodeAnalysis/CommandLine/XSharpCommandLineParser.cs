@@ -26,11 +26,12 @@ namespace Microsoft.CodeAnalysis.CSharp
         {
             options = new XSharpSpecificCompilationOptions();
         }
-        
         internal bool ParseXSharpArgument(ref string name, ref string value, string arg, List<Diagnostic> diagnostics)
         {
             if (options == null)
+            {
                 options = new XSharpSpecificCompilationOptions();
+            }
 
             bool handled = true;
             bool positive = !name.EndsWith("-");
@@ -104,8 +105,8 @@ namespace Microsoft.CodeAnalysis.CSharp
 
                 case "noclipcall":
                     options.NoClipCall = positive;
-					// rolled back change that also compiles with /refonly because that removes the line number
-					// information that we need for the [Source] button in the generated docs.
+                    // rolled back change that also compiles with /refonly because that removes the line number
+                    // information that we need for the [Source] button in the generated docs.
                     break;
 
                 case "norun":

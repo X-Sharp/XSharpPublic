@@ -40,7 +40,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             _changedParameters = newparameters.ToImmutableAndFree();
             _signatureChanged = true;
             this.DeclarationModifiers |= DeclarationModifiers.Override;
-            this.flags = new Flags(flags.MethodKind, this.DeclarationModifiers , this.ReturnsVoid,flags.IsExtensionMethod, flags.IsMetadataVirtual());
+            this.flags = new Flags(flags.MethodKind, this.DeclarationModifiers , this.ReturnsVoid,flags.IsExtensionMethod, flags.IsNullableAnalysisEnabled, flags.IsMetadataVirtual());
 
         }
         internal void SetOverriddenMethod(MethodSymbol m)

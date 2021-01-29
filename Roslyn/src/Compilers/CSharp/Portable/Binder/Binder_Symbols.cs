@@ -1704,7 +1704,11 @@ namespace Microsoft.CodeAnalysis.CSharp
                 if (snd == fst) return 0;
                 if ((object)fst == null) return -1;
                 if ((object)snd == null) return 1;
+#if XSHARP
+                if (snd.Name != fst.Name) return XSharpString.Compare(fst.Name, snd.Name);
+#else
                 if (snd.Name != fst.Name) return string.CompareOrdinal(fst.Name, snd.Name);
+#endif
                 if (snd.Kind != fst.Kind) return (int)fst.Kind - (int)snd.Kind;
                 int aLocationsCount = !snd.Locations.IsDefault ? snd.Locations.Length : 0;
                 int bLocationsCount = fst.Locations.Length;
@@ -2011,6 +2015,12 @@ namespace Microsoft.CodeAnalysis.CSharp
 
                             if (first is NamespaceOrTypeSymbol && second is NamespaceOrTypeSymbol)
                             {
+#if XSHARP
+                                if ((xresult = XSharpResolveEqualSymbols(first, second, originalSymbols, where as CSharpSyntaxNode, diagnostics)) != null)
+                                {
+                                    return xresult;
+                                }
+#endif
                                 if (options.IsAttributeTypeLookup() &&
                                     first.Kind == SymbolKind.NamedType &&
                                     second.Kind == SymbolKind.NamedType &&
@@ -2034,12 +2044,6 @@ namespace Microsoft.CodeAnalysis.CSharp
                                         new FormattedSymbol(second, SymbolDisplayFormat.CSharpErrorMessageFormat) });
                                 }
                             }
-#if XSHARP
-                            else if ((xresult = XSharpResolveEqualSymbols(first, second, originalSymbols, where as CSharpSyntaxNode, diagnostics)) != null)
-                            {
-                                return xresult;
-                            }
-#endif
                             else
                             {
                                 // CS0229: Ambiguity between '{0}' and '{1}'

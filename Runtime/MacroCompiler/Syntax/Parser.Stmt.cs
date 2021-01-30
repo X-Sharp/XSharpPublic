@@ -18,7 +18,7 @@ namespace XSharp.MacroCompiler
             List<Stmt> l = new List<Stmt>();
             while (ParseStatement() is Stmt s)
                 l.Add(s);
-            return new StmtBlock(l.ToArray());
+            return new StmtBlock(t, l.ToArray());
         }
 
         internal Stmt ParseStatement()
@@ -45,11 +45,23 @@ namespace XSharp.MacroCompiler
                 case TokenType.FIELD:
                     return ParseFieldDeclStmt();
                 case TokenType.NOP:
-                    return ParseEmptyStmt();
+                    return ParseNopStmt();
                 case TokenType.WHILE:
+                    return ParseWhileStmt();
                 case TokenType.FOR:
+                    return ParseForStmt();
                 case TokenType.IF:
+                    return ParseIfStmt();
                 case TokenType.DO:
+                    switch(La(2))
+                    {
+                        case TokenType.WHILE:
+                            return ParseWhileStmt();
+                        case TokenType.CASE:
+                            return ParseDoCaseStmt();
+                        default:
+                            throw Error(Lt(), ErrorCode.Expected, "WHILE or CASE");
+                    }
                 case TokenType.EXIT:
                 case TokenType.LOOP:
                 case TokenType.BREAK:
@@ -68,7 +80,7 @@ namespace XSharp.MacroCompiler
                     var l = ParseExprList();
                     if (l?.Exprs.Count > 0)
                     {
-                        Require(Expect(TokenType.EOS), ErrorCode.Expected, "EOS");
+                        Require(TokenType.EOS);
                         return new ExprStmt(l);
                     }
                     break;
@@ -87,7 +99,7 @@ namespace XSharp.MacroCompiler
                     vl.Add(v);
             } while (Expect(TokenType.COMMA));
             Require(vl.Count > 0, ErrorCode.Expected, "variable declaration");
-            Require(Expect(TokenType.EOS), ErrorCode.Expected, "EOS");
+            Require(TokenType.EOS);
             return new DeclStmt(t, vl.ToArray());
         }
 
@@ -180,7 +192,7 @@ namespace XSharp.MacroCompiler
             } while (Expect(TokenType.COMMA));
             Require(vl.Count > 0, ErrorCode.Expected, "variable declaration");
 
-            Require(Expect(TokenType.EOS), ErrorCode.Expected, "EOS");
+            Require(TokenType.EOS);
             return new DeclStmt(t, vl.ToArray());
         }
         internal VarDecl ParseVarDecl(bool implied = false)
@@ -227,6 +239,7 @@ namespace XSharp.MacroCompiler
             {
                 init = ParseExpression();
             }
+            if (implied) Require(init, ErrorCode.Expected, "initializer");
 
             // Parse type
             TypeExpr type = null;
@@ -237,7 +250,8 @@ namespace XSharp.MacroCompiler
                 type = Require(ParseType(), ErrorCode.Expected, "type");
             }
 
-            return new VarDecl(n, asub?.ToArray(), type, init) { IsConst = isConst, IsDim = isDim, IsIsType = isIsType };
+            return implied ? new ImpliedVarDecl(n, init) { IsConst = isConst }
+                : new VarDecl(n, asub?.ToArray(), type, init) { IsConst = isConst, IsDim = isDim, IsIsType = isIsType };
         }
 
         internal DeclStmt ParseFoxDimensionStmt()
@@ -250,7 +264,7 @@ namespace XSharp.MacroCompiler
                     vl.Add(v);
             } while (Expect(TokenType.COMMA));
             Require(vl.Count > 0, ErrorCode.Expected, "variable declaration");
-            Require(Expect(TokenType.EOS), ErrorCode.Expected, "EOS");
+            Require(TokenType.EOS);
             return new DeclStmt(t, vl.ToArray());
         }
         internal VarDecl ParseFoxDimVarDecl()
@@ -313,16 +327,153 @@ namespace XSharp.MacroCompiler
                 alias = RequireId();
             }
 
-            Require(Expect(TokenType.EOS), ErrorCode.Expected, "EOS");
+            Require(TokenType.EOS);
             return new FieldDeclStmt(fl.ToArray(), alias);
         }
 
-        internal EmptyStmt ParseEmptyStmt()
+        internal EmptyStmt ParseNopStmt()
         {
             Token t;
             ExpectAndGet(TokenType.NOP, out t);
-            Require(Expect(TokenType.EOS), ErrorCode.Expected, "EOS");
+            Require(TokenType.EOS);
+            if (Expect(TokenType.LPAREN))
+                Require(TokenType.RPAREN);
             return new EmptyStmt(t);
+        }
+
+        internal WhileStmt ParseWhileStmt()
+        {
+            Expect(TokenType.DO);
+            Token w;
+            Require(ExpectAndGet(TokenType.WHILE, out w),ErrorCode.Expected, TokenType.WHILE);
+            var cond = Require(ParseExpression(), ErrorCode.Expected, "expression");
+            Require(TokenType.EOS);
+            var s = ParseStatementBlock();
+            if (!Expect(TokenType.ENDDO))
+            {
+                Require(TokenType.END);
+                ExpectAny(TokenType.DO, TokenType.WHILE);
+            }
+            Require(TokenType.EOS);
+            return new WhileStmt(w, cond, s);
+        }
+
+        internal ForStmt ParseForStmt()
+        {
+            Token t;
+            ExpectAndGet(TokenType.FOR, out t);
+            VarDecl d = null;
+            AssignExpr a = null;
+            if (ExpectAny(TokenType.IMPLIED, TokenType.VAR) || (La(2) == TokenType.IMPLIED && Expect(TokenType.LOCAL) && Expect(TokenType.IMPLIED)))
+            {
+                d = ParseForDecl(true);
+            }
+            else if (Expect(TokenType.LOCAL))
+            {
+                d = ParseForDecl(false);
+            }
+            else
+            {
+                a = ParseExpression() as AssignExpr;
+                Require(a?.Left is IdExpr, ErrorCode.Expected, "id assignemnt expression");
+            }
+            var dir = Require(ExpectAndGetAny(TokenType.UPTO, TokenType.DOWNTO, TokenType.TO), ErrorCode.Expected, TokenType.TO);
+            Expr final = Require(ParseExpression(), ErrorCode.Expected, "expression");
+            Expr step = null;
+            if (Expect(TokenType.STEP))
+            {
+                step = Require(ParseExpression(), ErrorCode.Expected, "expression");
+            }
+            Require(TokenType.EOS);
+            var s = ParseStatementBlock();
+            if (Expect(TokenType.END))
+            {
+                Expect(TokenType.FOR);
+            }
+            else
+                Require(Expect(TokenType.NEXT), ErrorCode.Expected, "END FOR");
+            Require(TokenType.EOS);
+            return a != null ? new ForStmt(t, a, dir, final, step, s)
+                : new ForStmt(t, d, dir, final, step, s);
+        }
+        internal VarDecl ParseForDecl(bool implied)
+        {
+            Token n = null;
+            if (La() == TokenType.ID || TokenAttr.IsSoftKeyword(La()))
+                n = ConsumeAndGet();
+            Require(n, ErrorCode.Expected, "identifier");
+
+            Expr init = null;
+            if (Require(TokenType.ASSIGN_OP))
+            {
+                init = ParseExpression();
+            }
+
+            TypeExpr type = null;
+            if (!implied && Expect(TokenType.AS))
+            {
+                type = Require(ParseType(), ErrorCode.Expected, "type");
+            }
+
+            return implied ? new ImpliedVarDecl(n, init)
+                : new VarDecl(n, null, type, init);
+        }
+
+        internal IfStmt ParseIfStmt()
+        {
+            var t = RequireAndGet(TokenType.IF);
+            var cond = Require(ParseExpression(), ErrorCode.Expected, "expression");
+            Expect(TokenType.THEN);
+            Require(TokenType.EOS);
+            var si = ParseStatementBlock();
+            Stmt se = null;
+            if (Expect(TokenType.ELSE))
+            {
+                Require(TokenType.EOS);
+                se = ParseStatementBlock();
+            }
+            if (Expect(TokenType.END))
+            {
+                Expect(TokenType.IF);
+            }
+            else
+                Require(Expect(TokenType.ENDIF), ErrorCode.Expected, "END IF");
+            Require(TokenType.EOS);
+            return new IfStmt(t, cond, si, se);
+        }
+
+        internal DoCaseStmt ParseDoCaseStmt()
+        {
+            var t = RequireAndGet(TokenType.DO);
+            Require(TokenType.CASE);
+            Require(TokenType.EOS);
+
+            var cases = new List<CaseBlock>();
+            Token c;
+            while (ExpectAndGet(TokenType.CASE, out c))
+            {
+                var cond = ParseExpression();
+                Require(TokenType.EOS);
+                var s = ParseStatementBlock();
+                cases.Add(new CaseBlock(c, cond, s));
+            }
+
+            Stmt o = null;
+            if (Expect(TokenType.OTHERWISE))
+            {
+                Require(TokenType.EOS);
+                o = ParseStatementBlock();
+            }
+
+            Require(cases.Count > 0 || o != null, ErrorCode.Expected, "CASE or OTHERWISE");
+
+            if (Expect(TokenType.END))
+                Expect(TokenType.CASE);
+            else
+                Require(TokenType.ENDCASE);
+            Require(TokenType.EOS);
+
+            return new DoCaseStmt(t, cases.ToArray(), o);
         }
     }
 }

@@ -46,6 +46,11 @@ namespace XSharp.MacroCompiler.Syntax
             (Initializer!=null?" := "+Initializer.ToString():"") +
             (Type!=null?(IsIsType?" IS ":" AS ")+Type.ToString():"");
     }
+    internal partial class ImpliedVarDecl : VarDecl
+    {
+        internal ImpliedVarDecl(Token t, Expr i) : base(t, null, null, i) { }
+        public override string ToString() => (IsConst ? "CONST " : "") + Name + " := " + Initializer.ToString();
+    }
     internal partial class FieldDeclStmt : Stmt
     {
         internal Token[] Fields;
@@ -57,5 +62,47 @@ namespace XSharp.MacroCompiler.Syntax
     {
         internal EmptyStmt(Token t) : base(t) { }
         public override string ToString() => "NOP";
+    }
+    internal partial class WhileStmt : Stmt
+    {
+        Expr Cond;
+        Stmt Stmt;
+        internal WhileStmt(Token t, Expr cond, Stmt s) : base(t) { Cond = cond; Stmt = s; }
+        public override string ToString() => "WHILE " + Cond.ToString() + "\n  " + Stmt.ToString().Replace("\n","\n  ") + "\nEND WHILE";
+    }
+    internal partial class ForStmt : Stmt
+    {
+        AssignExpr AssignExpr;
+        VarDecl ForDecl;
+        Token Dir;
+        Expr Final;
+        Expr Step;
+        Stmt Stmt;
+        private ForStmt(Token t, Token dir, Expr final, Expr step, Stmt s) : base(t) { ForDecl = null; AssignExpr = null;  Dir = dir; Final = final; Step = step; Stmt = s; }
+        internal ForStmt(Token t, AssignExpr a, Token dir, Expr final, Expr step, Stmt s) : this(t, dir, final, step, s) { AssignExpr = a; }
+        internal ForStmt(Token t, VarDecl d, Token dir, Expr final, Expr step, Stmt s) : this(t, dir, final, step, s) { ForDecl = d; }
+        public override string ToString() => "FOR " + (AssignExpr?.ToString() ?? ((ForDecl is ImpliedVarDecl ? "VAR " : "LOCAL ") + ForDecl.ToString())) + " " + Dir.type + " " + Final + (Step != null ? " STEP " + Step : "") + "\n  " + Stmt.ToString().Replace("\n", "\n  ") + "\nEND FOR";
+    }
+    internal partial class IfStmt : Stmt
+    {
+        Expr Cond;
+        Stmt StmtIf;
+        Stmt StmtElse;
+        internal IfStmt(Token t, Expr cond, Stmt si, Stmt se) : base(t) { Cond = cond; StmtIf = si; StmtElse = se; }
+        public override string ToString() => "IF " + Cond.ToString() + "\n  " + StmtIf.ToString().Replace("\n", "\n  ") + (StmtElse != null ? "\nELSE\n  " + StmtElse.ToString().Replace("\n", "\n  ") : "") + "\nEND WHILE";
+    }
+    internal partial class DoCaseStmt : Stmt
+    {
+        CaseBlock[] Cases;
+        Stmt Otherwise;
+        internal DoCaseStmt(Token t, CaseBlock[] cases, Stmt otherwise) : base(t) { Cases = cases; Otherwise = otherwise; }
+        public override string ToString() => "DO CASE\n" + String.Join("\n", Array.ConvertAll(Cases, (x) => x.ToString())) + (Otherwise != null ? "\nOTHERWISE\n  " + Otherwise.ToString().Replace("\n", "\n  ") : "") + "\nEND CASE";
+    }
+    internal partial class CaseBlock : Node
+    {
+        Expr Cond;
+        Stmt Stmt;
+        internal CaseBlock(Token t, Expr cond, Stmt s) : base(t) { Cond = cond; Stmt = s; }
+        public override string ToString() => "CASE " + Cond.ToString() + "\n  " + Stmt.ToString().Replace("\n", "\n  ");
     }
 }

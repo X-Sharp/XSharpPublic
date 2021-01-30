@@ -75,8 +75,9 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             SELF:IsHot := FALSE
             RETURN lOk
 
-        INTERNAL METHOD Clear() AS VOID
+        INTERNAL VIRTUAL METHOD Clear() AS VOID
             _buffer := BYTE[]{_buffer:Length}
+            _hot    := FALSE
             RETURN
 
         INTERNAL METHOD SetEmptyRoot() AS VOID

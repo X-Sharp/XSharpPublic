@@ -29,11 +29,17 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 
     PRIVATE _freeList       AS LONG
     
-    INTERNAL PROPERTY FreeList AS LONG GET _freeList SET _SetLong(CDXFILEHEADER_FREELIST, value), _freeList  := value
+    INTERNAL PROPERTY FreeList AS LONG ;
+        GET IIF(_freeList >= 0, _freeList, 0) ;
+        SET _SetLong(CDXFILEHEADER_FREELIST, VALUE), _freeList  := IIF(VALUE >= 0, VALUE, 0)
 
 
     PRIVATE METHOD _getValues AS VOID
         _freeList   := _GetLong(CDXFILEHEADER_FREELIST)
+        IF _freeList < 0
+            _freeList := 0
+            _hot := TRUE
+        ENDIF
  
 
     INTERNAL OVERRIDE METHOD Read() AS LOGIC

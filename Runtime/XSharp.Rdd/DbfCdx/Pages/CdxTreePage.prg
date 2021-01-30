@@ -50,7 +50,9 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         ABSTRACT INTERNAL PROPERTY RightPtr		AS Int32 GET SET    // FoxPro stores empty pointers as -1, FoxBASE as 0
         ABSTRACT INTERNAL PROPERTY NumKeys      AS WORD  GET
         ABSTRACT INTERNAL PROPERTY LastNode     AS CdxPageNode GET
-        INTERNAL PROPERTY NextFree              AS LONG GET LeftPtr SET LeftPtr := value // alias for LeftPtr
+        INTERNAL PROPERTY NextFree              AS LONG ;
+            GET IIF(LeftPtr >= 0, LeftPtr, 0);
+            SET LeftPtr := IIF(VALUE >=0, VALUE, 0)// alias for LeftPtr
         // For debugging
         INTERNAL PROPERTY LeftPtrX  AS STRING GET LeftPtr:ToString("X8")
         INTERNAL PROPERTY RightPtrX AS STRING GET RightPtr:ToString("X8")
@@ -84,7 +86,6 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             RETURN oList
         END GET
         END PROPERTY
-
 #ifdef TESTCDX
         PRIVATE oPageLeft  AS CdxTreePage
         PRIVATE oPageRight AS CdxTreePage
@@ -195,7 +196,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
               sb:Append( o[x]:ToString())
               sb:Append( " ")
             NEXT
-           System.Diagnostics.Debug.WriteLine(sb:ToString())
+           System.Diagnostics.DeFbug.WriteLine(sb:ToString())
            RETURN
 #endif            
 	END CLASS

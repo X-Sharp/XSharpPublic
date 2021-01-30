@@ -94,6 +94,19 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             SELF:Tag        := oTag
             RETURN
 
+        INTERNAL METHOD _clear() AS VOID
+            SELF:_keyLen    := 0
+            SELF:_dataLen   := 0
+            SELF:_pageNoOffSet := 0
+            SELF:_maxKeys   := 0
+            SELF:_numKeys   := 0
+            SELF:_leftPtr   := 0
+            SELF:_rightPtr  := 0
+
+        INTERNAL OVERRIDE METHOD Clear() AS VOID
+            SUPER:Clear()
+            SELF:_clear()
+
         INTERNAL METHOD Read() AS LOGIC
             LOCAL lOk AS LOGIC
             lOk := SUPER:Read()

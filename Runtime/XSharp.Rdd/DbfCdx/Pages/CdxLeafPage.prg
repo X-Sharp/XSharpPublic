@@ -141,6 +141,24 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             SELF:_getValues()
 
             RETURN
+            
+        INTERNAL METHOD _clear() AS VOID
+            SELF:_numKeys        := 0
+            SELF:_leftPtr        := 0
+            SELF:_rightPtr       := 0
+            SELF:_freeSpace      := 0
+            SELF:_recnoMask      := 0
+            SELF:_duplicateMask  := 0
+            SELF:_trailingMask   := 0
+            SELF:_recordBits     := 0
+            SELF:_dupBits        := 0
+            SELF:_trailBits      := 0
+            SELF:_dataBytes      := 0
+            
+        INTERNAL OVERRIDE METHOD Clear() AS VOID
+            SUPER:Clear()
+            SELF:_clear()
+
         INTERNAL METHOD InitBlank(oTag AS CdxTag) AS VOID
             SELF:Tag    := oTag
             SELF:Initialize(KeyLength)

@@ -32,7 +32,7 @@ namespace XSharp.MacroCompiler.Syntax
         USING, WINCALL,
 
         // Statement keywords [statement]
-        BEGIN, BREAK, CASE, DIM, DO, DOWNTO, ELSE, ELSEIF, END, ENDCASE, ENDDO, ENDIF, EXIT,
+        BEGIN, BREAK, CASE, DIM, DO, DOWNTO, ELSE, ELSEIF, END, ENDCASE, ENDDO, ENDIF, EXIT, THEN,
         FOR, IN, LOCAL, LOOP, NAMEOF, NEXT, OTHERWISE,
         RECOVER, RETURN, SEQUENCE, STATIC, STEP, TO,
         UPTO, WHILE,
@@ -279,6 +279,7 @@ namespace XSharp.MacroCompiler.Syntax
                 {"STEP", TokenType.STEP},
                 {"SUPER", TokenType.SUPER},
                 {"TO", TokenType.TO},
+                {"THEN", TokenType.THEN },
                 {"UPTO", TokenType.UPTO},
                 {"WHILE", TokenType.WHILE},
 
@@ -813,6 +814,7 @@ namespace XSharp.MacroCompiler.Syntax
             softKws[(int)TokenType.STEP] = true;
             softKws[(int)TokenType.STRICT] = true;
             softKws[(int)TokenType.TO] = true;
+            softKws[(int)TokenType.THEN] = true;
             softKws[(int)TokenType.THISCALL] = true;
             softKws[(int)TokenType.UNION] = true;
             softKws[(int)TokenType.UNTIL] = true;

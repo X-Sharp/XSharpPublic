@@ -127,6 +127,10 @@ namespace XSharp.MacroCompiler
             }
             return p;
         }
+        bool Require(TokenType t)
+        {
+            return Require(Expect(t), ErrorCode.Expected, t);
+        }
 
         T Require<T>(T n, ErrorCode error, params object[] args)
         {
@@ -144,6 +148,13 @@ namespace XSharp.MacroCompiler
                 throw Error(t, error, args);
             }
             return n;
+        }
+
+        Token RequireAndGet(TokenType t)
+        {
+            Token tok;
+            Require(ExpectAndGet(t, out tok), ErrorCode.Expected, t);
+            return tok;
         }
 
         T RequireEnd<T>(T n, ErrorCode error, params object[] args)
@@ -181,7 +192,7 @@ namespace XSharp.MacroCompiler
 
         internal StmtBlock ParseScript()
         {
-            return ParseStatementBlock();
+            return RequireEnd(ParseStatementBlock(), ErrorCode.Unexpected, Lt());
         }
     }
 }

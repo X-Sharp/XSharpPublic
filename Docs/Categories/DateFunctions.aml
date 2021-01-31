@@ -1,0 +1,21 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<topic id="cat-DateFunctions" revisionNumber="1">
+  <developerConceptualDocument xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5" xmlns:xlink="http://www.w3.org/1999/xlink">
+    
+
+    <!-- Add one or more top-level section elements.  These are collapsible.
+         If using <autoOutline />, add an address attribute to identify it
+         and specify a title so that it can be jumped to with a hyperlink. -->
+    <section address="Section1">
+      <title>Date Functions</title>
+      <content>
+      <relatedTopics>
+	  <link xlink:href="html/M_XSharp_RT_Functions_Day.htm" />
+	  <link xlink:href="html/M_XSharp_RT_Functions_Year.htm" />
+	  <link xlink:href="html/M_XSharp_RT_Functions_Month.htm" />
+	  <link xlink:href="html/M_XSharp_RT_Functions_Dow.htm" />
+	  </relatedTopics>
+	  </content>
+     </section>
+  </developerConceptualDocument>
+</topic>

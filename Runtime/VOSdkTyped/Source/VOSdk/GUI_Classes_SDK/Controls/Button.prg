@@ -1,7 +1,8 @@
 
 
-#USING System.Windows.Forms
-using System.Drawing
+USING System.Windows.Forms
+USING System.Drawing
+[XSharp.Internal.TypesChanged];
 CLASS Button INHERIT TextControl
 	PROTECT oImage AS VObject
 

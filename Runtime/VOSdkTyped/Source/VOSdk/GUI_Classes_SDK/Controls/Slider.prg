@@ -102,8 +102,6 @@ CLASS Slider INHERIT ScrollBar
 		//RETURN SendMessage(SELF:__TrackBar:hWnd, TBM_GETTIC, 0, nIndex)
 		RETURN 0
 
-
-
 	ACCESS Range as Range
 		RETURN Range{__TrackBar:Minimum, __TrackBar:Maximum}
 

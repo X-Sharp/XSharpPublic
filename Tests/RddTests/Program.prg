@@ -8,14 +8,11 @@ USING System.Threading
 USING System.Reflection
 USING System.Collections.Generic
 
-CLASS a
-END CLASS
-CLASS b
-END class
 
 [STAThread];      
 FUNCTION Start() AS VOID
     TRY
+        TestCorruptCdx()
         //ReadVfpTableWithInfo()
         //ReadDbcProperties()
         //OrdDescTest2()
@@ -25,7 +22,7 @@ FUNCTION Start() AS VOID
         //DeleteAllOrders()
         //TestZapJune()
         //TestChrisCorrupt()
-        TestChrisCorrupt2()
+        //TestChrisCorrupt2()
         //DumpKeesFiles()
         //TestIndexKey()
         //TestDateTimeAndCurrency()
@@ -215,6 +212,16 @@ USING System.Windows.Forms
 USING System.Threading
 
 GLOBAL gcPath := "c:\test\"
+
+FUNCTION testCorruptCdx() AS VOID
+
+? DbUseArea(TRUE,"DBFCDX","c:\download\aufpos\AUFPOS.DBF",,FALSE)
+FOR VAR i := 1 TO 10
+    DbSetOrder(i)
+    ? DbOrderInfo(DBOI_DUMP)
+NEXT
+DbCloseArea()
+
 
 FUNCTION OrdDescTest2() AS VOID 
 LOCAL cDBF, cPfad, cIndex   AS STRING 

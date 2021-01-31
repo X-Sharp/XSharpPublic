@@ -152,6 +152,15 @@ CLASS GuiFactory
         METHOD CreateWindow(oWindow AS Window) AS VOForm
             RETURN VOForm{oWindow}
 
+        METHOD CreateListViewElement(type AS ControlType, owner AS OBJECT) AS OBJECT
+            SWITCH type
+            CASE ControlType.ListViewItem
+                RETURN VoListViewItem{(ListViewItem) owner}    
+            CASE ControlType.ListViewColumn
+                RETURN VOColumnHeader{(ListViewColumn) owner}    
+            END SWITCH
+            RETURN NULL
+
 END CLASS
 
 
@@ -171,7 +180,11 @@ ENUM ControlType
     MEMBER GroupBox
     MEMBER TabControl
     MEMBER ListView
+    MEMBER ListViewItem
+    MEMBER ListViewColumn
+    MEMBER ListViewGroup
     MEMBER TreeView
+    MEMBER TreeViewItem
     MEMBER DateTimePicker
     MEMBER SpinnerTextBox
     MEMBER Panel

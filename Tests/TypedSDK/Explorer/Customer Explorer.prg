@@ -173,7 +173,7 @@ CONSTRUCTOR(oOwner)
 	oImageList:Add(IconOne{})
 	oImageList:Add(IconTwo{})
 	oListView:LargeImageList := oImageList
-	
+	SELF:Size := Dimension{800,600}
 	// initialize pane sizes
 	oDimension := self:GetPaneSize(1)
 	oDimension:Width := oDimension:Width / 2
@@ -200,7 +200,7 @@ method InitData()
 	return nil
 
 
-method ListViewColumnClick(oListViewClickEvent) 
+METHOD ListViewColumnClick(oListViewClickEvent  AS ListViewColumnClickEvent)
 	local symColumnName as symbol
 	
 	super:ListViewColumnClick(oListViewClickEvent)
@@ -253,7 +253,7 @@ method Refresh()
 	RETURN SELF
 
 
-method TreeViewSelectionChanged(oTreeViewSelectionEvent) 
+METHOD TreeViewSelectionChanged(oTreeViewSelectionEvent AS TreeViewSelectionEvent) 
 	local oTreeViewItem	as TreeViewItem
 	
 	super:TreeViewSelectionChanged(oTreeViewSelectionEvent)
@@ -308,7 +308,7 @@ method SortByCustNum(oListViewItem1, oListViewItem2)
 	return 0
 
 
-method SortByOrderDate(oListViewItem1, oListViewItem2) 
+METHOD SortByOrderDate(oListViewItem1 AS ListViewItem, oListViewItem2 AS ListViewItem) AS LONG
 	local uValue1	as usual
 	local uValue2	as usual
 	

@@ -1,6 +1,4 @@
 
-
-
 CLASS RadioButtonGroup INHERIT GroupBox
 	PROTECT wPressedButton AS DWORD
 	PROTECT aButtons AS ARRAY

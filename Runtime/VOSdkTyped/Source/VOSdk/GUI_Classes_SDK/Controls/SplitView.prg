@@ -190,8 +190,6 @@ CLASS SplitView INHERIT Control
         ENDIF
         RETURN
 
-
-
 	METHOD Create() AS IVOControl STRICT
 		VAR oMain := SUPER:Create()
         SELF:__AdjustSize()

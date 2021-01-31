@@ -3,7 +3,7 @@
     #define BUILDNUMBER_H
     #define PRODUCT_NAME     "XSharp Cahors"
     #define PRODUCT			 "XSharp"
-    #define COPYRIGHT_STR    "Copyright (c) XSharp BV 2015-2020."
+    #define COPYRIGHT_STR    "Copyright (c) XSharp BV 2015-2021."
     #define COMPANY_NAME     "XSharp BV"
     #define REG_COMPANY_NAME  "XSharpBV"
 

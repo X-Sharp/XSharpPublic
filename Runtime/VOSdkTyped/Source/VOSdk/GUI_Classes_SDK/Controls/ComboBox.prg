@@ -1,6 +1,4 @@
-
-
-
+[XSharp.Internal.TypesChanged];
 CLASS ComboBox INHERIT ListBox
 	PROTECT liComboType AS LONG	// BOXSIMPLE, BOXDROPDOWN or BOXDROPDOWNLIST
 
@@ -8,7 +6,7 @@ CLASS ComboBox INHERIT ListBox
 
 
     METHOD OnControlCreated(oC AS IVOControl) AS VOID
-		VAR oCombo := (VOComboBox) oC
+		VAR oCombo := (IVOComboBox) oC
 		oCombo:DropDownHeight := oSize:Height
 		RETURN 
 

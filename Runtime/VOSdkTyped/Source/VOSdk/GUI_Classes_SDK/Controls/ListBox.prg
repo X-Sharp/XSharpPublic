@@ -1,6 +1,3 @@
-
-
-
 CLASS ListBox INHERIT BaseListBox
 	PROTECT wSelectNum 		AS LONG
 

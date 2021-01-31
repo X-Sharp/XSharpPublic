@@ -1,9 +1,8 @@
 
-
-
 USING System.Reflection
 USING SWF := System.Windows.Forms
 
+[XSharp.Internal.TypesChanged];
 CLASS Control INHERIT VObject IMPLEMENTS IGuiObject, ITimer
 	PROTECT oCtrl                AS IVOControl
 	PROTECT oParent              AS IControlParent 

@@ -17,6 +17,7 @@ INTERFACE IVOUIObject
     PROPERTY Size AS SD.Size GET SET
     PROPERTY Text AS STRING GET SET
     PROPERTY Visible  AS LOGIC GET SET
+    PROPERTY Width AS LONG GET SET
     METHOD PerformLayout AS VOID STRICT
     METHOD ResumeLayout AS VOID STRICT
     METHOD ResumeLayout(performLayout AS LOGIC) AS VOID STRICT
@@ -50,7 +51,7 @@ INTERFACE IVOControl INHERIT IVOUIObject
     PROPERTY Handle AS IntPtr GET
     PROPERTY IsHandleCreated AS LOGIC GET
     PROPERTY Margin AS SWF.Padding GET SET
-    PROPERTY Parent AS SWF.Control GET
+    PROPERTY Parent AS SWF.Control GET SET
     PROPERTY TabIndex AS LONG GET SET
     PROPERTY TabStop  AS LOGIC GET SET
     PROPERTY Tag  AS OBJECT GET SET
@@ -253,14 +254,14 @@ END INTERFACE
 INTERFACE IVOListView INHERIT IVOControl, IVOControlInitialize
     PROPERTY AllowColumnReorder  AS LOGIC GET SET
     PROPERTY CheckBoxes AS LOGIC GET SET
-    PROPERTY Columns    AS SWF.ListView.ColumnHeaderCollection GET
+    PROPERTY Columns    AS IList<IVOColumnHeader> GET
     PROPERTY FullRowSelect AS LOGIC GET SET
     PROPERTY GridLines  AS LOGIC GET SET
     PROPERTY LargeImageList AS SWF.ImageList GET SET
     PROPERTY HeaderStyle AS SWF.ColumnHeaderStyle GET SET
     PROPERTY HotTracking AS LOGIC GET SET
-    PROPERTY Groups     AS SWF.ListViewGroupCollection         GET
-    PROPERTY Items      AS SWF.ListView.ListViewItemCollection GET
+    PROPERTY Groups     AS IList<SWF.ListViewGroup> GET
+    PROPERTY Items      AS IList<IVOListViewItem> GET
     PROPERTY ListViewItemSorter AS System.Collections.IComparer GET SET
     PROPERTY SelectedItems AS SWF.ListView.SelectedListViewItemCollection GET
     PROPERTY SelectedIndices AS SWF.ListView.SelectedIndexCollection GET
@@ -275,6 +276,8 @@ INTERFACE IVOListView INHERIT IVOControl, IVOControlInitialize
     
     METHOD ArrangeIcons AS VOID STRICT
     METHOD ArrangeIcons(alignments AS System.Windows.Forms.ListViewAlignment) AS VOID
+    METHOD ContainsColumn(sName AS STRING) AS LOGIC
+    METHOD RemoveColumn(sName AS STRING) AS VOID
     METHOD BeginUpdate AS VOID STRICT
     METHOD EndUpdate AS VOID STRICT
     METHOD EnsureVisible(nItem AS LONG) AS VOID
@@ -285,6 +288,43 @@ INTERFACE IVOListView INHERIT IVOControl, IVOControlInitialize
     METHOD Sort() AS VOID STRICT
 END INTERFACE  
 
+
+INTERFACE IVOListViewItem
+    PROPERTY BackColor  AS SD.Color GET SET
+    PROPERTY Bounds     AS SD.Rectangle GET 
+    PROPERTY Checked    AS LOGIC GET SET
+    PROPERTY Focused    AS LOGIC GET SET
+    PROPERTY ForeColor  AS SD.Color GET SET
+    PROPERTY Group      AS System.Windows.Forms.ListViewGroup GET SET
+    PROPERTY ImageIndex AS LONG GET SET
+    PROPERTY Index      AS LONG GET 
+    PROPERTY IndentCount AS LONG GET SET
+    PROPERTY Item       AS VOSDK.ListViewItem GET SET         
+    PROPERTY Position   AS SD.Point GET SET
+    PROPERTY Selected   AS LOGIC GET SET
+    PROPERTY StateImageIndex AS LONG GET SET
+    PROPERTY SubItems   AS SWF.ListViewItem.ListViewSubItemCollection GET
+    PROPERTY Tag        AS OBJECT GET SET
+    METHOD EnsureVisible() AS VOID STRICT
+    METHOD BeginEdit() AS VOID STRICT
+    METHOD LinkTo(oItem AS VOSDK.ListViewItem) AS VOID STRICT
+END INTERFACE    
+
+
+INTERFACE IVOColumnHeader
+    PROPERTY Tag        AS OBJECT GET SET
+    PROPERTY DisplayIndex AS LONG GET SET
+    PROPERTY ImageIndex AS LONG GET SET
+    PROPERTY Index      AS LONG GET
+    PROPERTY Text       AS STRING GET SET
+    PROPERTY TextAlign  AS SWF.HorizontalAlignment GET SET
+    PROPERTY Width      AS LONG GET SET
+    METHOD AutoResize(style AS System.Windows.Forms.ColumnHeaderAutoResizeStyle) AS VOID        
+END INTERFACE
+
+INTERFACE IVOListViewGroup
+    
+END INTERFACE    
 
 
 INTERFACE IVOTextBox INHERIT IVOControl, IVOControlInitialize
@@ -328,3 +368,28 @@ INTERFACE IVOSpinnerTextBox  INHERIT IVOControl
 	PROPERTY Value  	AS DECIMAL GET SET
     
 END INTERFACE    
+
+
+
+INTERFACE IVOListControl INHERIT IVOControl, IVOControlProperties
+    PROPERTY Items AS IList<OBJECT> GET
+    PROPERTY SelectedIndex AS LONG GET SET
+    METHOD BeginUpdate() AS VOID STRICT
+    METHOD EndUpdate() AS VOID STRICT
+    METHOD FindString(cSearchString AS STRING, nIndex AS LONG) AS LONG
+    METHOD FindStringExact(cSearchString AS STRING, nIndex AS LONG) AS LONG
+END INTERFACE    
+
+INTERFACE IVOListBox INHERIT IVOListControl
+    PROPERTY SelectionMode AS System.Windows.Forms.SelectionMode GET SET
+    PROPERTY SelectedIndices AS IList<LONG> GET
+    PROPERTY SelectedItems AS IList<OBJECT> GET
+    PROPERTY TopIndex AS LONG GET SET
+
+END INTERFACE
+
+INTERFACE IVOComboBox INHERIT IVOListControl
+    PROPERTY DropDownHeight AS LONG GET SET
+    PROPERTY DropDownStyle  AS System.Windows.Forms.ComboBoxStyle GET SET
+    PROPERTY AutoCompleteSource AS DWORD GET SET
+END INTERFACE

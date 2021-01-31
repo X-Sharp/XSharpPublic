@@ -150,8 +150,8 @@ ACCESS ListView AS ListView
 
 METHOD ListViewColumnClick(oEvt AS ListViewColumnClickEvent) 
 
-	IF IsInstanceOf(oListView, #__ExplorerLV)
-		IVarPut(oListView, #symSortCol, oEvt:ListViewColumn:NameSym)
+	IF oListView IS __ExplorerLV VAR oLV
+		oLV:symSortCol := oEvt:ListViewColumn:NameSym
 		oListView:SortItems()
 	ENDIF
 

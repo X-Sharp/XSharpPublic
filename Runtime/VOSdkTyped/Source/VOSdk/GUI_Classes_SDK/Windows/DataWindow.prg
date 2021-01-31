@@ -160,6 +160,7 @@ CLASS DataWindow INHERIT ChildAppWindow IMPLEMENTS ILastFocus
 		// Find maximum field label size && number of lines
 		liFields := (LONG) oAttachedServer:FCount
 		FOR liField := 1 UPTO liFields
+            //DebOut("lifield", lifield)
 			oDFField := oAttachedServer:DataField(liField)
 			IF (oDFField == NULL_OBJECT)
 				LOOP
@@ -599,7 +600,8 @@ CLASS DataWindow INHERIT ChildAppWindow IMPLEMENTS ILastFocus
 
 
 	METHOD __SetupDataControl(oDC AS Control) AS VOID
-		IF IsInstanceOfUsual(oDC, #RadioButtonGroup)
+       // DebOut(__FUNCTION__)
+		IF oDC IS RadioButtonGroup
 			AAdd(aRadioGroups, oDC)
 		ENDIF
 		
@@ -612,6 +614,7 @@ CLASS DataWindow INHERIT ChildAppWindow IMPLEMENTS ILastFocus
 	
 
 	METHOD __SetupNonDataControl(oDC AS Control) AS VOID
+        //DebOut(__FUNCTION__)
 		IF __DataForm:AutoLayout .AND. !(oDC IS FixedText)
 			oDC:SetStyle(WS_TabStop)
 		ENDIF

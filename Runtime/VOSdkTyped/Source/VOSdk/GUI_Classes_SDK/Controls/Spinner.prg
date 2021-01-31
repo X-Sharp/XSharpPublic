@@ -37,7 +37,5 @@ CLASS VerticalSpinner INHERIT Spinner
     PROPERTY ControlType AS ControlType GET ControlType.VerticalSpinner
     CONSTRUCTOR(oOwner, xID, oPoint, oDimension, lDataAware) CLIPPER
 	   SUPER(oOwner,xID,oPoint,oDimension,lDataAware) 
-	
-	
 
 END CLASS

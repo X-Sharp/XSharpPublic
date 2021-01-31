@@ -35,22 +35,6 @@
       <DocumentationSource sourceFile="Binaries\Documentation\XSharp.XPP.dll" />
       <DocumentationSource sourceFile="Binaries\Documentation\XSharp.Data.dll" />
       <DocumentationSource sourceFile="Binaries\Documentation\XSharp.Data.xml" />
-      <DocumentationSource sourceFile="Binaries\Documentation\VOSystemClasses.dll" />
-      <DocumentationSource sourceFile="Binaries\Documentation\VOConsoleClasses.dll" />
-      <DocumentationSource sourceFile="Binaries\Documentation\VOGUIClasses.dll" />
-      <DocumentationSource sourceFile="Binaries\Documentation\VOInternetClasses.dll" />
-      <DocumentationSource sourceFile="Binaries\Documentation\VORDDClasses.dll" />
-      <DocumentationSource sourceFile="Binaries\Documentation\VOSQLClasses.dll" />
-      <DocumentationSource sourceFile="Docs\VOSDK_Classes.xml" />
-      <DocumentationSource sourceFile="Binaries\Documentation\VOSystemClasses.XML" />
-      <DocumentationSource sourceFile="Binaries\Documentation\VOSQLClasses.XML" />
-      <DocumentationSource sourceFile="Binaries\Documentation\VORDDClasses.XML" />
-      <DocumentationSource sourceFile="Binaries\Documentation\VOInternetClasses.XML" />
-      <DocumentationSource sourceFile="Binaries\Documentation\VOGUIClasses.XML" />
-      <DocumentationSource sourceFile="Docs\XSharpVOSDK_Classes.xml" />
-      <DocumentationSource sourceFile="Binaries\Documentation\XSharp.VOConsoleClasses.dll" />
-      <DocumentationSource sourceFile="Binaries\Documentation\XSharp.VORDDClasses.dll" />
-      <DocumentationSource sourceFile="Binaries\Documentation\XSharp.VOSystemClasses.dll" />
     </DocumentationSources>
     <HelpTitle>X# Runtime and VO SDK Reference</HelpTitle>
     <HelpFileVersion>2.7.0.0</HelpFileVersion>
@@ -60,10 +44,10 @@
     <NamespaceGrouping>False</NamespaceGrouping>
     <Preliminary>False</Preliminary>
     <SdkLinkTarget>Blank</SdkLinkTarget>
-    <HelpFileFormat>HtmlHelp1, MSHelpViewer, Website</HelpFileFormat>
+    <HelpFileFormat>HtmlHelp1</HelpFileFormat>
     <SyntaxFilters>C#, X#</SyntaxFilters>
     <PresentationStyle>VS2013XSharp</PresentationStyle>
-    <CleanIntermediates>True</CleanIntermediates>
+    <CleanIntermediates>False</CleanIntermediates>
     <KeepLogFile>True</KeepLogFile>
     <DisableCodeBlockComponent>False</DisableCodeBlockComponent>
     <IndentHtml>False</IndentHtml>
@@ -263,6 +247,15 @@
     <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
   </PropertyGroup>
   <ItemGroup>
+    <Folder Include="Docs\Categories\" />
     <Folder Include="Docs\" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Docs\Categories\Conceptual.aml" />
+    <None Include="Docs\Categories\DateFunctions.aml" />
+    <None Include="Docs\Categories\StringFunctions.aml" />
+  </ItemGroup>
+  <ItemGroup>
+    <ContentLayout Include="Docs\Content.content" />
   </ItemGroup>
 </Project>

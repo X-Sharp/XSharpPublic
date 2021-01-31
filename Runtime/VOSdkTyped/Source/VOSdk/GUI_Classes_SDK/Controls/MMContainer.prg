@@ -1,7 +1,4 @@
 
-
-
-
 CLASS MultiMediaContainer INHERIT Control
 	PROTECT pBitmap AS IntPtr
 	PROTECT sMajorType AS STRING
@@ -142,8 +139,6 @@ CLASS MultiMediaContainer INHERIT Control
 		//			MessageBox(0, String2Psz("MultiMedia File "+sNewVal+" does not exist!"), PSZ(_CAST, "Warning"), 0)
 		//		ENDIF
 		//	ENDIF
-
-
 
 		//	GetWindowRect(SELF:Handle(), @rc)
 		//	MapWindowPoints(NULL_PTR, GetParent(SELF:Handle()), (_winPOINT PTR) @rc, 2)

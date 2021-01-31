@@ -63,6 +63,8 @@ namespace XSharp.MacroCompiler
                             return ParseWhileStmt();
                         case TokenType.CASE:
                             return ParseDoCaseStmt();
+                        case TokenType.SWITCH:
+                            return ParseSwitchStmt();
                         default:
                             throw Error(Lt(), ErrorCode.Expected, "WHILE or CASE");
                     }
@@ -135,6 +137,21 @@ namespace XSharp.MacroCompiler
                 case TokenType.TRY:
                     return ParseTryStmt();
                 case TokenType.BEGIN:
+                    switch (La(2))
+                    {
+                        case TokenType.SWITCH:
+                            return ParseSwitchStmt();
+                        case TokenType.SEQUENCE:
+                        case TokenType.LOCK:
+                        case TokenType.SCOPE:
+                        case TokenType.USING:
+                        case TokenType.UNSAFE:
+                        case TokenType.CHECKED:
+                        case TokenType.UNCHECKED:
+                        case TokenType.FIXED:
+                        default:
+                            throw Error(Lt(), ErrorCode.Unexpected, Lt());
+                    }
                     break;
                 case TokenType.UNTIL:
                     return null;
@@ -156,15 +173,16 @@ namespace XSharp.MacroCompiler
 
         internal Token ParseVarIdName()
         {
-            Token n = null;
-            if (La() == TokenType.ID || TokenAttr.IsSoftKeyword(La()))
-                n = ConsumeAndGet();
+            if (La() == TokenType.ID)
+                return ConsumeAndGet();
             else if (La() == TokenType.M && La(2) == TokenType.DOT && (La(3) == TokenType.ID || TokenAttr.IsSoftKeyword(La(3))))
             {
                 Consume(2);
-                n = ConsumeAndGet();
+                return ConsumeAndGet();
             }
-            return n;
+            else if (TokenAttr.IsSoftKeyword(La()))
+                return ConsumeAndGet();
+            return null;
         }
         internal Token ParseIdName()
         {
@@ -633,6 +651,62 @@ namespace XSharp.MacroCompiler
             Require(TokenType.EOS);
 
             return new ForeachStmt(r, v, e, s);
+        }
+
+        internal SwitchStmt ParseSwitchStmt()
+        {
+            ExpectAny(TokenType.BEGIN, TokenType.DO);
+            var t = RequireAndGet(TokenType.SWITCH);
+            var e = Require(ParseExpression(), ErrorCode.Expected, "expression");
+            Require(TokenType.EOS);
+            var sbs = new List<SwitchBlock>();
+            sbs.Add(Require(ParseSwitchBlock(), ErrorCode.Expected, "CASE"));
+            while (ParseSwitchBlock() is SwitchBlock sb)
+                sbs.Add(sb);
+            Require(TokenType.END);
+            Expect(TokenType.SWITCH);
+            Require(TokenType.EOS);
+            return new SwitchStmt(t, e, sbs.ToArray());
+
+            SwitchBlock ParseSwitchBlock()
+            {
+                if (La() == TokenType.CASE && (
+                    (La(2) == TokenType.M && La(3) == TokenType.DOT && (La(4) == TokenType.ID || TokenAttr.IsSoftKeyword(La(4))) && La(5) == TokenType.AS) ||
+                    ((La(2) == TokenType.ID || TokenAttr.IsSoftKeyword(La(2))) && La(3) == TokenType.AS)
+                    ))
+                {
+                    var st = ConsumeAndGet();
+                    var n = Require(ParseVarIdName(), ErrorCode.Expected, "identifier");
+                    Require(TokenType.AS);
+                    var ty = Require(ParseType(), ErrorCode.Expected, "type");
+                    Expr wh = null;
+                    if (Expect(TokenType.WHEN))
+                        wh = ParseExpression();
+                    Require(TokenType.EOS);
+                    var s = ParseStatementBlock();
+                    return new SwitchBlockType(st, n, ty, wh, s);
+                }
+                else if (La() == TokenType.CASE)
+                {
+                    var st = ConsumeAndGet();
+                    var se = Require(ParseExpression(), ErrorCode.Expected, "expression");
+                    Expr wh = null;
+                    if (Expect(TokenType.WHEN))
+                        wh = ParseExpression();
+                    Require(TokenType.EOS);
+                    var s = ParseStatementBlock();
+                    return new SwitchBlockExpr(st, se, wh, s);
+                }
+                else if (La() == TokenType.OTHERWISE)
+                {
+                    var st = ConsumeAndGet();
+                    Require(TokenType.EOS);
+                    var s = ParseStatementBlock();
+                    return new SwitchBlock(st, s);
+                }
+                else
+                    return null;
+            }
         }
     }
 }

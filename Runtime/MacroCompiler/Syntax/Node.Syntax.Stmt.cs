@@ -8,6 +8,17 @@ namespace XSharp.MacroCompiler.Syntax
 {
     using static TokenAttr;
 
+    abstract internal partial class Stmt : Node
+    {
+        internal Stmt(Token t) : base(t) { }
+    }
+    internal partial class ReturnStmt : Stmt
+    {
+        internal Expr Expr;
+        internal ReturnStmt(Token t, Expr e) : base(t) { Expr = e; }
+        internal ReturnStmt(Expr e) : this(e.Token, e) { }
+        public override string ToString() { return "RETURN " + Expr?.ToString(); }
+    }
     internal partial class StmtBlock : Stmt
     {
         internal Stmt[] StmtList;
@@ -49,7 +60,7 @@ namespace XSharp.MacroCompiler.Syntax
     internal partial class ImpliedVarDecl : VarDecl
     {
         internal ImpliedVarDecl(Token t, Expr i) : base(t, null, null, i) { }
-        public override string ToString() => (IsConst ? "CONST " : "") + Name + " := " + Initializer.ToString();
+        public override string ToString() => (IsConst ? "CONST " : "") + Name + (Initializer != null ? " := " + Initializer.ToString() : "");
     }
     internal partial class FieldDeclStmt : Stmt
     {
@@ -65,44 +76,114 @@ namespace XSharp.MacroCompiler.Syntax
     }
     internal partial class WhileStmt : Stmt
     {
-        Expr Cond;
-        Stmt Stmt;
+        internal Expr Cond;
+        internal Stmt Stmt;
         internal WhileStmt(Token t, Expr cond, Stmt s) : base(t) { Cond = cond; Stmt = s; }
         public override string ToString() => "WHILE " + Cond.ToString() + "\n  " + Stmt.ToString().Replace("\n","\n  ") + "\nEND WHILE";
     }
+    internal partial class RepeatStmt : WhileStmt
+    {
+        internal RepeatStmt(Token t, Expr cond, Stmt s) : base(t, cond, s) { }
+        public override string ToString() => "REPEAT\n  " + Stmt.ToString().Replace("\n", "\n  ") + "\nUNTIL " + Cond.ToString();
+    }
     internal partial class ForStmt : Stmt
     {
-        AssignExpr AssignExpr;
-        VarDecl ForDecl;
-        Token Dir;
-        Expr Final;
-        Expr Step;
-        Stmt Stmt;
+        internal AssignExpr AssignExpr;
+        internal VarDecl ForDecl;
+        internal Token Dir;
+        internal Expr Final;
+        internal Expr Step;
+        internal Stmt Stmt;
         private ForStmt(Token t, Token dir, Expr final, Expr step, Stmt s) : base(t) { ForDecl = null; AssignExpr = null;  Dir = dir; Final = final; Step = step; Stmt = s; }
         internal ForStmt(Token t, AssignExpr a, Token dir, Expr final, Expr step, Stmt s) : this(t, dir, final, step, s) { AssignExpr = a; }
         internal ForStmt(Token t, VarDecl d, Token dir, Expr final, Expr step, Stmt s) : this(t, dir, final, step, s) { ForDecl = d; }
         public override string ToString() => "FOR " + (AssignExpr?.ToString() ?? ((ForDecl is ImpliedVarDecl ? "VAR " : "LOCAL ") + ForDecl.ToString())) + " " + Dir.type + " " + Final + (Step != null ? " STEP " + Step : "") + "\n  " + Stmt.ToString().Replace("\n", "\n  ") + "\nEND FOR";
     }
+    internal partial class ForeachStmt : Stmt
+    {
+        internal VarDecl ForDecl;
+        internal Expr Expr;
+        internal Stmt Stmt;
+        internal ForeachStmt(Token t, VarDecl d, Expr e, Stmt s) : base(t) { ForDecl = d; Expr = e; Stmt = s; }
+        public override string ToString() => "FOREACH " + (ForDecl is ImpliedVarDecl ? "VAR " : "") + ForDecl.ToString() + " IN " + Expr + "\n  " + Stmt.ToString().Replace("\n", "\n  ") + "\nEND FOREACH";
+    }
     internal partial class IfStmt : Stmt
     {
-        Expr Cond;
-        Stmt StmtIf;
-        Stmt StmtElse;
+        internal Expr Cond;
+        internal Stmt StmtIf;
+        internal Stmt StmtElse;
         internal IfStmt(Token t, Expr cond, Stmt si, Stmt se) : base(t) { Cond = cond; StmtIf = si; StmtElse = se; }
         public override string ToString() => "IF " + Cond.ToString() + "\n  " + StmtIf.ToString().Replace("\n", "\n  ") + (StmtElse != null ? "\nELSE\n  " + StmtElse.ToString().Replace("\n", "\n  ") : "") + "\nEND WHILE";
     }
     internal partial class DoCaseStmt : Stmt
     {
-        CaseBlock[] Cases;
-        Stmt Otherwise;
+        internal CaseBlock[] Cases;
+        internal Stmt Otherwise;
         internal DoCaseStmt(Token t, CaseBlock[] cases, Stmt otherwise) : base(t) { Cases = cases; Otherwise = otherwise; }
         public override string ToString() => "DO CASE\n" + String.Join("\n", Array.ConvertAll(Cases, (x) => x.ToString())) + (Otherwise != null ? "\nOTHERWISE\n  " + Otherwise.ToString().Replace("\n", "\n  ") : "") + "\nEND CASE";
     }
     internal partial class CaseBlock : Node
     {
-        Expr Cond;
-        Stmt Stmt;
+        internal Expr Cond;
+        internal Stmt Stmt;
         internal CaseBlock(Token t, Expr cond, Stmt s) : base(t) { Cond = cond; Stmt = s; }
         public override string ToString() => "CASE " + Cond.ToString() + "\n  " + Stmt.ToString().Replace("\n", "\n  ");
+    }
+
+    internal partial class ExitStmt : Stmt
+    {
+        internal ExitStmt(Token t) : base(t) { }
+        public override string ToString() => "EXIT";
+    }
+    internal partial class LoopStmt : Stmt
+    {
+        internal LoopStmt(Token t) : base(t) { }
+        public override string ToString() => "LOOP";
+    }
+    internal partial class BreakStmt : Stmt
+    {
+        internal Expr Expr;
+        internal BreakStmt(Token t, Expr e) : base(t) { Expr = e; }
+        public override string ToString() => "BREAK" + (Expr != null ? " " + Expr.ToString() : "") + "\n";
+    }
+    internal partial class ThrowStmt : Stmt
+    {
+        internal Expr Expr;
+        internal ThrowStmt(Token t, Expr e) : base(t) { Expr = e; }
+        public override string ToString() => "THROW" + (Expr != null ? " " + Expr.ToString() : "") + "\n";
+    }
+    internal partial class QMarkStmt : Stmt
+    {
+        internal Expr[] Exprs;
+        internal QMarkStmt(Token t, Expr[] e) : base(t) { Exprs = e; }
+        public override string ToString() => "? " + (Exprs != null ? String.Join(", ", Array.ConvertAll(Exprs, (x) => x.ToString())) : "") + "\n";
+    }
+    internal partial class QQMarkStmt : QMarkStmt
+    {
+        internal QQMarkStmt(Token t, Expr[] e) : base(t, e) { }
+        public override string ToString() => "?" + base.ToString();
+    }
+    internal partial class TryStmt : Stmt
+    {
+        internal Stmt Stmt;
+        internal CatchBlock[] Catches;
+        internal FinallyBlock Finally;
+        internal TryStmt(Token t, Stmt s, CatchBlock[] cb, FinallyBlock fb) : base(t) { Stmt = s; Catches = cb; Finally = fb; }
+        public override string ToString() => "TRY\n  " + Stmt.ToString().Replace("\n", "\n  ") + (Catches != null ? String.Join("\n", Array.ConvertAll(Catches, (x) => x.ToString())) : "") + Finally?.ToString();
+    }
+    internal partial class CatchBlock : Node
+    {
+        internal Token Name;
+        internal TypeExpr Type;
+        internal Expr When;
+        internal Stmt Stmt;
+        internal CatchBlock(Token t, Token name, TypeExpr type, Expr when, Stmt s) : base(t) { Name = name; Type = type; When = when; Stmt = s; }
+        public override string ToString() => "CATCH" + "\n  " + Stmt.ToString().Replace("\n", "\n  ");
+    }
+    internal partial class FinallyBlock : Node
+    {
+        internal Stmt Stmt;
+        internal FinallyBlock(Token t, Stmt s) : base(t) { Stmt = s; }
+        public override string ToString() => "FINALLY\n  " + Stmt.ToString().Replace("\n", "\n  ");
     }
 }

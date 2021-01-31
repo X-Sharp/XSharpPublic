@@ -130,6 +130,35 @@ namespace XSharp.MacroCompiler.Syntax
         public override string ToString() => "CASE " + Cond.ToString() + "\n  " + Stmt.ToString().Replace("\n", "\n  ");
     }
 
+    internal partial class SwitchStmt : Stmt
+    {
+        internal Expr Expr;
+        internal SwitchBlock[] SwitchBlocks;
+        internal SwitchStmt(Token t, Expr e, SwitchBlock[] sw) : base(t) { Expr = e; SwitchBlocks = sw; }
+        public override string ToString() => "DO CASE\n" + String.Join("\n", Array.ConvertAll(SwitchBlocks, (x) => x.ToString())) + "\nEND CASE";
+    }
+    internal partial class SwitchBlock : Node
+    {
+        internal Stmt Stmt;
+        internal SwitchBlock(Token t, Stmt s) : base(t) { Stmt = s; }
+        public override string ToString() => Token.type + "\n  " + Stmt.ToString().Replace("\n", "\n  ");
+    }
+    internal partial class SwitchBlockExpr : SwitchBlock
+    {
+        internal Expr Expr;
+        internal Expr When;
+        internal SwitchBlockExpr(Token t, Expr e, Expr when, Stmt s) : base(t, s) { Expr = e; When = when; }
+        public override string ToString() => Token.type + " " + Expr.ToString() + (When != null ? "WHEN " + When : "") + "\n  " + Stmt.ToString().Replace("\n", "\n  ");
+    }
+    internal partial class SwitchBlockType : SwitchBlock
+    {
+        Token Name;
+        internal TypeExpr Type;
+        internal Expr When;
+        internal SwitchBlockType(Token t, Token n, TypeExpr type, Expr when, Stmt s) : base(t, s) { Name = n;  Type = type; When = when; }
+        public override string ToString() => Token.type + " " + Name + " AS " + Type + (When != null ? "WHEN " + When : "") + "\n  " + Stmt.ToString().Replace("\n", "\n  ");
+    }
+
     internal partial class ExitStmt : Stmt
     {
         internal ExitStmt(Token t) : base(t) { }

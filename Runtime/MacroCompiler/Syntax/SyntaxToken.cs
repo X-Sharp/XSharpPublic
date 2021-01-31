@@ -51,7 +51,7 @@ namespace XSharp.MacroCompiler.Syntax
         NAMESPACE, NEW, OPERATOR, PARTIAL, PROPERTY, SEALED, SET, STRUCTURE, UNICODE, UNTIL, VALUE, VIRTUAL, VOSTRUCT,
 
         // New Vulcan Keywords (no 4 letter abbreviations) [statement]
-        CONST, FOREACH, IMPLICIT, IMPLIED, LOCK, OUT, REPEAT, SCOPE, TRY,
+        CONST, EACH, FOREACH, IMPLICIT, IMPLIED, LOCK, OUT, REPEAT, SCOPE, TRY,
 
         // New Vulcan expr Keywords (no 4 letter abbreviations)
         DEFAULT,
@@ -61,7 +61,7 @@ namespace XSharp.MacroCompiler.Syntax
 
         //// New XSharp Keywords (no 4 letter abbreviations) [statement]
         ARGLIST, ASCENDING, BY, DESCENDING, EQUALS, FROM, GROUP, INTO, JOIN, LET, NOP,
-        ON, ORDERBY, SELECT, SWITCH, VAR, VOLATILE, WHERE, YIELD, WITH,
+        ON, ORDERBY, SELECT, SWITCH, VAR, VOLATILE, WHERE, YIELD, WITH, WHEN,
 
         //// New XSharp expr Keywords (no 4 letter abbreviations)
         AWAIT, ASYNC, ASTYPE, CHECKED, UNCHECKED,
@@ -442,6 +442,7 @@ namespace XSharp.MacroCompiler.Syntax
                 {"CONST", TokenType.CONST},
                 {"FINALLY", TokenType.FINALLY},
                 {"FOREACH", TokenType.FOREACH},
+                {"EACH", TokenType.EACH},
                 {"IMPLIED", TokenType.IMPLIED},
                 {"LOCK", TokenType.LOCK},
                 {"ON", TokenType.ON},
@@ -478,6 +479,7 @@ namespace XSharp.MacroCompiler.Syntax
                 {"WHERE", TokenType.WHERE},
                 {"YIELD", TokenType.YIELD},
                 {"WITH", TokenType.WITH},
+                {"WHEN", TokenType.WHEN},
 
 			    // XSharp types
 			    {"DYNAMIC", TokenType.DYNAMIC},
@@ -723,6 +725,7 @@ namespace XSharp.MacroCompiler.Syntax
             softKws[(int)TokenType.DEFAULT] = true;
             softKws[(int)TokenType.EXPLICIT] = true;
             softKws[(int)TokenType.FOREACH] = true;
+            softKws[(int)TokenType.EACH] = true;
             softKws[(int)TokenType.GET] = true;
             softKws[(int)TokenType.IMPLEMENTS] = true;
             softKws[(int)TokenType.IMPLICIT] = true;
@@ -781,6 +784,7 @@ namespace XSharp.MacroCompiler.Syntax
             softKws[(int)TokenType.WHERE] = true;
             softKws[(int)TokenType.YIELD] = true;
             softKws[(int)TokenType.WITH] = true;
+            softKws[(int)TokenType.WHEN] = true;
             softKws[(int)TokenType.CHAR] = true;
             softKws[(int)TokenType.MEMVAR] = true;
             softKws[(int)TokenType.PARAMETERS] = true;

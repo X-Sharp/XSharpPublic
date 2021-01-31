@@ -1,5 +1,5 @@
 
-
+[XSharp.Internal.TypesChanged];
 CLASS CheckBox INHERIT Button
 	PROTECT lSavedChecked AS LOGIC
 

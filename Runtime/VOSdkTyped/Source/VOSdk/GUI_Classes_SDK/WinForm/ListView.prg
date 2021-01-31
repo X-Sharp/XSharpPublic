@@ -4,11 +4,11 @@
 // Also some On..() methods have been implemented that call the event handles on the VO Window
 // class that owns the control
 
-
+USING System.Collections.Generic
 USING System.Windows.Forms
 USING VOSDK := XSharp.VO.SDK
-
-CLASS VOListView INHERIT System.Windows.Forms.ListView IMPLEMENTS IVOListView
+USING SWF := System.Windows.Forms
+CLASS VOListView INHERIT SWF.ListView IMPLEMENTS IVOListView
 	PROPERTY ListView     AS VOSDK.ListView GET (VOSDK.ListView) oProperties:Control
 	#include "PropControl.vh"
 
@@ -27,7 +27,17 @@ CLASS VOListView INHERIT System.Windows.Forms.ListView IMPLEMENTS IVOListView
 			SELF:TabStop := (_AND(oProperties:Style, WS_TABSTOP) == WS_TABSTOP)
 		ENDIF
 
-	
+    METHOD ContainsColumn(sName AS STRING) AS LOGIC
+        RETURN SUPER:Columns:ContainsKey(sName)
+
+    METHOD RemoveColumn(sName AS STRING) AS VOID
+        SUPER:Columns:RemoveByKey(sName)
+        RETURN
+
+
+    NEW PROPERTY Columns AS IList<IVOColumnHeader> GET (IList<IVOColumnHeader> ) SUPER:Columns
+    NEW PROPERTY Groups AS IList<SWF.ListViewGroup> GET (IList<SWF.ListViewGroup> ) SUPER:Groups
+	NEW PROPERTY Items AS IList<IVOListViewItem> GET (IList<IVOListViewItem>) SUPER:Items
 	
 	#region Event Handlers		
 	
@@ -126,7 +136,7 @@ CLASS VODataListView INHERIT VOListView
 END CLASS
 
 
-CLASS VOColumnHeader INHERIT System.Windows.Forms.ColumnHeader
+CLASS VOColumnHeader INHERIT System.Windows.Forms.ColumnHeader IMPLEMENTS IVOColumnHeader
 	PROPERTY Column AS VOSDK.ListViewColumn AUTO
 	
 	METHOD LinkTo(oColumn AS VOSDK.ListViewColumn) AS VOID STRICT
@@ -143,7 +153,7 @@ END CLASS
 
 
 
-CLASS VOListViewItem INHERIT System.Windows.Forms.ListViewItem
+CLASS VOListViewItem INHERIT System.Windows.Forms.ListViewItem IMPLEMENTS IVOListViewItem
 	PROPERTY Item AS VOSDK.ListViewItem AUTO 
 	
 	
@@ -156,3 +166,10 @@ CLASS VOListViewItem INHERIT System.Windows.Forms.ListViewItem
 		SELF:LinkTo(oItem)
 	
 END CLASS
+
+// Cannot create subclass from ListViewGroup because it is sealed
+
+//CLASS VOListViewGroup INHERIT System.Windows.Forms.ListViewGroup IMPLEMENTS IVOListViewGroup
+//    CONSTRUCTOR(cName)
+//        SUPER(cName) 
+//END CLASS

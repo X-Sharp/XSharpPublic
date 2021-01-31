@@ -43,9 +43,6 @@ PROTECTED METHOD setDefaultFont(sender AS OBJECT, e AS System.Windows.Forms.WebB
 PROTECTED METHOD OnVScrolled(sender AS OBJECT, se AS System.Windows.Forms.ScrollEventArgs ) AS VOID
 	SELF:_oWebBrowser:Document:body:ScrollTop := SELF:_oVScrollBar:Value * 10
 
-
-
-
 ASSIGN __ForceModFlag2True(lNewValue AS LOGIC)  STRICT 
 	lForceModFlag2True := lNewValue
 
@@ -197,9 +194,6 @@ ASSIGN Modified(lModified  AS LOGIC)
 		SELF:_lModified := lModified
 	ENDIF
 	RETURN 
-
-
-
 
 END CLASS
 

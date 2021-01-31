@@ -1,6 +1,4 @@
-
-
-
+[XSharp.Internal.TypesChanged];
 CLASS FixedText INHERIT TextControl
 	PROTECT _dwDrawStyle AS DWORD
 	PROTECT _dwMargin	 AS DWORD

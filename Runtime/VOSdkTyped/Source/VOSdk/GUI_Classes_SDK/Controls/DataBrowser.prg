@@ -1442,11 +1442,13 @@ CLASS DataBrowser INHERIT VOSDK.Control
 
 	//RH Performance fix
 	METHOD __UnLinkColumns() AS VOID STRICT
-		FOREACH oColumn AS DataColumn IN aColumn
-			IF oColumn != NULL_OBJECT
-				oColumn:__UnLink(oDataServer)
-			ENDIF
-		NEXT
+        IF aColumn != NULL
+		    FOREACH oColumn AS DataColumn IN aColumn
+			    IF oColumn != NULL_OBJECT
+				    oColumn:__UnLink(oDataServer)
+			    ENDIF
+            NEXT
+        ENDIF
 		RETURN
         
 	METHOD __Unlink(oDS := NIL AS USUAL) AS VOSDK.Control STRICT 
@@ -1740,7 +1742,7 @@ CLASS DataBrowser INHERIT VOSDK.Control
 
 		nFocusField   := 0
 		oDataServer := NULL_OBJECT
-		aColumn := NULL_ARRAY
+		//aColumn := NULL_ARRAY
 
 		oTextPointer := NULL_OBJECT
 
@@ -2373,9 +2375,6 @@ CLASS DataBrowser INHERIT VOSDK.Control
                                              System.Drawing.Color.DarkGray, iif(colindex != __DataGridView:ColumnCount - 1 , 1 , 0), ;
 											 ButtonBorderStyle.Inset, System.Drawing.Color.DarkGray, 1, ButtonBorderStyle.Inset)
     RETURN
-
-
-
 /*
     //CellPainting event handler for your dataGridView1
     private void dataGridView1_CellPainting(object sender, DataGridViewCellPaintingEventArgs e){
@@ -2413,9 +2412,6 @@ CLASS DataBrowser INHERIT VOSDK.Control
                                            Color.Gray, 1, ButtonBorderStyle.Inset);
     }
 */
-
-
-
 END CLASS
 
 CLASS DataColumn INHERIT VObject

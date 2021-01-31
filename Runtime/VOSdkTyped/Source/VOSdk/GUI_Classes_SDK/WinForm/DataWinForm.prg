@@ -191,6 +191,7 @@ CLASS VODataForm INHERIT VOChildAppForm
 		LOCAL oSize AS Size
 		// This is called when resizing and/or when toolbar or statusbar is shown
 		// it recalculates the size of the framepanel
+       // DebOut(__FUNCTION__)
 		SELF:SuspendLayout()
 		IF ! SELF:SubForm
 			oSize := SELF:ClientRectangle:Size
@@ -223,6 +224,7 @@ CLASS VODataForm INHERIT VOChildAppForm
 		LOCAL nBordX, nBordY AS LONG
 		LOCAL oLoc       AS System.Drawing.Point
 		SELF:SuspendLayout()
+        //DebOut(__FUNCTION__)
 		IF SELF:SubForm
 			NOP
 		ELSE	
@@ -253,6 +255,7 @@ CLASS VODataForm INHERIT VOChildAppForm
 		RETURN
 
 	METHOD ChangeFormSize(oDim AS Size) AS VOID
+        //DebOut(__FUNCTION__)
 		SELF:Size := oDim
 		RETURN
 
@@ -338,6 +341,7 @@ CLASS VODataForm INHERIT VOChildAppForm
 		RETURN 	
 
 	PUBLIC METHOD SuspendRedraw AS VOID
+        //DebOut(__FUNCTION__)
 		IF SELF:lInBrowseView
 	        GuiWin32.SendMessage(SELF:Frame:Handle, WM_SETREDRAW, 0, 0)
 		ELSE
@@ -345,6 +349,7 @@ CLASS VODataForm INHERIT VOChildAppForm
 		ENDIF
 
 	PUBLIC METHOD ResumeRedraw AS VOID
+        //DebOut(__FUNCTION__)
 		IF SELF:lInBrowseView
 	        GuiWin32.SendMessage(SELF:Frame:Handle, WM_SETREDRAW, 1, 0)
 		ELSE

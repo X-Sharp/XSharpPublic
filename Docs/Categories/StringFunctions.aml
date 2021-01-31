@@ -1,0 +1,19 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<topic id="cat-StringFunctions" revisionNumber="1">
+  <developerConceptualDocument xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5" xmlns:xlink="http://www.w3.org/1999/xlink">
+    
+
+    <!-- Add one or more top-level section elements.  These are collapsible.
+         If using <autoOutline />, add an address attribute to identify it
+         and specify a title so that it can be jumped to with a hyperlink. -->
+    <section address="Section1">
+      <title>String Functions</title>
+      
+<content>
+
+       <para><codeEntityReference qualifyHint="false">M:XSharp.RT.Functions.DoW(XSharp.__Date)</codeEntityReference></para>
+       <para><codeEntityReference qualifyHint="false" linkText="Month()">M:XSharp.RT.Functions.Month(XSharp.__Date)</codeEntityReference></para>
+</content>
+     </section>
+  </developerConceptualDocument>
+</topic>

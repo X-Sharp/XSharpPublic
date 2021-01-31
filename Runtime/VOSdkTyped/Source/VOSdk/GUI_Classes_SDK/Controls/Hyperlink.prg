@@ -8,6 +8,7 @@ CLASS CurHand INHERIT Pointer
 
 END CLASS
 
+[XSharp.Internal.TypesChanged];
 CLASS HyperLink INHERIT FixedText
 
     PROPERTY Controltype AS Controltype GET Controltype.Label

@@ -170,7 +170,7 @@ CLASS VOGroupBox INHERIT System.Windows.Forms.GroupBox IMPLEMENTS IVOGroupBox
 		ENDIF
 
 		
-	 METHOD MoveNestedControl(oChild AS System.Windows.Forms.Control) AS LOGIC
+	 METHOD MoveNestedControl(oChild AS IVOControl) AS LOGIC
 		LOCAL oLocParent AS System.Drawing.Point
 		LOCAL oLocChild  AS System.Drawing.Point
 		
@@ -225,24 +225,24 @@ CLASS VOGroupBox INHERIT System.Windows.Forms.GroupBox IMPLEMENTS IVOGroupBox
 
 
 	 METHOD FindChildren() AS VOID STRICT
-		LOCAL aControls AS System.Windows.Forms.Control[]
+		LOCAL aControls AS IVOControl[]
 		IF !lFound .and. SELF:Parent != NULL_OBJECT .and. SELF:Parent:Controls:Count > 0
-			aControls := System.Windows.Forms.Control[]{SELF:Parent:Controls:Count}
+			aControls := IVOControl[]{SELF:Parent:Controls:Count}
 			SELF:Parent:Controls:CopyTo(aControls, 0)
 			SELF:FindChildren(aControls)
         ENDIF
         RETURN
 		
-	METHOD FindChildren(aControls AS System.Windows.Forms.Control[]) AS VOID STRICT
+	METHOD FindChildren(aControls AS IVOControl[]) AS VOID STRICT
 		LOCAL lAdded AS LOGIC
-        LOCAL oLB := NULL AS VOListBox
+        LOCAL oLB := NULL AS IVOListBox
 		IF ! lFound
-			LOCAL aNestedGroups AS List<VOGroupBox>
-			aNestedGroups := List<VOGroupBox>{}
-			FOREACH oChild AS System.Windows.Forms.Control IN aControls
+			LOCAL aNestedGroups AS List<IVOGroupBox>
+			aNestedGroups := List<IVOGroupBox>{}
+			FOREACH oChild AS IVOControl IN aControls
 				IF oChild != SELF 
 					IF ! (oChild IS VOFramePanel)
-						IF oChild IS VOListBox VAR oList
+						IF oChild IS IVOListBox VAR oList
                             oLB := oList
 							IF oLB:Items:Count == 0
 								oLB:Items:Add(ListBoxItemValue{"",0})

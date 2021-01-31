@@ -1,7 +1,5 @@
-
-
-
-#using System.Reflection
+USING System.Reflection
+[XSharp.Internal.TypesChanged];
 CLASS Edit INHERIT TextControl
 	PROTECT lNoNotify AS LOGIC
 	PROTECT lForceModFlag2True AS LOGIC
@@ -99,8 +97,6 @@ CLASS Edit INHERIT TextControl
             RETURN Dimension{nLeft, nTop}
         ENDIF
         RETURN Dimension{0, 0}
-
-		
 	
 	ASSIGN Margins(oNewMargins AS Dimension) 
 		IF SELF:ValidateControl()
@@ -706,8 +702,6 @@ CLASS SingleLineEdit INHERIT Edit
 			RETURN oEditString:Undo()
 		ENDIF
 		RETURN SUPER:Undo()
-
-
 
 END CLASS
 

@@ -1,5 +1,6 @@
 
 
+[XSharp.Internal.TypesChanged];
 CLASS GroupBox INHERIT TextControl
 
     PROPERTY ControlType AS ControlType GET ControlType.GroupBox

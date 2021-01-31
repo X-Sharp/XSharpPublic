@@ -1,8 +1,3 @@
-
-
-
-
-
 //#define EM_FINDTEXTW			(WM_USER + 123)
 //#define EM_FINDTEXTEXW			(WM_USER + 124)
 
@@ -96,9 +91,6 @@ CLASS RichEdit INHERIT MultiLineEdit
 	//LOCAL oFont AS Font
 	//LOCAL strucCharFormat IS _winCHARFORMAT
 	//LOCAL wFamily AS WORD
-
-	
-
 	//strucCharFormat:cbSize := _SIZEOF(_winCHARFORMAT)
 	//strucCharFormat:dwMask := DWORD(_CAST, _OR(CFM_FACE, CFM_SIZE, CFM_BOLD, CFM_ITALIC, CFM_STRIKEOUT, CFM_UNDERLINE))
 	//GuiWin32.SendMessage(oCtrl:Handle, EM_GETCHARFORMAT, DWORD(_CAST, TRUE), LONGINT(_CAST, @strucCharFormat))
@@ -514,8 +506,6 @@ CLASS RichEdit INHERIT MultiLineEdit
 		LOCAL liRet   AS LONGINT
 		strucFindTextEx := winFindTextEx{}
 
-		
-
 		Default(@lMatchCase,   FALSE)
 		Default(@lWholeWord,   FALSE)
 		Default(@lReturnRange, FALSE)
@@ -567,8 +557,6 @@ CLASS RichEdit INHERIT MultiLineEdit
 
 	METHOD SetOption(kOption, symOperation) 
 		LOCAL dwOperation AS DWORD
-
-		
 
 		Default(@symOperation, #Add)
 
@@ -650,8 +638,6 @@ CLASS RichEdit INHERIT MultiLineEdit
 	ASSIGN Value(uNewValue) 
 		SELF:__Value := uNewValue
 END CLASS
-
-
 
 INTERNAL VOSTRUCT _winPARAFORMAT ALIGN 1
 	MEMBER cbSize AS DWORD

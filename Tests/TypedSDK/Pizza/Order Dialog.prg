@@ -188,7 +188,7 @@ METHOD PostInit()
 	oCCMarioButton:BmpPressed   := Bitmap{ResourceID{"CHEF2", _GetInst()}}
 	RETURN NIL	
 
-METHOD VerticalSpin( oSpinEvent ) 
+METHOD VerticalSpin( oSpinEvent AS SpinnerEvent ) 
 	SUPER:VerticalSpin(oSpinEvent)
 
   IF oSpinEvent:Spinner == oDCCrustSpinner

@@ -40,11 +40,11 @@
     <VO14>false</VO14>
     <VO15>true</VO15>
     <VO16>true</VO16>
-    <XSharpProjectversion>2.6.3.0</XSharpProjectversion>
+    <XSharpProjectversion>2.7.0.0</XSharpProjectversion>
     <Nostandarddefs>false</Nostandarddefs>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'" Label="Configuration">
-    <PlatformTarget>AnyCPU</PlatformTarget>
+    <PlatformTarget>x86</PlatformTarget>
     <EmitDebugInformation>true</EmitDebugInformation>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
@@ -60,7 +60,7 @@
     <SignAssembly>false</SignAssembly>
     <DelaySign>false</DelaySign>
     <AssemblyOriginatorKeyFile />
-    <CommandLineOption />
+    <CommandLineOption>/subsystemversion:5.00</CommandLineOption>
     <Prefer32Bit>False</Prefer32Bit>
     <RegisterForComInterop>False</RegisterForComInterop>
   </PropertyGroup>
@@ -91,6 +91,9 @@
     <Compile Include="Order Dialog.prg">
       <SubType>Code</SubType>
     </Compile>
+    <NativeResource Include="Images.rc">
+      <DependentUpon>Images.prg</DependentUpon>
+    </NativeResource>
     <NativeResource Include="Order Dialog.OrderDialog.rc">
       <DependentUpon>Order Dialog.prg</DependentUpon>
     </NativeResource>
@@ -145,6 +148,12 @@
     <Compile Include="SubmitDlg.prg">
       <SubType>Code</SubType>
     </Compile>
+    <NativeResource Include="Order Dialog.prg.rc">
+      <DependentUpon>Order Dialog.prg</DependentUpon>
+    </NativeResource>
+    <NativeResource Include="SubmitDlg.prg.rc">
+      <DependentUpon>SubmitDlg.prg</DependentUpon>
+    </NativeResource>
     <NativeResource Include="SubmitDlg.SubmitDlg.rc">
       <DependentUpon>SubmitDlg.prg</DependentUpon>
     </NativeResource>

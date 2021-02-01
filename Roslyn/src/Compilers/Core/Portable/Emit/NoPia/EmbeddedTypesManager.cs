@@ -174,12 +174,19 @@ namespace Microsoft.CodeAnalysis.Emit.NoPia
             {
                 Cci.INamespaceTypeDefinition dx = x;
                 Cci.INamespaceTypeDefinition dy = y;
-
+#if XSHARP
+                int result = XSharpString.Compare(dx.NamespaceName, dy.NamespaceName);
+#else
                 int result = string.Compare(dx.NamespaceName, dy.NamespaceName, StringComparison.Ordinal);
+#endif
 
                 if (result == 0)
                 {
+#if XSHARP
+                    result = XSharpString.Compare(dx.Name, dy.Name);
+#else
                     result = string.Compare(dx.Name, dy.Name, StringComparison.Ordinal);
+#endif
 
                     if (result == 0)
                     {

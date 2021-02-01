@@ -2020,8 +2020,6 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                     }
                 }
            }
-
-              
             if (dialect == XSharpDialect.FoxPro)
             {
                 // Visual FoxPro Keywords
@@ -2039,7 +2037,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                     {"XOR", FOX_XOR},
                     {"EACH", EACH },                // Only after FOR
                     {"M", FOX_M }                   // FoxPro allows LOCAL M.Name and PRIVATE M.Name
-                }; 
+                };
                 var vfpKeyWordAbbrev = new Dictionary<string, int>
                 {
                     {"ENDDEFINE", ENDDEFINE },

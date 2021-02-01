@@ -2007,20 +2007,20 @@ namespace Microsoft.CodeAnalysis.CSharp
                         }
                         else
                         {
+#if XSHARP
+                            if ((xresult = XSharpResolveEqualSymbols(first, second, originalSymbols, where as CSharpSyntaxNode, diagnostics)) != null)
+                            {
+                                return xresult;
+                            }
+#endif
                             Debug.Assert(originalSymbols[best.Index].Name != originalSymbols[secondBest.Index].Name ||
-                                         !Symbol.Equals(originalSymbols[best.Index], originalSymbols[secondBest.Index], TypeCompareKind.ConsiderEverything),
+                            !Symbol.Equals(originalSymbols[best.Index], originalSymbols[secondBest.Index], TypeCompareKind.ConsiderEverything),
                                 "Why was the lookup result viable if it contained non-equal symbols with the same name?");
 
                             reportError = true;
 
                             if (first is NamespaceOrTypeSymbol && second is NamespaceOrTypeSymbol)
                             {
-#if XSHARP
-                                if ((xresult = XSharpResolveEqualSymbols(first, second, originalSymbols, where as CSharpSyntaxNode, diagnostics)) != null)
-                                {
-                                    return xresult;
-                                }
-#endif
                                 if (options.IsAttributeTypeLookup() &&
                                     first.Kind == SymbolKind.NamedType &&
                                     second.Kind == SymbolKind.NamedType &&

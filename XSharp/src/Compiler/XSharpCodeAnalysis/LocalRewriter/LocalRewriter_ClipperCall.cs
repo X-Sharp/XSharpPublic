@@ -38,7 +38,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
             if (ctor != null)
             {
-                return new BoundObjectCreationExpression(expr.Syntax, ctor, null, expr, _factory.Literal(true));
+                return new BoundObjectCreationExpression(expr.Syntax,ctor, new BoundExpression[] { expr, _factory.Literal(true) });
             }
             return expr;
         }

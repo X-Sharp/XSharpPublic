@@ -2765,9 +2765,9 @@ namespace Microsoft.CodeAnalysis
             return TryExtractByteArrayValueFromAttribute(info.Handle, out nullableTransforms);
         }
 
-        #endregion
+#endregion
 
-        #region TypeSpec helpers
+#region TypeSpec helpers
 
         /// <exception cref="BadImageFormatException">An exception from metadata reader.</exception>
         internal BlobReader GetTypeSpecificationSignatureReaderOrThrow(TypeSpecificationHandle typeSpec)
@@ -2779,9 +2779,9 @@ namespace Microsoft.CodeAnalysis
             return MetadataReader.GetBlobReader(signature);
         }
 
-        #endregion
+#endregion
 
-        #region MethodSpec helpers
+#region MethodSpec helpers
 
         /// <exception cref="BadImageFormatException">An exception from metadata reader.</exception>
         internal void GetMethodSpecificationOrThrow(MethodSpecificationHandle handle, out EntityHandle method, out BlobHandle instantiation)
@@ -2791,9 +2791,9 @@ namespace Microsoft.CodeAnalysis
             instantiation = methodSpec.Signature;
         }
 
-        #endregion
+#endregion
 
-        #region GenericParam helpers
+#region GenericParam helpers
 
         /// <exception cref="BadImageFormatException">An exception from metadata reader.</exception>
         internal void GetGenericParamPropsOrThrow(
@@ -2806,9 +2806,9 @@ namespace Microsoft.CodeAnalysis
             flags = row.Attributes;
         }
 
-        #endregion
+#endregion
 
-        #region MethodDef helpers
+#region MethodDef helpers
 
         /// <exception cref="BadImageFormatException">An exception from metadata reader.</exception>
         internal string GetMethodDefNameOrThrow(MethodDefinitionHandle methodDef)
@@ -2936,9 +2936,9 @@ namespace Microsoft.CodeAnalysis
             }
         }
 
-        #endregion
+#endregion
 
-        #region MemberRef helpers
+#region MemberRef helpers
 
         /// <exception cref="BadImageFormatException">An exception from metadata reader.</exception>
         public string GetMemberRefNameOrThrow(MemberReferenceHandle memberRef)
@@ -2977,9 +2977,9 @@ namespace Microsoft.CodeAnalysis
             signature = MetadataReader.GetBlobBytes(row.Signature);
         }
 
-        #endregion MemberRef helpers
+#endregion MemberRef helpers
 
-        #region ParamDef helpers
+#region ParamDef helpers
 
         /// <exception cref="BadImageFormatException">An exception from metadata reader.</exception>
         internal void GetParamPropsOrThrow(
@@ -3005,9 +3005,9 @@ namespace Microsoft.CodeAnalysis
             return MetadataReader.GetParameter(param).SequenceNumber;
         }
 
-        #endregion
+#endregion
 
-        #region PropertyDef helpers
+#region PropertyDef helpers
 
         /// <exception cref="BadImageFormatException">An exception from metadata reader.</exception>
         internal string GetPropertyDefNameOrThrow(PropertyDefinitionHandle propertyDef)
@@ -3032,9 +3032,9 @@ namespace Microsoft.CodeAnalysis
             flags = property.Attributes;
         }
 
-        #endregion
+#endregion
 
-        #region EventDef helpers
+#region EventDef helpers
 
         /// <exception cref="BadImageFormatException">An exception from metadata reader.</exception>
         internal string GetEventDefNameOrThrow(EventDefinitionHandle eventDef)
@@ -3055,9 +3055,9 @@ namespace Microsoft.CodeAnalysis
             type = eventRow.Type;
         }
 
-        #endregion
+#endregion
 
-        #region FieldDef helpers
+#region FieldDef helpers
 
         /// <exception cref="BadImageFormatException">An exception from metadata reader.</exception>
         public string GetFieldDefNameOrThrow(FieldDefinitionHandle fieldDef)
@@ -3123,9 +3123,9 @@ namespace Microsoft.CodeAnalysis
             }
         }
 
-        #endregion
+#endregion
 
-        #region Attribute Helpers
+#region Attribute Helpers
 
         /// <exception cref="BadImageFormatException">An exception from metadata reader.</exception>
         public CustomAttributeHandleCollection GetCustomAttributesOrThrow(EntityHandle handle)
@@ -3139,7 +3139,7 @@ namespace Microsoft.CodeAnalysis
             return MetadataReader.GetCustomAttribute(handle).Value;
         }
 
-        #endregion
+#endregion
 
         /// <exception cref="BadImageFormatException">An exception from metadata reader.</exception>
         private BlobHandle GetMarshallingDescriptorHandleOrThrow(EntityHandle fieldOrParameterToken)

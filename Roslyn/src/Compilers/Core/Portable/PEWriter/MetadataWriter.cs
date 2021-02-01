@@ -3331,10 +3331,12 @@ namespace Microsoft.Cci
             else
             {
 #if XSHARP
+#if DEBUG
                 // Vulcan parameters for Eval() have IsConst modifier !
                 Debug.Assert(parameterTypeInformation.RefCustomModifiers.Length == 0 || parameterTypeInformation.IsByReference  
                     || (parameterTypeInformation is ParameterSymbolAdapter psa && 
                         psa.AdaptedParameterSymbol is AnonymousTypeManager.CodeBlockEvalMethodParameterSymbol));
+#endif
 #else
                 Debug.Assert(parameterTypeInformation.RefCustomModifiers.Length == 0 || parameterTypeInformation.IsByReference);
 #endif

@@ -48,7 +48,11 @@ namespace Microsoft.CodeAnalysis.CodeGen
         {
             if (_lazyMethodsByName == null)
             {
+#if XSHARP
+                var map = new Dictionary<string, MethodData>(XSharpString.Comparer);
+#else
                 var map = new Dictionary<string, MethodData>();
+#endif
                 foreach (var pair in Methods)
                 {
                     var name = GetMethodName(pair.Key);

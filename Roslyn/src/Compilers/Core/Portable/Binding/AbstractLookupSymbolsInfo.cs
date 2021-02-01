@@ -233,7 +233,14 @@ namespace Microsoft.CodeAnalysis
 
         protected AbstractLookupSymbolsInfo(IEqualityComparer<string> comparer)
         {
+#if XSHARP
+            if (XSharpString.CaseSensitive)
+                _comparer = comparer;
+            else
+                _comparer = XSharpString.Comparer;
+#else
             _comparer = comparer;
+#endif
             _nameMap = new Dictionary<string, UniqueSymbolOrArities>(comparer);
         }
 

@@ -756,7 +756,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
 
                     diagnostics.Add(errorCode, overridingMemberLocation, overridingMember, hiddenMembers[0]);
                 }
+#if XSHARP
+                else if (overridingMember.IsOverride) // nvk: This prevents the following checks because the override flag gets cleared
+#else
                 else
+#endif
                 {
                     Symbol associatedPropertyOrEvent = null;
                     if (overridingMemberIsMethod)

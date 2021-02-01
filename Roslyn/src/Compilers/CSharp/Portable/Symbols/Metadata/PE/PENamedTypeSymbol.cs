@@ -27,13 +27,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols.Metadata.PE
 #if XSHARP
     internal abstract partial class PENamedTypeSymbol : NamedTypeSymbol
     {
-        private static readonly Dictionary<string, ImmutableArray<PENamedTypeSymbol>> s_emptyNestedTypes = new Dictionary<string, ImmutableArray<PENamedTypeSymbol>>(XSharpString.Comparer);
 #else
     internal abstract class PENamedTypeSymbol : NamedTypeSymbol
     {
-        private static readonly Dictionary<string, ImmutableArray<PENamedTypeSymbol>> s_emptyNestedTypes = new Dictionary<string, ImmutableArray<PENamedTypeSymbol>>(EmptyComparer.Instance);
 #endif
-
+        private static readonly Dictionary<string, ImmutableArray<PENamedTypeSymbol>> s_emptyNestedTypes = new Dictionary<string, ImmutableArray<PENamedTypeSymbol>>(EmptyComparer.Instance);
         private readonly NamespaceOrTypeSymbol _container;
         private readonly TypeDefinitionHandle _handle;
         private readonly string _name;

@@ -53,6 +53,13 @@ namespace Microsoft.CodeAnalysis
 
         public static bool Equals(string lhs, string rhs) =>  _compare(lhs, rhs) == 0;
         public static int Compare(string lhs, string rhs) => _compare(lhs, rhs);
+        public static int Compare(string lhs, int lhsstart, string rhs, int rhsstart, int length, StringComparison options)
+        {
+            if (_caseSensitive)
+                return String.Compare(lhs, lhsstart, rhs, rhsstart, length);
+            else
+                return String.Compare(lhs, lhsstart, rhs, rhsstart, length, true);
+        }
         public static StringComparer Comparer { get; private set; } = StringComparer.Ordinal;
         public static StringComparison Comparison { get; private set; } = StringComparison.Ordinal;
         public static bool IgnoreCase => !CaseSensitive;

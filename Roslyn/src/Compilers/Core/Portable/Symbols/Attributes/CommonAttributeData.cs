@@ -120,7 +120,11 @@ namespace Microsoft.CodeAnalysis
                     string name = container.Name;
                     int nameLength = name.Length;
                     index -= nameLength;
+#if XSHARP
+                    if (index < 0 || XSharpString.Compare(namespaceName, index, name, 0, nameLength, options) != 0)
+#else
                     if (index < 0 || string.Compare(namespaceName, index, name, 0, nameLength, options) != 0)
+#endif
                     {
                         return false;
                     }
@@ -184,7 +188,7 @@ namespace Microsoft.CodeAnalysis
             return -1;
         }
 
-        #region Decimal and DateTime Constant Decoding
+#region Decimal and DateTime Constant Decoding
 
         internal ConstantValue DecodeDecimalConstantValue()
         {
@@ -245,7 +249,7 @@ namespace Microsoft.CodeAnalysis
             return ConstantValue.Create(new DateTime(value));
         }
 
-        #endregion
+#endregion
 
         internal ObsoleteAttributeData DecodeObsoleteAttribute(ObsoleteAttributeKind kind)
         {

@@ -33,7 +33,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols.Metadata.PE
         // so we can find all types and sub namespaces easily
         // siblings is the list of all namespaces with same name but different casing, including
         // this namespace.
-        protected IList<PENestedNamespaceSymbol> lazyNamespacesList ;    
+        protected IList<PENestedNamespaceSymbol> lazyNamespacesList;
         protected ImmutableArray<PENestedNamespaceSymbol> siblings = ImmutableArray<PENestedNamespaceSymbol>.Empty;
 #endif
 
@@ -286,7 +286,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols.Metadata.PE
                 // we link these namespaces with eachother so the type 
                 // lookup or member lookup on one returns the elements of all
                 var namespaces = new Dictionary<string, PENestedNamespaceSymbol>(XSharpString.Comparer);
-                var duplicates  = new Dictionary<string, List<PENestedNamespaceSymbol>>(XSharpString.Comparer);
+                var duplicates = new Dictionary<string, List<PENestedNamespaceSymbol>>(XSharpString.Comparer);
                 var list = new List<PENestedNamespaceSymbol>();
 #else
                 var namespaces = new Dictionary<string, PENestedNamespaceSymbol>(StringOrdinalComparer.Instance);
@@ -296,7 +296,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols.Metadata.PE
                 {
                     var c = new PENestedNamespaceSymbol(child.Key, this, child.Value);
 #if XSHARP
-                    if (! namespaces.ContainsKey(c.Name))
+                    if (!namespaces.ContainsKey(c.Name))
                     {
                         namespaces.Add(c.Name, c);
                     }

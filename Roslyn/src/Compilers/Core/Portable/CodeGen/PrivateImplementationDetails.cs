@@ -57,7 +57,11 @@ namespace Microsoft.CodeAnalysis.CodeGen
         // synthesized methods
         private ImmutableArray<Cci.IMethodDefinition> _orderedSynthesizedMethods;
         private readonly ConcurrentDictionary<string, Cci.IMethodDefinition> _synthesizedMethods =
+#if XSHARP
+            new ConcurrentDictionary<string, Cci.IMethodDefinition>(XSharpString.Comparer);
+#else
             new ConcurrentDictionary<string, Cci.IMethodDefinition>();
+#endif
 
         // field types for different block sizes.
         private ImmutableArray<Cci.ITypeReference> _orderedProxyTypes;

@@ -87,7 +87,11 @@ namespace Microsoft.CodeAnalysis
 
                 case ConstantValueTypeDiscriminator.String:
                     Debug.Assert(second.IsString);
+#if XSHARP
+                    return XSharpString.Compare(first.StringValue, second.StringValue);
+#else
                     return string.CompareOrdinal(first.StringValue, second.StringValue);
+#endif
 
                 default:
                     throw ExceptionUtilities.UnexpectedValue(first.Discriminator);

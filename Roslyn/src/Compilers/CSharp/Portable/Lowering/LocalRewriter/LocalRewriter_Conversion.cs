@@ -28,22 +28,29 @@ namespace Microsoft.CodeAnalysis.CSharp
             var rewrittenOperand = VisitExpression(node.Operand);
             _inExpressionLambda = wasInExpressionLambda;
 #if XSHARP
-            if (rewrittenType.IsPszType() )
+            if (rewrittenType.IsPszType())
             {
-                if (rewrittenOperand is { } && rewrittenOperand.Type is { } && 
+                if (rewrittenOperand is { } && rewrittenOperand.Type is { } &&
                     rewrittenOperand.Type.SpecialType != SpecialType.System_Object)
                 {
                     return this.MakePsz(rewrittenOperand);
                 }
             }
-#endif
-
             var result = MakeConversionNode(node, node.Syntax, rewrittenOperand, node.Conversion, node.Checked, node.ExplicitCastInCode, node.ConstantValue, rewrittenType);
 
             var toType = node.Type;
             Debug.Assert(result.Type!.Equals(toType, TypeCompareKind.IgnoreDynamicAndTupleNames | TypeCompareKind.IgnoreNullableModifiersForReferenceTypes));
 
             return result;
+#else
+            var result = MakeConversionNode(node, node.Syntax, rewrittenOperand, node.Conversion, node.Checked, node.ExplicitCastInCode, node.ConstantValue, rewrittenType);
+
+            var toType = node.Type;
+            Debug.Assert(result.Type!.Equals(toType, TypeCompareKind.IgnoreDynamicAndTupleNames | TypeCompareKind.IgnoreNullableModifiersForReferenceTypes));
+
+            return result;
+
+#endif
         }
 
         private static bool IsFloatingPointExpressionOfUnknownPrecision(BoundExpression rewrittenNode)

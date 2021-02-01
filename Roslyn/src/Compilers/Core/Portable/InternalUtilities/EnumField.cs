@@ -75,7 +75,11 @@ namespace Roslyn.Utilities
                 // Sort order is descending value, then ascending name.
                 int diff = unchecked(((long)field2.Value).CompareTo((long)field1.Value));
                 return diff == 0
+#if XSHARP
+                    ? XSharpString.Compare(field1.Name, field2.Name)
+#else
                     ? string.CompareOrdinal(field1.Name, field2.Name)
+#endif
                     : diff;
             }
         }

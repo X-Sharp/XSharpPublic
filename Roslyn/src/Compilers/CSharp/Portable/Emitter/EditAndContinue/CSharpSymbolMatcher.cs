@@ -178,11 +178,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Emit
             {
                 if (_lazyTopLevelTypes == null)
                 {
-#if XSHARP				
+#if XSHARP
                     var typesByName = new Dictionary<string, Cci.INamespaceTypeDefinition>(s_nameComparer);
 #else
                     var typesByName = new Dictionary<string, Cci.INamespaceTypeDefinition>(StringOrdinalComparer.Instance);
-#endif					
+#endif
                     foreach (var type in GetTopLevelTypes())
                     {
                         // All generated top-level types are assumed to be in the global namespace.

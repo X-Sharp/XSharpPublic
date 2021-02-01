@@ -15,7 +15,7 @@ using System.Text;
 using System.Threading;
 using Roslyn.Utilities;
 using Antlr4.Runtime;
-using Antlr4.Runtime.Misc;
+using Antlr4.Runtime.Misc; 
 using Antlr4.Runtime.Tree;
 using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
 using System.Diagnostics; // PLEASE DO NOT REMOVE THIS!!!!
@@ -25,6 +25,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 {
     using Microsoft.CodeAnalysis.Syntax.InternalSyntax;
     using System.Net.Http.Headers;
+    using System.Net.Mime;
 
     internal partial class XSharpTreeTransformationCore : XSharpBaseListener
     {
@@ -5718,7 +5719,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             context.PutList(MakeList<StatementSyntax>(context._ImpliedVars));
         }
 
-
         public override void ExitLocalvar([NotNull] XP.LocalvarContext context)
         {
             // nvk: Do nothing here. It will be handled by the visitor after Datatype(s) are processed.
@@ -5971,7 +5971,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         public override void ExitImpliedvar([NotNull] XP.ImpliedvarContext context)
         {
             bool isConst = context.Const != null;
-            bool isStatic = (context.Parent as XP.VarLocalDeclContext).Static != null;
+            var parent = (XP.VarLocalDeclContext) context.Parent;
+            bool isStatic = parent.Static != null;
+            bool isUsing = parent.Using != null;
             context.SetSequencePoint();
             var variables = _pool.AllocateSeparated<VariableDeclaratorSyntax>();
             var name = context.Id.GetText();
@@ -5990,7 +5992,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             context.Put(_syntaxFactory.LocalDeclarationStatement(
                         attributeLists: default,
                         awaitKeyword: null,
-                        usingKeyword: null,
+                        usingKeyword: isUsing ? parent.Using.SyntaxKeyword() : null,
                 EmptyList<SyntaxToken>(),
                 _syntaxFactory.VariableDeclaration(_impliedType, variables),
                 SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)));

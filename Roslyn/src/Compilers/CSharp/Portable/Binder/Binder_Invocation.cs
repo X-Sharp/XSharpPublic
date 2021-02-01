@@ -1311,6 +1311,9 @@ namespace Microsoft.CodeAnalysis.CSharp
             bool assertMissingParametersAreOptional = true)
         {
 
+#if XSHARP
+            argumentsBuilder = XsGetDefaultArguments(argumentsBuilder, parameters);
+#endif
             var visitedParameters = BitVector.Create(parameters.Length);
             for (var i = 0; i < argumentsBuilder.Count; i++)
             {
@@ -1320,7 +1323,6 @@ namespace Microsoft.CodeAnalysis.CSharp
                     visitedParameters[parameter.Ordinal] = true;
                 }
             }
-
             // only proceed with binding default arguments if we know there is some parameter that has not been matched by an explicit argument
             if (parameters.All(static (param, visitedParameters) => visitedParameters[param.Ordinal], visitedParameters))
             {

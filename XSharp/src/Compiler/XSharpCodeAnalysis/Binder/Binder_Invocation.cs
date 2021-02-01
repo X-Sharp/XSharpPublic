@@ -27,6 +27,49 @@ namespace Microsoft.CodeAnalysis.CSharp
     internal partial class Binder
     {
 
+        ArrayBuilder<BoundExpression> XsGetDefaultArguments(ArrayBuilder<BoundExpression> arguments, ImmutableArray<ParameterSymbol> parameters)
+        {
+            if (parameters.Length == 0)
+            {
+                return arguments;
+            }
+            for (var i = 0; i < arguments.Count; i++)
+            {
+                var arg = arguments[i];
+                if (arg.Syntax.XIsMissingArgument)
+                {
+
+                    if (i < parameters.Length && !parameters[i].IsParams)
+                    {
+                        var parameter = parameters[i];
+                        var defValue = XsDefaultValue(parameter);
+                        if (defValue != ConstantValue.Null)
+                        {
+                            arguments[i] = new BoundLiteral(arg.Syntax, defValue, parameter.Type);
+                        }
+                        else
+                        {
+                            arguments[i] = new BoundDefaultExpression(arg.Syntax, parameter.Type, false);
+                        }
+                    }
+                    else
+                    {
+                        var parameter = parameters[parameters.Length - 1];
+                        if (parameter.IsParams && parameter.Type.IsArray())
+                        {
+                            var at = (ArrayTypeSymbol)parameter.Type;
+                            if (!Equals(at.ElementType, arg.Type))
+                            {
+                                arguments[i] = new BoundDefaultExpression(arg.Syntax, at.ElementType, false);
+                            }
+                        }
+                    }
+
+                }
+            }
+            return arguments;
+        }
+
 
         private static ConstantValue XsDefaultValue(ParameterSymbol parameter)
         {
@@ -34,8 +77,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             var defaultConstantValue = parameter.GetVODefaultParameter();
             if (defaultConstantValue == null)
                 return null;
-            if (parameterType is NamedTypeSymbol &&
-                ((NamedTypeSymbol)parameterType).ConstructedFrom.IsPszType())
+            if (parameterType is NamedTypeSymbol nts && nts.ConstructedFrom.IsPszType())
             {
 
                 if (defaultConstantValue.StringValue != null)

@@ -225,7 +225,6 @@ namespace Microsoft.CodeAnalysis.CSharp
                 case SpecialType.System_DateTime:
                 case SpecialType.System_Object:
                     return true;
-                
             }
             if (type.IsArrayType())
                 return true;

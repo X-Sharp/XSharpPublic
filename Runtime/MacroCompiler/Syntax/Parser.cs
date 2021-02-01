@@ -110,6 +110,14 @@ namespace XSharp.MacroCompiler
             t = null;
             return false;
         }
+        Token ExpectToken(TokenType c)
+        {
+            if (La() == c)
+            {
+                return ConsumeAndGet();
+            }
+            return null;
+        }
         Token ExpectAndGetAny(params TokenType[] c)
         {
             if (c.Contains(La()))

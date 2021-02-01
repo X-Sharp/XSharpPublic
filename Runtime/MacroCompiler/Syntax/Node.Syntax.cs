@@ -14,17 +14,6 @@ namespace XSharp.MacroCompiler.Syntax
         internal Token Token = null;
         internal Node(Token t) { Token = t; }
     }
-    abstract internal partial class Stmt : Node
-    {
-        internal Stmt(Token t) : base(t) { }
-    }
-    internal partial class ReturnStmt : Stmt
-    {
-        internal Expr Expr;
-        internal ReturnStmt(Token t, Expr e) : base(t) { Expr = e; }
-        internal ReturnStmt(Expr e) : this(e.Token, e) { }
-        public override string ToString() { return "RETURN (" + Expr.ToString() + ")"; }
-    }
     abstract internal partial class Expr : Node
     {
         internal Expr(Token t) : base(t) { }

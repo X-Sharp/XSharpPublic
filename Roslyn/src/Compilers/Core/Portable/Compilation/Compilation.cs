@@ -1600,7 +1600,7 @@ namespace Microsoft.CodeAnalysis
                         if (manifestContents == null)
                         {
 #if XSHARP
-                            manifestContents = typeof(Compilation).GetTypeInfo().Assembly.GetManifestResourceStream("LanguageService.CodeAnalysis.default.win32manifest");
+                            manifestContents = typeof(Compilation).GetTypeInfo().Assembly.GetManifestResourceStream("LanguageService.CodeAnalysis.XSharp.default.win32manifest");
 #else
                             manifestContents = typeof(Compilation).GetTypeInfo().Assembly.GetManifestResourceStream("Microsoft.CodeAnalysis.Resources.default.win32manifest");
 #endif

@@ -1099,7 +1099,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Emit
                 case Accessibility.Private:
 #if XSHARP
                     // Allow private structs and classes and treat them as internal
-                    if (symbol.ContainingType.IsNull())
+                    if (symbol.ContainingType is null)
                     {
                         if (symbol.ContainingAssembly.IsInteractive)
                         {

@@ -189,7 +189,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             foreach (var a in arguments)
             {
 
-                if (a.Type.IsNull() && !a.Syntax.XIsCodeBlock)
+                if (a.Type is null && !a.Syntax.XIsCodeBlock)
                 {
                     convArgs.Add(_factory.Default(usualType));
                 }

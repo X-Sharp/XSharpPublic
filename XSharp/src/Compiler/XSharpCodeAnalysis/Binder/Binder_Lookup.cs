@@ -58,13 +58,13 @@ namespace Microsoft.CodeAnalysis.CSharp
                     Binder scope = this;
                     while (scope != null)
                     {
-                        if (scope is InContainerBinder && scope.ContainingType.IsNull()) // at the namespace level, so outside of all types
+                        if (scope is InContainerBinder && scope.ContainingType is null) // at the namespace level, so outside of all types
                         {
                             scope.LookupSymbolsInSingleBinder(result, name, arity, basesBeingResolved, funcOptions, this, diagnose, ref useSiteDiagnostics);
                             FilterResults(result, options);
                             if (!result.IsClear)
                             {
-           					    break;
+                                break;
                             }
                         }
                         scope = scope.Next;

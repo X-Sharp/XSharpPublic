@@ -66,7 +66,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                 var initializerOpt = initializerBinder.BindInferredVariableInitializer(diagnostics, RefKind.None, declarator.Initializer, declarator);
                 if (initializerOpt != null && !type.IsPszType())
                 {
-                    if ((object)initializerOpt.Type != null && !initializerOpt.Type.IsErrorType())
+                    if (initializerOpt.Type is { } && !initializerOpt.Type.IsErrorType())
                     {
                         type = initializerOpt.Type;
 
@@ -82,7 +82,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                         }
                     }
                 }
-                if (type.IsNull())
+                if (type is null)
                 {
                     type = compilation.GetSpecialType(SpecialType.System_Object);
                 }

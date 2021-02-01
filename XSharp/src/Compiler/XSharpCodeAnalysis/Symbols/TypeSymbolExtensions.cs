@@ -18,26 +18,26 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
 {
     internal static partial class TypeSymbolExtensions
     {
-        private static ConcurrentDictionary<string, XSharpTargetDLL> dictionary;
+        private static readonly ConcurrentDictionary<string, XSharpTargetDLL> s_dictionary;
         static TypeSymbolExtensions()
         {
-            dictionary = new ConcurrentDictionary<string, XSharpTargetDLL>(XSharpString.Comparer);
+            s_dictionary = new ConcurrentDictionary<string, XSharpTargetDLL>(XSharpString.Comparer);
         }
 
         public static bool IsOurAttribute(this NamedTypeSymbol atype, string name)
         {
-            if (atype.IsNull())
-                return false;
-            if (atype.ContainingAssembly.IsRT())
+            if (atype is { })
             {
-                return XSharpString.Equals(atype.Name, name);
+                if (atype.ContainingAssembly.IsRT())
+                {
+                    return XSharpString.Equals(atype.Name, name);
+                }
             }
             return false;
-
         }
         internal static bool IsUsualType(this TypeSymbol type)
         {
-            return !type.IsNull() && type.Name == OurTypeNames.UsualType;
+            return type is { } && type.Name == OurTypeNames.UsualType;
         }
         internal static bool IsNotUsualType(this TypeSymbol type)
         {
@@ -56,28 +56,27 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
         }
         internal static bool IsSymbolType(this TypeSymbol type)
         {
-            return !type.IsNull() && type.Name == OurTypeNames.SymbolType;
+            return type is { } && type.Name == OurTypeNames.SymbolType;
         }
-        
         internal static bool IsNotSymbolType(this TypeSymbol type)
         {
             return !IsSymbolType(type);
         }
         internal static bool IsArrayType(this TypeSymbol type)
         {
-            return !type.IsNull() && type.Name == OurTypeNames.ArrayType;
+            return type is { } && type.Name == OurTypeNames.ArrayType;
         }
         internal static bool IsFloatType(this TypeSymbol type)
         {
-            return !type.IsNull() && (type.Name == OurTypeNames.FloatType || type.Name == OurTypeNames.VnFloatType);
+            return type is { } && (type.Name == OurTypeNames.FloatType || type.Name == OurTypeNames.VnFloatType);
         }
         internal static bool IsCodeblockType(this TypeSymbol type)
         {
-            return !type.IsNull() && type.Name == OurTypeNames.CodeBlockType;
+            return type is { } && type.Name == OurTypeNames.CodeBlockType;
         }
         internal static bool IsPszType(this TypeSymbol type)
         {
-            return !type.IsNull() && type.Name == OurTypeNames.PszType;
+            return type is { } && type.Name == OurTypeNames.PszType;
         }
         internal static bool IsNotPszType(this TypeSymbol type)
         {
@@ -85,36 +84,34 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
         }
         internal static bool IsWinBoolType(this TypeSymbol type)
         {
-            return !type.IsNull() && type.Name == OurTypeNames.WinBoolType;
-        }
-        public static bool IsNull(this TypeSymbol type)
-        {
-            return type is null;
+            return type is { } && type.Name == OurTypeNames.WinBoolType;
         }
         internal static bool IsDateType(this TypeSymbol type)
         {
-            return !type.IsNull() && (type.Name == OurTypeNames.DateType || type.Name == OurTypeNames.VnDateType);
+            return type is { } && (type.Name == OurTypeNames.DateType || type.Name == OurTypeNames.VnDateType);
         }
         public static bool IsVoStructOrUnion(this TypeSymbol _type)
         {
             // TODO (nvk): there must be a better way!
             NamedTypeSymbol type = null;
-            if (!_type.IsNull())
+            if (_type is { })
+            {
                 type = _type.OriginalDefinition as NamedTypeSymbol;
-            if (type is SourceNamedTypeSymbol)
-            {
-                return (type as SourceNamedTypeSymbol).IsSourceVoStructOrUnion ;
-            }
-            if (type is Metadata.PE.PENamedTypeSymbol)
-            {
-                if ((object)type != null && type.Arity == 0 && !type.MangleName)
+                if (type is SourceNamedTypeSymbol sourceType)
                 {
-                    var attrs = type.GetAttributes();
-                    foreach (var attr in attrs)
+                    return sourceType.IsSourceVoStructOrUnion;
+                }
+                if (type is Metadata.PE.PENamedTypeSymbol)
+                {
+                    if (type.Arity == 0 && !type.MangleName)
                     {
-                        var atype = attr.AttributeClass;
-                        if (atype.IsOurAttribute(OurTypeNames.VOStructAttribute))
-                            return true;
+                        var attrs = type.GetAttributes();
+                        foreach (var attr in attrs)
+                        {
+                            var atype = attr.AttributeClass;
+                            if (atype.IsOurAttribute(OurTypeNames.VOStructAttribute))
+                                return true;
+                        }
                     }
                 }
             }
@@ -125,31 +122,32 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
         {
             // TODO (nvk): there must be a better way!
             NamedTypeSymbol type = null;
-            if (!_type.IsNull())
-                type = _type.OriginalDefinition as NamedTypeSymbol;
-            if (!type.IsNull() && type.Arity == 0 && !type.MangleName)
+            if (_type is { })
             {
-                if (type is SourceNamedTypeSymbol)
+                type = _type.OriginalDefinition as NamedTypeSymbol;
+                if (type is { } && type.Arity == 0 && !type.MangleName)
                 {
-                    var sourceType = (SourceNamedTypeSymbol)type;
-                    if (sourceType.IsSourceVoStructOrUnion)
+                    if (type is SourceNamedTypeSymbol sourceType)
                     {
-                        return sourceType.VoStructSize;
-                    }
-                }
-                else if (type is Metadata.PE.PENamedTypeSymbol)
-                {
-                    var attrs = type.GetAttributes();
-                    foreach (var attr in attrs)
-                    {
-                        var atype = attr.AttributeClass;
-                        if (atype.IsOurAttribute(OurTypeNames.VOStructAttribute))
+                        if (sourceType.IsSourceVoStructOrUnion)
                         {
-                            if (attr.ConstructorArguments != null)
+                            return sourceType.VoStructSize;
+                        }
+                    }
+                    else if (type is Metadata.PE.PENamedTypeSymbol)
+                    {
+                        var attrs = type.GetAttributes();
+                        foreach (var attr in attrs)
+                        {
+                            var atype = attr.AttributeClass;
+                            if (atype.IsOurAttribute(OurTypeNames.VOStructAttribute))
                             {
-                                return attr.ConstructorArguments.First().DecodeValue<int>(SpecialType.System_Int32);
+                                if (attr.ConstructorArguments != null)
+                                {
+                                    return attr.ConstructorArguments.First().DecodeValue<int>(SpecialType.System_Int32);
+                                }
+                                return 0;
                             }
-                            return 0;
                         }
                     }
                 }
@@ -161,31 +159,32 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
         {
             // TODO (nvk): there must be a better way!
             NamedTypeSymbol type = null;
-            if (!_type.IsNull())
-                type = _type.OriginalDefinition as NamedTypeSymbol;
-            if (!type.IsNull() && type.Arity == 0 && !type.MangleName)
+            if (_type is { })
             {
-                if (type is SourceNamedTypeSymbol)
+                type = _type.OriginalDefinition as NamedTypeSymbol;
+                if (type is { } && type.Arity == 0 && !type.MangleName)
                 {
-                    var sourceType = (SourceNamedTypeSymbol)type;
-                    if (sourceType.IsSourceVoStructOrUnion)
+                    if (type is SourceNamedTypeSymbol sourceType)
                     {
-                        return sourceType.VoStructElementSize;
-                    }
-                }
-                else if (type is Metadata.PE.PENamedTypeSymbol)
-                {
-                    var attrs = type.GetAttributes();
-                    foreach (var attr in attrs)
-                    {
-                        var atype = attr.AttributeClass;
-                        if (atype.IsOurAttribute(OurTypeNames.VOStructAttribute))
+                        if (sourceType.IsSourceVoStructOrUnion)
                         {
-                            if (attr.ConstructorArguments != null)
-                            { 
-                                return attr.ConstructorArguments.Last().DecodeValue<int>(SpecialType.System_Int32);
+                            return sourceType.VoStructElementSize;
+                        }
+                    }
+                    else if (type is Metadata.PE.PENamedTypeSymbol)
+                    {
+                        var attrs = type.GetAttributes();
+                        foreach (var attr in attrs)
+                        {
+                            var atype = attr.AttributeClass;
+                            if (atype.IsOurAttribute(OurTypeNames.VOStructAttribute))
+                            {
+                                if (attr.ConstructorArguments != null)
+                                {
+                                    return attr.ConstructorArguments.Last().DecodeValue<int>(SpecialType.System_Int32);
+                                }
+                                return 0;
                             }
-                            return 0;
                         }
                     }
                 }
@@ -198,7 +197,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             int elementSize = type.SpecialType.FixedBufferElementSizeInBytes();
             if (elementSize == 0)
             {
-                if (type.IsPszType()|| type.IsPointerType()) 
+                if (type.IsPszType()|| type.IsPointerType())
                     elementSize = 4;
                 else
                     elementSize = type.VoStructOrUnionSizeInBytes();
@@ -209,56 +208,54 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
 
         public static bool IsRTDLL(this AssemblySymbol _asm, XSharpTargetDLL wantedTarget)
         {
-            XSharpTargetDLL target;
-            if (!dictionary.TryGetValue(_asm.Name, out target))
+            if (!s_dictionary.TryGetValue(_asm.Name, out var target))
             {
                 IsRT(_asm);
-                dictionary.TryGetValue(_asm.Name, out target);
+                s_dictionary.TryGetValue(_asm.Name, out target);
             }
             return target == wantedTarget;
         }
 
         public static bool IsRT(this AssemblySymbol _asm)
         {
-            if ((object) _asm == null)  // cast to object to prevent calling equals operator on AssemblySymbol
+            if (_asm is null)  // prevent calling equals operator on AssemblySymbol
                 return false;
-            XSharpTargetDLL target;
-            if (dictionary.TryGetValue(_asm.Name, out target))
+            if (s_dictionary.TryGetValue(_asm.Name, out var target))
             {
                 return target != XSharpTargetDLL.Other;
             }
             switch (_asm.Name.ToLower())
             {
                 case XSharpAssemblyNames.XSharpCore:
-                    dictionary.TryAdd(_asm.Name, XSharpTargetDLL.Core);
+                    s_dictionary.TryAdd(_asm.Name, XSharpTargetDLL.Core);
                     return true;
                 case XSharpAssemblyNames.XSharpVO:
-                    dictionary.TryAdd(_asm.Name, XSharpTargetDLL.VO);
+                    s_dictionary.TryAdd(_asm.Name, XSharpTargetDLL.VO);
                     return true;
                 case XSharpAssemblyNames.XSharpRT:
-                    dictionary.TryAdd(_asm.Name, XSharpTargetDLL.RT);
+                    s_dictionary.TryAdd(_asm.Name, XSharpTargetDLL.RT);
                     return true;
                 case XSharpAssemblyNames.XSharpXPP:
-                    dictionary.TryAdd(_asm.Name, XSharpTargetDLL.XPP);
+                    s_dictionary.TryAdd(_asm.Name, XSharpTargetDLL.XPP);
                     return true;
                 case XSharpAssemblyNames.XSharpVFP:
-                    dictionary.TryAdd(_asm.Name, XSharpTargetDLL.VFP);
+                    s_dictionary.TryAdd(_asm.Name, XSharpTargetDLL.VFP);
                     return true;
                 case VulcanAssemblyNames.VulcanRT:
-                    dictionary.TryAdd(_asm.Name, XSharpTargetDLL.VulcanRT);
+                    s_dictionary.TryAdd(_asm.Name, XSharpTargetDLL.VulcanRT);
                     return true;
                 case VulcanAssemblyNames.VulcanRTFuncs:
-                    dictionary.TryAdd(_asm.Name, XSharpTargetDLL.VulcanRTFuncs);
+                    s_dictionary.TryAdd(_asm.Name, XSharpTargetDLL.VulcanRTFuncs);
                     return true;
                 default:
-                    dictionary.TryAdd(_asm.Name, XSharpTargetDLL.Other);
+                    s_dictionary.TryAdd(_asm.Name, XSharpTargetDLL.Other);
                     return false;
             }
         }
 
         public static bool HasVODefaultParameter(this ParameterSymbol param)
         {
-            if ((object)param != null) // cast to object to prevent calling equals operator on ParameterSymbol
+            if (param is { }) // prevent calling equals operator on ParameterSymbol
             {
                 var attrs = param.GetAttributes();
                 foreach (var attr in attrs)
@@ -273,7 +270,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
 
         public static bool HasLateBindingAttribute(this TypeSymbol type)
         {
-            while ((object)type != null) // cast to object to prevent calling equals operator on TypeSymbol
+            while (type is { }) // prevent calling equals operator on TypeSymbol
             {
                 var attrs = type.GetAttributes();
                 foreach (var attr in attrs)
@@ -290,7 +287,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
 
         public static ConstantValue GetVODefaultParameter(this ParameterSymbol param)
         {
-            if ((object)param != null) // cast to object to prevent calling equals operator on ParameterSymbol
+            if (param is { }) // prevent calling equals operator on ParameterSymbol
             {
                 var attrs = param.GetAttributes();
                 foreach (var attr in attrs)
@@ -321,7 +318,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                             case 1:
                                 // NIL
                                 return ConstantValue.Null;
-                            case 2:     
+                            case 2:
                                 // Date, value should be long of ticks. Return DateTime
                                 DateTime dt = new DateTime((long)arg.Value);
                                 return ConstantValue.Create(dt);
@@ -331,13 +328,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                                     return ConstantValue.Null;
                                 else
                                     return ConstantValue.Create((string)arg.Value);
-                            case 4:     
+                            case 4:
                                 // Psz, value should be a string or null
                                 if (arg.Value == null)
                                     return ConstantValue.Null;
                                 else
                                     return ConstantValue.Create ((string)arg.Value);
-                            case 5:     
+                            case 5:
                                 // IntPtr, return value as IntPtr
                                 if (arg.Value == null)
                                     return ConstantValue.Null;
@@ -360,7 +357,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
         {
             TypeSymbol sym;
             sym = type;
-            while (!sym.IsNull())
+            while (sym is { })
             {
                 if (sym.GetMembers(name).Length > 0)
                     return true;
@@ -396,7 +393,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             foreach (var attr in attrs)
             {
                 var atype = attr.AttributeClass;
-                if (atype.Name == OurTypeNames.NeedAccessToLocals)
+                if (atype is { } && atype.Name == OurTypeNames.NeedAccessToLocals)
                 {
                     return true;
                 }
@@ -406,19 +403,19 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
 
         public static bool TypesChanged(this TypeSymbol type)
         {
-            if (type.IsNull())
+            if (type is null)
                 return false;
             var attrs = type.GetAttributes();
             foreach (var attr in attrs)
             {
                 var atype = attr.AttributeClass;
-                if (atype.Name == OurTypeNames.TypesChanged)
+                if (atype is { } && atype.Name == OurTypeNames.TypesChanged)
                 {
                     return true;
                 }
             }
             var bt = type.BaseTypeNoUseSiteDiagnostics;
-            if (!bt.IsNull() && bt.SpecialType != SpecialType.System_Object)
+            if (bt is { } && bt.SpecialType != SpecialType.System_Object)
                 return bt.TypesChanged();
             return false;
         }

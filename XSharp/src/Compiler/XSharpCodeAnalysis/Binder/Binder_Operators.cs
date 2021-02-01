@@ -592,7 +592,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                     case SyntaxKind.DivideExpression:
                     case SyntaxKind.MultiplyAssignmentExpression:
                     case SyntaxKind.MultiplyExpression:
-                        if (((object)leftType )!= null && ((object)rightType )!= null)
+                        if (leftType is { } && rightType is { } )
                         { 
                             if (!TypeSymbol.Equals(leftType ,rightType) && leftType.IsIntegralType() && rightType.IsIntegralType())
                             {

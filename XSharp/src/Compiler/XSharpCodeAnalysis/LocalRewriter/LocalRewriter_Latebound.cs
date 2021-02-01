@@ -92,8 +92,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             if (!allowLB || loweredReceiver.HasDynamicType())
                 return null;
             var usualType = _compilation.UsualType();
-            var value = loweredValue.Type.IsNull() ? new BoundDefaultExpression(syntax, usualType)
-                : MakeConversionNode(loweredValue, usualType, false);
+            var value = loweredValue.Type is null ? new BoundDefaultExpression(syntax, usualType) : MakeConversionNode(loweredValue, usualType, false);
             var nameExpr = _factory.Literal(name);
             if (IsFoxAccessMember(loweredReceiver, out var areaName))
             {
@@ -161,7 +160,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             var usualType = _compilation.UsualType();
             foreach (var a in args)
             {
-                if (a.Type.IsNull()&& ! a.Syntax.XIsCodeBlock)
+                if (a.Type is null && ! a.Syntax.XIsCodeBlock)
                 {
                     convArgs.Add(_factory.Default(usualType));
                 }
@@ -186,7 +185,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             var usualType = _compilation.UsualType();
             foreach (var a in args)
             {
-                if (a.Type.IsNull())
+                if (a.Type is null)
                 {
                     convArgs.Add(_factory.Default(usualType));
                 }

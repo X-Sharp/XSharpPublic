@@ -273,11 +273,11 @@ namespace Microsoft.CodeAnalysis.CSharp
                         // Select Array Indexer with the correct # of parameters
                         if (analyzedArguments.Arguments.Count == 1)
                         {
-                            indexer = (arrayType as Symbols.Metadata.PE.PENamedTypeSymbol).VulcanArrayIndexerOne;
+                            indexer = (arrayType as Symbols.Metadata.PE.PENamedTypeSymbol).XSharpArrayIndexerOne;
                         }
                         else
                         {
-                            indexer = (arrayType as Symbols.Metadata.PE.PENamedTypeSymbol).VulcanArrayIndexerMany;
+                            indexer = (arrayType as Symbols.Metadata.PE.PENamedTypeSymbol).XSharpArrayIndexerMany;
                         }
                         return new BoundIndexerAccess(
                             syntax: node,
@@ -404,7 +404,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             if (Compilation.Options.LateBindingOrFox(node) && right.Kind() != SyntaxKind.GenericName && boundLeft.Kind != BoundKind.TypeExpression )
             {
                 string propName = right.Identifier.ValueText;
-                if (!leftType.IsNull())
+                if (leftType is { })
                 {
                     bool earlyBound = propName == ".ctor";
                     bool isObject = leftType.IsObjectType();
@@ -551,7 +551,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         private bool BindStringToPsz(CSharpSyntaxNode syntax, ref BoundExpression source, TypeSymbol destination,DiagnosticBag diagnostics)
         {
             TypeSymbol psz = Compilation.PszType();
-            if (!source.Type.IsNull() && source.Type.IsStringType() &&
+            if (source.Type is { } && source.Type.IsStringType() &&
                 Compilation.Options.HasRuntime &&
                 (destination.IsPszType() || destination.IsVoidPointer()))
             {
@@ -764,7 +764,7 @@ namespace Microsoft.CodeAnalysis.CSharp
 
                     isError |= wasError;
 
-                    if ((object)symbol == null)
+                    if (symbol is null)
                     {
                         Debug.Assert(members.Count > 0);
 

@@ -35,7 +35,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 this._diagnostics.Add(ErrorCode.WRN_CompilerGeneratedPSZConversionGeneratesMemoryleak, value.Syntax.Location);
                 return result;
             }
-            var isString = !value.Type.IsNull() && value.Type.IsStringType();
+            var isString = value.Type is { } && value.Type.IsStringType();
             var ctors = psz.Constructors;
             foreach (var ctor in ctors)
             {
@@ -164,7 +164,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                                 TypeSymbol type = r.GetTypeByMetadataName(functionsClassName) as TypeSymbol;
                                 // If we can find the $Exit method then call that method
                                 // Otherwise find the public globals and clear them from our code
-                                if (!type.IsNull())
+                                if (type is { })
                                 {
                                     var members = type.GetMembers(XSharpSpecialNames.ExitProc);
                                     if (members.Length > 0)
@@ -244,7 +244,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             {
                 var vulcanrt = (AssemblySymbol) vrt.First().Value;
                 var type = vulcanrt.GetTypeByMetadataName("Vulcan.Runtime.State");
-                if (!type.IsNull())
+                if (type is { })
                 {
                     string[] names = { XSharpSpecialNames.RTCompilerOptionOvf,
                                     XSharpSpecialNames.RTCompilerOptionOvf,
@@ -268,7 +268,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             {
                 var xsrt = (AssemblySymbol)xc.First().Value;
                 var type = xsrt.GetTypeByMetadataName("XSharp.RuntimeState");
-                if (!type.IsNull())
+                if (type is { })
                 {
                     string[] names = { XSharpSpecialNames.RTCompilerOptionOvf,
                                     XSharpSpecialNames.RTCompilerOptionVO11,
@@ -333,7 +333,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                                 if (!string.IsNullOrEmpty(functionsClassName))
                                 {
                                     var type = r.GetTypeByMetadataName(functionsClassName);
-                                    if (!type.IsNull())
+                                    if (type is { })
                                     {
                                         foreach (var mem in type.GetMembers(XSharpSpecialNames.InitProc1))
                                         {

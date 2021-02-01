@@ -1078,7 +1078,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 }
             }
 #if XSHARP
-            if (source.Type.IsNull() &&
+            if (source.Type is null &&
                 source.Kind != BoundKind.MethodGroup &&
                 (destination.GetSpecialTypeSafe() == SpecialType.System_IntPtr
                 || destination.GetSpecialTypeSafe() == SpecialType.System_UIntPtr))

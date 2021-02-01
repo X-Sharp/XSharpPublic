@@ -47,7 +47,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
 
         internal MethodSymbol validateMethod(MethodSymbol overriddenMethod, DiagnosticBag diagnostics, Location location)
         {
-            if ((object)overriddenMethod != null)
+            if (overriddenMethod is { })
             {
                 if (this.HasClipperCallingConvention() != overriddenMethod.HasClipperCallingConvention())
                 {

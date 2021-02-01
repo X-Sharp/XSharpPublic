@@ -78,14 +78,14 @@ namespace Microsoft.CodeAnalysis.CSharp
             if (_compilation.Options.HasRuntime)
             {
                 var usualType = _compilation.UsualType();
-                if (!nts.IsNull())
+                if (nts is { })
                 {
                     nts = nts.ConstructedFrom;
                 }
                 // Ticket C575: Assign Interface to USUAL
                 // Marked as Boxing in Conversions.cs
                 // Implementation here
-                if (!nts.IsNull()&& nts.IsInterface && rewrittenType.IsUsualType() )
+                if (nts is { } && nts.IsInterface && rewrittenType.IsUsualType() )
                 {
 
                     var m = getImplicitOperatorByParameterType(usualType, _compilation.GetSpecialType(SpecialType.System_Object));

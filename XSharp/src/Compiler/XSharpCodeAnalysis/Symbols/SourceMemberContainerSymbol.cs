@@ -30,7 +30,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             if (!ctor.XGenerated || ctor.ParameterList.ParameterCount == 0)
                 return ctor;
             var parentType = type.BaseTypeNoUseSiteDiagnostics;
-            while (!parentType.IsNull())
+            while (parentType is { })
             {
                 // we expect exactly 1 parent ctor
                 var ctors = parentType.GetMembers(".ctor");

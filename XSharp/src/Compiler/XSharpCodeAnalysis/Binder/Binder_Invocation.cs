@@ -269,7 +269,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             {
                 lookupResult.Clear();
                 var ts = FindPCallDelegateType(type as IdentifierNameSyntax);
-                if (((object)ts) != null && ts.IsDelegateType())
+                if (ts is { } && ts.IsDelegateType())
                 {
                     SourceDelegateMethodSymbol delmeth = ts.DelegateInvokeMethod() as SourceDelegateMethodSymbol;
                     // clone the parameters from the methodSym

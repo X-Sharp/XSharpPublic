@@ -51,14 +51,39 @@ namespace Microsoft.CodeAnalysis
         delegate int stringCompare(string lhs, string rhs);
         private static stringCompare _compare = string.Compare;
 
-        public static bool Equals(string lhs, string rhs) =>  _compare(lhs, rhs) == 0;
-        public static int Compare(string lhs, string rhs) => _compare(lhs, rhs);
-        public static int Compare(string lhs, int lhsstart, string rhs, int rhsstart, int length, StringComparison options)
+        public static bool Equals(string? lhs, string? rhs)
         {
+            if (lhs is null)
+            {
+                return rhs is null;
+            }
+            if (rhs is null)
+                return false;
+            return _compare(lhs, rhs) == 0;
+        }
+        public static int Compare(string? lhs, string? rhs)
+        {
+            if (lhs is null && rhs is null)
+            {
+                return 0;
+            }
+            if (lhs is null)
+                lhs = string.Empty;
+            if (rhs is null)
+                rhs = string.Empty;
+            return _compare(lhs, rhs);
+        }
+        public static int Compare(string? lhs, int lhsstart, string? rhs, int rhsstart, int length, StringComparison options)
+        {
+            if (lhs is null)
+                lhs = string.Empty;
+            if (rhs is null)
+                rhs = string.Empty;
+
             if (_caseSensitive)
-                return String.Compare(lhs, lhsstart, rhs, rhsstart, length);
+                return string.Compare(lhs, lhsstart, rhs, rhsstart, length);
             else
-                return String.Compare(lhs, lhsstart, rhs, rhsstart, length, true);
+                return string.Compare(lhs, lhsstart, rhs, rhsstart, length, true);
         }
         public static StringComparer Comparer { get; private set; } = StringComparer.Ordinal;
         public static StringComparison Comparison { get; private set; } = StringComparison.Ordinal;

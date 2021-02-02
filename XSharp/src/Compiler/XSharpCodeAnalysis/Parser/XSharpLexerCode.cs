@@ -2225,6 +2225,8 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
 
                     // XSharp types
                     { "DYNAMIC", DYNAMIC},
+                    { "NINT", NINT },
+                    { "NUINT", NUINT },
 
                     // Macros
                     { "__ARRAYBASE__", MACRO},

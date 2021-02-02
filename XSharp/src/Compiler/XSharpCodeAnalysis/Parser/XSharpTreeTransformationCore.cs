@@ -9445,6 +9445,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 case XP.DATETIME:
                     context.Put(_syntaxFactory.IdentifierName(context.Token.SyntaxIdentifier()));
                     break;
+                case XP.NINT:
+                    context.Put(_syntaxFactory.IdentifierName(context.Token.SyntaxIdentifier()));
+                    break;
+                case XP.NUINT:
+                    context.Put(_syntaxFactory.IdentifierName(context.Token.SyntaxIdentifier()));
+                    break;
                 default:
                     context.Put(_syntaxFactory.PredefinedType(context.Token.SyntaxNativeType()));
                     break;

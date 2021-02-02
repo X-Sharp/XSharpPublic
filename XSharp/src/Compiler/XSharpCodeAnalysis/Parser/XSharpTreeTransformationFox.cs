@@ -42,7 +42,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         }
         public override void ExitFoxsource([NotNull] XP.FoxsourceContext context)
         {
-            
             if (context.StmtBlk != null && context.StmtBlk._Stmts.Count > 0)
             {
                 // Generate leading code for the file

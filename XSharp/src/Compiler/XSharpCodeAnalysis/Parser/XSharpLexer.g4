@@ -65,6 +65,10 @@ CHAR,INT64,UINT64,
 
 // XSharp Types
 DYNAMIC, DECIMAL, DATETIME, CURRENCY,BINARY,
+
+// New CSharp 9 types NINT and NUINT
+NINT, NUINT,
+
 LAST_TYPE,
 
 // UDC Tokens that should be shown in the keyword color

@@ -37,7 +37,9 @@ macroScript         : ( CbExpr=codeblock | Code=codeblockCode ) EOS
 source              :  (Entities+=entity )* EOF
                     ; 
 
-foxsource           :  StmtBlk=statementBlock (Entities+=entity )* EOF
+foxsource           :  (MemVars += filewidememvar)*
+                       StmtBlk=statementBlock
+                       (Entities+=entity )* EOF
                     ; 
 
 entity              : namespace_
@@ -1096,13 +1098,15 @@ nativeType			: Token=		// Aphabetical order
                     | LOGIC
                     | LONGINT
                     | OBJECT
+                    | NINT
+                    | NUINT
                     | PTR
                     | REAL4
                     | REAL8
                     | SHORTINT
                     | STRING
                     | UINT64
-                    | VOID                  
+                    | VOID
                     | WORD
                      )
                     ;

@@ -167,8 +167,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             internal string SymbolName;
             internal XSharpToken Symbol;
             internal InputState parent;
-            internal string MappedFileName;
-            internal PPRule udc;
+            //internal string MappedFileName;
+            //internal PPRule udc;
 
 
             internal InputState(ITokenStream tokens)
@@ -706,8 +706,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
             if (inputs.MappedLineDiff != 0)
                 token.MappedLine = token.Line + inputs.MappedLineDiff;
-            if (!string.IsNullOrEmpty(inputs.MappedFileName))
-                token.MappedFileName = inputs.MappedFileName;
+            //if (!string.IsNullOrEmpty(inputs.MappedFileName))
+            //    token.MappedFileName = inputs.MappedFileName;
             //if (!string.IsNullOrEmpty(inputs.SourceFileName))
             //    token.SourceFileName = inputs.SourceFileName;
             if (inputs.isSymbol)

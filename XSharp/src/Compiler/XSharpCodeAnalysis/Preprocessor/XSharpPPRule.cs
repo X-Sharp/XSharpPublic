@@ -678,9 +678,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     case PPTokenType.MatchRestricted:
                         foreach (var token in next.Tokens)
                         {
-                            if (canAddStopToken(stoptokens, next.Token))
+                            if (canAddStopToken(stoptokens, token))
                             {
-                                stoptokens.Add(next.Token);
+                                stoptokens.Add(token);
                             }
                         }
                         break;

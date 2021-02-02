@@ -89781,7 +89781,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   Optimize=0
 ENDApplication = R763 - Lexer check
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = 09F25645-7429-41B4-8D41-DFD5B355DD87
 ; ************** APPLICATION C752 - Error with =+ operator on late bound members *************
 Application = C752 - Error with =+ operator on late bound members
 IDEVersion = 1.06
@@ -89892,7 +89892,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   Optimize=0
 ENDApplication = C752 - Error with =+ operator on late bound members
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = 09F25645-7429-41B4-8D41-DFD5B355DD87
 ; ************** APPLICATION C753 - Error when overriding STRICT with CLIPPER method *************
 Application = C753 - Error when overriding STRICT with CLIPPER method
 IDEVersion = 1.06
@@ -90004,7 +90004,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   Optimize=0
 ENDApplication = C753 - Error when overriding STRICT with CLIPPER method
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = 09F25645-7429-41B4-8D41-DFD5B355DD87
 ; ************** APPLICATION C754 - Problem with PSZ and NULL *************
 Application = C754 - Problem with PSZ and NULL
 IDEVersion = 1.06
@@ -90115,7 +90115,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   Optimize=0
 ENDApplication = C754 - Problem with PSZ and NULL
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = 09F25645-7429-41B4-8D41-DFD5B355DD87
 ; ************** APPLICATION C756 - Ambiguous reference error with VOSTRUCTs *************
 Application = C756 - Ambiguous reference error with VOSTRUCTs
 IDEVersion = 1.06
@@ -90227,7 +90227,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   Optimize=0
 ENDApplication = C756 - Ambiguous reference error with VOSTRUCTs
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = 09F25645-7429-41B4-8D41-DFD5B355DD87
 ; ************** APPLICATION C756_helper *************
 Application = C756_helper
 IDEVersion = 1.06
@@ -90338,7 +90338,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   Optimize=0
 ENDApplication = C756_helper
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = 09F25645-7429-41B4-8D41-DFD5B355DD87
 ; ************** APPLICATION C757 - Preprocessor problem in new compiler *************
 Application = C757 - Preprocessor problem in new compiler
 IDEVersion = 1.06
@@ -90414,7 +90414,7 @@ Unsafe=0
 Undeclared=0
 UseNativeVersion=0
 MemVar=0
-IgnoreStdDefs=0
+IgnoreStdDefs=1
 Ovf=0
 FOvf=0
 ResponseOnly=0
@@ -90449,7 +90449,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   Optimize=0
 ENDApplication = C757 - Preprocessor problem in new compiler
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = 09F25645-7429-41B4-8D41-DFD5B355DD87
 ; ************** APPLICATION C758 - Failed to emit module error with /vo4 *************
 Application = C758 - Failed to emit module error with /vo4
 IDEVersion = 1.06

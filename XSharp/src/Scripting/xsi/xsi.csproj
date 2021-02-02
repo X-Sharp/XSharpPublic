@@ -51,7 +51,7 @@
   </ItemGroup>
   <Target Name="DeleteCSFiles" AfterTargets="Build" Condition="'$(TargetFramework)' != '' ">
     <ItemGroup>
-      <FilesToDelete Include="$(OutputPath)\CS*.*" />
+      <FilesToDelete Include="$(OutputPath)\CS*.*" /> 
     </ItemGroup>
     <Delete Files="@(FilesToDelete)" />
   </Target>

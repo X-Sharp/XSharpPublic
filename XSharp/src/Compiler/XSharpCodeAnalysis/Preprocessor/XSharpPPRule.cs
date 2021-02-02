@@ -404,12 +404,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 }
                 else
                 { 
-                if (!markers.ContainsKey(name))
-                {
-                    markers.Add(name, element);
-                }
-                else
-                {
+                    if (!markers.ContainsKey(name))
+                    {
+                        markers.Add(name, element);
+                    }
+                    else
+                    {
                         addErrorMessage(element.Token, $"Duplicate Match marker '{element.Key}' found in UDC");
                     }
                 }
@@ -611,6 +611,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             // it will have TO twice. That is not a problem.
             var mt = new PPMatchToken[result.Count];
             result.CopyTo(mt);
+            // build linear list of matchtokens
             if (nestLevel == 0)
             {
                 var linearlist = new List<PPMatchToken>();
@@ -620,10 +621,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 for (int i = 0; i < tokenCount; i++)
                 {
                     var marker = _matchTokensFlattened[i];
-                    if (marker.RuleTokenType.HasStopTokens() || marker.IsRepeat )
+                    if (marker.RuleTokenType.HasStopTokens() || marker.IsRepeat)
                     {
                         var stopTokens = new List<XSharpToken>();
-                        findStopTokens(mt,  1, stopTokens);
+                        findStopTokens(mt, 1, stopTokens);
                         marker.StopTokens = stopTokens.ToArray();
                     }
                     if (marker.IsOptional && !marker.IsWholeUDC)
@@ -635,7 +636,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
                                 var stopTokens = new List<XSharpToken>();
                                 if (child.RuleTokenType == PPTokenType.MatchList)
-                                    findStopTokens(mt, i+1, stopTokens); 
+                                    findStopTokens(mt, i + 1, stopTokens);
                                 else
                                     findStopTokens(mt, 1, stopTokens);
 
@@ -646,7 +647,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     }
                 }
 
-            // build linear list of matchtokens
             }
             return mt;
         }
@@ -677,9 +677,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     case PPTokenType.MatchRestricted:
                         foreach (var token in next.Tokens)
                         {
-                            if (canAddStopToken(stoptokens, next.Token))
+                            if (canAddStopToken(stoptokens, token))
                             {
-                                stoptokens.Add(next.Token);
+                                stoptokens.Add(token);
                             }
                         }
                         break;
@@ -687,7 +687,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     case PPTokenType.Token:
                         if (canAddStopToken(stoptokens, next.Token))
                         {
-                        stoptokens.Add(next.Token);
+                            stoptokens.Add(next.Token);
                         }
                         if (onlyFirstNonOptional)
                             done = true;
@@ -1094,7 +1094,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 }
                 else
                 {
-                    optfound = true;
+                    optfound = true; 
                     if (iChild == optional.Length && mchild.IsRepeat)
                     {
                         // if we have matched the last of a repeat group like the fldN in the sample above
@@ -1117,7 +1117,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 matchInfo[mToken.Index].SetPos(iOriginal, iEnd);
             }
             else
-            { 
+            {
+                // a token such as [FOO BAR] may have matched FOO but not BAR. Remove FOO from the list then.
                 while (matchedWithToken.Count > originalMatchedLen)
                 {
                     matchedWithToken.RemoveAt(matchedWithToken.Count - 1);
@@ -1300,10 +1301,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 var token = tokens[iSource];
                 if (token.Type != XSharpLexer.COMMA)
                 {
-                stopTokenFound = IsStopToken(mToken, token);
-                if (stopTokenFound)
-                {
-                    break;
+                    stopTokenFound = IsStopToken(mToken, token);
+                    if (stopTokenFound)
+                    {
+                        break;
                     }
                 }
                 // after matchExpresssion iLastUsed points to the last token of the expression
@@ -1419,9 +1420,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     }
                     break;
                 case PPTokenType.MatchWild:
+                    // matches anything until the end of the list or until a stop token is found
                     if (mToken.StopTokens?.Length == 0)
-                    { 
-                    iEnd = tokens.Count - 1;
+                    {
+                        iEnd = tokens.Count - 1;
                     }
                     else
                     {
@@ -1435,13 +1437,14 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                                 break;
                             }
                         }
+
                     }
                     // truncate spaces at the end
                     iEnd = trimHiddenTokens(tokens, iSource, iEnd);
                     matchInfo[mToken.Index].SetPos(iSource, iEnd);
                     iSource = iEnd+1;
                     iRule += 1;
-                    found = true;                    // matches anything until the end of the list
+                    found = true;
                     break;
                 case PPTokenType.MatchExtended:
                     // either match a single token, a token in parentheses
@@ -1479,6 +1482,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             List<XSharpToken> matchedWithToken = new List<XSharpToken>();
             int firstOptional = -1;
             bool hasSkippedMarkers = false;
+            // skip the last token: this is the WholeUdc token
             while (iRule < _matchtokens.Length-1 && iSource < tokens.Count)
             {
                 var mtoken = _matchtokens[iRule];

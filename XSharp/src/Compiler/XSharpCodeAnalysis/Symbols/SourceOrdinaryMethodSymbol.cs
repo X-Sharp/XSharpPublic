@@ -73,10 +73,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             {
                 var baseType = this.ContainingType.BaseTypeNoUseSiteDiagnostics;
                 var members = baseType.GetMembersUnordered().Where(member =>
-                   member.Kind == SymbolKind.Method && String.Equals(member.Name, this.Name, StringComparison.OrdinalIgnoreCase));
-                if (members.Count() > 0)
+                   member.Kind == SymbolKind.Method && string.Equals(member.Name, this.Name, StringComparison.OrdinalIgnoreCase));
+                if (members.Count() > 0 && members.First() is MethodSymbol ms)
                 {
-                    diagnostics.Add(ErrorCode.ERR_ClipperInSubClass, location, this.Name);
+                    if (ms.IsVirtual)
+                    { 
+                        diagnostics.Add(ErrorCode.ERR_ClipperInSubClass, location, this.Name);
+                    }
                 }
             }
 

@@ -545,9 +545,30 @@ namespace Microsoft.CodeAnalysis
             parsedArgs = null;
             pipeName = null;
             var newArgs = new List<string>();
+#if XSHARP
+            XSharpString.CaseSensitive = false;
+#endif
             foreach (var arg in args)
             {
+#if XSHARP
+                if (isClientArgsOption(arg, "credits", out bool hasValue, out string? value))
+                {
+                    errorMessage = CodeAnalysisResources.Credits;
+                    return false;
+                }
+                else if (isClientArgsOption(arg, "cs", out hasValue, out value) ||
+                    isClientArgsOption(arg, "cs+", out hasValue, out value))
+                {
+                    XSharpString.CaseSensitive = true;
+                }
+                else if (isClientArgsOption(arg, "cs-", out hasValue, out value))
+                {
+                    XSharpString.CaseSensitive = false;
+                }
+                if (isClientArgsOption(arg, "keepalive", out hasValue, out value))
+#else
                 if (isClientArgsOption(arg, "keepalive", out bool hasValue, out string? value))
+#endif
                 {
                     if (string.IsNullOrEmpty(value))
                     {

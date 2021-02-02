@@ -420,6 +420,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         internal static string @WRN_InvalidGlobalSectionName_Title => GetResourceString("WRN_InvalidGlobalSectionName_Title");
         /// <summary>Changes must be within bounds of SourceText</summary>
         internal static string @ChangesMustBeWithinBoundsOfSourceText => GetResourceString("ChangesMustBeWithinBoundsOfSourceText");
- 
+        internal static string @Credits => GetResourceString("Credits");
+
     }
 }

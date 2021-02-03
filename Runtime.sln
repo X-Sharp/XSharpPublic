@@ -135,6 +135,8 @@ Project("{AA6C8D78-22FF-423A-9C7C-5F2393824E04}") = "AppendSpeed", "Tests\Append
 EndProject
 Project("{AA6C8D78-22FF-423A-9C7C-5F2393824E04}") = "FoxTest", "Tests\DbcTest\FoxTest.xsproj", "{4BC29963-3419-4D9A-A301-BB63870381AE}"
 EndProject
+Project("{AA6C8D78-22FF-423A-9C7C-5F2393824E04}") = "XSharp.RT.Debugger", "Runtime\XSharp.RT.Debugger\XSharp.RT.Debugger.xsproj", "{770E6EBB-804F-415A-A9CA-E5B0383105F0}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -392,6 +394,12 @@ Global
 		{4BC29963-3419-4D9A-A301-BB63870381AE}.Documentation|Any CPU.Build.0 = Debug|Any CPU
 		{4BC29963-3419-4D9A-A301-BB63870381AE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4BC29963-3419-4D9A-A301-BB63870381AE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{770E6EBB-804F-415A-A9CA-E5B0383105F0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{770E6EBB-804F-415A-A9CA-E5B0383105F0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{770E6EBB-804F-415A-A9CA-E5B0383105F0}.Documentation|Any CPU.ActiveCfg = Documentation|Any CPU
+		{770E6EBB-804F-415A-A9CA-E5B0383105F0}.Documentation|Any CPU.Build.0 = Documentation|Any CPU
+		{770E6EBB-804F-415A-A9CA-E5B0383105F0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{770E6EBB-804F-415A-A9CA-E5B0383105F0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -440,6 +448,7 @@ Global
 		{22F634C4-97C1-4347-8994-A4F89D100AFB} = {FBBE72BB-AF27-4F54-BB40-419574C1D018}
 		{E6A86E45-AE23-4422-BBDB-F84BF9EF100E} = {FBBE72BB-AF27-4F54-BB40-419574C1D018}
 		{4BC29963-3419-4D9A-A301-BB63870381AE} = {FBBE72BB-AF27-4F54-BB40-419574C1D018}
+		{770E6EBB-804F-415A-A9CA-E5B0383105F0} = {3DA9803B-3850-4448-ADA9-DE41C81522DE}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {EF30CE30-FC9E-4FC7-B9F0-DCA49411ACFC}

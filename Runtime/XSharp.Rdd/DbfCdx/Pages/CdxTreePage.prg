@@ -48,7 +48,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 
         ABSTRACT INTERNAL PROPERTY LeftPtr		AS Int32 GET SET    // FoxPro stores empty pointers as -1, FoxBASE as 0
         ABSTRACT INTERNAL PROPERTY RightPtr		AS Int32 GET SET    // FoxPro stores empty pointers as -1, FoxBASE as 0
-        ABSTRACT INTERNAL PROPERTY NumKeys      AS WORD  GET
+        ABSTRACT INTERNAL PROPERTY NumKeys      AS WORD  GET SET
         ABSTRACT INTERNAL PROPERTY LastNode     AS CdxPageNode GET
         INTERNAL PROPERTY NextFree              AS LONG ;
             GET IIF(LeftPtr >= 0, LeftPtr, 0);

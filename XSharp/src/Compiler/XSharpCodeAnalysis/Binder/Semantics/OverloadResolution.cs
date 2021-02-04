@@ -461,7 +461,7 @@ namespace Microsoft.CodeAnalysis.CSharp
 
                 useSiteDiagnostics = new HashSet<DiagnosticInfo>();
                 useSiteDiagnostics.Add(info);
-
+                return true;
             }
             else if (func2 && !func1)
             {
@@ -469,31 +469,32 @@ namespace Microsoft.CodeAnalysis.CSharp
                 var info = GenerateFuncMethodWarning(m2.Member, m1.Member);
                 useSiteDiagnostics = new HashSet<DiagnosticInfo>();
                 useSiteDiagnostics.Add(info);
-
+                return true;
             }
             return false;
-	       CSDiagnosticInfo GenerateAmbiguousWarning(Symbol r1, Symbol r2) 
-	        {
-	            var info = new CSDiagnosticInfo(ErrorCode.WRN_VulcanAmbiguous,
-	                    new object[] {
-	                    r1.Name,
-	                    r1.Kind.ToString(),
-	                    new FormattedSymbol(r1, SymbolDisplayFormat.CSharpErrorMessageFormat),
-	                    r1.ContainingAssembly.Name,
-	                    r2.Kind.ToString(),
-	                    new FormattedSymbol(r2, SymbolDisplayFormat.CSharpErrorMessageFormat),
-	                    r2.ContainingAssembly.Name,
-	                    });
-	            return info;
-	        }
+            // Local Functions
+            CSDiagnosticInfo GenerateAmbiguousWarning(Symbol r1, Symbol r2)
+            {
+                var info = new CSDiagnosticInfo(ErrorCode.WRN_XSharpAmbiguous,
+                        new object[] {
+                        r1.Name,
+                        r1.Kind.ToString(),
+                        new FormattedSymbol(r1, SymbolDisplayFormat.CSharpErrorMessageFormat),
+                        r1.ContainingAssembly.Name,
+                        r2.Kind.ToString(),
+                        new FormattedSymbol(r2, SymbolDisplayFormat.CSharpErrorMessageFormat),
+                        r2.ContainingAssembly.Name,
+                        });
+                return info;
+            }
             CSDiagnosticInfo GenerateFuncMethodWarning(Symbol s1, Symbol s2)
             {
                 return new CSDiagnosticInfo(ErrorCode.WRN_FunctionsTakePrecedenceOverMethods,
                 new object[] {
                     s1.Name,
                     new FormattedSymbol(s1, SymbolDisplayFormat.CSharpErrorMessageFormat),
-                    new FormattedSymbol(s2, SymbolDisplayFormat.CSharpErrorMessageFormat),
-                    s1.Kind.ToString()}); 
+                    new FormattedSymbol(s2, SymbolDisplayFormat.CSharpErrorMessageFormat)
+                    });
             }
 
         }

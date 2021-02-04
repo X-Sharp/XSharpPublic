@@ -931,7 +931,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 }
 
             }
-            NamedTypeSymbol target = null;
+            Symbol target = null;
             if (code == ErrorCode.ERR_BadCtorArgCount)
             {
                 target = typeContainingConstructor;
@@ -942,7 +942,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
             else
             {
-                target = symbols[0] as NamedTypeSymbol;
+                target = symbols[0] ;
             }
 
 #else

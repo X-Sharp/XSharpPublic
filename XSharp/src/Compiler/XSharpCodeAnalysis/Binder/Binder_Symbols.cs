@@ -57,7 +57,7 @@ namespace Microsoft.CodeAnalysis.CSharp
 
             CSDiagnosticInfo GenerateWarning(Symbol s1, Symbol s2)
             {
-                return new CSDiagnosticInfo(ErrorCode.WRN_VulcanAmbiguous, originalSymbols,
+                return new CSDiagnosticInfo(ErrorCode.WRN_XSharpAmbiguous, originalSymbols,
                 new object[] {
                         where,
                         s1.Kind.ToString(),

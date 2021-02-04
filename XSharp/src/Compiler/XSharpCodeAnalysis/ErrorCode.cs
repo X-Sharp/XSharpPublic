@@ -2012,7 +2012,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         ERR_AccessAssignTypesMutchMatch = 9040,
         ERR_ClipperInParentClass = 9041,
         ERR_ClipperInSubClass = 9042,
-        WRN_VulcanAmbiguous = 9043,
+        WRN_XSharpAmbiguous = 9043,
         ERR_ImplicitlyTypedVariableCannotBeStatic = 9044,
         ERR_StaticLocalInCodeBlock = 9045,
         ERR_CannotAssignToMethod = 9046,

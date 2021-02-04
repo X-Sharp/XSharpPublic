@@ -90,6 +90,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 result.Clear();
             }
             Binder binder = null;
+            LookupResult otherResults = LookupResult.GetInstance();
             for (var scope = this; scope != null && !result.IsMultiViable; scope = scope.Next)
             {
                 if (binder != null)
@@ -107,7 +108,23 @@ namespace Microsoft.CodeAnalysis.CSharp
                     if (!result.IsClear)
                     {
                         binder = scope;
+                        otherResults.MergeEqual(result);
                     }
+                }
+            }
+            if (!functionResults.IsClear && !otherResults.IsClear)
+            {
+                var func = functionResults.Symbols[0];
+                var meth = otherResults.Symbols[0];
+                if (!meth.IsStatic)
+                {
+                    // Static method generate the error elsewhere
+                    var args = new object[] { name, func, meth};
+                    if (useSiteDiagnostics == null)
+                    {
+                        useSiteDiagnostics = new HashSet<DiagnosticInfo>();
+                    }
+                    useSiteDiagnostics.Add(new CSDiagnosticInfo(ErrorCode.WRN_FunctionsTakePrecedenceOverMethods, args));
                 }
             }
             if (!functionResults.IsClear)
@@ -152,6 +169,10 @@ namespace Microsoft.CodeAnalysis.CSharp
                     useSiteDiagnostics.Add(result.Error);
                 }
             }
+            if (otherResults != null)
+                otherResults.Free();
+            if (functionResults != null)
+                functionResults.Free();
             return binder;
         }
 

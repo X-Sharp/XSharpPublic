@@ -1157,7 +1157,7 @@ keywordxs           : Token=(AUTO | CHAR | CONST |  DEFAULT | GET | IMPLEMENTS |
                     // The following did not exist in Vulcan
                     | ADD | ARGLIST | ASCENDING | ASTYPE | ASYNC | AWAIT | BY | CHECKED | DESCENDING | DYNAMIC | EQUALS | EXTERN | FIXED | FROM 
                     | GROUP | INTO | JOIN | LET | NAMEOF | OF | ON | ORDERBY | OVERRIDE |PARAMS | REMOVE 
-                    | SELECT | UNCHECKED | VAR | VOLATILE | WHEN | WHERE | BINARY | CHAR | CURRENCY | DECIMAL | DATETIME 
+                    | SELECT | UNCHECKED | VAR | VOLATILE | WHEN | WHERE | BINARY | CHAR | CURRENCY | DECIMAL | DATETIME | NINT | NUINT
                     // Added as XS keywords to allow them to be treated as IDs
                     // the following entity keywords will be never used 'alone' and can therefore be safely defined as identifiers
                     | DELEGATE | ENUM | GLOBAL | INHERIT | STRUCTURE    

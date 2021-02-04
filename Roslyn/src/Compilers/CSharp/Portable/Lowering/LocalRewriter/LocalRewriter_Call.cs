@@ -148,7 +148,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             Debug.Assert(node != null);
 
 #if XSHARP
-            var result = VisitCallClipperConvention(node);
+            var result = XsVisitCall(node);
             if (result != null)
             {
                 return result;

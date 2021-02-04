@@ -1368,9 +1368,12 @@ namespace Microsoft.CodeAnalysis.CSharp
 
                     if (argumentRefKindsBuilder is { Count: > 0 })
                     {
+#if XSHARP
+                        argumentRefKindsBuilder.Add(parameter.RefKind);
+#else
                         argumentRefKindsBuilder.Add(RefKind.None);
+#endif
                     }
-
                     argsToParamsBuilder?.Add(parameter.Ordinal);
                 }
             }

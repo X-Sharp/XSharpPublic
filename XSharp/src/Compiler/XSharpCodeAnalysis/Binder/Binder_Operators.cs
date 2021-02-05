@@ -377,6 +377,9 @@ namespace Microsoft.CodeAnalysis.CSharp
         private BoundExpression BindVOBinaryOperator(BinaryExpressionSyntax node, DiagnosticBag diagnostics,
             ref BoundExpression left, ref BoundExpression right,VOOperatorType opType)
         {
+            Debug.Assert(opType != VOOperatorType.None);
+            left = BindToNaturalType(left, diagnostics, reportNoTargetType: false);
+            right = BindToNaturalType(right, diagnostics, reportNoTargetType: false);
             switch (opType)
             {
                 case VOOperatorType.SingleEqualsString:
@@ -536,7 +539,6 @@ namespace Microsoft.CodeAnalysis.CSharp
                                 break;
                             }
                         }
-    
                         if (opType == VOOperatorType.None)
                         { 
                             // Add or Subtract USUAL with other type
@@ -860,6 +862,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         {
             var trueType = trueExpr.Type;
             var falseType = falseExpr.Type;
+            bool done = false;
             // do nothing when the types null
             if (trueType is { } && falseType is { })
             {
@@ -871,13 +874,13 @@ namespace Microsoft.CodeAnalysis.CSharp
                     // Determine the largest of the two integral types and scale up
                     if (trueType.SpecialType.SizeInBytes() > falseType.SpecialType.SizeInBytes())
                     {
-                        falseType = trueType;
                         falseExpr = CreateConversion(falseExpr, trueType, diagnostics);
+                        done = true;
                     }
                     else
                     {
-                        trueType = falseType;
                         trueExpr = CreateConversion(trueExpr, falseType, diagnostics);
+                        done = true;
                     }
                 }
 
@@ -887,30 +890,29 @@ namespace Microsoft.CodeAnalysis.CSharp
                     var usualType = Compilation.UsualType();
                     if (trueType.IsUsualType())
                     {
-                        falseType = trueType;
                         falseExpr = CreateConversion(falseExpr, usualType, diagnostics);
+                        done = true;
                     }
                     else if (falseType.IsUsualType())
                     {
-                        trueType = falseType;
                         trueExpr = CreateConversion(trueExpr, usualType, diagnostics);
+                        done = true;
                     }
                     else if (Compilation.Options.HasOption(CompilerOption.CompatibleIIF, node))
                     {
                         // convert to usual when Compatible IIF is activated
                         trueExpr = CreateConversion(trueExpr, usualType, diagnostics);
                         falseExpr = CreateConversion(falseExpr, usualType, diagnostics);
-                        trueType = falseType = usualType;
+                        done = true;
                     }
                 }
-                if (!Equals(trueType, falseType))
+                if (!done && !Equals(trueType, falseType))
                 {
                     if (trueType.IsVoidPointer())
                     {
                         if (falseType.GetSpecialTypeSafe() == SpecialType.System_IntPtr)
                         {
                             trueExpr = CreateConversion(trueExpr, falseType, diagnostics);
-                            trueType = falseType;
                         }
                     }
                     else if (falseType.IsVoidPointer())
@@ -918,7 +920,6 @@ namespace Microsoft.CodeAnalysis.CSharp
                         if (trueType.GetSpecialTypeSafe() == SpecialType.System_IntPtr)
                         {
                             falseExpr = CreateConversion(falseExpr, trueType, diagnostics);
-                            falseType = trueType;
                         }
                     }
                     else if (Compilation.Options.HasOption(CompilerOption.CompatibleIIF, node))
@@ -928,7 +929,6 @@ namespace Microsoft.CodeAnalysis.CSharp
                         var objectType = Compilation.GetSpecialType(SpecialType.System_Object);
                         trueExpr = CreateConversion(trueExpr, objectType, diagnostics);
                         falseExpr = CreateConversion(falseExpr, objectType, diagnostics);
-                        trueType = falseType = objectType;
                     }
                 }
             }

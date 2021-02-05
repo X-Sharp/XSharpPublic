@@ -7,6 +7,7 @@
 using System;
 using System.Linq;
 using System.Collections.Generic;
+using System.Diagnostics;
 using Roslyn.Utilities; 
 using Antlr4.Runtime;
 using Antlr4.Runtime.Misc;
@@ -300,7 +301,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         #endregion
 
         #region Special app methods
-        protected MethodDeclarationSyntax CreateInitFunction(IList<String> procnames, string functionName, bool isApp, List<MemVarFieldInfo> filewidepublics)
+        protected MethodDeclarationSyntax CreateInitFunction(IList<String> procnames, string functionName, bool isApp, List<MemVarFieldInfo> filewidepublics = null)
         {
             // create body for new Init procedure
             var stmts = _pool.Allocate<StatementSyntax>();
@@ -383,16 +384,16 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
             // Put Everything in separate methods $Init1 .. $Init3
             // Always generate $Init1
-            members.Add(CreateInitFunction(init1, XSharpSpecialNames.InitProc1, isApp, null));
+            members.Add(CreateInitFunction(init1, XSharpSpecialNames.InitProc1, isApp));
             if (init2.Count > 0)
             {
-                members.Add(CreateInitFunction(init2, XSharpSpecialNames.InitProc2, isApp, null));
+                members.Add(CreateInitFunction(init2, XSharpSpecialNames.InitProc2, isApp));
             }
             if (init3.Count > 0 || filewidepublics.Count > 0)
             {
                 members.Add(CreateInitFunction(init3, XSharpSpecialNames.InitProc3, isApp, filewidepublics));
             }
-            members.Add(CreateInitFunction(exit, XSharpSpecialNames.ExitProc, isApp, null));
+            members.Add(CreateInitFunction(exit, XSharpSpecialNames.ExitProc, isApp));
             if (hasPCall)
             {
                 members.Add(CreatePCallFunction());
@@ -1117,6 +1118,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 }
                 else
                 {
+                    Debug.Assert(context.Token.Type == XP.MEMVAR);
                     // MEMVAR
                     foreach (var memvar in context._Vars)
                     {
@@ -1127,9 +1129,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 }
             }
         }
-        
+
         public override void ExitFilewidememvar([NotNull] XP.FilewidememvarContext context)
         {
+            // implemented in EnterFilewidememvar
             return;
         }
         private MemVarFieldInfo findMemVar(string name)
@@ -1247,6 +1250,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         context.Put(_syntaxFactory.EmptyStatement(SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)));
                     break;
                 default:
+                    Debug.Assert(false, "Unknown type in XbaseDecl","Type = " + context.T.Text);
                     break;
             }
           _pool.Free(stmts);
@@ -4185,7 +4189,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 MakeCastTo(_codeblockType,
                     _syntaxFactory.ParenthesizedLambdaExpression(
                         asyncKeyword: default,
-                        parameterList: default,
+                        parameterList: EmptyParameterList(),
                         arrowToken: SyntaxFactory.MakeToken(SyntaxKind.EqualsGreaterThanToken),
                         body: MakeBlock(MakeList<StatementSyntax>(
                             pushStmt,

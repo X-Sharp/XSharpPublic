@@ -37,7 +37,9 @@ macroScript         : ( CbExpr=codeblock | Code=codeblockCode ) EOS
 source              :  (Entities+=entity )* EOF
                     ; 
 
-foxsource           :  StmtBlk=statementBlock (Entities+=entity )* EOF
+foxsource           :  (MemVars += filewidememvar)*
+                       StmtBlk=statementBlock
+                       (Entities+=entity )* EOF
                     ; 
 
 entity              : namespace_

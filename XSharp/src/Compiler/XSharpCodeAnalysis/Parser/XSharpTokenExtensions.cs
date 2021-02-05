@@ -162,15 +162,25 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         public static SyntaxToken SyntaxIdentifier(this IToken token)
         {
-            bool isNameOf = token.Type == XSharpParser.NAMEOF;
-            (token as CommonToken).Type = XSharpParser.ID;
             string text = token.Text;
             if (text.StartsWith("@@"))
             {
                 text = text.Substring(2);
             }
-            var r =  isNameOf ? SyntaxFactory.Identifier(SyntaxKind.NameOfKeyword, null, text, text, null)
-                : SyntaxFactory.MakeIdentifier(text);
+            SyntaxToken r;
+            switch (token.Type)
+            {
+                case XSharpParser.NAMEOF:
+                    r = SyntaxFactory.Identifier(SyntaxKind.NameOfKeyword, null, text, text, null);
+                    break;
+                case XSharpParser.DYNAMIC:
+                    r = SyntaxFactory.MakeIdentifier(text.ToLower()); ;
+                    break;
+                default:
+                    r = SyntaxFactory.MakeIdentifier(text);
+                    break;
+            }
+            (token as CommonToken).Type = XSharpParser.ID;
             r.XNode = new XTerminalNodeImpl(token);
             return r;
         }

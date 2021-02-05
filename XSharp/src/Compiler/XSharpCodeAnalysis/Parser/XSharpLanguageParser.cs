@@ -631,7 +631,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 else
                     nsName = defaultNamespace;
                 members.Add(member);
-                member  = _syntaxFactory.NamespaceDeclaration(SyntaxFactory.MakeToken(SyntaxKind.NamespaceKeyword),
+                member  = _syntaxFactory.NamespaceDeclaration(
+                    SyntaxFactory.MakeToken(SyntaxKind.NamespaceKeyword),
                     name: trans.GenerateQualifiedName(nsName),
                     openBraceToken: SyntaxFactory.MakeToken(SyntaxKind.OpenBraceToken),
                     externs: null,
@@ -913,9 +914,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                                 trans.TokenList(SyntaxKind.StaticKeyword, SyntaxKind.InternalKeyword),
                                 SyntaxFactory.MakeToken(SyntaxKind.ClassKeyword),
                                 SyntaxFactory.MakeIdentifier(XSharpSpecialNames.SymbolTable),
-                                default(TypeParameterListSyntax),
-                                default(BaseListSyntax),
-                                default(SyntaxList<TypeParameterConstraintClauseSyntax>),
+                                null,
+                                null,
+                                default,
                                 SyntaxFactory.MakeToken(SyntaxKind.OpenBraceToken),
                                 clsmembers,
                                 SyntaxFactory.MakeToken(SyntaxKind.CloseBraceToken),
@@ -937,9 +938,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                                 trans.TokenList(SyntaxKind.StaticKeyword, SyntaxKind.InternalKeyword),
                                 SyntaxFactory.MakeToken(SyntaxKind.ClassKeyword),
                                 SyntaxFactory.MakeIdentifier(XSharpSpecialNames.PSZTable),
-                                default(TypeParameterListSyntax),
-                                default(BaseListSyntax),
-                                default(SyntaxList<TypeParameterConstraintClauseSyntax>),
+                                null,
+                                null,
+                                default,
                                 SyntaxFactory.MakeToken(SyntaxKind.OpenBraceToken),
                                 clsmembers,
                                 SyntaxFactory.MakeToken(SyntaxKind.CloseBraceToken),

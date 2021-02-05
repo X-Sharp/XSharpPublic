@@ -2199,6 +2199,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                     { "FIXED", FIXED},
                     { "FROM", FROM},
                     { "GROUP", GROUP},
+                    { "INIT", INIT},
                     { "INTO", INTO},
                     { "JOIN", JOIN},
                     { "LET", LET},

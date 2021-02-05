@@ -48,6 +48,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
         private readonly string _name;
         private readonly SyntaxReference _syntaxRef;
 #if XSHARP
+        // modifiers are Read/Write because we may remove the OverRide later
         protected DeclarationModifiers _modifiers;
         // Is this an indexed property with another name than SELF ?
         protected readonly bool _isIndexedProperty;

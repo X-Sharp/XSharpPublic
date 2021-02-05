@@ -376,14 +376,13 @@ propertyParameterList
                     | LPAREN (Params+=parameter (COMMA Params+=parameter)*)? RPAREN		// Allow Parentheses as well
                     ;
 
-propertyAutoAccessor: Attributes=attributes? Modifiers=accessorModifiers? Key=(GET|SET)
+propertyAutoAccessor: Attributes=attributes? Modifiers=accessorModifiers? Key=(GET|SET|INIT)
                     ;
 
 propertyLineAccessor: Attributes=attributes? Modifiers=accessorModifiers?
-                      ( {InputStream.La(2) != SET}? Key=GET    Expr=expression?
-                      | {InputStream.La(2) != SET}? Key=UDCSEP Expr=expression?           // New: UDCSep instead of GET
-                      | {InputStream.La(2) != GET}? Key=SET    ExprList=expressionList?
-                      | Key=(GET|SET)
+                      ( {InputStream.La(2) != SET && InputStream.La(2) != INIT}?     Key=(GET|UDCSEP)    Expr=expression?
+                      | {InputStream.La(2) != GET && InputStream.La(2) != UDCSEP}?   Key=(SET|INIT)      ExprList=expressionList?
+                      | Key=(GET|SET|INIT)
                       )
                     ;
 
@@ -394,10 +393,10 @@ expressionList	    : Exprs+=expression (COMMA Exprs+=expression)*
                     ;
 
 propertyAccessor    : Attributes=attributes? Modifiers=accessorModifiers?
-                      ( Key=GET end=eos StmtBlk=statementBlock END GET?
+                      ( Key=GET end=eos StmtBlk=statementBlock END Key2=GET?
                       | Key=GET UDCSEP ExpressionBody=expression              // New: Expression Body
-                      | Key=SET end=eos StmtBlk=statementBlock END SET?
-                      | Key=SET UDCSEP ExpressionBody=expression              // New: Expression Body
+                      | Key=(SET|INIT) end=eos StmtBlk=statementBlock END Key2=(SET | INIT)?
+                      | Key=(SET|INIT) UDCSEP ExpressionBody=expression              // New: Expression Body
                       )
                       end=eos
                     ;
@@ -1156,7 +1155,7 @@ keywordvo           : Token=(ACCESS | AS | ASSIGN | BEGIN | BREAK | CASE | CAST 
 keywordxs           : Token=(AUTO | CHAR | CONST |  DEFAULT | GET | IMPLEMENTS | NEW | OUT | REF | SET |  VALUE | VIRTUAL | INTERNAL
                     // The following did not exist in Vulcan
                     | ADD | ARGLIST | ASCENDING | ASTYPE | ASYNC | AWAIT | BY | CHECKED | DESCENDING | DYNAMIC | EQUALS | EXTERN | FIXED | FROM 
-                    | GROUP | INTO | JOIN | LET | NAMEOF | OF | ON | ORDERBY | OVERRIDE |PARAMS | REMOVE 
+                    | GROUP | INIT | INTO | JOIN | LET | NAMEOF | OF | ON | ORDERBY | OVERRIDE |PARAMS | REMOVE 
                     | SELECT | UNCHECKED | VAR | VOLATILE | WHEN | WHERE | BINARY | CHAR | CURRENCY | DECIMAL | DATETIME | NINT | NUINT
                     // Added as XS keywords to allow them to be treated as IDs
                     // the following entity keywords will be never used 'alone' and can therefore be safely defined as identifiers

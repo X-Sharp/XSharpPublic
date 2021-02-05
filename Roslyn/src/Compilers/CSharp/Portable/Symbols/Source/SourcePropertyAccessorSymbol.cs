@@ -414,7 +414,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                         this.DeclarationModifiers &= ~DeclarationModifiers.Virtual;
                     }
                     else
+                    {
                         this.DeclarationModifiers &= ~DeclarationModifiers.Override;
+                    }
 
                     flags = new Flags(flags.MethodKind, this.DeclarationModifiers , this.ReturnsVoid, flags.IsExtensionMethod, flags.IsNullableAnalysisEnabled, flags.IsMetadataVirtual(true));
                 }

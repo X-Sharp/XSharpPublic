@@ -950,6 +950,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 case XSharpParser.SET:
                     r = SyntaxFactory.MakeToken(SyntaxKind.SetKeyword, text);
                     break;
+                case XSharpParser.INIT:
+                    r = SyntaxFactory.MakeToken(SyntaxKind.InitKeyword, text);
+                    break;
                 case XSharpParser.EVENT:
                     r = SyntaxFactory.MakeToken(SyntaxKind.EventKeyword, text);
                     break;
@@ -1121,6 +1124,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     break;
                 case XSharpParser.SET:
                     r = SyntaxKind.SetAccessorDeclaration;
+                    break;
+                case XSharpParser.INIT:
+                    r = SyntaxKind.InitAccessorDeclaration;
                     break;
                 case XSharpParser.ADD:
                     r = SyntaxKind.AddAccessorDeclaration;

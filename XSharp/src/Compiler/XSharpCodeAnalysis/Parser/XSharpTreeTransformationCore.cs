@@ -602,22 +602,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             return r;
         }
 
-        protected SyntaxList<T> EmptyList<T>() where T : CSharpSyntaxNode
-        {
-            var rb = _pool.Allocate<T>();
-            var r = rb.ToList();
-            _pool.Free(rb);
-            return r;
-        }
-
-        protected SeparatedSyntaxList<T> EmptySeparatedList<T>() where T : CSharpSyntaxNode
-        {
-            var rb = _pool.AllocateSeparated<T>();
-            var r = rb.ToList();
-            _pool.Free(rb);
-            return r;
-        }
-
         protected SyntaxList<T> MakeList<T>(IEnumerable<IXParseTree> t)
             where T : InternalSyntax.CSharpSyntaxNode
         {
@@ -1398,13 +1382,23 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             _pool.Free(stmts);
             return result;
         }
+        protected BlockSyntax MakeBlock()
+        {
+            var block = _syntaxFactory.Block(
+                        attributeLists: default,
+                        openBraceToken: SyntaxFactory.MakeToken(SyntaxKind.OpenBraceToken),
+                        statements: default,
+                        closeBraceToken: SyntaxFactory.MakeToken(SyntaxKind.CloseBraceToken));
+            block.XGenerated = true;
+            return block;
+        }
         protected BlockSyntax MakeBlock(SyntaxList<StatementSyntax> statements)
         {
             var block = _syntaxFactory.Block(
                         attributeLists: default,
-                        SyntaxFactory.MakeToken(SyntaxKind.OpenBraceToken),
+                        openBraceToken: SyntaxFactory.MakeToken(SyntaxKind.OpenBraceToken),
                         statements,
-                        SyntaxFactory.MakeToken(SyntaxKind.CloseBraceToken));
+                        closeBraceToken: SyntaxFactory.MakeToken(SyntaxKind.CloseBraceToken));
             block.XGenerated = true;
             return block;
         }
@@ -2458,7 +2452,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         }
         protected SyntaxList<AttributeListSyntax> getAttributes(XP.AttributesContext attributes)
         {
-            return attributes?.GetList<AttributeListSyntax>() ?? EmptyList<AttributeListSyntax>();
+            return attributes?.GetList<AttributeListSyntax>() ?? default;
         }
 
         protected TypeParameterListSyntax getTypeParameters(XP.TypeparametersContext context)
@@ -3718,7 +3712,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 }
                 else if (forceBody)
                 {
-                    body = MakeBlock(EmptyList<StatementSyntax>());
+                    body = MakeBlock();
                 }
             }
             var decl = _syntaxFactory.AccessorDeclaration(
@@ -4778,7 +4772,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             var returntype = isprocedure ? voidType : context.Type.Get<TypeSyntax>();
             returntype.XVoDecl = true;
             var id = context.Id.Get<SyntaxToken>();
-            var attributes = EmptyList<AttributeListSyntax>();
+            SyntaxList<AttributeListSyntax> attributes = default;
             ImplementClipperAndPSZ(context, ref attributes, ref parameters, ref body, ref returntype);
             if (!isprocedure)
             {
@@ -4819,9 +4813,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     {
 
                         _emptyParameterList = _syntaxFactory.ParameterList(
-                            SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
-                            EmptySeparatedList<ParameterSyntax>(),
-                            SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken));
+                            openParenToken: SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
+                            parameters: default,
+                            closeParenToken: SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken));
                     }
                 }
 
@@ -4834,9 +4828,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             SyntaxList<SyntaxToken> modifiers = default;
             if (byref)
                 modifiers = TokenList(SyntaxKind.RefKeyword);
-            EqualsValueClauseSyntax eqv = default;
+            EqualsValueClauseSyntax eqv = null;
             if (defaultExpression != null)
-            { 
+            {
                 eqv = _syntaxFactory.EqualsValueClause(SyntaxFactory.MakeToken(SyntaxKind.EqualsToken), defaultExpression);
             }
             var parsyntax = _syntaxFactory.Parameter(
@@ -4921,10 +4915,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             if (context.Ellipsis != null)
             {
                 context.Put(_syntaxFactory.Parameter(
-                    default,
-                    default,
-                    default,
-                    context.Ellipsis.SyntaxLiteralValue(_options), null));
+                    attributeLists: default,
+                    modifiers: default,
+                    type: null,
+                    identifier: context.Ellipsis.SyntaxLiteralValue(_options), null));
                 return;
             }
             TypeSyntax type = _getParameterType(context);
@@ -5993,7 +5987,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         attributeLists: default,
                         awaitKeyword: null,
                         usingKeyword: isUsing ? parent.Using.SyntaxKeyword() : null,
-                EmptyList<SyntaxToken>(),
+                        modifiers: default,
                 _syntaxFactory.VariableDeclaration(_impliedType, variables),
                 SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)));
             _pool.Free(variables);
@@ -8134,16 +8128,16 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     if (_emptyArgs == null)
                     {
                         _emptyArgs = _syntaxFactory.ArgumentList(
-                                SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
-                                default(SeparatedSyntaxList<ArgumentSyntax>),
-                                SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken));
+                                openParenToken: SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
+                                arguments: default,
+                                closeParenToken: SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken));
                     }
                 }
             }
             return _emptyArgs;
         }
 
-        static private BracketedArgumentListSyntax _emptyBracketedArgs = null;
+        private static BracketedArgumentListSyntax _emptyBracketedArgs = null;
         protected BracketedArgumentListSyntax EmptyBracketedArgumentList()
         {
             if (_emptyBracketedArgs == null)
@@ -8154,9 +8148,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     if (_emptyBracketedArgs == null)
                     {
                         _emptyBracketedArgs = _syntaxFactory.BracketedArgumentList(
-                        SyntaxFactory.MakeToken(SyntaxKind.OpenBracketToken),
-                        default(SeparatedSyntaxList<ArgumentSyntax>),
-                        SyntaxFactory.MakeToken(SyntaxKind.CloseBracketToken));
+                        openBracketToken: SyntaxFactory.MakeToken(SyntaxKind.OpenBracketToken),
+                        arguments: default,
+                        closeBracketToken: SyntaxFactory.MakeToken(SyntaxKind.CloseBracketToken));
                     }
                 }
             }
@@ -8167,16 +8161,16 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
             return _syntaxFactory.ArgumentList(
                     SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
-                    MakeSeparatedList<ArgumentSyntax>(items),
+                    MakeSeparatedList(items),
                     SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken));
         }
 
         protected BracketedArgumentListSyntax MakeBracketedArgumentList(params ArgumentSyntax[] items)
         {
             return _syntaxFactory.BracketedArgumentList(
-                    SyntaxFactory.MakeToken(SyntaxKind.OpenBracketToken),
-                    MakeSeparatedList<ArgumentSyntax>(items),
-                    SyntaxFactory.MakeToken(SyntaxKind.CloseBracketToken));
+                    openBracketToken: SyntaxFactory.MakeToken(SyntaxKind.OpenBracketToken),
+                    MakeSeparatedList(items),
+                    closeBracketToken: SyntaxFactory.MakeToken(SyntaxKind.CloseBracketToken));
         }
 
 
@@ -8190,9 +8184,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 args.Add(argCtx.Get<ArgumentSyntax>());
             }
             context.Put(_syntaxFactory.BracketedArgumentList(
-                SyntaxFactory.MakeToken(SyntaxKind.OpenBracketToken),
-                args,
-                SyntaxFactory.MakeToken(SyntaxKind.CloseBracketToken)));
+                openBracketToken: SyntaxFactory.MakeToken(SyntaxKind.OpenBracketToken),
+                arguments: args,
+                closeBracketToken: SyntaxFactory.MakeToken(SyntaxKind.CloseBracketToken)));
             _pool.Free(args);
         }
 
@@ -9000,7 +8994,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         #endregion
 
-          
+
         #region Anonymous Types
         public override void ExitAnonTypeExpression([NotNull] XP.AnonTypeExpressionContext context)
         {

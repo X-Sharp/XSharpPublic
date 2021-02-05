@@ -640,11 +640,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             if (assName != null && !propDecl.HasVarName)
                 assName = assName + XSharpSpecialNames.PropertySuffix;
             var propType = getDataType(propctxt.Type);
-            
+
             var method = propDecl.Entity as XP.XppmethodContext;
             var accessors = _pool.Allocate<AccessorDeclarationSyntax>();
             var modifiers = decodeXppMemberModifiers(propDecl.Visibility, false, method.Modifiers?._Tokens);
-            var attributes = EmptyList<AttributeListSyntax>();
+            SyntaxList<AttributeListSyntax> attributes = default;
             if (method.Attributes != null && propctxt.Attributes == null)
             {
                 attributes = getAttributes(method.Attributes);

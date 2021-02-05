@@ -276,6 +276,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
 
                     _lazyParameters = CustomModifierUtils.CopyParameterCustomModifiers(overriddenOrImplementedProperty.Parameters, _lazyParameters, alsoCopyParamsModifier: isOverride);
                 }
+#if XSHARP
+                else /*if (this.IsVirtual)*/
+                {
+                    _modifiers &= ~DeclarationModifiers.Override;
+                }
+#endif
             }
             else if (_refKind == RefKind.RefReadOnly)
             {
@@ -283,6 +289,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
 
                 _lazyRefCustomModifiers = ImmutableArray.Create(CSharpCustomModifier.CreateRequired(modifierType));
             }
+
 
             Debug.Assert(isExplicitInterfaceImplementation || _lazyExplicitInterfaceImplementations.IsEmpty);
             _lazyExplicitInterfaceImplementations =

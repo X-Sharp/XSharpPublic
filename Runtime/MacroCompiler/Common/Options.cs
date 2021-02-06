@@ -25,9 +25,11 @@ namespace XSharp.MacroCompiler
     {
         public static MacroOptions Default { get => new MacroOptions(); }
 
-        public static MacroOptions VisualObjects { get => new MacroOptions() { AllowMemvarAlias = false, AllowDotAccess = false }; }
+        public static MacroOptions VisualObjects { get => new MacroOptions() { AllowMemvarAlias = false, AllowDotAccess = false, Dialect = XSharpDialect.VO }; }
 
-        public static MacroOptions FoxPro { get => new MacroOptions() { }; }
+        public static MacroOptions FoxPro { get => new MacroOptions() { Dialect = XSharpDialect.FoxPro }; }
+
+        public XSharpDialect Dialect = XSharpDialect.VO;
 
         public bool AllowFourLetterAbbreviations = false;
         public bool AllowOldStyleComments = true;

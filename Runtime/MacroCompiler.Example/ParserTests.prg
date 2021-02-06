@@ -11,10 +11,16 @@ USING System.Text
 
 // Rudimentary parser tests
 // Should parse without errors
-FUNCTION ParserTests(mc AS XSharp.Runtime.MacroCompiler) AS VOID
+
+FUNCTION ParserTestsFox(mc AS XSharp.Runtime.MacroCompiler) AS VOID
         ParseScript(mc, String.Join(e"\n",<STRING>{;
             "LPARAMETERS a,b as int, c",;
-            "PARAMETERS a as system.string,b, c as int",;
+            "PARAMETERS a as string,b, c as int";
+            }))
+    RETURN
+
+FUNCTION ParserTests(mc AS XSharp.Runtime.MacroCompiler) AS VOID
+        ParseScript(mc, String.Join(e"\n",<STRING>{;
             "PRIVATE a,b[4,5][4],c := 1+1, d[5] := {1,2,3,4}",;
             "PUBLIC a as float,b[4,5][4],c := 1+1 as system.int, d[5] := {1,2,3,4}",;
             "MEMVAR x, y",;

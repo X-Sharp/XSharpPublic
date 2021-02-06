@@ -337,7 +337,7 @@ namespace XSharp.MacroCompiler
         {
             NameExpr n = ParseName();
             // In FoxPro there are no dotted qualifiers. The Dot is the member access operator
-            if (RuntimeState.Dialect != XSharpDialect.FoxPro)
+            if (_options.Dialect != XSharpDialect.FoxPro)
             {
                 while (La() == TokenType.DOT && (La(2) == TokenType.ID || TokenAttr.IsSoftKeyword(La(2))))
                 {

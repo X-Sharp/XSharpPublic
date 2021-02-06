@@ -215,4 +215,48 @@ namespace XSharp.MacroCompiler.Syntax
         internal FinallyBlock(Token t, Stmt s) : base(t) { Stmt = s; }
         public override string ToString() => "FINALLY\n  " + Stmt.ToString().Replace("\n", "\n  ");
     }
+    internal partial class SequenceStmt : Stmt
+    {
+        internal Stmt Stmt;
+        internal Token Name;
+        internal StmtBlock Recover;
+        internal StmtBlock Finally;
+        internal SequenceStmt(Token t, Stmt s, Token n, StmtBlock r, StmtBlock f) : base(t) { Stmt = s; Name = n; Recover = r; Finally = f; }
+        public override string ToString() => "BEGIN SEQUENCE\n  " + Stmt.ToString().Replace("\n", "\n  ") +
+            (Recover != null ? "RECOVER USING " + Name + "\n  " + String.Join("\n", Recover.ToString()) : "") +
+            (Finally != null ? "FINALLY\n  " + String.Join("\n", Finally.ToString()) : "") +
+            "END SEQUENCE";
+    }
+
+    internal partial class ScopeStmt : Stmt
+    {
+        internal Stmt Stmt;
+        internal ScopeStmt(Token t, Stmt s) : base(t) { Stmt = s; }
+        public override string ToString() => "BEGIN " + TokenText(Token.type) + "\n  " + String.Join("\n", Stmt.ToString()) + "END " + TokenText(Token.type);
+    }
+
+    internal partial class LockStmt : Stmt
+    {
+        internal Stmt Stmt;
+        internal Expr Key;
+        internal LockStmt(Token t, Expr key, Stmt s) : base(t) { Key = key; Stmt = s; }
+        public override string ToString() => "BEGIN LOCK " + Key + "\n  " +  String.Join("\n", Stmt.ToString()) + "END LOCK";
+    }
+
+    internal partial class UsingStmt : Stmt
+    {
+        internal Stmt Stmt;
+        internal Expr Expr = null;
+        internal DeclStmt Decl = null;
+        internal UsingStmt(Token t, Expr e, Stmt s) : base(t) { Expr = e; Stmt = s; }
+        internal UsingStmt(Token t, DeclStmt decl, Stmt s) : base(t) { Decl = decl; Stmt = s; }
+        public override string ToString() => "BEGIN USING " + (Decl != null ? Decl.ToString() : Expr.ToString()) + "\n  " + String.Join("\n", Stmt.ToString()) + "END USING";
+    }
+    internal partial class FixedStmt : Stmt
+    {
+        internal Stmt Stmt;
+        internal DeclStmt Decl = null;
+        internal FixedStmt(Token t, DeclStmt decl, Stmt s) : base(t) { Decl = decl; Stmt = s; }
+        public override string ToString() => "BEGIN FIXED " + Decl + "\n  " + String.Join("\n", Stmt.ToString()) + "END FIXED";
+    }
 }

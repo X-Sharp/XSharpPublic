@@ -315,6 +315,7 @@ BEGIN NAMESPACE MacroCompilerTest
         //EvalMacro(mc, "{ || NIL } ")
         //wait
 
+        ParserTests(mc)
         RunTests(mc)
         wait
 

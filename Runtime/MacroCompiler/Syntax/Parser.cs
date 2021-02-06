@@ -182,6 +182,11 @@ namespace XSharp.MacroCompiler
             throw Error(Lt(), ErrorCode.Expected, "identifier");
         }
 
+        Expr RequireExpression()
+        {
+            return Require(ParseExpression(), ErrorCode.Expected, "expression");
+        }
+
         internal Codeblock ParseMacro()
         {
             var p = new List<IdExpr>();

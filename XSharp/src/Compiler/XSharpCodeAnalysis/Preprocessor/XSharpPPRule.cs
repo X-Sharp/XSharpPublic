@@ -3,7 +3,6 @@
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
-
 using System;
 using System.Collections.Generic;
 using Antlr4.Runtime;
@@ -1637,9 +1636,54 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 }
             }
             result.TrimLeadingSpaces();
+            adjustKeywordsToIdentifiers(result);
             return result;
         }
-
+        void adjustKeywordsToIdentifiers(IList<XSharpToken> result)
+        {
+            XSharpToken lasttoken = null;
+            foreach (var token in result)
+            {
+                if (lasttoken != null)
+                {
+                    if (XSharpLexer.IsKeyword(token.Type))
+                    {
+                        // after ALIAS and DOT we change the token to an ID
+                        switch (lasttoken.Type)
+                        {
+                            case XSharpLexer.ALIAS:
+                            case XSharpLexer.ID:
+                                token.Type = XSharpLexer.ID;
+                                // This makes sure that the token in the editor has the ID color
+                                token.Original.Type = XSharpLexer.ID; 
+                                break;
+                        }
+                    }
+                    if (token.Type == XSharpLexer.DOT)
+                    {
+                        // tokens before a DOT are changed to ID
+                        // with the exception of the tokens listed below
+                        switch (lasttoken.Type)
+                        {
+                            case XSharpLexer.SELF:
+                            case XSharpLexer.SUPER:
+                            case XSharpLexer.FOX_M:
+                                // leave alone
+                                break;
+                            default:
+                                if (XSharpLexer.IsKeyword(lasttoken.Type))
+                                {
+                                    lasttoken.Type = XSharpLexer.ID;
+                                    // This makes sure that the token in the editor has the ID color
+                                    lasttoken.Original.Type = XSharpLexer.ID;
+                                }
+                                break;
+                        }
+                    }
+                }
+                lasttoken = token;
+            }
+        }
         void tokenResult(PPResultToken resultToken, IList<XSharpToken> tokens, PPMatchRange[] matchInfo, IList<XSharpToken> result, int offset)
         {
             // Link the new token to the first token of the UDC
@@ -1912,7 +1956,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 }
             }
 
-            XSharpToken JoinTokens(IList<XSharpToken> toks, int s, int e)
+            XSharpToken joinTokensToString(IList<XSharpToken> toks, int s, int e)
             {
                 var sb = new System.Text.StringBuilder();
                 sb.Append('"');
@@ -1923,7 +1967,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     {
                         sb.Append(token.TriviaAsText);
                     }
-                    sb.Append(token.Text);
+                    var text = token.Text;
+                    if (text.StartsWith("@@"))
+                        text = text.Substring(2);
+                    sb.Append(text);
                 }
                 sb.Append('"');
                 var t = new XSharpToken(toks[s], XSharpLexer.STRING_CONST, sb.ToString())
@@ -1957,7 +2004,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     // change type of token to STRING_CONST;
                     if (!range.Empty)
                     {
-                        result.Add(JoinTokens(tokens, start, end));
+                        result.Add(joinTokensToString(tokens, start, end));
                     }
                     else
                     {
@@ -1973,7 +2020,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     // Delimit the input with string delimiters
                     if (!range.Empty)
                     {
-                        result.Add(JoinTokens(tokens, start, end));
+                        result.Add(joinTokensToString(tokens, start, end));
                     }
                     break;
 
@@ -1997,7 +2044,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                             }
                             else
                             {
-                                result.Add(JoinTokens(tokens, start, end));
+                                result.Add(joinTokensToString(tokens, start, end));
                             }
                         }
                         else
@@ -2015,7 +2062,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                             }
                             else
                             {
-                                var nt = JoinTokens(tokens, start, end);
+                                var nt = joinTokensToString(tokens, start, end);
                                 result.Add(nt);
                             }
                         }

@@ -29,7 +29,9 @@ namespace Microsoft.CodeAnalysis.CSharp
         internal bool ParseXSharpArgument(ref string name, ref string value, string arg, List<Diagnostic> diagnostics)
         {
             if (options == null)
+            {
                 options = new XSharpSpecificCompilationOptions();
+            }
 
             bool handled = true;
             bool positive = !name.EndsWith("-");

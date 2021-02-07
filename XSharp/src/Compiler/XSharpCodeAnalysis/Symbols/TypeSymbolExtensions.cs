@@ -18,10 +18,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
 {
     internal static partial class TypeSymbolExtensions
     {
-        private static ConcurrentDictionary<string, XSharpTargetDLL> dictionary;
+        private static readonly ConcurrentDictionary<string, XSharpTargetDLL> s_dictionary;
         static TypeSymbolExtensions()
         {
-            dictionary = new ConcurrentDictionary<string, XSharpTargetDLL>(XSharpString.Comparer);
+            s_dictionary = new ConcurrentDictionary<string, XSharpTargetDLL>(XSharpString.Comparer);
         }
 
         public static bool IsOurAttribute(this NamedTypeSymbol atype, string name)
@@ -119,9 +119,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                 type = _type.OriginalDefinition as NamedTypeSymbol;
             if (!type.IsNull() && type.Arity == 0 && !type.MangleName)
             {
-                if (type is SourceNamedTypeSymbol)
-                {
-                    var sourceType = (SourceNamedTypeSymbol)type;
+                    if (type is SourceNamedTypeSymbol sourceType)
+                    {
                     if (sourceType.IsSourceVoStructOrUnion)
                     {
                         return sourceType.VoStructSize;
@@ -199,11 +198,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
 
         public static bool IsRTDLL(this AssemblySymbol _asm, XSharpTargetDLL wantedTarget)
         {
-            XSharpTargetDLL target;
-            if (!dictionary.TryGetValue(_asm.Name, out target))
+            if (!s_dictionary.TryGetValue(_asm.Name, out var target))
             {
                 IsRT(_asm);
-                dictionary.TryGetValue(_asm.Name, out target);
+                s_dictionary.TryGetValue(_asm.Name, out target);
             }
             return target == wantedTarget;
         }
@@ -212,36 +210,35 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
         {
             if ((object) _asm == null)  // cast to object to prevent calling equals operator on AssemblySymbol
                 return false;
-            XSharpTargetDLL target;
-            if (dictionary.TryGetValue(_asm.Name, out target))
+            if (s_dictionary.TryGetValue(_asm.Name, out var target))
             {
                 return target != XSharpTargetDLL.Other;
             }
             switch (_asm.Name.ToLower())
             {
                 case XSharpAssemblyNames.XSharpCore:
-                    dictionary.TryAdd(_asm.Name, XSharpTargetDLL.Core);
+                    s_dictionary.TryAdd(_asm.Name, XSharpTargetDLL.Core);
                     return true;
                 case XSharpAssemblyNames.XSharpVO:
-                    dictionary.TryAdd(_asm.Name, XSharpTargetDLL.VO);
+                    s_dictionary.TryAdd(_asm.Name, XSharpTargetDLL.VO);
                     return true;
                 case XSharpAssemblyNames.XSharpRT:
-                    dictionary.TryAdd(_asm.Name, XSharpTargetDLL.RT);
+                    s_dictionary.TryAdd(_asm.Name, XSharpTargetDLL.RT);
                     return true;
                 case XSharpAssemblyNames.XSharpXPP:
-                    dictionary.TryAdd(_asm.Name, XSharpTargetDLL.XPP);
+                    s_dictionary.TryAdd(_asm.Name, XSharpTargetDLL.XPP);
                     return true;
                 case XSharpAssemblyNames.XSharpVFP:
-                    dictionary.TryAdd(_asm.Name, XSharpTargetDLL.VFP);
+                    s_dictionary.TryAdd(_asm.Name, XSharpTargetDLL.VFP);
                     return true;
                 case VulcanAssemblyNames.VulcanRT:
-                    dictionary.TryAdd(_asm.Name, XSharpTargetDLL.VulcanRT);
+                    s_dictionary.TryAdd(_asm.Name, XSharpTargetDLL.VulcanRT);
                     return true;
                 case VulcanAssemblyNames.VulcanRTFuncs:
-                    dictionary.TryAdd(_asm.Name, XSharpTargetDLL.VulcanRTFuncs);
+                    s_dictionary.TryAdd(_asm.Name, XSharpTargetDLL.VulcanRTFuncs);
                     return true;
                 default:
-                    dictionary.TryAdd(_asm.Name, XSharpTargetDLL.Other);
+                    s_dictionary.TryAdd(_asm.Name, XSharpTargetDLL.Other);
                     return false;
             }
         }
@@ -361,7 +358,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
         public static TypeSymbol GetActualType(this ParameterSymbol parameter)
         {
             var type = parameter.Type;
-            if (type.SpecialType == SpecialType.System_IntPtr)
+            if (type != null && type.SpecialType == SpecialType.System_IntPtr)
             {
                 var attrs = parameter.GetAttributes();
                 foreach (var attr in attrs)
@@ -386,7 +383,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             foreach (var attr in attrs)
             {
                 var atype = attr.AttributeClass;
-                if (atype.Name == OurTypeNames.NeedAccessToLocals)
+                if ((object) atype != null && atype.Name == OurTypeNames.NeedAccessToLocals)
                 {
                     return true;
                 }
@@ -396,6 +393,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
 
         public static bool TypesChanged(this TypeSymbol type)
         {
+            if (type is null)
+                return false;
             var attrs = type.GetAttributes();
             foreach (var attr in attrs)
             {
@@ -476,6 +475,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
         public NamedTypeSymbol UsualType
         {
             get { return this.Compilation.UsualType(); }
+        }
+        public ArrayTypeSymbol UsualArrayType
+        {
+            get { return this.Compilation.CreateArrayTypeSymbol(this.Compilation.UsualType()); }
         }
     }
 }

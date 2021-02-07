@@ -12,13 +12,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols.Metadata.PE
 {
     internal abstract partial class PENamedTypeSymbol : NamedTypeSymbol
     {
-        private PropertySymbol _vulcanArrayIndexerOne = null;
-        internal PropertySymbol VulcanArrayIndexerOne
+        private PropertySymbol _arrayIndexerOne = null;
+        internal PropertySymbol XSharpArrayIndexerOne
         {
             // this constructs an indexer that has the __GetElement and __SetElement as getter and setter with a single dimensional (inter) parameter
             get
             {
-                if (_vulcanArrayIndexerOne == null)
+                if (_arrayIndexerOne == null)
                 {
                     EnsureAllMembersAreLoaded();
 
@@ -36,21 +36,21 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols.Metadata.PE
                         if (((object)getOne != null) || ((object)setOne != null))
                         {
                             PropertyDefinitionHandle h = new PropertyDefinitionHandle();
-                            _vulcanArrayIndexerOne = PEPropertySymbol.Create(moduleSymbol, this, h, getOne, setOne);
+                            _arrayIndexerOne = PEPropertySymbol.Create(moduleSymbol, this, h, getOne, setOne);
                         }
                     }
                 }
-                return _vulcanArrayIndexerOne;
+                return _arrayIndexerOne;
             }
         }
 
-        private PropertySymbol _vulcanArrayIndexerMany = null;
-        internal PropertySymbol VulcanArrayIndexerMany
+        private PropertySymbol _arrayIndexerMany = null;
+        internal PropertySymbol XSharpArrayIndexerMany
         {
             // this constructs an indexer that has the __GetElement and __SetElement as getter and setter with a multi dimensional parameter array
             get
             {
-                if (_vulcanArrayIndexerMany == null)
+                if (_arrayIndexerMany == null)
                 {
                     EnsureAllMembersAreLoaded();
 
@@ -67,11 +67,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols.Metadata.PE
                         if (((object)getMany != null) || ((object)setMany != null))
                         {
                             PropertyDefinitionHandle h = new PropertyDefinitionHandle();
-                            _vulcanArrayIndexerMany = PEPropertySymbol.Create(moduleSymbol, this, h, getMany, setMany);
+                            _arrayIndexerMany = PEPropertySymbol.Create(moduleSymbol, this, h, getMany, setMany);
                         }
                     }
                 }
-                return _vulcanArrayIndexerMany;
+                return _arrayIndexerMany;
             }
         }
 

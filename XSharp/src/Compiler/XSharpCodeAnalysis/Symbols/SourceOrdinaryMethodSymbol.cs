@@ -18,7 +18,7 @@ using Roslyn.Utilities;
 
 namespace Microsoft.CodeAnalysis.CSharp.Symbols
 {
-    internal  sealed partial class SourceOrdinaryMethodSymbol 
+    internal sealed partial class SourceOrdinaryMethodSymbol 
     {
 
         private bool XsGenerateDebugInfo
@@ -67,6 +67,19 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                         }
                     }
                     overriddenMethod = null;
+                }
+            }
+            else if (this.HasClipperCallingConvention())
+            {
+                var baseType = this.ContainingType.BaseTypeNoUseSiteDiagnostics;
+                var members = baseType.GetMembersUnordered().Where(member =>
+                   member.Kind == SymbolKind.Method && string.Equals(member.Name, this.Name, StringComparison.OrdinalIgnoreCase));
+                if (members.Count() > 0 && members.First() is MethodSymbol ms)
+                {
+                    if (ms.IsVirtual)
+                    { 
+                        diagnostics.Add(ErrorCode.ERR_ClipperInSubClass, location, this.Name);
+                    }
                 }
             }
             else if (XSharpString.CaseSensitive && !this.DeclarationModifiers.HasFlag(DeclarationModifiers.New) &&

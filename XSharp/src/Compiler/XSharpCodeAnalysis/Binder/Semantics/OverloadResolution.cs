@@ -145,6 +145,8 @@ namespace Microsoft.CodeAnalysis.CSharp
                     // we have different / extended rules compared to C#
                     var parsLeft = m1.Member.GetParameters();
                     var parsRight = m2.Member.GetParameters();
+                    var usualType = Compilation.UsualType();
+                    var objectType = Compilation.GetSpecialType(SpecialType.System_Object);
                     var len = parsLeft.Length;
                     if (arguments.Count < len)
                         len = arguments.Count;
@@ -459,7 +461,7 @@ namespace Microsoft.CodeAnalysis.CSharp
 
                 useSiteDiagnostics = new HashSet<DiagnosticInfo>();
                 useSiteDiagnostics.Add(info);
-
+                return true;
             }
             else if (func2 && !func1)
             {
@@ -467,12 +469,13 @@ namespace Microsoft.CodeAnalysis.CSharp
                 var info = GenerateFuncMethodWarning(m2.Member, m1.Member);
                 useSiteDiagnostics = new HashSet<DiagnosticInfo>();
                 useSiteDiagnostics.Add(info);
-
+                return true;
             }
             return false;
+            // Local Functions
 	       CSDiagnosticInfo GenerateAmbiguousWarning(Symbol r1, Symbol r2) 
 	        {
-	            var info = new CSDiagnosticInfo(ErrorCode.WRN_VulcanAmbiguous,
+	            var info = new CSDiagnosticInfo(ErrorCode.WRN_XSharpAmbiguous,
 	                    new object[] {
 	                    r1.Name,
 	                    r1.Kind.ToString(),
@@ -490,8 +493,8 @@ namespace Microsoft.CodeAnalysis.CSharp
                 new object[] {
                     s1.Name,
                     new FormattedSymbol(s1, SymbolDisplayFormat.CSharpErrorMessageFormat),
-                    new FormattedSymbol(s2, SymbolDisplayFormat.CSharpErrorMessageFormat),
-                    s1.Kind.ToString()}); 
+                    new FormattedSymbol(s2, SymbolDisplayFormat.CSharpErrorMessageFormat)
+                    });
             }
 
         }

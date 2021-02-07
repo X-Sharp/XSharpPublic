@@ -282,11 +282,11 @@ namespace Microsoft.CodeAnalysis.CSharp
                         // Select Array Indexer with the correct # of parameters
                         if (analyzedArguments.Arguments.Count == 1)
                         {
-                            indexer = (arrayType as Symbols.Metadata.PE.PENamedTypeSymbol).VulcanArrayIndexerOne;
+                            indexer = (arrayType as Symbols.Metadata.PE.PENamedTypeSymbol).XSharpArrayIndexerOne;
                         }
                         else
                         {
-                            indexer = (arrayType as Symbols.Metadata.PE.PENamedTypeSymbol).VulcanArrayIndexerMany;
+                            indexer = (arrayType as Symbols.Metadata.PE.PENamedTypeSymbol).XSharpArrayIndexerMany;
                         }
                         return new BoundIndexerAccess(
                             syntax: node,

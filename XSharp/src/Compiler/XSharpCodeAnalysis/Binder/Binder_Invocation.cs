@@ -74,6 +74,29 @@ namespace Microsoft.CodeAnalysis.CSharp
                     boundExpression = CheckValue(boundExpression, BindValueKind.RValueOrMethodGroup, diagnostics);
                     string name = boundExpression.Kind == BoundKind.MethodGroup ? GetName(node.Expression) : null;
                     result = BindInvocationExpression(node, node.Expression, name, boundExpression, analyzedArguments, diagnostics);
+                    if (result is BoundCall bc)
+                    {
+                        // check if MethodSymbol has the NeedAccessToLocals attribute combined with /fox2
+                        if (Compilation.Options.Dialect == XSharpDialect.FoxPro &&
+                            Compilation.Options.HasOption(CompilerOption.FoxExposeLocals, node) &&
+                            bc.Method.NeedAccessToLocals())
+                        {
+                            var localsymbols = new List<LocalSymbol>();
+                            var binder = this;
+                            while (binder != null)
+                            {
+                                localsymbols.AddRange(binder.Locals);
+                                if (binder is InMethodBinder)
+                                    break;
+                                binder = binder.Next;
+                            }
+                            var root = node.SyntaxTree.GetRoot() as CompilationUnitSyntax;
+                            if (localsymbols.Count > 0)
+                            {
+                                root.RegisterFunctionThatNeedsAccessToLocals(node.CsNode, localsymbols);
+                            }
+                        }
+                    }
                 }
             }
             analyzedArguments.Free();
@@ -214,12 +237,12 @@ namespace Microsoft.CodeAnalysis.CSharp
                     foreach (var par in methodSym.Parameters)
                     {
                         var parameter = new SourceSimpleParameterSymbol(
-                            delmeth,
-                            par.Type,
-                            par.Ordinal,
-                            par.RefKind,
-                            par.Name,
-                            par.Locations);
+                            owner: delmeth,
+                            parameterType: par.Type,
+                            ordinal: par.Ordinal,
+                            refKind: par.RefKind,
+                            name: par.Name,
+                            locations: par.Locations);
                         builder.Add(parameter);
                     }
                     delmeth.InitializeParameters(builder.ToImmutableAndFree());
@@ -289,7 +312,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 var ts = FindPCallDelegateType(type as IdentifierNameSyntax);
                 if (ts != null && ts.IsDelegateType())
                 {
-                    SourceDelegateMethodSymbol delmeth = ts.DelegateInvokeMethod() as SourceDelegateMethodSymbol;
+                    var delmeth = ts.DelegateInvokeMethod() as SourceDelegateMethodSymbol;
                     // create new parameters based on the parameters from out parent call
                     var invoke = node.Parent as InvocationExpressionSyntax;
                     var realargs = invoke.ArgumentList;
@@ -303,12 +326,12 @@ namespace Microsoft.CodeAnalysis.CSharp
                         if (ptype.IsNull())
                             ptype = new PointerTypeSymbol(Compilation.GetSpecialType(SpecialType.System_Void));
                         var parameter = new SourceSimpleParameterSymbol(
-                            delmeth,
-                            ptype,
-                            i,
-                            delparams[i].RefKind,
-                            delparams[i].Name,
-                            delparams[i].Locations);
+                            owner: delmeth,
+                            parameterType: ptype,
+                            ordinal: i,
+                            refKind: delparams[i].RefKind,
+                            name: delparams[i].Name,
+                            locations: delparams[i].Locations);
                         builder.Add(parameter);
                         i++;
                     }

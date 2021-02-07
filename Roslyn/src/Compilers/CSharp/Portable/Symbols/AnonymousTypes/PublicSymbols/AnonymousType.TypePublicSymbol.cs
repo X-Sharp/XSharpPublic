@@ -111,9 +111,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                 this.TypeDescriptor = new AnonymousTypeDescriptor(codeblockParams.Select((t, i) => new AnonymousTypeField("Cb$Param$" + i, location, t))
                     .ToImmutableArray(), location);
                 var codeblockDelegate = manager.SynthesizeDelegate(codeblockParams.Length-1, default(BitVector), false, 0).Construct(codeblockParams);
+                var lambda = new AnonymousTypeField(XSharpSpecialNames.CodeBlockLamda, location, codeblockDelegate);
+                var source = new AnonymousTypeField(XSharpSpecialNames.CodeBlockSource, location, manager.System_String);
                 this.Properties = new[] {
-                    new AnonymousTypePropertySymbol(this, new AnonymousTypeField("Cb$Eval$", location, codeblockDelegate)),
-                    new AnonymousTypePropertySymbol(this, new AnonymousTypeField("Cb$Source$", location, manager.System_String))
+                    new AnonymousTypePropertySymbol(this, lambda),
+                    new AnonymousTypePropertySymbol(this, source)
                 }.AsImmutableOrNull();
 
                 Symbol[] members = new Symbol[4];

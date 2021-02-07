@@ -71,7 +71,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         // Options that can be set from the outside
         // Some options are also handled by the parser
         // Other options have flags, for the preprocessor macros, such as __VO1__
-
+        const LanguageVersion defaultLanguageVersion = LanguageVersion.CSharp7_3;
         #region private fields (need to be access with HasOption)
         private bool ArrayZero= false;
         private bool FoxInheritUnknown = false;
@@ -98,9 +98,9 @@ namespace Microsoft.CodeAnalysis.CSharp
         public XSharpTargetDLL TargetDLL { get; private set; }
         public bool DebugEnabled { get; private set; }
         public XSharpDialect Dialect { get; private set; }
-        public string DefaultIncludeDir { get; private set; }
-        public string WindowsDir { get; private set; }
-        public string SystemDir { get; private set; }
+        public string DefaultIncludeDir { get; private set; } = "";
+        public string WindowsDir { get; private set; } = "";
+        public string SystemDir { get; private set; } = "";
         public bool NoStdDef { get; private set; }
         public bool DumpAST { get; private set; }
         public bool ShowDefs { get; private set; }
@@ -110,7 +110,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         public bool AllowNamedArguments { get; private set; }
         public bool PreprocessorOutput { get; private set; }
         public bool SaveAsCSharp { get; private set; }
-        public string StdDefs { get; private set; }
+        public string StdDefs { get; private set; } = "";
         public bool Verbose { get; private set; }
         public bool VirtualInstanceMethods { get; private set; }
         public bool VOArithmeticConversions { get; private set; }
@@ -121,7 +121,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         public bool VOPreprocessorBehaviour { get; private set; }
         public bool VOResolveTypedFunctionPointersToPtr { get; private set; }
         public bool VOSignedUnsignedConversion { get; private set; }
-        public string DefaultNamespace { get; private set; }
+        public string DefaultNamespace { get; private set; } = "";
         public bool ImplicitNamespace { get; private set; }
         public bool HasRuntime { get { return this.Dialect.HasRuntime(); } }
         public bool SupportsMemvars { get { return this.Dialect.SupportsMemvars() && MemVars; } }
@@ -220,7 +220,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 UndeclaredMemVars = opt.UndeclaredMemVars;
                 AllowUnsafe = opt.AllowUnsafe;
             }
-            LanguageVersion = LanguageVersion.CSharp7_3;
+            LanguageVersion = defaultLanguageVersion;
         }
 
         public void SetOptions(CSharpCommandLineArguments opt)
@@ -230,7 +230,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 DebugEnabled = opt.EmitPdb;
                 CommandLineArguments = opt;
             }
-            LanguageVersion = LanguageVersion.CSharp7_3;
+            LanguageVersion = defaultLanguageVersion;
         }
         internal CSharpParseOptions WithNoStdDef(bool nostddef)
         {
@@ -296,7 +296,7 @@ namespace Microsoft.CodeAnalysis.CSharp
 #if !VSPARSER
             CommandLineArguments = opt.CommandLineArguments;
 #endif
-            LanguageVersion = LanguageVersion.CSharp7_3;
+            LanguageVersion = defaultLanguageVersion;
             MemVars = opt.MemVars;
             UndeclaredMemVars = opt.UndeclaredMemVars;
             InitLocals = opt.InitLocals;
@@ -319,7 +319,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             var result = new CSharpParseOptions(this);
             result.SetXSharpSpecificOptions(this);
             result.ConsoleOutput = consoleOutput;
-            result.LanguageVersion = LanguageVersion.CSharp7_3;
+            result.LanguageVersion = defaultLanguageVersion;
             return result;
         }
         public CSharpParseOptions WithMacroScript(bool macroScript)
@@ -331,7 +331,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             var result = new CSharpParseOptions(this);
             result.SetXSharpSpecificOptions(this);
             result.MacroScript = macroScript;
-            result.LanguageVersion = LanguageVersion.CSharp7_3;
+            result.LanguageVersion = defaultLanguageVersion;
             return result;
         }
 

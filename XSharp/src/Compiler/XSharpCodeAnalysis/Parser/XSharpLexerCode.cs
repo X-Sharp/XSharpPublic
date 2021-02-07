@@ -48,7 +48,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
         }
         public static bool IsIdentifier(int iToken)
         {
-            return iToken == ID || iToken == KWID;
+            return iToken == ID;
         }
 
         public static bool IsType(int iToken)
@@ -689,20 +689,14 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
 
         private void handleTrivia(XSharpToken t)
         {
-            switch (t.Channel)
+            if (t.IsTrivia)
             {
-                case TokenConstants.DefaultChannel:
-                case PREPROCESSORCHANNEL:
-                    if (_trivia.Count > 0)
-                    {
-                        t.Trivia = _trivia.ToImmutableArray();
-                        _trivia.Clear();
-                    }
-                    break;
-                case TokenConstants.HiddenChannel:
-                case XMLDOCCHANNEL:
-                    _trivia.Add(t);
-                    break;
+                _trivia.Add(t);
+            }
+            else if (t.CanHaveTrivia && _trivia.Count > 0)
+            {
+                t.Trivia = _trivia.ToImmutableArray();
+                _trivia.Clear();
             }
 
         }
@@ -1295,7 +1289,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                         }
                         _inDottedIdentifier = true;
                     }
-                    else if (type == ID || type == KWID)
+                    else if (type == ID)
                     {
                         _inDottedIdentifier = true;
                     }
@@ -1308,7 +1302,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                         t.Type = ID;
                         // keep _inDottedIdentifier true
                     }
-                    else if (type != DOT && type != ID && type != KWID)
+                    else if (type != DOT && type != ID )
                     {
                         _inDottedIdentifier = false;
                     }

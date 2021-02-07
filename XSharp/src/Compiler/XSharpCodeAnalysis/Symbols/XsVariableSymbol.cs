@@ -42,6 +42,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             _getMethod = getMethod;
             _setMethod = setMethod;
             _type = type;
+            _alias = string.Empty;
         }
         internal XsVariableSymbol(string alias, string name, MethodSymbol getMethod, MethodSymbol setMethod, TypeSymbol type)
         {

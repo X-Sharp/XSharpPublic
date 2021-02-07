@@ -59,10 +59,11 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                     }
                     return sb.ToString();
                 }
-                return String.Empty;
+                return string.Empty;
             }
         }
-
+        public bool IsTrivia => Channel == TokenConstants.HiddenChannel || Channel == XSharpLexer.XMLDOCCHANNEL;
+        public bool CanHaveTrivia => Channel == TokenConstants.DefaultChannel || Channel == XSharpLexer.PREPROCESSORCHANNEL;
         private void copyToken(XSharpToken token)
         {
             type = token.Type;
@@ -73,9 +74,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             StartIndex = token.StartIndex;
             StopIndex = token.StopIndex;
             Trivia = token.Trivia;
-
         }
-
         internal XSharpToken(IToken t) : base(t)
         {
             if (t is XSharpToken xt && t != this)

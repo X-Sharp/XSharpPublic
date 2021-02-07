@@ -1133,6 +1133,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     _parseErrors.Add(new ParseErrorData(context.ExpressionBody, ErrorCode.ERR_BlockBodyAndExpressionBody));
                 }
             }
+            if (context.Key2 != null && context.Key2.Type != context.Key.Type)
+            {
+                _parseErrors.Add(new ParseErrorData(context.Key2, ErrorCode.ERR_UnExpectedExpected, context.Key2.Text, context.Key.Text));
+            }
         }
         public override void ExitEventAccessor([NotNull] XSharpParser.EventAccessorContext context)
         {

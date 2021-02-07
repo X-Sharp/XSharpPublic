@@ -22,7 +22,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
     internal sealed partial class SourceNamedTypeSymbol : SourceMemberContainerTypeSymbol, IAttributeTargetSymbol
     {
 
-        private bool _isVoStructOrUnion = false;
+        private readonly bool _isVoStructOrUnion = false;
 
         internal bool IsSourceVoStructOrUnion { get { return _isVoStructOrUnion; } }
         private int _voStructSize = -1;

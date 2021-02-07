@@ -219,7 +219,9 @@ namespace Microsoft.CodeAnalysis.CSharp
                     && _compilation.Options.Dialect.AllowPointerMagic())
                 {
                     rewrittenOperand = new BoundConversion(rewrittenOperand.Syntax, rewrittenOperand,
-                        Conversion.Identity, false, false, null, _compilation.GetSpecialType(SpecialType.System_IntPtr));
+                        Conversion.Identity, false, false, 
+                        constantValueOpt: default, 
+                        type: _compilation.GetSpecialType(SpecialType.System_IntPtr));
                 }
             }
             return conversionKind;

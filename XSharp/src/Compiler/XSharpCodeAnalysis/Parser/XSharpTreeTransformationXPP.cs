@@ -644,7 +644,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             var method = propDecl.Entity as XP.XppmethodContext;
             var accessors = _pool.Allocate<AccessorDeclarationSyntax>();
             var modifiers = decodeXppMemberModifiers(propDecl.Visibility, false, method.Modifiers?._Tokens);
-            var attributes = EmptyList<AttributeListSyntax>();
+            SyntaxList<AttributeListSyntax> attributes = default;
             if (method.Attributes != null && propctxt.Attributes == null)
             {
                 attributes = getAttributes(method.Attributes);

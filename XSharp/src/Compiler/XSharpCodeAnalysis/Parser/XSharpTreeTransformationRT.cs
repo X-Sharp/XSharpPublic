@@ -407,7 +407,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             // Creates an empty $AppExit method.
             // The contents will be created in the LocalRewriter
             // This will contain the code to clear globals
-            var body = MakeBlock(EmptyList<StatementSyntax> ());
+            var body = MakeBlock();
             var appId = SyntaxFactory.Identifier(XSharpSpecialNames.AppExit);
             var modifiers = TokenList(SyntaxKind.InternalKeyword, SyntaxKind.StaticKeyword);
 
@@ -421,7 +421,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         private MethodDeclarationSyntax CreateRunInitProcs()
         {
-            var body = MakeBlock(EmptyList<StatementSyntax>());
+            var body = MakeBlock();
             var appId = SyntaxFactory.Identifier(ReservedNames.RunInitProcs);
             var modifiers = TokenList(SyntaxKind.PublicKeyword, SyntaxKind.StaticKeyword);
             var initProcs = _syntaxFactory.MethodDeclaration(

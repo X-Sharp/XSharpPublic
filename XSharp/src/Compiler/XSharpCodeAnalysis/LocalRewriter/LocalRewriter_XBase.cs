@@ -114,7 +114,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 isDelegateCall: false,
                 expanded: false,
                 invokedAsExtensionMethod: false,
-                argsToParamsOpt: default(ImmutableArray<int>),
+                argsToParamsOpt: default,
                 resultKind: LookupResultKind.Viable,
                 binderOpt:null,
                 type: rettype,

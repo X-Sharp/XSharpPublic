@@ -113,7 +113,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                         var rtType = _compilation.RuntimeFunctionsType();
                         get = rtType.GetMembers(ReservedNames.FieldGetWaUndeclared);
                         set = rtType.GetMembers(ReservedNames.FieldSetWaUndeclared);
-                        var varSym = new XsFoxMemberAccessSymbol(amc.AreaName, amc.FieldName, (MethodSymbol) get[0], (MethodSymbol)set[0], _compilation.UsualType());
+                        var varSym = new XsFoxMemberAccessSymbol(amc.AreaName, amc.FieldName, (MethodSymbol)get[0], (MethodSymbol)set[0], _compilation.UsualType());
                         if (get.Length > 0 && set.Length > 0)
                         {
                             boundProperties[i] = new BoundPropertyAccess(a.Syntax, null, varSym, LookupResultKind.Viable, varSym.Type);

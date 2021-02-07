@@ -19,7 +19,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         private BoundExpression MemVarFieldAccess(SyntaxNode syntax, XsVariableSymbol property)
         {
             var getMethod = property.GetMethod;
-            Debug.Assert((object)getMethod != null);
+            Debug.Assert(getMethod != null);
             if (property.HasAlias)
             {
                 var arg1 = MakeConversionNode(_factory.Literal(property.Alias), getMethod.ParameterTypes[0], false);
@@ -35,6 +35,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         private BoundExpression MemVarFieldAssign(SyntaxNode syntax, XsVariableSymbol property, BoundExpression rewrittenRight)
         {
             var setMethod = property.SetMethod;
+            Debug.Assert(setMethod != null);
             if (property.HasAlias)
             {
                 var arg1 = MakeConversionNode(_factory.Literal(property.Alias), setMethod.ParameterTypes[0], false);

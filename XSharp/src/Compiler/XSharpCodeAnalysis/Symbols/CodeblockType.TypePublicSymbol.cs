@@ -153,7 +153,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                 AnonymousTypeTemplateSymbol anonymousType = (AnonymousTypeTemplateSymbol)this.ContainingType;
                 var cbDel = (anonymousType.GetMembers()[0] as AnonymousTypePropertySymbol).BackingField;
                 MethodSymbol invokeMethod = cbDel.Type.GetDelegateType().DelegateInvokeMethod();
-                MethodSymbol argMethod = DeclaringCompilation.CodeBlockType().GetMembers("_BlockArg").First() as MethodSymbol;
+                MethodSymbol argMethod = DeclaringCompilation.CodeBlockType().GetMembers(ReservedNames.BlockArg).First() as MethodSymbol;
 
                 BoundExpression paramArr = F.Parameter(_parameters[0]);
 

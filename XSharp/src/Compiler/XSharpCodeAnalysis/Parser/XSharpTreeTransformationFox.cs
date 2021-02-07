@@ -953,7 +953,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
             var attributeList = getAttributes(context.Attributes);
             TypeSyntax type = foxdllGetType(context.Type);  // handle integer, single, double etc.
-            var modifiers = EmptyList<SyntaxToken>();
+            SyntaxList<SyntaxToken> modifiers = default;
 
             if (context.Address != null)
             {

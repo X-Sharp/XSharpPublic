@@ -7,6 +7,7 @@
 
 using Microsoft.CodeAnalysis.CSharp.Symbols;
 using System.Collections.Generic;
+using System.Linq;
 using XP = LanguageService.CodeAnalysis.XSharp.SyntaxParser.XSharpParser;
 using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
 
@@ -121,8 +122,10 @@ namespace Microsoft.CodeAnalysis.CSharp
                 if ( nts.ConstructedFrom.IsUsualType())
                 {
                     var op = usualType.GetOperators(WellKnownMemberNames.ImplicitConversionName)
-                        .WhereAsArray(o => o.ParameterCount == 1 && o.ParameterTypes[0].IsObjectType() && o.ReturnType.IsUsualType())
-                        .AsSingleton() as MethodSymbol;
+                        .WhereAsArray(o => o.ParameterCount == 1 
+						&& o.ParameterTypes[0].IsObjectType() 
+                        && o.ReturnType.IsUsualType())
+                        .First() as MethodSymbol;
                     if (op != null)
                     {
                         var sourceType = _binder.Compilation.GetSpecialType(SpecialType.System_Object);

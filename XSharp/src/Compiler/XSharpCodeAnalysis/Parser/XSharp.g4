@@ -394,9 +394,9 @@ expressionList	    : Exprs+=expression (COMMA Exprs+=expression)*
                     ;
 
 propertyAccessor    : Attributes=attributes? Modifiers=accessorModifiers?
-                      ( Key=GET end=eos StmtBlk=statementBlock END GET?
+                      ( Key=GET end=eos StmtBlk=statementBlock END Key2=GET?
                       | Key=GET UDCSEP ExpressionBody=expression              // New: Expression Body
-                      | Key=SET end=eos StmtBlk=statementBlock END SET?
+                      | Key=SET end=eos StmtBlk=statementBlock END Key2=SET?
                       | Key=SET UDCSEP ExpressionBody=expression              // New: Expression Body
                       )
                       end=eos
@@ -1053,13 +1053,13 @@ queryContinuation   : I=INTO Id=identifier Body=queryBody
 
 
 // All New Vulcan and X# keywords can also be recognized as Identifier
-identifier          : Token=(ID  | KWID)
+identifier          : Token=ID  
                     | XsToken=keywordxs
                     | XppToken=keywordxpp
                     | FoxToken=keywordfox
                     ;
 
-identifierString    : Token=(ID | KWID | STRING_CONST)
+identifierString    : Token=(ID | STRING_CONST)
                     | XsToken=keywordxs
                     | XppToken=keywordxpp
                     | FoxToken=keywordfox

@@ -224,7 +224,7 @@
                 case ErrorCode.WRN_CompilerOptionNotImplementedYet:
                 case ErrorCode.WRN_NoReturnValueAllowed:
                 case ErrorCode.WRN_SuppressAxitMethodCall:
-                case ErrorCode.WRN_VulcanAmbiguous:
+                case ErrorCode.WRN_XSharpAmbiguous:
                 case ErrorCode.WRN_GetSetMustHaveBody:
                 case ErrorCode.WRN_GeneratingGetAccessor:
                 case ErrorCode.WRN_ArgumentNameLocalNamePossibleConflict:

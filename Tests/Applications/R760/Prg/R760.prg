@@ -3,21 +3,25 @@ FUNCTION Start( ) AS VOID
 	LOCAL oValue AS ParentClass   
 	LOCAL uValue AS USUAL
 	oValue := ParentClass{}
-	? oValue:Caption
+	? oValue:Caption          
+	xAssert(oValue:Caption == "default")
 	oValue:Caption := "New Caption"
     ? oValue:Caption	
+	xAssert(oValue:Caption == "New Caption")
     oValue:Dispatch(MyChildEvent{})
 
 	oValue := ChildClass{}
 	? oValue:Caption     
 	uValue := "New Caption"
 	oValue:Caption := uValue
+	xAssert(oValue:Caption == "Child New Caption")
     ? oValue:Caption	
     
 	oValue := GrandChildClass{}
 	? oValue:Caption     
 	uValue := "New Caption"
 	oValue:Caption := uValue
+	xAssert(oValue:Caption == "Child GrandChild New Caption")
     ? oValue:Caption	
     oValue:Dispatch(MyChildEvent{})	
 RETURN                                                    
@@ -63,3 +67,11 @@ END CLASS
 
 CLASS MyChildEvent INHERIT MyEvent
 END CLASS    
+
+
+PROC xAssert(l AS LOGIC)
+IF l
+	? "Assertion passed"
+ELSE
+	THROW Exception{"Incorrect result"}
+END IF

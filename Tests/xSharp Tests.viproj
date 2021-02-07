@@ -91127,11 +91127,11 @@ GalleryPage =
 GalleryDefaultName = 
 Target = 0
 Platform = x86
-Language = XSharp
-Runtime = CLR4
+Language = VulcanNet
+Runtime = CLR2
 Dialect = Core
 Folder = %ProjectPath%\Applications\R766\
-PrgSubFolder = \Prg
+PrgSubFolder = \
 ResourcesSubFolder = \Resources
 Description = Just a simple x# application
 NameSpace = 
@@ -91160,7 +91160,6 @@ FileGUID = 3FF19C80-5578-4F4F-A5D8-F5F88F284CC8
 FileType = Code
 CopyToBin = 0
 [R766 - Support for Property INIT accessors References]
-ReferenceGAC = CLR4,System,1,0,4.0.0.0
 [R766 - Support for Property INIT accessors Resources]
 [R766 - Support for Property INIT accessors Native Resources]
 [R766 - Support for Property INIT accessors License files]
@@ -91202,9 +91201,9 @@ AppConfig = Debug,11111111-1111-1111-1111-111111111111
   SwitchesCF=
   CommandLine=
   CommandLineCF=
-  Debug=1
-  DebugInit=1
-  DefineDebug=1
+  Debug=0
+  DebugInit=0
+  DefineDebug=0
   DefineTrace=0
   SyntaxOnly=0
   WarningsErrors=1
@@ -91226,6 +91225,118 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
   Optimize=0
 ENDApplication = R766 - Support for Property INIT accessors
+
+ApplicationGroup = 09F25645-7429-41B4-8D41-DFD5B355DD87
+; ************** APPLICATION C763 - Problem with UDCs and keywords as field names *************
+Application = C763 - Problem with UDCs and keywords as field names
+IDEVersion = 1.06
+GalleryName = 
+GalleryPage = 
+GalleryDefaultName = 
+Target = 0
+Platform = AnyCPU
+Language = XSharp
+Runtime = CLR4
+Dialect = VO
+Folder = %ProjectPath%\Applications\C763\
+PrgSubFolder = \Prg
+ResourcesSubFolder = 
+Description = 
+NameSpace = 
+Assembly = C763
+Extension = 
+ApplicationIcon = 
+OutputFolder = 
+Frameworks = 1
+GUID = 8F223452-E2CC-4DF7-8751-382FF14B9B99
+IncludeInProjectBuild = 1
+IncludeInProjectSearch = 1
+IncludeInProjectExport = 1
+IncludePath = 
+StdDefsFile = 
+AppToRun = 
+SignAssembly = 0
+KeyFile = 
+
+[ExportOptions]
+ExportResources = 0
+ExportImages = 0
+[C763 - Problem with UDCs and keywords as field names FileGroups]
+[C763 - Problem with UDCs and keywords as field names Files]
+File = %AppPath%\Prg\C763.prg
+FileGUID = 95D6D548-5128-4691-A664-CF7EF12290D1
+FileType = Code
+CopyToBin = 0
+[C763 - Problem with UDCs and keywords as field names References]
+ReferenceGAC = CLR4,System,1,0,4.0.0.0
+ReferenceGAC = CLR4,XSharp.RT,1,0,2.6.0.0
+ReferenceGAC = CLR4,XSharp.VO,1,0,2.6.0.0
+ReferenceGAC = CLR4,XSharp.Core,1,0,2.6.0.0
+[C763 - Problem with UDCs and keywords as field names Resources]
+[C763 - Problem with UDCs and keywords as field names Native Resources]
+[C763 - Problem with UDCs and keywords as field names License files]
+[C763 - Problem with UDCs and keywords as field names General Options]
+Switches=/ppo
+ZeroArrays=0
+CaseSensitive=0
+ImplicitNamespace=0
+VO1=0
+VO2=0
+VO3=0
+VO4=0
+VO5=0
+VO6=0
+VO7=0
+VO8=0
+VO9=0
+VO10=0
+VO11=0
+VO12=0
+VO13=0
+VO14=0
+VO16=0
+FOX1=0
+FOX2=0
+XPP1=0
+LateBound=0
+Unsafe=0
+Undeclared=0
+UseNativeVersion=0
+MemVar=0
+IgnoreStdDefs=0
+Ovf=0
+FOvf=0
+ResponseOnly=0
+[C763 - Problem with UDCs and keywords as field names Configurations]
+AppConfig = Debug,11111111-1111-1111-1111-111111111111
+  Switches=
+  SwitchesCF=
+  CommandLine=
+  CommandLineCF=
+  Debug=1
+  DebugInit=1
+  DefineDebug=1
+  DefineTrace=0
+  SyntaxOnly=0
+  WarningsErrors=0
+  ForceConsole=0
+  ForceX86=0
+  Optimize=0
+AppConfig = Release,22222222-2222-2222-2222-222222222222
+  Switches=
+  SwitchesCF=
+  CommandLine=
+  CommandLineCF=
+  Debug=0
+  DebugInit=0
+  DefineDebug=0
+  DefineTrace=0
+  SyntaxOnly=0
+  WarningsErrors=0
+  ForceConsole=0
+  ForceX86=0
+  Optimize=0
+ENDApplication = C763 - Problem with UDCs and keywords as field names
 [EndApplications]
 
 [Configurations]

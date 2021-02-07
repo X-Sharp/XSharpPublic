@@ -49,7 +49,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
         }
         public static bool IsIdentifier(int iToken)
         {
-            return iToken == ID || iToken == KWID;
+            return iToken == ID;
         }
 
         public static bool IsType(int iToken)
@@ -690,33 +690,30 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
 
         private void handleTrivia(XSharpToken t)
         {
-            switch (t.Channel)
+            if (t.IsTrivia)
             {
-                case TokenConstants.DefaultChannel:
-                case PREPROCESSORCHANNEL:
-                    if (_trivia.Count > 0)
-                    {
-                        t.Trivia = _trivia.ToImmutableArray();
-                        _trivia.Clear();
-                    }
-                    break;
-                case TokenConstants.HiddenChannel:
-                case XMLDOCCHANNEL:
-                    _trivia.Add(t);
-                    break;
+                _trivia.Add(t);
+            }
+            else if (t.CanHaveTrivia && _trivia.Count > 0)
+            {
+                t.Trivia = _trivia.ToImmutableArray();
+                _trivia.Clear();
             }
 
         }
         private void handleSpecialFunctions()
         {
             // Handle function names that are the same as keywords
+            // This gets called when the LPAREN token is found
+            // This prevents the tokens to be seen as keyword and also makes
+            // Sure that in the editor the case of the tokens is not changed
             switch (LastToken)
             {
                 case FOR:                               // For ()  
                 case FIELD:                             // Field()
                     if (Dialect == XSharpDialect.FoxPro)
                     {
-                        _lastToken.Type = ID;           
+                        _lastToken.Type = ID;
                     }
                     break;
                 case DATETIME:                          // DateTime (....)
@@ -772,7 +769,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                             parseFoxProDate();
                         }
                         else
-                        { 
+                        {
                             parseOne(LCURLY);
                         }
                         break;
@@ -978,7 +975,6 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                                 parseOne(SUBSTR);
                                 break;
                         }
-                        
                         break;
                     case '!':
                         parseOne(NOT);
@@ -1296,7 +1292,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                         }
                         _inDottedIdentifier = true;
                     }
-                    else if (type == ID || type == KWID)
+                    else if (type == ID)
                     {
                         _inDottedIdentifier = true;
                     }
@@ -1309,13 +1305,12 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                         t.Type = ID;
                         // keep _inDottedIdentifier true
                     }
-                    else if (type != DOT && type != ID && type != KWID)
+                    else if (type != DOT && type != ID )
                     {
                         _inDottedIdentifier = false;
                     }
                 }
             }
-            
             if (type == NL)    // Semi colon EOS is handled in parseSemi()
             {
                 if (_beginOfStatement)

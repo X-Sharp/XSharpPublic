@@ -368,7 +368,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
         public static TypeWithAnnotations GetActualType(this ParameterSymbol parameter)
         {
             var type = parameter.Type;
-            if (type.SpecialType == SpecialType.System_IntPtr)
+            if (type is { } && type.SpecialType == SpecialType.System_IntPtr)
             {
                 var attrs = parameter.GetAttributes();
                 foreach (var attr in attrs)
@@ -490,8 +490,5 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
         {
             get { return this.Compilation.CreateArrayTypeSymbol(this.Compilation.UsualType()); }
         }
-
-        
-
     }
 }

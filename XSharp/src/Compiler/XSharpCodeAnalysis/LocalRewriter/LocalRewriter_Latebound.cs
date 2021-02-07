@@ -92,7 +92,8 @@ namespace Microsoft.CodeAnalysis.CSharp
             if (!allowLB || loweredReceiver.HasDynamicType())
                 return null;
             var usualType = _compilation.UsualType();
-            var value = loweredValue.Type is null ? new BoundDefaultExpression(syntax, usualType) : MakeConversionNode(loweredValue, usualType, false);
+            var value = loweredValue.Type is null ? new BoundDefaultExpression(syntax, usualType) 
+                : MakeConversionNode(loweredValue, usualType, false);
             var nameExpr = _factory.Literal(name);
             if (IsFoxAccessMember(loweredReceiver, out var areaName))
             {

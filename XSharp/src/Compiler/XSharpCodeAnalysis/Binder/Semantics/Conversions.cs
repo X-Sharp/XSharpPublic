@@ -56,7 +56,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         {
             bool result = base.HasBoxingConversion(source, destination, ref useSiteDiagnostics);
 
-            if (!result && _binder.Compilation.Options.HasRuntime && ! (destination  is null) && source is NamedTypeSymbol)
+            if (!result && _binder.Compilation.Options.HasRuntime && destination  is { } && source is NamedTypeSymbol)
             {
                 var nts = source as NamedTypeSymbol;
                 if (nts.ConstructedFrom.IsUsualType())
@@ -66,7 +66,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                     {
                         // do not box string, array, codeblock  and clipperargs
                         result = !destination.IsStringType()
-                            && ! (destFrom is null )
+                            && destFrom is { }
                             && !Equals(destFrom, _binder.Compilation.ArrayType())
                             && !Equals(destFrom, _binder.Compilation.CodeBlockType())
                             && !destination.IsIFormatProvider()
@@ -85,7 +85,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                     {
                         // do not box symbol, psz, vofloat, vodate
                         result = destination.SpecialType == SpecialType.None
-                            && !( destFrom is null )
+                            && destFrom is { }
                             && !Equals(destFrom, _binder.Compilation.SymbolType())
                             && !Equals(destFrom, _binder.Compilation.PszType())
                             && !Equals(destFrom, _binder.Compilation.FloatType())
@@ -94,7 +94,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 }
                 else if (Equals(nts.ConstructedFrom, _binder.Compilation.FloatType()))
                 {
-                    if (!(destination is null) && destination.SpecialType.IsNumericType())
+                    if (destination is {}  && destination.SpecialType.IsNumericType())
                     {
                         result = true;
                     }
@@ -121,8 +121,9 @@ namespace Microsoft.CodeAnalysis.CSharp
                 if ( nts.ConstructedFrom.IsUsualType())
                 {
                     var op = usualType.GetOperators(WellKnownMemberNames.ImplicitConversionName)
-                        .WhereAsArray(o => o.ParameterCount == 1 && o.Parameters[0].Type.IsObjectType()
-                        && Equals(o.ReturnType, usualType))
+                        .WhereAsArray(o => o.ParameterCount == 1 
+                        && o.Parameters[0].Type.IsObjectType()
+                        && o.ReturnType.IsUsualType())
                         .First() as MethodSymbol;
                     if (op != null)
                     {

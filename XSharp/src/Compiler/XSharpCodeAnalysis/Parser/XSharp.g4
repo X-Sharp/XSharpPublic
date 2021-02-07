@@ -1054,13 +1054,13 @@ queryContinuation   : I=INTO Id=identifier Body=queryBody
 
 
 // All New Vulcan and X# keywords can also be recognized as Identifier
-identifier          : Token=(ID  | KWID)
+identifier          : Token=ID  
                     | XsToken=keywordxs
                     | XppToken=keywordxpp
                     | FoxToken=keywordfox
                     ;
 
-identifierString    : Token=(ID | KWID | STRING_CONST)
+identifierString    : Token=(ID | STRING_CONST)
                     | XsToken=keywordxs
                     | XppToken=keywordxpp
                     | FoxToken=keywordfox

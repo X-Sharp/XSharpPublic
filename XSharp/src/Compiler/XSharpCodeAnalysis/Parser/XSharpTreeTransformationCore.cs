@@ -1652,7 +1652,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             var expressionBody = GetExpressionBody(context.ExpressionBody);
 
             MemberDeclarationSyntax m = _syntaxFactory.MethodDeclaration(
-                 attributeLists: default,
+                 attributeLists: null,
                  modifiers: mods,
                  returnType: returntype,
                  explicitInterfaceSpecifier: null,
@@ -8118,7 +8118,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         #endregion
 
         #region Arguments 
-        static private ArgumentListSyntax _emptyArgs = null;
+        private static ArgumentListSyntax _emptyArgs = null;
         protected ArgumentListSyntax EmptyArgumentList()
         {
             if (_emptyArgs == null)

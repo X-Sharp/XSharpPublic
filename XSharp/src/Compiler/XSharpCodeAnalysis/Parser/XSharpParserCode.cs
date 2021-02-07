@@ -410,7 +410,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                 }
                 var info = new MemVarFieldInfo(Name, Alias);
                 info.Context = context;
-                Fields.Add(Name, info);
+                Fields.Add(info.Name, info);
                 Fields.Add(info.FullName, info);
                 return info;
             }
@@ -1147,10 +1147,14 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
         public XSharpParserRuleContext Context { get; set; }
         internal MemVarFieldInfo(string name, string alias, bool filewidepublic = false)
         {
+            if (name.StartsWith("@@"))
+                name = name.Substring(2);
             Name = name;
             Alias = alias;
             if (!string.IsNullOrEmpty(alias))
             {
+                if (alias.StartsWith("@@"))
+                    alias = alias.Substring(2);
                 switch (alias.ToUpper())
                 {
                     case "&":

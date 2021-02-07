@@ -319,13 +319,13 @@ namespace Microsoft.CodeAnalysis.CSharp
                     foreach (var par in methodSym.Parameters)
                     {
                         var parameter = new SourceSimpleParameterSymbol(
-                            delmeth,
-                            TypeWithAnnotations.Create(par.Type),
-                            par.Ordinal,
-                            par.RefKind,
-                            par.Name,
+                            owner: delmeth,
+                            parameterType: TypeWithAnnotations.Create(par.Type),
+                            ordinal: par.Ordinal,
+                            refKind: par.RefKind,
+                            name: par.Name,
                             isDiscard: false,
-                            par.Locations);
+                            locations: par.Locations);
                         builder.Add(parameter);
                     }
                     delmeth.InitializeParameters(builder.ToImmutableAndFree());
@@ -393,9 +393,9 @@ namespace Microsoft.CodeAnalysis.CSharp
             try
             {
                 var ts = FindPCallDelegateType(type as IdentifierNameSyntax);
-                if (!object.ReferenceEquals(ts, null) && ts.IsDelegateType())
+                if (ts is { } && ts.IsDelegateType())
                 {
-                    SourceDelegateMethodSymbol delmeth = ts.DelegateInvokeMethod() as SourceDelegateMethodSymbol;
+                    var delmeth = ts.DelegateInvokeMethod() as SourceDelegateMethodSymbol;
                     // create new parameters based on the parameters from out parent call
                     var invoke = node.Parent as InvocationExpressionSyntax;
                     var realargs = invoke.ArgumentList;
@@ -406,7 +406,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                     foreach (var expr in analyzedArguments.Arguments)
                     {
                         var ptype = expr.Type;
-                        if (object.ReferenceEquals(ptype, null))
+                        if (ptype is null)
                             ptype = new PointerTypeSymbol(TypeWithAnnotations.Create(Compilation.GetSpecialType(SpecialType.System_Void)));
                         var parameter = new SourceSimpleParameterSymbol(
                             owner: delmeth,

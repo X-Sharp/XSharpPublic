@@ -857,6 +857,66 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
             return null;
         }
+        private BoundExpression AdjustConstantType(BoundExpression expr, TypeSymbol type, DiagnosticBag diagnostics)
+        {
+            if (expr.Kind != BoundKind.Literal)
+                return expr;
+
+            var value = Convert.ToInt64(expr.ConstantValue.Value);
+            switch (type.SpecialType)
+            {
+                case SpecialType.System_Byte:
+                    if (value >= byte.MinValue && value <= byte.MaxValue)
+                    {
+                        expr = CreateConversion(expr, type, diagnostics);
+                    }
+                    break;
+                case SpecialType.System_SByte:
+                    if (value >= sbyte.MinValue && value <= sbyte.MaxValue)
+                    {
+                        expr = CreateConversion(expr, type, diagnostics);
+                    }
+                    break;
+                case SpecialType.System_Int16:
+                    if (value >= Int16.MinValue && value <= Int16.MaxValue)
+                    {
+                        expr = CreateConversion(expr, type, diagnostics);
+                    }
+                    break;
+                case SpecialType.System_UInt16:
+                    if (value >= UInt16.MinValue && value <= UInt16.MaxValue)
+                    {
+                        expr = CreateConversion(expr, type, diagnostics);
+                    }
+                    break;
+                case SpecialType.System_Int32:
+                    if (value >= Int32.MinValue && value <= Int32.MaxValue)
+                    {
+                        expr = CreateConversion(expr, type, diagnostics);
+                    }
+                    break;
+                case SpecialType.System_UInt32:
+                    if (value >= UInt32.MinValue && value <= UInt32.MaxValue)
+                    {
+                        expr = CreateConversion(expr, type, diagnostics);
+                    }
+                    break;
+                case SpecialType.System_Int64:
+                    if (value >= Int64.MinValue && value <= Int64.MaxValue)
+                    {
+                        expr = CreateConversion(expr, type, diagnostics);
+                    }
+                    break;
+                case SpecialType.System_UInt64:
+                    if ((ulong) value >= UInt64.MinValue && (ulong) value <= UInt64.MaxValue)
+                    {
+                        expr = CreateConversion(expr, type, diagnostics);
+                    }
+                    break;
+
+            }
+            return expr;
+        }
         public void VODetermineIIFTypes(ConditionalExpressionSyntax node, DiagnosticBag diagnostics,
             ref BoundExpression trueExpr, ref BoundExpression falseExpr)
         {
@@ -871,17 +931,16 @@ namespace Microsoft.CodeAnalysis.CSharp
                 falseType = VOGetType(falseExpr);
                 if (!Equals(trueType, falseType) && trueType.IsIntegralType() && falseType.IsIntegralType())
                 {
+                    trueExpr = AdjustConstantType(trueExpr, falseType, diagnostics);
+                    falseExpr = AdjustConstantType(falseExpr, trueType, diagnostics);
+                    trueType = trueExpr.Type;
+                    falseType = falseExpr.Type;
+
                     // Determine the largest of the two integral types and scale up
-                    if (trueType.SpecialType.SizeInBytes() > falseType.SpecialType.SizeInBytes())
-                    {
-                        falseExpr = CreateConversion(falseExpr, trueType, diagnostics);
-                        done = true;
-                    }
+                    if (trueType.SpecialType.SizeInBytes() >= falseType.SpecialType.SizeInBytes())
+                        falseType = trueType;
                     else
-                    {
-                        trueExpr = CreateConversion(trueExpr, falseType, diagnostics);
-                        done = true;
-                    }
+                        trueType = falseType;
                 }
 
                 if (!Equals(trueType, falseType) && Compilation.Options.HasRuntime)

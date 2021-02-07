@@ -50,7 +50,6 @@ namespace Microsoft.CodeAnalysis.CSharp
                  __LocalsClear()
                  */
                 var rtType = _compilation.RuntimeFunctionsType();
-
                 var exprs = ImmutableArray.CreateBuilder<BoundExpression>();
                 var block = ImmutableArray.CreateBuilder<BoundExpression>();
                 var usual = _compilation.UsualType();

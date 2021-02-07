@@ -891,7 +891,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         internal ExpressionSyntax GenerateFieldSetWa(ExpressionSyntax area, ExpressionSyntax field, ExpressionSyntax value)
         {
             ArgumentListSyntax args;
-            var argField = MakeArgument(field); 
+            var argField = MakeArgument(field);
             var argWA = MakeArgument(area);
             var argValue = MakeArgument(value);
             var method = _options.XSharpRuntime ? XSharpQualifiedFunctionNames.FieldSetWa : VulcanQualifiedFunctionNames.FieldSetWa;
@@ -3330,12 +3330,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 {
                     foreach (XP.ParameterContext par in parameters)
                     {
-                        var name = par.Id.GetText();
-                        if (name.StartsWith("@@"))
-                            name = name.Substring(2);
-                        CurrentEntity.Data.AddField(name, XSharpSpecialNames.ClipperParamPrefix, par);
+                        CurrentEntity.Data.AddField(par.Id.GetText(), XSharpSpecialNames.ClipperParamPrefix, par);
                     }
-
                 }
             }
         }
@@ -4195,7 +4191,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         modifiers: default,
                         parameterList: EmptyParameterList(),
                         arrowToken: SyntaxFactory.MakeToken(SyntaxKind.EqualsGreaterThanToken),
-                        block: default,
+                        block: null,
                         expressionBody: expr);
                 var args = MakeArgumentList(MakeArgument(wa), MakeArgument(expr));
                 var mcall = GenerateMethodCall(XSharpQualifiedFunctionNames.AreaEval, args);

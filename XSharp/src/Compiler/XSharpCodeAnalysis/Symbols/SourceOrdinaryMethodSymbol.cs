@@ -82,8 +82,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                     }
                 }
             }
-
-
             else if (XSharpString.CaseSensitive && !this.DeclarationModifiers.HasFlag(DeclarationModifiers.New) &&
                 (this.DeclarationModifiers.HasFlag(DeclarationModifiers.Virtual) || this.DeclarationModifiers.HasFlag(DeclarationModifiers.Override)))
             {

@@ -294,7 +294,22 @@ BEGIN NAMESPACE MacroCompilerTest
         //EvalMacro(mc, "{|foo| bar := 10}")
         //EvalMacro(mc, "{|foo| bar := 10,foo}")
         //wait
-
+        LOCAL macrovar AS STRING
+        macrovar := "obj.Description"
+        LOCAL obj AS OBJECT
+        obj := Error{"Some description"}
+        __LocalPut("obj", obj)
+        VAR cb := MCompile(macrovar)
+        TRY
+            // This line will crash at runtime with an System.Security.VerificationException
+            ? eval(cb)
+        CATCH ex AS Exception
+            ? ex:ToString()
+        END TRY
+        IF __LocalsUpdated()
+            obj := __LocalGet("obj")
+        ENDIF
+        __LocalsClear()
         RunTests(mc)
         WAIT
 
@@ -341,13 +356,18 @@ BEGIN NAMESPACE MacroCompilerTest
         Compilation.Override(WellKnownMembers.XSharp_RT_Functions___MemVarPut, "MyMemVarPut")
 
         // USUAL defaults to FALSE for FoxPro
-        TestMacro(mc, e"{|a| a := default(usual) }", Args(8), FALSE, typeof(LOGIC))
+        //TestMacro(mc, e"{|a| a := default(usual) }", Args(8), FALSE, typeof(LOGIC))
 
         // FoxPro dot access
         TestMacro(mc, e"{|| testclass{}.NString((byte)1) }", Args(), "child", typeof(STRING))
         TestMacro(mc, e"{|a| a := testclass{}, a.prop }", Args(), 0, typeof(INT))
+        /*
+            RvdH VO does not allow TO ACCESS GLOBAL and DEFINE values IN the macro compiler
+            And FoxPro does not even have GLOBAL and DEFINE
+        
         TestMacro(mc, e"{|| tsi.v1 }", Args(), 1, typeof(INT))
         TestMacro(mc, e"{|| tci.v1 := 10, tci.v1++, tci.v1 }", Args(), 11, typeof(INT))
+        */
         TestMacro(mc, e"{|| DEVS.NIKOS}", Args(), "FieldGet(DEVS,NIKOS)", typeof(STRING))
         TestMacro(mc, e"{|| DEVS.NIKOS := \"123\"}", Args(), "FieldSet(DEVS,NIKOS):123", typeof(STRING))
         TestMacro(mc, e"{|| M.NAME}", Args(), "MemVarGet(NAME)", typeof(STRING))

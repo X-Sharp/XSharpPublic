@@ -931,7 +931,7 @@ BEGIN NAMESPACE XSharpModel
 		STATIC METHOD GetTypesLike(sName AS STRING, sProjectIds AS STRING) AS IList<XDbResult>
 			VAR stmt := "Select * from ProjectTypes where name like $name AND IdProject in ("+sProjectIds+")"
 			VAR result := List<XDbResult>{}
-			sName += '%'
+			sName += "%"
 			IF IsDbOpen
 				BEGIN LOCK oConn
 					TRY

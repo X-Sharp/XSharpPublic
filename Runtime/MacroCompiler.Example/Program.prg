@@ -315,6 +315,8 @@ BEGIN NAMESPACE MacroCompilerTest
         //EvalMacro(mc, "{ || NIL } ")
         //wait
 
+        ParserTestsFox(XSharp.Runtime.MacroCompiler{XSharp.MacroCompiler.MacroOptions.FoxPro})
+        ParserTests(mc)
         RunTests(mc)
         wait
 

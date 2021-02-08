@@ -93,11 +93,12 @@ namespace XSharp.MacroCompiler
     internal partial class TypeSymbol : ContainerSymbol
     {
         bool Cached = false;
+        internal bool IsFunctionsClass { get; set; }
         internal readonly Type Type;
         internal NativeType NativeType;
         internal TypeSymbol DeclaringType { get { return Binder.FindType(Type.DeclaringType); } }
         internal NamespaceSymbol Namespace { get { return Binder.LookupFullName(Type.Namespace) as NamespaceSymbol; } }
-        internal TypeSymbol(Type type) { Type = type; }
+        internal TypeSymbol(Type type) { Type = type; IsFunctionsClass = type.Name.EndsWith("Functions"); }
         internal bool IsByRef { get { return Type.IsByRef; } }
         internal bool IsValueType { get { return Type.IsValueType; } }
         internal bool IsReferenceType { get { return Type.IsClass || Type.IsInterface; } }
@@ -242,7 +243,7 @@ namespace XSharp.MacroCompiler
                 case MemberTypes.Field:
                     {
                         // Do not store Globals and Defines from the Functions classes
-                        if (contType.FullName.EndsWith("Functions"))
+                        if (contType.IsFunctionsClass)
                             return null;
                         var field = (FieldInfo)member;
                         if (field.IsLiteral)

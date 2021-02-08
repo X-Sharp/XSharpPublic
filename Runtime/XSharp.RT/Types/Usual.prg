@@ -2722,9 +2722,14 @@ BEGIN NAMESPACE XSharp
             /// <exclude />
         [DebuggerStepThroughAttribute];
         STATIC METHOD ToObject(u AS __Usual) AS OBJECT
-             IF !u:_initialized
-                 RETURN NULL
-             ENDIF
+            IF !u:_initialized
+                // Empty usuals are considered to be FALSE in the FoxPro dialect
+                IF XSharp.RuntimeState.Dialect == XSharpDialect.FoxPro
+                    RETURN FALSE
+                ELSE
+                    RETURN NULL    
+                ENDIF
+            ENDIF
             SWITCH u:_usualType
             CASE __UsualType.Array		; RETURN u:_arrayValue
             CASE __UsualType.Binary		; RETURN u:_binaryValue

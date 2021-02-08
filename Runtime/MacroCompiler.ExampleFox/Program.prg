@@ -283,6 +283,7 @@ BEGIN NAMESPACE MacroCompilerTest
 
         ReportMemory("initial")
         VAR mc := CreateMacroCompiler()
+        TestMacro(mc, e"{|a,b| a AND b }", Args(TRUE, TRUE), TRUE, typeof(LOGIC))
 
         //ParseMacro(mc, e"{|a,b| +a[++b] += 100, a[2]}")
         //EvalMacro(mc, e"{|a,b| a[++b] += 100, a[2]}", {1,2,3}, 1)

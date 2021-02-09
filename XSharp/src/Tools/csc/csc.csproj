@@ -8,7 +8,7 @@
     <RootNamespace>Microsoft.CodeAnalysis.CSharp.CommandLine</RootNamespace>
     <Prefer32Bit>false</Prefer32Bit>
     <LargeAddressAware>true</LargeAddressAware>
-    <StartupObject>Microsoft.CodeAnalysis.CSharp.CommandLine.Program</StartupObject> 
+    <StartupObject>Microsoft.CodeAnalysis.CSharp.CommandLine.Program</StartupObject>
     <TargetFrameworks>net472;netcoreapp3.1</TargetFrameworks>
     <ServerGarbageCollection>true</ServerGarbageCollection>
     <UseAppHost>false</UseAppHost>

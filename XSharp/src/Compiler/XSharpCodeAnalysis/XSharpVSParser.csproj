@@ -18,7 +18,7 @@
     <AntlrParams>-long-messages  -message-format vs2005 -Dlanguage=CSharp_v4_5 $(AntlrPackage) -listener -o $(AntlrOutputdir)</AntlrParams>
     <!--Use the C# compiler created in this solution-->
     <CSCToolPath>$(GeneratedCompilerPath)</CSCToolPath>
-    <NoWarn>;1573;1591;1701;3008;3021;1574</NoWarn>
+    <NoWarn>;1573;1591;1701;3008;3021;649;1574</NoWarn>
     <WarningLevel>4</WarningLevel>
     <DebugSymbols>true</DebugSymbols>
     <ErrorReport>prompt</ErrorReport>

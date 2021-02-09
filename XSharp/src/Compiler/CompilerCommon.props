@@ -29,8 +29,7 @@
     <CscSource>$(RoslynSrc)Compilers\CSharp\csc\</CscSource>
     <ServerSource>$(RoslynSrc)Compilers\Server\</ServerSource>
     <CSharpSource>$(RoslynSrc)Compilers\CSharp\Portable\</CSharpSource>
-    
-      <Configurations>Debug;Release;Public</Configurations>
+    <Configurations>Debug;Release;Public</Configurations>
     <Langversion>preview</Langversion>
     <GenerateAssemblyInfo>true</GenerateAssemblyInfo>
     <UseRoslynAnalyzers>false</UseRoslynAnalyzers>

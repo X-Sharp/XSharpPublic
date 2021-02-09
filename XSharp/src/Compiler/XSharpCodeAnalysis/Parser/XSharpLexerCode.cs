@@ -953,7 +953,13 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                     case '?':
                         parseOne(QMARK);
                         if (La_1 == '?')
+                        {
                             parseOne(QQMARK);
+                            if (La_1 == '=')
+                            {
+                                parseOne(ASSIGN_QQMARK);
+                            }
+                        }
                         break;
 
                     case '=':
@@ -1488,9 +1494,15 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                         return ID;
                     }
                     break;
+                case DEFAULT:
+                    if (StartOfLine(lastToken))     // DEFAULT is not a keyword when at the start of a line like in Default(@someVar, someValue)
+                    {
+                        return ID;
+                    }
+                    break;
                 // Next tokens only at Start of Line or after STATIC or INTERNAL
                 case DEFINE:
-                    if (!StartOfLine(lastToken) && !IsModifier(lastToken)  && lastToken != END )
+                    if (!StartOfLine(lastToken) && !IsModifier(lastToken) && lastToken != END)
                     {
                         return ID;
                     }
@@ -1502,7 +1514,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                         return ID;
                     }
                     break;
-                // Next token only at Start of Line or after BEGIN, and END
+                // Next tokens only at Start of Line or after END
                 case TRY:
                     if (!StartOfLine(lastToken) && lastToken != END)
                     {

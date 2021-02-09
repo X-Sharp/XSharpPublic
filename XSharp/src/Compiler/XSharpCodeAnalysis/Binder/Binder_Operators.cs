@@ -861,60 +861,44 @@ namespace Microsoft.CodeAnalysis.CSharp
         {
             if (expr.Kind != BoundKind.Literal)
                 return expr;
-
+            bool doconvert;
             var value = Convert.ToInt64(expr.ConstantValue.Value);
             switch (type.SpecialType)
             {
                 case SpecialType.System_Byte:
-                    if (value >= byte.MinValue && value <= byte.MaxValue)
-                    {
-                        expr = CreateConversion(expr, type, diagnostics);
-                    }
+                    doconvert = (value >= byte.MinValue && value <= byte.MaxValue);
                     break;
                 case SpecialType.System_SByte:
-                    if (value >= sbyte.MinValue && value <= sbyte.MaxValue)
-                    {
-                        expr = CreateConversion(expr, type, diagnostics);
-                    }
+                    doconvert = (value >= sbyte.MinValue && value <= sbyte.MaxValue);
                     break;
                 case SpecialType.System_Int16:
-                    if (value >= Int16.MinValue && value <= Int16.MaxValue)
-                    {
-                        expr = CreateConversion(expr, type, diagnostics);
-                    }
+                    doconvert = (value >= short.MinValue && value <= short.MaxValue);
                     break;
                 case SpecialType.System_UInt16:
-                    if (value >= UInt16.MinValue && value <= UInt16.MaxValue)
-                    {
-                        expr = CreateConversion(expr, type, diagnostics);
-                    }
+                    doconvert = (value >= ushort.MinValue && value <= ushort.MaxValue);
                     break;
                 case SpecialType.System_Int32:
-                    if (value >= Int32.MinValue && value <= Int32.MaxValue)
-                    {
-                        expr = CreateConversion(expr, type, diagnostics);
-                    }
+                    doconvert = (value >= int.MinValue && value <= int.MaxValue);
                     break;
                 case SpecialType.System_UInt32:
-                    if (value >= UInt32.MinValue && value <= UInt32.MaxValue)
-                    {
-                        expr = CreateConversion(expr, type, diagnostics);
-                    }
+                    doconvert = (value >= uint.MinValue && value <= uint.MaxValue);
                     break;
                 case SpecialType.System_Int64:
-                    if (value >= Int64.MinValue && value <= Int64.MaxValue)
-                    {
-                        expr = CreateConversion(expr, type, diagnostics);
-                    }
+                    doconvert = (value >= long.MinValue && value <= long.MaxValue);
                     break;
                 case SpecialType.System_UInt64:
-                    if ((ulong) value >= UInt64.MinValue && (ulong) value <= UInt64.MaxValue)
-                    {
-                        expr = CreateConversion(expr, type, diagnostics);
-                    }
+                    var uvalue = Convert.ToUInt64(expr.ConstantValue.Value);
+                    doconvert = (uvalue >= ulong.MinValue && uvalue <= ulong.MaxValue);
                     break;
-
+                default:
+                    doconvert = false;
+                    break;
             }
+            if (doconvert)
+            {
+                expr = CreateConversion(expr, type, diagnostics);
+            }
+
             return expr;
         }
         public void VODetermineIIFTypes(ConditionalExpressionSyntax node, DiagnosticBag diagnostics,
@@ -922,7 +906,6 @@ namespace Microsoft.CodeAnalysis.CSharp
         {
             var trueType = trueExpr.Type;
             var falseType = falseExpr.Type;
-            bool done = false;
             // do nothing when the types null
             if (trueType is { } && falseType is { })
             {
@@ -931,64 +914,88 @@ namespace Microsoft.CodeAnalysis.CSharp
                 falseType = VOGetType(falseExpr);
                 if (!Equals(trueType, falseType) && trueType.IsIntegralType() && falseType.IsIntegralType())
                 {
-                    trueExpr = AdjustConstantType(trueExpr, falseType, diagnostics);
-                    falseExpr = AdjustConstantType(falseExpr, trueType, diagnostics);
-                    trueType = trueExpr.Type;
-                    falseType = falseExpr.Type;
-
+                    // when one side is a literal and the other is not then try to cast to the non literal type
+                    if (trueExpr.ConstantValue != null && falseExpr.ConstantValue == null)
+                    {
+                        trueExpr = AdjustConstantType(trueExpr, falseType, diagnostics);
+                        trueType = trueExpr.Type;
+                    }
+                    if (falseExpr.ConstantValue != null && trueExpr.ConstantValue == null)
+                    {
+                        falseExpr = AdjustConstantType(falseExpr, trueType, diagnostics);
+                        falseType = falseExpr.Type;
+                    }
                     // Determine the largest of the two integral types and scale up
                     if (trueType.SpecialType.SizeInBytes() >= falseType.SpecialType.SizeInBytes())
+                    {
                         falseType = trueType;
+                    }
                     else
+                    {
                         trueType = falseType;
+                    }
+                }
+                if (!Equals(trueType, falseType) && trueType.IsIntegralType() != falseType.IsIntegralType())
+                {
+                    var trueFrac = trueType.IsFractionalType();
+                    var falseFrac = falseType.IsFractionalType();
+                    if (trueFrac)
+                    {
+                        falseType = trueType;
+                    }
+                    else if (falseFrac)
+                    {
+                        trueType = falseType;
+                    }
                 }
 
                 if (!Equals(trueType, falseType) && Compilation.Options.HasRuntime)
                 {
                     // convert to usual when one of the two is a usual
-                    var usualType = Compilation.UsualType();
                     if (trueType.IsUsualType())
                     {
-                        falseExpr = CreateConversion(falseExpr, usualType, diagnostics);
-                        done = true;
+                        falseType = trueType;
                     }
                     else if (falseType.IsUsualType())
                     {
-                        trueExpr = CreateConversion(trueExpr, usualType, diagnostics);
-                        done = true;
+                        trueType = falseType;
                     }
                     else if (Compilation.Options.HasOption(CompilerOption.CompatibleIIF, node))
                     {
                         // convert to usual when Compatible IIF is activated
-                        trueExpr = CreateConversion(trueExpr, usualType, diagnostics);
-                        falseExpr = CreateConversion(falseExpr, usualType, diagnostics);
-                        done = true;
+                        trueType = falseType = Compilation.UsualType();
                     }
                 }
-                if (!done && !Equals(trueType, falseType))
+                if (!Equals(trueType, falseType))
                 {
                     if (trueType.IsVoidPointer())
                     {
                         if (falseType.GetSpecialTypeSafe() == SpecialType.System_IntPtr)
                         {
-                            trueExpr = CreateConversion(trueExpr, falseType, diagnostics);
+                            trueType = falseType;
                         }
                     }
                     else if (falseType.IsVoidPointer())
                     {
                         if (trueType.GetSpecialTypeSafe() == SpecialType.System_IntPtr)
                         {
-                            falseExpr = CreateConversion(falseExpr, trueType, diagnostics);
+                            falseType = trueType;
                         }
                     }
                     else if (Compilation.Options.HasOption(CompilerOption.CompatibleIIF, node))
                     {
                         // convert to object when Compatible IIF is activated
                         // this will not happen for VO Dialect because that is handled above
-                        var objectType = Compilation.GetSpecialType(SpecialType.System_Object);
-                        trueExpr = CreateConversion(trueExpr, objectType, diagnostics);
-                        falseExpr = CreateConversion(falseExpr, objectType, diagnostics);
+                        trueType = falseType = Compilation.GetSpecialType(SpecialType.System_Object); ;
                     }
+                }
+                if (!Equals(trueExpr.Type,trueType))
+                {
+                    trueExpr = CreateConversion(trueExpr, trueType, diagnostics);
+                }
+                if (!Equals(falseExpr.Type,falseType))
+                {
+                    falseExpr = CreateConversion(falseExpr, falseType, diagnostics);
                 }
             }
         }

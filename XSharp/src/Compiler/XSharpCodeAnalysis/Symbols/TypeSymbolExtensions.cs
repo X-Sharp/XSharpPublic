@@ -70,6 +70,25 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
         {
             return type is { } && (type.Name == OurTypeNames.FloatType || type.Name == OurTypeNames.VnFloatType);
         }
+        internal static bool IsCurrencyType(this TypeSymbol type)
+        {
+            return type is { } && (type.Name == OurTypeNames.CurrencyType);
+        }
+        internal static bool IsFractionalType(this TypeSymbol type)
+        {
+            if (type is null)
+                return false;
+            switch (type.GetSpecialTypeSafe())
+            {
+                case SpecialType.System_Decimal:
+                case SpecialType.System_Double:
+                case SpecialType.System_Single:
+                    return true;
+                default:
+                    return type.IsFloatType() || type.IsCurrencyType();
+            }
+        }
+
         internal static bool IsCodeblockType(this TypeSymbol type)
         {
             return type is { } && type.Name == OurTypeNames.CodeBlockType;

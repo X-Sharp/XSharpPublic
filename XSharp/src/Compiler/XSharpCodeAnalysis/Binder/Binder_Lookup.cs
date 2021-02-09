@@ -115,8 +115,28 @@ namespace Microsoft.CodeAnalysis.CSharp
             if (!functionResults.IsClear && !otherResults.IsClear)
             {
                 var func = functionResults.Symbols[0];
-                var meth = otherResults.Symbols[0];
-                if (!meth.IsStatic)
+                Symbol meth = null;
+                var includeMethods = !options.HasFlag(LookupOptions.MustNotBeMethod);
+                foreach (var m in otherResults.Symbols)
+                {
+                    if (m.Kind == SymbolKind.Method )
+                    {
+                        if (includeMethods)
+                        {
+                            meth = m;
+                            break;
+                        }
+                    }
+                    else
+                    {
+                        if (!includeMethods)
+                        {
+                            meth = m;
+                            break;
+                        }
+                    }
+                }
+                if (meth != null && !meth.IsStatic)
                 {
                     // Static method generate the error elsewhere
                     var args = new object[] { name, func, meth};

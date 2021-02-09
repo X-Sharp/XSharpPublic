@@ -202,9 +202,8 @@ namespace Microsoft.CodeAnalysis.CSharp
 
             var rhsType = expression.Type;
             if (!TypeSymbol.Equals(targetType,rhsType) && 
-                targetType.SpecialType.IsIntegralType() &&
-                rhsType.SpecialType.IsIntegralType() 
-                )
+                targetType.GetSpecialTypeSafe().IsIntegralType() &&
+                rhsType.GetSpecialTypeSafe().IsIntegralType())
             {
                 bool ok = false;
                 if (expression.ConstantValue != null)

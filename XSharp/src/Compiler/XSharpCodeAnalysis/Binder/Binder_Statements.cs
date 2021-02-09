@@ -101,7 +101,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                             source: expression,
                             conversion: conversion,
                             isCast: false,
-                            conversionGroupOpt: default,
+                            conversionGroupOpt: null,
                             destination: targetType,
                             diagnostics: diagnostics);
                     }
@@ -124,47 +124,33 @@ namespace Microsoft.CodeAnalysis.CSharp
             if (value.SpecialType.IsSignedIntegralType())
             {
                 var i64Value = value.Int64Value;
-                switch (specialType)
+                return specialType switch
                 {
-                    case SpecialType.System_SByte:
-                        return i64Value <= sbyte.MaxValue && i64Value >= sbyte.MinValue;
-                    case SpecialType.System_Byte:
-                        return i64Value <= byte.MaxValue && i64Value >= byte.MinValue;
-                    case SpecialType.System_Int16:
-                        return i64Value <= short.MaxValue && i64Value >= short.MinValue;
-                    case SpecialType.System_UInt16:
-                        return i64Value <= ushort.MaxValue && i64Value >= ushort.MinValue;
-                    case SpecialType.System_Int32:
-                        return i64Value <= int.MaxValue && i64Value >= int.MinValue;
-                    case SpecialType.System_UInt32:
-                        return i64Value <= uint.MaxValue && i64Value >= uint.MinValue;
-                    case SpecialType.System_UInt64:
-                        return i64Value > 0;
-                }
-                return true;
+                    SpecialType.System_SByte => i64Value <= sbyte.MaxValue && i64Value >= sbyte.MinValue,
+                    SpecialType.System_Byte => i64Value <= byte.MaxValue && i64Value >= byte.MinValue,
+                    SpecialType.System_Int16 => i64Value <= short.MaxValue && i64Value >= short.MinValue,
+                    SpecialType.System_UInt16 => i64Value <= ushort.MaxValue && i64Value >= ushort.MinValue,
+                    SpecialType.System_Int32 => i64Value <= int.MaxValue && i64Value >= int.MinValue,
+                    SpecialType.System_UInt32 => i64Value <= uint.MaxValue && i64Value >= uint.MinValue,
+                    SpecialType.System_UInt64 => i64Value > 0,
+                    _ => true
+                };
             }
             else
             {
                 // unsigned
                 var u64Value = value.UInt64Value;
-                switch (specialType)
+                return specialType switch
                 {
-                    case SpecialType.System_SByte:
-                        return u64Value <= (ulong) sbyte.MaxValue ;
-                    case SpecialType.System_Byte:
-                        return u64Value <= byte.MaxValue ;
-                    case SpecialType.System_Int16:
-                        return u64Value <= (ulong)short.MaxValue;
-                    case SpecialType.System_UInt16:
-                        return u64Value <= ushort.MaxValue ;
-                    case SpecialType.System_Int32:
-                        return u64Value <= int.MaxValue ;
-                    case SpecialType.System_UInt32:
-                        return u64Value <= uint.MaxValue ;
-                    case SpecialType.System_Int64:
-                        return u64Value > long.MaxValue;
-                }
-                return true;
+                    SpecialType.System_SByte => u64Value <= (ulong)sbyte.MaxValue,
+                    SpecialType.System_Byte => u64Value <= byte.MaxValue,
+                    SpecialType.System_Int16 => u64Value <= (ulong)short.MaxValue,
+                    SpecialType.System_UInt16 => u64Value <= ushort.MaxValue,
+                    SpecialType.System_Int32 => u64Value <= int.MaxValue,
+                    SpecialType.System_UInt32 => u64Value <= uint.MaxValue,
+                    SpecialType.System_Int64 => u64Value > long.MaxValue,
+                    _ => true
+                };
             }
         }
 
@@ -173,7 +159,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             var target = targetType.SpecialType;
             var trueConst = bco.Consequence.ConstantValue;
             var falseConst = bco.Alternative.ConstantValue;
-            if (trueConst == null || falseConst== null)
+            if (trueConst == null || falseConst == null)
             {
                 return false;
             }
@@ -201,9 +187,9 @@ namespace Microsoft.CodeAnalysis.CSharp
                 return;
 
             var rhsType = expression.Type;
-            if (!TypeSymbol.Equals(targetType,rhsType) && 
-                targetType.GetSpecialTypeSafe().IsIntegralType() &&
-                rhsType.GetSpecialTypeSafe().IsIntegralType())
+            if (rhsType is { } && Equals(targetType, rhsType) &&
+                targetType.SpecialType.IsIntegralType() &&
+                rhsType.SpecialType.IsIntegralType())
             {
                 bool ok = false;
                 if (expression.ConstantValue != null)
@@ -211,11 +197,11 @@ namespace Microsoft.CodeAnalysis.CSharp
                     // warnings for literals that are too big are generated later
                     ok = true;
                 }
-                if (! ok)
+                if (!ok)
                 {
                     ok = Conversions.XsIsImplicitBinaryOperator(expression, targetType,this);
                 }
-                if (! ok)
+                if (!ok)
                 {
                     var sourceType = expression.Type;
                     var sourceSize = sourceType.SpecialType.SizeInBytes();
@@ -227,7 +213,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                         sourceType = binop.LargestOperand(this.Compilation);
                         sourceSize = sourceType.SpecialType.SizeInBytes();
                     }
-                    if (!TypeSymbol.Equals(sourceType,targetType) && !expression.Syntax.HasErrors)
+                    if (!Equals(sourceType,targetType) && !expression.Syntax.HasErrors)
                     {
                         // Find sources that do not fit in the target
                         if (expression is BoundConditionalOperator bco && XsLiteralIIfFitsInTarget(bco, targetType))

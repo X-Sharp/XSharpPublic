@@ -644,6 +644,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             var method = propDecl.Entity as XP.XppmethodContext;
             var accessors = _pool.Allocate<AccessorDeclarationSyntax>();
             var modifiers = decodeXppMemberModifiers(propDecl.Visibility, false, method.Modifiers?._Tokens);
+            bool isStatic = false;
+            if (method.Modifiers != null)
+            {
+                isStatic = method.Modifiers._Tokens.Any(t => t.Type == XSharpLexer.CLASS);
+            }
             SyntaxList<AttributeListSyntax> attributes = default;
             if (method.Attributes != null && propctxt.Attributes == null)
             {
@@ -657,7 +662,15 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             #region Accessor
             if (!string.IsNullOrEmpty(accName))
             {
-                var methodCall = GenerateMethodCall(accName, true);
+                ExpressionSyntax methodCall;
+                if (isStatic)
+                {
+                    methodCall = GenerateMethodCall(accName, EmptyArgumentList(),true);
+                }
+                else
+                {
+                    methodCall = GenerateThisMethodCall(accName, EmptyArgumentList(), true);
+                }
                 var block = MakeBlock(GenerateReturn(methodCall));
                 block.XGenerated = true;
                 var accessor = _syntaxFactory.AccessorDeclaration(
@@ -675,7 +688,15 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 method = propDecl.SetEntity as XP.XppmethodContext;
                 var args = MakeArgumentList(MakeArgument(GenerateSimpleName("value")));
-                var methodCall = GenerateMethodCall(accName, args, true);
+                ExpressionSyntax methodCall;
+                if (isStatic)
+                {
+                    methodCall = GenerateMethodCall(accName, args, true);
+                }
+                else
+                {
+                    methodCall = GenerateThisMethodCall(accName, args, true);
+                }
                 var stmt = GenerateExpressionStatement(methodCall);
                 var block = MakeBlock(stmt);
                 block.XGenerated = true;

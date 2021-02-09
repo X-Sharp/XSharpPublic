@@ -77,7 +77,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             {
                 foreach (var symbol in result.Symbols)
                 {
-                    if (symbol is MethodSymbol )
+                    if (symbol is MethodSymbol)
                     {
                         var ms = symbol as MethodSymbol;
                         if (ms.IsStatic && ms.ContainingType.Name.EndsWith("Functions", XSharpString.Comparison))
@@ -136,7 +136,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                         }
                     }
                 }
-                if (meth != null && !meth.IsStatic)
+                if (meth != null && !meth.IsStatic && ! Compilation.Options.HasOption(CompilerOption.Strict,null))
                 {
                     // Static method generate the error elsewhere
                     var args = new object[] { name, func, meth};

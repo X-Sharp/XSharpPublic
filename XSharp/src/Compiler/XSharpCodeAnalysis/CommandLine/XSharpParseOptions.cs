@@ -113,6 +113,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         public bool AllowNamedArguments { get; private set; }
         public bool PreprocessorOutput { get; private set; }
         public bool SaveAsCSharp { get; private set; }
+        public bool Strict { get; private set; }
         public string StdDefs { get; private set; } = "";
         public bool Verbose { get; private set; }
         public bool VirtualInstanceMethods { get; private set; }
@@ -184,6 +185,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 ShowDefs = opt.ShowDefs;
                 ShowIncludes = opt.ShowIncludes;
                 StdDefs = opt.StdDefs;
+                Strict = opt.Strict;
                 Verbose = opt.Verbose;
                 PreprocessorOutput = opt.PreProcessorOutput;
                 ParseLevel = opt.ParseLevel;
@@ -268,6 +270,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             ParseLevel = opt.ParseLevel;
             SaveAsCSharp = opt.SaveAsCSharp;
             StdDefs = opt.StdDefs;
+            Strict = opt.Strict;
             Verbose = opt.Verbose;
             AllowNamedArguments = opt.AllowNamedArguments;
             VoInitAxitMethods = opt.VoInitAxitMethods; // vo1

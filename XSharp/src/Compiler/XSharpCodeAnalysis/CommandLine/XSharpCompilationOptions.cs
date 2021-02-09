@@ -50,8 +50,8 @@ namespace Microsoft.CodeAnalysis.CSharp
         public bool ImplicitNameSpace { get; private set; }
         //bool InitLocals { get; set; }
         public bool LateBinding { get; private set; }
+        public bool Strict { get; private set; }
         public bool HasDefaultTree { get; set; } = false;
-    
         public bool HasRuntime { get { return this.Dialect.HasRuntime(); } }
 
         public XSharpTargetDLL TargetDLL { get; private set; }
@@ -91,6 +91,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 Dialect = opt.Dialect;
                 ImplicitNameSpace = opt.ImplicitNameSpace;
                 LateBinding = opt.LateBinding;
+                Strict = opt.Strict;
                 UndeclaredMemVars = opt.UndeclaredMemVars;
                 MemVars = opt.MemVars;
                 TargetDLL = opt.TargetDLL;
@@ -127,6 +128,9 @@ namespace Microsoft.CodeAnalysis.CSharp
 
                 case CompilerOption.MemVars:
                     return CheckOption(option, MemVars, syntax);
+
+                case CompilerOption.Strict:
+                    return CheckOption(option, Strict, syntax);
 
                 case CompilerOption.UndeclaredMemVars:
                     return CheckOption(option, UndeclaredMemVars, syntax);
@@ -220,6 +224,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             LateBinding = opt.LateBinding;
             TargetDLL = opt.TargetDLL;
             RuntimeAssemblies = opt.RuntimeAssemblies;
+            Strict = opt.Strict;
             //VoInitAxitMethods = opt.VoInitAxitMethods; // vo1 // Handled in the parser
             VONullStrings = opt.VONullStrings; // vo2
             VirtualInstanceMethods = opt.VirtualInstanceMethods; // vo3   

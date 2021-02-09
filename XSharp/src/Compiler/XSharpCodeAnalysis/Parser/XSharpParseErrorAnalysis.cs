@@ -476,6 +476,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                             case "lb":
                             case "memvar":
                             case "memvars":
+                            case "strict":
                             case "undeclared":
                             // case "vo1": // Init/axit
                             case "vo2":     // Initialize string variables with empty strings

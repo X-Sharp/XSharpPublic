@@ -91,6 +91,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 internal XP.IMethodContext AssignMethodCtx = null;
                 internal XP.IMethodContext DupAccess = null;
                 internal XP.IMethodContext DupAssign = null;
+                internal bool IsStatic = false;
             }
 
             internal SyntaxListPool _pool;
@@ -108,7 +109,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 _pool.Free(Members);
             }
 
-            internal void AddVoPropertyAccessor(XP.IMethodContext accessor, int Type, SyntaxToken idName)
+            internal void AddVoPropertyAccessor(XP.IMethodContext accessor, int Type, SyntaxToken idName, bool isStatic)
             {
                 if (VoProperties == null)
                     VoProperties = new Dictionary<string, VoPropertyInfo>(XSharpString.Comparer);
@@ -118,6 +119,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 {
                     propertyInfo = new VoPropertyInfo();
                     propertyInfo.idName = idName;
+                    propertyInfo.IsStatic = isStatic;
                     VoProperties.Add(name, propertyInfo);
                 }
                 switch (Type)
@@ -1351,6 +1353,23 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             return expr;
         }
 
+        protected ExpressionSyntax GenerateThisMethodCall(string MethodName, ArgumentListSyntax args, bool markAsGenerated = false)
+        {
+            var thisExpr = _syntaxFactory.ThisExpression(SyntaxFactory.MakeToken(SyntaxKind.ThisKeyword));
+            var memAcc = _syntaxFactory.MemberAccessExpression(
+                    SyntaxKind.SimpleMemberAccessExpression,
+                    thisExpr,
+                    SyntaxFactory.MakeToken(SyntaxKind.DotToken),
+                    GenerateSimpleName(MethodName));
+            memAcc.XGenerated = markAsGenerated;
+            ExpressionSyntax expr = _syntaxFactory.InvocationExpression(memAcc, args);
+            expr.XGenerated = markAsGenerated;
+            return expr;
+
+
+        }
+
+
         protected virtual void ImplementClipperAndPSZ(XP.IEntityWithBodyContext context,
             ref SyntaxList<AttributeListSyntax> attributes, ref ParameterListSyntax parameters, ref BlockSyntax body,
             ref TypeSyntax dataType)
@@ -1934,7 +1953,15 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     var name = AccMet.Id.GetText() + XSharpSpecialNames.AccessSuffix;
                     if (accParamCount == 0)
                     {
-                        methodCall = GenerateMethodCall(name);
+                        if (vop.IsStatic)
+                        {
+                            methodCall = GenerateMethodCall(name, EmptyArgumentList(), true);
+                        }
+                        else
+                        {
+                            methodCall = GenerateThisMethodCall(name, EmptyArgumentList(), true);
+                        }
+
                     }
                     else
                     {
@@ -1943,7 +1970,14 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         {
                             a.Add(MakeArgument(GenerateSimpleName(p.Id.GetText())));
                         }
-                        methodCall = GenerateMethodCall(name, MakeArgumentList(a.ToArray()));
+                        if (vop.IsStatic)
+                        {
+                            methodCall = GenerateMethodCall(name, MakeArgumentList(a.ToArray()), true);
+                        }
+                        else
+                        {
+                            methodCall = GenerateThisMethodCall(name, MakeArgumentList(a.ToArray()), true);
+                        }
                     }
                     block = MakeBlock(GenerateReturn(methodCall,true));
                     block.XGenerated = true;
@@ -2005,6 +2039,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 {
                     if (mergePartialDeclarations)
                     {
+
                         var a = new List<ArgumentSyntax>() { MakeArgument(GenerateSimpleName("value")) };
                         if (assParamCount > 1)
                         {
@@ -2014,8 +2049,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                                 a.Add(MakeArgument(GenerateSimpleName(paramName)));
                             }
                         }
-                        string mName = AssMet.Id.GetText() + XSharpSpecialNames.AssignSuffix;
-                        var stmt = GenerateExpressionStatement(GenerateMethodCall(mName, MakeArgumentList(a.ToArray())));
+                        var name = AssMet.Id.GetText() + XSharpSpecialNames.AssignSuffix;
+                        var mcall = GenerateThisMethodCall(name, MakeArgumentList(a.ToArray()), true);
+                        var stmt = GenerateExpressionStatement(mcall);
                         block = MakeBlock(stmt);
                         block.XGenerated = true;
                     }
@@ -4034,6 +4070,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             var mods = context.Modifiers?.GetList<SyntaxToken>() ?? DefaultMethodModifiers(isInInterface, context.isInStructure(), context.TypeParameters != null);
             var isExtern = mods.Any((int)SyntaxKind.ExternKeyword);
             var isAbstract = mods.Any((int)SyntaxKind.AbstractKeyword);
+            var isStatic = mods.Any((int)SyntaxKind.StaticKeyword);
             var hasNoBody = isInInterface || isExtern || isAbstract | context.Sig.ExpressionBody != null;
             var expressionBody = GetExpressionBody(context.Sig.ExpressionBody);
             if (_options.Dialect == XSharpDialect.FoxPro)
@@ -4230,7 +4267,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         cls.AddChild(context);
                         cls.Data.Partial = true;
                         context.parent = cls;
-                        ce.AddVoPropertyAccessor(context,context.RealType, idName);
+                        ce.AddVoPropertyAccessor(context,context.RealType, idName, isStatic);
                         context.Put(m); // this is needed by GenerateVOProperty
                         var vop = ce.VoProperties.Values.First();
                         var prop = GenerateVoProperty(vop, cls);
@@ -4265,7 +4302,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                                     ErrorCode.ERR_NoClipperCallingConventionForAccessAssign));
                 }
                 context.Put(m);
-                ClassEntities.Peek().AddVoPropertyAccessor(context, context.RealType, idName);
+                ClassEntities.Peek().AddVoPropertyAccessor(context, context.RealType, idName, isStatic);
             }
         }
 

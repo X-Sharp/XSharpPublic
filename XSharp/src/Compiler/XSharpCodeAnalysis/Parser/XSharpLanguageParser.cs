@@ -12,6 +12,7 @@ using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Diagnostics;
 using System.Threading;
+using System.Linq;
 using Microsoft.CodeAnalysis.Text;
 using Roslyn.Utilities;
 using Antlr4.Runtime;
@@ -1016,6 +1017,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         else
                             prop.DupAssign = m;
                     }
+                    if (m.Mods != null && m.Mods._Tokens.Any(t => t.Type == XSharpLexer.STATIC))
+                        prop.IsStatic = true;
                 }
                 var propdecl = trans.GenerateVoProperty(prop, null);
 

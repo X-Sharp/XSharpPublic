@@ -297,6 +297,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             var mods = context.Modifiers?.GetList<SyntaxToken>() ?? DefaultMethodModifiers(false, false, context.TypeParameters != null);
             var isExtern = mods.Any((int)SyntaxKind.ExternKeyword);
             var isAbstract = mods.Any((int)SyntaxKind.AbstractKeyword);
+            var isStatic = mods.Any((int)SyntaxKind.StaticKeyword);
             var hasNoBody = isExtern || isAbstract || context.Sig.ExpressionBody != null;
             var mName = idName.Text;
             if (mName.EndsWith("_ACCESS", StringComparison.OrdinalIgnoreCase))
@@ -400,7 +401,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                                     ErrorCode.ERR_NoClipperCallingConventionForAccessAssign));
                 }
                 context.Put(m);
-                ClassEntities.Peek().AddVoPropertyAccessor(context, context.RealType, idName);
+                ClassEntities.Peek().AddVoPropertyAccessor(context, context.RealType, idName,isStatic);
             }
         }
         public override void ExitFoxclass([NotNull] XP.FoxclassContext context)

@@ -679,7 +679,6 @@ namespace Microsoft.CodeAnalysis.CSharp
                 }
                 if (!instance)
                     options |= LookupOptions.MustNotBeInstance;
-                
             }
             else
             {
@@ -718,7 +717,10 @@ namespace Microsoft.CodeAnalysis.CSharp
                     if (lookupResult.Kind == LookupResultKind.StaticInstanceMismatch)
                     {
                         // try again but now allow instance methods
-                        lookupAgain = true;
+                        if (!Compilation.Options.HasOption(CompilerOption.Strict, node))
+                        {
+                            lookupAgain = true;
+                        }
                     }
                     if (lookupResult.Kind == LookupResultKind.Viable && invoked && lookupResult.Symbols.Count != 0)
                     {

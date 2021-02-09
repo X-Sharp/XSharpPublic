@@ -129,37 +129,40 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                                                               out _lazyParameters, alsoCopyParamsModifier: true);
             }
             var node = this.SyntaxNode.Green as Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax.MethodDeclarationSyntax;
-            var mods = this.DeclarationModifiers;
-            if (_overrideState ==2)
+            if (node != null)   // This can be a generated node, for example for Records
             {
-                if (this.Name != overriddenMethod.Name)
+                var mods = this.DeclarationModifiers;
+                if (_overrideState == 2)
                 {
-                    this._name = overriddenMethod.Name;
-                }
-                // remove generated Virtual Modifiers
-                foreach (var token in node.Modifiers)
-                {
-                    if (token.Kind == SyntaxKind.VirtualKeyword && token.XGenerated)
+                    if (this.Name != overriddenMethod.Name)
                     {
-                        mods = mods & ~DeclarationModifiers.Virtual;
+                        this._name = overriddenMethod.Name;
                     }
-                }
+                    // remove generated Virtual Modifiers
+                    foreach (var token in node.Modifiers)
+                    {
+                        if (token.Kind == SyntaxKind.VirtualKeyword && token.XGenerated)
+                        {
+                            mods = mods & ~DeclarationModifiers.Virtual;
+                        }
+                    }
 
-                flags = new Flags(flags.MethodKind, mods, this.ReturnsVoid, flags.IsExtensionMethod, flags.IsNullableAnalysisEnabled, flags.IsMetadataVirtual(true));
-            }
-            else
-            {
-                // remove generated Override Modifiers
-                foreach (var token in node.Modifiers)
-                {
-                    if (token.Kind == SyntaxKind.OverrideKeyword && token.XGenerated)
-                    {
-                        mods = mods & ~DeclarationModifiers.Override;
-                    }
+                    flags = new Flags(flags.MethodKind, mods, this.ReturnsVoid, flags.IsExtensionMethod, flags.IsNullableAnalysisEnabled, flags.IsMetadataVirtual(true));
                 }
-                flags = new Flags(flags.MethodKind, mods, this.ReturnsVoid, flags.IsExtensionMethod, flags.IsNullableAnalysisEnabled, flags.IsMetadataVirtual(true));
+                else
+                {
+                    // remove generated Override Modifiers
+                    foreach (var token in node.Modifiers)
+                    {
+                        if (token.Kind == SyntaxKind.OverrideKeyword && token.XGenerated)
+                        {
+                            mods = mods & ~DeclarationModifiers.Override;
+                        }
+                    }
+                    flags = new Flags(flags.MethodKind, mods, this.ReturnsVoid, flags.IsExtensionMethod, flags.IsNullableAnalysisEnabled, flags.IsMetadataVirtual(true));
+                }
+                this.DeclarationModifiers = mods;
             }
-            this.DeclarationModifiers = mods;
             return overriddenMethod;
         }
     }

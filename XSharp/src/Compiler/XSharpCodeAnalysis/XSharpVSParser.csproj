@@ -1,5 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <UseXSharpKey>true</UseXSharpKey>
+  </PropertyGroup>
   <Import Project="$(Solutiondir)src\Compiler\CompilerCommon.props" />
   <Import Project="$(RepositoryEngineeringDir)targets\GenerateCompilerExecutableBindingRedirects.targets" />
   <PropertyGroup>
@@ -15,7 +18,7 @@
     <AntlrParams>-long-messages  -message-format vs2005 -Dlanguage=CSharp_v4_5 $(AntlrPackage) -listener -o $(AntlrOutputdir)</AntlrParams>
     <!--Use the C# compiler created in this solution-->
     <CSCToolPath>$(GeneratedCompilerPath)</CSCToolPath>
-    <NoWarn>;1573;1591;1701;3008;3021;649;1574</NoWarn>
+    <NoWarn>;1573;1591;1701;3008;3021;1574</NoWarn>
     <WarningLevel>4</WarningLevel>
     <DebugSymbols>true</DebugSymbols>
     <ErrorReport>prompt</ErrorReport>
@@ -35,17 +38,11 @@
     <SignAssembly>true</SignAssembly>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="..\..\..\..\Roslyn\src\Compilers\Core\Portable\CommandLine\CommandLineSourceFile.cs">
-      <Link>CommandLine\CommandLineSourceFile.cs</Link>
-    </Compile>
-    <Compile Include="..\..\..\..\Roslyn\src\Compilers\Core\Portable\InternalUtilities\NullableAttributes.cs" Link="NullableAttributes.cs" />
-    <Compile Include="..\..\..\..\Roslyn\src\Compilers\Core\Portable\InternalUtilities\RoslynString.cs" Link="RoslynString.cs" />
-    <Compile Include="..\..\..\..\Roslyn\src\Compilers\Core\Portable\InternalUtilities\UnicodeCharacterUtilities.cs">
-      <Link>UnicodeCharacterUtilities.cs</Link>
-    </Compile>
-    <Compile Include="..\..\..\..\Roslyn\src\Compilers\CSharp\Portable\CommandLine\CSharpCommandLineArguments.cs">
-      <Link>CommandLine\CSharpCommandLineArguments.cs</Link>
-    </Compile>
+    <Compile Include="$(CoreSource)CommandLine\CommandLineSourceFile.cs" Link="CommandLine\CommandLineSourceFile.cs" />
+    <Compile Include="$(CoreSource)InternalUtilities\NullableAttributes.cs" Link="Core\NullableAttributes.cs" />
+    <Compile Include="$(CoreSource)InternalUtilities\RoslynString.cs" Link="Core\RoslynString.cs" />
+    <Compile Include="$(CoreSource)InternalUtilities\UnicodeCharacterUtilities.cs" Link="Core\UnicodeCharacterUtilities.cs" />
+    <Compile Include="$(CSharpSource)CommandLine\CSharpCommandLineArguments.cs" Link="CommandLine\CSharpCommandLineArguments" />
     <Compile Include="..\..\Common\CommonAssemblyInfo.cs">
       <Link>Properties\CommonAssemblyInfo.cs</Link>
     </Compile>

@@ -1081,8 +1081,8 @@ RETURN
 
 		cLine := ""
 		DO CASE
-		CASE TRUE
-			cLine := String.Format(e"\tSUPER(oParent , \"IDD_DEFDLG2\" , TRUE)" , SELF:oWindowDesign:Name)
+//		CASE TRUE
+//			cLine := String.Format(e"\tSUPER(oParent , \"IDD_DEFDLG2\" , TRUE)" , SELF:oWindowDesign:Name)
 		CASE SELF:oWindowDesign:cFullClass:IndexOf("FORM:DATAWINDOW") == 0
 			cLine += String.Format(e"\tSUPER(oWindow , ResourceID{{\"{0}\" , _GetInst()}},iCtlID)" , SELF:oWindowDesign:Name)
 		CASE SELF:oWindowDesign:cFullClass:IndexOf("FORM:DATADIALOG") == 0

@@ -125,7 +125,7 @@ namespace XSharp.Project
 
                 // find next delimiter, so we will include the whole word in the search
                 var ssp = XSharpTokenTools.FindEndOfCurrentToken(subjectTriggerPoint.Value, currentSnapshot);
-                int caretPos = ssp.Position+1;
+                int caretPos = ssp.Position;
 
                 int lineNumber = ssp.GetContainingLine().LineNumber;
                 var snapshot = session.TextView.TextBuffer.CurrentSnapshot;

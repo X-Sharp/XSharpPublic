@@ -383,7 +383,7 @@ namespace XSharp.LanguageService
                     spM = this.TextRangeToTextSpan(member.Range);
                     otherFile = false;
                     ft = DROPDOWNFONTATTR.FONTATTR_PLAIN;
-                    if (hasPartial)
+                    if (member.Parent is XTypeDefinition typedef &&  typedef.IsPartial)
                     {
                         otherFile = string.Compare(member.File.FullPath, _file.FullPath, true) != 0;
                     }
@@ -635,7 +635,11 @@ namespace XSharp.LanguageService
 
         public int OnItemSelected(int iCombo, int iIndex)
         {
-            return OnItemChosen(iCombo, iIndex);
+            if (iCombo == 0)
+                _selectedTypeIndex = iIndex;
+            if (iCombo == 1)
+                _selectedMemberIndex = iIndex;
+            return VSConstants.S_OK;
         }
 
         [DebuggerDisplay("{Label}")]

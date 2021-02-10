@@ -335,7 +335,7 @@
       <Version>16.8.30705.32</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.VisualStudio.Shell.Interop.15.6.DesignTime">
-      <Version>16.7.30705.32</Version>
+      <Version>16.8.30705.32</Version>
     </PackageReference>
     <PackageReference Include="StreamJsonRpc">
       <Version>2.6.121</Version>

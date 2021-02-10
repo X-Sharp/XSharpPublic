@@ -1081,8 +1081,8 @@ RETURN
 
 		cLine := ""
 		DO CASE
-		CASE TRUE
-			cLine := String.Format(e"\tSUPER(oParent , \"IDD_DEFDLG2\" , TRUE)" , SELF:oWindowDesign:Name)
+//		CASE TRUE
+//			cLine := String.Format(e"\tSUPER(oParent , \"IDD_DEFDLG2\" , TRUE)" , SELF:oWindowDesign:Name)
 		CASE SELF:oWindowDesign:cFullClass:IndexOf("FORM:DATAWINDOW") == 0
 			cLine += String.Format(e"\tSUPER(oWindow , ResourceID{{\"{0}\" , _GetInst()}},iCtlID)" , SELF:oWindowDesign:Name)
 		CASE SELF:oWindowDesign:cFullClass:IndexOf("FORM:DATADIALOG") == 0
@@ -4358,7 +4358,14 @@ CLASS DesignWindowItem INHERIT DesignItem
 			END IF
 //			TRY
 				aPages := (List<STRING>)VOWindowEditorTemplate.aPages[cPage:ToUpper()]
-//				MessageBox.Show((aPages == NULL):ToString() , cPage)
+                IF aPages == NULL
+                    STATIC LOCAL lMessageShown AS LOGIC
+                    IF .not. lMessageShown
+				        MessageBox.Show(String.Format("Properties page '{0}' not found for window/control template '{1}' ({2})", cPage, oTemplate:cName, oTemplate:cFullClass), "Error in cavowed.inf")
+                        lMessageShown := TRUE
+                    ENDIF
+                    LOOP
+                ENDIF
 				FOR m := 0 UPTO aPages:Count - 1
 					LOCAL lBasic AS LOGIC
 					cProp := aPages[m]:ToUpper()
@@ -4982,7 +4989,7 @@ INTERNAL CLASS WindowTypeSelectDlg INHERIT Form
       END IF
       // we need the xfile object to get to the XProject and read the files from the database
       IF xfile == NULL
-         SELF:oCloneButton:Visible := FALSE
+         SELF:oCloneButton:Enabled := FALSE
       ENDIF
 
 	RETURN

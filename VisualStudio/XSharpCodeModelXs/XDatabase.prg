@@ -165,7 +165,7 @@ BEGIN NAMESPACE XSharpModel
 				#region Table Files
 				stmt  		:= "CREATE TABLE Files ("
 				stmt     	+= " Id integer NOT NULL PRIMARY KEY, FileName text NOT NULL COLLATE NOCASE,  "
-				stmt     	+= " FileType integer NOT NULL, LastChanged DateTime NOT NULL, Size integer"
+				stmt     	+= " FileType integer NOT NULL, LastChanged DateTime NOT NULL, Size integer, Usings text, StaticUsings text"
 				stmt		+= " ) ;"
                 stmt	    += "CREATE UNIQUE INDEX Files_Pk    ON Files (Id) ;"
 				stmt	    += "CREATE INDEX Files_Name         ON Files (FileName) "
@@ -185,7 +185,6 @@ BEGIN NAMESPACE XSharpModel
 				stmt	+= "CREATE INDEX FilesPerProject_Project    ON FilesPerProject (idProject) "
 				cmd:CommandText := stmt
 				cmd:ExecuteNonQuery()				
-
 
 				#endregion
 				#region Table Types
@@ -273,7 +272,6 @@ BEGIN NAMESPACE XSharpModel
 				cmd:CommandText := stmt
 				cmd:ExecuteNonQuery()		
 				
-
 				stmt := "CREATE VIEW TypeMembers AS SELECT m.*, t.Name AS TypeName, t.Namespace, t.BaseTypeName, t.ClassType " + ;
 				"FROM members m JOIN Types t ON m.IdType = t.Id"
 				cmd:CommandText := stmt
@@ -448,7 +446,7 @@ BEGIN NAMESPACE XSharpModel
 		/*
 		"Create Table Files ("
 		" Id integer NOT NULL PRIMARY KEY, FileName text NOT NULL COLLATE NOCASE "
-		" FileType integer NOT NULL, LastChanged DateTime NOT NULL "
+		" FileType integer NOT NULL, LastChanged DateTime NOT NULL, Size integer, Usings text, StaticUsings text"
 		" )"
 		
 		"Create Table FilesPerProject ("
@@ -464,7 +462,7 @@ BEGIN NAMESPACE XSharpModel
 		BEGIN LOCK oConn
 			TRY
 					BEGIN USING VAR cmd := SQLiteCommand{"", oConn}
-						cmd:CommandText := "SELECT Id, LastChanged, Size FROM Files WHERE FileName = $file"
+						cmd:CommandText := "SELECT Id, LastChanged, Size, Usings,StaticUsings FROM Files WHERE FileName = $file"
 						cmd:Parameters:AddWithValue("$file",file)
 						VAR lOk := FALSE 
 						BEGIN USING VAR rdr := cmd:ExecuteReader()
@@ -472,6 +470,8 @@ BEGIN NAMESPACE XSharpModel
 								oFile:Id          := rdr:GetInt64(0)
 								oFile:LastChanged := rdr:GetDateTime(1)
 								oFile:Size        := rdr:GetInt64(2)
+								oFile:UsingsStr   := rdr:GetString(3)
+								oFile:StaticUsingsStr := rdr:GetString(4)
 								lOk := TRUE
 							ENDIF
 						END USING 
@@ -516,13 +516,15 @@ BEGIN NAMESPACE XSharpModel
 				TRY
                IF System.IO.File.Exists(oFile:FullPath)  // for files from SCC the physical file does not always exist
 						BEGIN USING VAR oCmd := SQLiteCommand{"SELECT 1", oConn}
-							oCmd:CommandText := "UPDATE Files SET LastChanged = $last, Size = $size WHERE id = "+oFile:Id:ToString()
+							oCmd:CommandText := "UPDATE Files SET LastChanged = $last, Size = $size, Usings = $usings, StaticUsings = $staticUsings WHERE id = "+oFile:Id:ToString()
 							VAR fi            := FileInfo{oFile:FullPath}
 							oFile:LastChanged := fi:LastWriteTime
 							oFile:Size        := fi:Length
 							oCmd:Parameters:Clear()
 							oCmd:Parameters:AddWithValue("$last", oFile:LastChanged)
 							oCmd:Parameters:AddWithValue("$size", oFile:Size)
+							oCmd:Parameters:AddWithValue("$usings", oFile:UsingsStr)
+							oCmd:Parameters:AddWithValue("$staticUsings", oFile:StaticUsingsStr)
 							oCmd:ExecuteNonQuery()
                   END USING
                ENDIF
@@ -1095,8 +1097,8 @@ BEGIN NAMESPACE XSharpModel
 			Log(i"GetReferenceTypes '{sName}' returns {result.Count} matches")
 		RETURN result         
 		
-		STATIC METHOD GetMembers(idType AS INT64, idProject AS INT64) AS IList<XDbResult>
-			VAR stmt := "Select * from ProjectMembers where IdType ="+idType:ToString()+" AND IdProject = "+idProject:ToString()
+		STATIC METHOD GetMembers(idType AS INT64) AS IList<XDbResult>
+			VAR stmt := "Select * from ProjectMembers where IdType ="+idType:ToString()
 			stmt     += " order by idFile, idType" 
 			VAR result := List<XDbResult>{}
 			IF IsDbOpen
@@ -1117,7 +1119,31 @@ BEGIN NAMESPACE XSharpModel
 			ENDIF
 			Log(i"GetMembers '{idType}' returns {result.Count} matches")
 		RETURN result  
-		
+
+		STATIC METHOD GetMembers(idTypes AS STRING) AS IList<XDbResult>
+			VAR stmt := "Select * from ProjectMembers where IdType IN ("+idTypes+") "
+			stmt     += " order by idFile, idType" 
+			VAR result := List<XDbResult>{}
+			IF IsDbOpen
+				BEGIN LOCK oConn
+					TRY
+							BEGIN USING VAR oCmd := SQLiteCommand{stmt, oConn}
+								BEGIN USING VAR rdr := oCmd:ExecuteReader()
+									DO WHILE rdr:Read()
+										result:Add(CreateMemberInfo(rdr))
+									ENDDO
+								END USING
+						END USING
+					CATCH e AS Exception
+						Log("Exception: "+e:ToString())
+					END TRY            
+					
+				END LOCK
+			ENDIF
+			Log(i"GetMembers '{idTypes}' returns {result.Count} matches")
+		RETURN result  
+
+
 		STATIC METHOD GetFunctions( sFileId AS STRING) AS IList<XDbResult>
 			// 
 			VAR result := List<XDbResult>{}

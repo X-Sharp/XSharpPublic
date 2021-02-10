@@ -41,7 +41,7 @@ BEGIN NAMESPACE XSharpModel
       PUBLIC STATIC PROPERTY DisableSyntaxHighlighting          AS LOGIC AUTO
       PUBLIC STATIC PROPERTY DisableXSharpProjectReferences     AS LOGIC AUTO
       
-      PUBLIC STATIC PROPERTY KeywordCase                        AS INT AUTO
+      PUBLIC STATIC PROPERTY KeywordCase                        AS KeywordCase AUTO
       
       PUBLIC STATIC PROPERTY DisplayOutputMessage             AS DisplayOutputMessage AUTO
       PUBLIC STATIC PROPERTY DisplayException                 AS DisplayException AUTO
@@ -65,13 +65,13 @@ BEGIN NAMESPACE XSharpModel
             RETURN ""
          ENDIF
          SWITCH KeywordCase
-            CASE 0
+            CASE KeywordCase.None
                RETURN sKeyword
-            CASE 1
+            CASE KeywordCase.Upper
                RETURN sKeyword:ToUpper()
-            CASE 2
+            CASE KeywordCase.Lower
                RETURN sKeyword:ToLower()
-            CASE 3
+            CASE KeywordCase.Title
                RETURN IIF(sKeyword:Length > 1 , sKeyword:Substring(0, 1):ToUpper() + sKeyword:Substring(1):ToLower() , sKeyword:ToUpper())
          END SWITCH
       RETURN sKeyword

@@ -31,3 +31,7 @@
 "CLSID"="{E76D53CC-3D4F-40a2-BD4D-4F3419755476}"
 "GeneratesDesignTimeSource"=dword:00000001
 @="Microsoft DataSet Code Generator for X#"
+[$RootKey$\Generators\{AA6C8D78-22FF-423A-9C7C-5F2393824E04}\TextTemplatingFileGenerator]
+"GeneratesDesignTimeSource"=dword:00000001 
+"CLSID"="{b9c665d2-0451-4ae2-a38c-443b85d634f2}"
+@="Generator that uses the Text Templating engine"

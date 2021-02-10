@@ -1,7 +1,12 @@
-#using System.Collections
-#using System.Text
-#using System.Xml
-#using System.IO
+//
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
+// See License.txt in the project root for license information.
+//
+USING System.Collections
+USING System.Text
+USING System.Xml
+USING System.IO
 
 CLASS VOWEDItem
 	EXPORT cName AS STRING
@@ -1085,4 +1090,5 @@ CLASS VODesignersException INHERIT Exception
 		SUPER(cMessage)
 	RETURN
 END CLASS
+
 

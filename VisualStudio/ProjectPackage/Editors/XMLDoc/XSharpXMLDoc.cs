@@ -27,15 +27,14 @@ namespace XSharp.Project
             ThreadHelper.JoinableTaskFactory.Run(async delegate
             {
 
-                await InitXML();
+                await InitXMLAsync();
             });
         }
 
-        async static Task<int> InitXML()
+        async static Task<int> InitXMLAsync()
         {
             var lang = XSharpProjectPackage.Instance;
             _XMLMemberIndexService = (IVsXMLMemberIndexService)await lang.GetServiceAsync(typeof(SVsXMLMemberIndexService));
-
             // create default entry so our own xml lookup will work
             var node = @"HKEY_LOCAL_MACHINE\Software\XSharpBV\XSharp";
             var InstallPath = (string)Microsoft.Win32.Registry.GetValue(node, "XSharpPath", "");
@@ -65,7 +64,7 @@ namespace XSharp.Project
         {
             get
             {
-                return _memberIndexes.Values.FirstOrDefault();       
+                return _memberIndexes.Values.FirstOrDefault();
             }
         }
         public static IVsXMLMemberIndex GetXmlDocFile(XAssembly assembly, XProject project)

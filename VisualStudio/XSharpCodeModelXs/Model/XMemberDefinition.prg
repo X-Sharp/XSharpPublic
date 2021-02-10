@@ -103,6 +103,10 @@ BEGIN NAMESPACE XSharpModel
             IF SELF:Kind:HasParameters()
                IF ( SELF:Kind == Kind.@@Constructor )
                   vars := "{" + SELF:ComboParameterList + "}"
+               ELSEIF SELF:Kind:IsProperty()
+                    IF SELF:ParameterCount > 0
+                        vars := "[" + SELF:ComboParameterList + "]"
+                    ENDIF
                ELSE
                   vars := "(" + SELF:ComboParameterList + ")"
                ENDIF 

@@ -99,7 +99,9 @@ BEGIN NAMESPACE XSharpModel
 		STATIC METHOD FindType(typeName AS STRING, usings AS IList<STRING>, assemblies AS IList<XAssembly>) AS XTypeReference
 			LOCAL result := NULL AS XTypeReference
 			TRY
+                IF XSettings.EnableTypelookupLog
 				WriteOutputMessage("--> FindType() "+typeName)
+                ENDIF
 				IF typeName:EndsWith(">") .AND.  typeName:Contains("<") .AND. typeName:Length > 2
 					IF typeName:Length <= (typeName:Replace(">", ""):Length + 1)
 						VAR elements := typeName:Split("<,>":ToCharArray(), System.StringSplitOptions.RemoveEmptyEntries)
@@ -151,8 +153,10 @@ BEGIN NAMESPACE XSharpModel
 				XSolution.WriteException(e)
 				result := NULL
 			FINALLY
-				WriteOutputMessage("<-- FindType() "+typeName+" " + IIF(result != NULL, result:FullName, "* not found *"))
-			END TRY
+                IF XSettings.EnableTypelookupLog
+				    WriteOutputMessage("<-- FindType() "+typeName+" " + IIF(result != NULL, result:FullName, "* not found *"))
+                ENDIF
+                END TRY
 			RETURN result
 			
 		STATIC METHOD GetNamespaces(assemblies AS IList<XAssembly>) AS IList<STRING>

@@ -33,7 +33,7 @@ using XSharp.Project;
 namespace XSharpLanguage
 {
     [Export(typeof(ICompletionSourceProvider))]
-    [ContentType("XSharp")]
+    [ContentType(XSharpConstants.LanguageName)]
     [Name("XSharpCompletion")]
     class XSharpCompletionSourceProvider : ICompletionSourceProvider
     {
@@ -2607,6 +2607,11 @@ namespace XSharpLanguage
             {
                 result = SearchPropertyTypeIn(cType, currentToken, minVisibility, out foundElement);
             }
+            if (result.IsEmpty())
+            {
+                result = SearchEventTypeIn(cType, currentToken, minVisibility, out foundElement);
+            }
+
             return result;
         }
 
@@ -2670,6 +2675,40 @@ namespace XSharpLanguage
                 else
                 {
                     foundElement = new CompletionElement(property);
+                    return foundElement.ReturnType;
+                }
+            }
+            // Sorry, not found 
+            return new CompletionType();
+
+        }
+
+
+        private static CompletionType SearchEventTypeIn(CompletionType cType, string currentToken, Modifiers minVisibility, out CompletionElement foundElement)
+        {
+            WriteOutputMessage($" SearchEventTypeIn {cType.FullName} , {currentToken}");
+            foundElement = null;
+            if (cType.Type != null)
+            {
+
+                IXMember evt = cType.Type.GetEvents().Where(e => String.Compare(e.Name, currentToken, true) == 0).FirstOrDefault();
+                //
+                if ((evt != null) && (evt.Visibility < minVisibility))
+                {
+                    evt = null;
+                }
+                //
+                if (evt == null)
+                {
+                    if (!string.IsNullOrEmpty(cType.BaseType) && cType.File != null)
+                    {
+                        // Parent has just a Name, so one of the System Types
+                        return SearchEventTypeIn(new CompletionType(cType.BaseType, cType.File, cType.File.Usings), currentToken, Modifiers.Public, out foundElement);
+                    }
+                }
+                else
+                {
+                    foundElement = new CompletionElement(evt);
                     return foundElement.ReturnType;
                 }
             }
@@ -3329,7 +3368,9 @@ namespace XSharpLanguage
         {
             get
             {
-                return foundElement.IsArray;
+                if (foundElement != null)
+                    return foundElement.IsArray;
+                return false;
             }
         }
 
@@ -3337,9 +3378,12 @@ namespace XSharpLanguage
         {
             get
             {
-                var type = foundElement.TypeName;
-                if ( type!= null)
-                    return type.EndsWith(">");
+                if (foundElement != null)
+                {
+                    var type = foundElement.TypeName;
+                    if (type != null)
+                        return type.EndsWith(">");
+                }
                 return false;
             }
         }

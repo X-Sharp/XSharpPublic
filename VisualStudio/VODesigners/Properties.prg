@@ -1,10 +1,13 @@
-//#using System.Drawing
-#using System.Collections
-#using System.Collections.Generic
-#using System.Drawing
+//
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
+// See License.txt in the project root for license information.
+//
+USING System.Collections
+USING System.Collections.Generic
+USING System.Drawing
 
 
-#include "VOWin32APILibrary.vh"
 
 ENUM PropertyType
 	MEMBER None
@@ -673,9 +676,9 @@ END CLASS
 
 
 STATIC CLASS VODefines
-	STATIC PRIVATE aDefines AS Dictionary<STRING,DWORD>
+	STATIC PRIVATE aDefines AS Dictionary<STRING,LONG>
 	STATIC CONSTRUCTOR()
-		VODefines.aDefines := Dictionary<STRING,DWORD>{}
+		VODefines.aDefines := Dictionary<STRING,LONG>{}
 
 		VODefines.aDefines:Add("WS_OVERLAPPED" , WS_OVERLAPPED)
 		VODefines.aDefines:Add("WS_POPUP" , WS_POPUP)

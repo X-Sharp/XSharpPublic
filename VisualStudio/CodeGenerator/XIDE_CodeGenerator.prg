@@ -9,7 +9,6 @@ BEGIN NAMESPACE Xide
 CLASS AbstractEditor
 	EXPORT aLines AS List<LineObject>
 	PROTECT nStart,nEnd AS INT
-	PROTECT oCaretPos AS System.Drawing.Point
 	PROTECT oBuffer AS EditorBuffer
 	CONSTRUCTOR(_oBuffer AS EditorBuffer)
 		SELF:oBuffer := _oBuffer
@@ -74,7 +73,6 @@ END CLASS
 PARTIAL CLASS CodeGenerator
 	PROTECT aLines AS List<LineObject>
 	PROTECT nStart,nEnd AS INT
-	PROTECT oCaretPos AS System.Drawing.Point
 	PROTECT oEditor , oBaseEditor , oDesEditor AS AbstractEditor
 
 	CONSTRUCTOR(oBuffer AS EditorBuffer)

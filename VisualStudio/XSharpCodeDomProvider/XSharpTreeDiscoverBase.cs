@@ -22,6 +22,7 @@ namespace XSharp.CodeDom
 {
     internal class XSharpBaseDiscover : XSharpBaseListener
     {
+        protected CodeTypeDeclaration _typeInOtherFile = null;
 
         protected IProjectTypeHelper _projectNode;
         private Dictionary<string, IXType> _types;    // type cache
@@ -44,7 +45,7 @@ namespace XSharp.CodeDom
             return new CodeSnippetExpression(txt);
         }
 
-        internal XSharpBaseDiscover(IProjectTypeHelper projectNode) : base()
+        internal XSharpBaseDiscover(IProjectTypeHelper projectNode, CodeTypeDeclaration otherType) : base()
         {
             FieldList = new Dictionary<ParserRuleContext, List<XCodeMemberField>>();
             _projectNode = projectNode;
@@ -52,6 +53,7 @@ namespace XSharp.CodeDom
             this._usings = new List<string>();
             this._locals = new Dictionary<string, IXType>(StringComparer.OrdinalIgnoreCase);
             this._members = new Dictionary<string, XMemberType>(StringComparer.OrdinalIgnoreCase);
+            this._typeInOtherFile = otherType;
 
         }
 
@@ -689,13 +691,17 @@ namespace XSharp.CodeDom
 
         private bool findMemberInBaseTypes(string name, MemberTypes mtype)
         {
-            foreach (XCodeTypeReference basetype in CurrentClass.BaseTypes)
+            var baseTypes = CurrentClass.BaseTypes;
+            if (baseTypes.Count == 0 && _typeInOtherFile != null)
+                baseTypes = _typeInOtherFile.BaseTypes;
+
+            foreach (XCodeTypeReference basetype in baseTypes)
             {
                 string typeName = basetype.BaseType;
                 var baseType = findType(typeName);
-                if (baseType != null)
+                if (baseType != null && hasClassMember(baseType, name, mtype))
                 {
-                    return hasClassMember(baseType, name, mtype);
+                    return true;
                 }
             }
             return false;

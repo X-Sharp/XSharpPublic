@@ -254,8 +254,8 @@ namespace XSharp.Project
         public void RegisterHierarchy(IVsHierarchy hierarchy, XProject Prj, XSharpProjectNode ProjectNode)
         {
             // No Hierarchy or... Hierarchy already registered ?
-            // disable classview for now
-            if (XSettings.DisableClassViewObjectView)// || true)
+            // disable classview for now too slow
+            if (XSettings.DisableClassViewObjectView || true)
             {
                 return;
             }

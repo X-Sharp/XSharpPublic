@@ -42,6 +42,8 @@ BEGIN NAMESPACE XSharpModel
       PROPERTY Comment      AS STRING  GET SourceCode SET SourceCode := value
       PROPERTY Line         AS INT   GET StartLine    SET StartLine := value
       PROPERTY Column       AS INT   GET StartColumn  SET StartColumn := value
+      PROPERTY Modifiers   AS Modifiers    GET _AND(Attributes, ~Modifiers.VisibilityMask)
+      PROPERTY Visibility  AS Modifiers    GET _AND(Attributes, Modifiers.VisibilityMask)
          
     END CLASS
 END NAMESPACE

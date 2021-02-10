@@ -1464,57 +1464,22 @@ namespace XSharpLanguage
             stopToken = null;
             if (tokens == null)
                 return tokenList;
-
-            var list = tokens.GetTokens().Where ( t=> t.Channel == XSharpLexer.DefaultTokenChannel).ToList();
-            if (list.Count == 0)
-                return tokenList;
-            int current = 0;
-            int bottom = 0;
-            int top = list.Count;
-            // locate the right line in the list of tokens
             // the line numbers in the IToken are 1 based. Vs is 0 based.
             int oneBasedLineNumber = triggerPointLineNumber + 1;
-            while (top - bottom > 1)
-            {
-                // determine middle
-                current = (bottom + top) / 2;
-                var check = list[current].Line;
-                if (check == oneBasedLineNumber)
-                {
-                    break;
-                }
-                else if (check > oneBasedLineNumber)
-                {
-                    top = current;
-                }
-                else  // < 
-                {
-                    bottom = current;
-                }
-            }
-            if (current > list.Count - 1 || current < 0)
-                return tokenList;
-            // on the right row now. Find the first token on the row
-            while (current > 0 && list[current-1].Line == oneBasedLineNumber)
-            {
-                current --;
-            }
-            // collect the tokens on the line
-            var line = new List<IToken>();
-            for (int iToken = current; iToken < list.Count; iToken++)
-            {
-                if (list[iToken].StartIndex <= triggerPointPosition)
-                    line.Add(list[iToken]);
-            }
+            var line = tokens.GetTokens().Where (
+                 t=> t.Channel == XSharpLexer.DefaultTokenChannel && 
+                 t.Line == oneBasedLineNumber) .ToList();
             if (line.Count == 0)
-            {
-                return tokenList;   // empty list
-            }
+                return tokenList;
+            // if the token appears after comma or paren then strip the tokens 
             // now look forward and find the first token that is on or after the triggerpoint
             var last = XSharpLexer.Eof;
             foreach (var token in line)
             {
-                string stop = null;
+                string open = null;
+                // only add open tokens to the list after the trigger point
+                if (token.StartIndex >= triggerPointPosition && !isOpenToken(token.Type))
+                    break;
                 switch (token.Type)
                 {
                     case XSharpLexer.LCURLY:
@@ -1530,19 +1495,25 @@ namespace XSharpLanguage
                         }
                         break;
                     case XSharpLexer.ID:
-                        if (token.Text.StartsWith("@@"))
-                            tokenList.Add(token.Text.Substring(2));
-                        else
-                            tokenList.Add(token.Text);
+                        var text = token.Text;
+                        if (text.StartsWith("@@"))
+                            text = text.Substring(2);
+                        tokenList.Add(text);                        
                         break;
                     case XSharpLexer.RCURLY:
-                        stop = "{";
+                        open = "{";
                         break;
                     case XSharpLexer.RPAREN:
-                        stop = "(";
+                        open = "(";
                         break;
                     case XSharpLexer.RBRKT:
-                        stop = "[";
+                        open = "[";
+                        break;
+                        // after these tokens we "restart" the list
+                    case XSharpLexer.TO:
+                    case XSharpLexer.UPTO:
+                    case XSharpLexer.IN:
+                        tokenList.Clear();
                         break;
                     case XSharpLexer.COMMA:
                     case XSharpLexer.ASSIGN_OP:
@@ -1564,20 +1535,28 @@ namespace XSharpLanguage
                         {
                             tokenList.Add(token.Text);
                         }
-                        if (XSharpLexer.IsKeyword(token.Type))
+                        else if (XSharpLexer.IsType(token.Type))
                         {
                             tokenList.Add(token.Text);
                         }
+                        else if (XSharpLexer.IsConstant(token.Type))
+                        {
+                            tokenList.Add(token.Text);
+                        }
+                        //if (XSharpLexer.IsKeyword(token.Type))
+                        //{
+                        //    tokenList.Add(token.Text);
+                        //}
                         break;
                 }
                 last = token.Type;
                 // find open token on the list and remove everything in between
-                if (stop != null)
+                if (open != null)
                 {
                     var iLast = tokenList.Count - 1;
                     while (iLast >= 0)
                     {
-                        if (tokenList[iLast].EndsWith(stop))
+                        if (tokenList[iLast].EndsWith(open))
                         {
                             if (iLast < tokenList.Count -1)
                             {
@@ -1590,7 +1569,54 @@ namespace XSharpLanguage
                     }
                 }
             }
+            if (tokenList.Count > 0)
+            {
+                var end = tokenList[tokenList.Count - 1];
+                if (end == ",")
+                {
+                    tokenList.RemoveAt(tokenList.Count - 1);
+                }
+            }
+            if (tokenList.Count > 1)
+            {
+                var pos = tokenList.Count - 2;
+                while (pos >= 0)
+                {
+                    // after open token or comma then remove the tokens 
+                    var previous = tokenList[pos].Last();
+                    if (previous == '(' 
+                        || previous =='{'
+                        || previous == '['
+                        || previous == ',')
+                    {
+                        tokenList.RemoveRange(0, pos+1);
+                        break;
+                    }
+                    else if (previous == '.')
+                    {
+                        var txt = tokenList[pos].ToLower();
+                        if (txt == ".or." ||
+                            txt == ".and.")
+                        {
+                            tokenList.RemoveRange(0, pos + 1);
+                            break;
+                        }
+                    }
+                    pos -= 1;
+                }
+            }
             return tokenList;
+        }
+        private static bool isOpenToken(int token)
+        {
+            switch (token)
+            {
+                case XSharpLexer.LCURLY:
+                case XSharpLexer.LPAREN:
+                case XSharpLexer.LBRKT:
+                    return true;
+            }
+            return false;
         }
         public static XTypeDefinition FindNamespace(int position, XFile file)
         {
@@ -2422,7 +2448,7 @@ namespace XSharpLanguage
             expr = BuildTokenString(tokens, 0);
             tokenList = new List<string> { expr };
             cType = RetrieveType(xVar.File, tokenList, member, currentNS, null, out foundElement, snapshot, currentLine, dialect);
-            if (foundElement != null)
+            if (cType != null)
             {
                 xVar.TypeName = cType.FullName;
             }
@@ -3220,7 +3246,23 @@ namespace XSharpLanguage
                 if (IsSourceElement)
                 {
                     string searchTypeName = foundElement.TypeName;
-                    cType = new CompletionType(searchTypeName, SearchLocation.File, SearchLocation.FileUsings);
+                    var usings = new List<String>();
+                    usings.AddRange(SearchLocation.FileUsings);
+                    var sourceElement = this.SourceElement;
+                    if (sourceElement is IXMember)
+                    {
+                       var member = (IXMember)sourceElement;
+                        var parts = member.FullName.Split(new char[]{ '.'});
+                        string ns = "";
+                        foreach (var part in parts)
+                        {
+                            ns = ns + part;
+                            if (!usings.Contains(ns))
+                                usings.Add(ns);
+                            ns += ".";
+                        }
+                    }
+                    cType = new CompletionType(searchTypeName, SearchLocation.File, usings);
                 }
                 else
                 {

@@ -29,6 +29,7 @@ BEGIN NAMESPACE XSharpModel
         PRIVATE _project      AS XProject
         #endregion
         // Methods
+        
         CONSTRUCTOR(fullPath AS STRING, project AS XProject)
             SUPER()
             //
@@ -51,8 +52,7 @@ BEGIN NAMESPACE XSharpModel
                 SELF:_usings:Insert(0, "System")
             ENDIF
             RETURN
-
-
+            
         METHOD FirstMember() AS IXMember
             IF (! SELF:HasCode)
                 RETURN NULL
@@ -335,12 +335,59 @@ BEGIN NAMESPACE XSharpModel
 
         PROPERTY Usings AS IList<STRING>
             GET
-                IF ! SELF:HasCode
-                    RETURN NULL
+                IF ! SELF:HasCode .or. _usings == NULL  
+                    RETURN <STRING>{}
                 ENDIF
                 RETURN _usings:ToArray()
             END GET
+         END PROPERTY
+
+    
+        PROPERTY UsingsStr AS STRING 
+            GET
+               if _usings == NULL 
+                  return String.Empty
+               endif
+               var sb := System.Text.StringBuilder{}
+               FOREACH var str in _usings
+                  IF (sb:Length > 0)
+                     sb:AppendLine("")
+                  ENDIF
+                  sb:Append(str)
+               NEXT
+            
+               RETURN sb:ToString()
+            END GET
+            SET
+               SELF:_usings		   := List<STRING>{}
+               if ! String.IsNullOrEmpty(value)
+                  self:_usings:AddRange(value:Split( <CHAR>{'\r'}))
+               endif
+            END SET
         END PROPERTY
+
+        PROPERTY StaticUsingsStr AS STRING
+            GET
+             if _usingStatics == NULL 
+                  return String.Empty
+               endif
+                 var sb := System.Text.StringBuilder{}
+               FOREACH var str in _usingStatics
+                  IF (sb:Length > 0)
+                     sb:AppendLine("")
+                  ENDIF
+                  sb:Append(str)
+               NEXT
+               RETURN sb:ToString()
+            END GET
+            SET
+               SELF:_usingStatics		   := List<STRING>{}
+               if ! String.IsNullOrEmpty(value)
+                  self:_usingStatics:AddRange(value:Split( <CHAR>{'\r'}))
+               endif
+            END SET
+        END PROPERTY
+
 
         PROPERTY XamlCodeBehindFile AS STRING
             GET

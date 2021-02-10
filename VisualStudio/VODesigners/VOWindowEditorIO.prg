@@ -1022,7 +1022,7 @@ PARTIAL CLASS VOWindowEditor INHERIT WindowDesignerBase
 		oStream:Editor:AddLine(e"#include \"VOWin32APILibrary.vh\"")
 		IF lOldTransporter
 			FOR n := 0 UPTO oCode:aDefines:Count - 1
-				oStream:Editor:AddLine("#STATIC DEFINE " + oCode:aDefines[n] + " " + oCode:aDefineValues[n])
+				oStream:Editor:AddLine("#define " + oCode:aDefines[n] + " " + oCode:aDefineValues[n])
 			NEXT
 		ELSE
 			IF lRcInSameFolder

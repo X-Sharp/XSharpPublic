@@ -292,9 +292,13 @@ BEGIN NAMESPACE XSharpModel
                   type:Namespace := type:Parent:FullName
                ENDIF
             ENDIF
-            IF type:Name:Contains(".")
+            IF type:Kind == Kind.Namespace
+               // Add to usings when needed. Not strictly necessary but makes lookup easier later
+               SELF:AddNameSpaceToUsing(type:Name)
+            ELSEIF type:Name:Contains(".") 
                VAR pos := type:Name:LastIndexOf(".")
                VAR ns  := type:Name:Substring(0, pos)
+               SELF:AddNameSpaceToUsing(ns)
                type:Name   := type:Name:Substring(pos+1)
                IF String.IsNullOrEmpty(type:Namespace)
                   type:Namespace := ns
@@ -328,7 +332,24 @@ BEGIN NAMESPACE XSharpModel
             _file:SetTypes(typelist, _usings, _staticusings, SELF:_EntityList)
             _file:SaveToDatabase()
          ENDIF
+      PRIVATE METHOD AddNameSpaceToUsing(name as STRING) AS VOID
+         var pos  := name:LastIndexOf(".")
+         SELF:AddUniqueUsing(name)
+         DO WHILE pos > 0
+            name := name:Substring(0, pos)
+            SELF:AddUniqueUsing(name)
+            pos  := name:LastIndexOf(".")
+         ENDDO
+         RETURN
          
+      PRIVATE METHOD AddUniqueUsing(strName as STRING) AS VOID
+         FOREACH var u in SELF:_usings
+            if String.Compare(u, strName, TRUE) == 0
+               RETURN
+            ENDIF
+         NEXT
+         _usings:Add(strName)
+         RETURN
          
       PRIVATE METHOD ParsePPLine() AS LOGIC
          VAR token := SELF:La1
@@ -659,8 +680,11 @@ attributeParam      : Name=identifierName Op=assignoperator Expr=expression     
                   // PRIVATE and PUBLIC as memvar declarator
                   // when inside a method or function
                   IF mods == Modifiers.Public .OR. mods == Modifiers.Private
+                     var txt := LastToken.Text.ToUpper()
+                     if (txt == "PUBLIC" .or. txt == "PRIVATE")
                      IF CurrentEntity IS XMemberDefinition VAR xDef .AND. ! xDef:SingleLine .AND. CurrentEntity.Kind:HasBody()
                         entityKind := Kind.Unknown
+                        ENDIF
                      ENDIF
                   ENDIF
                ELSEIF InFoxClass .AND. (CurrentEntity:Kind == Kind.Class .OR. CurrentEntity:Kind == Kind.Field)

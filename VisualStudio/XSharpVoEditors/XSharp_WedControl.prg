@@ -82,7 +82,7 @@ CLASS XSharp_VOWEDControl INHERIT VOWEDControl IMPLEMENTS IVOWEDControl
 	PROPERTY IsGridEnabled AS LOGIC GET oWed != NULL && oWed:IsGridEnabled
 
 
-	PROPERTY ReadOnly AS LOGIC GET SUPER:oEditor:ReadOnly SET SUPER:ReadOnly := VALUE
+	NEW PROPERTY ReadOnly AS LOGIC GET SUPER:oEditor:ReadOnly SET SUPER:ReadOnly := VALUE
 
 	PROPERTY IWin32Window AS IWin32Window GET (IWin32Window) SELF
 

@@ -168,7 +168,8 @@ BEGIN NAMESPACE XSharpModel
             VAR vis  := _AND(mods, Modifiers.VisibilityMask)
             IF IsStartOfEntity(OUT VAR entityKind, mods)
                IF _hasXmlDoc
-                  VAR cDoc := first:XmlComments
+                  LOCAL cDoc := first:XmlComments AS STRING
+                  cDoc := cDoc:Replace("///","")
                   IF ! String.IsNullOrEmpty(cDoc)
                      cXmlDoc := "<doc>"+cDoc+"</doc>"
                   ELSE
@@ -1153,13 +1154,13 @@ attributeParam      : Name=identifierName Op=assignoperator Expr=expression     
          CASE Kind.Delegate
             result := SELF:ParseDelegate()
          CASE Kind.Access
-            IF InXppClass
+            IF InXppClass .AND. _dialect == XSharpDialect.XPP
                result := SELF:ParseXppProperty()
             ELSE
                result := SELF:ParseMethod()
             ENDIF
          CASE Kind.Assign
-            IF InXppClass
+            IF InXppClass .AND. _dialect == XSharpDialect.XPP
                result := SELF:ParseXppProperty()
             ELSE
                result := SELF:ParseMethod()
@@ -1172,7 +1173,7 @@ attributeParam      : Name=identifierName Op=assignoperator Expr=expression     
             ENDIF
          CASE Kind.Function
          CASE Kind.Procedure
-            IF InFoxClass
+            IF InFoxClass .AND. _dialect == XSharpDialect.FoxPro
                result := SELF:ParseFoxMethod()
             ELSE
                result := SELF:ParseFuncProc()
@@ -1211,13 +1212,13 @@ attributeParam      : Name=identifierName Op=assignoperator Expr=expression     
             result := SELF:ParseDestructor()
             
          CASE Kind.Field
-            IF InXppClass
+            IF InXppClass .AND. _dialect == XSharpDialect.XPP
                IF SELF:La1 == XSharpLexer.COLON
                   result := SELF:ParseXppVisibility()
                ELSE
                   result := SELF:ParseXppClassVars()
                ENDIF
-            ELSEIF InFoxClass
+            ELSEIF InFoxClass .AND. _dialect == XSharpDialect.FoxPro
                result := SELF:ParseFoxFields()   
             ELSE
                result := SELF:ParseClassVars()   
@@ -1263,11 +1264,7 @@ funcproc      : (Attributes=attributes)? (Modifiers=funcprocModifiers)?
               ;
 */
             LOCAL kind AS Kind 
-            IF SELF:La1 == XSharpLexer.FUNCTION 
-               kind := Kind.Function
-            ELSEIF SELF:La1 == XSharpLexer.PROCEDURE
-               kind := Kind.Procedure
-            ELSE
+            IF ! ParseFuncProcType (OUT kind)
                RETURN NULL
             ENDIF
             SELF:Consume()
@@ -1532,7 +1529,7 @@ propertyAccessor    : Attributes=attributes? Modifiers=accessorModifiers?
          VAR sType := SELF:ParseAsIsType()
          LOCAL lSingleLine AS LOGIC
          DO WHILE ! SELF:Eos()
-            IF Matches(XSharpLexer.AUTO, XSharpLexer.GET,XSharpLexer.SET)
+            IF Matches(XSharpLexer.AUTO, XSharpLexer.GET,XSharpLexer.SET, XSharpLexer.UDCSEP)
                lSingleLine := TRUE
             ENDIF
             Consume()
@@ -1634,7 +1631,7 @@ operator_           : Attributes=attributes? Modifiers=operatorModifiers?
          ENDIF
          VAR aParams     := SELF:ParseParameterList(FALSE, OUT VAR _)
          VAR sType       := SELF:ParseAsIsType()
-         
+         SELF:ParseExpressionBody()
          SELF:GetSourceInfo(_start, LastToken, OUT VAR range, OUT VAR interval, OUT VAR source)  
          
          VAR id := t1:GetText()+ IIF(t2 != NULL, t2:GetText(),"")
@@ -1668,6 +1665,7 @@ operator_           : Attributes=attributes? Modifiers=operatorModifiers?
          VAR asType      := SELF:ParseAsIsType()
          VAR callconv    := SELF:ParseCallingConvention()
          VAR classClause := SELF:ParseOptionalClassClause()
+         SELF:ParseExpressionBody()
          SELF:GetSourceInfo(_start, LastToken, OUT VAR range, OUT VAR interval, OUT VAR source)  
          SELF:ReadLine()
          VAR xMember := XMemberDefinition{id, Kind.Constructor, _attributes, range, interval,""}
@@ -1700,6 +1698,7 @@ destructor          : (Attributes=attributes)? (Modifiers=destructorModifiers)?
             Consume()
          ENDIF
          VAR classClause := SELF:ParseOptionalClassClause()
+         SELF:ParseExpressionBody()
          SELF:GetSourceInfo(_start, LastToken, OUT VAR range, OUT VAR interval, OUT VAR source)  
          SELF:ReadLine()
          VAR xMember := XMemberDefinition{id, Kind.Destructor, _attributes, range, interval,"VOID"}
@@ -1893,8 +1892,9 @@ vodll               : (Attributes=attributes)? (Modifiers=funcprocModifiers)? //
          IF ! Expect(XSharpLexer.DLL)
             RETURN NULL
          ENDIF
-
-         VAR t := ConsumeAndGet()
+         IF ! ParseFuncProcType (OUT VAR kind)
+            RETURN NULL
+         ENDIF
          VAR sig     := SELF:ParseSignature()
          VAR colon   := SELF:ConsumeAndGetText()
          VAR dllName := SELF:ConsumeAndGetText()
@@ -1904,7 +1904,7 @@ vodll               : (Attributes=attributes)? (Modifiers=funcprocModifiers)? //
          ENDIF
          SELF:GetSourceInfo(_start, LastToken, OUT VAR range, OUT VAR interval, OUT VAR source)  
          SELF:ReadLine()
-         VAR xMember := XMemberDefinition{sig, Kind.VODLL, _attributes, range, interval, _attributes:HasFlag(Modifiers.Static)} {SubType := IIF(t:Type == XSharpLexer.FUNCTION, Kind.Function, Kind.Procedure)} 
+         VAR xMember := XMemberDefinition{sig, Kind.VODLL, _attributes, range, interval, _attributes:HasFlag(Modifiers.Static)} {SubType := kind } 
          xMember:File := SELF:_file
          xMember:SourceCode := source          
          RETURN <XEntityDefinition>{xMember}
@@ -2059,6 +2059,7 @@ signature             : Id=identifier
             oSig:TypeParameterContraints:Add(SELF:ParseTypeParameterConstraints())
          ENDDO
          oSig:CallingConvention  := SELF:ParseCallingConvention()
+         SELF:ParseExpressionBody()
          RETURN oSig
          
          
@@ -2188,6 +2189,12 @@ signature             : Id=identifier
             RETURN SELF:ParseTypeName()
          ENDIF
          RETURN ""
+      PRIVATE METHOD ParseExpressionBody() AS STRING
+         IF SELF:La1 != XSharpLexer.UDCSEP
+            RETURN ""
+         ENDIF
+         SELF:Consume()
+         RETURN SELF:ParseExpression()
          
       PRIVATE METHOD ParseCallingConvention() AS CallingConvention
 /*
@@ -2210,6 +2217,18 @@ callingconvention	: Convention=(CLIPPER | STRICT | PASCAL | ASPEN | WINCALL | CA
          RETURN CallingConvention.None
 
 
+      PRIVATE METHOD ParseFuncProcType( kind OUT Kind) AS LOGIC
+            
+            IF SELF:La1 == XSharpLexer.FUNCTION 
+                kind := Kind.Function
+            ELSEIF SELF:La1 == XSharpLexer.PROCEDURE
+                kind := Kind.Procedure
+            ELSE
+                kind := Kind.Unknown
+                RETURN FALSE
+            ENDIF
+            RETURN TRUE
+
       PRIVATE METHOD ParseLocalFuncProc() AS IList<XEntityDefinition>
          /*
 
@@ -2222,15 +2241,19 @@ callingconvention	: Convention=(CLIPPER | STRICT | PASCAL | ASPEN | WINCALL | CA
          
          */
             LOCAL kind AS Kind 
-            IF SELF:La2 == XSharpLexer.FUNCTION 
-               kind := Kind.LocalFunc
-            ELSEIF SELF:La2 == XSharpLexer.PROCEDURE
-               kind := Kind.LocalProc
-            ELSE
+            IF SELF:La1 != XSharpLexer.LOCAL
+                RETURN NULL
+            ENDIF
+            SELF:Consume()      // Local
+            IF ! ParseFuncProcType (OUT kind)
                RETURN NULL
             ENDIF
-            SELF:Consume()
-            SELF:Consume()
+            SELF:Consume()      // Function or Procedure
+            IF kind == Kind.Function
+                kind := Kind.LocalFunc
+            ELSEIF kind == Kind.Procedure
+                kind := Kind.LocalProc
+            ENDIF
             VAR sig := SELF:ParseSignature()
             
             SELF:GetSourceInfo(_start, LastToken, OUT VAR range, OUT VAR interval, OUT VAR source)  
@@ -2908,7 +2931,7 @@ callingconvention	: Convention=(CLIPPER | STRICT | PASCAL | ASPEN | WINCALL | CA
             */
             LOCAL hs := "" AS STRING
             LOCAL thisId := "" AS STRING
-            IF ! ExpectAny(XSharpLexer.FUNCTION, XSharpLexer.PROCEDURE)
+            IF ! ParseFuncProcType (OUT VAR kind)
                RETURN NULL
             ENDIF
             VAR sig := SELF:ParseSignature()
@@ -2921,7 +2944,7 @@ callingconvention	: Convention=(CLIPPER | STRICT | PASCAL | ASPEN | WINCALL | CA
             ENDIF
             SELF:GetSourceInfo(_start, LastToken, OUT VAR range, OUT VAR interval, OUT VAR source)  
             SELF:ReadLine()
-            VAR kind := Kind.Method
+            kind := Kind.Method
             // Check for _ACCESS or _ASSIGN
             VAR id := sig:Id
             IF id:EndsWith("_access", StringComparison.OrdinalIgnoreCase)

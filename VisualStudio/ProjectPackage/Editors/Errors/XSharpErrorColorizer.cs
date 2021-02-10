@@ -31,7 +31,7 @@ namespace XSharp.Project
 
     [Export(typeof(ITaggerProvider))]
 
-    [ContentType("XSharp")]
+    [ContentType(XSharpConstants.LanguageName)]
     [TextViewRole(PredefinedTextViewRoles.Document)]
     internal sealed class XSharpErrorColorizerFactory : IWpfTextViewCreationListener
     {

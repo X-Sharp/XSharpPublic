@@ -39,6 +39,7 @@ BEGIN NAMESPACE XSharpModel
 			PROPERTY TokenStream AS ITokenStream GET SELF:_tokenStream
 
 			PROPERTY StartPosition AS INT AUTO
+        PROPERTY SourcePath AS STRING AUTO  // Save it because calculation the XAML source path is a bit expensive
 
          PROPERTY EntityList AS IList<XEntityDefinition> GET _entities
          PROPERTY BlockList  AS IList<XBlock>   GET _blocks
@@ -49,13 +50,12 @@ BEGIN NAMESPACE XSharpModel
 		CONSTRUCTOR(file AS XFile)
 			SUPER()
             IF (file != NULL)
-			    LOCAL sourcePath AS STRING
 			    //SELF:_gate := OBJECT{}
 			    SELF:_file := file
 			    SELF:_prjNode := SELF:_file?:Project?:ProjectNode
 			    SELF:StartPosition := 0
 			    //
-			    sourcePath := SELF:_file:SourcePath
+                SELF:SourcePath := SELF:_file:SourcePath
              _options   := SELF:_file:Project:ParseOptions
             ENDIF
       
@@ -74,20 +74,20 @@ BEGIN NAMESPACE XSharpModel
 
 		METHOD Lex(cSource AS STRING) AS ITokenStream
 			LOCAL lOk := FALSE AS LOGIC
-			WriteOutputMessage("-->> Lex() "+_file:FullPath)
+            WriteOutputMessage("-->> Lex() "+SourcePath)
 			SELF:_errors := List<XError>{}
 			LOCAL stream := NULL AS ITokenStream
             TRY
-			XSharp.Parser.VsParser.Lex(cSource, SELF:_file:SourcePath, _options, SELF, OUT stream)
+                    XSharp.Parser.VsParser.Lex(cSource, SELF:SourcePath, _options, SELF, OUT stream)
 			BEGIN LOCK SELF
 				SELF:_tokenStream := stream
 			END LOCK
             CATCH e AS Exception
                 WriteOutputMessage("Lex() Failed:")
-                WriteOutputMessage(_file:FullPath)                  
+                WriteOutputMessage(SELF:SourcePath)                  
                 WriteOutputMessage(e:ToString())
             END TRY
-			WriteOutputMessage("<<-- Lex() "+_file:FullPath)
+            WriteOutputMessage("<<-- Lex() "+SELF:SourcePath)
 			RETURN stream
 
       METHOD ParseLocals(source AS STRING, xmember AS XMemberDefinition) AS List<IXSourceVariable>
@@ -120,7 +120,7 @@ BEGIN NAMESPACE XSharpModel
 
 
       METHOD ParseTokens(tokens AS ITokenStream , lIncludeRegions AS LOGIC, lIncludeLocals AS LOGIC) AS VOID
-         WriteOutputMessage("-->> ParseTokens() "+_file:FullPath+" locals "+lIncludeLocals:ToString()+" )")
+            WriteOutputMessage("-->> ParseTokens() "+SELF:SourcePath+" locals "+lIncludeLocals:ToString()+" )")
          TRY
             VAR parser := XsParser{_file, _options:Dialect}
             parser:Parse(tokens , lIncludeRegions, lIncludeLocals)
@@ -130,28 +130,28 @@ BEGIN NAMESPACE XSharpModel
             
          CATCH e AS Exception
             WriteOutputMessage("ParseTokens() Failed:")
-            WriteOutputMessage(_file:FullPath)
+                WriteOutputMessage(SELF:SourcePath)
             WriteOutputMessage(e:ToString())
          END TRY
-         WriteOutputMessage("<<-- ParseTokens() "+_file:FullPath)
+            WriteOutputMessage("<<-- ParseTokens() "+SELF:SourcePath)
 
 
       METHOD Parse(lIncludeLocals AS LOGIC) AS VOID
-         VAR cSource      := System.IO.File.ReadAllText(_file:FullPath)
+            VAR cSource      := System.IO.File.ReadAllText(SELF:SourcePath)
          SELF:Parse(cSource, lIncludeLocals)
 
       METHOD Parse(cSource AS STRING, lIncludeLocals AS LOGIC) AS VOID
-         WriteOutputMessage("-->> Parse() "+_file:FullPath+" locals "+lIncludeLocals:ToString()+" )")
+            WriteOutputMessage("-->> Parse() "+SELF:SourcePath+" locals "+lIncludeLocals:ToString()+" )")
          TRY
             VAR tokens   := SELF:Lex(cSource)
             SELF:ParseTokens(tokens, FALSE, lIncludeLocals)
          CATCH e AS Exception
             WriteOutputMessage("Parse() Failed:")
-            WriteOutputMessage(_file:FullPath)
+                WriteOutputMessage(SELF:SourcePath)
             WriteOutputMessage(e:ToString())
             
          END TRY
-         WriteOutputMessage("<<-- Parse() "+_file:FullPath)
+            WriteOutputMessage("<<-- Parse() "+SELF:SourcePath)
 
 		#region Errors
 			VIRTUAL METHOD ReportError(fileName AS STRING, span AS LinePositionSpan, errorCode AS STRING, message AS STRING, args AS OBJECT[]) AS VOID

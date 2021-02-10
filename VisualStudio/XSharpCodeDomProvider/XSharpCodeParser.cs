@@ -37,10 +37,18 @@ namespace XSharp.CodeDom
             this.TabSize = 1;
             _projectNode = projectNode;
         }
+        public XSharpCodeParser(IProjectTypeHelper projectNode, CodeTypeDeclaration formClass)
+        {
+            this.FileName = "";
+            this.TabSize = 1;
+            _projectNode = projectNode;
+            typeInMainFile = formClass;
+        }
         public string FileName { get; set; }
 
         public int TabSize { get; set; }
 
+        CodeTypeDeclaration typeInMainFile = null;
         public override CodeCompileUnit Parse(TextReader codeStream)
         {
             CodeCompileUnit ccu;
@@ -50,8 +58,13 @@ namespace XSharp.CodeDom
             }
             else
             {
-                String codeFile;
+                string codeFile;
                 codeFile = codeStream.ReadToEnd();
+                var field = codeStream.GetType().GetField("ClassName");
+                if (field != null)
+                {
+                    typeInMainFile = field.GetValue(codeStream) as CodeTypeDeclaration;
+                }
                 ccu = Parse(codeFile);
             }
             return ccu;
@@ -81,14 +94,14 @@ namespace XSharp.CodeDom
                 // 1 - Scan for the fields , so we know the difference between fields and properties when we perform step 2
                 // 2 - Scan for the rest. We pass the list of fields to the tree discover code so it "knows" about all fields
 
-                var discoverFields = new XSharpFieldsDiscover(_projectNode);
+                var discoverFields = new XSharpFieldsDiscover(_projectNode, typeInMainFile);
                 discoverFields.SourceCode = source;
                 discoverFields.CurrentFile = this.FileName;
 
                 var walker = new LanguageService.SyntaxTree.Tree.ParseTreeWalker();
                 walker.Walk(discoverFields, xtree);
                 // now the discoverFields class should contain a Dictionary with <context, FieldList>
-                var discover = new XSharpClassDiscover(_projectNode);
+                var discover = new XSharpClassDiscover(_projectNode, typeInMainFile);
                 discover.FieldList = discoverFields.FieldList;
                 discover.SourceCode = source;
                 discover.CurrentFile = this.FileName;

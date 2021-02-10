@@ -105,7 +105,7 @@ namespace XSharp.CodeDom
     }
     public class XSharpCodeDomHelper1
     {
-        static String Delimiter = new String('-', 5);
+        static readonly String Delimiter = new String('-', 5);
         static void dumpUserData(IDictionary userData)
         {
             if (userData.Count > 0)

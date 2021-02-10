@@ -1,12 +1,16 @@
-#using System.Windows.Forms
-#using System.Drawing
-#using System.Collections.Generic
-#using System.Collections
-#using System.IO
-#using System.Text
+//
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
+// See License.txt in the project root for license information.
+//
+USING System.Windows.Forms
+USING System.Drawing
+USING System.Collections.Generic
+USING System.Collections
+USING System.IO
+using System.Text
 
 
-#include "VOWin32APILibrary.vh"
 
 [Flags];
 ENUM Direction

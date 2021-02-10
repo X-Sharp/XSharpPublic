@@ -298,7 +298,7 @@ namespace XSharp.Project
                 XSettings.DisableSyntaxHighlighting = _intellisensePage.DisableSyntaxColorization;
                 XSettings.DisableXSharpProjectReferences = _intellisensePage.DisableXSharpProjectReferences;
 
-                XSettings.KeywordCase = (int)_intellisensePage.KeywordCase;
+                XSettings.KeywordCase = _intellisensePage.KeywordCase;
                 _intellisensePage.SettingsChanged = false;
             }
             return _intellisensePage;

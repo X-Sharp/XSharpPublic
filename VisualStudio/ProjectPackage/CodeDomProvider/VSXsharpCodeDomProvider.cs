@@ -19,6 +19,14 @@ using Microsoft;
 namespace XSharp.Project
 {
 
+    public class XDocDataTextReader : DocDataTextReader
+    {
+        public CodeTypeDeclaration ClassName;
+        public XDocDataTextReader(DocData docData, CodeTypeDeclaration classname) :base(docData)
+        {
+            ClassName = classname;
+        }
+    }
     // Moved "special" VisualStudio  CodeDomProvider
     [PermissionSet(SecurityAction.InheritanceDemand, Name = "FullTrust"), PermissionSet(SecurityAction.LinkDemand, Name = "FullTrust")]
     public class VSXSharpCodeDomProvider : XSharpCodeDomProvider
@@ -94,7 +102,7 @@ namespace XSharp.Project
                         {
                             // Ok, we have a candidate !!!
                             DocData docdata = new DocData((IServiceProvider)ddtr, designerPrgFile);
-                            DocDataTextReader reader = new DocDataTextReader(docdata);
+                            DocDataTextReader reader = new XDocDataTextReader(docdata, className);
                             // so parse
                             WriteOutputMessage("Start Parse " + designerPrgFile);
                             CodeCompileUnit designerCompileUnit = base.Parse(reader);
@@ -231,7 +239,7 @@ namespace XSharp.Project
                     designerStream.Close();
                 }
                 // The problem here, is that we "may" have some new members, like EvenHandlers, and we need to update their position (line/col)
-                XSharpCodeParser parser = new XSharpCodeParser(_projectNode);
+                XSharpCodeParser parser = new XSharpCodeParser(_projectNode, formClass);
                 parser.TabSize = XSharpCodeDomProvider.TabSize;
                 parser.FileName = designerPrgFile;
                 CodeCompileUnit resultDesigner = parser.Parse(generatedSource);

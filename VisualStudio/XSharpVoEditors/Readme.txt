@@ -1,0 +1,1 @@
+﻿This projects creates the "bridge" between the VS environment and the VODesigner which can also run outside of VS.

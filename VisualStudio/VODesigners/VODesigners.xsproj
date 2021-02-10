@@ -100,21 +100,18 @@
       <AssemblyName>XSharp.Core.dll</AssemblyName>
       <SpecificVersion>False</SpecificVersion>
       <Private>True</Private>
-      <HintPath>..\..\..\DevRt\Binaries\Debug\XSharp.Core.dll</HintPath>
     </Reference>
     <Reference Include="XSharp.RT, Version=2.1.0.0, Culture=neutral, PublicKeyToken=ed555a0467764586">
       <Name>XSharp.RT</Name>
       <AssemblyName>XSharp.RT.dll</AssemblyName>
       <SpecificVersion>False</SpecificVersion>
       <Private>True</Private>
-      <HintPath>..\..\..\DevRt\Binaries\Debug\XSharp.RT.dll</HintPath>
     </Reference>
     <Reference Include="XSharp.VO, Version=2.1.0.0, Culture=neutral, PublicKeyToken=ed555a0467764586">
       <Name>XSharp.VO</Name>
       <AssemblyName>XSharp.VO.dll</AssemblyName>
       <SpecificVersion>False</SpecificVersion>
       <Private>True</Private>
-      <HintPath>..\..\..\DevRt\Binaries\Debug\XSharp.VO.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -152,6 +149,7 @@
     <Compile Include="VOWindowEditor.prg" />
     <Compile Include="VOWindowEditorIO.prg" />
     <Compile Include="Editor.prg" />
+    <Compile Include="Win32.prg" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Properties\" />

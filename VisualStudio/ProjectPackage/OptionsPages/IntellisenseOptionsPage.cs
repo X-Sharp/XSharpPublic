@@ -6,7 +6,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-
+using XSharpModel;
 namespace XSharp.Project.OptionsPages
 {
 

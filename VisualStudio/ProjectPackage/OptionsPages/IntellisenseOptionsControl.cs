@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-
+using XSharpModel;
 namespace XSharp.Project.OptionsPages
 {
     public partial class IntellisenseOptionsControl : UserControl

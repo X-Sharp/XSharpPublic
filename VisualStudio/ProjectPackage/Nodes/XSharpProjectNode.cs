@@ -1433,7 +1433,7 @@ namespace XSharp.Project
         public string SynchronizeKeywordCase(string code, string fileName)
         {
             var package = XSharp.Project.XSharpProjectPackage.Instance;
-            if (XSettings.KeywordCase == (int) Project.KeywordCase.None)
+            if (XSettings.KeywordCase == (int) KeywordCase.None)
                 return code;
             // we also normalize the line endings
             code = code.Replace("\n", "");

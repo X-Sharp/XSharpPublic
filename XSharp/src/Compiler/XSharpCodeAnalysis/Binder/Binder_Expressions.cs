@@ -717,7 +717,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                     if (lookupResult.Kind == LookupResultKind.StaticInstanceMismatch)
                     {
                         // try again but now allow instance methods
-                        if (!Compilation.Options.HasOption(CompilerOption.Strict, node))
+                        if (!Compilation.Options.HasOption(CompilerOption.EnforceSelf, node))
                         {
                             lookupAgain = true;
                         }

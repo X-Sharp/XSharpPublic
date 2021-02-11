@@ -185,7 +185,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 ShowDefs = opt.ShowDefs;
                 ShowIncludes = opt.ShowIncludes;
                 StdDefs = opt.StdDefs;
-                Strict = opt.Strict;
+                Strict = opt.EnforceSelf;
                 Verbose = opt.Verbose;
                 PreprocessorOutput = opt.PreProcessorOutput;
                 ParseLevel = opt.ParseLevel;

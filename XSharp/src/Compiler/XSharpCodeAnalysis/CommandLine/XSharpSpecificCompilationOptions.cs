@@ -59,7 +59,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         public bool SaveAsCSharp { get; internal set; } = false;
         public bool DumpAST { get; internal set; } = false;
         public bool ShowDefs { get; internal set; } = false;
-        public bool Strict { get; internal set; } = false;
+        public bool EnforceSelf { get; internal set; } = false;
         public bool ShowIncludes { get; internal set; } = false;
         public string StdDefs { get; internal set; } = "XSharpDefs.xh";
         public XSharpTargetDLL TargetDLL { get; internal set; } = XSharpTargetDLL.Other;
@@ -182,8 +182,8 @@ namespace Microsoft.CodeAnalysis.CSharp
                 case CompilerOption.Overflow:
                     Overflow = value;
                     break;
-                case CompilerOption.Strict:
-                    Strict = value;
+                case CompilerOption.EnforceSelf:
+                    EnforceSelf = value;
                     break;
             }
         }
@@ -278,7 +278,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         MemVars = 1 << 26,
         UndeclaredMemVars = 1 << 27,
         ClrVersion = 1 << 28,
-        Strict = 1 << 29,
+        EnforceSelf = 1 << 29,
         All = -1
 
     }
@@ -310,8 +310,8 @@ namespace Microsoft.CodeAnalysis.CSharp
                     return CompilerOption.NamedArgs;
                 case "ovf":
                     return CompilerOption.Overflow;
-                case "strict":
-                    return CompilerOption.Strict;
+                case "enforceself":
+                    return CompilerOption.EnforceSelf;
                 case "undeclared":
                     return CompilerOption.UndeclaredMemVars;
                 case "vo1":

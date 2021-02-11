@@ -91,7 +91,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 Dialect = opt.Dialect;
                 ImplicitNameSpace = opt.ImplicitNameSpace;
                 LateBinding = opt.LateBinding;
-                Strict = opt.Strict;
+                Strict = opt.EnforceSelf;
                 UndeclaredMemVars = opt.UndeclaredMemVars;
                 MemVars = opt.MemVars;
                 TargetDLL = opt.TargetDLL;
@@ -129,7 +129,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 case CompilerOption.MemVars:
                     return CheckOption(option, MemVars, syntax);
 
-                case CompilerOption.Strict:
+                case CompilerOption.EnforceSelf:
                     return CheckOption(option, Strict, syntax);
 
                 case CompilerOption.UndeclaredMemVars:

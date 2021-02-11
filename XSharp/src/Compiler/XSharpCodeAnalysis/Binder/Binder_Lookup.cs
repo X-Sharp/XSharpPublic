@@ -136,7 +136,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                         }
                     }
                 }
-                if (meth != null && !meth.IsStatic && ! Compilation.Options.HasOption(CompilerOption.Strict,null))
+                if (meth != null && !meth.IsStatic && ! Compilation.Options.HasOption(CompilerOption.EnforceSelf,null))
                 {
                     // Static method generate the error elsewhere
                     var args = new object[] { name, func, meth};

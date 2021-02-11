@@ -384,8 +384,8 @@ namespace Microsoft.CodeAnalysis.CSharp
                     handled = false;    // there is also an 'unsafe' option in Roslyn
                     name = oldname;
                     break;
-                case "strict":       // SELF: or THIS. is mandatory
-                    options.Strict = positive;
+                case "enforceself":       // SELF: or THIS. is mandatory
+                    options.EnforceSelf = positive;
                     encode = true;
                     break;
 
@@ -542,8 +542,8 @@ namespace Microsoft.CodeAnalysis.CSharp
             {
                 if (!options.ExplicitOptions.HasFlag(CompilerOption.NamedArgs))
                     options.AllowNamedArguments = false;
-                if (!options.ExplicitOptions.HasFlag(CompilerOption.Strict))
-                    options.Strict = true;
+                if (!options.ExplicitOptions.HasFlag(CompilerOption.EnforceSelf))
+                    options.EnforceSelf = true;
             }
             if (newDialect == XSharpDialect.XPP && options.TargetDLL == XSharpTargetDLL.XPP)
             {

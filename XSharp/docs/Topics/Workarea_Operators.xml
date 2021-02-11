@@ -38,7 +38,7 @@
           <para styleclass="Normal">Customer-&gt;LastName<br/>FIELD-&gt;FirstName<br/>_FIELD-&gt;Salary<br/>M-&gt;Name<br/>A-&gt;City</para>
         </td>
         <td>
-          <para styleclass="Body Text">Field &quot;<text styleclass="Normal">LastName</text>&quot; in the &quot;<text styleclass="Normal">Customer</text>&quot; workarea<br/>Field &quot;<text styleclass="Normal">FirstName</text>&quot; in the current workarea<br/>Field &quot;<text styleclass="Normal">Salary</text>&quot; in the current workarea<br/>The dynamic memory variable &quot;<text styleclass="Normal">Name</text>&quot; (public or private)<br/>The field <text styleclass="Normal">City</text> in workarea 1. <br/>Allowed single letter aliases are A .. J. <br/><br/>Note that FIELD and _FIELD are synonyms.</para>
+          <para styleclass="Body Text">Field &quot;<text styleclass="Normal">LastName</text>&quot; in the &quot;<text styleclass="Normal">Customer</text>&quot; workarea<br/>Field &quot;<text styleclass="Normal">FirstName</text>&quot; in the current workarea<br/>Field &quot;<text styleclass="Normal">Salary</text>&quot; in the current workarea<br/>The dynamic memory variable &quot;<text styleclass="Normal">Name</text>&quot; (public or private)<br/>The field <text styleclass="Normal">City</text> in workarea 1. <br/>Allowed single letter aliases are A .. J. <br/><br/>Note that FIELD and _FIELD are synonyms.<br/>Keywords that appear directly after the -&gt; operator are seen as identifier and not keyword.</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -50,7 +50,7 @@
         </td>
         <td>
           <para styleclass="Body Text">In the VFP dialect we also support the DOT (&quot;.&quot;) syntax for aliased operations.<br/>Please note that this is ambiguous because the compiler cannot detect at compile time if CUSTOMER is a workarea or for example a MEMVAR. If there is a local variable with the name CUSTOMER then this will access the LASTNAME property of the CUSTOMER local variable.</para>
-          <para styleclass="Body Text">In all other cases this will produce code that looks for either a CUSTOMER workarea or memory variable at runtime.</para>
+          <para styleclass="Body Text">In all other cases this will produce code that looks for either a CUSTOMER workarea or memory variable at runtime.<br/>Keywords that appear directly after the &quot;.&quot; operator are seen as identifier and not keyword.</para>
         </td>
       </tr>
       <tr style="vertical-align:top">

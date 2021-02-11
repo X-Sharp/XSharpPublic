@@ -24,8 +24,8 @@ CLASS TestClass
 		n := SELF:gName
 		n := dName
 		n := gName
-		TestInt(dName)
-		TestInt(gName)
+		SELF:TestInt(dName)
+		SELF:TestInt(gName)
 	RETURN
 	METHOD TestInt(n AS INT) AS VOID
 		? n

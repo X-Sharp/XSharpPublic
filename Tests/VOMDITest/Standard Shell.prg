@@ -9,6 +9,8 @@ STATIC DEFINE MAILDLG_PBSEND := 102
 STATIC DEFINE MAILDLG_RICHEDIT1 := 100 
 #endregion
 
+GLOBAL oTest AS ARRAY
+
 CLASS StandardShellWindow INHERIT ShellWindow
 	PROTECT oPrinter      AS PrintingDevice
 	
@@ -64,6 +66,20 @@ METHOD FilePrinterSetup()
 	oPrinter:Setup()
 	
 RETURN SELF	
+
+
+METHOD ShowWorkareas() AS VOID
+    DbgShowWorkareas()
+
+METHOD ShowSettings() AS VOID
+    DbgShowSettings()
+
+METHOD ShowGlobals() AS VOID
+    DbgShowGlobals()
+
+METHOD ShowMemvars() AS VOID
+    DbgShowMemvars()
+
 
 CONSTRUCTOR( oOwnerApp ) 
 	local oSB as StatusBar

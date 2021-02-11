@@ -42,8 +42,13 @@
     <VO16>true</VO16>
     <NoStandardDefs>false</NoStandardDefs>
     <IncludePaths />
-    <XSharpProjectversion>2.6.0.0</XSharpProjectversion>
+    <XSharpProjectversion>2.7.0.0</XSharpProjectversion>
     <NoWin32Manifest>False</NoWin32Manifest>
+    <NamedArgs>false</NamedArgs>
+    <StandardDefs />
+    <MemVar>false</MemVar>
+    <Undeclared>false</Undeclared>
+    <InitLocals>false</InitLocals>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'" Label="Configuration">
     <PlatformTarget>x86</PlatformTarget>
@@ -172,6 +177,11 @@
     <ProjectReference Include="..\..\Runtime\XSharp.Rdd\XSharp.RDD.xsproj">
       <Name>XSharp.RDD</Name>
       <Project>{e83c6c8c-773f-4b01-a597-3d38398a9362}</Project>
+      <Private>True</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Runtime\XSharp.RT.Debugger\XSharp.RT.Debugger.xsproj">
+      <Name>XSharp.RT.Debugger</Name>
+      <Project>{770e6ebb-804f-415a-a9ca-e5b0383105f0}</Project>
       <Private>True</Private>
     </ProjectReference>
     <ProjectReference Include="..\..\Runtime\XSharp.RT\XSharp.RT.xsproj">

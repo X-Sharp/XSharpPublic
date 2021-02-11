@@ -100,7 +100,7 @@ CLASS VOControlProperties INHERIT VOProperties
 
     METHOD Dispatch(m REF Message) AS VOID
         IF OnWndProc != NULL
-            OnWndProc(m)
+            SELF:OnWndProc(m)
         ENDIF
         VAR oEvent := Event{REF m}
         SELF:Control:Dispatch( oEvent)

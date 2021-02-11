@@ -79,7 +79,7 @@ BEGIN NAMESPACE XSharp
 			IF _value == p:_value
 				ret := TRUE
 			ELSEIF _value != NULL .AND. p:_value != NULL
-				ret := __StringCompare( ToString(), p:ToString() ) == 0
+				ret := __StringCompare( SELF:ToString(), p:ToString() ) == 0
 			ENDIF
 			RETURN ret   
 		
@@ -88,7 +88,7 @@ BEGIN NAMESPACE XSharp
 			IF _value == p:_value
 				ret := FALSE
 			ELSEIF _value != NULL .AND. p:_value != NULL
-				ret := __StringCompare( ToString(), p:ToString() ) < 0
+				ret := __StringCompare( SELF:ToString(), p:ToString() ) < 0
 			ENDIF
 			RETURN ret       
 
@@ -97,7 +97,7 @@ BEGIN NAMESPACE XSharp
 			IF _value == p:_value
 				ret := FALSE
 			ELSEIF _value != NULL .AND. p:_value != NULL
-				ret := __StringCompare( ToString(), p:ToString() ) > 0
+				ret := __StringCompare( SELF:ToString(), p:ToString() ) > 0
 			ENDIF
 			RETURN ret     
 		

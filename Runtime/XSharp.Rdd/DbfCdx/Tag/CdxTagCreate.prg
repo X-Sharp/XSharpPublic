@@ -162,7 +162,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         PRIVATE METHOD _sortGetRecord() AS LOGIC
             // Get Key Values
             SELF:_oRdd:ReadRecord()
-            VAR result := getKeyValue(_sorter:SourceIndex, _newvalue:Key)
+            VAR result := SELF:getKeyValue(_sorter:SourceIndex, _newvalue:Key)
             IF result
                 _sorter:Add(SortRecord{_newvalue:Key, SELF:_RecNo})
             ENDIF
@@ -482,7 +482,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             VAR action := CdxAction.AddKey(nRecno, data)
             action := _tag:DoAction(action)
             IF action:Type != CdxActionType.Ok
-                Error("CdxSortHelper.AddRecord","Could not add record to leaf")
+                SELF:Error("CdxSortHelper.AddRecord","Could not add record to leaf")
                 RETURN FALSE
             ENDIF
 //            ++Written

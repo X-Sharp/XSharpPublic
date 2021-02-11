@@ -1037,7 +1037,7 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
 
 	METHOD __SetFont(oNewFont AS Font) AS Font STRICT 
 		oFont := oNewFont
-		__SetFont()
+		SELF:__SetFont()
 		RETURN oFont
 	
 	METHOD __SetFont() AS VOID STRICT

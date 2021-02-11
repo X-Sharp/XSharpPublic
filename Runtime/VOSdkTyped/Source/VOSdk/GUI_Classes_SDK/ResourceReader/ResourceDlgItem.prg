@@ -108,7 +108,7 @@ CLASS ResourceDialogItem  INHERIT ResourceReader
 		IF ((DWORD) pWord) % 4  != 0
 			pWord += 1
 		ENDIF
-		pWord := ReadExtraInfo(pWord)
+		pWord := SELF:ReadExtraInfo(pWord)
 		RETURN pWord
 
 	METHOD Read(pWord AS WORD PTR) AS WORD PTR
@@ -126,7 +126,7 @@ CLASS ResourceDialogItem  INHERIT ResourceReader
 		SELF:ExStyle := pItem:dwExtendedStyle
 		SELF:ControlID := pItem:id
 		pWord	+= sizeof(winDLGITEMTEMPLATE) / SIZEOF(WORD)
-		pWord := ReadExtraInfo(pWord)
+		pWord := SELF:ReadExtraInfo(pWord)
 		RETURN pWord
 
 	METHOD ReadExtraInfo(pWord as WORD PTR) AS WORD PTR

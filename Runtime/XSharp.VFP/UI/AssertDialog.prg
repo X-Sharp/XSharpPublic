@@ -27,7 +27,7 @@
     /// the contents of this method with the code editor.
     /// </summary>
     public constructor() strict
-        InitializeComponent()
+        SELF:InitializeComponent()
         SELF:cmdDebug:Enabled := System.Diagnostics.Debugger.IsAttached
         SELF:Result := AssertResult.None
         RETURN

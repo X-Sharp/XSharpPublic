@@ -227,7 +227,7 @@ BEGIN NAMESPACE XSharp
     SELF:SubCode := dwSubCode
     SELF:Description := ErrString( dwGenCode )
 
-    PRIVATE METHOD LangString(e as VOErrors) AS STRING
+    PRIVATE STATIC METHOD LangString(e as VOErrors) AS STRING
         local cString := __CavoStr(e):Trim() as string
         IF cString:EndsWith(":")
             cString := cString:Substring(0, cString:Length-1):Trim()

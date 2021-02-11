@@ -457,8 +457,8 @@ BEGIN NAMESPACE XSharp.VO.Tests
 
 		[Fact, Trait("Category", "DBF")];
 		METHOD Shared_Cdx() AS VOID
-			Shared_Cdx_helper(TRUE)
-			Shared_Cdx_helper(FALSE)
+			SELF:Shared_Cdx_helper(TRUE)
+			SELF:Shared_Cdx_helper(FALSE)
 		RETURN
 		PRIVATE METHOD Shared_Cdx_helper(lUseIndexFormVO AS LOGIC) AS VOID
 			LOCAL cDbf AS STRING
@@ -527,8 +527,8 @@ BEGIN NAMESPACE XSharp.VO.Tests
 
 		[Fact, Trait("Category", "DBF")];
 		METHOD Cdx_Issues() AS VOID
-			Cdx_Issues_Helper(TRUE)
-			Cdx_Issues_Helper(FALSE)
+			SELF:Cdx_Issues_Helper(TRUE)
+			SELF:Cdx_Issues_Helper(FALSE)
 		RETURN
 		PRIVATE METHOD Cdx_Issues_Helper(lUseIndexFormVO AS LOGIC) AS VOID
 			LOCAL cDbf AS STRING
@@ -624,8 +624,8 @@ BEGIN NAMESPACE XSharp.VO.Tests
 
 		[Fact, Trait("Category", "DBF")];
 		METHOD Cdx_Issues2() AS VOID
-			Cdx_Issues2_helper(TRUE)
-			Cdx_Issues2_helper(FALSE)
+			SELF:Cdx_Issues2_helper(TRUE)
+			SELF:Cdx_Issues2_helper(FALSE)
 		RETURN
 		PRIVATE METHOD Cdx_Issues2_helper(lUseIndexFormVO AS LOGIC) AS VOID
 			LOCAL cFileName AS STRING
@@ -796,8 +796,8 @@ BEGIN NAMESPACE XSharp.VO.Tests
 
 		[Fact, Trait("Category", "DBF")];
 		METHOD Cdx_Eof_test() AS VOID
-			Cdx_Eof_test_helper(TRUE)
-			Cdx_Eof_test_helper(FALSE)
+			SELF:Cdx_Eof_test_helper(TRUE)
+			SELF:Cdx_Eof_test_helper(FALSE)
 		RETURN
 		PRIVATE METHOD Cdx_Eof_test_helper(lUseIndexFormVO AS LOGIC) AS VOID
 			LOCAL cDbf AS STRING
@@ -880,8 +880,8 @@ BEGIN NAMESPACE XSharp.VO.Tests
 		
 		[Fact, Trait("Category", "DBF")];
 		METHOD OrdScope_test() AS VOID
-			OrdScope_test_helper(TRUE)
-			OrdScope_test_helper(FALSE)
+			SELF:OrdScope_test_helper(TRUE)
+			SELF:OrdScope_test_helper(FALSE)
 		RETURN
 		PRIVATE METHOD OrdScope_test_helper(lUseIndexFormVO AS LOGIC) AS VOID
 			LOCAL cDbf AS STRING
@@ -1057,8 +1057,8 @@ BEGIN NAMESPACE XSharp.VO.Tests
 	
 		[Fact, Trait("Category", "DBF")];
 		METHOD DBOrderInfo_DBOI_KEYCOUNT() AS VOID
-			DBOrderInfo_DBOI_KEYCOUNT_helper(TRUE)
-			DBOrderInfo_DBOI_KEYCOUNT_helper(FALSE)
+			SELF:DBOrderInfo_DBOI_KEYCOUNT_helper(TRUE)
+			SELF:DBOrderInfo_DBOI_KEYCOUNT_helper(FALSE)
 		RETURN
 		PRIVATE METHOD DBOrderInfo_DBOI_KEYCOUNT_helper(lUseIndexFormVO AS LOGIC) AS VOID
 			LOCAL cDbf AS STRING
@@ -1105,8 +1105,8 @@ BEGIN NAMESPACE XSharp.VO.Tests
 
 		[Fact, Trait("Category", "DBF")];
 		METHOD SetDeleted_FALSE() AS VOID
-			SetDeleted_FALSE_helper(TRUE)
-			SetDeleted_FALSE_helper(FALSE)
+			SELF:SetDeleted_FALSE_helper(TRUE)
+			SELF:SetDeleted_FALSE_helper(FALSE)
 		RETURN
 		PRIVATE METHOD SetDeleted_FALSE_helper(lUseIndexFormVO AS LOGIC) AS VOID
 			LOCAL cDbf AS STRING
@@ -1167,8 +1167,8 @@ BEGIN NAMESPACE XSharp.VO.Tests
 
 		[Fact, Trait("Category", "DBF")];
 		METHOD SetDeleted_TRUE() AS VOID
-			SetDeleted_TRUE_helper(TRUE)
-			SetDeleted_TRUE_helper(FALSE)
+			SELF:SetDeleted_TRUE_helper(TRUE)
+			SELF:SetDeleted_TRUE_helper(FALSE)
 		RETURN
 		PRIVATE METHOD SetDeleted_TRUE_helper(lUseIndexFormVO AS LOGIC) AS VOID
 			LOCAL cDbf AS STRING
@@ -1231,8 +1231,8 @@ BEGIN NAMESPACE XSharp.VO.Tests
 
 		[Fact, Trait("Category", "DBF")];
 		METHOD DBOrderInfo_DBOI_NUMBER() AS VOID
-			DBOrderInfo_DBOI_NUMBER_helper(TRUE)
-			DBOrderInfo_DBOI_NUMBER_helper(FALSE)
+			SELF:DBOrderInfo_DBOI_NUMBER_helper(TRUE)
+			SELF:DBOrderInfo_DBOI_NUMBER_helper(FALSE)
 		RETURN
 		PRIVATE METHOD DBOrderInfo_DBOI_NUMBER_helper(lUseIndexFormVO AS LOGIC) AS VOID
 			LOCAL aValues AS ARRAY
@@ -1418,8 +1418,8 @@ BEGIN NAMESPACE XSharp.VO.Tests
 
 		[Fact, Trait("Category", "DBF")];
 		METHOD DBSetOrderCondition_with_FOR() AS VOID
-			DBSetOrderCondition_with_FOR_helper(TRUE)
-			DBSetOrderCondition_with_FOR_helper(FALSE)
+			SELF:DBSetOrderCondition_with_FOR_helper(TRUE)
+			SELF:DBSetOrderCondition_with_FOR_helper(FALSE)
 		RETURN
 		PRIVATE METHOD DBSetOrderCondition_with_FOR_helper(lUseIndexFormVO AS LOGIC) AS VOID
 			LOCAL cDbf AS STRING
@@ -1658,9 +1658,9 @@ BEGIN NAMESPACE XSharp.VO.Tests
 
 		[Fact, Trait("Category", "DBF")];
 		METHOD Cdx_Multi_Order() AS VOID
-			Cdx_Multi_Order_helper(1)
-			Cdx_Multi_Order_helper(2)
-			Cdx_Multi_Order_helper(3)
+			SELF:Cdx_Multi_Order_helper(1)
+			SELF:Cdx_Multi_Order_helper(2)
+			SELF:Cdx_Multi_Order_helper(3)
 		RETURN
 		PRIVATE METHOD Cdx_Multi_Order_helper(nTestType AS INT) AS VOID
 			LOCAL aValues AS ARRAY
@@ -3255,7 +3255,7 @@ RETURN
         [Fact, Trait("Category", "DBF")];
 		METHOD ZapTest() AS VOID
 			FOR LOCAL i := 0 AS INT UPTO 5
-				ZapTest_helper(i)
+				SELF:ZapTest_helper(i)
 			NEXT
 		END METHOD
 
@@ -3681,9 +3681,9 @@ RETURN
 
         [Fact, Trait("Category", "DBF")];
 		METHOD PackZapReindexTest() AS VOID
-			PackZapReindexTest_helper(1)
-			PackZapReindexTest_helper(2)
-			PackZapReindexTest_helper(3)
+			SELF:PackZapReindexTest_helper(1)
+			SELF:PackZapReindexTest_helper(2)
+			SELF:PackZapReindexTest_helper(3)
 		END METHOD
 
 		METHOD PackZapReindexTest_helper(nWitch AS INT) AS VOID

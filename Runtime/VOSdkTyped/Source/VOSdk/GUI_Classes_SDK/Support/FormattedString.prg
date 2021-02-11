@@ -566,7 +566,7 @@ CLASS __FormattedString
 		IF SELF:ReadOnly
 			RETURN 
 		ENDIF
-		IF iPos <= sValue:Length && ! STRING.IsNullOrEmpty( cChar )
+		IF iPos <= sValue:Length .AND. ! STRING.IsNullOrEmpty( cChar )
 			LOCAL sb := System.Text.StringBuilder{ sValue } AS System.Text.StringBuilder
 			LOCAL ch := cChar[0] AS Char
 			IF FuncFlags:lConvUpper

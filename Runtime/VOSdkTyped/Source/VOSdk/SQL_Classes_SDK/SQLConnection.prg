@@ -442,7 +442,7 @@ CLASS SQLConnection
 		LOCAL oTable AS DataTable
 		LOCAL oRow AS DataRow
 		LOCAL oBuilder AS DbConnectionStringBuilder
-		oTable := GetSchemaTable("DataSourceInformation",NULL)
+		oTable := SELF:GetSchemaTable("DataSourceInformation",NULL)
 		oRow := oTable:Rows[0]
 		SELF:cDataSourceName            := (STRING) oRow["DataSourceProductName"]
 		SELF:cDataSourceVersion         := (STRING) oRow["DataSourceProductVersion"]

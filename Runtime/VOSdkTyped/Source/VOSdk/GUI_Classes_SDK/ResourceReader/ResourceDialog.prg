@@ -221,7 +221,7 @@ CLASS ResourceDialog INHERIT ResourceReader
 		SELF:CY			:= pDialogEx:cy
 		SELF:ItemCnt    := pDialogEx:nItems	
 		pWord			:= @pDialogEx:menu
-		pWord := ReadExtraInfo(pWord,TRUE)
+		pWord := SELF:ReadExtraInfo(pWord,TRUE)
 		
 		//	sz_Or_Ord menu;			// name or ordinal of a menu resource
 		//	sz_Or_Ord windowClass;	// name or ordinal of a window class
@@ -256,7 +256,7 @@ CLASS ResourceDialog INHERIT ResourceReader
 		SELF:ItemCnt    := pDialog:nItems	
 		pWord			:= (WORD PTR) @pDialog:cy
 		pWord			+= 1
-		pWord := ReadExtraInfo(pWord,FALSE)
+		pWord := SELF:ReadExtraInfo(pWord,FALSE)
 		FOR nItem := 1 TO SELF:ItemCnt
 			LOCAL IMPLIED oItem := ResourceDialogItem{}
 			SELF:Controls:Add(oItem)

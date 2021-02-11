@@ -370,7 +370,7 @@ FUNCTION RLock(cRecordNumberList AS STRING, uArea AS USUAL) AS LOGIC STRICT
     IF String.IsNullOrWhiteSpace(cRecordNumberList)
         RETURN FALSE
     ENDIF
-    aRecords := cRecordNumberList:Split(<CHAR>{','},StringSplitOptions.RemoveEmptyEntries)
+    aRecords := cRecordNumberList:Split(<CHAR>{c','},StringSplitOptions.RemoveEmptyEntries)
     nSelect := DbGetSelect()
     DbSelectArea(uArea)
     lOk := TRUE

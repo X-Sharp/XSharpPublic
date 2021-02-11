@@ -311,9 +311,9 @@ CLASS TreeView INHERIT TextControl
 
 	METHOD GetFirstChildItem(oItem AS USUAL) AS TreeViewItem 
 		IF IsSymbol(oItem)
-			RETURN GetFirstChildItem((SYMBOL) oItem )
+			RETURN SELF:GetFirstChildItem((SYMBOL) oItem )
 		ELSEIF IsObject(oItem)
-			RETURN GetFirstChildItem((TreeViewItem) oItem )
+			RETURN SELF:GetFirstChildItem((TreeViewItem) oItem )
 		ENDIF
 		RETURN NULL_OBJECT
 
@@ -368,9 +368,9 @@ CLASS TreeView INHERIT TextControl
 
 	METHOD GetNextSiblingItem(oItem AS USUAL) AS TreeViewItem 
 		IF IsSymbol(oItem)
-			RETURN GetNextSiblingItem((SYMBOL) oItem )
+			RETURN SELF:GetNextSiblingItem((SYMBOL) oItem )
 		ELSEIF IsObject(oItem)
-			RETURN GetNextSiblingItem((TreeViewItem) oItem )
+			RETURN SELF:GetNextSiblingItem((TreeViewItem) oItem )
 		ENDIF
 		RETURN NULL_OBJECT
 
@@ -389,9 +389,9 @@ CLASS TreeView INHERIT TextControl
 
 	METHOD GetNextVisibleItem(oItem AS USUAL) AS TreeViewItem 
 		IF IsSymbol(oItem)
-			RETURN GetNextVisibleItem((SYMBOL) oItem )
+			RETURN SELF:GetNextVisibleItem((SYMBOL) oItem )
 		ELSEIF IsObject(oItem)
-			RETURN GetNextVisibleItem((TreeViewItem) oItem )
+			RETURN SELF:GetNextVisibleItem((TreeViewItem) oItem )
 		ENDIF
 		RETURN NULL_OBJECT
 
@@ -412,9 +412,9 @@ CLASS TreeView INHERIT TextControl
 
 	METHOD GetParentItem(oItem AS USUAL) AS TreeViewItem 
 		IF IsSymbol(oItem)
-			RETURN GetParentItem((SYMBOL) oItem )
+			RETURN SELF:GetParentItem((SYMBOL) oItem )
 		ELSEIF IsObject(oItem)
-			RETURN GetParentItem((TreeViewItem) oItem )
+			RETURN SELF:GetParentItem((TreeViewItem) oItem )
 		ENDIF
 		RETURN NULL_OBJECT
 
@@ -434,9 +434,9 @@ CLASS TreeView INHERIT TextControl
 
 	METHOD GetPreviousSiblingItem(oItem AS USUAL) AS TreeViewItem 
 		IF IsSymbol(oItem)
-			RETURN GetPreviousSiblingItem((SYMBOL) oItem )
+			RETURN SELF:GetPreviousSiblingItem((SYMBOL) oItem )
 		ELSEIF IsObject(oItem)
-			RETURN GetPreviousSiblingItem((TreeViewItem) oItem )
+			RETURN SELF:GetPreviousSiblingItem((TreeViewItem) oItem )
 		ENDIF
 		RETURN NULL_OBJECT
 
@@ -458,9 +458,9 @@ CLASS TreeView INHERIT TextControl
 
 	METHOD GetPreviousVisibleItem(oItem AS USUAL) AS TreeViewItem 
 		IF IsSymbol(oItem)
-			RETURN GetPreviousVisibleItem((SYMBOL) oItem )
+			RETURN SELF:GetPreviousVisibleItem((SYMBOL) oItem )
 		ELSEIF IsObject(oItem)
-			RETURN GetPreviousVisibleItem((TreeViewItem) oItem )
+			RETURN SELF:GetPreviousVisibleItem((TreeViewItem) oItem )
 		ENDIF
 		RETURN NULL_OBJECT
 
@@ -499,13 +499,13 @@ CLASS TreeView INHERIT TextControl
 		RETURN NULL_OBJECT
 
 	ACCESS ImageList AS ImageList
-		IF ValidateControl()
+		IF SELF:ValidateControl()
 			RETURN ImageList{__TreeView:ImageList }
 		ENDIF
 		RETURN NULL_OBJECT
 
 	ASSIGN ImageList(oNewImageList AS ImageList) 
-		IF ValidateControl()
+		IF SELF:ValidateControl()
 			__TreeView:ImageList := oNewImageList:__ImageList
 		ENDIF
 		RETURN 

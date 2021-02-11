@@ -126,14 +126,14 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         // Constructor for Creation of tags
         INTERNAL CONSTRUCTOR (oBag AS CdxOrderBag)
 	        SUPER()
-            _InitFields(oBag)
+            SELF:_InitFields(oBag)
 
 
 
         // Constructor for Opening of tags
         INTERNAL CONSTRUCTOR (oBag AS CdxOrderBag, nPage AS Int32, cName AS STRING)
 	        SUPER()
-            _InitFields(oBag)
+            SELF:_InitFields(oBag)
             SELF:_orderName := cName
             SELF:Page := nPage
             SELF:_Header := CdxTagHeader{oBag, nPage,SELF:OrderName, SELF}
@@ -350,7 +350,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 
         INTERNAL METHOD GoHot() AS LOGIC
             // Is called to save the current for value and key value
-            RETURN _saveCurrentKey(SELF:_oRdd:RecNo, SELF:_currentvalue)
+            RETURN SELF:_saveCurrentKey(SELF:_oRdd:RecNo, SELF:_currentvalue)
 
         INTERNAL METHOD GetPage(nPage AS LONG) AS CdxTreePage
             IF nPage == -1

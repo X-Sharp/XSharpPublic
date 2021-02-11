@@ -14,8 +14,8 @@ BEGIN NAMESPACE XSharp.Debugger
         INHERIT System.Windows.Forms.Form
 
         PUBLIC CONSTRUCTOR() STRICT 
-            InitializeComponent()
-            LoadValues()
+            SELF:InitializeComponent()
+            SELF:LoadValues()
          RETURN
         VIRTUAL PROTECTED METHOD LoadValues() AS VOID
             RETURN

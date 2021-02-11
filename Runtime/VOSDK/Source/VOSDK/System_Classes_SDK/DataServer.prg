@@ -118,7 +118,7 @@ ASSIGN ConcurrencyControl( nMode)
     RETURN 
 
 METHOD DataField( nFieldPosition ) 
-    RETURN __DataField (nFieldPosition)
+    RETURN SELF:__DataField (nFieldPosition)
 
 ACCESS DBStruct 
     LOCAL aStruct	AS ARRAY
@@ -149,10 +149,10 @@ METHOD FieldGetFormatted( nFieldPosition )
     RETURN NIL
 
 METHOD FieldHyperLabel( nFieldPosition ) 
-    RETURN __DataField (nFieldPosition):HyperLabel
+    RETURN SELF:__DataField (nFieldPosition):HyperLabel
 
 METHOD FieldName( nFieldPosition ) 
-    RETURN __DataField (nFieldPosition):__HyperLabel:Name
+    RETURN SELF:__DataField (nFieldPosition):__HyperLabel:Name
 
 METHOD FieldPos( nFieldPosition ) 
     RETURN NIL
@@ -161,16 +161,16 @@ METHOD FIELDPUT( nFieldPosition, uValue )
     RETURN NIL
 
 METHOD FieldSpec( nFieldPosition ) 
-    RETURN __DataField (nFieldPosition):FieldSpec
+    RETURN SELF:__DataField (nFieldPosition):FieldSpec
 
 METHOD FieldStatus( nFieldPosition ) 
-    RETURN __DataField (nFieldPosition):__FieldSpec:Status
+    RETURN SELF:__DataField (nFieldPosition):__FieldSpec:Status
 
 METHOD FieldSym( nFieldPosition ) 
-    RETURN __DataField (nFieldPosition):__HyperLabel:NameSym
+    RETURN SELF:__DataField (nFieldPosition):__HyperLabel:NameSym
 
 METHOD FieldValidate( nFieldPosition, uValue ) 
-    RETURN __DataField (nFieldPosition):__FieldSpec:PerformValidations( uValue )
+    RETURN SELF:__DataField (nFieldPosition):__FieldSpec:PerformValidations( uValue )
 
 METHOD FLOCK( ) 
     RETURN FALSE

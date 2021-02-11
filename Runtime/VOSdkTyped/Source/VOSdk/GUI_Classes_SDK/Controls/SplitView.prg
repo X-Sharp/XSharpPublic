@@ -145,7 +145,7 @@ CLASS SplitView INHERIT Control
 
     METHOD __SetPanelClient(oPanel AS System.Windows.Forms.SplitterPanel, oObject AS IGuiObject) AS VOID
         IF oPanel != NULL_OBJECT
-            VAR oObj := __GetPaneObject(oObject)
+            VAR oObj := SELF:__GetPaneObject(oObject)
             oPanel:Controls:Clear()
             IF oObj != NULL
                 oPanel:Controls:Add((System.Windows.Forms.Control) oObj)

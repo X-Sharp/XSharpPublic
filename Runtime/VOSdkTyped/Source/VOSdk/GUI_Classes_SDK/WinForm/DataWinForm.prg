@@ -179,7 +179,7 @@ CLASS VODataForm INHERIT VOChildAppForm
 	OVERRIDE PROTECT METHOD OnSizeChanged(e AS EventArgs ) AS VOID
 		SUPER:OnSizeChanged(e)
 		IF SELF:Visible
-			AdjustSizes()
+			SELF:AdjustSizes()
 		ENDIF
 		RETURN
 

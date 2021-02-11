@@ -742,7 +742,7 @@ ACCESS BoundingBox
 
 	RETURN oBoundingBox
 ACCESS ButtonCount            // dcaton 070215 changed from ACCESS ButtonCount(symTB)
-   RETURN GetButtonCount()
+   RETURN SELF:GetButtonCount()
 
 METHOD GetButtonCount(symTB)  // dcaton 070215 changed from ACCESS to METHOD, Vulcan doesn't support CLIPPER-calling convention properties
 	LOCAL hwndTB AS PTR
@@ -1625,7 +1625,7 @@ METHOD RemoveTipText(nButtonID, symLookUp)
 
 	RETURN dwIndex > 0
 ACCESS Rows             // dcaton 070215 was ACCESS Rows(nRows)
-   RETURN GetRows()	
+   RETURN SELF:GetRows()	
 
 METHOD GetRows(symTB)   // dcaton changed from ACCESS to METHOD, Vulcan doesn't support CLIPPER-calling convention properties
 	LOCAL hwndTB AS PTR
@@ -1648,7 +1648,7 @@ METHOD GetRows(symTB)   // dcaton changed from ACCESS to METHOD, Vulcan doesn't 
 	RETURN 0
 
 ASSIGN Rows( nRows )	         // dcaton 070215 was ASSIGN Rows(nRows,symTB)
-   RETURN SetRows( nRows )
+   RETURN SELF:SetRows( nRows )
 
 METHOD SetRows(nRows, symTB)   // dcaton 070215 changed from ASSIGN to METHOD, Vulcan doesn't support CLIPPER-calling convention properties
 	//PP-040421 Update from S Ebert

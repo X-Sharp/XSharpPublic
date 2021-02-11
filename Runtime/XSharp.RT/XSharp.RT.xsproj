@@ -7,7 +7,7 @@
     <RootNamespace>XSharp.RT</RootNamespace>
     <AssemblyName>XSharp.RT</AssemblyName>
     <Name>XSharp.RT</Name>
-    <Dialect>Vulcan</Dialect>
+    <Dialect>VO</Dialect>
     <OutputName>XSharp.RT</OutputName>
     <CS>true</CS>
     <Unsafe>true</Unsafe>

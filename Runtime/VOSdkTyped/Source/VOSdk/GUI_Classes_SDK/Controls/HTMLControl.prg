@@ -18,12 +18,12 @@ METHOD __GetText() AS STRING STRICT
 
 PROPERTY ControlType AS ControlType GET ControlType.Panel
 
-METHOD OnControlCreated(oC AS System.Windows.Forms.Control) AS VOID
+METHOD OnControlCreated(oC AS IVOControl) AS VOID
 	SELF:_oWebBrowser := VOHtmlEditorControl{}
-	SELF:_oWebBrowser:Parent := oC
+	SELF:_oWebBrowser:Parent := (System.Windows.Forms.Control) oC
 	SELF:_oWebBrowser:Dock := System.Windows.Forms.DockStyle.Fill
 	SELF:_oVScrollBar				:= System.Windows.Forms.VScrollBar{}
-	SELF:_oVScrollBar:Parent		:= oC		
+	SELF:_oVScrollBar:Parent		:= (System.Windows.Forms.Control) oC		
 	SELF:_oVScrollBar:Visible		:= TRUE
 	SELF:_oVScrollBar:Dock		:= System.Windows.Forms.DockStyle.Right
 	SELF:_oVScrollBar:BackColor	:= System.Drawing.Color.Yellow

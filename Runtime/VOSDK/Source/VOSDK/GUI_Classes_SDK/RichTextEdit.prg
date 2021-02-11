@@ -983,10 +983,10 @@ METHOD __GetValue(dwType AS DWORD) AS STRING
 	RETURN sReturn
 
 ACCESS Value 
-   RETURN __GetValue(SF_RTF)
+   RETURN SELF:__GetValue(SF_RTF)
    
 ACCESS ValueAsText
-   RETURN __GetValue(SF_TEXT)
+   RETURN SELF:__GetValue(SF_TEXT)
    
 ASSIGN Value(uNewValue) 
 	RETURN SELF:__Value := uNewValue

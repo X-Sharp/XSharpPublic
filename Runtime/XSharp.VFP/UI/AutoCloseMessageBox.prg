@@ -28,7 +28,7 @@ INTERNAL CLASS XSharp.VFP.AutoCloseMessageBox
         RETURN
     
     PRIVATE METHOD OnTimerElapsed(state AS OBJECT )  AS VOID
-        CloseMessageBoxWindow((INT)state)
+        SELF:CloseMessageBoxWindow((INT)state)
         RETURN
         
     PRIVATE METHOD CloseMessageBoxWindow(dlgButtonId AS INT ) AS VOID

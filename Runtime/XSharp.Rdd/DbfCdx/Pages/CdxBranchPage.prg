@@ -81,9 +81,9 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             SELF:_getValues()
 
         PRIVATE METHOD _getValues() AS VOID
-            _numKeys  := _GetWord(CDXBRANCH_OFFSET_NUMKEYS)
-            _leftPtr  := _GetLong(CDXBRANCH_OFFSET_LEFTPTR)
-            _rightPtr := _GetLong(CDXBRANCH_OFFSET_RIGHTPTR)
+            _numKeys  := SELF:_GetWord(CDXBRANCH_OFFSET_NUMKEYS)
+            _leftPtr  := SELF:_GetLong(CDXBRANCH_OFFSET_LEFTPTR)
+            _rightPtr := SELF:_GetLong(CDXBRANCH_OFFSET_RIGHTPTR)
 
             
             //? "Branch Page", SELF:PageNo:ToString("X"), SELF:NumKeys, "Startswith ", GetRecno(0), _bag:_oRDD:_Encoding:GetString(GetKey(0),0,_keyLen)
@@ -119,27 +119,27 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             LOCAL nStart AS INT
             System.Diagnostics.Debug.Assert(nPos >= 0 .AND. nPos < SELF:NumKeys)
             nStart := CDXBRANCH_HEADERLEN + nPos * _dataLen
-            RETURN _GetBytes( nStart, _keyLen)
+            RETURN SELF:_GetBytes( nStart, _keyLen)
             
         INTERNAL METHOD GetRecno(nPos AS Int32) AS Int32
             LOCAL nStart AS INT
             System.Diagnostics.Debug.Assert(nPos >= 0 .AND. nPos < SELF:NumKeys)
             nStart := CDXBRANCH_HEADERLEN + nPos * _dataLen
-            RETURN _GetLongLE(nStart+_keyLen)
+            RETURN SELF:_GetLongLE(nStart+_keyLen)
             
         INTERNAL METHOD SetData(nPos as Int32, nRecord as Int32, nPage as Int32, key as Byte[]) AS CdxAction
             LOCAL nStart AS INT
             System.Diagnostics.Debug.Assert(nPos >= 0 .AND. nPos < SELF:NumKeys)
             nStart := CDXBRANCH_HEADERLEN + nPos * _dataLen
             Array.Copy(key, 0, _buffer, nStart, _keyLen)
-            _SetLongLE(nStart+_keyLen, nRecord)
-            _SetLongLE(nStart+_pageNoOffSet, nPage)
+            SELF:_SetLongLE(nStart+_keyLen, nRecord)
+            SELF:_SetLongLE(nStart+_pageNoOffSet, nPage)
             return CdxAction.Ok
             
         INTERNAL METHOD GetChildPage(nPos AS Int32) AS Int32
             LOCAL nStart AS INT
             nStart := CDXBRANCH_HEADERLEN + nPos * _dataLen
-            RETURN _GetLongLE(nStart+_pageNoOffSet)
+            RETURN SELF:_GetLongLE(nStart+_pageNoOffSet)
             
         INTERNAL METHOD GetChildren as IList<LONG>
             // used in the dump routine to avoid recursion
@@ -155,13 +155,13 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         // The _Set.. methods set the isHot flag of the page automatically
             
         INTERNAL PROPERTY NumKeys AS WORD     GET _numKeys ;
-            SET _SetWord(CDXBRANCH_OFFSET_NUMKEYS, value),  _numKeys := value
+            SET SELF:_SetWord(CDXBRANCH_OFFSET_NUMKEYS, value),  _numKeys := value
             
         INTERNAL PROPERTY LeftPtr AS Int32  GET _leftPtr ;
-            SET _SetLong(CDXBRANCH_OFFSET_LEFTPTR, value),  _leftPtr := value
+            SET SELF:_SetLong(CDXBRANCH_OFFSET_LEFTPTR, value),  _leftPtr := value
             
         INTERNAL PROPERTY RightPtr AS Int32 GET _rightPtr ; 
-            SET _SetLong(CDXBRANCH_OFFSET_RIGHTPTR, value),  _rightPtr := value
+            SET SELF:_SetLong(CDXBRANCH_OFFSET_RIGHTPTR, value),  _rightPtr := value
 
         INTERNAL PROPERTY LastNode AS CdxPageNode GET IIF(SELF:NumKeys == 0, NULL, SELF[(WORD) (SELF:NumKeys-1)])
         
@@ -238,7 +238,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 ENDIF
             NEXT
             // and insert at the right spot
-            SetData(nPos, recno, childPageNo, key)
+            SELF:SetData(nPos, recno, childPageNo, key)
             SELF:Write()
             RETURN CdxAction.Ok
             
@@ -355,7 +355,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 
          INTERNAL METHOD FindPage(nPage AS LONG) AS LONG
             FOR VAR i := 0 TO NumKeys -1
-                IF GetChildPage(i) == nPage
+                IF SELF:GetChildPage(i) == nPage
                     RETURN i
                 ENDIF
             NEXT

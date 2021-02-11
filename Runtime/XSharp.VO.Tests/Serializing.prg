@@ -21,7 +21,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
 		[Fact];
         METHOD DateTestJson AS VOID
              LOCAL d := Today() AS DATE
-             VAR o := JsonSaveRestore(d)
+             VAR o := SELF:JsonSaveRestore(d)
              Assert.True(o IS DATE)
              d := (DATE) o
              Assert.True (d == ToDay())
@@ -40,7 +40,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
         METHOD DateTestBinary AS VOID
              LOCAL d := Today() AS DATE
              LOCAL o AS OBJECT
-             o := BinarySaveRestore(d)
+             o := SELF:BinarySaveRestore(d)
              Assert.True(o IS DATE)
              d := (DATE) o
              Assert.True (d == ToDay())
@@ -59,7 +59,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
 		[Fact];
         METHOD FloatTestJson AS VOID
              LOCAL f := 123.456 AS FLOAT
-             VAR o := JsonSaveRestore(f)
+             VAR o := SELF:JsonSaveRestore(f)
              Assert.True(o IS FLOAT)
              VAR f2 := (FLOAT) o
              Assert.True (f == f2)
@@ -68,7 +68,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
 		[Fact];
         METHOD FloatTestBinary AS VOID
              LOCAL f := 123.456 AS FLOAT
-             VAR o := BinarySaveRestore(f)
+             VAR o := SELF:BinarySaveRestore(f)
              Assert.True(o IS FLOAT)
              VAR f2 := (FLOAT) o
              Assert.True (f == f2)
@@ -78,7 +78,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
 		[Fact];
         METHOD SymbolTestJson AS VOID
              LOCAL s1 := #MySymbol AS SYMBOL
-             VAR o := JsonSaveRestore(s1)
+             VAR o := SELF:JsonSaveRestore(s1)
              Assert.True(o IS SYMBOL)
              VAR s2 := (SYMBOL) o
              Assert.True (s1 == s2)
@@ -87,7 +87,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
 		[Fact];
         METHOD SymbolTestBinary AS VOID
              LOCAL s1 := #MySymbol AS SYMBOL
-             VAR o := BinarySaveRestore(s1)
+             VAR o := SELF:BinarySaveRestore(s1)
              Assert.True(o IS SYMBOL)
              VAR s2 := (SYMBOL) o
              Assert.True (s1 == s2)
@@ -97,7 +97,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
         [Fact];
         METHOD CurrencyTestJson AS VOID
              LOCAL c1 := $123.456 AS CURRENCY
-             VAR o := JsonSaveRestore(c1)
+             VAR o := SELF:JsonSaveRestore(c1)
              Assert.True(o IS CURRENCY)
              VAR c2 := (CURRENCY) o
              Assert.True (c1 == c2)
@@ -107,7 +107,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
         [Fact];
         METHOD CurrencyTestBinary AS VOID
              LOCAL c1 := $123.456 AS CURRENCY
-             VAR o := BinarySaveRestore(c1)
+             VAR o := SELF:BinarySaveRestore(c1)
              Assert.True(o IS CURRENCY)
              VAR c2 := (CURRENCY) o
              Assert.True (c1 == c2)
@@ -117,7 +117,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
         [Fact];
         METHOD BinaryTestJson AS VOID
              LOCAL b1 := 0h4567890ABCDE AS BINARY
-             VAR o := JsonSaveRestore(b1)
+             VAR o := SELF:JsonSaveRestore(b1)
              Assert.True(o IS BINARY)
              VAR b2 := (BINARY ) o
              Assert.True (b1 == b2)
@@ -127,7 +127,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
         [Fact];
         METHOD BinaryTestBinary AS VOID
              LOCAL b1 := 0h4567890ABCDE AS BINARY
-             VAR o := BinarySaveRestore(b1)
+             VAR o := SELF:BinarySaveRestore(b1)
              Assert.True(o IS BINARY)
              VAR b2 := (BINARY ) o
              Assert.True (b1 == b2)
@@ -152,7 +152,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
         [Fact];
         METHOD PszTestBinary AS VOID
              LOCAL p1 := String2Psz("The quick brown fox jumps over the lazy dog") AS PSZ
-             VAR o := BinarySaveRestore(p1)
+             VAR o := SELF:BinarySaveRestore(p1)
              Assert.True(o IS PSZ)
              // Cannot cast OBJECT to PSZ ?
              //VAR p2 := (PSZ) o
@@ -167,7 +167,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
         [Fact];
         METHOD WinBoolTestJson AS VOID
              LOCAL b1 := TRUE AS __WinBool
-             VAR o := JsonSaveRestore(b1)
+             VAR o := SELF:JsonSaveRestore(b1)
              Assert.True(o IS __WinBool)
              VAR b2 := (__WinBool ) o
              Assert.True (b1 == b2)
@@ -176,7 +176,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
         [Fact];
         METHOD WinBoolTestBinary AS VOID
              LOCAL b1 := TRUE AS __WinBool
-             VAR o := BinarySaveRestore(b1)
+             VAR o := SELF:BinarySaveRestore(b1)
              Assert.True(o IS __WinBool)
              VAR b2 := (__WinBool ) o
              Assert.True (b1 == b2)
@@ -213,42 +213,42 @@ BEGIN NAMESPACE XSharp.VO.Tests
              LOCAL u1 := TRUE AS USUAL
              LOCAL s AS STRING
              LOCAL o AS OBJECT
-             o := BinarySaveRestore(u1)
+             o := SELF:BinarySaveRestore(u1)
              Assert.True (o IS USUAL)
              VAR u2 := o
              Assert.True (u1 == u2)
              u1 := ToDay()
-             o := BinarySaveRestore(u1)
+             o := SELF:BinarySaveRestore(u1)
              Assert.True (o IS USUAL)
              u2 := o
              Assert.True (u1 == u2)
              u1 := 42
-             o := BinarySaveRestore(u1)
+             o := SELF:BinarySaveRestore(u1)
              Assert.True (o IS USUAL)
              u2 := o
              Assert.True (u1 == u2)
              u1 := "one day I will fly away"
-             o := BinarySaveRestore(u1)
+             o := SELF:BinarySaveRestore(u1)
              Assert.True (o IS USUAL)
              u2 := o
              Assert.True (u1 == u2)
              u1 := #IAmASymbol //symbol
-             o := BinarySaveRestore(u1)
+             o := SELF:BinarySaveRestore(u1)
              Assert.True (o IS USUAL)
              u2 := o
              Assert.True (u1 == u2)
              u1 := (FLOAT) 1.234
-             o := BinarySaveRestore(u1)
+             o := SELF:BinarySaveRestore(u1)
              Assert.True (o IS USUAL)
              u2 := o
              Assert.True (u1 == u2)
              u1 := $1234.56 // Currency
-             o := BinarySaveRestore(u1)
+             o := SELF:BinarySaveRestore(u1)
              Assert.True (o IS USUAL)
              u2 := o
              Assert.True (u1 == u2)
              u1 := 0h987654 // Binary
-             o := BinarySaveRestore(u1)
+             o := SELF:BinarySaveRestore(u1)
              Assert.True (o IS USUAL)
              u2 := o
              Assert.True (u1 == u2)
@@ -261,7 +261,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
         METHOD ArrayTestJson AS VOID
              LOCAL a1 := {1,"a",TRUE,42} AS ARRAY
              LOCAL s AS STRING
-             VAR o := JsonSaveRestore(a1, typeof(OBJECT[]))
+             VAR o := SELF:JsonSaveRestore(a1, typeof(OBJECT[]))
              Assert.True(o IS OBJECT[])
              VAR a2 := ARRAY{ (OBJECT[]) o}
              Assert.True(Alen(a1) == ALen(a2))
@@ -277,7 +277,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
         METHOD ArrayTestBinary AS VOID
              LOCAL a1 := {1,"a",TRUE,today(), 42} AS ARRAY
              LOCAL s AS STRING
-             VAR o := BinarySaveRestore(a1)
+             VAR o := SELF:BinarySaveRestore(a1)
              Assert.True(o IS ARRAY)
              VAR a2 := (ARRAY) o
              Assert.True(Alen(a1) == ALen(a2))

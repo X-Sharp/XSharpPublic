@@ -359,26 +359,26 @@ INTERNAL STATIC CLASS ConsoleHelpers
         FOREACH VAR cChar in cColor
             local done := FALSE AS LOGIC
             SWITCH cChar
-                CASE 'N'
-                CASE 'n'
+                CASE c'N'
+                CASE c'n'
                     nColor := 0 // never combined
-                CASE 'W'
-                CASE 'w'
+                CASE c'W'
+                CASE c'w'
                     nColor := 7 // never combined
-                CASE 'B'
-                CASE 'b'
+                CASE c'B'
+                CASE c'b'
                     nColor += 1 // can be combined
-                CASE 'G'    
-                CASE 'g'
+                CASE c'G'    
+                CASE c'g'
                     nColor += 2 // can be combined
-                CASE 'R'
-                CASE 'r'
+                CASE c'R'
+                CASE c'r'
                     nColor += 4 // can be combined
-                CASE '*'
+                CASE c'*'
                     nHigh  := 8 // flashing: not available, so intense
-                CASE '+'
+                CASE c'+'
                     nHigh  := 8 // intense
-                CASE '/' 
+                CASE c'/' 
                     IF lFore
                         nFore 	:= nColor + nHigh
                         nColor	:= nHigh := 0
@@ -386,7 +386,7 @@ INTERNAL STATIC CLASS ConsoleHelpers
                     ELSE
                         done := TRUE
                     ENDIF    
-                CASE ','
+                CASE c','
                     done := TRUE
                 OTHERWISE
                     // Ignore other characters

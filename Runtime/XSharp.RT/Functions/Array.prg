@@ -884,7 +884,7 @@ INTERNAL STRUCTURE ArraySortComparer<T, U>  IMPLEMENTS System.Collections.Generi
             RETURN 0
         ENDIF
         LOCAL u AS LOGIC
-        u := _cb( x, y )
+        u := SELF:_cb( x, y )
         RETURN IIF (  u , -1, 1 ) 
         
         

@@ -86,7 +86,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
         [Trait("Category", "ArrayBase")];
         [Fact]; 
         METHOD TestIndices AS VOID
-            VAR aDevs := BuildArray()
+            VAR aDevs := SELF:BuildArray()
             Assert.Equal( 2 , (INT) ALen(aDevs))
             Assert.Equal("Chris", aDevs[1]:FirstName)
             Assert.Equal("Pyrgas", aDevs[1]:LastName)
@@ -102,7 +102,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
         [Trait("Category", "ArrayBase")];
         [Fact]; 
         METHOD TestSort AS VOID
-            VAR aDevs := BuildArray()
+            VAR aDevs := SELF:BuildArray()
             ASort(aDevs, {x, y => x:LastName <= y:LastName})
             Assert.Equal("Kokkalis", aDevs[1]:LastName)
             Assert.Equal("Pyrgas", aDevs[2]:LastName)
@@ -113,7 +113,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
         [Trait("Category", "ArrayBase")];
         [Fact]; 
         METHOD TestEval AS VOID
-            VAR aDevs := BuildArray()
+            VAR aDevs := SELF:BuildArray()
             LOCAL result AS STRING
             result := ""
             Aeval(aDevs, { x => result += x:FirstName})
@@ -123,7 +123,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
         [Trait("Category", "ArrayBase")];
         [Fact]; 
         METHOD TestScan AS VOID
-            VAR aDevs := BuildArray()
+            VAR aDevs := SELF:BuildArray()
             Assert.Equal(1, (INT) AScan(aDevs, { x => X:FirstName == "Chris" .AND. x:LastName == "Pyrgas"}))
             Assert.Equal(2, (INT) AScan(aDevs, { x => X:FirstName == "Nikos" .AND. x:LastName == "Kokkalis"}))
             Assert.Equal(0, (INT) AScan(aDevs, { x => X:FirstName == "Fabrice" .AND. x:LastName == "Foray"}))
@@ -134,7 +134,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
         [Trait("Category", "ArrayBase")];
         [Fact]; 
         METHOD TestIndices2 AS VOID
-            VAR aDevs := BuildIndexedArray()
+            VAR aDevs := SELF:BuildIndexedArray()
             Assert.Equal("Chris", aDevs[1,1])
             Assert.Equal("Pyrgas", aDevs[1,2])
             Assert.Equal("Chris", aDevs[1,"firstname"])

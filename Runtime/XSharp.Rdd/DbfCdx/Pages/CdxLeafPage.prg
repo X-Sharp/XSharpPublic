@@ -239,9 +239,9 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             System.Diagnostics.Debug.Assert(nPos >= 0 .AND. nPos < SELF:NumKeys)
             nOffSet     := CDXLEAF_HEADERLEN + nPos * SELF:DataBytes
             IF SELF:RecordBits <= 16 
-                nRecno      := _GetWord(nOffSet)
+                nRecno      := SELF:_GetWord(nOffSet)
             ELSE
-                nRecno      := _GetLong(nOffSet)
+                nRecno      := SELF:_GetLong(nOffSet)
             ENDIF
             nRecno      := _AND( nRecno , SELF:RecnoMask)
             RETURN nRecno
@@ -296,12 +296,12 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 FOR VAR nI := 0 TO nLast
                     LOCAL iTemp AS WORD
                     IF SELF:RecordBits <= 16
-                        nRecno  := _GetWord(nOffSet)
+                        nRecno  := SELF:_GetWord(nOffSet)
                     ELSE
-                        nRecno  := _GetLong(nOffSet)
+                        nRecno  := SELF:_GetLong(nOffSet)
                     ENDIF
                     nRecno  := _AND( nRecno , SELF:RecnoMask)
-                    iTemp   := _GetWord(nOffSet + SELF:DataBytes - 2)
+                    iTemp   := SELF:_GetWord(nOffSet + SELF:DataBytes - 2)
                     SELF:_getDupTrail(iTemp, OUT nDup, OUT nTrail)
                     nCopy    := SELF:KeyLength - nTrail - nDup
                     IF nTrail > 0 .and. nTrail <= SELF:KeyLength
@@ -325,11 +325,11 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             
 
         PRIVATE METHOD _getValues AS VOID
-            _numKeys        := _GetWord(CDXLEAF_OFFSET_NUMKEYS)
-            _leftPtr        := _GetLong(CDXLEAF_OFFSET_LEFTPTR)
-            _rightPtr       := _GetLong(CDXLEAF_OFFSET_RIGHTPTR)
-            _freeSpace      := _GetWord(CDXLEAF_OFFSET_FREESPACE)
-            _recnoMask      := _GetLong(CDXLEAF_OFFSET_RECNOMASK)
+            _numKeys        := SELF:_GetWord(CDXLEAF_OFFSET_NUMKEYS)
+            _leftPtr        := SELF:_GetLong(CDXLEAF_OFFSET_LEFTPTR)
+            _rightPtr       := SELF:_GetLong(CDXLEAF_OFFSET_RIGHTPTR)
+            _freeSpace      := SELF:_GetWord(CDXLEAF_OFFSET_FREESPACE)
+            _recnoMask      := SELF:_GetLong(CDXLEAF_OFFSET_RECNOMASK)
             _duplicateMask  := _buffer[CDXLEAF_OFFSET_DUPMASK]
             _trailingMask   := _buffer[CDXLEAF_OFFSET_TRAILMASK]
             _recordBits     := _buffer[CDXLEAF_OFFSET_RECNUMBITS]
@@ -343,19 +343,19 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         // We read the values from our cache but write back to the cache and the buffer at the same time
         // The _Set.. methods set the IsHot flag of the page automatically
 		INTERNAL PROPERTY NumKeys  AS WORD	GET _numKeys;
-			SET _SetWord(CDXLEAF_OFFSET_NUMKEYS, value), _numKeys := value
+			SET SELF:_SetWord(CDXLEAF_OFFSET_NUMKEYS, value), _numKeys := value
 
 		INTERNAL PROPERTY LeftPtr AS Int32  GET _leftPtr;
-			SET _SetLong(CDXLEAF_OFFSET_LEFTPTR, value), _leftPtr:= value
+			SET SELF:_SetLong(CDXLEAF_OFFSET_LEFTPTR, value), _leftPtr:= value
 
 		INTERNAL PROPERTY RightPtr AS Int32	GET _rightPtr;
-			SET _SetLong(CDXLEAF_OFFSET_RIGHTPTR, value), _rightPtr := value
+			SET SELF:_SetLong(CDXLEAF_OFFSET_RIGHTPTR, value), _rightPtr := value
 			
 		INTERNAL PROPERTY Freespace AS WORD GET _freeSpace ;
-			SET _SetWord(CDXLEAF_OFFSET_FREESPACE, value),  _freeSpace := value
+			SET SELF:_SetWord(CDXLEAF_OFFSET_FREESPACE, value),  _freeSpace := value
 			
 		INTERNAL PROPERTY RecnoMask AS LONG GET _recnoMask;
-			SET _SetLong(CDXLEAF_OFFSET_RECNOMASK, value),  _recnoMask := value
+			SET SELF:_SetLong(CDXLEAF_OFFSET_RECNOMASK, value),  _recnoMask := value
 			
 		INTERNAL PROPERTY DuplicateMask	AS BYTE	GET _duplicateMask;
 			SET _buffer[CDXLEAF_OFFSET_DUPMASK]      := _duplicateMask := value, _hot := TRUE
@@ -395,7 +395,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         INTERNAL PROPERTY LastNode AS CdxPageNode GET IIF(SELF:NumKeys == 0, NULL, SELF[(WORD) (SELF:NumKeys-1)])
         INTERNAL PROPERTY Leaves    AS IList<CdxLeaf>
             GET
-                _ExpandLeaves(FALSE)
+                SELF:_ExpandLeaves(FALSE)
                 RETURN SELF:_leaves
             END GET
         END PROPERTY
@@ -460,12 +460,12 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 RETURN CdxAction.ExpandRecnos(SELF, recno, key, -1)
             ENDIF
             SELF:_ExpandLeaves(FALSE)
-            nTrailCount := _getTrailCount(key)
+            nTrailCount := SELF:_getTrailCount(key)
             IF SELF:NumKeys == 0
                 nDupCount := 0
             ELSE
                 VAR prevkey := _leaves[SELF:NumKeys-1]:Key
-                nDupCount   := _getDupCount(prevkey, key, nTrailCount) 
+                nDupCount   := SELF:_getDupCount(prevkey, key, nTrailCount) 
             ENDIF
             LOCAL nBytesNeeded := SELF:KeyLength - nDupCount - nTrailCount  + SELF:DataBytes  AS WORD
             IF SELF:Freespace < nBytesNeeded
@@ -514,7 +514,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 DUMP(  "triggers ExpandRecnos", SELF:PageNo:ToString("X8"), "Rec", recno)
                 RETURN CdxAction.ExpandRecnos(SELF,recno, key, nPos)
             ENDIF
-            nTrailCount := _getTrailCount(key)
+            nTrailCount := SELF:_getTrailCount(key)
             // we calculate if a key fits without looking at the Duplicate bytes to make things easier
             // it might fit when the # of duplicate bytes is large, but we simply don't allow it
             nBytesNeeded := SELF:DataBytes + SELF:KeyLength - nTrailCount 
@@ -737,7 +737,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         INTERNAL METHOD Delete(nPos AS LONG) AS CdxAction
              // Todo: optimize. We are now expanding the leaves which could be overkill.
             IF nPos >= 0 .AND. nPos < SELF:NumKeys
-                _ExpandLeaves(FALSE)
+                SELF:_ExpandLeaves(FALSE)
                 VAR result := CdxAction.Ok
                 IF ! SELF:IsRoot
                     IF nPos == SELF:NumKeys -1 .AND. SELF:NumKeys > 1 
@@ -750,7 +750,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 if nPos > 0 .and. nPos < SELF:NumKeys-1
                     var nextLeaf := _leaves[nPos+1]
                     var prevLeaf := _leaves[nPos-1]
-                    nextLeaf:Dup := _getDupCount(prevLeaf:Key, nextLeaf:Key,nextLeaf:Trail)
+                    nextLeaf:Dup := SELF:_getDupCount(prevLeaf:Key, nextLeaf:Key,nextLeaf:Trail)
                 ELSEIF nPos == 0 .AND. _leaves:Count > 1
                     _leaves[1]:Dup := 0
                 ENDIF
@@ -772,7 +772,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         INTERNAL METHOD Replace(nPos AS LONG, node AS CdxNode) AS CdxAction
             // Todo: optimize. We are now expanding the leaves which could be overkill.
             IF nPos >= 0 .AND. nPos < SELF:NumKeys
-                _ExpandLeaves(FALSE)
+                SELF:_ExpandLeaves(FALSE)
                 VAR nTrailCount := SELF:_getTrailCount(node:KeyBytes)
                 LOCAL nDupCount AS BYTE
                 IF nPos == 0
@@ -886,9 +886,9 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                     ENDIF
                 ENDIF
                 nOffset := nOffset + SELF:DataBytes - 2
-                LOCAL wValue := _GetWord(nOffset) AS WORD
+                LOCAL wValue := SELF:_GetWord(nOffset) AS WORD
                 wValue |= dupLen
-                _SetWord(nOffset , wValue)
+                SELF:_SetWord(nOffset , wValue)
             END UNCHECKED
             RETURN
 

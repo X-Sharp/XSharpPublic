@@ -165,7 +165,7 @@ ABSTRACT CLASS XSharp.RDD.Workareas
                     lResult        := TRUE
                 ENDIF              
                 
-                SetCargo(nArea, NULL)
+                SELF:SetCargo(nArea, NULL)
             END LOCK               
         ENDIF
         RETURN lResult
@@ -258,7 +258,7 @@ ABSTRACT CLASS XSharp.RDD.Workareas
                 IF ! Aliases:ContainsKey(sAlias)
                     Aliases:Add(sAlias, nArea)
                 ENDIF
-                SetCargo(nArea, NULL)
+                SELF:SetCargo(nArea, NULL)
                 Workareas._Add(oRDD, SELF)
             END LOCK
             RETURN TRUE

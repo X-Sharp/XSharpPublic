@@ -142,7 +142,7 @@ METHOD GoTop() AS LOGIC
 			SELF:_Bottom := FALSE
 			SELF:_BufferValid := FALSE
                 // Apply Filter and SetDeleted
-			VAR result := SkipFilter(1)
+			VAR result := SELF:SkipFilter(1)
             SELF:_CheckEofBof()
             RETURN result
         END LOCK
@@ -158,7 +158,7 @@ METHOD GoBottom() AS LOGIC
 			SELF:_Bottom := TRUE
 			SELF:_BufferValid := FALSE
             // Apply Filter and SetDeleted
-			VAR result := SkipFilter(-1)
+			VAR result := SELF:SkipFilter(-1)
             SELF:_CheckEofBof()
             RETURN result
         END LOCK
@@ -1109,7 +1109,7 @@ PRIVATE METHOD _readHeader() AS LOGIC
         SELF:_Encoding := System.Text.Encoding.GetEncoding( CodePageExtensions.ToCodePage( SELF:_Header:CodePage )  )
 
         // Move to top, after header
-        isOK := _oStream:SafeSetPos(DbfHeader.SIZE) .AND. _readFieldsHeader()
+        isOK := _oStream:SafeSetPos(DbfHeader.SIZE) .AND. SELF:_readFieldsHeader()
 	ENDIF
 RETURN isOK
 

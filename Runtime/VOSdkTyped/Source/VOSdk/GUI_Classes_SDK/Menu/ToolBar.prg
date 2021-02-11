@@ -67,7 +67,7 @@ CLASS ToolBar INHERIT Control
 		oButton:MenuID := nID
 		cText := SELF:GetTipText(nID,#MenuItemID)
 		IF SELF:nButtonStyle != TB_ICONONLY
-			oButton:Text := __CleanText(cCaption)
+			oButton:Text := SELF:__CleanText(cCaption)
 			IF STRING.IsNullOrEmpty(oButton:Text)
 				oButton:Text := cText
 			ENDIF
@@ -660,7 +660,7 @@ CLASS ToolBar INHERIT Control
 		RETURN oBoundingBox
 	
 	ACCESS ButtonCount            // dcaton 070215 changed from ACCESS ButtonCount(symTB)
-		RETURN GetButtonCount()
+		RETURN SELF:GetButtonCount()
 
 	METHOD GetButtonCount(symTB)  // dcaton 070215 changed from ACCESS to METHOD, Vulcan doesn't support CLIPPER-calling convention properties
 		LOCAL oTB	as VOToolBar
@@ -1313,35 +1313,35 @@ CLASS ToolBar INHERIT Control
 		RETURN TRUE
 
 	METHOD IsClicked(nID, symIDType, symTB) 
-		LOCAL IMPLIED oButton := __GetButton(nID, symIDType, symTB)
+		LOCAL IMPLIED oButton := SELF:__GetButton(nID, symIDType, symTB)
 		IF oButton != NULL_OBJECT
 			RETURN oButton:Pushed
 		ENDIF
 		RETURN FALSE
 
 	METHOD IsDimmed(nID, symIDType, symTB) 
-		LOCAL IMPLIED oButton := __GetButton(nID, symIDType, symTB)
+		LOCAL IMPLIED oButton := SELF:__GetButton(nID, symIDType, symTB)
 		IF oButton != NULL_OBJECT
 			RETURN !oButton:PartialPush
 		ENDIF
 		RETURN FALSE
 
 	METHOD IsEnabled(nID, symIDType, symTB) AS LOGIC CLIPPER
-		LOCAL IMPLIED oButton := __GetButton(nID, symIDType, symTB)
+		LOCAL IMPLIED oButton := SELF:__GetButton(nID, symIDType, symTB)
 		IF oButton != NULL_OBJECT
 			RETURN oButton:Enabled
 		ENDIF
 		RETURN FALSE
 
 	METHOD IsToolbarHidden(nID, symIDType, symTB) 	
-		LOCAL IMPLIED oButton := __GetButton(nID, symIDType, symTB)
+		LOCAL IMPLIED oButton := SELF:__GetButton(nID, symIDType, symTB)
 		IF oButton != NULL_OBJECT
 			RETURN !oButton:Visible
 		ENDIF
 		RETURN FALSE
 
 	METHOD IsPressed(nID, symIDType, symTB) 
-		LOCAL IMPLIED oButton := __GetButton(nID, symIDType, symTB)
+		LOCAL IMPLIED oButton := SELF:__GetButton(nID, symIDType, symTB)
 		IF oButton != NULL_OBJECT
 			RETURN oButton:Pushed
 		ENDIF
@@ -1402,7 +1402,7 @@ CLASS ToolBar INHERIT Control
 		RETURN 0
 
 	ASSIGN Rows( nRows )	         // dcaton 070215 was ASSIGN Rows(nRows,symTB)
-		SetRows( nRows )
+		SELF:SetRows( nRows )
 
 	METHOD SetRows(nRows, symTB)   // dcaton 070215 changed from ASSIGN to METHOD, Vulcan doesn't support CLIPPER-calling convention properties
 		//PP-040421 Update from S Ebert

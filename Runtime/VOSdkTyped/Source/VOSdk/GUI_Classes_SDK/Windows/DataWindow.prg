@@ -157,7 +157,7 @@ CLASS DataWindow INHERIT ChildAppWindow IMPLEMENTS ILastFocus
 		editHeight := iFontWidth + 4
 		editGap := editHeight + 6
 		
-		// Find maximum field label size && number of lines
+		// Find maximum field label size and number of lines
 		liFields := (LONG) oAttachedServer:FCount
 		FOR liField := 1 UPTO liFields
             //DebOut("lifield", lifield)

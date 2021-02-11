@@ -414,16 +414,14 @@ METHOD AddItem(oStatusBarItem)
 	SELF:__BuildItems()
 	RETURN NIL
 
-ACCESS AsString 
-	
-
-	RETURN cLastPermanentMessage
-
-ASSIGN AsString(cMessage) 
-	
-
-	SELF:setmessage(cLastPermanentMessage := cMessage, MESSAGEPERMANENT)
-	RETURN 
+NEW PROPERTY AsString AS STRING
+    GET
+	    RETURN cLastPermanentMessage
+    END GET
+    SET 
+    	SELF:setmessage(cLastPermanentMessage := value, MESSAGEPERMANENT)
+    END SET
+END PROPERTY
 
 METHOD ClearItems() 
 	LOCAL dwCount AS DWORD

@@ -667,7 +667,7 @@ METHOD ProcessKeyEvent(oKeyEvt AS KeyEvent) AS LOGIC STRICT
 METHOD PutChar(cChar AS STRING, iPos AS INT) AS VOID STRICT 
 #ifdef __VULCAN__
    // VO version modifies existing string, this is illegal in .NET
-   IF iPos <= sValue:Length && ! String.IsNullOrEmpty( cChar )
+   IF iPos <= sValue:Length .AND. ! String.IsNullOrEmpty( cChar )
       LOCAL sb := System.Text.StringBuilder{ sValue } AS System.Text.StringBuilder
       LOCAL ch := cChar[0] AS CHAR
       IF FuncFlags:lConvUpper

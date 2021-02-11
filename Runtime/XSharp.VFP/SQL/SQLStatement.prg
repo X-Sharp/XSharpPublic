@@ -102,10 +102,10 @@ INTERNAL CLASS XSharp.VFP.SQLStatement
         NEXT
         nFields := aStruct:Count
         VAR cTemp := System.IO.Path.GetTempFileName()
-        CloseArea(cCursorName)
+        SELF:CloseArea(cCursorName)
         // We do not use DBFVFPSQL because that driver deletes the file !
         DbCreate(cTemp, aStruct, "DBFVFP", TRUE, cCursorName)  
-        CloseArea(cCursorName)
+        SELF:CloseArea(cCursorName)
         VoDbUseArea(TRUE, "DBFVFPSQL",cTemp,cCursorName,FALSE,FALSE)
         LOCAL oRDD AS IRdd
         oRDD := (IRdd) DbInfo(DbInfo.DBI_RDD_OBJECT)
@@ -228,7 +228,7 @@ INTERNAL CLASS XSharp.VFP.SQLStatement
 
 
     PRIVATE METHOD _SaveResult(aInfo AS ARRAY) AS LONG
-        CopyToInfo(_aQueryResult, aInfo)
+        SELF:CopyToInfo(_aQueryResult, aInfo)
         IF SELF:_lastException != NULL
             RETURN -1
         ENDIF
@@ -471,7 +471,7 @@ INTERNAL CLASS XSharp.VFP.SQLStatement
             IF SELF:_ReturnsRows(SELF:_oNetCommand:CommandText)
                 VAR oDataReader := SELF:_oNetCommand:ExecuteReader()
                 SELF:_WriteOutParameters()
-                CopyToCursor(oDataReader, 0)
+                SELF:CopyToCursor(oDataReader, 0)
             ELSE
                 VAR result := SELF:_oNetCommand:ExecuteNonQuery()
                 SELF:_WriteOutParameters()
@@ -514,7 +514,7 @@ INTERNAL CLASS XSharp.VFP.SQLStatement
             SELF:_nextCursorNo := 0
         ENDIF
         IF _oLastDataReader != NULL .and. ! _oLastDataReader:IsClosed .AND. _oLastDataReader:HasRows 
-            CopyToCursor(_oLastDataReader, _nextCursorNo)
+            SELF:CopyToCursor(_oLastDataReader, _nextCursorNo)
             RETURN SELF:_SaveResult(aInfo)
         ENDIF
         ASize(aInfo,1)
@@ -560,12 +560,12 @@ INTERNAL CLASS XSharp.VFP.SQLStatement
         LOCAL nRestrictions AS LONG
         oTables := List<DataTable>{}
         
-        nRestrictions := GetNumRestrictions("Tables") 
+        nRestrictions := SELF:GetNumRestrictions("Tables") 
         filter := STRING[]{nRestrictions}
         oTable := SELF:Connection:NetConnection:GetSchema("Tables", filter)
         oTables:Add(oTable)
         
-        nRestrictions := GetNumRestrictions("Views")
+        nRestrictions := SELF:GetNumRestrictions("Views")
         filter := STRING[]{nRestrictions}
         oTable := SELF:Connection:NetConnection:GetSchema("Views", filter)
         oTables:Add(oTable)
@@ -579,7 +579,7 @@ INTERNAL CLASS XSharp.VFP.SQLStatement
         aStruct[5] := {"REMARKS","C:0",254,0}
         VAR cTemp := System.IO.Path.GetTempFileName()
         DbCreate(cTemp, aStruct, "DBFVFP")
-        CloseArea(cCursorName)
+        SELF:CloseArea(cCursorName)
         VoDbUseArea(TRUE, "DBFVFPSQL",cTemp,cCursorName,FALSE,FALSE)
         LOCAL oRDD AS IRdd
         oRDD := (IRdd) DbInfo(DbInfo.DBI_RDD_OBJECT)
@@ -631,7 +631,7 @@ INTERNAL CLASS XSharp.VFP.SQLStatement
         LOCAL filter AS STRING[]
         LOCAL oTable AS DataTable
         LOCAL nRestrictions AS LONG
-        nRestrictions := GetNumRestrictions("Columns") 
+        nRestrictions := SELF:GetNumRestrictions("Columns") 
         filter := STRING[]{nRestrictions}
         filter[3] := cTableName
         SELF:_CloseReader()
@@ -659,7 +659,7 @@ INTERNAL CLASS XSharp.VFP.SQLStatement
         aStruct[19] := {"SS_DATA_TY","I:0",4,0}
         VAR cTemp := System.IO.Path.GetTempFileName()
         DbCreate(cTemp, aStruct, "DBFVFP")
-        CloseArea(cCursorName)
+        SELF:CloseArea(cCursorName)
         VoDbUseArea(TRUE, "DBFVFPSQL",cTemp,cCursorName,FALSE,FALSE)
         LOCAL oRDD AS IRdd
         oRDD := (IRdd) DbInfo(DbInfo.DBI_RDD_OBJECT)
@@ -679,9 +679,9 @@ INTERNAL CLASS XSharp.VFP.SQLStatement
         ENDIF
         SWITCH cType:ToUpper()
         CASE "FOXPRO"
-            RETURN GetColumnsFox(cTableName, cCursorName)
+            RETURN SELF:GetColumnsFox(cTableName, cCursorName)
         CASE "NATIVE"
-            RETURN GetColumnsNative(cTableName, cCursorName)
+            RETURN SELF:GetColumnsNative(cTableName, cCursorName)
         END SWITCH
         RETURN FALSE
     #endregion

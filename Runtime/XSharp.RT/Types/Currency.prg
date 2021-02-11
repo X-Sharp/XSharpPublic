@@ -417,7 +417,7 @@ BEGIN NAMESPACE XSharp
         #region IFormattable
         /// <inheritdoc cref="System.Double.ToString"/>
         PUBLIC OVERRIDE METHOD ToString() AS STRING
-            RETURN ToString("0.0000")
+            RETURN SELF:ToString("0.0000")
             
         /// <inheritdoc cref="System.Double.ToString"/>
         PUBLIC METHOD ToString(sFormat AS STRING) AS STRING

@@ -17,8 +17,8 @@ BEGIN NAMESPACE XSharp
     /// <typeparam name="T">Type of the elements inside the array </typeparam>
     [Serializable];
 	PUBLIC CLASS __ArrayBase<T> ;
-        IMPLEMENTS INamedIndexer, IEnumerable<T>, ISerializable;
-        WHERE T IS NEW()
+        IMPLEMENTS INamedIndexer, IEnumerable<T>, ISerializable
+        
         [DebuggerBrowsable(DebuggerBrowsableState.Never)];
 		PROTECTED INTERNAL _internalList AS List<T>
         [DebuggerBrowsable(DebuggerBrowsableState.Never)];
@@ -83,7 +83,7 @@ BEGIN NAMESPACE XSharp
 
         /// <summary>Returns the default value for array elements when arrays are resized or initialized.</summary>
         [DebuggerBrowsable(DebuggerBrowsableState.Never)];
-        PUBLIC VIRTUAL PROPERTY DefaultValue AS T GET T{}
+        PUBLIC VIRTUAL PROPERTY DefaultValue AS T GET DEFAULT(T)
 		#endregion
 
 		#region Enumerators
@@ -209,7 +209,7 @@ BEGIN NAMESPACE XSharp
                     RETURN oIndex[index2]
                 ENDIF
 				LOCAL oProp    AS PropertyInfo
-                oProp    := __GetIndexer(TRUE)
+                oProp    := SELF:__GetIndexer(TRUE)
                 IF oProp != NULL
                     RETURN oProp:GetValue(oElement, <OBJECT>{index2})
                 ENDIF
@@ -227,7 +227,7 @@ BEGIN NAMESPACE XSharp
                         oIndex[index2] := value
                     ENDIF
 					LOCAL oProp    AS PropertyInfo
-                    oProp    := __GetIndexer(TRUE)
+                    oProp    := SELF:__GetIndexer(TRUE)
                     IF oProp != NULL
                         oProp:SetValue(oElement, OOPHelpers.VOConvert(value, oProp:PropertyType), <OBJECT>{index2} )
                         RETURN
@@ -253,11 +253,11 @@ BEGIN NAMESPACE XSharp
                     RETURN oIndex[name]
                 ENDIF
 				LOCAL oProp    AS PropertyInfo
-                oProp    := __GetIndexer(FALSE)
+                oProp    := SELF:__GetIndexer(FALSE)
                 IF oProp != NULL
                     RETURN oProp:GetValue(oElement, <OBJECT>{name})
                 ENDIF
-				oProp	 := __GetProperty( name)
+				oProp	 := SELF:__GetProperty( name)
 				RETURN oProp:GetValue(oElement, NULL)
 			END GET
 			SET
@@ -272,12 +272,12 @@ BEGIN NAMESPACE XSharp
                         oIndex[name] := value
                     ENDIF
 					LOCAL oProp    AS PropertyInfo
-                    oProp    := __GetIndexer(FALSE)
+                    oProp    := SELF:__GetIndexer(FALSE)
                     IF oProp != NULL
                         oProp:SetValue(oElement, OOPHelpers.VOConvert(value, oProp:PropertyType), <OBJECT>{name} )
                         RETURN
                     ENDIF
-					oProp	 := __GetProperty( name)
+					oProp	 := SELF:__GetProperty( name)
 					oProp:SetValue(oElement, NULL, value)
 				ENDIF
 			END SET
@@ -368,7 +368,7 @@ BEGIN NAMESPACE XSharp
 		INTERNAL METHOD Swap(position AS INT, element AS OBJECT) AS T
 			//try
 			VAR elementT := (T) (OBJECT) element
-			RETURN Swap( position, elementT)
+			RETURN SELF:Swap( position, elementT)
 			//catch
 			//	throw ArgumentException{"Parameter is of incorrect type "+element:GetType():FullName,nameof(element)}
 			//end try

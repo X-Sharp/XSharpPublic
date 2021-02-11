@@ -13,7 +13,7 @@ CLASS HyperLink INHERIT FixedText
 
     PROPERTY Controltype AS Controltype GET Controltype.Label
 
-    METHOD OnControlCreated(oC AS System.Windows.Forms.Control) AS VOID
+    METHOD OnControlCreated(oC AS IVOControl) AS VOID
         VAR oLabel := (IVOLabel) oC
         oLabel:Click += Clicked
 

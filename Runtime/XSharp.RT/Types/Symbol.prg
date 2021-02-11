@@ -303,7 +303,7 @@ BEGIN NAMESPACE XSharp
 
             /// <exclude/>
             METHOD CompareTo(o AS OBJECT) AS LONG
-            RETURN CompareTo((SYMBOL)o)
+            RETURN SELF:CompareTo((SYMBOL)o)
 
 
             /// <exclude/>

@@ -297,7 +297,7 @@ BEGIN NAMESPACE XSharp.RDD
                     ENDIF
                 ELSE
                     // Deallocate block and allocate new
-                    DeleteBlock(blockNbr)
+                    SELF:DeleteBlock(blockNbr)
                     lNewBlock := TRUE
                 ENDIF
             ELSE
@@ -371,7 +371,7 @@ BEGIN NAMESPACE XSharp.RDD
             /// <inheritdoc />
         VIRTUAL METHOD CreateMemFile(info AS DbOpenInfo) AS LOGIC
             LOCAL isOk      AS LOGIC
-            SELF:Extension := GetMemoExtFromDbfExt(info:FileName)
+            SELF:Extension := SELF:GetMemoExtFromDbfExt(info:FileName)
             isOk := SUPER:CreateMemFile(info)
             IF isOk
                 
@@ -383,7 +383,7 @@ BEGIN NAMESPACE XSharp.RDD
                     SELF:Error(FException(), Subcodes.ERDD_CREATE_MEMO, Gencode.EG_WRITE, "FPTMemo.CreateMemFile")
                 ENDIF
                 SELF:_initContext()
-                SELF:_fptHeader:NextFree :=  RoundToBlockSize(_fptHeader:Size + _flexHeader:Size) / _blockSize
+                SELF:_fptHeader:NextFree :=  SELF:RoundToBlockSize(_fptHeader:Size + _flexHeader:Size) / _blockSize
                 SELF:WriteHeader()
             ELSE
                 SELF:Error( FException(), ERDD.CREATE_MEMO, XSharp.Gencode.EG_CREATE, "FPTMemo.CreateMemFile")
@@ -394,7 +394,7 @@ BEGIN NAMESPACE XSharp.RDD
             /// <inheritdoc />
         VIRTUAL METHOD OpenMemFile(info AS DbOpenInfo ) AS LOGIC
             LOCAL isOk AS LOGIC
-            SELF:Extension := GetMemoExtFromDbfExt(info:FileName)
+            SELF:Extension := SELF:GetMemoExtFromDbfExt(info:FileName)
             isOk := SUPER:OpenMemFile(info)
             IF isOk
                 // Per default, Block Size if 512

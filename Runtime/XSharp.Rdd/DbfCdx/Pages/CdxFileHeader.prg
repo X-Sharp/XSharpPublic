@@ -31,11 +31,11 @@ BEGIN NAMESPACE XSharp.RDD.CDX
     
     INTERNAL PROPERTY FreeList AS LONG ;
         GET IIF(_freeList >= 0, _freeList, 0) ;
-        SET _SetLong(CDXFILEHEADER_FREELIST, VALUE), _freeList  := IIF(VALUE >= 0, VALUE, 0)
+        SET SELF:_SetLong(CDXFILEHEADER_FREELIST, VALUE), _freeList  := IIF(VALUE >= 0, VALUE, 0)
 
 
     PRIVATE METHOD _getValues AS VOID
-        _freeList   := _GetLong(CDXFILEHEADER_FREELIST)
+        _freeList   := SELF:_GetLong(CDXFILEHEADER_FREELIST)
         IF _freeList < 0
             _freeList := 0
             _hot := TRUE
@@ -54,7 +54,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         SUPER(bag, 0, "__ROOT__",NULL)
         
 
-    INTERNAL PROPERTY RootVersion AS DWORD GET _GetDWord(CDXFILEHEADER_VERSION) SET _SetDWord(CDXFILEHEADER_VERSION, value)
+    INTERNAL PROPERTY RootVersion AS DWORD GET SELF:_GetDWord(CDXFILEHEADER_VERSION) SET SELF:_SetDWord(CDXFILEHEADER_VERSION, value)
 
         METHOD Initialize() AS VOID
             SELF:FreeList   := 0

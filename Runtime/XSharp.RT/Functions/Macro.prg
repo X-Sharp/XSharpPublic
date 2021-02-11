@@ -84,7 +84,7 @@ INTERNAL FUNCTION _IsIdentifierStartChar(cChar AS CHAR) AS LOGIC
     IF cChar >= c'a' .AND. cChar <= c'z'
         RETURN TRUE
     ENDIF
-    IF cChar == '_'
+    IF cChar == c'_'
         RETURN TRUE
     ENDIF
     IF cChar < 0x7F
@@ -171,17 +171,17 @@ RETURN cRet
         FOREACH VAR cChar IN cString
             lAddChar := TRUE
             SWITCH cChar
-                CASE '&'
+                CASE c'&'
                     lInVariable   := TRUE
                     cVariableName := ""
                     lAddChar     := FALSE
-                CASE ' '
-                CASE '\t'
+                CASE c' '
+                CASE c'\t'
                     IF lInVariable
                         lInVariable := FALSE
                         evalMacro   := TRUE
                     ENDIF
-                CASE '.'
+                CASE c'.'
                     IF lInVariable
                         lInVariable := FALSE
                         evalMacro   := TRUE

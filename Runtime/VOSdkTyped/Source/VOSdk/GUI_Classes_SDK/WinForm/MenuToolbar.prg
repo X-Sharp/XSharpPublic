@@ -181,7 +181,7 @@ CLASS VOToolBar INHERIT System.Windows.Forms.ToolBar IMPLEMENTS IVOControl
 	
 	METHOD PressButton(nID as LONG, lPressed as LOGIC) AS LOGIC
 		LOCAL oButton as ToolBarButton
-		oButton := GetButton(nID, TRUE)
+		oButton := SELF:GetButton(nID, TRUE)
 		IF oButton != NULL_OBJECT
 			oButton:Pushed := lPressed
 			RETURN TRUE

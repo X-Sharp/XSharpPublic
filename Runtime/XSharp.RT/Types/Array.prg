@@ -153,7 +153,7 @@ BEGIN NAMESPACE XSharp
         /// <returns>The value of the property of the element stored at the indicated location in the array.</returns>
         NEW PUBLIC PROPERTY SELF[index AS INT] AS USUAL
             GET
-                RETURN __GetElement(index)
+                RETURN SELF:__GetElement(index)
             END GET
             SET
                 SELF:__SetElement(value,index)
@@ -167,7 +167,7 @@ BEGIN NAMESPACE XSharp
         /// <returns>The value of the property of the element stored at the indicated location in the array.</returns>
         NEW PUBLIC PROPERTY SELF[index AS INT, index2 AS INT] AS USUAL
             GET
-                RETURN __GetElement(index,index2)
+                RETURN SELF:__GetElement(index,index2)
             END GET
             SET
                 SELF:__SetElement(value,index,index2)
@@ -181,7 +181,7 @@ BEGIN NAMESPACE XSharp
         /// <returns>The value of the property of the element stored at the indicated location in the array.</returns>
         PUBLIC PROPERTY SELF[indices PARAMS INT[]] AS USUAL
             GET
-                RETURN __GetElement(indices)
+                RETURN SELF:__GetElement(indices)
             END GET
             SET
                 SELF:__SetElement(value,indices)
@@ -205,7 +205,7 @@ BEGIN NAMESPACE XSharp
             ENDIF
             RETURN
 
-        PRIVATE METHOD __NotAnArray(name as string , pos as INT, args as OBJECT[]) AS Exception
+        PRIVATE STATIC METHOD __NotAnArray(name as string , pos as INT, args as OBJECT[]) AS Exception
             VAR err         := Error.BoundError(ProcName(1),name, (DWORD) pos, args)
             err:Description := "Bound error: "+VO_Sprintf(VOErrors.USUALNOTINDEXED, typeof(IIndexedProperties):FullName)
             err:Stack   := ErrorStack(1)
@@ -237,7 +237,7 @@ BEGIN NAMESPACE XSharp
                     // this will handle special cases such as indexing a string for Xbase++
                     RETURN u[index2+1]
                 ENDIF
-                THROW SELF:__NotAnArray(nameof(index2), 2, <OBJECT>{index+1, index2+1})
+                THROW __NotAnArray(nameof(index2), 2, <OBJECT>{index+1, index2+1})
                 
             CATCH as Exception
                 IF !SuppressArrayIndexErrors
@@ -276,7 +276,7 @@ BEGIN NAMESPACE XSharp
                         RETURN o[indices[length]]
                     ENDIF
                     IF !u:IsArray
-                        THROW SELF:__NotAnArray(nameof(indices), i+1, SELF:_adjustArguments(indices))
+                        THROW __NotAnArray(nameof(indices), i+1, SELF:_adjustArguments(indices))
                     ENDIF
                 NEXT
                 index := indices[length]
@@ -289,7 +289,7 @@ BEGIN NAMESPACE XSharp
                     RETURN u[index +1]
                 ENDIF
                 
-                THROW SELF:__NotAnArray(nameof(indices), i, SELF:_adjustArguments(indices))
+                THROW __NotAnArray(nameof(indices), i, SELF:_adjustArguments(indices))
            CATCH as Exception
                 IF !SuppressArrayIndexErrors .or. firstDimension
                     THROW

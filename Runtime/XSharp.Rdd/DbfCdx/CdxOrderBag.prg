@@ -599,7 +599,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 SELF:_LockRetry(ComixXLockOfs, 1,"S")
                 SELF:_Unlock(ComixXLockOfs, 1)
             ENDIF
-            SELF:_sLockOffSet := randNum()
+            SELF:_sLockOffSet := SELF:randNum()
             SELF:_LockRetry( _OR(ComixSLockOfs, _sLockOffSet),1,"S")
  
         PRIVATE METHOD _xLockComix() AS VOID

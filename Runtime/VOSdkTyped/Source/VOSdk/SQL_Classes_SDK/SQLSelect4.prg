@@ -164,7 +164,7 @@ PARTIAL CLASS SQLSelect INHERIT DataServer
 		ENDIF
 		RETURN lOk
 
-	METHOD SetDataField( nFieldPosition AS USUAL, oDataField AS DataField) AS LOGIC
+	METHOD SetDataField( nFieldPosition AS DWORD, oDataField AS DataField) AS LOGIC
 		// override method in DataServer class because it does not allow
 		// to change size/decimals for numeric columns
 		LOCAL lRetVal := FALSE AS LOGIC

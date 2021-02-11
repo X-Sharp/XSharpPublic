@@ -187,7 +187,7 @@ CLASS WorkareasWindow INHERIT System.Windows.Forms.Form
 		
 	RETURN
 	
-	PROTECTED METHOD DoMove(eMove AS MovementType) AS VOID
+	PRIVATE METHOD DoMove(eMove AS MovementType) AS VOID
 		LOCAL oRdd AS XSharp.RDD.IRdd
 		IF SELF:oWorkareasListView:SelectedIndices:Count == 0
 			RETURN
@@ -336,7 +336,7 @@ CLASS WorkareasWindow INHERIT System.Windows.Forms.Form
 		SELF:SetDetail(WorkareaDetail.Filter , oRdd:FilterText)
 		SELF:FillFieldDetail(WorkareaDetail.RecNo , oRdd , "RecNo")
 	RETURN
-	PROTECTED METHOD FillFieldDetail(eDetail AS WorkareaDetail, oRdd AS XSharp.RDD.IRdd, cField AS STRING) AS VOID
+	PRIVATE METHOD FillFieldDetail(eDetail AS WorkareaDetail, oRdd AS XSharp.RDD.IRdd, cField AS STRING) AS VOID
 		LOCAL oType AS Type
 		LOCAL oFieldInfo AS System.Reflection.FieldInfo
 		TRY
@@ -386,7 +386,7 @@ CLASS WorkareasWindow INHERIT System.Windows.Forms.Form
 	
 	PROTECTED METHOD FillIndexes(oRdd AS XSharp.RDD.IRdd) AS VOID
 		
-		LOCAL oIndexNode AS TreeNode
+		LOCAL oIndexNode := NULL AS TreeNode
 		LOCAL oOrderNode AS TreeNode
 		LOCAL lMultiOrder AS LOGIC
 		LOCAL cOldIndex AS STRING
@@ -407,13 +407,13 @@ CLASS WorkareasWindow INHERIT System.Windows.Forms.Form
 		LOCAL oInfo AS XSharp.RDD.Support.DbOrderInfo
 		oInfo := XSharp.RDD.Support.DbOrderInfo{}
 		
-		cValue := oRdd:OrderInfo(DBOI_NAME,oInfo)
+		cValue := (STRING) oRdd:OrderInfo(DBOI_NAME,oInfo)
 		cValue += " ( " + oRdd:OrderInfo(DBOI_NUMBER,oInfo):ToString() + " )"
 		
 		SELF:oIndexTreeView:Nodes:Clear()
 		SELF:oIndexTreeView:Nodes:Add("Current Order = " + cValue)
 		
-		cValue := oRdd:OrderInfo(DBOI_EXPRESSION,oInfo)
+		cValue := (STRING) oRdd:OrderInfo(DBOI_EXPRESSION,oInfo)
 		SELF:oIndexTreeView:Nodes:Add("Current Expression = " + cValue)
 		
 		lMultiOrder := oRdd:OrderInfo(DBOI_INDEXEXT, oInfo):ToString():ToUpperInvariant():Contains("CDX")

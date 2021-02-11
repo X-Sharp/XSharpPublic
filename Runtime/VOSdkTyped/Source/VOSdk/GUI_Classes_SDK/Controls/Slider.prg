@@ -4,7 +4,7 @@ CLASS HorizontalSelectionSlider INHERIT SelectionSlider
 
     PROPERTY Controltype AS ControlType GET ControlType.Slider
 
-    METHOD OnControlCreated(oC AS System.Windows.Forms.Control) AS VOID
+    METHOD OnControlCreated(oC AS IVOControl) AS VOID
         VAR oControl := (System.Windows.Forms.TrackBar) oC
 		oControl:Orientation := System.Windows.Forms.Orientation.Horizontal
 		RETURN 
@@ -19,7 +19,7 @@ CLASS HorizontalSlider INHERIT Slider
 
     PROPERTY Controltype AS ControlType GET ControlType.Slider
 
-    METHOD OnControlCreated(oC AS System.Windows.Forms.Control) AS VOID
+    METHOD OnControlCreated(oC AS IVOControl) AS VOID
         VAR oControl := (System.Windows.Forms.TrackBar) oC
 		oControl:Orientation := System.Windows.Forms.Orientation.Horizontal
 		RETURN 
@@ -182,7 +182,7 @@ CLASS VerticalSelectionSlider INHERIT SelectionSlider
 
     PROPERTY Controltype AS ControlType GET ControlType.Slider
 
-    METHOD OnControlCreated(oC AS System.Windows.Forms.Control) AS VOID
+    METHOD OnControlCreated(oC AS IVOControl) AS VOID
         VAR oControl := (System.Windows.Forms.TrackBar) oC
 		oControl:Orientation := System.Windows.Forms.Orientation.Vertical
 		RETURN 
@@ -200,7 +200,7 @@ CLASS VerticalSlider INHERIT Slider
 
     PROPERTY Controltype AS ControlType GET ControlType.Slider
 
-    METHOD OnControlCreated(oC AS System.Windows.Forms.Control) AS VOID
+    METHOD OnControlCreated(oC AS IVOControl) AS VOID
         VAR oControl := (System.Windows.Forms.TrackBar) oC
 		oControl:Orientation := System.Windows.Forms.Orientation.Vertical
 		RETURN 

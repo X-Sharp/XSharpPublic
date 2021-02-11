@@ -1061,7 +1061,7 @@ METHOD Notify(	 kNotification,	 uDescription )
 				
 			ELSEIF lCDXSelectionActive
 				VODBSelect( wSelectionWorkArea, OUT dwCurrentWorkArea )
-				uVOVal := uVOVal2 := Eval( cbSelectionParentExpression )
+				uVOVal := uVOVal2 := XSharp.RT.Functions.Eval( cbSelectionParentExpression )
 				VODBSetSelect( LONGINT(wWorkArea ) )
 				VODBOrderInfo( DBOI_SCOPETOP	 , "", NIL, REF uVOVal )
 				VODBOrderInfo( DBOI_SCOPEBottom, "", NIL, REF uVOVal2 )

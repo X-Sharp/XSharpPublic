@@ -253,7 +253,7 @@ METHOD Create()
 
 ACCESS CurrentItem 
 	//long boxstyle = GetWindowLong(Handle(), GWL_STYLE)
-	//if ((boxstyle & LBS_MULTIPLESEL) && (!GetNoSelected()))
+	//if ((boxstyle & LBS_MULTIPLESEL) .and. (!GetNoSelected()))
 	//	return False
 	//endif
 	IF (hwnd != NULL_PTR)

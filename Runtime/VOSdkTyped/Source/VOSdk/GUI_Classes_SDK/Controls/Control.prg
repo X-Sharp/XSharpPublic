@@ -760,7 +760,7 @@ CLASS Control INHERIT VObject IMPLEMENTS IGuiObject, ITimer
 		ENDIF
 		RETURN Intptr.Zero
 	
-	PROTECTED PROPERTY hWnd AS IntPtr GET Handle()
+	PROTECTED PROPERTY hWnd AS IntPtr GET SELF:Handle()
 	
 	METHOD HasBorder() AS LOGIC STRICT
 		LOCAL lBorder		AS LOGIC

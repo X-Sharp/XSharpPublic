@@ -43,7 +43,7 @@ CLASS VOPanel INHERIT System.Windows.Forms.Panel IMPLEMENTS IVOPanel
 		SELF:Window := oWindow
 		lToolTipsEnabled := TRUE
 		SELF:Initialize()
-		RegisterEventHandlers()
+		SELF:RegisterEventHandlers()
 		SELF:AllowDrop := TRUE
 		SELF:DragEnter += Panel_DragEnter
 		SELF:DragDrop += Panel_DragDrop
@@ -52,7 +52,7 @@ CLASS VOPanel INHERIT System.Windows.Forms.Panel IMPLEMENTS IVOPanel
 		SUPER()
 		SELF:Window := Owner:Owner
 		SELF:Initialize()
-		RegisterEventHandlers()
+		SELF:RegisterEventHandlers()
 		SELF:AllowDrop := TRUE
 		SELF:DragEnter += Panel_DragEnter
 		SELF:DragDrop += Panel_DragDrop

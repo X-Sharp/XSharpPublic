@@ -692,7 +692,7 @@ BEGIN NAMESPACE XSharp
         #region implementation IComparable
         /// <summary>This method is needed to implement the IComparable interface.</summary>
         PUBLIC METHOD CompareTo(o AS OBJECT) AS LONG
-            RETURN CompareTo((__Usual) o)
+            RETURN SELF:CompareTo((__Usual) o)
             #endregion
 
         #region implementation IDisposable
@@ -1143,7 +1143,7 @@ BEGIN NAMESPACE XSharp
             IF u:IsNil
                 RETURN SELF:IsNil
             ENDIF
-            RETURN UsualEquals(u, "Usual.Equals()")
+            RETURN SELF:UsualEquals(u, "Usual.Equals()")
 
             #endregion
         #region Operators FOR Equality
@@ -1152,7 +1152,7 @@ BEGIN NAMESPACE XSharp
             IF obj == NULL
                 RETURN SELF:IsNil
             ENDIF
-            RETURN UsualEquals((USUAL) obj, "Usual.Equals()")
+            RETURN SELF:UsualEquals((USUAL) obj, "Usual.Equals()")
 
 
             /// <inheritdoc />
@@ -2722,7 +2722,7 @@ BEGIN NAMESPACE XSharp
             /// <exclude />
         [DebuggerStepThroughAttribute];
         STATIC METHOD ToObject(u AS __Usual) AS OBJECT
-            IF !u:_initialized
+            IF !u:_initialized 
                 // Empty usuals are considered to be FALSE in the FoxPro dialect
                 IF XSharp.RuntimeState.Dialect == XSharpDialect.FoxPro
                     RETURN FALSE
@@ -2778,7 +2778,6 @@ BEGIN NAMESPACE XSharp
                     result := SELF
             END SWITCH
             RETURN result
-
         /// <inheritdoc/>
         PUBLIC OVERRIDE METHOD ToString() AS STRING
             LOCAL strResult AS STRING
@@ -2788,7 +2787,7 @@ BEGIN NAMESPACE XSharp
                 CASE __UsualType.Binary		; strResult := SELF:_binaryValue:ToString()
                 CASE __UsualType.Codeblock  ; strResult := IIF (SELF:_refData == NULL, "NULL_CODEBLOCK", SELF:_codeblockValue:ToString())
                 CASE __UsualType.Currency	; strResult := IIF (SELF:_refData == NULL, "0", SELF:_currencyValue:ToString())
-                CASE __UsualType.Object		; strResult := AsString(SELF)
+                CASE __UsualType.Object		; strResult := XSharp.RT.Functions.AsString(SELF)
                 CASE __UsualType.Date		; strResult := SELF:_dateValue:ToString()
                 CASE __UsualType.DateTime	; strResult := SELF:_dateTimeValue:ToString()
                 CASE __UsualType.Decimal	; strResult := IIF (SELF:_refData == NULL, "0", SELF:_decimalValue:ToString())
@@ -2803,7 +2802,6 @@ BEGIN NAMESPACE XSharp
                 OTHERWISE					; strResult := ""
                 END SWITCH
             RETURN strResult
-
 
         /// <inheritdoc/>
         PUBLIC METHOD ToString(provider AS System.IFormatProvider) AS STRING

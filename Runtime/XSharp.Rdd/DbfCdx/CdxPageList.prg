@@ -35,7 +35,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
          	LOCAL isOk AS LOGIC
             LOCAL buffer AS BYTE[]
             LOCAL oResult AS CdxPage
-            oResult := _FindPage(nPage)
+            oResult := SELF:_FindPage(nPage)
             IF oResult != NULL_OBJECT
                 oResult:Tag := tag
                 RETURN oResult
@@ -151,7 +151,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         INTERNAL METHOD Write(pageNo AS LONG ) AS LOGIC
             // Write a single page from the buffer
             LOCAL lOk := FALSE AS LOGIC
-            VAR page := _FindPage(pageNo)
+            VAR page := SELF:_FindPage(pageNo)
             IF page != NULL
                 IF page:IsHot
                     lOk := page:Write()

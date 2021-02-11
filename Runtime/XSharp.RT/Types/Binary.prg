@@ -225,7 +225,7 @@ BEGIN NAMESPACE XSharp
         #region IFormattable
         /// <inheritdoc />
         PUBLIC OVERRIDE METHOD ToString() AS STRING
-            RETURN ToString("")
+            RETURN SELF:ToString("")
             
         /// <inheritdoc cref="System.Double.ToString"/>
         PUBLIC METHOD ToString(sFormat AS STRING) AS STRING
@@ -240,7 +240,7 @@ BEGIN NAMESPACE XSharp
             return sb:ToString()
             /// <inheritdoc />
         PUBLIC METHOD ToString(format AS STRING, provider AS System.IFormatProvider) AS STRING
-            RETURN ToString(format)
+            RETURN SELF:ToString(format)
             #endregion
         #region ISerializable
         /// <inheritdoc/>

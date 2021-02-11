@@ -601,7 +601,7 @@ CLASS ListView INHERIT TextControl
 
 	METHOD InsertColumn(oListViewColumn AS ListViewColumn, nInsertAfter:= -1 AS LONG) AS LOGIC
 		LOCAL oHeader AS IVOColumnHeader
-		IF ! ValidateControl()
+		IF ! SELF:ValidateControl()
 			RETURN FALSE
 		ENDIF
 		IF nInsertAfter == -1
@@ -622,7 +622,7 @@ CLASS ListView INHERIT TextControl
 		LOCAL oListViewItem		AS IVOListViewItem
 		LOCAL cCaption AS STRING
 		// copy the usual values from the item to the column
-		IF ! ValidateControl()
+		IF ! SELF:ValidateControl()
 			RETURN FALSE
 		ENDIF
 

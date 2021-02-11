@@ -997,7 +997,7 @@ VIRTUAL METHOD RecInfo(uiOrdinal AS LONG, iRecID AS OBJECT, oNewValue AS OBJECT)
             SELF:ADSERROR(ERDD_DATATYPE, EG_DATATYPE, "RecInfo")
             RETURN FALSE
         END TRY
-        _CheckError(ACE.AdsIsRecordLocked(SELF:_Table, dwRecno, OUT VAR locked))
+        SELF:_CheckError(ACE.AdsIsRecordLocked(SELF:_Table, dwRecno, OUT VAR locked))
         RETURN locked != 0
         
     CASE DbRecordInfo.DBRI_RECSIZE

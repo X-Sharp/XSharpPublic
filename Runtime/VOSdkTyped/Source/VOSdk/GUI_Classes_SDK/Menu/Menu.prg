@@ -388,7 +388,7 @@ CLASS Menu INHERIT VObject
 
 		
 	METHOD SetShortCuts(oAccelerator AS Accelerator) AS VOID
-		__ClearShortCuts(SELF:__Menu)
+		SELF:__ClearShortCuts(SELF:__Menu)
 		IF oAccelerator != NULL_OBJECT
 			FOREACH IMPLIED oKey IN oAccelerator:Keys
 				LOCAL IMPLIED oItem := SELF:__Menu:GetItemByID(oKey:ID)
@@ -402,7 +402,7 @@ CLASS Menu INHERIT VObject
 	METHOD __ClearShortCuts(oMenu as System.Windows.Forms.Menu) as VOID
 		FOREACH IMPLIED oItem in oMenu:MenuItems
 			oItem:Shortcut := System.Windows.Forms.Shortcut.None
-			__ClearShortCuts(oItem)
+			SELF:__ClearShortCuts(oItem)
 		NEXT
 		RETURN
 		

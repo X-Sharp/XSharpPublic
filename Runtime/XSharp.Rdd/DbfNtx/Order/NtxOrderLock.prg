@@ -141,7 +141,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             LOCAL dwOffSet AS DWORD
             
             result := FALSE
-            IF _lockGate(SELF:_tagNumber)
+            IF SELF:_lockGate(SELF:_tagNumber)
                 dwOffSet := ~(SELF:_getParkLotPlace(SELF:_tagNumber) + SELF:_parkPlace)
                 IF !SELF:_lockBytes(dwOffSet, 1)
                     SELF:_unlockBytes( SELF:_getParkLotGate( SELF:_tagNumber ), 1)

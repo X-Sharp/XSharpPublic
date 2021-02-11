@@ -317,17 +317,17 @@ BEGIN NAMESPACE XSharp.RDD
         /// <summary>Find a connection in the Database container.</summary>
         /// <param name="cConnection">The connection name to look for.</param>
         PUBLIC METHOD FindConnection(cConnection as STRING) AS DbcConnection
-            RETURN FindObject(SELF:_connections, cConnection)
+            RETURN SELF:FindObject(SELF:_connections, cConnection)
 
         /// <summary>Find a table in the Database container.</summary>
         /// <param name="cTable">The table name to look for.</param>
         PUBLIC METHOD FindTable(cTable as STRING) AS DbcTable
-            RETURN FindObject(SELF:_tables, cTable)
+            RETURN SELF:FindObject(SELF:_tables, cTable)
 
         /// <summary>Find a view in the Database container.</summary>
         /// <param name="cView">The view name to look for.</param>
         PUBLIC METHOD FindView(cView as STRING) AS DbcView 
-            RETURN FindObject(SELF:_views, cView)
+            RETURN SELF:FindObject(SELF:_views, cView)
 
         /// <summary>Loads the tables, views and connections from the DBC file</summary>
         OVERRIDE METHOD GetData() AS VOID
@@ -381,7 +381,7 @@ BEGIN NAMESPACE XSharp.RDD
                 if fields == null
                     THROW Error.ArgumentError(__FUNCTION__, nameof(cName), "Could not find table or view '"+names[0]+"'")
                 endif
-                var oField := FindObject(fields, names[1]:Trim())
+                var oField := SELF:FindObject(fields, names[1]:Trim())
                 if oField != NULL
                     RETURN oField:Properties:GetValue(cProp)
                 ELSE

@@ -80,17 +80,17 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 #endregion
 
         PRIVATE METHOD _getValues as VOID
-            _rootPage   := _GetLong(CDXTAGHEADER_ROOT)
-            _keyLength  := _GetWord(CDXTAGHEADER_KEYLENGTH)
+            _rootPage   := SELF:_GetLong(CDXTAGHEADER_ROOT)
+            _keyLength  := SELF:_GetWord(CDXTAGHEADER_KEYLENGTH)
             _options    := (CdxOptions)Buffer[CDXTAGHEADER_OPTIONS]
-            _keyExprPos := _GetWord(CDXTAGHEADER_KEYEXPRPOS)
-            _keyExprLen := _GetWord(CDXTAGHEADER_KEYEXPRLEN)
-            _forExprPos := _GetWord(CDXTAGHEADER_FOREXPRPOS)
-            _forExprLen := _GetWord(CDXTAGHEADER_FOREXPRLEN)
-            _keyExpression := _GetString(_keyExprPos+CDXPAGE_SIZE, _keyExprLen)
-            _forExpression := _GetString(_forExprPos+CDXPAGE_SIZE, _forExprLen)
-            _descending  := _GetWord( CDXTAGHEADER_DESCENDING ) != 0
-            _vfpCollation  := _GetString(CDXTAGHEADER_VFPCOLLATION, 8)
+            _keyExprPos := SELF:_GetWord(CDXTAGHEADER_KEYEXPRPOS)
+            _keyExprLen := SELF:_GetWord(CDXTAGHEADER_KEYEXPRLEN)
+            _forExprPos := SELF:_GetWord(CDXTAGHEADER_FOREXPRPOS)
+            _forExprLen := SELF:_GetWord(CDXTAGHEADER_FOREXPRLEN)
+            _keyExpression := SELF:_GetString(_keyExprPos+CDXPAGE_SIZE, _keyExprLen)
+            _forExpression := SELF:_GetString(_forExprPos+CDXPAGE_SIZE, _forExprLen)
+            _descending  := SELF:_GetWord( CDXTAGHEADER_DESCENDING ) != 0
+            _vfpCollation  := SELF:_GetString(CDXTAGHEADER_VFPCOLLATION, 8)
 
 #region Fields
         PRIVATE _rootPage       as LONG
@@ -108,40 +108,40 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 #region properties
 
         INTERNAL PROPERTY RootPage AS LONG GET _rootPage;
-            SET _SetLong(CDXTAGHEADER_ROOT, value), _rootPage := value
+            SET SELF:_SetLong(CDXTAGHEADER_ROOT, value), _rootPage := value
             
 		INTERNAL PROPERTY KeySize		AS WORD	GET _keyLength;
-			SET _SetWord(CDXTAGHEADER_KEYLENGTH, value), _keyLength := value
+			SET SELF:_SetWord(CDXTAGHEADER_KEYLENGTH, value), _keyLength := value
 
         INTERNAL PROPERTY Options	AS CdxOptions GET _options;
 			SET Buffer[CDXTAGHEADER_OPTIONS] := value, _options := value
 
-		INTERNAL PROPERTY Signature  AS BYTE GET _GetByte(CDXTAGHEADER_SIG) ;
-            SET _SetByte(CDXTAGHEADER_SIG, value)
+		INTERNAL PROPERTY Signature  AS BYTE GET SELF:_GetByte(CDXTAGHEADER_SIG) ;
+            SET SELF:_SetByte(CDXTAGHEADER_SIG, value)
 
 	    INTERNAL PROPERTY KeyExprPos AS WORD GET _keyExprPos;
-			SET _SetWord(CDXTAGHEADER_KEYEXPRPOS, value), _keyExprPos := value
+			SET SELF:_SetWord(CDXTAGHEADER_KEYEXPRPOS, value), _keyExprPos := value
 
 	    INTERNAL PROPERTY KeyExprLen	AS WORD GET _keyExprLen;
-			SET _SetWord(CDXTAGHEADER_KEYEXPRLEN, value), _keyExprLen := value
+			SET SELF:_SetWord(CDXTAGHEADER_KEYEXPRLEN, value), _keyExprLen := value
 
         INTERNAL PROPERTY ForExprPos	AS WORD	GET _forExprPos ;
-			SET _SetWord(CDXTAGHEADER_FOREXPRPOS, value), _forExprPos  := value
+			SET SELF:_SetWord(CDXTAGHEADER_FOREXPRPOS, value), _forExprPos  := value
 
 	    INTERNAL PROPERTY ForExprLen	AS WORD	GET _forExprLen ;
-			SET _SetWord(CDXTAGHEADER_FOREXPRLEN, value), _forExprLen := value
+			SET SELF:_SetWord(CDXTAGHEADER_FOREXPRLEN, value), _forExprLen := value
 
 		INTERNAL PROPERTY Descending	AS LOGIC  GET _descending ;
-			SET _SetWord( CDXTAGHEADER_DESCENDING, (WORD) IIF(value,1,0) ), _descending := value
+			SET SELF:_SetWord( CDXTAGHEADER_DESCENDING, (WORD) IIF(value,1,0) ), _descending := value
 
         INTERNAL PROPERTY KeyExpression AS STRING GET _keyExpression ;
-            SET _SetString(KeyExprPos+CDXPAGE_SIZE, KeyExprLen, value) , _keyExpression := value
+            SET SELF:_SetString(KeyExprPos+CDXPAGE_SIZE, KeyExprLen, value) , _keyExpression := value
 
         INTERNAL PROPERTY ForExpression AS STRING GET _forExpression ;
-            SET _SetString(ForExprPos+CDXPAGE_SIZE, ForExprLen, value) , _forExpression := value
+            SET SELF:_SetString(ForExprPos+CDXPAGE_SIZE, ForExprLen, value) , _forExpression := value
 
         INTERNAL PROPERTY VFPCollation AS STRING GET _vfpCollation ;
-            SET _SetString(CDXTAGHEADER_VFPCOLLATION, 8, value) , _vfpCollation := value
+            SET SELF:_SetString(CDXTAGHEADER_VFPCOLLATION, 8, value) , _vfpCollation := value
 
 
 #endregion

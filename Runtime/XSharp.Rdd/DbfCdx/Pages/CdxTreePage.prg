@@ -28,12 +28,12 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         INTERNAL PROPERTY DebuggerDisplay AS STRING GET String.Format("{0} {1:X} Keys: {2}",PageType, PageNo, NumKeys)
         PRIVATE _pageType AS CdxPageType
         PRIVATE METHOD _getValues() AS VOID
-            _pageType := (CdxPageType) _GetWord(CDXPAGE_TYPE)
+            _pageType := (CdxPageType) SELF:_GetWord(CDXPAGE_TYPE)
 
         #region Properties
         INTERNAL OVERRIDE PROPERTY PageType AS CdxPageType ;
           GET _pageType ;
-          SET _SetWord(CDXPAGE_TYPE, value), IsHot := TRUE, _pageType := value
+          SET SELF:_SetWord(CDXPAGE_TYPE, value), IsHot := TRUE, _pageType := value
 
         // FoxPro stores empty pointers as -1, FoxBASE as 0
         INTERNAL PROPERTY HasLeft    AS LOGIC GET LeftPtr    != 0 .AND. LeftPtr  != -1

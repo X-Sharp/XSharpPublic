@@ -604,7 +604,7 @@ METHOD Select() AS DWORD
 	VoDbSelect( wWorkArea, OUT dwCurrentWorkArea )
 	RETURN dwCurrentWorkArea
 
-METHOD SetDataField( nFieldPosition AS LONG, oDataField AS DataField) AS LOGIC
+METHOD SetDataField( nFieldPosition AS DWORD, oDataField AS DataField) AS LOGIC
 	LOCAL wFieldPosition := nFieldPosition  AS DWORD
 	LOCAL lRetCode AS LOGIC
 	LOCAL oError AS USUAL
@@ -703,7 +703,7 @@ METHOD SetFilter( cbFilterBlock , cFilterText ) AS LOGIC CLIPPER
 	
 
 METHOD SetIndex( oFSIndexFile AS FileSpec) AS LOGIC
-    RETURN SetIndex(oFSIndexFile:FullPath)
+    RETURN SELF:SetIndex(oFSIndexFile:FullPath)
     
 METHOD SetIndex( cIndexFileName := "" AS STRING ) AS LOGIC
 	// oFSIndexFile is a a FileSpec object for the index file,

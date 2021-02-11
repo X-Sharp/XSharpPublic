@@ -51,7 +51,7 @@ BEGIN NAMESPACE XSharp.IO
         INTERNAL METHOD Add(key as K, val as V) AS V
             LOCAL old as V
             if _cacheMap:Count >= _capacity
-                old := RemoveFirst()
+                old := SELF:RemoveFirst()
             ELSE
                 old := NULL
             endif

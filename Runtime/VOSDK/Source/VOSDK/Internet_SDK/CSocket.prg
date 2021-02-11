@@ -328,7 +328,7 @@ METHOD accept() AS CSocket STRICT
 
 
 DESTRUCTOR()
-	Destroy()
+	SELF:Destroy()
 	RETURN
 
 METHOD bind(nPort AS WORD, cIP AS STRING, nFamily AS SHORTINT) AS LOGIC STRICT

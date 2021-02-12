@@ -5,7 +5,6 @@
 #nullable disable
 
 using System;
-using System.Diagnostics;
 
 namespace Microsoft.CodeAnalysis.Debugging
 {
@@ -13,12 +12,7 @@ namespace Microsoft.CodeAnalysis.Debugging
     {
         public event EventHandler<DebuggingStateChangedEventArgs> BeforeDebuggingStateChanged;
 
-        public DebuggingState CurrentDebuggingState { get; private set; } = DebuggingState.Design;
-
         public void OnBeforeDebuggingStateChanged(DebuggingState before, DebuggingState after)
-        {
-            BeforeDebuggingStateChanged?.Invoke(this, new DebuggingStateChangedEventArgs(before, after));
-            CurrentDebuggingState = after;
-        }
+            => BeforeDebuggingStateChanged?.Invoke(this, new DebuggingStateChangedEventArgs(before, after));
     }
 }

@@ -20,6 +20,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
 #endif
     {
         private const string DefaultIndexerName = "Item";
+
         internal static SourcePropertySymbol Create(SourceMemberContainerTypeSymbol containingType, Binder bodyBinder, PropertyDeclarationSyntax syntax, DiagnosticBag diagnostics)
         {
             var nameToken = syntax.Identifier;
@@ -50,6 +51,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                 out bool isInitOnly,
                 out var getSyntax,
                 out var setSyntax);
+
             var explicitInterfaceSpecifier = GetExplicitInterfaceSpecifier(syntax);
             SyntaxTokenList modifiersTokenList = GetModifierTokensSyntax(syntax);
             bool isExplicitInterfaceImplementation = explicitInterfaceSpecifier is object;

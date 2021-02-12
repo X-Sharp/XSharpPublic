@@ -18,7 +18,6 @@ using Microsoft.CodeAnalysis.PooledObjects;
 using Microsoft.CodeAnalysis.Shared.Extensions;
 using Microsoft.CodeAnalysis.Shared.Utilities;
 using Microsoft.CodeAnalysis.Text;
-using Microsoft.VisualStudio.Debugger.Contracts.EditAndContinue;
 using Roslyn.Utilities;
 
 namespace Microsoft.CodeAnalysis.EditAndContinue
@@ -520,7 +519,7 @@ namespace Microsoft.CodeAnalysis.EditAndContinue
                 cancellationToken.ThrowIfCancellationRequested();
 
                 var triviaEdits = new List<(SyntaxNode OldNode, SyntaxNode NewNode)>();
-                var lineEdits = new List<SourceLineUpdate>();
+                var lineEdits = new List<LineChange>();
 
                 AnalyzeTrivia(
                     oldText,
@@ -1970,7 +1969,7 @@ namespace Microsoft.CodeAnalysis.EditAndContinue
             Match<SyntaxNode> topMatch,
             Dictionary<SyntaxNode, EditKind> editMap,
             [Out] List<(SyntaxNode OldNode, SyntaxNode NewNode)> triviaEdits,
-            [Out] List<SourceLineUpdate> lineEdits,
+            [Out] List<LineChange> lineEdits,
             [Out] List<RudeEditDiagnostic> diagnostics,
             CancellationToken cancellationToken)
         {
@@ -2021,7 +2020,7 @@ namespace Microsoft.CodeAnalysis.EditAndContinue
                 var requiresUpdate = false;
                 var isFirstToken = true;
                 var firstTokenLineDelta = 0;
-                SourceLineUpdate firstTokenLineChange = default;
+                LineChange firstTokenLineChange = default;
                 bool oldHasToken;
                 bool newHasToken;
                 while (true)
@@ -2054,7 +2053,7 @@ namespace Microsoft.CodeAnalysis.EditAndContinue
                     {
                         isFirstToken = false;
                         firstTokenLineDelta = lineDelta;
-                        firstTokenLineChange = (lineDelta != 0) ? new SourceLineUpdate(oldPosition.Line, newPosition.Line) : default;
+                        firstTokenLineChange = (lineDelta != 0) ? new LineChange(oldPosition.Line, newPosition.Line) : default;
                     }
                     else if (firstTokenLineDelta != lineDelta)
                     {
@@ -2083,10 +2082,10 @@ namespace Microsoft.CodeAnalysis.EditAndContinue
                 }
             }
 
-            lineEdits.Sort(CompareLineUpdates);
+            lineEdits.Sort(CompareLineChanges);
         }
 
-        private static int CompareLineUpdates(SourceLineUpdate x, SourceLineUpdate y)
+        private static int CompareLineChanges(LineChange x, LineChange y)
             => x.OldLine.CompareTo(y.OldLine);
 
         #endregion
@@ -3934,7 +3933,7 @@ namespace Microsoft.CodeAnalysis.EditAndContinue
                 Match<SyntaxNode> topMatch,
                 Dictionary<SyntaxNode, EditKind> editMap,
                 [Out] List<(SyntaxNode OldNode, SyntaxNode NewNode)> triviaEdits,
-                [Out] List<SourceLineUpdate> lineEdits,
+                [Out] List<LineChange> lineEdits,
                 [Out] List<RudeEditDiagnostic> diagnostics,
                 CancellationToken cancellationToken)
             {

@@ -291,7 +291,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                 _lazyRefCustomModifiers = ImmutableArray.Create(CSharpCustomModifier.CreateRequired(modifierType));
             }
 
-
             Debug.Assert(isExplicitInterfaceImplementation || _lazyExplicitInterfaceImplementations.IsEmpty);
             _lazyExplicitInterfaceImplementations =
                 explicitlyImplementedProperty is null ?
@@ -349,7 +348,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             }
         }
 
-#nullable enable
+#nullable enable 
 
         private void EnsureSignature()
         {
@@ -1090,7 +1089,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             }
         }
 
-#region Attributes
+        #region Attributes
 
         public abstract SyntaxList<AttributeListSyntax> AttributeDeclarationSyntaxList { get; }
 
@@ -1438,9 +1437,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             }
         }
 
-#endregion
+        #endregion
 
-#region Completion
+        #region Completion
 
         internal sealed override bool RequiresCompletion
         {
@@ -1576,7 +1575,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             }
         }
 
-#endregion
+        #endregion
 
 #nullable enable
 

@@ -147,9 +147,9 @@ namespace Microsoft.CodeAnalysis.CSharp
         {
             MethodSymbol addMethod = initializer.AddMethod;
 #if XSHARP
-            Debug.Assert(XSharpString.Equals(initializer.AddMethod.Name, "Add"));
+            Debug.Assert(XSharpString.Equals(addMethod.Name, "Add"));
 #else
-            Debug.Assert(initializer.AddMethod.Name == "Add");
+            Debug.Assert(addMethod.Name == "Add");
 #endif
            Debug.Assert(addMethod.Parameters
                 .Skip(addMethod.IsExtensionMethod ? 1 : 0)

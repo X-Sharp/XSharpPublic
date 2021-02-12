@@ -14,7 +14,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.CodeAnalysis.Completion;
 using Microsoft.CodeAnalysis.Completion.Providers;
-using Microsoft.CodeAnalysis.Debugging;
 using Microsoft.CodeAnalysis.EditAndContinue;
 using Microsoft.CodeAnalysis.Editor.Host;
 using Microsoft.CodeAnalysis.Editor.Implementation.IntelliSense.Completion;
@@ -271,7 +270,7 @@ namespace Microsoft.CodeAnalysis.Editor.Implementation.IntelliSense.AsyncComplet
             }
 
             var disallowAddingImports = _isDebuggerTextView ||
-                document.Project.Solution.Workspace.Services.GetRequiredService<IDebuggingWorkspaceService>().CurrentDebuggingState != DebuggingState.Design;
+                document.Project.Solution.Workspace.Services.GetService<IEditAndContinueWorkspaceService>()?.IsDebuggingSessionInProgress == true;
 
             var documentOptions = await document.GetOptionsAsync(cancellationToken).ConfigureAwait(false);
             var options = documentOptions

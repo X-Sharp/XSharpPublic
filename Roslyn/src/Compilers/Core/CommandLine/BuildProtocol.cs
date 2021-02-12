@@ -90,8 +90,8 @@ namespace Microsoft.CodeAnalysis.CommandLine
             var requestLength = args.Count + 1 + (libDirectory == null ? 0 : 1);
             var requestArgs = new List<Argument>(requestLength);
 
-                requestArgs.Add(new Argument(ArgumentId.CurrentDirectory, 0, workingDirectory));
-                requestArgs.Add(new Argument(ArgumentId.TempDirectory, 0, tempDirectory));
+            requestArgs.Add(new Argument(ArgumentId.CurrentDirectory, 0, workingDirectory));
+            requestArgs.Add(new Argument(ArgumentId.TempDirectory, 0, tempDirectory));
 
             if (keepAlive != null)
             {
@@ -401,12 +401,11 @@ namespace Microsoft.CodeAnalysis.CommandLine
         public readonly int ReturnCode;
         public readonly bool Utf8Output;
         public readonly string Output;
-        public readonly string ErrorOutput; 
+        public readonly string ErrorOutput;
 
         public CompletedBuildResponse(int returnCode,
                                       bool utf8output,
                                       string? output)
-
         {
             ReturnCode = returnCode;
             Utf8Output = utf8output;

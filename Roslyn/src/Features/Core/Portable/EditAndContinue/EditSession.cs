@@ -6,18 +6,19 @@ using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
+using System.IO;
 using System.Linq;
 using System.Reflection.Metadata;
 using System.Reflection.Metadata.Ecma335;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.CodeAnalysis.Debugging;
 using Microsoft.CodeAnalysis.Emit;
 using Microsoft.CodeAnalysis.ErrorReporting;
 using Microsoft.CodeAnalysis.PooledObjects;
 using Microsoft.CodeAnalysis.Text;
-using Microsoft.VisualStudio.Debugger.Contracts.EditAndContinue;
 using Roslyn.Utilities;
-
 namespace Microsoft.CodeAnalysis.EditAndContinue
 {
     internal sealed class EditSession : IDisposable
@@ -26,9 +27,9 @@ namespace Microsoft.CodeAnalysis.EditAndContinue
 
         internal readonly DebuggingSession DebuggingSession;
         internal readonly EditSessionTelemetry Telemetry;
-        internal readonly IManagedEditAndContinueDebuggerService DebuggerService;
+        internal readonly IDebuggeeModuleMetadataProvider DebugeeModuleMetadataProvider;
 
-        private readonly ImmutableDictionary<ManagedMethodId, ImmutableArray<NonRemappableRegion>> _nonRemappableRegions;
+        private readonly ImmutableDictionary<ActiveMethodId, ImmutableArray<NonRemappableRegion>> _nonRemappableRegions;
 
         /// <summary>
         /// Lazily calculated map of base active statements.
@@ -63,15 +64,16 @@ namespace Microsoft.CodeAnalysis.EditAndContinue
         internal EditSession(
             DebuggingSession debuggingSession,
             EditSessionTelemetry telemetry,
-            IManagedEditAndContinueDebuggerService debuggerService)
+            ActiveStatementProvider activeStatementProvider,
+            IDebuggeeModuleMetadataProvider debugeeModuleMetadataProvider)
         {
             DebuggingSession = debuggingSession;
             Telemetry = telemetry;
-            DebuggerService = debuggerService;
+            DebugeeModuleMetadataProvider = debugeeModuleMetadataProvider;
 
             _nonRemappableRegions = debuggingSession.NonRemappableRegions;
 
-            BaseActiveStatements = new AsyncLazy<ActiveStatementsMap>(cancellationToken => GetBaseActiveStatementsAsync(cancellationToken), cacheResult: true);
+            BaseActiveStatements = new AsyncLazy<ActiveStatementsMap>(cancellationToken => GetBaseActiveStatementsAsync(activeStatementProvider, cancellationToken), cacheResult: true);
         }
 
         internal PendingSolutionUpdate? Test_GetPendingSolutionUpdate() => _pendingUpdate;
@@ -88,47 +90,48 @@ namespace Microsoft.CodeAnalysis.EditAndContinue
         /// <returns><see langword="default"/> if the module is not loaded.</returns>
         public async Task<ImmutableArray<Diagnostic>?> GetModuleDiagnosticsAsync(Guid mvid, string projectDisplayName, CancellationToken cancellationToken)
         {
-            var availability = await DebuggerService.GetAvailabilityAsync(mvid, cancellationToken).ConfigureAwait(false);
-            if (availability.Status == ManagedEditAndContinueAvailabilityStatus.ModuleNotLoaded)
+            var availability = await DebugeeModuleMetadataProvider.GetEncAvailabilityAsync(mvid, cancellationToken).ConfigureAwait(false);
+            if (availability == null)
             {
                 return null;
             }
 
-            if (availability.Status == ManagedEditAndContinueAvailabilityStatus.Available)
+            var (errorCode, localizedMessage) = availability.Value;
+            if (errorCode == 0)
             {
                 return ImmutableArray<Diagnostic>.Empty;
             }
 
-            var descriptor = EditAndContinueDiagnosticDescriptors.GetModuleDiagnosticDescriptor(availability.Status);
-            return ImmutableArray.Create(Diagnostic.Create(descriptor, Location.None, new[] { projectDisplayName, availability.LocalizedMessage }));
+            var descriptor = EditAndContinueDiagnosticDescriptors.GetModuleDiagnosticDescriptor(errorCode);
+            return ImmutableArray.Create(Diagnostic.Create(descriptor, Location.None, new[] { projectDisplayName, localizedMessage }));
         }
 
-        private async Task<ActiveStatementsMap> GetBaseActiveStatementsAsync(CancellationToken cancellationToken)
+        private async Task<ActiveStatementsMap> GetBaseActiveStatementsAsync(ActiveStatementProvider activeStatementProvider, CancellationToken cancellationToken)
         {
             try
             {
                 // Last committed solution reflects the state of the source that is in sync with the binaries that are loaded in the debuggee.
-                return CreateActiveStatementsMap(await DebuggerService.GetActiveStatementsAsync(cancellationToken).ConfigureAwait(false));
+                return CreateActiveStatementsMap(await activeStatementProvider(cancellationToken).ConfigureAwait(false));
             }
             catch (Exception e) when (FatalError.ReportAndCatchUnlessCanceled(e))
             {
                 return new ActiveStatementsMap(
                     SpecializedCollections.EmptyReadOnlyDictionary<DocumentId, ImmutableArray<ActiveStatement>>(),
-                    SpecializedCollections.EmptyReadOnlyDictionary<ManagedInstructionId, ActiveStatement>());
+                    SpecializedCollections.EmptyReadOnlyDictionary<ActiveInstructionId, ActiveStatement>());
             }
         }
 
-        private ActiveStatementsMap CreateActiveStatementsMap(ImmutableArray<ManagedActiveStatementDebugInfo> debugInfos)
+        private ActiveStatementsMap CreateActiveStatementsMap(ImmutableArray<ActiveStatementDebugInfo> debugInfos)
         {
             var byDocument = PooledDictionary<DocumentId, ArrayBuilder<ActiveStatement>>.GetInstance();
-            var byInstruction = PooledDictionary<ManagedInstructionId, ActiveStatement>.GetInstance();
+            var byInstruction = PooledDictionary<ActiveInstructionId, ActiveStatement>.GetInstance();
 
             bool supportsEditAndContinue(DocumentId documentId)
                 => EditAndContinueWorkspaceService.SupportsEditAndContinue(DebuggingSession.LastCommittedSolution.GetProject(documentId.ProjectId)!);
 
             foreach (var debugInfo in debugInfos)
             {
-                var documentName = debugInfo.DocumentName;
+                var documentName = debugInfo.DocumentNameOpt;
                 if (documentName == null)
                 {
                     // Ignore active statements that do not have a source location.
@@ -156,7 +159,8 @@ namespace Microsoft.CodeAnalysis.EditAndContinue
                     documentIds: documentIds,
                     flags: debugInfo.Flags,
                     span: GetUpToDateSpan(debugInfo),
-                    instructionId: debugInfo.ActiveInstruction);
+                    instructionId: debugInfo.InstructionId,
+                    threadIds: debugInfo.ThreadIds);
 
                 primaryDocumentActiveStatements.Add(activeStatement);
 
@@ -180,7 +184,7 @@ namespace Microsoft.CodeAnalysis.EditAndContinue
 
                 try
                 {
-                    byInstruction.Add(debugInfo.ActiveInstruction, activeStatement);
+                    byInstruction.Add(debugInfo.InstructionId, activeStatement);
                 }
                 catch (ArgumentException)
                 {
@@ -191,25 +195,21 @@ namespace Microsoft.CodeAnalysis.EditAndContinue
             return new ActiveStatementsMap(byDocument.ToMultiDictionaryAndFree(), byInstruction.ToDictionaryAndFree());
         }
 
-        private LinePositionSpan GetUpToDateSpan(ManagedActiveStatementDebugInfo activeStatementInfo)
+        private LinePositionSpan GetUpToDateSpan(ActiveStatementDebugInfo activeStatementInfo)
         {
-            var activeSpan = activeStatementInfo.SourceSpan.ToLinePositionSpan();
-
             if ((activeStatementInfo.Flags & ActiveStatementFlags.MethodUpToDate) != 0)
             {
-                return activeSpan;
+                return activeStatementInfo.LinePositionSpan;
             }
 
-            var instructionId = activeStatementInfo.ActiveInstruction;
-
             // Map active statement spans in non-remappable regions to the latest source locations.
-            if (_nonRemappableRegions.TryGetValue(instructionId.Method, out var regionsInMethod))
+            if (_nonRemappableRegions.TryGetValue(activeStatementInfo.InstructionId.MethodId, out var regionsInMethod))
             {
                 foreach (var region in regionsInMethod)
                 {
-                    if (region.Span.Contains(activeSpan))
+                    if (region.Span.Contains(activeStatementInfo.LinePositionSpan))
                     {
-                        return activeSpan.AddLineDelta(region.LineDelta);
+                        return activeStatementInfo.LinePositionSpan.AddLineDelta(region.LineDelta);
                     }
                 }
             }
@@ -217,7 +217,7 @@ namespace Microsoft.CodeAnalysis.EditAndContinue
             // The active statement is in a method that's not up-to-date but the active span have not changed.
             // We only add changed spans to non-remappable regions map, so we won't find unchanged span there.
             // Return the original span.
-            return activeSpan;
+            return activeStatementInfo.LinePositionSpan;
         }
 
         /// <summary>
@@ -475,7 +475,7 @@ namespace Microsoft.CodeAnalysis.EditAndContinue
         /// Checks only projects containing a given <paramref name="sourceFilePath"/> or all projects of the solution if <paramref name="sourceFilePath"/> is null.
         /// Invoked by the debugger on every step. It is critical for stepping performance that this method returns as fast as possible in absence of changes.
         /// </summary>
-        public async ValueTask<bool> HasChangesAsync(Solution solution, SolutionActiveStatementSpanProvider solutionActiveStatementSpanProvider, string? sourceFilePath, CancellationToken cancellationToken)
+        public async Task<bool> HasChangesAsync(Solution solution, SolutionActiveStatementSpanProvider solutionActiveStatementSpanProvider, string? sourceFilePath, CancellationToken cancellationToken)
         {
             try
             {
@@ -601,7 +601,7 @@ namespace Microsoft.CodeAnalysis.EditAndContinue
             try
             {
                 var allEdits = ArrayBuilder<SemanticEdit>.GetInstance();
-                var allLineEdits = ArrayBuilder<(DocumentId, ImmutableArray<SourceLineUpdate>)>.GetInstance();
+                var allLineEdits = ArrayBuilder<(DocumentId, ImmutableArray<LineChange>)>.GetInstance();
                 var activeStatementsInChangedDocuments = ArrayBuilder<(DocumentId, ImmutableArray<ActiveStatement>, ImmutableArray<ImmutableArray<LinePositionSpan>>)>.GetInstance();
                 using var _ = ArrayBuilder<ISymbol>.GetInstance(out var allAddedSymbols);
 
@@ -659,12 +659,11 @@ namespace Microsoft.CodeAnalysis.EditAndContinue
         {
             try
             {
-                using var _1 = ArrayBuilder<ManagedModuleUpdate>.GetInstance(out var deltas);
-                using var _2 = ArrayBuilder<(Guid ModuleId, ImmutableArray<(ManagedModuleMethodId Method, NonRemappableRegion Region)>)>.GetInstance(out var nonRemappableRegions);
-                using var _3 = ArrayBuilder<(ProjectId, EmitBaseline)>.GetInstance(out var emitBaselines);
-                using var _4 = ArrayBuilder<IDisposable>.GetInstance(out var readers);
-                using var _5 = ArrayBuilder<(ProjectId, ImmutableArray<Diagnostic>)>.GetInstance(out var diagnostics);
-                using var _6 = ArrayBuilder<Document>.GetInstance(out var changedOrAddedDocuments);
+                using var deltasDisposer = ArrayBuilder<Deltas>.GetInstance(out var deltas);
+                using var emitBaselinesDisposer = ArrayBuilder<(ProjectId, EmitBaseline)>.GetInstance(out var emitBaselines);
+                using var readersDisposer = ArrayBuilder<IDisposable>.GetInstance(out var readers);
+                using var diagnosticsDisposer = ArrayBuilder<(ProjectId, ImmutableArray<Diagnostic>)>.GetInstance(out var diagnostics);
+                using var changedDocumentsDisposer = ArrayBuilder<Document>.GetInstance(out var changedOrAddedDocuments);
 
                 var baseSolution = DebuggingSession.LastCommittedSolution;
 
@@ -744,102 +743,131 @@ namespace Microsoft.CodeAnalysis.EditAndContinue
                         continue;
                     }
 
-                    if (!DebuggingSession.TryGetOrCreateEmitBaseline(project, readers, out var createBaselineDiagnostics, out var baseline))
-                    {
-                        Debug.Assert(!createBaselineDiagnostics.IsEmpty);
-
-                        // Report diagnosics even when the module is never going to be loaded (e.g. in multi-targeting scenario, where only one framework being debugged).
-                        // This is consistent with reporting compilation errors - the IDE reports them for all TFMs regardless of what framework the app is running on.
-                        diagnostics.Add((project.Id, createBaselineDiagnostics));
-                        Telemetry.LogProjectAnalysisSummary(projectSummary, createBaselineDiagnostics);
-                        isBlocked = true;
-                        continue;
-                    }
-
-                    EditAndContinueWorkspaceService.Log.Write("Emitting update of '{0}' [0x{1:X8}]", project.Id.DebugName, project.Id);
-
-                    // Exception regions of active statements in changed documents are calculated (non-default),
-                    // since we already checked that no changed document is out-of-sync above.
-                    var baseActiveExceptionRegions = await GetBaseActiveExceptionRegionsAsync(solution, cancellationToken).ConfigureAwait(false);
-                    var baseActiveStatements = await BaseActiveStatements.GetValueAsync(cancellationToken).ConfigureAwait(false);
-
                     var projectChanges = await GetProjectChangesAsync(changedDocumentAnalyses, cancellationToken).ConfigureAwait(false);
-                    var lineEdits = projectChanges.LineChanges.SelectAsArray((lineChange, project) =>
-                    {
-                        var filePath = project.GetDocument(lineChange.DocumentId)!.FilePath;
-                        Contract.ThrowIfNull(filePath);
-                        return new SequencePointUpdates(filePath, lineChange.Changes);
-                    }, project);
-
-                    using var pdbStream = SerializableBytes.CreateWritableStream();
-                    using var metadataStream = SerializableBytes.CreateWritableStream();
-                    using var ilStream = SerializableBytes.CreateWritableStream();
-
-                    var updatedMethods = ImmutableArray.CreateBuilder<MethodDefinitionHandle>();
-
                     var currentCompilation = await project.GetCompilationAsync(cancellationToken).ConfigureAwait(false);
+                    var baseActiveStatements = await BaseActiveStatements.GetValueAsync(cancellationToken).ConfigureAwait(false);
 
                     // project must support compilations since it supports EnC
                     Contract.ThrowIfNull(currentCompilation);
 
-                    var emitResult = currentCompilation.EmitDifference(
-                        baseline,
-                        projectChanges.SemanticEdits,
-                        projectChanges.AddedSymbols.Contains,
-                        metadataStream,
-                        ilStream,
-                        pdbStream,
-                        updatedMethods,
-                        cancellationToken);
+                    // Exception regions of active statements in changed documents are calculated (non-default),
+                    // since we already checked that no changed document is out-of-sync above.
+                    var baseActiveExceptionRegions = await GetBaseActiveExceptionRegionsAsync(solution, cancellationToken).ConfigureAwait(false);
 
-                    if (emitResult.Success)
+                    var lineEdits = projectChanges.LineChanges.SelectAsArray((lineChange, p) => (p.GetDocument(lineChange.DocumentId)!.FilePath, lineChange.Changes), project);
+
+                    // Dispatch to a background thread - the compiler reads symbols and ISymUnmanagedReader requires MTA thread.
+                    // We also don't want to block the UI thread - emit might perform IO.
+                    if (Thread.CurrentThread.GetApartmentState() != ApartmentState.MTA)
                     {
-                        var updatedMethodTokens = updatedMethods.SelectAsArray(h => MetadataTokens.GetToken(h));
-
-                        // Determine all active statements whose span changed and exception region span deltas.
-                        GetActiveStatementAndExceptionRegionSpans(
-                            mvid,
-                            baseActiveStatements,
-                            baseActiveExceptionRegions,
-                            updatedMethodTokens,
-                            _nonRemappableRegions,
-                            projectChanges.NewActiveStatements,
-                            out var activeStatementsInUpdatedMethods,
-                            out var moduleNonRemappableRegions,
-                            out var exceptionRegionUpdates);
-
-                        deltas.Add(new ManagedModuleUpdate(
-                            mvid,
-                            ilStream.ToImmutableArray(),
-                            metadataStream.ToImmutableArray(),
-                            pdbStream.ToImmutableArray(),
-                            lineEdits,
-                            updatedMethodTokens,
-                            activeStatementsInUpdatedMethods,
-                            exceptionRegionUpdates));
-
-                        nonRemappableRegions.Add((mvid, moduleNonRemappableRegions));
-                        emitBaselines.Add((project.Id, emitResult.Baseline));
+                        await Task.Factory.StartNew(() =>
+                        {
+                            try
+                            {
+                                Emit();
+                            }
+                            catch (Exception e) when (FatalError.ReportAndPropagateUnlessCanceled(e))
+                            {
+                                throw ExceptionUtilities.Unreachable;
+                            }
+                        }, cancellationToken, TaskCreationOptions.None, TaskScheduler.Default).ConfigureAwait(false);
                     }
                     else
                     {
-                        // error
-                        isBlocked = true;
+                        Emit();
                     }
 
-                    // TODO: https://github.com/dotnet/roslyn/issues/36061
-                    // We should only report diagnostics from emit phase.
-                    // Syntax and semantic diagnostics are already reported by the diagnostic analyzer.
-                    // Currently we do not have means to distinguish between diagnostics reported from compilation and emit phases.
-                    // Querying diagnostics of the entire compilation or just the updated files migth be slow.
-                    // In fact, it is desirable to allow emitting deltas for symbols affected by the change while allowing untouched
-                    // method bodies to have errors.
-                    if (!emitResult.Diagnostics.IsEmpty)
+                    void Emit()
                     {
-                        diagnostics.Add((project.Id, emitResult.Diagnostics));
-                    }
+                        Debug.Assert(Thread.CurrentThread.GetApartmentState() == ApartmentState.MTA, "SymReader requires MTA");
 
-                    Telemetry.LogProjectAnalysisSummary(projectSummary, emitResult.Diagnostics);
+                        // TODO: Use moduleLoaded to determine whether or not to create an initial baseline, once we move OOP.
+                        var baseline = DebuggingSession.GetOrCreateEmitBaseline(project.Id, mvid, DebugeeModuleMetadataProvider);
+
+                        // The metadata blob is guaranteed to not be disposed while "continue" operation is being executed.
+                        // If it is disposed it means it had been disposed when "continue" operation started.
+                        if (baseline == null || baseline.OriginalMetadata.IsDisposed)
+                        {
+                            // If we have no baseline the module has not been loaded yet.
+                            // We need to create the baseline from compiler outputs.
+                            var outputs = DebuggingSession.GetCompilationOutputs(project);
+                            if (CreateInitialBaselineForDeferredModuleUpdate(outputs, out var createBaselineDiagnostics, out baseline, out var debugInfoReaderProvider, out var metadataReaderProvider))
+                            {
+                                readers.Add(metadataReaderProvider);
+                                readers.Add(debugInfoReaderProvider);
+                            }
+                            else
+                            {
+                                // Report diagnosics even when the module is never going to be loaded (e.g. in multi-targeting scenario, where only one framework being debugged).
+                                // This is consistent with reporting compilation errors - the IDE reports them for all TFMs regardless of what framework the app is running on.
+                                diagnostics.Add((project.Id, createBaselineDiagnostics));
+                                Telemetry.LogProjectAnalysisSummary(projectSummary, createBaselineDiagnostics);
+                                isBlocked = true;
+                                return;
+                            }
+                        }
+
+                        EditAndContinueWorkspaceService.Log.Write("Emitting update of '{0}' [0x{1:X8}]", project.Id.DebugName, project.Id);
+
+                        using var pdbStream = SerializableBytes.CreateWritableStream();
+                        using var metadataStream = SerializableBytes.CreateWritableStream();
+                        using var ilStream = SerializableBytes.CreateWritableStream();
+
+                        var updatedMethods = ImmutableArray.CreateBuilder<MethodDefinitionHandle>();
+
+                        var emitResult = currentCompilation.EmitDifference(
+                            baseline,
+                            projectChanges.SemanticEdits,
+                            projectChanges.AddedSymbols.Contains,
+                            metadataStream,
+                            ilStream,
+                            pdbStream,
+                            updatedMethods,
+                            cancellationToken);
+
+                        if (emitResult.Success)
+                        {
+                            var updatedMethodTokens = updatedMethods.SelectAsArray(h => MetadataTokens.GetToken(h));
+
+                            // Determine all active statements whose span changed and exception region span deltas.
+                            GetActiveStatementAndExceptionRegionSpans(
+                                mvid,
+                                baseActiveStatements,
+                                baseActiveExceptionRegions,
+                                updatedMethodTokens,
+                                _nonRemappableRegions,
+                                projectChanges.NewActiveStatements,
+                                out var activeStatementsInUpdatedMethods,
+                                out var nonRemappableRegions);
+
+                            deltas.Add(new Deltas(
+                                mvid,
+                                ilStream.ToImmutableArray(),
+                                metadataStream.ToImmutableArray(),
+                                pdbStream.ToImmutableArray(),
+                                updatedMethodTokens,
+                                lineEdits,
+                                nonRemappableRegions,
+                                activeStatementsInUpdatedMethods));
+
+                            emitBaselines.Add((project.Id, emitResult.Baseline));
+                        }
+                        else
+                        {
+                            // error
+                            isBlocked = true;
+                        }
+
+                        // TODO: https://github.com/dotnet/roslyn/issues/36061
+                        // We should only report diagnostics from emit phase.
+                        // Syntax and semantic diagnostics are already reported by the diagnostic analyzer.
+                        // Currently we do not have means to distinguish between diagnostics reported from compilation and emit phases.
+                        // Querying diagnostics of the entire compilation or just the updated files migth be slow.
+                        // In fact, it is desirable to allow emitting deltas for symbols affected by the change while allowing untouched
+                        // method bodies to have errors.
+                        diagnostics.Add((project.Id, emitResult.Diagnostics));
+                        Telemetry.LogProjectAnalysisSummary(projectSummary, emitResult.Diagnostics);
+                    }
                 }
 
                 if (isBlocked)
@@ -853,10 +881,8 @@ namespace Microsoft.CodeAnalysis.EditAndContinue
                 }
 
                 return new SolutionUpdate(
-                    new ManagedModuleUpdates(
-                        (deltas.Count > 0) ? ManagedModuleUpdateStatus.Ready : ManagedModuleUpdateStatus.None,
-                        deltas.ToImmutable()),
-                    nonRemappableRegions.ToImmutable(),
+                    (deltas.Count > 0) ? SolutionUpdateStatus.Ready : SolutionUpdateStatus.None,
+                    deltas.ToImmutable(),
                     readers.ToImmutable(),
                     emitBaselines.ToImmutable(),
                     diagnostics.ToImmutable());
@@ -867,21 +893,88 @@ namespace Microsoft.CodeAnalysis.EditAndContinue
             }
         }
 
+        private static unsafe bool CreateInitialBaselineForDeferredModuleUpdate(
+            CompilationOutputs compilationOutputs,
+            out ImmutableArray<Diagnostic> diagnostics,
+            [NotNullWhen(true)] out EmitBaseline? baseline,
+            [NotNullWhen(true)] out DebugInformationReaderProvider? debugInfoReaderProvider,
+            [NotNullWhen(true)] out MetadataReaderProvider? metadataReaderProvider)
+        {
+            // Since the module has not been loaded to the debuggee the debugger does not have its metadata or symbols available yet.
+            // Read the metadata and symbols from the disk. Close the files as soon as we are done emitting the delta to minimize 
+            // the time when they are being locked. Since we need to use the baseline that is produced by delta emit for the subsequent
+            // delta emit we need to keep the module metadata and symbol info backing the symbols of the baseline alive in memory. 
+            // Alternatively, we could drop the data once we are done with emitting the delta and re-emit the baseline again 
+            // when we need it next time and the module is loaded.
+
+            diagnostics = default;
+            baseline = null;
+            debugInfoReaderProvider = null;
+            metadataReaderProvider = null;
+
+            var success = false;
+            var fileBeingRead = compilationOutputs.PdbDisplayPath;
+            try
+            {
+                debugInfoReaderProvider = compilationOutputs.OpenPdb();
+                if (debugInfoReaderProvider == null)
+                {
+                    throw new FileNotFoundException();
+                }
+
+                var debugInfoReader = debugInfoReaderProvider.CreateEditAndContinueMethodDebugInfoReader();
+
+                fileBeingRead = compilationOutputs.AssemblyDisplayPath;
+
+                metadataReaderProvider = compilationOutputs.OpenAssemblyMetadata(prefetch: true);
+                if (metadataReaderProvider == null)
+                {
+                    throw new FileNotFoundException();
+                }
+
+                var metadataReader = metadataReaderProvider.GetMetadataReader();
+                var moduleMetadata = ModuleMetadata.CreateFromMetadata((IntPtr)metadataReader.MetadataPointer, metadataReader.MetadataLength);
+
+                baseline = EmitBaseline.CreateInitialBaseline(
+                    moduleMetadata,
+                    debugInfoReader.GetDebugInfo,
+                    debugInfoReader.GetLocalSignature,
+                    debugInfoReader.IsPortable);
+
+                success = true;
+                return true;
+            }
+            catch (Exception e)
+            {
+                var descriptor = EditAndContinueDiagnosticDescriptors.GetDescriptor(EditAndContinueErrorCode.ErrorReadingFile);
+                diagnostics = ImmutableArray.Create(Diagnostic.Create(descriptor, Location.None, new[] { fileBeingRead, e.Message }));
+            }
+            finally
+            {
+                if (!success)
+                {
+                    debugInfoReaderProvider?.Dispose();
+                    metadataReaderProvider?.Dispose();
+                }
+            }
+
+            return false;
+        }
+
         // internal for testing
         internal static void GetActiveStatementAndExceptionRegionSpans(
             Guid moduleId,
             ActiveStatementsMap baseActiveStatements,
             ImmutableArray<ActiveStatementExceptionRegions> baseActiveExceptionRegions,
             ImmutableArray<int> updatedMethodTokens,
-            ImmutableDictionary<ManagedMethodId, ImmutableArray<NonRemappableRegion>> previousNonRemappableRegions,
+            ImmutableDictionary<ActiveMethodId, ImmutableArray<NonRemappableRegion>> previousNonRemappableRegions,
             ImmutableArray<(DocumentId DocumentId, ImmutableArray<ActiveStatement> ActiveStatements, ImmutableArray<ImmutableArray<LinePositionSpan>> ExceptionRegions)> newActiveStatementsInChangedDocuments,
-            out ImmutableArray<ManagedActiveStatementUpdate> activeStatementsInUpdatedMethods,
-            out ImmutableArray<(ManagedModuleMethodId Method, NonRemappableRegion Region)> nonRemappableRegions,
-            out ImmutableArray<ManagedExceptionRegionUpdate> exceptionRegionUpdates)
+            out ImmutableArray<(Guid ThreadId, ActiveInstructionId OldInstructionId, LinePositionSpan NewSpan)> activeStatementsInUpdatedMethods,
+            out ImmutableArray<(ActiveMethodId Method, NonRemappableRegion Region)> nonRemappableRegions)
         {
-            using var _1 = PooledDictionary<(ManagedModuleMethodId MethodId, LinePositionSpan BaseSpan), LinePositionSpan>.GetInstance(out var changedNonRemappableSpans);
-            var activeStatementsInUpdatedMethodsBuilder = ArrayBuilder<ManagedActiveStatementUpdate>.GetInstance();
-            var nonRemappableRegionsBuilder = ArrayBuilder<(ManagedModuleMethodId Method, NonRemappableRegion Region)>.GetInstance();
+            using var _1 = PooledDictionary<(int MethodToken, int MethodVersion, LinePositionSpan BaseSpan), LinePositionSpan>.GetInstance(out var changedNonRemappableSpans);
+            var activeStatementsInUpdatedMethodsBuilder = ArrayBuilder<(Guid, ActiveInstructionId, LinePositionSpan)>.GetInstance();
+            var nonRemappableRegionsBuilder = ArrayBuilder<(ActiveMethodId Method, NonRemappableRegion Region)>.GetInstance();
 
             // Process active statements and their exception regions in changed documents of this project/module:
             foreach (var (documentId, newActiveStatements, newExceptionRegions) in newActiveStatementsInChangedDocuments)
@@ -895,12 +988,16 @@ namespace Microsoft.CodeAnalysis.EditAndContinue
                     var oldActiveStatement = oldActiveStatements[i];
                     var newActiveStatement = newActiveStatements[i];
                     var oldInstructionId = oldActiveStatement.InstructionId;
-                    var oldMethodId = oldInstructionId.Method.Method;
+                    var methodToken = oldInstructionId.MethodId.Token;
+                    var methodVersion = oldInstructionId.MethodId.Version;
 
-                    var isMethodUpdated = updatedMethodTokens.Contains(oldMethodId.Token);
+                    var isMethodUpdated = updatedMethodTokens.Contains(methodToken);
                     if (isMethodUpdated)
                     {
-                        activeStatementsInUpdatedMethodsBuilder.Add(new ManagedActiveStatementUpdate(oldMethodId, oldInstructionId.ILOffset, newActiveStatement.Span.ToSourceSpan()));
+                        foreach (var threadId in oldActiveStatement.ThreadIds)
+                        {
+                            activeStatementsInUpdatedMethodsBuilder.Add((threadId, oldInstructionId, newActiveStatement.Span));
+                        }
                     }
 
                     void AddNonRemappableRegion(LinePositionSpan oldSpan, LinePositionSpan newSpan, bool isExceptionRegion)
@@ -912,7 +1009,7 @@ namespace Microsoft.CodeAnalysis.EditAndContinue
                             if (isMethodUpdated)
                             {
                                 var lineDelta = oldSpan.GetLineDelta(newSpan: newSpan);
-                                nonRemappableRegionsBuilder.Add((oldMethodId, new NonRemappableRegion(oldSpan, lineDelta, isExceptionRegion)));
+                                nonRemappableRegionsBuilder.Add((oldInstructionId.MethodId, new NonRemappableRegion(oldSpan, lineDelta, isExceptionRegion)));
                             }
 
                             // If the method has been up-to-date and it is not updated now then either the active statement span has not changed,
@@ -923,7 +1020,7 @@ namespace Microsoft.CodeAnalysis.EditAndContinue
                         else if (oldSpan != newSpan)
                         {
                             // The method is not up-to-date hence we maintain non-remapable span map for it that needs to be updated.
-                            changedNonRemappableSpans[(oldMethodId, oldSpan)] = newSpan;
+                            changedNonRemappableSpans[(methodToken, methodVersion, oldSpan)] = newSpan;
                         }
                     }
 
@@ -944,12 +1041,12 @@ namespace Microsoft.CodeAnalysis.EditAndContinue
             activeStatementsInUpdatedMethods = activeStatementsInUpdatedMethodsBuilder.ToImmutableAndFree();
 
             // Gather all active method instances contained in this project/module that are not up-to-date:
-            using var _2 = PooledHashSet<ManagedModuleMethodId>.GetInstance(out var unremappedActiveMethods);
+            using var _2 = PooledHashSet<ActiveMethodId>.GetInstance(out var unremappedActiveMethods);
             foreach (var (instruction, baseActiveStatement) in baseActiveStatements.InstructionMap)
             {
-                if (moduleId == instruction.Method.Module && !baseActiveStatement.IsMethodUpToDate)
+                if (moduleId == instruction.MethodId.ModuleId && !baseActiveStatement.IsMethodUpToDate)
                 {
-                    unremappedActiveMethods.Add(instruction.Method.Method);
+                    unremappedActiveMethods.Add(instruction.MethodId);
                 }
             }
 
@@ -957,14 +1054,9 @@ namespace Microsoft.CodeAnalysis.EditAndContinue
             {
                 foreach (var (methodInstance, regionsInMethod) in previousNonRemappableRegions)
                 {
-                    if (methodInstance.Module != moduleId)
-                    {
-                        continue;
-                    }
-
                     // Skip non-remappable regions that belong to method instances that are from a different module 
                     // or no longer active (all active statements in these method instances have been remapped to newer versions).
-                    if (!unremappedActiveMethods.Contains(methodInstance.Method))
+                    if (!unremappedActiveMethods.Contains(methodInstance))
                     {
                         continue;
                     }
@@ -975,7 +1067,7 @@ namespace Microsoft.CodeAnalysis.EditAndContinue
                         var baseSpan = region.Span.AddLineDelta(region.LineDelta);
 
                         NonRemappableRegion newRegion;
-                        if (changedNonRemappableSpans.TryGetValue((methodInstance.Method, baseSpan), out var newSpan))
+                        if (changedNonRemappableSpans.TryGetValue((methodInstance.Token, methodInstance.Version, baseSpan), out var newSpan))
                         {
                             // all spans must be of the same size:
                             Debug.Assert(newSpan.End.Line - newSpan.Start.Line == baseSpan.End.Line - baseSpan.Start.Line);
@@ -988,22 +1080,12 @@ namespace Microsoft.CodeAnalysis.EditAndContinue
                             newRegion = region;
                         }
 
-                        nonRemappableRegionsBuilder.Add((methodInstance.Method, newRegion));
+                        nonRemappableRegionsBuilder.Add((methodInstance, newRegion));
                     }
                 }
             }
 
             nonRemappableRegions = nonRemappableRegionsBuilder.ToImmutableAndFree();
-
-            // The range span in exception region updates is the new span. Deltas are inverse.
-            //   old = new + delta
-            //   new = old – delta
-            exceptionRegionUpdates = nonRemappableRegions.SelectAsArray(
-                r => r.Region.IsExceptionRegion,
-                r => new ManagedExceptionRegionUpdate(
-                    r.Method,
-                    -r.Region.LineDelta,
-                    r.Region.Span.AddLineDelta(r.Region.LineDelta).ToSourceSpan()));
         }
 
         internal void StorePendingUpdate(Solution solution, SolutionUpdate update)
@@ -1011,8 +1093,7 @@ namespace Microsoft.CodeAnalysis.EditAndContinue
             var previousPendingUpdate = Interlocked.Exchange(ref _pendingUpdate, new PendingSolutionUpdate(
                 solution,
                 update.EmitBaselines,
-                update.ModuleUpdates.Updates,
-                update.NonRemappableRegions,
+                update.Deltas,
                 update.ModuleReaders));
 
             // commit/discard was not called:

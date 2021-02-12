@@ -1006,6 +1006,7 @@ namespace Microsoft.CodeAnalysis
                                 if (fileStream is object)
                                 {
                                     Debug.Assert(tree.Encoding is object);
+
                                     using var disposer = new NoThrowStreamDisposer(fileStream, path, diagnostics, MessageProvider);
                                     using var writer = new StreamWriter(fileStream, tree.Encoding);
 
@@ -1479,14 +1480,8 @@ namespace Microsoft.CodeAnalysis
         }
 
         /// <summary>
-        /// Given a compilation and a destination directory, determine three names:
-        ///   1) The name with which the assembly should be output (default = null, which indicates that the compilation output name should be used).
-        ///   2) The path of the assembly/module file (default = destination directory + compilation output name).
-        ///   3) The path of the pdb file (default = assembly/module path with ".pdb" extension).
+        /// Returns the name with which the assembly should be output
         /// </summary>
-        /// <remarks>
-        /// C# has a special implementation that implements idiosyncratic behavior of csc.
-        /// </remarks>
         protected abstract string GetOutputFileName(Compilation compilation, CancellationToken cancellationToken);
 
         /// <summary>
@@ -1497,6 +1492,7 @@ namespace Microsoft.CodeAnalysis
             get { return _fileOpen ?? ((path, mode, access, share) => new FileStream(path, mode, access, share)); }
             set { _fileOpen = value; }
         }
+
         private Func<string, FileMode, FileAccess, FileShare, Stream>? _fileOpen;
 
         private Stream? OpenFile(

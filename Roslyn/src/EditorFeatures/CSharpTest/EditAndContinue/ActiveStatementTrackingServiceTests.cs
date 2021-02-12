@@ -18,7 +18,6 @@ using Microsoft.CodeAnalysis.Editor.UnitTests.Workspaces;
 using Microsoft.CodeAnalysis.Host;
 using Microsoft.CodeAnalysis.Test.Utilities;
 using Microsoft.CodeAnalysis.Text;
-using Microsoft.VisualStudio.Debugger.Contracts.EditAndContinue;
 using Roslyn.Test.Utilities;
 using Roslyn.Utilities;
 using Xunit;
@@ -161,13 +160,13 @@ class C
 
             var encService = new MockEditAndContinueWorkspaceService();
 
-            encService.GetBaseActiveStatementSpansImpl = (_, documentIds) => ImmutableArray.Create(
+            encService.GetBaseActiveStatementSpansAsyncImpl = documentIds => ImmutableArray.Create(
                 ImmutableArray.Create(
                     (span11, ActiveStatementFlags.IsNonLeafFrame),
                     (span12, ActiveStatementFlags.IsLeafFrame)),
                 ImmutableArray<(LinePositionSpan, ActiveStatementFlags)>.Empty);
 
-            encService.GetAdjustedActiveStatementSpansImpl = (document, _) => document.Name switch
+            encService.GetAdjustedDocumentActiveStatementSpansAsyncImpl = document => document.Name switch
             {
                 "1.cs" => ImmutableArray.Create(
                     (span21, ActiveStatementFlags.IsNonLeafFrame),
@@ -235,7 +234,7 @@ class C
             }
 
             // we are not able to determine active statements in a document:
-            encService.GetAdjustedActiveStatementSpansImpl = (_, _) => default;
+            encService.GetAdjustedDocumentActiveStatementSpansAsyncImpl = document => default;
 
             var spans6 = await trackingSession.GetAdjustedTrackingSpansAsync(document1, snapshot1, CancellationToken.None).ConfigureAwait(false);
             AssertEx.Equal(new[]

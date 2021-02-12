@@ -3,7 +3,6 @@
 // See the LICENSE file in the project root for more information.
 
 using System;
-using System.Runtime.Serialization;
 using Roslyn.Utilities;
 
 namespace Microsoft.CodeAnalysis.Text
@@ -11,13 +10,9 @@ namespace Microsoft.CodeAnalysis.Text
     /// <summary>
     /// Immutable span represented by a pair of line number and index within the line.
     /// </summary>
-    [DataContract]
     public readonly struct LinePositionSpan : IEquatable<LinePositionSpan>
     {
-        [DataMember(Order = 0)]
         private readonly LinePosition _start;
-
-        [DataMember(Order = 1)]
         private readonly LinePosition _end;
 
         /// <summary>

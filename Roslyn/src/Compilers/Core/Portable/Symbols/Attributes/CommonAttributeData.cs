@@ -188,7 +188,7 @@ namespace Microsoft.CodeAnalysis
             return -1;
         }
 
-#region Decimal and DateTime Constant Decoding
+        #region Decimal and DateTime Constant Decoding
 
         internal ConstantValue DecodeDecimalConstantValue()
         {
@@ -249,7 +249,7 @@ namespace Microsoft.CodeAnalysis
             return ConstantValue.Create(new DateTime(value));
         }
 
-#endregion
+        #endregion
 
         internal ObsoleteAttributeData DecodeObsoleteAttribute(ObsoleteAttributeKind kind)
         {

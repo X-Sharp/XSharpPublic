@@ -306,7 +306,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                        name).GetPublicSymbol();
         }
 
-#region Constructors and Factories
+        #region Constructors and Factories
 
         private static readonly CSharpCompilationOptions s_defaultOptions = new CSharpCompilationOptions(OutputKind.ConsoleApplication);
         private static readonly CSharpCompilationOptions s_defaultSubmissionOptions = new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary).WithReferencesSupersedeLowerVersions(true);
@@ -731,9 +731,9 @@ namespace Microsoft.CodeAnalysis.CSharp
                 eventQueue);
         }
 
-#endregion
+        #endregion
 
-#region Submission
+        #region Submission
 
         public new CSharpScriptCompilationInfo? ScriptCompilationInfo { get; }
         internal override ScriptCompilationInfo? CommonScriptCompilationInfo => ScriptCompilationInfo;
@@ -784,9 +784,9 @@ namespace Microsoft.CodeAnalysis.CSharp
             return false;
         }
 
-#endregion
+        #endregion
 
-#region Syntax Trees (maintain an ordered list)
+        #region Syntax Trees (maintain an ordered list)
 
         /// <summary>
         /// The syntax trees (parsed from source code) that this compilation was created with.
@@ -1038,9 +1038,9 @@ namespace Microsoft.CodeAnalysis.CSharp
             return _syntaxAndDeclarations.GetLazyState().OrdinalMap[tree];
         }
 
-#endregion
+        #endregion
 
-#region References
+        #region References
 
         internal override CommonReferenceManager CommonGetBoundReferenceManager()
         {
@@ -1260,9 +1260,9 @@ namespace Microsoft.CodeAnalysis.CSharp
             return GetBoundReferenceManager().GetMetadataReference(assemblySymbol);
         }
 
-#endregion
+        #endregion
 
-#region Symbols
+        #region Symbols
 
         /// <summary>
         /// The AssemblySymbol that represents the assembly being created.
@@ -2196,9 +2196,9 @@ namespace Microsoft.CodeAnalysis.CSharp
             LazyInitializer.EnsureInitialized(ref _moduleInitializerMethods).Add(method);
         }
 
-#endregion
+        #endregion
 
-#region Binding
+        #region Binding
 
         /// <summary>
         /// Gets a new SyntaxTreeSemanticModel for the specified syntax tree.
@@ -2425,9 +2425,9 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
         }
 
-#endregion
+        #endregion
 
-#region Diagnostics
+        #region Diagnostics
 
         internal override CommonMessageProvider MessageProvider
         {
@@ -2824,9 +2824,9 @@ namespace Microsoft.CodeAnalysis.CSharp
             return result.ToReadOnlyAndFree<Diagnostic>();
         }
 
-#endregion
+        #endregion
 
-#region Resources
+        #region Resources
 
         protected override void AppendDefaultVersionResource(Stream resourceStream)
         {
@@ -2848,9 +2848,9 @@ namespace Microsoft.CodeAnalysis.CSharp
                 companyName: sourceAssembly.Company);
         }
 
-#endregion
+        #endregion
 
-#region Emit
+        #region Emit
 
         internal override byte LinkerMajorVersion => 0x30;
 
@@ -3273,9 +3273,9 @@ namespace Microsoft.CodeAnalysis.CSharp
             return false;
         }
 
-#endregion
+        #endregion
 
-#region Common Members
+        #region Common Members
 
         protected override Compilation CommonWithReferences(IEnumerable<MetadataReference> newReferences)
         {
@@ -3704,7 +3704,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         }
 #pragma warning restore RS0026 // Do not add multiple public overloads with optional parameters
 
-#endregion
+        #endregion
 
         /// <summary>
         /// Returns if the compilation has all of the members necessary to emit metadata about

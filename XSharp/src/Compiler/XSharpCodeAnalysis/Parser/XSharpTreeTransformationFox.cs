@@ -576,7 +576,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             BlockSyntax body = null;
             if (_options.fox1)
             {
-                var call = GenerateMethodCall(XSharpSpecialNames.GetProperty, MakeArgumentList(MakeArgument(GenerateLiteral(fldName))), true);
+                var call = GenerateThisMethodCall(XSharpSpecialNames.GetProperty, MakeArgumentList(MakeArgument(GenerateLiteral(fldName))), true);
                 body = MakeBlock(GenerateReturn(call, true));
                 body.XGenerated = true;
             }
@@ -591,7 +591,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             accessors.Add(accessor);
             if (_options.fox1)
             {
-                var call = GenerateMethodCall(XSharpSpecialNames.SetProperty, MakeArgumentList(MakeArgument(GenerateLiteral(fldName)), MakeArgument(GenerateSimpleName("value"))), true);
+                var call = GenerateThisMethodCall(XSharpSpecialNames.SetProperty, MakeArgumentList(MakeArgument(GenerateLiteral(fldName)), MakeArgument(GenerateSimpleName("value"))), true);
                 body = MakeBlock(GenerateExpressionStatement(call, true));
                 body.XGenerated = true;
             }
@@ -691,7 +691,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     // AddObject(SELF:Property)
                     var arg1 = MakeArgument(GenerateLiteral(name));
                     var arg2 = MakeArgument(prop);
-                    var mcall = GenerateMethodCall(XSharpSpecialNames.AddObject, MakeArgumentList(arg1, arg2));
+                    var mcall = GenerateThisMethodCall(XSharpSpecialNames.AddObject, MakeArgumentList(arg1, arg2));
                     stmt = GenerateExpressionStatement(mcall);
                     stmt.XNode = addobject;
                     stmts.Add(stmt);

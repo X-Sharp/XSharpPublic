@@ -678,10 +678,8 @@ namespace ConsoleApplication1
             await VerifyItemExistsAsync(markup, "List<object?>");
         }
 
-        [Theory, Trait(Traits.Feature, Traits.Features.Completion)]
-        [InlineData('.')]
-        [InlineData(';')]
-        public async Task CreateObjectAndCommitWithCustomizedCommitChar(char commitChar)
+        [Fact, Trait(Traits.Feature, Traits.Features.Completion)]
+        public async Task CreateObjectAndCommitWithSemicolon()
         {
             var markup = @"
 class Program
@@ -691,21 +689,19 @@ class Program
         object o = new $$
     }
 }";
-            var expectedMark = $@"
+            var expectedMark = @"
 class Program
-{{
+{
     void Bar()
-    {{
-        object o = new object(){commitChar}
-    }}
-}}";
-            await VerifyProviderCommitAsync(markup, "object", expectedMark, commitChar: commitChar);
+    {
+        object o = new object();
+    }
+}";
+            await VerifyProviderCommitAsync(markup, "object", expectedMark, commitChar: ';');
         }
 
-        [Theory, Trait(Traits.Feature, Traits.Features.Completion)]
-        [InlineData('.')]
-        [InlineData(';')]
-        public async Task CreateNullableObjectAndCommitWithCustomizedCommitChar(char commitChar)
+        [WpfFact, Trait(Traits.Feature, Traits.Features.Completion)]
+        public async Task CreateNullableObjectAndCommitWithSemicolon()
         {
             var markup = @"
 class Program
@@ -715,21 +711,19 @@ class Program
         object? o = new $$
     }
 }";
-            var expectedMark = $@"
+            var expectedMark = @"
 class Program
-{{
+{
     void Bar()
-    {{
-        object? o = new object(){commitChar}
-    }}
-}}";
-            await VerifyProviderCommitAsync(markup, "object", expectedMark, commitChar: commitChar);
+    {
+        object? o = new object();
+    }
+}";
+            await VerifyProviderCommitAsync(markup, "object", expectedMark, commitChar: ';');
         }
 
-        [Theory, Trait(Traits.Feature, Traits.Features.Completion)]
-        [InlineData('.')]
-        [InlineData(';')]
-        public async Task CreateStringAsLocalAndCommitWithCustomizedCommitChar(char commitChar)
+        [Fact, Trait(Traits.Feature, Traits.Features.Completion)]
+        public async Task CreateStringAsLocalAndCommitWithSemicolon()
         {
             var markup = @"
 class Program
@@ -739,21 +733,19 @@ class Program
         string o = new $$
     }
 }";
-            var expectedMark = $@"
+            var expectedMark = @"
 class Program
-{{
+{
     void Bar()
-    {{
-        string o = new string(){commitChar}
-    }}
-}}";
-            await VerifyProviderCommitAsync(markup, "string", expectedMark, commitChar: commitChar);
+    {
+        string o = new string();
+    }
+}";
+            await VerifyProviderCommitAsync(markup, "string", expectedMark, commitChar: ';');
         }
 
-        [Theory, Trait(Traits.Feature, Traits.Features.Completion)]
-        [InlineData('.')]
-        [InlineData(';')]
-        public async Task CreateGenericListAsLocalAndCommitWithCustomizedChar(char commitChar)
+        [Fact, Trait(Traits.Feature, Traits.Features.Completion)]
+        public async Task CreateGenericListAsLocalAndCommitWithSemicolon()
         {
             var markup = @"
 using System.Collections.Generic;
@@ -764,16 +756,16 @@ class Program
         List<int> o = new $$
     }
 }";
-            var expectedMark = $@"
+            var expectedMark = @"
 using System.Collections.Generic;
 class Program
-{{
+{
     void Bar()
-    {{
-        List<int> o = new List<int>(){commitChar}
-    }}
-}}";
-            await VerifyProviderCommitAsync(markup, "List<int>", expectedMark, commitChar: commitChar);
+    {
+        List<int> o = new List<int>();
+    }
+}";
+            await VerifyProviderCommitAsync(markup, "List<int>", expectedMark, commitChar: ';');
         }
 
         [Fact, Trait(Traits.Feature, Traits.Features.Completion)]

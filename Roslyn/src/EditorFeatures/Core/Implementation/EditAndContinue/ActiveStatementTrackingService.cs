@@ -19,7 +19,6 @@ using Microsoft.CodeAnalysis.Host.Mef;
 using Microsoft.CodeAnalysis.PooledObjects;
 using Microsoft.CodeAnalysis.Text;
 using Microsoft.CodeAnalysis.Text.Shared.Extensions;
-using Microsoft.VisualStudio.Debugger.Contracts.EditAndContinue;
 using Microsoft.VisualStudio.Text;
 using Roslyn.Utilities;
 
@@ -47,7 +46,6 @@ namespace Microsoft.CodeAnalysis.Editor.Implementation.EditAndContinue
 
         private TrackingSession? _session;
         private readonly Workspace _workspace;
-        private readonly IActiveStatementSpanProvider _spanProvider;
 
         /// <summary>
         /// Raised whenever span tracking starts or ends.
@@ -57,12 +55,11 @@ namespace Microsoft.CodeAnalysis.Editor.Implementation.EditAndContinue
         public ActiveStatementTrackingService(Workspace workspace)
         {
             _workspace = workspace;
-            _spanProvider = new RemoteEditAndContinueServiceProxy(_workspace);
         }
 
         public void StartTracking()
         {
-            var newSession = new TrackingSession(_workspace, _spanProvider);
+            var newSession = new TrackingSession(_workspace, _workspace.Services.GetRequiredService<IEditAndContinueWorkspaceService>());
             if (Interlocked.CompareExchange(ref _session, newSession, null) != null)
             {
                 newSession.EndTracking();
@@ -84,18 +81,18 @@ namespace Microsoft.CodeAnalysis.Editor.Implementation.EditAndContinue
             TrackingChanged?.Invoke();
         }
 
-        public ValueTask<ImmutableArray<TextSpan>> GetSpansAsync(Document document, CancellationToken cancellationToken)
-            => _session?.GetSpansAsync(document, cancellationToken) ?? new(ImmutableArray<TextSpan>.Empty);
+        public Task<ImmutableArray<TextSpan>> GetSpansAsync(Document document, CancellationToken cancellationToken)
+            => _session?.GetSpansAsync(document, cancellationToken) ?? SpecializedTasks.EmptyImmutableArray<TextSpan>();
 
-        public ValueTask<ImmutableArray<ActiveStatementTrackingSpan>> GetAdjustedTrackingSpansAsync(Document document, ITextSnapshot snapshot, CancellationToken cancellationToken)
-            => _session?.GetAdjustedTrackingSpansAsync(document, snapshot, cancellationToken) ?? new(ImmutableArray<ActiveStatementTrackingSpan>.Empty);
+        public Task<ImmutableArray<ActiveStatementTrackingSpan>> GetAdjustedTrackingSpansAsync(Document document, ITextSnapshot snapshot, CancellationToken cancellationToken)
+            => _session?.GetAdjustedTrackingSpansAsync(document, snapshot, cancellationToken) ?? SpecializedTasks.EmptyImmutableArray<ActiveStatementTrackingSpan>();
 
         // internal for testing
         internal sealed class TrackingSession
         {
             private readonly Workspace _workspace;
             private readonly CancellationTokenSource _cancellationSource;
-            private readonly IActiveStatementSpanProvider _spanProvider;
+            private readonly IEditAndContinueWorkspaceService _encService;
 
             #region lock(_trackingSpans)
 
@@ -104,12 +101,12 @@ namespace Microsoft.CodeAnalysis.Editor.Implementation.EditAndContinue
 
             #endregion
 
-            public TrackingSession(Workspace workspace, IActiveStatementSpanProvider spanProvider)
+            public TrackingSession(Workspace workspace, IEditAndContinueWorkspaceService encService)
             {
                 _workspace = workspace;
                 _trackingSpans = new Dictionary<DocumentId, ImmutableArray<ActiveStatementTrackingSpan>>();
                 _cancellationSource = new CancellationTokenSource();
-                _spanProvider = spanProvider;
+                _encService = encService;
 
                 _workspace.DocumentOpened += DocumentOpened;
                 _workspace.DocumentClosed += DocumentClosed;
@@ -175,7 +172,7 @@ namespace Microsoft.CodeAnalysis.Editor.Implementation.EditAndContinue
                     }
 
                     var currentSolution = _workspace.CurrentSolution;
-                    var baseActiveStatementSpans = await _spanProvider.GetBaseActiveStatementSpansAsync(currentSolution, openDocumentIds, _cancellationSource.Token).ConfigureAwait(false);
+                    var baseActiveStatementSpans = await _encService.GetBaseActiveStatementSpansAsync(currentSolution, openDocumentIds, _cancellationSource.Token).ConfigureAwait(false);
                     if (baseActiveStatementSpans.IsDefault)
                     {
                         // Edit session not in progress.
@@ -273,7 +270,7 @@ namespace Microsoft.CodeAnalysis.Editor.Implementation.EditAndContinue
                 return snapshot != null;
             }
 
-            public async ValueTask<ImmutableArray<TextSpan>> GetSpansAsync(Document document, CancellationToken cancellationToken)
+            public async Task<ImmutableArray<TextSpan>> GetSpansAsync(Document document, CancellationToken cancellationToken)
             {
                 var sourceText = await document.GetTextAsync(cancellationToken).ConfigureAwait(false);
 
@@ -295,14 +292,14 @@ namespace Microsoft.CodeAnalysis.Editor.Implementation.EditAndContinue
             /// <summary>
             /// Updates tracking spans with the latest positions of all active statements in the specified document snapshot.
             /// </summary>
-            internal async ValueTask<ImmutableArray<ActiveStatementTrackingSpan>> GetAdjustedTrackingSpansAsync(Document document, ITextSnapshot snapshot, CancellationToken cancellationToken)
+            internal async Task<ImmutableArray<ActiveStatementTrackingSpan>> GetAdjustedTrackingSpansAsync(Document document, ITextSnapshot snapshot, CancellationToken cancellationToken)
             {
                 try
                 {
                     Debug.Assert(TryGetSnapshot(document, out var s) && s == snapshot);
 
                     var activeStatementSpanProvider = new DocumentActiveStatementSpanProvider(cancellationToken => GetSpansAsync(document, cancellationToken));
-                    var activeStatementSpans = await _spanProvider.GetAdjustedActiveStatementSpansAsync(document, activeStatementSpanProvider, cancellationToken).ConfigureAwait(false);
+                    var activeStatementSpans = await _encService.GetAdjustedActiveStatementSpansAsync(document, activeStatementSpanProvider, cancellationToken).ConfigureAwait(false);
 
                     lock (_trackingSpans)
                     {

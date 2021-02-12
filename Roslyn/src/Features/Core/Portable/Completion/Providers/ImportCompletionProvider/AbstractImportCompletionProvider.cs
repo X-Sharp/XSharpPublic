@@ -120,7 +120,7 @@ namespace Microsoft.CodeAnalysis.Completion.Providers
             if (provideParenthesisCompletion)
             {
                 insertText += "()";
-                CompletionProvidersLogger.LogCustomizedCommitToAddParenthesis(commitKey);
+                CompletionProvidersLogger.LogCommitUsingSemicolonToAddParenthesis();
             }
 
             if (await ShouldCompleteWithFullyQualifyTypeName().ConfigureAwait(false))

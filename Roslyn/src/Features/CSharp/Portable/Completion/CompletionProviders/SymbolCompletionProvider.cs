@@ -14,6 +14,7 @@ using Microsoft.CodeAnalysis.Completion.Log;
 using Microsoft.CodeAnalysis.Completion.Providers;
 using Microsoft.CodeAnalysis.CSharp.Extensions;
 using Microsoft.CodeAnalysis.CSharp.Extensions.ContextQuery;
+using Microsoft.CodeAnalysis.Experiments;
 using Microsoft.CodeAnalysis.Host.Mef;
 using Microsoft.CodeAnalysis.Options;
 using Microsoft.CodeAnalysis.Shared.Extensions;
@@ -28,6 +29,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Completion.Providers
     internal partial class SymbolCompletionProvider : AbstractRecommendationServiceBasedCompletionProvider<CSharpSyntaxContext>
     {
         private static readonly Dictionary<(bool importDirective, bool preselect, bool tupleLiteral), CompletionItemRules> s_cachedRules = new();
+
+        private bool? _shouldTriggerCompletionInArgumentListsExperiment = null;
 
         static SymbolCompletionProvider()
         {
@@ -81,16 +84,20 @@ namespace Microsoft.CodeAnalysis.CSharp.Completion.Providers
             OptionSet options,
             CancellationToken cancellationToken)
         {
-            if (context != null && ShouldTriggerInArgumentLists(options))
+            if (context != null)
             {
-                // Avoid preselection & hard selection when triggered via insertion in an argument list.
-                // If an item is hard selected, then a user trying to type MethodCall() will get
-                // MethodCall(someVariable) instead. We need only soft selected items to prevent this.
-                if (context.Trigger.Kind == CompletionTriggerKind.Insertion &&
-                    position > 0 &&
-                    await IsTriggerInArgumentListAsync(context.Document, position - 1, cancellationToken).ConfigureAwait(false) == true)
+                var document = context.Document;
+                if (ShouldTriggerInArgumentLists(document.Project.Solution.Workspace, options))
                 {
-                    return false;
+                    // Avoid preselection & hard selection when triggered via insertion in an argument list.
+                    // If an item is hard selected, then a user trying to type MethodCall() will get
+                    // MethodCall(someVariable) instead. We need only soft selected items to prevent this.
+                    if (context.Trigger.Kind == CompletionTriggerKind.Insertion &&
+                        position > 0 &&
+                        await IsTriggerInArgumentListAsync(document, position - 1, cancellationToken).ConfigureAwait(false) == true)
+                    {
+                        return false;
+                    }
                 }
             }
 
@@ -102,7 +109,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Completion.Providers
 
         public override bool IsInsertionTrigger(SourceText text, int characterPosition, OptionSet options)
         {
-            return ShouldTriggerInArgumentLists(options)
+            return Workspace.TryGetWorkspace(text.Container, out var workspace) && ShouldTriggerInArgumentLists(workspace, options)
                 ? CompletionUtilities.IsTriggerCharacterOrArgumentListCharacter(text, characterPosition, options)
                 : CompletionUtilities.IsTriggerCharacter(text, characterPosition, options);
         }
@@ -115,7 +122,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Completion.Providers
                 if (result.HasValue)
                     return result.Value;
 
-                if (ShouldTriggerInArgumentLists(await document.GetOptionsAsync(cancellationToken).ConfigureAwait(false)))
+                if (ShouldTriggerInArgumentLists(document.Project.Solution.Workspace, await document.GetOptionsAsync(cancellationToken).ConfigureAwait(false)))
                 {
                     result = await IsTriggerInArgumentListAsync(document, caretPosition - 1, cancellationToken).ConfigureAwait(false);
                     if (result.HasValue)
@@ -129,8 +136,23 @@ namespace Microsoft.CodeAnalysis.CSharp.Completion.Providers
 
         public override ImmutableHashSet<char> TriggerCharacters { get; } = CompletionUtilities.CommonTriggerCharactersWithArgumentList;
 
-        private static bool ShouldTriggerInArgumentLists(OptionSet options)
-            => options.GetOption(CompletionOptions.TriggerInArgumentLists, LanguageNames.CSharp);
+        private bool ShouldTriggerInArgumentLists(Workspace workspace, OptionSet options)
+        {
+            var isTriggerInArgumentListOptionEnabled = options.GetOption(CompletionOptions.TriggerInArgumentLists, LanguageNames.CSharp);
+            if (isTriggerInArgumentListOptionEnabled != null)
+            {
+                return isTriggerInArgumentListOptionEnabled.Value;
+            }
+
+            if (_shouldTriggerCompletionInArgumentListsExperiment == null)
+            {
+                var experimentationService = workspace.Services.GetRequiredService<IExperimentationService>();
+                _shouldTriggerCompletionInArgumentListsExperiment =
+                    experimentationService.IsExperimentEnabled(WellKnownExperimentNames.TriggerCompletionInArgumentLists);
+            }
+
+            return _shouldTriggerCompletionInArgumentListsExperiment.Value;
+        }
 
         protected override bool IsTriggerOnDot(SyntaxToken token, int characterPosition)
         {
@@ -218,16 +240,28 @@ namespace Microsoft.CodeAnalysis.CSharp.Completion.Providers
                 supportedPlatformData);
 
             var symbol = symbols[0].symbol;
-            if (symbol.IsKind(SymbolKind.Method))
+            // If it is a method symbol, also consider appending parenthesis when later, it is committed by using special characters.
+            // 2 cases are excluded.
+            // 1. If it is invoked under Nameof Context.
+            // For example: var a = nameof(Bar$$)
+            // In this case, if later committed by semicolon, we should have
+            // var a = nameof(Bar);
+            // 2. If the inferred type is delegate or function pointer.
+            // e.g. Action c = Bar$$
+            // In this case, if later committed by semicolon, we should have
+            // e.g. Action c = = Bar;
+            if (symbol.IsKind(SymbolKind.Method) && !context.IsNameOfContext)
             {
-                var isInferredTypeDelegate = context.InferredTypes.Any(type => type.IsDelegateType());
-                if (!isInferredTypeDelegate)
+                var isInferredTypeDelegateOrFunctionPointer = context.InferredTypes.Any(type => type.IsDelegateType() || type.IsFunctionPointerType());
+                if (!isInferredTypeDelegateOrFunctionPointer)
                 {
                     item = SymbolCompletionItem.AddShouldProvideParenthesisCompletion(item);
                 }
             }
             else if (symbol.IsKind(SymbolKind.NamedType) || symbol is IAliasSymbol aliasSymbol && aliasSymbol.Target.IsType)
             {
+                // If this is a type symbol/alias symbol, also consider appending parenthesis when later, it is committed by using special characters,
+                // and the type is used as constructor
                 if (context.IsObjectCreationTypeContext)
                     item = SymbolCompletionItem.AddShouldProvideParenthesisCompletion(item);
             }
@@ -237,10 +271,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Completion.Providers
 
         protected override string GetInsertionText(CompletionItem item, char ch)
         {
-            if (ch is ';' or '.' && SymbolCompletionItem.GetShouldProvideParenthesisCompletion(item))
+            if (ch == ';' && SymbolCompletionItem.GetShouldProvideParenthesisCompletion(item))
             {
-                CompletionProvidersLogger.LogCustomizedCommitToAddParenthesis(ch);
-                return SymbolCompletionItem.GetInsertionText(item) + "()";
+                CompletionProvidersLogger.LogCommitUsingSemicolonToAddParenthesis();
+                var insertionText = SymbolCompletionItem.GetInsertionText(item);
+                return insertionText + "()";
             }
 
             return base.GetInsertionText(item, ch);

@@ -347,7 +347,7 @@ namespace Microsoft.CodeAnalysis.CSharp
 
             var array = _factory.ArrayOrEmpty(_factory.SpecialType(SpecialType.System_String), loweredArgs);
 
-            return (BoundExpression)BoundCall.Synthesized(syntax, null, method, array);
+            return BoundCall.Synthesized(syntax, receiverOpt: null, method, array);
         }
 
         /// <summary>

@@ -13,7 +13,6 @@ using System.Runtime.Remoting;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.CodeAnalysis.EditAndContinue;
 using Microsoft.CodeAnalysis.Experiments;
 using Microsoft.CodeAnalysis.Extensions;
 using Microsoft.CodeAnalysis.Host;
@@ -275,7 +274,6 @@ namespace Microsoft.CodeAnalysis.Remote.Testing
                 RegisterRemoteBrokeredService(new RemoteDependentTypeFinderService.Factory());
                 RegisterRemoteBrokeredService(new RemoteGlobalNotificationDeliveryService.Factory());
                 RegisterRemoteBrokeredService(new RemoteCodeLensReferencesService.Factory());
-                RegisterRemoteBrokeredService(new RemoteEditAndContinueService.Factory());
             }
 
             public void Dispose()

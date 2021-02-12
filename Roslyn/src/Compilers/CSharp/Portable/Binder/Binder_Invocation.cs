@@ -1323,6 +1323,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                     visitedParameters[parameter.Ordinal] = true;
                 }
             }
+
             // only proceed with binding default arguments if we know there is some parameter that has not been matched by an explicit argument
             if (parameters.All(static (param, visitedParameters) => visitedParameters[param.Ordinal], visitedParameters))
             {
@@ -1389,7 +1390,6 @@ namespace Microsoft.CodeAnalysis.CSharp
             BoundExpression bindDefaultArgument(SyntaxNode syntax, ParameterSymbol parameter, Symbol containingMember, bool enableCallerInfo, DiagnosticBag diagnostics)
             {
                 TypeSymbol parameterType = parameter.Type;
-
                 if (Flags.Includes(BinderFlags.ParameterDefaultValue))
                 {
                     // This is only expected to occur in recursive error scenarios, for example: `object F(object param = F()) { }`

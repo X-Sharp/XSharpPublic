@@ -409,7 +409,6 @@ namespace Microsoft.CodeAnalysis.CSharp
             // (2) there were named arguments that reordered the arguments; we might
             //     have to generate temporaries to ensure that the arguments are 
             //     evaluated in source code order, not the actual call order.
-            // (3) there were optional parameters that had no corresponding arguments.
             //
             // If none of those are the case then we can just take an early out.
 

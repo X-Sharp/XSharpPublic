@@ -104,13 +104,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Completion.Providers
 
         private static readonly CompletionItemRules s_objectRules =
             CompletionItemRules.Create(
-                commitCharacterRules: ImmutableArray.Create(CharacterSetModificationRule.Create(CharacterSetModificationKind.Replace, ' ', '(', '[', ';', '.')),
+                commitCharacterRules: ImmutableArray.Create(CharacterSetModificationRule.Create(CharacterSetModificationKind.Replace, ' ', '(', '[', ';')),
                 matchPriority: MatchPriority.Preselect,
                 selectionBehavior: CompletionItemSelectionBehavior.HardSelection);
 
         private static readonly CompletionItemRules s_defaultRules =
             CompletionItemRules.Create(
-                commitCharacterRules: ImmutableArray.Create(CharacterSetModificationRule.Create(CharacterSetModificationKind.Replace, ' ', '(', '[', '{', ';', '.')),
+                commitCharacterRules: ImmutableArray.Create(CharacterSetModificationRule.Create(CharacterSetModificationKind.Replace, ' ', '(', '[', '{', ';')),
                 matchPriority: MatchPriority.Preselect,
                 selectionBehavior: CompletionItemSelectionBehavior.HardSelection);
 
@@ -133,10 +133,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Completion.Providers
 
         protected override string GetInsertionText(CompletionItem item, char ch)
         {
-            if (ch is ';' or '.')
+            if (ch == ';')
             {
-                CompletionProvidersLogger.LogCustomizedCommitToAddParenthesis(ch);
-                return SymbolCompletionItem.GetInsertionText(item) + "()";
+                CompletionProvidersLogger.LogCommitUsingSemicolonToAddParenthesis();
+                var insertionText = SymbolCompletionItem.GetInsertionText(item);
+                return insertionText + "()";
             }
 
             return base.GetInsertionText(item, ch);

@@ -345,7 +345,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             if (map == null)
             {
 #if XSHARP
-				map = new SmallDictionary<string, Symbol>(XSharpString.Comparer);
+                map = new SmallDictionary<string, Symbol>(XSharpString.Comparer);
 #else
                 map = new SmallDictionary<string, Symbol>();
 #endif

@@ -660,7 +660,6 @@ namespace Microsoft.CodeAnalysis.CSharp.CodeGen
 
                     break;
             }
-
         }
 
         private void EmitAddressOfExpression(BoundAddressOfOperator expression, bool used)

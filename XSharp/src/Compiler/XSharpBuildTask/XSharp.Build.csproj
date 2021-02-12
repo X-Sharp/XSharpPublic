@@ -20,6 +20,7 @@
     <DebugSymbols>true</DebugSymbols>
     <ErrorReport>prompt</ErrorReport>
     <Nullable>disable</Nullable>
+    <ApplicationIcon>..\..\Common\XSharpProject.ico</ApplicationIcon>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DefineConstants>$(GenericDefines);TRACE;DEBUG</DefineConstants>
@@ -73,6 +74,7 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <Content Include="debugging.txt" />
+    <Content Include="XSharpProject.ico" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Xaml\PropertyPage_Advanced.xaml">

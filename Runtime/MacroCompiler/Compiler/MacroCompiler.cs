@@ -44,7 +44,7 @@ namespace XSharp.Runtime
             if (Options.AllowOldStyleComments != lVo || objectCompiler == null)
             {
                 options.AllowSingleQuotedStrings = lVo;
-                objectCompiler = new ObjectCompilation(options);
+                objectCompiler = ObjectCompilation.Create(options);
                 usualCompiler = null;
             }
             return objectCompiler;
@@ -55,7 +55,7 @@ namespace XSharp.Runtime
             if (Options.AllowOldStyleComments != lVo || usualCompiler == null)
             {
                 options.AllowSingleQuotedStrings = lVo;
-                usualCompiler = new UsualCompilation(options);
+                usualCompiler = UsualCompilation.Create(options);
                 objectCompiler = null;
             }
             return usualCompiler;

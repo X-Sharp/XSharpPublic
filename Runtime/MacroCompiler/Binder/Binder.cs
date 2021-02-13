@@ -501,7 +501,7 @@ namespace XSharp.MacroCompiler
             }
         }
 
-        internal Codeblock Bind(Codeblock macro)
+        internal R Bind<R>(R macro) where R: Node
         {
             Bind(ref macro);
             return macro;

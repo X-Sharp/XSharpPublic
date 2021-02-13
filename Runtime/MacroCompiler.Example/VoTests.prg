@@ -16,6 +16,20 @@ BEGIN NAMESPACE MacroCompilerTest
 
     FUNCTION VoTests(mc AS XSharp.Runtime.MacroCompiler) AS VOID
         Console.WriteLine("Running VO tests ...")
+        TestGlobals.tsi := teststruct{1}
+        TestGlobals.tci := testclass{1}
+
+        // Reset overrides
+        Compilation.Override(WellKnownMembers.XSharp_RT_Functions___VarGet)
+        Compilation.Override(WellKnownMembers.XSharp_RT_Functions___VarPut)
+        Compilation.Override(WellKnownMembers.XSharp_RT_Functions___FieldGet)
+        Compilation.Override(WellKnownMembers.XSharp_RT_Functions___FieldSet)
+        Compilation.Override(WellKnownMembers.XSharp_RT_Functions___FieldGetWa)
+        Compilation.Override(WellKnownMembers.XSharp_RT_Functions___FieldSetWa)
+        Compilation.Override(WellKnownMembers.XSharp_RT_Functions___pushWorkarea)
+        Compilation.Override(WellKnownMembers.XSharp_RT_Functions___popWorkarea)
+        Compilation.Override(WellKnownMembers.XSharp_RT_Functions___MemVarGet)
+        Compilation.Override(WellKnownMembers.XSharp_RT_Functions___MemVarPut)
 
         //TestParse(mc, e"{|a,b| +a[++b] += 100, a[2]}", "{|a, b|RETURN (((+a((++b)))+='100'), a('2'))}")
         TestMacro(mc, e"{|v|(v := upper(v), left(v,3))}", Args("ABCDE"), "ABC", typeof(STRING))

@@ -19,7 +19,7 @@ BEGIN NAMESPACE MacroCompilerTest
         */        
         ReportMemory("initial")
         VAR mc := CreateMacroCompiler()
-        VAR fmc := XSharp.Runtime.MacroCompiler{XSharp.MacroCompiler.MacroOptions.FoxPro}
+        VAR fmc := CreateFoxMacroCompiler()
 
         //EvalMacro(mc, "{|| 0000.00.00 }" ,NULL_DATE)
         //ParseMacro(mc, e"{|a,b| +a[++b] += 100, a[2]}")
@@ -37,8 +37,8 @@ BEGIN NAMESPACE MacroCompilerTest
         //EvalMacro(mc, "{ || NIL } ")
         //wait
 
-        ParserTestsFox(fmc)
-        ParserTests(mc)
+        ParserTestsFox(CreateFoxScriptCompiler())
+        ParserTests(CreateScriptCompiler())
         VoTests(mc)
         FoxTests(fmc)
 
@@ -46,6 +46,7 @@ BEGIN NAMESPACE MacroCompilerTest
 
         ReportMemory("final");
 
+        Console.WriteLine("Total pass: {0}/{1}", TotalSuccess, TotalTests)
         Console.WriteLine("Press any key to exit...")
         Console.ReadKey()
 

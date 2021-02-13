@@ -16,7 +16,7 @@ BEGIN NAMESPACE MacroCompilerTest
 
     FUNCTION ParseScript(mc AS XSharp.Runtime.MacroCompiler, src AS STRING) AS VOID
         Console.WriteLine("Parsing script ...")
-        VAR ast := mc:GetObjectCompiler(true):ParseScript(src)
+        VAR ast := mc:GetObjectCompiler(true):Parse(src)
         Console.WriteLine(ast)
 
     FUNCTION ParseMacro(mc AS XSharp.Runtime.MacroCompiler, src AS STRING) AS VOID
@@ -130,6 +130,19 @@ BEGIN NAMESPACE MacroCompilerTest
             Console.WriteLine("[FAIL] (Exception: {0})", e:Message)
             return false*/
         END
+
+    FUNCTION CreateFoxScriptCompiler() AS XSharp.Runtime.MacroCompiler
+        var o := XSharp.MacroCompiler.MacroOptions.FoxPro
+        o:ParseMode := ParseMode.Statements
+        RETURN XSharp.Runtime.MacroCompiler{o}
+
+    FUNCTION CreateFoxMacroCompiler() AS XSharp.Runtime.MacroCompiler
+        RETURN XSharp.Runtime.MacroCompiler{XSharp.MacroCompiler.MacroOptions.FoxPro}
+
+    FUNCTION CreateScriptCompiler() AS XSharp.Runtime.MacroCompiler
+        var o := XSharp.MacroCompiler.MacroOptions.Default
+        o:ParseMode := ParseMode.Statements
+        RETURN XSharp.Runtime.MacroCompiler{o}
 
     FUNCTION CreateMacroCompiler() AS XSharp.Runtime.MacroCompiler
         Console.WriteLine("Creating macro compiler ...")

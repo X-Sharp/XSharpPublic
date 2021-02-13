@@ -98,6 +98,8 @@
     <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="FoxTests.prg" />
+    <Compile Include="Helpers.prg" />
     <Compile Include="ParserTests.prg" />
     <Compile Include="Properties\AssemblyInfo.prg">
       <SubType>Code</SubType>
@@ -105,6 +107,8 @@
     <Compile Include="Program.prg">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="TestData.prg" />
+    <Compile Include="VoTests.prg" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Properties\" />

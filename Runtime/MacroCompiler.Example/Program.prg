@@ -41,7 +41,6 @@ BEGIN NAMESPACE MacroCompilerTest
         ParserTests(mc)
         VoTests(mc)
         FoxTests(fmc)
-        //wait
 
         RunPerf(mc, "Console.WriteLine(123)")
 

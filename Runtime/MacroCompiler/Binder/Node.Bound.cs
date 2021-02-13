@@ -256,6 +256,8 @@ namespace XSharp.MacroCompiler.Syntax
             {
                 if (b.Options.AllowDotAccess)
                 {
+                    if (b.Options.UndeclaredVariableResolution != VariableResolution.TreatAsField)
+                        b.Bind(ref Expr, Affinity);
                     if (Expr.Symbol.UniqueIdent() != null)
                         return MemberAccessExpr.Bound(b, Expr, Member, Affinity);
                     if (Expr is NameExpr aname && Member is NameExpr fname)

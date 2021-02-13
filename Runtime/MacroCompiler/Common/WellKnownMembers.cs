@@ -92,6 +92,30 @@ namespace XSharp.MacroCompiler
 
         static MemberSymbol[] WellKnownMemberSymbols;
 
+        static MemberSymbol FindMember(string names)
+        {
+            foreach (var proto in names.Split('|'))
+            {
+                var name = proto.Replace("$", "").Split('(').First();
+                var s = Binder.LookupFullName(name.Replace("global::", "").Split('.').Select(n => n.Replace('@', '.')).ToArray());
+                if (s == null)
+                    continue;
+                if (s is SymbolList)
+                {
+                    var isStatic = proto.Contains('$');
+                    var args = proto.Replace(")", "").Split('(').Last().Split(',');
+                    var argTypes = args.Select(x => Binder.LookupFullName(x) as TypeSymbol).ToArray();
+                    s = (s as SymbolList).Symbols.Find(x => (x as MethodBaseSymbol)?.MethodBase.GetParameters().Length == args.Length
+                       && (x as MethodBaseSymbol)?.MethodBase.IsStatic == isStatic
+                       && (x as MethodBaseSymbol)?.MethodBase.GetParameters().All(y => args[y.Position] == "*" || y.ParameterType == argTypes[y.Position].Type) == true);
+                    Debug.Assert(s is MethodBaseSymbol);
+                }
+                Debug.Assert(s is MemberSymbol);
+                return s as MemberSymbol;
+            }
+            return null;
+        }
+
         internal static void InitializeWellKnownMembers()
         {
             var memberSymbols = new MemberSymbol[MemberNames.Length];
@@ -101,26 +125,7 @@ namespace XSharp.MacroCompiler
                 {
                     var names = MemberNames[(int)m];
                     Debug.Assert(m.ToString().StartsWith(names.Replace("global::", "").Replace('.', '_').Replace("`", "_T").Replace("$", "").Replace("@", "").Split('|', '(').First()));
-                    foreach (var proto in names.Split('|'))
-                    {
-                        var name = proto.Replace("$", "").Split('(').First();
-                        var s = Binder.LookupFullName(name.Replace("global::", "").Split('.').Select(n => n.Replace('@', '.')).ToArray());
-                        if (s == null)
-                            continue;
-                        if (s is SymbolList)
-                        {
-                            var isStatic = proto.Contains('$');
-                            var args = proto.Replace(")", "").Split('(').Last().Split(',');
-                            var argTypes = args.Select(x => Binder.LookupFullName(x) as TypeSymbol).ToArray();
-                            s = (s as SymbolList).Symbols.Find(x => (x as MethodBaseSymbol)?.MethodBase.GetParameters().Length == args.Length
-                               && (x as MethodBaseSymbol)?.MethodBase.IsStatic == isStatic
-                               && (x as MethodBaseSymbol)?.MethodBase.GetParameters().All(y => args[y.Position] == "*" || y.ParameterType == argTypes[y.Position].Type) == true);
-                            Debug.Assert(s is MethodBaseSymbol);
-                        }
-                        Debug.Assert(s is MemberSymbol);
-                        memberSymbols[(int)m] = s as MemberSymbol;
-                        break;
-                    }
+                    memberSymbols[(int)m] = FindMember(names);
                     Debug.Assert(memberSymbols[(int)m] != null);
                 }
 
@@ -135,8 +140,13 @@ namespace XSharp.MacroCompiler
         }
 
         // Useful for testing
-        internal static bool Override(WellKnownMembers kind, string proto)
+        internal static bool Override(WellKnownMembers kind, string proto = null)
         {
+            if (proto == null)
+            {
+                WellKnownMemberSymbols[(int)kind] = FindMember(MemberNames[(int)kind]);
+                return true;
+            }
             var name = proto.Replace("$", "").Split('(').First();
             var s = Binder.LookupName(name);
             if (s == null)

@@ -16,7 +16,29 @@ BEGIN NAMESPACE MacroCompilerTest
 
     FUNCTION FoxTests(mc AS XSharp.Runtime.MacroCompiler) AS VOID
         Console.WriteLine("Running FOX tests ...")
-        XSharp.RuntimeState.Dialect := XSharp.XSharpDialect.FoxPro
+        TestGlobals.tsi := teststruct{1}
+        TestGlobals.tci := testclass{1}
+
+        // Reset overrides
+        Compilation.Override(WellKnownMembers.XSharp_RT_Functions___VarGet)
+        Compilation.Override(WellKnownMembers.XSharp_RT_Functions___VarPut)
+        Compilation.Override(WellKnownMembers.XSharp_RT_Functions___FieldGet)
+        Compilation.Override(WellKnownMembers.XSharp_RT_Functions___FieldSet)
+        Compilation.Override(WellKnownMembers.XSharp_RT_Functions___FieldGetWa)
+        Compilation.Override(WellKnownMembers.XSharp_RT_Functions___FieldSetWa)
+        Compilation.Override(WellKnownMembers.XSharp_RT_Functions___pushWorkarea)
+        Compilation.Override(WellKnownMembers.XSharp_RT_Functions___popWorkarea)
+        Compilation.Override(WellKnownMembers.XSharp_RT_Functions___MemVarGet)
+        Compilation.Override(WellKnownMembers.XSharp_RT_Functions___MemVarPut)
+
+        mc:Options:UndeclaredVariableResolution := VariableResolution.TreatAsFieldOrMemvar
+        LOCAL obj := Error{"Some description"} AS OBJECT
+        __LocalPut("obj", obj)
+        TestMacro(mc, "obj.Description", Args(), "Some description",typeof(STRING))
+        IF __LocalsUpdated()
+            obj := __LocalGet("obj")
+        ENDIF
+        __LocalsClear()
 
         mc:Options:UndeclaredVariableResolution := VariableResolution.TreatAsField
         Compilation.Override(WellKnownMembers.XSharp_RT_Functions___FieldGet, "MyFieldGet")
@@ -36,8 +58,12 @@ BEGIN NAMESPACE MacroCompilerTest
         TestMacro(mc, e"{|| testclass{}.NString((byte)1) }", Args(), "child", typeof(STRING))
         TestMacro(mc, e"{|a| a := testclass{}, a.prop }", Args(), 0, typeof(INT))
         TestMacro(mc, e"{|a| a := testclass{}, a.prop := 111 }", Args(), 111, typeof(INT))
-        //TestMacro(mc, e"{|| tsi.v1 }", Args(), 1, typeof(INT)) // FAIL because access to globals not allowed, see commit c9107824
-        //TestMacro(mc, e"{|| tci.v1 := 10, tci.v1++, tci.v1 }", Args(), 11, typeof(INT)) // FAIL because access to globals not allowed, see commit c9107824
+        /*
+            RvdH VO does not allow TO ACCESS GLOBAL and DEFINE values IN the macro compiler
+            And FoxPro does not even have GLOBAL and DEFINE
+        TestMacro(mc, e"{|| tsi.v1 }", Args(), 1, typeof(INT)) // FAIL because access to globals not allowed, see commit c9107824
+        TestMacro(mc, e"{|| tci.v1 := 10, tci.v1++, tci.v1 }", Args(), 11, typeof(INT)) // FAIL because access to globals not allowed, see commit c9107824
+        */
         TestMacro(mc, e"{|| TestGlobals.tsi.v1 }", Args(), 1, typeof(INT))
         TestMacro(mc, e"{|| TestGlobals.tci.v1 := 10, TestGlobals.tci.v1++, TestGlobals.tci.v1 }", Args(), 11, typeof(INT))
         TestMacro(mc, e"{|| DEVS.NIKOS}", Args(), "FieldGet(DEVS,NIKOS)", typeof(STRING))
@@ -89,7 +115,6 @@ BEGIN NAMESPACE MacroCompilerTest
         TestMacro(mc, e"{|a,b| a .XOR. b }", Args(TRUE, FALSE), TRUE,typeof(LOGIC))
         TestMacro(mc, e"{|a,b| a .XOR. b }", Args(FALSE, FALSE), FALSE,typeof(LOGIC))
 
-        XSharp.RuntimeState.Dialect := XSharp.XSharpDialect.VO
         Console.WriteLine("Total pass: {0}/{1}", TotalSuccess, TotalTests)
         RETURN
 

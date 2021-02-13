@@ -458,6 +458,8 @@ namespace XSharp.MacroCompiler.Syntax
         {
             b.Bind(ref Type, BindAffinity.Type);
             Type.RequireType();
+            if (b.Options.Dialect == XSharpDialect.FoxPro && (Type.Symbol as TypeSymbol).NativeType == NativeType.Usual)
+                return LiteralExpr.Bound(Constant.Create(false));
             Symbol = Type.Symbol as TypeSymbol;
             Datatype = Symbol as TypeSymbol;
             return null;

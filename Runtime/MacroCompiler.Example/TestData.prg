@@ -179,6 +179,12 @@ GLOBAL tci := testclass{1} AS testclass
 
 global wag := "" as string
 
+public CLASS TestGlobals
+    static public tsi := teststruct{1} AS teststruct
+    static public tci := testclass{1} AS testclass
+    static public wag := "" as string
+END CLASS
+
 FUNCTION MyVarGet(name AS STRING) AS USUAL
     RETURN wag + "VarGet(" + name + ")"
 

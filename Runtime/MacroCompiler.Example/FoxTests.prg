@@ -29,19 +29,23 @@ BEGIN NAMESPACE MacroCompilerTest
         Compilation.Override(WellKnownMembers.XSharp_RT_Functions___MemVarPut, "MyMemVarPut")
 
         // USUAL defaults to FALSE for FoxPro
-//        TestMacro(mc, e"{|a| a := default(usual) }", Args(8), FALSE, typeof(LOGIC))
+        TestMacro(mc, e"{|a| a := default(usual) }", Args(8), FALSE, typeof(LOGIC))
+        TestMacro(mc, e"{|a| a := NIL }", Args(8), FALSE, typeof(LOGIC))
 
         // FoxPro dot access
         TestMacro(mc, e"{|| testclass{}.NString((byte)1) }", Args(), "child", typeof(STRING))
         TestMacro(mc, e"{|a| a := testclass{}, a.prop }", Args(), 0, typeof(INT))
-//        TestMacro(mc, e"{|| tsi.v1 }", Args(), 1, typeof(INT))
-//        TestMacro(mc, e"{|| tci.v1 := 10, tci.v1++, tci.v1 }", Args(), 11, typeof(INT))
-//        TestMacro(mc, e"{|| DEVS.NIKOS}", Args(), "FieldGet(DEVS,NIKOS)", typeof(STRING))
-//        TestMacro(mc, e"{|| DEVS.NIKOS := \"123\"}", Args(), "FieldSet(DEVS,NIKOS):123", typeof(STRING))
-//        TestMacro(mc, e"{|| M.NAME}", Args(), "MemVarGet(NAME)", typeof(STRING))
-//        TestMacro(mc, e"{|| M.NAME := \"Nikos\"}", Args(), "MemVarPut(NAME):Nikos", typeof(STRING))
-//        TestMacro(mc, e"{|| @@M.NAME}", Args(), "FieldGet(M,NAME)", typeof(STRING))
-//        TestMacro(mc, e"{|| @@M.NAME := \"Nikos\"}", Args(), "FieldSet(M,NAME):Nikos", typeof(STRING))
+        TestMacro(mc, e"{|a| a := testclass{}, a.prop := 111 }", Args(), 111, typeof(INT))
+        //TestMacro(mc, e"{|| tsi.v1 }", Args(), 1, typeof(INT)) // FAIL because access to globals not allowed, see commit c9107824
+        //TestMacro(mc, e"{|| tci.v1 := 10, tci.v1++, tci.v1 }", Args(), 11, typeof(INT)) // FAIL because access to globals not allowed, see commit c9107824
+        TestMacro(mc, e"{|| TestGlobals.tsi.v1 }", Args(), 1, typeof(INT))
+        TestMacro(mc, e"{|| TestGlobals.tci.v1 := 10, TestGlobals.tci.v1++, TestGlobals.tci.v1 }", Args(), 11, typeof(INT))
+        TestMacro(mc, e"{|| DEVS.NIKOS}", Args(), "FieldGet(DEVS,NIKOS)", typeof(STRING))
+        TestMacro(mc, e"{|| DEVS.NIKOS := \"123\"}", Args(), "FieldSet(DEVS,NIKOS):123", typeof(STRING))
+        TestMacro(mc, e"{|| M.NAME}", Args(), "MemVarGet(NAME)", typeof(STRING))
+        TestMacro(mc, e"{|| M.NAME := \"Nikos\"}", Args(), "MemVarPut(NAME):Nikos", typeof(STRING))
+        TestMacro(mc, e"{|| @@M.NAME}", Args(), "FieldGet(M,NAME)", typeof(STRING))
+        TestMacro(mc, e"{|| @@M.NAME := \"Nikos\"}", Args(), "FieldSet(M,NAME):Nikos", typeof(STRING))
         TestMacro(mc, e"{|| Alltrim('abc')}", Args(), "MyAlltrim()", typeof(STRING))
 
         // FoxPro literal dates and datetimes. For simplicity we return them all as DateTime

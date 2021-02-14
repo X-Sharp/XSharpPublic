@@ -13,58 +13,6 @@ namespace XSharp.MacroCompiler.Syntax
     {
         internal virtual void Emit(ILGenerator ilg) { throw new InternalError(); }
     }
-    abstract internal partial class Stmt : Node
-    {
-        internal Codeblock Codeblock;
-        internal List<Action> FinallyClauses;
-        internal virtual void EmitStmt(ILGenerator ilg) { throw new InternalError(); }
-        internal sealed override void Emit(ILGenerator ilg)
-        {
-            if (RequireExceptionHandling)
-            {
-                FinallyClauses = new List<Action>();
-                ilg.BeginExceptionBlock();
-            }
-            EmitStmt(ilg);
-            if (RequireExceptionHandling)
-            {
-                if (FinallyClauses.Count > 0)
-                {
-                    ilg.BeginFinallyBlock();
-                    foreach (var a in FinallyClauses) a();
-                }
-                ilg.EndExceptionBlock();
-            }
-        }
-    }
-    internal partial class ReturnStmt : Stmt
-    {
-        internal override void EmitStmt(ILGenerator ilg)
-        {
-            bool isVoid = true;
-            if (Expr != null)
-            {
-                isVoid &= Expr.Datatype.NativeType == NativeType.Void;
-                Expr.Emit(ilg, true);
-            }
-            if (Symbol != null)
-            {
-                if (isVoid)
-                {
-                    EmitDefault(ilg, (TypeSymbol)Symbol);
-                }
-                if (RequireExceptionHandling)
-                {
-                    if (Codeblock.Symbol == null)
-                    {
-                        var temp = ilg.DeclareLocal(((TypeSymbol)Symbol).Type);
-                        Codeblock.Symbol = new LocalSymbol((TypeSymbol)Symbol, temp.LocalIndex);
-                    }
-                    Codeblock.Symbol.EmitSet(ilg);
-                }
-            }
-        }
-    }
     abstract internal partial class Expr : Node
     {
         internal virtual void Emit(ILGenerator ilg, bool preserve) { throw new InternalError(); }
@@ -670,7 +618,6 @@ namespace XSharp.MacroCompiler.Syntax
                 ilg.Emit(OpCodes.Conv_I4);
                 PCount.EmitSet(ilg);
             }
-            Body.Codeblock = this;
             Body.Emit(ilg);
             if (Symbol != null) Symbol.EmitGet(ilg);
             ilg.Emit(OpCodes.Ret);

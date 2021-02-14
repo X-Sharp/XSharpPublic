@@ -16,25 +16,6 @@ namespace XSharp.MacroCompiler.Syntax
         internal virtual Node Bind(Binder b) { throw new InternalError(); }
         internal CompilationError Error(ErrorCode e, params object[] args) => Compilation.Error(Token, e, args);
     }
-    abstract internal partial class Stmt : Node
-    {
-        internal bool RequireExceptionHandling = false;
-    }
-    internal partial class ReturnStmt : Stmt
-    {
-        internal override Node Bind(Binder b)
-        {
-            if (Expr != null)
-            {
-                b.Bind(ref Expr);
-                if (Expr.Datatype.NativeType != NativeType.Void)
-                {
-                    b.Convert(ref Expr, b.ObjectType);
-                }
-            }
-            return null;
-        }
-    }
     abstract internal partial class Expr : Node
     {
         internal TypeSymbol Datatype = null;
@@ -843,6 +824,7 @@ namespace XSharp.MacroCompiler.Syntax
         ArgumentSymbol ParamArray;
         internal override Node Bind(Binder b)
         {
+            b.Entity = this;
             if (Params != null)
             {
                 foreach (var p in Params)
@@ -856,7 +838,6 @@ namespace XSharp.MacroCompiler.Syntax
             PCount = b.AddLocal(XSharpSpecialNames.ClipperPCount, Compilation.Get(NativeType.Int32));
             if (Body != null)
             {
-                Body.Symbol = b.ObjectType;
                 b.BindStmt(ref Body);
             }
             return null;

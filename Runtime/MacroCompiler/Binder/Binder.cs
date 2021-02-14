@@ -58,6 +58,7 @@ namespace XSharp.MacroCompiler
         internal List<XSharp.Codeblock> NestedCodeblocks;
         internal bool CreatesAutoVars = false;
         internal Stack<Stmt> StmtStack = new Stack<Stmt>();
+        internal Node Entity = null;
 
         protected Binder(Type objectType, Type delegateType, MacroOptions options)
         {

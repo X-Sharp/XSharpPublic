@@ -259,4 +259,10 @@ namespace XSharp.MacroCompiler.Syntax
         internal FixedStmt(Token t, DeclStmt decl, Stmt s) : base(t) { Decl = decl; Stmt = s; }
         public override string ToString() => "BEGIN FIXED " + Decl + "\n  " + String.Join("\n", Stmt.ToString()) + "END FIXED";
     }
+    internal partial class Script : Node
+    {
+        internal Stmt Body;
+        internal Script(Token t, Stmt s) : base(t) { Body = s; }
+        public override string ToString() => Body.ToString();
+    }
 }

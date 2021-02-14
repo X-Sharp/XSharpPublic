@@ -203,9 +203,10 @@ namespace XSharp.MacroCompiler
             return null;
         }
 
-        internal StmtBlock ParseScript()
+        internal Script ParseScript()
         {
-            return RequireEnd(ParseStatementBlock(), ErrorCode.Unexpected, Lt());
+            var s = RequireEnd(ParseStatementBlock(), ErrorCode.Unexpected, Lt());
+            return new Script(null, s);
         }
     }
 }

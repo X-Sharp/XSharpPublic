@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<topic id="cat-internet_Functions" revisionNumber="1" title="internet Functions">
+  <developerConceptualDocument xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5" xmlns:xlink="http://www.w3.org/1999/xlink">
+    
+
+    <!-- Add one or more top-level section elements.  These are collapsible.
+         If using <autoOutline />, add an address attribute to identify it
+         and specify a title so that it can be jumped to with a hyperlink. -->
+    <section address="Section1">
+	<title>Internet Functions</title>
+		<!-- <para><codeEntityReference qualifyHint="false">M:XSharp.RT.Functions.DoW(XSharp.__Date)</codeEntityReference></para> -->
+      
+	<content><table><tableHeader>
+<row><entry><para>Assembly</para></entry>
+<entry><para>Function</para></entry>
+</row></tableHeader>
+<row><entry><para>VOInternetClasses</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:VOInternetClasses.Functions.B64Decode</codeEntityReference></para></entry></row>
+<row><entry><para>VOInternetClasses</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:VOInternetClasses.Functions.B64DecodeString</codeEntityReference></para></entry></row>
+<row><entry><para>VOInternetClasses</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:VOInternetClasses.Functions.B64Encode</codeEntityReference></para></entry></row>
+<row><entry><para>VOInternetClasses</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:VOInternetClasses.Functions.B64EncodeStream</codeEntityReference></para></entry></row>
+<row><entry><para>VOInternetClasses</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:VOInternetClasses.Functions.B64EncodeString</codeEntityReference></para></entry></row>
+<row><entry><para>VOInternetClasses</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:VOInternetClasses.Functions.CharSetFromContentType</codeEntityReference></para></entry></row>
+<row><entry><para>VOInternetClasses</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:VOInternetClasses.Functions.CheckHostIP</codeEntityReference></para></entry></row>
+<row><entry><para>VOInternetClasses</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:VOInternetClasses.Functions.ConvertFromCodePageToCodePage</codeEntityReference></para></entry></row>
+<row><entry><para>VOInternetClasses</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:VOInternetClasses.Functions.DecodeMailTimeStamp</codeEntityReference></para></entry></row>
+<row><entry><para>VOInternetClasses</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:VOInternetClasses.Functions.GetHostByIP</codeEntityReference></para></entry></row>
+<row><entry><para>VOInternetClasses</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:VOInternetClasses.Functions.GetIPAddress</codeEntityReference></para></entry></row>
+<row><entry><para>VOInternetClasses</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:VOInternetClasses.Functions.GetMailTimeStamp</codeEntityReference></para></entry></row>
+<row><entry><para>VOInternetClasses</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:VOInternetClasses.Functions.GetUseNetMsgID</codeEntityReference></para></entry></row>
+<row><entry><para>VOInternetClasses</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:VOInternetClasses.Functions.HostName</codeEntityReference></para></entry></row>
+<row><entry><para>VOInternetClasses</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:VOInternetClasses.Functions.IFXFtpFindFirstFile</codeEntityReference></para></entry></row>
+<row><entry><para>VOInternetClasses</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:VOInternetClasses.Functions.IFXInternetFindNextFile</codeEntityReference></para></entry></row>
+<row><entry><para>VOInternetClasses</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:VOInternetClasses.Functions.INTStatusCallback</codeEntityReference></para></entry></row>
+<row><entry><para>VOInternetClasses</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:VOInternetClasses.Functions.LibInit</codeEntityReference></para></entry></row>
+<row><entry><para>VOInternetClasses</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:VOInternetClasses.Functions.NNTPSendMail</codeEntityReference></para></entry></row>
+<row><entry><para>VOInternetClasses</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:VOInternetClasses.Functions.POPGetMails</codeEntityReference></para></entry></row>
+<row><entry><para>VOInternetClasses</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:VOInternetClasses.Functions.QPDecode</codeEntityReference></para></entry></row>
+<row><entry><para>VOInternetClasses</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:VOInternetClasses.Functions.QPEncode</codeEntityReference></para></entry></row>
+<row><entry><para>VOInternetClasses</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:VOInternetClasses.Functions.SMTPSendMail</codeEntityReference></para></entry></row>
+<row><entry><para>VOInternetClasses</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:VOInternetClasses.Functions.SystemErrorString</codeEntityReference></para></entry></row>
+<row><entry><para>VOInternetClasses</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:VOInternetClasses.Functions.WinSockExit</codeEntityReference></para></entry></row>
+<row><entry><para>VOInternetClasses</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:VOInternetClasses.Functions.WinSockInit</codeEntityReference></para></entry></row>
+<row><entry><para>VOInternetClasses</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:VOInternetClasses.Functions.WSAGetLastError</codeEntityReference></para></entry></row>
+</table>
+</content>
+     </section>
+  </developerConceptualDocument>
+</topic>

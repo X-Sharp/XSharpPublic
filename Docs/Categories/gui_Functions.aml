@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<topic id="cat-gui_Functions" revisionNumber="1" title="GUI Functions">
+  <developerConceptualDocument xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5" xmlns:xlink="http://www.w3.org/1999/xlink">
+    
+
+    <!-- Add one or more top-level section elements.  These are collapsible.
+         If using <autoOutline />, add an address attribute to identify it
+         and specify a title so that it can be jumped to with a hyperlink. -->
+    <section address="Section1">
+	<title>GUI Functions</title>
+		<!-- <para><codeEntityReference qualifyHint="false">M:XSharp.RT.Functions.DoW(XSharp.__Date)</codeEntityReference></para> -->
+      
+	<content><table><tableHeader>
+<row><entry><para>Assembly</para></entry>
+<entry><para>Function</para></entry>
+</row></tableHeader>
+<row><entry><para>VOGUIClasses</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:VOGUIClasses.Functions.AllocUnicodeString</codeEntityReference></para></entry></row>
+<row><entry><para>VOGUIClasses</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:VOGUIClasses.Functions.AnimateWindow</codeEntityReference></para></entry></row>
+<row><entry><para>VOGUIClasses</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:VOGUIClasses.Functions.ApplicationExec</codeEntityReference></para></entry></row>
+<row><entry><para>VOGUIClasses</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:VOGUIClasses.Functions.CAPaintIsLoaded</codeEntityReference></para></entry></row>
+<row><entry><para>VOGUIClasses</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:VOGUIClasses.Functions.CAPaintLastError</codeEntityReference></para></entry></row>
+<row><entry><para>VOGUIClasses</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:VOGUIClasses.Functions.CAPaintLastErrorMsg</codeEntityReference></para></entry></row>
+<row><entry><para>VOGUIClasses</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:VOGUIClasses.Functions.CAPaintShowErrors</codeEntityReference></para></entry></row>
+<row><entry><para>VOGUIClasses</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:VOGUIClasses.Functions.CloseThemeData</codeEntityReference></para></entry></row>
+<row><entry><para>VOGUIClasses</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:VOGUIClasses.Functions.DIBCreateFromFile</codeEntityReference></para></entry></row>
+<row><entry><para>VOGUIClasses</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:VOGUIClasses.Functions.DIBCreateFromPTR</codeEntityReference></para></entry></row>
+<row><entry><para>VOGUIClasses</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:VOGUIClasses.Functions.DIBDelete</codeEntityReference></para></entry></row>
+<row><entry><para>VOGUIClasses</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:VOGUIClasses.Functions.DIBGetInfo</codeEntityReference></para></entry></row>
+<row><entry><para>VOGUIClasses</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:VOGUIClasses.Functions.DIBSaveAs</codeEntityReference></para></entry></row>
+<row><entry><para>VOGUIClasses</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:VOGUIClasses.Functions.DIBShow</codeEntityReference></para></entry></row>
+<row><entry><para>VOGUIClasses</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:VOGUIClasses.Functions.DIBStretch</codeEntityReference></para></entry></row>
+<row><entry><para>VOGUIClasses</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:VOGUIClasses.Functions.DragAcceptFiles</codeEntityReference></para></entry></row>
+<row><entry><para>VOGUIClasses</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:VOGUIClasses.Functions.DragFinish</codeEntityReference></para></entry></row>
+<row><entry><para>VOGUIClasses</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:VOGUIClasses.Functions.DragObject</codeEntityReference></para></entry></row>
+<row><entry><para>VOGUIClasses</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:VOGUIClasses.Functions.DragQueryFile</codeEntityReference></para></entry></row>
+<row><entry><para>VOGUIClasses</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:VOGUIClasses.Functions.DrawThemeBackground</codeEntityReference></para></entry></row>
+<row><entry><para>VOGUIClasses</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:VOGUIClasses.Functions.DrawThemeEdge</codeEntityReference></para></entry></row>
+<row><entry><para>VOGUIClasses</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:VOGUIClasses.Functions.DrawThemeParentBackground</codeEntityReference></para></entry></row>
+<row><entry><para>VOGUIClasses</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:VOGUIClasses.Functions.Enable3dControls</codeEntityReference></para></entry></row>
+<row><entry><para>VOGUIClasses</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:VOGUIClasses.Functions.EnableAppVisualTheme</codeEntityReference></para></entry></row>
+<row><entry><para>VOGUIClasses</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:VOGUIClasses.Functions.EnableThemeDialogTexture</codeEntityReference></para></entry></row>
+<row><entry><para>VOGUIClasses</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:VOGUIClasses.Functions.FreeCAPaint</codeEntityReference></para></entry></row>
+<row><entry><para>VOGUIClasses</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:VOGUIClasses.Functions.Get__WCControlProcPtr</codeEntityReference></para></entry></row>
+<row><entry><para>VOGUIClasses</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:VOGUIClasses.Functions.GetAppObject</codeEntityReference></para></entry></row>
+<row><entry><para>VOGUIClasses</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:VOGUIClasses.Functions.GetFocusedObject</codeEntityReference></para></entry></row>
+<row><entry><para>VOGUIClasses</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:VOGUIClasses.Functions.GetFrameWidth</codeEntityReference></para></entry></row>
+<row><entry><para>VOGUIClasses</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:VOGUIClasses.Functions.GetObjectByHandle</codeEntityReference></para></entry></row>
+<row><entry><para>VOGUIClasses</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:VOGUIClasses.Functions.GetThemeAppProperties</codeEntityReference></para></entry></row>
+<row><entry><para>VOGUIClasses</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:VOGUIClasses.Functions.GetThemeColor</codeEntityReference></para></entry></row>
+<row><entry><para>VOGUIClasses</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:VOGUIClasses.Functions.GetWindowTheme</codeEntityReference></para></entry></row>
+<row><entry><para>VOGUIClasses</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:VOGUIClasses.Functions.GUIExit</codeEntityReference></para></entry></row>
+<row><entry><para>VOGUIClasses</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:VOGUIClasses.Functions.InitCommonControlsEx</codeEntityReference></para></entry></row>
+<row><entry><para>VOGUIClasses</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:VOGUIClasses.Functions.InitializeCAPaint</codeEntityReference></para></entry></row>
+<row><entry><para>VOGUIClasses</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:VOGUIClasses.Functions.IsAltPressed</codeEntityReference></para></entry></row>
+<row><entry><para>VOGUIClasses</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:VOGUIClasses.Functions.IsAppThemed</codeEntityReference></para></entry></row>
+<row><entry><para>VOGUIClasses</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:VOGUIClasses.Functions.IsControlPressed</codeEntityReference></para></entry></row>
+<row><entry><para>VOGUIClasses</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:VOGUIClasses.Functions.IsCtl3dEnabled</codeEntityReference></para></entry></row>
+<row><entry><para>VOGUIClasses</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:VOGUIClasses.Functions.IsShiftPressed</codeEntityReference></para></entry></row>
+<row><entry><para>VOGUIClasses</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:VOGUIClasses.Functions.IsThemeEnabled</codeEntityReference></para></entry></row>
+<row><entry><para>VOGUIClasses</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:VOGUIClasses.Functions.IsThemeSupported</codeEntityReference></para></entry></row>
+<row><entry><para>VOGUIClasses</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:VOGUIClasses.Functions.OpenThemeData</codeEntityReference></para></entry></row>
+<row><entry><para>VOGUIClasses</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:VOGUIClasses.Functions.SetAccelerator</codeEntityReference></para></entry></row>
+<row><entry><para>VOGUIClasses</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:VOGUIClasses.Functions.SetClassStyle</codeEntityReference></para></entry></row>
+<row><entry><para>VOGUIClasses</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:VOGUIClasses.Functions.SetThemeAppProperties</codeEntityReference></para></entry></row>
+<row><entry><para>VOGUIClasses</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:VOGUIClasses.Functions.SetWindowTheme</codeEntityReference></para></entry></row>
+<row><entry><para>VOGUIClasses</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:VOGUIClasses.Functions.SHBrowseForFolder</codeEntityReference></para></entry></row>
+<row><entry><para>VOGUIClasses</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:VOGUIClasses.Functions.Shell_NotifyIcon</codeEntityReference></para></entry></row>
+<row><entry><para>VOGUIClasses</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:VOGUIClasses.Functions.ShellOpen</codeEntityReference></para></entry></row>
+<row><entry><para>VOGUIClasses</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:VOGUIClasses.Functions.SHGetPathFromIDList</codeEntityReference></para></entry></row>
+<row><entry><para>VOGUIClasses</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:VOGUIClasses.Functions.THTMLHelp</codeEntityReference></para></entry></row>
+<row><entry><para>VOGUIClasses</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:VOGUIClasses.Functions.TMCIWndCreate</codeEntityReference></para></entry></row>
+<row><entry><para>VOGUIClasses</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:VOGUIClasses.Functions.UseColonInAutoLayoutCaptions</codeEntityReference></para></entry></row>
+<row><entry><para>VOGUIClasses</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:VOGUIClasses.Functions.VerifyThemeState</codeEntityReference></para></entry></row>
+<row><entry><para>VOGUIClasses</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:VOGUIClasses.Functions.WCAppGetDialogWindow</codeEntityReference></para></entry></row>
+<row><entry><para>VOGUIClasses</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:VOGUIClasses.Functions.WCAppSetDialogWindow</codeEntityReference></para></entry></row>
+<row><entry><para>VOGUIClasses</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:VOGUIClasses.Functions.WCDCAdd</codeEntityReference></para></entry></row>
+<row><entry><para>VOGUIClasses</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:VOGUIClasses.Functions.WCDCClear</codeEntityReference></para></entry></row>
+<row><entry><para>VOGUIClasses</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:VOGUIClasses.Functions.WCDCDelete</codeEntityReference></para></entry></row>
+<row><entry><para>VOGUIClasses</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:VOGUIClasses.Functions.WCDCTop</codeEntityReference></para></entry></row>
+<row><entry><para>VOGUIClasses</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:VOGUIClasses.Functions.WCGetCoordinateSystem</codeEntityReference></para></entry></row>
+<row><entry><para>VOGUIClasses</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:VOGUIClasses.Functions.WCMoveWindow</codeEntityReference></para></entry></row>
+<row><entry><para>VOGUIClasses</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:VOGUIClasses.Functions.WCNewControlsAvailable</codeEntityReference></para></entry></row>
+<row><entry><para>VOGUIClasses</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:VOGUIClasses.Functions.WCSetCoordinateSystem</codeEntityReference></para></entry></row>
+</table>
+</content>
+     </section>
+  </developerConceptualDocument>
+</topic>

@@ -1,5 +1,5 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<topic id="cat-DateFunctions" revisionNumber="1">
+<?xml version="1.0" encoding="utf-8"?>
+<topic id="cat-Disk_Functions" revisionNumber="1" title="Disk Functions">
   <developerConceptualDocument xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5" xmlns:xlink="http://www.w3.org/1999/xlink">
     
 
@@ -7,15 +7,10 @@
          If using <autoOutline />, add an address attribute to identify it
          and specify a title so that it can be jumped to with a hyperlink. -->
     <section address="Section1">
-      <title>Date Functions</title>
-      <content>
-      <relatedTopics>
-	  <link xlink:href="html/M_XSharp_RT_Functions_Day.htm" />
-	  <link xlink:href="html/M_XSharp_RT_Functions_Year.htm" />
-	  <link xlink:href="html/M_XSharp_RT_Functions_Month.htm" />
-	  <link xlink:href="html/M_XSharp_RT_Functions_Dow.htm" />
-	  </relatedTopics>
-	  </content>
+	<title>Disk Functions</title>
+		<!-- <para><codeEntityReference qualifyHint="false">M:XSharp.RT.Functions.DoW(XSharp.__Date)</codeEntityReference></para> -->
+      
+<content></content>
      </section>
   </developerConceptualDocument>
 </topic>

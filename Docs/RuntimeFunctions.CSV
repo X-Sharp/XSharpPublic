@@ -1343,9 +1343,9 @@ XSharp.RT.DLL,VoDbOrdListClear,DbfTyped,,
 XSharp.RT.DLL,VoDbOrdListRebuild,DbfTyped,,
 XSharp.RT.DLL,VoDbOrdSetFocus,DbfTyped,,
 XSharp.RT.DLL,VoDbPack,DbfTyped,,
-XSharp.RT.DLL,VoDbRddCount,DbfTyped,,
+XSharp.RT.DLL,VoDbRddCount
 XSharp.RT.DLL,VoDbRddInfo,DbfTyped,,
-XSharp.RT.DLL,VoDbRddList,DbfTyped,,
+XSharp.RT.DLL,VoDbRddList
 XSharp.RT.DLL,VoDbRddName,DbfTyped,,
 XSharp.RT.DLL,VoDbRddSetDefault,DbfTyped,,
 XSharp.RT.DLL,VoDbRecall,DbfTyped,,

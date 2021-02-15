@@ -28,6 +28,35 @@ CLASS XSharp.RuntimeState
 	PRIVATE STATIC currentState := ThreadLocal<RuntimeState>{ {=>  initialState:Clone()},TRUE }  AS ThreadLocal<RuntimeState> 
 	STATIC CONSTRUCTOR
 		initialState	:= RuntimeState{TRUE}
+        detectDialect()
+
+    PRIVATE STATIC METHOD detectDialect() AS VOID
+        LOCAL asm := System.Reflection.Assembly.GetEntryAssembly() AS System.Reflection.Assembly
+        VAR att := TYPEOF( XSharp.Internal.CompilerVersionAttribute )
+        if asm:IsDefined(att, FALSE)
+            FOREACH var attr in asm:GetCustomAttributes(att, FALSE)
+                var compilerversion := (XSharp.Internal.CompilerVersionAttribute) attr
+                var vers := compilerversion:Version
+                var pos := vers:IndexOf("dialect:")
+                if pos >= 0
+                    vers := vers:Substring(pos + 8)
+                    SWITCH vers:ToLower()
+                    CASE "vo"
+                        Dialect := XSharpDialect.VO
+                    CASE "vulcan"
+                        Dialect := XSharpDialect.Vulcan
+                    CASE "core"
+                        Dialect := XSharpDialect.Core
+                    CASE "foxpro"
+                        Dialect := XSharpDialect.FoxPro
+                    CASE "harbour"
+                        Dialect := XSharpDialect.Harbour
+                    CASE "xpp"
+                        Dialect := XSharpDialect.XPP
+                    END SWITCH                            
+                endif
+            NEXT
+        ENDIF
 
 	/// <summary>Retrieve the runtime state for the current thread</summary>
 	PUBLIC STATIC METHOD GetInstance() AS RuntimeState

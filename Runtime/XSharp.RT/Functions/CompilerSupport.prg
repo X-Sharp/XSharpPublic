@@ -7,7 +7,7 @@
 
 USING XSharp.Internal
 
-/// <inheritdoc cref="RuntimeState.StringCompare(System.String,System.String)" />
+/// <inheritdoc cref="XSharp.RuntimeState.StringCompare(System.String,System.String)" />
 FUNCTION __StringCompare(strLHS AS STRING, strRHS AS STRING) AS INT
     RETURN RuntimeState.StringCompare(strLHS, strRHS)
 

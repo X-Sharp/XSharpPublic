@@ -46,7 +46,7 @@
     <VO15>true</VO15>
     <VO16>false</VO16>
     <TargetFrameworkProfile />
-    <XSharpProjectversion>2.6.2.0</XSharpProjectversion>
+    <XSharpProjectversion>2.7.0.0</XSharpProjectversion>
     <Includepaths />
     <Nostandarddefs>true</Nostandarddefs>
     <NamedArgs>false</NamedArgs>
@@ -162,6 +162,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="EmptyTests.prg" />
+    <Compile Include="FoxArraytests.prg" />
     <Compile Include="MiscTests.prg" />
     <Compile Include="DateTests.prg" />
     <Compile Include="NumericTests.prg" />

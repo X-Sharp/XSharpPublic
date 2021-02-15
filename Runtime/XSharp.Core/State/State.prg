@@ -33,7 +33,7 @@ CLASS XSharp.RuntimeState
     PRIVATE STATIC METHOD detectDialect() AS VOID
         LOCAL asm := System.Reflection.Assembly.GetEntryAssembly() AS System.Reflection.Assembly
         VAR att := TYPEOF( XSharp.Internal.CompilerVersionAttribute )
-        if asm:IsDefined(att, FALSE)
+        if asm != null .and. asm:IsDefined(att, FALSE)
             FOREACH var attr in asm:GetCustomAttributes(att, FALSE)
                 var compilerversion := (XSharp.Internal.CompilerVersionAttribute) attr
                 var vers := compilerversion:Version
@@ -328,6 +328,8 @@ CLASS XSharp.RuntimeState
 	/// <summary>The current Collation mode (used by the RDD system).</summary>
     /// <include file="CoreComments.xml" path="Comments/PerThread/*" />
     /// <seealso cref="Set.CollationMode" />
+    /// <seealso cref="OnCollationChanged" />
+    /// <remarks>Send an OnCollationChanged event when changed.</remarks>    
    STATIC PROPERTY CollationMode AS CollationMode 
         GET 
 			RETURN GetValue<CollationMode>(Set.CollationMode)
@@ -437,9 +439,11 @@ CLASS XSharp.RuntimeState
         SET SetValue<LOGIC>(Set.DigitFixed, value)
 
 
-	/// <summary>The DOS Codepage. This gets read at startup from the OS().</summary>
+	/// <summary>The 'DOS' Codepage. This gets read at startup from the OS().</summary>
     /// <seealso cref="DosEncoding" />
     /// <include file="CoreComments.xml" path="Comments/PerThread/*" />
+    /// <seealso cref="OnCodePageChanged" />
+    /// <remarks>Sends an OnCodePageChanged event when changed.</remarks>    
     STATIC PROPERTY DosCodePage AS LONG 
         GET
             RETURN GetValue<LONG>(Set.DosCodepage)
@@ -616,6 +620,8 @@ CLASS XSharp.RuntimeState
     /// <seealso cref="WinEncoding" />
     /// <include file="CoreComments.xml" path="Comments/PerThread/*" />
     /// <seealso cref="Set.WinCodepage" />
+    /// <seealso cref="OnCodePageChanged" />
+    /// <remarks>Sends an OnCodePageChanged event when changed.</remarks>    
     STATIC PROPERTY WinCodePage AS LONG
 	GET
 		RETURN GetValue<LONG>(Set.WinCodepage)
@@ -631,6 +637,7 @@ CLASS XSharp.RuntimeState
     /// <summary>The DOS Encoding. This is based on the corrent Win Codepage.</summary>
     /// <seealso cref="WinCodePage" />
     /// <include file="CoreComments.xml" path="Comments/PerThread/*" />
+    /// <seealso cref="O:StringCompare" />    
     STATIC PROPERTY WinEncoding AS System.Text.Encoding ;
         GET System.Text.Encoding.GetEncoding(WinCodePage)
 
@@ -866,6 +873,7 @@ CLASS XSharp.RuntimeState
     STATIC INTERNAL _macroresolver       AS MacroCompilerResolveAmbiguousMatch
     /// <summary>Active Macro compiler</summary>
     /// <remarks><note>This value is NOT 'per thread' but global for all threads.</note></remarks>
+    /// <seealso cref="IMacroCompiler" />
     PUBLIC STATIC PROPERTY MacroCompiler AS IMacroCompiler
         GET
             IF _macrocompiler == NULL 
@@ -880,6 +888,7 @@ CLASS XSharp.RuntimeState
         
     /// <summary>Active Macro compiler</summary>
     /// <remarks><note>This value is NOT 'per thread' but global for all threads.</note></remarks>
+    /// <seealso cref="IMacroCompiler2" />
     PUBLIC STATIC PROPERTY MacroResolver AS MacroCompilerResolveAmbiguousMatch
         GET
             IF _macroresolver == NULL
@@ -896,11 +905,14 @@ CLASS XSharp.RuntimeState
             ENDIF
         END SET
     END PROPERTY    
-	/// <summary>This event is thrown when the codepage of the runtimestate is changed</summary>
+	/// <summary>This event is thrown when one of the codepages of the runtimestate is changed</summary>
     /// <remarks>Clients can refresh cached information by registering to this event</remarks>
+    /// <seealso cref="DosCodePage" />
+    /// <seealso cref="WinCodePage" />
 	PUBLIC STATIC EVENT OnCodePageChanged AS EventHandler
 	/// <summary>This event is thrown when the collation of the runtimestate is changed</summary>
     /// <remarks>Clients can refresh cached information by registering to this event</remarks>
+    /// <seealso cref="CollationMode" />
 	PUBLIC STATIC EVENT OnCollationChanged AS EventHandler
 
     PRIVATE STATIC METHOD _LoadMacroCompiler() AS VOID
@@ -949,6 +961,9 @@ CLASS XSharp.RuntimeState
     /// The Clipper collation uses the current DOS codepage and the Windows collation the current Windows codepage.<br/>
     /// - When the current collationmode is Unicode or Ordinal then the original strings will be compared.
     /// </remarks>
+    /// <seealso cref="CompilerOptionVO13" />
+    /// <seealso cref="Exact" />
+    /// <seealso cref="StringCompareCollation" />
     STATIC METHOD StringCompare(strLHS AS STRING, strRHS AS STRING) AS INT
        LOCAL ret AS INT
         // Only when vo13 is off and SetExact = TRUE
@@ -989,6 +1004,8 @@ CLASS XSharp.RuntimeState
     /// <remarks>
     /// This method only checks for SetCollation and does not check fot SetExact() or the VO13 setting
     /// </remarks>
+    /// <seealso cref="O:StringCompare" />
+    /// <seealso cref="CollationMode" />
     STATIC METHOD StringCompareCollation(strLHS AS STRING, strRHS AS STRING) AS INT
        LOCAL ret AS INT
         // either exact or RHS longer than LHS
@@ -1010,7 +1027,7 @@ CLASS XSharp.RuntimeState
         END SWITCH
         RETURN ret
 
-    /// <inheritdoc cref="RuntimeState.StringCompare"/>
+    /// <inheritdoc cref="XSharp.RuntimeState.StringCompare"/>
     /// <summary>Compare 2 byte arrays respecting the runtime string comparison rules.</summary>
     /// <param name="aLHS">The first list of bytes.</param>
     /// <param name="aRHS">The second list of bytes.</param>
@@ -1020,7 +1037,10 @@ CLASS XSharp.RuntimeState
     /// - When the current collationmode is Clipper or Windows then no Ansi - Unicode conversions will be done.The comparisons will be done on the byte arrays.<br/>
     /// - When the current collationmode is Unicode or Ordinal then the byte arrays will be converted to Unicode before the comparison is executed. 
     /// </remarks>
-    /// <seealso cref="RuntimeState.WinEncoding" />
+    /// <seealso cref="WinEncoding" />
+    /// <seealso cref="StringCompareCollation" />
+    /// <seealso cref="CollationMode" />
+    /// <seealso cref="SetCollation" />
     STATIC METHOD StringCompare(aLHS AS BYTE[], aRHS AS BYTE[], nLen AS INT) AS INT
         SWITCH CollationMode
         CASE CollationMode.Clipper

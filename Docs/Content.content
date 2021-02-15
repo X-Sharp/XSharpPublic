@@ -2,7 +2,7 @@
 <Topics>
   <Topic id="Welcome" visible="True" isDefault="true" isSelected="true" title="Welcome" />
   <Topic id="6c99f5a5-8245-4b4f-b31e-70eb0e84db1e" visible="True" noFile="true" isExpanded="true" title="Categories">
-    <Topic id="cat-DateFunctions" visible="True" title="Date Functions" />
+    <Topic id="cat-DateFunctions"   visible="True" title="Date Functions" />
     <Topic id="cat-StringFunctions" visible="True" title="String Functions" />
   </Topic>
 </Topics>

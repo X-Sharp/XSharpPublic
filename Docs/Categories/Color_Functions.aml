@@ -10,7 +10,16 @@
 	<title>Color Functions</title>
 		<!-- <para><codeEntityReference qualifyHint="false">M:XSharp.RT.Functions.DoW(XSharp.__Date)</codeEntityReference></para> -->
       
-<content></content>
+<content><table><tableHeader>
+<row><entry><para>Assembly</para></entry>
+<entry><para>Function</para></entry>
+</row></tableHeader>
+<row><entry><para>XSharp.Core</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.Core.Functions.RGB</codeEntityReference></para></entry></row>
+<row><entry><para>XSharp.RT</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RT.Functions.PaletteRGB</codeEntityReference></para></entry></row>
+<row><entry><para>XSharp.VFP</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.VFP.Functions.RgbScheme</codeEntityReference></para></entry></row>
+<row><entry><para>XSharp.VFP</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.VFP.Functions.Scheme</codeEntityReference></para></entry></row>
+</table>
+</content>
      </section>
   </developerConceptualDocument>
 </topic>

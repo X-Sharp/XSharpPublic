@@ -10,8 +10,13 @@
 	<title>font Functions</title>
 		<!-- <para><codeEntityReference qualifyHint="false">M:XSharp.RT.Functions.DoW(XSharp.__Date)</codeEntityReference></para> -->
       
-	<content>
-	</content>
+	<content><table><tableHeader>
+<row><entry><para>Assembly</para></entry>
+<entry><para>Function</para></entry>
+</row></tableHeader>
+<row><entry><para>XSharp.VFP</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.VFP.Functions.TxtWidth</codeEntityReference></para></entry></row>
+</table>
+</content>
      </section>
   </developerConceptualDocument>
 </topic>

@@ -10,7 +10,14 @@
 	<title>Support Functions</title>
 		<!-- <para><codeEntityReference qualifyHint="false">M:XSharp.RT.Functions.DoW(XSharp.__Date)</codeEntityReference></para> -->
       
-<content></content>
+<content><table><tableHeader>
+<row><entry><para>Assembly</para></entry>
+<entry><para>Function</para></entry>
+</row></tableHeader>
+<row><entry><para>XSharp.Core</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.Core.Functions.GetPartialEnumName</codeEntityReference></para></entry></row>
+<row><entry><para>XSharp.Core</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.Core.Functions.ReadOsVersionFromRegistry</codeEntityReference></para></entry></row>
+</table>
+</content>
      </section>
   </developerConceptualDocument>
 </topic>

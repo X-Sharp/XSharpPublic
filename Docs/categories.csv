@@ -10,6 +10,7 @@ Cursor
 Dbf
 DbfTyped
 Date
+DateTime
 Dbc
 Debug
 Dialog
@@ -17,8 +18,10 @@ Disk
 Encryption
 Error
 File
+Gui
 Images
 Index
+Internet
 International
 Locking
 Macro

@@ -1,15 +1,17 @@
 USING System.Reflection
 USING System.Collections.Generic
 USING System.Linq
+USING System.Text
 FUNCTION Start AS VOID
-    //WriteTopics()
-    CreateSectionFiles()  
+    //CreateSectionFiles()  
+    WriteTopics()
     //CreateFunctionList()
 
 FUNCTION WriteTopics() AS VOID
     VAR aInfo       := ReadFunctionList()
     VAR aCategories := ReadCategories()
-    VAR catList     := List<STRING>{}
+    VAR catList     := List<STRING>{}                  
+    VAR sPath := "c:\XSharp\DevRt\Docs\Categories\"    
     FOREACH VAR item IN aInfo
         FOREACH VAR cat IN item:Value     
             IF ! String.IsNullOrEmpty(cat:ToLower())
@@ -20,6 +22,7 @@ FUNCTION WriteTopics() AS VOID
         NEXT
     NEXT
     VAR missing := FALSE         
+    catList:Sort()
     FOREACH VAR cat IN catList
         IF ! aCategories:Contains(cat)
             ? "Category "+cat+" is missing"
@@ -29,6 +32,43 @@ FUNCTION WriteTopics() AS VOID
     IF missing
         RETURN
     ENDIF
+    FOREACH VAR cat IN catList
+        ? cat
+        VAR sFile := sPath+cat+"_Functions.aml"
+        VAR contents := System.IO.File.ReadAllText(sFile)
+        VAR left   := contents:Substring(0, contents:IndexOf("<content>")+9)
+        VAR right  := contents:Substring(contents:IndexOf("</content>"))
+        VAR sb     := StringBuilder{} 
+        sb:Append(left)       
+        sb:AppendLine("<table><tableHeader>")
+        sb:AppendLine("<row><entry><para>Assembly</para></entry>")
+        sb:AppendLine("<entry><para>Function</para></entry>")
+        sb:AppendLine("</row></tableHeader>")
+        FOREACH VAR item IN aInfo  
+            VAR match := FALSE
+            FOREACH VAR keyword IN item:Value
+                IF String.Compare(keyword, cat, TRUE) == 0
+                    match := TRUE
+                    EXIT
+                ENDIF
+            NEXT                             
+            IF match      
+                VAR tokens := item:Key:Split(<Char>{':'})
+                VAR assembly := tokens[1]:replace(".DLL","")
+                sb:Append("<row><entry><para>"+assembly+"</para></entry>")
+                sb:Append("<entry><para><codeEntityReference qualifyHint=""false"" autoUpgrade=""true"">")
+                sb:Append("O:")                                               
+                sb:Append(Assembly)
+                sb:Append(".Functions.")
+                sb:Append(tokens[2])
+                sb:AppendLine("</codeEntityReference></para></entry></row>")
+            ENDIF
+        NEXT
+        sb:AppendLine("</table>")
+        sb:Append(right)
+        System.IO.File.WriteAllText(sFile, sb:ToString())
+    NEXT
+    
     RETURN
                   
 
@@ -52,7 +92,8 @@ FUNCTION CreateFunctionList AS VOID
     LOCAL aFiles AS STRING[]               
     LOCAL sPath  AS STRING
     LOCAL aInfo  AS Dictionary<STRING, STRING[]>
-    aFiles := <STRING>{"XSharp.Core.DLL", "XSharp.RT.DLL","XSharp.VO.DLL","XSharp.Data.DLL","XSharp.VFP.DLL","XSharp.RDD.DLL"}
+    aFiles := <STRING>{"XSharp.Core.DLL", "XSharp.RT.DLL","XSharp.VO.DLL", ;
+        "XSharp.Data.DLL","XSharp.VFP.DLL","XSharp.RDD.DLL","XSharp.XPP.DLL","VOSystemClasses.DLL","VORDDClasses.DLL","VOGUIClasses.DLL","VOSQLClasses.DLL","VOInternetClasses.DLL"}
     sPath := "c:\XSharp\DevRt\Binaries\Documentation\"    
     aInfo := ReadFunctionList()
     FOREACH VAR sFile IN aFiles                    
@@ -64,7 +105,7 @@ FUNCTION CreateFunctionList AS VOID
                 VAR functions := type:GetMethods(BindingFlags.Public+BindingFlags.Static)
                 FOREACH m AS MethodInfo IN functions      
                     VAR name := m:Name
-                    IF (name:StartsWith("$") || name:StartsWith("_")   )
+                    IF (name:StartsWith("$") || name:StartsWith("__")   )
                         LOOP
                     ENDIF
                     IF m:GetCustomAttributes(typeof(ObsoleteAttribute),FALSE):Count() > 0

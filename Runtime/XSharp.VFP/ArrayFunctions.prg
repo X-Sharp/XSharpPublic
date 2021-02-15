@@ -3,10 +3,10 @@
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
-#ifdef NOTDEFINED
+
 
 FUNCTION FoxArrayCreate(nRows as DWORD, nCols := 1 as DWORD) AS __FoxArray
-    RETURN __FoxArray{nRows , nCols, TRUE}
+    RETURN __FoxArray{nRows , nCols}
 
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/alen/*" />
@@ -36,7 +36,7 @@ FUNCTION AElement(ArrayName as __FoxArray, nRowSubscript as DWORD, nColumnSubscr
     ELSEIF nColumnSubscript == 1
         RETURN ArrayName[nRowSubscript]
     ELSE
-        THROW ArrayName:__GetDimensionError()
+        THROW ArrayName:__GetDimensionError(2)
     ENDIF
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/adel/*" />
@@ -95,4 +95,8 @@ FUNCTION AIns(ArrayName as __FoxArray, nElementNumber as DWORD, nInsertType := 1
 FUNCTION ASize(ArrayName as __FoxArray, nSize as DWORD) AS __FoxArray
     ArrayName:Resize((LONG) nSize)
     RETURN ArrayName
-#endif
+
+
+FUNCTION __FoxRedim(a as __FoxArray, nRows as INT, nCols := 1 as INT) AS __FoxArray
+    a:ReDim(nRows, nCols)
+    RETURN a

@@ -120,7 +120,7 @@ BEGIN NAMESPACE XSharp
 	    /// <include file="RTComments.xml" path="Comments/ZeroBasedIndexProperty/*" />  
 		/// <param name="index"><include file="RTComments.xml" path="Comments/ZeroBasedIndexParam/*" /></param>
         /// <returns>The element stored at the specified location in the array.</returns>
-        PUBLIC METHOD __GetElement(index AS INT) AS T
+        PUBLIC VIRTUAL METHOD __GetElement(index AS INT) AS T
 			RETURN SELF:_internalList[ index ]
 
 	    /// <include file="RTComments.xml" path="Comments/ZeroBasedIndexProperty/*" />  

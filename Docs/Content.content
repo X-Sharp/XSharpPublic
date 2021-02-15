@@ -1,8 +1,59 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Topics>
-  <Topic id="Welcome" visible="True" isDefault="true" isSelected="true" title="Welcome" />
-  <Topic id="6c99f5a5-8245-4b4f-b31e-70eb0e84db1e" visible="True" noFile="true" isExpanded="true" title="Categories">
-    <Topic id="cat-DateFunctions"   visible="True" title="Date Functions" />
-    <Topic id="cat-StringFunctions" visible="True" title="String Functions" />
+  <Topic id="Welcome" visible="True" isDefault="true" title="Welcome" />
+  <Topic id="6c99f5a5-8245-4b4f-b31e-70eb0e84db1e" visible="True" noFile="true" isExpanded="true" isSelected="true" title="Functions By Category">
+    <Topic id="60810de0-2ceb-4ade-9e38-d6501cf7c216" visible="True" noFile="true" isExpanded="true" title="Data Types">
+      <Topic id="cat-Array_Functions" visible="True" title="Array Functions" />
+      <Topic id="cat-Binary_Functions" visible="True" title="Binary Functions" />
+      <Topic id="cat-codeblock_Functions" visible="True" title="Codeblock Functions" />
+      <Topic id="cat-Conversion_Functions" visible="True" title="Conversion Functions" />
+      <Topic id="cat-Currency_Functions" visible="True" title="Currency Functions" />
+      <Topic id="cat-Date_Functions" visible="True" title="Date Functions" />
+      <Topic id="cat-Math_Functions" visible="True" title="Math Functions" />
+      <Topic id="cat-Memo_Functions" visible="True" title="Memo Functions" />
+      <Topic id="cat-Numeric_Functions" visible="True" title="Numeric Functions" />
+      <Topic id="cat-PSZ_Functions" visible="True" title="PSZ Functions" />
+      <Topic id="cat-StringFunctions" visible="True" title="String Functions" />
+      <Topic id="cat-Time_Functions" visible="True" title="Time Functions" />
+      <Topic id="cat-Usual_Functions" visible="True" title="Usual Functions" />
+    </Topic>
+    <Topic id="b33097a4-8751-44a7-886a-a5954a8bd1b8" visible="True" noFile="true" isExpanded="true" title="DBF and SQL">
+      <Topic id="cat-Ads_Functions" visible="True" title="ADS Functions" />
+      <Topic id="cat-Blob_Functions" visible="True" title="Blob Functions" />
+      <Topic id="cat-Cursor_Functions" visible="True" title="Cursor Functions" />
+      <Topic id="cat-Dbc_Functions" visible="True" title="DBC Functions" />
+      <Topic id="cat-Dbf_Functions" visible="True" title="DBF Functions" />
+      <Topic id="cat-DbfTyped_Functions" visible="True" title="Typed DBF Functions" />
+      <Topic id="cat-Index_Functions" visible="True" title="Index Functions" />
+      <Topic id="cat-Locking_Functions" visible="True" title="Locking Functions" />
+      <Topic id="cat-RDD_Functions" visible="True" title="RDD Functions" />
+      <Topic id="cat-Sql_Functions" visible="True" title="SQL Functions" />
+    </Topic>
+    <Topic id="5afa3667-6e1c-47cf-99b5-d2ab9dbf291c" visible="True" noFile="true" isExpanded="true" title="OS and File System">
+      <Topic id="cat-Disk_Functions" visible="True" title="Disk Functions" />
+      <Topic id="cat-File_Functions" visible="True" title="File Functions" />
+      <Topic id="cat-OS_Functions" visible="True" title="OS Functions" />
+    </Topic>
+    <Topic id="fe3d0bf0-cb35-4f4a-95a8-87cacc7e5cbc" visible="True" noFile="true" isExpanded="true" title="Programming">
+      <Topic id="cat-Color_Functions" visible="True" title="Color Functions" />
+      <Topic id="cat-Debug_Functions" visible="True" title="Debug Functions" />
+      <Topic id="cat-Dialog_Functions" visible="True" title="Dialog Functions" />
+      <Topic id="cat-Encryption_Functions" visible="True" title="Encryption Functions" />
+      <Topic id="cat-Error_Functions" visible="True" title="Error Functions" />
+      <Topic id="cat-font_Functions" visible="True" title="Font Functions" />
+      <Topic id="cat-Images_Functions" visible="True" title="Images Functions" />
+      <Topic id="cat-International_Functions" visible="True" title="International Functions" />
+      <Topic id="cat-Macro_Functions" visible="True" title="Macro Functions" />
+      <Topic id="cat-Memory_Functions" visible="True" title="Memory Functions" />
+      <Topic id="cat-Memvar_Functions" visible="True" title="Memvar Functions" />
+      <Topic id="cat-Network_Functions" visible="True" title="Network Functions" />
+      <Topic id="cat-Printing_Functions" visible="True" title="Printing Functions" />
+      <Topic id="cat-Programming_Functions" visible="True" title="Programming Functions" />
+      <Topic id="cat-Registry_Functions" visible="True" title="Registry Functions" />
+      <Topic id="cat-Settings_Functions" visible="True" title="Settings Functions" />
+      <Topic id="cat-Support_Functions" visible="True" title="Support Functions" />
+      <Topic id="cat-Terminal_Functions" visible="True" title="Terminal Functions" />
+      <Topic id="cat-XML_Functions" visible="True" title="XML Functions" />
+    </Topic>
   </Topic>
 </Topics>

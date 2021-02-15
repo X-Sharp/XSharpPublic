@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<topic id="cat-Numeric_Functions" revisionNumber="1" title="Numeric Functions">
+  <developerConceptualDocument xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5" xmlns:xlink="http://www.w3.org/1999/xlink">
+    
+
+    <!-- Add one or more top-level section elements.  These are collapsible.
+         If using <autoOutline />, add an address attribute to identify it
+         and specify a title so that it can be jumped to with a hyperlink. -->
+    <section address="Section1">
+	<title>Numeric Functions</title>
+		<!-- <para><codeEntityReference qualifyHint="false">M:XSharp.RT.Functions.DoW(XSharp.__Date)</codeEntityReference></para> -->
+      
+<content></content>
+     </section>
+  </developerConceptualDocument>
+</topic>

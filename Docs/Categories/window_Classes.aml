@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<topic id="cat-window_Classes" revisionNumber="1" title="default Classes">
+  <developerConceptualDocument xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5" xmlns:xlink="http://www.w3.org/1999/xlink">
+    
+
+    <!-- Add one or more top-level section elements.  These are collapsible.
+         If using <autoOutline />, add an address attribute to identify it
+         and specify a title so that it can be jumped to with a hyperlink. -->
+    <section address="Section1">
+	<title>window Classes</title>
+		<!-- <para><codeEntityReference qualifyHint="false">M:XSharp.RT.Functions.DoW(XSharp.__Date)</codeEntityReference></para> -->
+      
+	<content><table><tableHeader>
+<row><entry><para>Assembly</para></entry>
+<entry><para>Function</para></entry>
+<entry><para>Description</para></entry>
+</row></tableHeader>
+<row><entry><para>VOGUIClasses</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.ChildAppWindow</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>VOGUIClasses</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.ChildWinForm</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>VOGUIClasses</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.ControlWindow</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>VOGUIClasses</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.DataDialog</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>VOGUIClasses</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.DataWindow</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>VOGUIClasses</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.DialogWindow</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>VOGUIClasses</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.EditWindow</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>VOGUIClasses</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.EventContext</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>VOGUIClasses</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.ExplorerWindow</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>VOGUIClasses</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.OLEDataWindow</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>VOGUIClasses</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.OLEShellWindow</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>VOGUIClasses</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.ShellWindow</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>VOGUIClasses</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.SplitWindow</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>VOGUIClasses</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.TopAppWindow</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>VOGUIClasses</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.VOWinFormApp</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>VOGUIClasses</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.Window</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>VOGUIClasses</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.WinFormVOWindow</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>VOGUIClasses</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.WinFormVOWindowHost</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+</table>
+</content>
+     </section>
+  </developerConceptualDocument>
+</topic>

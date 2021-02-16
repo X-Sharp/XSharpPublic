@@ -3,9 +3,7 @@ Array
 Binary
 Blob
 Codeblock
-Color
 Conversion
-Currency
 Cursor
 Dbf
 DbfTyped
@@ -18,6 +16,7 @@ Disk
 Encryption
 Error
 File
+GDI
 Gui
 Images
 Index
@@ -25,13 +24,11 @@ Internet
 International
 Locking
 Macro
-Math
 Memo
 Memory
 Memvar
 Network
 Numeric
-OS
 Printing
 Programming
 PSZ
@@ -46,5 +43,3 @@ Terminal
 Time
 Usual
 XML
-Font
-

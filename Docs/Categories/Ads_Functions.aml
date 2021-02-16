@@ -13,241 +13,710 @@
 <content><table><tableHeader>
 <row><entry><para>Assembly</para></entry>
 <entry><para>Function</para></entry>
+<entry><para>Description</para></entry>
 </row></tableHeader>
-<row><entry><para>XSharp.RDD</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RDD.Functions.AdsAddCustomKey</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RDD</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RDD.Functions.AdsAppendRecord</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RDD</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RDD.Functions.AdsApplicationExit</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RDD</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RDD.Functions.AdsAtBOF</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RDD</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RDD.Functions.AdsAtEOF</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RDD</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RDD.Functions.AdsBeginTransaction</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RDD</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RDD.Functions.AdsBinaryToFile</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RDD</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RDD.Functions.AdsCacheOpenCursors</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RDD</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RDD.Functions.AdsCacheOpenTables</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RDD</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RDD.Functions.AdsCacheRecords</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RDD</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RDD.Functions.AdsCancelUpdate</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RDD</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RDD.Functions.AdsClearAllScopes</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RDD</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RDD.Functions.AdsClearAOF</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RDD</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RDD.Functions.AdsClearCallbackFunction</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RDD</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RDD.Functions.AdsClearDefault</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RDD</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RDD.Functions.AdsClearFilter</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RDD</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RDD.Functions.AdsClearProgressCallback</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RDD</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RDD.Functions.AdsClearRelation</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RDD</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RDD.Functions.AdsClearScope</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RDD</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RDD.Functions.AdsClearSQLAbortFunc</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RDD</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RDD.Functions.AdsClearSQLParams</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RDD</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RDD.Functions.AdsCloneTable</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RDD</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RDD.Functions.AdsCloseAllIndexes</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RDD</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RDD.Functions.AdsCloseAllTables</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RDD</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RDD.Functions.AdsCloseCachedTables</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RDD</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RDD.Functions.AdsCloseIndex</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RDD</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RDD.Functions.AdsCloseSQLStatement</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RDD</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RDD.Functions.AdsCloseTable</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RDD</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RDD.Functions.AdsCommitTransaction</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RDD</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RDD.Functions.AdsConnect60</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RDD</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RDD.Functions.AdsContinue</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RDD</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RDD.Functions.AdsCopyTableStructure</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RDD</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RDD.Functions.AdsCreateFTSIndex</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RDD</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RDD.Functions.AdsCreateIndex</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RDD</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RDD.Functions.AdsCreateIndex90</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RDD</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RDD.Functions.AdsCreateSQLStatement</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RDD</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RDD.Functions.AdsCreateTable90</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RDD</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RDD.Functions.AdsDecryptRecord</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RDD</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RDD.Functions.AdsDecryptTable</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RDD</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RDD.Functions.AdsDeleteCustomKey</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RDD</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RDD.Functions.AdsDeleteIndex</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RDD</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RDD.Functions.AdsDeleteRecord</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RDD</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RDD.Functions.AdsDisableAutoIncEnforcement</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RDD</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RDD.Functions.AdsDisableEncryption</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RDD</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RDD.Functions.AdsDisableLocalConnections</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RDD</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RDD.Functions.AdsDisableRI</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RDD</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RDD.Functions.AdsDisableUniqueEnforcement</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RDD</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RDD.Functions.AdsDisconnect</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RDD</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RDD.Functions.AdsEnableAutoIncEnforcement</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RDD</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RDD.Functions.AdsEnableEncryption</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RDD</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RDD.Functions.AdsEnableRI</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RDD</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RDD.Functions.AdsEnableUniqueEnforcement</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RDD</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RDD.Functions.AdsEncryptRecord</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RDD</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RDD.Functions.AdsEncryptTable</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RDD</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RDD.Functions.AdsEvalLogicalExpr</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RDD</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RDD.Functions.AdsEvalNumericExpr</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RDD</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RDD.Functions.AdsEvalStringExpr</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RDD</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RDD.Functions.AdsEvalTestExpr</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RDD</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RDD.Functions.AdsExecuteSQL</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RDD</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RDD.Functions.AdsExecuteSQLDirect</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RDD</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RDD.Functions.AdsExtractKey</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RDD</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RDD.Functions.AdsFileToBinary</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RDD</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RDD.Functions.AdsFindConnection</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RDD</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RDD.Functions.AdsFlushFileBuffers</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RDD</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RDD.Functions.AdsGetAllIndexes</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RDD</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RDD.Functions.AdsGetAllLocks</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RDD</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RDD.Functions.AdsGetAllTables</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RDD</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RDD.Functions.AdsGetAOFOptLevel</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RDD</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RDD.Functions.AdsGetBinary</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RDD</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RDD.Functions.AdsGetBinaryLength</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RDD</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RDD.Functions.AdsGetBookmark</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RDD</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RDD.Functions.AdsGetConnectionType</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RDD</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RDD.Functions.AdsGetDate</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RDD</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RDD.Functions.AdsGetDateFormat</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RDD</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RDD.Functions.AdsGetDouble</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RDD</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RDD.Functions.AdsGetErrorMessage</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RDD</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RDD.Functions.AdsGetField</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RDD</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RDD.Functions.AdsGetFieldDecimals</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RDD</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RDD.Functions.AdsGetFieldLength</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RDD</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RDD.Functions.AdsGetFieldName</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RDD</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RDD.Functions.AdsGetFieldType</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RDD</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RDD.Functions.AdsGetFTSIndexes</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RDD</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RDD.Functions.AdsGetHandleType</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RDD</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RDD.Functions.AdsGetIndexCondition</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RDD</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RDD.Functions.AdsGetIndexExpr</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RDD</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RDD.Functions.AdsGetIndexFilename</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RDD</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RDD.Functions.AdsGetIndexHandle</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RDD</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RDD.Functions.AdsGetIndexHandleByOrder</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RDD</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RDD.Functions.AdsGetIndexName</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RDD</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RDD.Functions.AdsGetIndexOrderByHandle</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RDD</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RDD.Functions.AdsGetJulian</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RDD</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RDD.Functions.AdsGetKeyCount</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RDD</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RDD.Functions.AdsGetKeyLength</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RDD</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RDD.Functions.AdsGetKeyNum</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RDD</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RDD.Functions.AdsGetKeyType</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RDD</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RDD.Functions.AdsGetLastError</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RDD</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RDD.Functions.AdsGetLastTableUpdate</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RDD</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RDD.Functions.AdsGetLogical</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RDD</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RDD.Functions.AdsGetMemoBlockSize</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RDD</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RDD.Functions.AdsGetMemoLength</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RDD</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RDD.Functions.AdsGetNumFields</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RDD</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RDD.Functions.AdsGetNumIndexes</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RDD</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RDD.Functions.AdsGetNumLocks</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RDD</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RDD.Functions.AdsGetRecordCount</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RDD</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RDD.Functions.AdsGetRecordCRC</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RDD</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RDD.Functions.AdsGetRecordLength</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RDD</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RDD.Functions.AdsGetRecordNum</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RDD</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RDD.Functions.AdsGetRelKeyPos</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RDD</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RDD.Functions.AdsGetScope</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RDD</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RDD.Functions.AdsGetString</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RDD</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RDD.Functions.AdsGetStringW</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RDD</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RDD.Functions.AdsGetTableFilename</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RDD</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RDD.Functions.AdsGetTableOpenOptions</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RDD</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RDD.Functions.AdsGetTableType</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RDD</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RDD.Functions.AdsGotoBottom</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RDD</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RDD.Functions.AdsGotoRecord</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RDD</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RDD.Functions.AdsGotoTop</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RDD</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RDD.Functions.AdsInitRawKey</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RDD</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RDD.Functions.AdsInTransaction</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RDD</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RDD.Functions.AdsIsEmpty</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RDD</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RDD.Functions.AdsIsFound</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RDD</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RDD.Functions.AdsIsIndexCustom</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RDD</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RDD.Functions.AdsIsIndexDescending</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RDD</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RDD.Functions.AdsIsIndexUnique</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RDD</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RDD.Functions.AdsIsRecordDeleted</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RDD</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RDD.Functions.AdsIsRecordLocked</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RDD</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RDD.Functions.AdsIsRecordVisible</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RDD</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RDD.Functions.AdsIsServerLoaded</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RDD</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RDD.Functions.AdsIsTableLocked</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RDD</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RDD.Functions.AdsLockRecord</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RDD</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RDD.Functions.AdsLockTable</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RDD</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RDD.Functions.AdsMgConnect</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RDD</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RDD.Functions.AdsMgDisconnect</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RDD</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RDD.Functions.AdsMgDumpInternalTables</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RDD</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RDD.Functions.AdsMgGetActivityInfo</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RDD</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RDD.Functions.AdsMgGetCommStats</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RDD</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RDD.Functions.AdsMgGetConfigInfo</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RDD</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RDD.Functions.AdsMgGetInstallInfo</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RDD</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RDD.Functions.AdsMgGetLockOwner</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RDD</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RDD.Functions.AdsMgGetLocks</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RDD</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RDD.Functions.AdsMgGetOpenIndexes</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RDD</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RDD.Functions.AdsMgGetOpenTables</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RDD</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RDD.Functions.AdsMgGetServerType</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RDD</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RDD.Functions.AdsMgGetUserNames</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RDD</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RDD.Functions.AdsMgGetWorkerThreadActivity</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RDD</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RDD.Functions.AdsMgKillUser</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RDD</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RDD.Functions.AdsMgResetCommStats</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RDD</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RDD.Functions.AdsOpenIndex</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RDD</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RDD.Functions.AdsOpenTable90</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RDD</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RDD.Functions.AdsPackTable</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RDD</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RDD.Functions.AdsRecallAllRecords</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RDD</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RDD.Functions.AdsRecallRecord</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RDD</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RDD.Functions.AdsRefreshAOF</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RDD</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RDD.Functions.AdsRefreshRecord</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RDD</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RDD.Functions.AdsRegisterCallbackFunction</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RDD</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RDD.Functions.AdsReindex</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RDD</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RDD.Functions.AdsResetConnection</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RDD</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RDD.Functions.AdsRollbackTransaction</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RDD</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RDD.Functions.AdsSeek</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RDD</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RDD.Functions.AdsSeekLast</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RDD</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RDD.Functions.AdsSetAOF</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RDD</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RDD.Functions.AdsSetBinary</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RDD</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RDD.Functions.AdsSetDateFormat</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RDD</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RDD.Functions.AdsSetDecimals</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RDD</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RDD.Functions.AdsSetDefault</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RDD</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RDD.Functions.AdsSetDouble</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RDD</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RDD.Functions.AdsSetEmpty</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RDD</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RDD.Functions.AdsSetEpoch</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RDD</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RDD.Functions.AdsSetExact</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RDD</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RDD.Functions.AdsSetField</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RDD</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RDD.Functions.AdsSetFilter</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RDD</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RDD.Functions.AdsSetJulian</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RDD</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RDD.Functions.AdsSetLogical</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RDD</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RDD.Functions.AdsSetMilliseconds</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RDD</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RDD.Functions.AdsSetMoney</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RDD</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RDD.Functions.AdsSetNull</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RDD</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RDD.Functions.AdsSetRelation</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RDD</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RDD.Functions.AdsSetScope</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RDD</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RDD.Functions.AdsSetSearchPath</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RDD</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RDD.Functions.AdsSetServerType</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RDD</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RDD.Functions.AdsSetShort</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RDD</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RDD.Functions.AdsSetString</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RDD</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RDD.Functions.AdsSetStringW</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RDD</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RDD.Functions.AdsSetTime</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RDD</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RDD.Functions.AdsSetTimeStamp</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RDD</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RDD.Functions.AdsShowDeleted</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RDD</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RDD.Functions.AdsSkip</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RDD</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RDD.Functions.AdsSkipUnique</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RDD</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RDD.Functions.AdsStmtClearTablePasswords</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RDD</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RDD.Functions.AdsStmtDisableEncryption</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RDD</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RDD.Functions.AdsStmtSetTableCharType</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RDD</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RDD.Functions.AdsStmtSetTableCollation</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RDD</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RDD.Functions.AdsStmtSetTableLockType</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RDD</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RDD.Functions.AdsStmtSetTablePassword</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RDD</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RDD.Functions.AdsStmtSetTableReadOnly</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RDD</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RDD.Functions.AdsStmtSetTableRights</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RDD</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RDD.Functions.AdsStmtSetTableType</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RDD</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RDD.Functions.AdsThreadExit</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RDD</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RDD.Functions.AdsUnlockRecord</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RDD</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RDD.Functions.AdsUnlockTable</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RDD</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RDD.Functions.AdsWriteAllRecords</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RDD</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RDD.Functions.AdsWriteRecord</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RDD</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RDD.Functions.AdsZapTable</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RDD</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RDD.Functions.AX_AXSLocking</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RDD</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RDD.Functions.AX_BLOB2File</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RDD</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RDD.Functions.AX_File2BLOB</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RDD</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RDD.Functions.AX_GetAceIndexHandle</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RDD</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RDD.Functions.AX_GetAceStmtHandle</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RDD</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RDD.Functions.AX_GetAceTableHandle</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RDD</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RDD.Functions.AX_IsServerLoaded</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RDD</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RDD.Functions.AX_PercentIndexed</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RDD</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RDD.Functions.AX_RightsCheck</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RDD</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RDD.Functions.AX_SetCollation</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RDD</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RDD.Functions.AX_SetConnectionHandle</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RDD</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RDD.Functions.AX_SetExactKeyPos</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RDD</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RDD.Functions.AX_SetPassword</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RDD</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RDD.Functions.AX_SetServerType</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RDD</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RDD.Functions.AX_SetSQLTablePasswords</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RDD</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RDD.Functions.AX_Transaction</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RDD</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RDD.Functions.AX_UsingClientServer</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RDD</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RDD.Functions.DBFAXSAdsBeginTransaction</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RDD</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RDD.Functions.DBFAXSAdsBinaryToFile</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RDD</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RDD.Functions.DBFAXSAdsCommitTransaction</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RDD</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RDD.Functions.DBFAXSAdsDisableEncryption</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RDD</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RDD.Functions.DBFAXSAdsEnableEncryption</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RDD</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RDD.Functions.DBFAXSAdsFileToBinary</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RDD</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RDD.Functions.DBFAXSAdsFindConnection</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RDD</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RDD.Functions.DBFAXSAdsGetConnectionType</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RDD</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RDD.Functions.DBFAXSAdsInTransaction</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RDD</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RDD.Functions.DBFAXSAdsIsServerLoaded</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RDD</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RDD.Functions.DBFAXSAdsRollbackTransaction</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RDD</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RDD.Functions.DBFAXSAdsSetServerType</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RDD</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RDD.Functions.GetAceIndexHandle</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RDD</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RDD.Functions.GetAceTableHandle</codeEntityReference></para></entry></row>
+<row><entry><para>XSharp.RDD</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RDD.Functions.AdsAddCustomKey(System.IntPtr)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RDD</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RDD.Functions.AdsAppendRecord(System.IntPtr)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RDD</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RDD.Functions.AdsApplicationExit</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RDD</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RDD.Functions.AdsAtBOF(System.IntPtr,System.UInt16@)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RDD</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RDD.Functions.AdsAtEOF(System.IntPtr,System.UInt16@)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RDD</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RDD.Functions.AdsBeginTransaction(System.IntPtr)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RDD</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RDD.Functions.AdsBinaryToFile(System.IntPtr,System.String,System.String)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RDD</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RDD.Functions.AdsCacheOpenCursors(System.UInt16)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RDD</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RDD.Functions.AdsCacheOpenTables(System.UInt16)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RDD</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RDD.Functions.AdsCacheRecords(System.IntPtr,System.UInt16)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RDD</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RDD.Functions.AdsCancelUpdate(System.IntPtr)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RDD</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RDD.Functions.AdsClearAllScopes(System.IntPtr)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RDD</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RDD.Functions.AdsClearAOF(System.IntPtr)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RDD</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RDD.Functions.AdsClearCallbackFunction</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RDD</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RDD.Functions.AdsClearDefault</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RDD</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RDD.Functions.AdsClearFilter(System.IntPtr)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RDD</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RDD.Functions.AdsClearProgressCallback</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RDD</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RDD.Functions.AdsClearRelation(System.IntPtr)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RDD</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RDD.Functions.AdsClearScope(System.IntPtr,System.UInt16)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RDD</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RDD.Functions.AdsClearSQLAbortFunc</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RDD</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RDD.Functions.AdsClearSQLParams(System.IntPtr)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RDD</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RDD.Functions.AdsCloneTable(System.IntPtr,System.IntPtr@)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RDD</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RDD.Functions.AdsCloseAllIndexes(System.IntPtr)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RDD</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RDD.Functions.AdsCloseAllTables</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RDD</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RDD.Functions.AdsCloseCachedTables(System.IntPtr)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RDD</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RDD.Functions.AdsCloseIndex(System.IntPtr)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RDD</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RDD.Functions.AdsCloseSQLStatement(System.IntPtr)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RDD</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RDD.Functions.AdsCloseTable(System.IntPtr)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RDD</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RDD.Functions.AdsCommitTransaction(System.IntPtr)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RDD</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RDD.Functions.AdsConnect60(System.String,System.UInt16,System.String,System.String,System.UInt32,System.IntPtr@)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RDD</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RDD.Functions.AdsContinue(System.IntPtr,System.UInt16@)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RDD</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RDD.Functions.AdsCopyTableStructure(System.IntPtr,System.String)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RDD</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RDD.Functions.AdsCreateFTSIndex(System.IntPtr,System.String,System.String,System.String,System.UInt32,System.UInt32,System.UInt32,System.UInt16,System.String,System.UInt16,System.String,System.UInt16,System.String,System.UInt16,System.String,System.String,System.String,System.UInt32)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RDD</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RDD.Functions.AdsCreateIndex(System.IntPtr,System.String,System.String,System.String,System.String,System.String,System.UInt32,System.IntPtr@)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RDD</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RDD.Functions.AdsCreateIndex90(System.IntPtr,System.String,System.String,System.String,System.String,System.String,System.UInt32,System.UInt32,System.String,System.IntPtr@)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RDD</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RDD.Functions.AdsCreateSQLStatement(System.IntPtr,System.IntPtr@)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RDD</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RDD.Functions.AdsCreateTable90(System.IntPtr,System.String,System.String,System.UInt16,System.UInt16,System.UInt16,System.UInt16,System.UInt16,System.String,System.UInt32,System.String,System.IntPtr@)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RDD</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RDD.Functions.AdsDecryptRecord(System.IntPtr)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RDD</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RDD.Functions.AdsDecryptTable(System.IntPtr)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RDD</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RDD.Functions.AdsDeleteCustomKey(System.IntPtr)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RDD</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RDD.Functions.AdsDeleteIndex(System.IntPtr)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RDD</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RDD.Functions.AdsDeleteRecord(System.IntPtr)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RDD</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RDD.Functions.AdsDisableAutoIncEnforcement(System.IntPtr)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RDD</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RDD.Functions.AdsDisableEncryption(System.IntPtr)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RDD</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RDD.Functions.AdsDisableLocalConnections</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RDD</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RDD.Functions.AdsDisableRI(System.IntPtr)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RDD</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RDD.Functions.AdsDisableUniqueEnforcement(System.IntPtr)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RDD</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RDD.Functions.AdsDisconnect(System.IntPtr)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RDD</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RDD.Functions.AdsEnableAutoIncEnforcement(System.IntPtr)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RDD</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RDD.Functions.AdsEnableEncryption(System.IntPtr,System.String)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RDD</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RDD.Functions.AdsEnableRI(System.IntPtr)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RDD</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RDD.Functions.AdsEnableUniqueEnforcement(System.IntPtr)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RDD</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RDD.Functions.AdsEncryptRecord(System.IntPtr)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RDD</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RDD.Functions.AdsEncryptTable(System.IntPtr)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RDD</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RDD.Functions.AdsEvalLogicalExpr(System.IntPtr,System.String,System.UInt16@)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RDD</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RDD.Functions.AdsEvalNumericExpr(System.IntPtr,System.String,System.Double@)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RDD</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RDD.Functions.AdsEvalStringExpr(System.IntPtr,System.String,System.Char[],System.UInt16@)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RDD</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RDD.Functions.AdsEvalTestExpr(System.IntPtr,System.String,System.UInt16@)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RDD</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RDD.Functions.AdsExecuteSQL(System.IntPtr,System.IntPtr@)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RDD</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RDD.Functions.AdsExecuteSQLDirect(System.IntPtr,System.String,System.IntPtr@)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RDD</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RDD.Functions.AdsExtractKey(System.IntPtr,System.Char[],System.UInt16@)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RDD</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RDD.Functions.AdsFileToBinary(System.IntPtr,System.String,System.UInt16,System.String)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RDD</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RDD.Functions.AdsFindConnection(System.String,System.IntPtr@)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RDD</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RDD.Functions.AdsFlushFileBuffers(System.IntPtr)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RDD</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RDD.Functions.AdsGetAllIndexes(System.IntPtr,System.IntPtr[],System.UInt16@)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RDD</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RDD.Functions.AdsGetAllLocks(System.IntPtr,System.UInt32[],System.UInt16@)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RDD</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RDD.Functions.AdsGetAllTables(System.IntPtr[],System.UInt16@)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RDD</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RDD.Functions.AdsGetAOFOptLevel(System.IntPtr,System.UInt16@,System.Char[],System.UInt16@)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RDD</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RDD.Functions.AdsGetBinary(System.IntPtr,System.UInt32,System.UInt32,System.Byte[],System.UInt32@)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RDD</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RDD.Functions.AdsGetBinaryLength(System.IntPtr,System.UInt32,System.UInt32@)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RDD</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RDD.Functions.AdsGetBookmark(System.IntPtr,System.IntPtr@)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RDD</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RDD.Functions.AdsGetConnectionType(System.IntPtr,System.UInt16@)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RDD</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RDD.Functions.AdsGetDate(System.IntPtr,System.UInt32,System.Char[],System.UInt16@)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RDD</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RDD.Functions.AdsGetDateFormat(System.Char[],System.UInt16@)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RDD</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RDD.Functions.AdsGetDouble(System.IntPtr,System.UInt32,System.Double@)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RDD</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RDD.Functions.AdsGetErrorMessage</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RDD</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RDD.Functions.AdsGetField(System.IntPtr,System.UInt32,System.Byte[],System.UInt32@,System.UInt16)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RDD</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RDD.Functions.AdsGetFieldDecimals(System.IntPtr,System.UInt32,System.UInt16@)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RDD</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RDD.Functions.AdsGetFieldLength(System.IntPtr,System.UInt32,System.UInt32@)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RDD</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RDD.Functions.AdsGetFieldName(System.IntPtr,System.UInt16,System.Char[],System.UInt16@)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RDD</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RDD.Functions.AdsGetFieldType(System.IntPtr,System.UInt32,System.UInt16@)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RDD</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RDD.Functions.AdsGetFTSIndexes(System.IntPtr,System.IntPtr[],System.UInt16@)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RDD</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RDD.Functions.AdsGetHandleType(System.IntPtr,System.UInt16@)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RDD</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RDD.Functions.AdsGetIndexCondition(System.IntPtr,System.Char[],System.UInt16@)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RDD</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RDD.Functions.AdsGetIndexExpr(System.IntPtr,System.Char[],System.UInt16@)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RDD</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RDD.Functions.AdsGetIndexFilename(System.IntPtr,System.UInt16,System.Char[],System.UInt16@)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RDD</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RDD.Functions.AdsGetIndexHandle(System.IntPtr,System.String,System.IntPtr@)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RDD</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RDD.Functions.AdsGetIndexHandleByOrder(System.IntPtr,System.UInt16,System.IntPtr@)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RDD</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RDD.Functions.AdsGetIndexName(System.IntPtr,System.Char[],System.UInt16@)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RDD</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RDD.Functions.AdsGetIndexOrderByHandle(System.IntPtr,System.UInt16@)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RDD</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RDD.Functions.AdsGetJulian(System.IntPtr,System.UInt32,System.Int32@)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RDD</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RDD.Functions.AdsGetKeyCount(System.IntPtr,System.UInt16,System.UInt32@)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RDD</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RDD.Functions.AdsGetKeyLength(System.IntPtr,System.UInt16@)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RDD</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RDD.Functions.AdsGetKeyNum(System.IntPtr,System.UInt16,System.UInt32@)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RDD</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RDD.Functions.AdsGetKeyType(System.IntPtr,System.UInt16@)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RDD</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RDD.Functions.AdsGetLastError(System.UInt32@,System.Char[],System.UInt16@)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RDD</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RDD.Functions.AdsGetLastTableUpdate(System.IntPtr,System.Char[],System.UInt16@)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RDD</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RDD.Functions.AdsGetLogical(System.IntPtr,System.UInt32,System.UInt16@)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RDD</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RDD.Functions.AdsGetMemoBlockSize(System.IntPtr,System.UInt16@)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RDD</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RDD.Functions.AdsGetMemoLength(System.IntPtr,System.UInt32,System.UInt32@)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RDD</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RDD.Functions.AdsGetNumFields(System.IntPtr,System.UInt16@)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RDD</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RDD.Functions.AdsGetNumIndexes(System.IntPtr,System.UInt16@)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RDD</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RDD.Functions.AdsGetNumLocks(System.IntPtr,System.UInt16@)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RDD</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RDD.Functions.AdsGetRecordCount(System.IntPtr,System.UInt16,System.UInt32@)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RDD</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RDD.Functions.AdsGetRecordCRC(System.IntPtr,System.UInt32@,System.UInt32)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RDD</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RDD.Functions.AdsGetRecordLength(System.IntPtr,System.UInt32@)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RDD</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RDD.Functions.AdsGetRecordNum(System.IntPtr,System.UInt16,System.UInt32@)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RDD</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RDD.Functions.AdsGetRelKeyPos(System.IntPtr,System.Double@)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RDD</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RDD.Functions.AdsGetScope(System.IntPtr,System.UInt16,System.Char[],System.UInt16@)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RDD</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RDD.Functions.AdsGetString(System.IntPtr,System.UInt32,System.Char[],System.UInt32@,System.UInt16)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RDD</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RDD.Functions.AdsGetStringW(System.IntPtr,System.UInt32,System.Char[],System.UInt32@,System.UInt16)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RDD</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RDD.Functions.AdsGetTableFilename(System.IntPtr,System.UInt16,System.Char[],System.UInt16@)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RDD</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RDD.Functions.AdsGetTableOpenOptions(System.IntPtr,System.UInt32@)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RDD</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RDD.Functions.AdsGetTableType(System.IntPtr,System.UInt16@)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RDD</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RDD.Functions.AdsGotoBottom(System.IntPtr)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RDD</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RDD.Functions.AdsGotoRecord(System.IntPtr,System.UInt32)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RDD</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RDD.Functions.AdsGotoTop(System.IntPtr)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RDD</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RDD.Functions.AdsInitRawKey(System.IntPtr)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RDD</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RDD.Functions.AdsInTransaction(System.IntPtr,System.UInt16@)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RDD</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RDD.Functions.AdsIsEmpty(System.IntPtr,System.UInt32,System.UInt16@)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RDD</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RDD.Functions.AdsIsFound(System.IntPtr,System.UInt16@)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RDD</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RDD.Functions.AdsIsIndexCustom(System.IntPtr,System.UInt16@)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RDD</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RDD.Functions.AdsIsIndexDescending(System.IntPtr,System.UInt16@)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RDD</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RDD.Functions.AdsIsIndexUnique(System.IntPtr,System.UInt16@)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RDD</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RDD.Functions.AdsIsRecordDeleted(System.IntPtr,System.UInt16@)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RDD</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RDD.Functions.AdsIsRecordLocked(System.IntPtr,System.UInt32,System.UInt16@)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RDD</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RDD.Functions.AdsIsRecordVisible(System.IntPtr,System.UInt16@)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RDD</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RDD.Functions.AdsIsServerLoaded(System.String,System.UInt16@)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RDD</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RDD.Functions.AdsIsTableLocked(System.IntPtr,System.UInt16@)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RDD</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RDD.Functions.AdsLockRecord(System.IntPtr,System.UInt32)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RDD</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RDD.Functions.AdsLockTable(System.IntPtr)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RDD</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RDD.Functions.AdsMgConnect(System.String,System.String,System.String,System.IntPtr@)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RDD</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RDD.Functions.AdsMgDisconnect(System.IntPtr)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RDD</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RDD.Functions.AdsMgDumpInternalTables(System.IntPtr)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RDD</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RDD.Functions.AdsMgGetActivityInfo(System.IntPtr,System.IntPtr,System.UInt16@)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RDD</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RDD.Functions.AdsMgGetCommStats(System.IntPtr,System.IntPtr,System.UInt16@)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RDD</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RDD.Functions.AdsMgGetConfigInfo(System.IntPtr,System.IntPtr,System.UInt16@,System.IntPtr,System.UInt16@)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RDD</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RDD.Functions.AdsMgGetInstallInfo(System.IntPtr,System.IntPtr,System.UInt16@)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RDD</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RDD.Functions.AdsMgGetLockOwner(System.IntPtr,System.String,System.UInt32,System.IntPtr,System.UInt16@,System.UInt16@)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RDD</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RDD.Functions.AdsMgGetLocks(System.IntPtr,System.String,System.String,System.UInt16,System.IntPtr,System.UInt16@,System.UInt16@)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RDD</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RDD.Functions.AdsMgGetOpenIndexes(System.IntPtr,System.String,System.String,System.UInt16,System.IntPtr,System.UInt16@,System.UInt16@)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RDD</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RDD.Functions.AdsMgGetOpenTables(System.IntPtr,System.String,System.UInt16,System.IntPtr,System.UInt16@,System.UInt16@)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RDD</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RDD.Functions.AdsMgGetServerType(System.IntPtr,System.UInt16@)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RDD</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RDD.Functions.AdsMgGetUserNames(System.IntPtr,System.String,System.IntPtr,System.UInt16@,System.UInt16@)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RDD</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RDD.Functions.AdsMgGetWorkerThreadActivity(System.IntPtr,System.IntPtr,System.UInt16@,System.UInt16@)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RDD</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RDD.Functions.AdsMgKillUser(System.IntPtr,System.String,System.UInt16)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RDD</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RDD.Functions.AdsMgResetCommStats(System.IntPtr)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RDD</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RDD.Functions.AdsOpenIndex(System.IntPtr,System.String,System.IntPtr[],System.UInt16@)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RDD</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RDD.Functions.AdsOpenTable90(System.IntPtr,System.String,System.String,System.UInt16,System.UInt16,System.UInt16,System.UInt16,System.UInt32,System.String,System.IntPtr@)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RDD</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RDD.Functions.AdsPackTable(System.IntPtr)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RDD</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RDD.Functions.AdsRecallAllRecords(System.IntPtr)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RDD</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RDD.Functions.AdsRecallRecord(System.IntPtr)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RDD</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RDD.Functions.AdsRefreshAOF(System.IntPtr)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RDD</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RDD.Functions.AdsRefreshRecord(System.IntPtr)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RDD</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RDD.Functions.AdsRegisterCallbackFunction(XSharp.ADS.CallbackFn,System.UInt32)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RDD</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RDD.Functions.AdsReindex(System.IntPtr)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RDD</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RDD.Functions.AdsResetConnection(System.IntPtr)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RDD</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RDD.Functions.AdsRollbackTransaction(System.IntPtr)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RDD</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RDD.Functions.AdsSeek(System.IntPtr,System.String,System.UInt16,System.UInt16,System.UInt16,System.UInt16@)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RDD</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RDD.Functions.AdsSeekLast(System.IntPtr,System.String,System.UInt16,System.UInt16,System.UInt16@)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RDD</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RDD.Functions.AdsSetAOF(System.IntPtr,System.String,System.UInt16)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RDD</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RDD.Functions.AdsSetBinary(System.IntPtr,System.UInt32,System.UInt16,System.UInt32,System.UInt32,System.Byte[],System.UInt32)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RDD</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RDD.Functions.AdsSetDateFormat(System.String)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RDD</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RDD.Functions.AdsSetDecimals(System.UInt16)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RDD</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RDD.Functions.AdsSetDefault(System.String)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RDD</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RDD.Functions.AdsSetDouble(System.IntPtr,System.UInt32,System.Double)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RDD</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RDD.Functions.AdsSetEmpty(System.IntPtr,System.UInt32)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RDD</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RDD.Functions.AdsSetEpoch(System.UInt16)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RDD</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RDD.Functions.AdsSetExact(System.UInt16)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RDD</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RDD.Functions.AdsSetField(System.IntPtr,System.UInt32,System.Byte[],System.UInt32)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RDD</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RDD.Functions.AdsSetFilter(System.IntPtr,System.String)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RDD</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RDD.Functions.AdsSetJulian(System.IntPtr,System.UInt32,System.Int32)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RDD</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RDD.Functions.AdsSetLogical(System.IntPtr,System.UInt32,System.UInt16)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RDD</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RDD.Functions.AdsSetMilliseconds(System.IntPtr,System.UInt32,System.Int32)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RDD</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RDD.Functions.AdsSetMoney(System.IntPtr,System.UInt32,System.Int64)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RDD</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RDD.Functions.AdsSetNull(System.IntPtr,System.UInt32)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RDD</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RDD.Functions.AdsSetRelation(System.IntPtr,System.IntPtr,System.String)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RDD</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RDD.Functions.AdsSetScope(System.IntPtr,System.UInt16,System.String,System.UInt16,System.UInt16)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RDD</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RDD.Functions.AdsSetSearchPath(System.String)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RDD</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RDD.Functions.AdsSetServerType(System.UInt16)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RDD</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RDD.Functions.AdsSetShort(System.IntPtr,System.UInt32,System.Int16)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RDD</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RDD.Functions.AdsSetString(System.IntPtr,System.UInt32,System.String,System.UInt32)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RDD</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RDD.Functions.AdsSetStringW(System.IntPtr,System.UInt32,System.String,System.UInt32)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RDD</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RDD.Functions.AdsSetTime(System.IntPtr,System.UInt32,System.String,System.UInt16)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RDD</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RDD.Functions.AdsSetTimeStamp(System.IntPtr,System.UInt32,System.String,System.UInt32)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RDD</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RDD.Functions.AdsShowDeleted(System.UInt16)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RDD</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RDD.Functions.AdsSkip(System.IntPtr,System.Int32)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RDD</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RDD.Functions.AdsSkipUnique(System.IntPtr,System.Int32)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RDD</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RDD.Functions.AdsStmtClearTablePasswords(System.IntPtr)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RDD</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RDD.Functions.AdsStmtDisableEncryption(System.IntPtr)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RDD</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RDD.Functions.AdsStmtSetTableCharType(System.IntPtr,System.UInt16)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RDD</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RDD.Functions.AdsStmtSetTableCollation(System.IntPtr,System.String)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RDD</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RDD.Functions.AdsStmtSetTableLockType(System.IntPtr,System.UInt16)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RDD</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RDD.Functions.AdsStmtSetTablePassword(System.IntPtr,System.String,System.String)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RDD</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RDD.Functions.AdsStmtSetTableReadOnly(System.IntPtr,System.UInt16)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RDD</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RDD.Functions.AdsStmtSetTableRights(System.IntPtr,System.UInt16)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RDD</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RDD.Functions.AdsStmtSetTableType(System.IntPtr,System.UInt16)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RDD</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RDD.Functions.AdsThreadExit</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RDD</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RDD.Functions.AdsUnlockRecord(System.IntPtr,System.UInt32)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RDD</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RDD.Functions.AdsUnlockTable(System.IntPtr)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RDD</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RDD.Functions.AdsWriteAllRecords</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RDD</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RDD.Functions.AdsWriteRecord(System.IntPtr)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RDD</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RDD.Functions.AdsZapTable(System.IntPtr)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RDD</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RDD.Functions.AX_AXSLocking</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RDD</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RDD.Functions.AX_BLOB2File(System.String,System.String)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RDD</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RDD.Functions.AX_File2BLOB(System.String,System.String)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RDD</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RDD.Functions.AX_GetAceIndexHandle(System.Object,System.Object)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RDD</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RDD.Functions.AX_GetAceStmtHandle</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RDD</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RDD.Functions.AX_GetAceTableHandle</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RDD</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RDD.Functions.AX_IsServerLoaded(System.String)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RDD</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RDD.Functions.AX_PercentIndexed</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RDD</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RDD.Functions.AX_RightsCheck</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RDD</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RDD.Functions.AX_SetCollation(System.String)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RDD</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RDD.Functions.AX_SetConnectionHandle(System.IntPtr)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RDD</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RDD.Functions.AX_SetExactKeyPos</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RDD</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RDD.Functions.AX_SetPassword(System.String)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RDD</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RDD.Functions.AX_SetServerType(System.Boolean,System.Boolean,System.Boolean)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RDD</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RDD.Functions.AX_SetSQLTablePasswords(System.Object)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RDD</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RDD.Functions.AX_Transaction(System.Int32)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RDD</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RDD.Functions.AX_UsingClientServer</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RDD</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RDD.Functions.DBFAXSAdsBeginTransaction(System.IntPtr)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RDD</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RDD.Functions.DBFAXSAdsBinaryToFile(System.IntPtr,System.String,System.String)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RDD</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RDD.Functions.DBFAXSAdsCommitTransaction(System.IntPtr)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RDD</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RDD.Functions.DBFAXSAdsDisableEncryption(System.IntPtr)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RDD</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RDD.Functions.DBFAXSAdsEnableEncryption(System.IntPtr,System.String)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RDD</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RDD.Functions.DBFAXSAdsFileToBinary(System.IntPtr,System.String,System.UInt16,System.String)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RDD</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RDD.Functions.DBFAXSAdsFindConnection(System.String,System.IntPtr@)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RDD</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RDD.Functions.DBFAXSAdsGetConnectionType(System.IntPtr,System.UInt16@)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RDD</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RDD.Functions.DBFAXSAdsInTransaction(System.IntPtr,System.UInt16@)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RDD</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RDD.Functions.DBFAXSAdsIsServerLoaded(System.String,System.UInt16@)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RDD</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RDD.Functions.DBFAXSAdsRollbackTransaction(System.IntPtr)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RDD</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RDD.Functions.DBFAXSAdsSetServerType(System.UInt16)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RDD</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RDD.Functions.GetAceIndexHandle</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RDD</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RDD.Functions.GetAceTableHandle</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
 </table>
 </content>
      </section>

@@ -1,0 +1,238 @@
+<?xml version="1.0" encoding="utf-8"?>
+<topic id="cat-rdd_Classes" revisionNumber="1" title="default Classes">
+  <developerConceptualDocument xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5" xmlns:xlink="http://www.w3.org/1999/xlink">
+    
+
+    <!-- Add one or more top-level section elements.  These are collapsible.
+         If using <autoOutline />, add an address attribute to identify it
+         and specify a title so that it can be jumped to with a hyperlink. -->
+    <section address="Section1">
+	<title>rdd Classes</title>
+		<!-- <para><codeEntityReference qualifyHint="false">M:XSharp.RT.Functions.DoW(XSharp.__Date)</codeEntityReference></para> -->
+      
+	<content><table><tableHeader>
+<row><entry><para>Assembly</para></entry>
+<entry><para>Function</para></entry>
+<entry><para>Description</para></entry>
+</row></tableHeader>
+<row><entry><para>XSharp.Core</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.RDD.BaseIndex</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.Core</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.RDD.BaseMemo</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.Core</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.RDD.CursorProperty</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.Core</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.RDD.DataSession</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.Core</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.RDD.Support.DbEvalInfo</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.Core</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.RDD.Enums.DBFFieldFlags</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.Core</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.RDD.Enums.DbfHeaderCodepage</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.Core</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.RDD.Enums.DbFieldInfo</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.Core</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.RDD.Enums.DbFieldType</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.Core</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.RDD.Support.DbFilterInfo</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.Core</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.RDD.Enums.DbInfo</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.Core</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.RDD.Support.DbLockInfo</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.Core</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.RDD.Enums.DbLockMode</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.Core</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.RDD.Enums.DbNotificationType</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.Core</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.DbNotifyEventArgs</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.Core</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.DbNotifyEventHandler</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.Core</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.RDD.Support.DbOpenInfo</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.Core</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.RDD.Enums.DbOrder_Info</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.Core</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.RDD.Support.DbOrderCondInfo</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.Core</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.RDD.Support.DbOrderCreateInfo</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.Core</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.RDD.Support.DbOrderInfo</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.Core</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.RDD.Enums.DbRecordInfo</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.Core</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.RDD.Support.DbRelInfo</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.Core</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.RDD.Support.DbScopeInfo</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.Core</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.RDD.Support.DbSeekInfo</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.Core</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.RDD.Enums.DbSortFlags</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.Core</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.RDD.Support.DbSortInfo</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.Core</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.RDD.Support.DbSortItem</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.Core</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.RDD.Support.DbTransInfo</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.Core</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.RDD.Enums.DbTransInfoFlags</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.Core</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.RDD.Support.DbTransItem</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.Core</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.RDD.Support.RDDExtensions</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.Core</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.RDD.Support.RddFieldInfo</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.Core</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.RDD.Enums.RddInfo</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.Core</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.RDD.RegisteredRDD</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.Core</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.RDD.Workarea</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.Core</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.RDD.Workareas</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.Core</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.RDD.WrapperRDD</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RDD</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.RDD.CSV</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RDD</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.RDD.DBF</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RDD</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.RDD.DbfAutoIncrementColumn</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RDD</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.RDD.DBFCDX</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RDD</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.RDD.DbfCharacterColumn</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RDD</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.RDD.DbfColumn</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RDD</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.RDD.DbfCurrencyColumn</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RDD</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.RDD.DbfDateColumn</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RDD</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.RDD.DbfDateTimeColumn</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RDD</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.RDD.DBFDBT</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RDD</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.RDD.DbfDoubleColumn</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RDD</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.RDD.DbfField</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RDD</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.RDD.DBFFPT</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RDD</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.RDD.DbfHeader</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RDD</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.RDD.DbfHeaderCodepage</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RDD</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.RDD.DbfIntegerColumn</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RDD</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.RDD.DbfLocking</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RDD</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.RDD.DbfLockingModel</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RDD</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.RDD.DbfLogicColumn</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RDD</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.RDD.DbfMemoColumn</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RDD</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.RDD.DBFNTX</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RDD</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.RDD.DbfNullColumn</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RDD</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.RDD.DbfNumericColumn</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RDD</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.RDD.DBFTableFlags</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RDD</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.RDD.DBFVersion</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RDD</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.RDD.DBFVFP</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RDD</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.RDD.DBFVFPSQL</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RDD</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.RDD.DELIM</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RDD</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.RDD.ERDD</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RDD</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.RDD.OsCodepage</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RDD</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.RDD.SDF</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RDD</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.RDD.TEXTRDD</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RDD</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.RDD.TSV</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RT</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.VoDb</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+</table>
+</content>
+     </section>
+  </developerConceptualDocument>
+</topic>

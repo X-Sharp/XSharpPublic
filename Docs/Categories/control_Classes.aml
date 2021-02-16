@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="utf-8"?>
+<topic id="cat-control_Classes" revisionNumber="1" title="default Classes">
+  <developerConceptualDocument xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5" xmlns:xlink="http://www.w3.org/1999/xlink">
+    
+
+    <!-- Add one or more top-level section elements.  These are collapsible.
+         If using <autoOutline />, add an address attribute to identify it
+         and specify a title so that it can be jumped to with a hyperlink. -->
+    <section address="Section1">
+	<title>control Classes</title>
+		<!-- <para><codeEntityReference qualifyHint="false">M:XSharp.RT.Functions.DoW(XSharp.__Date)</codeEntityReference></para> -->
+      
+	<content><table><tableHeader>
+<row><entry><para>Assembly</para></entry>
+<entry><para>Function</para></entry>
+<entry><para>Description</para></entry>
+</row></tableHeader>
+<row><entry><para>VOGUIClasses</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.AnimationControl</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>VOGUIClasses</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.BaseListBox</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>VOGUIClasses</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.ComboBox</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>VOGUIClasses</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.ComboBoxEx</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>VOGUIClasses</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.ComboBoxExItem</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>VOGUIClasses</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.Control</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>VOGUIClasses</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.CustomControl</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>VOGUIClasses</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.DataBrowser</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>VOGUIClasses</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.DataColumn</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>VOGUIClasses</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.DataListView</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>VOGUIClasses</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.DateTimePicker</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>VOGUIClasses</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.Edit</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>VOGUIClasses</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.HorizontalScrollBar</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>VOGUIClasses</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.HorizontalSelectionSlider</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>VOGUIClasses</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.HorizontalSlider</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>VOGUIClasses</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.HorizontalSpinner</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>VOGUIClasses</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.ListBox</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>VOGUIClasses</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.ListView</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>VOGUIClasses</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.ListViewColumn</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>VOGUIClasses</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.ListViewItem</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>VOGUIClasses</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.MonthCalendar</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>VOGUIClasses</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.ProgressBar</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>VOGUIClasses</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.ScrollBar</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>VOGUIClasses</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.SelectionSlider</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>VOGUIClasses</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.Slider</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>VOGUIClasses</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.Spinner</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>VOGUIClasses</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.StatusBar</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>VOGUIClasses</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.StatusBarItem</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>VOGUIClasses</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.StatusBarKeyItem</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>VOGUIClasses</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.SysLink</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>VOGUIClasses</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.TabControl</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>VOGUIClasses</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.ToolBar</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>VOGUIClasses</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.TreeView</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>VOGUIClasses</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.TreeViewItem</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>VOGUIClasses</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.VerticalScrollBar</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>VOGUIClasses</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.VerticalSelectionSlider</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>VOGUIClasses</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.VerticalSlider</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>VOGUIClasses</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.VerticalSpinner</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>VOGUIClasses</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.WindowHorizontalScrollBar</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>VOGUIClasses</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.WindowScrollBar</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>VOGUIClasses</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.WindowVerticalScrollBar</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+</table>
+</content>
+     </section>
+  </developerConceptualDocument>
+</topic>

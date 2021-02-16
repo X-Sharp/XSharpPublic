@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<topic id="cat-textcontrol_Classes" revisionNumber="1" title="default Classes">
+  <developerConceptualDocument xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5" xmlns:xlink="http://www.w3.org/1999/xlink">
+    
+
+    <!-- Add one or more top-level section elements.  These are collapsible.
+         If using <autoOutline />, add an address attribute to identify it
+         and specify a title so that it can be jumped to with a hyperlink. -->
+    <section address="Section1">
+	<title>textcontrol Classes</title>
+		<!-- <para><codeEntityReference qualifyHint="false">M:XSharp.RT.Functions.DoW(XSharp.__Date)</codeEntityReference></para> -->
+      
+	<content><table><tableHeader>
+<row><entry><para>Assembly</para></entry>
+<entry><para>Function</para></entry>
+<entry><para>Description</para></entry>
+</row></tableHeader>
+<row><entry><para>VOGUIClasses</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.FixedText</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>VOGUIClasses</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.GroupBox</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>VOGUIClasses</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.HotKeyEdit</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>VOGUIClasses</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.HyperLink</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>VOGUIClasses</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.IPAddress</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>VOGUIClasses</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.MultiLineEdit</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>VOGUIClasses</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.RichEdit</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>VOGUIClasses</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.SingleLineEdit</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>VOGUIClasses</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.TextControl</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+</table>
+</content>
+     </section>
+  </developerConceptualDocument>
+</topic>

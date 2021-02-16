@@ -13,48 +13,125 @@
 <content><table><tableHeader>
 <row><entry><para>Assembly</para></entry>
 <entry><para>Function</para></entry>
+<entry><para>Description</para></entry>
 </row></tableHeader>
-<row><entry><para>VOSQLClasses</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:VOSQLClasses.Functions._SLen</codeEntityReference></para></entry></row>
-<row><entry><para>VOSQLClasses</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:VOSQLClasses.Functions.DToCSQL</codeEntityReference></para></entry></row>
-<row><entry><para>VOSQLClasses</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:VOSQLClasses.Functions.MakeTimeStamp</codeEntityReference></para></entry></row>
-<row><entry><para>VOSQLClasses</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:VOSQLClasses.Functions.SQL_LEN_DATA_AT_EXEC</codeEntityReference></para></entry></row>
-<row><entry><para>VOSQLClasses</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:VOSQLClasses.Functions.SQLConnectErrorMsg</codeEntityReference></para></entry></row>
-<row><entry><para>VOSQLClasses</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:VOSQLClasses.Functions.SqlDeleteWhiteSpace</codeEntityReference></para></entry></row>
-<row><entry><para>VOSQLClasses</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:VOSQLClasses.Functions.SQLDropMyConnection</codeEntityReference></para></entry></row>
-<row><entry><para>VOSQLClasses</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:VOSQLClasses.Functions.SQLGetDataSources</codeEntityReference></para></entry></row>
-<row><entry><para>VOSQLClasses</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:VOSQLClasses.Functions.SQLGetMyConnection</codeEntityReference></para></entry></row>
-<row><entry><para>VOSQLClasses</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:VOSQLClasses.Functions.SqlIsBinaryType</codeEntityReference></para></entry></row>
-<row><entry><para>VOSQLClasses</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:VOSQLClasses.Functions.SqlIsCharType</codeEntityReference></para></entry></row>
-<row><entry><para>VOSQLClasses</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:VOSQLClasses.Functions.SqlIsLongType</codeEntityReference></para></entry></row>
-<row><entry><para>VOSQLClasses</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:VOSQLClasses.Functions.SQLOpenConnection</codeEntityReference></para></entry></row>
-<row><entry><para>VOSQLClasses</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:VOSQLClasses.Functions.SQLSetConnection</codeEntityReference></para></entry></row>
-<row><entry><para>VOSQLClasses</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:VOSQLClasses.Functions.SqlSetStmtConcurrency</codeEntityReference></para></entry></row>
-<row><entry><para>VOSQLClasses</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:VOSQLClasses.Functions.SqlSetStmtCursorType</codeEntityReference></para></entry></row>
-<row><entry><para>VOSQLClasses</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:VOSQLClasses.Functions.SqlSetStmtSimulateCursor</codeEntityReference></para></entry></row>
-<row><entry><para>VOSQLClasses</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:VOSQLClasses.Functions.SQLThrowOutOfMemoryError</codeEntityReference></para></entry></row>
-<row><entry><para>VOSQLClasses</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:VOSQLClasses.Functions.SQLType2CType</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.Core</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.Core.Functions.GetSQLProperty</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.Data</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.Data.Functions.GetSqlFactory</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.VFP</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.VFP.Functions.ASessions</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.VFP</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.VFP.Functions.ASqlHandles</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.VFP</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.VFP.Functions.Refresh</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.VFP</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.VFP.Functions.Requery</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.VFP</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.VFP.Functions.SqlCancel</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.VFP</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.VFP.Functions.SqlColumns</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.VFP</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.VFP.Functions.SqlCommit</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.VFP</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.VFP.Functions.SqlConnect</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.VFP</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.VFP.Functions.SqlDisconnect</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.VFP</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.VFP.Functions.SqlExec</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.VFP</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.VFP.Functions.SqlGetProp</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.VFP</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.VFP.Functions.SqlIdleDisconnect</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.VFP</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.VFP.Functions.SqlMoreResults</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.VFP</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.VFP.Functions.SqlParameters</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.VFP</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.VFP.Functions.SqlPrepare</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.VFP</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.VFP.Functions.SqlRollBack</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.VFP</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.VFP.Functions.SqlSetFactory</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.VFP</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.VFP.Functions.SqlSetProp</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.VFP</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.VFP.Functions.SqlStringConnect</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.VFP</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.VFP.Functions.SqlTables</codeEntityReference></para></entry></row>
+<row><entry><para>VOSQLClasses</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:VOSQLClasses.Functions._SLen(System.String)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>VOSQLClasses</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:VOSQLClasses.Functions.DToCSQL(XSharp.__Date)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>VOSQLClasses</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:VOSQLClasses.Functions.MakeTimeStamp(XSharp.__Usual,XSharp.__Usual)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>VOSQLClasses</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:VOSQLClasses.Functions.SQL_LEN_DATA_AT_EXEC(System.Int32)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>VOSQLClasses</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:VOSQLClasses.Functions.SQLConnectErrorMsg(XSharp.__Usual)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>VOSQLClasses</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:VOSQLClasses.Functions.SqlDeleteWhiteSpace(System.String)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>VOSQLClasses</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:VOSQLClasses.Functions.SQLDropMyConnection(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>VOSQLClasses</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:VOSQLClasses.Functions.SQLGetDataSources</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>VOSQLClasses</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:VOSQLClasses.Functions.SQLGetMyConnection(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>VOSQLClasses</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:VOSQLClasses.Functions.SqlIsBinaryType(System.Int32)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>VOSQLClasses</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:VOSQLClasses.Functions.SqlIsCharType(System.Int32)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>VOSQLClasses</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:VOSQLClasses.Functions.SqlIsLongType(System.Int32)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>VOSQLClasses</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:VOSQLClasses.Functions.SQLOpenConnection</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>VOSQLClasses</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:VOSQLClasses.Functions.SQLSetConnection(XSharp.__Usual)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>VOSQLClasses</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:VOSQLClasses.Functions.SqlSetStmtConcurrency(XSharp.__Usual)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>VOSQLClasses</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:VOSQLClasses.Functions.SqlSetStmtCursorType(XSharp.__Usual)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>VOSQLClasses</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:VOSQLClasses.Functions.SqlSetStmtSimulateCursor(XSharp.__Usual)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.Core</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.GetSQLProperty(System.String)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.Data</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Data.Functions.GetSqlFactory</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.VFP</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.ASessions(XSharp.__Usual)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.VFP</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.ASqlHandles(XSharp.__Array,XSharp.__Usual)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.VFP</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.Refresh(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.VFP</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.Requery(XSharp.__Usual)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.VFP</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.SqlCancel(System.Int32)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.VFP</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.SqlColumns(System.Int32,System.String,System.String,System.String)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.VFP</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.SqlCommit(System.Int32)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.VFP</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.SqlConnect(System.Int32)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.VFP</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.SqlDisconnect(System.Int32)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.VFP</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.SqlExec(System.Int32,System.String,System.String,XSharp.__Array)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.VFP</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.SqlGetProp(System.Int32,System.String)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.VFP</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.SqlIdleDisconnect(System.Int32)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.VFP</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.SqlMoreResults(System.Int32,XSharp.__Usual,XSharp.__Usual)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.VFP</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.SqlParameters(System.Int32,System.Object)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.VFP</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.SqlPrepare(System.Int32,System.String,System.String)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.VFP</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.SqlRollBack(System.Int32)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.VFP</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.SqlSetFactory</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.VFP</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.SqlSetProp(System.Int32,System.String,XSharp.__Usual)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.VFP</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.SqlStringConnect(System.Boolean)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.VFP</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.SqlTables(System.Int32,System.String,System.String)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
 </table>
 </content>
      </section>

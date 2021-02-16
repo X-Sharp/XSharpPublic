@@ -13,26 +13,65 @@
 <content><table><tableHeader>
 <row><entry><para>Assembly</para></entry>
 <entry><para>Function</para></entry>
+<entry><para>Description</para></entry>
 </row></tableHeader>
-<row><entry><para>XSharp.VFP</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.VFP.Functions.XmlToCursor</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.VFP</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.VFP.Functions.XmlUpdatefram</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.XPP</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.XPP.Functions.XMLDocClearErrors</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.XPP</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.XPP.Functions.XMLDocClose</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.XPP</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.XPP.Functions.XMLDocCloseAll</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.XPP</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.XPP.Functions.XmlDocExplainErrorMessage</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.XPP</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.XPP.Functions.XMLDocGetErrorList</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.XPP</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.XPP.Functions.XMLDocGetRootTag</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.XPP</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.XPP.Functions.XMLDocOpenFile</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.XPP</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.XPP.Functions.XMLDocOpenString</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.XPP</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.XPP.Functions.XMLDocProcess</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.XPP</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.XPP.Functions.XMLDocResetAction</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.XPP</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.XPP.Functions.XMLDocSetAction</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.XPP</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.XPP.Functions.XMLGetAttribute</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.XPP</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.XPP.Functions.XMLGetChild</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.XPP</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.XPP.Functions.XMLGetChildren</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.XPP</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.XPP.Functions.XMLGetParent</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.XPP</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.XPP.Functions.XMLGetTag</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.XPP</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.XPP.Functions.XMLSelectNodes</codeEntityReference></para></entry></row>
+<row><entry><para>XSharp.VFP</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.XmlToCursor(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.VFP</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.XmlUpdatefram(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.XPP</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.XPP.Functions.XMLDocClearErrors</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.XPP</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.XPP.Functions.XMLDocClose(System.Int64)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.XPP</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.XPP.Functions.XMLDocCloseAll</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.XPP</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.XPP.Functions.XmlDocExplainErrorMessage(System.Int32)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.XPP</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.XPP.Functions.XMLDocGetErrorList(System.Int64,System.Int64)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.XPP</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.XPP.Functions.XMLDocGetRootTag(System.Int64)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.XPP</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.XPP.Functions.XMLDocOpenFile(System.String)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.XPP</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.XPP.Functions.XMLDocOpenString(System.String,XSharp.__Usual@)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.XPP</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.XPP.Functions.XMLDocProcess(System.Int64)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.XPP</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.XPP.Functions.XMLDocResetAction(System.Int64)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.XPP</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.XPP.Functions.XMLDocSetAction(System.Int64,System.String,XSharp.Codeblock)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.XPP</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.XPP.Functions.XMLGetAttribute(System.Int64,System.String)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.XPP</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.XPP.Functions.XMLGetChild(System.Int64,System.String)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.XPP</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.XPP.Functions.XMLGetChildren(System.Int64,System.String)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.XPP</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.XPP.Functions.XMLGetParent(System.Int64)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.XPP</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.XPP.Functions.XMLGetTag(System.Int64,XSharp.__Usual@)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.XPP</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.XPP.Functions.XMLSelectNodes(System.Int64,System.String,XSharp.__Usual@)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
 </table>
 </content>
      </section>

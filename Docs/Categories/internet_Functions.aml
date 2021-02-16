@@ -13,34 +13,89 @@
 	<content><table><tableHeader>
 <row><entry><para>Assembly</para></entry>
 <entry><para>Function</para></entry>
+<entry><para>Description</para></entry>
 </row></tableHeader>
-<row><entry><para>VOInternetClasses</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:VOInternetClasses.Functions.B64Decode</codeEntityReference></para></entry></row>
-<row><entry><para>VOInternetClasses</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:VOInternetClasses.Functions.B64DecodeString</codeEntityReference></para></entry></row>
-<row><entry><para>VOInternetClasses</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:VOInternetClasses.Functions.B64Encode</codeEntityReference></para></entry></row>
-<row><entry><para>VOInternetClasses</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:VOInternetClasses.Functions.B64EncodeStream</codeEntityReference></para></entry></row>
-<row><entry><para>VOInternetClasses</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:VOInternetClasses.Functions.B64EncodeString</codeEntityReference></para></entry></row>
-<row><entry><para>VOInternetClasses</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:VOInternetClasses.Functions.CharSetFromContentType</codeEntityReference></para></entry></row>
-<row><entry><para>VOInternetClasses</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:VOInternetClasses.Functions.CheckHostIP</codeEntityReference></para></entry></row>
-<row><entry><para>VOInternetClasses</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:VOInternetClasses.Functions.ConvertFromCodePageToCodePage</codeEntityReference></para></entry></row>
-<row><entry><para>VOInternetClasses</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:VOInternetClasses.Functions.DecodeMailTimeStamp</codeEntityReference></para></entry></row>
-<row><entry><para>VOInternetClasses</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:VOInternetClasses.Functions.GetHostByIP</codeEntityReference></para></entry></row>
-<row><entry><para>VOInternetClasses</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:VOInternetClasses.Functions.GetIPAddress</codeEntityReference></para></entry></row>
-<row><entry><para>VOInternetClasses</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:VOInternetClasses.Functions.GetMailTimeStamp</codeEntityReference></para></entry></row>
-<row><entry><para>VOInternetClasses</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:VOInternetClasses.Functions.GetUseNetMsgID</codeEntityReference></para></entry></row>
-<row><entry><para>VOInternetClasses</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:VOInternetClasses.Functions.HostName</codeEntityReference></para></entry></row>
-<row><entry><para>VOInternetClasses</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:VOInternetClasses.Functions.IFXFtpFindFirstFile</codeEntityReference></para></entry></row>
-<row><entry><para>VOInternetClasses</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:VOInternetClasses.Functions.IFXInternetFindNextFile</codeEntityReference></para></entry></row>
-<row><entry><para>VOInternetClasses</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:VOInternetClasses.Functions.INTStatusCallback</codeEntityReference></para></entry></row>
-<row><entry><para>VOInternetClasses</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:VOInternetClasses.Functions.LibInit</codeEntityReference></para></entry></row>
-<row><entry><para>VOInternetClasses</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:VOInternetClasses.Functions.NNTPSendMail</codeEntityReference></para></entry></row>
-<row><entry><para>VOInternetClasses</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:VOInternetClasses.Functions.POPGetMails</codeEntityReference></para></entry></row>
-<row><entry><para>VOInternetClasses</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:VOInternetClasses.Functions.QPDecode</codeEntityReference></para></entry></row>
-<row><entry><para>VOInternetClasses</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:VOInternetClasses.Functions.QPEncode</codeEntityReference></para></entry></row>
-<row><entry><para>VOInternetClasses</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:VOInternetClasses.Functions.SMTPSendMail</codeEntityReference></para></entry></row>
-<row><entry><para>VOInternetClasses</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:VOInternetClasses.Functions.SystemErrorString</codeEntityReference></para></entry></row>
-<row><entry><para>VOInternetClasses</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:VOInternetClasses.Functions.WinSockExit</codeEntityReference></para></entry></row>
-<row><entry><para>VOInternetClasses</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:VOInternetClasses.Functions.WinSockInit</codeEntityReference></para></entry></row>
-<row><entry><para>VOInternetClasses</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:VOInternetClasses.Functions.WSAGetLastError</codeEntityReference></para></entry></row>
+<row><entry><para>VOInternetClasses</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:VOInternetClasses.Functions.B64Decode(System.Void*,System.Void*,System.UInt32,System.UInt32@)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>VOInternetClasses</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:VOInternetClasses.Functions.B64DecodeString(System.String)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>VOInternetClasses</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:VOInternetClasses.Functions.B64Encode(System.Void*,System.Void*,System.UInt32,System.UInt32@)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>VOInternetClasses</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:VOInternetClasses.Functions.B64EncodeStream(System.String,System.UInt32@)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>VOInternetClasses</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:VOInternetClasses.Functions.B64EncodeString(System.String)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>VOInternetClasses</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:VOInternetClasses.Functions.CharSetFromContentType(System.String)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>VOInternetClasses</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:VOInternetClasses.Functions.CheckHostIP(System.String)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>VOInternetClasses</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:VOInternetClasses.Functions.ConvertFromCodePageToCodePage(System.String,System.UInt32,System.UInt32)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>VOInternetClasses</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:VOInternetClasses.Functions.DecodeMailTimeStamp(System.String,XSharp.__Date@,System.String@)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>VOInternetClasses</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:VOInternetClasses.Functions.GetHostByIP(System.String)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>VOInternetClasses</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:VOInternetClasses.Functions.GetIPAddress(System.String)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>VOInternetClasses</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:VOInternetClasses.Functions.GetMailTimeStamp(System.Boolean)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>VOInternetClasses</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:VOInternetClasses.Functions.GetUseNetMsgID(System.String,System.String)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>VOInternetClasses</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:VOInternetClasses.Functions.HostName</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>VOInternetClasses</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:VOInternetClasses.Functions.IFXFtpFindFirstFile(System.Void*,XSharp.__Psz,VO._WINWIN32_FIND_DATA*,System.UInt32,System.UInt32)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>VOInternetClasses</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:VOInternetClasses.Functions.IFXInternetFindNextFile(System.Void*,VO._WINWIN32_FIND_DATA*)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>VOInternetClasses</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:VOInternetClasses.Functions.INTStatusCallback(System.Void*,System.UInt32,System.UInt32,System.Void*,System.UInt32)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>VOInternetClasses</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:VOInternetClasses.Functions.LibInit</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>VOInternetClasses</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:VOInternetClasses.Functions.NNTPSendMail(System.String,System.String,System.String,System.String,System.String,XSharp.__Usual,System.String)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>VOInternetClasses</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:VOInternetClasses.Functions.POPGetMails(System.String,System.String,System.String,System.Boolean)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>VOInternetClasses</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:VOInternetClasses.Functions.QPDecode(System.String,System.Boolean)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>VOInternetClasses</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:VOInternetClasses.Functions.QPEncode(System.String,System.Boolean)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>VOInternetClasses</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:VOInternetClasses.Functions.SMTPSendMail(System.String,System.String,XSharp.__Usual,XSharp.__Usual,System.String,System.String,XSharp.__Usual,System.String,XSharp.__Usual,System.String)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>VOInternetClasses</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:VOInternetClasses.Functions.SystemErrorString(System.UInt32,System.String)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>VOInternetClasses</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:VOInternetClasses.Functions.WinSockExit</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>VOInternetClasses</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:VOInternetClasses.Functions.WinSockInit</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>VOInternetClasses</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:VOInternetClasses.Functions.WSAGetLastError</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
 </table>
 </content>
      </section>

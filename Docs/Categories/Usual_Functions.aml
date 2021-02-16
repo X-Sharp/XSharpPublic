@@ -13,21 +13,50 @@
 <content><table><tableHeader>
 <row><entry><para>Assembly</para></entry>
 <entry><para>Function</para></entry>
+<entry><para>Description</para></entry>
 </row></tableHeader>
-<row><entry><para>XSharp.RT</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RT.Functions.IsArray</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RT</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RT.Functions.IsByRef</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RT</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RT.Functions.IsCodeBlock</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RT</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RT.Functions.IsCurrency</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RT</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RT.Functions.IsDate</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RT</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RT.Functions.IsDateTime</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RT</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RT.Functions.IsDecimal</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RT</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RT.Functions.IsFloat</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RT</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RT.Functions.IsLogic</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RT</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RT.Functions.IsLong</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RT</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RT.Functions.IsNil</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RT</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RT.Functions.IsNumeric</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RT</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RT.Functions.IsObject</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.VFP</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.VFP.Functions.IsBlank</codeEntityReference></para></entry></row>
+<row><entry><para>XSharp.RT</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.IsArray(XSharp.__Usual)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RT</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.IsByRef(XSharp.__Usual)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RT</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.IsCodeBlock(XSharp.__Usual)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RT</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.IsCurrency(XSharp.__Usual)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RT</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.IsDate(XSharp.__Usual)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RT</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.IsDateTime(XSharp.__Usual)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RT</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.IsDecimal(XSharp.__Usual)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RT</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.IsFloat(XSharp.__Usual)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RT</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.IsLogic(XSharp.__Usual)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RT</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.IsLong(XSharp.__Usual)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RT</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.IsNil(XSharp.__Usual)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RT</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.IsNumeric(XSharp.__Usual)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RT</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.IsObject(XSharp.__Usual)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.VFP</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.IsBlank(XSharp.__Usual)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
 </table>
 </content>
      </section>

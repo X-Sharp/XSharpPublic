@@ -13,23 +13,56 @@
 	<content><table><tableHeader>
 <row><entry><para>Assembly</para></entry>
 <entry><para>Function</para></entry>
+<entry><para>Description</para></entry>
 </row></tableHeader>
-<row><entry><para>XSharp.RT</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RT.Functions.AEval</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RT</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RT.Functions.AEvalA</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RT</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RT.Functions.AEvalOld</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RT</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RT.Functions.DbEval</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RT</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RT.Functions.Eval</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RT</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RT.Functions.Evaluate</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RT</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RT.Functions.FieldBlock</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RT</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RT.Functions.FieldBlockSym</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RT</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RT.Functions.FieldWBlock</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RT</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RT.Functions.FieldWBlockSym</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RT</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RT.Functions.IsCodeBlock</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RT</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RT.Functions.MCompile</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RT</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RT.Functions.MExec</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RT</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RT.Functions.SEval</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RT</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RT.Functions.SEvalA</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RT</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RT.Functions.StrEvaluate</codeEntityReference></para></entry></row>
+<row><entry><para>XSharp.RT</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.AEval(XSharp.__Array,XSharp.ICodeblock)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RT</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.AEvalA(XSharp.__Array,XSharp.ICodeblock)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RT</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.AEvalOld(XSharp.__Array,XSharp.ICodeblock,XSharp.__Usual,XSharp.__Usual)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RT</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.DbEval(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RT</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.Eval(XSharp.ICodeblock,XSharp.__Usual[])</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RT</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.Evaluate(System.String)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RT</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.FieldBlock(System.String)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RT</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.FieldBlockSym(XSharp.__Symbol)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RT</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.FieldWBlock(System.String,XSharp.__Usual)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RT</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.FieldWBlockSym(XSharp.__Symbol,System.UInt32)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RT</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.IsCodeBlock(XSharp.__Usual)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RT</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.MCompile(System.String)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RT</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.MExec(XSharp.Codeblock)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RT</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.SEval(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RT</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.SEvalA(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RT</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.StrEvaluate(System.String)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
 </table>
 </content>
      </section>

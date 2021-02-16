@@ -1,5 +1,5 @@
-<?xml version="1.0" encoding="utf-8"?>
-<topic id="cat-font_Functions" revisionNumber="1" title="font Functions">
+﻿<?xml version="1.0" encoding="utf-8"?>
+<topic id="default" revisionNumber="1" title="default Classes">
   <developerConceptualDocument xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5" xmlns:xlink="http://www.w3.org/1999/xlink">
     
 
@@ -7,16 +7,11 @@
          If using <autoOutline />, add an address attribute to identify it
          and specify a title so that it can be jumped to with a hyperlink. -->
     <section address="Section1">
-	<title>font Functions</title>
+	<title>default Classes</title>
 		<!-- <para><codeEntityReference qualifyHint="false">M:XSharp.RT.Functions.DoW(XSharp.__Date)</codeEntityReference></para> -->
       
-	<content><table><tableHeader>
-<row><entry><para>Assembly</para></entry>
-<entry><para>Function</para></entry>
-</row></tableHeader>
-<row><entry><para>XSharp.VFP</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.VFP.Functions.TxtWidth</codeEntityReference></para></entry></row>
-</table>
-</content>
+	<content>
+	</content>
      </section>
   </developerConceptualDocument>
 </topic>

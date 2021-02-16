@@ -13,14 +13,47 @@
 	<content><table><tableHeader>
 <row><entry><para>Assembly</para></entry>
 <entry><para>Function</para></entry>
+<entry><para>Description</para></entry>
 </row></tableHeader>
-<row><entry><para>XSharp.Core</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.Core.Functions.CToDt</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.Core</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.Core.Functions.CToDtAnsi</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.Core</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.Core.Functions.DateTime</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.Core</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.Core.Functions.DtToC</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.Core</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.Core.Functions.DtToS</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.Core</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.Core.Functions.SToDt</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.VFP</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.VFP.Functions.DToT</codeEntityReference></para></entry></row>
+<row><entry><para>XSharp.Core</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.ConDateTime(System.UInt32,System.UInt32,System.UInt32)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.Core</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.CToDt(System.String,System.String)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.Core</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.CToDtAnsi(System.String)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.Core</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.DateTime(System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.Core</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.DtToC(System.DateTime)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.Core</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.DtToS(System.DateTime)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.Core</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.SToDt(System.String)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RT</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.IsDateTime(XSharp.__Usual)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.VFP</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.DToT(XSharp.__Date)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.VFP</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.TToC(XSharp.__Usual,XSharp.__Usual)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.VFP</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.TToD(System.DateTime)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.VO</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VO.Functions.OleDateTimeAsDate(System.Boolean)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.XPP</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.XPP.Functions.InitDateCountry</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
 </table>
 </content>
      </section>

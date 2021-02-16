@@ -13,54 +13,176 @@
 <content><table><tableHeader>
 <row><entry><para>Assembly</para></entry>
 <entry><para>Function</para></entry>
+<entry><para>Description</para></entry>
 </row></tableHeader>
-<row><entry><para>XSharp.RT</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RT.Functions.IndexCount</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RT</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RT.Functions.IndexExt</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RT</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RT.Functions.IndexHPLock</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RT</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RT.Functions.IndexKey</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RT</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RT.Functions.IndexOrd</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RT</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RT.Functions.OrdBagExt</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RT</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RT.Functions.OrdBagName</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RT</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RT.Functions.OrdCondSet</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RT</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RT.Functions.OrdCount</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RT</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RT.Functions.OrdCreate</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RT</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RT.Functions.OrdDescend</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RT</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RT.Functions.OrdDestroy</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RT</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RT.Functions.OrdFor</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RT</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RT.Functions.OrdIsUnique</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RT</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RT.Functions.OrdKey</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RT</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RT.Functions.OrdKeyAdd</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RT</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RT.Functions.OrdKeyCount</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RT</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RT.Functions.OrdKeyDel</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RT</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RT.Functions.OrdKeyGoto</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RT</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RT.Functions.OrdKeyNo</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RT</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RT.Functions.OrdKeyVal</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RT</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RT.Functions.OrdList</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RT</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RT.Functions.OrdListAdd</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RT</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RT.Functions.OrdListClear</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RT</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RT.Functions.OrdListRebuild</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RT</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RT.Functions.OrdName</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RT</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RT.Functions.OrdNumber</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RT</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RT.Functions.OrdScope</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RT</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RT.Functions.OrdSetFocus</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RT</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RT.Functions.OrdSetRelation</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RT</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RT.Functions.OrdSkipUnique</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.VFP</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.VFP.Functions.ATagInfo</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.VFP</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.VFP.Functions.Candidate</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.VFP</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.VFP.Functions.Cdx</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.VFP</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.VFP.Functions.Descending</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.VFP</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.VFP.Functions.For</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.VFP</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.VFP.Functions.IdxCollate</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.VFP</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.VFP.Functions.IndexSeek</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.VFP</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.VFP.Functions.Key</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.VFP</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.VFP.Functions.KeyMatch</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.VFP</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.VFP.Functions.Ndx</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.VFP</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.VFP.Functions.Order</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.VFP</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.VFP.Functions.Primary</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.VFP</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.VFP.Functions.Tag</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.VFP</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.VFP.Functions.TagCount</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.VFP</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.VFP.Functions.TagNo</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.VFP</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.VFP.Functions.Unique</codeEntityReference></para></entry></row>
+<row><entry><para>XSharp.RT</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.IndexCount</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RT</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.IndexExt</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RT</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.IndexHPLock(XSharp.__Usual)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RT</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.IndexKey(XSharp.__Usual)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RT</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.IndexOrd</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RT</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.OrdBagExt</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RT</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.OrdBagName(XSharp.__Usual)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RT</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.OrdCondSet(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RT</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.OrdCount</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RT</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.OrdCreate(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RT</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.OrdDescend(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RT</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.OrdDestroy(XSharp.__Usual,XSharp.__Usual)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RT</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.OrdFor(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RT</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.OrdIsUnique(XSharp.__Usual,XSharp.__Usual)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RT</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.OrdKey(XSharp.__Usual,XSharp.__Usual)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RT</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.OrdKeyAdd(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RT</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.OrdKeyCount(XSharp.__Usual,XSharp.__Usual)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RT</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.OrdKeyDel(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RT</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.OrdKeyGoto(XSharp.__Usual)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RT</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.OrdKeyNo(XSharp.__Usual,XSharp.__Usual)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RT</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.OrdKeyVal(XSharp.__Usual,XSharp.__Usual)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RT</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.OrdList</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RT</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.OrdListAdd(XSharp.__Usual,XSharp.__Usual)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RT</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.OrdListClear(XSharp.__Usual,XSharp.__Usual)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RT</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.OrdListRebuild</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RT</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.OrdName(XSharp.__Usual,XSharp.__Usual)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RT</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.OrdNumber(XSharp.__Usual,XSharp.__Usual)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RT</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.OrdScope(XSharp.__Usual,XSharp.__Usual)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RT</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.OrdSetFocus(XSharp.__Usual,XSharp.__Usual)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RT</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.OrdSetRelation(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RT</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.OrdSkipUnique(XSharp.__Usual)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RT</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.VoDbOrdBagExt</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RT</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.VoDbOrdCondSet(XSharp.RDD.Support.DbOrderCondInfo)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RT</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.VoDbOrdCreate(System.String,XSharp.__Usual,System.String,XSharp.__Usual,System.Boolean,XSharp.RDD.Support.DbOrderCondInfo)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RT</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.VoDbOrdDestroy(System.String,XSharp.__Usual)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RT</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.VoDbOrderInfo(System.UInt32,System.String,XSharp.__Usual,XSharp.__Usual@)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RT</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.VoDbOrdListAdd(System.String,XSharp.__Usual)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RT</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.VoDbOrdListClear(System.String,XSharp.__Usual)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RT</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.VoDbOrdListRebuild</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RT</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.VoDbOrdSetFocus(System.String,XSharp.__Usual,System.String@)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.VFP</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.ATagInfo(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.VFP</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.Candidate(XSharp.__Usual,XSharp.__Usual)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.VFP</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.Cdx(XSharp.__Usual,XSharp.__Usual)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.VFP</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.Descending(XSharp.__Usual,XSharp.__Usual)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.VFP</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.For(XSharp.__Usual,XSharp.__Usual)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.VFP</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.IdxCollate(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.VFP</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.IndexSeek(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.VFP</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.Key(XSharp.__Usual,XSharp.__Usual)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.VFP</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.KeyMatch(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.VFP</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.Ndx(XSharp.__Usual,XSharp.__Usual)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.VFP</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.Order(XSharp.__Usual,XSharp.__Usual)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.VFP</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.Primary(XSharp.__Usual,XSharp.__Usual)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.VFP</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.Tag(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.VFP</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.TagCount(XSharp.__Usual,XSharp.__Usual)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.VFP</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.TagNo(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.VFP</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.Unique(XSharp.__Usual)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
 </table>
 </content>
      </section>

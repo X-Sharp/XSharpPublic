@@ -13,25 +13,59 @@
 <content><table><tableHeader>
 <row><entry><para>Assembly</para></entry>
 <entry><para>Function</para></entry>
+<entry><para>Description</para></entry>
 </row></tableHeader>
-<row><entry><para>XSharp.Core</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.Core.Functions._MPosToLc</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.Core</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.Core.Functions.HardCR</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.Core</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.Core.Functions.MemLines</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.Core</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.Core.Functions.MemoLine</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.Core</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.Core.Functions.MemoRead</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.Core</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.Core.Functions.MemoReadBinary</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.Core</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.Core.Functions.MemoWrit</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.Core</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.Core.Functions.MemoWritBinary</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.Core</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.Core.Functions.MLCount1</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.Core</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.Core.Functions.MLcToPos</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.Core</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.Core.Functions.MLine</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.Core</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.Core.Functions.MLine3</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.Core</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.Core.Functions.MLPos2</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RT</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RT.Functions.MemoTran</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RT</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RT.Functions.MLCount</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RT</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RT.Functions.MLcToPos</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RT</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RT.Functions.MLPos</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RT</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RT.Functions.MPosToLc</codeEntityReference></para></entry></row>
+<row><entry><para>XSharp.Core</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.HardCR(System.String)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.Core</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.MemLines(System.String)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.Core</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.MemoLine(System.String,System.UInt32,System.UInt32,System.UInt32,System.Boolean)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.Core</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.MemoRead(System.String)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.Core</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.MemoReadBinary(System.String)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.Core</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.MemoWrit(System.String,System.String)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.Core</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.MemoWritBinary(System.String,System.Byte[])</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.Core</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.MLCount1(System.String)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.Core</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.MLcToPos(System.String,System.UInt32,System.UInt32,System.UInt32,System.UInt32,System.Boolean)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.Core</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.MLine(System.String,System.UInt32)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.Core</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.MLine3(System.String,System.UInt32,System.UInt32@)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.Core</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.MLPos2(System.String,System.UInt32)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RT</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.MemoTran(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RT</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.MLCount(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RT</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.MLcToPos(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RT</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.MLPos(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RT</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.MPosToLc(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
 </table>
 </content>
      </section>

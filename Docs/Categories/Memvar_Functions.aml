@@ -13,34 +13,95 @@
 <content><table><tableHeader>
 <row><entry><para>Assembly</para></entry>
 <entry><para>Function</para></entry>
+<entry><para>Description</para></entry>
 </row></tableHeader>
-<row><entry><para>XSharp.RT</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RT.Functions._MClear</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RT</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RT.Functions._MRelease</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RT</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RT.Functions._MRestore</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RT</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RT.Functions._MSave</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RT</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RT.Functions._MxRelease</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RT</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RT.Functions._PrivateCount</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RT</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RT.Functions._PrivateEnum</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RT</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RT.Functions._PrivateFirst</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RT</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RT.Functions._PrivateNext</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RT</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RT.Functions._PublicCount</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RT</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RT.Functions._PublicEnum</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RT</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RT.Functions._PublicFirst</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RT</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RT.Functions._PublicNext</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RT</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RT.Functions.MAssign</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RT</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RT.Functions.MemVarBlock</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RT</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RT.Functions.MemVarBlockSym</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RT</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RT.Functions.MemVarClear</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RT</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RT.Functions.MemVarGet</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RT</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RT.Functions.MemVarGetSym</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RT</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RT.Functions.MemVarPut</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RT</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RT.Functions.MemVarPutSym</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RT</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RT.Functions.MemVarRelease</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RT</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RT.Functions.MemVarTryGet</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RT</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RT.Functions.VarGet</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RT</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RT.Functions.VarGetSym</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RT</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RT.Functions.VarPut</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RT</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RT.Functions.VarPutSym</codeEntityReference></para></entry></row>
+<row><entry><para>XSharp.RT</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions._MClear</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RT</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions._MRelease(System.String,System.Boolean)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RT</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions._MRestore(System.String,System.Boolean,System.String,System.Boolean)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RT</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions._MSave(System.String,System.String,System.Boolean)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RT</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions._MxRelease(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RT</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions._PrivateCount(System.Boolean)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RT</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions._PrivateEnum(System.Boolean)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RT</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions._PrivateFirst(System.Boolean)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RT</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions._PrivateNext</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RT</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions._PublicCount</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RT</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions._PublicEnum</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RT</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions._PublicFirst</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RT</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions._PublicNext</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RT</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.MAssign(System.String,XSharp.__Usual)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RT</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.MemVarBlock(System.String)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RT</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.MemVarBlockSym(XSharp.__Symbol)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RT</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.MemVarClear(System.String)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RT</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.MemVarGet(System.String)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RT</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.MemVarGetSym(XSharp.__Symbol)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RT</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.MemVarPut(System.String,XSharp.__Usual)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RT</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.MemVarPutSym(XSharp.__Symbol,XSharp.__Usual)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RT</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.MemVarRelease(System.String)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RT</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.MemVarTryGet(System.String,XSharp.__Usual@)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RT</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.ShowPrivates(System.Boolean)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RT</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.ShowPublics</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RT</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.VarGet(System.String)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RT</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.VarGetSym(XSharp.__Symbol)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RT</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.VarPut(System.String,XSharp.__Usual)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RT</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.VarPutSym(XSharp.__Symbol,XSharp.__Usual)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
 </table>
 </content>
      </section>

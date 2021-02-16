@@ -13,18 +13,41 @@
 <content><table><tableHeader>
 <row><entry><para>Assembly</para></entry>
 <entry><para>Function</para></entry>
+<entry><para>Description</para></entry>
 </row></tableHeader>
-<row><entry><para>XSharp.Core</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.Core.Functions.DosError</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.Core</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.Core.Functions.DosErrString</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.Core</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.Core.Functions.ErrorBuild</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.Core</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.Core.Functions.ErrorLevel</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.Core</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.Core.Functions.ErrorStack</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.Core</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.Core.Functions.ErrString</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.Core</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.Core.Functions.NetErr</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RT</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RT.Functions._VoDbErrInfoPtr</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RT</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RT.Functions.DoError</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RT</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RT.Functions.ErrorBlock</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.VO</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.VO.Functions.ErrorDialog</codeEntityReference></para></entry></row>
+<row><entry><para>XSharp.Core</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.DosError(System.UInt32)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.Core</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.DosErrString(System.UInt32)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.Core</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.ErrorBuild(System.Exception)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.Core</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.ErrorLevel(System.UInt32)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.Core</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.ErrorStack(System.UInt32)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.Core</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.ErrString(System.UInt32)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.Core</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.NetErr</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RT</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions._VoDbErrInfoPtr</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RT</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.DoError(System.String,System.Int32)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RT</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.ErrorBlock(XSharp.Codeblock)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.VO</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VO.Functions.ErrorDialog(System.Exception)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
 </table>
 </content>
      </section>

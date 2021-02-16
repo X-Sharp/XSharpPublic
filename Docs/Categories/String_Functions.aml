@@ -12,216 +12,593 @@
 <content><table><tableHeader>
 <row><entry><para>Assembly</para></entry>
 <entry><para>Function</para></entry>
+<entry><para>Description</para></entry>
 </row></tableHeader>
-<row><entry><para>XSharp.Core</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.Core.Functions._C2Hex</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.Core</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.Core.Functions._Like</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.Core</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.Core.Functions._Val</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.Core</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.Core.Functions.AllTrim</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.Core</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.Core.Functions.Ansi2Oem</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.Core</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.Core.Functions.Ansi2OemA</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.Core</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.Core.Functions.Ansi2OemBuff</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.Core</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.Core.Functions.Asc</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.Core</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.Core.Functions.AscW</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.Core</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.Core.Functions.At</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.Core</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.Core.Functions.At2</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.Core</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.Core.Functions.At3</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.Core</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.Core.Functions.AtC</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.Core</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.Core.Functions.AtC2</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.Core</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.Core.Functions.ATCLine</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.Core</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.Core.Functions.ATCLine2</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.Core</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.Core.Functions.ATLine</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.Core</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.Core.Functions.ATLine2</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.Core</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.Core.Functions.Buffer</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.Core</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.Core.Functions.Bytes2String</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.Core</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.Core.Functions.C2Hex</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.Core</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.Core.Functions.CharEven</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.Core</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.Core.Functions.CharMix</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.Core</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.Core.Functions.CharOdd</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.Core</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.Core.Functions.CharPos</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.Core</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.Core.Functions.Chr</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.Core</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.Core.Functions.ChrW</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.Core</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.Core.Functions.CTOL</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.Core</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.Core.Functions.DtToC</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.Core</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.Core.Functions.DtToS</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.Core</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.Core.Functions.DW2Bin</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.Core</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.Core.Functions.EncodeBase64</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.Core</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.Core.Functions.FPathName</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.Core</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.Core.Functions.Hex2C</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.Core</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.Core.Functions.I2Bin</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.Core</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.Core.Functions.Instr</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.Core</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.Core.Functions.IsAlNum</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.Core</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.Core.Functions.IsAlpha</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.Core</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.Core.Functions.IsAlphaNum</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.Core</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.Core.Functions.IsLower</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.Core</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.Core.Functions.IsSpace</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.Core</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.Core.Functions.IsUpper</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.Core</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.Core.Functions.L2Bin</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.Core</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.Core.Functions.Left</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.Core</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.Core.Functions.Like</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.Core</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.Core.Functions.Lower</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.Core</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.Core.Functions.LowerA</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.Core</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.Core.Functions.LTrim</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.Core</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.Core.Functions.MemLines</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.Core</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.Core.Functions.MemoLine</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.Core</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.Core.Functions.MemoRead</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.Core</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.Core.Functions.MemoReadBinary</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.Core</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.Core.Functions.MemoWrit</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.Core</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.Core.Functions.MemoWritBinary</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.Core</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.Core.Functions.Occurs</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.Core</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.Core.Functions.Occurs2</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.Core</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.Core.Functions.Occurs3</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.Core</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.Core.Functions.Oem2Ansi</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.Core</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.Core.Functions.Oem2AnsiA</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.Core</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.Core.Functions.Oem2AnsiBuff</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.Core</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.Core.Functions.Proper</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.Core</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.Core.Functions.ProperA</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.Core</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.Core.Functions.RAt</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.Core</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.Core.Functions.RAt2</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.Core</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.Core.Functions.RAt3</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.Core</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.Core.Functions.RAtLine</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.Core</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.Core.Functions.RATLine2</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.Core</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.Core.Functions.Repl</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.Core</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.Core.Functions.Replicate</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.Core</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.Core.Functions.Right</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.Core</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.Core.Functions.RTrim</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.Core</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.Core.Functions.SClone</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.Core</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.Core.Functions.SLen</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.Core</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.Core.Functions.SoundEx</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.Core</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.Core.Functions.Space</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.Core</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.Core.Functions.SToDt</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.Core</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.Core.Functions.String2Bytes</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.Core</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.Core.Functions.String2FAttr</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.Core</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.Core.Functions.Stuff</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.Core</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.Core.Functions.SubStr2</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.Core</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.Core.Functions.SubStr3</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.Core</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.Core.Functions.Trim</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.Core</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.Core.Functions.TString</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.Core</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.Core.Functions.Upper</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.Core</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.Core.Functions.UpperA</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RT</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RT.Functions._AsString</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RT</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RT.Functions._Str</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RT</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RT.Functions._Str3</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RT</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RT.Functions.ADim</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RT</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RT.Functions.ADimPic</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RT</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RT.Functions.Ansi2OemBuff</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RT</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RT.Functions.AsHexString</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RT</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RT.Functions.AsPadr</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RT</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RT.Functions.AsString</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RT</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RT.Functions.Cast2Psz</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RT</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RT.Functions.CDoW</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RT</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RT.Functions.CMonth</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RT</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RT.Functions.Descend</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RT</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RT.Functions.DescendA</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RT</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RT.Functions.DToC</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RT</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RT.Functions.DToS</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RT</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RT.Functions.F2Bin</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RT</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RT.Functions.IsString</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RT</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RT.Functions.Len</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RT</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RT.Functions.Mem2String</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RT</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RT.Functions.MemoTran</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RT</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RT.Functions.NTrim</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RT</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RT.Functions.Oem2AnsiBuff</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RT</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RT.Functions.Pad</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RT</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RT.Functions.PadC</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RT</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RT.Functions.PadL</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RT</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RT.Functions.PadR</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RT</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RT.Functions.Psz2String</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RT</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RT.Functions.SEval</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RT</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RT.Functions.SEvalA</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RT</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RT.Functions.SToD</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RT</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RT.Functions.Str</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RT</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RT.Functions.Str1</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RT</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RT.Functions.Str2</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RT</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RT.Functions.Str3</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RT</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RT.Functions.StrEvaluate</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RT</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RT.Functions.StrFloat</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RT</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RT.Functions.String2Atom</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RT</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RT.Functions.String2Mem</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RT</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RT.Functions.String2Psz</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RT</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RT.Functions.String2Symbol</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RT</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RT.Functions.StringAlloc</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RT</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RT.Functions.StrInt</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RT</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RT.Functions.StrLong</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RT</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RT.Functions.StrToFloat</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RT</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RT.Functions.StrTran</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RT</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RT.Functions.StrZero</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RT</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RT.Functions.SubS</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RT</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RT.Functions.SubStr</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RT</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RT.Functions.Symbol2String</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RT</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RT.Functions.Transform</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RT</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RT.Functions.TString</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RT</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RT.Functions.Unformat</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.VFP</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.VFP.Functions.AddBs</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.VFP</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.VFP.Functions.AllTrim</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.VFP</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.VFP.Functions.At</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.VFP</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.VFP.Functions.At_C</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.VFP</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.VFP.Functions.AtC</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.VFP</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.VFP.Functions.AtCC</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.VFP</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.VFP.Functions.ChrTran</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.VFP</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.VFP.Functions.ChrTranC</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.VFP</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.VFP.Functions.CToT</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.VFP</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.VFP.Functions.Difference</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.VFP</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.VFP.Functions.DMY</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.VFP</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.VFP.Functions.DToT</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.VFP</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.VFP.Functions.FileToStr</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.VFP</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.VFP.Functions.FullPath</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.VFP</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.VFP.Functions.GetWordCount</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.VFP</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.VFP.Functions.GetWordNum</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.VFP</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.VFP.Functions.LeftC</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.VFP</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.VFP.Functions.LenC</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.VFP</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.VFP.Functions.LikeC</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.VFP</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.VFP.Functions.LTrim</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.VFP</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.VFP.Functions.MDY</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.VFP</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.VFP.Functions.Normalize</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.VFP</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.VFP.Functions.RAt</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.VFP</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.VFP.Functions.RAtC</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.VFP</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.VFP.Functions.RightC</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.VFP</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.VFP.Functions.RTrim</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.VFP</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.VFP.Functions.StrConv</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.VFP</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.VFP.Functions.StrExtract</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.VFP</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.VFP.Functions.StrToFile</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.VFP</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.VFP.Functions.StuffC</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.VFP</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.VFP.Functions.SubStrC</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.VFP</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.VFP.Functions.Transform</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.VFP</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.VFP.Functions.Trim</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.VFP</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.VFP.Functions.TToC</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.VFP</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.VFP.Functions.TToD</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.VFP</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.VFP.Functions.TxtWidth</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.VO</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.VO.Functions.Crypt</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.VO</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.VO.Functions.CryptA</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.VO</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.VO.Functions.CryptRaw</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.VO</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.VO.Functions.LoadResString</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.VO</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.VO.Functions.MBAllTrim</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.VO</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.VO.Functions.MBAt</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.VO</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.VO.Functions.MBAt2</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.VO</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.VO.Functions.MBAt3</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.VO</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.VO.Functions.MBAtC</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.VO</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.VO.Functions.MBAtC2</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.VO</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.VO.Functions.MBAtLine</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.VO</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.VO.Functions.MBAtLine2</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.VO</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.VO.Functions.MBLEFT</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.VO</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.VO.Functions.MBLen</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.VO</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.VO.Functions.MBLTrim</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.VO</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.VO.Functions.MBRat</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.VO</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.VO.Functions.MBRat2</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.VO</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.VO.Functions.MBRat3</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.VO</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.VO.Functions.MBRight</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.VO</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.VO.Functions.MBRTrim</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.VO</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.VO.Functions.MBSLen</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.VO</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.VO.Functions.MBStuff</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.VO</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.VO.Functions.MBSubstr</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.VO</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.VO.Functions.MBSubstr2</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.VO</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.VO.Functions.MBSubstr3</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.VO</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.VO.Functions.MBTrim</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.VO</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.VO.Functions.String2W</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.VO</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.VO.Functions.W2String</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.XPP</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.XPP.Functions.PosAlpha</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.XPP</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.XPP.Functions.PosChar</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.XPP</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.XPP.Functions.PosDel</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.XPP</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.XPP.Functions.PosIns</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.XPP</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.XPP.Functions.PosLower</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.XPP</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.XPP.Functions.PosRepl</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.XPP</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.XPP.Functions.PosUpper</codeEntityReference></para></entry></row>
+<row><entry><para>XSharp.Core</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions._C2Hex(System.String,System.Boolean)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.Core</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions._Like(System.String,System.String)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.Core</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions._Val(System.String)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.Core</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.AllTrim(System.String)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.Core</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.Ansi2Oem(System.String)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.Core</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.Ansi2OemA(System.String@)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.Core</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.Ansi2OemBuff(System.Byte[],System.Byte[],System.UInt32)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.Core</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.Asc(System.String)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.Core</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.AscW(System.String)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.Core</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.At(System.String,System.String)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.Core</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.At2(System.String,System.String)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.Core</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.At3(System.String,System.String,System.UInt32)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.Core</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.AtC(System.String,System.String)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.Core</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.AtC2(System.String,System.String)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.Core</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.ATCLine(System.String,System.String)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.Core</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.ATCLine2(System.String,System.String)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.Core</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.ATLine(System.String,System.String)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.Core</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.ATLine2(System.String,System.String)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.Core</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.Buffer(System.UInt32)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.Core</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.C2Hex(System.String)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.Core</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.CharEven(System.String)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.Core</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.CharMix(System.String,System.String)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.Core</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.CharOdd(System.String)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.Core</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.CharPos(System.String,System.UInt32)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.Core</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.Chr(System.UInt32)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.Core</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.ChrW(System.UInt32)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.Core</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.CTOL(System.String)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.Core</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.DtToC(System.DateTime)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.Core</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.DtToS(System.DateTime)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.Core</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.DW2Bin(System.UInt32)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.Core</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.EncodeBase64(System.IntPtr,System.IntPtr)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.Core</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.FPathName</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.Core</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.Hex2C(System.String)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.Core</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.I2Bin(System.Int16)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.Core</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.Instr(System.String,System.String)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.Core</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.IsAlNum(System.String)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.Core</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.IsAlpha(System.String)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.Core</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.IsAlphaNum(System.String)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.Core</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.IsLower(System.String)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.Core</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.IsSpace(System.String)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.Core</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.IsUpper(System.String)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.Core</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.L2Bin(System.Int32)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.Core</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.Left(System.String,System.UInt32)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.Core</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.Like(System.String,System.String)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.Core</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.Lower(System.String)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.Core</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.LowerA(System.String@)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.Core</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.LTrim(System.String)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.Core</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.Occurs(System.String,System.String)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.Core</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.Occurs2(System.String,System.String)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.Core</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.Occurs3(System.String,System.String,System.UInt32)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.Core</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.Oem2Ansi(System.String)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.Core</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.Oem2AnsiA(System.String@)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.Core</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.Oem2AnsiBuff(System.Byte[],System.Byte[],System.UInt32)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.Core</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.Proper(System.String)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.Core</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.ProperA(System.String@)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.Core</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.RAt(System.String,System.String)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.Core</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.RAt2(System.String,System.String)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.Core</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.RAt3(System.String,System.String,System.UInt32)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.Core</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.RAtLine(System.String,System.String)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.Core</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.RATLine2(System.String,System.String)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.Core</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.Repl(System.String,System.UInt32)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.Core</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.Replicate(System.String,System.UInt32)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.Core</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.Right(System.String,System.UInt32)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.Core</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.RTrim(System.String)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.Core</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.SClone(System.String)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.Core</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.SLen(System.String)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.Core</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.SoundEx(System.String)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.Core</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.Space(System.UInt32)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.Core</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.SToDt(System.String)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.Core</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.String2FAttr(System.String)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.Core</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.Stuff(System.String,System.UInt32,System.UInt32,System.String)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.Core</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.SubStr2(System.String,System.UInt32)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.Core</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.SubStr3(System.String,System.UInt32,System.UInt32)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.Core</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.Trim(System.String)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.Core</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.TString(System.Double)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.Core</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.Upper(System.String)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.Core</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.UpperA(System.String@)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RT</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions._Str(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RT</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions._Str3(XSharp.__Float,System.UInt32,System.UInt32)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RT</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.ADim(XSharp.__Array)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RT</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.ADimPic(XSharp.__Array)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RT</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.Ansi2OemBuff(XSharp.__Psz,XSharp.__Psz,System.UInt32)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RT</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.AsHexString(XSharp.__Usual)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RT</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.AsPadr(XSharp.__Usual,System.UInt32)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RT</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.AsString(XSharp.__Usual)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RT</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.CDoW(XSharp.__Date)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RT</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.CMonth(XSharp.__Date)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RT</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.Descend(XSharp.__Usual)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RT</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.DescendA(XSharp.__Usual@)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RT</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.DToC(XSharp.__Date)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RT</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.DToS(XSharp.__Date)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RT</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.F2Bin(XSharp.__Float)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RT</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.IsString(XSharp.__Usual)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RT</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.Len(XSharp.__Usual)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RT</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.Mem2String(System.IntPtr,System.UInt32)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RT</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.MemoTran(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RT</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.NTrim(XSharp.__Usual)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RT</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.Oem2AnsiBuff(XSharp.__Psz,XSharp.__Psz,System.UInt32)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RT</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.Pad(XSharp.__Usual,System.Int32,System.String)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RT</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.PadC(XSharp.__Usual,System.Int32,System.String)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RT</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.PadL(XSharp.__Usual,System.Int32,System.String)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RT</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.PadR(XSharp.__Usual,System.UInt32,System.String)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RT</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.Psz2String(XSharp.__Psz)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RT</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.SEval(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RT</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.SEvalA(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RT</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.SToD(System.String)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RT</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.Str(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RT</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.Str1(XSharp.__Usual)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RT</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.Str2(XSharp.__Float,System.UInt32)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RT</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.Str3(XSharp.__Float,System.UInt32,System.UInt32)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RT</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.StrEvaluate(System.String)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RT</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.StrFloat(XSharp.__Float,System.UInt32,System.UInt32)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RT</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.String2Atom(System.String)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RT</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.String2Symbol(System.String)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RT</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.StringAlloc(System.String)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RT</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.StrInt(System.Int32,System.UInt32,System.UInt32)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RT</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.StrLong(System.Int32,System.UInt32,System.UInt32)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RT</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.StrToFloat(System.String)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RT</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.StrTran(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RT</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.StrZero(XSharp.__Usual,System.Int32,System.Int32)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RT</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.SubS(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RT</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.SubStr(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RT</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.Symbol2String(XSharp.__Symbol)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RT</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.Transform(XSharp.__Date,System.String)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RT</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.TString(XSharp.__Usual)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RT</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.Unformat(System.String,System.String,System.String)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RT</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.Val(System.String)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.VFP</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.AddBs(System.String)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.VFP</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.AllTrim(System.String,System.Int32,System.String[])</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.VFP</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.At(System.String,System.String,System.UInt32)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.VFP</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.At_C(System.String,System.String,System.UInt32)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.VFP</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.AtC(System.String,System.String,System.UInt32)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.VFP</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.AtCC(System.String,System.String,System.UInt32)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.VFP</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.ChrTran(System.String,System.String,System.String)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.VFP</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.ChrTranC(System.String,System.String,System.String)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.VFP</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.CToT(XSharp.__Usual)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.VFP</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.Difference(XSharp.__Usual,XSharp.__Usual)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.VFP</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.DMY(System.DateTime)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.VFP</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.FileToStr(System.String)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.VFP</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.FullPath(XSharp.__Usual,XSharp.__Usual)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.VFP</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.GetWordCount(System.String)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.VFP</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.GetWordNum(System.String,System.Int32)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.VFP</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.LeftC(System.String,System.UInt32)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.VFP</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.LenC(System.String)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.VFP</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.LikeC(XSharp.__Usual,XSharp.__Usual)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.VFP</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.LTrim(System.String,System.Int32,System.String[])</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.VFP</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.MDY(System.DateTime)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.VFP</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.Normalize(XSharp.__Usual)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.VFP</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.RAt(System.String,System.String,System.Int32)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.VFP</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.RAtC(System.String,System.String,System.Int32)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.VFP</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.RightC(System.String,System.UInt32)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.VFP</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.RTrim(System.String,System.Int32,System.String[])</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.VFP</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.StrConv(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.VFP</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.StrExtract(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.VFP</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.StrToFile(System.String,System.String)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.VFP</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.StuffC(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.VFP</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.SubStrC(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.VFP</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.Transform(XSharp.__Usual)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.VFP</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.Trim(System.String,System.Int32,System.String[])</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.VFP</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.TToC(XSharp.__Usual,XSharp.__Usual)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.VFP</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.TToD(System.DateTime)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.VFP</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.TxtWidth(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.VO</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VO.Functions.Crypt(System.String,System.String)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.VO</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VO.Functions.CryptA(System.String,System.String)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.VO</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VO.Functions.CryptRaw(System.String,System.String)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.VO</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VO.Functions.LoadResString(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.VO</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VO.Functions.MBAllTrim(System.String)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.VO</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VO.Functions.MBAt(System.String,System.String)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.VO</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VO.Functions.MBAt2(System.String,System.String)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.VO</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VO.Functions.MBAt3(System.String,System.String,System.UInt32)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.VO</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VO.Functions.MBAtC(System.String,System.String)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.VO</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VO.Functions.MBAtC2(System.String,System.String)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.VO</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VO.Functions.MBAtLine(System.String,System.String)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.VO</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VO.Functions.MBAtLine2(System.String,System.String)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.VO</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VO.Functions.MBLEFT(System.String,System.UInt32)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.VO</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VO.Functions.MBLen(System.String)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.VO</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VO.Functions.MBLTrim(System.String)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.VO</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VO.Functions.MBRat(System.String,System.String)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.VO</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VO.Functions.MBRat2(System.String,System.String)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.VO</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VO.Functions.MBRat3(System.String,System.String,System.UInt32)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.VO</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VO.Functions.MBRight(System.String,System.UInt32)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.VO</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VO.Functions.MBRTrim(System.String)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.VO</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VO.Functions.MBSLen(System.String)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.VO</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VO.Functions.MBStuff(System.String,System.UInt32,System.UInt32,System.String)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.VO</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VO.Functions.MBSubstr(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.VO</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VO.Functions.MBSubstr2(System.String,System.UInt32)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.VO</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VO.Functions.MBSubstr3(System.String,System.UInt32,System.UInt32)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.VO</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VO.Functions.MBTrim(System.String)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.XPP</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.XPP.Functions.PosAlpha(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.XPP</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.XPP.Functions.PosChar(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.XPP</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.XPP.Functions.PosDel(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.XPP</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.XPP.Functions.PosIns(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.XPP</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.XPP.Functions.PosLower(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.XPP</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.XPP.Functions.PosRepl(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.XPP</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.XPP.Functions.PosUpper(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
 </table>
 </content>
      </section>

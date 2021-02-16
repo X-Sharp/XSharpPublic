@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<topic id="cat-Math_Functions" revisionNumber="1" title="Math Functions">
+<topic id="cat-help_Classes" revisionNumber="1" title="default Classes">
   <developerConceptualDocument xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5" xmlns:xlink="http://www.w3.org/1999/xlink">
     
 
@@ -7,15 +7,20 @@
          If using <autoOutline />, add an address attribute to identify it
          and specify a title so that it can be jumped to with a hyperlink. -->
     <section address="Section1">
-	<title>Math Functions</title>
+	<title>help Classes</title>
 		<!-- <para><codeEntityReference qualifyHint="false">M:XSharp.RT.Functions.DoW(XSharp.__Date)</codeEntityReference></para> -->
       
-<content><table><tableHeader>
+	<content><table><tableHeader>
 <row><entry><para>Assembly</para></entry>
 <entry><para>Function</para></entry>
+<entry><para>Description</para></entry>
 </row></tableHeader>
-<row><entry><para>XSharp.RT</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RT.Functions.ASin</codeEntityReference></para></entry></row>
-<row><entry><para>XSharp.RT</para></entry><entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">O:XSharp.RT.Functions.SQrt</codeEntityReference></para></entry></row>
+<row><entry><para>VOGUIClasses</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.HelpDisplay</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>VOSystemClasses</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.HyperLabel</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
 </table>
 </content>
      </section>

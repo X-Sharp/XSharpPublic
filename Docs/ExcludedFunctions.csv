@@ -32,3 +32,4 @@ XSharp.Core.DLL,_SetDict
 XSharp.VO.DLL,GetNatDllHandle
 VOSQLClasses.DLL,InitGlobals
 XSharp.RT.DLL,_GetMRandID
+VOGUIClasses.DLL,GetThemeColor

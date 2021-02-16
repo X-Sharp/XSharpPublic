@@ -12,9 +12,9 @@ FUNCTION Start AS VOID
     gsPath  := "c:\XSharp\DevRt\Binaries\Documentation\"    
     gsCatPath := "c:\XSharp\DevRt\Docs\Categories\"        
     TRY
-    //CreateFunctionSectionFiles()  
     //CreateClassList()
-    //CreateClassSectionFiles()
+    CreateFunctionSectionFiles()  
+    CreateClassSectionFiles()
     WriteClassTopics()
     WriteFunctionTopics()
     //CreateClassList()
@@ -41,7 +41,7 @@ FUNCTION WriteClassTopics() AS VOID
     VAR missing := FALSE         
     catList:Sort()
     FOREACH VAR cat IN catList
-        IF ! aCategories:Contains(cat)
+        IF ! aCategories:ContainsKey(cat)
             ? "Class Category "+cat+" is missing"
             missing := TRUE
         ENDIF
@@ -58,8 +58,8 @@ FUNCTION WriteClassTopics() AS VOID
         VAR sb     := StringBuilder{} 
         sb:Append(left)       
         sb:AppendLine("<table><tableHeader>")
-        sb:AppendLine("<row><entry><para>Assembly</para></entry>")
-        sb:AppendLine("<entry><para>Function</para></entry>")
+        sb:AppendLine("<row><entry><para>Namespace</para></entry>")
+        sb:AppendLine("<entry><para>Class</para></entry>")
         sb:AppendLine("<entry><para>Description</para></entry>")
         sb:AppendLine("</row></tableHeader>")
         FOREACH VAR item IN aInfo  
@@ -72,8 +72,7 @@ FUNCTION WriteClassTopics() AS VOID
                 ENDIF
             NEXT                             
             IF match                     
-                VAR assembly := info:assembly:replace(".DLL","")
-                sb:AppendLine("<row><entry><para>"+assembly+"</para></entry>")
+                sb:AppendLine("<row><entry><para>"+info:NameSpace+"</para></entry>")
                 sb:Append("<entry><para><codeEntityReference qualifyHint=""false"" autoUpgrade=""true"">")
                 sb:Append("T:")                                               
                 sb:Append(info:NameSpace+".")
@@ -106,7 +105,7 @@ FUNCTION WriteFunctionTopics() AS VOID
     VAR missing := FALSE         
     catList:Sort()
     FOREACH VAR cat IN catList
-        IF ! aCategories:Contains(cat)
+        IF ! aCategories:ContainsKey(cat)
             ? "Function Category "+cat+" is missing"
             missing := TRUE
         ENDIF
@@ -160,7 +159,8 @@ FUNCTION WriteFunctionTopics() AS VOID
 FUNCTION CreateFunctionSectionFiles AS VOID
     VAR sTemplate := gsCatPath+"templateFunctions.aml"
     VAR aLines := ReadFunctionCategories()
-    FOREACH VAR sLine IN aLines              
+    FOREACH VAR pair IN aLines              
+        VAR sLine := pair:Value
         ? sLine
         VAR sFile := gsCatPath+sLine+"_Functions.aml"
         IF ! System.IO.File.Exists(sFile)        
@@ -175,19 +175,20 @@ FUNCTION CreateFunctionSectionFiles AS VOID
 FUNCTION CreateClassSectionFiles AS VOID
     VAR sTemplate := gsCatPath+"templateClasses.aml"
     VAR aLines := ReadClassCategories()
-    FOREACH VAR sLine IN aLines              
+    FOREACH VAR pair IN aLines              
+        VAR sLine := pair:Value
         ? sLine
         VAR sFile := gsCatPath+sLine+"_Classes.aml"
         IF ! System.IO.File.Exists(sFile)        
             VAR file := System.IO.File.ReadAllText(sTemplate)
             file := file.Replace("id=""default""", "id=""cat-"+sLine+"_Classes""")
-            file := file.Replace("title=""default classes""", "title="""+sLine+" Classes""")
+            file := file.Replace("title=""default Classes""", "title="""+sLine+" Classes""")
             file := file.Replace("<title>default Classes</title>", "<title>"+sLine +" Classes</title>")
             System.IO.File.WriteAllText(sFile, file)
         ENDIF
     NEXT
 
-FUNCTION CreateClassList AS Dictionary<STRING, MyClassInfo>
+FUNCTION CreateClassList AS SortedDictionary<STRING, MyClassInfo>
     VAR aInfo := ReadClassList()     
     VAR aExcluded := ReadExcludedClasses()
     FOREACH VAR sFile IN gaFiles                    
@@ -219,7 +220,7 @@ FUNCTION CreateClassList AS Dictionary<STRING, MyClassInfo>
             ? e:ToString()
         END TRY
     NEXT    
-    VAR output := System.IO.File.CreateText("RuntimeClasses.CSV")
+    VAR output := System.IO.File.CreateText("RuntimeClasses.CSV") 
     FOREACH VAR item IN aInfo
         VAR groups := item:Value:Categories
         VAR sGroups := ""
@@ -233,7 +234,7 @@ FUNCTION CreateClassList AS Dictionary<STRING, MyClassInfo>
     NEXT
     output:Close()   
     RETURN aInfo
-FUNCTION CreateFunctionList AS  Dictionary<STRING, FunctionInfo>
+FUNCTION CreateFunctionList AS  SortedDictionary<STRING, FunctionInfo>
     VAR aInfo := ReadFunctionList() 
     VAR aExcluded := ReadExcludedFunctions()
     FOREACH VAR sFile IN gaFiles                    
@@ -310,8 +311,8 @@ FUNCTION CreateFunctionList AS  Dictionary<STRING, FunctionInfo>
     RETURN aInfo
     
     
-FUNCTION ReadFunctionList() AS Dictionary<STRING, FunctionInfo>     
-    VAR aInfo := Dictionary<STRING, FunctionInfo> {}
+FUNCTION ReadFunctionList() AS SortedDictionary<STRING, FunctionInfo>     
+    VAR aInfo := SortedDictionary<STRING, FunctionInfo> {}
     IF System.IO.File.Exists("RuntimeFunctions.CSV")
         VAR aLines := System.IO.File.ReadAllLines("RuntimeFunctions.CSV")
         FOREACH VAR line IN aLines
@@ -329,8 +330,8 @@ FUNCTION ReadFunctionList() AS Dictionary<STRING, FunctionInfo>
     ENDIF
     RETURN aInfo                     
 
-FUNCTION ReadClassList() AS Dictionary<STRING, MyClassInfo>     
-    VAR aInfo := Dictionary<STRING, MyClassInfo> {}
+FUNCTION ReadClassList() AS SortedDictionary<STRING, MyClassInfo>     
+    VAR aInfo := SortedDictionary<STRING, MyClassInfo> {}
     IF System.IO.File.Exists("RuntimeClasses.CSV")
         VAR aLines := System.IO.File.ReadAllLines("RuntimeClasses.CSV")
         FOREACH VAR line IN aLines
@@ -348,8 +349,8 @@ FUNCTION ReadClassList() AS Dictionary<STRING, MyClassInfo>
     ENDIF
     RETURN aInfo 
 
-FUNCTION ReadExcludedFunctions() AS Dictionary<STRING, FunctionInfo>     
-    VAR aInfo := Dictionary<STRING, FunctionInfo> {}
+FUNCTION ReadExcludedFunctions() AS SortedDictionary<STRING, FunctionInfo>     
+    VAR aInfo := SortedDictionary<STRING, FunctionInfo> {}
     IF System.IO.File.Exists("ExcludedFunctions.CSV")
         VAR aLines := System.IO.File.ReadAllLines("ExcludedFunctions.CSV")
         FOREACH VAR line IN aLines
@@ -362,8 +363,8 @@ FUNCTION ReadExcludedFunctions() AS Dictionary<STRING, FunctionInfo>
     ENDIF
     RETURN aInfo                     
 
-FUNCTION ReadExcludedClasses() AS Dictionary<STRING, MyClassInfo>     
-    VAR aInfo := Dictionary<STRING, MyClassInfo> {}
+FUNCTION ReadExcludedClasses() AS SortedDictionary<STRING, MyClassInfo>     
+    VAR aInfo := SortedDictionary<STRING, MyClassInfo> {}
     IF System.IO.File.Exists("ExcludedClasses.CSV")
         VAR aLines := System.IO.File.ReadAllLines("ExcludedClasses.CSV")
         FOREACH VAR line IN aLines
@@ -377,30 +378,30 @@ FUNCTION ReadExcludedClasses() AS Dictionary<STRING, MyClassInfo>
     RETURN aInfo                     
     
     
-FUNCTION ReadFunctionCategories() AS STRING[]    
-    VAR list := List<STRING>{}
+FUNCTION ReadFunctionCategories() AS SortedDictionary<STRING, STRING>
+    VAR list := SortedDictionary<STRING, STRING>{StringComparer.OrdinalIgnoreCase}
     IF System.IO.File.Exists("FunctionCategories.CSV")    
         VAR aLines := System.IO.File.ReadAllLines("FunctionCategories.CSV")        
         FOREACH VAR sLine IN aLines              
             IF ! String.IsNullOrEmpty(sLine)
-                list:Add(sLine:ToLower())
+                list:Add(sLine:Trim(),sline:Trim())
             ENDIF
         NEXT
     ENDIF
-    RETURN list:ToArray()
+    RETURN list
 
 
-FUNCTION ReadClassCategories() AS STRING[]    
-    VAR list := List<STRING>{}
+FUNCTION ReadClassCategories() AS SortedDictionary<STRING, STRING>
+    VAR list := SortedDictionary<STRING, STRING>{StringComparer.OrdinalIgnoreCase}
     IF System.IO.File.Exists("ClassesCategories.CSV")    
         VAR aLines := System.IO.File.ReadAllLines("ClassesCategories.CSV")        
         FOREACH VAR sLine IN aLines              
             IF ! String.IsNullOrEmpty(sLine)
-                list:Add(sLine:ToLower())
+                list:Add(sLine:Trim(), sLine:Trim())
             ENDIF
         NEXT
     ENDIF
-    RETURN list:ToArray()
+    RETURN list
 
 
 
@@ -410,7 +411,7 @@ CLASS MyClassInfo
     PROPERTY NameSpace  AS STRING AUTO  := ""
     PROPERTY Description AS STRING AUTO   := ""
     PROPERTY Categories AS STRING[] AUTO  := STRING[]{0}
-    PROPERTY Key AS STRING GET NameSpace:ToLower()+Name:ToLower()
+    PROPERTY Key AS STRING GET NameSpace:ToLower():PadRight(100) +":"+Name:ToLower()
     PROPERTY Type AS System.Type AUTO
 END CLASS    
 
@@ -422,7 +423,7 @@ CLASS FunctionInfo
     PROPERTY Name AS STRING AUTO
     PROPERTY Description AS STRING AUTO   := ""
     PROPERTY Categories AS STRING[] AUTO  := STRING[]{0}
-    PROPERTY Key AS STRING GET Assembly:ToLower()+":"+Name:ToLower()
+    PROPERTY Key AS STRING GET Assembly:ToLower():PadRight(25) +":"+Name:ToLower()
     PROPERTY Overloads AS MemberInfo[] AUTO
     PROPERTY Signature AS STRING 
         GET                                     
@@ -442,8 +443,8 @@ CLASS FunctionInfo
             IF overload == NULL
                 overload := (methodInfo) SELF:Overloads[1]
             ENDIF
-            VAR params := overload:GetParameters()
-            IF params:Length == 0
+            VAR PARAMS := overload:GetParameters()
+            IF PARAMS:Length == 0
                 RETURN ""
             ENDIF
             VAR sb := StringBuilder{}                        
@@ -452,7 +453,7 @@ CLASS FunctionInfo
                 sb:Append("``"+genArgs:Length:ToString())
             ENDIF
             sb:Append("(")
-            FOREACH par AS ParameterInfo IN params
+            FOREACH par AS ParameterInfo IN PARAMS
                 IF sb:Length > 1
                     sb:Append(",")
                 ENDIF                               

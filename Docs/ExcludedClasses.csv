@@ -11,7 +11,7 @@ VOSystemClasses.DLL,VO,HLError
 XSharp.Core.DLL,XSharp,AssemblyHelper
 XSharp.Core.DLL,XSharp,MemoHelpers
 XSharp.Core.DLL,XSharp,Messages
-XSharp.Core.DLL,XSharp,RDDExtensions
+XSharp.Core.DLL,XSharp.RDD.Support,RDDExtensions
 XSharp.Core.DLL,XSharp,VOErrors
 XSharp.Core.DLL,XSharp,StringHelpers
 XSharp.RDD.DLL,Xsharp.ADS,ACE
@@ -26,3 +26,4 @@ XSharp.VFP.DLL,XSharp.VFP,PropertyVisibility
 VOInternetClasses.DLL,VO,StdSocket
 VOGUIClasses.DLL,VO,CurHand
 VOGUIClasses.DLL,VO,OleDragEventInfo
+VORDDClasses.DLL,VO,DbSelectionIndex

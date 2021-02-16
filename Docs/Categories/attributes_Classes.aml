@@ -1,51 +1,45 @@
 <?xml version="1.0" encoding="utf-8"?>
-<topic id="cat-attributes_Classes" revisionNumber="1" title="default Classes">
+<topic id="cat-Attributes_Classes" revisionNumber="1" title="Attributes Classes">
   <developerConceptualDocument xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5" xmlns:xlink="http://www.w3.org/1999/xlink">
-    
-
-    <!-- Add one or more top-level section elements.  These are collapsible.
-         If using <autoOutline />, add an address attribute to identify it
-         and specify a title so that it can be jumped to with a hyperlink. -->
     <section address="Section1">
-	<title>attributes Classes</title>
-		<!-- <para><codeEntityReference qualifyHint="false">M:XSharp.RT.Functions.DoW(XSharp.__Date)</codeEntityReference></para> -->
+	<title>Attributes Classes</title>
       
 	<content><table><tableHeader>
-<row><entry><para>Assembly</para></entry>
-<entry><para>Function</para></entry>
+<row><entry><para>Namespace</para></entry>
+<entry><para>Class</para></entry>
 <entry><para>Description</para></entry>
 </row></tableHeader>
-<row><entry><para>XSharp.Core</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.Internal.ActualTypeAttribute</codeEntityReference></para></entry>
-<entry><para></para></entry></row>
-<row><entry><para>XSharp.Core</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.Internal.AllowLateBindingAttribute</codeEntityReference></para></entry>
-<entry><para></para></entry></row>
-<row><entry><para>XSharp.Core</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.Internal.ClassLibraryAttribute</codeEntityReference></para></entry>
-<entry><para></para></entry></row>
-<row><entry><para>XSharp.Core</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.Internal.ClipperCallingConventionAttribute</codeEntityReference></para></entry>
-<entry><para></para></entry></row>
-<row><entry><para>XSharp.Core</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.Internal.CompilerVersionAttribute</codeEntityReference></para></entry>
-<entry><para></para></entry></row>
-<row><entry><para>XSharp.Core</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.Internal.DefaultParameterValueAttribute</codeEntityReference></para></entry>
-<entry><para></para></entry></row>
-<row><entry><para>XSharp.Core</para></entry>
+<row><entry><para>XSharp</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.ImplicitNamespaceAttribute</codeEntityReference></para></entry>
 <entry><para></para></entry></row>
-<row><entry><para>XSharp.Core</para></entry>
+<row><entry><para>XSharp.Internal</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.Internal.ActualTypeAttribute</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.Internal</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.Internal.AllowLateBindingAttribute</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.Internal</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.Internal.ClassLibraryAttribute</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.Internal</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.Internal.ClipperCallingConventionAttribute</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.Internal</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.Internal.CompilerVersionAttribute</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.Internal</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.Internal.DefaultParameterValueAttribute</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.Internal</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.Internal.IsInstanceAttribute</codeEntityReference></para></entry>
 <entry><para></para></entry></row>
-<row><entry><para>XSharp.Core</para></entry>
+<row><entry><para>XSharp.Internal</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.Internal.NeedsAccessToLocalsAttribute</codeEntityReference></para></entry>
 <entry><para></para></entry></row>
-<row><entry><para>XSharp.Core</para></entry>
+<row><entry><para>XSharp.Internal</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.Internal.TypesChangedAttribute</codeEntityReference></para></entry>
 <entry><para></para></entry></row>
-<row><entry><para>XSharp.Core</para></entry>
+<row><entry><para>XSharp.Internal</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.Internal.VoStructAttribute</codeEntityReference></para></entry>
 <entry><para></para></entry></row>
 </table>

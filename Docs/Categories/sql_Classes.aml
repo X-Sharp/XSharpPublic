@@ -1,94 +1,85 @@
 <?xml version="1.0" encoding="utf-8"?>
-<topic id="cat-sql_Classes" revisionNumber="1" title="default Classes">
+<topic id="cat-SQL_Classes" revisionNumber="1" title="SQL Classes">
   <developerConceptualDocument xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5" xmlns:xlink="http://www.w3.org/1999/xlink">
-    
-
-    <!-- Add one or more top-level section elements.  These are collapsible.
-         If using <autoOutline />, add an address attribute to identify it
-         and specify a title so that it can be jumped to with a hyperlink. -->
     <section address="Section1">
-	<title>sql Classes</title>
-		<!-- <para><codeEntityReference qualifyHint="false">M:XSharp.RT.Functions.DoW(XSharp.__Date)</codeEntityReference></para> -->
+	<title>SQL Classes</title>
       
 	<content><table><tableHeader>
-<row><entry><para>Assembly</para></entry>
-<entry><para>Function</para></entry>
+<row><entry><para>Namespace</para></entry>
+<entry><para>Class</para></entry>
 <entry><para>Description</para></entry>
 </row></tableHeader>
-<row><entry><para>VOSQLClasses</para></entry>
+<row><entry><para>VO</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.SQLCatalogQuery</codeEntityReference></para></entry>
 <entry><para></para></entry></row>
-<row><entry><para>VOSQLClasses</para></entry>
+<row><entry><para>VO</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.SQLColumn</codeEntityReference></para></entry>
 <entry><para></para></entry></row>
-<row><entry><para>VOSQLClasses</para></entry>
+<row><entry><para>VO</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.SQLColumnAttributes</codeEntityReference></para></entry>
 <entry><para></para></entry></row>
-<row><entry><para>VOSQLClasses</para></entry>
+<row><entry><para>VO</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.SQLConnection</codeEntityReference></para></entry>
 <entry><para></para></entry></row>
-<row><entry><para>VOSQLClasses</para></entry>
+<row><entry><para>VO</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.SQLData</codeEntityReference></para></entry>
 <entry><para></para></entry></row>
-<row><entry><para>VOSQLClasses</para></entry>
+<row><entry><para>VO</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.SqlData_Union</codeEntityReference></para></entry>
 <entry><para></para></entry></row>
-<row><entry><para>VOSQLClasses</para></entry>
+<row><entry><para>VO</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.SQLErrorInfo</codeEntityReference></para></entry>
 <entry><para></para></entry></row>
-<row><entry><para>VOSQLClasses</para></entry>
+<row><entry><para>VO</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.SQLListColumnPrivileges</codeEntityReference></para></entry>
 <entry><para></para></entry></row>
-<row><entry><para>VOSQLClasses</para></entry>
+<row><entry><para>VO</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.SQLListColumns</codeEntityReference></para></entry>
 <entry><para></para></entry></row>
-<row><entry><para>VOSQLClasses</para></entry>
+<row><entry><para>VO</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.SQLListForeignKeys</codeEntityReference></para></entry>
 <entry><para></para></entry></row>
-<row><entry><para>VOSQLClasses</para></entry>
+<row><entry><para>VO</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.SQLListPrimaryKeys</codeEntityReference></para></entry>
 <entry><para></para></entry></row>
-<row><entry><para>VOSQLClasses</para></entry>
+<row><entry><para>VO</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.SQLListProcedureColumns</codeEntityReference></para></entry>
 <entry><para></para></entry></row>
-<row><entry><para>VOSQLClasses</para></entry>
+<row><entry><para>VO</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.SQLListProcedures</codeEntityReference></para></entry>
 <entry><para></para></entry></row>
-<row><entry><para>VOSQLClasses</para></entry>
+<row><entry><para>VO</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.SQLListSpecialColumns</codeEntityReference></para></entry>
 <entry><para></para></entry></row>
-<row><entry><para>VOSQLClasses</para></entry>
+<row><entry><para>VO</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.SQLListStatistics</codeEntityReference></para></entry>
 <entry><para></para></entry></row>
-<row><entry><para>VOSQLClasses</para></entry>
+<row><entry><para>VO</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.SQLListTablePrivileges</codeEntityReference></para></entry>
 <entry><para></para></entry></row>
-<row><entry><para>VOSQLClasses</para></entry>
+<row><entry><para>VO</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.SQLListTables</codeEntityReference></para></entry>
 <entry><para></para></entry></row>
-<row><entry><para>VOSQLClasses</para></entry>
+<row><entry><para>VO</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.SQLListTypeInfo</codeEntityReference></para></entry>
 <entry><para></para></entry></row>
-<row><entry><para>VOSQLClasses</para></entry>
+<row><entry><para>VO</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.SqlParameter</codeEntityReference></para></entry>
 <entry><para></para></entry></row>
-<row><entry><para>VOSQLClasses</para></entry>
+<row><entry><para>VO</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.SQLSelect</codeEntityReference></para></entry>
 <entry><para></para></entry></row>
-<row><entry><para>VOSQLClasses</para></entry>
+<row><entry><para>VO</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.SQLStatement</codeEntityReference></para></entry>
 <entry><para></para></entry></row>
-<row><entry><para>VOSQLClasses</para></entry>
+<row><entry><para>VO</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.SQLTable</codeEntityReference></para></entry>
 <entry><para></para></entry></row>
-<row><entry><para>VOSQLClasses</para></entry>
+<row><entry><para>VO</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.SQLValue</codeEntityReference></para></entry>
 <entry><para></para></entry></row>
-<row><entry><para>XSharp.Core</para></entry>
+<row><entry><para>XSharp</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.SQLHelpers</codeEntityReference></para></entry>
-<entry><para></para></entry></row>
-<row><entry><para>XSharp.Core</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.RDD.SQLProperty</codeEntityReference></para></entry>
 <entry><para></para></entry></row>
 <row><entry><para>XSharp.Data</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.Data.AbstractSqlFactory</codeEntityReference></para></entry>
@@ -104,6 +95,9 @@
 <entry><para></para></entry></row>
 <row><entry><para>XSharp.Data</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.Data.SqlServerFactory</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.RDD</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.RDD.SQLProperty</codeEntityReference></para></entry>
 <entry><para></para></entry></row>
 </table>
 </content>

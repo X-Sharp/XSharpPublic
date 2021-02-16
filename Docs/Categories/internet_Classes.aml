@@ -1,60 +1,54 @@
 <?xml version="1.0" encoding="utf-8"?>
-<topic id="cat-internet_Classes" revisionNumber="1" title="default Classes">
+<topic id="cat-Internet_Classes" revisionNumber="1" title="Internet Classes">
   <developerConceptualDocument xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5" xmlns:xlink="http://www.w3.org/1999/xlink">
-    
-
-    <!-- Add one or more top-level section elements.  These are collapsible.
-         If using <autoOutline />, add an address attribute to identify it
-         and specify a title so that it can be jumped to with a hyperlink. -->
     <section address="Section1">
-	<title>internet Classes</title>
-		<!-- <para><codeEntityReference qualifyHint="false">M:XSharp.RT.Functions.DoW(XSharp.__Date)</codeEntityReference></para> -->
+	<title>Internet Classes</title>
       
 	<content><table><tableHeader>
-<row><entry><para>Assembly</para></entry>
-<entry><para>Function</para></entry>
+<row><entry><para>Namespace</para></entry>
+<entry><para>Class</para></entry>
 <entry><para>Description</para></entry>
 </row></tableHeader>
-<row><entry><para>VOInternetClasses</para></entry>
+<row><entry><para>VO</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.CEmail</codeEntityReference></para></entry>
 <entry><para></para></entry></row>
-<row><entry><para>VOInternetClasses</para></entry>
+<row><entry><para>VO</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.CFtp</codeEntityReference></para></entry>
 <entry><para></para></entry></row>
-<row><entry><para>VOInternetClasses</para></entry>
+<row><entry><para>VO</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.CHttp</codeEntityReference></para></entry>
 <entry><para></para></entry></row>
-<row><entry><para>VOInternetClasses</para></entry>
+<row><entry><para>VO</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.CImap</codeEntityReference></para></entry>
 <entry><para></para></entry></row>
-<row><entry><para>VOInternetClasses</para></entry>
+<row><entry><para>VO</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.CINetDial</codeEntityReference></para></entry>
 <entry><para></para></entry></row>
-<row><entry><para>VOInternetClasses</para></entry>
+<row><entry><para>VO</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.CMailAbstract</codeEntityReference></para></entry>
 <entry><para></para></entry></row>
-<row><entry><para>VOInternetClasses</para></entry>
+<row><entry><para>VO</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.CMessage</codeEntityReference></para></entry>
 <entry><para></para></entry></row>
-<row><entry><para>VOInternetClasses</para></entry>
+<row><entry><para>VO</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.CNews</codeEntityReference></para></entry>
 <entry><para></para></entry></row>
-<row><entry><para>VOInternetClasses</para></entry>
+<row><entry><para>VO</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.CNNTP</codeEntityReference></para></entry>
 <entry><para></para></entry></row>
-<row><entry><para>VOInternetClasses</para></entry>
+<row><entry><para>VO</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.CPop</codeEntityReference></para></entry>
 <entry><para></para></entry></row>
-<row><entry><para>VOInternetClasses</para></entry>
+<row><entry><para>VO</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.CSession</codeEntityReference></para></entry>
 <entry><para></para></entry></row>
-<row><entry><para>VOInternetClasses</para></entry>
+<row><entry><para>VO</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.CSmtp</codeEntityReference></para></entry>
 <entry><para></para></entry></row>
-<row><entry><para>VOInternetClasses</para></entry>
+<row><entry><para>VO</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.CSocket</codeEntityReference></para></entry>
 <entry><para></para></entry></row>
-<row><entry><para>VOInternetClasses</para></entry>
+<row><entry><para>VO</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.CStorage</codeEntityReference></para></entry>
 <entry><para></para></entry></row>
 </table>

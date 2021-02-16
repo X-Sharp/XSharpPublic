@@ -1,24 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<topic id="cat-state_Classes" revisionNumber="1" title="default Classes">
+<topic id="cat-State_Classes" revisionNumber="1" title="State Classes">
   <developerConceptualDocument xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5" xmlns:xlink="http://www.w3.org/1999/xlink">
-    
-
-    <!-- Add one or more top-level section elements.  These are collapsible.
-         If using <autoOutline />, add an address attribute to identify it
-         and specify a title so that it can be jumped to with a hyperlink. -->
     <section address="Section1">
-	<title>state Classes</title>
-		<!-- <para><codeEntityReference qualifyHint="false">M:XSharp.RT.Functions.DoW(XSharp.__Date)</codeEntityReference></para> -->
+	<title>State Classes</title>
       
 	<content><table><tableHeader>
-<row><entry><para>Assembly</para></entry>
-<entry><para>Function</para></entry>
+<row><entry><para>Namespace</para></entry>
+<entry><para>Class</para></entry>
 <entry><para>Description</para></entry>
 </row></tableHeader>
-<row><entry><para>XSharp.Core</para></entry>
+<row><entry><para>XSharp</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.RuntimeState</codeEntityReference></para></entry>
 <entry><para></para></entry></row>
-<row><entry><para>XSharp.Core</para></entry>
+<row><entry><para>XSharp</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.Set</codeEntityReference></para></entry>
 <entry><para></para></entry></row>
 </table>

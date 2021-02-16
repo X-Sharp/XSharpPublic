@@ -1,84 +1,75 @@
 <?xml version="1.0" encoding="utf-8"?>
-<topic id="cat-data_Classes" revisionNumber="1" title="default Classes">
+<topic id="cat-Data_Classes" revisionNumber="1" title="Data Classes">
   <developerConceptualDocument xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5" xmlns:xlink="http://www.w3.org/1999/xlink">
-    
-
-    <!-- Add one or more top-level section elements.  These are collapsible.
-         If using <autoOutline />, add an address attribute to identify it
-         and specify a title so that it can be jumped to with a hyperlink. -->
     <section address="Section1">
-	<title>data Classes</title>
-		<!-- <para><codeEntityReference qualifyHint="false">M:XSharp.RT.Functions.DoW(XSharp.__Date)</codeEntityReference></para> -->
+	<title>Data Classes</title>
       
 	<content><table><tableHeader>
-<row><entry><para>Assembly</para></entry>
-<entry><para>Function</para></entry>
+<row><entry><para>Namespace</para></entry>
+<entry><para>Class</para></entry>
 <entry><para>Description</para></entry>
 </row></tableHeader>
-<row><entry><para>VOGUIClasses</para></entry>
+<row><entry><para>VO</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.DataBrowser</codeEntityReference></para></entry>
 <entry><para></para></entry></row>
-<row><entry><para>VOGUIClasses</para></entry>
+<row><entry><para>VO</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.DataColumn</codeEntityReference></para></entry>
 <entry><para></para></entry></row>
-<row><entry><para>VORDDClasses</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.DbFileSpec</codeEntityReference></para></entry>
-<entry><para></para></entry></row>
-<row><entry><para>VORDDClasses</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.DBSelectionIndex</codeEntityReference></para></entry>
-<entry><para></para></entry></row>
-<row><entry><para>VORDDClasses</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.DbServer</codeEntityReference></para></entry>
-<entry><para></para></entry></row>
-<row><entry><para>VORDDClasses</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.OrderSpec</codeEntityReference></para></entry>
-<entry><para></para></entry></row>
-<row><entry><para>VOSystemClasses</para></entry>
+<row><entry><para>VO</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.DataField</codeEntityReference></para></entry>
 <entry><para></para></entry></row>
-<row><entry><para>VOSystemClasses</para></entry>
+<row><entry><para>VO</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.DataServer</codeEntityReference></para></entry>
 <entry><para></para></entry></row>
-<row><entry><para>VOSystemClasses</para></entry>
+<row><entry><para>VO</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.DateFS</codeEntityReference></para></entry>
 <entry><para></para></entry></row>
-<row><entry><para>VOSystemClasses</para></entry>
+<row><entry><para>VO</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.DbFileSpec</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>VO</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.DbServer</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>VO</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.FieldSpec</codeEntityReference></para></entry>
 <entry><para></para></entry></row>
-<row><entry><para>VOSystemClasses</para></entry>
+<row><entry><para>VO</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.FileSpec</codeEntityReference></para></entry>
 <entry><para></para></entry></row>
-<row><entry><para>VOSystemClasses</para></entry>
+<row><entry><para>VO</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.IntegerFS</codeEntityReference></para></entry>
 <entry><para></para></entry></row>
-<row><entry><para>VOSystemClasses</para></entry>
+<row><entry><para>VO</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.LogicFS</codeEntityReference></para></entry>
 <entry><para></para></entry></row>
-<row><entry><para>VOSystemClasses</para></entry>
+<row><entry><para>VO</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.MoneyFS</codeEntityReference></para></entry>
 <entry><para></para></entry></row>
-<row><entry><para>VOSystemClasses</para></entry>
+<row><entry><para>VO</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.NumberFS</codeEntityReference></para></entry>
 <entry><para></para></entry></row>
-<row><entry><para>VOSystemClasses</para></entry>
+<row><entry><para>VO</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.OrderSpec</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>VO</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.StringFS</codeEntityReference></para></entry>
 <entry><para></para></entry></row>
-<row><entry><para>XSharp.Data</para></entry>
+<row><entry><para>XSharp</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.DbDataColumn</codeEntityReference></para></entry>
 <entry><para></para></entry></row>
-<row><entry><para>XSharp.Data</para></entry>
+<row><entry><para>XSharp</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.DbDataRow</codeEntityReference></para></entry>
 <entry><para></para></entry></row>
-<row><entry><para>XSharp.Data</para></entry>
+<row><entry><para>XSharp</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.DbDataSource</codeEntityReference></para></entry>
 <entry><para></para></entry></row>
-<row><entry><para>XSharp.Data</para></entry>
+<row><entry><para>XSharp</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.DbDataTable</codeEntityReference></para></entry>
 <entry><para></para></entry></row>
-<row><entry><para>XSharp.Data</para></entry>
+<row><entry><para>XSharp</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.DbField</codeEntityReference></para></entry>
 <entry><para></para></entry></row>
-<row><entry><para>XSharp.Data</para></entry>
+<row><entry><para>XSharp</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.DbRecord</codeEntityReference></para></entry>
 <entry><para></para></entry></row>
 </table>

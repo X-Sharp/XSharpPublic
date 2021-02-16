@@ -1,16 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <topic id="cat-File_Functions" revisionNumber="1" title="File Functions">
   <developerConceptualDocument xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5" xmlns:xlink="http://www.w3.org/1999/xlink">
-    
-
-    <!-- Add one or more top-level section elements.  These are collapsible.
-         If using <autoOutline />, add an address attribute to identify it
-         and specify a title so that it can be jumped to with a hyperlink. -->
     <section address="Section1">
 	<title>File Functions</title>
-		<!-- <para><codeEntityReference qualifyHint="false">M:XSharp.RT.Functions.DoW(XSharp.__Date)</codeEntityReference></para> -->
       
-<content><table><tableHeader>
+	<content><table><tableHeader>
 <row><entry><para>Assembly</para></entry>
 <entry><para>Function</para></entry>
 <entry><para>Description</para></entry>

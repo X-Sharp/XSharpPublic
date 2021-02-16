@@ -1,60 +1,54 @@
 <?xml version="1.0" encoding="utf-8"?>
-<topic id="cat-dbc_Classes" revisionNumber="1" title="default Classes">
+<topic id="cat-DBC_Classes" revisionNumber="1" title="DBC Classes">
   <developerConceptualDocument xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5" xmlns:xlink="http://www.w3.org/1999/xlink">
-    
-
-    <!-- Add one or more top-level section elements.  These are collapsible.
-         If using <autoOutline />, add an address attribute to identify it
-         and specify a title so that it can be jumped to with a hyperlink. -->
     <section address="Section1">
-	<title>dbc Classes</title>
-		<!-- <para><codeEntityReference qualifyHint="false">M:XSharp.RT.Functions.DoW(XSharp.__Date)</codeEntityReference></para> -->
+	<title>DBC Classes</title>
       
 	<content><table><tableHeader>
-<row><entry><para>Assembly</para></entry>
-<entry><para>Function</para></entry>
+<row><entry><para>Namespace</para></entry>
+<entry><para>Class</para></entry>
 <entry><para>Description</para></entry>
 </row></tableHeader>
-<row><entry><para>XSharp.Core</para></entry>
+<row><entry><para>XSharp.RDD</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.RDD.DatabasePropertyCollection</codeEntityReference></para></entry>
 <entry><para></para></entry></row>
-<row><entry><para>XSharp.Core</para></entry>
+<row><entry><para>XSharp.RDD</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.RDD.DatabasePropertyType</codeEntityReference></para></entry>
 <entry><para></para></entry></row>
-<row><entry><para>XSharp.Core</para></entry>
+<row><entry><para>XSharp.RDD</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.RDD.Dbc</codeEntityReference></para></entry>
 <entry><para></para></entry></row>
-<row><entry><para>XSharp.Core</para></entry>
+<row><entry><para>XSharp.RDD</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.RDD.DbcConnection</codeEntityReference></para></entry>
 <entry><para></para></entry></row>
-<row><entry><para>XSharp.Core</para></entry>
+<row><entry><para>XSharp.RDD</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.RDD.DbcDatabase</codeEntityReference></para></entry>
 <entry><para></para></entry></row>
-<row><entry><para>XSharp.Core</para></entry>
+<row><entry><para>XSharp.RDD</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.RDD.DbcField</codeEntityReference></para></entry>
 <entry><para></para></entry></row>
-<row><entry><para>XSharp.Core</para></entry>
+<row><entry><para>XSharp.RDD</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.RDD.DbcIndex</codeEntityReference></para></entry>
 <entry><para></para></entry></row>
-<row><entry><para>XSharp.Core</para></entry>
+<row><entry><para>XSharp.RDD</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.RDD.DbcManager</codeEntityReference></para></entry>
 <entry><para></para></entry></row>
-<row><entry><para>XSharp.Core</para></entry>
+<row><entry><para>XSharp.RDD</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.RDD.DbcObject</codeEntityReference></para></entry>
 <entry><para></para></entry></row>
-<row><entry><para>XSharp.Core</para></entry>
+<row><entry><para>XSharp.RDD</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.RDD.DbColumnInfo</codeEntityReference></para></entry>
 <entry><para></para></entry></row>
-<row><entry><para>XSharp.Core</para></entry>
+<row><entry><para>XSharp.RDD</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.RDD.DbcOther</codeEntityReference></para></entry>
 <entry><para></para></entry></row>
-<row><entry><para>XSharp.Core</para></entry>
+<row><entry><para>XSharp.RDD</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.RDD.DbcRelation</codeEntityReference></para></entry>
 <entry><para></para></entry></row>
-<row><entry><para>XSharp.Core</para></entry>
+<row><entry><para>XSharp.RDD</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.RDD.DbcTable</codeEntityReference></para></entry>
 <entry><para></para></entry></row>
-<row><entry><para>XSharp.Core</para></entry>
+<row><entry><para>XSharp.RDD</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.RDD.DbcView</codeEntityReference></para></entry>
 <entry><para></para></entry></row>
 </table>

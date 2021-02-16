@@ -1,43 +1,51 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Topics>
   <Topic id="75f9037d-2930-47ac-b247-0344736fbd6a" visible="True" noFile="true" isExpanded="true" apiParentMode="InsertBefore" title="Classes By Category">
-    <Topic id="cat-application_Classes" visible="True" isSelected="true" title="Application Classes">
-      <Topic id="cat-state_Classes" visible="True" title="Settings Classes" />
-      <Topic id="cat-support_Classes" visible="True" title="Support Classes" />
-      <Topic id="cat-macro_Classes" visible="True" title="Macro Classes" />
-      <Topic id="cat-attributes_Classes" visible="True" title="Attributes Classes" />
-      <Topic id="cat-error_Classes" visible="True" title="Error Classes" />
-      <Topic id="cat-international_Classes" visible="True" title="International Classes" />
-    </Topic>
-    <Topic id="cat-data_Classes" visible="True" isExpanded="true" title="Data Classes">
-      <Topic id="cat-dbc_Classes" visible="True" title="DBC Classes" />
-      <Topic id="cat-ads_Classes" visible="True" title="ADS Classes" />
-      <Topic id="cat-sql_Classes" visible="True" title="SQL Classes" />
-      <Topic id="cat-rdd_Classes" visible="True" title="RDD Classes" />
-    </Topic>
-    <Topic id="cat-vfp_Classes" visible="True" title="VFP classes" />
-    <Topic id="4cf5f628-5b1f-4d69-98c7-512d4e0cd9e0" visible="True" noFile="true" isExpanded="true" title="UI Classes">
-      <Topic id="cat-control_Classes" visible="True" isExpanded="true" title="Control Classes">
-        <Topic id="cat-button_Classes" visible="True" title="Button Classes" />
-        <Topic id="cat-draw_Classes" visible="True" title="Draw Classes" />
-        <Topic id="cat-image_Classes" visible="True" title="Image Classes" />
-        <Topic id="cat-textcontrol_Classes" visible="True" title="TextControl Classes" />
+    <Topic id="cat-Application_Classes" visible="True" isExpanded="true" title="Application Classes">
+      <Topic id="cat-State_Classes" visible="True" title="Settings Classes" />
+      <Topic id="cat-Support_Classes" visible="True" title="Support Classes" />
+      <Topic id="cat-Macro_Classes" visible="True" title="Macro Classes" />
+      <Topic id="cat-Attributes_Classes" visible="True" title="Attributes Classes" />
+      <Topic id="cat-Error_Classes" visible="True" title="Error Classes">
+        <HelpKeywords>
+          <HelpKeyword index="K" term="Error Classes" />
+        </HelpKeywords>
       </Topic>
-      <Topic id="cat-internet_Classes" visible="True" title="Internet Classes" />
-      <Topic id="cat-window_Classes" visible="True" isExpanded="true" title="Window Classes">
-        <Topic id="cat-dialog_Classes" visible="True" title="Dialog Classes" />
+      <Topic id="cat-International_Classes" visible="True" title="International Classes">
+        <HelpKeywords>
+          <HelpKeyword index="K" term="International Classes" />
+        </HelpKeywords>
+      </Topic>
+    </Topic>
+    <Topic id="cat-Data_Classes" visible="True" title="Data Classes">
+      <Topic id="cat-DBC_Classes" visible="True" title="DBC Classes" />
+      <Topic id="cat-ADS_Classes" visible="True" title="ADS Classes" />
+      <Topic id="cat-SQL_Classes" visible="True" title="SQL Classes" />
+      <Topic id="cat-RDD_Classes" visible="True" title="RDD Classes" />
+    </Topic>
+    <Topic id="cat-Internet_Classes" visible="True" title="Internet Classes" />
+    <Topic id="4cf5f628-5b1f-4d69-98c7-512d4e0cd9e0" visible="True" noFile="true" isSelected="true" title="VO UI Classes">
+      <Topic id="cat-Control_Classes" visible="True" isExpanded="true" title="Control Classes">
+        <Topic id="cat-Button_Classes" visible="True" title="Button Classes" />
+        <Topic id="cat-Draw_Classes" visible="True" title="Draw Classes" />
+        <Topic id="cat-Image_Classes" visible="True" title="Image Classes" />
+        <Topic id="cat-TextControl_Classes" visible="True" title="TextControl Classes" />
+      </Topic>
+      <Topic id="cat-Window_Classes" visible="True" isExpanded="true" title="Window Classes">
+        <Topic id="cat-Dialog_Classes" visible="True" title="Dialog Classes" />
       </Topic>
       <Topic id="892b9a68-074a-45dd-a61c-8778cc4aa9a2" visible="True" noFile="true" isExpanded="true" title="Other Classes">
-        <Topic id="cat-display_Classes" visible="True" title="Display Classes" />
-        <Topic id="cat-event_Classes" visible="True" title="Event classes" />
-        <Topic id="cat-help_Classes" visible="True" title="Help Classes" />
-        <Topic id="cat-menu_Classes" visible="True" title="Menu Classes" />
-        <Topic id="cat-printer_Classes" visible="True" title="Printer Classes" />
+        <Topic id="cat-Display_Classes" visible="True" title="Display Classes" />
+        <Topic id="cat-Event_Classes" visible="True" title="Event classes" />
+        <Topic id="cat-Help_Classes" visible="True" title="Help Classes" />
+        <Topic id="cat-Menu_Classes" visible="True" title="Menu Classes" />
+        <Topic id="cat-Printer_Classes" visible="True" title="Printer Classes" />
       </Topic>
     </Topic>
-    <Topic id="cat-xpp_Classes" visible="True" title="XPP Classes" />
+    <Topic id="cat-VFP_Classes" visible="True" title="VFP classes" />
+    <Topic id="cat-XPP_Classes" visible="True" title="XPP Classes" />
   </Topic>
-  <Topic id="6c99f5a5-8245-4b4f-b31e-70eb0e84db1e" visible="True" noFile="true" isExpanded="true" title="Functions By Category">
+  <Topic id="6c99f5a5-8245-4b4f-b31e-70eb0e84db1e" visible="True" noFile="true" title="Functions By Category">
     <Topic id="60810de0-2ceb-4ade-9e38-d6501cf7c216" visible="True" noFile="true" title="Data Types">
       <Topic id="cat-Array_Functions" visible="True" title="Array Functions">
         <HelpKeywords>
@@ -49,7 +57,7 @@
           <HelpKeyword index="K" term="Binary Functions" />
         </HelpKeywords>
       </Topic>
-      <Topic id="cat-codeblock_Functions" visible="True" title="Codeblock Functions">
+      <Topic id="cat-Codeblock_Functions" visible="True" title="Codeblock Functions">
         <HelpKeywords>
           <HelpKeyword index="K" term="Codeblock Functions" />
         </HelpKeywords>
@@ -64,7 +72,7 @@
           <HelpKeyword index="K" term="Date Functions" />
         </HelpKeywords>
       </Topic>
-      <Topic id="cat-datetime_Functions" visible="True" title="DateTime Functions">
+      <Topic id="cat-DateTime_Functions" visible="True" title="DateTime Functions">
         <HelpKeywords>
           <HelpKeyword index="K" term="DateTime Functions" />
         </HelpKeywords>
@@ -84,7 +92,7 @@
           <HelpKeyword index="K" term="PSZ Functions" />
         </HelpKeywords>
       </Topic>
-      <Topic id="cat-StringFunctions" visible="True" title="String Functions">
+      <Topic id="cat-String_Functions" visible="True" title="String Functions">
         <HelpKeywords>
           <HelpKeyword index="K" term="String Functions" />
         </HelpKeywords>
@@ -101,7 +109,7 @@
       </Topic>
     </Topic>
     <Topic id="b33097a4-8751-44a7-886a-a5954a8bd1b8" visible="True" noFile="true" title="DBF and SQL">
-      <Topic id="cat-Ads_Functions" visible="True" title="ADS Functions">
+      <Topic id="cat-ADS_Functions" visible="True" title="ADS Functions">
         <HelpKeywords>
           <HelpKeyword index="K" term="ADS Functions" />
         </HelpKeywords>
@@ -164,7 +172,7 @@
         </HelpKeywords>
       </Topic>
     </Topic>
-    <Topic id="fe3d0bf0-cb35-4f4a-95a8-87cacc7e5cbc" visible="True" noFile="true" title="Various">
+    <Topic id="fe3d0bf0-cb35-4f4a-95a8-87cacc7e5cbc" visible="True" noFile="true" isExpanded="true" title="Various">
       <Topic id="cat-Debug_Functions" visible="True" title="Debug Functions">
         <HelpKeywords>
           <HelpKeyword index="K" term="Debug Functions" />
@@ -183,11 +191,6 @@
       <Topic id="cat-Error_Functions" visible="True" title="Error Functions">
         <HelpKeywords>
           <HelpKeyword index="K" term="Error Functions" />
-        </HelpKeywords>
-      </Topic>
-      <Topic id="cat-gdi_Functions" visible="True" title="Fonts, Colors, Images Functions">
-        <HelpKeywords>
-          <HelpKeyword index="K" term="Fonts, Colors, Images Functions" />
         </HelpKeywords>
       </Topic>
       <Topic id="cat-International_Functions" visible="True" title="International Functions">

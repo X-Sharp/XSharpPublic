@@ -48,6 +48,21 @@
 <row><entry><para>XSharp</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.Codeblock</codeEntityReference></para></entry>
 <entry><para></para></entry></row>
+<row><entry><para>XSharp.Debugger</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.Debugger.GlobalsWindow</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.Debugger</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.Debugger.MemVarsWindow</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.Debugger</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.Debugger.SettingsWindow</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.Debugger</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.Debugger.VariablesWindow</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
+<row><entry><para>XSharp.Debugger</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.Debugger.WorkareasWindow</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
 </table>
 </content>
      </section>

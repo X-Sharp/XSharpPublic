@@ -7,17 +7,20 @@ GLOBAL gsPath AS STRING
 GLOBAL gsCatPath AS STRING
 FUNCTION Start AS VOID   
     gaFiles := <STRING>{"XSharp.Core.DLL", "XSharp.RT.DLL","XSharp.VO.DLL", ;
-        "XSharp.Data.DLL","XSharp.VFP.DLL","XSharp.RDD.DLL","XSharp.XPP.DLL","VOSystemClasses.DLL",;
-        "VORDDClasses.DLL","VOGUIClasses.DLL","VOSQLClasses.DLL","VOInternetClasses.DLL", "VOConsoleClasses.DLL"}
+        "XSharp.Data.DLL","XSharp.VFP.DLL","XSharp.RDD.DLL","XSharp.XPP.DLL",   ;
+        "VOSystemClasses.DLL", "VORDDClasses.DLL","VOGUIClasses.DLL", ;
+        "VOSQLClasses.DLL","VOInternetClasses.DLL", "VOConsoleClasses.DLL",;
+        "XSharp.RT.Debugger.DLL", "XSharp.VOSystemClasses.DLL", ;
+        "XSharp.VOConsoleClasses.DLL","XSharp.VOSQLClasses.DLL","XSharp.VORDDClasses.DLL"}
     gsPath  := "c:\XSharp\DevRt\Binaries\Documentation\"    
     gsCatPath := "c:\XSharp\DevRt\Docs\Categories\"        
     TRY
-    //CreateClassList()
-    CreateFunctionSectionFiles()  
-    CreateClassSectionFiles()
+    //CreateClassList() 
+    //CreateClassSectionFiles()
     WriteClassTopics()
+    //CreateFunctionList()
+    //CreateFunctionSectionFiles()  
     WriteFunctionTopics()
-    //CreateClassList()
     CATCH e AS Exception
         ? e:ToString()
         Console.ReadLine()
@@ -196,7 +199,7 @@ FUNCTION CreateClassList AS SortedDictionary<STRING, MyClassInfo>
         VAR asm   := Assembly.LoadFrom(gsPath+sFile)
         VAR types := asm:GetTypes()
         FOREACH oType AS System.Type IN types
-            IF !oType:FullName:EndsWith(".Functions") .and. ;
+            IF !oType:FullName:EndsWith("Functions") .and. ;
                  oType:Name:IndexOf("$") == -1 .and.oType:Name:IndexOf("<") == -1 .and. ;
                  ! oType:Name:StartsWith("_")  .and. oType:IsPublic
                 VAR classInfo := MyClassInfo{} { assembly := sFile, name := oType:Name, namespace := oType:Namespace}
@@ -283,7 +286,8 @@ FUNCTION CreateFunctionList AS  SortedDictionary<STRING, FunctionInfo>
                             ? "Add", m.Name                                        
                             aInfo:Add(info:key, info )
                         ENDIF
-                    CATCH  AS Exception
+                    CATCH e AS Exception
+                        ? e:ToString()
                         
                     END TRY
                 NEXT
@@ -343,7 +347,11 @@ FUNCTION ReadClassList() AS SortedDictionary<STRING, MyClassInfo>
                     groups[i] := aElements[i+3]
                 NEXT                           
                 info:Categories := groups
-                aInfo:Add(info:Key, info)
+                IF !aInfo:ContainsKey(info:Key)
+                    aInfo:Add(info:Key, info)
+                ELSE 
+                    NOP
+                ENDIF
             ENDIF
         NEXT
     ENDIF
@@ -411,7 +419,15 @@ CLASS MyClassInfo
     PROPERTY NameSpace  AS STRING AUTO  := ""
     PROPERTY Description AS STRING AUTO   := ""
     PROPERTY Categories AS STRING[] AUTO  := STRING[]{0}
-    PROPERTY Key AS STRING GET NameSpace:ToLower():PadRight(100) +":"+Name:ToLower()
+    PROPERTY Key AS STRING 
+        GET     
+            IF String.IsNullOrEmpty(NameSpace)
+                RETURN Name:ToLower()
+            ELSE
+                RETURN NameSpace:ToLower():PadRight(100) +":"+Name:ToLower()
+            ENDIF
+        END GET
+    END PROPERTY
     PROPERTY Type AS System.Type AUTO
 END CLASS    
 

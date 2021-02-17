@@ -15,6 +15,9 @@
 <row><entry><para>VO</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.HyperLabel</codeEntityReference></para></entry>
 <entry><para></para></entry></row>
+<row><entry><para>XSharp.VO.SDK</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.VO.SDK.HyperLabel</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
 </table>
 </content>
      </section>

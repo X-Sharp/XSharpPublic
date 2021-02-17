@@ -159,6 +159,9 @@
 <row><entry><para>XSharp.ADS</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.ADS.CallbackFn101</codeEntityReference></para></entry>
 <entry><para></para></entry></row>
+<row><entry><para>XSharp.VO.SDK</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.VO.SDK.AdsSQLServer</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
 </table>
 </content>
      </section>

@@ -25823,7 +25823,7 @@
       </summary>
       <value>The order (tag) name for this order.  Used for creating multi-order order files (bags).</value>
     </member>
-    <member name="P:XSharp.VO.SDK.OrderSpec.Recno">
+    <member name="P:XSharp.VO.SDK.OrderSpec.RecNo">
       <summary>
         The individual record number to be processed.  Defaults to zero (0) for all records.
       </summary>

@@ -1,4 +1,4 @@
-﻿#using System.Collections
+﻿USING System.Collections
 
 
 /// <summary>Special App class to is used when hosting Windows Forms Forms in a VO GUI hierarchy</summary>

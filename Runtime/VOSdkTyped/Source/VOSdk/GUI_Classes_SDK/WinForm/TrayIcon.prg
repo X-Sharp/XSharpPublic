@@ -1,6 +1,6 @@
 
 
-#USING System.Windows.Forms
+USING System.Windows.Forms
 CLASS VOTrayIcon INHERIT VObject
 	PROTECT Window  AS Window
 	PROTECT oIcon   AS NotifyIcon

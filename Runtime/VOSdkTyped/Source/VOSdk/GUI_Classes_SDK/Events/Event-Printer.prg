@@ -1,5 +1,5 @@
 // Event_Printer.prg
-#using System.Diagnostics
+USING System.Diagnostics
 
 CLASS PrinterErrorEvent INHERIT @@Event
 	ACCESS ErrorType AS DWORD STRICT 

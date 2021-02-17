@@ -1,7 +1,7 @@
 // ResourceReader.prg
 // Helper class used to read native dialogs ( & menus ?)
 //
-#USING System.Text
+USING System.Text
 CLASS ResourceReader
 	CONSTRUCTOR()
 		SUPER()

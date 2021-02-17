@@ -1,8 +1,8 @@
 // GuiWin32.prg
 // Static class with some Win32 API functions that are used inside the Unicode GUI Classes
 
-#USING System.Runtime.InteropServices
-#USING System.Text
+USING System.Runtime.InteropServices
+USING System.Text
 
 
 

@@ -1,6 +1,6 @@
 
 
-#USING System.Collections.Generic
+USING System.Collections.Generic
 
 CLASS AcceleratorKey
 	INTERNAL Flags	as WORD

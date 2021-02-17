@@ -1,6 +1,6 @@
 
 
-#USING System.Windows.Forms
+USING System.Windows.Forms
 FUNCTION __DBCSEnabled() AS LOGIC
 	//RETURN LOGIC(_CAST, GetSystemMetrics(SM_DBCSENABLED))
 	RETURN FALSE

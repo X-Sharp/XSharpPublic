@@ -1,7 +1,7 @@
 
 
-#USING System.Collections.Generic
-#USING System.Diagnostics
+USING System.Collections.Generic
+USING System.Diagnostics
 CLASS TreeView INHERIT TextControl
 	PROTECT oDragImageList AS ImageList
 	PROTECT lDragDropEnabled AS LOGIC
@@ -935,8 +935,8 @@ END CLASS
 
 
 
-#using System.Collections
-#using System.Reflection
+USING System.Collections
+USING System.Reflection
 CLASS TreeViewItemComparer IMPLEMENTS IComparer
 	PROTECT oTreeView AS TreeView
 	PROTECT oMethodInfo AS System.Reflection.MethodInfo

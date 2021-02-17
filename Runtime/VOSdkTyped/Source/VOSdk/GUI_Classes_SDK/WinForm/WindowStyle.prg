@@ -2,7 +2,7 @@
 
 
 
-#USING System.Text
+USING System.Text
 INTERNAL CLASS WindowStyle
 
 	STATIC METHOD SetStyle(hWnd AS IntPtr, dwSetStyle AS DWORD, lEnable AS LOGIC) AS VOID

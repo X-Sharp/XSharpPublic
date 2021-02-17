@@ -2,7 +2,7 @@
 
 
 #define SYSTEM_KEYCODE 0x20000000
-#USING System.Diagnostics
+USING System.Diagnostics
 
 INTERFACE INamedEvent
     PROPERTY Name    AS STRING GET

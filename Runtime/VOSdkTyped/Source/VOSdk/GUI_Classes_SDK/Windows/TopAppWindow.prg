@@ -1,7 +1,7 @@
 
 
 
-#USING System.Windows.Forms
+USING System.Windows.Forms
 
 CLASS TopAppWindow INHERIT AppWindow
 

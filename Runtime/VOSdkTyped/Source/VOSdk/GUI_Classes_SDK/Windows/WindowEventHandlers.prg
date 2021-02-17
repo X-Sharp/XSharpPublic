@@ -2,7 +2,7 @@
 // Contains the 'empty' event handlers of the window class
 
 
-#USING System.Windows.Forms
+USING System.Windows.Forms
 
 PARTIAL CLASS Window INHERIT @@EventContext
 

@@ -31,25 +31,27 @@ CLASS XSharp.DbDataSource IMPLEMENTS IBindingList
     INTERNAL EVENT FieldChanged       AS DbNotifyFieldChange
     
     CONSTRUCTOR(oRDD AS IRdd)
-    _oRDD       := oRDD
-    _readOnly   := (LOGIC) oRDD:Info(DBI_READONLY,NULL)
-    _shared     := (LOGIC) oRDD:Info(DBI_SHARED,NULL)
-    _records    := Dictionary<LONG, DbRecord>{}
-    _index      := -1
+    SELF:_oRDD       := oRDD
+    SELF:_readOnly   := (LOGIC) oRDD:Info(DBI_READONLY,NULL)
+    SELF:_shared     := (LOGIC) oRDD:Info(DBI_SHARED,NULL)
+    SELF:_records    := Dictionary<LONG, DbRecord>{}
+    SELF:_index      := -1
     SupportsSorting  := TRUE
-    _sorted     := FALSE
+    SELF:_sorted     := FALSE
     RETURN
+    /// <summary>Should the Deleted Flag be included as "virtual column"</summary>
     PROPERTY ShowDeleted AS LOGIC AUTO := TRUE
+    /// <summary>Should the Record number be included as "virtual column"</summary>
     PROPERTY ShowRecno   AS LOGIC AUTO := TRUE
     #region IBindingList implementation
         /// <summary>TRUE when the workarea is not readonly</summary>
-        PROPERTY AllowEdit      AS LOGIC GET !_readOnly
+        PROPERTY AllowEdit      AS LOGIC GET !SELF:_readOnly
         /// <summary>TRUE when the workarea is not readonly</summary>
-        PROPERTY AllowNew       AS LOGIC GET !_readOnly
+        PROPERTY AllowNew       AS LOGIC GET !SELF:_readOnly
         /// <summary>TRUE when the workarea is not readonly</summary>
-        PROPERTY AllowRemove    AS LOGIC GET !_readOnly
+        PROPERTY AllowRemove    AS LOGIC GET !SELF:_readOnly
         /// <inheritdoc/>
-        PROPERTY IsSorted       AS LOGIC GET _sorted
+        PROPERTY IsSorted       AS LOGIC GET SELF:_sorted
         /// <inheritdoc/>
         PROPERTY SortDirection  AS ListSortDirection  AUTO
         /// <inheritdoc/>
@@ -115,13 +117,13 @@ CLASS XSharp.DbDataSource IMPLEMENTS IBindingList
             
         PRIVATE METHOD createOrder(fldName AS STRING, lDesc AS LOGIC) AS LOGIC
             VAR cond := DbOrderCondInfo{}
-            IF String.IsNullOrEmpty(_indexFile )
-                _indexFile := System.IO.Path.GetTempFileName()
+            IF String.IsNullOrEmpty(SELF:_indexFile )
+                SELF:_indexFile := System.IO.Path.GetTempFileName()
                 FErase(_indexFile)
-                _indexFile := System.IO.Path.GetFileNameWithoutExtension(_indexFile)
+                SELF:_indexFile := System.IO.Path.GetFileNameWithoutExtension(SELF:_indexFile)
             ENDIF
             VAR info := DbOrderCreateInfo{}
-            info:BagName 		:= _indexFile
+            info:BagName 		:= SELF:_indexFile
             info:Order			:= fldName:Replace("()","")
             info:Expression     := fldName
             cond:Descending     := lDesc
@@ -176,7 +178,7 @@ CLASS XSharp.DbDataSource IMPLEMENTS IBindingList
     /// <summary>Alias of underlying workarea</summary>
     PROPERTY Name       AS STRING GET _oRDD:Alias
     /// <summary>File name of underlying workarea</summary>
-    PROPERTY FullName   AS STRING GET (STRING) _oRDD:Info(DBI_FULLPATH,NULL)
+    PROPERTY FullName   AS STRING GET (STRING) SELF:_oRDD:Info(DBI_FULLPATH,NULL)
     
     INTERNAL METHOD GoTop() AS LOGIC
         SELF:_index := 0
@@ -280,19 +282,25 @@ CLASS XSharp.DbDataSource IMPLEMENTS IBindingList
     /// <summary>This required method has not (yet) been implemented</summary>
 
     VIRTUAL METHOD CopyTo( list AS System.Array , index AS INT ) AS VOID
-        _oRDD:GoTop()
+        SELF:_oRDD:GoTop()
         DO WHILE ! _oRDD:EoF
             list:SetValue(SELF:Current, index)
             index += 1
-            _oRDD:Skip(1)
+            SELF:_oRDD:Skip(1)
         ENDDO
-        _oRDD:GoTop()
+        SELF:_oRDD:GoTop()
         
-        
+
+    /// <summary>Returns the # of records in the RDD</summary>
     VIRTUAL PROPERTY Count          AS INT GET _oRDD:RecCount
+    /// <exclude/>
     VIRTUAL PROPERTY IsSynchronized AS LOGIC GET TRUE
+    /// <exclude/>
     VIRTUAL PROPERTY SyncRoot       AS OBJECT GET SELF:_oRDD
     
+    /// <summary>Returns an enumerator with which you can walk the RDD.</summary>
+    /// <remarks>This enumerator returns DbRecord objects for each record in the Data Source</remarks>
+    /// <seealso cref='DbRecord'>DbRecord class</seealso>
     VIRTUAL METHOD GetEnumerator() AS IEnumerator STRICT
         RETURN DbEnumerator{SELF}
         
@@ -326,57 +334,57 @@ CLASS XSharp.DbDataSource IMPLEMENTS IBindingList
         
         
     INTERNAL METHOD GetValue( uField AS OBJECT)  AS OBJECT
-    LOCAL fieldPos AS INT
-    LOCAL retVal := NULL AS OBJECT
-    IF uField IS STRING VAR strField
-        fieldPos := SELF:_oRDD:FieldIndex(strField)
-    ELSEIF uField IS LONG VAR liField
-        fieldPos := (LONG) liField
-    ELSE
-        fieldPos := -1        
-    ENDIF
-    IF fieldPos > 0    
-        retVal     := SELF:_oRDD:GetValue(fieldPos)
-        IF retVal IS STRING VAR strValue
-            retVal := strValue:TrimEnd()
+        LOCAL fieldPos AS INT
+        LOCAL retVal := NULL AS OBJECT
+        IF uField IS STRING VAR strField
+            fieldPos := SELF:_oRDD:FieldIndex(strField)
+        ELSEIF uField IS LONG VAR liField
+            fieldPos := (LONG) liField
+        ELSE
+            fieldPos := -1        
         ENDIF
-    ENDIF
-    RETURN retVal
+        IF fieldPos > 0    
+            retVal     := SELF:_oRDD:GetValue(fieldPos)
+            IF retVal IS STRING VAR strValue
+                retVal := strValue:TrimEnd()
+            ENDIF
+        ENDIF
+        RETURN retVal
     
     
     /// We write through into the dbf table and signal the rest of the world, that we have changed something-
     INTERNAL METHOD PutValue( uField AS OBJECT, oValue  AS OBJECT)  AS LOGIC
-    LOCAL fieldPos AS INT
-    LOCAL retVal := FALSE AS LOGIC
-    IF uField IS STRING VAR strField
-        fieldPos := SELF:_oRDD:FieldIndex(strField)
-    ELSEIF uField IS LONG VAR liField
-        fieldPos := (LONG) liField
-    ELSE
-        fieldPos := -1        
-    ENDIF
-    IF fieldPos > 0
-        LOCAL lockInfo AS DbLockInfo
-        lockInfo := DbLockInfo{}
-        lockInfo:Method  := DbLockInfo.LockMethod.Exclusive
-        lockInfo:RecId    := SELF:_oRDD:RecNo
-        retVal  := SELF:_oRDD:Lock(REF lockInfo)
-        IF retVal
-            retVal     := SELF:_oRDD:PutValue(fieldPos, oValue)
-            SELF:_oRDD:UnLock(SELF:_oRDD:RecNo)
+        LOCAL fieldPos AS INT
+        LOCAL retVal := FALSE AS LOGIC
+        IF uField IS STRING VAR strField
+            fieldPos := SELF:_oRDD:FieldIndex(strField)
+        ELSEIF uField IS LONG VAR liField
+            fieldPos := (LONG) liField
+        ELSE
+            fieldPos := -1        
         ENDIF
-    ENDIF
-    SELF:OnFieldChange(SELF:RecNo,fieldPos)   
-    RETURN retVal
+        IF fieldPos > 0
+            LOCAL lockInfo AS DbLockInfo
+            lockInfo := DbLockInfo{}
+            lockInfo:Method  := DbLockInfo.LockMethod.Exclusive
+            lockInfo:RecId    := SELF:_oRDD:RecNo
+            retVal  := SELF:_oRDD:Lock(REF lockInfo)
+            IF retVal
+                retVal     := SELF:_oRDD:PutValue(fieldPos, oValue)
+                SELF:_oRDD:UnLock(SELF:_oRDD:RecNo)
+            ENDIF
+        ENDIF
+        SELF:OnFieldChange(SELF:RecNo,fieldPos)   
+        RETURN retVal
     
     
     /// As the meta data are the same for all records, we generate them just once.
     INTERNAL PROPERTY Fields AS IEnumerable<DbField>
         GET
-            IF _fieldList == NULL
+            IF SELF:_fieldList == NULL
                 SELF:generateFields()
             ENDIF
-            RETURN _fieldList
+            RETURN SELF:_fieldList
         END GET
     END PROPERTY
 
@@ -408,38 +416,39 @@ CLASS XSharp.DbDataSource IMPLEMENTS IBindingList
 
     /// Generate the meta data which will be used as source for generating the dynamic properties.
     PRIVATE METHOD generateFields() AS VOID
-        _fieldList  := List<DbField>{}
+        SELF:_fieldList  := List<DbField>{}
         LOCAL f AS INT
         LOCAL fieldCount := SELF:_oRDD:FieldCount AS LONG
         FOR f:=1 UPTO fieldCount
             LOCAL oInfo    AS DbColumnInfo
             oInfo  := (DbColumnInfo) SELF:_oRDD:FieldInfo(f, DBS_COLUMNINFO, NULL)
-            _fieldList:Add(DbField{oInfo})
+            SELF:_fieldList:Add(DbField{oInfo})
             
         NEXT
         RETURN
     #endregion
 
+    // Helper class to enumerate the DbDataSource
     PRIVATE CLASS DbEnumerator IMPLEMENTS IEnumerator
 
         PROTECT datasource AS DbDataSource
     
         CONSTRUCTOR( source AS DbDataSource )
-            datasource := source
+            SELF:datasource := source
             RETURN
     
         PUBLIC VIRTUAL PROPERTY Current AS OBJECT
             GET
-                RETURN datasource:Current
+                RETURN SELF:datasource:Current
             END GET
         END PROPERTY
     
         PUBLIC VIRTUAL METHOD MoveNext() AS LOGIC STRICT
-            datasource:Skip()
+            SELF:datasource:Skip()
             RETURN ! datasource:EoF
         
         PUBLIC VIRTUAL METHOD Reset() AS VOID STRICT
-            datasource:GoTop()
+            SELF:datasource:GoTop()
             RETURN 
     
     END CLASS

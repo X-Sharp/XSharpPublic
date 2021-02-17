@@ -1,7 +1,7 @@
 // DialogForm.prg
 
-#using System.Windows.Forms
-#using System.ComponentModel
+USING System.Windows.Forms
+USING System.ComponentModel
 CLASS VODialogForm INHERIT VOForm
 	PROTECT	oSurfacePanel	AS VOSurfacePanel
 	PROTECT oResDlg			AS ResourceDialog

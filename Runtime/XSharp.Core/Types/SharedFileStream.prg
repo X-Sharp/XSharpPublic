@@ -30,7 +30,7 @@ BEGIN NAMESPACE XSharp.IO
             IF lOk
                 RETURN result
             ENDIF
-            THROW System.IO.IOException{"Error moving file pointer"}
+            THROW IOException{i"Error moving file pointer from {origin} to {offset}"}
             
         /// <inheritdoc />
         /// <remarks>This method calls the Windows SetEndOfFile() function directly.</remarks>
@@ -43,15 +43,10 @@ BEGIN NAMESPACE XSharp.IO
         /// <remarks>This method calls the Windows GetFileSize() function directly.</remarks>
         PUBLIC PROPERTY Length AS INT64
             GET
-                
-                LOCAL highSize := 0 AS INT
-                LOCAL fileSize := 0 AS DWORD
-                fileSize := GetFileSize(SELF:hFile, OUT highSize)
-                IF (fileSize == UInt32.MaxValue)
-                    THROW IOException{"Could not retrieve file length"}
-                ENDIF
-                LOCAL size := (highSize << 0x20) + ((INT64) fileSize) AS INT64
-                RETURN size
+                  IF GetFileSizeEx(SELF:hFile, OUT VAR size)
+                        RETURN size
+                  ENDIF
+                  THROW IOException{"Could not retrieve file length"}  
             END GET
         END PROPERTY
         /// <inheritdoc />
@@ -84,11 +79,11 @@ BEGIN NAMESPACE XSharp.IO
                 System.Array.Copy(bytes,offset, aCopy,0, count)
                 ret := WriteFile(SELF:hFile, aCopy, count, OUT bytesWritten, 0)
             ENDIF
-            IF (!ret)
-                THROW IOException{"Write: File write failed"}
+            IF !ret
+                THROW IOException{i"Write: File write failed offset {offset} count {count}"}
             ENDIF
             IF bytesWritten != count
-                THROW IOException{"Write: Not all bytes written to file"}
+                THROW IOException{i"Write: Not all bytes written to file offset {offset} count {count} written {bytesWritten}"}
             ENDIF
         RETURN
         /// <inheritdoc />
@@ -100,10 +95,10 @@ BEGIN NAMESPACE XSharp.IO
         /// <remarks>This method calls the Windows LockFile() function directly.</remarks>
         PUBLIC OVERRIDE METHOD Lock(position AS INT64, length AS INT64)  AS VOID
             
-            LOCAL ret := FALSE AS LOGIC
+            LOCAL ret  := FALSE AS LOGIC
             ret := LockFile(SELF:hFile, (INT)position, (INT)(position >> 32), (INT)(length), (INT)(length >> 32))
-            IF (!ret)
-                THROW IOException{"Lock: File lock failed"}
+            IF !ret
+                THROW IOException{i"Lock: File lock failed, pos: {position}, length: {length} "}
             ENDIF
         RETURN 
         /// <inheritdoc />
@@ -111,8 +106,8 @@ BEGIN NAMESPACE XSharp.IO
         PUBLIC OVERRIDE METHOD Unlock( position AS INT64, length AS INT64)  AS VOID
             LOCAL ret := FALSE AS LOGIC
             ret := UnlockFile(SELF:hFile, (INT)position, (INT)(position >> 32), (INT)(length), (INT)(length >> 32))
-            IF (!ret)
-                THROW IOException{"Lock: File unlock failed"}
+            IF !ret
+                THROW IOException{i"UnLock: File Unlock failed, pos: {position}, length: {length} "}
             ENDIF
         RETURN
         /// <inheritdoc />
@@ -153,7 +148,11 @@ BEGIN NAMESPACE XSharp.IO
         /// <exclude />
         [DllImport("kernel32.dll", SetLastError := TRUE,EntryPoint := "GetFileSize")];
         PRIVATE STATIC EXTERN METHOD GetFileSize(hFile AS IntPtr , highSize OUT INT) AS DWORD
-        #endregion
+        /// <exclude />
+        [DllImport("kernel32.dll", SetLastError := TRUE,EntryPoint := "GetFileSizeEx")];
+        PRIVATE STATIC EXTERN METHOD GetFileSizeEx(hFile AS IntPtr , FileSize OUT INT64) AS LOGIC
+
+#endregion
         
     END CLASS
     

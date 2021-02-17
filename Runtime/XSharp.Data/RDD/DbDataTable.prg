@@ -107,7 +107,9 @@ PROTECT _nArea   AS LONG
             SELF:_nAdding := nRecord
             SELF:Rows:Add(oData)
         RETURN
-        
+
+        /// <summary>Save the changes in the DbDataTable to the underlying RDD</summary>
+        /// <param name="oRDD">The RDD object for the area where the changes must be saved.</param>
         METHOD Save(oRDD AS IRdd) AS LOGIC
             LOCAL lockInfo AS DbLockInfo
             TRY

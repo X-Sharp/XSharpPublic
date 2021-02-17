@@ -5,9 +5,9 @@
 // The structures are copied from the WIN32 API Lib
 
 
-#USING System.Runtime.InteropServices
-#USING System.Text
-#USING System.Diagnostics
+USING System.Runtime.InteropServices
+USING System.Text
+USING System.Diagnostics
 
 [DebuggerDisplay("ID: {ControlID}, Caption: {Caption}, Class: {Class}, X,Y: {X},{Y} ")];
 CLASS ResourceDialogItem  INHERIT ResourceReader

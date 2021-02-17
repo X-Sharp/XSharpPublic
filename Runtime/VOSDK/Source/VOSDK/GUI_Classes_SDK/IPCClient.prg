@@ -1,5 +1,5 @@
 #ifdef __VULCAN__
-   #using System.Runtime.InteropServices
+   USING System.Runtime.InteropServices
 #endif
 
 CLASS IpcClient INHERIT EventContext

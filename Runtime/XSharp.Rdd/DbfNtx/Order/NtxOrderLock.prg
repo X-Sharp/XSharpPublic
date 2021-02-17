@@ -76,7 +76,9 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             LOCAL locked AS LOGIC
             locked := _oStream:SafeLock(nOffset, nLong )
             IF ! locked
-                Trace.WriteLine("Lock Error:" + FException():Message)
+                var oEx := FException()
+                var msg := iif(oEx != NULL, oEx:Message, "Unknown")
+                Trace.WriteLine(i"Lock Error, position: {nOffset} length: {nLong} Message: {msg}")
             ENDIF
             RETURN locked
             
@@ -84,10 +86,9 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             LOCAL unlocked AS LOGIC
             unlocked := _oStream:SafeUnlock( nOffset, nLong )
             IF ! unlocked
-                VAR oEx := FException()
-                IF oEx != NULL
-                    Trace.WriteLine("UnLock Error:" + oEx:Message)
-                ENDIF
+                var oEx := FException()
+                var msg := iif(oEx != NULL, oEx:Message, "Unknown")
+                Trace.WriteLine(i"UnLock Error, position: {nOffset} length: {nLong} Message: {msg}")
             ENDIF
             RETURN unlocked
             

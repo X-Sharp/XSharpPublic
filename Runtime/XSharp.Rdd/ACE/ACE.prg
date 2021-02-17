@@ -2459,7 +2459,7 @@ BEGIN NAMESPACE XSharp.ADS
         RETURN delGetRecordLength(hTable, OUT pulLength)
         
         
-        PUBLIC STATIC METHOD AdsGetTableFilename(hTable AS IntPtr, usOption AS WORD, strName AS CHAR[], wLen REF WORD ) AS DWORD 
+        PUBLIC STATIC METHOD AdsGetTableFilename(hTable AS IntPtr, usOption AS WORD, [InAttribute] [OutAttribute] strName AS CHAR[], wLen REF WORD ) AS DWORD 
         RETURN delGetTableFilename(hTable, usOption, strName, REF wLen)
         
         PUBLIC STATIC METHOD AdsOpenTable90(hConnect AS IntPtr, strName AS STRING, strAlias AS STRING, usTableType AS WORD, usCharType AS WORD, usLockType AS WORD, usCheckRights AS WORD, ulOptions AS DWORD, strCollation AS STRING, phTable OUT IntPtr ) AS DWORD 
@@ -2486,7 +2486,7 @@ BEGIN NAMESPACE XSharp.ADS
         PUBLIC STATIC METHOD AdsGetField(hTable AS IntPtr, lFieldOrdinal AS DWORD, [InAttribute] [OutAttribute] abBuf AS BYTE[], pulLen REF DWORD, usOption AS WORD ) AS DWORD 
         RETURN delGetField1(hTable, lFieldOrdinal, abBuf, REF pulLen, usOption)
         
-        PUBLIC STATIC METHOD AdsGetField(hTable AS IntPtr, lFieldOrdinal AS DWORD, strBuf AS CHAR[], pulLen REF DWORD, usOption AS WORD ) AS DWORD 
+        PUBLIC STATIC METHOD AdsGetField(hTable AS IntPtr, lFieldOrdinal AS DWORD, [InAttribute] [OutAttribute] strBuf AS CHAR[], pulLen REF DWORD, usOption AS WORD ) AS DWORD 
         RETURN delGetField2(hTable, lFieldOrdinal, strBuf, REF pulLen, usOption)
         
         PUBLIC STATIC METHOD AdsGetField(hTable AS IntPtr, strFldName AS STRING, abBuf AS BYTE[], pulLen REF DWORD, usOption AS WORD ) AS DWORD 
@@ -2496,7 +2496,7 @@ BEGIN NAMESPACE XSharp.ADS
                 RETURN ACE64.AdsGetField(hTable, strFldName,  abBuf, REF pulLen, usOption)
         ENDIF
         
-        PUBLIC STATIC METHOD AdsGetField(hTable AS IntPtr, strFldName AS STRING,  strBuf AS CHAR[], pulLen REF DWORD, usOption AS WORD ) AS DWORD 
+        PUBLIC STATIC METHOD AdsGetField(hTable AS IntPtr, strFldName AS STRING,  [InAttribute] [OutAttribute] strBuf AS CHAR[], pulLen REF DWORD, usOption AS WORD ) AS DWORD 
             IF Is32Bits
                 RETURN ACE32.AdsGetField(hTable, strFldName, strBuf,  REF pulLen, usOption)
             ELSE
@@ -3941,14 +3941,14 @@ BEGIN NAMESPACE XSharp.ADS
                 RETURN ACE64.AdsGetSearchPath(strPath, REF wLen ) 
         ENDIF
         
-        PUBLIC STATIC METHOD AdsGetServerName(hConnect AS IntPtr, strName AS CHAR[], wLen REF WORD ) AS DWORD 
+        PUBLIC STATIC METHOD AdsGetServerName(hConnect AS IntPtr, [InAttribute] [OutAttribute] strName AS CHAR[], wLen REF WORD ) AS DWORD 
             IF Is32Bits
                 RETURN ACE32.AdsGetServerName(hConnect, strName, REF wLen ) 
             ELSE
                 RETURN ACE64.AdsGetServerName(hConnect, strName, REF wLen ) 
         ENDIF
         
-        PUBLIC STATIC METHOD AdsGetServerTime(hConnect AS IntPtr,  strDateBuf AS CHAR[], pusDateBufLen REF WORD, plTime OUT INT, [InAttribute] [OutAttribute] strTimeBuf AS CHAR[], pusTimeBufLen REF WORD ) AS DWORD 
+        PUBLIC STATIC METHOD AdsGetServerTime(hConnect AS IntPtr,  [InAttribute] [OutAttribute] strDateBuf AS CHAR[], pusDateBufLen REF WORD, plTime OUT INT, [InAttribute] [OutAttribute] strTimeBuf AS CHAR[], pusTimeBufLen REF WORD ) AS DWORD 
             IF Is32Bits
                 RETURN ACE32.AdsGetServerTime(hConnect,  strDateBuf, REF pusDateBufLen, OUT plTime, strTimeBuf, REF pusTimeBufLen ) 
             ELSE
@@ -4539,7 +4539,7 @@ BEGIN NAMESPACE XSharp.ADS
         //INTERNAL DELEGATE _delGetDateS(hTable AS IntPtr, strFldName AS STRING, [InAttribute] [OutAttribute] strBuf AS CHAR[], wLen REF WORD ) AS DWORD 
     INTERNAL DELEGATE _delGetFTSIndexes(hTable AS IntPtr, [InAttribute] [OutAttribute] ahIndex AS IntPtr[], pusArrayLen REF WORD ) AS DWORD 
     INTERNAL DELEGATE _delGetField1(hTable AS IntPtr, lFieldOrdinal AS DWORD, [InAttribute] [OutAttribute] abBuf AS BYTE[], pulLen REF DWORD, usOption AS WORD ) AS DWORD 
-    INTERNAL DELEGATE _delGetField2(hTable AS IntPtr, lFieldOrdinal AS DWORD, strBuf AS CHAR[], pulLen REF DWORD, usOption AS WORD ) AS DWORD 
+    INTERNAL DELEGATE _delGetField2(hTable AS IntPtr, lFieldOrdinal AS DWORD, [InAttribute] [OutAttribute] strBuf AS CHAR[], pulLen REF DWORD, usOption AS WORD ) AS DWORD 
         //INTERNAL DELEGATE _delGetField3(hTable AS IntPtr, strFldName AS STRING, abBuf AS BYTE[], pulLen REF DWORD, usOption AS WORD ) AS DWORD 
         //INTERNAL DELEGATE _delGetField4(hTable AS IntPtr, strFldName AS STRING,  strBuf AS CHAR[], pulLen REF DWORD, usOption AS WORD ) AS DWORD 
     INTERNAL DELEGATE _delGetFieldName(hTable AS IntPtr, usFld AS WORD, [InAttribute] [OutAttribute] strName AS CHAR[], pusBufLen REF WORD ) AS DWORD 
@@ -4552,7 +4552,7 @@ BEGIN NAMESPACE XSharp.ADS
     INTERNAL DELEGATE _delGetScope(hIndex AS IntPtr, usScopeOption AS WORD, [InAttribute] [OutAttribute] strScope AS CHAR[], pusBufLen REF WORD ) AS DWORD 
     INTERNAL DELEGATE _delGetStringD(hTable AS IntPtr, lFieldOrdinal AS DWORD, [InAttribute] [OutAttribute] strBuf AS CHAR[], pulLen REF DWORD, usOption AS WORD) AS DWORD 
         //INTERNAL DELEGATE _delGetStringS(hTable AS IntPtr, strFldName AS STRING, [InAttribute] [OutAttribute] strBuf AS CHAR[], pulLen REF DWORD, usOption AS WORD ) AS DWORD 
-    INTERNAL DELEGATE _delGetTableFilename(hTable AS IntPtr, usOption AS WORD, strName AS CHAR[], wLen REF WORD ) AS DWORD 
+    INTERNAL DELEGATE _delGetTableFilename(hTable AS IntPtr, usOption AS WORD, [InAttribute] [OutAttribute] strName AS CHAR[], wLen REF WORD ) AS DWORD 
     INTERNAL DELEGATE _delH (h AS IntPtr) AS DWORD
     INTERNAL DELEGATE _delHD(h AS IntPtr, d AS DWORD) AS DWORD
     INTERNAL DELEGATE _delHDI(h AS IntPtr, d AS DWORD, i AS INT) AS DWORD

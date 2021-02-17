@@ -838,10 +838,10 @@ BEGIN NAMESPACE XSharp.ADS
         PUBLIC STATIC EXTERN METHOD AdsGetSearchPath([InAttribute] [OutAttribute] pucPath AS CHAR[] , pusLen REF WORD ) AS DWORD 
         
         [DllImport("ace32.dll", CharSet := CharSet.Ansi)];
-        PUBLIC STATIC EXTERN METHOD AdsGetServerName(hConnect AS IntPtr, pucName AS CHAR[] , pusLen REF WORD ) AS DWORD 
+        PUBLIC STATIC EXTERN METHOD AdsGetServerName(hConnect AS IntPtr, [InAttribute] [OutAttribute] pucName AS CHAR[] , pusLen REF WORD ) AS DWORD 
         
         [DllImport("ace32.dll", CharSet := CharSet.Ansi)];
-        PUBLIC STATIC EXTERN METHOD AdsGetServerTime(hConnect AS IntPtr,  pucDateBuf AS CHAR[], pusDateBufLen REF WORD , plTime OUT INT , [InAttribute] [OutAttribute] pucTimeBuf AS CHAR[] , pusTimeBufLen REF WORD ) AS DWORD 
+        PUBLIC STATIC EXTERN METHOD AdsGetServerTime(hConnect AS IntPtr,  [InAttribute] [OutAttribute] pucDateBuf AS CHAR[], pusDateBufLen REF WORD , plTime OUT INT , [InAttribute] [OutAttribute] pucTimeBuf AS CHAR[] , pusTimeBufLen REF WORD ) AS DWORD 
         
         [DllImport("ace32.dll", CharSet := CharSet.Ansi)];
         PUBLIC STATIC EXTERN METHOD AdsGetShort(hTable AS IntPtr , pucFldName AS STRING , psValue OUT SHORT ) AS DWORD 
@@ -855,10 +855,10 @@ BEGIN NAMESPACE XSharp.ADS
         [DllImport("ace32.dll", CharSet := CharSet.Ansi)];
         PUBLIC STATIC EXTERN METHOD AdsGetString(hTable AS IntPtr , lFieldOrdinal AS DWORD, [InAttribute] [OutAttribute] pucBuf AS CHAR[] , pulLen REF DWORD , usOption AS WORD) AS DWORD 
         
-        [DllImport("ace32.dll", CharSet := CharSet.Ansi)];
+        [DllImport("ace32.dll", CharSet := CharSet.Unicode)];
         PUBLIC STATIC EXTERN METHOD AdsGetStringW(hTable AS IntPtr , [MarshalAs(UnmanagedType.LPStr)] pucFldName AS STRING , [InAttribute] [OutAttribute] pucBuf AS CHAR[] , pulLen REF DWORD , usOption AS WORD ) AS DWORD 
         
-        [DllImport("ace32.dll", CharSet := CharSet.Ansi)];
+        [DllImport("ace32.dll", CharSet := CharSet.Unicode)];
         PUBLIC STATIC EXTERN METHOD AdsGetStringW(hTable AS IntPtr , lFieldOrdinal AS DWORD, [InAttribute] [OutAttribute] pucBuf AS CHAR[] , pulLen REF DWORD , usOption AS WORD) AS DWORD 
         
         [DllImport("ace32.dll", CharSet := CharSet.Ansi)];
@@ -998,49 +998,49 @@ BEGIN NAMESPACE XSharp.ADS
     
         [DllImport("ace32.dll", CharSet := CharSet.Ansi)];
         PUBLIC STATIC EXTERN METHOD AdsMgDisconnect( hMgmtHandle AS IntPtr ) AS DWORD 
-    
+        
         [DllImport("ace32.dll", CharSet := CharSet.Ansi)];
-        PUBLIC STATIC EXTERN METHOD AdsMgGetActivityInfo( hMgmtHandle AS IntPtr, pstActivityInfo AS IntPtr, pusStructSize REF WORD ) AS DWORD 
-    
+        PUBLIC STATIC EXTERN METHOD AdsMgGetActivityInfo( hMgmtHandle AS IntPtr, [InAttribute] [OutAttribute] pstActivityInfo AS IntPtr, pusStructSize REF WORD ) AS DWORD 
+        
         [DllImport("ace32.dll", CharSet := CharSet.Ansi)];
-        PUBLIC STATIC EXTERN METHOD AdsMgGetCommStats( hMgmtHandle AS IntPtr, pstCommStats AS IntPtr, pusStructSize REF WORD ) AS DWORD 
-    
+        PUBLIC STATIC EXTERN METHOD AdsMgGetCommStats( hMgmtHandle AS IntPtr, [InAttribute] [OutAttribute] pstCommStats AS IntPtr, pusStructSize REF WORD ) AS DWORD 
+        
         [DllImport("ace32.dll", CharSet := CharSet.Ansi)];
-        PUBLIC STATIC EXTERN METHOD AdsMgGetConfigInfo( hMgmtHandle AS IntPtr, pstConfigValues AS IntPtr, pusConfigValuesStructSize REF WORD, pstConfigMemory AS IntPtr, pusConfigMemoryStructSize REF WORD ) AS DWORD 
-    
+        PUBLIC STATIC EXTERN METHOD AdsMgGetConfigInfo( hMgmtHandle AS IntPtr, [InAttribute] [OutAttribute] pstConfigValues AS IntPtr, pusConfigValuesStructSize REF WORD, [InAttribute] [OutAttribute] pstConfigMemory AS IntPtr, pusConfigMemoryStructSize REF WORD ) AS DWORD 
+        
         [DllImport("ace32.dll", CharSet := CharSet.Ansi)];
-        PUBLIC STATIC EXTERN METHOD AdsMgGetInstallInfo( hMgmtHandle AS IntPtr, pstInstallInfo AS IntPtr, pusStructSize REF WORD ) AS DWORD 
-    
+        PUBLIC STATIC EXTERN METHOD AdsMgGetInstallInfo( hMgmtHandle AS IntPtr, [InAttribute] [OutAttribute] pstInstallInfo AS IntPtr,  pusStructSize REF WORD ) AS DWORD 
+        
         [DllImport("ace32.dll", CharSet := CharSet.Ansi)];
-        PUBLIC STATIC EXTERN METHOD AdsMgGetLockOwner( hMgmtHandle AS IntPtr, pucTableName AS STRING, ulRecordNumber AS DWORD, pstUserInfo AS IntPtr, pusStructSize REF WORD, pusLockType REF WORD ) AS DWORD 
-    
+        PUBLIC STATIC EXTERN METHOD AdsMgGetLockOwner( hMgmtHandle AS IntPtr, pucTableName AS STRING, ulRecordNumber AS DWORD, [InAttribute] [OutAttribute] pstUserInfo AS IntPtr, pusStructSize REF WORD, pusLockType REF WORD ) AS DWORD 
+        
         [DllImport("ace32.dll", CharSet := CharSet.Ansi)];
-        PUBLIC STATIC EXTERN METHOD AdsMgGetLocks( hMgmtHandle AS IntPtr, pucTableName AS STRING, pucUserName AS STRING, usConnNumber AS WORD, astRecordInfo AS IntPtr, pusArrayLen REF WORD, pusStructSize REF WORD ) AS DWORD 
-    
+        PUBLIC STATIC EXTERN METHOD AdsMgGetLocks( hMgmtHandle AS IntPtr, pucTableName AS STRING, pucUserName AS STRING, usConnNumber AS WORD, [InAttribute] [OutAttribute] astRecordInfo AS IntPtr, pusArrayLen REF WORD,pusStructSize REF WORD ) AS DWORD 
+        
         [DllImport("ace32.dll", CharSet := CharSet.Ansi)];
-        PUBLIC STATIC EXTERN METHOD AdsMgGetOpenIndexes( hMgmtHandle AS IntPtr, pucTableName AS STRING, pucUserName AS STRING, usConnNumber AS WORD, astOpenIndexInfo AS IntPtr, pusArrayLen REF WORD, pusStructSize REF WORD ) AS DWORD 
-    
+        PUBLIC STATIC EXTERN METHOD AdsMgGetOpenIndexes( hMgmtHandle AS IntPtr, pucTableName AS STRING, pucUserName AS STRING, usConnNumber AS WORD, [InAttribute] [OutAttribute] astOpenIndexInfo AS IntPtr, pusArrayLen REF WORD,  pusStructSize REF WORD ) AS DWORD 
+        
         [DllImport("ace32.dll", CharSet := CharSet.Ansi)];
-        PUBLIC STATIC EXTERN METHOD AdsMgGetOpenTables( hMgmtHandle AS IntPtr, pucUserName AS STRING, usConnNumber AS WORD, astOpenTableInfo AS IntPtr, pusArrayLen REF WORD, pusStructSize REF WORD ) AS DWORD 
-
+        PUBLIC STATIC EXTERN METHOD AdsMgGetOpenTables( hMgmtHandle AS IntPtr, pucUserName AS STRING, usConnNumber AS WORD, [InAttribute] [OutAttribute] astOpenTableInfo AS IntPtr, pusArrayLen REF WORD,  pusStructSize REF WORD ) AS DWORD 
+        
         [DllImport("ace32.dll", CharSet := CharSet.Ansi)];
-        PUBLIC STATIC EXTERN METHOD AdsMgGetUserNames( hMgmtHandle AS IntPtr, pucFileName AS STRING, astUserInfo AS IntPtr, pusArrayLen REF WORD, pusStructSize REF WORD ) AS DWORD 
-    
+        PUBLIC STATIC EXTERN METHOD AdsMgGetUserNames( hMgmtHandle AS IntPtr, pucFileName AS STRING, [InAttribute] [OutAttribute] astUserInfo AS IntPtr, pusArrayLen REF WORD,  pusStructSize REF WORD ) AS DWORD 
+        
         [DllImport("ace32.dll", CharSet := CharSet.Ansi)];
-        PUBLIC STATIC EXTERN METHOD AdsMgGetWorkerThreadActivity( hMgmtHandle AS IntPtr, astWorkerThreadActivity AS IntPtr, pusArrayLen REF WORD, pusStructSize REF WORD ) AS DWORD 
-    
+        PUBLIC STATIC EXTERN METHOD AdsMgGetWorkerThreadActivity( hMgmtHandle AS IntPtr, [InAttribute] [OutAttribute] astWorkerThreadActivity AS IntPtr,  pusArrayLen REF WORD, pusStructSize REF WORD ) AS DWORD 
+        
         [DllImport("ace32.dll", CharSet := CharSet.Ansi)];
         PUBLIC STATIC EXTERN METHOD AdsMgResetCommStats( hMgmtHandle AS IntPtr ) AS DWORD 
 
         [DllImport("ace32.dll", CharSet := CharSet.Ansi)];
         PUBLIC STATIC EXTERN METHOD AdsMgDumpInternalTables( hMgmtHandle AS IntPtr ) AS DWORD 
-	
+        
         [DllImport("ace32.dll", CharSet := CharSet.Ansi)];
         PUBLIC STATIC EXTERN METHOD AdsMgGetServerType( hMgmtHandle AS IntPtr, pusServerType OUT WORD ) AS DWORD 
-    
+        
         [DllImport("ace32.dll", CharSet := CharSet.Ansi)];
         PUBLIC STATIC EXTERN METHOD AdsMgKillUser( hMgmtHandle AS IntPtr, pucUserName AS STRING, usConnNumber AS WORD ) AS DWORD 
-
+        
         [DllImport("ace32.dll", CharSet := CharSet.Ansi)];
         PUBLIC STATIC EXTERN METHOD AdsNullTerminateStrings(bNullTerminate AS WORD ) AS DWORD 
         

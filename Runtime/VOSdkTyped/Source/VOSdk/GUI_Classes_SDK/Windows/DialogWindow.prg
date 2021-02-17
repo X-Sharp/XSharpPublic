@@ -1,7 +1,7 @@
 
 
 
-#using System.Runtime.InteropServices
+USING System.Runtime.InteropServices
 
 
 CLASS DialogWindow INHERIT Window IMPLEMENTS ILastFocus

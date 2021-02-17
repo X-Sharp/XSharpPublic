@@ -1,7 +1,7 @@
 
 
 
-#USING System.Windows.Forms
+USING System.Windows.Forms
 CLASS AppWindow INHERIT Window
 	PROTECT oVertScroll AS WindowVerticalScrollBar
 	PROTECT oHorzScroll AS WindowHorizontalScrollBar

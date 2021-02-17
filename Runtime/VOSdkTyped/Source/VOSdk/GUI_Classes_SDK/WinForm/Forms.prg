@@ -7,10 +7,10 @@
 // in the standard VO GU classes
 
 
-#USING System.Windows.Forms
-#USING System.Reflection
-#using System.ComponentModel
-#using System.Collections.Generic
+USING System.Windows.Forms
+USING System.Reflection
+USING System.ComponentModel
+USING System.Collections.Generic
 CLASS VOForm INHERIT Form IMPLEMENTS IVOForm
 
 	#region Fields

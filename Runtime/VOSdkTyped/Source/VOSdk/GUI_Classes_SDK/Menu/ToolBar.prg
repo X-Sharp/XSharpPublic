@@ -1,7 +1,7 @@
 
 
 
-#using System.Collections.Generic
+USING System.Collections.Generic
 CLASS ToolBar INHERIT Control
 
 	PROTECT oBitmap 		AS Bitmap

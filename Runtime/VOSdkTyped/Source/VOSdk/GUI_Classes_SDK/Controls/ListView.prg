@@ -1397,8 +1397,8 @@ CLASS ListViewItem INHERIT VObject
 
 END CLASS
 
-#using System.Collections
-#using System.Reflection
+USING System.Collections
+USING System.Reflection
 CLASS ListViewItemComparer IMPLEMENTS IComparer
 	PROTECT oListView AS ListView
 	PROTECT symMethod AS SYMBOL

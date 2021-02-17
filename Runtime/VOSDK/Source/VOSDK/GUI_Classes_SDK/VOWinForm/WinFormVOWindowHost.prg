@@ -1,4 +1,4 @@
-﻿#using System.ComponentModel
+﻿using System.ComponentModel
 /// <summary>This class is used to host a VO GUI Window in a Windows Forms UI Hierarchy</summary>
 CLASS XSharp.WinFormVOWindowHost INHERIT Component
     PRIVATE components := NULL AS System.ComponentModel.IContainer

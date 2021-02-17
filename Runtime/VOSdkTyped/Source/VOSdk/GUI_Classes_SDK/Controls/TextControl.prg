@@ -1,7 +1,7 @@
 
 
 
-#using System.Runtime.InteropServices
+USING System.Runtime.InteropServices
 CLASS TextControl INHERIT Control
 	PROTECT cSavedText   AS STRING // save text before DESTROY, for 1.0 compatibility
 	PROTECT oFont        AS Font

@@ -8,19 +8,25 @@ USING System
 USING System.Collections.Generic
 USING System.Text
 
-FUNCTION DbgShowWorkAreas() AS VOID
+STATIC CLASS XSharp.RT.Debugger.Functions
+/// <summary>Open a window to display the open workareas/cursors</summary>
+STATIC METHOD DbgShowWorkAreas() AS VOID
     VAR oWin := XSharp.Debugger.WorkareasWindow{}
     oWin:ShowDialog()
     RETURN
 
-FUNCTION DbgShowSettings() AS VOID
+/// <summary>Open a window to show the current settings.</summary>
+STATIC METHOD DbgShowSettings() AS VOID
     VAR oWin := XSharp.Debugger.SettingsWindow{}
     oWin:ShowDialog()
 
-FUNCTION DbgShowGlobals() AS VOID
+/// <summary>Open a window to show the (public) symbols in the running app and the other loaded assemblies</summary>
+STATIC METHOD DbgShowGlobals() AS VOID
     VAR oWin := XSharp.Debugger.GlobalsWindow{}
     oWin:ShowDialog()
 
-FUNCTION DbgShowMemvars() AS VOID
+/// <summary>Open a window to show the Publics and privates</summary>
+STATIC METHOD DbgShowMemvars() AS VOID
     VAR oWin := XSharp.Debugger.MemVarsWindow{}
     oWin:ShowDialog()
+END CLASS

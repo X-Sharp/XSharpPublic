@@ -1,6 +1,6 @@
 
 
-#USING System.Diagnostics
+USING System.Diagnostics
 
 [DebuggerStepThrough];
 [DebuggerDisplay("{iInt1}, {iInt2}")];

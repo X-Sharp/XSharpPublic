@@ -6,7 +6,7 @@
 
 
 
-#using System.ComponentModel
+USING System.ComponentModel
 
 CLASS WinFormVOWindowHost INHERIT Component
 	PRIVATE components := NULL AS System.ComponentModel.IContainer

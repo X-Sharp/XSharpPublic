@@ -35,6 +35,38 @@ CLASS DbFileSpec INHERIT FileSpec
 	PROTECT aOrders AS ARRAY
 	PROTECT aIndexNames AS ARRAY
 
+CONSTRUCTOR( oFS AS FileSpec, cDriver := "" AS STRING, _aRDDs := NULL_ARRAY AS ARRAY)
+    SELF(oFS:FullPath, cDriver, _aRDDs)
+
+CONSTRUCTOR( cFullPath := "" AS STRING, cDriver := "" AS STRING, _aRDDs := NULL_ARRAY AS ARRAY) 
+	SELF:aOrders := { }
+	SELF:aIndexNames := { }
+
+
+	IF Empty( cDriver ) 
+		SELF:cRDD_Name := RddInfo( _SET_DEFAULTRDD )
+	ELSE
+		SELF:cRDD_Name := cDriver
+	ENDIF
+
+	SELF:aRDDs := _aRDDs
+
+	IF ! String.IsNullOrEmpty( cFullPath )
+
+		SUPER( cFullPath )
+
+		IF SELF:cFSExtension == NULL_STRING
+			SELF:cFSExtension := ".DBF"
+		ENDIF
+
+		IF File( SELF:FullPath )
+			SELF:DBFSGetInfo()
+		ENDIF
+	ENDIF
+
+	RETURN 
+
+
 METHOD __MemFullPath() AS STRING STRICT 
 	LOCAL cPath AS STRING
 
@@ -187,7 +219,7 @@ METHOD CopyTo( oFS, cDriver, lWantAnsi ) AS USUAL CLIPPER
 	ENDIF
 
 	cbOldErr := ErrorBlock( { | oErr | _Break( oErr ) } )
-
+   
 	BEGIN SEQUENCE
 		IF Empty( lWantAnsi ) .OR. ! IsLogic( lWantAnsi )
 			lOldAnsi := SetAnsi( SELF:lAnsi )
@@ -386,21 +418,20 @@ METHOD Create( cFullPath, aDbStruct, cDriver, lWantAnsi, aRdds ) AS USUAL CLIPPE
 
 	RETURN lRetCode
 
-ACCESS DbFAttr AS STRING 
-
+ACCESS DBFAttr AS STRING 
 	IF ALen( SELF:DBF ) > 0
 		RETURN SELF:DBF[1, F_ATTR]
 	ENDIF
 	RETURN NULL_STRING
 
-ACCESS DbFDateChanged AS DATE
+ACCESS DBFDateChanged AS DATE
 
 	IF ALen( SELF:DBF ) > 0
 		RETURN SELF:DBF[1, F_DATE]
 	ENDIF
 	RETURN NULL_DATE
 
-ACCESS DbFName AS STRING
+ACCESS DBFName AS STRING
 
 	IF ALen( SELF:DBF ) > 0
 		RETURN SELF:DBF[1, F_NAME]
@@ -512,7 +543,7 @@ METHOD DBFSGetInfo( xRdds, aHidden ) AS USUAL CLIPPER
 
 	RETURN lRetCode
 
-ACCESS DbFSize AS LONG
+ACCESS DBFSize AS LONG
 	LOCAL DW := 0 AS LONG
 	IF ALen( SELF:DBF ) > 0
 		DW := SELF:DBF[1, F_SIZE]
@@ -520,7 +551,7 @@ ACCESS DbFSize AS LONG
 
 	RETURN DW
 
-ACCESS DbFTime AS STRING
+ACCESS DBFTime AS STRING
 
 	IF ALen( SELF:DBF ) > 0
 		RETURN SELF:DBF[1, F_TIME]
@@ -731,38 +762,6 @@ ACCESS IndexNames AS ARRAY
 
 ASSIGN IndexNames( cIndexName AS ARRAY) 
 	SELF:aIndexNames := cIndexName
-	RETURN 
-
-
-CONSTRUCTOR( oFS AS FileSpec, cDriver := "" AS STRING, _aRDDs := NULL_ARRAY AS ARRAY)
-    SELF(oFS:FullPath, cDriver, _aRDDs)
-
-CONSTRUCTOR( cFullPath := "" AS STRING, cDriver := "" AS STRING, _aRDDs := NULL_ARRAY AS ARRAY) 
-	SELF:aOrders := { }
-	SELF:aIndexNames := { }
-
-
-	IF Empty( cDriver ) 
-		SELF:cRDD_Name := RddInfo( _SET_DEFAULTRDD )
-	ELSE
-		SELF:cRDD_Name := cDriver
-	ENDIF
-
-	SELF:aRDDs := _aRDDs
-
-	IF ! Empty( cFullPath )
-
-		SUPER( cFullPath )
-
-		IF SELF:cFSExtension == NULL_STRING
-			SELF:cFSExtension := ".DBF"
-		ENDIF
-
-		IF File( SELF:FullPath )
-			SELF:DBFSGetInfo()
-		ENDIF
-	ENDIF
-
 	RETURN 
 
 ACCESS IsAnsi AS LOGIC
@@ -1056,7 +1055,7 @@ ACCESS RecCount AS LONG
 
 	RETURN SELF:nRecCount
 
-ACCESS Recno AS LONG
+ACCESS RecNo AS LONG
 
 	RETURN SELF:nRecord
 

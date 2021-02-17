@@ -1,5 +1,5 @@
 #ifdef __VULCAN__
-   #using System.Runtime.InteropServices
+   USING System.Runtime.InteropServices
    INTERNAL DELEGATE RichEditCallback( dwCookie AS DWORD, pbBuff AS BYTE PTR, cb AS LONGINT, pcb AS LONGINT PTR ) AS DWORD
 #endif
 

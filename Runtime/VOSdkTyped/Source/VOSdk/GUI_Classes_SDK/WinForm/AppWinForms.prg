@@ -1,7 +1,7 @@
 // AppWinForms.prg
 
 
-#USING System.Windows.Forms
+USING System.Windows.Forms
 
 CLASS VOAppForm INHERIT VOForm
 

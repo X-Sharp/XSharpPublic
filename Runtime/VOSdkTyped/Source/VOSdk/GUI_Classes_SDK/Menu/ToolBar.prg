@@ -68,7 +68,7 @@ CLASS ToolBar INHERIT Control
 		cText := SELF:GetTipText(nID,#MenuItemID)
 		IF SELF:nButtonStyle != TB_ICONONLY
 			oButton:Text := SELF:__CleanText(cCaption)
-			IF STRING.IsNullOrEmpty(oButton:Text)
+			IF String.IsNullOrEmpty(oButton:Text)
 				oButton:Text := cText
 			ENDIF
 		ENDIF

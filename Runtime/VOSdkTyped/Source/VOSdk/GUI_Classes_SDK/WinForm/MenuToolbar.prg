@@ -177,8 +177,37 @@ CLASS VOToolBar INHERIT System.Windows.Forms.ToolBar IMPLEMENTS IVOControl
 			ENDIF
 		ENDIF
 		RETURN NULL_OBJECT
-	
-	
+
+
+    PROTECTED VIRTUAL METHOD OnMouseMove(e as MouseEventArgs) AS VOID
+        SUPER:OnMouseMove(e)
+        if SELF:Bounds:Contains(Point{e:X, e:Y})
+            SELF:ShowStatusMessage(e:X, e:Y)
+        ENDIF
+        RETURN
+
+    PRIVATE METHOD ShowStatusMessage(X as LONG, Y as LONG) AS VOID
+        LOCAL selectedButton := NULL_OBJECT as VOToolBarButton
+        FOREACH button as VOToolBarButton in SELF:Buttons
+            local rect := button:Rectangle as System.Drawing.Rectangle
+            if rect:Left <= X .and. rect:Right >= X
+                if rect:Top <= Y .and. rect:Bottom >= Y
+                    selectedButton := button
+                    EXIT
+                ENDIF
+            ENDIF
+        NEXT
+        IF selectedButton != NULL_OBJECT
+            LOCAL nMenuId := 0 as LONG
+            LOCAL oWindow as Window
+            LOCAL oMenu   as Menu
+            oWindow := SELF:Control:Owner
+            oMenu   := oWindow:Menu
+            nMenuId := selectedButton:MenuID
+           oWindow:MenuSelect(MenuSelectEvent{oMenu, oWindow, nMenuId})
+        ENDIF
+
+        
 	METHOD PressButton(nID as LONG, lPressed as LOGIC) AS LOGIC
 		LOCAL oButton as ToolBarButton
 		oButton := SELF:GetButton(nID, TRUE)

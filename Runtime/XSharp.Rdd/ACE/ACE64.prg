@@ -839,7 +839,7 @@ BEGIN NAMESPACE XSharp.ADS
         PUBLIC STATIC EXTERN METHOD AdsGetSearchPath([InAttribute] [OutAttribute] pucPath AS CHAR[] , pusLen REF WORD ) AS DWORD 
         
         [DllImport("ACE64.dll", CharSet := CharSet.Ansi)];
-        PUBLIC STATIC EXTERN METHOD AdsGetServerName(hConnect AS IntPtr, pucName AS CHAR[] , pusLen REF WORD ) AS DWORD 
+        PUBLIC STATIC EXTERN METHOD AdsGetServerName(hConnect AS IntPtr, [InAttribute] [OutAttribute] pucName AS CHAR[] , pusLen REF WORD ) AS DWORD 
         
         [DllImport("ACE64.dll", CharSet := CharSet.Ansi)];
         PUBLIC STATIC EXTERN METHOD AdsGetServerTime(hConnect AS IntPtr,  pucDateBuf AS CHAR[], pusDateBufLen REF WORD , plTime OUT INT , [InAttribute] [OutAttribute] pucTimeBuf AS CHAR[] , pusTimeBufLen REF WORD ) AS DWORD 

@@ -354,12 +354,12 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         METHOD FindFreePage() AS LONG
             LOCAL nPage AS LONG
             LOCAL nNext AS LONG
-            IF SELF:_root:FreeList != 0
+            IF SELF:_root:FreeList > 0
                 nPage := SELF:_root:FreeList
                 VAR oPage := SELF:_PageList:GetPage(nPage, 0, NULL)
                 IF oPage IS CdxTreePage VAR tPage
                     nNext := tPage:NextFree
-                    IF nNext == -1
+                    IF nNext < 0
                         nNext := 0
                     ENDIF
                     SELF:_root:FreeList := nNext
@@ -367,6 +367,11 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 ENDIF
                 SELF:_PageList:Delete(nPage)
             ELSE
+                IF _stream:Length >= Int32.MaxValue
+                    var cMessage := "Maximum file size of 2 Gb for CDX file exceeded"
+                    DebOut32(cMessage)
+                    throw IOException{cMessage}
+                ENDIF
                 nPage   := (LONG) _stream:Length
             ENDIF
             RETURN nPage
@@ -395,6 +400,11 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 oPage:PageNo := SELF:FindFreePage()
                 oPage:IsHot  := TRUE
                 SELF:_PageList:SetPage(oPage:PageNo, oPage)
+            ENDIF
+            if oPage:PageNo < 0
+                var cMessage := i"Trying to write to negative pageno {oPage:PageNo} in CDX"
+                DebOut32(cMessage)
+                THROW IOException{cMessage}
             ENDIF
             IF oPage:IsHot
                 isOk := SELF:_stream:SafeWriteAt(oPage:PageNo, oPage:Buffer)

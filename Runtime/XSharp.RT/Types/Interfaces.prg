@@ -26,6 +26,7 @@ BEGIN NAMESPACE XSharp
         /// <param name="index"><include file="RTComments.xml" path="Comments/ZeroBasedIndexParam/*" /></param>
         PUBLIC PROPERTY SELF[index PARAMS INT[]] AS USUAL GET SET
         PUBLIC PROPERTY SELF[index AS INT] AS USUAL GET SET
+        PUBLIC PROPERTY SELF[index1 AS INT, index2 as INT] AS USUAL GET SET
     END INTERFACE
 
     /// <summary>This interface is used to index a collection using a numeric and a string index and is implemented by the

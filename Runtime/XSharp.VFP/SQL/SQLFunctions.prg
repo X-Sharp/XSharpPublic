@@ -98,7 +98,7 @@ FUNCTION SqlDisconnect( nStatementHandle AS LONG) AS LONG
      
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/sqlexec/*" />
 /// <seealso cref="NeedsAccessToLocalsAttribute" />
-[NeedsAccessToLocals];
+[NeedsAccessToLocals(TRUE)];
 FUNCTION SqlExec( nStatementHandle AS LONG, cSQLCommand := "" AS STRING, cCursorName := "SQLRESULT" AS STRING, aCountInfo := NULL_ARRAY  AS ARRAY) AS LONG
     LOCAL aInfo AS ARRAY
     LOCAL prepared := FALSE AS LOGIC
@@ -155,7 +155,7 @@ FUNCTION SqlMoreResults( nStatementHandle AS LONG, cCursorName := NIL AS USUAL ,
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/sqlprepare/*" />
 /// <seealso cref="NeedsAccessToLocalsAttribute" />
-[NeedsAccessToLocals];
+[NeedsAccessToLocals(TRUE)];
 FUNCTION SqlPrepare( nStatementHandle AS LONG, cSQLCommand AS STRING, cCursorName := "SQLRESULT" AS STRING) AS LONG
     VAR oStmt := GetStatement(nStatementHandle)    
     IF oStmt != NULL

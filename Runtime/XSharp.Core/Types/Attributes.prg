@@ -166,8 +166,11 @@ BEGIN NAMESPACE XSharp.Internal
     /// <seealso cref="O:XSharp.VFP.Functions.SqlPrepare" />
 	[AttributeUsage(AttributeTargets.Method | AttributeTargets.Property | AttributeTargets.Constructor) ];
 	SEALED CLASS NeedsAccessToLocalsAttribute INHERIT Attribute
-		CONSTRUCTOR()
-			SUPER()
+        PRIVATE _writesToLocals := FALSE AS LOGIC
+        PROPERTY WritesToLocals AS LOGIC GET _writesToLocals
+		/// <summary></summary>	
+		CONSTRUCTOR(lWrites AS LOGIC)
+            _writesToLocals := lWrites
 		
 	END CLASS
 

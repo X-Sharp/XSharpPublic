@@ -9,14 +9,14 @@ USING System.Globalization
 USING XSharp.Internal		
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/evaluate/*" />
 /// <seealso cref="NeedsAccessToLocalsAttribute" />
-[NeedsAccessToLocals];
+[NeedsAccessToLocals(TRUE)];
     FUNCTION Evaluate(cString AS STRING) AS USUAL
 RETURN Evaluate(cString, TRUE) 
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/evaluate/*" />	
 /// <param name="lAllowSingleQuotes">Should single quotes be allowed as string delimiters.</param>
 /// <seealso cref="NeedsAccessToLocalsAttribute" />
-[NeedsAccessToLocals];
+[NeedsAccessToLocals(TRUE)];
     FUNCTION Evaluate(cString AS STRING, lAllowSingleQuotes AS LOGIC) AS USUAL
     LOCAL oMacro AS XSharp._Codeblock 
     LOCAL uRes   AS USUAL
@@ -69,7 +69,7 @@ FUNCTION MCompile(cString AS STRING, lAllowSingleQuotes AS LOGIC) AS XSharp._Cod
 /// <seealso cref="_Codeblock" />
 /// <seealso cref="MCompile" />
 /// <seealso cref="NeedsAccessToLocalsAttribute" />
-[NeedsAccessToLocals];
+[NeedsAccessToLocals(TRUE)];
     FUNCTION MExec(oBlock AS CODEBLOCK) AS USUAL
 RETURN Eval(oBlock)
 
@@ -132,7 +132,7 @@ RETURN TRUE
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/type/*" />
 /// <seealso cref="NeedsAccessToLocalsAttribute" />
-[NeedsAccessToLocals];
+[NeedsAccessToLocals(FALSE)];
     FUNCTION Type(cString AS STRING) AS STRING
     LOCAL uValue AS USUAL
     LOCAL cRet	 AS STRING
@@ -158,7 +158,7 @@ RETURN cRet
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/strevaluate/*" />
 /// <seealso cref="NeedsAccessToLocalsAttribute" />
-[NeedsAccessToLocals];
+[NeedsAccessToLocals(FALSE)];
     FUNCTION StrEvaluate( cString AS STRING ) AS STRING
     IF cString:IndexOf("&") > 0
         LOCAL cVariableName AS STRING

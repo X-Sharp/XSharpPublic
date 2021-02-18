@@ -158,9 +158,9 @@ BEGIN NAMESPACE XSharp
 
 
         /// <summary>Redimension the array. Existing data will be saved if the # of cells in the new array &lt;= the # of cells in the old array. </summary>
-        METHOD ReDim(nRows as INT, nCols := 1 as INT) AS __FoxArray
-            _nCols := (DWORD) nCols
-            SELF:Resize(nRows * nCols)
+        METHOD ReDim(nRows as DWORD, nCols := 1 as DWORD) AS __FoxArray
+            _nCols := nCols
+            SELF:Resize( (INT) (nRows * nCols))
             RETURN SELF
 
 

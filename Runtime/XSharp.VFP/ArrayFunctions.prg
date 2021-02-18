@@ -4,9 +4,24 @@
 // See License.txt in the project root for license information.
 //
 
+using XSharp.Internal
 
-FUNCTION FoxArrayCreate(nRows as DWORD, nCols := 1 as DWORD) AS __FoxArray
-    RETURN __FoxArray{nRows , nCols}
+[NeedsAccessToLocals(FALSE)];
+FUNCTION __FoxRedim(cVariableName as STRING, nRows AS DWORD, nCols := 1 AS DWORD) AS __FoxArray
+    LOCAL oldValue as USUAL
+    LOCAL result := NULL as __FoxArray
+    IF XSharp.MemVar.TryGet(cVariableName, OUT oldValue)
+        IF IsArray(oldValue)
+            LOCAL oldArray := oldValue as ARRAY
+            IF oldArray IS __FoxArray VAR foxArray
+                result := foxArray:ReDim(nRows, nCols)
+            ENDIF
+        ENDIF
+    ENDIF
+    IF result == NULL
+        result := __FoxArray{nRows, nCols}
+    ENDIF
+    RETURN result
 
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/alen/*" />
@@ -97,6 +112,3 @@ FUNCTION ASize(ArrayName as __FoxArray, nSize as DWORD) AS __FoxArray
     RETURN ArrayName
 
 
-FUNCTION __FoxRedim(a as __FoxArray, nRows as INT, nCols := 1 as INT) AS __FoxArray
-    a:ReDim(nRows, nCols)
-    RETURN a

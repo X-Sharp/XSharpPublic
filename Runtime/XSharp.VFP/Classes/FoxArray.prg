@@ -1,4 +1,4 @@
-﻿//
+//
 // Copyright (c) XSharp B.V.  All Rights Reserved.
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
@@ -37,7 +37,7 @@ BEGIN NAMESPACE XSharp
             SUPER(capacity, TRUE)
 
 
-        CONSTRUCTOR(nRows as DWORD, nCols as DWORD)
+        CONSTRUCTOR(nRows AS DWORD, nCols AS DWORD)
             SUPER( nRows * nCols, TRUE)
             SELF:_nCols := nCols
 
@@ -46,7 +46,7 @@ BEGIN NAMESPACE XSharp
             SUPER(elements)
             
 
-        INTERNAL METHOD __GetDimensionError(nDimensionsAsked as LONG) AS Error
+        INTERNAL METHOD __GetDimensionError(nDimensionsAsked AS LONG) AS Error
             VAR err         := Error.BoundError(ProcName(2),"indices", 1)
             IF SELF:MultiDimensional
                err:Description := i"Bound error: You cannot access a 2 dimensional array with {nDimensionsAsked} indices"
@@ -62,17 +62,42 @@ BEGIN NAMESPACE XSharp
             RETURN err
 
         PUBLIC OVERRIDE METHOD __GetElement(index AS INT, index2 AS INT) AS USUAL
-             var item := SELF:__GetIndex(index, index2)
+             VAR item := SELF:__GetIndex(index, index2)
              SUPER:__CheckArrayElement(SELF, item, nameof(index),1)
-             RETURN SELF:__GetElement(item)
+             RETURN SUPER:__GetElement(item)
+
+        PUBLIC OVERRIDE METHOD __GetElement(indices PARAMS INT[] ) AS USUAL
+            IF  indices:Length == 1
+                RETURN SUPER:__GetElement(indices[1])
+            ELSEIF indices:Length == 2 .and. SELF:_nCols > 1
+                RETURN SELF:__GetElement(indices[1], indices[2])
+            ELSE
+                VAR err     := Error.BoundError(ProcName(1),nameof(indices), 1, indices)
+                err:Stack   := ErrorStack(1)
+                err:Description := i"Bound error: Too many dimensions)"
+                THROW err
+            ENDIF
+
 
         PUBLIC OVERRIDE METHOD __SetElement(u AS USUAL, index AS INT, index2 AS INT) AS USUAL
-            var item := SELF:__GetIndex(index, index2)
+             VAR item := SELF:__GetIndex(index, index2)
              SUPER:__CheckArrayElement(SELF, item, nameof(index),1)
-             RETURN SELF:__SetElement(u, item)
+             RETURN SUPER:__SetElement(u, item)
 
 
-        PRIVATE METHOD __GetIndex(nRow as int, nColumn as int) as int
+        PUBLIC OVERRIDE METHOD __SetElement(u AS USUAL, indices PARAMS INT[] ) AS USUAL
+            IF  indices:Length == 1
+                RETURN SUPER:__SetElement(u, indices[1])
+            ELSEIF indices:Length == 2 .and. _nCols > 1
+                RETURN SELF:__SetElement(u, indices[1], indices[2])
+            ELSE
+                VAR err     := Error.BoundError(ProcName(1),"indices", 2, indices)
+                err:Stack   := ErrorStack(1)
+                err:Description := i"Bound error: Too many dimensions"
+                THROW err
+            ENDIF
+
+        PRIVATE METHOD __GetIndex(nRow AS INT, nColumn AS INT) AS INT
             // Note that nRow and nColumn are already Zero based !
             IF SELF:_nCols > 1
                 RETURN (nRow * _nCols) + nColumn
@@ -86,14 +111,14 @@ BEGIN NAMESPACE XSharp
         OVERRIDE PUBLIC PROPERTY SELF[index AS INT] AS USUAL
             GET
                  SUPER:__CheckArrayElement(SELF, index, nameof(index),1)
-                 RETURN SELF:__GetElement(index)
+                 RETURN SUPER:__GetElement(index)
             END GET
             SET
                 IF IsArray(value)
                     THROW SELF:__NestedArrayError()
                 ENDIF
                 SUPER:__CheckArrayElement(SELF, index, nameof(index),1)
-                SELF:__SetElement(value,index)
+                SUPER:__SetElement(value,index)
             END SET
         END PROPERTY
 
@@ -132,7 +157,7 @@ BEGIN NAMESPACE XSharp
                     SUPER:__CheckArrayElement(SELF, indices[1], nameof(indices),1)                    
                     RETURN SELF:__GetElement(indices[1])
                 ELSEIF indices:Length == 2 .and. SELF:MultiDimensional
-                    var index := SELF:__GetIndex(indices[1], indices[2])
+                    VAR index := SELF:__GetIndex(indices[1], indices[2])
                     SUPER:__CheckArrayElement(SELF, index, nameof(indices),1)                    
                     RETURN SELF:__GetElement(index)
                 ELSE
@@ -147,7 +172,7 @@ BEGIN NAMESPACE XSharp
                     SELF:__CheckArrayElement(SELF, indices[1], nameof(indices),1)                    
                     SELF:__SetElement(indices[1], value)
                 ELSEIF indices:Length == 2 .and. SELF:MultiDimensional
-                    var index := SELF:__GetIndex(indices[1], indices[2])
+                    VAR index := SELF:__GetIndex(indices[1], indices[2])
                     SELF:__CheckArrayElement(SELF, index, nameof(indices),1)                    
                     SELF:__SetElement(index, value)
                 ELSE
@@ -158,7 +183,7 @@ BEGIN NAMESPACE XSharp
 
 
         /// <summary>Redimension the array. Existing data will be saved if the # of cells in the new array &lt;= the # of cells in the old array. </summary>
-        METHOD ReDim(nRows as DWORD, nCols := 1 as DWORD) AS __FoxArray
+        METHOD ReDim(nRows AS DWORD, nCols := 1 AS DWORD) AS __FoxArray
             _nCols := nCols
             SELF:Resize( (INT) (nRows * nCols))
             RETURN SELF
@@ -167,16 +192,16 @@ BEGIN NAMESPACE XSharp
        /// <summary>Delete a row from a multi dimensional array.</summary>
         /// <param name="nRow">1 based row number to delete</param>
         /// <remarks>Deleting rows will shift other rows up and will add a blank row at the bottom of the array</remarks>
-        METHOD DeleteRow(nRow as INT) AS __FoxArray
+        METHOD DeleteRow(nRow AS INT) AS __FoxArray
             // __GetIndex expects 0 based indices. DeleteRow works with 1 based rows
             VAR nStart := SELF:__GetIndex(nRow-1, 0)              // first element on the row
             VAR nEnd   := _internalList:Count - _nCols-1
-            FOR VAR nIndex := nStart upto nEnd
+            FOR VAR nIndex := nStart UPTO nEnd
                 _internalList[nIndex] := _internalList[nIndex+_nCols]
             NEXT
             nStart := _internalList:Count - _nCols
             nEnd   := _internalList:Count-1
-            FOR var nIndex :=  nStart upto nEnd
+            FOR VAR nIndex :=  nStart UPTO nEnd
                 _internalList[nIndex] := NIL
             NEXT
             RETURN SELF
@@ -188,12 +213,12 @@ BEGIN NAMESPACE XSharp
         /// Assume a 4 x 4 array. When DeleteColumn() is called with column 2 then the elements 2,6,10 and 14 are deleted
         /// and the elements 3 &amp; 4, 7 &amp; 8, 11 &amp; 12 and 15 &amp; 16 are shifted to the left.
         /// New empty elements are inserted on locations 4,8,12 and 16.</remarks>
-       METHOD DeleteColumn(nColumn as INT) AS __FoxArray
+       METHOD DeleteColumn(nColumn AS INT) AS __FoxArray
             IF SELF:_nCols > 1 .and. nColumn > 0 .and. nColumn <= _nCols
                 LOCAL nRowStart := 0 AS INT
-                LOCAL nColumns  := SELF:Columns as LONG
+                LOCAL nColumns  := SELF:Columns AS LONG
                 DO WHILE nRowStart < SELF:_internalList:Count
-                    FOR VAR nElement := nColumn upto nColumns-1
+                    FOR VAR nElement := nColumn UPTO nColumns-1
                         SELF:_internalList[nRowStart+nElement -1] := SELF:_internalList[nRowStart+nElement ]
                     NEXT
                     SELF:_internalList[nRowStart + nColumns-1 ] := NIL
@@ -206,12 +231,12 @@ BEGIN NAMESPACE XSharp
         /// <summary>Insert a row into a multi dimensional array.</summary>
         /// <param name="nRow">1 based row number to insert</param>
         /// <remarks>Inserting rows shifts rows up and deletes a row at the end of the array: FoxPro arrays do not grow automatically</remarks>
-        METHOD InsertRow(nRow as INT) AS __FoxArray
+        METHOD InsertRow(nRow AS INT) AS __FoxArray
             VAR nStart := SELF:__GetIndex(nRow-1, 0)              // first element on the row
             FOR VAR nIndex := _internalList:Count-1 DOWNTO nStart+_nCols
                 SELF:_internalList[nIndex] := SELF:_internalList[nIndex-_nCols]
             NEXT
-            FOR var nIndex := nStart upto nStart + _nCols-1
+            FOR VAR nIndex := nStart UPTO nStart + _nCols-1
                 SELF:_internalList[nIndex] := NIL
             NEXT
             RETURN SELF
@@ -219,7 +244,7 @@ BEGIN NAMESPACE XSharp
         /// <summary>Insert a column into a multi dimensional array.</summary>
         /// <param name="nColumn">1 based column number to insert</param>
         /// <remarks>Inserting columns deletes columns at the end of each row.</remarks>
-        METHOD InsertColumn(nColumn as INT) AS __FoxArray
+        METHOD InsertColumn(nColumn AS INT) AS __FoxArray
             IF nColumn <= SELF:Columns .and. nColumn > 0
                 // this is more difficult to do
                 // we cannot simply insert because that would shift elements to new rows
@@ -230,10 +255,10 @@ BEGIN NAMESPACE XSharp
                 //    element 4 has to be replaced by element 3
                 //    element 3 will be cleared
                 // note that _GetIndex is ZERO based
-                var nToMove  := SELF:Columns - nColumn 
-                FOR VAR nRow := 0 upto SELF:Rows-1
-                    var nLastInRow := SELF:__GetIndex(nRow,  self:Columns-1)
-                    FOR VAR nCell := 0 upto nToMove-1
+                VAR nToMove  := SELF:Columns - nColumn 
+                FOR VAR nRow := 0 UPTO SELF:Rows-1
+                    VAR nLastInRow := SELF:__GetIndex(nRow,  SELF:Columns-1)
+                    FOR VAR nCell := 0 UPTO nToMove-1
                         _internalList[nLastInRow - nCell] := _internalList[nLastInRow - nCell-1]
                     NEXT
                     _internalList[nLastInRow - nToMove] := NIL
@@ -246,7 +271,7 @@ BEGIN NAMESPACE XSharp
             // Make sure we have a multiple of the # of columns
             // Assume we have a 3 column array and we resize to 10
             // then we must make the size a multiple of 3, so it will become 12
-            if SELF:_nCols != 1
+            IF SELF:_nCols != 1
                 VAR nDiff := newSize % SELF:Columns
                 IF nDiff != 0
                     newSize += (SELF:Columns - nDiff)
@@ -258,13 +283,13 @@ BEGIN NAMESPACE XSharp
         INTERNAL METHOD GetRow(nElement AS LONG) AS LONG
             // calculate the row
             VAR nZeroBased := nElement -1
-            RETURN (nZeroBased / (int) SELF:Columns) +1
+            RETURN (nZeroBased / (INT) SELF:Columns) +1
 
         INTERNAL METHOD GetColumn(nElement AS LONG) AS LONG
             VAR nZeroBased := nElement -1
-            RETURN (nZeroBased % (int) SELF:Columns) +1
+            RETURN (nZeroBased % (INT) SELF:Columns) +1
             
-        INTERNAL METHOD GetSubScript(nElement as LONG) AS STRING
+        INTERNAL METHOD GetSubScript(nElement AS LONG) AS STRING
             IF !SELF:MultiDimensional
                 RETURN "["+nElement:ToString()+"]"
             ELSE
@@ -277,30 +302,30 @@ BEGIN NAMESPACE XSharp
             sb := StringBuilder{}
             sb:Append("FoxArray[")
             VAR nRows := SELF:Rows
-            if _nCols == 1
+            IF _nCols == 1
                 sb:Append(_internalList:Count)
-            else
+            ELSE
                 sb:Append(nRows)
                 sb:Append(",")
                 sb:Append(_nCols)
-            endif
+            ENDIF
             sb:Append("] (")
-            for var i := 1 to Math.Min(SELF:Length,10)
-                if i > 1
+            FOR VAR i := 1 TO Math.Min(SELF:Length,10)
+                IF i > 1
                     sb:Append(",")
-                endif
+                ENDIF
                 sb:Append(AsString(_internalList[i-1]))
-            next
-            if SELF:Length > 10
+            NEXT
+            IF SELF:Length > 10
                 sb:Append(",..")
             ENDIF
             sb:Append(")")
             RETURN sb:ToString()
             
-        INTERNAL PROPERTY Values as string[]
+        INTERNAL PROPERTY Values AS STRING[]
             GET
-                VAR result := List<String>{}
-                FOR VAR nElement := 1 to SELF:Count
+                VAR result := List<STRING>{}
+                FOR VAR nElement := 1 TO SELF:Count
                     result:Add(SELF:GetSubScript(nElement)+" "+AsString(_internalList[nElement-1]))
                 NEXT
                 RETURN result:ToArray()
@@ -311,7 +336,7 @@ BEGIN NAMESPACE XSharp
         PUBLIC OVERRIDE METHOD Add(u AS USUAL) AS VOID
             VAR err     := Error{NotSupportedException{"The FoxPro array type does not support the Add functionality because it cannot dynamically grow. " + ;
                             "You will have to use the DIMENSION statement to change its size"}}
-            throw err            
+            THROW err            
 
     END CLASS
 END NAMESPACE

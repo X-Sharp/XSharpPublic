@@ -371,7 +371,7 @@ BEGIN NAMESPACE XSharp
         /// <param name="indices"><include file="RTComments.xml" path="Comments/ZeroBasedIndexParam/*" /></param>
         /// <param name='u'>New element to store in the array at the position specified</param>
         /// <returns>The new element</returns>
-        PUBLIC METHOD __SetElement(u AS USUAL, indices PARAMS INT[] ) AS USUAL
+        PUBLIC VIRTUAL METHOD __SetElement(u AS USUAL, indices PARAMS INT[] ) AS USUAL
             // indices are 0 based
             IF SELF:CheckLock()
                 LOCAL length := indices:Length AS INT

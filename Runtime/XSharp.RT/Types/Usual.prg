@@ -2988,6 +2988,23 @@ BEGIN NAMESPACE XSharp
               THROW InvalidCastException{VO_Sprintf(VOErrors.USUALNOTINDEXED, typeof(IIndexedProperties):FullName)}
             END SET
         END PROPERTY
+
+        PROPERTY SELF[index1 AS INT, index2 as INT] AS USUAL
+            GET
+              IF SELF:IsArray
+                 RETURN  SELF:_arrayValue:__GetElement(index1, index2)
+              ENDIF
+              THROW InvalidCastException{VO_Sprintf(VOErrors.USUALNOTINDEXED, typeof(IIndexedProperties):FullName)}
+            END GET
+            SET
+              IF SELF:IsArray
+                 SELF:_arrayValue:__SetElement(value, index1, index2)
+                 RETURN
+              ENDIF
+              THROW InvalidCastException{VO_Sprintf(VOErrors.USUALNOTINDEXED, typeof(IIndexedProperties):FullName)}
+            END SET
+        END PROPERTY
+
         #endregion
 
         METHOD XppUsualIndex(index AS INT) AS USUAL

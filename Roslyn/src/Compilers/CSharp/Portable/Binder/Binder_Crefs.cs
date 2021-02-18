@@ -80,7 +80,9 @@ namespace Microsoft.CodeAnalysis.CSharp
         /// </remarks>
         private NamespaceOrTypeSymbol BindNamespaceOrTypeSymbolInCref(TypeSyntax syntax)
         {
+#if !XSHARP
             Debug.Assert(Flags.Includes(BinderFlags.Cref));
+#endif
 
             // BREAK: Dev11 used to do a second lookup, ignoring accessibility, if the first lookup failed.
             //   VS BUG#3321137: we need to try to find accessible members first

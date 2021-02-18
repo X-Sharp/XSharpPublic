@@ -7632,4 +7632,8 @@ To remove the warning, you can use /reference instead (set the Embed Interop Typ
   <data name="ERR_MethodSignatureChanged" xml:space="preserve">
     <value>'{0}': The method signature was changed in the method '{1}'. You will have to update the parameter types and/or return type in the method of the subclass too.</value>
   </data>
+  
+  <data name="ERR_FoxDimensionDeclaration" xml:space="preserve">
+    <value>FoxPro Dimension statement supports 1 or 2 dimensions, not more.</value>
+  </data>
 </root>

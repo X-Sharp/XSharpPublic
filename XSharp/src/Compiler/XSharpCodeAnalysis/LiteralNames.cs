@@ -232,6 +232,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         internal const string LocalGet = "__LocalGet";
         internal const string LocalsUpdated = "__LocalsUpdated";
         internal const string LocalsClear = "__LocalsClear";
+        internal const string FoxRedim = "__FoxRedim";
     }
     internal static class VulcanQualifiedFunctionNames
     {

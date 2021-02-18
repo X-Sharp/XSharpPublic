@@ -27,7 +27,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 return expression;
             // check if MethodSymbol has the NeedAccessToLocals attribute combined with /fox2
             // if that is the case then the node is registered  in the FunctionsThatNeedAccessToLocals dictionary
-            if (root.GetLocalsForFunction(expression.Syntax.CsNode, out var localsymbols))
+            if (root.GetLocalsForFunction(expression.Syntax.CsNode, out var writeAccess, out var localsymbols))
             {
                 // write prelude and after code
                 // prelude code should register the locals
@@ -83,17 +83,21 @@ namespace Microsoft.CodeAnalysis.CSharp
                 var callorig = _factory.AssignmentExpression(tempLocal, expression);
                 exprs.Add(callorig);
 
-                // create condition  __LocalsUpdated()
-                var cond = _factory.StaticCall(rtType, ReservedNames.LocalsUpdated);
-                var t = _factory.Literal(true);
-                var f = _factory.Literal(false);
+                if (writeAccess)
+                {
 
-                // create a sequence with the assignment expressions, return true (because the conditional expression needs a value)
-                var assignmentsequence = _factory.Sequence(block.ToArray(), t);
+                    // create condition  __LocalsUpdated()
+                    var cond = _factory.StaticCall(rtType, ReservedNames.LocalsUpdated);
+                    var t = _factory.Literal(true);
+                    var f = _factory.Literal(false);
 
-                // iif ( __localupdated(), <assignmentsequence>, false)
-                var condexpr = _factory.Conditional(cond, assignmentsequence, f, _compilation.GetSpecialType(SpecialType.System_Boolean));
-                exprs.Add(condexpr);
+                    // create a sequence with the assignment expressions, return true (because the conditional expression needs a value)
+                    var assignmentsequence = _factory.Sequence(block.ToArray(), t);
+
+                    // iif ( __localupdated(), <assignmentsequence>, false)
+                    var condexpr = _factory.Conditional(cond, assignmentsequence, f, _compilation.GetSpecialType(SpecialType.System_Boolean));
+                    exprs.Add(condexpr);
+                }
 
                 // __LocalsClear()
                 var clear = _factory.StaticCall(rtType, ReservedNames.LocalsClear);

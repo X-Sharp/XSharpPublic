@@ -722,7 +722,10 @@ xbasedecltype       : AS Type=datatype (OF ClassLib=identifierName)?
 xbasevar            : (Amp=AMP)?  Id=varidentifierName (LBRKT ArraySub=arraysub RBRKT)? (Op=assignoperator Expression=expression)?
                     ;
 
-dimensionVar        : Id=identifierName  ( LBRKT ArraySub=arraysub RBRKT | LPAREN ArraySub=arraysub RPAREN ) (AS DataType=datatype)?
+dimensionVar        : Id=identifierName
+                        ( LBRKT  Dims+=expression (COMMA Dims+=expression)* RBRKT
+                        | LPAREN Dims+=expression (COMMA Dims+=expression)* RPAREN )
+                        (AS DataType=datatype)?
                     ;
 
 localfuncproc       :  (Modifiers=localfuncprocModifiers)?   

@@ -113,27 +113,30 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         internal IList<PragmaWarningDirectiveTriviaSyntax> PragmaWarnings { get; set; } = null;
         internal IList<PragmaOption> PragmaOptions { get; set; } = null;
 
-        private ConcurrentDictionary<MCA.CSharpSyntaxNode, List<LocalSymbol>> functionsThatNeedAccessToLocals ;
+        private ConcurrentDictionary<MCA.CSharpSyntaxNode, (bool, List<LocalSymbol>) > functionsThatNeedAccessToLocals ;
 
-        internal bool RegisterFunctionThatNeedsAccessToLocals(MCA.CSharpSyntaxNode node, List<LocalSymbol> locals)
+        internal bool RegisterFunctionThatNeedsAccessToLocals(MCA.CSharpSyntaxNode node, bool writeAccess, List<LocalSymbol> locals)
         {
             if (functionsThatNeedAccessToLocals == null)
-                functionsThatNeedAccessToLocals = new ConcurrentDictionary<MCA.CSharpSyntaxNode, List<LocalSymbol>>();
-            return functionsThatNeedAccessToLocals.TryAdd(node, locals);
+                functionsThatNeedAccessToLocals = new ConcurrentDictionary<MCA.CSharpSyntaxNode, (bool, List<LocalSymbol>) >();
+            return functionsThatNeedAccessToLocals.TryAdd(node, new (writeAccess, locals));
         }
-        internal bool GetLocalsForFunction(MCA.CSharpSyntaxNode node, out List<LocalSymbol> locals, bool remove = true)
+        internal bool GetLocalsForFunction(MCA.CSharpSyntaxNode node, out bool writeAccess, out List<LocalSymbol> locals, bool remove = true)
         {
             locals = null;
+            writeAccess = false;
             var found = false;
             if (functionsThatNeedAccessToLocals != null)
             {
                 if (remove)
                 {
-                    found = functionsThatNeedAccessToLocals.TryRemove(node, out locals);
+                    found = functionsThatNeedAccessToLocals.TryRemove(node, out var element);
+                    (writeAccess, locals) = element;
                 }
                 else
                 {
-                    found = functionsThatNeedAccessToLocals.TryGetValue(node, out locals);
+                    found = functionsThatNeedAccessToLocals.TryGetValue(node, out var element);
+                    (writeAccess, locals) = element;
                 }
             }
             return found;
@@ -158,7 +161,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         internal XSharpParser.SourceContext XSource => XNode as XSharpParser.SourceContext;
         internal Dictionary<String, FieldDeclarationSyntax> LiteralSymbols { get; set; } = new Dictionary<string, FieldDeclarationSyntax>();
-        internal Dictionary<String, Tuple<string, FieldDeclarationSyntax>> LiteralPSZs { get; set; } =new Dictionary<string, Tuple<string, FieldDeclarationSyntax>>();
+        internal Dictionary<String, Tuple<string, FieldDeclarationSyntax>> LiteralPSZs { get; set; } = new Dictionary<string, Tuple<string, FieldDeclarationSyntax>>();
     }
 }
 
@@ -256,13 +259,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax
         internal Dictionary<String, Tuple<string, InternalSyntax.FieldDeclarationSyntax> > LiteralPSZs => internalUnit.LiteralPSZs;
         internal IList<InternalSyntax.PragmaWarningDirectiveTriviaSyntax> PragmaWarnings => internalUnit.PragmaWarnings;
         internal IList<PragmaOption> PragmaOptions => internalUnit.PragmaOptions;
-        internal bool RegisterFunctionThatNeedsAccessToLocals(MCA.CSharpSyntaxNode node, List<LocalSymbol> locals)
+        internal bool RegisterFunctionThatNeedsAccessToLocals(MCA.CSharpSyntaxNode node, bool writeAccess, List<LocalSymbol> locals)
         {
-            return internalUnit.RegisterFunctionThatNeedsAccessToLocals(node, locals);
+            return internalUnit.RegisterFunctionThatNeedsAccessToLocals(node, writeAccess, locals);
         }
-        internal bool GetLocalsForFunction(MCA.CSharpSyntaxNode node, out List<LocalSymbol> locals, bool remove = true)
+        internal bool GetLocalsForFunction(MCA.CSharpSyntaxNode node, out bool writeAccess, out List<LocalSymbol> locals, bool remove = true)
         {
-            return internalUnit.GetLocalsForFunction(node, out locals, remove);
+            return internalUnit.GetLocalsForFunction(node, out writeAccess, out locals, remove);
         }
     }
 }

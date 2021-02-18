@@ -129,7 +129,32 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             foreach (var dimvar in context._DimVars)
             {
                 var name = dimvar.Id.GetText();
-                var stmt = GenerateLocalDecl(name, _arrayType, GenerateVOArrayInitializer(dimvar.ArraySub));
+                ArgumentListSyntax args;
+                var arg1 = MakeArgument(GenerateLiteral(name));
+                var arg2 = MakeArgument(dimvar._Dims[0].Get<ExpressionSyntax>());
+                if (dimvar._Dims.Count == 2)
+                {
+                    var arg3 = MakeArgument(dimvar._Dims[1].Get<ExpressionSyntax>());
+                    args = MakeArgumentList(arg1, arg2, arg3);
+                }
+                else
+                {
+                    args = MakeArgumentList(arg1, arg2);
+                }
+                var mcall = GenerateMethodCall(ReservedNames.FoxRedim, args);
+                MemVarFieldInfo fieldInfo = findMemVar(name);
+                ExpressionSyntax lhs;
+                if (fieldInfo != null)
+                {
+                    lhs = MakeMemVarField(fieldInfo);
+                }
+                else
+                {
+                    lhs = GenerateSimpleName(name);
+                }
+                var ass = MakeSimpleAssignment(lhs, mcall);
+                var stmt = GenerateExpressionStatement(ass);
+
                 stmts.Add(stmt);
             }
             context.PutList< StatementSyntax>(stmts);
@@ -1112,7 +1137,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         public override void ExitStatementBlock([NotNull] XP.StatementBlockContext context)
         {
             base.ExitStatementBlock(context);
-            if (_options.HasOption(CompilerOption.FoxExposeLocals, context, PragmaOptions))
+            if (_options.HasOption(CompilerOption.MemVars, context, PragmaOptions))
             {
                 // Make sure we have a privates level in case we want to
                 // keep track of locals for the macro compiler or Type() 

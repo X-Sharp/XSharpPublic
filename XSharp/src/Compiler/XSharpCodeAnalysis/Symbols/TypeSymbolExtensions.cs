@@ -406,14 +406,24 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             }
             return TypeWithAnnotations.Create(type);
         }
-        public static bool NeedAccessToLocals(this MethodSymbol method)
+        public static bool NeedAccessToLocals(this MethodSymbol method, out bool writeAccess)
         {
             var attrs = method.GetAttributes();
+            writeAccess = false;
             foreach (var attr in attrs)
             {
                 var atype = attr.AttributeClass;
                 if (atype is { } && atype.Name == OurTypeNames.NeedAccessToLocals)
                 {
+                    if (attr.ConstructorArguments.Count() == 1)
+                    {
+                        var arg = attr.ConstructorArguments.First();
+                        writeAccess = (bool)(arg.Value);
+                    }
+                    else
+                    {
+                        writeAccess = true;
+                    }
                     return true;
                 }
             }

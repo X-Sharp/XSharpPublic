@@ -900,7 +900,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         }
 
-        private ExpressionSyntax MakeMemVarField(MemVarFieldInfo fieldInfo)
+        protected ExpressionSyntax MakeMemVarField(MemVarFieldInfo fieldInfo)
         {
             if (fieldInfo.IsClipperParameter)
                 return GenerateSimpleName(fieldInfo.Name);
@@ -912,7 +912,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             // Check to see if the name is a field or Memvar, registered with the FIELD or MemVar statement
             string Name = context.Name.GetText();
             ExpressionSyntax expr = context.Name.Get<NameSyntax>();
-            if (! (context.Parent.Parent  is XP.MethodCallContext))
+            if (! (context.Parent.Parent is XP.MethodCallContext))
             {
                 MemVarFieldInfo fieldInfo = findMemVar(Name);
                 if (fieldInfo != null)
@@ -1150,7 +1150,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             return;
         }
 
-        private MemVarFieldInfo findMemVar(string name)
+        protected MemVarFieldInfo findMemVar(string name)
         {
 
             MemVarFieldInfo memvar = null;

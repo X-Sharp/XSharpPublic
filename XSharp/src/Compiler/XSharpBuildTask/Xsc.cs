@@ -15,8 +15,6 @@ using Roslyn.Utilities;
 
 namespace XSharp.Build
 {
-
-
     public class Xsc : ManagedCompiler
     {
 

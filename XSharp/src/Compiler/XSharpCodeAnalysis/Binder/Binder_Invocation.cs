@@ -157,10 +157,11 @@ namespace Microsoft.CodeAnalysis.CSharp
                     result = BindInvocationExpression(node, node.Expression, name, boundExpression, analyzedArguments, diagnostics);
                     if (result is BoundCall bc)
                     {
+
                         // check if MethodSymbol has the NeedAccessToLocals attribute combined with /fox2
                         if (Compilation.Options.Dialect == XSharpDialect.FoxPro &&
-                            Compilation.Options.HasOption(CompilerOption.FoxExposeLocals, node) &&
-                            bc.Method.NeedAccessToLocals())
+                            Compilation.Options.HasOption(CompilerOption.MemVars, node) &&
+                            bc.Method.NeedAccessToLocals( out var writeAccess))
                         {
                             var localsymbols = new List<LocalSymbol>();
                             var binder = this;
@@ -174,7 +175,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                             var root = node.SyntaxTree.GetRoot() as CompilationUnitSyntax;
                             if (localsymbols.Count > 0)
                             {
-                                root.RegisterFunctionThatNeedsAccessToLocals(node.CsNode, localsymbols);
+                                root.RegisterFunctionThatNeedsAccessToLocals(node.CsNode, writeAccess, localsymbols);
                             }
                         }
                     }

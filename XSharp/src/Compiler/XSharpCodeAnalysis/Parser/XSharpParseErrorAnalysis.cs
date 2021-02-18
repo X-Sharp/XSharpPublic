@@ -213,7 +213,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     if (hasClipper)
                     {
                         _parseErrors.Add(new ParseErrorData(context.ExpressionBody, ErrorCode.ERR_ExpressionBodyClipperCallingConvention));
-                        
                     }
                 }
             }
@@ -268,6 +267,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             if (context.DataType != null)
             {
                 _parseErrors.Add(new ParseErrorData(context.DataType, ErrorCode.WRN_FoxUnsupportedClause, "AS <DataType>"));
+            }
+            if (context._Dims.Count > 2)
+            {
+                _parseErrors.Add(new ParseErrorData(context.DataType, ErrorCode.ERR_FoxDimensionDeclaration));
+
             }
         }
 
@@ -495,7 +499,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                             case "vo15":    // Untyped allowed
                             case "vo16":    // Add Clipper CC Missing constructors
                             // case "fox1": // Classes inherit from unknown
-                            case "fox2":    // Expose local names to macro compiler
+                            //case "fox2":    // Expose local names to macro compiler
                                             //case "xpp1":    // classes inherit from XPP.Abstract
                                             //case "xpp2":    // stronly typed entry point
                                 context.Pragma = new PragmaOption(context, state, CompilerOptionDecoder.Decode(opt));

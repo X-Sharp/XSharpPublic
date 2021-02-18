@@ -129,6 +129,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             foreach (var dimvar in context._DimVars)
             {
                 var name = dimvar.Id.GetText();
+                if (context.T.Type == XP.LOCAL)
+                {
+                    var decl = GenerateLocalDecl(name, _arrayType, GenerateLiteralNull());
+                    stmts.Add(decl);
+                }
                 ArgumentListSyntax args;
                 var arg1 = MakeArgument(GenerateLiteral(name));
                 var arg2 = MakeArgument(dimvar._Dims[0].Get<ExpressionSyntax>());

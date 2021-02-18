@@ -18,6 +18,7 @@ using Roslyn.Utilities;
 using XP = LanguageService.CodeAnalysis.XSharp.SyntaxParser.XSharpParser;
 using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
 using Microsoft.CodeAnalysis.PooledObjects;
+
 namespace Microsoft.CodeAnalysis.CSharp
 {
 
@@ -140,16 +141,25 @@ namespace Microsoft.CodeAnalysis.CSharp
                 else
                 {
                     // FoxPro allows () for array indexes
-                    if (Compilation.Options.Dialect == XSharpDialect.FoxPro && analyzedArguments.Arguments.Count > 0)
-                    {
-                        var expression = BindExpression(node.Expression, diagnostics);
-                        if (expression.Kind != BoundKind.BadExpression)
-                        {
-                            var type = expression.Type;
-                            if (type.IsArrayType() || type.IsUsualType())
-                                return BindIndexerOrVOArrayAccess(node.Expression, expression, analyzedArguments, diagnostics);
-                        }
-                    }
+                    //if (Compilation.Options.Dialect == XSharpDialect.FoxPro && analyzedArguments.Arguments.Count > 0)
+                    //{
+                    //    var nodeExpression = node.Expression;
+                    //    if (nodeExpression is SimpleNameSyntax simple)
+                    //    {
+                    //        var id = BindXSIdentifier(simple, false, diagnostics, false);
+                    //        if (id.Kind != BoundKind.MethodGroup)
+                    //        {
+                    //            return BindIndexerOrVOArrayAccess(node.Expression, id, analyzedArguments, diagnostics);
+                    //        }
+                    //    }
+                    //    var expression = BindExpression(node.Expression, diagnostics);
+                    //    if (expression.Kind != BoundKind.BadExpression)
+                    //    {
+                    //        var type = expression.Type;
+                    //        if (type.IsArrayType() || type.IsUsualType())
+                    //            return BindIndexerOrVOArrayAccess(node.Expression, expression, analyzedArguments, diagnostics);
+                    //    }
+                    //}
 
                     BoundExpression boundExpression = BindMethodGroup(node.Expression, invoked: true, indexed: false, diagnostics: diagnostics);
                     boundExpression = CheckValue(boundExpression, BindValueKind.RValueOrMethodGroup, diagnostics);
@@ -161,7 +171,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                         // check if MethodSymbol has the NeedAccessToLocals attribute combined with /fox2
                         if (Compilation.Options.Dialect == XSharpDialect.FoxPro &&
                             Compilation.Options.HasOption(CompilerOption.MemVars, node) &&
-                            bc.Method.NeedAccessToLocals( out var writeAccess))
+                            bc.Method.NeedAccessToLocals(out var writeAccess))
                         {
                             var localsymbols = new List<LocalSymbol>();
                             var binder = this;

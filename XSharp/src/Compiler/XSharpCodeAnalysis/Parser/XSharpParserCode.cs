@@ -30,6 +30,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
         public CSharpParseOptions Options { get; set; }
         public bool AllowNamedArgs => Options.AllowNamedArguments;
         public bool IsXPP => Options.Dialect == XSharpDialect.XPP;
+        public bool IsFox => Options.Dialect == XSharpDialect.FoxPro;
         void unexpectedToken(string token)
         {
             if (Interpreter.PredictionMode == Antlr4.Runtime.Atn.PredictionMode.Sll)

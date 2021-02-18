@@ -152,7 +152,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 _parseErrors.Add(new ParseErrorData(context.T2, ErrorCode.ERR_UnExpectedExpected, context.T2.Token.Text, context.T.Token.Text));
             }
-            
             if (context.T.Token.Type == XSharpParser.PROCEDURE)
             {
                 if (context.Sig.Type != null && context.Sig.Type.Start.Type != XSharpLexer.VOID)
@@ -259,6 +258,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 _parseErrors.Add(new ParseErrorData(context.ArraySub, ErrorCode.ERR_FeatureNotAvailableInDialect, "Indexed Local", _options.Dialect.ToString()));
             }
+            if (context.ClassLib != null)
+            {
+                _parseErrors.Add(new ParseErrorData(context.DataType, ErrorCode.WRN_FoxUnsupportedClause, "OF <ClassLib>"));
+            }
+
         }
 
         public override void ExitDimensionVar([NotNull] XSharpParser.DimensionVarContext context)
@@ -271,7 +275,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             if (context._Dims.Count > 2)
             {
                 _parseErrors.Add(new ParseErrorData(context.DataType, ErrorCode.ERR_FoxDimensionDeclaration));
-
+            }
+            if (context.ClassLib != null)
+            {
+                _parseErrors.Add(new ParseErrorData(context.DataType, ErrorCode.WRN_FoxUnsupportedClause, "OF <ClassLib>"));
             }
         }
 

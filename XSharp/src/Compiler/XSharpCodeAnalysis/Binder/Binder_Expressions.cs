@@ -896,7 +896,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                         warning = ErrorCode.WRN_UndeclaredCursor;
                     }
                 }
-                if (node.Parent is InvocationExpressionSyntax)
+                if (node.Parent is InvocationExpressionSyntax /*&& Compilation.Options.Dialect != XSharpDialect.FoxPro*/)
                 {
                     expression = null;
                 }

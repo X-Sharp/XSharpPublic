@@ -1631,7 +1631,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                                 return ID;
 
                         case LOCAL:
-                            if (keyword == FUNCTION || keyword == PROCEDURE)    // local function and procedure statement
+                            if (keyword == FUNCTION || keyword == PROCEDURE || keyword == ARRAY)    // local function and procedure statement and local array
                                 return keyword;
                             return ID;
 

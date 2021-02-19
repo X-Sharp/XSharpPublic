@@ -727,7 +727,6 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
 
 #if XSHARP
-			// TODO  RvdH Is this still needed
             if (syntax is VariableDeclaratorSyntax)
             {
                 return (initializer as BoundExpressionStatement)?.Expression.Kind == BoundKind.AssignmentOperator;

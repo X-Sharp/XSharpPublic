@@ -470,10 +470,6 @@ namespace Microsoft.CodeAnalysis.CSharp
 
                 case SyntaxKind.FunctionPointerType:
                     var functionPointerTypeSyntax = (FunctionPointerTypeSyntax)syntax;
-#if XSHARP
-					// TODO RvdH allow to take the address of managed pointer.
-					// Original Binder_Symbols 444
-#endif					
                     if (GetUnsafeDiagnosticInfo(sizeOfTypeOpt: null) is CSDiagnosticInfo info)
                     {
                         var @delegate = functionPointerTypeSyntax.DelegateKeyword;

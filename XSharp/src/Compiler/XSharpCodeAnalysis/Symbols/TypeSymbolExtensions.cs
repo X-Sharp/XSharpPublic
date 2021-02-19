@@ -6,9 +6,6 @@
 #nullable disable
 using System;
 using System.Linq;
-using System.Collections.Generic;
-using System.Collections.Immutable;
-using System.Diagnostics;
 using Roslyn.Utilities;
 using Microsoft.CodeAnalysis.Symbols;
 using Microsoft.CodeAnalysis;
@@ -41,7 +38,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
         }
         internal static bool IsNotUsualType(this TypeSymbol type)
         {
-            return !IsUsualType(type);
+            return type is null || type.Name != OurTypeNames.UsualType;
         }
         public static MethodSymbol MethodSymbol(this IMethodSymbol sym)
         {
@@ -60,7 +57,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
         }
         internal static bool IsNotSymbolType(this TypeSymbol type)
         {
-            return !IsSymbolType(type);
+            return type is null || type.Name != OurTypeNames.SymbolType;
         }
         internal static bool IsArrayType(this TypeSymbol type)
         {
@@ -99,7 +96,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
         }
         internal static bool IsNotPszType(this TypeSymbol type)
         {
-            return !IsPszType(type);
+            return type is null || type.Name != OurTypeNames.PszType;
         }
         internal static bool IsWinBoolType(this TypeSymbol type)
         {
@@ -112,10 +109,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
         public static bool IsVoStructOrUnion(this TypeSymbol _type)
         {
             // TODO (nvk): there must be a better way!
-            NamedTypeSymbol type = null;
-            if (_type is { })
+            if (_type is { } && _type.OriginalDefinition is NamedTypeSymbol type)
             {
-                type = _type.OriginalDefinition as NamedTypeSymbol;
                 if (type is SourceNamedTypeSymbol sourceType)
                 {
                     return sourceType.IsSourceVoStructOrUnion;
@@ -140,10 +135,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
         public static int VoStructOrUnionSizeInBytes(this TypeSymbol _type)
         {
             // TODO (nvk): there must be a better way!
-            NamedTypeSymbol type = null;
-            if (_type is { })
+            if (_type is { } && _type.OriginalDefinition is NamedTypeSymbol type)
             {
-                type = _type.OriginalDefinition as NamedTypeSymbol;
                 if (type is { } && type.Arity == 0 && !type.MangleName)
                 {
                     if (type is SourceNamedTypeSymbol sourceType)
@@ -177,10 +170,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
         public static int VoStructOrUnionLargestElementSizeInBytes(this TypeSymbol _type)
         {
             // TODO (nvk): there must be a better way!
-            NamedTypeSymbol type = null;
-            if (_type is { })
+            if (_type is { } && _type.OriginalDefinition is NamedTypeSymbol type)
             {
-                type = _type.OriginalDefinition as NamedTypeSymbol;
                 if (type is { } && type.Arity == 0 && !type.MangleName)
                 {
                     if (type is SourceNamedTypeSymbol sourceType)
@@ -339,28 +330,27 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                                 return ConstantValue.Null;
                             case 2:
                                 // Date, value should be long of ticks. Return DateTime
-                                DateTime dt = new DateTime((long)arg.Value);
+                                DateTime dt = new DateTime(arg.DecodeValue<long>(SpecialType.System_Int64));
                                 return ConstantValue.Create(dt);
                             case 3:
                                 // Symbol, value should be a string literal or null
                                 if (arg.Value == null)
                                     return ConstantValue.Null;
                                 else
-                                    return ConstantValue.Create((string)arg.Value);
+                                    return ConstantValue.Create(arg.DecodeValue<string>(SpecialType.System_String));
                             case 4:
                                 // Psz, value should be a string or null
                                 if (arg.Value == null)
                                     return ConstantValue.Null;
                                 else
-                                    return ConstantValue.Create ((string)arg.Value);
+                                    return ConstantValue.Create(arg.DecodeValue<string>(SpecialType.System_String));
                             case 5:
                                 // IntPtr, return value as IntPtr
                                 if (arg.Value == null)
                                     return ConstantValue.Null;
                                 else
                                 {
-                                    int i = arg.DecodeValue<int>(SpecialType.System_Int32);
-                                    IntPtr p = new IntPtr(i);
+                                    IntPtr p = new IntPtr(arg.DecodeValue<int>(SpecialType.System_Int32));
                                     return ConstantValue.Create(p);
                                 }
                             default:
@@ -417,8 +407,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                 {
                     if (attr.ConstructorArguments.Count() == 1)
                     {
-                        var arg = attr.ConstructorArguments.First();
-                        writeAccess = (bool)(arg.Value);
+                        writeAccess = attr.ConstructorArguments.First().DecodeValue<bool>(SpecialType.System_Boolean);
                     }
                     else
                     {

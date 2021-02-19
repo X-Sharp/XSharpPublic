@@ -1615,7 +1615,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         public override void ExitCallingconvention([NotNull] XP.CallingconventionContext context)
         {
-            // TODO nvk (calling convention is silently ignored for now)
             if (CurrentEntity != null)
             {
                 if (context.Convention.Type == XP.CLIPPER && context.Parent == CurrentEntity)

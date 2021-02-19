@@ -147,17 +147,8 @@ namespace Microsoft.CodeAnalysis.CSharp
             {
                 if (type.IsCodeblockType() || type.IsUsualType() || type.IsObjectType())
                 {
-                    return LambdaConversionResult.Success;
+                    return LambdaConversionResult.Success; 
                 }
-                // Todo RvdH Check if can be converted
-                /*
-                TypeSymbol cb = Compilation.CodeBlockType();
-                var conv = Compilation.ClassifyConversion(cb, type);
-                if (conv.Exists)
-                {
-                    return LambdaConversionResult.Success;
-                }
-                */
                 return LambdaConversionResult.Success;
             }
 
@@ -167,7 +158,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         protected override Conversion ClassifyCoreImplicitConversionFromExpression(BoundExpression sourceExpression, TypeSymbol source, TypeSymbol destination, ref HashSet<DiagnosticInfo> useSiteDiagnostics)
         {
             // Parameters checks have been done in the calling code
-            // The following conversion Rules are for all dialects
+            // The following conversion Rules are for all dialects 
             var srcType = source.SpecialType;
             var dstType = destination.SpecialType;
             // From and to CHAR

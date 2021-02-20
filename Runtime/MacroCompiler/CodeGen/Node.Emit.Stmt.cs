@@ -135,6 +135,19 @@ namespace XSharp.MacroCompiler.Syntax
     }
     internal partial class ForStmt : Stmt
     {
+        internal override void EmitStmt(ILGenerator ilg)
+        {
+            AssignExpr.Emit(ilg, false);
+            var lb = ilg.DefineLabel();
+            var le = ilg.DefineLabel();
+            ilg.MarkLabel(lb);
+            WhileExpr.Emit(ilg, true);
+            ilg.Emit(OpCodes.Brfalse, le);
+            Stmt.Emit(ilg);
+            IncrExpr.Emit(ilg, false);
+            ilg.Emit(OpCodes.Br, lb);
+            ilg.MarkLabel(le);
+        }
     }
     internal partial class ForeachStmt : Stmt
     {

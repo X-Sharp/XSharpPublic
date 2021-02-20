@@ -52,6 +52,7 @@ namespace XSharp.MacroCompiler
         DotMemberAccess = 232,
         BinaryIncorrectLength = 233,
         NoBindTarget = 234,
+        Internal = 999,
     }
 
     internal class ErrorString
@@ -101,6 +102,7 @@ namespace XSharp.MacroCompiler
             { ErrorCode.DotMemberAccess, "Dot operator does not allow instance member access" },
             { ErrorCode.BinaryIncorrectLength, "Binary Literal '{0}' has incorrect length" },
             { ErrorCode.NoBindTarget, "No bind target entity" },
+            { ErrorCode.Internal, "Internal error" },
         };
 
         static internal string Get(ErrorCode e) { return _errorStrings[e]; }

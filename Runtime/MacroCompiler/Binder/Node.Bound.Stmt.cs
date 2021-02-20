@@ -67,6 +67,15 @@ namespace XSharp.MacroCompiler.Syntax
     }
     internal partial class ImpliedVarDecl : VarDecl
     {
+        internal LocalSymbol Var;
+        internal override Node Bind(Binder b)
+        {
+            b.Bind(ref Initializer);
+            Initializer.RequireGetAccess();
+            Var = b.AddLocal(Name, Initializer.Datatype);
+            Initializer = AssignExpr.Bound(IdExpr.Bound(Var), Initializer, b.Options.Binding);
+            return null;
+        }
     }
     internal partial class FieldDeclStmt : Stmt
     {
@@ -98,7 +107,19 @@ namespace XSharp.MacroCompiler.Syntax
         Expr IncrExpr;
         internal override Node Bind(Binder b)
         {
-            b.Bind(ref AssignExpr);
+            if (AssignExpr != null)
+            {
+                b.Bind(ref AssignExpr);
+            }
+            else if (ForDecl is ImpliedVarDecl)
+            {
+                b.Bind(ref ForDecl);
+                AssignExpr = ForDecl.Initializer as AssignExpr;
+            }
+            else
+            {
+                throw Error(ErrorCode.NotSupported, "typed declaration");
+            }
 
             Expr Iter;
             Iter = AssignExpr.Left;

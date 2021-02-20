@@ -34,7 +34,8 @@ FUNCTION ParserTests(mc AS XSharp.Runtime.MacroCompiler) AS VOID
             "DECLARE a[10][4][3+5,2] as int",;
             "x+1,2",;
             "y*x",;
-            "NOP";
+            "NOP",;
+            "NOP()";
             }))
         ParseScript(mc, String.Join(e"\n",<STRING>{;
             "WHILE x > 3",;

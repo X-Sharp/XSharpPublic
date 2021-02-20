@@ -171,7 +171,7 @@ namespace XSharp.MacroCompiler
                     if (l?.Exprs.Count > 0)
                     {
                         Require(TokenType.EOS);
-                        return new ExprStmt(l);
+                        return new ExprResultStmt(l);
                     }
                     break;
             }
@@ -433,9 +433,9 @@ namespace XSharp.MacroCompiler
         {
             Token t;
             ExpectAndGet(TokenType.NOP, out t);
-            Require(TokenType.EOS);
             if (Expect(TokenType.LPAREN))
                 Require(TokenType.RPAREN);
+            Require(TokenType.EOS);
             return new EmptyStmt(t);
         }
 

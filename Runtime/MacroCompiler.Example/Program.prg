@@ -37,12 +37,36 @@ BEGIN NAMESPACE MacroCompilerTest
         //EvalMacro(mc, "{ || NIL } ")
         //wait
 
-/*var sc := CreateScriptCompiler()
+/*
+var sc := CreateScriptCompiler()
 EvalMacro(sc, String.Join(e"\n",<STRING>{;
     "Console.WriteLine(123)",;
-    "Console.WriteLine(456)";
-    }))
-wait*/
+    "NOP",;
+    "NOP()",;
+    "123",;
+    ""}))
+EvalMacro(sc, String.Join(e"\n",<STRING>{;
+    "x := 1",;
+    "IF x == 1",;
+      "return true",;
+    "ELSE",;
+      "return false",;
+    "END",;
+    ""}))
+EvalMacro(sc, String.Join(e"\n",<STRING>{;
+    "x := ;","10",;
+    "DO CASE",;
+    "CASE x == 0",;
+      "return true",;
+    "case x == 1",;
+      "return true",;
+    "otherwise",;
+      "return x",;
+    "END CASE",;
+    "return -1",;
+    ""}))
+wait
+*/
 
         ParserTestsFox(CreateFoxScriptCompiler())
         ParserTests(CreateScriptCompiler())

@@ -12,13 +12,6 @@ namespace XSharp.MacroCompiler.Syntax
     {
         internal Stmt(Token t) : base(t) { }
     }
-    internal partial class ReturnStmt : Stmt
-    {
-        internal Expr Expr;
-        internal ReturnStmt(Token t, Expr e) : base(t) { Expr = e; }
-        internal ReturnStmt(Expr e) : this(e.Token, e) { }
-        public override string ToString() { return "RETURN " + Expr?.ToString(); }
-    }
     internal partial class StmtBlock : Stmt
     {
         internal Stmt[] StmtList;
@@ -32,6 +25,17 @@ namespace XSharp.MacroCompiler.Syntax
         internal ExprStmt(Token t, Expr e) : base(t) { Expr = e; }
         internal ExprStmt(Expr e) : this(e.Token, e) { }
         public override string ToString() => Expr.ToString();
+    }
+    internal partial class ExprResultStmt : ExprStmt
+    {
+        internal ExprResultStmt(Token t, Expr e) : base(t, e) { }
+        internal ExprResultStmt(Expr e) : base(e.Token, e) { }
+    }
+    internal partial class ReturnStmt : ExprResultStmt
+    {
+        internal ReturnStmt(Token t, Expr e) : base(t, e) { }
+        internal ReturnStmt(Expr e) : base(e) { }
+        public override string ToString() { return "RETURN " + Expr?.ToString(); }
     }
     internal partial class DeclStmt : Stmt
     {

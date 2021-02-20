@@ -502,7 +502,7 @@ namespace XSharp.MacroCompiler
             }
         }
 
-        internal R Bind<R>(R macro) where R: Node
+        internal U Bind<U>(U macro) where U: Node
         {
             Bind(ref macro);
             return macro;

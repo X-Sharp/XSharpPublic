@@ -14,7 +14,26 @@ namespace XSharp.MacroCompiler.Syntax
     {
         internal bool RequireExceptionHandling = false;
     }
-    internal partial class ReturnStmt : Stmt
+    internal partial class StmtBlock : Stmt
+    {
+        internal override Node Bind(Binder b)
+        {
+            for(int i  = 0; i < StmtList.Length; i++)
+            {
+                b.BindStmt(ref StmtList[i]);
+            }
+            return null;
+        }
+    }
+    internal partial class ExprStmt : Stmt
+    {
+        internal override Node Bind(Binder b)
+        {
+            b.Bind(ref Expr);
+            return null;
+        }
+    }
+    internal partial class ExprResultStmt : ExprStmt
     {
         internal Node TargetEntity = null;
         internal override Node Bind(Binder b)
@@ -37,24 +56,8 @@ namespace XSharp.MacroCompiler.Syntax
             return null;
         }
     }
-    internal partial class StmtBlock : Stmt
+    internal partial class ReturnStmt : ExprResultStmt
     {
-        internal override Node Bind(Binder b)
-        {
-            for(int i  = 0; i < StmtList.Length; i++)
-            {
-                b.BindStmt(ref StmtList[i]);
-            }
-            return null;
-        }
-    }
-    internal partial class ExprStmt : Stmt
-    {
-        internal override Node Bind(Binder b)
-        {
-            b.Bind(ref Expr);
-            return null;
-        }
     }
     internal partial class DeclStmt : Stmt
     {
@@ -70,6 +73,10 @@ namespace XSharp.MacroCompiler.Syntax
     }
     internal partial class EmptyStmt : Stmt
     {
+        internal override Node Bind(Binder b)
+        {
+            return null;
+        }
     }
     internal partial class WhileStmt : Stmt
     {
@@ -85,12 +92,32 @@ namespace XSharp.MacroCompiler.Syntax
     }
     internal partial class IfStmt : Stmt
     {
+        internal override Node Bind(Binder b)
+        {
+            b.Bind(ref Cond);
+            b.BindStmt(ref StmtIf);
+            b.BindStmt(ref StmtElse);
+            return null;
+        }
     }
     internal partial class DoCaseStmt : Stmt
     {
+        internal override Node Bind(Binder b)
+        {
+            for(int i = 0; i < Cases.Length; i++)
+                b.Bind(ref Cases[i]);
+            b.Bind(ref Otherwise);
+            return null;
+        }
     }
     internal partial class CaseBlock : Node
     {
+        internal override Node Bind(Binder b)
+        {
+            b.Bind(ref Cond);
+            b.Bind(ref Stmt);
+            return null;
+        }
     }
 
     internal partial class SwitchStmt : Stmt

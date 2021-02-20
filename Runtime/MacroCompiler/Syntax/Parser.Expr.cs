@@ -577,7 +577,7 @@ namespace XSharp.MacroCompiler
 
             Require(Expect(TokenType.RCURLY) || AllowMissingSyntax, ErrorCode.Expected, "}");
 
-            return new Codeblock(p, new ReturnStmt(l));
+            return new Codeblock(p, new ExprResultStmt(l));
         }
 
         internal TypeExpr ParseParenType()

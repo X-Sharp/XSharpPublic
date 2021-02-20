@@ -197,7 +197,7 @@ namespace XSharp.MacroCompiler
             if (l != null)
             {
                 if (AllowExtraneousSyntax) while (ExpectAny(TokenType.RPAREN)) { }
-                return RequireEnd(new Codeblock(null, new ReturnStmt(l)), ErrorCode.Unexpected, Lt());
+                return RequireEnd(new Codeblock(null, new ExprResultStmt(l)), ErrorCode.Unexpected, Lt());
             }
 
             return null;

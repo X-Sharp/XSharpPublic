@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Reflection.Emit;
+using System.Runtime.CompilerServices;
 
 namespace XSharp.MacroCompiler.Syntax
 {
@@ -32,7 +33,22 @@ namespace XSharp.MacroCompiler.Syntax
             }
         }
     }
-    internal partial class ReturnStmt : Stmt
+    internal partial class StmtBlock : Stmt
+    {
+        internal override void EmitStmt(ILGenerator ilg)
+        {
+            foreach(var s in StmtList)
+                s.Emit(ilg);
+        }
+    }
+    internal partial class ExprStmt : Stmt
+    {
+        internal override void EmitStmt(ILGenerator ilg)
+        {
+            Expr.Emit(ilg, false);
+        }
+    }
+    internal partial class ExprResultStmt : ExprStmt
     {
         internal override void EmitStmt(ILGenerator ilg)
         {
@@ -60,19 +76,17 @@ namespace XSharp.MacroCompiler.Syntax
             }
         }
     }
-    internal partial class StmtBlock : Stmt
+    internal partial class ReturnStmt : ExprResultStmt
     {
         internal override void EmitStmt(ILGenerator ilg)
         {
-            foreach(var s in StmtList)
-                s.Emit(ilg);
-        }
-    }
-    internal partial class ExprStmt : Stmt
-    {
-        internal override void EmitStmt(ILGenerator ilg)
-        {
-            Expr.Emit(ilg, false);
+            base.EmitStmt(ilg);
+            if (TargetEntity is Script s)
+            {
+                if (s.End == null)
+                    s.End = ilg.DefineLabel();
+                ilg.Emit(OpCodes.Br, s.End.Value);
+            }
         }
     }
     internal partial class DeclStmt : Stmt
@@ -89,6 +103,9 @@ namespace XSharp.MacroCompiler.Syntax
     }
     internal partial class EmptyStmt : Stmt
     {
+        internal override void EmitStmt(ILGenerator ilg)
+        {
+        }
     }
     internal partial class WhileStmt : Stmt
     {
@@ -104,12 +121,43 @@ namespace XSharp.MacroCompiler.Syntax
     }
     internal partial class IfStmt : Stmt
     {
+        internal override void EmitStmt(ILGenerator ilg)
+        {
+            Cond.Emit(ilg, true);
+            var lb = ilg.DefineLabel();
+            var le = ilg.DefineLabel();
+            ilg.Emit(OpCodes.Brtrue, lb);
+            StmtElse.Emit(ilg);
+            ilg.Emit(OpCodes.Br, le);
+            ilg.MarkLabel(lb);
+            StmtIf.Emit(ilg);
+            ilg.MarkLabel(le);
+        }
     }
     internal partial class DoCaseStmt : Stmt
     {
+        internal override void EmitStmt(ILGenerator ilg)
+        {
+            var le = ilg.DefineLabel();
+            foreach (var c in Cases)
+            {
+                c.Emit(ilg, le);
+            }
+            Otherwise.Emit(ilg);
+            ilg.MarkLabel(le);
+        }
     }
     internal partial class CaseBlock : Node
     {
+        internal void Emit(ILGenerator ilg, Label end)
+        {
+            Cond.Emit(ilg, true);
+            var lf = ilg.DefineLabel();
+            ilg.Emit(OpCodes.Brfalse, lf);
+            Stmt.Emit(ilg);
+            ilg.Emit(OpCodes.Br, end);
+            ilg.MarkLabel(lf);
+        }
     }
 
     internal partial class SwitchStmt : Stmt
@@ -171,12 +219,15 @@ namespace XSharp.MacroCompiler.Syntax
     }
     internal partial class Script : Node
     {
+        internal Label? End = null;
         internal override void Emit(ILGenerator ilg)
         {
             var temp = ilg.DeclareLocal(((TypeSymbol)Symbol).Type);
             Symbol = new LocalSymbol((TypeSymbol)Symbol, temp.LocalIndex);
             Body.Emit(ilg);
-            if (Symbol != null) Symbol.EmitGet(ilg);
+            if (End != null)
+                ilg.MarkLabel(End.Value);
+            Symbol.EmitGet(ilg);
             ilg.Emit(OpCodes.Ret);
         }
     }

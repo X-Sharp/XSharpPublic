@@ -91,7 +91,6 @@ namespace XSharp.MacroCompiler
                         return kwIds.TryGetValue(text, out token);
                     }
             }
-            return false;
         }
 
         IDictionary<string, TokenType> SymIds

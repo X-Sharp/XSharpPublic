@@ -101,6 +101,11 @@ EvalMacro(sc, String.Join(e"\n",<STRING>{;
         "y += 1",;
     "NEXT",;
     "y"}))
+EvalMacro(sc, String.Join(e"\n",<STRING>{;
+    "FOR VAR l := 1 TO 40 step 4",;
+        "y += 1",;
+    "NEXT",;
+    "y"}))
 wait
 */
 

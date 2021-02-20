@@ -137,6 +137,10 @@ namespace XSharp.MacroCompiler.Syntax
     {
         internal override void EmitStmt(ILGenerator ilg)
         {
+            if (ForDecl != null)
+            {
+                (ForDecl as ImpliedVarDecl).Var.Declare(ilg);
+            }
             AssignExpr.Emit(ilg, false);
             var lb = ilg.DefineLabel();
             var le = ilg.DefineLabel();

@@ -473,7 +473,7 @@ namespace XSharp.MacroCompiler
             else
             {
                 a = ParseExpression() as AssignExpr;
-                Require(a?.Left is IdExpr, ErrorCode.Expected, "id assignemnt expression");
+                Require(a?.Left is IdExpr, ErrorCode.Expected, "variable assignemnt expression");
             }
             var dir = Require(ExpectAndGetAny(TokenType.UPTO, TokenType.DOWNTO, TokenType.TO), ErrorCode.Expected, TokenType.TO);
             Expr final = RequireExpression();

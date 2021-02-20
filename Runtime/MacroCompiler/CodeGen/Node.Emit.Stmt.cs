@@ -109,9 +109,29 @@ namespace XSharp.MacroCompiler.Syntax
     }
     internal partial class WhileStmt : Stmt
     {
+        internal override void EmitStmt(ILGenerator ilg)
+        {
+            var lb = ilg.DefineLabel();
+            var le = ilg.DefineLabel();
+            ilg.MarkLabel(lb);
+            Cond.Emit(ilg, true);
+            ilg.Emit(OpCodes.Brfalse, le);
+            Stmt.Emit(ilg);
+            ilg.Emit(OpCodes.Br, lb);
+            ilg.MarkLabel(le);
+        }
     }
     internal partial class RepeatStmt : WhileStmt
     {
+        internal override void EmitStmt(ILGenerator ilg)
+        {
+            var lb = ilg.DefineLabel();
+            var le = ilg.DefineLabel();
+            ilg.MarkLabel(lb);
+            Stmt.Emit(ilg);
+            Cond.Emit(ilg, true);
+            ilg.Emit(OpCodes.Brfalse, lb);
+        }
     }
     internal partial class ForStmt : Stmt
     {

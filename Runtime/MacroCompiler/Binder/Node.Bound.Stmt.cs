@@ -80,6 +80,13 @@ namespace XSharp.MacroCompiler.Syntax
     }
     internal partial class WhileStmt : Stmt
     {
+        internal override Node Bind(Binder b)
+        {
+            b.Bind(ref Cond);
+            b.Convert(ref Cond, Compilation.Get(NativeType.Boolean));
+            b.Bind(ref Stmt);
+            return null;
+        }
     }
     internal partial class RepeatStmt : WhileStmt
     {
@@ -95,6 +102,7 @@ namespace XSharp.MacroCompiler.Syntax
         internal override Node Bind(Binder b)
         {
             b.Bind(ref Cond);
+            b.Convert(ref Cond, Compilation.Get(NativeType.Boolean));
             b.BindStmt(ref StmtIf);
             b.BindStmt(ref StmtElse);
             return null;
@@ -115,6 +123,7 @@ namespace XSharp.MacroCompiler.Syntax
         internal override Node Bind(Binder b)
         {
             b.Bind(ref Cond);
+            b.Convert(ref Cond, Compilation.Get(NativeType.Boolean));
             b.Bind(ref Stmt);
             return null;
         }

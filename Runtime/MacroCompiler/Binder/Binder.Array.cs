@@ -31,7 +31,7 @@ namespace XSharp.MacroCompiler
             {
                 for (int i = 0; i < args.Args.Count; i++)
                 {
-                    args.Args[i].Expr = BinaryExpr.Bound(args.Args[i].Expr, args.Args[i].Expr.Token, LiteralExpr.Bound(Constant.Create(1)), BinaryOperatorKind.Subtraction, false, Options.Binding);
+                    args.Args[i].Expr = BinaryExpr.Bound(args.Args[i].Expr, args.Args[i].Expr.Token, LiteralExpr.Bound(Constant.Create(1)), BinaryOperatorKind.Subtraction, Options.Binding);
                     var expr = args.Args[i].Expr;
                     Binder.Convert(ref expr, Compilation.Get(NativeType.Int32), BindOptions.Default);
                     args.Args[i].Expr = expr;

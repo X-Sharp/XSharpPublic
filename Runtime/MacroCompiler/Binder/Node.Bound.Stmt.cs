@@ -83,6 +83,7 @@ namespace XSharp.MacroCompiler.Syntax
         internal override Node Bind(Binder b)
         {
             b.Bind(ref Cond);
+            Cond.RequireGetAccess();
             b.Convert(ref Cond, Compilation.Get(NativeType.Boolean));
             b.Bind(ref Stmt);
             return null;
@@ -93,6 +94,54 @@ namespace XSharp.MacroCompiler.Syntax
     }
     internal partial class ForStmt : Stmt
     {
+        Expr WhileExpr;
+        Expr IncrExpr;
+        internal override Node Bind(Binder b)
+        {
+            b.Bind(ref AssignExpr);
+
+            Expr Iter;
+            Iter = AssignExpr.Left;
+            Iter.RequireGetAccess();
+
+            b.Bind(ref Final);
+            Final.RequireGetAccess();
+
+            if (Step != null)
+            {
+                b.Bind(ref Step);
+                Step.RequireGetAccess();
+            }
+            else
+            {
+                Step = LiteralExpr.Bound(Constant.Create(1));
+            }
+
+            switch (Dir.type)
+            {
+                case TokenType.UPTO:
+                    WhileExpr = BinaryExpr.Bound(Iter, Dir, Final, BinaryOperatorKind.LessThanOrEqual, b.Options.Binding);
+                    IncrExpr = AssignOpExpr.Bound(Iter, Step, BinaryOperatorKind.Addition, b);
+                    break;
+                case TokenType.DOWNTO:
+                    WhileExpr = BinaryExpr.Bound(Iter, Dir, Final, BinaryOperatorKind.GreaterThanOrEqual, b.Options.Binding);
+                    IncrExpr = AssignOpExpr.Bound(Iter, Step, BinaryOperatorKind.Subtraction, b);
+                    break;
+                case TokenType.TO:
+                    var step_pos = BinaryExpr.Bound(Step, Dir, LiteralExpr.Bound(Constant.Create(0)), BinaryOperatorKind.GreaterThanOrEqual, b.Options.Binding);
+                    var whileExprUpTo = BinaryExpr.Bound(Iter, Dir, Final, BinaryOperatorKind.LessThanOrEqual, b.Options.Binding);
+                    var whileExprDownTo = BinaryExpr.Bound(Iter, Dir, Final, BinaryOperatorKind.GreaterThanOrEqual, b.Options.Binding);
+                    WhileExpr = IifExpr.Bound(step_pos, whileExprUpTo, whileExprDownTo, b.Options.Binding);
+                    IncrExpr = AssignOpExpr.Bound(Iter, Step, BinaryOperatorKind.Addition, b);
+                    break;
+                default:
+                    throw Error(ErrorCode.Internal);
+            }
+            b.Convert(ref WhileExpr, Compilation.Get(NativeType.Boolean));
+
+            b.Bind(ref Stmt);
+            return null;
+        }
     }
     internal partial class ForeachStmt : Stmt
     {
@@ -102,6 +151,7 @@ namespace XSharp.MacroCompiler.Syntax
         internal override Node Bind(Binder b)
         {
             b.Bind(ref Cond);
+            Cond.RequireGetAccess();
             b.Convert(ref Cond, Compilation.Get(NativeType.Boolean));
             b.BindStmt(ref StmtIf);
             b.BindStmt(ref StmtElse);
@@ -123,6 +173,7 @@ namespace XSharp.MacroCompiler.Syntax
         internal override Node Bind(Binder b)
         {
             b.Bind(ref Cond);
+            Cond.RequireGetAccess();
             b.Convert(ref Cond, Compilation.Get(NativeType.Boolean));
             b.Bind(ref Stmt);
             return null;

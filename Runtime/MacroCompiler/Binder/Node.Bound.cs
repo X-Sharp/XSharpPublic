@@ -270,6 +270,13 @@ namespace XSharp.MacroCompiler.Syntax
             Datatype = Left.Datatype;
             return null;
         }
+        internal static AssignExpr Bound(Expr Left, Expr Right, BindOptions options)
+        {
+            Left.RequireSetAccess();
+            Right.RequireGetAccess();
+            Binder.Convert(ref Right, Left.Datatype, options);
+            return new AssignExpr(Left, Left.Token, Right) { Symbol = Left.Symbol, Datatype = Left.Datatype };
+        }
     }
     internal partial class AssignOpExpr : AssignExpr
     {
@@ -279,11 +286,19 @@ namespace XSharp.MacroCompiler.Syntax
             b.Bind(ref Right);
             Left.RequireGetSetAccess();
             Right.RequireGetAccess();
-            Right = BinaryExpr.Bound(Left.Cloned(b), Token, Right, BinaryOperatorSymbol.OperatorKind(Kind), false, b.Options.Binding);
+            Right = BinaryExpr.Bound(Left.Cloned(b), Token, Right, BinaryOperatorSymbol.OperatorKind(Kind), b.Options.Binding);
             b.Convert(ref Right, Left.Datatype);
             Symbol = Left.Symbol;
             Datatype = Left.Datatype;
             return null;
+        }
+        internal static AssignOpExpr Bound(Expr Left, Expr Right, BinaryOperatorKind kind, Binder b)
+        {
+            Left.RequireGetSetAccess();
+            Right.RequireGetAccess();
+            Right = BinaryExpr.Bound(Left.Cloned(b), Left.Token, Right, kind, b.Options.Binding);
+            b.Convert(ref Right, Left.Datatype);
+            return new AssignOpExpr(Left, Left.Token, Right) { Symbol = Left.Symbol, Datatype = Left.Datatype };
         }
     }
     internal partial class BinaryExpr : Expr
@@ -301,8 +316,10 @@ namespace XSharp.MacroCompiler.Syntax
             Datatype = Symbol.Type();
             return null;
         }
-        internal static BinaryExpr Bound(Expr Left, Token t, Expr Right, BinaryOperatorKind kind, bool logic, BindOptions options)
+        internal static BinaryExpr Bound(Expr Left, Token t, Expr Right, BinaryOperatorKind kind, BindOptions options)
         {
+            Left.RequireGetAccess();
+            Right.RequireGetAccess();
             var e = new BinaryExpr(Left, t, Right);
             e.Symbol = Binder.BindBinaryOperation(e, kind, options);
             e.Datatype = e.Symbol.Type();
@@ -320,6 +337,15 @@ namespace XSharp.MacroCompiler.Syntax
             Symbol = b.BindBinaryLogicOperation(this, BinaryOperatorSymbol.OperatorKind(Kind));
             Datatype = Symbol.Type();
             return null;
+        }
+        internal static new BinaryExpr Bound(Expr Left, Token t, Expr Right, BinaryOperatorKind kind, BindOptions options)
+        {
+            Left.RequireGetAccess();
+            Right.RequireGetAccess();
+            var e = new BinaryExpr(Left, t, Right);
+            e.Symbol = Binder.BindBinaryOperation(e, kind, options | BindOptions.Logic);
+            e.Datatype = e.Symbol.Type();
+            return e;
         }
     }
     internal partial class UnaryExpr : Expr
@@ -674,6 +700,16 @@ namespace XSharp.MacroCompiler.Syntax
             b.Convert(ref Cond, Compilation.Get(NativeType.Boolean));
             Datatype = b.ConvertResult(ref True, ref False);
             return null;
+        }
+        internal static IifExpr Bound(Expr cond, Expr t, Expr f, BindOptions opt)
+        {
+            cond.RequireGetAccess();
+            t.RequireGetAccess();
+            f.RequireGetAccess();
+            Binder.Convert(ref cond, Compilation.Get(NativeType.Boolean), Binder.Conversion(cond, Compilation.Get(NativeType.Boolean), opt));
+            var r = new IifExpr(cond, t, f, cond.Token);
+            r.Datatype = Binder.ConvertResult(ref r.True, ref r.False, opt);
+            return r;
         }
         internal override void RequireGetAccess() => base.RequireValue();
     }

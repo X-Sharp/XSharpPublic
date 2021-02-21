@@ -94,6 +94,12 @@ namespace XSharp.MacroCompiler.Syntax
     }
     internal partial class VarDecl : Node
     {
+        internal override void Emit(ILGenerator ilg)
+        {
+            Var.Declare(ilg);
+            if (Initializer != null)
+                Initializer.Emit(ilg, false);
+        }
     }
     internal partial class ImpliedVarDecl : VarDecl
     {
@@ -139,9 +145,12 @@ namespace XSharp.MacroCompiler.Syntax
         {
             if (ForDecl != null)
             {
-                (ForDecl as ImpliedVarDecl).Var.Declare(ilg);
+                ForDecl.Emit(ilg);
             }
-            AssignExpr.Emit(ilg, false);
+            else
+            {
+                AssignExpr.Emit(ilg, false);
+            }
             var lb = ilg.DefineLabel();
             var le = ilg.DefineLabel();
             ilg.MarkLabel(lb);

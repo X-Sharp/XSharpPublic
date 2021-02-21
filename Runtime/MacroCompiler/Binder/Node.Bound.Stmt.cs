@@ -64,10 +64,31 @@ namespace XSharp.MacroCompiler.Syntax
     }
     internal partial class VarDecl : Node
     {
+        internal LocalSymbol Var;
+        internal override Node Bind(Binder b)
+        {
+            if (Type != null)
+            {
+                b.Bind(ref Type, BindAffinity.Type);
+                Type.RequireType();
+                Var = b.AddLocal(Name, Type.Symbol as TypeSymbol);
+            }
+            else
+            {
+                Var = b.AddLocal(Name, b.ObjectType);
+            }
+            if (Initializer != null)
+            {
+                b.Bind(ref Initializer);
+                Initializer.RequireGetAccess();
+                b.Convert(ref Initializer, Var.Type);
+                Initializer = AssignExpr.Bound(IdExpr.Bound(Var), Initializer, b.Options.Binding);
+            }
+            return null;
+        }
     }
     internal partial class ImpliedVarDecl : VarDecl
     {
-        internal LocalSymbol Var;
         internal override Node Bind(Binder b)
         {
             b.Bind(ref Initializer);
@@ -111,14 +132,10 @@ namespace XSharp.MacroCompiler.Syntax
             {
                 b.Bind(ref AssignExpr);
             }
-            else if (ForDecl is ImpliedVarDecl)
+            else
             {
                 b.Bind(ref ForDecl);
                 AssignExpr = ForDecl.Initializer as AssignExpr;
-            }
-            else
-            {
-                throw Error(ErrorCode.NotSupported, "typed declaration");
             }
 
             Expr Iter;

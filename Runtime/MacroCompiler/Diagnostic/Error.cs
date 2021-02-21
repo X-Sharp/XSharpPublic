@@ -52,6 +52,7 @@ namespace XSharp.MacroCompiler
         DotMemberAccess = 232,
         BinaryIncorrectLength = 233,
         NoBindTarget = 234,
+        LocalSameName = 235,
         Internal = 999,
     }
 
@@ -102,6 +103,7 @@ namespace XSharp.MacroCompiler
             { ErrorCode.DotMemberAccess, "Dot operator does not allow instance member access" },
             { ErrorCode.BinaryIncorrectLength, "Binary Literal '{0}' has incorrect length" },
             { ErrorCode.NoBindTarget, "No bind target entity" },
+            { ErrorCode.LocalSameName, "Local variable exists with the same name: '{0}'" },
             { ErrorCode.Internal, "Internal error" },
         };
 

@@ -106,7 +106,7 @@ EvalMacro(sc, String.Join(e"\n",<STRING>{;
     "FOR VAR l := 1 TO 40 step 4",;
         "y += 1",;
     "NEXT",;
-    "FOR LOCAL l2 := 1 AS INT TO 40 step 4",;
+    "FOR LOCAL l := 1 AS INT TO 40 step 4",;
         "y += 1",;
     "NEXT",;
     "FOR LOCAL IMPLIED l3 := 1 TO 40 step 4",;

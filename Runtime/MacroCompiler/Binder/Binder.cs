@@ -46,11 +46,11 @@ namespace XSharp.MacroCompiler
         static List<ContainerSymbol> RuntimeFunctions = null;
         static Dictionary<Type, TypeSymbol> TypeCache = null;
 
-        internal static StringComparer LookupComprer = StringComparer.OrdinalIgnoreCase;
+        internal static StringComparer LookupComparer = StringComparer.OrdinalIgnoreCase;
 
         internal MacroOptions Options;
 
-        internal Dictionary<string, Symbol> LocalCache = new Dictionary<string, Symbol>(LookupComprer);
+        internal Dictionary<string, Symbol> LocalCache = new Dictionary<string, Symbol>(LookupComparer);
         internal List<LocalSymbol> Locals = new List<LocalSymbol>();
         internal List<ArgumentSymbol> Args = new List<ArgumentSymbol>();
         internal TypeSymbol ObjectType;
@@ -58,6 +58,7 @@ namespace XSharp.MacroCompiler
         internal List<XSharp.Codeblock> NestedCodeblocks;
         internal bool CreatesAutoVars = false;
         internal Stack<Stmt> StmtStack = new Stack<Stmt>();
+        internal Stack<int> ScopeStack = new Stack<int>();
         internal Node Entity = null;
 
         protected Binder(Type objectType, Type delegateType, MacroOptions options)
@@ -410,7 +411,11 @@ namespace XSharp.MacroCompiler
             local.IsParam = isParam;
             Locals.Add(local);
             if (!string.IsNullOrEmpty(name))
+            {
+                if (LocalCache.ContainsKey(name))
+                    return null;
                 LocalCache.Add(name, local);
+            }
             return local;
         }
 
@@ -453,6 +458,24 @@ namespace XSharp.MacroCompiler
                     if (loc.IsParam)
                         c++;
                 return c;
+            }
+        }
+
+        internal int OpenScope()
+        {
+            ScopeStack.Push(Locals.Count);
+            return Locals.Count;
+        }
+
+        internal void CloseScope()
+        {
+            var scopeBase = ScopeStack.Pop();
+            for (var i = scopeBase; i <Locals.Count; i++)
+            {
+                if (!string.IsNullOrEmpty(Locals[i].Name))
+                {
+                    LocalCache.Remove(Locals[i].Name);
+                }
             }
         }
 

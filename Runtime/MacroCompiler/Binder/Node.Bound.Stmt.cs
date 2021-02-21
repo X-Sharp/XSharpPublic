@@ -71,7 +71,7 @@ namespace XSharp.MacroCompiler.Syntax
             {
                 b.Bind(ref Type, BindAffinity.Type);
                 Type.RequireType();
-                Var = b.AddLocal(Name, Type.Symbol as TypeSymbol);
+                Var = b.AddLocal(Name, Type.Symbol as TypeSymbol) ?? throw Error(ErrorCode.LocalSameName, Name);
             }
             else
             {
@@ -93,7 +93,7 @@ namespace XSharp.MacroCompiler.Syntax
         {
             b.Bind(ref Initializer);
             Initializer.RequireGetAccess();
-            Var = b.AddLocal(Name, Initializer.Datatype);
+            Var = b.AddLocal(Name, Initializer.Datatype) ?? throw Error(ErrorCode.LocalSameName, Name);
             Initializer = AssignExpr.Bound(IdExpr.Bound(Var), Initializer, b.Options.Binding);
             return null;
         }
@@ -112,15 +112,18 @@ namespace XSharp.MacroCompiler.Syntax
     {
         internal override Node Bind(Binder b)
         {
+            b.OpenScope();
             b.Bind(ref Cond);
             Cond.RequireGetAccess();
             b.Convert(ref Cond, Compilation.Get(NativeType.Boolean));
             b.Bind(ref Stmt);
+            b.CloseScope();
             return null;
         }
     }
     internal partial class RepeatStmt : WhileStmt
     {
+        internal override Node Bind(Binder b) => base.Bind(b);
     }
     internal partial class ForStmt : Stmt
     {
@@ -128,6 +131,8 @@ namespace XSharp.MacroCompiler.Syntax
         Expr IncrExpr;
         internal override Node Bind(Binder b)
         {
+            b.OpenScope();
+
             if (AssignExpr != null)
             {
                 b.Bind(ref AssignExpr);
@@ -178,6 +183,8 @@ namespace XSharp.MacroCompiler.Syntax
             b.Convert(ref WhileExpr, Compilation.Get(NativeType.Boolean));
 
             b.Bind(ref Stmt);
+
+            b.CloseScope();
             return null;
         }
     }
@@ -188,11 +195,17 @@ namespace XSharp.MacroCompiler.Syntax
     {
         internal override Node Bind(Binder b)
         {
+            b.OpenScope();
             b.Bind(ref Cond);
             Cond.RequireGetAccess();
             b.Convert(ref Cond, Compilation.Get(NativeType.Boolean));
             b.BindStmt(ref StmtIf);
+            b.CloseScope();
+
+            b.OpenScope();
             b.BindStmt(ref StmtElse);
+            b.CloseScope();
+
             return null;
         }
     }
@@ -202,7 +215,9 @@ namespace XSharp.MacroCompiler.Syntax
         {
             for(int i = 0; i < Cases.Length; i++)
                 b.Bind(ref Cases[i]);
+            b.OpenScope();
             b.Bind(ref Otherwise);
+            b.CloseScope();
             return null;
         }
     }
@@ -210,10 +225,12 @@ namespace XSharp.MacroCompiler.Syntax
     {
         internal override Node Bind(Binder b)
         {
+            b.OpenScope();
             b.Bind(ref Cond);
             Cond.RequireGetAccess();
             b.Convert(ref Cond, Compilation.Get(NativeType.Boolean));
             b.Bind(ref Stmt);
+            b.CloseScope();
             return null;
         }
     }

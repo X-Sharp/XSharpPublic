@@ -537,6 +537,13 @@ CLASS XSharp.RuntimeState
         GET GetValue<Exception>(Set.LastRddError);
         SET SetValue<Exception>(Set.LastRddError, value)
 
+	/// <summary>Last Script error that occurred .</summary>
+    /// <include file="CoreComments.xml" path="Comments/PerThread/*" />
+    /// <seealso cref="Set.LastScriptError" />
+    STATIC PROPERTY LastScriptError AS Exception ;
+        GET GetValue<Exception>(Set.LastScriptError);
+        SET SetValue<Exception>(Set.LastScriptError, value)
+
 	/// <summary>Number of tries that were done when the last lock operation failed.</summary>
     /// <include file="CoreComments.xml" path="Comments/PerThread/*" />
     /// <seealso cref="SetEpoch" />

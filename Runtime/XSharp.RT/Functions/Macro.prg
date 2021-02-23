@@ -5,6 +5,7 @@
 //
 USING System.Reflection
 USING System.Globalization
+USING System.Collections.Generic
 
 USING XSharp.Internal		
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/evaluate/*" />
@@ -260,27 +261,48 @@ INTERNAL GLOBAL _fullMacroCompiler AS Assembly
 /// <include file="VFPDocs.xml" path="Runtimefunctions/execscript/*" />
 FUNCTION ExecScript( cExpression, eParameters ) AS USUAL CLIPPER
     LOCAL result := NIL AS USUAL
-    IF _fullMacroCompiler == NULL_OBJECT
-        
-        AssemblyHelper.Load("XSharp.Scripting")
-        AssemblyHelper.Load("XSharp.CodeAnalysis")
-        _fullMacroCompiler := AssemblyHelper.Load("XSharp.MacroCompiler.Full")
-        VAR oImm := AssemblyHelper.FindLoadedAssembly("System.Collections.Immutable")
-        IF oImm == NULL_OBJECT
-            oImm := Assembly.Load("System.Collections.Immutable, Version=1.2.3.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a")
+    XSharp.RuntimeState.LastScriptError := NULL
+    TRY
+        IF _fullMacroCompiler == NULL_OBJECT
+            AssemblyHelper.Load("XSharp.Scripting")
+            AssemblyHelper.Load("XSharp.CodeAnalysis")
+            _fullMacroCompiler := AssemblyHelper.Load("XSharp.MacroCompiler.Full")
+            VAR oImm := AssemblyHelper.FindLoadedAssembly("System.Collections.Immutable")
+            IF oImm == NULL_OBJECT
+                oImm := Assembly.Load("System.Collections.Immutable, Version=1.2.3.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a")
+            ENDIF
+            IF oImm == NULL_OBJECT
+                THROW Error{"Could not load 'System.Collections.Immutable'"}
+            ENDIF
         ENDIF
-        IF oImm == NULL_OBJECT
-            VAR oErr := Error{"Could not load 'System.Collections.Immutable'"}
-            THROW oErr
+        IF _fullMacroCompiler != NULL_OBJECT
+            LOCAL type := _fullMacroCompiler:GetType("XSharp_MacroCompiler_Full.Functions") AS System.Type
+            if (type != NULL)
+                var exec := type:GetMethod("_ExecScript")
+                var argTmp := List<USUAL>{}
+                argTmp:AddRange(_Args())
+                argTmp:RemoveAt(0)
+                if exec != null
+                    var args := OBJECT[]{2}
+                    args[1] := (String) cExpression
+                    args[2] := argTmp:ToArray()
+                    TRY
+                        result := exec:Invoke(NULL, args)
+                    CATCH e as Exception
+                        XSharp.RuntimeState.LastScriptError := e
+                        THROW e
+                    END TRY
+                ELSE
+                    THROW Error{"Could not load function '_ExecScript' in type 'XSharp_MacroCompiler_Full.Functions'"}
+                endif
+            ELSE
+                THROW Error{"Could not load type 'XSharp_MacroCompiler_Full.Functions' in XSharp.MacroCompiler.Full.dll"}
+            endif
         ENDIF
-    ENDIF
-    IF _fullMacroCompiler != NULL_OBJECT
-        LOCAL aFuncs AS MethodInfo[]
-        aFuncs := OOPHelpers.FindClipperFunctions(#_ExecScript)
-        IF aFuncs:Length == 1                
-            result := _CallClipFunc(#_ExecScript,_Args())
-        ENDIF
-    ENDIF
+    CATCH e as Exception
+        XSharp.RuntimeState.LastScriptError :=  e
+        THROW e
+    END TRY
     RETURN result
     
     

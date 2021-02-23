@@ -207,3 +207,19 @@ File | Description
 BuildClient.cs | Determine and encode SysDir, WinDir and IncludeDir in the libDirectory parameter
 BuildServerConnection.cs | Handle special pipe name for case sensitive compilation
 
+
+## Files in the Roslyn\src\Scripting\Core folder
+
+File | Description
+---- | -----------
+ScriptBuilder.cs | XSharp returns all compiler errors in the exception and not just the first one
+ScriptOptions.cs | XSharp has additional options in a XsOptions property. Therefore there is also a WithXSharpSpecificOptions method.
+ScriptState.cs | We have added some helper methods that make it easier to find a method in the compiled script
+
+
+## Files in the Roslyn\src\Scripting\CSharp folder
+
+File | Description
+---- | -----------
+CSharpScriptCompiler.cs | Added extra parameter that contains the X# specific compilation options.
+

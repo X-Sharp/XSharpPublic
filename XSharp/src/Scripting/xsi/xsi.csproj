@@ -56,7 +56,7 @@
     <Delete Files="@(FilesToDelete)" />
   </Target>
   <!-- Copy the files from the XSC folder into the XSI folder-->
-  <Target Name="CopyCompilerFiles" AfterTargets="Build" Condition="'$(TargetFramework)' != '' ">
+  <Target Name="CopyCompilerFiles" AfterTargets="Build" >
     <ItemGroup>
       <FilesToCopy Include="$(OutputPath.Replace('xsi','xsc'))X*.*" />
     </ItemGroup>

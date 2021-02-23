@@ -12,7 +12,7 @@
     <Name>TestFullMacroCompiler</Name>
     <Nologo>true</Nologo>
     <GenerateFullPaths>true</GenerateFullPaths>
-    <Dialect>VO</Dialect>
+    <Dialect>FoxPro</Dialect>
     <OutputName>TestMacroCompiler</OutputName>
     <StartupObject />
     <ApplicationIcon />
@@ -100,6 +100,13 @@
       <Private>True</Private>
       <HintPath>$(RuntimeFilesDir)XSharp.RT.dll</HintPath>
     </Reference>
+    <Reference Include="XSharp.VFP, Version=2.6.0.0, Culture=neutral, PublicKeyToken=ed555a0467764586">
+      <Name>XSharp.VFP</Name>
+      <AssemblyName>XSharp.VFP.dll</AssemblyName>
+      <SpecificVersion>False</SpecificVersion>
+      <Private>True</Private>
+      <HintPath>..\..\..\..\..\DevRt\Binaries\Debug\XSharp.VFP.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.prg">
@@ -108,6 +115,8 @@
     <Compile Include="Program.prg">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="TestMacro.prg" />
+    <Compile Include="TestScript.prg" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Properties\" />

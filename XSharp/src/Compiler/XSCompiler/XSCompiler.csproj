@@ -9,13 +9,12 @@
     <OutputType>Exe</OutputType>
     <AssemblyName>XSCompiler</AssemblyName>
     <LargeAddressAware>true</LargeAddressAware>
-    <TargetFrameworks>net472;netcoreapp3.1</TargetFrameworks>
     <DefineConstants Condition="'$(TargetFramework)' == 'net472'">$(DefineConstants)NET46;NET472</DefineConstants>
     <DefineConstants>$(DefineConstants);XSHARP</DefineConstants>
     <UseVSHostingProcess>false</UseVSHostingProcess>
     <ServerGarbageCollection>true</ServerGarbageCollection>
     <!--Use the C# compiler created in this solution-->
-    <CscToolPath>$(GeneratedCompilerPath)</CscToolPath>
+    <CSCToolExe>$(GeneratedCompilerPath)csc.exe</CSCToolExe>
     <GenerateMicrosoftCodeAnalysisCommitHashAttribute>false</GenerateMicrosoftCodeAnalysisCommitHashAttribute>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
 

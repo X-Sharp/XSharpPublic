@@ -11,10 +11,9 @@
     <OutputType>Exe</OutputType>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <RootNamespace>XSharpInteractive</RootNamespace>
-    <TargetFrameworks>netcoreapp3.1;net472</TargetFrameworks>
     <DefineConstants Condition="'$(TargetFramework)' == 'net472'">$(DefineConstants);NET46;NET472;</DefineConstants>
     <!--Use the C# compiler created in this solution-->
-    <CscToolPath>$(GeneratedCompilerPath)</CscToolPath>
+    <CSCToolExe>$(GeneratedCompilerPath)csc.exe</CSCToolExe>
     <CreateZips>true</CreateZips>
   </PropertyGroup>
   <ItemGroup Label="Project References">

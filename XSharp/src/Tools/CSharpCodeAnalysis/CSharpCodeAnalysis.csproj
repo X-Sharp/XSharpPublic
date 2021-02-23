@@ -7,7 +7,7 @@
     <RootNamespace>Microsoft.CodeAnalysis.CSharp</RootNamespace>
     <AssemblyName>CSharp.CodeAnalysis</AssemblyName>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <TargetFrameworks>net472;netcoreapp3.1</TargetFrameworks>
+	<TargetFrameworks>net472</TargetFrameworks>
     <DefineConstants>$(DefineConstants);COMPILERCORE;XSHARPPRE</DefineConstants>
     <CodeAnalysisRuleSet>$(CSharpSource)..\CSharpCodeAnalysisRules.ruleset</CodeAnalysisRuleSet>
     <GenerateMicrosoftCodeAnalysisCommitHashAttribute>true</GenerateMicrosoftCodeAnalysisCommitHashAttribute>

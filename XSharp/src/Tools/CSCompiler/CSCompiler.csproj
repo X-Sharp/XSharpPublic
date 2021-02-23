@@ -5,8 +5,7 @@
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <LargeAddressAware>true</LargeAddressAware>
-    <TargetFrameworks>net472;netcoreapp3.1</TargetFrameworks>
-    <UseVSHostingProcess>false</UseVSHostingProcess>
+<TargetFrameworks>net472</TargetFrameworks>    <UseVSHostingProcess>false</UseVSHostingProcess>
     <ServerGarbageCollection>true</ServerGarbageCollection>
     <UseAppHost>false</UseAppHost>
     <GenerateMicrosoftCodeAnalysisCommitHashAttribute>true</GenerateMicrosoftCodeAnalysisCommitHashAttribute>

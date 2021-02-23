@@ -9,13 +9,12 @@
     <OutputType>Library</OutputType>
     <AssemblyName>XSharp.Scripting</AssemblyName>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <TargetFrameworks>netcoreapp3.1;net472</TargetFrameworks>
     <RootNamespace>LanguageService.CodeAnalysis.XSharp.Scripting</RootNamespace>
     <GenerateMicrosoftCodeAnalysisCommitHashAttribute>false</GenerateMicrosoftCodeAnalysisCommitHashAttribute>
     <Genericdefines>TRACE;SCRIPTING;XSHARP;COMMITHASH</Genericdefines>
     <!--Use the C# compiler created in this solution-->
 
-    <CscToolPath>$(GeneratedCompilerPath)</CscToolPath>
+    <CSCToolExe>$(GeneratedCompilerPath)csc.exe</CSCToolExe>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <Configurations>Debug;Release;Public</Configurations>
   </PropertyGroup>

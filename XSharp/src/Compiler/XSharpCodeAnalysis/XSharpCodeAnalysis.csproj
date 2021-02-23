@@ -11,7 +11,6 @@
     <RootNamespace>LanguageService.CodeAnalysis.XSharp</RootNamespace>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <NoWarn>1591,1573,1701,3021</NoWarn> 
-    <TargetFrameworks>net472;netcoreapp3.1</TargetFrameworks>
     <!--<CodeAnalysisRuleSet>$(RoslynSrc)\Compilers\CSharp\CSharpCodeAnalysisRules.ruleset</CodeAnalysisRuleSet>-->
     <NoStdLib>true</NoStdLib>
     <GenerateMicrosoftCodeAnalysisCommitHashAttribute>false</GenerateMicrosoftCodeAnalysisCommitHashAttribute>
@@ -21,13 +20,13 @@
          contains a reference to C# + VB CodeAnalysis. This ensures that the project
          reference is a higher version than the NuGet reference. -->
     <Version>$(NuGetPerBuildPreReleaseVersion)</Version>
-    <AntlrCall>java -jar $(SolutionDir).\build\antlr4-csharp-4.6.1-SNAPSHOT-complete.jar</AntlrCall> 
+    <AntlrCall>java -jar $(AntlrDir)antlr4-csharp-4.6.1-SNAPSHOT-complete.jar</AntlrCall> 
     <AntlrPackage>-package LanguageService.CodeAnalysis.XSharp.SyntaxParser</AntlrPackage>
     <AntlrOutputDir>$(MSBuildThisFileDirectory)Generated\</AntlrOutputDir>
     <AntlrInputDir>$(MSBuildThisFileDirectory)Parser\</AntlrInputDir>
     <AntlrParams>-long-messages  -message-format vs2005 -Dlanguage=CSharp_v4_5 $(AntlrPackage) -listener -o $(AntlrOutputdir)</AntlrParams>
     <!--Use the C# compiler created in this solution-->
-    <CscToolPath>$(GeneratedCompilerPath)</CscToolPath>
+    <CSCToolExe>$(GeneratedCompilerPath)csc.exe</CSCToolExe>
     <CheckForOverflowUnderflow>true</CheckForOverflowUnderflow>
     <GenericDefines>COMPILERCORE;NET45PLUS;NET40PLUS;NET35PLUS;PORTABLE;NETSTANDARD20;NETSTANDARD;COMMITHASH</GenericDefines>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>

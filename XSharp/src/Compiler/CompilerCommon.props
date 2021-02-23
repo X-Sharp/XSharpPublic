@@ -35,13 +35,13 @@
     <UseRoslynAnalyzers>false</UseRoslynAnalyzers>
     <GenerateMicrosoftCodeAnalysisCommitHashAttribute>true</GenerateMicrosoftCodeAnalysisCommitHashAttribute>
     <BinariesDir>$(Solutiondir)Artifacts\bin\</BinariesDir>
+	<AntlrDir>$(Solutiondir)eng\</AntlrDir>
     <ZipsDir>$(Solutiondir)Artifacts\Zips</ZipsDir>
-    <GeneratedCompilerPath>$(BinariesDir)csc\$(Configuration)\net472</GeneratedCompilerPath>
+    <GeneratedCompilerPath>$(BinariesDir)csc\$(Configuration)\net472\</GeneratedCompilerPath>
     <XscToolPath Condition="'$(XscToolPath)' == '' ">$(BinariesDir)xsc\$(Configuration)\net472</XscToolPath>
     <EnableBaseIntermediateOutputPathMismatchWarning>false</EnableBaseIntermediateOutputPathMismatchWarning>
 	<RuntimeFilesDir Condition="'$(RuntimeFilesDir)' == '' ">$(DevRtDir)Binaries\Debug\</RuntimeFilesDir>
-    <!--<TargetFrameworks>netcoreapp3.1;netstandard2.0</TargetFrameworks>-->
-    <TargetFrameworks>netstandard2.0</TargetFrameworks>
+    <TargetFrameworks>netcoreapp3.1;net472</TargetFrameworks>
 	<DebugType>full</DebugType>
 	<DebugSymbols>true</DebugSymbols>
   </PropertyGroup>

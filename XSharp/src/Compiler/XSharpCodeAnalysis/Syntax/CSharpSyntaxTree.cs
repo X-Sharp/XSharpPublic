@@ -248,6 +248,10 @@ namespace Microsoft.CodeAnalysis.CSharp
                     text = ntext;
                     file = fn;
                 }
+                if (string.IsNullOrEmpty(file) && root.XNode is XSharpParser.ScriptContext)
+                {
+                    file = "Script";
+                }
                 if (start + length > text.Length)
                 {
                     // this should not happen, but we fix it anyway to prevent a nasty crash when generating

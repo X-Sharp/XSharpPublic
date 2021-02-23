@@ -114,9 +114,20 @@ namespace Microsoft.CodeAnalysis.Scripting
             {
                 return;
             }
+#if XSHARP
+            var sb = new System.Text.StringBuilder();
+            foreach (var error in filtered)
+            {
+                if (sb.Length > 0)
+                    sb.AppendLine();
+                sb.Append(formatter.Format(error, CultureInfo.CurrentCulture));
+            }
+            throw new CompilationErrorException(sb.ToString(), filtered);
+#else
             throw new CompilationErrorException(
                 formatter.Format(filtered[0], CultureInfo.CurrentCulture),
                 filtered);
+#endif
         }
 
         /// <summary>

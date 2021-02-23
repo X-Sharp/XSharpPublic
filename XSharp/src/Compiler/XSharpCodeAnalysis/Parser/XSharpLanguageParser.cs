@@ -125,6 +125,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             _fileName = FileName;
             _options = options;
             _isScript = options.Kind == SourceCodeKind.Script;
+            if (_isScript)
+                _fileName = "Script";
             _isMacroScript = _isScript && options.MacroScript;
         }
 

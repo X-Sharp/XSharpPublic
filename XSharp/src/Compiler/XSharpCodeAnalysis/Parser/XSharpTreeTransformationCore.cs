@@ -2308,15 +2308,25 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         {
                             var local = (LocalDeclarationStatementSyntax)stmt;
                             var decl = _syntaxFactory.FieldDeclaration(
-                                attributeLists: default, 
+                                attributeLists: default,
                                 local.Modifiers,
                                 local.Declaration,
                                 local.SemicolonToken);
+                            if (stmt.XNode is XSharpParserRuleContext xnode)
+                            {
+                                xnode.Put(decl);
+                            }
                             GlobalClassEntities.Members.Add(decl);
                         }
                         else
                         {
-                            GlobalClassEntities.Members.Add(_syntaxFactory.GlobalStatement(stmt));
+
+                            var globstmt = _syntaxFactory.GlobalStatement(stmt);
+                            if (stmt.XNode is XSharpParserRuleContext xnode)
+                            {
+                                xnode.Put(globstmt);
+                            }
+                            GlobalClassEntities.Members.Add(globstmt);
                         }
                     }
                 }
@@ -2327,23 +2337,32 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         var b = (BlockSyntax)s;
                         foreach (var stmt in b.Statements)
                         {
-                            GlobalClassEntities.Members.Add(_syntaxFactory.GlobalStatement(
+                            var globstmt = _syntaxFactory.GlobalStatement(
                                 _syntaxFactory.ExpressionStatement(
                                     attributeLists: default,
                                     ((ExpressionStatementSyntax)stmt).Expression,
-                                    SyntaxFactory.MissingToken(SyntaxKind.SemicolonToken))
-                                ));
+                                    SyntaxFactory.MissingToken(SyntaxKind.SemicolonToken)));
+                            if (stmt != null && stmt.XNode is XSharpParserRuleContext xnode)
+                            {
+                                xnode.Put(globstmt);
+                            }
+                            GlobalClassEntities.Members.Add(globstmt);
                         }
                     }
                     else
                     {
-                        GlobalClassEntities.Members.Add(_syntaxFactory.GlobalStatement(
+                        var node = s as CSharpSyntaxNode;
+                        var globstmt = _syntaxFactory.GlobalStatement(
                             _syntaxFactory.ExpressionStatement(
                                 attributeLists: default,
                                 ((ExpressionStatementSyntax)s).Expression,
                                 SyntaxFactory.MissingToken(SyntaxKind.SemicolonToken))
-                            ));
-
+                            );
+                        if (node != null && node.XNode is XSharpParserRuleContext xnode)
+                        {
+                            xnode.Put(globstmt);
+                        }
+                        GlobalClassEntities.Members.Add(globstmt);
                     }
                 }
                 else

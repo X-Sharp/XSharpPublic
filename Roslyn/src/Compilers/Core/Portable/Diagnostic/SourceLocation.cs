@@ -4,6 +4,9 @@
 
 using System;
 using System.Diagnostics;
+#if XSHARP
+using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
+#endif
 using Microsoft.CodeAnalysis.Text;
 using Roslyn.Utilities;
 

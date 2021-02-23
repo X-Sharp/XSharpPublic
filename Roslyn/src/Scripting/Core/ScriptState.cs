@@ -265,6 +265,111 @@ namespace Microsoft.CodeAnalysis.Scripting
             return null;
         }
 #endif
+#if XSHARP
+        /// <summary>
+        /// Invoke a method declared by the script.
+        /// </summary>
+        public object Invoke(string name, params object[] args)
+        {
+            var func = this.FindMethod(name, args != null ? args.Length : 0);
+            if (func != null)
+            {
+                return func(args);
+            }
+
+            return null;
+        }
+
+        private Func<object[], object> FindMethod(string name, int argCount)
+        {
+            for (int i = ExecutionState.SubmissionStateCount - 1; i >= 0; i--)
+            {
+                var sub = ExecutionState.GetSubmissionState(i);
+                if (sub != null)
+                {
+                    var type = sub.GetType();
+                    var method = FindMethod(type, name, argCount);
+                    if (method != null)
+                    {
+                        return (args) => method.Invoke(sub, args);
+                    }
+                }
+            }
+
+            return null;
+        }
+
+        private MethodInfo FindMethod(Type type, string name, int argCount)
+        {
+            return type.GetTypeInfo().GetDeclaredMethod(name);
+        }
+
+        /// <summary>
+        /// Create a delegate to a method declared by the script.
+        /// </summary>
+        public TDelegate CreateDelegate<TDelegate>(string name)
+        {
+            var delegateInvokeMethod = typeof(TDelegate).GetTypeInfo().GetDeclaredMethod("Invoke");
+
+            for (int i = ExecutionState.SubmissionStateCount - 1; i >= 0; i--)
+            {
+                var sub = ExecutionState.GetSubmissionState(i);
+                if (sub != null)
+                {
+                    var type = sub.GetType();
+                    var method = FindMatchingMethod(type, name, delegateInvokeMethod);
+                    if (method != null)
+                    {
+                        if (method.IsStatic)
+                            return (TDelegate)(object)method.CreateDelegate(typeof(TDelegate));
+                        else
+                            return (TDelegate)(object)method.CreateDelegate(typeof(TDelegate), sub);
+                    }
+                }
+            }
+
+            return default(TDelegate);
+        }
+
+        public (MethodInfo,object)[] GetMethodsNamed(string name)
+        {
+            var res = new ArrayBuilder< (MethodInfo, object) >();
+            for (int i = ExecutionState.SubmissionStateCount - 1; i >= 0; i--)
+            {
+                var sub = ExecutionState.GetSubmissionState(i);
+                if (sub != null)
+                {
+                    var type = sub.GetType();
+                    foreach(var mi in type.GetTypeInfo().GetDeclaredMethods(name))
+                    {
+                        res.Add((mi, sub));
+                    }
+                }
+            }
+
+            return res.ToArray();
+        }
+
+        private MethodInfo FindMatchingMethod(Type instanceType, string name, MethodInfo delegateInvokeMethod)
+        {
+            var dprms = delegateInvokeMethod.GetParameters();
+
+            foreach (var mi in instanceType.GetTypeInfo().GetDeclaredMethods(name))
+            {
+                if (mi.Name == name)
+                {
+                    var prms = mi.GetParameters();
+                    if (prms.Length == dprms.Length)
+                    {
+                        // TODO: better matching..
+                        return mi;
+                    }
+                }
+            }
+
+            return null;
+        }
+#endif
     }
 
     public sealed class ScriptState<T> : ScriptState

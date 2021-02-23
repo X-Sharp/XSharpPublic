@@ -157,7 +157,8 @@ BEGIN NAMESPACE XSharp
         MEMBER ErrorBlock   := 82  // Codeblock
         /// <summary>The last error that occurred for a RDD operation.</summary>
         MEMBER LastRddError := 84   // Exception object
-        // 85 unused
+        /// <summary>The last script error that occurred.</summary>
+        MEMBER LastScriptError := 85   // Exception object
         /// <summary>The last file found with File()</summary>
         MEMBER LastFound    := 86   // Last file found with File()
         /// <summary>The last File error code</summary>
@@ -880,9 +881,9 @@ INTERNAL FUNCTION RuntimeStateDefaultValue(nSet AS XSharp.Set) AS OBJECT
         CASE Set.ErrorBlock     // Codeblock
             RETURN NULL        
         
-        CASE Set.LastRddError   // Exception object
-            RETURN NULL        
-        CASE Set.FileException  // Last File exception
+        CASE Set.LastRddError       // Exception object
+        CASE Set.LastScriptError    // Exception object
+        CASE Set.FileException      // Exception object
             RETURN NULL
 
         CASE Set.Intl           

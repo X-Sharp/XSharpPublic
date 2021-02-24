@@ -243,8 +243,15 @@ namespace XSharp.LanguageService
                 case (LIB_CATEGORY)_LIB_CATEGORY2.LC_HIERARCHYTYPE:
                     fieldValue = (uint)_LIBCAT_HIERARCHYTYPE.LCHT_UNKNOWN;
                     break;
-                //default:
-                    //throw new NotImplementedException();
+                case LIB_CATEGORY.LC_VISIBILITY:
+                case LIB_CATEGORY.LC_NODETYPE:
+                case LIB_CATEGORY.LC_MODIFIER:
+                case LIB_CATEGORY.LC_CLASSTYPE:
+                case LIB_CATEGORY.LC_CLASSACCESS:
+                case LIB_CATEGORY.LC_MEMBERACCESS:
+                case LIB_CATEGORY.LC_MEMBERTYPE:
+                default:
+                    break;
             }
             return fieldValue;
         }

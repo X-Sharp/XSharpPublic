@@ -45,7 +45,7 @@ namespace XSharp.LanguageService
     [ProvideLanguageExtension(typeof(XSharpLanguageService), ".xh")]
     [ProvideLanguageExtension(typeof(XSharpLanguageService), ".ch")]
     [ProvideLanguageService(typeof(XSharpLanguageService),
-                         "XSharp",
+                         XSharpConstants.LanguageName,
                          languageResourceID: 1,        // resource ID of localized language name. This sets the name to X#
                          RequestStockColors = true,   
                          ShowDropDownOptions = true    // Supports NavigationBar
@@ -60,8 +60,8 @@ namespace XSharp.LanguageService
                   @"\%MyDocs%\Code Snippets\XSharp\My Code Snippets"
          )]
     //Note that the name of the entry in Tools/Options/TextEditor is defined in VsPackage.Resx in item #1 as X#
-    [ProvideLanguageEditorOptionPage(typeof(IntellisenseOptionsPage), "XSharp", null, "Intellisense", pageNameResourceId: "201")]  // keywordlistresourceid
-    [ProvideLanguageEditorOptionPage(typeof(FormattingOptionsPage), "XSharp", null, "Formatting", pageNameResourceId: "202")]       // keywordlistresourceid
+    [ProvideLanguageEditorOptionPage(typeof(IntellisenseOptionsPage), XSharpConstants.LanguageName, null, "Intellisense", pageNameResourceId: "201")]  // keywordlistresourceid
+    [ProvideLanguageEditorOptionPage(typeof(FormattingOptionsPage), XSharpConstants.LanguageName, null, "Formatting", pageNameResourceId: "202")]       // keywordlistresourceid
     public sealed class XSharpLanguageService : AsyncPackage, IVsShellPropertyEvents, IVsDebuggerEvents, IOleComponent
     {
         private static XSharpLanguageService instance;

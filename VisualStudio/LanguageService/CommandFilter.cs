@@ -548,11 +548,13 @@ namespace XSharp.LanguageService
             {
                 switch ((VSConstants.VSStd2KCmdID)nCmdID)
                 {
-                    case VSConstants.VSStd2KCmdID.AUTOCOMPLETE:
                     case VSConstants.VSStd2KCmdID.COMPLETEWORD:
+                    case VSConstants.VSStd2KCmdID.AUTOCOMPLETE:
                     case VSConstants.VSStd2KCmdID.SHOWMEMBERLIST:
+                        // in this case we WANT to include keywords in the list
+                        // when they type LOCA we want to include LOCAL as well
                         CancelSignatureSession();
-                        handled = StartCompletionSession(nCmdID, '\0');
+                        handled = StartCompletionSession(nCmdID, '\0',true);
                         break;
                     case VSConstants.VSStd2KCmdID.RETURN:
                         handled = CompleteCompletionSession();
@@ -872,7 +874,7 @@ namespace XSharp.LanguageService
                 }
                 if (chars > 2)
                 {
-                    StartCompletionSession(nCmdID, '\0');
+                    StartCompletionSession(nCmdID, '\0',true);
                 }
             }
         }
@@ -1061,7 +1063,7 @@ namespace XSharp.LanguageService
         }
 
 
-        bool StartCompletionSession(uint nCmdId, char typedChar)
+        bool StartCompletionSession(uint nCmdId, char typedChar, bool includeKeywords = false)
         {
             WriteOutputMessage("CommandFilter.StartCompletionSession()");
 
@@ -1089,9 +1091,10 @@ namespace XSharp.LanguageService
             _completionSession.Committed += OnCompletionSessionCommitted;
             _completionSession.SelectedCompletionSetChanged += _completionSession_SelectedCompletionSetChanged;
 
-            _completionSession.Properties["Command"] = nCmdId;
-            _completionSession.Properties["Char"] = typedChar;
-            _completionSession.Properties["Type"] = null;
+            _completionSession.Properties[XSCompletion.Command] = nCmdId;
+            _completionSession.Properties[XSCompletion.Char] = typedChar;
+            _completionSession.Properties[XSCompletion.Type] = null;
+            _completionSession.Properties[XSCompletion.IncludeKeywords] = includeKeywords;
             try
             {
                 _completionSession.Start();
@@ -1123,9 +1126,9 @@ namespace XSharp.LanguageService
                 if (_completionSession.SelectedCompletionSet.SelectionStatus.Completion.InsertionText.EndsWith("("))
                 {
                     XSharpModel.CompletionType cType = null;
-                    if (_completionSession.Properties["Type"] != null)
+                    if (_completionSession.Properties[XSCompletion.Type] != null)
                     {
-                        cType = (XSharpModel.CompletionType)_completionSession.Properties["Type"];
+                        cType = (XSharpModel.CompletionType)_completionSession.Properties[XSCompletion.Type];
                     }
                     string method = _completionSession.SelectedCompletionSet.SelectionStatus.Completion.InsertionText;
                     method = method.Substring(0, method.Length - 1);

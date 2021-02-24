@@ -35,6 +35,7 @@ BEGIN NAMESPACE XSharpModel
       PROPERTY IdFile       AS INT64 AUTO
       PROPERTY IdProject    AS INT64 AUTO     
       PROPERTY IdType       AS INT64 AUTO
+      PROPERTY BaseTypeName aS STRING GET MemberName SET MemberName := value
       PROPERTY FullName     AS STRING  GET FileName SET FileName := value
       PROPERTY Assembly     AS STRING  GET Project  SET Project := value
       PROPERTY IdAssembly   AS INT64   GET IdProject SET IdProject := value

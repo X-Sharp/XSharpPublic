@@ -127,7 +127,6 @@
     <Compile Include="OptionsPages\OtherEditorOptions.cs" />
     <Compile Include="OptionsPages\DialogPageProvider.cs" />
     <Compile Include="OptionsPages\WindowEditorOptions.cs" />
-    <Compile Include="ProjectSelector.cs" />
     <Compile Include="ErrorList\ErrorListProvider.cs" />
     <Compile Include="ErrorList\ListSinkManager.cs" />
     <Compile Include="ErrorList\ErrorMessageUtil.cs" />
@@ -193,10 +192,6 @@
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
     <Content Include="Editors\Todo.txt" />
-    <Content Include="ProjectSelectors.pkgdef">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      <IncludeInVSIX>true</IncludeInVSIX>
-    </Content>
     <Content Include="Snippets\SnippetsIndex.xml" />
     <Content Include="Template.ico" />
     <ZipProject Include="Templates\Projects\Windows\CoreWinFormApp\Form1.designer.prg" />
@@ -633,10 +628,6 @@
       <Name>ProjectBase</Name>
       <IncludeOutputGroupsInVSIX>BuiltProjectOutputGroup%3bBuiltProjectOutputGroupDependencies%3bGetCopyToOutputDirectoryItems%3bSatelliteDllsProjectOutputGroup%3b</IncludeOutputGroupsInVSIX>
       <IncludeOutputGroupsInVSIXLocalOnly>DebugSymbolsProjectOutputGroup%3b</IncludeOutputGroupsInVSIXLocalOnly>
-    </ProjectReference>
-    <ProjectReference Include="..\ProjectPackageCPS\XSharpProjectCPS.csproj">
-      <Project>{679502ac-264c-40ac-9e3a-587f2a27f08b}</Project>
-      <Name>XSharpProjectCPS</Name>
     </ProjectReference>
     <ProjectReference Include="..\VODesigners\VODesigners.xsproj">
       <Project>{faac947e-0355-4f8d-adb9-c57b1c9357d2}</Project>

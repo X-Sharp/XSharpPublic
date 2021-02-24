@@ -19,16 +19,14 @@ USING XSharp.Parser
 BEGIN NAMESPACE XSharpModel
     CLASS SourceWalker IMPLEMENTS IDisposable , VsParser.IErrorListener
         #region fields
-        PRIVATE _errors AS IList<XError>
-        PRIVATE _file AS XFile
-            //PRIVATE _gate AS OBJECT
-        PRIVATE _prjNode AS IXSharpProject
+        PRIVATE _errors     AS IList<XError>            
+        PRIVATE _file       AS XFile
+        PRIVATE _prjNode    AS IXSharpProject
         PRIVATE _tokenStream AS ITokenStream
-            //PRIVATE _info AS ParseResult
-        PRIVATE _entities AS IList<XEntityDefinition>
-        PRIVATE _blocks   AS IList<XBlock>
-        PRIVATE _locals   AS IList<XVariable>
-            PRIVATE _options  AS XSharpParseOptions
+        PRIVATE _entities   AS IList<XEntityDefinition> 
+        PRIVATE _blocks     AS IList<XBlock>             
+        PRIVATE _locals     AS IList<XVariable>           
+        PRIVATE _options    AS XSharpParseOptions
             
         #endregion
         #region Properties
@@ -50,12 +48,16 @@ BEGIN NAMESPACE XSharpModel
         CONSTRUCTOR(file AS XFile)
             SUPER()
             IF (file != NULL)
-                //SELF:_gate := OBJECT{}
                 SELF:_file := file
                 SELF:_prjNode := SELF:_file?:Project?:ProjectNode
                 SELF:StartPosition := 0
                 SELF:SourcePath := SELF:_file:SourcePath
-                _options   := SELF:_file:Project:ParseOptions
+                SELF:_options   := SELF:_file:Project:ParseOptions
+                SELF:_errors   := List<XError>{} 
+                SELF:_entities := List<XEntityDefinition>{}  
+                SELF:_blocks   := List<XBlock>{}             
+                SELF:_locals   := List<XVariable>{}          
+                
             ENDIF
         
         VIRTUAL METHOD Dispose() AS VOID 
@@ -68,6 +70,10 @@ BEGIN NAMESPACE XSharpModel
                 SELF:_file := NULL
                 SELF:_prjNode := NULL
                 SELF:_tokenStream := NULL
+                SELF:_entities := NULL
+                SELF:_blocks   := NULL
+                SELF:_locals   := NULL
+                
         ENDIF
         
         
@@ -77,9 +83,9 @@ BEGIN NAMESPACE XSharpModel
             SELF:_errors := List<XError>{}
             LOCAL stream := NULL AS ITokenStream
             TRY
-                    XSharp.Parser.VsParser.Lex(cSource, SELF:SourcePath, _options, SELF, OUT stream)
-                    BEGIN LOCK SELF
-                        SELF:_tokenStream := stream
+                XSharp.Parser.VsParser.Lex(cSource, SELF:SourcePath, _options, SELF, OUT stream)
+                BEGIN LOCK SELF
+                    SELF:_tokenStream := stream
                 END LOCK
             CATCH e AS Exception
                 WriteOutputMessage("Lex() Failed:")
@@ -140,9 +146,12 @@ BEGIN NAMESPACE XSharpModel
             SELF:Parse(cSource, lIncludeLocals)
             
         METHOD Parse(cSource AS STRING, lIncludeLocals AS LOGIC) AS VOID
+            IF SELF:_file == NULL
+                RETURN
+            ENDIF
             WriteOutputMessage("-->> Parse() "+SELF:SourcePath+" locals "+lIncludeLocals:ToString()+" )")
             TRY
-                    VAR tokens   := SELF:Lex(cSource)
+                VAR tokens   := SELF:Lex(cSource)
                 SELF:ParseTokens(tokens, FALSE, lIncludeLocals)
             CATCH e AS Exception
                 WriteOutputMessage("Parse() Failed:")

@@ -294,7 +294,6 @@ namespace XSharp.LanguageService
                 // can't edit !
                 return;
             }
-            // Read Settings
 
             // Try to retrieve an already parsed list of Tags
             if (_classifier != null)

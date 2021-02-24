@@ -39,7 +39,7 @@
     <VO14>false</VO14>
     <VO15>false</VO15>
     <VO16>false</VO16>
-    <XSharpProjectversion>2.6.3.0</XSharpProjectversion>
+    <XSharpProjectversion>2.7.0.0</XSharpProjectversion>
     <Includepaths>$(SolutionDir)\Common</Includepaths>
     <Nostandarddefs>true</Nostandarddefs>
     <NamedArgs>true</NamedArgs>
@@ -50,6 +50,7 @@
     <XPP1>false</XPP1>
     <FOX1>false</FOX1>
     <FOX2>false</FOX2>
+    <NoWin32Manifest>False</NoWin32Manifest>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
@@ -104,16 +105,8 @@
     </Reference>
     <Reference Include="mscorlib" />
     <Reference Include="System" />
-    <Reference Include="System.Core">
-      <Name>System.Core</Name>
-      <AssemblyName>System.Core.dll</AssemblyName>
-      <SpecificVersion>False</SpecificVersion>
-    </Reference>
-    <Reference Include="System.Data, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-      <Name>System.Data</Name>
-      <AssemblyName>System.Data.dll</AssemblyName>
-      <SpecificVersion>False</SpecificVersion>
-    </Reference>
+    <Reference Include="System.Data" />
+    <Reference Include="System.Core" />
     <Reference Include="System.Data.SQLite, Version=1.0.113.0, Culture=neutral, PublicKeyToken=db937bc2d44ff139">
       <Name>System.Data.SQLite</Name>
       <AssemblyName>System.Data.SQLite.dll</AssemblyName>

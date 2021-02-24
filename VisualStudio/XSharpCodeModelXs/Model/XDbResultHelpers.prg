@@ -24,27 +24,27 @@ BEGIN NAMESPACE XSharpModel
             LOCAL idProject := -1 AS INT64
             //
             TRY
-                    FOREACH VAR element IN found
-                        // Skip types found in another project
-                        IF idProject != -1 .AND. element:IdProject != idProject
-                            LOOP
-                        ENDIF
-                        idProject   := element:IdProject  
-                        VAR name    := element:TypeName
-                        VAR idType  := element:IdType
-                        VAR fileName := element:FileName
-                        IF fileName == NULL
-                            fileName := origin:FullPath
-                        ENDIF
-                        VAR file       := XFile{ fileName, origin:Project}
-                        file:Virtual   := TRUE
-                        file:Id        := element:IdFile
-                        VAR range    := TextRange{element:StartLine, element:StartColumn, element:EndLine, element:EndColumn}
-                        VAR interval := TextInterval{element:Start, element:Stop}
-                        VAR xtype := XTypeDefinition{name, element:Kind,element:Attributes, range, interval, file}
-                        xtype:Namespace := element:Namespace
-                        xtype:Id  := element:IdType
-                        result:Add(xtype)
+                FOREACH VAR element IN found
+                    // Skip types found in another project
+                    IF idProject != -1 .AND. element:IdProject != idProject
+                        LOOP
+                    ENDIF
+                    idProject   := element:IdProject  
+                    VAR name    := element:TypeName
+                    VAR idType  := element:IdType
+                    VAR fileName := element:FileName
+                    IF fileName == NULL
+                        fileName := origin:FullPath
+                    ENDIF
+                    VAR file       := XFile{ fileName, origin:Project}
+                    file:Virtual   := TRUE
+                    file:Id        := element:IdFile
+                    VAR range    := TextRange{element:StartLine, element:StartColumn, element:EndLine, element:EndColumn}
+                    VAR interval := TextInterval{element:Start, element:Stop}
+                    VAR xtype := XTypeDefinition{name, element:Kind,element:Attributes, range, interval, file}
+                    xtype:Namespace := element:Namespace
+                    xtype:Id  := element:IdType
+                    result:Add(xtype)
                 NEXT
             CATCH e AS Exception
                 XSolution.WriteOutputMessage("GetTypesInFile: "+ e:Message)
@@ -57,54 +57,54 @@ BEGIN NAMESPACE XSharpModel
             LOCAL idProject := -1 AS INT64
             //
             TRY
-                    FOREACH VAR element IN found
-                        // Skip types found in another project
-                        IF idProject != -1 .AND. element:IdProject != idProject
-                            LOOP
-                        ENDIF
-                        idProject   := element:IdProject  
-                        //
-                        VAR name    := element:TypeName
-                        VAR idType  := element:IdType
-                        VAR fileName := element:FileName
-                        IF fileName == NULL
-                            fileName := origin:FullPath
-                        ENDIF
-                        VAR file       := XFile{ fileName, origin:Project}
-                        file:Virtual   := TRUE
-                        // If we don't set Interactive, the EntityList will be emptied after the Parse() operation
-                        file:Interactive := TRUE
-                        file:Id        := element:IdFile
-                        VAR members := XDatabase.GetMembers(idType, idProject)
-                        // now create a temporary source for the parser
-                        VAR source     := GetTypeSource(element, members)
-                        VAR walker := SourceWalker{file}
-                        walker:Parse(source, FALSE)
-                        IF walker:EntityList:Count > 0
-                            VAR xElement      := walker:EntityList:First()
-                            IF xElement IS XTypeDefinition VAR xtype
-                                xtype:Range       := TextRange{element:StartLine, element:StartColumn, element:EndLine, element:EndColumn}
-                                xtype:Interval    := TextInterval{element:Start, element:Stop}
-                                xtype:XmlComments := element:XmlComments
-                                xtype:ClassType   := (XSharpDialect) element:ClassType
-                                xtype:Namespace := element:Namespace
-                                xtype:Id  := element:IdType
-                                VAR xmembers := xtype:XMembers
-                                IF xmembers:Count == members:Count
-                                    LOCAL i AS INT
-                                    FOR i := 0 TO members:Count-1
-                                        VAR xmember := (XMemberDefinition) xmembers[i] 
-                                        VAR melement := members[i]
-                                        xmember:Range       := TextRange{melement:StartLine, melement:StartColumn, melement:EndLine, melement:EndColumn}
-                                        xmember:Interval    := TextInterval{melement:Start, melement:Stop}
-                                        IF xmember:Name == melement:MemberName
-                                            xmember:XmlComments := melement:XmlComments
-                                        ENDIF
-                                    NEXT
-                                ENDIF
-                                result:Add(xtype)
+                FOREACH VAR element IN found
+                    // Skip types found in another project
+                    IF idProject != -1 .AND. element:IdProject != idProject
+                        LOOP
+                    ENDIF
+                    idProject   := element:IdProject  
+                    //
+                    VAR name    := element:TypeName
+                    VAR idType  := element:IdType
+                    VAR fileName := element:FileName
+                    IF fileName == NULL
+                        fileName := origin:FullPath
+                    ENDIF
+                    VAR file       := XFile{ fileName, origin:Project}
+                    file:Virtual   := TRUE
+                    // If we don't set Interactive, the EntityList will be emptied after the Parse() operation
+                    file:Interactive := TRUE
+                    file:Id        := element:IdFile
+					VAR members := XDatabase.GetMembers(idType)
+                    // now create a temporary source for the parser
+                    VAR source     := GetTypeSource(element, members)
+                    VAR walker := SourceWalker{file}
+                    walker:Parse(source, FALSE)
+                    IF walker:EntityList:Count > 0
+                        VAR xElement      := walker:EntityList:First()
+                        IF xElement IS XTypeDefinition VAR xtype
+                            xtype:Range       := TextRange{element:StartLine, element:StartColumn, element:EndLine, element:EndColumn}
+                            xtype:Interval    := TextInterval{element:Start, element:Stop}
+                            xtype:XmlComments := element:XmlComments
+                            xtype:ClassType   := (XSharpDialect) element:ClassType
+                            xtype:Namespace := element:Namespace
+                            xtype:Id  := element:IdType
+                            VAR xmembers := xtype:XMembers
+                            IF xmembers:Count == members:Count
+                                LOCAL i AS INT
+                                FOR i := 0 TO members:Count-1
+                                    VAR xmember := (XMemberDefinition) xmembers[i] 
+                                    VAR melement := members[i]
+                                    xmember:Range       := TextRange{melement:StartLine, melement:StartColumn, melement:EndLine, melement:EndColumn}
+                                    xmember:Interval    := TextInterval{melement:Start, melement:Stop}
+                                    IF xmember:Name == melement:MemberName
+                                        xmember:XmlComments := melement:XmlComments
+                                    ENDIF
+                                NEXT
                             ENDIF
+                            result:Add(xtype)
                         ENDIF
+                    ENDIF
                 NEXT
             CATCH e AS Exception
                 XSolution.WriteOutputMessage("GetTypesInFile: "+ e:Message)

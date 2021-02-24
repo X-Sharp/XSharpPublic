@@ -19,17 +19,13 @@
 
 using System;
 using System.Globalization;
-using System.Runtime.InteropServices;
 
 using Microsoft.VisualStudio.Shell.Interop;
-using Microsoft.VisualStudio.TextManager.Interop;
-using Microsoft.VisualStudio.Shell;
 using ErrorHandler = Microsoft.VisualStudio.ErrorHandler;
 using VSConstants = Microsoft.VisualStudio.VSConstants;
 using XSharpModel;
 using System.Collections.Generic;
 using System.Diagnostics;
-using XSharp.LanguageService;
 namespace XSharp.LanguageService
 {
 
@@ -126,12 +122,20 @@ namespace XSharp.LanguageService
         private string fileMoniker;
         // Description Infos...
         private List<Tuple<string, VSOBDESCRIPTIONSECTION>> description;
-        private SourcePosition editorInfo;
-        private String nodeText;
+        private readonly SourcePosition editorInfo;
+        private string nodeText;
         // ClassName & Namespace
-        private string nameSp = "";
+        private string nameSpace = "";
         private string className = "";
-
+        private readonly Kind kind;
+        private readonly Modifiers attributes;
+        const string NEWLINE = "\n";
+        const string CONSTRUCTOR = "Constructor";
+        const string DEFAULTNAMESPACE = "Default NameSpace";
+        const string SUMMARY = "\nSummary:\n";
+        const string PARAMETERS = "\nParameters:";
+        const string RETURNS = "\nReturns:\n";
+        const string REMARKS = "\nRemarks:\n";
         internal string FullPath { get; } = "";
 		
         internal XSharpLibraryNode(string namePrefix, LibraryNodeType nType, string path)
@@ -155,14 +159,16 @@ namespace XSharp.LanguageService
         }
 
 
-        internal XSharpLibraryNode(XEntityDefinition scope, string namePrefix, IVsHierarchy hierarchy, uint itemId)
-            : base(String.IsNullOrEmpty(scope.FullName) ? namePrefix : scope.FullName)
+        internal XSharpLibraryNode(XEntityDefinition entity, string namePrefix, IVsHierarchy hierarchy, uint itemId)
+            : base(String.IsNullOrEmpty(entity.FullName) ? namePrefix : entity.FullName)
         {
-            if (scope.Kind == Kind.Namespace)
+            kind = entity.Kind;
+            attributes = entity.Attributes;
+            if (kind == Kind.Namespace)
             {
                 this.NodeType = LibraryNodeType.Namespaces;
             }
-            else if (scope.Kind.IsType())
+            else if (kind.IsType())
             {
                 this.NodeType = LibraryNodeType.Classes;
             }
@@ -182,15 +188,15 @@ namespace XSharp.LanguageService
                 this.CanGoToSource = true;
                 this.editorInfo = new SourcePosition()
                 {
-                    FileName = scope.File.FullPath,
-                    Line = scope.Range.StartLine + 1,
-                    Column = scope.Range.StartColumn,
+                    FileName = entity.File.FullPath,
+                    Line = entity.Range.StartLine + 1,
+                    Column = entity.Range.StartColumn,
                 };
             }
             //
-            this.buildImageData(scope.Kind, scope.Visibility);
-            this.initText(scope);
-            this.initDescription(scope);
+            this.buildImageData(entity.Kind, entity.Visibility);
+            this.initText(entity);
+            this.initDescription(entity);
         }
 
         private void buildImageData(Kind elementType, Modifiers accessType)
@@ -294,6 +300,12 @@ namespace XSharp.LanguageService
             this.fileMoniker = node.fileMoniker;
             //this.member = node.member;
             this.NodeType = node.NodeType;
+            this.editorInfo = node.editorInfo;
+            this.description = node.description;
+            this.kind = node.kind;
+            this.attributes = node.attributes;
+
+
         }
 
 
@@ -330,6 +342,136 @@ namespace XSharp.LanguageService
             return this.filesId.Count;
         }
 
+        private uint classAccess()
+        {
+            _LIBCAT_CLASSACCESS result = 0;
+            if ((attributes & Modifiers.VisibilityMask) == Modifiers.None)
+                result |= _LIBCAT_CLASSACCESS.LCCA_PUBLIC;
+            else
+            {
+                if (attributes.HasFlag(Modifiers.Sealed))
+                    result |= _LIBCAT_CLASSACCESS.LCCA_SEALED;
+                if (attributes.HasFlag(Modifiers.Protected))
+                    result |= _LIBCAT_CLASSACCESS.LCCA_PROTECTED;
+                if (attributes.HasFlag(Modifiers.Private))
+                    result |= _LIBCAT_CLASSACCESS.LCCA_PRIVATE;
+                if (attributes.HasFlag(Modifiers.Public))
+                    result |= _LIBCAT_CLASSACCESS.LCCA_PUBLIC;
+                if (attributes.HasFlag(Modifiers.Internal))
+                    result |= _LIBCAT_CLASSACCESS.LCCA_FRIEND;
+            }
+            return (uint)result;
+        }
+
+        private uint memberAccess()
+        {
+            _LIBCAT_MEMBERACCESS result = 0;
+            if ((attributes & Modifiers.VisibilityMask) == Modifiers.None)
+                result |= _LIBCAT_MEMBERACCESS.LCMA_PUBLIC;
+            else
+            {
+                if (attributes.HasFlag(Modifiers.Sealed))
+                    result |= _LIBCAT_MEMBERACCESS.LCMA_SEALED;
+                if (attributes.HasFlag(Modifiers.Protected))
+                    result |= _LIBCAT_MEMBERACCESS.LCMA_PROTECTED;
+                if (attributes.HasFlag(Modifiers.Private))
+                    result |= _LIBCAT_MEMBERACCESS.LCMA_PRIVATE;
+                if (attributes.HasFlag(Modifiers.Public))
+                    result |= _LIBCAT_MEMBERACCESS.LCMA_PUBLIC;
+                if (attributes.HasFlag(Modifiers.Internal))
+                    result |= _LIBCAT_MEMBERACCESS.LCMA_FRIEND;
+            }
+            return (uint) result;
+        }
+        private _LIBCAT_MEMBERTYPE memberType()
+        {
+            switch (kind)
+            {
+                case Kind.Method:
+                case Kind.Constructor:
+                case Kind.Destructor:
+                    return _LIBCAT_MEMBERTYPE.LCMT_METHOD;
+                case Kind.Function:
+                case Kind.LocalFunc:
+                case Kind.Procedure:
+                case Kind.LocalProc:
+                    return _LIBCAT_MEMBERTYPE.LCMT_FUNCTION;
+                case Kind.Operator:
+                    return _LIBCAT_MEMBERTYPE.LCMT_OPERATOR;
+                case Kind.Property:
+                case Kind.Access:
+                case Kind.Assign:
+                    return _LIBCAT_MEMBERTYPE.LCMT_PROPERTY;
+                case Kind.Field:
+                case Kind.VOGlobal:
+                    return _LIBCAT_MEMBERTYPE.LCMT_FIELD;
+                case Kind.Local:
+                case Kind.Parameter:
+                case Kind.DbField:
+                case Kind.MemVar:
+                    return _LIBCAT_MEMBERTYPE.LCMT_VARIABLE;
+                case Kind.Event:
+                    return _LIBCAT_MEMBERTYPE.LCMT_EVENT;
+                case Kind.VODefine:
+                    return _LIBCAT_MEMBERTYPE.LCMT_CONSTANT;
+                case Kind.EnumMember:
+                    return _LIBCAT_MEMBERTYPE.LCMT_ENUMITEM;
+                case Kind.Class:
+                case Kind.Structure:
+                case Kind.VOStruct:
+                case Kind.Interface:
+                case Kind.Enum:
+                case Kind.Delegate:
+                case Kind.Union:
+                    return _LIBCAT_MEMBERTYPE.LCMT_TYPEDEF;
+                default:
+                    return _LIBCAT_MEMBERTYPE.LCMT_ERROR;
+            }
+        }
+
+        private _LIBCAT_CLASSTYPE classType()
+        {
+            switch (kind)
+            {
+                case Kind.Class:
+                    return _LIBCAT_CLASSTYPE.LCCT_CLASS;
+                case Kind.Interface:
+                    return _LIBCAT_CLASSTYPE.LCCT_INTERFACE;
+                case Kind.Structure:
+                case Kind.VOStruct:
+                case Kind.Union:
+                    return _LIBCAT_CLASSTYPE.LCCT_STRUCT;
+                case Kind.Enum:
+                    return _LIBCAT_CLASSTYPE.LCCT_ENUM;
+                // LCCT_MODULE
+                // LCCT_INTRINSIC 
+                case Kind.Delegate:
+                    return _LIBCAT_CLASSTYPE.LCCT_DELEGATE;
+                // LCCT_EXCEPTION
+                // LCCT_MAP
+                // LCCT_GLOBAL
+                default:
+                    return _LIBCAT_CLASSTYPE.LCCT_ERROR;
+            }
+        }
+
+        private _LIBCAT_MODIFIERTYPE modifierType()
+        {
+            _LIBCAT_MODIFIERTYPE result = (_LIBCAT_MODIFIERTYPE)0;
+            if (attributes.HasFlag(Modifiers.Static))
+                result |= _LIBCAT_MODIFIERTYPE.LCMDT_STATIC;
+            if (attributes.HasFlag(Modifiers.Virtual))
+                result |= _LIBCAT_MODIFIERTYPE.LCMDT_VIRTUAL;
+            else if (attributes.HasFlag(Modifiers.Override))
+                result |= _LIBCAT_MODIFIERTYPE.LCMDT_VIRTUAL;
+            else
+                result |= _LIBCAT_MODIFIERTYPE.LCMDT_NONVIRTUAL;
+            if (attributes.HasFlag(Modifiers.Sealed))
+                result |= _LIBCAT_MODIFIERTYPE.LCMDT_FINAL;
+
+            return result;
+        }
+
         protected override uint CategoryField(LIB_CATEGORY category)
         {
             switch (category)
@@ -339,6 +481,27 @@ namespace XSharp.LanguageService
                     {
                         return (uint)_LIBCAT_MEMBERINHERITANCE.LCMI_IMMEDIATE;
                     }
+                    break;
+                case LIB_CATEGORY.LC_MEMBERTYPE:
+                    return (uint)memberType();
+
+                case LIB_CATEGORY.LC_MEMBERACCESS:
+                    return this.memberAccess();
+                case LIB_CATEGORY.LC_CLASSTYPE:
+                    return (uint) this.classType();
+                case LIB_CATEGORY.LC_CLASSACCESS:
+                    return (uint)this.classAccess();
+                case LIB_CATEGORY.LC_ACTIVEPROJECT:
+                    return (uint)_LIBCAT_ACTIVEPROJECT.LCAP_SHOWALWAYS;
+                case LIB_CATEGORY.LC_LISTTYPE:
+                    break;
+                case LIB_CATEGORY.LC_VISIBILITY:
+                    return (uint) _LIBCAT_VISIBILITY.LCV_VISIBLE;
+                case LIB_CATEGORY.LC_MODIFIER:
+                    return (uint) modifierType();
+                case LIB_CATEGORY.LC_NODETYPE:
+                    break;
+                default:
                     break;
             }
             return base.CategoryField(category);
@@ -394,7 +557,7 @@ namespace XSharp.LanguageService
             {
                 case VSTREETEXTOPTIONS.TTO_PREFIX2:
                     //  
-                    descText = nameSp;
+                    descText = nameSpace;
                     break;
                 case VSTREETEXTOPTIONS.TTO_PREFIX:
                     //   
@@ -424,7 +587,7 @@ namespace XSharp.LanguageService
             {
                 if (member.Parent is XTypeDefinition)
                 {
-                    nameSp = ((XTypeDefinition)member.Parent).Namespace;
+                    nameSpace = ((XTypeDefinition)member.Parent).Namespace;
                     className = ((XTypeDefinition)member.Parent).Name;
                 }
                 //
@@ -432,14 +595,7 @@ namespace XSharp.LanguageService
                 if (member is XMemberDefinition)
                 {
                     var tm = member as XMemberDefinition;
-                    if (tm.Kind == Kind.Constructor)
-                    {
-                        descText = "Constructor";
-                    }
-                    else
-                    {
-                        descText = member.Name;
-                    }
+                    descText = tm.Kind == Kind.Constructor ? CONSTRUCTOR : member.Name;
                     if (tm.Kind.HasParameters())
                     {
                         descText +=  tm.Kind == Kind.Constructor ? "{" : "( ";
@@ -457,7 +613,7 @@ namespace XSharp.LanguageService
                     var tm = member as XTypeDefinition;
                     if ((tm.Kind == Kind.Namespace) && (String.IsNullOrEmpty(descText)))
                     {
-                        descText = "Default NameSpace";
+                        descText = DEFAULTNAMESPACE;
                     }
                 }
 
@@ -465,42 +621,33 @@ namespace XSharp.LanguageService
             nodeText = descText;
         }
 
-        public string NodeText
-        {
-            get
-            {
-                return nodeText != null ? nodeText : "";
-            }
-        }
+        public string NodeText => nodeText ?? "";
 
         protected override void buildDescription(_VSOBJDESCOPTIONS flags, IVsObjectBrowserDescription3 obDescription)
         {
             obDescription.ClearDescriptionText();
-            foreach (var element in description)
+            try
             {
-                obDescription.AddDescriptionText3(element.Item1, element.Item2, null);
+                foreach (var element in description)
+                {
+                    obDescription.AddDescriptionText3(element.Item1, element.Item2, null);
+                }
             }
+            catch { }
+
+        }
+
+        private Tuple<string, VSOBDESCRIPTIONSECTION> item (string item1, VSOBDESCRIPTIONSECTION item2)
+        {
+            return new Tuple<string, VSOBDESCRIPTIONSECTION>(item1, item2);
         }
 
         private void initDescription(XEntityDefinition member) //, _VSOBJDESCOPTIONS flags, IVsObjectBrowserDescription3 description)
         {
             description = new List<Tuple<string, VSOBDESCRIPTIONSECTION>>();
-            //
-            string descText = this.Name;
-            // 
-            string namesp = "";
-            string className = "";
+            string descText ;
             if (member != null)
             {
-                if (member.Parent != null)
-                {
-                    if (member.Parent is IXType)
-                    {
-                        namesp = ((IXType)member.Parent).Namespace;
-                        className = ((IXType)member.Parent).Name;
-                    }
-                }
-                //
                 string modifier = "";
                 string access = "";
                 if ((member is XTypeDefinition) && (member.Kind != Kind.Namespace))
@@ -514,15 +661,14 @@ namespace XSharp.LanguageService
                     access = member.Visibility.ToDisplayString() ;
                 }
                 //
-                if (!String.IsNullOrEmpty(modifier))
+                if (!string.IsNullOrEmpty(modifier))
                 {
-                    description.Add(new Tuple<string, VSOBDESCRIPTIONSECTION>(modifier + " ", VSOBDESCRIPTIONSECTION.OBDS_ATTRIBUTE));
+                    description.Add(item(modifier + " ", VSOBDESCRIPTIONSECTION.OBDS_ATTRIBUTE));
                 }
                 //
-                if (!String.IsNullOrEmpty(access))
+                if (!string.IsNullOrEmpty(access))
                 {
-                    description.Add(new Tuple<string, VSOBDESCRIPTIONSECTION>(access + " ", VSOBDESCRIPTIONSECTION.OBDS_ATTRIBUTE));
-                    //description.AddDescriptionText3(access, VSOBDESCRIPTIONSECTION.OBDS_MISC, null);
+                    description.Add(item(access + " ", VSOBDESCRIPTIONSECTION.OBDS_ATTRIBUTE));
                 }
                 // 
                 if (member.Kind != Kind.Field)
@@ -533,21 +679,18 @@ namespace XSharp.LanguageService
                     {
                         descName = VSOBDESCRIPTIONSECTION.OBDS_NAME;
                     }
-                    description.Add(new Tuple<string, VSOBDESCRIPTIONSECTION>(descText, descName));
-                    //description.AddDescriptionText3(descText, VSOBDESCRIPTIONSECTION.OBDS_MISC, null);
+                    description.Add(item(descText, descName));
                 }
                 if (member.Kind != Kind.Constructor)
                 {
                     descText = member.Name;
-                    description.Add(new Tuple<string, VSOBDESCRIPTIONSECTION>(descText, VSOBDESCRIPTIONSECTION.OBDS_NAME));
+                    description.Add(item(descText, VSOBDESCRIPTIONSECTION.OBDS_NAME));
                 }
-                //description.AddDescriptionText3(descText, VSOBDESCRIPTIONSECTION.OBDS_NAME, null);
                 // Parameters ?
                 if (member.Kind.HasParameters())
                 {
                     descText = "(";
-                    description.Add(new Tuple<string, VSOBDESCRIPTIONSECTION>(descText, VSOBDESCRIPTIONSECTION.OBDS_MISC));
-                    //description.AddDescriptionText3(descText, VSOBDESCRIPTIONSECTION.OBDS_MISC, null);
+                    description.Add(item(descText, VSOBDESCRIPTIONSECTION.OBDS_MISC));
                     XMemberDefinition realmember;
                     XTypeDefinition type = member as XTypeDefinition;
                     if (member.Kind == Kind.Delegate && type?.XMembers.Count > 0)
@@ -562,54 +705,33 @@ namespace XSharp.LanguageService
                         foreach (XVariable param in realmember.Parameters)
                         {
                             descText = param.Name;
-                            description.Add(new Tuple<string, VSOBDESCRIPTIONSECTION>(descText, VSOBDESCRIPTIONSECTION.OBDS_PARAM));
+                            description.Add(item(descText, VSOBDESCRIPTIONSECTION.OBDS_PARAM));
                             descText = param.ParamTypeDesc;
-                            description.Add(new Tuple<string, VSOBDESCRIPTIONSECTION>(descText, VSOBDESCRIPTIONSECTION.OBDS_MISC));
-                            //description.AddDescriptionText3(descText, VSOBDESCRIPTIONSECTION.OBDS_PARAM, null);
+                            description.Add(item(descText, VSOBDESCRIPTIONSECTION.OBDS_MISC));
                             descText = param.TypeName;
                             //
-                            IVsNavInfo navInfo = buildNavInfo(member.File, param.TypeName);
-                            //
-                            description.Add(new Tuple<string, VSOBDESCRIPTIONSECTION>(descText, VSOBDESCRIPTIONSECTION.OBDS_TYPE));
-                            //description.AddDescriptionText3(descText, VSOBDESCRIPTIONSECTION.OBDS_TYPE, navInfo);
+                            description.Add(item(descText, VSOBDESCRIPTIONSECTION.OBDS_TYPE));
                             // Need a comma ?
                             if (paramNum < realmember.ParameterCount)
                             {
                                 paramNum++;
                                 descText = ",";
-                                description.Add(new Tuple<string, VSOBDESCRIPTIONSECTION>(descText, VSOBDESCRIPTIONSECTION.OBDS_COMMA));
-                                //description.AddDescriptionText3(descText, VSOBDESCRIPTIONSECTION.OBDS_COMMA, null);
+                                description.Add(item(descText, VSOBDESCRIPTIONSECTION.OBDS_COMMA));
                             }
                         }
                     }
                     descText = ")";
-                    description.Add(new Tuple<string, VSOBDESCRIPTIONSECTION>(descText, VSOBDESCRIPTIONSECTION.OBDS_MISC));
-                    //description.AddDescriptionText3(descText, VSOBDESCRIPTIONSECTION.OBDS_MISC, null);
+                    description.Add(item(descText, VSOBDESCRIPTIONSECTION.OBDS_MISC));
                 }
                 if (member.Kind.HasReturnType())
                 {
                     descText = XLiterals.AsKeyWord;
-                    description.Add(new Tuple<string, VSOBDESCRIPTIONSECTION>(descText, VSOBDESCRIPTIONSECTION.OBDS_MISC));
-                    //description.AddDescriptionText3(descText, VSOBDESCRIPTIONSECTION.OBDS_MISC, null);
+                    description.Add(item(descText, VSOBDESCRIPTIONSECTION.OBDS_MISC));
                     descText = member.TypeName;
-                    description.Add(new Tuple<string, VSOBDESCRIPTIONSECTION>(descText, VSOBDESCRIPTIONSECTION.OBDS_TYPE));
-                    //description.AddDescriptionText3(descText, VSOBDESCRIPTIONSECTION.OBDS_TYPE, null);
+                    description.Add(item(descText, VSOBDESCRIPTIONSECTION.OBDS_TYPE));
                 }
 
-                //
-                //if (!((member.Kind == Kind.Function) || (member.Kind == Kind.Procedure) || (member.Kind == Kind.VODLL)) &&
-                //    ((member.Parent is XTypeDefinition) && (member.Parent.Kind == Kind.Class)))
-                //{
-                //    descText = " CLASS ";
-                //    description.Add(new Tuple<string, VSOBDESCRIPTIONSECTION>(descText, VSOBDESCRIPTIONSECTION.OBDS_MISC));
-                //    //description.AddDescriptionText3(descText, VSOBDESCRIPTIONSECTION.OBDS_MISC, null);
-                //    descText = className;
-                //    description.Add(new Tuple<string, VSOBDESCRIPTIONSECTION>(descText, VSOBDESCRIPTIONSECTION.OBDS_TYPE));
-                //    //description.AddDescriptionText3(descText, VSOBDESCRIPTIONSECTION.OBDS_TYPE, null);
-                //}
-                //
-                description.Add(new Tuple<string, VSOBDESCRIPTIONSECTION>(null, VSOBDESCRIPTIONSECTION.OBDS_ENDDECL));
-                //description.AddDescriptionText3(null, VSOBDESCRIPTIONSECTION.OBDS_ENDDECL, null);
+                description.Add(item(null, VSOBDESCRIPTIONSECTION.OBDS_ENDDECL));
             }
             //
             if (member.File?.Project != null)
@@ -626,46 +748,37 @@ namespace XSharp.LanguageService
                 {
                     summary = XSharpXMLDocMember.GetTypeSummary((XTypeDefinition)member, member.File?.Project, out returns, out remarks);
                 }
-                if (!String.IsNullOrEmpty(summary))
+                if (!string.IsNullOrEmpty(summary))
                 {
-                    description.Add(new Tuple<string, VSOBDESCRIPTIONSECTION>("\n", VSOBDESCRIPTIONSECTION.OBDS_MISC));
-                    description.Add(new Tuple<string, VSOBDESCRIPTIONSECTION>("\nSummary:\n", VSOBDESCRIPTIONSECTION.OBDS_NAME));
-                    description.Add(new Tuple<string, VSOBDESCRIPTIONSECTION>(summary, VSOBDESCRIPTIONSECTION.OBDS_MISC));
+                    description.Add(item(NEWLINE, VSOBDESCRIPTIONSECTION.OBDS_MISC));
+                    description.Add(item(SUMMARY, VSOBDESCRIPTIONSECTION.OBDS_NAME));
+                    description.Add(item(summary, VSOBDESCRIPTIONSECTION.OBDS_MISC));
                 }
                 if (pNames.Count > 0)
                 {
-                    description.Add(new Tuple<string, VSOBDESCRIPTIONSECTION>("\n", VSOBDESCRIPTIONSECTION.OBDS_MISC));
-                    description.Add(new Tuple<string, VSOBDESCRIPTIONSECTION>("\nParameters:", VSOBDESCRIPTIONSECTION.OBDS_NAME));
+                    description.Add(item(NEWLINE, VSOBDESCRIPTIONSECTION.OBDS_MISC));
+                    description.Add(item(PARAMETERS, VSOBDESCRIPTIONSECTION.OBDS_NAME));
                     for( int i =0; i < pNames.Count; i++)
                     {
-                        description.Add(new Tuple<string, VSOBDESCRIPTIONSECTION>("\n"+pNames[i], VSOBDESCRIPTIONSECTION.OBDS_PARAM));
-                        description.Add(new Tuple<string, VSOBDESCRIPTIONSECTION>(" : ", VSOBDESCRIPTIONSECTION.OBDS_MISC));
-                        description.Add(new Tuple<string, VSOBDESCRIPTIONSECTION>(pDescriptions[i], VSOBDESCRIPTIONSECTION.OBDS_MISC));
+                        description.Add(item(NEWLINE + pNames[i], VSOBDESCRIPTIONSECTION.OBDS_PARAM));
+                        description.Add(item(" : ", VSOBDESCRIPTIONSECTION.OBDS_MISC));
+                        description.Add(item(pDescriptions[i], VSOBDESCRIPTIONSECTION.OBDS_MISC));
                     }
                     
                 }
-                if (!String.IsNullOrEmpty(returns))
+                if (!string.IsNullOrEmpty(returns))
                 {
-                    description.Add(new Tuple<string, VSOBDESCRIPTIONSECTION>("\n", VSOBDESCRIPTIONSECTION.OBDS_MISC));
-                    description.Add(new Tuple<string, VSOBDESCRIPTIONSECTION>("\nReturn:\n", VSOBDESCRIPTIONSECTION.OBDS_NAME));
-                    description.Add(new Tuple<string, VSOBDESCRIPTIONSECTION>(returns, VSOBDESCRIPTIONSECTION.OBDS_MISC));
+                    description.Add(item(NEWLINE, VSOBDESCRIPTIONSECTION.OBDS_MISC));
+                    description.Add(item(RETURNS, VSOBDESCRIPTIONSECTION.OBDS_NAME));
+                    description.Add(item(returns, VSOBDESCRIPTIONSECTION.OBDS_MISC));
                 }
-                if (!String.IsNullOrEmpty(remarks))
+                if (!string.IsNullOrEmpty(remarks))
                 {
-                    description.Add(new Tuple<string, VSOBDESCRIPTIONSECTION>("\n", VSOBDESCRIPTIONSECTION.OBDS_MISC));
-                    description.Add(new Tuple<string, VSOBDESCRIPTIONSECTION>("\nRemarks:\n", VSOBDESCRIPTIONSECTION.OBDS_NAME));
-                    description.Add(new Tuple<string, VSOBDESCRIPTIONSECTION>(remarks, VSOBDESCRIPTIONSECTION.OBDS_MISC));
+                    description.Add(item(NEWLINE, VSOBDESCRIPTIONSECTION.OBDS_MISC));
+                    description.Add(item(REMARKS, VSOBDESCRIPTIONSECTION.OBDS_NAME));
+                    description.Add(item(remarks, VSOBDESCRIPTIONSECTION.OBDS_MISC));
                 }
             }
-        }
-
-        private IVsNavInfo buildNavInfo(XFile file, string typeName)
-        {
-            IVsNavInfo navInfo = null;
-            CompletionType completion = new CompletionType(typeName, file, "");
-            //
-            //
-            return navInfo;
         }
 
         public override string UniqueName
@@ -696,15 +809,8 @@ namespace XSharp.LanguageService
         /// <returns></returns>
         public LibraryNode SearchClass(string fqName)
         {
-            LibraryNode result = null;
             //
-            result = children.Find(
-                            delegate (LibraryNode nd)
-                            {
-
-                                return ((String.Compare(nd.Name, fqName, true) == 0) && ((nd.NodeType & LibraryNode.LibraryNodeType.Classes) != LibraryNode.LibraryNodeType.None));
-                            }
-                                    );
+            var result = children.Find(node => matchesName(node, fqName));
             if (result == null)
             {
                 foreach (XSharpLibraryNode child in children)
@@ -716,59 +822,12 @@ namespace XSharp.LanguageService
             }
             return result;
         }
-    }
-
-
-    public class XSharpNavInfo : IVsNavInfo
-    {
-        public int EnumCanonicalNodes(out IVsEnumNavInfoNodes ppEnum)
+        bool matchesName(LibraryNode node, string name)
         {
-            throw new NotImplementedException();
-        }
-
-        public int EnumPresentationNodes(uint dwFlags, out IVsEnumNavInfoNodes ppEnum)
-        {
-            throw new NotImplementedException();
-        }
-
-        public int GetLibGuid(out Guid pGuid)
-        {
-            throw new NotImplementedException();
-        }
-
-        public int GetSymbolType(out uint pdwType)
-        {
-            throw new NotImplementedException();
+            return String.Compare(node.Name, name, true) == 0 &&
+                (node.NodeType & LibraryNodeType.Classes) != LibraryNodeType.None;
         }
     }
 
-    public class XSharpNavInfoNode : IVsNavInfoNode
-    {
-        public string Name { get; }
-        public _LIB_LISTTYPE ListType { get; }
-
-        public XSharpNavInfoNode(string name, uint listType)
-        {
-            Name = name;
-            ListType = (_LIB_LISTTYPE)listType;
-        }
-
-        public XSharpNavInfoNode(string name, _LIB_LISTTYPE listType)
-        {
-            Name = name;
-            ListType = listType;
-        }
-
-        int IVsNavInfoNode.get_Name(out string pbstrName)
-        {
-            pbstrName = Name;
-            return VSConstants.S_OK;
-        }
-
-        int IVsNavInfoNode.get_Type(out uint pllt)
-        {
-            pllt = (uint)ListType;
-            return VSConstants.S_OK;
-        }
-    }
 }
+

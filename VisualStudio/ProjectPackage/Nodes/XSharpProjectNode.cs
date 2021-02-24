@@ -76,7 +76,7 @@ namespace XSharp.Project
         }
 
         #region Constants
-        internal const string ProjectTypeName = "XSharp";
+        internal const string ProjectTypeName = XSharpConstants.LanguageName;
         #endregion
 
         #region Fields

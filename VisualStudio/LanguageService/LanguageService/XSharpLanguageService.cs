@@ -84,7 +84,7 @@ namespace XSharp.LanguageService
 
         public override string Name
         {
-            get { return "XSharp"; }
+            get { return XSharpConstants.LanguageName; }
         }
 
         public override AuthoringScope ParseSource(ParseRequest req)

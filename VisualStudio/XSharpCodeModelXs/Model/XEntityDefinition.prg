@@ -47,7 +47,7 @@ BEGIN NAMESPACE XSharpModel
          LOCAL parentName AS STRING
          LOCAL thisName AS STRING
          LOCAL tmp AS XTypeDefinition
-         
+                 
          IF SELF:Parent == NULL .AND. ! String.IsNullOrEmpty(SELF:ParentName)
             
             parentName := SELF:ParentName

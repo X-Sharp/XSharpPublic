@@ -25,8 +25,7 @@ STATIC CLASS VOWindowEditorTemplate
 	STATIC PRIVATE aAssignMap AS Dictionary<STRING,STRING>
 	STATIC PRIVATE lLoaded AS LOGIC
 	STATIC EXPORT aPages AS HashTable
-	STATIC PROPERTY GridX AS INT GET XEditorSettings.GridX SET XEditorSettings.GridX := VALUE
-    STATIC PROPERTY GridY AS INT GET XEditorSettings.GridY SET XEditorSettings.GridY := value
+	STATIC EXPORT GridX , GridY AS INT
 	STATIC CONSTRUCTOR()
 
 		VOWindowEditorTemplate.aControls := ArrayList{}

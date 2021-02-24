@@ -856,23 +856,23 @@ BEGIN NAMESPACE XSharpModel
 			IF IsDbOpen
 				BEGIN LOCK oConn
 					TRY
-							BEGIN USING VAR oCmd := SQLiteCommand{"SELECT 1", oConn}
-								oCmd:CommandText := "SELECT * FROM ProjectMembers WHERE name = $name AND TypeName = $typename " + ;
-								" AND Kind in ($kind1, $kind2, $kind3, $kind4,$kind5,$kind6) AND IdProject in ("+sProjectIds+")"
-								oCmd:Parameters:AddWithValue("$name", sName)
-								oCmd:Parameters:AddWithValue("$kind1", (INT) Kind.Function)
-								oCmd:Parameters:AddWithValue("$kind2", (INT) Kind.Procedure)
-								oCmd:Parameters:AddWithValue("$kind3", (INT) Kind.Method)
-								oCmd:Parameters:AddWithValue("$kind4", (INT) Kind.VODLL)
-								oCmd:Parameters:AddWithValue("$kind5", (INT) Kind.LocalFunc)
-								oCmd:Parameters:AddWithValue("$kind6", (INT) Kind.LocalProc)
-								oCmd:Parameters:AddWithValue("$typename", XLiterals.GlobalName)
-								BEGIN USING VAR rdr := oCmd:ExecuteReader()
-									DO WHILE rdr:Read()
-										result:Add(CreateMemberInfo(rdr))
-									ENDDO
-								END USING
-						END USING
+						BEGIN USING VAR oCmd := SQLiteCommand{"SELECT 1", oConn}
+							oCmd:CommandText := "SELECT * FROM ProjectMembers WHERE name = $name AND TypeName = $typename " + ;
+							" AND Kind in ($kind1, $kind2, $kind3, $kind4,$kind5,$kind6) AND IdProject in ("+sProjectIds+")"
+							oCmd:Parameters:AddWithValue("$name", sName)
+							oCmd:Parameters:AddWithValue("$kind1", (INT) Kind.Function)
+							oCmd:Parameters:AddWithValue("$kind2", (INT) Kind.Procedure)
+							oCmd:Parameters:AddWithValue("$kind3", (INT) Kind.Method)
+							oCmd:Parameters:AddWithValue("$kind4", (INT) Kind.VODLL)
+							oCmd:Parameters:AddWithValue("$kind5", (INT) Kind.LocalFunc)
+							oCmd:Parameters:AddWithValue("$kind6", (INT) Kind.LocalProc)
+							oCmd:Parameters:AddWithValue("$typename", XLiterals.GlobalName)
+							BEGIN USING VAR rdr := oCmd:ExecuteReader()
+								DO WHILE rdr:Read()
+									result:Add(CreateMemberInfo(rdr))
+								ENDDO
+							END USING
+					    END USING
 					CATCH e AS Exception
 						Log("Exception: "+e:ToString())
 					END TRY            
@@ -1178,6 +1178,7 @@ BEGIN NAMESPACE XSharpModel
 			VAR res := XDbResult{}
 			res:TypeName     := DbToString(rdr["Name"])
 			res:Namespace    := DbToString(rdr["NameSpace"])
+			res:BaseTypeName := DbToString(rdr["BaseTypeName"])
 			res:Kind         := (Kind) (INT64) rdr["Kind"]
 			res:ClassType    := DbToInt( rdr["ClassType"])
 			res:Attributes   := (Modifiers) (INT64) rdr["Attributes"]

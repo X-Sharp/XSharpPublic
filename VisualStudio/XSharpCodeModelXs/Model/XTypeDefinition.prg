@@ -131,7 +131,19 @@ BEGIN NAMESPACE XSharpModel
             RETURN SELF:GetMembers(elementName)
          ENDIF
 
-      
+      METHOD ForceComplete as VOID
+        IF String.IsNullOrEmpty(SELF:_signature:BaseType) .and. SELF:Attributes:HasFlag(Modifiers.Partial)
+             // Find all other parts to find the base typename
+             var allParts := XDatabase.GetTypes(SELF:Name, SELF:File:Project:Id:ToString())
+             FOREACH result as XDbResult in allParts
+                if !String.IsNullOrEmpty(result:BaseTypeName)
+                    SELF:BaseType := result:BaseTypeName
+                    EXIT
+                ENDIF
+             NEXT
+        ENDIF
+        RETURN
+
       PROPERTY FullName  AS STRING   GET SELF:GetFullName()
       PROPERTY IsGeneric as LOGIC   GET SELF:TypeName:EndsWith(">")
       

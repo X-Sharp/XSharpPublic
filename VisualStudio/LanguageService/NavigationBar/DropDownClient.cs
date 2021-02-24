@@ -216,7 +216,10 @@ namespace XSharp.LanguageService
                 var usings = new List<string>();
                 usings.Add(type.Namespace);
                 var fullType = _file.Project.Lookup(type.Name, usings);
-                members.AddRange(fullType.XMembers);
+                if (fullType != null)
+                { 
+                    members.AddRange(fullType.XMembers);
+                }
             }
             else
             {

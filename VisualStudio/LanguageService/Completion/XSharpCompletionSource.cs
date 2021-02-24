@@ -125,9 +125,9 @@ namespace XSharp.LanguageService
                 if (triggerPoint == null)
                     return;
                 // The "parameters" coming from CommandFilter
-                uint cmd = (uint)session.Properties["Command"];
+                uint cmd = (uint)session.Properties[XSCompletion.Command];
                 VSConstants.VSStd2KCmdID nCmdId = (VSConstants.VSStd2KCmdID)cmd;
-                char typedChar = (char)session.Properties["Char"];
+                char typedChar = (char)session.Properties[XSCompletion.Char];
                 if (typedChar == '\0')
                 {
 
@@ -178,9 +178,9 @@ namespace XSharp.LanguageService
                 CompletionList kwdList = new CompletionList(_file);
                 // The CompletionType we will use to fill the CompletionList
                 CompletionType cType = null;
-                if (session.Properties.ContainsProperty("Type"))
+                if (session.Properties.ContainsProperty(XSCompletion.Type))
                 {
-                    cType = (CompletionType)session.Properties["Type"];
+                    cType = (CompletionType)session.Properties[XSCompletion.Type];
                 }
                 // Start of Process
                 string filterText = "";
@@ -190,7 +190,16 @@ namespace XSharp.LanguageService
                 XTypeDefinition currentNamespace = XSharpTokenTools.FindNamespace(triggerPoint.Position, this._file);
                 // Standard TokenList Creation (based on colon Selector )
                 var caretPos = triggerPoint.Position;
-                var tokenList = XSharpTokenTools.GetTokenList(caretPos, currentLine, _buffer.CurrentSnapshot, out _stopToken, _file, false, member);
+                bool includeKeywords = false;
+                if (session.Properties.ContainsProperty(XSCompletion.IncludeKeywords))
+                {
+                    includeKeywords = (bool)session.Properties[XSCompletion.IncludeKeywords];
+                }
+
+                var tokenList = XSharpTokenTools.GetTokenList(caretPos, currentLine, _buffer.CurrentSnapshot, out _stopToken, _file, false, member, includeKeywords);
+
+
+
                 // We might be here due to a COMPLETEWORD command, so we have no typedChar
                 // but we "may" have a incomplete word like System.String.To
                 // Try to Guess what TypedChar could be
@@ -290,7 +299,7 @@ namespace XSharp.LanguageService
                 cType = XSharpTokenTools.RetrieveType(_file, tokenList, member, currentNS, null, out foundElement, snapshot, currentLine, _dialect);
                 if (!cType.IsEmpty())
                 {
-                    session.Properties["Type"] = cType;
+                    session.Properties[XSCompletion.Type] = cType;
                 }
                 else
                 {
@@ -299,7 +308,7 @@ namespace XSharp.LanguageService
                         cType = XSharpTokenTools.RetrieveType(_file, altTokenList, member, currentNS, null, out foundElement, snapshot, currentLine, _dialect);
                         if (!cType.IsEmpty())
                         {
-                            session.Properties["Type"] = cType;
+                            session.Properties[XSCompletion.Type] = cType;
                         }
                     }
                 }
@@ -1301,6 +1310,11 @@ namespace XSharp.LanguageService
     [DebuggerDisplay("{DisplayText,nq}")]
     public class XSCompletion : Completion
     {
+        public const string Type = nameof(Type);
+        public const string Char = nameof(Char);
+        public const string IncludeKeywords = nameof(IncludeKeywords);
+        public const string Command = nameof(Command);
+
         public XSharpModel.Kind Kind { get; set; }
         public string Value { get; set; }
         public XSCompletion(string displayText, string insertionText, string description, 
@@ -1384,14 +1398,14 @@ namespace XSharp.LanguageService
         /// <param name="fromMember">The Member containing the position</param>
         /// <returns></returns>
         public static List<string> GetTokenList(int triggerPointPosition, int triggerPointLineNumber,
-            ITextSnapshot snapshot, out IToken stopToken, XFile file, bool dotAsSelector, XMemberDefinition fromMember)
+            ITextSnapshot snapshot, out IToken stopToken, XFile file, bool dotAsSelector, XMemberDefinition fromMember, bool includeKeywords = false)
         {
             var bufferText = snapshot.GetText();
-            return GetTokenList(triggerPointPosition, triggerPointLineNumber, bufferText, out stopToken, file, dotAsSelector, fromMember);
+            return GetTokenList(triggerPointPosition, triggerPointLineNumber, bufferText, out stopToken, file, dotAsSelector, fromMember, includeKeywords);
         }
 
         public static List<string> GetTokenList(int triggerPointPosition, int triggerPointLineNumber,
-            string bufferText, out IToken stopToken,  XFile file, bool dotAsSelector, XMemberDefinition fromMember)
+            string bufferText, out IToken stopToken,  XFile file, bool dotAsSelector, XMemberDefinition fromMember, bool includeKeywords = false)
         {
             //////////////////////////////////////
             //////////////////////////////////////
@@ -1447,12 +1461,12 @@ namespace XSharp.LanguageService
 
             bool ok = Lex(bufferText, fileName, parseoptions, reporter, out tokenStream);
             var stream = tokenStream as BufferedTokenStream;
-            return GetTokenList(triggerPointPosition, triggerPointLineNumber, stream, out stopToken,  file, dotAsSelector, fromMember);
+            return GetTokenList(triggerPointPosition, triggerPointLineNumber, stream, out stopToken,  file, dotAsSelector, fromMember, includeKeywords);
         }
 
 
         public static List<string> GetTokenList(int triggerPointPosition, int triggerPointLineNumber,
-            BufferedTokenStream tokens, out IToken stopToken, XFile file, bool dotAsSelector, XMemberDefinition fromMember)
+            BufferedTokenStream tokens, out IToken stopToken, XFile file, bool dotAsSelector, XMemberDefinition fromMember, bool includeKeywords = false)
         {
             List<string> tokenList = new List<string>();
             //
@@ -1538,10 +1552,10 @@ namespace XSharp.LanguageService
                         {
                             tokenList.Add(token.Text);
                         }
-                        //if (XSharpLexer.IsKeyword(token.Type))
-                        //{
-                        //    tokenList.Add(token.Text);
-                        //}
+                        if (XSharpLexer.IsKeyword(token.Type) && includeKeywords)
+                        {
+                            tokenList.Add(token.Text);
+                        }
                         break;
                 }
                 last = token.Type;
@@ -1799,7 +1813,7 @@ namespace XSharp.LanguageService
                     {
                         currentMember = (XMemberDefinition)elt;
                     }
-                    else if (elt is XTypeDefinition)
+                    else if (elt is XTypeDefinition && stopToken != null)
                     {
                         // We might be in the Class Declaration !?
                         switch (stopToken.Type)
@@ -2012,7 +2026,7 @@ namespace XSharp.LanguageService
                     if (currentPos == 0 || startOfExpression)
                     {
                         var globType = SearchFunctionIn(currentMember.File, currentToken, out foundElement);
-                        if (currentPos == lastopentoken)
+                        if (currentPos == lastopentoken && globType != null)
                             return globType;
                     }
                     if (!cType.IsEmpty())

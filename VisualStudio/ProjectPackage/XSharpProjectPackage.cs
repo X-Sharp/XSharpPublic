@@ -163,7 +163,7 @@ namespace XSharp.Project
         private XSharpDocumentWatcher _documentWatcher;
         private IErrorList _errorList = null;
         private ITaskList _taskList = null;
-        private XSharpProjectSelector _projectSelector = null;
+        //private XSharpProjectSelector _projectSelector = null;
         private uint shellCookie;
 
         public static XSharpProjectPackage XInstance = null;
@@ -216,8 +216,8 @@ namespace XSharp.Project
             await base.InitializeAsync(cancellationToken, progress);
             await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
             // The project selector helps to choose between MPF and CPS projects
-            _projectSelector = new XSharpProjectSelector();
-            await _projectSelector.InitAsync(this);
+            //_projectSelector = new XSharpProjectSelector();
+            //await _projectSelector.InitAsync(this);
 
 
 

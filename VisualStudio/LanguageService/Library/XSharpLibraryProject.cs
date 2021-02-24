@@ -73,22 +73,17 @@ namespace XSharp.LanguageService
             defaultNS.displayData.Image = (ushort)IconImageIndex._Namespace;
             defaultNS.displayData.SelectedImage = (ushort)IconImageIndex._Namespace;
             this.AddNode(defaultNS);
+            XSettings.DisplayOutputMessage("Added LibraryProject " + prj.Name);
             //
         }
 
         public LibraryNode SearchNameSpace(string nsName)
         {
-            LibraryNode result = null;
-            //
-            result = children.Find(
-                            delegate(LibraryNode nd)
-                            {
-                                return ((String.Compare(nd.Name, nsName, true) == 0) && ((nd.NodeType & LibraryNode.LibraryNodeType.Namespaces) != LibraryNode.LibraryNodeType.None));
-                            }
-                                    );
-            //
-            return result;
+            return children.Find(node => findbyName(node, nsName));
         }
-
+        bool findbyName(LibraryNode node, string name)
+        {
+            return String.Compare(node.Name, name, true) == 0 && (node.NodeType & LibraryNodeType.Namespaces) != LibraryNodeType.None;
+        }
     }
 }

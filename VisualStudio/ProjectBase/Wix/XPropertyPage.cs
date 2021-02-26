@@ -46,6 +46,8 @@ namespace Microsoft.VisualStudio.Project
         private XProjectConfig[] projectConfigs;
         private PROPPAGEINFO propPageInfo;
 
+        protected bool PerConfig { get; set; } = false;
+
         // =========================================================================================
         // Constructors
         // =========================================================================================
@@ -595,7 +597,7 @@ namespace Microsoft.VisualStudio.Project
         /// </returns>
         public virtual string GetProperty(string propertyName)
         {
-            ProjectProperty property = new ProjectProperty(this.ProjectMgr, propertyName);
+            ProjectProperty property = new ProjectProperty(this.ProjectMgr, propertyName, PerConfig);
             return property.GetValue(false, projectConfigs);
         }
 
@@ -607,7 +609,7 @@ namespace Microsoft.VisualStudio.Project
         /// inconsistent across configurations.</returns>
         public virtual CheckState GetPropertyCheckState(string propertyName)
         {
-            ProjectProperty property = new ProjectProperty(this.ProjectMgr, propertyName);
+            ProjectProperty property = new ProjectProperty(this.ProjectMgr, propertyName, PerConfig);
             bool? value = property.GetBooleanValue(projectConfigs);
 
             if (!value.HasValue)
@@ -627,7 +629,7 @@ namespace Microsoft.VisualStudio.Project
         /// <param name="value">Value of the property.</param>
         public virtual void SetProperty(string propertyName, string value)
         {
-            ProjectProperty property = new ProjectProperty(this.ProjectMgr, propertyName);
+            ProjectProperty property = new ProjectProperty(this.ProjectMgr, propertyName, PerConfig);
 
             string oldValue = this.GetProperty(propertyName);
             if (!String.Equals(value, oldValue, StringComparison.Ordinal))
@@ -715,6 +717,64 @@ namespace Microsoft.VisualStudio.Project
             }
         }
 
+        protected string getCfgString(String Name, string defaultValue = "")
+        {
+            string property;
+            string value = this.GetUnevaluatedConfigProperty(Name);
+            if (!String.IsNullOrEmpty(value))
+                property = value;
+            else
+                property = defaultValue;
+            return property;
+        }
+
+        protected void SetConfigProperty(string name, string value)
+        {
+            CCITracing.TraceCall();
+            if (value == null)
+            {
+                value = String.Empty;
+            }
+
+            if (this.ProjectMgr != null)
+            {
+                for (int i = 0, n = this.ProjectConfigs.Count; i < n; i++)
+                {
+                    ProjectConfig config = ProjectConfigs[i];
+
+                    config.SetConfigurationProperty(name, value);
+                }
+
+                this.ProjectMgr.SetProjectFileDirty(true);
+            }
+        }
+        protected string GetUnevaluatedConfigProperty(string propertyName)
+        {
+            if (this.ProjectMgr != null)
+            {
+                string unifiedResult = null;
+
+                for (int i = 0; i < this.ProjectConfigs.Count; i++)
+                {
+                    ProjectConfig config = ProjectConfigs[i];
+                    string property = config.GetUnevaluatedConfigurationProperty(propertyName);
+
+                    if (property != null)
+                    {
+                        string text = property.Trim();
+
+                        if (i == 0)
+                            unifiedResult = text;
+                        else if (unifiedResult != text)
+                            return ""; // tristate value is blank then
+                    }
+                }
+
+                return unifiedResult;
+            }
+
+            return String.Empty;
+        }
         /// <summary>
         /// Handles the help event by displaying the property pages
         /// </summary>

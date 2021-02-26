@@ -22,5 +22,6 @@ namespace XSharp.LanguageService
             TokenStream = tokenstream;
             SnapShot = snapshot;
         }
+        public bool Complete => TokenStream != null && SnapShot != null;
     }
 }

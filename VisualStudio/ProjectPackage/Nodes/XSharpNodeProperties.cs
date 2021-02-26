@@ -26,7 +26,7 @@ namespace XSharp.Project
         [SRCategory(Microsoft.VisualStudio.Project.SR.Misc)]
         [LocDisplayName(SR.FolderName)]
         [SRDescription(Microsoft.VisualStudio.Project.SR.FolderNameDescription)]
-        [AutomationBrowsable(false)]
+        //[AutomationBrowsable(false)]
         public string FolderName
         {
             get
@@ -37,7 +37,7 @@ namespace XSharp.Project
 
         #region properties - used for automation only
         [Browsable(false)]
-        [AutomationBrowsable(true)]
+        //[AutomationBrowsable(true)]
         public string FileName
         {
             get
@@ -47,7 +47,7 @@ namespace XSharp.Project
         }
 
         [Browsable(false)]
-        [AutomationBrowsable(true)]
+        //[AutomationBrowsable(true)]
         public string FullPath
         {
             get
@@ -142,7 +142,7 @@ namespace XSharp.Project
         /// <value>Gets / Sets the BuildAction for the item. It defines how the MS Build
         /// will treat this item at build time.</value>
         [Browsable(false)]
-        [AutomationBrowsable(false)]
+        //[AutomationBrowsable(false)]
         public override BuildActionEnum BuildAction
         {
             get

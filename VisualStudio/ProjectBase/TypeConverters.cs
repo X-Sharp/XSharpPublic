@@ -349,7 +349,7 @@ namespace Microsoft.VisualStudio.Project
             var result = new List<string>();
             foreach (string name in frameworks)
             {
-                if (name.ToLower().IndexOf("profile") == -1)
+                if (name.ToLower().IndexOf("profile") == -1 && name.StartsWith(".NETFramework"))
                 {
                     result.Add(name);
                 }

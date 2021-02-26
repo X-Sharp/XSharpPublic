@@ -97,11 +97,7 @@ namespace XSharp.LanguageService
 
 
                     // Get XFile and assign it to the textbuffer
-                    if (textView.TextBuffer.Properties.ContainsProperty(typeof(XFile)))
-                    {
-                        file = textView.TextBuffer.Properties.GetProperty<XFile>(typeof(XFile));
-                    }
-                    else
+                    if (!textView.TextBuffer.Properties.TryGetProperty(typeof(XFile), out file))
                     {
                         file = XSharpModel.XSolution.FindFile(fileName);
                         if (file == null)
@@ -127,8 +123,8 @@ namespace XSharp.LanguageService
                     filter.Next = next;
                 }
             }
-            var codeWindow = textView.Properties.GetProperty<IVsCodeWindow>(typeof(IVsCodeWindow));
-            if (codeWindow != null)
+            IVsCodeWindow codeWindow;
+            if (textView.Properties.TryGetProperty(typeof(IVsCodeWindow), out codeWindow))
             {
                 IVsDropdownBarManager dropDownBarManager = codeWindow as IVsDropdownBarManager;
                 if (dropDownBarManager != null)

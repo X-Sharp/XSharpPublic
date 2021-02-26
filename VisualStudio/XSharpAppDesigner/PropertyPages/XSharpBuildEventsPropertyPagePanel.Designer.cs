@@ -100,10 +100,6 @@ namespace XSharp.Project
             | System.Windows.Forms.AnchorStyles.Right)));
             this.runPostBuildComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.runPostBuildComboBox.FormattingEnabled = true;
-            this.runPostBuildComboBox.Items.AddRange(new object[] {
-            "Always",
-            "On successful build",
-            "When the build updates the project output"});
             this.runPostBuildComboBox.Location = new System.Drawing.Point(20, 171);
             this.runPostBuildComboBox.Name = "runPostBuildComboBox";
             this.runPostBuildComboBox.Size = new System.Drawing.Size(521, 21);

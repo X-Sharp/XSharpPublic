@@ -49,7 +49,7 @@ namespace XSharp.LanguageService
                 XTypeDefinition currentNamespace = XSharpTokenTools.FindNamespace(triggerPoint.Position, _file);
 
                 var snapshot = _textBuffer.CurrentSnapshot;
-                var tokenList = XSharpTokenTools.GetTokenList(caretPos, lineNumber, snapshot, out stopToken, _file, false, member);
+                var tokenList = XSharpTokenTools.GetTokenList(caretPos, lineNumber, snapshot, out stopToken, _file, member);
                 // LookUp for the BaseType, reading the TokenList (From left to right)
                 CompletionElement gotoElement;
                 string currentNS = "";

@@ -7,6 +7,7 @@
 namespace XSharp.Project
 {
     using System;
+    using System.Linq;
     using System.Globalization;
     using System.Runtime.InteropServices;
     using System.Windows.Forms;
@@ -19,23 +20,28 @@ namespace XSharp.Project
     /// Property page for the build events.
     /// </summary>
     [ComVisible(true)]
-    [Guid(XSharpConstants.BuildEventsPropertiesPage)]
-    [ProvideObject(typeof(XSharpBuildEventsPropertyPage))]
-    public class XSharpBuildEventsPropertyPage : XPropertyPage
+    [Guid(XSharpConstants.GeneralPropertiesPage)]
+    [ClassInterface(ClassInterfaceType.AutoDual)]
+    [ProvideObject(typeof(XSharpGeneralPropertyPage))]
+    public class XSharpGeneralPropertyPage : XPropertyPage
     {
         // =========================================================================================
         // Constructors
         // =========================================================================================
-        string[] names = { "Always",
-            "When the build updates the project output",
-             "On successful build"};
+
         /// <summary>
         /// Initializes a new instance of the <see cref="XSharpBuildEventsPropertyPage"/> class.
         /// </summary>
-        public XSharpBuildEventsPropertyPage()
+        OutputTypeConverter converterOutPut;
+        DialectConverter converterDialect;
+        FrameworkNameConverter converterFramework;
+        public XSharpGeneralPropertyPage()
         {
-            this.PageName = "Build Events";
-            this.PerConfig = true;
+            this.PageName = "Application";
+            this.PerConfig = false;
+            converterDialect = new DialectConverter();
+            converterFramework = new FrameworkNameConverter();
+            converterOutPut = new OutputTypeConverter();
         }
 
         // =========================================================================================
@@ -51,19 +57,24 @@ namespace XSharp.Project
         /// </returns>
         public override string GetProperty(string propertyName)
         {
-            string value = getCfgString(propertyName);
+            string value = base.GetProperty(propertyName);
 
-            if (propertyName == XProjectFileConstants.RunPostBuildEvent)
+            if (propertyName == XProjectFileConstants.OutputType)
             {
-                RunPostBuildEvent postbuildevent;
-
-                if (!Enum.TryParse(value, true, out postbuildevent))
-                {
-                    postbuildevent = RunPostBuildEvent.OnBuildSuccess;
-                }
-                value = names[(int)postbuildevent];
+                var outputType = (OutputType) converterOutPut.ConvertFrom(value);
+                value = (string)converterOutPut.ConvertTo(outputType, typeof(System.String));
             }
-
+            else if (propertyName == "Dialect")
+            {
+                var dialect = (Dialect)converterDialect.ConvertFrom(value);
+                value = (string) converterDialect.ConvertTo(dialect, typeof(System.String));
+            }
+            else if (propertyName == "TargetFrameworkVersion")
+            {
+                if (!value.StartsWith(".NETFramework"))
+                    value = ".NETFramework,Version =" + value;
+                value = converterFramework.ConvertFrom(value).ToString();
+            }
             return value;
         }
 
@@ -74,26 +85,27 @@ namespace XSharp.Project
         /// <param name="value">Value of the property.</param>
         public override void SetProperty(string propertyName, string value)
         {
-            if (propertyName == XProjectFileConstants.RunPostBuildEvent)
+            if (propertyName == ProjectFileConstants.OutputType)
             {
-                var postbuildevent = RunPostBuildEvent.Always;
-                value = value.ToLower();
-                if (value.IndexOf("always") >= 0)
-                {
-                    postbuildevent = RunPostBuildEvent.Always;
-                }
-                else if (value.IndexOf("successful") >= 0)
-                {
-                    postbuildevent = RunPostBuildEvent.OnBuildSuccess;
-                }
-                else if (value.IndexOf("updated") >= 0)
-                {
-                    postbuildevent = RunPostBuildEvent.OnOutputUpdated;
-                }
-                value = postbuildevent.ToString();
-            }
+                var output = (OutputType)converterOutPut.ConvertFrom(value);
+                value = output.ToString();
 
-            SetConfigProperty(propertyName, value);
+            }
+            else if (propertyName == "Dialect")
+            {
+                var dialect = (Dialect)converterDialect.ConvertFrom(value);
+                value = dialect.ToString();
+            }
+            else if (propertyName == "TargetFrameworkVersion")
+            {
+                value = value.ToLower();
+                var pos = value.IndexOf("version=");
+                if (pos > 0)
+                {
+                    value = value.Substring(pos + "version=".Length);
+                }
+            }
+            base.SetProperty(propertyName, value);
         }
 
         /// <summary>
@@ -102,7 +114,7 @@ namespace XSharp.Project
         /// <returns>The newly created main control that hosts the property page.</returns>
         protected override XPropertyPagePanel CreatePropertyPagePanel()
         {
-            return new XBuildEventsPropertyPagePanel(this, names);
+            return new XGeneralPropertyPagePanel(this);
         }
     }
 }

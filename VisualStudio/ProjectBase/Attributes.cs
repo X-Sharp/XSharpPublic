@@ -76,4 +76,4 @@ namespace Microsoft.VisualStudio.Project
     //    }
     //    #endregion
     //}
-}
+    }

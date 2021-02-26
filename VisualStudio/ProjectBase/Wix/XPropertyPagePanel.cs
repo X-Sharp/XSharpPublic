@@ -156,7 +156,7 @@ namespace Microsoft.VisualStudio.Project
             }
             else if (comboBox != null)
             {
-                value = comboBox.SelectedIndex.ToString(CultureInfo.InvariantCulture);
+                value = comboBox.SelectedItem.ToString();
             }
             else if (textBox != null)
             {
@@ -182,7 +182,7 @@ namespace Microsoft.VisualStudio.Project
                     }
                     else if (comboBox != null)
                     {
-                        comboBox.SelectedIndex = Int32.Parse(currentValue, CultureInfo.InvariantCulture);
+                        comboBox.SelectedItem = currentValue;
                     }
                     else
                     {
@@ -216,7 +216,17 @@ namespace Microsoft.VisualStudio.Project
                     ComboBox comboBox = control as ComboBox;
                     if (comboBox != null)
                     {
-                        comboBox.SelectedIndex = (value != null ? Int32.Parse(value, CultureInfo.InvariantCulture) : -1);
+                        int index = 0;
+                        comboBox.SelectedIndex = -1;
+                        foreach (string item in comboBox.Items)
+                        {
+                            if (item == value)
+                            {
+                                comboBox.SelectedIndex = index;
+                                break;
+                            }
+                            index++;
+                        }
                     }
                     else
                     {

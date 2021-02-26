@@ -125,9 +125,11 @@ namespace XSharp.LanguageService
                 if (triggerPoint == null)
                     return;
                 // The "parameters" coming from CommandFilter
-                uint cmd = (uint)session.Properties[XSCompletion.Command];
+                uint cmd;
+                char typedChar;
+                session.Properties.TryGetProperty(XsCompletionProperties.Command, out cmd);
                 VSConstants.VSStd2KCmdID nCmdId = (VSConstants.VSStd2KCmdID)cmd;
-                char typedChar = (char)session.Properties[XSCompletion.Char];
+                session.Properties.TryGetProperty(XsCompletionProperties.Char, out typedChar);
                 if (typedChar == '\0')
                 {
 
@@ -178,9 +180,9 @@ namespace XSharp.LanguageService
                 CompletionList kwdList = new CompletionList(_file);
                 // The CompletionType we will use to fill the CompletionList
                 CompletionType cType = null;
-                if (session.Properties.ContainsProperty(XSCompletion.Type))
+                if (session.Properties.ContainsProperty(XsCompletionProperties.Type))
                 {
-                    cType = (CompletionType)session.Properties[XSCompletion.Type];
+                    cType = (CompletionType)session.Properties[XsCompletionProperties.Type];
                 }
                 // Start of Process
                 string filterText = "";
@@ -190,13 +192,10 @@ namespace XSharp.LanguageService
                 XTypeDefinition currentNamespace = XSharpTokenTools.FindNamespace(triggerPoint.Position, this._file);
                 // Standard TokenList Creation (based on colon Selector )
                 var caretPos = triggerPoint.Position;
-                bool includeKeywords = false;
-                if (session.Properties.ContainsProperty(XSCompletion.IncludeKeywords))
-                {
-                    includeKeywords = (bool)session.Properties[XSCompletion.IncludeKeywords];
-                }
+                bool includeKeywords;
+                session.Properties.TryGetProperty(XsCompletionProperties.IncludeKeywords, out includeKeywords);
 
-                var tokenList = XSharpTokenTools.GetTokenList(caretPos, currentLine, _buffer.CurrentSnapshot, out _stopToken, _file, false, member, includeKeywords);
+                var tokenList = XSharpTokenTools.GetTokenList(caretPos, currentLine, _buffer.CurrentSnapshot, out _stopToken, _file, member, includeKeywords);
 
 
 
@@ -254,7 +253,7 @@ namespace XSharp.LanguageService
                 // Alternative Token list (dot is a selector)
                 List<string> altTokenList;
                 if (dotSelector && _dotUniversal)
-                    altTokenList = XSharpTokenTools.GetTokenList(caretPos, currentLine, _buffer.CurrentSnapshot, out _stopToken, _file, true, member);
+                    altTokenList = XSharpTokenTools.GetTokenList(caretPos, currentLine, _buffer.CurrentSnapshot, out _stopToken, _file,  member);
                 else
                     altTokenList = tokenList;
 
@@ -299,7 +298,7 @@ namespace XSharp.LanguageService
                 cType = XSharpTokenTools.RetrieveType(_file, tokenList, member, currentNS, null, out foundElement, snapshot, currentLine, _dialect);
                 if (!cType.IsEmpty())
                 {
-                    session.Properties[XSCompletion.Type] = cType;
+                    session.Properties[XsCompletionProperties.Type] = cType;
                 }
                 else
                 {
@@ -308,7 +307,7 @@ namespace XSharp.LanguageService
                         cType = XSharpTokenTools.RetrieveType(_file, altTokenList, member, currentNS, null, out foundElement, snapshot, currentLine, _dialect);
                         if (!cType.IsEmpty())
                         {
-                            session.Properties[XSCompletion.Type] = cType;
+                            session.Properties[XsCompletionProperties.Type] = cType;
                         }
                     }
                 }
@@ -1199,7 +1198,6 @@ namespace XSharp.LanguageService
     }
     /// <summary>
     /// XSharp CompletionList
-    /// Overload the Add() Method to support "overloads"
     /// </summary>
     internal class CompletionList : SortedDictionary<string, XSCompletion>
     {
@@ -1225,24 +1223,19 @@ namespace XSharp.LanguageService
                 // we do not want to the overloads message for partial classes that appear in more than 1 file
                 // and if a method in a subclass has the same params we also do not want to show that there are overloads
                 var found = this[item.DisplayText];
-                if (item.Kind == Kind.Method && !string.Equals(found.Description, item.Description, StringComparison.OrdinalIgnoreCase))
+                if (!string.Equals(found.Description, item.Description, StringComparison.OrdinalIgnoreCase))
                 {
                     int overloads = 0;
                     // Already exists in the List !!
                     // First Overload ?
-                    var comp = this[item.DisplayText];
-                    if (comp.Properties.ContainsProperty("overloads"))
+                    XSCompletion comp = this[item.DisplayText];
+                    if (!comp.Properties.TryGetProperty(XsCompletionProperties.Overloads, out overloads))
                     {
-                        // No ...
-                        overloads = (int)comp.Properties.GetProperty("overloads");
-                    }
-                    else
-                    {
-                        comp.Properties.AddProperty("overloads", overloads);
+                        comp.Properties.AddProperty(XsCompletionProperties.Overloads, overloads);
                     }
                     overloads += 1;
                     // Set the number of Overload(s)
-                    comp.Properties["overloads"] = overloads;
+                    comp.Properties[XsCompletionProperties.Overloads] = overloads;
                     // Now, hack the Description text
                 }
                 // Ok, Forget about the newly added Completion please
@@ -1303,6 +1296,16 @@ namespace XSharp.LanguageService
         }
     }
 
+    internal static class XsCompletionProperties
+    {
+        public const string Type = nameof(Type);
+        public const string Char = nameof(Char);
+        public const string IncludeKeywords = nameof(IncludeKeywords);
+        public const string Command = nameof(Command);
+        public const string Overloads = nameof(Overloads);
+
+    }
+
     /// <summary>
     /// XSharp Completion class.
     /// Overload the Description property in order to add "overload" text at the end
@@ -1310,11 +1313,7 @@ namespace XSharp.LanguageService
     [DebuggerDisplay("{DisplayText,nq}")]
     public class XSCompletion : Completion
     {
-        public const string Type = nameof(Type);
-        public const string Char = nameof(Char);
-        public const string IncludeKeywords = nameof(IncludeKeywords);
-        public const string Command = nameof(Command);
-
+ 
         public XSharpModel.Kind Kind { get; set; }
         public string Value { get; set; }
         public XSCompletion(string displayText, string insertionText, string description, 
@@ -1331,11 +1330,7 @@ namespace XSharp.LanguageService
             {
                 string desc;
                 int overloads = 0;
-                if (this.Properties.ContainsProperty("overloads"))
-                {
-                    // No ...
-                    overloads = (int)this.Properties.GetProperty("overloads");
-                }
+                this.Properties.TryGetProperty(XsCompletionProperties.Overloads, out overloads);
                 if (overloads > 0)
                 {
                     desc = base.Description;
@@ -1394,18 +1389,18 @@ namespace XSharp.LanguageService
         /// <param name="stopToken">The IToken that stops the move backwards</param>
         /// <param name="fromGotoDefn">Indicate if the call is due to Goto Definition</param>
         /// <param name="file">XFile object to use for the context</param>
-        /// <param name="dotAsSelector">dot is used as 'standard' selector, like colon </param>
         /// <param name="fromMember">The Member containing the position</param>
+        /// <param name="includeKeywords">Should keywords be included in the tokenlist</param>
         /// <returns></returns>
         public static List<string> GetTokenList(int triggerPointPosition, int triggerPointLineNumber,
-            ITextSnapshot snapshot, out IToken stopToken, XFile file, bool dotAsSelector, XMemberDefinition fromMember, bool includeKeywords = false)
+            ITextSnapshot snapshot, out IToken stopToken, XFile file, XMemberDefinition fromMember, bool includeKeywords = false)
         {
             var bufferText = snapshot.GetText();
-            return GetTokenList(triggerPointPosition, triggerPointLineNumber, bufferText, out stopToken, file, dotAsSelector, fromMember, includeKeywords);
+            return _getTokenList(triggerPointPosition, triggerPointLineNumber, bufferText, out stopToken, file,  fromMember, includeKeywords);
         }
 
-        public static List<string> GetTokenList(int triggerPointPosition, int triggerPointLineNumber,
-            string bufferText, out IToken stopToken,  XFile file, bool dotAsSelector, XMemberDefinition fromMember, bool includeKeywords = false)
+        private static List<string> _getTokenList(int triggerPointPosition, int triggerPointLineNumber,
+            string bufferText, out IToken stopToken,  XFile file, XMemberDefinition fromMember, bool includeKeywords)
         {
             //////////////////////////////////////
             //////////////////////////////////////
@@ -1461,12 +1456,11 @@ namespace XSharp.LanguageService
 
             bool ok = Lex(bufferText, fileName, parseoptions, reporter, out tokenStream);
             var stream = tokenStream as BufferedTokenStream;
-            return GetTokenList(triggerPointPosition, triggerPointLineNumber, stream, out stopToken,  file, dotAsSelector, fromMember, includeKeywords);
+            return GetTokenList(triggerPointPosition, triggerPointLineNumber, stream, out stopToken,  includeKeywords);
         }
 
 
-        public static List<string> GetTokenList(int triggerPointPosition, int triggerPointLineNumber,
-            BufferedTokenStream tokens, out IToken stopToken, XFile file, bool dotAsSelector, XMemberDefinition fromMember, bool includeKeywords = false)
+        public static List<string> GetTokenList(int triggerPointPosition, int triggerPointLineNumber, BufferedTokenStream tokens, out IToken stopToken,  bool includeKeywords = false)
         {
             List<string> tokenList = new List<string>();
             //
@@ -1538,6 +1532,24 @@ namespace XSharp.LanguageService
                     case XSharpLexer.SELF:
                     case XSharpLexer.SUPER:
                         tokenList.Add(token.Text);
+                        break;
+                    case XSharpLexer.STRING_CONST:
+                        tokenList.Add("\"\"");
+                        break;
+                    case XSharpLexer.CHAR_CONST:
+                        tokenList.Add("\'\'");
+                        break;
+                    case XSharpLexer.INT_CONST:
+                        tokenList.Add("0");
+                        break;
+                    case XSharpLexer.REAL_CONST:
+                        tokenList.Add("0.");
+                        break;
+                    case XSharpLexer.DATE_CONST:
+                        tokenList.Add("0.0.0");
+                        break;
+                    case XSharpLexer.DATETIME_CONST:
+                        tokenList.Add("0.0.0:00:00");
                         break;
                     default:
                         if (XSharpLexer.IsOperator(token.Type))
@@ -2082,70 +2094,109 @@ namespace XSharp.LanguageService
                         currentToken = currentToken.Substring(0, currentToken.Length - 1);
                     }
                     // First token, so it could be a parameter or a local var
-                    if (startOfExpression)
+
+
+                    var literal = false;
+                    if (currentToken == "\"\"") // string literal
                     {
-                        // Search in Parameters, Locals, Field and Properties
-                        foundElement = FindIdentifier(currentMember, currentToken, ref cType, Modifiers.Private, currentNS, snapshot, currentLine, dialect);
-                        if ((foundElement != null) && (foundElement.IsInitialized))
-                        {
-                            cType = foundElement.ReturnType;
-                        }
+                        cType = new CompletionType("System.String", file, "");
+                        literal = true;
+                    }
+                    else if (currentToken == "\"\"") // string literal
+                    {
+                        cType = new CompletionType("System.Char", file, "");
+                        literal = true;
+                    }
+                    else if (currentToken == "0") // integer literal
+                    {
+                        cType = new CompletionType("System.Int32", file, "");
+                        literal = true;
+                    }
+                    else if (currentToken == "0.0") // real literal
+                    {
+                        cType = new CompletionType("System.Double", file, "");
+                        literal = true;
+                    }
+                    else if (currentToken == "0.0.0") // Date literal
+                    {
+                        cType = new CompletionType("__Date", file, "");
+                        literal = true;
+                    }
+                    else if (currentToken == "0.0.0:00:00") // Date literal
+                    {
+                        cType = new CompletionType("System.DateTime", file, "");
+                        literal = true;
                     }
                     else
                     {
-                        // We can have a Property/Field of the current CompletionType
-                        if (!cType.IsEmpty())
+                        if (startOfExpression)
                         {
-                            cType = SearchPropertyOrFieldIn(cType, currentToken, visibility, out foundElement);
+                            // Search in Parameters, Locals, Field and Properties
+                            foundElement = FindIdentifier(currentMember, currentToken, ref cType, Modifiers.Private, currentNS, snapshot, currentLine, dialect);
+                            if ((foundElement != null) && (foundElement.IsInitialized))
+                            {
+                                cType = foundElement.ReturnType;
+                            }
+                        }
+                        else
+                        {
+                            // We can have a Property/Field of the current CompletionType
+                            if (!cType.IsEmpty())
+                            {
+                                cType = SearchPropertyOrFieldIn(cType, currentToken, visibility, out foundElement);
+                            }
                         }
                     }
-                    if (foundElement == null)
+                    if (! literal)
                     {
-                        cType = SearchType(file, currentToken, out foundElement, currentNS);
-                    }
-                    // We have it
-                    if ((foundElement != null) && (foundElement.IsInitialized))
-                    {
-                        // and we are in an Array, so we need the "other" type
-                        if (hasBracket)
+                        if (foundElement == null)
                         {
-                            if (foundElement.IsGeneric)
+                            cType = SearchType(file, currentToken, out foundElement, currentNS);
+                        }
+                        // We have it
+                        if ((foundElement != null) && (foundElement.IsInitialized))
+                        {
+                            // and we are in an Array, so we need the "other" type
+                            if (hasBracket)
                             {
-                                // Retrieve the inner Type
-                                if (foundElement.Result != null)
+                                if (foundElement.IsGeneric)
                                 {
-                                    if (!string.IsNullOrEmpty(foundElement.GenericTypeName))
+                                    // Retrieve the inner Type
+                                    if (foundElement.Result != null)
                                     {
-                                        var usings = new List<string>(currentScopes);
-                                        usings.AddRange(file.Usings);
-                                        if ( !string.IsNullOrEmpty(currentNS) && !usings.Contains(currentNS))
+                                        if (!string.IsNullOrEmpty(foundElement.GenericTypeName))
                                         {
-                                            usings.Add(currentNS);
+                                            var usings = new List<string>(currentScopes);
+                                            usings.AddRange(file.Usings);
+                                            if (!string.IsNullOrEmpty(currentNS) && !usings.Contains(currentNS))
+                                            {
+                                                usings.Add(currentNS);
+                                            }
+                                            if (foundElement.GenericTypeName.Contains(','))
+                                            {
+                                                // Ok, this is might be wrong, but...
+                                                string[] items = foundElement.GenericTypeName.Split(',');
+                                                if (items.Length > 1)
+                                                    cType = new CompletionType(items[1], file, usings);
+                                            }
+                                            else
+                                                cType = new CompletionType(foundElement.GenericTypeName, file, usings);
                                         }
-                                        if (foundElement.GenericTypeName.Contains(','))
-                                        {
-                                            // Ok, this is might be wrong, but...
-                                            string[] items = foundElement.GenericTypeName.Split(',');
-                                            if (items.Length > 1)
-                                                cType = new CompletionType(items[1], file, usings);
-                                        }
-                                        else
-                                            cType = new CompletionType(foundElement.GenericTypeName, file, usings);
+                                    }
+                                }
+                                else if (foundElement.IsArray)
+                                {
+                                    // Retrieve the inner Type
+                                    if (foundElement.Result != null)
+                                    {
+                                        cType = foundElement.ReturnType;
                                     }
                                 }
                             }
                             else if (foundElement.IsArray)
                             {
-                                // Retrieve the inner Type
-                                if (foundElement.Result != null)
-                                {
-                                    cType = foundElement.ReturnType;
-                                }
+                                cType = new CompletionType("System.Array", file, "");
                             }
-                        }
-                        else if (foundElement.IsArray)
-                        {
-                            cType = new CompletionType("System.Array", file, "");
                         }
                     }
                 }
@@ -2624,29 +2675,6 @@ namespace XSharp.LanguageService
             return result;
         }
 
-        private static CompletionType SearchExternalGlobalFieldIn(XFile xFile, string currentToken, out CompletionElement foundElement)
-        {
-            WriteOutputMessage($"<-- SearchExternalGlobalFieldIn {xFile.SourcePath}, {currentToken} ");
-            foundElement = null;
-            if (xFile == null)
-            {
-                return null;
-            }
-            //
-            CompletionType cType = null;
-            List<string> emptyUsings = new List<string>();
-            foreach (string staticUsing in xFile.AllUsingStatics)
-            {
-                // Provide an Empty Using list, so we are looking for FullyQualified-name only
-                CompletionType tempType = new CompletionType(staticUsing, xFile, emptyUsings);
-                //
-                cType = SearchPropertyOrFieldIn(tempType, currentToken, Modifiers.Public, out foundElement);
-                if (!cType.IsEmpty())
-                    break;
-            }
-            //
-            return cType;
-        }
 
 
         /// <summary>

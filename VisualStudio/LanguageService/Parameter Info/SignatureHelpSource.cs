@@ -8,6 +8,15 @@ using XSharpModel;
 
 namespace XSharp.LanguageService
 {
+    internal static class SignatureProperties
+    {
+        internal const string Line = nameof(Line);
+        internal const string Start = nameof(Start);
+        internal const string Element = nameof(Element);
+        internal const string Length = nameof(Length);
+        internal const string Comma = nameof(Comma);
+        internal const string File = nameof(File);
+    }
     internal class XSharpVsParameter : IParameter
     {
         public string Documentation { get; private set; }
@@ -71,44 +80,27 @@ namespace XSharp.LanguageService
                     break;
                 }
                 currentPos += 1;
-                switch (ch)
+                if (!instring)
                 {
-                    case '\'':
-                        if (!instring)
-                        {
+                    switch (ch)
+                    {
+                        case '\'':
+                        case '"':
                             instring = true;
                             endchar = ch;
-                            continue;
-                        }
-                        break;
-                    case '"':
-                        if (!instring)
-                        {
-                            instring = true;
-                            endchar = ch;
-                            continue;
-                        }
-                        break;
-                    case '[':
-                        if (!instring)
-                        {
+                            break;
+                        case '[':
                             instring = true;
                             endchar = ']';
-                            continue;
-                        }
-                        break;
-                    case ',':
-                        if (!instring)
-                        {
+                            break;
+                        case ',':
                             commaCount++;
-                        }
-
-                        break;
+                            break;
+                    }
                 }
-                if (ch == endchar)
+                else if (ch == endchar)
                 {
                     instring = false;
-                    continue;
                 }
             }
             return commaCount;
@@ -193,7 +185,6 @@ namespace XSharp.LanguageService
 
     internal class XSharpSignatureHelpSource : ISignatureHelpSource
     {
-
         private ITextBuffer m_textBuffer;
         private ISignatureHelpSession m_session;
         private ITrackingSpan m_applicableToSpan;
@@ -214,18 +205,18 @@ namespace XSharp.LanguageService
             try
             {
                 Debug("XSharpSignatureHelpSource.AugmentSignatureHelpSession()");
+                m_session = session;
                 XSharpModel.ModelWalker.Suspend();
                 ITextSnapshot snapshot = m_textBuffer.CurrentSnapshot;
+                int start, length;
+                XFile file;
                 int position = session.GetTriggerPoint(m_textBuffer).GetPosition(snapshot);
-                int start = (int)session.Properties["Start"];
-                int length = (int)session.Properties["Length"];
-                var comma = (bool)session.Properties["Comma"];
-                var file = (XFile)session.Properties["File"];
-                m_applicableToSpan = m_textBuffer.CurrentSnapshot.CreateTrackingSpan(
-                 new Span(start, length), SpanTrackingMode.EdgeInclusive, 0);
+                session.Properties.TryGetProperty(SignatureProperties.Start, out start);
+                session.Properties.TryGetProperty(SignatureProperties.Length, out length);
+                session.Properties.TryGetProperty(SignatureProperties.File, out file);
+                m_applicableToSpan = m_textBuffer.CurrentSnapshot.CreateTrackingSpan(new Span(start, length), SpanTrackingMode.EdgeInclusive, 0);
 
-                object elt = session.Properties["Element"];
-                m_session = session;
+                object elt = session.Properties.GetProperty(SignatureProperties.Element);
                 if (elt is IXElement)
                 {
                     IXMember element = elt as IXMember;
@@ -236,7 +227,7 @@ namespace XSharp.LanguageService
                         var names = new List<string>();
                         var proto = xMember.Prototype;
                         names.Add(proto);
-                        signatures.Add(CreateSignature(m_textBuffer, xMember, proto, "", ApplicableToSpan, comma, xMember.Kind == XSharpModel.Kind.Constructor, file));
+                        signatures.Add(CreateSignature(m_textBuffer, xMember, proto, ApplicableToSpan, xMember.Kind == XSharpModel.Kind.Constructor, file));
                         var overloads = xMember.GetOverloads();
                         foreach (var member in overloads)
                         {
@@ -244,7 +235,7 @@ namespace XSharp.LanguageService
                             proto = member.Prototype;
                             if (!names.Contains(proto))
                             {
-                                signatures.Add(CreateSignature(m_textBuffer, member, proto, "", ApplicableToSpan, comma, member.Kind == XSharpModel.Kind.Constructor, file));
+                                signatures.Add(CreateSignature(m_textBuffer, member, proto, ApplicableToSpan, member.Kind == XSharpModel.Kind.Constructor, file));
                                 names.Add(proto);
                             }
                         }
@@ -252,7 +243,7 @@ namespace XSharp.LanguageService
                     else if (element != null)
                     {
                         // Type ??
-                        signatures.Add(CreateSignature(m_textBuffer, null, element.Prototype, "", ApplicableToSpan, comma, false, file));
+                        signatures.Add(CreateSignature(m_textBuffer, null, element.Prototype, ApplicableToSpan, false, file));
                     }
                     // why not ?
                     int paramCount = int.MaxValue;
@@ -270,7 +261,7 @@ namespace XSharp.LanguageService
             }
             catch (Exception ex)
             {
-                XSettings.DisplayOutputMessage("XSharpSignatureHelpSource.AugmentSignatureHelpSession Exception failed " );
+                XSettings.DisplayOutputMessage("XSharpSignatureHelpSource.AugmentSignatureHelpSession Exception failed ");
                 XSettings.DisplayException(ex);
             }
             finally
@@ -282,9 +273,9 @@ namespace XSharp.LanguageService
 
  
 
-        private XSharpVsSignature CreateSignature(ITextBuffer textBuffer, IXMember member, string methodSig, string methodDoc, ITrackingSpan span, bool comma, bool isCtor, XFile file )
+        private XSharpVsSignature CreateSignature(ITextBuffer textBuffer, IXMember member, string methodSig, ITrackingSpan span, bool isCtor, XFile file )
         {
-            var doc = methodDoc;
+            var doc = "";
             string returns;
             string remarks;
             if (member != null)
@@ -294,8 +285,8 @@ namespace XSharp.LanguageService
 
             Debug("XSharpSignatureHelpSource.CreateSignature()");
             var sig = new XSharpVsSignature(textBuffer, methodSig, doc, null);
-            var names = new List<String>();
-            var descriptions = new List<String>();
+            var names = new List<string>();
+            var descriptions = new List<string>();
             if (member != null)
             {
                 XSharpXMLDocMember.GetMemberParameters(member, file.Project, names, descriptions);
@@ -311,9 +302,13 @@ namespace XSharp.LanguageService
             // 3 : AS TYPE3
             string[] pars;
             if (isCtor)
+            {
                 pars = methodSig.Split(new char[] { '{', ',', '}' });
+            }
             else
+            {
                 pars = methodSig.Split(new char[] { '(', ',', ')' });
+            }
             List<IParameter> paramList = new List<IParameter>();
             int locusSearchStart = 0;
             // i = 1 to skip the MethodName; Length-1 to Skip the ReturnType

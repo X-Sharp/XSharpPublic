@@ -136,7 +136,7 @@ namespace XSharp.LanguageService
                 XMemberDefinition member = XSharpTokenTools.FindMember(lineNumber, _file);
                 XTypeDefinition currentNamespace = XSharpTokenTools.FindNamespace(caretPos, _file);
                 // adjust caretpos, for other completions we need to stop before the caret. Now we include the caret
-                var tokenList = XSharpTokenTools.GetTokenList(caretPos , lineNumber, tokens.TokenStream, out stopToken, _file, false, member);
+                var tokenList = XSharpTokenTools.GetTokenList(caretPos , lineNumber, tokens.TokenStream, out stopToken);
                 // LookUp for the BaseType, reading the TokenList (From left to right)
                 CompletionElement gotoElement;
                 string currentNS = "";

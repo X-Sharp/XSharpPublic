@@ -1,3 +1,4 @@
+#if NOTUSED
 /* ****************************************************************************
  *
  * Copyright (c) Microsoft Corporation.
@@ -26,22 +27,23 @@ namespace Microsoft.VisualStudio.Project
         OutputPath
     }
 
+
     /// <summary>
     /// Defines the properties on the build property page and the logic the binds the properties to project data (load and save)
     /// </summary>
     [CLSCompliant(false), ComVisible(true), Guid("9B3DEA40-7F29-4a17-87A4-00EE08E8241E")]
     public class BuildPropertyPage : SettingsPage
     {
-        #region fields
+#region fields
         private string outputPath;
 
         public BuildPropertyPage()
         {
             this.Name = SR.GetString(SR.BuildCaption, CultureInfo.CurrentUICulture);
         }
-        #endregion
+#endregion
 
-        #region properties
+#region properties
         [SRCategoryAttribute(SR.BuildCaption)]
         [LocDisplayName(SR.OutputPath)]
         [SRDescriptionAttribute(SR.OutputPathDescription)]
@@ -50,9 +52,9 @@ namespace Microsoft.VisualStudio.Project
             get { return this.outputPath; }
             set { this.outputPath = value; this.IsDirty = true; }
         }
-        #endregion
+#endregion
 
-        #region overridden methods
+#region overridden methods
         public virtual string GetClassName()
         {
             return this.GetType().FullName;
@@ -81,6 +83,11 @@ namespace Microsoft.VisualStudio.Project
             this.IsDirty = false;
             return VSConstants.S_OK;
         }
-        #endregion
+#endregion
     }
+
+
 }
+
+
+#endif

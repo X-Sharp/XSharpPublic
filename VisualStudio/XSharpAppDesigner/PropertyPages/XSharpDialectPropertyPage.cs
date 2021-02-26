@@ -323,7 +323,7 @@ namespace XSharp.Project
 			xpp1 = getPrjLogic(nameof(XPP1), false);
             fox1 = getPrjLogic(nameof(FOX1), false);
             fox2 = getPrjLogic(nameof(FOX2), false);
-            //EnableDialectOptions(this.ProjectMgr.GetProjectProperty("Dialect"));
+            EnableDialectOptions(this.XsProject.GetProjectProperty("Dialect",false,false));
         }
 
         /// <summary>
@@ -337,27 +337,27 @@ namespace XSharp.Project
                 return VSConstants.E_INVALIDARG;
             }
             saving = true;
-            /*
-            this.ProjectMgr.SetProjectProperty(nameof(VO1), this.vo1.ToString().ToLower());
-            this.ProjectMgr.SetProjectProperty(nameof(VO2), this.vo2.ToString().ToLower());
-            this.ProjectMgr.SetProjectProperty(nameof(VO3), this.vo3.ToString().ToLower());
-            this.ProjectMgr.SetProjectProperty(nameof(VO4), this.vo4.ToString().ToLower());
-            this.ProjectMgr.SetProjectProperty(nameof(VO5), this.vo5.ToString().ToLower());
-            this.ProjectMgr.SetProjectProperty(nameof(VO6), this.vo6.ToString().ToLower());
-            this.ProjectMgr.SetProjectProperty(nameof(VO7), this.vo7.ToString().ToLower());
-            this.ProjectMgr.SetProjectProperty(nameof(VO8), this.vo8.ToString().ToLower());
-            this.ProjectMgr.SetProjectProperty(nameof(VO9), this.vo9.ToString().ToLower());
-            this.ProjectMgr.SetProjectProperty(nameof(VO10), this.vo10.ToString().ToLower());
-            this.ProjectMgr.SetProjectProperty(nameof(VO11), this.vo11.ToString().ToLower());
-            this.ProjectMgr.SetProjectProperty(nameof(VO12), this.vo12.ToString().ToLower());
-            this.ProjectMgr.SetProjectProperty(nameof(VO13), this.vo13.ToString().ToLower());
-            this.ProjectMgr.SetProjectProperty(nameof(VO14), this.vo14.ToString().ToLower());
-            this.ProjectMgr.SetProjectProperty(nameof(VO15), this.vo15.ToString().ToLower());
-            this.ProjectMgr.SetProjectProperty(nameof(VO16), this.vo16.ToString().ToLower());
-			this.ProjectMgr.SetProjectProperty(nameof(XPP1), this.xpp1.ToString().ToLower());
-            this.ProjectMgr.SetProjectProperty(nameof(FOX1), this.fox1.ToString().ToLower());
-            this.ProjectMgr.SetProjectProperty(nameof(FOX2), this.fox2.ToString().ToLower());
-            */
+
+            this.XsProject.SetProjectProperty(nameof(VO1), this.vo1.ToString().ToLower());
+            this.XsProject.SetProjectProperty(nameof(VO2), this.vo2.ToString().ToLower());
+            this.XsProject.SetProjectProperty(nameof(VO3), this.vo3.ToString().ToLower());
+            this.XsProject.SetProjectProperty(nameof(VO4), this.vo4.ToString().ToLower());
+            this.XsProject.SetProjectProperty(nameof(VO5), this.vo5.ToString().ToLower());
+            this.XsProject.SetProjectProperty(nameof(VO6), this.vo6.ToString().ToLower());
+            this.XsProject.SetProjectProperty(nameof(VO7), this.vo7.ToString().ToLower());
+            this.XsProject.SetProjectProperty(nameof(VO8), this.vo8.ToString().ToLower());
+            this.XsProject.SetProjectProperty(nameof(VO9), this.vo9.ToString().ToLower());
+            this.XsProject.SetProjectProperty(nameof(VO10), this.vo10.ToString().ToLower());
+            this.XsProject.SetProjectProperty(nameof(VO11), this.vo11.ToString().ToLower());
+            this.XsProject.SetProjectProperty(nameof(VO12), this.vo12.ToString().ToLower());
+            this.XsProject.SetProjectProperty(nameof(VO13), this.vo13.ToString().ToLower());
+            this.XsProject.SetProjectProperty(nameof(VO14), this.vo14.ToString().ToLower());
+            this.XsProject.SetProjectProperty(nameof(VO15), this.vo15.ToString().ToLower());
+            this.XsProject.SetProjectProperty(nameof(VO16), this.vo16.ToString().ToLower());
+			this.XsProject.SetProjectProperty(nameof(XPP1), this.xpp1.ToString().ToLower());
+            this.XsProject.SetProjectProperty(nameof(FOX1), this.fox1.ToString().ToLower());
+            this.XsProject.SetProjectProperty(nameof(FOX2), this.fox2.ToString().ToLower());
+
             this.IsDirty = false;
             saving = false;
             return VSConstants.S_OK;

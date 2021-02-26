@@ -425,8 +425,8 @@ namespace XSharp.Project
             {
                 if (String.IsNullOrEmpty(DocumentationFile))
                 {
-                    //var asmName = this.ProjectMgr.GetProjectProperty("AssemblyName", true);
-                    //documentationFile = asmName+ ".Xml";
+                    var asmName = this.XsProject.GetProjectProperty("AssemblyName", true);
+                    documentationFile = asmName+ ".Xml";
                 }
             }
             else

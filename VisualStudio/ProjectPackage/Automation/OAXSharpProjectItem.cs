@@ -13,6 +13,7 @@ using EnvDTE;
 using Microsoft.VisualStudio.Project;
 using VSLangProj;
 using Microsoft.VisualStudio.Shell;
+using Microsoft.VisualStudio.Shell.Interop;
 
 namespace XSharp.Project
 {

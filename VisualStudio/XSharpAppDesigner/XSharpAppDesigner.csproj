@@ -52,6 +52,7 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -69,9 +70,17 @@
     <Compile Include="Attributes\LocDisplayNameAttribute.cs" />
     <Compile Include="Attributes\ResourcesCategoryAttribute.cs" />
     <Compile Include="Attributes\ResourcesDescriptionAttribute.cs" />
+    <Compile Include="IXsProjectDesigner.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="PropertyPages\Enums.cs" />
+    <Compile Include="PropertyPages\XGeneralPropertyPage.cs" />
     <Compile Include="PropertyPages\XBuildEventsPropertyPage.cs" />
+    <Compile Include="PropertyPages\XGeneralPropertyPagePanel.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="PropertyPages\XGeneralPropertyPagePanel.Designer.cs">
+      <DependentUpon>XGeneralPropertyPagePanel.cs</DependentUpon>
+    </Compile>
     <Compile Include="PropertyPages\XSharpBuildEventsPropertyPagePanel.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -113,6 +122,9 @@
     <Compile Include="Resources.cs" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="PropertyPages\XGeneralPropertyPagePanel.resx">
+      <DependentUpon>XGeneralPropertyPagePanel.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="PropertyPages\XSharpBuildEventsPropertyPagePanel.resx">
       <DependentUpon>XSharpBuildEventsPropertyPagePanel.cs</DependentUpon>
     </EmbeddedResource>
@@ -130,6 +142,10 @@
     <ProjectReference Include="..\ProjectBase\ProjectBase.csproj">
       <Project>{cacb60a9-1e76-4f92-8831-b134a658c695}</Project>
       <Name>Microsoft.VisualStudio.Project</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\XSharpCodeModelXs\XSharpModelXs.xsproj">
+      <Project>{eed6843b-b727-4f08-aa32-ca0f48fdde3f}</Project>
+      <Name>XSharpModelXs</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

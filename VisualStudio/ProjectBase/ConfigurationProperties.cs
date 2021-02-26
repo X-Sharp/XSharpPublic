@@ -48,11 +48,11 @@ namespace Microsoft.VisualStudio.Project
         {
             get
             {
-                return this.projectConfig.GetConfigurationProperty(BuildPropertyPageTag.OutputPath.ToString(), true);
+                return this.projectConfig.GetConfigurationProperty(ProjectFileConstants.OutputPath.ToString(), true);
             }
             set
             {
-                this.projectConfig.SetConfigurationProperty(BuildPropertyPageTag.OutputPath.ToString(), value);
+                this.projectConfig.SetConfigurationProperty(ProjectFileConstants.OutputPath.ToString(), value);
             }
         }
 

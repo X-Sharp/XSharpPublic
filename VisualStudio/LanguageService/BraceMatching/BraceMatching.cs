@@ -166,7 +166,7 @@ namespace XSharp.LanguageService.Editors.BraceMatching
 
                 if (SourceBuffer.Properties != null && SourceBuffer.Properties.ContainsProperty(typeof(XSharpTokens)))
                 {
-                    xTokens = SourceBuffer.Properties.GetProperty<XSharpTokens>(typeof(XSharpTokens));
+                    SourceBuffer.Properties.TryGetProperty(typeof(XSharpTokens), out xTokens);
                     if (xTokens == null || xTokens.TokenStream == null || xTokens.SnapShot == null)
                         yield break;
 

@@ -11,18 +11,24 @@ namespace XSharp.Project
     using System.Diagnostics;
     using System.Drawing;
     using System.Text;
+    using System.Collections.Generic;
     using System.Windows.Forms;
+    using System.ComponentModel;
     using Microsoft.VisualStudio.Project;
     /// <summary>
     /// Property page contents for the Candle Settings page.
     /// </summary>
-    internal partial class XBuildEventsPropertyPagePanel : XPropertyPagePanel
+    internal partial class XGeneralPropertyPagePanel : XPropertyPagePanel
     {
-        // =========================================================================================
-        // Member Variables
-        // =========================================================================================
+        private void FillCombo(TypeConverter converter, System.Windows.Forms.ComboBox combo)
+        {
+            foreach (var enumvalue in converter.GetStandardValues(null))
+            {
+                var name = converter.ConvertTo(enumvalue, typeof(System.String));
+                combo.Items.Add(name); // new comboItem ((int) enumvalue, name));
+            }
+        }
 
-        private XBuildEventEditorForm editorForm = new XBuildEventEditorForm(null);
 
         // =========================================================================================
         // Constructors
@@ -32,21 +38,28 @@ namespace XSharp.Project
         /// Initializes a new instance of the <see cref="XBuildEventsPropertyPagePanel"/> class.
         /// </summary>
         /// <param name="parentPropertyPage">The parent property page to which this is bound.</param>
-        public XBuildEventsPropertyPagePanel(XPropertyPage parentPropertyPage, string[] names)
+        public XGeneralPropertyPagePanel(XPropertyPage parentPropertyPage)
             : base(parentPropertyPage)
         {
             this.InitializeComponent();
 
-            this.runPostBuildComboBox.Items.AddRange(names);
+            this.tbAssemblyName.Tag = ProjectFileConstants.AssemblyName;
+            this.tbDefaultNamespace.Tag = ProjectFileConstants.RootNamespace;
+            this.tbAppIcon.Tag = ProjectFileConstants.ApplicationIcon;
+            this.tbStartupObject.Tag = ProjectFileConstants.StartupObject;
+            this.chkPreferNativeVersion.Tag = "UseNativeVersion";
+            this.chkSuppressDefaultManifest.Tag = "NoWin32Manifest";
+            this.chkVulcanCompatibleResources.Tag = "VulcanCompatibleResources";
+            this.chkAutoGenerateBindingRedirects.Tag = "AutoGenerateBindingRedirects";
+            this.comboDialect.Tag = "Dialect";
+            this.comboOutputType.Tag = ProjectFileConstants.OutputType;
+            this.comboTargetFramework.Tag = "TargetFrameworkVersion";
+            FillCombo(new DialectConverter() , comboDialect);
+            FillCombo(new OutputTypeConverter(), comboOutputType);
+            FillCombo(new FrameworkNameConverter(), comboTargetFramework);
+
 
             // hook up the form to both editors
-            this.preBuildEditor.Initialize(  parentPropertyPage.ProjectMgr, this.editorForm);
-            this.postBuildEditor.Initialize(parentPropertyPage.ProjectMgr, this.editorForm);
-
-            this.preBuildEditor.TextBox.Tag = XProjectFileConstants.PreBuildEvent;
-            this.postBuildEditor.TextBox.Tag = XProjectFileConstants.PostBuildEvent;
-            this.runPostBuildComboBox.Tag = XProjectFileConstants.RunPostBuildEvent;
-
             Color defaultBackground = SystemColors.ButtonFace;
             Color defaultForeground = SystemColors.WindowText;
             UpdateWindowColors(this, defaultBackground, defaultForeground);
@@ -72,5 +85,7 @@ namespace XSharp.Project
                 UpdateWindowColors(child, clrBackground, clrForeground);
             }
         }
+      
+
     }
 }

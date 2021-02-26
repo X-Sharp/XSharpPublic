@@ -77,8 +77,10 @@ namespace XSharp.LanguageService
             {
                 if (_classifier == null)
                 {
-                    _classifier = (XSharpClassifier)_buffer.Properties.GetProperty(typeof(XSharpClassifier));
-                    _classifier.ClassificationChanged += _classifier_ClassificationChanged;
+                    if (_buffer.Properties.TryGetProperty(typeof(XSharpClassifier), out _classifier))
+                    {
+                        _classifier.ClassificationChanged += _classifier_ClassificationChanged;
+                    }
                 }
             }
             else
@@ -511,9 +513,9 @@ namespace XSharp.LanguageService
                 }
                 if (changed && _buffer.Properties.ContainsProperty(typeof(XSharpClassifier)))
                 */
-                if (_buffer.Properties.ContainsProperty(typeof(XSharpClassifier)))
+                XSharpClassifier classify;
+                if (_buffer.Properties.TryGetProperty(typeof(XSharpClassifier), out classify))
                 {
-                    var classify = _buffer.Properties.GetProperty<XSharpClassifier>(typeof(XSharpClassifier));
                     classify.Classify();
                 }
                 WriteOutputMessage("<-- CommandFilter.formatCaseForBuffer()");
@@ -770,7 +772,7 @@ namespace XSharp.LanguageService
                         return;
                 }
 
-                var tokenList = XSharpTokenTools.GetTokenList(caretPos, lineNumber, tokens.TokenStream, out stopToken, file, false, member);
+                var tokenList = XSharpTokenTools.GetTokenList(caretPos, lineNumber, tokens.TokenStream, out stopToken);
 
                 // LookUp for the BaseType, reading the TokenList (From left to right)
                 CompletionElement gotoElement;
@@ -848,7 +850,7 @@ namespace XSharp.LanguageService
             {
                 return;
             }
-            if (Char.IsLetterOrDigit(ch) || ch == '_')
+            if (char.IsLetterOrDigit(ch) || ch == '_')
             {
                 var line = caret.GetContainingLine();
 
@@ -1091,10 +1093,10 @@ namespace XSharp.LanguageService
             _completionSession.Committed += OnCompletionSessionCommitted;
             _completionSession.SelectedCompletionSetChanged += _completionSession_SelectedCompletionSetChanged;
 
-            _completionSession.Properties[XSCompletion.Command] = nCmdId;
-            _completionSession.Properties[XSCompletion.Char] = typedChar;
-            _completionSession.Properties[XSCompletion.Type] = null;
-            _completionSession.Properties[XSCompletion.IncludeKeywords] = includeKeywords;
+            _completionSession.Properties[XsCompletionProperties.Command] = nCmdId;
+            _completionSession.Properties[XsCompletionProperties.Char] = typedChar;
+            _completionSession.Properties[XsCompletionProperties.Type] = null;
+            _completionSession.Properties[XsCompletionProperties.IncludeKeywords] = includeKeywords;
             try
             {
                 _completionSession.Start();
@@ -1126,10 +1128,7 @@ namespace XSharp.LanguageService
                 if (_completionSession.SelectedCompletionSet.SelectionStatus.Completion.InsertionText.EndsWith("("))
                 {
                     XSharpModel.CompletionType cType = null;
-                    if (_completionSession.Properties[XSCompletion.Type] != null)
-                    {
-                        cType = (XSharpModel.CompletionType)_completionSession.Properties[XSCompletion.Type];
-                    }
+                    _completionSession.Properties.TryGetProperty(XsCompletionProperties.Type, out cType);
                     string method = _completionSession.SelectedCompletionSet.SelectionStatus.Completion.InsertionText;
                     method = method.Substring(0, method.Length - 1);
                     _completionSession.Dismiss();
@@ -1214,7 +1213,7 @@ namespace XSharp.LanguageService
 
                 XMemberDefinition member = XSharpTokenTools.FindMember(lineNumber, file);
                 XTypeDefinition currentNamespace = XSharpTokenTools.FindNamespace(caretPos, file);
-                var tokenList = XSharpTokenTools.GetTokenList(caretPos, lineNumber, snapshot, out stopToken, file, false, member);
+                var tokenList = XSharpTokenTools.GetTokenList(caretPos, lineNumber, snapshot, out stopToken, file,  member);
                 string currentNS = "";
                 if (currentNamespace != null)
                 {
@@ -1242,14 +1241,13 @@ namespace XSharp.LanguageService
                 _signatureSession.Dismissed += OnSignatureSessionDismiss;
                 if (currentElement.Result != null)
                 {
-                    _signatureSession.Properties["Element"] = currentElement.Result;
+                    _signatureSession.Properties[SignatureProperties.Element] = currentElement.Result;
                 }
                
-                _signatureSession.Properties["Line"] = startLineNumber;
-                _signatureSession.Properties["Start"] = ssp.Position;
-                _signatureSession.Properties["Length"] = TextView.Caret.Position.BufferPosition.Position - ssp.Position;
-                _signatureSession.Properties["Comma"] = comma;
-                _signatureSession.Properties["File"] = file;
+                _signatureSession.Properties[SignatureProperties.Line] = startLineNumber;
+                _signatureSession.Properties[SignatureProperties.Start] = ssp.Position;
+                _signatureSession.Properties[SignatureProperties.Length] = TextView.Caret.Position.BufferPosition.Position - ssp.Position;
+                _signatureSession.Properties[SignatureProperties.File] = file;
 
                 try
                 {
@@ -1285,7 +1283,8 @@ namespace XSharp.LanguageService
             if (_signatureSession == null)
                 return false;
 
-            int start = (int)_signatureSession.Properties["Start"];
+            int start;
+            _signatureSession.Properties.TryGetProperty(SignatureProperties.Start, out start);
             int pos = this.TextView.Caret.Position.BufferPosition.Position;
 
             ((XSharpVsSignature)_signatureSession.SelectedSignature).ComputeCurrentParameter(pos - start - 1);

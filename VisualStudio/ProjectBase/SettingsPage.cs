@@ -41,8 +41,7 @@ namespace Microsoft.VisualStudio.Project
         private bool active;
         private bool dirty = false;
         private IPropertyPageSite site;
-        private EnvDTE.Project envproject;
-        private IVsProject4 project;
+        private IVsProject project;
         private IVsProjectCfg2[] projectConfigs;
         private IVSMDPropertyGrid grid = null;
         private string name;
@@ -70,7 +69,7 @@ namespace Microsoft.VisualStudio.Project
 
         [Browsable(false)]
         [AutomationBrowsable(false)]
-        public IVsProject4 ProjectMgr
+        public IVsProject ProjectMgr
         {
             get
             {
@@ -250,6 +249,19 @@ namespace Microsoft.VisualStudio.Project
 
         #endregion
 
+        protected virtual IVSMDPropertyGrid CreateGrid()
+        {
+            //if (this.grid == null && this.project != null && this.project.Site != null)
+            //{
+
+            //    IVSMDPropertyBrowser pb = this.project.Site.GetService(typeof(IVSMDPropertyBrowser)) as IVSMDPropertyBrowser;
+            //    Assumes.Present(pb);
+            //    this.grid = pb.CreatePropertyGrid();
+            //}
+            return null;
+
+        }
+
         #region IPropertyPage methods.
         public virtual void Activate(IntPtr parent, RECT[] pRect, int bModal)
         {
@@ -268,15 +280,10 @@ namespace Microsoft.VisualStudio.Project
                 this.panel.CreateControl();
                 NativeMethods.SetParent(this.panel.Handle, parent);
             }
-
-            //if(this.grid == null && this.project != null && this.project.Site != null)
-            //{
-                
-            //    IVSMDPropertyBrowser pb = this.project.Site.GetService(typeof(IVSMDPropertyBrowser)) as IVSMDPropertyBrowser;
-            //    Assumes.Present(pb);
-            //    this.grid = pb.CreatePropertyGrid();
-            //}
-
+            if (this.grid == null)
+            {
+                this.grid = CreateGrid();
+            }
             if (this.grid != null)
             {
                 this.active = true;
@@ -389,7 +396,7 @@ namespace Microsoft.VisualStudio.Project
 
             if(count > 0)
             {
-                if (punk[0] is ProjectConfig)
+                if (punk[0] is ProjectConfig pconfig)
                 {
                     ArrayList configs = new ArrayList();
 
@@ -397,10 +404,10 @@ namespace Microsoft.VisualStudio.Project
                     {
                         ProjectConfig config = (ProjectConfig)punk[i];
 
-                        if (this.project == null || (this.project != (punk[0] as ProjectConfig).ProjectMgr))
+                        if (this.project == null || (this.project != pconfig.ProjectMgr))
                         {
                             UnRegisterProjectEvents();
-                            //this.project = config.ProjectMgr;
+                            this.project = config.ProjectMgr;
                             RegisterProjectEvents();
                         }
 
@@ -408,46 +415,14 @@ namespace Microsoft.VisualStudio.Project
                     }
 
                     this.projectConfigs = (ProjectConfig[])configs.ToArray(typeof(ProjectConfig));
-            
                 }
-                else if (punk[0] is IVsCfgBrowseObject cfgbrowseobject)
-                {
-                    cfgbrowseobject.GetProjectItem(out var hier, out var itemid);
-                    var hr = hier.GetProperty((uint) VSITEMID.Root, (int) __VSHPROPID.VSHPROPID_ExtObject, out var obj);
-                    if (obj is EnvDTE.Project dteproject)
-                    {
-                        envproject = dteproject;
-                        obj = dteproject.Object;
-                        if (obj is VSLangProj.VSProject prj4)
-                        {
-                            //project = prj4;
-                            project = null;
-                        }
-                    }
 
-
-
-                }
-                else if (punk[0] is IVsBrowseObject browseobject)
+                else if (punk[0] is NodeProperties props)
                 {
-                    browseobject.GetProjectItem(out var hier, out var itemid);
-                    var hr = hier.GetProperty((uint) VSITEMID.Root, (int) __VSHPROPID.VSHPROPID_ExtObject, out var obj);
-                    if (obj is EnvDTE.Project dteproject)
-                    {
-                        envproject = dteproject;
-                        obj = dteproject.Object;
-                        if (obj is IVsProject4 prj4)
-                        {
-                            project = prj4;
-                        }
-                    }
-                }
-                else if(punk[0] is NodeProperties)
-                {
-                    if (this.project == null || (this.project != (punk[0] as NodeProperties).Node.ProjectMgr))
+                    if (this.project == null || (this.project != props.Node.ProjectMgr))
                     {
                         UnRegisterProjectEvents();
-                        //this.project = (punk[0] as NodeProperties).Node.ProjectMgr;
+                        this.project = props.Node.ProjectMgr;
                         RegisterProjectEvents();
                     }
 
@@ -456,32 +431,32 @@ namespace Microsoft.VisualStudio.Project
                     {
                         await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
 
-                    for(int i = 0; i < count; i++)
-                    {
-                        NodeProperties property = (NodeProperties)punk[i];
-                        IVsCfgProvider provider;
-                        ErrorHandler.ThrowOnFailure(property.Node.ProjectMgr.GetCfgProvider(out provider));
-                        uint[] expected = new uint[1];
-                        ErrorHandler.ThrowOnFailure(provider.GetCfgs(0, null, expected, null));
-                        if(expected[0] > 0)
+                        for (int i = 0; i < count; i++)
                         {
-                            ProjectConfig[] configs = new ProjectConfig[expected[0]];
-                            uint[] actual = new uint[1];
-                            provider.GetCfgs(expected[0], configs, actual, null);
-
-                            foreach(ProjectConfig config in configs)
+                            NodeProperties property = (NodeProperties)punk[i];
+                            IVsCfgProvider provider;
+                            ErrorHandler.ThrowOnFailure(property.Node.ProjectMgr.GetCfgProvider(out provider));
+                            uint[] expected = new uint[1];
+                            ErrorHandler.ThrowOnFailure(provider.GetCfgs(0, null, expected, null));
+                            if (expected[0] > 0)
                             {
-                                if(!configsMap.ContainsKey(config.ConfigName))
+                                ProjectConfig[] configs = new ProjectConfig[expected[0]];
+                                uint[] actual = new uint[1];
+                                provider.GetCfgs(expected[0], configs, actual, null);
+
+                                foreach (ProjectConfig config in configs)
                                 {
-                                    configsMap.Add(config.ConfigName, config);
+                                    if (!configsMap.ContainsKey(config.ConfigName))
+                                    {
+                                        configsMap.Add(config.ConfigName, config);
+                                    }
                                 }
                             }
                         }
-                    }
                     });
-                    if(configsMap.Count > 0)
+                    if (configsMap.Count > 0)
                     {
-                        if(this.projectConfigs == null)
+                        if (this.projectConfigs == null)
                         {
                             this.projectConfigs = new ProjectConfig[configsMap.Keys.Count];
                         }

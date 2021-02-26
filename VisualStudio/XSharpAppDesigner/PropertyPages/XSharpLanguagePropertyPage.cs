@@ -341,24 +341,24 @@ namespace XSharp.Project
             }
             saving = true;
 
-            //this.ProjectMgr.SetProjectProperty(nameof(AZ), this.az.ToString().ToLower());
+            this.XsProject.SetProjectProperty(nameof(AZ), this.az.ToString().ToLower());
 
-            //this.ProjectMgr.SetProjectProperty(nameof(CS), this.cs.ToString().ToLower());
-            //this.ProjectMgr.SetProjectProperty(nameof(LB), this.lb.ToString().ToLower());
-            //this.ProjectMgr.SetProjectProperty(nameof(NamedArgs), this.namedargs.ToString().ToLower());
-            //this.ProjectMgr.SetProjectProperty(nameof(OVF), this.ovf.ToString().ToLower());
-            //this.ProjectMgr.SetProjectProperty(nameof(Unsafe), this.@unsafe.ToString().ToLower());
+            this.XsProject.SetProjectProperty(nameof(CS), this.cs.ToString().ToLower());
+            this.XsProject.SetProjectProperty(nameof(LB), this.lb.ToString().ToLower());
+            this.XsProject.SetProjectProperty(nameof(NamedArgs), this.namedargs.ToString().ToLower());
+            this.XsProject.SetProjectProperty(nameof(OVF), this.ovf.ToString().ToLower());
+            this.XsProject.SetProjectProperty(nameof(Unsafe), this.@unsafe.ToString().ToLower());
 
 
-            //this.ProjectMgr.SetProjectProperty(nameof(INS), this.ins.ToString().ToLower());
-            //this.ProjectMgr.SetProjectProperty(nameof(NS), this.ns.ToString().ToLower());
+            this.XsProject.SetProjectProperty(nameof(INS), this.ins.ToString().ToLower());
+            this.XsProject.SetProjectProperty(nameof(NS), this.ns.ToString().ToLower());
 
-            //this.ProjectMgr.SetProjectProperty(nameof(NoStandardDefs), this.nostandarddefs.ToString().ToLower());
-            //this.ProjectMgr.SetProjectProperty(nameof(IncludePaths), this.includepaths?.ToString());
-            //this.ProjectMgr.SetProjectProperty(nameof(StandardDefs), this.standarddefs?.ToString());
-            //this.ProjectMgr.SetProjectProperty(nameof(MemVar), this.memvar.ToString().ToLower());
-            //this.ProjectMgr.SetProjectProperty(nameof(Undeclared), this.undeclared.ToString().ToLower());
-            //this.ProjectMgr.SetProjectProperty(nameof(InitLocals), this.initlocals.ToString().ToLower());
+            this.XsProject.SetProjectProperty(nameof(NoStandardDefs), this.nostandarddefs.ToString().ToLower());
+            this.XsProject.SetProjectProperty(nameof(IncludePaths), this.includepaths?.ToString());
+            this.XsProject.SetProjectProperty(nameof(StandardDefs), this.standarddefs?.ToString());
+            this.XsProject.SetProjectProperty(nameof(MemVar), this.memvar.ToString().ToLower());
+            this.XsProject.SetProjectProperty(nameof(Undeclared), this.undeclared.ToString().ToLower());
+            this.XsProject.SetProjectProperty(nameof(InitLocals), this.initlocals.ToString().ToLower());
             saving = false;
             this.IsDirty = false;
 

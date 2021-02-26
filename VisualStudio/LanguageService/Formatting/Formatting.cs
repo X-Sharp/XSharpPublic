@@ -211,6 +211,16 @@ namespace XSharp.LanguageService
             }
         }
 
+        private bool getBufferedTokens(out XSharpTokens xTokens)
+        {
+            if (_buffer.Properties != null && _buffer.Properties.TryGetProperty(typeof(XSharpTokens), out xTokens))
+            {
+                return xTokens != null && xTokens.Complete;
+            }
+            xTokens = null;            
+            return false;
+        }
+
         private void FormatLine()
         {
             //
@@ -869,40 +879,35 @@ namespace XSharp.LanguageService
         {
             IList<IToken> tokens = new List<IToken>();
             // Already been lexed ?
-            if (_buffer.Properties != null && _buffer.Properties.ContainsProperty(typeof(XSharpTokens)))
+            if (getBufferedTokens(out var xTokens))
             {
-                XSharpTokens xTokens = null;
-                xTokens = _buffer.Properties.GetProperty<XSharpTokens>(typeof(XSharpTokens));
-                if (!(xTokens == null || xTokens.TokenStream == null || xTokens.SnapShot == null))
+                var allTokens = xTokens.TokenStream.GetTokens();
+                if (allTokens != null)
                 {
-                    var allTokens = xTokens.TokenStream.GetTokens();
-                    if (allTokens != null)
+                    if (xTokens.SnapShot.Version == _buffer.CurrentSnapshot.Version)
                     {
-                        if (xTokens.SnapShot.Version == _buffer.CurrentSnapshot.Version)
+                        // Ok, use it
+                        int startIndex = -1;
+                        // Move to the line position
+                        for (int i = 0; i < allTokens.Count; i++)
                         {
-                            // Ok, use it
-                            int startIndex = -1;
-                            // Move to the line position
-                            for (int i = 0; i < allTokens.Count; i++)
+                            if (allTokens[i].StartIndex >= line.Start.Position)
                             {
-                                if (allTokens[i].StartIndex >= line.Start.Position)
-                                {
-                                    startIndex = i;
-                                    break;
-                                }
+                                startIndex = i;
+                                break;
                             }
-                            if ( startIndex > -1 )
+                        }
+                        if (startIndex > -1)
+                        {
+                            // Move to the end of line
+                            int currentLine = allTokens[startIndex].Line;
+                            do
                             {
-                                // Move to the end of line
-                                int currentLine = allTokens[startIndex].Line;
-                                do
-                                {
-                                    tokens.Add(allTokens[startIndex]);
-                                    startIndex++;
+                                tokens.Add(allTokens[startIndex]);
+                                startIndex++;
 
-                                } while ((startIndex < allTokens.Count) && (currentLine == allTokens[startIndex].Line));
-                                return tokens;
-                            }
+                            } while ((startIndex < allTokens.Count) && (currentLine == allTokens[startIndex].Line));
+                            return tokens;
                         }
                     }
                 }
@@ -918,40 +923,35 @@ namespace XSharp.LanguageService
         {
             IList<IToken> tokens = new List<IToken>();
             // Already been lexed ?
-            if (_buffer.Properties != null && _buffer.Properties.ContainsProperty(typeof(XSharpTokens)))
+            if (getBufferedTokens(out var xTokens))
             {
-                XSharpTokens xTokens = null;
-                xTokens = _buffer.Properties.GetProperty<XSharpTokens>(typeof(XSharpTokens));
-                if (!(xTokens == null || xTokens.TokenStream == null || xTokens.SnapShot == null))
+                var allTokens = xTokens.TokenStream.GetTokens();
+                if (allTokens != null)
                 {
-                    var allTokens = xTokens.TokenStream.GetTokens();
-                    if (allTokens != null)
+                    if (xTokens.SnapShot.Version == _buffer.CurrentSnapshot.Version)
                     {
-                        if (xTokens.SnapShot.Version == _buffer.CurrentSnapshot.Version)
+                        // Ok, use it
+                        int startIndex = -1;
+                        // Move to the line position
+                        for (int i = 0; i < allTokens.Count; i++)
                         {
-                            // Ok, use it
-                            int startIndex = -1;
-                            // Move to the line position
-                            for (int i = 0; i < allTokens.Count; i++)
+                            if (allTokens[i].StartIndex >= start)
                             {
-                                if (allTokens[i].StartIndex >= start)
-                                {
-                                    startIndex = i;
-                                    break;
-                                }
+                                startIndex = i;
+                                break;
                             }
-                            if (startIndex > -1)
+                        }
+                        if (startIndex > -1)
+                        {
+                            // Move to the end of span
+                            int lastPosition = start + length;
+                            do
                             {
-                                // Move to the end of span
-                                int lastPosition = start + length;
-                                do
-                                {
-                                    tokens.Add(allTokens[startIndex]);
-                                    startIndex++;
+                                tokens.Add(allTokens[startIndex]);
+                                startIndex++;
 
-                                } while ((startIndex < allTokens.Count) && (allTokens[startIndex].StopIndex < lastPosition ));
-                                return tokens;
-                            }
+                            } while ((startIndex < allTokens.Count) && (allTokens[startIndex].StopIndex < lastPosition));
+                            return tokens;
                         }
                     }
                 }
@@ -1791,22 +1791,17 @@ namespace XSharp.LanguageService
                 //
                 FormattingContext context = null;
                 // Already been lexed ?
-                if (_buffer.Properties != null && _buffer.Properties.ContainsProperty(typeof(XSharpTokens)))
+                if (getBufferedTokens(out var xTokens))
                 {
-                    XSharpTokens xTokens = null;
-                    xTokens = _buffer.Properties.GetProperty<XSharpTokens>(typeof(XSharpTokens));
-                    if (!(xTokens == null || xTokens.TokenStream == null || xTokens.SnapShot == null))
+                    var tokens = xTokens.TokenStream.GetTokens();
+                    // Ok, we have some tokens
+                    if (tokens != null)
                     {
-                        var tokens = xTokens.TokenStream.GetTokens();
-                        // Ok, we have some tokens
-                        if (tokens != null)
+                        // And they are the right ones
+                        if (xTokens.SnapShot.Version == _buffer.CurrentSnapshot.Version)
                         {
-                            // And they are the right ones
-                            if (xTokens.SnapShot.Version == _buffer.CurrentSnapshot.Version)
-                            {
-                                // Ok, use it
-                                context = new FormattingContext(tokens, this.ParseOptions.Dialect);
-                            }
+                            // Ok, use it
+                            context = new FormattingContext(tokens, this.ParseOptions.Dialect);
                         }
                     }
                 }

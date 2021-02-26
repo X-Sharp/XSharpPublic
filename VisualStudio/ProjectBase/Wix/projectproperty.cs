@@ -34,16 +34,6 @@ namespace Microsoft.VisualStudio.Project
             XProjectFileConstants.ReferencePaths,
         };
 
-        private static readonly ICollection<string> NonPerConfigProperties = new string[]
-        {
-            XProjectFileConstants.IncludeSearchPaths,
-            XProjectFileConstants.OutputName,
-            XProjectFileConstants.OutputType,
-            XProjectFileConstants.PreBuildEvent,
-            XProjectFileConstants.PostBuildEvent,
-            XProjectFileConstants.ReferencePaths,
-            XProjectFileConstants.RunPostBuildEvent,
-        };
 
         private static readonly ICollection<string> AllowVariablesProperties = new string[]
         {
@@ -92,7 +82,7 @@ namespace Microsoft.VisualStudio.Project
         /// </summary>
         /// <param name="project">Project that owns the property.</param>
         /// <param name="propertyName">Name of the property.</param>
-        public ProjectProperty(XProjectNode project, string propertyName)
+        public ProjectProperty(XProjectNode project, string propertyName, bool perConfig)
         {
             XHelperMethods.VerifyNonNullArgument(project, "project");
             XHelperMethods.VerifyNonNullArgument(propertyName, "propertyName");
@@ -101,7 +91,7 @@ namespace Microsoft.VisualStudio.Project
             this.propertyName = propertyName;
 
             this.perUser = ProjectProperty.PerUserProperties.Contains(propertyName);
-            this.perConfig = !ProjectProperty.NonPerConfigProperties.Contains(propertyName);
+            this.perConfig = perConfig;
             this.allowVariables = ProjectProperty.AllowVariablesProperties.Contains(propertyName);
             this.list = ProjectProperty.ListProperties.Contains(propertyName);
             this.endOfProjectFile = ProjectProperty.EndOfProjectFileProperties.Contains(propertyName);

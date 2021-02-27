@@ -61,6 +61,7 @@ namespace XSharp.MacroCompiler.Syntax
     }
     internal partial class DeclStmt : Stmt
     {
+        // TODO
     }
     internal partial class VarDecl : Node
     {
@@ -100,6 +101,7 @@ namespace XSharp.MacroCompiler.Syntax
     }
     internal partial class FieldDeclStmt : Stmt
     {
+        // TODO
     }
     internal partial class EmptyStmt : Stmt
     {
@@ -190,6 +192,7 @@ namespace XSharp.MacroCompiler.Syntax
     }
     internal partial class ForeachStmt : Stmt
     {
+        // TODO
     }
     internal partial class IfStmt : Stmt
     {
@@ -237,60 +240,84 @@ namespace XSharp.MacroCompiler.Syntax
 
     internal partial class SwitchStmt : Stmt
     {
+        // TODO
     }
     internal partial class SwitchBlock : Node
     {
+        // TODO
     }
     internal partial class SwitchBlockExpr : SwitchBlock
     {
+        // TODO
     }
     internal partial class SwitchBlockType : SwitchBlock
     {
+        // TODO
     }
     internal partial class ExitStmt : Stmt
     {
+        // TODO
     }
     internal partial class LoopStmt : Stmt
     {
+        // TODO
     }
     internal partial class BreakStmt : Stmt
     {
+        // TODO
     }
     internal partial class ThrowStmt : Stmt
     {
+        // TODO
     }
     internal partial class QMarkStmt : Stmt
     {
+        // TODO
     }
     internal partial class QQMarkStmt : QMarkStmt
     {
+        // TODO
     }
     internal partial class TryStmt : Stmt
     {
+        // TODO
     }
     internal partial class CatchBlock : Node
     {
+        // TODO
     }
     internal partial class FinallyBlock : Node
     {
+        // TODO
     }
     internal partial class SequenceStmt : Stmt
     {
+        // TODO
     }
 
     internal partial class ScopeStmt : Stmt
     {
+        internal override Node Bind(Binder b)
+        {
+            b.OpenScope();
+            b.Bind(ref Stmt);
+            b.CloseScope();
+            return null;
+        }
     }
 
     internal partial class LockStmt : Stmt
     {
+        // TODO
     }
 
     internal partial class UsingStmt : Stmt
     {
+        // TODO
     }
     internal partial class FixedStmt : Stmt
     {
+        // TODO
     }
     internal partial class Script : Node
     {

@@ -165,6 +165,11 @@ EvalMacro(sc, String.Join(e"\n",<STRING>{;
     "x"}))
 EvalMacro(sc, String.Join(e"\n",<STRING>{"EXIT"}))
 EvalMacro(sc, String.Join(e"\n",<STRING>{"LOOP"}))
+EvalMacro(sc, String.Join(e"\n",<STRING>{;
+    "?",;
+    "? 1+1, 10, 100",;
+    "?? 5, 6, 7",;
+    "??"}))
 wait
 */
 

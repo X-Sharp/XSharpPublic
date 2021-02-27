@@ -119,6 +119,8 @@ namespace XSharp.MacroCompiler
         internal const string StringAlloc = "StringAlloc";
         internal const string GetElement = "__GetElement";
         internal const string SetElement = "__SetElement";
+        internal const string QOut = "QOut";
+        internal const string QQOut = "QQOut";
         // These are in the generated code
         internal const string RunInitProcs = "RunInitProcs";
     }

@@ -266,6 +266,33 @@ namespace XSharp.MacroCompiler.Syntax
             }
         }
     }
+    internal partial class IsVarExpr : IsExpr
+    {
+        internal override void Emit(ILGenerator ilg, bool preserve)
+        {
+            Expr.Emit(ilg, preserve);
+            if (preserve)
+            {
+                Var.Declare(ilg);
+                if (Check == null)
+                {
+                    ilg.Emit(OpCodes.Isinst, (Symbol as TypeSymbol).Type);
+                    ilg.Emit(OpCodes.Dup);
+                    Var.EmitSet(ilg);
+                    ilg.Emit(OpCodes.Ldnull);
+                    ilg.Emit(OpCodes.Cgt_Un);
+                }
+                else
+                {
+                    Var.EmitSet(ilg);
+                    if (Check == true)
+                        ilg.Emit(OpCodes.Ldc_I4_1);
+                    else
+                        ilg.Emit(OpCodes.Ldc_I4_0);
+                }
+            }
+        }
+    }
     internal partial class AsTypeExpr : Expr
     {
         internal override void Emit(ILGenerator ilg, bool preserve)

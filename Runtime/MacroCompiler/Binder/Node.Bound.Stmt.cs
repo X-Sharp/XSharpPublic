@@ -247,19 +247,91 @@ namespace XSharp.MacroCompiler.Syntax
 
     internal partial class SwitchStmt : Stmt
     {
-        // TODO
+        internal LocalSymbol SwitchValue;
+        internal override Node Bind(Binder b)
+        {
+            b.OpenScope();
+            b.Bind(ref Expr);
+            SwitchValue = b.AddLocal(Expr.Datatype);
+            bool hasDefault = false;
+            SwitchBlock next = null;
+            for (var i = SwitchBlocks.Length-1; i >= 0; i--)
+            {
+                b.Bind(ref SwitchBlocks[i]);
+                var sb = SwitchBlocks[i];
+                if (!(sb is SwitchBlockExpr)&&!(sb is SwitchBlockType))
+                {
+                    if (hasDefault)
+                        throw Error(ErrorCode.MultipleDefaultInSwitch, sb.Token);
+                    hasDefault = true;
+                }
+                if (sb.FallThrough)
+                    sb.NextBlock = next;
+                else
+                    next = sb;
+            }
+            b.CloseScope();
+            return null;
+        }
     }
     internal partial class SwitchBlock : Node
     {
-        // TODO
+        internal bool FallThrough => Stmt == null;
+        internal SwitchBlock NextBlock = null;
+        internal override Node Bind(Binder b)
+        {
+            b.OpenScope();
+            b.Bind(ref Stmt);
+            b.CloseScope();
+            return null;
+        }
     }
     internal partial class SwitchBlockExpr : SwitchBlock
     {
-        // TODO
+        Expr Cond;
+        internal override Node Bind(Binder b)
+        {
+            b.OpenScope();
+            b.Bind(ref Expr);
+            Expr.RequireGetAccess();
+            var s = b.FindOuter<SwitchStmt>() ?? throw Error(ErrorCode.Internal);
+            Cond = BinaryExpr.Bound(Expr, Expr.Token, IdExpr.Bound(s.SwitchValue), BinaryOperatorKind.ExactEqual, b.Options.Binding);
+            b.Convert(ref Cond, Compilation.Get(NativeType.Boolean));
+            if (When != null)
+            {
+                b.Bind(ref When);
+                When.RequireGetAccess();
+                b.Convert(ref When, Compilation.Get(NativeType.Boolean));
+            }
+            if (Stmt != null)
+                b.Bind(ref Stmt);
+            b.CloseScope();
+            return null;
+        }
     }
     internal partial class SwitchBlockType : SwitchBlock
     {
-        // TODO
+        Expr Cond;
+        internal override Node Bind(Binder b)
+        {
+            b.OpenScope();
+            b.Bind(ref Type, BindAffinity.Type);
+            Type.RequireType();
+            var v = b.AddLocal(Type.Symbol as TypeSymbol);
+            var s = b.FindOuter<SwitchStmt>() ?? throw Error(ErrorCode.Internal);
+            Cond = IsVarExpr.Bound(IdExpr.Bound(s.SwitchValue), Type, v);
+            b.Convert(ref Cond, Compilation.Get(NativeType.Boolean));
+            if (When != null)
+            {
+                b.Bind(ref When);
+                When.RequireGetAccess();
+                b.Convert(ref When, Compilation.Get(NativeType.Boolean));
+            }
+            if (Stmt != null)
+                b.Bind(ref Stmt);
+            b.CloseScope();
+            return null;
+        }
     }
     internal partial class ExitStmt : Stmt
     {

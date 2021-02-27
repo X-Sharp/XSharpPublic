@@ -516,6 +516,41 @@ namespace XSharp.MacroCompiler.Syntax
             Datatype = Compilation.Get(NativeType.Boolean);
             return null;
         }
+        internal static Expr Bound(Expr expr, TypeExpr type)
+        {
+            if (expr.Datatype.IsValueType)
+            {
+                if (Binder.TypesMatch(expr.Datatype, type.Symbol as TypeSymbol))
+                    return LiteralExpr.Bound(Constant.Create(true));
+                else if (Binder.TypesMatch(type.Symbol as TypeSymbol, Compilation.Get(WellKnownTypes.System_ValueType)))
+                    return LiteralExpr.Bound(Constant.Create(true));
+                else if (Binder.TypesMatch(type.Symbol as TypeSymbol, Compilation.Get(NativeType.Object)))
+                    return LiteralExpr.Bound(Constant.Create(true));
+                return LiteralExpr.Bound(Constant.Create(false));
+            }
+            return new IsExpr(expr, type, null) { Symbol = type.Symbol, Datatype = Compilation.Get(NativeType.Boolean) };
+        }
+    }
+    internal partial class IsVarExpr : IsExpr
+    {
+        internal LocalSymbol Var;
+        internal bool? Check = null;
+        internal static IsVarExpr Bound(Expr expr, TypeExpr type, LocalSymbol var)
+        {
+            bool? check = null;
+            if (expr.Datatype.IsValueType)
+            {
+                if (Binder.TypesMatch(expr.Datatype, type.Symbol as TypeSymbol))
+                    check = true;
+                else if (Binder.TypesMatch(type.Symbol as TypeSymbol, Compilation.Get(WellKnownTypes.System_ValueType)))
+                    check = true;
+                else if (Binder.TypesMatch(type.Symbol as TypeSymbol, Compilation.Get(NativeType.Object)))
+                    check = true;
+                else
+                    check = false;
+            }
+            return new IsVarExpr(expr, type, null, null) { Symbol = type.Symbol, Datatype = Compilation.Get(NativeType.Boolean), Var = var, Check = check };
+        }
     }
     internal partial class AsTypeExpr : Expr
     {

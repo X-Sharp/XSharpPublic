@@ -172,6 +172,11 @@ namespace XSharp.MacroCompiler.Syntax
         internal IsExpr(Expr e, TypeExpr t, Token o) : base(o) { Expr = e; Type = t; }
         public override string ToString() { return "(" + Expr.ToString() + " IS " + Type.ToString() + ")"; }
     }
+    internal partial class IsVarExpr : IsExpr
+    {
+        internal Token Name;
+        internal IsVarExpr(Expr e, TypeExpr t, Token o, Token name) : base(e, t, o) { Name = name; }
+    }
     internal partial class AsTypeExpr : Expr
     {
         internal Expr Expr;

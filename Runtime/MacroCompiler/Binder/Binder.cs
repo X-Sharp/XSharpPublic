@@ -479,6 +479,18 @@ namespace XSharp.MacroCompiler
             }
         }
 
+        internal T FindOuter<T>() where T: class
+        {
+            foreach(var s in StmtStack)
+            {
+                if (s is T ts)
+                {
+                    return ts;
+                }
+            }
+            return null;
+        }
+
         internal int AddNestedCodeblock(out Symbol argSym)
         {
             if (NestedCodeblocks == null)

@@ -53,6 +53,8 @@ namespace XSharp.MacroCompiler
         BinaryIncorrectLength = 233,
         NoBindTarget = 234,
         LocalSameName = 235,
+        NoLoopableStatement = 236,
+        NoExitableStatement = 237,
         Internal = 999,
     }
 
@@ -104,6 +106,8 @@ namespace XSharp.MacroCompiler
             { ErrorCode.BinaryIncorrectLength, "Binary Literal '{0}' has incorrect length" },
             { ErrorCode.NoBindTarget, "No bind target entity" },
             { ErrorCode.LocalSameName, "Local variable exists with the same name: '{0}'" },
+            { ErrorCode.NoLoopableStatement, "No loopable statement" },
+            { ErrorCode.NoExitableStatement, "No exitable statement" },
             { ErrorCode.Internal, "Internal error" },
         };
 

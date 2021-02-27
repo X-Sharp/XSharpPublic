@@ -289,6 +289,10 @@ namespace XSharp.MacroCompiler.Syntax
     }
     internal partial class QMarkStmt : Stmt
     {
+        internal override void EmitStmt(ILGenerator ilg)
+        {
+            QOutCall.Emit(ilg, false);
+        }
     }
     internal partial class QQMarkStmt : QMarkStmt
     {

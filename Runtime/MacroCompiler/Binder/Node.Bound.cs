@@ -130,11 +130,11 @@ namespace XSharp.MacroCompiler.Syntax
     }
     internal partial class IdExpr : NameExpr
     {
-        static internal IdExpr Bound(LocalSymbol loc)
+        static internal IdExpr Bound(Symbol sym)
         {
             var e = new IdExpr(Token.None);
-            e.Symbol = loc;
-            e.Datatype = loc.Type;
+            e.Symbol = sym;
+            e.Datatype = sym.Type();
             return e;
         }
         internal override Node Bind(Binder b)
@@ -555,6 +555,10 @@ namespace XSharp.MacroCompiler.Syntax
                 }
             }
             return null;
+        }
+        internal static MethodCallExpr Bound(Expr e, Symbol sym, Expr self, ArgList args)
+        {
+            return new MethodCallExpr(e, args) { Symbol = sym, Datatype = sym.Type(), Self = self };
         }
     }
     internal partial class CtorCallExpr : MethodCallExpr

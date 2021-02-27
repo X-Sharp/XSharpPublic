@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Reflection;
 using static System.Diagnostics.Debug;
+using System.Dynamic;
 
 namespace XSharp.MacroCompiler.Syntax
 {
@@ -288,11 +289,25 @@ namespace XSharp.MacroCompiler.Syntax
     }
     internal partial class QMarkStmt : Stmt
     {
-        // TODO
+        internal virtual string QOutName => XSharpFunctionNames.QOut;
+        Expr QOutCall;
+        internal override Node Bind(Binder b)
+        {
+            var funcs = Compilation.Get(WellKnownTypes.XSharp_RT_Functions);
+            var expr = IdExpr.Bound(b.Lookup(funcs, QOutName));
+            var args = new ArgList(new List<Arg>(Exprs.Select(x => new Arg(x))));
+            b.Bind(ref args);
+            Expr self;
+            var sym = b.BindMethodCall(expr, expr.Symbol, args, out self);
+            if (self != null)
+                throw Error(ErrorCode.Internal);
+            QOutCall = MethodCallExpr.Bound(expr, sym, null, args);
+            return null;
+        }
     }
     internal partial class QQMarkStmt : QMarkStmt
     {
-        // TODO
+        internal override string QOutName => XSharpFunctionNames.QQOut;
     }
     internal partial class TryStmt : Stmt
     {

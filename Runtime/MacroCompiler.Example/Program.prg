@@ -170,6 +170,29 @@ EvalMacro(sc, String.Join(e"\n",<STRING>{;
     "? 1+1, 10, 100",;
     "?? 5, 6, 7",;
     "??"}))
+EvalMacro(sc, String.Join(e"\n",<STRING>{;
+    "x := 123",;
+    "DO SWITCH x",;
+    "OTHERWISE",;
+    "OTHERWISE",;
+        "RETURN 1",;
+    "END",;
+    "x"}))
+EvalMacro(sc, String.Join(e"\n",<STRING>{;
+    "x := 123",;
+    "DO SWITCH x",;
+    "CASE k as USUAL",;
+        "x := 1",;
+    "CASE 1",;
+        "x := 1",;
+    "CASE 123",;
+    "CASE 1234",;
+    "CASE 12345",;
+        "x := 0",;
+    "OTHERWISE",;
+        "x := -1",;
+    "END",;
+    "x"}))
 wait
 */
 

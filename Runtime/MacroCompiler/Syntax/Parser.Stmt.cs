@@ -700,25 +700,26 @@ namespace XSharp.MacroCompiler
                         wh = ParseExpression();
                     Require(TokenType.EOS);
                     var s = ParseStatementBlock();
-                    return new SwitchBlockType(st, n, ty, wh, s);
+                    return new SwitchBlockType(st, n, ty, wh, s.StmtList.Length>0 ? s : null);
                 }
                 else if (La() == TokenType.CASE)
                 {
                     var st = ConsumeAndGet();
                     var se = RequireExpression();
+                    Require(se is LiteralExpr, ErrorCode.Expected, "literal value");
                     Expr wh = null;
                     if (Expect(TokenType.WHEN))
                         wh = ParseExpression();
                     Require(TokenType.EOS);
                     var s = ParseStatementBlock();
-                    return new SwitchBlockExpr(st, se, wh, s);
+                    return new SwitchBlockExpr(st, se, wh, s.StmtList.Length > 0 ? s : null);
                 }
                 else if (La() == TokenType.OTHERWISE)
                 {
                     var st = ConsumeAndGet();
                     Require(TokenType.EOS);
                     var s = ParseStatementBlock();
-                    return new SwitchBlock(st, s);
+                    return new SwitchBlock(st, s.StmtList.Length > 0 ? s : null);
                 }
                 else
                     return null;

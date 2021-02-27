@@ -55,6 +55,7 @@ namespace XSharp.MacroCompiler
         LocalSameName = 235,
         NoLoopableStatement = 236,
         NoExitableStatement = 237,
+        MultipleDefaultInSwitch = 238,
         Internal = 999,
     }
 
@@ -108,6 +109,7 @@ namespace XSharp.MacroCompiler
             { ErrorCode.LocalSameName, "Local variable exists with the same name: '{0}'" },
             { ErrorCode.NoLoopableStatement, "No loopable statement" },
             { ErrorCode.NoExitableStatement, "No exitable statement" },
+            { ErrorCode.MultipleDefaultInSwitch, "Only one '{0}' block allowed in switch statement" },
             { ErrorCode.Internal, "Internal error" },
         };
 

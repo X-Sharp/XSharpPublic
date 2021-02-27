@@ -257,15 +257,71 @@ namespace XSharp.MacroCompiler.Syntax
 
     internal partial class SwitchStmt : Stmt
     {
+        internal override void EmitStmt(ILGenerator ilg)
+        {
+            Expr.Emit(ilg, true);
+            SwitchValue.Declare(ilg);
+            SwitchValue.EmitSet(ilg);
+            var le = ilg.DefineLabel();
+            foreach (var sb in SwitchBlocks)
+            {
+                sb.Emit(ilg, le);
+            }
+            ilg.MarkLabel(le);
+        }
     }
     internal partial class SwitchBlock : Node
     {
+        Label? _entry = null;
+        Label? _exit = null;
+        internal Label Entry(ILGenerator ilg) => _entry != null ? _entry.Value : (_entry = ilg.DefineLabel()).Value;
+        internal Label Exit(ILGenerator ilg) => _exit != null ? _exit.Value : (_exit = ilg.DefineLabel()).Value;
+        internal sealed override void Emit(ILGenerator ilg)
+        {
+            throw Error(ErrorCode.Internal);
+        }
+        internal virtual void Emit(ILGenerator ilg, Label end)
+        {
+            ilg.MarkLabel(Entry(ilg));
+            if (Stmt != null)
+            {
+                Stmt?.Emit(ilg);
+                ilg.Emit(OpCodes.Br, end);
+            }
+            else
+            {
+                ilg.Emit(OpCodes.Br, NextBlock.Entry(ilg));
+            }
+            ilg.MarkLabel(Exit(ilg));
+        }
     }
     internal partial class SwitchBlockExpr : SwitchBlock
     {
+        internal override void Emit(ILGenerator ilg, Label end)
+        {
+            Cond.Emit(ilg, true);
+            ilg.Emit(OpCodes.Brfalse, Exit(ilg));
+            if (When != null)
+            {
+                When.Emit(ilg, true);
+                ilg.Emit(OpCodes.Brfalse, Exit(ilg));
+            }
+            base.Emit(ilg, end);
+        }
     }
     internal partial class SwitchBlockType : SwitchBlock
     {
+        internal override void Emit(ILGenerator ilg, Label end)
+        {
+            Cond.Emit(ilg, true);
+            ilg.Emit(OpCodes.Brfalse, Exit(ilg));
+            if (When != null)
+            {
+                When.Emit(ilg, true);
+                ilg.Emit(OpCodes.Brfalse, Exit(ilg));
+            }
+            base.Emit(ilg, end);
+        }
     }
     internal partial class ExitStmt : Stmt
     {

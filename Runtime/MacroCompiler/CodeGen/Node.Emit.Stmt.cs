@@ -251,6 +251,10 @@ namespace XSharp.MacroCompiler.Syntax
 
     internal partial class ScopeStmt : Stmt
     {
+        internal override void EmitStmt(ILGenerator ilg)
+        {
+            Stmt.Emit(ilg);
+        }
     }
 
     internal partial class LockStmt : Stmt

@@ -37,7 +37,7 @@ BEGIN NAMESPACE MacroCompilerTest
         //EvalMacro(mc, "{ || NIL } ")
         //wait
 
-/*
+///*
 var sc := CreateScriptCompiler()
 EvalMacro(sc, String.Join(e"\n",<STRING>{;
     "Console.WriteLine(123)",;
@@ -113,8 +113,15 @@ EvalMacro(sc, String.Join(e"\n",<STRING>{;
         "y += 1",;
     "NEXT",;
     "y"}))
+EvalMacro(sc, String.Join(e"\n",<STRING>{;
+    "y := 0",;
+    "BEGIN SCOPE",;
+        "y += 1",;
+        "x := y",;
+    "END SCOPE",;
+    "x"}))
 wait
-*/
+//*/
 
         ParserTestsFox(CreateFoxScriptCompiler())
         ParserTests(CreateScriptCompiler())

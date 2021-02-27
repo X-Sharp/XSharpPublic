@@ -37,7 +37,7 @@ BEGIN NAMESPACE MacroCompilerTest
         //EvalMacro(mc, "{ || NIL } ")
         //wait
 
-///*
+/*
 var sc := CreateScriptCompiler()
 EvalMacro(sc, String.Join(e"\n",<STRING>{;
     "Console.WriteLine(123)",;
@@ -120,8 +120,53 @@ EvalMacro(sc, String.Join(e"\n",<STRING>{;
         "x := y",;
     "END SCOPE",;
     "x"}))
+EvalMacro(sc, String.Join(e"\n",<STRING>{;
+    "x := 0, y := 0",;
+    "FOR VAR l := 1 TO 40",;
+        "x += 1",;
+        "LOOP",;
+        "y += 1",;
+    "NEXT",;
+    "x+y"}))
+EvalMacro(sc, String.Join(e"\n",<STRING>{;
+    "x := 10",;
+    "WHILE --x > 0",;
+        "LOOP",;
+        "x := -100",;
+    "END",;
+    "x"}))
+EvalMacro(sc, String.Join(e"\n",<STRING>{;
+    "x := 10",;
+    "REPEAT",;
+        "LOOP",;
+        "x := -100",;
+    "UNTIL --x <= 0",;
+    "x"}))
+EvalMacro(sc, String.Join(e"\n",<STRING>{;
+    "y := 0",;
+    "FOR VAR l := 1 TO 40",;
+        "y += 1",;
+        "EXIT",;
+    "NEXT",;
+    "y"}))
+EvalMacro(sc, String.Join(e"\n",<STRING>{;
+    "x := 10",;
+    "WHILE --x > 0",;
+        "x := 100",;
+        "EXIT",;
+    "END",;
+    "x"}))
+EvalMacro(sc, String.Join(e"\n",<STRING>{;
+    "x := 10",;
+    "REPEAT",;
+        "x := 100",;
+        "EXIT",;
+    "UNTIL --x <= 0",;
+    "x"}))
+EvalMacro(sc, String.Join(e"\n",<STRING>{"EXIT"}))
+EvalMacro(sc, String.Join(e"\n",<STRING>{"LOOP"}))
 wait
-//*/
+*/
 
         ParserTestsFox(CreateFoxScriptCompiler())
         ParserTests(CreateScriptCompiler())

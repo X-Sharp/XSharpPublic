@@ -14,6 +14,12 @@ namespace XSharp.MacroCompiler.Syntax
     {
         internal bool RequireExceptionHandling = false;
     }
+    internal partial interface ILoopableStmt
+    {
+    }
+    internal partial interface IExitableStmt
+    {
+    }
     internal partial class StmtBlock : Stmt
     {
         internal override Node Bind(Binder b)
@@ -110,7 +116,7 @@ namespace XSharp.MacroCompiler.Syntax
             return null;
         }
     }
-    internal partial class WhileStmt : Stmt
+    internal partial class WhileStmt : Stmt, ILoopableStmt, IExitableStmt
     {
         internal override Node Bind(Binder b)
         {
@@ -123,11 +129,11 @@ namespace XSharp.MacroCompiler.Syntax
             return null;
         }
     }
-    internal partial class RepeatStmt : WhileStmt
+    internal partial class RepeatStmt : WhileStmt, ILoopableStmt, IExitableStmt
     {
         internal override Node Bind(Binder b) => base.Bind(b);
     }
-    internal partial class ForStmt : Stmt
+    internal partial class ForStmt : Stmt, ILoopableStmt, IExitableStmt
     {
         Expr WhileExpr;
         Expr IncrExpr;
@@ -190,7 +196,7 @@ namespace XSharp.MacroCompiler.Syntax
             return null;
         }
     }
-    internal partial class ForeachStmt : Stmt
+    internal partial class ForeachStmt : Stmt, ILoopableStmt, IExitableStmt
     {
         // TODO
     }
@@ -256,11 +262,21 @@ namespace XSharp.MacroCompiler.Syntax
     }
     internal partial class ExitStmt : Stmt
     {
-        // TODO
+        internal IExitableStmt Outer;
+        internal override Node Bind(Binder b)
+        {
+            Outer = b.FindOuter<IExitableStmt>() ?? throw Error(ErrorCode.NoExitableStatement);
+            return null;
+        }
     }
     internal partial class LoopStmt : Stmt
     {
-        // TODO
+        internal ILoopableStmt Outer;
+        internal override Node Bind(Binder b)
+        {
+            Outer = b.FindOuter<ILoopableStmt>() ?? throw Error(ErrorCode.NoLoopableStatement);
+            return null;
+        }
     }
     internal partial class BreakStmt : Stmt
     {

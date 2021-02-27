@@ -3629,7 +3629,7 @@ RETURN
 		LOCAL oColor AS Color
 		DO CASE
 		CASE oProp:Name == "Caption"
-			IF oDesign:Control:GetType() == TypeOf(DesignPushButton)
+			IF oDesign:Control:GetType() == TypeOf(DesignPushButton) .or. oDesign:Control:GetType() == TypeOf(DesignCheckBox)
 				oDesign:Control:Text := ""
 				oDesign:Control:Invalidate()
 				RETURN

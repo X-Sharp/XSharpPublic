@@ -167,26 +167,28 @@ namespace XSharp.MacroCompiler.Syntax
             ilg.Emit(OpCodes.Br, Cont.Value);
         }
     }
-    internal partial class ForStmt : Stmt, ILoopableStmt, IExitableStmt
+    internal partial class ForBaseStmt : Stmt, ILoopableStmt, IExitableStmt
     {
         Label Begin;
         Label? Cont = null;
         Label End;
         internal override void EmitStmt(ILGenerator ilg)
         {
-            if (ForDecl != null)
+            if (IterDecl != null)
             {
-                ForDecl.Emit(ilg);
+                IterDecl.Emit(ilg);
             }
             else
             {
-                AssignExpr.Emit(ilg, false);
+                IterInit.Emit(ilg, false);
             }
             Begin = ilg.DefineLabel();
             End = ilg.DefineLabel();
             ilg.MarkLabel(Begin);
             WhileExpr.Emit(ilg, true);
             ilg.Emit(OpCodes.Brfalse, End);
+            if (InnerDecl != null)
+                InnerDecl.Emit(ilg);
             Stmt.Emit(ilg);
             if (Cont != null)
                 ilg.MarkLabel(Cont.Value);
@@ -205,14 +207,11 @@ namespace XSharp.MacroCompiler.Syntax
             ilg.Emit(OpCodes.Br, End);
         }
     }
-    internal partial class ForeachStmt : Stmt, ILoopableStmt, IExitableStmt
+    internal partial class ForStmt : ForBaseStmt, ILoopableStmt, IExitableStmt
     {
-        public void EmitLoop(ILGenerator ilg)
-        {
-        }
-        public void EmitExit(ILGenerator ilg)
-        {
-        }
+    }
+    internal partial class ForeachStmt : ForBaseStmt, ILoopableStmt, IExitableStmt
+    {
     }
     internal partial class IfStmt : Stmt
     {

@@ -382,6 +382,28 @@ namespace XSharp.MacroCompiler.Syntax
                 ilg.Emit(OpCodes.Pop);
         }
     }
+    internal partial class NativeArrayAccessExpr : ArrayAccessExpr
+    {
+        internal override void Emit(ILGenerator ilg, bool preserve)
+        {
+            if (Self != null) Self.Emit(ilg);
+            Args.Emit(ilg);
+            ilg.Emit(OpCodes.Ldelem, Datatype.Type);
+            if (!preserve)
+                ilg.Emit(OpCodes.Pop);
+        }
+        internal override void EmitSet(ILGenerator ilg, bool preserve)
+        {
+            if (preserve)
+                ilg.Emit(OpCodes.Dup);
+            var t = ilg.DeclareLocal(Datatype.Type);
+            ilg.Emit(OpCodes.Stloc, t.LocalIndex);
+            if (Self != null) Self.Emit(ilg);
+            Args.Emit(ilg);
+            ilg.Emit(OpCodes.Ldloc, t.LocalIndex);
+            ilg.Emit(OpCodes.Stelem, Datatype.Type);
+        }
+    }
     internal partial class EmptyExpr : Expr
     {
         internal override void Emit(ILGenerator ilg, bool preserve)

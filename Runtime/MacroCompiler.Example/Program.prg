@@ -193,6 +193,18 @@ EvalMacro(sc, String.Join(e"\n",<STRING>{;
         "x := -1",;
     "END",;
     "x"}))
+EvalMacro(sc, String.Join(e"\n",<STRING>{;
+    "y := 0",;
+    "FOR VAR l := 1 TO 5",;
+        "y += testglobals.tsa[l]",;
+    "NEXT",;
+    "y"}))
+EvalMacro(sc, String.Join(e"\n",<STRING>{;
+    "y := 0",;
+    "FOREACH VAR l IN testglobals.tsa",;
+        "y += l",;
+    "NEXT",;
+    "y"}))
 wait
 */
 

@@ -56,6 +56,7 @@ namespace XSharp.MacroCompiler
         NoLoopableStatement = 236,
         NoExitableStatement = 237,
         MultipleDefaultInSwitch = 238,
+        WrongNumberIfIndices = 239,
         Internal = 999,
     }
 
@@ -110,6 +111,7 @@ namespace XSharp.MacroCompiler
             { ErrorCode.NoLoopableStatement, "No loopable statement" },
             { ErrorCode.NoExitableStatement, "No exitable statement" },
             { ErrorCode.MultipleDefaultInSwitch, "Only one '{0}' block allowed in switch statement" },
+            { ErrorCode.WrongNumberIfIndices, "Wrong number of indices in array" },
             { ErrorCode.Internal, "Internal error" },
         };
 

@@ -219,6 +219,8 @@ namespace XSharp.MacroCompiler
         internal const string IndexerName = "Item";
         internal const string DelegateInvokeName = "Invoke";
         internal const string CtorName = ".ctor";
+        internal const string ArrayGetValue = "GetValue";
+        internal const string ArraySetValue = "SetValue";
     }
     internal static class SystemQualifiedNames
     {

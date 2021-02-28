@@ -100,9 +100,11 @@ namespace XSharp.MacroCompiler
         internal NamespaceSymbol Namespace { get { return Binder.LookupFullName(Type.Namespace) as NamespaceSymbol; } }
         internal TypeSymbol(Type type) { Type = type; IsFunctionsClass = type.Name.EndsWith("Functions"); }
         internal bool IsByRef { get { return Type.IsByRef; } }
+        internal bool IsArray { get { return Type.IsArray; } }
         internal bool IsValueType { get { return Type.IsValueType; } }
         internal bool IsReferenceType { get { return Type.IsClass || Type.IsInterface; } }
         internal bool IsEnum { get { return Type.IsEnum; } }
+        internal int ArrayRank { get { return Type.GetArrayRank(); } }
         internal TypeSymbol ElementType { get { return Type.HasElementType ? Binder.FindType(Type.GetElementType()) : null; } }
         internal TypeSymbol EnumUnderlyingType { get { return Type.IsEnum ? Binder.FindType(Type.GetEnumUnderlyingType()) : null; } }
         internal Dictionary<MemberInfo, Symbol> MemberTable = new Dictionary<MemberInfo, Symbol>();
@@ -153,6 +155,17 @@ namespace XSharp.MacroCompiler
                 Members.TryGetValue(XSharpFunctionNames.SetElement, out setter);
                 if (getter is SymbolList) getter = (getter as SymbolList).Symbols.Find(s => (s as MethodSymbol)?.Parameters.Parameters.LastOrDefault()?.ParameterType.IsArray == true);
                 if (setter is SymbolList) setter = (setter as SymbolList).Symbols.Find(s => (s as MethodSymbol)?.Parameters.Parameters.LastOrDefault()?.ParameterType.IsArray == true);
+                if (getter is MethodSymbol && setter is MethodSymbol)
+                    AddMember(SystemNames.IndexerName, new PropertySymbol(this, getter as MethodSymbol, setter as MethodSymbol, false));
+            }
+            if (IsArray && ArrayRank > 1)
+            {
+                Symbol getters;
+                Symbol setters;
+                Members.TryGetValue(SystemNames.ArrayGetValue, out getters);
+                Members.TryGetValue(SystemNames.ArraySetValue, out setters);
+                var getter = (getters as SymbolList).Symbols.Find(s => { var t = (s as MethodSymbol)?.Parameters.Parameters.LastOrDefault()?.ParameterType; return t.IsArray == true && t.GetElementType() == typeof(int); });
+                var setter = (setters as SymbolList).Symbols.Find(s => { var t = (s as MethodSymbol)?.Parameters.Parameters.LastOrDefault()?.ParameterType; return t.IsArray == true && t.GetElementType() == typeof(int); });
                 if (getter is MethodSymbol && setter is MethodSymbol)
                     AddMember(SystemNames.IndexerName, new PropertySymbol(this, getter as MethodSymbol, setter as MethodSymbol, false));
             }

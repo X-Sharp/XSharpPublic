@@ -1,3 +1,4 @@
+#pragma options ("enforceself", on)
 CLASS __FormFrame INHERIT ChildAppWindow
 	PROTECT lAutoLayout AS LOGIC
 	PROTECT lSubForm AS LOGIC

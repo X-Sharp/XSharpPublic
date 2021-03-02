@@ -1,3 +1,4 @@
+#pragma options ("enforceself", on)
 CLASS __SplitView INHERIT Control
 	PROTECT	dwDeferPaintCount	AS DWORD
 	PROTECT	oPanes			 	AS Dimension

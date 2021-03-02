@@ -49,7 +49,6 @@
     <VO16>false</VO16>
     <XPP1>false</XPP1>
     <FOX1>false</FOX1>
-	<EnforceSelf>true</EnforceSelf>
     <InitLocals>false</InitLocals>
     <NamedArgs>false</NamedArgs>
     <MemVar>false</MemVar>

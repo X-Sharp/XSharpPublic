@@ -1,3 +1,4 @@
+#pragma options ("enforceself", on)
 CLASS Menu INHERIT VObject
 	PROTECT oParent 	AS Menu
 	PROTECT hMenu 		AS PTR

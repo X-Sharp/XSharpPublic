@@ -1,3 +1,4 @@
+#pragma options ("enforceself", on)
 CLASS __ForeignWindow INHERIT Window
 
     CONSTRUCTOR(hwndSelf)

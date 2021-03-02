@@ -1,5 +1,5 @@
 #translate DBFDebug(<c1> [, <cn>]) =>
-
+#pragma options ("enforceself", on)
 PARTIAL CLASS DbServer
 
 METHOD GetArray( nMaxRows, uField1, uSearchValue )  

@@ -8,7 +8,7 @@ METHOD __GetImage()
 	ENDIF
 	RETURN oImage
 
-METHOD __SetImage(oNewImage) 
+METHOD __SetImage(oNewImage)  
 	//PP-030915
 
 	IF IsThemeEnabled()

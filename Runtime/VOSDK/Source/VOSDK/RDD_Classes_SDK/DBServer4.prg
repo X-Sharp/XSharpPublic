@@ -1,5 +1,5 @@
 #translate DBFDebug(<c1> [, <cn>]) =>
-
+#pragma options ("enforceself", on)
 PARTIAL CLASS DbServer
 
 METHOD RDDINFO( kRDDInfoType, uRDDVal )

@@ -1,3 +1,4 @@
+#pragma options ("enforceself", on)
 CLASS DBSelectionIndex
 	PROTECT oServer AS DBSERVER
 	PROTECT cExpression AS STRING

@@ -19,7 +19,7 @@
 // cost of servicing or repair. No oral or written information or advice given
 // by an Extended Systems Inc. representative shall create a warranty or in any
 // way increase the scope of this warranty.
-
+#pragma options ("enforceself", on)
 
 //#include "VOSystemLibrary.vh"
 // #include "dbfaxs.vh"

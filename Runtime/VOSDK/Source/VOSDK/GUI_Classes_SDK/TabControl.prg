@@ -1,3 +1,4 @@
+#pragma options ("enforceself", on)
 STATIC DEFINE TAB_SYMBOL := 1
 STATIC DEFINE TAB_INDEX  := 2
 STATIC DEFINE TAB_PAGE   := 3

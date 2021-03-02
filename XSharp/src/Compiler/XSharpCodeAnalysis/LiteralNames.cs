@@ -172,6 +172,10 @@ namespace Microsoft.CodeAnalysis.CSharp
         internal const string ScriptClipperPCount = "__XSHARP__PCount";
         internal const string ScriptVoPszList = "__XSHARP__PszList";
         internal const string ScriptPrivatesLevel = "__XSHARP__PrivatesLevel";
+
+        // These functions will be ignored when they override a method. Must be lowercase
+        internal const string funcToIgnore1 = "default";
+        internal const string funcToIgnore2 = "asstring";
     }
 
     internal static class ReservedNames
@@ -242,7 +246,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         internal const string FieldGetWa = VulcanRTFuncs + ReservedNames.FieldGetWa;
         internal const string FieldSet = VulcanRTFuncs + ReservedNames.FieldSet;
         internal const string FieldSetWa = VulcanRTFuncs + ReservedNames.FieldSetWa;
-        internal const string NullDate = VulcanQualifiedTypeNames.Date +  ReservedNames.NullDate;
+        internal const string NullDate = VulcanQualifiedTypeNames.Date + ReservedNames.NullDate;
         internal const string UsualNIL = VulcanQualifiedTypeNames.Usual + ReservedNames.NIL;
         internal const string PszRelease = CompilerServices + ReservedNames.String2PszRelease;
         internal const string String2Psz = CompilerServices + ReservedNames.String2Psz;
@@ -268,6 +272,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         internal const string GlobalRT = "global::" + XSharpSpecialNames.XSharpRTFunctionsClass + ".";
         internal const string GlobalCore = "global::" + XSharpSpecialNames.XSharpCoreFunctionsClass + ".";
         internal const string CompilerServices = "global::XSharp.Internal.CompilerServices.";
+        internal const string GlobalVFP = "global::" + XSharpSpecialNames.XSharpVFPFunctionsClass + ".";
         // In core
         internal const string Chr = GlobalCore + ReservedNames.Chr;
         internal const string InStr = GlobalCore + ReservedNames.Instr;
@@ -299,6 +304,14 @@ namespace Microsoft.CodeAnalysis.CSharp
         internal const string Evaluate = GlobalRT + ReservedNames.Evaluate;
         internal const string IVarGet = GlobalRT + ReservedNames.IVarGet;
         internal const string IVarPut = GlobalRT + ReservedNames.IVarPut;
+        internal const string LocalPut = GlobalRT + ReservedNames.LocalPut;
+        internal const string LocalGet = GlobalRT + ReservedNames.LocalGet;
+        internal const string LocalsUpdated = GlobalRT + ReservedNames.LocalsUpdated;
+        internal const string LocalsClear = GlobalRT + ReservedNames.LocalsClear;
+        internal const string FoxRedim = GlobalVFP + ReservedNames.FoxRedim;
+        internal const string TextSupport = GlobalVFP + ReservedNames.TextSupport;
+        internal const string TextOut = GlobalVFP + ReservedNames.TextOut;
+        internal const string TextMergeCheck = GlobalVFP + ReservedNames.TextMergeCheck;
     }
 
     internal static class VulcanAssemblyNames

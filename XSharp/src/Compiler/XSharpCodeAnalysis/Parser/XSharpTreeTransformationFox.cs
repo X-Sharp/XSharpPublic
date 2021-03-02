@@ -146,7 +146,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 {
                     args = MakeArgumentList(arg1, arg2);
                 }
-                var mcall = GenerateMethodCall(ReservedNames.FoxRedim, args);
+                var mcall = GenerateMethodCall(XSharpQualifiedFunctionNames.FoxRedim, args);
                 MemVarFieldInfo fieldInfo = findMemVar(name);
                 ExpressionSyntax lhs;
                 if (fieldInfo != null)
@@ -898,7 +898,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             if (hasDelim && context.Merge == null)
             {
-                var txtmerge = GenerateMethodCall(ReservedNames.TextMergeCheck, true);
+                var txtmerge = GenerateMethodCall(XSharpQualifiedFunctionNames.TextMergeCheck, true);
                 stringExpr = MakeConditional(txtmerge, stringExpr, GenerateLiteral(context.String.Text));
             }
 
@@ -907,7 +907,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             var arg3 = MakeArgument(context.Flags != null ? context.Flags.Get<ExpressionSyntax>() : GenerateLiteral(0));
             var arg4 = MakeArgument(context.Pretext != null ? context.Pretext.Get<ExpressionSyntax>() : GenerateNIL());
             var args = MakeArgumentList(arg1, arg2, arg3, arg4);
-            var call = GenerateMethodCall(ReservedNames.TextSupport, args);
+            var call = GenerateMethodCall(XSharpQualifiedFunctionNames.TextSupport, args);
 
             if (context.Id != null)
             {
@@ -1123,14 +1123,14 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 expr = GenerateLiteral(sourceText);
             }
             var arg2 = GenerateLiteral(context.B.Type != XP.BACKBACKSLASH);
-            var cond = GenerateMethodCall(ReservedNames.TextMergeCheck, true);  
+            var cond = GenerateMethodCall(XSharpQualifiedFunctionNames.TextMergeCheck, true);  
             if (! hasDelim)
             {
                 cond = GenerateLiteral(false);
             }
             var arg1 = MakeConditional(cond, expr, GenerateLiteral(context.String.Text));
             var args = MakeArgumentList(MakeArgument(arg1), MakeArgument(arg2));
-            var call = GenerateMethodCall(ReservedNames.TextOut, args, true); 
+            var call = GenerateMethodCall(XSharpQualifiedFunctionNames.TextOut, args, true); 
             var stmt = GenerateExpressionStatement(call);
             if (!delimitersOk)
                 stmt = stmt.WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.WRN_UnbalancedTextMergeOperators));

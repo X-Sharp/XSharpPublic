@@ -1,19 +1,26 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk">
-  <Import Project="$(Solutiondir)src\Compiler\CompilerCommon.props" />
   <PropertyGroup>
-    <MinimumVisualStudioVersion>14.0</MinimumVisualStudioVersion>
+    <UseXSharpKey>true</UseXSharpKey>
+  </PropertyGroup>  
+  <Import Project="$(Solutiondir)src\Compiler\CompilerCommon.props" />
+  <Import Project="$(RepositoryEngineeringDir)targets\GenerateCompilerExecutableBindingRedirects.targets" />
+  <PropertyGroup>
+    <MinimumVisualStudioVersion>15.0</MinimumVisualStudioVersion>
     <Platform Condition="'$(Platform)' == ''">AnyCPU</Platform>
     <PlatformTarget>AnyCPU</PlatformTarget>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>XSharp.Build</RootNamespace>
     <AssemblyName>XSharp.Build</AssemblyName>
-    <TargetFramework>net46</TargetFramework>
+    <TargetFrameworks>net472</TargetFrameworks>
     <DefaultLanguage>en-US</DefaultLanguage>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <GenerateMicrosoftCodeAnalysisCommitHashAttribute>false</GenerateMicrosoftCodeAnalysisCommitHashAttribute>
     <DebugSymbols>true</DebugSymbols>
     <ErrorReport>prompt</ErrorReport>
+    <Nullable>disable</Nullable>
+    <ApplicationIcon>..\..\Common\XSharpProject.ico</ApplicationIcon>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DefineConstants>$(GenericDefines);TRACE;DEBUG</DefineConstants>
@@ -32,6 +39,12 @@
     </Compile>
     <Compile Include="$(CoreSource)InternalUtilities\CompilerOptionParseUtilities.cs">
       <Link>CompilerOptionParseUtilities.cs</Link>
+    </Compile>
+    <Compile Include="$(CoreSource)InternalUtilities\RoslynString.cs">
+      <Link>RoslynString.cs</Link>
+    </Compile>
+    <Compile Include="$(CoreSource)InternalUtilities\NullableAttributes.cs">
+      <Link>NullableAttributes.cs</Link>
     </Compile>
 
   </ItemGroup>
@@ -61,6 +74,7 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <Content Include="debugging.txt" />
+    <Content Include="XSharpProject.ico" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Xaml\PropertyPage_Advanced.xaml">
@@ -117,11 +131,11 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Microsoft.Build" Version="$(MicrosoftBuildFixedVersion)" />
-    <PackageReference Include="Microsoft.Build.Tasks.Core" Version="$(MicrosoftBuildTasksCoreFixedVersion)" />
-    <PackageReference Include="Microsoft.Win32.Registry" Version="4.3.0" />
-    <PackageReference Include="System.IO.Pipes.AccessControl" Version="$(SystemIOPipesAccessControlVersion)" Condition="'$(TargetFramework)' == 'netcoreapp2.0'" />
-    <PackageReference Include="System.Security.AccessControl" Version="$(SystemSecurityAccessControlVersion)" Condition="'$(TargetFramework)' == 'netcoreapp2.0'" />
+    <PackageReference Include="Microsoft.Build.Framework" Version="$(MicrosoftBuildFrameworkVersion)" ExcludeAssets="Runtime" />
+    <PackageReference Include="Microsoft.Build.Tasks.Core" Version="$(MicrosoftBuildTasksCoreVersion)" ExcludeAssets="Runtime" />
+    <PackageReference Include="System.IO.Pipes.AccessControl" Version="$(SystemIOPipesAccessControlVersion)" Condition="'$(TargetFramework)' == 'netcoreapp3.1'" />
+     <PackageReference Include="Microsoft.Win32.Registry" Version="4.3.0" />
+    <PackageReference Include="System.Security.AccessControl" Version="$(SystemSecurityAccessControlVersion)" Condition="'$(TargetFramework)' == 'netcoreapp3.1'" />
   </ItemGroup>
   <Target Name="DeleteMsFiles" AfterTargets="Build">
     <ItemGroup>

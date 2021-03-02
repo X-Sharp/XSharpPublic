@@ -1,24 +1,20 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk">
-  <Import Project="..\..\..\build\Targets\GenerateCompilerExecutableBindingRedirects.targets" />
   <Import Project="$(Solutiondir)src\Compiler\CompilerCommon.props" />
+  <Import Project="$(RepositoryEngineeringDir)targets\GenerateCompilerExecutableBindingRedirects.targets" />
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <RootNamespace>Microsoft.CodeAnalysis.CompilerServer</RootNamespace>
-    <AssemblyName>CSCompiler</AssemblyName>
     <LargeAddressAware>true</LargeAddressAware>
-    <TargetFrameworks>$(RoslynPortableTargetFrameworks)</TargetFrameworks>
-    <RuntimeIdentifiers>$(RoslynPortableRuntimeIdentifiers)</RuntimeIdentifiers>
-    <DefineConstants Condition="'$(TargetFramework)' == 'net46'">$(DefineConstants)NET46</DefineConstants>
-
-    <UseVSHostingProcess>false</UseVSHostingProcess>
+<TargetFrameworks>net472</TargetFrameworks>    <UseVSHostingProcess>false</UseVSHostingProcess>
     <ServerGarbageCollection>true</ServerGarbageCollection>
+    <UseAppHost>false</UseAppHost>
+    <GenerateMicrosoftCodeAnalysisCommitHashAttribute>true</GenerateMicrosoftCodeAnalysisCommitHashAttribute>
   </PropertyGroup>
   <ItemGroup Label="Project References">
     <ProjectReference Include="..\CSharpCodeAnalysis\CSharpCodeAnalysis.csproj" />
   </ItemGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DefineConstants>$(DefineConstants);TRACE;DEBUG;XSHARPPRE;</DefineConstants>
+    <DefineConstants>$(DefineConstants);TRACE;DEBUG;XSHARPPRE;NETCOREAPP</DefineConstants>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Public|AnyCPU'">
     <DefineConstants>$(DefineConstants);TRACE;DEBUG;XSHARPPRE;</DefineConstants>
@@ -27,31 +23,15 @@
     <DefineConstants>$(DefineConstants);XSHARPPRE;</DefineConstants>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="System.Configuration" Condition="'$(TargetFramework)' != 'netcoreapp2.0'" />
-    <PackageReference Include="System.IO.Pipes.AccessControl" Version="$(SystemIOPipesAccessControlVersion)" Condition="'$(TargetFramework)' == 'netcoreapp2.0'" />
+    <Reference Include="System.Configuration" Condition="'$(TargetFramework)' != 'netcoreapp3.1'" />
+    <PackageReference Include="System.IO.Pipes.AccessControl" Version="$(SystemIOPipesAccessControlVersion)" Condition="'$(TargetFramework)' == 'netcoreapp3.1'" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="$(SharedSource)BuildClient.cs">
-      <Link>BuildClient.cs</Link>
-    </Compile>
-    <Compile Include="$(SharedSource)BuildServerConnection.cs">
-      <Link>BuildServerConnection.cs</Link>
-    </Compile>
-    <Compile Include="$(SharedSource)CoreClrAnalyzerAssemblyLoader.cs">
-      <Link>CoreClrAnalyzerAssemblyLoader.cs</Link>
-    </Compile>
-    <Compile Include="$(SharedSource)DesktopAnalyzerAssemblyLoader.cs">
-      <Link>DesktopAnalyzerAssemblyLoader.cs</Link>
-    </Compile>
-    <Compile Include="$(SharedSource)DesktopBuildClient.cs">
-      <Link>DesktopBuildClient.cs</Link>
-    </Compile>
-    <Compile Include="$(SharedSource)ExitingTraceListener.cs">
-      <Link>ExitingTraceListener.cs</Link>
-    </Compile>
-    <Compile Include="$(SharedSource)ShadowCopyAnalyzerAssemblyLoader.cs">
-      <Link>ShadowCopyAnalyzerAssemblyLoader.cs</Link>
-    </Compile>
+    <Compile Include="$(SharedSource)RuntimeHostInfo.cs" />
+    <Compile Include="$(SharedSource)NamedPipeUtil.cs" />
+    <Compile Include="$(SharedSource)BuildClient.cs" />
+    <Compile Include="$(SharedSource)BuildServerConnection.cs" />
+    <Compile Include="$(SharedSource)ExitingTraceListener.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
@@ -62,4 +42,5 @@
   </Compile>
   </ItemGroup>
   <Import Project="$(CoreSource)..\CommandLine\CommandLine.projitems" Label="Shared" />
+  <Import Project="$(RepositoryEngineeringDir)targets\DiaSymReaderNative.targets" />
 </Project>

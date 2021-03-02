@@ -1,24 +1,29 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <UseXSharpKey>true</UseXSharpKey>
+  </PropertyGroup>
   <Import Project="$(Solutiondir)src\Compiler\CompilerCommon.props" />
+  <Import Project="$(RepositoryEngineeringDir)targets\GenerateCompilerExecutableBindingRedirects.targets" />
   <PropertyGroup>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>XSharp.VSParser</RootNamespace>
     <AssemblyName>XSharp.VSParser</AssemblyName>
-    <TargetFramework>net46</TargetFramework>
-    <AntlrCall>java -jar $(SolutionDir).\build\antlr4-csharp-4.6.1-SNAPSHOT-complete.jar</AntlrCall> 
+    <TargetFrameworks>net472</TargetFrameworks>
+    <AntlrCall>java -jar $(AntlrDir)antlr4-csharp-4.6.1-SNAPSHOT-complete.jar</AntlrCall> 
     <AntlrPackage>-package LanguageService.CodeAnalysis.XSharp.SyntaxParser</AntlrPackage>
     <AntlrOutputDir>$(MSBuildThisFileDirectory)Generated\</AntlrOutputDir>
     <AntlrInputDir>$(MSBuildThisFileDirectory)Parser\</AntlrInputDir>
     <AntlrParams>-long-messages  -message-format vs2005 -Dlanguage=CSharp_v4_5 $(AntlrPackage) -listener -o $(AntlrOutputdir)</AntlrParams>
     <!--Use the C# compiler created in this solution-->
-    <CSCToolPath>$(GeneratedCompilerPath)</CSCToolPath>
+    <CSCToolExe>$(GeneratedCompilerPath)csc.exe</CSCToolExe>
     <NoWarn>;1573;1591;1701;3008;3021;649;1574</NoWarn>
     <WarningLevel>4</WarningLevel>
     <DebugSymbols>true</DebugSymbols>
     <ErrorReport>prompt</ErrorReport>
-    <GenericDefines>COMPILERCORE;XSHARP;NET45;NET45PLUS;NET40PLUS;NET35PLUS;NET30PLUS;NET20PLUS;VSPARSER</GenericDefines>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <GenericDefines>COMPILERCORE;XSHARP;NET45;NET45PLUS;NET40PLUS;NET35PLUS;NET30PLUS;NET20PLUS;VSPARSER;NETSTANDARD20</GenericDefines>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DefineConstants>$(GenericDefines);TRACE;DEBUG</DefineConstants>
@@ -33,15 +38,11 @@
     <SignAssembly>true</SignAssembly>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="..\..\..\..\Roslyn\src\Compilers\Core\Portable\CommandLine\CommandLineSourceFile.cs">
-      <Link>CommandLine\CommandLineSourceFile.cs</Link>
-    </Compile>
-    <Compile Include="..\..\..\..\Roslyn\src\Compilers\Core\Portable\InternalUtilities\UnicodeCharacterUtilities.cs">
-      <Link>UnicodeCharacterUtilities.cs</Link>
-    </Compile>
-    <Compile Include="..\..\..\..\Roslyn\src\Compilers\CSharp\Portable\CommandLine\CSharpCommandLineArguments.cs">
-      <Link>CommandLine\CSharpCommandLineArguments.cs</Link>
-    </Compile>
+    <Compile Include="$(CoreSource)CommandLine\CommandLineSourceFile.cs" Link="CommandLine\CommandLineSourceFile.cs" />
+    <Compile Include="$(CoreSource)InternalUtilities\NullableAttributes.cs" Link="Core\NullableAttributes.cs" />
+    <Compile Include="$(CoreSource)InternalUtilities\RoslynString.cs" Link="Core\RoslynString.cs" />
+    <Compile Include="$(CoreSource)InternalUtilities\UnicodeCharacterUtilities.cs" Link="Core\UnicodeCharacterUtilities.cs" />
+    <Compile Include="$(CSharpSource)CommandLine\CSharpCommandLineArguments.cs" Link="CommandLine\CSharpCommandLineArguments" />
     <Compile Include="..\..\Common\CommonAssemblyInfo.cs">
       <Link>Properties\CommonAssemblyInfo.cs</Link>
     </Compile>

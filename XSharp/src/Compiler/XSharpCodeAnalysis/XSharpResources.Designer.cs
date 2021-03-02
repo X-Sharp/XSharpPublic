@@ -16011,15 +16011,6 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to &apos;{0}&apos; is ambiguous. Could be  {1} &apos;{2}&apos; in {3} or {4} &apos;{5}&apos; in {6}. Using the first one..
-        /// </summary>
-        internal static string WRN_VulcanAmbiguous {
-            get {
-                return ResourceManager.GetString("WRN_VulcanAmbiguous", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to #warning: &apos;{0}&apos;.
         /// </summary>
         internal static string WRN_WarningDirective {
@@ -16142,6 +16133,15 @@ namespace LanguageService.CodeAnalysis {
         internal static string WRN_XPPVarIsInNotSupported {
             get {
                 return ResourceManager.GetString("WRN_XPPVarIsInNotSupported", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &apos;{0}&apos; is ambiguous. Could be  {1} &apos;{2}&apos; in {3} or {4} &apos;{5}&apos; in {6}. Using the first one..
+        /// </summary>
+        internal static string WRN_XSharpAmbiguous {
+            get {
+                return ResourceManager.GetString("WRN_XSharpAmbiguous", resourceCulture);
             }
         }
         

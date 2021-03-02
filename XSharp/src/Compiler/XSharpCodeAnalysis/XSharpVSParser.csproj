@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk">
-  <Import Project="..\CompilerCommon.props" />
+  <Import Project="$(Solutiondir)src\Compiler\CompilerCommon.props" />
   <PropertyGroup>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
@@ -19,7 +19,6 @@
     <DebugSymbols>true</DebugSymbols>
     <ErrorReport>prompt</ErrorReport>
     <GenericDefines>COMPILERCORE;XSHARP;NET45;NET45PLUS;NET40PLUS;NET35PLUS;NET30PLUS;NET20PLUS;VSPARSER</GenericDefines>
-    <Configurations>Debug;Release;Public</Configurations>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DefineConstants>$(GenericDefines);TRACE;DEBUG</DefineConstants>

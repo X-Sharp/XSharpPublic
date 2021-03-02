@@ -7,13 +7,13 @@
       <para styleclass="Heading1">__callingconvention</para>
     </header>
     <para styleclass="List">&lt;idConvention&gt;<tab />Specifies the calling convention for this entity. &#160;&lt;idConvention&gt; must be one of the following:</para>
-    <list id="1" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <list id="1" level="1" type="ul" listtype="bullet" formatstring="&#111;" levelreset="true" legalstyle="false" startfrom="1" styleclass="List" style="font-family:&apos;Courier New&apos;; font-size:11pt; color:#000000;">
-        <li styleclass="List">CLIPPER</li>
-        <li styleclass="List">STRICT</li>
-        <li styleclass="List">PASCAL</li>
-        <li styleclass="List">CALLBACK</li>
-        <li styleclass="List">THISCALL</li>
+    <list id="2" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List" style="text-indent:192px; margin-left:0px; font-family:Symbol; font-size:11pt; color:#000000;">
+      <list id="2" level="1" type="ul" listtype="bullet" formatstring="&#111;" levelreset="true" legalstyle="false" startfrom="1" styleclass="List" style="text-indent:192px; margin-left:0px; font-family:&apos;Courier New&apos;; font-size:11pt; color:#000000;">
+        <li styleclass="List" style="text-indent:192px; margin-left:0px;"><tab />CLIPPER</li>
+        <li styleclass="List" style="text-indent:192px; margin-left:0px;"><tab />STRICT</li>
+        <li styleclass="List" style="text-indent:192px; margin-left:0px;"><tab />PASCAL</li>
+        <li styleclass="List" style="text-indent:192px; margin-left:0px;"><tab />CALLBACK</li>
+        <li styleclass="List" style="text-indent:192px; margin-left:0px;"><tab />THISCALL</li>
       </list>
     </list>
     <para styleclass="List"><tab />Most calling conventions are for backward compatibility only. <br/>There are 2 exceptions:<br/>CLIPPER declares that a method has untyped parameters. This is usually only needed for methods without any declared parameters. Otherwise the compiler will assume CLIPPER calling convention when it detects untyped parameters. <br/>Methods and Functions in external DLL may have STRICT, PASCAL, CALLBACK</para>

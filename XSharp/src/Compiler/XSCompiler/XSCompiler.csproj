@@ -18,8 +18,6 @@
     <!--Use the C# compiler created in this solution-->
     <CscToolPath>$(GeneratedCompilerPath)</CscToolPath>
     <GenerateMicrosoftCodeAnalysisCommitHashAttribute>false</GenerateMicrosoftCodeAnalysisCommitHashAttribute>
-    <Configurations>Debug;Release;Public</Configurations>
-  
   </PropertyGroup>
   <ItemGroup Label="Project References">
     <ProjectReference Include="..\..\Tools\CSCompiler\CSCompiler.csproj" />

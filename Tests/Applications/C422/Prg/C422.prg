@@ -67,7 +67,7 @@ METHOD DoTest() AS VOID
 	IF PTR(oEvt:lParam) != p1
 		THROW Exception{"Incorrect result"}
 	END IF
-	ODDrawItem(oEvt)
+	SELF:ODDrawItem(oEvt)
 RETURN
 METHOD ODDrawItem(oEvent) 
 	LOCAL oEvt AS @@Event

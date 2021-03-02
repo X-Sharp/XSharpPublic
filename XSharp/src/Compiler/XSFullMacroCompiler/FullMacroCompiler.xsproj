@@ -35,6 +35,7 @@
     <IncludePaths>$(Solutiondir)src\Common</IncludePaths>
     <NoStandardDefs>true</NoStandardDefs>
     <OutputPath>$(Binariesdir)</OutputPath>
+	<RuntimeIdentifiers>win;</RuntimeIdentifiers>
     <StartupObject />
     <ApplicationIcon />
     <XSharpProjectversion>2.6.0.0</XSharpProjectversion>

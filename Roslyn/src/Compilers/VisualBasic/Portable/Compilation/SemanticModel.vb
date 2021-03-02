@@ -1,4 +1,6 @@
-﻿' Copyright (c) Microsoft.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
+﻿' Licensed to the .NET Foundation under one or more agreements.
+' The .NET Foundation licenses this file to you under the MIT license.
+' See the LICENSE file in the project root for more information.
 
 Imports System.Collections.Immutable
 Imports System.Runtime.InteropServices
@@ -102,7 +104,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         Friend MustOverride Function GetAttributeMemberGroup(attribute As AttributeSyntax, Optional cancellationToken As CancellationToken = Nothing) As ImmutableArray(Of Symbol)
 
         ''' <summary>
-        ''' Gets symbol information about an cref reference syntax node. This is the worker
+        ''' Gets symbol information about a cref reference syntax node. This is the worker
         ''' function that is overridden in various derived kinds of Semantic Models. 
         ''' </summary>
         Friend MustOverride Function GetCrefReferenceSymbolInfo(crefReference As CrefReferenceSyntax, options As SymbolInfoOptions, Optional cancellationToken As CancellationToken = Nothing) As SymbolInfo
@@ -889,7 +891,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                 End If
             Else
                 ' 2 or more symbols. Use a hash set to remove duplicates.
-                Dim symbolSet As New HashSet(Of Symbol)
+                Dim symbolSet = PooledHashSet(Of Symbol).GetInstance()
                 For Each s In symbolsBuilder
                     If (options And SymbolInfoOptions.ResolveAliases) <> 0 Then
                         s = UnwrapAlias(s)
@@ -907,7 +909,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                     End If
                 Next
 
-                Return ImmutableArray.CreateRange(symbolSet)
+                Dim result = ImmutableArray.CreateRange(symbolSet)
+                symbolSet.Free()
+                Return result
             End If
         End Function
 
@@ -1216,7 +1220,7 @@ _Default:
                         meParam = New MeParameterSymbol(containingMember, containingType)
 
                     Else
-                        If referenceType = ErrorTypeSymbol.UnknownResultType Then
+                        If TypeSymbol.Equals(referenceType, ErrorTypeSymbol.UnknownResultType, TypeCompareKind.ConsiderEverything) Then
                             ' in an instance member, but binder considered Me/MyBase/MyClass unreferenceable
                             meParam = New MeParameterSymbol(containingMember, containingType)
                             resultKind = LookupResultKind.NotReferencable
@@ -1391,13 +1395,7 @@ _Default:
         End Sub
 
         Private Shared Function UnwrapAliases(symbols As ImmutableArray(Of Symbol)) As ImmutableArray(Of Symbol)
-            Dim anyAliases As Boolean = False
-
-            For Each sym In symbols
-                If sym.Kind = SymbolKind.Alias Then
-                    anyAliases = True
-                End If
-            Next
+            Dim anyAliases As Boolean = symbols.Any(Function(sym) sym.Kind = SymbolKind.Alias)
 
             If Not anyAliases Then
                 Return symbols
@@ -1447,7 +1445,7 @@ _Default:
                         Case BoundKind.Attribute
                             Dim boundAttribute As BoundAttribute = DirectCast(boundNodeOfSyntacticParent, BoundAttribute)
 
-                            Debug.Assert(resultKind <> LookupResultKind.Good OrElse namedTypeSymbol = boundAttribute.Type)
+                            Debug.Assert(resultKind <> LookupResultKind.Good OrElse TypeSymbol.Equals(namedTypeSymbol, boundAttribute.Type, TypeCompareKind.ConsiderEverything))
                             constructor = boundAttribute.Constructor
                             resultKind = LookupResult.WorseResultKind(resultKind, boundAttribute.ResultKind)
 
@@ -1932,7 +1930,7 @@ _Default:
                                   results As ArrayBuilder(Of Symbol))
             Debug.Assert(results IsNot Nothing)
 
-            Dim uniqueSymbols = New HashSet(Of Symbol)()
+            Dim uniqueSymbols = PooledHashSet(Of Symbol).GetInstance()
             Dim tempResults = ArrayBuilder(Of Symbol).GetInstance(arities.Count)
 
             For Each knownArity In arities
@@ -1947,6 +1945,7 @@ _Default:
             tempResults.Free()
 
             results.AddRange(uniqueSymbols)
+            uniqueSymbols.Free()
         End Sub
 
         Private Shadows Sub LookupSymbols(binder As Binder,
@@ -1979,7 +1978,7 @@ _Default:
                 If result.HasDiagnostic Then
                     ' In the ambiguous symbol case, we have a good symbol with a diagnostics that
                     ' mentions the other symbols. Union everything together with a set to prevent dups.
-                    Dim symbolSet As New HashSet(Of Symbol)
+                    Dim symbolSet = PooledHashSet(Of Symbol).GetInstance()
                     Dim symBuilder = ArrayBuilder(Of Symbol).GetInstance()
                     AddSymbolsFromDiagnosticInfo(symBuilder, result.Diagnostic)
                     symbolSet.UnionWith(symBuilder)
@@ -1987,7 +1986,7 @@ _Default:
                     symBuilder.Free()
 
                     results.AddRange(symbolSet)
-
+                    symbolSet.Free()
                 ElseIf result.HasSingleSymbol AndAlso result.SingleSymbol.Kind = SymbolKind.Namespace AndAlso
                        DirectCast(result.SingleSymbol, NamespaceSymbol).NamespaceKind = NamespaceKindNamespaceGroup Then
                     results.AddRange(DirectCast(result.SingleSymbol, NamespaceSymbol).ConstituentNamespaces)
@@ -2353,7 +2352,7 @@ _Default:
         End Function
 
         ''' <summary>
-        ''' Given an modified identifier that is part of a variable declaration, get the
+        ''' Given a modified identifier that is part of a variable declaration, get the
         ''' corresponding symbol.
         ''' </summary>
         ''' <param name="identifierSyntax">The modified identifier that declares a variable.</param>
@@ -2415,7 +2414,7 @@ _Default:
         End Function
 
         ''' <summary>
-        ''' Given an FieldInitializerSyntax, get the corresponding symbol of anonymous type property.
+        ''' Given a FieldInitializerSyntax, get the corresponding symbol of anonymous type property.
         ''' </summary>
         ''' <param name="fieldInitializerSyntax">The anonymous object creation field initializer syntax.</param>
         ''' <returns>The symbol that was declared, or Nothing if no such symbol exists or 
@@ -2464,7 +2463,7 @@ _Default:
         End Function
 
         ''' <summary>
-        ''' Given an CollectionRangeVariableSyntax, get the corresponding symbol.
+        ''' Given a CollectionRangeVariableSyntax, get the corresponding symbol.
         ''' </summary>
         ''' <param name="rangeVariableSyntax">The range variable syntax that declares a variable.</param>
         ''' <returns>The symbol that was declared, or Nothing if no such symbol exists.</returns>
@@ -3430,7 +3429,7 @@ _Default:
             VisualBasicDeclarationComputer.ComputeDeclarationsInSpan(Me, span, getSymbol, builder, cancellationToken)
         End Sub
 
-        Friend Overrides Sub ComputeDeclarationsInNode(node As SyntaxNode, getSymbol As Boolean, builder As ArrayBuilder(Of DeclarationInfo), cancellationToken As CancellationToken, Optional levelsToCompute As Integer? = Nothing)
+        Friend Overrides Sub ComputeDeclarationsInNode(node As SyntaxNode, associatedSymbol As ISymbol, getSymbol As Boolean, builder As ArrayBuilder(Of DeclarationInfo), cancellationToken As CancellationToken, Optional levelsToCompute As Integer? = Nothing)
             VisualBasicDeclarationComputer.ComputeDeclarationsInNode(Me, node, getSymbol, builder, cancellationToken)
         End Sub
 
@@ -3474,6 +3473,10 @@ _Default:
             End Select
 
             Return declaringSyntax
+        End Function
+
+        Public NotOverridable Overrides Function GetNullableContext(position As Integer) As NullableContext
+            Return NullableContext.Disabled Or NullableContext.ContextInherited
         End Function
 #End Region
 

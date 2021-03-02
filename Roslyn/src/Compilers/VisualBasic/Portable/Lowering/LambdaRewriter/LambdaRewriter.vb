@@ -1,4 +1,6 @@
-﻿' Copyright (c) Microsoft.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
+﻿' Licensed to the .NET Foundation under one or more agreements.
+' The .NET Foundation licenses this file to you under the MIT license.
+' See the LICENSE file in the project root for more information.
 
 Imports System.Collections.Immutable
 Imports System.Runtime.InteropServices
@@ -102,8 +104,10 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
 
         Private _reported_ERR_CannotUseOnErrorGotoWithClosure As Boolean
 
+#Disable Warning IDE0044 ' Add readonly modifier - The field is assigned in "#If DEBUG"
         ''' <summary> WARNING: used ONLY in DEBUG </summary>
         Private _rewrittenNodes As HashSet(Of BoundNode) = Nothing
+#Enable Warning IDE0044 ' Add readonly modifier
 
         Private Sub New(analysis As Analysis,
                         method As MethodSymbol,
@@ -285,7 +289,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
 
                 _frames(scope) = frame
 
-                CompilationState.ModuleBuilderOpt.AddSynthesizedDefinition(_topLevelMethod.ContainingType, frame)
+                CompilationState.ModuleBuilderOpt.AddSynthesizedDefinition(_topLevelMethod.ContainingType, frame.GetCciAdapter())
                 ' NOTE: we will add this ctor to compilation state after we know all captured locals
                 '       we need them to generate copy constructor, if needed
             End If
@@ -319,7 +323,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                     Dim frame = Me._lazyStaticLambdaFrame
 
                     ' add frame type
-                    CompilationState.ModuleBuilderOpt.AddSynthesizedDefinition(_topLevelMethod.ContainingType, frame)
+                    CompilationState.ModuleBuilderOpt.AddSynthesizedDefinition(_topLevelMethod.ContainingType, frame.GetCciAdapter())
 
                     ' associate the frame with the first lambda that caused it to exist. 
                     ' we need to associate this with some syntax.
@@ -355,7 +359,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         ''' <returns>A bound node that computes the pointer to the required frame</returns>
         Private Function FrameOfType(syntax As SyntaxNode, frameType As NamedTypeSymbol) As BoundExpression
             Dim result As BoundExpression = FramePointer(syntax, frameType.OriginalDefinition)
-            Debug.Assert(result.Type = frameType)
+            Debug.Assert(TypeSymbol.Equals(result.Type, frameType, TypeCompareKind.ConsiderEverything))
             Return result
         End Function
 
@@ -369,7 +373,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         ''' <returns>A bound node that computes the pointer to the required frame</returns>
         Friend Overrides Function FramePointer(syntax As SyntaxNode, frameClass As NamedTypeSymbol) As BoundExpression
             Debug.Assert(frameClass.IsDefinition)
-            If _currentFrameThis IsNot Nothing AndAlso _currentFrameThis.Type = frameClass Then
+            If _currentFrameThis IsNot Nothing AndAlso TypeSymbol.Equals(_currentFrameThis.Type, frameClass, TypeCompareKind.ConsiderEverything) Then
                 Return New BoundMeReference(syntax, frameClass)
             End If
 
@@ -503,7 +507,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             Dim framePointer = New SynthesizedLocal(Me._topLevelMethod, frameType, SynthesizedLocalKind.LambdaDisplayClass, frame.ScopeSyntax)
             Dim prologue = ArrayBuilder(Of BoundExpression).GetInstance()
             Dim constructor As MethodSymbol = frame.Constructor.AsMember(frameType)
-            Debug.Assert(frameType = constructor.ContainingType)
+            Debug.Assert(TypeSymbol.Equals(frameType, constructor.ContainingType, TypeCompareKind.ConsiderEverything))
 
             Dim syntaxNode As SyntaxNode = node.Syntax
 
@@ -548,7 +552,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                     End If
 
 
-                    CompilationState.ModuleBuilderOpt.AddSynthesizedDefinition(frame, capturedFrame)
+                    CompilationState.ModuleBuilderOpt.AddSynthesizedDefinition(frame, capturedFrame.GetCciAdapter())
 
                     Proxies(_innermostFramePointer) = capturedFrame
                 End If
@@ -806,7 +810,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                 Debug.Assert(Not Me.Proxies.ContainsKey(origLocal), "captured local should not need rewriting")
 
                 Dim newType = VisitType(origLocal.Type)
-                If newType = origLocal.Type Then
+                If TypeSymbol.Equals(newType, origLocal.Type, TypeCompareKind.ConsiderEverything) Then
                     ' keeping same local
                     rewrittenCatchLocal = origLocal
 
@@ -1068,7 +1072,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             ' Move the body of the lambda to a freshly generated synthetic method on its container.
             Dim synthesizedMethod = New SynthesizedLambdaMethod(translatedLambdaContainer, closureKind, _topLevelMethod, topLevelMethodId, node, lambdaId, Me.Diagnostics)
 
-            CompilationState.ModuleBuilderOpt.AddSynthesizedDefinition(translatedLambdaContainer, synthesizedMethod)
+            CompilationState.ModuleBuilderOpt.AddSynthesizedDefinition(translatedLambdaContainer, synthesizedMethod.GetCciAdapter())
 
             For Each parameter In node.LambdaSymbol.Parameters
                 ParameterMap.Add(parameter, synthesizedMethod.Parameters(parameter.Ordinal))
@@ -1185,7 +1189,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                                                                            accessibility:=Accessibility.Public,
                                                                            isShared:=(closureKind = ClosureKind.Static))
 
-                CompilationState.ModuleBuilderOpt.AddSynthesizedDefinition(translatedLambdaContainer, cacheField)
+                CompilationState.ModuleBuilderOpt.AddSynthesizedDefinition(translatedLambdaContainer, cacheField.GetCciAdapter())
 
                 Dim F = New SyntheticBoundNodeFactory(Me._topLevelMethod, Me._currentMethod, node.Syntax, CompilationState, Diagnostics)
                 Dim fieldToAccess As FieldSymbol = cacheField.AsMember(constructedFrame)
@@ -1444,4 +1448,3 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
 
     End Class
 End Namespace
-

@@ -1,9 +1,15 @@
-﻿// Copyright (c) Microsoft.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
+﻿// Licensed to the .NET Foundation under one or more agreements.
+// The .NET Foundation licenses this file to you under the MIT license.
+// See the LICENSE file in the project root for more information.
+
+#nullable disable
 
 using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Linq;
 using System.Runtime.InteropServices;
+using System.Runtime.Serialization;
 using Roslyn.Utilities;
 
 namespace Microsoft.CodeAnalysis
@@ -12,43 +18,89 @@ namespace Microsoft.CodeAnalysis
     /// Checksum of data can be used later to see whether two data are same or not
     /// without actually comparing data itself
     /// </summary>
+    [DataContract]
     internal sealed partial class Checksum : IObjectWritable, IEquatable<Checksum>
     {
         /// <summary>
-        /// The intended size of the <see cref="Sha1Hash"/> structure. Some runtime environments are known to deviate
-        /// from this size, so the implementation code should remain functionally correct even when the structure size
-        /// is greater than this value.
+        /// The intended size of the <see cref="HashData"/> structure. 
         /// </summary>
-        /// <seealso href="https://bugzilla.xamarin.com/show_bug.cgi?id=60298">LayoutKind.Explicit, Size = 12 ignored with 64bit alignment</seealso>
-        /// <seealso href="https://github.com/dotnet/roslyn/issues/23722">Checksum throws on Mono 64-bit</seealso>
-        private const int Sha1HashSize = 20;
+        private const int HashSize = 20;
 
-        public static readonly Checksum Null = new Checksum(Array.Empty<byte>());
+        public static readonly Checksum Null = new(default);
 
-        private Sha1Hash _checkSum;
+        [DataMember(Order = 0)]
+        private readonly HashData _checksum;
 
-        public unsafe Checksum(byte[] checksum)
+        public Checksum(HashData hash)
+            => _checksum = hash;
+
+        /// <summary>
+        /// Create Checksum from given byte array. if byte array is bigger than
+        /// <see cref="HashSize"/>, it will be truncated to the size
+        /// </summary>
+        public static Checksum From(byte[] checksum)
         {
             if (checksum.Length == 0)
             {
-                _checkSum = default;
-                return;
-            }
-            else if (checksum.Length != Sha1HashSize)
-            {
-                throw new ArgumentException($"{nameof(checksum)} must be a SHA-1 hash", nameof(checksum));
+                return Null;
             }
 
-            fixed (byte* data = checksum)
+            if (checksum.Length < HashSize)
             {
-                // Avoid a direct dereferencing assignment since sizeof(Sha1Hash) may be greater than Sha1HashSize.
-                _checkSum = Sha1Hash.FromPointer((Sha1Hash*)data);
+                throw new ArgumentException($"checksum must be equal or bigger than the hash size: {HashSize}", nameof(checksum));
             }
+
+            return FromWorker(checksum);
         }
 
-        private Checksum(Sha1Hash hash)
+        /// <summary>
+        /// Create Checksum from given byte array. if byte array is bigger than
+        /// <see cref="HashSize"/>, it will be truncated to the size
+        /// </summary>
+        public static Checksum From(ImmutableArray<byte> checksum)
         {
-            _checkSum = hash;
+            if (checksum.Length == 0)
+            {
+                return Null;
+            }
+
+            if (checksum.Length < HashSize)
+            {
+                throw new ArgumentException($"{nameof(checksum)} must be equal or bigger than the hash size: {HashSize}", nameof(checksum));
+            }
+
+            using var pooled = SharedPools.ByteArray.GetPooledObject();
+            var bytes = pooled.Object;
+            checksum.CopyTo(sourceIndex: 0, bytes, destinationIndex: 0, length: HashSize);
+
+            return FromWorker(bytes);
+        }
+
+        public static Checksum FromSerialized(byte[] checksum)
+        {
+            if (checksum.Length == 0)
+            {
+                return Null;
+            }
+
+            if (checksum.Length != HashSize)
+            {
+                throw new ArgumentException($"{nameof(checksum)} must be equal to the hash size: {HashSize}", nameof(checksum));
+            }
+
+            return FromWorker(checksum);
+        }
+
+        private static unsafe Checksum FromWorker(byte[] checksum)
+        {
+            fixed (byte* data = checksum)
+            {
+                // Avoid a direct dereferencing assignment since sizeof(HashData) may be greater than HashSize.
+                //
+                // ex) "https://bugzilla.xamarin.com/show_bug.cgi?id=60298" - LayoutKind.Explicit, Size = 12 ignored with 64bit alignment
+                // or  "https://github.com/dotnet/roslyn/issues/23722" - Checksum throws on Mono 64-bit
+                return new Checksum(HashData.FromPointer((HashData*)data));
+            }
         }
 
         public bool Equals(Checksum other)
@@ -58,74 +110,74 @@ namespace Microsoft.CodeAnalysis
                 return false;
             }
 
-            return _checkSum == other._checkSum;
+            return _checksum == other._checksum;
         }
 
         public override bool Equals(object obj)
             => Equals(obj as Checksum);
 
         public override int GetHashCode()
-            => _checkSum.GetHashCode();
+            => _checksum.GetHashCode();
 
         public override unsafe string ToString()
         {
-            var data = new byte[sizeof(Sha1Hash)];
+            var data = new byte[sizeof(HashData)];
             fixed (byte* dataPtr = data)
             {
-                *(Sha1Hash*)dataPtr = _checkSum;
+                *(HashData*)dataPtr = _checksum;
             }
 
-            return Convert.ToBase64String(data, 0, Sha1HashSize);
+            return Convert.ToBase64String(data, 0, HashSize);
         }
 
         public static bool operator ==(Checksum left, Checksum right)
-        {
-            return EqualityComparer<Checksum>.Default.Equals(left, right);
-        }
+            => EqualityComparer<Checksum>.Default.Equals(left, right);
 
         public static bool operator !=(Checksum left, Checksum right)
-        {
-            return !(left == right);
-        }
+            => !(left == right);
 
         bool IObjectWritable.ShouldReuseInSerialization => true;
 
         public void WriteTo(ObjectWriter writer)
-            => _checkSum.WriteTo(writer);
+            => _checksum.WriteTo(writer);
 
         public static Checksum ReadFrom(ObjectReader reader)
-            => new Checksum(Sha1Hash.ReadFrom(reader));
+            => new(HashData.ReadFrom(reader));
 
         public static string GetChecksumLogInfo(Checksum checksum)
-        {
-            return checksum.ToString();
-        }
+            => checksum.ToString();
 
         public static string GetChecksumsLogInfo(IEnumerable<Checksum> checksums)
-        {
-            return string.Join("|", checksums.Select(c => c.ToString()));
-        }
+            => string.Join("|", checksums.Select(c => c.ToString()));
 
         /// <summary>
-        /// This structure stores the 20-byte SHA 1 hash as an inline value rather than requiring the use of
+        /// This structure stores the 20-byte hash as an inline value rather than requiring the use of
         /// <c>byte[]</c>.
         /// </summary>
-        [StructLayout(LayoutKind.Explicit, Size = Sha1HashSize)]
-        private struct Sha1Hash : IEquatable<Sha1Hash>
+        [DataContract]
+        [StructLayout(LayoutKind.Explicit, Size = HashSize)]
+        public readonly struct HashData : IEquatable<HashData>
         {
-            [FieldOffset(0)]
-            private long Data1;
+            [FieldOffset(0), DataMember(Order = 0)]
+            private readonly long Data1;
 
-            [FieldOffset(8)]
-            private long Data2;
+            [FieldOffset(8), DataMember(Order = 1)]
+            private readonly long Data2;
 
-            [FieldOffset(16)]
-            private int Data3;
+            [FieldOffset(16), DataMember(Order = 2)]
+            private readonly int Data3;
 
-            public static bool operator ==(Sha1Hash x, Sha1Hash y)
+            public HashData(long data1, long data2, int data3)
+            {
+                Data1 = data1;
+                Data2 = data2;
+                Data3 = data3;
+            }
+
+            public static bool operator ==(HashData x, HashData y)
                 => x.Equals(y);
 
-            public static bool operator !=(Sha1Hash x, Sha1Hash y)
+            public static bool operator !=(HashData x, HashData y)
                 => !x.Equals(y);
 
             public void WriteTo(ObjectWriter writer)
@@ -135,23 +187,11 @@ namespace Microsoft.CodeAnalysis
                 writer.WriteInt32(Data3);
             }
 
-            public static unsafe Sha1Hash FromPointer(Sha1Hash* hash)
-            {
-                Sha1Hash result = default;
-                result.Data1 = hash->Data1;
-                result.Data2 = hash->Data2;
-                result.Data3 = hash->Data3;
-                return result;
-            }
+            public static unsafe HashData FromPointer(HashData* hash)
+                => new(hash->Data1, hash->Data2, hash->Data3);
 
-            public static Sha1Hash ReadFrom(ObjectReader reader)
-            {
-                Sha1Hash result = default;
-                result.Data1 = reader.ReadInt64();
-                result.Data2 = reader.ReadInt64();
-                result.Data3 = reader.ReadInt32();
-                return result;
-            }
+            public static HashData ReadFrom(ObjectReader reader)
+                => new(reader.ReadInt64(), reader.ReadInt64(), reader.ReadInt32());
 
             public override int GetHashCode()
             {
@@ -160,9 +200,9 @@ namespace Microsoft.CodeAnalysis
             }
 
             public override bool Equals(object obj)
-                => obj is Sha1Hash other && Equals(other);
+                => obj is HashData other && Equals(other);
 
-            public bool Equals(Sha1Hash other)
+            public bool Equals(HashData other)
             {
                 return Data1 == other.Data1
                     && Data2 == other.Data2

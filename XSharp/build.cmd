@@ -1,6 +1,6 @@
 @echo off
 set xsoldpath=%path%
-set xsdotnetpath=%~dp0\Binaries\Tools\dotnet
+set xsdotnetpath=%~dp0\Artifacts\Tools\dotnet
 set path=%xsdotnetpath%;%PATH%
 if "%VSVERSION%" == "" SET VSVERSION=2019
 if "%VSEDITION%" == "" SET VSEDITION=Enterprise
@@ -14,8 +14,6 @@ if /i "%1" == "All" goto All
 goto Error
 :All
 Echo Restore nuget packages once for all builds
-
-powershell  -noprofile -executionPolicy RemoteSigned -file "%~dp0\build\scripts\dotnet-install.ps1" --version 3.1.402 --InstallDir %xsdotnetpath%
 dotnet restore Compiler.sln 
 SET XSHARPBUILDNESTED=1
 call Build Debug
@@ -32,11 +30,10 @@ rem Next line can help to debug where DotNet.exe finds the right SDK
 rem SET COREHOST_TRACE=1
 if "%XSHARPBUILDNESTED%" == "1" goto Build
 Echo Restoring packages for configuration %1 
-powershell  -noprofile -executionPolicy RemoteSigned -file "%~dp0\build\scripts\dotnet-install.ps1" --version 3.1.402 --InstallDir %xsdotnetpath%
 dotnet restore Compiler.sln 
 :Build
 Echo Building output for configuration %1
-set AntlrCall=java -jar build\antlr4-csharp-4.6.1-SNAPSHOT-complete.jar
+set AntlrCall=java -jar eng\antlr4-csharp-4.6.1-SNAPSHOT-complete.jar
 set AntlrPackage=-package LanguageService.CodeAnalysis.XSharp.SyntaxParser
 set AntlrOutputDir=%~dp0src\Compiler\XSharpCodeAnalysis\Generated
 set AntlrInputDir=%~dp0src\Compiler\XSharpCodeAnalysis\Parser\
@@ -47,7 +44,7 @@ if exist "%AntlrOutputdir%\XSharp*.*" del %AntlrOutputdir%\XSharp*.* /q
 %AntlrCall% %AntlrParams% %AntlrInputdir%XSharpLexer.g4
 %AntlrCall% %AntlrParams% %AntlrInputdir%XSharp.g4
 rem There seems to be a problem packing the zips on the CI server, so create the folder "manually"
-IF NOT EXIST %~dp0Binaries\Zips\*.* md %~dp0Binaries\Zips
+IF NOT EXIST %~dp0artifacts\Zips\*.* md %~dp0artifacts\Zips
 SET CreateZips=
 IF /i "%1" == "Release" SET CreateZips=Yes
 msbuild Compiler.sln /fl1 /p:Configuration=%1 /t:Build /v:m /nologo /m

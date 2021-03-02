@@ -3,7 +3,7 @@
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
-
+#nullable disable
 using System.Collections.Immutable;
 using System.Diagnostics;
 using System.Linq;
@@ -62,7 +62,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
 
             var usualType = _compilation.UsualType();
-            if (constructedFrom == usualType)
+            if (TypeSymbol.Equals(constructedFrom, usualType))
             {
                 loweredReceiver = _factory.StaticCall(usualType, ReservedNames.ToObject, loweredReceiver);
             }
@@ -92,7 +92,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             if (!allowLB || loweredReceiver.HasDynamicType())
                 return null;
             var usualType = _compilation.UsualType();
-            var value = loweredValue.Type == null ? new BoundDefaultExpression(syntax, usualType)
+            var value = loweredValue.Type is null ? new BoundDefaultExpression(syntax, usualType) 
                 : MakeConversionNode(loweredValue, usualType, false);
             var nameExpr = _factory.Literal(name);
             if (IsFoxAccessMember(loweredReceiver, out var areaName))
@@ -113,7 +113,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             {
                 _diagnostics.Add(new CSDiagnostic(new CSDiagnosticInfo(ErrorCode.WRN_UndeclaredMember, constructedFrom, name,"property","assign" ), loweredReceiver.Syntax.Location));
             }
-            if ( constructedFrom == usualType)
+            if ( constructedFrom .IsUsualType())
             {
                 loweredReceiver = _factory.StaticCall(usualType, ReservedNames.ToObject, loweredReceiver);
             }
@@ -161,7 +161,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             var usualType = _compilation.UsualType();
             foreach (var a in args)
             {
-                if (a.Type == null && ! a.Syntax.XIsCodeBlock)
+                if (a.Type is null && ! a.Syntax.XIsCodeBlock)
                 {
                     convArgs.Add(_factory.Default(usualType));
                 }
@@ -186,7 +186,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             var usualType = _compilation.UsualType();
             foreach (var a in args)
             {
-                if (a.Type == null)
+                if (a.Type is null)
                 {
                     convArgs.Add(_factory.Default(usualType));
                 }

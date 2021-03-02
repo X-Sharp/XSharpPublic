@@ -3,7 +3,7 @@
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
-
+#nullable disable
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
@@ -29,7 +29,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 if (c.GetParameterCount() == 2)
                 {
                     var types = c.GetParameterTypes();
-                    if (types[0].IsUsualType() && types[1].SpecialType == SpecialType.System_Boolean)
+                    if (types[0].Type.IsUsualType() && types[1].Type.SpecialType == SpecialType.System_Boolean)
                     {
                         ctor = (MethodSymbol)c;
                         break;
@@ -38,7 +38,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
             if (ctor != null)
             {
-                return new BoundObjectCreationExpression(expr.Syntax, ctor, null, expr, _factory.Literal(true));
+                return new BoundObjectCreationExpression(expr.Syntax,ctor, new BoundExpression[] { expr, _factory.Literal(true) });
             }
             return expr;
         }
@@ -113,7 +113,8 @@ namespace Microsoft.CodeAnalysis.CSharp
                         var rtType = _compilation.RuntimeFunctionsType();
                         get = rtType.GetMembers(ReservedNames.FieldGetWaUndeclared);
                         set = rtType.GetMembers(ReservedNames.FieldSetWaUndeclared);
-                        var varSym = new XsFoxMemberAccessSymbol(amc.AreaName, amc.FieldName, (MethodSymbol) get[0], (MethodSymbol)set[0], _compilation.UsualType());
+                        var usual = TypeWithAnnotations.Create(_compilation.UsualType());
+                        var varSym = new XsFoxMemberAccessSymbol(amc.AreaName, amc.FieldName, (MethodSymbol) get[0], (MethodSymbol)set[0], usual);
                         if (get.Length > 0 && set.Length > 0)
                         {
                             boundProperties[i] = new BoundPropertyAccess(a.Syntax, null, varSym, LookupResultKind.Viable, varSym.Type);
@@ -183,13 +184,12 @@ namespace Microsoft.CodeAnalysis.CSharp
 
         internal BoundExpression RewriteLateBoundCallWithRefParams(BoundExpression loweredReceiver, string name, BoundDynamicInvocation node, ImmutableArray<BoundExpression> arguments)
         {
-            
             var convArgs = new ArrayBuilder<BoundExpression>();
             var usualType = _compilation.UsualType();
             foreach (var a in arguments)
             {
 
-                if (a.Type == null && !a.Syntax.XIsCodeBlock)
+                if (a.Type is null && !a.Syntax.XIsCodeBlock)
                 {
                     convArgs.Add(_factory.Default(usualType));
                 }
@@ -300,7 +300,6 @@ namespace Microsoft.CodeAnalysis.CSharp
 
         }
 
-   
         internal BoundNode VisitCtorCallClipperConvention(BoundObjectCreationExpression node)
         {
             if (node.Arguments.Length > 0 && node.Syntax is ObjectCreationExpressionSyntax oces)
@@ -326,7 +325,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             BoundExpression rewrittenObjectCreation = node.UpdateArgumentsAndInitializer(rewrittenArguments, argumentRefKindsOpt, newInitializerExpression: null, changeTypeOpt: node.Constructor.ContainingType);
             if (node.Type.IsInterfaceType())
             {
-                Debug.Assert(rewrittenObjectCreation.Type == ((NamedTypeSymbol)node.Type).ComImportCoClass);
+                Debug.Assert(TypeSymbol.Equals(rewrittenObjectCreation.Type, ((NamedTypeSymbol)node.Type).ComImportCoClass));
                 rewrittenObjectCreation = MakeConversionNode(rewrittenObjectCreation, node.Type, false, false);
             }
             BoundExpression objectAssignment = _factory.AssignmentExpression(boundObjTemp, rewrittenObjectCreation);
@@ -337,28 +336,80 @@ namespace Microsoft.CodeAnalysis.CSharp
             {
                 return rewrittenObjectCreation;
             }
-            return MakeObjectCreationWithInitializer(node.Syntax, rewrittenObjectCreation, node.InitializerExpressionOpt, node.Type);
+            return MakeExpressionWithInitializer(node.Syntax, rewrittenObjectCreation, node.InitializerExpressionOpt, node.Type);
         }
 
-        internal BoundNode VisitCallClipperConvention(BoundCall node)
+        internal BoundNode XsAddNILParameters(BoundCall node)
         {
+            var rewrittenArgs = ImmutableArray.CreateBuilder<BoundExpression>();
+            var locals = ImmutableArray.CreateBuilder<LocalSymbol>();
+            var pexprs = ImmutableArray.CreateBuilder<BoundExpression>();
+            var utype = _compilation.UsualType();
+            var flds = utype.GetMembers("_NIL");
+            var type = _factory.Type(utype);
+            var nil = _factory.Field(type, (FieldSymbol)flds[0]);
+            for (var i = 0; i < node.Arguments.Length; i++)
+            {
+                var arg = node.Arguments[i];
+                if (arg.Kind == BoundKind.DefaultExpression && arg.Type.IsUsualType())
+                {
+                    var tempLocal = _factory.SynthesizedLocal(utype, node.Syntax);
+                    var local = _factory.Local(tempLocal);
+                    locals.Add(tempLocal);
+                    var assign = _factory.AssignmentExpression(local, nil);
+                    pexprs.Add(assign);
+                    rewrittenArgs.Add(local);
+                }
+                else
+                {
+                    rewrittenArgs.Add(arg);
+                }
+            }
+            BoundExpression receiver = VisitExpression(node.ReceiverOpt);
+
+            var mcall = MakeCall(node, node.Syntax, receiver, node.Method, rewrittenArgs.ToImmutable(), node.ArgumentRefKindsOpt,
+                node.InvokedAsExtensionMethod, node.ResultKind, node.Type);
+            return Visit(new BoundSequence(node.Syntax, locals.ToImmutable(), pexprs.ToImmutable(), mcall, node.Type));
+
+        }
+
+        internal BoundNode XsVisitCall(BoundCall node)
+        {
+            bool isClipperCall = false;
+            bool rewriteUsuals = false;
             // some generated nodes do not have an invocation expression syntax node
             if (node.Arguments.Length > 0 && node.Syntax is InvocationExpressionSyntax ies)
             {
-                var mcall = ies.XNode as XSharpParser.MethodCallContext;
-                var dostmt = ies.XNode as XSharpParser.DoStmtContext;
-                if (mcall == null && dostmt == null)
-                    return null;
-                if (mcall != null && !mcall.HasRefArguments)
-                    return null;
-                if (dostmt != null && !dostmt.HasRefArguments)
-                    return null;
-
-                if (!node.Method.HasClipperCallingConvention())
-                    return null;
+                // Adjust default arguments from Default(USUAL) to NIL
+                for (var i = 0; i < node.Arguments.Length; i++)
+                {
+                    var arg = node.Arguments[i];
+                    if (arg.Kind == BoundKind.DefaultExpression && arg.Type.IsUsualType())
+                    {
+                        rewriteUsuals = true;
+                        break;
+                    }
+                }
+                if (!rewriteUsuals)
+                {
+                    var mcall = ies.XNode as XSharpParser.MethodCallContext;
+                    var dostmt = ies.XNode as XSharpParser.DoStmtContext;
+                    if (mcall == null && dostmt == null)
+                        return null;
+                    if (mcall != null && !mcall.HasRefArguments)
+                        return null;
+                    if (dostmt != null && !dostmt.HasRefArguments)
+                        return null;
+                }
+                if (node.Method.HasClipperCallingConvention())
+                    isClipperCall = true;
             }
-            else
+            if (!isClipperCall && !rewriteUsuals)
                 return null;
+            if (rewriteUsuals && !isClipperCall)
+            {
+                return XsAddNILParameters(node);
+            }
 
             BoundExpression rewrittenReceiver = VisitExpression(node.ReceiverOpt);
 
@@ -390,8 +441,6 @@ namespace Microsoft.CodeAnalysis.CSharp
                 exprs = preExprs.Add(call).AddRange(postExprs);
 
             }
-
-        
             return new BoundSequence(node.Syntax, temps.Add(callTemp), exprs, boundCallTemp, node.Type);
         }
 
@@ -399,7 +448,6 @@ namespace Microsoft.CodeAnalysis.CSharp
             ref ImmutableArray<RefKind> argumentRefKindsOpt, out ImmutableArray<LocalSymbol> temps, bool invokeAsExtensionMethod, out ImmutableArray<BoundExpression> preExprs, out ImmutableArray<BoundExpression> postExprs)
         {
             var argTemps = ImmutableArray.CreateBuilder<LocalSymbol>();
-             
             var exprs = ImmutableArray.CreateBuilder<BoundExpression>();
             var rewrittenArgs = ImmutableArray.CreateBuilder<BoundExpression>(arguments.Length);
             var argBoundTemps = new BoundLocal[arguments.Length];
@@ -417,7 +465,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             var rewrittenArgumentRefKindsOpt = argumentRefKindsOpt;
             var rewrittenArguments = rewrittenArgs.ToImmutable();
             ImmutableArray<LocalSymbol> aTemps;
-            rewrittenArguments = MakeArguments(syntax, rewrittenArguments, method, method, expanded, argsToParamsOpt, ref rewrittenArgumentRefKindsOpt, out aTemps, invokeAsExtensionMethod);
+            rewrittenArguments = MakeArguments(syntax, rewrittenArguments, method, expanded, argsToParamsOpt, ref rewrittenArgumentRefKindsOpt, out aTemps, invokeAsExtensionMethod);
             argTemps.AddRange(aTemps);
 
             var argsNode = rewrittenArguments[rewrittenArguments.Length - 1];

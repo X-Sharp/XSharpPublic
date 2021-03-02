@@ -3,7 +3,7 @@
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
-
+#nullable disable
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
@@ -247,6 +247,10 @@ namespace Microsoft.CodeAnalysis.CSharp
                 {
                     text = ntext;
                     file = fn;
+                }
+                if (string.IsNullOrEmpty(file) && root.XNode is XSharpParser.ScriptContext)
+                {
+                    file = "Script";
                 }
                 if (start + length > text.Length)
                 {

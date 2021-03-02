@@ -1,8 +1,10 @@
-﻿// Copyright (c) Microsoft.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
+﻿// Licensed to the .NET Foundation under one or more agreements.
+// The .NET Foundation licenses this file to you under the MIT license.
+// See the LICENSE file in the project root for more information.
 
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Text;
 using Microsoft.CodeAnalysis.PooledObjects;
@@ -36,7 +38,7 @@ namespace Microsoft.CodeAnalysis
             if (_caseSensitive)
             {
                 _compare = string.Compare;
-                Comparer = StringOrdinalComparer.Instance;
+                Comparer = StringComparer.Ordinal;
                 Comparison = StringComparison.Ordinal;
             }
             else
@@ -47,12 +49,44 @@ namespace Microsoft.CodeAnalysis
             }
         }
         delegate int stringCompare(string lhs, string rhs);
-        private static stringCompare _compare;
+        private static stringCompare _compare = string.Compare;
 
-        public static bool Equals(string lhs, string rhs) =>  _compare(lhs, rhs) == 0;
-        public static int Compare(string lhs, string rhs) => _compare(lhs, rhs);
-        public static IEqualityComparer<string> Comparer { get; private set; }
-        public static StringComparison Comparison { get; private set; }
+        public static bool Equals(string? lhs, string? rhs)
+        {
+            if (lhs is null)
+            {
+                return rhs is null;
+            }
+            if (rhs is null)
+                return false;
+            return _compare(lhs, rhs) == 0;
+        }
+        public static int Compare(string? lhs, string? rhs)
+        {
+            if (lhs is null && rhs is null)
+            {
+                return 0;
+            }
+            if (lhs is null)
+                lhs = string.Empty;
+            if (rhs is null)
+                rhs = string.Empty;
+            return _compare(lhs, rhs);
+        }
+        public static int Compare(string? lhs, int lhsstart, string? rhs, int rhsstart, int length, StringComparison options)
+        {
+            if (lhs is null)
+                lhs = string.Empty;
+            if (rhs is null)
+                rhs = string.Empty;
+
+            if (_caseSensitive)
+                return string.Compare(lhs, lhsstart, rhs, rhsstart, length);
+            else
+                return string.Compare(lhs, lhsstart, rhs, rhsstart, length, true);
+        }
+        public static StringComparer Comparer { get; private set; } = StringComparer.Ordinal;
+        public static StringComparison Comparison { get; private set; } = StringComparison.Ordinal;
         public static bool IgnoreCase => !CaseSensitive;
     }
 
@@ -131,19 +165,19 @@ namespace Microsoft.CodeAnalysis
                 return (c1 == c2) ? 0 : ToLower(c1) - ToLower(c2);
             }
 
-            public override int Compare(string str1, string str2)
+            public override int Compare(string? str1, string? str2)
             {
-                if ((object)str1 == str2)
+                if ((object?)str1 == str2)
                 {
                     return 0;
                 }
 
-                if ((object)str1 == null)
+                if (str1 is null)
                 {
                     return -1;
                 }
 
-                if ((object)str2 == null)
+                if (str2 is null)
                 {
                     return 1;
                 }
@@ -162,19 +196,37 @@ namespace Microsoft.CodeAnalysis
                 return str1.Length - str2.Length;
             }
 
+#if !NET20 && !NETSTANDARD1_3
+            public int Compare(ReadOnlySpan<char> str1, ReadOnlySpan<char> str2)
+            {
+                int len = Math.Min(str1.Length, str2.Length);
+                for (int i = 0; i < len; i++)
+                {
+                    int ordDiff = CompareLowerUnicode(str1[i], str2[i]);
+                    if (ordDiff != 0)
+                    {
+                        return ordDiff;
+                    }
+                }
+
+                // return the smaller string, or 0 if they are equal in length
+                return str1.Length - str2.Length;
+            }
+#endif
+
             private static bool AreEqualLowerUnicode(char c1, char c2)
             {
                 return c1 == c2 || ToLower(c1) == ToLower(c2);
             }
 
-            public override bool Equals(string str1, string str2)
+            public override bool Equals(string? str1, string? str2)
             {
-                if ((object)str1 == str2)
+                if ((object?)str1 == str2)
                 {
                     return true;
                 }
 
-                if ((object)str1 == null || (object)str2 == null)
+                if (str1 is null || str2 is null)
                 {
                     return false;
                 }
@@ -194,6 +246,26 @@ namespace Microsoft.CodeAnalysis
 
                 return true;
             }
+
+#if !NET20 && !NETSTANDARD1_3
+            public bool Equals(ReadOnlySpan<char> str1, ReadOnlySpan<char> str2)
+            {
+                if (str1.Length != str2.Length)
+                {
+                    return false;
+                }
+
+                for (int i = 0; i < str1.Length; i++)
+                {
+                    if (!AreEqualLowerUnicode(str1[i], str2[i]))
+                    {
+                        return false;
+                    }
+                }
+
+                return true;
+            }
+#endif
 
             public static bool EndsWith(string value, string possibleEnd)
             {
@@ -246,7 +318,7 @@ namespace Microsoft.CodeAnalysis
                     return false;
                 }
 
-                for(int i = 0; i < possibleStart.Length; i++)
+                for (int i = 0; i < possibleStart.Length; i++)
                 {
                     if (!AreEqualLowerUnicode(value[i], possibleStart[i]))
                     {
@@ -271,22 +343,48 @@ namespace Microsoft.CodeAnalysis
         }
 
         /// <summary>
-        /// Returns a StringComparer that compares strings according the VB identifier comparison rules.
+        /// Returns a StringComparer that compares strings according to Unicode rules for case-insensitive
+        /// identifier comparison (lower-case mapping).
         /// </summary>
+        /// <remarks>
+        /// These are also the rules used for VB identifier comparison.
+        /// </remarks>
         private static readonly OneToOneUnicodeComparer s_comparer = new OneToOneUnicodeComparer();
 
         /// <summary>
-        /// Returns a StringComparer that compares strings according the VB identifier comparison rules.
+        /// Returns a StringComparer that compares strings according to Unicode rules for case-insensitive
+        /// identifier comparison (lower-case mapping).
         /// </summary>
+        /// <remarks>
+        /// These are also the rules used for VB identifier comparison.
+        /// </remarks>
         public static StringComparer Comparer => s_comparer;
 
         /// <summary>
-        /// Determines if two VB identifiers are equal according to the VB identifier comparison rules.
+        /// Determines if two strings are equal according to Unicode rules for case-insensitive
+        /// identifier comparison (lower-case mapping).
         /// </summary>
         /// <param name="left">First identifier to compare</param>
         /// <param name="right">Second identifier to compare</param>
         /// <returns>true if the identifiers should be considered the same.</returns>
+        /// <remarks>
+        /// These are also the rules used for VB identifier comparison.
+        /// </remarks>
         public static bool Equals(string left, string right) => s_comparer.Equals(left, right);
+
+#if !NET20 && !NETSTANDARD1_3
+        /// <summary>
+        /// Determines if two strings are equal according to Unicode rules for case-insensitive
+        /// identifier comparison (lower-case mapping).
+        /// </summary>
+        /// <param name="left">First identifier to compare</param>
+        /// <param name="right">Second identifier to compare</param>
+        /// <returns>true if the identifiers should be considered the same.</returns>
+        /// <remarks>
+        /// These are also the rules used for VB identifier comparison.
+        /// </remarks>
+        public static bool Equals(ReadOnlySpan<char> left, ReadOnlySpan<char> right) => s_comparer.Equals(left, right);
+#endif
 
         /// <summary>
         /// Determines if the string 'value' end with string 'possibleEnd'.
@@ -305,21 +403,42 @@ namespace Microsoft.CodeAnalysis
         public static bool StartsWith(string value, string possibleStart) => OneToOneUnicodeComparer.StartsWith(value, possibleStart);
 
         /// <summary>
-        /// Compares two VB identifiers according to the VB identifier comparison rules.
+        /// Compares two strings according to the Unicode rules for case-insensitive
+        /// identifier comparison (lower-case mapping).
         /// </summary>
         /// <param name="left">First identifier to compare</param>
         /// <param name="right">Second identifier to compare</param>
         /// <returns>-1 if <paramref name="left"/> &lt; <paramref name="right"/>, 1 if <paramref name="left"/> &gt; <paramref name="right"/>, 0 if they are equal.</returns>
+        /// <remarks>
+        /// These are also the rules used for VB identifier comparison.
+        /// </remarks>
         public static int Compare(string left, string right) => s_comparer.Compare(left, right);
 
+#if !NET20 && !NETSTANDARD1_3
         /// <summary>
-        /// Gets a case-insensitive hash code for VB identifiers.
+        /// Compares two strings according to the Unicode rules for case-insensitive
+        /// identifier comparison (lower-case mapping).
+        /// </summary>
+        /// <param name="left">First identifier to compare</param>
+        /// <param name="right">Second identifier to compare</param>
+        /// <returns>-1 if <paramref name="left"/> &lt; <paramref name="right"/>, 1 if <paramref name="left"/> &gt; <paramref name="right"/>, 0 if they are equal.</returns>
+        /// <remarks>
+        /// These are also the rules used for VB identifier comparison.
+        /// </remarks>
+        public static int Compare(ReadOnlySpan<char> left, ReadOnlySpan<char> right) => s_comparer.Compare(left, right);
+#endif
+
+        /// <summary>
+        /// Gets a case-insensitive hash code for Unicode identifiers.
         /// </summary>
         /// <param name="value">identifier to get the hash code for</param>
         /// <returns>The hash code for the given identifier</returns>
+        /// <remarks>
+        /// These are also the rules used for VB identifier comparison.
+        /// </remarks>
         public static int GetHashCode(string value)
         {
-            Debug.Assert(value != null);
+            RoslynDebug.Assert(value != null);
 
             return s_comparer.GetHashCode(value);
         }
@@ -329,9 +448,10 @@ namespace Microsoft.CodeAnalysis
         /// </summary>
         /// <param name="value"></param>
         /// <returns></returns>
-        public static string ToLower(string value)
+        [return: NotNullIfNotNull(parameterName: "value")]
+        public static string? ToLower(string? value)
         {
-            if ((object)value == null)
+            if (value is null)
                 return null;
 
             if (value.Length == 0)

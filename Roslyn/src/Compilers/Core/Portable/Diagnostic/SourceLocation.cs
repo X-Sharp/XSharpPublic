@@ -1,4 +1,6 @@
-﻿// Copyright (c) Microsoft.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
+﻿// Licensed to the .NET Foundation under one or more agreements.
+// The .NET Foundation licenses this file to you under the MIT license.
+// See the LICENSE file in the project root for more information.
 
 using System;
 using System.Diagnostics;
@@ -13,7 +15,7 @@ namespace Microsoft.CodeAnalysis
     /// <summary>
     /// A program location in source code.
     /// </summary>
-    internal sealed class SourceLocation : Location, IEquatable<SourceLocation>
+    internal sealed class SourceLocation : Location, IEquatable<SourceLocation?>
     {
         private readonly SyntaxTree _syntaxTree;
         private readonly TextSpan _span;
@@ -27,22 +29,23 @@ namespace Microsoft.CodeAnalysis
         public SourceLocation(SyntaxNode node)
             : this(node.SyntaxTree, node.Span)
         {
-
         }
 
         public SourceLocation(in SyntaxToken token)
-            : this(token.SyntaxTree, token.Span)
+            : this(token.SyntaxTree!, token.Span)
         {
         }
 
         public SourceLocation(in SyntaxNodeOrToken nodeOrToken)
-            : this(nodeOrToken.SyntaxTree, nodeOrToken.Span)
+            : this(nodeOrToken.SyntaxTree!, nodeOrToken.Span)
         {
+            Debug.Assert(nodeOrToken.SyntaxTree is object);
         }
 
         public SourceLocation(in SyntaxTrivia trivia)
-            : this(trivia.SyntaxTree, trivia.Span)
+            : this(trivia.SyntaxTree!, trivia.Span)
         {
+            Debug.Assert(trivia.SyntaxTree is object);
         }
 
         public SourceLocation(SyntaxReference syntaxRef)
@@ -105,7 +108,7 @@ namespace Microsoft.CodeAnalysis
             return _syntaxTree.GetMappedLineSpan(_span);
         }
 
-        public bool Equals(SourceLocation other)
+        public bool Equals(SourceLocation? other)
         {
             if (ReferenceEquals(this, other))
             {
@@ -115,7 +118,7 @@ namespace Microsoft.CodeAnalysis
             return other != null && other._syntaxTree == _syntaxTree && other._span == _span;
         }
 
-        public override bool Equals(object obj)
+        public override bool Equals(object? obj)
         {
             return this.Equals(obj as SourceLocation);
         }

@@ -3,7 +3,7 @@
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
-
+#nullable disable
 
 using System;
 using System.Linq;
@@ -42,7 +42,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         }
         public override void ExitFoxsource([NotNull] XP.FoxsourceContext context)
         {
-            
             if (context.StmtBlk != null && context.StmtBlk._Stmts.Count > 0)
             {
                 // Generate leading code for the file
@@ -130,7 +129,37 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             foreach (var dimvar in context._DimVars)
             {
                 var name = dimvar.Id.GetText();
-                var stmt = GenerateLocalDecl(name, _arrayType, GenerateVOArrayInitializer(dimvar.ArraySub));
+                if (context.T.Type == XP.LOCAL)
+                {
+                    var decl = GenerateLocalDecl(name, _arrayType, GenerateLiteralNull());
+                    stmts.Add(decl);
+                }
+                ArgumentListSyntax args;
+                var arg1 = MakeArgument(GenerateLiteral(name));
+                var arg2 = MakeArgument(dimvar._Dims[0].Get<ExpressionSyntax>());
+                if (dimvar._Dims.Count == 2)
+                {
+                    var arg3 = MakeArgument(dimvar._Dims[1].Get<ExpressionSyntax>());
+                    args = MakeArgumentList(arg1, arg2, arg3);
+                }
+                else
+                {
+                    args = MakeArgumentList(arg1, arg2);
+                }
+                var mcall = GenerateMethodCall(XSharpQualifiedFunctionNames.FoxRedim, args);
+                MemVarFieldInfo fieldInfo = findMemVar(name);
+                ExpressionSyntax lhs;
+                if (fieldInfo != null)
+                {
+                    lhs = MakeMemVarField(fieldInfo);
+                }
+                else
+                {
+                    lhs = GenerateSimpleName(name);
+                }
+                var ass = MakeSimpleAssignment(lhs, mcall);
+                var stmt = GenerateExpressionStatement(ass);
+
                 stmts.Add(stmt);
             }
             context.PutList< StatementSyntax>(stmts);
@@ -298,6 +327,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             var mods = context.Modifiers?.GetList<SyntaxToken>() ?? DefaultMethodModifiers(false, false, context.TypeParameters != null);
             var isExtern = mods.Any((int)SyntaxKind.ExternKeyword);
             var isAbstract = mods.Any((int)SyntaxKind.AbstractKeyword);
+            var isStatic = mods.Any((int)SyntaxKind.StaticKeyword);
             var hasNoBody = isExtern || isAbstract || context.Sig.ExpressionBody != null;
             var mName = idName.Text;
             if (mName.EndsWith("_ACCESS", StringComparison.OrdinalIgnoreCase))
@@ -401,7 +431,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                                     ErrorCode.ERR_NoClipperCallingConventionForAccessAssign));
                 }
                 context.Put(m);
-                ClassEntities.Peek().AddVoPropertyAccessor(context, context.RealType, idName);
+                ClassEntities.Peek().AddVoPropertyAccessor(context, context.RealType, idName,isStatic);
             }
         }
         public override void ExitFoxclass([NotNull] XP.FoxclassContext context)
@@ -576,7 +606,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             BlockSyntax body = null;
             if (_options.fox1)
             {
-                var call = GenerateMethodCall(XSharpSpecialNames.GetProperty, MakeArgumentList(MakeArgument(GenerateLiteral(fldName))), true);
+                var call = GenerateThisMethodCall(XSharpSpecialNames.GetProperty, MakeArgumentList(MakeArgument(GenerateLiteral(fldName))), true);
                 body = MakeBlock(GenerateReturn(call, true));
                 body.XGenerated = true;
             }
@@ -591,7 +621,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             accessors.Add(accessor);
             if (_options.fox1)
             {
-                var call = GenerateMethodCall(XSharpSpecialNames.SetProperty, MakeArgumentList(MakeArgument(GenerateLiteral(fldName)), MakeArgument(GenerateSimpleName("value"))), true);
+                var call = GenerateThisMethodCall(XSharpSpecialNames.SetProperty, MakeArgumentList(MakeArgument(GenerateLiteral(fldName)), MakeArgument(GenerateSimpleName("value"))), true);
                 body = MakeBlock(GenerateExpressionStatement(call, true));
                 body.XGenerated = true;
             }
@@ -691,7 +721,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     // AddObject(SELF:Property)
                     var arg1 = MakeArgument(GenerateLiteral(name));
                     var arg2 = MakeArgument(prop);
-                    var mcall = GenerateMethodCall(XSharpSpecialNames.AddObject, MakeArgumentList(arg1, arg2));
+                    var mcall = GenerateThisMethodCall(XSharpSpecialNames.AddObject, MakeArgumentList(arg1, arg2));
                     stmt = GenerateExpressionStatement(mcall);
                     stmt.XNode = addobject;
                     stmts.Add(stmt);
@@ -868,7 +898,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             if (hasDelim && context.Merge == null)
             {
-                var txtmerge = GenerateMethodCall(ReservedNames.TextMergeCheck, true);
+                var txtmerge = GenerateMethodCall(XSharpQualifiedFunctionNames.TextMergeCheck, true);
                 stringExpr = MakeConditional(txtmerge, stringExpr, GenerateLiteral(context.String.Text));
             }
 
@@ -877,7 +907,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             var arg3 = MakeArgument(context.Flags != null ? context.Flags.Get<ExpressionSyntax>() : GenerateLiteral(0));
             var arg4 = MakeArgument(context.Pretext != null ? context.Pretext.Get<ExpressionSyntax>() : GenerateNIL());
             var args = MakeArgumentList(arg1, arg2, arg3, arg4);
-            var call = GenerateMethodCall(ReservedNames.TextSupport, args);
+            var call = GenerateMethodCall(XSharpQualifiedFunctionNames.TextSupport, args);
 
             if (context.Id != null)
             {
@@ -953,7 +983,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
             var attributeList = getAttributes(context.Attributes);
             TypeSyntax type = foxdllGetType(context.Type);  // handle integer, single, double etc.
-            var modifiers = EmptyList<SyntaxToken>();
+            SyntaxList<SyntaxToken> modifiers = default;
 
             if (context.Address != null)
             {
@@ -1093,14 +1123,14 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 expr = GenerateLiteral(sourceText);
             }
             var arg2 = GenerateLiteral(context.B.Type != XP.BACKBACKSLASH);
-            var cond = GenerateMethodCall(ReservedNames.TextMergeCheck, true);  
+            var cond = GenerateMethodCall(XSharpQualifiedFunctionNames.TextMergeCheck, true);  
             if (! hasDelim)
             {
                 cond = GenerateLiteral(false);
             }
             var arg1 = MakeConditional(cond, expr, GenerateLiteral(context.String.Text));
             var args = MakeArgumentList(MakeArgument(arg1), MakeArgument(arg2));
-            var call = GenerateMethodCall(ReservedNames.TextOut, args, true); 
+            var call = GenerateMethodCall(XSharpQualifiedFunctionNames.TextOut, args, true); 
             var stmt = GenerateExpressionStatement(call);
             if (!delimitersOk)
                 stmt = stmt.WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.WRN_UnbalancedTextMergeOperators));
@@ -1112,7 +1142,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         public override void ExitStatementBlock([NotNull] XP.StatementBlockContext context)
         {
             base.ExitStatementBlock(context);
-            if (_options.HasOption(CompilerOption.FoxExposeLocals, context, PragmaOptions))
+            if (_options.HasOption(CompilerOption.MemVars, context, PragmaOptions))
             {
                 // Make sure we have a privates level in case we want to
                 // keep track of locals for the macro compiler or Type() 

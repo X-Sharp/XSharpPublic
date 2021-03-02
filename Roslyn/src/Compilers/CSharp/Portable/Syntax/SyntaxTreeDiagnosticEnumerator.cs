@@ -1,4 +1,6 @@
-﻿// Copyright (c) Microsoft.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
+﻿// Licensed to the .NET Foundation under one or more agreements.
+// The .NET Foundation licenses this file to you under the MIT license.
+// See the LICENSE file in the project root for more information.
 
 using System;
 using System.Diagnostics;
@@ -13,23 +15,17 @@ namespace Microsoft.CodeAnalysis.CSharp
     /// </summary>
     internal struct SyntaxTreeDiagnosticEnumerator
     {
-        private readonly SyntaxTree _syntaxTree;
+        private readonly SyntaxTree? _syntaxTree;
         private NodeIterationStack _stack;
-        private Diagnostic _current;
+        private Diagnostic? _current;
         private int _position;
         private const int DefaultStackCapacity = 8;
-#if XSHARP
-        private GreenNode _node;
-#endif
 
-        internal SyntaxTreeDiagnosticEnumerator(SyntaxTree syntaxTree, GreenNode node, int position)
+        internal SyntaxTreeDiagnosticEnumerator(SyntaxTree syntaxTree, GreenNode? node, int position)
         {
             _syntaxTree = null;
             _current = null;
             _position = position;
-#if XSHARP
-            _node = node;
-#endif
             if (node != null && node.ContainsDiagnostics)
             {
                 _syntaxTree = syntaxTree;
@@ -70,6 +66,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                     int leadingWidthAlreadyCounted = node.IsToken ? node.GetLeadingTriviaWidth() : 0;
 
                     // don't produce locations outside of tree span
+                    Debug.Assert(_syntaxTree is object);
                     var length = _syntaxTree.GetRoot().FullSpan.Length;
                     var spanStart = Math.Min(_position - leadingWidthAlreadyCounted + sdi.Offset, length);
                     var spanWidth = Math.Min(spanStart + sdi.Width, length) - spanStart;
@@ -77,10 +74,12 @@ namespace Microsoft.CodeAnalysis.CSharp
 
                     _current = new CSDiagnostic(sdi, new SourceLocation(_syntaxTree, new TextSpan(spanStart, spanWidth)));
 #if XSHARP
-                    var n = node as Syntax.InternalSyntax.CSharpSyntaxNode;
-                    if (n.XNode != null)
+                    if (node is Syntax.InternalSyntax.CSharpSyntaxNode n)
                     {
-                        _current = new CSDiagnostic(sdi, n.XNode.GetLocation());
+                        if (n.XNode != null)
+                        {
+                            _current = new CSDiagnostic(sdi, n.XNode.GetLocation());
+                        }
                     }
 #endif
                     _stack.UpdateDiagnosticIndexForStackTop(diagIndex);
@@ -88,7 +87,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 }
 
                 var slotIndex = _stack.Top.SlotIndex;
-            tryAgain:
+tryAgain:
                 if (slotIndex < node.SlotCount - 1)
                 {
                     slotIndex++;
@@ -126,7 +125,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         /// </summary>
         public Diagnostic Current
         {
-            get { return _current; }
+            get { Debug.Assert(_current is object); return _current; }
         }
 
         private struct NodeIteration
@@ -255,6 +254,7 @@ namespace Microsoft.CodeAnalysis.CSharp
            }
            return new LinePosition(iLine, iCol);
         }
+        /*
         internal static Location GetLocation(this IXParseTree node)
         {
 
@@ -289,6 +289,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             return new ExternalFileLocation(node.SourceFileName, span, lspan);
 
         }
+        */
     }
 #endif
 }

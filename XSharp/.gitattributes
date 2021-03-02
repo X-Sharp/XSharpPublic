@@ -2,6 +2,7 @@
 # Set default behavior to automatically normalize line endings.
 ###############################################################################
 * text=auto encoding=UTF-8
+*.sh text eol=lf
 
 ###############################################################################
 # Set default behavior for command prompt diff.
@@ -62,3 +63,9 @@
 #*.PDF   diff=astextplain
 #*.rtf   diff=astextplain
 #*.RTF   diff=astextplain
+
+# Generated files
+src/Compilers/CSharp/Portable/Generated/*                  linguist-generated=true
+src/Compilers/CSharp/Portable/CSharpResources.Designer.cs  linguist-generated=true
+src/Compilers/VisualBasic/Portable/Generated/*             linguist-generated=true
+src/Compilers/VisualBasic/Portable/VBResources.Designer.vb linguist-generated=true

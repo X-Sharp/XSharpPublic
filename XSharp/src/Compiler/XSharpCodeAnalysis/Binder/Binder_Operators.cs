@@ -3,17 +3,14 @@
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
-
+#nullable disable
 using System;
-using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Diagnostics;
 using Microsoft.CodeAnalysis.CSharp.Symbols;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.PooledObjects;
-using Roslyn.Utilities;
 using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
-using Microsoft.CodeAnalysis.CSharp;
 namespace Microsoft.CodeAnalysis.CSharp
 {
     internal partial class Binder
@@ -33,15 +30,15 @@ namespace Microsoft.CodeAnalysis.CSharp
             LogicCompare
         }
 
-        private bool XsHasImplicitCast(BoundExpression expression , TypeSymbol targetType, DiagnosticBag diagnostics)
+        private bool XsHasImplicitCast(BoundExpression expression, TypeSymbol targetType, DiagnosticBag diagnostics)
         {
             var sourceType = expression.Type;
             var syntax = expression.Syntax;
-			if (sourceType == targetType)
-				return true;
-				
+            if (Equals(sourceType, targetType))
+                return true;
+
             // do not silently cast one enum to another !
-            if (sourceType.IsEnumType() || targetType.IsEnumType() )
+            if (sourceType.IsEnumType() || targetType.IsEnumType())
                 return false;
 
             // do not throw an warnings for IIF() expressions with types that are too big
@@ -50,7 +47,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             {
                 return true;
             }
-            if (Conversions.XsIsImplicitBinaryOperator(expression, targetType,this))
+            if (Conversions.XsIsImplicitBinaryOperator(expression, targetType, this))
             {
                 return true;
             }
@@ -59,7 +56,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             {
                 sourceType = binop.LargestOperand(this.Compilation);
             }
-            if (sourceType == targetType)
+            if (Equals(sourceType, targetType))
             {
                 return true;
             }
@@ -71,9 +68,9 @@ namespace Microsoft.CodeAnalysis.CSharp
             return false;
         }
         private BoundExpression BindVOCompareString(BinaryExpressionSyntax node, DiagnosticBag diagnostics,
-            BoundExpression left, BoundExpression right, ref int compoundStringLength)
+            BoundExpression left, BoundExpression right)
         {
-            MethodSymbol opMeth = null;
+            MethodSymbol opMeth;
             TypeSymbol type;
             BoundCall opCall = null;
             var stringType = Compilation.GetSpecialType(SpecialType.System_String);
@@ -86,11 +83,11 @@ namespace Microsoft.CodeAnalysis.CSharp
                 right = CreateConversion(right, stringType, diagnostics);
             }
 
-            if (Compilation.Options.HasRuntime && this.Compilation.Options.HasOption(CompilerOption.StringComparisons,node))
+            if (Compilation.Options.HasRuntime && this.Compilation.Options.HasOption(CompilerOption.StringComparisons, node))
             {
                 // VO Style String Comparison
                 type = Compilation.RuntimeFunctionsType();
-                string methodName = ReservedNames.StringCompare ;
+                string methodName = ReservedNames.StringCompare;
                 var symbols = Binder.GetCandidateMembers(type, methodName, LookupOptions.MustNotBeInstance, this);
                 if (symbols.Length == 1)
                 {
@@ -107,10 +104,14 @@ namespace Microsoft.CodeAnalysis.CSharp
                 // Standard String Comparison using .Net String Compare
                 TryGetSpecialTypeMember(Compilation, SpecialMember.System_String__Compare, node, diagnostics, out opMeth);
                 opCall = BoundCall.Synthesized(node, null, opMeth, left, right);
+                opCall.WasCompilerGenerated = true;
             }
-            return BindSimpleBinaryOperator(node, diagnostics, opCall,
-                new BoundLiteral(node, ConstantValue.Create((int)0), GetSpecialType(SpecialType.System_Int32, diagnostics, node)),
-                ref compoundStringLength);
+            var op = BindSimpleBinaryOperator(node, diagnostics, opCall,
+                new BoundLiteral(node, ConstantValue.Create(0), GetSpecialType(SpecialType.System_Int32, diagnostics, node)));
+            op.WasCompilerGenerated = true;
+            var res = CreateConversion(op, Compilation.GetSpecialType(SpecialType.System_Boolean), diagnostics);
+            res.WasCompilerGenerated = true;
+            return res;
         }
 
 
@@ -126,15 +127,18 @@ namespace Microsoft.CodeAnalysis.CSharp
             {
                 opMeth = (MethodSymbol)symbols[0];
                 var stringType = Compilation.GetSpecialType(SpecialType.System_String);
-                if (right.Type != stringType)
+                if (!TypeSymbol.Equals(right.Type, stringType))
                 {
                     right = CreateConversion(right, stringType, diagnostics);
                 }
-                if (left.Type != stringType)
+                if (!TypeSymbol.Equals(left.Type ,stringType))
                 {
                     left = CreateConversion(left, stringType, diagnostics);
                 }
                 opCall = BoundCall.Synthesized(node, null, opMeth, left, right);
+                opCall.WasCompilerGenerated = true;
+                opCall = CreateConversion(opCall, Compilation.GetSpecialType(SpecialType.System_Boolean), diagnostics);
+                opCall.WasCompilerGenerated = true;
             }
             else
             {
@@ -249,8 +253,8 @@ namespace Microsoft.CodeAnalysis.CSharp
             var intType = Compilation.GetSpecialType(SpecialType.System_Int32);
             var lit0 = new BoundLiteral(node, ConstantValue.Create(0), intType);
             var lit1 = new BoundLiteral(node, ConstantValue.Create(1), intType);
-            left = new BoundConditionalOperator(node, false, left, lit1, lit0, null, intType);
-            right = new BoundConditionalOperator(node, false, right, lit1, lit0, null, intType);
+            left = new BoundConditionalOperator(node, false, left, lit1, lit0, constantValueOpt: default, wasTargetTyped: false, type: intType, naturalTypeOpt: default);
+            right = new BoundConditionalOperator(node, false, right, lit1, lit0, constantValueOpt: default, wasTargetTyped: false, type: intType, naturalTypeOpt: default);
             return null;
         }
 
@@ -271,7 +275,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 opMeth = (MethodSymbol)symbols[0];
                 if (right.Type.GetSpecialTypeSafe() == SpecialType.System_String)
                 {
-                    if (right.Type != opMeth.Parameters[0].Type)
+                    if (!TypeSymbol.Equals(right.Type, opMeth.Parameters[0].Type))
                         opMeth = (MethodSymbol)symbols[1];
                 }
                 else
@@ -315,7 +319,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 opMeth = (MethodSymbol)symbols[0];
                 if (right.Type.GetSpecialTypeSafe() == SpecialType.System_String)
                 {
-                    if (right.Type != opMeth.Parameters[0].Type)
+                    if (!TypeSymbol.Equals(right.Type , opMeth.Parameters[0].Type))
                         opMeth = (MethodSymbol)symbols[1];
                 }
                 else
@@ -371,8 +375,11 @@ namespace Microsoft.CodeAnalysis.CSharp
         }
 
         private BoundExpression BindVOBinaryOperator(BinaryExpressionSyntax node, DiagnosticBag diagnostics,
-            ref BoundExpression left, ref BoundExpression right, ref int compoundStringLength, VOOperatorType opType)
+            ref BoundExpression left, ref BoundExpression right,VOOperatorType opType)
         {
+            Debug.Assert(opType != VOOperatorType.None);
+            left = BindToNaturalType(left, diagnostics, reportNoTargetType: false);
+            right = BindToNaturalType(right, diagnostics, reportNoTargetType: false);
             switch (opType)
             {
                 case VOOperatorType.SingleEqualsString:
@@ -384,7 +391,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 case VOOperatorType.SubtractString:
                     return BindVOSubtractString(node, diagnostics, left, right);
                 case VOOperatorType.CompareString:
-                    return BindVOCompareString(node, diagnostics, left, right, ref compoundStringLength);
+                    return BindVOCompareString(node, diagnostics, left, right);
                 case VOOperatorType.UsualOther:
                     return BindVOUsualOther(node, diagnostics, left, right);
                 case VOOperatorType.PSZCompare:
@@ -503,8 +510,8 @@ namespace Microsoft.CodeAnalysis.CSharp
                             opType = VOOperatorType.PSZCompare;
                             break;
                         }
-                        if (leftType == Compilation.GetSpecialType(SpecialType.System_Boolean) &&
-                            rightType == Compilation.GetSpecialType(SpecialType.System_Boolean))
+                        if (leftType.GetSpecialTypeSafe() == SpecialType.System_Boolean &&
+                            rightType.GetSpecialTypeSafe() == SpecialType.System_Boolean)
                         {
                             opType = VOOperatorType.LogicCompare;
                             break;
@@ -532,7 +539,6 @@ namespace Microsoft.CodeAnalysis.CSharp
                                 break;
                             }
                         }
-    
                         if (opType == VOOperatorType.None)
                         { 
                             // Add or Subtract USUAL with other type
@@ -588,14 +594,20 @@ namespace Microsoft.CodeAnalysis.CSharp
                     case SyntaxKind.DivideExpression:
                     case SyntaxKind.MultiplyAssignmentExpression:
                     case SyntaxKind.MultiplyExpression:
-                        if (leftType != null && rightType != null)
+                        if (leftType is { } && rightType is { } )
                         { 
-                            if (leftType != rightType && leftType.IsIntegralType() && rightType.IsIntegralType())
+                            if (!TypeSymbol.Equals(leftType ,rightType) && leftType.IsIntegralType() && rightType.IsIntegralType())
                             {
                                if (xnode != null  && xnode.Parent is XSharpParser.VodefineContext)
                                {
                                     // convert RHS to type of LHS inside a VODefine
-                                    right = new BoundConversion(right.Syntax, right, Conversion.ImplicitNumeric, false, false, right.ConstantValue, leftType) { WasCompilerGenerated = true };
+                                    right = new BoundConversion(right.Syntax, right,
+                                        Conversion.ImplicitNumeric,
+                                        false,
+                                        false,
+                                        conversionGroupOpt: default, 
+                                        constantValueOpt: right.ConstantValue,
+                                        type: leftType) { WasCompilerGenerated = true };
                                 }
 
                             }
@@ -656,13 +668,15 @@ namespace Microsoft.CodeAnalysis.CSharp
                 var kind = BinaryOperatorKind.Subtraction;
                 var left = index;
                 var right = new BoundLiteral(syntax, ConstantValue.Create(1), index.Type) { WasCompilerGenerated = true };
-                int compoundStringLength = 0;
                 var leftType = left.Type;
-                var opKind = leftType.SpecialType == SpecialType.System_Int32 ? BinaryOperatorKind.IntSubtraction
-                    : leftType.SpecialType == SpecialType.System_Int64 ? BinaryOperatorKind.LongSubtraction
-                    : leftType.SpecialType == SpecialType.System_UInt32 ? BinaryOperatorKind.UIntSubtraction
-                    : BinaryOperatorKind.ULongSubtraction;
-                var resultConstant = FoldBinaryOperator(syntax, opKind, left, right, left.Type.SpecialType, diagnostics, ref compoundStringLength);
+                var opKind = leftType.SpecialType switch
+                {
+                    SpecialType.System_Int32 => BinaryOperatorKind.IntSubtraction,
+                    SpecialType.System_Int64 => BinaryOperatorKind.LongSubtraction,
+                    SpecialType.System_UInt32 => BinaryOperatorKind.UIntSubtraction,
+                    _ => BinaryOperatorKind.ULongSubtraction
+                };
+                var resultConstant = FoldBinaryOperator(syntax, opKind, left, right, left.Type.SpecialType, diagnostics);
                 var sig = this.Compilation.builtInOperators.GetSignature(opKind);
                 index = new BoundBinaryOperator(syntax, kind, left, right, resultConstant, sig.Method,
                     resultKind: LookupResultKind.Viable,
@@ -677,7 +691,7 @@ namespace Microsoft.CodeAnalysis.CSharp
 
         public TypeSymbol VOGetType(BoundExpression expr)
         {
-            if (expr.Kind == BoundKind.Literal )
+            if (expr.Kind == BoundKind.Literal)
             {
                 var lit = expr as BoundLiteral;
                 var xnode = lit?.Syntax.XNode as XSharpParser.PrimaryExpressionContext;
@@ -706,28 +720,23 @@ namespace Microsoft.CodeAnalysis.CSharp
                 }
                 return lit.ConstantType(Compilation);
             }
-            else if (expr.Kind ==BoundKind.UnaryOperator)
+            else if (expr.Kind == BoundKind.UnaryOperator)
             {
                 var unary = expr as BoundUnaryOperator;
                 var type = VOGetType(unary.Operand);
                 if (unary.OperatorKind.IsUnaryMinus())
                 {
                     // see if we must change unsigned into signed
-                    var st = type.GetSpecialTypeSafe();
-                    if (st == SpecialType.System_Byte)
+                    var sptype = type.GetSpecialTypeSafe();
+                    type = sptype switch
                     {
-                        type = Compilation.GetSpecialType(SpecialType.System_Int16);
-                    }
-                    else if (st == SpecialType.System_UInt16)
-                    {
-                        type = Compilation.GetSpecialType(SpecialType.System_Int32);
-                    }
-                    else if (st == SpecialType.System_UInt32)
-                    {
-                        type = Compilation.GetSpecialType(SpecialType.System_Int64);  
-                    }
+                        SpecialType.System_Byte => Compilation.GetSpecialType(SpecialType.System_Int16),
+                        SpecialType.System_UInt16 => Compilation.GetSpecialType(SpecialType.System_Int32),
+                        SpecialType.System_UInt32 => Compilation.GetSpecialType(SpecialType.System_Int64),
+                        _ => type
+                    };
                 }
-                else if (unary.OperatorKind.HasFlag(UnaryOperatorKind.LogicalNegation ))
+                else if (unary.OperatorKind.HasFlag(UnaryOperatorKind.LogicalNegation))
                 {
                     type = Compilation.GetSpecialType(SpecialType.System_Boolean);
                 }
@@ -787,134 +796,163 @@ namespace Microsoft.CodeAnalysis.CSharp
                 {
                     return expr;
                 }
-                var bfa = expr as BoundFieldAccess;
-                // Externally defined fixed Field. Could be a DIM field in a VoStruct class
-                if (bfa.FieldSymbol.IsFixed)
+                if (expr is BoundFieldAccess bfa)
                 {
-                    var type = bfa.FieldSymbol.ContainingType;
-                    if (type.IsVoStructOrUnion())
+                    // Externally defined fixed Field. Could be a DIM field in a VoStruct class
+                    if (bfa.FieldSymbol.IsFixedSizeBuffer)
                     {
-                        return expr;
+                        var type = bfa.FieldSymbol.ContainingType;
+                        if (type.IsVoStructOrUnion())
+                        {
+                            return expr;
+                        }
                     }
                 }
-
 
             }
             if (expr.Kind == BoundKind.ArrayAccess)
             {
                 //translate @var[i]  to var[i]
-                var bac = expr as BoundArrayAccess;
-                var type = expr.Type;
-                if (bac.Expression.ExpressionSymbol is SourceLocalSymbol && type.IsVoStructOrUnion())
+                if (expr is BoundArrayAccess bac)
                 {
-                    var sls = bac.Expression.ExpressionSymbol as SourceLocalSymbol;
-                    var syntaxes = sls.DeclaringSyntaxReferences;
-                    if (syntaxes.Length > 0)
+                    var type = expr.Type;
+                    if (bac.Expression.ExpressionSymbol is SourceLocalSymbol sls && type.IsVoStructOrUnion())
                     {
-                        var syntaxNode = syntaxes[0].GetSyntax() as CSharpSyntaxNode;
-                        var lvc = syntaxNode.XNode as XSharpParser.LocalvarContext;
-                        if (lvc.As.Type == XSharpParser.AS)
+                        var syntaxes = sls.DeclaringSyntaxReferences;
+                        if (syntaxes.Length > 0)
                         {
-                            return expr;
+                            var syntaxNode = (CSharpSyntaxNode)syntaxes[0].GetSyntax();
+                            if (syntaxNode.XNode is XSharpParser.LocalvarContext lvc && lvc.As.Type == XSharpParser.AS)
+                            {
+                                return expr;
+                            }
                         }
-
-
                     }
                 }
             }
             if (expr.Kind == BoundKind.Local)
             {
-                var bl = expr as BoundLocal;
                 // only translate @name to @name[0] when not IsDecl
                 if (expr.Type.IsArray())
                 {
-                    var eltype = (expr.Type as ArrayTypeSymbol).ElementType;
                     // convert from @expr to @expr[0]
                     var intType = Compilation.GetSpecialType(SpecialType.System_Int32);
                     var arrType = expr.Type as ArrayTypeSymbol;
                     var elType = arrType.ElementType;
                     var aindex = ArrayBuilder<BoundExpression>.GetInstance();
-                    for (int i = 0; i < arrType.Rank; i++)
+                    for (var i = 0; i < arrType.Rank; i++)
                     {
                         aindex.Add(new BoundLiteral(node, ConstantValue.Create(0), intType));
                     }
                     var bacc = new BoundArrayAccess(node.Operand, expr, aindex.ToImmutableAndFree(), elType, false);
-                    TypeSymbol ptrType = new PointerTypeSymbol(elType);
+                    TypeSymbol ptrType = new PointerTypeSymbol(TypeWithAnnotations.Create(elType));
                     return new BoundAddressOfOperator(node, bacc, false, ptrType, hasErrors: false);
                 }
             }
             return null;
         }
-        public void VODetermineIIFTypes(ConditionalExpressionSyntax node, DiagnosticBag diagnostics,
-            ref BoundExpression trueExpr, ref BoundExpression falseExpr, 
-            ref TypeSymbol trueType, ref TypeSymbol falseType)
+        private BoundExpression AdjustConstantType(BoundExpression expr, TypeSymbol type, DiagnosticBag diagnostics)
         {
-            // do nothing when the types null
-            if (trueType != null && falseType != null)
+            if (expr.Kind == BoundKind.Literal && xsValueFitsIn(expr.ConstantValue, type.SpecialType))
             {
-                // Determine underlying types. For literal numbers this may be Byte, Short, Int or Long
-                trueType = VOGetType(trueExpr);
-                falseType = VOGetType(falseExpr);
-                if (trueType != falseType && trueType.IsIntegralType() && falseType.IsIntegralType())
+                expr = CreateConversion(expr, type, diagnostics);
+            }
+            return expr;
+        }
+        public void VODetermineIIFTypes(ConditionalExpressionSyntax node, DiagnosticBag diagnostics,
+            ref BoundExpression trueExpr, ref BoundExpression falseExpr)
+        {
+            if (trueExpr.Type is null || falseExpr.Type is null)
+                return;
+            TypeSymbol trueType = trueExpr.Type;
+            TypeSymbol falseType = falseExpr.Type;
+            // Determine underlying types. For literal numbers this may be Byte, Short, Int or Long
+            trueType = VOGetType(trueExpr);
+            falseType = VOGetType(falseExpr);
+            if (!Equals(trueType, falseType) && trueType.IsIntegralType() && falseType.IsIntegralType())
+            {
+                // when one side is a literal and the other is not then try to cast to the non literal type
+                if (trueExpr.ConstantValue != null && falseExpr.ConstantValue == null)
                 {
-                    // Determine the largest of the two integral types and scale up
-                    if (trueType.SpecialType.SizeInBytes() > falseType.SpecialType.SizeInBytes())
-                        falseType = trueType;
-                    else
-                        trueType = falseType;
+                    trueExpr = AdjustConstantType(trueExpr, falseType, diagnostics);
+                    trueType = trueExpr.Type;
                 }
+                if (falseExpr.ConstantValue != null && trueExpr.ConstantValue == null)
+                {
+                    falseExpr = AdjustConstantType(falseExpr, trueType, diagnostics);
+                    falseType = falseExpr.Type;
+                }
+                // Determine the largest of the two integral types and scale up
+                if (trueType.SpecialType.SizeInBytes() >= falseType.SpecialType.SizeInBytes())
+                {
+                    falseType = trueType;
+                }
+                else
+                {
+                    trueType = falseType;
+                }
+            }
+            if (!Equals(trueType, falseType) && trueType.IsIntegralType() != falseType.IsIntegralType())
+            {
+                var trueFrac = trueType.IsFractionalType();
+                var falseFrac = falseType.IsFractionalType();
+                if (trueFrac)
+                {
+                    falseType = trueType;
+                }
+                else if (falseFrac)
+                {
+                    trueType = falseType;
+                }
+            }
 
-                if (trueType != falseType && Compilation.Options.HasRuntime)
+            if (!Equals(trueType, falseType) && Compilation.Options.HasRuntime)
+            {
+                // convert to usual when one of the two is a usual
+                if (trueType.IsUsualType())
                 {
-                    // convert to usual when one of the two is a usual
-                    var usualType = Compilation.UsualType();
-                    if (trueType.IsUsualType())
-                    {
-                        falseType = trueType;
-                        falseExpr = CreateConversion(falseExpr, usualType, diagnostics);
-                    }
-                    else if (falseType.IsUsualType())
+                    falseType = trueType;
+                }
+                else if (falseType.IsUsualType())
+                {
+                    trueType = falseType;
+                }
+                else if (Compilation.Options.HasOption(CompilerOption.CompatibleIIF, node))
+                {
+                    // convert to usual when Compatible IIF is activated
+                    trueType = falseType = Compilation.UsualType();
+                }
+            }
+            if (!Equals(trueType, falseType))
+            {
+                if (trueType.IsVoidPointer())
+                {
+                    if (falseType.GetSpecialTypeSafe() == SpecialType.System_IntPtr)
                     {
                         trueType = falseType;
-                        trueExpr = CreateConversion(trueExpr, usualType, diagnostics);
-                    }
-                    else if (Compilation.Options.HasOption(CompilerOption.CompatibleIIF, node))
-                    {
-                        // convert to usual when Compatible IIF is activated
-                        trueExpr = CreateConversion(trueExpr, usualType, diagnostics);
-                        falseExpr = CreateConversion(falseExpr, usualType, diagnostics);
-                        trueType = falseType = usualType;
                     }
                 }
-                if (trueType != falseType )
+                else if (falseType.IsVoidPointer())
                 {
-                    if (trueType.IsVoidPointer())
+                    if (trueType.GetSpecialTypeSafe() == SpecialType.System_IntPtr)
                     {
-                        if (falseType == Compilation.GetSpecialType(SpecialType.System_IntPtr))
-                        {
-                            trueExpr = CreateConversion(trueExpr, falseType, diagnostics);
-                            trueType = falseType;
-                        }
+                        falseType = trueType;
                     }
-                    else if (falseType.IsVoidPointer())
-                    {
-                        if (trueType == Compilation.GetSpecialType(SpecialType.System_IntPtr))
-                        {
-                            falseExpr = CreateConversion(falseExpr, trueType, diagnostics);
-                            falseType = trueType;
-                        }
-                    }
-                    else if (Compilation.Options.HasOption(CompilerOption.CompatibleIIF, node))
-                    {
-                        // convert to object when Compatible IIF is activated
-                        // this will not happen for VO Dialect because that is handled above
-                        var objectType = Compilation.GetSpecialType(SpecialType.System_Object);
-                        trueExpr = CreateConversion(trueExpr, objectType, diagnostics);
-                        falseExpr = CreateConversion(falseExpr, objectType, diagnostics);
-                        trueType = falseType = objectType;
-                    }
-
                 }
+                else if (Compilation.Options.HasOption(CompilerOption.CompatibleIIF, node))
+                {
+                    // convert to object when Compatible IIF is activated
+                    // this will not happen for VO Dialect because that is handled above
+                    trueType = falseType = Compilation.GetSpecialType(SpecialType.System_Object); ;
+                }
+            }
+            if (!Equals(trueExpr.Type, trueType))
+            {
+                trueExpr = CreateConversion(trueExpr, trueType, diagnostics);
+            }
+            if (!Equals(falseExpr.Type, falseType))
+            {
+                falseExpr = CreateConversion(falseExpr, falseType, diagnostics);
             }
         }
         private static object FoldXsUncheckedIntegralBinaryOperator(BinaryOperatorKind kind, ConstantValue valueLeft, ConstantValue valueRight, ref SpecialType resultType)
@@ -923,8 +961,8 @@ namespace Microsoft.CodeAnalysis.CSharp
             {
                 Debug.Assert(valueLeft != null);
                 Debug.Assert(valueRight != null);
-                Int64 result;
-                UInt64 result2;
+                long result;
+                ulong result2;
 
                 switch (kind)
                 {
@@ -954,16 +992,16 @@ namespace Microsoft.CodeAnalysis.CSharp
                         return valueLeft.UInt64Value - valueRight.UInt64Value;
                     case BinaryOperatorKind.IntMultiplication:
                         result = (long)valueLeft.Int32Value * (long)valueRight.Int32Value;
-                        if (result <= Int32.MaxValue && result >= Int32.MinValue)
-                            return (Int32)result;
+                        if (result <= int.MaxValue && result >= int.MinValue)
+                            return (int)result;
                         resultType = SpecialType.System_Int64;
                         return result;
                     case BinaryOperatorKind.LongMultiplication:
                         return valueLeft.Int64Value * valueRight.Int64Value;
                     case BinaryOperatorKind.UIntMultiplication:
                         result2 = (ulong)valueLeft.UInt32Value * (ulong)valueRight.UInt32Value;
-                        if (result2 <= UInt32.MaxValue && result2 >= UInt32.MinValue)
-                            return (UInt32)result2;
+                        if (result2 <= uint.MaxValue && result2 >= uint.MinValue)
+                            return (uint)result2;
                         resultType = SpecialType.System_UInt64;
                         return result2;
                     case BinaryOperatorKind.ULongMultiplication:
@@ -990,32 +1028,23 @@ namespace Microsoft.CodeAnalysis.CSharp
                 return null;
             }
         }
-		
         ConstantValue XsConvertConstant(ConstantValue constant, SpecialType specialType)
         {
             unchecked
             {
                 if (!constant.IsBad)
                 {
-                    switch (specialType)
+                    return specialType switch
                     {
-                        case SpecialType.System_SByte:
-                            return ConstantValue.Create((sbyte)constant.Int64Value);
-                        case SpecialType.System_Byte:
-                            return ConstantValue.Create((byte)constant.Int64Value);
-                        case SpecialType.System_Int16:
-                            return ConstantValue.Create((short)constant.Int64Value);
-                        case SpecialType.System_UInt16:
-                            return ConstantValue.Create((ushort)constant.Int64Value);
-                        case SpecialType.System_Int32:
-                            return ConstantValue.Create((int)constant.Int64Value);
-                        case SpecialType.System_UInt32:
-                            return ConstantValue.Create((uint)constant.Int64Value);
-                        case SpecialType.System_Int64:
-                            return ConstantValue.Create((long)constant.Int64Value);
-                        case SpecialType.System_UInt64:
-                            return ConstantValue.Create((ulong)constant.Int64Value);
-                    }
+                        SpecialType.System_SByte    => ConstantValue.Create((sbyte)constant.Int64Value),
+                        SpecialType.System_Int16    => ConstantValue.Create((short)constant.Int64Value),
+                        SpecialType.System_UInt16   => ConstantValue.Create((ushort)constant.Int64Value),
+                        SpecialType.System_Int32    => ConstantValue.Create((int)constant.Int64Value),
+                        SpecialType.System_UInt32   => ConstantValue.Create((uint)constant.Int64Value),
+                        SpecialType.System_Int64    => ConstantValue.Create((long)constant.Int64Value),
+                        SpecialType.System_UInt64   => ConstantValue.Create((ulong)constant.Int64Value),
+                        _ => constant
+                    };
                 }
             }
             return constant;

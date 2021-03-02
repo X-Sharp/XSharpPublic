@@ -1,2 +1,2 @@
-set path=%~dp0\..\Roslyn\Binaries\Tools\dotnet;%path%
-dotnet restore Compiler.sln
+@echo off
+powershell -ExecutionPolicy ByPass -NoProfile -command "& """%~dp0eng\build.ps1""" -restore %*"

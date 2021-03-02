@@ -3,7 +3,7 @@
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
-
+#nullable disable
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
@@ -29,9 +29,9 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
 
         }
-        internal static bool HandleXSharpImport(UsingDirectiveSyntax usingDirective, Binder usingsBinder, 
-            ArrayBuilder<NamespaceOrTypeAndUsingDirective>  usings, PooledHashSet<NamespaceOrTypeSymbol> uniqueUsings, 
-            ConsList<Symbol> basesBeingResolved, CSharpCompilation compilation)
+        internal static bool HandleXSharpImport(UsingDirectiveSyntax usingDirective, Binder usingsBinder,
+            ArrayBuilder<NamespaceOrTypeAndUsingDirective>  usings, PooledHashSet<NamespaceOrTypeSymbol> uniqueUsings,
+            ConsList<TypeSymbol> basesBeingResolved, CSharpCompilation compilation)
         {
             // The usingDirective name contains spaces when it is nested and the GlobalClassName not , so we must eliminate them here
             // nvk: usingDirective.Name.ToString() ONLY has spaces if it is nested. This is not supposed to be nested, as it is "Functions" even for the non-core dialects !!!
@@ -67,9 +67,9 @@ namespace Microsoft.CodeAnalysis.CSharp
                         var diagnostics = DiagnosticBag.GetInstance();
                         var name = Syntax.InternalSyntax.XSharpTreeTransformationCore.ExtGenerateQualifiedName(functionsClass);
                         var imported = declbinder.BindNamespaceOrTypeSymbol(name, diagnostics, basesBeingResolved);
-                        if (imported.Kind == SymbolKind.NamedType)
+                        if (imported.NamespaceOrTypeSymbol.Kind == SymbolKind.NamedType)
                         {
-                            var importedType = (NamedTypeSymbol)imported;
+                            var importedType = (NamedTypeSymbol)imported.NamespaceOrTypeSymbol;
                             AddNs(usingDirective, importedType, usings, uniqueUsings);
                         }
                     }
@@ -82,14 +82,14 @@ namespace Microsoft.CodeAnalysis.CSharp
                     var diagnostics = DiagnosticBag.GetInstance();
                     string[] defNs;
                     if (compilation.Options.XSharpRuntime)
-                        defNs = new string[]{ OurNameSpaces.XSharp}; 
+                        defNs = new string[]{ OurNameSpaces.XSharp};
                     else
-                        defNs = new string[]{ OurNameSpaces.Vulcan}; 
+                        defNs = new string[]{ OurNameSpaces.Vulcan};
 
                     foreach (var n in defNs)
                     {
                         var name = Syntax.InternalSyntax.XSharpTreeTransformationCore.ExtGenerateQualifiedName(n);
-                        var imported = declbinder.BindNamespaceOrTypeSymbol(name, diagnostics, basesBeingResolved);
+                        var imported = declbinder.BindNamespaceOrTypeSymbol(name, diagnostics, basesBeingResolved).NamespaceOrTypeSymbol;
                         if (imported.Kind == SymbolKind.Namespace)
                         {
                             AddNs(usingDirective, imported, usings, uniqueUsings);
@@ -108,51 +108,50 @@ namespace Microsoft.CodeAnalysis.CSharp
                         foreach (var attr in r.GetAttributes())
                         {
                             // Check for VulcanImplicitNameSpace attribute
-                            if (attr.AttributeClass.ConstructedFrom == vins && compilation.Options.ImplicitNameSpace)
+                            if (TypeSymbol.Equals(attr.AttributeClass.ConstructedFrom, vins) && compilation.Options.ImplicitNameSpace)
                             {
                                 var args = attr.CommonConstructorArguments;
                                 if (args != null && args.Length == 1)
                                 {
                                     // only one argument, must be default namespace
-                                    var defaultNamespace = args[0].Value.ToString();
+                                    var defaultNamespace = args[0].Value?.ToString() ?? "";
                                     if (!string.IsNullOrEmpty(defaultNamespace))
                                     {
                                         var name = Syntax.InternalSyntax.XSharpTreeTransformationCore.ExtGenerateQualifiedName(defaultNamespace);
                                         var imported = declbinder.BindNamespaceOrTypeSymbol(name, diagnostics, basesBeingResolved);
-                                        if (imported.Kind == SymbolKind.Namespace)
+                                        if (imported.NamespaceOrTypeSymbol.Kind == SymbolKind.Namespace)
                                         {
-                                            AddNs(usingDirective, imported, usings, uniqueUsings);
+                                            AddNs(usingDirective, imported.NamespaceOrTypeSymbol, usings, uniqueUsings);
                                         }
                                     }
                                 }
                             }
                             // Check for VulcanClasslibrary  attribute
-                            else if (attr.AttributeClass.ConstructedFrom == vcla)
+                            else if (TypeSymbol.Equals(attr.AttributeClass.ConstructedFrom,vcla))
                             {
                                 var args = attr.CommonConstructorArguments;
                                 if (args != null && args.Length == 2)
                                 {
                                     // first element is the Functions class
-                                    var globalClassName = args[0].Value.ToString();
+                                    var globalClassName = args[0].Value?.ToString() ?? "";
                                     if (!string.IsNullOrEmpty(globalClassName))
                                     {
                                         var name = Syntax.InternalSyntax.XSharpTreeTransformationCore.ExtGenerateQualifiedName(globalClassName);
                                         var imported = declbinder.BindNamespaceOrTypeSymbol(name, diagnostics, basesBeingResolved);
-                                        if (imported.Kind == SymbolKind.NamedType)
+                                        if (imported.NamespaceOrTypeSymbol.Kind == SymbolKind.NamedType)
                                         {
-                                            var importedType = (NamedTypeSymbol)imported;
-                                            AddNs(usingDirective, importedType, usings, uniqueUsings);
+                                            AddNs(usingDirective, imported.NamespaceOrTypeSymbol, usings, uniqueUsings);
                                         }
                                     }
                                     // second element is the default namespace
-                                    var defaultNamespace = args[1].Value.ToString();
+                                    var defaultNamespace = args[1].Value?.ToString() ?? "";
                                     if (!string.IsNullOrEmpty(defaultNamespace) && compilation.Options.ImplicitNameSpace)
                                     {
                                         var name = Syntax.InternalSyntax.XSharpTreeTransformationCore.ExtGenerateQualifiedName(defaultNamespace);
                                         var imported = declbinder.BindNamespaceOrTypeSymbol(name, diagnostics, basesBeingResolved);
-                                        if (imported.Kind == SymbolKind.Namespace)
+                                        if (imported.NamespaceOrTypeSymbol.Kind == SymbolKind.Namespace)
                                         {
-                                            AddNs(usingDirective, imported, usings, uniqueUsings);
+                                            AddNs(usingDirective, imported.NamespaceOrTypeSymbol, usings, uniqueUsings);
                                         }
                                     }
                                 }

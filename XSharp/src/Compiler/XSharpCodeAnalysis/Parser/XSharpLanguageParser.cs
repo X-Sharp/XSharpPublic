@@ -6,11 +6,13 @@
 
 // Uncomment this define to dump time profiling info of the parsing phases.
 //#define DUMP_TIMES
+#nullable disable
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Diagnostics;
 using System.Threading;
+using System.Linq;
 using Microsoft.CodeAnalysis.Text;
 using Roslyn.Utilities;
 using Antlr4.Runtime;
@@ -123,6 +125,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             _fileName = FileName;
             _options = options;
             _isScript = options.Kind == SourceCodeKind.Script;
+            if (_isScript)
+                _fileName = "Script";
             _isMacroScript = _isScript && options.MacroScript;
         }
 
@@ -631,7 +635,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 else
                     nsName = defaultNamespace;
                 members.Add(member);
-                member  = _syntaxFactory.NamespaceDeclaration(SyntaxFactory.MakeToken(SyntaxKind.NamespaceKeyword),
+                member  = _syntaxFactory.NamespaceDeclaration(
+                    attributeLists: default,
+                    modifiers: default, 
+                    SyntaxFactory.MakeToken(SyntaxKind.NamespaceKeyword),
                     name: trans.GenerateQualifiedName(nsName),
                     openBraceToken: SyntaxFactory.MakeToken(SyntaxKind.OpenBraceToken),
                     externs: null,
@@ -913,9 +920,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                                 trans.TokenList(SyntaxKind.StaticKeyword, SyntaxKind.InternalKeyword),
                                 SyntaxFactory.MakeToken(SyntaxKind.ClassKeyword),
                                 SyntaxFactory.MakeIdentifier(XSharpSpecialNames.SymbolTable),
-                                default(TypeParameterListSyntax),
-                                default(BaseListSyntax),
-                                default(SyntaxList<TypeParameterConstraintClauseSyntax>),
+                                null,
+                                null,
+                                default,
                                 SyntaxFactory.MakeToken(SyntaxKind.OpenBraceToken),
                                 clsmembers,
                                 SyntaxFactory.MakeToken(SyntaxKind.CloseBraceToken),
@@ -937,9 +944,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                                 trans.TokenList(SyntaxKind.StaticKeyword, SyntaxKind.InternalKeyword),
                                 SyntaxFactory.MakeToken(SyntaxKind.ClassKeyword),
                                 SyntaxFactory.MakeIdentifier(XSharpSpecialNames.PSZTable),
-                                default(TypeParameterListSyntax),
-                                default(BaseListSyntax),
-                                default(SyntaxList<TypeParameterConstraintClauseSyntax>),
+                                null,
+                                null,
+                                default,
                                 SyntaxFactory.MakeToken(SyntaxKind.OpenBraceToken),
                                 clsmembers,
                                 SyntaxFactory.MakeToken(SyntaxKind.CloseBraceToken),
@@ -1012,6 +1019,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         else
                             prop.DupAssign = m;
                     }
+                    if (m.Mods != null && m.Mods._Tokens.Any(t => t.Type == XSharpLexer.STATIC))
+                        prop.IsStatic = true;
                 }
                 var propdecl = trans.GenerateVoProperty(prop, null);
 

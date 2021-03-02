@@ -3,6 +3,7 @@
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
+#nullable disable
 using System.IO;
 using System.Runtime.InteropServices;
 using System;
@@ -44,13 +45,13 @@ namespace Microsoft.CodeAnalysis.CSharp
         //public bool XPPInheritFromAbstract { get; private set; } // Handled in the parser
         //public bool XPPUntypedmain { get; private set; } // Handled in the parser
         //public bool FoxInheritUnknown { get; private set; } // Handled in the parser
-        public bool FoxExposeLocals { get; private set; }
+        //public bool FoxExposeLocals { get; private set; }
         public XSharpDialect Dialect { get; private set; }
         public bool ImplicitNameSpace { get; private set; }
         //bool InitLocals { get; set; }
         public bool LateBinding { get; private set; }
+        public bool Strict { get; private set; }
         public bool HasDefaultTree { get; set; } = false;
-    
         public bool HasRuntime { get { return this.Dialect.HasRuntime(); } }
 
         public XSharpTargetDLL TargetDLL { get; private set; }
@@ -86,10 +87,11 @@ namespace Microsoft.CodeAnalysis.CSharp
                 //XPPInheritFromAbstract = opt.Xpp1;        // Handled in the parser
                 //XPPUntypedmain= opt.Xpp2;                 // Handled in the parser
                 //FoxInheritUnknown= opt.Fox1;              // Handled in the parser
-                FoxExposeLocals = opt.Fox2;                 // Only needed in the parser ?
+                //FoxExposeLocals = opt.Fox2;                 // Only needed in the parser ?
                 Dialect = opt.Dialect;
                 ImplicitNameSpace = opt.ImplicitNameSpace;
                 LateBinding = opt.LateBinding;
+                Strict = opt.EnforceSelf;
                 UndeclaredMemVars = opt.UndeclaredMemVars;
                 MemVars = opt.MemVars;
                 TargetDLL = opt.TargetDLL;
@@ -127,6 +129,9 @@ namespace Microsoft.CodeAnalysis.CSharp
                 case CompilerOption.MemVars:
                     return CheckOption(option, MemVars, syntax);
 
+                case CompilerOption.EnforceSelf:
+                    return CheckOption(option, Strict, syntax);
+
                 case CompilerOption.UndeclaredMemVars:
                     return CheckOption(option, UndeclaredMemVars, syntax);
 
@@ -151,8 +156,8 @@ namespace Microsoft.CodeAnalysis.CSharp
                 case CompilerOption.StringComparisons: // vo13
                     return CheckOption(option, VOStringComparisons, syntax);
 
-                case CompilerOption.FoxExposeLocals: // fox2
-                    return CheckOption(option, FoxExposeLocals, syntax);
+                //case CompilerOption.FoxExposeLocals: // fox2
+                //    return CheckOption(option, FoxExposeLocals, syntax);
 
                 // other options are not handled or only handled during parsing
                 case CompilerOption.ClipperCallingConvention:   // Vo5
@@ -219,6 +224,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             LateBinding = opt.LateBinding;
             TargetDLL = opt.TargetDLL;
             RuntimeAssemblies = opt.RuntimeAssemblies;
+            Strict = opt.Strict;
             //VoInitAxitMethods = opt.VoInitAxitMethods; // vo1 // Handled in the parser
             VONullStrings = opt.VONullStrings; // vo2
             VirtualInstanceMethods = opt.VirtualInstanceMethods; // vo3   
@@ -235,7 +241,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             //VOFloatConstants = opt.VOFloatConstants; // vo14  // Handled in the parser
             //VOUntypedAllowed = opt.VOUntypedAllowed; // vo15  // Handled in the parser
             //VOClipperConstructors = opt.VOClipperConstructors; // vo16// Handled in the parser
-            FoxExposeLocals = opt.FoxExposeLocals;          // Only neeed in the parser ?
+            //FoxExposeLocals = opt.FoxExposeLocals;          // Only neeed in the parser ?
             ConsoleOutput = opt.ConsoleOutput;
             UndeclaredMemVars = opt.UndeclaredMemVars;
             MemVars = opt.MemVars;
@@ -268,32 +274,20 @@ namespace Microsoft.CodeAnalysis.CSharp
                 !string.IsNullOrEmpty(args.Win32Icon) ||
                 !string.IsNullOrEmpty(args.Win32Manifest))
             {
-                var file = System.IO.Path.Combine(args.OutputDirectory, args.OutputFileName);
-                if (System.IO.File.Exists(file))
+                var file = Path.Combine(args.OutputDirectory, args.OutputFileName);
+                if (File.Exists(file))
                 {
                     var hRes = BeginUpdateResource(file, false);
                     if (hRes != IntPtr.Zero)
                     {
                         var res = EndUpdateResource(hRes, false);
                     }
-                    
                     if (compilation.HasStrongName)
                     {
                         // We have to resign the assembly because updating the resources
                         // may have invalidated the signature.
                         var provider = new DesktopStrongNameProvider();
-                        using (var inputstream = provider.CreateInputStream())
-                        {
-                            using (var fs = new FileStream(file, FileMode.Open, FileAccess.Read, FileShare.Read))
-                            {
-                                fs.CopyTo(inputstream);
-                            }
-                            using (var outputstream = new FileStream(file, FileMode.Create, FileAccess.Write, FileShare.Write))
-                            {
-                                provider.SignStream(compilation.StrongNameKeys, inputstream, outputstream);
-                                outputstream.Flush();
-                            }
-                        }
+                        provider.SignFile(compilation.StrongNameKeys, file);
                     }
                 }
             }

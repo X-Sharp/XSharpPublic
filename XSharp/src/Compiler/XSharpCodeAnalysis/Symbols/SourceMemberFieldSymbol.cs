@@ -3,7 +3,7 @@
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
-
+#nullable disable
 using Microsoft.CodeAnalysis.CSharp.Emit;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Roslyn.Utilities;
@@ -19,7 +19,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
 {
     internal partial class SourceMemberFieldSymbol : SourceFieldSymbolWithSyntaxReference
     {
-        internal TypeSymbol GetVOGlobalType(CSharpCompilation compilation, TypeSyntax typeSyntax, Binder binder, ConsList<FieldSymbol> fieldsBeingBound)
+        internal TypeWithAnnotations GetVOGlobalType(CSharpCompilation compilation, TypeSyntax typeSyntax, Binder binder, ConsList<FieldSymbol> fieldsBeingBound)
         {
             var xNode = this.SyntaxNode.XNode;
             if (compilation.Options.HasOption(CompilerOption.ResolveTypedFunctionPointersToPtr,this.SyntaxNode))
@@ -49,16 +49,16 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                     // So we have a global as typed ptr
                     string name = ptrdtc.TypeName.Name.GetText();
                     // Lookup name ?
-                    return compilation.GetSpecialType(SpecialType.System_IntPtr);
+                    return TypeWithAnnotations.Create(compilation.GetSpecialType(SpecialType.System_IntPtr));
                 }
 
             }
-            TypeSymbol type = null;
-            if (xNode is XP.VodefineContext && ! this.IsConst)
+            TypeSymbol type = default;
+            if (xNode is XP.VodefineContext && !this.IsConst)
             {
                 var vodef = xNode as XP.VodefineContext;
                 DiagnosticBag diagnostics = DiagnosticBag.GetInstance();
-                type = binder.BindType(typeSyntax, diagnostics);
+                type = binder.BindType(typeSyntax, diagnostics).Type;
                 // parser could not determine the type
                 fieldsBeingBound = new ConsList<FieldSymbol>(this, fieldsBeingBound);
                 var declarator = (VariableDeclaratorSyntax)this.DeclaringSyntaxReferences.AsSingleton().GetSyntax();
@@ -66,7 +66,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                 var initializerOpt = initializerBinder.BindInferredVariableInitializer(diagnostics, RefKind.None, declarator.Initializer, declarator);
                 if (initializerOpt != null && !type.IsPszType())
                 {
-                    if ((object)initializerOpt.Type != null && !initializerOpt.Type.IsErrorType())
+                    if (initializerOpt.Type is { } && !initializerOpt.Type.IsErrorType())
                     {
                         type = initializerOpt.Type;
 
@@ -82,15 +82,15 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                         }
                     }
                 }
-                if (type == null)
+                if (type is null)
                 {
                     type = compilation.GetSpecialType(SpecialType.System_Object);
                 }
                 //System.Diagnostics.Debug.WriteLine($"Looking for type of define {vodef.Name.ToString()}, found {type.ToString()}, const: {IsConst}");
 
-                return type;
+                return TypeWithAnnotations.Create(type);
             }
-            return null;
+            return default;
         }
     }
 }

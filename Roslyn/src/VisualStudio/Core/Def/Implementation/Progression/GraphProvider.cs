@@ -1,10 +1,15 @@
-﻿// Copyright (c) Microsoft.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
+﻿// Licensed to the .NET Foundation under one or more agreements.
+// The .NET Foundation licenses this file to you under the MIT license.
+// See the LICENSE file in the project root for more information.
+
+#nullable disable
 
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Editing;
+using Microsoft.CodeAnalysis.Editor.Shared.Utilities;
 using Microsoft.CodeAnalysis.Shared.TestHooks;
 using Microsoft.VisualStudio.GraphModel;
 using Microsoft.VisualStudio.GraphModel.Schemas;
@@ -17,6 +22,7 @@ namespace Microsoft.VisualStudio.LanguageServices.Implementation.Progression
 {
     internal class AbstractGraphProvider : IGraphProvider
     {
+        private readonly IThreadingContext _threadingContext;
         private readonly IGlyphService _glyphService;
         private readonly IServiceProvider _serviceProvider;
         private readonly Workspace _workspace;
@@ -25,11 +31,13 @@ namespace Microsoft.VisualStudio.LanguageServices.Implementation.Progression
         private bool _initialized = false;
 
         protected AbstractGraphProvider(
+            IThreadingContext threadingContext,
             IGlyphService glyphService,
             SVsServiceProvider serviceProvider,
             Workspace workspace,
             IAsynchronousOperationListenerProvider listenerProvider)
         {
+            _threadingContext = threadingContext;
             _glyphService = glyphService;
             _serviceProvider = serviceProvider;
             var asyncListener = listenerProvider.GetListener(FeatureAttribute.GraphProvider);
@@ -300,19 +308,13 @@ namespace Microsoft.VisualStudio.LanguageServices.Implementation.Progression
         }
 
         private DeclarationModifiers GetModifiers(GraphNode node)
-        {
-            return (DeclarationModifiers)node[RoslynGraphProperties.SymbolModifiers];
-        }
+            => (DeclarationModifiers)node[RoslynGraphProperties.SymbolModifiers];
 
         private bool CheckAccessibility(GraphNode node, Accessibility accessibility)
-        {
-            return node[RoslynGraphProperties.DeclaredAccessibility].Equals(accessibility);
-        }
+            => node[RoslynGraphProperties.DeclaredAccessibility].Equals(accessibility);
 
         private bool HasExplicitInterfaces(GraphNode node)
-        {
-            return ((IList<SymbolKey>)node[RoslynGraphProperties.ExplicitInterfaceImplementations]).Count > 0;
-        }
+            => ((IList<SymbolKey>)node[RoslynGraphProperties.ExplicitInterfaceImplementations]).Count > 0;
 
         private bool IsRoslynNode(GraphNode node)
         {
@@ -321,30 +323,25 @@ namespace Microsoft.VisualStudio.LanguageServices.Implementation.Progression
         }
 
         private bool IsAnySymbolKind(GraphNode node, params SymbolKind[] symbolKinds)
-        {
-            return symbolKinds.Any(k => k.Equals(node[RoslynGraphProperties.SymbolKind]));
-        }
+            => symbolKinds.Any(k => k.Equals(node[RoslynGraphProperties.SymbolKind]));
 
         private bool IsAnyTypeKind(GraphNode node, params TypeKind[] typeKinds)
-        {
-            return typeKinds.Any(k => node[RoslynGraphProperties.TypeKind].Equals(k));
-        }
+            => typeKinds.Any(k => node[RoslynGraphProperties.TypeKind].Equals(k));
 
         private static readonly GraphCommandDefinition s_overridesCommandDefinition =
-            new GraphCommandDefinition("Overrides", ServicesVSResources.Overrides_, GraphContextDirection.Target, 700);
+            new("Overrides", ServicesVSResources.Overrides_, GraphContextDirection.Target, 700);
 
         private static readonly GraphCommandDefinition s_overriddenByCommandDefinition =
-            new GraphCommandDefinition("OverriddenBy", ServicesVSResources.Overridden_By, GraphContextDirection.Source, 700);
+            new("OverriddenBy", ServicesVSResources.Overridden_By, GraphContextDirection.Source, 700);
 
         private static readonly GraphCommandDefinition s_implementsCommandDefinition =
-            new GraphCommandDefinition("Implements", ServicesVSResources.Implements_, GraphContextDirection.Target, 600);
+            new("Implements", ServicesVSResources.Implements_, GraphContextDirection.Target, 600);
 
         private static readonly GraphCommandDefinition s_implementedByCommandDefinition =
-            new GraphCommandDefinition("ImplementedBy", ServicesVSResources.Implemented_By, GraphContextDirection.Source, 600);
+            new("ImplementedBy", ServicesVSResources.Implemented_By, GraphContextDirection.Source, 600);
 
         public T GetExtension<T>(GraphObject graphObject, T previous) where T : class
         {
-
             if (graphObject is GraphNode graphNode)
             {
                 // If this is not a Roslyn node, bail out.
@@ -358,7 +355,7 @@ namespace Microsoft.VisualStudio.LanguageServices.Implementation.Progression
 
                 if (typeof(T) == typeof(IGraphNavigateToItem))
                 {
-                    return new GraphNavigatorExtension(_workspace) as T;
+                    return new GraphNavigatorExtension(_threadingContext, _workspace) as T;
                 }
 
                 if (typeof(T) == typeof(IGraphFormattedLabel))

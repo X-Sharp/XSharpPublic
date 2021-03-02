@@ -8,6 +8,9 @@ using System.Collections.Immutable;
 using System.Collections.Generic;
 using System.IO;
 using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
+#if !VSPARSER
+using Microsoft.CodeAnalysis.CodeGen;
+#endif
 
 namespace Microsoft.CodeAnalysis.CSharp
 {
@@ -15,7 +18,7 @@ namespace Microsoft.CodeAnalysis.CSharp
     [Flags]
     public enum RuntimeAssemblies : int
     {
-        None = 0 ,
+        None = 0,
         VulcanRT = 0x01,
         VulcanRTFuncs = 0x02,
         XSharpCore = 0x04,
@@ -46,16 +49,16 @@ namespace Microsoft.CodeAnalysis.CSharp
 
     public enum XSharpTargetDLL : Byte
     {
-        Other =0,
+        Other = 0,
         Core = 1,
         Data = 2,
         RDD = 3,
         RT = 4,
         VO = 5,
         XPP = 6,
-        VFP = 7, 
+        VFP = 7,
         VulcanRT = 8,    // strictly not a target but we use this in the OverloadResolution
-        VulcanRTFuncs= 9,  // strictly not a target but we use this in the OverloadResolution
+        VulcanRTFuncs = 9,  // strictly not a target but we use this in the OverloadResolution
         VOWin32Api = 10,
         VOSystemClasses = 11,
         VORDDClasses = 12,
@@ -71,9 +74,9 @@ namespace Microsoft.CodeAnalysis.CSharp
         // Options that can be set from the outside
         // Some options are also handled by the parser
         // Other options have flags, for the preprocessor macros, such as __VO1__
-
+        const LanguageVersion defaultLanguageVersion = LanguageVersion.CSharp9;
         #region private fields (need to be access with HasOption)
-        private bool ArrayZero= false;
+        private bool ArrayZero = false;
         private bool FoxInheritUnknown = false;
         private bool InitLocals = false;
         private bool VOAllowMissingReturns = false;
@@ -87,7 +90,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         private bool VOStringComparisons = false;
         private bool XPPInheritFromAbstract = false;
         private bool XPPUntypedmain = false;
-        private bool FoxExposeLocals = false;
+        //private bool FoxExposeLocals = false;
 
         #endregion
         public bool AllowUnsafe { get; private set; }
@@ -98,30 +101,31 @@ namespace Microsoft.CodeAnalysis.CSharp
         public XSharpTargetDLL TargetDLL { get; private set; }
         public bool DebugEnabled { get; private set; }
         public XSharpDialect Dialect { get; private set; }
-        public string DefaultIncludeDir { get; private set; }
-        public string WindowsDir { get; private set; }
-        public string SystemDir { get; private set; }
+        public string DefaultIncludeDir { get; private set; } = "";
+        public string WindowsDir { get; private set; } = "";
+        public string SystemDir { get; private set; } = "";
         public bool NoStdDef { get; private set; }
         public bool DumpAST { get; private set; }
         public bool ShowDefs { get; private set; }
         public bool ShowIncludes { get; private set; }
-        public bool NoClipCall { get; internal set; } 
+        public bool NoClipCall { get; internal set; }
         public ParseLevel ParseLevel { get; set; } = ParseLevel.Complete;
         public bool AllowNamedArguments { get; private set; }
         public bool PreprocessorOutput { get; private set; }
         public bool SaveAsCSharp { get; private set; }
-        public string StdDefs { get; private set; }
+        public bool Strict { get; private set; }
+        public string StdDefs { get; private set; } = "";
         public bool Verbose { get; private set; }
         public bool VirtualInstanceMethods { get; private set; }
         public bool VOArithmeticConversions { get; private set; }
-        public bool VOClipperConstructors{ get; private set; }
+        public bool VOClipperConstructors { get; private set; }
 
         public bool VoInitAxitMethods { get; private set; }
         public bool VOCompatibleIIF { get; private set; }
         public bool VOPreprocessorBehaviour { get; private set; }
         public bool VOResolveTypedFunctionPointersToPtr { get; private set; }
         public bool VOSignedUnsignedConversion { get; private set; }
-        public string DefaultNamespace { get; private set; }
+        public string DefaultNamespace { get; private set; } = "";
         public bool ImplicitNamespace { get; private set; }
         public bool HasRuntime { get { return this.Dialect.HasRuntime(); } }
         public bool SupportsMemvars { get { return this.Dialect.SupportsMemvars() && MemVars; } }
@@ -138,8 +142,8 @@ namespace Microsoft.CodeAnalysis.CSharp
 
         public RuntimeAssemblies RuntimeAssemblies { get; private set; } = RuntimeAssemblies.None;
         public bool Overflow { get; private set; }
-        public CSharpCommandLineArguments CommandLineArguments { get; private set; }
-        public TextWriter ConsoleOutput { get; private set; }
+        public CSharpCommandLineArguments? CommandLineArguments { get; private set; }
+        public TextWriter? ConsoleOutput { get; private set; } 
         public bool cs => CaseSensitive;
         public bool vo1 => VoInitAxitMethods;
         public bool vo2 => VONullStrings;
@@ -160,7 +164,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         public bool xpp1 => XPPInheritFromAbstract;
         public bool xpp2 => XPPUntypedmain;
         public bool fox1 => FoxInheritUnknown;
-        public bool fox2 => FoxExposeLocals;
+        //public bool fox2 => FoxExposeLocals;
         public void SetXSharpSpecificOptions(XSharpSpecificCompilationOptions opt)
         {
             if (opt != null)
@@ -181,6 +185,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 ShowDefs = opt.ShowDefs;
                 ShowIncludes = opt.ShowIncludes;
                 StdDefs = opt.StdDefs;
+                Strict = opt.EnforceSelf;
                 Verbose = opt.Verbose;
                 PreprocessorOutput = opt.PreProcessorOutput;
                 ParseLevel = opt.ParseLevel;
@@ -208,7 +213,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 XPPInheritFromAbstract = opt.Xpp1;
                 XPPUntypedmain = opt.Xpp2;
                 FoxInheritUnknown = opt.Fox1;
-                FoxExposeLocals = opt.Fox2;
+                //FoxExposeLocals = opt.Fox2;
                 RuntimeAssemblies = opt.RuntimeAssemblies;
                 Overflow = opt.Overflow;
                 ConsoleOutput = opt.ConsoleOutput;
@@ -220,7 +225,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 UndeclaredMemVars = opt.UndeclaredMemVars;
                 AllowUnsafe = opt.AllowUnsafe;
             }
-            LanguageVersion = LanguageVersion.CSharp7_3;
+            LanguageVersion = defaultLanguageVersion;
         }
 
         public void SetOptions(CSharpCommandLineArguments opt)
@@ -230,7 +235,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 DebugEnabled = opt.EmitPdb;
                 CommandLineArguments = opt;
             }
-            LanguageVersion = LanguageVersion.CSharp7_3;
+            LanguageVersion = defaultLanguageVersion;
         }
         internal CSharpParseOptions WithNoStdDef(bool nostddef)
         {
@@ -265,6 +270,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             ParseLevel = opt.ParseLevel;
             SaveAsCSharp = opt.SaveAsCSharp;
             StdDefs = opt.StdDefs;
+            Strict = opt.Strict;
             Verbose = opt.Verbose;
             AllowNamedArguments = opt.AllowNamedArguments;
             VoInitAxitMethods = opt.VoInitAxitMethods; // vo1
@@ -286,7 +292,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             XPPInheritFromAbstract = opt.XPPInheritFromAbstract; // xpp1
             XPPUntypedmain = opt.XPPUntypedmain;    // xpp2
             FoxInheritUnknown = opt.FoxInheritUnknown;  // fox1
-            FoxExposeLocals = opt.FoxExposeLocals;      // fox2
+            //FoxExposeLocals = opt.FoxExposeLocals;      // fox2
 
             RuntimeAssemblies = opt.RuntimeAssemblies;
             Overflow = opt.Overflow;
@@ -296,7 +302,7 @@ namespace Microsoft.CodeAnalysis.CSharp
 #if !VSPARSER
             CommandLineArguments = opt.CommandLineArguments;
 #endif
-            LanguageVersion = LanguageVersion.CSharp7_3;
+            LanguageVersion = defaultLanguageVersion;
             MemVars = opt.MemVars;
             UndeclaredMemVars = opt.UndeclaredMemVars;
             InitLocals = opt.InitLocals;
@@ -319,7 +325,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             var result = new CSharpParseOptions(this);
             result.SetXSharpSpecificOptions(this);
             result.ConsoleOutput = consoleOutput;
-            result.LanguageVersion = LanguageVersion.CSharp7_3;
+            result.LanguageVersion = defaultLanguageVersion;
             return result;
         }
         public CSharpParseOptions WithMacroScript(bool macroScript)
@@ -331,11 +337,11 @@ namespace Microsoft.CodeAnalysis.CSharp
             var result = new CSharpParseOptions(this);
             result.SetXSharpSpecificOptions(this);
             result.MacroScript = macroScript;
-            result.LanguageVersion = LanguageVersion.CSharp7_3;
+            result.LanguageVersion = LanguageVersion.CSharp9;
             return result;
         }
 
-        public bool HasOption (CompilerOption option, XSharpParserRuleContext context, IList<PragmaOption> options )
+        public bool HasOption(CompilerOption option, XSharpParserRuleContext context, IList<PragmaOption> options)
         {
             switch (option)
             {
@@ -375,8 +381,8 @@ namespace Microsoft.CodeAnalysis.CSharp
                 case CompilerOption.DefaultClipperContructors: // vo16
                     return CheckOption(option, VOClipperConstructors, context, options);
 
-                case CompilerOption.FoxExposeLocals: // fox2
-                    return CheckOption(option, FoxExposeLocals, context, options);
+                //case CompilerOption.FoxExposeLocals: // fox2
+                //    return CheckOption(option, FoxExposeLocals, context, options);
 
                 case CompilerOption.LateBinding:  // lb is handled in cde generation
                 case CompilerOption.SignedUnsignedConversion: // vo4

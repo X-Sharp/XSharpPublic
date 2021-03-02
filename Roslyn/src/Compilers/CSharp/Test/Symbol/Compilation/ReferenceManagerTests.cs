@@ -1,4 +1,8 @@
-﻿// Copyright (c) Microsoft.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
+﻿// Licensed to the .NET Foundation under one or more agreements.
+// The .NET Foundation licenses this file to you under the MIT license.
+// See the LICENSE file in the project root for more information.
+
+#nullable disable
 
 using System;
 using System.Collections.Generic;
@@ -13,6 +17,7 @@ using Microsoft.CodeAnalysis.Test.Utilities;
 using Roslyn.Test.Utilities;
 using Roslyn.Utilities;
 using Xunit;
+using static Roslyn.Test.Utilities.TestMetadata;
 
 namespace Microsoft.CodeAnalysis.CSharp.UnitTests
 {
@@ -739,11 +744,11 @@ namespace Microsoft.TeamFoundation.WebAccess.Common
     }
 }";
             var tree = Parse(source);
-            var r1 = AssemblyMetadata.CreateFromImage(TestResources.NetFX.v4_0_30319.System_Core).GetReference(filePath: @"c:\temp\aa.dll", display: "System.Core.v4_0_30319.dll");
-            var r2 = AssemblyMetadata.CreateFromImage(TestResources.NetFX.v4_0_30319.System_Core).GetReference(filePath: @"c:\temp\aa.dll", display: "System.Core.v4_0_30319.dll");
+            var r1 = AssemblyMetadata.CreateFromImage(ResourcesNet451.SystemCore).GetReference(filePath: @"c:\temp\aa.dll", display: "System.Core.v4_0_30319.dll");
+            var r2 = AssemblyMetadata.CreateFromImage(ResourcesNet451.SystemCore).GetReference(filePath: @"c:\temp\aa.dll", display: "System.Core.v4_0_30319.dll");
             var r2_SysCore = r2.WithAliases(new[] { "SysCore" });
 
-            var compilation = CreateEmptyCompilation(tree, new[] { MscorlibRef, r1, r2_SysCore }, new CSharpCompilationOptions(OutputKind.ConsoleApplication), assemblyName: "Test");
+            var compilation = CreateEmptyCompilation(tree, new[] { MscorlibRef, r1, r2_SysCore }, TestOptions.DebugExe, assemblyName: "Test");
             CompileAndVerify(compilation, expectedOutput: "k");
         }
 
@@ -993,7 +998,7 @@ public interface I {}";
         [Fact]
         public void DuplicateAssemblyReferences_EquivalentName()
         {
-            string p1 = Temp.CreateFile().WriteAllBytes(TestResources.NetFX.v4_0_30319.System_Core).Path;
+            string p1 = Temp.CreateFile().WriteAllBytes(ResourcesNet451.SystemCore).Path;
             string p2 = Temp.CreateFile().CopyContentFrom(p1).Path;
 
             var r1 = MetadataReference.CreateFromFile(p1);
@@ -1013,13 +1018,13 @@ public interface I {}";
         [WorkItem(546026, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/546026"), WorkItem(546169, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/546169")]
         public void CS1703ERR_DuplicateImport()
         {
-            var p1 = Temp.CreateFile().WriteAllBytes(TestResources.NetFX.v4_0_30319.System).Path;
-            var p2 = Temp.CreateFile().WriteAllBytes(TestResources.NetFX.v2_0_50727.System).Path;
+            var p1 = Temp.CreateFile().WriteAllBytes(ResourcesNet451.System).Path;
+            var p2 = Temp.CreateFile().WriteAllBytes(ResourcesNet20.System).Path;
             var text = @"namespace N {}";
 
             var comp = CSharpCompilation.Create(
                 "DupSignedRefs",
-                new[] { SyntaxFactory.ParseSyntaxTree(text) },
+                new[] { SyntaxFactory.ParseSyntaxTree(text, options: TestOptions.Regular) },
                 new[] { MetadataReference.CreateFromFile(p1), MetadataReference.CreateFromFile(p2) },
                 TestOptions.ReleaseDll.WithAssemblyIdentityComparer(DesktopAssemblyIdentityComparer.Default));
 
@@ -1371,14 +1376,14 @@ public class A
                     }),
                     files: new Dictionary<string, PortableExecutableReference>()
                     {
-                        { @"C:\A\lib.dll", TestReferences.NetFx.v4_0_30319.Microsoft_CSharp },
-                        { @"C:\B\lib.dll", TestReferences.NetFx.v4_0_30319.Microsoft_VisualBasic },
+                        { @"C:\A\lib.dll", Net451.MicrosoftCSharp },
+                        { @"C:\B\lib.dll", Net451.MicrosoftVisualBasic },
                     })));
 
             c.VerifyDiagnostics();
 
-            Assert.Same(TestReferences.NetFx.v4_0_30319.Microsoft_CSharp, c.GetDirectiveReference(rd1));
-            Assert.Same(TestReferences.NetFx.v4_0_30319.Microsoft_VisualBasic, c.GetDirectiveReference(rd2));
+            Assert.Same(Net451.MicrosoftCSharp, c.GetDirectiveReference(rd1));
+            Assert.Same(Net451.MicrosoftVisualBasic, c.GetDirectiveReference(rd2));
         }
 
         [Fact]
@@ -2191,25 +2196,25 @@ public class Source
             var refVectors40 = vectors40.EmitToImageReference();
             var refVectors41 = vectors41.EmitToImageReference();
 
-            var c1 = CreateEmptyCompilation("", 
+            var c1 = CreateEmptyCompilation("",
                 TargetFrameworkUtil.StandardReferences.AddRange(new[] { refVectors40, refVectors41 }),
                 options: TestOptions.ReleaseDll.WithAssemblyIdentityComparer(DesktopAssemblyIdentityComparer.Default));
             c1.VerifyDiagnostics();
 
             var a0 = c1.GetAssemblyOrModuleSymbol(refVectors40);
             var a1 = c1.GetAssemblyOrModuleSymbol(refVectors41);
-            Assert.Equal("System.Numerics.Vectors, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a", ((IAssemblySymbol)a0).Identity.GetDisplayName());
-            Assert.Equal("System.Numerics.Vectors, Version=4.1.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a", ((IAssemblySymbol)a1).Identity.GetDisplayName());
+            Assert.Equal("System.Numerics.Vectors, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a", ((AssemblySymbol)a0).Identity.GetDisplayName());
+            Assert.Equal("System.Numerics.Vectors, Version=4.1.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a", ((AssemblySymbol)a1).Identity.GetDisplayName());
 
-            var c2 = CreateEmptyCompilation("", 
+            var c2 = CreateEmptyCompilation("",
                 TargetFrameworkUtil.StandardReferences.AddRange(new[] { refVectors41, refVectors40 }),
                 options: TestOptions.ReleaseDll.WithAssemblyIdentityComparer(DesktopAssemblyIdentityComparer.Default));
             c2.VerifyDiagnostics();
 
             a0 = c2.GetAssemblyOrModuleSymbol(refVectors40);
             a1 = c2.GetAssemblyOrModuleSymbol(refVectors41);
-            Assert.Equal("System.Numerics.Vectors, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a", ((IAssemblySymbol)a0).Identity.GetDisplayName());
-            Assert.Equal("System.Numerics.Vectors, Version=4.1.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a", ((IAssemblySymbol)a1).Identity.GetDisplayName());
+            Assert.Equal("System.Numerics.Vectors, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a", ((AssemblySymbol)a0).Identity.GetDisplayName());
+            Assert.Equal("System.Numerics.Vectors, Version=4.1.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a", ((AssemblySymbol)a1).Identity.GetDisplayName());
         }
 
         [Fact]
@@ -2217,10 +2222,10 @@ public class Source
         {
             var c = CreateSubmissionWithExactReferences("System.Diagnostics.Process.GetCurrentProcess()", new[]
             {
-                TestReferences.NetFx.v2_0_50727.mscorlib,
-                TestReferences.NetFx.v2_0_50727.System,
-                TestReferences.NetFx.v4_0_30319.mscorlib,
-                TestReferences.NetFx.v4_0_30319.System,
+                Net20.mscorlib,
+                Net20.System,
+                Net451.mscorlib,
+                Net451.System,
             });
 
             c.VerifyDiagnostics();
@@ -2553,7 +2558,7 @@ public class P
                 "A -> B, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null");
         }
 
-        [NoIOperationValidationFact]
+        [ConditionalFact(typeof(NoIOperationValidation))]
         public void MissingAssemblyResolution_Aliases()
         {
             // c - a -> b with alias X
@@ -2580,7 +2585,7 @@ public class C : A
                 "A -> B, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null");
         }
 
-        [NoIOperationValidationFact]
+        [ConditionalFact(typeof(NoIOperationValidation))]
         public void MissingAssemblyResolution_AliasesMerge()
         {
             // c - a -> "b, V1" resolved to "b, V3" with alias X
@@ -2875,7 +2880,7 @@ public class C : A
         /// <summary>
         /// Don't try to resolve AssemblyRefs that already match explicitly specified definition.
         /// </summary>
-        [NoIOperationValidationFact]
+        [ConditionalFact(typeof(NoIOperationValidation))]
         public void MissingAssemblyResolution_BindingToExplicitReference_WorseVersion()
         {
             // c - a -> d -> "b,v2"
@@ -2941,7 +2946,7 @@ public class C : A
         /// <summary>
         /// Don't try to resolve AssemblyRefs that already match explicitly specified definition.
         /// </summary>
-        [NoIOperationValidationFact]
+        [ConditionalFact(typeof(NoIOperationValidation))]
         public void MissingAssemblyResolution_BindingToExplicitReference_BetterVersion()
         {
             // c - a -> d -> "b,v2"
@@ -3186,16 +3191,16 @@ public class C : A
             //          "System, v2"
             //     b -> "mscorlib, v4"
             //          "System, v4"
-            var aRef = CreateEmptyCompilation(@"public interface A { System.Diagnostics.Process PA { get; } }", new[] { TestReferences.NetFx.v2_0_50727.mscorlib, TestReferences.NetFx.v2_0_50727.System },
+            var aRef = CreateEmptyCompilation(@"public interface A { System.Diagnostics.Process PA { get; } }", new[] { Net20.mscorlib, Net20.System },
                 options: options, assemblyName: "A").EmitToImageReference();
 
-            var bRef = CreateEmptyCompilation(@"public interface B { System.Diagnostics.Process PB { get; } }", new[] { MscorlibRef_v4_0_30316_17626, TestReferences.NetFx.v4_0_30319.System },
+            var bRef = CreateEmptyCompilation(@"public interface B { System.Diagnostics.Process PB { get; } }", new[] { MscorlibRef_v4_0_30316_17626, Net451.System },
                 options: options, assemblyName: "B").EmitToImageReference();
 
             var resolverC = new TestMissingMetadataReferenceResolver(new Dictionary<string, MetadataReference>
             {
-                { "System, 2.0.0.0", TestReferences.NetFx.v2_0_50727.System },
-                { "System, 4.0.0.0", TestReferences.NetFx.v4_0_30319.System },
+                { "System, 2.0.0.0", Net20.System },
+                { "System, 4.0.0.0", Net451.System },
             });
 
             var c = CreateSubmissionWithExactReferences("public interface C : A, B { System.Diagnostics.Process PC { get; } }", new[] { MscorlibRef_v4_0_30316_17626, aRef, bRef },
@@ -3205,11 +3210,11 @@ public class C : A
 
             resolverC.VerifyResolutionAttempts(
                 "B -> System, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089",
-                "System.dll -> System.Configuration, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a",
-                "System.dll -> System.Xml, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089",
+                "System.dll (net451) -> System.Configuration, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a",
+                "System.dll (net451) -> System.Xml, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089",
                 "A -> System, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089",
-                "System.dll -> System.Configuration, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a",
-                "System.dll -> System.Xml, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089");
+                "System.dll (net20) -> System.Configuration, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a",
+                "System.dll (net20) -> System.Xml, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089");
 
             c.VerifyAssemblyVersionsAndAliases(
                 "mscorlib, Version=4.0.0.0",

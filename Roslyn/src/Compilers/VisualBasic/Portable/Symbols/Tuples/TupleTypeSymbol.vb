@@ -1,4 +1,6 @@
-﻿' Copyright (c) Microsoft.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
+﻿' Licensed to the .NET Foundation under one or more agreements.
+' The .NET Foundation licenses this file to you under the MIT license.
+' See the LICENSE file in the project root for more information.
 
 Imports System.Collections.Immutable
 Imports System.Globalization
@@ -341,6 +343,10 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Symbols
             Debug.Assert(elementLocations.IsDefault OrElse elementLocations.Length = elementTypes.Length)
             Debug.Assert(elementNames.IsDefault OrElse elementNames.Length = elementTypes.Length)
             Debug.Assert(Not underlyingType.IsTupleType)
+            Debug.Assert(TypeOf underlyingType Is InstanceTypeSymbol OrElse
+                         TypeOf underlyingType Is InstanceErrorTypeSymbol OrElse
+                         TypeOf underlyingType Is SubstitutedNamedType OrElse
+                         TypeOf underlyingType Is SubstitutedErrorType) ' Required to ensure symmetrical equality
             Me._elementLocations = elementLocations
             Me._providedElementNames = elementNames
             Me._elementTypes = elementTypes
@@ -601,7 +607,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Symbols
             Return "Item" & position
         End Function
 
-        Private Shared ForbiddenNames As HashSet(Of String) = New HashSet(Of String)(
+        Private Shared ReadOnly ForbiddenNames As HashSet(Of String) = New HashSet(Of String)(
             {"CompareTo", "Deconstruct", "Equals", "GetHashCode", "Rest", "ToString"},
             IdentifierComparison.Comparer)
 
@@ -940,7 +946,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Symbols
         End Function
 
         Public Overrides Function GetMembers(name As String) As ImmutableArray(Of Symbol)
-            Return Me.GetMembers().WhereAsArray(Function(m As Symbol) IdentifierComparison.Equals(m.Name, name))
+            Return Me.GetMembers().WhereAsArray(Function(member, name_) IdentifierComparison.Equals(member.Name, name_), name)
         End Function
 
         Public Overrides Function GetTypeMembers() As ImmutableArray(Of NamedTypeSymbol)
@@ -965,35 +971,45 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Symbols
             Return Me._underlyingType.GetAttributes()
         End Function
 
-        Public Overrides Function Equals(obj As Object) As Boolean
+        Public Overrides Function Equals(obj As TypeSymbol, comparison As TypeCompareKind) As Boolean
+            If obj Is Me Then
+                Return True
+            End If
+
+            If obj Is Nothing Then
+                Return False
+            End If
+
             Dim otherTuple = TryCast(obj, TupleTypeSymbol)
-            If otherTuple Is Nothing Then
+
+            If otherTuple Is Nothing AndAlso (comparison And TypeCompareKind.IgnoreTupleNames) = 0 Then
                 Return False
             End If
 
-            Dim otherUnderlying = otherTuple.TupleUnderlyingType
-            If (Me.TupleUnderlyingType <> otherUnderlying) Then
+            If Not Me.TupleUnderlyingType.Equals(obj.GetTupleUnderlyingTypeOrSelf(), comparison) Then
                 Return False
             End If
 
-            Dim myNames = Me.TupleElementNames
-            Dim otherNames = otherTuple.TupleElementNames
+            If (comparison And TypeCompareKind.IgnoreTupleNames) = 0 Then
+                Dim myNames = Me.TupleElementNames
+                Dim otherNames = otherTuple.TupleElementNames
 
-            If myNames.IsDefault Then
-                Return otherNames.IsDefault
-            End If
+                If myNames.IsDefault Then
+                    Return otherNames.IsDefault
+                End If
 
-            If otherNames.IsDefault Then
-                Return False
-            End If
-
-            Debug.Assert(myNames.Length = otherNames.Length)
-
-            For i As Integer = 0 To myNames.Length - 1
-                If Not IdentifierComparison.Equals(myNames(i), otherNames(i)) Then
+                If otherNames.IsDefault Then
                     Return False
                 End If
-            Next
+
+                Debug.Assert(myNames.Length = otherNames.Length)
+
+                For i As Integer = 0 To myNames.Length - 1
+                    If Not IdentifierComparison.Equals(myNames(i), otherNames(i)) Then
+                        Return False
+                    End If
+                Next
+            End If
 
             Return True
         End Function
@@ -1064,11 +1080,11 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Symbols
             Return New TypeWithModifiers(tupleType, Nothing)
         End Function
 
-        Friend Overrides Function MakeDeclaredBase(basesBeingResolved As ConsList(Of Symbol), diagnostics As DiagnosticBag) As NamedTypeSymbol
+        Friend Overrides Function MakeDeclaredBase(basesBeingResolved As BasesBeingResolved, diagnostics As DiagnosticBag) As NamedTypeSymbol
             Return Me._underlyingType.MakeDeclaredBase(basesBeingResolved, diagnostics)
         End Function
 
-        Friend Overrides Function MakeDeclaredInterfaces(basesBeingResolved As ConsList(Of Symbol), diagnostics As DiagnosticBag) As ImmutableArray(Of NamedTypeSymbol)
+        Friend Overrides Function MakeDeclaredInterfaces(basesBeingResolved As BasesBeingResolved, diagnostics As DiagnosticBag) As ImmutableArray(Of NamedTypeSymbol)
             Return Me._underlyingType.MakeDeclaredInterfaces(basesBeingResolved, diagnostics)
         End Function
 

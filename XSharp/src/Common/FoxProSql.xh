@@ -15,6 +15,8 @@
 
 // SQL Select commands. Separate commands for TO and 3 different INTO variations
 
+#command __NOFOXPROSQL__  => #warning FoxPro embedded SQL is not yet supported
+
 #command SELECT <*columnClauses*> FROM <*TableList*>           ;
     [WITH (BUFFERING = <lExpr> ) ]                             ;
     [WHERE <*WhereConditions*> ]                               ;
@@ -22,7 +24,8 @@
     [UNION [ALL] <*SelectCommand*>]                            ;
     [ORDER BY <*orderByList*>]                                 ;
     [TO <dest:FILE,PRINTER,SCREEN> <*extraoptions*>]        => ;
-    __FoxSqlSelect(<"udc">)                
+    __NOFOXPROSQL__  //__FoxSqlSelect(<"udc">)                
+    
 
 #command SELECT <*columnClauses*> FROM <*TableList*>           ;
     [WITH (BUFFERING = <lExpr> ) ]                             ;
@@ -31,7 +34,7 @@
     [UNION [ALL] <*SelectCommand*>]                            ;
     [ORDER BY <*orderByList*>]                                 ;
     INTO ARRAY <ArrayName>                                  => ;
-    __FoxSqlSelectArray(<"udc">,<ArrayName>)                
+    __NOFOXPROSQL__  // __FoxSqlSelectArray(<"udc">,<ArrayName>)                
 
             
 #command SELECT <*columnClauses*> FROM <*TableList*>              ;
@@ -41,7 +44,7 @@
     [UNION [ALL] <*SelectCommand*>]                               ;
     [ORDER BY <*orderByList*>]                                    ;
     INTO CURSOR <CursorName> [<cursoropt:NOFILTER,READWRITE>] =>  ;
-    __FoxSqlSelectCursor(<"udc">,<"CursorName">)     
+    __NOFOXPROSQL__   // __FoxSqlSelectCursor(<"udc">,<"CursorName">)     
 
 #command SELECT <*columnClauses*> FROM <*TableList*>                          ;
     [WITH (BUFFERING = <lExpr> ) ]                                            ;
@@ -50,55 +53,55 @@
     [UNION [ALL] <*SelectCommand*>]                                           ;
     [ORDER BY <*orderByList*>]                                                ;
     INTO TABLE <TableName> [DATABASE <DatabaseName> [NAME <LongName>] ]  =>   ;
-    __FoxSqlSelectTable(<"udc">,<"TableName">, <"DatabaseName">, <"LongName">)     
-
+    __NOFOXPROSQL__   // __FoxSqlSelectTable(<"udc">,<"TableName">, <"DatabaseName">, <"LongName">)     
+    
 
 // SQL Insert commands
     
 #command INSERT INTO <*dbfAndFields*> VALUES <*values*>    => ;
-    __FoxSqlCommand(<"udc">)
+    __NOFOXPROSQL__   // __FoxSqlCommand(<"udc">)
 
 #command INSERT INTO <*dbfAndFields*> SELECT <*selectClause*>   => ;
-    __FoxSqlCommand(<"udc">)
+    __NOFOXPROSQL__   // __FoxSqlCommand(<"udc">)
     
 #command INSERT INTO <*dbfAndFields*> FROM MEMVAR => ;
-    __FoxSqlInsertMemVar(<"udc">)
+    __NOFOXPROSQL__   // __FoxSqlInsertMemVar(<"udc">)
 
 #command INSERT INTO <*dbfAndFields*> FROM ARRAY <arrayName>   => ;
-    __FoxSqlInsertArray(<"udc">,<arrayName>)
+    __NOFOXPROSQL__   // __FoxSqlInsertArray(<"udc">,<arrayName>)
 
 #command INSERT INTO <*dbfAndFields*> FROM NAME <objectName>   => ;
-    __FoxSqlInsertObject(<"udc">,<objectName>)
+    __NOFOXPROSQL__   // __FoxSqlInsertObject(<"udc">,<objectName>)
 
 // SQL Delete commands
 #command DELETE [<*target*>] FROM <moreClauses,...> => ;
-    __FoxSqlDelete(<"udc"> )
+    __NOFOXPROSQL__   // __FoxSqlDelete(<"udc"> )
 
 // SQL Update Commands
 #command UPDATE <target,...> SET <otherClauses,...> => ;
-    __FoxSqlUpdate(<"udc">)
+    __NOFOXPROSQL__   // __FoxSqlUpdate(<"udc">)
 
 
 // SQL Create Commands
 #command CREATE SQL VIEW <clauses,...> => ;
-    __FoxSqlCreateView(<"udc">)
+    __NOFOXPROSQL__   // __FoxSqlCreateView(<"udc">)
 
 #command CREATE TABLE <*clauses*> => ;
-    __FoxSqlCreateTable(<"udc">)
+    __NOFOXPROSQL__   // __FoxSqlCreateTable(<"udc">)
 
 #command CREATE CURSOR <*clauses*> => ;
-    __FoxSqlCreateCursor(<"udc">)
+    __NOFOXPROSQL__   // __FoxSqlCreateCursor(<"udc">)
 
 #command DROP TABLE <*clauses*> => ;
-    __FoxSqlCommand(<"udc">)
+    __NOFOXPROSQL__   // __FoxSqlCommand(<"udc">)
 
 #command DROP VIEW <*clauses*> => ;
-    __FoxSqlCommand(<"udc">)
+    __NOFOXPROSQL__   // __FoxSqlCommand(<"udc">)
 
 // SQL Alter Commands
 
 #command ALTER TABLE <*clauses*> => ;
-    __FoxSqlCreateTable(<"udc">)
+    __NOFOXPROSQL__   // __FoxSqlCreateTable(<"udc">)
 
 // Unsupported commands
 

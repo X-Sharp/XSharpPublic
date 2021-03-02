@@ -21,7 +21,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
 {
     internal class XsFoxMemberAccessSymbol : XsVariableSymbol
     {
-        internal XsFoxMemberAccessSymbol(string alias, string name, MethodSymbol getMethod, MethodSymbol setMethod, TypeSymbol type):
+        internal XsFoxMemberAccessSymbol(string alias, string name, MethodSymbol getMethod, MethodSymbol setMethod, TypeWithAnnotations type):
             base(alias, name, getMethod, setMethod, type)
         {
         }
@@ -34,16 +34,17 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
         private readonly string _alias;
         private readonly MethodSymbol _getMethod;
         private readonly MethodSymbol _setMethod;
-        private TypeSymbol _type;
+        private readonly TypeWithAnnotations _type;
 
-        internal XsVariableSymbol(string name, MethodSymbol getMethod, MethodSymbol setMethod, TypeSymbol type)
+        internal XsVariableSymbol(string name, MethodSymbol getMethod, MethodSymbol setMethod, TypeWithAnnotations type)
         {
             _name = name;
             _getMethod = getMethod;
             _setMethod = setMethod;
             _type = type;
+            _alias = string.Empty;
         }
-        internal XsVariableSymbol(string alias, string name, MethodSymbol getMethod, MethodSymbol setMethod, TypeSymbol type)
+        internal XsVariableSymbol(string alias, string name, MethodSymbol getMethod, MethodSymbol setMethod, TypeWithAnnotations type)
         {
             _alias = alias;
             _name = name;
@@ -54,12 +55,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
 
         public override RefKind RefKind => RefKind.None;
 
-        public override TypeSymbol Type => _type;
+        public override TypeWithAnnotations TypeWithAnnotations => _type;
         public override string Name => _name;
         public string Alias => _alias;
         public bool HasAlias => !string.IsNullOrEmpty(_alias);
 
-        public override ImmutableArray<CustomModifier> TypeCustomModifiers => ImmutableArray<CustomModifier>.Empty;
+        //public override ImmutableArray<CustomModifier> TypeCustomModifiers => ImmutableArray<CustomModifier>.Empty;
 
         public override ImmutableArray<CustomModifier> RefCustomModifiers => ImmutableArray<CustomModifier>.Empty;
 

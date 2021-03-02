@@ -3,7 +3,7 @@
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
-
+#nullable disable
 
 using System;
 using System.Collections.Generic;
@@ -18,14 +18,97 @@ using Roslyn.Utilities;
 using XP = LanguageService.CodeAnalysis.XSharp.SyntaxParser.XSharpParser;
 using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
 using Microsoft.CodeAnalysis.PooledObjects;
+
 namespace Microsoft.CodeAnalysis.CSharp
 {
-    /// <summary>
+
+     /// <summary>
     /// This portion of the binder converts an <see cref="ExpressionSyntax"/> into a <see cref="BoundExpression"/>.
     /// </summary>
     internal partial class Binder
     {
 
+        ArrayBuilder<BoundExpression> XsGetDefaultArguments(ArrayBuilder<BoundExpression> arguments, ImmutableArray<ParameterSymbol> parameters)
+        {
+            if (parameters.Length == 0)
+            {
+                return arguments;
+            }
+            for (var i = 0; i < arguments.Count; i++)
+            {
+                var arg = arguments[i];
+                if (arg.Syntax.XIsMissingArgument)
+                {
+
+                    if (i < parameters.Length && !parameters[i].IsParams)
+                    {
+                        var parameter = parameters[i];
+                        var defValue = XsDefaultValue(parameter);
+                        if (defValue != ConstantValue.Null)
+                        {
+                            arguments[i] = new BoundLiteral(arg.Syntax, defValue, parameter.Type);
+                        }
+                        else
+                        {
+                            arguments[i] = new BoundDefaultExpression(arg.Syntax, parameter.Type, false);
+                        }
+                    }
+                    else
+                    {
+                        var parameter = parameters[parameters.Length - 1];
+                        if (parameter.IsParams && parameter.Type.IsArray())
+                        {
+                            var at = (ArrayTypeSymbol)parameter.Type;
+                            if (!Equals(at.ElementType, arg.Type))
+                            {
+                                arguments[i] = new BoundDefaultExpression(arg.Syntax, at.ElementType, false);
+                            }
+                        }
+                    }
+
+                }
+            }
+            return arguments;
+        }
+
+
+        private static ConstantValue XsDefaultValue(ParameterSymbol parameter)
+        {
+            TypeSymbol parameterType = parameter.Type;
+            var defaultConstantValue = parameter.GetVODefaultParameter();
+            if (defaultConstantValue == null)
+                return null;
+            if (parameterType is NamedTypeSymbol nts && nts.ConstructedFrom.IsPszType())
+            {
+
+                if (defaultConstantValue.StringValue != null)
+                {
+                    // ToDo
+                    // when the parameter is of type PSZ and there was a literal default string
+                    // then Vulcan generates a special literal array in the calling code.
+                    // For example Foo(s := "abcë" AS PSZ) becomes a
+                    // Foo([DefaultParameterValue("abc\x00eb", 0)] __Psz s)
+                    //
+                    // and in the calling code the default parameter is stored as a field of the <Module> class
+                    //
+                    // .field assembly static valuetype $ArrayType$5 䌤㘲␵$PSZ$_15_1 = ((61 62 63 EB 00))
+                    //
+                    // and a type is declared for the array size of 5 bytes. This type is declared in the global namespace:
+                    //
+                    // [StructLayout(LayoutKind.Explicit, Size=5, Pack=1)]
+                    //    public struct $ArrayType$5
+                    //    {
+                    //    }
+                    //
+                    // The call to the function becomes
+                    // Foo((__Psz) &䌤㘲␵$PSZ$_15_1);
+                    // Nikos can you implement something like this ?
+                    //
+                    defaultConstantValue = ConstantValue.Null;
+                }
+            }
+            return defaultConstantValue;
+        }
         private BoundExpression BindXsInvocationExpression(
             InvocationExpressionSyntax node,
             DiagnosticBag diagnostics)
@@ -36,7 +119,6 @@ namespace Microsoft.CodeAnalysis.CSharp
             {
                 return result; // all of the binding is done by BindNameofOperator
             }
-
             // M(__arglist()) is legal, but M(__arglist(__arglist()) is not!
             bool isArglist = node.Expression.Kind() == SyntaxKind.ArgListExpression;
             AnalyzedArguments analyzedArguments = AnalyzedArguments.GetInstance();
@@ -59,21 +141,54 @@ namespace Microsoft.CodeAnalysis.CSharp
                 else
                 {
                     // FoxPro allows () for array indexes
-                    if (Compilation.Options.Dialect == XSharpDialect.FoxPro && analyzedArguments.Arguments.Count > 0)
-                    {
-                        var expression = BindExpression(node.Expression, diagnostics);
-                        if (expression.Kind != BoundKind.BadExpression ) 
-                        {
-                            var type = expression.Type;
-                            if (type.IsArrayType() || type.IsUsualType())
-                                return BindIndexerOrVOArrayAccess(node.Expression, expression, analyzedArguments, diagnostics);
-                        }
-                    }
+                    //if (Compilation.Options.Dialect == XSharpDialect.FoxPro && analyzedArguments.Arguments.Count > 0)
+                    //{
+                    //    var nodeExpression = node.Expression;
+                    //    if (nodeExpression is SimpleNameSyntax simple)
+                    //    {
+                    //        var id = BindXSIdentifier(simple, false, diagnostics, false);
+                    //        if (id.Kind != BoundKind.MethodGroup)
+                    //        {
+                    //            return BindIndexerOrVOArrayAccess(node.Expression, id, analyzedArguments, diagnostics);
+                    //        }
+                    //    }
+                    //    var expression = BindExpression(node.Expression, diagnostics);
+                    //    if (expression.Kind != BoundKind.BadExpression)
+                    //    {
+                    //        var type = expression.Type;
+                    //        if (type.IsArrayType() || type.IsUsualType())
+                    //            return BindIndexerOrVOArrayAccess(node.Expression, expression, analyzedArguments, diagnostics);
+                    //    }
+                    //}
 
                     BoundExpression boundExpression = BindMethodGroup(node.Expression, invoked: true, indexed: false, diagnostics: diagnostics);
                     boundExpression = CheckValue(boundExpression, BindValueKind.RValueOrMethodGroup, diagnostics);
                     string name = boundExpression.Kind == BoundKind.MethodGroup ? GetName(node.Expression) : null;
                     result = BindInvocationExpression(node, node.Expression, name, boundExpression, analyzedArguments, diagnostics);
+                    if (result is BoundCall bc)
+                    {
+
+                        // check if MethodSymbol has the NeedAccessToLocals attribute combined with /fox2
+                        if (Compilation.Options.Dialect == XSharpDialect.FoxPro &&
+                            Compilation.Options.HasOption(CompilerOption.MemVars, node) &&
+                            bc.Method.NeedAccessToLocals(out var writeAccess))
+                        {
+                            var localsymbols = new List<LocalSymbol>();
+                            var binder = this;
+                            while (binder != null)
+                            {
+                                localsymbols.AddRange(binder.Locals);
+                                if (binder is InMethodBinder)
+                                    break;
+                                binder = binder.Next;
+                            }
+                            var root = node.SyntaxTree.GetRoot() as CompilationUnitSyntax;
+                            if (localsymbols.Count > 0)
+                            {
+                                root.RegisterFunctionThatNeedsAccessToLocals(node.CsNode, writeAccess, localsymbols);
+                            }
+                        }
+                    }
                 }
             }
             analyzedArguments.Free();
@@ -81,6 +196,7 @@ namespace Microsoft.CodeAnalysis.CSharp
 
         }
 
+  
         private void BindPCall(InvocationExpressionSyntax node, DiagnosticBag diagnostics, AnalyzedArguments analyzedArguments)
         {
             if (node.XPCall && node.Expression is GenericNameSyntax)
@@ -127,11 +243,11 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
             return null;
         }
-        private void BindPCallAndDelegate(InvocationExpressionSyntax node, ArrayBuilder<BoundExpression> args, 
-            DiagnosticBag diagnostics, TypeSyntax type)
+        private void BindPCallAndDelegate(InvocationExpressionSyntax node, ArrayBuilder<BoundExpression> args,
+                DiagnosticBag diagnostics, TypeSyntax type)
         {
             var XNode = node.XNode as XP.MethodCallContext;
-            string method = XNode?.Expr.GetText(); 
+            string method = XNode?.Expr.GetText();
             if (string.IsNullOrEmpty(method))
                 method = "PCALL";
             if (!ValidatePCallArguments(node, args, diagnostics, method))
@@ -140,12 +256,12 @@ namespace Microsoft.CodeAnalysis.CSharp
             if (kind != BoundKind.Local && kind != BoundKind.FieldAccess)
             {
                 Error(diagnostics, ErrorCode.ERR_PCallFirstArgument, node, method, "typed function pointer");
-                return ;
+                return;
             }
             string methodName = null;
             // Note that this does not get the syntax of the argument itself
             // but the syntax of the place where the symbol (Global, Field or Local) that the argument points to was defined
-            SyntaxReference syntaxref = null; 
+            SyntaxReference syntaxref = null;
             if (kind == BoundKind.FieldAccess)
             {
                 var bfa = args[0] as BoundFieldAccess;  // Global or Field
@@ -169,11 +285,11 @@ namespace Microsoft.CodeAnalysis.CSharp
                 methodName = GetTypedPtrName(xNode);
             }
 
-            if (methodName == null )
+            if (methodName == null)
             {
                 // first argument for pcall must be typed ptr
                 Error(diagnostics, ErrorCode.ERR_PCallFirstArgument, node, method, "typed function pointer");
-                return ;
+                return;
             }
             var lookupResult = LookupResult.GetInstance();
             HashSet<DiagnosticInfo> useSiteDiagnostics = null;
@@ -193,7 +309,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 {
                     if (symbol.DeclaringCompilation == this.Compilation && symbol is SourceMethodSymbol)
                     {
-                        methodSym = (SourceMethodSymbol) symbol;
+                        methodSym = (SourceMethodSymbol)symbol;
                         break;
                     }
                 }
@@ -206,7 +322,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             {
                 lookupResult.Clear();
                 var ts = FindPCallDelegateType(type as IdentifierNameSyntax);
-                if (ts != null && ts.IsDelegateType())
+                if (ts is { } && ts.IsDelegateType())
                 {
                     SourceDelegateMethodSymbol delmeth = ts.DelegateInvokeMethod() as SourceDelegateMethodSymbol;
                     // clone the parameters from the methodSym
@@ -214,16 +330,17 @@ namespace Microsoft.CodeAnalysis.CSharp
                     foreach (var par in methodSym.Parameters)
                     {
                         var parameter = new SourceSimpleParameterSymbol(
-                            delmeth,
-                            par.Type,
-                            par.Ordinal,
-                            par.RefKind,
-                            par.Name,
-                            par.Locations);
+                            owner: delmeth,
+                            parameterType: TypeWithAnnotations.Create(par.Type),
+                            ordinal: par.Ordinal,
+                            refKind: par.RefKind,
+                            name: par.Name,
+                            isDiscard: false,
+                            locations: par.Locations);
                         builder.Add(parameter);
                     }
                     delmeth.InitializeParameters(builder.ToImmutableAndFree());
-                    delmeth.SetReturnType(methodSym.ReturnType);
+                    delmeth.SetReturnType(TypeWithAnnotations.Create(methodSym.ReturnType));
                 }
                 else
                 {
@@ -256,13 +373,13 @@ namespace Microsoft.CodeAnalysis.CSharp
         }
 
         private bool ValidatePCallArguments(InvocationExpressionSyntax node, ArrayBuilder<BoundExpression> args,
-            DiagnosticBag diagnostics, string method)
+                DiagnosticBag diagnostics, string method)
         {
             bool ok = args.Count == 1;
-            if (ok  )
+            if (ok)
             {
                 var argType = args[0].Type;
-                ok = argType == Compilation.GetSpecialType(SpecialType.System_IntPtr);
+                ok = TypeSymbol.Equals(argType, Compilation.GetSpecialType(SpecialType.System_IntPtr));
                 ok = ok | argType.IsVoidPointer();
                 ok = ok | argType.IsPointerType();
             }
@@ -274,10 +391,10 @@ namespace Microsoft.CodeAnalysis.CSharp
         }
 
         private void BindPCallNativeAndDelegate(InvocationExpressionSyntax node, ArrayBuilder<BoundExpression> args,
-            DiagnosticBag diagnostics, TypeSyntax type)
+                DiagnosticBag diagnostics, TypeSyntax type)
         {
             var XNode = node.XNode as XP.MethodCallContext;
-            string method = XNode?.Expr.GetText() ;
+            string method = XNode?.Expr.GetText();
             if (string.IsNullOrEmpty(method))
                 method = "PCALLNATIVE";
             if (!ValidatePCallArguments(node, args, diagnostics, method))
@@ -287,9 +404,9 @@ namespace Microsoft.CodeAnalysis.CSharp
             try
             {
                 var ts = FindPCallDelegateType(type as IdentifierNameSyntax);
-                if (ts != null && ts.IsDelegateType())
+                if (ts is { } && ts.IsDelegateType())
                 {
-                    SourceDelegateMethodSymbol delmeth = ts.DelegateInvokeMethod() as SourceDelegateMethodSymbol;
+                    var delmeth = ts.DelegateInvokeMethod() as SourceDelegateMethodSymbol;
                     // create new parameters based on the parameters from out parent call
                     var invoke = node.Parent as InvocationExpressionSyntax;
                     var realargs = invoke.ArgumentList;
@@ -300,15 +417,16 @@ namespace Microsoft.CodeAnalysis.CSharp
                     foreach (var expr in analyzedArguments.Arguments)
                     {
                         var ptype = expr.Type;
-                        if (ptype == null)
-                            ptype = new PointerTypeSymbol(Compilation.GetSpecialType(SpecialType.System_Void));
+                        if (ptype is null)
+                            ptype = new PointerTypeSymbol(TypeWithAnnotations.Create(Compilation.GetSpecialType(SpecialType.System_Void)));
                         var parameter = new SourceSimpleParameterSymbol(
-                            delmeth,
-                            ptype,
-                            i,
-                            delparams[i].RefKind,
-                            delparams[i].Name,
-                            delparams[i].Locations);
+                            owner: delmeth,
+                            parameterType: TypeWithAnnotations.Create(ptype),
+                            ordinal: i,
+                            refKind: delparams[i].RefKind,
+                            name: delparams[i].Name,
+                            isDiscard: false,
+                            locations: delparams[i].Locations);
                         builder.Add(parameter);
                         i++;
                     }
@@ -352,3 +470,4 @@ namespace Microsoft.CodeAnalysis.CSharp
 
     }
 }
+

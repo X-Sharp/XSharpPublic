@@ -3,6 +3,7 @@
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
+#nullable disable
 using Antlr4.Runtime;
 using System;
 using System.Collections.Generic;
@@ -58,6 +59,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         public bool SaveAsCSharp { get; internal set; } = false;
         public bool DumpAST { get; internal set; } = false;
         public bool ShowDefs { get; internal set; } = false;
+        public bool EnforceSelf { get; internal set; } = false;
         public bool ShowIncludes { get; internal set; } = false;
         public string StdDefs { get; internal set; } = "XSharpDefs.xh";
         public XSharpTargetDLL TargetDLL { get; internal set; } = XSharpTargetDLL.Other;
@@ -81,7 +83,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         public bool Xpp1 { get; internal set; } = false;
         public bool Xpp2 { get; internal set; } = false;
         public bool Fox1 { get; internal set; } = false;
-        public bool Fox2 { get; internal set; } = false;
+        //public bool Fox2 { get; internal set; } = false;
         public bool VulcanRTFuncsIncluded => RuntimeAssemblies.HasFlag(RuntimeAssemblies.VulcanRTFuncs);
         public bool VulcanRTIncluded => RuntimeAssemblies.HasFlag(RuntimeAssemblies.VulcanRT);
         public bool XSharpRTIncluded => RuntimeAssemblies.HasFlag(RuntimeAssemblies.XSharpRT);
@@ -97,7 +99,6 @@ namespace Microsoft.CodeAnalysis.CSharp
         public bool UseNativeVersion { get; internal set; } = false;
         public string PreviousArgument { get; internal set; } = string.Empty;
         public TextWriter ConsoleOutput { get; internal set; }
-
 
         public void SetOption(CompilerOption option, bool value)
         {
@@ -154,9 +155,9 @@ namespace Microsoft.CodeAnalysis.CSharp
                 case CompilerOption.Fox1:
                     Fox1 = value;
                     break;
-                case CompilerOption.Fox2:
-                    Fox2 = value;
-                    break;
+                //case CompilerOption.Fox2:
+                //    Fox2 = value;
+                //    break;
                 case CompilerOption.Xpp1:
                     Xpp1 = value;
                     break;
@@ -180,6 +181,9 @@ namespace Microsoft.CodeAnalysis.CSharp
                     break;
                 case CompilerOption.Overflow:
                     Overflow = value;
+                    break;
+                case CompilerOption.EnforceSelf:
+                    EnforceSelf = value;
                     break;
             }
         }
@@ -264,8 +268,8 @@ namespace Microsoft.CodeAnalysis.CSharp
         Xpp1 = 1 << 17,
         Xpp2 = 1 << 18,
         Fox1 = 1 << 19,
-        Fox2 = 1 << 20,
-        FoxExposeLocals = Fox2,
+        //Fox2 = 1 << 20,
+        //FoxExposeLocals = Fox2,
         InitLocals = 1 << 21,
         NamedArgs = 1 << 22,
         ArrayZero = 1 << 23,
@@ -274,6 +278,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         MemVars = 1 << 26,
         UndeclaredMemVars = 1 << 27,
         ClrVersion = 1 << 28,
+        EnforceSelf = 1 << 29,
         All = -1
 
     }
@@ -290,8 +295,8 @@ namespace Microsoft.CodeAnalysis.CSharp
                     return CompilerOption.Overflow;
                 case "fox1":
                     return CompilerOption.Fox1;
-                case "fox2":
-                    return CompilerOption.Fox2;
+                //case "fox2":
+                //    return CompilerOption.Fox2;
                 case "initlocals":
                     return CompilerOption.InitLocals;
                 case "ins":
@@ -305,6 +310,8 @@ namespace Microsoft.CodeAnalysis.CSharp
                     return CompilerOption.NamedArgs;
                 case "ovf":
                     return CompilerOption.Overflow;
+                case "enforceself":
+                    return CompilerOption.EnforceSelf;
                 case "undeclared":
                     return CompilerOption.UndeclaredMemVars;
                 case "vo1":

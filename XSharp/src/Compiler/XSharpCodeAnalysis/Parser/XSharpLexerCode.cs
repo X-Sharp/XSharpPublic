@@ -4,6 +4,7 @@
 // See License.txt in the project root for license information.
 //
 
+#nullable disable
 using System.Collections.Immutable;
 using System.Collections.Generic;
 using Microsoft.CodeAnalysis.CSharp;
@@ -48,7 +49,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
         }
         public static bool IsIdentifier(int iToken)
         {
-            return iToken == ID || iToken == KWID;
+            return iToken == ID;
         }
 
         public static bool IsType(int iToken)
@@ -689,33 +690,30 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
 
         private void handleTrivia(XSharpToken t)
         {
-            switch (t.Channel)
+            if (t.IsTrivia)
             {
-                case TokenConstants.DefaultChannel:
-                case PREPROCESSORCHANNEL:
-                    if (_trivia.Count > 0)
-                    {
-                        t.Trivia = _trivia.ToImmutableArray();
-                        _trivia.Clear();
-                    }
-                    break;
-                case TokenConstants.HiddenChannel:
-                case XMLDOCCHANNEL:
-                    _trivia.Add(t);
-                    break;
+                _trivia.Add(t);
+            }
+            else if (t.CanHaveTrivia && _trivia.Count > 0)
+            {
+                t.Trivia = _trivia.ToImmutableArray();
+                _trivia.Clear();
             }
 
         }
         private void handleSpecialFunctions()
         {
             // Handle function names that are the same as keywords
+            // This gets called when the LPAREN token is found
+            // This prevents the tokens to be seen as keyword and also makes
+            // Sure that in the editor the case of the tokens is not changed
             switch (LastToken)
             {
                 case FOR:                               // For ()  
                 case FIELD:                             // Field()
                     if (Dialect == XSharpDialect.FoxPro)
                     {
-                        _lastToken.Type = ID;           
+                        _lastToken.Type = ID;
                     }
                     break;
                 case DATETIME:                          // DateTime (....)
@@ -771,7 +769,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                             parseFoxProDate();
                         }
                         else
-                        { 
+                        {
                             parseOne(LCURLY);
                         }
                         break;
@@ -955,7 +953,13 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                     case '?':
                         parseOne(QMARK);
                         if (La_1 == '?')
+                        {
                             parseOne(QQMARK);
+                            if (La_1 == '=')
+                            {
+                                parseOne(ASSIGN_QQMARK);
+                            }
+                        }
                         break;
 
                     case '=':
@@ -977,7 +981,6 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                                 parseOne(SUBSTR);
                                 break;
                         }
-                        
                         break;
                     case '!':
                         parseOne(NOT);
@@ -1295,7 +1298,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                         }
                         _inDottedIdentifier = true;
                     }
-                    else if (type == ID || type == KWID)
+                    else if (type == ID)
                     {
                         _inDottedIdentifier = true;
                     }
@@ -1308,13 +1311,12 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                         t.Type = ID;
                         // keep _inDottedIdentifier true
                     }
-                    else if (type != DOT && type != ID && type != KWID)
+                    else if (type != DOT && type != ID )
                     {
                         _inDottedIdentifier = false;
                     }
                 }
             }
-            
             if (type == NL)    // Semi colon EOS is handled in parseSemi()
             {
                 if (_beginOfStatement)
@@ -1492,9 +1494,15 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                         return ID;
                     }
                     break;
+                case DEFAULT:
+                    if (StartOfLine(lastToken))     // DEFAULT is not a keyword when at the start of a line like in Default(@someVar, someValue)
+                    {
+                        return ID;
+                    }
+                    break;
                 // Next tokens only at Start of Line or after STATIC or INTERNAL
                 case DEFINE:
-                    if (!StartOfLine(lastToken) && !IsModifier(lastToken)  && lastToken != END )
+                    if (!StartOfLine(lastToken) && !IsModifier(lastToken) && lastToken != END)
                     {
                         return ID;
                     }
@@ -1506,7 +1514,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                         return ID;
                     }
                     break;
-                // Next token only at Start of Line or after BEGIN, and END
+                // Next tokens only at Start of Line or after END
                 case TRY:
                     if (!StartOfLine(lastToken) && lastToken != END)
                     {
@@ -1623,7 +1631,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                                 return ID;
 
                         case LOCAL:
-                            if (keyword == FUNCTION || keyword == PROCEDURE)    // local function and procedure statement
+                            if (keyword == FUNCTION || keyword == PROCEDURE || keyword == ARRAY)    // local function and procedure statement and local array
                                 return keyword;
                             return ID;
 
@@ -2019,8 +2027,6 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                     }
                 }
            }
-
-              
             if (dialect == XSharpDialect.FoxPro)
             {
                 // Visual FoxPro Keywords
@@ -2038,7 +2044,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                     {"XOR", FOX_XOR},
                     {"EACH", EACH },                // Only after FOR
                     {"M", FOX_M }                   // FoxPro allows LOCAL M.Name and PRIVATE M.Name
-                }; 
+                };
                 var vfpKeyWordAbbrev = new Dictionary<string, int>
                 {
                     {"ENDDEFINE", ENDDEFINE },
@@ -2200,6 +2206,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                     { "FIXED", FIXED},
                     { "FROM", FROM},
                     { "GROUP", GROUP},
+                    { "INIT", INIT},
                     { "INTO", INTO},
                     { "JOIN", JOIN},
                     { "LET", LET},
@@ -2226,6 +2233,8 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
 
                     // XSharp types
                     { "DYNAMIC", DYNAMIC},
+                    { "NINT", NINT },
+                    { "NUINT", NUINT },
 
                     // Macros
                     { "__ARRAYBASE__", MACRO},

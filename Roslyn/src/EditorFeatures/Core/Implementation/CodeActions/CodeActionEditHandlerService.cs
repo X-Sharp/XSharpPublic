@@ -1,16 +1,19 @@
-﻿// Copyright (c) Microsoft.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
+﻿// Licensed to the .NET Foundation under one or more agreements.
+// The .NET Foundation licenses this file to you under the MIT license.
+// See the LICENSE file in the project root for more information.
+
+#nullable disable
 
 using System;
-using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.ComponentModel.Composition;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading;
-using System.Threading.Tasks;
 using Microsoft.CodeAnalysis.CodeActions;
 using Microsoft.CodeAnalysis.Editor.Shared.Utilities;
 using Microsoft.CodeAnalysis.Editor.Undo;
+using Microsoft.CodeAnalysis.Host.Mef;
 using Microsoft.CodeAnalysis.Navigation;
 using Microsoft.CodeAnalysis.Notification;
 using Microsoft.CodeAnalysis.Shared.Extensions;
@@ -28,10 +31,13 @@ namespace Microsoft.CodeAnalysis.Editor.Implementation.CodeActions
         private readonly ITextBufferAssociatedViewService _associatedViewService;
 
         [ImportingConstructor]
+        [Obsolete(MefConstruction.ImportingConstructorMessage, error: true)]
         public CodeActionEditHandlerService(
+            IThreadingContext threadingContext,
             IPreviewFactoryService previewService,
             IInlineRenameService renameService,
             ITextBufferAssociatedViewService associatedViewService)
+            : base(threadingContext)
         {
             _previewService = previewService;
             _renameService = renameService;
@@ -71,7 +77,7 @@ namespace Microsoft.CodeAnalysis.Editor.Implementation.CodeActions
                 if (op is PreviewOperation previewOp)
                 {
                     currentResult = SolutionPreviewResult.Merge(currentResult,
-                        new SolutionPreviewResult(new SolutionPreviewItem(
+                        new SolutionPreviewResult(ThreadingContext, new SolutionPreviewItem(
                             projectId: null, documentId: null,
                             lazyPreview: c => previewOp.GetPreviewAsync(c))));
                     continue;
@@ -82,7 +88,7 @@ namespace Microsoft.CodeAnalysis.Editor.Implementation.CodeActions
                 if (title != null)
                 {
                     currentResult = SolutionPreviewResult.Merge(currentResult,
-                        new SolutionPreviewResult(new SolutionPreviewItem(
+                        new SolutionPreviewResult(ThreadingContext, new SolutionPreviewItem(
                             projectId: null, documentId: null, text: title)));
                     continue;
                 }
@@ -91,7 +97,7 @@ namespace Microsoft.CodeAnalysis.Editor.Implementation.CodeActions
             return currentResult;
         }
 
-        public async Task ApplyAsync(
+        public bool Apply(
             Workspace workspace, Document fromDocument,
             ImmutableArray<CodeActionOperation> operations,
             string title, IProgressTracker progressTracker,
@@ -101,7 +107,7 @@ namespace Microsoft.CodeAnalysis.Editor.Implementation.CodeActions
 
             if (operations.IsDefaultOrEmpty)
             {
-                return;
+                return _renameService.ActiveSession is null;
             }
 
             if (_renameService.ActiveSession != null)
@@ -109,7 +115,7 @@ namespace Microsoft.CodeAnalysis.Editor.Implementation.CodeActions
                 workspace.Services.GetService<INotificationService>()?.SendNotification(
                     EditorFeaturesResources.Cannot_apply_operation_while_a_rename_session_is_active,
                     severity: NotificationSeverity.Error);
-                return;
+                return false;
             }
 
 #if DEBUG && false
@@ -118,9 +124,7 @@ namespace Microsoft.CodeAnalysis.Editor.Implementation.CodeActions
             {
                 foreach (var document in project.Documents)
                 {
-                    // ConfigureAwait(true) so we come back to the same thread as 
-                    // we do all application on the UI thread.                    
-                    if (!await document.HasAnyErrorsAsync(cancellationToken).ConfigureAwait(true))
+                    if (!document.HasAnyErrorsAsync(cancellationToken).WaitAndGetResult(cancellationToken))
                     {
                         documentErrorLookup.Add(document.Id);
                     }
@@ -130,54 +134,54 @@ namespace Microsoft.CodeAnalysis.Editor.Implementation.CodeActions
 
             var oldSolution = workspace.CurrentSolution;
 
+            bool applied;
+
             // Determine if we're making a simple text edit to a single file or not.
             // If we're not, then we need to make a linked global undo to wrap the 
             // application of these operations.  This way we should be able to undo 
             // them all with one user action.
             //
-            // The reason we don't always create a gobal undo is that a global undo
+            // The reason we don't always create a global undo is that a global undo
             // forces all files to save.  And that's rather a heavyweight and 
             // unexpected experience for users (for the common case where a single 
             // file got edited).
             var singleChangedDocument = TryGetSingleChangedText(oldSolution, operations);
             if (singleChangedDocument != null)
             {
-                // ConfigureAwait(true) so we come back to the same thread as 
-                // we do all application on the UI thread.
-                var text = await singleChangedDocument.GetTextAsync(cancellationToken).ConfigureAwait(true);
+                var text = singleChangedDocument.GetTextSynchronously(cancellationToken);
 
                 using (workspace.Services.GetService<ISourceTextUndoService>().RegisterUndoTransaction(text, title))
                 {
-                    operations.Single().Apply(workspace, cancellationToken);
+                    applied = operations.Single().TryApply(workspace, progressTracker, cancellationToken);
                 }
             }
             else
             {
                 // More than just a single document changed.  Make a global undo to run 
                 // all the changes under.
-                using (var transaction = workspace.OpenGlobalUndoTransaction(title))
+                using var transaction = workspace.OpenGlobalUndoTransaction(title);
+
+                // link current file in the global undo transaction
+                // Do this before processing operations, since that can change
+                // documentIds.
+                if (fromDocument != null)
                 {
-                    // ConfigureAwait(true) so we come back to the same thread as 
-                    // we do all application on the UI thread.
-                    ProcessOperations(
-                        workspace, operations, progressTracker,
-                        cancellationToken);
-
-                    // link current file in the global undo transaction
-                    if (fromDocument != null)
-                    {
-                        transaction.AddDocument(fromDocument.Id);
-                    }
-
-                    transaction.Commit();
+                    transaction.AddDocument(fromDocument.Id);
                 }
+
+                applied = ProcessOperations(
+                    workspace, operations, progressTracker,
+                    cancellationToken);
+
+                transaction.Commit();
             }
 
             var updatedSolution = operations.OfType<ApplyChangesOperation>().FirstOrDefault()?.ChangedSolution ?? oldSolution;
             TryNavigateToLocationOrStartRenameSession(workspace, oldSolution, updatedSolution, cancellationToken);
+            return applied;
         }
 
-        private TextDocument TryGetSingleChangedText(
+        private static TextDocument TryGetSingleChangedText(
             Solution oldSolution, ImmutableArray<CodeActionOperation> operationsList)
         {
             Debug.Assert(operationsList.Length > 0);
@@ -186,8 +190,7 @@ namespace Microsoft.CodeAnalysis.Editor.Implementation.CodeActions
                 return null;
             }
 
-            var applyOperation = operationsList.Single() as ApplyChangesOperation;
-            if (applyOperation == null)
+            if (!(operationsList.Single() is ApplyChangesOperation applyOperation))
             {
                 return null;
             }
@@ -211,11 +214,13 @@ namespace Microsoft.CodeAnalysis.Editor.Implementation.CodeActions
             if (projectChange.GetAddedAdditionalDocuments().Any() ||
                 projectChange.GetAddedAnalyzerReferences().Any() ||
                 projectChange.GetAddedDocuments().Any() ||
+                projectChange.GetAddedAnalyzerConfigDocuments().Any() ||
                 projectChange.GetAddedMetadataReferences().Any() ||
                 projectChange.GetAddedProjectReferences().Any() ||
                 projectChange.GetRemovedAdditionalDocuments().Any() ||
                 projectChange.GetRemovedAnalyzerReferences().Any() ||
                 projectChange.GetRemovedDocuments().Any() ||
+                projectChange.GetRemovedAnalyzerConfigDocuments().Any() ||
                 projectChange.GetRemovedMetadataReferences().Any() ||
                 projectChange.GetRemovedProjectReferences().Any())
             {
@@ -223,22 +228,42 @@ namespace Microsoft.CodeAnalysis.Editor.Implementation.CodeActions
             }
 
             var changedAdditionalDocuments = projectChange.GetChangedAdditionalDocuments().ToImmutableArray();
-            var changedDocuments = projectChange.GetChangedDocuments().ToImmutableArray();
+            var changedDocuments = projectChange.GetChangedDocuments(onlyGetDocumentsWithTextChanges: true).ToImmutableArray();
+            var changedAnalyzerConfigDocuments = projectChange.GetChangedAnalyzerConfigDocuments().ToImmutableArray();
 
-            if (changedAdditionalDocuments.Length + changedDocuments.Length != 1)
+            if (changedAdditionalDocuments.Length + changedDocuments.Length + changedAnalyzerConfigDocuments.Length != 1)
             {
                 return null;
             }
 
-            return changedDocuments.Length == 1
-                ? oldSolution.GetDocument(changedDocuments[0])
-                : oldSolution.GetAdditionalDocument(changedAdditionalDocuments[0]);
+            if (changedDocuments.Any(id => newSolution.GetDocument(id).HasInfoChanged(oldSolution.GetDocument(id))) ||
+                changedAdditionalDocuments.Any(id => newSolution.GetAdditionalDocument(id).HasInfoChanged(oldSolution.GetAdditionalDocument(id))) ||
+                changedAnalyzerConfigDocuments.Any(id => newSolution.GetAnalyzerConfigDocument(id).HasInfoChanged(oldSolution.GetAnalyzerConfigDocument(id))))
+            {
+                return null;
+            }
+
+            if (changedDocuments.Length == 1)
+            {
+                return oldSolution.GetDocument(changedDocuments[0]);
+            }
+            else if (changedAdditionalDocuments.Length == 1)
+            {
+                return oldSolution.GetAdditionalDocument(changedAdditionalDocuments[0]);
+            }
+            else
+            {
+                return oldSolution.GetAnalyzerConfigDocument(changedAnalyzerConfigDocuments[0]);
+            }
         }
 
-        private static void ProcessOperations(
+        /// <returns><see langword="true"/> if all expected <paramref name="operations"/> are applied successfully;
+        /// otherwise, <see langword="false"/>.</returns>
+        private static bool ProcessOperations(
             Workspace workspace, ImmutableArray<CodeActionOperation> operations,
             IProgressTracker progressTracker, CancellationToken cancellationToken)
         {
+            var applied = true;
             var seenApplyChanges = false;
             foreach (var operation in operations)
             {
@@ -253,8 +278,10 @@ namespace Microsoft.CodeAnalysis.Editor.Implementation.CodeActions
                     seenApplyChanges = true;
                 }
 
-                operation.TryApply(workspace, progressTracker, cancellationToken);
+                applied &= operation.TryApply(workspace, progressTracker, cancellationToken);
             }
+
+            return applied;
         }
 
         private void TryNavigateToLocationOrStartRenameSession(Workspace workspace, Solution oldSolution, Solution newSolution, CancellationToken cancellationToken)
@@ -271,16 +298,16 @@ namespace Microsoft.CodeAnalysis.Editor.Implementation.CodeActions
                 var root = document.GetSyntaxRootSynchronously(cancellationToken);
 
                 var navigationTokenOpt = root.GetAnnotatedTokens(NavigationAnnotation.Kind)
-                                             .FirstOrNullable();
+                                             .FirstOrNull();
                 if (navigationTokenOpt.HasValue)
                 {
                     var navigationService = workspace.Services.GetService<IDocumentNavigationService>();
-                    navigationService.TryNavigateToPosition(workspace, documentId, navigationTokenOpt.Value.SpanStart);
+                    navigationService.TryNavigateToPosition(workspace, documentId, navigationTokenOpt.Value.SpanStart, cancellationToken);
                     return;
                 }
 
                 var renameTokenOpt = root.GetAnnotatedTokens(RenameAnnotation.Kind)
-                                         .FirstOrNullable();
+                                         .FirstOrNull();
 
                 if (renameTokenOpt.HasValue)
                 {
@@ -298,7 +325,7 @@ namespace Microsoft.CodeAnalysis.Editor.Implementation.CodeActions
                     {
                         var editorWorkspace = workspace;
                         var navigationService = editorWorkspace.Services.GetService<IDocumentNavigationService>();
-                        if (navigationService.TryNavigateToSpan(editorWorkspace, documentId, resolvedRenameToken.Span))
+                        if (navigationService.TryNavigateToSpan(editorWorkspace, documentId, resolvedRenameToken.Span, cancellationToken))
                         {
                             var openDocument = workspace.CurrentSolution.GetDocument(documentId);
                             var openRoot = openDocument.GetSyntaxRootSynchronously(cancellationToken);

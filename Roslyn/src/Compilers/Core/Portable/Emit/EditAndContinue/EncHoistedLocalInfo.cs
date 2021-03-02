@@ -1,4 +1,8 @@
-﻿// Copyright (c) Microsoft.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
+﻿// Licensed to the .NET Foundation under one or more agreements.
+// The .NET Foundation licenses this file to you under the MIT license.
+// See the LICENSE file in the project root for more information.
+
+#nullable disable
 
 using System;
 using System.Diagnostics;
@@ -37,7 +41,7 @@ namespace Microsoft.CodeAnalysis.Emit
             Debug.Assert(other.Type != null);
 
             return this.SlotInfo.Equals(other.SlotInfo) &&
-                   this.Type.Equals(other.Type);
+                   Cci.SymbolEquivalentEqualityComparer.Instance.Equals(this.Type, other.Type);
         }
 
         public override bool Equals(object obj)
@@ -47,7 +51,7 @@ namespace Microsoft.CodeAnalysis.Emit
 
         public override int GetHashCode()
         {
-            return Hash.Combine(this.Type, this.SlotInfo.GetHashCode());
+            return Hash.Combine(Cci.SymbolEquivalentEqualityComparer.Instance.GetHashCode(this.Type), this.SlotInfo.GetHashCode());
         }
 
         private string GetDebuggerDisplay()

@@ -1,5 +1,10 @@
-﻿// Copyright (c) Microsoft.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
+﻿// Licensed to the .NET Foundation under one or more agreements.
+// The .NET Foundation licenses this file to you under the MIT license.
+// See the LICENSE file in the project root for more information.
 
+#nullable disable
+
+using System;
 using System.Collections.Immutable;
 using System.Linq;
 using Microsoft.CodeAnalysis.Tags;
@@ -7,10 +12,11 @@ using Roslyn.Utilities;
 
 namespace Microsoft.CodeAnalysis.Completion
 {
-    internal static class CommonCompletionItem 
+    internal static class CommonCompletionItem
     {
         public static CompletionItem Create(
             string displayText,
+            string displayTextSuffix,
             CompletionItemRules rules,
             Glyph? glyph = null,
             ImmutableArray<SymbolDisplayPart> description = default,
@@ -18,7 +24,8 @@ namespace Microsoft.CodeAnalysis.Completion
             string filterText = null,
             bool showsWarningIcon = false,
             ImmutableDictionary<string, string> properties = null,
-            ImmutableArray<string> tags = default)
+            ImmutableArray<string> tags = default,
+            string inlineDescription = null)
         {
             tags = tags.NullToEmpty();
 
@@ -33,7 +40,7 @@ namespace Microsoft.CodeAnalysis.Completion
                 tags = tags.Add(WellKnownTags.Warning);
             }
 
-            properties = properties ?? ImmutableDictionary<string, string>.Empty;
+            properties ??= ImmutableDictionary<string, string>.Empty;
             if (!description.IsDefault && description.Length > 0)
             {
                 properties = properties.Add("Description", EncodeDescription(description));
@@ -41,17 +48,17 @@ namespace Microsoft.CodeAnalysis.Completion
 
             return CompletionItem.Create(
                 displayText: displayText,
+                displayTextSuffix: displayTextSuffix,
                 filterText: filterText,
                 sortText: sortText,
                 properties: properties,
                 tags: tags,
-                rules: rules);
+                rules: rules,
+                inlineDescription: inlineDescription);
         }
 
         public static bool HasDescription(CompletionItem item)
-        {
-            return item.Properties.ContainsKey("Description");
-        }
+            => item.Properties.ContainsKey("Description");
 
         public static CompletionDescription GetDescription(CompletionItem item)
         {
@@ -65,12 +72,10 @@ namespace Microsoft.CodeAnalysis.Completion
             }
         }
 
-        private static char[] s_descriptionSeparators = new char[] { '|' };
+        private static readonly char[] s_descriptionSeparators = new char[] { '|' };
 
         private static string EncodeDescription(ImmutableArray<SymbolDisplayPart> description)
-        {
-            return EncodeDescription(description.ToTaggedText());
-        }
+            => EncodeDescription(description.ToTaggedText());
 
         private static string EncodeDescription(ImmutableArray<TaggedText> description)
         {
@@ -92,12 +97,12 @@ namespace Microsoft.CodeAnalysis.Completion
             var parts = encoded.Split(s_descriptionSeparators).Select(t => t.Unescape('\\')).ToArray();
 
             var builder = ImmutableArray<TaggedText>.Empty.ToBuilder();
-            for (int i = 0; i < parts.Length; i += 2)
+            for (var i = 0; i < parts.Length; i += 2)
             {
                 builder.Add(new TaggedText(parts[i], parts[i + 1]));
             }
 
             return CompletionDescription.Create(builder.ToImmutable());
-        } 
+        }
     }
 }

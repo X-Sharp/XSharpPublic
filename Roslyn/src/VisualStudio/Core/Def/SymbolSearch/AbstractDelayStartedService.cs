@@ -1,17 +1,20 @@
-﻿// Copyright (c) Microsoft.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
+﻿// Licensed to the .NET Foundation under one or more agreements.
+// The .NET Foundation licenses this file to you under the MIT license.
+// See the LICENSE file in the project root for more information.
+
+#nullable disable
 
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
+using System.Threading;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Editor.Shared.Utilities;
 using Microsoft.CodeAnalysis.Options;
 
 namespace Microsoft.VisualStudio.LanguageServices.SymbolSearch
 {
-    using Workspace = Microsoft.CodeAnalysis.Workspace;
-
     /// <summary>
     /// Base type for services that we want to delay running until certain criteria is met.
     /// For example, we don't want to run the <see cref="VisualStudioSymbolSearchService"/> core codepath
@@ -20,26 +23,31 @@ namespace Microsoft.VisualStudio.LanguageServices.SymbolSearch
     /// </summary>
     internal abstract class AbstractDelayStartedService : ForegroundThreadAffinitizedObject
     {
-        private readonly List<string> _registeredLanguageNames = new List<string>();
+        private readonly List<string> _registeredLanguageNames = new();
 
         protected readonly Workspace Workspace;
 
         // Option that controls if this service is enabled or not (regardless of language).
-        private readonly Option<bool> _serviceOnOffOption;
+        private readonly Option2<bool> _serviceOnOffOption;
 
         // Options that control if this service is enabled or not for a particular language.
-        private readonly ImmutableArray<PerLanguageOption<bool>> _perLanguageOptions;
+        private readonly ImmutableArray<PerLanguageOption2<bool>> _perLanguageOptions;
 
         private bool _enabled = false;
 
+        protected CancellationToken DisposalToken { get; }
+
         protected AbstractDelayStartedService(
+            IThreadingContext threadingContext,
             Workspace workspace,
-            Option<bool> onOffOption,
-            params PerLanguageOption<bool>[] perLanguageOptions)
+            Option2<bool> onOffOption,
+            params PerLanguageOption2<bool>[] perLanguageOptions)
+            : base(threadingContext)
         {
             Workspace = workspace;
             _serviceOnOffOption = onOffOption;
             _perLanguageOptions = perLanguageOptions.ToImmutableArray();
+            DisposalToken = threadingContext.DisposalToken;
         }
 
         protected abstract void EnableService();

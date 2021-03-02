@@ -60,9 +60,8 @@ FUNCTION _ExecScript(source AS STRING, args PARAMS USUAL[]) AS USUAL
     ELSE                  
         TRY
             script := GetInitialScript():ContinueWith(source)
-            //script := CompileScript(source)
         CATCH e AS Exception
-            THROW  e
+            THROW e
         END TRY
         CompiledScripts:TryAdd(source,script)
     END
@@ -72,6 +71,8 @@ FUNCTION _ExecScript(source AS STRING, args PARAMS USUAL[]) AS USUAL
     ScriptArgs:__XSHARP__PrivatesLevel := XSharp.RT.Functions.__MemVarInit()
     TRY
         res := script:RunAsync(ScriptArgs):Result:ReturnValue
+    CATCH e as Exception
+        THROW e
     FINALLY
         XSharp.RT.Functions.__MemVarRelease(ScriptArgs:__XSHARP__PrivatesLevel)
         XSharp.Internal.CompilerServices.String2PszRelease(ScriptArgs:__XSHARP__PszLizt)

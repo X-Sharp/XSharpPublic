@@ -3,6 +3,7 @@
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
+#nullable disable
 
 using System;
 using System.Linq;
@@ -14,6 +15,7 @@ using Roslyn.Utilities;
 using Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax;
 using Microsoft.CodeAnalysis.CSharp.Emit;
 using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
+using Microsoft.CodeAnalysis.CSharp.Symbols.Metadata.PE;
 
 namespace Microsoft.CodeAnalysis.CSharp
 {
@@ -33,7 +35,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 this._diagnostics.Add(ErrorCode.WRN_CompilerGeneratedPSZConversionGeneratesMemoryleak, value.Syntax.Location);
                 return result;
             }
-            var isString = value.Type != null && value.Type.IsStringType();
+            var isString = value.Type is { } && value.Type.IsStringType();
             var ctors = psz.Constructors;
             foreach (var ctor in ctors)
             {
@@ -41,7 +43,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 {
                     bool found = false;
                     var partype = ctor.GetParameterTypes()[0];
-                    if (isString && partype != null && partype.IsStringType())
+                    if (isString && partype != null && partype.Type.IsStringType())
                     {
                         found = true;
                     }
@@ -50,13 +52,21 @@ namespace Microsoft.CodeAnalysis.CSharp
                         found = true;
                         if (value.Type.SpecialType != SpecialType.System_IntPtr)
                         {
-                            value = new BoundConversion(value.Syntax, value, Conversion.Identity, false, false, null, partype, false);
+                            value = new BoundConversion(
+                                syntax: value.Syntax,
+                                operand: value,
+                                conversion:Conversion.Identity,
+                                @checked: false,
+                                explicitCastInCode: false,
+                                constantValueOpt: default,
+                                conversionGroupOpt: default,
+                                type: partype.Type,
+                                hasErrors: false);
                         }
-                        
                     }
                     if (found)
                     {
-                        return new BoundObjectCreationExpression(value.Syntax, ctor, binderOpt: null, new BoundExpression[] { value });
+                        return new BoundObjectCreationExpression(value.Syntax, ctor, new BoundExpression[] { value });
                     }
                 }
             }
@@ -107,16 +117,16 @@ namespace Microsoft.CodeAnalysis.CSharp
         {
             var args = ImmutableArray<BoundExpression>.Empty;
             var rettype = compilation.GetSpecialType(SpecialType.System_Void);
-            var call = new BoundCall(node, null, sym,
+            var call = new BoundCall(syntax: node, receiverOpt: null, method: sym,
                 arguments: args,
                 argumentNamesOpt: default(ImmutableArray<string>),
                 argumentRefKindsOpt: default(ImmutableArray<RefKind>),
                 isDelegateCall: false,
                 expanded: false,
                 invokedAsExtensionMethod: false,
-                argsToParamsOpt: default(ImmutableArray<int>),
+                argsToParamsOpt: default,
+                defaultArguments: default,
                 resultKind: LookupResultKind.Viable,
-                binderOpt:null,
                 type: rettype,
                 hasErrors: false)
             { WasCompilerGenerated = true };
@@ -140,10 +150,10 @@ namespace Microsoft.CodeAnalysis.CSharp
 
             foreach (var rkv in refMan.GetReferencedAssemblies())
             {
-                var r = rkv.Value;
+                var r = (AssemblySymbol)rkv.Value;
                 foreach (var attr in r.GetAttributes())
                 {
-                    if ((Symbol)attr.AttributeClass.ConstructedFrom == vcla)
+                    if (TypeSymbol.Equals(attr.AttributeClass.ConstructedFrom, vcla))
                     {
                         var attargs = attr.CommonConstructorArguments;
                         if (attargs.Length == 2)
@@ -154,14 +164,14 @@ namespace Microsoft.CodeAnalysis.CSharp
                                 TypeSymbol type = r.GetTypeByMetadataName(functionsClassName) as TypeSymbol;
                                 // If we can find the $Exit method then call that method
                                 // Otherwise find the public globals and clear them from our code
-                                if (type != null)
+                                if (type is { })
                                 {
                                     var members = type.GetMembers(XSharpSpecialNames.ExitProc);
                                     if (members.Length > 0)
                                     {
-                                        foreach (MethodSymbol sym in members)
+                                        foreach (Symbol sym in members)
                                         {
-                                            CreateMethodCall(method.DeclaringCompilation, statement.Syntax, sym, newstatements);
+                                            CreateMethodCall(method.DeclaringCompilation, statement.Syntax, ((IMethodSymbol)sym.ISymbol).MethodSymbol(), newstatements);
                                         }
                                     }
                                     else
@@ -179,9 +189,9 @@ namespace Microsoft.CodeAnalysis.CSharp
             // Now clear the globals in this assembly by calling $Exit
 
             var symbols = FindMembers(method.DeclaringCompilation, XSharpSpecialNames.ExitProc);
-            foreach (MethodSymbol sym in symbols)
+            foreach (IMethodSymbol sym in symbols)
             {
-                CreateMethodCall(method.DeclaringCompilation, statement.Syntax, sym, newstatements);
+                CreateMethodCall(method.DeclaringCompilation, statement.Syntax, sym.MethodSymbol(), newstatements);
             }
             newstatements.Add(new BoundReturnStatement(statement.Syntax, RefKind.None, null));
             var oldbody = statement as BoundBlock;
@@ -232,9 +242,9 @@ namespace Microsoft.CodeAnalysis.CSharp
             var vrt = comp.GetBoundReferenceManager().GetReferencedAssemblies().Where(x => x.Value.Name == "VulcanRT");
             if (vrt.Count() != 0)
             {
-                var vulcanrt = vrt.First().Value;
+                var vulcanrt = (AssemblySymbol) vrt.First().Value;
                 var type = vulcanrt.GetTypeByMetadataName("Vulcan.Runtime.State");
-                if (type != null)
+                if (type is { })
                 {
                     string[] names = { XSharpSpecialNames.RTCompilerOptionOvf,
                                     XSharpSpecialNames.RTCompilerOptionOvf,
@@ -256,9 +266,9 @@ namespace Microsoft.CodeAnalysis.CSharp
             var xc = comp.GetBoundReferenceManager().GetReferencedAssemblies().Where(x => x.Value.Name == "XSharp.Core");
             if (xc.Count() != 0)
             {
-                var xsrt = xc.First().Value;
+                var xsrt = (AssemblySymbol)xc.First().Value;
                 var type = xsrt.GetTypeByMetadataName("XSharp.RuntimeState");
-                if (type != null)
+                if (type is { })
                 {
                     string[] names = { XSharpSpecialNames.RTCompilerOptionOvf,
                                     XSharpSpecialNames.RTCompilerOptionVO11,
@@ -283,7 +293,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             newstatements.AddRange(initstmts);
             tryblock = tryblock.Update(tryblock.Locals, ImmutableArray<LocalFunctionSymbol>.Empty, newstatements.ToImmutableArray<BoundStatement>());
             tryblock.WasCompilerGenerated = true;
-            trystmt = trystmt.Update(tryblock, trystmt.CatchBlocks, trystmt.FinallyBlockOpt, trystmt.PreferFaultHandler);
+            trystmt = trystmt.Update(tryblock, trystmt.CatchBlocks, trystmt.FinallyBlockOpt, trystmt.FinallyLabelOpt, trystmt.PreferFaultHandler);
             trystmt.WasCompilerGenerated = true;
             newstatements.Clear();
             newstatements.Add(trystmt);
@@ -307,14 +317,14 @@ namespace Microsoft.CodeAnalysis.CSharp
             var init1 = new List<ISymbol>();
             var init2 = new List<ISymbol>();
             var init3 = new List<ISymbol>();
-            if (! localOnly)
+            if (!localOnly)
             {
                 foreach (var rkv in refMan.GetReferencedAssemblies())
                 {
-                    var r = rkv.Value;
+                    var r = (AssemblySymbol) rkv.Value;
                     foreach (var attr in r.GetAttributes())
                     {
-                        if ((Symbol)attr.AttributeClass.ConstructedFrom == vcla)
+                        if ( TypeSymbol.Equals(attr.AttributeClass.ConstructedFrom,vcla))
                         {
                             var attargs = attr.CommonConstructorArguments;
                             if (attargs.Length == 2)
@@ -323,11 +333,20 @@ namespace Microsoft.CodeAnalysis.CSharp
                                 if (!string.IsNullOrEmpty(functionsClassName))
                                 {
                                     var type = r.GetTypeByMetadataName(functionsClassName);
-                                    if (type != null)
+                                    if (type is { })
                                     {
-                                        init1.AddRange(type.GetMembers(XSharpSpecialNames.InitProc1));
-                                        init2.AddRange(type.GetMembers(XSharpSpecialNames.InitProc2));
-                                        init3.AddRange(type.GetMembers(XSharpSpecialNames.InitProc3));
+                                        foreach (var mem in type.GetMembers(XSharpSpecialNames.InitProc1))
+                                        {
+                                            init1.Add(mem.ISymbol);
+                                        }
+                                        foreach (var mem in type.GetMembers(XSharpSpecialNames.InitProc2))
+                                        {
+                                            init2.Add(mem.ISymbol);
+                                        }
+                                        foreach (var mem in type.GetMembers(XSharpSpecialNames.InitProc3))
+                                        {
+                                            init3.Add(mem.ISymbol);
+                                        }
                                     }
                                 }
                             }
@@ -336,19 +355,25 @@ namespace Microsoft.CodeAnalysis.CSharp
                 }
             }
 
-            var members = FindMembers(compilation, XSharpSpecialNames.InitProc1);
-            init1.AddRange(members);
-            members = FindMembers(compilation, XSharpSpecialNames.InitProc2);
-            init2.AddRange(members);
-            members = FindMembers(compilation, XSharpSpecialNames.InitProc3);
-            init3.AddRange(members);
+            foreach (var mem in FindMembers(compilation, XSharpSpecialNames.InitProc1))
+            {
+                init1.Add(mem);
+            }
+            foreach (var mem in FindMembers(compilation, XSharpSpecialNames.InitProc2))
+            {
+                init2.Add(mem);
+            }
+            foreach (var mem in FindMembers(compilation, XSharpSpecialNames.InitProc3))
+            {
+                init3.Add(mem);
+            }
             // Now join all 3 lists to one list
             init1.AddRange(init2);
             init1.AddRange(init3);
 
-            foreach (MethodSymbol sym in init1)
+            foreach (IMethodSymbol sym in init1)
             {
-                CreateMethodCall(compilation, statement.Syntax, sym, newstatements);
+                CreateMethodCall(compilation, statement.Syntax, sym.MethodSymbol(), newstatements);
             }
             return newstatements;
         }
@@ -506,7 +531,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                             if (newfinStatements.Count > 0  || tryStmt.CatchBlocks.Length > 0)
                             {
                                 finBlock = finBlock.Update(finBlock.Locals, finBlock.LocalFunctions, newfinStatements.ToImmutableArray());
-                                tryStmt = tryStmt.Update(tryStmt.TryBlock, tryStmt.CatchBlocks, finBlock, tryStmt.PreferFaultHandler);
+                                tryStmt = tryStmt.Update(tryStmt.TryBlock, tryStmt.CatchBlocks, finBlock, tryStmt.FinallyLabelOpt, tryStmt.PreferFaultHandler);
                                 newStmts.Add(tryStmt);
                             }
                             else

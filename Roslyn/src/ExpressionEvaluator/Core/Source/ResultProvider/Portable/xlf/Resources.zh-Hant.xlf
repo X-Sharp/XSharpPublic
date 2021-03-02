@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="1.2" xsi:schemaLocation="urn:oasis:names:tc:xliff:document:1.2 xliff-core-1.2-transitional.xsd">
-  <file datatype="xml" source-language="en" target-language="zh-Hant" original="../Resources.resx">
+  <file datatype="xml" source-language="en" target-language="zh-HANT" original="../Resources.resx">
     <body>
       <trans-unit id="DynamicView">
         <source>Dynamic View</source>
@@ -26,6 +26,11 @@
         <source>'{0}' threw an exception of type '{1}'</source>
         <target state="translated">'{0}' 擲回 '{1}' 類型的例外狀況</target>
         <note>Threw an exception while evaluating a value.</note>
+      </trans-unit>
+      <trans-unit id="HostValueNotFound">
+        <source>Cannot provide the value: host value not found</source>
+        <target state="translated">無法提供值: 找不到主機值</target>
+        <note />
       </trans-unit>
       <trans-unit id="InvalidPointerDereference">
         <source>Cannot dereference '{0}'. The pointer is not valid.</source>

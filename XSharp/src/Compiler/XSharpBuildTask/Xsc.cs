@@ -15,8 +15,6 @@ using Roslyn.Utilities;
 
 namespace XSharp.Build
 {
-
-
     public class Xsc : ManagedCompiler
     {
 
@@ -42,6 +40,12 @@ namespace XSharp.Build
             set { _store[nameof(CS)] = value; }
             get { return _store.GetOrDefault(nameof(CS), false); }
         }
+        public bool EnforceSelf
+        {
+            set { _store[nameof(EnforceSelf)] = value; }
+            get { return _store.GetOrDefault(nameof(EnforceSelf), false); }
+        }
+
         public bool LB
         {
             set { _store[nameof(LB)] = value; }
@@ -712,6 +716,7 @@ namespace XSharp.Build
                 commandline.AppendPlusOrMinusSwitch("/memvar", _store, nameof(MemVar));
                 commandline.AppendPlusOrMinusSwitch("/undeclared", _store, nameof(Undeclared));
             }
+            commandline.AppendPlusOrMinusSwitch("/enforceself", _store, nameof(EnforceSelf));
             commandline.AppendPlusOrMinusSwitch("/ovf", _store, nameof(OVF));
             commandline.AppendPlusOrMinusSwitch("/ppo", _store, nameof(PPO));
             commandline.AppendPlusOrMinusSwitch("/vo1", _store, nameof(VO1));

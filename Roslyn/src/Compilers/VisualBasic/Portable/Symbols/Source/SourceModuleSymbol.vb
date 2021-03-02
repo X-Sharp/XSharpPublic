@@ -1,4 +1,6 @@
-﻿' Copyright (c) Microsoft.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
+﻿' Licensed to the .NET Foundation under one or more agreements.
+' The .NET Foundation licenses this file to you under the MIT license.
+' See the LICENSE file in the project root for more information.
 
 Imports System.Collections.Concurrent
 Imports System.Collections.Generic
@@ -103,8 +105,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Symbols
             Get
                 Select Case DeclaringCompilation.Options.Platform
                     Case Platform.Arm64
-                        ' Use real enum instead of casting value https://github.com/dotnet/roslyn/issues/25185
-                        Return CType(CInt(&HAA64), System.Reflection.PortableExecutable.Machine)
+                        Return System.Reflection.PortableExecutable.Machine.Arm64
                     Case Platform.Arm
                         Return System.Reflection.PortableExecutable.Machine.ArmThumb2
                     Case Platform.X64
@@ -615,13 +616,14 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Symbols
                 Dim trees = ArrayBuilder(Of SyntaxTree).GetInstance()
                 trees.AddRange(SyntaxTrees)
 
-                Dim options = New ParallelOptions() With {.CancellationToken = cancellationToken}
-                Parallel.For(0, trees.Count, options,
+                RoslynParallel.For(
+                    0,
+                    trees.Count,
                     UICultureUtilities.WithCurrentUICulture(
                         Sub(i As Integer)
-                            cancellationToken.ThrowIfCancellationRequested()
                             TryGetSourceFile(trees(i)).GenerateAllDeclarationErrors()
-                        End Sub))
+                        End Sub),
+                    cancellationToken)
                 trees.Free()
             Else
                 For Each tree In SyntaxTrees
@@ -698,7 +700,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Symbols
                                 Sub()
                                     Try
                                         visitor(symbol)
-                                    Catch e As Exception When FatalError.ReportUnlessCanceled(e)
+                                    Catch e As Exception When FatalError.ReportAndPropagateUnlessCanceled(e)
                                         Throw ExceptionUtilities.Unreachable
                                     End Try
                                 End Sub),
@@ -739,7 +741,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Symbols
                 For Each attrData In assembly.GetAttributes()
                     If attrData.IsTargetAttribute(assembly, AttributeDescription.GuidAttribute) Then
                         If attrData.CommonConstructorArguments.Length = 1 Then
-                            Dim value = attrData.CommonConstructorArguments(0).Value
+                            Dim value = attrData.CommonConstructorArguments(0).ValueInternal
                             If value Is Nothing OrElse TypeOf value Is String Then
                                 hasGuidAttribute = True
                             End If

@@ -1,4 +1,6 @@
-﻿' Copyright (c) Microsoft.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
+﻿' Licensed to the .NET Foundation under one or more agreements.
+' The .NET Foundation licenses this file to you under the MIT license.
+' See the LICENSE file in the project root for more information.
 
 Imports System.Collections.Generic
 Imports System.Collections.Immutable
@@ -144,12 +146,12 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Symbols.Metadata.PE
             Dim value As ConstantValue
 
             If Me.Type.SpecialType = SpecialType.System_DateTime Then
-                value = GetConstantValue(SymbolsInProgress(Of FieldSymbol).Empty)
+                value = GetConstantValue(ConstantFieldsInProgress.Empty)
                 If value IsNot Nothing AndAlso value.Discriminator = ConstantValueTypeDiscriminator.DateTime Then
                     Return AttributeDescription.DateTimeConstantAttribute
                 End If
             ElseIf Me.Type.SpecialType = SpecialType.System_Decimal Then
-                value = GetConstantValue(SymbolsInProgress(Of FieldSymbol).Empty)
+                value = GetConstantValue(ConstantFieldsInProgress.Empty)
                 If value IsNot Nothing AndAlso value.Discriminator = ConstantValueTypeDiscriminator.Decimal Then
                     Return AttributeDescription.DecimalConstantAttribute
                 End If
@@ -199,11 +201,11 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Symbols.Metadata.PE
 
         Public Overrides ReadOnly Property IsConst As Boolean
             Get
-                Return (_flags And FieldAttributes.Literal) <> 0 OrElse GetConstantValue(SymbolsInProgress(Of FieldSymbol).Empty) IsNot Nothing
+                Return (_flags And FieldAttributes.Literal) <> 0 OrElse GetConstantValue(ConstantFieldsInProgress.Empty) IsNot Nothing
             End Get
         End Property
 
-        Friend Overrides Function GetConstantValue(inProgress As SymbolsInProgress(Of FieldSymbol)) As ConstantValue
+        Friend Overrides Function GetConstantValue(inProgress As ConstantFieldsInProgress) As ConstantValue
             If _lazyConstantValue Is Microsoft.CodeAnalysis.ConstantValue.Unset Then
                 Dim value As ConstantValue = Nothing
 
@@ -339,7 +341,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Symbols.Metadata.PE
             If _lazyType Is Nothing Then
                 Dim moduleSymbol = _containingType.ContainingPEModule
                 Dim customModifiers As ImmutableArray(Of ModifierInfo(Of TypeSymbol)) = Nothing
-                Dim type As TypeSymbol = New MetadataDecoder(moduleSymbol, _containingType).DecodeFieldSignature(_handle, Nothing, customModifiers)
+                Dim type As TypeSymbol = New MetadataDecoder(moduleSymbol, _containingType).DecodeFieldSignature(_handle, customModifiers)
 
                 type = TupleTypeDecoder.DecodeTupleTypesIfApplicable(type, _handle, moduleSymbol)
 
@@ -376,7 +378,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Symbols.Metadata.PE
                 If fieldUseSiteErrorInfo Is Nothing Then
 
                     ' report use site errors for invalid constant values 
-                    Dim constantValue = GetConstantValue(SymbolsInProgress(Of FieldSymbol).Empty)
+                    Dim constantValue = GetConstantValue(ConstantFieldsInProgress.Empty)
                     If constantValue IsNot Nothing AndAlso
                         constantValue.IsBad Then
                         fieldUseSiteErrorInfo = New DiagnosticInfo(MessageProvider.Instance,

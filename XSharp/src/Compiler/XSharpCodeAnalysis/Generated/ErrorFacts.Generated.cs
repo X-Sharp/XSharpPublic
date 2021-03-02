@@ -56,7 +56,7 @@
                 case ErrorCode.WRN_BadRefCompareLeft:
                 case ErrorCode.WRN_BadRefCompareRight:
                 case ErrorCode.WRN_PatternIsAmbiguous:
-                case ErrorCode.WRN_PatternStaticOrInaccessible:
+                //case ErrorCode.WRN_PatternStaticOrInaccessible:
                 case ErrorCode.WRN_PatternBadSignature:
                 case ErrorCode.WRN_SequentialOnPartialClass:
                 case ErrorCode.WRN_MainCantBeGeneric:
@@ -224,7 +224,7 @@
                 case ErrorCode.WRN_CompilerOptionNotImplementedYet:
                 case ErrorCode.WRN_NoReturnValueAllowed:
                 case ErrorCode.WRN_SuppressAxitMethodCall:
-                case ErrorCode.WRN_VulcanAmbiguous:
+                case ErrorCode.WRN_XSharpAmbiguous:
                 case ErrorCode.WRN_GetSetMustHaveBody:
                 case ErrorCode.WRN_GeneratingGetAccessor:
                 case ErrorCode.WRN_ArgumentNameLocalNamePossibleConflict:

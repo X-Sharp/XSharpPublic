@@ -1,7 +1,9 @@
-﻿// Copyright (c) Microsoft.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
+﻿// Licensed to the .NET Foundation under one or more agreements.
+// The .NET Foundation licenses this file to you under the MIT license.
+// See the LICENSE file in the project root for more information.
 
-using System;
-using System.Linq;
+#nullable disable
+
 using System.Threading;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Editor.Shared.Extensions;
@@ -36,7 +38,8 @@ namespace Microsoft.VisualStudio.LanguageServices.Implementation.Snippets
 
         public string DisplayName => FeaturesResources.Snippets;
 
-        public AbstractSnippetCommandHandler(IVsEditorAdaptersFactoryService editorAdaptersFactoryService, SVsServiceProvider serviceProvider)
+        public AbstractSnippetCommandHandler(IThreadingContext threadingContext, IVsEditorAdaptersFactoryService editorAdaptersFactoryService, SVsServiceProvider serviceProvider)
+            : base(threadingContext)
         {
             this.EditorAdaptersFactoryService = editorAdaptersFactoryService;
             this.ServiceProvider = serviceProvider;
@@ -47,9 +50,7 @@ namespace Microsoft.VisualStudio.LanguageServices.Implementation.Snippets
         protected abstract bool TryInvokeInsertionUI(ITextView textView, ITextBuffer subjectBuffer, bool surroundWith = false);
 
         protected virtual bool TryInvokeSnippetPickerOnQuestionMark(ITextView textView, ITextBuffer textBuffer)
-        {
-            return false;
-        }
+            => false;
 
         public bool ExecuteCommand(TabKeyCommandArgs args, CommandExecutionContext context)
         {
@@ -91,7 +92,7 @@ namespace Microsoft.VisualStudio.LanguageServices.Implementation.Snippets
                 return CommandState.Unspecified;
             }
 
-            if (!Workspace.TryGetWorkspace(args.SubjectBuffer.AsTextContainer(), out var workspace))
+            if (!Workspace.TryGetWorkspace(args.SubjectBuffer.AsTextContainer(), out _))
             {
                 return CommandState.Unspecified;
             }
@@ -125,7 +126,7 @@ namespace Microsoft.VisualStudio.LanguageServices.Implementation.Snippets
                 return CommandState.Unspecified;
             }
 
-            if (!Workspace.TryGetWorkspace(args.SubjectBuffer.AsTextContainer(), out var workspace))
+            if (!Workspace.TryGetWorkspace(args.SubjectBuffer.AsTextContainer(), out _))
             {
                 return CommandState.Unspecified;
             }
@@ -159,7 +160,7 @@ namespace Microsoft.VisualStudio.LanguageServices.Implementation.Snippets
                 return CommandState.Unspecified;
             }
 
-            if (!Workspace.TryGetWorkspace(args.SubjectBuffer.AsTextContainer(), out var workspace))
+            if (!Workspace.TryGetWorkspace(args.SubjectBuffer.AsTextContainer(), out _))
             {
                 return CommandState.Unspecified;
             }
@@ -193,7 +194,7 @@ namespace Microsoft.VisualStudio.LanguageServices.Implementation.Snippets
                 return CommandState.Unspecified;
             }
 
-            if (!Workspace.TryGetWorkspace(args.SubjectBuffer.AsTextContainer(), out var workspace))
+            if (!Workspace.TryGetWorkspace(args.SubjectBuffer.AsTextContainer(), out _))
             {
                 return CommandState.Unspecified;
             }
@@ -239,7 +240,7 @@ namespace Microsoft.VisualStudio.LanguageServices.Implementation.Snippets
         {
             AssertIsForeground();
 
-            Document document = subjectBuffer.CurrentSnapshot.GetOpenDocumentInCurrentContextWithChanges();
+            var document = subjectBuffer.CurrentSnapshot.GetOpenDocumentInCurrentContextWithChanges();
             if (document == null)
             {
                 return false;
@@ -260,7 +261,7 @@ namespace Microsoft.VisualStudio.LanguageServices.Implementation.Snippets
             // Find the snippet shortcut
             while (startPosition > 0)
             {
-                char c = currentText[startPosition - 1];
+                var c = currentText[startPosition - 1];
                 if (!syntaxFactsService.IsIdentifierPartCharacter(c) && c != '#' && c != '~')
                 {
                     break;
@@ -297,6 +298,12 @@ namespace Microsoft.VisualStudio.LanguageServices.Implementation.Snippets
 
         protected static bool AreSnippetsEnabled(EditorCommandArgs args)
         {
+            // Don't execute in cloud environment, should be handled by LSP
+            if (args.SubjectBuffer.IsInLspEditorContext())
+            {
+                return false;
+            }
+
             return args.SubjectBuffer.GetFeatureOnOffOption(InternalFeatureOnOffOptions.Snippets) &&
                 // TODO (https://github.com/dotnet/roslyn/issues/5107): enable in interactive
                 !(Workspace.TryGetWorkspace(args.SubjectBuffer.AsTextContainer(), out var workspace) && workspace.Kind == WorkspaceKind.Interactive);

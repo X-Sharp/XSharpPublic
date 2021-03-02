@@ -3,7 +3,7 @@
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
-
+#nullable disable
 using System;
 using System.Collections.Generic;
 using Antlr4.Runtime;
@@ -189,7 +189,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             var udctoken = new PPMatchToken(new XSharpToken(XSharpLexer.ID, "udc"), PPTokenType.MatchWholeUDC);
             addToDict(markers, udctoken);
             matchTokens.Add(udctoken);
-
             _matchtokens = matchTokens.ToArray();
             var linearlist = new List<PPMatchToken>();
             addMatchTokens(_matchtokens, linearlist);
@@ -678,9 +677,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     case PPTokenType.MatchRestricted:
                         foreach (var token in next.Tokens)
                         {
-                            if (canAddStopToken(stoptokens, next.Token))
+                            if (canAddStopToken(stoptokens, token))
                             {
-                                stoptokens.Add(next.Token);
+                                stoptokens.Add(token);
                             }
                         }
                         break;
@@ -1124,7 +1123,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 {
                     matchedWithToken.RemoveAt(matchedWithToken.Count - 1);
                 }
-                    
                 iSource = iOriginal;
             }
             return optfound;
@@ -1424,7 +1422,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 case PPTokenType.MatchWild:
                     // matches anything until the end of the list or until a stop token is found
                     if (mToken.StopTokens?.Length == 0)
-                    { 
+                    {
                         iEnd = tokens.Count - 1;
                     }
                     else
@@ -1446,7 +1444,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     matchInfo[mToken.Index].SetPos(iSource, iEnd);
                     iSource = iEnd+1;
                     iRule += 1;
-                    found = true;                    
+                    found = true;
                     break;
                 case PPTokenType.MatchExtended:
                     // either match a single token, a token in parentheses
@@ -1637,16 +1635,62 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 }
             }
             result.TrimLeadingSpaces();
+            // after certain tokens (->, and . for example) keywords must be changed to identifiers
+            adjustKeywordsToIdentifiers(result);
             return result;
         }
-
+        void adjustKeywordsToIdentifiers(IList<XSharpToken> result)
+        {
+            XSharpToken lasttoken = null;
+            foreach (var token in result)
+            {
+                if (lasttoken != null)
+                {
+                    if (XSharpLexer.IsKeyword(token.Type))
+                    {
+                        // after ALIAS and DOT we change the token to an ID
+                        switch (lasttoken.Type)
+                        {
+                            case XSharpLexer.ALIAS:
+                            case XSharpLexer.ID:
+                                token.Type = XSharpLexer.ID;
+                                // This makes sure that the token in the editor has the ID color
+                                token.Original.Type = XSharpLexer.ID; 
+                                break;
+                        }
+                    }
+                    if (token.Type == XSharpLexer.DOT)
+                    {
+                        // tokens before a DOT are changed to ID
+                        // with the exception of the tokens listed below
+                        switch (lasttoken.Type)
+                        {
+                            case XSharpLexer.SELF:
+                            case XSharpLexer.SUPER:
+                            case XSharpLexer.FOX_M:
+                                // leave alone
+                                break;
+                            default:
+                                if (XSharpLexer.IsKeyword(lasttoken.Type))
+                                {
+                                    lasttoken.Type = XSharpLexer.ID;
+                                    // This makes sure that the token in the editor has the ID color
+                                    lasttoken.Original.Type = XSharpLexer.ID;
+                                }
+                                break;
+                        }
+                    }
+                }
+                lasttoken = token;
+            }
+        }
         void tokenResult(PPResultToken resultToken, IList<XSharpToken> tokens, PPMatchRange[] matchInfo, IList<XSharpToken> result, int offset)
         {
             // Link the new token to the first token of the UDC
             // so for the command #xcommand WAIT [<msg>]                  => _wait( <msg> )
             // the LPAREN and RPAREN will also be linked to the WAIT keyword in the source.
            var newToken = new XSharpToken(resultToken.Token) {SourceSymbol = tokens[0]};
-            result.Add(newToken);
+           result.Add(newToken);
         }
         void repeatedResult(PPResultToken resultToken, IList<XSharpToken> tokens, PPMatchRange[] matchInfo, IList<XSharpToken> result, int offset)
         {
@@ -1791,12 +1835,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             end= -1;
             if (tokens.Count >= start+1 && tokens[start].Type == XSharpLexer.AMP )
             {
-                
                 if (matchExpression(start + 1, tokens, null, out end))
                 {
                     return true;
                 }
-            
             }
             return false;
         }
@@ -1912,7 +1954,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 }
             }
 
-            XSharpToken JoinTokens(IList<XSharpToken> toks, int s, int e)
+            XSharpToken joinTokensToString(IList<XSharpToken> toks, int s, int e)
             {
                 var sb = new System.Text.StringBuilder();
                 sb.Append('"');
@@ -1923,7 +1965,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     {
                         sb.Append(token.TriviaAsText);
                     }
-                    sb.Append(token.Text);
+                    var text = token.Text;
+                    if (text.StartsWith("@@"))
+                        text = text.Substring(2);
+                    sb.Append(text);
                 }
                 sb.Append('"');
                 var t = new XSharpToken(toks[s], XSharpLexer.STRING_CONST, sb.ToString())
@@ -1957,7 +2002,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     // change type of token to STRING_CONST;
                     if (!range.Empty)
                     {
-                        result.Add(JoinTokens(tokens, start, end));
+                        result.Add(joinTokensToString(tokens, start, end));
                     }
                     else
                     {
@@ -1973,7 +2018,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     // Delimit the input with string delimiters
                     if (!range.Empty)
                     {
-                        result.Add(JoinTokens(tokens, start, end));
+                        result.Add(joinTokensToString(tokens, start, end));
                     }
                     break;
 
@@ -1997,7 +2042,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                             }
                             else
                             {
-                                result.Add(JoinTokens(tokens, start, end));
+                                result.Add(joinTokensToString(tokens, start, end));
                             }
                         }
                         else
@@ -2015,7 +2060,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                             }
                             else
                             {
-                                var nt = JoinTokens(tokens, start, end);
+                                var nt = joinTokensToString(tokens, start, end);
                                 result.Add(nt);
                             }
                         }

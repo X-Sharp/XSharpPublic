@@ -3,7 +3,7 @@
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
-
+#nullable disable
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
@@ -18,10 +18,10 @@ using Roslyn.Utilities;
 
 namespace Microsoft.CodeAnalysis.CSharp.Symbols
 {
-    internal  sealed partial class SourceOrdinaryMethodSymbol : SourceMemberMethodSymbol
+    internal abstract partial class SourceOrdinaryMethodSymbolBase 
     {
 
-        private bool XsGenerateDebugInfo
+        protected bool XsGenerateDebugInfo
         {
             get
             {
@@ -47,17 +47,16 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
 
         internal MethodSymbol validateMethod(MethodSymbol overriddenMethod, DiagnosticBag diagnostics, Location location)
         {
-            if ((object)overriddenMethod != null)
+            if (overriddenMethod is { })
             {
                 if (this.HasClipperCallingConvention() != overriddenMethod.HasClipperCallingConvention())
                 {
-
                     if (overriddenMethod.ContainingType.TypesChanged())
                     {
-                        diagnostics.Add(ErrorCode.ERR_MethodSignatureChanged, this.Locations[0], this, overriddenMethod );
+                        diagnostics.Add(ErrorCode.ERR_MethodSignatureChanged, this.Locations[0], this, overriddenMethod);
                     }
                     else
-                    { 
+                    {
                         if (this.HasClipperCallingConvention())
                         {
                             diagnostics.Add(ErrorCode.ERR_ClipperInSubClass, location, this.Name);
@@ -68,6 +67,19 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                         }
                     }
                     overriddenMethod = null;
+                }
+            }
+            else if (this.HasClipperCallingConvention())
+            {
+                var baseType = this.ContainingType.BaseTypeNoUseSiteDiagnostics;
+                var members = baseType.GetMembersUnordered().Where(member =>
+                   member.Kind == SymbolKind.Method && string.Equals(member.Name, this.Name, StringComparison.OrdinalIgnoreCase));
+                if (members.Count() > 0 && members.First() is MethodSymbol ms)
+                {
+                    if (ms.IsVirtual)
+                    { 
+                        diagnostics.Add(ErrorCode.ERR_ClipperInSubClass, location, this.Name);
+                    }
                 }
             }
             else if (XSharpString.CaseSensitive && !this.DeclarationModifiers.HasFlag(DeclarationModifiers.New) &&
@@ -82,14 +94,15 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                     foreach (var member in members)
                     {
                         var metSym = member as MethodSymbol;
-                        bool equalSignature = metSym.ParameterCount == this.ParameterCount && this.ReturnType == metSym.ReturnType;
+                        bool equalSignature = metSym.ParameterCount == this.ParameterCount && 
+                            TypeSymbol.Equals(this.ReturnType, metSym.ReturnType);
                         if (equalSignature)
                         {
-                            var thisTypes = this.ParameterTypes;
-                            var theirTypes = metSym.ParameterTypes;
+                            var thisTypes = this.ParameterTypesWithAnnotations;
+                            var theirTypes = metSym.Parameters;
                             for (int i = 0; i < thisTypes.Length; i++)
                             {
-                                if (thisTypes[i] != theirTypes[i])
+                                if (!TypeSymbol.Equals(thisTypes[i].Type,theirTypes[i].Type))
                                 {
                                     equalSignature = false;
                                     break;
@@ -104,49 +117,52 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                     }
                 }
             }
-            if ((object)overriddenMethod != null)
-                _overrideState = 2;  // checked and has a (correct) override
-            else
-                _overrideState = 1; // checked and does not have an override
 
-            if ((object)overriddenMethod != null)
+            if (overriddenMethod is null )
+                _overrideState = 1; // checked and does not have an override
+            else
             {
+                _overrideState = 2;  // checked and has a (correct) override
+
                 CustomModifierUtils.CopyMethodCustomModifiers(overriddenMethod, this, out _lazyReturnType,
-                                                              out _lazyCustomModifiers,
+                                                              out _lazyRefCustomModifiers,
                                                               out _lazyParameters, alsoCopyParamsModifier: true);
             }
             var node = this.SyntaxNode.Green as Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax.MethodDeclarationSyntax;
-            var mods = flags.DeclarationModifiers;
-            if ((object)overriddenMethod != null)
+            if (node != null)   // This can be a generated node, for example for Records
             {
-                if (this.Name != overriddenMethod.Name)
+                var mods = this.DeclarationModifiers;
+                if (_overrideState == 2)
                 {
-                    this._name = overriddenMethod.Name;
-                }
-                // remove generated Virtual Modifiers
-                foreach (var token in node.Modifiers)
-                {
-                    if (token.Kind == SyntaxKind.VirtualKeyword && token.XGenerated)
+                    if (this.Name != overriddenMethod.Name)
                     {
-                        mods = mods & ~DeclarationModifiers.Virtual;
+                        this._name = overriddenMethod.Name;
                     }
-                }
-
-                flags = new Flags(flags.MethodKind, mods, flags.ReturnsVoid, flags.IsExtensionMethod, flags.IsMetadataVirtual(true));
-            }
-            else
-            {
-                // remove generated Override Modifiers
-                foreach (var token in node.Modifiers)
-                {
-                    if (token.Kind == SyntaxKind.OverrideKeyword && token.XGenerated)
+                    // remove generated Virtual Modifiers
+                    foreach (var token in node.Modifiers)
                     {
-                        mods = mods & ~DeclarationModifiers.Override;
+                        if (token.Kind == SyntaxKind.VirtualKeyword && token.XGenerated)
+                        {
+                            mods = mods & ~DeclarationModifiers.Virtual;
+                        }
                     }
-                }
-                flags = new Flags(flags.MethodKind, mods, flags.ReturnsVoid, flags.IsExtensionMethod, flags.IsMetadataVirtual(true));
-            }
 
+                    flags = new Flags(flags.MethodKind, mods, this.ReturnsVoid, flags.IsExtensionMethod, flags.IsNullableAnalysisEnabled, flags.IsMetadataVirtual(true));
+                }
+                else
+                {
+                    // remove generated Override Modifiers
+                    foreach (var token in node.Modifiers)
+                    {
+                        if (token.Kind == SyntaxKind.OverrideKeyword && token.XGenerated)
+                        {
+                            mods = mods & ~DeclarationModifiers.Override;
+                        }
+                    }
+                    flags = new Flags(flags.MethodKind, mods, this.ReturnsVoid, flags.IsExtensionMethod, flags.IsNullableAnalysisEnabled, flags.IsMetadataVirtual(true));
+                }
+                this.DeclarationModifiers = mods;
+            }
             return overriddenMethod;
         }
     }

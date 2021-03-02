@@ -1,8 +1,11 @@
-﻿' Copyright (c) Microsoft.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
+﻿' Licensed to the .NET Foundation under one or more agreements.
+' The .NET Foundation licenses this file to you under the MIT license.
+' See the LICENSE file in the project root for more information.
 
 Imports System.Threading
 Imports Microsoft.CodeAnalysis.Editor.CSharp.GoToDefinition
 Imports Microsoft.CodeAnalysis.Editor.Host
+Imports Microsoft.CodeAnalysis.Editor.Shared.Utilities
 Imports Microsoft.CodeAnalysis.Editor.UnitTests.Utilities.GoToHelpers
 Imports Microsoft.CodeAnalysis.Editor.UnitTests.Workspaces
 Imports Microsoft.CodeAnalysis.Editor.VisualBasic.GoToDefinition
@@ -12,11 +15,11 @@ Imports Microsoft.VisualStudio.Text
 Namespace Microsoft.CodeAnalysis.Editor.UnitTests.GoToDefinition
     <[UseExportProvider]>
     Public Class GoToDefinitionTests
-        Friend Sub Test(workspaceDefinition As XElement,
-                                        expectedResult As Boolean,
-                                        executeOnDocument As Func(Of Document, Integer, IEnumerable(Of Lazy(Of IStreamingFindUsagesPresenter)), Boolean))
-            Using workspace = TestWorkspace.Create(
-                    workspaceDefinition, exportProvider:=GoToTestHelpers.ExportProviderFactory.CreateExportProvider())
+        Friend Shared Sub Test(
+                workspaceDefinition As XElement,
+                expectedResult As Boolean,
+                executeOnDocument As Func(Of Document, Integer, IThreadingContext, IStreamingFindUsagesPresenter, Boolean))
+            Using workspace = TestWorkspace.Create(workspaceDefinition, composition:=GoToTestHelpers.Composition)
                 Dim solution = workspace.CurrentSolution
                 Dim cursorDocument = workspace.Documents.First(Function(d) d.CursorPosition.HasValue)
                 Dim cursorPosition = cursorDocument.CursorPosition.Value
@@ -30,16 +33,16 @@ Namespace Microsoft.CodeAnalysis.Editor.UnitTests.GoToDefinition
                 Dim textBuffer = textView.TextBuffer
                 textView.Caret.MoveTo(New SnapshotPoint(textBuffer.CurrentSnapshot, cursorPosition))
 
-                Dim cursorBuffer = cursorDocument.TextBuffer
+                Dim cursorBuffer = cursorDocument.GetTextBuffer()
                 Dim document = workspace.CurrentSolution.GetDocument(cursorDocument.Id)
 
                 Dim mockDocumentNavigationService = DirectCast(workspace.Services.GetService(Of IDocumentNavigationService)(), MockDocumentNavigationService)
                 Dim mockSymbolNavigationService = DirectCast(workspace.Services.GetService(Of ISymbolNavigationService)(), MockSymbolNavigationService)
 
                 Dim presenterCalled As Boolean = False
+                Dim threadingContext = workspace.ExportProvider.GetExportedValue(Of IThreadingContext)()
                 Dim presenter = New MockStreamingFindUsagesPresenter(Sub() presenterCalled = True)
-                Dim presenters = {New Lazy(Of IStreamingFindUsagesPresenter)(Function() presenter)}
-                Dim actualResult = executeOnDocument(document, cursorPosition, presenters)
+                Dim actualResult = executeOnDocument(document, cursorPosition, threadingContext, presenter)
 
                 Assert.Equal(expectedResult, actualResult)
 
@@ -98,16 +101,15 @@ Namespace Microsoft.CodeAnalysis.Editor.UnitTests.GoToDefinition
                     Assert.False(presenterCalled)
                 End If
 
-
             End Using
         End Sub
 
-        Private Sub Test(workspaceDefinition As XElement, Optional expectedResult As Boolean = True)
+        Private Shared Sub Test(workspaceDefinition As XElement, Optional expectedResult As Boolean = True)
             Test(workspaceDefinition, expectedResult,
-                Function(document As Document, cursorPosition As Integer, presenters As IEnumerable(Of Lazy(Of IStreamingFindUsagesPresenter)))
+                Function(document, cursorPosition, threadingContext, presenter)
                     Dim goToDefService = If(document.Project.Language = LanguageNames.CSharp,
-                        DirectCast(New CSharpGoToDefinitionService(presenters), IGoToDefinitionService),
-                        New VisualBasicGoToDefinitionService(presenters))
+                        DirectCast(New CSharpGoToDefinitionService(threadingContext, presenter), IGoToDefinitionService),
+                        New VisualBasicGoToDefinitionService(threadingContext, presenter))
 
                     Return goToDefService.TryGoToDefinition(document, cursorPosition, CancellationToken.None)
                 End Function)
@@ -368,6 +370,38 @@ end class
                 }
 
                 partial void [|M|]()
+                {
+                    throw new NotImplementedException();
+                }
+            }
+        </Document>
+    </Project>
+</Workspace>
+
+            Test(workspace)
+        End Sub
+
+        <WpfFact, Trait(Traits.Feature, Traits.Features.GoToDefinition)>
+        Public Sub TestCSharpGotoDefinitionExtendedPartialMethod()
+            Dim workspace =
+<Workspace>
+    <Project Language="C#" CommonReferences="true">
+        <Document>
+            partial class Test
+            {
+                public partial void M();
+            }
+        </Document>
+        <Document>
+            partial class Test
+            {
+                void Goo()
+                {
+                    var t = new Test();
+                    t.M$$();
+                }
+
+                public partial void [|M|]()
                 {
                     throw new NotImplementedException();
                 }
@@ -960,10 +994,79 @@ class C
             Test(workspace)
         End Sub
 
+        <WorkItem(41870, "https://github.com/dotnet/roslyn/issues/41870")>
+        <WpfFact, Trait(Traits.Feature, Traits.Features.GoToDefinition)>
+        Public Sub TestCSharpGoToImplementedInterfaceMemberFromImpl1()
+            Dim workspace =
+<Workspace>
+    <Project Language="C#" CommonReferences="true">
+        <Document>
+interface IFoo1 { void [|Bar|](); }
+
+class Foo : IFoo1
+{
+    public void $$Bar()
+    {
+
+    }
+}
+        </Document>
+    </Project>
+</Workspace>
+
+            Test(workspace)
+        End Sub
+
+        <WorkItem(41870, "https://github.com/dotnet/roslyn/issues/41870")>
+        <WpfFact, Trait(Traits.Feature, Traits.Features.GoToDefinition)>
+        Public Sub TestCSharpGoToImplementedInterfaceMemberFromImpl2()
+            Dim workspace =
+<Workspace>
+    <Project Language="C#" CommonReferences="true">
+        <Document>
+interface IFoo1 { void [|Bar|](); }
+
+class Foo : IFoo1
+{
+    void IFoo1.$$Bar()
+    {
+
+    }
+}
+        </Document>
+    </Project>
+</Workspace>
+
+            Test(workspace)
+        End Sub
+
+        <WorkItem(41870, "https://github.com/dotnet/roslyn/issues/41870")>
+        <WpfFact, Trait(Traits.Feature, Traits.Features.GoToDefinition)>
+        Public Sub TestCSharpGoToImplementedInterfaceMemberFromImpl3()
+            Dim workspace =
+<Workspace>
+    <Project Language="C#" CommonReferences="true">
+        <Document>
+interface IFoo1 { void [|Bar|](); }
+interface IFoo2 { void [|Bar|](); }
+
+class Foo : IFoo1, IFoo2
+{
+    public void $$Bar()
+    {
+
+    }
+}
+        </Document>
+    </Project>
+</Workspace>
+
+            Test(workspace)
+        End Sub
 #End Region
 
 #Region "CSharp TupleTests"
-        Dim tuple2 As XCData =
+        Private ReadOnly tuple2 As XCData =
         <![CDATA[
 namespace System
 {
@@ -1019,7 +1122,7 @@ namespace System
             Dim workspace =
 <Workspace>
     <Project Language="C#" CommonReferences="true">
-        <!-- intentionally not including tuple2, shoudl still work -->
+        <!-- intentionally not including tuple2, should still work -->
         <Document>
     class Program
     {
@@ -2457,7 +2560,6 @@ End Class
 
         </Document>
     </Project>
-
     <Project Language="Visual Basic" CommonReferences="true" AssemblyName="VBAssembly">
         <Document>
 Namespace Importable
@@ -2474,7 +2576,7 @@ End Namespace
 
 #Region "CSharp Query expressions Tests"
 
-        Private Function GetExpressionPatternDefinition(highlight As String, Optional index As Integer = 0) As String
+        Private Shared Function GetExpressionPatternDefinition(highlight As String, Optional index As Integer = 0) As String
             Dim definition As String =
 "
 using System;

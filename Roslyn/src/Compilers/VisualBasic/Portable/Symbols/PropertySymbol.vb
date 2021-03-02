@@ -1,4 +1,6 @@
-﻿' Copyright (c) Microsoft.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
+﻿' Licensed to the .NET Foundation under one or more agreements.
+' The .NET Foundation licenses this file to you under the MIT license.
+' See the LICENSE file in the project root for more information.
 
 Imports System.Collections.Generic
 Imports System.Collections.Immutable
@@ -83,7 +85,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Symbols
         End Property
 
         ''' <summary>
-        ''' True if the property itself Is excluded from code covarage instrumentation.
+        ''' True if the property itself Is excluded from code coverage instrumentation.
         ''' True for source properties marked with <see cref="AttributeDescription.ExcludeFromCodeCoverageAttribute"/>.
         ''' </summary>
         Friend Overridable ReadOnly Property IsDirectlyExcludedFromCodeCoverage As Boolean
@@ -142,22 +144,76 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Symbols
         ''' <summary>
         ''' Indicates if the property can be written into, which means this 
         ''' property has a setter or it is a getter only autoproperty accessed 
-        ''' in a corresponding constructor or initializer
+        ''' in a corresponding constructor or initializer.
+        ''' If the setter is init-only, we also check that it is accessed in a constructor
+        ''' on Me/MyBase/MyClass or is a target of a member initializer in an object member
+        ''' initializer.
         ''' </summary>
-        Friend Function IsWritable(receiver As BoundExpression, containingBinder As Binder) As Boolean
-            If Me.HasSet Then
-                Return True
+        Friend Function IsWritable(receiverOpt As BoundExpression, containingBinder As Binder, isKnownTargetOfObjectMemberInintializer As Boolean) As Boolean
+            Debug.Assert(containingBinder IsNot Nothing)
+
+            Dim mostDerivedSet As MethodSymbol = Me.GetMostDerivedSetMethod()
+
+            If mostDerivedSet IsNot Nothing Then
+                If Not mostDerivedSet.IsInitOnly Then
+                    Return True
+                End If
+
+                If receiverOpt Is Nothing Then
+                    Return False
+                End If
+
+                ' ok: New C() With { .InitOnlyProperty = ... }
+                If isKnownTargetOfObjectMemberInintializer Then
+                    Debug.Assert(receiverOpt.Kind = BoundKind.WithLValueExpressionPlaceholder)
+                    Return True
+                End If
+
+                ' ok: setting on `Me`/`MyBase`/`MyClass` from an instance constructor
+                Dim containingMember As Symbol = containingBinder.ContainingMember
+                If If(TryCast(containingMember, MethodSymbol)?.MethodKind <> MethodKind.Constructor, True) Then
+                    Return False
+                End If
+
+                If receiverOpt.Kind = BoundKind.WithLValueExpressionPlaceholder OrElse receiverOpt.Kind = BoundKind.WithRValueExpressionPlaceholder Then
+                    ' This can be a reference used as a target for a `With` statement
+                    Dim currentBinder As Binder = containingBinder
+
+                    While currentBinder IsNot Nothing AndAlso currentBinder.ContainingMember Is containingMember
+                        Dim withBlockBinder = TryCast(currentBinder, WithBlockBinder)
+                        If withBlockBinder IsNot Nothing Then
+                            If withBlockBinder.Info?.ExpressionPlaceholder Is receiverOpt Then
+                                receiverOpt = withBlockBinder.Info.OriginalExpression
+                            End If
+
+                            Exit While
+                        End If
+
+                        currentBinder = currentBinder.ContainingBinder
+                    End While
+                End If
+
+                Do
+                    Select Case receiverOpt.Kind
+                        Case BoundKind.MeReference, BoundKind.MyBaseReference, BoundKind.MyClassReference
+                            Return True
+                        Case BoundKind.Parenthesized
+                            receiverOpt = DirectCast(receiverOpt, BoundParenthesized).Expression
+                        Case Else
+                            Return False
+                    End Select
+                Loop
             End If
 
             Dim sourceProperty As SourcePropertySymbol = TryCast(Me, SourcePropertySymbol)
             Dim propertyIsStatic As Boolean = Me.IsShared
             Dim fromMember = containingBinder.ContainingMember
 
-            Return sourceProperty IsNot Nothing AndAlso
+            Return sourceProperty IsNot Nothing AndAlso fromMember IsNot Nothing AndAlso
                 sourceProperty.IsAutoProperty AndAlso
-                sourceProperty.ContainingType = fromMember.ContainingType AndAlso
+                TypeSymbol.Equals(sourceProperty.ContainingType, fromMember.ContainingType, TypeCompareKind.ConsiderEverything) AndAlso
                 propertyIsStatic = fromMember.IsShared AndAlso
-                (propertyIsStatic OrElse receiver.Kind = BoundKind.MeReference) AndAlso
+                (propertyIsStatic OrElse (receiverOpt IsNot Nothing AndAlso receiverOpt.Kind = BoundKind.MeReference)) AndAlso
                 ((fromMember.Kind = SymbolKind.Method AndAlso DirectCast(fromMember, MethodSymbol).IsAnyConstructor) OrElse
                         TypeOf containingBinder Is DeclarationInitializerBinder)
 
@@ -175,7 +231,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Symbols
         ''' overridden property if such property exists.
         ''' 
         ''' NOTE: It is not possible in VB, but possible in other languages (for example in C#) to
-        '''       override read-write property an provide override only for setter, thus inheriting 
+        '''       override read-write property and provide override only for setter, thus inheriting 
         '''       getter's implementation. This method will find the Get method from the most-derived
         '''       overridden property in this case
         ''' </summary>
@@ -202,7 +258,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Symbols
         ''' overridden property if such property exists.
         ''' 
         ''' NOTE: It is not possible in VB, but possible in other languages (for example in C#) to
-        '''       override read-write property an provide override only for getter, thus inheriting 
+        '''       override read-write property and provide override only for getter, thus inheriting 
         '''       setter's implementation. This method will find the Set method from the most-derived
         '''       overridden property in this case
         ''' </summary>
@@ -522,6 +578,12 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Symbols
         Private ReadOnly Property IPropertySymbol_Type As ITypeSymbol Implements IPropertySymbol.Type
             Get
                 Return Me.Type
+            End Get
+        End Property
+
+        Private ReadOnly Property IPropertySymbol_NullableAnnotation As NullableAnnotation Implements IPropertySymbol.NullableAnnotation
+            Get
+                Return NullableAnnotation.None
             End Get
         End Property
 

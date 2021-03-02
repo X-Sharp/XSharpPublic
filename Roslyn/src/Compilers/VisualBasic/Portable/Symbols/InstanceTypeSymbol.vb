@@ -1,4 +1,6 @@
-﻿' Copyright (c) Microsoft.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
+﻿' Licensed to the .NET Foundation under one or more agreements.
+' The .NET Foundation licenses this file to you under the MIT license.
+' See the LICENSE file in the project root for more information.
 
 Imports System.Collections.Generic
 Imports System.Collections.Immutable
@@ -125,6 +127,33 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Symbols
                 Return Me
             End Get
         End Property
+
+        Public Overrides Function GetHashCode() As Integer
+            Return System.Runtime.CompilerServices.RuntimeHelpers.GetHashCode(Me)
+        End Function
+
+        Public Overrides Function Equals(other As TypeSymbol, comparison As TypeCompareKind) As Boolean
+            If other Is Me Then
+                Return True
+            End If
+
+            If other Is Nothing OrElse (comparison And TypeCompareKind.AllIgnoreOptionsForVB) = 0 Then
+                Return False
+            End If
+
+            Dim otherTuple = TryCast(other, TupleTypeSymbol)
+            If otherTuple IsNot Nothing Then
+                Return otherTuple.Equals(Me, comparison)
+            End If
+
+            If other.OriginalDefinition IsNot Me Then
+                Return False
+            End If
+
+            ' Delegate comparison to the other type to ensure symmetry
+            Debug.Assert(TypeOf other Is SubstitutedNamedType)
+            Return other.Equals(Me, comparison)
+        End Function
 
 #Region "Use-Site Diagnostics"
 

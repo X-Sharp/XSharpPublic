@@ -3,17 +3,19 @@
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
-
+#nullable disable
 using System;
 using System.Linq;
 using System.Collections.Generic;
-using Roslyn.Utilities; 
+using System.Diagnostics;
+using Roslyn.Utilities;
 using Antlr4.Runtime;
 using Antlr4.Runtime.Misc;
 using Antlr4.Runtime.Tree;
 using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
 using XP = LanguageService.CodeAnalysis.XSharp.SyntaxParser.XSharpParser;
 using Microsoft.CodeAnalysis.PooledObjects;
+
 namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 {
     using Microsoft.CodeAnalysis.Syntax.InternalSyntax;
@@ -300,7 +302,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         #endregion
 
         #region Special app methods
-        protected MethodDeclarationSyntax CreateInitFunction(IList<String> procnames, string functionName, bool isApp, List<MemVarFieldInfo> filewidepublics)
+        protected MethodDeclarationSyntax CreateInitFunction(IList<String> procnames, string functionName, bool isApp, List<MemVarFieldInfo> filewidepublics = null)
         {
             // create body for new Init procedure
             var stmts = _pool.Allocate<StatementSyntax>();
@@ -383,16 +385,16 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
             // Put Everything in separate methods $Init1 .. $Init3
             // Always generate $Init1
-            members.Add(CreateInitFunction(init1, XSharpSpecialNames.InitProc1, isApp, null));
+            members.Add(CreateInitFunction(init1, XSharpSpecialNames.InitProc1, isApp));
             if (init2.Count > 0)
             {
-                members.Add(CreateInitFunction(init2, XSharpSpecialNames.InitProc2, isApp, null));
+                members.Add(CreateInitFunction(init2, XSharpSpecialNames.InitProc2, isApp));
             }
             if (init3.Count > 0 || filewidepublics.Count > 0)
             {
                 members.Add(CreateInitFunction(init3, XSharpSpecialNames.InitProc3, isApp, filewidepublics));
             }
-            members.Add(CreateInitFunction(exit, XSharpSpecialNames.ExitProc, isApp, null));
+            members.Add(CreateInitFunction(exit, XSharpSpecialNames.ExitProc, isApp));
             if (hasPCall)
             {
                 members.Add(CreatePCallFunction());
@@ -406,7 +408,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             // Creates an empty $AppExit method.
             // The contents will be created in the LocalRewriter
             // This will contain the code to clear globals
-            var body = MakeBlock(EmptyList<StatementSyntax> ());
+            var body = MakeBlock();
             var appId = SyntaxFactory.Identifier(XSharpSpecialNames.AppExit);
             var modifiers = TokenList(SyntaxKind.InternalKeyword, SyntaxKind.StaticKeyword);
 
@@ -420,7 +422,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         private MethodDeclarationSyntax CreateRunInitProcs()
         {
-            var body = MakeBlock(EmptyList<StatementSyntax>());
+            var body = MakeBlock();
             var appId = SyntaxFactory.Identifier(ReservedNames.RunInitProcs);
             var modifiers = TokenList(SyntaxKind.PublicKeyword, SyntaxKind.StaticKeyword);
             var initProcs = _syntaxFactory.MethodDeclaration(
@@ -467,6 +469,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             var excType = GenerateQualifiedName(SystemQualifiedNames.Exception);
             var Exception = CreateObject(excType, MakeArgumentList(arg1, arg2));
             var throwstmt = _syntaxFactory.ThrowStatement(
+                attributeLists: default,    
                 SyntaxFactory.MakeToken(SyntaxKind.ThrowKeyword),
                 Exception, SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken));
             stmts.Add(throwstmt);
@@ -479,6 +482,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 SyntaxFactory.MakeToken(SyntaxKind.CatchKeyword), catchDecl, null, MakeBlock(stmts));
 
             var tryStmt = _syntaxFactory.TryStatement(
+                    attributeLists: default,
                     SyntaxFactory.MakeToken(SyntaxKind.TryKeyword),
                     body, catchClause, null);
             tryStmt.XGenerated = true;
@@ -537,14 +541,23 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 var init = _syntaxFactory.EqualsValueClause(SyntaxFactory.MakeToken(SyntaxKind.EqualsToken), createExpr);
                 var vd = _syntaxFactory.VariableDeclarator(arrayId, null, init);
                 var decl = _syntaxFactory.VariableDeclaration(_impliedType, MakeSeparatedList(vd));
-                stmts.Add(_syntaxFactory.LocalDeclarationStatement(null, decl, SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)));
+                stmts.Add(_syntaxFactory.LocalDeclarationStatement(
+                    attributeLists: default,
+                    awaitKeyword: default,
+                    usingKeyword: default,
+                    modifiers: default,
+                    declaration: decl,
+                    semicolonToken: SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)));
                 // create iterator that copies values to  the elements in the array
                 var block = new List<StatementSyntax>();
                 // iterator body : Xs$Array.Add(element)
                 var addmethod = MakeSimpleMemberAccess(arrayName, GenerateSimpleName("Add"));
                 var methcall = _syntaxFactory.InvocationExpression(addmethod, MakeArgumentList(MakeArgument(GenerateSimpleName("element"))));
                 block.Add(GenerateExpressionStatement(methcall));
-                StatementSyntax forStmt = _syntaxFactory.ForEachStatement(SyntaxFactory.MakeToken(SyntaxKind.ForEachKeyword),
+                StatementSyntax forStmt = _syntaxFactory.ForEachStatement(
+                    attributeLists: default,
+                    awaitKeyword: default, 
+                    SyntaxFactory.MakeToken(SyntaxKind.ForEachKeyword),
                     SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
                     _impliedType,
                     SyntaxFactory.Identifier("element"),
@@ -635,9 +648,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             var finallyblock = MakeBlock(stmts);
             var finallyclause = _syntaxFactory.FinallyClause(SyntaxFactory.MakeToken(SyntaxKind.FinallyKeyword),
                     finallyblock);
-            var trystmt = _syntaxFactory.TryStatement(SyntaxFactory.MakeToken(SyntaxKind.TryKeyword),
+            var trystmt = _syntaxFactory.TryStatement(
+                 attributeLists: default, 
+                 SyntaxFactory.MakeToken(SyntaxKind.TryKeyword),
                  tryblock,
-                 null,
+                 catches: default,
                  finallyclause);
             return MakeBlock(trystmt);
         }
@@ -876,7 +891,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         internal ExpressionSyntax GenerateFieldSetWa(ExpressionSyntax area, ExpressionSyntax field, ExpressionSyntax value)
         {
             ArgumentListSyntax args;
-            var argField = MakeArgument(field); 
+            var argField = MakeArgument(field);
             var argWA = MakeArgument(area);
             var argValue = MakeArgument(value);
             var method = _options.XSharpRuntime ? XSharpQualifiedFunctionNames.FieldSetWa : VulcanQualifiedFunctionNames.FieldSetWa;
@@ -885,7 +900,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         }
 
-        private ExpressionSyntax MakeMemVarField(MemVarFieldInfo fieldInfo)
+        protected ExpressionSyntax MakeMemVarField(MemVarFieldInfo fieldInfo)
         {
             if (fieldInfo.IsClipperParameter)
                 return GenerateSimpleName(fieldInfo.Name);
@@ -897,7 +912,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             // Check to see if the name is a field or Memvar, registered with the FIELD or MemVar statement
             string Name = context.Name.GetText();
             ExpressionSyntax expr = context.Name.Get<NameSyntax>();
-            if (! (context.Parent.Parent  is XP.MethodCallContext))
+            if (! (context.Parent.Parent is XP.MethodCallContext))
             {
                 MemVarFieldInfo fieldInfo = findMemVar(Name);
                 if (fieldInfo != null)
@@ -1117,6 +1132,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 }
                 else
                 {
+                    Debug.Assert(context.Token.Type == XP.MEMVAR);
                     // MEMVAR
                     foreach (var memvar in context._Vars)
                     {
@@ -1127,12 +1143,14 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 }
             }
         }
-        
+
         public override void ExitFilewidememvar([NotNull] XP.FilewidememvarContext context)
         {
+            // implemented in EnterFilewidememvar
             return;
         }
-        private MemVarFieldInfo findMemVar(string name)
+
+        protected MemVarFieldInfo findMemVar(string name)
         {
 
             MemVarFieldInfo memvar = null;
@@ -1221,10 +1239,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     }
                     context.Put(MakeBlock(stmts));
                     break;
-               
+
                 case XP.MEMVAR:
                     // handled in the Enter method
-                    context.Put(_syntaxFactory.EmptyStatement(SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)));
+                    context.Put(_syntaxFactory.EmptyStatement(
+                        attributeLists: default, 
+                        SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)));
                     break;
                 case XP.LPARAMETERS:
                     if (CurrentEntity?.isScript() == true)
@@ -1244,9 +1264,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         context.PutList(stmts.ToList());
                     }
                     else
-                        context.Put(_syntaxFactory.EmptyStatement(SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)));
+                        context.Put(_syntaxFactory.EmptyStatement(attributeLists: default, SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)));
                     break;
                 default:
+                    Debug.Assert(false, "Unknown type in XbaseDecl","Type = " + context.T.Text);
                     break;
             }
           _pool.Free(stmts);
@@ -1594,7 +1615,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         public override void ExitCallingconvention([NotNull] XP.CallingconventionContext context)
         {
-            // TODO nvk (calling convention is silently ignored for now)
             if (CurrentEntity != null)
             {
                 if (context.Convention.Type == XP.CLIPPER && context.Parent == CurrentEntity)
@@ -1708,7 +1728,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 else
                     args = MakeArgumentList(MakeArgument(GenerateNIL()));
                 var expr = CreateObject(GenerateQualifiedName(_wrappedExceptionType), args);
-                context.Put(_syntaxFactory.ThrowStatement(SyntaxFactory.MakeToken(SyntaxKind.ThrowKeyword),
+                context.Put(_syntaxFactory.ThrowStatement(attributeLists: default,
+                    SyntaxFactory.MakeToken(SyntaxKind.ThrowKeyword),
                     expr,
                         SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)));
             }
@@ -2109,9 +2130,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             stmts.Clear();
             stmts.Add(GenerateExpressionStatement(GenerateMethodCall(
                 _options.XSharpRuntime ? XSharpQualifiedFunctionNames.ExitSequence : VulcanQualifiedFunctionNames.ExitSequence, true)));
-            var innerTry = _syntaxFactory.TryStatement(SyntaxFactory.MakeToken(SyntaxKind.TryKeyword),
+            var innerTry = _syntaxFactory.TryStatement(
+                attributeLists: default, 
+                SyntaxFactory.MakeToken(SyntaxKind.TryKeyword),
                  tryBlock,
-                 null,
+                 catches: default,
                  _syntaxFactory.FinallyClause(SyntaxFactory.MakeToken(SyntaxKind.FinallyKeyword),
                      MakeBlock(stmts)));
             stmts.Clear();
@@ -2143,7 +2166,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                  SyntaxFactory.MakeToken(SyntaxKind.FinallyKeyword),
                  context.FinBlock.Get<BlockSyntax>());
             }
-            StatementSyntax outerTry = _syntaxFactory.TryStatement(SyntaxFactory.MakeToken(SyntaxKind.TryKeyword),
+            StatementSyntax outerTry = _syntaxFactory.TryStatement(
+                  attributeLists: default, 
+                  SyntaxFactory.MakeToken(SyntaxKind.TryKeyword),
                   tryBlock,
                   catchClause,
                   finallyClause);
@@ -2225,6 +2250,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
                 // if 3
                 var ifstmt = _syntaxFactory.IfStatement(
+                            attributeLists: default,
                             SyntaxFactory.MakeToken(SyntaxKind.IfKeyword),
                             SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
                             condition3,
@@ -2238,6 +2264,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
                 // if 2
                 ifstmt = _syntaxFactory.IfStatement(
+                            attributeLists: default,
                             SyntaxFactory.MakeToken(SyntaxKind.IfKeyword),
                             SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
                             condition2,
@@ -2250,6 +2277,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     ifstmt);
                 // if 1
                 ifstmt = _syntaxFactory.IfStatement(
+                            attributeLists: default,
                             SyntaxFactory.MakeToken(SyntaxKind.IfKeyword),
                             SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
                             condition1,
@@ -3301,12 +3329,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 {
                     foreach (XP.ParameterContext par in parameters)
                     {
-                        var name = par.Id.GetText();
-                        if (name.StartsWith("@@"))
-                            name = name.Substring(2);
-                        CurrentEntity.Data.AddField(name, XSharpSpecialNames.ClipperParamPrefix, par);
+                        CurrentEntity.Data.AddField(par.Id.GetText(), XSharpSpecialNames.ClipperParamPrefix, par);
                     }
-
                 }
             }
         }
@@ -3373,7 +3397,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 // Bring body back to a simple "throw null" Assign xnode so we will have line numbers and a [Source] button in the docs.
                 var stmts = new List<StatementSyntax>();
-                var stmt = _syntaxFactory.ThrowStatement(SyntaxFactory.MakeToken(SyntaxKind.ThrowKeyword),
+                var stmt = _syntaxFactory.ThrowStatement(attributeLists: default,
+                    SyntaxFactory.MakeToken(SyntaxKind.ThrowKeyword),
                     GenerateLiteralNull(),
                     SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken));
                 stmt.XNode = context;
@@ -3543,6 +3568,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
                     var tryStmt = finallyClause == null ? (StatementSyntax)body :
                         _syntaxFactory.TryStatement(
+                            attributeLists: default, 
                         SyntaxFactory.MakeToken(SyntaxKind.TryKeyword),
                         body,
                         null,
@@ -3668,7 +3694,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             _pool.Free(indices);
             return result;
         }
-
         private StatementSyntax GenerateGetClipperByRefAssignParam(List<string> paramNames,  XP.EntityData data, XSharpParserRuleContext context)
         {
             // Note that the expr must result into a 1 based offset or (with /az) a 0 based offset
@@ -4069,6 +4094,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             var block = context.CsNode as BlockSyntax;
             if (block == null )
             {
+                // No need to do anything. We now support codeblocks with an expression body
+                /*
                 var cbc = context.Parent as XP.CodeblockContext;
                 if (cbc?.lambda == null)
                 {
@@ -4078,6 +4105,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         context.Put(block);
                     }
                 }
+                */
             }
             if (context.Expr == null && context.ExprList == null && context.StmtBlk == null)
             {
@@ -4085,8 +4113,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 var cbcontext = context.Parent as XP.CodeblockContext;
                 if (cbcontext?.lambda == null)
                 {
-                    block = MakeBlock(GenerateReturn(GenerateNIL()));
-                    context.Put(block);
+                    //block = MakeBlock(GenerateReturn(GenerateNIL()));
+                    //context.Put(block);
+                    // We now support codeblocks with an expression body
+                    context.Put(GenerateNIL());
                 }
             }
         }
@@ -4095,7 +4125,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         #region Workarea and Macro
         public override void ExitFielddecl([NotNull] XP.FielddeclContext context)
         {
-            var stmt = _syntaxFactory.EmptyStatement(SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken));
+            var stmt = _syntaxFactory.EmptyStatement(attributeLists: default, SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken));
             context.SetSequencePoint();
             context.Put(stmt);
             return;
@@ -4157,10 +4187,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 // alias can be a literal, or variable
                 // __AreaEval ( alias, { => Expr })
                 expr = _syntaxFactory.ParenthesizedLambdaExpression(
-                        asyncKeyword: null,
+                        modifiers: default,
                         parameterList: EmptyParameterList(),
                         arrowToken: SyntaxFactory.MakeToken(SyntaxKind.EqualsGreaterThanToken),
-                        expr);
+                        block: null,
+                        expressionBody: expr);
                 var args = MakeArgumentList(MakeArgument(wa), MakeArgument(expr));
                 var mcall = GenerateMethodCall(XSharpQualifiedFunctionNames.AreaEval, args);
                 context.Put(mcall);
@@ -4185,21 +4216,22 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             MakeSimpleMemberAccess(
                 MakeCastTo(_codeblockType,
                     _syntaxFactory.ParenthesizedLambdaExpression(
-                        asyncKeyword: null,
+                        modifiers: default,
                         parameterList: EmptyParameterList(),
                         arrowToken: SyntaxFactory.MakeToken(SyntaxKind.EqualsGreaterThanToken),
-                        body: MakeBlock(MakeList<StatementSyntax>(
+                        block: MakeBlock(MakeList<StatementSyntax>(
                             pushStmt,
                             _syntaxFactory.TryStatement(
-                                    SyntaxFactory.MakeToken(SyntaxKind.TryKeyword),
-                                    MakeBlock(MakeList<StatementSyntax>(GenerateReturn(expr))),
-                                    default,
-                                    _syntaxFactory.FinallyClause(
-                                            SyntaxFactory.MakeToken(SyntaxKind.FinallyKeyword),
-                                            MakeBlock(MakeList<StatementSyntax>(popStmt))
+                                attributeLists: default, 
+                                SyntaxFactory.MakeToken(SyntaxKind.TryKeyword),
+                                MakeBlock(MakeList<StatementSyntax>(GenerateReturn(expr))),
+                                catches: default, 
+                                _syntaxFactory.FinallyClause(SyntaxFactory.MakeToken(SyntaxKind.FinallyKeyword),
+                                    MakeBlock(MakeList<StatementSyntax>(popStmt))
                                     )
                                 )
-                            ))
+                            )),
+                        expressionBody: default
                         )
                     ),
                 _syntaxFactory.IdentifierName(SyntaxFactory.MakeIdentifier(ReservedNames.Eval))

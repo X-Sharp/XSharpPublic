@@ -1,11 +1,17 @@
-﻿// Copyright (c) Microsoft.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
+﻿// Licensed to the .NET Foundation under one or more agreements.
+// The .NET Foundation licenses this file to you under the MIT license.
+// See the LICENSE file in the project root for more information.
+
+#nullable disable
 
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.ComponentModel.Composition;
 using System.Threading.Tasks;
+using Microsoft.CodeAnalysis.Editor.Shared.Extensions;
 using Microsoft.CodeAnalysis.Editor.Shared.Tagging;
+using Microsoft.CodeAnalysis.Editor.Shared.Utilities;
 using Microsoft.CodeAnalysis.Editor.Tagging;
 using Microsoft.CodeAnalysis.ErrorReporting;
 using Microsoft.CodeAnalysis.Internal.Log;
@@ -34,7 +40,7 @@ namespace Microsoft.CodeAnalysis.Editor.Implementation.Structure
         AsynchronousTaggerProvider<TRegionTag>
         where TRegionTag : class, ITag
     {
-        private static IComparer<BlockSpan> s_blockSpanComparer =
+        private static readonly IComparer<BlockSpan> s_blockSpanComparer =
             Comparer<BlockSpan>.Create((s1, s2) => s1.TextSpan.Start - s2.TextSpan.Start);
 
         protected readonly ITextEditorFactoryService TextEditorFactoryService;
@@ -42,12 +48,13 @@ namespace Microsoft.CodeAnalysis.Editor.Implementation.Structure
         protected readonly IProjectionBufferFactoryService ProjectionBufferFactoryService;
 
         protected AbstractStructureTaggerProvider(
+            IThreadingContext threadingContext,
             IForegroundNotificationService notificationService,
             ITextEditorFactoryService textEditorFactoryService,
             IEditorOptionsFactoryService editorOptionsFactoryService,
             IProjectionBufferFactoryService projectionBufferFactoryService,
             IAsynchronousOperationListenerProvider listenerProvider)
-                : base(listenerProvider.GetListener(FeatureAttribute.Outlining), notificationService)
+                : base(threadingContext, listenerProvider.GetListener(FeatureAttribute.Outlining), notificationService)
         {
             TextEditorFactoryService = textEditorFactoryService;
             EditorOptionsFactoryService = editorOptionsFactoryService;
@@ -88,18 +95,26 @@ namespace Microsoft.CodeAnalysis.Editor.Implementation.Structure
         {
             try
             {
-                var outliningService = TryGetService(context, documentSnapshotSpan);
-                if (outliningService != null)
-                {
-                    var blockStructure = await outliningService.GetBlockStructureAsync(
+                var document = documentSnapshotSpan.Document;
+                if (document == null)
+                    return;
+
+                // Let LSP handle producing tags in the cloud scenario
+                if (documentSnapshotSpan.SnapshotSpan.Snapshot.TextBuffer.IsInLspEditorContext())
+                    return;
+
+                var outliningService = BlockStructureService.GetService(document);
+                if (outliningService == null)
+                    return;
+
+                var blockStructure = await outliningService.GetBlockStructureAsync(
                         documentSnapshotSpan.Document, context.CancellationToken).ConfigureAwait(false);
 
-                    ProcessSpans(
-                        context, documentSnapshotSpan.SnapshotSpan, outliningService,
-                        blockStructure.Spans);
-                }
+                ProcessSpans(
+                    context, documentSnapshotSpan.SnapshotSpan, outliningService,
+                    blockStructure.Spans);
             }
-            catch (Exception e) when (FatalError.ReportUnlessCanceled(e))
+            catch (Exception e) when (FatalError.ReportAndPropagateUnlessCanceled(e))
             {
                 throw ExceptionUtilities.Unreachable;
             }
@@ -113,43 +128,27 @@ namespace Microsoft.CodeAnalysis.Editor.Implementation.Structure
         {
             try
             {
-                var outliningService = TryGetService(context, documentSnapshotSpan);
-                if (outliningService != null)
-                {
-                    var document = documentSnapshotSpan.Document;
-                    var cancellationToken = context.CancellationToken;
+                var document = documentSnapshotSpan.Document;
+                if (document == null)
+                    return;
 
-                    // Try to call through the synchronous service if possible. Otherwise, fallback
-                    // and make a blocking call against the async service.
+                // Let LSP handle producing tags in the cloud scenario
+                if (documentSnapshotSpan.SnapshotSpan.Snapshot.TextBuffer.IsInLspEditorContext())
+                    return;
 
-                    var blockStructure = outliningService.GetBlockStructure(document, cancellationToken);
+                var outliningService = BlockStructureService.GetService(document);
+                if (outliningService == null)
+                    return;
 
-                    ProcessSpans(
-                        context, documentSnapshotSpan.SnapshotSpan, outliningService,
-                        blockStructure.Spans);
-                }
+                var blockStructure = outliningService.GetBlockStructure(document, context.CancellationToken);
+                ProcessSpans(
+                    context, documentSnapshotSpan.SnapshotSpan, outliningService,
+                    blockStructure.Spans);
             }
-            catch (Exception e) when (FatalError.ReportUnlessCanceled(e))
+            catch (Exception e) when (FatalError.ReportAndPropagateUnlessCanceled(e))
             {
                 throw ExceptionUtilities.Unreachable;
             }
-        }
-
-        private BlockStructureService TryGetService(
-            TaggerContext<TRegionTag> context,
-            DocumentSnapshotSpan documentSnapshotSpan)
-        {
-            var cancellationToken = context.CancellationToken;
-            using (Logger.LogBlock(FunctionId.Tagger_Outlining_TagProducer_ProduceTags, cancellationToken))
-            {
-                var document = documentSnapshotSpan.Document;
-                if (document != null)
-                {
-                    return BlockStructureService.GetService(document);
-                }
-            }
-
-            return null;
         }
 
         private void ProcessSpans(
@@ -164,7 +163,7 @@ namespace Microsoft.CodeAnalysis.Editor.Implementation.Structure
             }
             catch (TypeLoadException)
             {
-                // We're targetting a version of the BlockTagging infrastructure in 
+                // We're targeting a version of the BlockTagging infrastructure in 
                 // VS that may not match the version that the user is currently
                 // developing against.  Be resilient to this until everything moves
                 // forward to the right VS version.
@@ -213,7 +212,7 @@ namespace Microsoft.CodeAnalysis.Editor.Implementation.Structure
 
         private static bool s_exceptionReported = false;
 
-        private ImmutableArray<BlockSpan> GetMultiLineRegions(
+        private static ImmutableArray<BlockSpan> GetMultiLineRegions(
             BlockStructureService service,
             ImmutableArray<BlockSpan> regions, ITextSnapshot snapshot)
         {
@@ -237,7 +236,7 @@ namespace Microsoft.CodeAnalysis.Editor.Implementation.Structure
                             {
                                 throw new InvalidOutliningRegionException(service, snapshot, snapshotSpan, regionSpan);
                             }
-                            catch (InvalidOutliningRegionException e) when (FatalError.ReportWithoutCrash(e))
+                            catch (InvalidOutliningRegionException e) when (FatalError.ReportAndCatch(e))
                             {
                             }
                         }

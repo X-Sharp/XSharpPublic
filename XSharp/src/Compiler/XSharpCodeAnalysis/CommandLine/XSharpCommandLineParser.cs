@@ -3,6 +3,7 @@
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
+#nullable disable
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -25,11 +26,12 @@ namespace Microsoft.CodeAnalysis.CSharp
         {
             options = new XSharpSpecificCompilationOptions();
         }
-        
         internal bool ParseXSharpArgument(ref string name, ref string value, string arg, List<Diagnostic> diagnostics)
         {
             if (options == null)
+            {
                 options = new XSharpSpecificCompilationOptions();
+            }
 
             bool handled = true;
             bool positive = !name.EndsWith("-");
@@ -75,9 +77,9 @@ namespace Microsoft.CodeAnalysis.CSharp
                     }
                     else
                     {
-                        if(value.StartsWith("\"") && value.EndsWith("\""))
+                        if (value.StartsWith("\"") && value.EndsWith("\""))
                             value = value.Substring(1, value.Length - 2);
-                        options.IncludePaths = string.IsNullOrEmpty(options.IncludePaths) ? value : options.IncludePaths +';' + value;
+                        options.IncludePaths = string.IsNullOrEmpty(options.IncludePaths) ? value : options.IncludePaths + ';' + value;
                     }
                     break;
 
@@ -103,8 +105,8 @@ namespace Microsoft.CodeAnalysis.CSharp
 
                 case "noclipcall":
                     options.NoClipCall = positive;
-					// rolled back change that also compiles with /refonly because that removes the line number
-					// information that we need for the [Source] button in the generated docs.
+                    // rolled back change that also compiles with /refonly because that removes the line number
+                    // information that we need for the [Source] button in the generated docs.
                     break;
 
                 case "norun":
@@ -127,7 +129,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                     break;
                 case "fovf":    // synonym for checked
                 case "ovf":     // synonym for checked
-                    if (options.ExplicitOptions.HasFlag(CompilerOption.Overflow)  && positive != options.Overflow)
+                    if (options.ExplicitOptions.HasFlag(CompilerOption.Overflow) && positive != options.Overflow)
                     {
                         AddDiagnostic(diagnostics, ErrorCode.ERR_ConflictingCommandLineOptions, arg, options.PreviousArgument);
                     }
@@ -215,7 +217,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                         }
                     }
                     handled = false;
-                    break; 
+                    break;
                 case "ppo":
                     options.PreProcessorOutput = positive;
                     break;
@@ -242,9 +244,9 @@ namespace Microsoft.CodeAnalysis.CSharp
                             value = value.Substring(1, value.Length - 2);
                         }
                         string filename = value;
-                        if (value.IndexOf(";")!=-1)
+                        if (value.IndexOf(";") != -1)
                         {
-                            foreach (var fname in  ParseSeparatedPaths(value).Where((path) => !string.IsNullOrWhiteSpace(path)))
+                            foreach (var fname in ParseSeparatedPaths(value).Where((path) => !string.IsNullOrWhiteSpace(path)))
                             {
                                 SetOptionFromReference(fname);
                             }
@@ -373,14 +375,18 @@ namespace Microsoft.CodeAnalysis.CSharp
                     options.Fox1 = positive;
                     encode = true;
                     break;
-                case "fox2":       // Make locals visible to macro compiler
-                    options.Fox2 = positive;
-                    encode = true;
+                case "fox2":       // Ignored now
+                    //options.Fox2 = positive;
+                    //encode = true;
                     break;
                 case "unsafe":
                     options.AllowUnsafe = positive;
                     handled = false;    // there is also an 'unsafe' option in Roslyn
                     name = oldname;
+                    break;
+                case "enforceself":       // SELF: or THIS. is mandatory
+                    options.EnforceSelf = positive;
+                    encode = true;
                     break;
 
                 default:
@@ -450,9 +456,9 @@ namespace Microsoft.CodeAnalysis.CSharp
                 case XSharpAssemblyNames.VoWin32:
                     options.RuntimeAssemblies |= RuntimeAssemblies.VoWin32;
                     break;
-               case "mscorlib":
+                case "mscorlib":
                 case "system":
-                    if (! options.ExplicitOptions.HasFlag(CompilerOption.ClrVersion))
+                    if (!options.ExplicitOptions.HasFlag(CompilerOption.ClrVersion))
                     {
                         if (filename.ToLower().Contains("\\v2") || filename.ToLower().Contains("\\2."))
                         {
@@ -524,7 +530,8 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
         }
 
-        private void ValidateXSharpSettings(List<Diagnostic> diagnostics) {
+        private void ValidateXSharpSettings(List<Diagnostic> diagnostics)
+        {
             bool withRT = false;
             var newDialect = options.Dialect;
             if (options.Dialect == XSharpDialect.Core)
@@ -536,25 +543,29 @@ namespace Microsoft.CodeAnalysis.CSharp
             {
                 if (!options.ExplicitOptions.HasFlag(CompilerOption.NamedArgs))
                     options.AllowNamedArguments = false;
+                //if (!options.ExplicitOptions.HasFlag(CompilerOption.EnforceSelf))
+                //    options.EnforceSelf = true;
             }
             if (newDialect == XSharpDialect.XPP && options.TargetDLL == XSharpTargetDLL.XPP)
-            { 
+            {
                 newDialect = XSharpDialect.VO;  // the runtime uses the VO syntax for classes
             }
-            if (newDialect.HasRuntime()) {
+            if (newDialect.HasRuntime())
+            {
                 if (options.VulcanRTFuncsIncluded && options.VulcanRTIncluded && options.Dialect != XSharpDialect.XPP && options.Dialect != XSharpDialect.FoxPro)
                 {
                     // Ok;
                     withRT = true;
                 }
-                else if (options.XSharpRTIncluded  && options.XSharpCoreIncluded )
+                else if (options.XSharpRTIncluded && options.XSharpCoreIncluded)
                 {
                     // Ok;
                     withRT = true;
                 }
-                else if(options.TargetDLL == XSharpTargetDLL.VO || options.TargetDLL == XSharpTargetDLL.RDD ||
+                else if (options.TargetDLL == XSharpTargetDLL.VO || options.TargetDLL == XSharpTargetDLL.RDD ||
                     options.TargetDLL == XSharpTargetDLL.XPP || options.TargetDLL == XSharpTargetDLL.RT ||
-                    options.TargetDLL == XSharpTargetDLL.VFP) {
+                    options.TargetDLL == XSharpTargetDLL.VFP)
+                {
                     // Ok
                     withRT = true;
                 }
@@ -573,9 +584,9 @@ namespace Microsoft.CodeAnalysis.CSharp
                     newDialect = XSharpDialect.Core;
                 }
             }
-            if (! withRT)
+            if (!withRT)
             {
-                if (options.Vo5 && options.ExplicitOptions.HasFlag(CompilerOption.Vo5)) 
+                if (options.Vo5 && options.ExplicitOptions.HasFlag(CompilerOption.Vo5))
                 {
                     AddDiagnostic(diagnostics, ErrorCode.ERR_CompilerOptionNotSupportedForDialect, "vo5", "Implicit CLIPPER calling convention", options.Dialect.ToString());
                     options.Vo5 = false;
@@ -647,7 +658,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                     if (!options.XSharpRTIncluded)
                     {
                         AddDiagnostic(diagnostics, ErrorCode.ERR_IllegalCombinationOfCommandLineOptions, "The FoxPro dialect requires the use of the X# Runtime");
-                        options.Fox2 = false;
+                        //options.Fox2 = false;
                     }
                     if (!options.ExplicitOptions.HasFlag(CompilerOption.Vo9))
                     {
@@ -661,34 +672,35 @@ namespace Microsoft.CodeAnalysis.CSharp
                     {
                         options.Fox1 = true;             // inherit from Custom
                     }
-                    if (options.Fox2 && !options.MemVars)
-                    {
-                        AddDiagnostic(diagnostics, ErrorCode.ERR_IllegalCombinationOfCommandLineOptions, "/fox2 must be combined /memvars");
-                    }
+                    //if (options.Fox2 && !options.MemVars)
+                    //{
+                    //    AddDiagnostic(diagnostics, ErrorCode.ERR_IllegalCombinationOfCommandLineOptions, "/fox2 must be combined /memvars");
+                    //}
                 }
                 else
                 {
-                    if (options.Fox1 || options.Fox2)
+                    if (options.Fox1 /*|| options.Fox2*/)
                     {
-                        AddDiagnostic(diagnostics, ErrorCode.ERR_IllegalCombinationOfCommandLineOptions, "/fox1 and /fox2 are only valid for the FoxPro dialect");
+                        //AddDiagnostic(diagnostics, ErrorCode.ERR_IllegalCombinationOfCommandLineOptions, "/fox1 and /fox2 are only valid for the FoxPro dialect");
+                        AddDiagnostic(diagnostics, ErrorCode.ERR_IllegalCombinationOfCommandLineOptions, "/fox1 is only valid for the FoxPro dialect");
                     }
                 }
             }
-            if (options.Xpp1 ||options.Xpp2)
+            if (options.Xpp1 || options.Xpp2)
             {
                 if (options.Dialect != XSharpDialect.XPP)
                     AddDiagnostic(diagnostics, ErrorCode.ERR_IllegalCombinationOfCommandLineOptions, "/xpp1 and /xpp2 are only valid for the Xbase++ dialect");
-            }    
+            }
 
-            if (options.UndeclaredMemVars && ! options.MemVars)
+            if (options.UndeclaredMemVars && !options.MemVars)
             {
                 AddDiagnostic(diagnostics, ErrorCode.ERR_IllegalCombinationOfCommandLineOptions, "/undeclared must be combined /memvars");
             }
             options.Dialect = newDialect;
-           
+
         }
 
-        private void OptionNotImplemented(List<Diagnostic> diagnostics, string option, string description )
+        private void OptionNotImplemented(List<Diagnostic> diagnostics, string option, string description)
         {
             AddDiagnostic(diagnostics, ErrorCode.WRN_CompilerOptionNotImplementedYet, option, description);
         }

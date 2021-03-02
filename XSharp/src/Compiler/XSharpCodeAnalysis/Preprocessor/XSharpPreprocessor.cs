@@ -3,7 +3,7 @@
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
-
+#nullable disable
 #define UDCSUPPORT
 using System;
 using System.Collections.Generic;
@@ -21,6 +21,7 @@ using Microsoft.CodeAnalysis;
 using System.Reflection;
 using System.Runtime;
 using System.Collections;
+using System.Threading;
 
 namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 {
@@ -37,7 +38,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 #if VSPARSER
                 var strm = asm.GetManifestResourceStream("XSharp.VSParser.Preprocessor.StandardHeaders.resources");
 #else
-                var strm = asm.GetManifestResourceStream("LanguageService.CodeAnalysis.Preprocessor.StandardHeaders.resources");
+                var strm = asm.GetManifestResourceStream("LanguageService.CodeAnalysis.XSharp.Preprocessor.StandardHeaders.resources");
 #endif
                 var rdr = new System.Resources.ResourceReader(strm);
                 foreach (DictionaryEntry item in rdr)
@@ -139,7 +140,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 this.LastUsed = DateTime.Now;
                 if (File.Exists(this.FileName))
                 {
-                    this.LastWritten = FileUtilities.GetFileTimeStamp(this.FileName);
+                this.LastWritten = FileUtilities.GetFileTimeStamp(this.FileName);
                 }
                 else
                 {
@@ -147,6 +148,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 }
                 this.Tokens = tokens.ToImmutableArray();
                 this.MustBeProcessed = mustBeProcessed;
+
             }
             internal PPIncludeFile Clone()
             {
@@ -167,8 +169,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             internal string SymbolName;
             internal XSharpToken Symbol;
             internal InputState parent;
-            internal string MappedFileName;
-            internal PPRule udc;
+            //internal string MappedFileName;
+            //internal PPRule udc;
 
 
             internal InputState(ITokenStream tokens)
@@ -338,7 +340,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             macroDefines.Add("__XPP1__", (token) => new XSharpToken(options.xpp1 ? XSharpLexer.TRUE_CONST: XSharpLexer.FALSE_CONST, token));
             macroDefines.Add("__XPP2__", (token) => new XSharpToken(options.xpp2 ? XSharpLexer.TRUE_CONST : XSharpLexer.FALSE_CONST, token));
             macroDefines.Add("__FOX1__", (token) => new XSharpToken(options.fox1 ? XSharpLexer.TRUE_CONST : XSharpLexer.FALSE_CONST, token));
-            macroDefines.Add("__FOX2__", (token) => new XSharpToken(options.fox2 ? XSharpLexer.TRUE_CONST : XSharpLexer.FALSE_CONST, token));
+            //macroDefines.Add("__FOX2__", (token) => new XSharpToken(options.fox2 ? XSharpLexer.TRUE_CONST : XSharpLexer.FALSE_CONST, token));
             if (!options.NoStdDef )
             {
                 // Todo: when the compiler option nostddefs is not set: read XSharpDefs.xh from the XSharp Include folder,//
@@ -438,10 +440,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
 #if !VSPARSER
             // use the filter mechanism in the compiler to only add errors that are not suppressed.
-            var d = Diagnostic.Create(new SyntaxDiagnosticInfo(error.Code));   
+            var d = Diagnostic.Create(new SyntaxDiagnosticInfo(error.Code));
             if (_options.CommandLineArguments != null)
             {
-                d = _options.CommandLineArguments.CompilationOptions.FilterDiagnostic(d);
+                d = _options.CommandLineArguments.CompilationOptions.FilterDiagnostic(d,CancellationToken.None);
             }
             if (d != null)
             {
@@ -706,8 +708,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
             if (inputs.MappedLineDiff != 0)
                 token.MappedLine = token.Line + inputs.MappedLineDiff;
-            if (!string.IsNullOrEmpty(inputs.MappedFileName))
-                token.MappedFileName = inputs.MappedFileName;
+            //if (!string.IsNullOrEmpty(inputs.MappedFileName))
+            //    token.MappedFileName = inputs.MappedFileName;
             //if (!string.IsNullOrEmpty(inputs.SourceFileName))
             //    token.SourceFileName = inputs.SourceFileName;
             if (inputs.isSymbol)
@@ -1246,6 +1248,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         DebugOutput("Bummer: include file was already added to cache by another thread {0}", nfp);
                     }
                 }
+
             }
             nfp = includeFile.FileName;
             if (_options.ParseLevel == ParseLevel.Complete || includeFile.MustBeProcessed || _lexer.HasPPIfdefs)
@@ -1340,7 +1343,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             return true;
         }
-#region Preprocessor Directives
+        #region Preprocessor Directives
 
 
         private void checkForUnexpectedPPInput(IList<XSharpToken> line, int nMax)
@@ -1962,7 +1965,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
         }
 
-#endregion
+        #endregion
 
 
         private List<XSharpToken> doReplace(IList<XSharpToken> line, PPRule rule, PPMatchRange[] matchInfo)

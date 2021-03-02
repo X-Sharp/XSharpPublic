@@ -3,6 +3,7 @@
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
+#nullable disable
 using System;
 using System.Collections.Generic;
 using Microsoft.CodeAnalysis.Text;
@@ -10,13 +11,15 @@ using CoreInternalSyntax = Microsoft.CodeAnalysis.Syntax.InternalSyntax;
 using Antlr4.Runtime;
 using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
 using System.Collections.Concurrent;
+using Microsoft.CodeAnalysis.CSharp.Symbols;
+using MCA = Microsoft.CodeAnalysis.CSharp;
 
 namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 {
     internal static partial class SyntaxFactory
     {
-        readonly static internal SyntaxTrivia WS = Whitespace(" ");
-        readonly static internal ConcurrentDictionary<SyntaxKind, SyntaxToken> tokens = new ConcurrentDictionary<SyntaxKind, SyntaxToken>();
+        internal static readonly SyntaxTrivia WS = Whitespace(" ");
+        //internal static readonly ConcurrentDictionary<SyntaxKind, SyntaxToken> tokens = new ConcurrentDictionary<SyntaxKind, SyntaxToken>();
 
         internal static SyntaxToken MakeTokenNoWs(SyntaxKind kind)
         {
@@ -24,12 +27,15 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         }
         internal static SyntaxToken MakeToken(SyntaxKind kind)
         {
-            if (tokens.TryGetValue(kind, out var token))
-            {
-                return token;
-            }
-            token = Token(WS, kind, WS);
-            tokens.TryAdd(kind, token);
+            //if (kind != SyntaxKind.NullKeyword && tokens.TryGetValue(kind, out var token))
+            //{
+            //    return token;
+            //}
+            var token = Token(WS, kind, WS);
+            //if (kind != SyntaxKind.NullKeyword)
+            //{ 
+            //    tokens.TryAdd(kind, token);
+            //}
             return token;
         }
 
@@ -98,14 +104,43 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
     {
         internal SyntaxTree SyntaxTree { get; set; }
         private XNodeFlags xflags = XNodeFlags.None;
-        public Dictionary<string, SourceText> IncludedFiles { get; internal set; } = new Dictionary<string, SourceText>();
-        public ITokenStream XTokens { get; internal set; } = default(ITokenStream);
-        public ITokenStream XPPTokens { get; internal set; } = default(ITokenStream);
-        public IList<Tuple<int, string>> InitProcedures { get; internal set; } = new List<Tuple<int, string>>();
-        public IList< MemVarFieldInfo> FileWidePublics { get; internal set; } = new List<MemVarFieldInfo>();
-        public IList<FieldDeclarationSyntax> Globals { get; internal set; } = new List<FieldDeclarationSyntax>();
-        public IList<PragmaWarningDirectiveTriviaSyntax> PragmaWarnings { get; internal set; } = null;
-        public IList<PragmaOption> PragmaOptions { get; internal set; } = null;
+        internal Dictionary<string, SourceText> IncludedFiles { get; set; } = new Dictionary<string, SourceText>();
+        internal ITokenStream XTokens { get; set; } = null;
+        internal ITokenStream XPPTokens { get; set; } = null;
+        internal IList<Tuple<int, string>> InitProcedures { get; set; } = new List<Tuple<int, string>>();
+        internal IList< MemVarFieldInfo> FileWidePublics { get; set; } = new List<MemVarFieldInfo>();
+        internal IList<FieldDeclarationSyntax> Globals { get; set; } = new List<FieldDeclarationSyntax>();
+        internal IList<PragmaWarningDirectiveTriviaSyntax> PragmaWarnings { get; set; } = null;
+        internal IList<PragmaOption> PragmaOptions { get; set; } = null;
+
+        private ConcurrentDictionary<MCA.CSharpSyntaxNode, (bool, List<LocalSymbol>) > functionsThatNeedAccessToLocals ;
+
+        internal bool RegisterFunctionThatNeedsAccessToLocals(MCA.CSharpSyntaxNode node, bool writeAccess, List<LocalSymbol> locals)
+        {
+            if (functionsThatNeedAccessToLocals == null)
+                functionsThatNeedAccessToLocals = new ConcurrentDictionary<MCA.CSharpSyntaxNode, (bool, List<LocalSymbol>) >();
+            return functionsThatNeedAccessToLocals.TryAdd(node, new (writeAccess, locals));
+        }
+        internal bool GetLocalsForFunction(MCA.CSharpSyntaxNode node, out bool writeAccess, out List<LocalSymbol> locals, bool remove = true)
+        {
+            locals = null;
+            writeAccess = false;
+            var found = false;
+            if (functionsThatNeedAccessToLocals != null)
+            {
+                if (remove)
+                {
+                    found = functionsThatNeedAccessToLocals.TryRemove(node, out var element);
+                    (writeAccess, locals) = element;
+                }
+                else
+                {
+                    found = functionsThatNeedAccessToLocals.TryGetValue(node, out var element);
+                    (writeAccess, locals) = element;
+                }
+            }
+            return found;
+        }
         public bool HasPCall
         {
             get => xflags.HasFlag(XNodeFlags.XPCall);
@@ -124,9 +159,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             internal set => xflags = xflags.SetFlag(XNodeFlags.XDocComments, value);
         }
 
-        public XSharpParser.SourceContext XSource => XNode as XSharpParser.SourceContext;
-        public Dictionary<String, FieldDeclarationSyntax> LiteralSymbols { get; internal set; } = new Dictionary<string, FieldDeclarationSyntax>();
-        public Dictionary<String, Tuple<string, FieldDeclarationSyntax>> LiteralPSZs { get; internal set; } =new Dictionary<string, Tuple<string, FieldDeclarationSyntax>>();
+        internal XSharpParser.SourceContext XSource => XNode as XSharpParser.SourceContext;
+        internal Dictionary<String, FieldDeclarationSyntax> LiteralSymbols { get; set; } = new Dictionary<string, FieldDeclarationSyntax>();
+        internal Dictionary<String, Tuple<string, FieldDeclarationSyntax>> LiteralPSZs { get; set; } = new Dictionary<string, Tuple<string, FieldDeclarationSyntax>>();
     }
 }
 
@@ -147,7 +182,6 @@ namespace Microsoft.CodeAnalysis.CSharp
 
 namespace Microsoft.CodeAnalysis
 {
-    
     public abstract partial class SyntaxNode
     {
         internal CSharp.CSharpSyntaxNode CsNode => (CSharp.CSharpSyntaxNode)this;
@@ -223,10 +257,16 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax
         public bool HasDocComments => internalUnit.HasDocComments;
         internal Dictionary<String, InternalSyntax.FieldDeclarationSyntax> LiteralSymbols => internalUnit.LiteralSymbols;
         internal Dictionary<String, Tuple<string, InternalSyntax.FieldDeclarationSyntax> > LiteralPSZs => internalUnit.LiteralPSZs;
-
         internal IList<InternalSyntax.PragmaWarningDirectiveTriviaSyntax> PragmaWarnings => internalUnit.PragmaWarnings;
         internal IList<PragmaOption> PragmaOptions => internalUnit.PragmaOptions;
-
+        internal bool RegisterFunctionThatNeedsAccessToLocals(MCA.CSharpSyntaxNode node, bool writeAccess, List<LocalSymbol> locals)
+        {
+            return internalUnit.RegisterFunctionThatNeedsAccessToLocals(node, writeAccess, locals);
+        }
+        internal bool GetLocalsForFunction(MCA.CSharpSyntaxNode node, out bool writeAccess, out List<LocalSymbol> locals, bool remove = true)
+        {
+            return internalUnit.GetLocalsForFunction(node, out writeAccess, out locals, remove);
+        }
     }
 }
 

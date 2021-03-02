@@ -1,4 +1,8 @@
-﻿// Copyright (c) Microsoft.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
+﻿// Licensed to the .NET Foundation under one or more agreements.
+// The .NET Foundation licenses this file to you under the MIT license.
+// See the LICENSE file in the project root for more information.
+
+#nullable disable
 
 using System;
 using System.Collections.Generic;
@@ -35,7 +39,7 @@ namespace Microsoft.CodeAnalysis.Editor.Tagging
 
             private readonly AbstractAsynchronousTaggerProvider<TTag> _dataSource;
 
-            private IEqualityComparer<ITagSpan<TTag>> _tagSpanComparer;
+            private readonly IEqualityComparer<ITagSpan<TTag>> _tagSpanComparer;
 
             /// <summary>
             /// async operation notifier
@@ -85,17 +89,7 @@ namespace Microsoft.CodeAnalysis.Editor.Tagging
             /// if our ref count actually reaches 0.  Otherwise, we always try to compute the initial
             /// set of tags for our view/buffer.
             /// </summary>
-            private readonly CancellationTokenSource _initialComputationCancellationTokenSource = new CancellationTokenSource();
-
-            /// <summary>
-            /// Whether or not we've gotten any change notifications from our <see cref="ITaggerEventSource"/>.
-            /// The first time we hear about changes, we fast track getting tags and reporting 
-            /// them to the UI.
-            /// 
-            /// We use an int so we can use <see cref="Interlocked.CompareExchange(ref int, int, int)"/> 
-            /// to read/set this.
-            /// </summary>
-            private int _seenEventSourceChanged;
+            private readonly CancellationTokenSource _initialComputationCancellationTokenSource = new();
 
             public TaggerDelay AddedTagNotificationDelay => _dataSource.AddedTagNotificationDelay;
             public TaggerDelay RemovedTagNotificationDelay => _dataSource.RemovedTagNotificationDelay;
@@ -106,6 +100,7 @@ namespace Microsoft.CodeAnalysis.Editor.Tagging
                 AbstractAsynchronousTaggerProvider<TTag> dataSource,
                 IAsynchronousOperationListener asyncListener,
                 IForegroundNotificationService notificationService)
+                : base(dataSource.ThreadingContext)
             {
                 if (dataSource.SpanTrackingMode == SpanTrackingMode.Custom)
                 {
@@ -121,7 +116,7 @@ namespace Microsoft.CodeAnalysis.Editor.Tagging
 
                 DebugRecordInitialStackTrace();
 
-                _workQueue = new AsynchronousSerialWorkQueue(asyncListener);
+                _workQueue = new AsynchronousSerialWorkQueue(ThreadingContext, asyncListener);
                 this.CachedTagTrees = ImmutableDictionary.Create<ITextBuffer, TagSpanIntervalTree<TTag>>();
 
                 _eventSource = CreateEventSource();
@@ -300,19 +295,13 @@ namespace Microsoft.CodeAnalysis.Editor.Tagging
             }
 
             private void RaisePaused()
-            {
-                this.Paused?.Invoke(this, EventArgs.Empty);
-            }
+                => this.Paused?.Invoke(this, EventArgs.Empty);
 
             private void RaiseResumed()
-            {
-                this.Resumed?.Invoke(this, EventArgs.Empty);
-            }
+                => this.Resumed?.Invoke(this, EventArgs.Empty);
 
             private static T NextOrDefault<T>(IEnumerator<T> enumerator)
-            {
-                return enumerator.MoveNext() ? enumerator.Current : default;
-            }
+                => enumerator.MoveNext() ? enumerator.Current : default;
 
             /// <summary>
             /// Return all the spans that appear in only one of "latestSpans" or "previousSpans".
@@ -320,73 +309,72 @@ namespace Microsoft.CodeAnalysis.Editor.Tagging
             private static DiffResult Difference<T>(IEnumerable<ITagSpan<T>> latestSpans, IEnumerable<ITagSpan<T>> previousSpans, IEqualityComparer<T> comparer)
                 where T : ITag
             {
-                using (var addedPool = SharedPools.Default<List<SnapshotSpan>>().GetPooledObject())
-                using (var removedPool = SharedPools.Default<List<SnapshotSpan>>().GetPooledObject())
-                using (var latestEnumerator = latestSpans.GetEnumerator())
-                using (var previousEnumerator = previousSpans.GetEnumerator())
+                using var addedPool = SharedPools.Default<List<SnapshotSpan>>().GetPooledObject();
+                using var removedPool = SharedPools.Default<List<SnapshotSpan>>().GetPooledObject();
+                using var latestEnumerator = latestSpans.GetEnumerator();
+                using var previousEnumerator = previousSpans.GetEnumerator();
+
+                var added = addedPool.Object;
+                var removed = removedPool.Object;
+
+                var latest = NextOrDefault(latestEnumerator);
+                var previous = NextOrDefault(previousEnumerator);
+
+                while (latest != null && previous != null)
                 {
-                    var added = addedPool.Object;
-                    var removed = removedPool.Object;
+                    var latestSpan = latest.Span;
+                    var previousSpan = previous.Span;
 
-                    var latest = NextOrDefault(latestEnumerator);
-                    var previous = NextOrDefault(previousEnumerator);
-
-                    while (latest != null && previous != null)
+                    if (latestSpan.Start < previousSpan.Start)
                     {
-                        var latestSpan = latest.Span;
-                        var previousSpan = previous.Span;
-
-                        if (latestSpan.Start < previousSpan.Start)
-                        {
-                            added.Add(latestSpan);
-                            latest = NextOrDefault(latestEnumerator);
-                        }
-                        else if (previousSpan.Start < latestSpan.Start)
+                        added.Add(latestSpan);
+                        latest = NextOrDefault(latestEnumerator);
+                    }
+                    else if (previousSpan.Start < latestSpan.Start)
+                    {
+                        removed.Add(previousSpan);
+                        previous = NextOrDefault(previousEnumerator);
+                    }
+                    else
+                    {
+                        // If the starts are the same, but the ends are different, report the larger
+                        // region to be conservative.
+                        if (previousSpan.End > latestSpan.End)
                         {
                             removed.Add(previousSpan);
+                            latest = NextOrDefault(latestEnumerator);
+                        }
+                        else if (latestSpan.End > previousSpan.End)
+                        {
+                            added.Add(latestSpan);
                             previous = NextOrDefault(previousEnumerator);
                         }
                         else
                         {
-                            // If the starts are the same, but the ends are different, report the larger
-                            // region to be conservative.
-                            if (previousSpan.End > latestSpan.End)
-                            {
-                                removed.Add(previousSpan);
-                                latest = NextOrDefault(latestEnumerator);
-                            }
-                            else if (latestSpan.End > previousSpan.End)
+                            if (!comparer.Equals(latest.Tag, previous.Tag))
                             {
                                 added.Add(latestSpan);
-                                previous = NextOrDefault(previousEnumerator);
                             }
-                            else
-                            {
-                                if (!comparer.Equals(latest.Tag, previous.Tag))
-                                {
-                                    added.Add(latestSpan);
-                                }
 
-                                latest = NextOrDefault(latestEnumerator);
-                                previous = NextOrDefault(previousEnumerator);
-                            }
+                            latest = NextOrDefault(latestEnumerator);
+                            previous = NextOrDefault(previousEnumerator);
                         }
                     }
-
-                    while (latest != null)
-                    {
-                        added.Add(latest.Span);
-                        latest = NextOrDefault(latestEnumerator);
-                    }
-
-                    while (previous != null)
-                    {
-                        removed.Add(previous.Span);
-                        previous = NextOrDefault(previousEnumerator);
-                    }
-
-                    return new DiffResult(added, removed);
                 }
+
+                while (latest != null)
+                {
+                    added.Add(latest.Span);
+                    latest = NextOrDefault(latestEnumerator);
+                }
+
+                while (previous != null)
+                {
+                    removed.Add(previous.Span);
+                    previous = NextOrDefault(previousEnumerator);
+                }
+
+                return new DiffResult(added, removed);
             }
         }
     }

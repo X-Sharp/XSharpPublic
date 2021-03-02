@@ -25,6 +25,7 @@
     <BoolProperty   Category="General"       Name="INITLOCALS"          DisplayName="Initialize Local variables"                  Visible="True" Description="Automatically initialize local variables without initialization expression. Please note that for locals of type string the initial value will depend on the 'Initialize strings' setting from the Dialect page.(/initlocals)"  Switch="initlocals"/>
     <BoolProperty   Category="General"       Name="OVF"                 DisplayName="Overflow Exceptions"                         Visible="True" Description="Check for Overflow and Underflow (like the CHECKED keyword, /ovf)" Default="True"  Switch="ovf"/>
     <BoolProperty   Category="General"       Name="AZ"                  DisplayName="Use Zero Based Arrays"                       Visible="True" Description="Zero Based Arrays (/az)"  Switch="az"/>
+    <BoolProperty   Category="General"       Name="EnforceSelf"         DisplayName="Enforce SELF to access instance members"     Visible="True" Description="Enforce the use of SELF: (or This. in the FoxPro dialect) to access instance members inside a class. (/enforceself)"  Switch="enforceself"/>
 
 
     <BoolProperty   Category="MemVar"       Name="MEMVAR"               DisplayName="Enable Memvar support"                       Visible="True" Description="Enable support for memory variables (MEMVAR, PUBLIC, PRIVATE and PARAMETERS). (/memvar)\rPlease note that this is NOT supported for the Core and Vulcan dialects" Default="False"  Switch="memvar"/>

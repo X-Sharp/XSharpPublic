@@ -3,7 +3,7 @@
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
-
+#nullable disable
 using Antlr4.Runtime;
 using Antlr4.Runtime.Misc;
 using Antlr4.Runtime.Tree;
@@ -152,7 +152,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 _parseErrors.Add(new ParseErrorData(context.T2, ErrorCode.ERR_UnExpectedExpected, context.T2.Token.Text, context.T.Token.Text));
             }
-            
             if (context.T.Token.Type == XSharpParser.PROCEDURE)
             {
                 if (context.Sig.Type != null && context.Sig.Type.Start.Type != XSharpLexer.VOID)
@@ -213,7 +212,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     if (hasClipper)
                     {
                         _parseErrors.Add(new ParseErrorData(context.ExpressionBody, ErrorCode.ERR_ExpressionBodyClipperCallingConvention));
-                        
                     }
                 }
             }
@@ -260,6 +258,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 _parseErrors.Add(new ParseErrorData(context.ArraySub, ErrorCode.ERR_FeatureNotAvailableInDialect, "Indexed Local", _options.Dialect.ToString()));
             }
+            if (context.ClassLib != null)
+            {
+                _parseErrors.Add(new ParseErrorData(context.DataType, ErrorCode.WRN_FoxUnsupportedClause, "OF <ClassLib>"));
+            }
+
         }
 
         public override void ExitDimensionVar([NotNull] XSharpParser.DimensionVarContext context)
@@ -268,6 +271,14 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             if (context.DataType != null)
             {
                 _parseErrors.Add(new ParseErrorData(context.DataType, ErrorCode.WRN_FoxUnsupportedClause, "AS <DataType>"));
+            }
+            if (context._Dims.Count > 2)
+            {
+                _parseErrors.Add(new ParseErrorData(context.DataType, ErrorCode.ERR_FoxDimensionDeclaration));
+            }
+            if (context.ClassLib != null)
+            {
+                _parseErrors.Add(new ParseErrorData(context.DataType, ErrorCode.WRN_FoxUnsupportedClause, "OF <ClassLib>"));
             }
         }
 
@@ -476,6 +487,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                             case "lb":
                             case "memvar":
                             case "memvars":
+                            case "enforceself":
                             case "undeclared":
                             // case "vo1": // Init/axit
                             case "vo2":     // Initialize string variables with empty strings
@@ -494,7 +506,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                             case "vo15":    // Untyped allowed
                             case "vo16":    // Add Clipper CC Missing constructors
                             // case "fox1": // Classes inherit from unknown
-                            case "fox2":    // Expose local names to macro compiler
+                            //case "fox2":    // Expose local names to macro compiler
                                             //case "xpp1":    // classes inherit from XPP.Abstract
                                             //case "xpp2":    // stronly typed entry point
                                 context.Pragma = new PragmaOption(context, state, CompilerOptionDecoder.Decode(opt));
@@ -681,10 +693,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         private void interfacesCannotHaveTypes([NotNull] XSharpParser.ClassmemberContext context)
         {
-            if (context.isInInterface())
-            {
-                _parseErrors.Add(new ParseErrorData(context, ErrorCode.ERR_InterfacesCannotContainTypes));
-            }
+            //if (context.isInInterface())
+            //{
+            //    _parseErrors.Add(new ParseErrorData(context, ErrorCode.ERR_InterfacesCannotContainTypes));
+            //}
         }
 
         public override void ExitVodllmethod([NotNull] XSharpParser.VodllmethodContext context)
@@ -812,14 +824,14 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 _parseErrors.Add(new ParseErrorData(context.T2, ErrorCode.ERR_SyntaxError, t.Text));
 
             }
-           if (isInInterface && hasbody)
-            {
-                _parseErrors.Add(new ParseErrorData(context.Sig.Id, ErrorCode.ERR_InterfaceMemberHasBody));
-            }
-            if (isInInterface && context.ClassId != null)
-            {
-                _parseErrors.Add(new ParseErrorData(context.ClassId, ErrorCode.ERR_InterfacesCannotContainTypes));
-            }
+           //if (isInInterface && hasbody)
+           // {
+           //     _parseErrors.Add(new ParseErrorData(context.Sig.Id, ErrorCode.ERR_InterfaceMemberHasBody));
+           // }
+            //if (isInInterface && context.ClassId != null)
+            //{
+            //    _parseErrors.Add(new ParseErrorData(context.ClassId, ErrorCode.ERR_InterfacesCannotContainTypes));
+            //}
             if (isInInterface && _options.VoInitAxitMethods)
             {
                 var name = context.Sig.Id.GetText().ToLower();
@@ -1105,10 +1117,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             if (HasBody)
             {
-                if (isInInterface)
-                {
-                    _parseErrors.Add(new ParseErrorData(context.Start, ErrorCode.ERR_InterfaceMemberHasBody, "Property"));
-                }
+                //if (isInInterface)
+                //{
+                //    _parseErrors.Add(new ParseErrorData(context.Start, ErrorCode.ERR_InterfaceMemberHasBody, "Property"));
+                //}
                 if (isExtern)
                 {
                     _parseErrors.Add(new ParseErrorData(context.Start, ErrorCode.ERR_ExternHasBody, "Property"));
@@ -1132,6 +1144,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 {
                     _parseErrors.Add(new ParseErrorData(context.ExpressionBody, ErrorCode.ERR_BlockBodyAndExpressionBody));
                 }
+            }
+            if (context.Key2 != null && context.Key2.Type != context.Key.Type)
+            {
+                _parseErrors.Add(new ParseErrorData(context.Key2, ErrorCode.ERR_UnExpectedExpected, context.Key2.Text, context.Key.Text));
+
             }
         }
         public override void ExitEventAccessor([NotNull] XSharpParser.EventAccessorContext context)

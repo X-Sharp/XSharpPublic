@@ -1,5 +1,8 @@
-﻿' Copyright (c) Microsoft.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
+﻿' Licensed to the .NET Foundation under one or more agreements.
+' The .NET Foundation licenses this file to you under the MIT license.
+' See the LICENSE file in the project root for more information.
 
+Imports System.Collections.Immutable
 Imports System.Threading
 Imports Microsoft.CodeAnalysis.Completion.Providers
 Imports Microsoft.CodeAnalysis.VisualBasic.Extensions.ContextQuery
@@ -12,17 +15,17 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Completion.KeywordRecommenders.Decl
     Friend Class ImplementsKeywordRecommender
         Inherits AbstractKeywordRecommender
 
-        Protected Overrides Function RecommendKeywords(context As VisualBasicSyntaxContext, cancellationToken As CancellationToken) As IEnumerable(Of RecommendedKeyword)
+        Protected Overrides Function RecommendKeywords(context As VisualBasicSyntaxContext, cancellationToken As CancellationToken) As ImmutableArray(Of RecommendedKeyword)
             Dim targetToken = context.TargetToken
 
             Dim typeBlock = targetToken.GetAncestor(Of TypeBlockSyntax)()
             If TypeOf typeBlock Is InterfaceBlockSyntax Then
-                Return SpecializedCollections.EmptyEnumerable(Of RecommendedKeyword)()
+                Return ImmutableArray(Of RecommendedKeyword).Empty
             End If
 
             If context.IsAfterStatementOfKind(
                     SyntaxKind.ClassStatement, SyntaxKind.StructureStatement, SyntaxKind.ImplementsStatement, SyntaxKind.InheritsStatement) Then
-                Return SpecializedCollections.SingletonEnumerable(New RecommendedKeyword("Implements", VBFeaturesResources.Specifies_one_or_more_interfaces_or_interface_members_that_must_be_implemented_in_the_class_or_structure_definition_in_which_the_Implements_statement_appears))
+                Return ImmutableArray.Create(New RecommendedKeyword("Implements", VBFeaturesResources.Specifies_one_or_more_interfaces_or_interface_members_that_must_be_implemented_in_the_class_or_structure_definition_in_which_the_Implements_statement_appears))
             End If
 
             If context.IsFollowingParameterListOrAsClauseOfMethodDeclaration() OrElse
@@ -41,14 +44,14 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Completion.KeywordRecommenders.Decl
                                TypeOf typeStatement.Parent Is TypeBlockSyntax AndAlso
                                DirectCast(typeStatement.Parent, TypeBlockSyntax).Implements.Count > 0 Then
 
-                                Return SpecializedCollections.SingletonEnumerable(New RecommendedKeyword("Implements", VBFeaturesResources.Indicates_that_a_class_or_structure_member_is_providing_the_implementation_for_a_member_defined_in_an_interface))
+                                Return ImmutableArray.Create(New RecommendedKeyword("Implements", VBFeaturesResources.Indicates_that_a_class_or_structure_member_is_providing_the_implementation_for_a_member_defined_in_an_interface))
                             End If
                         Next
                     End If
                 End If
             End If
 
-            Return SpecializedCollections.EmptyEnumerable(Of RecommendedKeyword)()
+            Return ImmutableArray(Of RecommendedKeyword).Empty
         End Function
     End Class
 End Namespace

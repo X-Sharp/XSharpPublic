@@ -3,7 +3,8 @@
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 // 
-  
+#nullable disable
+
 using InternalSyntax = Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax;
 
 using Microsoft.CodeAnalysis.CSharp;
@@ -29,6 +30,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
         public CSharpParseOptions Options { get; set; }
         public bool AllowNamedArgs => Options.AllowNamedArguments;
         public bool IsXPP => Options.Dialect == XSharpDialect.XPP;
+        public bool IsFox => Options.Dialect == XSharpDialect.FoxPro;
         void unexpectedToken(string token)
         {
             if (Interpreter.PredictionMode == Antlr4.Runtime.Atn.PredictionMode.Sll)
@@ -409,7 +411,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                 }
                 var info = new MemVarFieldInfo(Name, Alias);
                 info.Context = context;
-                Fields.Add(Name, info);
+                Fields.Add(info.Name, info);
                 Fields.Add(info.FullName, info);
                 return info;
             }
@@ -1146,10 +1148,14 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
         public XSharpParserRuleContext Context { get; set; }
         internal MemVarFieldInfo(string name, string alias, bool filewidepublic = false)
         {
+            if (name.StartsWith("@@"))
+                name = name.Substring(2);
             Name = name;
             Alias = alias;
             if (!string.IsNullOrEmpty(alias))
             {
+                if (alias.StartsWith("@@"))
+                    alias = alias.Substring(2);
                 switch (alias.ToUpper())
                 {
                     case "&":
@@ -1378,5 +1384,6 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             else
                 return parent.isInStructure();
         }
+
     }
 }

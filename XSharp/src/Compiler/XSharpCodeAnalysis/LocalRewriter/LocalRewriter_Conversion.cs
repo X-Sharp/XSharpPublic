@@ -3,7 +3,7 @@
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
-
+#nullable disable
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
@@ -22,7 +22,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             var members = srcType.GetMembers(WellKnownMemberNames.ImplicitConversionName);
             foreach (MethodSymbol m in members)
             {
-                if (m.ReturnType == destType)
+                if (TypeSymbol.Equals(m.ReturnType, destType))
                 {
                     return m;
                 }
@@ -38,8 +38,8 @@ namespace Microsoft.CodeAnalysis.CSharp
             {
                 if (m.ParameterCount > 0)
                 {
-                    var pt = m.GetParameterTypes()[0] as TypeSymbol;
-                    if (pt == destType)
+                    var pt = m.GetParameterTypes()[0].Type as TypeSymbol;
+                    if (TypeSymbol.Equals(pt, destType))
                     {
                         return m;
                     }
@@ -54,7 +54,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             var members = srcType.GetMembers(WellKnownMemberNames.ExplicitConversionName);
             foreach (MethodSymbol m in members)
             {
-                if (m.ReturnType == destType)
+                if (TypeSymbol.Equals(m.ReturnType, destType))
                 {
                     return m;
                 }
@@ -78,14 +78,14 @@ namespace Microsoft.CodeAnalysis.CSharp
             if (_compilation.Options.HasRuntime)
             {
                 var usualType = _compilation.UsualType();
-                if (nts != null)
+                if (nts is { })
                 {
                     nts = nts.ConstructedFrom;
                 }
                 // Ticket C575: Assign Interface to USUAL
                 // Marked as Boxing in Conversions.cs
                 // Implementation here
-                if (nts != null && nts.IsInterface && rewrittenType.IsUsualType())
+                if (nts is { } && nts.IsInterface && rewrittenType.IsUsualType() )
                 {
 
                     var m = getImplicitOperatorByParameterType(usualType, _compilation.GetSpecialType(SpecialType.System_Object));
@@ -97,10 +97,10 @@ namespace Microsoft.CodeAnalysis.CSharp
                     }
                 }
 
-                if (nts == usualType)
+                if (nts.IsUsualType())
                 {
                     // USUAL -> WINBOOL, use LOGIC as intermediate type
-                    if (rewrittenType== _compilation.WinBoolType())
+                    if (rewrittenType.IsWinBoolType())
                     {
                         MethodSymbol m = getImplicitOperatorByReturnType(usualType, _compilation.GetSpecialType(SpecialType.System_Boolean));
                         rewrittenOperand = _factory.StaticCall(rewrittenType, m, rewrittenOperand);
@@ -122,7 +122,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                         {
                             rewrittenOperand = _factory.StaticCall(rewrittenType, m, rewrittenOperand);
                             rewrittenOperand.WasCompilerGenerated = true;
-                            return ConversionKind.PointerToPointer;
+                            return ConversionKind.ExplicitPointerToPointer;
                         }
                     }
                     else if (rewrittenType.SpecialType == SpecialType.System_DateTime)
@@ -138,7 +138,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                         {
                             foreach (var interf in usualType.AllInterfacesNoUseSiteDiagnostics)
                             {
-                                if (interf == rewrittenType)
+                                if (TypeSymbol.Equals(interf, rewrittenType))
                                 {
                                     return ConversionKind.ImplicitReference;
                                 }
@@ -219,7 +219,10 @@ namespace Microsoft.CodeAnalysis.CSharp
                     && _compilation.Options.Dialect.AllowPointerMagic())
                 {
                     rewrittenOperand = new BoundConversion(rewrittenOperand.Syntax, rewrittenOperand,
-                        Conversion.Identity, false, false, null, _compilation.GetSpecialType(SpecialType.System_IntPtr));
+                        Conversion.Identity, false, false,
+                        conversionGroupOpt: default,
+                        constantValueOpt: default, 
+                        type: _compilation.GetSpecialType(SpecialType.System_IntPtr));
                 }
             }
             return conversionKind;

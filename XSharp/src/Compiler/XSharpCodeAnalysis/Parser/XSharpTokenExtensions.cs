@@ -3,6 +3,7 @@
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
+#nullable disable
 using System;
 using System.Collections.Generic;
 using System.Collections.Concurrent;
@@ -162,15 +163,27 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         public static SyntaxToken SyntaxIdentifier(this IToken token)
         {
-            bool isNameOf = token.Type == XSharpParser.NAMEOF;
-            (token as CommonToken).Type = XSharpParser.ID;
             string text = token.Text;
             if (text.StartsWith("@@"))
             {
                 text = text.Substring(2);
             }
-            var r =  isNameOf ? SyntaxFactory.Identifier(SyntaxKind.NameOfKeyword, null, text, text, null)
-                : SyntaxFactory.MakeIdentifier(text);
+            SyntaxToken r;
+            switch (token.Type)
+            {
+                case XSharpParser.NAMEOF:
+                    r = SyntaxFactory.Identifier(SyntaxKind.NameOfKeyword, null, text, text, null);
+                    break;
+                case XSharpParser.NINT:
+                case XSharpParser.NUINT:
+                case XSharpParser.DYNAMIC:
+                    r = SyntaxFactory.MakeIdentifier(text.ToLower()); ;
+                    break;
+                default:
+                    r = SyntaxFactory.MakeIdentifier(text);
+                    break;
+            }
+            (token as CommonToken).Type = XSharpParser.ID;
             r.XNode = new XTerminalNodeImpl(token);
             return r;
         }
@@ -654,7 +667,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 case XSharpParser.ASSIGN_XOR:
                     r = SyntaxFactory.MakeToken(SyntaxKind.CaretEqualsToken);
                     break;
+                case XSharpParser.ASSIGN_QQMARK:
+                    r = SyntaxFactory.MakeToken(SyntaxKind.QuestionQuestionEqualsToken);
+                    break;
                 case XSharpParser.DEFAULT:
+                case XSharpParser.QQMARK:
                     r = SyntaxFactory.MakeToken(SyntaxKind.QuestionQuestionToken);
                     break;
                 case XSharpParser.ADDROF:
@@ -707,7 +724,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     // in VO ~is XOR for binary expressions and bitwise negation (Ones complement) for unary expressions
                     // VO uses ^ for Exponent
                     // in C# ^is XOR and ~is Bitwise negation (Ones complement)
-                    // This method returns the Unaru operator Tilde
+                    // This method returns the Unary operator Tilde
                     r = SyntaxFactory.MakeToken(SyntaxKind.TildeToken);
                     break;
                 case XSharpParser.ADDROF:
@@ -937,6 +954,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 case XSharpParser.SET:
                     r = SyntaxFactory.MakeToken(SyntaxKind.SetKeyword, text);
                     break;
+                case XSharpParser.INIT:
+                    r = SyntaxFactory.MakeToken(SyntaxKind.InitKeyword, text);
+                    break;
                 case XSharpParser.EVENT:
                     r = SyntaxFactory.MakeToken(SyntaxKind.EventKeyword, text);
                     break;
@@ -1108,6 +1128,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     break;
                 case XSharpParser.SET:
                     r = SyntaxKind.SetAccessorDeclaration;
+                    break;
+                case XSharpParser.INIT:
+                    r = SyntaxKind.InitAccessorDeclaration;
                     break;
                 case XSharpParser.ADD:
                     r = SyntaxKind.AddAccessorDeclaration;
@@ -1313,7 +1336,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 case XSharpParser.ASSIGN_XOR:
                     r = SyntaxKind.ExclusiveOrAssignmentExpression;
                     break;
+                case XSharpParser.ASSIGN_QQMARK:
+                    r = SyntaxKind.CoalesceAssignmentExpression;
+                    break;
                 case XSharpParser.DEFAULT:
+                case XSharpParser.QQMARK:
                     r = SyntaxKind.CoalesceExpression;
                     break;
                 default:
@@ -1357,6 +1384,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 case XSharpParser.ASSIGN_XOR:
                     r = SyntaxFactory.MakeToken(SyntaxKind.CaretToken);
                     break;
+                case XSharpParser.ASSIGN_QQMARK:
+                    r = SyntaxFactory.MakeToken(SyntaxKind.QuestionQuestionToken);
+                    break;
                 default:
                     r = SyntaxFactory.MakeToken(SyntaxKind.DotToken);
                     break;
@@ -1398,6 +1428,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     break;
                 case XSharpParser.ASSIGN_XOR:
                     r = SyntaxKind.ExclusiveOrExpression;
+                    break;
+                case XSharpParser.ASSIGN_QQMARK:
+                    r = SyntaxKind.CoalesceExpression;
                     break;
                 default:
                     r = SyntaxKind.EmptyStatement;
@@ -1507,7 +1540,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 list.Add(makeGeneratedToken(SyntaxKind.VirtualKeyword));
             }
-                
             if (list.Any((int)SyntaxKind.NewKeyword) || list.Any((int)SyntaxKind.AbstractKeyword))
                 return;
             if (!list.Any((int)SyntaxKind.OverrideKeyword))

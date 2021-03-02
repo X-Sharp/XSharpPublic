@@ -1,4 +1,8 @@
-﻿// Copyright (c) Microsoft.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
+﻿// Licensed to the .NET Foundation under one or more agreements.
+// The .NET Foundation licenses this file to you under the MIT license.
+// See the LICENSE file in the project root for more information.
+
+#nullable disable
 
 using System.Collections.Generic;
 using System.Threading;
@@ -41,19 +45,19 @@ namespace Microsoft.CodeAnalysis.Editor.Extensibility.NavigationBar
 
             if (navigationPoint.HasValue)
             {
-                NavigateToVirtualTreePoint(document.Project.Solution, navigationPoint.Value);
+                NavigateToVirtualTreePoint(document.Project.Solution, navigationPoint.Value, cancellationToken);
             }
         }
 
-        protected void NavigateToVirtualTreePoint(Solution solution, VirtualTreePoint navigationPoint)
+        protected static void NavigateToVirtualTreePoint(Solution solution, VirtualTreePoint navigationPoint, CancellationToken cancellationToken)
         {
             var documentToNavigate = solution.GetDocument(navigationPoint.Tree);
             var workspace = solution.Workspace;
             var navigationService = workspace.Services.GetService<IDocumentNavigationService>();
 
-            if (navigationService.CanNavigateToPosition(workspace, documentToNavigate.Id, navigationPoint.Position, navigationPoint.VirtualSpaces))
+            if (navigationService.CanNavigateToPosition(workspace, documentToNavigate.Id, navigationPoint.Position, navigationPoint.VirtualSpaces, cancellationToken))
             {
-                navigationService.TryNavigateToPosition(workspace, documentToNavigate.Id, navigationPoint.Position, navigationPoint.VirtualSpaces);
+                navigationService.TryNavigateToPosition(workspace, documentToNavigate.Id, navigationPoint.Position, navigationPoint.VirtualSpaces, options: null, cancellationToken);
             }
             else
             {
@@ -63,8 +67,6 @@ namespace Microsoft.CodeAnalysis.Editor.Extensibility.NavigationBar
         }
 
         public virtual bool ShowItemGrayedIfNear(NavigationBarItem item)
-        {
-            return true;
-        }
+            => true;
     }
 }

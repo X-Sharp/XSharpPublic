@@ -3,7 +3,7 @@
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
-
+#nullable disable
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Diagnostics;
@@ -22,7 +22,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
     internal sealed partial class SourceNamedTypeSymbol : SourceMemberContainerTypeSymbol, IAttributeTargetSymbol
     {
 
-        private bool _isVoStructOrUnion = false;
+        private readonly bool _isVoStructOrUnion = false;
 
         internal bool IsSourceVoStructOrUnion { get { return _isVoStructOrUnion; } }
         private int _voStructSize = -1;
@@ -46,7 +46,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                     {
                         var f = (FieldSymbol)m;
                         int sz, elsz;
-                        if (f.IsFixed == true)
+                        if (f.IsFixedSizeBuffer == true)
                         {
                             elsz = (f.Type as PointerTypeSymbol).PointedAtType.VoFixedBufferElementSizeInBytes();
                             sz = f.FixedSize * elsz;
@@ -62,7 +62,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                             {
                                 elsz = f.Type.VoStructOrUnionLargestElementSizeInBytes();
                             }
-                            else if (f.Type == DeclaringCompilation.WinBoolType())
+                            else if (f.Type.IsWinBoolType())
                             {
                                 elsz = sz = 4;
                             }

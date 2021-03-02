@@ -37,7 +37,9 @@ macroScript         : ( CbExpr=codeblock | Code=codeblockCode ) EOS
 source              :  (Entities+=entity )* EOF
                     ; 
 
-foxsource           :  StmtBlk=statementBlock (Entities+=entity )* EOF
+foxsource           :  (MemVars += filewidememvar)*
+                       StmtBlk=statementBlock
+                       (Entities+=entity )* EOF
                     ; 
 
 entity              : namespace_
@@ -364,8 +366,8 @@ property            : (Attributes=attributes)? (Modifiers=memberModifiers)?
                       (ParamList=propertyParameterList)?
                       (AS Type=datatype)?
                       ( Auto=AUTO (AutoAccessors+=propertyAutoAccessor)* (Op=assignoperator Initializer=expression)? end=EOS	// Auto
-                        | (LineAccessors+=propertyLineAccessor)+ end=EOS													// Single Line
-                        | Multi=eos (Accessors+=propertyAccessor)+  END PROPERTY? EOS				// Multi Line
+                        | (LineAccessors+=propertyLineAccessor)+ end=EOS                     // Single Line
+                        | Multi=eos (Accessors+=propertyAccessor)+  END PROPERTY? EOS        // Multi Line
                       )
                     ;
 
@@ -374,14 +376,13 @@ propertyParameterList
                     | LPAREN (Params+=parameter (COMMA Params+=parameter)*)? RPAREN		// Allow Parentheses as well
                     ;
 
-propertyAutoAccessor: Attributes=attributes? Modifiers=accessorModifiers? Key=(GET|SET)
+propertyAutoAccessor: Attributes=attributes? Modifiers=accessorModifiers? Key=(GET|SET|INIT)
                     ;
 
 propertyLineAccessor: Attributes=attributes? Modifiers=accessorModifiers?
-                      ( {InputStream.La(2) != SET}? Key=GET    Expr=expression?
-                      | {InputStream.La(2) != SET}? Key=UDCSEP Expr=expression?           // New: UDCSep instead of GET
-                      | {InputStream.La(2) != GET}? Key=SET    ExprList=expressionList?
-                      | Key=(GET|SET)
+                      ( {InputStream.La(2) != SET && InputStream.La(2) != INIT}?     Key=(GET|UDCSEP)    Expr=expression?
+                      | {InputStream.La(2) != GET && InputStream.La(2) != UDCSEP}?   Key=(SET|INIT)      ExprList=expressionList?
+                      | Key=(GET|SET|INIT)
                       )
                     ;
 
@@ -392,10 +393,10 @@ expressionList	    : Exprs+=expression (COMMA Exprs+=expression)*
                     ;
 
 propertyAccessor    : Attributes=attributes? Modifiers=accessorModifiers?
-                      ( Key=GET end=eos StmtBlk=statementBlock END GET?
+                      ( Key=GET end=eos StmtBlk=statementBlock END Key2=GET?
                       | Key=GET UDCSEP ExpressionBody=expression              // New: Expression Body
-                      | Key=SET end=eos StmtBlk=statementBlock END SET?
-                      | Key=SET UDCSEP ExpressionBody=expression              // New: Expression Body
+                      | Key=(SET|INIT) end=eos StmtBlk=statementBlock END Key2=(SET | INIT)?
+                      | Key=(SET|INIT) UDCSEP ExpressionBody=expression              // New: Expression Body
                       )
                       end=eos
                     ;
@@ -681,12 +682,15 @@ localdecl          : LOCAL (Static=STATIC)? LocalVars+=localvar (COMMA LocalVars
                    | Static=STATIC? VAR           ImpliedVars+=impliedvar (COMMA ImpliedVars+=impliedvar)*  end=eos #varLocalDecl
                    | Static=STATIC LOCAL? IMPLIED ImpliedVars+=impliedvar (COMMA ImpliedVars+=impliedvar)*  end=eos #varLocalDecl
                    | LOCAL Static=STATIC? IMPLIED ImpliedVars+=impliedvar (COMMA ImpliedVars+=impliedvar)*  end=eos #varLocalDecl
+                   | Using=USING Static=STATIC? VAR ImpliedVars+=impliedvar (COMMA ImpliedVars+=impliedvar)*        end=eos #varLocalDecl
+                   | Using=USING Static=STATIC? LOCAL? IMPLIED ImpliedVars+=impliedvar (COMMA ImpliedVars+=impliedvar)*  end=eos #varLocalDecl
                     // FoxPro dimension statement
                    | T=(DIMENSION|DECLARE) DimVars += dimensionVar (COMMA DimVars+=dimensionVar)*    end=eos  #foxDimensionDecl
+                   | {IsFox}? T=LOCAL ARRAY DimVars += dimensionVar (COMMA DimVars+=dimensionVar)*    end=eos  #foxDimensionDecl
                    ;
 
 localvar           : (Const=CONST)? ( Dim=DIM )? Id=varidentifier (LBRKT ArraySub=arraysub RBRKT)?  
-                     (Op=assignoperator Expression=expression)? (As=(AS | IS) DataType=datatype)?
+                     (Op=assignoperator Expression=expression)? (As=(AS | IS) DataType=datatype (OF ClassLib=identifierName)?  )?
                    ;
 
 impliedvar         : (Const=CONST)? Id=varidentifier Op=assignoperator Expression=expression
@@ -719,7 +723,10 @@ xbasedecltype       : AS Type=datatype (OF ClassLib=identifierName)?
 xbasevar            : (Amp=AMP)?  Id=varidentifierName (LBRKT ArraySub=arraysub RBRKT)? (Op=assignoperator Expression=expression)?
                     ;
 
-dimensionVar        : Id=identifierName  ( LBRKT ArraySub=arraysub RBRKT | LPAREN ArraySub=arraysub RPAREN ) (AS DataType=datatype)?
+dimensionVar        : Id=identifierName
+                        ( LBRKT  Dims+=expression (COMMA Dims+=expression)* RBRKT
+                        | LPAREN Dims+=expression (COMMA Dims+=expression)* RPAREN )
+                        (AS DataType=datatype (OF ClassLib=identifierName)? )?
                     ;
 
 localfuncproc       :  (Modifiers=localfuncprocModifiers)?   
@@ -785,12 +792,12 @@ expression          : Expr=expression Op=(DOT | COLON) Name=simpleName          
                     | Left=expression Op=(LOGIC_AND |AND |FOX_AND) Right=expression #binaryExpression       // expr .and. expr (logical and) also &&
                     | Left=expression Op=(LOGIC_XOR |FOX_XOR) Right=expression  #binaryExpression       // expr .xor. expr (logical xor)
                     | Left=expression Op=(LOGIC_OR |OR|FOX_OR) Right=expression #binaryExpression       // expr .or. expr (logical or)  also ||
-                    | Left=expression Op=DEFAULT Right=expression               #binaryExpression       // expr DEFAULT expr
+                    | Left=expression Op=(DEFAULT|QQMARK) Right=expression               #binaryExpression       // expr DEFAULT expr
                     | <assoc=right> Left=expression
                       Op=( ASSIGN_OP | ASSIGN_ADD | ASSIGN_SUB | ASSIGN_EXP
                             | ASSIGN_MUL | ASSIGN_DIV | ASSIGN_MOD
                             | ASSIGN_BITAND | ASSIGN_BITOR | ASSIGN_LSHIFT
-                            | ASSIGN_RSHIFT | ASSIGN_XOR )
+                            | ASSIGN_RSHIFT | ASSIGN_XOR | ASSIGN_QQMARK)
                       Right=expression                                          #assignmentExpression	// expr := expr, also expr += expr etc.
                     | Expr=primary                                              #primaryExpression
                     ;
@@ -1051,13 +1058,13 @@ queryContinuation   : I=INTO Id=identifier Body=queryBody
 
 
 // All New Vulcan and X# keywords can also be recognized as Identifier
-identifier          : Token=(ID  | KWID)
+identifier          : Token=ID  
                     | XsToken=keywordxs
                     | XppToken=keywordxpp
                     | FoxToken=keywordfox
                     ;
 
-identifierString    : Token=(ID | KWID | STRING_CONST)
+identifierString    : Token=(ID | STRING_CONST)
                     | XsToken=keywordxs
                     | XppToken=keywordxpp
                     | FoxToken=keywordfox
@@ -1094,13 +1101,15 @@ nativeType			: Token=		// Aphabetical order
                     | LOGIC
                     | LONGINT
                     | OBJECT
+                    | NINT
+                    | NUINT
                     | PTR
                     | REAL4
                     | REAL8
                     | SHORTINT
                     | STRING
                     | UINT64
-                    | VOID                  
+                    | VOID
                     | WORD
                      )
                     ;
@@ -1150,8 +1159,8 @@ keywordvo           : Token=(ACCESS | AS | ASSIGN | BEGIN | BREAK | CASE | CAST 
 keywordxs           : Token=(AUTO | CHAR | CONST |  DEFAULT | GET | IMPLEMENTS | NEW | OUT | REF | SET |  VALUE | VIRTUAL | INTERNAL
                     // The following did not exist in Vulcan
                     | ADD | ARGLIST | ASCENDING | ASTYPE | ASYNC | AWAIT | BY | CHECKED | DESCENDING | DYNAMIC | EQUALS | EXTERN | FIXED | FROM 
-                    | GROUP | INTO | JOIN | LET | NAMEOF | OF | ON | ORDERBY | OVERRIDE |PARAMS | REMOVE 
-                    | SELECT | UNCHECKED | VAR | VOLATILE | WHEN | WHERE | BINARY | CHAR | CURRENCY | DECIMAL | DATETIME 
+                    | GROUP | INIT | INTO | JOIN | LET | NAMEOF | OF | ON | ORDERBY | OVERRIDE |PARAMS | REMOVE 
+                    | SELECT | UNCHECKED | VAR | VOLATILE | WHEN | WHERE | BINARY | CHAR | CURRENCY | DECIMAL | DATETIME | NINT | NUINT 
                     // Added as XS keywords to allow them to be treated as IDs
                     // the following entity keywords will be never used 'alone' and can therefore be safely defined as identifiers
                     | DELEGATE | ENUM | GLOBAL | INHERIT | STRUCTURE    

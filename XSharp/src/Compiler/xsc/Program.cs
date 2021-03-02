@@ -16,11 +16,6 @@ namespace Microsoft.CodeAnalysis.CSharp.CommandLine
         {
             try
             {
-#if NET46
-#if DEBUG
-                System.Diagnostics.Debug.Listeners.Add(new System.Diagnostics.ConsoleTraceListener());
-#endif
-#endif
                 return MainCore(args);
             }
             catch (FileNotFoundException e)
@@ -34,12 +29,12 @@ namespace Microsoft.CodeAnalysis.CSharp.CommandLine
 
         private static int MainCore(string[] args)
         {
-#if NET46
-            var loader = new DesktopAnalyzerAssemblyLoader();
-#else
-            var loader = new CoreClrAnalyzerAssemblyLoader();
+#if BOOTSTRAP
+            ExitingTraceListener.Install();
 #endif
-            return DesktopBuildClient.Run(args, RequestLanguage.CSharpCompile, Xsc.Run, loader);
+
+            using var logger = new CompilerServerLogger();
+            return BuildClient.Run(args, RequestLanguage.CSharpCompile, Xsc.Run, logger);
         }
 
         public static int Run(string[] args, string clientDir, string workingDir, string sdkDir, string tempDir, TextWriter textWriter, IAnalyzerAssemblyLoader analyzerLoader)

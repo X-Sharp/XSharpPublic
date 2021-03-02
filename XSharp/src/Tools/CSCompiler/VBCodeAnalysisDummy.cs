@@ -17,10 +17,10 @@ namespace Microsoft.CodeAnalysis.VisualBasic
     {
         internal VisualBasicCompiler(
             CSharp.CSharpCommandLineParser clp,
-            string rspFile,
+            string? rspFile,
             string[] args,
             BuildPaths buildPaths,
-            string libDirectory,
+            string? libDirectory,
             IAnalyzerAssemblyLoader analyzerLoader)
             : base(clp, rspFile, args, buildPaths, "", analyzerLoader)
         {

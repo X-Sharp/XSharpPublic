@@ -53,6 +53,7 @@
 
 #ifdef __DIALECT_FOXPRO__
 #include "FoxProCmd.xh"
+#include "FoxProSQL.xh"
 #endif
 
 // Various SET commands

@@ -1,4 +1,6 @@
-﻿' Copyright (c) Microsoft.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
+﻿' Licensed to the .NET Foundation under one or more agreements.
+' The .NET Foundation licenses this file to you under the MIT license.
+' See the LICENSE file in the project root for more information.
 
 Imports System
 Imports System.Collections.Concurrent
@@ -226,7 +228,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             compiler.WaitForWorkers()
 
             If moduleBeingBuiltOpt IsNot Nothing Then
-                Dim additionalTypes = moduleBeingBuiltOpt.GetAdditionalTopLevelTypes()
+                Dim additionalTypes = moduleBeingBuiltOpt.GetAdditionalTopLevelTypes(diagnostics)
                 If Not additionalTypes.IsEmpty Then
                     compiler.CompileSynthesizedMethods(additionalTypes)
                 End If
@@ -257,7 +259,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                 If (compiler.GlobalHasErrors OrElse moduleBeingBuiltOpt.SourceModule.HasBadAttributes) AndAlso Not hasDeclarationErrors AndAlso Not diagnostics.HasAnyErrors Then
                     ' If there were errors but no diagnostics, explicitly add
                     ' a "Failed to emit module" error to prevent emitting.
-                    diagnostics.Add(ERRID.ERR_ModuleEmitFailure, NoLocation.Singleton, moduleBeingBuiltOpt.SourceModule.Name)
+                    Dim messageResourceName = If(compiler.GlobalHasErrors, NameOf(CodeAnalysisResources.UnableToDetermineSpecificCauseOfFailure), NameOf(CodeAnalysisResources.ModuleHasInvalidAttributes))
+                    diagnostics.Add(ERRID.ERR_ModuleEmitFailure, NoLocation.Singleton, moduleBeingBuiltOpt.SourceModule.Name,
+                        New LocalizableResourceString(messageResourceName, CodeAnalysisResources.ResourceManager, GetType(CodeAnalysisResources)))
                 End If
             End If
         End Sub
@@ -455,20 +459,20 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             _cancellationToken.ThrowIfCancellationRequested()
 
             If Me._compilation.Options.ConcurrentBuild Then
-                Dim worker As Task = CompileNamespaceAsTask(symbol)
+                Dim worker As Task = CompileNamespaceAsync(symbol)
                 _compilerTasks.Push(worker)
             Else
                 CompileNamespace(symbol)
             End If
         End Sub
 
-        Private Function CompileNamespaceAsTask(symbol As NamespaceSymbol) As Task
+        Private Function CompileNamespaceAsync(symbol As NamespaceSymbol) As Task
             Return Task.Run(
                 UICultureUtilities.WithCurrentUICulture(
                     Sub()
                         Try
                             CompileNamespace(symbol)
-                        Catch e As Exception When FatalError.ReportUnlessCanceled(e)
+                        Catch e As Exception When FatalError.ReportAndPropagateUnlessCanceled(e)
                             Throw ExceptionUtilities.Unreachable
                         End Try
                     End Sub),
@@ -487,7 +491,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             _cancellationToken.ThrowIfCancellationRequested()
             If PassesFilter(_filterOpt, symbol) Then
                 If Me._compilation.Options.ConcurrentBuild Then
-                    Dim worker As Task = CompileNamedTypeAsTask(symbol, _filterOpt)
+                    Dim worker As Task = CompileNamedTypeAsync(symbol, _filterOpt)
                     _compilerTasks.Push(worker)
                 Else
                     CompileNamedType(symbol, _filterOpt)
@@ -495,13 +499,13 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             End If
         End Sub
 
-        Private Function CompileNamedTypeAsTask(symbol As NamedTypeSymbol, filter As Predicate(Of Symbol)) As Task
+        Private Function CompileNamedTypeAsync(symbol As NamedTypeSymbol, filter As Predicate(Of Symbol)) As Task
             Return Task.Run(
                 UICultureUtilities.WithCurrentUICulture(
                     Sub()
                         Try
                             CompileNamedType(symbol, filter)
-                        Catch e As Exception When FatalError.ReportUnlessCanceled(e)
+                        Catch e As Exception When FatalError.ReportAndPropagateUnlessCanceled(e)
                             Throw ExceptionUtilities.Unreachable
                         End Try
                     End Sub),
@@ -592,7 +596,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                     Debug.Assert(sharedConstructorDelegateRelaxationIdDispenser = 0)
 
                     If _moduleBeingBuiltOpt IsNot Nothing Then
-                        _moduleBeingBuiltOpt.AddSynthesizedDefinition(sourceTypeSymbol, sharedDefaultConstructor)
+                        _moduleBeingBuiltOpt.AddSynthesizedDefinition(sourceTypeSymbol, sharedDefaultConstructor.GetCciAdapter())
                     End If
                 End If
             End If
@@ -801,7 +805,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                         End If
 
                         f.CloseMethod(body)
-                        _moduleBeingBuiltOpt.AddSynthesizedDefinition(method.ContainingType, DirectCast(matchingStub, Microsoft.Cci.IMethodDefinition))
+                        _moduleBeingBuiltOpt.AddSynthesizedDefinition(method.ContainingType, DirectCast(matchingStub.GetCciAdapter(), Microsoft.Cci.IMethodDefinition))
                     End If
 
                     matchingStub.AddImplementedMethod(implemented)
@@ -838,7 +842,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             Debug.Assert(_moduleBeingBuiltOpt IsNot Nothing)
 
             Dim compilationState As New TypeCompilationState(_compilation, _moduleBeingBuiltOpt, initializeComponentOpt:=Nothing)
-            For Each method As MethodSymbol In privateImplClass.GetMethods(Nothing)
+            For Each methodDef In privateImplClass.GetMethods(Nothing)
+                Dim method = DirectCast(methodDef.GetInternalSymbol(), MethodSymbol)
                 Dim diagnosticsThisMethod = DiagnosticBag.GetInstance()
 
                 Dim boundBody = method.GetBoundMethodBody(compilationState, diagnosticsThisMethod)
@@ -1211,18 +1216,20 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                     If block Is Nothing Then
                         compilation.SymbolDeclaredEvent(sourceMethod)
                     Else
-                        'create a compilation event that caches the already-computed bound tree
-                        Dim lazySemanticModel = New Lazy(Of SemanticModel)(
-                            Function()
-                                Dim syntax = block.Syntax
-                                Dim semanticModel = CType(compilation.GetSemanticModel(syntax.SyntaxTree), SyntaxTreeSemanticModel)
-                                Dim memberModel = CType(semanticModel.GetMemberSemanticModel(syntax), MethodBodySemanticModel)
-                                If memberModel IsNot Nothing Then
-                                    memberModel.CacheBoundNodes(block, syntax)
-                                End If
-                                Return semanticModel
-                            End Function)
-                        compilation.EventQueue.TryEnqueue(New SymbolDeclaredCompilationEvent(compilation, method, lazySemanticModel))
+                        ' If compilation has a caching semantic model provider, then cache the already-computed bound tree
+                        ' onto the semantic model and store it on the event.
+                        Dim semanticModelWithCachedBoundNodes As SyntaxTreeSemanticModel = Nothing
+                        Dim cachingSemanticModelProvider = TryCast(compilation.SemanticModelProvider, CachingSemanticModelProvider)
+                        If cachingSemanticModelProvider IsNot Nothing Then
+                            Dim syntax = block.Syntax
+                            semanticModelWithCachedBoundNodes = CType(cachingSemanticModelProvider.GetSemanticModel(syntax.SyntaxTree, compilation), SyntaxTreeSemanticModel)
+                            Dim memberModel = CType(semanticModelWithCachedBoundNodes.GetMemberSemanticModel(syntax), MethodBodySemanticModel)
+                            If memberModel IsNot Nothing Then
+                                memberModel.CacheBoundNodes(block, syntax)
+                            End If
+                        End If
+
+                        compilation.EventQueue.TryEnqueue(New SymbolDeclaredCompilationEvent(compilation, method, semanticModelWithCachedBoundNodes))
                     End If
                 End If
             End If
@@ -1301,7 +1308,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                 ' no need to rewrite getter, they are pretty simple and 
                 ' are already in a lowered form.
                 compilationState.AddMethodWrapper(getter, getter, getterBody)
-                _moduleBeingBuiltOpt.AddSynthesizedDefinition(containingType, getter)
+                _moduleBeingBuiltOpt.AddSynthesizedDefinition(containingType, getter.GetCciAdapter())
 
                 ' setter needs to rewritten as it may require lambda conversions
                 Dim setterBody = setter.GetBoundMethodBody(compilationState, diagnostics, containingTypeBinder)
@@ -1334,10 +1341,10 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                 closureDebugInfoBuilder.Free()
 
                 compilationState.AddMethodWrapper(setter, setter, setterBody)
-                _moduleBeingBuiltOpt.AddSynthesizedDefinition(containingType, setter)
+                _moduleBeingBuiltOpt.AddSynthesizedDefinition(containingType, setter.GetCciAdapter())
 
                 ' add property too
-                _moduleBeingBuiltOpt.AddSynthesizedDefinition(containingType, prop)
+                _moduleBeingBuiltOpt.AddSynthesizedDefinition(containingType, prop.GetCciAdapter())
                 withEventPropertyIdDispenser += 1
             Next
         End Sub
@@ -1507,7 +1514,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                 optimizations = OptimizationLevel.Release
             End If
 
-            Dim builder As ILBuilder = New ILBuilder(moduleBuilder, localSlotManager, optimizations)
+            Dim builder As ILBuilder = New ILBuilder(moduleBuilder, localSlotManager, optimizations, areLocalsZeroed:=True)
 
             Try
                 Debug.Assert(Not diagnostics.HasAnyErrors)
@@ -1552,7 +1559,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                     ' So it is undesirable to consider these exceptions "user unhandled" since there may well be user code that is awaiting the task.
                     ' This is a heuristic since it's possible that there is no user code awaiting the task.
                     moveNextBodyDebugInfoOpt = New AsyncMoveNextBodyDebugInfo(
-                        kickoffMethod,
+                        kickoffMethod.GetCciAdapter(),
                         If(kickoffMethod.IsSub, asyncCatchHandlerOffset, -1),
                         asyncYieldPoints,
                         asyncResumePoints)
@@ -1560,7 +1567,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                     codeGen.Generate()
 
                     If kickoffMethod IsNot Nothing Then
-                        moveNextBodyDebugInfoOpt = New IteratorMoveNextBodyDebugInfo(kickoffMethod)
+                        moveNextBodyDebugInfoOpt = New IteratorMoveNextBodyDebugInfo(kickoffMethod.GetCciAdapter())
                     End If
                 End If
 
@@ -1604,12 +1611,14 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
 
                 Return New MethodBody(builder.RealizedIL,
                                       builder.MaxStack,
-                                      If(method.PartialDefinitionPart, method),
+                                      If(method.PartialDefinitionPart, method).GetCciAdapter(),
                                       If(variableSlotAllocatorOpt?.MethodId, New DebugId(methodOrdinal, moduleBuilder.CurrentGenerationOrdinal)),
                                       builder.LocalSlotManager.LocalsInOrder(),
                                       builder.RealizedSequencePoints,
                                       debugDocumentProvider,
                                       builder.RealizedExceptionHandlers,
+                                      areLocalsZeroed:=True,
+                                      hasStackalloc:=False,
                                       localScopes,
                                       hasDynamicLocalVariables:=False,
                                       importScopeOpt:=importScopeOpt,
@@ -1637,7 +1646,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             Dim hoistedVariables = ArrayBuilder(Of EncHoistedLocalInfo).GetInstance()
             Dim awaiters = ArrayBuilder(Of Cci.ITypeReference).GetInstance()
 
-            For Each field As StateMachineFieldSymbol In fieldDefs
+            For Each def In fieldDefs
+                Dim field = DirectCast(def.GetInternalSymbol(), StateMachineFieldSymbol)
                 Dim index = field.SlotIndex
 
                 If field.SlotDebugInfo.SynthesizedKind = SynthesizedLocalKind.AwaiterField Then

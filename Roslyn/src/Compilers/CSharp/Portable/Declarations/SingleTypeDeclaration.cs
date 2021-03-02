@@ -1,4 +1,8 @@
-﻿// Copyright (c) Microsoft.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
+﻿// Licensed to the .NET Foundation under one or more agreements.
+// The .NET Foundation licenses this file to you under the MIT license.
+// See the LICENSE file in the project root for more information.
+
+#nullable disable
 
 using System;
 using System.Collections.Immutable;
@@ -16,7 +20,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         private readonly ImmutableArray<SingleTypeDeclaration> _children;
 
         [Flags]
-        internal enum TypeDeclarationFlags : byte
+        internal enum TypeDeclarationFlags : ushort
         {
             None = 0,
             AnyMemberHasExtensionMethodSyntax = 1 << 1,
@@ -24,6 +28,21 @@ namespace Microsoft.CodeAnalysis.CSharp
             HasBaseDeclarations = 1 << 3,
             AnyMemberHasAttributes = 1 << 4,
             HasAnyNontypeMembers = 1 << 5,
+
+            /// <summary>
+            /// Simple program uses await expressions. Set only for <see cref="DeclarationKind.SimpleProgram"/>
+            /// </summary>
+            HasAwaitExpressions = 1 << 6,
+
+            /// <summary>
+            /// Set only for <see cref="DeclarationKind.SimpleProgram"/>
+            /// </summary>
+            IsIterator = 1 << 7,
+
+            /// <summary>
+            /// Set only for <see cref="DeclarationKind.SimpleProgram"/>
+            /// </summary>
+            HasReturnWithExpression = 1 << 8,
         }
 
         internal SingleTypeDeclaration(
@@ -123,6 +142,30 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
         }
 
+        public bool HasAwaitExpressions
+        {
+            get
+            {
+                return (_flags & TypeDeclarationFlags.HasAwaitExpressions) != 0;
+            }
+        }
+
+        public bool HasReturnWithExpression
+        {
+            get
+            {
+                return (_flags & TypeDeclarationFlags.HasReturnWithExpression) != 0;
+            }
+        }
+
+        public bool IsIterator
+        {
+            get
+            {
+                return (_flags & TypeDeclarationFlags.IsIterator) != 0;
+            }
+        }
+
         protected override ImmutableArray<SingleNamespaceOrTypeDeclaration> GetNamespaceOrTypeDeclarationChildren()
         {
             return StaticCast<SingleNamespaceOrTypeDeclaration>.From(_children);
@@ -190,7 +233,7 @@ namespace Microsoft.CodeAnalysis.CSharp
 #if XSHARP
                 return Hash.Combine(thisDecl.Name.ToLower().GetHashCode(),
 #else
-                    return Hash.Combine(thisDecl.Name.GetHashCode(),
+                return Hash.Combine(thisDecl.Name.GetHashCode(),
 #endif
                     Hash.Combine(thisDecl.Arity.GetHashCode(),
                     (int)thisDecl.Kind));

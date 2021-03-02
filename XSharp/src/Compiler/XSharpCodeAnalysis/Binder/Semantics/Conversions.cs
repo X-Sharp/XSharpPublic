@@ -3,10 +3,11 @@
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
-
+#nullable disable
 
 using Microsoft.CodeAnalysis.CSharp.Symbols;
 using System.Collections.Generic;
+using System.Linq;
 using XP = LanguageService.CodeAnalysis.XSharp.SyntaxParser.XSharpParser;
 using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
 
@@ -51,12 +52,11 @@ namespace Microsoft.CodeAnalysis.CSharp
     }
     internal sealed partial class Conversions
     {
-    
         override public bool HasBoxingConversion(TypeSymbol source, TypeSymbol destination, ref HashSet<DiagnosticInfo> useSiteDiagnostics)
         {
             bool result = base.HasBoxingConversion(source, destination, ref useSiteDiagnostics);
 
-            if (!result && _binder.Compilation.Options.HasRuntime && destination != null && source is NamedTypeSymbol)
+            if (!result && _binder.Compilation.Options.HasRuntime && destination  is { } && source is NamedTypeSymbol)
             {
                 var nts = source as NamedTypeSymbol;
                 if (nts.ConstructedFrom.IsUsualType())
@@ -66,16 +66,16 @@ namespace Microsoft.CodeAnalysis.CSharp
                     {
                         // do not box string, array, codeblock  and clipperargs
                         result = !destination.IsStringType()
-                            && destFrom != null
-                            && destFrom != _binder.Compilation.ArrayType()
-                            && destFrom != _binder.Compilation.CodeBlockType()
-                            && ! destination.IsIFormatProvider()
+                            && destFrom is { }
+                            && !Equals(destFrom, _binder.Compilation.ArrayType())
+                            && !Equals(destFrom, _binder.Compilation.CodeBlockType())
+                            && !destination.IsIFormatProvider()
                             && destFrom.IsDerivedFrom(_binder.Compilation.CodeBlockType(), TypeCompareKind.IgnoreDynamicAndTupleNames, ref useSiteDiagnostics) != true
                             && !IsClipperArgsType(destination);
                     }
                     else if (destination.IsPointerType())
                     {
-                       return true;
+                        return true;
                     }
                     else if (destination.SpecialType == SpecialType.System_DateTime)
                     {
@@ -85,16 +85,16 @@ namespace Microsoft.CodeAnalysis.CSharp
                     {
                         // do not box symbol, psz, vofloat, vodate
                         result = destination.SpecialType == SpecialType.None
-                            && destFrom != null
-                            && destFrom != _binder.Compilation.SymbolType()
-                            && destFrom != _binder.Compilation.PszType()
-                            && destFrom != _binder.Compilation.FloatType()
-                            && destFrom != _binder.Compilation.DateType();
+                            && destFrom is { }
+                            && !Equals(destFrom, _binder.Compilation.SymbolType())
+                            && !Equals(destFrom, _binder.Compilation.PszType())
+                            && !Equals(destFrom, _binder.Compilation.FloatType())
+                            && !Equals(destFrom, _binder.Compilation.DateType());
                     }
                 }
-                else if (nts.ConstructedFrom == _binder.Compilation.FloatType())
+                else if (Equals(nts.ConstructedFrom, _binder.Compilation.FloatType()))
                 {
-                    if (destination != null && destination.SpecialType.IsNumericType())
+                    if (destination is {}  && destination.SpecialType.IsNumericType())
                     {
                         result = true;
                     }
@@ -121,8 +121,10 @@ namespace Microsoft.CodeAnalysis.CSharp
                 if ( nts.ConstructedFrom.IsUsualType())
                 {
                     var op = usualType.GetOperators(WellKnownMemberNames.ImplicitConversionName)
-                        .WhereAsArray(o => o.ParameterCount == 1 && o.ParameterTypes[0].IsObjectType() && o.ReturnType.IsUsualType())
-                        .AsSingleton() as MethodSymbol;
+                        .WhereAsArray(o => o.ParameterCount == 1 
+                        && o.Parameters[0].Type.IsObjectType()
+                        && o.ReturnType.IsUsualType())
+                        .First() as MethodSymbol;
                     if (op != null)
                     {
                         var sourceType = _binder.Compilation.GetSpecialType(SpecialType.System_Object);
@@ -145,14 +147,9 @@ namespace Microsoft.CodeAnalysis.CSharp
             {
                 if (type.IsCodeblockType() || type.IsUsualType() || type.IsObjectType())
                 {
-                    return LambdaConversionResult.Success;
+                    return LambdaConversionResult.Success; 
                 }
-
-                var conv = Compilation.ClassifyConversion(Compilation.CodeBlockType(), type);
-                if (conv.Exists)
-                {
-                    return LambdaConversionResult.Success;
-                }
+                return LambdaConversionResult.Success;
             }
 
             return res;
@@ -161,7 +158,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         protected override Conversion ClassifyCoreImplicitConversionFromExpression(BoundExpression sourceExpression, TypeSymbol source, TypeSymbol destination, ref HashSet<DiagnosticInfo> useSiteDiagnostics)
         {
             // Parameters checks have been done in the calling code
-            // The following conversion Rules are for all dialects
+            // The following conversion Rules are for all dialects 
             var srcType = source.SpecialType;
             var dstType = destination.SpecialType;
             // From and to CHAR
@@ -263,7 +260,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             if (expression is BoundBinaryOperator binop && targetType.SpecialType.IsIntegralType())
             {
                 var sourceType = binop.LargestOperand(this.Compilation,false);
-                if (sourceType == targetType)
+                if (TypeSymbol.Equals(sourceType, targetType))
                 {
                     return true;
                 }
@@ -557,7 +554,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         }
         protected override Conversion ClassifyXSImplicitBuiltInConversionFromExpression(BoundExpression sourceExpression, TypeSymbol source, TypeSymbol destination, ref HashSet<DiagnosticInfo> useSiteDiagnostics)
         {
-            if (source == null || destination == null)
+            if (source is null || destination is null )
             {
                 return ClassifyNullConversionFromExpression(sourceExpression, source, destination, ref useSiteDiagnostics);
             }

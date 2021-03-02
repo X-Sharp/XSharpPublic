@@ -1,4 +1,6 @@
-﻿' Copyright (c) Microsoft.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
+﻿' Licensed to the .NET Foundation under one or more agreements.
+' The .NET Foundation licenses this file to you under the MIT license.
+' See the LICENSE file in the project root for more information.
 
 Imports System.Collections.Generic
 Imports System.Collections.Immutable
@@ -47,7 +49,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Symbols.Metadata.PE
 
         Private Structure PackedFlags
             ' Flags are packed into a 32-bit int with the following layout:
-            ' |              h|g|f|e|d|c|b|aaaaa|
+            ' |              |j|i|h|g|f|e|d|c|b|aaaaa|
             '
             ' a = method kind. 5 bits
             ' b = method kind populated. 1 bit
@@ -57,6 +59,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Symbols.Metadata.PE
             ' f = custom attributes populated. 1 bit
             ' g = use site diagnostic populated. 1 bit
             ' h = conditional attributes populated. 1 bit
+            ' i = is init-only. 1 bit.
+            ' j = is init-only populated. 1 bit.
 
             Private _bits As Integer
 
@@ -69,6 +73,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Symbols.Metadata.PE
             Private Const s_isCustomAttributesPopulatedBit As Integer = 1 << 9
             Private Const s_isUseSiteDiagnosticPopulatedBit As Integer = 1 << 10
             Private Const s_isConditionalAttributePopulatedBit As Integer = 1 << 11
+            Private Const s_isInitOnlyBit = 1 << 12
+            Private Const s_isInitOnlyPopulatedBit = 1 << 13
 
             Public Property MethodKind As MethodKind
                 Get
@@ -122,6 +128,18 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Symbols.Metadata.PE
                 End Get
             End Property
 
+            Public ReadOnly Property IsInitOnly As Boolean
+                Get
+                    Return (_bits And s_isInitOnlyBit) <> 0
+                End Get
+            End Property
+
+            Public ReadOnly Property IsInitOnlyPopulated As Boolean
+                Get
+                    Return (_bits And s_isInitOnlyPopulatedBit) <> 0
+                End Get
+            End Property
+
             Private Shared Function BitsAreUnsetOrSame(bits As Integer, mask As Integer) As Boolean
                 Return (bits And mask) = 0 OrElse (bits And mask) = mask
             End Function
@@ -153,6 +171,12 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Symbols.Metadata.PE
 
             Public Sub SetIsConditionalAttributePopulated()
                 ThreadSafeFlagOperations.Set(_bits, s_isConditionalAttributePopulatedBit)
+            End Sub
+
+            Public Sub InitializeIsInitOnly(isInitOnly As Boolean)
+                Dim bitsToSet = If(isInitOnly, s_isInitOnlyBit, 0) Or s_isInitOnlyPopulatedBit
+                Debug.Assert(BitsAreUnsetOrSame(_bits, bitsToSet))
+                ThreadSafeFlagOperations.Set(_bits, bitsToSet)
             End Sub
         End Structure
 
@@ -752,7 +776,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Symbols.Metadata.PE
                              MethodAttributes.Final Or
                              MethodAttributes.Abstract Or
                              MethodAttributes.NewSlot)) =
-                        (MethodAttributes.Virtual Or MethodAttributes.Final)
+                        If(_containingType.IsInterface,
+                           MethodAttributes.Virtual Or MethodAttributes.Final Or MethodAttributes.Abstract,
+                           MethodAttributes.Virtual Or MethodAttributes.Final)
             End Get
         End Property
 
@@ -782,7 +808,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Symbols.Metadata.PE
                                      MethodAttributes.NewSlot))
 
                 Return flagsToCheck = (MethodAttributes.Virtual Or MethodAttributes.NewSlot) OrElse
-                       (flagsToCheck = MethodAttributes.Virtual AndAlso _containingType.BaseTypeNoUseSiteDiagnostics Is Nothing)
+                       (Not _containingType.IsInterface AndAlso
+                        flagsToCheck = MethodAttributes.Virtual AndAlso _containingType.BaseTypeNoUseSiteDiagnostics Is Nothing)
             End Get
         End Property
 
@@ -795,7 +822,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Symbols.Metadata.PE
                 '
                 ' This means that a virtual method without NewSlot flag in a type that doesn't have a base
                 ' is a new virtual method and doesn't override anything.
-                Return (_flags And MethodAttributes.Virtual) <> 0 AndAlso
+                Return Not _containingType.IsInterface AndAlso
+                       (_flags And MethodAttributes.Virtual) <> 0 AndAlso
                        (_flags And MethodAttributes.NewSlot) = 0 AndAlso
                        _containingType.BaseTypeNoUseSiteDiagnostics IsNot Nothing
             End Get
@@ -822,6 +850,21 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Symbols.Metadata.PE
         Public Overrides ReadOnly Property IsIterator As Boolean
             Get
                 Return False
+            End Get
+        End Property
+
+        Public Overrides ReadOnly Property IsInitOnly As Boolean
+            Get
+                If Not _packedFlags.IsInitOnlyPopulated Then
+
+                    Dim result As Boolean = Not Me.IsShared AndAlso
+                                            Me.MethodKind = MethodKind.PropertySet AndAlso
+                                            CustomModifierUtils.HasIsExternalInitModifier(ReturnTypeCustomModifiers)
+
+                    _packedFlags.InitializeIsInitOnly(result)
+                End If
+
+                Return _packedFlags.IsInitOnly
             End Get
         End Property
 
@@ -914,7 +957,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Symbols.Metadata.PE
 
         Private Function SetAssociatedPropertyOrEvent(propertyOrEventSymbol As Symbol, methodKind As MethodKind) As Boolean
             If Me._associatedPropertyOrEventOpt Is Nothing Then
-                Debug.Assert(propertyOrEventSymbol.ContainingType = Me.ContainingType)
+                Debug.Assert(TypeSymbol.Equals(propertyOrEventSymbol.ContainingType, Me.ContainingType, TypeCompareKind.ConsiderEverything))
                 Me._associatedPropertyOrEventOpt = propertyOrEventSymbol
                 _packedFlags.MethodKind = methodKind
                 Return True
@@ -927,8 +970,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Symbols.Metadata.PE
 
             Dim moduleSymbol = _containingType.ContainingPEModule
 
-                Dim signatureHeader As SignatureHeader
-                Dim mrEx As BadImageFormatException = Nothing
+            Dim signatureHeader As SignatureHeader
+            Dim mrEx As BadImageFormatException = Nothing
             Dim paramInfo() As ParamInfo(Of TypeSymbol) =
                     (New MetadataDecoder(moduleSymbol, Me)).GetSignatureForMethod(_handle, signatureHeader, mrEx)
 

@@ -12,7 +12,7 @@ namespace Microsoft.CodeAnalysis.CSharp
     {
         internal const string ClipperArgs = "$args";
     }
-    internal static class OurTypeNames
+    internal static class OurTypeNames 
     {
         internal const string CodeBlockType = "Codeblock";
         internal const string UsualType = "__Usual";
@@ -21,9 +21,11 @@ namespace Microsoft.CodeAnalysis.CSharp
         internal const string PszType = "__Psz";
         internal const string SymbolType = "__Symbol";
         internal const string FloatType = "__Float";
+        internal const string CurrencyType = "__Currency";
         internal const string VnFloatType = "__VOFloat";
         internal const string DateType = "__Date";
         internal const string VnDateType = "__VODate";
+        internal const string WinBoolType = "__WinBool";
         internal const string VOStructAttribute = "VoStructAttribute";
         internal const string DefaultParameterAttribute = "DefaultParameterValueAttribute";
         internal const string ActualTypeAttribute = "ActualTypeAttribute";
@@ -104,7 +106,7 @@ namespace Microsoft.CodeAnalysis.CSharp
     internal static class XSharpSpecialNames
     {
         internal const string ImpliedTypeName = "Xs$var";
-        internal const string ScriptDummy = "XS$dummy";                      
+        internal const string ScriptDummy = "XS$dummy";
         internal const string StaticLocalFieldNamePrefix = "Xs$StaticLocal$";
         internal const string StaticLocalInitFieldNameSuffix = "$init";
         internal const string StaticLocalLockFieldNameSuffix = "$lock";
@@ -112,6 +114,10 @@ namespace Microsoft.CodeAnalysis.CSharp
         internal const string AccessSuffix = "$Access";
         internal const string AssignSuffix = "$Assign";
         internal const string PropertySuffix = "$Method";
+
+        internal const string CodeBlockParameter = "Cb$Param$";
+        internal const string CodeBlockLamda = "Cb$Eval$";
+        internal const string CodeBlockSource = "Cb$Source$";
 
         internal const string DelegateNameSpace = "Xs$Delegates";
         internal const string PCallPrefix = "$PCall";
@@ -166,11 +172,16 @@ namespace Microsoft.CodeAnalysis.CSharp
         internal const string ScriptClipperPCount = "__XSHARP__PCount";
         internal const string ScriptVoPszList = "__XSHARP__PszList";
         internal const string ScriptPrivatesLevel = "__XSHARP__PrivatesLevel";
+
+        // These functions will be ignored when they override a method. Must be lowercase
+        internal const string funcToIgnore1 = "default";
+        internal const string funcToIgnore2 = "asstring";
     }
 
     internal static class ReservedNames
     {
         // these are all expected in the VO Function type
+        internal const string BlockArg = "_BlockArg";
         internal const string StringCompare = "__StringCompare";
         internal const string StringEquals = "__StringEquals";
         internal const string StringSubtract = "StringSubtract";
@@ -225,6 +236,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         internal const string LocalGet = "__LocalGet";
         internal const string LocalsUpdated = "__LocalsUpdated";
         internal const string LocalsClear = "__LocalsClear";
+        internal const string FoxRedim = "__FoxRedim";
     }
     internal static class VulcanQualifiedFunctionNames
     {
@@ -234,7 +246,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         internal const string FieldGetWa = VulcanRTFuncs + ReservedNames.FieldGetWa;
         internal const string FieldSet = VulcanRTFuncs + ReservedNames.FieldSet;
         internal const string FieldSetWa = VulcanRTFuncs + ReservedNames.FieldSetWa;
-        internal const string NullDate = VulcanQualifiedTypeNames.Date +  ReservedNames.NullDate;
+        internal const string NullDate = VulcanQualifiedTypeNames.Date + ReservedNames.NullDate;
         internal const string UsualNIL = VulcanQualifiedTypeNames.Usual + ReservedNames.NIL;
         internal const string PszRelease = CompilerServices + ReservedNames.String2PszRelease;
         internal const string String2Psz = CompilerServices + ReservedNames.String2Psz;
@@ -260,6 +272,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         internal const string GlobalRT = "global::" + XSharpSpecialNames.XSharpRTFunctionsClass + ".";
         internal const string GlobalCore = "global::" + XSharpSpecialNames.XSharpCoreFunctionsClass + ".";
         internal const string CompilerServices = "global::XSharp.Internal.CompilerServices.";
+        internal const string GlobalVFP = "global::" + XSharpSpecialNames.XSharpVFPFunctionsClass + ".";
         // In core
         internal const string Chr = GlobalCore + ReservedNames.Chr;
         internal const string InStr = GlobalCore + ReservedNames.Instr;
@@ -291,6 +304,14 @@ namespace Microsoft.CodeAnalysis.CSharp
         internal const string Evaluate = GlobalRT + ReservedNames.Evaluate;
         internal const string IVarGet = GlobalRT + ReservedNames.IVarGet;
         internal const string IVarPut = GlobalRT + ReservedNames.IVarPut;
+        internal const string LocalPut = GlobalRT + ReservedNames.LocalPut;
+        internal const string LocalGet = GlobalRT + ReservedNames.LocalGet;
+        internal const string LocalsUpdated = GlobalRT + ReservedNames.LocalsUpdated;
+        internal const string LocalsClear = GlobalRT + ReservedNames.LocalsClear;
+        internal const string FoxRedim = GlobalVFP + ReservedNames.FoxRedim;
+        internal const string TextSupport = GlobalVFP + ReservedNames.TextSupport;
+        internal const string TextOut = GlobalVFP + ReservedNames.TextOut;
+        internal const string TextMergeCheck = GlobalVFP + ReservedNames.TextMergeCheck;
     }
 
     internal static class VulcanAssemblyNames

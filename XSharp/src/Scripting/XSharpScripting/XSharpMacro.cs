@@ -4,7 +4,7 @@ using System.Threading;
 using Microsoft.CodeAnalysis.Scripting;
 using Microsoft.CodeAnalysis.Scripting.Hosting;
 using Microsoft.CodeAnalysis.Text;
-
+#nullable disable
 namespace Microsoft.CodeAnalysis.CSharp.Scripting
 {
     public static class XSharpMacro 
@@ -44,7 +44,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Scripting
             result.Vo15 = notcore; // Missing types as USUAL
             result.Vo16 = notcore; // Generate Clipper constructors
             result.Fox1 = dialect == XSharpDialect.FoxPro; // Inherit from abstract class
-            result.Fox2 = dialect == XSharpDialect.FoxPro; // Expose Locals
+            //result.Fox2 = dialect == XSharpDialect.FoxPro; // Expose Locals
             result.Xpp1 = dialect == XSharpDialect.XPP; // Inherit from Custom class
             result.RuntimeAssemblies = RuntimeAssemblies.XSharpRT | RuntimeAssemblies.XSharpCore;
             switch (dialect)

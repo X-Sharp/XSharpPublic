@@ -3,7 +3,7 @@
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
-
+#nullable disable
 using System;
 using System.Collections.Generic;
 using Antlr4.Runtime;
@@ -37,7 +37,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         // Xbase++ addition
         MatchSingle = 8,                   // <#idMarker>
         // X# addition
-        MatchLike = 9,                     // <%idMarker%>
+        MatchLike = 9,                     // <%idMarker%>          
         MatchWholeUDC = 10,                // all tokens in the UDC. Is always added as last match marker with the key UDC
 
         ResultRegular = 0x81,                // <idMarker>           
@@ -46,7 +46,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         ResultSmartStringify = 0x84,         // <(idMarker)>         
         ResultBlockify = 0x85,               // <{idMarker}>         
         ResultLogify = 0x86,                 // <.idMarker.>
-        ResultOptional = 0x87,               // [....]
+        ResultOptional = 0x87,               // [....]               
 
     }
     internal class PPErrorMessages : List<PPErrorMessage>

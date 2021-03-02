@@ -3,7 +3,7 @@
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
-
+#nullable disable
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Diagnostics;
@@ -22,7 +22,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         /// <remarks>
         /// Makes a second attempt if the results are not viable, in order to produce more detailed failure information (symbols and diagnostics).
         /// </remarks>
-        private Binder XSLookupSymbolsWithFallback(LookupResult result, string name, int arity, ref HashSet<DiagnosticInfo> useSiteDiagnostics, ConsList<Symbol> basesBeingResolved = null, LookupOptions options = LookupOptions.Default)
+        private Binder XSLookupSymbolsWithFallback(LookupResult result, string name, int arity, ref HashSet<DiagnosticInfo> useSiteDiagnostics, ConsList<TypeSymbol> basesBeingResolved = null, LookupOptions options = LookupOptions.Default)
         {
             Debug.Assert(options.AreValid());
 
@@ -41,7 +41,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             return binder;
         }
         private Binder XSLookupSymbolsInternal(
-            LookupResult result, string name, int arity, ConsList<Symbol> basesBeingResolved, LookupOptions options, bool diagnose, ref HashSet<DiagnosticInfo> useSiteDiagnostics)
+            LookupResult result, string name, int arity, ConsList<TypeSymbol> basesBeingResolved, LookupOptions options, bool diagnose, ref HashSet<DiagnosticInfo> useSiteDiagnostics)
         {
             Debug.Assert(result.IsClear);
             Debug.Assert(options.AreValid());
@@ -58,13 +58,13 @@ namespace Microsoft.CodeAnalysis.CSharp
                     Binder scope = this;
                     while (scope != null)
                     {
-                        if (scope is InContainerBinder && scope.ContainingType == null) // at the namespace level, so outside of all types
+                        if (scope is InContainerBinder && scope.ContainingType is null) // at the namespace level, so outside of all types
                         {
                             scope.LookupSymbolsInSingleBinder(result, name, arity, basesBeingResolved, funcOptions, this, diagnose, ref useSiteDiagnostics);
                             FilterResults(result, options);
                             if (!result.IsClear)
                             {
-           					    break;
+                                break;
                             }
                         }
                         scope = scope.Next;
@@ -77,7 +77,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             {
                 foreach (var symbol in result.Symbols)
                 {
-                    if (symbol is MethodSymbol )
+                    if (symbol is MethodSymbol)
                     {
                         var ms = symbol as MethodSymbol;
                         if (ms.IsStatic && ms.ContainingType.Name.EndsWith("Functions", XSharpString.Comparison))
@@ -90,6 +90,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 result.Clear();
             }
             Binder binder = null;
+            LookupResult otherResults = LookupResult.GetInstance();
             for (var scope = this; scope != null && !result.IsMultiViable; scope = scope.Next)
             {
                 if (binder != null)
@@ -107,6 +108,59 @@ namespace Microsoft.CodeAnalysis.CSharp
                     if (!result.IsClear)
                     {
                         binder = scope;
+                        otherResults.MergeEqual(result);
+                    }
+                }
+            }
+            if (!functionResults.IsClear && !otherResults.IsClear)
+            {
+                var func = functionResults.Symbols[0];
+                Symbol meth = null;
+                var includeMethods = !options.HasFlag(LookupOptions.MustNotBeMethod);
+                foreach (var m in otherResults.Symbols)
+                {
+                    if (m.Kind == SymbolKind.Method )
+                    {
+                        if (includeMethods)
+                        {
+                            meth = m;
+                            break;
+                        }
+                    }
+                    else
+                    {
+                        if (!includeMethods)
+                        {
+                            meth = m;
+                            break;
+                        }
+                    }
+                }
+                if (meth != null && !meth.IsStatic )
+                {
+                    var b = this;
+                    while (b is not null && b is not InMethodBinder )
+                    {
+                        b = b.Next;
+                    }
+                    CSharpSyntaxNode syntax = null;
+                    if (b is InMethodBinder mbinder)
+                    {
+                        syntax = mbinder.ContainingMemberOrLambda.GetNonNullSyntaxNode();
+                    }
+                    if (!Compilation.Options.HasOption(CompilerOption.EnforceSelf, syntax))
+                    {
+                        // Static method generate the error elsewhere
+                        bool ignore = name.ToLower() == XSharpSpecialNames.funcToIgnore1 || name.ToLower() == XSharpSpecialNames.funcToIgnore2;
+                        if (!ignore)
+                        {
+                            var args = new object[] { name, func, meth };
+                            if (useSiteDiagnostics == null)
+                            {
+                                useSiteDiagnostics = new HashSet<DiagnosticInfo>();
+                            }
+                            useSiteDiagnostics.Add(new CSDiagnosticInfo(ErrorCode.WRN_FunctionsTakePrecedenceOverMethods, args));
+                        }
                     }
                 }
             }
@@ -152,6 +206,10 @@ namespace Microsoft.CodeAnalysis.CSharp
                     useSiteDiagnostics.Add(result.Error);
                 }
             }
+            if (otherResults != null)
+                otherResults.Free();
+            if (functionResults != null)
+                functionResults.Free();
             return binder;
         }
 

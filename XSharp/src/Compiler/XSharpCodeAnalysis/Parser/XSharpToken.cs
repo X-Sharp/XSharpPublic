@@ -3,6 +3,7 @@
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
+#nullable disable
 using Antlr4.Runtime;
 using Antlr4.Runtime.Tree;
 using System;
@@ -32,7 +33,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                     foreach (var t in Trivia)
                     {
                         if (t.Channel == XSharpLexer.XMLDOCCHANNEL)
-                        { 
+                        {
                             sb.AppendLine(t.Text.Trim());
                         }
                     }
@@ -59,10 +60,11 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                     }
                     return sb.ToString();
                 }
-                return String.Empty;
+                return string.Empty;
             }
         }
-
+        public bool IsTrivia => Channel == TokenConstants.HiddenChannel || Channel == XSharpLexer.XMLDOCCHANNEL;
+        public bool CanHaveTrivia => Channel == TokenConstants.DefaultChannel || Channel == XSharpLexer.PREPROCESSORCHANNEL;
         private void copyToken(XSharpToken token)
         {
             type = token.Type;
@@ -73,9 +75,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             StartIndex = token.StartIndex;
             StopIndex = token.StopIndex;
             Trivia = token.Trivia;
-
         }
-
         internal XSharpToken(IToken t) : base(t)
         {
             if (t is XSharpToken xt && t != this)

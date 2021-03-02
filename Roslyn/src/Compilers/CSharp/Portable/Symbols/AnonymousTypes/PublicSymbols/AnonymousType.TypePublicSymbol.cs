@@ -1,19 +1,20 @@
-﻿// Copyright (c) Microsoft.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
+﻿// Licensed to the .NET Foundation under one or more agreements.
+// The .NET Foundation licenses this file to you under the MIT license.
+// See the LICENSE file in the project root for more information.
+
+#nullable disable
 
 using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Diagnostics;
-using System.Linq;
 using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading;
-using Microsoft.CodeAnalysis.CSharp.Symbols;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.PooledObjects;
-using Microsoft.CodeAnalysis.Text;
 using Roslyn.Utilities;
+#if XSHARP
+using System.Linq;
+#endif
 
 namespace Microsoft.CodeAnalysis.CSharp.Symbols
 {
@@ -24,9 +25,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
         /// In emit phase it is being substituted with implementation symbol.
         /// </summary>
 #if XSHARP
-        private class AnonymousTypePublicSymbol : NamedTypeSymbol
+        internal class AnonymousTypePublicSymbol : NamedTypeSymbol
 #else
-        private sealed class AnonymousTypePublicSymbol : NamedTypeSymbol
+        internal sealed class AnonymousTypePublicSymbol : NamedTypeSymbol
 #endif
         {
 #if XSHARP
@@ -58,41 +59,26 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                 this.Manager = manager;
                 this.TypeDescriptor = typeDescr;
 
-                int fieldsCount = typeDescr.Fields.Length;
+                var fields = typeDescr.Fields;
+                var properties = fields.SelectAsArray((field, i, type) => new AnonymousTypePropertySymbol(type, field, i), this);
 
                 //  members
-                Symbol[] members = new Symbol[fieldsCount * 2 + 1];
-                int memberIndex = 0;
+                int membersCount = fields.Length * 2 + 1;
+                var members = ArrayBuilder<Symbol>.GetInstance(membersCount);
 
-                // The array storing property symbols to be used in 
-                // generation of constructor and other methods
-                if (fieldsCount > 0)
+                foreach (var property in properties)
                 {
-                    AnonymousTypePropertySymbol[] propertiesArray = new AnonymousTypePropertySymbol[fieldsCount];
-
-                    // Process fields
-                    for (int fieldIndex = 0; fieldIndex < fieldsCount; fieldIndex++)
-                    {
-                        // Add a property
-                        AnonymousTypePropertySymbol property = new AnonymousTypePropertySymbol(this, typeDescr.Fields[fieldIndex]);
-                        propertiesArray[fieldIndex] = property;
-
-                        // Property related symbols
-                        members[memberIndex++] = property;
-                        members[memberIndex++] = property.GetMethod;
-                    }
-
-                    this.Properties = propertiesArray.AsImmutableOrNull();
+                    // Property related symbols
+                    members.Add(property);
+                    members.Add(property.GetMethod);
                 }
-                else
-                {
-                    this.Properties = ImmutableArray<AnonymousTypePropertySymbol>.Empty;
-                }
+
+                this.Properties = properties;
 
                 // Add a constructor
-                members[memberIndex++] = new AnonymousTypeConstructorSymbol(this, this.Properties);
-                _members = members.AsImmutableOrNull();
-                Debug.Assert(memberIndex == _members.Length);
+                members.Add(new AnonymousTypeConstructorSymbol(this, properties));
+                _members = members.ToImmutableAndFree();
+                Debug.Assert(membersCount == _members.Length);
 
                 //  fill nameToSymbols map
                 foreach (var symbol in _members)
@@ -100,6 +86,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                     _nameToSymbols.Add(symbol.Name, symbol);
                 }
             }
+
+            protected override NamedTypeSymbol WithTupleDataCore(TupleExtraData newData)
+                => throw ExceptionUtilities.Unreachable;
 #if XSHARP
             internal bool IsCodeblock { get; } = false;
 
@@ -108,12 +97,19 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                 Debug.Assert(codeblockParams.Length > 0);
 
                 this.Manager = manager;
-                this.TypeDescriptor = new AnonymousTypeDescriptor(codeblockParams.Select((t, i) => new AnonymousTypeField("Cb$Param$" + i, location, t))
-                    .ToImmutableArray(), location);
-                var codeblockDelegate = manager.SynthesizeDelegate(codeblockParams.Length-1, default(BitVector), false, 0).Construct(codeblockParams);
+                var fields = ArrayBuilder<AnonymousTypeField>.GetInstance(codeblockParams.Length + 2);
+                for (int i = 0; i < codeblockParams.Length; i++)
+                {
+                    fields.Add(new AnonymousTypeField(XSharpSpecialNames.CodeBlockParameter + i, location, TypeWithAnnotations.Create(codeblockParams[i])));
+                }
+                this.TypeDescriptor = new AnonymousTypeDescriptor(fields.ToImmutable(), location);
+
+                var codeblockDelegate = manager.SynthesizeDelegate(codeblockParams.Length - 1, default, false, 0).Construct(codeblockParams);
+                var lambda = new AnonymousTypeField(XSharpSpecialNames.CodeBlockLamda, location, TypeWithAnnotations.Create(codeblockDelegate));
+                var source = new AnonymousTypeField(XSharpSpecialNames.CodeBlockSource, location, TypeWithAnnotations.Create(manager.System_String));
                 this.Properties = new[] {
-                    new AnonymousTypePropertySymbol(this, new AnonymousTypeField("Cb$Eval$", location, codeblockDelegate)),
-                    new AnonymousTypePropertySymbol(this, new AnonymousTypeField("Cb$Source$", location, manager.System_String))
+                    new AnonymousTypePropertySymbol(this, lambda,0),
+                    new AnonymousTypePropertySymbol(this, source,0)
                 }.AsImmutableOrNull();
 
                 Symbol[] members = new Symbol[4];
@@ -146,25 +142,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                 throw ExceptionUtilities.Unreachable;
             }
 
-            internal override ImmutableArray<TypeSymbol> TypeArgumentsNoUseSiteDiagnostics
+            internal override ImmutableArray<TypeWithAnnotations> TypeArgumentsWithAnnotationsNoUseSiteDiagnostics
             {
-                get { return ImmutableArray<TypeSymbol>.Empty; }
-            }
-
-            internal override bool HasTypeArgumentsCustomModifiers
-            {
-                get
-                {
-                    return false;
-                }
+                get { return ImmutableArray<TypeWithAnnotations>.Empty; }
             }
 
             internal override bool HasCodeAnalysisEmbeddedAttribute => false;
-
-            public override ImmutableArray<CustomModifier> GetTypeArgumentCustomModifiers(int ordinal)
-            {
-                return GetEmptyTypeArgumentCustomModifiers(ordinal);
-            }
 
             public override ImmutableArray<Symbol> GetMembers(string name)
             {
@@ -233,12 +216,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                 get { return false; }
             }
 
-            internal sealed override bool IsByRefLikeType
+            public sealed override bool IsRefLikeType
             {
-                get { return false;  }
+                get { return false; }
             }
 
-            internal sealed override bool IsReadOnly
+            public sealed override bool IsReadOnly
             {
                 get { return false; }
             }
@@ -278,7 +261,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                 get { return Accessibility.Internal; }
             }
 
-            internal override ImmutableArray<NamedTypeSymbol> InterfacesNoUseSiteDiagnostics(ConsList<Symbol> basesBeingResolved)
+            internal override ImmutableArray<NamedTypeSymbol> InterfacesNoUseSiteDiagnostics(ConsList<TypeSymbol> basesBeingResolved)
             {
                 return ImmutableArray<NamedTypeSymbol>.Empty;
             }
@@ -288,10 +271,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                 throw ExceptionUtilities.Unreachable;
             }
 
-            internal override NamedTypeSymbol BaseTypeNoUseSiteDiagnostics
-            {
-                get { return this.Manager.System_Object; }
-            }
+            internal override NamedTypeSymbol BaseTypeNoUseSiteDiagnostics => this.Manager.System_Object;
 
             public override TypeKind TypeKind
             {
@@ -366,6 +346,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                 get { return false; }
             }
 
+            public sealed override bool AreLocalsZeroed
+            {
+                get { throw ExceptionUtilities.Unreachable; }
+            }
+
             internal override bool HasDeclarativeSecurity
             {
                 get { return false; }
@@ -386,15 +371,21 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                 return AttributeUsageInfo.Null;
             }
 
-            internal override NamedTypeSymbol GetDeclaredBaseType(ConsList<Symbol> basesBeingResolved)
+            internal override NamedTypeSymbol GetDeclaredBaseType(ConsList<TypeSymbol> basesBeingResolved)
             {
                 return this.Manager.System_Object;
             }
 
-            internal override ImmutableArray<NamedTypeSymbol> GetDeclaredInterfaces(ConsList<Symbol> basesBeingResolved)
+            internal override ImmutableArray<NamedTypeSymbol> GetDeclaredInterfaces(ConsList<TypeSymbol> basesBeingResolved)
             {
                 return ImmutableArray<NamedTypeSymbol>.Empty;
             }
+
+            internal sealed override NamedTypeSymbol AsNativeInteger() => throw ExceptionUtilities.Unreachable;
+
+            internal sealed override NamedTypeSymbol NativeIntegerUnderlyingType => null;
+
+            internal override bool IsRecord => false;
 
             internal override bool Equals(TypeSymbol t2, TypeCompareKind comparison)
             {
@@ -411,6 +402,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             {
                 return this.TypeDescriptor.GetHashCode();
             }
+
+            internal override bool HasPossibleWellKnownCloneMethod() => false;
         }
     }
 }

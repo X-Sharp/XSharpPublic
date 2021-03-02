@@ -1,4 +1,8 @@
-﻿// Copyright (c) Microsoft.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
+﻿// Licensed to the .NET Foundation under one or more agreements.
+// The .NET Foundation licenses this file to you under the MIT license.
+// See the LICENSE file in the project root for more information.
+
+#nullable disable
 
 using System.Collections.Immutable;
 using System.Diagnostics;
@@ -46,7 +50,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                     var expression = GetTrailingScriptExpression(lastStatement);
                     if (expression != null &&
                         (object)expression.Type != null &&
-                        expression.Type.SpecialType != SpecialType.System_Void)
+                        !expression.Type.IsVoidType())
                     {
                         trailingExpression = expression;
                         continue;
@@ -58,7 +62,7 @@ namespace Microsoft.CodeAnalysis.CSharp
 
             if (hasSubmissionResultType && (trailingExpression != null))
             {
-                Debug.Assert(submissionResultType.SpecialType != SpecialType.System_Void);
+                Debug.Assert(!submissionResultType.IsVoidType());
 
                 // Note: The trailing expression was already converted to the submission result type in Binder.BindGlobalStatement.
                 boundStatements.Add(new BoundReturnStatement(lastStatement.Syntax, RefKind.None, trailingExpression));
@@ -84,7 +88,7 @@ namespace Microsoft.CodeAnalysis.CSharp
 
         private static BoundStatement RewriteFieldInitializer(BoundFieldEqualsValue fieldInit)
         {
-            var syntax = fieldInit.Syntax;
+            SyntaxNode syntax = fieldInit.Syntax;
             syntax = (syntax as EqualsValueClauseSyntax)?.Value ?? syntax; //we want the attached sequence point to indicate the value node
             var boundReceiver = fieldInit.Field.IsStatic ? null :
                                         new BoundThisReference(syntax, fieldInit.Field.ContainingType);
@@ -104,7 +108,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 }
             }
             if (wasGenerated && fieldInit.Field.Type.IsStringType() 
-                && boundReceiver != null 
+                && boundReceiver != null
                 && fieldInit.Field.DeclaringCompilation.Options.HasOption(CompilerOption.NullStrings, boundReceiver.Syntax))
             {
                 var fldaccess = new BoundFieldAccess(syntax,
@@ -112,11 +116,12 @@ namespace Microsoft.CodeAnalysis.CSharp
                                                     fieldInit.Field,
                                                     constantValueOpt: null)
                 { WasCompilerGenerated = true };
-                initValue = new BoundNullCoalescingOperator(syntax,
-                                                    fldaccess,
-                                                    initValue,
-                                                    Conversion.Identity,
-                                                    fieldInit.Field.Type)
+                initValue = new BoundNullCoalescingOperator(syntax: syntax,
+                                                    leftOperand: fldaccess,
+                                                    rightOperand: initValue,
+                                                    leftConversion: Conversion.Identity,
+                                                    operatorResultKind: BoundNullCoalescingOperatorResultKind.LeftType,
+                                                    type: fieldInit.Field.Type)
                 { WasCompilerGenerated = true };
             }
             BoundStatement boundStatement =
@@ -139,7 +144,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                             boundReceiver,
                             fieldInit.Field,
                             constantValueOpt: null),
-                            fieldInit.Value,
+                        fieldInit.Value,
                         fieldInit.Field.Type)
                     { WasCompilerGenerated = true })
                 { WasCompilerGenerated = !fieldInit.Locals.IsEmpty || fieldInit.WasCompilerGenerated };
@@ -149,7 +154,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 boundStatement = new BoundBlock(syntax, fieldInit.Locals, ImmutableArray.Create(boundStatement)) { WasCompilerGenerated = fieldInit.WasCompilerGenerated };
             }
 
-            Debug.Assert(LocalRewriter.IsFieldOrPropertyInitializer(boundStatement)); 
+            Debug.Assert(LocalRewriter.IsFieldOrPropertyInitializer(boundStatement));
             return boundStatement;
         }
 

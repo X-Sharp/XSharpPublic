@@ -1,3 +1,4 @@
+#pragma options ("enforceself", on)
 CLASS Control INHERIT VObject
 	PROTECT hWnd AS PTR
 	PROTECT oParent AS OBJECT // PRAAN02@12/05/95: Changed to protect for ToolBar's benefit

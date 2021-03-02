@@ -1,3 +1,4 @@
+#pragma options ("enforceself", on)
 #ifdef __VULCAN__
    USING System.Runtime.InteropServices
 #endif

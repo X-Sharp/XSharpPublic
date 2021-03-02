@@ -3,7 +3,7 @@
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
 //
-
+#pragma options ("enforceself", on)
 [XSharp.Internal.TypesChanged];
 CLASS FieldSpec
 	// Class that contains a number of properties of database fields and form fields ( controls )

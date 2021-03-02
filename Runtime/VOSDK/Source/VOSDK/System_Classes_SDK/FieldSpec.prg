@@ -1,3 +1,4 @@
+#pragma options ("enforceself", on)
 CLASS FieldSpec
     // Class that contains a number of properties of database fields and form fields ( controls )
     // HyperLabel   describes the FieldSpec
@@ -79,7 +80,7 @@ PROTECT lNullable AS LOGIC
         ENDIF
         RETURN 
     
-ACCESS __HyperLabel as HyperLabel
+    ACCESS __HyperLabel as HyperLabel
         RETURN oHyperLabel
     ACCESS HyperLabel                               
         // Returns the HyperLabel object
@@ -534,7 +535,7 @@ ACCESS __HyperLabel as HyperLabel
         ELSE
             DbError{ SELF, #Status, EG_ARG, __CavoStr(__CAVOSTR_DBFCLASS_BADHL), oHL, "oHL" }:Throw()
         ENDIF
-        
+         
         RETURN 
 
     METHOD Transform( uValue )                      
@@ -547,7 +548,7 @@ ACCESS __HyperLabel as HyperLabel
         LOCAL lZero :=FALSE   AS LOGIC    
         
         IF cPicture == NULL_STRING
-                IF lNumeric
+                IF lNumeric 
                         IF wDecimals=0
                             cResult := Transform(uValue,Replicate("9",wLength))
                         ELSE

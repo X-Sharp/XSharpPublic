@@ -1,3 +1,4 @@
+#pragma options ("enforceself", on)
 CLASS DateTimePicker INHERIT TextControl
     HIDDEN _lNoAssign AS LOGIC   
     PROTECT lNullFormat       AS LOGIC

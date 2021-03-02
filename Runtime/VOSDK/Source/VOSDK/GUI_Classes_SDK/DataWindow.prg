@@ -1,4 +1,5 @@
- CLASS DataWindow INHERIT ChildAppWindow
+#pragma options ("enforceself", on)
+CLASS DataWindow INHERIT ChildAppWindow
 	PROTECT sCurrentView AS SYMBOL
 	PROTECT nCCMode AS INT
 	PROTECT nLastLock AS INT

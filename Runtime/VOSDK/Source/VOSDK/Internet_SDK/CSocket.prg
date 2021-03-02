@@ -1,3 +1,4 @@
+#pragma options ("enforceself", on)
 CLASS CSocket
 	PROTECT nSocket AS DWORD
 

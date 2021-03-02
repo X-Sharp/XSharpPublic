@@ -100,7 +100,7 @@ METHOD Play(nFrom, nTo, nRepeatCount)
 	LOCAL dwRepeatCount	AS DWORD
 
 
-	Default(@nFrom, 0)
+	Default(@nFrom, 0) 
 	Default(@nTo, -1)
 	Default(@nRepeatCount, -1)
 

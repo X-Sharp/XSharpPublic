@@ -136,18 +136,31 @@ namespace Microsoft.CodeAnalysis.CSharp
                         }
                     }
                 }
-                if (meth != null && !meth.IsStatic && !Compilation.Options.HasOption(CompilerOption.EnforceSelf,null))
+                if (meth != null && !meth.IsStatic )
                 {
-                    // Static method generate the error elsewhere
-                    bool ignore = name.ToLower() == XSharpSpecialNames.funcToIgnore1 || name.ToLower() == XSharpSpecialNames.funcToIgnore2;
-                    if (!ignore)
+                    var b = this;
+                    while (b is not null && b is not InMethodBinder )
                     {
-                        var args = new object[] { name, func, meth };
-                        if (useSiteDiagnostics == null)
+                        b = b.Next;
+                    }
+                    CSharpSyntaxNode syntax = null;
+                    if (b is InMethodBinder mbinder)
+                    {
+                        syntax = mbinder.ContainingMemberOrLambda.GetNonNullSyntaxNode();
+                    }
+                    if (!Compilation.Options.HasOption(CompilerOption.EnforceSelf, syntax))
+                    {
+                        // Static method generate the error elsewhere
+                        bool ignore = name.ToLower() == XSharpSpecialNames.funcToIgnore1 || name.ToLower() == XSharpSpecialNames.funcToIgnore2;
+                        if (!ignore)
                         {
-                            useSiteDiagnostics = new HashSet<DiagnosticInfo>();
+                            var args = new object[] { name, func, meth };
+                            if (useSiteDiagnostics == null)
+                            {
+                                useSiteDiagnostics = new HashSet<DiagnosticInfo>();
+                            }
+                            useSiteDiagnostics.Add(new CSDiagnosticInfo(ErrorCode.WRN_FunctionsTakePrecedenceOverMethods, args));
                         }
-                        useSiteDiagnostics.Add(new CSDiagnosticInfo(ErrorCode.WRN_FunctionsTakePrecedenceOverMethods, args));
                     }
                 }
             }

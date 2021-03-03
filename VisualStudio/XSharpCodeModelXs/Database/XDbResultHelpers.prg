@@ -19,8 +19,8 @@ BEGIN NAMESPACE XSharpModel
     CLASS XDbResultHelpers
         
         ///
-        STATIC METHOD BuildTypesInFile( origin AS XFile, found AS IList<XDbResult>) AS IList<XTypeDefinition>
-            VAR result := List<XTypeDefinition>{}
+        STATIC METHOD BuildTypesInFile( origin AS XFile, found AS IList<XDbResult>) AS IList<XSourceTypeSymbol>
+            VAR result := List<XSourceTypeSymbol>{}
             LOCAL idProject := -1 AS INT64
             //
             TRY
@@ -41,7 +41,7 @@ BEGIN NAMESPACE XSharpModel
                     file:Id        := element:IdFile
                     VAR range    := TextRange{element:StartLine, element:StartColumn, element:EndLine, element:EndColumn}
                     VAR interval := TextInterval{element:Start, element:Stop}
-                    VAR xtype := XTypeDefinition{name, element:Kind,element:Attributes, range, interval, file}
+                    VAR xtype := XSourceTypeSymbol{name, element:Kind,element:Attributes, range, interval, file}
                     xtype:Namespace := element:Namespace
                     xtype:Id  := element:IdType
                     result:Add(xtype)
@@ -52,8 +52,8 @@ BEGIN NAMESPACE XSharpModel
         RETURN result		
         
         
-        STATIC METHOD BuildFullTypesInFile( origin AS XFile, found AS IList<XDbResult>) AS IList<XTypeDefinition>
-            VAR result := List<XTypeDefinition>{}
+        STATIC METHOD BuildFullTypesInFile( origin AS XFile, found AS IList<XDbResult>) AS IList<XSourceTypeSymbol>
+            VAR result := List<XSourceTypeSymbol>{}
             LOCAL idProject := -1 AS INT64
             //
             TRY
@@ -82,7 +82,7 @@ BEGIN NAMESPACE XSharpModel
                     walker:Parse(source, FALSE)
                     IF walker:EntityList:Count > 0
                         VAR xElement      := walker:EntityList:First()
-                        IF xElement IS XTypeDefinition VAR xtype
+                        IF xElement IS XSourceTypeSymbol VAR xtype
                             xtype:Range       := TextRange{element:StartLine, element:StartColumn, element:EndLine, element:EndColumn}
                             xtype:Interval    := TextInterval{element:Start, element:Stop}
                             xtype:XmlComments := element:XmlComments
@@ -93,7 +93,7 @@ BEGIN NAMESPACE XSharpModel
                             IF xmembers:Count == members:Count
                                 LOCAL i AS INT
                                 FOR i := 0 TO members:Count-1
-                                    VAR xmember := (XMemberDefinition) xmembers[i] 
+                                    VAR xmember := (XSourceMemberSymbol) xmembers[i] 
                                     VAR melement := members[i]
                                     xmember:Range       := TextRange{melement:StartLine, melement:StartColumn, melement:EndLine, melement:EndColumn}
                                     xmember:Interval    := TextInterval{melement:Start, melement:Stop}
@@ -112,8 +112,8 @@ BEGIN NAMESPACE XSharpModel
             //
         RETURN result
         
-        STATIC METHOD BuildFullFuncsInFile( origin AS XFile, found AS IList<XDbResult>) AS IList<XMemberDefinition>
-            VAR result := List<XMemberDefinition>{}
+        STATIC METHOD BuildFullFuncsInFile( origin AS XFile, found AS IList<XDbResult>) AS IList<XSourceMemberSymbol>
+            VAR result := List<XSourceMemberSymbol>{}
             LOCAL idProject := -1 AS INT64
             //
             TRY
@@ -138,7 +138,7 @@ BEGIN NAMESPACE XSharpModel
                     LOCAL i AS INT
                     FOR i := 0 TO found:Count-1
                         VAR entity := walker:EntityList[i]
-                        IF entity IS XMemberDefinition VAR xMember
+                        IF entity IS XSourceMemberSymbol VAR xMember
                             VAR melement := found[i]
                             xMember:Range       := TextRange{melement:StartLine, melement:StartColumn, melement:EndLine, melement:EndColumn}
                             xMember:Interval    := TextInterval{melement:Start, melement:Stop}

@@ -130,12 +130,27 @@
       <Link>Properties\constants.prg</Link>
     </Compile>
     <Compile Include="CompletionType.prg" />
+    <Compile Include="Database\XDatabase.prg" />
+    <Compile Include="Database\XDbResult.prg" />
+    <Compile Include="Database\XDbResultHelpers.prg" />
     <Compile Include="Model\CommentTask.prg" />
-    <Compile Include="Model\XDbResult.prg" />
-    <Compile Include="Model\XBaseSignature.prg" />
-    <Compile Include="Model\XDbResultHelpers.prg" />
+    <Compile Include="PE\XPEMemberSymbol.prg" />
+    <Compile Include="PE\XPEParameterSymbol.prg" />
+    <Compile Include="PE\XPESymbol.prg" />
+    <Compile Include="PE\XPETypeSymbol.prg" />
     <Compile Include="Settings\XEditorSettings.prg" />
+    <Compile Include="Settings\XLiterals.prg" />
     <Compile Include="Settings\XSettings.prg" />
+    <Compile Include="Signatures\XBaseSignature.prg" />
+    <Compile Include="Signatures\XMemberSignature.prg" />
+    <Compile Include="Signatures\XTypeSignature.prg" />
+    <Compile Include="Source\XSourceBlock.prg" />
+    <Compile Include="Source\XSourceSymbol.prg" />
+    <Compile Include="Source\XSourceEntity.prg" />
+    <Compile Include="Source\XSourceMemberSymbol.prg" />
+    <Compile Include="Source\XSourceParameterSymbol.prg" />
+    <Compile Include="Source\XSourceTypeSymbol.prg" />
+    <Compile Include="Source\XSourceVariableSymbol.prg" />
     <Compile Include="Support\TextInterval.prg" />
     <Compile Include="Support\TextRange.prg" />
     <Compile Include="Support\TypeExtensions.prg" />
@@ -145,42 +160,32 @@
     <Compile Include="MetaData\XAssembly.prg" />
     <Compile Include="MetaData\AssemblyReader.prg" />
     <Compile Include="MetaData\SystemTypeController.prg" />
-    <Compile Include="Model\XParameterReference.prg" />
-    <Compile Include="Model\XSourceElement.prg" />
-    <Compile Include="Model\XElement.prg" />
-    <Compile Include="Model\XTypeSignature.prg" />
+    <Compile Include="Model\XSymbol.prg" />
     <Compile Include="Model\XTypeExtensions.prg" />
     <Compile Include="Model\XTypeMemberExtensions.prg" />
-    <Compile Include="Model\XLiterals.prg" />
-    <Compile Include="Model\XEntityReference.prg" />
-    <Compile Include="Model\XMemberReference.prg" />
-    <Compile Include="Model\XTypeReference.prg" />
     <Compile Include="Model\ExtensionMethods.prg" />
     <Compile Include="Model\Interfaces.prg" />
-    <Compile Include="Model\XMemberSignature.prg" />
     <Compile Include="Model\Enums.prg" />
-    <Compile Include="Model\XBlock.prg" />
-    <Compile Include="Model\XEntityDefinition.prg" />
-    <Compile Include="Model\XTypeDefinition.prg" />
-    <Compile Include="Model\XMemberDefinition.prg" />
-    <Compile Include="Model\XVariable.prg" />
     <Compile Include="ProjectSystem\OrphanedFilesProject.prg" />
     <Compile Include="ProjectSystem\XFile.prg" />
     <Compile Include="ProjectSystem\XProject.prg" />
     <Compile Include="ProjectSystem\XSolution.prg" />
     <Compile Include="Properties\AssembyInfo.prg" />
-    <Compile Include="XDatabase.prg" />
-    <Compile Include="Walker\ModelWalker.prg" />
-    <Compile Include="Walker\XsParser.prg" />
-    <Compile Include="Walker\SourceWalker.prg" />
+    <Compile Include="Parser\ModelWalker.prg" />
+    <Compile Include="Parser\XsParser.prg" />
+    <Compile Include="Parser\SourceWalker.prg" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Model\" />
     <Folder Include="MetaData" />
+    <Folder Include="Database" />
+    <Folder Include="PE\" />
     <Folder Include="Settings" />
+    <Folder Include="Signatures\" />
+    <Folder Include="Source\" />
     <Folder Include="Support" />
     <Folder Include="ProjectSystem\" />
-    <Folder Include="Walker" />
+    <Folder Include="Parser" />
     <Folder Include="Properties\" />
   </ItemGroup>
   <ItemGroup>

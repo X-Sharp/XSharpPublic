@@ -12,10 +12,10 @@ USING LanguageService.SyntaxTree
 BEGIN NAMESPACE XSharpModel
    // A variable is strictly speaking not an entity
    [DebuggerDisplay("{DebuggerDisplay(),nq}")];
-   CLASS XParameterReference INHERIT XElement IMPLEMENTS IXVariable
+   CLASS XPEParameterSymbol INHERIT XSymbol IMPLEMENTS IXVariableSymbol
       
       // Methods
-      CONSTRUCTOR(parent AS IXMember, name AS STRING, typeName AS STRING)
+      CONSTRUCTOR(parent AS IXMemberSymbol, name AS STRING, typeName AS STRING)
          SUPER(name, Kind.Parameter, Modifiers.Public)
          SELF:TypeName      := typeName
          SELF:Parent        := parent
@@ -25,6 +25,7 @@ BEGIN NAMESPACE XSharpModel
       PROPERTY IsArray      AS LOGIC AUTO
       PROPERTY TypeName     AS STRING AUTO
       PROPERTY IsTyped      AS LOGIC GET TRUE
+      PROPERTY IsStatic     AS LOGIC GET FALSE
       PROPERTY OriginalTypeName as STRING AUTO
       PROPERTY Description  AS STRING
          GET
@@ -38,6 +39,8 @@ BEGIN NAMESPACE XSharpModel
       END PROPERTY
       
       PROPERTY IsParameter AS LOGIC GET TRUE
+      PROPERTY FullName as STRING GET Name
+      PROPERTY Namespace as STRING GET ""
       PROPERTY ParamType AS ParamType AUTO
       PROPERTY Prototype AS STRING GET SUPER:Name
       PROPERTY ParamTypeDesc AS STRING

@@ -24,8 +24,8 @@ namespace XSharp.LanguageService
         private IVsDropdownBar _dropDownBar;
 
         private ITextView _textView;
-        XEntityDefinition _lastSelected = null;
-        XEntityDefinition _lastType = null;
+        XSourceEntity _lastSelected = null;
+        XSourceEntity _lastType = null;
 
         List<XDropDownMember> _members = null;
         List<XDropDownMember> _types = null;
@@ -108,7 +108,7 @@ namespace XSharp.LanguageService
         }
 
 
-        private int findSelectedMember(XEntityDefinition member)
+        private int findSelectedMember(XSourceEntity member)
         {
             if (member != null)
             {
@@ -141,7 +141,7 @@ namespace XSharp.LanguageService
             }
         }
 
-        private int findSelectedType(XTypeDefinition type)
+        private int findSelectedType(XSourceTypeSymbol type)
         {
             if (type != null)
             {
@@ -159,19 +159,19 @@ namespace XSharp.LanguageService
         {
             if (_file == null)
                 return;
-            XEntityDefinition selectedElement = _file.FindMemberAtRow(newLine);
+            XSourceEntity selectedElement = _file.FindMemberAtRow(newLine);
             if (selectedElement == _lastSelected && !SettingsChanged)
             {
                 return;
             }
-            XTypeDefinition parentType = null;
-            if (selectedElement is XMemberDefinition)
+            XSourceTypeSymbol parentType = null;
+            if (selectedElement is XSourceMemberSymbol)
             {
-                parentType = (XTypeDefinition)selectedElement.Parent;
+                parentType = (XSourceTypeSymbol)selectedElement.Parent;
             }
-            else if (selectedElement is XTypeDefinition)
+            else if (selectedElement is XSourceTypeSymbol)
             {
-                parentType = selectedElement as XTypeDefinition;
+                parentType = selectedElement as XSourceTypeSymbol;
             }
             else
             {
@@ -208,9 +208,9 @@ namespace XSharp.LanguageService
             return;
         }
 
-        private IList<XEntityDefinition> GetTypeMembers(XTypeDefinition type)
+        private IList<XSourceEntity> GetTypeMembers(XSourceTypeSymbol type)
         {
-            var members = new List<XEntityDefinition>();
+            var members = new List<XSourceEntity>();
             if (type.IsPartial && ! type.IsGlobal && !XSettings.EditorNavigationExcludeMembersFromOtherFiles)
             { 
                 var usings = new List<string>();
@@ -225,7 +225,7 @@ namespace XSharp.LanguageService
             {
                
                 members.AddRange(type.XMembers);
-                foreach (XTypeDefinition child in type.Children)
+                foreach (XSourceTypeSymbol child in type.Children)
                 {
                     members.Add(child);
                     members.AddRange(child.XMembers);
@@ -249,17 +249,17 @@ namespace XSharp.LanguageService
             
         }
 
-        private IList<XEntityDefinition> GetAllMembers()
+        private IList<XSourceEntity> GetAllMembers()
         {
-            var members = new List<XEntityDefinition>();
+            var members = new List<XSourceEntity>();
             var includeFields = XSettings.EditorNavigationIncludeFields;
             members.AddRange(_file.EntityList.Where(member => includeFields || !member.Kind.IsField()));
             _lastFileChanged = DateTime.MinValue;
             foreach (var ent in _file.EntityList)
             {
-                if (ent is XTypeDefinition)
+                if (ent is XSourceTypeSymbol)
                 {
-                    var xType = ent as XTypeDefinition;
+                    var xType = ent as XSourceTypeSymbol;
                     if (xType.IsPartial && !XSettings.EditorNavigationExcludeMembersFromOtherFiles)
                     {
 
@@ -291,10 +291,10 @@ namespace XSharp.LanguageService
             XDropDownMember elt;
             int nSelect = 0;
             DROPDOWNFONTATTR ft;
-            List<XTypeDefinition> xList = _file.TypeList.Values.ToList<XTypeDefinition>();
+            List<XSourceTypeSymbol> xList = _file.TypeList.Values.ToList<XSourceTypeSymbol>();
             if (sortItems)
             {
-                xList.Sort(delegate (XTypeDefinition elt1, XTypeDefinition elt2)
+                xList.Sort(delegate (XSourceTypeSymbol elt1, XSourceTypeSymbol elt2)
                 {
                     return elt1.FullName.CompareTo(elt2.FullName);
                 });
@@ -303,7 +303,7 @@ namespace XSharp.LanguageService
             {
                 xList.Add(_file.GlobalType);
             }
-            foreach (XTypeDefinition eltType in xList)
+            foreach (XSourceTypeSymbol eltType in xList)
             {
                 if (eltType.Kind == Kind.Namespace)
                     continue;
@@ -334,14 +334,14 @@ namespace XSharp.LanguageService
             var sortItems = XSettings.EditorNavigationSorted;
             var includeFields = XSettings.EditorNavigationIncludeFields;
             var currentTypeOnly = XSettings.EditorNavigationMembersOfCurrentTypeOnly;
-            var currentType = (XTypeDefinition) (selectedType > -1 ? _types[selectedType].Entity : _types[0].Entity);
+            var currentType = (XSourceTypeSymbol) (selectedType > -1 ? _types[selectedType].Entity : _types[0].Entity);
             var globalType = _file.GlobalType;
             DROPDOWNFONTATTR ft;
             bool hasPartial = !currentType.IsGlobal && currentType.IsPartial;
             _members.Clear();
             _relatedFiles.Clear();
             AddSourceFile(_file.SourcePath);
-            var members = new List<XEntityDefinition>();
+            var members = new List<XSourceEntity>();
             if (currentTypeOnly)
             {
                 members.AddRange(GetTypeMembers(currentType));
@@ -378,7 +378,7 @@ namespace XSharp.LanguageService
                     _members.Add(elt);
                 }
             }
-            foreach (XEntityDefinition member in members)
+            foreach (XSourceEntity member in members)
             {
                 bool otherFile;
                 if (includeFields || (member.Kind != Kind.Field && member.Kind != Kind.VODefine))
@@ -386,7 +386,7 @@ namespace XSharp.LanguageService
                     spM = this.TextRangeToTextSpan(member.Range);
                     otherFile = false;
                     ft = DROPDOWNFONTATTR.FONTATTR_PLAIN;
-                    if (member.Parent is XTypeDefinition typedef &&  typedef.IsPartial)
+                    if (member.Parent is XSourceTypeSymbol typedef &&  typedef.IsPartial)
                     {
                         otherFile = string.Compare(member.File.FullPath, _file.FullPath, true) != 0;
                     }
@@ -399,15 +399,15 @@ namespace XSharp.LanguageService
                     }
                     else
                     {
-                        if (member.Parent is XEntityDefinition && member.Parent.Name != XLiterals.GlobalName && member.Kind.IsClassMember(_file.Project.Dialect))
+                        if (member.Parent is XSourceEntity && member.Parent.Name != XLiterals.GlobalName && member.Kind.IsClassMember(_file.Project.Dialect))
                         {
                             addPrefix = true;
                         }
                     }
                     if (addPrefix)
                     {
-                        var parent = member.Parent as XEntityDefinition;
-                        if (member.Modifiers.HasFlag(Modifiers.Static) || member is XTypeDefinition)
+                        var parent = member.Parent as XSourceEntity;
+                        if (member.Modifiers.HasFlag(Modifiers.Static) || member is XSourceTypeSymbol)
                             prototype = parent.ComboPrototype + "." + prototype;
                         else
                             prototype = parent.ComboPrototype + ":" + prototype;
@@ -601,7 +601,7 @@ namespace XSharp.LanguageService
 
         public int OnItemChosen(int combo, int index)
         {
-            XEntityDefinition entity = null;
+            XSourceEntity entity = null;
             if (index < 0)
                 index = 0;
             switch (combo)
@@ -652,8 +652,8 @@ namespace XSharp.LanguageService
             public string Label { get; set; }
             public int Glyph { get; set; }
             public DROPDOWNFONTATTR FontAttr { get; set; }
-            public XEntityDefinition Entity { get; set; }
-            internal XDropDownMember(string label, TextSpan span, int glyph, DROPDOWNFONTATTR fontAttribute, XEntityDefinition element)
+            public XSourceEntity Entity { get; set; }
+            internal XDropDownMember(string label, TextSpan span, int glyph, DROPDOWNFONTATTR fontAttribute, XSourceEntity element)
             {
                 Label = label;
                 Span = span;

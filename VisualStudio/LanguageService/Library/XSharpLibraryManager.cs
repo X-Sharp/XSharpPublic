@@ -434,7 +434,7 @@ namespace XSharp.LanguageService
             }
         }
 
-        private void addNamespace(XTypeDefinition xType, XSharpLibraryProject prjNode, XSharpModuleId moduleId)
+        private void addNamespace(XSourceTypeSymbol xType, XSharpLibraryProject prjNode, XSharpModuleId moduleId)
         {
             string nodeName = xType.Name;
             XSharpLibraryNode node;
@@ -462,7 +462,7 @@ namespace XSharp.LanguageService
             return ;
         }
 
-        private void addType(XTypeDefinition xType, XSharpLibraryProject prjNode, XSharpModuleId moduleId)
+        private void addType(XSourceTypeSymbol xType, XSharpLibraryProject prjNode, XSharpModuleId moduleId)
         {
             LibraryNode nsNode;
             XSharpLibraryNode newNode;
@@ -531,7 +531,7 @@ namespace XSharp.LanguageService
                 //
                 var elements = XDbResultHelpers.BuildTypesInFile(file, namespaces);
                 // First search for NameSpaces
-                foreach (XTypeDefinition xType in elements)
+                foreach (XSourceTypeSymbol xType in elements)
                 {
 
                     if (xType.Kind == Kind.Namespace)
@@ -549,7 +549,7 @@ namespace XSharp.LanguageService
                 elements = XDbResultHelpers.BuildFullTypesInFile(file, types);
                 model.FileWalkComplete += OnFileWalkComplete;
                 // Now, look for Classes
-                foreach (XTypeDefinition xType in elements)
+                foreach (XSourceTypeSymbol xType in elements)
                 {
                     if ((xType.Kind.IsType()))
                     {
@@ -576,7 +576,7 @@ namespace XSharp.LanguageService
 
                 // Finally, any Function/Procedure ??
                 var funcs = XSharpModel.XDatabase.GetFunctions(file.Id.ToString());
-                IList<XMemberDefinition> elts;
+                IList<XSourceMemberSymbol> elts;
                 if (funcs != null)
                 {
                     elts = XDbResultHelpers.BuildFullFuncsInFile(file, funcs);
@@ -590,13 +590,13 @@ namespace XSharp.LanguageService
             }
         }
 
-        private void CreateGlobalTree(LibraryNode globalScope, IList<XMemberDefinition> XMembers, XSharpModuleId moduleId)
+        private void CreateGlobalTree(LibraryNode globalScope, IList<XSourceMemberSymbol> XMembers, XSharpModuleId moduleId)
         {
             if (XSolution.IsClosing)
             {
                 return;
             }
-            foreach (XMemberDefinition member in XMembers)
+            foreach (XSourceMemberSymbol member in XMembers)
             {
                 XSharpLibraryNode newNode = new XSharpLibraryNode(member, "", moduleId.Hierarchy, moduleId.ItemID);
                 // Functions ?
@@ -609,14 +609,14 @@ namespace XSharp.LanguageService
             }
         }
 
-        private void CreateMembersTree(LibraryNode current, XTypeDefinition scope, XSharpModuleId moduleId)
+        private void CreateMembersTree(LibraryNode current, XSourceTypeSymbol scope, XSharpModuleId moduleId)
         {
             if (null == scope || XSolution.IsClosing)
             {
                 return;
             }
 
-            foreach (XMemberDefinition member in scope.Members)
+            foreach (XSourceMemberSymbol member in scope.Members)
             {
                 if (member.File.FullPath != moduleId.Path)
                     continue;

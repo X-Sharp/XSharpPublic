@@ -30,7 +30,7 @@ namespace XSharp.CodeDom
             Type = null;
             TypeName = typeName;
         }
-        internal XMemberType(string name, MemberTypes memberType, bool inherited, IXType type, string typeName)
+        internal XMemberType(string name, MemberTypes memberType, bool inherited, IXTypeSymbol type, string typeName)
         {
             Name = name;
             MemberType = memberType;
@@ -46,7 +46,7 @@ namespace XSharp.CodeDom
 
         internal string Name { get; private set; }
         internal MemberTypes MemberType { get; private set; }
-        internal IXType Type { get; private set; }
+        internal IXTypeSymbol Type { get; private set; }
         internal string TypeName { get; private set; }
         internal bool Inherited { get; private set; }
 
@@ -648,9 +648,9 @@ namespace XSharp.CodeDom
             }
             return expr;
         }
-        private IXType findType(CodeExpression expr)
+        private IXTypeSymbol findType(CodeExpression expr)
         {
-            IXType type;
+            IXTypeSymbol type;
             if (expr is CodeFieldReferenceExpression)
             {
                 var cfr = expr as CodeFieldReferenceExpression;

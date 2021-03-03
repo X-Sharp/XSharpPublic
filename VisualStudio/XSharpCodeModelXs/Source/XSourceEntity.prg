@@ -11,17 +11,15 @@ USING System.Linq
 USING LanguageService.CodeAnalysis.XSharp
 
 BEGIN NAMESPACE XSharpModel
-   
+
+    /// <summary>An entity in a source file. </summary>
    [DebuggerDisplay("{Kind}, {Name,nq}")];
-   CLASS XEntityDefinition INHERIT XSourceElement IMPLEMENTS IXEntity
+   CLASS XSourceEntity INHERIT XSourceSymbol IMPLEMENTS IXSymbol, IXSourceSymbol
       #region Simple Properties
       
       PROPERTY FullName                AS STRING            GET SELF:Name
       PROPERTY Namespace               AS STRING            AUTO
 
-      PROPERTY IsArray                 AS LOGIC             AUTO
-      PROPERTY IsStatic                AS LOGIC             AUTO GET PROTECTED SET
-      
       PROPERTY ParentName              AS STRING            GET SELF:Parent?:FullName
       PROPERTY ComboPrototype          AS STRING            GET SELF:FullName 
       PROPERTY Prototype               AS STRING            GET SELF:FullName
@@ -46,7 +44,7 @@ BEGIN NAMESPACE XSharpModel
       METHOD ForceComplete() AS VOID
          LOCAL parentName AS STRING
          LOCAL thisName AS STRING
-         LOCAL tmp AS XTypeDefinition
+         LOCAL tmp AS XSourceTypeSymbol
                  
          IF SELF:Parent == NULL .AND. ! String.IsNullOrEmpty(SELF:ParentName)
             

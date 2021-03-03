@@ -23,9 +23,9 @@ BEGIN NAMESPACE XSharpModel
         PRIVATE _file       AS XFile
         PRIVATE _prjNode    AS IXSharpProject
         PRIVATE _tokenStream AS ITokenStream
-        PRIVATE _entities   AS IList<XEntityDefinition> 
-        PRIVATE _blocks     AS IList<XBlock>             
-        PRIVATE _locals     AS IList<XVariable>           
+        PRIVATE _entities   AS IList<XSourceEntity> 
+        PRIVATE _blocks     AS IList<XSourceBlock>             
+        PRIVATE _locals     AS IList<XSourceVariableSymbol>           
         PRIVATE _options    AS XSharpParseOptions
             
         #endregion
@@ -39,8 +39,8 @@ BEGIN NAMESPACE XSharpModel
         PROPERTY StartPosition AS INT AUTO
         PROPERTY SourcePath AS STRING AUTO  // Save it because calculation the XAML source path is a bit expensive
         
-        PROPERTY EntityList AS IList<XEntityDefinition> GET _entities
-        PROPERTY BlockList  AS IList<XBlock>   GET _blocks
+        PROPERTY EntityList AS IList<XSourceEntity> GET _entities
+        PROPERTY BlockList  AS IList<XSourceBlock>   GET _blocks
         PROPERTY File AS XFile GET _file
         
         #endregion
@@ -54,9 +54,9 @@ BEGIN NAMESPACE XSharpModel
                 SELF:SourcePath := SELF:_file:SourcePath
                 SELF:_options   := SELF:_file:Project:ParseOptions
                 SELF:_errors   := List<XError>{} 
-                SELF:_entities := List<XEntityDefinition>{}  
-                SELF:_blocks   := List<XBlock>{}             
-                SELF:_locals   := List<XVariable>{}          
+                SELF:_entities := List<XSourceEntity>{}  
+                SELF:_blocks   := List<XSourceBlock>{}             
+                SELF:_locals   := List<XSourceVariableSymbol>{}          
                 
             ENDIF
         
@@ -95,13 +95,13 @@ BEGIN NAMESPACE XSharpModel
             WriteOutputMessage("<<-- Lex() "+SELF:SourcePath)
             RETURN stream
             
-        METHOD ParseLocals(source AS STRING, xmember AS XMemberDefinition) AS List<IXSourceVariable>
+        METHOD ParseLocals(source AS STRING, xmember AS XSourceMemberSymbol) AS List<XSourceVariableSymbol>
             // This is JUST the source of the method. The locations in the variables need to be adjusted
             
             VAR owner := xmember:Parent
             VAR startLine := xmember:Range:StartLine 
             VAR startIndex := xmember:Interval:Start+1
-            IF owner IS XTypeDefinition VAR td .AND. td:Name != XLiterals.GlobalName .AND. td:Kind == Kind.Class
+            IF owner IS XSourceTypeSymbol VAR td .AND. td:Name != XLiterals.GlobalName .AND. td:Kind == Kind.Class
                 source := td:SourceCode + e"\r\n" + source
                 startLine   -= 1        
                 startIndex  -= (td:SourceCode:Length +2)
@@ -114,7 +114,7 @@ BEGIN NAMESPACE XSharpModel
                 ENDIF
             ENDIF         
             SELF:Parse(source, TRUE)         
-            VAR result := List<IXSourceVariable>{}
+            VAR result := List<XSourceVariableSymbol>{}
             FOREACH VAR xVar IN SELF:_locals
                 xVar:Range     := xVar:Range:AddLine(startLine)
                 xVar:Interval  := xVar:Interval:AddPos(startIndex)

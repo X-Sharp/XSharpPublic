@@ -159,7 +159,7 @@ namespace XSharp.LanguageService
         }
 
 
-        internal XSharpLibraryNode(XEntityDefinition entity, string namePrefix, IVsHierarchy hierarchy, uint itemId)
+        internal XSharpLibraryNode(XSourceEntity entity, string namePrefix, IVsHierarchy hierarchy, uint itemId)
             : base(String.IsNullOrEmpty(entity.FullName) ? namePrefix : entity.FullName)
         {
             kind = entity.Kind;
@@ -579,22 +579,22 @@ namespace XSharp.LanguageService
             pbstrText = descText;
         }
 
-        private void initText(XEntityDefinition member)
+        private void initText(XSourceEntity member)
         {
             string descText = this.Name;
             //
             if (member != null)
             {
-                if (member.Parent is XTypeDefinition)
+                if (member.Parent is XSourceTypeSymbol)
                 {
-                    nameSpace = ((XTypeDefinition)member.Parent).Namespace;
-                    className = ((XTypeDefinition)member.Parent).Name;
+                    nameSpace = ((XSourceTypeSymbol)member.Parent).Namespace;
+                    className = ((XSourceTypeSymbol)member.Parent).Name;
                 }
                 //
                 descText = member.Name;
-                if (member is XMemberDefinition)
+                if (member is XSourceMemberSymbol)
                 {
-                    var tm = member as XMemberDefinition;
+                    var tm = member as XSourceMemberSymbol;
                     descText = tm.Kind == Kind.Constructor ? CONSTRUCTOR : member.Name;
                     if (tm.Kind.HasParameters())
                     {
@@ -608,9 +608,9 @@ namespace XSharp.LanguageService
                         descText +=  tm.Kind == Kind.Constructor ? "}" : ") ";
                     }
                 }
-                else if (member is XTypeDefinition)
+                else if (member is XSourceTypeSymbol)
                 {
-                    var tm = member as XTypeDefinition;
+                    var tm = member as XSourceTypeSymbol;
                     if ((tm.Kind == Kind.Namespace) && (String.IsNullOrEmpty(descText)))
                     {
                         descText = DEFAULTNAMESPACE;
@@ -642,7 +642,7 @@ namespace XSharp.LanguageService
             return new Tuple<string, VSOBDESCRIPTIONSECTION>(item1, item2);
         }
 
-        private void initDescription(XEntityDefinition member) //, _VSOBJDESCOPTIONS flags, IVsObjectBrowserDescription3 description)
+        private void initDescription(XSourceEntity member) //, _VSOBJDESCOPTIONS flags, IVsObjectBrowserDescription3 description)
         {
             description = new List<Tuple<string, VSOBDESCRIPTIONSECTION>>();
             string descText ;
@@ -650,12 +650,12 @@ namespace XSharp.LanguageService
             {
                 string modifier = "";
                 string access = "";
-                if ((member is XTypeDefinition) && (member.Kind != Kind.Namespace))
+                if ((member is XSourceTypeSymbol) && (member.Kind != Kind.Namespace))
                 {
                     modifier = member.Modifiers.ToDisplayString() ;
                     access = member.Visibility.ToDisplayString() ;
                 }
-                else if ((member is XMemberDefinition) && ((member.Kind != Kind.Function) && (member.Kind != Kind.Procedure)))
+                else if ((member is XSourceMemberSymbol) && ((member.Kind != Kind.Function) && (member.Kind != Kind.Procedure)))
                 {
                     modifier = member.Modifiers.ToDisplayString();
                     access = member.Visibility.ToDisplayString() ;
@@ -691,18 +691,18 @@ namespace XSharp.LanguageService
                 {
                     descText = "(";
                     description.Add(item(descText, VSOBDESCRIPTIONSECTION.OBDS_MISC));
-                    XMemberDefinition realmember;
-                    XTypeDefinition type = member as XTypeDefinition;
+                    XSourceMemberSymbol realmember;
+                    XSourceTypeSymbol type = member as XSourceTypeSymbol;
                     if (member.Kind == Kind.Delegate && type?.XMembers.Count > 0)
                         realmember = type.XMembers[0] ;
                     else
-                        realmember = member as XMemberDefinition;
+                        realmember = member as XSourceMemberSymbol;
 
                     if (realmember != null && realmember.HasParameters)
                     {
                         //
                         int paramNum = 1;
-                        foreach (XVariable param in realmember.Parameters)
+                        foreach (var param in realmember.Parameters)
                         {
                             descText = param.Name;
                             description.Add(item(descText, VSOBDESCRIPTIONSECTION.OBDS_PARAM));
@@ -739,14 +739,14 @@ namespace XSharp.LanguageService
                 string summary=null, returns=null, remarks=null;
                 List<string> pNames = new List<string>();
                 List<string> pDescriptions = new List<string>();
-                if (member is XMemberDefinition)
+                if (member is XSourceMemberSymbol)
                 {
-                    summary = XSharpXMLDocMember.GetMemberSummary((XMemberDefinition)member, member.File?.Project, out returns, out remarks);
-                    XSharpXMLDocMember.GetMemberParameters((XMemberDefinition)member, member.File?.Project, pNames, pDescriptions);
+                    summary = XSharpXMLDocMember.GetMemberSummary((XSourceMemberSymbol)member, member.File?.Project, out returns, out remarks);
+                    XSharpXMLDocMember.GetMemberParameters((XSourceMemberSymbol)member, member.File?.Project, pNames, pDescriptions);
                 }
-                else if ( member is XTypeDefinition)
+                else if ( member is XSourceTypeSymbol)
                 {
-                    summary = XSharpXMLDocMember.GetTypeSummary((XTypeDefinition)member, member.File?.Project, out returns, out remarks);
+                    summary = XSharpXMLDocMember.GetTypeSummary((XSourceTypeSymbol)member, member.File?.Project, out returns, out remarks);
                 }
                 if (!string.IsNullOrEmpty(summary))
                 {

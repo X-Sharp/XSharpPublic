@@ -12,7 +12,7 @@ USING LanguageService.SyntaxTree
 BEGIN NAMESPACE XSharpModel
      // an entity in the source code
     [DebuggerDisplay("{Kind}, {Name,nq}")];
-    CLASS XElement IMPLEMENTS IXElement
+    CLASS XSymbol IMPLEMENTS IXSymbol
       PROPERTY Kind        AS Kind         AUTO GET INTERNAL SET
       PROPERTY Name        AS STRING       AUTO GET INTERNAL SET
       PROPERTY Attributes  AS Modifiers    AUTO GET INTERNAL SET
@@ -32,7 +32,14 @@ BEGIN NAMESPACE XSharpModel
       PROPERTY VisibilityKeyword			AS STRING   GET SELF:Visibility:ToDisplayString()
       PROPERTY KindKeyword				   AS STRING   GET SELF:Kind:ToDisplayString()
       PROPERTY TypeName                AS STRING   AUTO
-      PROPERTY Parent                  AS IXEntity AUTO
+      PROPERTY Parent                  AS IXSymbol AUTO
+      PROPERTY Description             AS STRING AUTO
+      PROPERTY Prototype               AS STRING GET ""
+      PROPERTY IsStatic                AS LOGIC AUTO 
+      PROPERTY IsArray                 AS LOGIC AUTO
+      PROPERTY Namespace  AS STRING AUTO
+      PROPERTY FullName   AS STRING GET Name
+            
       CONSTRUCTOR(name AS STRING, kind AS Kind, attributes as Modifiers)
          SELF:Name       := name
          SELF:Kind       := kind
@@ -40,9 +47,9 @@ BEGIN NAMESPACE XSharpModel
          if SELF:Visibility == Modifiers.None
             attributes |= Modifiers.Public
          endif
-
+      METHOD ForceComplete() AS VOID
+            RETURN
     END CLASS
 END NAMESPACE      
       
  
-      

@@ -11,42 +11,42 @@ USING System.Linq
 BEGIN NAMESPACE XSharpModel
    
    STATIC CLASS XTypeExtensions
-      STATIC METHOD GetDescription(SELF type as IXType) AS STRING
+      STATIC METHOD GetDescription(SELF type as IXTypeSymbol) AS STRING
          VAR modVis := type:ModVis
          IF  type:IsStatic
             modVis += "STATIC "
          ENDIF
          RETURN modVis + type:Kind:ToString() + " " + type:Prototype
       
-      STATIC METHOD GetFullName(SELF type as IXType) AS STRING
+      STATIC METHOD GetFullName(SELF type as IXTypeSymbol) AS STRING
          IF ! String.IsNullOrEmpty(type:Namespace) .AND. type:Kind != Kind.Namespace
             var result := type:Namespace + "." + type:Name
             return result            
          ENDIF
          RETURN type:Name
       
-      STATIC METHOD GetMethods(SELF type as IXType) AS IXMember[]
+      STATIC METHOD GetMethods(SELF type as IXTypeSymbol) AS IXMemberSymbol[]
          return type:Members:Where( { m => m.Kind:IsMethod() }):ToArray()
          
-      STATIC METHOD GetFields(SELF type as IXType) AS IXMember[]
+      STATIC METHOD GetFields(SELF type as IXTypeSymbol) AS IXMemberSymbol[]
          return type:Members:Where( { m => m.Kind:IsField()}):ToArray()
          
-      STATIC METHOD GetEvents(SELF type as IXType) AS IXMember[]
+      STATIC METHOD GetEvents(SELF type as IXTypeSymbol) AS IXMemberSymbol[]
          return type:Members:Where( { m => m.Kind == Kind.Event}):ToArray()
          
-      STATIC METHOD GetProperties(SELF type as IXType) AS IXMember[]
+      STATIC METHOD GetProperties(SELF type as IXTypeSymbol) AS IXMemberSymbol[]
          return type:Members:Where( { m => m.Kind:IsProperty()}):ToArray()
          
-      STATIC METHOD GetMethods(SELF type AS IXType, strName AS STRING) AS IXMember[]
+      STATIC METHOD GetMethods(SELF type AS IXTypeSymbol, strName AS STRING) AS IXMemberSymbol[]
          RETURN type:GetMembers(strName, TRUE):Where( { m=> m.Kind:IsMethod()}):ToArray()
          
-      STATIC METHOD GetProperties(SELF type as IXType, strName as STRING) AS IXMember[]
+      STATIC METHOD GetProperties(SELF type as IXTypeSymbol, strName as STRING) AS IXMemberSymbol[]
          RETURN type:GetMembers(strName, TRUE):Where( { m=> m.Kind:IsProperty()}):ToArray()
          
-      STATIC METHOD GetFields(SELF type AS IXType, strName AS STRING) AS IXMember[]
+      STATIC METHOD GetFields(SELF type AS IXTypeSymbol, strName AS STRING) AS IXMemberSymbol[]
          RETURN type:GetMembers(strName, TRUE):Where( { m=> m.Kind:IsField()}):ToArray()
          
-      STATIC METHOD GetXmlSignature(SELF tm as IXType) AS STRING
+      STATIC METHOD GetXmlSignature(SELF tm as IXTypeSymbol) AS STRING
          // todo: need to handle type parameters !
          RETURN "T:"+tm:FullName
          

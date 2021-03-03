@@ -12,12 +12,12 @@ USING LanguageService.CodeAnalysis.XSharp
 
 BEGIN NAMESPACE XSharpModel
    
-   ENUM KeywordCase
-      MEMBER None := 0
-      MEMBER Upper := 1
-      MEMBER Lower := 2
-      MEMBER Title := 3
-   END ENUM
+    ENUM KeywordCase
+        MEMBER None := 0
+        MEMBER Upper:= 1
+        MEMBER Lower:= 2
+        MEMBER Title:= 3
+    END ENUM
    STATIC CLASS XLiterals
    STATIC CONSTRUCTOR
        // 0 : none; 1 : UPPER; 2 : lower; 3 : TitleCase

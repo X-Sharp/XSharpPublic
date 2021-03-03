@@ -381,7 +381,10 @@ namespace Microsoft.VisualStudio.Project
             // IMPORTANT NOTE: This code will be called when a parent folder is renamed. As such, it is
             //                 expected that we can be called with a label which is the same as the current
             //                 label and this should not be considered a NO-OP.
-
+            if (! CanRenameItem())
+            {
+                return VSConstants.E_FAIL;
+            }
             if (this.ProjectMgr == null || this.ProjectMgr.IsClosed)
             {
                 return VSConstants.E_FAIL;
@@ -479,6 +482,10 @@ namespace Microsoft.VisualStudio.Project
         /// </summary>
         protected internal override int SetEditLabel(string label, string relativePath)
         {
+            if (! CanRenameItem())
+            {
+                return VSConstants.S_FALSE;
+            }
             int returnValue = VSConstants.S_OK;
             uint oldId = this.ID;
             string strSavePath = Path.GetDirectoryName(relativePath);
@@ -494,7 +501,7 @@ namespace Microsoft.VisualStudio.Project
             if (NativeMethods.IsSamePath(newName, this.Url))
             {
                 // If this is really a no-op, then nothing to do
-                if (String.Compare(newName, this.Url, StringComparison.Ordinal) == 0)
+                if (string.Compare(newName, this.Url, StringComparison.Ordinal) == 0)
                     return VSConstants.S_FALSE;
             }
             else

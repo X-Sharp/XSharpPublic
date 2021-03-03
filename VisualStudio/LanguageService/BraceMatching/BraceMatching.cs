@@ -178,7 +178,7 @@ namespace XSharp.LanguageService.Editors.BraceMatching
                     {
                         // get source from the start of the file until the current entity
                         var xfile = SourceBuffer.GetFile();
-                        var member = XSharpTokenTools.FindMemberAtPosition(ssp.Position, xfile);
+                        var member = XSharpLookup.FindMemberAtPosition(ssp.Position, xfile);
                         if (member != null)
                         {
                             try

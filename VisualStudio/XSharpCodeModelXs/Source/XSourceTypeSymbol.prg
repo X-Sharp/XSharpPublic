@@ -15,18 +15,18 @@ BEGIN NAMESPACE XSharpModel
       /// Model for Namespace, Class, Interface, Structure, Enum
    /// </summary>
    [DebuggerDisplay("{ToString(),nq}")];
-   CLASS XTypeDefinition INHERIT XEntityDefinition IMPLEMENTS IXType
+   CLASS XSourceTypeSymbol INHERIT XSourceEntity IMPLEMENTS IXTypeSymbol
       PRIVATE _isPartial      AS LOGIC
-      PRIVATE _members        AS IList<XMemberDefinition>
-      PRIVATE _children       AS List<XTypeDefinition>
+      PRIVATE _members        AS IList<XSourceMemberSymbol>
+      PRIVATE _children       AS List<XSourceTypeSymbol>
       PRIVATE _signature      AS XTypeSignature
       PRIVATE _isClone        AS LOGIC
       PROPERTY SourceCode     AS STRING AUTO      
       
       CONSTRUCTOR(name AS STRING, kind AS Kind, attributes AS Modifiers, span AS TextRange, position AS TextInterval, oFile AS XFile)
          SUPER(name, kind, attributes, span, position)
-         SELF:_members     := List<XMemberDefinition>{}
-         SELF:_children    := List<XTypeDefinition>{}
+         SELF:_members     := List<XSourceMemberSymbol>{}
+         SELF:_children    := List<XSourceTypeSymbol>{}
          SELF:_signature   := XTypeSignature{""}
          SELF:ClassType    := XSharpDialect.Core
          SELF:Namespace    := ""
@@ -42,7 +42,7 @@ BEGIN NAMESPACE XSharpModel
             /// Duplicate the current Object, so we have the same properties in another object
             /// </summary>
          /// <returns></returns>
-      CONSTRUCTOR( oOther AS XTypeDefinition)
+      CONSTRUCTOR( oOther AS XSourceTypeSymbol)
          SELF(oOther:Name, oOther:Kind, oOther:Attributes, oOther:Range, oOther:Interval, oOther:File)
          SELF:Parent    := oOther:Parent
          SELF:BaseType  := oOther:BaseType
@@ -53,20 +53,20 @@ BEGIN NAMESPACE XSharpModel
          SELF:_isClone  := TRUE
          RETURN
          
-      METHOD AddChild(oChild AS XTypeDefinition) AS VOID
+      METHOD AddChild(oChild AS XSourceTypeSymbol) AS VOID
          BEGIN LOCK SELF:_children
             SELF:_children:Add(oChild)
             oChild:Parent := SELF
          END LOCK
          
-      METHOD AddMember(oMember AS XMemberDefinition) AS VOID
+      METHOD AddMember(oMember AS XSourceMemberSymbol) AS VOID
          BEGIN LOCK SELF:_members
             SELF:_members:Add(oMember)
             oMember:Parent := SELF
              
          END LOCK
          
-      METHOD AddMembers(members AS IEnumerable<XMemberDefinition>) AS VOID
+      METHOD AddMembers(members AS IEnumerable<XSourceMemberSymbol>) AS VOID
          BEGIN LOCK SELF:_members
             FOREACH VAR oMember IN members
                SELF:_members:Add(oMember)
@@ -97,7 +97,7 @@ BEGIN NAMESPACE XSharpModel
       METHOD ClearMembers() AS VOID
          SELF:_members:Clear()
 
-      PROPERTY Members AS IList<IXMember>  
+      PROPERTY Members AS IList<IXMemberSymbol>  
          GET
             BEGIN LOCK SELF:_members
                RETURN SELF:_members:ToArray()
@@ -105,7 +105,7 @@ BEGIN NAMESPACE XSharpModel
          END GET
       END PROPERTY
       
-      PROPERTY XMembers AS IList<XMemberDefinition>
+      PROPERTY XMembers AS IList<XSourceMemberSymbol>
          GET
             BEGIN LOCK SELF:_members
                RETURN SELF:_members:ToArray()
@@ -113,8 +113,8 @@ BEGIN NAMESPACE XSharpModel
          END GET
       END PROPERTY
       
-      METHOD GetMembers(elementName AS STRING) AS IList<IXMember>
-         VAR tempMembers := List<IXMember>{}
+      METHOD GetMembers(elementName AS STRING) AS IList<IXMemberSymbol>
+         VAR tempMembers := List<IXMemberSymbol>{}
          if ! String.IsNullOrEmpty(elementName)
             tempMembers:AddRange(SELF:_members:Where({ m => m.Name:StartsWith(elementName, StringComparison.OrdinalIgnoreCase)} ))
          ELSE
@@ -122,9 +122,9 @@ BEGIN NAMESPACE XSharpModel
          ENDIF
          RETURN tempMembers
 
-      METHOD GetMembers(elementName AS STRING, lExact as LOGIC) AS IList<IXMember>
+      METHOD GetMembers(elementName AS STRING, lExact as LOGIC) AS IList<IXMemberSymbol>
          IF lExact
-            VAR result := List<IXMember>{}
+            VAR result := List<IXMemberSymbol>{}
             result:AddRange(SELF:_members:Where ({ m => m.Name:Equals(elementName, StringComparison.OrdinalIgnoreCase)} ))
             RETURN result
          ELSE
@@ -148,13 +148,13 @@ BEGIN NAMESPACE XSharpModel
       PROPERTY IsGeneric as LOGIC   GET SELF:TypeName:EndsWith(">")
       
       /// <summary>
-         /// Merge two XTypeDefinition Objects : Used to create the resulting  XTypeDefinition from 2 or more partial classes
+         /// Merge two XSourceTypeSymbol Objects : Used to create the resulting  XSourceTypeSymbol from 2 or more partial classes
          /// </summary>
       /// <param name="otherType"></param>
-      METHOD Merge(otherType AS XTypeDefinition) AS XTypeDefinition
-         LOCAL clone AS XTypeDefinition
+      METHOD Merge(otherType AS XSourceTypeSymbol) AS XSourceTypeSymbol
+         LOCAL clone AS XSourceTypeSymbol
          IF ! self:_isClone
-            clone := XTypeDefinition{SELF}
+            clone := XSourceTypeSymbol{SELF}
          ELSE
             clone := SELF
          ENDIF
@@ -176,11 +176,11 @@ BEGIN NAMESPACE XSharpModel
          RETURN clone
          
       /// <summary>
-      /// If this XTypeDefinition is a Partial type, return a Copy of it, merged with all other informations
+      /// If this XSourceTypeSymbol is a Partial type, return a Copy of it, merged with all other informations
       /// coming from other files.
       /// </summary>
          
-      PROPERTY Clone AS XTypeDefinition
+      PROPERTY Clone AS XSourceTypeSymbol
          GET
             IF SELF:IsPartial .AND. SELF:File != NULL
                RETURN SUPER:File:Project:Lookup(SELF:FullName, SELF:File:Usings:ToArray())
@@ -193,18 +193,18 @@ BEGIN NAMESPACE XSharpModel
       PROPERTY ComboPrototype    AS STRING GET SELF:FullName
       PROPERTY Description       AS STRING GET SELF:GetDescription()
       PROPERTY IsPartial         AS LOGIC  GET SELF:_isPartial SET SELF:_isPartial := VALUE
-      PROPERTY IsNested          AS LOGIC  GET SELF:Parent IS XTypeDefinition
+      PROPERTY IsNested          AS LOGIC  GET SELF:Parent IS XSourceTypeSymbol
       PROPERTY ClassType         AS XSharpDialect AUTO
       
-      STATIC METHOD CreateGlobalType(xfile AS XFile) AS XTypeDefinition
-         VAR globalType := XTypeDefinition{XLiterals.GlobalName, Kind.Class, Modifiers.Public+Modifiers.Static, TextRange{0, 0, 0, 0}, TextInterval{}, xfile}
+      STATIC METHOD CreateGlobalType(xfile AS XFile) AS XSourceTypeSymbol
+         VAR globalType := XSourceTypeSymbol{XLiterals.GlobalName, Kind.Class, Modifiers.Public+Modifiers.Static, TextRange{0, 0, 0, 0}, TextInterval{}, xfile}
          globalType:IsPartial:=TRUE
          RETURN globalType
       
-      STATIC METHOD IsGlobalType(type AS IXEntity) AS LOGIC
-         RETURN type != NULL .AND. type is IXType .and. type:Name == XLiterals.GlobalName
+      STATIC METHOD IsGlobalType(type AS IXSymbol) AS LOGIC
+         RETURN type != NULL .AND. type is IXTypeSymbol .and. type:Name == XLiterals.GlobalName
       
-      PROPERTY Children   AS IList<IXType> 
+      PROPERTY Children   AS IList<IXTypeSymbol> 
          GET 
             BEGIN LOCK SELF:_children
                return SELF:_children:ToArray()
@@ -212,7 +212,7 @@ BEGIN NAMESPACE XSharpModel
          END GET
       END PROPERTY
       
-      PROPERTY XChildren   AS IList<XTypeDefinition>  
+      PROPERTY XChildren   AS IList<XSourceTypeSymbol>  
          GET 
             BEGIN LOCK SELF:_children
                return SELF:_children:ToArray()

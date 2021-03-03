@@ -25,7 +25,7 @@ namespace XSharp.CodeDom
         protected CodeTypeDeclaration _typeInOtherFile = null;
 
         protected IProjectTypeHelper _projectNode;
-        private Dictionary<string, IXType> _types;    // type cache
+        private Dictionary<string, IXTypeSymbol> _types;    // type cache
         private List<string> _usings;          // uses for type lookup
         protected IList<IToken> _tokens;          // used to find comments
 
@@ -33,7 +33,7 @@ namespace XSharp.CodeDom
         internal string SourceCode { get; set; }
         internal string CurrentFile { get; set; }
         const string SnippetsTxt = @"D:\Snippets.txt";
-        protected IDictionary<string, IXType> _locals;          // used to keep track of local vars
+        protected IDictionary<string, IXTypeSymbol> _locals;          // used to keep track of local vars
 
         protected CodeExpression BuildSnippetExpression(String txt)
         {
@@ -49,9 +49,9 @@ namespace XSharp.CodeDom
         {
             FieldList = new Dictionary<ParserRuleContext, List<XCodeMemberField>>();
             _projectNode = projectNode;
-            this._types = new Dictionary<string, IXType>(StringComparer.OrdinalIgnoreCase);
+            this._types = new Dictionary<string, IXTypeSymbol>(StringComparer.OrdinalIgnoreCase);
             this._usings = new List<string>();
-            this._locals = new Dictionary<string, IXType>(StringComparer.OrdinalIgnoreCase);
+            this._locals = new Dictionary<string, IXTypeSymbol>(StringComparer.OrdinalIgnoreCase);
             this._members = new Dictionary<string, XMemberType>(StringComparer.OrdinalIgnoreCase);
             this._typeInOtherFile = otherType;
 
@@ -71,7 +71,7 @@ namespace XSharp.CodeDom
             _members.Clear();
         }
 
-        private bool hasClassMember(IXType type, string name, MemberTypes mtype)
+        private bool hasClassMember(IXTypeSymbol type, string name, MemberTypes mtype)
         {
             if (_members.ContainsKey(name))
             {
@@ -83,12 +83,11 @@ namespace XSharp.CodeDom
                 return false;
             bool result = false;
 
-            IXMember element = type.GetMembers(name, true).FirstOrDefault();
+            var element = type.GetMembers(name, true).FirstOrDefault();
             if (element != null)
             {
-                IXType t = null;
-                var tm = element as IXMember;
-                t = findType(tm.OriginalTypeName);
+                IXTypeSymbol t = null;
+                t = findType(element.OriginalTypeName);
                 var typeName = element.OriginalTypeName;
                 switch (element.Kind)
                 {
@@ -127,7 +126,7 @@ namespace XSharp.CodeDom
 
 
 
-        protected IXType getClassMemberType(string name, MemberTypes memberType)
+        protected IXTypeSymbol getClassMemberType(string name, MemberTypes memberType)
         {
             if (_members.ContainsKey(name))
             {
@@ -456,7 +455,7 @@ namespace XSharp.CodeDom
         {
             var elements = new List<XSharpParser.AccessMemberContext>();
             string typeName;
-            IXType xtype = null;
+            IXTypeSymbol xtype = null;
             // if the top level element has a Dot it may be a type of a field of a type.
             if (amc.Op.Type == XSharpParser.DOT)
             {
@@ -539,7 +538,7 @@ namespace XSharp.CodeDom
             // expr should have a value here
             if (lhs != null)
             {
-                IXType memberType = null;
+                IXTypeSymbol memberType = null;
                 for (int i = 0; i < elements.Count; i++)
                 {
                     amc = elements[i];
@@ -571,7 +570,7 @@ namespace XSharp.CodeDom
             }
             return lhs;
         }
-        private CodeExpression buildTypeMemberExpression(IXType xtype, string name)
+        private CodeExpression buildTypeMemberExpression(IXTypeSymbol xtype, string name)
         {
             var l = new XCodeTypeReferenceExpression(xtype.FullName);
             var members = xtype.GetMembers(name, true);
@@ -603,7 +602,7 @@ namespace XSharp.CodeDom
         }
 
 
-        private CodeExpression buildTypeMemberExpression(CodeExpression target, IXType xtype, string name, out IXType memberType)
+        private CodeExpression buildTypeMemberExpression(CodeExpression target, IXTypeSymbol xtype, string name, out IXTypeSymbol memberType)
         {
             // Special Name ? (Keyword)
             CodeExpression expr = null;
@@ -647,7 +646,7 @@ namespace XSharp.CodeDom
             return expr;
         }
 
-        private CodeExpression buildSelfExpression(CodeExpression target, string name, out IXType memberType)
+        private CodeExpression buildSelfExpression(CodeExpression target, string name, out IXTypeSymbol memberType)
         {
             CodeExpression expr = null;
             memberType = null;
@@ -1555,7 +1554,7 @@ namespace XSharp.CodeDom
 
         }
 
-        protected IXType findInCache(string typeName)
+        protected IXTypeSymbol findInCache(string typeName)
         {
             if (_types.ContainsKey(typeName))
             {
@@ -1582,7 +1581,7 @@ namespace XSharp.CodeDom
             return name;
         }
 
-        protected IXType findType(string typeName, IList<string> usings = null)
+        protected IXTypeSymbol findType(string typeName, IList<string> usings = null)
         {
             typeName = simplifyType(typeName);
             typeName = typeName.GetSystemTypeName(_projectNode.ParseOptions.XSharpRuntime);
@@ -1594,7 +1593,7 @@ namespace XSharp.CodeDom
             {
                 usings = _usings;
             }
-            IXType type;
+            IXTypeSymbol type;
             var myusings = usings.ToArray();
             // this looks up the type in the current project and all the dependent X# projects
             type = _projectNode.ResolveXType(typeName, myusings);
@@ -1612,19 +1611,27 @@ namespace XSharp.CodeDom
         }
 
 
-        protected IXType findParentType(IXType xtype)
+        protected IXTypeSymbol findParentType(IXTypeSymbol xtype)
         {
             var name = simplifyType(xtype.BaseType);
+            IList<string> usings;
+            if (xtype is XSourceTypeSymbol xsts)
+            {
+                usings = xsts.FileUsings;
+            }
+            else
+                usings = new string[]{ };
+
             var result = findInCache(name);
             if (result != null)
                 return result;
-            var xparent = findType(name, xtype.FileUsings);
+            var xparent = findType(name, usings);
             if (xparent != null)
                 return xparent;
             var parent = findType(name);
             if (parent == null)
             {
-                parent = _projectNode.ResolveXType(name, xtype.FileUsings.ToArray());
+                parent = _projectNode.ResolveXType(name, usings.ToArray());
             }
             return parent;
 

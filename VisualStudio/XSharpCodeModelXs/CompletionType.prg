@@ -16,9 +16,9 @@ BEGIN NAMESPACE XSharpModel
 	CLASS CompletionType
 		// Fields
 		PRIVATE _file	  AS XFile
-		PRIVATE _type	  AS IXType
+		PRIVATE _type	  AS IXTypeSymbol
 		PROPERTY IsArray AS LOGIC AUTO
-		PROPERTY InSource as LOGIC GET _type IS XSourceElement
+		PROPERTY InSource as LOGIC GET _type IS XSourceSymbol
       
 
 		// Methods
@@ -28,57 +28,57 @@ BEGIN NAMESPACE XSharpModel
 			SELF:_file := NULL
 
 
-		CONSTRUCTOR(element AS IXEntity, oFile as XFile)
+		CONSTRUCTOR(element AS IXSymbol, oFile as XFile)
 			SELF()
     	   SELF:_file := oFile
- 			IF element IS IXType VAR oType
+ 			IF element IS IXTypeSymbol VAR oType
 				SELF:_type := oType
-			ELSEIF element IS IXMember VAR oMember
+			ELSEIF element IS IXMemberSymbol VAR oMember
 				SELF:CheckType(oMember:TypeName, oMember:Parent:Namespace)
-			ELSEIF element:Parent IS IXType VAR oParent
+			ELSEIF element:Parent IS IXTypeSymbol VAR oParent
 			   SELF:_type := oParent
 			ELSE
-				VAR parent := (IXMember)(element:Parent)
+				VAR parent := (IXMemberSymbol)(element:Parent)
 				IF (parent != NULL)
 					SELF:CheckType(parent:TypeName, parent:Parent:Namespace)
 				ENDIF
          ENDIF
  
-		CONSTRUCTOR(type AS IXType, oFile as XFile)
+		CONSTRUCTOR(type AS IXTypeSymbol, oFile as XFile)
 			SELF()
 			SELF:_type  := type
          SELF:_file  := oFile         
 
-   	CONSTRUCTOR(type AS IXType)
+   	CONSTRUCTOR(type AS IXTypeSymbol)
 			SELF(type, null)
-         if type is XSourceElement VAR xel
+         if type is XSourceSymbol VAR xel
             _file := xel:File
          endif
 
-		CONSTRUCTOR(element AS IXMember)
+		CONSTRUCTOR(element AS IXMemberSymbol)
 			SELF()
-         if element is XSourceElement VAR xel
+         if element is XSourceSymbol VAR xel
 			   SELF:_file := xel:File
          ENDIF
 			IF element:Kind:HasReturnType()
-            if element is XMemberDefinition
+            if element is XSourceMemberSymbol
 				   SELF:CheckType(element:TypeName, element:Parent:Namespace)
             else
-               var entref  := (XMemberReference) element
+               var entref  := (XPEMemberSymbol) element
                var type    := SystemTypeController.FindType(entref:OriginalTypeName, entref:Assembly:FullName)
                _type       := type
             ENDIF
 			ELSE
-				SELF:_type := (IXType) element:Parent
+				SELF:_type := (IXTypeSymbol) element:Parent
 			ENDIF
 
-		CONSTRUCTOR(xvar AS IXVariable, defaultNS AS STRING)
+		CONSTRUCTOR(xvar AS IXVariableSymbol, defaultNS AS STRING)
 			SELF()
-			LOCAL parent AS IXMember
-			parent := (IXMember)(xvar:Parent)
-         IF xvar is XSourceElement var xel
+			LOCAL parent AS IXMemberSymbol
+			parent := (IXMemberSymbol)(xvar:Parent)
+            IF xvar is XSourceSymbol var xel
 			   SELF:_file := xel:File
-         ENDIF
+            ENDIF
 			IF (parent != NULL)
 				IF (! String.IsNullOrEmpty(parent:Parent:Namespace))
 					defaultNS := parent:Parent:Namespace
@@ -97,7 +97,7 @@ BEGIN NAMESPACE XSharpModel
 			SELF:CheckType(typeName, defaultNS)
 
 		PRIVATE METHOD CheckProjectType(typeName AS STRING, xprj AS XProject, usings AS IList<STRING>) AS VOID
-			LOCAL xType AS XTypeDefinition
+			LOCAL xType AS XSourceTypeSymbol
          IF String.IsNullOrEmpty(typeName)
             RETURN
          ENDIF
@@ -107,7 +107,7 @@ BEGIN NAMESPACE XSharpModel
 			ENDIF
 
 		PRIVATE METHOD CheckSystemType(typeName AS STRING, usings AS IList<STRING>) AS VOID
-			LOCAL sType AS XTypeReference
+			LOCAL sType AS XPETypeSymbol
          IF String.IsNullOrEmpty(typeName)
             RETURN
          ENDIF
@@ -158,9 +158,9 @@ BEGIN NAMESPACE XSharpModel
          // Now check all usings
 			SELF:CheckType(typeName, usings)
          
-		INTERNAL METHOD SimpleTypeToSystemType(kw AS STRING) AS IXType
+		INTERNAL METHOD SimpleTypeToSystemType(kw AS STRING) AS IXTypeSymbol
 			LOCAL typeName AS STRING
-			LOCAL sType := NULL AS IXType
+			LOCAL sType := NULL AS IXTypeSymbol
 			//
 			IF (kw != NULL)
 				//
@@ -285,9 +285,9 @@ BEGIN NAMESPACE XSharpModel
 			END GET
 		END PROPERTY
 
-		PROPERTY Type     AS IXType            GET SELF:_type
-		PROPERTY XTypeDef AS XTypeDefinition   GET SELF:_type ASTYPE XTypeDefinition
-      PROPERTY XTypeRef AS XTypeReference    GET SELF:_type ASTYPE XTypeReference
+		PROPERTY Type     AS IXTypeSymbol            GET SELF:_type
+		PROPERTY XTypeDef AS XSourceTypeSymbol   GET SELF:_type ASTYPE XSourceTypeSymbol
+        PROPERTY XTypeRef AS XPETypeSymbol    GET SELF:_type ASTYPE XPETypeSymbol
          
       PROPERTY BaseType as STRING
          GET

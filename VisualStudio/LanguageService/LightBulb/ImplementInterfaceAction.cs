@@ -106,8 +106,8 @@ namespace XSharp.Project.Editors.LightBulb
                 int lineNumber = line.LineNumber;
                 int columnNumber = span.Start.Position - line.Start.Position;
                 //
-                XTypeDefinition classDef = null;
-                foreach (KeyValuePair<String, XTypeDefinition> kvp in file.TypeList)
+                XSourceTypeSymbol classDef = null;
+                foreach (KeyValuePair<String, XSourceTypeSymbol> kvp in file.TypeList)
                 {
                     if (kvp.Value.Range.ContainsInclusive(lineNumber, columnNumber))
                     {
@@ -122,13 +122,13 @@ namespace XSharp.Project.Editors.LightBulb
                     string[] interfaces = { };
                     // Clr Types
                     // Our own types
-                    XTypeDefinition ti = null;
+                    XSourceTypeSymbol ti = null;
                     IList<string> Usings = file.Usings;
                     // Search already implemented Members
                     bool FoundAll = true;
                     string FullName = "";
                     // Let's build a list of Elements to add to implement the Interface
-                    List<XMemberDefinition> toAdd = new List<XMemberDefinition>();
+                    List<XSourceMemberSymbol> toAdd = new List<XSourceMemberSymbol>();
                     CompletionType temp;
                     //
                     foreach (string iface in interfaces)
@@ -147,7 +147,7 @@ namespace XSharp.Project.Editors.LightBulb
                                     FullName = ti.Name;
                                     // Everything is here ?
                                     FoundAll = true;
-                                    foreach (XMemberDefinition mbr in ti.Members)
+                                    foreach (XSourceMemberSymbol mbr in ti.Members)
                                     {
                                         if (!classDef.Members.Contains(mbr))
                                         {
@@ -167,9 +167,9 @@ namespace XSharp.Project.Editors.LightBulb
             return;
         }
 
-        private List<XMemberDefinition> BuildMissingMembers(XTypeDefinition currentClass, System.Reflection.MemberInfo[] members)
+        private List<XSourceMemberSymbol> BuildMissingMembers(XSourceTypeSymbol currentClass, System.Reflection.MemberInfo[] members)
         {
-            List<XMemberDefinition> elementsToAdd = new List<XMemberDefinition>();
+            List<XSourceMemberSymbol> elementsToAdd = new List<XSourceMemberSymbol>();
             //
             foreach (System.Reflection.MemberInfo member in members)
             {
@@ -196,13 +196,13 @@ namespace XSharp.Project.Editors.LightBulb
             return elementsToAdd;
         }
 
-        private XMemberDefinition CreateMember(MemberInfo member, MemberInfo[] members)
+        private XSourceMemberSymbol CreateMember(MemberInfo member, MemberInfo[] members)
         {
             // NOOooooo
             return null;
         }
 
-        private bool CheckForMember(XTypeDefinition currentClass, MemberInfo member)
+        private bool CheckForMember(XSourceTypeSymbol currentClass, MemberInfo member)
         {
             return true;
         }

@@ -217,13 +217,12 @@ namespace XSharp.LanguageService
                 m_applicableToSpan = m_textBuffer.CurrentSnapshot.CreateTrackingSpan(new Span(start, length), SpanTrackingMode.EdgeInclusive, 0);
 
                 object elt = session.Properties.GetProperty(SignatureProperties.Element);
-                if (elt is IXElement)
+                if (elt is IXSymbol)
                 {
-                    IXMember element = elt as IXMember;
+                    IXMemberSymbol element = elt as IXMemberSymbol;
                     //
-                    if (elt is IXMember)
+                    if (elt is IXMemberSymbol xMember)
                     {
-                        IXMember xMember = elt as IXMember;
                         var names = new List<string>();
                         var proto = xMember.Prototype;
                         names.Add(proto);
@@ -273,7 +272,7 @@ namespace XSharp.LanguageService
 
  
 
-        private XSharpVsSignature CreateSignature(ITextBuffer textBuffer, IXMember member, string methodSig, ITrackingSpan span, bool isCtor, XFile file )
+        private XSharpVsSignature CreateSignature(ITextBuffer textBuffer, IXMemberSymbol member, string methodSig, ITrackingSpan span, bool isCtor, XFile file )
         {
             var doc = "";
             string returns;

@@ -255,19 +255,19 @@ BEGIN NAMESPACE XSharpModel
                   ENDIF
                NEXT
                IF loaded:Count > 0
-                  FOREACH path AS STRING IN loaded
-                     IF SELF:_unprocessedAssemblyReferences:Contains(path)
-                        SELF:_unprocessedAssemblyReferences:Remove(path)
-                     ENDIF
-                  NEXT
-                  SELF:_clearTypeCache()
+               FOREACH path AS STRING IN loaded
+                  IF SELF:_unprocessedAssemblyReferences:Contains(path)
+                     SELF:_unprocessedAssemblyReferences:Remove(path)
+                  ENDIF
+               NEXT
+               SELF:_clearTypeCache()
                ENDIF
                SELF:ProjectNode:SetStatusBarText("")
             ENDIF
             RETURN
          
          METHOD ResolveReferences() AS VOID
-            IF SELF:hasUnprocessedReferences
+            IF SELF:hasUnprocessedReferences 
                 var now := DateTime.Now
                 LOCAL diff := now - SELF:_lastRefCheck as TimeSpan
                 if diff:Seconds < 5
@@ -628,11 +628,11 @@ BEGIN NAMESPACE XSharpModel
          #endregion
       
       #region Lookup Types and Functions
-      METHOD FindGlobalMembersInAssemblyReferences(name AS STRING) AS IList<IXMember>
+      METHOD FindGlobalMembersInAssemblyReferences(name AS STRING) AS IList<IXMemberSymbol>
         IF XSettings.EnableTypelookupLog
             WriteOutputMessage(i"FindGlobalMembersInAssemblyReferences {name} ")
         ENDIF
-         VAR result := List<IXMember>{}
+         VAR result := List<IXMemberSymbol>{}
          FOREACH VAR asm IN AssemblyReferences:ToArray()
             IF !String.IsNullOrEmpty(asm:GlobalClassName)
                VAR type := asm:GetType(asm.GlobalClassName)
@@ -651,7 +651,7 @@ BEGIN NAMESPACE XSharpModel
          
       
       
-      METHOD FindFunction(name AS STRING, lRecursive := TRUE AS LOGIC) AS IXMember
+      METHOD FindFunction(name AS STRING, lRecursive := TRUE AS LOGIC) AS IXMemberSymbol
          // we look in the project references and assembly references
          // pass the list of ProjectIds and AssemblyIds to the database engine
         IF XSettings.EnableTypelookupLog
@@ -669,7 +669,7 @@ BEGIN NAMESPACE XSharpModel
          ENDIF
          RETURN xmember
          
-      METHOD FindGlobalOrDefine(name AS STRING, lRecursive := TRUE AS LOGIC) AS IXMember
+      METHOD FindGlobalOrDefine(name AS STRING, lRecursive := TRUE AS LOGIC) AS IXMemberSymbol
          // we look in the project references and assembly references
          // pass the list of ProjectIds and AssemblyIds to the database engine
          IF XSettings.EnableTypelookupLog
@@ -686,7 +686,7 @@ BEGIN NAMESPACE XSharpModel
          ENDIF
          RETURN xmember         
          
-      PRIVATE METHOD GetGlobalMember(result AS IList<XDbResult>) AS IXMember
+      PRIVATE METHOD GetGlobalMember(result AS IList<XDbResult>) AS IXMemberSymbol
          IF result:Count > 0
             // Get the source code and parse it into a member
             // we know that it will be of the globals class
@@ -698,7 +698,7 @@ BEGIN NAMESPACE XSharpModel
             walker:Parse(source, FALSE)
             IF walker:EntityList:Count > 0
                VAR xElement      := walker:EntityList:First()
-               IF xElement IS XMemberDefinition VAR xmember
+               IF xElement IS XSourceMemberSymbol VAR xmember
                   xmember:Range       := TextRange{element:StartLine, element:StartColumn, element:EndLine, element:EndColumn}
                   xmember:Interval    := TextInterval{element:Start, element:Stop}
                   xmember:XmlComments := element:XmlComments
@@ -708,16 +708,16 @@ BEGIN NAMESPACE XSharpModel
          ENDIF
          RETURN NULL    
       
-      METHOD FindSystemTypesByName(typeName AS STRING, usings AS IReadOnlyList<STRING>) AS IList<XTypeReference>
+      METHOD FindSystemTypesByName(typeName AS STRING, usings AS IReadOnlyList<STRING>) AS IList<XPETypeSymbol>
          usings := AdjustUsings(REF typeName, usings)
          VAR result := XDatabase.GetReferenceTypes(typeName, SELF:DependentAssemblyList )
          result := FilterUsings(result,usings,typeName, FALSE)
          RETURN GetRefType(result)
          
-      PRIVATE METHOD GetRefType(found AS IList<XDbResult>) AS IList<XTypeReference>
+      PRIVATE METHOD GetRefType(found AS IList<XDbResult>) AS IList<XPETypeSymbol>
          LOCAL IdAssembly := -1 AS INT64
          LOCAL fullTypeName:= ""  AS STRING
-         VAR result := List<XTypeReference>{}
+         VAR result := List<XPETypeSymbol>{}
          FOREACH VAR element IN found
             // Skip types found in another project
             fullTypeName := element:FullName
@@ -735,7 +735,7 @@ BEGIN NAMESPACE XSharpModel
          NEXT
          RETURN result
          
-      METHOD FindSystemType(name AS STRING, usings AS IList<STRING>) AS XTypeReference
+      METHOD FindSystemType(name AS STRING, usings AS IList<STRING>) AS XPETypeSymbol
          IF XSettings.EnableTypelookupLog
             WriteOutputMessage("FindSystemType() "+name)
          ENDIF
@@ -790,10 +790,10 @@ BEGIN NAMESPACE XSharpModel
          RETURN myusings
          
       
-      PRIVATE _lastFound := NULL AS XTypeDefinition
+      PRIVATE _lastFound := NULL AS XSourceTypeSymbol
       PRIVATE _lastName  := NULL AS STRING
       
-      METHOD GetTypes( startWith AS STRING, usings AS IReadOnlyList<STRING>) AS IList<XTypeDefinition>
+      METHOD GetTypes( startWith AS STRING, usings AS IReadOnlyList<STRING>) AS IList<XSourceTypeSymbol>
          VAR result := XDatabase.GetTypesLike(startWith, SELF:DependentProjectList)
          result := FilterUsings(result,usings,startWith,TRUE)
          VAR types := SELF:GetTypeList(result)
@@ -805,11 +805,11 @@ BEGIN NAMESPACE XSharpModel
             SELF:_lastName  := NULL
          ENDIF
 
-      METHOD Lookup(typeName AS STRING) AS XTypeDefinition
+      METHOD Lookup(typeName AS STRING) AS XSourceTypeSymbol
          VAR usings := List<STRING>{}
          RETURN Lookup(typeName, usings)
    
-      METHOD Lookup(typeName AS STRING, usings AS IReadOnlyList<STRING>) AS XTypeDefinition
+      METHOD Lookup(typeName AS STRING, usings AS IReadOnlyList<STRING>) AS XSourceTypeSymbol
       	 // lookup Type definition in this project and X# projects referenced by this project
         IF XSettings.EnableTypelookupLog
             WriteOutputMessage(i"Lookup {typeName}")
@@ -842,12 +842,12 @@ BEGIN NAMESPACE XSharpModel
           
          RETURN _lastFound
          
-      METHOD LookupReferenced(typeName AS STRING) AS XTypeDefinition
+      METHOD LookupReferenced(typeName AS STRING) AS XSourceTypeSymbol
       	 // lookup Type definition in X# projects referenced by this project
          VAR usings := List<STRING>{}
          RETURN Lookup(typeName, usings)
          
-      METHOD LookupReferenced(typeName AS STRING, usings AS IReadOnlyList<STRING>) AS XTypeDefinition
+      METHOD LookupReferenced(typeName AS STRING, usings AS IReadOnlyList<STRING>) AS XSourceTypeSymbol
    	   // Is now identical to Lookup()
          RETURN Lookup(typeName, usings)
          
@@ -869,8 +869,10 @@ BEGIN NAMESPACE XSharpModel
             IF String.IsNullOrEmpty(element:Namespace)
                result:Add(element)
             ELSE
-               FOREACH VAR ns IN usings
-                  IF element:Namespace:StartsWith(ns, StringComparison.OrdinalIgnoreCase)
+               FOREACH VAR using IN usings
+                  // when we have USING System.IO we want to include types in System.IO and System.
+                  // so we include when the USING starts with the namespace of the type
+                  IF using:StartsWith(element:Namespace, StringComparison.OrdinalIgnoreCase)
                      result:Add(element)
                      EXIT
                   ENDIF
@@ -879,7 +881,7 @@ BEGIN NAMESPACE XSharpModel
          NEXT
          RETURN result
          
-      PRIVATE METHOD GetType(found AS IList<XDbResult>) AS XTypeDefinition
+      PRIVATE METHOD GetType(found AS IList<XDbResult>) AS XSourceTypeSymbol
          if found:Count == 0
             RETURN NULL
          ENDIF
@@ -895,7 +897,7 @@ BEGIN NAMESPACE XSharpModel
                ENDIF
                sTypeIds += element:IdType:ToString()
             ENDIF
-            NEXT
+         NEXT
          IF sTypeIds:Length == 0
             RETURN NULL
          ENDIF
@@ -915,18 +917,18 @@ BEGIN NAMESPACE XSharpModel
             idProject      := oType:IdProject  
             VAR name       := oType:TypeName
             VAR xElement      := walker:EntityList:First()
-            IF xElement IS XTypeDefinition VAR xtype
+            IF xElement IS XSourceTypeSymbol VAR xtype
                xtype:Range       := TextRange{oType:StartLine, oType:StartColumn, oType:EndLine, oType:EndColumn}
                xtype:Interval    := TextInterval{oType:Start, oType:Stop}
                xtype:Namespace   := namespace
                xtype:XmlComments := oType:XmlComments
                xtype:ClassType   := (XSharpDialect) oType:ClassType
                VAR xmembers := xtype:XMembers:ToArray()
-               var dict := Dictionary<string, IList<XMemberDefinition>>{}
-               FOREACH m as XMemberDefinition in xmembers
+               var dict := Dictionary<string, IList<XSourceMemberSymbol>>{}
+               FOREACH m as XSourceMemberSymbol in xmembers
                   var key := m:Kind:ToString()+" "+m:Name
                   if ! dict:ContainsKey(key)
-                     dict:Add(key, List<XMemberDefinition>{})
+                     dict:Add(key, List<XSourceMemberSymbol>{})
                   ENDIF
                   dict[key]:Add(m)
                NEXT
@@ -970,7 +972,7 @@ BEGIN NAMESPACE XSharpModel
         ENDIF
         RETURN NULL        
          
-      PRIVATE METHOD EqualSourceCode(mlhs as XMemberDefinition, mrhs as XDbResult) AS LOGIC
+      PRIVATE METHOD EqualSourceCode(mlhs as XSourceMemberSymbol, mrhs as XDbResult) AS LOGIC
          if mlhs:SourceCode == mrhs:SourceCode
             return true
          endif
@@ -1006,8 +1008,10 @@ BEGIN NAMESPACE XSharpModel
             endif
          endif
          return lhs == rhs
-  PRIVATE METHOD GetTypeList(found AS IList<XDbResult>) AS IList<XTypeDefinition>
-         VAR result        := List<XTypeDefinition>{}
+            
+      
+      PRIVATE METHOD GetTypeList(found AS IList<XDbResult>) AS IList<XSourceTypeSymbol>
+         VAR result        := List<XSourceTypeSymbol>{}
          LOCAL idProject   := -1 AS INT64
          LOCAL fullTypeName:= ""  AS STRING
          FOREACH VAR element IN found
@@ -1028,7 +1032,7 @@ BEGIN NAMESPACE XSharpModel
             file:Id        := element:IdFile
             VAR range    := TextRange{element:StartLine, element:StartColumn, element:EndLine, element:EndColumn}
             VAR interval := TextInterval{element:Start, element:Stop}
-            VAR xtype := XTypeDefinition{name, element:Kind,element:Attributes, range, interval, file}
+            VAR xtype := XSourceTypeSymbol{name, element:Kind,element:Attributes, range, interval, file}
             xtype:Namespace := element:Namespace
             xtype:Id  := element:IdType
             result:Add(xtype)
@@ -1088,7 +1092,7 @@ BEGIN NAMESPACE XSharpModel
          END SWITCH         
          RETURN sb:ToString()
       
-      METHOD GetExtensions( typeName AS STRING) AS IList<IXMember>
+      METHOD GetExtensions( typeName AS STRING) AS IList<IXMemberSymbol>
          RETURN SystemTypeController.LookForExtensions( typeName, SELF:_AssemblyReferences)
 
       METHOD GetFileById(nId as INT64) AS XFile

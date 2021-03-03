@@ -9,7 +9,7 @@ USING Mono.Cecil
 BEGIN NAMESPACE XSharpModel
 
 
-   CLASS XPropertyReference INHERIT XMemberReference
+   CLASS XPEPropertySymbol INHERIT XPEMemberSymbol
         PRIVATE _propdef      as PropertyDefinition
          
 		CONSTRUCTOR(def AS PropertyDefinition, asm AS XAssembly)
@@ -41,7 +41,7 @@ BEGIN NAMESPACE XSharpModel
          RETURN
    END CLASS
 
-   CLASS XFieldReference INHERIT XMemberReference
+   CLASS XPEFieldSymbol INHERIT XPEMemberSymbol
         PRIVATE _fielddef     as FieldDefinition
    
    STATIC METHOD ConvertAttributes (attributes AS FieldAttributes) as Modifiers
@@ -91,7 +91,7 @@ BEGIN NAMESPACE XSharpModel
 
    END CLASS
    
-   CLASS XEventReference INHERIT XMemberReference
+   CLASS XPEEventSymbol INHERIT XPEMemberSymbol
         PRIVATE _eventdef     as EventDefinition
          
 		CONSTRUCTOR(def AS EventDefinition, asm AS XAssembly)
@@ -117,7 +117,7 @@ BEGIN NAMESPACE XSharpModel
          RETURN
    END CLASS  
    
-   CLASS XMethodReference  INHERIT XMemberReference
+   CLASS XMethodReference  INHERIT XPEMemberSymbol
        PRIVATE _methoddef    as MethodDefinition
        PRIVATE _ccAttrib     AS Mono.Cecil.CustomAttribute
          
@@ -208,7 +208,7 @@ BEGIN NAMESPACE XSharpModel
    END CLASS
 
    [DebuggerDisplay("{ToString(),nq}")];
-	CLASS XMemberReference     INHERIT XEntityReference IMPLEMENTS IXMember
+	CLASS XPEMemberSymbol     INHERIT XPESymbol IMPLEMENTS IXMemberSymbol
 		// Fields
         PRIVATE   _signature    AS XMemberSignature 
         PRIVATE   _resolved    AS LOGIC
@@ -261,7 +261,7 @@ BEGIN NAMESPACE XSharpModel
          if type:FullName == "System.String[]"
             var args := (Mono.Cecil.CustomAttributeArgument[]) arg:Value
             FOREACH VAR argName in args
-               var parRef := XParameterReference {self, argName:Value:ToString(), "USUAL"}
+               var parRef := XPEParameterSymbol{self, argName:Value:ToString(), "USUAL"}
                parRef:ParamType := ParamType.As
                parRef:OriginalTypeName := "XSharp.__Usual"
                SELF:_signature:Parameters:Add(parRef)
@@ -289,7 +289,7 @@ BEGIN NAMESPACE XSharpModel
             if oPar:HasCustomAttributes
                defValue := SELF:DecodeCustomAttributes(oPar:CustomAttributes)
             ENDIF
-            var parRef := XParameterReference {self, name, type}
+            var parRef := XPEParameterSymbol{self, name, type}
             parRef:OriginalTypeName := RemoveGenericParameters(oPar:ParameterType:FullName)
             if defValue != NULL
                parRef:Value := defValue:ToString()
@@ -409,7 +409,7 @@ BEGIN NAMESPACE XSharpModel
       PROPERTY TypeParameterConstraintsList AS STRING    GET SELF:_signature:TypeParameterConstraintsList
 
 
-      PROPERTY Parameters         AS IList<IXVariable> 
+      PROPERTY Parameters         AS IList<IXVariableSymbol> 
          GET 
             SELF:DoResolve()
             RETURN _signature:Parameters:ToArray()
@@ -418,7 +418,7 @@ BEGIN NAMESPACE XSharpModel
 
       PROPERTY CallingConvention AS CallingConvention GET _signature:CallingConvention SET _signature:CallingConvention := @@value
 
-      PROPERTY ParentType     AS IXType GET SELF:Parent ASTYPE IXType		
+      PROPERTY ParentType     AS IXTypeSymbol GET SELF:Parent ASTYPE IXTypeSymbol		
 		PROPERTY Prototype      AS STRING 
          GET 
             SELF:DoResolve()

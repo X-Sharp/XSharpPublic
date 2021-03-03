@@ -18,7 +18,7 @@ namespace Microsoft.VisualStudio.Project
     /// <summary>
     /// Describes attributes of project properties and allows getting/setting in context of those attributes.
     /// </summary>
-    internal class ProjectProperty
+    public class ProjectProperty
     {
         // =========================================================================================
         // Constants
@@ -244,7 +244,7 @@ namespace Microsoft.VisualStudio.Project
         public void SetValue(string value, IList<XProjectConfig> configs)
         {
             XHelperMethods.VerifyNonNullArgument(value, "value");
-
+            var oldvalue = this.GetValue(false);
             value = value.Trim();
 
             MSBuild.Project buildProject = this.project.BuildProject;
@@ -355,6 +355,7 @@ namespace Microsoft.VisualStudio.Project
 
             this.project.InvalidatePropertyCache();
             this.project.SetProjectFileDirty(true);
+             this.project.RaiseProjectPropertyChanged(this.propertyName, oldvalue, value);
         }
 
         private string GetValue(bool finalValue, IList<ProjectConfig> configs, bool booleanValue)

@@ -380,6 +380,7 @@ namespace Microsoft.VisualStudio.Project
                 if (this.project != null)
                 {
                     //this.project.OutputTypeChanged -= this.HandleOutputTypeChanged;
+                    this.project.OnProjectPropertyChanged -= Project_OnProjectPropertyChanged;
                     this.project = null;
                 }
 
@@ -397,7 +398,7 @@ namespace Microsoft.VisualStudio.Project
                     if (this.project == null)
                     {
                         this.project = config.ProjectMgr as XProjectNode;
-                        //this.project.OutputTypeChanged += this.HandleOutputTypeChanged;
+                        this.project.OnProjectPropertyChanged += Project_OnProjectPropertyChanged;
 
                     }
 
@@ -411,7 +412,7 @@ namespace Microsoft.VisualStudio.Project
                 if (this.project == null)
                 {
                     this.project = (punk[0] as NodeProperties).Node.ProjectMgr as XProjectNode;
-                    //this.project.OutputTypeChanged += this.HandleOutputTypeChanged;
+                    this.project.OnProjectPropertyChanged += Project_OnProjectPropertyChanged;
                 }
 
                 Dictionary<string, XProjectConfig> configsMap = new Dictionary<string, XProjectConfig>();
@@ -463,7 +464,7 @@ namespace Microsoft.VisualStudio.Project
 
         protected virtual void Project_OnProjectPropertyChanged(object sender, ProjectPropertyChangedArgs e)
         {
-
+            ; // handled in subclasses
         }
 
 

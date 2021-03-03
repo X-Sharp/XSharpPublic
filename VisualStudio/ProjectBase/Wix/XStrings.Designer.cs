@@ -22,7 +22,7 @@ namespace Microsoft.VisualStudio.Project.Wix {
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    internal class XStrings {
+    public class XStrings {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
@@ -36,7 +36,7 @@ namespace Microsoft.VisualStudio.Project.Wix {
         ///   Returns the cached ResourceManager instance used by this class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        internal static global::System.Resources.ResourceManager ResourceManager {
+        public static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
                     global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Microsoft.VisualStudio.Project.Wix.XStrings", typeof(XStrings).Assembly);
@@ -51,7 +51,7 @@ namespace Microsoft.VisualStudio.Project.Wix {
         ///   resource lookups using this strongly typed resource class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        internal static global::System.Globalization.CultureInfo Culture {
+        public static global::System.Globalization.CultureInfo Culture {
             get {
                 return resourceCulture;
             }
@@ -63,7 +63,7 @@ namespace Microsoft.VisualStudio.Project.Wix {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap Delete {
+        public static System.Drawing.Bitmap Delete {
             get {
                 object obj = ResourceManager.GetObject("Delete", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
@@ -73,7 +73,7 @@ namespace Microsoft.VisualStudio.Project.Wix {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap DownArrow {
+        public static System.Drawing.Bitmap DownArrow {
             get {
                 object obj = ResourceManager.GetObject("DownArrow", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
@@ -83,7 +83,7 @@ namespace Microsoft.VisualStudio.Project.Wix {
         /// <summary>
         ///   Looks up a localized string similar to {0}: {1} is not a valid culture..
         /// </summary>
-        internal static string InvalidCultureError {
+        public static string InvalidCultureError {
             get {
                 return ResourceManager.GetString("InvalidCultureError", resourceCulture);
             }
@@ -92,7 +92,7 @@ namespace Microsoft.VisualStudio.Project.Wix {
         /// <summary>
         ///   Looks up a localized string similar to {0}: The {0} property cannot be empty..
         /// </summary>
-        internal static string InvalidFileNameEmpty {
+        public static string InvalidFileNameEmpty {
             get {
                 return ResourceManager.GetString("InvalidFileNameEmpty", resourceCulture);
             }
@@ -101,7 +101,7 @@ namespace Microsoft.VisualStudio.Project.Wix {
         /// <summary>
         ///   Looks up a localized string similar to {0}: Invalid {0}. A file name cannot contain any of the following characters: /\:?&quot;&lt;&gt;|.
         /// </summary>
-        internal static string InvalidFileNameInvalidChar {
+        public static string InvalidFileNameInvalidChar {
             get {
                 return ResourceManager.GetString("InvalidFileNameInvalidChar", resourceCulture);
             }
@@ -110,7 +110,7 @@ namespace Microsoft.VisualStudio.Project.Wix {
         /// <summary>
         ///   Looks up a localized string similar to {0}: Invalid {0}. A path cannot contain any of the following characters: *?&quot;&lt;&gt;|.
         /// </summary>
-        internal static string InvalidPath {
+        public static string InvalidPath {
             get {
                 return ResourceManager.GetString("InvalidPath", resourceCulture);
             }
@@ -119,7 +119,7 @@ namespace Microsoft.VisualStudio.Project.Wix {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap UpArrow {
+        public static System.Drawing.Bitmap UpArrow {
             get {
                 object obj = ResourceManager.GetObject("UpArrow", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));

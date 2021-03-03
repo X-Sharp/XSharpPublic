@@ -17,10 +17,7 @@ using LanguageService.SyntaxTree;
 using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
 using Microsoft.VisualStudio;
 using LanguageService.CodeAnalysis.XSharp;
-using System.Diagnostics;
 using Microsoft.VisualStudio.Text.Tagging;
-using static XSharp.Parser.VsParser;
-using LanguageService.CodeAnalysis.Text;
 
 namespace XSharp.LanguageService
 {
@@ -52,6 +49,7 @@ namespace XSharp.LanguageService
         private XSharpCompletionSourceProvider _provider;
         private bool _settingIgnoreCase;
         // Keep a trace of the Context of the TokenList build
+        // This will be AS, IS, REF, USING, STATIC (USING STATIC), INHERIT, IMPLEMENTS etc.
         private IToken _stopToken;
 
         private XFile _file;
@@ -170,8 +168,8 @@ namespace XSharp.LanguageService
                     return;
                 }
                 // The Completion list we are building
-                CompletionList compList = new CompletionList(_file);
-                CompletionList kwdList = new CompletionList(_file);
+                XCompletionList compList = new XCompletionList(_file);
+                XCompletionList kwdList = new XCompletionList(_file);
                 // The CompletionType we will use to fill the CompletionList
                 CompletionType cType = null;
                 if (session.Properties.ContainsProperty(XsCompletionProperties.Type))
@@ -188,9 +186,8 @@ namespace XSharp.LanguageService
                 var caretPos = triggerPoint.Position;
                 bool includeKeywords;
                 session.Properties.TryGetProperty(XsCompletionProperties.IncludeKeywords, out includeKeywords);
-
-                var tokenList = XSharpTokenTools.GetTokenList(caretPos, currentLine, _buffer.CurrentSnapshot, out _stopToken, _file, member, includeKeywords);
-
+                CompletionState state;
+                var tokenList = XSharpTokenTools.GetTokenList(caretPos, currentLine, _buffer.CurrentSnapshot, out state, _file, member, includeKeywords);
 
 
                 // We might be here due to a COMPLETEWORD command, so we have no typedChar
@@ -247,7 +244,7 @@ namespace XSharp.LanguageService
                 // Alternative Token list (dot is a selector)
                 List<XSharpToken> altTokenList;
                 if (dotSelector && _dotUniversal)
-                    altTokenList = XSharpTokenTools.GetTokenList(caretPos, currentLine, _buffer.CurrentSnapshot, out _stopToken, _file,  member);
+                    altTokenList = XSharpTokenTools.GetTokenList(caretPos, currentLine, _buffer.CurrentSnapshot, out state, _file,  member);
                 else
                     altTokenList = tokenList;
 
@@ -289,7 +286,7 @@ namespace XSharp.LanguageService
                     currentNS = currentNamespace.Name;
                 }
                 //
-                cType = XSharpLookup.RetrieveType(_file, tokenList, member, currentNS, null, out foundElement, snapshot, currentLine, _dialect);
+                cType = XSharpLookup.RetrieveType(_file, tokenList, member, currentNS, CompletionState.General, out foundElement, snapshot, currentLine, _dialect);
                 if (!cType.IsEmpty())
                 {
                     session.Properties[XsCompletionProperties.Type] = cType;
@@ -298,48 +295,41 @@ namespace XSharp.LanguageService
                 {
                     if (dotSelector && _dotUniversal)
                     {
-                        cType = XSharpLookup.RetrieveType(_file, altTokenList, member, currentNS, null, out foundElement, snapshot, currentLine, _dialect);
+                        cType = XSharpLookup.RetrieveType(_file, altTokenList, member, currentNS, CompletionState.General, out foundElement, snapshot, currentLine, _dialect);
                         if (!cType.IsEmpty())
                         {
                             session.Properties[XsCompletionProperties.Type] = cType;
                         }
                     }
                 }
-                //
                 if (dotSelector)
                 {
                     if (string.IsNullOrEmpty(filterText))
                     {
-                        filterText = TokenListAsString(tokenList, 0);
+                        filterText = TokenListAsString(tokenList,_stopToken);
                         if (!filterText.EndsWith("."))
                             filterText += ".";
                     }
-                    switch (tokenType)
+                    switch (state)
                     {
-                        case XSharpLexer.USING:
-                            // It can be a namespace
+                        case CompletionState.Namespaces:
                             AddNamespaces(compList, _file.Project, filterText);
                             break;
-                        case XSharpLexer.AS:
-                        case XSharpLexer.IS:
-                        case XSharpLexer.REF:
-                        case XSharpLexer.INHERIT:
-                        case XSharpLexer.FROM:          // Xbase++ Parent clause
-                            // It can be a namespace
-                            AddNamespaces(compList, _file.Project, filterText);
-                            // It can be Type, FullyQualified
-                            // we should also walk all the USINGs, and the current Namespace if any, to search Types
+                        case CompletionState.Namespaces|CompletionState.Types:
+                        case CompletionState.Types:
+                            if (state.HasFlag(CompletionState.Namespaces))
+                                AddNamespaces(compList, _file.Project, filterText);
                             AddTypeNames(compList, _file.Project, filterText, Usings);
-                            //
                             AddXSharpKeywordTypeNames(kwdList, filterText);
                             break;
-                        case XSharpLexer.IMPLEMENTS:
-                            // It can be a namespace
-                            AddNamespaces(compList, _file.Project, filterText);
-                            // TODO: add Interfaces only
+                        case CompletionState.Namespaces | CompletionState.Interfaces:
+                        case CompletionState.Interfaces:
+                            if (state.HasFlag(CompletionState.Namespaces))
+                                AddNamespaces(compList, _file.Project, filterText);
+                            AddTypeNames(compList, _file.Project, filterText, Usings,true);
+                            AddXSharpKeywordTypeNames(kwdList, filterText);
                             break;
                         default:
-                            // It can be a namespace
                             AddNamespaces(compList, _file.Project, filterText);
                             // It can be Type, FullyQualified
                             // we should also walk all the USINGs, and the current Namespace if any, to search Types
@@ -354,7 +344,6 @@ namespace XSharp.LanguageService
                                 filterText = filterText.Substring(dotPos + 1, filterText.Length - dotPos - 1);
                                 BuildCompletionList(compList, cType, Modifiers.Public, true, filterText);
                             }
-                            //
                             break;
                     }
                 }
@@ -540,7 +529,7 @@ namespace XSharp.LanguageService
             WriteOutputMessage("<<-- AugmentCompletionSessions");
         }
 
-        private void AddUsingStaticMembers(CompletionList compList, XFile file, string filterText)
+        private void AddUsingStaticMembers(XCompletionList compList, XFile file, string filterText)
         {
             //
             foreach (string staticType in file.AllUsingStatics)
@@ -556,7 +545,7 @@ namespace XSharp.LanguageService
             return type.Name.IndexOf("$", StringComparison.Ordinal) > -1;
         }
 
-        private void AddTypeNames(CompletionList compList, XProject project, string startWith, HashSet<string> usings)
+        private void AddTypeNames(XCompletionList compList, XProject project, string startWith, HashSet<string> usings, bool onlyInterfaces = false)
         {
             if (string.IsNullOrEmpty(startWith))
                 return;
@@ -579,7 +568,8 @@ namespace XSharp.LanguageService
             {
                 if (isGenerated(type))
                    continue;
-
+                if (onlyInterfaces && type.Kind != Kind.Interface)
+                    continue;
                 string realTypeName = type.FullName;
                 if (IsHiddenTypeName(realTypeName))
                 {
@@ -654,7 +644,7 @@ namespace XSharp.LanguageService
             return false;
         }
 
-        private void AddXSharpKeywords(CompletionList compList, string startWith)
+        private void AddXSharpKeywords(XCompletionList compList, string startWith)
         {
             foreach (var kw in XSharpTypes.Get().Where(ti => nameStartsWith(ti.Name, startWith)))
             {
@@ -663,7 +653,7 @@ namespace XSharp.LanguageService
             }
         }
 
-        private void AddXSharpTypeNames(CompletionList compList, XProject project, string startWith, IReadOnlyList<string> usings)
+        private void AddXSharpTypeNames(XCompletionList compList, XProject project, string startWith, IReadOnlyList<string> usings)
         {
             var list = project.GetTypes(startWith, usings);
             foreach (var typeInfo in list)
@@ -676,7 +666,7 @@ namespace XSharp.LanguageService
             }
         }
 
-        private void AddXSharpKeywordTypeNames(CompletionList compList, string startWith)
+        private void AddXSharpKeywordTypeNames(XCompletionList compList, string startWith)
         {
             //
             int startLen = 0;
@@ -704,7 +694,7 @@ namespace XSharp.LanguageService
         }
 
 
-        private void AddNamespaces(CompletionList compList, XProject project, string startWith)
+        private void AddNamespaces(XCompletionList compList, XProject project, string startWith)
         {
             // We are looking for NameSpaces, in References
             var namespaces = project.GetAssemblyNamespaces();
@@ -714,6 +704,7 @@ namespace XSharp.LanguageService
             if (dotPos != -1)
                 startLen = dotPos + 1;
             ImageSource icon = _provider.GlyphService.GetGlyph(StandardGlyphGroup.GlyphGroupNamespace, StandardGlyphItem.GlyphItemPublic);
+            ImageSource iconClass = _provider.GlyphService.GetGlyph(StandardGlyphGroup.GlyphGroupClass, StandardGlyphItem.GlyphItemPublic);
             foreach (string nameSpace in namespaces.Where(ns => nameStartsWith(ns, startWith)))
             {
                 string realNamespace = nameSpace;
@@ -726,7 +717,16 @@ namespace XSharp.LanguageService
                 if (dotPos > 0)
                     realNamespace = realNamespace.Substring(0, dotPos);
                 //
-                if (!compList.Add(new XSCompletion(realNamespace, realNamespace, "Namespace " + nameSpace, icon, null, Kind.Namespace,"")))
+                XSCompletion item;
+                if (realNamespace.IndexOf("<") > 0)
+                {
+                    item = new XSCompletion(realNamespace, realNamespace, nameSpace, iconClass, null, Kind.Class, "");
+                }
+                else
+                {
+                    item = new XSCompletion(realNamespace, realNamespace, "Namespace " + nameSpace, icon, null, Kind.Namespace, "");
+                }
+                if (!compList.Add(item))
                     break;
             }
             //
@@ -746,7 +746,7 @@ namespace XSharp.LanguageService
             //}
         }
 
-        private void AddXSharpNamespaces(CompletionList compList, XProject project, string startWith, ImageSource icon)
+        private void AddXSharpNamespaces(XCompletionList compList, XProject project, string startWith, ImageSource icon)
         {
             // Calculate the length we must remove
             int startLen = 0;
@@ -771,7 +771,7 @@ namespace XSharp.LanguageService
             }
         }
 
-        private void BuildCompletionList(CompletionList compList, XSourceMemberSymbol currentMember, string startWith, int currentLine)
+        private void BuildCompletionList(XCompletionList compList, XSourceMemberSymbol currentMember, string startWith, int currentLine)
         {
             if (currentMember == null)
             {
@@ -818,7 +818,7 @@ namespace XSharp.LanguageService
         /// <param name="minVisibility">The minimum Visibility</param>
         /// <param name="staticOnly">Static member only ?</param>
         /// <param name="startWith">The filter text</param>
-        private void BuildCompletionList(CompletionList compList, XSymbol parent, Modifiers minVisibility, bool staticOnly, string startWith)
+        private void BuildCompletionList(XCompletionList compList, XSymbol parent, Modifiers minVisibility, bool staticOnly, string startWith)
         {
             if (parent == null)
             {
@@ -862,7 +862,7 @@ namespace XSharp.LanguageService
             }
         }
 
-        private void BuildCompletionList(CompletionList compList, CompletionType cType, Modifiers minVisibility, bool staticOnly, string startWith)
+        private void BuildCompletionList(XCompletionList compList, CompletionType cType, Modifiers minVisibility, bool staticOnly, string startWith)
         {
             if (cType == null)
             {
@@ -906,7 +906,7 @@ namespace XSharp.LanguageService
         /// <param name="members"></param>
         /// <param name="minVisibility"></param>
         /// <param name="staticOnly"></param>
-        private void FillMembers(CompletionList compList, IEnumerable<IXMemberSymbol> members, Modifiers minVisibility, bool staticOnly)
+        private void FillMembers(XCompletionList compList, IEnumerable<IXMemberSymbol> members, Modifiers minVisibility, bool staticOnly)
         {
             WriteOutputMessage($"FillMembers start, {members.Count()} members");
             foreach (var elt in members)
@@ -970,13 +970,13 @@ namespace XSharp.LanguageService
         /// <param name="compList"></param>
         /// <param name="xType"></param>
         /// <param name="minVisibility"></param>
-        private void FillMembers(CompletionList compList, IXTypeSymbol xType, Modifiers minVisibility, bool staticOnly, string startWith)
+        private void FillMembers(XCompletionList compList, IXTypeSymbol xType, Modifiers minVisibility, bool staticOnly, string startWith)
         {
             FillMembers(compList, xType.GetMembers(startWith), minVisibility, staticOnly);
         }
 
 
-        private void FillExtensions(CompletionList compList, CompletionType cType, string startWith)
+        private void FillExtensions(XCompletionList compList, CompletionType cType, string startWith)
         {
             //WriteOutputMessage($"FillExtensions for type {sType.FullName}");
             if (cType.Type != null)
@@ -1031,540 +1031,29 @@ namespace XSharp.LanguageService
         /// </summary>
         /// <param name="tokenList"></param>
         /// <returns></returns>
-        private string TokenListAsString(List<XSharpToken> tokenList, int less)
+        private string TokenListAsString(List<XSharpToken> tokenList, IToken fromToken)
         {
             string retValue = "";
-            for (int pos = 0; pos < tokenList.Count - less; pos++)
+            bool include = false;
+            if (fromToken == null)
+                include = true;
+            for (int pos = 0; pos < tokenList.Count; pos++)
             {
-                string tk = tokenList[pos].Text;
-                retValue += tk;
+                if (include)
+                {
+                    retValue += tokenList[pos].Text;
+                }
+                else
+                {
+                    include = tokenList[pos] == fromToken;
+                }
             }
             return retValue;
         }
     }
   
 
-    /// <summary>
-    /// Process a TypeInfo in order to provide usable informations (TypeName, Glyph, ... )
-    /// </summary>
- 
-    /// <summary>
-    /// XSharp CompletionList
-    /// </summary>
-    internal class CompletionList : SortedDictionary<string, XSCompletion>
-    {
-        internal bool HasMethods { get; private set; }
-        internal bool HasProperties { get; private set; }
-        internal bool HasFields { get; private set; }
-        internal bool HasEvents { get; private set; }
-        internal bool HasEnumMembers { get; private set; }
-        internal bool HasTypes { get; private set; }
-        internal bool HasNamespaces { get; private set; }
-        internal XFile _file;
-        internal CompletionList(XFile startLocation) : base(StringComparer.OrdinalIgnoreCase)
-        {
-            _file = startLocation;
-        }
-        internal XFile File => _file;
-        public bool Add(XSCompletion item)
-        {
-
-            if (ContainsKey(item.DisplayText))
-            {
-                // only methods have overloads
-                // we do not want to the overloads message for partial classes that appear in more than 1 file
-                // and if a method in a subclass has the same params we also do not want to show that there are overloads
-                var found = this[item.DisplayText];
-                if (!string.Equals(found.Description, item.Description, StringComparison.OrdinalIgnoreCase))
-                {
-                    int overloads = 0;
-                    // Already exists in the List !!
-                    // First Overload ?
-                    XSCompletion comp = this[item.DisplayText];
-                    if (!comp.Properties.TryGetProperty(XsCompletionProperties.Overloads, out overloads))
-                    {
-                        comp.Properties.AddProperty(XsCompletionProperties.Overloads, overloads);
-                    }
-                    overloads += 1;
-                    // Set the number of Overload(s)
-                    comp.Properties[XsCompletionProperties.Overloads] = overloads;
-                    // Now, hack the Description text
-                }
-                // Ok, Forget about the newly added Completion please
-                return true;
-
-            }
-            if (!string.IsNullOrEmpty(item.DisplayText))
-            {
-                switch (item.Kind)
-                {
-                    case Kind.Method:
-                    case Kind.Function:
-                    case Kind.Procedure:
-                    case Kind.Operator:
-                    case Kind.VODLL:
-                    case Kind.LocalFunc:
-                    case Kind.LocalProc:
-                        HasMethods = true;
-                        break;
-                    case Kind.Event:
-                        HasEvents = true;
-                        break;
-                    case Kind.Property:
-                    case Kind.Access:
-                    case Kind.Assign:
-                        HasProperties = true;
-                        break;
-                    case Kind.Namespace:
-                        HasNamespaces = true;
-                        break;
-                    case Kind.EnumMember:
-                        HasEnumMembers = true;
-                        break;
-                    case Kind.Constructor:
-                        break;
-                    case Kind.Destructor:
-                        break;
-                    case Kind.Local:
-                        break;
-                    case Kind.Parameter:
-                        break;
-                    case Kind.Delegate:
-                        break;
-                    case Kind.Using:
-                        break;
-                    case Kind.Keyword:
-                        break;
-                    default:
-                        if (item.Kind.IsField())
-                            HasFields = true;
-                        else if (item.Kind.IsType())
-                            HasTypes = true;
-                        break;
-                }
-                base.Add(item.DisplayText, item);
-            }
-            return true;
-        }
-    }
-
-    internal static class XsCompletionProperties
-    {
-        public const string Type = nameof(Type);
-        public const string Char = nameof(Char);
-        public const string IncludeKeywords = nameof(IncludeKeywords);
-        public const string Command = nameof(Command);
-        public const string Overloads = nameof(Overloads);
-
-    }
-
-    /// <summary>
-    /// XSharp Completion class.
-    /// Overload the Description property in order to add "overload" text at the end
-    /// </summary>
-    [DebuggerDisplay("{DisplayText,nq}")]
-    public class XSCompletion : Completion
-    {
- 
-        public XSharpModel.Kind Kind { get; set; }
-        public string Value { get; set; }
-        public XSCompletion(string displayText, string insertionText, string description, 
-            ImageSource iconSource, string iconAutomationText, XSharpModel.Kind kind, string value)
-            : base(displayText, insertionText, description, iconSource, iconAutomationText)
-        {
-            Kind = kind;
-            Value = value;
-        }
-
-        public override string Description
-        {
-            get
-            {
-                string desc;
-                int overloads = 0;
-                this.Properties.TryGetProperty(XsCompletionProperties.Overloads, out overloads);
-                if (overloads > 0)
-                {
-                    desc = base.Description;
-                    desc += " (+" + overloads + " overload";
-                    if (overloads > 1)
-                        desc += "s";
-                    desc += ")";
-                }
-                else
-                {
-                    desc = base.Description;
-                }
-                if (!string.IsNullOrEmpty(Value))
-                {
-                    desc += " := " + Value;
-                }
-                //
-                return desc;
-            }
-            set
-            {
-                base.Description = value;
-            }
-        }
-
-    }
-
-
- 
-    /// <summary>
-    /// Static class Tools. Offer services to get Glyphs (Icons) to CompletionSource (at least) ...
-    /// </summary>
-    public static class XSharpGlyphTools
-    {
-        public static StandardGlyphGroup getGlyphGroup(this IXSymbol elt)
-        {
-            StandardGlyphGroup imgG = StandardGlyphGroup.GlyphGroupClass;
-            switch (elt.Kind)
-            {
-                case Kind.Class:
-                    imgG = StandardGlyphGroup.GlyphGroupClass;
-                    break;
-                case Kind.Constructor:
-                case Kind.Destructor:
-                case Kind.Method:
-                case Kind.Function:
-                case Kind.Procedure:
-                case Kind.LocalFunc:
-                case Kind.LocalProc:
-                    imgG = StandardGlyphGroup.GlyphGroupMethod;
-                    break;
-                case Kind.Structure:
-                    imgG = StandardGlyphGroup.GlyphGroupStruct;
-                    break;
-                case Kind.Access:
-                case Kind.Assign:
-                case Kind.Property:
-                    imgG = StandardGlyphGroup.GlyphGroupProperty;
-                    break;
-                case Kind.Local:
-                case Kind.MemVar:
-                case Kind.DbField:
-                case Kind.Parameter:
-                    imgG = StandardGlyphGroup.GlyphGroupVariable;
-                    break;
-                case Kind.Event:
-                    imgG = StandardGlyphGroup.GlyphGroupEvent;
-                    break;
-                case Kind.Delegate:
-                    imgG = StandardGlyphGroup.GlyphGroupDelegate;
-                    break;
-                case Kind.Enum:
-                    imgG = StandardGlyphGroup.GlyphGroupEnum;
-                    break;
-                case Kind.EnumMember:
-                    imgG = StandardGlyphGroup.GlyphGroupEnumMember;
-                    break;
-                case Kind.Operator:
-                    imgG = StandardGlyphGroup.GlyphGroupOperator;
-                    break;
-                case Kind.Interface:
-                    imgG = StandardGlyphGroup.GlyphGroupInterface;
-                    break;
-                case Kind.Namespace:
-                    imgG = StandardGlyphGroup.GlyphGroupNamespace;
-                    break;
-                case Kind.Field:
-                case Kind.VOGlobal:
-                    imgG = StandardGlyphGroup.GlyphGroupField;
-                    break;
-                case Kind.Union:
-                    imgG = StandardGlyphGroup.GlyphGroupUnion;
-                    break;
-                case Kind.VODefine:
-                    imgG = StandardGlyphGroup.GlyphGroupConstant;
-                    break;
-                case Kind.VOStruct:
-                    imgG = StandardGlyphGroup.GlyphGroupValueType;
-                    break;
-                case Kind.Keyword:
-                    imgG = StandardGlyphGroup.GlyphKeyword;
-                    break;
-            }
-            return imgG;
-        }
-
-        public static StandardGlyphItem getGlyphItem(this IXSymbol elt) 
-        {
-            StandardGlyphItem imgI = StandardGlyphItem.GlyphItemPublic;
-            switch (elt.Visibility)
-            {
-                case Modifiers.Public:
-                    imgI = StandardGlyphItem.GlyphItemPublic;
-                    break;
-                case Modifiers.Protected:
-                    imgI = StandardGlyphItem.GlyphItemProtected;
-                    break;
-                case Modifiers.Private:
-                    imgI = StandardGlyphItem.GlyphItemPrivate;
-                    break;
-                case Modifiers.Internal:
-                    imgI = StandardGlyphItem.GlyphItemInternal;
-                    break;
-                case Modifiers.ProtectedInternal:
-                    imgI = StandardGlyphItem.GlyphItemProtected;
-                    break;
-            }
-            if (elt.IsStatic)
-            {
-                imgI = StandardGlyphItem.GlyphItemShortcut;
-            }
-            return imgI;
-        }
-    }
-
-
-    /// <summary>
-    /// Class that contains informations about the Code Element we have found during
-    /// type searching.
-    /// Used by Goto Definition, Parameter Info, ...
-    /// </summary>
-    [DebuggerDisplay("{Name,nq} {ReturnType.FullName,nq}")]
-    public class CompletionElement
-    {
-        IXSymbol foundElement = null;
-        public bool IsSourceElement => SearchLocation != null;
-        string genTypeName;
-        public XSourceSymbol SourceElement => foundElement as XSourceSymbol;
-        public XSourceSymbol SearchLocation;
-        public CompletionElement(IXSymbol element)
-        {
-            this.foundElement = element;
-            if (element is XSourceSymbol)
-            {
-                this.SearchLocation = (XSourceSymbol)element;
-            }
-        }
-        public CompletionElement(IXSymbol element, XFile file)
-        {
-            this.foundElement = element;
-            if (element is XSourceSymbol)
-            {
-                this.SearchLocation = (XSourceSymbol)element;
-            }
-        }
-        public void OpenSource()
-        {
-            if (IsSourceElement)
-            {
-                SourceElement.OpenEditor();
-            }
-        }
-
-        public bool IsInitialized => this.foundElement != null;
-
-        public IXSymbol Result => foundElement ;
-
-        public string Name => this.foundElement.Name;
-
-
-        public string TypeName
-        {
-            get
-            {
-                var t = ReturnType;
-                var name = t.FullName;
-                if (t.IsArray)
-                    name += "[]";
-                return name;
-            }
-        }
-        public CompletionType MemberOf
-        {
-            get
-            {
-                CompletionType cType = new CompletionType();
-                //if (this.XSharpElement != null)
-                //{
-                //    if (this.XSharpElement.Parent != null)
-                //        cType = new CompletionType(this.XSharpElement.Parent);
-                //    else if (this.XSharpElement.ParentName != null)
-                //    {
-                //        var defaultNS = "";
-                //        if (!String.IsNullOrEmpty(this.XSharpElement.ParentName))
-                //        {
-                //            defaultNS = this.XSharpElement.ParentName;
-                //        }
-                //        cType = new CompletionType(this.XSharpElement.ParentName, this.XSharpElement.File, defaultNS);
-                //    }
-                //    else
-                //        cType = new CompletionType("System.Object", null, "");
-                //}
-                return cType;
-            }
-        }
-
-        public CompletionType ReturnType
-        {
-            get
-            {
-                CompletionType cType;
-                
-                if (IsSourceElement)
-                {
-                    string searchTypeName = foundElement.TypeName;
-                    var usings = new List<String>();
-                    usings.AddRange(SearchLocation.FileUsings);
-                    var sourceElement = this.SourceElement;
-                    if (sourceElement is IXMemberSymbol)
-                    {
-                       var member = (IXMemberSymbol)sourceElement;
-                        var parts = member.FullName.Split(new char[]{ '.'});
-                        string ns = "";
-                        foreach (var part in parts)
-                        {
-                            ns = ns + part;
-                            if (!usings.Contains(ns))
-                                usings.Add(ns);
-                            ns += ".";
-                        }
-                    }
-                    cType = new CompletionType(searchTypeName, SearchLocation.File, usings);
-                }
-                else
-                {
-                    if (foundElement is IXMemberSymbol)
-                    {
-                        cType = new CompletionType(foundElement as IXMemberSymbol);
-                    }
-                    else // if (foundElement is IXTypeSymbol)
-                    {
-                        cType = new CompletionType(foundElement as IXTypeSymbol);
-                    }
-                }
-                return cType;
-            }
-        }
-
-        public string GenericTypeName
-        {
-            get
-            {
-                string ret = "";
-                if (this.IsGeneric)
-                {
-                    if (this.genTypeName == null)
-                    {
-                        string searchTypeName = "";
-                        if ((this.foundElement is XSourceMemberSymbol) && (this.Result.Kind.HasReturnType()))
-                        {
-                            XSourceMemberSymbol xt = (XSourceMemberSymbol)this.foundElement;
-                            searchTypeName = xt.TypeName;
-                        }
-                        else if (this.foundElement is XSourceVariableSymbol xv)
-                        {
-                            searchTypeName = xv.TypeName;
-                        }
-                        if (!string.IsNullOrEmpty(searchTypeName))
-                        {
-                            int genMarker = searchTypeName.IndexOf("<");
-                            if (genMarker > -1)
-                            {
-                                searchTypeName = searchTypeName.Substring(genMarker + 1);
-                                searchTypeName = searchTypeName.Substring(0, searchTypeName.Length - 1);
-                                this.genTypeName = searchTypeName;
-                                ret = this.genTypeName;
-                            }
-                        }
-                    }
-                    else
-                    {
-                        ret = this.genTypeName;
-                    }
-                }
-                return ret; 
-            }
-
-            set
-            {
-                this.genTypeName = value;
-            }
-        }
-
-        public bool IsArray
-        {
-            get
-            {
-                if (foundElement != null)
-                    return foundElement.IsArray;
-                return false;
-            }
-        }
-
-        public bool IsGeneric
-        {
-            get
-            {
-                if (foundElement != null)
-                {
-                    var type = foundElement.TypeName;
-                    if (type != null)
-                        return type.EndsWith(">");
-                }
-                return false;
-            }
-        }
-
-    }
-
-    // Build a list of all Keywords
-    internal static class XSharpTypes
-    {
-        static IList<IXSymbol> _keywords;
-        static IList<IXSymbol> _types;
-
-        static XSharpTypes()
-        {
-            // Dummy call to a Lexer; just to copy the Keywords, Types, ...
-            // Pass default options so this will be the core dialect and no
-            // 4 letter abbreviations will be in the list
-            var lexer = XSharpLexer.Create("", "", XSharpParseOptions.Default);
-            //
-
-            var keywords = new List<IXSymbol>();
-            var types = new List<IXSymbol>();
-            //
-            foreach (var keyword in lexer.KwIds)
-            {
-                keywords.Add(new XSourceSymbol(keyword.Key, Kind.Keyword, Modifiers.None));
-                if (XSharpLexer.IsType(keyword.Value))
-                {
-                    types.Add(new XSourceSymbol(keyword.Key, Kind.Keyword, Modifiers.None));
-                }
-            }
-            //
-            _keywords = keywords.ToArray();
-            _types = types.ToArray();
-        }
-
-        internal static IList<IXSymbol> Get()
-        {
-            return _keywords;
-        }
-        internal static IList<IXSymbol> GetTypes()
-        {
-            return _types;
-        }
-    }
-    public class ErrorIgnorer : IErrorListener
-    {
-        #region IErrorListener
-        public void ReportError(string fileName, LinePositionSpan span, string errorCode, string message, object[] args)
-        {
-            ; //  _errors.Add(new XError(fileName, span, errorCode, message, args));
-        }
-
-        public void ReportWarning(string fileName, LinePositionSpan span, string errorCode, string message, object[] args)
-        {
-            ; //  _errors.Add(new XError(fileName, span, errorCode, message, args));
-        }
-        #endregion
-    }
+  
     internal static class MemberExtensions
     {
         /// <summary>

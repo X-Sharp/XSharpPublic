@@ -45,8 +45,8 @@ namespace XSharp.LanguageService
                 IToken stopToken;
                 //
                 // Check if we can get the member where we are
-                XMemberDefinition member = XSharpTokenTools.FindMember(triggerPoint.GetContainingLine().LineNumber, _file);
-                XTypeDefinition currentNamespace = XSharpTokenTools.FindNamespace(triggerPoint.Position, _file);
+                var member = XSharpLookup.FindMember(triggerPoint.GetContainingLine().LineNumber, _file);
+                var currentNamespace = XSharpTokenTools.FindNamespace(triggerPoint.Position, _file);
 
                 var snapshot = _textBuffer.CurrentSnapshot;
                 var tokenList = XSharpTokenTools.GetTokenList(caretPos, lineNumber, snapshot, out stopToken, _file, member);
@@ -57,7 +57,7 @@ namespace XSharp.LanguageService
                 {
                     currentNS = currentNamespace.Name;
                 }
-                CompletionType cType = XSharpTokenTools.RetrieveType(_file, tokenList, member, currentNS, stopToken, out gotoElement, snapshot, lineNumber, _file.Project.Dialect);
+                CompletionType cType = XSharpLookup.RetrieveType(_file, tokenList, member, currentNS, stopToken, out gotoElement, snapshot, lineNumber, _file.Project.Dialect);
                 //
                 if ((gotoElement != null) && (gotoElement.IsSourceElement))
                 {

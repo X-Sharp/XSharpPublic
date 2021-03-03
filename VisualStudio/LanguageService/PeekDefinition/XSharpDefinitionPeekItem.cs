@@ -7,9 +7,9 @@ namespace XSharp.LanguageService
     class XSharpDefinitionPeekItem : IPeekableItem
     {
         internal readonly IPeekResultFactory _peekResultFactory;
-        internal XSourceElement _gotoElement;
+        internal XSourceSymbol _gotoElement;
 
-        public XSharpDefinitionPeekItem(XSourceElement  gotoElement, IPeekResultFactory peekResultFactory)
+        public XSharpDefinitionPeekItem(XSourceSymbol gotoElement, IPeekResultFactory peekResultFactory)
         {
             _gotoElement = gotoElement;
             _peekResultFactory = peekResultFactory;

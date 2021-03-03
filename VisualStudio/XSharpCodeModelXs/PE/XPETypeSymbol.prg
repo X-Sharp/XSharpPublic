@@ -14,10 +14,10 @@ BEGIN NAMESPACE XSharpModel
       /// Model for Namespace, Class, Interface, Structure, Enum
    /// </summary>
    [DebuggerDisplay("{ToString(),nq}")];
-   CLASS XTypeReference INHERIT XEntityReference IMPLEMENTS IXType
-      PRIVATE _baseType       AS XTypeReference
-      PRIVATE _members        AS List<XMemberReference>
-      PRIVATE _children       AS List<XTypeReference>
+   CLASS XPETypeSymbol INHERIT XPESymbol IMPLEMENTS IXTypeSymbol
+      PRIVATE _baseType       AS XPETypeSymbol
+      PRIVATE _members        AS List<XPEMemberSymbol>
+      PRIVATE _children       AS List<XPETypeSymbol>
       PRIVATE _signature      AS XTypeSignature
       PRIVATE _typeDef        as TypeDefinition
       PRIVATE _initialized   := FALSE  AS LOGIC
@@ -27,8 +27,8 @@ BEGIN NAMESPACE XSharpModel
      CONSTRUCTOR(typedef as TypeDefinition, asm as XAssembly)
          SUPER(typedef:Name, GetKind(typedef), ConvertAttributes(typedef:Attributes), asm)  
          SELF:_typeDef        := typedef
-         SELF:_members        := List<XMemberReference>{}
-         SELF:_children       := List<XTypeReference>{}
+         SELF:_members        := List<XPEMemberSymbol>{}
+         SELF:_children       := List<XPETypeSymbol>{}
          SELF:_signature      := XTypeSignature{"System.Object"}
          SELF:Namespace       := typedef:Namespace
          IF SELF:Namespace:Length == 0 .AND. typedef:DeclaringType != NULL
@@ -122,7 +122,7 @@ BEGIN NAMESPACE XSharpModel
          return modifiers         
               
        
-      INTERNAL STATIC METHOD AddMembers(aMembers AS  List<XMemberReference>, typedef AS TypeDefinition, parent AS XTypeReference) AS VOID
+      INTERNAL STATIC METHOD AddMembers(aMembers AS  List<XPEMemberSymbol>, typedef AS TypeDefinition, parent AS XPETypeSymbol) AS VOID
                 
             IF typedef:HasMethods
                FOREACH VAR md IN typedef:Methods
@@ -156,7 +156,7 @@ BEGIN NAMESPACE XSharpModel
                   IF pd:GetMethod != NULL .AND. pd:GetMethod:IsPrivate
                      LOOP
                   ENDIF
-                  VAR xprop := XPropertyReference{pd,parent:Assembly}
+                  VAR xprop := XPEPropertySymbol{pd,parent:Assembly}
                   aMembers:Add(xprop)
                   xprop:Parent := parent
                NEXT
@@ -166,7 +166,7 @@ BEGIN NAMESPACE XSharpModel
                   IF fd:IsPrivate
                      LOOP
                   ENDIF
-                  VAR xField := XFieldReference{fd,parent:Assembly} 
+                  VAR xField := XPEFieldSymbol{fd,parent:Assembly} 
                   aMembers:Add(xField)
                   xField:Parent := parent
                NEXT
@@ -176,7 +176,7 @@ BEGIN NAMESPACE XSharpModel
                   IF ed:AddMethod != NULL .AND. ed:AddMethod:IsPrivate
                      LOOP
                   ENDIF
-                  VAR xEvent := XEventReference{ed,parent:Assembly} 
+                  VAR xEvent := XPEEventSymbol{ed,parent:Assembly} 
                   aMembers:Add(xEvent)
                   xEvent:Parent := parent
                      
@@ -185,7 +185,7 @@ BEGIN NAMESPACE XSharpModel
          
       INTERNAL METHOD Resolve() AS VOID
          IF ! SELF:_initialized .AND. SELF:_typeDef != NULL
-               VAR aMembers := List<XMemberReference>{}
+               VAR aMembers := List<XPEMemberSymbol>{}
                AddMembers(aMembers, SELF:_typeDef, SELF)
               // Get methods from parent class(es), recursively
               if SELF:Assembly != NULL .and. ! String.IsNullOrEmpty(SELF:BaseType)
@@ -199,9 +199,9 @@ BEGIN NAMESPACE XSharpModel
 
               // nested children ?
               IF _typeDef:HasNestedTypes
-                  var aChildren := List<XTypeReference>{}
+                  var aChildren := List<XPETypeSymbol>{}
                   FOREACH var child in _typeDef:NestedTypes
-                     aChildren:Add(XTypeReference{child,SELF:Assembly})
+                     aChildren:Add(XPETypeSymbol{child,SELF:Assembly})
                   NEXT
                   BEGIN LOCK SELF
                      SELF:_children := aChildren
@@ -235,8 +235,8 @@ BEGIN NAMESPACE XSharpModel
       
       
       
-      METHOD GetMembers(elementName AS STRING) AS IList<IXMember>
-         VAR tempMembers := List<IXMember>{}
+      METHOD GetMembers(elementName AS STRING) AS IList<IXMemberSymbol>
+         VAR tempMembers := List<IXMemberSymbol>{}
          SELF:Resolve()
          if ! String.IsNullOrEmpty(elementName)
             tempMembers:AddRange(SELF:_members:Where ( {m => m.Name.StartsWith(elementName, StringComparison.OrdinalIgnoreCase) }))
@@ -245,27 +245,26 @@ BEGIN NAMESPACE XSharpModel
          ENDIF
          RETURN tempMembers
          
-      METHOD GetMembers(elementName AS STRING, lExact as LOGIC) AS IList<IXMember>
+      METHOD GetMembers(elementName AS STRING, lExact as LOGIC) AS IList<IXMemberSymbol>
       IF lExact
-         LOCAL result AS List<IXMember>
          SELF:Resolve()
-         result := List<IXMember>{}
+         var result := List<IXMemberSymbol>{}
          result:AddRange(SELF:_members:Where ( {m => m.Name.Equals(elementName, StringComparison.OrdinalIgnoreCase) }))
          RETURN result
       ELSE
          RETURN SELF:GetMembers(elementName)
       ENDIF
       
-      PROPERTY Members AS IList<IXMember>  
+      PROPERTY Members AS IList<IXMemberSymbol>  
          GET
             SELF:Resolve()
-            VAR members := List<IXMember>{}
+            VAR members := List<IXMemberSymbol>{}
             members:AddRange(SELF:_members)
             RETURN members
          END GET
       END PROPERTY
       
-      PROPERTY XMembers AS IList<XMemberReference>
+      PROPERTY XMembers AS IList<XPEMemberSymbol>
          GET
             SELF:Resolve()
             RETURN SELF:_members:ToArray()
@@ -276,18 +275,18 @@ BEGIN NAMESPACE XSharpModel
       
       PROPERTY Description AS STRING GET SELF:GetDescription()
       
-      PROPERTY IsNested  AS LOGIC GET SELF:Parent IS XTypeReference
+      PROPERTY IsNested  AS LOGIC GET SELF:Parent IS XPETypeSymbol
       PROPERTY IsGeneric as LOGIC GET _typeDef:HasGenericParameters
       PROPERTY IsStatic  AS LOGIC GET _typeDef:Attributes:HasFlag(TypeAttributes.Abstract |TypeAttributes.Sealed)
       PROPERTY Location AS STRING GET SELF:Assembly:DisplayName
                
-      PROPERTY Children   AS IList<IXType> 
+      PROPERTY Children   AS IList<IXTypeSymbol> 
          GET 
-            return (IList<IXType> ) SELF:_children
+            return (IList<IXTypeSymbol> ) SELF:_children
          END GET
       END PROPERTY
       
-      PROPERTY XChildren   AS IList<XTypeReference>  
+      PROPERTY XChildren   AS IList<XPETypeSymbol>  
          GET 
             BEGIN LOCK SELF
                return SELF:_children

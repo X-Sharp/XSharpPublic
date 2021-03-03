@@ -291,7 +291,7 @@ namespace XSharp.LanguageService
 
         }
 
-        public IList<ClassificationSpan> BuildRegionTags( IList<XEntityDefinition> entities, IList<XBlock> blocks, ITextSnapshot snapshot, IClassificationType start, IClassificationType stop)
+        public IList<ClassificationSpan> BuildRegionTags( IList<XSourceEntity> entities, IList<XSourceBlock> blocks, ITextSnapshot snapshot, IClassificationType start, IClassificationType stop)
         {
             if (XSettings.DisableRegions)
             {
@@ -301,9 +301,8 @@ namespace XSharp.LanguageService
             var regions = new List<ClassificationSpan>();
             foreach (var entity in entities)
             {
-                if (entity is XMemberDefinition )
+                if (entity is XSourceMemberSymbol member)
                 {
-                    var member = (XMemberDefinition)entity;
                     if (member.SingleLine)
                     {
                         continue;

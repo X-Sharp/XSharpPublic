@@ -689,11 +689,11 @@ BEGIN NAMESPACE XSharpModel
 							NEXT
                   NEXT
                   // Save local functions and procedure
-                  FOREACH xmember as XMemberDefinition in oFile:EntityList:Where ( {m => m.Kind.IsLocal() } )
+                  FOREACH xmember as XSourceMemberSymbol in oFile:EntityList:Where ( {m => m.Kind.IsLocal() } )
 								TRY
 										// file is constant
 										pars[ 0]:Value := oFile:Id
-										pars[ 1]:Value := ((XTypeDefinition) xmember:ParentType):Id
+										pars[ 1]:Value := ((XSourceTypeSymbol) xmember:ParentType):Id
 										pars[ 2]:Value := xmember:Name
 										pars[ 3]:Value := (INT) xmember:Kind
 										pars[ 4]:Value := (INT) xmember:Attributes

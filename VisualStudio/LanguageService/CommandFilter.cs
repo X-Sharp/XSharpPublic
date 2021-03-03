@@ -268,17 +268,17 @@ namespace XSharp.LanguageService
                 if (identifier.StartsWith("@@"))
                     identifier = identifier.Substring(2);
                 var lineNumber = currentLine;
-                XMemberDefinition currentMember = XSharpTokenTools.FindMember(lineNumber, _file);
+                var currentMember = XSharpLookup.FindMember(lineNumber, _file);
                 //
                 if (currentMember == null)
                     return;
                 CompletionType cType = null;
                 CompletionElement foundElement = null;
-                IXVariable element = null;
+                IXVariableSymbol element = null;
                 // Search in Parameters
                 if (currentMember.Parameters != null)
                 {
-                    element = (XVariable)currentMember.Parameters.Where(x => XSharpTokenTools.StringEquals(x.Name, identifier)).FirstOrDefault();
+                    element = currentMember.Parameters.Where(x => XSharpTokenTools.StringEquals(x.Name, identifier)).FirstOrDefault();
                 }
                 if (element == null)
                 {
@@ -293,11 +293,11 @@ namespace XSharp.LanguageService
                         if (currentMember.Parent != null)
                         {
                             // Context Type....
-                            cType = new CompletionType(currentMember.Parent as IXType);
+                            cType = new CompletionType(currentMember.Parent as IXTypeSymbol);
                             // We can have a Property/Field of the current CompletionType
                             if (!cType.IsEmpty())
                             {
-                                cType = XSharpTokenTools.SearchPropertyOrFieldIn(cType, identifier, Modifiers.Private, out foundElement);
+                                cType = XSharpLookup.SearchPropertyOrFieldIn(cType, identifier, Modifiers.Private, out foundElement);
                             }
                             // Not found ? It might be a Global !?
                             if (foundElement == null)
@@ -309,8 +309,8 @@ namespace XSharp.LanguageService
                 }
                 if (element != null)
                 {
-                    cType = new CompletionType((XVariable)element, "");
-                    foundElement = new CompletionElement((XVariable)element);
+                    cType = new CompletionType((XSourceVariableSymbol)element, "");
+                    foundElement = new CompletionElement((XSourceVariableSymbol)element);
                 }
                 // got it !
                 if (foundElement != null)
@@ -756,8 +756,8 @@ namespace XSharp.LanguageService
                 if (file == null)
                     return;
                 // Check if we can get the member where we are
-                XMemberDefinition member = XSharpTokenTools.FindMember(lineNumber, file);
-                XTypeDefinition currentNamespace = XSharpTokenTools.FindNamespace(caretPos, file);
+                var member = XSharpLookup.FindMember(lineNumber, file);
+                var currentNamespace = XSharpTokenTools.FindNamespace(caretPos, file);
 
                 // Then, the corresponding Type/Element if possible
                 IToken stopToken;
@@ -782,15 +782,15 @@ namespace XSharp.LanguageService
                     currentNS = currentNamespace.Name;
                 }
                 //
-                CompletionType cType = XSharpTokenTools.RetrieveType(file, tokenList, member, currentNS, stopToken, out gotoElement, snapshot, lineNumber, file.Project.Dialect);
+                CompletionType cType = XSharpLookup.RetrieveType(file, tokenList, member, currentNS, stopToken, out gotoElement, snapshot, lineNumber, file.Project.Dialect);
                 //
                 if (gotoElement != null)
                 {
                     if (gotoElement.Result != null)
                     {
-                        if (gotoElement.Result is XMemberDefinition)
+                        if (gotoElement.Result is XSourceMemberSymbol result)
                         {
-                            if (((XMemberDefinition)gotoElement.Result).GetOverloads().Length > 1)
+                            if (result.GetOverloads().Length > 1)
                             {
                                 ObjectBrowserHelper.FindSymbols(gotoElement.Result.Name);
                                 return;
@@ -809,7 +809,7 @@ namespace XSharp.LanguageService
                 {
                     // try again with just the last element in the list
                     tokenList.RemoveRange(0, tokenList.Count - 1);
-                    cType = XSharpTokenTools.RetrieveType(file, tokenList, member, currentNS, stopToken, out gotoElement, snapshot, lineNumber, file.Project.Dialect);
+                    cType = XSharpLookup.RetrieveType(file, tokenList, member, currentNS, stopToken, out gotoElement, snapshot, lineNumber, file.Project.Dialect);
                 }
                 if ((gotoElement != null) && (gotoElement.Result != null))
                 {
@@ -1202,7 +1202,7 @@ namespace XSharp.LanguageService
             //
             if (cType != null && methodName != null)
             {
-                XSharpTokenTools.SearchMethodTypeIn(cType, methodName, XSharpModel.Modifiers.Private, false, out currentElement, file.Project.Dialect);
+                XSharpLookup.SearchMethodTypeIn(cType, methodName, XSharpModel.Modifiers.Private, false, out currentElement, file.Project.Dialect);
             }
             else
             {
@@ -1211,8 +1211,8 @@ namespace XSharp.LanguageService
                 IToken stopToken;
                 // Check if we can get the member where we are
 
-                XMemberDefinition member = XSharpTokenTools.FindMember(lineNumber, file);
-                XTypeDefinition currentNamespace = XSharpTokenTools.FindNamespace(caretPos, file);
+                var member = XSharpLookup.FindMember(lineNumber, file);
+                var currentNamespace = XSharpTokenTools.FindNamespace(caretPos, file);
                 var tokenList = XSharpTokenTools.GetTokenList(caretPos, lineNumber, snapshot, out stopToken, file,  member);
                 string currentNS = "";
                 if (currentNamespace != null)
@@ -1220,7 +1220,7 @@ namespace XSharp.LanguageService
                     currentNS = currentNamespace.Name;
                 }
                 // We don't care of the corresponding Type, we are looking for the currentElement
-                XSharpTokenTools.RetrieveType(file, tokenList, member, currentNS, stopToken, out currentElement, snapshot, startLineNumber, file.Project.Dialect,true);
+                XSharpLookup.RetrieveType(file, tokenList, member, currentNS, stopToken, out currentElement, snapshot, startLineNumber, file.Project.Dialect,true);
             }
             //
             if ((currentElement != null) && (currentElement.IsInitialized))

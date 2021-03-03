@@ -1,4 +1,4 @@
-//
+ï»¿//
 // Copyright (c) XSharp B.V.  All Rights Reserved.
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
@@ -107,7 +107,7 @@ PARTIAL CLASS VOMenuEditor INHERIT DesignerBase
 	RETURN FALSE
 
 	ACCESS AutoUpdateItem AS INT
-        STATIC LOCAL aWindow := <STRING>{"WINDOW","Fenêtre":ToUpper(),"FENSTER","FINESTRA","VENTANA","Fönster":ToUpper(),"VENSTER","VINDU","VINDUE","JANELA","OKNO","ABLAK"} AS STRING[]
+        STATIC LOCAL aWindow := <STRING>{"WINDOW","FenÃªtre":ToUpper(),"FENSTER","FINESTRA","VENTANA","FÃ¶nster":ToUpper(),"VENSTER","VINDU","VINDUE","JANELA","OKNO","ABLAK"} AS STRING[]
 		LOCAL oNode AS TreeNode
 		LOCAL cText AS STRING
 		LOCAL n AS INT

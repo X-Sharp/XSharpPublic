@@ -118,11 +118,5 @@ BEGIN NAMESPACE XSharpModel
             RETURN XSettings.FormatKeyword(keyword:ToString());
             
     END CLASS
-    ENUM KeywordCase
-        MEMBER None := 0
-        MEMBER Upper:= 1
-        MEMBER Lower:= 2
-        MEMBER Title:= 3
-    END ENUM
 
 END NAMESPACE

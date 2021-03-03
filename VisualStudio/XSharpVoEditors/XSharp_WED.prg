@@ -319,7 +319,7 @@ CLASS XSharp_VOWindowEditor INHERIT VOWindowEditor
 	PROTECTED VIRTUAL METHOD WriteCallback(oDesign AS DesignWindowItem , cName AS STRING) AS VOID
 		LOCAL oProject AS XSharpModel.XProject
 		LOCAL oFile AS XSharpModel.XFile
-		LOCAL oType AS XSharpModel.XTypeDefinition
+		LOCAL oType AS XSharpModel.XSourceTypeSymbol
 		//LOCAL oEditor AS VulcanEditor
 		LOCAL aLines AS List<STRING>
 		LOCAL cClass AS STRING

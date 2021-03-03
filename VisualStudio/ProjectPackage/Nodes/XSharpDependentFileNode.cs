@@ -54,9 +54,13 @@ namespace XSharp.Project
         /// </summary>
         /// <param name="label">new label</param>
         /// <returns>E_NOTIMPLE in order to tell the call that we do not support rename</returns>
-        public override string GetEditLabel()
+        //public override string GetEditLabel()
+        //{
+        //    throw new NotImplementedException();
+        //}
+        protected override bool CanRenameItem()
         {
-            throw new NotImplementedException();
+            return false;
         }
 
         // Called since the FileNode.ImageIndex returns -1 by default.

@@ -13,15 +13,11 @@ USING Mono.Cecil
 BEGIN NAMESPACE XSharpModel
    
    [DebuggerDisplay("{Kind}, {Name,nq}")];
-   CLASS XEntityReference INHERIT XElement IMPLEMENTS IXEntity
+   CLASS XPESymbol INHERIT XSymbol IMPLEMENTS IXSymbol
       #region Simple Properties
       PROPERTY Assembly AS XAssembly               AUTO
-      PROPERTY FullName AS STRING                  GET SELF:Name
-      PROPERTY Namespace  AS STRING                AUTO
       
       PROPERTY Prototype AS STRING                 GET SELF:Name
-      PROPERTY IsArray  AS LOGIC                   AUTO GET PROTECTED SET 
-      PROPERTY IsStatic  AS LOGIC                  GET FALSE
       PROPERTY CustomAttributes AS STRING           AUTO
       PROPERTY SingleLine        AS LOGIC          AUTO
       PROPERTY Value             AS STRING         AUTO 
@@ -55,7 +51,6 @@ BEGIN NAMESPACE XSharpModel
       
       PROPERTY IsTyped                 AS LOGIC    GET TRUE
       PROPERTY TypeName                AS STRING   AUTO
-      PROPERTY FileUsings              AS IList<String> GET nullUsings
       
    END CLASS
    

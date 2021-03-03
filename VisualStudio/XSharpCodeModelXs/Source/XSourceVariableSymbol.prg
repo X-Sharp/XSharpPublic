@@ -12,10 +12,10 @@ USING LanguageService.SyntaxTree
 BEGIN NAMESPACE XSharpModel
      // A variable is strictly speaking not an entity
     [DebuggerDisplay("{DebuggerDisplay(),nq}")];
-    CLASS XVariable INHERIT XEntityDefinition IMPLEMENTS IXSourceVariable
+    CLASS XSourceVariableSymbol INHERIT XSourceEntity  IMPLEMENTS IXVariableSymbol, IXSourceSymbol
         
         // Methods
-        CONSTRUCTOR(parent AS XEntityDefinition, name AS STRING, span AS TextRange, position AS TextInterval, typeName AS STRING)
+        CONSTRUCTOR(parent AS XSourceEntity, name AS STRING, span AS TextRange, position AS TextInterval, typeName AS STRING)
             SUPER(name, Kind.Local, Modifiers.None, span, position)
             SELF:TypeName       := typeName
             SUPER:Parent        := parent
@@ -28,7 +28,7 @@ BEGIN NAMESPACE XSharpModel
         PROPERTY Expression   AS IList<IToken> AUTO GET INTERNAL SET
 	
         PROPERTY FullName     AS STRING GET SELF:TypeName
-	
+
         PROPERTY Description  AS STRING
             GET
                 //
@@ -84,7 +84,10 @@ BEGIN NAMESPACE XSharpModel
                 RETURN cType
             END GET
         END PROPERTY
-
+        PROPERTY IsArray      AS LOGIC AUTO
+        PROPERTY IsTyped      AS LOGIC GET TRUE
+        PROPERTY Value        AS STRING AUTO
+	
 
         METHOD DebuggerDisplay() AS STRING
             VAR result := SUPER:Name
@@ -94,15 +97,6 @@ BEGIN NAMESPACE XSharpModel
             RETURN result
 
     END CLASS
-    CLASS XParameter INHERIT XVariable
-
-        CONSTRUCTOR(parent AS XEntityDefinition, name AS STRING, span AS TextRange, position AS TextInterval, parameterType AS STRING)
-            SUPER(parent, name, span, position, parameterType)
-            SELF:Kind := Kind.Parameter
-	    
-        PROPERTY IsParameter AS LOGIC GET TRUE
-
-   END CLASS
          
 
 END NAMESPACE

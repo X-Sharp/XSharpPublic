@@ -2083,6 +2083,11 @@ namespace Microsoft.VisualStudio.Project
             return this.ProjectMgr.CanProjectDeleteItems;
         }
 
+        protected virtual bool CanRenameItem()
+        {
+            return true;
+        }
+
         /// <summary>
         /// Overwrite this method to tell that you support the default icon for this node.
         /// </summary>

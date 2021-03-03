@@ -168,15 +168,14 @@ namespace XSharp.LanguageService
         /// <param name="member"></param>
         /// <param name="project"></param>
         /// <returns></returns>
-        static public string GetTypeSummary(IXType type, XProject project, out string returns, out string remarks)
+        static public string GetTypeSummary(IXTypeSymbol type, XProject project, out string returns, out string remarks)
         {
             string summary = null;
             returns = remarks = "";
             if (type == null)
                 return "";
-            if (type is XTypeDefinition)
+            if (type is XSourceTypeSymbol xdef)
             {
-                var xdef = (XTypeDefinition)type;
                 var xml = xdef.XmlComments;
                 var xfile = XSharpXMLDocTools.firstfile;
                 if (xfile != null && !string.IsNullOrEmpty(xml))
@@ -187,7 +186,7 @@ namespace XSharp.LanguageService
 
             }
 
-            var xtype = (XTypeReference)type;
+            var xtype = (XPETypeSymbol)type;
             var declarationAssembly = xtype.Assembly;
 
             var file = XSharpXMLDocTools.GetXmlDocFile(declarationAssembly, project);
@@ -206,7 +205,7 @@ namespace XSharp.LanguageService
         }
 
         static IVsXMLMemberIndex lastfile = null;
-        static public string GetMemberSummary(IXMember member, XProject project, out string returns, out string remarks)
+        static public string GetMemberSummary(IXMemberSymbol member, XProject project, out string returns, out string remarks)
         {
             string summary = null;
             returns = remarks = "";
@@ -214,9 +213,8 @@ namespace XSharp.LanguageService
                 return "";
 
             //
-            if (member is XMemberDefinition)
+            if (member is XSourceMemberSymbol xdef)
             {
-                var xdef = (XMemberDefinition)member;
                 var xml = xdef.XmlComments;
                 var xfile = XSharpXMLDocTools.firstfile;
                 if (xfile != null && !string.IsNullOrEmpty(xml))
@@ -226,10 +224,10 @@ namespace XSharp.LanguageService
                 return summary;
 
             }
-            if (!(member is XMemberReference))
+            if (!(member is XPEMemberSymbol))
                 return "";
 
-            var xmember = (XMemberReference)member;
+            var xmember = (XPEMemberSymbol)member;
             var declarationAssembly = xmember.Assembly;
 
             //
@@ -288,14 +286,14 @@ namespace XSharp.LanguageService
             return true;
 
         }
-        static public bool GetMemberParameters(IXMember member, XProject project, IList<string> names, IList<string> descriptions)
+        static public bool GetMemberParameters(IXMemberSymbol member, XProject project, IList<string> names, IList<string> descriptions)
         {
             if (member == null)
                 return false;
 
-            if (member is XMemberDefinition)
+            if (member is XSourceMemberSymbol)
             {
-                var xdef = (XMemberDefinition)member;
+                var xdef = (XSourceMemberSymbol)member;
                 var xml = xdef.XmlComments;
                 var xfile = XSharpXMLDocTools.firstfile;
                 if (xfile != null && !string.IsNullOrEmpty(xml))
@@ -306,10 +304,10 @@ namespace XSharp.LanguageService
                 return false;
 
             }
-            if (!(member is XMemberReference))
+            if (!(member is XPEMemberSymbol))
                 return false;
 
-            var xmember = (XMemberReference)member;
+            var xmember = (XPEMemberSymbol)member;
             var declarationAssembly = xmember.Assembly;
             var file = XSharpXMLDocTools.GetXmlDocFile(declarationAssembly, project);
             if (file == null)

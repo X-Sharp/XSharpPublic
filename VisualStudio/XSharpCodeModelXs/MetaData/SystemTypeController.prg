@@ -78,7 +78,7 @@ BEGIN NAMESPACE XSharpModel
 			NEXT
 			RETURN NULL
 		
-      STATIC METHOD FindType(typeName as STRING, assemblyName as STRING) AS XTypeReference
+      STATIC METHOD FindType(typeName as STRING, assemblyName as STRING) AS XPETypeSymbol
          VAR assemblies := List<XAssembly>{}
          var asm := FindAssembly(assemblyName)
          IF asm != null
@@ -96,8 +96,8 @@ BEGIN NAMESPACE XSharpModel
          return NULL
 
 
-		STATIC METHOD FindType(typeName AS STRING, usings AS IList<STRING>, assemblies AS IList<XAssembly>) AS XTypeReference
-			LOCAL result := NULL AS XTypeReference
+		STATIC METHOD FindType(typeName AS STRING, usings AS IList<STRING>, assemblies AS IList<XAssembly>) AS XPETypeSymbol
+			LOCAL result := NULL AS XPETypeSymbol
 			TRY
                 IF XSettings.EnableTypelookupLog
 				WriteOutputMessage("--> FindType() "+typeName)
@@ -196,7 +196,7 @@ BEGIN NAMESPACE XSharpModel
 			RETURN info
 		
 		
-		STATIC METHOD Lookup(typeName AS STRING, theirassemblies AS IList<XAssembly>) AS XTypeReference
+		STATIC METHOD Lookup(typeName AS STRING, theirassemblies AS IList<XAssembly>) AS XPETypeSymbol
 			FOREACH VAR assembly IN theirassemblies
 				assembly:Refresh()
  				VAR type := assembly:GetType(typeName)
@@ -238,14 +238,14 @@ BEGIN NAMESPACE XSharpModel
 		STATIC METHOD WriteOutputMessage(message AS STRING) AS VOID
 			XSolution.WriteOutputMessage("XModel.Typecontroller "+message)
 		
-		STATIC METHOD LookForExtensions(typeName AS STRING, theirassemblies AS IList<XAssembly>) AS IList<IXMember>
+		STATIC METHOD LookForExtensions(typeName AS STRING, theirassemblies AS IList<XAssembly>) AS IList<IXMemberSymbol>
 			// First Search for a system Type
          VAR pos := typeName:IndexOf('<')
          IF pos > 0
             typeName := typeName:Substring(0, pos)+"<>"
 
          ENDIF
-         VAR result := List<IXMember>{} 
+         VAR result := List<IXMemberSymbol>{} 
 			FOREACH VAR assembly IN theirassemblies
 				assembly:Refresh()
 				IF assembly:HasExtensions

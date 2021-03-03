@@ -30,17 +30,17 @@ BEGIN NAMESPACE XSharpModel
       PRIVATE  _file         AS XFile
       PRIVATE  _usings       AS IList<STRING>
       PRIVATE  _staticusings AS IList<STRING>
-      PRIVATE  _EntityList    AS IList<XEntityDefinition>
-      PRIVATE  _EntityStack   AS Stack<XEntityDefinition>
-      PRIVATE  _BlockList     AS IList<XBlock>
-      PRIVATE  _BlockStack    AS Stack<XBlock>
-      PRIVATE  _PPBlockStack  AS Stack<XBlock>  
-      PRIVATE  _locals        AS IList<XVariable>
+      PRIVATE  _EntityList    AS IList<XSourceEntity>
+      PRIVATE  _EntityStack   AS Stack<XSourceEntity>
+      PRIVATE  _BlockList     AS IList<XSourceBlock>
+      PRIVATE  _BlockStack    AS Stack<XSourceBlock>
+      PRIVATE  _PPBlockStack  AS Stack<XSourceBlock>  
+      PRIVATE  _locals        AS IList<XSourceVariableSymbol>
       PRIVATE  _lastToken     AS IToken
       PRIVATE  _collectLocals AS LOGIC 
       PRIVATE  _collectBlocks AS LOGIC
 	   PRIVATE  _errors        AS IList<XError>
-      PRIVATE  _globalType    AS XTypeDefinition
+      PRIVATE  _globalType    AS XSourceTypeSymbol
       PRIVATE  _dialect       AS XSharpDialect
       PRIVATE  _xppVisibility AS Modifiers
       PRIVATE  _commentTasks  AS IList<XCommentTask>
@@ -50,19 +50,19 @@ BEGIN NAMESPACE XSharpModel
       PRIVATE  _hasXmlDoc    AS LOGIC
       PRIVATE  _tokens       AS IList<IToken>
       
-      PRIVATE PROPERTY CurrentEntity      AS XEntityDefinition GET IIF(_EntityStack:Count > 0, _EntityStack:Peek(), NULL_OBJECT)
-      PRIVATE PROPERTY CurrentType        AS XTypeDefinition    
+      PRIVATE PROPERTY CurrentEntity      AS XSourceEntity GET IIF(_EntityStack:Count > 0, _EntityStack:Peek(), NULL_OBJECT)
+      PRIVATE PROPERTY CurrentType        AS XSourceTypeSymbol    
          GET 
             VAR aStack := _EntityStack:ToArray()
             FOREACH VAR item IN aStack
-               IF item IS XTypeDefinition VAR type
+               IF item IS XSourceTypeSymbol VAR type
                   RETURN type
                ENDIF
             NEXT
             RETURN NULL
          END GET
       END PROPERTY
-      PRIVATE PROPERTY CurrentBlock       AS XBlock   GET IIF(_BlockStack:Count > 0, _BlockStack:Peek(), NULL_OBJECT)
+      PRIVATE PROPERTY CurrentBlock       AS XSourceBlock   GET IIF(_BlockStack:Count > 0, _BlockStack:Peek(), NULL_OBJECT)
       PRIVATE PROPERTY CurrentEntityKind  AS Kind     GET IIF(_EntityStack:Count > 0, CurrentEntity:Kind, Kind:Unknown)
       PRIVATE PROPERTY La1 AS INT GET SELF:La(1)
       PRIVATE PROPERTY La2 AS INT GET SELF:La(2)
@@ -72,9 +72,9 @@ BEGIN NAMESPACE XSharpModel
       PRIVATE PROPERTY LastToken AS IToken GET _lastToken
       PRIVATE PROPERTY InFoxClass AS LOGIC GET CurrentType != NULL .AND. CurrentType:ClassType == XSharpDialect.FoxPro 
       PRIVATE PROPERTY InXppClass AS LOGIC GET CurrentType != NULL .AND. CurrentType:ClassType == XSharpDialect.XPP 
-      PROPERTY EntityList AS IList<XEntityDefinition>  GET _EntityList
-      PROPERTY BlockList  AS IList<XBlock>    GET _BlockList
-      PROPERTY Locals     AS IList<XVariable> GET _locals
+      PROPERTY EntityList AS IList<XSourceEntity>  GET _EntityList
+      PROPERTY BlockList  AS IList<XSourceBlock>    GET _BlockList
+      PROPERTY Locals     AS IList<XSourceVariableSymbol> GET _locals
       
       
       CONSTRUCTOR(oFile AS XFile, dialect AS XSharpDialect)
@@ -82,14 +82,14 @@ BEGIN NAMESPACE XSharpModel
          _usings        := List<STRING>{}
          _commentTasks  := List<XCommentTask>{}
          _staticusings  := List<STRING>{}
-         _EntityList    := List<XEntityDefinition>{}
-         _EntityStack   := Stack<XEntityDefinition>{}
-         _BlockList     := List<XBlock>{}
-         _BlockStack    := Stack<XBlock>{}
-         _PPBlockStack  := Stack<XBlock>{}
+         _EntityList    := List<XSourceEntity>{}
+         _EntityStack   := Stack<XSourceEntity>{}
+         _BlockList     := List<XSourceBlock>{}
+         _BlockStack    := Stack<XSourceBlock>{}
+         _PPBlockStack  := Stack<XSourceBlock>{}
          _file          := oFile
          _dialect       := dialect
-         _locals        := List<XVariable>{}
+         _locals        := List<XSourceVariableSymbol>{}
          _file:InitTypeList()
          _globalType    := _file:GlobalType
          _globalType:ClearMembers()
@@ -209,7 +209,7 @@ BEGIN NAMESPACE XSharpModel
                         mustPop := FALSE
                      ELSEIF CurrentEntityKind:HasMembers()
                         mustPop := FALSE
-                     ELSEIF CurrentEntity IS XTypeDefinition 
+                     ELSEIF CurrentEntity IS XSourceTypeSymbol 
                         mustPop := FALSE
                      ELSEIF CurrentEntityKind:HasBody() .and. entity:Kind:IsLocal()
                         mustPop := FALSE
@@ -219,18 +219,18 @@ BEGIN NAMESPACE XSharpModel
                      IF mustPop 
                         _EntityStack:Pop()
                      ENDIF
-                     IF entity:Kind:IsGlobalType() .AND. entity IS XMemberDefinition VAR xGlobalMember
+                     IF entity:Kind:IsGlobalType() .AND. entity IS XSourceMemberSymbol VAR xGlobalMember
                         SELF:_globalType:AddMember(xGlobalMember)
                      ELSEIF entity:Kind:IsLocal()
                         entity:Parent := CurrentEntity
                      ELSE
-                        IF CurrentEntityKind:HasMembers() .AND. CurrentEntity IS XTypeDefinition VAR xEnt
-                           IF entity IS XMemberDefinition VAR xMember .AND. xMember:Parent == NULL
+                        IF CurrentEntityKind:HasMembers() .AND. CurrentEntity IS XSourceTypeSymbol VAR xEnt
+                           IF entity IS XSourceMemberSymbol VAR xMember .AND. xMember:Parent == NULL
                               xEnt:AddMember( xMember )
                            ENDIF
                         ENDIF
-                        IF CurrentEntityKind:HasChildren() .AND. CurrentEntity IS XTypeDefinition VAR xTypeDef
-                           IF entity IS XTypeDefinition VAR xChild .AND. ! XTypeDefinition.IsGlobalType(xTypeDef)
+                        IF CurrentEntityKind:HasChildren() .AND. CurrentEntity IS XSourceTypeSymbol VAR xTypeDef
+                           IF entity IS XSourceTypeSymbol VAR xChild .AND. ! XSourceTypeSymbol.IsGlobalType(xTypeDef)
                               xTypeDef:AddChild( xChild )
                               xChild:Namespace := xTypeDef:FullName
                            ENDIF
@@ -272,11 +272,11 @@ BEGIN NAMESPACE XSharpModel
                SELF:ParseStatement() 
             ENDIF
          ENDDO
-         VAR types := SELF:_EntityList:Where( {x => x IS XTypeDefinition})
-         VAR typelist := Dictionary<STRING, XTypeDefinition>{System.StringComparer.InvariantCultureIgnoreCase}
+         VAR types := SELF:_EntityList:Where( {x => x IS XSourceTypeSymbol})
+         VAR typelist := Dictionary<STRING, XSourceTypeSymbol>{System.StringComparer.InvariantCultureIgnoreCase}
          typelist:Add(_globalType:Name, _globalType)
-         LOCAL last  := NULL AS XTypeDefinition
-         FOREACH type AS XTypeDefinition IN types
+         LOCAL last  := NULL AS XSourceTypeSymbol
+         FOREACH type AS XSourceTypeSymbol IN types
             IF last != NULL .AND. last:Range:StartLine == last:Range:EndLine
                // adjust the end of the type with the start of the current line
                VAR newEndLine := type:Range:StartLine-1
@@ -357,20 +357,20 @@ BEGIN NAMESPACE XSharpModel
          CASE XSharpLexer.PP_REGION
          CASE XSharpLexer.PP_IFDEF
          CASE XSharpLexer.PP_IFNDEF
-            VAR block := XBlock{ SELF:Lt1, SELF:Lt2}
+            VAR block := XSourceBlock{ SELF:Lt1, SELF:Lt2}
             _BlockList:Add(block)
             _PPBlockStack:Push(block)
          CASE XSharpLexer.PP_ENDREGION
          CASE XSharpLexer.PP_ENDIF
                // end
             IF _PPBlockStack:Count > 0
-               _PPBlockStack:Peek():Children:Add( XBlock{SELF:Lt1,SELF:Lt2})
+               _PPBlockStack:Peek():Children:Add( XSourceBlock{SELF:Lt1,SELF:Lt2})
                _PPBlockStack:Pop()
             ENDIF
          CASE XSharpLexer.PP_ELSE
                // middle
             IF _PPBlockStack:Count > 0
-               _PPBlockStack:Peek():Children:Add( XBlock{SELF:Lt1,SELF:Lt2})
+               _PPBlockStack:Peek():Children:Add( XSourceBlock{SELF:Lt1,SELF:Lt2})
             ENDIF
          OTHERWISE
             RETURN FALSE
@@ -668,13 +668,13 @@ attributeParam      : Name=identifierName Op=assignoperator Expr=expression     
          OTHERWISE
             IF IsId(SELF:La1) 
                IF mods != Modifiers.None
-                  LOCAL parent AS XTypeDefinition
-                  IF CurrentEntity IS XTypeDefinition 
-                     parent := (XTypeDefinition) CurrentEntity
-                  ELSEIF CurrentEntity != NULL .AND. CurrentEntity:Parent IS XTypeDefinition 
-                     parent := (XTypeDefinition) CurrentEntity:Parent 
+                  LOCAL parent AS XSourceTypeSymbol
+                  IF CurrentEntity IS XSourceTypeSymbol 
+                     parent := (XSourceTypeSymbol) CurrentEntity
+                  ELSEIF CurrentEntity != NULL .AND. CurrentEntity:Parent IS XSourceTypeSymbol 
+                     parent := (XSourceTypeSymbol) CurrentEntity:Parent 
                   ENDIF
-                  IF ! XTypeDefinition.IsGlobalType(parent) 
+                  IF ! XSourceTypeSymbol.IsGlobalType(parent) 
                      entityKind := Kind.Field
                   ENDIF
                   // PRIVATE and PUBLIC as memvar declarator
@@ -682,7 +682,7 @@ attributeParam      : Name=identifierName Op=assignoperator Expr=expression     
                   IF mods == Modifiers.Public .OR. mods == Modifiers.Private
                      var txt := LastToken.Text.ToUpper()
                      if (txt == "PUBLIC" .or. txt == "PRIVATE")
-                     IF CurrentEntity IS XMemberDefinition VAR xDef .AND. ! xDef:SingleLine .AND. CurrentEntity.Kind:HasBody()
+                     IF CurrentEntity IS XSourceMemberSymbol VAR xDef .AND. ! xDef:SingleLine .AND. CurrentEntity.Kind:HasBody()
                         entityKind := Kind.Unknown
                         ENDIF
                      ENDIF
@@ -792,7 +792,7 @@ attributeParam      : Name=identifierName Op=assignoperator Expr=expression     
           END SWITCH
          IF nStart > 0
             IF SELF:_collectBlocks
-               VAR block := XBlock{ SELF:Lt1, IIF(nStart == 1, SELF:Lt1, SELF:Lt2)}
+               VAR block := XSourceBlock{ SELF:Lt1, IIF(nStart == 1, SELF:Lt1, SELF:Lt2)}
                _BlockList:Add(block)
                _BlockStack:Push(block)
             ENDIF
@@ -804,7 +804,7 @@ attributeParam      : Name=identifierName Op=assignoperator Expr=expression     
                   VAR start := SELF:Lt1
                   VAR stop  := SELF:Lt2
                   SELF:GetSourceInfo(start, stop, OUT VAR range, OUT VAR interval, OUT VAR _)  
-                  VAR xVar := XVariable{SELF:CurrentEntity, id, range, interval, strType} 
+                  VAR xVar := XSourceVariableSymbol{SELF:CurrentEntity, id, range, interval, strType} 
                   
                   SELF:_locals:Add(xVar)
                ENDIF
@@ -820,7 +820,7 @@ attributeParam      : Name=identifierName Op=assignoperator Expr=expression     
          ELSEIF nMiddle > 0
             // Do something
             IF SELF:_collectBlocks .AND. _BlockStack:Count > 0
-               CurrentBlock:Children:Add( XBlock{SELF:Lt1,IIF(nMiddle == 1, SELF:Lt1, SELF:Lt2)})
+               CurrentBlock:Children:Add( XSourceBlock{SELF:Lt1,IIF(nMiddle == 1, SELF:Lt1, SELF:Lt2)})
             ENDIF
             SWITCH SELF:La1
             CASE XSharpLexer.CATCH
@@ -835,7 +835,7 @@ attributeParam      : Name=identifierName Op=assignoperator Expr=expression     
                      ENDIF
                      
                      SELF:GetSourceInfo(start, LastToken, OUT VAR range, OUT VAR interval, OUT VAR _)  
-                     VAR xVar := XVariable{SELF:CurrentEntity, id, range, interval, strType} 
+                     VAR xVar := XSourceVariableSymbol{SELF:CurrentEntity, id, range, interval, strType} 
                      SELF:_locals:Add(xVar)
                   ENDIF
                ENDIF
@@ -849,7 +849,7 @@ attributeParam      : Name=identifierName Op=assignoperator Expr=expression     
             RETURN TRUE
          ELSEIF nEnd > 0
             IF SELF:_collectBlocks .AND. _BlockStack:Count > 0
-               CurrentBlock:Children:Add( XBlock{SELF:Lt1,IIF(nEnd == 1, SELF:Lt1, SELF:Lt2)})
+               CurrentBlock:Children:Add( XSourceBlock{SELF:Lt1,IIF(nEnd == 1, SELF:Lt1, SELF:Lt2)})
                _BlockStack:Pop()
             ENDIF
             SELF:ReadLine()
@@ -1130,8 +1130,8 @@ attributeParam      : Name=identifierName Op=assignoperator Expr=expression     
          NEXT
          RETURN sb:ToString()
          
-      PRIVATE METHOD ParseEntity(entityKind AS Kind) AS IList<XEntityDefinition>
-         LOCAL result AS IList<XEntityDefinition>
+      PRIVATE METHOD ParseEntity(entityKind AS Kind) AS IList<XSourceEntity>
+         LOCAL result AS IList<XSourceEntity>
          SWITCH entityKind
          CASE Kind.Ignore
             SELF:ReadLine()
@@ -1252,7 +1252,7 @@ attributeParam      : Name=identifierName Op=assignoperator Expr=expression     
          
          #region Main entities
          
-         PRIVATE METHOD ParseFuncProc() AS IList<XEntityDefinition>
+         PRIVATE METHOD ParseFuncProc() AS IList<XSourceEntity>
 /*
 funcproc      : (Attributes=attributes)? (Modifiers=funcprocModifiers)?   
               T=funcproctype Sig=signature
@@ -1280,12 +1280,12 @@ funcproctype        : Token=(FUNCTION | PROCEDURE)
             SELF:GetSourceInfo(_start, LastToken, OUT VAR range, OUT VAR interval, OUT VAR source)  
             SELF:ReadLine()
             
-            VAR xMember := XMemberDefinition{sig, kind, _attributes, range, interval, _attributes:HasFlag(Modifiers.Static)}
+            VAR xMember := XSourceMemberSymbol{sig, kind, _attributes, range, interval, _attributes:HasFlag(Modifiers.Static)}
             xMember:SourceCode := source
             xMember:File := SELF:_file
-            RETURN <XEntityDefinition>{xMember}        
+            RETURN <XSourceEntity>{xMember}        
             
-         PRIVATE METHOD ParseNamespace() AS IList<XEntityDefinition>
+         PRIVATE METHOD ParseNamespace() AS IList<XSourceEntity>
 /*
 namespace_          : BEGIN NAMESPACE Name=name e=eos
                       (Entities+=entity)*
@@ -1300,11 +1300,11 @@ namespace_          : BEGIN NAMESPACE Name=name e=eos
             VAR id := SELF:ParseQualifiedName()
             SELF:GetSourceInfo(_start, LastToken, OUT VAR range, OUT VAR interval, OUT VAR source)  
             SELF:ReadLine()
-            VAR xType := XTypeDefinition{id, Kind.Namespace, _attributes, range, interval,_file}
+            VAR xType := XSourceTypeSymbol{id, Kind.Namespace, _attributes, range, interval,_file}
             xType:SourceCode := source
-            RETURN <XEntityDefinition>{xType}
+            RETURN <XSourceEntity>{xType}
             
-         PRIVATE METHOD ParseTypeDef() AS IList<XEntityDefinition>
+         PRIVATE METHOD ParseTypeDef() AS IList<XSourceEntity>
 /*
 interface_          : (Attributes=attributes)? (Modifiers=classModifiers)?            
                       I=INTERFACE (Namespace=nameDot)? Id=identifier                        
@@ -1376,7 +1376,7 @@ structure_          : (Attributes=attributes)? (Modifiers=classModifiers)?
             SELF:GetSourceInfo(_start, LastToken, OUT VAR range, OUT VAR interval, OUT VAR source)  
             SELF:ReadLine()
             
-            VAR xType := XTypeDefinition{id, kind, _attributes, range, interval, _file}
+            VAR xType := XSourceTypeSymbol{id, kind, _attributes, range, interval, _file}
             xType:SourceCode := source
 
             IF interfaces?:Count > 0
@@ -1402,9 +1402,9 @@ structure_          : (Attributes=attributes)? (Modifiers=classModifiers)?
                xType:Parent := SELF:CurrentEntity
             ENDIF
             
-            RETURN <XEntityDefinition>{xType}
+            RETURN <XSourceEntity>{xType}
 
-         PRIVATE METHOD ParseDelegate() AS IList<XEntityDefinition>
+         PRIVATE METHOD ParseDelegate() AS IList<XSourceEntity>
 /*
 delegate_           : (Attributes=attributes)? (Modifiers=classModifiers)?
                       D=DELEGATE (Namespace=nameDot)? Id=identifier
@@ -1423,21 +1423,21 @@ delegate_           : (Attributes=attributes)? (Modifiers=classModifiers)?
 
             VAR sig      := SELF:ParseSignature()
             SELF:GetSourceInfo(_start, LastToken, OUT VAR range, OUT VAR interval, OUT VAR source)  
-            VAR xType    := XTypeDefinition{sig:Id, Kind.Delegate,_attributes, range, interval,_file}{SingleLine := TRUE}
+            VAR xType    := XSourceTypeSymbol{sig:Id, Kind.Delegate,_attributes, range, interval,_file}{SingleLine := TRUE}
             xType:SourceCode := source
             xType:TypeName := sig:DataType
             xType:File     := _file
-            VAR xMember  := XMemberDefinition{sig, Kind.Delegate, _attributes, ;
+            VAR xMember  := XSourceMemberSymbol{sig, Kind.Delegate, _attributes, ;
                               range, interval,_attributes:HasFlag(Modifiers.Static)} {SingleLine := TRUE}
                               xType:AddMember(xMember)
             xMember:SourceCode := source
             xType:AddMember(xMember)
             xMember:File       := _file
-            RETURN <XEntityDefinition>{xType}
+            RETURN <XSourceEntity>{xType}
             #endregion
             
          #region ClassMembers
-      PRIVATE METHOD ParseMethod(  ) AS IList<XEntityDefinition>
+      PRIVATE METHOD ParseMethod(  ) AS IList<XSourceEntity>
 /*
 // method rule used inside and outside class members rule 
 method              : (Attributes=attributes)? (Modifiers=memberModifiers)?
@@ -1471,14 +1471,14 @@ methodtype          : Token=(METHOD | ACCESS | ASSIGN )
          SELF:GetSourceInfo(_start, LastToken, OUT VAR range, OUT VAR interval, OUT VAR source)  
          SELF:ReadLine()
         
-         VAR xMember := XMemberDefinition{sig, kind, _attributes, range, interval, _attributes:HasFlag(Modifiers.Static)}
+         VAR xMember := XSourceMemberSymbol{sig, kind, _attributes, range, interval, _attributes:HasFlag(Modifiers.Static)}
          IF SELF:CurrentType != NULL
             SELF:CurrentType:AddMember(xMember)
          ENDIF
          xMember:SourceCode := source          
-         RETURN <XEntityDefinition>{xMember}
+         RETURN <XSourceEntity>{xMember}
          
-      PRIVATE METHOD ParseProperty() AS IList<XEntityDefinition>
+      PRIVATE METHOD ParseProperty() AS IList<XSourceEntity>
             IF ! Expect(XSharpLexer.PROPERTY)
                RETURN NULL
             ENDIF
@@ -1526,7 +1526,7 @@ propertyAccessor    : Attributes=attributes? Modifiers=accessorModifiers?
          ELSE
             id := SELF:ParseQualifiedName()
          ENDIF
-         VAR aParams := List<IXVariable>{}
+         VAR aParams := List<XSourceParameterSymbol>{}
          IF Matches(XSharpLexer.LPAREN)
             aParams := SELF:ParseParameterList( FALSE, OUT VAR _)
          ELSEIF Matches(XSharpLexer.LBRKT)
@@ -1542,15 +1542,15 @@ propertyAccessor    : Attributes=attributes? Modifiers=accessorModifiers?
          ENDDO
          SELF:GetSourceInfo(_start, LastToken, OUT VAR range, OUT VAR interval, OUT VAR source)  
          SELF:ReadLine()
-         VAR xMember := XMemberDefinition{id, Kind.Property, _attributes, range, interval,sType} {SingleLine := lSingleLine}
+         VAR xMember := XSourceMemberSymbol{id, Kind.Property, _attributes, range, interval,sType} {SingleLine := lSingleLine}
          xMember:SourceCode := source          
          IF SELF:CurrentType != NULL
             CurrentType:AddMember(xMember)
          ENDIF
          xMember:AddParameters(aParams)
-         RETURN <XEntityDefinition>{xMember}
+         RETURN <XSourceEntity>{xMember}
          
-      PRIVATE METHOD ParseEvent() AS IList<XEntityDefinition>
+      PRIVATE METHOD ParseEvent() AS IList<XSourceEntity>
             IF ! Expect(XSharpLexer.EVENT)
                RETURN NULL
             ENDIF
@@ -1589,12 +1589,12 @@ eventAccessor       : Attributes=attributes? Modifiers=accessorModifiers?
          ENDDO
          SELF:GetSourceInfo(_start, LastToken, OUT VAR range, OUT VAR interval, OUT VAR source)  
          SELF:ReadLine()
-         VAR xMember := XMemberDefinition{id, Kind.Event, _attributes, range, interval,strType}  {SingleLine := lSingleLine}
+         VAR xMember := XSourceMemberSymbol{id, Kind.Event, _attributes, range, interval,strType}  {SingleLine := lSingleLine}
          xMember:SourceCode := source          
          IF SELF:CurrentType != NULL
             CurrentType:AddMember(xMember)
          ENDIF
-         RETURN <XEntityDefinition>{xMember}
+         RETURN <XSourceEntity>{xMember}
 
          PRIVATE _operatortokens := <LONG> {XSharpLexer.PLUS , XSharpLexer.MINUS , XSharpLexer.NOT , XSharpLexer.TILDE , XSharpLexer.INC, ;
                                             XSharpLexer.DEC ,XSharpLexer.TRUE_CONST ,XSharpLexer.FALSE_CONST , XSharpLexer.MULT , ;
@@ -1603,7 +1603,7 @@ eventAccessor       : Attributes=attributes? Modifiers=accessorModifiers?
                                             XSharpLexer.GTE , XSharpLexer.LTE , XSharpLexer.AND , XSharpLexer.OR, XSharpLexer.IMPLICIT, XSharpLexer.EXPLICIT}  AS LONG[]
 
 
-      PRIVATE METHOD ParseOperator() AS IList<XEntityDefinition>
+      PRIVATE METHOD ParseOperator() AS IList<XSourceEntity>
             IF ! Expect(XSharpLexer.OPERATOR)
                RETURN NULL
             ENDIF
@@ -1645,16 +1645,16 @@ operator_           : Attributes=attributes? Modifiers=operatorModifiers?
          
          VAR id := t1:GetText()+ IIF(t2 != NULL, t2:GetText(),"")
          SELF:ReadLine()
-         VAR xMember := XMemberDefinition{id, Kind.Operator, _attributes, range, interval,sType}
+         VAR xMember := XSourceMemberSymbol{id, Kind.Operator, _attributes, range, interval,sType}
          xMember:SourceCode := source          
          IF SELF:CurrentType != NULL
             CurrentType:AddMember(xMember)
          ENDIF
          xMember:AddParameters(aParams)
-         RETURN <XEntityDefinition>{xMember}
+         RETURN <XSourceEntity>{xMember}
          
          
-      PRIVATE METHOD ParseConstructor() AS IList<XEntityDefinition>
+      PRIVATE METHOD ParseConstructor() AS IList<XSourceEntity>
       
 /*constructor         :  (Attributes=attributes)? (Modifiers=constructorModifiers)?
                       c1=CONSTRUCTOR (ParamList=parameterList)? (AS VOID)? // As Void is allowed but ignored
@@ -1678,16 +1678,16 @@ operator_           : Attributes=attributes? Modifiers=operatorModifiers?
          SELF:ParseExpressionBody()
          SELF:GetSourceInfo(_start, LastToken, OUT VAR range, OUT VAR interval, OUT VAR source)  
          SELF:ReadLine()
-         VAR xMember := XMemberDefinition{id, Kind.Constructor, _attributes, range, interval,""}
+         VAR xMember := XSourceMemberSymbol{id, Kind.Constructor, _attributes, range, interval,""}
          xMember:SourceCode := source          
          xMember:AddParameters(aParams)
          IF SELF:CurrentType != NULL
             CurrentType:AddMember(xMember)
          ENDIF
 
-         RETURN <XEntityDefinition>{xMember}
+         RETURN <XSourceEntity>{xMember}
          
-      PRIVATE METHOD ParseDestructor() AS IList<XEntityDefinition>
+      PRIVATE METHOD ParseDestructor() AS IList<XSourceEntity>
 /*
 destructor          : (Attributes=attributes)? (Modifiers=destructorModifiers)?
                       d1=DESTRUCTOR (LPAREN RPAREN)? 
@@ -1712,14 +1712,14 @@ destructor          : (Attributes=attributes)? (Modifiers=destructorModifiers)?
          SELF:ParseExpressionBody()
          SELF:GetSourceInfo(_start, LastToken, OUT VAR range, OUT VAR interval, OUT VAR source)  
          SELF:ReadLine()
-         VAR xMember := XMemberDefinition{id, Kind.Destructor, _attributes, range, interval,"VOID"}
+         VAR xMember := XSourceMemberSymbol{id, Kind.Destructor, _attributes, range, interval,"VOID"}
          xMember:SourceCode := source          
          IF SELF:CurrentType != NULL
             SELF:CurrentType:AddMember(xMember)
          ENDIF
-         RETURN <XEntityDefinition>{xMember}
+         RETURN <XSourceEntity>{xMember}
          
-      PRIVATE METHOD ParseClassVars() AS IList<XEntityDefinition>
+      PRIVATE METHOD ParseClassVars() AS IList<XSourceEntity>
 /*
 classvars           : (Attributes=attributes)? (Modifiers=classvarModifiers)?
                       Vars=classVarList
@@ -1727,7 +1727,7 @@ classvars           : (Attributes=attributes)? (Modifiers=classvarModifiers)?
                     ;
 */         
          VAR classvars := SELF:ParseClassVarList(Kind.Field)
-         VAR result := List<XEntityDefinition>{}
+         VAR result := List<XSourceEntity>{}
          FOREACH VAR classvar IN classvars
             classvar:SourceCode := classvar:ModVis +" "+classvar:SourceCode
             IF SELF:CurrentType != NULL
@@ -1740,7 +1740,7 @@ classvars           : (Attributes=attributes)? (Modifiers=classvarModifiers)?
          #endregion
          
       #region Enum
-      PRIVATE METHOD ParseEnum() AS IList<XEntityDefinition>
+      PRIVATE METHOD ParseEnum() AS IList<XSourceEntity>
 /*
 enum_               : (Attributes=attributes)? (Modifiers=classModifiers)?
                       E=ENUM (Namespace=nameDot)? Id=identifier ((AS|INHERIT) Type=datatype)? e=eos
@@ -1761,11 +1761,11 @@ enum_               : (Attributes=attributes)? (Modifiers=classModifiers)?
          ENDIF
          SELF:GetSourceInfo(_start, LastToken, OUT VAR range, OUT VAR interval, OUT VAR source)  
          SELF:ReadLine()
-         VAR xType := XTypeDefinition{id, Kind.Enum, _attributes, range, interval, _file} {BaseType := type}
+         VAR xType := XSourceTypeSymbol{id, Kind.Enum, _attributes, range, interval, _file} {BaseType := type}
          xType:SourceCode := source          
-         RETURN <XEntityDefinition>{xType}
+         RETURN <XSourceEntity>{xType}
          
-      PRIVATE METHOD ParseEnumMember() AS IList<XEntityDefinition>
+      PRIVATE METHOD ParseEnumMember() AS IList<XSourceEntity>
 /*
 enummember          : (Attributes=attributes)? MEMBER? Id=identifier (Op=assignoperator Expr=expression)? eos
                     ;
@@ -1781,15 +1781,15 @@ enummember          : (Attributes=attributes)? MEMBER? Id=identifier (Op=assigno
          SELF:GetSourceInfo(_start, LastToken, OUT VAR range, OUT VAR interval, OUT VAR source)  
          SELF:ReadLine()
          VAR type := CurrentType?:Name
-         VAR xMember := XMemberDefinition{id, Kind.EnumMember, _attributes, range, interval, type} {SingleLine := TRUE, @@Value := strValue}
+         VAR xMember := XSourceMemberSymbol{id, Kind.EnumMember, _attributes, range, interval, type} {SingleLine := TRUE, @@Value := strValue}
          xMember:File := SELF:_file
          xMember:SourceCode := source          
-         RETURN <XEntityDefinition>{xMember}
+         RETURN <XSourceEntity>{xMember}
          
          #endregion
          
       #region VO Global, Define, Struct, Union
-      PRIVATE METHOD ParseVOGlobals() AS IList<XEntityDefinition>
+      PRIVATE METHOD ParseVOGlobals() AS IList<XSourceEntity>
 /*
                     // [STATIC] GLOBAL [CONST] Identifier [:= Expression] [, Identifier2 [:= Expression2] ] [AS Type]
                     // STATIC          [CONST] Identifier [:= Expression] [, Identifier2 [:= Expression2] ] [AS Type]
@@ -1802,7 +1802,7 @@ voglobal            : (Attributes=attributes)? (Modifiers=funcprocModifiers)? Gl
          ENDIF
          Expect(XSharpLexer.CONST)
          VAR classvars := SELF:ParseClassVarList(Kind.VOGlobal)
-         VAR result    := List<XEntityDefinition>{}
+         VAR result    := List<XSourceEntity>{}
          FOREACH VAR classvar IN classvars
             classvar:SourceCode := classvar:ModVis+" GLOBAL "+classvar:SourceCode
             result:Add(classvar)
@@ -1811,7 +1811,7 @@ voglobal            : (Attributes=attributes)? (Modifiers=funcprocModifiers)? Gl
          
          RETURN result
          
-      PRIVATE METHOD ParseVoDefine() AS IList<XEntityDefinition>
+      PRIVATE METHOD ParseVoDefine() AS IList<XSourceEntity>
 /*
 vodefine            : (Modifiers=funcprocModifiers)?
                       D=DEFINE Id=identifier Op=assignoperator Expr=expression (AS DataType=typeName)? end=EOS
@@ -1831,12 +1831,12 @@ vodefine            : (Modifiers=funcprocModifiers)?
          SELF:GetSourceInfo(_start, LastToken, OUT VAR range, OUT VAR interval, OUT VAR source)  
          SELF:ReadLine()
          
-         VAR xMember := XMemberDefinition{id, Kind.VODefine, _attributes, range,interval, type} {SingleLine := TRUE, @@Value := strValue}
+         VAR xMember := XSourceMemberSymbol{id, Kind.VODefine, _attributes, range,interval, type} {SingleLine := TRUE, @@Value := strValue}
          xMember:SourceCode := source          
          xMember:File := SELF:_file
-         RETURN <XEntityDefinition>{xMember}
+         RETURN <XSourceEntity>{xMember}
          
-      PRIVATE METHOD ParseVoStruct() AS IList<XEntityDefinition>
+      PRIVATE METHOD ParseVoStruct() AS IList<XSourceEntity>
 /*
 vostruct            : (Modifiers=votypeModifiers)?
                       V=VOSTRUCT (Namespace=nameDot)? Id=identifier (ALIGN Alignment=INT_CONST)? e=eos
@@ -1858,14 +1858,14 @@ vostruct            : (Modifiers=votypeModifiers)?
          // read to EndOfLine
          SELF:GetSourceInfo(_start, LastToken, OUT VAR range, OUT VAR interval, OUT VAR source)  
          SELF:ReadLine()
-         VAR xType := XTypeDefinition{id, Kind.VOStruct, _attributes, range, interval,_file}
+         VAR xType := XSourceTypeSymbol{id, Kind.VOStruct, _attributes, range, interval,_file}
          xType:SourceCode := source          
          IF String.IsNullOrEmpty(sAlign)
             xType:AddInterface(sAlign)
          ENDIF
-         RETURN <XEntityDefinition>{xType}
+         RETURN <XSourceEntity>{xType}
          
-      PRIVATE METHOD ParseVOUnion() AS IList<XEntityDefinition>
+      PRIVATE METHOD ParseVOUnion() AS IList<XSourceEntity>
 /*
 vounion             : (Modifiers=votypeModifiers)?
                       U=UNION (Namespace=nameDot)? Id=identifier e=eos
@@ -1880,11 +1880,11 @@ vounion             : (Modifiers=votypeModifiers)?
          VAR id := SELF:ParseQualifiedName()
          SELF:GetSourceInfo(_start, LastToken, OUT VAR range, OUT VAR interval, OUT VAR source)  
          SELF:ReadLine()
-         VAR xType := XTypeDefinition{id, Kind.Union, _attributes, range, interval,_file}
+         VAR xType := XSourceTypeSymbol{id, Kind.Union, _attributes, range, interval,_file}
          xType:SourceCode := source          
-         RETURN <XEntityDefinition>{xType}
+         RETURN <XSourceEntity>{xType}
          
-      PRIVATE METHOD ParseVODLL() AS IList<XEntityDefinition>
+      PRIVATE METHOD ParseVODLL() AS IList<XSourceEntity>
 /*
 
 vodll               : (Attributes=attributes)? (Modifiers=funcprocModifiers)? // Optional
@@ -1915,13 +1915,13 @@ vodll               : (Attributes=attributes)? (Modifiers=funcprocModifiers)? //
          ENDIF
          SELF:GetSourceInfo(_start, LastToken, OUT VAR range, OUT VAR interval, OUT VAR source)  
          SELF:ReadLine()
-         VAR xMember := XMemberDefinition{sig, Kind.VODLL, _attributes, range, interval, _attributes:HasFlag(Modifiers.Static)} {SubType := kind } 
+         VAR xMember := XSourceMemberSymbol{sig, Kind.VODLL, _attributes, range, interval, _attributes:HasFlag(Modifiers.Static)} {SubType := kind } 
          xMember:File := SELF:_file
          xMember:SourceCode := source          
-         RETURN <XEntityDefinition>{xMember}
+         RETURN <XSourceEntity>{xMember}
          
          
-      PRIVATE METHOD ParseVoStructMember() AS IList<XEntityDefinition>
+      PRIVATE METHOD ParseVoStructMember() AS IList<XSourceEntity>
 /*
 vostructmember      : MEMBER Dim=DIM Id=identifier LBRKT ArraySub=arraysub RBRKT (As=(AS | IS) DataType=datatype)? eos
                     | MEMBER Id=identifier (As=(AS | IS) DataType=datatype)? eos
@@ -1943,23 +1943,23 @@ vostructmember      : MEMBER Dim=DIM Id=identifier LBRKT ArraySub=arraysub RBRKT
          IF isArray
             sType += "[]"
          ENDIF
-         VAR xMember := XMemberDefinition{id, Kind.Field, _attributes, range, interval, sType} {SingleLine := TRUE, IsArray := isArray}
+         VAR xMember := XSourceMemberSymbol{id, Kind.Field, _attributes, range, interval, sType} {SingleLine := TRUE, IsArray := isArray}
          xMember:File := SELF:_file
          xMember:SourceCode := source          
-         RETURN <XEntityDefinition>{xMember}
+         RETURN <XSourceEntity>{xMember}
          
          #endregion
          
          
-      PRIVATE METHOD ParseClassVarList(eKind AS Kind)   AS IList<XMemberDefinition>
+      PRIVATE METHOD ParseClassVarList(eKind AS Kind)   AS IList<XSourceMemberSymbol>
 /*
 
 classVarList        : Var+=classvar (COMMA Var+=classvar)* (As=(AS | IS) DataType=datatype)?
                     ;
 */         
-         LOCAL aVars  AS List<XMemberDefinition>
+         LOCAL aVars  AS List<XSourceMemberSymbol>
          LOCAL sType  AS STRING
-         aVars := List<XMemberDefinition>{}
+         aVars := List<XSourceMemberSymbol>{}
          aVars:Add(ParseClassVar(eKind))
          DO WHILE Expect(XSharpLexer.COMMA)
             aVars:Add(ParseClassVar(eKind))
@@ -1974,7 +1974,7 @@ classVarList        : Var+=classvar (COMMA Var+=classvar)* (As=(AS | IS) DataTyp
          
          
          
-      PRIVATE METHOD ParseClassVar(eKind AS Kind) AS XMemberDefinition
+      PRIVATE METHOD ParseClassVar(eKind AS Kind) AS XSourceMemberSymbol
 /*
 
 classvar            : (Dim=DIM)? Id=identifier (LBRKT ArraySub=arraysub RBRKT)? (Op=assignoperator Initializer=expression)?
@@ -1994,7 +1994,7 @@ classvar            : (Dim=DIM)? Id=identifier (LBRKT ArraySub=arraysub RBRKT)? 
          ENDIF
          endToken := SELF:LastToken
          SELF:GetSourceInfo(startToken, endToken, OUT VAR range, OUT VAR interval, OUT VAR source)  
-         VAR xMember   := XMemberDefinition{sId,eKind, Modifiers.None, range,interval,""}
+         VAR xMember   := XSourceMemberSymbol{sId,eKind, Modifiers.None, range,interval,""}
          xMember:SourceCode := source          
          xMember:Value := sDefault
          IF isDim .OR. !String.IsNullOrEmpty(sBracket)
@@ -2063,7 +2063,8 @@ signature             : Id=identifier
             oSig:TypeParameters := SELF:ParseTypeParameters()
          ENDIF
          IF SELF:La1 == XSharpLexer.LPAREN
-            oSig:Parameters   := SELF:ParseParameterList(FALSE,  OUT VAR isSelf)
+            var params        := SELF:ParseParameterList(FALSE,  OUT VAR isSelf)
+            oSig:Parameters:AddRange(params)
             oSig:IsExtension  := isSelf
          ENDIF
          oSig:DataType       := SELF:ParseAsIsType()
@@ -2098,7 +2099,7 @@ signature             : Id=identifier
          SELF:Expect(XSharpLexer.GT)
          RETURN aTypeParams 
          
-      PRIVATE METHOD ParseParameterList(lBracketed AS LOGIC, isSelf OUT LOGIC) AS List<IXVariable>
+      PRIVATE METHOD ParseParameterList(lBracketed AS LOGIC, isSelf OUT LOGIC) AS List<XSourceParameterSymbol>
          isSelf := FALSE 
          IF SELF:La1 != XSharpLexer.LPAREN .AND. ! lBracketed
             RETURN NULL
@@ -2107,7 +2108,7 @@ signature             : Id=identifier
             RETURN NULL
          ENDIF
          Consume()   // LParen
-         VAR aResult  := List<IXVariable>{}
+         VAR aResult  := List<XSourceParameterSymbol>{}
          LOCAL cond AS DelEndToken
          cond := { token => IIF (lBracketed, token == XSharpLexer.RBRKT, token == XSharpLexer.RPAREN ) }
          DO WHILE !cond(SELF:La1) .AND. ! SELF:Eos()
@@ -2135,10 +2136,10 @@ signature             : Id=identifier
                ENDIF
                sTypeName := SELF:ParseTypeName()
             ENDIF
-            LOCAL variable AS XVariable
+            LOCAL variable AS XSourceParameterSymbol
             VAR endToken := SELF:LastToken
             SELF:GetSourceInfo(start, LastToken, OUT VAR range, OUT VAR interval, OUT VAR _)  
-            variable := XParameter{CurrentEntity, sId, range,interval, sTypeName}
+            variable := XSourceParameterSymbol{CurrentEntity, sId, range,interval, sTypeName}
             IF token != NULL
                SWITCH token:Type
                CASE XSharpLexer.AS
@@ -2243,7 +2244,7 @@ callingconvention	: Convention=(CLIPPER | STRICT | PASCAL | ASPEN | WINCALL | CA
             ENDIF
             RETURN TRUE
 
-      PRIVATE METHOD ParseLocalFuncProc() AS IList<XEntityDefinition>
+      PRIVATE METHOD ParseLocalFuncProc() AS IList<XSourceEntity>
          /*
 
          localfuncproc       :  (Modifiers=localfuncprocModifiers)?   
@@ -2273,10 +2274,10 @@ callingconvention	: Convention=(CLIPPER | STRICT | PASCAL | ASPEN | WINCALL | CA
             SELF:ReadLine()
             _attributes |= Modifiers.Private
             _attributes &= (~Modifiers.Export)
-            VAR xMember := XMemberDefinition{sig, kind, _attributes, range, interval, false}
+            VAR xMember := XSourceMemberSymbol{sig, kind, _attributes, range, interval, false}
             xMember:SourceCode := source
             xMember:File := SELF:_file
-            RETURN <XEntityDefinition>{xMember}        
+            RETURN <XSourceEntity>{xMember}        
          
          
          
@@ -2421,7 +2422,7 @@ callingconvention	: Convention=(CLIPPER | STRICT | PASCAL | ASPEN | WINCALL | CA
                      expr := SELF:ParseExpressionAsTokens()
                   ENDIF
                   SELF:GetSourceInfo(start, LastToken, OUT VAR range, OUT VAR interval, OUT VAR _)  
-                  VAR xVar := XVariable{SELF:CurrentEntity, id, range, interval, XLiterals.VarType } {Expression := expr }
+                  VAR xVar := XSourceVariableSymbol{SELF:CurrentEntity, id, range, interval, XLiterals.VarType } {Expression := expr }
                   SELF:_locals:Add(xVar)
                ENDIF
             ELSEIF SELF:IsId(SELF:La1) .AND. SELF:La2 == XSharpLexer.AS
@@ -2429,7 +2430,7 @@ callingconvention	: Convention=(CLIPPER | STRICT | PASCAL | ASPEN | WINCALL | CA
                VAR id    := SELF:ParseIdentifier()
                VAR type  := SELF:ParseAsIsType()
                SELF:GetSourceInfo(start, LastToken, OUT VAR range, OUT VAR interval, OUT VAR _)  
-               VAR xVar := XVariable{SELF:CurrentEntity, id, range, interval, type } 
+               VAR xVar := XSourceVariableSymbol{SELF:CurrentEntity, id, range, interval, type } 
                SELF:_locals:Add(xVar)
 
             ELSEIF SELF:La1 == XSharpLexer.LOCAL .AND. SELF:IsId(SELF:La2) .AND. La3 == XSharpLexer.AS
@@ -2438,7 +2439,7 @@ callingconvention	: Convention=(CLIPPER | STRICT | PASCAL | ASPEN | WINCALL | CA
                VAR id    := SELF:ParseIdentifier()
                VAR type  := SELF:ParseAsIsType()
                SELF:GetSourceInfo(start, LastToken, OUT VAR range, OUT VAR interval, OUT VAR _)  
-               VAR xVar := XVariable{SELF:CurrentEntity, id, range, interval, type } 
+               VAR xVar := XSourceVariableSymbol{SELF:CurrentEntity, id, range, interval, type } 
                SELF:_locals:Add(xVar)
                      
             ENDIF
@@ -2458,7 +2459,7 @@ callingconvention	: Convention=(CLIPPER | STRICT | PASCAL | ASPEN | WINCALL | CA
                   Consume()   // VAR
                   VAR id      := SELF:ParseIdentifier()
                   SELF:GetSourceInfo(start, LastToken, OUT VAR range, OUT VAR interval, OUT VAR _)  
-                  VAR xVar     := XVariable{SELF:CurrentEntity, id, range, interval, type} 
+                  VAR xVar     := XSourceVariableSymbol{SELF:CurrentEntity, id, range, interval, type} 
                   SELF:_locals:Add(xVar)
                ENDIF
             ELSEIF SELF:La1 == XSharpLexer.OUT
@@ -2469,7 +2470,7 @@ callingconvention	: Convention=(CLIPPER | STRICT | PASCAL | ASPEN | WINCALL | CA
                   VAR id   := SELF:ParseIdentifier()
                   VAR type := SELF:ParseAsIsType()
                   SELF:GetSourceInfo(start, LastToken, OUT VAR range, OUT VAR interval, OUT VAR _)  
-                  VAR xVar     := XVariable{SELF:CurrentEntity, id, range, interval, type}
+                  VAR xVar     := XSourceVariableSymbol{SELF:CurrentEntity, id, range, interval, type}
                   SELF:_locals:Add(xVar)
                ELSEIF SELF:La2 == XSharpLexer.VAR
                   // OUT VAR Id, when Id = '_' then discard and do not create a local
@@ -2477,7 +2478,7 @@ callingconvention	: Convention=(CLIPPER | STRICT | PASCAL | ASPEN | WINCALL | CA
                   VAR id         := SELF:ParseIdentifier()
                   IF id          == "_"
                      SELF:GetSourceInfo(start, LastToken, OUT VAR range, OUT VAR interval, OUT VAR _)  
-                     VAR xVar       := XVariable{SELF:CurrentEntity, id, range, interval, XLiterals.VarType} 
+                     VAR xVar       := XSourceVariableSymbol{SELF:CurrentEntity, id, range, interval, XLiterals.VarType} 
                      SELF:_locals:Add(xVar)
                   ENDIF
                ELSEIF SELF:La2 == XSharpLexer.NULL
@@ -2489,7 +2490,7 @@ callingconvention	: Convention=(CLIPPER | STRICT | PASCAL | ASPEN | WINCALL | CA
                VAR id    := SELF:ParseIdentifier()
                VAR type  := SELF:ParseAsIsType()
                SELF:GetSourceInfo(start, LastToken, OUT VAR range, OUT VAR interval, OUT VAR _)  
-               VAR xVar     := XVariable{SELF:CurrentEntity, id, range, interval, type}
+               VAR xVar     := XSourceVariableSymbol{SELF:CurrentEntity, id, range, interval, type}
                SELF:_locals:Add(xVar)
             ELSE
                Consume()
@@ -2589,7 +2590,7 @@ callingconvention	: Convention=(CLIPPER | STRICT | PASCAL | ASPEN | WINCALL | CA
          ELSE
             RETURN FALSE
          ENDIF
-         VAR result := List<XVariable>{}
+         VAR result := List<XSourceVariableSymbol>{}
          IF lImplied
             VAR xVar := SELF:ParseImpliedVar()
             result:Add(xVar)
@@ -2608,7 +2609,7 @@ callingconvention	: Convention=(CLIPPER | STRICT | PASCAL | ASPEN | WINCALL | CA
             ENDDO
          ENDIF
          // copy type forward
-         VAR missingTypes := List<XVariable>{}
+         VAR missingTypes := List<XSourceVariableSymbol>{}
          FOREACH VAR xVar IN result
             IF xVar:TypeName == XLiterals.NoType
                missingTypes:Add(xVar)
@@ -2627,7 +2628,7 @@ callingconvention	: Convention=(CLIPPER | STRICT | PASCAL | ASPEN | WINCALL | CA
          NEXT
          RETURN TRUE
 
-      PRIVATE METHOD ParseLocalVar AS XVariable
+      PRIVATE METHOD ParseLocalVar AS XSourceVariableSymbol
 /*
 //localvar           : (CONST=CONST)? ( DIM=DIM )? Id=identifier (LBRKT ArraySub=arraysub RBRKT)?
 //                     (Op=assignoperator Expression=expression)? (AS=(AS | IS) DataType=datatype)?
@@ -2655,14 +2656,14 @@ callingconvention	: Convention=(CLIPPER | STRICT | PASCAL | ASPEN | WINCALL | CA
          IF String.IsNullOrEmpty(type)
             type := XLiterals.NoType
          ENDIF
-         VAR xVar     := XVariable{SELF:CurrentEntity, id, range, interval, type} {IsArray := lDim .OR. !String.IsNullOrEmpty(arraysub)}
+         VAR xVar     := XSourceVariableSymbol{SELF:CurrentEntity, id, range, interval, type} {IsArray := lDim .OR. !String.IsNullOrEmpty(arraysub)}
          IF type:EndsWith("[]")
             xVar:IsArray := TRUE
          ENDIF
          xVar:Expression := expr
          RETURN xVar
 
-      PRIVATE METHOD ParseImpliedVar() AS XVariable
+      PRIVATE METHOD ParseImpliedVar() AS XSourceVariableSymbol
          // impliedvar: (Const=CONST)? Id=identifier Op=assignoperator Expression=expression         
          LOCAL lConst   := FALSE AS LOGIC
          LOCAL lDim     := FALSE AS LOGIC
@@ -2677,7 +2678,7 @@ callingconvention	: Convention=(CLIPPER | STRICT | PASCAL | ASPEN | WINCALL | CA
             expr:= SELF:ParseExpressionAsTokens()
          ENDIF
          SELF:GetSourceInfo(start, LastToken, OUT VAR range, OUT VAR interval, OUT VAR _)  
-         VAR xVar     := XVariable{SELF:CurrentEntity, id,  range, interval, XLiterals.VarType} 
+         VAR xVar     := XSourceVariableSymbol{SELF:CurrentEntity, id,  range, interval, XLiterals.VarType} 
          xVar:Expression := expr
          RETURN xVar
 
@@ -2737,7 +2738,7 @@ callingconvention	: Convention=(CLIPPER | STRICT | PASCAL | ASPEN | WINCALL | CA
             SELF:GetSourceInfo(start, LastToken, OUT VAR range, OUT VAR interval, OUT VAR _)  
             SELF:ReadLine()
             FOREACH VAR id IN Ids
-               VAR xVar := XVariable{SELF:CurrentEntity, id, range, interval,XLiterals.UsualType} 
+               VAR xVar := XSourceVariableSymbol{SELF:CurrentEntity, id, range, interval,XLiterals.UsualType} 
                IF start.Type != XSharpLexer.MEMVAR
                   xVar.Kind := Kind.Parameter
                ELSE
@@ -2757,7 +2758,7 @@ callingconvention	: Convention=(CLIPPER | STRICT | PASCAL | ASPEN | WINCALL | CA
             IF ! ExpectAny(XSharpLexer.PRIVATE, XSharpLexer.PUBLIC)
                RETURN
             ENDIF
-            VAR result := List<XVariable>{}
+            VAR result := List<XSourceVariableSymbol>{}
             VAR xVar := SELF:ParseXBaseVar()
             result:Add(xVar)
             DO WHILE SELF:La1 == XSharpLexer.COMMA
@@ -2770,7 +2771,7 @@ callingconvention	: Convention=(CLIPPER | STRICT | PASCAL | ASPEN | WINCALL | CA
             NEXT
             RETURN       
 
-      PRIVATE METHOD ParseXBaseVar AS XVariable
+      PRIVATE METHOD ParseXBaseVar AS XSourceVariableSymbol
          /*
          xbasevar            : (Amp=AMP)?  Id=identifierName (LBRKT ArraySub=arraysub RBRKT)? (Op=assignoperator Expression=expression)?
                               ;
@@ -2789,7 +2790,7 @@ callingconvention	: Convention=(CLIPPER | STRICT | PASCAL | ASPEN | WINCALL | CA
          ENDIF
          VAR type       := XLiterals.UsualType
          SELF:GetSourceInfo(start, LastToken, OUT VAR range, OUT VAR interval, OUT VAR _)  
-         VAR xVar       := XVariable{SELF:CurrentEntity, id, range, interval, type} {IsArray := !String.IsNullOrEmpty(arraysub)}
+         VAR xVar       := XSourceVariableSymbol{SELF:CurrentEntity, id, range, interval, type} {IsArray := !String.IsNullOrEmpty(arraysub)}
          xVar.Kind      := Kind.MemVar
          xVar:Expression := expr
          RETURN xVar
@@ -2829,7 +2830,7 @@ callingconvention	: Convention=(CLIPPER | STRICT | PASCAL | ASPEN | WINCALL | CA
          IF String.IsNullOrEmpty(type)
             type := "ARRAY"
          ENDIF
-         VAR xVar     := XVariable{SELF:CurrentEntity, id, range, interval, type} 
+         VAR xVar     := XSourceVariableSymbol{SELF:CurrentEntity, id, range, interval, type} 
          IF type != "ARRAY"
             xVar:IsArray := !String.IsNullOrEmpty(arraysub)
          ENDIF
@@ -2861,7 +2862,7 @@ callingconvention	: Convention=(CLIPPER | STRICT | PASCAL | ASPEN | WINCALL | CA
             SELF:GetSourceInfo(start, LastToken, OUT VAR range, OUT VAR interval, OUT VAR _)  
             SELF:ReadLine()
             FOREACH VAR id IN Ids
-               VAR xVar := XVariable{SELF:CurrentEntity, id, range, interval,XLiterals.UsualType} 
+               VAR xVar := XSourceVariableSymbol{SELF:CurrentEntity, id, range, interval,XLiterals.UsualType} 
                xVar.Kind := Kind.DbField
                IF ! String.IsNullOrEmpty(area)
                   xVar:Value := area
@@ -2871,7 +2872,7 @@ callingconvention	: Convention=(CLIPPER | STRICT | PASCAL | ASPEN | WINCALL | CA
             RETURN TRUE
 
 #region FoxPro class definitions            
-         PRIVATE METHOD ParseFoxClass() AS IList<XEntityDefinition>
+         PRIVATE METHOD ParseFoxClass() AS IList<XSourceEntity>
          /*
          foxclass            : (Attributes=attributes)?
                                D=DEFINE (Modifiers=classModifiers)?
@@ -2913,7 +2914,7 @@ callingconvention	: Convention=(CLIPPER | STRICT | PASCAL | ASPEN | WINCALL | CA
             ENDDO
             SELF:GetSourceInfo(_start, LastToken, OUT VAR range, OUT VAR interval, OUT VAR source)  
             SELF:ReadLine()
-            VAR xType := XTypeDefinition{id, Kind.Class, mods, range, interval, _file}
+            VAR xType := XSourceTypeSymbol{id, Kind.Class, mods, range, interval, _file}
             xType:SourceCode := source
             IF constraints?:Count > 0
                FOREACH VAR constraint IN constraints
@@ -2926,9 +2927,9 @@ callingconvention	: Convention=(CLIPPER | STRICT | PASCAL | ASPEN | WINCALL | CA
                NEXT
             ENDIF            
             xType:ClassType := XSharpDialect.FoxPro
-            RETURN <XEntityDefinition>{xType}
+            RETURN <XSourceEntity>{xType}
          
-         PRIVATE METHOD ParseFoxMethod() AS IList<XEntityDefinition>
+         PRIVATE METHOD ParseFoxMethod() AS IList<XSourceEntity>
            /*
          foxmethod           : (Attributes=attributes)? (Modifiers=memberModifiers)?
                                T=foxmethodtype  Sig=signature
@@ -2968,13 +2969,13 @@ callingconvention	: Convention=(CLIPPER | STRICT | PASCAL | ASPEN | WINCALL | CA
                kind := Kind.Assign
             ENDIF
              
-            VAR xMember := XMemberDefinition{sig, kind, _attributes, range, interval, _attributes:HasFlag(Modifiers.Static)}
+            VAR xMember := XSourceMemberSymbol{sig, kind, _attributes, range, interval, _attributes:HasFlag(Modifiers.Static)}
             xMember:SourceCode := source
             xMember:File := SELF:_file
-            RETURN <XEntityDefinition>{xMember}        
+            RETURN <XSourceEntity>{xMember}        
             
          
-         PRIVATE METHOD ParseFoxFields() AS IList<XEntityDefinition>
+         PRIVATE METHOD ParseFoxFields() AS IList<XSourceEntity>
          /*
             foxclassvars        : (Attributes=attributes)? (Modifiers=classvarModifiers)? 
                                   (Fld=FIELD)? Vars += identifier (COMMA Vars += identifier )*  (AS DataType=datatype)? 
@@ -3005,7 +3006,7 @@ callingconvention	: Convention=(CLIPPER | STRICT | PASCAL | ASPEN | WINCALL | CA
                RETURN NULL
             ENDIF
             VAR typedef := CurrentType
-            VAR result := List<XEntityDefinition>{}
+            VAR result := List<XSourceEntity>{}
             // Detect which variant we need
             IF Expect(XSharpLexer.IMPLEMENTS)
                //  foximplementsclause : IMPLEMENTS Type=datatype (Excl=EXCLUDE)? (IN Library=expression)? END=eos
@@ -3030,11 +3031,11 @@ callingconvention	: Convention=(CLIPPER | STRICT | PASCAL | ASPEN | WINCALL | CA
                ENDIF
                SELF:GetSourceInfo(_start, LastToken, OUT VAR range, OUT VAR interval, OUT VAR source)  
                SELF:ReadLine()
-               VAR xMember := XMemberDefinition{id, Kind.Field, _attributes, range, interval,"ARRAY"}
+               VAR xMember := XSourceMemberSymbol{id, Kind.Field, _attributes, range, interval,"ARRAY"}
                xMember:SourceCode := source
                xMember:SingleLine := TRUE
                xMember:File := SELF:_file
-               RETURN <XEntityDefinition>{xMember}        
+               RETURN <XSourceEntity>{xMember}        
             ELSEIF Matches(XSharpLexer.ID, XSharpLexer.FIELD)
                VAR hasField := Expect(XSharpLexer.FIELD)
                IF ! IsId(SELF:La1)
@@ -3055,12 +3056,12 @@ callingconvention	: Convention=(CLIPPER | STRICT | PASCAL | ASPEN | WINCALL | CA
                      VAR expr := SELF:ParseExpression()                     
                      SELF:GetSourceInfo(_start, LastToken, OUT VAR r1, OUT VAR i1, OUT source)  
                      SELF:ReadLine()
-                     VAR xMember := XMemberDefinition{ids:First(), Kind.Field, _attributes, r1, i1, "USUAL"}
+                     VAR xMember := XSourceMemberSymbol{ids:First(), Kind.Field, _attributes, r1, i1, "USUAL"}
                      xMember:SourceCode := source
                      xMember:Value      := expr
                      xMember:File := SELF:_file
                      xMember:SingleLine := TRUE
-                     RETURN <XEntityDefinition>{xMember}        
+                     RETURN <XSourceEntity>{xMember}        
                ENDIF                  
                IF Matches(XSharpLexer.COMMA)
                   // foxclassvars        : (Attributes=attributes)? (Modifiers=classvarModifiers)? 
@@ -3074,7 +3075,7 @@ callingconvention	: Convention=(CLIPPER | STRICT | PASCAL | ASPEN | WINCALL | CA
                SELF:GetSourceInfo(_start, LastToken, OUT VAR range, OUT VAR interval, OUT  source)  
                SELF:ReadLine()  
                FOREACH VAR id IN ids
-                  VAR xMember := XMemberDefinition{id, Kind.Field, _attributes, range, interval, type}
+                  VAR xMember := XSourceMemberSymbol{id, Kind.Field, _attributes, range, interval, type}
                   IF ids:Count == 1
                      xMember:SourceCode := source
                   ELSEIF String.IsNullOrEmpty(type)
@@ -3111,11 +3112,11 @@ callingconvention	: Convention=(CLIPPER | STRICT | PASCAL | ASPEN | WINCALL | CA
                ENDDO
                SELF:GetSourceInfo(_start, LastToken, OUT VAR range, OUT VAR interval, OUT VAR source)  
                SELF:ReadLine()  
-               VAR xMember := XMemberDefinition{id, Kind.Field, _attributes, range, interval, type}
+               VAR xMember := XSourceMemberSymbol{id, Kind.Field, _attributes, range, interval, type}
                xMember:SourceCode := source
                xMember:File := SELF:_file
                xMember:SingleLine := TRUE
-               RETURN <XEntityDefinition>{xMember}        
+               RETURN <XSourceEntity>{xMember}        
            ENDIF        
             // ignore the COMATTRIB rule here
            SELF:ReadLine()  
@@ -3123,7 +3124,7 @@ callingconvention	: Convention=(CLIPPER | STRICT | PASCAL | ASPEN | WINCALL | CA
 #endregion         
 
 #region XPP classes
-            PRIVATE METHOD ParseXppClass() AS IList<XEntityDefinition>
+            PRIVATE METHOD ParseXppClass() AS IList<XSourceEntity>
 /*
 xppclass           :  (Attributes=attributes)?                                // NEW Optional Attributes
                       (Modifiers=xppclassModifiers)?                          // [STATIC|FREEZE|FINAL] 
@@ -3171,7 +3172,7 @@ xppclassMember      : Member=xppmethodvis                           #xppclsvisib
             SELF:GetSourceInfo(_start, LastToken, OUT VAR range, OUT VAR interval, OUT VAR source)  
             SELF:ReadLine()
             
-            VAR xType := XTypeDefinition{id,Kind.Class, _attributes, range, interval, _file}
+            VAR xType := XSourceTypeSymbol{id,Kind.Class, _attributes, range, interval, _file}
             xType:SourceCode := source
 
             IF interfaces?:Count > 0
@@ -3188,9 +3189,9 @@ xppclassMember      : Member=xppmethodvis                           #xppclsvisib
             ENDIF
             xType:ClassType := XSharpDialect.XPP
             _xppVisibility := Modifiers.Public
-            RETURN <XEntityDefinition>{xType}            
+            RETURN <XSourceEntity>{xType}            
             
-            PRIVATE METHOD ParseXppClassVars() AS IList<XEntityDefinition>
+            PRIVATE METHOD ParseXppClassVars() AS IList<XSourceEntity>
                      /*
 
                      xppclassvars        : (Modifiers=xppmemberModifiers)?                             // [CLASS] 
@@ -3238,9 +3239,9 @@ xppclassMember      : Member=xppmethodvis                           #xppclsvisib
                   NOP
                ENDDO
                SELF:ReadLine()
-               VAR result := List<XEntityDefinition>{}
+               VAR result := List<XSourceEntity>{}
                FOREACH VAR id IN ids
-                  VAR classvar := XMemberDefinition{id, Kind.Field, _xppVisibility, range, interval, type, FALSE}
+                  VAR classvar := XSourceMemberSymbol{id, Kind.Field, _xppVisibility, range, interval, type, FALSE}
                   classvar:SourceCode := ie"{classvar.ModVis}: \r\n{ IIF(isStatic, \"STATIC\",\"\")} VAR {classvar.Name}" 
                   IF SELF:CurrentType != NULL
                      SELF:CurrentType:AddMember(classvar)
@@ -3250,7 +3251,7 @@ xppclassMember      : Member=xppmethodvis                           #xppclsvisib
                NEXT
                RETURN result
                
-               PRIVATE METHOD ParseXppProperty AS IList<XEntityDefinition>
+               PRIVATE METHOD ParseXppProperty AS IList<XSourceEntity>
                   /*
                   xppproperty         : (Attributes=attributes)?                                    // NEW Optional Attributes
                                         (   Access=ACCESS Assign=ASSIGN?                            // ACCESS | ASSIGN  | ACCESS ASSIGN | ASSIGN ACCESS
@@ -3283,16 +3284,16 @@ xppclassMember      : Member=xppmethodvis                           #xppclsvisib
                   VAR type := SELF:ParseAsIsType()
                   SELF:GetSourceInfo(_start, _lastToken, OUT VAR range, OUT VAR interval, OUT VAR source)  
                   SELF:ReadLine()                
-                  VAR xmember := XMemberDefinition{id+XLiterals.XppDeclaration, Kind.Property, _OR(_xppVisibility, _attributes), range, interval, type, isStatic}
+                  VAR xmember := XSourceMemberSymbol{id+XLiterals.XppDeclaration, Kind.Property, _OR(_xppVisibility, _attributes), range, interval, type, isStatic}
                   xmember:SourceCode := source
                   IF SELF:CurrentType != NULL
                      SELF:CurrentType:AddMember(xmember)
                   ENDIF
                   xmember:SingleLine := TRUE
-                  RETURN <XEntityDefinition> {xmember}
+                  RETURN <XSourceEntity> {xmember}
 
 
-      PRIVATE METHOD ParseXppMethodDeclaration() AS IList<XEntityDefinition>
+      PRIVATE METHOD ParseXppMethodDeclaration() AS IList<XSourceEntity>
          /*
          xppdeclareMethod    : (Modifiers=xppdeclareModifiers)?                            // [DEFERRED |FINAL | INTRODUCE | OVERRIDE] [CLASS] 
                                METHOD Methods+=identifier                                   // METHOD <MethodName,...> 
@@ -3326,9 +3327,9 @@ xppclassMember      : Member=xppmethodvis                           #xppclsvisib
             ENDDO
          ENDIF
          SELF:GetSourceInfo(_start, _lastToken, OUT VAR range, OUT VAR interval, OUT VAR _)  
-         VAR result := List<XEntityDefinition>{}
+         VAR result := List<XSourceEntity>{}
          FOREACH VAR id IN ids
-            VAR xmethod := XMemberDefinition{id+XLiterals.XppDeclaration, Kind.Method, _xppVisibility, range, interval, "", FALSE}
+            VAR xmethod := XSourceMemberSymbol{id+XLiterals.XppDeclaration, Kind.Method, _xppVisibility, range, interval, "", FALSE}
             xmethod:SourceCode := ie"{xmethod.ModVis}: \r\n{ IIF(isStatic, \"STATIC\",\"\")} METHOD {xmethod.Name}" 
             IF SELF:CurrentType != NULL
                SELF:CurrentType:AddMember(xmethod)
@@ -3338,7 +3339,7 @@ xppclassMember      : Member=xppmethodvis                           #xppclsvisib
          NEXT
          RETURN result
 
-       PRIVATE METHOD ParseXppVisibility() AS IList<XEntityDefinition>
+       PRIVATE METHOD ParseXppVisibility() AS IList<XSourceEntity>
             /*
             xppmethodvis        : Vis=xppvisibility COLON eos
                                  ;
@@ -3374,7 +3375,7 @@ xppclassMember      : Member=xppmethodvis                           #xppclsvisib
             RETURN 
 
 
-       PRIVATE METHOD ParseXppMethod() AS IList<XEntityDefinition>
+       PRIVATE METHOD ParseXppMethod() AS IList<XSourceEntity>
             // detect if we're inside the class definition
             IF SELF:La1 == XSharpLexer.INLINE
                RETURN SELF:ParseXppMethodInLine()
@@ -3386,7 +3387,7 @@ xppclassMember      : Member=xppmethodvis                           #xppclsvisib
             
 
 
-       PRIVATE METHOD ParseXppMethodInLine() AS IList<XEntityDefinition>
+       PRIVATE METHOD ParseXppMethodInLine() AS IList<XSourceEntity>
             /*
                xppinlineMethod     : (Attributes=attributes)?                               // NEW Optional Attributes
                                      I=INLINE  
@@ -3421,7 +3422,7 @@ xppclassMember      : Member=xppmethodvis                           #xppclsvisib
             ENDIF
             SELF:GetSourceInfo(_start, _lastToken, OUT VAR range, OUT VAR interval, OUT VAR source)  
             SELF:ReadLine()
-            VAR xmethod := XMemberDefinition{id, Kind.Method, _xppVisibility, range, interval, type, isStatic}
+            VAR xmethod := XSourceMemberSymbol{id, Kind.Method, _xppVisibility, range, interval, type, isStatic}
             xmethod:SourceCode := source
             IF SELF:CurrentType != NULL
                SELF:CurrentType:AddMember(xmethod)
@@ -3431,13 +3432,13 @@ xppclassMember      : Member=xppmethodvis                           #xppclsvisib
                   xmethod:AddParameter(par)
                NEXT
             ENDIF
-            RETURN <XEntityDefinition>{xmethod}
+            RETURN <XSourceEntity>{xmethod}
 
 
        PRIVATE METHOD ParseXPPMemberModifiers() AS LOGIC
             RETURN SELF:ExpectAny(XSharpLexer.CLASS, XSharpLexer.STATIC)
 
-      PRIVATE METHOD ParseXppMethodImplementation() AS IList<XEntityDefinition>
+      PRIVATE METHOD ParseXppMethodImplementation() AS IList<XSourceEntity>
             /*
                xppmethod           : (Attributes=attributes)?                              // NEW Optional Attributes
                                      (MethodType=(ACCESS|ASSIGN))?                         // Optional Access or Assign
@@ -3478,7 +3479,7 @@ xppclassMember      : Member=xppmethodvis                           #xppclsvisib
             ENDIF
             SELF:GetSourceInfo(_start, _lastToken, OUT VAR range, OUT VAR interval, OUT VAR source)  
             SELF:ReadLine()
-            VAR xmethod := XMemberDefinition{id, kind, Modifiers.None, range, interval, type, isStatic}
+            VAR xmethod := XSourceMemberSymbol{id, kind, Modifiers.None, range, interval, type, isStatic}
             // we need to lookup the visibility in the types list
             xmethod:SourceCode := source
             // find the parent in the stack. Either the last one (when the classprefix is empty) or a specific one
@@ -3486,7 +3487,7 @@ xppclassMember      : Member=xppmethodvis                           #xppclsvisib
             VAR classdef := SELF:FindXPPClass(classprefix)
             IF classdef != NULL
                classdef:AddMember(xmethod)
-               FOREACH m AS XMemberDefinition IN classdef:Members
+               FOREACH m AS XSourceMemberSymbol IN classdef:Members
                   IF m:Name == xmethod:Name+XLiterals.XppDeclaration
                      xmethod:Attributes := m:Attributes
                      EXIT
@@ -3504,13 +3505,13 @@ xppclassMember      : Member=xppmethodvis                           #xppclsvisib
                   xmethod:AddParameter(par)
                NEXT
             ENDIF
-            RETURN <XEntityDefinition>{xmethod}            
+            RETURN <XSourceEntity>{xmethod}            
 
-         PRIVATE METHOD FindXPPClass(sName AS STRING) AS XTypeDefinition
+         PRIVATE METHOD FindXPPClass(sName AS STRING) AS XSourceTypeSymbol
             VAR start := SELF:_EntityList:Count-1
             FOR VAR i := start DOWNTO 0
                VAR element := _EntityList[i]
-               IF element IS XTypeDefinition VAR typedef
+               IF element IS XSourceTypeSymbol VAR typedef
                   IF typedef:ClassType == XSharpDialect.XPP
                      IF String.IsNullOrEmpty(sName) 
                         RETURN typedef

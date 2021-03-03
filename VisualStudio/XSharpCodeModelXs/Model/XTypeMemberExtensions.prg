@@ -14,7 +14,7 @@ BEGIN NAMESPACE XSharpModel
    
    STATIC CLASS TypeMemberExtensions
       
-      STATIC METHOD GetProtoType(SELF tm as IXMember) AS STRING
+      STATIC METHOD GetProtoType(SELF tm as IXMemberSymbol) AS STRING
          VAR vars := StringBuilder{}
          IF tm:TypeParameters?:Count > 0
             VAR delim := "<"
@@ -50,7 +50,7 @@ BEGIN NAMESPACE XSharpModel
          RETURN vars:ToString()
       
       
-      STATIC METHOD GetDescription(SELF tm AS IXMember) AS STRING
+      STATIC METHOD GetDescription(SELF tm AS IXMemberSymbol) AS STRING
          VAR desc := tm:ModVis
          IF ( tm:IsStatic )
             desc += "STATIC "
@@ -63,20 +63,20 @@ BEGIN NAMESPACE XSharpModel
          ENDIF
          RETURN desc + " "+tm:GetProtoType()
       
-      STATIC METHOD GetFullName(SELF tm as IXMember) AS STRING
+      STATIC METHOD GetFullName(SELF tm as IXMemberSymbol) AS STRING
          IF (tm:Parent != NULL)
             RETURN tm:Parent:FullName +"." + tm:Name
          ENDIF
          RETURN tm:Name
          
-      STATIC METHOD GetOverloads(SELF tm as IXMember) AS IXMember[]
-         var result := List<IXMember>{}
+      STATIC METHOD GetOverloads(SELF tm as IXMemberSymbol) AS IXMemberSymbol[]
+         var result := List<IXMemberSymbol>{}
          IF tm:ParentType != NULL
             result:AddRange(tm:ParentType:GetMembers(tm.Name, TRUE))
          ENDIF
          RETURN result:ToArray()         
          
-      STATIC METHOD GetXmlSignature(SELF tm as IXMember) AS STRING
+      STATIC METHOD GetXmlSignature(SELF tm as IXMemberSymbol) AS STRING
          local prefix as String
          local name   as String
          // todo: need to handle type parameters !
@@ -116,7 +116,7 @@ BEGIN NAMESPACE XSharpModel
                IF iParam > 0
                   sb:Append(",")
                ENDIF
-               IF param IS XParameterReference VAR xrefpar
+               IF param IS XPEParameterSymbol VAR xrefpar
                   // check if the original parameter contains a type reference
                   VAR typeName := xrefpar:OriginalTypeName
                   VAR result   := typeName

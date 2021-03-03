@@ -13,7 +13,7 @@ USING LanguageService.CodeAnalysis.XSharp.SyntaxParser
 BEGIN NAMESPACE XSharpModel
 
    [DebuggerDisplay("{ToString(),nq}")];
-   CLASS XMemberDefinition INHERIT XEntityDefinition IMPLEMENTS IXMember
+   CLASS XSourceMemberSymbol INHERIT XSourceEntity IMPLEMENTS IXMemberSymbol
       // Fields
       PRIVATE _signature    AS XMemberSignature 
       PROPERTY InitExit     AS STRING AUTO
@@ -44,7 +44,7 @@ BEGIN NAMESPACE XSharpModel
          #endregion
       
       
-      METHOD AddParameters( list AS IList<IXVariable>) AS VOID
+      METHOD AddParameters( list AS IList<XSourceParameterSymbol>) AS VOID
          IF list != NULL
             FOREACH VAR par IN list
                SELF:AddParameter(par)
@@ -52,11 +52,9 @@ BEGIN NAMESPACE XSharpModel
          ENDIF
          RETURN
          
-      METHOD AddParameter(oVar AS IXVariable) AS VOID
+      METHOD AddParameter(oVar AS XSourceParameterSymbol) AS VOID
          oVar:Parent := SELF
-         IF oVar IS XVariable VAR xVar
-            xVar:File   := SELF:File
-         ENDIF
+         oVar:File   := SELF:File
          _signature:Parameters:Add(oVar)
          oVar:Parent := SELF
          RETURN
@@ -74,7 +72,7 @@ BEGIN NAMESPACE XSharpModel
      PROPERTY ComboParameterList AS STRING
          GET
             VAR parameters := ""
-            FOREACH variable AS IXVariable IN SELF:Parameters
+            FOREACH variable AS IXVariableSymbol IN SELF:Parameters
                IF (parameters:Length > 0)
                   parameters := parameters + ", "
                ENDIF
@@ -88,7 +86,7 @@ BEGIN NAMESPACE XSharpModel
             RETURN parameters
          END GET
       END PROPERTY
-      PROPERTY Parameters         AS IList<IXVariable> GET _signature:Parameters:ToArray()
+      PROPERTY Parameters         AS IList<IXVariableSymbol> GET _signature:Parameters:ToArray()
       
       PROPERTY Signature         AS XMemberSignature  GET _signature SET _signature := @@value
       PROPERTY CallingConvention AS CallingConvention GET _signature:CallingConvention SET _signature:CallingConvention := @@value
@@ -123,13 +121,13 @@ BEGIN NAMESPACE XSharpModel
          END GET
       END PROPERTY
          
-      PROPERTY ParentType     AS IXType   
+      PROPERTY ParentType     AS IXTypeSymbol   
       GET 
-         IF SELF:Parent IS IXType
-            RETURN (IXType) SELF:Parent
+         IF SELF:Parent IS IXTypeSymbol
+            RETURN (IXTypeSymbol) SELF:Parent
          ENDIF
-         IF SELF:Parent IS IXMember
-            RETURN ((IXMember) SELF:Parent):ParentType
+         IF SELF:Parent IS IXMemberSymbol
+            RETURN ((IXMemberSymbol) SELF:Parent):ParentType
          ENDIF
          RETURN NULL
       END GET

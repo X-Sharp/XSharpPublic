@@ -1,3 +1,9 @@
+//
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
+// See License.txt in the project root for license information.
+//
+
 USING System.Windows.Forms
 USING System.Drawing
 USING System.Collections.Generic
@@ -3629,7 +3635,7 @@ RETURN
 		LOCAL oColor AS Color
 		DO CASE
 		CASE oProp:Name == "Caption"
-			IF oDesign:Control:GetType() == TypeOf(DesignPushButton)
+			IF oDesign:Control:GetType() == TypeOf(DesignPushButton) .or. oDesign:Control:GetType() == TypeOf(DesignCheckBox)
 				oDesign:Control:Text := ""
 				oDesign:Control:Invalidate()
 				RETURN

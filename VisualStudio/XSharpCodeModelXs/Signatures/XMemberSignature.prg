@@ -11,18 +11,18 @@ USING System.Linq
 BEGIN NAMESPACE XSharpModel
    [DebuggerDisplay("{DebuggerDisplay(),nq}")];
    CLASS XMemberSignature  INHERIT XBaseSignature
-      PROPERTY Id                       AS STRING               AUTO GET INTERNAL SET
-      PROPERTY Parameters               AS List<IXVariable>     AUTO GET INTERNAL SET
-      PROPERTY CallingConvention        AS CallingConvention    AUTO GET INTERNAL SET
-      PROPERTY DataType                 AS STRING               AUTO GET INTERNAL SET
-      PROPERTY IsExtension              AS LOGIC                AUTO GET INTERNAL SET
+      PROPERTY Id                       AS STRING                   AUTO GET INTERNAL SET
+      PROPERTY Parameters               AS List<IXVariableSymbol>   AUTO GET INTERNAL SET
+      PROPERTY CallingConvention        AS CallingConvention        AUTO GET INTERNAL SET
+      PROPERTY DataType                 AS STRING                   AUTO GET INTERNAL SET
+      PROPERTY IsExtension              AS LOGIC                    AUTO GET INTERNAL SET
       
       PROPERTY HasParameters AS LOGIC GET SELF:Parameters:Count > 0
       PROPERTY ParameterCount  AS INT GET SELF:Parameters:Count
       PROPERTY ParameterList AS STRING
          GET
             VAR parameters := ""
-            FOREACH variable AS IXVariable IN SELF:Parameters
+            FOREACH variable AS IXVariableSymbol IN SELF:Parameters
                IF (parameters:Length > 0)
                   parameters := parameters + ", "
                ENDIF
@@ -41,7 +41,7 @@ BEGIN NAMESPACE XSharpModel
       CONSTRUCTOR()
          SUPER()
          SELF:TypeParameters             := List<STRING>{}
-         SELF:Parameters                 := List<IXVariable>{}
+         SELF:Parameters                 := List<IXVariableSymbol>{}
          SELF:TypeParameterContraints    := List<STRING>{}
          SELF:CallingConvention          := CallingConvention.None
          

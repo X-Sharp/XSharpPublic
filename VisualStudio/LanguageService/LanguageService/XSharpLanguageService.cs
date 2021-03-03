@@ -211,7 +211,7 @@ namespace XSharp.LanguageService
             ppEnum = null;
             var file = getFile(pBuffer);
             var list = new List<String>();
-            XElement member;
+            XSourceEntity member;
             // We use our orignal syntax here (so SELF and ":"). The expression compiler
             // in the debugger takes care of translating SELF to this and ':' to '.'
             if (file != null)
@@ -235,21 +235,20 @@ namespace XSharp.LanguageService
                         break;
                 }
                 var buffer = _editorAdaptersFactoryService.GetDataBuffer(pBuffer);
-                Dictionary<string, XVariable> locals = null;
+                Dictionary<string, IXVariableSymbol> locals = null;
                 if (member != null)
                 {
-                    if (member is XMemberDefinition)
+                    if (member is XSourceMemberSymbol tm)
                     {
-                        locals = new Dictionary<string, XVariable>(StringComparer.OrdinalIgnoreCase);
-                        var tm = member as XMemberDefinition;
+                        locals = new Dictionary<string, IXVariableSymbol>(StringComparer.OrdinalIgnoreCase);
                         var vars = tm.GetLocals(buffer.CurrentSnapshot, iLine, file.Project.ParseOptions.Dialect);
                         foreach (var v in vars)
                         {
-                            locals.Add(v.Name, (XVariable) v);
+                            locals.Add(v.Name,  v);
                         }
                         foreach (var p in tm.Parameters)
                         {
-                            locals.Add(p.Name, (XVariable)p);
+                            locals.Add(p.Name, p);
                         }
                     }
                     addtokens(buffer, iLine , list, file, locals);
@@ -261,7 +260,7 @@ namespace XSharp.LanguageService
             return VSConstants.S_OK;
         }
 
-        private void addtokens(ITextBuffer buffer, int iLine, IList<string> list, XFile file, IDictionary<string, XVariable> locals)
+        private void addtokens(ITextBuffer buffer, int iLine, IList<string> list, XFile file, IDictionary<string, IXVariableSymbol> locals)
         {
             if (iLine <= 0)
                 return;

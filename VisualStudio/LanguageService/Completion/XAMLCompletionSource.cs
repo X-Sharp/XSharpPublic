@@ -87,7 +87,7 @@ namespace XSharpLanguage
                     return;
                 }
                 // The Completion list we are building
-                CompletionList compList = new CompletionList(_file);
+                XCompletionList compList = new XCompletionList(_file);
                 ///
                 /// 
                 //compList.Add(new XSCompletion("XSDummy", "XSDummy", "XSDummy Description", null, null, Kind.Class));

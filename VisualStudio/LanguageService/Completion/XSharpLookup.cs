@@ -16,6 +16,7 @@ using System.Collections.Immutable;
 
 namespace XSharp.LanguageService
 {
+
     internal static class XSharpLookup
     {
 
@@ -395,6 +396,8 @@ namespace XSharp.LanguageService
             }
             return "";
         }
+
+        /*
         /// <summary>
         /// Retrieve the CompletionType based on :
         ///  The Token list returned by GetTokenList()
@@ -407,15 +410,14 @@ namespace XSharp.LanguageService
         /// <param name="stopToken"></param>
         /// <param name="foundElement"></param>
         /// <returns></returns>
-        public static CompletionType RetrieveType(XFile file, List<XSharpToken> tokenList, XSourceMemberSymbol currentMember, string currentNS,
-            IToken stopToken, out CompletionElement foundElement, ITextSnapshot snapshot, int currentLine, XSharpDialect dialect, bool stopAtOpenToken = false)
+        public static IXSymbol FindSymbol(XFile file, List<XSharpToken> tokenList, XSourceMemberSymbol currentMember, string currentNS,
+            IToken stopToken, ITextSnapshot snapshot, int currentLine, XSharpDialect dialect, bool stopAtOpenToken = false)
         {
             //
 #if TRACE
                 Stopwatch stopWatch = new Stopwatch();
                 stopWatch.Start();
 #endif
-            foundElement = null;
             CompletionType cType = null;
 
             int currentPos = 0;
@@ -424,6 +426,7 @@ namespace XSharp.LanguageService
             XSharpToken currentToken = null;
             var currentScopes = new List<string>();
             IXSymbol scope;
+            CompletionElement foundElement = null;
             scope = currentMember;
             //Todo
             while (scope != null)
@@ -487,12 +490,12 @@ namespace XSharp.LanguageService
                         }
                         if (!cType.IsEmpty())
                         {
-                            SearchConstructorIn(cType, Modifiers.Private, out foundElement);
+                            var ctor = SearchConstructorIn(cType, Modifiers.Private, out foundElement);
                             if (foundElement?.Result == null && cType.XTypeDef != null)
                             {
                                 foundElement = new CompletionElement(cType.XTypeDef);
                             }
-                            return cType;
+                            return ctor;
                         }
                     }
                 }
@@ -512,13 +515,13 @@ namespace XSharp.LanguageService
             }
 
             //
-            // we have to walk the tokenList, searching for the current Type
-            // As we have separators every even token, we will walk by step 2
-            CompletionType cTemp = null;
+            // we have to walk the tokenList, searching for the current Symbol
+            IXSymbol currentSymbol = null;
             if (tokenList.Count == 0)
                 return null;
+            var parentType = (currentMember.ParentType as XSourceTypeSymbol).Clone;
             // Context Type....
-            cType = new CompletionType((currentMember.ParentType as XSourceTypeSymbol).Clone);
+            currentSymbol = parentType;
             Modifiers visibility = Modifiers.Private;
             int lastopentoken = tokenList.Count - 1;
             if (stopAtOpenToken)
@@ -557,11 +560,11 @@ namespace XSharp.LanguageService
                 var hasBracket = false;
                 if (currentPos < lastopentoken)
                 {
-                    var nextType    = tokenList[currentPos + 1].Type;
-                    qualifiedName   = nextType == XSharpLexer.DOT;
-                    findMethod      = nextType == XSharpLexer.LPAREN;
-                    findType        = nextType == XSharpLexer.LCURLY;
-                    hasBracket      = nextType == XSharpLexer.LBRKT;
+                    var nextType = tokenList[currentPos + 1].Type;
+                    qualifiedName = nextType == XSharpLexer.DOT;
+                    findMethod = nextType == XSharpLexer.LPAREN;
+                    findType = nextType == XSharpLexer.LCURLY;
+                    hasBracket = nextType == XSharpLexer.LBRKT;
 
                 }
 
@@ -653,6 +656,425 @@ namespace XSharp.LanguageService
                     {
                         var globType = SearchFunctionIn(currentMember.File, currentName, out foundElement);
                         if (currentPos == lastopentoken && globType != null)
+                            return null;
+                    }
+                    if (!cType.IsEmpty())
+                    {
+                        // Now, search for a Method
+                        cTemp = SearchMethodTypeIn(cType, currentName, visibility, false, out foundElement, dialect);
+                        if ((foundElement != null) && (foundElement.IsInitialized))
+                        {
+                            cType = cTemp;
+                        }
+                        else
+                        {
+                            cType = CompletionType.Empty;
+                        }
+                    }
+                    if (cType.IsEmpty())
+                    {
+                        // check to see if this is a method from the Object Type, such as ToString().
+                        cTemp = SearchMethodTypeIn(new CompletionType("System.Object", file, file.Usings), currentName, visibility, false, out foundElement, dialect);
+                        if ((foundElement != null) && (foundElement.IsInitialized))
+                        {
+                            cType = cTemp;
+                        }
+                    }
+                    if (cType.IsEmpty())
+                    {
+                        // Could it be Static Method with "Using Static"
+                        // Now, search for a Method
+                        cType = SearchMethodStaticIn(currentMember.File, currentName, out foundElement, dialect);
+                    }
+                    if (cType.IsEmpty())
+                    {
+                        cType = null;
+                    }
+                }
+                else
+                {
+                    var literal = XSharpLexer.IsConstant(currentToken.Type);
+                    if (literal)
+                    {
+                        cType = getConstantType(currentToken.Type, file);
+                    }
+                    else if (startOfExpression)
+                    {
+                        // Search in Parameters, Locals, Field and Properties
+                        foundElement = FindIdentifier(currentMember, currentName, ref cType, Modifiers.Private, currentNS, snapshot, currentLine, dialect);
+                        if ((foundElement != null) && (foundElement.IsInitialized))
+                        {
+                            cType = foundElement.ReturnType;
+                        }
+                    }
+                    else
+                    {
+                        // We can have a Property/Field of the current CompletionType
+                        if (!cType.IsEmpty())
+                        {
+                            cType = SearchPropertyOrFieldIn(cType, currentName, visibility, out foundElement);
+                        }
+                    }
+                    if (!literal)
+                    {
+                        if (foundElement == null)
+                        {
+                            cType = SearchType(file, currentName, out foundElement, currentNS);
+                        }
+                        // We have it
+                        if ((foundElement != null) && (foundElement.IsInitialized))
+                        {
+                            // and we are in an Array, so we need the "other" type
+                            if (hasBracket)
+                            {
+                                if (foundElement.IsGeneric)
+                                {
+                                    // Retrieve the inner Type
+                                    if (foundElement.Result != null)
+                                    {
+                                        if (!string.IsNullOrEmpty(foundElement.GenericTypeName))
+                                        {
+                                            var usings = new List<string>(currentScopes);
+                                            usings.AddRange(file.Usings);
+                                            if (!string.IsNullOrEmpty(currentNS) && !usings.Contains(currentNS))
+                                            {
+                                                usings.Add(currentNS);
+                                            }
+                                            if (foundElement.GenericTypeName.Contains(','))
+                                            {
+                                                // Ok, this is might be wrong, but...
+                                                string[] items = foundElement.GenericTypeName.Split(',');
+                                                if (items.Length > 1)
+                                                    cType = new CompletionType(items[1], file, usings);
+                                            }
+                                            else
+                                                cType = new CompletionType(foundElement.GenericTypeName, file, usings);
+                                        }
+                                    }
+                                }
+                                else if (foundElement.IsArray)
+                                {
+                                    // Retrieve the inner Type
+                                    if (foundElement.Result != null)
+                                    {
+                                        cType = foundElement.ReturnType;
+                                    }
+                                }
+                            }
+                            else if (foundElement.IsArray)
+                            {
+                                cType = new CompletionType("System.Array", file, "");
+                            }
+                        }
+                    }
+                }
+                if (cType.IsEmpty())
+                {
+
+                    cType = null;
+                }
+                // Next Token
+                currentPos += 1;
+                if (currentPos >= tokenList.Count)
+                {
+                    break;
+                }
+                currentToken = tokenList[currentPos];
+                switch (currentToken.Type)
+                {
+                    case XSharpLexer.DOT:
+                    case XSharpLexer.COLON:
+                    case XSharpLexer.COLONCOLON:
+                        currentPos += 1;
+                        break;
+                }
+                switch (lastToken.Type)
+                {
+                    case XSharpLexer.LPAREN:
+                    case XSharpLexer.LCURLY:
+                    case XSharpLexer.LBRKT:
+                    case XSharpLexer.COMMA:
+                    case XSharpLexer.PLUS:
+                    case XSharpLexer.MINUS:
+                    case XSharpLexer.MULT:
+                    case XSharpLexer.DIV:
+                    case XSharpLexer.EQ:
+                    case XSharpLexer.LT:
+                    case XSharpLexer.GT:
+                        startOfExpression = true;
+                        break;
+                    case XSharpLexer.COLON:
+                    case XSharpLexer.DOT:
+                    default:
+                        startOfExpression = false;
+                        break;
+                }
+                //
+                visibility = Modifiers.Public;
+                if ((foundElement != null) && (foundElement.IsInitialized))
+                {
+                    if (string.Compare(foundElement.Name, "self", true) == 0)
+                    {
+                        visibility = Modifiers.Private;
+                    }
+                    else if (string.Compare(foundElement.Name, "super", true) == 0)
+                    {
+                        visibility = Modifiers.Protected;
+                    }
+                }
+            }
+            if (cType != null && foundElement == null && cType.XTypeDef != null)
+            {
+                foundElement = new CompletionElement(cType.XTypeDef);
+            }
+#if TRACE
+                //
+                stopWatch.Stop();
+                // Get the elapsed time as a TimeSpan value.
+                TimeSpan ts = stopWatch.Elapsed;
+                // Format and display the TimeSpan value.
+                string elapsedTime = string.Format("{0:00}h {1:00}m {2:00}.{3:00}s",
+                    ts.Hours, ts.Minutes, ts.Seconds,
+                    ts.Milliseconds / 10);
+            //
+            WriteOutputMessage("XSharpTokenTools::RetrieveType : Done in " + elapsedTime);
+#endif
+
+            return null;
+        }
+        */
+        /// <summary>
+        /// Retrieve the CompletionType based on :
+        ///  The Token list returned by GetTokenList()
+        ///  The Token that stops the building of the Token List.
+        /// </summary>
+        /// <param name="file"></param>
+        /// <param name="tokenList"></param>
+        /// <param name="currentMember"></param>
+        /// <param name="currentNS"></param>
+        /// <param name="stopToken"></param>
+        /// <param name="foundElement"></param>
+        /// <returns></returns>
+        public static CompletionType RetrieveType(XFile file, List<XSharpToken> tokenList, XSourceMemberSymbol currentMember, string currentNS,
+            CompletionState state, out CompletionElement foundElement, ITextSnapshot snapshot, int currentLine, XSharpDialect dialect, bool stopAtOpenToken = false)
+        {
+            //
+#if TRACE
+                Stopwatch stopWatch = new Stopwatch();
+                stopWatch.Start();
+#endif
+            foundElement = null;
+            CompletionType cType = null;
+
+            int currentPos = 0;
+            var startOfExpression = true;
+            var findConstructor = true;
+            XSharpToken currentToken = null;
+            var currentScopes = new List<string>();
+            IXSymbol scope;
+            scope = currentMember;
+            //Todo
+            while (scope != null)
+            {
+                string ns = "";
+                if (scope is XSourceTypeSymbol && !XSourceTypeSymbol.IsGlobalType(scope))
+                {
+                    ns = scope.FullName;
+                }
+                if (scope.Kind == Kind.Namespace)
+                {
+                    ns = scope.FullName;
+                }
+                if (ns?.Length > 0)
+                {
+                    var elements = ns.Split(".".ToCharArray());
+                    ns = "";
+                    for (int i = 0; i < elements.Length; i++)
+                    {
+                        if (i > 0)
+                            ns += "." + elements[i];
+                        else
+                            ns = elements[0];
+                        if (!currentScopes.Contains(ns))
+                        {
+                            currentScopes.Add(ns);
+                        }
+                    }
+                }
+                scope = scope.Parent;
+
+            }
+
+            //
+            if (currentMember == null)
+            {
+                // try to find the first member in the file
+                if (file != null)
+                {
+                    var elt = file.FindMemberAtRow(currentLine);
+                    if (elt is XSourceMemberSymbol)
+                    {
+                        currentMember = (XSourceMemberSymbol)elt;
+                    }
+                    else if (elt is XSourceTypeSymbol )
+                    {
+                        // We might be in the Class Declaration !?
+                        if (state.HasFlag(CompletionState.Types))
+                        {
+                            if (tokenList.Count == 1)
+                            {
+                                currentToken = tokenList[currentPos];
+                                cType = new CompletionType(currentToken.Text, file, ((XSourceTypeSymbol)(elt)).Namespace);
+                            }
+                        }
+                        else
+                        {
+                            cType = new CompletionType(elt.Name, file, file.Usings);
+                        }
+                    }
+                    if (!cType.IsEmpty())
+                        {
+                            SearchConstructorIn(cType, Modifiers.Private, out foundElement);
+                            if (foundElement?.Result == null && cType.XTypeDef != null)
+                            {
+                                foundElement = new CompletionElement(cType.XTypeDef);
+                            }
+                            return cType;
+                        }
+                    }
+                //
+                if (currentMember == null)
+                {
+#if TRACE
+                    stopWatch.Stop();
+                    WriteOutputMessage(string.Format("Retrieve current Type : Member cannot be null."));
+#endif
+                    return null;
+                }
+            }
+            else
+            {
+                file = currentMember.File;
+            }
+
+            //
+            // we have to walk the tokenList, searching for the current Type
+            // As we have separators every even token, we will walk by step 2
+            CompletionType cTemp = null;
+            if (tokenList.Count == 0)
+                return null;
+            // Context Type....
+            cType = new CompletionType((currentMember.ParentType as XSourceTypeSymbol).Clone);
+            Modifiers visibility = Modifiers.Private;
+            int lastopentoken = tokenList.Count - 1;
+            if (stopAtOpenToken)
+            {
+                for (int i = 0; i < tokenList.Count; i++)
+                {
+                    var token = tokenList[i];
+                    switch (token.Type)
+                    {
+                        case XSharpLexer.LPAREN:
+                        case XSharpLexer.LCURLY:
+                        case XSharpLexer.LBRKT:
+                            lastopentoken = i;
+                            break;
+                    }
+                }
+            }
+
+            while (currentPos <= lastopentoken)
+            {
+                currentToken = tokenList[currentPos];
+                var currentName = currentToken.Text;
+                var lastToken = currentToken;
+                switch (currentToken.Type)
+                {
+                    case XSharpLexer.LPAREN:
+                    case XSharpLexer.LCURLY:
+                    case XSharpLexer.LBRKT:
+                        currentPos += 1;
+                        continue;
+                }
+
+                var qualifiedName = false;
+                var findType = false;
+                var findMethod = false;
+                var hasBracket = false;
+                if (currentPos < lastopentoken)
+                {
+                    var nextType    = tokenList[currentPos + 1].Type;
+                    qualifiedName   = nextType == XSharpLexer.DOT;
+                    findMethod      = nextType == XSharpLexer.LPAREN;
+                    findType        = nextType == XSharpLexer.LCURLY;
+                    hasBracket      = nextType == XSharpLexer.LBRKT;
+
+                }
+
+                //
+                if (state.HasFlag(CompletionState.Types))
+                {
+                    // Look for a type
+
+                    SearchType(currentMember.File, currentName, out foundElement, currentMember.Parent.Namespace);
+
+
+                    cType = new CompletionType(currentName, currentMember.File, currentMember.Parent.Namespace);
+                    if (!cType.IsEmpty())
+                    {
+                        foundElement = new CompletionElement(cType.Type);
+                        if (findConstructor)
+                        {
+                            SearchConstructorIn(cType, visibility, out foundElement);
+                        }
+                        if (foundElement == null)
+                        {
+                            foundElement = new CompletionElement(cType.XTypeDef);
+                        }
+                        else if (foundElement.Result == null && cType.XTypeDef != null)
+                        {
+                            foundElement = new CompletionElement(cType.XTypeDef);
+                        }
+
+                        if ((foundElement != null) && (foundElement.IsGeneric))
+                        {
+                            if (string.IsNullOrEmpty(foundElement.GenericTypeName))
+                            {
+                                if (currentName.EndsWith(">"))
+                                {
+                                    string genName = currentName;
+                                    int index = genName.IndexOf('<');
+                                    if (index != -1)
+                                    {
+                                        // Extract the Generic params
+                                        genName = genName.Substring(index + 1);
+                                        genName = genName.Substring(0, genName.Length - 1);
+                                        foundElement.GenericTypeName = genName;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                else if (findMethod)
+                {
+                    // this a Method call
+
+                    // Do we already know in which Type we are ?
+                    if (currentName.ToLower() == "self")
+                    {
+                        SearchConstructorIn(cType, visibility, out foundElement);
+                    }
+                    else if (currentName.ToLower() == "super")
+                    {
+                        SearchConstructorIn(cType.ParentType, visibility, out foundElement);
+                    }
+                    // The first token in the list can be a Function or a Procedure
+                    // Except if we already have a Type
+                    if (currentPos == 0 || startOfExpression)
+                    {
+                        var globType = SearchFunctionIn(currentMember.File, currentName, out foundElement);
+                        if (currentPos == lastopentoken && globType != null)
                             return globType;
                     }
                     if (!cType.IsEmpty())
@@ -665,7 +1087,7 @@ namespace XSharp.LanguageService
                         }
                         else
                         {
-                            cType = new CompletionType();
+                            cType = CompletionType.Empty;
                         }
                     }
                     if (cType.IsEmpty())
@@ -847,7 +1269,7 @@ namespace XSharp.LanguageService
         /// <param name="cType"></param>
         /// <param name="minVisibility"></param>
         /// <param name="foundElement"></param>
-        private static void SearchConstructorIn(CompletionType cType, Modifiers minVisibility, out CompletionElement foundElement)
+        private static IXMemberSymbol SearchConstructorIn(CompletionType cType, Modifiers minVisibility, out CompletionElement foundElement)
         {
             WriteOutputMessage($"--> SearchConstructorIn {cType?.FullName}");
             foundElement = null;
@@ -862,10 +1284,10 @@ namespace XSharp.LanguageService
                 if (xMethod != null)
                 {
                     foundElement = new CompletionElement(xMethod);
-                    return;
+                    return xMethod;
                 }
             }
-            return;
+            return null;
         }
 
         internal static CompletionType getConstantType(int type, XFile file)
@@ -1042,7 +1464,7 @@ namespace XSharp.LanguageService
                 }
             }
             // Sorry, not found 
-            return new CompletionType();
+            return CompletionType.Empty;
 
         }
 
@@ -1076,7 +1498,7 @@ namespace XSharp.LanguageService
                 }
             }
             // Sorry, not found
-            return new CompletionType();
+            return CompletionType.Empty;
 
         }
         /// <summary>
@@ -1116,7 +1538,7 @@ namespace XSharp.LanguageService
             }
 
             // Sorry, not found
-            return new CompletionType();
+            return CompletionType.Empty;
         }
         /// <summary>
         /// Search for a Method, in a CompletionType, based on the Visibility.
@@ -1162,7 +1584,7 @@ namespace XSharp.LanguageService
             }
 
             // Sorry, not found
-            return new CompletionType();
+            return CompletionType.Empty;
         }
         /// <summary>
         /// Search for a static Method in a File

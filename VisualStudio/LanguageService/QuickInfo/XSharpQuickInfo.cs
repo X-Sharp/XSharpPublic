@@ -130,12 +130,11 @@ namespace XSharp.LanguageService
                 if (_file == null)
                     return;
                 // Then, the corresponding Type/Element if possible
-                IToken stopToken;
                 //ITokenStream tokenStream;
                 XSourceMemberSymbol member = XSharpLookup.FindMember(lineNumber, _file);
                 XSourceTypeSymbol currentNamespace = XSharpTokenTools.FindNamespace(caretPos, _file);
                 // adjust caretpos, for other completions we need to stop before the caret. Now we include the caret
-                var tokenList = XSharpTokenTools.GetTokenList(caretPos , lineNumber, tokens.TokenStream, out stopToken);
+                var tokenList = XSharpTokenTools.GetTokenList(caretPos , lineNumber, tokens.TokenStream, out var state);
                 // LookUp for the BaseType, reading the TokenList (From left to right)
                 CompletionElement gotoElement;
                 string currentNS = "";
@@ -144,7 +143,7 @@ namespace XSharp.LanguageService
                     currentNS = currentNamespace.Name;
                 }
 
-                var cType = XSharpLookup.RetrieveType(_file, tokenList, member, currentNS, stopToken, out gotoElement, snapshot, lineNumber, _file.Project.Dialect);
+                var cType = XSharpLookup.RetrieveType(_file, tokenList, member, currentNS, state, out gotoElement, snapshot, lineNumber, _file.Project.Dialect);
                 //
                 //
                 if ((gotoElement != null) && (gotoElement.IsInitialized))

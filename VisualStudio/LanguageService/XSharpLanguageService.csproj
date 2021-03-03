@@ -56,7 +56,9 @@
       <Link>Constants.cs</Link>
     </Compile>
     <Compile Include="BraceMatching\BraceMatching.cs" />
-    <Compile Include="Completion\Binder.cs" />
+    <Compile Include="Completion\XBinder.cs" />
+    <Compile Include="Completion\XCompletionList.cs" />
+    <Compile Include="Completion\XSharpGlyphTools.cs" />
     <Compile Include="Completion\XSharpLookup.cs" />
     <Compile Include="KeywordColoring\ClassificationDefinitions.cs" />
     <Compile Include="KeywordColoring\ColorizerConstants.cs" />

@@ -760,8 +760,6 @@ namespace XSharp.LanguageService
                 var currentNamespace = XSharpTokenTools.FindNamespace(caretPos, file);
 
                 // Then, the corresponding Type/Element if possible
-                IToken stopToken;
-                //ITokenStream tokenStream;
 
                 // We don't want to lex the buffer. So get the tokens from the last lex run
                 // and when these are too old, then simply bail out
@@ -772,7 +770,7 @@ namespace XSharp.LanguageService
                         return;
                 }
 
-                var tokenList = XSharpTokenTools.GetTokenList(caretPos, lineNumber, tokens.TokenStream, out stopToken);
+                var tokenList = XSharpTokenTools.GetTokenList(caretPos, lineNumber, tokens.TokenStream, out var state);
 
                 // LookUp for the BaseType, reading the TokenList (From left to right)
                 CompletionElement gotoElement;
@@ -782,7 +780,7 @@ namespace XSharp.LanguageService
                     currentNS = currentNamespace.Name;
                 }
                 //
-                CompletionType cType = XSharpLookup.RetrieveType(file, tokenList, member, currentNS, stopToken, out gotoElement, snapshot, lineNumber, file.Project.Dialect);
+                CompletionType cType = XSharpLookup.RetrieveType(file, tokenList, member, currentNS, state, out gotoElement, snapshot, lineNumber, file.Project.Dialect);
                 //
                 if (gotoElement != null)
                 {
@@ -809,7 +807,7 @@ namespace XSharp.LanguageService
                 {
                     // try again with just the last element in the list
                     tokenList.RemoveRange(0, tokenList.Count - 1);
-                    cType = XSharpLookup.RetrieveType(file, tokenList, member, currentNS, stopToken, out gotoElement, snapshot, lineNumber, file.Project.Dialect);
+                    cType = XSharpLookup.RetrieveType(file, tokenList, member, currentNS, state, out gotoElement, snapshot, lineNumber, file.Project.Dialect);
                 }
                 if ((gotoElement != null) && (gotoElement.Result != null))
                 {
@@ -1208,19 +1206,18 @@ namespace XSharp.LanguageService
             {
 
                 // Then, the corresponding Type/Element if possible
-                IToken stopToken;
                 // Check if we can get the member where we are
 
                 var member = XSharpLookup.FindMember(lineNumber, file);
                 var currentNamespace = XSharpTokenTools.FindNamespace(caretPos, file);
-                var tokenList = XSharpTokenTools.GetTokenList(caretPos, lineNumber, snapshot, out stopToken, file,  member);
+                var tokenList = XSharpTokenTools.GetTokenList(caretPos, lineNumber, snapshot, out var state, file,  member);
                 string currentNS = "";
                 if (currentNamespace != null)
                 {
                     currentNS = currentNamespace.Name;
                 }
                 // We don't care of the corresponding Type, we are looking for the currentElement
-                XSharpLookup.RetrieveType(file, tokenList, member, currentNS, stopToken, out currentElement, snapshot, startLineNumber, file.Project.Dialect,true);
+                XSharpLookup.RetrieveType(file, tokenList, member, currentNS, state, out currentElement, snapshot, startLineNumber, file.Project.Dialect,true);
             }
             //
             if ((currentElement != null) && (currentElement.IsInitialized))

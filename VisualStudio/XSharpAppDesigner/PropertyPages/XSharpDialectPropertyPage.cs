@@ -23,10 +23,7 @@ namespace XSharp.Project
     /// This class implements dialect property page for the project type.
     /// </summary>
     [ComVisible(true)]
-    [Guid(XSharpConstants.DialectPropertiesPage)]
-    [ClassInterface(ClassInterfaceType.AutoDual)]
-    [ProvideObject(typeof(XSharpDialectPropertyPage))]
-    public class XSharpDialectPropertyPage : XSharpSettingsPage
+    public class XXSharpDialectPropertyPage : XSharpSettingsPage
     {
         #region Constants
         internal const string DialectCaption = "Dialect";
@@ -102,7 +99,7 @@ namespace XSharp.Project
         /// <summary>
         /// Explicitly defined default constructor.
         /// </summary>
-        public XSharpDialectPropertyPage()
+        public XXSharpDialectPropertyPage()
         {
             this.Name = DialectCaption;
         }

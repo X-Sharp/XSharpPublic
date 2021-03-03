@@ -23,11 +23,8 @@ namespace XSharp.Project
     /// <summary>
     /// This class implements language property page for the project type.
     /// </summary>
-    [ComVisible(true)]
-    [Guid(XSharpConstants.LanguagePropertiesPage)]
-    [ClassInterface(ClassInterfaceType.AutoDual)]
     [ProvideObject(typeof(XSharpLanguagePropertyPage))]
-    public class XSharpLanguagePropertyPage : XSharpSettingsPage
+    public class XXSharpLanguagePropertyPage : XSharpSettingsPage
     {
         #region Constants
         internal const string LanguageCaption = "Language";
@@ -92,7 +89,7 @@ namespace XSharp.Project
         /// <summary>
         /// Explicitly defined default constructor.
         /// </summary>
-        public XSharpLanguagePropertyPage()
+        public XXSharpLanguagePropertyPage()
         {
             this.Name = LanguageCaption;
         }

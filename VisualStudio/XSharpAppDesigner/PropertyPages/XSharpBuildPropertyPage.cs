@@ -27,7 +27,7 @@ namespace XSharp.Project
     [Guid(XSharpConstants.BuildPropertiesPage)]
     [ClassInterface(ClassInterfaceType.AutoDual)]
     [ProvideObject(typeof(XSharpBuildPropertyPage))]
-    public class XSharpBuildPropertyPage : XSharpSettingsPage
+    public class XXSharpBuildPropertyPage : XSharpSettingsPage
     {
         //internal const string catEvents = "Build Events";
         internal const string catSigning = "Code Signing";
@@ -118,7 +118,7 @@ namespace XSharp.Project
         /// <summary>
         /// Explicitly defined default constructor.
         /// </summary>
-        public XSharpBuildPropertyPage()
+        public XXSharpBuildPropertyPage()
         {
             this.Name = "Build";
         }

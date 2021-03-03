@@ -16,7 +16,7 @@ namespace Microsoft.VisualStudio.Project
     {
         public event EventHandler<ProjectPropertyChangedArgs> OnProjectPropertyChanged;
 
-        protected virtual void RaiseProjectPropertyChanged(string propertyName, string oldValue, string newValue)
+        public virtual void RaiseProjectPropertyChanged(string propertyName, string oldValue, string newValue)
 		{
             var onPropChanged = OnProjectPropertyChanged;
             if (onPropChanged != null)

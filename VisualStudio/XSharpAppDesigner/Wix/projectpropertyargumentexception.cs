@@ -14,7 +14,7 @@ namespace Microsoft.VisualStudio.Project
     /// Exception thrown when an invalid property is entered on the project property pages
     /// </summary>
     [Serializable]
-    internal class ProjectPropertyArgumentException : ArgumentException
+    public class ProjectPropertyArgumentException : ArgumentException
     {
         // =========================================================================================
         // Constructors

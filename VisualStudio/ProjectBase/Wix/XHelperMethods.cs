@@ -594,7 +594,7 @@ public static class XHelperMethods
         /// Sets the colors of the passed control and all of its child controls by using the VS Colors services
         /// </summary>
         /// <param name="parent">Parent form/control</param>
-        internal static void SetControlTreeColors(Control parent)
+        public static void SetControlTreeColors(Control parent)
         {
             SetSingleControlColors(parent);
 
@@ -625,7 +625,7 @@ public static class XHelperMethods
         /// </summary>
         /// <param name="visualStudioColor">Color enum</param>
         /// <returns>The color itself</returns>
-        internal static Color GetVsColor(Vs2010Color visualStudioColor)
+        public static Color GetVsColor(Vs2010Color visualStudioColor)
         {
             uint win32Color = 0;
             IVsUIShell2 vsuiShell2 = AsyncProjectPackage.GetGlobalService(typeof(SVsUIShell)) as IVsUIShell2;

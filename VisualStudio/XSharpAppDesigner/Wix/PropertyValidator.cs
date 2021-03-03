@@ -16,7 +16,7 @@ namespace Microsoft.VisualStudio.Project
     /// <summary>
     /// Class to handle validation of the different types of votive project properties
     /// </summary>
-    internal static class PropertyValidator
+    public static class PropertyValidator
     {
 
         // =========================================================================================

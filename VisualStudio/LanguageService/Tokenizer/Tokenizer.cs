@@ -381,6 +381,7 @@ namespace XSharp.LanguageService
         static internal SnapshotPoint FindEndOfCurrentToken(SnapshotPoint ssp, ITextSnapshot snapshot)
         {
             var done = false;
+            var ingeneric = false;
             while (ssp.Position < snapshot.Length && !done)
             {
                 var c = ssp.GetChar();
@@ -394,11 +395,25 @@ namespace XSharp.LanguageService
                         done = true;
                         ssp -= 1;
                         break;
+                    case '<':
+                        ssp += 1;
+                        ingeneric = true;
+                        break;
+                    case '>':
+                        if (ingeneric)
+                        {
+                            ssp += 1;
+                            ingeneric = false;
+                        }
+                        break;
                     default:
                         if (char.IsLetterOrDigit(c) || c == '_')
                             ssp += 1;
+                        else if (ingeneric)
+                            ssp += 1;
                         else
                             done = true;
+
                         break;
                 }
             }

@@ -19,7 +19,7 @@ BEGIN NAMESPACE XSharpModel
       PRIVATE _members        AS List<XPEMemberSymbol>
       PRIVATE _children       AS List<XPETypeSymbol>
       PRIVATE _signature      AS XTypeSignature
-      PRIVATE _typeDef        as TypeDefinition
+      PRIVATE _typeDef        AS TypeDefinition
       PRIVATE _initialized   := FALSE  AS LOGIC
 
       PROPERTY TypeDef        AS TypeDefinition GET _typeDef
@@ -40,8 +40,10 @@ BEGIN NAMESPACE XSharpModel
          ELSE
             SELF:BaseType     := ""
          ENDIF
+         SELF:OriginalTypeName := typedef:FullName   
          IF typedef:HasGenericParameters
-            VAR cName := SELF:Name
+            
+            VAR cName          := SELF:Name
             VAR nsGeneric := FALSE
             VAR pos := cName:IndexOf('`')
             IF pos == -1
@@ -50,7 +52,7 @@ BEGIN NAMESPACE XSharpModel
                pos := cName:IndexOf('`')
             ENDIF
             IF pos > 0
-               cName := cName:Substring(0,pos)+"<"
+               cName += cName:Substring(0,pos)+"<"
                LOCAL first := TRUE AS LOGIC
                FOREACH VAR genparam IN typedef:GenericParameters
                   IF ! first
@@ -58,6 +60,20 @@ BEGIN NAMESPACE XSharpModel
                   ENDIF
                   cName += genparam:Name
                   first := FALSE
+                  SELF:_signature:TypeParameters:Add(genparam:Name)
+                  if (genparam:HasConstraints)
+                        VAR cConstraint := ""
+                        foreach var constraint in genparam:Constraints
+                            IF cConstraint:Length > 0
+                                cConstraint += ","
+                            ENDIF
+                            cConstraint += constraint:ConstraintType:Name
+                        next
+                        SELF:_signature:TypeParameterContraints:Add(cConstraint)
+                    ELSE
+                        SELF:_signature:TypeParameterContraints:Add("")
+                        
+                  ENDIF
                NEXT
                cName += ">"
                IF nsGeneric

@@ -48,6 +48,9 @@ BEGIN NAMESPACE XSharpModel
          
       STATIC METHOD GetXmlSignature(SELF tm as IXTypeSymbol) AS STRING
          // todo: need to handle type parameters !
+         IF tm is XPETypeSymbol VAR peType
+            RETURN "T:"+peType:OriginalTypeName
+         ENDIF
          RETURN "T:"+tm:FullName
          
    END CLASS

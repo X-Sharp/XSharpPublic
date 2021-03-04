@@ -27,11 +27,14 @@ namespace XSharp.LanguageService
             this.Type = typeInfo;
             this.Name = typeInfo.FullName;
             //
-
-            //
             if (typeInfo.IsGeneric)
             {
+                // convert syntax with `2 to real type parameter names
                 string genName = typeInfo.FullName;
+                if (typeInfo is XPETypeSymbol petype)
+                {
+                    genName = petype.OriginalTypeName;
+                }
                 int index = genName.IndexOf('`');
                 if (index != -1)
                 {
@@ -48,8 +51,8 @@ namespace XSharp.LanguageService
                         genName += ", ";
                 }
                 genName += ">";
-                //
                 this.Name = genName;
+
             }
 
         }

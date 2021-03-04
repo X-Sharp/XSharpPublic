@@ -996,7 +996,20 @@ namespace XSharp.LanguageService
                         currentPos += 1;
                         continue;
                 }
-
+                if (currentToken.Type == XSharpLexer.ID &&
+                    currentPos < lastopentoken &&
+                    tokenList[currentPos+1].Type == XSharpLexer.LT)
+                {
+                    currentPos += 1;
+                    while (currentPos <= lastopentoken)
+                    {
+                        var nextToken = tokenList[currentPos];
+                        currentName += nextToken.Text;
+                        currentPos += 1;
+                        if (nextToken.Type == XSharpLexer.GT)
+                            break;
+                    }
+                }
                 var qualifiedName = false;
                 var findType = false;
                 var findMethod = false;
@@ -1008,7 +1021,6 @@ namespace XSharp.LanguageService
                     findMethod      = nextType == XSharpLexer.LPAREN;
                     findType        = nextType == XSharpLexer.LCURLY;
                     hasBracket      = nextType == XSharpLexer.LBRKT;
-
                 }
 
                 //

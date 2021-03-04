@@ -2299,24 +2299,24 @@ callingconvention	: Convention=(CLIPPER | STRICT | PASCAL | ASPEN | WINCALL | CA
          CASE XSharpLexer.SYMBOL
          CASE XSharpLexer.USUAL
             result :=  ConsumeAndGet():GetText() 
-            CASE XSharpLexer.BYTE
-            CASE XSharpLexer.CHAR
-            CASE XSharpLexer.DATETIME
-            CASE XSharpLexer.DECIMAL
-            CASE XSharpLexer.DWORD
-            CASE XSharpLexer.DYNAMIC
-            CASE XSharpLexer.INT
-            CASE XSharpLexer.INT64
-            CASE XSharpLexer.LOGIC
-            CASE XSharpLexer.LONGINT
-            CASE XSharpLexer.OBJECT
-            CASE XSharpLexer.PTR
-            CASE XSharpLexer.REAL4
-            CASE XSharpLexer.REAL8
-            CASE XSharpLexer.SHORTINT
-            CASE XSharpLexer.STRING
-            CASE XSharpLexer.UINT64
-            CASE XSharpLexer.VOID
+        CASE XSharpLexer.BYTE
+        CASE XSharpLexer.CHAR
+        CASE XSharpLexer.DATETIME
+        CASE XSharpLexer.DECIMAL
+        CASE XSharpLexer.DWORD
+        CASE XSharpLexer.DYNAMIC
+        CASE XSharpLexer.INT
+        CASE XSharpLexer.INT64
+        CASE XSharpLexer.LOGIC
+        CASE XSharpLexer.LONGINT
+        CASE XSharpLexer.OBJECT
+        CASE XSharpLexer.PTR
+        CASE XSharpLexer.REAL4
+        CASE XSharpLexer.REAL8
+        CASE XSharpLexer.SHORTINT
+        CASE XSharpLexer.STRING
+        CASE XSharpLexer.UINT64
+        CASE XSharpLexer.VOID
          CASE XSharpLexer.WORD
             result :=  SELF:ConsumeAndGet():GetText() 
          OTHERWISE

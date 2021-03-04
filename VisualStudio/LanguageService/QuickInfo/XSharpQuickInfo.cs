@@ -59,25 +59,11 @@ namespace XSharp.LanguageService
         public void AugmentQuickInfoSession(IQuickInfoSession session, IList<object> qiContent, out ITrackingSpan applicableToSpan)
         {
             applicableToSpan = null;
-            //if (skipFirst)
-            //{
-            //    skipFirst = false;
-            //    return;
-            //}
-            //else
-            //{
-            //    skipFirst = true;
-            //}
-            if (XSettings.DebuggerIsRunning)
-            {
+            if (XSettings.DebuggerIsRunning || XSettings.DisableQuickInfo)
                 return;
-            }
             try
             {
                 XSharpModel.ModelWalker.Suspend();
-                if (XSettings.DisableQuickInfo)
-                    return;
-
 
                 // Map the trigger point down to our buffer.
                 SnapshotPoint? subjectTriggerPoint = session.GetTriggerPoint(_subjectBuffer.CurrentSnapshot);
@@ -466,7 +452,13 @@ namespace XSharp.LanguageService
             public List<Inline> WPFPrototype(int len)
             {
                 List<Inline> content = new List<Inline>();
-                content.addText(this.typeMember.Name);
+                var name = this.typeMember.Parent.Name;
+                if (this.typeMember.IsStatic)
+                    name += ".";
+                else
+                    name += ":";
+                name += this.typeMember.Name;
+                content.addText(name);
                 if (this.typeMember.Kind.HasParameters())
                 {
                     content.addKeyword(this.typeMember.Kind == XSharpModel.Kind.Constructor ? "{" : "(");
@@ -607,4 +599,5 @@ namespace XSharp.LanguageService
         }
     }
 }
+
 

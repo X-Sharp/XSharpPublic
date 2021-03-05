@@ -238,7 +238,10 @@ namespace XSharp.MacroCompiler.Syntax
                 if (b.Options.AllowDotAccess)
                 {
                     if (b.Options.UndeclaredVariableResolution != VariableResolution.TreatAsField)
+                    {
+                        Expr.Symbol = null; // re-bind Expr -- this is a hack!!!
                         b.Bind(ref Expr, Affinity);
+                    }
                     if (Expr.Symbol.UniqueIdent() != null)
                         return MemberAccessExpr.Bound(b, Expr, Member, Affinity);
                     if (Expr is NameExpr aname && Member is NameExpr fname)
@@ -640,7 +643,20 @@ namespace XSharp.MacroCompiler.Syntax
             b.Bind(ref Expr);
             Expr.RequireGetAccess();
             b.Bind(ref Args);
-            b.Convert(ref Expr, Compilation.Get(NativeType.Array));
+            if (Expr.Datatype.IsUsualOrObject())
+            {
+                b.Convert(ref Expr, Compilation.Get(NativeType.Array));
+            }
+            if (Binder.TypesMatch(Expr.Datatype,NativeType.Array) || Expr.Datatype.IsArray)
+            {
+                b.ConvertArrayBase(Args);
+            }
+            if (Expr.Datatype.IsArray && Expr.Datatype.ArrayRank == 1 )
+            {
+                if (Args.Args.Count != 1)
+                    throw Error(ErrorCode.WrongNumberIfIndices);
+                return NativeArrayAccessExpr.Bound(Expr, Args);
+            }
             Self = Expr;
             var s = Self.Datatype.Lookup(SystemNames.IndexerName);
             Symbol = b.BindArrayAccess(Self, s, Args);
@@ -653,8 +669,36 @@ namespace XSharp.MacroCompiler.Syntax
             foreach (var arg in Args.Args) b.Cache(ref arg.Expr);
             return this;
         }
+        internal static ArrayAccessExpr Bound(Expr e, ArgList a, Binder b)
+        {
+            if (e.Datatype.IsUsualOrObject())
+            {
+                b.Convert(ref e, Compilation.Get(NativeType.Array));
+            }
+            if (Binder.TypesMatch(e.Datatype, NativeType.Array) || e.Datatype.IsArray)
+            {
+                b.ConvertArrayBase(a);
+            }
+            if (e.Datatype.IsArray && e.Datatype.ArrayRank == 1)
+            {
+                if (a.Args.Count != 1)
+                    throw e.Error(ErrorCode.WrongNumberIfIndices);
+                return NativeArrayAccessExpr.Bound(e, a);
+            }
+            var item = e.Datatype.Lookup(SystemNames.IndexerName);
+            var sym = b.BindArrayAccess(e, item, a);
+            return new ArrayAccessExpr(e, a) { Self = e, Symbol = sym, Datatype = sym.Type() };
+        }
         internal override void RequireSetAccess() => RequireGetAccess();
         internal override void RequireGetSetAccess() => RequireGetAccess();
+    }
+    internal partial class NativeArrayAccessExpr : ArrayAccessExpr
+    {
+        NativeArrayAccessExpr(Expr e, ArgList a) : base(e, a) { }
+        internal static NativeArrayAccessExpr Bound(Expr e, ArgList a)
+        {
+            return new NativeArrayAccessExpr(e, a) { Self = e, Symbol = e.Symbol, Datatype = e.Symbol.Type().ElementType };
+        }
     }
     internal partial class EmptyExpr : Expr
     {

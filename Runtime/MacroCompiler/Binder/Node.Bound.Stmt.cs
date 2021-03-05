@@ -94,6 +94,10 @@ namespace XSharp.MacroCompiler.Syntax
             }
             return null;
         }
+        internal static VarDecl Bound(LocalSymbol loc, Expr initializer, BindOptions opt)
+        {
+            return new VarDecl(null, null, null, null, AssignExpr.Bound(IdExpr.Bound(loc), initializer, opt)) { Var = loc };
+        }
     }
     internal partial class ImpliedVarDecl : VarDecl
     {
@@ -134,10 +138,16 @@ namespace XSharp.MacroCompiler.Syntax
     {
         internal override Node Bind(Binder b) => base.Bind(b);
     }
-    internal partial class ForStmt : Stmt, ILoopableStmt, IExitableStmt
+    internal partial class ForBaseStmt: Stmt, ILoopableStmt, IExitableStmt
     {
-        Expr WhileExpr;
-        Expr IncrExpr;
+        protected VarDecl IterDecl = null;
+        protected Expr IterInit = null;
+        protected Expr WhileExpr;
+        protected Expr IncrExpr;
+        protected VarDecl InnerDecl = null;
+    }
+    internal partial class ForStmt : ForBaseStmt, ILoopableStmt, IExitableStmt
+    {
         internal override Node Bind(Binder b)
         {
             b.OpenScope();
@@ -145,10 +155,12 @@ namespace XSharp.MacroCompiler.Syntax
             if (AssignExpr != null)
             {
                 b.Bind(ref AssignExpr);
+                IterInit = AssignExpr;
             }
             else
             {
                 b.Bind(ref ForDecl);
+                IterDecl = ForDecl;
                 AssignExpr = ForDecl.Initializer as AssignExpr;
             }
 
@@ -197,9 +209,39 @@ namespace XSharp.MacroCompiler.Syntax
             return null;
         }
     }
-    internal partial class ForeachStmt : Stmt, ILoopableStmt, IExitableStmt
+    internal partial class ForeachStmt : ForBaseStmt, ILoopableStmt, IExitableStmt
     {
-        // TODO
+        internal override Node Bind(Binder b)
+        {
+            b.OpenScope();
+
+            b.Bind(ref Expr);
+            Expr.RequireGetAccess();
+
+            if (Expr.Datatype.IsArray && Expr.Datatype.ArrayRank == 1)
+            {
+                var array = b.Cache(ref Expr);
+                var iter = b.AddLocal(Compilation.Get(NativeType.Int32));
+                IterDecl = VarDecl.Bound(iter, LiteralExpr.Bound(Constant.Create(1)), b.Options.Binding);
+                WhileExpr = BinaryExpr.Bound(IdExpr.Bound(iter), Token,
+                    MethodCallExpr.Bound(array.Cloned(b), Compilation.Get(WellKnownMembers.System_Array_get_Length), array, new ArgList(new List<Arg>(0))),
+                    BinaryOperatorKind.LessThanOrEqual, b.Options.Binding);
+                IncrExpr = AssignOpExpr.Bound(IdExpr.Bound(iter), LiteralExpr.Bound(Constant.Create(1)), BinaryOperatorKind.Addition, b);
+                ForDecl.Initializer = ArrayAccessExpr.Bound(array, new ArgList(new List<Arg>(1) { new Arg(IdExpr.Bound(iter)) }), b);
+            }
+
+            b.Bind(ref ForDecl);
+            InnerDecl = ForDecl;
+
+            Expr Iter;
+            Iter = (ForDecl.Initializer as AssignExpr).Left;
+            Iter.RequireGetAccess();
+
+            b.Bind(ref Stmt);
+
+            b.CloseScope();
+            return null;
+        }
     }
     internal partial class IfStmt : Stmt
     {

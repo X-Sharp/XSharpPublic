@@ -141,7 +141,7 @@ CLASS XSharp.OleAutoObject IMPLEMENTS IDynamicProperties
 		LOCAL nArg, nArgs  AS INT
 		LOCAL oRet  AS OBJECT
 		nArgs := PCOUNT()
-		cName := NoMethod()
+		cName := RuntimeState.NoMethod
         IF RuntimeState.Dialect == XSharpDialect.Vulcan
 		    args  := USUAL[]{nArgs-1}
 		    FOR nArg := 2 TO nArgs

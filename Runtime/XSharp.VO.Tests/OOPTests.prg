@@ -529,7 +529,7 @@ END CLASS
 CLASS ClassWithNoMethod
 	METHOD NoMethod(arg1, arg2, arg3 , uNil)
 		LOCAL cMethodName AS STRING
-		cMethodName := NoMethod()
+		cMethodName := XSharp.RT.Functions.NoMethod()
 		IF cMethodName = "ADD"
 			RETURN arg1+arg2+arg3
 		ELSEIF cMethodName = "MUL"

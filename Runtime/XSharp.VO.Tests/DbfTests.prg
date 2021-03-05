@@ -119,7 +119,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
 
 		// TECH-K3TL5J8M7V
 		[Fact, Trait("Category", "DBF")];
-		METHOD VODBInfo() AS VOID
+		METHOD VODBInfoTest() AS VOID
 			
 			LOCAL cFileName AS STRING
 			cFileName := "test.DBF"
@@ -252,7 +252,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
 	
 		// TECH-560ANYQI2P , DBRLockList() always returns zero
 		[Fact, Trait("Category", "DBF")];
-		METHOD DBRLockList() AS VOID
+		METHOD DBRLockListTest() AS VOID
 			LOCAL cFileName AS STRING
 			cFileName := __FUNCTION__
 			DbCreate(cFileName, {{"FLD1","C",10,0}})

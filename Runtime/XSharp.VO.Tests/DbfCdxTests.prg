@@ -119,7 +119,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
 
 
 		[Fact, Trait("Category", "DBF")];
-		METHOD VODBInfo() AS VOID
+		METHOD VODBInfoTest() AS VOID
 			
 			LOCAL cFileName AS STRING
 			cFileName := GetTempFileName("test")
@@ -265,7 +265,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
 	
 	
 		[Fact, Trait("Category", "DBF")];
-		METHOD DBRLockList() AS VOID
+		METHOD DBRLockListTest() AS VOID
 			LOCAL cFileName AS STRING
 			cFileName := GetTempFileName()
 			FErase(cFileName + ".cdx")

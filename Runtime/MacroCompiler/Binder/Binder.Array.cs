@@ -13,8 +13,6 @@ namespace XSharp.MacroCompiler
     {
         internal MemberSymbol BindArrayAccess(Expr self, Symbol symbol, ArgList args)
         {
-            ConvertArrayBase(args);
-
             OverloadResult ovRes = null;
 
             var res = TryBindArrayAccess(self, symbol, args, ref ovRes, Options.Binding);

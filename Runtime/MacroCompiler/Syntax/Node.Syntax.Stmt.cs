@@ -90,24 +90,30 @@ namespace XSharp.MacroCompiler.Syntax
         internal RepeatStmt(Token t, Expr cond, Stmt s) : base(t, cond, s) { }
         public override string ToString() => "REPEAT\n  " + Stmt.ToString().Replace("\n", "\n  ") + "\nUNTIL " + Cond.ToString();
     }
-    internal partial class ForStmt : Stmt
+    internal partial class ForBaseStmt : Stmt
+    {
+        internal ForBaseStmt(Token t) : base(t) { }
+    }
+    internal partial class ForBaseStmt : Stmt
+    {
+        internal Stmt Stmt;
+    }
+    internal partial class ForStmt : ForBaseStmt
     {
         internal AssignExpr AssignExpr;
         internal VarDecl ForDecl;
         internal Token Dir;
         internal Expr Final;
         internal Expr Step;
-        internal Stmt Stmt;
         private ForStmt(Token t, Token dir, Expr final, Expr step, Stmt s) : base(t) { ForDecl = null; AssignExpr = null;  Dir = dir; Final = final; Step = step; Stmt = s; }
         internal ForStmt(Token t, AssignExpr a, Token dir, Expr final, Expr step, Stmt s) : this(t, dir, final, step, s) { AssignExpr = a; }
         internal ForStmt(Token t, VarDecl d, Token dir, Expr final, Expr step, Stmt s) : this(t, dir, final, step, s) { ForDecl = d; }
         public override string ToString() => "FOR " + (AssignExpr?.ToString() ?? ((ForDecl is ImpliedVarDecl ? "VAR " : "LOCAL ") + ForDecl.ToString())) + " " + Dir.type + " " + Final + (Step != null ? " STEP " + Step : "") + "\n  " + Stmt.ToString().Replace("\n", "\n  ") + "\nEND FOR";
     }
-    internal partial class ForeachStmt : Stmt
+    internal partial class ForeachStmt : ForBaseStmt
     {
         internal VarDecl ForDecl;
         internal Expr Expr;
-        internal Stmt Stmt;
         internal ForeachStmt(Token t, VarDecl d, Expr e, Stmt s) : base(t) { ForDecl = d; Expr = e; Stmt = s; }
         public override string ToString() => "FOREACH " + (ForDecl is ImpliedVarDecl ? "VAR " : "") + ForDecl.ToString() + " IN " + Expr + "\n  " + Stmt.ToString().Replace("\n", "\n  ") + "\nEND FOREACH";
     }

@@ -205,7 +205,7 @@ BEGIN NAMESPACE MacroCompilerTest
         TestMacro(mc, e"{|| TestGlobals.tci:v1 := 10, TestGlobals.tci:v1++, TestGlobals.tci:v1 }", Args(), 11, typeof(INT))
         TestMacro(mc, e"-TestGlobals.tsi", Args(), NULL, NULL, ErrorCode.UnaryOperationNotFound)
         TestMacro(mc, e"TestGlobals.tsi+1", Args(), NULL, NULL, ErrorCode.BinaryOperationNotFound)
-        TestMacro(mc, e"TestGlobals.tsi[2]", Args(), NULL, NULL, ErrorCode.NoConversion)
+        TestMacro(mc, e"TestGlobals.tsi[2]", Args(), NULL, NULL, ErrorCode.IndexerNotFound)
         TestMacro(mc, e"{|| TestGlobals.tci:GetHashCode() }", Args(), TestGlobals.tci:GetHashCode(), typeof(INT))
         TestMacro(mc, e"{|| TestGlobals.tsi:GetHashCode() }", Args(), TestGlobals.tsi:GetHashCode(), typeof(INT))
         TestMacro(mc, e"{|| TestGlobals.tci:ToString() }", Args(), "testclass", typeof(STRING))

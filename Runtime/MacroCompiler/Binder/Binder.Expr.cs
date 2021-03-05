@@ -10,8 +10,11 @@ namespace XSharp.MacroCompiler
     {
         internal void Bind<T>(ref T node) where T: Syntax.Node
         {
-            var b = node?.Bind(this);
-            if ( b != null ) node = (T)b;
+            if (node.Symbol == null)
+            {
+                var b = node?.Bind(this);
+                if (b != null) node = (T)b;
+            }
         }
 
         internal void Bind<T>(ref T node, BindAffinity affinity) where T : Syntax.Expr
@@ -29,8 +32,11 @@ namespace XSharp.MacroCompiler
             {
                 for (var i = 0; i < nodes.Count; i++)
                 {
-                    var b = nodes[i]?.Bind(this);
-                    if ( b != null ) nodes[i] = (T)b;
+                    if (nodes[i]?.Symbol == null)
+                    {
+                        var b = nodes[i]?.Bind(this);
+                        if (b != null) nodes[i] = (T)b;
+                    }
                 }
             }
         }

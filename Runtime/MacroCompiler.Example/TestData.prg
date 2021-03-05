@@ -182,6 +182,7 @@ global wag := "" as string
 public CLASS TestGlobals
     static public tsi := teststruct{1} AS teststruct
     static public tci := testclass{1} AS testclass
+    static public tsa := <int>{11, 22, 33, 44, 55} AS INT[]
     static public wag := "" as string
 END CLASS
 

@@ -149,7 +149,6 @@ namespace Microsoft.CodeAnalysis.CSharp
                 {
                     return LambdaConversionResult.Success; 
                 }
-                return LambdaConversionResult.Success;
             }
 
             return res;

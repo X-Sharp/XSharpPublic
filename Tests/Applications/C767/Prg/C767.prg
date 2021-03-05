@@ -1,4 +1,7 @@
-// 767. error XS0121: The call is ambiguous between the following methods or properties: 'System.Windows.Forms.ToolStripMenuItem.ToolStripMenuItem(string, System.Drawing.Image, System.EventHandler)' and 'System.Windows.Forms.ToolStripMenuItem.ToolStripMenuItem(string, System.Drawing.Image, params System.Windows.Forms.ToolStripItem[])'
+// 767. error XS0121: The call is ambiguous between the following methods or properties: 
+// 'System.Windows.Forms.ToolStripMenuItem.ToolStripMenuItem(string, System.Drawing.Image, System.EventHandler)' and 
+// 'System.Windows.Forms.ToolStripMenuItem.ToolStripMenuItem(string, System.Drawing.Image, params System.Windows.Forms.ToolStripItem[])'
+// Please note that this example works fine when compiled in the Core dialect but does not work in the VO dialect
 
 USING System.Windows.Forms
 USING System.Drawing

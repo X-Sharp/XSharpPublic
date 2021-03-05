@@ -200,7 +200,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             {
                 //do this last so that it can assume the method symbol is constructed (except for ExplicitInterfaceImplementation)
                 overriddenOrExplicitlyImplementedMethod = FindExplicitlyImplementedMethod(diagnostics);
-
+#if XSHARP
+                if (this.HasClipperCallingConvention() != overriddenOrExplicitlyImplementedMethod.HasClipperCallingConvention())
+                {
+                    diagnostics.Add(ErrorCode.ERR_InterfaceImplementationDifferentCallingConvention, Locations[0], this,overriddenOrExplicitlyImplementedMethod);
+                    overriddenOrExplicitlyImplementedMethod = null;
+                }
+#endif
                 if ((object)overriddenOrExplicitlyImplementedMethod != null)
                 {
                     Debug.Assert(_lazyExplicitInterfaceImplementations.IsDefault);

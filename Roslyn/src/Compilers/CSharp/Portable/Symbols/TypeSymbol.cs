@@ -846,6 +846,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                     if (interfaceMember.HasClipperCallingConvention() != first.HasClipperCallingConvention())
                     {
                         diagnostics.Add(ErrorCode.ERR_InterfaceImplementationDifferentCallingConvention, first.Locations[0], interfaceMember, explicitImpl, implementingType);
+                        implementationInInterfacesMightChangeResult = false;
+                        return null;
                     }
 #endif
                     implementationInInterfacesMightChangeResult = false;
@@ -911,6 +913,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                         if (interfaceMember.HasClipperCallingConvention() != currTypeImplicitImpl.HasClipperCallingConvention())
                         {
                             diagnostics.Add(ErrorCode.ERR_InterfaceImplementationDifferentCallingConvention, currTypeImplicitImpl.Locations[0], interfaceMember, currTypeImplicitImpl, implementingType);
+                            currTypeImplicitImpl = null;
                         }
 #endif
                         implicitImpl = currTypeImplicitImpl;

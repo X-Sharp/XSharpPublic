@@ -62,12 +62,32 @@ INTERNAL CLASS FptHeader
     END PROPERTY
 
     INTERNAL METHOD Read(oStream AS FileStream) AS LOGIC
-        oStream:SafeSetPos(FOXHEADER_OFFSET)
-        RETURN oStream:SafeRead(Buffer) 
+        local lOk := FALSE AS LOGIC
+        DO WHILE ! lOk
+            oStream:SafeSetPos(FOXHEADER_OFFSET)
+            lOk := oStream:SafeRead(Buffer)
+            IF ! lOk
+                if oStream:Length < FOXHEADER_LENGTH
+                    EXIT
+                ENDIF
+                System.Threading.Thread.Sleep(5)
+            ENDIF
+        ENDDO
+        RETURN lOk
 
     INTERNAL METHOD Write(oStream AS FileStream) AS LOGIC
-        oStream:SafeSetPos(FOXHEADER_OFFSET)
-        RETURN oStream:SafeWrite(Buffer)
+        local lOk := FALSE AS LOGIC
+        DO WHILE ! lOk
+            oStream:SafeSetPos(FOXHEADER_OFFSET)
+            lOk := oStream:SafeWrite(Buffer)
+            IF ! lOk
+                if oStream:Length < FOXHEADER_LENGTH
+                    EXIT
+                ENDIF
+                System.Threading.Thread.Sleep(5)
+            ENDIF
+        ENDDO
+        RETURN lOk
 
 
 END CLASS
@@ -128,13 +148,35 @@ INTERNAL CLASS FlexHeader
             System.Array.Copy(bytes,0, Buffer, OFFSET_SIGNATURE, LEN_SIGNATURE)
         END SET
     END PROPERTY
+    
     INTERNAL METHOD Read(oStream AS FileStream) AS LOGIC
-        oStream:SafeSetPos(FLEXHEADER_OFFSET)
-        RETURN oStream:SafeRead(Buffer, FLEXHEADER_LENGTH) 
+        local lOk := FALSE AS LOGIC
+        DO WHILE ! lOk
+            oStream:SafeSetPos(FLEXHEADER_OFFSET)
+            lOk := oStream:SafeRead(Buffer, FLEXHEADER_LENGTH)
+            IF ! lOk
+                if oStream:Length < FLEXHEADER_OFFSET + FLEXHEADER_LENGTH
+                    EXIT
+                ENDIF
+                System.Threading.Thread.Sleep(5)
+            ENDIF
+        ENDDO
+        RETURN lOk
+
 
     INTERNAL METHOD Write(oStream AS FileStream) AS LOGIC
-        oStream:SafeSetPos(FLEXHEADER_OFFSET)
-        RETURN oStream:SafeWrite(Buffer)
+        local lOk := FALSE AS LOGIC
+        DO WHILE ! lOk
+            oStream:SafeSetPos(FLEXHEADER_OFFSET)
+            lOk := oStream:SafeWrite(Buffer)
+            IF ! lOk
+                if oStream:Length < FLEXHEADER_OFFSET + FLEXHEADER_LENGTH
+                    EXIT
+                ENDIF
+                System.Threading.Thread.Sleep(5)
+            ENDIF
+        ENDDO
+        RETURN lOk
         
 
     INTERNAL PROPERTY Valid AS LOGIC

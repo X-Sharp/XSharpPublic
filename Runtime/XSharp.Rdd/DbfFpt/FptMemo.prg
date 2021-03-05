@@ -41,8 +41,7 @@ BEGIN NAMESPACE XSharp.RDD
             LOCAL lOk := TRUE AS LOGIC
             IF SELF:Shared
                 IF SELF:_lockCount == 0
-                    lOk := SELF:_tryLock(0, 1, 10)
-                    IF lOk
+                    DO WHILE ! SELF:_tryLock(0, 1, 10)
                         SELF:_lockCount := 1
                         IF refreshHeaders
                             IF SELF:ReadHeader()
@@ -53,7 +52,7 @@ BEGIN NAMESPACE XSharp.RDD
                                 SELF:Error(FException(), Subcodes.ERDD_READ, Gencode.EG_READ, "FPTMemo.LockHeader")
                             ENDIF
                         ENDIF
-                    ENDIF
+                    ENDDO
                 ELSE
                     SELF:_lockCount += 1
                 ENDIF
@@ -292,9 +291,8 @@ BEGIN NAMESPACE XSharp.RDD
                             SELF:LastWrittenBlockNumber := blockNbr
                             RETURN TRUE
                         ENDIF
-                    ELSE
-                        SELF:Error(FException(), Subcodes.ERDD_WRITE, Gencode.EG_WRITE, "FPTMemo.PutValue")
                     ENDIF
+                    SELF:Error(FException(), Subcodes.ERDD_WRITE, Gencode.EG_WRITE, "FPTMemo.PutValue")
                 ELSE
                     // Deallocate block and allocate new
                     SELF:DeleteBlock(blockNbr)
@@ -439,9 +437,9 @@ BEGIN NAMESPACE XSharp.RDD
             ENDIF
             REPEAT
                 locked := _oStream:SafeLock(nOffset, nLong )
-                IF ! locked
-                    SELF:Error(FException(), Subcodes.ERDD_INIT_LOCK, Gencode.EG_LOCK_ERROR, "FPTMemo._tryLock")
-                ENDIF
+//                IF ! locked
+//                    SELF:Error(FException(), Subcodes.ERDD_INIT_LOCK, Gencode.EG_LOCK_ERROR, "FPTMemo._tryLock")
+//                ENDIF
                 IF ( !locked )
                     nTries --
                     IF ( nTries > 0 )

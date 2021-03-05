@@ -30,6 +30,11 @@ BEGIN NAMESPACE XSharp.IO
             IF lOk
                 RETURN result
             ENDIF
+            VAR nErr := (DWORD) Marshal.GetLastWin32Error()
+            if (nErr == 0)
+                nErr := 30 // Dos error Read Fault
+            ENDIF
+            FError(nErr) 
             THROW IOException{i"Error moving file pointer from {origin} to {offset}"}
             
         /// <inheritdoc />
@@ -44,8 +49,13 @@ BEGIN NAMESPACE XSharp.IO
         PUBLIC PROPERTY Length AS INT64
             GET
                   IF GetFileSizeEx(SELF:hFile, OUT VAR size)
-                        RETURN size
+                      RETURN size
                   ENDIF
+                    VAR nErr := (DWORD) Marshal.GetLastWin32Error()
+                    if (nErr == 0)
+                        nErr := 30 // Dos error Read Fault
+                    ENDIF
+                    FError(nErr) 
                   THROW IOException{"Could not retrieve file length"}  
             END GET
         END PROPERTY
@@ -80,9 +90,19 @@ BEGIN NAMESPACE XSharp.IO
                 ret := WriteFile(SELF:hFile, aCopy, count, OUT bytesWritten, 0)
             ENDIF
             IF !ret
+                VAR nErr := (DWORD) Marshal.GetLastWin32Error()
+                if (nErr == 0)
+                    nErr := 29 // Dos error Write Fault
+                ENDIF
+                FError(nErr) 
                 THROW IOException{i"Write: File write failed offset {offset} count {count}"}
             ENDIF
             IF bytesWritten != count
+                VAR nErr := (DWORD) Marshal.GetLastWin32Error()
+                if (nErr == 0)
+                    nErr := 29 // Dos error Write Fault
+                ENDIF
+                FError(nErr) 
                 THROW IOException{i"Write: Not all bytes written to file offset {offset} count {count} written {bytesWritten}"}
             ENDIF
         RETURN
@@ -98,6 +118,12 @@ BEGIN NAMESPACE XSharp.IO
             LOCAL ret  := FALSE AS LOGIC
             ret := LockFile(SELF:hFile, (INT)position, (INT)(position >> 32), (INT)(length), (INT)(length >> 32))
             IF !ret
+                NetErr(TRUE)
+                VAR nErr := (DWORD) Marshal.GetLastWin32Error()
+                if (nErr == 0)
+                    nErr := 33 // DOS Lock violation 
+                ENDIF
+                FError(nErr)  
                 THROW IOException{i"Lock: File lock failed, pos: {position}, length: {length} "}
             ENDIF
         RETURN 
@@ -107,6 +133,12 @@ BEGIN NAMESPACE XSharp.IO
             LOCAL ret := FALSE AS LOGIC
             ret := UnlockFile(SELF:hFile, (INT)position, (INT)(position >> 32), (INT)(length), (INT)(length >> 32))
             IF !ret
+                NetErr(TRUE)
+                VAR nErr := (DWORD) Marshal.GetLastWin32Error()
+                if (nErr == 0)
+                    nErr := 33 // DOS Lock violation 
+                ENDIF
+                FError(nErr)  
                 THROW IOException{i"UnLock: File Unlock failed, pos: {position}, length: {length} "}
             ENDIF
         RETURN

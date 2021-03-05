@@ -549,12 +549,12 @@ RETURN locked
     // Return the result of the operation
 PROTECTED METHOD _tryLock( nOffset AS INT64, nLong AS INT64, lGenError AS LOGIC) AS LOGIC
 	LOCAL locked AS LOGIC
-    LOCAL nTries AS LONG
+    LOCAL nTries AS DWORD
 	IF ! SELF:IsOpen
 		RETURN FALSE
 	ENDIF
 	LOCAL lockEx := NULL AS Exception
-	nTries := 123
+	nTries := XSharp.RuntimeState.LockTries
 	REPEAT
 		locked := _oStream:SafeLock(nOffset, nLong)
 		IF !locked
@@ -565,7 +565,7 @@ PROTECTED METHOD _tryLock( nOffset AS INT64, nLong AS INT64, lGenError AS LOGIC)
 			nTries --
             //DebOut32(ProcName(1)+" Lock Failed "+nTries:ToString()+" tries left, offset: "+ nOffSet:ToString()+" length: "+nLong:ToString())
 			IF nTries > 0 
-				System.Threading.Thread.Sleep( 10)
+				System.Threading.Thread.Sleep( 1)
             ENDIF
 		ENDIF
 	UNTIL ( locked .OR. (nTries==0) )

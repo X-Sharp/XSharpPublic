@@ -83,7 +83,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         public bool Xpp1 { get; internal set; } = false;
         public bool Xpp2 { get; internal set; } = false;
         public bool Fox1 { get; internal set; } = false;
-        //public bool Fox2 { get; internal set; } = false;
+        public bool Fox2 { get; internal set; } = false;
         public bool VulcanRTFuncsIncluded => RuntimeAssemblies.HasFlag(RuntimeAssemblies.VulcanRTFuncs);
         public bool VulcanRTIncluded => RuntimeAssemblies.HasFlag(RuntimeAssemblies.VulcanRT);
         public bool XSharpRTIncluded => RuntimeAssemblies.HasFlag(RuntimeAssemblies.XSharpRT);
@@ -155,9 +155,9 @@ namespace Microsoft.CodeAnalysis.CSharp
                 case CompilerOption.Fox1:
                     Fox1 = value;
                     break;
-                //case CompilerOption.Fox2:
-                //    Fox2 = value;
-                //    break;
+                case CompilerOption.Fox2:
+                    Fox2 = value;
+                    break;
                 case CompilerOption.Xpp1:
                     Xpp1 = value;
                     break;
@@ -216,7 +216,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         {
             Option = option;
         }
-  
+
     }
     public class PragmaWarning : PragmaBase
     {
@@ -268,8 +268,8 @@ namespace Microsoft.CodeAnalysis.CSharp
         Xpp1 = 1 << 17,
         Xpp2 = 1 << 18,
         Fox1 = 1 << 19,
-        //Fox2 = 1 << 20,
-        //FoxExposeLocals = Fox2,
+        Fox2 = 1 << 20,
+        FoxExposeLocals = Fox2,
         InitLocals = 1 << 21,
         NamedArgs = 1 << 22,
         ArrayZero = 1 << 23,
@@ -295,8 +295,8 @@ namespace Microsoft.CodeAnalysis.CSharp
                     return CompilerOption.Overflow;
                 case "fox1":
                     return CompilerOption.Fox1;
-                //case "fox2":
-                //    return CompilerOption.Fox2;
+                case "fox2":
+                    return CompilerOption.Fox2;
                 case "initlocals":
                     return CompilerOption.InitLocals;
                 case "ins":

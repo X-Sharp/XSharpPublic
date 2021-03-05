@@ -506,9 +506,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                             case "vo15":    // Untyped allowed
                             case "vo16":    // Add Clipper CC Missing constructors
                             // case "fox1": // Classes inherit from unknown
-                            //case "fox2":    // Expose local names to macro compiler
-                                            //case "xpp1":    // classes inherit from XPP.Abstract
-                                            //case "xpp2":    // stronly typed entry point
+                            case "fox2":    // Expose local names to macro compiler
+                                //case "xpp1":    // classes inherit from XPP.Abstract
+                                //case "xpp2":    // strongly typed entry point
                                 context.Pragma = new PragmaOption(context, state, CompilerOptionDecoder.Decode(opt));
                                 break;
                             default:

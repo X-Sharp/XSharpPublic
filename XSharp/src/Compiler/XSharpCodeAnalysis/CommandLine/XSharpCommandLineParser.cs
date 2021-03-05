@@ -375,9 +375,9 @@ namespace Microsoft.CodeAnalysis.CSharp
                     options.Fox1 = positive;
                     encode = true;
                     break;
-                case "fox2":       // Ignored now
-                    //options.Fox2 = positive;
-                    //encode = true;
+                case "fox2":       // Not used
+                    options.Fox2 = positive;
+                    encode = true;
                     break;
                 case "unsafe":
                     options.AllowUnsafe = positive;

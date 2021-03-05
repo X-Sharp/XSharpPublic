@@ -3637,12 +3637,17 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 {
                     context.AddError(new ParseErrorData(context.Auto, ErrorCode.ERR_SyntaxError, SyntaxFactory.MakeToken(SyntaxKind.GetKeyword)));
                 }
-                MemberDeclarationSyntax indexer = _syntaxFactory.IndexerDeclaration(
+                // Make sure that a property with the name "Item" is treated as a SELF property
+                // There is a lot of code in Roslyn that checks for this
+                var thisName = context.Id?.Start.Text ?? "";
+                if (XSharpString.Equals(thisName, "Item"))
+                    thisName = "";
+                var indexer = _syntaxFactory.IndexerDeclaration(
                     attributeLists: atts,
                     modifiers: mods,
                     type: type,
                     explicitInterfaceSpecifier: explicitif,
-                    thisKeyword: SyntaxFactory.MakeToken(SyntaxKind.ThisKeyword, context.Id?.Start.Text ?? ""),
+                    thisKeyword: SyntaxFactory.MakeToken(SyntaxKind.ThisKeyword, thisName),
                     parameterList: context.ParamList?.Get<BracketedParameterListSyntax>(),
                     accessorList: accessorList,
                     expressionBody: null, // Can we do an indexer with an expression body and no accessors ?

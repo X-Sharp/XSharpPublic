@@ -371,6 +371,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                     // We should copy the name so that the runtime will recognize this as an override.
                     _name = overriddenMethod.Name;
                 }
+#if XSHARP
+                else
+                {
+                    this.RemoveModifier(DeclarationModifiers.Override);
+                }
+#endif
             }
 
         }

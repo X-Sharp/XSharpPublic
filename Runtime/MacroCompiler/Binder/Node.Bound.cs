@@ -661,6 +661,12 @@ namespace XSharp.MacroCompiler.Syntax
             var s = Self.Datatype.Lookup(SystemNames.IndexerName);
             Symbol = b.BindArrayAccess(Self, s, Args);
             Datatype = Symbol.Type();
+            if (Expr.Datatype.IsArray && Expr.Datatype != Datatype)
+            {
+                Expr conv = this;
+                b.Convert(ref conv, Expr.Datatype.ElementType);
+                return conv;
+            }
             return null;
         }
         internal override Expr Cloned(Binder b)

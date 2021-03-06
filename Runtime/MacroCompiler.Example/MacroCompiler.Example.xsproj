@@ -109,6 +109,7 @@
     <Compile Include="Program.prg">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="ScriptTests.prg" />
     <Compile Include="TestData.prg" />
     <Compile Include="VoTests.prg" />
   </ItemGroup>

@@ -12,12 +12,20 @@ namespace XSharp.MacroCompiler
 
     partial class Parser
     {
-        internal StmtBlock ParseStatementBlock()
+        internal StmtBlock ParseStatementBlock(bool returnsValue = false)
         {
             var t = Lt();
             List<Stmt> l = new List<Stmt>();
             while (ParseStatement() is Stmt s)
                 l.Add(s);
+            if (returnsValue && l.Count > 0)
+            {
+                var i = l.Count - 1;
+                while (i > 0 && l[i] is EmptyStmt)
+                    i -= 1;
+                if (l[i] is ExprStmt last)
+                    l[i] = new ExprResultStmt(last.Expr);
+            }
             return new StmtBlock(t, l.ToArray());
         }
 
@@ -171,7 +179,7 @@ namespace XSharp.MacroCompiler
                     if (l?.Exprs.Count > 0)
                     {
                         Require(TokenType.EOS);
-                        return new ExprResultStmt(l);
+                        return new ExprStmt(l);
                     }
                     break;
             }

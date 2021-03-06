@@ -322,9 +322,12 @@ namespace XSharp.MacroCompiler.Syntax
         internal SwitchBlock NextBlock = null;
         internal override Node Bind(Binder b)
         {
-            b.OpenScope();
-            b.Bind(ref Stmt);
-            b.CloseScope();
+            if (Stmt != null)
+            {
+                b.OpenScope();
+                b.Bind(ref Stmt);
+                b.CloseScope();
+            }
             return null;
         }
     }

@@ -598,7 +598,20 @@ namespace XSharp.MacroCompiler.Syntax
         {
             return new MethodCallExpr(e, args) { Symbol = sym, Datatype = sym.Type(), Self = self };
         }
-    }
+        internal static MethodCallExpr Bound(Binder b, Expr e, string name, ArgList args)
+        {
+            Expr m = new IdExpr(name);
+            Expr self;
+            var ms = b.BindMemberAccess(ref e, ref m, BindAffinity.Invoke);
+            if (ms is SymbolList sms)
+            {
+                ms = sms.Symbols.First();
+            }
+            var expr = new MemberAccessExpr(e, e.Token, m) { Symbol = ms };
+            var sym = b.BindMethodCall(expr, ms, ArgList.Empty, out self);
+            return Bound(e, sym, self, ArgList.Empty);
+        }
+}
     internal partial class CtorCallExpr : MethodCallExpr
     {
         internal override Node Bind(Binder b)

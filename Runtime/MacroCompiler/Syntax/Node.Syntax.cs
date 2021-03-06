@@ -45,6 +45,7 @@ namespace XSharp.MacroCompiler.Syntax
     internal partial class IdExpr : NameExpr
     {
         internal IdExpr(Token t) : base(t, t.value, 0) { }
+        internal IdExpr(string name) : base(null, name, 0) { }
         internal IdExpr WithName(string name) { Name = name; return this; }
     }
     internal partial class MemberAccessExpr : Expr
@@ -267,6 +268,7 @@ namespace XSharp.MacroCompiler.Syntax
     {
         internal IList<Arg> Args;
         internal ArgList(IList<Arg> a) : base(null) { Args = a; }
+        static internal ArgList Empty => new ArgList(new List<Arg>(0));
         public override string ToString() { var sb = new StringBuilder(); foreach (var a in Args) { if (sb.Length > 0) sb.Append(", "); sb.Append(a.ToString()); } return sb.ToString(); }
     }
     internal partial class Codeblock : Node

@@ -14,6 +14,8 @@ namespace XSharp.MacroCompiler
 
         internal static bool IsSubclassOf(this TypeSymbol ts, TypeSymbol tb) => ts.Type.IsSubclassOf(tb.Type);
 
+        internal static bool IsAssignableFrom(this TypeSymbol ts, TypeSymbol tb) => ts.Type.IsAssignableFrom(tb.Type);
+
         internal static bool IsMethodOrMethodGroup(this Symbol s)
         {
             if (s is MethodBaseSymbol)

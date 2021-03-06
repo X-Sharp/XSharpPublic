@@ -187,14 +187,22 @@ namespace XSharp.MacroCompiler.Syntax
             ilg.MarkLabel(Begin);
             WhileExpr.Emit(ilg, true);
             ilg.Emit(OpCodes.Brfalse, End);
-            if (InnerDecl != null)
-                InnerDecl.Emit(ilg);
+            InnerDecl?.Emit(ilg);
             Stmt.Emit(ilg);
             if (Cont != null)
                 ilg.MarkLabel(Cont.Value);
-            IncrExpr.Emit(ilg, false);
+            IncrExpr?.Emit(ilg, false);
             ilg.Emit(OpCodes.Br, Begin);
             ilg.MarkLabel(End);
+            if (Dispose)
+            {
+                FinallyClauses.Add(() => {
+                    var loc = IterDecl.Symbol as LocalSymbol;
+                    ilg.Emit(OpCodes.Ldloc, loc.Index);
+                    ilg.Emit(OpCodes.Isinst, Compilation.Get(WellKnownTypes.System_IDisposable).Type);
+                    ilg.Emit(OpCodes.Callvirt, (Compilation.Get(WellKnownMembers.System_IDisposable_Dispose) as MethodSymbol).Method);
+                });
+            }
         }
         public void EmitLoop(ILGenerator ilg)
         {

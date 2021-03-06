@@ -123,6 +123,27 @@ namespace XSharp.MacroCompiler
             else
                 Members[name] = ms;
         }
+        static List<MemberInfo> GetMemberInfoList(Type t, BindingFlags flags)
+        {
+            List<MemberInfo> result = new List<MemberInfo>();
+            result.AddRange(t.GetMembers(flags));
+            var usedIfaces = new HashSet<Type>();
+            var ifaces = new Stack<Type>();
+            ifaces.Push(t);
+            while (ifaces.Count > 0)
+            {
+                foreach(var iface in ifaces.Pop().GetInterfaces())
+                {
+                    if (!usedIfaces.Contains(iface))
+                    {
+                        usedIfaces.Add(iface);
+                        result.AddRange(iface.GetMembers(flags));
+                        ifaces.Push(iface);
+                    }
+                }
+            }
+            return result;
+        }
         internal void UpdateCache()
         {
             if (Cached)
@@ -132,7 +153,7 @@ namespace XSharp.MacroCompiler
             {
                 flags |= BindingFlags.NonPublic;
             }
-            foreach(var m in Type.GetMembers(flags))
+            foreach (var m in GetMemberInfoList(Type, flags))
             {
                 lock (this)
                 { 

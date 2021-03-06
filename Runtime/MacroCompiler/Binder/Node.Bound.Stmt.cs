@@ -72,18 +72,18 @@ namespace XSharp.MacroCompiler.Syntax
     }
     internal partial class VarDecl : Node
     {
-        internal LocalSymbol Var;
+        internal LocalSymbol Var => Symbol as LocalSymbol;
         internal override Node Bind(Binder b)
         {
             if (Type != null)
             {
                 b.Bind(ref Type, BindAffinity.Type);
                 Type.RequireType();
-                Var = b.AddLocal(Name, Type.Symbol as TypeSymbol) ?? throw Error(ErrorCode.LocalSameName, Name);
+                Symbol = b.AddLocal(Name, Type.Symbol as TypeSymbol) ?? throw Error(ErrorCode.LocalSameName, Name);
             }
             else
             {
-                Var = b.AddLocal(Name, b.ObjectType);
+                Symbol = b.AddLocal(Name, b.ObjectType);
             }
             if (Initializer != null)
             {
@@ -96,7 +96,7 @@ namespace XSharp.MacroCompiler.Syntax
         }
         internal static VarDecl Bound(LocalSymbol loc, Expr initializer, BindOptions opt)
         {
-            return new VarDecl(null, null, null, null, AssignExpr.Bound(IdExpr.Bound(loc), initializer, opt)) { Var = loc };
+            return new VarDecl(null, null, null, null, AssignExpr.Bound(IdExpr.Bound(loc), initializer, opt)) { Symbol = loc };
         }
     }
     internal partial class ImpliedVarDecl : VarDecl
@@ -105,7 +105,7 @@ namespace XSharp.MacroCompiler.Syntax
         {
             b.Bind(ref Initializer);
             Initializer.RequireGetAccess();
-            Var = b.AddLocal(Name, Initializer.Datatype) ?? throw Error(ErrorCode.LocalSameName, Name);
+            Symbol = b.AddLocal(Name, Initializer.Datatype) ?? throw Error(ErrorCode.LocalSameName, Name);
             Initializer = AssignExpr.Bound(IdExpr.Bound(Var), Initializer, b.Options.Binding);
             return null;
         }
@@ -142,9 +142,10 @@ namespace XSharp.MacroCompiler.Syntax
     {
         protected VarDecl IterDecl = null;
         protected Expr IterInit = null;
-        protected Expr WhileExpr;
-        protected Expr IncrExpr;
+        protected Expr WhileExpr = null;
+        protected Expr IncrExpr = null;
         protected VarDecl InnerDecl = null;
+        protected bool Dispose = false;
     }
     internal partial class ForStmt : ForBaseStmt, ILoopableStmt, IExitableStmt
     {
@@ -224,10 +225,26 @@ namespace XSharp.MacroCompiler.Syntax
                 var iter = b.AddLocal(Compilation.Get(NativeType.Int32));
                 IterDecl = VarDecl.Bound(iter, LiteralExpr.Bound(Constant.Create(1)), b.Options.Binding);
                 WhileExpr = BinaryExpr.Bound(IdExpr.Bound(iter), Token,
-                    MethodCallExpr.Bound(array.Cloned(b), Compilation.Get(WellKnownMembers.System_Array_get_Length), array, new ArgList(new List<Arg>(0))),
+                    MethodCallExpr.Bound(array, Compilation.Get(WellKnownMembers.System_Array_get_Length), array, ArgList.Empty),
                     BinaryOperatorKind.LessThanOrEqual, b.Options.Binding);
                 IncrExpr = AssignOpExpr.Bound(IdExpr.Bound(iter), LiteralExpr.Bound(Constant.Create(1)), BinaryOperatorKind.Addition, b);
                 ForDecl.Initializer = ArrayAccessExpr.Bound(array, new ArgList(new List<Arg>(1) { new Arg(IdExpr.Bound(iter)) }), b);
+            }
+            else
+            {
+                if (Expr.Datatype.IsUsualOrObject() && b.Options.Binding.HasFlag(BindOptions.AllowDynamic))
+                {
+                    b.Convert(ref Expr, Compilation.Get(NativeType.Array));
+                }
+                Expr e = b.Cache(ref Expr);
+                var getIter = MethodCallExpr.Bound(b, e, SystemNames.GetEnumerator, ArgList.Empty);
+                var iter = b.AddLocal(getIter.Datatype);
+                IterDecl = VarDecl.Bound(iter, getIter, b.Options.Binding);
+                WhileExpr = MethodCallExpr.Bound(b, IdExpr.Bound(iter), SystemNames.MoveNext, ArgList.Empty);
+                b.Convert(ref WhileExpr, Compilation.Get(NativeType.Boolean));
+                ForDecl.Initializer = MethodCallExpr.Bound(b, IdExpr.Bound(iter), SystemNames.CurrentGetter, ArgList.Empty);
+                Dispose = Compilation.Get(WellKnownTypes.System_IDisposable).IsAssignableFrom(getIter.Datatype);
+                if (Dispose) RequireExceptionHandling = true;
             }
 
             b.Bind(ref ForDecl);

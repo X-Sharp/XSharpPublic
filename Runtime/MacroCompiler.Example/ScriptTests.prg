@@ -185,5 +185,12 @@ FUNCTION ScriptTests AS VOID
             "y += l",;
         "NEXT",;
         "y"}),Args(), 165, typeof(int))
+    TestMacro(sc, String.Join(e"\n",<STRING>{;
+        "y := 0",;
+        "list := {1,2,3,4,5}",;
+        "FOREACH VAR l IN list",;
+            "y += l",;
+        "NEXT",;
+        "y"}),Args(), 15, typeof(int))
 
     RETURN

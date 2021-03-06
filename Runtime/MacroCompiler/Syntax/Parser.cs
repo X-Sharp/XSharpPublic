@@ -205,7 +205,7 @@ namespace XSharp.MacroCompiler
 
         internal Script ParseScript()
         {
-            var s = RequireEnd(ParseStatementBlock(), ErrorCode.Unexpected, Lt());
+            var s = RequireEnd(ParseStatementBlock(true), ErrorCode.Unexpected, Lt());
             return new Script(null, s);
         }
     }

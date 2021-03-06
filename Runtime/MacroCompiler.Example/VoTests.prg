@@ -195,6 +195,10 @@ BEGIN NAMESPACE MacroCompilerTest
         TestMacro(mc, e"{|a| tci:(&a) }", Args("v1"), 1, typeof(INT))
         */
 
+        TestMacro(mc, e"{|| TestGlobals.tsa[1] }", Args(), 11, typeof(INT))
+        TestMacro(mc, e"{|| TestGlobals.tsa[5] }", Args(), 55, typeof(INT))
+        TestMacro(mc, e"{|| TestGlobals.tsa2[1,1] }", Args(), 11, typeof(INT))
+        TestMacro(mc, e"{|| TestGlobals.tsa2[1,2] }", Args(), 22, typeof(INT))
         TestMacro(mc, e"{|| TestGlobals.tsi:v1 }", Args(), 1, typeof(INT))
         TestMacro(mc, e"{|| ++TestGlobals.tsi:v1 }", Args(), 2, typeof(INT))
 //        TestMacro(mc, e"{|| TestGlobals.tsi:v1 := 10, TestGlobals.tsi:v1 }", Args(), 10, typeof(int)) // FAIL because tsi is boxed by value for IVarPut()

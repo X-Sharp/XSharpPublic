@@ -6,7 +6,7 @@ on:
 
 jobs:
   delete-artifacts:
-    runs-on: windows-2019 
+    runs-on: ubuntu-latest
     steps:
       - uses: kolpav/purge-artifacts-action@v1
         with:

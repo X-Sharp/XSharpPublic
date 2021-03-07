@@ -237,7 +237,8 @@ namespace XSharp.MacroCompiler.Syntax
                     b.Convert(ref Expr, Compilation.Get(NativeType.Array));
                 }
                 Expr e = b.Cache(ref Expr);
-                var getIter = MethodCallExpr.Bound(b, e, SystemNames.GetEnumerator, ArgList.Empty);
+                var getIterSym = e.Datatype.GetEnumeratorGetter() ?? throw Error(ErrorCode.NoSuitableEnumerator);
+                var getIter = MethodCallExpr.Bound(e, getIterSym, e, ArgList.Empty);
                 var iter = b.AddLocal(getIter.Datatype);
                 IterDecl = VarDecl.Bound(iter, getIter, b.Options.Binding);
                 WhileExpr = MethodCallExpr.Bound(b, IdExpr.Bound(iter), SystemNames.MoveNext, ArgList.Empty);

@@ -57,6 +57,7 @@ namespace XSharp.MacroCompiler
         NoExitableStatement = 237,
         MultipleDefaultInSwitch = 238,
         WrongNumberIfIndices = 239,
+        NoSuitableEnumerator = 240,
         Internal = 999,
     }
 
@@ -112,6 +113,7 @@ namespace XSharp.MacroCompiler
             { ErrorCode.NoExitableStatement, "No exitable statement" },
             { ErrorCode.MultipleDefaultInSwitch, "Only one '{0}' block allowed in switch statement" },
             { ErrorCode.WrongNumberIfIndices, "Wrong number of indices in array" },
+            { ErrorCode.NoSuitableEnumerator, "No suitable enumerator getter" },
             { ErrorCode.Internal, "Internal error" },
         };
 

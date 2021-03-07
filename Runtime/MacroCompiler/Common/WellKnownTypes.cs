@@ -17,6 +17,8 @@ namespace XSharp.MacroCompiler
         System_UInt32,
         System_Runtime_CompilerServices_IsConst,
         System_IDisposable,
+        System_Collections_IEnumerator,
+        System_Collections_Generic_IEnumerator_T1,
         ClipperCallingConventionAttribute,
         DefaultParameterValueAttribute,
         XSharp_Internal_VOStructAttribute,
@@ -34,7 +36,7 @@ namespace XSharp.MacroCompiler
         XSharp___ArrayBase_T1,
         XSharp___WinBool,
     }
-
+ 
     public static partial class Compilation
     {
         static string[] TypeNames =
@@ -44,6 +46,8 @@ namespace XSharp.MacroCompiler
             "System.UInt32",
             "System.Runtime.CompilerServices.IsConst",
             "System.IDisposable",
+            "System.Collections.IEnumerator",
+            "System.Collections.Generic.IEnumerator`1",
             XSharpQualifiedTypeNames.ClipperCallingConvention + "|" + VulcanQualifiedTypeNames.ClipperCallingConvention,
             XSharpQualifiedTypeNames.DefaultParameterAttribute + "|" + VulcanQualifiedTypeNames.DefaultParameterAttribute,
             "XSharp.Internal.VOStructAttribute|Vulcan.Internal.VOStructAttribute",

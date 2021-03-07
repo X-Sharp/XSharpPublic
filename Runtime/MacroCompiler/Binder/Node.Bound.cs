@@ -603,10 +603,8 @@ namespace XSharp.MacroCompiler.Syntax
             Expr m = new IdExpr(name);
             Expr self;
             var ms = b.BindMemberAccess(ref e, ref m, BindAffinity.Invoke);
-            if (ms is SymbolList sms)
-            {
-                ms = sms.Symbols.First();
-            }
+            if (!(ms is MethodSymbol))
+                throw e.Error(ErrorCode.Internal);
             var expr = new MemberAccessExpr(e, e.Token, m) { Symbol = ms };
             var sym = b.BindMethodCall(expr, ms, ArgList.Empty, out self);
             return Bound(e, sym, self, ArgList.Empty);

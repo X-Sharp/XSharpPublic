@@ -1882,6 +1882,7 @@ VIRTUAL METHOD Info(nOrdinal AS INT, oNewValue AS OBJECT) AS OBJECT
 	oResult := NULL
 	SWITCH nOrdinal
 	CASE DbInfo.DBI_ISDBF
+		oResult := TRUE
 	CASE DbInfo.DBI_CANPUTREC
 		oResult := IIF(SELF:HasMemo, FALSE , TRUE)
 	CASE DbInfo.DBI_GETRECSIZE

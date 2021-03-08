@@ -9,7 +9,8 @@ BEGIN NAMESPACE XSharp.VFP.Tests
         [Fact, Trait("Category", "FoxArray")];
 		ASYNC METHOD SimpleArrayTests() AS VOID
             XSharp.RuntimeState.Dialect := XSharpDialect.FoxPro
-            VAR a := FoxArrayCreate(10)
+            LOCAL a
+            Dimension a(10)
             // You cannot assign an array to an element of a FOX array
             AWAIT Assert.ThrowsAsync<Error>( { => a[1] := {1,2,3} })
             
@@ -137,17 +138,18 @@ BEGIN NAMESPACE XSharp.VFP.Tests
       [Fact, Trait("Category", "FoxArray")];
 		METHOD UsualArrayTests() AS VOID
             XSharp.RuntimeState.Dialect := XSharpDialect.FoxPro
-            VAR a := FoxArrayCreate(10)
+            LOCAL a
+            Dimension a(10)
             FillArray(a)
             LOCAL u := a as USUAL
             Assert.True(IsArray(u))
             Assert.True(u[1] == 1)
             Assert.True(u[10] == 10)
-            u := __FoxRedim(a,5,2)
+            Dimension a(5,2)
             Assert.True(u[1,1] == 1)
             Assert.True(u[1,2] == 2)
             Assert.True(u[5,2] == 10)
-            Assert.True(u[6,2] == 10)
+            //Assert.True(u[6,2] == 10)
  
         STATIC METHOD FillArray(a as __FoxArray) as void
             FOR VAR i := 1 to ALen(a)

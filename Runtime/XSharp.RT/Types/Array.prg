@@ -339,7 +339,7 @@ BEGIN NAMESPACE XSharp
         /// <include file="RTComments.xml" path="Comments/ZeroBasedIndexProperty/*" />
         /// <param name="index"><include file="RTComments.xml" path="Comments/ZeroBasedIndexParam/*" /></param>
         /// <returns>The element stored at the specified location in the array.</returns>
-        NEW PUBLIC METHOD __SetElement(u AS USUAL, index AS INT) AS USUAL
+        NEW PUBLIC VIRTUAL METHOD __SetElement(u AS USUAL, index AS INT) AS USUAL
             IF SELF:CheckLock()
                 SELF:__CheckArrayElement(SELF, index, nameof(index),1)
                 SELF:_internalList[ index ] := u

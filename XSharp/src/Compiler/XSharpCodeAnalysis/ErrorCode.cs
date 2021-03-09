@@ -2094,6 +2094,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         ERR_FoxCtorDtor = 9232,
         ERR_FoxDeclareDLLStringByReference = 9233,
         ERR_FoxDimensionDeclaration = 9234,
+        ERR_FoxDimensionNeedsMemvars = 9235,
         ERR_Internal = 9999
         #endregion X#-only messages
     }

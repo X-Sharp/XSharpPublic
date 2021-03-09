@@ -7634,6 +7634,11 @@ To remove the warning, you can use /reference instead (set the Embed Interop Typ
   </data>
   
   <data name="ERR_FoxDimensionDeclaration" xml:space="preserve">
-    <value>FoxPro Dimension statement supports 1 or 2 dimensions, not more.</value>
+    <value>FoxPro DIMENSION statement or LOCAL ARRAY statement supports 1 or 2 dimensions, not more.</value>
   </data>
+
+ <data name="ERR_FoxDimensionNeedsMemvars" xml:space="preserve">
+    <value>FoxPro Array support requires the /memvar compiler option.</value>
+  </data>
+
 </root>

@@ -2195,17 +2195,58 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 Entities.Push((XP.IEntityContext)context);
 
         }
-
+        private void setErrorsInList<TNode>(ParserRuleContext ctxt, SyntaxList<TNode> list) where TNode : CSharpSyntaxNode
+        {
+            var context = ctxt as XSharpParserRuleContext;
+            var item = list[0];
+            foreach (var e in context.ErrorData)
+            {
+                item = item.WithAdditionalDiagnostics(
+                    new SyntaxDiagnosticInfo(item.GetLeadingTriviaWidth(), item.Width, e.Code, e.Args));
+                item.XNode = context;
+            }
+            var stmts = _pool.Allocate<TNode>();
+            stmts.Add(item);
+            for (int i = 1; i < list.Count; i++)
+            {
+                stmts.Add(list[i]);
+            }
+            context.PutList<TNode>(stmts);
+            _pool.Free(stmts);
+        }
         public override void ExitEveryRule([NotNull] ParserRuleContext ctxt)
         {
             var context = ctxt as XSharpParserRuleContext;
-            if (context.HasErrors() && context.CsNode != null && context.CsNode is CSharpSyntaxNode)
+            if (context.HasErrors() && context.CsNode != null)
             {
-                foreach (var e in context.ErrorData)
+                if (context.CsNode is CSharpSyntaxNode csNode)
                 {
-                    var csNode = (CSharpSyntaxNode)context.CsNode;
-                    context.Put(csNode.WithAdditionalDiagnostics(
-                        new SyntaxDiagnosticInfo(csNode.GetLeadingTriviaWidth(), csNode.Width, e.Code, e.Args)));
+                    foreach (var e in context.ErrorData)
+                    {
+                        csNode = csNode.WithAdditionalDiagnostics(
+                            new SyntaxDiagnosticInfo(csNode.GetLeadingTriviaWidth(), csNode.Width, e.Code, e.Args));
+                    }
+                    context.Put(csNode);
+                }
+                else if (context.CsNode is SyntaxList<StatementSyntax> list)
+                {
+                    setErrorsInList(context, list);
+                }
+                else if (context.CsNode is SyntaxList<AttributeListSyntax> alist)
+                {
+                    setErrorsInList(context, alist);
+                }
+                else if (context.CsNode is SyntaxList<SyntaxToken> slist)
+                {
+                    setErrorsInList(context, slist);
+                }
+                else if (context.CsNode is SyntaxList<FieldDeclarationSyntax> flist)
+                {
+                    setErrorsInList(context, flist);
+                }
+                else
+                {
+                    Debug.Assert(false, "UnHandled SyntaxList of type " + context.CsNode.GetType());
                 }
             }
 #if DEBUG && DUMP_TREE
@@ -5149,7 +5190,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             context.PutList(modifiers.ToList<SyntaxToken>());
             _pool.Free(modifiers);
         }
-         
+
         public override void ExitParameterDeclMods([NotNull] XP.ParameterDeclModsContext context)
         {
             SyntaxListBuilder modifiers = _pool.Allocate();
@@ -5162,8 +5203,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             context.PutList(modifiers.ToList<SyntaxToken>());
             _pool.Free(modifiers);
         }
-
-  
 
 
         public override void ExitVotypeModifiers([NotNull] XP.VotypeModifiersContext context)

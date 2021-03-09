@@ -124,6 +124,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         public override void ExitFoxDimensionDecl([NotNull] XP.FoxDimensionDeclContext context)
         {
+            if (!_options.HasOption(CompilerOption.MemVars, context, PragmaOptions))
+            {
+                context.AddError(new ParseErrorData(context, ErrorCode.ERR_FoxDimensionNeedsMemvars));
+            }
             context.SetSequencePoint();
             var stmts = _pool.Allocate<StatementSyntax>();
             foreach (var dimvar in context._DimVars)
@@ -132,6 +136,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 if (context.T.Type == XP.LOCAL)
                 {
                     var decl = GenerateLocalDecl(name, _arrayType, GenerateLiteralNull());
+                    decl.XNode = context;
                     stmts.Add(decl);
                 }
                 ArgumentListSyntax args;
@@ -147,6 +152,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     args = MakeArgumentList(arg1, arg2);
                 }
                 var mcall = GenerateMethodCall(XSharpQualifiedFunctionNames.FoxRedim, args);
+                mcall.XNode = context;
                 MemVarFieldInfo fieldInfo = findMemVar(name);
                 ExpressionSyntax lhs;
                 if (fieldInfo != null)
@@ -159,10 +165,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 }
                 var ass = MakeSimpleAssignment(lhs, mcall);
                 var stmt = GenerateExpressionStatement(ass);
-
+                stmt.XNode = context;
                 stmts.Add(stmt);
             }
-            context.PutList< StatementSyntax>(stmts);
+            context.PutList<StatementSyntax>(stmts);
             _pool.Free(stmts);
         }
 

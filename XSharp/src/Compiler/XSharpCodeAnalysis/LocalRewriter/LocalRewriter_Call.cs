@@ -72,14 +72,19 @@ namespace Microsoft.CodeAnalysis.CSharp
                     count++;
                     // __LocalPut("name", (USUAL) localvar)
                     var value = MakeConversionNode(localvar, usual, false);
+                    value.WasCompilerGenerated = true;
                     var mcall = _factory.StaticCall(rtType, ReservedNames.LocalPut, localname, value);
+                    mcall.WasCompilerGenerated = true;
                     exprs.Add(mcall);
 
                     // create assignment expression for inside the block that is executed when locals are updated
                     // LocalVar := (CorrectType) __LocalGet("name")
                     mcall = _factory.StaticCall(rtType, ReservedNames.LocalGet, localname);
+                    mcall.WasCompilerGenerated = true;
                     value = MakeConversionNode(mcall, localsym.Type, false);
+                    value.WasCompilerGenerated = true;
                     var ass = _factory.AssignmentExpression(localvar, value);
+                    ass.WasCompilerGenerated = true;
                     block.Add(ass);
                 }
                 // we need an array of the local symbols for the sequence
@@ -99,19 +104,20 @@ namespace Microsoft.CodeAnalysis.CSharp
                     var cond = _factory.StaticCall(rtType, ReservedNames.LocalsUpdated);
                     var t = _factory.Literal(true);
                     var f = _factory.Literal(false);
-
+                    cond.WasCompilerGenerated = true;
                     // create a sequence with the assignment expressions, return true (because the conditional expression needs a value)
                     var assignmentsequence = _factory.Sequence(block.ToArray(), t);
-
+                    assignmentsequence.WasCompilerGenerated = true;
                     // iif ( __localupdated(), <assignmentsequence>, false)
                     var condexpr = _factory.Conditional(cond, assignmentsequence, f, _compilation.GetSpecialType(SpecialType.System_Boolean));
+                    condexpr.WasCompilerGenerated = true;
                     exprs.Add(condexpr);
                 }
                 if (count > 0)
                 {
-                // __LocalsClear()
-                var clear = _factory.StaticCall(rtType, ReservedNames.LocalsClear);
-                exprs.Add(VisitExpression(clear));
+                    // __LocalsClear()
+                    var clear = _factory.StaticCall(rtType, ReservedNames.LocalsClear);
+                    exprs.Add(VisitExpression(clear));
                 }
 
                 // create a sequence that returns the temp var.

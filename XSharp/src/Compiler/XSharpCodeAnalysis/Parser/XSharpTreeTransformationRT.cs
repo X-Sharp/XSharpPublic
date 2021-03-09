@@ -2623,7 +2623,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             return null;
         }
-        private AttributeSyntax EncodeDefaultParameter(XP.ExpressionContext initexpr)
+        private AttributeSyntax EncodeDefaultParameter(XP.ExpressionContext initexpr, XP.DatatypeContext datatype)
         {
             bool negative = false;
             if (initexpr is XP.PrefixExpressionContext)
@@ -2641,9 +2641,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 return MakeDefaultParameter(initexpr.Get<ExpressionSyntax>(), GenerateLiteral(0));
             }
             else
-
             {
-                var nullExpr = GenerateLiteralNull();
+                var zero = GenerateLiteral(0);
                 switch (token.Type)
                 {
                     case XP.NIL:
@@ -2659,28 +2658,29 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                             dt = new DateTime(0L);
                         return MakeDefaultParameter(GenerateLiteral(dt.Ticks), GenerateLiteral(2));    // 2 = Date, value in ticks
                     case XP.NULL_SYMBOL:
-                        return MakeDefaultParameter(nullExpr, GenerateLiteral(3));                      // 3 = Symbol, value is empty
+                        return MakeDefaultParameter(GenerateLiteralNull(), GenerateLiteral(3));        // 3 = Symbol, value is empty
                     case XP.SYMBOL_CONST:
                         var symvalue = token.Text.Substring(1);
                         return MakeDefaultParameter(GenerateLiteral(symvalue), GenerateLiteral(3));      // 3 = Symbol, value is a string
                     case XP.NULL_PSZ:
-                        return MakeDefaultParameter(nullExpr, GenerateLiteral(4));                       // 4 = PSZ, null = empty
+                        return MakeDefaultParameter(GenerateLiteralNull(), GenerateLiteral(4));                       // 4 = PSZ, null = empty
                     case XP.NULL_PTR:
                         return MakeDefaultParameter(GenerateLiteral(0L), GenerateLiteral(5));            // 5 = IntPtr
                     case XP.NULL_STRING:
                         if (_options.HasOption(CompilerOption.NullStrings, initexpr, PragmaOptions))
                         {
-                            return MakeDefaultParameter(GenerateLiteral(""), GenerateLiteral(0));               // 0 = regular .Net Value
+                            return MakeDefaultParameter(GenerateLiteral(""), zero);               // 0 = regular .Net Value
                         }
                         else
                         {
-                            return MakeDefaultParameter(nullExpr, GenerateLiteral(0));                          // 0 = regular .Net Value
+                            return MakeDefaultParameter(GenerateLiteralNull(), zero);                          // 0 = regular .Net Value
                         }
                     case XP.NULL_ARRAY:
                     case XP.NULL_OBJECT:
                     case XP.NULL_CODEBLOCK:
-                        return MakeDefaultParameter(nullExpr, GenerateLiteral(0));                          // 0 = regular .Net Value
+                        return MakeDefaultParameter(GenerateLiteralNull(), zero);                          // 0 = regular .Net Value
                     case XP.INT_CONST:
+                        var ts = datatype.Get<TypeSyntax>();
                         if (negative)
                         {
                             string text = token.Text;
@@ -2694,10 +2694,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                                     break;
                             }
                             Int64 iValue = Int64.Parse(text) * -1;
-                            return MakeDefaultParameter(GenerateLiteral(iValue), GenerateLiteral(0));   // 0 = regular .Net Value
+                            return MakeDefaultParameter(MakeCastTo(ts, GenerateLiteral(iValue)), zero);   // 0 = regular .Net Value
                         }
                         else
-                            return MakeDefaultParameter(GenerateLiteral(token), GenerateLiteral(0));   // 0 = regular .Net Value
+                        {
+                            return MakeDefaultParameter(MakeCastTo(ts, GenerateLiteral(token, initexpr)), zero);   // 0 = regular .Net Value
+                        }
                     case XP.REAL_CONST:
                         double dValue;
                         if (token.Text[0] == '$')
@@ -2722,12 +2724,16 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                             }
                         }
                         if (negative)
-                            return MakeDefaultParameter(GenerateLiteral(dValue * -1), GenerateLiteral(0));   // 0 = regular .Net Value
+                        {
+                            return MakeDefaultParameter(GenerateLiteral(dValue * -1), zero);   // 0 = regular .Net Value
+                        }
                         else
-                            return MakeDefaultParameter(GenerateLiteral(dValue), GenerateLiteral(0));   // 0 = regular .Net Value
+                        {
+                            return MakeDefaultParameter(GenerateLiteral(dValue), zero);   // 0 = regular .Net Value
+                        }
 
                     default:
-                        return MakeDefaultParameter(GenerateLiteral(token), GenerateLiteral(0));   // 0 = regular .Net Value
+                        return MakeDefaultParameter(GenerateLiteral(token), zero);   // 0 = regular .Net Value
                 }
             }
         }
@@ -2748,7 +2754,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     context.Put(par);
                     return;
                 }
-                AttributeSyntax attr = EncodeDefaultParameter(context.Default);
+                AttributeSyntax attr = EncodeDefaultParameter(context.Default, context.Type);
                 if (attr != null)
                 {
                     ParameterSyntax par = context.Get<ParameterSyntax>();

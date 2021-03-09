@@ -2,14 +2,11 @@
 name: ContinuousBuild
 #Set when this build is activated. This can be once x time period, or on push/commit of certain branches
 on:
-#   schedule:
-#     #uses the POSIX cron syntax. The below runs every hour
-#     - cron: '0 * * * *'
-  push:
-    branches: 
-     - main
+  schedule:
+     - cron: '0 2 * * *' # every night at 2 am UTC
   pull_request:
       types: [opened, assigned, synchronize, edited]
+  workflow_dispatch:
 jobs:
   job1:
     name: BuildXSharpCompiler

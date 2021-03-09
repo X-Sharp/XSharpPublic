@@ -83,7 +83,7 @@ namespace XSharp.MacroCompiler.Syntax
         internal Expr Cond;
         internal Stmt Stmt;
         internal WhileStmt(Token t, Expr cond, Stmt s) : base(t) { Cond = cond; Stmt = s; }
-        public override string ToString() => "WHILE " + Cond.ToString() + "\n  " + Stmt.ToString().Replace("\n","\n  ") + "\nEND WHILE";
+        public override string ToString() => "DO WHILE " + Cond.ToString() + "\n  " + Stmt.ToString().Replace("\n","\n  ") + "\nENDDO";
     }
     internal partial class RepeatStmt : WhileStmt
     {
@@ -123,7 +123,7 @@ namespace XSharp.MacroCompiler.Syntax
         internal Stmt StmtIf;
         internal Stmt StmtElse;
         internal IfStmt(Token t, Expr cond, Stmt si, Stmt se) : base(t) { Cond = cond; StmtIf = si; StmtElse = se; }
-        public override string ToString() => "IF " + Cond.ToString() + "\n  " + StmtIf.ToString().Replace("\n", "\n  ") + (StmtElse != null ? "\nELSE\n  " + StmtElse.ToString().Replace("\n", "\n  ") : "") + "\nEND WHILE";
+        public override string ToString() => "IF " + Cond.ToString() + "\n  " + StmtIf.ToString().Replace("\n", "\n  ") + (StmtElse != null ? "\nELSE\n  " + StmtElse.ToString().Replace("\n", "\n  ") : "") + "\nENDIF";
     }
     internal partial class DoCaseStmt : Stmt
     {
@@ -145,7 +145,7 @@ namespace XSharp.MacroCompiler.Syntax
         internal Expr Expr;
         internal SwitchBlock[] SwitchBlocks;
         internal SwitchStmt(Token t, Expr e, SwitchBlock[] sw) : base(t) { Expr = e; SwitchBlocks = sw; }
-        public override string ToString() => "DO SWITCH\n" + String.Join("\n", Array.ConvertAll(SwitchBlocks, (x) => x.ToString())) + "\nEND CASE";
+        public override string ToString() => "SWITCH\n" + String.Join("\n", Array.ConvertAll(SwitchBlocks, (x) => x.ToString())) + "\nEND SWITCH";
     }
     internal partial class SwitchBlock : Node
     {

@@ -2694,11 +2694,21 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                                     break;
                             }
                             Int64 iValue = Int64.Parse(text) * -1;
-                            return MakeDefaultParameter(MakeCastTo(ts, GenerateLiteral(iValue)), zero);   // 0 = regular .Net Value
+                            ExpressionSyntax expr1 = GenerateLiteral(iValue);
+                            if (datatype is XP.SimpleDatatypeContext sdtc && sdtc.TypeName.NativeType != null)
+                            {
+                                expr1 = MakeCastTo(ts, expr1);
+                            }
+                            return MakeDefaultParameter(expr1, zero);   // 0 = regular .Net Value
                         }
                         else
                         {
-                            return MakeDefaultParameter(MakeCastTo(ts, GenerateLiteral(token, initexpr)), zero);   // 0 = regular .Net Value
+                            ExpressionSyntax expr1 = GenerateLiteral(token, initexpr);
+                            if (datatype is XP.SimpleDatatypeContext sdtc && sdtc.TypeName.NativeType != null)
+                            {
+                                expr1 = MakeCastTo(ts, expr1);
+                            }
+                            return MakeDefaultParameter(expr1, zero);   // 0 = regular .Net Value
                         }
                     case XP.REAL_CONST:
                         double dValue;

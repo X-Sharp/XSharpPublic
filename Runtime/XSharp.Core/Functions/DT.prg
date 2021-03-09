@@ -362,9 +362,11 @@ FUNCTION DtToC(d AS DateTime) AS STRING
 /// An 8-character string in the format yyyymmdd.  If dDate is a DateTime.MinValue, a string of eight spaces is returned.  The return value is not affected by the current date format.
 /// </returns>
 FUNCTION DtToS(dDate AS DateTime) AS STRING
-	LOCAL result:="        " AS STRING		
+	LOCAL result := NULL  AS STRING		
 	IF dDate != DateTime.MinValue
 		result := dDate:ToString("yyyyMMdd")
+    ELSE
+        result:="        " 
 	ENDIF
 	RETURN result 
 
@@ -376,7 +378,7 @@ FUNCTION DtToS(dDate AS DateTime) AS STRING
 FUNCTION SToDt(cDate AS STRING) AS DateTime
 	LOCAL convertedDate AS DateTime
 	TRY
-        IF String.IsNullOrEmpty(cDate)
+        IF String.IsNullOrWhiteSpace(cDate)
             convertedDate := DateTime.MinValue
         ELSE
             IF cDate:Length == 8 .AND. cDate[0] == c'0' .AND. cDate[1] == c'0'

@@ -78,8 +78,17 @@ BEGIN NAMESPACE XSharp
                 THROW err
             ENDIF
 
+       PUBLIC OVERRIDE METHOD __SetElement(u AS USUAL, index AS INT) AS USUAL
+             IF IsArray(u)
+                  THROW SELF:__NestedArrayError()
+             ENDIF
+             SUPER:__CheckArrayElement(SELF, index, nameof(index),1)
+             RETURN SUPER:__SetElement(u, index)
 
         PUBLIC OVERRIDE METHOD __SetElement(u AS USUAL, index AS INT, index2 AS INT) AS USUAL
+             IF IsArray(u)
+                  THROW SELF:__NestedArrayError()
+             ENDIF
              VAR item := SELF:__GetIndex(index, index2)
              SUPER:__CheckArrayElement(SELF, item, nameof(index),1)
              RETURN SUPER:__SetElement(u, item)

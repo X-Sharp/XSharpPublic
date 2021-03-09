@@ -3,10 +3,10 @@
 FUNCTION Start( ) AS VOID
 	LOCAL oTest AS OBJECT
 	oTest := Test{}
-	? oTest:DoSomething(2,1)
-	? oTest:DoSomething(2) 
-	? oTest:DoSomethingWithMoney(2) 
-	? oTest:DoSomethingWithDouble(2) 
+	xAssert(oTest:DoSomething(2,1) == 2)
+	xAssert(oTest:DoSomething(2) == 2)
+	xAssert(oTest:DoSomethingWithMoney(2) == 2.0m)
+	xAssert(oTest:DoSomethingWithDouble(2) == 2.0)
 RETURN
 
 
@@ -20,3 +20,10 @@ CLASS Test
 END CLASS    
 
 
+
+PROC xAssert(l AS LOGIC)
+IF .not. l
+	THROW Exception{"Incorrect result in line " + System.Diagnostics.StackTrace{TRUE}:GetFrame(1):GetFileLineNumber():ToString()}
+END IF
+? "Assertion passed"
+RETURN

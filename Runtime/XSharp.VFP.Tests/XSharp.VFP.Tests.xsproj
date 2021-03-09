@@ -49,9 +49,9 @@
     <XSharpProjectversion>2.7.0.0</XSharpProjectversion>
     <Includepaths />
     <Nostandarddefs>true</Nostandarddefs>
-    <NamedArgs>False</NamedArgs>
+    <NamedArgs>false</NamedArgs>
     <StandardDefs />
-    <MemVar>false</MemVar>
+    <MemVar>true</MemVar>
     <Undeclared>false</Undeclared>
     <InitLocals>false</InitLocals>
     <NoWin32Manifest>False</NoWin32Manifest>

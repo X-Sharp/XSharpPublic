@@ -40,6 +40,8 @@ BEGIN NAMESPACE XSharpModel
 					RETURN "LOCAL FUNCTION"
 				CASE Kind.LocalProc
 					RETURN "LOCAL PROCEDURE"
+				CASE Kind.VODLL
+					RETURN "DLL FUNCTION"
 			END SWITCH
 			RETURN elementKind:ToString()
 		
@@ -88,12 +90,14 @@ BEGIN NAMESPACE XSharpModel
 			ENDIF
 			RETURN HasReturnType(elementKind)
 		
-      STATIC METHOD IsGlobalType(SELF elementKind AS Kind) AS LOGIC
+      STATIC METHOD IsGlobalTypeMember(SELF elementKind AS Kind) AS LOGIC
          SWITCH elementKind
          CASE Kind.VOGlobal
          CASE Kind.VODefine
          CASE Kind.Function
          CASE Kind.Procedure
+         CASE Kind.LocalFunc
+         CASE Kind.LocalProc
          CASE Kind.VODLL
             RETURN TRUE
          END SWITCH

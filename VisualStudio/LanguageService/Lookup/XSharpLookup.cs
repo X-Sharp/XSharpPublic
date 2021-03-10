@@ -633,7 +633,8 @@ namespace XSharp.LanguageService
                     if (currentPos == 0 || startOfExpression)
                     {
                         var globType = SearchFunctionIn(location, currentName, out foundElement);
-                        if (currentPos == lastopentoken && globType != null)
+                        if ((currentPos == lastopentoken || currentPos == lastopentoken-1)
+                            && globType != null)
                             return globType;
                     }
                     if (!cType.IsEmpty())
@@ -679,6 +680,9 @@ namespace XSharp.LanguageService
                     else if (startOfExpression)
                     {
                         // Search in Parameters, Locals, Field and Properties
+                        if (currentName == "::" || currentName.ToLower() == "this")
+                            currentName = "SELF";
+
                         foundElement = FindIdentifier(currentName, ref cType, Modifiers.Private, location);
                         if ((foundElement != null) && (foundElement.IsInitialized))
                         {

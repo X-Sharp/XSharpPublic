@@ -891,8 +891,11 @@ BEGIN NAMESPACE XSharpModel
          LOCAL sTypeIds := ""  as STRING
          LOCAL aFiles   := Dictionary<INT64, XFile>{} AS Dictionary<INT64, XFile>
          LOCAL cXmlComment as STRING
+         LOCAL projectIds as STRING
+         projectIds := ","+self:DependentProjectList+","
          FOREACH var element in found
-            IF element:IdProject == SELF:Id
+            var id := ","+element:IdProject.ToString()+","
+            IF projectIds.IndexOf(id) >= 0
                IF sTypeIds:Length > 0
                   sTypeIds += ", "
                ENDIF
@@ -906,9 +909,10 @@ BEGIN NAMESPACE XSharpModel
             RETURN NULL
          ENDIF
          VAR members  := XDatabase.GetMembers(sTypeIds):ToArray()
-         VAR oType  := found[0]
-         VAR source := GetTypeSource(oType, members)
-         VAR file   := SELF:GetFileById(oType:IdFile)
+         VAR oType   := found[0]
+         VAR source  := GetTypeSource(oType, members)
+         var project := XSolution.FindProject(oType:Project)
+         VAR file    := project:GetFileById(oType:IdFile)
          IF file == null
             RETURN NULL
          ENDIF

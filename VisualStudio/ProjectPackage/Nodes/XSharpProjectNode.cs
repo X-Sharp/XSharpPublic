@@ -1464,7 +1464,11 @@ namespace XSharp.Project
         {
             if (statusBar == null && !lTriedToGetStatusBar)
             {
-                statusBar = Site.GetService(typeof(SVsStatusbar)) as IVsStatusbar;
+                ThreadHelper.JoinableTaskFactory.Run(async delegate
+                {
+                    await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+                    statusBar = Site.GetService(typeof(SVsStatusbar)) as IVsStatusbar;
+                });
                 lTriedToGetStatusBar = true;
             }
         }

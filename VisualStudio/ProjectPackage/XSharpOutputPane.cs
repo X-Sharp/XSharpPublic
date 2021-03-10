@@ -21,25 +21,29 @@ namespace XSharp.Project
         internal static void DisplayOutputMessage(string message)
         {
             IVsOutputWindowPane outputPane = null;
-            var outputWindow = ServiceProvider.GlobalProvider.GetService(typeof(SVsOutputWindow)) as IVsOutputWindow;
-            if (outputWindow != null && ErrorHandler.Failed(outputWindow.GetPane(XSharpOutputWindowPane, out outputPane)))
+            ThreadHelper.JoinableTaskFactory.Run(async delegate
             {
-                IVsWindowFrame windowFrame;
-                var vsUiShell = ServiceProvider.GlobalProvider.GetService(typeof(SVsUIShell)) as IVsUIShell;
-                Assumes.Present(vsUiShell);
-                uint flags = (uint)__VSFINDTOOLWIN.FTW_fForceCreate;
-                vsUiShell.FindToolWindow(flags, VSConstants.StandardToolWindows.Output, out windowFrame);
-                if (windowFrame != null)
-                {
-                    windowFrame.Show();
-                    outputWindow.CreatePane(XSharpOutputWindowPane, "XSharp - Debug Window", 1, 1);
-                    outputWindow.GetPane(XSharpOutputWindowPane, out outputPane);
-                    outputPane.Activate();
-                }
-            }
-            message = DateTime.Now.ToString("hh:mm:ss.fff") + " "+message + "\r\n";
-            outputPane?.OutputStringThreadSafe(message);
+                await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
 
+                var outputWindow = ServiceProvider.GlobalProvider.GetService(typeof(SVsOutputWindow)) as IVsOutputWindow;
+                if (outputWindow != null && ErrorHandler.Failed(outputWindow.GetPane(XSharpOutputWindowPane, out outputPane)))
+                {
+                    IVsWindowFrame windowFrame;
+                    var vsUiShell = ServiceProvider.GlobalProvider.GetService(typeof(SVsUIShell)) as IVsUIShell;
+                    Assumes.Present(vsUiShell);
+                    uint flags = (uint)__VSFINDTOOLWIN.FTW_fForceCreate;
+                    vsUiShell.FindToolWindow(flags, VSConstants.StandardToolWindows.Output, out windowFrame);
+                    if (windowFrame != null)
+                    {
+                        windowFrame.Show();
+                        outputWindow.CreatePane(XSharpOutputWindowPane, "XSharp - Debug Window", 1, 1);
+                        outputWindow.GetPane(XSharpOutputWindowPane, out outputPane);
+                        outputPane.Activate();
+                    }
+                }
+                message = DateTime.Now.ToString("hh:mm:ss.fff") + " " + message + "\r\n";
+                outputPane?.OutputStringThreadSafe(message);
+            });
         }
     }
 }

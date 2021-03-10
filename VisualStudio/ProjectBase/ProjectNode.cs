@@ -630,14 +630,18 @@ namespace Microsoft.VisualStudio.Project
         {
             get
             {
-                EnvDTE.Project automationObject = this.GetAutomationObject() as EnvDTE.Project;
-                if (automationObject != null)
+                return ThreadHelper.JoinableTaskFactory.Run(async delegate
                 {
-                    var platform = Utilities.GetActivePlatformName(automationObject);
-                    var name = new ConfigCanonicalName(Utilities.GetActiveConfigurationName(automationObject), platform);
-                    return new ProjectConfig(this, name);
-                }
-                return null;
+                    await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+                    EnvDTE.Project automationObject = this.GetAutomationObject() as EnvDTE.Project;
+                    if (automationObject != null)
+                    {
+                        var platform = Utilities.GetActivePlatformName(automationObject);
+                        var name = new ConfigCanonicalName(Utilities.GetActiveConfigurationName(automationObject), platform);
+                        return new ProjectConfig(this, name);
+                    }
+                    return null;
+                });
             }
         }
 
@@ -650,12 +654,16 @@ namespace Microsoft.VisualStudio.Project
         {
             get
             {
-                if (_outputFile == null && _configName != CurrentConfig.ConfigName)
+                return ThreadHelper.JoinableTaskFactory.Run(async delegate
                 {
-                    _outputFile = this.GetProjectProperty(ProjectFileConstants.TargetPath);
-                    _configName = CurrentConfig.ConfigName;
-                }
-                return _outputFile;
+                    await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+                    if (_outputFile == null && _configName != CurrentConfig.ConfigName)
+                    {
+                        _outputFile = this.GetProjectProperty(ProjectFileConstants.TargetPath);
+                        _configName = CurrentConfig.ConfigName;
+                    }
+                    return _outputFile;
+                });
             }
             set
             {
@@ -671,11 +679,15 @@ namespace Microsoft.VisualStudio.Project
             {
                 if (_rootNamespace == null)
                 {
-                    lock (this)
+                    ThreadHelper.JoinableTaskFactory.Run(async delegate
                     {
-                        if (_rootNamespace == null)
-                            _rootNamespace = GetProjectProperty(ProjectFileConstants.RootNamespace, false);
-                    }
+                        await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+                        lock (this)
+                        {
+                            if (_rootNamespace == null)
+                                _rootNamespace = GetProjectProperty(ProjectFileConstants.RootNamespace, false);
+                        }
+                    });
                 }
                 return _rootNamespace;
             }
@@ -701,10 +713,14 @@ namespace Microsoft.VisualStudio.Project
                 if (this.projectIdGuid != value)
                 {
                     this.projectIdGuid = value;
-                    if (this.buildProject != null)
+                    ThreadHelper.JoinableTaskFactory.Run(async delegate
                     {
-                        this.SetProjectProperty("ProjectGuid", this.projectIdGuid.ToString("B"));
-                    }
+                        await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+                        if (this.buildProject != null)
+                        {
+                            this.SetProjectProperty("ProjectGuid", this.projectIdGuid.ToString("B"));
+                        }
+                    });
                 }
             }
         }

@@ -75,13 +75,14 @@ namespace XSharp.LanguageService
                 }
                 else
                 {
-                    nWidth = fromMember.Interval.Width + 500;
+                    nWidth = fromMember.Interval.Width + 500; 
                 }
                 nWidth = Math.Min(nWidth, bufferText.Length - fromMember.Interval.Start);
                 bufferText = bufferText.Substring(fromMember.Interval.Start, nWidth);
                 // Adapt the positions.
+                location = location.Clone();
                 location.Position = location.Position - fromMember.Interval.Start + 1;
-                location.Position = location.Position - (fromMember.Range.StartLine);
+                location.LineNumber = location.LineNumber - (fromMember.Range.StartLine);
             }
             else
             {
@@ -138,6 +139,7 @@ namespace XSharp.LanguageService
                 // now walk back in the list and find if there are '(', '{' or '[' before the first token.
                 // when there are then delete the tokens upto the
                 bool done = false;
+                int lastToken = XSharpLexer.EOS;
                 for (int i = tokenUnderCursor; i >= 0; i--)
                 {
                     var token = result[i];
@@ -146,15 +148,54 @@ namespace XSharp.LanguageService
                         case XSharpLexer.LCURLY:
                         case XSharpLexer.LPAREN:
                         case XSharpLexer.LBRKT:
-                            result.RemoveRange(0, i + 1);
                             done = true;
                             break;
-
+                        case XSharpLexer.RCURLY:
+                        case XSharpLexer.RPAREN:
+                        case XSharpLexer.RBRKT:
+                            if (lastToken != XSharpLexer.DOT && lastToken != XSharpLexer.COLON)
+                            {
+                                done = true;
+                            }
+                            break;
+                        case XSharpLexer.DOT:
+                        case XSharpLexer.COLON:
+                        case XSharpLexer.SELF:
+                        case XSharpLexer.SUPER:
+                            break;
                         default:
+                            if (XSharpLexer.IsOperator(token.Type))
+                            {
+                                done = true;
+                            }
+                            else if (XSharpLexer.IsKeyword(token.Type) &&
+                                !XSharpLexer.IsPositionalKeyword(token.Type))
+                            {
+                                done = true;
+                            }
                             break;
                     }
                     if (done)
+                    {
+                        result.RemoveRange(0, i + 1);
                         break;
+                    }
+                    lastToken = token.Type;
+                }
+            }
+            // check for extra lparen, lcurly at the end
+            int count = result.Count;
+            if (count > 2)
+            {
+                if (result[count-2].Type == XSharpLexer.LPAREN)
+                {
+                    switch (result[count - 1].Type)
+                    {
+                        case XSharpLexer.LPAREN:
+                        case XSharpLexer.LCURLY:
+                            result.RemoveAt(count - 1);
+                            break;
+                    }
                 }
             }
             return result;

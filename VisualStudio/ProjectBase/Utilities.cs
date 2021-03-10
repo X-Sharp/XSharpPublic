@@ -423,11 +423,16 @@ namespace Microsoft.VisualStudio.Project
             {
                 try
                 {
-                    EnvDTE.Configuration activeConfig = automationObject.ConfigurationManager.ActiveConfiguration;
-                    if (activeConfig != null)
+                    ThreadHelper.JoinableTaskFactory.Run(async delegate
                     {
-                        currentConfigName = activeConfig.ConfigurationName;
-                    }
+                        await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+
+                        EnvDTE.Configuration activeConfig = automationObject.ConfigurationManager.ActiveConfiguration;
+                        if (activeConfig != null)
+                        {
+                            currentConfigName = activeConfig.ConfigurationName;
+                        }
+                    });
                 }
                 catch (COMException ex)
                 {
@@ -456,12 +461,15 @@ namespace Microsoft.VisualStudio.Project
 			{
                 try
                 {
-
-					EnvDTE.Configuration activeConfig = automationObject.ConfigurationManager.ActiveConfiguration;
-					if (activeConfig != null)
-					{
-						currentPlatformName = activeConfig.PlatformName;
-					}
+                    ThreadHelper.JoinableTaskFactory.Run(async delegate
+                    {
+                        await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+                        EnvDTE.Configuration activeConfig = automationObject.ConfigurationManager.ActiveConfiguration;
+                        if (activeConfig != null)
+                        {
+                            currentPlatformName = activeConfig.PlatformName;
+                        }
+                    });
                 }
                 catch (COMException ex)
                 {

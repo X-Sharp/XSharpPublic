@@ -94,7 +94,7 @@ namespace XSharp.LanguageService
                 var location = new XSharpSearchLocation(member, snapshot) { CurrentNamespace = currentNS, LineNumber = lineNumber, Position = position };
                 var tokenList = XSharpTokenTools.GetTokensUnderCursor(location, tokens.TokenStream);
                 // LookUp for the BaseType, reading the TokenList (From left to right)
-                var cType = XSharpLookup.RetrieveType(location, tokenList, CompletionState.General, out gotoElement);
+                var cType = XSharpLookup.RetrieveType(location, tokenList, CompletionState.General, out gotoElement,true);
 
                 //
                 if ((gotoElement != null) && (gotoElement.IsInitialized))
@@ -325,11 +325,15 @@ namespace XSharp.LanguageService
             public ClassifiedTextRun[] WPFPrototype(int len)
             {
                 var content = new List<ClassifiedTextRun>();
-                var name = this.typeMember.Parent.Name;
-                if (this.typeMember.IsStatic)
-                    name += ".";
-                else
-                    name += ":";
+                string name = "";
+                if (!this.typeMember.Kind.IsGlobalTypeMember())
+                {
+                    name = this.typeMember.Parent.Name;
+                    if (this.typeMember.IsStatic)
+                        name += ".";
+                    else
+                        name += ":";
+                }
                 name += this.typeMember.Name;
                 content.addText(name);
                 if (this.typeMember.Kind.HasParameters())

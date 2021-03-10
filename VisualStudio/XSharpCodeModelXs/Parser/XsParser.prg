@@ -219,7 +219,7 @@ BEGIN NAMESPACE XSharpModel
                      IF mustPop 
                         _EntityStack:Pop()
                      ENDIF
-                     IF entity:Kind:IsGlobalType() .AND. entity IS XSourceMemberSymbol VAR xGlobalMember
+                     IF entity:Kind:IsGlobalTypeMember() .AND. entity IS XSourceMemberSymbol VAR xGlobalMember
                         SELF:_globalType:AddMember(xGlobalMember)
                      ELSEIF entity:Kind:IsLocal()
                         entity:Parent := CurrentEntity
@@ -1906,6 +1906,7 @@ vodll               : (Attributes=attributes)? (Modifiers=funcprocModifiers)? //
          IF ! ParseFuncProcType (OUT VAR kind)
             RETURN NULL
          ENDIF
+         SELF:Consume()
          VAR sig     := SELF:ParseSignature()
          VAR colon   := SELF:ConsumeAndGetText()
          VAR dllName := SELF:ConsumeAndGetText()

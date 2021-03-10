@@ -42,5 +42,10 @@ namespace XSharp.LanguageService
             File = Member.File;
         }
 
+        internal XSharpSearchLocation Clone()
+        {
+            return (XSharpSearchLocation)this.MemberwiseClone();
+        }
+
     }
 }

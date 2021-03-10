@@ -250,7 +250,11 @@ namespace XSharp.LanguageService
             int hr = VSConstants.S_OK;
             try
             {
-                hr = hierarchy.GetGuidProperty(itemId, (int)__VSHPROPID.VSHPROPID_TypeGuid, out typeGuid);
+                ThreadHelper.JoinableTaskFactory.Run(async delegate
+                {
+                    await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+                    hr = hierarchy.GetGuidProperty(itemId, (int)__VSHPROPID.VSHPROPID_TypeGuid, out typeGuid);
+                });
             }
             catch (System.Runtime.InteropServices.COMException)
             {
@@ -268,8 +272,12 @@ namespace XSharp.LanguageService
             //hierarchy.GetProperty(itemId, (int)__VSHPROPID.VSHPROPID_Name, out var name);
 
             // This item is a file; find if it is a PRG file.
-            hr = hierarchy.GetCanonicalName(itemId, out var canonicalName);
-            
+            string canonicalName = null;
+            ThreadHelper.JoinableTaskFactory.Run(async delegate
+            {
+                await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+                hr = hierarchy.GetCanonicalName(itemId, out canonicalName);
+            });
             return canonicalName;
         }
 
@@ -296,16 +304,27 @@ namespace XSharp.LanguageService
                 // Before looking at the children we have to make sure that the enumeration has not
                 // side effects to avoid unexpected behavior.
                 bool canScanSubitems = true;
-                int hr = hierarchy.GetProperty(currentItem, (int)__VSHPROPID.VSHPROPID_HasEnumerationSideEffects, out var propertyValue);
-                if ((VSConstants.S_OK == hr) && (propertyValue is bool))
+                int hr = 0;
+                object propertyValue = null;
+                ThreadHelper.JoinableTaskFactory.Run(async delegate
                 {
-                    canScanSubitems = !(bool)propertyValue;
+                    await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+                    hr = hierarchy.GetProperty(currentItem, (int)__VSHPROPID.VSHPROPID_HasEnumerationSideEffects, out propertyValue);
+                });
+
+                if (VSConstants.S_OK == hr && propertyValue is bool ok)
+                {
+                    canScanSubitems = !ok;
                 }
                 // If it is allow to look at the sub-items of the current one, lets do it.
                 if (canScanSubitems)
                 {
-                    object child;
-                    hr = hierarchy.GetProperty(currentItem, (int)__VSHPROPID.VSHPROPID_FirstChild, out child);
+                    object child = null;
+                    ThreadHelper.JoinableTaskFactory.Run(async delegate
+                    {
+                        await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+                        hr = hierarchy.GetProperty(currentItem, (int)__VSHPROPID.VSHPROPID_FirstChild, out child);
+                    });
                     if (VSConstants.S_OK == hr)
                     {
                         // There is a sub-item, call this same function on it.
@@ -314,8 +333,12 @@ namespace XSharp.LanguageService
                 }
 
                 // Move the current item to its first visible sibling.
-                object sibling;
-                hr = hierarchy.GetProperty(currentItem, (int)__VSHPROPID.VSHPROPID_NextSibling, out sibling);
+                object sibling = null;
+                ThreadHelper.JoinableTaskFactory.Run(async delegate
+                {
+                    await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+                    hr = hierarchy.GetProperty(currentItem, (int)__VSHPROPID.VSHPROPID_NextSibling, out sibling);
+                });
                 if (VSConstants.S_OK != hr)
                 {
                     currentItem = VSConstants.VSITEMID_NIL;

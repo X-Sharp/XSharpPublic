@@ -67,7 +67,12 @@ BEGIN NAMESPACE XSharpModel
                             IF cConstraint:Length > 0
                                 cConstraint += ","
                             ENDIF
-                            cConstraint += constraint:ConstraintType:Name
+                            var constName := constraint:ConstraintType:Name
+                            if constName:ToLower() == "valuetype"
+                                cConstraint += "STRUCT"
+                            else
+                                cConstraint += constName
+                            endif
                         next
                         SELF:_signature:TypeParameterContraints:Add(cConstraint)
                     ELSE

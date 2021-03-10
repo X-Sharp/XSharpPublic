@@ -23,6 +23,7 @@ using Microsoft.VisualStudio.OLE.Interop;
 using Microsoft.VisualStudio.Shell.Interop;
 using VSConstants = Microsoft.VisualStudio.VSConstants;
 using System.Collections.Generic;
+using Microsoft.VisualStudio.Shell;
 
 namespace XSharp.LanguageService
 {
@@ -128,27 +129,33 @@ namespace XSharp.LanguageService
             if ( pobSrch != null)
                 strSearchCriteria = pobSrch[0].szName;
             //
-            switch( ListType )
+            IVsSimpleObjectList2 result = null;
+            ThreadHelper.JoinableTaskFactory.Run(async delegate
             {
-                case (uint)_LIB_LISTTYPE.LLT_PHYSICALCONTAINERS:
-                    ppIVsSimpleObjectList2 = root as IVsSimpleObjectList2;
-                    break;
-                case (uint)_LIB_LISTTYPE.LLT_HIERARCHY:
-                    // Search in Projects
-                    ppIVsSimpleObjectList2 = SearchNodes(ListType, strSearchCriteria);
-                    //ppIVsSimpleObjectList2 = root as IVsSimpleObjectList2;
-                    break;
-                case (uint)_LIB_LISTTYPE.LLT_NAMESPACES:
-                    // Search NameSpaces with the searchCriteria
-                    //ppIVsSimpleObjectList2 = root as IVsSimpleObjectList2;
-                    ppIVsSimpleObjectList2 = SearchNodes(ListType, strSearchCriteria);
-                    break;
-                case (uint)_LIB_LISTTYPE.LLT_MEMBERS:
-                    // Search in Members : Classes / Enums / ...
-                    //ppIVsSimpleObjectList2 = root as IVsSimpleObjectList2;
-                    ppIVsSimpleObjectList2 = SearchNodes(ListType, strSearchCriteria);
-                    break;
-            }
+                await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+                switch (ListType)
+                {
+                    case (uint)_LIB_LISTTYPE.LLT_PHYSICALCONTAINERS:
+                        result = root as IVsSimpleObjectList2;
+                        break;
+                    case (uint)_LIB_LISTTYPE.LLT_HIERARCHY:
+                        // Search in Projects
+                        result = SearchNodes(ListType, strSearchCriteria);
+                        //ppIVsSimpleObjectList2 = root as IVsSimpleObjectList2;
+                        break;
+                    case (uint)_LIB_LISTTYPE.LLT_NAMESPACES:
+                        // Search NameSpaces with the searchCriteria
+                        //ppIVsSimpleObjectList2 = root as IVsSimpleObjectList2;
+                        result = SearchNodes(ListType, strSearchCriteria);
+                        break;
+                    case (uint)_LIB_LISTTYPE.LLT_MEMBERS:
+                        // Search in Members : Classes / Enums / ...
+                        //ppIVsSimpleObjectList2 = root as IVsSimpleObjectList2;
+                        result = SearchNodes(ListType, strSearchCriteria);
+                        break;
+                }
+            });
+            ppIVsSimpleObjectList2 = result;
             return ret;
         }
 
@@ -230,7 +237,15 @@ namespace XSharp.LanguageService
 
         public int UpdateCounter(out uint pCurUpdate)
         {
-            return ((IVsSimpleObjectList2)root).UpdateCounter(out pCurUpdate);
+            var result = 0;
+            uint counter = 0;
+            ThreadHelper.JoinableTaskFactory.Run(async delegate
+            {
+                await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+                result = ((IVsSimpleObjectList2)root).UpdateCounter(out counter);
+            });
+            pCurUpdate = counter;
+            return result;
         }
 
         #endregion

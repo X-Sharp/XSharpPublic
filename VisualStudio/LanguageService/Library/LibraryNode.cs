@@ -547,7 +547,13 @@ namespace XSharp.LanguageService
                 }
                 pclsidActive = commandId.Guid;
                 pnMenuId = commandId.ID;
-                ppCmdTrgtActive = children[(int)index] as IOleCommandTarget;
+                IOleCommandTarget target = null;
+                ThreadHelper.JoinableTaskFactory.Run(async delegate
+                {
+                    await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+                    target = children[(int)index] as IOleCommandTarget;
+                });
+                ppCmdTrgtActive = target;
             }
             return VSConstants.S_OK;
         }
@@ -630,7 +636,13 @@ namespace XSharp.LanguageService
                 {
                     throw new ArgumentOutOfRangeException("index");
                 }
-                ppNavInfoNode = children[(int)index] as IVsNavInfoNode;
+                IVsNavInfoNode navinfo = null;
+                ThreadHelper.JoinableTaskFactory.Run(async delegate
+                {
+                    await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+                    navinfo = children[(int)index] as IVsNavInfoNode;
+                });
+                ppNavInfoNode = navinfo;
             }
             return VSConstants.S_OK;
         }
@@ -699,8 +711,12 @@ namespace XSharp.LanguageService
                 throw new ArgumentNullException("pNavInfoNode");
             }
             pulIndex = NullIndex;
-            string nodeName;
-            ErrorHandler.ThrowOnFailure(pNavInfoNode.get_Name(out nodeName));
+            string nodeName = null;
+            ThreadHelper.JoinableTaskFactory.Run(async delegate
+            {
+                await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+                ErrorHandler.ThrowOnFailure(pNavInfoNode.get_Name(out nodeName));
+            });
             try
             {
                 for (int i = 0; i < children.Count; i++)

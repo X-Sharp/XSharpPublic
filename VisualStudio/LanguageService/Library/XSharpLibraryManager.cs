@@ -153,11 +153,16 @@ namespace XSharp.LanguageService
             // Remove this library from the object manager.
             if (0 != objectManagerCookie)
             {
-                IVsObjectManager2 mgr = provider.GetService(typeof(SVsObjectManager)) as IVsObjectManager2;
-                if (null != mgr)
+                ThreadHelper.JoinableTaskFactory.Run(async delegate
                 {
-                    mgr.UnregisterLibrary(objectManagerCookie);
-                }
+                    await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+
+                    IVsObjectManager2 mgr = provider.GetService(typeof(SVsObjectManager)) as IVsObjectManager2;
+                    if (null != mgr)
+                    {
+                        mgr.UnregisterLibrary(objectManagerCookie);
+                    }
+                });
                 objectManagerCookie = 0;
             }
 
@@ -199,13 +204,18 @@ namespace XSharp.LanguageService
             //
             if (0 == objectManagerCookie)
             {
-                IVsObjectManager2 objManager = provider.GetService(typeof(SVsObjectManager)) as IVsObjectManager2;
-                if (null == objManager)
+                ThreadHelper.JoinableTaskFactory.Run(async delegate
                 {
-                    return;
-                }
-                Microsoft.VisualStudio.ErrorHandler.ThrowOnFailure(
-                    objManager.RegisterSimpleLibrary(library, out objectManagerCookie));
+                    await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+
+                    IVsObjectManager2 objManager = provider.GetService(typeof(SVsObjectManager)) as IVsObjectManager2;
+                    if (null == objManager)
+                    {
+                        return;
+                    }
+                    Microsoft.VisualStudio.ErrorHandler.ThrowOnFailure(
+                        objManager.RegisterSimpleLibrary(library, out objectManagerCookie));
+                });
             }
             // The project is the Root of the Library
             XSharpLibraryProject prjNode = new XSharpLibraryProject(Prj, hierarchy);
@@ -653,7 +663,14 @@ namespace XSharp.LanguageService
                 if (projectdict.TryGetValue(xfile.Project.FileName, out var prjNode))
                 {
                     var hierarchyId = prjNode.ownerHierarchy;
-                    var hr = hierarchyId.ParseCanonicalName(xfile.FullPath, out var itemid);
+                    uint itemid = 0;
+                    int hr = 0;
+                    ThreadHelper.JoinableTaskFactory.Run(async delegate
+                    {
+                        await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+                        hr = hierarchyId.ParseCanonicalName(xfile.FullPath, out itemid);
+                    });
+
                     if (itemid != 0 && hr == VSConstants.S_OK)
                     {
                         var args = new HierarchyEventArgs(itemid, xfile.FullPath);
@@ -676,7 +693,13 @@ namespace XSharp.LanguageService
                     foreach (var path in xsProject.SourceFiles)
                     {
                         var xfile = xsProject.FindXFile(path);
-                        var hr = hierarchyId.ParseCanonicalName(xfile.FullPath, out var itemid);
+                        uint itemid = 0;
+                        int hr = 0;
+                        ThreadHelper.JoinableTaskFactory.Run(async delegate
+                        {
+                            await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+                            hr = hierarchyId.ParseCanonicalName(xfile.FullPath, out itemid);
+                        });
                         if (itemid != 0 && hr == VSConstants.S_OK)
                         {
                             var args = new HierarchyEventArgs(itemid, xfile.FullPath);
@@ -709,32 +732,38 @@ namespace XSharp.LanguageService
 
         private string getFileNameFromCookie(uint docCookie)
         {
-            IVsRunningDocumentTable rdt = provider.GetService(typeof(SVsRunningDocumentTable)) as IVsRunningDocumentTable;
+
             string fileName = "";
-
-            if (rdt != null)
+            ThreadHelper.JoinableTaskFactory.Run(async delegate
             {
-                IntPtr docData = IntPtr.Zero;
-                try
+                await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+
+                IVsRunningDocumentTable rdt = provider.GetService(typeof(SVsRunningDocumentTable)) as IVsRunningDocumentTable;
+
+                if (rdt != null)
                 {
-                    int hr;
-                    IVsHierarchy hier;
-                    uint flags, readLocks, editLocks, itemid;
-                    hr = rdt.GetDocumentInfo(docCookie, out flags, out readLocks, out editLocks, out fileName, out hier, out itemid, out docData);
-                    if (hierarchies.ContainsKey(hier))
+                    IntPtr docData = IntPtr.Zero;
+                    try
                     {
+                        int hr;
+                        IVsHierarchy hier;
+                        uint flags, readLocks, editLocks, itemid;
+                        hr = rdt.GetDocumentInfo(docCookie, out flags, out readLocks, out editLocks, out fileName, out hier, out itemid, out docData);
+                        if (hierarchies.ContainsKey(hier))
+                        {
+
+                        }
 
                     }
-
-                }
-                finally
-                {
-                    if (IntPtr.Zero != docData)
+                    finally
                     {
-                        Marshal.Release(docData);
+                        if (IntPtr.Zero != docData)
+                        {
+                            Marshal.Release(docData);
+                        }
                     }
                 }
-            }
+            });
             return fileName;
 
         }
@@ -747,16 +776,21 @@ namespace XSharp.LanguageService
         /// <param name="args"></param>
         private void OnNewFile(object sender, HierarchyEventArgs args)
         {
-            IVsHierarchy hierarchy = sender as IVsHierarchy;
-            if (null == hierarchy)
+            ThreadHelper.JoinableTaskFactory.Run(async delegate
             {
-                return;
-            }
-            var type = XFileTypeHelpers.GetFileType(args.CanonicalName);
-            if (type == XFileType.SourceCode)
-            {
-                CreateUpdateTreeRequest(args.CanonicalName, hierarchy, args.ItemID);
-            }
+                await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+
+                IVsHierarchy hierarchy = sender as IVsHierarchy;
+                if (null == hierarchy)
+                {
+                    return;
+                }
+                var type = XFileTypeHelpers.GetFileType(args.CanonicalName);
+                if (type == XFileType.SourceCode)
+                {
+                    CreateUpdateTreeRequest(args.CanonicalName, hierarchy, args.ItemID);
+                }
+            });
         }
 
         /// <summary>
@@ -766,33 +800,38 @@ namespace XSharp.LanguageService
         /// <param name="args"></param>
         private void OnDeleteFile(object sender, HierarchyEventArgs args)
         {
-            IVsHierarchy hierarchy = sender as IVsHierarchy;
-            if (null == hierarchy)
+            ThreadHelper.JoinableTaskFactory.Run(async delegate
             {
-                return;
-            }
-            XSharpModuleId id = new XSharpModuleId(hierarchy, args.ItemID, args.CanonicalName);
-            XSettings.DisplayOutputMessage("OnDeleteFile " + args.ItemID.ToString()+" "+args.CanonicalName);
-            // Ok, now remove ALL nodes for that key
-            lock (files)
-            {
-                if (files.TryGetValue(id, out var values))
+                await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+
+                IVsHierarchy hierarchy = sender as IVsHierarchy;
+                if (null == hierarchy)
                 {
-                    foreach (XSharpLibraryNode node in values)
+                    return;
+                }
+                XSharpModuleId id = new XSharpModuleId(hierarchy, args.ItemID, args.CanonicalName);
+                XSettings.DisplayOutputMessage("OnDeleteFile " + args.ItemID.ToString() + " " + args.CanonicalName);
+                // Ok, now remove ALL nodes for that key
+                lock (files)
+                {
+                    if (files.TryGetValue(id, out var values))
                     {
-                        if (node.Freeing(id.ItemID) == 0)
+                        foreach (XSharpLibraryNode node in values)
                         {
-                            if (node.parent != null)
+                            if (node.Freeing(id.ItemID) == 0)
                             {
-                                node.parent.RemoveNode(node);
+                                if (node.parent != null)
+                                {
+                                    node.parent.RemoveNode(node);
+                                }
                             }
                         }
                     }
                 }
-            }
-            // and then remove the key
-            removeNode(id);
-            //
+                // and then remove the key
+                removeNode(id);
+                //
+            });
         }
         #endregion
 

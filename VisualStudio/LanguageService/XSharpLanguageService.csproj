@@ -36,7 +36,7 @@
     <WarningLevel>4</WarningLevel>
     <CreateVsixContainer>False</CreateVsixContainer>
     <DeployExtension>False</DeployExtension>
-    <NoWarn>618;4014;VSTHRD001;VSTHRD010;VSTHRD105;VSTHRD110</NoWarn>
+    <NoWarn>618;4014</NoWarn>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -59,11 +59,12 @@
     <Compile Include="Completion\XBinder.cs" />
     <Compile Include="Completion\XCompletionList.cs" />
     <Compile Include="Completion\XSharpGlyphTools.cs" />
-    <Compile Include="Completion\XSharpLookup.cs" />
+    <Compile Include="Lookup\XSharpSearchLocation.cs" />
+    <Compile Include="Lookup\XSharpLookup.cs" />
     <Compile Include="KeywordColoring\ClassificationDefinitions.cs" />
     <Compile Include="KeywordColoring\ColorizerConstants.cs" />
     <Compile Include="CommandFilter.cs" />
-    <Compile Include="Completion\AnalysisClasses.cs" />
+    <Compile Include="Lookup\AnalysisClasses.cs" />
     <Compile Include="Completion\XAMLCompletionSource.cs" />
     <Compile Include="Completion\XSharpCompletionSource.cs" />
     <Compile Include="KeywordColoring\EditorFormats.cs" />

@@ -39,16 +39,16 @@ namespace XSharp.LanguageService
                 //
                 var triggerPoint = tp.Value;
                 // Make sure we include the  closing ( or {
-                triggerPoint = XSharpTokenTools.FindEndOfCurrentToken(triggerPoint, _textBuffer.CurrentSnapshot);
                 var lineNumber = triggerPoint.GetContainingLine().LineNumber;
-                var caretPos = triggerPoint.Position ;
+                var position = triggerPoint.Position ;
                 //
                 // Check if we can get the member where we are
                 var member = XSharpLookup.FindMember(triggerPoint.GetContainingLine().LineNumber, _file);
                 var currentNamespace = XSharpTokenTools.FindNamespace(triggerPoint.Position, _file);
 
                 var snapshot = _textBuffer.CurrentSnapshot;
-                var tokenList = XSharpTokenTools.GetTokenList(caretPos, lineNumber, snapshot, out var state, _file, member);
+                var tokens = _textBuffer.GetTokens();
+
                 // LookUp for the BaseType, reading the TokenList (From left to right)
                 CompletionElement gotoElement;
                 string currentNS = "";
@@ -56,7 +56,9 @@ namespace XSharp.LanguageService
                 {
                     currentNS = currentNamespace.Name;
                 }
-                CompletionType cType = XSharpLookup.RetrieveType(_file, tokenList, member, currentNS, state, out gotoElement, snapshot, lineNumber, _file.Project.Dialect);
+                var location = new XSharpSearchLocation(member, snapshot) { LineNumber = lineNumber, Position = position, CurrentNamespace = currentNS};
+                var tokenList = XSharpTokenTools.GetTokensUnderCursor(location, tokens.TokenStream);
+                CompletionType cType = XSharpLookup.RetrieveType(location, tokenList, CompletionState.General, out gotoElement);
                 //
                 if ((gotoElement != null) && (gotoElement.IsSourceElement))
                 {

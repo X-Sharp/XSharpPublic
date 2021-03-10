@@ -50,28 +50,28 @@ namespace XSharp.LanguageService
         /// <param name="fromMember">The Member containing the position</param>
         /// <param name="includeKeywords">Should keywords be included in the tokenlist</param>
         /// <returns></returns>
-        public static List<XSharpToken> GetTokenList(int triggerPointPosition, int triggerPointLineNumber,
-            ITextSnapshot snapshot, out CompletionState state, XFile file, XSourceMemberSymbol fromMember, bool includeKeywords = false)
+        internal static List<XSharpToken> GetTokenList(XSharpSearchLocation location, out CompletionState state, bool includeKeywords = false)
         {
-            var bufferText = snapshot.GetText();
-            return _getTokenList(triggerPointPosition, triggerPointLineNumber, bufferText, out state, file, fromMember, includeKeywords);
+            var bufferText = location.Snapshot.GetText();
+            return _getTokenList(location, bufferText, out state, includeKeywords);
         }
 
-        private static List<XSharpToken> _getTokenList(int triggerPointPosition, int triggerPointLineNumber,
-            string bufferText, out CompletionState state, XFile file, XSourceMemberSymbol fromMember, bool includeKeywords)
+        private static List<XSharpToken> _getTokenList(XSharpSearchLocation location, 
+            string bufferText, out CompletionState state, bool includeKeywords)
         {
             //////////////////////////////////////
             //////////////////////////////////////
             // Try to speedup the process, Tokenize only the Member source if possible (and not the FULL source text)
-            if (fromMember != null && fromMember.Interval.Start < triggerPointPosition && fromMember.Kind.HasBody())
+            var fromMember = location.Member;
+            if (fromMember != null && fromMember.Interval.Start < location.Position && fromMember.Kind.HasBody())
             {
                 // if the trigger point is after the end of the member then the member information is old and
                 // we should use that position to determine the end of the buffer to scan
                 // And make sure we also add some more because that does not hurt.
                 int nWidth;
-                if (triggerPointPosition > fromMember.Interval.Stop)
+                if (location.Position > fromMember.Interval.Stop)
                 {
-                    nWidth = triggerPointPosition - fromMember.Interval.Start + 500;
+                    nWidth = location.Position - fromMember.Interval.Start + 500;
                 }
                 else
                 {
@@ -80,13 +80,13 @@ namespace XSharp.LanguageService
                 nWidth = Math.Min(nWidth, bufferText.Length - fromMember.Interval.Start);
                 bufferText = bufferText.Substring(fromMember.Interval.Start, nWidth);
                 // Adapt the positions.
-                triggerPointPosition = triggerPointPosition - fromMember.Interval.Start + 1;
-                triggerPointLineNumber = triggerPointLineNumber - (fromMember.Range.StartLine);
+                location.Position = location.Position - fromMember.Interval.Start + 1;
+                location.Position = location.Position - (fromMember.Range.StartLine);
             }
             else
             {
                 // no need to parse the whole buffer. It could be huge
-                int maxLen = triggerPointPosition + 500;
+                int maxLen = location.Position + 500;
                 if (maxLen > bufferText.Length)
                     maxLen = bufferText.Length;
                 bufferText = bufferText.Substring(0, maxLen);
@@ -99,11 +99,11 @@ namespace XSharp.LanguageService
             // Get compiler options
             XSharpParseOptions parseoptions;
             string fileName;
-            if (file != null)
+            if (location.File != null)
             {
-                var prj = file.Project.ProjectNode;
+                var prj = location.File.Project.ProjectNode;
                 parseoptions = prj.ParseOptions;
-                fileName = file.FullPath;
+                fileName = location.File.FullPath;
             }
             else
             {
@@ -114,11 +114,53 @@ namespace XSharp.LanguageService
 
             bool ok = Lex(bufferText, fileName, parseoptions, reporter, out tokenStream);
             var stream = tokenStream as BufferedTokenStream;
-            return GetTokenList(triggerPointPosition, triggerPointLineNumber, stream, out state, includeKeywords);
+            return GetTokenList(location, stream, out state, includeKeywords);
         }
 
 
-        public static List<XSharpToken> GetTokenList(int triggerPointPosition, int triggerPointLineNumber, BufferedTokenStream tokens,
+        internal static IList<XSharpToken> GetTokensUnderCursor(XSharpSearchLocation location, BufferedTokenStream tokens)
+        {
+
+            var result = GetTokenList(location, tokens, out var _, false);
+            // Find "current" token
+            if (result.Count > 0)
+            {
+                var tokenUnderCursor = 0;
+                for (int i = 0; i < result.Count; i++)
+                {
+                    var token = result[i];
+                    if (token.StartIndex <= location.Position && token.StopIndex >= location.Position)
+                    {
+                        tokenUnderCursor = i;
+                        break;
+                    }
+                }
+                // now walk back in the list and find if there are '(', '{' or '[' before the first token.
+                // when there are then delete the tokens upto the
+                bool done = false;
+                for (int i = tokenUnderCursor; i >= 0; i--)
+                {
+                    var token = result[i];
+                    switch (token.Type)
+                    {
+                        case XSharpLexer.LCURLY:
+                        case XSharpLexer.LPAREN:
+                        case XSharpLexer.LBRKT:
+                            result.RemoveRange(0, i + 1);
+                            done = true;
+                            break;
+
+                        default:
+                            break;
+                    }
+                    if (done)
+                        break;
+                }
+            }
+            return result;
+        }
+
+        internal static List<XSharpToken> GetTokenList(XSharpSearchLocation location, BufferedTokenStream tokens,
             out CompletionState state, bool includeKeywords = false)
         {
             var tokenList = new List<XSharpToken>();
@@ -127,7 +169,7 @@ namespace XSharp.LanguageService
             if (tokens == null)
                 return tokenList;
             // the line numbers in the IToken are 1 based. Vs is 0 based.
-            int oneBasedLineNumber = triggerPointLineNumber + 1;
+            int oneBasedLineNumber = location.LineNumber + 1;
             var line = tokens.GetTokens().Where(
                  t => t.Channel == XSharpLexer.DefaultTokenChannel &&
                  t.Line == oneBasedLineNumber).ToList();
@@ -140,7 +182,7 @@ namespace XSharp.LanguageService
             {
                 int open = 0;
                 // only add open tokens to the list after the trigger point
-                if (token.StartIndex >= triggerPointPosition )
+                if (token.StartIndex >= location.Position )
                 {
                     if (token.Type == XSharpLexer.LT
                         && (state.HasFlag(CompletionState.Types) || state.HasFlag(CompletionState.Interfaces)))

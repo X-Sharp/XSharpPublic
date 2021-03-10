@@ -232,7 +232,11 @@ namespace XSharp.LanguageService
                 }
                 if (_oleComponentManager != null)
                 {
-                    _oleComponentManager.FRevokeComponent(m_componentID);
+                    ThreadHelper.JoinableTaskFactory.Run(async delegate
+                    {
+                        await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+                        _oleComponentManager.FRevokeComponent(m_componentID);
+                    });
                     _oleComponentManager = null;
                 }
 
@@ -290,10 +294,10 @@ namespace XSharp.LanguageService
             int hr;
             ThreadHelper.JoinableTaskFactory.Run(async delegate
             {
+                await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
                 m_debugger = await this.GetServiceAsync(typeof(SVsShellDebugger)) as IVsDebugger;
                 if (m_debugger != null)
                 {
-                    await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
                     hr = m_debugger.AdviseDebuggerEvents(this, out m_Debuggercookie);
                     Microsoft.VisualStudio.ErrorHandler.ThrowOnFailure(hr);
                     // Get initial value
@@ -306,11 +310,16 @@ namespace XSharp.LanguageService
         private void UnRegisterDebuggerEvents()
         {
             int hr;
-            if (m_debugger != null && m_Debuggercookie != 0)
+            ThreadHelper.JoinableTaskFactory.Run(async delegate
             {
-                hr = m_debugger.UnadviseDebuggerEvents(m_Debuggercookie);
-                Microsoft.VisualStudio.ErrorHandler.ThrowOnFailure(hr);
-            }
+                await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+
+                if (m_debugger != null && m_Debuggercookie != 0)
+                {
+                    hr = m_debugger.UnadviseDebuggerEvents(m_Debuggercookie);
+                    Microsoft.VisualStudio.ErrorHandler.ThrowOnFailure(hr);
+                }
+            });
             m_Debuggercookie = 0;
             m_debugger = null;
         }

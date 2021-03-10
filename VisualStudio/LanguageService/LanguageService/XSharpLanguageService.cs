@@ -212,7 +212,7 @@ namespace XSharp.LanguageService
             var file = getFile(pBuffer);
             var list = new List<String>();
             XSourceEntity member;
-            // We use our orignal syntax here (so SELF and ":"). The expression compiler
+            // We use our original syntax here (so SELF and ":"). The expression compiler
             // in the debugger takes care of translating SELF to this and ':' to '.'
             if (file != null)
             {
@@ -241,7 +241,8 @@ namespace XSharp.LanguageService
                     if (member is XSourceMemberSymbol tm)
                     {
                         locals = new Dictionary<string, IXVariableSymbol>(StringComparer.OrdinalIgnoreCase);
-                        var vars = tm.GetLocals(buffer.CurrentSnapshot, iLine, file.Project.ParseOptions.Dialect);
+                        var location = new XSharpSearchLocation(tm, buffer.CurrentSnapshot) { LineNumber = iLine};
+                        var vars = tm.GetLocals(location);
                         foreach (var v in vars)
                         {
                             locals.Add(v.Name,  v);

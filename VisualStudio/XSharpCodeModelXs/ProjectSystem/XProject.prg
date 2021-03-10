@@ -890,12 +890,16 @@ BEGIN NAMESPACE XSharpModel
          LOCAL namespace := "" AS STRING
          LOCAL sTypeIds := ""  as STRING
          LOCAL aFiles   := Dictionary<INT64, XFile>{} AS Dictionary<INT64, XFile>
+         LOCAL cXmlComment as STRING
          FOREACH var element in found
             IF element:IdProject == SELF:Id
                IF sTypeIds:Length > 0
                   sTypeIds += ", "
                ENDIF
                sTypeIds += element:IdType:ToString()
+               if ! String.IsNullOrEmpty(element:XmlComments)
+                   cXmlComment := element:XmlComments
+               ENDIF
             ENDIF
          NEXT
          IF sTypeIds:Length == 0
@@ -923,6 +927,7 @@ BEGIN NAMESPACE XSharpModel
                xtype:Namespace   := namespace
                xtype:XmlComments := oType:XmlComments
                xtype:ClassType   := (XSharpDialect) oType:ClassType
+               xtype:XmlComments := cXmlComment
                VAR xmembers := xtype:XMembers:ToArray()
                var dict := Dictionary<string, IList<XSourceMemberSymbol>>{}
                FOREACH m as XSourceMemberSymbol in xmembers

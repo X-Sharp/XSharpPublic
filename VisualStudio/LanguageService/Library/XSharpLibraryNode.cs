@@ -26,6 +26,8 @@ using VSConstants = Microsoft.VisualStudio.VSConstants;
 using XSharpModel;
 using System.Collections.Generic;
 using System.Diagnostics;
+using Microsoft.VisualStudio.Shell;
+
 namespace XSharp.LanguageService
 {
 
@@ -625,16 +627,21 @@ namespace XSharp.LanguageService
 
         protected override void buildDescription(_VSOBJDESCOPTIONS flags, IVsObjectBrowserDescription3 obDescription)
         {
-            obDescription.ClearDescriptionText();
-            try
+            ThreadHelper.JoinableTaskFactory.Run(async delegate
             {
-                foreach (var element in description)
-                {
-                    obDescription.AddDescriptionText3(element.Item1, element.Item2, null);
-                }
-            }
-            catch { }
+                await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
 
+                obDescription.ClearDescriptionText();
+                try
+                {
+                    foreach (var element in description)
+                    {
+                        obDescription.AddDescriptionText3(element.Item1, element.Item2, null);
+                    }
+                }
+                catch { }
+
+            });
         }
 
         private Tuple<string, VSOBDESCRIPTIONSECTION> item (string item1, VSOBDESCRIPTIONSECTION item2)
@@ -787,13 +794,18 @@ namespace XSharp.LanguageService
             {
                 if (string.IsNullOrEmpty(fileMoniker))
                 {
-                    if ((this.filesId.Count > 0) && (this.filesId[0] != VSConstants.VSITEMID_NIL))
+                    ThreadHelper.JoinableTaskFactory.Run(async delegate
                     {
-                        if (ownerHierarchy != null)
+                        await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+
+                        if ((this.filesId.Count > 0) && (this.filesId[0] != VSConstants.VSITEMID_NIL))
                         {
-                            ErrorHandler.ThrowOnFailure(ownerHierarchy.GetCanonicalName(this.filesId[0], out fileMoniker));
+                            if (ownerHierarchy != null)
+                            {
+                                ErrorHandler.ThrowOnFailure(ownerHierarchy.GetCanonicalName(this.filesId[0], out fileMoniker));
+                            }
                         }
-                    }
+                    });
                 }
                 string result = "";
                 if (fileMoniker != null)

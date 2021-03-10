@@ -10,22 +10,53 @@ using Microsoft.VisualStudio.Language.Intellisense;
 using System.Windows.Documents;
 using System.Windows.Media;
 using XSharpModel;
+using Microsoft.VisualStudio.Language.StandardClassification;
+using Microsoft.VisualStudio.Text.Adornments;
+using Microsoft.VisualStudio.Core.Imaging;
+using Microsoft.VisualStudio.Imaging;
+using Microsoft.VisualStudio.Imaging.Interop;
 
 namespace XSharp.LanguageService
 {
     internal class XTypeAnalysis
     {
         public string Name { get; private set; }
-        public bool IsStatic => this.Type.IsStatic;
+        public bool IsStatic => Type.IsStatic;
         public IXTypeSymbol Type { get; private set; }
 
-        void setType(IXTypeSymbol typeInfo)
+        internal ImageMoniker Image
+        {
+            get
+            {
+                switch (Type.Kind)
+                {
+                    case Kind.Class:
+                        return KnownMonikers.Class;
+                    case Kind.Structure:
+                        return KnownMonikers.Structure;
+                    case Kind.Interface:
+                        return KnownMonikers.Interface;
+                    case Kind.Delegate:
+                        return KnownMonikers.Delegate;
+                    case Kind.Enum:
+                        return KnownMonikers.Enumeration;
+                    case Kind.VOStruct:
+                        return KnownMonikers.Type;
+                    case Kind.Union:
+                        return KnownMonikers.Union;
+                    case Kind.Namespace:
+                        return KnownMonikers.Namespace;
+                }
+                return KnownMonikers.None;
+            }
+        }
+        internal XTypeAnalysis(IXTypeSymbol typeInfo)
         {
             //
             if (typeInfo == null)
                 return;
-            this.Type = typeInfo;
-            this.Name = typeInfo.FullName;
+            Type = typeInfo;
+            Name = typeInfo.FullName;
             //
             if (typeInfo.IsGeneric)
             {
@@ -51,56 +82,45 @@ namespace XSharp.LanguageService
                         genName += ", ";
                 }
                 genName += ">";
-                this.Name = genName;
+                Name = genName;
 
             }
-
         }
 
-        internal XTypeAnalysis(IXTypeSymbol type)
-        {
-            setType(type);
-        }
-
-        internal XTypeAnalysis(IXTypeSymbol type, Brush fg, Brush txt)
-        {
-            QuickInfoHelpers.kwBrush = fg;
-            QuickInfoHelpers.txtBrush = txt;
-            setType(type);
-        }
-        public List<Inline> WPFDescription
+   
+        public ClassifiedTextRun[] WPFDescription
         {
             get
             {
-                List<Inline> content = new List<Inline>();
+                var content = new List<ClassifiedTextRun>();
 
-                if (this.Type.Modifiers != XSharpModel.Modifiers.None)
+                if (Type.Modifiers != Modifiers.None)
                 {
-                    content.addKeyword(XSettings.FormatKeyword(this.Type.ModifiersKeyword) + " ");
+                    content.addKeyword(XSettings.FormatKeyword(Type.ModifiersKeyword) + " ");
                 }
-                content.addKeyword(XSettings.FormatKeyword(this.Type.VisibilityKeyword) + " ");
+                content.addKeyword(XSettings.FormatKeyword(Type.VisibilityKeyword) + " ");
                 //
-                if (this.IsStatic)
+                if (IsStatic)
                 {
                     content.addKeyword(XSettings.FormatKeyword("STATIC "));
                 }
                 //
-                if (this.Type.Kind != XSharpModel.Kind.Field)
+                if (Type.Kind != Kind.Field)
                 {
-                    content.addKeyword(XSettings.FormatKeyword(this.Type.KindKeyword) + " ");
+                    content.addKeyword(XSettings.FormatKeyword(Type.KindKeyword) + " ");
                 }
                 //
-                content.addText(this.Prototype);
+                content.addText(Prototype);
 
                 //
                 string returns;
                 string remarks;
-                var xmldesc = XSharpXMLDocMember.GetTypeSummary(this.Type, null, out returns, out remarks);
+                var xmldesc = XSharpXMLDocMember.GetTypeSummary(Type, null, out returns, out remarks);
                 content.addSummary(xmldesc);
                 content.addReturns(returns);
                 content.addRemarks(remarks);
                 content.addLocation(Type.Location);
-                return content;
+                return content.ToArray();
             }
 
         }
@@ -108,7 +128,7 @@ namespace XSharp.LanguageService
         {
             get
             {
-                return this.Name;
+                return Name;
                 //
             }
         }
@@ -119,7 +139,7 @@ namespace XSharp.LanguageService
             {
                 StandardGlyphGroup imgG;
                 //
-                switch (this.Type.Kind)
+                switch (Type.Kind)
                 {
                     case Kind.Class:
                     default:
@@ -151,7 +171,7 @@ namespace XSharp.LanguageService
             {
                 StandardGlyphItem imgI;
                 //
-                switch (this.Type.Visibility)
+                switch (Type.Visibility)
                 {
                     case Modifiers.Public:
                     default:
@@ -184,57 +204,62 @@ namespace XSharp.LanguageService
         public string Value { get; private set; }
         public IXMemberSymbol Member;
 
-        internal XMemberAnalysis(IXMemberSymbol member, Brush kw, Brush txt)
-        {
-            this.Member = member;
-            this.Name = member.Name;
-            this.TypeName = "";
-            this.Value = member.Value;
+     
 
-            QuickInfoHelpers.kwBrush = kw;
-            QuickInfoHelpers.txtBrush = txt;
+        internal XMemberAnalysis(IXMemberSymbol member)
+        {
+            TypeName = "";
+            if (member == null)
+                return;
+            Member = member;
+            Name = member.Name;
+            Value = member.Value;
+            if (member.Kind.HasReturnType())
+            {
+                TypeName = member.TypeName;
+            }
         }
 
-        public List<Inline> WPFDescription
+        public ClassifiedTextRun[] WPFDescription
         {
             get
             {
-                List<Inline> content = new List<Inline>();
+                var content = new List<ClassifiedTextRun>();
 
-                if (this.Member.Modifiers != XSharpModel.Modifiers.None)
+                if (Member.Modifiers != Modifiers.None)
                 {
-                    content.addKeyword(XSettings.FormatKeyword(this.Member.ModifiersKeyword) + " ");
+                    content.addKeyword(XSettings.FormatKeyword(Member.ModifiersKeyword) + " ");
                 }
-                content.addKeyword(XSettings.FormatKeyword(this.Member.VisibilityKeyword) + " ");
+                content.addKeyword(XSettings.FormatKeyword(Member.VisibilityKeyword) + " ");
                 //
-                if ((this.Member.IsStatic) && ((this.Member.Kind != Kind.Function) && (this.Member.Kind != Kind.Procedure)))
+                if ((Member.IsStatic) && ((Member.Kind != Kind.Function) && (Member.Kind != Kind.Procedure)))
                 {
                     content.addKeyword(XSettings.FormatKeyword("STATIC "));
                 }
                 //
-                if ((this.Member.Kind != XSharpModel.Kind.Field) && (this.Member.Kind != XSharpModel.Kind.Constructor))
+                if ((Member.Kind != Kind.Field) && (Member.Kind != Kind.Constructor))
                 {
-                    content.addKeyword(XSettings.FormatKeyword(this.Member.KindKeyword) + " ");
+                    content.addKeyword(XSettings.FormatKeyword(Member.KindKeyword) + " ");
                 }
                 //
-                content.AddRange(this.WPFPrototype);
+                content.AddRange(WPFPrototype);
                 //
-                return content;
+                return content.ToArray();
             }
 
         }
 
-        public List<Inline> WPFPrototype
+        public ClassifiedTextRun[] WPFPrototype
         {
             get
             {
-                List<Inline> content = new List<Inline>();
-                if (this.Member.Kind.HasParameters())
+                var content = new List<ClassifiedTextRun>();
+                if (Member.Kind.HasParameters())
                 {
-                    content.addText(this.Name);
-                    content.addKeyword(this.Member.Kind == XSharpModel.Kind.Constructor ? "{" : "(");
+                    content.addText(Name);
+                    content.addKeyword(Member.Kind == Kind.Constructor ? "{" : "(");
                     bool first = true;
-                    foreach (var var in this.Member.Parameters)
+                    foreach (var var in Member.Parameters)
                     {
                         if (!first)
                         {
@@ -245,18 +270,18 @@ namespace XSharp.LanguageService
                         content.addKeyword(var.ParamTypeDesc + " ");
                         content.addKeyword(var.TypeName);
                     }
-                    content.addKeyword(this.Member.Kind == XSharpModel.Kind.Constructor ? "}" : ")");
+                    content.addKeyword(Member.Kind == Kind.Constructor ? "}" : ")");
                 }
                 //
-                if (!String.IsNullOrEmpty(this.Value))
+                if (!string.IsNullOrEmpty(Value))
                 {
-                    content.addText(" := " + this.Value);
+                    content.addText(" := " + Value);
                 }
-                if (this.Member.Kind.HasReturnType())
+                if (Member.Kind.HasReturnType())
                 {
-                    content.addReturnType(this.TypeName);
+                    content.addReturnType(TypeName);
                 }
-                return content;
+                return content.ToArray();
             }
         }
     }

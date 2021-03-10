@@ -283,7 +283,8 @@ namespace XSharp.LanguageService
                 if (element == null)
                 {
                     // then Locals
-                    var locals = currentMember.GetLocals(TextView.TextSnapshot, lineNumber, _file.Project.Dialect);
+                    var location = new XSharpSearchLocation(currentMember, null) { LineNumber = lineNumber};
+                    var locals = currentMember.GetLocals(location);
                     if (locals != null)
                     {
                         element = locals.Where(x => XSharpTokenTools.StringEquals(x.Name, identifier)).FirstOrDefault();
@@ -297,7 +298,7 @@ namespace XSharp.LanguageService
                             // We can have a Property/Field of the current CompletionType
                             if (!cType.IsEmpty())
                             {
-                                cType = XSharpLookup.SearchPropertyOrFieldIn(cType, identifier, Modifiers.Private, out foundElement);
+                                cType = XSharpLookup.SearchPropertyOrFieldIn(location, cType, identifier, Modifiers.Private, out foundElement);
                             }
                             // Not found ? It might be a Global !?
                             if (foundElement == null)
@@ -534,10 +535,21 @@ namespace XSharp.LanguageService
 
         public int Exec(ref Guid pguidCmdGroup, uint nCmdID, uint nCmdexecopt, IntPtr pvaIn, IntPtr pvaOut)
         {
-            if (Microsoft.VisualStudio.Shell.VsShellUtilities.IsInAutomationFunction(m_provider.ServiceProvider))
+            var cmdGrp = pguidCmdGroup;
+            bool done = false;
+            int result = 0;
+            ThreadHelper.JoinableTaskFactory.Run(async delegate
             {
-                return Next.Exec(ref pguidCmdGroup, nCmdID, nCmdexecopt, pvaIn, pvaOut);
-            }
+                await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+
+                if (Microsoft.VisualStudio.Shell.VsShellUtilities.IsInAutomationFunction(m_provider.ServiceProvider))
+                {
+                    done = true;
+                    result = Next.Exec(ref cmdGrp, nCmdID, nCmdexecopt, pvaIn, pvaOut);
+                }
+            });
+            if (done)
+                return result;
             //
             bool handled = false;
             if (_classifier == null)
@@ -623,7 +635,12 @@ namespace XSharp.LanguageService
                             completionWas = null;
                     }
                 }
-                hresult = Next.Exec(pguidCmdGroup, nCmdID, nCmdexecopt, pvaIn, pvaOut);
+                ThreadHelper.JoinableTaskFactory.Run(async delegate
+                {
+                    await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+
+                    hresult = Next.Exec(ref cmdGrp, nCmdID, nCmdexecopt, pvaIn, pvaOut);
+                });
             }
 
             if (ErrorHandler.Succeeded(hresult))
@@ -749,8 +766,7 @@ namespace XSharp.LanguageService
                 // find next delimiter, so we will include the '{' or '(' in the search
                 
                 var snapshot = this.TextView.TextBuffer.CurrentSnapshot;
-                ssp = XSharpTokenTools.FindEndOfCurrentToken(ssp, snapshot);
-                int caretPos = ssp.Position+1;
+                int caretPos = ssp.Position;
                 int lineNumber = ssp.GetContainingLine().LineNumber;
                 XSharpModel.XFile file = this.TextView.TextBuffer.GetFile();
                 if (file == null)
@@ -769,18 +785,20 @@ namespace XSharp.LanguageService
                     if (tokens.SnapShot.Version != snapshot.Version)
                         return;
                 }
-
-                var tokenList = XSharpTokenTools.GetTokenList(caretPos, lineNumber, tokens.TokenStream, out var state);
-
-                // LookUp for the BaseType, reading the TokenList (From left to right)
-                CompletionElement gotoElement;
                 String currentNS = "";
                 if (currentNamespace != null)
                 {
                     currentNS = currentNamespace.Name;
                 }
+                var location = new XSharpSearchLocation(member, snapshot) { Position = caretPos, LineNumber = lineNumber, CurrentNamespace = currentNS};
+                var tokenList = XSharpTokenTools.GetTokensUnderCursor(location, tokens.TokenStream);
+
+                // LookUp for the BaseType, reading the TokenList (From left to right)
+                CompletionElement gotoElement;
+
                 //
-                CompletionType cType = XSharpLookup.RetrieveType(file, tokenList, member, currentNS, state, out gotoElement, snapshot, lineNumber, file.Project.Dialect);
+                var state = CompletionState.General;
+                CompletionType cType = XSharpLookup.RetrieveType(location, tokenList,  state, out gotoElement);
                 //
                 if (gotoElement != null)
                 {
@@ -790,7 +808,11 @@ namespace XSharp.LanguageService
                         {
                             if (result.GetOverloads().Length > 1)
                             {
-                                ObjectBrowserHelper.FindSymbols(gotoElement.Result.Name);
+                                ThreadHelper.JoinableTaskFactory.Run(async delegate
+                                {
+                                    await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+                                    ObjectBrowserHelper.FindSymbols(gotoElement.Result.Name);
+                                });
                                 return;
                             }
                         }
@@ -806,8 +828,11 @@ namespace XSharp.LanguageService
                 if (tokenList.Count > 1)
                 {
                     // try again with just the last element in the list
-                    tokenList.RemoveRange(0, tokenList.Count - 1);
-                    cType = XSharpLookup.RetrieveType(file, tokenList, member, currentNS, state, out gotoElement, snapshot, lineNumber, file.Project.Dialect);
+                    var token = tokenList[tokenList.Count - 1];
+                    tokenList.Clear();
+                    tokenList.Add(token);
+                    location.CurrentNamespace = currentNS;
+                    cType = XSharpLookup.RetrieveType(location, tokenList, state, out gotoElement);
                 }
                 if ((gotoElement != null) && (gotoElement.Result != null))
                 {
@@ -1197,10 +1222,18 @@ namespace XSharp.LanguageService
             var file = this.TextView.TextBuffer.GetFile();
             if (file == null)
                 return false;
-            //
+            var member = XSharpLookup.FindMember(lineNumber, file);
+            var currentNamespace = XSharpTokenTools.FindNamespace(caretPos, file);
+            string currentNS = "";
+            if (currentNamespace != null)
+            {
+                currentNS = currentNamespace.Name;
+            }
+            XSharpSearchLocation location = new XSharpSearchLocation(member, snapshot) { Position = caretPos, LineNumber = lineNumber, CurrentNamespace = currentNS };
+
             if (cType != null && methodName != null)
             {
-                XSharpLookup.SearchMethodTypeIn(cType, methodName, XSharpModel.Modifiers.Private, false, out currentElement, file.Project.Dialect);
+                XSharpLookup.SearchMethodTypeIn(location, cType, methodName, XSharpModel.Modifiers.Private, false, out currentElement);
             }
             else
             {
@@ -1208,16 +1241,9 @@ namespace XSharp.LanguageService
                 // Then, the corresponding Type/Element if possible
                 // Check if we can get the member where we are
 
-                var member = XSharpLookup.FindMember(lineNumber, file);
-                var currentNamespace = XSharpTokenTools.FindNamespace(caretPos, file);
-                var tokenList = XSharpTokenTools.GetTokenList(caretPos, lineNumber, snapshot, out var state, file,  member);
-                string currentNS = "";
-                if (currentNamespace != null)
-                {
-                    currentNS = currentNamespace.Name;
-                }
+                var tokenList = XSharpTokenTools.GetTokenList(location, out var state);
                 // We don't care of the corresponding Type, we are looking for the currentElement
-                XSharpLookup.RetrieveType(file, tokenList, member, currentNS, state, out currentElement, snapshot, startLineNumber, file.Project.Dialect,true);
+                XSharpLookup.RetrieveType(location, tokenList, state, out currentElement, true);
             }
             //
             if ((currentElement != null) && (currentElement.IsInitialized))
@@ -1314,7 +1340,14 @@ namespace XSharp.LanguageService
                         return VSConstants.S_OK;
                 }
             }
-            return Next.QueryStatus(pguidCmdGroup, cCmds, prgCmds, pCmdText);
+            int result = 0;
+            var cmdGroup = pguidCmdGroup;
+            ThreadHelper.JoinableTaskFactory.Run(async delegate
+            {
+                await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+                result = Next.QueryStatus(cmdGroup, cCmds, prgCmds, pCmdText);
+            });
+            return result;
         }
 
     }

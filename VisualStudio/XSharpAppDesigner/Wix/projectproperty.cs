@@ -353,9 +353,8 @@ namespace Microsoft.VisualStudio.Project
                 }
             }
 
-            this.project.InvalidatePropertyCache();
             this.project.SetProjectFileDirty(true);
-             this.project.RaiseProjectPropertyChanged(this.propertyName, oldvalue, value);
+            this.project.RaiseProjectPropertyChanged(this.propertyName, oldvalue, value);
         }
 
         private string GetValue(bool finalValue, IList<ProjectConfig> configs, bool booleanValue)

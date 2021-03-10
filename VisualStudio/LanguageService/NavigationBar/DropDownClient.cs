@@ -68,13 +68,19 @@ namespace XSharp.LanguageService
             _lastLine = 0;
             _relatedFiles = new List<string>();
             _lastFileChanged = DateTime.MinValue;
-            RefreshDropDownAsync(false);
+            ThreadHelper.JoinableTaskFactory.Run(async delegate
+            {
+                await RefreshDropDownAsync(needsUI: false);
+            });
         }
 
 
         private void _file_ContentsChanged()
         {
-            RefreshDropDownAsync(needsUI: true);
+            ThreadHelper.JoinableTaskFactory.Run(async delegate
+            {
+                await RefreshDropDownAsync(needsUI: true);
+            });
         }
 
         private void _textView_Closed(object sender, EventArgs e)
@@ -627,7 +633,10 @@ namespace XSharp.LanguageService
         public int SetDropdownBar(IVsDropdownBar dropdownBar)
         {
             _dropDownBar = dropdownBar;
-            RefreshDropDownAsync(needsUI: false);
+            ThreadHelper.JoinableTaskFactory.Run(async delegate
+            {
+                await RefreshDropDownAsync(needsUI: false);
+            });
             if (_dropDownBar != null)
             {
                 _dropDownBar.RefreshCombo(0, 1);

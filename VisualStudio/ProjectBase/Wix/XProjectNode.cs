@@ -589,7 +589,7 @@ namespace Microsoft.VisualStudio.Project
         /// <param name="propertyName">The name of the property to change.</param>
         /// <param name="propertyValue">The value to assign the property.</param>
         /// <param name="condition">The condition to use on the property. Corresponds to the Condition attribute of the Property element.</param>
-        public void SetProjectProperty(string propertyName, string propertyValue, string condition)
+        public virtual void SetProjectProperty(string propertyName, string propertyValue, string condition)
         {
             XHelperMethods.VerifyStringArgument(propertyName, "propertyName");
 
@@ -602,7 +602,7 @@ namespace Microsoft.VisualStudio.Project
             // know whether to actually mark the project file dirty or not
             string oldValue = this.GetProjectProperty(propertyName, true);
 
-            if (!String.Equals(oldValue, propertyValue, StringComparison.Ordinal))
+            if (!string.Equals(oldValue, propertyValue, StringComparison.Ordinal))
             {
                 // check out the project file
                 if (this.ProjectMgr != null && !this.ProjectMgr.QueryEditProjectFile(false))

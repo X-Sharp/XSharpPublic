@@ -187,7 +187,10 @@ namespace XSharp.LanguageService
                 bool includeKeywords;
                 session.Properties.TryGetProperty(XsCompletionProperties.IncludeKeywords, out includeKeywords);
                 CompletionState state;
-                var tokenList = XSharpTokenTools.GetTokenList(caretPos, currentLine, _buffer.CurrentSnapshot, out state, _file, member, includeKeywords);
+
+                var location = new XSharpSearchLocation(member, snapshot) { LineNumber = currentLine, Position = caretPos };
+
+                var tokenList = XSharpTokenTools.GetTokenList(location, out state, includeKeywords);
 
 
                 // We might be here due to a COMPLETEWORD command, so we have no typedChar
@@ -244,7 +247,7 @@ namespace XSharp.LanguageService
                 // Alternative Token list (dot is a selector)
                 List<XSharpToken> altTokenList;
                 if (dotSelector && _dotUniversal)
-                    altTokenList = XSharpTokenTools.GetTokenList(caretPos, currentLine, _buffer.CurrentSnapshot, out state, _file,  member);
+                    altTokenList = XSharpTokenTools.GetTokenList(location, out state);
                 else
                     altTokenList = tokenList;
 
@@ -285,8 +288,8 @@ namespace XSharp.LanguageService
                 {
                     currentNS = currentNamespace.Name;
                 }
-                //
-                cType = XSharpLookup.RetrieveType(_file, tokenList, member, currentNS, CompletionState.General, out foundElement, snapshot, currentLine, _dialect);
+                location.CurrentNamespace = currentNS;
+                cType = XSharpLookup.RetrieveType(location, tokenList, CompletionState.General, out foundElement);
                 if (!cType.IsEmpty())
                 {
                     session.Properties[XsCompletionProperties.Type] = cType;
@@ -295,7 +298,7 @@ namespace XSharp.LanguageService
                 {
                     if (dotSelector && _dotUniversal)
                     {
-                        cType = XSharpLookup.RetrieveType(_file, altTokenList, member, currentNS, CompletionState.General, out foundElement, snapshot, currentLine, _dialect);
+                        cType = XSharpLookup.RetrieveType(location, altTokenList, CompletionState.General, out foundElement);
                         if (!cType.IsEmpty())
                         {
                             session.Properties[XsCompletionProperties.Type] = cType;
@@ -434,7 +437,7 @@ namespace XSharp.LanguageService
                                 if (member != null)
                                 {
                                     // Fill with the context ( Parameters and Locals )
-                                    BuildCompletionList(compList, member, filterText, currentLine);
+                                    BuildCompletionList(compList, member, filterText, location);
                                     AddXSharpKeywords(compList, filterText);
                                     // Context Type....
                                     cType = new CompletionType(((XSourceTypeSymbol) (member.Parent)).Clone);
@@ -771,7 +774,7 @@ namespace XSharp.LanguageService
             }
         }
 
-        private void BuildCompletionList(XCompletionList compList, XSourceMemberSymbol currentMember, string startWith, int currentLine)
+        private void BuildCompletionList(XCompletionList compList, XSourceMemberSymbol currentMember, string startWith, XSharpSearchLocation location)
         {
             if (currentMember == null)
             {
@@ -787,7 +790,7 @@ namespace XSharp.LanguageService
             }
             // Then, look for Locals
             // line numbers in the range are 1 based. currentLine = 0 based !
-            foreach (var localVar in currentMember.GetLocals(_buffer.CurrentSnapshot, currentLine, _dialect).Where(l => nameStartsWith(l.Name, startWith) && l.Range.StartLine-1 <= currentLine))
+            foreach (var localVar in currentMember.GetLocals(location).Where(l => nameStartsWith(l.Name, startWith) && l.Range.StartLine-1 <= location.LineNumber))
             {
                 //
                 ImageSource icon = _provider.GlyphService.GetGlyph(localVar.getGlyphGroup(), localVar.getGlyphItem());
@@ -1063,17 +1066,17 @@ namespace XSharp.LanguageService
         /// <param name="snapshot"></param>
         /// <param name="iCurrentLine"></param>
         /// <returns></returns>
-        internal static IList<XSourceVariableSymbol> GetLocals(this XSourceMemberSymbol member, ITextSnapshot snapshot, int iCurrentLine, XSharpDialect dialect)
+        internal static IList<XSourceVariableSymbol> GetLocals(this XSourceMemberSymbol member, XSharpSearchLocation location)
         {
-            iCurrentLine = Math.Min(snapshot.LineCount - 1, iCurrentLine);
+            var iCurrentLine = Math.Min(location.Snapshot.LineCount - 1, location.LineNumber);
             // create a walker with just the contents of the current member
             // use a new file object so we will not destroy the types in the existing object
             var walker = new SourceWalker( new XFile ( member.File.FullPath, member.File.Project));
             var start = member.Interval.Start;
             var end = member.Interval.Width;
-            if (start + end > snapshot.Length)
-                end = snapshot.Length - start;
-            var memberSource = snapshot.GetText(start, end);
+            if (start + end > location.Snapshot.Length)
+                end = location.Snapshot.Length - start;
+            var memberSource = location.Snapshot.GetText(start, end);
             
             var locals = walker.ParseLocals(memberSource, member);
             // Add the normal locals for class members
@@ -1081,12 +1084,9 @@ namespace XSharp.LanguageService
             {
                 // assign the current member so we will have the proper Parent as well
                 local.Parent = member;
-                if (local is XSourceSymbol )
-                {
-                    ((XSourceSymbol)local).File = member.File;
-                }
+                local.File = member.File;
             }
-            if (member.Kind.IsClassMember(dialect) && !member.Modifiers.HasFlag(Modifiers.Static))
+            if (member.Kind.IsClassMember(location.Dialect) && !member.Modifiers.HasFlag(Modifiers.Static))
             {
                 var XVar = new XSourceVariableSymbol(member, "SELF", member.Range, member.Interval, member.ParentName);
                 XVar.File = walker.File;

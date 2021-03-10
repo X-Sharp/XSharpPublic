@@ -85,7 +85,7 @@ BEGIN NAMESPACE XSharpModel
                 current := (bottom + top) / 2
                 VAR oElement := _entityList[current]
                 VAR result := oDel(oElement, nValue)
-                IF result == 0
+                IF result == 0 .and. oElement:Kind != Kind.Namespace
                     // found
                     RETURN oElement
                 ELSEIF result = 1 // element is after the search point

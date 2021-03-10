@@ -99,6 +99,8 @@ namespace XSharp.Project
         public XSharpProjectNode(XSharpProjectPackage package)
         {
             this.package = package;
+            _hasDialect = false;
+            this.OnProjectPropertyChanged += XSharpProjectNode_OnProjectPropertyChanged;
             InitializeImageList();
 
             InitializeCATIDs();
@@ -114,6 +116,13 @@ namespace XSharp.Project
             this.SupportsProjectDesigner = true;
 
         }
+
+        private void XSharpProjectNode_OnProjectPropertyChanged(object sender, ProjectPropertyChangedArgs e)
+        {
+            if (string.Compare(e.PropertyName, "dialect", true) == 0)
+                _hasDialect = false;
+        }
+
 
         protected override void OnFileChanged(string url)
         {
@@ -295,22 +304,26 @@ namespace XSharp.Project
 
         public override ProjectOptions GetProjectOptions(ConfigCanonicalName configCanonicalName)
         {
-            if (this.options != null)
+            return ThreadHelper.JoinableTaskFactory.Run(async delegate
             {
-                var xoptions = this.options as XSharpProjectOptions;
-                if (xoptions.ConfigCanonicalName != configCanonicalName)
+                await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+                if (this.options != null)
                 {
-                    invalidateOptions();
+                    var xoptions = this.options as XSharpProjectOptions;
+                    if (xoptions.ConfigCanonicalName != configCanonicalName)
+                    {
+                        invalidateOptions();
+                    }
                 }
-            }
-            if (this.options == null)
-            {
-                this.options = base.GetProjectOptions(configCanonicalName);
-                var xoptions = this.options as XSharpProjectOptions;
-                xoptions.ConfigCanonicalName = configCanonicalName;
-                xoptions.BuildCommandLine();
-            }
-            return this.options;
+                if (this.options == null)
+                {
+                    this.options = base.GetProjectOptions(configCanonicalName);
+                    var xoptions = this.options as XSharpProjectOptions;
+                    xoptions.ConfigCanonicalName = configCanonicalName;
+                    xoptions.BuildCommandLine();
+                }
+                return this.options;
+            });
         }
 
 
@@ -323,6 +336,7 @@ namespace XSharp.Project
             }
         }
 
+
         public override string GetProjectProperty(string propertyName, bool resetCache, bool unevaluated = false)
         {
             if (BuildProject != null)
@@ -331,6 +345,7 @@ namespace XSharp.Project
             }
             return null;
         }
+       
         public __VSPROJOUTPUTTYPE GetOutPutType()
         {
             string outputTypeAsString = this.ProjectMgr.GetProjectProperty("OutputType", false);
@@ -1864,11 +1879,14 @@ namespace XSharp.Project
         #endregion
         public bool IsDocumentOpen(string documentName)
         {
-            IVsUIHierarchy hier;
-            uint itemid;
-            IVsWindowFrame windowFrame;
-            bool open = VsShellUtilities.IsDocumentOpen(this.Site, documentName, Guid.Empty, out hier, out itemid, out windowFrame);
-            return open;
+            return ThreadHelper.JoinableTaskFactory.Run(async delegate
+            {
+                await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync(); IVsUIHierarchy hier;
+                uint itemid;
+                IVsWindowFrame windowFrame;
+                bool open = VsShellUtilities.IsDocumentOpen(this.Site, documentName, Guid.Empty, out hier, out itemid, out windowFrame);
+                return open;
+            });
         }
 
 
@@ -1908,36 +1926,48 @@ namespace XSharp.Project
             projectModel = null;
             base.Dispose(disposing);
         }
-
+        private bool _hasDialect = false;
+        private XSharpDialect _dialect;
         public XSharpDialect Dialect
         {
             get
             {
-                var prop = GetProjectProperty("Dialect");
-                XSharpDialect dialect = XSharpDialect.Core;
-                if (! Enum.TryParse(prop, true, out dialect))
-                { 
-                    dialect = XSharpDialect.Core;
-                }
-                return dialect;
+                if (_hasDialect)
+                    return _dialect;
+                return ThreadHelper.JoinableTaskFactory.Run(async delegate
+                {
+                    await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+                    var prop = GetProjectProperty("Dialect");
+                    if (!Enum.TryParse(prop, true, out _dialect))
+                    {
+                        _dialect = XSharpDialect.Core;
+                    }
+                    _hasDialect = true;
+                    return _dialect;
+                });
             }
 
         }
+
         public XSharpParseOptions ParseOptions
         {
             get
             {
-                if (this.CurrentConfig != null)
+                return ThreadHelper.JoinableTaskFactory.Run(async delegate
                 {
-                    var xoptions = GetProjectOptions(this.CurrentConfig.ConfigCanonicalName) as XSharpProjectOptions;
-                    if (xoptions != null)
+                    await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+                    if (this.CurrentConfig != null)
                     {
-                        if (xoptions.ParseOptions == null)
-                            xoptions.BuildCommandLine();
-                        return xoptions.ParseOptions;
+                        var xoptions = GetProjectOptions(this.CurrentConfig.ConfigCanonicalName) as XSharpProjectOptions;
+                        if (xoptions != null)
+                        {
+                            if (xoptions.ParseOptions == null)
+                                xoptions.BuildCommandLine();
+                            return xoptions.ParseOptions;
+                        }
                     }
-                }
-                return XSharpParseOptions.Default;
+                    return XSharpParseOptions.Default;
+                });
             }
         }
         bool _closing = false;

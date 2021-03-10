@@ -2606,12 +2606,16 @@ namespace Microsoft.VisualStudio.Project
         /// <returns>null if property does not exist, otherwise value of the property</returns>
         public virtual string GetProjectProperty(string propertyName, bool resetCache, bool unevaluated = false)
         {
-            Microsoft.Build.Evaluation.ProjectProperty property = GetMsBuildProperty(propertyName, resetCache);
-            if (property == null)
-                return null;
-            if (unevaluated)
-                return property.UnevaluatedValue;
-            return property.EvaluatedValue;
+            return ThreadHelper.JoinableTaskFactory.Run(async delegate
+            {
+                await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+                Microsoft.Build.Evaluation.ProjectProperty property = GetMsBuildProperty(propertyName, resetCache);
+                if (property == null)
+                    return null;
+                if (unevaluated)
+                    return property.UnevaluatedValue;
+                return property.EvaluatedValue;
+            });
         }
 
         /// <summary>
@@ -2621,49 +2625,46 @@ namespace Microsoft.VisualStudio.Project
         /// <param name="propertyValue">Value of property</param>
         public virtual void SetProjectProperty(string propertyName, string propertyValue)
         {
-            if (propertyName == null)
-                throw new ArgumentNullException("propertyName", "Cannot set a null project property");
-
-            string oldValue = null;
-            var oldProp = GetMsBuildProperty(propertyName, true);
-            if (oldProp != null)
-                oldValue = oldProp.EvaluatedValue;
-            if (propertyValue == null)
+            ThreadHelper.JoinableTaskFactory.Run(async delegate
             {
-                // if property already null, do nothing
-                if (oldValue == null)
-                    return;
-                // otherwise, set it to empty
-                propertyValue = String.Empty;
-            }
+                await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+                if (propertyName == null)
+                    throw new ArgumentNullException("propertyName", "Cannot set a null project property");
 
-            // Only do the work if this is different to what we had before
-            if (String.Compare(oldValue, propertyValue, StringComparison.Ordinal) != 0)
-            {
-                // Check out the project file.
-                if (!this.ProjectMgr.QueryEditProjectFile(false))
+                string oldValue = null;
+                var oldProp = GetMsBuildProperty(propertyName, true);
+                if (oldProp != null)
+                    oldValue = oldProp.EvaluatedValue;
+                if (propertyValue == null)
                 {
-                    throw Marshal.GetExceptionForHR(VSConstants.OLE_E_PROMPTSAVECANCELLED);
+                    // if property already null, do nothing
+                    if (oldValue == null)
+                        return;
+                    // otherwise, set it to empty
+                    propertyValue = String.Empty;
                 }
 
-                this.buildProject.SetProperty(propertyName, propertyValue);
-                RaiseProjectPropertyChanged(propertyName, oldValue, propertyValue);
+                // Only do the work if this is different to what we had before
+                if (String.Compare(oldValue, propertyValue, StringComparison.Ordinal) != 0)
+                {
+                    // Check out the project file.
+                    if (!this.ProjectMgr.QueryEditProjectFile(false))
+                    {
+                        throw Marshal.GetExceptionForHR(VSConstants.OLE_E_PROMPTSAVECANCELLED);
+                    }
 
-                // property cache will need to be updated
-                //this.projectInstance = null;
-                this.SetProjectFileDirty(true);
-            }
-            return;
+                    this.buildProject.SetProperty(propertyName, propertyValue);
+                    RaiseProjectPropertyChanged(propertyName, oldValue, propertyValue);
+
+                    // property cache will need to be updated
+                    //this.projectInstance = null;
+                    this.SetProjectFileDirty(true);
+                }
+                return;
+            });
         }
 
-        /// <summary>
-        /// Invalidates any cache of properties after some property value has changed.
-        /// </summary>
-        public virtual void InvalidatePropertyCache()
-        {
-            // TODO: Remove/reevaluate calls to this function
-        }
-
+ 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Globalization", "CA1308:NormalizeStringsToUppercase")]
         public virtual ProjectOptions GetProjectOptions(ConfigCanonicalName configCanonicalName)
         {

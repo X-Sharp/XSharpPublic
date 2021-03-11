@@ -23,6 +23,7 @@ namespace Microsoft.VisualStudio.Project
     using Microsoft.VisualStudio.Package;
     using Microsoft.VisualStudio.Shell.Interop;
     using Microsoft.VisualStudio.Project;
+    using Microsoft.VisualStudio.Shell;
 
     /// <summary>
     /// Abstract base class for a project property page.
@@ -78,6 +79,7 @@ namespace Microsoft.VisualStudio.Project
 
             set
             {
+                ThreadHelper.ThrowIfNotOnUIThread();
                 if (this.isDirty != value)
                 {
                     this.isDirty = value;
@@ -170,6 +172,7 @@ namespace Microsoft.VisualStudio.Project
 
             // set our initial size
             this.ResizeContents(rects[0]);
+            ThreadHelper.ThrowIfNotOnUIThread();
 
             this.PropertyPagePanel.BindProperties();
             this.active = true;
@@ -184,6 +187,7 @@ namespace Microsoft.VisualStudio.Project
         /// <param name="modal">Indicates whether the dialog box is shown modally or not.</param>
         void IPropertyPage2.Activate(IntPtr hwndParent, RECT[] rects, int modal)
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
             ((IPropertyPage)this).Activate(hwndParent, rects, modal);
         }
 
@@ -196,6 +200,8 @@ namespace Microsoft.VisualStudio.Project
         /// </returns>
         int IPropertyPage.Apply()
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
+
             if (this.PropertyPagePanel != null)
             {
                 this.PropertyPagePanel.Apply();
@@ -211,6 +217,7 @@ namespace Microsoft.VisualStudio.Project
         /// </summary>
         void IPropertyPage2.Apply()
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
             ErrorHandler.ThrowOnFailure(((IPropertyPage)this).Apply());
         }
 
@@ -233,6 +240,7 @@ namespace Microsoft.VisualStudio.Project
         /// </summary>
         void IPropertyPage2.Deactivate()
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
             ((IPropertyPage)this).Deactivate();
         }
 
@@ -276,6 +284,7 @@ namespace Microsoft.VisualStudio.Project
         /// <param name="pageInfos">The parameters are returned in this one-sized array.</param>
         void IPropertyPage2.GetPageInfo(PROPPAGEINFO[] pageInfos)
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
             ((IPropertyPage)this).GetPageInfo(pageInfos);
         }
 
@@ -303,6 +312,7 @@ namespace Microsoft.VisualStudio.Project
         /// </param>
         void IPropertyPage2.Help(string pszHelpDir)
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
             ((IPropertyPage)this).Help(pszHelpDir);
         }
 
@@ -335,6 +345,7 @@ namespace Microsoft.VisualStudio.Project
         /// </returns>
         int IPropertyPage2.IsPageDirty()
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
             return ((IPropertyPage)this).IsPageDirty();
         }
 
@@ -360,6 +371,7 @@ namespace Microsoft.VisualStudio.Project
         /// <param name="rects">The bounds of the area that we should fill.</param>
         void IPropertyPage2.Move(RECT[] rects)
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
             ((IPropertyPage)this).Move(rects);
         }
 
@@ -375,6 +387,7 @@ namespace Microsoft.VisualStudio.Project
         /// </remarks>
         void IPropertyPage.SetObjects(uint count, object[] punk)
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
             if (count == 0)
             {
                 if (this.project != null)
@@ -481,6 +494,7 @@ namespace Microsoft.VisualStudio.Project
         /// </remarks>
         void IPropertyPage2.SetObjects(uint count, object[] punk)
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
             ((IPropertyPage)this).SetObjects(count, punk);
         }
 
@@ -510,6 +524,7 @@ namespace Microsoft.VisualStudio.Project
         /// </param>
         void IPropertyPage2.SetPageSite(IPropertyPageSite site)
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
             ((IPropertyPage)this).SetPageSite(site);
         }
 
@@ -547,6 +562,7 @@ namespace Microsoft.VisualStudio.Project
         /// </param>
         void IPropertyPage2.Show(uint cmdShow)
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
             ((IPropertyPage)this).Show(cmdShow);
         }
 
@@ -582,6 +598,7 @@ namespace Microsoft.VisualStudio.Project
         /// </returns>
         int IPropertyPage2.TranslateAccelerator(MSG[] msg)
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
             return ((IPropertyPage)this).TranslateAccelerator(msg);
         }
 
@@ -631,6 +648,7 @@ namespace Microsoft.VisualStudio.Project
         public virtual void SetProperty(string propertyName, string value)
         {
             ProjectProperty property = new ProjectProperty(this.ProjectMgr, propertyName, PerConfig);
+            ThreadHelper.ThrowIfNotOnUIThread();
 
             string oldValue = this.GetProperty(propertyName);
             if (!String.Equals(value, oldValue, StringComparison.Ordinal))

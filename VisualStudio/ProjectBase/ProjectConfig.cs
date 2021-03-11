@@ -243,11 +243,13 @@ namespace Microsoft.VisualStudio.Project
 		{
 			get
 			{
-				return GetConfigurationProperty(ProjectFileConstants.StartURL, false);
+                ThreadHelper.ThrowIfNotOnUIThread();
+                return GetConfigurationProperty(ProjectFileConstants.StartURL, false);
 			}
 			set
 			{
-				SetConfigurationProperty(ProjectFileConstants.StartURL, value);
+                ThreadHelper.ThrowIfNotOnUIThread();
+                SetConfigurationProperty(ProjectFileConstants.StartURL, value);
 			}
 		}
 
@@ -255,11 +257,13 @@ namespace Microsoft.VisualStudio.Project
 		{
 			get
 			{
-				return GetConfigurationProperty(ProjectFileConstants.StartArguments, false);
+                ThreadHelper.ThrowIfNotOnUIThread();
+                return GetConfigurationProperty(ProjectFileConstants.StartArguments, false);
 			}
 			set
 			{
-				SetConfigurationProperty(ProjectFileConstants.StartArguments, value);
+                ThreadHelper.ThrowIfNotOnUIThread();
+                SetConfigurationProperty(ProjectFileConstants.StartArguments, value);
 			}
 		}
 
@@ -267,11 +271,13 @@ namespace Microsoft.VisualStudio.Project
 		{
 			get
 			{
-				return GetConfigurationProperty(ProjectFileConstants.StartWorkingDirectory, false);
+                ThreadHelper.ThrowIfNotOnUIThread();
+                return GetConfigurationProperty(ProjectFileConstants.StartWorkingDirectory, false);
 			}
 			set
 			{
-				SetConfigurationProperty(ProjectFileConstants.StartWorkingDirectory, value);
+                ThreadHelper.ThrowIfNotOnUIThread();
+                SetConfigurationProperty(ProjectFileConstants.StartWorkingDirectory, value);
 			}
 		}
 
@@ -279,11 +285,13 @@ namespace Microsoft.VisualStudio.Project
 		{
 			get
 			{
-				return GetConfigurationProperty(ProjectFileConstants.StartProgram, false);
+                ThreadHelper.ThrowIfNotOnUIThread();
+                return GetConfigurationProperty(ProjectFileConstants.StartProgram, false);
 			}
 			set
 			{
-				SetConfigurationProperty(ProjectFileConstants.StartProgram, value);
+                ThreadHelper.ThrowIfNotOnUIThread();
+                SetConfigurationProperty(ProjectFileConstants.StartProgram, value);
 			}
 		}
 
@@ -291,7 +299,9 @@ namespace Microsoft.VisualStudio.Project
 		{
 			get
 			{
-				string startAction = GetConfigurationProperty(ProjectFileConstants.StartAction, false);
+                ThreadHelper.ThrowIfNotOnUIThread();
+
+                string startAction = GetConfigurationProperty(ProjectFileConstants.StartAction, false);
 
 				if ("Program" == startAction)
 					return 1;
@@ -318,7 +328,8 @@ namespace Microsoft.VisualStudio.Project
 					default:
 						throw new ArgumentException("Invalid StartAction value");
 				}
-				SetConfigurationProperty(ProjectFileConstants.StartAction, startAction);
+                ThreadHelper.ThrowIfNotOnUIThread();
+                SetConfigurationProperty(ProjectFileConstants.StartAction, startAction);
 			}
 		}
 
@@ -378,6 +389,7 @@ namespace Microsoft.VisualStudio.Project
 			this.project = project;
 			this.configCanonicalName = configName;
 			this.lastCache = DateTime.MinValue;
+            ThreadHelper.ThrowIfNotOnUIThread();
 
             // Because the project can be aggregated by a flavor, we need to make sure
             // we get the outer most implementation of that interface (hence: project --> IUnknown --> Interface)
@@ -405,8 +417,9 @@ namespace Microsoft.VisualStudio.Project
 		internal ProjectConfig(ProjectNode project, string configName, string platformName)
 			: this(project, new ConfigCanonicalName(configName, platformName))
 		{
+            ThreadHelper.ThrowIfNotOnUIThread();
 
-		}
+        }
         #endregion
 
         #region methods
@@ -418,12 +431,14 @@ namespace Microsoft.VisualStudio.Project
 
         public void PrepareBuild(bool clean)
         {
-			project.PrepareBuild(this.configCanonicalName, clean);
+            ThreadHelper.ThrowIfNotOnUIThread();
+            project.PrepareBuild(this.configCanonicalName, clean);
         }
 
 		public virtual string GetConfigurationProperty(string propertyName, bool resetCache)
 		{
-			MSBuild.ProjectProperty property = GetMsBuildProperty(propertyName, resetCache);
+            ThreadHelper.ThrowIfNotOnUIThread();
+            MSBuild.ProjectProperty property = GetMsBuildProperty(propertyName, resetCache);
 
 			if (property == null)
 				return null;
@@ -432,7 +447,8 @@ namespace Microsoft.VisualStudio.Project
 		}
 		protected string GetProjectAssemblyName()
 		{
-			if (this.lastCache < this.project.LastModifiedTime || this.projectAssemblyNameCache == null)
+            ThreadHelper.ThrowIfNotOnUIThread();
+            if (this.lastCache < this.project.LastModifiedTime || this.projectAssemblyNameCache == null)
 			{
 				this.lastCache = this.project.LastModifiedTime;
 				this.projectAssemblyNameCache = this.project.GetAssemblyName(this.configCanonicalName);
@@ -442,6 +458,7 @@ namespace Microsoft.VisualStudio.Project
 
         public virtual string GetUnevaluatedConfigurationProperty(string propertyName)
 		{
+            ThreadHelper.ThrowIfNotOnUIThread();
             String result;
             // Get properties for current configuration from project file and cache it
             this.project.SetConfiguration(this.configCanonicalName);
@@ -461,6 +478,7 @@ namespace Microsoft.VisualStudio.Project
             {
                 throw Marshal.GetExceptionForHR(VSConstants.OLE_E_PROMPTSAVECANCELLED);
             }
+            ThreadHelper.ThrowIfNotOnUIThread();
 
             SetPropertyUnderCondition(propertyName, propertyValue, Condition);
 
@@ -483,7 +501,8 @@ namespace Microsoft.VisualStudio.Project
         /// </summary>
         private void SetPropertyUnderCondition(string propertyName, string propertyValue, string condition)
         {
-			this.EnsureCache();
+            ThreadHelper.ThrowIfNotOnUIThread();
+            this.EnsureCache();
 
             string conditionTrimmed = (condition == null) ? String.Empty : condition.Trim();
 
@@ -572,6 +591,7 @@ namespace Microsoft.VisualStudio.Project
         /// <returns>0 = not dirty</returns>
         internal int IsFlavorDirty(_PersistStorageType storageType)
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
             int isDirty = 0;
             if(this.flavoredCfg != null && this.flavoredCfg is IPersistXMLFragment)
             {
@@ -592,6 +612,7 @@ namespace Microsoft.VisualStudio.Project
         internal int GetXmlFragment(Guid flavor, _PersistStorageType storageType, out string fragment)
         {
             fragment = null;
+            ThreadHelper.ThrowIfNotOnUIThread();
             int hr = VSConstants.S_OK;
             if(this.flavoredCfg != null && this.flavoredCfg is IPersistXMLFragment)
             {
@@ -605,6 +626,8 @@ namespace Microsoft.VisualStudio.Project
         #region IVsSpecifyPropertyPages
         public void GetPages(CAUUID[] pages)
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
+
             this.GetCfgPropertyPages(pages);
         }
         #endregion
@@ -617,6 +640,7 @@ namespace Microsoft.VisualStudio.Project
         /// <returns>VSConstants.S_OK</returns>
         public virtual int GetProjectDesignerPages(CAUUID[] pages)
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
             this.GetCfgPropertyPages(pages);
             return VSConstants.S_OK;
         }
@@ -680,7 +704,8 @@ namespace Microsoft.VisualStudio.Project
 
 		public virtual int get_CanonicalName(out string name)
 		{
-			return ((IVsCfg)this).get_DisplayName(out name);
+            ThreadHelper.ThrowIfNotOnUIThread();
+            return ((IVsCfg)this).get_DisplayName(out name);
 		}
 
         public virtual int get_IsPackaged(out int pkgd)
@@ -708,6 +733,7 @@ namespace Microsoft.VisualStudio.Project
         {
             CCITracing.TraceCall();
             p = null;
+            ThreadHelper.ThrowIfNotOnUIThread();
             IVsCfgProvider cfgProvider = null;
             this.project.GetCfgProvider(out cfgProvider);
             if(cfgProvider != null)
@@ -761,7 +787,8 @@ namespace Microsoft.VisualStudio.Project
         {
             ppIVsOutputGroup = null;
             // Search through our list of groups to find the one they are looking forgroupName
-            foreach(OutputGroup group in OutputGroups)
+            ThreadHelper.ThrowIfNotOnUIThread();
+            foreach (OutputGroup group in OutputGroups)
             {
                 string groupName;
                 group.get_CanonicalName(out groupName);
@@ -782,9 +809,10 @@ namespace Microsoft.VisualStudio.Project
 
 		public virtual int get_CfgType(ref Guid iidCfg, out IntPtr ppCfg)
 		{
-			// Delegate to the flavored configuration (to enable a flavor to take control)
-			// Since we can be asked for Configuration we don't support, avoid throwing and return the HRESULT directly
-			int hr = flavoredCfg.get_CfgType(ref iidCfg, out ppCfg);
+            // Delegate to the flavored configuration (to enable a flavor to take control)
+            // Since we can be asked for Configuration we don't support, avoid throwing and return the HRESULT directly
+            ThreadHelper.ThrowIfNotOnUIThread();
+            int hr = flavoredCfg.get_CfgType(ref iidCfg, out ppCfg);
 
 			if(ppCfg != IntPtr.Zero)
 				return hr;
@@ -872,7 +900,8 @@ namespace Microsoft.VisualStudio.Project
         /// <returns>If the method succeeds, it returns S_OK. If it fails, it returns an error code. </returns>
         public virtual int GetProjectItem(out IVsHierarchy hier, out uint itemid)
         {
-            if(this.project == null || this.project.NodeProperties == null)
+            ThreadHelper.ThrowIfNotOnUIThread();
+            if (this.project == null || this.project.NodeProperties == null)
             {
                 throw new InvalidOperationException();
             }
@@ -884,14 +913,16 @@ namespace Microsoft.VisualStudio.Project
 
 		private void EnsureCache()
 		{
-			// Get properties for current configuration from project file and cache it
-			this.project.SetConfiguration(configCanonicalName);
+            // Get properties for current configuration from project file and cache it
+            ThreadHelper.ThrowIfNotOnUIThread();
+            this.project.SetConfiguration(configCanonicalName);
 			this.evaluatedProject = this.project.BuildProject;
 		}
 
 		public MSBuild.ProjectProperty GetMsBuildProperty(string propertyName, bool resetCache)
 		{
-			if (resetCache || this.evaluatedProject == null)
+            ThreadHelper.ThrowIfNotOnUIThread();
+            if (resetCache || this.evaluatedProject == null)
 			{
 				this.EnsureCache();
 			}
@@ -920,8 +951,9 @@ namespace Microsoft.VisualStudio.Project
             {
                 throw new ArgumentException(SR.GetString(SR.InvalidParameter, CultureInfo.CurrentUICulture), "pages");
             }
+            ThreadHelper.ThrowIfNotOnUIThread();
 
-            // Retrive the list of guids from hierarchy properties.
+            // Retrieve the list of guids from hierarchy properties.
             // Because a flavor could modify that list we must make sure we are calling the outer most implementation of IVsHierarchy
             string guidsList = String.Empty;
             IVsHierarchy hierarchy = this.project;
@@ -968,8 +1000,9 @@ namespace Microsoft.VisualStudio.Project
         {
             ppCfg = IntPtr.Zero;
 
+            ThreadHelper.ThrowIfNotOnUIThread();
             // See if this is an interface we support
-            if(iidCfg == typeof(IVsDebuggableProjectCfg).GUID)
+            if (iidCfg == typeof(IVsDebuggableProjectCfg).GUID)
                 ppCfg = Marshal.GetComInterfaceForObject(this, typeof(IVsDebuggableProjectCfg));
             else if(iidCfg == typeof(IVsBuildableProjectCfg).GUID)
             {
@@ -999,13 +1032,16 @@ namespace Microsoft.VisualStudio.Project
 		public DebuggableProjectConfig(ProjectNode project, ConfigCanonicalName conigName)
 			: base(project, conigName)
 		{
-		}
+            ThreadHelper.ThrowIfNotOnUIThread();
+
+        }
         #endregion
 
         #region IVsDebuggableProjectCfg methods
 
         private VsDebugTargetInfo GetDebugTargetInfo(uint grfLaunch)
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
             VsDebugTargetInfo info = new VsDebugTargetInfo();
             info.cbSize = (uint)Marshal.SizeOf(info);
             info.dlo = DEBUG_LAUNCH_OPERATION.DLO_CreateProcess;
@@ -1103,6 +1139,7 @@ namespace Microsoft.VisualStudio.Project
         public virtual int DebugLaunch(uint grfLaunch)
         {
             CCITracing.TraceCall();
+            ThreadHelper.ThrowIfNotOnUIThread();
 
             try
             {
@@ -1131,7 +1168,8 @@ namespace Microsoft.VisualStudio.Project
 		/// <returns>S_OK if the method succeeds, otherwise an error code</returns>
 		public virtual int QueryDebugLaunch(uint flags, out int fCanLaunch)
 		{
-			CCITracing.TraceCall();
+            ThreadHelper.ThrowIfNotOnUIThread();
+            CCITracing.TraceCall();
 			string assembly = GetProjectAssemblyName();
 			fCanLaunch = (assembly != null && assembly.ToUpperInvariant().EndsWith(".exe", StringComparison.OrdinalIgnoreCase)) ? 1 : 0;
 			if (fCanLaunch == 0)
@@ -1146,7 +1184,8 @@ namespace Microsoft.VisualStudio.Project
 		#region IVsQueryDebuggableProjectCfg
 		public virtual int QueryDebugTargets(uint grfLaunch, uint cTargets, VsDebugTargetInfo2[] debugTargetInfo, uint[] actualTargets)
 		{
-			if (debugTargetInfo == null) // caller only queries for number of targets
+            ThreadHelper.ThrowIfNotOnUIThread();
+            if (debugTargetInfo == null) // caller only queries for number of targets
 			{
 				actualTargets[0] = 1;
 				return VSConstants.S_OK;
@@ -1259,6 +1298,7 @@ namespace Microsoft.VisualStudio.Project
         public virtual int QueryStartClean(uint options, int[] supported, int[] ready)
         {
             CCITracing.TraceCall();
+            ThreadHelper.ThrowIfNotOnUIThread();
             config.PrepareBuild(false);
             if(supported != null && supported.Length > 0)
                 supported[0] = 1;
@@ -1270,6 +1310,7 @@ namespace Microsoft.VisualStudio.Project
         public virtual int QueryStartUpToDateCheck(uint options, int[] supported, int[] ready)
         {
             CCITracing.TraceCall();
+            ThreadHelper.ThrowIfNotOnUIThread();
             config.PrepareBuild(false);
             if(supported != null && supported.Length > 0)
                 supported[0] = 0; // TODO:
@@ -1289,6 +1330,7 @@ namespace Microsoft.VisualStudio.Project
         public virtual int StartBuild(IVsOutputWindowPane pane, uint options)
         {
             CCITracing.TraceCall();
+            ThreadHelper.ThrowIfNotOnUIThread();
             config.PrepareBuild(false);
 
             // Current version of MSBuild wish to be called in an STA
@@ -1303,6 +1345,7 @@ namespace Microsoft.VisualStudio.Project
         public virtual int StartClean(IVsOutputWindowPane pane, uint options)
         {
             CCITracing.TraceCall();
+            ThreadHelper.ThrowIfNotOnUIThread();
             config.PrepareBuild(true);
             // Current version of MSBuild wish to be called in an STA
             this.Build(options, pane, MsBuildTarget.Clean);
@@ -1346,6 +1389,8 @@ namespace Microsoft.VisualStudio.Project
         private bool NotifyBuildBegin()
         {
             int shouldContinue = 1;
+            ThreadHelper.ThrowIfNotOnUIThread();
+
             foreach (IVsBuildStatusCallback cb in callbacks)
             {
                 try
@@ -1370,8 +1415,9 @@ namespace Microsoft.VisualStudio.Project
 		private void NotifyBuildEnd(bool isSuccess)
 		{
 			int success = (isSuccess ? 1 : 0);
+            ThreadHelper.ThrowIfNotOnUIThread();
 
-			foreach (IVsBuildStatusCallback cb in callbacks)
+            foreach (IVsBuildStatusCallback cb in callbacks)
 			{
 				try
 				{
@@ -1389,8 +1435,9 @@ namespace Microsoft.VisualStudio.Project
 		{
 			// We want to refresh the references if we are building with the Build or Rebuild target.
 			bool shouldRepaintReferences = (target == null || target == MsBuildTarget.Build || target == MsBuildTarget.Rebuild);
+            ThreadHelper.ThrowIfNotOnUIThread();
 
-			if (!NotifyBuildBegin()) return;
+            if (!NotifyBuildBegin()) return;
 
             try
             {
@@ -1410,12 +1457,13 @@ namespace Microsoft.VisualStudio.Project
 		{
 			try
 			{
-				// Now repaint references if that is needed.
-				// We hardly rely here on the fact the ResolveAssemblyReferences target has been run as part of the build.
-				// One scenario to think at is when an assembly reference is renamed on disk thus becomming unresolvable,
-				// but msbuild can actually resolve it.
-				// Another one if the project was opened only for browsing and now the user chooses to build or rebuild.
-				if (shouldRepaintReferences && result.IsSuccessful)
+                // Now repaint references if that is needed.
+                // We hardly rely here on the fact the ResolveAssemblyReferences target has been run as part of the build.
+                // One scenario to think at is when an assembly reference is renamed on disk thus becomming unresolvable,
+                // but msbuild can actually resolve it.
+                // Another one if the project was opened only for browsing and now the user chooses to build or rebuild.
+                ThreadHelper.ThrowIfNotOnUIThread();
+                if (shouldRepaintReferences && result.IsSuccessful)
 				{
 					this.RefreshReferences();
 				}
@@ -1440,6 +1488,7 @@ namespace Microsoft.VisualStudio.Project
         {
             // RvdH Call ResolveAssemblyReferences task once and not for every reference
             var instance = this.config.ProjectMgr.ProjectInstance;
+            ThreadHelper.ThrowIfNotOnUIThread();
             this.config.ProjectMgr.DoMSBuildSubmission(BuildKind.Sync, MsBuildTarget.ResolveAssemblyReferences, ref instance, null);
 
             // Refresh the reference container node for assemblies that could be resolved.

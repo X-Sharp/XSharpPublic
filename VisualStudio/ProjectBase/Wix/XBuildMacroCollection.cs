@@ -90,6 +90,7 @@ namespace Microsoft.VisualStudio.Project
             foreach (string macroName in macroNames)
             {
                 string value;
+                ThreadHelper.ThrowIfNotOnUIThread();
                 if (res.ProjectInstance != null)
                 {
                     value = res.ProjectInstance.GetPropertyValue(macroName);
@@ -179,6 +180,8 @@ namespace Microsoft.VisualStudio.Project
         {
             IVsSolution solution = XHelperMethods.GetService<IVsSolution, SVsSolution>(project.Site);
             object solutionPathObj;
+            ThreadHelper.ThrowIfNotOnUIThread();
+
             ErrorHandler.ThrowOnFailure(solution.GetProperty((int)__VSPROPID.VSPROPID_SolutionFileName, out solutionPathObj));
             string solutionPath = (string)solutionPathObj;
             XPackageSettings settings = XPackageSettings.Instance;
@@ -228,6 +231,7 @@ namespace Microsoft.VisualStudio.Project
                     string configuration = null;
                     IVsProjectCfg2 projectCfg2 = null;
                     IVsProjectCfg[] projectCfgArray = new IVsProjectCfg[1];
+                    ThreadHelper.ThrowIfNotOnUIThread();
 
                     // this can fail for some reason... this code was copied from Wix and probably isn't stable yet.
                     // this routine is called from InvokeMSBuild and we don't want that to fix because of

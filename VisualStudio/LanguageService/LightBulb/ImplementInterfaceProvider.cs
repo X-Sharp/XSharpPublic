@@ -78,7 +78,7 @@ namespace XSharp.LanguageService.Editors.LightBulb
             wordExtent = navigator.GetExtentOfWord(point);
             return true;
         }
-
+#pragma warning disable VSTHRD105
         public Task<bool> HasSuggestedActionsAsync(ISuggestedActionCategorySet requestedActionCategories, SnapshotSpan range, CancellationToken cancellationToken)
         {
             //return Task.Factory.StartNew(() =>
@@ -97,7 +97,7 @@ namespace XSharp.LanguageService.Editors.LightBulb
                 return SearchImplement();
             });
         }
-
+#pragma warning restore VSTHRD105
         public IEnumerable<SuggestedActionSet> GetSuggestedActions(ISuggestedActionCategorySet requestedActionCategories, SnapshotSpan range, CancellationToken cancellationToken)
         {
             if (SearchImplement())

@@ -183,6 +183,7 @@ namespace Microsoft.VisualStudio.Project.Automation
         /// <exception cref="ArgumentNullException">Is thrown if fileName is null.</exception>
         public override void Save(string fileName)
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
             this.DoSave(false, fileName);
         }
 
@@ -195,6 +196,7 @@ namespace Microsoft.VisualStudio.Project.Automation
         {
             try
             {
+                ThreadHelper.ThrowIfNotOnUIThread();
                 this.DoSave(true, fileName);
             }
             catch(InvalidOperationException)

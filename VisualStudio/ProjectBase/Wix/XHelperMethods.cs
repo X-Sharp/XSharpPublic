@@ -147,6 +147,8 @@ public static class XHelperMethods
         public static Font GetDialogFont()
         {
             IUIHostLocale uiHostLocale = XHelperMethods.GetServiceNoThrow<IUIHostLocale, IUIHostLocale>(AsyncProjectPackage.Instance);
+            ThreadHelper.ThrowIfNotOnUIThread();
+
             if (uiHostLocale != null)
             {
                 UIDLGLOGFONT[] pLOGFONT = new UIDLGLOGFONT[1];
@@ -211,6 +213,7 @@ public static class XHelperMethods
             OLEMSGICON icon = OLEMSGICON.OLEMSGICON_CRITICAL;
             OLEMSGBUTTON buttons = OLEMSGBUTTON.OLEMSGBUTTON_OK;
             OLEMSGDEFBUTTON defaultButton = OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST;
+            ThreadHelper.ThrowIfNotOnUIThread();
 
             ShowMessageBox(serviceProvider, buttons, icon, defaultButton, message, args);
         }
@@ -231,6 +234,7 @@ public static class XHelperMethods
          {
             message = String.Format( CultureInfo.CurrentUICulture, message, args );
          }
+            ThreadHelper.ThrowIfNotOnUIThread();
 
             // show the message box
             Utilities.ShowMessageBox(serviceProvider, message, String.Empty, icon, buttons, defaultButton);
@@ -596,6 +600,8 @@ public static class XHelperMethods
         /// <param name="parent">Parent form/control</param>
         public static void SetControlTreeColors(Control parent)
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
+
             SetSingleControlColors(parent);
 
             if (parent.Controls != null)
@@ -613,6 +619,8 @@ public static class XHelperMethods
         /// <param name="control">Control on which the colors are being set</param>
         internal static void SetSingleControlColors(Control control)
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
+
             control.ForeColor = GetVsColor(Vs2010Color.VSCOLOR_BUTTONTEXT);
             if (control is TextBox || control is ListBox || control is ListView || control is ComboBox )
             {
@@ -628,6 +636,8 @@ public static class XHelperMethods
         public static Color GetVsColor(Vs2010Color visualStudioColor)
         {
             uint win32Color = 0;
+            ThreadHelper.ThrowIfNotOnUIThread();
+
             IVsUIShell2 vsuiShell2 = AsyncProjectPackage.GetGlobalService(typeof(SVsUIShell)) as IVsUIShell2;
             if (vsuiShell2 != null && vsuiShell2.GetVSSysColorEx((Int32)visualStudioColor, out win32Color) == VSConstants.S_OK)
             {
@@ -658,6 +668,8 @@ public static class XHelperMethods
         /// </summary>
         internal static void RefreshPropertyBrowser()
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
+
             IVsUIShell vsuiShell = AsyncProjectPackage.GetGlobalService(typeof(SVsUIShell)) as IVsUIShell;
 
             if (vsuiShell == null)
@@ -700,7 +712,8 @@ public static class XHelperMethods
       /// <param name="node">The selected hierarchy node</param>
       internal static void RefreshProject( HierarchyNode node )
       {
-         XProjectNode projectNode = node.ProjectMgr as XProjectNode;
+            ThreadHelper.ThrowIfNotOnUIThread();
+            XProjectNode projectNode = node.ProjectMgr as XProjectNode;
 
          if ( projectNode.ShowAllFilesEnabled )
          {
@@ -729,6 +742,8 @@ public static class XHelperMethods
        /// <param name="tabName"></param>
         internal static void WriteOutputWindow(string outputText, string tabName)
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
+
             IVsOutputWindow outputWindow = Microsoft.VisualStudio.Shell.Package.GetGlobalService(typeof(SVsOutputWindow)) as IVsOutputWindow;
 
             // If we fail to get it we can exit now.

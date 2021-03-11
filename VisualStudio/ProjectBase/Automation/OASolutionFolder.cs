@@ -67,7 +67,9 @@ namespace Microsoft.VisualStudio.Project.Automation
             bool isVSTemplate = Utilities.IsTemplateFile(fileName);
 
             NestedProjectNode newNode = null;
-            if(isVSTemplate)
+            ThreadHelper.ThrowIfNotOnUIThread();
+
+            if (isVSTemplate)
             {
                 // Get the wizard to run, we will get called again and use the alternate code path
                 ProjectElement newElement = new ProjectElement(this.node.ProjectMgr, System.IO.Path.Combine(destination, projectName), ProjectFileConstants.SubProject);

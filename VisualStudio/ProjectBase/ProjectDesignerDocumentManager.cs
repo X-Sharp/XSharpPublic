@@ -12,6 +12,7 @@
 using System;
 using System.Diagnostics;
 using Microsoft.VisualStudio;
+using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using IOleServiceProvider = Microsoft.VisualStudio.OLE.Interop.IServiceProvider;
 
@@ -30,6 +31,7 @@ namespace Microsoft.VisualStudio.Project
 
         public override int Open(ref Guid logicalView, IntPtr docDataExisting, out IVsWindowFrame windowFrame, WindowFrameShowAction windowFrameAction)
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
             Guid editorGuid = VSConstants.GUID_ProjectDesignerEditor;
             return this.OpenWithSpecific(0, ref editorGuid, String.Empty, ref logicalView, docDataExisting, out windowFrame, windowFrameAction);
         }
@@ -37,6 +39,7 @@ namespace Microsoft.VisualStudio.Project
         public override int OpenWithSpecific(uint editorFlags, ref Guid editorType, string physicalView, ref Guid logicalView, IntPtr docDataExisting, out IVsWindowFrame frame, WindowFrameShowAction windowFrameAction)
         {
             frame = null;
+            ThreadHelper.ThrowIfNotOnUIThread();
             Debug.Assert(editorType == VSConstants.GUID_ProjectDesignerEditor, "Cannot open project designer with guid " + editorType.ToString());
 
 
@@ -47,8 +50,9 @@ namespace Microsoft.VisualStudio.Project
 
             IVsUIShellOpenDocument uiShellOpenDocument = this.Node.ProjectMgr.Site.GetService(typeof(SVsUIShellOpenDocument)) as IVsUIShellOpenDocument;
             IOleServiceProvider serviceProvider = this.Node.ProjectMgr.Site.GetService(typeof(IOleServiceProvider)) as IOleServiceProvider;
+            ThreadHelper.ThrowIfNotOnUIThread();
 
-            if(serviceProvider != null && uiShellOpenDocument != null)
+            if (serviceProvider != null && uiShellOpenDocument != null)
             {
                 string fullPath = this.GetFullPathForDocument();
                 string caption = this.GetOwnerCaption();

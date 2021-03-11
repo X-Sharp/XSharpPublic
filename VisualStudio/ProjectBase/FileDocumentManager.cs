@@ -48,6 +48,7 @@ namespace Microsoft.VisualStudio.Project
         {
             bool newFile = false;
             bool openWith = false;
+            ThreadHelper.ThrowIfNotOnUIThread();
             return this.Open(newFile, openWith, ref logicalView, docDataExisting, out windowFrame, windowFrameAction);
         }
 
@@ -63,10 +64,12 @@ namespace Microsoft.VisualStudio.Project
         /// <param name="windowFrameAction">Determine the UI action on the document window</param>
         /// <returns>If the method succeeds, it returns S_OK. If it fails, it returns an error code.</returns>
         public override int OpenWithSpecific(uint editorFlags, ref Guid editorType, string physicalView, ref Guid logicalView, IntPtr docDataExisting, out IVsWindowFrame windowFrame, WindowFrameShowAction windowFrameAction)
-		{
+        {
             windowFrame = null;
             bool newFile = false;
             bool openWith = false;
+            ThreadHelper.ThrowIfNotOnUIThread();
+
             return Open(newFile, openWith, editorFlags, ref editorType, physicalView, ref logicalView, docDataExisting, out windowFrame, windowFrameAction);
         }
 
@@ -82,10 +85,12 @@ namespace Microsoft.VisualStudio.Project
         /// <param name="windowFrameAction">Determine the UI action on the document window</param>
         /// <returns>If the method succeeds, it returns S_OK. If it fails, it returns an error code.</returns>
         public override int ReOpenWithSpecific(uint editorFlags, ref Guid editorType, string physicalView, ref Guid logicalView, IntPtr docDataExisting, out IVsWindowFrame windowFrame, WindowFrameShowAction windowFrameAction)
-		{
+        {
             windowFrame = null;
             bool newFile = false;
             bool openWith = false;
+            ThreadHelper.ThrowIfNotOnUIThread();
+
             return Open(newFile, openWith, editorFlags, ref editorType, physicalView, ref logicalView, docDataExisting, out windowFrame, windowFrameAction, reopen: true);
         }
 
@@ -103,6 +108,8 @@ namespace Microsoft.VisualStudio.Project
         {
             Guid logicalView = VSConstants.LOGVIEWID_Primary;
             IVsWindowFrame windowFrame = null;
+            ThreadHelper.ThrowIfNotOnUIThread();
+
             return this.Open(newFile, openWith, logicalView, out windowFrame, windowFrameAction);
         }
 
@@ -118,9 +125,11 @@ namespace Microsoft.VisualStudio.Project
         public int Open(bool newFile, bool openWith, Guid logicalView, out IVsWindowFrame frame, WindowFrameShowAction windowFrameAction)
         {
             frame = null;
+            ThreadHelper.ThrowIfNotOnUIThread();
+
             IVsRunningDocumentTable rdt = this.Node.ProjectMgr.Site.GetService(typeof(SVsRunningDocumentTable)) as IVsRunningDocumentTable;
             Debug.Assert(rdt != null, " Could not get running document table from the services exposed by this project");
-            if(rdt == null)
+            if (rdt == null)
             {
                 return VSConstants.E_FAIL;
             }
@@ -136,17 +145,18 @@ namespace Microsoft.VisualStudio.Project
 
             try
             {
+                ThreadHelper.ThrowIfNotOnUIThread();
                 ErrorHandler.ThrowOnFailure(rdt.FindAndLockDocument((uint)flags, path, out ivsHierarchy, out itemid, out docData, out docCookie));
                 ErrorHandler.ThrowOnFailure(this.Open(newFile, openWith, ref logicalView, docData, out frame, windowFrameAction));
             }
-            catch(COMException e)
+            catch (COMException e)
             {
                 XSettings.DisplayException(e);
                 returnValue = e.ErrorCode;
             }
             finally
             {
-                if(docData != IntPtr.Zero)
+                if (docData != IntPtr.Zero)
                 {
                     Marshal.Release(docData);
                 }
@@ -172,6 +182,7 @@ namespace Microsoft.VisualStudio.Project
         {
             windowFrame = null;
             Guid editorType = VSConstants.LOGVIEWID_Primary;
+            ThreadHelper.ThrowIfNotOnUIThread();
             return this.Open(newFile, openWith, 0, ref editorType, null, ref logicalView, docDataExisting, out windowFrame, windowFrameAction);
         }
 
@@ -182,7 +193,7 @@ namespace Microsoft.VisualStudio.Project
         protected int Open(bool newFile, bool openWith, uint editorFlags, ref Guid editorType, string physicalView, ref Guid logicalView, IntPtr docDataExisting, out IVsWindowFrame windowFrame, WindowFrameShowAction windowFrameAction, bool reopen = false)
         {
             windowFrame = null;
-            if(this.Node == null || this.Node.ProjectMgr == null || this.Node.ProjectMgr.IsClosed)
+            if (this.Node == null || this.Node.ProjectMgr == null || this.Node.ProjectMgr.IsClosed)
             {
                 return VSConstants.E_FAIL;
             }
@@ -190,6 +201,7 @@ namespace Microsoft.VisualStudio.Project
             Debug.Assert(this.Node != null, "No node has been initialized for the document manager");
             Debug.Assert(this.Node.ProjectMgr != null, "No project manager has been initialized for the document manager");
             Debug.Assert(this.Node is FileNode, "Node is not FileNode object");
+            ThreadHelper.ThrowIfNotOnUIThread();
 
             int returnValue = VSConstants.S_OK;
             string caption = this.GetOwnerCaption();
@@ -204,7 +216,7 @@ namespace Microsoft.VisualStudio.Project
             var openState = uiShellOpenDocument as IVsUIShellOpenDocument3;
             bool showDialog = !reopen && (openState == null || !((__VSNEWDOCUMENTSTATE)openState.NewDocumentState).HasFlag(__VSNEWDOCUMENTSTATE.NDS_Provisional));
             // Make sure that the file is on disk before we open the editor and display message if not found
-            if(!((FileNode)this.Node).IsFileOnDisk(showDialog))
+            if (!((FileNode)this.Node).IsFileOnDisk(showDialog))
             {
                 // Bail since we are not able to open the item
                 // Do not return an error code otherwise an internal error message is shown. The scenario for this operation
@@ -217,21 +229,21 @@ namespace Microsoft.VisualStudio.Project
                 this.Node.ProjectMgr.OnOpenItem(fullPath);
                 int result = VSConstants.E_FAIL;
 
-                if(openWith)
+                if (openWith)
                 {
                     result = uiShellOpenDocument.OpenStandardEditor((uint)__VSOSEFLAGS.OSE_UseOpenWithDialog, fullPath, ref logicalView, caption, this.Node.ProjectMgr, this.Node.ID, docDataExisting, serviceProvider, out windowFrame);
                 }
                 else
                 {
                     __VSOSEFLAGS openFlags = 0;
-                    if(newFile)
+                    if (newFile)
                     {
                         openFlags |= __VSOSEFLAGS.OSE_OpenAsNewFile;
                     }
 
                     //NOTE: we MUST pass the IVsProject in pVsUIHierarchy and the itemid
                     // of the node being opened, otherwise the debugger doesn't work.
-                    if(editorType != Guid.Empty)
+                    if (editorType != Guid.Empty)
                     {
                         result = uiShellOpenDocument.OpenSpecificEditor(editorFlags, fullPath, ref editorType, physicalView, ref logicalView, caption, this.Node.ProjectMgr, this.Node.ID, docDataExisting, serviceProvider, out windowFrame);
                     }
@@ -242,46 +254,47 @@ namespace Microsoft.VisualStudio.Project
                     }
                 }
 
-                if(result != VSConstants.S_OK && result != VSConstants.S_FALSE && result != VSConstants.OLE_E_PROMPTSAVECANCELLED)
+                if (result != VSConstants.S_OK && result != VSConstants.S_FALSE && result != VSConstants.OLE_E_PROMPTSAVECANCELLED)
                 {
+                    // Note that the error MUST be thrown. Without this the file will not be opened in the debugger when it is not already opened
                     ErrorHandler.ThrowOnFailure(result);
                 }
-              
-                    if (windowFrame != null)
+
+                if (windowFrame != null)
+                {
+                    object var;
+
+                    if (newFile)
                     {
-                        object var;
-
-                        if (newFile)
-                        {
-                            ErrorHandler.ThrowOnFailure(windowFrame.GetProperty((int)__VSFPROPID.VSFPROPID_DocData, out var));
-                            IVsPersistDocData persistDocData = (IVsPersistDocData)var;
-                            ErrorHandler.ThrowOnFailure(persistDocData.SetUntitledDocPath(fullPath));
-                        }
-
-                        var = null;
-                        ErrorHandler.ThrowOnFailure(windowFrame.GetProperty((int)__VSFPROPID.VSFPROPID_DocCookie, out var));
-                        this.Node.DocCookie = (uint)(int)var;
-
-                        if (windowFrameAction == WindowFrameShowAction.Show)
-                        {
-                            ErrorHandler.ThrowOnFailure(windowFrame.Show());
-                        }
-                        else if (windowFrameAction == WindowFrameShowAction.ShowNoActivate)
-                        {
-                            ErrorHandler.ThrowOnFailure(windowFrame.ShowNoActivate());
-                        }
-                        else if (windowFrameAction == WindowFrameShowAction.Hide)
-                        {
-                            ErrorHandler.ThrowOnFailure(windowFrame.Hide());
-                        }
+                        ErrorHandler.ThrowOnFailure(windowFrame.GetProperty((int)__VSFPROPID.VSFPROPID_DocData, out var));
+                        IVsPersistDocData persistDocData = (IVsPersistDocData)var;
+                        ErrorHandler.ThrowOnFailure(persistDocData.SetUntitledDocPath(fullPath));
                     }
-              
+
+                    var = null;
+                    ErrorHandler.ThrowOnFailure(windowFrame.GetProperty((int)__VSFPROPID.VSFPROPID_DocCookie, out var));
+                    this.Node.DocCookie = (uint)(int)var;
+
+                    if (windowFrameAction == WindowFrameShowAction.Show)
+                    {
+                        ErrorHandler.ThrowOnFailure(windowFrame.Show());
+                    }
+                    else if (windowFrameAction == WindowFrameShowAction.ShowNoActivate)
+                    {
+                        ErrorHandler.ThrowOnFailure(windowFrame.ShowNoActivate());
+                    }
+                    else if (windowFrameAction == WindowFrameShowAction.Hide)
+                    {
+                        ErrorHandler.ThrowOnFailure(windowFrame.Hide());
+                    }
+                }
+
             }
-            catch(COMException e)
+            catch (COMException e)
             {
                 XSettings.DisplayException(e);
                 returnValue = e.ErrorCode;
-				CloseWindowFrame(ref windowFrame);
+                CloseWindowFrame(ref windowFrame);
             }
 
             return returnValue;

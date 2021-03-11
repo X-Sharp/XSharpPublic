@@ -18,7 +18,7 @@ using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Shell.Interop;
 using IServiceProvider = System.IServiceProvider;
 using XSharpModel;
-
+using Microsoft.VisualStudio.Shell;
 
 namespace Microsoft.VisualStudio.Project
 {
@@ -30,6 +30,8 @@ namespace Microsoft.VisualStudio.Project
         public SolutionListenerForProjectReferenceUpdate(IServiceProvider serviceProvider)
             : base(serviceProvider)
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
+
         }
         #endregion
 
@@ -42,7 +44,9 @@ namespace Microsoft.VisualStudio.Project
         /// <returns></returns>
         public override int OnBeforeCloseProject(IVsHierarchy hierarchy, int removed)
         {
-            if(removed != 0)
+            ThreadHelper.ThrowIfNotOnUIThread();
+
+            if (removed != 0)
             {
                 List<ProjectReferenceNode> projectReferences = this.GetProjectReferencesContainingThisProject(hierarchy);
 
@@ -67,6 +71,8 @@ namespace Microsoft.VisualStudio.Project
         /// <returns></returns>
         public override int OnAfterLoadProject(IVsHierarchy stubHierarchy, IVsHierarchy realHierarchy)
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
+
             List<ProjectReferenceNode> projectReferences = this.GetProjectReferencesContainingThisProject(realHierarchy);
 
             // Refersh the project reference node. That should trigger the drawing of the normal project reference icon.
@@ -87,6 +93,7 @@ namespace Microsoft.VisualStudio.Project
             {
                 return VSConstants.E_INVALIDARG;
             }
+            ThreadHelper.ThrowIfNotOnUIThread();
 
             try
             {
@@ -137,6 +144,8 @@ namespace Microsoft.VisualStudio.Project
 
         public override int OnBeforeUnloadProject(IVsHierarchy realHierarchy, IVsHierarchy stubHierarchy)
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
+
             List<ProjectReferenceNode> projectReferences = this.GetProjectReferencesContainingThisProject(realHierarchy);
 
             // Refresh the project reference node. That should trigger the drawing of the dangling project reference icon.
@@ -167,6 +176,7 @@ namespace Microsoft.VisualStudio.Project
             uint flags = (uint)(__VSENUMPROJFLAGS.EPF_ALLPROJECTS | __VSENUMPROJFLAGS.EPF_LOADEDINSOLUTION);
             Guid enumOnlyThisType = Guid.Empty;
             IEnumHierarchies enumHierarchies = null;
+            ThreadHelper.ThrowIfNotOnUIThread();
 
             ErrorHandler.ThrowOnFailure(this.Solution.GetProjectEnum(flags, ref enumOnlyThisType, out enumHierarchies));
             Debug.Assert(enumHierarchies != null, "Could not get list of hierarchies in solution");
@@ -206,11 +216,13 @@ namespace Microsoft.VisualStudio.Project
             {
                 return null;
             }
+            ThreadHelper.ThrowIfNotOnUIThread();
 
             Guid projectGuid;
             inputHierarchy.GetGuidProperty(VSConstants.VSITEMID_ROOT, (int)__VSHPROPID.VSHPROPID_ProjectIDGuid, out projectGuid);
 
             string canonicalName;
+            ThreadHelper.ThrowIfNotOnUIThread();
             inputHierarchy.GetCanonicalName(VSConstants.VSITEMID_ROOT, out canonicalName);
             foreach(ReferenceNode refNode in references)
             {

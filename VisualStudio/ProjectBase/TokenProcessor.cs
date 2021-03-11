@@ -9,6 +9,7 @@
  *
  * ***************************************************************************/
 
+using Microsoft.VisualStudio.Shell;
 using System;
 using System.Collections;
 using System.Diagnostics;
@@ -346,6 +347,7 @@ namespace Microsoft.VisualStudio.Project
         public string GetFileNamespace(string fileFullPath, ProjectNode node)
         {
             Utilities.ArgumentNotNull("node", node);
+            ThreadHelper.ThrowIfNotOnUIThread();
 
             // Get base namespace from the project
             string namespce = node.GetProjectProperty("RootNamespace");

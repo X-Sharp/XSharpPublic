@@ -43,6 +43,8 @@ namespace Microsoft.VisualStudio.Project
                 throw new ArgumentNullException("serviceProviderParameter");
             }
                 this.serviceProvider = serviceProviderParameter;
+            ThreadHelper.ThrowIfNotOnUIThread();
+
             this.solution = this.serviceProvider.GetService(typeof(SVsSolution)) as IVsSolution;
             
             if (this.solution == null)
@@ -196,6 +198,8 @@ namespace Microsoft.VisualStudio.Project
         /// </summary>
         public void Dispose()
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
+
             this.Dispose(true);
             GC.SuppressFinalize(this);
         }
@@ -205,7 +209,9 @@ namespace Microsoft.VisualStudio.Project
         #region methods
         public void Init()
         {
-            if(this.solution != null)
+            ThreadHelper.ThrowIfNotOnUIThread();
+
+            if (this.solution != null)
             {
                 this.solution.AdviseSolutionEvents(this.InteropSafeIVsSolutionEvents, out this.eventsCookie);
             }
@@ -219,7 +225,9 @@ namespace Microsoft.VisualStudio.Project
         protected virtual void Dispose(bool disposing)
         {
             // Everybody can go here.
-            if(!this.isDisposed)
+            ThreadHelper.ThrowIfNotOnUIThread();
+
+            if (!this.isDisposed)
             {
                 // Synchronize calls to the Dispose simulteniously.
                 lock(Mutex)

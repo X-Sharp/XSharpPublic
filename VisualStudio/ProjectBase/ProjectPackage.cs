@@ -80,7 +80,9 @@ namespace Microsoft.VisualStudio.Project
             // Unadvise solution listeners.
             try
             {
-                if(disposing)
+                ThreadHelper.ThrowIfNotOnUIThread();
+
+                if (disposing)
                 {
                     foreach(SolutionListener solutionListener in this.solutionListeners)
                     {
@@ -104,6 +106,8 @@ namespace Microsoft.VisualStudio.Project
         {
             // Check if the .suo file is safe, i.e. created on this computer
             // This should really go on the Package.cs
+            ThreadHelper.ThrowIfNotOnUIThread();
+
             IVsSolution solution = this.GetService(typeof(SVsSolution)) as IVsSolution;
 
             if (solution != null)

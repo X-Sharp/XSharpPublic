@@ -8,6 +8,7 @@ using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.InteropServices;
 using Microsoft.VisualStudio.Project;
+using Microsoft.VisualStudio.Shell;
 
 namespace Microsoft.VisualStudio.Project
 {
@@ -56,6 +57,7 @@ namespace Microsoft.VisualStudio.Project
 
             set
             {
+                ThreadHelper.ThrowIfNotOnUIThread();
                 base.BuildAction = value;
             }
         }

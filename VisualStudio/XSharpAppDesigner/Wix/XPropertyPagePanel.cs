@@ -5,6 +5,7 @@
 //
 namespace Microsoft.VisualStudio.Project
 {
+    using Microsoft.VisualStudio.Shell;
     using System;
     using System.ComponentModel;
     using System.Diagnostics;
@@ -88,6 +89,7 @@ namespace Microsoft.VisualStudio.Project
                     textBox = buildEventEditor.TextBox;
                 }
             }
+            ThreadHelper.ThrowIfNotOnUIThread();
 
             if (textBox != null && textBox.Modified)
             {
@@ -165,6 +167,7 @@ namespace Microsoft.VisualStudio.Project
             {
                 value = control.Text;
             }
+            ThreadHelper.ThrowIfNotOnUIThread();
 
             if (value != null && !String.Equals(value, currentValue, StringComparison.Ordinal))
             {
@@ -291,6 +294,8 @@ namespace Microsoft.VisualStudio.Project
         /// <param name="e">Parameters for the event.</param>
         private void HandleTextBoxModifiedChanged(object sender, EventArgs e)
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
+
             TextBox textBox = (TextBox)sender;
             if (textBox.Modified && !this.ParentPropertyPage.IsDirty)
             {
@@ -342,6 +347,7 @@ namespace Microsoft.VisualStudio.Project
             }
 
             string currentValue = this.ParentPropertyPage.GetProperty(propertyName);
+            ThreadHelper.ThrowIfNotOnUIThread();
 
             if (!String.Equals(value, currentValue, StringComparison.Ordinal))
             {
@@ -397,6 +403,7 @@ namespace Microsoft.VisualStudio.Project
         private void HandleTextBoxLostFocus(object sender, EventArgs e)
         {
             TextBox textBox = sender as TextBox;
+            ThreadHelper.ThrowIfNotOnUIThread();
             if (textBox != null && textBox.Modified)
             {
                 CancelEventArgs ce = new CancelEventArgs();

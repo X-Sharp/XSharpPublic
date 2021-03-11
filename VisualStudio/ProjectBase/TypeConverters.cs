@@ -18,6 +18,7 @@ using System.Linq;
 using System.Runtime.Versioning;
 using Microsoft.VisualStudio.Shell.Interop;
 using System.Runtime.InteropServices;
+using Microsoft.VisualStudio.Shell;
 
 namespace Microsoft.VisualStudio.Project
 {
@@ -338,6 +339,8 @@ namespace Microsoft.VisualStudio.Project
         public override TypeConverter.StandardValuesCollection GetStandardValues(System.ComponentModel.ITypeDescriptorContext context)
         {
             IServiceProvider sp = ProjectNode.ServiceProvider;
+            ThreadHelper.ThrowIfNotOnUIThread();
+
             var multiTargetService = sp.GetService(typeof(SVsFrameworkMultiTargeting)) as IVsFrameworkMultiTargeting;
             if (multiTargetService == null)
             {

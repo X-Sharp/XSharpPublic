@@ -60,6 +60,7 @@ namespace XSharp.Project.WPF
             }
 
             //Finally, add the new method to the class
+            ThreadHelper.ThrowIfNotOnUIThread();
 
             CodeDomDocDataAdapter adapter = GetDocDataAdapterForXSharpFile();
 
@@ -73,6 +74,7 @@ namespace XSharp.Project.WPF
         {
             string originalMethodName = string.Format(CultureInfo.InvariantCulture, "{0}_{1}", objectName, eventDescription.Name);
             string methodName = originalMethodName;
+            ThreadHelper.ThrowIfNotOnUIThread();
 
             List<CodeTypeMember> methods = GetHandlersFromActiveFile(string.Format(CultureInfo.InvariantCulture, "{0}_{1}", objectName, eventDescription.Name));
 
@@ -101,6 +103,8 @@ namespace XSharp.Project.WPF
             List<string> methodHandlers = new List<string>();
             // How many parameters
             List<String> pName = new List<string>();
+            ThreadHelper.ThrowIfNotOnUIThread();
+
             foreach (EventParameter eParam in eventDescription.Parameters)
             {
                 pName.Add(RetrieveFullTypeName(eParam.TypeName));
@@ -141,6 +145,7 @@ namespace XSharp.Project.WPF
 
             //We expect that prg files that contain the event wiring for XAML files contain a namespace
             //and a class.
+            ThreadHelper.ThrowIfNotOnUIThread();
             foreach (CodeTypeMember member in GetCodeDomForXSharpFile().Members)
             {
                 //We just match on the element name here (e.g. button1_Click), not on parameters
@@ -186,6 +191,7 @@ namespace XSharp.Project.WPF
         {
             List<string> methodHandlers = new List<string>();
 
+            ThreadHelper.ThrowIfNotOnUIThread();
             foreach (CodeTypeMember member in GetCodeDomForXSharpFile().Members)
             {
                 if (member is CodeConstructor)
@@ -231,6 +237,7 @@ namespace XSharp.Project.WPF
 
         public override bool IsExistingMethodName(EventDescription eventDescription, string methodName)
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
             List<CodeTypeMember> elements = GetHandlersFromActiveFile(methodName);
             return elements.Count != 0;
         }
@@ -252,6 +259,7 @@ namespace XSharp.Project.WPF
 
         public override bool ShowMethod(EventDescription eventDescription, string methodName)
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
             CodeDomDocDataAdapter adapter = GetDocDataAdapterForXSharpFile();
             List<CodeTypeMember> methodsToShow = GetHandlersFromActiveFile(methodName);
 
@@ -315,6 +323,7 @@ namespace XSharp.Project.WPF
         /// <returns>The CodeDomDocDataAdapter for the .prg file that corresponds to the active xaml file</returns>
         CodeDomDocDataAdapter GetDocDataAdapterForXSharpFile()
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
             if (_cdda == null)
             {
                 var codeDom = (IVSMDCodeDomProvider)(new ServiceProvider(_xsFile.OleServiceProvider, true)).GetService(typeof(SVSMDCodeDomProvider));
@@ -332,6 +341,7 @@ namespace XSharp.Project.WPF
         /// <returns>The CodeTypeDeclaration for the .prg file that corresponds to the active xaml file</returns>
         CodeTypeDeclaration GetCodeDomForXSharpFile()
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
             CodeDomDocDataAdapter cdda = GetDocDataAdapterForXSharpFile();
             // That will call the Parse method in VSXSharpCodeDomProvider class
             CodeTypeDeclaration ctd = cdda.TypeDeclaration;

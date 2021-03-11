@@ -35,6 +35,7 @@ namespace XSharp.Project
         /// </summary>
         public void Dispose()
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
             if (vsServiceProvider != null)
             {
                 vsServiceProvider.Dispose();

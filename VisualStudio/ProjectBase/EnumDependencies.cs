@@ -12,6 +12,7 @@
 using System;
 using System.Collections.Generic;
 using Microsoft.VisualStudio;
+using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 
 namespace Microsoft.VisualStudio.Project
@@ -45,6 +46,8 @@ namespace Microsoft.VisualStudio.Project
 
         public int Clone(out IVsEnumDependencies enumDependencies)
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
+
             enumDependencies = new EnumDependencies(this.dependencyList);
             enumDependencies.Skip(this.nextIndex);
             return VSConstants.S_OK;

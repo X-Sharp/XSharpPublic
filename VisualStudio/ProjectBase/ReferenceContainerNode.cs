@@ -230,7 +230,8 @@ namespace Microsoft.VisualStudio.Project
 
         protected override int ExecCommandOnNode(Guid cmdGroup, uint cmd, uint nCmdexecopt, IntPtr pvaIn, IntPtr pvaOut)
         {
-            if(cmdGroup == VsMenus.guidStandardCommandSet2K)
+            ThreadHelper.ThrowIfNotOnUIThread();
+            if (cmdGroup == VsMenus.guidStandardCommandSet2K)
             {
                 switch((VsCommands2K)cmd)
                 {
@@ -284,6 +285,7 @@ namespace Microsoft.VisualStudio.Project
         /// </summary>
         public void LoadReferencesFromBuildProject(MSBuild.Project buildProject)
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
             List<ReferenceNode> duplicatedNode = new List<ReferenceNode>();
 			BuildResult buildResult = this.ProjectMgr.Build(MsBuildTarget.ResolveAssemblyReferences);
 
@@ -370,7 +372,9 @@ namespace Microsoft.VisualStudio.Project
         public virtual ReferenceNode AddReferenceFromSelectorData(VSCOMPONENTSELECTORDATA selectorData, string wrapperTool = null)
         {
             //Make sure we can edit the project file
-            if(!this.ProjectMgr.QueryEditProjectFile(false))
+            ThreadHelper.ThrowIfNotOnUIThread();
+
+            if (!this.ProjectMgr.QueryEditProjectFile(false))
             {
                 throw Marshal.GetExceptionForHR(VSConstants.OLE_E_PROMPTSAVECANCELLED);
             }

@@ -105,6 +105,7 @@ namespace XSharp.Project
                     value = value.Substring(pos + "version=".Length);
                 }
             }
+            ThreadHelper.ThrowIfNotOnUIThread();
             base.SetProperty(propertyName, value);
         }
 

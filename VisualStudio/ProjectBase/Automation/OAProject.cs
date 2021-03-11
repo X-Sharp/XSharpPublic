@@ -290,6 +290,7 @@ namespace Microsoft.VisualStudio.Project.Automation
         {
             get
             {
+                ThreadHelper.ThrowIfNotOnUIThread();
                 return !this.IsDirty;
             }
             set
@@ -370,6 +371,7 @@ namespace Microsoft.VisualStudio.Project.Automation
         /// <exception cref="ArgumentNullException">Is thrown if fileName is null.</exception>
         public virtual void SaveAs(string fileName)
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
             this.DoSave(true, fileName);
         }
 
@@ -381,6 +383,7 @@ namespace Microsoft.VisualStudio.Project.Automation
         /// <exception cref="ArgumentNullException">Is thrown if fileName is null.</exception>
         public virtual void Save(string fileName)
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
             this.DoSave(false, fileName);
         }
 

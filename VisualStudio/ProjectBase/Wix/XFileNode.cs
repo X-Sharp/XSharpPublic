@@ -15,6 +15,7 @@ using OleConstants = Microsoft.VisualStudio.OLE.Interop.Constants;
 using VsCommands = Microsoft.VisualStudio.VSConstants.VSStd97CmdID;
 using VsCommands2K = Microsoft.VisualStudio.VSConstants.VSStd2KCmdID;
 using VsPkgMenus = Microsoft.VisualStudio.Project.VsMenus;
+using Microsoft.VisualStudio.Shell;
 
 namespace Microsoft.VisualStudio.Project
 {
@@ -187,6 +188,7 @@ namespace Microsoft.VisualStudio.Project
                     break;
 
                 default:
+                    ThreadHelper.ThrowIfNotOnUIThread();
                     result = base.SetProperty(propid, value);
                     break;
             }
@@ -201,6 +203,7 @@ namespace Microsoft.VisualStudio.Project
         /// <returns>The property value.</returns>
         public override object GetProperty(int propId)
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
             __VSHPROPID id = (__VSHPROPID)propId;
             switch (id)
             {
@@ -237,6 +240,7 @@ namespace Microsoft.VisualStudio.Project
         [SuppressMessage("Microsoft.Design", "CA1033:InterfaceMethodsShouldBeCallableByChildTypes")]
         int IProjectSourceNode.ExcludeFromProject()
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
             return this.ExcludeFromProject();
         }
 
@@ -299,6 +303,7 @@ namespace Microsoft.VisualStudio.Project
 
                 XProjectNode projectNode = this.ProjectMgr as XProjectNode;
                 projectNode.RemoveURL(this.Url);
+                ThreadHelper.ThrowIfNotOnUIThread();
                 if (projectNode != null && projectNode.ShowAllFilesEnabled && File.Exists(this.Url))
                 {
                     // need to store before removing the node.
@@ -375,6 +380,7 @@ namespace Microsoft.VisualStudio.Project
 
                 // make sure that all parent folders are included in the project
                 XHelperMethods.EnsureParentFolderIncluded(this);
+                ThreadHelper.ThrowIfNotOnUIThread();
 
                 // now add this node to the project.
                 this.SetProperty((int)__VSHPROPID.VSHPROPID_IsNonMemberItem, false);
@@ -458,6 +464,7 @@ namespace Microsoft.VisualStudio.Project
         [SuppressMessage("Microsoft.Naming", "CA1725:ParameterNamesShouldMatchBaseDeclaration", MessageId = "2#", Justification = "Suppressing to avoid conflict with style cop.")]
         protected override int ExecCommandOnNode(Guid cmdGroup, uint cmd, uint cmdexecopt, IntPtr pvaIn, IntPtr pvaOut)
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
             if (cmdGroup == VsPkgMenus.guidStandardCommandSet2K)
             {
                 switch ((VsCommands2K)cmd)
@@ -509,16 +516,19 @@ namespace Microsoft.VisualStudio.Project
                 }
             }
 
+            ThreadHelper.ThrowIfNotOnUIThread();
             if (change)
             {
                 this.NodeProperties = this.CreatePropertiesObject();
                 // notify others.
+
                 this.OnPropertyChanged(this, (int)__VSHPROPID.VSHPROPID_BrowseObject, 0);
             }
         }
 
         int IProjectSourceNode.IncludeInProject()
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
             return this.IncludeInProject();
         }
     }

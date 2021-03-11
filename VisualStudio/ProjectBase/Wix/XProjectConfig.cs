@@ -7,6 +7,7 @@
 using System;
 using System.Globalization;
 using Microsoft.VisualStudio.Project;
+using Microsoft.VisualStudio.Shell;
 using MSBuildConstruction = Microsoft.Build.Construction;
 
 namespace Microsoft.VisualStudio.Project
@@ -38,6 +39,7 @@ namespace Microsoft.VisualStudio.Project
         public XProjectConfig(ProjectNode project, ConfigCanonicalName name)
             : base(project, name)
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
         }
 
         /// <summary>

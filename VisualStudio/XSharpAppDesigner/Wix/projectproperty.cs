@@ -275,7 +275,7 @@ namespace Microsoft.VisualStudio.Project
                     foreach (ProjectPropertyGroupElement propGroup in buildProject.Xml.PropertyGroups)
                     {
                         // if there is, set it within that group
-                        if (String.Equals(propGroup.Condition, config.Condition, StringComparison.Ordinal))
+                        if (String.Equals(propGroup.Condition.Trim(), config.Condition.Trim(), StringComparison.Ordinal))
                         {
                             propGroup.SetProperty(this.propertyName, value);
                             set = true;

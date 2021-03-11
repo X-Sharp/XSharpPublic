@@ -16,6 +16,7 @@ using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.InteropServices;
 using EnvDTE;
+using Microsoft.VisualStudio.Shell;
 using VSLangProj;
 
 namespace Microsoft.VisualStudio.Project.Automation
@@ -71,6 +72,7 @@ namespace Microsoft.VisualStudio.Project.Automation
         {
             get
             {
+                ThreadHelper.ThrowIfNotOnUIThread();
                 return (EnvDTE.DTE)this.project.Site.GetService(typeof(EnvDTE.DTE));
             }
         }
@@ -116,6 +118,7 @@ namespace Microsoft.VisualStudio.Project.Automation
         {
             get
             {
+                ThreadHelper.ThrowIfNotOnUIThread();
                 return this.project.GetAutomationObject() as EnvDTE.Project;
             }
         }

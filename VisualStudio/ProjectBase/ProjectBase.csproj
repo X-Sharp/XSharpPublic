@@ -33,7 +33,7 @@
     <WarningLevel>4</WarningLevel>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <Prefer32Bit>false</Prefer32Bit>
-    <NoWarn>VSTHRD010;VSSDK006;1762</NoWarn>
+    <NoWarn>1762;VSSDK006</NoWarn>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -119,6 +119,7 @@
     <Compile Include="ImageHandler.cs" />
     <Compile Include="Interfaces.cs" />
     <Compile Include="LocalizableProperties.cs" />
+    <Compile Include="Misc\ThreadUtilities.cs" />
     <Compile Include="Resources.cs" />
     <Compile Include="Url.cs" />
     <Compile Include="VisualStudio.Project.cs" />

@@ -47,6 +47,7 @@ namespace Microsoft.VisualStudio.Project
         public int get_CanonicalName(out string pbstrCanonicalName)
         {
             // Get the output assembly path (including the name)
+            ThreadHelper.ThrowIfNotOnUIThread();
             pbstrCanonicalName = project.GetProjectProperty(ProjectFileConstants.TargetPath);
             Debug.Assert(!String.IsNullOrEmpty(pbstrCanonicalName), "Output Assembly not defined");
 
@@ -66,6 +67,7 @@ namespace Microsoft.VisualStudio.Project
         /// </summary>
         public virtual int get_DeploySourceURL(out string pbstrDeploySourceURL)
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
             string path = string.Empty; ;
             if (this.project is XProjectNode)
             {
@@ -84,11 +86,13 @@ namespace Microsoft.VisualStudio.Project
 
         public int get_DisplayName(out string pbstrDisplayName)
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
             return this.get_CanonicalName(out pbstrDisplayName);
         }
 
         public virtual int get_Property(string szProperty, out object pvar)
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
             if (string.IsNullOrEmpty(szProperty))
             {
                 pvar = null;
@@ -123,6 +127,7 @@ namespace Microsoft.VisualStudio.Project
         public int get_RootRelativeURL(out string pbstrRelativePath)
         {
 
+            ThreadHelper.ThrowIfNotOnUIThread();
             pbstrRelativePath = String.Empty;
             object variant;
             // get the corresponding property

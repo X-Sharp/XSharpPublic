@@ -18,6 +18,7 @@ using VsCommands = Microsoft.VisualStudio.VSConstants.VSStd97CmdID;
 using VsCommands2K = Microsoft.VisualStudio.VSConstants.VSStd2KCmdID;
 using VsMenus = Microsoft.VisualStudio.Project.VsMenus;
 using System.Diagnostics.CodeAnalysis;
+using Microsoft.VisualStudio.Shell;
 
 namespace Microsoft.VisualStudio.Project
 {
@@ -41,6 +42,7 @@ namespace Microsoft.VisualStudio.Project
 
         protected override void Dispose(bool disposing)
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
             if (filechangemanager != null)
             {
                 filechangemanager.Dispose();
@@ -57,6 +59,7 @@ namespace Microsoft.VisualStudio.Project
         /// </remarks>
         protected override void InitializeProjectProperties()
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
             if (String.IsNullOrWhiteSpace(this.GetProjectProperty(XProjectFileConstants.OutputName)))
             {
                 string projectName = Path.GetFileNameWithoutExtension(this.FileName);
@@ -97,6 +100,7 @@ namespace Microsoft.VisualStudio.Project
         /// <returns>S_OK if it's possible to toggle the state, OLECMDERR_E_NOTSUPPORTED if not</returns>
         protected internal override int ShowAllFiles()
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
             int result = this.ToggleShowAllFiles();
 
             if (result != NativeMethods.S_OK)
@@ -137,6 +141,7 @@ namespace Microsoft.VisualStudio.Project
 
             using (XHelperMethods.NewWaitCursor())
             {
+                ThreadHelper.ThrowIfNotOnUIThread();
                 this.showAllFilesEnabled = !this.showAllFilesEnabled; // toggle the flag
 
                 if (this.showAllFilesEnabled)
@@ -153,6 +158,7 @@ namespace Microsoft.VisualStudio.Project
         }
         protected override void Reload()
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
             base.Reload();
 
             // read .user file
@@ -356,6 +362,7 @@ namespace Microsoft.VisualStudio.Project
 
             return false; // not handled.
         }
+#pragma warning disable VSTHRD010
         /// <summary>
         /// Gets the current project configuration.
         /// </summary>
@@ -363,17 +370,20 @@ namespace Microsoft.VisualStudio.Project
         {
             get
             {
-                EnvDTE.Project automationObject = this.GetAutomationObject() as EnvDTE.Project;
-                if (automationObject != null)
+                return ThreadUtilities.runSafe( ()=>
                 {
-                    var platform = Utilities.GetActivePlatformName(automationObject);
-                    var name = new ConfigCanonicalName(Utilities.GetActiveConfigurationName(automationObject), platform );
-                    return new XProjectConfig(this, name);
-                }
-                return null;
+                    EnvDTE.Project automationObject = this.GetAutomationObject() as EnvDTE.Project;
+                    if (automationObject != null)
+                    {
+                        var platform = Utilities.GetActivePlatformName(automationObject);
+                        var name = new ConfigCanonicalName(Utilities.GetActiveConfigurationName(automationObject), platform);
+                        return new XProjectConfig(this, name);
+                    }
+                    return null;
+                });
             }
         }
-
+#pragma warning restore VSTHRD010
         /// <summary>
         /// Handles command execution.
         /// </summary>
@@ -387,6 +397,8 @@ namespace Microsoft.VisualStudio.Project
         [SuppressMessage("Microsoft.Naming", "CA1725:ParameterNamesShouldMatchBaseDeclaration", MessageId = "0#", Justification = "We cannot comply with FxCop and StyleCop simultaneously.")]
         protected override int ExecCommandOnNode(Guid cmdGroup, uint cmd, uint cmdexecopt, IntPtr pvaIn, IntPtr pvaOut)
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
+
             if (cmdGroup == VsMenus.guidStandardCommandSet2K)
             {
                 switch ((VsCommands2K)cmd)
@@ -481,6 +493,7 @@ namespace Microsoft.VisualStudio.Project
         /// <returns>A success or failure value.</returns>
         public override int Close()
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
             int result = base.Close();
 
             if (this.UserBuildProject != null && this.UserBuildProject.IsDirty)
@@ -502,6 +515,7 @@ namespace Microsoft.VisualStudio.Project
         [SuppressMessage("Microsoft.Naming", "CA1725:ParameterNamesShouldMatchBaseDeclaration", MessageId = "2#", Justification = "We cannot comply with FxCop and StyleCop simultaneously.")]
         public override int Save(string fileToBeSaved, int remember, uint formatIndex)
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
             int result = base.Save(fileToBeSaved, remember, formatIndex);
             if (NativeMethods.S_OK == result && this.userBuildProject != null)
             {
@@ -517,6 +531,7 @@ namespace Microsoft.VisualStudio.Project
         /// <param name="newFile">The new name for the project file.</param>
         protected override void RenameProjectFile(string newFile)
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
             string oldUserFileName = this.UserFileName;
             base.RenameProjectFile(newFile);
 
@@ -545,6 +560,8 @@ namespace Microsoft.VisualStudio.Project
         /// <returns>ProjectElement for the file item.</returns>
         internal ProjectElement CreateMsBuildFileProjectElement(string file)
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
+
             return this.AddFileToMsBuild(file);
         }
 
@@ -567,6 +584,7 @@ namespace Microsoft.VisualStudio.Project
         {
             XBuildMacroCollection.DefineSolutionProperties(this);
             XBuildMacroCollection.DefineProjectReferenceConfigurations(this);
+            ThreadHelper.ThrowIfNotOnUIThread();
             return base.InvokeMsBuild(target);
         }
 
@@ -580,6 +598,7 @@ namespace Microsoft.VisualStudio.Project
         /// <param name="propertyValue">The value to assign the property.</param>
         public override void SetProjectProperty(string propertyName, string propertyValue)
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
             this.SetProjectProperty(propertyName, propertyValue, null);
         }
 
@@ -591,6 +610,7 @@ namespace Microsoft.VisualStudio.Project
         /// <param name="condition">The condition to use on the property. Corresponds to the Condition attribute of the Property element.</param>
         public virtual void SetProjectProperty(string propertyName, string propertyValue, string condition)
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
             XHelperMethods.VerifyStringArgument(propertyName, "propertyName");
 
             if (propertyValue == null)
@@ -646,11 +666,15 @@ namespace Microsoft.VisualStudio.Project
         }
         protected void ObserveItem(string url)
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
+
             if (filechangemanager != null)
                 filechangemanager.ObserveItem(url);
         }
         protected void StopObservingItem(string url)
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
+
             if (filechangemanager != null)
                 filechangemanager.StopObservingItem(url);
         }

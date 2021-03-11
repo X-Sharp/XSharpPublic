@@ -9,6 +9,7 @@
  *
  * ***************************************************************************/
 
+using Microsoft.VisualStudio.Shell;
 using System;
 using System.Runtime.InteropServices;
 
@@ -48,10 +49,12 @@ namespace Microsoft.VisualStudio.Project
         {
             get
             {
+                ThreadHelper.ThrowIfNotOnUIThread();
                 return this.projectConfig.GetConfigurationProperty(ProjectFileConstants.OutputPath.ToString(), true);
             }
             set
             {
+                ThreadHelper.ThrowIfNotOnUIThread();
                 this.projectConfig.SetConfigurationProperty(ProjectFileConstants.OutputPath.ToString(), value);
             }
         }

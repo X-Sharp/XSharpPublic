@@ -80,6 +80,7 @@ namespace XSharp.MacroCompiler
                 case TokenType.WORD:
                 case TokenType.LPAREN:
                 case TokenType.LCURLY:
+                case TokenType.IF:
                 case TokenType.IIF:
                 case TokenType.FIELD:
                 case TokenType.VO_AND:

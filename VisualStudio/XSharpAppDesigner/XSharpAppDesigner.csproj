@@ -37,7 +37,7 @@
     <WarningLevel>4</WarningLevel>
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
     <Prefer32Bit>false</Prefer32Bit>
-    <NoWarn>VSTHRD010;VSSDK006;1762</NoWarn>
+    <NoWarn>1762</NoWarn>
     <DeployExtension>True</DeployExtension>
     <DocumentationFile>
     </DocumentationFile>

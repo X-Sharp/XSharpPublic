@@ -63,6 +63,7 @@ namespace XSharp.Project
         /// <param name="value">Value of the property.</param>
         public override void SetProperty(string propertyName, string value)
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
             base.SetProperty(propertyName, value);
         }
 

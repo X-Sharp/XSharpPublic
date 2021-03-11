@@ -97,6 +97,7 @@ namespace Microsoft.VisualStudio.Project
         public static bool IsVisualStudioInDesignMode(IServiceProvider site)
         {
             Utilities.ArgumentNotNull("site", site);
+            ThreadHelper.ThrowIfNotOnUIThread();
 
             IVsMonitorSelection selectionMonitor = site.GetService(typeof(IVsMonitorSelection)) as IVsMonitorSelection;
             Assumes.Present(selectionMonitor);
@@ -117,6 +118,7 @@ namespace Microsoft.VisualStudio.Project
         public static bool IsInAutomationFunction(IServiceProvider serviceProvider)
         {
             Utilities.ArgumentNotNull("serviceProvider", serviceProvider);
+            ThreadHelper.ThrowIfNotOnUIThread();
 
             IVsExtensibility3 extensibility = serviceProvider.GetService(typeof(EnvDTE.IVsExtensibility)) as IVsExtensibility3;
 
@@ -247,11 +249,13 @@ namespace Microsoft.VisualStudio.Project
                     }
                 }
             }
+            ThreadHelper.ThrowIfNotOnUIThread();
 
-            if(errorMessage.Length > 0)
+            if (errorMessage.Length > 0)
             {
                 // If it is not called from an automation method show a dialog box.
-                if(!Utilities.IsInAutomationFunction(serviceProvider))
+
+                if (!Utilities.IsInAutomationFunction(serviceProvider))
                 {
                     string title = null;
                     OLEMSGICON icon = OLEMSGICON.OLEMSGICON_CRITICAL;
@@ -419,6 +423,8 @@ namespace Microsoft.VisualStudio.Project
             Utilities.ArgumentNotNull("automationObject", automationObject);
 
             string currentConfigName = string.Empty;
+            ThreadHelper.ThrowIfNotOnUIThread();
+
             if (automationObject.ConfigurationManager != null)
             {
                 try
@@ -457,6 +463,8 @@ namespace Microsoft.VisualStudio.Project
 			}
 
 			string currentPlatformName = string.Empty;
+            ThreadHelper.ThrowIfNotOnUIThread();
+
             if (automationObject.ConfigurationManager != null)
 			{
                 try
@@ -753,8 +761,9 @@ namespace Microsoft.VisualStudio.Project
 			string solutionFile = null;
 			string userOptionsFile = null;
 			string installDir = null;
+            ThreadHelper.ThrowIfNotOnUIThread();
 
-			if (provider != null)
+            if (provider != null)
 			{
 				IVsSolution solution = provider.GetService(typeof(SVsSolution)) as IVsSolution;
 				if (solution != null)
@@ -1104,6 +1113,8 @@ namespace Microsoft.VisualStudio.Project
         /// </summary>
         /// <returns>Whether succeeded</returns>
         public static bool SaveDirtyFiles() {
+            ThreadHelper.ThrowIfNotOnUIThread();
+
             var rdt = ServiceProvider.GlobalProvider.GetService(typeof(SVsRunningDocumentTable)) as IVsRunningDocumentTable;
             if (rdt != null) {
                 // Consider using (uint)(__VSRDTSAVEOPTIONS.RDTSAVEOPT_SaveIfDirty | __VSRDTSAVEOPTIONS.RDTSAVEOPT_PromptSave)
@@ -1147,8 +1158,9 @@ namespace Microsoft.VisualStudio.Project
 			{
 				throw new ArgumentNullException("hierarchy");
 			}
+            ThreadHelper.ThrowIfNotOnUIThread();
 
-			IVsSolutionBuildManager2 solutionBuildManager = serviceProvider.GetService(typeof(SVsSolutionBuildManager)) as IVsSolutionBuildManager2;
+            IVsSolutionBuildManager2 solutionBuildManager = serviceProvider.GetService(typeof(SVsSolutionBuildManager)) as IVsSolutionBuildManager2;
 
 			if (solutionBuildManager == null)
 			{
@@ -1179,6 +1191,7 @@ namespace Microsoft.VisualStudio.Project
         public static bool IsShellInCommandLineMode(System.IServiceProvider serviceProvider)
         {
             Utilities.ArgumentNotNull("serviceProvider", serviceProvider);
+            ThreadHelper.ThrowIfNotOnUIThread();
 
             IVsShell shell = serviceProvider.GetService(typeof(SVsShell)) as IVsShell;
             if(shell == null)
@@ -1203,8 +1216,9 @@ namespace Microsoft.VisualStudio.Project
 			{
 				throw new ArgumentNullException("serviceProvider");
 			}
+            ThreadHelper.ThrowIfNotOnUIThread();
 
-			IVsSolution solution = serviceProvider.GetService(typeof(SVsSolution)) as IVsSolution;
+            IVsSolution solution = serviceProvider.GetService(typeof(SVsSolution)) as IVsSolution;
 
 			if (solution == null)
 			{
@@ -1237,6 +1251,8 @@ namespace Microsoft.VisualStudio.Project
         /// </summary>
         public static int ShowMessageBox(IServiceProvider serviceProvider, string message, string title, OLEMSGICON icon, OLEMSGBUTTON msgButton, OLEMSGDEFBUTTON defaultButton)
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
+
             IVsUIShell uiShell = serviceProvider.GetService(typeof(IVsUIShell)) as IVsUIShell;
             Debug.Assert(uiShell != null, "Could not get the IVsUIShell object from the services exposed by this serviceprovider");
             if (uiShell == null)

@@ -14,6 +14,7 @@ namespace Microsoft.VisualStudio.Project
 	using Microsoft.VisualStudio.Project;
 	using Microsoft.VisualStudio.Shell.Interop;
 	using System.Runtime.InteropServices;
+    using Microsoft.VisualStudio.Shell;
 
 
     /// <summary>
@@ -37,6 +38,7 @@ namespace Microsoft.VisualStudio.Project
 
             // exclude the items which are the part of the build.
             XProjectMembers.ExcludeProjectBuildItems(project, files, folders);
+            ThreadHelper.ThrowIfNotOnUIThread();
 
             XProjectMembers.AddNonMemberFolderItems(project, folders);
             XProjectMembers.AddNonMemberFileItems(project, files);
@@ -51,10 +53,12 @@ namespace Microsoft.VisualStudio.Project
         {
             IList<HierarchyNode> nodeList = new List<HierarchyNode>();
             XHelperMethods.FindNodes(nodeList, project, XProjectMembers.IsNodeNonMemberItem, null);
+            ThreadHelper.ThrowIfNotOnUIThread();
             for (int index = nodeList.Count - 1; index >= 0; index--)
             {
                 HierarchyNode node = nodeList[index];
                 HierarchyNode parent = node.Parent;
+
                 node.OnItemDeleted();
                 parent.RemoveChild(node);
             }
@@ -70,6 +74,8 @@ namespace Microsoft.VisualStudio.Project
         private static bool IsNodeNonMemberItem(HierarchyNode node, object criteria)
         {
             bool isNonMemberItem = false;
+            ThreadHelper.ThrowIfNotOnUIThread();
+
             if (node != null)
             {
                 object propObj = node.GetProperty((int)__VSHPROPID.VSHPROPID_IsNonMemberItem);
@@ -268,6 +274,7 @@ namespace Microsoft.VisualStudio.Project
 
                     parentNode = childNode;
                 }
+                ThreadHelper.ThrowIfNotOnUIThread();
 
                 if (topFolderNode != null)
                 {
@@ -329,6 +336,7 @@ namespace Microsoft.VisualStudio.Project
 
                     parentNode = childNode;
                 }
+                ThreadHelper.ThrowIfNotOnUIThread();
 
                 if (topFolderNode != null)
                 {

@@ -12,6 +12,7 @@
 using System;
 using System.Diagnostics;
 using Microsoft.VisualStudio;
+using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 
 namespace Microsoft.VisualStudio.Project
@@ -44,6 +45,7 @@ namespace Microsoft.VisualStudio.Project
         private IVsTrackProjectDocuments2 GetIVsTrackProjectDocuments2()
         {
             Debug.Assert(this.projectMgr != null && !this.projectMgr.IsClosed && this.projectMgr.Site != null);
+            ThreadHelper.ThrowIfNotOnUIThread();
 
             IVsTrackProjectDocuments2 documentTracker = this.projectMgr.Site.GetService(typeof(SVsTrackProjectDocuments)) as IVsTrackProjectDocuments2;
             Utilities.CheckNotNull(documentTracker);
@@ -69,6 +71,7 @@ namespace Microsoft.VisualStudio.Project
             {
                 return false;
             }
+            ThreadHelper.ThrowIfNotOnUIThread();
 
             int len = files.Length;
             VSQUERYADDFILERESULTS[] summary = new VSQUERYADDFILERESULTS[1];
@@ -86,7 +89,9 @@ namespace Microsoft.VisualStudio.Project
         /// </summary>
         internal void OnItemAdded(string file, VSADDFILEFLAGS flag)
         {
-            if((this.projectMgr.EventTriggeringFlag & ProjectNode.EventTriggering.DoNotTriggerTrackerEvents) == 0)
+            ThreadHelper.ThrowIfNotOnUIThread();
+
+            if ((this.projectMgr.EventTriggeringFlag & ProjectNode.EventTriggering.DoNotTriggerTrackerEvents) == 0)
             {
                 ErrorHandler.ThrowOnFailure(this.GetIVsTrackProjectDocuments2().OnAfterAddFilesEx(this.projectMgr , 1, new string[1] { file }, new VSADDFILEFLAGS[1] { flag }));
             }
@@ -113,6 +118,7 @@ namespace Microsoft.VisualStudio.Project
             int length = files.Length;
 
             VSQUERYREMOVEFILERESULTS[] summary = new VSQUERYREMOVEFILERESULTS[1];
+            ThreadHelper.ThrowIfNotOnUIThread();
 
             ErrorHandler.ThrowOnFailure(this.GetIVsTrackProjectDocuments2().OnQueryRemoveFiles(this.projectMgr , length, files, flags, summary, null));
             if(summary[0] == VSQUERYREMOVEFILERESULTS.VSQUERYREMOVEFILERESULTS_RemoveNotOK)
@@ -128,6 +134,8 @@ namespace Microsoft.VisualStudio.Project
         /// </summary>
         internal void OnItemRemoved(string file, VSREMOVEFILEFLAGS flag)
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
+
             if (!string.IsNullOrEmpty(file))
             {
                 if ((this.projectMgr.EventTriggeringFlag & ProjectNode.EventTriggering.DoNotTriggerTrackerEvents) == 0)
@@ -151,6 +159,7 @@ namespace Microsoft.VisualStudio.Project
             {
                 return true;
             }
+            ThreadHelper.ThrowIfNotOnUIThread();
 
             int iCanContinue = 0;
             ErrorHandler.ThrowOnFailure(this.GetIVsTrackProjectDocuments2().OnQueryRenameFile(this.projectMgr , oldFileName, newFileName, flag, out iCanContinue));
@@ -163,7 +172,9 @@ namespace Microsoft.VisualStudio.Project
         ///
         internal void OnItemRenamed(string strOldName, string strNewName, VSRENAMEFILEFLAGS flag)
         {
-            if((this.projectMgr.EventTriggeringFlag & ProjectNode.EventTriggering.DoNotTriggerTrackerEvents) == 0)
+            ThreadHelper.ThrowIfNotOnUIThread();
+
+            if ((this.projectMgr.EventTriggeringFlag & ProjectNode.EventTriggering.DoNotTriggerTrackerEvents) == 0)
             {
                 ErrorHandler.ThrowOnFailure(this.GetIVsTrackProjectDocuments2().OnAfterRenameFile(this.projectMgr , strOldName, strNewName, flag));
             }

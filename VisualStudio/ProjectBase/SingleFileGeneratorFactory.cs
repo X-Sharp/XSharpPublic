@@ -14,6 +14,7 @@ using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.OLE.Interop;
+using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using Microsoft.Win32;
 using VSRegistry = Microsoft.VisualStudio.Shell.VSRegistry;
@@ -231,6 +232,8 @@ namespace Microsoft.VisualStudio.Project
         {
             get
             {
+                ThreadHelper.ThrowIfNotOnUIThread();
+
                 return this.serviceProvider.GetService(typeof(SLocalRegistry)) as ILocalRegistry;
             }
         }
@@ -249,6 +252,8 @@ namespace Microsoft.VisualStudio.Project
         public virtual int CreateGeneratorInstance(string progId, out int generatesDesignTimeSource, out int generatesSharedDesignTimeSource, out int useTempPEFlag, out IVsSingleFileGenerator generate)
         {
             Guid genGuid;
+            ThreadHelper.ThrowIfNotOnUIThread();
+
             ErrorHandler.ThrowOnFailure(this.GetGeneratorInformation(progId, out generatesDesignTimeSource, out generatesSharedDesignTimeSource, out useTempPEFlag, out genGuid));
 
             //Create the single file generator and pass it out. Check to see if it is in the cache

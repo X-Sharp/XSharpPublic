@@ -346,6 +346,7 @@ namespace Microsoft.VisualStudio.Project
         {
             if (this.IsDependent)
                 return null;
+            ThreadHelper.ThrowIfNotOnUIThread();
             return base.PrepareSelectedNodesForClipBoard();
         }
         //RvdH Prevent deleting the file for Linked files
@@ -361,6 +362,7 @@ namespace Microsoft.VisualStudio.Project
                 removeFromStorage = false;
             }
 
+            ThreadHelper.ThrowIfNotOnUIThread();
             base.Remove(removeFromStorage);
         }
 
@@ -421,6 +423,7 @@ namespace Microsoft.VisualStudio.Project
             {
                 throw new InvalidOperationException(SR.GetString(SR.FileNameCannotContainALeadingPeriod, CultureInfo.CurrentUICulture));
             }
+            ThreadHelper.ThrowIfNotOnUIThread();
 
             // Verify that the file extension is unchanged
             string strRelPath = Path.GetFileName(this.ItemNode.GetMetadata(ProjectFileConstants.Include));
@@ -528,6 +531,8 @@ namespace Microsoft.VisualStudio.Project
 
             try
             {
+                ThreadHelper.ThrowIfNotOnUIThread();
+
                 if (!RenameDocument(oldName, newName))
                 {
                     this.ItemNode.Rename(oldrelPath);
@@ -593,6 +598,7 @@ namespace Microsoft.VisualStudio.Project
             {
                 return (int)OleConstants.OLECMDERR_E_NOTSUPPORTED;
             }
+            ThreadHelper.ThrowIfNotOnUIThread();
 
             // Exec on special filenode commands
             if (cmdGroup == VsMenus.guidStandardCommandSet97)
@@ -710,6 +716,7 @@ namespace Microsoft.VisualStudio.Project
             CCITracing.TraceCall();
             FileDocumentManager manager = this.GetDocumentManager() as FileDocumentManager;
             Utilities.CheckNotNull(manager, "Could not get the FileDocumentManager");
+            ThreadHelper.ThrowIfNotOnUIThread();
             manager.Open(false, false, WindowFrameShowAction.Show);
         }
 
@@ -721,6 +728,7 @@ namespace Microsoft.VisualStudio.Project
         /// <returns></returns>
         protected override int AfterSaveItemAs(IntPtr docData, string newFilePath)
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
             Utilities.ArgumentNotNullOrEmpty("newFilePath", newFilePath);
 
             int returnCode = VSConstants.S_OK;
@@ -864,6 +872,7 @@ namespace Microsoft.VisualStudio.Project
             }
             set
             {
+                ThreadHelper.ThrowIfNotOnUIThread();
                 this.SetEditLabel(value);
             }
         }
@@ -876,6 +885,7 @@ namespace Microsoft.VisualStudio.Project
         internal protected virtual bool IsFileOnDisk(bool showMessage)
         {
             bool fileExist = IsFileOnDisk(this.Url);
+            ThreadHelper.ThrowIfNotOnUIThread();
 
             if (!fileExist && showMessage && !Utilities.IsInAutomationFunction(this.ProjectMgr.Site))
             {
@@ -911,6 +921,7 @@ namespace Microsoft.VisualStudio.Project
         /// <remarks>While a new node will be used to represent the item, the underlying MSBuild item will be the same and as a result file properties saved in the project file will not be lost.</remarks>
 		protected internal virtual FileNode RenameFileNode(string oldFileName, string newFileName, string linkPath, uint newParentId)
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
             bool bDependantItem = false;
             string oldLinkPath = this.ItemNode.GetMetadata(ProjectFileConstants.Link);
             if (String.Equals(oldFileName, newFileName, StringComparison.Ordinal) &&
@@ -1012,6 +1023,7 @@ namespace Microsoft.VisualStudio.Project
                     newfilename = Path.Combine(Path.GetDirectoryName(parentNode.GetMkDocument()), childNode.Caption);
                 }
 
+                ThreadHelper.ThrowIfNotOnUIThread();
                 childNode.RenameDocument(childNode.GetMkDocument(), newfilename);
 
                 //We must update the DependsUpon property since the rename operation will not do it if the childNode is not renamed
@@ -1032,6 +1044,7 @@ namespace Microsoft.VisualStudio.Project
         /// <param name="originalFileName">The original filenamee</param>
         protected virtual void RecoverFromRenameFailure(string fileThatFailed, string originalFileName, string originalLinkPath = null)
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
             if (this.ItemNode != null && !String.IsNullOrEmpty(originalFileName))
             {
                 this.ItemNode.Rename(originalFileName);
@@ -1105,6 +1118,7 @@ namespace Microsoft.VisualStudio.Project
         internal bool RenameDocument(string oldName, string newName)
         {
             HierarchyNode newNode;
+            ThreadHelper.ThrowIfNotOnUIThread();
             return RenameDocument(oldName, newName, out newNode);
         }
         /// <summary>
@@ -1113,6 +1127,7 @@ namespace Microsoft.VisualStudio.Project
         /// returns FALSE if the doc can not be renamed
         protected virtual bool RenameDocument(string oldName, string newName, out HierarchyNode newNodeOut)
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
             HierarchyNode newNode = null;
             newNodeOut = null;
 
@@ -1236,6 +1251,7 @@ namespace Microsoft.VisualStudio.Project
             }
 
             this.ItemNode.RefreshProperties();
+            ThreadHelper.ThrowIfNotOnUIThread();
 
             this.ReDraw(UIHierarchyElement.Caption);
             this.RenameChildNodes(this);
@@ -1330,6 +1346,7 @@ namespace Microsoft.VisualStudio.Project
         [SuppressMessage("Microsoft.Naming", "CA1704:IdentifiersShouldBeSpelledCorrectly", MessageId = "Scc")]
         protected internal override void UpdateSccStateIcons()
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
             if (this.IsDependent && !this.ExcludeNodeFromScc)
             {
                 this.Parent.ReDraw(UIHierarchyElement.SccState);

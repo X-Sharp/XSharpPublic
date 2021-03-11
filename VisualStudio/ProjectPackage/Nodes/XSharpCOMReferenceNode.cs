@@ -12,6 +12,7 @@ using Microsoft.VisualStudio.OLE.Interop;
 using Microsoft.VisualStudio.Project;
 using System.Reflection;
 using System.Diagnostics;
+using Microsoft.VisualStudio.Shell;
 
 namespace XSharp.Project
 {
@@ -47,6 +48,7 @@ namespace XSharp.Project
         public XSharpComReferenceNode(ProjectNode root, ProjectElement element)
            : base(root, element)
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
             BindReferenceData();
         }
         protected override void Dispose(bool disposing)
@@ -78,6 +80,7 @@ namespace XSharp.Project
         {
             if (String.IsNullOrEmpty(wrapperTool))
                 wrapperTool = WrapperToolAttributeValue.TlbImp.ToString();
+            ThreadHelper.ThrowIfNotOnUIThread();
 
             this.description = selectorData.bstrTitle;
             this.EmbedInteropTypes = false;
@@ -87,6 +90,7 @@ namespace XSharp.Project
 
         protected override void BindReferenceData()
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
             base.BindReferenceData();
             GetNamesFromWrapper();
         }
@@ -142,6 +146,8 @@ namespace XSharp.Project
         {
             get
             {
+                ThreadHelper.ThrowIfNotOnUIThread();
+
                 if (typelibwrapper == null)
                 {
                     Guid wrapperGuid = typeof(IVsTypeLibraryWrapper).GUID;
@@ -174,6 +180,7 @@ namespace XSharp.Project
         }
         private void GetNamesFromWrapper()
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
             if (this.TypeLibWrapper != null)
             {
                 TLIBATTR[] attr = new TLIBATTR[1];

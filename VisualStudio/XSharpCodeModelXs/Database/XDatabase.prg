@@ -467,11 +467,12 @@ BEGIN NAMESPACE XSharpModel
 						VAR lOk := FALSE 
 						BEGIN USING VAR rdr := cmd:ExecuteReader()
 							IF rdr:Read()
-								oFile:Id          := rdr:GetInt64(0)
-								oFile:LastChanged := rdr:GetDateTime(1)
-								oFile:Size        := rdr:GetInt64(2)
-								oFile:UsingsStr   := rdr:GetString(3)
-								oFile:StaticUsingsStr := rdr:GetString(4)
+								oFile:Id                := rdr:GetInt64(0)
+								oFile:LastChanged       := rdr:GetDateTime(1)
+                                // these can be NULL
+								oFile:Size              := DbToInt(rdr[2])
+								oFile:UsingsStr         := DbToString(rdr[3])
+								oFile:StaticUsingsStr := DbToString(rdr[4])
 								lOk := TRUE
 							ENDIF
 						END USING 

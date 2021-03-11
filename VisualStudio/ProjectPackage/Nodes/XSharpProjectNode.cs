@@ -139,6 +139,7 @@ namespace XSharp.Project
 
         private void Newtask_Navigate(object sender, EventArgs e)
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
             lock (this)
             {
                 var task = (Microsoft.VisualStudio.Shell.Task)sender;
@@ -230,6 +231,7 @@ namespace XSharp.Project
                 {
                     return null;
                 }
+                ThreadHelper.ThrowIfNotOnUIThread();
                 IVsHierarchy hier = Marshal.GetObjectForIUnknown(unknownPtr) as IVsHierarchy;
                 return hier;
             }
@@ -373,7 +375,7 @@ namespace XSharp.Project
                 case (int)__VSHPROPID.VSHPROPID_DefaultNamespace:
                     return this.RootNameSpace;
                 case (int)__VSHPROPID5.VSHPROPID_OutputType:
-                    return GetOutPutType();
+                    return (uint) GetOutPutType();
                 case (int)__VSHPROPID2.VSHPROPID_DesignerHiddenCodeGeneration:
                 case (int)__VSHPROPID3.VSHPROPID_WebReferenceSupported:
                 case (int)__VSHPROPID3.VSHPROPID_ServiceReferenceSupported:
@@ -383,7 +385,7 @@ namespace XSharp.Project
                 case (int)__VSHPROPID6.VSHPROPID_ShowAllProjectFilesInProjectView:
                     return true;
                 case (int)__VSHPROPID6.VSHPROPID_NuGetPackageProjectTypeContext:
-                    return "XSharp.ProjectSystem";
+                    return "XSharp.ProjectSystem"; 
                 //case (int)__VSHPROPID6.VSHPROPID_Subcaption:
                 //case (int)__VSHPROPID7.VSHPROPID_ShortSubcaption:
                 //    return "X#";
@@ -1008,10 +1010,11 @@ namespace XSharp.Project
             this.OleServiceProvider.AddService(typeof(SVSMDCodeDomProvider), new OleServiceProvider.ServiceCreatorCallback(this.CreateServices), false);
             this.OleServiceProvider.AddService(typeof(System.CodeDom.Compiler.CodeDomProvider), new OleServiceProvider.ServiceCreatorCallback(this.CreateServices), false);
 
-            // This will call the Calback in PojectPackage
+            // This will call the callback in PojectPackage
             IXSharpLibraryManager libraryManager = Site.GetService(typeof(IXSharpLibraryManager)) as IXSharpLibraryManager;
             // Be sure we have External/system types for Intellisense
             UpdateAssemblyReferencesModel();
+            ThreadHelper.ThrowIfNotOnUIThread();
             if (null != libraryManager)
             {
                 libraryManager.RegisterHierarchy(this.InteropSafeHierarchy, this.ProjectModel, this);
@@ -1315,21 +1318,26 @@ namespace XSharp.Project
             ThreadHelper.JoinableTaskFactory.Run(async delegate
             {
                 await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
-                dte = (EnvDTE.DTE)this.Site.GetService(typeof(EnvDTE.DTE));
-                foreach (EnvDTE.Project p in dte.Solution.Projects)
+                var tmp = this.Site.GetService(typeof(EnvDTE.DTE));
+                if (tmp != null)
                 {
-                    if (p == null || p.Properties == null) // unloaded ?
+                    dte = (EnvDTE.DTE)tmp;
+
+                    foreach (EnvDTE.Project p in dte.Solution.Projects)
                     {
-                        continue;
-                    }
-                    // EnvDTE80.ProjectKinds.vsProjectKindSolutionFolder
-                    if (p.Kind == "{66A26720-8FB5-11D2-AA7E-00C04F688DDE}")
-                    {
-                        list.AddRange(GetSolutionFolderProjects(p));
-                    }
-                    else
-                    {
-                        list.Add(p);
+                        if (p == null || p.Properties == null) // unloaded ?
+                        {
+                            continue;
+                        }
+                        // EnvDTE80.ProjectKinds.vsProjectKindSolutionFolder
+                        if (p.Kind == "{66A26720-8FB5-11D2-AA7E-00C04F688DDE}")
+                        {
+                            list.AddRange(GetSolutionFolderProjects(p));
+                        }
+                        else
+                        {
+                            list.Add(p);
+                        }
                     }
                 }
             });
@@ -1337,6 +1345,8 @@ namespace XSharp.Project
         }
         public EnvDTE.Project FindProject(string sProject)
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
+
             foreach (var p in GetSolutionProjects())
             {
                 string name = "";
@@ -1393,6 +1403,7 @@ namespace XSharp.Project
             // because the type lookup will not work then
             if (physicalView == "Design" && !projectModel.FileWalkCompleted)
                 return VSConstants.E_FAIL;
+            ThreadHelper.ThrowIfNotOnUIThread();
             return base.ReopenItem(itemId, ref editorType, physicalView, ref logicalView, docDataExisting, out frame);
         }
 
@@ -1543,6 +1554,7 @@ namespace XSharp.Project
             uint dummy2;
             try
             {
+                ThreadHelper.ThrowIfNotOnUIThread();
                 VsShellUtilities.OpenDocument(this.Site, file, VSConstants.LOGVIEWID_Code, out dummy1, out dummy2, out window, out textView);
                 if ((window != null) && (textView != null))
                 {
@@ -1746,6 +1758,7 @@ namespace XSharp.Project
             pbGeneratesSharedDesignTimeSource = 0;
             pbUseTempPEFlag = 0;
             ppGenerate = null;
+            ThreadHelper.ThrowIfNotOnUIThread();
             if (createIVsSingleFileGeneratorFactory())
                 return factory.CreateGeneratorInstance(wszProgId, out pbGeneratesDesignTimeSource, out pbGeneratesSharedDesignTimeSource, out pbUseTempPEFlag, out ppGenerate);
             return VSConstants.S_FALSE;
@@ -1757,6 +1770,7 @@ namespace XSharp.Project
             pbGeneratesSharedDesignTimeSource = 0;
             pbUseTempPEFlag = 0;
             pguidGenerator = Guid.Empty;
+            ThreadHelper.ThrowIfNotOnUIThread();
             if (createIVsSingleFileGeneratorFactory())
                 return factory.GetGeneratorInformation(wszProgId, out pbGeneratesDesignTimeSource, out pbGeneratesSharedDesignTimeSource, out pbUseTempPEFlag, out pguidGenerator);
             return VSConstants.S_FALSE;
@@ -1980,6 +1994,8 @@ namespace XSharp.Project
 
             // First remove the Navigation Data
             //
+            ThreadHelper.ThrowIfNotOnUIThread();
+
             if (this.Site != null)
             {
 
@@ -2054,6 +2070,7 @@ namespace XSharp.Project
             int result;
             bool dialectVO = false;
             bool ok = true;
+            ThreadHelper.ThrowIfNotOnUIThread();
             silent = (__VSUPGRADEPROJFLAGS)grfUpgradeFlags == __VSUPGRADEPROJFLAGS.UPF_SILENTMIGRATE;
             if (ModelScannerEvents.ChangedProjectFiles.ContainsKey(this.Url))
             {

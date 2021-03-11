@@ -13,6 +13,7 @@ using Microsoft.VisualStudio.Shell.Interop;
 using VsCommands = Microsoft.VisualStudio.VSConstants.VSStd97CmdID;
 using VsCommands2K = Microsoft.VisualStudio.VSConstants.VSStd2KCmdID;
 using OleConstants = Microsoft.VisualStudio.OLE.Interop.Constants;
+using Microsoft.VisualStudio.Shell;
 
 namespace Microsoft.VisualStudio.Project
 {
@@ -132,6 +133,8 @@ namespace Microsoft.VisualStudio.Project
         {
             int result;
             __VSHPROPID id = (__VSHPROPID)propid;
+            ThreadHelper.ThrowIfNotOnUIThread();
+
             switch (id)
             {
                 case __VSHPROPID.VSHPROPID_IsNonMemberItem:
@@ -174,6 +177,7 @@ namespace Microsoft.VisualStudio.Project
                 case __VSHPROPID.VSHPROPID_IsNonMemberItem:
                     return this.IsNonMemberItem;
             }
+            ThreadHelper.ThrowIfNotOnUIThread();
 
             return base.GetProperty(propId);
         }
@@ -218,6 +222,7 @@ namespace Microsoft.VisualStudio.Project
         /// </summary>
         public void ExpandFolder()
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
             this.SetExpanded(true);
         }
 
@@ -226,6 +231,7 @@ namespace Microsoft.VisualStudio.Project
         /// </summary>
         public void CollapseFolder()
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
             this.SetExpanded(false);
         }
 
@@ -271,6 +277,7 @@ namespace Microsoft.VisualStudio.Project
                         }
                     }
                 }
+                ThreadHelper.ThrowIfNotOnUIThread();
 
                 if (projectNode != null && projectNode.ShowAllFilesEnabled && Directory.Exists(this.Url))
                 {
@@ -327,6 +334,7 @@ namespace Microsoft.VisualStudio.Project
             {
                 return VSConstants.S_OK; // do nothing, just ignore it.
             }
+            ThreadHelper.ThrowIfNotOnUIThread();
 
             using (XHelperMethods.NewWaitCursor())
             {
@@ -400,6 +408,7 @@ namespace Microsoft.VisualStudio.Project
         [SuppressMessage("Microsoft.Naming", "CA1725:ParameterNamesShouldMatchBaseDeclaration", MessageId = "2#", Justification = "Suppressing to avoid conflict with style cop.")]
         protected override int ExecCommandOnNode(Guid cmdGroup, uint cmd, uint cmdexecopt, IntPtr pvaIn, IntPtr pvaOut)
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
             if (cmdGroup == VsMenus.guidStandardCommandSet2K)
             {
                 switch ((VsCommands2K)cmd)
@@ -429,6 +438,7 @@ namespace Microsoft.VisualStudio.Project
                         return VSConstants.S_OK;
                 }
             }
+            ThreadHelper.ThrowIfNotOnUIThread();
 
             return base.ExecCommandOnNode(cmdGroup, cmd, cmdexecopt, pvaIn, pvaOut);
         }
@@ -444,6 +454,7 @@ namespace Microsoft.VisualStudio.Project
             {
                 return; // do nothing
             }
+            ThreadHelper.ThrowIfNotOnUIThread();
 
             this.ItemNode = projectNode.CreateMsBuildFolderProjectElement(this.Url);
             this.SetProperty((int)__VSHPROPID.VSHPROPID_IsNonMemberItem, false);
@@ -468,6 +479,7 @@ namespace Microsoft.VisualStudio.Project
         protected void SetExpanded(bool expanded)
         {
             this.IsExpanded = expanded;
+            ThreadHelper.ThrowIfNotOnUIThread();
             this.SetProperty((int)__VSHPROPID.VSHPROPID_Expanded, expanded);
 
             // If we are in automation mode then skip the ui part

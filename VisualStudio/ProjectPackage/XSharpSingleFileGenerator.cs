@@ -103,6 +103,7 @@ namespace XSharp.Project
             // is dirty if there's no generator even defined???
 
             uint itemid = VSConstants.VSITEMID_NIL;
+            ThreadHelper.ThrowIfNotOnUIThread();
             IVsHierarchy hier = (IVsHierarchy)this.ProjectMgr;
             if (document != null && hier != null && ErrorHandler.Succeeded(hier.ParseCanonicalName((string)document, out itemid)))
             {
@@ -140,11 +141,13 @@ namespace XSharp.Project
             var path = System.IO.Path.GetDirectoryName(fileNode.Url);
             var depfile = Path.Combine(path, fileName);
             var depedentNode = ((XSharpProjectNode)this.ProjectMgr).FindURL(depfile);
+            ThreadHelper.ThrowIfNotOnUIThread();
             return UpdateGeneratedCodeFile(fileNode, data, size, fileName, depedentNode);
         }
         protected virtual string UpdateGeneratedCodeFile(FileNode fileNode, byte[] data, int size, string fileName, HierarchyNode dependentNode)
         {
             string filePath = Path.Combine(Path.GetDirectoryName(fileNode.GetMkDocument()), fileName);
+            ThreadHelper.ThrowIfNotOnUIThread();
 
             IVsRunningDocumentTable rdt = this.ProjectMgr.GetService(typeof(SVsRunningDocumentTable)) as IVsRunningDocumentTable;
 
@@ -307,6 +310,7 @@ namespace XSharp.Project
             }
 
             string customToolNamespace = nodeproperties.CustomToolNamespace;
+            ThreadHelper.ThrowIfNotOnUIThread();
 
             try
             {
@@ -529,6 +533,7 @@ namespace XSharp.Project
             Guid CLSID_VsTextBuffer = new Guid("{8E7B96A8-E33D-11d0-A6D5-00C04FB67F6A}");
             string bufferContents = "";
             srpStream = null;
+            ThreadHelper.ThrowIfNotOnUIThread();
 
             IVsRunningDocumentTable rdt = this.DocumentTable;
             if (rdt != null)

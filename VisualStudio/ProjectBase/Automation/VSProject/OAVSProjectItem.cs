@@ -13,6 +13,7 @@ using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.InteropServices;
 using EnvDTE;
+using Microsoft.VisualStudio.Shell;
 using VSLangProj;
 
 namespace Microsoft.VisualStudio.Project.Automation
@@ -39,17 +40,28 @@ namespace Microsoft.VisualStudio.Project.Automation
 
         public virtual EnvDTE.Project ContainingProject
         {
-            get { return fileNode.ProjectMgr.GetAutomationObject() as EnvDTE.Project; }
+            get
+            {
+                ThreadHelper.ThrowIfNotOnUIThread();
+                return fileNode.ProjectMgr.GetAutomationObject() as EnvDTE.Project;
+            }
         }
 
         public virtual ProjectItem ProjectItem
         {
-            get { return fileNode.GetAutomationObject() as ProjectItem; }
+            get {
+                ThreadHelper.ThrowIfNotOnUIThread();
+                return fileNode.GetAutomationObject() as ProjectItem;
+            }
         }
 
         public virtual DTE DTE
         {
-            get { return (DTE)this.fileNode.ProjectMgr.Site.GetService(typeof(DTE)); }
+            get
+            {
+                ThreadHelper.ThrowIfNotOnUIThread();
+                return (DTE)this.fileNode.ProjectMgr.Site.GetService(typeof(DTE));
+            }
         }
 
         public virtual void RunCustomTool()

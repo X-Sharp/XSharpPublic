@@ -56,6 +56,7 @@ namespace Microsoft.VisualStudio.Project
         /// <returns>If the method succeeds, it returns S_OK. If it fails, it returns an error code.</returns>
         public override int DragEnter(IOleDataObject pDataObject, uint grfKeyState, uint itemid, ref uint pdwEffect)
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
             pdwEffect = (uint)DropEffect.None;
             // Comment this out so drag/drop works inside a project
             //if(this.SourceDraggedOrCutOrCopied)
@@ -78,6 +79,7 @@ namespace Microsoft.VisualStudio.Project
         /// <returns>If the method succeeds, it returns S_OK. If it fails, it returns an error code.</returns>
         public override int DragLeave()
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
             this.dropDataType = DropDataType.None;
             return VSConstants.S_OK;
         }
@@ -92,6 +94,7 @@ namespace Microsoft.VisualStudio.Project
         /// <returns>If the method succeeds, it returns S_OK. If it fails, it returns an error code.</returns>
         public override int DragOver(uint grfKeyState, uint itemid, ref uint pdwEffect)
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
             pdwEffect = (uint)DropEffect.None;
 
             // Dragging items to a project that is being debugged is not supported
@@ -133,7 +136,9 @@ namespace Microsoft.VisualStudio.Project
         /// <returns>If the method succeeds, it returns S_OK. If it fails, it returns an error code. </returns>
         public override int Drop(IOleDataObject pDataObject, uint grfKeyState, uint itemid, ref uint pdwEffect)
         {
-            if(pDataObject == null)
+            ThreadHelper.ThrowIfNotOnUIThread();
+
+            if (pDataObject == null)
             {
                 return VSConstants.E_INVALIDARG;
             }
@@ -206,6 +211,7 @@ namespace Microsoft.VisualStudio.Project
         /// <returns>If the method succeeds, it returns S_OK. If it fails, it returns an error code.</returns>
         public override int GetDropInfo(out uint pdwOKEffects, out IOleDataObject ppDataObject, out IDropSource ppDropSource)
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
             //init out params
             pdwOKEffects = (uint)DropEffect.None;
             ppDataObject = null;
@@ -235,7 +241,8 @@ namespace Microsoft.VisualStudio.Project
         /// <returns>If the method succeeds, it returns S_OK. If it fails, it returns an error code. </returns>
         public override int OnDropNotify(int fDropped, uint dwEffects)
         {
-            if(!this.SourceDraggedOrCutOrCopied)
+            ThreadHelper.ThrowIfNotOnUIThread();
+            if (!this.SourceDraggedOrCutOrCopied)
             {
                 return VSConstants.S_FALSE;
             }
@@ -278,7 +285,9 @@ namespace Microsoft.VisualStudio.Project
             foreach(HierarchyNode node in this.ItemsDraggedOrCutOrCopied)
             {
             DocumentManager manager = node.GetDocumentManager();
-            if (manager != null)
+                ThreadHelper.ThrowIfNotOnUIThread();
+
+                if (manager != null)
             {
                if (manager.IsDirty && manager.IsOpenedByUs)
                {
@@ -315,9 +324,10 @@ namespace Microsoft.VisualStudio.Project
                     fCancelDrop = 1;
                     return VSConstants.S_OK;
             }
+            ThreadHelper.ThrowIfNotOnUIThread();
 
             // Save all dirty documents
-            foreach(HierarchyNode node in this.ItemsDraggedOrCutOrCopied)
+            foreach (HierarchyNode node in this.ItemsDraggedOrCutOrCopied)
             {
                 DocumentManager manager = node.GetDocumentManager();
                 if(manager != null)
@@ -342,7 +352,8 @@ namespace Microsoft.VisualStudio.Project
         /// <returns>If the method succeeds, it returns S_OK. If it fails, it returns an error code. </returns>
         public virtual int OnPaste(int wasCut, uint dropEffect)
         {
-            if(!this.SourceDraggedOrCutOrCopied)
+            ThreadHelper.ThrowIfNotOnUIThread();
+            if (!this.SourceDraggedOrCutOrCopied)
             {
                 return VSConstants.S_FALSE;
             }
@@ -371,7 +382,8 @@ namespace Microsoft.VisualStudio.Project
         /// <returns>If the method succeeds, it returns S_OK. If it fails, it returns an error code. </returns>
         public virtual int OnClear(int wasCut)
         {
-            if(!this.SourceDraggedOrCutOrCopied)
+            ThreadHelper.ThrowIfNotOnUIThread();
+            if (!this.SourceDraggedOrCutOrCopied)
             {
                 return VSConstants.S_FALSE;
             }
@@ -414,6 +426,7 @@ namespace Microsoft.VisualStudio.Project
         /// <returns>data object for selected items</returns>
         internal virtual DataObject PackageSelectionDataObject(bool cutHighlightItems)
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
             this.CleanupSelectionDataObject(false, false, false);
             StringBuilder sb = new StringBuilder();
 
@@ -512,6 +525,7 @@ namespace Microsoft.VisualStudio.Project
         /// <param name="dropEffect">The drop effect</param>
         protected internal virtual void AddFolderFromOtherProject(string folderToAdd, HierarchyNode targetNode, uint dropEffect)
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
             AddFolderFromOtherProject(folderToAdd, targetNode, dropEffect, false);
         }
 
@@ -525,7 +539,8 @@ namespace Microsoft.VisualStudio.Project
         /// <param name="validateOnly">If true, no action is actually taken. Only checks for error cases.</param>
         protected internal virtual void AddFolderFromOtherProject(string folderToAdd, HierarchyNode targetNode, uint dropEffect, bool validateOnly)
         {
-            if(String.IsNullOrEmpty(folderToAdd))
+            ThreadHelper.ThrowIfNotOnUIThread();
+            if (String.IsNullOrEmpty(folderToAdd))
                 throw new ArgumentNullException("folderToAdd");
             if(targetNode == null)
                 throw new ArgumentNullException("targetNode");
@@ -623,19 +638,19 @@ namespace Microsoft.VisualStudio.Project
         /// <param name="targetNode">Node to start adding to</param>
         /// <param name="addSibblings">Typically false on first call and true after that</param>
         protected virtual void WalkSourceProjectAndAdd(IVsHierarchy sourceHierarchy, uint itemId, HierarchyNode targetNode, bool addSiblings)
-      {
-         // Before we start the walk, add the current node
+        {
+            // Before we start the walk, add the current node
+            ThreadHelper.ThrowIfNotOnUIThread();
+            if (itemId != VSConstants.VSITEMID_NIL)
+            {
+                // Calculate the corresponding path in our project
+                string source;
+                ErrorHandler.ThrowOnFailure(((IVsProject)sourceHierarchy).GetMkDocument(itemId, out source));
+                string name = Path.GetFileName(source.TrimEnd(new char[] { '/', '\\' }));
 
-         if (itemId != VSConstants.VSITEMID_NIL)
-         {
-            // Calculate the corresponding path in our project
-            string source;
-            ErrorHandler.ThrowOnFailure(((IVsProject)sourceHierarchy).GetMkDocument(itemId, out source));
-            string name = Path.GetFileName(source.TrimEnd(new char[] { '/', '\\' }));
-
-            WalkSourceProjectAndAdd(sourceHierarchy, itemId, targetNode, name, addSiblings);
-         }
-      }
+                WalkSourceProjectAndAdd(sourceHierarchy, itemId, targetNode, name, addSiblings);
+            }
+        }
       /// <summary>
       /// Recursive method that walk a hierarchy and add items it find to our project.
       /// Note that this is meant as an helper to the Copy&Paste/Drag&Drop functionality.
@@ -649,7 +664,7 @@ namespace Microsoft.VisualStudio.Project
       /// the same as the source.</remarks>
       protected virtual void WalkSourceProjectAndAdd(IVsHierarchy sourceHierarchy, uint itemId, HierarchyNode targetNode, string name, bool addSiblings)
       {
-
+            ThreadHelper.ThrowIfNotOnUIThread();
             if (sourceHierarchy == null)
             {
                 throw new ArgumentNullException("sourceHierarchy");
@@ -747,6 +762,7 @@ namespace Microsoft.VisualStudio.Project
         /// <returns>Node that was added</returns>
       protected virtual HierarchyNode AddNodeIfTargetExistInStorage(HierarchyNode parentNode, string name, string targetPath, VSADDITEMOPERATION addItemOp)
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
             if (parentNode == null)
             {
                 return null;
@@ -778,6 +794,7 @@ namespace Microsoft.VisualStudio.Project
         /// </summary>
         protected internal override int CutToClipboard()
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
             int returnValue = (int)OleConstants.OLECMDERR_E_NOTSUPPORTED;
          	this.dataWasCut = true;
             try
@@ -817,6 +834,7 @@ namespace Microsoft.VisualStudio.Project
         /// </summary>
         protected internal override int CopyToClipboard()
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
             int returnValue = (int)OleConstants.OLECMDERR_E_NOTSUPPORTED;
          	this.dataWasCut = false;
             try
@@ -860,7 +878,9 @@ namespace Microsoft.VisualStudio.Project
       /// </summary>
       protected internal override int PasteFromClipboard(HierarchyNode targetNode)
       {
-         if (targetNode == null)
+            ThreadHelper.ThrowIfNotOnUIThread();
+
+            if (targetNode == null)
          {
             return VSConstants.E_INVALIDARG;
          }
@@ -886,6 +906,7 @@ namespace Microsoft.VisualStudio.Project
       /// </summary>
       private int PasteFromClipboardCore(HierarchyNode targetNode)
       {
+            ThreadHelper.ThrowIfNotOnUIThread();
 
             int returnValue = (int)OleConstants.OLECMDERR_E_NOTSUPPORTED;
 
@@ -960,6 +981,7 @@ namespace Microsoft.VisualStudio.Project
                 {
                     return false;
                 }
+                ThreadHelper.ThrowIfNotOnUIThread();
 
                 // First see if this is a set of storage based items
                 FORMATETC format = DragDropHelper.CreateFormatEtc((ushort)DragDropHelper.CF_VSSTGPROJECTITEMS);
@@ -987,6 +1009,7 @@ namespace Microsoft.VisualStudio.Project
         /// <param name="register">true for register, false for unregister</param>
         protected internal override void RegisterClipboardNotifications(bool register)
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
             // Get the UiHierarchy window clipboard helper service
             IVsUIHierWinClipboardHelper clipboardHelper = (IVsUIHierWinClipboardHelper)GetService(typeof(SVsUIHierWinClipboardHelper));
             if(clipboardHelper == null)
@@ -1014,6 +1037,7 @@ namespace Microsoft.VisualStudio.Project
         /// <remarks>The targetNode is set if the method is called from a drop operation, otherwise it is null</remarks>
         internal DropDataType ProcessSelectionDataObject(IOleDataObject dataObject, HierarchyNode targetNode, uint grfKeyState)
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
             DropDataType dropDataType = DropDataType.None;
             bool isWindowsFormat = false;
 
@@ -1090,7 +1114,8 @@ namespace Microsoft.VisualStudio.Project
 /// <returns>dropdatatype or none if dataobject does not contain known format</returns>
 internal static DropDataType QueryDropDataType(IOleDataObject pDataObject)
         {
-            if(pDataObject == null)
+            ThreadHelper.ThrowIfNotOnUIThread();
+            if (pDataObject == null)
             {
                 return DropDataType.None;
             }
@@ -1169,6 +1194,7 @@ internal static DropDataType QueryDropDataType(IOleDataObject pDataObject)
 
         internal void CleanupSelectionDataObject(bool dropped, bool cut, bool moved)
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
             this.CleanupSelectionDataObject(dropped, cut, moved, false);
         }
 
@@ -1179,7 +1205,8 @@ internal static DropDataType QueryDropDataType(IOleDataObject pDataObject)
         /// </summary>
         internal void CleanupSelectionDataObject(bool dropped, bool cut, bool moved, bool justCleanup)
         {
-            if(this.ItemsDraggedOrCutOrCopied == null || this.ItemsDraggedOrCutOrCopied.Count == 0)
+            ThreadHelper.ThrowIfNotOnUIThread();
+            if (this.ItemsDraggedOrCutOrCopied == null || this.ItemsDraggedOrCutOrCopied.Count == 0)
             {
                 return;
             }
@@ -1262,10 +1289,11 @@ internal static DropDataType QueryDropDataType(IOleDataObject pDataObject)
          //Validate input
 		 Utilities.ArgumentNotNull("projectReferences", projectReferences);
 		 Utilities.ArgumentNotNull("targetNode", targetNode);
+            ThreadHelper.ThrowIfNotOnUIThread();
 
-         //Iteratively add files from projectref
+            //Iteratively add files from projectref
 
-         bool bSourceProjectIsNotThisProject = false;
+            bool bSourceProjectIsNotThisProject = false;
          foreach (string projectReference in projectReferences)
          {
             if (String.IsNullOrEmpty(projectReference))
@@ -1578,6 +1606,7 @@ internal static DropDataType QueryDropDataType(IOleDataObject pDataObject)
             }
 
 
+            ThreadHelper.ThrowIfNotOnUIThread();
             string sourceProjectPath = DragDropHelper.GetSourceProjectPath(oleDataObject);
 
             if(!String.IsNullOrEmpty(sourceProjectPath) && NativeMethods.IsSamePath(sourceProjectPath, this.GetMkDocument()))

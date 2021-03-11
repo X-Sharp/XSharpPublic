@@ -53,6 +53,8 @@ namespace Microsoft.VisualStudio.Project
             get { return assemblyPath; }
             set
             {
+                ThreadHelper.ThrowIfNotOnUIThread();
+
                 this.StopObservingItem(assemblyPath);
                 assemblyPath = value;
                 this.ObserveItem(assemblyPath);
@@ -105,6 +107,8 @@ namespace Microsoft.VisualStudio.Project
         public AssemblyReferenceNode(ProjectNode root, ProjectElement element)
             : base(root, element)
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
+
             this.GetPathNameFromProjectFile();
 
             this.InitializeFileChangeEvents();
@@ -123,7 +127,8 @@ namespace Microsoft.VisualStudio.Project
             : base(root)
         {
             // Validate the input parameters.
-            if(null == root)
+            ThreadHelper.ThrowIfNotOnUIThread();
+            if (null == root)
             {
                 throw new ArgumentNullException("root");
             }
@@ -182,11 +187,12 @@ namespace Microsoft.VisualStudio.Project
         protected override void BindReferenceData()
         {
             Debug.Assert(this.assemblyName != null, "The AssemblyName field has not been initialized");
+            ThreadHelper.ThrowIfNotOnUIThread();
 
             // If the item has not been set correctly like in case of a new reference added it now.
             // The constructor for the AssemblyReference node will create a default project item. In that case the Item is null.
             // We need to specify here the correct project element.
-            if(this.ItemNode == null || this.ItemNode.Item == null)
+            if (this.ItemNode == null || this.ItemNode.Item == null)
             {
                 this.ItemNode = new ProjectElement(this.ProjectMgr, this.assemblyName.FullName, ProjectFileConstants.Reference);
             }
@@ -219,6 +225,8 @@ namespace Microsoft.VisualStudio.Project
 
             try
             {
+                ThreadHelper.ThrowIfNotOnUIThread();
+
                 if (this.assemblyRef != null)
                 {
                     this.assemblyRef.Dispose();
@@ -236,6 +244,7 @@ namespace Microsoft.VisualStudio.Project
         private void CreateFromAssemblyName(AssemblyName name)
         {
             this.assemblyName = name;
+            ThreadHelper.ThrowIfNotOnUIThread();
 
             // Use MsBuild to resolve the assembly name
             this.ResolveAssemblyReference();
@@ -303,7 +312,9 @@ namespace Microsoft.VisualStudio.Project
         private void GetPathNameFromProjectFile()
         {
             string result = this.ItemNode.GetMetadata(ProjectFileConstants.HintPath);
-            if(String.IsNullOrEmpty(result))
+            ThreadHelper.ThrowIfNotOnUIThread();
+
+            if (String.IsNullOrEmpty(result))
             {
                 result = this.ItemNode.GetMetadata(ProjectFileConstants.AssemblyName);
                 if(String.IsNullOrEmpty(result))
@@ -329,12 +340,14 @@ namespace Microsoft.VisualStudio.Project
 
         private string GetFullPathFromPath(string path)
         {
-            if(Path.IsPathRooted(path))
+            ThreadHelper.ThrowIfNotOnUIThread();
+            if (Path.IsPathRooted(path))
             {
                 if (File.Exists(path))
                     return path;
                 else
                 {
+
                     this.ItemNode.SetMetadata(ProjectFileConstants.HintPath, null);
                     return string.Empty;
                 }
@@ -361,6 +374,7 @@ namespace Microsoft.VisualStudio.Project
 
         protected override void ResolveReference()
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
             this.ResolveAssemblyReference();
         }
 
@@ -374,6 +388,7 @@ namespace Microsoft.VisualStudio.Project
 
             // Private means local copy; we want to know if it is already set to not override the default
             string privateValue = this.ItemNode.GetMetadata(ProjectFileConstants.Private);
+            ThreadHelper.ThrowIfNotOnUIThread();
 
             // Get the list of items which require HintPath
             IEnumerable<ProjectItemInstance> references = MSBuildProjectInstance.GetItems(instance, MsBuildGeneratedItemType.ReferenceCopyLocalPaths);
@@ -417,7 +432,8 @@ namespace Microsoft.VisualStudio.Project
         // no loggers
         public static bool BuildInstance(ProjectNode projectNode, ProjectInstance instance, string target)
 		{
-			BuildSubmission submission = projectNode.DoMSBuildSubmission(BuildKind.Sync, target, ref instance, null);
+            ThreadHelper.ThrowIfNotOnUIThread();
+            BuildSubmission submission = projectNode.DoMSBuildSubmission(BuildKind.Sync, target, ref instance, null);
             if (submission == null)
                 return false;
 			return (submission.BuildResult.OverallResult == BuildResultCode.Success);
@@ -429,6 +445,8 @@ namespace Microsoft.VisualStudio.Project
 		private void SetReferenceProperties()
 		{
             // Set a default HintPath for msbuild to be able to resolve the reference.
+            ThreadHelper.ThrowIfNotOnUIThread();
+
             this.ItemNode.SetMetadata(ProjectFileConstants.HintPath, this.assemblyPath);
 
             // Resolve assembly references. This is needed to make sure that properties like the full path
@@ -466,6 +484,7 @@ namespace Microsoft.VisualStudio.Project
             {
                 return;
             }
+            ThreadHelper.ThrowIfNotOnUIThread();
 
             var instance = this.ProjectMgr.ProjectInstance;
             // must call MsBuild again
@@ -533,6 +552,8 @@ namespace Microsoft.VisualStudio.Project
         /// </summary>
         private void UnregisterFromFileChangeService()
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
+
             this.fileChangeListener.FileChangedOnDisk -= this.OnAssemblyReferenceChangedOnDisk;
             this.fileChangeListener.Dispose();
         }
@@ -556,8 +577,9 @@ namespace Microsoft.VisualStudio.Project
             //    return;
             //}
 
+            ThreadHelper.ThrowIfNotOnUIThread();
 
-            if(NativeMethods.IsSamePath(e.FileName, this.assemblyPath))
+            if (NativeMethods.IsSamePath(e.FileName, this.assemblyPath))
             {
                 this.OnInvalidateItems(this.Parent);
             }
@@ -581,6 +603,8 @@ namespace Microsoft.VisualStudio.Project
 
         protected void ObserveItem(string url)
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
+
             if (File.Exists(url) && fileChangeListener != null)
             {
                 this.fileChangeListener.ObserveItem(url);
@@ -589,6 +613,8 @@ namespace Microsoft.VisualStudio.Project
 
         protected void StopObservingItem(string url)
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
+
             if (! String.IsNullOrEmpty(url) && fileChangeListener != null)
             {
                 this.fileChangeListener.StopObservingItem(url);

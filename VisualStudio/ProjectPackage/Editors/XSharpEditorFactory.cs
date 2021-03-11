@@ -143,7 +143,7 @@ namespace XSharp.Project
             createDocumentWindowFlags = 0;
             commandUIGuid = Guid.Empty;
             editorCaption = null;
-
+            ThreadHelper.ThrowIfNotOnUIThread();
             // Validate inputs
             if ((createEditorFlags & (VSConstants.CEF_OPENFILE | VSConstants.CEF_SILENT)) == 0)
                 return VSConstants.E_INVALIDARG;
@@ -185,6 +185,7 @@ namespace XSharp.Project
         private IVsTextLines GetTextBuffer(System.IntPtr docDataExisting)
         {
             IVsTextLines textLines;
+            ThreadHelper.ThrowIfNotOnUIThread();
             if (docDataExisting == IntPtr.Zero)
             {
                 // Create a new IVsTextLines buffer.

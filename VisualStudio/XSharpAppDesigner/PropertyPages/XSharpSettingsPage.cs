@@ -18,6 +18,7 @@ using System.Drawing;
 using Microsoft.VisualStudio.OLE.Interop;
 using System.Reflection;
 using Microsoft.VisualStudio.Designer.Interfaces;
+using Microsoft.VisualStudio.Shell;
 
 namespace XSharp.Project
 {
@@ -34,6 +35,7 @@ namespace XSharp.Project
         #region IInternalExtenderProvider Members
         public object GetExtenderNames(string ExtenderCATID, object ExtendeeObject)
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
             IVsHierarchy outerHierarchy = ProjectMgr as IVsHierarchy;//HierarchyNode.GetOuterHierarchy(ProjectMgr);
 
             if (outerHierarchy is IInternalExtenderProvider)
@@ -44,6 +46,7 @@ namespace XSharp.Project
 
         public object GetExtender(string ExtenderCATID, string ExtenderName, object ExtendeeObject, IExtenderSite ExtenderSite, int Cookie)
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
             IVsHierarchy outerHierarchy = ProjectMgr as IVsHierarchy; //HierarchyNode.GetOuterHierarchy(ProjectMgr);
 
             if (outerHierarchy is IInternalExtenderProvider)
@@ -56,6 +59,7 @@ namespace XSharp.Project
         public bool CanExtend(string ExtenderCATID, string ExtenderName, object ExtendeeObject)
         {
             //
+            ThreadHelper.ThrowIfNotOnUIThread();
             IVsHierarchy outerHierarchy = ProjectMgr as IVsHierarchy; // HierarchyNode.GetOuterHierarchy(ProjectMgr);
 
             if (outerHierarchy is IInternalExtenderProvider)
@@ -87,6 +91,7 @@ namespace XSharp.Project
         {
             get
             {
+                ThreadHelper.ThrowIfNotOnUIThread();
                 ObjectExtenders extenderService = (ObjectExtenders)XsProject.GetService(typeof(ObjectExtenders));
                 return extenderService.GetExtenderNames(ExtenderCATID, this);
             }
@@ -94,6 +99,7 @@ namespace XSharp.Project
 
         public object get_Extender(string extenderName)
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
             ObjectExtenders extenderService = (ObjectExtenders)XsProject.GetService(typeof(ObjectExtenders));
             return extenderService.GetExtender(ExtenderCATID, extenderName, this);
         }
@@ -103,6 +109,7 @@ namespace XSharp.Project
         // Expand the inner-panel to the full visible size
         public override void Move(Microsoft.VisualStudio.OLE.Interop.RECT[] arrRect)
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
             base.Move(arrRect);
             // Get the Inner panel
             Control innerPanel = Control.FromHandle(new IntPtr(Grid.Handle));
@@ -143,8 +150,13 @@ namespace XSharp.Project
             if (this.XsProject != null && this.XsProject.Site != null)
             {
 
-                IVSMDPropertyBrowser pb = this.XsProject.Site.GetService(typeof(IVSMDPropertyBrowser)) as IVSMDPropertyBrowser;
-                return pb.CreatePropertyGrid();
+                var tmp = this.XsProject.Site.GetService(typeof(IVSMDPropertyBrowser));
+                if (tmp != null)
+                {
+                    var pb =  (IVSMDPropertyBrowser) tmp;
+                    return pb.CreatePropertyGrid();
+                }
+                return null;
             }
             return null;
         }

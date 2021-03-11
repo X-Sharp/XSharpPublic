@@ -9,6 +9,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Security.AccessControl;
 using Microsoft.VisualStudio;
+using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using Microsoft.Win32;
 
@@ -40,6 +41,7 @@ namespace Microsoft.VisualStudio.Project
         public XPackageSettings(IServiceProvider serviceProvider)
         {
             XHelperMethods.VerifyNonNullArgument(serviceProvider, "serviceProvider");
+            ThreadHelper.ThrowIfNotOnUIThread();
 
             if (serviceProvider != null)
             {

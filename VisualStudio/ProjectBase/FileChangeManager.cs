@@ -13,6 +13,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using Microsoft.VisualStudio;
+using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using IServiceProvider = System.IServiceProvider;
 
@@ -79,6 +80,7 @@ namespace Microsoft.VisualStudio.Project
             }
             #endregion
 
+            ThreadHelper.ThrowIfNotOnUIThread();
             this.fileChangeService = (IVsFileChangeEx)serviceProvider.GetService(typeof(SVsFileChangeEx));
             Assumes.Present(fileChangeService);
         }
@@ -97,9 +99,10 @@ namespace Microsoft.VisualStudio.Project
             }
 
             this.disposed = true;
+            ThreadHelper.ThrowIfNotOnUIThread();
 
             // Unsubscribe from the observed source files.
-            foreach(ObservedItemInfo info in this.observedItems.Values)
+            foreach (ObservedItemInfo info in this.observedItems.Values)
             {
                 this.fileChangeService.UnadviseFileChange(info.FileChangeCookie);
             }
@@ -170,6 +173,7 @@ namespace Microsoft.VisualStudio.Project
         /// <param name="fileName">File to observe.</param>
         internal void ObserveItem(string fileName)
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
             this.ObserveItem(fileName, VSConstants.VSITEMID_NIL);
         }
 
@@ -186,6 +190,7 @@ namespace Microsoft.VisualStudio.Project
                 throw new ArgumentException(SR.GetString(SR.InvalidParameter, CultureInfo.CurrentUICulture), "fileName");
             }
             #endregion
+            ThreadHelper.ThrowIfNotOnUIThread();
 
             string fullFileName = Utilities.CanonicalizeFileName(fileName);
             if(!this.observedItems.ContainsKey(fullFileName))
@@ -216,6 +221,7 @@ namespace Microsoft.VisualStudio.Project
                 throw new ArgumentException(SR.GetString(SR.InvalidParameter, CultureInfo.CurrentUICulture), "fileName");
             }
             #endregion
+            ThreadHelper.ThrowIfNotOnUIThread();
 
             string fullFileName = Utilities.CanonicalizeFileName(fileName);
             if(this.observedItems.ContainsKey(fullFileName))
@@ -239,8 +245,9 @@ namespace Microsoft.VisualStudio.Project
             #endregion
 
             string fullFileName = Utilities.CanonicalizeFileName(fileName);
+            ThreadHelper.ThrowIfNotOnUIThread();
 
-            if(this.observedItems.ContainsKey(fullFileName))
+            if (this.observedItems.ContainsKey(fullFileName))
             {
                 // Get the cookie that was used for this.observedItems to this file.
                 ObservedItemInfo itemInfo = this.observedItems[fullFileName];

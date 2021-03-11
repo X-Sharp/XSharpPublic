@@ -20,7 +20,7 @@ using Microsoft.VisualStudio.Shell.Interop;
 using Microsoft.VisualStudio.TextManager.Interop;
 using XSharpModel;
 using System.Text.RegularExpressions;
-
+using Microsoft.VisualStudio.Shell;
 
 namespace Microsoft.VisualStudio.Project
 {
@@ -74,6 +74,8 @@ namespace Microsoft.VisualStudio.Project
             // the generator because if the original document is not dirty then
             // the generated output should be already up to date.
             uint itemid = VSConstants.VSITEMID_NIL;
+            ThreadHelper.ThrowIfNotOnUIThread();
+
             IVsHierarchy hier = (IVsHierarchy)this.projectMgr;
             if (document != null && hier != null && ErrorHandler.Succeeded(hier.ParseCanonicalName((string)document, out itemid)))
             {
@@ -118,6 +120,8 @@ namespace Microsoft.VisualStudio.Project
 
             try
             {
+                ThreadHelper.ThrowIfNotOnUIThread();
+
                 if (!this.runningGenerator)
                 {
                     //Get the buffer contents for the current node
@@ -312,6 +316,8 @@ namespace Microsoft.VisualStudio.Project
         protected virtual string UpdateGeneratedCodeFile(FileNode fileNode, byte[] data, int size, string fileName)
         {
             string filePath = Path.Combine(Path.GetDirectoryName(fileNode.GetMkDocument()), fileName);
+            ThreadHelper.ThrowIfNotOnUIThread();
+
             IVsRunningDocumentTable rdt = this.projectMgr.GetService(typeof(SVsRunningDocumentTable)) as IVsRunningDocumentTable;
 
             // (kberes) Shouldn't this be an InvalidOperationException instead with some not to annoying errormessage to the user?
@@ -381,6 +387,7 @@ namespace Microsoft.VisualStudio.Project
             Guid CLSID_VsTextBuffer = new Guid("{8E7B96A8-E33D-11d0-A6D5-00C04FB67F6A}");
             string bufferContents = "";
             srpStream = null;
+            ThreadHelper.ThrowIfNotOnUIThread();
 
             IVsRunningDocumentTable rdt = this.projectMgr.GetService(typeof(SVsRunningDocumentTable)) as IVsRunningDocumentTable;
             if (rdt != null)
@@ -492,6 +499,7 @@ namespace Microsoft.VisualStudio.Project
             pHier = null;
             ppDocData = null;
             cookie = 0;
+            ThreadHelper.ThrowIfNotOnUIThread();
 
             IVsRunningDocumentTable rdt = this.projectMgr.GetService(typeof(IVsRunningDocumentTable)) as IVsRunningDocumentTable;
             if (rdt != null)
@@ -549,6 +557,7 @@ namespace Microsoft.VisualStudio.Project
             {
                 // Set the recursion guard
                 this.gettingCheckoutStatus = true;
+                ThreadHelper.ThrowIfNotOnUIThread();
 
                 // Get the QueryEditQuerySave service
                 IVsQueryEditQuerySave2 queryEditQuerySave = (IVsQueryEditQuerySave2)this.projectMgr.GetService(typeof(SVsQueryEditQuerySave));

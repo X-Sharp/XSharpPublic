@@ -239,7 +239,11 @@ namespace XSharp.Project
 
             this._documentWatcher = new XSharpDocumentWatcher(this);
             _errorList = await GetServiceAsync(typeof(SVsErrorList)) as IErrorList;
-            _taskList = await GetServiceAsync(typeof(SVsTaskList)) as ITaskList;
+            var tmp = await GetServiceAsync(typeof(SVsTaskList));
+            if (tmp != null)
+            {
+                _taskList = (ITaskList)tmp;
+            }
 
             _langservice = await GetServiceAsync(typeof(XSharpLanguageService)) as XSharpLanguageService;
 

@@ -329,6 +329,7 @@ namespace XSharp.Project
             {
                 return VSConstants.E_INVALIDARG;
             }
+            ThreadHelper.ThrowIfNotOnUIThread();
 
             IVsPropertyPageFrame propertyPageFrame = (IVsPropertyPageFrame)this.XsProject.Site.GetService((typeof(SVsPropertyPageFrame)));
             Assumes.Present(propertyPageFrame);

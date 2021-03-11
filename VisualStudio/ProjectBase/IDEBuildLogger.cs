@@ -8,7 +8,7 @@
  * You must not remove this notice, or any other, from this software.
  *
  * ***************************************************************************/
-
+#pragma warning disable VSTHRD010
 using System;
 using System.Windows.Forms.Design;
 using System.Collections.Generic;
@@ -105,6 +105,7 @@ namespace Microsoft.VisualStudio.Project
             Trace.WriteLineIf(Thread.CurrentThread.GetApartmentState() != ApartmentState.STA, "WARNING: IDEBuildLogger constructor running on the wrong thread.");
 
             IOleServiceProvider site;
+
             Microsoft.VisualStudio.ErrorHandler.ThrowOnFailure(hierarchy.GetSite(out site));
 
             this.taskProvider = taskProvider;
@@ -409,6 +410,7 @@ namespace Microsoft.VisualStudio.Project
 
             protected override void OnNavigate(EventArgs e)
             {
+                ThreadHelper.ThrowIfNotOnUIThread();
                 VsUtilities.NavigateTo(
                     _serviceProvider,
                     Document,

@@ -62,6 +62,7 @@ namespace XSharp.Project
         public override void SetProperty(string propertyName, string value)
         {
             //todo enable / disable controls based on contents
+            ThreadHelper.ThrowIfNotOnUIThread();
             base.SetProperty(propertyName, value);
         }
 

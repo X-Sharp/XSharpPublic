@@ -43,6 +43,7 @@ namespace XSharp.Project
                 name = elements[0];
                 platName = elements[1];
             }
+            ThreadHelper.ThrowIfNotOnUIThread();
             return base.GetCfgOfName(name, platName, out cfg);
 
         }
@@ -184,6 +185,7 @@ namespace XSharp.Project
         {
             // Let MSBuild know which configuration we are working with
             this.Project.SetConfiguration(this.ProjectCfg.ConfigCanonicalName);
+            ThreadHelper.ThrowIfNotOnUIThread();
 
             // Generate dependencies if such a task exist
             if (this.Project.ProjectInstance.Targets.ContainsKey(ProjectFileConstants.AllProjectOutputGroups))

@@ -15,6 +15,7 @@ using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.InteropServices;
 using Microsoft.VisualStudio;
+using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using MSBuild = Microsoft.Build.Evaluation;
 using MSBuildExecution = Microsoft.Build.Execution;
@@ -89,6 +90,7 @@ namespace Microsoft.VisualStudio.Project
 		{
             get {
                 string canonicalName;
+                ThreadHelper.ThrowIfNotOnUIThread();
                 ErrorHandler.ThrowOnFailure(get_CanonicalName(out canonicalName));
                 return canonicalName;
             }
@@ -99,7 +101,8 @@ namespace Microsoft.VisualStudio.Project
         protected virtual void Refresh()
         {
             // Let MSBuild know which configuration we are working with
-			_project.SetConfiguration(_projectCfg.ConfigCanonicalName);
+            ThreadHelper.ThrowIfNotOnUIThread();
+            _project.SetConfiguration(_projectCfg.ConfigCanonicalName);
 
             // Generate dependencies if such a task exist
 			if (_project.ProjectInstance.Targets.ContainsKey(ProjectFileConstants.AllProjectOutputGroups))
@@ -170,6 +173,7 @@ namespace Microsoft.VisualStudio.Project
             pbstrDescription = null;
 
             string description;
+            ThreadHelper.ThrowIfNotOnUIThread();
             int hr = this.get_CanonicalName(out description);
             if(ErrorHandler.Succeeded(hr))
                 pbstrDescription = this.Project.GetOutputGroupDescription(description);
@@ -181,6 +185,7 @@ namespace Microsoft.VisualStudio.Project
             pbstrDisplayName = null;
 
             string displayName;
+            ThreadHelper.ThrowIfNotOnUIThread();
             int hr = this.get_CanonicalName(out displayName);
             if(ErrorHandler.Succeeded(hr))
                 pbstrDisplayName = this.Project.GetOutputGroupDisplayName(displayName);
@@ -197,12 +202,15 @@ namespace Microsoft.VisualStudio.Project
                 pbstrCanonicalName = String.Empty;
                 return VSConstants.S_FALSE;
             }
+            ThreadHelper.ThrowIfNotOnUIThread();
             return _keyOutput.get_CanonicalName(out pbstrCanonicalName);
         }
 
         public virtual int get_KeyOutputObject(out IVsOutput2 ppKeyOutput)
         {
-            if(_keyOutput == null)
+            ThreadHelper.ThrowIfNotOnUIThread();
+
+            if (_keyOutput == null)
 			{
                 Refresh();
                 if (_keyOutput == null)
@@ -232,6 +240,7 @@ namespace Microsoft.VisualStudio.Project
             //
             // In the end, this is probably the right thing to do, though -- as it keeps the output
             // groups always up to date.
+            ThreadHelper.ThrowIfNotOnUIThread();
             Refresh();
 
             // See if only the caller only wants to know the count
@@ -262,12 +271,14 @@ namespace Microsoft.VisualStudio.Project
 
         public virtual int get_ProjectCfg(out IVsProjectCfg2 ppIVsProjectCfg2)
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
             ppIVsProjectCfg2 = (IVsProjectCfg2)this._projectCfg;
             return VSConstants.S_OK;
         }
 
         public virtual int get_Property(string pszProperty, out object pvar)
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
             pvar = _project.GetProjectProperty(pszProperty);
             return VSConstants.S_OK;
         }

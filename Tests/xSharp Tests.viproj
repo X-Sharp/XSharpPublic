@@ -92445,6 +92445,118 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
   Optimize=0
 ENDApplication = C770 - Problems with passing values by reference in FoxPro dialect
+
+ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+; ************** APPLICATION C771 - Various problems with compiling VFP code *************
+Application = C771 - Various problems with compiling VFP code
+IDEVersion = 1.06
+GalleryName = 
+GalleryPage = 
+GalleryDefaultName = 
+Target = 0
+Platform = AnyCPU
+Language = XSharp
+Runtime = CLR4
+Dialect = FoxPro
+Folder = %ProjectPath%\Applications\C771\
+PrgSubFolder = \Prg
+ResourcesSubFolder = 
+Description = 
+NameSpace = 
+Assembly = C771
+Extension = 
+ApplicationIcon = 
+OutputFolder = 
+Frameworks = 1
+GUID = 748D16F5-7F0E-4700-9B29-D9616804BC90
+IncludeInProjectBuild = 1
+IncludeInProjectSearch = 1
+IncludeInProjectExport = 1
+IncludePath = 
+StdDefsFile = 
+AppToRun = 
+SignAssembly = 0
+KeyFile = 
+
+[ExportOptions]
+ExportResources = 0
+ExportImages = 0
+[C771 - Various problems with compiling VFP code FileGroups]
+[C771 - Various problems with compiling VFP code Files]
+File = %AppPath%\Prg\C771.prg
+FileGUID = B7EF8BA3-6D2B-4919-85E8-450924CD316F
+FileType = Code
+CopyToBin = 0
+[C771 - Various problems with compiling VFP code References]
+ReferenceGAC = CLR4,System,1,0,4.0.0.0
+ReferenceGAC = CLR4,XSharp.Core,1,0,2.6.0.0
+ReferenceGAC = CLR4,XSharp.RT,1,0,2.6.0.0
+ReferenceGAC = CLR4,XSharp.VFP,1,0,2.6.0.0
+[C771 - Various problems with compiling VFP code Resources]
+[C771 - Various problems with compiling VFP code Native Resources]
+[C771 - Various problems with compiling VFP code License files]
+[C771 - Various problems with compiling VFP code General Options]
+Switches=
+ZeroArrays=0
+CaseSensitive=0
+ImplicitNamespace=0
+VO1=0
+VO2=0
+VO3=0
+VO4=0
+VO5=0
+VO6=0
+VO7=0
+VO8=0
+VO9=0
+VO10=0
+VO11=0
+VO12=0
+VO13=0
+VO14=0
+VO16=0
+FOX1=1
+FOX2=1
+XPP1=0
+LateBound=1
+Unsafe=0
+Undeclared=1
+UseNativeVersion=0
+MemVar=1
+IgnoreStdDefs=0
+Ovf=0
+FOvf=0
+ResponseOnly=0
+[C771 - Various problems with compiling VFP code Configurations]
+AppConfig = Debug,11111111-1111-1111-1111-111111111111
+  Switches=
+  SwitchesCF=
+  CommandLine=
+  CommandLineCF=
+  Debug=1
+  DebugInit=1
+  DefineDebug=1
+  DefineTrace=0
+  SyntaxOnly=0
+  WarningsErrors=0
+  ForceConsole=0
+  ForceX86=0
+  Optimize=0
+AppConfig = Release,22222222-2222-2222-2222-222222222222
+  Switches=
+  SwitchesCF=
+  CommandLine=
+  CommandLineCF=
+  Debug=0
+  DebugInit=0
+  DefineDebug=0
+  DefineTrace=0
+  SyntaxOnly=0
+  WarningsErrors=0
+  ForceConsole=0
+  ForceX86=0
+  Optimize=0
+ENDApplication = C771 - Various problems with compiling VFP code
 [EndApplications]
 
 [Configurations]

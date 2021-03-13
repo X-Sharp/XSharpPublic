@@ -51,6 +51,7 @@ BEGIN NAMESPACE MacroCompilerTest
         TestMacro(mc, e"{|o| eval({|a| eval({|q|q*q},a)+1 },o) }", Args(5), 26, typeof(INT))
         TestMacro(mc, e"{|o| eval( iif(o, {||42},{||-42})) }", Args(TRUE), 42, typeof(INT))
         TestMacro(mc, e"{|o| eval( iif(o, {||42},{||-42})) }", Args(FALSE), -42, typeof(INT))
+        TestMacro(mc, e"{|e| if( e = 1, 'true','false' ) ", Args(1), "true", typeof(String) )
         
         mc:Options:UndeclaredVariableResolution := VariableResolution.TreatAsFieldOrMemvar
         TestMacro(mc, e"{|| eval({||true}) }", Args(), true, typeof(logic))

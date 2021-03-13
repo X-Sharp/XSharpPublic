@@ -200,7 +200,9 @@ CLASS DBFVFP INHERIT DBFCDX
                         LOCAL oColumn AS DbfColumn
                         VAR oField := oTable:Fields[nPos-1]
                         oColumn := SELF:_GetColumn(nPos) ASTYPE DbfColumn
-                        oColumn:Properties  := oField:Properties
+                        IF oField:HasProperties
+                            oColumn:Properties  := oField:Properties
+                        ENDIF
                         oColumn:Alias       := oField:ObjectName
                         oColumn:ColumnName  := oField:ObjectName
                         IF String.Compare(oColumn:Name, oColumn:Alias, TRUE) != 0

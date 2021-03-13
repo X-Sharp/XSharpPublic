@@ -567,10 +567,22 @@ BEGIN NAMESPACE XSharp.RDD
         PROPERTY ParentID AS LONG AUTO
         PROPERTY ObjectType AS STRING AUTO
         PROPERTY ObjectName AS STRING AUTO
-        PROPERTY Properties AS DatabasePropertyCollection AUTO
         PROPERTY Parent     AS OBJECT AUTO
         PROPERTY ObjectKey  AS STRING GET ObjectID:ToString():PadLeft(10,' ')
-        
+        PROPERTY Properties AS DatabasePropertyCollection
+            GET
+                if _lazyProperties == NULL
+                    _lazyProperties := DatabasePropertyCollection{}
+                endif
+                return _lazyProperties
+            END GET
+            SET
+                _lazyProperties := value
+            END SET
+        END PROPERTY
+        PRIVATE _lazyProperties  := NULL as DatabasePropertyCollection
+        PROPERTY HasProperties as LOGIC GET _lazyProperties != NULL
+         
         CONSTRUCTOR
             Properties := DatabasePropertyCollection{}
         VIRTUAL METHOD Read() AS LOGIC

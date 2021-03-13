@@ -448,7 +448,15 @@ BEGIN NAMESPACE XSharp.ADS
                 SWITCH SELF:AdsType
                 CASE AdsFieldType.MEMO
                     chars := CHAR[] {++mlength}
-                    SELF:RDD:_CheckError(ACE.AdsGetString(SELF:_Table, SELF:FieldPos, chars, REF mlength ,0),EG_READ)
+                    result := ACE.AdsGetString(SELF:_Table, SELF:FieldPos, chars, REF mlength ,0)
+                    if (result == ACE.AE_INVALID_FIELD_TYPE)
+                        chars := NULL
+                        bytes := BYTE[] {mlength}
+                        result := ACE.AdsGetBinary(SELF:_Table, SELF:FieldPos, 0, bytes, REF mlength )
+                        SELF:RDD:_CheckError(result)
+                        return RuntimeState:WinEncoding:GetString(bytes, 0, bytes:Length)
+                    ENDIF
+                    SELF:RDD:_CheckError(result,EG_READ)
                     RETURN SELF:RDD:_Ansi2Unicode(chars, (INT) mlength)
                 CASE AdsFieldType.NMEMO
                     chars := CHAR[] {++mlength}

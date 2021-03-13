@@ -197,7 +197,7 @@ namespace XSharp.MacroCompiler.Syntax
                 ThrowError(ErrorCode.DotMemberAccess);
             b.Bind(ref Expr);
             Expr.RequireValue();
-            if (Expr.Datatype.IsArray && Expr.Datatype.ArrayRank == 1 && (Member as IdExpr)?.Name == SystemNames.Length)
+            if (Expr.Datatype.IsArray && Expr.Datatype.ArrayRank == 1 && Binder.LookupComparer.Equals((Member as IdExpr)?.Name, SystemNames.Length))
                 return ArrayLengthExpr.Bound(Expr);
             Symbol = b.BindMemberAccess(ref Expr, ref Member, Affinity);
             Datatype = Symbol.Type();

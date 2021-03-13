@@ -196,6 +196,7 @@ BEGIN NAMESPACE MacroCompilerTest
         TestMacro(mc, e"{|a| tci:(&a) }", Args("v1"), 1, typeof(INT))
         */
 
+        TestMacro(mc, e"{|| TestGlobals.tsa:length }", Args(), 5, typeof(INT))
         TestMacro(mc, e"{|| TestGlobals.tsa[1] }", Args(), 11, typeof(INT))
         TestMacro(mc, e"{|| TestGlobals.tsa[5] }", Args(), 55, typeof(INT))
         TestMacro(mc, e"{|| TestGlobals.tsa2[1,1] }", Args(), 11, typeof(INT))

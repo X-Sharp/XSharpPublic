@@ -20,7 +20,7 @@ namespace XSharp.MacroCompiler
             GetSet = Get | Set,
             All = Get | Set | Ref,
         };
-        AccessMode access_ = AccessMode.None;
+        internal AccessMode access_ = AccessMode.None;
         internal Symbol() { }
         internal Symbol(AccessMode access) { access_ = access; }
         internal abstract Symbol Lookup(string name);
@@ -234,6 +234,10 @@ namespace XSharp.MacroCompiler
     internal partial class VariableSymbol : LocalSymbol
     {
         internal VariableSymbol(string name, TypeSymbol type) : base(name, type) { }
+    }
+    internal partial class MemvarSymbol : LocalSymbol
+    {
+        internal MemvarSymbol(string name) : base(name, Compilation.Get(NativeType.Usual)) { access_ = AccessMode.GetSet; }
     }
     internal partial class DynamicSymbol : TypedSymbol
     {

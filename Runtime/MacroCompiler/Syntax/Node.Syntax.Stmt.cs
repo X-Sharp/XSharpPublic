@@ -61,6 +61,11 @@ namespace XSharp.MacroCompiler.Syntax
             (Initializer!=null?" := "+Initializer.ToString():"") +
             (Type!=null?(IsIsType?" IS ":" AS ")+Type.ToString():"");
     }
+    internal partial class MemVarDecl : VarDecl
+    {
+        internal MemVarDecl(Token t, Expr i) : base(t, null, null, i) { }
+        internal MemVarDecl(Token t, Expr[] asub, TypeExpr a, Expr i) : base(t, asub, a, i) { }
+    }
     internal partial class ImpliedVarDecl : VarDecl
     {
         internal ImpliedVarDecl(Token t, Expr i) : base(t, null, null, i) { }

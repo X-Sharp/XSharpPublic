@@ -114,9 +114,13 @@ namespace XSharp.MacroCompiler.Syntax
                 Initializer.Emit(ilg, false);
         }
     }
+    internal partial class MemVarDecl : VarDecl
+    {
+        // Emit handled by parent
+    }
     internal partial class ImpliedVarDecl : VarDecl
     {
-        // Handled by parent
+        // Emit handled by parent
     }
     internal partial class FieldDeclStmt : Stmt
     {

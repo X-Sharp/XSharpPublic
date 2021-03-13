@@ -443,6 +443,15 @@ namespace XSharp.MacroCompiler
             return variable;
         }
 
+        internal MemvarSymbol AddMemvar(string name)
+        {
+            var variable = new MemvarSymbol(name);
+            Locals.Add(variable);
+            if (!string.IsNullOrEmpty(name))
+                LocalCache.Add(name, variable);
+            return variable;
+        }
+
         internal void AddConstant(string name, Constant c)
         {
             if (!string.IsNullOrEmpty(name))

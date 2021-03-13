@@ -223,7 +223,7 @@ namespace XSharp.MacroCompiler
             var vl = new List<VarDecl>();
             do
             {
-                if (ParseXBaseVarDecl(parseArraySub: parseArraySub, parseInit: parseInit, parseType: parseType) is VarDecl v)
+                if (ParseXBaseVarDecl(local: kind == TokenType.LPARAMETERS, parseArraySub: parseArraySub, parseInit: parseInit, parseType: parseType) is VarDecl v)
                     vl.Add(v);
             } while (Expect(TokenType.COMMA));
             Require(vl.Count > 0, ErrorCode.Expected, "variable declaration");
@@ -231,7 +231,7 @@ namespace XSharp.MacroCompiler
             return new DeclStmt(t, vl.ToArray());
         }
 
-        internal VarDecl ParseXBaseVarDecl(bool parseArraySub = false, bool parseInit = false, bool parseType = false)
+        internal VarDecl ParseXBaseVarDecl(bool local = false, bool parseArraySub = false, bool parseInit = false, bool parseType = false)
         {
             // Parse variable name
             Token n = RequireVarIdName();
@@ -274,7 +274,8 @@ namespace XSharp.MacroCompiler
                 }
             }
 
-            return new VarDecl(n, asub?.ToArray(), type, init);
+            return local ? new VarDecl(n, asub?.ToArray(), type, init)
+                : new MemVarDecl(n, asub?.ToArray(), type, init);
         }
 
         internal DeclStmt ParseLocalDeclarationStmt()

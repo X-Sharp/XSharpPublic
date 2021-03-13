@@ -28,7 +28,7 @@ namespace XSharp.MacroCompiler.ObjectMacro
             int nLevel = __MemVarInit(true);
             try
             {
-                return base.EvalBlock();
+                return base.EvalBlock(args);
             }
             finally
             {

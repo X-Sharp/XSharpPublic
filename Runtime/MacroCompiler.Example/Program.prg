@@ -37,13 +37,11 @@ BEGIN NAMESPACE MacroCompilerTest
         //EvalMacro(mc, "{ || NIL } ")
         //wait
 
-        /*
-        var sc := CreateScriptCompiler()
+        /*var sc := CreateScriptCompiler()
         EvalMacro(sc, String.Join(e"\n",<STRING>{;
-            "LPARAMETERS a, b, c",;
-            "RETURN A+B+C"}),1,2,3)
-        wait
-        */
+            "PARAMETERS a, b, c",;
+            "RETURN a+b+c"}),1,2,3)
+        wait*/
 
         ParserTestsFox(CreateFoxScriptCompiler())
         ParserTests(CreateScriptCompiler())

@@ -226,6 +226,7 @@ namespace XSharp.MacroCompiler
         internal const string Current = "Current";
         internal const string CurrentGetter = "get_Current";
         internal const string Dispose = "Dispose";
+        internal const string Length = "Length";
     }
     internal static class SystemQualifiedNames
     {

@@ -209,5 +209,11 @@ FUNCTION ScriptTests AS VOID
     TestMacro(sc, String.Join(e"\n",<STRING>{;
         "LPARAMETERS a, b, c",;
         "RETURN A+B+C"}), Args(1,2,3), 6, typeof(int))
+    TestMacro(sc, String.Join(e"\n",<STRING>{;
+        "LPARAMETERS a, b, c",;
+        "RETURN A+B"}), Args(1,2), 3, typeof(int))
+    TestMacro(sc, String.Join(e"\n",<STRING>{;
+        "PARAMETERS a, b, c",;
+        "RETURN a+b+c"}),Args(1,2,3), 6, typeof(int))
 
     RETURN

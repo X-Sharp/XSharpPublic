@@ -95,6 +95,19 @@ namespace XSharp.MacroCompiler.Syntax
             Symbol.EmitSet(ilg);
         }
     }
+    internal partial class ArrayLengthExpr : MemberAccessExpr
+    {
+        internal override void Emit(ILGenerator ilg, bool preserve)
+        {
+            Expr.Emit(ilg, preserve);
+            if (preserve)
+            {
+                ilg.Emit(OpCodes.Ldlen);
+                ilg.Emit(OpCodes.Conv_I4);
+            }
+        }
+        internal override void EmitSet(ILGenerator ilg, bool preserve) => throw new InternalError();
+    }
     internal partial class QualifiedNameExpr : NameExpr
     {
         internal override void Emit(ILGenerator ilg, bool preserve)

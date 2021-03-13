@@ -197,6 +197,8 @@ namespace XSharp.MacroCompiler.Syntax
                 ThrowError(ErrorCode.DotMemberAccess);
             b.Bind(ref Expr);
             Expr.RequireValue();
+            if (Expr.Datatype.IsArray && Expr.Datatype.ArrayRank == 1 && (Member as IdExpr)?.Name == SystemNames.Length)
+                return ArrayLengthExpr.Bound(Expr);
             Symbol = b.BindMemberAccess(ref Expr, ref Member, Affinity);
             Datatype = Symbol.Type();
             return null;
@@ -213,6 +215,17 @@ namespace XSharp.MacroCompiler.Syntax
             e.Symbol = b.BindMemberAccess(ref e.Expr, ref e.Member, affinity);
             e.Datatype = e.Symbol.Type();
             return e;
+        }
+    }
+    internal partial class ArrayLengthExpr : MemberAccessExpr
+    {
+        internal ArrayLengthExpr(Expr array) : base(array, array.Token, null) { }
+        internal override void RequireGetAccess() { }
+        internal override void RequireSetAccess() => throw Binder.AccessModeError(this, Symbol, Symbol.AccessMode.Set);
+        internal override void RequireRefAccess() => throw Binder.AccessModeError(this, Symbol, Symbol.AccessMode.Ref);
+        internal static ArrayLengthExpr Bound(Expr expr)
+        {
+            return new ArrayLengthExpr(expr) { Datatype = Compilation.Get(NativeType.Int32) };
         }
     }
     internal partial class QualifiedNameExpr : NameExpr
@@ -475,6 +488,16 @@ namespace XSharp.MacroCompiler.Syntax
             Symbol = Type.Symbol as TypeSymbol;
             Datatype = Symbol as TypeSymbol;
             return null;
+        }
+        internal static Expr Bound(Binder b, TypeSymbol type)
+        {
+            if (b.Options.Dialect == XSharpDialect.FoxPro && type.NativeType == NativeType.Usual)
+            {
+                Expr e = LiteralExpr.Bound(Constant.Create(false));
+                b.Convert(ref e, type);
+                return e;
+            }
+            return new DefaultExpr(null, null) { Symbol = type, Datatype = type };
         }
         internal override void RequireGetAccess() => base.RequireValue();
     }

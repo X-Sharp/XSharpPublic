@@ -70,13 +70,18 @@ namespace XSharp.MacroCompiler.Syntax
     {
         internal override Node Bind(Binder b)
         {
-            if (Token.type == TokenType.LPARAMETERS)
+            if (Token.type == TokenType.LPARAMETERS || Token.type == TokenType.PARAMETERS)
             {
                 for (int i = 0; i < VarDecls.Length; i++)
                 {
-                    ref var decl = ref VarDecls[i];
                     var argIdx = b.Options.ArrayBase + i;
-                    decl.Initializer = ArrayAccessExpr.Bound(IdExpr.Bound((b.Entity as Script).ParamArray),ArgList.Bound(LiteralExpr.Bound(Constant.Create(argIdx))),b);
+                    var paramArray = IdExpr.Bound((b.Entity as Script).ParamArray);
+                    VarDecls[i].Initializer =
+                        IifExpr.Bound(
+                            BinaryExpr.Bound(ArrayLengthExpr.Bound(paramArray), Token, LiteralExpr.Bound(Constant.Create(i)), BinaryOperatorKind.GreaterThan, b.Options.Binding),
+                            ArrayAccessExpr.Bound(paramArray, ArgList.Bound(LiteralExpr.Bound(Constant.Create(argIdx))), b),
+                            DefaultExpr.Bound(b, b.ObjectType),
+                            b.Options.Binding);
                 }
             }
 
@@ -114,6 +119,22 @@ namespace XSharp.MacroCompiler.Syntax
         internal static VarDecl Bound(LocalSymbol loc, Expr initializer, BindOptions opt)
         {
             return new VarDecl(null, null, null, null, AssignExpr.Bound(IdExpr.Bound(loc), initializer, opt)) { Symbol = loc };
+        }
+    }
+    internal partial class MemVarDecl : VarDecl
+    {
+        internal override Node Bind(Binder b)
+        {
+            b.CreatesAutoVars = true;
+            Symbol = b.AddMemvar(Name);
+            if (Initializer != null)
+            {
+                b.Bind(ref Initializer);
+                Initializer.RequireGetAccess();
+                b.Convert(ref Initializer, Var.Type);
+                Initializer = AssignExpr.Bound(IdExpr.Bound(Var), Initializer, b.Options.Binding);
+            }
+            return null;
         }
     }
     internal partial class ImpliedVarDecl : VarDecl

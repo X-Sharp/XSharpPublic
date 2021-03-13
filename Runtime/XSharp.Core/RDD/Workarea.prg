@@ -73,16 +73,21 @@ BEGIN NAMESPACE XSharp.RDD
 		/// <summary>Result of the last Block evaluation.</summary>
 		PROTECTED _EvalResult    AS OBJECT
 
-        PROTECTED Properties   := DatabasePropertyCollection{} AS DatabasePropertyCollection
-		#endregion
-		
-		#region Static Properties that point to Runtime state ?
-		// Ansi
-		// AutoOrder
-		// AutoShare
-		// etc
-		#endregion
-		/// <exclude />
+        PUBLIC PROPERTY Properties AS DatabasePropertyCollection
+            GET
+                if _lazyProperties == NULL
+                    _lazyProperties := DatabasePropertyCollection{}
+                endif
+                return _lazyProperties
+            END GET
+            SET
+                _lazyProperties := value
+            END SET
+        END PROPERTY
+        PRIVATE _lazyProperties  := NULL as DatabasePropertyCollection
+        PROPERTY HasProperties as LOGIC GET _lazyProperties != NULL
+        #endregion
+ 	        /// <exclude />
 		CONSTRUCTOR() 
 			SELF:_FilterInfo := DbFilterInfo{}
 			SELF:_ScopeInfo  := DbScopeInfo{}            

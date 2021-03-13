@@ -79,7 +79,9 @@ BEGIN NAMESPACE XSharp.RDD
                 dbfac:IncrStep  := oField:IncStep
                 dbfac:Counter   := oField:Counter
             ENDIF
-            oColumn:Properties := oInfo:Properties
+            IF oInfo:HasProperties
+                oColumn:Properties := oInfo:Properties
+            ENDIF
             return oColumn
 
 

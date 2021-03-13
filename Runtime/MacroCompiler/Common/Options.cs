@@ -59,5 +59,6 @@ namespace XSharp.MacroCompiler
         internal bool ParseStatements { get => ParseMode == ParseMode.Statements || ParseMode == ParseMode.Entities; }
 
         internal BindOptions Binding { get; private set; } = BindOptions.Default;
+        internal int ArrayBase => ArrayZero ? 0 : 1;
     }
 }

@@ -192,5 +192,22 @@ FUNCTION ScriptTests AS VOID
             "y += l",;
         "NEXT",;
         "y"}),Args(), 15, typeof(int))
+    TestMacro(sc, String.Join(e"\n",<STRING>{;
+        "LOCAL y := 0 AS INT",;
+        "list := {1,2,3,4,5}",;
+        "FOREACH VAR l IN list",;
+            "y += l",;
+        "NEXT",;
+        "y"}), Args(), 15, typeof(int))
+    EvalMacro(sc, String.Join(e"\n",<STRING>{;
+        "VAR y := 0",;
+        "list := {1,2,3,4,5}",;
+        "FOREACH VAR l IN list",;
+            "y += l",;
+        "NEXT",;
+        "y"}), Args(), 15, typeof(int))
+    TestMacro(sc, String.Join(e"\n",<STRING>{;
+        "LPARAMETERS a, b, c",;
+        "RETURN A+B+C"}), Args(1,2,3), 6, typeof(int))
 
     RETURN

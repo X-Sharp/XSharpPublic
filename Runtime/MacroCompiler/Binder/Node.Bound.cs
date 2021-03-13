@@ -953,6 +953,10 @@ namespace XSharp.MacroCompiler.Syntax
             b.Bind(Args);
             return null;
         }
+        internal static ArgList Bound(params Expr[] argExprs)
+        {
+            return new ArgList(new List<Arg>(argExprs.Select(e => new Arg(e))));
+        }
     }
     internal partial class Codeblock : Node
     {

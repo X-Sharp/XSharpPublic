@@ -99,6 +99,11 @@ namespace XSharp.MacroCompiler.Syntax
     }
     internal partial class DeclStmt : Stmt
     {
+        internal override void EmitStmt(ILGenerator ilg)
+        {
+            foreach (var decl in VarDecls)
+                decl.Emit(ilg);
+        }
     }
     internal partial class VarDecl : Node
     {
@@ -111,6 +116,7 @@ namespace XSharp.MacroCompiler.Syntax
     }
     internal partial class ImpliedVarDecl : VarDecl
     {
+        // Handled by parent
     }
     internal partial class FieldDeclStmt : Stmt
     {
@@ -396,8 +402,18 @@ namespace XSharp.MacroCompiler.Syntax
         internal Label? End = null;
         internal override void Emit(ILGenerator ilg)
         {
-            var temp = ilg.DeclareLocal(((TypeSymbol)Symbol).Type);
-            Symbol = new LocalSymbol((TypeSymbol)Symbol, temp.LocalIndex);
+            var result = ilg.DeclareLocal(((TypeSymbol)Symbol).Type);
+            Symbol = new LocalSymbol((TypeSymbol)Symbol, result.LocalIndex);
+
+            if (PCount != null)
+            {
+                PCount.Declare(ilg);
+                ParamArray.EmitGet(ilg);
+                ilg.Emit(OpCodes.Ldlen);
+                ilg.Emit(OpCodes.Conv_I4);
+                PCount.EmitSet(ilg);
+            }
+
             Body.Emit(ilg);
             if (End != null)
                 ilg.MarkLabel(End.Value);

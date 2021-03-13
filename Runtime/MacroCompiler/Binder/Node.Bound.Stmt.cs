@@ -68,7 +68,24 @@ namespace XSharp.MacroCompiler.Syntax
     }
     internal partial class DeclStmt : Stmt
     {
-        // TODO
+        internal override Node Bind(Binder b)
+        {
+            if (Token.type == TokenType.LPARAMETERS)
+            {
+                for (int i = 0; i < VarDecls.Length; i++)
+                {
+                    ref var decl = ref VarDecls[i];
+                    var argIdx = b.Options.ArrayBase + i;
+                    decl.Initializer = ArrayAccessExpr.Bound(IdExpr.Bound((b.Entity as Script).ParamArray),ArgList.Bound(LiteralExpr.Bound(Constant.Create(argIdx))),b);
+                }
+            }
+
+            for (int i = 0; i < VarDecls.Length; i++)
+            {
+                b.Bind(ref VarDecls[i]);
+            }
+            return null;
+        }
     }
     internal partial class VarDecl : Node
     {
@@ -223,10 +240,10 @@ namespace XSharp.MacroCompiler.Syntax
             {
                 var array = b.Cache(ref Expr);
                 var iter = b.AddLocal(Compilation.Get(NativeType.Int32));
-                IterDecl = VarDecl.Bound(iter, LiteralExpr.Bound(Constant.Create(1)), b.Options.Binding);
+                IterDecl = VarDecl.Bound(iter, LiteralExpr.Bound(Constant.Create(b.Options.ArrayBase)), b.Options.Binding);
                 WhileExpr = BinaryExpr.Bound(IdExpr.Bound(iter), Token,
                     MethodCallExpr.Bound(array, Compilation.Get(WellKnownMembers.System_Array_get_Length), array, ArgList.Empty),
-                    BinaryOperatorKind.LessThanOrEqual, b.Options.Binding);
+                    b.Options.ArrayZero ? BinaryOperatorKind.LessThan : BinaryOperatorKind.LessThanOrEqual, b.Options.Binding);
                 IncrExpr = AssignOpExpr.Bound(IdExpr.Bound(iter), LiteralExpr.Bound(Constant.Create(1)), BinaryOperatorKind.Addition, b);
                 ForDecl.Initializer = ArrayAccessExpr.Bound(array, new ArgList(new List<Arg>(1) { new Arg(IdExpr.Bound(iter)) }), b);
             }
@@ -487,9 +504,16 @@ namespace XSharp.MacroCompiler.Syntax
     }
     internal partial class Script : Node
     {
+        internal LocalSymbol PCount;
+        internal ArgumentSymbol ParamArray;
         internal override Node Bind(Binder b)
         {
             b.Entity = this;
+
+            ParamArray = b.AddParam(XSharpSpecialNames.ClipperArgs, Binder.ArrayOf(b.ObjectType));
+            //b.AddConstant(XSharpSpecialNames.ClipperArgCount, Constant.Create(Params?.Count ?? 0));
+            PCount = b.AddLocal(XSharpSpecialNames.ClipperPCount, Compilation.Get(NativeType.Int32));
+
             Symbol = b.ObjectType;
             if (Body != null)
             {

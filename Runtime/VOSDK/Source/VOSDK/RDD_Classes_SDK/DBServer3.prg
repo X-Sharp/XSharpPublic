@@ -985,7 +985,11 @@ METHOD Notify(	 kNotification,	 uDescription )
 		IF siSuspendNotification == 0 .AND. nClients > 0
 			VODBSelect( wWorkArea, OUT dwCurrentWorkArea )
             FOREACH oClient AS USUAL IN aClients
-                Send(oClient,#Notify, kNotification, uDescription ) 
+                IF oClient IS IVoNotify VAR oNotify
+                    oNotify:Notify(kNotification, uDescription)
+                ELSE
+                    Send(oClient, #Notify, kNotification, uDescription )
+                ENDIF
             NEXT
 			VODBSetSelect( LONGINT(dwCurrentWorkArea ) )
 		ENDIF
@@ -996,7 +1000,11 @@ METHOD Notify(	 kNotification,	 uDescription )
 		IF siSuspendNotification == 0
 			IF nClients > 0
                 FOREACH oClient AS USUAL IN aClients
-                    uRetValue := Send(oClient,#Notify, kNotification, uDescription ) 
+                    IF oClient IS IVoNotify VAR oNotify
+                        uRetValue := oNotify:Notify(kNotification, uDescription)
+                    ELSE
+                        uRetValue := Send(oClient, #Notify, kNotification, uDescription )
+                    ENDIF
                     IF ! uRetValue
                         EXIT
                     ENDIF
@@ -1031,12 +1039,20 @@ METHOD Notify(	 kNotification,	 uDescription )
 		IF siSuspendNotification == 0
 			IF lRelationsActive
 				FOREACH oChild AS USUAL IN aRelationChildren
-                    Send(oChild, #Notify, NOTIFYRELATIONCHANGE)
+                    IF oChild IS IVoNotify VAR oNotify
+                        oNotify:Notify(NOTIFYRELATIONCHANGE)
+                    ELSE
+                        Send(oChild, #Notify, NOTIFYRELATIONCHANGE)
+                    ENDIF
 				NEXT  
 			ENDIF
 			IF nClients > 0
 				FOREACH oClient AS USUAL IN aClients
-                    Send(oClient, #Notify, kNotification, uDescription )
+                    IF oClient IS IVoNotify VAR oNotify
+                        oNotify:Notify(kNotification, uDescription )
+                    ELSE
+                        Send(oClient, #Notify, kNotification, uDescription )
+                    ENDIF
 				NEXT  
 			ENDIF
 		ENDIF
@@ -1077,12 +1093,20 @@ METHOD Notify(	 kNotification,	 uDescription )
 			
 			IF nClients > 0
                 FOREACH oClient AS USUAL IN aClients
-                    Send(oClient, #Notify, NOTIFYFILECHANGE)
+                    IF oClient IS IVONotify VAR oNotify
+                        oNotify:Notify(NOTIFYFILECHANGE)
+                    ELSE
+                        Send(oClient, #Notify, NOTIFYFILECHANGE)
+                    ENDIF
 				NEXT 
 			ENDIF
 			IF lRelationsActive
                 FOREACH oChild AS USUAL IN aRelationChildren
-                    Send(oChild, #Notify, NOTIFYRELATIONCHANGE, siSelectionStatus)
+                    IF oChild IS IVONotify VAR oNotify
+                        oNotify:Notify( NOTIFYRELATIONCHANGE, siSelectionStatus)
+                    ELSE
+                        Send(oChild, #Notify, NOTIFYRELATIONCHANGE, siSelectionStatus)
+                    ENDIF
 				NEXT 
 			ENDIF
 			

@@ -1551,8 +1551,12 @@ METHOD Destroy()  AS USUAL CLIPPER
 		SELF:__Unlink()
 	ENDIF
 	
-	IF lSubForm
-		oParent:__UnRegisterSubForm(SELF)
+	IF lSubForm 
+	    IF oParent IS DataWindow VAR oDW
+            oDW:__UnRegisterSubForm(SELF)
+		ELSE
+		    oParent:__UnRegisterSubForm(SELF)
+		ENDIF
 	ENDIF
 	
 	// If this window has subforms destroy them first

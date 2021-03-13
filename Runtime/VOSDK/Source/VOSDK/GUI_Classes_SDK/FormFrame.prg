@@ -63,9 +63,15 @@ METHOD __ResizeParent() AS __FormFrame STRICT
 			liToolBarVOffset := oTB:Size:Height
 		ENDIF
 
-		IF (oParent:StatusBar != NULL_OBJECT) //.and. (lIgnoreVisibility .or. IsWindowVisible(oParent:Statusbar:Handle()))
-			liStatusBarVOffset := oParent:StatusBar:Size:Height
-		ENDIF
+        IF oParent IS AppWindow VAR oAppWnd
+		    IF (oAppWnd:StatusBar != NULL_OBJECT) 
+			    liStatusBarVOffset := oAppWnd:StatusBar:Size:Height
+            ENDIF
+        ELSE
+            IF (oParent:StatusBar != NULL_OBJECT) 
+                liStatusBarVOffset := oParent:StatusBar:Size:Height
+            ENDIF
+        ENDIF
 
 		GetClientRect(hWndParent, @r)
 

@@ -14,8 +14,13 @@ METHOD Dispatch(oEvent)
     //  oParent:Dispatch(oEvent)
     //  RETURN SELF:EventReturnValue := oParent:EventReturnValue
     oEvent:oWindow := oParent
-    liReturn := oParent:Dispatch(oEvent)
-    SELF:EventReturnValue := oParent:EventReturnValue 
+    IF oParent IS Window VAR oWnd
+        liReturn := oWnd:Dispatch(oEvent)
+        SELF:EventReturnValue := oWnd:EventReturnValue
+    ELSE
+        liReturn := oParent:Dispatch(oEvent)
+        SELF:EventReturnValue := oParent:EventReturnValue
+    ENDIF
     RETURN liReturn
 
 CONSTRUCTOR(oOwner, lModal, lChild) 
@@ -44,8 +49,11 @@ CONSTRUCTOR(oOwner, lModal, lChild)
     GlobalFree(hgbl)
 
     SELF:SetExStyle(WS_EX_CONTROLPARENT, FALSE)
-
-    oParent:__Imp := SELF
+    IF oParent IS ChildAppWindow VAR oCA
+        oCA:__Imp := SELF
+    ELSE
+        oParent:__Imp := SELF
+    ENDIF
     oParent:SetHandle(hWnd)
 
 	RETURN 

@@ -27,7 +27,11 @@ METHOD Dispatch(oEvent)
 		hWnd := oEvt:hWnd
 		SELF:owner:__Imp := SELF
 		SELF:Owner:SetHandle(hWnd)
-		oParent:Dispatch(oEvt)
+        IF oParent IS Window VAR oWnd
+            oWnd:Dispatch(oEvt)
+        ELSE
+            oParent:Dispatch(oEvt)
+        ENDIF
 
 	CASE WM_QUERYENDSESSION
 		oParent:EventReturnValue := oParent:QueryClose(oEvt)

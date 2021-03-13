@@ -82,12 +82,20 @@ METHOD Dispatch(oEvent)
 		hWnd := oEvt:hWnd
 		SELF:Owner:__Imp := SELF
 		SELF:Owner:SetHandle(hWnd)
+        IF oParent IS Window VAR oWnd
+		    oWnd:Dispatch(oEvt)
+            RETURN oWnd:EventReturnValue
+        ENDIF
 		oParent:Dispatch(oEvt)
 		RETURN oParent:EventReturnValue
 
-	OTHERWISE
-		oParent:Dispatch(oEvt)
-		RETURN oParent:EventReturnValue
+    OTHERWISE
+        IF oParent IS Window VAR oWnd        
+		     oWnd:Dispatch(oEvt)
+		     RETURN oWnd:EventReturnValue
+        ENDIF
+        oParent:Dispatch(oEvt)
+        RETURN oParent:EventReturnValue
 	END SWITCH
 
 	SELF:Default(oEvt)

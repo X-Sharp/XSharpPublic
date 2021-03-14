@@ -225,7 +225,7 @@ CLASS VODesignProperty INHERIT DesignProperty
 					SELF:oValue := MenuAccelerator{"" , FALSE , FALSE , FALSE}
 					TRY
 						cValue := cValue:Trim()
-						nAt := cValue:IndexOf("+")
+						nAt := cValue:LastIndexOf("+")
 						IF nAt != -1 .and. cValue != "+"
 							cAccelerator := cValue:Substring(nAt + 1):Trim()
 							cValue := cValue:Substring(0 , nAt):Trim():ToUpper()

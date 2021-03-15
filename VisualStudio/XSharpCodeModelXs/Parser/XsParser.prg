@@ -1429,8 +1429,8 @@ delegate_           : (Attributes=attributes)? (Modifiers=classModifiers)?
             xType:File     := _file
             VAR xMember  := XSourceMemberSymbol{sig, Kind.Delegate, _attributes, ;
                               range, interval,_attributes:HasFlag(Modifiers.Static)} {SingleLine := TRUE}
-                              xType:AddMember(xMember)
             xMember:SourceCode := source
+            xMember:Name := "Invoke"
             xType:AddMember(xMember)
             xMember:File       := _file
             RETURN <XSourceEntity>{xType}

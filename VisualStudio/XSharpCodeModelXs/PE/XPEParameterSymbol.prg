@@ -82,7 +82,11 @@ BEGIN NAMESPACE XSharpModel
          " Name text NOT NULL COLLATE NOCASE, ParamKind integer NOT NULL, ParamType TEXT NOT NULL COLLATE NOCASE, " 
          " DefaultValue text, "
          */
-         
+
+        METHOD Clone() AS IXVariableSymbol
+            RETURN (IXVariableSymbol) SELF:MemberwiseClone()
+
+
    END CLASS
    
    

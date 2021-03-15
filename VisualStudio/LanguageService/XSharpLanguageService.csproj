@@ -56,7 +56,6 @@
       <Link>Constants.cs</Link>
     </Compile>
     <Compile Include="BraceMatching\BraceMatching.cs" />
-    <Compile Include="Completion\XBinder.cs" />
     <Compile Include="Completion\XCompletionList.cs" />
     <Compile Include="Completion\XSharpGlyphTools.cs" />
     <Compile Include="Lookup\XSharpSearchLocation.cs" />

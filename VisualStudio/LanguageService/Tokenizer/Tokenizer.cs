@@ -80,9 +80,8 @@ namespace XSharp.LanguageService
                 nWidth = Math.Min(nWidth, bufferText.Length - fromMember.Interval.Start);
                 bufferText = bufferText.Substring(fromMember.Interval.Start, nWidth);
                 // Adapt the positions.
-                location = location.Clone();
-                location.Position = location.Position - fromMember.Interval.Start + 1;
-                location.LineNumber = location.LineNumber - (fromMember.Range.StartLine);
+                location = location.With(location.LineNumber - fromMember.Range.StartLine,
+                    location.Position - fromMember.Interval.Start + 1);
             }
             else
             {

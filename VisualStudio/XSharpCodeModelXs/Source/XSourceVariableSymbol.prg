@@ -17,12 +17,13 @@ BEGIN NAMESPACE XSharpModel
         // Methods
         CONSTRUCTOR(parent AS XSourceEntity, name AS STRING, span AS TextRange, position AS TextInterval, typeName AS STRING)
             SUPER(name, Kind.Local, Modifiers.None, span, position)
-            SELF:TypeName       := typeName
+            SELF:TypeName       := iif (String.IsNullOrEmpty(typeName), "System.Object", typeName)
             SUPER:Parent        := parent
             IF parent != NULL
                 SELF:File           := parent:File
             ENDIF
-
+            SELF:CheckForGenericTypeName()
+            
         // Properties
 	
         PROPERTY Expression   AS IList<IToken> AUTO GET INTERNAL SET
@@ -87,7 +88,6 @@ BEGIN NAMESPACE XSharpModel
         PROPERTY IsArray      AS LOGIC AUTO
         PROPERTY IsTyped      AS LOGIC GET TRUE
         PROPERTY Value        AS STRING AUTO
-	
 
         METHOD DebuggerDisplay() AS STRING
             VAR result := SUPER:Name
@@ -95,6 +95,9 @@ BEGIN NAMESPACE XSharpModel
                 result += ParamTypeDesc+" "+SELF:TypeName
             ENDIF
             RETURN result
+
+          METHOD Clone() AS IXVariableSymbol
+            RETURN (IXVariableSymbol) SELF:MemberwiseClone()
 
     END CLASS
          

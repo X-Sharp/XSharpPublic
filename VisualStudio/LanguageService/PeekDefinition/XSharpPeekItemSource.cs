@@ -50,19 +50,19 @@ namespace XSharp.LanguageService
                 var tokens = _textBuffer.GetTokens();
 
                 // LookUp for the BaseType, reading the TokenList (From left to right)
-                CompletionElement gotoElement;
                 string currentNS = "";
                 if (currentNamespace != null)
                 {
                     currentNS = currentNamespace.Name;
                 }
-                var location = new XSharpSearchLocation(member, snapshot) { LineNumber = lineNumber, Position = position, CurrentNamespace = currentNS};
+                var location = new XSharpSearchLocation(member, snapshot, lineNumber, position, currentNS);
                 var tokenList = XSharpTokenTools.GetTokensUnderCursor(location, tokens.TokenStream);
-                CompletionType cType = XSharpLookup.RetrieveType(location, tokenList, CompletionState.General, out gotoElement);
+                var result = new List<IXSymbol>();
+                result.AddRange( XSharpLookup.RetrieveElement(location, tokenList, CompletionState.General));
                 //
-                if ((gotoElement != null) && (gotoElement.IsSourceElement))
+                if (result.Count > 0 && result[0] is XSourceSymbol symbol)
                 {
-                    peekableItems.Add(new XSharpDefinitionPeekItem(gotoElement.SourceElement, _peekResultFactory));
+                    peekableItems.Add(new XSharpDefinitionPeekItem(symbol, _peekResultFactory));
                 }
             }
             catch (Exception ex)

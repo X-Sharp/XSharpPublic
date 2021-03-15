@@ -75,6 +75,10 @@ BEGIN NAMESPACE XSharpModel
             NEXT
          ENDIF
          RETURN res
-         
+      METHOD Clone() AS XMemberSignature
+         VAR oClone := (XMemberSignature) self:MemberwiseClone()
+         oClone:Parameters := List<IXVariableSymbol>{}
+         oClone:Parameters:AddRange(SELF:Parameters)
+         RETURN oClone
    END CLASS
 END NAMESPACE

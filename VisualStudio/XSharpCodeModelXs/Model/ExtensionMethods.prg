@@ -14,8 +14,8 @@ BEGIN NAMESPACE XSharpModel
 	
 	STATIC CLASS ExtensionMethods
 		
-		STATIC METHOD IsEmpty( SELF cType AS CompletionType) AS LOGIC
-			RETURN cType == NULL .OR. ! cType:IsInitialized
+//		STATIC METHOD IsEmpty( SELF cType AS CompletionType) AS LOGIC
+//			RETURN cType == NULL .OR. ! cType:IsInitialized
 		
 		STATIC METHOD AddUnique<TKey, TValue>( SELF dict AS Dictionary<TKey, TValue>, key AS TKey, VALUE AS TValue) AS TValue 
 			IF dict != NULL .AND. key != NULL
@@ -246,7 +246,7 @@ BEGIN NAMESPACE XSharpModel
 				list:Add(item)
 			ENDIF
 		
-		STATIC METHOD Expanded( SELF source AS IEnumerable<STRING>) AS IReadOnlyList<STRING>
+		STATIC METHOD Expanded( SELF source AS IEnumerable<STRING>) AS IList<STRING>
 			LOCAL list AS List<STRING>
 			LOCAL item AS STRING
 			list := List<STRING>{}

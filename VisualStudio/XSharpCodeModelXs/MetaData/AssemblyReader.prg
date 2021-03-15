@@ -69,7 +69,7 @@ INTERNAL CLASS AssemblyReader
    			END SWITCH
          NEXT
          foreach var md in _extensionMethods
-            assembly:ExtensionMethods:Add( XMethodReference{md, assembly })
+            assembly:ExtensionMethods:Add( XPEMethodSymbol{md, assembly })
          next
          assembly:Loaded                 := TRUE
          RETURN 

@@ -85,29 +85,28 @@ namespace XSharp.LanguageService
                 var snapshot = session.TextView.TextBuffer.CurrentSnapshot;
                 XSourceMemberSymbol member = XSharpLookup.FindMember(lineNumber, file);
                 XSourceTypeSymbol currentNamespace = XSharpTokenTools.FindNamespace(position, file);
-                CompletionElement gotoElement = null;
                 string currentNS = "";
                 if (currentNamespace != null)
                 {
                     currentNS = currentNamespace.Name;
                 }
-                var location = new XSharpSearchLocation(member, snapshot) { CurrentNamespace = currentNS, LineNumber = lineNumber, Position = position };
+                var location = new XSharpSearchLocation(member, snapshot, lineNumber, position, currentNS);
                 var tokenList = XSharpTokenTools.GetTokensUnderCursor(location, tokens.TokenStream);
                 // LookUp for the BaseType, reading the TokenList (From left to right)
-                var cType = XSharpLookup.RetrieveType(location, tokenList, CompletionState.General, out gotoElement,true);
+                var lookupresult = new List<IXSymbol>();
+                lookupresult.AddRange(XSharpLookup.RetrieveElement(location, tokenList, CompletionState.General,true));
 
                 //
-                if ((gotoElement != null) && (gotoElement.IsInitialized))
+                if (lookupresult.Count > 0)
                 {
+                    var element = lookupresult[0];
                     var qiContent = new List<object>();
 
-                    if (gotoElement.Result != null)
-                    {
-                        if (gotoElement.Result.Kind == Kind.Constructor)
+                        if (element.Kind == Kind.Constructor)
                         {
-                            if (gotoElement.Result.Parent != null)
+                            if (element.Parent != null)
                             {
-                                var xtype = gotoElement.Result.Parent as IXTypeSymbol;
+                                var xtype = element.Parent as IXTypeSymbol;
                                 var qitm = new XTypeAnalysis(xtype);
                                 AddImage(qiContent, qitm.Image);
                                 var description = new ClassifiedTextElement(qitm.WPFDescription);
@@ -115,22 +114,22 @@ namespace XSharp.LanguageService
 
                             }
                         }
-                        else if (gotoElement.Result is IXMemberSymbol)
+                        else if (element is IXMemberSymbol mem)
                         {
-                            QuickInfoTypeMember qitm = new QuickInfoTypeMember((IXMemberSymbol)gotoElement.Result);
+                            QuickInfoTypeMember qitm = new QuickInfoTypeMember(mem);
                             AddImage(qiContent, qitm.Image);
                             var description = new ClassifiedTextElement(qitm.WPFDescription);
                             qiContent.Add(description);
                         }
-                        else if (gotoElement.Result is IXVariableSymbol)
+                        else if (element is IXVariableSymbol var)
                         {
-                            QuickInfoVariable qitm = new QuickInfoVariable((IXVariableSymbol)gotoElement.Result);
+                            QuickInfoVariable qitm = new QuickInfoVariable(var);
                             AddImage(qiContent, qitm.Image);
                             var description = new ClassifiedTextElement(qitm.WPFDescription);
                             qiContent.Add(description);
 
                         }
-                        else if (gotoElement.Result is IXTypeSymbol xtype)
+                        else if (element is IXTypeSymbol xtype)
                         {
                             var qitm = new XTypeAnalysis(xtype);
                             AddImage(qiContent, qitm.Image);
@@ -141,7 +140,7 @@ namespace XSharp.LanguageService
                         {
                             return null;
                         }
-                    }
+                    
                     var result = new ContainerElement(ContainerElementStyle.Wrapped, qiContent);
 
                     return new QuickInfoItem(lineSpan, result);

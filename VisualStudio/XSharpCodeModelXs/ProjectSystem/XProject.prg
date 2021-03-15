@@ -708,7 +708,7 @@ BEGIN NAMESPACE XSharpModel
          ENDIF
          RETURN NULL    
       
-      METHOD FindSystemTypesByName(typeName AS STRING, usings AS IReadOnlyList<STRING>) AS IList<XPETypeSymbol>
+      METHOD FindSystemTypesByName(typeName AS STRING, usings AS IList<STRING>) AS IList<XPETypeSymbol>
          usings := AdjustUsings(REF typeName, usings)
          VAR result := XDatabase.GetReferenceTypes(typeName, SELF:DependentAssemblyList )
          result := FilterUsings(result,usings,typeName, FALSE)
@@ -775,7 +775,7 @@ BEGIN NAMESPACE XSharpModel
          RETURN result
          
          
-      PRIVATE METHOD AdjustUsings(typeName REF STRING, usings AS IReadOnlyList<STRING>) AS IReadOnlyList<STRING>
+      PRIVATE METHOD AdjustUsings(typeName REF STRING, usings AS IList<STRING>) AS IList<STRING>
          VAR pos := typeName:LastIndexOf(".")
          VAR myusings := List<STRING>{}
          myusings:AddRange(usings)
@@ -793,7 +793,7 @@ BEGIN NAMESPACE XSharpModel
       PRIVATE _lastFound := NULL AS XSourceTypeSymbol
       PRIVATE _lastName  := NULL AS STRING
       
-      METHOD GetTypes( startWith AS STRING, usings AS IReadOnlyList<STRING>) AS IList<XSourceTypeSymbol>
+      METHOD GetTypes( startWith AS STRING, usings AS IList<STRING>) AS IList<XSourceTypeSymbol>
          VAR result := XDatabase.GetTypesLike(startWith, SELF:DependentProjectList)
          result := FilterUsings(result,usings,startWith,TRUE)
          VAR types := SELF:GetTypeList(result)
@@ -805,11 +805,19 @@ BEGIN NAMESPACE XSharpModel
             SELF:_lastName  := NULL
          ENDIF
 
+      METHOD FindType(typeName as STRING, usings AS IList<STRING>) AS IXTypeSymbol
+         LOCAL result as IXTypeSymbol
+         result := SELF:Lookup(typeName, usings)
+         if result == NULL
+             result := SELF:FindSystemType(typeName, usings)  
+         ENDIF
+         RETURN result   
+
       METHOD Lookup(typeName AS STRING) AS XSourceTypeSymbol
          VAR usings := List<STRING>{}
          RETURN Lookup(typeName, usings)
    
-      METHOD Lookup(typeName AS STRING, usings AS IReadOnlyList<STRING>) AS XSourceTypeSymbol
+      METHOD Lookup(typeName AS STRING, usings AS IList<STRING>) AS XSourceTypeSymbol
       	 // lookup Type definition in this project and X# projects referenced by this project
         IF XSettings.EnableTypelookupLog
             WriteOutputMessage(i"Lookup {typeName}")
@@ -823,7 +831,7 @@ BEGIN NAMESPACE XSharpModel
          IF pos > 0
             typeName := typeName:Substring(0, pos)
          ENDIF         
-         VAR result := XDatabase.GetTypes(typeName, SELF:DependentProjectList)
+         VAR result  := XDatabase.GetTypes(typeName, SELF:DependentProjectList)
          result      := FilterUsings(result,usings, typeName, FALSE)
  
          var tmp  := GetType(result)
@@ -847,11 +855,11 @@ BEGIN NAMESPACE XSharpModel
          VAR usings := List<STRING>{}
          RETURN Lookup(typeName, usings)
          
-      METHOD LookupReferenced(typeName AS STRING, usings AS IReadOnlyList<STRING>) AS XSourceTypeSymbol
+      METHOD LookupReferenced(typeName AS STRING, usings AS IList<STRING>) AS XSourceTypeSymbol
    	   // Is now identical to Lookup()
          RETURN Lookup(typeName, usings)
          
-      METHOD FilterUsings(list AS IList<XDbResult> , usings AS IReadOnlyList<STRING>, typeName AS STRING, partial AS LOGIC) AS IList<XDbResult>
+      METHOD FilterUsings(list AS IList<XDbResult> , usings AS IList<STRING>, typeName AS STRING, partial AS LOGIC) AS IList<XDbResult>
          VAR result := List<XDbResult>{}
          VAR checkCase := SELF:ParseOptions:CaseSensitive
          FOREACH VAR element IN list
@@ -892,7 +900,10 @@ BEGIN NAMESPACE XSharpModel
          LOCAL aFiles   := Dictionary<INT64, XFile>{} AS Dictionary<INT64, XFile>
          LOCAL cXmlComment as STRING
          LOCAL projectIds as STRING
+         local interfaces as STRING
+         local baseTypeName as STRING
          projectIds := ","+self:DependentProjectList+","
+         interfaces := ""
          FOREACH var element in found
             var id := ","+element:IdProject.ToString()+","
             IF projectIds.IndexOf(id) >= 0
@@ -902,12 +913,21 @@ BEGIN NAMESPACE XSharpModel
                sTypeIds += element:IdType:ToString()
                if ! String.IsNullOrEmpty(element:XmlComments)
                    cXmlComment := element:XmlComments
-               ENDIF
+                ENDIF
+                var pos := element:SourceCode.ToLower().IndexOf("implements ")
+                if pos > 0
+                    interfaces += element:SourceCode:Substring(pos +10).Trim()+","
+                endif
+                if ! String.IsNullOrEmpty(element:BaseTypeName)
+                    baseTypeName := element:BaseTypeName
+                endif
             ENDIF
          NEXT
          IF sTypeIds:Length == 0
             RETURN NULL
-         ENDIF
+        ENDIF
+         var aIF := interfaces.Split(<CHAR>{c','}, StringSplitOptions.RemoveEmptyEntries)    
+         //todo Collect interfaces from IMPLEMENTS clauses
          VAR members  := XDatabase.GetMembers(sTypeIds):ToArray()
          VAR oType   := found[0]
          VAR source  := GetTypeSource(oType, members)
@@ -926,6 +946,8 @@ BEGIN NAMESPACE XSharpModel
             VAR name       := oType:TypeName
             VAR xElement      := walker:EntityList:First()
             IF xElement IS XSourceTypeSymbol VAR xtype
+               xtype:SetInterfaces(aIF)
+               xtype:BaseType    := baseTypeName
                xtype:Range       := TextRange{oType:StartLine, oType:StartColumn, oType:EndLine, oType:EndColumn}
                xtype:Interval    := TextInterval{oType:Start, oType:Stop}
                xtype:Namespace   := namespace

@@ -17,7 +17,8 @@ BEGIN NAMESPACE XSharpModel
             SELF:Kind := Kind.Parameter
         
         PROPERTY IsParameter AS LOGIC GET TRUE
-        
+
+ 
     END CLASS
     
 END NAMESPACE

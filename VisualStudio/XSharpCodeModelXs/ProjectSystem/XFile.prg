@@ -187,7 +187,9 @@ BEGIN NAMESPACE XSharpModel
                     ContentsChanged()
                 ENDIF
             ENDIF
-      
+
+        METHOD FindType(typeName as STRING) AS IXTypeSymbol
+            RETURN SELF:Project:FindType(typeName, SELF:Usings)
          
         METHOD SaveToDatabase() AS VOID
             IF ! SELF:Virtual

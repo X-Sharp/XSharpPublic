@@ -20,24 +20,24 @@ BEGIN NAMESPACE XSharpModel
 			SELF:OriginalTypeName   := RemoveGenericParameters(def:PropertyType:FullName)
          SELF:TypeName        := SELF:Signature:DataType := def:PropertyType:GetXSharpTypeName()
          if def:GetMethod != NULL
-            VAR xMethod := XMethodReference{def:GetMethod, asm}
+            VAR xMethod := XPEMethodSymbol{def:GetMethod, asm}
             SELF:Attributes := xMethod:Attributes
          ELSEIF def:SetMethod != NULL
-            VAR xMethod := XMethodReference{def:SetMethod, asm}
+            VAR xMethod := XPEMethodSymbol{def:SetMethod, asm}
             SELF:Attributes := xMethod:Attributes
          ENDIF
-         IF _propdef:HasCustomAttributes
+         IF def:HasCustomAttributes
             SELF:_custatts       := _propdef:CustomAttributes
          ENDIF
+            
          
-      OVERRIDE METHOD Resolve() AS VOID
-         IF SELF:_propdef != NULL
+      PROTECTED OVERRIDE METHOD Resolve() AS VOID
+         IF ! _resolved
             IF _propdef:HasParameters
                SELF:AddParameters(_propdef:Parameters)
             ENDIF
             SUPER:Resolve()
          ENDIF
-         SELF:_propdef := NULL
          RETURN
    END CLASS
 
@@ -84,9 +84,8 @@ BEGIN NAMESPACE XSharpModel
             SELF:_custatts       := def:CustomAttributes
          ENDIF
 
-      OVERRIDE METHOD Resolve() AS VOID
+      PROTECTED OVERRIDE METHOD Resolve() AS VOID
          SUPER:Resolve()
-         SELF:_fielddef := NULL
          RETURN
 
    END CLASS
@@ -101,23 +100,22 @@ BEGIN NAMESPACE XSharpModel
          SELF:OriginalTypeName      := RemoveGenericParameters(def:EventType:FullName)
          SELF:TypeName              := SELF:Signature:DataType    := def:EventType:GetXSharpTypeName()
          if def:AddMethod != NULL
-            VAR xMethod := XMethodReference{def:AddMethod, asm}
+            VAR xMethod := XPEMethodSymbol{def:AddMethod, asm}
             SELF:Attributes := xMethod:Attributes
          elseif def:RemoveMethod != null
-            VAR xMethod := XMethodReference{def:RemoveMethod, asm}
+            VAR xMethod := XPEMethodSymbol{def:RemoveMethod, asm}
             SELF:Attributes := xMethod:Attributes
          endif
          IF def:HasCustomAttributes
             SELF:_custatts       := def:CustomAttributes
          ENDIF
         
-      OVERRIDE Method Resolve() AS VOID
+      PROTECTED OVERRIDE Method Resolve() AS VOID
          SUPER:Resolve()
-         SELF:_eventdef := NULL
          RETURN
    END CLASS  
    
-   CLASS XMethodReference  INHERIT XPEMemberSymbol
+   CLASS XPEMethodSymbol  INHERIT XPEMemberSymbol
        PRIVATE _methoddef    as MethodDefinition
        PRIVATE _ccAttrib     AS Mono.Cecil.CustomAttribute
          
@@ -164,29 +162,33 @@ BEGIN NAMESPACE XSharpModel
          
   		 CONSTRUCTOR(def AS MethodDefinition, asm AS XAssembly)
 			SUPER(def:Name, Kind.Method, ConvertAttributes(def:Attributes),  asm)
-         SELF:DeclaringType   := def:DeclaringType:GetXSharpTypeName()
-         IF DeclaringType:EndsWith("Functions")
-            SELF:Attributes := _AND(SELF:Attributes, ~Modifiers.Static)
-            SELF:Kind      := Kind.Function
-         ENDIF
-         SELF:OriginalTypeName   := RemoveGenericParameters(def:ReturnType:FullName)
-         SELF:TypeName           := SELF:Signature:DataType := def:ReturnType:GetXSharpTypeName()
-         SELF:_methoddef         := def
-         IF def:HasCustomAttributes
-            SELF:_custatts       := def:CustomAttributes
-            FOREACH VAR attr IN def:CustomAttributes
-               SWITCH attr:AttributeType:FullName 
-               CASE "System.Runtime.CompilerServices.ExtensionAttribute"
-                  SELF:Signature:IsExtension := TRUE
-               CASE "XSharp.Internal.ClipperCallingConventionAttribute"
-               CASE "Vulcan.Internal.ClipperCallingConventionAttribute"
-                  SELF:CallingConvention := CallingConvention.Clipper
-                  _ccAttrib := attr
-               END SWITCH
-            NEXT
-         ENDIF         
-         OVERRIDE METHOD Resolve() AS VOID         
-            IF SELF:_methoddef != NULL
+             SELF:DeclaringType   := def:DeclaringType:GetXSharpTypeName()
+             IF DeclaringType:EndsWith("Functions")
+                SELF:Attributes := _AND(SELF:Attributes, ~Modifiers.Static)
+                SELF:Kind      := Kind.Function
+             ENDIF
+             SELF:OriginalTypeName   := RemoveGenericParameters(def:ReturnType:FullName)
+             SELF:TypeName           := SELF:Signature:DataType := def:ReturnType:GetXSharpTypeName()
+             SELF:_methoddef         := def
+             IF def:HasCustomAttributes
+                SELF:_custatts       := def:CustomAttributes
+                FOREACH VAR attr IN def:CustomAttributes
+                   SWITCH attr:AttributeType:FullName 
+                   CASE "System.Runtime.CompilerServices.ExtensionAttribute"
+                      SELF:Signature:IsExtension := TRUE
+                   CASE "XSharp.Internal.ClipperCallingConventionAttribute"
+                   CASE "Vulcan.Internal.ClipperCallingConventionAttribute"
+                      SELF:CallingConvention := CallingConvention.Clipper
+                      _ccAttrib := attr
+                   END SWITCH
+                NEXT
+                ENDIF
+                IF def:HasGenericParameters
+                    SELF:_generic := def:HasGenericParameters
+                    SELF:_signature:ReadGenericParameters(def:GenericParameters)          
+                ENDIF            
+         PROTECTED OVERRIDE METHOD Resolve() AS VOID         
+            IF ! _resolved
                // Add Generic parameters first so have that info when processing the parameters
                IF _methoddef:HasGenericParameters
                   SELF:AddTypeParameters(_methoddef:GenericParameters)
@@ -200,7 +202,6 @@ BEGIN NAMESPACE XSharpModel
                ENDIF
                SUPER:Resolve()
             ENDIF
-            SELF:_methoddef := NULL
             
             RETURN
 
@@ -210,12 +211,14 @@ BEGIN NAMESPACE XSharpModel
    [DebuggerDisplay("{ToString(),nq}")];
 	CLASS XPEMemberSymbol     INHERIT XPESymbol IMPLEMENTS IXMemberSymbol
 		// Fields
-        PRIVATE   _signature    AS XMemberSignature 
-        PRIVATE   _resolved    AS LOGIC
+        PROTECTED  _signature    AS XMemberSignature 
+        PROTECTED  _resolved    AS LOGIC
+        PROTECTED  _generic     AS LOGIC
         PROTECTED _custatts    AS Mono.Collections.Generic.Collection<CustomAttribute>
         PROPERTY  SubType      AS Kind AUTO
         PROPERTY  DeclaringType  AS STRING AUTO            
         PROPERTY  Signature     AS XMemberSignature  GET _signature
+        PROPERTY  IsGeneric    AS LOGIC GET _generic
         
 
 		#region constructors
@@ -225,12 +228,13 @@ BEGIN NAMESPACE XSharpModel
          SELF:_signature      := XMemberSignature{}
          SELF:_resolved       := FALSE
          SELF:_custatts       := NULL
+         SELF:_generic        := FALSE
          RETURN
       
 
       #endregion
 
-      VIRTUAL METHOD Resolve() AS VOID
+      PROTECTED VIRTUAL METHOD Resolve() AS VOID
          IF SELF:_custatts != NULL
             FOREACH VAR custatt IN SELF:_custatts
                SWITCH custatt:AttributeType:FullName 
@@ -270,6 +274,7 @@ BEGIN NAMESPACE XSharpModel
          
 
       METHOD AddParameters (aPars as Mono.Collections.Generic.Collection<ParameterDefinition>) AS VOID
+         SELF:_signature:Parameters:Clear()
          FOREACH var oPar in aPars
             var name  := oPar:Name
             var index := oPar:Index
@@ -377,7 +382,7 @@ BEGIN NAMESPACE XSharpModel
       PROPERTY Description AS STRING GET SELF:GetDescription()
 
 		
-		PROPERTY FullName AS STRING GET SELF:GetFullName()
+	  PROPERTY FullName AS STRING GET SELF:GetFullName()
 		
       PROPERTY IsStatic AS LOGIC GET SELF:Modifiers:HasFlag(Modifiers.Static)
       PROPERTY Location AS STRING GET SELF:Assembly:DisplayName
@@ -441,7 +446,34 @@ BEGIN NAMESPACE XSharpModel
          ENDIF
          RETURN result
 
-      
+
+     METHOD WithName(newName as STRING) AS IXMemberSymbol
+        var clone := (XPEMemberSymbol) SELF:MemberwiseClone()
+        clone:Name := newName
+        clone:_signature := SELF:_signature:Clone()
+        RETURN (IXMemberSymbol) clone
+
+//     METHOD WithGenericArgs(args as List<String>) AS IXMemberSymbol
+//        var clone := (XPEMemberSymbol) SELF:MemberwiseClone()
+//        var orgParameters   := SELF:Parameters
+//        clone:_signature := SELF:_signature:Clone()
+//        clone:_signature:Parameters := List<IXVariableSymbol>{}
+//        if args:Count >= ParentType:TypeParameters:Count
+//            FOREACH par as IXVariableSymbol in orgParameters
+//                var type := par:TypeName
+//                var index := ParentType:TypeParameters:IndexOf(type)
+//                if index >= 0
+//                    var newpar := par:Clone()
+//                    newpar:TypeName := args[index]
+//                    clone:_signature:Parameters:Add(newpar)  
+//                else
+//                  clone:_signature:Parameters:Add(par)  
+//                
+//                ENDIF
+//            NEXT
+//        ENDIF        
+//        RETURN (IXMemberSymbol) clone
+
 		#endregion
 	END CLASS
 	

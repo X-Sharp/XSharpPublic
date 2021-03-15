@@ -71,4 +71,5 @@
 - Token Under cursor after cast (Test) SomeToken
 - Recognize type after := 
   VAR x := String.Compare()
-- Recognize tyoe after IF sometype
+- Recognize type after IF sometype
+- Delegete parameter lookup

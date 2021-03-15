@@ -1675,7 +1675,7 @@ namespace XSharp.Project
             return bOk;
         }
         #region IProjectTypeHelper
-        public IXTypeSymbol ResolveExternalType(string name, IReadOnlyList<string> usings)
+        public IXTypeSymbol ResolveExternalType(string name, IList<string> usings)
         {
             switch (name.ToLower())
             {
@@ -1703,7 +1703,7 @@ namespace XSharp.Project
             return model.FindSystemType(name, myusings);
         }
 
-        public XSourceTypeSymbol ResolveXType(string name, IReadOnlyList<string> usings)
+        public XSourceTypeSymbol ResolveXType(string name, IList<string> usings)
         {
             var model = this.ProjectModel;
             XSourceTypeSymbol result = model.Lookup(name, usings);
@@ -1713,7 +1713,7 @@ namespace XSharp.Project
         }
 
 
-        public XSourceTypeSymbol ResolveReferencedType(string name, IReadOnlyList<string> usings)
+        public XSourceTypeSymbol ResolveReferencedType(string name, IList<string> usings)
         {
             // identical but may be used by others
             return ResolveXType(name, usings);

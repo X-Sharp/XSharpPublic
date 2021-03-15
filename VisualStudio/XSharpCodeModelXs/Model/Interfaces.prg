@@ -23,7 +23,6 @@ BEGIN NAMESPACE XSharpModel
       PROPERTY IsArray      AS LOGIC GET
       PROPERTY Namespace    AS STRING GET
       PROPERTY FullName     AS STRING GET
-     
       METHOD ForceComplete() AS VOID STRICT
    
    END INTERFACE
@@ -31,6 +30,7 @@ BEGIN NAMESPACE XSharpModel
    
    /// <summary>Properties shared by types (both internal and external) </summary>
    INTERFACE IXTypeSymbol INHERIT IXSymbol
+      PROPERTY ShortName   AS STRING GET
       PROPERTY Children    AS IList<IXTypeSymbol> GET
       PROPERTY IsNested    AS LOGIC GET
       PROPERTY Members     AS IList<IXMemberSymbol> GET
@@ -63,7 +63,10 @@ BEGIN NAMESPACE XSharpModel
       PROPERTY IsExtension    AS LOGIC GET
       PROPERTY XMLSignature   AS STRING GET   
       PROPERTY OriginalTypeName  AS STRING GET
-      PROPERTY Location    AS STRING GET
+      PROPERTY Location       AS STRING GET
+      PROPERTY IsGeneric      AS LOGIC GET
+      METHOD WithName(newName as STRING) AS IXMemberSymbol
+     // METHOD WithGenericArgs(args as List<String>) AS IXMemberSymbol
    END INTERFACE
    
    /// <summary>Properties shared by variables (locals, parameters, both internal and external) </summary>
@@ -74,6 +77,7 @@ BEGIN NAMESPACE XSharpModel
       PROPERTY ShortTypeName  AS STRING GET
       PROPERTY ParamTypeDesc  AS STRING GET
       PROPERTY Value          AS STRING GET
+      METHOD Clone() AS IXVariableSymbol            
          
       END INTERFACE
       

@@ -93,108 +93,95 @@ namespace XSharp.Project.Editors.LightBulb
         }
 
 
-        private void BuildMemberList(SnapshotSpan span)
-        {
-            // 
-            ITrackingSpan trackingSpan = span.Snapshot.CreateTrackingSpan(span, SpanTrackingMode.EdgeInclusive);
-            // Get the Name of the File
-            XSharpModel.XFile file = this.m_textView.TextBuffer.GetFile();
-            if (file != null)
-            {
-                //
-                ITextSnapshotLine line = span.Start.GetContainingLine();
-                int lineNumber = line.LineNumber;
-                int columnNumber = span.Start.Position - line.Start.Position;
-                //
-                XSourceTypeSymbol classDef = null;
-                foreach (KeyValuePair<String, XSourceTypeSymbol> kvp in file.TypeList)
-                {
-                    if (kvp.Value.Range.ContainsInclusive(lineNumber, columnNumber))
-                    {
-                        classDef = kvp.Value;
-                        break;
-                    }
-                }
-                if (classDef != null)
-                {
-                    // Get the Interfaces
-                    // classDef.Implement DOESN'T exist currently :(
-                    string[] interfaces = { };
-                    // Clr Types
-                    // Our own types
-                    XSourceTypeSymbol ti = null;
-                    IList<string> Usings = file.Usings;
-                    // Search already implemented Members
-                    bool FoundAll = true;
-                    string FullName = "";
-                    // Let's build a list of Elements to add to implement the Interface
-                    List<XSourceMemberSymbol> toAdd = new List<XSourceMemberSymbol>();
-                    CompletionType temp;
-                    //
-                    foreach (string iface in interfaces)
-                    {
-                        String iFace = iface.Trim();
-                        // Search The interface
-                        // --> Default NameSpace
-                        temp = new CompletionType(iFace, file, "");
-                        if (!temp.IsEmpty())
-                        {
-                            if (temp.XTypeDef!= null)
-                            {
-                                ti = temp.XTypeDef;
-                                if (ti.Kind == Kind.Interface)
-                                {
-                                    FullName = ti.Name;
-                                    // Everything is here ?
-                                    FoundAll = true;
-                                    foreach (XSourceMemberSymbol mbr in ti.Members)
-                                    {
-                                        if (!classDef.Members.Contains(mbr))
-                                        {
-                                            // No
-                                            toAdd.Add(mbr);
-                                        }
-                                    }
-                                    FoundAll = (toAdd.Count == 0);
-                                }
-                            }
-                        }
-                        //
-                    }
-                }
-            }
-            // Sorry, nothing to do....
-            return;
-        }
+        //private void BuildMemberList(SnapshotSpan span)
+        //{
+        //    // 
+        //    ITrackingSpan trackingSpan = span.Snapshot.CreateTrackingSpan(span, SpanTrackingMode.EdgeInclusive);
+        //    // Get the Name of the File
+        //    XSharpModel.XFile file = this.m_textView.TextBuffer.GetFile();
+        //    if (file != null)
+        //    {
+        //        //
+        //        ITextSnapshotLine line = span.Start.GetContainingLine();
+        //        int lineNumber = line.LineNumber;
+        //        int columnNumber = span.Start.Position - line.Start.Position;
+        //        //
+        //        XSourceTypeSymbol classDef = null;
+        //        foreach (KeyValuePair<String, XSourceTypeSymbol> kvp in file.TypeList)
+        //        {
+        //            if (kvp.Value.Range.ContainsInclusive(lineNumber, columnNumber))
+        //            {
+        //                classDef = kvp.Value;
+        //                break;
+        //            }
+        //        }
+        //        if (classDef != null)
+        //        {
+        //            // Get the Interfaces
+        //            // classDef.Implement DOESN'T exist currently :(
+        //            string[] interfaces = { };
+        //            // Clr Types
+        //            // Our own types
+        //            // Search already implemented Members
+        //            string FullName ;
+        //            // Let's build a list of Elements to add to implement the Interface
+        //            List<XSourceMemberSymbol> toAdd = new List<XSourceMemberSymbol>();
+        //            //
+        //            foreach (string iface in interfaces)
+        //            {
+        //                // Search The interface
+        //                // --> Default NameSpace
+        //                var iftype = file.FindType(iface.Trim());
+        //                if (iftype != null)
+        //                {
+        //                    if (iftype.Kind == Kind.Interface)
+        //                    {
+        //                        FullName = iftype.Name;
+        //                        // Everything is here ?
+        //                        foreach (XSourceMemberSymbol mbr in iftype.Members)
+        //                        {
+        //                            if (!classDef.Members.Contains(mbr))
+        //                            {
+        //                                // No
+        //                                toAdd.Add(mbr);
+        //                            }
+        //                        }
+        //                    }
+        //                }
+        //            }
+        //        }
+        //    }
+        //    return;
+        //}
 
-        private List<XSourceMemberSymbol> BuildMissingMembers(XSourceTypeSymbol currentClass, System.Reflection.MemberInfo[] members)
-        {
-            List<XSourceMemberSymbol> elementsToAdd = new List<XSourceMemberSymbol>();
-            //
-            foreach (System.Reflection.MemberInfo member in members)
-            {
-                System.Reflection.MemberTypes realType = member.MemberType;
-                if (realType == System.Reflection.MemberTypes.Method)
-                {
-                    System.Reflection.MethodInfo method = (System.Reflection.MethodInfo)member;
-                    // Check for Getter/Setter 
-                    if ((method.Attributes & System.Reflection.MethodAttributes.SpecialName) == System.Reflection.MethodAttributes.SpecialName)
-                    {
-                        string getsetName = member.Name;
-                        if (getsetName.StartsWith("get_") || getsetName.StartsWith("set_"))
-                            // Oooppsss
-                            continue;
-                    }
-                }
-                // Now, We will have to check Parameters / Return Type
-                if (!CheckForMember(currentClass, member))
-                {
-                    // and re-create our own prototype
-                    elementsToAdd.Add(CreateMember(member, members));
-                }
-            }
-            return elementsToAdd;
-        }
+        //private List<XSourceMemberSymbol> BuildMissingMembers(XSourceTypeSymbol currentClass, System.Reflection.MemberInfo[] members)
+        //{
+        //    List<XSourceMemberSymbol> elementsToAdd = new List<XSourceMemberSymbol>();
+        //    //
+        //    foreach (System.Reflection.MemberInfo member in members)
+        //    {
+        //        System.Reflection.MemberTypes realType = member.MemberType;
+        //        if (realType == System.Reflection.MemberTypes.Method)
+        //        {
+        //            System.Reflection.MethodInfo method = (System.Reflection.MethodInfo)member;
+        //            // Check for Getter/Setter 
+        //            if ((method.Attributes & System.Reflection.MethodAttributes.SpecialName) == System.Reflection.MethodAttributes.SpecialName)
+        //            {
+        //                string getsetName = member.Name;
+        //                if (getsetName.StartsWith("get_") || getsetName.StartsWith("set_"))
+        //                    // Oooppsss
+        //                    continue;
+        //            }
+        //        }
+        //        // Now, We will have to check Parameters / Return Type
+        //        if (!CheckForMember(currentClass, member))
+        //        {
+        //            // and re-create our own prototype
+        //            elementsToAdd.Add(CreateMember(member, members));
+        //        }
+        //    }
+        //    return elementsToAdd;
+        //}
 
         private XSourceMemberSymbol CreateMember(MemberInfo member, MemberInfo[] members)
         {

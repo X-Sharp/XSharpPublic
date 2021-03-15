@@ -29,6 +29,8 @@ BEGIN NAMESPACE XSharpModel
       PROPERTY Value                   AS STRING            AUTO 
       PROPERTY XmlComments             AS STRING            AUTO
       PRIVATE _typeName                AS STRING
+      PROPERTY IsGeneric               AS LOGIC AUTO
+      PROPERTY GenericArgs             AS List<String> AUTO
       
       #endregion
       
@@ -66,7 +68,9 @@ BEGIN NAMESPACE XSharpModel
             ENDIF
          ENDIF
          
-         
+
+    
+
   
          #region Complexer properties		
          // Properties
@@ -76,7 +80,6 @@ BEGIN NAMESPACE XSharpModel
                RETURN SELF:ModVis + " "+KindKeyword +  " "+SELF:Prototype
             END GET
          END PROPERTY
-         
          
          
          PROPERTY IsTyped                  AS LOGIC GET !String.IsNullOrEmpty(_typeName)
@@ -92,7 +95,19 @@ BEGIN NAMESPACE XSharpModel
                SELF:_typeName := VALUE
             END SET
          END PROPERTY
-         
+
+
+        METHOD CheckForGenericTypeName() AS VOID
+            VAR pos := SELF:TypeName:IndexOf("<")
+            IF pos > 0
+                SELF:IsGeneric := TRUE
+                SELF:GenericArgs := List<STRING>{}
+                var tmp := SELF:TypeName:Substring(pos)
+                var elements := tmp:Split(<CHAR>{'<',',','>'}, StringSplitOptions.RemoveEmptyEntries)
+                SELF:GenericArgs:AddRange(elements)
+            ENDIF
+            
+
          #endregion
    END CLASS
    

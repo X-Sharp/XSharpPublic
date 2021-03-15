@@ -241,7 +241,7 @@ namespace XSharp.LanguageService
                     if (member is XSourceMemberSymbol tm)
                     {
                         locals = new Dictionary<string, IXVariableSymbol>(StringComparer.OrdinalIgnoreCase);
-                        var location = new XSharpSearchLocation(tm, buffer.CurrentSnapshot) { LineNumber = iLine};
+                        var location = new XSharpSearchLocation(tm, buffer.CurrentSnapshot, iLine);
                         var vars = tm.GetLocals(location);
                         foreach (var v in vars)
                         {

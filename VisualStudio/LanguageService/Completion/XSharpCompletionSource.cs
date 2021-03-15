@@ -170,11 +170,10 @@ namespace XSharp.LanguageService
                 // The Completion list we are building
                 XCompletionList compList = new XCompletionList(_file);
                 XCompletionList kwdList = new XCompletionList(_file);
-                // The CompletionType we will use to fill the CompletionList
-                CompletionType cType = null;
+                IXTypeSymbol type = null;
                 if (session.Properties.ContainsProperty(XsCompletionProperties.Type))
                 {
-                    cType = (CompletionType)session.Properties[XsCompletionProperties.Type];
+                    type = (IXTypeSymbol)session.Properties[XsCompletionProperties.Type];
                 }
                 // Start of Process
                 string filterText = "";
@@ -188,7 +187,7 @@ namespace XSharp.LanguageService
                 session.Properties.TryGetProperty(XsCompletionProperties.IncludeKeywords, out includeKeywords);
                 CompletionState state;
 
-                var location = new XSharpSearchLocation(member, snapshot) { LineNumber = currentLine, Position = caretPos };
+                var location = new XSharpSearchLocation(member, snapshot, currentLine, caretPos );
 
                 var tokenList = XSharpTokenTools.GetTokenList(location, out state, includeKeywords);
 
@@ -282,26 +281,61 @@ namespace XSharp.LanguageService
                     tokenType = this._stopToken.Type;
                 }
                 // LookUp for the BaseType, reading the TokenList (From left to right)
-                CompletionElement foundElement;
                 string currentNS = "";
                 if (currentNamespace != null)
                 {
                     currentNS = currentNamespace.Name;
                 }
-                location.CurrentNamespace = currentNS;
-                cType = XSharpLookup.RetrieveType(location, tokenList, CompletionState.General, out foundElement);
-                if (!cType.IsEmpty())
+                location = location.With(currentNS);
+                var symbol  = XSharpLookup.RetrieveElement(location, tokenList, CompletionState.General).FirstOrDefault();
+                var memberName = "";
+                // Check for members, locals etc and convert the type of these to IXTypeSymbol
+                if (symbol != null )
                 {
-                    session.Properties[XsCompletionProperties.Type] = cType;
+                    if (symbol is IXTypeSymbol xtype)
+                    {
+                        type = xtype;
+                    }
+                    else if (symbol is IXMemberSymbol xmember)
+                    {
+                        var typeName = xmember.TypeName;
+                        if (xmember is XSourceMemberSymbol sourcemem)
+                        {
+                            type = sourcemem.File.FindType(typeName);
+                        }
+                        else
+                        {
+                            type = location.FindType(typeName);
+                        }
+                        memberName = xmember.Name;
+                    }
+                    else if (symbol is IXVariableSymbol xvar)
+                    {
+                        var typeName = "";
+                        if (xvar is  XSourceVariableSymbol sourcevar)
+                        {
+                            typeName = sourcevar.TypeName;
+                            type = sourcevar.File.FindType(typeName);
+
+                        }
+                        else if (xvar is XPEParameterSymbol par)
+                        {
+                            typeName = par.TypeName;
+                            type = location.FindType(typeName);
+                        }
+                        memberName = xvar.Name;
+                    }
+                    session.Properties[XsCompletionProperties.Type] = type;
                 }
                 else
                 {
                     if (dotSelector && _dotUniversal)
                     {
-                        cType = XSharpLookup.RetrieveType(location, altTokenList, CompletionState.General, out foundElement);
-                        if (!cType.IsEmpty())
+                        symbol = XSharpLookup.RetrieveElement(location, altTokenList, CompletionState.General).FirstOrDefault();
+                        // Check for members, locals etc and convert the type of these to IXTypeSymbol
+                        if (symbol != null && symbol is IXTypeSymbol)
                         {
-                            session.Properties[XsCompletionProperties.Type] = cType;
+                            session.Properties[XsCompletionProperties.Type] = symbol;
                         }
                     }
                 }
@@ -340,12 +374,12 @@ namespace XSharp.LanguageService
                             //
                             AddXSharpKeywordTypeNames(kwdList, filterText);
                             // it can be a static Method/Property/Enum
-                            if (cType != null)
+                            if (type != null)
                             {
                                 // First we need to keep only the text AFTER the last dot
                                 int dotPos = filterText.LastIndexOf('.');
                                 filterText = filterText.Substring(dotPos + 1, filterText.Length - dotPos - 1);
-                                BuildCompletionList(compList, cType, Modifiers.Public, true, filterText);
+                                BuildCompletionList(compList,type, Modifiers.Public, true, filterText);
                             }
                             break;
                     }
@@ -354,38 +388,31 @@ namespace XSharp.LanguageService
                 if (showInstanceMembers)
                 {
                     // Member call
-                    if (cType != null)
+                    if (type != null)
                     {
-                        Modifiers visibleAs = Modifiers.Public; 
-                        if (cType.XTypeDef != null && cType.XTypeDef.File.Project == member.File.Project)
+                        Modifiers visibleAs = Modifiers.Public;
+                        if (type is XSourceTypeSymbol sourceType && sourceType.File.Project == member.File.Project)
                         {
                             visibleAs = Modifiers.Internal;
-                        }
-                        if (foundElement != null)
-                        {
-                            switch (foundElement.Name.ToLower())
+                            switch (memberName.ToLower())
                             {
                                 case "self":
                                 case "this":
-                                    visibleAs = Modifiers.Private ;
+                                    visibleAs = Modifiers.Private;
                                     break;
                                 case "super":
                                     visibleAs = Modifiers.Protected;
                                     break;
                                 default:
-                                    if (member.ParentName == cType.FullName)
+                                    if (member.ParentName == type.FullName)
                                     {
                                         visibleAs = Modifiers.Private;
                                     }
                                     break;
                             }
                         }
-                        else if (member.ParentName == cType.FullName)
-                        {
-                            visibleAs = Modifiers.Private;
-                        }
                         // Now, Fill the CompletionList with the available members, from there
-                        BuildCompletionList(compList, cType, visibleAs, false, filterText);
+                        BuildCompletionList(compList, type, visibleAs, false, filterText);
                     }
                 }
                 //
@@ -440,12 +467,12 @@ namespace XSharp.LanguageService
                                     BuildCompletionList(compList, member, filterText, location);
                                     AddXSharpKeywords(compList, filterText);
                                     // Context Type....
-                                    cType = new CompletionType(((XSourceTypeSymbol) (member.Parent)).Clone);
-                                    if (!cType.IsEmpty())
-                                    {
-                                        // Get the members also
-                                        BuildCompletionList(compList, cType, Modifiers.Private, false, filterText);
-                                    }
+                                    //cType = new CompletionType(((XSourceTypeSymbol) (member.Parent)).Clone);
+                                    //if (!cType.IsEmpty())
+                                    //{
+                                    //    // Get the members also
+                                    //    BuildCompletionList(compList, type, Modifiers.Private, false, filterText);
+                                    //}
                                 }
                                 // Now Add Functions and Procedures
                                 BuildCompletionList(compList, _file.Project.Lookup(XLiterals.GlobalName), Modifiers.Public, false, filterText);
@@ -535,10 +562,10 @@ namespace XSharp.LanguageService
         private void AddUsingStaticMembers(XCompletionList compList, XFile file, string filterText)
         {
             //
-            foreach (string staticType in file.AllUsingStatics)
-            {
-                BuildCompletionList(compList, new CompletionType(staticType, file, ""), Modifiers.Public, true, filterText);
-            }
+            //foreach (string staticType in file.AllUsingStatics)
+            //{
+            //    BuildCompletionList(compList, new CompletionType(staticType, file, ""), Modifiers.Public, true, filterText);
+            //}
             // And what about Global Types in referenced Assemblies ?
             var found = file.Project.FindGlobalMembersInAssemblyReferences(filterText);
             FillMembers(compList, found, Modifiers.Public, true);
@@ -656,7 +683,7 @@ namespace XSharp.LanguageService
             }
         }
 
-        private void AddXSharpTypeNames(XCompletionList compList, XProject project, string startWith, IReadOnlyList<string> usings)
+        private void AddXSharpTypeNames(XCompletionList compList, XProject project, string startWith, IList<string> usings)
         {
             var list = project.GetTypes(startWith, usings);
             foreach (var typeInfo in list)
@@ -821,75 +848,74 @@ namespace XSharp.LanguageService
         /// <param name="minVisibility">The minimum Visibility</param>
         /// <param name="staticOnly">Static member only ?</param>
         /// <param name="startWith">The filter text</param>
-        private void BuildCompletionList(XCompletionList compList, XSymbol parent, Modifiers minVisibility, bool staticOnly, string startWith)
-        {
-            if (parent == null)
-            {
-                return;
-            }
-            if (!(parent is XSourceTypeSymbol))
-            {
-                return;
-            }
-            //
-            IXTypeSymbol Owner = parent as IXTypeSymbol;
-            //
-            bool hideAdvanced = XSettings.EditorHideAdvancedMembers;
-            foreach (var elt in Owner.GetMembers(startWith))
-            {
-                if (elt.Kind == Kind.Constructor)
-                    continue;
-                if (elt.IsStatic != staticOnly)
-                    continue;
-                if (elt.Visibility < minVisibility)
-                    continue;
-                //
-                if (IsHiddenMemberName(elt.Name))
-                {
-                    continue;
-                }
-                ImageSource icon = _provider.GlyphService.GetGlyph(elt.getGlyphGroup(), elt.getGlyphItem());
-                string toAdd = "";
-                if (elt.Kind.HasParameters() && elt.Kind != Kind.Constructor)
-                {
-                    toAdd = "(";
-                }
-                if (!compList.Add(new XSCompletion(elt.Name, elt.Name + toAdd, elt.Prototype, icon, null, elt.Kind,elt.Value)))
-                    break;
-            }
-            // Hummm, we should call for Owner of the Owner.. Super !
-            Owner.ForceComplete();
-            if (Owner.Parent != null)
-            {
-                BuildCompletionList(compList, parent, Modifiers.Protected, staticOnly, startWith);
-            }
-        }
+        //private void BuildCompletionList(XCompletionList compList, IXTypeSymbol parent, Modifiers minVisibility, bool staticOnly, string startWith)
+        //{
+        //    if (!(parent is XSourceTypeSymbol))
+        //    {
+        //        return;
+        //    }
+        //    //
+        //    IXTypeSymbol Owner = parent as IXTypeSymbol;
+        //    //
+        //    bool hideAdvanced = XSettings.EditorHideAdvancedMembers;
+        //    foreach (var elt in Owner.GetMembers(startWith))
+        //    {
+        //        if (elt.Kind == Kind.Constructor)
+        //            continue;
+        //        if (elt.IsStatic != staticOnly)
+        //            continue;
+        //        if (elt.Visibility < minVisibility)
+        //            continue;
+        //        //
+        //        if (IsHiddenMemberName(elt.Name))
+        //        {
+        //            continue;
+        //        }
+        //        ImageSource icon = _provider.GlyphService.GetGlyph(elt.getGlyphGroup(), elt.getGlyphItem());
+        //        string toAdd = "";
+        //        if (elt.Kind.HasParameters() && elt.Kind != Kind.Constructor)
+        //        {
+        //            toAdd = "(";
+        //        }
+        //        if (!compList.Add(new XSCompletion(elt.Name, elt.Name + toAdd, elt.Prototype, icon, null, elt.Kind,elt.Value)))
+        //            break;
+        //    }
+        //    // Hummm, we should call for Owner of the Owner.. Super !
+        //    Owner.ForceComplete();
+        //    if (Owner.Parent != null)
+        //    {
+        //        BuildCompletionList(compList, parent, Modifiers.Protected, staticOnly, startWith);
+        //    }
+        //}
 
-        private void BuildCompletionList(XCompletionList compList, CompletionType cType, Modifiers minVisibility, bool staticOnly, string startWith)
+        private void BuildCompletionList(XCompletionList compList, IXTypeSymbol type, Modifiers minVisibility, bool staticOnly, string startWith)
         {
-            if (cType == null)
+            if (type == null)
             {
                 return;
             }
             //
-            if (cType.XTypeDef != null)
+            FillMembers(compList, type, minVisibility, staticOnly, startWith);
+            if (type is XSourceTypeSymbol sourceType)
             {
-                FillMembers(compList, cType.XTypeDef, minVisibility, staticOnly, startWith);
-                // Hummm, we should call for Owner of the Owner.. Super !
-                cType.XTypeDef.ForceComplete();
-                if (cType.BaseType!= null)
+                sourceType.ForceComplete();
+                var baseType = sourceType.BaseType;
+                if (string.IsNullOrWhiteSpace(baseType))
+                    {
+                    baseType = "System.Object";
+                }
+                var parentType = sourceType.File.FindType(baseType);
+                BuildCompletionList(compList, parentType, Modifiers.Protected, staticOnly, startWith);
+                foreach (var ifname in sourceType.Interfaces)
                 {
-                    // Parent has just a Name, so one of the System Types
-                    BuildCompletionList(compList, new CompletionType(cType.BaseType, _file, _file.Usings), Modifiers.Protected, staticOnly, startWith);
+                    var iftype = sourceType.File.FindType(ifname);
+                    if (iftype != null)
+                    {
+                        BuildCompletionList(compList, iftype, Modifiers.Public, staticOnly, startWith);
+                    }
                 }
             }
-            else if (cType.XTypeRef != null)
-            {
-                // Now add Members for System types
-                FillMembers(compList, cType.XTypeRef, minVisibility, staticOnly, startWith);
-                //
-            }
-            FillExtensions(compList, cType, startWith);
+            FillExtensions(compList, type, startWith);
         }
 
 
@@ -979,25 +1005,25 @@ namespace XSharp.LanguageService
         }
 
 
-        private void FillExtensions(XCompletionList compList, CompletionType cType, string startWith)
+        private void FillExtensions(XCompletionList compList, IXTypeSymbol type, string startWith)
         {
-            //WriteOutputMessage($"FillExtensions for type {sType.FullName}");
-            if (cType.Type != null)
+            //WriteOutputMessage($"FillExtensions for type {type?.FullName}");
+            if (type != null)
             {
-                var extensions = _file.Project.GetExtensions(cType.Type.FullName);
+                var extensions = _file.Project.GetExtensions(type.FullName);
                 IEnumerable<IXMemberSymbol> selection = extensions;
                 if (! string.IsNullOrEmpty(startWith))
                 {
                     selection = extensions.Where(x => nameStartsWith(x.Name, startWith));
                 }
                 FillMembers(compList, selection, Modifiers.Public, true);
-                foreach (var ifname in cType.Type.Interfaces)
+                foreach (var ifname in type.Interfaces)
                 {
                     var lifname = ifname;
                     var lookupproject = _file.Project;
-                    if (cType.XTypeDef != null)
+                    if (type is XSourceTypeSymbol sourceType)
                     {
-                        var typedef = cType.XTypeDef;
+                        var typedef = sourceType;
                         var origfile = XSolution.FindFullPath(typedef.File.FullPath);
                         lookupproject = origfile.Project;
                         var reftype = SystemTypeController.FindType(lifname, typedef.FileUsings, lookupproject.AssemblyReferences);

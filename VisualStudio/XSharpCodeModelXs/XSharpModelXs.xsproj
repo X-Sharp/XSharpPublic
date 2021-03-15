@@ -129,7 +129,6 @@
     <Compile Include="..\..\Common\constants.prg">
       <Link>Properties\constants.prg</Link>
     </Compile>
-    <Compile Include="CompletionType.prg" />
     <Compile Include="Database\XDatabase.prg" />
     <Compile Include="Database\XDbResult.prg" />
     <Compile Include="Database\XDbResultHelpers.prg" />

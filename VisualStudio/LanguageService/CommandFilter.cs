@@ -272,8 +272,6 @@ namespace XSharp.LanguageService
                 //
                 if (currentMember == null)
                     return;
-                CompletionType cType = null;
-                CompletionElement foundElement = null;
                 IXVariableSymbol element = null;
                 // Search in Parameters
                 if (currentMember.Parameters != null)
@@ -283,7 +281,7 @@ namespace XSharp.LanguageService
                 if (element == null)
                 {
                     // then Locals
-                    var location = new XSharpSearchLocation(currentMember, null) { LineNumber = lineNumber};
+                    var location = new XSharpSearchLocation(currentMember, null, lineNumber);
                     var locals = currentMember.GetLocals(location);
                     if (locals != null)
                     {
@@ -291,38 +289,27 @@ namespace XSharp.LanguageService
                     }
                     if (element == null)
                     {
-                        if (currentMember.Parent != null)
+                        if (currentMember.Parent is IXTypeSymbol type)
                         {
-                            // Context Type....
-                            cType = new CompletionType(currentMember.Parent as IXTypeSymbol);
-                            // We can have a Property/Field of the current CompletionType
-                            if (!cType.IsEmpty())
-                            {
-                                cType = XSharpLookup.SearchPropertyOrFieldIn(location, cType, identifier, Modifiers.Private, out foundElement);
-                            }
-                            // Not found ? It might be a Global !?
-                            if (foundElement == null)
-                            {
-
-                            }
+                            var field = XSharpLookup.SearchPropertyOrField(location, type, identifier, Modifiers.Private).FirstOrDefault();
                         }
                     }
                 }
-                if (element != null)
-                {
-                    cType = new CompletionType((XSourceVariableSymbol)element, "");
-                    foundElement = new CompletionElement((XSourceVariableSymbol)element);
-                }
-                // got it !
-                if (foundElement != null)
-                {
-                    if ((String.Compare(foundElement.Name, identifier) != 0))
-                    {
-                        int startpos = offSet + token.StartIndex;
-                        editSession.Replace(startpos, foundElement.Name.Length, foundElement.Name);
+                //if (element != null)
+                //{
+                //    cType = new CompletionType((XSourceVariableSymbol)element, "");
+                //    foundElement = new CompletionElement((XSourceVariableSymbol)element);
+                //}
+                //// got it !
+                //if (foundElement != null)
+                //{
+                //    if ((String.Compare(foundElement.Name, identifier) != 0))
+                //    {
+                //        int startpos = offSet + token.StartIndex;
+                //        editSession.Replace(startpos, foundElement.Name.Length, foundElement.Name);
 
-                    }
-                }
+                //    }
+                //}
 
             }
         }
@@ -751,7 +738,7 @@ namespace XSharp.LanguageService
 
 
         #region Goto Definition
-
+#pragma warning disable VSTHRD010
         private void GotoDefn()
         {
             try
@@ -790,39 +777,27 @@ namespace XSharp.LanguageService
                 {
                     currentNS = currentNamespace.Name;
                 }
-                var location = new XSharpSearchLocation(member, snapshot) { Position = caretPos, LineNumber = lineNumber, CurrentNamespace = currentNS};
+                var location = new XSharpSearchLocation(member, snapshot, lineNumber, caretPos,currentNS);
                 var tokenList = XSharpTokenTools.GetTokensUnderCursor(location, tokens.TokenStream);
 
                 // LookUp for the BaseType, reading the TokenList (From left to right)
-                CompletionElement gotoElement;
+                var result = new List<IXSymbol>();
 
-                //
                 var state = CompletionState.General;
-                CompletionType cType = XSharpLookup.RetrieveType(location, tokenList,  state, out gotoElement);
+                result.AddRange(XSharpLookup.RetrieveElement(location, tokenList,  state));
                 //
-                if (gotoElement != null)
+                if (result.Count > 0) 
                 {
-                    if (gotoElement.Result != null)
+                    var element = result[0];
+                    if (element is XSourceEntity source)
                     {
-                        if (gotoElement.Result is XSourceMemberSymbol result)
-                        {
-                            if (result.GetOverloads().Length > 1)
-                            {
-                                ThreadHelper.JoinableTaskFactory.Run(async delegate
-                                {
-                                    await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
-                                    ObjectBrowserHelper.FindSymbols(gotoElement.Result.Name);
-                                });
-                                return;
-                            }
-                        }
-                        // Ok, find it ! Let's go ;)
-                        if (gotoElement.IsSourceElement)
-                        {
-                            gotoElement.OpenSource();
-                        }
-                        return;
+                        source.OpenEditor();
                     }
+                    else
+                    {
+                        openInObjectBrowser(element.Name);
+                    }
+                    return;
                 }
                 //
                 if (tokenList.Count > 1)
@@ -831,16 +806,20 @@ namespace XSharp.LanguageService
                     var token = tokenList[tokenList.Count - 1];
                     tokenList.Clear();
                     tokenList.Add(token);
-                    location.CurrentNamespace = currentNS;
-                    cType = XSharpLookup.RetrieveType(location, tokenList, state, out gotoElement);
+                    location = location.With(currentNS);
+                    result.AddRange(XSharpLookup.RetrieveElement(location, tokenList, state));
                 }
-                if ((gotoElement != null) && (gotoElement.Result != null))
+                if (result.Count > 0 )
                 {
-                    // Ok, find it ! Let's go ;)
-                    if (gotoElement.IsSourceElement)
+                    var element = result[0];
+                    if (element is XSourceEntity source)
+                        source.OpenEditor();
+                    else
                     {
-                        gotoElement.OpenSource();
+                        openInObjectBrowser(element.Name);
                     }
+                    return;
+
                 }
 
             }
@@ -855,12 +834,18 @@ namespace XSharp.LanguageService
             }
         }
 
-
-        private void gotoObjectBrowser(MemberInfo mbrInfo)
+#pragma warning restore VSTHRD010
+        private void openInObjectBrowser(string name)
         {
-            Microsoft.VisualStudio.Shell.ThreadHelper.ThrowIfNotOnUIThread();
-            ObjectBrowserHelper.GotoMemberDefinition(mbrInfo.Name);
+            ThreadHelper.JoinableTaskFactory.Run(async delegate
+            {
+                await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+                ObjectBrowserHelper.FindSymbols(name);
+            });
+            return;
         }
+
+       
         #endregion
 
         #region Completion Session
@@ -1150,13 +1135,13 @@ namespace XSharp.LanguageService
             {
                 if (_completionSession.SelectedCompletionSet.SelectionStatus.Completion.InsertionText.EndsWith("("))
                 {
-                    XSharpModel.CompletionType cType = null;
-                    _completionSession.Properties.TryGetProperty(XsCompletionProperties.Type, out cType);
+                    IXTypeSymbol type = null;
+                    _completionSession.Properties.TryGetProperty(XsCompletionProperties.Type, out type);
                     string method = _completionSession.SelectedCompletionSet.SelectionStatus.Completion.InsertionText;
                     method = method.Substring(0, method.Length - 1);
                     _completionSession.Dismiss();
 
-                    StartSignatureSession(false, cType, method);
+                    StartSignatureSession(false, type, method);
                 }
             }
             //
@@ -1179,7 +1164,7 @@ namespace XSharp.LanguageService
 
         #region Signature Session
 
-        bool StartSignatureSession(bool comma, XSharpModel.CompletionType cType = null, string methodName = null)
+        bool StartSignatureSession(bool comma, IXTypeSymbol type = null, string methodName = null)
         {
             WriteOutputMessage("CommandFilter.StartSignatureSession()");
 
@@ -1190,7 +1175,6 @@ namespace XSharp.LanguageService
             // when coming from the completion list then there is no need to check a lot of stuff
             // we can then simply lookup the method and that is it.
             // Also no need to filter on visibility since that has been done in the completionlist already !
-            CompletionElement currentElement = null;
             // First, where are we ?
             int caretPos;
             int Level = 0;
@@ -1229,11 +1213,11 @@ namespace XSharp.LanguageService
             {
                 currentNS = currentNamespace.Name;
             }
-            XSharpSearchLocation location = new XSharpSearchLocation(member, snapshot) { Position = caretPos, LineNumber = lineNumber, CurrentNamespace = currentNS };
-
-            if (cType != null && methodName != null)
+            XSharpSearchLocation location = new XSharpSearchLocation(member, snapshot, lineNumber, caretPos, currentNS );
+            IXMemberSymbol currentElement = null;
+            if (type != null && methodName != null)
             {
-                XSharpLookup.SearchMethodTypeIn(location, cType, methodName, XSharpModel.Modifiers.Private, false, out currentElement);
+                currentElement = XSharpLookup.SearchMethod(location, type, methodName, XSharpModel.Modifiers.Private, false).FirstOrDefault();
             }
             else
             {
@@ -1243,10 +1227,13 @@ namespace XSharp.LanguageService
 
                 var tokenList = XSharpTokenTools.GetTokenList(location, out var state);
                 // We don't care of the corresponding Type, we are looking for the currentElement
-                XSharpLookup.RetrieveType(location, tokenList, state, out currentElement, true);
+                var element = XSharpLookup.RetrieveElement(location, tokenList, state, true).FirstOrDefault();
+                if (element is IXMemberSymbol mem)
+                    currentElement = mem;
+                
             }
             //
-            if ((currentElement != null) && (currentElement.IsInitialized))
+            if ((currentElement != null))
             {
 
                 SnapshotPoint caret = TextView.Caret.Position.BufferPosition;
@@ -1262,9 +1249,9 @@ namespace XSharp.LanguageService
                 }
 
                 _signatureSession.Dismissed += OnSignatureSessionDismiss;
-                if (currentElement.Result != null)
+                if (currentElement != null)
                 {
-                    _signatureSession.Properties[SignatureProperties.Element] = currentElement.Result;
+                    _signatureSession.Properties[SignatureProperties.Element] = currentElement;
                 }
                
                 _signatureSession.Properties[SignatureProperties.Line] = startLineNumber;

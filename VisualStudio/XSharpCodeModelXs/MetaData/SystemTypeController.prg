@@ -96,13 +96,8 @@ BEGIN NAMESPACE XSharpModel
          return NULL
 
 
-		STATIC METHOD FindType(typeName AS STRING, usings AS IList<STRING>, assemblies AS IList<XAssembly>) AS XPETypeSymbol
-			LOCAL result := NULL AS XPETypeSymbol
-			TRY
-                IF XSettings.EnableTypelookupLog
-				WriteOutputMessage("--> FindType() "+typeName)
-                ENDIF
-				IF typeName:EndsWith(">") .AND.  typeName:Contains("<") .AND. typeName:Length > 2
+        STATIC METHOD GetTickedTypeName(typeName as STRING) AS STRING
+           IF typeName:EndsWith(">") .AND.  typeName:Contains("<") .AND. typeName:Length > 2
 					IF typeName:Length <= (typeName:Replace(">", ""):Length + 1)
 						VAR elements := typeName:Split("<,>":ToCharArray(), System.StringSplitOptions.RemoveEmptyEntries)
 						VAR num := (elements:Length - 1)
@@ -121,7 +116,16 @@ BEGIN NAMESPACE XSharpModel
 						VAR elements := typeParams:Split(",":ToCharArray())
 						typeName := baseName + "`" + elements:Length:ToString()
 					ENDIF
-				ENDIF
+				ENDIF 
+            RETURN typeName
+
+		STATIC METHOD FindType(typeName AS STRING, usings AS IList<STRING>, assemblies AS IList<XAssembly>) AS XPETypeSymbol
+			LOCAL result := NULL AS XPETypeSymbol
+			TRY
+                IF XSettings.EnableTypelookupLog
+				WriteOutputMessage("--> FindType() "+typeName)
+                ENDIF
+				typeName := GetTickedTypeName(typeName)
 				result := Lookup(typeName, assemblies)
 				IF result != NULL
 					RETURN result

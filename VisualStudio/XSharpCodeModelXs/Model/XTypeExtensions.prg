@@ -45,7 +45,7 @@ BEGIN NAMESPACE XSharpModel
          
       STATIC METHOD GetFields(SELF type AS IXTypeSymbol, strName AS STRING) AS IXMemberSymbol[]
          RETURN type:GetMembers(strName, TRUE):Where( { m=> m.Kind:IsField()}):ToArray()
-         
+
       STATIC METHOD GetXmlSignature(SELF tm as IXTypeSymbol) AS STRING
          // todo: need to handle type parameters !
          IF tm is XPETypeSymbol VAR peType

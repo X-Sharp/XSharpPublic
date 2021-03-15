@@ -21,7 +21,7 @@ BEGIN NAMESPACE XSharpModel
       PRIVATE _signature      AS XTypeSignature
       PRIVATE _typeDef        AS TypeDefinition
       PRIVATE _initialized   := FALSE  AS LOGIC
-
+      PROPERTY ShortName      AS STRING       AUTO GET INTERNAL SET
       PROPERTY TypeDef        AS TypeDefinition GET _typeDef
 
      CONSTRUCTOR(typedef as TypeDefinition, asm as XAssembly)
@@ -52,35 +52,10 @@ BEGIN NAMESPACE XSharpModel
                pos := cName:IndexOf('`')
             ENDIF
             IF pos > 0
-               cName += cName:Substring(0,pos)+"<"
-               LOCAL first := TRUE AS LOGIC
-               FOREACH VAR genparam IN typedef:GenericParameters
-                  IF ! first
-                    cName += ","
-                  ENDIF
-                  cName += genparam:Name
-                  first := FALSE
-                  SELF:_signature:TypeParameters:Add(genparam:Name)
-                  if (genparam:HasConstraints)
-                        VAR cConstraint := ""
-                        foreach var constraint in genparam:Constraints
-                            IF cConstraint:Length > 0
-                                cConstraint += ","
-                            ENDIF
-                            var constName := constraint:ConstraintType:Name
-                            if constName:ToLower() == "valuetype"
-                                cConstraint += "STRUCT"
-                            else
-                                cConstraint += constName
-                            endif
-                        next
-                        SELF:_signature:TypeParameterContraints:Add(cConstraint)
-                    ELSE
-                        SELF:_signature:TypeParameterContraints:Add("")
-                        
-                  ENDIF
-               NEXT
-               cName += ">"
+               cName := cName:Substring(0,pos)
+               SELF:ShortName := cName
+               SELF:_signature:ReadGenericParameters(typedef:GenericParameters)                  
+               cName += _signature:GetTypeParameterNames() 
                IF nsGeneric
                   SELF:Namespace := cName
                ELSE
@@ -164,7 +139,7 @@ BEGIN NAMESPACE XSharpModel
                         kind := Kind.Constructor
                      ENDIF
                   ENDIF
-                  VAR xmember := XMethodReference{md,parent:Assembly}
+                  VAR xmember := XPEMethodSymbol{md,parent:Assembly}
                   IF xmember:Kind == Kind.Method      // this could have changed from Method to Function
                      xmember:Kind := kind
                   ENDIF
@@ -333,9 +308,6 @@ BEGIN NAMESPACE XSharpModel
       
    METHOD ToString() AS STRING
       var result := i"{Kind} {Name}"
-      if SELF:_signature != NULL .and. SELF:_signature:TypeParameters:Count > 0
-         result += self:_signature:ToString()
-      ENDIF
       RETURN result      
       
    END CLASS

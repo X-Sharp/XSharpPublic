@@ -21,7 +21,9 @@ BEGIN NAMESPACE XSharpModel
       PRIVATE _children       AS List<XSourceTypeSymbol>
       PRIVATE _signature      AS XTypeSignature
       PRIVATE _isClone        AS LOGIC
-      PROPERTY SourceCode     AS STRING AUTO      
+      PROPERTY SourceCode     AS STRING AUTO
+      PROPERTY ShortName      AS STRING  GET IIF(!SELF:IsGeneric, SELF:Name, SELF:Name:Substring(0, SELF:Name:IndexOf("<")-1))
+            
       
       CONSTRUCTOR(name AS STRING, kind AS Kind, attributes AS Modifiers, span AS TextRange, position AS TextInterval, oFile AS XFile)
          SUPER(name, kind, attributes, span, position)
@@ -73,7 +75,10 @@ BEGIN NAMESPACE XSharpModel
                oMember:Parent := SELF
             NEXT
          END LOCK
-       
+
+      INTERNAL METHOD SetInterfaces (interfaces as IList<String>) AS VOID
+         SELF:_signature:Interfaces:Clear()
+         SELF:_signature:Interfaces:AddRange(interfaces)
          
       METHOD AddInterface(sInterface AS STRING) AS VOID
          SELF:_signature:AddInterface(sInterface)
@@ -132,15 +137,13 @@ BEGIN NAMESPACE XSharpModel
          ENDIF
 
       METHOD ForceComplete as VOID
-        IF String.IsNullOrEmpty(SELF:_signature:BaseType) .and. SELF:Attributes:HasFlag(Modifiers.Partial)
+        IF SELF:Attributes:HasFlag(Modifiers.Partial) 
              // Find all other parts to find the base typename
-             var allParts := XDatabase.GetTypes(SELF:Name, SELF:File:Project:Id:ToString())
-             FOREACH result as XDbResult in allParts
-                if !String.IsNullOrEmpty(result:BaseTypeName)
-                    SELF:BaseType := result:BaseTypeName
-                    EXIT
-                ENDIF
-             NEXT
+             var oClone := SELF:Clone
+             SELF:_signature:BaseType := oClone:BaseType
+             var aIF := oClone:Interfaces:ToArray()
+             SELF:SetInterfaces(aIF)
+             
         ENDIF
         RETURN
 

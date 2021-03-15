@@ -66,11 +66,10 @@ BEGIN NAMESPACE XSharpModel
 				RETURN
 			ENDIF
 			BEGIN LOCK oConn
-				BEGIN USING VAR oCmd := SQLiteCommand{"PRAGMA foreign_keys = ON", oConn}
-					oCmd:ExecuteNonQuery()
-					oCmd:CommandText := "VACUUM"
-					oCmd:ExecuteNonQuery()
-				END USING
+				USING VAR oCmd := SQLiteCommand{"PRAGMA foreign_keys = ON", oConn}
+				oCmd:ExecuteNonQuery()
+				oCmd:CommandText := "VACUUM"
+				oCmd:ExecuteNonQuery()
 			END LOCK
 		RETURN
 		
@@ -90,9 +89,8 @@ BEGIN NAMESPACE XSharpModel
 			ENDIF
 			VAR diskdb := OpenFile(cFile)
 			oConn:BackupDatabase(diskdb, "main", "main", -1, NULL, 0)
-			BEGIN USING VAR oCmd := SQLiteCommand{"VACUUM", diskdb}
-				oCmd:ExecuteNonQuery()
-			END USING
+			USING VAR oCmd := SQLiteCommand{"VACUUM", diskdb}
+			oCmd:ExecuteNonQuery()
 			diskdb:Close()
 			lastWritten := DateTime.Now
 		RETURN         
@@ -322,32 +320,31 @@ BEGIN NAMESPACE XSharpModel
 			lOk := TRUE
 			BEGIN LOCK connection
 				DO WHILE lOk
-					BEGIN USING VAR cmd  := SQLiteCommand{"SELECT 1", connection}
-						VAR stmt := "SELECT count(name) from sqlite_master WHERE type='table' AND name=$table"
-						cmd:CommandText := stmt
-						VAR tables := <STRING> {"Projects","FilesPerProject","Files", "Types", "Members", "Db_Version","Assemblies","ReferencedTypes","CommentTasks"}
-						FOREACH VAR table IN tables    
-							cmd:Parameters:Clear()
-							cmd:Parameters:AddWithValue("$table",table)
-							VAR num := (INT64) cmd:ExecuteScalar()
-							IF num != 1
-								lOk := FALSE
-								EXIT
-							ENDIF
-                  NEXT
-                  IF lOk
-						   cmd:CommandText := "SELECT Max(Version) from Db_version"
-                     var vers := (System.Double) 0.0 
-                     TRY
-						      vers := (System.Double) cmd:ExecuteScalar()
-                     CATCH  as Exception
-                        vers := (System.Double) 0.0 
-                     END TRY
-						   IF vers != CurrentDbVersion
-							   lOk := FALSE
-                     ENDIF			
-                  ENDIF
-					END USING
+					USING VAR cmd  := SQLiteCommand{"SELECT 1", connection}
+					VAR stmt := "SELECT count(name) from sqlite_master WHERE type='table' AND name=$table"
+					cmd:CommandText := stmt
+					VAR tables := <STRING> {"Projects","FilesPerProject","Files", "Types", "Members", "Db_Version","Assemblies","ReferencedTypes","CommentTasks"}
+					FOREACH VAR table IN tables    
+						cmd:Parameters:Clear()
+						cmd:Parameters:AddWithValue("$table",table)
+						VAR num := (INT64) cmd:ExecuteScalar()
+						IF num != 1
+							lOk := FALSE
+							EXIT
+						ENDIF
+                      NEXT
+                      IF lOk
+						       cmd:CommandText := "SELECT Max(Version) from Db_version"
+                         var vers := (System.Double) 0.0 
+                         TRY
+						          vers := (System.Double) cmd:ExecuteScalar()
+                         CATCH  as Exception
+                            vers := (System.Double) 0.0 
+                         END TRY
+						       IF vers != CurrentDbVersion
+							       lOk := FALSE
+                         ENDIF			
+                      ENDIF
 					EXIT
 				ENDDO		
 			END LOCK
@@ -360,14 +357,12 @@ BEGIN NAMESPACE XSharpModel
 			VAR result := List<STRING>{}
 			IF IsDbOpen
 				BEGIN LOCK oConn
-					BEGIN USING VAR cmd := SQLiteCommand{"SELECT ProjectFileName from Projects", oConn}
-						BEGIN USING VAR rdr := cmd:ExecuteReader()
-							DO WHILE rdr:Read()
-								VAR name := rdr:GetString(0)
-								result:Add(name)
-							ENDDO
-						END USING
-					END USING
+					USING VAR cmd := SQLiteCommand{"SELECT ProjectFileName from Projects", oConn}
+					USING VAR rdr := cmd:ExecuteReader()
+					DO WHILE rdr:Read()
+						VAR name := rdr:GetString(0)
+						result:Add(name)
+					ENDDO
 				END LOCK  
 			ENDIF
 			Log(i"GetProjectNames returned {result.Count} names")
@@ -382,23 +377,22 @@ BEGIN NAMESPACE XSharpModel
 			VAR lUpdated := FALSE
 			Log(i"Read Project info for project {file}")
 			BEGIN LOCK oConn
-				BEGIN USING VAR cmd := SQLiteCommand{"", oConn}
-					cmd:CommandText := "SELECT Id, ProjectFileName from Projects WHERE ProjectFileName = $file"
-					cmd:Parameters:AddWithValue("$file",file)
-					VAR lOk := FALSE 
-					BEGIN USING VAR rdr := cmd:ExecuteReader()
-						IF rdr:Read()
-							oProject:Id := rdr:GetInt64(0)
-							lOk := TRUE
-						ENDIF
-					END USING 
-					IF ! lOk
-						cmd:CommandText := "INSERT INTO Projects( ProjectFileName ) values ($file); SELECT last_insert_rowid() "
-						VAR id := (INT64) cmd:ExecuteScalar()
-						oProject:Id := id
-						lUpdated := TRUE
-					ENDIF
-				END USING 
+				USING VAR cmd := SQLiteCommand{"", oConn}
+				cmd:CommandText := "SELECT Id, ProjectFileName from Projects WHERE ProjectFileName = $file"
+				cmd:Parameters:AddWithValue("$file",file)
+				VAR lOk := FALSE 
+				BEGIN USING VAR rdr := cmd:ExecuteReader()
+				    IF rdr:Read()
+					    oProject:Id := rdr:GetInt64(0)
+					    lOk := TRUE
+                    ENDIF
+                END USING
+				IF ! lOk
+					cmd:CommandText := "INSERT INTO Projects( ProjectFileName ) values ($file); SELECT last_insert_rowid() "
+					VAR id := (INT64) cmd:ExecuteScalar()
+					oProject:Id := id
+					lUpdated := TRUE
+				ENDIF
 			END LOCK
 			IF lUpdated
 				CommitWhenNeeded()
@@ -411,11 +405,10 @@ BEGIN NAMESPACE XSharpModel
 			ENDIF
 			VAR file := cFileName
 			BEGIN LOCK oConn
-				BEGIN USING VAR cmd := SQLiteCommand{"", oConn}
-					cmd:CommandText := "delete from Projects where ProjectFileName = $file" 
-					cmd:Parameters:AddWithValue("$file",file)
-					cmd:ExecuteNonQuery()
-				END USING
+				USING VAR cmd := SQLiteCommand{"", oConn}
+				cmd:CommandText := "delete from Projects where ProjectFileName = $file" 
+				cmd:Parameters:AddWithValue("$file",file)
+				cmd:ExecuteNonQuery()
 			END LOCK
 			CommitWhenNeeded()
 		#endregion        
@@ -429,11 +422,10 @@ BEGIN NAMESPACE XSharpModel
 			VAR file    := cFileName
 			Log(i"Delete Project info for project {cFileName}")
 			BEGIN LOCK oConn
-				BEGIN USING VAR cmd := SQLiteCommand{"", oConn}
-					cmd:CommandText := "DELETE FROM Files WHERE FileName = $file" 
-					cmd:Parameters:AddWithValue("$file",file)
-					cmd:ExecuteNonQuery()
-				END USING
+				USING VAR cmd := SQLiteCommand{"", oConn}
+				cmd:CommandText := "DELETE FROM Files WHERE FileName = $file" 
+				cmd:Parameters:AddWithValue("$file",file)
+				cmd:ExecuteNonQuery()
 			END LOCK
 		CommitWhenNeeded()
 		
@@ -461,42 +453,41 @@ BEGIN NAMESPACE XSharpModel
 		LOCAL lUpdated := FALSE AS LOGIC
 		BEGIN LOCK oConn
 			TRY
-					BEGIN USING VAR cmd := SQLiteCommand{"", oConn}
-						cmd:CommandText := "SELECT Id, LastChanged, Size, Usings,StaticUsings FROM Files WHERE FileName = $file"
-						cmd:Parameters:AddWithValue("$file",file)
-						VAR lOk := FALSE 
-						BEGIN USING VAR rdr := cmd:ExecuteReader()
-							IF rdr:Read()
-								oFile:Id                := rdr:GetInt64(0)
-								oFile:LastChanged       := rdr:GetDateTime(1)
-                                // these can be NULL
-								oFile:Size              := DbToInt(rdr[2])
-								oFile:UsingsStr         := DbToString(rdr[3])
-								oFile:StaticUsingsStr := DbToString(rdr[4])
-								lOk := TRUE
-							ENDIF
-						END USING 
-						IF ! lOk
-							cmd:Parameters:AddWithValue("$type",(INT) oFile:XFileType)
-							cmd:Parameters:AddWithValue("$last", DateTime.MinValue)
-							cmd:CommandText := "INSERT INTO Files( FileName, FileType, LastChanged, Size ) VALUES ( $file, $type, $last, 0); "+ ;
-							"SELECT last_insert_rowid() "
-							VAR id := (INT64) cmd:ExecuteScalar()
-							oFile:Id := id
-							oFile:LastChanged := DateTime.MinValue
-							oFile:Size        := 0
-							lUpdated := TRUE
-						ENDIF
-						cmd:CommandText := "SELECT count(idFile) FROM FilesPerProject WHERE idFile = $idFile and idProject = $idProject"
-						cmd:Parameters:Clear()
-						cmd:Parameters:AddWithValue("$idFile",oFile:Id)
-						cmd:Parameters:AddWithValue("$idProject",oFile:Project:Id)
-						VAR count := (INT64) cmd:ExecuteScalar()
-						IF (count == 0)
-							cmd:CommandText := "INSERT INTO FilesPerProject(idFile, idProject) VALUES ($idFile, $idProject)"
-							cmd:ExecuteNonQuery()
-						ENDIF
-				END USING 
+				USING VAR cmd := SQLiteCommand{"", oConn}
+				cmd:CommandText := "SELECT Id, LastChanged, Size, Usings,StaticUsings FROM Files WHERE FileName = $file"
+				cmd:Parameters:AddWithValue("$file",file)
+				VAR lOk := FALSE 
+				BEGIN USING VAR rdr := cmd:ExecuteReader()
+					IF rdr:Read()
+						oFile:Id                := rdr:GetInt64(0)
+						oFile:LastChanged       := rdr:GetDateTime(1)
+                        // these can be NULL
+						oFile:Size              := DbToInt(rdr[2])
+						oFile:UsingsStr         := DbToString(rdr[3])
+						oFile:StaticUsingsStr := DbToString(rdr[4])
+						lOk := TRUE
+                    ENDIF
+                END USING
+				IF ! lOk
+					cmd:Parameters:AddWithValue("$type",(INT) oFile:XFileType)
+					cmd:Parameters:AddWithValue("$last", DateTime.MinValue)
+					cmd:CommandText := "INSERT INTO Files( FileName, FileType, LastChanged, Size ) VALUES ( $file, $type, $last, 0); "+ ;
+					"SELECT last_insert_rowid() "
+					VAR id := (INT64) cmd:ExecuteScalar()
+					oFile:Id := id
+					oFile:LastChanged := DateTime.MinValue
+					oFile:Size        := 0
+					lUpdated := TRUE
+                ENDIF
+				cmd:CommandText := "SELECT count(idFile) FROM FilesPerProject WHERE idFile = $idFile and idProject = $idProject"
+				cmd:Parameters:Clear()
+				cmd:Parameters:AddWithValue("$idFile",oFile:Id)
+				cmd:Parameters:AddWithValue("$idProject",oFile:Project:Id)
+				VAR count := (INT64) cmd:ExecuteScalar()
+				IF (count == 0)
+					cmd:CommandText := "INSERT INTO FilesPerProject(idFile, idProject) VALUES ($idFile, $idProject)"
+					cmd:ExecuteNonQuery()
+				ENDIF
 			CATCH e AS Exception
 				Log("Exception: "+e:ToString())
 				Log("File   : "+oFile:FullPath+" "+oFile:Id:ToString())
@@ -516,18 +507,17 @@ BEGIN NAMESPACE XSharpModel
 			BEGIN LOCK oConn
 				TRY
                IF System.IO.File.Exists(oFile:FullPath)  // for files from SCC the physical file does not always exist
-						BEGIN USING VAR oCmd := SQLiteCommand{"SELECT 1", oConn}
-							oCmd:CommandText := "UPDATE Files SET LastChanged = $last, Size = $size, Usings = $usings, StaticUsings = $staticUsings WHERE id = "+oFile:Id:ToString()
-							VAR fi            := FileInfo{oFile:FullPath}
-							oFile:LastChanged := fi:LastWriteTime
-							oFile:Size        := fi:Length
-							oCmd:Parameters:Clear()
-							oCmd:Parameters:AddWithValue("$last", oFile:LastChanged)
-							oCmd:Parameters:AddWithValue("$size", oFile:Size)
-							oCmd:Parameters:AddWithValue("$usings", oFile:UsingsStr)
-							oCmd:Parameters:AddWithValue("$staticUsings", oFile:StaticUsingsStr)
-							oCmd:ExecuteNonQuery()
-                  END USING
+					USING VAR oCmd := SQLiteCommand{"SELECT 1", oConn}
+					oCmd:CommandText := "UPDATE Files SET LastChanged = $last, Size = $size, Usings = $usings, StaticUsings = $staticUsings WHERE id = "+oFile:Id:ToString()
+					VAR fi            := FileInfo{oFile:FullPath}
+					oFile:LastChanged := fi:LastWriteTime
+					oFile:Size        := fi:Length
+					oCmd:Parameters:Clear()
+					oCmd:Parameters:AddWithValue("$last", oFile:LastChanged)
+					oCmd:Parameters:AddWithValue("$size", oFile:Size)
+					oCmd:Parameters:AddWithValue("$usings", oFile:UsingsStr)
+					oCmd:Parameters:AddWithValue("$staticUsings", oFile:StaticUsingsStr)
+					oCmd:ExecuteNonQuery()
                ENDIF
 				CATCH e AS Exception
 					Log("Exception: "+e:ToString())
@@ -571,7 +561,7 @@ BEGIN NAMESPACE XSharpModel
 			Log(i"Update File contents for file {oFile.FullPath}")
 			BEGIN LOCK oConn
 				TRY
-						BEGIN USING VAR oCmd := SQLiteCommand{"DELETE FROM Members WHERE IdFile = "+oFile:Id:ToString(), oConn}
+						USING VAR oCmd := SQLiteCommand{"DELETE FROM Members WHERE IdFile = "+oFile:Id:ToString(), oConn}
 							oCmd:ExecuteNonQuery()
 							
 							oCmd:CommandText  := "DELETE FROM CommentTasks WHERE IdFile = "+oFile:Id:ToString()
@@ -691,31 +681,31 @@ BEGIN NAMESPACE XSharpModel
                   NEXT
                   // Save local functions and procedure
                   FOREACH xmember as XSourceMemberSymbol in oFile:EntityList:Where ( {m => m.Kind.IsLocal() } )
-								TRY
-										// file is constant
-										pars[ 0]:Value := oFile:Id
-										pars[ 1]:Value := ((XSourceTypeSymbol) xmember:ParentType):Id
-										pars[ 2]:Value := xmember:Name
-										pars[ 3]:Value := (INT) xmember:Kind
-										pars[ 4]:Value := (INT) xmember:Attributes
-										pars[ 5]:Value := xmember:Range:StartLine
-										pars[ 6]:Value := xmember:Range:StartColumn
-										pars[ 7]:Value := xmember:Range:EndLine
-										pars[ 8]:Value := xmember:Range:EndColumn
-										pars[ 9]:Value := xmember:Interval:Start
-										pars[10]:Value := xmember:Interval:Stop
-										pars[11]:Value := xmember:SourceCode
-										pars[12]:Value := xmember:XmlComments
-										VAR id := (INT64) oCmd:ExecuteScalar()
-									xmember:Id := id
-								CATCH e AS Exception
-									Log("Exception: "+e:ToString())
-									Log("File   : "+oFile:FullPath+" "+oFile:Id:ToString())
-									Log("Member : "+xmember:Name)
-									Log("Kind   : "+xmember:Kind:ToString())
-									Log("Line :   "+xmember:Range:StartLine:ToString())
-									Log("Column : "+xmember:Range:StartColumn:ToString())
-								END TRY
+					TRY
+							// file is constant
+							pars[ 0]:Value := oFile:Id
+							pars[ 1]:Value := ((XSourceTypeSymbol) xmember:ParentType):Id
+							pars[ 2]:Value := xmember:Name
+							pars[ 3]:Value := (INT) xmember:Kind
+							pars[ 4]:Value := (INT) xmember:Attributes
+							pars[ 5]:Value := xmember:Range:StartLine
+							pars[ 6]:Value := xmember:Range:StartColumn
+							pars[ 7]:Value := xmember:Range:EndLine
+							pars[ 8]:Value := xmember:Range:EndColumn
+							pars[ 9]:Value := xmember:Interval:Start
+							pars[10]:Value := xmember:Interval:Stop
+							pars[11]:Value := xmember:SourceCode
+							pars[12]:Value := xmember:XmlComments
+							VAR id := (INT64) oCmd:ExecuteScalar()
+						xmember:Id := id
+					CATCH e AS Exception
+						Log("Exception: "+e:ToString())
+						Log("File   : "+oFile:FullPath+" "+oFile:Id:ToString())
+						Log("Member : "+xmember:Name)
+						Log("Kind   : "+xmember:Kind:ToString())
+						Log("Line :   "+xmember:Range:StartLine:ToString())
+						Log("Column : "+xmember:Range:StartColumn:ToString())
+					END TRY
                   NEXT
                   
 						oCmd:CommandText := "INSERT INTO CommentTasks (idFile, Line, Column, Priority,Comment) " +;
@@ -736,7 +726,6 @@ BEGIN NAMESPACE XSharpModel
 							pars[ 4]:Value := task:Comment
 							oCmd:ExecuteScalar()
 						NEXT
-					END USING
 				CATCH e AS Exception
 					Log("Exception: "+e:ToString())
 					Log("File   : "+oFile:FullPath+" "+oFile:Id:ToString())
@@ -765,27 +754,26 @@ BEGIN NAMESPACE XSharpModel
 		VAR lUpdated := FALSE
 		BEGIN LOCK oConn
 			TRY
-					BEGIN USING VAR cmd := SQLiteCommand{"", oConn}
-						cmd:CommandText := "SELECT Id, Name, AssemblyFileName, LastChanged, Size from Assemblies where  AssemblyFileName = $file"
-						cmd:Parameters:AddWithValue("$file",file)
-						VAR lOk := FALSE 
-						BEGIN USING VAR rdr := cmd:ExecuteReader()
-							IF rdr:Read()
-								oAssembly:Id            := rdr:GetInt64(0)
-								oAssembly:LastChanged   := rdr:GetDateTime(3)
-								oAssembly:Size          := rdr:GetInt64(4)
-								lOk := TRUE
-							ENDIF
-						END USING 
-						IF ! lOk
-							cmd:CommandText := "INSERT INTO Assemblies(Name, AssemblyFileName,LastChanged, Size ) values ($name, $file,$last,0); SELECT last_insert_rowid() "
-							cmd:Parameters:AddWithValue("$name",name)
-							cmd:Parameters:AddWithValue("$last", DateTime.MinValue)
-							VAR id := (INT64) cmd:ExecuteScalar()
-							oAssembly:Id := id
-							lUpdated := TRUE
-						ENDIF
-				END USING 
+				USING VAR cmd := SQLiteCommand{"", oConn}
+				cmd:CommandText := "SELECT Id, Name, AssemblyFileName, LastChanged, Size from Assemblies where  AssemblyFileName = $file"
+				cmd:Parameters:AddWithValue("$file",file)
+				VAR lOk := FALSE 
+				BEGIN USING VAR rdr := cmd:ExecuteReader()
+				    IF rdr:Read()
+					    oAssembly:Id            := rdr:GetInt64(0)
+					    oAssembly:LastChanged   := rdr:GetDateTime(3)
+					    oAssembly:Size          := rdr:GetInt64(4)
+					    lOk := TRUE
+                    ENDIF
+                END USING
+				IF ! lOk
+					cmd:CommandText := "INSERT INTO Assemblies(Name, AssemblyFileName,LastChanged, Size ) values ($name, $file,$last,0); SELECT last_insert_rowid() "
+					cmd:Parameters:AddWithValue("$name",name)
+					cmd:Parameters:AddWithValue("$last", DateTime.MinValue)
+					VAR id := (INT64) cmd:ExecuteScalar()
+					oAssembly:Id := id
+					lUpdated := TRUE
+				ENDIF
 			CATCH e AS Exception
 				Log("Exception: "+e:ToString())
 				Log("Assembly : "+oAssembly:FileName+" "+oAssembly:Id:ToString())
@@ -804,44 +792,43 @@ BEGIN NAMESPACE XSharpModel
 			Log(i"Update Assembly info for assembly {oAssembly.FileName}")
 			BEGIN LOCK oConn
 				TRY
-						BEGIN USING VAR oCmd := SQLiteCommand{"SELECT 1", oConn}
-							// Updated TypeReferences
-							//	   "Create Table ReferencedTypes ("
-							//	   " Id integer NOT NULL PRIMARY KEY, idAssembly integer NOT NULL, Name text NOT NULL COLLATE NOCASE, Namespace text NOT NULL COLLATE NOCASE, "
-							//	   " FullName text NOT NULL COLLATE NOCASE, Kind integer NOT NULL, BaseTypeName text COLLATE NOCASE, Attributes integer NOT NULL, "
-							//	   " FOREIGN KEY (idAssembly) REFERENCES Assemblies (Id) ON DELETE CASCADE ON UPDATE CASCADE"
-							//	  ")"
-							oCmd:CommandText := "INSERT INTO ReferencedTypes (idAssembly, Name, Namespace, Kind, BaseTypeName, Attributes,FullName) " + ;
-							" values ($id, $name, $namespace, $kind, $basetypename, $attributes,$fullname) "
-							oCmd:Parameters:Clear()
-							VAR pars := List<SQLiteParameter>{} { ;
-							oCmd:Parameters:AddWithValue("$id", 0),;
-							oCmd:Parameters:AddWithValue("$name", ""),;
-							oCmd:Parameters:AddWithValue("$namespace", ""),;
-							oCmd:Parameters:AddWithValue("$fullname", ""),;
-							oCmd:Parameters:AddWithValue("$kind", 0),;
-							oCmd:Parameters:AddWithValue("$basetypename", ""),;
-							oCmd:Parameters:AddWithValue("$attributes",0)}
-							FOREACH VAR typeref IN oAssembly:Types:Values
-								pars[0]:Value := oAssembly:Id
-								pars[1]:Value := typeref:Name
-								pars[2]:Value := typeref:Namespace
-								pars[3]:Value := typeref:FullName
-								pars[4]:Value := (INT) typeref:Kind
-								pars[5]:Value := typeref:BaseType
-								pars[6]:Value := (INT) typeref:Attributes
-								oCmd:ExecuteNonQuery()
-							NEXT
+					USING VAR oCmd := SQLiteCommand{"SELECT 1", oConn}
+					// Updated TypeReferences
+					//	   "Create Table ReferencedTypes ("
+					//	   " Id integer NOT NULL PRIMARY KEY, idAssembly integer NOT NULL, Name text NOT NULL COLLATE NOCASE, Namespace text NOT NULL COLLATE NOCASE, "
+					//	   " FullName text NOT NULL COLLATE NOCASE, Kind integer NOT NULL, BaseTypeName text COLLATE NOCASE, Attributes integer NOT NULL, "
+					//	   " FOREIGN KEY (idAssembly) REFERENCES Assemblies (Id) ON DELETE CASCADE ON UPDATE CASCADE"
+					//	  ")"
+					oCmd:CommandText := "INSERT INTO ReferencedTypes (idAssembly, Name, Namespace, Kind, BaseTypeName, Attributes,FullName) " + ;
+					" values ($id, $name, $namespace, $kind, $basetypename, $attributes,$fullname) "
+					oCmd:Parameters:Clear()
+					VAR pars := List<SQLiteParameter>{} { ;
+					oCmd:Parameters:AddWithValue("$id", 0),;
+					oCmd:Parameters:AddWithValue("$name", ""),;
+					oCmd:Parameters:AddWithValue("$namespace", ""),;
+					oCmd:Parameters:AddWithValue("$fullname", ""),;
+					oCmd:Parameters:AddWithValue("$kind", 0),;
+					oCmd:Parameters:AddWithValue("$basetypename", ""),;
+					oCmd:Parameters:AddWithValue("$attributes",0)}
+					FOREACH VAR typeref IN oAssembly:Types:Values
+						pars[0]:Value := oAssembly:Id
+						pars[1]:Value := typeref:Name
+						pars[2]:Value := typeref:Namespace
+						pars[3]:Value := typeref:FullName
+						pars[4]:Value := (INT) typeref:Kind
+						pars[5]:Value := typeref:BaseType
+						pars[6]:Value := (INT) typeref:Attributes
+						oCmd:ExecuteNonQuery()
+					NEXT
 							
-							oCmd:CommandText := "Update Assemblies set LastChanged = $last, Size = $size where id = "+oAssembly:Id:ToString()
-							VAR fi            := FileInfo{oAssembly:FileName}
-							oAssembly:LastChanged := fi:LastWriteTime
-							oAssembly:Size        := fi:Length
-							oCmd:Parameters:Clear()
-							oCmd:Parameters:AddWithValue("$last", oAssembly:LastChanged)
-							oCmd:Parameters:AddWithValue("$size", oAssembly:Size)
-							oCmd:ExecuteNonQuery()
-					END USING
+					oCmd:CommandText := "Update Assemblies set LastChanged = $last, Size = $size where id = "+oAssembly:Id:ToString()
+					VAR fi            := FileInfo{oAssembly:FileName}
+					oAssembly:LastChanged := fi:LastWriteTime
+					oAssembly:Size        := fi:Length
+					oCmd:Parameters:Clear()
+					oCmd:Parameters:AddWithValue("$last", oAssembly:LastChanged)
+					oCmd:Parameters:AddWithValue("$size", oAssembly:Size)
+					oCmd:ExecuteNonQuery()
 				CATCH e AS Exception
 					Log("Exception: "+e:ToString())
 					Log("Assembly : "+oAssembly:FileName+" "+oAssembly:Id:ToString())
@@ -857,23 +844,21 @@ BEGIN NAMESPACE XSharpModel
 			IF IsDbOpen
 				BEGIN LOCK oConn
 					TRY
-						BEGIN USING VAR oCmd := SQLiteCommand{"SELECT 1", oConn}
-							oCmd:CommandText := "SELECT * FROM ProjectMembers WHERE name = $name AND TypeName = $typename " + ;
-							" AND Kind in ($kind1, $kind2, $kind3, $kind4,$kind5,$kind6) AND IdProject in ("+sProjectIds+")"
-							oCmd:Parameters:AddWithValue("$name", sName)
-							oCmd:Parameters:AddWithValue("$kind1", (INT) Kind.Function)
-							oCmd:Parameters:AddWithValue("$kind2", (INT) Kind.Procedure)
-							oCmd:Parameters:AddWithValue("$kind3", (INT) Kind.Method)
-							oCmd:Parameters:AddWithValue("$kind4", (INT) Kind.VODLL)
-							oCmd:Parameters:AddWithValue("$kind5", (INT) Kind.LocalFunc)
-							oCmd:Parameters:AddWithValue("$kind6", (INT) Kind.LocalProc)
-							oCmd:Parameters:AddWithValue("$typename", XLiterals.GlobalName)
-							BEGIN USING VAR rdr := oCmd:ExecuteReader()
-								DO WHILE rdr:Read()
-									result:Add(CreateMemberInfo(rdr))
-								ENDDO
-							END USING
-					    END USING
+						USING VAR oCmd := SQLiteCommand{"SELECT 1", oConn}
+						oCmd:CommandText := "SELECT * FROM ProjectMembers WHERE name = $name AND TypeName = $typename " + ;
+						" AND Kind in ($kind1, $kind2, $kind3, $kind4,$kind5,$kind6) AND IdProject in ("+sProjectIds+")"
+						oCmd:Parameters:AddWithValue("$name", sName)
+						oCmd:Parameters:AddWithValue("$kind1", (INT) Kind.Function)
+						oCmd:Parameters:AddWithValue("$kind2", (INT) Kind.Procedure)
+						oCmd:Parameters:AddWithValue("$kind3", (INT) Kind.Method)
+						oCmd:Parameters:AddWithValue("$kind4", (INT) Kind.VODLL)
+						oCmd:Parameters:AddWithValue("$kind5", (INT) Kind.LocalFunc)
+						oCmd:Parameters:AddWithValue("$kind6", (INT) Kind.LocalProc)
+						oCmd:Parameters:AddWithValue("$typename", XLiterals.GlobalName)
+						USING VAR rdr := oCmd:ExecuteReader()
+						DO WHILE rdr:Read()
+							result:Add(CreateMemberInfo(rdr))
+						ENDDO
 					CATCH e AS Exception
 						Log("Exception: "+e:ToString())
 					END TRY            
@@ -888,19 +873,17 @@ BEGIN NAMESPACE XSharpModel
 			IF IsDbOpen
 				BEGIN LOCK oConn
 					TRY
-					BEGIN USING VAR oCmd := SQLiteCommand{"SELECT 1", oConn}
-						oCmd:CommandText := "SELECT * FROM ProjectMembers WHERE name = $name AND TypeName = $typename " + ;
-						" AND Kind in ($kind1, $kind2) AND IdProject in ("+sProjectIds+")"
-						oCmd:Parameters:AddWithValue("$name", sName)
-						oCmd:Parameters:AddWithValue("$kind1", (INT) Kind.VOGlobal)
-						oCmd:Parameters:AddWithValue("$kind2", (INT) Kind.VODefine)
-						oCmd:Parameters:AddWithValue("$typename", XLiterals.GlobalName)
-						BEGIN USING VAR rdr := oCmd:ExecuteReader()
-							DO WHILE rdr:Read()
-								result:Add(CreateMemberInfo(rdr))
-							ENDDO
-						END USING
-				    END USING
+					    USING VAR oCmd := SQLiteCommand{"SELECT 1", oConn}
+					    oCmd:CommandText := "SELECT * FROM ProjectMembers WHERE name = $name AND TypeName = $typename " + ;
+					    " AND Kind in ($kind1, $kind2) AND IdProject in ("+sProjectIds+")"
+					    oCmd:Parameters:AddWithValue("$name", sName)
+					    oCmd:Parameters:AddWithValue("$kind1", (INT) Kind.VOGlobal)
+					    oCmd:Parameters:AddWithValue("$kind2", (INT) Kind.VODefine)
+					    oCmd:Parameters:AddWithValue("$typename", XLiterals.GlobalName)
+					    USING VAR rdr := oCmd:ExecuteReader()
+					    DO WHILE rdr:Read()
+						    result:Add(CreateMemberInfo(rdr))
+					    ENDDO
 					CATCH e AS Exception
 						Log("Exception: "+e:ToString())
 					END TRY            
@@ -915,14 +898,12 @@ BEGIN NAMESPACE XSharpModel
 			IF IsDbOpen
 				BEGIN LOCK oConn
 					TRY
-							BEGIN USING VAR oCmd := SQLiteCommand{stmt, oConn}
-								oCmd:Parameters:AddWithValue("$name", sName)
-								BEGIN USING VAR rdr := oCmd:ExecuteReader()
-									DO WHILE rdr:Read()
-										result:Add(CreateTypeInfo(rdr))
-									ENDDO
-								END USING
-						END USING
+					    USING VAR oCmd := SQLiteCommand{stmt, oConn}
+						oCmd:Parameters:AddWithValue("$name", sName)
+						USING VAR rdr := oCmd:ExecuteReader()
+						DO WHILE rdr:Read()
+							result:Add(CreateTypeInfo(rdr))
+						ENDDO
 					CATCH e AS Exception
 						Log("Exception: "+e:ToString())
 					END TRY            
@@ -938,14 +919,12 @@ BEGIN NAMESPACE XSharpModel
 			IF IsDbOpen
 				BEGIN LOCK oConn
 					TRY
-							BEGIN USING VAR oCmd := SQLiteCommand{stmt, oConn}
-								oCmd:Parameters:AddWithValue("$name", sName)
-								BEGIN USING VAR rdr := oCmd:ExecuteReader()
-									DO WHILE rdr:Read()
-										result:Add(CreateTypeInfo(rdr))
-									ENDDO
-								END USING
-						END USING
+						USING VAR oCmd := SQLiteCommand{stmt, oConn}
+						oCmd:Parameters:AddWithValue("$name", sName)
+						USING VAR rdr := oCmd:ExecuteReader()
+						DO WHILE rdr:Read()
+							result:Add(CreateTypeInfo(rdr))
+						ENDDO
 					CATCH e AS Exception
 						Log("Exception: "+e:ToString())
 					END TRY            
@@ -961,13 +940,11 @@ BEGIN NAMESPACE XSharpModel
 			IF IsDbOpen
 				BEGIN LOCK oConn
 					TRY
-							BEGIN USING VAR oCmd := SQLiteCommand{stmt, oConn}
-								BEGIN USING VAR rdr := oCmd:ExecuteReader()
-									DO WHILE rdr:Read()
-										result:Add(CreateCommentTask(rdr))
-									ENDDO
-								END USING
-						END USING
+						USING VAR oCmd := SQLiteCommand{stmt, oConn}
+						USING VAR rdr := oCmd:ExecuteReader()
+					    DO WHILE rdr:Read()
+						    result:Add(CreateCommentTask(rdr))
+					    ENDDO
 					CATCH e AS Exception
 						Log("Exception: "+e:ToString())
 					END TRY            
@@ -982,14 +959,12 @@ BEGIN NAMESPACE XSharpModel
 			IF IsDbOpen
 				BEGIN LOCK oConn
 					TRY
-							BEGIN USING VAR oCmd := SQLiteCommand{stmt, oConn}
+						USING VAR oCmd := SQLiteCommand{stmt, oConn}
                         oCmd:Parameters:AddWithValue("$type",(INT) type)
-								BEGIN USING VAR rdr := oCmd:ExecuteReader()
-									DO WHILE rdr:Read()
+						USING VAR rdr := oCmd:ExecuteReader()
+						DO WHILE rdr:Read()
                               result:Add(DbToString(rdr[0]))
-									ENDDO
-								END USING
-						END USING
+						ENDDO
 					CATCH e AS Exception
 						Log("Exception: "+e:ToString())
 					END TRY            
@@ -1003,18 +978,16 @@ BEGIN NAMESPACE XSharpModel
 			IF IsDbOpen
 				BEGIN LOCK oConn
 					TRY
-							BEGIN USING VAR oCmd := SQLiteCommand{stmt, oConn}
-								BEGIN USING VAR rdr := oCmd:ExecuteReader()
-									DO WHILE rdr:Read()
-										VAR res := XDbResult{}
-										res:Namespace    := DbToString(rdr[0])
-										res:TypeName     := res:Namespace
-										IF ! String.IsNullOrEmpty(res:Namespace)
-											result:Add(res)
-										ENDIF
-									ENDDO
-								END USING
-						END USING
+						USING VAR oCmd := SQLiteCommand{stmt, oConn}
+						USING VAR rdr := oCmd:ExecuteReader()
+						DO WHILE rdr:Read()
+							VAR res := XDbResult{}
+							res:Namespace    := DbToString(rdr[0])
+							res:TypeName     := res:Namespace
+							IF ! String.IsNullOrEmpty(res:Namespace)
+								result:Add(res)
+							ENDIF
+						ENDDO
 					CATCH e AS Exception
 						Log("Exception: "+e:ToString())
 					END TRY            
@@ -1032,21 +1005,19 @@ BEGIN NAMESPACE XSharpModel
 			IF IsDbOpen
 				BEGIN LOCK oConn
 					TRY
-							BEGIN USING VAR oCmd := SQLiteCommand{stmt, oConn}
-								BEGIN USING VAR rdr := oCmd:ExecuteReader()
-									DO WHILE rdr:Read()
-										VAR res := XDbResult{}
-										IF rdr[0] != DBNull.Value
-											res:Kind         := Kind.Namespace
-											res:Namespace    := DbToString(rdr[0])
-											res:TypeName     := res:Namespace							
-											IF !String.IsNullOrEmpty(res:Namespace) .OR. keepEmptyName
-												result:Add(res)
-											ENDIF
-										ENDIF
-									ENDDO
-								END USING
-						END USING
+						USING VAR oCmd := SQLiteCommand{stmt, oConn}
+						USING VAR rdr := oCmd:ExecuteReader()
+						DO WHILE rdr:Read()
+							VAR res := XDbResult{}
+							IF rdr[0] != DBNull.Value
+								res:Kind         := Kind.Namespace
+								res:Namespace    := DbToString(rdr[0])
+								res:TypeName     := res:Namespace							
+								IF !String.IsNullOrEmpty(res:Namespace) .OR. keepEmptyName
+									result:Add(res)
+								ENDIF
+							ENDIF
+						ENDDO
 					CATCH e AS Exception
 						Log("Exception: "+e:ToString())
 					END TRY            
@@ -1061,13 +1032,11 @@ BEGIN NAMESPACE XSharpModel
 			IF IsDbOpen
 				BEGIN LOCK oConn
 					TRY
-							BEGIN USING VAR oCmd := SQLiteCommand{stmt, oConn}
-								BEGIN USING VAR rdr := oCmd:ExecuteReader()
-									DO WHILE rdr:Read()
-										result:Add(CreateTypeInfo(rdr))
-									ENDDO
-								END USING
-						END USING
+						USING VAR oCmd := SQLiteCommand{stmt, oConn}
+						USING VAR rdr := oCmd:ExecuteReader()
+						DO WHILE rdr:Read()
+							result:Add(CreateTypeInfo(rdr))
+						ENDDO
 					CATCH e AS Exception
 						Log("Exception: "+e:ToString())
 					END TRY            
@@ -1082,14 +1051,13 @@ BEGIN NAMESPACE XSharpModel
 			IF IsDbOpen
 				BEGIN LOCK oConn
 					TRY
-							BEGIN USING VAR oCmd := SQLiteCommand{stmt, oConn}
-								oCmd:Parameters:AddWithValue("$name", sName+"%")
-								BEGIN USING VAR rdr := oCmd:ExecuteReader()
-									DO WHILE rdr:Read()
-										result:Add(CreateRefTypeInfo(rdr))
-									ENDDO
-								END USING
-						END USING
+					    USING VAR oCmd := SQLiteCommand{stmt, oConn}
+					    oCmd:Parameters:AddWithValue("$name", sName+"%")
+					    USING VAR rdr := oCmd:ExecuteReader()
+					    DO WHILE rdr:Read()
+					        result:Add(CreateRefTypeInfo(rdr))
+					    ENDDO
+					
 					CATCH e AS Exception
 						Log("Exception: "+e:ToString())
 					END TRY            
@@ -1105,13 +1073,11 @@ BEGIN NAMESPACE XSharpModel
 			IF IsDbOpen
 				BEGIN LOCK oConn
 					TRY
-					    BEGIN USING VAR oCmd := SQLiteCommand{stmt, oConn}
-						    BEGIN USING VAR rdr := oCmd:ExecuteReader()
-							    DO WHILE rdr:Read()
-								    result:Add(CreateMemberInfo(rdr))
-							    ENDDO
-						    END USING
-						END USING
+					    USING VAR oCmd := SQLiteCommand{stmt, oConn}
+						USING VAR rdr := oCmd:ExecuteReader()
+						DO WHILE rdr:Read()
+							result:Add(CreateMemberInfo(rdr))
+						ENDDO
 					CATCH e AS Exception
 						Log("Exception: "+e:ToString())
 					END TRY            
@@ -1128,13 +1094,11 @@ BEGIN NAMESPACE XSharpModel
 			IF IsDbOpen
 				BEGIN LOCK oConn
 					TRY
-							BEGIN USING VAR oCmd := SQLiteCommand{stmt, oConn}
-								BEGIN USING VAR rdr := oCmd:ExecuteReader()
-									DO WHILE rdr:Read()
-										result:Add(CreateMemberInfo(rdr))
-									ENDDO
-								END USING
-						END USING
+						USING VAR oCmd := SQLiteCommand{stmt, oConn}
+						USING VAR rdr := oCmd:ExecuteReader()
+						DO WHILE rdr:Read()
+							result:Add(CreateMemberInfo(rdr))
+						ENDDO
 					CATCH e AS Exception
 						Log("Exception: "+e:ToString())
 					END TRY            
@@ -1151,22 +1115,20 @@ BEGIN NAMESPACE XSharpModel
 			IF IsDbOpen
 				BEGIN LOCK oConn
 					TRY
-							BEGIN USING VAR oCmd := SQLiteCommand{"SELECT 1", oConn}
-								oCmd:CommandText := "SELECT * FROM ProjectMembers WHERE IdFile = $idfile AND TypeName = $typename " + ;
-								" AND Kind in ($kind1, $kind2, $kind3, $kind4, $kind5)"
-								oCmd:Parameters:AddWithValue("$idfile", sFileId)
-								oCmd:Parameters:AddWithValue("$kind1", (INT) Kind.Function)
-								oCmd:Parameters:AddWithValue("$kind2", (INT) Kind.Procedure)
-								oCmd:Parameters:AddWithValue("$kind3", (INT) Kind.VODLL)
-								oCmd:Parameters:AddWithValue("$kind4", (INT) Kind.VOGlobal)
-								oCmd:Parameters:AddWithValue("$kind5", (INT) Kind.VODefine)
-								oCmd:Parameters:AddWithValue("$typename", XLiterals.GlobalName)
-								BEGIN USING VAR rdr := oCmd:ExecuteReader()
-									DO WHILE rdr:Read()
-										result:Add(CreateMemberInfo(rdr))
-									ENDDO
-								END USING
-						END USING
+    					USING VAR oCmd := SQLiteCommand{"SELECT 1", oConn}
+						oCmd:CommandText := "SELECT * FROM ProjectMembers WHERE IdFile = $idfile AND TypeName = $typename " + ;
+						" AND Kind in ($kind1, $kind2, $kind3, $kind4, $kind5)"
+						oCmd:Parameters:AddWithValue("$idfile", sFileId)
+						oCmd:Parameters:AddWithValue("$kind1", (INT) Kind.Function)
+						oCmd:Parameters:AddWithValue("$kind2", (INT) Kind.Procedure)
+						oCmd:Parameters:AddWithValue("$kind3", (INT) Kind.VODLL)
+						oCmd:Parameters:AddWithValue("$kind4", (INT) Kind.VOGlobal)
+						oCmd:Parameters:AddWithValue("$kind5", (INT) Kind.VODefine)
+						oCmd:Parameters:AddWithValue("$typename", XLiterals.GlobalName)
+						USING VAR rdr := oCmd:ExecuteReader()
+						DO WHILE rdr:Read()
+							result:Add(CreateMemberInfo(rdr))
+						ENDDO
 					CATCH e AS Exception
 						Log("Exception: "+e:ToString())
 					END TRY            

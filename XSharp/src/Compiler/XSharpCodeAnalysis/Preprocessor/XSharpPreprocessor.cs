@@ -53,9 +53,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         #region IncludeCache
         internal class PPIncludeFile
         {
-            static ConcurrentDictionary<String, PPIncludeFile> cache = new ConcurrentDictionary<string, PPIncludeFile>(StringComparer.OrdinalIgnoreCase);
+            static readonly ConcurrentDictionary<String, PPIncludeFile> cache = new(StringComparer.OrdinalIgnoreCase);
 
-            static internal void ClearOldIncludes()
+            internal static void ClearOldIncludes()
             {
                 // Remove old includes that have not been used in the last 1 minutes
                 var oldkeys = new List<string>();
@@ -74,8 +74,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 }
             }
 
-
-            static internal PPIncludeFile Get(string fileName)
+            internal static PPIncludeFile Get(string fileName)
             {
                 PPIncludeFile file = null;
                 if (cache.ContainsKey(fileName))
@@ -102,7 +101,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 }
                 return file;
             }
-            static internal PPIncludeFile Add(string fileName, IList<IToken> tokens, SourceText text, bool mustBeProcessed, ref bool newFile)
+            internal static PPIncludeFile Add(string fileName, IList<IToken> tokens, SourceText text, bool mustBeProcessed, ref bool newFile)
             {
                 PPIncludeFile file;
                 cache.TryGetValue(fileName, out file);
@@ -140,7 +139,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 this.LastUsed = DateTime.Now;
                 if (File.Exists(this.FileName))
                 {
-                this.LastWritten = FileUtilities.GetFileTimeStamp(this.FileName);
+                    this.LastWritten = FileUtilities.GetFileTimeStamp(this.FileName);
                 }
                 else
                 {
@@ -152,9 +151,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             internal PPIncludeFile Clone()
             {
-                return new PPIncludeFile(FileName, Tokens, Text, MustBeProcessed); ;
+                return new PPIncludeFile(FileName, Tokens, Text, MustBeProcessed); 
             }
-
         }
 
         #endregion
@@ -171,7 +169,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             internal InputState parent;
             //internal string MappedFileName;
             //internal PPRule udc;
-
 
             internal InputState(ITokenStream tokens)
             {
@@ -226,26 +223,26 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         Dictionary<string, IList<XSharpToken>> symbolDefines;
 
-        Dictionary<string, Func<XSharpToken, XSharpToken>> macroDefines = new Dictionary<string, Func<XSharpToken, XSharpToken>>(XSharpString.Comparer);
+        readonly Dictionary<string, Func<XSharpToken, XSharpToken>> macroDefines = new (XSharpString.Comparer);
 
-        Stack<bool> defStates = new Stack<bool>();
-        Stack<XSharpToken> regions = new Stack<XSharpToken>();
+        readonly Stack<bool> defStates = new();
+        readonly Stack<XSharpToken> regions = new();
         readonly string _fileName = null;
         InputState inputs;
         IToken lastToken = null;
 
-        PPRuleDictionary cmdRules = new PPRuleDictionary();
-        PPRuleDictionary transRules = new PPRuleDictionary();
+        readonly PPRuleDictionary cmdRules = new();
+        readonly PPRuleDictionary transRules = new();
         bool _hasCommandrules = false;
         bool _hasTransrules = false;
         int rulesApplied = 0;
         readonly int defsApplied = 0;
-        HashSet<string> activeSymbols = new HashSet<string>();
+        readonly HashSet<string> activeSymbols = new();
 
         readonly bool _preprocessorOutput = false;
         Stream _ppoStream;
 
-        internal Dictionary<string, SourceText> IncludedFiles = new Dictionary<string, SourceText>(CaseInsensitiveComparison.Comparer);
+        internal Dictionary<string, SourceText> IncludedFiles = new(CaseInsensitiveComparison.Comparer);
 
         public int MaxIncludeDepth { get; set; } = 16;
 
@@ -260,7 +257,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             // Make sure you also update the MACROs in XSharpLexerCode.cs !
             macroDefines.Add("__ARRAYBASE__", (token) => new XSharpToken(XSharpLexer.INT_CONST, _options.HasOption(CompilerOption.ArrayZero, null, null) ? "0" : "1", token));
             if (_options.ClrVersion == 2)
-                macroDefines.Add("__CLR2__", (token) => new XSharpToken(XSharpLexer.TRUE_CONST,token));
+                macroDefines.Add("__CLR2__", (token) => new XSharpToken(XSharpLexer.TRUE_CONST, token));
             if (_options.ClrVersion == 4)
                 macroDefines.Add("__CLR4__", (token) => new XSharpToken(XSharpLexer.TRUE_CONST, token));
             macroDefines.Add("__CLRVERSION__", (token) => new XSharpToken(XSharpLexer.STRING_CONST, "\"" + _options.ClrVersion.ToString() + ".0\"", token));
@@ -279,7 +276,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 debug = false;
 #endif
             if (debug)
-            { 
+            {
                 macroDefines.Add("__DEBUG__", (token) => new XSharpToken(XSharpLexer.TRUE_CONST, token));
             }
             macroDefines.Add("__DIALECT__", (token) => new XSharpToken(XSharpLexer.STRING_CONST, '"' + options.Dialect.ToString() + '"', token));
@@ -314,7 +311,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             macroDefines.Add("__ENTITY__", (token) => new XSharpToken(XSharpLexer.STRING_CONST, "\"__ENTITY__\"", token));  // Handled later in Transformation phase
             macroDefines.Add("__FILE__", (token) => new XSharpToken(XSharpLexer.STRING_CONST, '"' + (inputs.SourceFileName ?? fileName) + '"', token));
             macroDefines.Add("__LINE__", (token) => new XSharpToken(XSharpLexer.INT_CONST, token.Line.ToString(), token));
-            macroDefines.Add("__MODULE__", (token) => new XSharpToken(XSharpLexer.STRING_CONST, '"' + (inputs.SourceFileName ?? fileName) + '"',token));
+            macroDefines.Add("__MODULE__", (token) => new XSharpToken(XSharpLexer.STRING_CONST, '"' + (inputs.SourceFileName ?? fileName) + '"', token));
             macroDefines.Add("__FUNCTION__", (token) => new XSharpToken(XSharpLexer.STRING_CONST, "\"__FUNCTION__\"", token)); // Handled later in Transformation phase
             macroDefines.Add("__FUNCTIONS__", (token) => new XSharpToken(XSharpLexer.STRING_CONST, "\"__FUNCTIONS__\"", token)); // Handled later in Transformation phase
             macroDefines.Add("__SIG__", (token) => new XSharpToken(XSharpLexer.STRING_CONST, "\"__SIG__\"", token)); // Handled later in Transformation phase
@@ -335,9 +332,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             for (int iOpt = 0; iOpt < flags.Length; iOpt++)
             {
                 string flagName = string.Format("__VO{0}__", iOpt + 1);
-                macroDefines.Add(flagName, (token) => new XSharpToken(flags[iOpt] ? XSharpLexer.TRUE_CONST: XSharpLexer.FALSE_CONST, token));
+                macroDefines.Add(flagName, (token) => new XSharpToken(flags[iOpt] ? XSharpLexer.TRUE_CONST : XSharpLexer.FALSE_CONST, token));
             }
-            macroDefines.Add("__XPP1__", (token) => new XSharpToken(options.xpp1 ? XSharpLexer.TRUE_CONST: XSharpLexer.FALSE_CONST, token));
+            macroDefines.Add("__XPP1__", (token) => new XSharpToken(options.xpp1 ? XSharpLexer.TRUE_CONST : XSharpLexer.FALSE_CONST, token));
             macroDefines.Add("__XPP2__", (token) => new XSharpToken(options.xpp2 ? XSharpLexer.TRUE_CONST : XSharpLexer.FALSE_CONST, token));
             macroDefines.Add("__FOX1__", (token) => new XSharpToken(options.fox1 ? XSharpLexer.TRUE_CONST : XSharpLexer.FALSE_CONST, token));
             macroDefines.Add("__FOX2__", (token) => new XSharpToken(options.fox2 ? XSharpLexer.TRUE_CONST : XSharpLexer.FALSE_CONST, token));
@@ -351,7 +348,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
         }
 
-
         internal void DumpStats()
         {
             DebugOutput("Preprocessor statistics");
@@ -364,7 +360,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             DebugOutput("# of UDCs used   : {0}", this.rulesApplied);
         }
 
-        private void _writeToPPO(String text, bool addCRLF )
+        private void _writeToPPO(String text, bool addCRLF)
         {
             // do not call t.Text when not needed.
             if (_preprocessorOutput)
@@ -412,9 +408,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 foreach (var t in tokens)
                 {
                     // Copy the trivia from the original first symbol on the line so the UDC has the proper indentlevel
-                    if (first && t.SourceSymbol!= null && t.SourceSymbol.HasTrivia && t.SourceSymbol.Type == XSharpLexer.UDC_KEYWORD)
+                    if (first && t.SourceSymbol != null && t.SourceSymbol.HasTrivia && t.SourceSymbol.Type == XSharpLexer.UDC_KEYWORD)
                     {
-                        bld.Append(t.SourceSymbol.TriviaAsText); 
+                        bld.Append(t.SourceSymbol.TriviaAsText);
                     }
                     bld.Append(t.Text);
                     first = false;
@@ -423,7 +419,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 {
                     bld.Replace("\n", "\n" + PPOPrefix);
                 }
-                _writeToPPO(bld.ToString(),true);
+                _writeToPPO(bld.ToString(), true);
             }
         }
 
@@ -443,7 +439,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             var d = Diagnostic.Create(new SyntaxDiagnosticInfo(error.Code));
             if (_options.CommandLineArguments != null)
             {
-                d = _options.CommandLineArguments.CompilationOptions.FilterDiagnostic(d,CancellationToken.None);
+                d = _options.CommandLineArguments.CompilationOptions.FilterDiagnostic(d, CancellationToken.None);
             }
             if (d != null)
             {
@@ -530,16 +526,15 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
         }
 
-
         /// <summary>
         /// Pre-processes the input stream. Reads #Include files, processes #ifdef commands and translations from #defines, macros and UDCs
-        /// </summary>                                                               a
+        /// </summary>
         /// <returns>Translated input stream</returns>
         internal IList<IToken> PreProcess()
         {
-            var result = new List<IToken>(); ;
+            var result = new List<IToken>(); 
             XSharpToken t = Lt();
-            List<XSharpToken> omitted = new List<XSharpToken>(); ;
+            List<XSharpToken> omitted = new List<XSharpToken>(); 
             while (t.Type != IntStreamConstants.Eof)
             {
                 // read until the next EOS
@@ -568,7 +563,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             return result;
         }
 
-        int getFirstTokenType(IList<XSharpToken> line)
+        static int getFirstTokenType(IList<XSharpToken> line)
         {
             for (int i = 0; i < line.Count; i++)
             {
@@ -689,7 +684,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 return _fileName;
             }
         }
-
 
         XSharpToken GetSourceSymbol()
         {
@@ -816,7 +810,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
             return (t.Type == XSharpLexer.MACRO) ? macroDefines.ContainsKey(t.Text) : false;
         }
-        IList<XSharpToken> stripWs(IList<XSharpToken> line)
+        static IList<XSharpToken> stripWs(IList<XSharpToken> line)
         {
             IList<XSharpToken> result = new List<XSharpToken>();
             foreach (var token in line)
@@ -990,7 +984,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 {
                     DebugOutput("{0}:{1} add {2} {3}", cmd.FileName(), cmd.Line, cmd.Type == XSharpLexer.PP_DEFINE ? "DEFINE" : "UDC", rule.Name);
                 }
-
             }
         }
 #if !VSPARSER
@@ -1017,7 +1010,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         // Encoding problem ?
                         text = EncodedStringText.Create(data);
                     }
-
                 }
             }
             catch (Exception e)
@@ -1248,7 +1240,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         DebugOutput("Bummer: include file was already added to cache by another thread {0}", nfp);
                     }
                 }
-
             }
             nfp = includeFile.FileName;
             if (_options.ParseLevel == ParseLevel.Complete || includeFile.MustBeProcessed || _lexer.HasPPIfdefs)
@@ -1345,7 +1336,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         }
         #region Preprocessor Directives
 
-
         private void checkForUnexpectedPPInput(IList<XSharpToken> line, int nMax)
         {
             if (line.Count > nMax)
@@ -1410,7 +1400,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 writeToPPO("");
             }
-
         }
 
         private void doUnDefDirective(IList<XSharpToken> original)
@@ -1604,8 +1593,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 #if !VSPARSER
                     inputs.MappedLineDiff = (int)ln.SyntaxLiteralValue(_options,null, null).Value - (ln.Line + 1);
 #else
-                    int temp;
-                    if (Int32.TryParse(ln.Text, out temp))
+                    if (Int32.TryParse(ln.Text, out var temp))
                     { 
                         inputs.MappedLineDiff = temp- (ln.Line + 1);
                     }
@@ -1710,8 +1698,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             return line;
         }
 
-
-        private IList<XSharpToken> copySource(IList<XSharpToken> line, int nCount)
+        private static IList<XSharpToken> copySource(IList<XSharpToken> line, int nCount)
         {
             var result = new List<XSharpToken>(line.Count);
             var temp = new XSharpToken[nCount];
@@ -1807,7 +1794,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     hasChanged = true;
                 }
             }
-            return hasChanged; ;
+            return hasChanged; 
         }
 
         private bool doProcessTranslates(IList<XSharpToken> line, out IList<XSharpToken> result)
@@ -1967,7 +1954,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         #endregion
 
-
         private List<XSharpToken> doReplace(IList<XSharpToken> line, PPRule rule, PPMatchRange[] matchInfo)
         {
             Debug.Assert(line?.Count > 0);
@@ -1992,6 +1978,3 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         }
     }
 }
-
-
-

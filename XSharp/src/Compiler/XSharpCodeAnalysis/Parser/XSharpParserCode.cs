@@ -261,7 +261,6 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                 return oldFlag;
             }
 
-
             EntityFlags flags;
 
             public bool HasClipperCallingConvention
@@ -423,13 +422,11 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                 }
                 return null;
             }
-
-
         }
 
         public partial class ScriptContext : IEntityContext
         {
-            EntityData data = new EntityData();
+            readonly EntityData data = new();
             public EntityData Data => data;
             public ParameterListContext Params => null;
             public DatatypeContext ReturnType => null;
@@ -480,7 +477,6 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             public StatementBlockContext Statements { get { return StmtBlk; } }
         }
 
-
         public partial class LocalfuncprocContext : IEntityWithBodyContext, IBodyWithLocalFunctions
         {
 
@@ -490,7 +486,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             public ParameterListContext ParamList => Sig.ParamList;
             public DatatypeContext Type => Sig.Type;
             public CallingconventionContext CallingConvention => Sig.CallingConvention;
-            EntityData data = new EntityData();
+            readonly EntityData data = new();
             public EntityData Data => data;
             public ParameterListContext Params => this.ParamList;
             public DatatypeContext ReturnType => this.Type;
@@ -501,7 +497,6 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             public IList<object> LocalFunctions { get; set; } = null;
         }
 
-
         public partial class FuncprocContext : IEntityWithBodyContext, IGlobalEntityContext, IBodyWithLocalFunctions
         {
 
@@ -511,7 +506,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             public ParameterListContext ParamList => Sig.ParamList;
             public DatatypeContext Type => Sig.Type;
             public CallingconventionContext CallingConvention => Sig.CallingConvention;
-            EntityData data = new EntityData();
+            readonly EntityData data = new();
             public EntityData Data => data;
             public ParameterListContext Params => this.ParamList;
             public DatatypeContext ReturnType => this.Type;
@@ -546,7 +541,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             public CallingconventionContext CallingConvention => Sig.CallingConvention;
             public bool IsInInterface => this.isInInterface();
             public bool IsInStructure => this.isInStructure();
-            EntityData data = new EntityData();
+            readonly EntityData data = new();
             public EntityData Data => data;
             public ParameterListContext Params => this.ParamList;
             public DatatypeContext ReturnType => this.Type;
@@ -585,7 +580,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             public bool IsInInterface => false;
             public bool IsInStructure => false;
 
-            EntityData data = new EntityData();
+            readonly EntityData data = new();
             public EntityData Data => data;
             public ParameterListContext Params => this.Sig.ParamList;
             public DatatypeContext ReturnType => this.Sig.Type;
@@ -607,7 +602,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
 
         public partial class EventAccessorContext : IEntityWithBodyContext, IBodyWithLocalFunctions
         {
-            EntityData data = new EntityData();
+            readonly EntityData data = new();
             public EntityData Data => data;
             public ParameterListContext Params => null;
             public DatatypeContext ReturnType => null;
@@ -620,7 +615,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
 
         public partial class PropertyAccessorContext : IEntityWithBodyContext, IBodyWithLocalFunctions
         {
-            EntityData data = new EntityData();
+            readonly EntityData data = new();
             public EntityData Data => data;
             public ParameterListContext Params => null;
             public DatatypeContext ReturnType => null;
@@ -631,7 +626,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
         }
         public partial class PropertyLineAccessorContext : IEntityContext
         {
-            EntityData data = new EntityData();
+            readonly EntityData data = new();
             public EntityData Data => data;
             public ParameterListContext Params => null;
             public DatatypeContext ReturnType => null;
@@ -640,7 +635,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
         }
         public partial class ConstructorContext : IEntityWithBodyContext, IBodyWithLocalFunctions
         {
-            EntityData data = new EntityData();
+            readonly EntityData data = new();
             public EntityData Data => data;
             public ParameterListContext Params => this.ParamList;
             public DatatypeContext ReturnType => null;
@@ -651,7 +646,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
         }
         public partial class DestructorContext : IEntityWithBodyContext, IBodyWithLocalFunctions
         {
-            EntityData data = new EntityData();
+            readonly EntityData data = new();
             public EntityData Data => data;
             public ParameterListContext Params => null;
             public DatatypeContext ReturnType => null;
@@ -662,7 +657,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
         }
         public partial class Event_Context : IEntityContext
         {
-            EntityData data = new EntityData();
+            readonly EntityData data = new();
             public EntityData Data => data;
             public ParameterListContext Params => null;
             public DatatypeContext ReturnType => this.Type;
@@ -672,7 +667,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
         }
         public partial class VodefineContext : IEntityContext, IGlobalEntityContext
         {
-            EntityData data = new EntityData();
+            readonly EntityData data = new();
             public EntityData Data => data;
             public ParameterListContext Params => null;
             public DatatypeContext ReturnType => null;
@@ -682,7 +677,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
         }
         public partial class PropertyContext : IEntityContext
         {
-            EntityData data = new EntityData();
+            readonly EntityData data = new();
 
             public EntityData Data { get { return data; } }
             public ParameterListContext Params => null;
@@ -698,7 +693,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
         }
         public partial class Operator_Context : IEntityWithBodyContext, IBodyWithLocalFunctions
         {
-            EntityData data = new EntityData();
+            readonly EntityData data = new();
             public EntityData Data => data;
             public ParameterListContext Params => this.ParamList;
             public DatatypeContext ReturnType => this.Type;
@@ -714,14 +709,13 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                         name = Conversion.GetText();
                     return name;
                 }
-
             }
             public StatementBlockContext Statements => StmtBlk;
             public IList<object> LocalFunctions { get; set; } = null;
         }
         public partial class Delegate_Context : IEntityContext
         {
-            EntityData data = new EntityData();
+            readonly EntityData data = new();
             public EntityData Data => data;
             public ParameterListContext Params => this.ParamList;
             public DatatypeContext ReturnType => this.Type;
@@ -730,7 +724,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
         }
         public partial class Interface_Context : IPartialPropertyContext, IEntityContext
         {
-            EntityData data = new EntityData();
+            readonly EntityData data = new();
             List<IMethodContext> partialProperties = null;
             public List<IMethodContext> PartialProperties
             {
@@ -746,7 +740,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
         }
         public partial class Class_Context : IPartialPropertyContext, IEntityContext
         {
-            EntityData data = new EntityData();
+            readonly EntityData data = new();
             List<IMethodContext> partialProperties = null;
             public List<IMethodContext> PartialProperties
             {
@@ -761,7 +755,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
         }
         public partial class Structure_Context : IPartialPropertyContext, IEntityContext
         {
-            EntityData data = new EntityData();
+            readonly EntityData data = new();
             List<IMethodContext> partialProperties = null;
             public List<IMethodContext> PartialProperties
             {
@@ -776,7 +770,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
         }
         public partial class VodllContext : IEntityContext, IGlobalEntityContext
         {
-            EntityData data = new EntityData();
+            readonly EntityData data = new();
             public EntityData Data => data;
             public ParameterListContext Params => this.ParamList;
             public DatatypeContext ReturnType => this.Type;
@@ -787,7 +781,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
 
         public partial class VoglobalContext : IEntityContext, IGlobalEntityContext
         {
-            EntityData data = new EntityData();
+            readonly EntityData data = new();
             public EntityData Data => data;
             public ParameterListContext Params => null;
             public DatatypeContext ReturnType => this.Vars.DataType;
@@ -797,7 +791,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
         }
         public partial class FoxdllContext : IEntityContext, IGlobalEntityContext
         {
-            EntityData data = new EntityData();
+            readonly EntityData data = new();
             public EntityData Data => data;
             public ParameterListContext Params => null;
             public DatatypeContext ReturnType => this.Type;
@@ -813,7 +807,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
 
         public partial class VounionContext : IEntityContext
         {
-            EntityData data = new EntityData();
+            readonly EntityData data = new();
             public EntityData Data => data;
             public ParameterListContext Params => null;
             public DatatypeContext ReturnType => null;
@@ -823,7 +817,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
         }
         public partial class VostructContext : IEntityContext
         {
-            EntityData data = new EntityData();
+            readonly EntityData data = new();
             public EntityData Data => data;
             public ParameterListContext Params => null;
             public DatatypeContext ReturnType => null;
@@ -833,7 +827,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
         }
         public partial class XppclassContext : IEntityContext
         {
-            EntityData data = new EntityData();
+            readonly EntityData data = new();
             public EntityData Data => data;
             public ParameterListContext Params => null;
             public DatatypeContext ReturnType => null;
@@ -847,7 +841,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
 
         public partial class XppmethodContext : IXPPEntityContext
         {
-            EntityData data = new EntityData();
+            readonly EntityData data = new();
             public EntityData Data => data;
             public ParameterListContext Params => this.ParamList;
             public DatatypeContext ReturnType => this.Type;
@@ -870,7 +864,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
         }
         public partial class XppinlineMethodContext : IXPPEntityContext, IBodyWithLocalFunctions
         {
-            EntityData data = new EntityData();
+            readonly EntityData data = new();
             public EntityData Data => data;
             public ParameterListContext Params => this.ParamList;
             public DatatypeContext ReturnType => this.Type;
@@ -902,7 +896,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
         }
         public partial class XpppropertyContext : IEntityContext
         {
-            EntityData data = new EntityData();
+            readonly EntityData data = new();
             public EntityData Data => data;
             public ParameterListContext Params => null;
             public DatatypeContext ReturnType => this.Type;
@@ -918,7 +912,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
         }
         public partial class FoxclassContext : IPartialPropertyContext, IEntityContext
         {
-            EntityData data = new EntityData();
+            readonly EntityData data = new();
             List<IMethodContext> partialProperties = null;
 
             public List<IMethodContext> PartialProperties
@@ -961,7 +955,6 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
 
 #endif
     }
-
 
     [DebuggerDisplay("{DebuggerDisplay()}")]
     internal class ParseErrorData
@@ -1102,7 +1095,6 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             var ls = new MCT.LinePositionSpan(lp1, lp2);
             return Microsoft.CodeAnalysis.Location.Create(this.SourceFileName, ts, ls);
 
-
         }
 #endif
     }
@@ -1231,7 +1223,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             where T : InternalSyntax.CSharpSyntaxNode
         {
             if (t == null || t.CsNode == null)
-                return default(T);
+                return null;
 
             return (T)t.CsNode;
         }
@@ -1384,6 +1376,5 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             else
                 return parent.isInStructure();
         }
-
     }
 }

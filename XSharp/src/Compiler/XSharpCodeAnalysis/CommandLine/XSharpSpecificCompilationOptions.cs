@@ -17,7 +17,7 @@ namespace Microsoft.CodeAnalysis.CSharp
     /// </summary>
     public sealed class XSharpSpecificCompilationOptions
     {
-        public static readonly XSharpSpecificCompilationOptions Default = new XSharpSpecificCompilationOptions();
+        public static readonly XSharpSpecificCompilationOptions Default = new();
 
         static string _defaultIncludeDir;
         static string _windir;
@@ -38,7 +38,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         {
             // All defaults are set at property level
         }
-
+        public bool AllowDotForInstanceMembers { get; internal set; } = false;
         public bool ArrayZero { get; internal set; } = false;
         public bool CaseSensitive { get; internal set; } = false;
         public int ClrVersion { get; internal set; } = 4;
@@ -179,6 +179,9 @@ namespace Microsoft.CodeAnalysis.CSharp
                 case CompilerOption.ArrayZero:
                     ArrayZero = value;
                     break;
+                case CompilerOption.AllowDotForInstanceMembers:
+                    AllowDotForInstanceMembers = value;
+                    break;
                 case CompilerOption.Overflow:
                     Overflow = value;
                     break;
@@ -187,7 +190,6 @@ namespace Microsoft.CodeAnalysis.CSharp
                     break;
             }
         }
-
     }
 
     public class PragmaBase
@@ -216,7 +218,6 @@ namespace Microsoft.CodeAnalysis.CSharp
         {
             Option = option;
         }
-
     }
     public class PragmaWarning : PragmaBase
     {
@@ -279,6 +280,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         UndeclaredMemVars = 1 << 27,
         ClrVersion = 1 << 28,
         EnforceSelf = 1 << 29,
+        AllowDotForInstanceMembers = 1 << 30,
         All = -1
 
     }
@@ -289,6 +291,8 @@ namespace Microsoft.CodeAnalysis.CSharp
         {
             switch (option.ToLower())
             {
+                case "allowdot":
+                    return CompilerOption.AllowDotForInstanceMembers;
                 case "az":
                     return CompilerOption.ArrayZero;
                 case "fovf":

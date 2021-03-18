@@ -122,7 +122,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         }
     }
 
-
     internal class XSharpTreeTransformationXPP : XSharpTreeTransformationRT
     {
         internal IList<XppClassInfo> _classes;
@@ -324,7 +323,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 declInfo.AssignMethod = context.Id.GetText();
             }
-
         }
         public override void ExitXppproperty([NotNull] XP.XpppropertyContext context)
         {
@@ -534,7 +532,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 context.Statements = null;
             }
-
         }
 
         public override void ExitXppmethod([NotNull] XP.XppmethodContext context)
@@ -961,7 +958,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     {
                         modifiers.AddCheckUnique(kw);
                     }
-
                 }
             }
             var result = modifiers.ToList<SyntaxToken>();  
@@ -999,5 +995,4 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             base.ExitMethodCall(context);
         }
     }
-    
 }

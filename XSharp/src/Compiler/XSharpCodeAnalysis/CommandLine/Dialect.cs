@@ -19,7 +19,7 @@ namespace Microsoft.CodeAnalysis.CSharp
     }
     public static class DialectExtensions
     {
-        public static bool HasRuntime(this XSharpDialect dialect)
+        public static bool NeedsRuntime(this XSharpDialect dialect)
         {
             return dialect != XSharpDialect.Core;
         }
@@ -79,7 +79,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
         }
 
-        public static bool AllowDotAsSendOperator(this XSharpDialect dialect)
+        public static bool AllowDotForInstanceMembers(this XSharpDialect dialect)
         {
             switch (dialect)
             {

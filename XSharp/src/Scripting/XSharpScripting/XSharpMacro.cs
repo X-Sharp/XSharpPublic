@@ -9,16 +9,16 @@ namespace Microsoft.CodeAnalysis.CSharp.Scripting
 {
     public static class XSharpMacro 
     {
-        public readonly static XSharpSpecificCompilationOptions XsCoreOptions = GetOptions((int) XSharpDialect.Core);
-        public readonly static XSharpSpecificCompilationOptions XsVoOptions = GetOptions((int)XSharpDialect.VO);
-        public readonly static XSharpSpecificCompilationOptions XsVulcanOptions = GetOptions((int)XSharpDialect.Vulcan);
-        public readonly static XSharpSpecificCompilationOptions XsFoxOptions = GetOptions((int)XSharpDialect.FoxPro);
-        public readonly static XSharpSpecificCompilationOptions XsXppOptions = GetOptions((int)XSharpDialect.XPP);
-        public readonly static XSharpSpecificCompilationOptions XsHbOptions = GetOptions((int)XSharpDialect.Harbour);
+        public static readonly XSharpSpecificCompilationOptions XsCoreOptions = GetOptions((int) XSharpDialect.Core);
+        public static readonly XSharpSpecificCompilationOptions XsVoOptions = GetOptions((int)XSharpDialect.VO);
+        public static readonly XSharpSpecificCompilationOptions XsVulcanOptions = GetOptions((int)XSharpDialect.Vulcan);
+        public static readonly XSharpSpecificCompilationOptions XsFoxOptions = GetOptions((int)XSharpDialect.FoxPro);
+        public static readonly XSharpSpecificCompilationOptions XsXppOptions = GetOptions((int)XSharpDialect.XPP);
+        public static readonly XSharpSpecificCompilationOptions XsHbOptions = GetOptions((int)XSharpDialect.Harbour);
 
         public static XSharpSpecificCompilationOptions GetOptions(int numdialect)
         {
-            XSharpDialect dialect = (XSharpDialect)numdialect;
+            var dialect = (XSharpDialect)numdialect;
             var notcore = dialect != XSharpDialect.Core;
             var result = new XSharpSpecificCompilationOptions { Dialect = dialect };
             result.ImplicitNameSpace = true;
@@ -77,7 +77,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Scripting
         public static T Compile<T>(string code, ScriptOptions options = null, bool allowSingleQuotes = true, InteractiveAssemblyLoader assemblyLoader = null)
         {
             Type globalsType = null;
-            CancellationToken cancellationToken = default(CancellationToken);
+            var cancellationToken = default(CancellationToken);
             return Script.CreateInitialScript<T>(XSharpMacroCompiler.GetInstance(allowSingleQuotes), SourceText.From(code, options?.FileEncoding), options, globalsType, assemblyLoader).RunAsync(null, cancellationToken).GetEvaluationResultAsync().Result;
         }
     }

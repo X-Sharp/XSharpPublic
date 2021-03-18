@@ -66,7 +66,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         private readonly string _fileName;
         private readonly SourceText _text;
         private readonly CSharpParseOptions _options;
-        private readonly SyntaxListPool _pool = new SyntaxListPool(); // Don't need to reset this.
+        private readonly SyntaxListPool _pool = new(); // Don't need to reset this.
         private readonly SyntaxFactoryContext _syntaxFactoryContext; // Fields are resettable.
         private readonly ContextAwareSyntax _syntaxFactory; // Has context, the fields of which are resettable.
         private readonly bool _isScript;
@@ -74,9 +74,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         private BufferedTokenStream _lexerTokenStream;
         private BufferedTokenStream _preprocessorTokenStream;
-
-
-  
         internal class XSharpErrorListener : IAntlrErrorListener<IToken>
         {
             readonly String _fileName;
@@ -169,8 +166,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             return msg;
         }
-
-        
 
         internal CompilationUnitSyntax ParseCompilationUnitCore()
         {
@@ -344,7 +339,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             var walker = new ParseTreeWalker();
 
- 
             if (_options.ParseLevel == ParseLevel.Complete)
             {
                 // check for parser errors, such as missing tokens
@@ -359,60 +353,59 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 {
                     parseErrors.Add(new ParseErrorData(_fileName, ErrorCode.ERR_Internal, e.Message, e.StackTrace));
                 }
-
             }
             var treeTransform = CreateTransform(parser, _options, _pool, _syntaxFactory, _fileName);
             bool hasErrors = false;
             SyntaxToken eof = null;
             try
-            { 
-  
-            if (_options.ParseLevel < ParseLevel.Complete || parser.NumberOfSyntaxErrors != 0 ||
-                (parseErrors.Count != 0 && parseErrors.Contains(p => !ErrorFacts.IsWarning(p.Code))))
             {
-                eof = SyntaxFactory.Token(SyntaxKind.EndOfFileToken);
-                if (pp != null)
-                {
-                    eof = AddLeadingSkippedSyntax(eof, ParserErrorsAsTrivia(parseErrors, pp.IncludedFiles));
-                }
-                if (tree != null)
-                {
-                    eof.XNode = new XTerminalNodeImpl(tree.Stop);
-                }
-                else
-                {
-                    eof.XNode = new XTerminalNodeImpl(_lexerTokenStream.Get(_lexerTokenStream.Size - 1));
-                }
-                hasErrors = true;
-            }
 
-            if (!hasErrors)
-            {
-                try
+                if (_options.ParseLevel < ParseLevel.Complete || parser.NumberOfSyntaxErrors != 0 ||
+                    (parseErrors.Count != 0 && parseErrors.Contains(p => !ErrorFacts.IsWarning(p.Code))))
                 {
-                    walker.Walk(treeTransform, tree);
+                    eof = SyntaxFactory.Token(SyntaxKind.EndOfFileToken);
+                    if (pp != null)
+                    {
+                        eof = AddLeadingSkippedSyntax(eof, ParserErrorsAsTrivia(parseErrors, pp.IncludedFiles));
+                    }
+                    if (tree != null)
+                    {
+                        eof.XNode = new XTerminalNodeImpl(tree.Stop);
+                    }
+                    else
+                    {
+                        eof.XNode = new XTerminalNodeImpl(_lexerTokenStream.Get(_lexerTokenStream.Size - 1));
+                    }
+                    hasErrors = true;
                 }
-                catch (Exception e)
+
+                if (!hasErrors)
                 {
-                    parseErrors.Add(new ParseErrorData(_fileName, ErrorCode.ERR_Internal, e.Message, e.StackTrace));
+                    try
+                    {
+                        walker.Walk(treeTransform, tree);
+                    }
+                    catch (Exception e)
+                    {
+                        parseErrors.Add(new ParseErrorData(_fileName, ErrorCode.ERR_Internal, e.Message, e.StackTrace));
+                    }
+                    eof = SyntaxFactory.Token(SyntaxKind.EndOfFileToken);
+                    if (!parseErrors.IsEmpty())
+                    {
+                        eof = AddLeadingSkippedSyntax(eof, ParserErrorsAsTrivia(parseErrors, pp.IncludedFiles));
+                    }
                 }
-                eof = SyntaxFactory.Token(SyntaxKind.EndOfFileToken);
-                if (!parseErrors.IsEmpty())
-                {
-                    eof = AddLeadingSkippedSyntax(eof, ParserErrorsAsTrivia(parseErrors, pp.IncludedFiles));
-                }
-            }
-            var result = _syntaxFactory.CompilationUnit(
-                    treeTransform.GlobalEntities.Externs, 
-                    treeTransform.GlobalEntities.Usings,
-                    treeTransform.GlobalEntities.Attributes, 
-                    treeTransform.GlobalEntities.Members, eof);
+                var result = _syntaxFactory.CompilationUnit(
+                        treeTransform.GlobalEntities.Externs,
+                        treeTransform.GlobalEntities.Usings,
+                        treeTransform.GlobalEntities.Attributes,
+                        treeTransform.GlobalEntities.Members, eof);
                 result.XNode = tree;
                 tree.CsNode = result;
                 result.XTokens = _lexerTokenStream;
                 result.XPPTokens = _preprocessorTokenStream;
                 result.HasDocComments = lexer.HasDocComments;
-                if (!_options.MacroScript  && ! hasErrors)
+                if (!_options.MacroScript && !hasErrors)
                 {
                     result.InitProcedures = treeTransform.GlobalEntities.InitProcedures;
                     result.Globals = treeTransform.GlobalEntities.Globals;
@@ -598,7 +591,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             // original failure.
             return AddError(AddLeadingSkippedSyntax(node, FileAsTrivia(_text)), position, 0, ErrorCode.ERR_InsufficientStack);
         }
-
 
         internal static SyntaxTree ProcessTrees(SyntaxTree[] trees, CSharpParseOptions options)
         {
@@ -1066,10 +1058,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     }
                 }
             }
-
         }
-
-
-
     }
 }

@@ -20,8 +20,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 {
     using Microsoft.CodeAnalysis.Syntax.InternalSyntax;
     using System.Diagnostics;
-
-
     
     internal class XSharpTreeTransformationFox : XSharpTreeTransformationRT
     {
@@ -93,17 +91,16 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
             _exitSource(context);
         }
-       
         public override void ExitAccessMember([NotNull] XP.AccessMemberContext context)
         {
-            if (context.Expr != null && context.Op.Type == XP.DOT )  // do not assume an area when no Expr (inside WITH Block)
+            if (context.Expr != null && context.Op.Type == XP.DOT)  // do not assume an area when no Expr (inside WITH Block)
             {
                 context.foxFlags |= XP.FoxFlags.MemberAccess;
             }
-            CoreAccessMember(context);
+            base.ExitAccessMember(context);
             // FoxPro uses M. for Locals and memvars
             // We assume it is a local and then will later correct this inside Binder_Expressions.cs if we can't find the local
-            if (context.foxFlags.HasFlag(XP.FoxFlags.MemberAccess) && context.AreaName == "M" )
+            if (context.foxFlags.HasFlag(XP.FoxFlags.MemberAccess) && context.AreaName == "M")
             {
                 context.foxFlags |= XP.FoxFlags.MPrefix;
                 context.Put(context.Name.Get<ExpressionSyntax>());
@@ -539,7 +536,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         }
                     }
                 }
-
             }
             generated.Free();
             if (ctor != null)
@@ -677,8 +673,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 }
             }
         }
-
-
 
         private ConstructorDeclarationSyntax createConstructor(XP.FoxclassContext context, SyntaxListBuilder<MemberDeclarationSyntax> members, 
             List<String> fieldNames, ConstructorDeclarationSyntax existingctor)
@@ -1021,7 +1015,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             context.Put(par);
         }
 
-
         private AttributeSyntax _foxdllImportAttribute(XP.FoxdllContext context, ExpressionSyntax dllExpr, ExpressionSyntax entrypointExpr)
         {
             AttributeArgumentSyntax charset;
@@ -1158,7 +1151,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 }
             }
         }
-
     }
 }
 

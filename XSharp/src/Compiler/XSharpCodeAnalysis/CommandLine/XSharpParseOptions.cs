@@ -93,6 +93,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         private bool FoxExposeLocals = false;
 
         #endregion
+        public bool AllowDotForInstanceMembers { get; private set; }
         public bool AllowUnsafe { get; private set; }
         public bool CaseSensitive { get; private set; }
         public int ClrVersion { get; private set; }
@@ -127,7 +128,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         public bool VOSignedUnsignedConversion { get; private set; }
         public string DefaultNamespace { get; private set; } = "";
         public bool ImplicitNamespace { get; private set; }
-        public bool HasRuntime { get { return this.Dialect.HasRuntime(); } }
+        public bool HasRuntime { get { return this.Dialect.NeedsRuntime(); } }
         public bool SupportsMemvars { get { return this.Dialect.SupportsMemvars() && MemVars; } }
 #if !VSPARSER
         public ImmutableArray<string> IncludePaths { get; private set; } = ImmutableArray.Create<string>();
@@ -169,6 +170,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         {
             if (opt != null)
             {
+                AllowDotForInstanceMembers = opt.AllowDotForInstanceMembers;
                 ArrayZero = opt.ArrayZero;
                 CaseSensitive = opt.CaseSensitive;
                 ClrVersion = opt.ClrVersion;
@@ -248,6 +250,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         }
         public void SetXSharpSpecificOptions(CSharpParseOptions opt)
         {
+            AllowDotForInstanceMembers = opt.AllowDotForInstanceMembers;
             ArrayZero = opt.ArrayZero;
             ClrVersion = opt.ClrVersion;
             CaseSensitive = opt.CaseSensitive;
@@ -345,6 +348,9 @@ namespace Microsoft.CodeAnalysis.CSharp
         {
             switch (option)
             {
+                case CompilerOption.AllowDotForInstanceMembers: // allowdot
+                    return CheckOption(option, AllowDotForInstanceMembers, context, options);
+
                 case CompilerOption.ArrayZero: // az
                     return CheckOption(option, ArrayZero, context, options);
 
@@ -425,6 +431,5 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
             return result;
         }
-
     }
 }

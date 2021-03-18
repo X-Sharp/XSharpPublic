@@ -38,7 +38,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
             if (ctor != null)
             {
-                return new BoundObjectCreationExpression(expr.Syntax,ctor, new BoundExpression[] { expr, _factory.Literal(true) });
+                return new BoundObjectCreationExpression(expr.Syntax, ctor, new BoundExpression[] { expr, _factory.Literal(true) });
             }
             return expr;
         }
@@ -58,7 +58,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 // Check for @var when ImplicitCastsAndConversions is enabled (/vo7) and dialect allows AddressOf
                 var a = arguments[i];
                 // no need to check for Dialect.AddressOfIsAlwaysByRef() because that is already done in the TreeTransformation phase
-                if (a.Kind == BoundKind.AddressOfOperator) 
+                if (a.Kind == BoundKind.AddressOfOperator)
                 {
                     if (_compilation.Options.HasOption(CompilerOption.ImplicitCastsAndConversions, a.Syntax))
                     {
@@ -98,7 +98,8 @@ namespace Microsoft.CodeAnalysis.CSharp
                 {
                     bool normalArg = true;
                     hasRef = true;
-                    while (a is BoundConversion c) a = c.Operand;
+                    while (a is BoundConversion c)
+                        a = c.Operand;
                     if (a is BoundPropertyAccess bp && bp.PropertySymbol is XsVariableSymbol)
                     {
                         // no need for conversion here because everything is a USUAL
@@ -107,14 +108,14 @@ namespace Microsoft.CodeAnalysis.CSharp
                         rewrittenArgs.Add(MakeRefUsual(newarg));
                         normalArg = false;
                     }
-                    else if ( a is BoundDynamicMemberAccess dma && dma.Syntax?.XNode is XSharpParser.AccessMemberContext amc && amc.IsFox)
+                    else if (a is BoundDynamicMemberAccess dma && dma.Syntax?.XNode is XSharpParser.AccessMemberContext amc && amc.IsFox)
                     {
                         ImmutableArray<Symbol> get, set;
                         var rtType = _compilation.RuntimeFunctionsType();
                         get = rtType.GetMembers(ReservedNames.FieldGetWaUndeclared);
                         set = rtType.GetMembers(ReservedNames.FieldSetWaUndeclared);
                         var usual = TypeWithAnnotations.Create(_compilation.UsualType());
-                        var varSym = new XsFoxMemberAccessSymbol(amc.AreaName, amc.FieldName, (MethodSymbol) get[0], (MethodSymbol)set[0], usual);
+                        var varSym = new XsFoxMemberAccessSymbol(amc.AreaName, amc.FieldName, (MethodSymbol)get[0], (MethodSymbol)set[0], usual);
                         if (get.Length > 0 && set.Length > 0)
                         {
                             boundProperties[i] = new BoundPropertyAccess(a.Syntax, null, varSym, LookupResultKind.Viable, varSym.Type);
@@ -179,7 +180,6 @@ namespace Microsoft.CodeAnalysis.CSharp
                     }
                 }
             }
-
         }
 
         internal BoundExpression RewriteLateBoundCallWithRefParams(BoundExpression loweredReceiver, string name, BoundDynamicInvocation node, ImmutableArray<BoundExpression> arguments)
@@ -200,7 +200,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
             var aArgs = _factory.Array(usualType, convArgs.ToImmutableAndFree());
 
-             // Note: Make sure the first parameter in __InternalSend() in the runtime is a USUAL!
+            // Note: Make sure the first parameter in __InternalSend() in the runtime is a USUAL!
             var expr = _factory.StaticCall(_compilation.RuntimeFunctionsType(), ReservedNames.InternalSend,
                         MakeConversionNode(loweredReceiver, usualType, false),
                         _factory.Literal(name),
@@ -245,7 +245,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                         {
                             exprs.Add(rewrittenArgs[i]);
                         }
-                        else 
+                        else
                         {
                             exprs.Add(e);
                         }
@@ -268,8 +268,6 @@ namespace Microsoft.CodeAnalysis.CSharp
                 sendArgs.Add(actualargs[1]);
                 sendArgs.Add(parsAssignment);
                 bc = bc.Update(bc.ReceiverOpt, bc.Method, sendArgs.ToImmutableArray());
-
-
 
                 // result = __InternalSend(oObject, methodName, params)
                 LocalSymbol callTemp = _factory.SynthesizedLocal(bc.Type);
@@ -486,4 +484,3 @@ namespace Microsoft.CodeAnalysis.CSharp
         }
     }
 }
-

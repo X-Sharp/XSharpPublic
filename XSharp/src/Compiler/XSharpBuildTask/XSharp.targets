@@ -29,9 +29,9 @@ Copyright (c) XSharp B.V.  All Rights Reserved
     <TargetRuntime>Managed</TargetRuntime>
     <AlwaysUseNumericalSuffixInItemNames>true</AlwaysUseNumericalSuffixInItemNames>
     <DefineCommonItemSchemas Condition=" '$(DefineCommonItemSchemas)' == '' ">true</DefineCommonItemSchemas>
-	<!-- The next line triggers the import of all kind of XAML reference schemas from the Microsoft.Common.CurrentVersion.Targets -->
+    <!-- The next line triggers the import of all kind of XAML reference schemas from the Microsoft.Common.CurrentVersion.Targets -->
     <DefineCommonReferenceSchemas Condition=" '$(DefineCommonReferenceSchemas)' == '' ">true</DefineCommonReferenceSchemas>
-	<!-- The next line triggers the import of all kind of project capabilities from the Microsoft.Common.CurrentVersion.Targets -->
+    <!-- The next line triggers the import of all kind of project capabilities from the Microsoft.Common.CurrentVersion.Targets -->
     <DefineCommonCapabilities Condition=" '$(DefineCommonCapabilities)' == '' ">true</DefineCommonCapabilities>
     <SynthesizeLinkMetadata Condition=" '$(SynthesizeLinkMetadata)' == '' and '$(HasSharedItems)' == 'true' ">true</SynthesizeLinkMetadata>
     <Utf8Output Condition="'$(Utf8Output)' == ''">true</Utf8Output>
@@ -49,7 +49,7 @@ Copyright (c) XSharp B.V.  All Rights Reserved
          but the user hasn't told us to not include standard references -->
 
     <!-- Make sure that we have full paths when compiling inside VS -->
-     <GenerateFullPaths Condition="'$(BuildingInsideVisualStudio)'=='true'">true</GenerateFullPaths>
+    <GenerateFullPaths Condition="'$(BuildingInsideVisualStudio)'=='true'">true</GenerateFullPaths>
 
   </PropertyGroup>
   <ItemGroup Condition=" '$(NoCompilerStandardLib)' == 'true' and '$(NoStdLib)' != 'true' ">
@@ -162,14 +162,14 @@ Copyright (c) XSharp B.V.  All Rights Reserved
       <Output TaskParameter="Include" ItemName="FileWrites" />
 
     </CreateItem>
-    
+
   </Target>
-   <!-- Fix up FrameworkPathOverride, which is primarily used to determine the location of mscorlib.dll in the 
+  <!-- Fix up FrameworkPathOverride, which is primarily used to determine the location of mscorlib.dll in the 
         (relatively uncommon) situation where the reference assemblies, in which it's usually found, are not 
         installed. -->
-   <PropertyGroup Condition="'$(MSBuildAssemblyVersion)' == ''">
-      <FrameworkPathOverride Condition="!Exists('$(FrameworkPathOverride)\mscorlib.dll')">$(MSBuildFrameworkToolsPath)</FrameworkPathOverride>
-   </PropertyGroup>
+  <PropertyGroup Condition="'$(MSBuildAssemblyVersion)' == ''">
+    <FrameworkPathOverride Condition="!Exists('$(FrameworkPathOverride)\mscorlib.dll')">$(MSBuildFrameworkToolsPath)</FrameworkPathOverride>
+  </PropertyGroup>
 
   <Target Name="GetTargetPath" DependsOnTargets="PrepareForBuild" Outputs="$(TargetPath)" />
 
@@ -196,12 +196,12 @@ Copyright (c) XSharp B.V.  All Rights Reserved
       <_NonMacroReferencePath Include="@(ReferencePath)" Condition="%(ReferencePath.OutputItemType) != 'macro'" />
       <_MacroProjectReferencePath Include="@(ReferencePath)" Condition="%(ReferencePath.OutputItemType) == 'macro'" />
     </ItemGroup>
-    
+
     <!-- Prefer32Bit was introduced in .NET 4.5. Set it to false if we are targeting 4.0 -->
     <PropertyGroup Condition="('$(TargetFrameworkVersion)' == 'v4.0')">
       <Prefer32Bit>false</Prefer32Bit>
     </PropertyGroup>
-    
+
     <PropertyGroup Condition="'$(UseSharedCompilation)' == ''">
       <UseSharedCompilation>true</UseSharedCompilation>
     </PropertyGroup>
@@ -211,6 +211,7 @@ Copyright (c) XSharp B.V.  All Rights Reserved
             AddModules="@(AddModules)"
             AdditionalFiles="@(AdditionalFiles)"
             AllowUnsafeBlocks="$(Unsafe)"
+            AllowDot="$(AllowDot)"
             Analyzers="@(Analyzer)"
             ApplicationConfiguration="$(AppConfigForCompiler)"
             BaseAddress="$(BaseAddress)"
@@ -250,7 +251,7 @@ Copyright (c) XSharp B.V.  All Rights Reserved
             NoConfig="true"
             NoLogo="$(NoLogo)"
             NoStandardDefs="$(NoStandardDefs)"
-		  NoStandardLib="$(NoCompilerStandardLib)"
+            NoStandardLib="$(NoCompilerStandardLib)"
             NoWin32Manifest="$(NoWin32Manifest)"
             Optimize="$(Optimize)"
             OutputAssembly="@(IntermediateAssembly)"
@@ -266,7 +267,7 @@ Copyright (c) XSharp B.V.  All Rights Reserved
             ResponseFiles="$(CompilerResponseFile)"
             RootNamespace="$(RootNamespace)"
             RuntimeMetadataVersion="$(RuntimeMetadataVersion)"
-            SharedCompilationId="$(SharedCompilationId)"                    
+            SharedCompilationId="$(SharedCompilationId)"
             SkipCompilerExecution="$(SkipCompilerExecution)"
             Sources="@(Compile)"
             SourceLink="$(SourceLink)"
@@ -279,7 +280,7 @@ Copyright (c) XSharp B.V.  All Rights Reserved
             UseHostCompilerIfAvailable="$(UseHostCompilerIfAvailable)"
             UseSharedCompilation="$(UseSharedCompilation)"
             Utf8Output="$(Utf8Output)"
-                  UseNativeVersion="$(UseNativeVersion)"
+            UseNativeVersion="$(UseNativeVersion)"
             VulcanCompatibleResources="$(VulcanCompatibleResources)"
             VsSessionGuid="$(VsSessionGuid)"
             WarningLevel="$(WarningLevel)"
@@ -292,9 +293,9 @@ Copyright (c) XSharp B.V.  All Rights Reserved
             CS="$(CS)"
             INS="$(INS)"
             LB="$(LB)"
-      NamedArgs="$(NamedArgs)"
-      MemVar="$(MemVar)"
-      Undeclared="$(Undeclared)"
+            NamedArgs="$(NamedArgs)"
+            MemVar="$(MemVar)"
+            Undeclared="$(Undeclared)"
             NS="$(NS)"
             OVF="$(OVF)"
             PPO="$(PPO)"
@@ -313,11 +314,11 @@ Copyright (c) XSharp B.V.  All Rights Reserved
             VO13="$(VO13)"
             VO14="$(VO14)"
             VO15="$(VO15)"
-            VO16="$(VO16)" 
-            XPP1="$(XPP1)" 
-            XPP2="$(XPP2)" 
-      FOX1="$(FOX1)" 
-      FOX2="$(FOX2)" 
+            VO16="$(VO16)"
+            XPP1="$(XPP1)"
+            XPP2="$(XPP2)"
+            FOX1="$(FOX1)"
+            FOX2="$(FOX2)"
     />
 
     <ItemGroup>

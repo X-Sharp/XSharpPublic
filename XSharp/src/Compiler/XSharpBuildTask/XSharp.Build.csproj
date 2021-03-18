@@ -31,6 +31,9 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DefineConstants>$(GenericDefines);NDEBUG</DefineConstants>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net472|AnyCPU'">
+    <NoWarn>;1701;1702;1705;1591;1573;1591;1701;NU5105;Nullable;RS0016</NoWarn>
+  </PropertyGroup>
   <ItemGroup>
     <Compile Include="..\..\Common\CommonAssemblyInfo.cs" Link="Properties\CommonAssemblyInfo.cs" />
     <Compile Include="..\..\Common\Constants.cs" Link="Properties\Constants.cs" />
@@ -74,6 +77,8 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <Content Include="debugging.txt" />
+    <Content Include="PublicAPI.Shipped.txt" />
+    <Content Include="PublicAPI.Unshipped.txt" />
     <Content Include="XSharpProject.ico" />
   </ItemGroup>
   <ItemGroup>

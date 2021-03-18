@@ -30,6 +30,11 @@ namespace XSharp.Build
 
         #region VO Compatible properties
 
+        public bool AllowDot
+        {
+            set { _store[nameof(AllowDot)] = value; }
+            get { return _store.GetOrDefault(nameof(AllowDot), false); }
+        }
         public bool AZ
         {
             set { _store[nameof(AZ)] = value; }
@@ -705,6 +710,7 @@ namespace XSharp.Build
             {
                 commandline.AppendSwitch("/ns:" + this.RootNameSpace);
             }
+            commandline.AppendPlusOrMinusSwitch("/allowdot", _store, nameof(AllowDot));
             commandline.AppendPlusOrMinusSwitch("/az", _store, nameof(AZ));
             commandline.AppendPlusOrMinusSwitch("/cs", _store, nameof(CS));
             commandline.AppendPlusOrMinusSwitch("/initlocals", _store, nameof(InitLocals));

@@ -12,7 +12,6 @@ using System;
 using Antlr4.Runtime;
 using static Roslyn.Utilities.UnicodeCharacterUtilities;
 
-
 namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
 {
     // Notes: If you want to add a dialect specific keyword then do this:
@@ -23,7 +22,6 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
     // - if the keyword has to appear before a DOT check the _inDottedIdentifier logic
     // - add it to the keyword<dialect> rule in XSharp.g4 (so it will become a positional keyword)
     // - add it to the grammar in XSharp.g4 
-
 
     public partial class XSharpLexer
     {
@@ -84,12 +82,11 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             return iToken == SL_COMMENT || iToken == ML_COMMENT || iToken == DOC_COMMENT;
         }
 
-
         #endregion
 
         #region Properties and Fields
         // Properties to set the behavior of the Lexer
-        private List<XSharpToken> pendingTokens = new List<XSharpToken>();
+        private readonly List<XSharpToken> pendingTokens = new();
         public CSharpParseOptions Options { get; set; }
         public XSharpDialect Dialect => Options.Dialect;
         private bool AllowOldStyleComments => Dialect.AllowOldStyleComments();
@@ -119,11 +116,11 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
         bool _onStartOfTextBlock = false;
         bool _inTextBlock = false;
         bool _onTextLine = false;
-        XSharpToken _lastToken = new XSharpToken(NL);
-        IList<ParseErrorData> _lexErrors = new List<ParseErrorData>();
-        IList<XSharpToken> _trivia = new List<XSharpToken>();
+        XSharpToken _lastToken = new(NL);
+        readonly IList<ParseErrorData> _lexErrors = new List<ParseErrorData>();
+        readonly IList<XSharpToken> _trivia = new List<XSharpToken>();
 
-        System.Text.StringBuilder _textSb = new System.Text.StringBuilder();
+        readonly System.Text.StringBuilder _textSb = new();
         int _lineStartCharIndex;
         int _startCharIndex;
         int _startColumn;
@@ -131,21 +128,19 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
         int _tokenType;
         int _tokenChannel;
 
-        static object kwlock = new object();
-        static IDictionary<string, int>[] _kwids;       // for each dialect its own _kwids
+        static readonly object kwlock = new();
+        static readonly IDictionary<string, int>[] _kwids;       // for each dialect its own _kwids
         static IDictionary<string, int> _symPPIds;
         static XSharpLexer()
         {
             _kwids = new IDictionary<string, int>[(int)XSharpDialect.Last];
-            for (int i= 0; i < (int) XSharpDialect.Last; i++)
+            for (int i = 0; i < (int)XSharpDialect.Last; i++)
             {
                 _kwids[i] = null;
             }
         }
 
-
         #endregion
-
 
         private Tuple<ITokenSource, ICharStream> _sourcePair;
         public Tuple<ITokenSource, ICharStream> SourcePair
@@ -415,7 +410,8 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                     parseOne(HEX_CONST);
                     while ((La_1 >= '0' && La_1 <= '9') || (La_1 >= 'A' && La_1 <= 'F') || (La_1 >= 'a' && La_1 <= 'f') || La_1 == '_')
                         parseOne();
-                    if (_textSb[_textSb.Length - 1] == '_') invalid = true;
+                    if (_textSb[_textSb.Length - 1] == '_')
+                        invalid = true;
                     if (La_1 == 'U' || La_1 == 'L' || La_1 == 'u' || La_1 == 'l')
                         parseOne();
                     if (invalid)
@@ -443,7 +439,8 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             }
             while ((La_1 >= '0' && La_1 <= '9') || La_1 == '_')
                 parseOne();
-            if (_textSb[_textSb.Length - 1] == '_') invalid = true;
+            if (_textSb[_textSb.Length - 1] == '_')
+                invalid = true;
             if (parseType() == INT_CONST)
             {
                 if (La_1 == 'U' || La_1 == 'L' || La_1 == 'u' || La_1 == 'l')
@@ -460,7 +457,8 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                     {
                         while ((La_1 >= '0' && La_1 <= '9') || La_1 == '_')
                             parseOne();
-                        if (_textSb[_textSb.Length - 1] == '_') invalid = true;
+                        if (_textSb[_textSb.Length - 1] == '_')
+                            invalid = true;
                     }
                 }
             }
@@ -495,7 +493,8 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                     parseOne();             // +/-
                     while ((La_1 >= '0' && La_1 <= '9') || La_1 == '_')
                         parseOne();
-                    if (_textSb[_textSb.Length - 1] == '_') invalid = true;
+                    if (_textSb[_textSb.Length - 1] == '_')
+                        invalid = true;
                 }
             }
             if (La_1 == 'S' || La_1 == 'D' || La_1 == 's' || La_1 == 'd')
@@ -620,7 +619,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             parseType(TEXT_STRING_CONST);
             _inTextBlock = false;
             Interpreter.Column += (InputStream.Index - _startCharIndex);
-            XSharpToken  t = TokenFactory.Create(this.SourcePair, _tokenType, _textSb.ToString(), _tokenChannel, _startCharIndex, CharIndex - 1, _startLine, _startColumn) as XSharpToken;
+            XSharpToken t = TokenFactory.Create(this.SourcePair, _tokenType, _textSb.ToString(), _tokenChannel, _startCharIndex, CharIndex - 1, _startLine, _startColumn) as XSharpToken;
             Emit(t);
             if (unmatched)
             {
@@ -699,7 +698,6 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                 t.Trivia = _trivia.ToImmutableArray();
                 _trivia.Clear();
             }
-
         }
         private void handleSpecialFunctions()
         {
@@ -753,7 +751,8 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                     return parseTextLine();
                 }
 
-                if (La_1 == '\uFEFF') parseSkip();
+                if (La_1 == '\uFEFF')
+                    parseSkip();
                 switch (La_1)
                 {
                     case '(':
@@ -827,7 +826,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                     case '\\':       // used inside #command to escape '<'
                         parseOne(BACKSLASH);
                         if (StartOfLine(LastToken) && Options.Dialect == XSharpDialect.FoxPro)
-                        { 
+                        {
                             if (La_1 == '\\')
                                 parseOne(BACKBACKSLASH);
                             _onTextLine = true;
@@ -1078,7 +1077,8 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                         break;
                     case '\r':
                     case '\n':
-                        if (tryParseNewLine()) parseType(NL);
+                        if (tryParseNewLine())
+                            parseType(NL);
                         break;
                     case '\t':
                     case ' ':
@@ -1635,7 +1635,6 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                                 return keyword;
                             return ID;
 
-
                         // After these keywords we expect an ID
                         // Some of these also have a possible SELF, DIM, CONST or STATIC clause but these have been excluded above
 
@@ -1668,8 +1667,6 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                         case MEMVAR:            // VO & XPP: followed by list of names
                         case PARAMETERS:
                             return ID;
-
-
                     }
                     break;
             }
@@ -1938,7 +1935,6 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                 // Consts
                 {"FALSE", FALSE_CONST},
                 {"TRUE", TRUE_CONST},
-
 
                 };
             }
@@ -2399,7 +2395,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
         }
 
         #endregion
-        static public XSharpLexer Create(string text, string fileName, CSharpParseOptions options = null)
+        public static XSharpLexer Create(string text, string fileName, CSharpParseOptions options = null)
         {
             var stream = new AntlrInputStream(text);
             stream.name = fileName;
@@ -2423,7 +2419,3 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
         }
     }
 }
-
-
-
-

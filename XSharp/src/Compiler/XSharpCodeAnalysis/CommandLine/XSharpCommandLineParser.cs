@@ -43,6 +43,10 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
             switch (name)
             {
+                case "allowdot":
+                    options.AllowDotForInstanceMembers = positive;
+                    encode = true;
+                    break;
                 case "az":
                     options.ArrayZero = positive;
                     encode = true;
@@ -281,7 +285,6 @@ namespace Microsoft.CodeAnalysis.CSharp
                     }
                     break;
 
-
                 case "tocs":
                     options.SaveAsCSharp = positive;
                     break;
@@ -475,11 +478,9 @@ namespace Microsoft.CodeAnalysis.CSharp
                             options.ExplicitOptions |= CompilerOption.ClrVersion;
                             options.ClrVersion = 4;
                         }
-
                     }
                     break;
             }
-
         }
         private static bool TryParseDialect(string str, XSharpDialect defaultDialect, out XSharpDialect dialect)
         {
@@ -529,7 +530,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                     return false;
             }
         }
-
+#if !VSPARSER
         private void ValidateXSharpSettings(List<Diagnostic> diagnostics)
         {
             bool withRT = false;
@@ -550,7 +551,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             {
                 newDialect = XSharpDialect.VO;  // the runtime uses the VO syntax for classes
             }
-            if (newDialect.HasRuntime())
+            if (newDialect.NeedsRuntime())
             {
                 if (options.VulcanRTFuncsIncluded && options.VulcanRTIncluded && options.Dialect != XSharpDialect.XPP && options.Dialect != XSharpDialect.FoxPro)
                 {
@@ -697,13 +698,15 @@ namespace Microsoft.CodeAnalysis.CSharp
                 AddDiagnostic(diagnostics, ErrorCode.ERR_IllegalCombinationOfCommandLineOptions, "/undeclared must be combined /memvars");
             }
             options.Dialect = newDialect;
-
+            if (!options.ExplicitOptions.HasFlag(CompilerOption.AllowDotForInstanceMembers))
+            {
+                options.AllowDotForInstanceMembers = options.Dialect.AllowDotForInstanceMembers();
+            }
         }
-
+#endif
         private void OptionNotImplemented(List<Diagnostic> diagnostics, string option, string description)
         {
             AddDiagnostic(diagnostics, ErrorCode.WRN_CompilerOptionNotImplementedYet, option, description);
         }
-
     }
 }

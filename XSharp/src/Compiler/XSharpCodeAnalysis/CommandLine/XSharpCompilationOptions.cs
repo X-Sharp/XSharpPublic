@@ -52,12 +52,12 @@ namespace Microsoft.CodeAnalysis.CSharp
         public bool LateBinding { get; private set; }
         public bool Strict { get; private set; }
         public bool HasDefaultTree { get; set; } = false;
-        public bool HasRuntime { get { return this.Dialect.HasRuntime(); } }
+        public bool HasRuntime { get { return this.Dialect.NeedsRuntime(); } }
 
         public XSharpTargetDLL TargetDLL { get; private set; }
         public bool UseNativeVersion { get; private set; } = false;
 
-        public RuntimeAssemblies RuntimeAssemblies ;
+        public RuntimeAssemblies RuntimeAssemblies;
         public bool XSharpRuntime => RuntimeAssemblies.HasFlag(RuntimeAssemblies.XSharpRT) |
             RuntimeAssemblies.HasFlag(RuntimeAssemblies.XSharpCore);
         // Access to the console output
@@ -107,9 +107,9 @@ namespace Microsoft.CodeAnalysis.CSharp
         {
             return this.Dialect.SupportsMemvars() && HasOption(CompilerOption.MemVars, syntax);
         }
-        internal  bool LateBindingOrFox(SyntaxNode syntax)
+        internal bool LateBindingOrFox(SyntaxNode syntax)
         {
-            if (! HasRuntime)
+            if (!HasRuntime)
                 return false;
             if (Dialect == XSharpDialect.FoxPro)
                 return true;
@@ -172,13 +172,13 @@ namespace Microsoft.CodeAnalysis.CSharp
             return false;
         }
 
-        private bool CheckOption(CompilerOption option, bool defaultValue , SyntaxNode node)
+        private bool CheckOption(CompilerOption option, bool defaultValue, SyntaxNode node)
         {
             bool result = defaultValue;
             if (node is CSharpSyntaxNode csn)
             {
                 var unit = csn.SyntaxTree.GetRoot() as CompilationUnitSyntax;
-                if (unit != null && unit.PragmaOptions != null )
+                if (unit != null && unit.PragmaOptions != null)
                 {
                     var context = csn.XNode as XSharpParserRuleContext;
                     int line = context.Start.Line;
@@ -291,11 +291,10 @@ namespace Microsoft.CodeAnalysis.CSharp
                     }
                 }
             }
-
         }
 
         [DllImport("kernel32.dll", SetLastError = true)]
-        static extern IntPtr BeginUpdateResource(string pFileName, [MarshalAs(UnmanagedType.Bool)]bool bDeleteExistingResources);
+        static extern IntPtr BeginUpdateResource(string pFileName, [MarshalAs(UnmanagedType.Bool)] bool bDeleteExistingResources);
         [DllImport("kernel32.dll", SetLastError = true)]
         static extern bool EndUpdateResource(IntPtr hUpdate, bool fDiscard);
 #endif

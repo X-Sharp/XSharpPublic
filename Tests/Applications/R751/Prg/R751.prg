@@ -1,11 +1,12 @@
 FUNCTION Start() AS VOID
 	LOCAL a := "Robert" AS STRING
     LOCAL b := 1 AS LONG
-    xAssert(Type("b:= 42") == "N")
+    xAssert(Type("b") == "N")
     xAssert(Type("a") == "C")
     xAssert(Type("b") == "N")
     ? a
-    ? b                    
+    ? b            
+    ? &("b := 42")        
     xAssert(a == "Robert")
     xAssert(b == 42)
 RETURN

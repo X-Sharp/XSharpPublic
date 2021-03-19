@@ -121,6 +121,10 @@ namespace Microsoft.CodeAnalysis.CSharp
                             boundProperties[i] = new BoundPropertyAccess(a.Syntax, null, varSym, LookupResultKind.Viable, varSym.Type);
                         }
                     }
+                    else if (a is BoundCall bc && bc.PropertyAccess != null)
+                    {
+                        boundProperties[i] = bc.PropertyAccess;
+                    }
                     if (normalArg)
                     {
                         a = VisitExpression(a);

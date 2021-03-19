@@ -43,7 +43,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 }
                 else
                 {
-                    return MemVarFieldAccess(syntax, xsvar);
+                    return MemVarFieldAccess(syntax, xsvar, oldNodeOpt);
                 }
             }
 #endif
@@ -96,7 +96,7 @@ namespace Microsoft.CodeAnalysis.CSharp
 #if XSHARP
             if (property is XsVariableSymbol xsvar)
             {
-                return MemVarFieldAccess(syntax, xsvar);
+                return MemVarFieldAccess(syntax, xsvar, oldNodeOpt);
             }
 #endif
             if (_inExpressionLambda && rewrittenArguments.IsEmpty)

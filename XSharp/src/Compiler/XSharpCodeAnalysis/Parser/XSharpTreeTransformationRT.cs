@@ -792,6 +792,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                             else
                             {
                                 expr = MakeSimpleAssignment(bin.Left, bin.Right);
+                                RegisterParamAssign(bin.Left.XNode.GetText());
                             }
                         }
                         if (_options.Dialect != XSharpDialect.FoxPro)
@@ -1758,7 +1759,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             base.ExitAccessMember(context);
         }
 
-        private void RegisterParamAssign(string name)
+        protected void RegisterParamAssign(string name)
         {
             if (CurrentEntity != null)
             {

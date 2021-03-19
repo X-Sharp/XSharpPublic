@@ -22,7 +22,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         // so we can check later in IsFoxMemberAccess that we want to
         // handle the cursor.FieldName syntax
         //
-        private BoundExpression MemVarFieldAccess(SyntaxNode syntax, XsVariableSymbol property)
+        private BoundExpression MemVarFieldAccess(SyntaxNode syntax, XsVariableSymbol property, BoundPropertyAccess? bpa)
         {
             var getMethod = property.GetMethod;
             Debug.Assert( getMethod is { });
@@ -30,12 +30,17 @@ namespace Microsoft.CodeAnalysis.CSharp
             {
                 var arg1 = MakeConversionNode(_factory.Literal(property.Alias), getMethod.Parameters[0].Type, false);
                 var arg2 = MakeConversionNode(_factory.Literal(property.Name), getMethod.Parameters[1].Type, false);
-                return BoundCall.Synthesized(syntax, null, getMethod, arg1, arg2);
+                var call = BoundCall.Synthesized(syntax, null, getMethod, arg1, arg2);
+                // Keep track of the original PropertyAccess in case they are passing the variable by reference
+                call.PropertyAccess = bpa;
+                return call;
             }
             else
             {
                 var arg1 = MakeConversionNode(_factory.Literal(property.Name), getMethod.Parameters[0].Type, false);
-                return BoundCall.Synthesized(syntax, null, getMethod, arg1);
+                var call = BoundCall.Synthesized(syntax, null, getMethod, arg1);
+                call.PropertyAccess = bpa;
+                return call;
             }
         }
         private BoundExpression MemVarFieldAssign(SyntaxNode syntax, XsVariableSymbol property, BoundExpression rewrittenRight)

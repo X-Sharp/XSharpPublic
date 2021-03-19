@@ -14,11 +14,16 @@ using Roslyn.Utilities;
 using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
 namespace Microsoft.CodeAnalysis.CSharp
 {
+    internal partial class BoundCall
+    {
+        // This field is used to keep track of the original MemVarSymbol Property Access
+        // for M->Name that gets changed to __MemVarGet("name")
+        // so we have the BoundProperty available in the LocalRewriter for use when the variable gets
+        // passed by reference in a call.
+        internal BoundPropertyAccess? PropertyAccess { get; set; } = null;
+    }
     internal partial class Binder
     {
-
-
-
         internal Symbol XSharpResolveEqualSymbols(Symbol first, Symbol second, ImmutableArray<Symbol> originalSymbols, CSharpSyntaxNode where, DiagnosticBag diagnostics)
         {
             CSDiagnosticInfo info;

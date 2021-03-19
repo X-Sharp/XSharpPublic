@@ -5346,9 +5346,11 @@ To remove the warning, you can use /reference instead (set the Embed Interop Typ
                               Specify nullable context option enable|disable|warnings|annotations.
 
                         - XBASE COMPATIBILITY -
+-allowdot[+|-]                 Control if the DOT operator can be used for instance members or not. 
 -az[+|-]                       Use Zero based arrays
 -cs[+|-]                       Case Sensitivity on/off
 -dialect:&lt;string&gt;              Specify xBase Dialect: Core, VO, Vulcan, dBase, FoxPro, xBase++, Harbour
+-enforceself[+|-]              Enforce the use of SELF (or SUPER) inside methods to access properties and methods.
 -fovf[+|-]                     Float overflow exceptions(mapped to /checked)
 -ins[+|-]                      Implicit namespace lookup
 -lb[+|-]                       Allow late binding

@@ -1428,6 +1428,9 @@
         <topicref type="topic" id="423894984487432" build="ALL" modified="2016-01-20T09:45:43.575Z" icon="0" href="opt-addmodule">
           <caption translate="true">-addmodule</caption>
         </topicref>
+        <topicref type="topic" id="442744110798403" build="ALL" modified="2021-03-19T13:13:19.311Z" icon="0" href="opt-allowdot">
+          <caption translate="true">-allowdot</caption>
+        </topicref>
         <topicref type="topic" id="423894748709370" build="ALL" modified="2016-01-20T09:45:54.408Z" icon="0" href="opt-_analyzer">
           <caption translate="true">-analyzer, -a</caption>
         </topicref>
@@ -1466,6 +1469,9 @@
         </topicref>
         <topicref type="topic" id="42390665422030" build="ALL" modified="2016-01-20T09:46:15.692Z" icon="0" href="opt-doc">
           <caption translate="true">-doc</caption>
+        </topicref>
+        <topicref type="topic" id="442744878615658" build="ALL" modified="2021-03-19T13:15:34.222Z" icon="0" href="opt-enforceself">
+          <caption translate="true">-enforceself</caption>
         </topicref>
         <topicref type="topic" id="426335377328542" build="ALL" modified="2016-09-20T09:20:11.513Z" icon="0" href="opt-errorendlocation">
           <caption translate="true">-errorendlocation</caption>

@@ -150,7 +150,14 @@ namespace XSharp.MacroCompiler.Syntax
     }
     internal partial class FieldDeclStmt : Stmt
     {
-        // TODO
+        internal override Node Bind(Binder b)
+        {
+            foreach (var f in Fields)
+            {
+                b.AddFieldAlias(f.value, Alias?.value);
+            }
+            return null;
+        }
     }
     internal partial class EmptyStmt : Stmt
     {

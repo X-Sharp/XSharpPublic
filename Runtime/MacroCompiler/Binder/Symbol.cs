@@ -239,6 +239,12 @@ namespace XSharp.MacroCompiler
     {
         internal MemvarSymbol(string name) : base(name, Compilation.Get(NativeType.Usual)) { access_ = AccessMode.GetSet; }
     }
+    internal partial class FieldAliasSymbol : LocalSymbol
+    {
+        internal string WorkArea = null;
+        internal FieldAliasSymbol(string name) : base(name, Compilation.Get(NativeType.Usual)) { access_ = AccessMode.GetSet; }
+        internal FieldAliasSymbol(string name, string wa) : this(name) { WorkArea = wa; }
+    }
     internal partial class DynamicSymbol : TypedSymbol
     {
         internal string Name;

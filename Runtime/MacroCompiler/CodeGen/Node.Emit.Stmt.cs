@@ -124,11 +124,16 @@ namespace XSharp.MacroCompiler.Syntax
     }
     internal partial class FieldDeclStmt : Stmt
     {
+        internal override void EmitStmt(ILGenerator ilg)
+        {
+            // Nothing to emit
+        }
     }
     internal partial class EmptyStmt : Stmt
     {
         internal override void EmitStmt(ILGenerator ilg)
         {
+            // Nothing to emit
         }
     }
     internal partial class WhileStmt : Stmt, ILoopableStmt, IExitableStmt

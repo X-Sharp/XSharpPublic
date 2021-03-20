@@ -451,6 +451,14 @@ namespace XSharp.MacroCompiler
                 LocalCache.Add(name, variable);
             return variable;
         }
+        internal FieldAliasSymbol AddFieldAlias(string name, string wa = null)
+        {
+            var variable = new FieldAliasSymbol(name, wa);
+            Locals.Add(variable);
+            if (!string.IsNullOrEmpty(name))
+                LocalCache.Add(name, variable);
+            return variable;
+        }
 
         internal void AddConstant(string name, Constant c)
         {

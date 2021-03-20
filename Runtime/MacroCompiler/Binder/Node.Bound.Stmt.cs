@@ -97,6 +97,10 @@ namespace XSharp.MacroCompiler.Syntax
         internal LocalSymbol Var => Symbol as LocalSymbol;
         internal override Node Bind(Binder b)
         {
+            // TODO: Handle array sub
+            // TODO: Handle CONST
+            // TODO: Handle DIM
+            // TODO: Handle IS
             if (Type != null)
             {
                 b.Bind(ref Type, BindAffinity.Type);
@@ -141,6 +145,7 @@ namespace XSharp.MacroCompiler.Syntax
     {
         internal override Node Bind(Binder b)
         {
+            // TODO: Handle CONST
             b.Bind(ref Initializer);
             Initializer.RequireGetAccess();
             Symbol = b.AddLocal(Name, Initializer.Datatype) ?? throw Error(ErrorCode.LocalSameName, Name);
@@ -465,7 +470,16 @@ namespace XSharp.MacroCompiler.Syntax
     }
     internal partial class ThrowStmt : Stmt
     {
-        // TODO
+        internal override Node Bind(Binder b)
+        {
+            if (Expr != null)
+            {
+                b.Bind(ref Expr);
+                Expr.RequireGetAccess();
+                b.Convert(ref Expr, Compilation.Get(NativeType.Object));
+            }
+            return null;
+        }
     }
     internal partial class QMarkStmt : Stmt
     {

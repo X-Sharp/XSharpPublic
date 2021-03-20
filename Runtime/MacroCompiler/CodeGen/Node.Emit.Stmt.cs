@@ -232,9 +232,11 @@ namespace XSharp.MacroCompiler.Syntax
     }
     internal partial class ForStmt : ForBaseStmt, ILoopableStmt, IExitableStmt
     {
+        // Emit handled by parent
     }
     internal partial class ForeachStmt : ForBaseStmt, ILoopableStmt, IExitableStmt
     {
+        // Emit handled by parent
     }
     internal partial class IfStmt : Stmt
     {
@@ -364,6 +366,18 @@ namespace XSharp.MacroCompiler.Syntax
     }
     internal partial class ThrowStmt : Stmt
     {
+        internal override void EmitStmt(ILGenerator ilg)
+        {
+            if (Expr != null)
+            {
+                Expr.Emit(ilg, true);
+                ilg.Emit(OpCodes.Throw);
+            }
+            else
+            {
+                ilg.Emit(OpCodes.Rethrow);
+            }
+        }
     }
     internal partial class QMarkStmt : Stmt
     {

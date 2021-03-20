@@ -216,4 +216,21 @@ FUNCTION ScriptTests AS VOID
         "PARAMETERS a, b, c",;
         "RETURN a+b+c"}),Args(1,2,3), 6, typeof(int))
 
+    Compilation.Override(WellKnownMembers.XSharp_RT_Functions___FieldGet, "MyFieldGet")
+    Compilation.Override(WellKnownMembers.XSharp_RT_Functions___FieldSet, "MyFieldSet")
+    Compilation.Override(WellKnownMembers.XSharp_RT_Functions___FieldGetWa, "MyFieldGetWa")
+    Compilation.Override(WellKnownMembers.XSharp_RT_Functions___FieldSetWa, "MyFieldSetWa")
+    TestMacro(sc, String.Join(e"\n",<STRING>{;
+        "FIELD a",;
+        "RETURN a"}),Args(), "FieldGet(a)", typeof(string))
+    TestMacro(sc, String.Join(e"\n",<STRING>{;
+        "FIELD a",;
+        "a:=123"}),Args(), 123, typeof(int))
+    TestMacro(sc, String.Join(e"\n",<STRING>{;
+        "FIELD a IN db",;
+        "RETURN a"}),Args(), "FieldGet(db,a)", typeof(string))
+    TestMacro(sc, String.Join(e"\n",<STRING>{;
+        "FIELD a IN db",;
+        "a:=123"}),Args(), 123, typeof(int))
+
     RETURN

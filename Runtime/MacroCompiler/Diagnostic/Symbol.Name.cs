@@ -52,6 +52,9 @@ namespace XSharp.MacroCompiler
     internal partial class MemvarSymbol : LocalSymbol
     {
     }
+    internal partial class FieldAliasSymbol : LocalSymbol
+    {
+    }
     internal partial class DynamicSymbol : TypedSymbol
     {
         internal override string FullName { get { return Name; } }

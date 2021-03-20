@@ -6,6 +6,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Reflection;
 using System.Reflection.Emit;
+using XSharp.RDD;
 
 namespace XSharp.MacroCompiler
 {
@@ -68,6 +69,34 @@ namespace XSharp.MacroCompiler
             ilg.Emit(OpCodes.Ldstr, Name);
             ilg.Emit(OpCodes.Ldloc, v.LocalIndex);
             MethodSymbol m = Compilation.Get(WellKnownMembers.XSharp_RT_Functions___MemVarPut) as MethodSymbol;
+            ilg.Emit(OpCodes.Call, m.Method);
+            ilg.Emit(OpCodes.Pop);
+        }
+        internal override void Declare(ILGenerator ilg) { }
+    }
+    internal partial class FieldAliasSymbol : LocalSymbol
+    {
+        internal override void EmitGet(ILGenerator ilg)
+        {
+            if (WorkArea != null)
+                ilg.Emit(OpCodes.Ldstr, WorkArea);
+            ilg.Emit(OpCodes.Ldstr, Name);
+            MethodSymbol m = WorkArea != null ?
+                  Compilation.Get(WellKnownMembers.XSharp_RT_Functions___FieldGetWa) as MethodSymbol
+                : Compilation.Get(WellKnownMembers.XSharp_RT_Functions___FieldGet) as MethodSymbol;
+            ilg.Emit(OpCodes.Call, m.Method);
+        }
+        internal override void EmitSet(ILGenerator ilg)
+        {
+            var v = ilg.DeclareLocal(Compilation.Get(NativeType.Usual).Type);
+            ilg.Emit(OpCodes.Stloc, v.LocalIndex);
+            if (WorkArea != null)
+                ilg.Emit(OpCodes.Ldstr, WorkArea);
+            ilg.Emit(OpCodes.Ldstr, Name);
+            ilg.Emit(OpCodes.Ldloc, v.LocalIndex);
+            MethodSymbol m = WorkArea != null ?
+                  Compilation.Get(WellKnownMembers.XSharp_RT_Functions___FieldSetWa) as MethodSymbol
+                : Compilation.Get(WellKnownMembers.XSharp_RT_Functions___FieldSet) as MethodSymbol;
             ilg.Emit(OpCodes.Call, m.Method);
             ilg.Emit(OpCodes.Pop);
         }

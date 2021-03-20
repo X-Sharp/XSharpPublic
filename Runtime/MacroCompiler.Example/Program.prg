@@ -43,6 +43,15 @@ BEGIN NAMESPACE MacroCompilerTest
             "RETURN a+b+c"}),1,2,3)
         wait*/
 
+/*var sc := CreateScriptCompiler()
+EvalMacro(sc, String.Join(e"\n",<STRING>{;
+    "TRY",;
+    e"THROW Exception{\"Hello\"}",;
+    "CATCH e AS Exception",;
+    "RETURN e:Message",;
+    "END"}))
+wait*/
+
         ParserTestsFox(CreateFoxScriptCompiler())
         ParserTests(CreateScriptCompiler())
         ScriptTests()

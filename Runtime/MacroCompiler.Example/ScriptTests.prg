@@ -215,6 +215,9 @@ FUNCTION ScriptTests AS VOID
     TestMacro(sc, String.Join(e"\n",<STRING>{;
         "PARAMETERS a, b, c",;
         "RETURN a+b+c"}),Args(1,2,3), 6, typeof(int))
+    TestMacro(sc, String.Join(e"\n",<STRING>{;
+        e"THROW Exception{\"Hello\"}",;
+        "RETURN 1"}),Args(), "Hello", typeof(Exception))
 
     Compilation.Override(WellKnownMembers.XSharp_RT_Functions___FieldGet, "MyFieldGet")
     Compilation.Override(WellKnownMembers.XSharp_RT_Functions___FieldSet, "MyFieldSet")

@@ -125,10 +125,17 @@ BEGIN NAMESPACE MacroCompilerTest
                 wait
             END
             RETURN FALSE
-/*        catch e as Exception
-            TotalFails += 1
-            Console.WriteLine("[FAIL] (Exception: {0})", e:Message)
-            return false*/
+        catch e as Exception
+            IF t == e:GetType() .AND. e:Message == expect
+                TotalSuccess += 1
+                Console.WriteLine("[OK]")
+                RETURN TRUE
+            ELSE
+                TotalFails += 1
+                Console.WriteLine("[FAIL] (Exception: {0})", e:Message)
+                wait
+                return false
+            END
         END
 
     FUNCTION CreateFoxScriptCompiler() AS XSharp.Runtime.MacroCompiler

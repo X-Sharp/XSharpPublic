@@ -218,6 +218,40 @@ FUNCTION ScriptTests AS VOID
     TestMacro(sc, String.Join(e"\n",<STRING>{;
         e"THROW Exception{\"Hello\"}",;
         "RETURN 1"}),Args(), "Hello", typeof(Exception))
+    TestMacro(sc, String.Join(e"\n",<STRING>{e"THROW 0"}), Args(), null, null, ErrorCode.TypeMustDeriveFrom)
+    TestMacro(sc, String.Join(e"\n",<STRING>{;
+        "TRY",;
+        "CATCH a AS INT",;
+        "END"}), Args(), null, null, ErrorCode.TypeMustDeriveFrom)
+    TestMacro(sc, String.Join(e"\n",<STRING>{;
+        "TRY",;
+        e"THROW Exception{\"Hello\"}",;
+        "END",;
+        "RETURN 321"}), Args(), 321, typeof(int))
+    TestMacro(sc, String.Join(e"\n",<STRING>{;
+        "x := 0",;
+        "TRY",;
+        "FINALLY",;
+        "x := 123",;
+        "END",;
+        "RETURN x"}), Args(), 123, typeof(int))
+    TestMacro(sc, String.Join(e"\n",<STRING>{;
+        "x := 0",;
+        "TRY",;
+        e"THROW Exception{\"Hello\"}",;
+        "CATCH",;
+        "FINALLY",;
+        "x := 123",;
+        "END",;
+        "RETURN x"}), Args(), 123, typeof(int))
+    TestMacro(sc, String.Join(e"\n",<STRING>{;
+        "x := 0",;
+        "TRY",;
+        e"THROW Exception{\"Hello\"}",;
+        "CATCH e AS Exception",;
+        "x := e:Message",;
+        "END",;
+        "RETURN x"}), Args(), "Hello", typeof(string))
 
     Compilation.Override(WellKnownMembers.XSharp_RT_Functions___FieldGet, "MyFieldGet")
     Compilation.Override(WellKnownMembers.XSharp_RT_Functions___FieldSet, "MyFieldSet")

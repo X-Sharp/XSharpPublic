@@ -617,11 +617,11 @@ namespace XSharp.MacroCompiler
 
                 TypeExpr type = null;
                 if (Expect(TokenType.AS))
-                    Require(ParseType(), ErrorCode.Expected, "type");
+                    Require(type = ParseType(), ErrorCode.Expected, "type");
 
                 Expr when = null;
                 if (Expect(TokenType.WHEN))
-                    RequireExpression();
+                    when = RequireExpression();
 
                 Expect(TokenType.EOS);
                 var cs = ParseStatementBlock();

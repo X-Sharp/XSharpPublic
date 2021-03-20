@@ -476,6 +476,8 @@ namespace XSharp.MacroCompiler.Syntax
             {
                 b.Bind(ref Expr);
                 Expr.RequireGetAccess();
+                if (!Compilation.Get(WellKnownTypes.System_Exception).IsAssignableFrom(Expr.Datatype))
+                    Expr.ThrowError(ErrorCode.TypeMustDeriveFrom, Compilation.Get(WellKnownTypes.System_Exception).FullName);
                 b.Convert(ref Expr, Compilation.Get(NativeType.Object));
             }
             return null;
@@ -505,15 +507,59 @@ namespace XSharp.MacroCompiler.Syntax
     }
     internal partial class TryStmt : Stmt
     {
-        // TODO
+        internal override Node Bind(Binder b)
+        {
+            b.OpenScope();
+            b.Bind(ref Stmt);
+            b.CloseScope();
+            for (int i = 0; i < Catches.Length; i++)
+                b.Bind(ref Catches[i]);
+            if (Finally != null)
+                b.Bind(ref Finally);
+            return null;
+        }
     }
     internal partial class CatchBlock : Node
     {
-        // TODO
+        LocalSymbol ExVar;
+        internal override Node Bind(Binder b)
+        {
+            // TODO: do not allow multiple unfiltered catch blocks of the same type
+            // TODO: allow RETURN from within a catch block (currently does not work)
+            b.OpenScope();
+            if (Type != null)
+            {
+                b.Bind(ref Type, BindAffinity.Type);
+                Type.RequireType();
+                if (!Compilation.Get(WellKnownTypes.System_Exception).IsAssignableFrom(Type.Symbol as TypeSymbol))
+                    Type.ThrowError(ErrorCode.TypeMustDeriveFrom, Compilation.Get(WellKnownTypes.System_Exception).FullName);
+                ExVar = b.AddLocal(Name.value, Type.Symbol as TypeSymbol);
+            }
+            else if (Name != null)
+                ExVar = b.AddLocal(Name.value, Compilation.Get(NativeType.Object));
+            else
+                ExVar = b.AddLocal(Compilation.Get(NativeType.Object));
+            if (When != null)
+            {
+                // TODO: support filtered exceptions
+                b.Bind(ref When);
+                When.RequireGetAccess();
+                When.ThrowError(ErrorCode.NotSupported);
+            }
+            b.Bind(ref Stmt);
+            b.CloseScope();
+            return null;
+        }
     }
     internal partial class FinallyBlock : Node
     {
-        // TODO
+        internal override Node Bind(Binder b)
+        {
+            b.OpenScope();
+            b.Bind(ref Stmt);
+            b.CloseScope();
+            return null;
+        }
     }
     internal partial class SequenceStmt : Stmt
     {

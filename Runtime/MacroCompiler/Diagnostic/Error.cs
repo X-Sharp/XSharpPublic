@@ -58,6 +58,7 @@ namespace XSharp.MacroCompiler
         MultipleDefaultInSwitch = 238,
         WrongNumberIfIndices = 239,
         NoSuitableEnumerator = 240,
+        TypeMustDeriveFrom = 241,
         Internal = 999,
     }
 
@@ -114,6 +115,7 @@ namespace XSharp.MacroCompiler
             { ErrorCode.MultipleDefaultInSwitch, "Only one '{0}' block allowed in switch statement" },
             { ErrorCode.WrongNumberIfIndices, "Wrong number of indices in array" },
             { ErrorCode.NoSuitableEnumerator, "No suitable enumerator getter" },
+            { ErrorCode.TypeMustDeriveFrom, "Type must derive from {0}" },
             { ErrorCode.Internal, "Internal error" },
         };
 

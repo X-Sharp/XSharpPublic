@@ -24,9 +24,9 @@ namespace XSharp.MacroCompiler.Syntax
             EmitStmt(ilg);
             if (RequireExceptionHandling)
             {
+                ilg.BeginFinallyBlock();
                 if (FinallyClauses.Count > 0)
                 {
-                    ilg.BeginFinallyBlock();
                     foreach (var a in FinallyClauses) a();
                 }
                 ilg.EndExceptionBlock();
@@ -391,12 +391,39 @@ namespace XSharp.MacroCompiler.Syntax
     }
     internal partial class TryStmt : Stmt
     {
+        internal override void EmitStmt(ILGenerator ilg)
+        {
+            ilg.BeginExceptionBlock();
+            Stmt.Emit(ilg);
+            if (Catches.Length == 0 && Finally == null)
+                ilg.BeginCatchBlock(Compilation.Get(NativeType.Object).Type);
+            foreach (var c in Catches)
+            {
+                c.Emit(ilg);
+            }
+            if (Finally != null)
+                Finally.Emit(ilg);
+            ilg.EndExceptionBlock();
+        }
     }
     internal partial class CatchBlock : Node
     {
+        internal override void Emit(ILGenerator ilg)
+        {
+            ExVar.Declare(ilg);
+            ilg.BeginCatchBlock(ExVar.Type.Type);
+            ilg.Emit(OpCodes.Isinst, ExVar.Type.Type);
+            ilg.Emit(OpCodes.Stloc, ExVar.Index);
+            Stmt.Emit(ilg);
+        }
     }
     internal partial class FinallyBlock : Node
     {
+        internal override void Emit(ILGenerator ilg)
+        {
+            ilg.BeginFinallyBlock();
+            Stmt.Emit(ilg);
+        }
     }
     internal partial class SequenceStmt : Stmt
     {

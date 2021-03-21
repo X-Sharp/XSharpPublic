@@ -452,6 +452,9 @@ BEGIN NAMESPACE MacroCompilerTest
         TestMacro(mc, "{ || $.5 } ", Args(), .5m, typeof(currency))
         TestMacro(mc, "{ || $123_456 } ", Args(), 123456m, typeof(currency))
         TestMacro(mc, e"{|a| TestByRef(a) }", Args("123"), "123", typeof(string))
+        TestMacro(mc, "{ |x| (x)-1 } ",Args(2),1,typeof(int))
+        TestMacro(mc, "{ || (int)(-5.1) } ",Args(),-5,typeof(int))
+
 
         Compilation.Override(WellKnownMembers.XSharp_RT_Functions___MemVarGet, "MyMemVarGet")
         Compilation.Override(WellKnownMembers.XSharp_RT_Functions___MemVarPut, "MyMemVarPut")

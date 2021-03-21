@@ -453,9 +453,24 @@ namespace XSharp.MacroCompiler
             return PrefixOpers[(int)La()].Parse(this, out n);
         }
 
-        bool CanParsePrefixOper()
+        Oper ParsePrefixOnlyOper(out Node n)
         {
-            return PrefixOpers[(int)La()] != Oper.Empty;
+            if (CanParseBinaryOper())
+            {
+                n = null;
+                return null;
+            }
+            return PrefixOpers[(int)La()].Parse(this, out n);
+        }
+
+        bool CanParseBinaryOper()
+        {
+            return Opers[(int)La()].IsBinary;
+        }
+
+        bool CanParsePrefixOnlyOper()
+        {
+            return !CanParseBinaryOper() && PrefixOpers[(int)La()] != Oper.Empty;
         }
 
         internal Expr ParseExpression()
@@ -473,10 +488,10 @@ namespace XSharp.MacroCompiler
 
                 e = ParseTerm();
 
-                if (isCast && e is TypeExpr && (CanParsePrefixOper() || CanParseTerm()))
+                if (isCast && e is TypeExpr && (CanParsePrefixOnlyOper() || CanParseTerm()))
                 {
                     var p = Mark();
-                    while (ParsePrefixOper(out n) != null) { }
+                    while (ParsePrefixOnlyOper(out n) != null) { }
                     isCast = CanParseTerm();
                     Rewind(p);
                 }
@@ -948,6 +963,27 @@ namespace XSharp.MacroCompiler
             {
                 if (parseFunc != null) Parse = parseFunc;
                 if (combineFunc != null) Combine = combineFunc;
+            }
+            internal bool IsBinary
+            {
+                get
+                {
+                    switch (assoc)
+                    {
+                        case AssocType.BinaryLeft:
+                        case AssocType.BinaryRight:
+                        case AssocType.BinaryAssign:
+                        case AssocType.BinaryAssignOp:
+                        case AssocType.BinaryLogic:
+                        case AssocType.BinaryAlias:
+                        case AssocType.BinarySubstr:
+                        case AssocType.BinaryDot:
+                        case AssocType.BinaryColon:
+                            return true;
+                        default:
+                            return false;
+                    }
+                }
             }
             Oper _parse(Parser p, out Node n)
             {

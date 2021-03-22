@@ -86,33 +86,35 @@ namespace XSharp.CodeDom
             var element = type.GetMembers(name, true).FirstOrDefault();
             if (element != null)
             {
-                IXTypeSymbol t = null;
-                t = findType(element.OriginalTypeName);
-                var typeName = element.OriginalTypeName;
-                switch (element.Kind)
+                var xtype = findType(element.OriginalTypeName);
+                if (xtype != null)
                 {
-                    case Kind.Field:
-                        result = (mtype | MemberTypes.Field) != 0;
-                        addClassMember(new XMemberType(name, MemberTypes.Field, true, t, typeName));
-                        break;
-                    case Kind.Property:
-                    case Kind.Access:
-                    case Kind.Assign:
-                        result = (mtype | MemberTypes.Property) != 0;
-                        addClassMember(new XMemberType(name, MemberTypes.Property, true, t, typeName));
-                        break;
-                    case Kind.Method:
-                        result = (mtype | MemberTypes.Method) != 0;
-                        addClassMember(new XMemberType(name, MemberTypes.Method, true, t, typeName));
-                        break;
-                    case Kind.Event:
-                        result = (mtype | MemberTypes.Event) != 0;
-                        addClassMember(new XMemberType(name, MemberTypes.Event, true, t, typeName));
-                        break;
-                    case Kind.Constructor:
-                        result = (mtype | MemberTypes.Constructor) != 0;
-                        addClassMember(new XMemberType(name, MemberTypes.Constructor, true, t, typeName));
-                        break;
+                    var typeName = element.OriginalTypeName;
+                    switch (element.Kind)
+                    {
+                        case Kind.Field:
+                            result = (mtype | MemberTypes.Field) != 0;
+                            addClassMember(new XMemberType(element.Name, MemberTypes.Field, true, xtype, typeName));
+                            break;
+                        case Kind.Property:
+                        case Kind.Access:
+                        case Kind.Assign:
+                            result = (mtype | MemberTypes.Property) != 0;
+                            addClassMember(new XMemberType(element.Name, MemberTypes.Property, true, xtype, typeName));
+                            break;
+                        case Kind.Method:
+                            result = (mtype | MemberTypes.Method) != 0;
+                            addClassMember(new XMemberType(element.Name, MemberTypes.Method, true, xtype, typeName));
+                            break;
+                        case Kind.Event:
+                            result = (mtype | MemberTypes.Event) != 0;
+                            addClassMember(new XMemberType(element.Name, MemberTypes.Event, true, xtype, typeName));
+                            break;
+                        case Kind.Constructor:
+                            result = (mtype | MemberTypes.Constructor) != 0;
+                            addClassMember(new XMemberType(element.Name, MemberTypes.Constructor, true, xtype, typeName));
+                            break;
+                    }
                 }
             }
             else
@@ -572,30 +574,30 @@ namespace XSharp.CodeDom
         }
         private CodeExpression buildTypeMemberExpression(IXTypeSymbol xtype, string name)
         {
-            var l = new XCodeTypeReferenceExpression(xtype.FullName);
+            var typeRef = new XCodeTypeReferenceExpression(xtype.FullName);
             var members = xtype.GetMembers(name, true);
             var m = members.Where(e => (e.Kind == Kind.Field || e.Kind == Kind.EnumMember)).FirstOrDefault();
             if (m != null)
             {
-                var fld = new XCodeFieldReferenceExpression(l, name);
+                var fld = new XCodeFieldReferenceExpression(typeRef, m.Name);
                 return fld;
             }
             m = members.Where(e => (e.Kind == Kind.Property || e.Kind == Kind.Access || e.Kind == Kind.Assign)).FirstOrDefault();
             if (m != null)
             {
-                var prop = new XCodePropertyReferenceExpression(l, name);
+                var prop = new XCodePropertyReferenceExpression(typeRef, m.Name);
                 return prop;
             }
             m = members.Where(e => e.Kind == Kind.Method).FirstOrDefault();
             if (m != null)
             {
-                var met = new XCodeMethodReferenceExpression(l, name);
+                var met = new XCodeMethodReferenceExpression(typeRef, m.Name);
                 return met;
             }
             m = members.Where(e => e.Kind == Kind.Event).FirstOrDefault();
             if (m != null)
             {
-                var evt = new XCodeEventReferenceExpression(l, name);
+                var evt = new XCodeEventReferenceExpression(typeRef, m.Name);
                 return evt;
             }
             return null;
@@ -624,18 +626,18 @@ namespace XSharp.CodeDom
                     switch (m.Kind)
                     {
                         case Kind.Field:
-                            expr = new XCodeFieldReferenceExpression(target, name);
+                            expr = new XCodeFieldReferenceExpression(target, m.Name);
                             break;
                         case Kind.Access:
                         case Kind.Assign:
                         case Kind.Property:
-                            expr = new XCodePropertyReferenceExpression(target, name);
+                            expr = new XCodePropertyReferenceExpression(target, m.Name);
                             break;
                         case Kind.Method:
-                            expr = new XCodeMethodReferenceExpression(target, name);
+                            expr = new XCodeMethodReferenceExpression(target, m.Name);
                             break;
                         case Kind.Event:
-                            expr = new XCodeEventReferenceExpression(target, name);
+                            expr = new XCodeEventReferenceExpression(target, m.Name);
                             break;
                         default:
                             break;

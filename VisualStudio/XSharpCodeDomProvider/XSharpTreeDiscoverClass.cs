@@ -817,8 +817,8 @@ namespace XSharp.CodeDom
         public static string GetCleanText(this XSharpParserRuleContext context)
         {
             string name = context.GetText();
-            if (name.IndexOf("@@") >= 0)
-                name = name.Replace("@@", "");
+            //if (name.IndexOf("@@") >= 0)
+            //    name = name.Replace("@@", "");
             return name;
         }
     }

@@ -233,6 +233,9 @@ BEGIN NAMESPACE XSharpModel
       
       METHOD GetMembers(elementName AS STRING) AS IList<IXMemberSymbol>
          VAR tempMembers := List<IXMemberSymbol>{}
+          IF elementName:StartsWith("@@")
+                elementName := elementName:Substring(2)
+          ENDIF
          SELF:Resolve()
          if ! String.IsNullOrEmpty(elementName)
             tempMembers:AddRange(SELF:_members:Where ( {m => m.Name.StartsWith(elementName, StringComparison.OrdinalIgnoreCase) }))
@@ -242,6 +245,9 @@ BEGIN NAMESPACE XSharpModel
          RETURN tempMembers
          
       METHOD GetMembers(elementName AS STRING, lExact as LOGIC) AS IList<IXMemberSymbol>
+      IF elementName:StartsWith("@@")
+            elementName := elementName:Substring(2)
+      ENDIF
       IF lExact
          SELF:Resolve()
          var result := List<IXMemberSymbol>{}

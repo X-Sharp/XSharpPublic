@@ -1087,6 +1087,30 @@ BEGIN NAMESPACE XSharpModel
 			Log(i"GetMembers '{idType}' returns {result.Count} matches")
 		RETURN result  
 
+        STATIC METHOD GetStartupClasses(projectFile as string) AS List<String>
+            var result := List<String>{}
+			IF IsDbOpen
+				BEGIN LOCK oConn
+					TRY
+                        var stmt := "select TypeName, Name, Attributes, Kind from ProjectMembers where Name like 'Start%' and ProjectFileName like '%" +projectFile+"'"
+						USING VAR oCmd := SQLiteCommand{stmt, oConn}
+						USING VAR rdr := oCmd:ExecuteReader()
+						DO WHILE rdr:Read()
+                            var atts := (Modifiers) (INT64) rdr["Attributes"]
+                            var kind := (Kind) (INT64) rdr["Kind"]
+                            var m := rdr["Name"]:ToString()
+                            if m:Trim():ToLower() == "start" .and. atts:HasFlag(Modifiers.Static) .and. kind:HasFlag(Kind.Method)
+    							result:Add(rdr["TypeName"]:ToString())
+                            endif
+						ENDDO
+					CATCH e AS Exception
+						Log("Exception: "+e:ToString())
+					END TRY            
+					
+				END LOCK
+			ENDIF
+            return result
+
 		STATIC METHOD GetMembers(idTypes AS STRING) AS IList<XDbResult>
 			VAR stmt := "Select * from ProjectMembers where IdType IN ("+idTypes+") "
 			stmt     += " order by idFile, idType" 

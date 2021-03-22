@@ -106,8 +106,8 @@
     <Compile Include="..\..\Common\Constants.cs">
       <Link>Constants.cs</Link>
     </Compile>
-    <Compile Include="..\..\Common\GuidStrings.cs">
-      <Link>GuidStrings.cs</Link>
+    <Compile Include="..\..\Common\XSharpConstants.cs">
+      <Link>XSharpConstants.cs</Link>
     </Compile>
     <Compile Include="Automation\OAXSharpProjectItem.cs" />
     <Compile Include="CodeDomProvider\VSXsharpCodeDomProvider.cs">
@@ -371,7 +371,6 @@
     <Compile Include="WPF\XSharpWPFProjectFactory.cs" />
     <Compile Include="Nodes\XSharpAssemblyReferenceNode.cs" />
     <Compile Include="Nodes\XSharpCOMReferenceNode.cs" />
-    <Compile Include="XSharpConstants.cs" />
     <Compile Include="Nodes\XSharpDependentFileNode.cs" />
     <Compile Include="Editors\XSharpEditorFactory.cs" />
     <Compile Include="XSharpConfigprovider.cs" />

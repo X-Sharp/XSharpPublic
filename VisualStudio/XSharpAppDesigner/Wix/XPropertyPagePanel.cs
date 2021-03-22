@@ -12,7 +12,7 @@ namespace Microsoft.VisualStudio.Project
     using System.Drawing;
     using System.Globalization;
     using System.Windows.Forms;
-
+    using XSharp.Project;
     /// <summary>
     /// Property page contents for the Project Build Settings page.
     /// </summary>
@@ -414,5 +414,45 @@ namespace Microsoft.VisualStudio.Project
                 }
             }
         }
+        protected void FillCombo(TypeConverter converter, System.Windows.Forms.ComboBox combo)
+        {
+            foreach (var enumvalue in converter.GetStandardValues(null))
+            {
+                var name = converter.ConvertTo(enumvalue, typeof(System.String));
+                combo.Items.Add(name); // new comboItem ((int) enumvalue, name));
+            }
+        }
+
+        protected void ShowOpenFileDialog(TextBox tb, string description, string filters)
+        {
+            ThreadHelper.ThrowIfNotOnUIThread();
+            var openFileDialog = new OpenFileDialog();
+            openFileDialog.FileName = tb.Text;
+            openFileDialog.Filter = filters;
+            openFileDialog.FilterIndex = 0;
+            openFileDialog.Title = description;
+            var result = openFileDialog.ShowDialog();
+            if (result == DialogResult.OK)
+            {
+                ParentPropertyPage.SetProperty((string)tb.Tag, openFileDialog.FileName);
+                tb.Text = openFileDialog.FileName;
+            }
+        }
+        protected void showMacroDialog(TextBox tb, string caption)
+        {
+            ThreadHelper.ThrowIfNotOnUIThread();
+            var form = new XSharpSLEPropertyForm();
+            XBuildMacroCollection mc = new XBuildMacroCollection((ProjectNode)this.ParentPropertyPage.ProjectMgr);
+            form.SetMacros(mc);
+            form.PropertyText.Text = tb.Text;
+            form.Text = caption;
+            var result = form.ShowDialog();
+            if (result == DialogResult.OK)
+            {
+                tb.Text = form.PropertyText.Text;
+                this.ParentPropertyPage.SetProperty((string)tb.Tag, tb.Text);
+            }
+        }
+
     }
 }

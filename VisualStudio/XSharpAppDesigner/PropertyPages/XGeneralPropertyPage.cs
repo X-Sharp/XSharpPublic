@@ -59,22 +59,28 @@ namespace XSharp.Project
         {
             string value = base.GetProperty(propertyName);
 
-            if (propertyName == XProjectFileConstants.OutputType)
+            if (propertyName == XSharpProjectFileConstants.OutputType)
             {
                 var outputType = (OutputType) converterOutPut.ConvertFrom(value);
                 value = (string)converterOutPut.ConvertTo(outputType, typeof(System.String));
             }
-            else if (propertyName == "Dialect")
+            else if (propertyName == XSharpProjectFileConstants.Dialect)
             {
                 var dialect = (Dialect)converterDialect.ConvertFrom(value);
                 value = (string) converterDialect.ConvertTo(dialect, typeof(System.String));
             }
-            else if (propertyName == "TargetFrameworkVersion")
+            else if (propertyName == XSharpProjectFileConstants.TargetFrameworkVersion)
             {
                 if (!value.StartsWith(".NETFramework"))
                     value = ".NETFramework,Version =" + value;
                 value = converterFramework.ConvertFrom(value).ToString();
             }
+            if (propertyName == XSharpProjectFileConstants.StartupObject)
+            {
+                if (string.IsNullOrEmpty(value))
+                    value = XGeneralPropertyPagePanel.DefaultValue;
+            }
+
             return value;
         }
 
@@ -85,18 +91,38 @@ namespace XSharp.Project
         /// <param name="value">Value of the property.</param>
         public override void SetProperty(string propertyName, string value)
         {
-            if (propertyName == ProjectFileConstants.OutputType)
+            if (propertyName == XSharpProjectFileConstants.OutputType)
             {
                 var output = (OutputType)converterOutPut.ConvertFrom(value);
                 value = output.ToString();
 
             }
-            else if (propertyName == "Dialect")
+            else if (propertyName == XSharpProjectFileConstants.Dialect)
             {
                 var dialect = (Dialect)converterDialect.ConvertFrom(value);
-                value = dialect.ToString();
+                var strAllowdot = base.GetProperty(XSharpProjectFileConstants.Allowdot);
+                if (!string.IsNullOrEmpty(strAllowdot))
+                {
+                    bool bAllowDot;
+                    bAllowDot = strAllowdot.ToLower() == "true";
+                    value = dialect.ToString();
+                    switch (dialect)
+                    {
+                        case Dialect.Core:
+                        case Dialect.FoxPro:
+                            if (!bAllowDot)
+                            {
+                                base.SetProperty(XSharpProjectFileConstants.Allowdot, "true");
+                            }
+                            break;
+                        default:
+                            if (bAllowDot)
+                                base.SetProperty(XSharpProjectFileConstants.Allowdot, "false");
+                            break;
+                    }
+                }
             }
-            else if (propertyName == "TargetFrameworkVersion")
+            else if (propertyName == XSharpProjectFileConstants.TargetFrameworkVersion)
             {
                 value = value.ToLower();
                 var pos = value.IndexOf("version=");
@@ -105,6 +131,14 @@ namespace XSharp.Project
                     value = value.Substring(pos + "version=".Length);
                 }
             }
+            else if (propertyName == XSharpProjectFileConstants.StartupObject)
+            {
+                if (value == XGeneralPropertyPagePanel.DefaultValue)
+                {
+                    value = "";
+                }
+            }
+
             ThreadHelper.ThrowIfNotOnUIThread();
             base.SetProperty(propertyName, value);
         }

@@ -3,6 +3,7 @@
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
 //
+using XSharp;
 
 namespace Microsoft.VisualStudio.Project
 {
@@ -31,34 +32,37 @@ namespace Microsoft.VisualStudio.Project
 
         private static readonly ICollection<string> PerUserProperties = new string[]
         {
-            XProjectFileConstants.ReferencePaths,
+            //XSharpProjectFileConstants.DebuggerWorkingDirectory,
+            //XSharpProjectFileConstants.DebuggerCommand,
+            //XSharpProjectFileConstants.DebuggerCommandArguments,
+            //XSharpProjectFileConstants.EnableUnmanagedDebugging, 
         };
 
 
         private static readonly ICollection<string> AllowVariablesProperties = new string[]
         {
-            XProjectFileConstants.DefineConstants,
-            XProjectFileConstants.IntermediateOutputPath,
-            XProjectFileConstants.OutputPath,
-            XProjectFileConstants.PostBuildEvent,
-            XProjectFileConstants.PreBuildEvent,
+            XSharpProjectFileConstants.DefineConstants,
+            XSharpProjectFileConstants.IntermediateOutputPath,
+            XSharpProjectFileConstants.OutputPath,
+            XSharpProjectFileConstants.PostBuildEvent,
+            XSharpProjectFileConstants.PreBuildEvent,
+            XSharpProjectFileConstants.DebuggerWorkingDirectory,
+            XSharpProjectFileConstants.DebuggerCommand,
         };
 
         private static readonly ICollection<string> ListProperties = new string[]
         {
-            XProjectFileConstants.Cultures,
-            XProjectFileConstants.DefineConstants,
-            XProjectFileConstants.IncludeSearchPaths,
-            XProjectFileConstants.ReferencePaths
-            //,XProjectFileConstants.SuppressIces
-            //,XProjectFileConstants.SuppressSpecificWarnings,
+            XSharpProjectFileConstants.Cultures,
+            XSharpProjectFileConstants.DefineConstants,
+            XSharpProjectFileConstants.IncludeSearchPaths,
+            XSharpProjectFileConstants.ReferencePaths
         };
 
         private static readonly ICollection<string> EndOfProjectFileProperties = new string[]
         {
-            XProjectFileConstants.PreBuildEvent,
-            XProjectFileConstants.PostBuildEvent,
-            XProjectFileConstants.RunPostBuildEvent,
+            XSharpProjectFileConstants.PreBuildEvent,
+            XSharpProjectFileConstants.PostBuildEvent,
+            XSharpProjectFileConstants.RunPostBuildEvent,
         };
 
         // =========================================================================================
@@ -127,7 +131,7 @@ namespace Microsoft.VisualStudio.Project
         }
 
         /// <summary>
-        /// Gets a flag indicating wether the property allows variables in the value (affects escaping behavior).
+        /// Gets a flag indicating whether the property allows variables in the value (affects escaping behavior).
         /// </summary>
         public bool AllowVariables
         {
@@ -135,7 +139,7 @@ namespace Microsoft.VisualStudio.Project
         }
 
         /// <summary>
-        /// Gets a flag indicating wether the property value is a list of items (affects escaping behavior).
+        /// Gets a flag indicating whether the property value is a list of items (affects escaping behavior).
         /// </summary>
         public bool List
         {
@@ -143,7 +147,7 @@ namespace Microsoft.VisualStudio.Project
         }
 
         /// <summary>
-        /// Gets a flag indicating wether the property is stored at the end of the project file.
+        /// Gets a flag indicating whether the property is stored at the end of the project file.
         /// </summary>
         public bool EndOfProjectFile
         {
@@ -441,14 +445,18 @@ namespace Microsoft.VisualStudio.Project
                 // Ideally, we would like to expand only the value for the property but MSBuild does not allow that
                 // That solves the case where OutputPath is define as $(OutputPath)\ if it's not ending with a backslash
                 string propertyNameEscaped = "$(" + this.propertyName + ")";
-                if (buildProperty.EvaluatedValue.Contains(propertyNameEscaped))
+                var value = buildProperty.UnevaluatedValue;
+                if (value.Contains("$([MSBuild]::") && buildProperty.Predecessor != null)
+                    value = buildProperty.Predecessor.UnevaluatedValue;
+                if (value.Contains(propertyNameEscaped))
                 {
-                    return buildProperty.UnevaluatedValue;
+                    return value;
                 }
                 else
                 {
-                    return this.Unescape(buildProperty.UnevaluatedValue);
+                    return this.Unescape(value);
                 }
+
             }
         }
 

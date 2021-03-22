@@ -46,8 +46,7 @@ namespace XSharp.Project
 
         private void OKButton_Click(object sender, EventArgs e)
         {
-            XSharpMLEPropertyForm form = (XSharpMLEPropertyForm)sender;
-            form.Close();
+            this.Close();
         }
 
         private void InsertFilenameBtn_Click(object sender, EventArgs e)

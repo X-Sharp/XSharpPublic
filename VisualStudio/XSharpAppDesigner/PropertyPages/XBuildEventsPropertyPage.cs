@@ -53,7 +53,7 @@ namespace XSharp.Project
         {
             string value = getCfgString(propertyName);
 
-            if (propertyName == XProjectFileConstants.RunPostBuildEvent)
+            if (propertyName == XSharpProjectFileConstants.RunPostBuildEvent)
             {
                 RunPostBuildEvent postbuildevent;
 
@@ -74,7 +74,7 @@ namespace XSharp.Project
         /// <param name="value">Value of the property.</param>
         public override void SetProperty(string propertyName, string value)
         {
-            if (propertyName == XProjectFileConstants.RunPostBuildEvent)
+            if (propertyName == XSharpProjectFileConstants.RunPostBuildEvent)
             {
                 var postbuildevent = RunPostBuildEvent.Always;
                 value = value.ToLower();

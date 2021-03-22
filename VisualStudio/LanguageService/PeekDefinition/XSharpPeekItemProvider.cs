@@ -2,7 +2,7 @@
 using Microsoft.VisualStudio.Language.Intellisense;
 using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Utilities;
-using static XSharp.LanguageService.XSharpConstants;
+using static XSharp.XSharpConstants;
 using XSharpModel;
 namespace XSharp.LanguageService
 {

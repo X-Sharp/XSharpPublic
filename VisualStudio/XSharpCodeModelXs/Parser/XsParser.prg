@@ -193,6 +193,10 @@ BEGIN NAMESPACE XSharpModel
                      entity:File := _file
                      IF _hasXmlDoc
                         entity:XmlComments := cXmlDoc
+                         if entity:Kind == Kind.Delegate .and. entity is XSourceTypeSymbol var xtype
+                            var invoke := xtype:XMembers:First()
+                            invoke:XmlComments := cXmlDoc
+                         endif
                      ENDIF
                      IF aAttribs?:Count > 0
                         entity:CustomAttributes := TokensAsString(aAttribs)
@@ -325,8 +329,10 @@ BEGIN NAMESPACE XSharpModel
          Log(i"Completed, found {_EntityList.Count} entities and {typelist.Count} types")
          IF SELF:_EntityList:Count > 0
             VAR lastEntity          := SELF:_EntityList:Last()
-            lastEntity:Range        := lastEntity:Range:WithEnd(LastToken)
-            lastEntity:Interval     := lastEntity:Interval:WithEnd(LastToken)
+            if ! lastEntity:Kind:IsClassMember(_dialect)
+                lastEntity:Range        := lastEntity:Range:WithEnd(LastToken)
+                lastEntity:Interval     := lastEntity:Interval:WithEnd(LastToken)
+            ENDIF
          ENDIF
          IF ! lLocals
             _file:SetTypes(typelist, _usings, _staticusings, SELF:_EntityList)

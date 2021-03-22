@@ -120,6 +120,9 @@ BEGIN NAMESPACE XSharpModel
       
       METHOD GetMembers(elementName AS STRING) AS IList<IXMemberSymbol>
          VAR tempMembers := List<IXMemberSymbol>{}
+          IF elementName:StartsWith("@@")
+                elementName := elementName:Substring(2)
+          ENDIF
          if ! String.IsNullOrEmpty(elementName)
             tempMembers:AddRange(SELF:_members:Where({ m => m.Name:StartsWith(elementName, StringComparison.OrdinalIgnoreCase)} ))
          ELSE
@@ -128,6 +131,9 @@ BEGIN NAMESPACE XSharpModel
          RETURN tempMembers
 
       METHOD GetMembers(elementName AS STRING, lExact as LOGIC) AS IList<IXMemberSymbol>
+          IF elementName:StartsWith("@@")
+                elementName := elementName:Substring(2)
+          ENDIF
          IF lExact
             VAR result := List<IXMemberSymbol>{}
             result:AddRange(SELF:_members:Where ({ m => m.Name:Equals(elementName, StringComparison.OrdinalIgnoreCase)} ))

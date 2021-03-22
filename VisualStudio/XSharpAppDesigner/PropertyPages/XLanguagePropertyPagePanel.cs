@@ -15,12 +15,15 @@ namespace XSharp.Project
     using System.Windows.Forms;
     using System.ComponentModel;
     using Microsoft.VisualStudio.Project;
+    using Microsoft.VisualStudio.Shell;
+    using Microsoft.VisualStudio.Shell.Interop;
+
     /// <summary>
     /// Property page contents for the Candle Settings page.
     /// </summary>
     internal partial class XLanguagePropertyPagePanel : XPropertyPagePanel
     {
-      
+
         //todo Conditionally enable/disable certain options
         #region Constants
         internal const string LanguageCaption = "Language";
@@ -36,6 +39,8 @@ namespace XSharp.Project
         internal const string MemVarCaption = "Enable Memvar support";
         internal const string UndeclaredCaption = "Enable Undeclared variables support";
         internal const string InitLocalsCaption = "Initialize Local variables";
+        internal const string enforceSelfCaption = "Enforce SELF";
+        internal const string allowDotCaption = "Allow DOT for instance members";
 
         internal const string CSDescription = "Enable/Disable case sensitivity (/cs)";
         internal const string AZDescription = "Use Zero Based Arrays (/az)";
@@ -55,6 +60,9 @@ namespace XSharp.Project
         internal const string StdDefDescription = "Name of an alternative standard header file (alternative for XSharpDefs.xh)  (/stddefs)";
         internal const string MemVarDescription = "Enable support for memory variables (MEMVAR, PUBLIC, PRIVATE & PARAMETERS). (/memvar)\rPlease note that this is NOT supported for the Core and Vulcan dialects";
         internal const string UndeclaredDescription = "Enable support for undeclared variables (these are resolved to MEMVARs). (/undeclared)\rPlease note that this requires /memvar to be enabled as well.";
+
+        internal const string EnforceSelfDescroption = "Enforce the use of SELF inside members of a class. This helps to prevent ambiguity in your code (/enforceself)";
+        internal const string allowDotDescription = "Allow the DOT operator to access instance fields, properties and methods (/allowdot)";
 
         internal const string CatGeneral = "General";
         internal const string CatNamespaces = "Namespaces";
@@ -76,51 +84,61 @@ namespace XSharp.Project
         {
             this.InitializeComponent();
             chkAZ.Text = AZCaption;
-            chkAZ.Tag = "AZ";
+            chkAZ.Tag = XSharpProjectFileConstants.AZ;
             toolTip1.SetToolTip(chkAZ, AZDescription);
             chkCS.Text = CSCaption;
-            chkCS.Tag = "CS";
+            chkCS.Tag = XSharpProjectFileConstants.CS;
             toolTip1.SetToolTip(chkCS, CSDescription);
             chkIns.Text = INSCaption;
-            chkIns.Tag = "INS";
+            chkIns.Tag = XSharpProjectFileConstants.INS;
             toolTip1.SetToolTip(chkIns, INSDescription);
             chkInitLocals.Text = InitLocalsCaption;
-            chkInitLocals.Tag = "InitLocals";
+            chkInitLocals.Tag = XSharpProjectFileConstants.InitLocals;
             toolTip1.SetToolTip(chkInitLocals, InitLocalsDescription);
             chkLB.Text = LBCaption;
-            chkLB.Tag = "LB";
+            chkLB.Tag = XSharpProjectFileConstants.LB;
             toolTip1.SetToolTip(chkLB, LBDescription);
             chkMemVar.Text = MemVarCaption;
-            chkMemVar.Tag = "MEMVAR";
+            chkMemVar.Tag = XSharpProjectFileConstants.MemVar;
             toolTip1.SetToolTip(chkMemVar, MemVarDescription);
             chkMemVar.CheckStateChanged += ChkMemVar_CheckStateChanged;
             chkNamedArgs.Text = NamedArgCaption;
-            chkNamedArgs.Tag = "NamedArgs";
+            chkNamedArgs.Tag = XSharpProjectFileConstants.NamedArgs;
             toolTip1.SetToolTip(chkNamedArgs, NamedArgDescription);
             chkNoStandardDefs.Text = NoStdDefCaption;
-            chkNoStandardDefs.Tag = "NoStandardDefs";
+            chkNoStandardDefs.Tag = XSharpProjectFileConstants.NoStandardDefs;
             toolTip1.SetToolTip(chkNoStandardDefs, NoStdDefDescription);
             chkNS.Text = NSCaption;
-            chkNS.Tag = "NS";
+            chkNS.Tag = XSharpProjectFileConstants.NS;
             toolTip1.SetToolTip(chkNS, NSDescription);
             chkOvf.Text = OVFCaption;
-            chkOvf.Tag = "OVF";
+            chkOvf.Tag = XSharpProjectFileConstants.OVF;
             toolTip1.SetToolTip(chkOvf, OVFDescription);
             chkUndefined.Text = UndeclaredCaption;
-            chkUndefined.Tag = "Undeclared";
+            chkUndefined.Tag = XSharpProjectFileConstants.Undeclared;
             toolTip1.SetToolTip(chkUndefined, UndeclaredDescription);
             chkUnsafe.Text = UnsafeCaption;
-            chkUnsafe.Tag = "Unsafe";
+            chkUnsafe.Tag = XSharpProjectFileConstants.Unsafe;
             toolTip1.SetToolTip(chkUnsafe, UnsafeDescription);
 
             lblIncludePaths.Text = INCCaption;
-            tbIncludePath.Tag = "IncludePaths";
+            tbIncludePath.Tag = XSharpProjectFileConstants.IncludePaths;
             toolTip1.SetToolTip(lblIncludePaths, INCDescription);
             toolTip1.SetToolTip(tbIncludePath, INCDescription);
+            toolTip1.SetToolTip(this.btnIncludePaths, INCDescription);
             lblStandardDefs.Text = StdDefCaption;
-            tbStandardDefs.Tag = "StandardDefs";
+            tbStandardDefs.Tag = XSharpProjectFileConstants.StandardDefs;
             toolTip1.SetToolTip(lblStandardDefs, StdDefDescription);
             toolTip1.SetToolTip(tbStandardDefs, StdDefDescription);
+            toolTip1.SetToolTip(btnStandardHeader, StdDefDescription);
+            chkEnforceSelf.Text = enforceSelfCaption;
+            chkEnforceSelf.Tag = XSharpProjectFileConstants.EnforceSelf;
+            toolTip1.SetToolTip(chkEnforceSelf, EnforceSelfDescroption);
+
+            chkAllowDot.Text = allowDotCaption;
+            chkAllowDot.Tag = XSharpProjectFileConstants.Allowdot;
+            toolTip1.SetToolTip(chkAllowDot, allowDotDescription);
+
             // hook up the form to both editors
             Color defaultBackground = SystemColors.ButtonFace;
             Color defaultForeground = SystemColors.WindowText;
@@ -157,7 +175,7 @@ namespace XSharp.Project
         {
             dialect = dialect.ToLower();
             bool Core = dialect == "core";
-
+            ThreadHelper.ThrowIfNotOnUIThread();
             chkMemVar.Enabled = !Core;
             chkLB.Enabled = !Core;
 
@@ -167,17 +185,40 @@ namespace XSharp.Project
             }
             else
             {
-                chkUndefined.Enabled = false;
+                chkUndefined.Enabled = false; 
                 chkMemVar.Checked = false;
                 chkUndefined.Checked = false;
                 chkLB.Checked = false;
+                this.ParentPropertyPage.IsDirty = true;
+            }
+            switch (dialect)
+            {
+                case "core":
+                case "foxpro":
+                    if (!chkAllowDot.Checked)
+                    {
+                        chkAllowDot.Checked = true;
+                        this.ParentPropertyPage.IsDirty = true;
+                    }
+                    break; 
+                default:
+                    if (chkAllowDot.Checked)
+                    {
+                        chkAllowDot.Checked = false;
+                        this.ParentPropertyPage.IsDirty = true;
+                    }
+                    break;
+
             }
         }
+
         internal void Project_OnProjectPropertyChanged(object sender, ProjectPropertyChangedArgs e)
         {
             try
             {
-                if (e.PropertyName.ToLower() == "dialect")
+                ThreadHelper.ThrowIfNotOnUIThread();
+
+                if (string.Compare(e.PropertyName, XSharpProjectFileConstants.Dialect, true) == 0)
                 {
                     SetDialectOptions(e.NewValue);
                 }
@@ -186,23 +227,46 @@ namespace XSharp.Project
             {
             }
         }
+
         private void EnableMemVars()
         {
             chkUndefined.Enabled = chkMemVar.Checked;
         }
 
-        private void EnableDisableStandardDefs()
-        {
-            if (chkNoStandardDefs.Checked)
-            {
-                tbStandardDefs.Text = "";
-            }
-        }
         protected internal override void BindProperties()
         {
             base.BindProperties();
-            SetDialectOptions(ParentPropertyPage.GetProperty("dialect"));
+            ThreadHelper.ThrowIfNotOnUIThread();
+            SetDialectOptions(ParentPropertyPage.GetProperty(XSharpProjectFileConstants.Dialect));
+            EnabledisableStandardDefs();
         }
 
+        private void btnStandardHeader_Click(object sender, EventArgs e)
+        {
+            ThreadHelper.ThrowIfNotOnUIThread();
+            ShowOpenFileDialog(tbStandardDefs, StdDefDescription, "Header Files (*.xh; *.vh; *.ch)|*.xh;*.vh;*.ch|All files (*.*)|*.*");
+        }
+
+        private void chkNoStandardDefs_CheckedChanged(object sender, EventArgs e)
+        {
+            ThreadHelper.ThrowIfNotOnUIThread();
+            EnabledisableStandardDefs();
+        }
+        private void EnabledisableStandardDefs()
+        {
+            ThreadHelper.ThrowIfNotOnUIThread();
+            btnStandardHeader.Enabled = !this.chkNoStandardDefs.Checked;
+            if (this.chkNoStandardDefs.Checked && ! string.IsNullOrEmpty(this.tbStandardDefs.Text))
+            {
+                ParentPropertyPage.SetProperty(XSharpProjectFileConstants.StandardDefs, "");
+                this.tbStandardDefs.Text = null;
+            }
+        }
+
+        private void chkIncludePaths_Click(object sender, EventArgs e)
+        {
+            ThreadHelper.ThrowIfNotOnUIThread();
+            showMacroDialog(this.tbIncludePath, INCDescription);
+        }
     }
 }

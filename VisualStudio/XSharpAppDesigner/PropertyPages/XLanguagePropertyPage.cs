@@ -25,57 +25,25 @@ namespace XSharp.Project
     [ProvideObject(typeof(XSharpLanguagePropertyPage))]
     public class XSharpLanguagePropertyPage : XPropertyPage
     {
-        // =========================================================================================
-        // Constructors
-        // =========================================================================================
 
         /// <summary>
         /// Initializes a new instance of the <see cref="XSharpBuildEventsPropertyPage"/> class.
         /// </summary>
-         public XSharpLanguagePropertyPage()
+        public XSharpLanguagePropertyPage()
         {
             this.PageName = "Language";
             this.PerConfig = false;
         }
 
-        // =========================================================================================
-        // Methods
-        // =========================================================================================
-
-        /// <summary>
-        /// Gets a project property.
-        /// </summary>
-        /// <param name="propertyName">The name of the property to get.</param>
-        /// <returns>
-        /// Value of the property, or null if the property is unset or inconsistent across configurations.
-        /// </returns>
-        public override string GetProperty(string propertyName)
-        {
-            string value = base.GetProperty(propertyName);
-            return value;
-        }
-
-        /// <summary>
-        /// Sets a project property.
-        /// </summary>
-        /// <param name="propertyName">Name of the property to set.</param>
-        /// <param name="value">Value of the property.</param>
-        public override void SetProperty(string propertyName, string value)
-        {
-            //todo enable / disable controls based on contents
-            ThreadHelper.ThrowIfNotOnUIThread();
-            base.SetProperty(propertyName, value);
-        }
 
         /// <summary>
         /// Creates the controls that constitute the property page. This should be safe to re-entrancy.
         /// </summary>
         /// <returns>The newly created main control that hosts the property page.</returns>
-        
+
         protected override XPropertyPagePanel CreatePropertyPagePanel()
         {
             if (panel == null)
-
             {
                 panel = new XLanguagePropertyPagePanel(this);
             }
@@ -84,6 +52,7 @@ namespace XSharp.Project
         XLanguagePropertyPagePanel panel = null;
         protected override void Project_OnProjectPropertyChanged(object sender, ProjectPropertyChangedArgs e)
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
             if (panel != null)
             {
                 panel.Project_OnProjectPropertyChanged(sender, e);

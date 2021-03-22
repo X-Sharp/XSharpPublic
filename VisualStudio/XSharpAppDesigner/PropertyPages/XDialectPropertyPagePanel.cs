@@ -15,6 +15,7 @@ namespace XSharp.Project
     using System.Windows.Forms;
     using System.ComponentModel;
     using Microsoft.VisualStudio.Project;
+    using Microsoft.VisualStudio.Shell;
 
     /// <summary>
     /// Property page contents for the Candle Settings page.
@@ -98,24 +99,24 @@ namespace XSharp.Project
             this.chkVO16.Text = VO16Caption;
             this.chkFox1.Text = FOX1Caption;
             this.chkXPP1.Text = XPP1Caption;
-            this.chkVO1.Tag = "VO1";
-            this.chkVO2.Tag = "VO2";
-            this.chkVO3.Tag = "VO3";
-            this.chkVO4.Tag = "VO4";
-            this.chkVO5.Tag = "VO5";
-            this.chkVO6.Tag = "VO6";
-            this.chkVO7.Tag = "VO7";
-            this.chkVO8.Tag = "VO8";
-            this.chkVO9.Tag = "VO9";
-            this.chkVO10.Tag = "VO10";
-            this.chkVO11.Tag = "VO11";
-            this.chkVO12.Tag = "VO12";
-            this.chkVO13.Tag = "VO13";
-            this.chkVO14.Tag = "VO14";
-            this.chkVO15.Tag = "VO15";
-            this.chkVO16.Tag = "VO16";
-            this.chkFox1.Tag = "Fox1";
-            this.chkXPP1.Tag = "XPP1";
+            this.chkVO1.Tag = XSharpProjectFileConstants.Vo1;
+            this.chkVO2.Tag = XSharpProjectFileConstants.Vo2;
+            this.chkVO3.Tag = XSharpProjectFileConstants.Vo3;
+            this.chkVO4.Tag = XSharpProjectFileConstants.Vo4;
+            this.chkVO5.Tag = XSharpProjectFileConstants.Vo5;
+            this.chkVO6.Tag = XSharpProjectFileConstants.Vo6;
+            this.chkVO7.Tag = XSharpProjectFileConstants.Vo7;
+            this.chkVO8.Tag = XSharpProjectFileConstants.Vo8;
+            this.chkVO9.Tag = XSharpProjectFileConstants.Vo9;
+            this.chkVO10.Tag = XSharpProjectFileConstants.Vo10;
+            this.chkVO11.Tag = XSharpProjectFileConstants.Vo11;
+            this.chkVO12.Tag = XSharpProjectFileConstants.Vo12;
+            this.chkVO13.Tag = XSharpProjectFileConstants.Vo13;
+            this.chkVO14.Tag = XSharpProjectFileConstants.Vo14;
+            this.chkVO15.Tag = XSharpProjectFileConstants.Vo15;
+            this.chkVO16.Tag = XSharpProjectFileConstants.Vo16;
+            this.chkFox1.Tag = XSharpProjectFileConstants.Fox1;
+            this.chkXPP1.Tag = XSharpProjectFileConstants.Xpp1;
             toolTip1.SetToolTip(chkVO1, VO1Description);
             toolTip1.SetToolTip(chkVO2, VO2Description);
             toolTip1.SetToolTip(chkVO3, VO3Description);
@@ -172,6 +173,7 @@ namespace XSharp.Project
             }
         }
 
+
         private void EnableDialectOptions(string dialect)
         {
             dialect = dialect.ToLower();
@@ -208,6 +210,7 @@ namespace XSharp.Project
         }
         internal void SetDialectOptions(string dialect)
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
             EnableDialectOptions(dialect);
         }
         /// <summary>
@@ -234,8 +237,9 @@ namespace XSharp.Project
 
         protected internal override void BindProperties()
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
             base.BindProperties();
-            SetDialectOptions(ParentPropertyPage.GetProperty("dialect"));
+            SetDialectOptions(ParentPropertyPage.GetProperty(XSharpProjectFileConstants.Dialect));
         }
     }
 }

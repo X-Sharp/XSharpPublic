@@ -19,22 +19,31 @@ namespace XSharp.Project
     /// <summary>
     /// Property page for the build events.
     /// </summary>
-    [ComVisible(true)]
-    [Guid(XSharpConstants.BuildPropertiesPage)]
+    [Guid(XSharpConstants.DebugPropertiesPage)]
     [ClassInterface(ClassInterfaceType.AutoDual)]
-    [ProvideObject(typeof(XSharpBuildPropertyPage))]
-    public class XSharpBuildPropertyPage : XPropertyPage
+    [ProvideObject(typeof(XSharpDebugPropertyPage))]
+    public class XSharpDebugPropertyPage : XPropertyPage
     {
+        DebugTypeConverter converterDebugType;
+        // =========================================================================================
+        // Constructors
+        // =========================================================================================
 
         /// <summary>
         /// Initializes a new instance of the <see cref="XSharpBuildEventsPropertyPage"/> class.
         /// </summary>
-        public XSharpBuildPropertyPage()
+        public XSharpDebugPropertyPage()
         {
-            this.PageName = "Build";
+            this.PageName = "Debug";
             this.PerConfig = true;
+            converterDebugType = new DebugTypeConverter();
+
         }
-  
+
+        // =========================================================================================
+        // Methods
+        // =========================================================================================
+
         /// <summary>
         /// Sets a project property.
         /// </summary>
@@ -42,26 +51,20 @@ namespace XSharp.Project
         /// <param name="value">Value of the property.</param>
         public override void SetProperty(string propertyName, string value)
         {
+            //todo enable / disable controls based on contents
             ThreadHelper.ThrowIfNotOnUIThread();
             base.SetProperty(propertyName, value);
         }
 
-        XBuildPropertyPagePanel panel;
         /// <summary>
         /// Creates the controls that constitute the property page. This should be safe to re-entrancy.
         /// </summary>
         /// <returns>The newly created main control that hosts the property page.</returns>
         protected override XPropertyPagePanel CreatePropertyPagePanel()
         {
-            panel = new XBuildPropertyPagePanel(this);
-            return panel;
+            return new XDebugPropertyPagePanel(this);
         }
-        protected override void Project_OnProjectPropertyChanged(object sender, ProjectPropertyChangedArgs e)
-        {
-            if (panel != null)
-            {
-                panel.Project_OnProjectPropertyChanged(sender, e);
-            }
-        }
+        
+
     }
 }

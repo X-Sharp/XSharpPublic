@@ -55,6 +55,9 @@
     <Compile Include="..\..\Common\Constants.cs">
       <Link>Constants.cs</Link>
     </Compile>
+    <Compile Include="..\..\Common\XSharpConstants.cs">
+      <Link>XSharpConstants.cs</Link>
+    </Compile>
     <Compile Include="BraceMatching\BraceMatching.cs" />
     <Compile Include="Completion\XCompletionList.cs" />
     <Compile Include="Completion\XSharpGlyphTools.cs" />
@@ -130,7 +133,6 @@
     <Compile Include="XMLDoc\XSharpXMLDoc.cs" />
     <Compile Include="KeywordColoring\XSharpClassifier.cs" />
     <Compile Include="KeywordColoring\XSharpClassifierProvider.cs" />
-    <Compile Include="XSharpConstants.cs" />
     <Compile Include="Outlining\XSharpOutlining.cs" />
     <Compile Include="Tokenizer\XSharpTokens.cs" />
   </ItemGroup>

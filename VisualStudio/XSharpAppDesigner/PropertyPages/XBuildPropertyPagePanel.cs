@@ -15,6 +15,9 @@ namespace XSharp.Project
     using System.Windows.Forms;
     using System.ComponentModel;
     using Microsoft.VisualStudio.Project;
+    using Microsoft.VisualStudio.Shell;
+    using VSLangProj;
+
     /// <summary>
     /// Property page contents for the Candle Settings page.
     /// </summary>
@@ -69,15 +72,10 @@ namespace XSharp.Project
 
         internal const string defaultOutputPath = @"bin\$(Configuration)\";
         internal const string defaultIntermediatePath = @"obj\$(Configuration)\";
+
+        
+
         #endregion
-        private void FillCombo(TypeConverter converter, System.Windows.Forms.ComboBox combo)
-        {
-            foreach (var enumvalue in converter.GetStandardValues(null))
-            {
-                var name = converter.ConvertTo(enumvalue, typeof(System.String));
-                combo.Items.Add(name); // new comboItem ((int) enumvalue, name));
-            }
-        }
 
 
         // =========================================================================================
@@ -98,82 +96,83 @@ namespace XSharp.Project
             this.toolTip1.SetToolTip(this.chkPPO, PPODescription);
 
             this.chkUseSharedCompilation.Text = captUseSharedCompilation;
-            this.chkUseSharedCompilation.Tag = "UseSharedCompilation";
+            this.chkUseSharedCompilation.Tag = XSharpProjectFileConstants.UseSharedCompilation;
             this.toolTip1.SetToolTip(this.chkUseSharedCompilation, descUseSharedCompilation);
 
             this.chkPrefer32Bit.Text = captPrefer32Bit;
-            this.chkPrefer32Bit.Tag = "Prefer32Bit";
+            this.chkPrefer32Bit.Tag = XSharpProjectFileConstants.Prefer32Bit;
             this.toolTip1.SetToolTip(this.chkPrefer32Bit, descPrefer32Bit);
 
             this.chkRegisterForComInterop.Text = captRegisterForComInterop;
-            this.chkRegisterForComInterop.Tag = "RegisterForComInterop";
+            this.chkRegisterForComInterop.Tag = XSharpProjectFileConstants.RegisterForComInterop;
             this.toolTip1.SetToolTip(this.chkRegisterForComInterop, descRegisterForComInterop);
 
             this.chkXMLDocumentationFile.Text = captDocumentationFile;
-            this.txtXMLDocumentationFile.Tag = "DocFile";
+            this.txtXMLDocumentationFile.Tag = XSharpProjectFileConstants.DocFile;
             this.toolTip1.SetToolTip(chkXMLDocumentationFile, descDocumentationFile);
             this.toolTip1.SetToolTip(txtXMLDocumentationFile, descDocumentationFileName);
 
-            this.chkOptimize.Text = captOptimize;
-            this.chkOptimize.Tag = "Optimize";
+            this.chkOptimize.Text =captOptimize;
+            this.chkOptimize.Tag = XSharpProjectFileConstants.Optimize;
             this.toolTip1.SetToolTip(this.chkOptimize, descOptimize);
 
             this.chkSignAssembly.Text = captSignAssembly;
-            this.chkSignAssembly.Tag = "SignAssembly";
+            this.chkSignAssembly.Tag = XSharpProjectFileConstants.SignAssembly;
             this.toolTip1.SetToolTip(this.chkSignAssembly, descSignAssembly);
 
             this.chkSuppressRCWarnings.Text = SuppressRCWarningsCaption;
-            this.chkSuppressRCWarnings.Tag = "SuppressRCWarnings";
+            this.chkSuppressRCWarnings.Tag = XSharpProjectFileConstants.SuppressRCWarnings;
             this.toolTip1.SetToolTip(this.chkSuppressRCWarnings, SuppressRCWarningsDescription);
 
             this.chkDelaySign.Text = captDelaySign;
-            this.chkDelaySign.Tag = "DelaySign";
+            this.chkDelaySign.Tag = XSharpProjectFileConstants.DelaySign;
             this.toolTip1.SetToolTip(this.chkDelaySign, descDelaySign);
 
-            this.txtDefineConstants.Tag = "DefineConstants";
+            this.txtDefineConstants.Tag = XSharpProjectFileConstants.DefineConstants;
             this.lblDefineConstants.Text = DefCaption;
             this.toolTip1.SetToolTip(this.txtDefineConstants, DefDescription);
             this.toolTip1.SetToolTip(this.lblDefineConstants, DefDescription);
 
-            this.txtCommandLineOption.Tag = "CommandLineOption";
+            this.txtCommandLineOption.Tag = XSharpProjectFileConstants.CommandLineOption;
             this.lblCommandLineOption.Text = CmdLineCaption;
             this.toolTip1.SetToolTip(txtCommandLineOption, CmdLineDescription);
             this.toolTip1.SetToolTip(lblCommandLineOption, CmdLineDescription);
 
-            this.txtDisabledWarnings.Tag = "DisabledWarnings";
+            this.txtDisabledWarnings.Tag = XSharpProjectFileConstants.DisabledWarnings;
             this.lblDisabledWarnings.Text = captDisabledWarnings;
             this.toolTip1.SetToolTip(lblDisabledWarnings, descDisabledWarnings);
             this.toolTip1.SetToolTip(txtDisabledWarnings, descDisabledWarnings);
 
-            this.txtOutputPath.Tag = "OutputPath";
+            this.txtOutputPath.Tag = XSharpProjectFileConstants.OutputPath;
             this.lblOutputPath.Text = captOutputPath;
             this.toolTip1.SetToolTip(txtOutputPath, descOutputPath);
             this.toolTip1.SetToolTip(lblOutputPath, descOutputPath);
 
 
-            this.txtIntermediateOutputPath.Tag = "IntermediateOutputPath";
+            this.txtIntermediateOutputPath.Tag = XSharpProjectFileConstants.IntermediateOutputPath;
             this.lblIntermediateOutputPath.Text = captIntermediateOutputPath;
             this.toolTip1.SetToolTip(txtIntermediateOutputPath, descIntermediateOutputPath);
             this.toolTip1.SetToolTip(lblIntermediateOutputPath, descIntermediateOutputPath);
 
-            this.txtAssemblyOriginatorKeyFile.Tag = "AssemblyOriginatorKeyFile";
+            this.txtAssemblyOriginatorKeyFile.Tag = XSharpProjectFileConstants.AssemblyOriginatorKeyFile;
             this.lblAssemblyOriginatorKeyFile.Text = captAssemblyOriginatorKeyFile;
             this.toolTip1.SetToolTip(txtAssemblyOriginatorKeyFile, descAssemblyOriginatorKeyFile);
             this.toolTip1.SetToolTip(lblAssemblyOriginatorKeyFile, descAssemblyOriginatorKeyFile);
 
             this.lblPlatformTarget.Text = captPlatFormTarget;
-            this.cboPlatformTarget.Tag = "PlatformTarget";
+            this.comboPlatformTarget.Tag = XSharpProjectFileConstants.PlatformTarget;
             this.toolTip1.SetToolTip(lblPlatformTarget, descPlatFormTarget);
-            this.toolTip1.SetToolTip(cboPlatformTarget, descPlatFormTarget);
+            this.toolTip1.SetToolTip(comboPlatformTarget, descPlatFormTarget);
 
             this.lblWarningLevel.Text = captWarningLevel;
-            this.cboWarningLevel.Tag = "WarningLevel";
+            this.cboWarningLevel.Tag = XSharpProjectFileConstants.WarningLevel;
             this.toolTip1.SetToolTip(lblWarningLevel, descWarningLevel);
             this.toolTip1.SetToolTip(cboWarningLevel, descWarningLevel);
 
-            this.txtSpecificWarnings.Tag = "SpecificWarnings";
+            this.txtSpecificWarnings.Tag = XSharpProjectFileConstants.SpecificWarnings;
             this.toolTip1.SetToolTip(txtSpecificWarnings, descPlatFormTarget);
 
+            FillCombo(new PlatformConverter(), comboPlatformTarget);
 
             // hook up the form to both editors
             Color defaultBackground = SystemColors.ButtonFace;
@@ -201,7 +200,64 @@ namespace XSharp.Project
                 UpdateWindowColors(child, clrBackground, clrForeground);
             }
         }
-      
 
+        private void btnOutputPathBrowse_Click(object sender, EventArgs e)
+        {
+            ThreadHelper.ThrowIfNotOnUIThread();
+            showMacroDialog(txtOutputPath, descOutputPath);
+        }
+
+        private void btnIntermediateOutputPath_Click(object sender, EventArgs e)
+        {
+            ThreadHelper.ThrowIfNotOnUIThread();
+            showMacroDialog(txtIntermediateOutputPath, descIntermediateOutputPath);
+        }
+        internal void Project_OnProjectPropertyChanged(object sender, ProjectPropertyChangedArgs e)
+        {
+            if (e.OldValue != e.NewValue)
+            {
+                if (string.Compare(e.PropertyName, XSharpProjectFileConstants.PlatformTarget, true) == 0)
+                {
+                    chkPrefer32Bit.Enabled = e.NewValue.ToLower() == "anycpu";
+                }
+            }
+        }
+
+        private void chkXMLDocumentationFile_CheckedChanged(object sender, EventArgs e)
+        {
+            ThreadHelper.ThrowIfNotOnUIThread();
+            string documentationFile = "";
+            if (chkXMLDocumentationFile.Checked)
+            {
+                var asmName = this.ParentPropertyPage.GetProperty(XSharpProjectFileConstants.AssemblyName);
+                documentationFile = asmName + ".Xml";
+            }
+            var tag = "DocFile"; ;
+            this.ParentPropertyPage.SetProperty(tag, documentationFile);
+            this.txtXMLDocumentationFile.Text = documentationFile;
+        }
+
+        protected internal override void BindProperties()
+        {
+            base.BindProperties();
+            this.chkXMLDocumentationFile.Checked = !string.IsNullOrEmpty(ParentPropertyPage.GetProperty("DocFile"));
+            var platform = ParentPropertyPage.GetProperty(XSharpProjectFileConstants.PlatformTarget);
+            if (string.Compare(platform, "anycpu",true) == 0)
+            {
+                this.chkPrefer32Bit.Enabled = true;
+            }
+            else
+            {
+                this.chkPrefer32Bit.Enabled = false;
+                this.chkPrefer32Bit.Checked = false;
+
+            }
+        }
+
+        private void btnKeyFile_Click(object sender, EventArgs e)
+        {
+            ThreadHelper.ThrowIfNotOnUIThread();
+            this.ShowOpenFileDialog(txtAssemblyOriginatorKeyFile, "Select Key File", "Key Files (*.snk; *.pfx)|*.snk;*.pfx|All files (*.*)|*.*");
+        }
     }
 }

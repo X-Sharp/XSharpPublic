@@ -52,17 +52,22 @@ namespace XSharp.Project
             this.chkOvf = new System.Windows.Forms.CheckBox();
             this.chkAZ = new System.Windows.Forms.CheckBox();
             this.lblPreprocessor = new System.Windows.Forms.Label();
-            this.lblStandardDefs = new System.Windows.Forms.Label();
-            this.chkNoStandardDefs = new System.Windows.Forms.CheckBox();
             this.tbIncludePath = new System.Windows.Forms.TextBox();
+            this.chkEnforceSelf = new System.Windows.Forms.CheckBox();
+            this.chkAllowDot = new System.Windows.Forms.CheckBox();
+            this.lblStandardDefs = new System.Windows.Forms.Label();
             this.tbStandardDefs = new System.Windows.Forms.TextBox();
+            this.btnStandardHeader = new System.Windows.Forms.Button();
+            this.chkNoStandardDefs = new System.Windows.Forms.CheckBox();
+            this.btnIncludePaths = new System.Windows.Forms.Button();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             this.tableLayoutPanel1.SuspendLayout();
             this.SuspendLayout();
             // 
             // tableLayoutPanel1
             // 
-            this.tableLayoutPanel1.ColumnCount = 3;
+            this.tableLayoutPanel1.ColumnCount = 4;
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
@@ -82,13 +87,17 @@ namespace XSharp.Project
             this.tableLayoutPanel1.Controls.Add(this.chkOvf, 0, 6);
             this.tableLayoutPanel1.Controls.Add(this.chkAZ, 0, 7);
             this.tableLayoutPanel1.Controls.Add(this.lblPreprocessor, 1, 6);
-            this.tableLayoutPanel1.Controls.Add(this.lblStandardDefs, 1, 8);
-            this.tableLayoutPanel1.Controls.Add(this.chkNoStandardDefs, 1, 9);
             this.tableLayoutPanel1.Controls.Add(this.tbIncludePath, 2, 7);
-            this.tableLayoutPanel1.Controls.Add(this.tbStandardDefs, 2, 8);
+            this.tableLayoutPanel1.Controls.Add(this.chkEnforceSelf, 0, 8);
+            this.tableLayoutPanel1.Controls.Add(this.chkAllowDot, 0, 9);
+            this.tableLayoutPanel1.Controls.Add(this.lblStandardDefs, 1, 9);
+            this.tableLayoutPanel1.Controls.Add(this.tbStandardDefs, 2, 9);
+            this.tableLayoutPanel1.Controls.Add(this.btnStandardHeader, 3, 9);
+            this.tableLayoutPanel1.Controls.Add(this.chkNoStandardDefs, 1, 8);
+            this.tableLayoutPanel1.Controls.Add(this.btnIncludePaths, 3, 7);
             this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel1.ForeColor = System.Drawing.Color.Black;
-            this.tableLayoutPanel1.Location = new System.Drawing.Point(3, 16);
+            this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 0);
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
             this.tableLayoutPanel1.RowCount = 11;
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
@@ -102,7 +111,7 @@ namespace XSharp.Project
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tableLayoutPanel1.Size = new System.Drawing.Size(615, 218);
+            this.tableLayoutPanel1.Size = new System.Drawing.Size(699, 457);
             this.tableLayoutPanel1.TabIndex = 0;
             // 
             // lblIncludePaths
@@ -110,22 +119,22 @@ namespace XSharp.Project
             this.lblIncludePaths.AutoSize = true;
             this.lblIncludePaths.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
             this.lblIncludePaths.ForeColor = System.Drawing.Color.Black;
-            this.lblIncludePaths.Location = new System.Drawing.Point(154, 139);
+            this.lblIncludePaths.Location = new System.Drawing.Point(193, 139);
             this.lblIncludePaths.Margin = new System.Windows.Forms.Padding(5, 3, 3, 0);
             this.lblIncludePaths.Name = "lblIncludePaths";
             this.lblIncludePaths.Size = new System.Drawing.Size(115, 13);
-            this.lblIncludePaths.TabIndex = 15;
+            this.lblIncludePaths.TabIndex = 17;
             this.lblIncludePaths.Text = "Additionl Include Paths";
             // 
             // chkNS
             // 
             this.chkNS.AutoSize = true;
             this.chkNS.ForeColor = System.Drawing.Color.Black;
-            this.chkNS.Location = new System.Drawing.Point(154, 99);
+            this.chkNS.Location = new System.Drawing.Point(193, 99);
             this.chkNS.Margin = new System.Windows.Forms.Padding(5, 3, 3, 0);
             this.chkNS.Name = "chkNS";
             this.chkNS.Size = new System.Drawing.Size(91, 17);
-            this.chkNS.TabIndex = 13;
+            this.chkNS.TabIndex = 15;
             this.chkNS.Text = "Prefix Classes";
             this.chkNS.UseVisualStyleBackColor = true;
             // 
@@ -133,11 +142,11 @@ namespace XSharp.Project
             // 
             this.chkIns.AutoSize = true;
             this.chkIns.ForeColor = System.Drawing.Color.Black;
-            this.chkIns.Location = new System.Drawing.Point(154, 79);
+            this.chkIns.Location = new System.Drawing.Point(193, 79);
             this.chkIns.Margin = new System.Windows.Forms.Padding(5, 3, 3, 0);
             this.chkIns.Name = "chkIns";
             this.chkIns.Size = new System.Drawing.Size(199, 17);
-            this.chkIns.TabIndex = 12;
+            this.chkIns.TabIndex = 14;
             this.chkIns.Text = "Enable Imcplicit Namespace Lookuo";
             this.chkIns.UseVisualStyleBackColor = true;
             // 
@@ -146,22 +155,22 @@ namespace XSharp.Project
             this.lblNamespaces.AutoSize = true;
             this.lblNamespaces.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblNamespaces.ForeColor = System.Drawing.Color.Black;
-            this.lblNamespaces.Location = new System.Drawing.Point(154, 59);
+            this.lblNamespaces.Location = new System.Drawing.Point(193, 59);
             this.lblNamespaces.Margin = new System.Windows.Forms.Padding(5, 3, 3, 0);
             this.lblNamespaces.Name = "lblNamespaces";
             this.lblNamespaces.Size = new System.Drawing.Size(79, 13);
-            this.lblNamespaces.TabIndex = 11;
+            this.lblNamespaces.TabIndex = 13;
             this.lblNamespaces.Text = "Namespaces";
             // 
             // chkUndefined
             // 
             this.chkUndefined.AutoSize = true;
             this.chkUndefined.ForeColor = System.Drawing.Color.Black;
-            this.chkUndefined.Location = new System.Drawing.Point(154, 39);
+            this.chkUndefined.Location = new System.Drawing.Point(193, 39);
             this.chkUndefined.Margin = new System.Windows.Forms.Padding(5, 3, 3, 0);
             this.chkUndefined.Name = "chkUndefined";
             this.chkUndefined.Size = new System.Drawing.Size(163, 17);
-            this.chkUndefined.TabIndex = 10;
+            this.chkUndefined.TabIndex = 12;
             this.chkUndefined.Text = "Enable Undeclared Variables";
             this.chkUndefined.UseVisualStyleBackColor = true;
             // 
@@ -169,11 +178,11 @@ namespace XSharp.Project
             // 
             this.chkMemVar.AutoSize = true;
             this.chkMemVar.ForeColor = System.Drawing.Color.Black;
-            this.chkMemVar.Location = new System.Drawing.Point(154, 19);
+            this.chkMemVar.Location = new System.Drawing.Point(193, 19);
             this.chkMemVar.Margin = new System.Windows.Forms.Padding(5, 3, 3, 0);
             this.chkMemVar.Name = "chkMemVar";
             this.chkMemVar.Size = new System.Drawing.Size(105, 17);
-            this.chkMemVar.TabIndex = 9;
+            this.chkMemVar.TabIndex = 11;
             this.chkMemVar.Text = "Enable Memvars";
             this.chkMemVar.UseVisualStyleBackColor = true;
             // 
@@ -182,11 +191,11 @@ namespace XSharp.Project
             this.lblMemVar.AutoSize = true;
             this.lblMemVar.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblMemVar.ForeColor = System.Drawing.Color.Black;
-            this.lblMemVar.Location = new System.Drawing.Point(154, 3);
+            this.lblMemVar.Location = new System.Drawing.Point(193, 3);
             this.lblMemVar.Margin = new System.Windows.Forms.Padding(5, 3, 3, 0);
             this.lblMemVar.Name = "lblMemVar";
             this.lblMemVar.Size = new System.Drawing.Size(105, 13);
-            this.lblMemVar.TabIndex = 8;
+            this.lblMemVar.TabIndex = 10;
             this.lblMemVar.Text = "Memory variables";
             // 
             // lblGeneral
@@ -290,56 +299,103 @@ namespace XSharp.Project
             this.lblPreprocessor.AutoSize = true;
             this.lblPreprocessor.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblPreprocessor.ForeColor = System.Drawing.Color.Black;
-            this.lblPreprocessor.Location = new System.Drawing.Point(154, 119);
+            this.lblPreprocessor.Location = new System.Drawing.Point(193, 119);
             this.lblPreprocessor.Margin = new System.Windows.Forms.Padding(5, 3, 3, 0);
             this.lblPreprocessor.Name = "lblPreprocessor";
             this.lblPreprocessor.Size = new System.Drawing.Size(81, 13);
-            this.lblPreprocessor.TabIndex = 14;
+            this.lblPreprocessor.TabIndex = 16;
             this.lblPreprocessor.Text = "Preprocessor";
+            // 
+            // tbIncludePath
+            // 
+            this.tbIncludePath.BackColor = System.Drawing.Color.White;
+            this.tbIncludePath.ForeColor = System.Drawing.Color.Black;
+            this.tbIncludePath.Location = new System.Drawing.Point(400, 139);
+            this.tbIncludePath.Margin = new System.Windows.Forms.Padding(5, 3, 3, 0);
+            this.tbIncludePath.Name = "tbIncludePath";
+            this.tbIncludePath.Size = new System.Drawing.Size(250, 20);
+            this.tbIncludePath.TabIndex = 18;
+            // 
+            // chkEnforceSelf
+            // 
+            this.chkEnforceSelf.AutoSize = true;
+            this.chkEnforceSelf.ForeColor = System.Drawing.Color.Black;
+            this.chkEnforceSelf.Location = new System.Drawing.Point(5, 168);
+            this.chkEnforceSelf.Margin = new System.Windows.Forms.Padding(5, 3, 3, 0);
+            this.chkEnforceSelf.Name = "chkEnforceSelf";
+            this.chkEnforceSelf.Size = new System.Drawing.Size(92, 17);
+            this.chkEnforceSelf.TabIndex = 8;
+            this.chkEnforceSelf.Text = "Enforce SELF";
+            this.chkEnforceSelf.UseVisualStyleBackColor = true;
+            // 
+            // chkAllowDot
+            // 
+            this.chkAllowDot.AutoSize = true;
+            this.chkAllowDot.ForeColor = System.Drawing.Color.Black;
+            this.chkAllowDot.Location = new System.Drawing.Point(5, 188);
+            this.chkAllowDot.Margin = new System.Windows.Forms.Padding(5, 3, 3, 0);
+            this.chkAllowDot.Name = "chkAllowDot";
+            this.chkAllowDot.Size = new System.Drawing.Size(180, 17);
+            this.chkAllowDot.TabIndex = 9;
+            this.chkAllowDot.Text = "Allow DOT for instance members";
+            this.chkAllowDot.UseVisualStyleBackColor = true;
             // 
             // lblStandardDefs
             // 
             this.lblStandardDefs.AutoSize = true;
             this.lblStandardDefs.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
             this.lblStandardDefs.ForeColor = System.Drawing.Color.Black;
-            this.lblStandardDefs.Location = new System.Drawing.Point(154, 162);
+            this.lblStandardDefs.Location = new System.Drawing.Point(193, 188);
             this.lblStandardDefs.Margin = new System.Windows.Forms.Padding(5, 3, 3, 0);
             this.lblStandardDefs.Name = "lblStandardDefs";
             this.lblStandardDefs.Size = new System.Drawing.Size(152, 13);
-            this.lblStandardDefs.TabIndex = 16;
+            this.lblStandardDefs.TabIndex = 21;
             this.lblStandardDefs.Text = "Alternate Standard Header File";
-            // 
-            // chkNoStandardDefs
-            // 
-            this.chkNoStandardDefs.AutoSize = true;
-            this.chkNoStandardDefs.ForeColor = System.Drawing.Color.Black;
-            this.chkNoStandardDefs.Location = new System.Drawing.Point(154, 185);
-            this.chkNoStandardDefs.Margin = new System.Windows.Forms.Padding(5, 3, 3, 0);
-            this.chkNoStandardDefs.Name = "chkNoStandardDefs";
-            this.chkNoStandardDefs.Size = new System.Drawing.Size(173, 17);
-            this.chkNoStandardDefs.TabIndex = 17;
-            this.chkNoStandardDefs.Text = "Suppress Standard Header File";
-            this.chkNoStandardDefs.UseVisualStyleBackColor = true;
-            // 
-            // tbIncludePath
-            // 
-            this.tbIncludePath.BackColor = System.Drawing.Color.White;
-            this.tbIncludePath.ForeColor = System.Drawing.Color.Black;
-            this.tbIncludePath.Location = new System.Drawing.Point(361, 139);
-            this.tbIncludePath.Margin = new System.Windows.Forms.Padding(5, 3, 3, 0);
-            this.tbIncludePath.Name = "tbIncludePath";
-            this.tbIncludePath.Size = new System.Drawing.Size(250, 20);
-            this.tbIncludePath.TabIndex = 18;
             // 
             // tbStandardDefs
             // 
             this.tbStandardDefs.BackColor = System.Drawing.Color.White;
             this.tbStandardDefs.ForeColor = System.Drawing.Color.Black;
-            this.tbStandardDefs.Location = new System.Drawing.Point(361, 162);
+            this.tbStandardDefs.Location = new System.Drawing.Point(400, 188);
             this.tbStandardDefs.Margin = new System.Windows.Forms.Padding(5, 3, 3, 0);
             this.tbStandardDefs.Name = "tbStandardDefs";
             this.tbStandardDefs.Size = new System.Drawing.Size(250, 20);
-            this.tbStandardDefs.TabIndex = 19;
+            this.tbStandardDefs.TabIndex = 22;
+            // 
+            // btnStandardHeader
+            // 
+            this.btnStandardHeader.ForeColor = System.Drawing.Color.Black;
+            this.btnStandardHeader.Location = new System.Drawing.Point(656, 188);
+            this.btnStandardHeader.Name = "btnStandardHeader";
+            this.btnStandardHeader.Size = new System.Drawing.Size(23, 23);
+            this.btnStandardHeader.TabIndex = 23;
+            this.btnStandardHeader.Text = "...";
+            this.btnStandardHeader.UseVisualStyleBackColor = true;
+            this.btnStandardHeader.Click += new System.EventHandler(this.btnStandardHeader_Click);
+            // 
+            // chkNoStandardDefs
+            // 
+            this.chkNoStandardDefs.AutoSize = true;
+            this.chkNoStandardDefs.ForeColor = System.Drawing.Color.Black;
+            this.chkNoStandardDefs.Location = new System.Drawing.Point(193, 168);
+            this.chkNoStandardDefs.Margin = new System.Windows.Forms.Padding(5, 3, 3, 0);
+            this.chkNoStandardDefs.Name = "chkNoStandardDefs";
+            this.chkNoStandardDefs.Size = new System.Drawing.Size(173, 17);
+            this.chkNoStandardDefs.TabIndex = 20;
+            this.chkNoStandardDefs.Text = "Suppress Standard Header File";
+            this.chkNoStandardDefs.UseVisualStyleBackColor = true;
+            this.chkNoStandardDefs.CheckedChanged += new System.EventHandler(this.chkNoStandardDefs_CheckedChanged);
+            // 
+            // btnIncludePaths
+            // 
+            this.btnIncludePaths.ForeColor = System.Drawing.Color.Black;
+            this.btnIncludePaths.Location = new System.Drawing.Point(656, 139);
+            this.btnIncludePaths.Name = "btnIncludePaths";
+            this.btnIncludePaths.Size = new System.Drawing.Size(23, 23);
+            this.btnIncludePaths.TabIndex = 19;
+            this.btnIncludePaths.Text = "...";
+            this.btnIncludePaths.UseVisualStyleBackColor = true;
+            this.btnIncludePaths.Click += new System.EventHandler(this.chkIncludePaths_Click);
             // 
             // XLanguagePropertyPagePanel
             // 
@@ -379,5 +435,9 @@ namespace XSharp.Project
         private System.Windows.Forms.TextBox tbIncludePath;
         private System.Windows.Forms.TextBox tbStandardDefs;
         private System.Windows.Forms.ToolTip toolTip1;
+        private System.Windows.Forms.CheckBox chkEnforceSelf;
+        private System.Windows.Forms.CheckBox chkAllowDot;
+        private System.Windows.Forms.Button btnStandardHeader;
+        private System.Windows.Forms.Button btnIncludePaths;
     }
 }

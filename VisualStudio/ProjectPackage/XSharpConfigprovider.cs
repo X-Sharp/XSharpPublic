@@ -100,21 +100,26 @@ namespace XSharp.Project
                 info.dlo = DEBUG_LAUNCH_OPERATION.DLO_CreateProcess;
 
                 // On first call, reset the cache, following calls will use the cached values
-                string property = GetConfigurationProperty("DebuggerCommand", true);
+                
+                string property = GetConfigurationProperty(XSharpProjectFileConstants.DebuggerCommand, true);
                 if (string.IsNullOrEmpty(property))
                 {
                     property = this._project.GetOutputAssembly(this.ConfigCanonicalName);
                 }
                 info.bstrExe = property;
 
-                property = GetConfigurationProperty("DebuggerWorkingDirectory", false);
+                property = GetConfigurationProperty(XSharpProjectFileConstants.DebuggerWorkingDirectory, false);
                 if (string.IsNullOrEmpty(property))
                 {
                     property = Path.GetDirectoryName(info.bstrExe);
                 }
+                if (! Path.IsPathRooted(property))
+                {
+                    property = Path.Combine(this.ProjectMgr.ProjectFolder, property);
+                }
                 info.bstrCurDir = property;
 
-                property = GetConfigurationProperty("DebuggerCommandArguments", false);
+                property = GetConfigurationProperty(XSharpProjectFileConstants.DebuggerCommandArguments, false);
                 if (!string.IsNullOrEmpty(property))
                 {
                     info.bstrArg = property;
@@ -137,7 +142,7 @@ namespace XSharp.Project
                 }
 
 
-                property = GetConfigurationProperty("EnableUnmanagedDebugging", false);
+                property = GetConfigurationProperty(XSharpProjectFileConstants.EnableUnmanagedDebugging, false);
                 if (property != null && string.Compare(property, "true", StringComparison.OrdinalIgnoreCase) == 0)
                 {
                     info.clsidCustom = VSConstants.DebugEnginesGuids.ManagedAndNative_guid; // {92EF0900-2251-11D2-B72E-0000F87572EF}

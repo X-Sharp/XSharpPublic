@@ -62,11 +62,11 @@ namespace XSharp.Project
             this.lblIntermediateOutputPath = new System.Windows.Forms.Label();
             this.txtXMLDocumentationFile = new System.Windows.Forms.TextBox();
             this.txtIntermediateOutputPath = new System.Windows.Forms.TextBox();
-            this.button1 = new System.Windows.Forms.Button();
+            this.btnIntermediateOutputPath = new System.Windows.Forms.Button();
             this.chkPPO = new System.Windows.Forms.CheckBox();
             this.chkXMLDocumentationFile = new System.Windows.Forms.CheckBox();
             this.lblPlatformTarget = new System.Windows.Forms.Label();
-            this.cboPlatformTarget = new System.Windows.Forms.ComboBox();
+            this.comboPlatformTarget = new System.Windows.Forms.ComboBox();
             this.chkOptimize = new System.Windows.Forms.CheckBox();
             this.chkUseSharedCompilation = new System.Windows.Forms.CheckBox();
             this.chkPrefer32Bit = new System.Windows.Forms.CheckBox();
@@ -83,6 +83,7 @@ namespace XSharp.Project
             this.rbWarningSpecific = new System.Windows.Forms.RadioButton();
             this.chkSuppressRCWarnings = new System.Windows.Forms.CheckBox();
             this.txtSpecificWarnings = new System.Windows.Forms.TextBox();
+            this.btnKeyFile = new System.Windows.Forms.Button();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             this.mainPanel.SuspendLayout();
             this.panelSigning.SuspendLayout();
@@ -96,7 +97,7 @@ namespace XSharp.Project
             // 
             this.mainPanel.ColumnCount = 3;
             this.mainPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-            this.mainPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 300F));
+            this.mainPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
             this.mainPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
             this.mainPanel.Controls.Add(this.panelSigning, 0, 23);
             this.mainPanel.Controls.Add(this.outputTableLayoutPanel, 0, 15);
@@ -114,11 +115,11 @@ namespace XSharp.Project
             this.mainPanel.Controls.Add(this.lblIntermediateOutputPath, 0, 17);
             this.mainPanel.Controls.Add(this.txtXMLDocumentationFile, 1, 20);
             this.mainPanel.Controls.Add(this.txtIntermediateOutputPath, 1, 17);
-            this.mainPanel.Controls.Add(this.button1, 2, 17);
+            this.mainPanel.Controls.Add(this.btnIntermediateOutputPath, 2, 17);
             this.mainPanel.Controls.Add(this.chkPPO, 0, 2);
             this.mainPanel.Controls.Add(this.chkXMLDocumentationFile, 0, 20);
             this.mainPanel.Controls.Add(this.lblPlatformTarget, 0, 3);
-            this.mainPanel.Controls.Add(this.cboPlatformTarget, 1, 3);
+            this.mainPanel.Controls.Add(this.comboPlatformTarget, 1, 3);
             this.mainPanel.Controls.Add(this.chkOptimize, 0, 4);
             this.mainPanel.Controls.Add(this.chkUseSharedCompilation, 0, 5);
             this.mainPanel.Controls.Add(this.chkPrefer32Bit, 2, 3);
@@ -135,6 +136,7 @@ namespace XSharp.Project
             this.mainPanel.Controls.Add(this.rbWarningSpecific, 0, 13);
             this.mainPanel.Controls.Add(this.chkSuppressRCWarnings, 0, 14);
             this.mainPanel.Controls.Add(this.txtSpecificWarnings, 1, 13);
+            this.mainPanel.Controls.Add(this.btnKeyFile, 2, 24);
             this.mainPanel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.mainPanel.ForeColor = System.Drawing.Color.Black;
             this.mainPanel.Location = new System.Drawing.Point(0, 0);
@@ -407,7 +409,7 @@ namespace XSharp.Project
             this.txtDefineConstants.Location = new System.Drawing.Point(198, 24);
             this.txtDefineConstants.Margin = new System.Windows.Forms.Padding(3, 11, 3, 3);
             this.txtDefineConstants.Name = "txtDefineConstants";
-            this.txtDefineConstants.Size = new System.Drawing.Size(294, 20);
+            this.txtDefineConstants.Size = new System.Drawing.Size(300, 20);
             this.txtDefineConstants.TabIndex = 3;
             // 
             // lblDefineConstants
@@ -462,7 +464,7 @@ namespace XSharp.Project
             this.txtDisabledWarnings.Location = new System.Drawing.Point(198, 221);
             this.txtDisabledWarnings.Margin = new System.Windows.Forms.Padding(3, 3, 3, 11);
             this.txtDisabledWarnings.Name = "txtDisabledWarnings";
-            this.txtDisabledWarnings.Size = new System.Drawing.Size(294, 20);
+            this.txtDisabledWarnings.Size = new System.Drawing.Size(300, 20);
             this.txtDisabledWarnings.TabIndex = 17;
             // 
             // txtOutputPath
@@ -473,7 +475,8 @@ namespace XSharp.Project
             this.txtOutputPath.Location = new System.Drawing.Point(198, 398);
             this.txtOutputPath.Margin = new System.Windows.Forms.Padding(3, 11, 3, 3);
             this.txtOutputPath.Name = "txtOutputPath";
-            this.txtOutputPath.Size = new System.Drawing.Size(294, 20);
+            this.txtOutputPath.ReadOnly = true;
+            this.txtOutputPath.Size = new System.Drawing.Size(300, 20);
             this.txtOutputPath.TabIndex = 27;
             // 
             // btnOutputPathBrowse
@@ -482,12 +485,13 @@ namespace XSharp.Project
             this.btnOutputPathBrowse.AutoSize = true;
             this.btnOutputPathBrowse.ForeColor = System.Drawing.Color.Black;
             this.btnOutputPathBrowse.ImeMode = System.Windows.Forms.ImeMode.NoControl;
-            this.btnOutputPathBrowse.Location = new System.Drawing.Point(498, 397);
+            this.btnOutputPathBrowse.Location = new System.Drawing.Point(504, 397);
             this.btnOutputPathBrowse.Margin = new System.Windows.Forms.Padding(3, 11, 0, 3);
             this.btnOutputPathBrowse.Name = "btnOutputPathBrowse";
-            this.btnOutputPathBrowse.Size = new System.Drawing.Size(120, 23);
+            this.btnOutputPathBrowse.Size = new System.Drawing.Size(26, 23);
             this.btnOutputPathBrowse.TabIndex = 29;
-            this.btnOutputPathBrowse.Text = "B&rowse...";
+            this.btnOutputPathBrowse.Text = "...";
+            this.btnOutputPathBrowse.Click += new System.EventHandler(this.btnOutputPathBrowse_Click);
             // 
             // lblIntermediateOutputPath
             // 
@@ -511,7 +515,7 @@ namespace XSharp.Project
             this.txtXMLDocumentationFile.Location = new System.Drawing.Point(198, 455);
             this.txtXMLDocumentationFile.Name = "txtXMLDocumentationFile";
             this.txtXMLDocumentationFile.ReadOnly = true;
-            this.txtXMLDocumentationFile.Size = new System.Drawing.Size(294, 20);
+            this.txtXMLDocumentationFile.Size = new System.Drawing.Size(300, 20);
             this.txtXMLDocumentationFile.TabIndex = 28;
             // 
             // txtIntermediateOutputPath
@@ -521,21 +525,23 @@ namespace XSharp.Project
             this.txtIntermediateOutputPath.ForeColor = System.Drawing.Color.Black;
             this.txtIntermediateOutputPath.Location = new System.Drawing.Point(198, 427);
             this.txtIntermediateOutputPath.Name = "txtIntermediateOutputPath";
-            this.txtIntermediateOutputPath.Size = new System.Drawing.Size(294, 20);
+            this.txtIntermediateOutputPath.ReadOnly = true;
+            this.txtIntermediateOutputPath.Size = new System.Drawing.Size(300, 20);
             this.txtIntermediateOutputPath.TabIndex = 32;
             // 
-            // button1
+            // btnIntermediateOutputPath
             // 
-            this.button1.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.button1.AutoSize = true;
-            this.button1.ForeColor = System.Drawing.Color.Black;
-            this.button1.ImeMode = System.Windows.Forms.ImeMode.NoControl;
-            this.button1.Location = new System.Drawing.Point(498, 426);
-            this.button1.Margin = new System.Windows.Forms.Padding(3, 3, 0, 3);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(120, 23);
-            this.button1.TabIndex = 33;
-            this.button1.Text = "B&rowse...";
+            this.btnIntermediateOutputPath.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.btnIntermediateOutputPath.AutoSize = true;
+            this.btnIntermediateOutputPath.ForeColor = System.Drawing.Color.Black;
+            this.btnIntermediateOutputPath.ImeMode = System.Windows.Forms.ImeMode.NoControl;
+            this.btnIntermediateOutputPath.Location = new System.Drawing.Point(504, 426);
+            this.btnIntermediateOutputPath.Margin = new System.Windows.Forms.Padding(3, 3, 0, 3);
+            this.btnIntermediateOutputPath.Name = "btnIntermediateOutputPath";
+            this.btnIntermediateOutputPath.Size = new System.Drawing.Size(26, 23);
+            this.btnIntermediateOutputPath.TabIndex = 33;
+            this.btnIntermediateOutputPath.Text = "...";
+            this.btnIntermediateOutputPath.Click += new System.EventHandler(this.btnIntermediateOutputPath_Click);
             // 
             // chkPPO
             // 
@@ -561,6 +567,7 @@ namespace XSharp.Project
             this.chkXMLDocumentationFile.Size = new System.Drawing.Size(140, 17);
             this.chkXMLDocumentationFile.TabIndex = 26;
             this.chkXMLDocumentationFile.Text = "&XML documentation file:";
+            this.chkXMLDocumentationFile.CheckedChanged += new System.EventHandler(this.chkXMLDocumentationFile_CheckedChanged);
             // 
             // lblPlatformTarget
             // 
@@ -573,17 +580,17 @@ namespace XSharp.Project
             this.lblPlatformTarget.TabIndex = 7;
             this.lblPlatformTarget.Text = "Platform Target";
             // 
-            // cboPlatformTarget
+            // comboPlatformTarget
             // 
-            this.cboPlatformTarget.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.cboPlatformTarget.BackColor = System.Drawing.Color.White;
-            this.cboPlatformTarget.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cboPlatformTarget.ForeColor = System.Drawing.Color.Black;
-            this.cboPlatformTarget.FormattingEnabled = true;
-            this.cboPlatformTarget.Location = new System.Drawing.Point(198, 73);
-            this.cboPlatformTarget.Name = "cboPlatformTarget";
-            this.cboPlatformTarget.Size = new System.Drawing.Size(133, 21);
-            this.cboPlatformTarget.TabIndex = 7;
+            this.comboPlatformTarget.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.comboPlatformTarget.BackColor = System.Drawing.Color.White;
+            this.comboPlatformTarget.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboPlatformTarget.ForeColor = System.Drawing.Color.Black;
+            this.comboPlatformTarget.FormattingEnabled = true;
+            this.comboPlatformTarget.Location = new System.Drawing.Point(198, 73);
+            this.comboPlatformTarget.Name = "comboPlatformTarget";
+            this.comboPlatformTarget.Size = new System.Drawing.Size(133, 21);
+            this.comboPlatformTarget.TabIndex = 7;
             // 
             // chkOptimize
             // 
@@ -615,7 +622,7 @@ namespace XSharp.Project
             // 
             this.chkPrefer32Bit.AutoSize = true;
             this.chkPrefer32Bit.ForeColor = System.Drawing.Color.Black;
-            this.chkPrefer32Bit.Location = new System.Drawing.Point(498, 73);
+            this.chkPrefer32Bit.Location = new System.Drawing.Point(504, 73);
             this.chkPrefer32Bit.Name = "chkPrefer32Bit";
             this.chkPrefer32Bit.Size = new System.Drawing.Size(83, 17);
             this.chkPrefer32Bit.TabIndex = 8;
@@ -656,7 +663,7 @@ namespace XSharp.Project
             this.txtCommandLineOption.ForeColor = System.Drawing.Color.Black;
             this.txtCommandLineOption.Location = new System.Drawing.Point(198, 146);
             this.txtCommandLineOption.Name = "txtCommandLineOption";
-            this.txtCommandLineOption.Size = new System.Drawing.Size(294, 20);
+            this.txtCommandLineOption.Size = new System.Drawing.Size(300, 20);
             this.txtCommandLineOption.TabIndex = 36;
             // 
             // chkSignAssembly
@@ -665,7 +672,7 @@ namespace XSharp.Project
             this.chkSignAssembly.AutoSize = true;
             this.chkSignAssembly.ForeColor = System.Drawing.Color.Black;
             this.chkSignAssembly.ImeMode = System.Windows.Forms.ImeMode.NoControl;
-            this.chkSignAssembly.Location = new System.Drawing.Point(23, 543);
+            this.chkSignAssembly.Location = new System.Drawing.Point(23, 554);
             this.chkSignAssembly.Margin = new System.Windows.Forms.Padding(23, 3, 3, 3);
             this.chkSignAssembly.Name = "chkSignAssembly";
             this.chkSignAssembly.Size = new System.Drawing.Size(145, 17);
@@ -678,7 +685,7 @@ namespace XSharp.Project
             this.lblAssemblyOriginatorKeyFile.AutoSize = true;
             this.lblAssemblyOriginatorKeyFile.ForeColor = System.Drawing.Color.Black;
             this.lblAssemblyOriginatorKeyFile.ImeMode = System.Windows.Forms.ImeMode.NoControl;
-            this.lblAssemblyOriginatorKeyFile.Location = new System.Drawing.Point(20, 520);
+            this.lblAssemblyOriginatorKeyFile.Location = new System.Drawing.Point(20, 526);
             this.lblAssemblyOriginatorKeyFile.Margin = new System.Windows.Forms.Padding(20, 3, 3, 3);
             this.lblAssemblyOriginatorKeyFile.Name = "lblAssemblyOriginatorKeyFile";
             this.lblAssemblyOriginatorKeyFile.Size = new System.Drawing.Size(104, 13);
@@ -690,9 +697,9 @@ namespace XSharp.Project
             this.txtAssemblyOriginatorKeyFile.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.txtAssemblyOriginatorKeyFile.BackColor = System.Drawing.Color.White;
             this.txtAssemblyOriginatorKeyFile.ForeColor = System.Drawing.Color.Black;
-            this.txtAssemblyOriginatorKeyFile.Location = new System.Drawing.Point(198, 517);
+            this.txtAssemblyOriginatorKeyFile.Location = new System.Drawing.Point(198, 522);
             this.txtAssemblyOriginatorKeyFile.Name = "txtAssemblyOriginatorKeyFile";
-            this.txtAssemblyOriginatorKeyFile.Size = new System.Drawing.Size(294, 20);
+            this.txtAssemblyOriginatorKeyFile.Size = new System.Drawing.Size(300, 20);
             this.txtAssemblyOriginatorKeyFile.TabIndex = 39;
             // 
             // chkDelaySign
@@ -701,7 +708,7 @@ namespace XSharp.Project
             this.chkDelaySign.AutoSize = true;
             this.chkDelaySign.ForeColor = System.Drawing.Color.Black;
             this.chkDelaySign.ImeMode = System.Windows.Forms.ImeMode.NoControl;
-            this.chkDelaySign.Location = new System.Drawing.Point(198, 543);
+            this.chkDelaySign.Location = new System.Drawing.Point(198, 554);
             this.chkDelaySign.Name = "chkDelaySign";
             this.chkDelaySign.Size = new System.Drawing.Size(113, 17);
             this.chkDelaySign.TabIndex = 40;
@@ -780,8 +787,22 @@ namespace XSharp.Project
             this.txtSpecificWarnings.ForeColor = System.Drawing.Color.Black;
             this.txtSpecificWarnings.Location = new System.Drawing.Point(198, 324);
             this.txtSpecificWarnings.Name = "txtSpecificWarnings";
-            this.txtSpecificWarnings.Size = new System.Drawing.Size(294, 20);
+            this.txtSpecificWarnings.Size = new System.Drawing.Size(300, 20);
             this.txtSpecificWarnings.TabIndex = 22;
+            // 
+            // btnKeyFile
+            // 
+            this.btnKeyFile.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.btnKeyFile.AutoSize = true;
+            this.btnKeyFile.ForeColor = System.Drawing.Color.Black;
+            this.btnKeyFile.ImeMode = System.Windows.Forms.ImeMode.NoControl;
+            this.btnKeyFile.Location = new System.Drawing.Point(504, 525);
+            this.btnKeyFile.Margin = new System.Windows.Forms.Padding(3, 11, 0, 3);
+            this.btnKeyFile.Name = "btnKeyFile";
+            this.btnKeyFile.Size = new System.Drawing.Size(26, 23);
+            this.btnKeyFile.TabIndex = 44;
+            this.btnKeyFile.Text = "...";
+            this.btnKeyFile.Click += new System.EventHandler(this.btnKeyFile_Click);
             // 
             // XBuildPropertyPagePanel
             // 
@@ -814,7 +835,7 @@ namespace XSharp.Project
         private System.Windows.Forms.Label lblGeneralLine;
         private System.Windows.Forms.Label lblGeneral;
         internal System.Windows.Forms.TextBox txtDefineConstants;
-        internal System.Windows.Forms.ComboBox cboPlatformTarget;
+        internal System.Windows.Forms.ComboBox comboPlatformTarget;
         private System.Windows.Forms.Label lblDefineConstants;
         private System.Windows.Forms.CheckBox chkPPO;
         private System.Windows.Forms.Label lblPlatformTarget;
@@ -845,7 +866,7 @@ namespace XSharp.Project
         internal System.Windows.Forms.Label lblIntermediateOutputPath;
         internal System.Windows.Forms.TextBox txtXMLDocumentationFile;
         internal System.Windows.Forms.TextBox txtIntermediateOutputPath;
-        internal System.Windows.Forms.Button button1;
+        internal System.Windows.Forms.Button btnIntermediateOutputPath;
         private System.Windows.Forms.CheckBox chkUseSharedCompilation;
         internal System.Windows.Forms.Label lblCommandLineOption;
         internal System.Windows.Forms.TextBox txtCommandLineOption;
@@ -858,5 +879,6 @@ namespace XSharp.Project
         internal System.Windows.Forms.CheckBox chkDelaySign;
         private System.Windows.Forms.ToolTip toolTip1;
         internal System.Windows.Forms.CheckBox chkSuppressRCWarnings;
+        internal System.Windows.Forms.Button btnKeyFile;
     }
 }

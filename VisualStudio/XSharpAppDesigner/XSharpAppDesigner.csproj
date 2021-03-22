@@ -70,9 +70,9 @@
     <Compile Include="..\..\Common\Constants.cs">
       <Link>Constants.cs</Link>
     </Compile>
-    <Compile Include="Attributes\LocDisplayNameAttribute.cs" />
-    <Compile Include="Attributes\ResourcesCategoryAttribute.cs" />
-    <Compile Include="Attributes\ResourcesDescriptionAttribute.cs" />
+    <Compile Include="..\..\Common\XSharpConstants.cs">
+      <Link>XSharpConstants.cs</Link>
+    </Compile>
     <Compile Include="IXsProjectDesigner.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="PropertyPages\Enums.cs" />
@@ -83,6 +83,13 @@
       <DependentUpon>XBuildPropertyPagePanel.cs</DependentUpon>
     </Compile>
     <Compile Include="PropertyPages\XBuildPropertyPage.cs" />
+    <Compile Include="PropertyPages\XDebugPropertyPage.cs" />
+    <Compile Include="PropertyPages\XDebugPropertyPagePanel.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="PropertyPages\XDebugPropertyPagePanel.Designer.cs">
+      <DependentUpon>XDebugPropertyPagePanel.cs</DependentUpon>
+    </Compile>
     <Compile Include="PropertyPages\XGeneralPropertyPagePanel.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -105,27 +112,11 @@
     <Compile Include="PropertyPages\XLanguagePropertyPagePanel.Designer.cs">
       <DependentUpon>XLanguagePropertyPagePanel.cs</DependentUpon>
     </Compile>
-    <Compile Include="PropertyPages\XSharpBuildEventsPropertyPagePanel.cs">
+    <Compile Include="PropertyPages\XBuildEventsPropertyPagePanel.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="PropertyPages\XSharpBuildEventsPropertyPagePanel.Designer.cs">
-      <DependentUpon>XSharpBuildEventsPropertyPagePanel.cs</DependentUpon>
-    </Compile>
-    <Compile Include="PropertyPages\XSharpBuildPropertyPage.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="PropertyPages\XSharpDebugPropertyPage.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="PropertyPages\XSharpDialectPropertyPage.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="PropertyPages\XSharpFileNameEditor.cs" />
-    <Compile Include="PropertyPages\XSharpGeneralPropertyPage.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="PropertyPages\XSharpLanguagePropertyPage.cs">
-      <SubType>Component</SubType>
+    <Compile Include="PropertyPages\XBuildEventsPropertyPagePanel.Designer.cs">
+      <DependentUpon>XBuildEventsPropertyPagePanel.cs</DependentUpon>
     </Compile>
     <Compile Include="PropertyPages\XSharpMLEPropertyForm.cs">
       <SubType>Form</SubType>
@@ -133,16 +124,12 @@
     <Compile Include="PropertyPages\XSharpMLEPropertyForm.Designer.cs">
       <DependentUpon>XSharpMLEPropertyForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="PropertyPages\XSharpSettingsPage.cs">
-      <SubType>Component</SubType>
-    </Compile>
     <Compile Include="PropertyPages\XSharpSLEPropertyForm.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="PropertyPages\XSharpSLEPropertyForm.Designer.cs">
       <DependentUpon>XSharpSLEPropertyForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="PropertyPages\XSharpUITypeEditors.cs" />
     <Compile Include="Resources.cs" />
     <Compile Include="Wix\FolderBrowserTextBox.cs">
       <SubType>UserControl</SubType>
@@ -195,6 +182,9 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="PropertyPages\XDebugPropertyPagePanel.resx">
+      <DependentUpon>XDebugPropertyPagePanel.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="PropertyPages\XDialectPropertyPagePanel.resx">
       <DependentUpon>XDialectPropertyPagePanel.cs</DependentUpon>
     </EmbeddedResource>
@@ -207,8 +197,8 @@
     <EmbeddedResource Include="PropertyPages\XLanguagePropertyPagePanel.resx">
       <DependentUpon>XLanguagePropertyPagePanel.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="PropertyPages\XSharpBuildEventsPropertyPagePanel.resx">
-      <DependentUpon>XSharpBuildEventsPropertyPagePanel.cs</DependentUpon>
+    <EmbeddedResource Include="PropertyPages\XBuildEventsPropertyPagePanel.resx">
+      <DependentUpon>XBuildEventsPropertyPagePanel.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="PropertyPages\XSharpMLEPropertyForm.resx">
       <DependentUpon>XSharpMLEPropertyForm.cs</DependentUpon>

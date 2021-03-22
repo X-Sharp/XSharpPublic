@@ -271,9 +271,11 @@ namespace XSharp.Project
     [PropertyPageTypeConverter(typeof(DebugTypeConverter))]
     public enum DebugType
     {
-        none,
-        full,
-        pdbonly,
+        None,
+        Full,
+        Pdbonly,
+        Portable,
+        Embedded
     }
 
     public class DebugTypeConverter : EnumConverter
@@ -297,19 +299,22 @@ namespace XSharp.Project
 
             if (str != null)
             {
-                if (String.Compare(str, "none", true) == 0) return DebugType.none;
-                if (String.Compare(str, "full", true) == 0) return DebugType.full;
-                if (String.Compare(str, "pdbonly", true) == 0) return DebugType.pdbonly;
+                if (String.Compare(str, "none", true) == 0) return DebugType.None;
+                if (String.Compare(str, "full", true) == 0) return DebugType.Full;
+                if (String.Compare(str, "pdb-only", true) == 0) return DebugType.Pdbonly;
+                if (String.Compare(str, "pdbonly", true) == 0) return DebugType.Pdbonly;
+                if (String.Compare(str, "portable", true) == 0) return DebugType.Portable;
+                if (String.Compare(str, "embedded", true) == 0) return DebugType.Embedded;
 
             }
-            return DebugType.none;
+            return DebugType.None;
         }
 
         public override object ConvertTo(ITypeDescriptorContext context, CultureInfo culture, object value, Type destinationType)
         {
             if (destinationType == typeof(string))
             {
-                string result = null;
+                string result;
                 // In some cases if multiple nodes are selected the windows form engine
                 // calls us with a null value if the selected node's property values are not equal
                 if (value != null)
@@ -318,7 +323,7 @@ namespace XSharp.Project
                 }
                 else
                 {
-                    result = DebugType.none.ToString();
+                    result = DebugType.None.ToString();
                 }
 
                 if (result != null) return result;
@@ -334,7 +339,7 @@ namespace XSharp.Project
 
         public override StandardValuesCollection GetStandardValues(System.ComponentModel.ITypeDescriptorContext context)
         {
-            return new StandardValuesCollection(new DebugType[] { DebugType.none, DebugType.full, DebugType.pdbonly});
+            return new StandardValuesCollection(new DebugType[] { DebugType.None, DebugType.Full, DebugType.Pdbonly, DebugType.Portable, DebugType.Embedded});
         }
     }
 

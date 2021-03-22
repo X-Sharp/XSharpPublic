@@ -43,9 +43,9 @@ namespace XSharp.Project
             this.preBuildEditor.Initialize(  parentPropertyPage.ProjectMgr, this.editorForm);
             this.postBuildEditor.Initialize(parentPropertyPage.ProjectMgr, this.editorForm);
 
-            this.preBuildEditor.TextBox.Tag = XProjectFileConstants.PreBuildEvent;
-            this.postBuildEditor.TextBox.Tag = XProjectFileConstants.PostBuildEvent;
-            this.runPostBuildComboBox.Tag = XProjectFileConstants.RunPostBuildEvent;
+            this.preBuildEditor.TextBox.Tag = XSharpProjectFileConstants.PreBuildEvent;
+            this.postBuildEditor.TextBox.Tag = XSharpProjectFileConstants.PostBuildEvent;
+            this.runPostBuildComboBox.Tag = XSharpProjectFileConstants.RunPostBuildEvent;
 
             Color defaultBackground = SystemColors.ButtonFace;
             Color defaultForeground = SystemColors.WindowText;

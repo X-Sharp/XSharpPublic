@@ -6,7 +6,7 @@ using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Text.Editor;
 using Microsoft.VisualStudio.Text.Tagging;
 using Microsoft.VisualStudio.Utilities;
-using static XSharp.LanguageService.XSharpConstants;
+using static XSharp.XSharpConstants;
 using XSharp.LanguageService;
 using Microsoft.VisualStudio.Text.Classification;
 using Microsoft.VisualStudio.Language.Intellisense;

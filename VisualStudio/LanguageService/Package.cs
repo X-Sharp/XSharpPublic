@@ -9,7 +9,7 @@ using Microsoft.VisualStudio;
 using System;
 using System.Runtime.InteropServices;
 using System.ComponentModel;
-using static XSharp.LanguageService.XSharpConstants;
+using static XSharp.XSharpConstants;
 using XSharp.LanguageService.OptionsPages;
 using System.Threading;
 using Microsoft.VisualStudio.TextManager.Interop;

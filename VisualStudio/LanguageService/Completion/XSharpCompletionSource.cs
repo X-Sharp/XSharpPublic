@@ -180,6 +180,8 @@ namespace XSharp.LanguageService
                 // Check if we can get the member where we are
                 int currentLine = triggerPoint.GetContainingLine().LineNumber;
                 var member = XSharpLookup.FindMember(currentLine, this._file);
+                if (member == null)
+                    return;
                 var currentNamespace = XSharpTokenTools.FindNamespace(triggerPoint.Position, this._file);
                 // Standard TokenList Creation (based on colon Selector )
                 var caretPos = triggerPoint.Position;

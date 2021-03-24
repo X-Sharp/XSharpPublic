@@ -318,6 +318,22 @@ namespace XSharp.LanguageService
                         tokenList.Add(token);
                         break;
 
+                    case XSharpLexer.QMARK: 
+                        if (tokenList.Count != 0)       // when at start of line then do not add. Otherwise it might be a Nullable type or conditional access expression
+                            tokenList.Add(token);
+                        break;
+                    case XSharpLexer.QQMARK:
+                        if (tokenList.Count != 0)       // when at start of line then do not add. Otherwise it might be a binary expression
+                            tokenList.Add(token);
+                        break;
+
+                    case XSharpLexer.BACKSLASH:
+                    case XSharpLexer.BACKBACKSLASH:
+                        // this should only be seen at start of line
+                        // clear the list to be sure
+                        tokenList.Clear();
+                        break;
+
                     case XSharpLexer.COMMA:
                     case XSharpLexer.ASSIGN_OP:
                     case XSharpLexer.COLONCOLON:

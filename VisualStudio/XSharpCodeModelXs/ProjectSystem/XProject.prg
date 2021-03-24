@@ -778,8 +778,7 @@ BEGIN NAMESPACE XSharpModel
       PRIVATE METHOD AdjustUsings(typeName REF STRING, usings AS IList<STRING>) AS IList<STRING>
          VAR pos := typeName:LastIndexOf(".")
          VAR myusings := List<STRING>{}
-         myusings:AddRange(usings)
-         myusings:AddRange(SELF:ImplicitNamespaces)
+         // when we have a fully qualified typename then add that to the start of the list
          IF pos > 0 
             VAR ns   := typeName:Substring(0,pos)
             myusings:Add(ns)
@@ -787,6 +786,8 @@ BEGIN NAMESPACE XSharpModel
                typeName := typeName:Substring(pos+1)
             ENDIF
          ENDIF
+         myusings:AddRange(usings)
+         myusings:AddRange(SELF:ImplicitNamespaces)
          RETURN myusings
          
       

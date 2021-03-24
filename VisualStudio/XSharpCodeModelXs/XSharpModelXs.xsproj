@@ -143,6 +143,7 @@
     <Compile Include="Signatures\XBaseSignature.prg" />
     <Compile Include="Signatures\XMemberSignature.prg" />
     <Compile Include="Signatures\XTypeSignature.prg" />
+    <Compile Include="Source\XSourceImpliedVariableSymbol.prg" />
     <Compile Include="Source\XSourceBlock.prg" />
     <Compile Include="Source\XSourceSymbol.prg" />
     <Compile Include="Source\XSourceEntity.prg" />

@@ -211,7 +211,16 @@ BEGIN NAMESPACE XSharpModel
       MEMBER @@Fastcall    :=  XSharpLexer.FASTCALL
       MEMBER @@Thiscall    :=  XSharpLexer.THISCALL
    END ENUM
-   
+
+    ENUM ImpliedKind
+        MEMBER None         := 0     //
+        MEMBER Assignment   := 1     // VAR name := Expression         Need to detect the type of Expression. Save everything after := to the Expression
+        MEMBER TypeCheck    := 2     // IF x IS type VAR name          This will assign the typename of the ImpliedVar. No need to store the Expression
+        MEMBER InCollection := 3     // FOREACH VAR x IN collection    Need to detect type of collection: everything after IN is saved in the Expression
+        MEMBER LoopCounter  := 4     // FOR VAR  name := start TO end  Need to detect the type of start or end. Save tokens start .. end in the Expression
+        MEMBER OutParam     := 5     // Int32.TryParse("123", OUT VAR name)  // need to detect the type of the method and get the parametertype. Whole line until closing paren in the Expression
+        MEMBER Using        := 6     // (BEGIN) USING VAR name := Expression   variation of VAR Name := Expression
+    END ENUM
    
 END NAMESPACE
 

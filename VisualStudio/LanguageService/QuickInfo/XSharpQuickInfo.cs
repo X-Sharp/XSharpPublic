@@ -415,12 +415,37 @@ namespace XSharp.LanguageService
                 get
                 {
                     var content = new List<ClassifiedTextRun>();
-                    int len;
                     var kind = xVar.Kind.ToString();
+                    if (xVar is XSourceImpliedVariableSymbol impvar)
+                    {
+                        switch (impvar.ImpliedKind)
+                        {
+                            case ImpliedKind.InCollection:
+                                kind = "ForEach VAR";
+                                break;
+                            case ImpliedKind.LoopCounter:
+                                kind = "For VAR";
+                                break;
+                            case ImpliedKind.Using:
+                                kind = "Using VAR";
+                                break;
+                            case ImpliedKind.OutParam:
+                                kind = "Out VAR";
+                                break;
+                            case ImpliedKind.TypeCheck:
+                                kind = "IS VAR";
+                                break;
+                            case ImpliedKind.None:
+                            case ImpliedKind.Assignment:
+                            default:
+                                kind = "VAR";
+                                break;
+                        }
+                    }
                     if (xVar.Kind == Kind.DbField)
                         kind = "Field";
                     content.addKeyword(XSettings.FormatKeyword(kind + " "));
-                    addVarInfo(content, xVar, out len);
+                    addVarInfo(content, xVar, out _);
                     return content.ToArray();
                 }
 

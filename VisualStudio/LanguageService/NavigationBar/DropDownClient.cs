@@ -340,6 +340,8 @@ namespace XSharp.LanguageService
             var sortItems = XSettings.EditorNavigationSorted;
             var includeFields = XSettings.EditorNavigationIncludeFields;
             var currentTypeOnly = XSettings.EditorNavigationMembersOfCurrentTypeOnly;
+            if (selectedType >= _types.Count)
+                return;
             var currentType = (XSourceTypeSymbol) (selectedType > -1 ? _types[selectedType].Entity : _types[0].Entity);
             var globalType = _file.GlobalType;
             DROPDOWNFONTATTR ft;

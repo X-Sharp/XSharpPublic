@@ -13,6 +13,8 @@ using LanguageService.SyntaxTree;
 using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
 using LanguageService.CodeAnalysis.XSharp;
 using System.Collections.Immutable;
+using System.Windows.Navigation;
+using System.Diagnostics;
 
 namespace XSharp.LanguageService
 {
@@ -81,16 +83,15 @@ namespace XSharp.LanguageService
                         }
                     }
                 }
-                if (result.Count > 0)
+              if (result.Count > 0)
                 {
                     var element = result[0];
-                    if (element is XSourceVariableSymbol xVar)
+                    if (element is XSourceImpliedVariableSymbol xVar)
                     {
-                        if (xVar.TypeName == XLiterals.VarType)
+                        var type = resolveImpliedType(location, xVar, currentType, visibility);
+                        if (type != null)
                         {
-                            var type = resolveVarType(location, xVar, visibility);
-                            if (type != null)
-                                result.Add(type);
+                            xVar.TypeName = type.FullName;
                         }
 
                     }
@@ -216,63 +217,193 @@ namespace XSharp.LanguageService
         }
 
 #endif
-        private static IXTypeSymbol resolveVarType(XSharpSearchLocation location, XSourceVariableSymbol xVar, Modifiers visibility)
+        private static string getTypeNameFromSymbol( IXSymbol symbol)
         {
-            var tokens = xVar.Expression;
-            //List<XSharpToken> tokenList;
-            //string expr;
-            if (tokens == null || tokens.Count == 0)
+            if (symbol is IXTypeSymbol ts)
+                return ts.FullName;
+            if (symbol is IXMemberSymbol mem)
             {
-                xVar.TypeName = "OBJECT";
-                return null;
+                return mem.OriginalTypeName;
             }
-            if (tokens.Count == 1)
+            if (symbol is IXVariableSymbol)
             {
-                if (XSharpLexer.IsConstant(tokens[0].Type))
-                {
-                    var type = getConstantType(tokens[0].Type, location.File);
-                    if (type != null)
-                    {
-                        xVar.TypeName = type.FullName;
-                        return type;
-                    }
+                return symbol.TypeName;
+            }
+            return null;
+        }
 
-                }
-            }
-            if (tokens[0].Type == XSharpLexer.IN && tokens.Count > 1)
+
+        private static IXTypeSymbol getTypeFromSymbol(XSharpSearchLocation location, IXSymbol symbol)
+        {
+            if (symbol is IXTypeSymbol ts)
+                return ts;
+            var name = getTypeNameFromSymbol(symbol);
+            return SearchType(location, name).FirstOrDefault();
+        }
+
+
+        private static IXTypeSymbol resolveImpliedLoop(XSharpSearchLocation location, XSourceImpliedVariableSymbol xVar, IXTypeSymbol currentType, Modifiers visibility)
+        {
+            Debug.Assert(xVar.ImpliedKind == ImpliedKind.LoopCounter);
+            var start = new List<XSharpToken>();
+            var end = new List<XSharpToken>();
+            bool seento = false;
+            foreach (var t in xVar.Expression)
             {
-                // foreach loop with IN <somevariable> or IN <list>
-                //if (tokens.Count == 2)
-                //{
-                //    string collection = tokens[1].Text;
-                //    var result = FindIdentifier(collection, type,visibility, location);
-                //    if (foundElement != null)
-                //    {
-                //        xVar.TypeName = GetTypeFromFoundElement(foundElement);
-                //        return;
-                //    }
-                //}
-                //Todo: Type Lookup Var
-                //expr = BuildTokenString(tokens, 1);
-                //if (!string.IsNullOrEmpty(expr))
-                //{
-                //    tokenList = new List<XSharpToken> { expr };
-                //    cType = RetrieveType(xVar.File, tokenList, member, currentNS, null, out foundElement, snapshot, currentLine, dialect);
-                //    if (foundElement != null)
-                //    {
-                //        xVar.TypeName = GetTypeFromFoundElement(foundElement);
-                //    }
-                //}
-                return null;
+                if (t.Type == XSharpLexer.TO)
+                    seento = true;
+                else if (seento)
+                    end.Add(t);
+                else
+                    start.Add(t);
             }
-            //Todo: Type Lookup Var
-            //expr = BuildTokenString(tokens, 0);
-            //tokenList = new List<string> { expr };
-            //cType = RetrieveType(xVar.File, tokenList, member, currentNS, null, out foundElement, snapshot, currentLine, dialect);
-            //if (cType != null)
-            //{
-            //    xVar.TypeName = cType.FullName;
-            //}
+            if (start.Count > 0 && end.Count > 0)
+            {
+                if (start.Count == 1 && end.Count == 1)
+                {
+                    var startType = start[0].Type;
+                    var endType = end[0].Type;
+                    if (startType == XSharpLexer.ID)
+                    {
+                        var id = FindIdentifier(location, start[0].Text, currentType, visibility);
+                        return getTypeFromSymbol(location, id.FirstOrDefault());
+                    }
+                    else if (endType == XSharpLexer.ID)
+                    {
+                        var id = FindIdentifier(location, end[0].Text, currentType, visibility);
+                        return getTypeFromSymbol(location, id.FirstOrDefault());
+                    }
+                    else if (XSharpLexer.IsConstant(startType))
+                    {
+                        return getConstantType(start[0], location.File);
+                    }
+                    else if (XSharpLexer.IsConstant(endType))
+                    {
+                        return getConstantType(end[0], location.File);
+                    }
+                    //todo what else ?
+                    return null;
+                }
+                if (end.Count > 1)  // prefer type of end over type of start
+                {
+                    var res = RetrieveElement(location, end, CompletionState.General);
+                    return getTypeFromSymbol(location, res.FirstOrDefault());
+                }
+                // start must be > 1
+                var result = RetrieveElement(location, start, CompletionState.General);
+                return getTypeFromSymbol(location, result.FirstOrDefault());
+            }
+            return null;
+        }
+        private static IXTypeSymbol resolveImpliedCollection(XSharpSearchLocation location, XSourceImpliedVariableSymbol xVar, IXTypeSymbol currentType, Modifiers visibility)
+        {
+            var tokenList = xVar.Expression;
+            var result = RetrieveElement(location, tokenList, CompletionState.General);
+            var element = result.FirstOrDefault();
+            var elementType = getTypeNameFromSymbol(element);
+            var type = getTypeFromSymbol(location, element);
+            if (type != null)
+            {
+                // detect if the type has an implementation of:
+                // System.Collections.IEnumerator
+                // Array
+                //
+                type.ForceComplete();
+                var interfaces = type.Interfaces;
+                bool hasEnumerator = false;
+                foreach (var interf in interfaces)
+                {
+                    if (interf.EndsWith("IEnumerable", StringComparison.OrdinalIgnoreCase))
+                    {
+                        hasEnumerator = true;
+                        break;
+                    }
+                    else if (interf.EndsWith("IEnumerable`1", StringComparison.OrdinalIgnoreCase))
+                    {
+                        hasEnumerator = true;
+                        break;
+                    }
+                    else if (interf.EndsWith("IEnumerable<T>", StringComparison.OrdinalIgnoreCase))
+                    {
+                        hasEnumerator = true;
+                        break;
+                    }
+                }
+                if (hasEnumerator)
+                {
+                    if (type.IsGeneric)
+                    {
+                        if (elementType != null && elementType.IndexOf('<') > 0)
+                        {
+                            var elements = elementType.Split(new char[] { '<', '>' }, StringSplitOptions.RemoveEmptyEntries);
+                            if (elements.Length == 2 ) //  // List<T>
+                            {
+                                type = SearchType(location, elements[1]).FirstOrDefault();
+                            }
+                            else // Dictionary <T,U> we need to determine the type of the enumerator and see which of the generic arguments is returned
+                            {
+                                type = null;
+                            }
+                        }
+                        else
+                        {
+                            var member = type.GetMembers("GetEnumerator").FirstOrDefault();
+                            var name = member.OriginalTypeName;
+                            // translate name from definition to name used by variable
+                            type = null;
+                        }
+                         
+                    }
+                    else
+                    {
+                        var member = type.GetMembers("GetEnumerator").FirstOrDefault();
+                        type = SearchType(location, member.OriginalTypeName).FirstOrDefault();
+                    }
+                }
+                else if (type.IsArray)
+                {
+                    type = null;
+                }
+                else
+                {
+                    type = null;
+                }
+
+            }
+            return type;
+        }
+        private static IXTypeSymbol resolveImpliedOutParam(XSharpSearchLocation location, XSourceImpliedVariableSymbol xVar, IXTypeSymbol currentType, Modifiers visibility)
+        {
+            Debug.Assert(xVar.ImpliedKind == ImpliedKind.OutParam);
+            return null;
+        }
+        private static IXTypeSymbol resolveImpliedAssign(XSharpSearchLocation location, XSourceImpliedVariableSymbol xVar, IXTypeSymbol currentType, Modifiers visibility)
+        {
+            Debug.Assert(xVar.ImpliedKind == ImpliedKind.Assignment);
+            var tokenList = xVar.Expression;
+            var result = RetrieveElement(location, tokenList, CompletionState.General);
+            var element = result.FirstOrDefault();
+            return getTypeFromSymbol(location, element);
+        }
+        private static IXTypeSymbol resolveImpliedType(XSharpSearchLocation location, XSourceImpliedVariableSymbol xVar, IXTypeSymbol currentType, Modifiers visibility)
+        {
+            // the following Implied Kinds are followed by a := and should return the type of the expression in the ExpressionList
+            switch (xVar.ImpliedKind)
+            {
+                case ImpliedKind.Assignment:
+                case ImpliedKind.Using:
+                    return resolveImpliedAssign(location, xVar, currentType, visibility);
+                case ImpliedKind.TypeCheck:
+                    return SearchType(location, xVar.TypeName).FirstOrDefault();
+                case ImpliedKind.InCollection:
+                    return resolveImpliedCollection(location, xVar, currentType, visibility);
+                case ImpliedKind.LoopCounter:
+                    return resolveImpliedLoop(location, xVar, currentType, visibility);
+                case ImpliedKind.OutParam:
+                    return resolveImpliedOutParam(location, xVar, currentType, visibility);
+                case ImpliedKind.None:
+                    break;
+            }
             return null;
         }
 
@@ -464,7 +595,7 @@ namespace XSharp.LanguageService
                     }
                 }
             }
-
+            string preFix = "";
             while (currentPos <= lastopentoken)
             {
                 if (result.Count > 0)
@@ -517,6 +648,7 @@ namespace XSharp.LanguageService
                 var qualifiedName = false;
                 var findMethod = false;
                 var hasBracket = false;
+                var findType = false;
                 if (currentPos < lastopentoken)
                 {
                     var nextType = tokenList[currentPos + 1].Type;
@@ -524,6 +656,7 @@ namespace XSharp.LanguageService
                     findMethod = nextType == XSharpLexer.LPAREN;
                     findConstructor = nextType == XSharpLexer.LCURLY;
                     hasBracket = nextType == XSharpLexer.LBRKT;
+                    findType = preFix.Length > 0;
                 }
 
                 if (state.HasFlag(CompletionState.Types))
@@ -572,6 +705,7 @@ namespace XSharp.LanguageService
 
                         if (result.Count == 0)
                         {
+                            // Foo() could be a delegate call where Foo is a local or Field
                             result.AddRange(SearchDelegateCall(location, currentName, currentType, visibility));
                         }
 
@@ -580,26 +714,14 @@ namespace XSharp.LanguageService
                     }
                     if (currentType != null)
                     {
-                        // Now, search for a Method
+                        // Now, search for a Method. this will search the whole hierarchy
                         result.AddRange(SearchMethod(location, currentType, currentName, visibility, false));
 
                     }
                     if (result.Count == 0)
                     {
-                        // check to see if this is a method from the Object Type, such as ToString().
-                        var objType = location.FindType("System.Object");
-                        result.AddRange(SearchMethod(location, objType, currentName, visibility, false));
-                    }
-                    if (result.Count == 0)
-                    {
                         // Could it be Static Method with "Using Static"
                         result.AddRange(SearchMethodStatic(location, currentName));
-                    }
-                    if (result.Count == 0)
-                    {
-                        // Could it be Static Method with "Using Static"
-                        // Now, search for a Method
-                        result.AddRange(SearchDelegate(location, currentName));
                     }
                 }
                 else
@@ -607,13 +729,17 @@ namespace XSharp.LanguageService
                     var literal = XSharpLexer.IsConstant(currentToken.Type);
                     if (literal)
                     {
-                        currentType = getConstantType(currentToken.Type, location.File);
+                        currentType = getConstantType(currentToken, location.File);
                         if (currentType != null)
                         {
                             result.Add(currentType);
                         }
                     }
-                    else if (startOfExpression)
+                    if (startOfExpression || findType)
+                    {
+                        result.AddRange(SearchType(location, preFix + currentName));
+                    }
+                    if (startOfExpression && result.Count == 0)
                     {
                         // Search in Parameters, Locals, Field and Properties
                         if (currentName == "::" || currentName.ToLower() == "this")
@@ -628,10 +754,6 @@ namespace XSharp.LanguageService
                     }
                     if (!literal)
                     {
-                        if (result.Count == 0)
-                        {
-                            result.AddRange(SearchType(location, currentName));
-                        }
                         // We have it
                         if (result.Count > 0)
                         {
@@ -681,7 +803,10 @@ namespace XSharp.LanguageService
                         }
                     }
                 }
-                // Next Token
+                if (result.Count == 0 && (currentToken.Type == XSharpLexer.ID || XSharpLexer.IsKeyword(currentToken.Type)))
+                {
+                    preFix += currentToken.Text;
+                }               // Next Token
                 currentPos += 1;
                 if (currentPos >= tokenList.Count)
                 {
@@ -691,6 +816,10 @@ namespace XSharp.LanguageService
                 switch (currentToken.Type)
                 {
                     case XSharpLexer.DOT:
+                        preFix += currentToken.Text;
+                        currentPos += 1;
+                        break;
+
                     case XSharpLexer.COLON:
                     case XSharpLexer.COLONCOLON:
                         currentPos += 1;
@@ -718,7 +847,6 @@ namespace XSharp.LanguageService
                         break;
                 }
                 //
-                visibility = Modifiers.Public;
                 //if ((foundElement != null) && (foundElement.IsInitialized))
                 //{
                 //    if (string.Compare(foundElement.Name, "self", true) == 0)
@@ -775,13 +903,13 @@ namespace XSharp.LanguageService
             return result;
         }
 
-        internal static IXTypeSymbol getConstantType(int type, XFile file)
+        internal static IXTypeSymbol getConstantType(XSharpToken token, XFile file)
         {
             IXTypeSymbol result;
             var project = file.Project;
             var xusings = new string[] { "XSharp", "Vulcan" };
             var susings = new string[] { };
-            switch (type)
+            switch (token.Type)
             {
                 case XSharpLexer.FALSE_CONST:
                 case XSharpLexer.TRUE_CONST:
@@ -790,7 +918,18 @@ namespace XSharp.LanguageService
                 case XSharpLexer.HEX_CONST:
                 case XSharpLexer.BIN_CONST:
                 case XSharpLexer.INT_CONST:
-                    result = project.FindSystemType("System.Int32", susings);
+                    if (token.Text.ToUpper().EndsWith("L"))
+                    {
+                        result = project.FindSystemType("System.Int32", susings);
+                    }
+                    else if (token.Text.ToUpper().EndsWith("U"))
+                    {
+                        result = project.FindSystemType("System.UInt32", susings);
+                    }
+                    else
+                    {
+                        result = project.FindSystemType("System.Int32", susings);
+                    }
                     break;
                 case XSharpLexer.DATE_CONST:
                 case XSharpLexer.NULL_DATE:
@@ -800,7 +939,18 @@ namespace XSharp.LanguageService
                     result = project.FindSystemType("System.DateTime", susings);
                     break;
                 case XSharpLexer.REAL_CONST:
-                    result = project.FindSystemType("System.Double", susings);
+                    if (token.Text.ToUpper().EndsWith("M"))
+                    {
+                        result = project.FindSystemType("System.Decimal", susings);
+                    }
+                    else if (token.Text.ToUpper().EndsWith("S"))
+                    {
+                        result = project.FindSystemType("System.Single", susings);
+                    }
+                    else // if (token.Text.ToUpper().EndsWith("D"))
+                    {
+                        result = project.FindSystemType("System.Double", susings);
+                    }
                     break;
                 case XSharpLexer.SYMBOL_CONST:
                 case XSharpLexer.NULL_SYMBOL:
@@ -905,8 +1055,10 @@ namespace XSharp.LanguageService
         private static IEnumerable<IXTypeSymbol> SearchType(XSharpSearchLocation location, string name)
         {
             WriteOutputMessage($"SearchType in file {location.File.SourcePath} {name}");
-            // check for a system type
             var result = new List<IXTypeSymbol>();
+            // translate out type names to system type names
+            name = name.GetSystemTypeName(location.Project.ParseOptions.XSharpRuntime);
+
             var type = location.FindType(name);
             if (type != null)
                 result.Add(type);
@@ -916,11 +1068,27 @@ namespace XSharp.LanguageService
         private static IEnumerable<IXMemberSymbol> SearchMembers(XSharpSearchLocation location, IXTypeSymbol type, string name, Modifiers minVisibility)
         {
             var result = new List<IXMemberSymbol>();
-            WriteOutputMessage($" SearchMembers {type?.FullName} , {name}");
             if (type != null)
             {
+                WriteOutputMessage($" SearchMembers {type?.FullName} , {name}");
                 result.AddRange(type.GetMembers(name, true).Where((m) => m.Visibility >= minVisibility));
+                if (result.Count() == 0 && !string.IsNullOrEmpty(type.BaseType))
+                {
+                    if (minVisibility == Modifiers.Private)
+                        minVisibility = Modifiers.Protected;
+                    IXTypeSymbol baseType;
+                    if (type is XSourceTypeSymbol sourceType)
+                    {
+                        baseType = sourceType.File.FindType(type.BaseType);
+                    }
+                    else
+                    {
+                        baseType = location.FindType(type.BaseType);
+                    }
+                    result.AddRange(SearchMembers(location, baseType, name, minVisibility));
+                }
             }
+
             return result;
         }
         /// <summary>

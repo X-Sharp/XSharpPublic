@@ -25,7 +25,7 @@ BEGIN NAMESPACE XSharpModel
    
    CLASS XsParser IMPLEMENTS VsParser.IErrorListener
       PRIVATE  _stream       AS BufferedTokenStream 
-      PRIVATE  _input        AS IList<IToken>
+      PRIVATE  _input        AS IList<XSharpToken>
       PRIVATE  _index        AS LONG
       PRIVATE  _file         AS XFile
       PRIVATE  _usings       AS IList<STRING>
@@ -112,7 +112,7 @@ BEGIN NAMESPACE XSharpModel
          RETURN 
     
       METHOD Parse( tokenStream AS ITokenStream, lBlocks AS LOGIC, lLocals AS LOGIC) AS VOID
-         LOCAL aAttribs        AS IList<IToken>
+         LOCAL aAttribs        AS IList<XSharpToken>
          LOCAL cXmlDoc   := "" AS STRING
          VAR cmtTokens  := XSolution.CommentTokens
          Log(i"Start")
@@ -121,8 +121,8 @@ BEGIN NAMESPACE XSharpModel
          _collectBlocks := lBlocks
          _stream        := (BufferedTokenStream) tokenStream 
          _tokens        := _stream:GetTokens()
-         _input         := List<IToken>{}
-         FOREACH VAR token IN _tokens
+         _input         := List<XSharpToken>{}
+         FOREACH token AS XSharpToken IN _tokens
             SWITCH token:Channel
             CASE TokenConstants.HiddenChannel
             CASE XSharpLexer.DEFOUTCHANNEL // Inactive code 
@@ -394,6 +394,9 @@ using_              : USING (Static=STATIC)? (Alias=identifierName Op=assignoper
          IF SELF:La1 != XSharpLexer.USING
             RETURN FALSE
          ENDIF
+         IF SELF:La2 == XSharpLexer.VAR             // USING VAR
+            RETURN FALSE
+         ENDIF
          VAR startToken := SELF:ConsumeAndGet()
          VAR isStatic := FALSE
          VAR alias := ""
@@ -414,7 +417,7 @@ using_              : USING (Static=STATIC)? (Alias=identifierName Op=assignoper
          SELF:ReadLine()
          RETURN TRUE
          
-      PRIVATE METHOD ParseAttributes() AS IList<IToken>
+      PRIVATE METHOD ParseAttributes() AS IList<XSharpToken>
 /*
 attributes          : ( AttrBlk+=attributeBlock )+
                     ;
@@ -434,7 +437,7 @@ attributeParam      : Name=identifierName Op=assignoperator Expr=expression     
                     ;
 
 */         
-         VAR tokens := List<IToken>{}
+         VAR tokens := List<XSharpToken>{}
          DO WHILE SELF:La1 == XSharpLexer.LBRKT .AND. ! SELF:Eos() 
             tokens:Add(SELF:ConsumeAndGet())
             DO WHILE SELF:La1 != XSharpLexer.RBRKT .AND. ! SELF:Eos() 
@@ -567,7 +570,7 @@ attributeParam      : Name=identifierName Op=assignoperator Expr=expression     
             IF SELF:InXppClass
                IF SELF:La2 == XSharpLexer.METHOD  .OR. SELF:IsModifier(SELF:La2)   // XPP has CLASS METHOD = a static method
                   entityKind := Kind.Method
-               ELSEIF SELF:La2 == XSharpLexer.VAR  
+               ELSEIF SELF:La2 == XSharpLexer.VAR                                  // CLASS VAR for XPP
                   entityKind := Kind.Field
                ENDIF
             ELSE
@@ -794,8 +797,8 @@ attributeParam      : Name=identifierName Op=assignoperator Expr=expression     
                     
                CASE XSharpLexer.EOS        // End without following keyword is usually also allowed
                   nEnd := 1
-               END SWITCH
-          END SWITCH
+                END SWITCH
+         END SWITCH
          IF nStart > 0
             IF SELF:_collectBlocks
                VAR block := XSourceBlock{ SELF:Lt1, IIF(nStart == 1, SELF:Lt1, SELF:Lt2)}
@@ -817,7 +820,7 @@ attributeParam      : Name=identifierName Op=assignoperator Expr=expression     
                IF SELF:La1 == XSharpLexer.IF 
                   SELF:ParseForLocals()
                ELSE
-                  SELF:ParseForBlockLocals()
+                  SELF:ParseForLocalDeclaration()
                ENDIF
             ELSE
                SELF:ReadLine()
@@ -860,6 +863,10 @@ attributeParam      : Name=identifierName Op=assignoperator Expr=expression     
             ENDIF
             SELF:ReadLine()
             RETURN TRUE
+         ELSE
+            IF SELF:_collectLocals
+                SELF:ParseForLocalDeclaration()
+            ENDIF
          ENDIF
          RETURN FALSE
          
@@ -1016,7 +1023,7 @@ attributeParam      : Name=identifierName Op=assignoperator Expr=expression     
          _index+= 1
          RETURN
          
-      PRIVATE METHOD ConsumeAndGet() AS IToken
+      PRIVATE METHOD ConsumeAndGet() AS XSharpToken
          VAR t := _input[_index]
          _lastToken := t
          _index+= 1
@@ -1107,7 +1114,7 @@ attributeParam      : Name=identifierName Op=assignoperator Expr=expression     
          
       PRIVATE METHOD ParseQualifiedName() AS STRING
          LOCAL result := "" AS STRING
-         VAR Tokens := List<IToken>{}
+         VAR Tokens := List<XSharpToken>{}
          IF SELF:La1 == XSharpLexer.ID .OR. SELF:La1 == XSharpLexer.KWID
             Tokens:Add(SELF:ConsumeAndGet())
             DO WHILE SELF:La1 == XSharpLexer.DOT .AND.  SELF:IsId(SELF:La2) .AND. ! SELF:Eos()
@@ -1115,24 +1122,20 @@ attributeParam      : Name=identifierName Op=assignoperator Expr=expression     
                Tokens:Add(SELF:ConsumeAndGet())
             ENDDO
          ENDIF
-         RETURN TokensAsString(Tokens)
+         RETURN SELF:TokensAsString(Tokens)
          
-      PRIVATE METHOD TokensAsString(tokens AS IList<IToken>) AS STRING
+      PRIVATE METHOD TokensAsString(tokens AS IList<XSharpToken>) AS STRING
          LOCAL sb AS StringBuilder
-         LOCAL last := NULL AS IToken
-         IF (tokens == NULL)
+         IF (tokens == NULL .or. tokens:Count == 0)
             RETURN ""
          ENDIF
          sb := StringBuilder{}
          
-         FOREACH VAR t IN tokens
-            IF last != NULL
-               IF t:StartIndex > last:StopIndex +1
-                  sb:Append(" ")
-               ENDIF
+         FOREACH t AS XSharpToken IN tokens
+            IF t:HasTrivia
+                sb:Append(t:TriviaAsText)
             ENDIF
-            sb:Append(t:GetText())
-            last := t
+            sb:Append(t:Text)
          NEXT
          RETURN sb:ToString()
          
@@ -2119,7 +2122,7 @@ signature             : Id=identifier
          LOCAL cond AS DelEndToken
          cond := { token => IIF (lBracketed, token == XSharpLexer.RBRKT, token == XSharpLexer.RPAREN ) }
          DO WHILE !cond(SELF:La1) .AND. ! SELF:Eos()
-            LOCAL defaultExpr := NULL AS IList<IToken>
+            LOCAL defaultExpr := NULL AS IList<XSharpToken>
 
             VAR start := SELF:Lt1
             VAR atts := SELF:TokensAsString(ParseAttributes())
@@ -2334,7 +2337,7 @@ callingconvention	: Convention=(CLIPPER | STRICT | PASCAL | ASPEN | WINCALL | CA
          IF result:Length > 0
             result += ParseTypeSuffix()
          ENDIF
-         RETURN result
+         RETURN result:Trim()
          
 
       PRIVATE METHOD ParseTypeSuffix AS STRING
@@ -2343,7 +2346,7 @@ callingconvention	: Convention=(CLIPPER | STRICT | PASCAL | ASPEN | WINCALL | CA
          ELSEIF SELF:La1 = XSharpLexer.QMARK
             RETURN " "+SELF:ConsumeAndGet():GetText()
          ELSEIF SELF:La1 == XSharpLexer.LBRKT
-            VAR tokens := List<IToken>{}
+            VAR tokens := List<XSharpToken>{}
             tokens:Add(SELF:ConsumeAndGet())
             LOCAL closed := FALSE AS LOGIC
             DO WHILE ! SELF:Eos() .AND. ! closed
@@ -2372,11 +2375,11 @@ callingconvention	: Convention=(CLIPPER | STRICT | PASCAL | ASPEN | WINCALL | CA
          RETURN ""
          
          
-      PRIVATE METHOD ParseExpressionAsTokens AS IList<IToken>
+      PRIVATE METHOD ParseExpressionAsTokens AS IList<XSharpToken>
          // parse until SELF:Eos() or tokens such as AS, IS, 
          LOCAL nested := 0 AS LONG
          LOCAL done  := FALSE AS LOGIC
-         VAR tokens := List<IToken>{}
+         VAR tokens := List<XSharpToken>{}
          
          DO WHILE ! SELF:Eos() .AND. ! done
             SWITCH SELF:La1
@@ -2413,23 +2416,41 @@ callingconvention	: Convention=(CLIPPER | STRICT | PASCAL | ASPEN | WINCALL | CA
          RETURN TokensAsString(SELF:ParseExpressionAsTokens())
         
          
-      PRIVATE METHOD ParseForBlockLocals() AS VOID
+      PRIVATE METHOD ParseForLocalDeclaration() AS VOID
          VAR tokens := List<IToken>{}
+         VAR firstToken := SELF:Lt1
          DO WHILE ! SELF:Eos()
             IF SELF:Matches(XSharpLexer.IMPLIED, XSharpLexer.VAR)
                IF SELF:IsId(SELF:La2)
+                  LOCAL kind := ImpliedKind.Assignment as ImpliedKind
                   VAR start := SELF:Lt2
                   Consume()      // IMPLIED or VAR
                   VAR id    := SELF:ParseIdentifier()
-                  LOCAL expr AS IList<IToken>
+                  LOCAL expr AS IList<XSharpToken>
                   IF SELF:IsAssignOp(SELF:La1) .OR. SELF:La1 == XSharpLexer.IN
-                     IF (SELF:La1 != XSharpLexer.IN)
-                        Consume()   // := 
+                     IF SELF:La1 == XSharpLexer.IN
+                        kind := ImpliedKind.InCollection
+                     ELSE
+                        kind := ImpliedKind.Assignment
                      ENDIF
-                     expr := SELF:ParseExpressionAsTokens()
+                     SWITCH firstToken.Type
+                     CASE XSharpLexer.FOR
+                        kind := ImpliedKind.LoopCounter
+                     CASE XSharpLexer.FOREACH
+                        kind := ImpliedKind.InCollection
+                     CASE XSharpLexer.BEGIN
+                     CASE XSharpLexer.USING
+                        kind := ImpliedKind.Using
+                     END SWITCH
+                     Consume()     
+                     // get the text after IN or the expression after the assignment operator    
+                     expr := SELF:ParseExpressionAsTokens() 
                   ENDIF
                   SELF:GetSourceInfo(start, LastToken, OUT VAR range, OUT VAR interval, OUT VAR _)  
-                  VAR xVar := XSourceVariableSymbol{SELF:CurrentEntity, id, range, interval, XLiterals.VarType } {Expression := expr }
+                  VAR xVar := XSourceImpliedVariableSymbol{SELF:CurrentEntity, id, range, interval }
+                  xVar:Expression  := expr
+                  xVar:ImpliedKind := kind
+                  xVar:TypeName    := TokensAsString(expr):Trim()
                   SELF:_locals:Add(xVar)
                ENDIF
             ELSEIF SELF:IsId(SELF:La1) .AND. SELF:La2 == XSharpLexer.AS
@@ -2453,6 +2474,7 @@ callingconvention	: Convention=(CLIPPER | STRICT | PASCAL | ASPEN | WINCALL | CA
             Consume()
          ENDDO
          RETURN
+            
       PRIVATE METHOD ParseForLocals() AS VOID
          // Check for method call with OUT VAR or OUT id AS TYPE
          // Check for <expr> IS <type> VAR <id>
@@ -2464,9 +2486,11 @@ callingconvention	: Convention=(CLIPPER | STRICT | PASCAL | ASPEN | WINCALL | CA
                VAR type := SELF:ParseTypeName()
                IF SELF:La1 == XSharpLexer.VAR
                   Consume()   // VAR
-                  VAR id      := SELF:ParseIdentifier()
+                  VAR id            := SELF:ParseIdentifier()
                   SELF:GetSourceInfo(start, LastToken, OUT VAR range, OUT VAR interval, OUT VAR _)  
-                  VAR xVar     := XSourceVariableSymbol{SELF:CurrentEntity, id, range, interval, type} 
+                  VAR xVar          := XSourceImpliedVariableSymbol{SELF:CurrentEntity, id, range, interval}
+                  xVar:TypeName     := type:Trim()
+                  xVar:ImpliedKind  := ImpliedKind.TypeCheck
                   SELF:_locals:Add(xVar)
                ENDIF
             ELSEIF SELF:La1 == XSharpLexer.OUT
@@ -2485,7 +2509,9 @@ callingconvention	: Convention=(CLIPPER | STRICT | PASCAL | ASPEN | WINCALL | CA
                   VAR id         := SELF:ParseIdentifier()
                   IF id          == "_"
                      SELF:GetSourceInfo(start, LastToken, OUT VAR range, OUT VAR interval, OUT VAR _)  
-                     VAR xVar       := XSourceVariableSymbol{SELF:CurrentEntity, id, range, interval, XLiterals.VarType} 
+                     VAR xVar           := XSourceImpliedVariableSymbol{SELF:CurrentEntity, id, range, interval}
+                     xVar:ImpliedKind := ImpliedKind.OutParam
+                     // Todo: Get Expression for OUT variable 
                      SELF:_locals:Add(xVar)
                   ENDIF
                ELSEIF SELF:La2 == XSharpLexer.NULL
@@ -2643,7 +2669,7 @@ callingconvention	: Convention=(CLIPPER | STRICT | PASCAL | ASPEN | WINCALL | CA
 */
          LOCAL lConst   := FALSE AS LOGIC
          LOCAL lDim     := FALSE AS LOGIC
-         LOCAL expr     AS IList<IToken>
+         LOCAL expr     AS IList<XSharpToken>
          LOCAL start    := SELF:Lt1 AS IToken
          IF SELF:La1 == XSharpLexer.CONST
             lConst := TRUE
@@ -2674,7 +2700,7 @@ callingconvention	: Convention=(CLIPPER | STRICT | PASCAL | ASPEN | WINCALL | CA
          // impliedvar: (Const=CONST)? Id=identifier Op=assignoperator Expression=expression         
          LOCAL lConst   := FALSE AS LOGIC
          LOCAL lDim     := FALSE AS LOGIC
-         LOCAL expr     AS IList<IToken>
+         LOCAL expr     AS IList<XSharpToken>
          LOCAL start    := SELF:Lt1 AS IToken
          IF SELF:La1 == XSharpLexer.CONST
             lConst := TRUE
@@ -2682,11 +2708,13 @@ callingconvention	: Convention=(CLIPPER | STRICT | PASCAL | ASPEN | WINCALL | CA
          ENDIF
          VAR id := SELF:ParseIdentifier()
          IF ExpectAssign()
-            expr:= SELF:ParseExpressionAsTokens()
+            expr := SELF:ParseExpressionAsTokens()
          ENDIF
          SELF:GetSourceInfo(start, LastToken, OUT VAR range, OUT VAR interval, OUT VAR _)  
-         VAR xVar     := XSourceVariableSymbol{SELF:CurrentEntity, id,  range, interval, XLiterals.VarType} 
+         VAR xVar     := XSourceImpliedVariableSymbol{SELF:CurrentEntity, id,  range, interval} 
          xVar:Expression := expr
+         xVar:ImpliedKind := ImpliedKind.Assignment
+         xVar:TypeName    := Self:TokensAsString(expr):Trim()
          RETURN xVar
 
       PRIVATE METHOD ParseXBaseDeclarationStatement() AS LOGIC
@@ -2784,7 +2812,7 @@ callingconvention	: Convention=(CLIPPER | STRICT | PASCAL | ASPEN | WINCALL | CA
                               ;
          */
          LOCAL lAmp     := FALSE AS LOGIC
-         LOCAL expr     AS IList<IToken>
+         LOCAL expr     AS IList<XSharpToken>
          LOCAL start    := SELF:Lt1 AS IToken
          IF SELF:La1 == XSharpLexer.AMP
             lAmp := TRUE

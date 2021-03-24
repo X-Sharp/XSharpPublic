@@ -238,6 +238,12 @@ namespace XSharp.LanguageService
             if (symbol is IXTypeSymbol ts)
                 return ts;
             var name = getTypeNameFromSymbol(symbol);
+            if (name == null)
+                return null;
+            if (name.EndsWith("[]"))
+            {
+                name = "System.Array";
+            }
             return SearchType(location, name).FirstOrDefault();
         }
 
@@ -301,9 +307,18 @@ namespace XSharp.LanguageService
             var result = RetrieveElement(location, tokenList, CompletionState.General);
             var element = result.FirstOrDefault();
             var elementType = getTypeNameFromSymbol(element);
+            if (elementType.EndsWith("[]"))
+            {
+                return SearchType(location, elementType.Substring(0, elementType.Length - 2)).FirstOrDefault();
+            }
             var type = getTypeFromSymbol(location, element);
             if (type != null)
             {
+                if (type.Name == "__Array" || type.Name == "__FoxArray")
+                {
+                    type = SearchType(location, "__Usual").FirstOrDefault();
+                    return type;
+                }
                 // detect if the type has an implementation of:
                 // System.Collections.IEnumerator
                 // Array
@@ -358,6 +373,16 @@ namespace XSharp.LanguageService
                     {
                         var member = type.GetMembers("GetEnumerator").FirstOrDefault();
                         type = SearchType(location, member.OriginalTypeName).FirstOrDefault();
+                        if (type != null)
+                        {
+                            var current = type.GetProperties("Current").FirstOrDefault();
+                            if (current != null)
+                            {
+                                type = SearchType(location, current.OriginalTypeName).FirstOrDefault();
+                                return type;
+                            }
+
+                        }
                     }
                 }
                 else if (type.IsArray)
@@ -379,7 +404,7 @@ namespace XSharp.LanguageService
         }
         private static IXTypeSymbol resolveImpliedAssign(XSharpSearchLocation location, XSourceImpliedVariableSymbol xVar, IXTypeSymbol currentType, Modifiers visibility)
         {
-            Debug.Assert(xVar.ImpliedKind == ImpliedKind.Assignment);
+            Debug.Assert(xVar.ImpliedKind == ImpliedKind.Assignment || xVar.ImpliedKind == ImpliedKind.Using);
             var tokenList = xVar.Expression;
             var result = RetrieveElement(location, tokenList, CompletionState.General);
             var element = result.FirstOrDefault();
@@ -497,6 +522,9 @@ namespace XSharp.LanguageService
                 stopWatch.Start();
 #endif
             var result = new List<IXSymbol>();
+            if (tokenList == null || tokenList.Count == 0)
+                return result;
+
             IXTypeSymbol currentType = null;
             int currentPos = 0;
             var startOfExpression = true;
@@ -570,9 +598,6 @@ namespace XSharp.LanguageService
                 }
             }
 
-            //
-            if (tokenList.Count == 0)
-                return result;
             // Context Type....
             if (location.Member.Kind.IsClassMember(location.Dialect))
             {

@@ -1137,7 +1137,7 @@ attributeParam      : Name=identifierName Op=assignoperator Expr=expression     
             ENDIF
             sb:Append(t:Text)
          NEXT
-         RETURN sb:ToString()
+         RETURN sb:ToString():Trim()
          
       PRIVATE METHOD ParseEntity(entityKind AS Kind) AS IList<XSourceEntity>
          LOCAL result AS IList<XSourceEntity>
@@ -2461,11 +2461,25 @@ callingconvention	: Convention=(CLIPPER | STRICT | PASCAL | ASPEN | WINCALL | CA
                VAR xVar := XSourceVariableSymbol{SELF:CurrentEntity, id, range, interval, type } 
                SELF:_locals:Add(xVar)
 
-            ELSEIF SELF:La1 == XSharpLexer.LOCAL .AND. SELF:IsId(SELF:La2) .AND. La3 == XSharpLexer.AS
+            ELSEIF SELF:La1 == XSharpLexer.LOCAL .AND. SELF:IsId(SELF:La2) 
                VAR start := SELF:Lt1
                Consume()
                VAR id    := SELF:ParseIdentifier()
-               VAR type  := SELF:ParseAsIsType()
+               LOCAL type := "" AS STRING
+               IF SELF:ExpectAny(XSharpLexer.AS, XSharpLexer.IS)
+                    type  := SELF:ParseAsIsType()
+               ELSE
+                   IF SELF:_file:Project != NULL
+                        var options := SELF:_file:Project:ParseOptions 
+                        if options:Dialect == XSharpDialect.Core
+                            type := "OBJECT"
+                        else
+                            type := "USUAL"
+                        endif
+                    ELSE
+                        type := "OBJECT"
+                   ENDIF
+               ENDIF
                SELF:GetSourceInfo(start, LastToken, OUT VAR range, OUT VAR interval, OUT VAR _)  
                VAR xVar := XSourceVariableSymbol{SELF:CurrentEntity, id, range, interval, type } 
                SELF:_locals:Add(xVar)

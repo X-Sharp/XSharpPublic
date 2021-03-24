@@ -157,7 +157,10 @@ namespace Microsoft.VisualStudio.Project
             }
             else if (comboBox != null)
             {
-                value = comboBox.SelectedItem.ToString();
+                if (comboBox.SelectedItem != null)
+                    value = comboBox.SelectedItem.ToString();
+                else
+                    value = "";
             }
             else if (textBox != null)
             {

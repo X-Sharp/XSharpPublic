@@ -128,6 +128,12 @@ namespace XSharp.Project
             {
                 this.comboStartupObject.Items.Add(item);
             }
+            if (comboStartupObject.Items.Count == 1)
+            {
+                comboStartupObject.SelectedItem = DefaultValue;
+                this.comboStartupObject.Items.Add("");
+                comboStartupObject.Enabled = false;
+            }
         }
 
         protected internal override void BindProperties()

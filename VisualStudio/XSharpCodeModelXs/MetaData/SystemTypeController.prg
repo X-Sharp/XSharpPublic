@@ -98,25 +98,28 @@ BEGIN NAMESPACE XSharpModel
 
         STATIC METHOD GetTickedTypeName(typeName as STRING) AS STRING
            IF typeName:EndsWith(">") .AND.  typeName:Contains("<") .AND. typeName:Length > 2
-					IF typeName:Length <= (typeName:Replace(">", ""):Length + 1)
-						VAR elements := typeName:Split("<,>":ToCharArray(), System.StringSplitOptions.RemoveEmptyEntries)
-						VAR num := (elements:Length - 1)
-						typeName := elements[ 1] + "`" + num:ToString()
-					ELSE
-						VAR pos		   := typeName:IndexOf("<")
-						VAR baseName   := typeName:Substring(0, pos)
-						VAR typeParams := typeName:Substring(pos + 1)
-						typeParams	   := typeParams:Substring(0, typeName:Length - 1):Trim()
-						pos			   := typeParams:IndexOf("<")
-						WHILE pos >= 0
-							VAR pos2  := typeParams:LastIndexOf(">")
-							typeParams := typeParams:Substring(0, pos) + typeParams:Substring(pos2 + 1):Trim()
-							pos := typeParams:IndexOf("<")
-						ENDDO
-						VAR elements := typeParams:Split(",":ToCharArray())
-						typeName := baseName + "`" + elements:Length:ToString()
-					ENDIF
-				ENDIF 
+				IF typeName:Length <= (typeName:Replace(">", ""):Length + 1)
+					VAR elements := typeName:Split("<,>":ToCharArray(), System.StringSplitOptions.RemoveEmptyEntries)
+					VAR num := (elements:Length - 1)
+					typeName := elements[ 1] + "`" + num:ToString()
+				ELSE
+					VAR pos		   := typeName:IndexOf("<")
+					VAR baseName   := typeName:Substring(0, pos)
+					VAR typeParams := typeName:Substring(pos + 1)
+					typeParams	   := typeParams:Substring(0, typeName:Length - 1):Trim()
+					pos			   := typeParams:IndexOf("<")
+					WHILE pos >= 0
+						VAR pos2  := typeParams:LastIndexOf(">")
+						typeParams := typeParams:Substring(0, pos) + typeParams:Substring(pos2 + 1):Trim()
+						pos := typeParams:IndexOf("<")
+					ENDDO
+					VAR elements := typeParams:Split(",":ToCharArray())
+					typeName := baseName + "`" + elements:Length:ToString()
+				ENDIF
+            ENDIF
+            IF typeName:EndsWith("[]")
+                RETURN "System.Array"
+            ENDIF
             RETURN typeName
 
 		STATIC METHOD FindType(typeName AS STRING, usings AS IList<STRING>, assemblies AS IList<XAssembly>) AS XPETypeSymbol

@@ -38,6 +38,14 @@ INTERNAL CLASS ListViewItem_workarea INHERIT ListViewItem
 	RETURN
 END CLASS
 
+/// <summary>
+/// The Workareas window shows the open workareas/cursors in the current thread.
+/// Cursors for SqlExec() (FoxPro dialect) are also included.
+/// </summary>
+/// <seealso cref='M:XSharp.RT.Debugger.Functions.DbgShowWorkAreas' />
+/// <seealso cref='P:XSharp.RuntimeState.Workareas' />
+/// <seealso cref='P:XSharp.RuntimeState.DataSession' />
+
 CLASS WorkareasWindow INHERIT System.Windows.Forms.Form
     
     PROTECT oIndexTreeView AS System.Windows.Forms.TreeView

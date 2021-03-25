@@ -13,7 +13,7 @@ BEGIN NAMESPACE XSharp.Debugger
     PUBLIC PARTIAL CLASS VariablesWindow ;
         INHERIT System.Windows.Forms.Form
 
-        PUBLIC CONSTRUCTOR() STRICT 
+        INTERNAL CONSTRUCTOR() STRICT 
             SELF:InitializeComponent()
             SELF:LoadValues()
          RETURN

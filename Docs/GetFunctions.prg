@@ -17,9 +17,9 @@ FUNCTION Start AS VOID
     TRY
     //CreateClassList() 
     //CreateClassSectionFiles()
-    WriteClassTopics()
+    //WriteClassTopics()
     //CreateFunctionList()
-    //CreateFunctionSectionFiles()  
+    CreateFunctionSectionFiles()  
     WriteFunctionTopics()
     CATCH e AS Exception
         ? e:ToString()

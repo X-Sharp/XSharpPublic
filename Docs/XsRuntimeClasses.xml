@@ -21,6 +21,11 @@
         This compiler generated class contains all the functions, globals and defines that are defined in the XSharp.RT assembly.
       </summary>
     </member>
+   <member name="T:XSharp.RT.Debugger.Functions">
+      <summary>
+        This compiler generated class contains all the functions from te XSharp Runtime Debugger assembly (XSharp.RT.Debugger.dll).
+      </summary>
+    </member>
     <member name="T:XSharp.VO.Functions">
       <summary>
         This compiler generated class contains all the functions, globals and defines that are defined in the XSharp.VO assembly.

@@ -13,8 +13,15 @@ USING System.Windows.Forms
 BEGIN NAMESPACE XSharp.Debugger
 
 	/// <summary>
-    /// The GlobalsWindow class.
-    /// </summary>
+    /// The Globals Window shows the globals in all the loaded assemblies that were compiled with X#.
+	/// </summary>
+	/// <remarks>
+	/// The Globals are detected by looking at the existence of the ClassLibraryAttribute for the assembly.
+	/// The window lists all the public fields that are not Literals or Readonly.
+    /// </remarks>
+	/// <seealso cref='M:XSharp.RT.Debugger.Functions.DbgShowGlobals' />
+	/// <seealso cref='T:XSharp.Internal.ClassLibraryAttribute' />
+
 	CLASS GlobalsWindow INHERIT VariablesWindow
  
     CONSTRUCTOR()

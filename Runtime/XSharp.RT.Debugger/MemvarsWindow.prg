@@ -14,8 +14,13 @@ USING System.Windows.Forms
 BEGIN NAMESPACE XSharp.Debugger
 
 	/// <summary>
-    /// The MemVarsWindow class.
+    /// The MemVars Window shows the Public and private memory variables for the current thread.
     /// </summary>
+    /// <remarks>
+	/// It uses the public API in the XSharp Runtime to list these variables.
+    /// </remarks>
+	/// <seealso cref='M:XSharp.RT.Debugger.Functions.DbgShowMemvars' />
+	
 	CLASS MemVarsWindow INHERIT VariablesWindow
  
     CONSTRUCTOR()

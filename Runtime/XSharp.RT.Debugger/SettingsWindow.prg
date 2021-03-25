@@ -10,6 +10,15 @@ USING System.Windows.Forms
 
 BEGIN NAMESPACE XSharp.Debugger
 
+	/// <summary>
+    /// The Settings Window shows the global settings for the current thread.
+    /// </summary>
+    /// <remarks>
+	/// These settings are stored in the Settings field in the the XSharp RuntimeState object.
+    /// </remarks>
+	/// <seealso cref='M:XSharp.RT.Debugger.Functions.DbgShowSettings' />
+	/// <seealso cref='P:XSharp.RuntimeState.Settings' />
+
     PUBLIC PARTIAL CLASS SettingsWindow ;
         INHERIT VariablesWindow
 

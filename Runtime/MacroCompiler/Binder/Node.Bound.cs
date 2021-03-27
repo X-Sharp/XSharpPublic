@@ -644,6 +644,11 @@ namespace XSharp.MacroCompiler.Syntax
             Datatype = Symbol.Type();
             return null;
         }
+        internal static CtorCallExpr Bound(Binder b, TypeExpr type, ArgList args)
+        {
+            var sym = b.BindCtorCall(type, type.Symbol, args);
+            return new CtorCallExpr(type, args) { Symbol = sym, Datatype = sym.Type() };
+        }
     }
     internal partial class IntrinsicCallExpr : MethodCallExpr
     {

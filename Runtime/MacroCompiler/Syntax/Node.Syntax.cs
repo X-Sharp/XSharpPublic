@@ -189,7 +189,7 @@ namespace XSharp.MacroCompiler.Syntax
     {
         internal Expr Expr;
         internal ArgList Args;
-        internal MethodCallExpr(Expr e, ArgList a) : base(e.Token) { Expr = e; Args = a; }
+        internal MethodCallExpr(Expr e, ArgList a) : base(e?.Token) { Expr = e; Args = a; }
         public override string ToString() { return Expr.ToString() + "(" + Args.ToString() + ")"; }
     }
     internal partial class CtorCallExpr : MethodCallExpr

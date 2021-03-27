@@ -228,7 +228,6 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             
         PRIVATE METHOD _ReadLock() AS LOGIC
             LOCAL isOk AS LOGIC
-            
             isOk := TRUE
             Trace.Assert(SELF:_writeLocks == 0, "Attempting read lock while holding write lock")
             IF SELF:_readLocks != 0

@@ -124,7 +124,7 @@ BEGIN NAMESPACE XSharp.IO
                     nErr := 33 // DOS Lock violation 
                 ENDIF
                 FError(nErr)  
-                THROW IOException{i"Lock: File lock failed, pos: {position}, length: {length} "}
+                THROW IOException{i"Lock: File lock failed, pos: {position}, length: {length} "} 
             ENDIF
         RETURN 
         /// <inheritdoc />
@@ -145,14 +145,23 @@ BEGIN NAMESPACE XSharp.IO
         /// <inheritdoc />
         /// <remarks>This method calls the Windows FlushFileBuffers() function directly.</remarks>
         PUBLIC OVERRIDE METHOD Flush(lCommit AS LOGIC) AS VOID
-            IF lCommit
-                FlushFileBuffers(SELF:hFile)
+            // Note that GetDangerousFileHandle() calls Flush before we have the file handle
+            IF lCommit .and. SELF:hFile != NULL
+                IF ! FlushFileBuffers(SELF:hFile)
+                     XSharp.IO.File.SetErrorState(IOException{i"Flush: Error Flushing File Buffer "})
+                ENDIF
             ENDIF
         RETURN
         
         /// <inheritdoc />
         PUBLIC OVERRIDE METHOD Flush() AS VOID
-            SELF:Flush(FALSE)
+            // Note that GetDangerousFileHandle() calls Flush before we have the file handle
+            IF SELF:hFile == NULL
+                SUPER:Flush()
+                RETURN
+            ENDIF
+            // Shared FileStream should default to Committing the changes
+            SELF:Flush(TRUE)
             RETURN
             
         #region External methods

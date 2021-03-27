@@ -17,6 +17,8 @@ USING XSharp.RDD.Support
 USING System.Linq
 
 //#define TESTCDX
+//#define VALIDATE
+//define LOGGING := FALSE
 BEGIN NAMESPACE XSharp.RDD.CDX
 
     INTERNAL PARTIAL SEALED CLASS CdxTag
@@ -125,15 +127,38 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                         // after expanding we either need to split or update the current page, so no nextlevel
                             action := SELF:ExpandRecnos(action)
                         OTHERWISE
-                            SELF:_UpdateError(NULL, "CdxTag.DoAction","Unexpected Enum value "+action:Type:ToString())
+                            SELF:_UpdateError(NULL, "CdxTag.DoAction","Unexpected Enum value "+action:ToString())
                     END SWITCH
                 ENDDO
+                
+
             CATCH ex AS Exception
-                SELF:_UpdateError(ex,"CdxTag.DoAction","Error performing action "+action:Type:ToString())
+                SELF:_UpdateError(ex,"CdxTag.DoAction","Error performing action "+action:ToString())
 
             END TRY
             RETURN action
+#ifdef DEBUG
+        PRIVATE METHOD ValidateAllLevels() AS LOGIC
+#ifdef  BALANCE
+            VAR aStack  := Stack <IList<CdxTreePage>>{}
 
+            VAR oPage := SELF:GetPage(SELF:_rootPage)
+            DO WHILE oPage != NULL
+                VAR pages  := oPage:CurrentLevel
+                aStack:Push(pages)
+                var children := oPage:GetChildren()
+                if children:Count == 0
+                    EXIT
+                ENDIF
+                oPage := SELF:GetPage(children:First())
+            ENDDO
+            // The stack now contains the pages for the CDX
+            IF aStack:Count > 2
+                NOP
+            ENDIF
+#endif
+            RETURN TRUE
+#endif
         PRIVATE METHOD DeletePage(action AS CdxAction) AS CdxAction
             VAR oPage := SELF:GetPage(action:PageNo )
             IF oPage == NULL
@@ -177,7 +202,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 //Debug.Assert(pageR:HasLeft .or. pageR:HasRight)
             ENDIF
             VAR result := CdxAction.DeleteFromParent(oPage,-1)
-            SELF:OrderBag:FreePage(oPage)
+            SELF:OrderBag:AddFreePage(oPage)
             RETURN result
 
         PRIVATE METHOD DeleteFromParent(action AS CdxAction) AS CdxAction
@@ -315,7 +340,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             // and insert it
             // when our key is after the last key, then make sure that we do not need to insert
             // the key on the Branch page to the right of the oParent
-
+    
             // First check to see if the parent has room for an extra child node
             IF oParent:NumKeys >= oParent:MaxKeys
                 VAR tmp := CdxAction.AddBranch(oParent, oPage:PageNo, oLast:Recno,oLast:KeyBytes )
@@ -452,6 +477,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             #endif
             VAR lWasRoot := oOldRoot:IsRoot
             // Adjust new sibling
+            //DebOut32("Make sure root page keeps same number "+ oOldRoot:PageNo:ToString("X")+ " Swap with "+ oNewRoot:PageNo:ToString("X"))
             oNewSibling:LeftPtr := 0
             oNewSibling:Write()
             // swap page numbers for both pages
@@ -481,7 +507,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 ENDIF
             ENDIF
             Header:RootPage := oPage:PageNo
-            Header:Write()
+            Header:Write() 
             oPage:SetRoot()
             oPage:Write()
             _rootPage := oPage:PageNo
@@ -791,6 +817,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                             IF changed .AND. _currentvalue:ForCond .AND. recno == recordNo
                                 VAR page := SELF:Stack:Top:Page
                                 VAR pos  := SELF:Stack:Top:Pos
+                                Debug.Assert(page IS CdxLeafPage)
                                 SELF:DoAction(CdxAction.DeleteKey(page, pos))
                             ENDIF
                         ELSE
@@ -809,6 +836,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                         IF SELF:_locate(SELF:_newvalue:Key, SELF:_keySize, SearchMode.Left, SELF:_rootPage,recordNo)  == 0
                             VAR page := SELF:Stack:Top:Page
                             VAR pos  := SELF:Stack:Top:Pos
+                            Debug.Assert(page IS CdxLeafPage)
                             SELF:DoAction(CdxAction.InsertKey(page, pos, SELF:_newvalue:Recno, SELF:_newvalue:Key))
                         ELSE
                             SELF:ClearStack()
@@ -818,6 +846,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                         IF !SELF:Stack:Empty
                             VAR page := SELF:Stack:Top:Page
                             VAR pos  := SELF:Stack:Top:Pos
+                            Debug.Assert(page IS CdxLeafPage)
                             SELF:DoAction(CdxAction.InsertKey(page, pos, SELF:_newvalue:Recno, SELF:_newvalue:Key))
                         ELSE
                             RETURN FALSE
@@ -830,10 +859,12 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 RETURN TRUE
             FINALLY
                 IF SELF:Shared
+                    SELF:ValidateAllLevels()
                     SELF:UnLock()
                 ENDIF
             END TRY
-            
+
+
         PRIVATE METHOD _getLeaf AS CdxLeafPage
             VAR page    := SELF:CurrentStack:Page
             IF page IS CdxLeafPage VAR leaf

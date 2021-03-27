@@ -77,14 +77,11 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 
         INTERNAL METHOD SetPage(nPage AS LONG, page AS CdxPage) AS VOID
             SELF:_pages[nPage] :=  page
-
+            
         INTERNAL CONSTRUCTOR( bag AS CdxOrderBag )
             SELF:_pages := Dictionary<LONG, CdxPage>{}
             SELF:_bag   := bag
             
-//         DESTRUCTOR()
-//            SELF:Flush(TRUE)
-
         INTERNAL METHOD Update( pageNo AS LONG ) AS CdxPage
             LOCAL page AS CdxPage
             page := SELF:Read(pageNo)
@@ -101,6 +98,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             _pages:Clear()
 
         INTERNAL METHOD Delete(pageNo AS LONG) AS LOGIC
+           Debug.Assert(_pages:ContainsKey(pageNo))
            IF _pages:ContainsKey(pageNo)
                 _pages:Remove(pageNo)
                 RETURN TRUE
@@ -141,9 +139,6 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 ENDIF
             NEXT
             IF ! keepData
-//                FOREACH VAR pair IN _pages
-//                    pair:Value:Free()
-//                NEXT
                 SELF:_pages:Clear()
             ENDIF
             RETURN lOk
@@ -167,9 +162,20 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 page:Dumped := TRUE
             ENDIF
             RETURN
-            
-            
-            
+
+        INTERNAL METHOD SetVersion(nVersion as DWORD) AS VOID
+#ifdef DEBUG
+            FOREACH var page in _pages
+                page:Value:Generation := nVersion
+            NEXT
+#endif
+
+        INTERNAL METHOD CheckVersion(nVersion as DWORD) AS VOID
+#ifdef DEBUG
+            FOREACH var page in _pages
+                Debug.Assert(page:Value:Generation == nVersion)
+            NEXT
+#endif            
     END CLASS
     
 END NAMESPACE // global::XSharp.RDD.Types.DbfNtx

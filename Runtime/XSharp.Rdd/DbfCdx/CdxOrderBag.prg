@@ -11,6 +11,7 @@ USING XSharp.RDD.Support
 USING System.Text
 USING System.IO
 USING System.Linq
+USING System.Diagnostics
 
 
 BEGIN NAMESPACE XSharp.RDD.CDX
@@ -376,13 +377,14 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             ENDIF
             RETURN nPage
 
-         METHOD FreePage(oPage AS CdxTreePage) AS LOGIC
+         METHOD AddFreePage(oPage AS CdxTreePage) AS LOGIC
+            var nPage := oPage:PageNo
             oPage:Clear()
             oPage:NextFree     := SELF:_root:FreeList
-            SELF:_root:FreeList := oPage:PageNo
-            SELF:_root:Write()
-            SELF:_PageList:Delete(oPage:PageNo)
             oPage:Write()
+            SELF:_root:FreeList := nPage
+            SELF:_root:Write()
+            SELF:_PageList:Delete(nPage)
             RETURN TRUE
 
         METHOD AllocBuffer(nSize := 1 AS LONG)  AS BYTE[]
@@ -392,10 +394,16 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             RETURN SELF:_stream:SafeReadAt(nPage, buffer) 
  
         METHOD Read(oPage AS CdxPage) AS LOGIC
+#ifdef DEBUG            
+            oPage:Generation := SELF:_root:RootVersion
+#endif
             RETURN SELF:_stream:SafeReadAt(oPage:PageNo, oPage:Buffer, oPage:Buffer:Length) 
 
         METHOD Write(oPage AS CdxPage) AS LOGIC
             LOCAL isOk AS LOGIC
+#ifdef DEBUG            
+            SELF:_PageList:CheckVersion(SELF:Root:RootVersion)
+#endif
             IF oPage:PageNo == -1
                 oPage:PageNo := SELF:FindFreePage()
                 oPage:IsHot  := TRUE
@@ -409,7 +417,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             IF oPage:IsHot
                 isOk := SELF:_stream:SafeWriteAt(oPage:PageNo, oPage:Buffer)
                 IF isOk .and. SELF:Shared
-                    SELF:_stream:Flush()
+                    SELF:_stream:Flush(TRUE)
                 ENDIF
             ELSE
                 isOk := TRUE
@@ -430,6 +438,9 @@ BEGIN NAMESPACE XSharp.RDD.CDX
   
          METHOD SetPage(page AS CdxPage) AS VOID
             SELF:_PageList:SetPage(page:PageNo, page)
+#ifdef DEBUG
+            page:Generation := SELF:Root:RootVersion
+#endif
 
         #region properties
 
@@ -449,6 +460,11 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             IF SELF:BagHasChanged
                 lChanged := TRUE
                 SELF:_PageList:Clear()
+                // Add new versions of Root and Taglist to the cache
+                SELF:Root:Read()
+                SELF:_tagList:Read()
+                SELF:_PageList:Add(SELF:Root)
+                SELF:_PageList:Add(SELF:_tagList)
             ENDIF
             RETURN lChanged
 
@@ -473,29 +489,34 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 
         PRIVATE METHOD _LockRetry(nOffSet AS INT64, nLen AS INT64,sPrefix AS STRING) AS VOID
             LOCAL result := FALSE AS LOGIC
+            var timer := LockTimer{}
+            timer:Start()
             REPEAT
                 result := SELF:_stream:SafeLock(nOffSet, nLen)
                 IF ! result
+                    IF timer:TimeOut(FullPath, nOffSet, nLen)
+                        RETURN
+                    ENDIF
                     var wait := 10 +rand:@@Next() % 50
-                    DebOut32("Retry Wait "+wait:ToString()+" milliseconds")
                     System.Threading.Thread.Sleep(wait)
                 ENDIF
-            UNTIL result
+            UNTIL result 
             //DebOut32( "Locked " +nOffSet:ToString()+" "+nLen:ToString())
 
         PRIVATE METHOD _Unlock(nOffSet AS INT64, nLen AS INT64) AS LOGIC
             VAR res := SELF:_stream:SafeUnlock(nOffSet, nLen)
-            IF res
-                NOP // DebOut32( "UnLocked " +nOffSet:ToString()+" "+nLen:ToString())
-            ELSE
-                DebOut32( "UnLock FAILED " +nOffSet:ToString()+" "+nLen:ToString())
-            ENDIF
+            //IF res
+            //    NOP // DebOut32( "UnLocked " +nOffSet:ToString()+" "+nLen:ToString())
+            //ELSE
+            //    //DebOut32( "UnLock FAILED " +nOffSet:ToString()+" "+nLen:ToString())
+            //ENDIF
             RETURN res
 
         INTERNAL METHOD SLock() AS LOGIC
             IF !SELF:Shared
                 RETURN TRUE
             ENDIF
+            //DebOut32( System.Threading.Thread.CurrentThread:Name+__ENTITY__ )
             BEGIN LOCK SELF
                 SELF:_sharedLocks += 1
                 IF SELF:_exclusiveLocks == 0  .AND. SELF:_sharedLocks == 1
@@ -572,8 +593,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             ELSEIF SELF:_exclusiveLocks > 0
                 SELF:_exclusiveLocks -= 1
                 IF SELF:_exclusiveLocks == 0
-                    SELF:_root:RootVersion += 1
-                    SELF:_root:Write()
+                    SELF:_UpdateRootVersion()
                     SELF:_Unlock(FoxXLockOfs, FoxXLockLen)
                 ENDIF
             ENDIF    
@@ -615,34 +635,26 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         PRIVATE METHOD _xLockComix() AS VOID
             //Debout32("_xLockComix() ")
             SELF:_sLockGate := 0
-            SELF:_xLockedInOne := TRUE
-                
+            Debug.Assert(_sharedLocks == 0)         
             IF ! SELF:_stream:SafeLock(ComixXLockOfs, ComixXLockLen+1)
-                DebOut32( "_xLockComix FAILED " +ComixXLockOfs:ToString()+" "+(ComixXLockLen+1):ToString())
                 SELF:_xLockedInOne := FALSE
                 SELF:_LockRetry(ComixXLockOfs, 1,"X")
                 SELF:_LockRetry(ComixSLockOfs, ComixXLockLen,"X")
             ELSE
-                NOP // DebOut32( "_xLockComix " +ComixXLockOfs:ToString()+" "+(ComixXLockLen+1):ToString())
+                SELF:_xLockedInOne := TRUE
             ENDIF
  
         PRIVATE METHOD _UnLockComix() AS VOID
             
             IF SELF:_sharedLocks > 0
-                //DebOut32("_UnLockComix() shared")
                 SELF:_sharedLocks -= 1
                 IF SELF:_sharedLocks == 0
-                    NOP // DebOut32("_UnLockComix() shared == 0")
                     SELF:_Unlock(ComixSLockOfs| SELF:_sLockOffSet, 1)
                 ENDIF
             ELSEIF SELF:_exclusiveLocks > 0
-                //DebOut32("_UnLockComix() exclusive")
                 SELF:_exclusiveLocks -= 1
                 IF SELF:_exclusiveLocks == 0
-                    SELF:_root:RootVersion += 1
-                    //DebOut32(System.Threading.Thread.CurrentThread.ManagedThreadId:ToString()+ " Update Root version to "+SELF:_root:RootVersion:ToString())
-                    SELF:_root:Write()
-                    
+                    SELF:_UpdateRootVersion()                    
                     IF SELF:_xLockedInOne
                         SELF:_Unlock(ComixXLockOfs, ComixXLockLen+1)
                     ELSE
@@ -652,6 +664,16 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 ENDIF
             ENDIF    
             RETURN
+            
+        PRIVATE METHOD _UpdateRootVersion() AS VOID
+            var version := SELF:_root:RootVersion +1
+            SELF:_root:RootVersion := version
+            // Update the pagelist first. otherwise writing the _root will fail.
+#ifdef DEBUG
+            SELF:_PageList:SetVersion(version)
+#endif
+            SELF:_root:Write()
+            
     #endregion
 
 

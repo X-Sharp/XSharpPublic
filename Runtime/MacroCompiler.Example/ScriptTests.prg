@@ -273,6 +273,18 @@ FUNCTION ScriptTests AS VOID
         "FINALLY",;
         "RETURN 0",;
         "END"}), Args(), null, null, ErrorCode.ReturnNotAllowed)
+    TestMacro(sc, String.Join(e"\n",<STRING>{;
+        "TRY",;
+        "RETURN 123",;
+        "FINALLY",;
+        "END"}), Args(), 123, typeof(int))
+    TestMacro(sc, String.Join(e"\n",<STRING>{;
+        "BEGIN SEQUENCE",;
+        "BREAK 123",;
+        "RECOVER USING e",;
+        "RETURN e",;
+        "FINALLY",;
+        "END SEQUENCE"}), Args(), 123, typeof(int))
 
     Compilation.Override(WellKnownMembers.XSharp_RT_Functions___FieldGet, "MyFieldGet")
     Compilation.Override(WellKnownMembers.XSharp_RT_Functions___FieldSet, "MyFieldSet")

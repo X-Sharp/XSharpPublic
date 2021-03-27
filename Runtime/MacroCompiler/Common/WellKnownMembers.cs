@@ -49,6 +49,9 @@ namespace XSharp.MacroCompiler
         XSharp_RT_Functions___pushWorkarea,
         XSharp_RT_Functions___popWorkarea,
         XSharp_Core_Functions_Chr,
+        XSharp_Internal_CompilerServices_EnterBeginSequence,
+        XSharp_Internal_CompilerServices_ExitBeginSequence,
+        XSharp_Error_WrapRawException,
     }
 
     public static partial class Compilation
@@ -92,6 +95,9 @@ namespace XSharp.MacroCompiler
             XSharpQualifiedFunctionNames.PushWorkarea+"|"+VulcanQualifiedFunctionNames.PushWorkarea,
             XSharpQualifiedFunctionNames.PopWorkarea+"|"+VulcanQualifiedFunctionNames.PopWorkarea,
             XSharpQualifiedFunctionNames.Chr+"|"+VulcanQualifiedFunctionNames.Chr,
+            XSharpQualifiedFunctionNames.EnterSequence+"|"+VulcanQualifiedFunctionNames.EnterSequence,
+            XSharpQualifiedFunctionNames.ExitSequence+"|"+VulcanQualifiedFunctionNames.ExitSequence,
+            XSharpQualifiedFunctionNames.WrapException+"|"+VulcanQualifiedFunctionNames.WrapException,
         };
 
         static MemberSymbol[] WellKnownMemberSymbols;

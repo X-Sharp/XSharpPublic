@@ -475,6 +475,7 @@ namespace XSharp.MacroCompiler.Syntax
     }
     internal partial class SequenceStmt : Stmt
     {
+        // Handled by TryStmt
     }
 
     internal partial class ScopeStmt : Stmt

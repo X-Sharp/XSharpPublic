@@ -31,6 +31,10 @@ namespace XSharp.MacroCompiler.Syntax
             }
             return null;
         }
+        internal static StmtBlock Bound(params Stmt[] s)
+        {
+            return new StmtBlock(s);
+        }
     }
     internal partial class ExprStmt : Stmt
     {
@@ -38,6 +42,10 @@ namespace XSharp.MacroCompiler.Syntax
         {
             b.Bind(ref Expr);
             return null;
+        }
+        internal static ExprStmt Bound(Expr e)
+        {
+            return new ExprStmt(e);
         }
     }
     internal partial class ExprResultStmt : ExprStmt
@@ -65,6 +73,12 @@ namespace XSharp.MacroCompiler.Syntax
     }
     internal partial class ReturnStmt : ExprResultStmt
     {
+        internal override Node Bind(Binder b)
+        {
+            if (b.Entity is Script s && !s.AllowReturn)
+                throw Error(ErrorCode.ReturnNotAllowed);
+            return base.Bind(b);
+        }
     }
     internal partial class DeclStmt : Stmt
     {
@@ -90,6 +104,10 @@ namespace XSharp.MacroCompiler.Syntax
                 b.Bind(ref VarDecls[i]);
             }
             return null;
+        }
+        internal static DeclStmt Bound(VarDecl v)
+        {
+            return new DeclStmt(null, new VarDecl[] { v });
         }
     }
     internal partial class VarDecl : Node
@@ -464,10 +482,6 @@ namespace XSharp.MacroCompiler.Syntax
             return null;
         }
     }
-    internal partial class BreakStmt : Stmt
-    {
-        // TODO
-    }
     internal partial class ThrowStmt : Stmt
     {
         internal override Node Bind(Binder b)
@@ -480,6 +494,29 @@ namespace XSharp.MacroCompiler.Syntax
                     Expr.ThrowError(ErrorCode.TypeMustDeriveFrom, Compilation.Get(WellKnownTypes.System_Exception).FullName);
                 b.Convert(ref Expr, Compilation.Get(NativeType.Object));
             }
+            return null;
+        }
+    }
+    internal partial class BreakStmt : ThrowStmt
+    {
+        internal override Node Bind(Binder b)
+        {
+            if (Expr != null)
+            {
+                b.Bind(ref Expr);
+                Expr.RequireGetAccess();
+            }
+            else
+            {
+                if (b.Options.Dialect == XSharpDialect.FoxPro)
+                    Expr = LiteralExpr.Bound(Constant.Create(false));
+                else
+                    Expr = LiteralExpr.Bound(Constant.CreateDefault(Compilation.Get(NativeType.Usual)));
+            }
+            var t = IdExpr.Bound(Compilation.Get(WellKnownTypes.XSharp_Internal_WrappedException));
+            var args = ArgList.Bound(Expr);
+            Expr = CtorCallExpr.Bound(b, t, args);
+            b.Convert(ref Expr, Compilation.Get(NativeType.Object));
             return null;
         }
     }
@@ -507,8 +544,10 @@ namespace XSharp.MacroCompiler.Syntax
     }
     internal partial class TryStmt : Stmt
     {
+        internal Node TargetEntity = null;
         internal override Node Bind(Binder b)
         {
+            TargetEntity = b.Entity;
             b.OpenScope();
             b.Bind(ref Stmt);
             b.CloseScope();
@@ -517,6 +556,16 @@ namespace XSharp.MacroCompiler.Syntax
             if (Finally != null)
                 b.Bind(ref Finally);
             return null;
+        }
+        internal static TryStmt Bound(Binder b, Stmt sb, Stmt fb)
+        {
+            return new TryStmt(null, sb, new CatchBlock[] { }, fb == null ? null : new FinallyBlock(null, fb)) { TargetEntity = b.Entity };
+        }
+        internal static TryStmt Bound(Binder b, Stmt sb, CatchBlock cb, Stmt fb)
+        {
+            if (cb == null)
+                return Bound(b, sb, fb);
+            return new TryStmt(null, sb, new CatchBlock[] { cb }, fb == null ? null : new FinallyBlock(null, fb)) { TargetEntity = b.Entity };
         }
     }
     internal partial class CatchBlock : Node
@@ -544,26 +593,102 @@ namespace XSharp.MacroCompiler.Syntax
                 // TODO: support filtered exceptions
                 b.Bind(ref When);
                 When.RequireGetAccess();
-                When.ThrowError(ErrorCode.NotSupported);
+                When.ThrowError(ErrorCode.NotSupported, "WHEN");
             }
             b.Bind(ref Stmt);
             b.CloseScope();
             return null;
         }
+        internal static CatchBlock Bound(LocalSymbol exVar, Stmt s)
+        {
+            return s == null ? null : new CatchBlock(null, null, null, null, s) { ExVar = exVar };
+        }
     }
     internal partial class FinallyBlock : Node
     {
+        bool SaveAllowReturn(Binder b)
+        {
+            bool ar = false;
+            if (b.Entity is Script s)
+            {
+                ar = s.AllowReturn;
+                s.AllowReturn = false;
+            }
+            return ar;
+        }
+        void RestoreAllowReturn(Binder b, bool ar)
+        {
+            if (b.Entity is Script s)
+                s.AllowReturn = ar;
+        }
         internal override Node Bind(Binder b)
         {
+            bool ar = SaveAllowReturn(b);
             b.OpenScope();
             b.Bind(ref Stmt);
             b.CloseScope();
+            RestoreAllowReturn(b, ar);
             return null;
         }
     }
     internal partial class SequenceStmt : Stmt
     {
-        // TODO
+        LocalSymbol ExVar;
+        bool SaveAllowReturn(Binder b)
+        {
+            bool ar = false;
+            if (b.Entity is Script s)
+            {
+                ar = s.AllowReturn;
+                s.AllowReturn = false;
+            }
+            return ar;
+        }
+        void RestoreAllowReturn(Binder b, bool ar)
+        {
+            if (b.Entity is Script s)
+                s.AllowReturn = ar;
+        }
+        internal override Node Bind(Binder b)
+        {
+            b.OpenScope();
+            b.Bind(ref Stmt);
+            Stmt = TryStmt.Bound(b,
+                StmtBlock.Bound(
+                    ExprStmt.Bound(MethodCallExpr.Bound(null, Compilation.Get(WellKnownMembers.XSharp_Internal_CompilerServices_EnterBeginSequence), null, ArgList.Empty)),
+                    Stmt),
+                ExprStmt.Bound(MethodCallExpr.Bound(null, Compilation.Get(WellKnownMembers.XSharp_Internal_CompilerServices_ExitBeginSequence), null, ArgList.Empty))
+                );
+            b.CloseScope();
+            if (Recover != null)
+            {
+                b.OpenScope();
+                var rv = b.AddLocal(Name.value, b.ObjectType);
+                b.Bind(ref Recover);
+                ExVar = b.AddLocal(Compilation.Get(WellKnownTypes.System_Exception));
+                Expr rvxw = MethodCallExpr.Bound(b, TypeCast.Bound(b, IdExpr.Bound(ExVar), Compilation.Get(WellKnownTypes.XSharp_Internal_WrappedException)), "get_Value", ArgList.Empty);
+                Expr rvxe = TypeCast.Bound(b, IdExpr.Bound(ExVar), Compilation.Get(WellKnownTypes.XSharp_Error));
+                Expr rvx = MethodCallExpr.Bound(null, Compilation.Get(WellKnownMembers.XSharp_Error_WrapRawException), null, ArgList.Bound(TypeCast.Bound(b, IdExpr.Bound(ExVar), Compilation.Get(WellKnownTypes.System_Exception))));
+                var rvInit =
+                    IifExpr.Bound(IsExpr.Bound(IdExpr.Bound(ExVar), IdExpr.Bound(Compilation.Get(WellKnownTypes.XSharp_Internal_WrappedException))),   TypeConversion.Bound(b, rvxw, Compilation.Get(NativeType.Usual)),
+                        IifExpr.Bound(IsExpr.Bound(IdExpr.Bound(ExVar), IdExpr.Bound(Compilation.Get(WellKnownTypes.XSharp_Error))), TypeConversion.Bound(b, rvxe, Compilation.Get(NativeType.Usual)),
+                            rvx,
+                            b.Options.Binding),
+                        b.Options.Binding);
+                var rvdecl = DeclStmt.Bound(VarDecl.Bound(rv, rvInit, b.Options.Binding));
+                Recover = StmtBlock.Bound(rvdecl, Recover);
+                b.CloseScope();
+            }
+            if (Finally != null)
+            {
+                bool ar = SaveAllowReturn(b);
+                b.OpenScope();
+                b.Bind(ref Finally);
+                b.CloseScope();
+                RestoreAllowReturn(b, ar);
+            }
+            return TryStmt.Bound(b, Stmt, CatchBlock.Bound(ExVar, Recover), Finally);
+        }
     }
 
     internal partial class ScopeStmt : Stmt
@@ -594,6 +719,7 @@ namespace XSharp.MacroCompiler.Syntax
     {
         internal LocalSymbol PCount;
         internal ArgumentSymbol ParamArray;
+        internal bool AllowReturn = true;
         internal override Node Bind(Binder b)
         {
             b.Entity = this;

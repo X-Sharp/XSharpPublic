@@ -65,6 +65,12 @@ namespace XSharp.MacroCompiler.Syntax
     }
     internal partial class ReturnStmt : ExprResultStmt
     {
+        internal override Node Bind(Binder b)
+        {
+            if (b.Entity is Script s && !s.AllowReturn)
+                throw Error(ErrorCode.ReturnNotAllowed);
+            return base.Bind(b);
+        }
     }
     internal partial class DeclStmt : Stmt
     {
@@ -574,11 +580,28 @@ namespace XSharp.MacroCompiler.Syntax
     }
     internal partial class FinallyBlock : Node
     {
+        bool SaveAllowReturn(Binder b)
+        {
+            bool ar = false;
+            if (b.Entity is Script s)
+            {
+                ar = s.AllowReturn;
+                s.AllowReturn = false;
+            }
+            return ar;
+        }
+        void RestoreAllowReturn(Binder b, bool ar)
+        {
+            if (b.Entity is Script s)
+                s.AllowReturn = ar;
+        }
         internal override Node Bind(Binder b)
         {
+            bool ar = SaveAllowReturn(b);
             b.OpenScope();
             b.Bind(ref Stmt);
             b.CloseScope();
+            RestoreAllowReturn(b, ar);
             return null;
         }
     }
@@ -615,6 +638,7 @@ namespace XSharp.MacroCompiler.Syntax
     {
         internal LocalSymbol PCount;
         internal ArgumentSymbol ParamArray;
+        internal bool AllowReturn = true;
         internal override Node Bind(Binder b)
         {
             b.Entity = this;

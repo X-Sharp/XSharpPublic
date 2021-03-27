@@ -268,6 +268,11 @@ FUNCTION ScriptTests AS VOID
         "CATCH e AS XSharp.Internal.WrappedException",;
         "FINALLY",;
         "END"}), Args(), "Hello", typeof(string))
+    TestMacro(sc, String.Join(e"\n",<STRING>{;
+        "TRY",;
+        "FINALLY",;
+        "RETURN 0",;
+        "END"}), Args(), null, null, ErrorCode.ReturnNotAllowed)
 
     Compilation.Override(WellKnownMembers.XSharp_RT_Functions___FieldGet, "MyFieldGet")
     Compilation.Override(WellKnownMembers.XSharp_RT_Functions___FieldSet, "MyFieldSet")

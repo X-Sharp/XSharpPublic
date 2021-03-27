@@ -59,6 +59,7 @@ namespace XSharp.MacroCompiler
         WrongNumberIfIndices = 239,
         NoSuitableEnumerator = 240,
         TypeMustDeriveFrom = 241,
+        ReturnNotAllowed = 242,
         Internal = 999,
     }
 
@@ -116,6 +117,7 @@ namespace XSharp.MacroCompiler
             { ErrorCode.WrongNumberIfIndices, "Wrong number of indices in array" },
             { ErrorCode.NoSuitableEnumerator, "No suitable enumerator getter" },
             { ErrorCode.TypeMustDeriveFrom, "Type must derive from {0}" },
+            { ErrorCode.ReturnNotAllowed, "Return not allowed from within a FINALLY block" },
             { ErrorCode.Internal, "Internal error" },
         };
 

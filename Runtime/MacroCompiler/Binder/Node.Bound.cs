@@ -514,11 +514,23 @@ namespace XSharp.MacroCompiler.Syntax
                 ThrowError(ErrorCode.NoConversion, Expr.Datatype, Type.Symbol);
             return null;
         }
-        internal static TypeCast Bound(Expr e, TypeSymbol t) { return new TypeCast(null, e) { Datatype = t }; }
+        internal static TypeCast Bound(Binder b, Expr e, TypeSymbol t)
+        {
+            var s = b.ExplicitConversion(e, t);
+            return new TypeCast(null, e) { Datatype = t, Symbol = s };
+        }
     }
     internal partial class TypeConversion : TypeCast
     {
-        internal static TypeConversion Bound(Expr e, TypeSymbol t, ConversionSymbol conv) { return new TypeConversion(null, e) { Datatype = t, Symbol = conv }; }
+        internal static TypeConversion Bound(Expr e, TypeSymbol t, ConversionSymbol conv)
+        {
+            return new TypeConversion(null, e) { Datatype = t, Symbol = conv };
+        }
+        internal static Expr Bound(Binder b, Expr e, TypeSymbol t)
+        {
+            b.Convert(ref e, t);
+            return e;
+        }
     }
     internal partial class IsExpr : Expr
     {
@@ -556,6 +568,7 @@ namespace XSharp.MacroCompiler.Syntax
             }
             return new IsExpr(expr, type, null) { Symbol = type.Symbol, Datatype = Compilation.Get(NativeType.Boolean) };
         }
+        internal override void RequireGetAccess() { }
     }
     internal partial class IsVarExpr : IsExpr
     {
@@ -643,6 +656,11 @@ namespace XSharp.MacroCompiler.Syntax
             Symbol = b.BindCtorCall(Expr, Expr.Symbol, Args);
             Datatype = Symbol.Type();
             return null;
+        }
+        internal static CtorCallExpr Bound(Binder b, TypeExpr type, ArgList args)
+        {
+            var sym = b.BindCtorCall(type, type.Symbol, args);
+            return new CtorCallExpr(type, args) { Symbol = sym, Datatype = sym.Type() };
         }
     }
     internal partial class IntrinsicCallExpr : MethodCallExpr

@@ -311,36 +311,17 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             RETURN isOk
 
         INTERNAL METHOD Flush() AS LOGIC
-//           
-//            IF !SELF:Shared .AND. SELF:_Hot 
-//                SELF:GoCold()
-//                SELF:_PageList:Flush(TRUE)
-//                SELF:_Header:IndexingVersion        := 1
-//                SELF:_Header:NextUnusedPageOffset   := SELF:_nextUnusedPageOffset
-//                SELF:_Header:FirstPageOffset        := SELF:_rootPage
-//                SELF:_Header:Write( )
-//            ENDIF
-//            FFlush( SELF:_hFile )
+            // do NOT Call bag:flush to avoid recursion
+            //SELF:_bag:Flush()
             RETURN TRUE
 
         INTERNAL METHOD Commit() AS LOGIC
-            //SELF:GoCold()
-//            IF !SELF:_Shared .AND. SELF:_Hot .AND. SELF:_hFile != F_ERROR
-//                SELF:_Header:IndexingVersion        := 1
-//                SELF:_Header:NextUnusedPageOffset   := SELF:_nextUnusedPageOffset
-//                SELF:_Header:FirstPageOffset        := SELF:_rootPage
-//                SELF:_Header:Write( )
-//            ENDIF
-//            FFlush( SELF:_hFile )
+            SELF:GoCold()
+            SELF:_bag:Flush()
             RETURN TRUE
             
         INTERNAL METHOD Close() AS LOGIC
-            LOCAL lOk AS LOGIC
-            lOk := SELF:GoCold()
-            IF lOk
-                lOk := SELF:Flush()
-            ENDIF
-            RETURN TRUE
+            RETURN SELF:Commit()
 
         INTERNAL METHOD GoCold() AS LOGIC
             IF SELF:_oRdd:IsHot

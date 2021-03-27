@@ -90,4 +90,19 @@ BEGIN NAMESPACE XSharp.RDD
             ENDIF
     END CLASS
 
+    STRUCTURE LockTimer
+        PRIVATE _start AS INT64
+        PROPERTY Started AS LOGIC GET _start != 0
+        METHOD Start() AS VOID
+            _start := System.DateTime.Now.Ticks
+            
+        METHOD TimeOut(cFileName as STRING, nOffSet as INT64, nLen as INT64) AS LOGIC
+            IF  System.DateTime.Now.Ticks > _start + 300_000_000
+                THROW TimeoutException{i"Timeout locking file {cFileName} Offset {nOffSet} Len {nLen}"}
+            ENDIF
+            RETURN FALSE
+
+    END STRUCTURE
+
+
 END NAMESPACE

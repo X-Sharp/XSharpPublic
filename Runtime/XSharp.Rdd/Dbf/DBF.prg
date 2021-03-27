@@ -421,10 +421,15 @@ METHOD HeaderLock( lockMode AS DbLockMode ) AS LOGIC
 	IF lockMode == DbLockMode.Lock 
         //? CurrentThreadId, "Start Header Lock", ProcName(1)
         LOCAL nTries := 0 AS LONG
+        var timer := LockTimer{}
+        timer:Start()
         DO WHILE TRUE
             ++nTries
 		    SELF:_HeaderLocked := SELF:_tryLock( SELF:_lockScheme:Offset, 1,FALSE)
             IF ! SELF:_HeaderLocked
+                IF timer:TimeOut(SELF:FullPath, SELF:_lockScheme:Offset, 1)
+                    RETURN FALSE
+                ENDIF
                 System.Threading.Thread.Sleep(100)
                 
             ELSE
@@ -437,8 +442,8 @@ METHOD HeaderLock( lockMode AS DbLockMode ) AS LOGIC
         
 		TRY
             //? CurrentThreadId, "Start Header UnLock",ProcName(1)
-         _oStream:SafeUnlock(SELF:_lockScheme:Offset, 1)
-			SELF:_HeaderLocked := FALSE
+            _oStream:SafeUnlock(SELF:_lockScheme:Offset, 1)
+            SELF:_HeaderLocked := FALSE
             //? CurrentThreadId, "Header UnLock", unlocked
 		CATCH ex AS Exception
 			SELF:_HeaderLocked := FALSE
@@ -459,7 +464,6 @@ METHOD UnLock(oRecId AS OBJECT) AS LOGIC
     //
 	IF SELF:Shared 
 		BEGIN LOCK SELF
-    //
             //? CurrentThreadId, "UnLock", oRecId
 			SELF:GoCold()
 			TRY
@@ -1559,7 +1563,7 @@ METHOD Flush() 			AS LOGIC
         //? SELF:CurrentThreadId, "After EOF"
 		SELF:_writeHeader()
         //? SELF:CurrentThreadId, "After writeHeader"
-        _oStream:Flush()
+        _oStream:Flush(TRUE)
         //? SELF:CurrentThreadId, "After FFlush"
 	ENDIF
 	IF SELF:Shared .AND. locked

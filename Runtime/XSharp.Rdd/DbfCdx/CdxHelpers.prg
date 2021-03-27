@@ -64,6 +64,9 @@ BEGIN NAMESPACE XSharp.RDD.CDX
     [DebuggerDisplay("Stack: {Count}")];
     INTERNAL SEALED CLASS CdxPageStack
         PRIVATE _pages AS List<CdxStackEntry>
+#ifdef DEBUG            
+        PRIVATE _oldStack as List<CdxStackEntry>
+#endif        
         INTERNAL CONSTRUCTOR(tag AS CdxTag)
             _pages := List<CdxStackEntry>{20}
 
@@ -159,6 +162,10 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             RETURN -1
             
         INTERNAL METHOD Clear() AS VOID
+#ifdef DEBUG
+            SELF:_oldStack := List<CdxStackEntry>{}
+            SELF:_oldStack:AddRange(SELF:_pages)
+#endif            
             SELF:_pages:Clear()
             RETURN
     END CLASS
@@ -229,7 +236,31 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 
         INTERNAL STATIC METHOD OutOfBounds(oPage AS CdxTreePage) AS CdxAction
             RETURN CdxAction{CdxActionType.OutOfBounds}{PageNo := oPage:PageNo}
-            
+
+        OVERRIDE METHOD ToString() AS STRING
+            var sb := System.Text.StringBuilder{}
+            sb:Append("CdxAction: ")
+            sb:Append(SELF:Type:ToString())
+            IF SELF:PageNo != 0
+                sb:Append(" PageNo: "+SELF:PageNo:ToString("X"))
+            ENDIF
+            IF SELF:PageNo2 != 0
+                sb:Append(" PageNo2: "+SELF:PageNo2:ToString("X"))
+            ENDIF
+            IF SELF:Pos != 0
+                sb:Append(" Pos: "+SELF:Pos:ToString())
+            ENDIF
+            IF SELF:Recno != 0
+                sb:Append(" Recno: "+SELF:Recno:ToString())
+            ENDIF
+            IF SELF:ChildPage!= 0
+                sb:Append(" ChildPage: "+SELF:ChildPage:ToString("X"))
+            ENDIF
+            IF SELF:Key != NULL
+                sb:Append(" Key: "+SELF:Key:ToAscii(FALSE))
+            ENDIF
+            RETURN sb:ToString()
+
     END CLASS
 
 END NAMESPACE

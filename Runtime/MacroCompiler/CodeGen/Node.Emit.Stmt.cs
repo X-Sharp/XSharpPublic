@@ -361,9 +361,6 @@ namespace XSharp.MacroCompiler.Syntax
             Outer.EmitLoop(ilg);
         }
     }
-    internal partial class BreakStmt : Stmt
-    {
-    }
     internal partial class ThrowStmt : Stmt
     {
         internal override void EmitStmt(ILGenerator ilg)
@@ -378,6 +375,10 @@ namespace XSharp.MacroCompiler.Syntax
                 ilg.Emit(OpCodes.Rethrow);
             }
         }
+    }
+    internal partial class BreakStmt : ThrowStmt
+    {
+        // Emit handled by parent
     }
     internal partial class QMarkStmt : Stmt
     {

@@ -464,10 +464,6 @@ namespace XSharp.MacroCompiler.Syntax
             return null;
         }
     }
-    internal partial class BreakStmt : Stmt
-    {
-        // TODO
-    }
     internal partial class ThrowStmt : Stmt
     {
         internal override Node Bind(Binder b)
@@ -480,6 +476,29 @@ namespace XSharp.MacroCompiler.Syntax
                     Expr.ThrowError(ErrorCode.TypeMustDeriveFrom, Compilation.Get(WellKnownTypes.System_Exception).FullName);
                 b.Convert(ref Expr, Compilation.Get(NativeType.Object));
             }
+            return null;
+        }
+    }
+    internal partial class BreakStmt : ThrowStmt
+    {
+        internal override Node Bind(Binder b)
+        {
+            if (Expr != null)
+            {
+                b.Bind(ref Expr);
+                Expr.RequireGetAccess();
+            }
+            else
+            {
+                if (b.Options.Dialect == XSharpDialect.FoxPro)
+                    Expr = LiteralExpr.Bound(Constant.Create(false));
+                else
+                    Expr = LiteralExpr.Bound(Constant.CreateDefault(Compilation.Get(NativeType.Usual)));
+            }
+            var t = IdExpr.Bound(Compilation.Get(WellKnownTypes.XSharp_Internal_WrappedException));
+            var args = ArgList.Bound(Expr);
+            Expr = CtorCallExpr.Bound(b, t, args);
+            b.Convert(ref Expr, Compilation.Get(NativeType.Object));
             return null;
         }
     }

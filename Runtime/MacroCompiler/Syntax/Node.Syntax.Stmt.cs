@@ -184,17 +184,16 @@ namespace XSharp.MacroCompiler.Syntax
         internal LoopStmt(Token t) : base(t) { }
         public override string ToString() => "LOOP";
     }
-    internal partial class BreakStmt : Stmt
-    {
-        internal Expr Expr;
-        internal BreakStmt(Token t, Expr e) : base(t) { Expr = e; }
-        public override string ToString() => "BREAK" + (Expr != null ? " " + Expr.ToString() : "") + "\n";
-    }
     internal partial class ThrowStmt : Stmt
     {
         internal Expr Expr;
         internal ThrowStmt(Token t, Expr e) : base(t) { Expr = e; }
         public override string ToString() => "THROW" + (Expr != null ? " " + Expr.ToString() : "") + "\n";
+    }
+    internal partial class BreakStmt : ThrowStmt
+    {
+        internal BreakStmt(Token t, Expr e) : base(t, e) { }
+        public override string ToString() => "BREAK" + (Expr != null ? " " + Expr.ToString() : "") + "\n";
     }
     internal partial class QMarkStmt : Stmt
     {

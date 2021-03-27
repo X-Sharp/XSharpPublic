@@ -346,6 +346,10 @@ namespace XSharp.MacroCompiler.Syntax
 
             return null;
         }
+        internal static IfStmt Bound(Expr cond, Stmt sTrue, Stmt sFalse)
+        {
+            return new IfStmt(null, cond, sTrue, sFalse);
+        }
     }
     internal partial class DoCaseStmt : Stmt
     {
@@ -704,7 +708,33 @@ namespace XSharp.MacroCompiler.Syntax
 
     internal partial class LockStmt : Stmt
     {
-        // TODO
+        internal override Node Bind(Binder b)
+        {
+            b.OpenScope();
+            b.Bind(ref Key);
+            Key.RequireGetAccess();
+            if (Key.Datatype.IsValueType)
+                throw Error(ErrorCode.RequireReferenceType);
+            b.Bind(ref Stmt);
+            b.CloseScope();
+
+            var k = b.AddLocal(Compilation.Get(NativeType.Object));
+            b.Convert(ref Key, Compilation.Get(NativeType.Object));
+            var kdecl = DeclStmt.Bound(VarDecl.Bound(k, Key, b.Options.Binding));
+
+            var l = b.AddLocal(Compilation.Get(NativeType.Boolean));
+            var ldecl = DeclStmt.Bound(VarDecl.Bound(l, LiteralExpr.Bound(Constant.Create(false)), b.Options.Binding));
+
+            var enter = ExprStmt.Bound(MethodCallExpr.Bound(b, null, Compilation.Get(WellKnownMembers.System_Threading_Monitor_Enter), null, ArgList.Bound(IdExpr.Bound(k), IdExpr.Bound(l))));
+            var exit = IfStmt.Bound(IdExpr.Bound(l),
+                ExprStmt.Bound(MethodCallExpr.Bound(b, null, Compilation.Get(WellKnownMembers.System_Threading_Monitor_Exit), null, ArgList.Bound(IdExpr.Bound(k)))),
+                null);
+
+            return StmtBlock.Bound(kdecl, ldecl,
+                TryStmt.Bound(b,
+                    StmtBlock.Bound(enter, Stmt),
+                    exit));
+        }
     }
 
     internal partial class UsingStmt : Stmt

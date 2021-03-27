@@ -526,8 +526,10 @@ namespace XSharp.MacroCompiler.Syntax
     }
     internal partial class TryStmt : Stmt
     {
+        internal Node TargetEntity = null;
         internal override Node Bind(Binder b)
         {
+            TargetEntity = b.Entity;
             b.OpenScope();
             b.Bind(ref Stmt);
             b.CloseScope();

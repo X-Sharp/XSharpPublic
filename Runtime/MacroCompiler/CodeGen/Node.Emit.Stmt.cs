@@ -392,19 +392,66 @@ namespace XSharp.MacroCompiler.Syntax
     }
     internal partial class TryStmt : Stmt
     {
+        Label? EndLabel => (TargetEntity as Script)?.End;
+        Label? SaveEndLabel()
+        {
+            if (TargetEntity is Script s)
+            {
+                var e = s.End;
+                s.End = null;
+                return e;
+            }
+            return null;
+        }
+        void RestoreEndLabel(Label? e)
+        {
+            if (TargetEntity is Script s)
+            {
+                s.End = e;
+            }
+        }
+        LocalBuilder retVal = null;
+        void WrapEmit(Node n, ILGenerator ilg)
+        {
+            var oe = SaveEndLabel();
+            n.Emit(ilg);
+            if (EndLabel is Label ex)
+            {
+                if (retVal == null)
+                    retVal = ilg.DeclareLocal(Compilation.Get(NativeType.Boolean).Type);
+                var te = ilg.DefineLabel();
+                ilg.Emit(OpCodes.Br_S, te);
+                ilg.MarkLabel(ex);
+                ilg.Emit(OpCodes.Ldc_I4_1);
+                ilg.Emit(OpCodes.Stloc, retVal.LocalIndex);
+                ilg.MarkLabel(te);
+            }
+            RestoreEndLabel(oe);
+        }
+        void UnwrapReturn(ILGenerator ilg)
+        {
+            if (retVal != null && TargetEntity is Script s)
+            {
+                ilg.Emit(OpCodes.Ldloc, retVal.LocalIndex);
+                if (s.End == null)
+                    s.End = ilg.DefineLabel();
+                ilg.Emit(OpCodes.Brtrue, s.End.Value);
+            }
+        }
         internal override void EmitStmt(ILGenerator ilg)
         {
             ilg.BeginExceptionBlock();
-            Stmt.Emit(ilg);
+            WrapEmit(Stmt, ilg);
             if (Catches.Length == 0 && Finally == null)
                 ilg.BeginCatchBlock(Compilation.Get(NativeType.Object).Type);
             foreach (var c in Catches)
             {
-                c.Emit(ilg);
+                WrapEmit(c, ilg);
             }
             if (Finally != null)
                 Finally.Emit(ilg);
             ilg.EndExceptionBlock();
+            UnwrapReturn(ilg);
         }
     }
     internal partial class CatchBlock : Node

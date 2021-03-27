@@ -259,6 +259,15 @@ FUNCTION ScriptTests AS VOID
         "x := e:Value",;
         "END",;
         "RETURN x"}), Args(), 123, typeof(int))
+    TestMacro(sc, String.Join(e"\n",<STRING>{;
+        "TRY",;
+        e"THROW Exception{\"Hello\"}",;
+        "RETURN 0",;
+        "CATCH e AS Exception",;
+        "RETURN e:Message",;
+        "CATCH e AS XSharp.Internal.WrappedException",;
+        "FINALLY",;
+        "END"}), Args(), "Hello", typeof(string))
 
     Compilation.Override(WellKnownMembers.XSharp_RT_Functions___FieldGet, "MyFieldGet")
     Compilation.Override(WellKnownMembers.XSharp_RT_Functions___FieldSet, "MyFieldSet")

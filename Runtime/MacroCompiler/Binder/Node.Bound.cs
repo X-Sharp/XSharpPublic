@@ -526,7 +526,7 @@ namespace XSharp.MacroCompiler.Syntax
         {
             return new TypeConversion(null, e) { Datatype = t, Symbol = conv };
         }
-        internal static Expr Bound(Binder b, Expr e, TypeSymbol t)
+        internal new static Expr Bound(Binder b, Expr e, TypeSymbol t)
         {
             b.Convert(ref e, t);
             return e;
@@ -633,6 +633,14 @@ namespace XSharp.MacroCompiler.Syntax
         internal static MethodCallExpr Bound(Expr e, Symbol sym, Expr self, ArgList args)
         {
             return new MethodCallExpr(e, args) { Symbol = sym, Datatype = sym.Type(), Self = self };
+        }
+        internal static MethodCallExpr Bound(Binder b, Expr e, Symbol sym, Expr self, ArgList args)
+        {
+            Expr boundSelf;
+            if (self != null)
+                e = new MemberAccessExpr(self, null, null);
+            var m = b.BindMethodCall(e, sym, args, out boundSelf);
+            return new MethodCallExpr(e, args) { Symbol = m, Datatype = m.Type(), Self = boundSelf };
         }
         internal static MethodCallExpr Bound(Binder b, Expr e, string name, ArgList args)
         {

@@ -246,10 +246,10 @@ namespace XSharp.MacroCompiler.Syntax
             var lb = ilg.DefineLabel();
             var le = ilg.DefineLabel();
             ilg.Emit(OpCodes.Brtrue, lb);
-            StmtElse.Emit(ilg);
+            StmtElse?.Emit(ilg);
             ilg.Emit(OpCodes.Br, le);
             ilg.MarkLabel(lb);
-            StmtIf.Emit(ilg);
+            StmtIf?.Emit(ilg);
             ilg.MarkLabel(le);
         }
     }

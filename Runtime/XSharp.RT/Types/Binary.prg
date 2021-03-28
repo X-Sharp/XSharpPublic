@@ -32,24 +32,24 @@ BEGIN NAMESPACE XSharp
         /// <include file="RTComments.xml" path="Comments/Constructor/*" />
         /// <param name="b">Byte[] value that has the bytes that define the binary</param>
         [DebuggerStepThroughAttribute] [MethodImpl(MethodImplOptions.AggressiveInlining)];        
-        CONSTRUCTOR (b as Byte[])
+        CONSTRUCTOR (b AS BYTE[])
             IF b == NULL
                 THROW NullError()
             ENDIF
             SELF:_value    := b
 
-        PRIVATE STATIC METHOD NullError() as Error
+        PRIVATE STATIC METHOD NullError() AS Error
             VAR err			 := Error{ArgumentException{}}
             err:Gencode		 := Gencode.EG_ARG
             err:ArgNum		 := 1
             err:FuncSym		 := "Binary.ctor"
             err:Description  := "Argument cannot be null"
             err:Args         := <OBJECT> {NULL}
-            return err
+            RETURN err
 
-        PRIVATE CONSTRUCTOR( lhs as byte[], rhs as byte[]) 
-            var len := lhs:Length + rhs:Length
-            var result := byte[]{len}
+        PRIVATE CONSTRUCTOR( lhs AS BYTE[], rhs AS BYTE[]) 
+            VAR len := lhs:Length + rhs:Length
+            VAR result := BYTE[]{len}
             System.Array.Copy(lhs, result, lhs:Length)
             System.Array.Copy(rhs, 0, result,lhs:Length, rhs:Length)
             _value := result
@@ -58,7 +58,7 @@ BEGIN NAMESPACE XSharp
         #endregion
         #region Properties
         /// <summary>Binary value as array of Bytes</summary>
-        PROPERTY @@Value    AS Byte[]	GET _value
+        PROPERTY @@Value    AS BYTE[]	GET _value
         PROPERTY Length     AS LONG GET iif(_value == NULL, 0, _value:Length)
         #endregion
         
@@ -78,7 +78,7 @@ BEGIN NAMESPACE XSharp
             IF SELF:Length != rhs:Length
                 RETURN FALSE
             ENDIF
-            FOR VAR i := 0 to SELF:Length-1
+            FOR VAR i := 0 TO SELF:Length-1
                 IF SELF:Value[i] != rhs:Value[i]
                     RETURN FALSE
                 ENDIF
@@ -106,47 +106,47 @@ BEGIN NAMESPACE XSharp
         #region Comparison Operators
         /// <include file="RTComments.xml" path="Comments/Operator/*" />
         OPERATOR >(lhs AS __Binary, rhs AS __Binary) AS LOGIC
-            var len := Math.Min(lhs:Length,rhs:Length)
-            var res := RuntimeState.StringCompare(lhs:Value, rhs:Value, len)
-            if res > 0
-                return TRUE
-            elseif res < 0
-                return FALSE
-            endif
+            VAR len := Math.Min(lhs:Length,rhs:Length)
+            VAR res := RuntimeState.StringCompare(lhs:Value, rhs:Value, len)
+            IF res > 0
+                RETURN TRUE
+            ELSEIF res < 0
+                RETURN FALSE
+            ENDIF
             RETURN lhs:Length > rhs:Length
             
             
             /// <include file="RTComments.xml" path="Comments/Operator/*" />
         OPERATOR <(lhs AS __Binary, rhs AS __Binary) AS LOGIC
-            var len := Math.Min(lhs:Length,rhs:Length)
-            var res := RuntimeState.StringCompare(lhs:Value, rhs:Value, len)
-            if res < 0
-                return TRUE
-            elseif res > 0
-                return FALSE
-            endif
+            VAR len := Math.Min(lhs:Length,rhs:Length)
+            VAR res := RuntimeState.StringCompare(lhs:Value, rhs:Value, len)
+            IF res < 0
+                RETURN TRUE
+            ELSEIF res > 0
+                RETURN FALSE
+            ENDIF
             RETURN lhs:Length < rhs:Length
             
             /// <include file="RTComments.xml" path="Comments/Operator/*" />
         OPERATOR >=(lhs AS __Binary, rhs AS __Binary) AS LOGIC
-            var len := Math.Min(lhs:Length,rhs:Length)
-            var res := RuntimeState.StringCompare(lhs:Value, rhs:Value, len)
-            if res > 0
-                return TRUE
-            elseif res < 0
-                return FALSE
-            endif
+            VAR len := Math.Min(lhs:Length,rhs:Length)
+            VAR res := RuntimeState.StringCompare(lhs:Value, rhs:Value, len)
+            IF res > 0
+                RETURN TRUE
+            ELSEIF res < 0
+                RETURN FALSE
+            ENDIF
             RETURN lhs:Length >= rhs:Length
             
             /// <include file="RTComments.xml" path="Comments/Operator/*" />
         OPERATOR <=(lhs AS __Binary, rhs AS __Binary) AS LOGIC
-            var len := Math.Min(lhs:Length,rhs:Length)
-            var res := RuntimeState.StringCompare(lhs:Value, rhs:Value, len)
-            if res < 0
-                return TRUE
-            elseif res > 0
-                return FALSE
-            endif
+            VAR len := Math.Min(lhs:Length,rhs:Length)
+            VAR res := RuntimeState.StringCompare(lhs:Value, rhs:Value, len)
+            IF res < 0
+                RETURN TRUE
+            ELSEIF res > 0
+                RETURN FALSE
+            ENDIF
             RETURN lhs:Length <= rhs:Length
             
             #endregion
@@ -155,12 +155,12 @@ BEGIN NAMESPACE XSharp
         /// <include file="RTComments.xml" path="Comments/Operator/*" />
         [DebuggerStepThroughAttribute];
         STATIC OPERATOR IMPLICIT(b AS BYTE[]) AS __Binary
-            RETURN __Binary{b}
+            RETURN __Binary{(BYTE[])b:Clone()}
             
             /// <include file="RTComments.xml" path="Comments/Operator/*" />
         [DebuggerStepThroughAttribute];
         STATIC OPERATOR IMPLICIT(b AS __Binary) AS BYTE[]
-            RETURN b:Value
+            RETURN (BYTE[])b:Value:Clone()
             
 
         /// <include file="RTComments.xml" path="Comments/Operator/*" />
@@ -180,14 +180,14 @@ BEGIN NAMESPACE XSharp
 
             /// <include file="RTComments.xml" path="Comments/Operator/*" />
         OPERATOR+(lhs AS __Binary, rhs AS __Binary) AS __Binary
-            return __Binary{lhs:Value, rhs:Value}
+            RETURN __Binary{lhs:Value, rhs:Value}
             
         /// <include file="RTComments.xml" path="Comments/Operator/*" />
         OPERATOR+(lhs AS __Binary, rhs AS STRING) AS __Binary
-            return __Binary{lhs:Value, RuntimeState.WinEncoding:GetBytes(rhs)}
+            RETURN __Binary{lhs:Value, RuntimeState.WinEncoding:GetBytes(rhs)}
 
         OPERATOR+(lhs AS STRING, rhs AS __Binary) AS STRING
-            var sb := StringBuilder{}
+            VAR sb := StringBuilder{}
             sb:Append(lhs)
             sb:Append(RuntimeState.WinEncoding:GetString(rhs))
             RETURN sb:ToString()
@@ -203,18 +203,18 @@ BEGIN NAMESPACE XSharp
             
         /// <inheritdoc />
         PUBLIC METHOD CompareTo(rhs AS __Binary) AS INT
-            var len := Math.Min(SELF:Length,rhs:Length)
-            for var i := 0 to len-1
-                if SELF:Value[i] > rhs:Value[i]
-                    return 1
+            VAR len := Math.Min(SELF:Length,rhs:Length)
+            FOR VAR i := 0 TO len-1
+                IF SELF:Value[i] > rhs:Value[i]
+                    RETURN 1
                 ELSEIF SELF:Value[i] < rhs:Value[i]
-                    return -1
+                    RETURN -1
                 ENDIF
-            next
-            if SELF:Length > rhs:Length
+            NEXT
+            IF SELF:Length > rhs:Length
                 RETURN 1
             ELSEIF SELF:Length < rhs:Length
-                return -1
+                RETURN -1
             ENDIF
             RETURN 0
             /// <inheritdoc />
@@ -229,15 +229,15 @@ BEGIN NAMESPACE XSharp
             
         /// <inheritdoc cref="System.Double.ToString"/>
         PUBLIC METHOD ToString(sFormat AS STRING) AS STRING
-            if sFormat == "G"
-                return RuntimeState:WinEncoding:GetString(self:Value)
-            endif
-            var sb := StringBuilder{}
+            IF sFormat == "G"
+                RETURN RuntimeState:WinEncoding:GetString(SELF:Value)
+            ENDIF
+            VAR sb := StringBuilder{}
             sb:Append("0h")
-            foreach var b in self:Value
+            FOREACH VAR b IN SELF:Value
                 sb:Append(b:ToString("X2"))
-            next
-            return sb:ToString()
+            NEXT
+            RETURN sb:ToString()
             /// <inheritdoc />
         PUBLIC METHOD ToString(format AS STRING, provider AS System.IFormatProvider) AS STRING
             RETURN SELF:ToString(format)

@@ -58,7 +58,14 @@ BEGIN NAMESPACE XSharp
         #endregion
         #region Properties
         /// <summary>Binary value as array of Bytes</summary>
-        PROPERTY @@Value    AS Byte[]	GET _value
+        PROPERTY @@Value    AS Byte[]
+            GET
+                var len    := _value:Length
+                var result := byte[]{len}
+                System.Array.Copy(_value, result, len)
+                return result
+            END GET
+        END PROPERTY
         PROPERTY Length     AS LONG GET iif(_value == NULL, 0, _value:Length)
         #endregion
         

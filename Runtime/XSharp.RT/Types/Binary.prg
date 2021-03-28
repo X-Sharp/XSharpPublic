@@ -86,7 +86,7 @@ BEGIN NAMESPACE XSharp
                 RETURN FALSE
             ENDIF
             FOR VAR i := 0 to SELF:Length-1
-                IF SELF:Value[i] != rhs:Value[i]
+                IF SELF:_value[i] != rhs:_value[i]
                     RETURN FALSE
                 ENDIF
             NEXT
@@ -114,7 +114,7 @@ BEGIN NAMESPACE XSharp
         /// <include file="RTComments.xml" path="Comments/Operator/*" />
         OPERATOR >(lhs AS __Binary, rhs AS __Binary) AS LOGIC
             var len := Math.Min(lhs:Length,rhs:Length)
-            var res := RuntimeState.StringCompare(lhs:Value, rhs:Value, len)
+            var res := RuntimeState.StringCompare(lhs:_value, rhs:_value, len)
             if res > 0
                 return TRUE
             elseif res < 0
@@ -126,7 +126,7 @@ BEGIN NAMESPACE XSharp
             /// <include file="RTComments.xml" path="Comments/Operator/*" />
         OPERATOR <(lhs AS __Binary, rhs AS __Binary) AS LOGIC
             var len := Math.Min(lhs:Length,rhs:Length)
-            var res := RuntimeState.StringCompare(lhs:Value, rhs:Value, len)
+            var res := RuntimeState.StringCompare(lhs:_value, rhs:_value, len)
             if res < 0
                 return TRUE
             elseif res > 0
@@ -137,7 +137,7 @@ BEGIN NAMESPACE XSharp
             /// <include file="RTComments.xml" path="Comments/Operator/*" />
         OPERATOR >=(lhs AS __Binary, rhs AS __Binary) AS LOGIC
             var len := Math.Min(lhs:Length,rhs:Length)
-            var res := RuntimeState.StringCompare(lhs:Value, rhs:Value, len)
+            var res := RuntimeState.StringCompare(lhs:_value, rhs:_value, len)
             if res > 0
                 return TRUE
             elseif res < 0
@@ -148,7 +148,7 @@ BEGIN NAMESPACE XSharp
             /// <include file="RTComments.xml" path="Comments/Operator/*" />
         OPERATOR <=(lhs AS __Binary, rhs AS __Binary) AS LOGIC
             var len := Math.Min(lhs:Length,rhs:Length)
-            var res := RuntimeState.StringCompare(lhs:Value, rhs:Value, len)
+            var res := RuntimeState.StringCompare(lhs:_value, rhs:_value, len)
             if res < 0
                 return TRUE
             elseif res > 0
@@ -167,13 +167,13 @@ BEGIN NAMESPACE XSharp
             /// <include file="RTComments.xml" path="Comments/Operator/*" />
         [DebuggerStepThroughAttribute];
         STATIC OPERATOR IMPLICIT(b AS __Binary) AS BYTE[]
-            RETURN b:Value
+            RETURN b:_value  // this is a copy of the originsl byte[]
             
 
         /// <include file="RTComments.xml" path="Comments/Operator/*" />
         [DebuggerStepThroughAttribute];
         STATIC OPERATOR IMPLICIT(bytes AS __Binary) AS STRING
-            RETURN RuntimeState.WinEncoding:GetString(bytes:Value)
+            RETURN RuntimeState.WinEncoding:GetString(bytes:_value)
 
         /// <include file="RTComments.xml" path="Comments/Operator/*" />
         [DebuggerStepThroughAttribute];
@@ -187,11 +187,11 @@ BEGIN NAMESPACE XSharp
 
             /// <include file="RTComments.xml" path="Comments/Operator/*" />
         OPERATOR+(lhs AS __Binary, rhs AS __Binary) AS __Binary
-            return __Binary{lhs:Value, rhs:Value}
+            return __Binary{lhs:_value, rhs:_value}
             
         /// <include file="RTComments.xml" path="Comments/Operator/*" />
         OPERATOR+(lhs AS __Binary, rhs AS STRING) AS __Binary
-            return __Binary{lhs:Value, RuntimeState.WinEncoding:GetBytes(rhs)}
+            return __Binary{lhs:_value, RuntimeState.WinEncoding:GetBytes(rhs)}
 
         OPERATOR+(lhs AS STRING, rhs AS __Binary) AS STRING
             var sb := StringBuilder{}
@@ -212,9 +212,9 @@ BEGIN NAMESPACE XSharp
         PUBLIC METHOD CompareTo(rhs AS __Binary) AS INT
             var len := Math.Min(SELF:Length,rhs:Length)
             for var i := 0 to len-1
-                if SELF:Value[i] > rhs:Value[i]
+                if SELF:_value[i] > rhs:_value[i]
                     return 1
-                ELSEIF SELF:Value[i] < rhs:Value[i]
+                ELSEIF SELF:_value[i] < rhs:_value[i]
                     return -1
                 ENDIF
             next
@@ -237,11 +237,11 @@ BEGIN NAMESPACE XSharp
         /// <inheritdoc cref="System.Double.ToString"/>
         PUBLIC METHOD ToString(sFormat AS STRING) AS STRING
             if sFormat == "G"
-                return RuntimeState:WinEncoding:GetString(self:Value)
+                return RuntimeState:WinEncoding:GetString(self:_value)
             endif
             var sb := StringBuilder{}
             sb:Append("0h")
-            foreach var b in self:Value
+            foreach var b in self:_value
                 sb:Append(b:ToString("X2"))
             next
             return sb:ToString()

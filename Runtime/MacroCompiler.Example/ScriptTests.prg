@@ -285,6 +285,16 @@ FUNCTION ScriptTests AS VOID
         "RETURN e",;
         "FINALLY",;
         "END SEQUENCE"}), Args(), 123, typeof(int))
+    TestMacro(sc, String.Join(e"\n",<STRING>{;
+        "IF true",;
+        "RETURN 1",;
+        "ENDIF"}), Args(), 1, typeof(int))
+    TestMacro(sc, String.Join(e"\n",<STRING>{;
+        "var o := object{}",;
+        "BEGIN LOCK o",;
+        "o := 1",;
+        "END LOCK",;
+        "RETURN o"}), Args(), 1, typeof(int))
 
     Compilation.Override(WellKnownMembers.XSharp_RT_Functions___FieldGet, "MyFieldGet")
     Compilation.Override(WellKnownMembers.XSharp_RT_Functions___FieldSet, "MyFieldSet")

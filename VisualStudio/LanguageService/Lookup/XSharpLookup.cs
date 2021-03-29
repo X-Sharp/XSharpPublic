@@ -838,11 +838,13 @@ namespace XSharp.LanguageService
 #endif
             result.Clear();
             if (symbols.Count > 0)
-                result.Add(symbols.Pop());
-            if (result[0] is IXMemberSymbol xmember && xmember.ParentType != null && xmember.ParentType.IsGeneric && symbols.Count > 0)
             {
-                result.Clear();
-                result.Add(adjustGenericMember(xmember, symbols.Peek()));
+                result.Add(symbols.Pop());
+                if (result[0] is IXMemberSymbol xmember && xmember.ParentType != null && xmember.ParentType.IsGeneric && symbols.Count > 0)
+                {
+                    result.Clear();
+                    result.Add(adjustGenericMember(xmember, symbols.Peek()));
+                }
             }
             return result;
         }

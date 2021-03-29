@@ -22,7 +22,7 @@ BEGIN NAMESPACE XSharpModel
             RETURN (IXVariableSymbol) SELF:MemberwiseClone()
 
         // Properties
-        PROPERTY IsParameter  AS LOGIC GET SET
+        PROPERTY IsParameter  AS LOGIC AUTO
         PROPERTY ImpliedKind as ImpliedKind AUTO
         PROPERTY Collection   AS IXSymbol AUTO
 

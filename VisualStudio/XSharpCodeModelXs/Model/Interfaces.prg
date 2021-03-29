@@ -65,7 +65,9 @@ BEGIN NAMESPACE XSharpModel
       PROPERTY OriginalTypeName  AS STRING GET
       PROPERTY Location       AS STRING GET
       PROPERTY IsGeneric      AS LOGIC GET
+      METHOD Clone()          AS IXMemberSymbol
       METHOD WithName(newName as STRING) AS IXMemberSymbol
+            
      // METHOD WithGenericArgs(args as List<String>) AS IXMemberSymbol
    END INTERFACE
    

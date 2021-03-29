@@ -171,37 +171,17 @@ BEGIN NAMESPACE XSharpModel
          END GET
       END PROPERTY
 
+     METHOD Clone() AS IXMemberSymbol
+        var clone := (XSourceMemberSymbol) SELF:MemberwiseClone()
+        clone:_signature := SELF:_signature:Clone()
+        RETURN (IXMemberSymbol) clone
+
+
      METHOD WithName(newName as STRING) AS IXMemberSymbol
         var clone := (XSourceMemberSymbol) SELF:MemberwiseClone()
         clone:Name := newName
         clone:_signature := SELF:_signature:Clone()
         RETURN (IXMemberSymbol) clone
-
-//     METHOD WithGenericArgs(args as List<String>) AS IXMemberSymbol
-//        var clone := (XSourceMemberSymbol) SELF:MemberwiseClone()
-//        var orgTypeArgs     := List<String>{}
-//        var orgParameters   := SELF:Parameters
-//        clone:_signature := SELF:_signature:Clone()
-//        orgTypeArgs:AddRange(SELF:TypeParameters)
-//        clone:_signature:TypeParameters:Clear()
-//        clone:_signature:TypeParameters:AddRange(args)
-//        clone:_signature:Parameters := List<IXVariableSymbol>{}
-//        if args:Count >= orgTypeArgs:Count
-//            FOREACH par as IXVariableSymbol in orgParameters
-//                var type := par:TypeName
-//                var index := orgTypeArgs:IndexOf(type)
-//                if index >= 0
-//                    var newpar := par:Clone()
-//                    newpar:TypeName := args[index]
-//                    clone:_signature:Parameters:Add(newpar)  
-//                else
-//                  clone:_signature:Parameters:Add(par)  
-//                
-//                ENDIF
-//            NEXT
-//        ENDIF        
-//        RETURN (IXMemberSymbol) clone
-
 
       METHOD ToString() AS STRING
          VAR result := i"{Kind} {Name}"

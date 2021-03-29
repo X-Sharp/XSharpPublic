@@ -446,33 +446,16 @@ BEGIN NAMESPACE XSharpModel
          ENDIF
          RETURN result
 
+     METHOD Clone() AS IXMemberSymbol
+        var clone := (XPEMemberSymbol) SELF:MemberwiseClone()
+        clone:_signature := SELF:_signature:Clone()
+        RETURN (IXMemberSymbol) clone
 
      METHOD WithName(newName as STRING) AS IXMemberSymbol
         var clone := (XPEMemberSymbol) SELF:MemberwiseClone()
         clone:Name := newName
         clone:_signature := SELF:_signature:Clone()
         RETURN (IXMemberSymbol) clone
-
-//     METHOD WithGenericArgs(args as List<String>) AS IXMemberSymbol
-//        var clone := (XPEMemberSymbol) SELF:MemberwiseClone()
-//        var orgParameters   := SELF:Parameters
-//        clone:_signature := SELF:_signature:Clone()
-//        clone:_signature:Parameters := List<IXVariableSymbol>{}
-//        if args:Count >= ParentType:TypeParameters:Count
-//            FOREACH par as IXVariableSymbol in orgParameters
-//                var type := par:TypeName
-//                var index := ParentType:TypeParameters:IndexOf(type)
-//                if index >= 0
-//                    var newpar := par:Clone()
-//                    newpar:TypeName := args[index]
-//                    clone:_signature:Parameters:Add(newpar)  
-//                else
-//                  clone:_signature:Parameters:Add(par)  
-//                
-//                ENDIF
-//            NEXT
-//        ENDIF        
-//        RETURN (IXMemberSymbol) clone
 
 		#endregion
 	END CLASS

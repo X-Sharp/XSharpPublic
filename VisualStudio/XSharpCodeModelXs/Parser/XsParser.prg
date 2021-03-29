@@ -2452,6 +2452,7 @@ callingconvention	: Convention=(CLIPPER | STRICT | PASCAL | ASPEN | WINCALL | CA
                   xVar:ImpliedKind := kind
                   xVar:TypeName    := TokensAsString(expr):Trim()
                   SELF:_locals:Add(xVar)
+                  SELF:ReadLine()
                ENDIF
             ELSEIF SELF:IsId(SELF:La1) .AND. SELF:La2 == XSharpLexer.AS
                VAR start := SELF:Lt1
@@ -2467,7 +2468,7 @@ callingconvention	: Convention=(CLIPPER | STRICT | PASCAL | ASPEN | WINCALL | CA
                VAR id    := SELF:ParseIdentifier()
                LOCAL type := "" AS STRING
                IF SELF:ExpectAny(XSharpLexer.AS, XSharpLexer.IS)
-                    type  := SELF:ParseAsIsType()
+                    type  := SELF:ParseTypeName()
                ELSE
                    IF SELF:_file:Project != NULL
                         var options := SELF:_file:Project:ParseOptions 

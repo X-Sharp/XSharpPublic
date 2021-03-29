@@ -323,7 +323,7 @@ namespace XSharp.LanguageService
         }
         static public bool GetMemberParameters(IXMemberSymbol member, XProject project, IList<string> names, IList<string> descriptions)
         {
-            ThreadHelper.JoinableTaskFactory.Run(async delegate
+            VsinThreadHelper.JoinableTaskFactory.Run(async delegate
             {
                 await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
                 if (member == null)

@@ -24,6 +24,7 @@ BEGIN NAMESPACE XSharpModel
         // Properties
         PROPERTY IsParameter  AS LOGIC GET SET
         PROPERTY ImpliedKind as ImpliedKind AUTO
+        PROPERTY Collection   AS IXSymbol AUTO
 
 
     END CLASS

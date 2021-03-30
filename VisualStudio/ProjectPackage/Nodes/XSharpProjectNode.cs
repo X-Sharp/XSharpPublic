@@ -1434,6 +1434,16 @@ namespace XSharp.Project
         #region IXSharpProject Interface
         protected IVsStatusbar statusBar;
 
+        public void RunInForeGroundThread(Action a)
+        {
+
+            ThreadHelper.JoinableTaskFactory.Run(async delegate
+            {
+                await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+                a();
+            });
+        }
+
         public string SynchronizeKeywordCase(string code, string fileName)
         {
             if (XSettings.KeywordCase == KeywordCase.None)

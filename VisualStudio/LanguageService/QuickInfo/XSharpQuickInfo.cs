@@ -218,8 +218,16 @@ namespace XSharp.LanguageService
                     len += text.Length;
 
                 }
-                list.addPair(var.ParamTypeDesc + " ", var.TypeName);
-                len += var.ParamTypeDesc.Length + 1;
+                if (var is XSourceParameterSymbol ssps)
+                {
+                    list.addPair(ssps.ParamTypeDesc + " ", var.TypeName);
+                    len += ssps.ParamTypeDesc.Length + 1;
+                }
+                else if (var is XSourceVariableSymbol xsvs)
+                {
+                    list.addPair(xsvs.LocalTypeDesc + " ", var.TypeName);
+                    len += xsvs.LocalTypeDesc.Length + 1;
+                }
                 len += var.TypeName.Length;
                 if (var.IsArray)
                 {

@@ -12,7 +12,7 @@ USING LanguageService.SyntaxTree
 BEGIN NAMESPACE XSharpModel
    // A variable is strictly speaking not an entity
    [DebuggerDisplay("{DebuggerDisplay(),nq}")];
-   CLASS XPEParameterSymbol INHERIT XSymbol IMPLEMENTS IXVariableSymbol
+   CLASS XPEParameterSymbol INHERIT XSymbol IMPLEMENTS IXParameterSymbol
       
       // Methods
       CONSTRUCTOR(parent AS IXMemberSymbol, name AS STRING, typeName AS STRING)

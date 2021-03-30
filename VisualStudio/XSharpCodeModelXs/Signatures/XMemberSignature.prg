@@ -12,7 +12,7 @@ BEGIN NAMESPACE XSharpModel
    [DebuggerDisplay("{DebuggerDisplay(),nq}")];
    CLASS XMemberSignature  INHERIT XBaseSignature
       PROPERTY Id                       AS STRING                   AUTO GET INTERNAL SET
-      PROPERTY Parameters               AS List<IXVariableSymbol>   AUTO GET INTERNAL SET
+      PROPERTY Parameters               AS List<IXParameterSymbol>  AUTO GET INTERNAL SET
       PROPERTY CallingConvention        AS CallingConvention        AUTO GET INTERNAL SET
       PROPERTY DataType                 AS STRING                   AUTO GET INTERNAL SET
       PROPERTY IsExtension              AS LOGIC                    AUTO GET INTERNAL SET
@@ -22,7 +22,7 @@ BEGIN NAMESPACE XSharpModel
       PROPERTY ParameterList AS STRING
          GET
             VAR parameters := ""
-            FOREACH variable AS IXVariableSymbol IN SELF:Parameters
+            FOREACH variable AS IXParameterSymbol IN SELF:Parameters
                IF (parameters:Length > 0)
                   parameters := parameters + ", "
                ENDIF
@@ -41,7 +41,7 @@ BEGIN NAMESPACE XSharpModel
       CONSTRUCTOR()
          SUPER()
          SELF:TypeParameters             := List<STRING>{}
-         SELF:Parameters                 := List<IXVariableSymbol>{}
+         SELF:Parameters                 := List<IXParameterSymbol>{}
          SELF:TypeParameterContraints    := List<STRING>{}
          SELF:CallingConvention          := CallingConvention.None
          
@@ -77,9 +77,9 @@ BEGIN NAMESPACE XSharpModel
          RETURN res
       METHOD Clone() AS XMemberSignature
          VAR oClone := (XMemberSignature) self:MemberwiseClone()
-         oClone:Parameters := List<IXVariableSymbol>{}
+         oClone:Parameters := List<IXParameterSymbol>{}
          FOREACH var param in SELF:Parameters
-             oClone:Parameters:Add( param:Clone())
+             oClone:Parameters:Add( (IXParameterSymbol) param:Clone())
          NEXT
          RETURN oClone
    END CLASS

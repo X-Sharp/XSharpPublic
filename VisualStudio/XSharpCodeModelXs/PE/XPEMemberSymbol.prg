@@ -414,7 +414,7 @@ BEGIN NAMESPACE XSharpModel
       PROPERTY TypeParameterConstraintsList AS STRING    GET SELF:_signature:TypeParameterConstraintsList
 
 
-      PROPERTY Parameters         AS IList<IXVariableSymbol> 
+      PROPERTY Parameters         AS IList<IXParameterSymbol> 
          GET 
             SELF:DoResolve()
             RETURN _signature:Parameters:ToArray()

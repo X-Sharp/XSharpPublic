@@ -51,6 +51,8 @@
     <FOX1>false</FOX1>
     <FOX2>false</FOX2>
     <NoWin32Manifest>False</NoWin32Manifest>
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>

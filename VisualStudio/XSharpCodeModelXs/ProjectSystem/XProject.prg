@@ -14,6 +14,8 @@ USING LanguageService.CodeAnalysis.XSharp
 USING System.Collections.Concurrent
 USING System.Diagnostics
 USING System.Reflection
+
+
 #pragma options ("az", ON)
 BEGIN NAMESPACE XSharpModel
    [DebuggerDisplay("{Name,nq}")];
@@ -514,69 +516,77 @@ BEGIN NAMESPACE XSharpModel
             ENDIF
          ENDIF
          RETURN FALSE
-         
+
+        METHOD RefreshStrangerProjectDLLOutputFiles_Worker AS VOID
+            FOREACH p AS EnvDTE.Project IN SELF:_StrangerProjects:ToArray()
+                VAR  sProjectURL := p:FullName
+                VAR mustAdd     := FALSE
+                VAR outputFile  := SELF:GetStrangerOutputDLL(sProjectURL, p)
+                IF SELF:_projectOutputDLLs:ContainsKey(sProjectURL)
+                    // when the output file name of the referenced project has changed
+                    // then remove the old name
+                    IF outputFile:ToLower() != SELF:_projectOutputDLLs:Item[sProjectURL]:ToLower()
+                        IF XSettings.EnableReferenceInfoLog
+                        WriteOutputMessage(i"DLL has been renamed to {outputFile} so remove the old DLL {SELF:_projectOutputDLLs:Item[sProjectURL]}")
+                        ENDIF
+                        SELF:_projectOutputDLLs:TryRemove(sProjectURL, OUT VAR _)
+                        mustAdd := TRUE
+                    ENDIF
+                ELSE
+                    mustAdd := TRUE
+                ENDIF
+                IF mustAdd
+                    SELF:AddStrangerProjectReference(sProjectURL)
+                ENDIF
+            NEXT
+            RETURN 
+            
+
       PRIVATE METHOD RefreshStrangerProjectDLLOutputFiles() AS VOID
          // Check if any DLL has changed
          IF SELF:_StrangerProjects:Count > 0 .AND. ! XSettings.DisableForeignProjectReferences
             IF XSettings.EnableReferenceInfoLog
                WriteOutputMessage("--> RefreshStrangerProjectDLLOutputFiles() "+SELF:_StrangerProjects:Count():ToString())
             ENDIF
-            FOREACH p AS EnvDTE.Project IN SELF:_StrangerProjects:ToArray()
-               VAR  sProjectURL := p:FullName
-               VAR mustAdd     := FALSE
-               VAR outputFile  := SELF:GetStrangerOutputDLL(sProjectURL, p)
-               IF SELF:_projectOutputDLLs:ContainsKey(sProjectURL)
-                  // when the output file name of the referenced project has changed
-                  // then remove the old name
-                  IF outputFile:ToLower() != SELF:_projectOutputDLLs:Item[sProjectURL]:ToLower()
-                     IF XSettings.EnableReferenceInfoLog
-                        WriteOutputMessage(i"DLL has been renamed to {outputFile} so remove the old DLL {SELF:_projectOutputDLLs:Item[sProjectURL]}")
-                     ENDIF
-                     SELF:_projectOutputDLLs:TryRemove(sProjectURL, OUT VAR _)
-                     mustAdd := TRUE
-                  ENDIF
-               ELSE
-                  mustAdd := TRUE
-               ENDIF
-               IF mustAdd
-                  SELF:AddStrangerProjectReference(sProjectURL)
-               ENDIF
-            NEXT
+            _projectNode:RunInForeGroundThread ( { => SELF:RefreshStrangerProjectDLLOutputFiles_Worker() }) 
             IF XSettings.EnableReferenceInfoLog
                WriteOutputMessage("<-- RefreshStrangerProjectDLLOutputFiles()")
             ENDIF
          ENDIF
-      
-      PRIVATE METHOD ResolveUnprocessedStrangerReferences() AS VOID
-         LOCAL existing AS List<STRING>
-         LOCAL p AS EnvDTE.Project
-         LOCAL outputFile AS STRING
-         IF SELF:_unprocessedStrangerProjectReferences:Count > 0 .AND. ! XSettings.DisableForeignProjectReferences
+
+        METHOD ResolveUnprocessedStrangerReferences_Worker AS VOID
+             LOCAL existing AS List<STRING>
+             LOCAL outputFile AS STRING
             IF XSettings.EnableReferenceInfoLog
-               WriteOutputMessage("ResolveUnprocessedStrangerReferences()" +_unprocessedStrangerProjectReferences:Count:ToString())
-            ENDIF
-            existing := List<STRING>{}
-            FOREACH sProject AS STRING IN SELF:_unprocessedStrangerProjectReferences:ToArray()
-               p := SELF:ProjectNode:FindProject(sProject)
-               IF (p != NULL)
-                  SELF:_StrangerProjects:Add(p)
-                  outputFile := SELF:GetStrangerOutputDLL(sProject, p)
-                  IF !String.IsNullOrEmpty(outputFile)
-                     SELF:AddProjectOutput(sProject, outputFile)
-                  ELSE
-                     IF ! SELF:_failedStrangerProjectReferences:Contains(sProject)
-                        SELF:_failedStrangerProjectReferences:Add(sProject)
-                     ENDIF
-                  ENDIF
-                  // Always remove the project, to prevent endless retries
-                  existing:Add(sProject)
-               ENDIF
-            NEXT
-            FOREACH sProject AS STRING IN existing
-               IF SELF:_unprocessedStrangerProjectReferences:Contains(sProject)
-                  SELF:_unprocessedStrangerProjectReferences:Remove(sProject)
-               ENDIF
-            NEXT
+                   WriteOutputMessage("ResolveUnprocessedStrangerReferences()" +_unprocessedStrangerProjectReferences:Count:ToString())
+                ENDIF
+                existing := List<STRING>{}
+                FOREACH sProject AS STRING IN SELF:_unprocessedStrangerProjectReferences:ToArray()
+                   LOCAL p AS EnvDTE.Project
+                   p := SELF:ProjectNode:FindProject(sProject)
+                   IF (p != NULL)
+                      SELF:_StrangerProjects:Add(p)
+                      outputFile := SELF:GetStrangerOutputDLL(sProject, p)
+                      IF !String.IsNullOrEmpty(outputFile)
+                         SELF:AddProjectOutput(sProject, outputFile)
+                      ELSE
+                         IF ! SELF:_failedStrangerProjectReferences:Contains(sProject)
+                            SELF:_failedStrangerProjectReferences:Add(sProject)
+                         ENDIF
+                      ENDIF
+                      // Always remove the project, to prevent endless retries
+                      existing:Add(sProject)
+                   ENDIF
+                NEXT
+                FOREACH sProject AS STRING IN existing
+                   IF SELF:_unprocessedStrangerProjectReferences:Contains(sProject)
+                      SELF:_unprocessedStrangerProjectReferences:Remove(sProject)
+                   ENDIF
+                NEXT
+      PRIVATE METHOD ResolveUnprocessedStrangerReferences() AS VOID
+         IF SELF:_unprocessedStrangerProjectReferences:Count > 0 .AND. ! XSettings.DisableForeignProjectReferences
+            _projectNode:RunInForeGroundThread ( { => SELF:ResolveUnprocessedStrangerReferences_Worker() }) 
+     
             SELF:_clearTypeCache()
          ENDIF
          

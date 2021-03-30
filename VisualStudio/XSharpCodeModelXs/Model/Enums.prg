@@ -199,6 +199,10 @@ BEGIN NAMESPACE XSharpModel
       MEMBER @@Params   := 3
       MEMBER @@In  	   := 4
    END ENUM
+   ENUM LocalType as BYTE
+      MEMBER @@As       := 0
+      MEMBER @@Is       := 1
+   END ENUM
    
    ENUM CallingConvention
       MEMBER None          := 0

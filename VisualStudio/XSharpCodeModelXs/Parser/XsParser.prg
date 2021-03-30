@@ -2467,6 +2467,7 @@ callingconvention	: Convention=(CLIPPER | STRICT | PASCAL | ASPEN | WINCALL | CA
                Consume()
                VAR id    := SELF:ParseIdentifier()
                LOCAL type := "" AS STRING
+               LOCAL lIsIs := SELF:La1 == XSharpLexer.IS AS LOGIC
                IF SELF:ExpectAny(XSharpLexer.AS, XSharpLexer.IS)
                     type  := SELF:ParseTypeName()
                ELSE
@@ -2482,7 +2483,10 @@ callingconvention	: Convention=(CLIPPER | STRICT | PASCAL | ASPEN | WINCALL | CA
                    ENDIF
                ENDIF
                SELF:GetSourceInfo(start, LastToken, OUT VAR range, OUT VAR interval, OUT VAR _)  
-               VAR xVar := XSourceVariableSymbol{SELF:CurrentEntity, id, range, interval, type } 
+               VAR xVar := XSourceVariableSymbol{SELF:CurrentEntity, id, range, interval, type }
+               IF lIsIs
+                    xVar:LocalType := LocalType.Is
+               ENDIF
                SELF:_locals:Add(xVar)
                      
             ENDIF

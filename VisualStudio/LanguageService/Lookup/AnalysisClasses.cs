@@ -259,7 +259,7 @@ namespace XSharp.LanguageService
                     content.addText(Name);
                     content.addKeyword(Member.Kind == Kind.Constructor ? "{" : "(");
                     bool first = true;
-                    foreach (var var in Member.Parameters)
+                    foreach (IXParameterSymbol var in Member.Parameters)
                     {
                         if (!first)
                         {

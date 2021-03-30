@@ -709,7 +709,7 @@ namespace XSharp.LanguageService
                     {
                         //
                         int paramNum = 1;
-                        foreach (var param in realmember.Parameters)
+                        foreach (IXParameterSymbol param in realmember.Parameters)
                         {
                             descText = param.Name;
                             description.Add(item(descText, VSOBDESCRIPTIONSECTION.OBDS_PARAM));

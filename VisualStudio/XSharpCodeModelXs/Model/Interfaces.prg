@@ -57,7 +57,7 @@ BEGIN NAMESPACE XSharpModel
       PROPERTY ParentType     AS IXTypeSymbol GET
       PROPERTY ParameterList  as STRING GET
       PROPERTY Value          AS STRING GET
-      PROPERTY Parameters     AS IList<IXVariableSymbol> GET
+      PROPERTY Parameters     AS IList<IXParameterSymbol> GET
       PROPERTY TypeParameters AS IList<STRING> GET
       PROPERTY DeclaringType  AS STRING GET  
       PROPERTY IsExtension    AS LOGIC GET
@@ -75,14 +75,18 @@ BEGIN NAMESPACE XSharpModel
    INTERFACE IXVariableSymbol   INHERIT IXSymbol
       PROPERTY IsParameter    AS LOGIC GET
       PROPERTY IsTyped        AS LOGIC  GET 
-      PROPERTY ParamType      AS ParamType  GET   
       PROPERTY ShortTypeName  AS STRING GET
-      PROPERTY ParamTypeDesc  AS STRING GET
       PROPERTY Value          AS STRING GET
       METHOD Clone() AS IXVariableSymbol            
          
       END INTERFACE
-      
+
+    INTERFACE IXParameterSymbol   INHERIT IXVariableSymbol
+      PROPERTY ParamType      AS ParamType  GET   
+      PROPERTY ParamTypeDesc  AS STRING GET
+    END INTERFACE
+   
+
    INTERFACE IXSourceSymbol 
       PROPERTY File AS XFile               GET  
       PROPERTY Range AS TextRange          GET  

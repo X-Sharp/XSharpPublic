@@ -11,6 +11,7 @@ USING LanguageService.CodeAnalysis.XSharp.SyntaxParser
 
 BEGIN NAMESPACE XSharpModel
      // A variable is strictly speaking not an entity
+    /// <summary>Local Variable Symbol in the source</summary>
     [DebuggerDisplay("{DebuggerDisplay(),nq}")];
     CLASS XSourceVariableSymbol INHERIT XSourceEntity  IMPLEMENTS IXVariableSymbol, IXSourceSymbol
         
@@ -19,6 +20,7 @@ BEGIN NAMESPACE XSharpModel
             SUPER(name, Kind.Local, Modifiers.None, span, position)
             SELF:TypeName       := iif (String.IsNullOrEmpty(typeName), "System.Object", typeName)
             SUPER:Parent        := parent
+            SELF:LocalType      := LocalType.As
             IF parent != NULL
                 SELF:File           := parent:File
             ENDIF
@@ -37,16 +39,27 @@ BEGIN NAMESPACE XSharpModel
                 prefix := SELF:Kind:ToString():ToUpper() +" "
                 VAR result := prefix + SELF:Prototype
                 IF SELF:IsTyped
-                    result += ParamTypeDesc + SELF:TypeName + IIF(SELF:IsArray,"[]","")
+                    result += LocalTypeDesc + SELF:TypeName + IIF(SELF:IsArray,"[]","")
                 ENDIF
                 RETURN result
             END GET
         END PROPERTY
 
 
-
+        PROPERTY IsIs        AS LOGIC AUTO
         PROPERTY IsParameter AS LOGIC GET FALSE
-        PROPERTY ParamType AS ParamType AUTO
+        PROPERTY LocalType   AS LocalType AUTO
+        PROPERTY LocalTypeDesc as STRING
+            GET
+                SWITCH LocalType
+                CASE LocalType.As
+                    RETURN XLiterals.AsKeyWord
+                OTHERWISE
+                    RETURN XLiterals.IsKeyWord
+                END SWITCH                        
+            END GET
+        END PROPERTY
+        
         PROPERTY Prototype AS STRING 
             GET 
                VAR result := SUPER:Name
@@ -59,22 +72,6 @@ BEGIN NAMESPACE XSharpModel
                RETURN result
             END GET
         END PROPERTY
-        PROPERTY ParamTypeDesc AS STRING
-            GET
-                SWITCH ParamType
-                CASE ParamType.Ref
-                    RETURN XLiterals.RefKeyWord
-                CASE ParamType.Out
-                    RETURN XLiterals.OutKeyWord
-                CASE ParamType.Params
-                    RETURN XLiterals.ParamsKeyWord
-                OTHERWISE // AS and IN
-                    RETURN XLiterals.AsKeyWord
-                END SWITCH
-            END GET
-        END PROPERTY
-
-
         PROPERTY ShortTypeName AS STRING
             GET
                 VAR cType := SELF:TypeName
@@ -92,7 +89,7 @@ BEGIN NAMESPACE XSharpModel
         METHOD DebuggerDisplay() AS STRING
             VAR result := SUPER:Name
             IF SELF:IsTyped
-                result += ParamTypeDesc+" "+SELF:TypeName
+                result += LocalTypeDesc+" "+SELF:TypeName
             ENDIF
             RETURN result
 

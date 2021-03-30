@@ -72,7 +72,7 @@ BEGIN NAMESPACE XSharpModel
      PROPERTY ComboParameterList AS STRING
          GET
             VAR parameters := ""
-            FOREACH variable AS IXVariableSymbol IN SELF:Parameters
+            FOREACH variable AS IXParameterSymbol IN SELF:Parameters
                IF (parameters:Length > 0)
                   parameters := parameters + ", "
                ENDIF
@@ -86,7 +86,7 @@ BEGIN NAMESPACE XSharpModel
             RETURN parameters
          END GET
       END PROPERTY
-      PROPERTY Parameters         AS IList<IXVariableSymbol> GET _signature:Parameters:ToArray()
+      PROPERTY Parameters         AS IList<IXParameterSymbol> GET _signature:Parameters:ToArray()
       
       PROPERTY Signature         AS XMemberSignature  GET _signature SET _signature := @@value
       PROPERTY CallingConvention AS CallingConvention GET _signature:CallingConvention SET _signature:CallingConvention := @@value

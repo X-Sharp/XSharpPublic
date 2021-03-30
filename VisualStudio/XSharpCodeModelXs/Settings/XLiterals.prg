@@ -72,6 +72,7 @@ BEGIN NAMESPACE XSharpModel
    CONST PUBLIC GlobalName := "(Global Scope)" AS STRING
    CONST PUBLIC VarType := "$VAR$" AS STRING
    CONST PUBLIC UsualType := "USUAL" AS STRING
+   CONST PUBLIC ObjectType := "OBJECT" AS STRING
    CONST PUBLIC NoType := "$NOTYPE$" AS STRING
    CONST PUBLIC XppDeclaration := "_declaration" AS STRING
 

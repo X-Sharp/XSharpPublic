@@ -153,7 +153,7 @@ namespace XSharp.LanguageService
             this.NodeType = nType;
             if (this.NodeType == LibraryNodeType.Namespaces)
             {
-                buildImageData(Kind.Namespace, Modifiers.Public);
+                BuildImageData(Kind.Namespace, Modifiers.Public);
             }
             //
             description = new List<Tuple<string, VSOBDESCRIPTIONSECTION>>();
@@ -196,12 +196,12 @@ namespace XSharp.LanguageService
                 };
             }
             //
-            this.buildImageData(entity.Kind, entity.Visibility);
-            this.initText(entity);
-            this.initDescription(entity);
+            this.BuildImageData(entity.Kind, entity.Visibility);
+            this.InitText(entity);
+            this.InitDescription(entity);
         }
 
-        private void buildImageData(Kind elementType, Modifiers accessType)
+        private void BuildImageData(Kind elementType, Modifiers accessType)
         {
             int iImage = 0;
             // First get the Icon
@@ -344,7 +344,7 @@ namespace XSharp.LanguageService
             return this.filesId.Count;
         }
 
-        private uint classAccess()
+        private uint ClassAccess()
         {
             _LIBCAT_CLASSACCESS result = 0;
             if ((attributes & Modifiers.VisibilityMask) == Modifiers.None)
@@ -365,7 +365,7 @@ namespace XSharp.LanguageService
             return (uint)result;
         }
 
-        private uint memberAccess()
+        private uint MemberAccess()
         {
             _LIBCAT_MEMBERACCESS result = 0;
             if ((attributes & Modifiers.VisibilityMask) == Modifiers.None)
@@ -385,7 +385,7 @@ namespace XSharp.LanguageService
             }
             return (uint) result;
         }
-        private _LIBCAT_MEMBERTYPE memberType()
+        private _LIBCAT_MEMBERTYPE MemberType()
         {
             switch (kind)
             {
@@ -431,7 +431,7 @@ namespace XSharp.LanguageService
             }
         }
 
-        private _LIBCAT_CLASSTYPE classType()
+        private _LIBCAT_CLASSTYPE ClassType()
         {
             switch (kind)
             {
@@ -457,7 +457,7 @@ namespace XSharp.LanguageService
             }
         }
 
-        private _LIBCAT_MODIFIERTYPE modifierType()
+        private _LIBCAT_MODIFIERTYPE ModifierType()
         {
             _LIBCAT_MODIFIERTYPE result = (_LIBCAT_MODIFIERTYPE)0;
             if (attributes.HasFlag(Modifiers.Static))
@@ -485,14 +485,14 @@ namespace XSharp.LanguageService
                     }
                     break;
                 case LIB_CATEGORY.LC_MEMBERTYPE:
-                    return (uint)memberType();
+                    return (uint)MemberType();
 
                 case LIB_CATEGORY.LC_MEMBERACCESS:
-                    return this.memberAccess();
+                    return this.MemberAccess();
                 case LIB_CATEGORY.LC_CLASSTYPE:
-                    return (uint) this.classType();
+                    return (uint) this.ClassType();
                 case LIB_CATEGORY.LC_CLASSACCESS:
-                    return (uint)this.classAccess();
+                    return (uint)this.ClassAccess();
                 case LIB_CATEGORY.LC_ACTIVEPROJECT:
                     return (uint)_LIBCAT_ACTIVEPROJECT.LCAP_SHOWALWAYS;
                 case LIB_CATEGORY.LC_LISTTYPE:
@@ -500,7 +500,7 @@ namespace XSharp.LanguageService
                 case LIB_CATEGORY.LC_VISIBILITY:
                     return (uint) _LIBCAT_VISIBILITY.LCV_VISIBLE;
                 case LIB_CATEGORY.LC_MODIFIER:
-                    return (uint) modifierType();
+                    return (uint) ModifierType();
                 case LIB_CATEGORY.LC_NODETYPE:
                     break;
                 default:
@@ -581,16 +581,16 @@ namespace XSharp.LanguageService
             pbstrText = descText;
         }
 
-        private void initText(XSourceEntity member)
+        private void InitText(XSourceEntity member)
         {
             string descText = this.Name;
             //
             if (member != null)
             {
-                if (member.Parent is XSourceTypeSymbol)
+                if (member.Parent is XSourceTypeSymbol symbol)
                 {
-                    nameSpace = ((XSourceTypeSymbol)member.Parent).Namespace;
-                    className = ((XSourceTypeSymbol)member.Parent).Name;
+                    nameSpace = symbol.Namespace;
+                    className = symbol.Name;
                 }
                 //
                 descText = member.Name;
@@ -644,12 +644,12 @@ namespace XSharp.LanguageService
             });
         }
 
-        private Tuple<string, VSOBDESCRIPTIONSECTION> item (string item1, VSOBDESCRIPTIONSECTION item2)
+        private Tuple<string, VSOBDESCRIPTIONSECTION> Item (string item1, VSOBDESCRIPTIONSECTION item2)
         {
             return new Tuple<string, VSOBDESCRIPTIONSECTION>(item1, item2);
         }
 
-        private void initDescription(XSourceEntity member) //, _VSOBJDESCOPTIONS flags, IVsObjectBrowserDescription3 description)
+        private void InitDescription(XSourceEntity member) //, _VSOBJDESCOPTIONS flags, IVsObjectBrowserDescription3 description)
         {
             description = new List<Tuple<string, VSOBDESCRIPTIONSECTION>>();
             string descText ;
@@ -670,12 +670,12 @@ namespace XSharp.LanguageService
                 //
                 if (!string.IsNullOrEmpty(modifier))
                 {
-                    description.Add(item(modifier + " ", VSOBDESCRIPTIONSECTION.OBDS_ATTRIBUTE));
+                    description.Add(Item(modifier + " ", VSOBDESCRIPTIONSECTION.OBDS_ATTRIBUTE));
                 }
                 //
                 if (!string.IsNullOrEmpty(access))
                 {
-                    description.Add(item(access + " ", VSOBDESCRIPTIONSECTION.OBDS_ATTRIBUTE));
+                    description.Add(Item(access + " ", VSOBDESCRIPTIONSECTION.OBDS_ATTRIBUTE));
                 }
                 // 
                 if (member.Kind != Kind.Field)
@@ -686,18 +686,18 @@ namespace XSharp.LanguageService
                     {
                         descName = VSOBDESCRIPTIONSECTION.OBDS_NAME;
                     }
-                    description.Add(item(descText, descName));
+                    description.Add(Item(descText, descName));
                 }
                 if (member.Kind != Kind.Constructor)
                 {
                     descText = member.Name;
-                    description.Add(item(descText, VSOBDESCRIPTIONSECTION.OBDS_NAME));
+                    description.Add(Item(descText, VSOBDESCRIPTIONSECTION.OBDS_NAME));
                 }
                 // Parameters ?
                 if (member.Kind.HasParameters())
                 {
                     descText = "(";
-                    description.Add(item(descText, VSOBDESCRIPTIONSECTION.OBDS_MISC));
+                    description.Add(Item(descText, VSOBDESCRIPTIONSECTION.OBDS_MISC));
                     XSourceMemberSymbol realmember;
                     XSourceTypeSymbol type = member as XSourceTypeSymbol;
                     if (member.Kind == Kind.Delegate && type?.XMembers.Count > 0)
@@ -712,33 +712,33 @@ namespace XSharp.LanguageService
                         foreach (IXParameterSymbol param in realmember.Parameters)
                         {
                             descText = param.Name;
-                            description.Add(item(descText, VSOBDESCRIPTIONSECTION.OBDS_PARAM));
+                            description.Add(Item(descText, VSOBDESCRIPTIONSECTION.OBDS_PARAM));
                             descText = param.ParamTypeDesc;
-                            description.Add(item(descText, VSOBDESCRIPTIONSECTION.OBDS_MISC));
+                            description.Add(Item(descText, VSOBDESCRIPTIONSECTION.OBDS_MISC));
                             descText = param.TypeName;
                             //
-                            description.Add(item(descText, VSOBDESCRIPTIONSECTION.OBDS_TYPE));
+                            description.Add(Item(descText, VSOBDESCRIPTIONSECTION.OBDS_TYPE));
                             // Need a comma ?
                             if (paramNum < realmember.ParameterCount)
                             {
                                 paramNum++;
                                 descText = ",";
-                                description.Add(item(descText, VSOBDESCRIPTIONSECTION.OBDS_COMMA));
+                                description.Add(Item(descText, VSOBDESCRIPTIONSECTION.OBDS_COMMA));
                             }
                         }
                     }
                     descText = ")";
-                    description.Add(item(descText, VSOBDESCRIPTIONSECTION.OBDS_MISC));
+                    description.Add(Item(descText, VSOBDESCRIPTIONSECTION.OBDS_MISC));
                 }
                 if (member.Kind.HasReturnType())
                 {
                     descText = XLiterals.AsKeyWord;
-                    description.Add(item(descText, VSOBDESCRIPTIONSECTION.OBDS_MISC));
+                    description.Add(Item(descText, VSOBDESCRIPTIONSECTION.OBDS_MISC));
                     descText = member.TypeName;
-                    description.Add(item(descText, VSOBDESCRIPTIONSECTION.OBDS_TYPE));
+                    description.Add(Item(descText, VSOBDESCRIPTIONSECTION.OBDS_TYPE));
                 }
 
-                description.Add(item(null, VSOBDESCRIPTIONSECTION.OBDS_ENDDECL));
+                description.Add(Item(null, VSOBDESCRIPTIONSECTION.OBDS_ENDDECL));
             }
             //
             if (member.File?.Project != null)
@@ -746,44 +746,44 @@ namespace XSharp.LanguageService
                 string summary=null, returns=null, remarks=null;
                 List<string> pNames = new List<string>();
                 List<string> pDescriptions = new List<string>();
-                if (member is XSourceMemberSymbol)
+                if (member is XSourceMemberSymbol symbol1)
                 {
-                    summary = XSharpXMLDocMember.GetMemberSummary((XSourceMemberSymbol)member, member.File?.Project, out returns, out remarks);
-                    XSharpXMLDocMember.GetMemberParameters((XSourceMemberSymbol)member, member.File?.Project, pNames, pDescriptions);
+                    summary = XSharpXMLDocMember.GetMemberSummary(symbol1, member.File?.Project, out returns, out remarks);
+                    XSharpXMLDocMember.GetMemberParameters(symbol1, member.File?.Project, pNames, pDescriptions);
                 }
-                else if ( member is XSourceTypeSymbol)
+                else if (member is XSourceTypeSymbol symbol)
                 {
-                    summary = XSharpXMLDocMember.GetTypeSummary((XSourceTypeSymbol)member, member.File?.Project, out returns, out remarks);
+                    summary = XSharpXMLDocMember.GetTypeSummary(symbol, member.File?.Project, out returns, out remarks);
                 }
                 if (!string.IsNullOrEmpty(summary))
                 {
-                    description.Add(item(NEWLINE, VSOBDESCRIPTIONSECTION.OBDS_MISC));
-                    description.Add(item(SUMMARY, VSOBDESCRIPTIONSECTION.OBDS_NAME));
-                    description.Add(item(summary, VSOBDESCRIPTIONSECTION.OBDS_MISC));
+                    description.Add(Item(NEWLINE, VSOBDESCRIPTIONSECTION.OBDS_MISC));
+                    description.Add(Item(SUMMARY, VSOBDESCRIPTIONSECTION.OBDS_NAME));
+                    description.Add(Item(summary, VSOBDESCRIPTIONSECTION.OBDS_MISC));
                 }
                 if (pNames.Count > 0)
                 {
-                    description.Add(item(NEWLINE, VSOBDESCRIPTIONSECTION.OBDS_MISC));
-                    description.Add(item(PARAMETERS, VSOBDESCRIPTIONSECTION.OBDS_NAME));
+                    description.Add(Item(NEWLINE, VSOBDESCRIPTIONSECTION.OBDS_MISC));
+                    description.Add(Item(PARAMETERS, VSOBDESCRIPTIONSECTION.OBDS_NAME));
                     for( int i =0; i < pNames.Count; i++)
                     {
-                        description.Add(item(NEWLINE + pNames[i], VSOBDESCRIPTIONSECTION.OBDS_PARAM));
-                        description.Add(item(" : ", VSOBDESCRIPTIONSECTION.OBDS_MISC));
-                        description.Add(item(pDescriptions[i], VSOBDESCRIPTIONSECTION.OBDS_MISC));
+                        description.Add(Item(NEWLINE + pNames[i], VSOBDESCRIPTIONSECTION.OBDS_PARAM));
+                        description.Add(Item(" : ", VSOBDESCRIPTIONSECTION.OBDS_MISC));
+                        description.Add(Item(pDescriptions[i], VSOBDESCRIPTIONSECTION.OBDS_MISC));
                     }
                     
                 }
                 if (!string.IsNullOrEmpty(returns))
                 {
-                    description.Add(item(NEWLINE, VSOBDESCRIPTIONSECTION.OBDS_MISC));
-                    description.Add(item(RETURNS, VSOBDESCRIPTIONSECTION.OBDS_NAME));
-                    description.Add(item(returns, VSOBDESCRIPTIONSECTION.OBDS_MISC));
+                    description.Add(Item(NEWLINE, VSOBDESCRIPTIONSECTION.OBDS_MISC));
+                    description.Add(Item(RETURNS, VSOBDESCRIPTIONSECTION.OBDS_NAME));
+                    description.Add(Item(returns, VSOBDESCRIPTIONSECTION.OBDS_MISC));
                 }
                 if (!string.IsNullOrEmpty(remarks))
                 {
-                    description.Add(item(NEWLINE, VSOBDESCRIPTIONSECTION.OBDS_MISC));
-                    description.Add(item(REMARKS, VSOBDESCRIPTIONSECTION.OBDS_NAME));
-                    description.Add(item(remarks, VSOBDESCRIPTIONSECTION.OBDS_MISC));
+                    description.Add(Item(NEWLINE, VSOBDESCRIPTIONSECTION.OBDS_MISC));
+                    description.Add(Item(REMARKS, VSOBDESCRIPTIONSECTION.OBDS_NAME));
+                    description.Add(Item(remarks, VSOBDESCRIPTIONSECTION.OBDS_MISC));
                 }
             }
         }
@@ -822,7 +822,7 @@ namespace XSharp.LanguageService
         public LibraryNode SearchClass(string fqName)
         {
             //
-            var result = children.Find(node => matchesName(node, fqName));
+            var result = children.Find(node => MatchesName(node, fqName));
             if (result == null)
             {
                 foreach (XSharpLibraryNode child in children)
@@ -834,7 +834,7 @@ namespace XSharp.LanguageService
             }
             return result;
         }
-        bool matchesName(LibraryNode node, string name)
+        bool MatchesName(LibraryNode node, string name)
         {
             return String.Compare(node.Name, name, true) == 0 &&
                 (node.NodeType & LibraryNodeType.Classes) != LibraryNodeType.None;

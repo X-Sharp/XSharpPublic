@@ -16,7 +16,6 @@ using Microsoft.VisualStudio.Shell.Interop;
 
 namespace XSharp.LanguageService
 {
-
     internal static class XSharpLookup
     {
 
@@ -26,7 +25,7 @@ namespace XSharp.LanguageService
                 return true;
             return false;
         }
-        static List<string> nestedSearches = new List<string>();
+        static readonly List<string> nestedSearches = new List<string>();
         static public IEnumerable<IXSymbol> FindIdentifier(XSharpSearchLocation location, string name, IXTypeSymbol currentType, Modifiers visibility)
         {
             var result = new List<IXSymbol>();
@@ -42,51 +41,62 @@ namespace XSharp.LanguageService
                 {
                     currentType = location.Member.ParentType;
                 }
+                // we search in the order:
+                // 1) Parameters (for entities with parameters)
+                // 2) Locals (for entities with locals)
+                // 3) Properties or Fields
+                // 4) Globals and Defines
                 WriteOutputMessage($"--> FindIdentifier in {currentType.FullName}, {name} ");
-                result.AddRange(location.Member.Parameters.Where(x => StringEquals(x.Name, name)));
+                if (location.Member.Kind.HasParameters())
+                {
+                    result.AddRange(location.Member.Parameters.Where(x => StringEquals(x.Name, name)));
+                }
                 if (result.Count == 0)
                 {
                     // then Locals
                     // line numbers in the range are 1 based. currentLine = 0 based !
-                    var local = location.Member.GetLocals(location).Where(x => StringEquals(x.Name, name) && x.Range.StartLine - 1 <= location.LineNumber).LastOrDefault();
-                    if (local != null)
+                    if (location.Member.Kind.HasBody())
                     {
-                        result.Add(local);
-                    }
-                    else
-                    {
-                        // We can have a Property/Field of the current CompletionType
-                        if (currentType != null)
+                        var local = location.Member.GetLocals(location).Where(x => StringEquals(x.Name, name) && x.Range.StartLine - 1 <= location.LineNumber).LastOrDefault();
+                        if (local != null)
                         {
-                            result.AddRange(SearchPropertyOrField(location, currentType, name, visibility));
-                        }
-                        // Find Defines and globals in this file
-                        if (result.Count == 0 && location.File.GlobalType != null)
-                        {
-                            result.AddRange(location.File.GlobalType.GetMembers(name, true));
-                        }
-                        if (result.Count == 0)
-                        {
-                            var type = location.File.Project.Lookup(XSharpModel.XLiterals.GlobalName);
-                            if (type != null)
-                            {
-                                result.AddRange(type.GetMembers(name, true));
-                            }
-                        }
-                        if (result.Count == 0)
-                        {
-                            // Now, search for a Global in external Assemblies
-                            //
-                            result.AddRange(SearchGlobalField(location, name));
+                            result.Add(local);
                         }
                     }
                 }
-              if (result.Count > 0)
+                if (result.Count == 0)
+                {
+                    // We can have a Property/Field of the current CompletionType
+                    if (currentType != null)
+                    {
+                        result.AddRange(SearchPropertyOrField(location, currentType, name, visibility));
+                    }
+                    // Find Defines and globals in this file
+                    if (result.Count == 0 && location.File.GlobalType != null)
+                    {
+                        result.AddRange(location.File.GlobalType.GetMembers(name, true));
+                    }
+                    if (result.Count == 0)
+                    {
+                        var type = location.File.Project.Lookup(XSharpModel.XLiterals.GlobalName);
+                        if (type != null)
+                        {
+                            result.AddRange(type.GetMembers(name, true));
+                        }
+                    }
+                    if (result.Count == 0)
+                    {
+                        // Now, search for a Global in external Assemblies
+                        //
+                        result.AddRange(SearchGlobalField(location, name));
+                    }
+                }
+                if (result.Count > 0)
                 {
                     var element = result[0];
                     if (element is XSourceImpliedVariableSymbol xVar)
                     {
-                        var type = resolveImpliedType(location, xVar, currentType, visibility);
+                        var type = ResolveImpliedType(location, xVar, currentType, visibility);
                         if (type != null)
                         {
                             xVar.TypeName = type.FullName;
@@ -170,8 +180,10 @@ namespace XSharp.LanguageService
             var ent = file.EntityList.LastOrDefault();
             if (ent is XSourceMemberSymbol)
                 return ent as XSourceMemberSymbol;
-            if (ent is XSourceTypeSymbol)
-                return ((XSourceTypeSymbol)ent).XMembers.LastOrDefault();
+            if (ent is XSourceTypeSymbol symbol)
+            {
+                return symbol.XMembers.LastOrDefault();
+            }
 
 
 #if DEBUG
@@ -180,7 +192,7 @@ namespace XSharp.LanguageService
             return null;
         }
 
-        private static string getTypeNameFromSymbol(XSharpSearchLocation location, IXSymbol symbol)
+        private static string GetTypeNameFromSymbol(XSharpSearchLocation location, IXSymbol symbol)
         {
             if (symbol is IXTypeSymbol ts)
                 return ts.FullName;
@@ -189,7 +201,7 @@ namespace XSharp.LanguageService
             {
                 name = mem.OriginalTypeName;
             }
-            if (symbol is IXVariableSymbol var)
+            if (symbol is IXVariableSymbol)
             {
                 name = symbol.TypeName;
             }
@@ -197,11 +209,11 @@ namespace XSharp.LanguageService
         }
 
 
-        private static IXTypeSymbol getTypeFromSymbol(XSharpSearchLocation location, IXSymbol symbol)
+        private static IXTypeSymbol GetTypeFromSymbol(XSharpSearchLocation location, IXSymbol symbol)
         {
             if (symbol is IXTypeSymbol ts)
                 return ts;
-            var name = getTypeNameFromSymbol(location, symbol);
+            var name = GetTypeNameFromSymbol(location, symbol);
             if (name == null)
                 return null;
             if (name.EndsWith("[]"))
@@ -211,21 +223,29 @@ namespace XSharp.LanguageService
             return SearchType(location, name).FirstOrDefault();
         }
 
-
-        private static IXTypeSymbol resolveImpliedLoop(XSharpSearchLocation location, XSourceImpliedVariableSymbol xVar, IXTypeSymbol currentType, Modifiers visibility)
+        private static IXTypeSymbol ResolveImpliedLoop(XSharpSearchLocation location, XSourceImpliedVariableSymbol xVar, IXTypeSymbol currentType, Modifiers visibility)
         {
+            //  Resolve the type of a loop variable. To do so we split the line in the part before and after the TO/UPTO/DOWNTO
             Debug.Assert(xVar.ImpliedKind == ImpliedKind.LoopCounter);
             var start = new List<XSharpToken>();
             var end = new List<XSharpToken>();
             bool seento = false;
             foreach (var t in xVar.Expression)
             {
-                if (t.Type == XSharpLexer.TO)
-                    seento = true;
-                else if (seento)
-                    end.Add(t);
-                else
-                    start.Add(t);
+                switch (t.Type)
+                {
+                    case XSharpLexer.TO:
+                    case XSharpLexer.UPTO:
+                    case XSharpLexer.DOWNTO:
+                        seento = true;
+                        break;
+                    default:
+                        if (seento)
+                            end.Add(t);
+                        else
+                            start.Add(t);
+                        break;
+                }
             }
             if (start.Count > 0 && end.Count > 0)
             {
@@ -233,23 +253,26 @@ namespace XSharp.LanguageService
                 {
                     var startType = start[0].Type;
                     var endType = end[0].Type;
+                    // when one of the 2 is an ID then we resolve to the type of the Id. First is leading
                     if (startType == XSharpLexer.ID)
                     {
                         var id = FindIdentifier(location, start[0].Text, currentType, visibility);
-                        return getTypeFromSymbol(location, id.FirstOrDefault());
+                        return GetTypeFromSymbol(location, id.FirstOrDefault());
                     }
                     else if (endType == XSharpLexer.ID)
                     {
                         var id = FindIdentifier(location, end[0].Text, currentType, visibility);
-                        return getTypeFromSymbol(location, id.FirstOrDefault());
+                        return GetTypeFromSymbol(location, id.FirstOrDefault());
                     }
+                    // if the one of the two is constant we take the type of the constant.
                     else if (XSharpLexer.IsConstant(startType))
                     {
-                        return getConstantType(start[0], location.File);
+                        return GetConstantType(start[0], location.File);
                     }
+
                     else if (XSharpLexer.IsConstant(endType))
                     {
-                        return getConstantType(end[0], location.File);
+                        return GetConstantType(end[0], location.File);
                     }
                     //todo what else ?
                     return null;
@@ -257,28 +280,29 @@ namespace XSharp.LanguageService
                 if (end.Count > 1)  // prefer type of end over type of start
                 {
                     var res = RetrieveElement(location, end, CompletionState.General);
-                    return getTypeFromSymbol(location, res.FirstOrDefault());
+                    return GetTypeFromSymbol(location, res.FirstOrDefault());
                 }
                 // start must be > 1
                 var result = RetrieveElement(location, start, CompletionState.General);
-                return getTypeFromSymbol(location, result.FirstOrDefault());
+                return GetTypeFromSymbol(location, result.FirstOrDefault());
             }
             return null;
         }
-        private static IXTypeSymbol resolveImpliedCollection(XSharpSearchLocation location, XSourceImpliedVariableSymbol xVar, IXTypeSymbol currentType, Modifiers visibility)
+        private static IXTypeSymbol ResolveImpliedCollection(XSharpSearchLocation location, XSourceImpliedVariableSymbol xVar, IXTypeSymbol currentType, Modifiers visibility)
         {
+            // Resolve the VAR type of an element in a collection
             var tokenList = xVar.Expression;
             var result = RetrieveElement(location, tokenList, CompletionState.General);
             var element = result.FirstOrDefault();
             if (element == null)
                 return null;
             xVar.Collection = element;
-            var elementType = getTypeNameFromSymbol(location, element);
+            var elementType = GetTypeNameFromSymbol(location, element);
             if (elementType.EndsWith("[]"))
             {
                 return SearchType(location, elementType.Substring(0, elementType.Length - 2)).FirstOrDefault();
             }
-            var type = getTypeFromSymbol(location, element);
+            var type = GetTypeFromSymbol(location, element);
             if (type != null)
             {
                 if (type.Name == "__Array" || type.Name == "__FoxArray")
@@ -322,11 +346,9 @@ namespace XSharp.LanguageService
                         var typeparams = type.TypeParameters;
                         if (elementType != null && elementType.IndexOf('<') > 0)
                         {
-                            var realargs = getRealTypeParameters(elementType);
-                            typeName = replaceTypeParameters(typeName, typeparams, realargs);
+                            var realargs = GetRealTypeParameters(elementType);
+                            typeName = ReplaceTypeParameters(typeName, typeparams, realargs);
                         }
-                        type = null;
-
                     }
                     type = SearchType(location, typeName).FirstOrDefault();
                     return type;
@@ -339,111 +361,112 @@ namespace XSharp.LanguageService
             }
             return type;
         }
-        private static IXTypeSymbol resolveImpliedOutParam(XSharpSearchLocation location, XSourceImpliedVariableSymbol xVar, IXTypeSymbol currentType, Modifiers visibility)
+        private static IXTypeSymbol ResolveImpliedOutParam(XSharpSearchLocation location, XSourceImpliedVariableSymbol xVar, IXTypeSymbol currentType, Modifiers visibility)
         {
+            // TODO: Resolve type lookup Out Parameters
             Debug.Assert(xVar.ImpliedKind == ImpliedKind.OutParam);
             return null;
         }
-        private static IXTypeSymbol resolveImpliedAssign(XSharpSearchLocation location, XSourceImpliedVariableSymbol xVar, IXTypeSymbol currentType, Modifiers visibility)
+        private static IXTypeSymbol ResolveImpliedAssign(XSharpSearchLocation location, XSourceImpliedVariableSymbol xVar, IXTypeSymbol currentType, Modifiers visibility)
         {
             Debug.Assert(xVar.ImpliedKind == ImpliedKind.Assignment || xVar.ImpliedKind == ImpliedKind.Using);
             var tokenList = xVar.Expression;
             var result = RetrieveElement(location, tokenList, CompletionState.General);
             var element = result.FirstOrDefault();
-            return getTypeFromSymbol(location, element);
+            return GetTypeFromSymbol(location, element);
         }
-        private static IXTypeSymbol resolveImpliedType(XSharpSearchLocation location, XSourceImpliedVariableSymbol xVar, IXTypeSymbol currentType, Modifiers visibility)
+        private static IXTypeSymbol ResolveImpliedType(XSharpSearchLocation location, XSourceImpliedVariableSymbol xVar, IXTypeSymbol currentType, Modifiers visibility)
         {
             // the following Implied Kinds are followed by a := and should return the type of the expression in the ExpressionList
             switch (xVar.ImpliedKind)
             {
                 case ImpliedKind.Assignment:
                 case ImpliedKind.Using:
-                    return resolveImpliedAssign(location, xVar, currentType, visibility);
+                    return ResolveImpliedAssign(location, xVar, currentType, visibility);
                 case ImpliedKind.TypeCheck:
                     return SearchType(location, xVar.TypeName).FirstOrDefault();
                 case ImpliedKind.InCollection:
-                    return resolveImpliedCollection(location, xVar, currentType, visibility);
+                    return ResolveImpliedCollection(location, xVar, currentType, visibility);
                 case ImpliedKind.LoopCounter:
-                    return resolveImpliedLoop(location, xVar, currentType, visibility);
+                    return ResolveImpliedLoop(location, xVar, currentType, visibility);
                 case ImpliedKind.OutParam:
-                    return resolveImpliedOutParam(location, xVar, currentType, visibility);
+                    return ResolveImpliedOutParam(location, xVar, currentType, visibility);
                 case ImpliedKind.None:
                     break;
             }
             return null;
         }
 
-        private static string BuildTokenString(IList<IToken> tokens, int start = 0)
-        {
-            var sb = new StringBuilder();
-            bool left = false, right = false;
-            int nested = 0;
-            bool done = false;
-            int leftToken = 0;
-            int rightToken = 0;
-            string leftStr = "";
-            string rightStr = "";
-            for (int i = start; i < tokens.Count && !done; i++)
-            {
-                var t = tokens[i];
-                switch (t.Type)
-                {
-                    case XSharpLexer.LPAREN:
-                        leftToken = t.Type;
-                        rightToken = XSharpLexer.RPAREN;
-                        leftStr = "(";
-                        rightStr = ")";
-                        break;
-                    case XSharpLexer.LCURLY:
-                        leftToken = t.Type;
-                        rightToken = XSharpLexer.RCURLY;
-                        leftStr = "{";
-                        rightStr = "}";
-                        break;
-                    case XSharpLexer.LBRKT:
-                        leftToken = t.Type;
-                        rightToken = XSharpLexer.RBRKT;
-                        leftStr = "[";
-                        rightStr = "]";
-                        break;
-                }
-                if (leftToken != 0)
-                    break;
-            }
-            if (leftToken == 0 || rightToken == 0)
-                return "";
-            for (int i = start; i < tokens.Count && !done; i++)
-            {
-                var t = tokens[i];
-                if (t.Type == leftToken)
-                {
-                    left = true;
-                    nested++;
-                }
-                else if (t.Type == rightToken)
-                {
-                    right = true;
-                    nested--;
-                    if (nested == 0)
-                    {
-                        done = true;
-                    }
-                }
-                else
-                {
-                    if (!left)
-                    {
-                        sb.Append(t.Text);
-                    }
-                }
-            }
-            if (left && right)
-            {
-                return sb.ToString() + leftStr + rightStr;
-            }
-            return "";
-        }
+        //private static string BuildTokenString(IList<IToken> tokens, int start = 0)
+        //{
+        //    var sb = new StringBuilder();
+        //    bool left = false, right = false;
+        //    int nested = 0;
+        //    bool done = false;
+        //    int leftToken = 0;
+        //    int rightToken = 0;
+        //    string leftStr = "";
+        //    string rightStr = "";
+        //    for (int i = start; i < tokens.Count && !done; i++)
+        //    {
+        //        var t = tokens[i];
+        //        switch (t.Type)
+        //        {
+        //            case XSharpLexer.LPAREN:
+        //                leftToken = t.Type;
+        //                rightToken = XSharpLexer.RPAREN;
+        //                leftStr = "(";
+        //                rightStr = ")";
+        //                break;
+        //            case XSharpLexer.LCURLY:
+        //                leftToken = t.Type;
+        //                rightToken = XSharpLexer.RCURLY;
+        //                leftStr = "{";
+        //                rightStr = "}";
+        //                break;
+        //            case XSharpLexer.LBRKT:
+        //                leftToken = t.Type;
+        //                rightToken = XSharpLexer.RBRKT;
+        //                leftStr = "[";
+        //                rightStr = "]";
+        //                break;
+        //        }
+        //        if (leftToken != 0)
+        //            break;
+        //    }
+        //    if (leftToken == 0 || rightToken == 0)
+        //        return "";
+        //    for (int i = start; i < tokens.Count && !done; i++)
+        //    {
+        //        var t = tokens[i];
+        //        if (t.Type == leftToken)
+        //        {
+        //            left = true;
+        //            nested++;
+        //        }
+        //        else if (t.Type == rightToken)
+        //        {
+        //            right = true;
+        //            nested--;
+        //            if (nested == 0)
+        //            {
+        //                done = true;
+        //            }
+        //        }
+        //        else
+        //        {
+        //            if (!left)
+        //            {
+        //                sb.Append(t.Text);
+        //            }
+        //        }
+        //    }
+        //    if (left && right)
+        //    {
+        //        return sb.ToString() + leftStr + rightStr;
+        //    }
+        //    return "";
+        //}
 
         /// <summary>
         /// Retrieve the CompletionType based on :
@@ -573,7 +596,7 @@ namespace XSharp.LanguageService
                 if (symbols.Count > 0 && symbols.Count != count)
                 {
                     var top = symbols.Peek();
-                    currentType = getTypeFromSymbol(location, top);
+                    currentType = GetTypeFromSymbol(location, top);
                     count = symbols.Count;
                 }
                 currentToken = tokenList[currentPos];
@@ -664,7 +687,7 @@ namespace XSharp.LanguageService
                 }
                 else if (literal)
                 {
-                    currentType = getConstantType(currentToken, location.File);
+                    currentType = GetConstantType(currentToken, location.File);
                     symbols.Push(currentType);
                 }
                 else if (findMethod)
@@ -751,31 +774,40 @@ namespace XSharp.LanguageService
                             symbols.Push(result[0]);
                         }
                     }
-                    // We have it
-                    if (hasBracket && symbols.Count > 0)
+                }
+                // We have it
+                if (hasBracket && symbols.Count > 0)
+                {
+                    var type = currentType;
+                    var symbol = symbols.Peek();
+                    if (type.IsArray || type.FullName == "System.Array")
                     {
-                        var type = currentType;
-                        var symbol = symbols.Peek();
-                        if (type.IsArray)
+                        var typeName = symbol.TypeName;
+                        if (typeName.EndsWith("[]"))
                         {
-
-                        }
-                        else
-                        {
-                            var member = type.GetProperties().Where((p) => p.Parameters.Count > 0).FirstOrDefault();
-                            if (member != null)
+                            typeName = typeName.Substring(0, typeName.Length - 2);
+                            var elementType = SearchType(location, typeName).FirstOrDefault();
+                            if (elementType != null)
                             {
-                                var typeName = member.OriginalTypeName;
-                                if (type.IsGeneric)
-                                {
-                                    var realargs = getRealTypeParameters(symbol.TypeName);
-                                    typeName = replaceTypeParameters(typeName, type.TypeParameters, realargs);
-                                }
-                                var elementType = SearchType(location, typeName).FirstOrDefault();
-                                if (elementType != null)
-                                {
-                                    symbols.Push(elementType);
-                                }
+                                symbols.Push(elementType);
+                            }
+                        }
+                    }
+                    else
+                    {
+                        var member = type.GetProperties().Where((p) => p.Parameters.Count > 0).FirstOrDefault();
+                        if (member != null)
+                        {
+                            var typeName = member.OriginalTypeName;
+                            if (type.IsGeneric)
+                            {
+                                var realargs = GetRealTypeParameters(symbol.TypeName);
+                                typeName = ReplaceTypeParameters(typeName, type.TypeParameters, realargs);
+                            }
+                            var elementType = SearchType(location, typeName).FirstOrDefault();
+                            if (elementType != null)
+                            {
+                                symbols.Push(elementType);
                             }
                         }
                     }
@@ -843,13 +875,13 @@ namespace XSharp.LanguageService
                 if (result[0] is IXMemberSymbol xmember && xmember.ParentType != null && xmember.ParentType.IsGeneric && symbols.Count > 0)
                 {
                     result.Clear();
-                    result.Add(adjustGenericMember(xmember, symbols.Peek()));
+                    result.Add(AdjustGenericMember(xmember, symbols.Peek()));
                 }
             }
             return result;
         }
 
-        private static IXMemberSymbol adjustGenericMember(IXMemberSymbol xmember, IXSymbol memberdefinition)
+        private static IXMemberSymbol AdjustGenericMember(IXMemberSymbol xmember, IXSymbol memberdefinition)
         {
             /*
              * This code was added to solve the following
@@ -916,7 +948,7 @@ namespace XSharp.LanguageService
             return xmember;
         }
 
-        private static string[] getRealTypeParameters(string typeName)
+        private static string[] GetRealTypeParameters(string typeName)
         {
             var pos = typeName.IndexOf('<');
             if (pos > 0)
@@ -927,7 +959,7 @@ namespace XSharp.LanguageService
             }
             return new string[] { };
         }
-        private static string replaceTypeParameters(string typeName, IList<String> genericParameters, IList<String> realParameters)
+        private static string ReplaceTypeParameters(string typeName, IList<String> genericParameters, IList<String> realParameters)
         {
             if (genericParameters.Count == realParameters.Count)
             {
@@ -966,7 +998,7 @@ namespace XSharp.LanguageService
             return result;
         }
 
-        internal static IXTypeSymbol getConstantType(XSharpToken token, XFile file)
+        internal static IXTypeSymbol GetConstantType(XSharpToken token, XFile file)
         {
             IXTypeSymbol result;
             var project = file.Project;
@@ -1103,17 +1135,17 @@ namespace XSharp.LanguageService
             return result;
         }
 
-        private static IEnumerable<IXMemberSymbol> SearchDelegate(XSharpSearchLocation location, string name)
-        {
-            WriteOutputMessage($"SearchDelegate in file {location.File.SourcePath} {name}");
-            var result = new List<IXMemberSymbol>();
-            var type = location.FindType(name);
-            if (type != null && type.Kind == Kind.Delegate)
-            {
-                result.AddRange(type.Members);
-            }
-            return result;
-        }
+        //private static IEnumerable<IXMemberSymbol> SearchDelegate(XSharpSearchLocation location, string name)
+        //{
+        //    WriteOutputMessage($"SearchDelegate in file {location.File.SourcePath} {name}");
+        //    var result = new List<IXMemberSymbol>();
+        //    var type = location.FindType(name);
+        //    if (type != null && type.Kind == Kind.Delegate)
+        //    {
+        //        result.AddRange(type.Members);
+        //    }
+        //    return result;
+        //}
 
         private static IEnumerable<IXTypeSymbol> SearchType(XSharpSearchLocation location, string name)
         {
@@ -1307,31 +1339,31 @@ namespace XSharp.LanguageService
             return result;
         }
 
-        private static IEnumerable<IXMemberSymbol> SearchGlobalOrDefineIn(XSharpSearchLocation location, string name)
-        {
+        //private static IEnumerable<IXMemberSymbol> SearchGlobalOrDefineIn(XSharpSearchLocation location, string name)
+        //{
 
-            var result = new List<IXMemberSymbol>();
-            if (location.File == null || location.Project == null)
-            {
-                return result;
-            }
-            WriteOutputMessage($" SearchGlobalOrDefineIn {location.File.SourcePath}, {name} ");
-            //
-            //
-            IXMemberSymbol xMethod = location.Project.FindGlobalOrDefine(name);
-            //
-            if (xMethod != null)
-            {
-                result.Add(xMethod);
-            }
-            else
-            {
-                var found = location.Project.FindGlobalMembersInAssemblyReferences(name).Where(m => m.Kind.IsField()).ToArray();
-                result.AddRange(found);
-            }
-            //
-            return result;
-        }
+        //    var result = new List<IXMemberSymbol>();
+        //    if (location.File == null || location.Project == null)
+        //    {
+        //        return result;
+        //    }
+        //    WriteOutputMessage($" SearchGlobalOrDefineIn {location.File.SourcePath}, {name} ");
+        //    //
+        //    //
+        //    IXMemberSymbol xMethod = location.Project.FindGlobalOrDefine(name);
+        //    //
+        //    if (xMethod != null)
+        //    {
+        //        result.Add(xMethod);
+        //    }
+        //    else
+        //    {
+        //        var found = location.Project.FindGlobalMembersInAssemblyReferences(name).Where(m => m.Kind.IsField()).ToArray();
+        //        result.AddRange(found);
+        //    }
+        //    //
+        //    return result;
+        //}
         static void WriteOutputMessage(string message)
         {
             if (XSettings.EnableCodeCompletionLog)

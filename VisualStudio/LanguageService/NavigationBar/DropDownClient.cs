@@ -273,13 +273,16 @@ namespace XSharp.LanguageService
                         var usings = new List<string>();
                         usings.Add(xType.Namespace);
                         var fullType = _file.Project.Lookup(xType.Name, usings);
-                        foreach (var member in fullType.XMembers)
+                        if (fullType != null)
                         {
-                            if (string.Compare(member.File.FullPath, _file.FullPath, true) != 0)
+                            foreach (var member in fullType.XMembers)
                             {
-                                if (includeFields || (member.Kind != Kind.Field && member.Kind != Kind.VODefine))
+                                if (string.Compare(member.File.FullPath, _file.FullPath, true) != 0)
                                 {
-                                    members.Add(member);
+                                    if (includeFields || (member.Kind != Kind.Field && member.Kind != Kind.VODefine))
+                                    {
+                                        members.Add(member);
+                                    }
                                 }
                             }
                         }

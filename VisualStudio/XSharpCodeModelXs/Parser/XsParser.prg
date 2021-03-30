@@ -49,6 +49,7 @@ BEGIN NAMESPACE XSharpModel
       PRIVATE  _start        AS IToken
       PRIVATE  _hasXmlDoc    AS LOGIC
       PRIVATE  _tokens       AS IList<IToken>
+      PRIVATE  _missingType  AS STRING
       
       PRIVATE PROPERTY CurrentEntity      AS XSourceEntity GET IIF(_EntityStack:Count > 0, _EntityStack:Peek(), NULL_OBJECT)
       PRIVATE PROPERTY CurrentType        AS XSourceTypeSymbol    
@@ -94,7 +95,10 @@ BEGIN NAMESPACE XSharpModel
          _globalType    := _file:GlobalType
          _globalType:ClearMembers()
          _EntityStack:Push(_globalType)
-
+         _missingType := XLiterals.ObjectType
+          IF SELF:_file:Project != NULL .and. SELF:_file:Project:ParseOptions:Dialect != XSharpDialect.Core
+             _missingType := XLiterals.UsualType
+          ENDIF
       
       #region IErrorListener
       METHOD ReportError(fileName AS STRING, span AS LinePositionSpan, errorCode AS STRING, message AS STRING, args AS OBJECT[]) AS VOID
@@ -1063,7 +1067,7 @@ attributeParam      : Name=identifierName Op=assignoperator Expr=expression     
          ENDIF
          RETURN FALSE
      
-      PRIVATE METHOD ExpectAssign() AS LOGIC
+      PRIVATE METHOD ExpectAssignOp() AS LOGIC
          RETURN SELF:ExpectAny(XSharpLexer.ASSIGN_OP, XSharpLexer.EQ)
       
       PRIVATE METHOD ExpectAndGet(nType AS LONG, t OUT IToken) AS LOGIC
@@ -1784,7 +1788,7 @@ enummember          : (Attributes=attributes)? MEMBER? Id=identifier (Op=assigno
          Expect(XSharpLexer.MEMBER)    // Optional !
          VAR strValue := ""
          VAR id := SELF:ParseQualifiedName()
-         IF ExpectAssign()
+         IF ExpectAssignOp()
             strValue := SELF:ParseExpression()
          ENDIF
          SELF:GetSourceInfo(_start, LastToken, OUT VAR range, OUT VAR interval, OUT VAR source)  
@@ -1833,7 +1837,7 @@ vodefine            : (Modifiers=funcprocModifiers)?
 
          VAR id := SELF:ParseQualifiedName()
          LOCAL strValue AS STRING
-         IF ExpectAssign()
+         IF ExpectAssignOp()
             strValue := SELF:ParseExpression()
          ENDIF
          VAR type := SELF:ParseAsIsType()
@@ -1999,7 +2003,7 @@ classvar            : (Dim=DIM)? Id=identifier (LBRKT ArraySub=arraysub RBRKT)? 
          isDim := Expect(XSharpLexer.DIM)
          sId  := SELF:ParseIdentifier()
          VAR sBracket  := SELF:ParseArraySub()
-         IF ExpectAssign()
+         IF ExpectAssignOp()
             sDefault := SELF:ParseExpression()
          ENDIF
          endToken := SELF:LastToken
@@ -2135,7 +2139,7 @@ signature             : Id=identifier
             IF SELF:IsId(SELF:La1)
                sId  += SELF:ConsumeAndGetText()
             ENDIF
-            IF ExpectAssign()
+            IF ExpectAssignOp()
                defaultExpr := SELF:ParseExpressionAsTokens()
             ENDIF
             
@@ -2348,12 +2352,19 @@ callingconvention	: Convention=(CLIPPER | STRICT | PASCAL | ASPEN | WINCALL | CA
          ELSEIF SELF:La1 == XSharpLexer.LBRKT
             VAR tokens := List<XSharpToken>{}
             tokens:Add(SELF:ConsumeAndGet())
+            LOCAL openCount := 1 as LONG
             LOCAL closed := FALSE AS LOGIC
             DO WHILE ! SELF:Eos() .AND. ! closed
                SWITCH SELF:La1
                CASE XSharpLexer.RBRKT
                   tokens:Add(SELF:ConsumeAndGet())
-                  closed := TRUE
+                  openCount -= 1
+                  IF openCount == 0 .and. SELF:La1 != XSharpLexer.LBRKT
+                     closed := TRUE
+                  ENDIF
+               CASE XSharpLexer.LBRKT
+                  openCount += 1      
+                  tokens:Add(SELF:ConsumeAndGet())
                CASE XSharpLexer.COMMA
                   tokens:Add(SELF:ConsumeAndGet())
                OTHERWISE
@@ -2392,8 +2403,8 @@ callingconvention	: Convention=(CLIPPER | STRICT | PASCAL | ASPEN | WINCALL | CA
             CASE XSharpLexer.RCURLY
                   nested--
                   
-               CASE XSharpLexer.AS
-               CASE XSharpLexer.IS
+            CASE XSharpLexer.AS
+            CASE XSharpLexer.IS
             CASE XSharpLexer.COMMA
                   // The comma is used for a comma separated list of expression.
                   // however inside a method call or constructor call we should have nested > 0
@@ -2459,34 +2470,30 @@ callingconvention	: Convention=(CLIPPER | STRICT | PASCAL | ASPEN | WINCALL | CA
                VAR id    := SELF:ParseIdentifier()
                VAR type  := SELF:ParseAsIsType()
                SELF:GetSourceInfo(start, LastToken, OUT VAR range, OUT VAR interval, OUT VAR _)  
-               VAR xVar := XSourceVariableSymbol{SELF:CurrentEntity, id, range, interval, type } 
+               VAR xVar := XSourceVariableSymbol{SELF:CurrentEntity, id, range, interval, iif(type == "", _missingType, type) } 
                SELF:_locals:Add(xVar)
 
             ELSEIF SELF:La1 == XSharpLexer.LOCAL .AND. SELF:IsId(SELF:La2) 
                VAR start := SELF:Lt1
+               LOCAL expression := List<XSharpToken>{} AS IList<XSharpToken>
                Consume()
                VAR id    := SELF:ParseIdentifier()
+               IF SELF:ExpectAssignOp()
+                   expression := SELF:ParseExpressionAsTokens()
+               ENDIF
                LOCAL type := "" AS STRING
                LOCAL lIsIs := SELF:La1 == XSharpLexer.IS AS LOGIC
                IF SELF:ExpectAny(XSharpLexer.AS, XSharpLexer.IS)
                     type  := SELF:ParseTypeName()
                ELSE
-                   IF SELF:_file:Project != NULL
-                        var options := SELF:_file:Project:ParseOptions 
-                        if options:Dialect == XSharpDialect.Core
-                            type := "OBJECT"
-                        else
-                            type := "USUAL"
-                        endif
-                    ELSE
-                        type := "OBJECT"
-                   ENDIF
+                    type := SELF:_missingType
                ENDIF
                SELF:GetSourceInfo(start, LastToken, OUT VAR range, OUT VAR interval, OUT VAR _)  
                VAR xVar := XSourceVariableSymbol{SELF:CurrentEntity, id, range, interval, type }
                IF lIsIs
                     xVar:LocalType := LocalType.Is
                ENDIF
+               xVar:Expression := expression
                SELF:_locals:Add(xVar)
                      
             ENDIF
@@ -2520,7 +2527,7 @@ callingconvention	: Convention=(CLIPPER | STRICT | PASCAL | ASPEN | WINCALL | CA
                   VAR id   := SELF:ParseIdentifier()
                   VAR type := SELF:ParseAsIsType()
                   SELF:GetSourceInfo(start, LastToken, OUT VAR range, OUT VAR interval, OUT VAR _)  
-                  VAR xVar     := XSourceVariableSymbol{SELF:CurrentEntity, id, range, interval, type}
+                  VAR xVar     := XSourceVariableSymbol{SELF:CurrentEntity, id, range, interval, iif(type == "", _missingType, type)}
                   SELF:_locals:Add(xVar)
                ELSEIF SELF:La2 == XSharpLexer.VAR
                   // OUT VAR Id, when Id = '_' then discard and do not create a local
@@ -2542,7 +2549,7 @@ callingconvention	: Convention=(CLIPPER | STRICT | PASCAL | ASPEN | WINCALL | CA
                VAR id    := SELF:ParseIdentifier()
                VAR type  := SELF:ParseAsIsType()
                SELF:GetSourceInfo(start, LastToken, OUT VAR range, OUT VAR interval, OUT VAR _)  
-               VAR xVar     := XSourceVariableSymbol{SELF:CurrentEntity, id, range, interval, type}
+               VAR xVar     := XSourceVariableSymbol{SELF:CurrentEntity, id, range, interval, iif(type == "", _missingType, type)}
                SELF:_locals:Add(xVar)
             ELSE
                Consume()
@@ -2700,13 +2707,13 @@ callingconvention	: Convention=(CLIPPER | STRICT | PASCAL | ASPEN | WINCALL | CA
          ENDIF
          VAR id := SELF:ParseIdentifier()
          VAR arraysub := SELF:ParseArraySub()
-         IF ExpectAssign()
+         IF ExpectAssignOp()
             expr       := SELF:ParseExpressionAsTokens()
          ENDIF
          VAR type     := SELF:ParseAsIsType()
          SELF:GetSourceInfo(start, LastToken, OUT VAR range, OUT VAR interval, OUT VAR _)  
          IF String.IsNullOrEmpty(type)
-            type := XLiterals.NoType
+            type := _missingType
          ENDIF
          VAR xVar     := XSourceVariableSymbol{SELF:CurrentEntity, id, range, interval, type} {IsArray := lDim .OR. !String.IsNullOrEmpty(arraysub)}
          IF type:EndsWith("[]")
@@ -2726,7 +2733,7 @@ callingconvention	: Convention=(CLIPPER | STRICT | PASCAL | ASPEN | WINCALL | CA
             Consume()
          ENDIF
          VAR id := SELF:ParseIdentifier()
-         IF ExpectAssign()
+         IF ExpectAssignOp()
             expr := SELF:ParseExpressionAsTokens()
          ENDIF
          SELF:GetSourceInfo(start, LastToken, OUT VAR range, OUT VAR interval, OUT VAR _)  
@@ -2839,7 +2846,7 @@ callingconvention	: Convention=(CLIPPER | STRICT | PASCAL | ASPEN | WINCALL | CA
          ENDIF
          VAR id         := SELF:ParseIdentifier()
          VAR arraysub   := SELF:ParseArraySub()
-         IF ExpectAssign()
+         IF ExpectAssignOp()
             expr        := SELF:ParseExpressionAsTokens()
          ENDIF
          VAR type       := XLiterals.UsualType
@@ -3102,7 +3109,7 @@ callingconvention	: Convention=(CLIPPER | STRICT | PASCAL | ASPEN | WINCALL | CA
                ENDIF
                VAR source := ""
                
-               IF ExpectAssign()
+               IF ExpectAssignOp()
                      // foxfield            : (Modifiers=classvarModifiers)? (Fld=FIELD)? F=foxfieldinitializer END=eos
                      //                     ;
                      // foxfieldinitializer : Name=name assignoperator Expr=expression
@@ -3110,7 +3117,7 @@ callingconvention	: Convention=(CLIPPER | STRICT | PASCAL | ASPEN | WINCALL | CA
                      VAR expr := SELF:ParseExpression()                     
                      SELF:GetSourceInfo(_start, LastToken, OUT VAR r1, OUT VAR i1, OUT source)  
                      SELF:ReadLine()
-                     VAR xMember := XSourceMemberSymbol{ids:First(), Kind.Field, _attributes, r1, i1, "USUAL"}
+                     VAR xMember := XSourceMemberSymbol{ids:First(), Kind.Field, _attributes, r1, i1, _missingType}
                      xMember:SourceCode := source
                      xMember:Value      := expr
                      xMember:File := SELF:_file

@@ -19,7 +19,7 @@ namespace XSharpDebugger
     [DebuggerDisplay("ImportedType: {DebugDisplay}")]
     public class ImportedType : ImportedMember
     {
-        private TypeDefinition _typeDef;
+        private readonly TypeDefinition _typeDef;
 
         private List<ImportedField> _fields;
         private List<ImportedMethod> _methods;
@@ -141,7 +141,7 @@ namespace XSharpDebugger
             switch (FullName)
             {
                 case "System.Boolean":
-                    return XSharpType.Boolean;
+                    return XSharpType.Logic;
                 case "System.Int32":
                     return XSharpType.Integer;
                 case "System.String":

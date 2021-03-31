@@ -53,6 +53,8 @@ FUNCTION EmptyUsual(kType AS DWORD) AS USUAL
 		result := USUAL{NULL_CODEBLOCK}
     CASE __UsualType.Object
 	    result := USUAL{NULL_OBJECT}
+    CASE __UsualType.Binary
+       result := USUAL{BINARY{""}}
     CASE __UsualType.Fixed
 	OTHERWISE
 		THROW Error.ArgumentError(__ENTITY__, NAMEOF(kType) , "Unknown type parameter")
@@ -72,6 +74,13 @@ FUNCTION IsArray(uValue AS USUAL) AS LOGIC
 FUNCTION IsByRef(uVal AS USUAL) AS LOGIC
 	RETURN uVal:IsByRef
 
+/// <summary>
+/// Determine if a value is a Binary.
+/// </summary>
+/// <param name="uVal">The value to examine.</param>
+/// <returns>TRUE if the value is a Binary data type; otherwise, FALSE. </returns>
+FUNCTION IsBinary(uValue AS USUAL) AS LOGIC
+	RETURN uValue:IsBinary
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/iscodeblock/*" />
 FUNCTION IsCodeBlock(uValue AS USUAL) AS LOGIC
@@ -94,7 +103,7 @@ FUNCTION IsDateTime(uVal AS USUAL) AS LOGIC
 /// Determine if a value is a Decimal.
 /// </summary>
 /// <param name="uVal">The value to examine.</param>
-/// <returns>TRUE if the value is a DECIMAL data type; otherwise, FALSE. </returns>
+/// <returns>TRUE if the value is a Decimal data type; otherwise, FALSE. </returns>
 FUNCTION IsDecimal(uVal AS USUAL) AS LOGIC
 	RETURN uVal:IsDecimal
 
@@ -103,7 +112,7 @@ FUNCTION IsDecimal(uVal AS USUAL) AS LOGIC
 /// Determine if a value is a Currency.
 /// </summary>
 /// <param name="uVal">The value to examine.</param>
-/// <returns>TRUE if the value is a DECIMAL data type; otherwise, FALSE. </returns>
+/// <returns>TRUE if the value is a Currency data type; otherwise, FALSE. </returns>
 FUNCTION IsCurrency(uVal AS USUAL) AS LOGIC
 	RETURN uVal:IsCurrency
 
@@ -111,7 +120,7 @@ FUNCTION IsCurrency(uVal AS USUAL) AS LOGIC
 /// Determine if a value is a Decimal or a Float
 /// </summary>
 /// <param name="uVal">The value to examine.</param>
-/// <returns>TRUE if the value is a DECIMAL, CURRENCY or FLOAT data type; otherwise, FALSE. </returns>
+/// <returns>TRUE if the value is a Decimal, Currency or Float data type; otherwise, FALSE. </returns>
 FUNCTION IsFractional(uVal AS USUAL) AS LOGIC
 	RETURN uVal:IsFractional
 
@@ -183,7 +192,7 @@ FUNCTION Len(uValue AS USUAL) AS DWORD
 
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/default/*" />
-FUNCTION Default(uVar REF USUAL, uDefault AS USUAL) AS VOID
+FUNCTION @@Default(uVar REF USUAL, uDefault AS USUAL) AS VOID
 	IF uVar:IsNil
 		uVar := uDefault
 	ENDIF

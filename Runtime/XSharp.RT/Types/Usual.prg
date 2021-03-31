@@ -338,7 +338,7 @@ BEGIN NAMESPACE XSharp
         [DebuggerBrowsable(DebuggerBrowsableState.Never)];
         PRIVATE PROPERTY _codeblockValue AS ICodeblock		GET (ICodeblock) _refData
         [DebuggerBrowsable(DebuggerBrowsableState.Never)];
-        PRIVATE PROPERTY _currencyValue	AS CURRENCY	    GET Currency{ (System.Decimal) _refData}
+        PRIVATE PROPERTY _currencyValue	AS CURRENCY	    GET __Currency{ (System.Decimal) _refData}
         [DebuggerBrowsable(DebuggerBrowsableState.Never)];
         PRIVATE PROPERTY _dateValue		AS DATE				GET _valueData:d
         [DebuggerBrowsable(DebuggerBrowsableState.Never)];
@@ -362,7 +362,7 @@ BEGIN NAMESPACE XSharp
         [DebuggerBrowsable(DebuggerBrowsableState.Never)];
         PRIVATE PROPERTY _symValue		AS SYMBOL			GET _valueData:s
         [DebuggerBrowsable(DebuggerBrowsableState.Never)];
-        PRIVATE PROPERTY _binaryValue	AS BINARY		    GET BINARY{ (Byte[]) _refData}
+        PRIVATE PROPERTY _binaryValue	AS BINARY		    GET __Binary{ (BYTE[]) _refData}
 
         // properties for floats
         [DebuggerBrowsable(DebuggerBrowsableState.Never)];

@@ -21,7 +21,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 
         INTERNAL CONST CDXPAGE_TYPE	:= 0	AS WORD // WORD
 
-	    INTERNAL CONSTRUCTOR( oBag AS CdxOrderBag, nPage AS Int32, buffer AS BYTE[] )
+        INTERNAL CONSTRUCTOR( oBag AS CdxOrderBag, nPage AS Int32, buffer AS BYTE[] )
             SUPER(oBag, nPage, buffer)
             SELF:_getValues()
             RETURN
@@ -161,20 +161,25 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 
         INTERNAL PROPERTY IsRoot AS LOGIC GET SELF:PageType:HasFlag(CdxPageType.Root)
 
-
        INTERNAL METHOD AddRightSibling(oNewRight AS CdxTreePage) AS VOID
             Debug.Assert(oNewRight != NULL_OBJECT)
+            //DUMP( SELF:PageType:ToString(), oNewRight:PageNo:ToString("X") )
             IF oNewRight != NULL_OBJECT
-                LOCAL  oOldRight AS CdxTreePage
+                LOCAL  oOldRight := NULL AS CdxTreePage
                 oNewRight:LeftPtr  := SELF:PageNo
                 oNewRight:RightPtr := SELF:RightPtr
                 IF SELF:HasRight
                     oOldRight := SELF:_tag:GetPage(SELF:RightPtr)
                     Debug.Assert(oOldRight:LeftPtr == SELF:PageNo)
                     oOldRight:LeftPtr := oNewRight:PageNo    
-                    oOldRight:Write()
                 ENDIF
                 SELF:RightPtr     := oNewRight:PageNo
+                IF oOldRight != NULL
+                    oOldRight:Write()
+                ENDIF
+                IF oNewRight != NULL
+                    oNewRight:Write()
+                ENDIF
                 SELF:Write()
             ELSE
                 NOP
@@ -196,7 +201,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
               sb:Append( o[x]:ToString())
               sb:Append( " ")
             NEXT
-           System.Diagnostics.DeFbug.WriteLine(sb:ToString())
+           System.Diagnostics.Debug.WriteLine(sb:ToString())
            RETURN
 #endif            
 	END CLASS

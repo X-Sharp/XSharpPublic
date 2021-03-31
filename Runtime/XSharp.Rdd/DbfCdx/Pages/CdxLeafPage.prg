@@ -565,7 +565,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 VAR nextLeaf := _leaves[nPos+1]
                 nDupCount    := SELF:_getDupCount(key, nextLeaf:Key,  nextLeaf:Trail)
                 IF nDupCount != nextLeaf:Dup
-                    //Debug("Adjusted next leaf dup from ", nextLeaf:Dup, "to", nDupCount)
+                    DUMP("Adjusted next leaf dup from ", nextLeaf:Dup, "to", nDupCount)
                     VAR diff        := nDupCount - nextLeaf:Dup
                     SELF:Freespace  += (WORD) diff
                     nextLeaf:Dup    := nDupCount
@@ -575,7 +575,6 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 #endif
             ENDIF
             SELF:NumKeys := (WORD) _leaves:Count
-            //Debug("Pos",nPos, "Rec", recno, "keys", SELF:NumKeys, "free after", SELF:Freespace)
 
             VAR result := CdxAction.Ok
             IF last .AND. ! SELF:IsRoot
@@ -595,6 +594,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             LOCAL oPage AS CdxLeafPage
             LOCAL oLeft AS CdxLeaf
             LOCAL oRight AS CdxLeaf
+            DUMP("ValidateChain")
             IF SELF:NumKeys == 0 
                 RETURN
             ENDIF
@@ -626,8 +626,8 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             ELSEIF nDiff == 0 .AND. oLeft:Recno < oRight:Recno
                 RETURN TRUE
             ENDIF
-//           SELF:Debug("Incorrect order of Keys", oLeft:Key:ToAscii(),oRight:Key:ToAscii())
-//            Console.ReadLine()
+            SELF:Debug("Incorrect order of Keys", oLeft:Key:ToAscii(),oRight:Key:ToAscii())
+            Console.ReadLine()
             RETURN FALSE
 
         METHOD Validate() AS VOID
@@ -639,7 +639,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 //                    SELF:Debug("Corruption detected: incorrect order of Keys", leaf1:Key:ToAscii(),leaf2:Key:ToAscii())
 //                ENDIF
 //            NEXT
-            IF SELF:NumKeys > 0
+            IF SELF:NumKeys > 0 
                 IF SELF:HasLeft
                     var oLeft := SELF:_tag:GetPage(SELF:LeftPtr) astype CdxLeafPage
                     IF oLeft != NULL_OBJECT
@@ -674,7 +674,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 ENDIF
             ENDIF
 
-#endif
+#endif 
         INTERNAL METHOD Split(oPageR AS CdxLeafPage, action AS CdxAction) AS CdxAction
             DUMP("New", oPageR:PageNo:ToString("X"))
             VAR list      := _leaves

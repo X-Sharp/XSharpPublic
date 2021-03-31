@@ -859,7 +859,9 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 RETURN TRUE
             FINALLY
                 IF SELF:Shared
+#ifdef DEBUG                     
                     SELF:ValidateAllLevels()
+#endif                     
                     SELF:UnLock()
                 ENDIF
             END TRY

@@ -1,5 +1,5 @@
 ﻿
-#undef TESTCDX
+//#define TESTCDX
 #ifndef TESTCDX
 #translate DUMP( [<list,...>] ) => NOP
 #else

@@ -26,6 +26,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 		PROTECTED _buffer   AS BYTE[]
 		PROTECTED _hot      AS LOGIC        // Hot ?  => Page has changed ?
         PROTECTED _dumped   AS LOGIC
+        INTERNAL PROPERTY Generation AS DWORD AUTO := 0
         INTERNAL VIRTUAL PROPERTY PageType AS CdxPageType GET CdxPageType.Undefined SET
 
 
@@ -45,7 +46,11 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 
         PROTECTED INTERNAL CONSTRUCTOR( bag AS CdxOrderBag )
 			SELF:_bag    := bag
-
+            IF (bag:Root != NULL)
+                SELF:Generation := bag:Root:RootVersion
+            ELSE
+                NOP
+            ENDIF
 	    PROTECTED INTERNAL CONSTRUCTOR( bag AS CdxOrderBag , nPage AS Int32 , buffer AS BYTE[])
 			SELF(bag)
             SELF:_nPage  := nPage
@@ -55,6 +60,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             ELSE
     			SELF:_buffer := buffer
             ENDIF
+            SELF:Generation := bag:Root:RootVersion
 		    RETURN
         #region Read/Write
 

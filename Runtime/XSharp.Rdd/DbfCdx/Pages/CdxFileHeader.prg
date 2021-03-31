@@ -65,5 +65,6 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             SELF:KeyExprLen := 1
             SELF:ForExprPos := 1
             SELF:ForExprLen := 1
+            SELF:Generation := SELF:RootVersion
 	END CLASS
 END NAMESPACE 

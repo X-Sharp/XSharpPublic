@@ -164,18 +164,14 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             RETURN
 
         INTERNAL METHOD SetVersion(nVersion as DWORD) AS VOID
-#ifdef DEBUG
-            FOREACH var page in _pages
+            FOREACH VAR page IN _pages
                 page:Value:Generation := nVersion
             NEXT
-#endif
 
         INTERNAL METHOD CheckVersion(nVersion as DWORD) AS VOID
-#ifdef DEBUG
-            FOREACH var page in _pages
+            FOREACH VAR page IN _pages
                 Debug.Assert(page:Value:Generation == nVersion)
             NEXT
-#endif            
     END CLASS
     
 END NAMESPACE // global::XSharp.RDD.Types.DbfNtx

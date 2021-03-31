@@ -394,16 +394,12 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             RETURN SELF:_stream:SafeReadAt(nPage, buffer) 
  
         METHOD Read(oPage AS CdxPage) AS LOGIC
-#ifdef DEBUG            
             oPage:Generation := SELF:_root:RootVersion
-#endif
             RETURN SELF:_stream:SafeReadAt(oPage:PageNo, oPage:Buffer, oPage:Buffer:Length) 
 
         METHOD Write(oPage AS CdxPage) AS LOGIC
             LOCAL isOk AS LOGIC
-#ifdef DEBUG            
             SELF:_PageList:CheckVersion(SELF:Root:RootVersion)
-#endif
             IF oPage:PageNo == -1
                 oPage:PageNo := SELF:FindFreePage()
                 oPage:IsHot  := TRUE

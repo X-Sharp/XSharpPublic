@@ -245,9 +245,11 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         INTERNAL METHOD Delete(nPos AS LONG) AS CdxAction
             LOCAL nMax := SELF:NumKeys AS WORD
             LOCAL result AS CdxAction
-            IF nMax == 0 
+            Debug.Assert(nMax > 0, "Branchpage is unexpectedly empty")
+            IF nMax == 0
                 RETURN CdxAction.DeletePage(SELF)
             ENDIF
+            Debug.Assert(nPos >= 0 .AND. nPos < nMax, "Delete key that is not on the page")
             IF nPos < 0 .OR. nPos > nMax-1
                 RETURN CdxAction.OutOfBounds(SELF)
             ENDIF
@@ -262,10 +264,8 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             ENDIF
             SELF:NumKeys -= 1
             IF SELF:NumKeys == 0
-                //SELF:Tag:SetChildToProcess(SELF:PageNo)
                 result := CdxAction.DeletePage(SELF)
             ELSEIF nPos == SELF:NumKeys
-               //SELF:Tag:SetChildToProcess(SELF:PageNo)
                 result := CdxAction.ChangeParent(SELF)
             ELSE
                 result := CdxAction.Ok
@@ -297,6 +297,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 VAR node := branches[i]
                 SELF:Add(node:Recno, node:ChildPage, node:Key)
             NEXT
+            Debug.Assert(NumKeys > 0)
             FOR VAR i := half+1 TO branches:Count-1
                 VAR node := branches[i]
                 oTarget:Add(node:Recno, node:ChildPage, node:Key)

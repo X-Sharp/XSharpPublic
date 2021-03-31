@@ -146,8 +146,8 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 
 #endregion
 #region constants
-		PRIVATE CONST CDXTAGHEADER_ROOT		        := 0x00	AS WORD		// Byte offset to Root
-		PRIVATE CONST CDXTAGHEADER_FREELIST	        := 0x04	AS WORD		// Byte offset to next free block
+		PRIVATE CONST CDXTAGHEADER_ROOT		       := 0x00	AS WORD		// Byte offset to Root
+		PRIVATE CONST CDXTAGHEADER_FREELIST	       := 0x04	AS WORD		// Byte offset to next free block
 		PRIVATE CONST CDXTAGHEADER_VERSION		   := 0x08	AS WORD		// to increment on modification
 		PRIVATE CONST CDXTAGHEADER_KEYLENGTH	   := 0x0c	AS WORD		// Length of key
 		PRIVATE CONST CDXTAGHEADER_OPTIONS		   := 0x0e	AS WORD		// CdxOptions : bit field
@@ -179,6 +179,11 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 SELF:_getValues()
             ENDIF
             RETURN lOk
-		
+            
+        INTERNAL METHOD UpdateWhenNeeded() AS VOID
+            IF SELF:_bag:Root:RootVersion != SELF:Generation
+                SELF:Read()
+            ENDIF
+            RETURN
 	END CLASS
 END NAMESPACE 

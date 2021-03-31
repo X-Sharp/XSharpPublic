@@ -22,9 +22,11 @@ BEGIN NAMESPACE XSharp
     /// <seealso cref='IIndexer' />
     /// <include file="RTComments.xml" path="Comments/ZeroBasedIndex/*" /> 
     //[DebuggerTypeProxy(TYPEOF(ArrayDebugView))];
-    [DebuggerDisplay("{DebuggerString(),nq}", Type := "FOXARRAY")] ;
+    [DebuggerDisplay("{DebuggerString(),nq}")] ;
     PUBLIC SEALED CLASS __FoxArray INHERIT __Array IMPLEMENTS IIndexer
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)];
         PRIVATE _nCols := 1 AS DWORD
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)];
         PROPERTY MultiDimensional AS LOGIC GET _nCols > 1
         PROPERTY Columns AS LONG GET (LONG) _nCols
         PROPERTY Rows    AS LONG GET _internalList:Count / (LONG) _nCols 
@@ -44,7 +46,15 @@ BEGIN NAMESPACE XSharp
             /// <inheritdoc />
         CONSTRUCTOR( elements AS OBJECT[] )
             SUPER(elements)
-            
+
+        PRIVATE CONSTRUCTOR( elements AS USUAL[])
+            SUPER(elements)
+
+        INTERNAL METHOD __Fill(uValue AS USUAL) AS VOID
+            FOR VAR nElement := 0 TO SELF:Length-1
+               SELF:_internalList[nElement] := uValue
+            NEXT
+            RETURN
 
         INTERNAL METHOD __GetDimensionError(nDimensionsAsked AS LONG) AS Error
             VAR err         := Error.BoundError(ProcName(2),"indices", 1)
@@ -56,7 +66,7 @@ BEGIN NAMESPACE XSharp
             err:Stack   := ErrorStack(1)
             RETURN err
 
-        INTERNAL METHOD __NestedArrayError() AS Error
+        INTERNAL STATIC METHOD __NestedArrayError() AS Error
             VAR err     := Error.ArgumentError(ProcName(2),"value", "You cannot assign an array to an element inside a Fox Array")
             err:Stack   := ErrorStack(1)
             RETURN err
@@ -80,14 +90,14 @@ BEGIN NAMESPACE XSharp
 
        PUBLIC OVERRIDE METHOD __SetElement(u AS USUAL, index AS INT) AS USUAL
              IF IsArray(u)
-                  THROW SELF:__NestedArrayError()
+                  THROW __NestedArrayError()
              ENDIF
              SUPER:__CheckArrayElement(SELF, index, nameof(index),1)
              RETURN SUPER:__SetElement(u, index)
 
         PUBLIC OVERRIDE METHOD __SetElement(u AS USUAL, index AS INT, index2 AS INT) AS USUAL
              IF IsArray(u)
-                  THROW SELF:__NestedArrayError()
+                  THROW __NestedArrayError()
              ENDIF
              VAR item := SELF:__GetIndex(index, index2)
              SUPER:__CheckArrayElement(SELF, item, nameof(index),1)
@@ -124,7 +134,7 @@ BEGIN NAMESPACE XSharp
             END GET
             SET
                 IF IsArray(value)
-                    THROW SELF:__NestedArrayError()
+                    THROW __NestedArrayError()
                 ENDIF
                 SUPER:__CheckArrayElement(SELF, index, nameof(index),1)
                 SUPER:__SetElement(value,index)
@@ -146,7 +156,7 @@ BEGIN NAMESPACE XSharp
             END GET
             SET
                 IF IsArray(value)
-                    THROW SELF:__NestedArrayError()
+                    THROW __NestedArrayError()
                 ENDIF
                 IF ! SELF:MultiDimensional
                     THROW SELF:__GetDimensionError(2)
@@ -175,7 +185,7 @@ BEGIN NAMESPACE XSharp
             END GET
             SET
                 IF IsArray(value)
-                    THROW SELF:__NestedArrayError()
+                    THROW __NestedArrayError()
                 ENDIF
                 IF indices:Length == 1
                     SELF:__CheckArrayElement(SELF, indices[1], nameof(indices),1)                    
@@ -331,6 +341,7 @@ BEGIN NAMESPACE XSharp
             sb:Append(")")
             RETURN sb:ToString()
             
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)];
         INTERNAL PROPERTY Values AS STRING[]
             GET
                 VAR result := List<STRING>{}
@@ -346,6 +357,7 @@ BEGIN NAMESPACE XSharp
             VAR err     := Error{NotSupportedException{"The FoxPro array type does not support the Add functionality because it cannot dynamically grow. " + ;
                             "You will have to use the DIMENSION statement to change its size"}}
             THROW err            
+
 
     END CLASS
 END NAMESPACE

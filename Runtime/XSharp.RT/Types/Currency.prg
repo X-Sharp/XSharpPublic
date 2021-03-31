@@ -18,6 +18,7 @@ BEGIN NAMESPACE XSharp
     /// </summary>
     /// <seealso cref="__Float"/>
     /// <seealso cref="System.Decimal"/>
+    [DebuggerDisplay("{ToDebugString(),nq}")];
     [Serializable];
     PUBLIC STRUCTURE __Currency IMPLEMENTS IConvertible,; 
         IFormattable, ;
@@ -26,6 +27,7 @@ BEGIN NAMESPACE XSharp
         IComparable,            ;
         ISerializable
     
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)];
         PRIVATE INITONLY _value AS System.Decimal
         
         #region constructors
@@ -46,7 +48,8 @@ BEGIN NAMESPACE XSharp
 
         #endregion
         #region Properties
-        /// <summary>REAL8 (System.Double) value</summary>
+        /// <summary>Decimal (System.Decimal) value</summary>
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)];
         PROPERTY @@Value    AS System.Decimal	GET _value			
         #endregion
         
@@ -426,7 +429,13 @@ BEGIN NAMESPACE XSharp
             /// <inheritdoc />
         PUBLIC METHOD ToString(format AS STRING, provider AS System.IFormatProvider) AS STRING
             RETURN ((IFormattable) _value):ToString(format, provider)
-            #endregion
+
+
+        INTERNAL METHOD ToDebugString() AS STRING 
+            RETURN SELF:ToString("0.0000")
+
+        #endregion
+            
         #region IComparable
         /// <inheritdoc />
         PUBLIC METHOD CompareTo(rhs AS CURRENCY) AS INT

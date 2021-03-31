@@ -480,36 +480,38 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     if (token.Type == XSharpParser.STRING_CONST && opt.StartsWith("\"") && opt.EndsWith("\"") && opt.Length > 2)
                     {
                         opt = opt.Substring(1, opt.Length - 2);
-                        switch (opt)
+                        var compopt = CompilerOptionDecoder.Decode(opt);
+
+                        switch (compopt)
                         {
-                            case "az":
-                            case "initlocals":
-                            case "lb":
-                            case "memvar":
-                            case "memvars":
-                            case "enforceself":
-                            case "undeclared":
+                            case CompilerOption.AllowDotForInstanceMembers:
+                            case CompilerOption.ArrayZero:
+                            case CompilerOption.InitLocals:
+                            case CompilerOption.LateBinding:
+                            case CompilerOption.MemVars:
+                            case CompilerOption.EnforceSelf:
+                            case CompilerOption.UndeclaredMemVars:
                             // case "vo1": // Init/axit
-                            case "vo2":     // Initialize string variables with empty strings
+                            case CompilerOption.Vo2:     // Initialize string variables with empty strings
                             // case "vo3": // All methods Virtual
-                            case "vo4":     // SignedUnsignedConversion
-                            case "vo5":     // Implicit Clipper Calling convention
-                            case "vo6":     // ResolveTypedFunctionPointersToPtr
-                            case "vo7":     // Implicit Casts and Conversions
+                            case CompilerOption.Vo4:     // SignedUnsignedConversion
+                            case CompilerOption.Vo5:     // Implicit Clipper Calling convention
+                            case CompilerOption.Vo6:     // ResolveTypedFunctionPointersToPtr
+                            case CompilerOption.Vo7:     // Implicit Casts and Conversions
                             // case "vo8": // Compatible preprocessor
-                            case "vo9":     // Allow missing return statements or missing return values
-                            case "vo10":     // Compatible IIF
-                            case "vo11":    // ArithmeticConversions
-                            case "vo12":    // Clipper Integer divisions
-                            case "vo13":    // StringComparisons
-                            case "vo14":    // Embed real constants as float
-                            case "vo15":    // Untyped allowed
-                            case "vo16":    // Add Clipper CC Missing constructors
+                            case CompilerOption.Vo9:     // Allow missing return statements or missing return values
+                            case CompilerOption.Vo10:     // Compatible IIF
+                            case CompilerOption.Vo11:    // ArithmeticConversions
+                            case CompilerOption.Vo12:    // Clipper Integer divisions
+                            case CompilerOption.Vo13:    // StringComparisons
+                            case CompilerOption.Vo14:    // Embed real constants as float
+                            case CompilerOption.Vo15:    // Untyped allowed
+                            case CompilerOption.Vo16:    // Add Clipper CC Missing constructors
                             // case "fox1": // Classes inherit from unknown
-                            case "fox2":    // Expose local names to macro compiler
+                            case CompilerOption.Fox2:    // Expose local names to macro compiler
                                 //case "xpp1":    // classes inherit from XPP.Abstract
                                 //case "xpp2":    // strongly typed entry point
-                                context.Pragma = new PragmaOption(context, state, CompilerOptionDecoder.Decode(opt));
+                                context.Pragma = new PragmaOption(context, state, compopt);
                                 break;
                             default:
                                 error = ErrorCode.WRN_IllegalPPOption;

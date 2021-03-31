@@ -9,7 +9,7 @@ USING System.Runtime.InteropServices
 USING System.Runtime.CompilerServices
 USING System.Diagnostics
 USING System.Runtime.Serialization
-#pragma options ("az", on)
+#pragma options ("az", ON)
 BEGIN NAMESPACE XSharp
     // use explicit layout so we can compact the size into 12 bytes
     // Type is Immutable, so has no settable properties

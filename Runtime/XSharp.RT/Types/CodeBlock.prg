@@ -13,11 +13,12 @@ USING System.Runtime.CompilerServices
 /// This type has methods that normally are never directly called from user code.
 /// </summary>
 /// <seealso cref="ICodeblock"/>
-[DebuggerDisplay( "{ToString(),nq}", Type := "CODEBLOCK" )] ;
+//[DebuggerDisplay( "{ToString(),nq}", Type := "CODEBLOCK" )] ;
 ABSTRACT CLASS XSharp.Codeblock IMPLEMENTS ICodeblock
 	PRIVATE INITONLY _pcount AS INT
 
-    PRIVATE STATIC nullArgs as USUAL[]
+    [DebuggerBrowsable(DebuggerBrowsableState.Never)];
+    PRIVATE STATIC nullArgs AS USUAL[]
 
     STATIC CONSTRUCTOR
         nullArgs := USUAL[]{0}
@@ -87,7 +88,8 @@ PUBLIC CLASS XSharp._Codeblock INHERIT XSharp.Codeblock IMPLEMENTS IRtCodeblock
 	/// <exclude />
 	PROTECT _addsMemVars AS LOGIC
 
-    STATIC PRIVATE nullArgs as OBJECT[]
+    [DebuggerBrowsable(DebuggerBrowsableState.Never)];
+    STATIC PRIVATE nullArgs AS OBJECT[]
 
     STATIC CONSTRUCTOR
         nullArgs := OBJECT[]{0}

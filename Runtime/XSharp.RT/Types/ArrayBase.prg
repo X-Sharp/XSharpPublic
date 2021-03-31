@@ -6,6 +6,7 @@
 USING System.Collections
 USING System.Collections.Generic
 USING System.Linq
+USING System.Text
 USING System.Diagnostics
 USING System.Reflection
 USING XSharp
@@ -15,6 +16,7 @@ BEGIN NAMESPACE XSharp
 	/// This type has methods and properties that normally are never directly called from user code.
 	/// </summary>
     /// <typeparam name="T">Type of the elements inside the array </typeparam>
+    [DebuggerDisplay("{DebuggerString(),nq}")] ;
     [Serializable];
 	PUBLIC CLASS __ArrayBase<T> ;
         IMPLEMENTS INamedIndexer, IEnumerable<T>, ISerializable
@@ -384,6 +386,7 @@ BEGIN NAMESPACE XSharp
 			SELF:_islocked := lLocked
 			RETURN wasLocked
 			/// <summary>Is the array locked?</summary>
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)];
 		PROPERTY Locked AS LOGIC GET _islocked
 
 		INTERNAL METHOD CheckLock AS LOGIC
@@ -435,6 +438,32 @@ BEGIN NAMESPACE XSharp
 			RETURN aResult:ToArray()
 
     #endregion
+            
+        PROTECTED VIRTUAL METHOD DebuggerString() AS STRING
+            LOCAL sb AS StringBuilder
+            LOCAL cnt, tot AS LONG
+            sb := StringBuilder{}
+            sb:Append(SELF:ToString())
+            sb:Append("{")
+            tot := _internalList:Count
+            cnt := 0
+            FOREACH VAR element IN SELF:_internalList
+                IF cnt > 0
+                    sb:Append(",")
+                ENDIF
+                sb:Append(element:ToString())
+                cnt++
+                IF cnt > 5
+                    IF cnt < tot
+                        sb:Append(",..")
+                    ENDIF
+                    EXIT
+                ENDIF
+            NEXT
+            sb:Append("}")
+            RETURN sb:ToString()
+
+      
     #region ISerializable
         /// <inheritdoc/>
         PUBLIC VIRTUAL METHOD GetObjectData(info AS SerializationInfo, context AS StreamingContext) AS VOID

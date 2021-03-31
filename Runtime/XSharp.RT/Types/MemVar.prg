@@ -440,6 +440,25 @@ PUBLIC CLASS XSharp.MemVar
         RETURN FALSE
     
 
+
+    /// <summary>Get the value of a local, private or public (in that order). Returns NIL if the value does not exist.</summary>
+	STATIC METHOD GetSafe(cName AS STRING) AS USUAL
+        // Local takes precedence over private
+        IF LocalFind(cName, OUT VAR uValue, OUT VAR _)
+            RETURN uValue
+        ENDIF
+		LOCAL oMemVar AS XSharp.MemVar
+		// privates take precedence over publics
+		oMemVar := PrivateFind(cName)
+		IF oMemVar == NULL
+			oMemVar := PublicFind(cName)
+		ENDIF            
+		IF oMemVar != NULL
+			RETURN oMemVar:Value
+        ENDIF
+        RETURN NIL
+
+        
     /// <summary>Get the value of a local, private or public (in that order). Throws an exception when the variable does not exist.</summary>
 	STATIC METHOD Get(cName AS STRING) AS USUAL
         // Local takes precedence over private

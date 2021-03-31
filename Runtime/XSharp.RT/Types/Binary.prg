@@ -18,6 +18,7 @@ BEGIN NAMESPACE XSharp
     /// The data in this type is stored as an array of Bytes<br/>
     /// Conversions from and to String are supported and they use the current active windows codepage.
     /// </summary>
+    [DebuggerDisplay("{ToDebugString(),nq}")];
     [Serializable];
     PUBLIC STRUCTURE __Binary IMPLEMENTS IFormattable, ;
         IComparable<__Binary>, ;
@@ -37,6 +38,17 @@ BEGIN NAMESPACE XSharp
                 THROW NullError()
             ENDIF
             SELF:_value    := b
+        
+        /// <include file="RTComments.xml" path="Comments/Constructor/*" />
+        /// <param name="s">STRING that will be converted to bytes using the current windows codepage.</param>
+        /// <remarks>Accented characters and characters outside the current windows codepage may be replaced with a question mark.
+        /// and when the current codepage is a so called multi byte codepage than one character may be mapped to more than one byte in the result</remarks>
+        [DebuggerStepThroughAttribute] [MethodImpl(MethodImplOptions.AggressiveInlining)];        
+        CONSTRUCTOR (s AS STRING)
+            IF s == NULL
+                THROW NullError()
+            ENDIF
+            SELF:_value    := RuntimeState.WinEncoding:GetBytes(s)
 
         PRIVATE STATIC METHOD NullError() AS Error
             VAR err			 := Error{ArgumentException{}}
@@ -58,7 +70,7 @@ BEGIN NAMESPACE XSharp
         #endregion
         #region Properties
         /// <summary>Binary value as array of Bytes</summary>
-        PROPERTY @@Value    AS BYTE[]	GET (BYTE[]) _value:Clone()
+        PROPERTY @@Value    AS BYTE[]	GET  IIF (_value == NULL, NULL, (BYTE[]) _value:Clone())
         PROPERTY Length     AS LONG GET iif(_value == NULL, 0, _value:Length)
         #endregion
         
@@ -171,7 +183,7 @@ BEGIN NAMESPACE XSharp
         /// <include file="RTComments.xml" path="Comments/Operator/*" />
         [DebuggerStepThroughAttribute];
         STATIC OPERATOR IMPLICIT(s AS STRING) AS __Binary
-            RETURN __Binary{ RuntimeState.WinEncoding:GetBytes(s) }
+            RETURN __Binary{ s }
 
             #endregion
             
@@ -186,6 +198,7 @@ BEGIN NAMESPACE XSharp
         OPERATOR+(lhs AS __Binary, rhs AS STRING) AS __Binary
             RETURN __Binary{lhs:_value, RuntimeState.WinEncoding:GetBytes(rhs)}
 
+        /// <include file="RTComments.xml" path="Comments/Operator/*" />
         OPERATOR+(lhs AS STRING, rhs AS __Binary) AS STRING
             VAR sb := StringBuilder{}
             sb:Append(lhs)
@@ -242,6 +255,13 @@ BEGIN NAMESPACE XSharp
         PUBLIC METHOD ToString(format AS STRING, provider AS System.IFormatProvider) AS STRING
             RETURN SELF:ToString(format)
             #endregion
+
+        INTERNAL METHOD ToDebugString() AS STRING 
+            IF _value == NULL
+               RETURN "<uninitialized>"
+            ENDIF
+            RETURN SELF:ToString("")
+ 
         #region ISerializable
         /// <inheritdoc/>
         

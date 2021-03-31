@@ -18,10 +18,11 @@ BEGIN NAMESPACE XSharp
     /// <seealso cref='IIndexer' />
     /// <include file="RTComments.xml" path="Comments/ZeroBasedIndex/*" /> 
     //[DebuggerTypeProxy(TYPEOF(ArrayDebugView))];
-    [DebuggerDisplay("{DebuggerString(),nq}", Type := "ARRAY")] ;
+    [DebuggerDisplay("{DebuggerString(),nq}")] ;
     [Serializable];
     PUBLIC CLASS __Array INHERIT __ArrayBase<USUAL> IMPLEMENTS IIndexer, ISerializable
 
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)];
         INTERNAL STATIC SuppressArrayIndexErrors := FALSE AS LOGIC  // used for Get_Element to emulate strange VO behaviour
 
         /// <inheritdoc />

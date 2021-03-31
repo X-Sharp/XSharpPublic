@@ -29,8 +29,10 @@ namespace XSharp.LanguageService.OptionsPages
         {
             get
             {
-                FormattingOptionsControl page = new FormattingOptionsControl();
-                page.formattingPage = this;
+                FormattingOptionsControl page = new FormattingOptionsControl
+                {
+                    formattingPage = this
+                };
                 page.Initialize();
                 return page;
             }

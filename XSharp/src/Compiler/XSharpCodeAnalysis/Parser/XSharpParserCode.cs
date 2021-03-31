@@ -411,7 +411,8 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                 var info = new MemVarFieldInfo(Name, Alias);
                 info.Context = context;
                 Fields.Add(info.Name, info);
-                Fields.Add(info.FullName, info);
+                if (info.Name != info.FullName)
+                    Fields.Add(info.FullName, info);
                 return info;
             }
             internal MemVarFieldInfo GetField(string Name)
@@ -1107,7 +1108,8 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             Memvar,
             Field,
             ClipperParameter,
-            MacroMemvar
+            MacroMemvar,
+            Local,
         }
         private readonly vartype _varType;
         internal vartype VarType => _varType;
@@ -1135,7 +1137,9 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
 
         public bool IsClipperParameter => _varType == vartype.ClipperParameter;
         public bool IsFileWidePublic { get; private set; }
+        public bool IsLocal => VarType == vartype.Local;
         public bool IsParameter { get; set; }
+        public bool IsFoxArray { get; set; }
         public bool IsWritten { get; set; }
         public XSharpParserRuleContext Context { get; set; }
         internal MemVarFieldInfo(string name, string alias, bool filewidepublic = false)
@@ -1150,7 +1154,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                     alias = alias.Substring(2);
                 switch (alias.ToUpper())
                 {
-                    case "&":
+                 case "&":
                         _varType = vartype.MacroMemvar;
                         Alias = XSharpSpecialNames.MemVarPrefix;
                         break;
@@ -1175,6 +1179,10 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                                 break;
                             case XSharpSpecialNames.MemVarPrefix:
                                 _varType = vartype.Memvar;
+                                break;
+                            case XSharpSpecialNames.LocalPrefix:
+                                _varType = vartype.Local;
+                                Alias = null;
                                 break;
                             case XSharpSpecialNames.FieldPrefix:
                             default:

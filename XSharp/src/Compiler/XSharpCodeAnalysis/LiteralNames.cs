@@ -63,6 +63,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         internal const string Binary = "global::XSharp.__Binary";
         internal const string Date = "global::XSharp.__Date";
         internal const string Array = "global::XSharp.__Array";
+        internal const string FoxArray = "global::XSharp.__FoxArray";
         internal const string Symbol = "global::XSharp.__Symbol";
         internal const string Psz = "global::XSharp.__Psz";
         internal const string Codeblock = "global::XSharp.Codeblock";
@@ -144,6 +145,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         internal const string PrivatesLevel = "Xs$PrivatesLevel";
         internal const string MemVarPrefix = "Xs$MemVar";
         internal const string FieldPrefix = "Xs$Field";
+        internal const string LocalPrefix = "Xs$Local";
         internal const string ClipperParamPrefix = "Xs$Par";
         internal const string ParenExprSuffix = "$ParenExpr$";
 
@@ -203,6 +205,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         internal const string RunInitProcs = "RunInitProcs";
         internal const string VarGet = "__VarGet";
         internal const string VarPut = "__VarPut";
+        internal const string MemVarGetSafe = "__MemVarGetSafe";
         internal const string MemVarGet = "__MemVarGet";
         internal const string MemVarPut = "__MemVarPut";
         internal const string MemVarRelease = "__MemVarRelease";
@@ -237,6 +240,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         internal const string LocalsUpdated = "__LocalsUpdated";
         internal const string LocalsClear = "__LocalsClear";
         internal const string FoxRedim = "__FoxRedim";
+        internal const string FoxFillArray = "__FoxFillArray";
     }
     internal static class VulcanQualifiedFunctionNames
     {
@@ -283,6 +287,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         internal const string FieldSet = GlobalRT + ReservedNames.FieldSet;
         internal const string FieldSetWa = GlobalRT + ReservedNames.FieldSetWa;
         internal const string AreaEval = GlobalRT + ReservedNames.AreaEval;
+        internal const string MemVarGetSafe = GlobalRT + ReservedNames.MemVarGetSafe;
         internal const string MemVarGet = GlobalRT + ReservedNames.MemVarGet;
         internal const string MemVarPut = GlobalRT + ReservedNames.MemVarPut;
         internal const string MemVarInit = GlobalRT + ReservedNames.MemVarInit;

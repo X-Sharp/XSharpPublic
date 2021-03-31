@@ -23,6 +23,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
     
     internal class XSharpTreeTransformationFox : XSharpTreeTransformationRT
     {
+        protected readonly TypeSyntax _foxarrayType;
+
         protected override XSharpTreeTransformationCore CreateWalker(XSharpParser parser)
         {
             return new XSharpTreeTransformationFox(parser, _options, _pool, _syntaxFactory, _fileName);
@@ -32,6 +34,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     ContextAwareSyntax syntaxFactory, string fileName) :
                     base(parser, options, pool, syntaxFactory, fileName)
         {
+            _foxarrayType = GenerateQualifiedName(XSharpQualifiedTypeNames.Array);
+
         }
 
         public override void EnterFoxsource([NotNull] XP.FoxsourceContext context)
@@ -119,6 +123,70 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             context.Put(stmt);
         }
 
+        private void AddLocalName(string name, XSharpParserRuleContext context, bool local)
+        {
+            var fieldInfo = findVar(name);
+            var alias = local ? XSharpSpecialNames.LocalPrefix : XSharpSpecialNames.MemVarPrefix;
+            if (fieldInfo == null)
+            {
+                addFieldOrMemvar(name, alias, context, false);
+            }
+        }
+
+        public override void EnterLocalvar([NotNull] XP.LocalvarContext context)
+        {
+            base.EnterLocalvar(context);
+            var name = context.Id.GetText();
+            AddLocalName(name, context, true);
+        }
+
+        public override void EnterImpliedvar([NotNull] XP.ImpliedvarContext context)
+        {
+            base.EnterImpliedvar(context);
+            var name = context.Id.GetText();
+            AddLocalName(name, context, true);
+        }
+
+        public override void EnterDimensionVar([NotNull] XP.DimensionVarContext context)
+        {
+            base.EnterDimensionVar(context);
+            var name = context.Id.GetText();
+            AddLocalName(name, context, false);
+        }
+
+        protected override ExpressionSyntax HandleFoxArrayAssign(XSharpParserRuleContext context, XSharpParserRuleContext Left, XSharpParserRuleContext Right)
+        {
+            if (Left is XP.PrimaryExpressionContext pec && pec.Expr is XP.NameExpressionContext nec)
+            {
+                var name = nec.GetText();
+                var field = findVar(name);
+                if (field != null && field.IsFoxArray)
+                {
+                    var arg1 = MakeArgument(Left.Get<ExpressionSyntax>());
+                    var arg2 = MakeArgument(Right.Get<ExpressionSyntax>());
+                    var args = MakeArgumentList(arg1, arg2);
+                    var expr = GenerateMethodCall(ReservedNames.FoxFillArray, args);
+                    return expr;
+                }
+            }
+            return null;
+        }
+        public override void ExitAssignmentExpression([NotNull] XP.AssignmentExpressionContext context)
+        {
+            // Check for assignment to FoxArray and change that to a call to __FoxFillArray()
+            if (context.Op.Type == XSharpLexer.ASSIGN_OP)
+            {
+                var expr = HandleFoxArrayAssign(context, context.Left, context.Right);
+                if (expr != null)
+                {
+                    context.Put(expr);
+                    return;
+                }
+            }
+            base.ExitAssignmentExpression(context);
+            return;
+        }
+
         public override void ExitFoxDimensionDecl([NotNull] XP.FoxDimensionDeclContext context)
         {
             if (!_options.HasOption(CompilerOption.MemVars, context, PragmaOptions))
@@ -130,14 +198,28 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             foreach (var dimvar in context._DimVars)
             {
                 var name = dimvar.Id.GetText();
+                MemVarFieldInfo fieldInfo = findVar(name);
                 if (context.T.Type == XP.LOCAL)
                 {
-                    var decl = GenerateLocalDecl(name, _arrayType, GenerateLiteralNull());
+                    var decl = GenerateLocalDecl(name, _foxarrayType, GenerateLiteralNull());
                     decl.XNode = context;
                     stmts.Add(decl);
                 }
+                fieldInfo.IsFoxArray = true;
                 ArgumentListSyntax args;
-                var arg1 = MakeArgument(GenerateLiteral(name));
+                ArgumentSyntax arg1;
+                ExpressionSyntax mcall;
+                if (fieldInfo.IsLocal)
+                {
+                    arg1 = MakeArgument(GenerateSimpleName(name));
+                }
+                else
+                {
+                    arg1 = MakeArgument(GenerateLiteral(name));
+                    args = MakeArgumentList(arg1);
+                    mcall = GenerateMethodCall(XSharpQualifiedFunctionNames.MemVarGetSafe, args, true);
+                    arg1 = MakeArgument(mcall);
+                }
                 var arg2 = MakeArgument(dimvar._Dims[0].Get<ExpressionSyntax>());
                 if (dimvar._Dims.Count == 2)
                 {
@@ -148,11 +230,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 {
                     args = MakeArgumentList(arg1, arg2);
                 }
-                var mcall = GenerateMethodCall(XSharpQualifiedFunctionNames.FoxRedim, args);
+                mcall = GenerateMethodCall(XSharpQualifiedFunctionNames.FoxRedim, args);
                 mcall.XNode = context;
-                MemVarFieldInfo fieldInfo = findMemVar(name);
                 ExpressionSyntax lhs;
-                if (fieldInfo != null)
+                if (fieldInfo != null && ! fieldInfo.IsLocal)
                 {
                     lhs = MakeMemVarField(fieldInfo);
                 }
@@ -243,7 +324,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             var id = context.Name.Get<ExpressionSyntax>();
             var assign = MakeSimpleAssignment(id, context.Expr.Get<ExpressionSyntax>());
             context.Put(assign);
-
         }
 
         public override void ExitFoxaddobject([NotNull] XP.FoxaddobjectContext context)

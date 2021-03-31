@@ -44,7 +44,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         private ArrayTypeSyntax arrayOfUsual = null;
         private ArrayTypeSyntax arrayOfString = null;
-        private Dictionary<string, MemVarFieldInfo> _memvars = null;
+        private Dictionary<string, MemVarFieldInfo> _filewideMemvars = null;
 
         private Dictionary<string, FieldDeclarationSyntax> _literalSymbols;
         private Dictionary<string, Tuple<string, FieldDeclarationSyntax>> _literalPSZs;
@@ -108,7 +108,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             if (_options.SupportsMemvars)
             {
-                _memvars = new Dictionary<string, MemVarFieldInfo>(XSharpString.Comparer);
+                _filewideMemvars = new Dictionary<string, MemVarFieldInfo>(XSharpString.Comparer);
             }
 
             _literalSymbols = new Dictionary<string, FieldDeclarationSyntax>();
@@ -718,6 +718,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         #endregion
 
         #region Expression Statement
+
+        protected virtual ExpressionSyntax HandleFoxArrayAssign(XSharpParserRuleContext context, XSharpParserRuleContext Left, XSharpParserRuleContext Right)
+        {
+            return null;
+        }
+
         protected override StatementSyntax HandleExpressionStmt(IList<XP.ExpressionContext> expressions)
         {
             var statements = _pool.Allocate<StatementSyntax>();
@@ -791,8 +797,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                             }
                             else
                             {
-                                expr = MakeSimpleAssignment(bin.Left, bin.Right);
-                                RegisterParamAssign(bin.Left.XNode.GetText());
+                                var binContext = (XP.BinaryExpressionContext)exprCtx;
+                                expr = HandleFoxArrayAssign(binContext, binContext.Left, binContext.Right);
+                                if (expr == null)
+                                {
+                                    expr = MakeSimpleAssignment(bin.Left, bin.Right);
+                                    RegisterParamAssign(bin.Left.XNode.GetText());
+                                }
                             }
                         }
                         if (_options.Dialect != XSharpDialect.FoxPro)
@@ -1019,7 +1030,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             context.Put(qtype);
         }
 
-        private void addFieldOrMemvar(string name, string prefix, XSharpParserRuleContext context, bool isParameter)
+        protected void addFieldOrMemvar(string name, string prefix, XSharpParserRuleContext context, bool isParameter)
         {
             if (CurrentEntity.Data.GetField(name) != null)
             {
@@ -1110,7 +1121,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                             var name = memvar.Id.GetText();
                             var mv = new MemVarFieldInfo(memvar.Id.GetText(), "M", true);
                             mv.Context = memvar;
-                            _memvars.Add(mv.Name, mv);
+                            _filewideMemvars.Add(mv.Name, mv);
                             GlobalEntities.FileWidePublics.Add(mv);
                         }
                         // Code generation for initialization is done in CreateInitFunction()
@@ -1124,7 +1135,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     {
                         var mv = new MemVarFieldInfo(memvar.Id.GetText(), "M", true);
                         mv.Context = memvar;
-                        _memvars.Add(mv.Name, mv);
+                        _filewideMemvars.Add(mv.Name, mv);
                     }
                 }
             }
@@ -1136,13 +1147,15 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             return;
         }
 
-        protected MemVarFieldInfo findMemVar(string name)
+
+        protected MemVarFieldInfo findVar(string name)
         {
 
             MemVarFieldInfo memvar = null;
+            // First look in the FileWide Memvars
             if (_options.SupportsMemvars)
             {
-                _memvars.TryGetValue(name, out memvar);
+                _filewideMemvars.TryGetValue(name, out memvar);
             }
             // the next is also needed when memvars are not supported, since name could be a field
             if (memvar == null && CurrentEntity != null)
@@ -1150,6 +1163,14 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 memvar = CurrentEntity.Data.GetField(name);
             }
             return memvar;
+        }
+        protected MemVarFieldInfo findMemVar(string name)
+        {
+
+            MemVarFieldInfo memvar = findVar(name);
+            if (memvar != null && !memvar.IsLocal)
+                return memvar;
+            return null;
         }
 
         public override void ExitXbasedeclStmt([NotNull] XP.XbasedeclStmtContext context)

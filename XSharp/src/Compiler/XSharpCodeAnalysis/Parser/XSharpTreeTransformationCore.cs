@@ -5948,7 +5948,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             vardecl.XVoIsDim = isDim;
             vardecl.XNode = context;
             var name = context.Id.GetText();
-            if (CurrentEntity?.Data.GetField(name) != null)
+            var memvar = CurrentEntity?.Data.GetField(name);
+            if (memvar != null && !memvar.IsLocal)
             {
                 vardecl = vardecl.WithAdditionalDiagnostics( new SyntaxDiagnosticInfo(ErrorCode.ERR_MemvarFieldWithSameName, name));
             }
@@ -6010,7 +6011,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             context.SetSequencePoint();
             var variables = _pool.AllocateSeparated<VariableDeclaratorSyntax>();
             var name = context.Id.GetText();
-            if (CurrentEntity?.Data.GetField(name) != null)
+            var field = CurrentEntity?.Data.GetField(name);
+            if (field != null && !field.IsLocal)
             {
                 context.AddError(new ParseErrorData(context, ErrorCode.ERR_MemvarFieldWithSameName, name));
             }

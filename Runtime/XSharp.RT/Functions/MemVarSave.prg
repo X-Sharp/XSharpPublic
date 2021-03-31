@@ -212,7 +212,7 @@ INTERNAL CLASS MemWriter
                     SELF:WriteBytes(W2Bin((WORD) wArrayEl))
                 ENDIF
                 
-            CASE OBJECT
+            CASE __UsualType.Object
                 wArrayEl := AScan(aObjectList, uVal)
                 IF wArrayEl =0
                     SELF:WriteByte(__UsualType.Object)
@@ -224,7 +224,7 @@ INTERNAL CLASS MemWriter
                     SELF:WriteBytes(W2Bin((WORD) wArrayEl))
                 ENDIF
                 
-            CASE PTR
+            CASE __UsualType.Ptr
                 SELF:WriteByte(__UsualType.Ptr)
                 WriteName()
                 SELF:WriteBytes(Ptr2Bin(uVal))

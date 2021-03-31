@@ -493,6 +493,8 @@ BEGIN NAMESPACE XSharp
         SWITCH oType:FullName:ToLower()
         CASE "xsharp.__array"
           RETURN __UsualType.Array
+        CASE "xsharp.__binary"
+          RETURN __UsualType.Binary
         CASE "xsharp.__codeblock"
           RETURN __UsualType.Codeblock
         CASE "xsharp.__currency"
@@ -522,6 +524,8 @@ BEGIN NAMESPACE XSharp
       typeName := "XSharp.__Array"
     CASE __UsualType.Byte
       RETURN typeof(System.Byte)
+    CASE __UsualType.Binary
+       typeName := "XSharp.__Binary"
     CASE __UsualType.Char
       RETURN typeof(System.Char)
     CASE __UsualType.Codeblock

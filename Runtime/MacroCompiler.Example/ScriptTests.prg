@@ -295,6 +295,13 @@ FUNCTION ScriptTests AS VOID
         "o := 1",;
         "END LOCK",;
         "RETURN o"}), Args(), 1, typeof(int))
+    TestMacro(sc, String.Join(e"\n",<STRING>{;
+        "LPARAMETERS s",;
+        "var reader := System.IO.StringReader{s}",;
+        "begin using reader",;
+        "VAR item := reader:ReadLine()",;
+        "end using",;
+        "reader:ReadLine()"}),Args("hello"), "Cannot read from a closed TextReader.", typeof(System.ObjectDisposedException))
 
     Compilation.Override(WellKnownMembers.XSharp_RT_Functions___FieldGet, "MyFieldGet")
     Compilation.Override(WellKnownMembers.XSharp_RT_Functions___FieldSet, "MyFieldSet")

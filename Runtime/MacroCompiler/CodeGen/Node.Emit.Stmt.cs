@@ -488,10 +488,12 @@ namespace XSharp.MacroCompiler.Syntax
 
     internal partial class LockStmt : Stmt
     {
+        // Emitted as TRY statement
     }
 
     internal partial class UsingStmt : Stmt
     {
+        // Emitted as TRY statement
     }
     internal partial class FixedStmt : Stmt
     {

@@ -779,7 +779,11 @@ namespace XSharp.MacroCompiler.Syntax
     }
     internal partial class FixedStmt : Stmt
     {
-        // TODO
+        internal override Node Bind(Binder b)
+        {
+            // TODO: support FIXED when pointer support is added
+            throw Error(ErrorCode.NotSupported, Token.type);
+        }
     }
     internal partial class Script : Node
     {

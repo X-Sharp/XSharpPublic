@@ -699,6 +699,15 @@ namespace XSharp.MacroCompiler.Syntax
     {
         internal override Node Bind(Binder b)
         {
+            // TODO: UNSAFE
+            if (Token.type == TokenType.UNSAFE) throw Error(ErrorCode.NotSupported, Token.type);
+
+            // TODO: CHECKED
+            if (Token.type == TokenType.CHECKED) throw Error(ErrorCode.NotSupported, Token.type);
+
+            // TODO: UNCHECKED
+            if (Token.type == TokenType.UNCHECKED) throw Error(ErrorCode.NotSupported, Token.type);
+
             b.OpenScope();
             b.Bind(ref Stmt);
             b.CloseScope();
@@ -739,7 +748,34 @@ namespace XSharp.MacroCompiler.Syntax
 
     internal partial class UsingStmt : Stmt
     {
-        // TODO
+        internal override Node Bind(Binder b)
+        {
+            b.OpenScope();
+            if (Expr != null)
+            {
+                b.Bind(ref Expr);
+                Expr.RequireGetAccess();
+            }
+            else
+                b.Bind(ref Decl);
+            b.Bind(ref Stmt);
+            b.CloseScope();
+
+            var u = Decl != null ? Decl.VarDecls[0].Var : b.AddLocal(Expr.Datatype);
+            var udecl = Decl ?? DeclStmt.Bound(VarDecl.Bound(u, Expr, b.Options.Binding));
+
+            Expr du = AsTypeExpr.Bound(IdExpr.Bound(u), IdExpr.Bound(Compilation.Get(WellKnownTypes.System_IDisposable)));
+            b.Cache(ref du);
+            var cond = BinaryExpr.Bound(du, Expr.Token, LiteralExpr.Bound(Constant.Null), BinaryOperatorKind.NotEqual, b.Options.Binding);
+            var exit = IfStmt.Bound(cond,
+                ExprStmt.Bound(MethodCallExpr.Bound(b, null, Compilation.Get(WellKnownMembers.System_IDisposable_Dispose), du, ArgList.Empty)),
+                null);
+
+            return StmtBlock.Bound(udecl,
+                TryStmt.Bound(b,
+                    Stmt,
+                    exit));
+        }
     }
     internal partial class FixedStmt : Stmt
     {

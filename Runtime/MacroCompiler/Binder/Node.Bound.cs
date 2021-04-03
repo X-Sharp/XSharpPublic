@@ -603,6 +603,11 @@ namespace XSharp.MacroCompiler.Syntax
             Datatype = Type.Symbol as TypeSymbol;
             return null;
         }
+        internal static Expr Bound(Expr expr, TypeExpr type)
+        {
+            return new AsTypeExpr(expr, type, null) { Symbol = type.Symbol, Datatype = type.Symbol as TypeSymbol };
+        }
+        internal override void RequireGetAccess() { }
     }
     internal partial class MethodCallExpr : Expr
     {

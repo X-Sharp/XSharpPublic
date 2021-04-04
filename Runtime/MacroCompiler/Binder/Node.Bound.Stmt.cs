@@ -99,6 +99,10 @@ namespace XSharp.MacroCompiler.Syntax
                 }
             }
 
+            // TODO: Handle STATIC
+            if (Token.type == TokenType.STATIC)
+                throw Error(ErrorCode.NotSupported, "STATIC");
+
             for (int i = 0; i < VarDecls.Length; i++)
             {
                 b.Bind(ref VarDecls[i]);
@@ -115,20 +119,36 @@ namespace XSharp.MacroCompiler.Syntax
         internal LocalSymbol Var => Symbol as LocalSymbol;
         internal override Node Bind(Binder b)
         {
-            // TODO: Handle array sub
-            // TODO: Handle CONST
-            // TODO: Handle DIM
+            // TODO: Handle DIM, array sub
+            if (!IsDim && ArraySub != null)
+                throw Error(ErrorCode.Expected, "DIM");
+            if (IsDim && ArraySub == null)
+                throw Error(ErrorCode.Expected, "array specifier");
+            bool isDim = IsDim && ArraySub != null;
+            if (ArraySub != null)
+            {
+                for (int i = 0; i < ArraySub.Length; i++)
+                {
+                    b.Bind(ref ArraySub[i]);
+                }
+            }
+
             // TODO: Handle IS
+            if (IsIsType)
+                throw Type.Error(ErrorCode.NotSupported, "IS");
+
+            TypeSymbol t = b.ObjectType;
             if (Type != null)
             {
                 b.Bind(ref Type, BindAffinity.Type);
                 Type.RequireType();
-                Symbol = b.AddLocal(Name, Type.Symbol as TypeSymbol) ?? throw Error(ErrorCode.LocalSameName, Name);
+                t = Type.Symbol as TypeSymbol;
             }
-            else
+            if (isDim)
             {
-                Symbol = b.AddLocal(Name, b.ObjectType);
+                t = Binder.ArrayOf(t,ArraySub.Length);
             }
+            Symbol = b.AddLocal(Name, t) ?? throw Error(ErrorCode.LocalSameName, Name);
             if (Initializer != null)
             {
                 b.Bind(ref Initializer);
@@ -143,7 +163,13 @@ namespace XSharp.MacroCompiler.Syntax
                 Initializer = InitExpr.Bound(IdExpr.Bound(Var), Initializer, b.Options.Binding);
             }
             else if (IsConst)
+            {
                 throw Error(ErrorCode.ConstWithoutInitializer);
+            }
+            else if (isDim)
+            {
+                Initializer = InitExpr.Bound(IdExpr.Bound(Var), CtorCallExpr.Bound(b, IdExpr.Bound(t), ArgList.Bound(ArraySub)), b.Options.Binding);
+            }
             return null;
         }
         internal static VarDecl Bound(LocalSymbol loc, Expr initializer, BindOptions opt)
@@ -171,7 +197,6 @@ namespace XSharp.MacroCompiler.Syntax
     {
         internal override Node Bind(Binder b)
         {
-            // TODO: Handle CONST
             b.Bind(ref Initializer);
             Initializer.RequireGetAccess();
             if (IsConst && Initializer is LiteralExpr c)

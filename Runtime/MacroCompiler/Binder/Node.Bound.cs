@@ -735,7 +735,7 @@ namespace XSharp.MacroCompiler.Syntax
             {
                 b.ConvertArrayBase(Args);
             }
-            if (Expr.Datatype.IsArray && Expr.Datatype.ArrayRank == 1 )
+            if (Expr.Datatype.IsArray && Expr.Datatype.ArrayRank == 1)
             {
                 if (Args.Args.Count != 1)
                     throw Error(ErrorCode.WrongNumberIfIndices);

@@ -291,6 +291,14 @@ namespace XSharp.MacroCompiler
             return FindType(nt);
         }
 
+        internal static TypeSymbol ArrayOf(TypeSymbol t, int rank)
+        {
+            if (t == null)
+                return null;
+            var nt = rank == 1 ? t.Type.MakeArrayType() : t.Type.MakeArrayType(rank);
+            return FindType(nt);
+        }
+
         internal static TypeSymbol PointerOf(TypeSymbol t)
         {
             if (t == null)

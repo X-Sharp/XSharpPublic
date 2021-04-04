@@ -307,7 +307,7 @@ namespace XSharp.MacroCompiler
             var vl = new List<VarDecl>();
             do
             {
-                if (ParseVarDecl(implied: implied) is VarDecl v)
+                if (ParseVarDecl(implied) is VarDecl v)
                     vl.Add(v);
             } while (Expect(TokenType.COMMA));
             Require(vl.Count > 0, ErrorCode.Expected, "variable declaration");
@@ -315,7 +315,7 @@ namespace XSharp.MacroCompiler
             Require(TokenType.EOS);
             return new DeclStmt(t, vl.ToArray());
         }
-        internal VarDecl ParseVarDecl(bool implied = false)
+        internal VarDecl ParseVarDecl(bool implied)
         {
             // Parse modifiers
             bool isConst = Expect(TokenType.CONST);
@@ -790,7 +790,7 @@ namespace XSharp.MacroCompiler
             return kind == TokenType.SCOPE ? (Stmt)s : new ScopeStmt(t, s);
         }
 
-        internal DeclStmt ParseVarDecl()
+        internal DeclStmt ParseInnerDeclStmt()
         {
             Token t = null;
             if (ExpectAndGet(TokenType.LOCAL, out t) && La() != TokenType.IMPLIED && La() != TokenType.VAR)
@@ -828,7 +828,7 @@ namespace XSharp.MacroCompiler
         {
             Require(TokenType.BEGIN);
             var t = RequireAndGet(TokenType.USING);
-            var d = ParseVarDecl();
+            var d = ParseInnerDeclStmt();
             var e = d == null ? RequireExpression() : null;
             Require(TokenType.EOS);
             var s = ParseStatementBlock();
@@ -841,7 +841,7 @@ namespace XSharp.MacroCompiler
         {
             Require(TokenType.BEGIN);
             var t = RequireAndGet(TokenType.FIXED);
-            var d = ParseVarDecl();
+            var d = ParseInnerDeclStmt();
             Require(TokenType.EOS);
             var s = ParseStatementBlock();
             Require(TokenType.END);

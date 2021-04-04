@@ -109,9 +109,12 @@ namespace XSharp.MacroCompiler.Syntax
     {
         internal override void Emit(ILGenerator ilg)
         {
-            Var.Declare(ilg);
-            if (Initializer != null)
-                Initializer.Emit(ilg, false);
+            if (Symbol is LocalSymbol loc)
+            {
+                loc.Declare(ilg);
+                if (Initializer != null)
+                    Initializer.Emit(ilg, false);
+            }
         }
     }
     internal partial class MemVarDecl : VarDecl

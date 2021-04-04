@@ -302,6 +302,22 @@ FUNCTION ScriptTests AS VOID
         "VAR item := reader:ReadLine()",;
         "end using",;
         "reader:ReadLine()"}),Args("hello"), "Cannot read from a closed TextReader.", typeof(System.ObjectDisposedException))
+    TestMacro(sc, String.Join(e"\n",<STRING>{;
+        "PARAMETERS a, b, c",;
+        "VAR CONST x := a+b+c",;
+        "RETURN x"}), Args(1,2,3), null, null, ErrorCode.ValueNotConst)
+    TestMacro(sc, String.Join(e"\n",<STRING>{;
+        "VAR CONST x := 1+2+3",;
+        "RETURN x"}), Args(), 6, typeof(int))
+    TestMacro(sc, String.Join(e"\n",<STRING>{;
+        "VAR CONST x := 1+2+3",;
+        "x := 5"}), Args(), null, null, ErrorCode.NoAccessMode)
+    TestMacro(sc, String.Join(e"\n",<STRING>{;
+        "LOCAL CONST x := 3+2+1 as int",;
+        "RETURN x"}), Args(), 6, typeof(int))
+    TestMacro(sc, String.Join(e"\n",<STRING>{;
+        "LOCAL CONST x as int",;
+        "RETURN x"}), Args(), null, null, ErrorCode.ConstWithoutInitializer)
 
     Compilation.Override(WellKnownMembers.XSharp_RT_Functions___FieldGet, "MyFieldGet")
     Compilation.Override(WellKnownMembers.XSharp_RT_Functions___FieldSet, "MyFieldSet")

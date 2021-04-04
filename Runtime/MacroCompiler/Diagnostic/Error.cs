@@ -61,6 +61,8 @@ namespace XSharp.MacroCompiler
         TypeMustDeriveFrom = 241,
         ReturnNotAllowed = 242,
         RequireReferenceType = 243,
+        ValueNotConst = 244,
+        ConstWithoutInitializer = 245,
         Internal = 999,
     }
 
@@ -120,6 +122,8 @@ namespace XSharp.MacroCompiler
             { ErrorCode.TypeMustDeriveFrom, "Type must derive from {0}" },
             { ErrorCode.ReturnNotAllowed, "Return not allowed from within a FINALLY block" },
             { ErrorCode.RequireReferenceType, "Reference type required" },
+            { ErrorCode.ValueNotConst, "Value must be a constant" },
+            { ErrorCode.ConstWithoutInitializer, "CONST variable must have an initializer" },
             { ErrorCode.Internal, "Internal error" },
         };
 

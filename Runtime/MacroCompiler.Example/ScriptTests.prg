@@ -324,6 +324,14 @@ FUNCTION ScriptTests AS VOID
     TestMacro(sc, String.Join(e"\n",<STRING>{;
         "LOCAL DIM a[10,10] as INT",;
         "RETURN a[1,1]"}), Args(), 0, typeof(int))
+    TestMacro(sc, String.Join(e"\n",<STRING>{;
+        "local a[10]",;
+        "a[10] := 123",;
+        "RETURN a[1]"}),Args(), null, null)
+    TestMacro(sc, String.Join(e"\n",<STRING>{;
+        "local a[10,10]",;
+        "a[10,10] := 123",;
+        "RETURN a[1,1]"}),Args(), null, null)
 
     Compilation.Override(WellKnownMembers.XSharp_RT_Functions___FieldGet, "MyFieldGet")
     Compilation.Override(WellKnownMembers.XSharp_RT_Functions___FieldSet, "MyFieldSet")

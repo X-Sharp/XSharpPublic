@@ -133,9 +133,17 @@ namespace XSharp.MacroCompiler.Syntax
             {
                 b.Bind(ref Initializer);
                 Initializer.RequireGetAccess();
+                if (IsConst)
+                {
+                    if (!Initializer.IsConstant)
+                        throw Error(ErrorCode.ValueNotConst);
+                    Var.SetConst();
+                }
                 b.Convert(ref Initializer, Var.Type);
-                Initializer = AssignExpr.Bound(IdExpr.Bound(Var), Initializer, b.Options.Binding);
+                Initializer = InitExpr.Bound(IdExpr.Bound(Var), Initializer, b.Options.Binding);
             }
+            else if (IsConst)
+                throw Error(ErrorCode.ConstWithoutInitializer);
             return null;
         }
         internal static VarDecl Bound(LocalSymbol loc, Expr initializer, BindOptions opt)
@@ -166,8 +174,21 @@ namespace XSharp.MacroCompiler.Syntax
             // TODO: Handle CONST
             b.Bind(ref Initializer);
             Initializer.RequireGetAccess();
-            Symbol = b.AddLocal(Name, Initializer.Datatype) ?? throw Error(ErrorCode.LocalSameName, Name);
-            Initializer = AssignExpr.Bound(IdExpr.Bound(Var), Initializer, b.Options.Binding);
+            if (IsConst && Initializer is LiteralExpr c)
+            {
+                Symbol = b.AddConstant(Name, (Constant)c.Symbol) ?? throw Error(ErrorCode.LocalSameName, Name);
+            }
+            else
+            {
+                Symbol = b.AddLocal(Name, Initializer.Datatype) ?? throw Error(ErrorCode.LocalSameName, Name);
+                if (IsConst)
+                {
+                    if (Initializer?.IsConstant != true)
+                        throw Error(ErrorCode.ValueNotConst);
+                    Var.SetConst();
+                }
+                Initializer = InitExpr.Bound(IdExpr.Bound(Var), Initializer, b.Options.Binding);
+            }
             return null;
         }
     }
@@ -578,7 +599,6 @@ namespace XSharp.MacroCompiler.Syntax
         internal override Node Bind(Binder b)
         {
             // TODO: do not allow multiple unfiltered catch blocks of the same type
-            // TODO: allow RETURN from within a catch block (currently does not work)
             b.OpenScope();
             if (Type != null)
             {

@@ -60,6 +60,14 @@ namespace XSharp.MacroCompiler.Syntax
             if (!Symbol.HasSetAccess)
                 throw Binder.AccessModeError(this, Symbol, Symbol.AccessMode.Set);
         }
+        internal virtual void RequireInitAccess()
+        {
+            RequireValue();
+            if (Symbol == null)
+                ThrowError(ErrorCode.NotFound, "Expression", this.ToString());
+            if (!Symbol.HasInitAccess)
+                throw Binder.AccessModeError(this, Symbol, Symbol.AccessMode.Init);
+        }
         internal virtual void RequireGetSetAccess()
         {
             RequireValue();
@@ -292,6 +300,17 @@ namespace XSharp.MacroCompiler.Syntax
             Right.RequireGetAccess();
             Binder.Convert(ref Right, Left.Datatype, options);
             return new AssignExpr(Left, Left.Token, Right) { Symbol = Left.Symbol, Datatype = Left.Datatype };
+        }
+    }
+    internal partial class InitExpr : AssignExpr
+    {
+        InitExpr(Expr l, Token o, Expr r) : base(l, o, r) { }
+        internal static new InitExpr Bound(Expr Left, Expr Right, BindOptions options)
+        {
+            Left.RequireInitAccess();
+            Right.RequireGetAccess();
+            Binder.Convert(ref Right, Left.Datatype, options);
+            return new InitExpr(Left, Left.Token, Right) { Symbol = Left.Symbol, Datatype = Left.Datatype };
         }
     }
     internal partial class AssignOpExpr : AssignExpr

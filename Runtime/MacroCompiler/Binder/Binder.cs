@@ -430,7 +430,11 @@ namespace XSharp.MacroCompiler
             else
                 Args.Add(arg);
             if (!string.IsNullOrEmpty(name))
+            {
+                if (LocalCache.ContainsKey(name))
+                    return null;
                 LocalCache.Add(name, arg);
+            }
             return arg;
         }
 
@@ -439,7 +443,11 @@ namespace XSharp.MacroCompiler
             var variable = new VariableSymbol(name, type);
             Locals.Add(variable);
             if (!string.IsNullOrEmpty(name))
+            {
+                if (LocalCache.ContainsKey(name))
+                    return null;
                 LocalCache.Add(name, variable);
+            }
             return variable;
         }
 
@@ -448,7 +456,11 @@ namespace XSharp.MacroCompiler
             var variable = new MemvarSymbol(name);
             Locals.Add(variable);
             if (!string.IsNullOrEmpty(name))
+            {
+                if (LocalCache.ContainsKey(name))
+                    return null;
                 LocalCache.Add(name, variable);
+            }
             return variable;
         }
         internal FieldAliasSymbol AddFieldAlias(string name, string wa = null)
@@ -456,14 +468,23 @@ namespace XSharp.MacroCompiler
             var variable = new FieldAliasSymbol(name, wa);
             Locals.Add(variable);
             if (!string.IsNullOrEmpty(name))
+            {
+                if (LocalCache.ContainsKey(name))
+                    return null;
                 LocalCache.Add(name, variable);
+            }
             return variable;
         }
 
-        internal void AddConstant(string name, Constant c)
+        internal Constant AddConstant(string name, Constant c)
         {
             if (!string.IsNullOrEmpty(name))
+            {
+                if (LocalCache.ContainsKey(name))
+                    return null;
                 LocalCache.Add(name, c);
+            }
+            return c;
         }
 
         internal int ParamCount

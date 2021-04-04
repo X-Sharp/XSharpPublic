@@ -16,9 +16,11 @@ namespace XSharp.MacroCompiler
             None = 0,
             Get = 1,
             Set = 2,
-            Ref = 3,
-            GetSet = Get | Set,
-            All = Get | Set | Ref,
+            Ref = 4,
+            Init = 8,
+            InitGet = Get | Init,
+            GetSet = Get | Set | Init,
+            All = Get | Set | Ref | Init,
         };
         internal AccessMode access_ = AccessMode.None;
         internal Symbol() { }
@@ -27,6 +29,7 @@ namespace XSharp.MacroCompiler
         internal bool HasGetAccess { get => access_.HasFlag(AccessMode.Get); }
         internal bool HasSetAccess { get => access_.HasFlag(AccessMode.Set); }
         internal bool HasRefAccess { get => access_.HasFlag(AccessMode.Ref); }
+        internal bool HasInitAccess { get => access_.HasFlag(AccessMode.Init); }
         internal static Symbol Join(Symbol s, Symbol t)
         {
             if (t != null)
@@ -222,10 +225,13 @@ namespace XSharp.MacroCompiler
         internal override TypeSymbol Type { get; }
         internal int Index = -1;
         internal bool IsParam { get; set; }
+
+        internal bool IsConst => !HasSetAccess;
         internal LocalSymbol(string name, TypeSymbol type) : base(AccessMode.All) { Name = name; Type = type; }
         internal LocalSymbol(TypeSymbol type, int index) : this(null, type) { Index = index; }
         internal LocalSymbol(TypeSymbol type) : this(null, type) { }
         internal override Symbol Lookup(string name) { return null; }
+        internal void SetConst() { access_ &= ~AccessMode.Set; }
     }
     internal partial class ArgumentSymbol : LocalSymbol
     {

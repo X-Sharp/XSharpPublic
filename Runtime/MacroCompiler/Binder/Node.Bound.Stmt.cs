@@ -119,12 +119,15 @@ namespace XSharp.MacroCompiler.Syntax
         internal LocalSymbol Var => Symbol as LocalSymbol;
         internal override Node Bind(Binder b)
         {
-            // TODO: Handle DIM, array sub
-            if (!IsDim && ArraySub != null)
-                throw Error(ErrorCode.Expected, "DIM");
+            // TODO: Handle IS
+            if (IsIsType)
+                throw Type.Error(ErrorCode.NotSupported, "IS");
+
+            // TODO: Handle DIM, array sub peroperly (according to full compiler)
             if (IsDim && ArraySub == null)
                 throw Error(ErrorCode.Expected, "array specifier");
             bool isDim = IsDim && ArraySub != null;
+            bool isArray = !IsDim && ArraySub != null;
             if (ArraySub != null)
             {
                 for (int i = 0; i < ArraySub.Length; i++)
@@ -132,10 +135,6 @@ namespace XSharp.MacroCompiler.Syntax
                     b.Bind(ref ArraySub[i]);
                 }
             }
-
-            // TODO: Handle IS
-            if (IsIsType)
-                throw Type.Error(ErrorCode.NotSupported, "IS");
 
             TypeSymbol t = b.ObjectType;
             if (Type != null)
@@ -147,6 +146,10 @@ namespace XSharp.MacroCompiler.Syntax
             if (isDim)
             {
                 t = Binder.ArrayOf(t,ArraySub.Length);
+            }
+            else if (isArray && Type == null)
+            {
+                t = Compilation.Get(NativeType.Array);
             }
             Symbol = b.AddLocal(Name, t) ?? throw Error(ErrorCode.LocalSameName, Name);
             if (Initializer != null)
@@ -169,6 +172,10 @@ namespace XSharp.MacroCompiler.Syntax
             else if (isDim)
             {
                 Initializer = InitExpr.Bound(IdExpr.Bound(Var), CtorCallExpr.Bound(b, IdExpr.Bound(t), ArgList.Bound(ArraySub)), b.Options.Binding);
+            }
+            else if (isArray)
+            {
+                Initializer = InitExpr.Bound(IdExpr.Bound(Var), MethodCallExpr.Bound(b, null, Compilation.Get(WellKnownMembers.XSharp___Array___ArrayNew), null, ArgList.Bound(ArraySub)), b.Options.Binding);
             }
             return null;
         }

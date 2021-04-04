@@ -189,6 +189,7 @@ namespace XSharp.MacroCompiler.Syntax
         }
         internal static readonly Token None = new Token(TokenType.UNRECOGNIZED, TokenType.UNRECOGNIZED, -1, 0, null, Channel.DEFOUTCHANNEL);
         public override string ToString() => ( !string.IsNullOrEmpty(value) ? value : TokenAttr.TokenText(type) ) ;
+        internal CompilationError Error(ErrorCode e, params object[] args) => Compilation.Error(this, e, args);
     }
 
     internal class TokenAttr

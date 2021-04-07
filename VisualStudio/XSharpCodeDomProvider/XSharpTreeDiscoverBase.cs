@@ -18,6 +18,8 @@ using Microsoft.VisualStudio.Shell.Design.Serialization.CodeDom;
 using System.Diagnostics;
 
 using XSharpModel;
+using System.Globalization;
+
 namespace XSharp.CodeDom
 {
     internal class XSharpBaseDiscover : XSharpBaseListener
@@ -1266,6 +1268,7 @@ namespace XSharp.CodeDom
             {
                 bool isUnsigned = value.EndsWith("u", StringComparison.OrdinalIgnoreCase);
                 bool isSigned = value.EndsWith("l", StringComparison.OrdinalIgnoreCase);
+                // Note: we do not return a primitive with unsigned numbers because VS does not like that !
                 if (isSigned || isUnsigned)
                 {
                     value = value.Substring(0, value.Length - 1);
@@ -1277,22 +1280,21 @@ namespace XSharp.CodeDom
                 {
                     if (len > 64)
                     {
-                        ret = Double.NaN;
+                       ret = double.NaN;
                     }
                     else
                     {
                         // Don't forget to remove the prefix !!!
                         value = value.Substring(2);
                         // BIN are always unsigned (??)
-                        UInt64 bin64;
+                        long bin64;
                         try
                         {
-                            bin64 = Convert.ToUInt64(value, 2);
+                            bin64 = Convert.ToInt64(value, 2);
                             // Maybe 32 bits is enough ?
-                            if (bin64 <= UInt32.MaxValue)
+                            if (bin64 <= Int32.MaxValue && bin64 >= Int32.MinValue)
                             {
-                                UInt32 bin32 = Convert.ToUInt32(bin64);
-                                ret = bin32;
+                                ret = Convert.ToInt32(bin64);
                             }
                             else
                             {
@@ -1301,7 +1303,7 @@ namespace XSharp.CodeDom
                         }
                         catch
                         {
-                            ret = Double.NaN;
+                            ret = double.NaN;
                         }
                     }
                 }
@@ -1309,22 +1311,22 @@ namespace XSharp.CodeDom
                 {
                     if (len > 16)
                     {
-                        ret = Double.NaN;
+                        ret = Convert.ToDouble(value);
                     }
                     else
                     {
                         // Don't forget to remove the prefix !!!
                         value = value.Substring(2);
                         // HEX are always unsigned (??)
-                        UInt64 hex64;
+                        // the designer wants signed integers only
+                        Int64 hex64;
                         try
                         {
-                            hex64 = Convert.ToUInt64(value, 16);
+                            hex64 = Convert.ToInt64(value, 16);
                             // Maybe 32 bits is enough ?
-                            if (hex64 <= UInt32.MaxValue)
+                            if (hex64 <= Int32.MaxValue && hex64 >= Int32.MinValue)
                             {
-                                UInt32 hex32 = Convert.ToUInt32(hex64);
-                                ret = hex32;
+                                ret = Convert.ToInt32(hex64);
                             }
                             else
                             {
@@ -1333,49 +1335,30 @@ namespace XSharp.CodeDom
                         }
                         catch
                         {
-                            ret = Double.NaN;
+                            ret = double.NaN;
                         }
                     }
                 }
                 else
                 {
                     // context.INT_CONST() != null
-                    if (len > 64)
+                    if (len > 19)
                     {
-                        ret = Double.NaN;
-                    }
-                    else if (isUnsigned)
-                    {
-                        UInt64 myUInt64;
-                        try
-                        {
-                            myUInt64 = Convert.ToUInt64(value, 10);
-                            // Maybe 32 bits is enough ?
-                            if (myUInt64 <= UInt32.MaxValue)
-                            {
-                                UInt32 myUInt32 = Convert.ToUInt32(myUInt64);
-                                ret = myUInt32;
-                            }
-                            else
-                            {
-                                ret = myUInt64;
-                            }
-                        }
-                        catch
-                        {
-                            ret = Double.NaN;
-                        }
+                        if (Double.TryParse(value, NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out var d))
+                            ret = d;
+                        else
+                            ret = double.NaN;
                     }
                     else
                     {
-                        Int64 myInt64;
+                        long myInt64;
                         try
                         {
                             myInt64 = Convert.ToInt64(value, 10);
                             // Maybe 32 bits is enough ?
-                            if ((myInt64 >= UInt32.MinValue) && (myInt64 <= UInt32.MaxValue))
+                            if ((myInt64 >= int.MinValue) && (myInt64 <= int.MaxValue))
                             {
-                                Int32 myInt32 = Convert.ToInt32(myInt64);
+                                int myInt32 = Convert.ToInt32(myInt64);
                                 ret = myInt32;
                             }
                             else
@@ -1385,14 +1368,16 @@ namespace XSharp.CodeDom
                         }
                         catch
                         {
-                            ret = Double.NaN;
+                            if (Double.TryParse(value, NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out var d))
+                                ret = d;
+                            else
+                                ret = double.NaN;
                         }
                     }
                 }
             }
             else
             {
-                double d;
                 if (value.EndsWith("m", StringComparison.OrdinalIgnoreCase) ||      // money
                     value.EndsWith("s", StringComparison.OrdinalIgnoreCase) ||      // single
                     value.EndsWith("d", StringComparison.OrdinalIgnoreCase))        // double
@@ -1401,13 +1386,15 @@ namespace XSharp.CodeDom
                 }
                 try
                 {
-                    d = double.Parse(value, System.Globalization.CultureInfo.InvariantCulture);
+                    ret = double.Parse(value, System.Globalization.CultureInfo.InvariantCulture);
                 }
                 catch (Exception)
                 {
-                    d = Double.NaN;
+                    if (Double.TryParse(value, out var d))
+                        ret = d;
+                    else
+                        ret = double.NaN;
                 }
-                ret = d;
             }
             return ret;
         }

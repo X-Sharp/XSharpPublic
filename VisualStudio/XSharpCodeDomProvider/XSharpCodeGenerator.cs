@@ -1344,22 +1344,30 @@ namespace XSharp.CodeDom
         }
         protected override void GeneratePrimitiveExpression(CodePrimitiveExpression e)
         {
-            if (e.Value is char )
+            if (e.Value is char)
             {
                 var c = (char)e.Value;
-                if ((int) c < 127)
+                if ((int)c < 127)
                 {
                     base.Output.Write("c'" + c.ToString() + "'");
                 }
                 else
                 {
                     var i = (int)c;
-                    base.Output.Write("c'\\x" + i.ToString("X")+"'");
+                    base.Output.Write("c'\\x" + i.ToString("X") + "'");
                 }
 
             }
             else
             {
+                if (e.Value is uint || e.Value is ulong)
+                {
+                    var tmp = Convert.ToDouble(e.Value);
+                    if (tmp < long.MaxValue)
+                        e.Value = Convert.ToInt64(e.Value);
+                    else
+                        e.Value = tmp;
+                }
                 base.GeneratePrimitiveExpression(e);
             }
         }

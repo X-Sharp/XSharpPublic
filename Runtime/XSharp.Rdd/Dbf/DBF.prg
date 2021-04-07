@@ -1401,7 +1401,8 @@ INTERNAL METHOD _dbfError(ex AS Exception, iSubCode AS DWORD, iGenCode AS DWORD,
 		oError := RddError{ex,iGenCode, iSubCode}
 	ELSE
 		oError := RddError{iGenCode, iSubCode}
-	ENDIF
+    ENDIF
+    oError:CanDefault := TRUE
 	oError:SubSystem := SELF:Driver
 	oError:Severity := iSeverity
 	oError:FuncSym  := IIF(strFunction == NULL, "", strFunction) // code in the SDK expects all string properties to be non-NULL

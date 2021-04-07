@@ -1,3 +1,5 @@
+GLOBAL DefaultFormDialogClassName := #__FormDialogWindow AS SYMBOL
+
 #pragma options ("enforceself", on)
 CLASS __FormFrame INHERIT ChildAppWindow
 	PROTECT lAutoLayout AS LOGIC
@@ -734,7 +736,7 @@ CONSTRUCTOR(oOwner, oResID, lScroll, lBorder, lIsSub)
 	//PP-030505
 	symFDialog := oOwner:symFormDialog
 	IF symFDialog == NULL_SYMBOL
-		symFDialog := #__FormDialogWindow
+		symFDialog := DefaultFormDialogClassName
 	ENDIF
 	uResIdId:=oResID:ID
 	IF IsLong(uResIdId) .AND. (uResIdId == -1)

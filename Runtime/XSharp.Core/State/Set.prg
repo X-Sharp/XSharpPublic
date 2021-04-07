@@ -229,6 +229,15 @@ FUNCTION SetErrorLog() AS LOGIC
 FUNCTION SetErrorLog(lNewSetting AS LOGIC) AS LOGIC
 	SETSTATE LOGIC Set.Errorlog lNewSetting
 
+
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/seterrorlog/*" />
+FUNCTION SetErrorLogFile() AS STRING
+	GETSTATE STRING Set.ErrorLogFile 
+
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/seterrorlog/*" />
+FUNCTION SetErrorLogFile(cNewSetting AS STRING) AS STRING
+	SETSTATE STRING Set.ErrorLogFile cNewSetting
+
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/setexact/*" />
 FUNCTION SetExact() AS LOGIC
 	RETURN RuntimeState.Exact

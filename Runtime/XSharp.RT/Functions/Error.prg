@@ -5,15 +5,15 @@
 //
 
 PROCEDURE ErrorSys _INIT1
-   RuntimeState.GetInstance():Settings[Set.ErrorBlock] :=  {|oError| DefError(oError)}
-   SetErrorLog(TRUE)
+   ErrorBlock( {|oError| DefError(oError)} )
+   SetErrorLog( TRUE )
+   SetErrorLogFile( "VOERROR.LOG" )
    RETURN
 
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/break/*" />
 FUNCTION _Break(uValue AS USUAL) AS USUAL
 	BREAK uValue
-
 
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/errorblock/*" />
@@ -45,7 +45,7 @@ FUNCTION VO_Sprintf( format AS USUAL,  args PARAMS OBJECT[] ) AS STRING
 
 
 
-FUNCTION DefError(oErr AS OBJECT) AS OBJECT PASCAL
+INTERNAL FUNCTION DefError(oErr AS OBJECT) AS OBJECT PASCAL
 
 	LOCAL dwChoice			AS INT
 	LOCAL cMessage			AS STRING
@@ -132,20 +132,20 @@ FUNCTION DefError(oErr AS OBJECT) AS OBJECT PASCAL
 
 	RETURN NIL
 
-STATIC DEFINE FILE_ERRORLOG := "VOERROR.LOG"
-STATIC FUNCTION __OpenErrorLog() AS IntPtr PASCAL
+
+INTERNAL FUNCTION __OpenErrorLog() AS IntPtr PASCAL
 
 	LOCAL cFile                     AS STRING
 	LOCAL cBuffer                   AS STRING
 	LOCAL hfRet                     AS IntPtr
 
-	cFile := WorkDir() + FILE_ERRORLOG
+	cFile := WorkDir() + SetErrorLogFile()
 
 	hfRet := FOpen2(cFile, FO_WRITE)
 
 	IF hfRet != F_ERROR
 		FSeek3( hfRet, 0, FS_END)
-		FPutS3( hfRet, "", 0)
+		FPutS( hfRet, "", 0)
 	ELSE
 		hfRet := FCreate2(cFile, FC_ARCHIVED)
 
@@ -170,7 +170,7 @@ STATIC FUNCTION __OpenErrorLog() AS IntPtr PASCAL
 
 
 
-STATIC FUNCTION __WriteErrorLog (hf AS IntPtr, cMsg AS STRING, oError AS Error) AS VOID PASCAL
+INTERNAL FUNCTION __WriteErrorLog (hf AS IntPtr, cMsg AS STRING, oError AS Error) AS VOID PASCAL
    LOCAL cExe		AS STRING
    
 	FPutS(hf, "***********************ERROR********************************")
@@ -224,18 +224,18 @@ STATIC FUNCTION __WriteErrorLog (hf AS IntPtr, cMsg AS STRING, oError AS Error) 
 	FPutS(hf, "--------------------" )
 
 	RETURN
-_DLL FUNCTION MessageBoxW(hwnd AS IntPtr, lpText AS STRING, lpCaption AS STRING, uType AS DWORD)	AS INT PASCAL:USER32.MessageBoxW UNICODE
+INTERNAL _DLL FUNCTION MessageBoxW(hwnd AS IntPtr, lpText AS STRING, lpCaption AS STRING, uType AS DWORD)	AS INT PASCAL:USER32.MessageBoxW UNICODE
 
-STATIC DEFINE MB_ABORTRETRYIGNORE    := 0x00000002U
+INTERNAL  DEFINE MB_ABORTRETRYIGNORE    := 0x00000002U
 
-STATIC DEFINE IDOK            := 1
-STATIC DEFINE IDCANCEL        := 2
-STATIC DEFINE IDABORT         := 3
-STATIC DEFINE IDRETRY         := 4
-STATIC DEFINE IDIGNORE        := 5
-STATIC DEFINE IDYES           := 6
-STATIC DEFINE IDNO            := 7
-STATIC DEFINE IDCLOSE         := 8
-STATIC DEFINE IDHELP          :=9
-STATIC DEFINE IDTRYAGAIN      := 10
-STATIC DEFINE IDCONTINUE      := 11
+INTERNAL DEFINE IDOK            := 1
+INTERNAL DEFINE IDCANCEL        := 2
+INTERNAL DEFINE IDABORT         := 3
+INTERNAL DEFINE IDRETRY         := 4
+INTERNAL DEFINE IDIGNORE        := 5
+INTERNAL DEFINE IDYES           := 6
+INTERNAL DEFINE IDNO            := 7
+INTERNAL DEFINE IDCLOSE         := 8
+INTERNAL DEFINE IDHELP          :=9
+INTERNAL DEFINE IDTRYAGAIN      := 10
+INTERNAL DEFINE IDCONTINUE      := 11

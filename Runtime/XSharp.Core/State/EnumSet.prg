@@ -172,7 +172,8 @@ BEGIN NAMESPACE XSharp
         MEMBER FieldDelimiter   := 90
         /// <summary>Determines the current record delimiter for Delim RDDs</summary>
         MEMBER RecordDelimiter  := 91
-
+        /// <summary>Name of the error log file from the default RT error handler. Defaults to VOERROR.LOG</summary>
+        MEMBER ErrorLogFile     := 92
         // 92 - 97 unused
         /// <summary></summary>
         MEMBER Dict        := 98	// LOGIC
@@ -890,6 +891,8 @@ INTERNAL FUNCTION RuntimeStateDefaultValue(nSet AS XSharp.Set) AS OBJECT
         CASE Set.CollationMode
             RETURN CollationMode.Windows
 
+        CASE Set.ErrorLogFile
+            RETURN "ERROR.LOG"
 
 
         CASE Set.DosCodepage

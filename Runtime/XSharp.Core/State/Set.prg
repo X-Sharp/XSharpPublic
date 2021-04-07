@@ -230,11 +230,14 @@ FUNCTION SetErrorLog(lNewSetting AS LOGIC) AS LOGIC
 	SETSTATE LOGIC Set.Errorlog lNewSetting
 
 
-/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/seterrorlog/*" />
+/// <summary>Get the name of the current errorlog file</summary>
+/// <returns>Current name of the error log file.</returns>
 FUNCTION SetErrorLogFile() AS STRING
 	GETSTATE STRING Set.ErrorLogFile 
 
-/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/seterrorlog/*" />
+/// <summary>Set the name of the current errorlog file</summary>
+/// <param name="cNewSetting">New name of error log file </param>
+/// <returns>Previous name of the error log file.</returns>
 FUNCTION SetErrorLogFile(cNewSetting AS STRING) AS STRING
 	SETSTATE STRING Set.ErrorLogFile cNewSetting
 

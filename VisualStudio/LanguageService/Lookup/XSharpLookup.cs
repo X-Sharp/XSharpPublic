@@ -562,9 +562,12 @@ namespace XSharp.LanguageService
                     }
                 }
             }
-
-            // Context Type....
-            if (location.Member.Kind.IsClassMember(location.Dialect))
+            if (location.Member == null)
+            {
+                return null;
+            }
+                // Context Type....
+                if (location.Member.Kind.IsClassMember(location.Dialect))
             {
                 currentType = location.Member.ParentType;
                 symbols.Push(currentType);

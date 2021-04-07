@@ -67,6 +67,8 @@ BEGIN NAMESPACE XSharpModel
         PUBLIC STATIC PROPERTY EditorTabsAsSpaces               AS LOGIC AUTO
         PUBLIC STATIC PROPERTY EditorIndentStyle                AS LONG AUTO
         PUBLIC STATIC PROPERTY EditorIndentFactor               AS LONG AUTO
+        PUBLIC STATIC PROPERTY EditorInsertFinalNewline         AS LOGIC AUTO
+        PUBLIC STATIC PROPERTY EditorTrimTrailingWhiteSpace     AS LOGIC AUTO
         
         PUBLIC STATIC PROPERTY DisplayOutputMessage             AS DisplayOutputMessage AUTO
         PUBLIC STATIC PROPERTY DisplayException                 AS DisplayException AUTO
@@ -85,13 +87,16 @@ BEGIN NAMESPACE XSharpModel
         STATIC CONSTRUCTOR
             DisplayOutputMessage := NoOutput
             DisplayException     := NoException
-        ShowMessageBox       := NoMessageBox
-        
+            ShowMessageBox       := NoMessageBox
+
         STATIC METHOD FormatKeyword(sKeyword AS STRING) AS STRING
+            RETURN FormatKeyword(sKeyword, XSettings.KeywordCase)
+            
+        STATIC METHOD FormatKeyword(sKeyword AS STRING, nKeywordCase AS KeywordCase) AS STRING
             IF sKeyword == NULL
                 RETURN ""
             ENDIF
-            SWITCH KeywordCase
+            SWITCH nKeywordCase
                 CASE KeywordCase.None
                     RETURN sKeyword
                 CASE KeywordCase.Upper
@@ -102,20 +107,26 @@ BEGIN NAMESPACE XSharpModel
                     RETURN IIF(sKeyword:Length > 1 , sKeyword:Substring(0, 1):ToUpper() + sKeyword:Substring(1):ToLower() , sKeyword:ToUpper())
             END SWITCH
         RETURN sKeyword
+         
         STATIC METHOD FormatKeyword(sKeyword AS OBJECT) AS STRING
-        RETURN FormatKeyword(sKeyword:ToString())
+            RETURN FormatKeyword(sKeyword:ToString(), XSettings.KeywordCase)
         
+        STATIC METHOD FormatKeyword(sKeyword AS OBJECT, nKeywordCase AS KeywordCase) AS STRING
+            RETURN FormatKeyword(sKeyword:ToString(), nKeywordCase)
         
         STATIC METHOD FormatKeyword(keyword AS Kind) AS STRING
+            RETURN FormatKeyword(keyword , XSettings.KeywordCase)
+            
+        STATIC METHOD FormatKeyword(keyword AS Kind, nKeywordCase AS KeywordCase) AS STRING
             SWITCH (keyword)
                 CASE Kind.VODefine
-                    RETURN XSettings.FormatKeyword("define")
+                    RETURN XSettings.FormatKeyword("define",nKeywordCase)
                 CASE Kind.VOGlobal
-                    RETURN XSettings.FormatKeyword("global")
+                    RETURN XSettings.FormatKeyword("global",nKeywordCase)
                 CASE Kind.VODLL
-                    RETURN XSettings.FormatKeyword("_dll function")
+                    RETURN XSettings.FormatKeyword("_dll function",nKeywordCase)
             END SWITCH
-            RETURN XSettings.FormatKeyword(keyword:ToString());
+            RETURN XSettings.FormatKeyword(keyword:ToString(),nKeywordCase)
             
     END CLASS
 

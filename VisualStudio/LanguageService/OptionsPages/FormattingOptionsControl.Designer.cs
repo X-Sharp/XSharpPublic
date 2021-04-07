@@ -34,6 +34,8 @@
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             this.chkAlignMethod = new System.Windows.Forms.CheckBox();
             this.chkAlignDoCase = new System.Windows.Forms.CheckBox();
+            this.chkTrimTrailngWhiteSpace = new System.Windows.Forms.CheckBox();
+            this.chkInsertFinalNewLine = new System.Windows.Forms.CheckBox();
             this.panel1 = new System.Windows.Forms.Panel();
             this.grpCase = new System.Windows.Forms.GroupBox();
             this.multiFactor = new System.Windows.Forms.TextBox();
@@ -92,16 +94,44 @@
             this.chkAlignDoCase.UseVisualStyleBackColor = true;
             this.chkAlignDoCase.CheckedChanged += new System.EventHandler(this.chkAlignDoCase_CheckedChanged);
             // 
+            // chkTrimTrailngWhiteSpace
+            // 
+            this.chkTrimTrailngWhiteSpace.AutoSize = true;
+            this.chkTrimTrailngWhiteSpace.Location = new System.Drawing.Point(13, 143);
+            this.chkTrimTrailngWhiteSpace.Name = "chkTrimTrailngWhiteSpace";
+            this.chkTrimTrailngWhiteSpace.Size = new System.Drawing.Size(143, 17);
+            this.chkTrimTrailngWhiteSpace.TabIndex = 11;
+            this.chkTrimTrailngWhiteSpace.Text = "Trim Trailing Whitespace";
+            this.toolTip1.SetToolTip(this.chkTrimTrailngWhiteSpace, "When you select this then the CASE keywords will line up with the DO keyword from" +
+        " a DO CASE statement or the SWITCH keyword from a SWITCH statement");
+            this.chkTrimTrailngWhiteSpace.UseVisualStyleBackColor = true;
+            this.chkTrimTrailngWhiteSpace.CheckedChanged += new System.EventHandler(this.chkTrimTrailngWhiteSpace_CheckedChanged);
+            // 
+            // chkInsertFinalNewLine
+            // 
+            this.chkInsertFinalNewLine.AutoSize = true;
+            this.chkInsertFinalNewLine.Location = new System.Drawing.Point(13, 166);
+            this.chkInsertFinalNewLine.Name = "chkInsertFinalNewLine";
+            this.chkInsertFinalNewLine.Size = new System.Drawing.Size(122, 17);
+            this.chkInsertFinalNewLine.TabIndex = 12;
+            this.chkInsertFinalNewLine.Text = "Insert Final NewLine";
+            this.toolTip1.SetToolTip(this.chkInsertFinalNewLine, "When you select this then the CASE keywords will line up with the DO keyword from" +
+        " a DO CASE statement or the SWITCH keyword from a SWITCH statement");
+            this.chkInsertFinalNewLine.UseVisualStyleBackColor = true;
+            this.chkInsertFinalNewLine.CheckedChanged += new System.EventHandler(this.chkInsertFinalNewLine_CheckedChanged);
+            // 
             // panel1
             // 
             this.panel1.Controls.Add(this.grpCase);
             this.panel1.Location = new System.Drawing.Point(0, 0);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(381, 179);
+            this.panel1.Size = new System.Drawing.Size(381, 221);
             this.panel1.TabIndex = 4;
             // 
             // grpCase
             // 
+            this.grpCase.Controls.Add(this.chkInsertFinalNewLine);
+            this.grpCase.Controls.Add(this.chkTrimTrailngWhiteSpace);
             this.grpCase.Controls.Add(this.label2);
             this.grpCase.Controls.Add(this.multiFactor);
             this.grpCase.Controls.Add(this.chkAlignMethod);
@@ -110,7 +140,7 @@
             this.grpCase.Controls.Add(this.chkIdentifierCase);
             this.grpCase.Location = new System.Drawing.Point(3, 14);
             this.grpCase.Name = "grpCase";
-            this.grpCase.Size = new System.Drawing.Size(373, 153);
+            this.grpCase.Size = new System.Drawing.Size(373, 195);
             this.grpCase.TabIndex = 5;
             this.grpCase.TabStop = false;
             this.grpCase.Text = "Document Formatting";
@@ -205,7 +235,7 @@
             this.AutoScroll = true;
             this.Controls.Add(this.panel1);
             this.Name = "FormattingOptionsControl";
-            this.Size = new System.Drawing.Size(389, 195);
+            this.Size = new System.Drawing.Size(389, 266);
             this.panel1.ResumeLayout(false);
             this.grpCase.ResumeLayout(false);
             this.grpCase.PerformLayout();
@@ -229,5 +259,7 @@
         private System.Windows.Forms.RadioButton rbLower;
         private System.Windows.Forms.CheckBox chkIdentifierCase;
         private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.CheckBox chkInsertFinalNewLine;
+        private System.Windows.Forms.CheckBox chkTrimTrailngWhiteSpace;
     }
 }

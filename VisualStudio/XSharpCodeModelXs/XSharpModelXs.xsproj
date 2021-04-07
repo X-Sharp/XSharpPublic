@@ -39,7 +39,7 @@
     <VO14>false</VO14>
     <VO15>false</VO15>
     <VO16>false</VO16>
-    <XSharpProjectversion>2.7.0.0</XSharpProjectversion>
+    <XSharpProjectversion>2.8.0.9</XSharpProjectversion>
     <Includepaths>$(SolutionDir)\Common</Includepaths>
     <Nostandarddefs>true</Nostandarddefs>
     <NamedArgs>true</NamedArgs>
@@ -139,6 +139,7 @@
     <Compile Include="PE\XPEParameterSymbol.prg" />
     <Compile Include="PE\XPESymbol.prg" />
     <Compile Include="PE\XPETypeSymbol.prg" />
+    <Compile Include="Settings\XSourceEditorSettings.prg" />
     <Compile Include="Settings\XEditorSettings.prg" />
     <Compile Include="Settings\XLiterals.prg" />
     <Compile Include="Settings\XSettings.prg" />

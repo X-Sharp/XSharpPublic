@@ -19,4 +19,5 @@ BEGIN NAMESPACE XSharpModel
         STATIC PROPERTY MenuParentClass AS STRING AUTO := "Menu"
         STATIC PROPERTY ToolbarParentClass AS STRING AUTO := "Menu"
     END CLASS
+
 END NAMESPACE

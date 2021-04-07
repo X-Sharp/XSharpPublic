@@ -46,11 +46,11 @@ METHOD PostInit(oParent,uExtra)
 	sVer := SubStr(sVer, RAt2(" ", sVer)+1)
 	oDCAboutText:CurrentText := _CHR(13)+" $safeprojectname$"+_CHR(13)+_CHR(13);
 		+" X# Version "+sVer+_CHR(13)+_CHR(13);
-		+" Copyright (c) XSharp BV 2015-2020"
+		+" Copyright (c) XSharp BV 2015-2021"
 		
 	IF IsThemeEnabled()
 		s := "Visit <A HREF="+_CHR(34)+;
-			"http://www.xsharp.info"+_CHR(34)+">X#</A> on the web!"
+			"http://www.xsharp.eu"+_CHR(34)+">X#</A> on the web!"
 		oSysLink := SysLink{SELF, -1, Point{10,5}, Dimension{300,20}, s}
 		oSysLink:Show()
 	ELSE
@@ -62,7 +62,7 @@ METHOD PostInit(oParent,uExtra)
 		oFont1 := Font{,8,"Microsoft Sans Serif"}
 		oFont1:Underline := TRUE
 		
-		oHL1 := HyperLink{SELF,-1,point{190,25},dimension{0,0},"http://www.xsharp.info"}
+		oHL1 := HyperLink{SELF,-1,point{190,25},dimension{0,0},"http://www.xsharp.eu"}
 		oHL1:font(oFont1)
 		oHL1:size := dimension{150,20}
 		oHL1:textcolor := color{COLORBLUE}

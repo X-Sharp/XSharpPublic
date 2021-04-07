@@ -115,8 +115,7 @@ namespace XSharp.LanguageService
                     {
                         file.Interactive = true;
                     }
-                    CommandFilter filter = new CommandFilter(textView, CompletionBroker,
-                        TextStructureNavigatorSelectorService.GetTextStructureNavigator(textView.TextBuffer), SignatureHelpBroker, BufferTagAggregatorFactoryService, this );
+                    CommandFilter filter = new CommandFilter(textView, CompletionBroker, SignatureHelpBroker, BufferTagAggregatorFactoryService, this );
                     IOleCommandTarget next;
                     textViewAdapter.AddCommandFilter(filter, out next);
                     

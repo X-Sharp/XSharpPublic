@@ -4,33 +4,23 @@
 // See License.txt in the project root for license information.
 //
 using System;
-using System.ComponentModel.Composition;
 using System.Diagnostics;
 using Microsoft.VisualStudio.OLE.Interop;
 using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Text.Editor;
-using Microsoft.VisualStudio.TextManager.Interop;
-using Microsoft.VisualStudio.Utilities;
 using Microsoft.VisualStudio;
-using Microsoft.VisualStudio.Package;
 using System.Runtime.InteropServices;
-using Microsoft.VisualStudio.Editor;
 using Microsoft.VisualStudio.Language.Intellisense;
 using LanguageService.SyntaxTree;
 using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
 using System.Collections.Generic;
-using System.Reflection;
 using Microsoft.VisualStudio.Text.Operations;
 using Microsoft.VisualStudio.Text.Classification;
 using Microsoft.VisualStudio.Text.Tagging;
-using Microsoft.VisualStudio.Text.Editor.OptionsExtensionMethods;
 using XSharpModel;
-using XSharpLanguage;
 using System.Linq;
 using Microsoft.VisualStudio.Shell.Interop;
-using LanguageService.CodeAnalysis.XSharp;
 using Microsoft;
-using System.Windows.Threading;
 using Microsoft.VisualStudio.Shell;
 
 namespace XSharp.LanguageService
@@ -40,36 +30,17 @@ namespace XSharp.LanguageService
         public ITextView TextView { get; private set; }
         public IOleCommandTarget Next { get; set; }
 
-        ICompletionBroker _completionBroker;
-        ICompletionSession _completionSession;
+        readonly ICompletionBroker _completionBroker;
+        private ICompletionSession _completionSession;
         XSharpClassifier _classifier;
-        XFile _file;
-        ISignatureHelpBroker _signatureBroker;
+        readonly XFile _file;
+        readonly ISignatureHelpBroker _signatureBroker;
         ISignatureHelpSession _signatureSession;
-        Stack<ISignatureHelpSession> _signatureStack;
-
-        ITextStructureNavigator m_navigator;
-        IBufferTagAggregatorFactoryService _aggregator;
-        List<int> _linesToSync;
+        private static int _lastIndentValue;    // in number of characters
+        private readonly ITextBuffer _buffer;
+        readonly IBufferTagAggregatorFactoryService _aggregator;
+        readonly List<int> _linesToSync;
         bool _suspendSync = false;
-
-
-
-        private bool getTagAggregator()
-        {
-            try
-            {
-                if (_tagAggregator == null)
-                {
-                    _tagAggregator = _aggregator.CreateTagAggregator<IClassificationTag>(_buffer);
-                }
-            }
-            catch (Exception e)
-            {
-                System.Diagnostics.Debug.WriteLine(e.Message);
-            }
-            return _tagAggregator != null;
-        }
 
         private void registerClassifier()
         {
@@ -79,7 +50,7 @@ namespace XSharp.LanguageService
                 {
                     if (_buffer.Properties.TryGetProperty(typeof(XSharpClassifier), out _classifier))
                     {
-                        _classifier.ClassificationChanged += _classifier_ClassificationChanged;
+                        _classifier.ClassificationChanged += Classifier_ClassificationChanged;
                     }
                 }
             }
@@ -99,12 +70,12 @@ namespace XSharp.LanguageService
                 return line.LineNumber;
             }
         }
-        private void _classifier_ClassificationChanged(object sender, ClassificationChangedEventArgs e)
+        private void Classifier_ClassificationChanged(object sender, ClassificationChangedEventArgs e)
         {
             WriteOutputMessage("CommandFilter.ClassificationChanged()");
             if (_suspendSync)
                 return;
-            if (XSettings.KeywordCase == KeywordCase.None)
+            if (_settings.KeywordCase == KeywordCase.None)
             {
                 return;
             }
@@ -169,15 +140,13 @@ namespace XSharp.LanguageService
 
             }
         }
-        public CommandFilter(IWpfTextView textView, ICompletionBroker completionBroker, ITextStructureNavigator nav, ISignatureHelpBroker signatureBroker, IBufferTagAggregatorFactoryService aggregator, VsTextViewCreationListener provider)
+        public CommandFilter(IWpfTextView textView, ICompletionBroker completionBroker, ISignatureHelpBroker signatureBroker, IBufferTagAggregatorFactoryService aggregator, VsTextViewCreationListener provider)
         {
-            m_navigator = nav;
 
             m_provider = provider;
 
             _completionSession = null;
             _signatureSession = null;
-            _signatureStack = new Stack<ISignatureHelpSession>();
 
             TextView = textView;
             _completionBroker = completionBroker;
@@ -198,6 +167,7 @@ namespace XSharp.LanguageService
                     //formatCaseForWholeBuffer();
                 }
             }
+            ReadSettings(_file.FullPath);
         }
 
         private void Textbuffer_Changing(object sender, TextContentChangingEventArgs e)
@@ -254,7 +224,7 @@ namespace XSharp.LanguageService
             if (syncKeyword)
             {
                 var keyword = token.Text;
-                var transform = XSettings.FormatKeyword(keyword);
+                var transform = XSettings.FormatKeyword(keyword, _settings.KeywordCase);
                 if (String.Compare(transform, keyword) != 0)
                 {
                     int startpos = offSet + token.StartIndex;
@@ -295,22 +265,6 @@ namespace XSharp.LanguageService
                         }
                     }
                 }
-                //if (element != null)
-                //{
-                //    cType = new CompletionType((XSourceVariableSymbol)element, "");
-                //    foundElement = new CompletionElement((XSourceVariableSymbol)element);
-                //}
-                //// got it !
-                //if (foundElement != null)
-                //{
-                //    if ((String.Compare(foundElement.Name, identifier) != 0))
-                //    {
-                //        int startpos = offSet + token.StartIndex;
-                //        editSession.Replace(startpos, foundElement.Name.Length, foundElement.Name);
-
-                //    }
-                //}
-
             }
         }
         private bool canIndentLine(ITextSnapshotLine line)
@@ -370,7 +324,7 @@ namespace XSharp.LanguageService
                 return;
             }
 
-            if (XSettings.KeywordCase == KeywordCase.None)
+            if (_settings.KeywordCase == KeywordCase.None)
             {
                 return;
             }
@@ -425,7 +379,7 @@ namespace XSharp.LanguageService
 
         private void registerLineForCaseSync(int line)
         {
-            if (!_suspendSync && XSettings.KeywordCase != KeywordCase.None)
+            if (!_suspendSync && _settings.KeywordCase != KeywordCase.None)
             {
                 lock (_linesToSync)
                 {
@@ -461,13 +415,13 @@ namespace XSharp.LanguageService
                 XSettings.DisplayOutputMessage(strMessage);
             }
         }
-        private void formatCaseForWholeBuffer()
+        private void FormatCaseForWholeBuffer()
         {
             if (XSettings.DebuggerIsRunning)
             {
                 return;
             }
-            if (XSettings.KeywordCase != 0)
+            if (_settings.KeywordCase != KeywordCase.None)
             {
                 WriteOutputMessage("--> CommandFilter.formatCaseForBuffer()");
                 /*
@@ -501,8 +455,7 @@ namespace XSharp.LanguageService
                 }
                 if (changed && _buffer.Properties.ContainsProperty(typeof(XSharpClassifier)))
                 */
-                XSharpClassifier classify;
-                if (_buffer.Properties.TryGetProperty(typeof(XSharpClassifier), out classify))
+                if (_buffer.Properties.TryGetProperty(typeof(XSharpClassifier), out XSharpClassifier classify))
                 {
                     classify.Classify();
                 }
@@ -518,7 +471,7 @@ namespace XSharp.LanguageService
 
         bool completionWasSelected = false;
         CompletionSelectionStatus completionWas;
-        private VsTextViewCreationListener m_provider;
+        private readonly VsTextViewCreationListener m_provider;
 
         public int Exec(ref Guid pguidCmdGroup, uint nCmdID, uint nCmdexecopt, IntPtr pvaIn, IntPtr pvaOut)
         {
@@ -595,6 +548,14 @@ namespace XSharp.LanguageService
             {
                 switch ((VSConstants.VSStd97CmdID)nCmdID)
                 {
+                    case VSConstants.VSStd97CmdID.Save:
+                    case VSConstants.VSStd97CmdID.SaveAs:
+                    case VSConstants.VSStd97CmdID.SaveProjectItem:
+                        if (_settings.InsertFinalNewline || _settings.TrimTrailingWhiteSpace)
+                        {
+                            adjustWhiteSpace();
+                        }
+                        break;
                     case VSConstants.VSStd97CmdID.GotoDefn:
                         GotoDefn();
                         return VSConstants.S_OK;
@@ -736,9 +697,66 @@ namespace XSharp.LanguageService
         }
 
 
+        private void adjustWhiteSpace()
+        {
+            
+            ThreadHelper.JoinableTaskFactory.Run(async delegate
+            {
+
+                await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+                var editSession = _buffer.CreateEdit();
+                var changed = false;
+                try
+                {
+                    var snapshot = editSession.Snapshot;
+                    if (_settings.InsertFinalNewline)
+                    {
+                        var text = snapshot.GetText();
+                        if (!text.EndsWith(Environment.NewLine))
+                        {
+                            var line = snapshot.GetLineFromLineNumber(snapshot.LineCount - 1);
+                            editSession.Insert(line.End.Position, Environment.NewLine);
+                            changed = true;
+                        }
+
+                    }
+                    if (_settings.TrimTrailingWhiteSpace)
+                    {
+                        foreach (var line in snapshot.Lines)
+                        {
+                            var text = line.GetText();
+                            if (text.Length > 0)
+                            {
+                                var last = text[text.Length - 1];
+                                if (last == ' ' || last == '\t')
+                                {
+                                    text = text.TrimEnd();
+                                    editSession.Replace(line.Start.Position, line.Length, text);
+                                    changed = true;
+                                }
+                            }
+                        }
+                    }
+                }
+                catch (Exception)
+                {
+                    editSession.Cancel();
+                }
+                finally
+                {
+                    if (changed)
+                        editSession.Apply();
+                    else
+                        editSession.Cancel();
+
+                }
+            });
+
+
+        }
+
 
         #region Goto Definition
-#pragma warning disable VSTHRD010
         private void GotoDefn()
         {
             try
@@ -760,6 +778,8 @@ namespace XSharp.LanguageService
                     return;
                 // Check if we can get the member where we are
                 var member = XSharpLookup.FindMember(lineNumber, file);
+                if (member == null)
+                    return;
                 var currentNamespace = XSharpTokenTools.FindNamespace(caretPos, file);
 
                 // Then, the corresponding Type/Element if possible
@@ -786,6 +806,7 @@ namespace XSharp.LanguageService
                 var state = CompletionState.General;
                 result.AddRange(XSharpLookup.RetrieveElement(location, tokenList,  state));
                 //
+                Microsoft.VisualStudio.Shell.ThreadHelper.ThrowIfNotOnUIThread();
                 if (result.Count > 0) 
                 {
                     var element = result[0];
@@ -795,7 +816,7 @@ namespace XSharp.LanguageService
                     }
                     else
                     {
-                        openInObjectBrowser(element.Name);
+                        openInObjectBrowser(element.FullName);
                     }
                     return;
                 }
@@ -816,7 +837,7 @@ namespace XSharp.LanguageService
                         source.OpenEditor();
                     else
                     {
-                        openInObjectBrowser(element.Name);
+                        openInObjectBrowser(element.FullName);
                     }
                     return;
 
@@ -834,7 +855,6 @@ namespace XSharp.LanguageService
             }
         }
 
-#pragma warning restore VSTHRD010
         private void openInObjectBrowser(string name)
         {
             ThreadHelper.JoinableTaskFactory.Run(async delegate
@@ -930,7 +950,7 @@ namespace XSharp.LanguageService
 
         void formatKeyword(Completion completion)
         {
-            completion.InsertionText = XSettings.FormatKeyword(completion.InsertionText);
+            completion.InsertionText = XSettings.FormatKeyword(completion.InsertionText, _settings.KeywordCase);
         }
 
         bool CompleteCompletionSession(bool force = false, char ch = ' ')
@@ -952,9 +972,9 @@ namespace XSharp.LanguageService
                         caret = _completionSession.TextView.Caret;
                         Kind kind = Kind.Unknown;
                         var completion = _completionSession.SelectedCompletionSet.SelectionStatus.Completion;
-                        if (completion is XSCompletion)
+                        if (completion is XSCompletion completion1)
                         {
-                            kind = ((XSCompletion)completion).Kind;
+                            kind = completion1.Kind;
                         }
                         if (kind == Kind.Keyword)
                         {
@@ -1002,7 +1022,7 @@ namespace XSharp.LanguageService
                     if (_completionSession.SelectedCompletionSet.SelectionStatus.Completion != null)
                     {
                         var completion = _completionSession.SelectedCompletionSet.SelectionStatus.Completion;
-                        if (completion is XSCompletion && ((XSCompletion)completion).Kind == Kind.Keyword)
+                        if (completion is XSCompletion completion1 && completion1.Kind == Kind.Keyword)
                         {
                             formatKeyword(completion);
                         }
@@ -1117,12 +1137,11 @@ namespace XSharp.LanguageService
             return true;
         }
 
-        private void _completionSession_SelectedCompletionSetChanged(object sender, ValueChangedEventArgs<Microsoft.VisualStudio.Language.Intellisense.CompletionSet> e)
+        private void _completionSession_SelectedCompletionSetChanged(object sender, ValueChangedEventArgs<CompletionSet> e)
         {
             if (e.NewValue.SelectionStatus.IsSelected == false)
             {
-                int x = 0;
-                x++;
+                ;
             }
         }
 
@@ -1135,8 +1154,7 @@ namespace XSharp.LanguageService
             {
                 if (_completionSession.SelectedCompletionSet.SelectionStatus.Completion.InsertionText.EndsWith("("))
                 {
-                    IXTypeSymbol type = null;
-                    _completionSession.Properties.TryGetProperty(XsCompletionProperties.Type, out type);
+                    _completionSession.Properties.TryGetProperty(XsCompletionProperties.Type, out IXTypeSymbol type);
                     string method = _completionSession.SelectedCompletionSet.SelectionStatus.Completion.InsertionText;
                     method = method.Substring(0, method.Length - 1);
                     _completionSession.Dismiss();
@@ -1180,7 +1198,7 @@ namespace XSharp.LanguageService
             int Level = 0;
             do
             {
-                ssp = ssp - 1;
+                ssp= ssp-1;
                 char leftCh = ssp.GetChar();
                 bool done = false;
                 switch (leftCh)
@@ -1293,8 +1311,7 @@ namespace XSharp.LanguageService
             if (_signatureSession == null)
                 return false;
 
-            int start;
-            _signatureSession.Properties.TryGetProperty(SignatureProperties.Start, out start);
+            _signatureSession.Properties.TryGetProperty(SignatureProperties.Start, out int start);
             int pos = this.TextView.Caret.Position.BufferPosition.Position;
 
             ((XSharpVsSignature)_signatureSession.SelectedSignature).ComputeCurrentParameter(pos - start - 1);
@@ -1339,67 +1356,6 @@ namespace XSharp.LanguageService
 
     }
 
-    static class CommandFilterHelper
-    {
-        /// <summary>
-        /// Format the Keywords and Identifiers in the Line, using the EditSession
-        /// </summary>
-        /// <param name="editSession"></param>
-        /// <param name="line"></param>
-        static public void FormatLineIndent(ITextEdit editSession, ITextSnapshotLine line, int desiredIndentation)
-        {
-            //CommandFilter.WriteOutputMessage($"CommandFilterHelper.FormatLineIndent({line.LineNumber + 1})");
-            int tabSize = XSettings.EditorTabSize;
-            int indentSize = XSettings.EditorIndentSize;
-            bool useSpaces = XSettings.EditorTabsAsSpaces;
-            int lineLength = line.Length;
-
-            int originalIndentLength = lineLength - line.GetText().TrimStart().Length;
-            if (desiredIndentation < 0)
-            {
-                ; //do nothing
-            }
-            else if (desiredIndentation == 0)
-            {
-                // remove indentation
-                if (originalIndentLength != 0)
-                {
-                    Span indentSpan = new Span(line.Start.Position, originalIndentLength);
-                    editSession.Replace(indentSpan, "");
-                }
-            }
-            else
-            {
-                string newIndent;
-                if (useSpaces)
-                {
-                    newIndent = new String(' ', desiredIndentation);
-                }
-                else
-                {
-                    // fill indent room with tabs and optionally also with one or more spaces
-                    // if the indentsize is not the same as the tabsize
-                    int numTabs = desiredIndentation / tabSize;
-                    int numSpaces = desiredIndentation % tabSize;
-                    newIndent = new String('\t', numTabs);
-                    if (numSpaces != 0)
-                    {
-                        newIndent += new String(' ', numSpaces);
-                    }
-                }
-                if (originalIndentLength == 0)
-                {
-                    editSession.Insert(line.Start.Position, newIndent);
-                }
-                else
-                {
-                    Span indentSpan = new Span(line.Start.Position, originalIndentLength);
-                    editSession.Replace(indentSpan, newIndent);
-                }
-            }
-        }
-    }
-
 
     internal static class ObjectBrowserHelper
     {
@@ -1440,7 +1396,7 @@ namespace XSharp.LanguageService
 
         private static void gotoDefinition(string memberName, _LIB_LISTTYPE libListtype, uint searchOptions)
         {
-            Microsoft.VisualStudio.Shell.ThreadHelper.ThrowIfNotOnUIThread();
+            ThreadHelper.ThrowIfNotOnUIThread();
             if (gotoDefinitionInternal(memberName, libListtype, searchOptions) == false)
             {
                 // There was an ambiguity (more than one item found) or no items found at all.
@@ -1453,14 +1409,12 @@ namespace XSharp.LanguageService
 
         private static bool gotoDefinitionInternal(string typeOrMemberName, _LIB_LISTTYPE symbolType, uint searchOptions)
         {
-            Microsoft.VisualStudio.Shell.ThreadHelper.ThrowIfNotOnUIThread();
-            IVsSimpleObjectList2 list;
-            if (tryFindSymbol(typeOrMemberName, out list, symbolType, searchOptions))
+            ThreadHelper.ThrowIfNotOnUIThread();
+            if (tryFindSymbol(typeOrMemberName, out IVsSimpleObjectList2 list, symbolType, searchOptions))
             {
-                int ok;
                 const VSOBJGOTOSRCTYPE whereToGo = VSOBJGOTOSRCTYPE.GS_DEFINITION;
                 //
-                return HResult.Succeeded(list.CanGoToSource(0, whereToGo, out ok)) &&
+                return HResult.Succeeded(list.CanGoToSource(0, whereToGo, out int ok)) &&
                        HResult.Succeeded(ok) &&
                        HResult.Succeeded(list.GoToSource(0, whereToGo));
             }
@@ -1469,37 +1423,36 @@ namespace XSharp.LanguageService
         }
 
         // Searching in the XSharp Library (Current Solution)
+
+        // Searching in the XSharp Library (Current Solution)
         private static IVsSimpleLibrary2 GetXSharpLibrary()
         {
             Microsoft.VisualStudio.Shell.ThreadHelper.ThrowIfNotOnUIThread();
             Guid guid = new Guid(XSharpConstants.Library);
-            IVsLibrary2 _library;
             IVsSimpleLibrary2 simpleLibrary = null;
             //
             System.IServiceProvider provider = XSharpLanguageService.Instance;
             // ProjectPackage already switches to UI thread inside GetService
-            IVsObjectManager2 mgr = provider.GetService(typeof(SVsObjectManager)) as IVsObjectManager2;
-            if (mgr != null)
+            if (provider.GetService(typeof(SVsObjectManager)) is IVsObjectManager2 mgr)
             {
-                ErrorHandler.ThrowOnFailure(mgr.FindLibrary(ref guid, out _library));
+                ErrorHandler.ThrowOnFailure(mgr.FindLibrary(ref guid, out IVsLibrary2 _library));
                 simpleLibrary = _library as IVsSimpleLibrary2;
             }
             return simpleLibrary;
         }
 
-        private static bool tryGetSourceLocation(string memberName, out string fileName, out uint line, uint searchOptions)
-        {
-            IVsSimpleObjectList2 list;
-            Microsoft.VisualStudio.Shell.ThreadHelper.ThrowIfNotOnUIThread();
-            if (ObjectBrowserHelper.tryFindSymbol(memberName, out list, _LIB_LISTTYPE.LLT_MEMBERS, searchOptions))
-            {
-                return HResult.Succeeded(list.GetSourceContextWithOwnership(0, out fileName, out line));
-            }
+        //private static bool tryGetSourceLocation(string memberName, out string fileName, out uint line, uint searchOptions)
+        //{
+        //    ThreadHelper.ThrowIfNotOnUIThread();
+        //    if (tryFindSymbol(memberName, out IVsSimpleObjectList2 list, _LIB_LISTTYPE.LLT_MEMBERS, searchOptions))
+        //    {
+        //        return HResult.Succeeded(list.GetSourceContextWithOwnership(0, out fileName, out line));
+        //    }
 
-            fileName = null;
-            line = 0;
-            return false;
-        }
+        //    fileName = null;
+        //    line = 0;
+        //    return false;
+        //}
 
         /// <summary>
         ///     Tries to find a member (field/property/event/methods/etc).
@@ -1521,23 +1474,20 @@ namespace XSharp.LanguageService
                 // The Visual Studio API we're using here breaks with superfulous spaces
                 typeOrMemberName = typeOrMemberName.Replace(" ", "");
                 var library = ObjectBrowserHelper.GetXSharpLibrary();
-                IVsSimpleObjectList2 list;
-                Microsoft.VisualStudio.Shell.ThreadHelper.ThrowIfNotOnUIThread();
+                ThreadHelper.ThrowIfNotOnUIThread();
                 var searchSucceed = HResult.Succeeded(library.GetList2((uint)symbolType,
                     (uint)_LIB_LISTFLAGS.LLF_USESEARCHFILTER,
                     createSearchCriteria(typeOrMemberName, searchOptions),
-                    out list));
+                    out IVsSimpleObjectList2 list));
                 if (searchSucceed && list != null)
                 {
                     // Check if there is an ambiguity (where there is more than one symbol that matches)
                     if (getSymbolNames(list).Distinct().Count() == 1)
                     {
-                        uint count;
-                        list.GetItemCount(out count);
+                        list.GetItemCount(out uint count);
                         if (count > 1)
                         {
-                            int ok;
-                            list.CanDelete((uint)1, out ok);
+                            list.CanDelete((uint)1, out int ok);
                         }
                         resultList = list;
                         return true;
@@ -1558,7 +1508,7 @@ namespace XSharp.LanguageService
         {
             Microsoft.VisualStudio.Shell.ThreadHelper.ThrowIfNotOnUIThread();
             System.IServiceProvider provider = XSharpLanguageService.Instance;
-            bool result = true;
+            bool result ;
             // ProjectPackage already switches to UI thread inside GetService
             IVsFindSymbol searcher = provider.GetService(typeof(SVsObjectSearch)) as IVsFindSymbol;
             Assumes.Present(searcher);
@@ -1571,7 +1521,7 @@ namespace XSharp.LanguageService
         {
             Microsoft.VisualStudio.Shell.ThreadHelper.ThrowIfNotOnUIThread();
             System.IServiceProvider provider = XSharpLanguageService.Instance;
-            bool result= true;
+            bool result ;
             // ProjectPackage already switches to UI thread inside GetService
             IVsFindSymbol searcher = provider.GetService(typeof(SVsObjectSearch)) as IVsFindSymbol;
             Assumes.Present(searcher);
@@ -1599,16 +1549,14 @@ namespace XSharp.LanguageService
         private static IEnumerable<string> getSymbolNames(IVsSimpleObjectList2 list)
         {
             Microsoft.VisualStudio.Shell.ThreadHelper.ThrowIfNotOnUIThread();
-            uint count;
-            if (HResult.Succeeded(list.GetItemCount(out count)))
+            if (HResult.Succeeded(list.GetItemCount(out uint count)))
             {
                 for (uint i = 0; i < count; i++)
                 {
-                    object symbol;
 
                     if (HResult.Succeeded(list.GetProperty(i,
                         (int)_VSOBJLISTELEMPROPID.VSOBJLISTELEMPROPID_FULLNAME,
-                        out symbol)))
+                        out object symbol)))
                     {
                         yield return (string)symbol;
                     }

@@ -42,6 +42,8 @@ namespace XSharp.LanguageService.OptionsPages
             chkIdentifierCase.Checked = formattingPage.IdentifierCase;
             chkAlignDoCase.Checked = formattingPage.AlignDoCase;
             chkAlignMethod.Checked = formattingPage.AlignMethod;
+            chkInsertFinalNewLine.Checked = formattingPage.InsertFinalNewLine;
+            chkTrimTrailngWhiteSpace.Checked = formattingPage.TrimTrailingWhiteSpace;
             multiFactor.Text = formattingPage.MultiFactor.ToString();
             _loading = false;
 
@@ -99,5 +101,14 @@ namespace XSharp.LanguageService.OptionsPages
             formattingPage.MultiFactor = factor;
         }
 
+        private void chkTrimTrailngWhiteSpace_CheckedChanged(object sender, EventArgs e)
+        {
+            formattingPage.TrimTrailingWhiteSpace = chkTrimTrailngWhiteSpace.Checked;
+        }
+
+        private void chkInsertFinalNewLine_CheckedChanged(object sender, EventArgs e)
+        {
+            formattingPage.InsertFinalNewLine = chkInsertFinalNewLine.Checked;
+        }
     }
 }

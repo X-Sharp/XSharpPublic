@@ -20,6 +20,8 @@ namespace XSharp.Project
         }
         internal static void DisplayOutputMessage(string message)
         {
+            if (!XSharpModel.XSettings.EnableLogging)
+                return;
             IVsOutputWindowPane outputPane = null;
             ThreadHelper.JoinableTaskFactory.Run(async delegate
             {

@@ -85,6 +85,8 @@ namespace XSharp.LanguageService
                     _settings.IdentifierCase = temp == TRUE;
                 }
             }
+            if (_buffer.Properties.ContainsProperty(typeof(SourceCodeEditorSettings)))
+                _buffer.Properties.RemoveProperty(typeof(SourceCodeEditorSettings));
             _buffer.Properties.AddProperty(typeof(SourceCodeEditorSettings), _settings);
         }
     }

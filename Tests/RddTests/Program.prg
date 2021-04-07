@@ -12,7 +12,10 @@ USING System.Collections.Generic
 [STAThread];      
 FUNCTION Start() AS VOID
     TRY
-        TestCorruptCdx()
+        //DumpWg1()
+         testUse()
+        //testWg1()
+        //TestCorruptCdx()
         //ReadVfpTableWithInfo()
         //ReadDbcProperties()
         //OrdDescTest2()
@@ -212,6 +215,91 @@ USING System.Windows.Forms
 USING System.Threading
 
 GLOBAL gcPath := "c:\test\"
+
+
+FUNCTION testUse() AS INT
+LOCAL cFilename AS STRING
+
+cFilename:="c:\temp\test.dbf"
+
+DbCreate(cFilename , {{"FLD","C",10,0}})
+
+? VoDbUseArea(TRUE, "DBFCDX", cFileName , "c1", FALSE,FALSE)
+? VoDbUseArea(TRUE, "DBFCDX", cFileName , "c2", FALSE,FALSE) // no error
+DbCloseAll()
+
+? DbUseArea(TRUE,"DBFCDX",cFileName+"X","c3",TRUE)
+? DbUseArea(TRUE,"DBFCDX",cFileName,"c4",FALSE) // exception
+
+WAIT
+RETURN 0
+
+
+FUNCTION DumpWg1() AS VOID
+	LOCAL cPath			AS STRING
+	cPath			:= "C:\test\Wolfgang"                                 
+    RuntimeState.SetValue(Set.FoxLock, FALSE)
+	? DbUseArea(TRUE, "DBFCDX" , cPath, ,FALSE,FALSE)
+    DbSetOrder(1)
+    DbOrderInfo(DBOI_USER+42)
+    DbCloseArea()
+    RETURN
+
+
+FUNCTION testWg1() AS VOID
+	LOCAL cPath			AS STRING
+	LOCAL nI			AS DWORD
+	LOCAL nLen			AS DWORD
+	LOCAL aValues		AS ARRAY
+	LOCAL aStruct AS ARRAY
+	LOCAL n := 0 AS INT
+    RuntimeState.SetValue(Set.FoxLock, FALSE)
+    
+
+
+	cPath			:= "C:\test\Wolfgang"                                 
+	FErase(cPath + ".dbf")                                                                      
+	FErase(cPath + ".cdx")
+	
+	aStruct := {{"AUFNR","N",10,0},{"JAHR","C",4,0},{"POSFORO","N",4,0},{"POSGRUP","N",4,0},{"POSNR","N",4,0}}
+	                                                                                         
+	? DbCreate(cPath , aStruct , "DBFCDX")
+                                                                    
+	? DbUseArea(TRUE, "DBFCDX" , cPath, ,FALSE,FALSE)
+	? DbCreateIndex(cPath , "JAHR+STR(AUFNR,10)+STR(POSFORO,4)+STR(POSGRUP,4)+STR(POSNR,4)")
+	? DbCloseArea()
+	
+	? DbUseArea(TRUE, "DBFCDX" , cPath, ,TRUE,FALSE)
+	DbGoBottom()
+	nLen				:= FCount()
+	aValues				:= ArrayNew( nLen )                                     
+	WHILE TRUE
+		TRY
+			FOR nI := 1 UPTO nLen
+				aValues[nI]			:= FieldGet( nI )
+			NEXT
+			DbAppend( TRUE )                                                                              
+			n ++
+			FOR nI := 1 UPTO nLen
+				FieldPut( nI, aValues[nI] )
+			NEXT           
+			FieldPut( 5, FieldGet( 5 ) + 1 )
+			IF FieldGet( 5 ) > 900
+				FieldPut( 5, 1 )
+				FieldPut( 1, FieldGet( 1 ) + 1 )
+			ENDIF
+			DbCommit()
+			DbUnLock()
+		CATCH e AS Exception
+			? e:ToString()      
+			Console.ReadLine()
+		END TRY
+		? n
+	END
+
+
+
+
 
 FUNCTION testCorruptCdx() AS VOID
 

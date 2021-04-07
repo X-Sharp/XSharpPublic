@@ -165,7 +165,10 @@ BEGIN NAMESPACE XSharp
             IF oProp:CanWrite
                 oProp:SetValue(SELF, oProp:GetValue(e))
             ENDIF
-        NEXT
+         NEXT
+         IF SELF:SubCode == 0
+            SELF:SubCodeText := ""
+         ENDIF
     ELSE
         SELF:Description := ex:Message
         SELF:Gencode     := EG_EXCEPTION

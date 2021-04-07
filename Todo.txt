@@ -1,5 +1,4 @@
-- Complete Appdesigner 
-- Check X86 and X64 debugging
+Checks
 - Exclude files, Include files
 - Copy / Paste
 - Drag / Drop

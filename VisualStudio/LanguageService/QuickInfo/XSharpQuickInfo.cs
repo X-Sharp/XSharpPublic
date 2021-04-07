@@ -84,6 +84,8 @@ namespace XSharp.LanguageService
 
                 var snapshot = session.TextView.TextBuffer.CurrentSnapshot;
                 XSourceMemberSymbol member = XSharpLookup.FindMember(lineNumber, file);
+                if (member == null)
+                    return null;
                 XSourceTypeSymbol currentNamespace = XSharpTokenTools.FindNamespace(position, file);
                 string currentNS = "";
                 if (currentNamespace != null)

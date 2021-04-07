@@ -45,10 +45,31 @@ namespace XSharp.LanguageService
     [ProvideLanguageExtension(typeof(XSharpLanguageService), ".xh")]
     [ProvideLanguageExtension(typeof(XSharpLanguageService), ".ch")]
     [ProvideLanguageService(typeof(XSharpLanguageService),
-                         XSharpConstants.LanguageName,
-                         languageResourceID: 1,        // resource ID of localized language name. This sets the name to X#
-                         RequestStockColors = true,   
-                         ShowDropDownOptions = true    // Supports NavigationBar
+                         LanguageName,
+                         1,                            // resource ID of localized language name
+                         AutoOutlining = true,
+                         CodeSense = true,             // Supports IntelliSense
+                         CodeSenseDelay = 1000,        // Delay to wait
+                         DefaultToInsertSpaces = true,
+                         DefaultToNonHotURLs = true,
+                         EnableAdvancedMembersOption = true,
+                         EnableAsyncCompletion = true, // Supports background parsing
+                         EnableCommenting = true,      // Supports commenting out code
+                         EnableLineNumbers = true,
+                         MatchBraces = true,
+                         MatchBracesAtCaret = true,
+                         MaxErrorMessages = 10,
+                         QuickInfo = true,
+                         RequestStockColors = false,   // Supplies custom colors
+                         ShowCompletion = true,
+                         ShowDropDownOptions = true,    // Supports NavigationBar
+                         ShowMatchingBrace = true,
+                         ShowSmartIndent = true,
+                         EnableFormatSelection = true,
+                         HideAdvancedMembersByDefault = true,
+                         SingleCodeWindowOnly = false,
+                         ShowHotURLs = true,
+                         SupportCopyPasteOfHTML = true
                  )]
     [ProvideLanguageCodeExpansion(
          typeof(XSharpLanguageService),
@@ -60,8 +81,8 @@ namespace XSharp.LanguageService
                   @"\%MyDocs%\Code Snippets\XSharp\My Code Snippets"
          )]
     //Note that the name of the entry in Tools/Options/TextEditor is defined in VsPackage.Resx in item #1 as X#
-    [ProvideLanguageEditorOptionPage(typeof(IntellisenseOptionsPage), XSharpConstants.LanguageName, null, "Intellisense", pageNameResourceId: "201")]  // keywordlistresourceid
-    [ProvideLanguageEditorOptionPage(typeof(FormattingOptionsPage), XSharpConstants.LanguageName, null, "Formatting", pageNameResourceId: "202")]       // keywordlistresourceid
+    [ProvideLanguageEditorOptionPage(typeof(IntellisenseOptionsPage), LanguageName, null, "Intellisense", pageNameResourceId: "201")]  // keywordlistresourceid
+    [ProvideLanguageEditorOptionPage(typeof(FormattingOptionsPage), LanguageName, null, "Formatting", pageNameResourceId: "202")]       // keywordlistresourceid
     public sealed class XSharpLanguageService : AsyncPackage, IVsShellPropertyEvents, IVsDebuggerEvents, IOleComponent
     {
         private static XSharpLanguageService instance;
@@ -160,6 +181,8 @@ namespace XSharp.LanguageService
                 XSettings.EditorFormatAlignDoCase = _formattingPage.AlignDoCase;
                 XSettings.EditorFormatAlignMethod = _formattingPage.AlignMethod;
                 XSettings.IdentifierCase = _formattingPage.IdentifierCase;
+                XSettings.EditorTrimTrailingWhiteSpace = _formattingPage.TrimTrailingWhiteSpace;
+                XSettings.EditorInsertFinalNewline = _formattingPage.InsertFinalNewLine;
                 XSettings.KeywordCase = _formattingPage.KeywordCase;
 
                 _formattingPage.SettingsChanged = false;

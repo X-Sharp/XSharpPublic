@@ -1,13 +1,13 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <PackageManifest Version="2.0.0" xmlns="http://schemas.microsoft.com/developer/vsx-schema/2011" xmlns:d="http://schemas.microsoft.com/developer/vsx-schema-design/2011">
     <Metadata>
-        <Identity Id="XSharp.ProjectSystem" Version="2.8.0.5" Language="en-US" Publisher="XSharp BV" />
+        <Identity Id="XSharp.ProjectSystem" Version="2.8.0.10" Language="en-US" Publisher="XSharp BV" />
         <DisplayName>XSharp Visual Studio Integration</DisplayName>
         <Description xml:space="preserve">X# Visual Studio Integration.
 Includes a Project System, Language Service , Debugger Support, Custom Editors etc.</Description>
-        <MoreInfo>http://www.xsharp.info</MoreInfo>
+        <MoreInfo>http://www.xsharp.eu</MoreInfo>
         <License>License.txt</License>
-        <ReleaseNotes>https://www.xsharp.info/itm-downloads?folder=general%252FReadme</ReleaseNotes>
+        <ReleaseNotes>https://www.xsharp.eu/itm-downloads?folder=general%252FReadme</ReleaseNotes>
         <Icon>XSharp.ico</Icon>
         <PreviewImage>XSharpVSIXLogo.png</PreviewImage>
     </Metadata>
@@ -38,6 +38,7 @@ Includes a Project System, Language Service , Debugger Support, Custom Editors e
         <Asset Type="Microsoft.VisualStudio.Assembly" d:Source="Project" d:ProjectName="XSharpAppDesigner" Path="|XSharpAppDesigner|" AssemblyName="|XSharpAppDesigner;AssemblyName|" />
         <Asset Type="Microsoft.VisualStudio.Assembly" d:Source="Project" d:ProjectName="ProjectBase" Path="|ProjectBase|" AssemblyName="|ProjectBase;AssemblyName|" />
         <Asset Type="Microsoft.VisualStudio.VsPackage" d:Source="File" Path="XSharpAppDesigner.pkgdef" />
+        <Asset Type="Microsoft.VisualStudio.VsPackage" d:Source="File" Path="XSharpLanguageService.pkgdef" />
 
     </Assets>
     <Content>

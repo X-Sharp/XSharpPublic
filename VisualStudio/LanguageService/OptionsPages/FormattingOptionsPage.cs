@@ -23,6 +23,8 @@ namespace XSharp.LanguageService.OptionsPages
         public bool IdentifierCase => false;
         public bool AlignDoCase { get; set; }
         public bool AlignMethod { get; set; }
+        public bool TrimTrailingWhiteSpace { get; set; }
+        public bool InsertFinalNewLine { get; set; }
         public int MultiFactor { get; set; }
  
         protected override IWin32Window Window

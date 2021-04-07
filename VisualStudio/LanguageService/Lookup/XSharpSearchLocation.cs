@@ -44,7 +44,10 @@ namespace XSharp.LanguageService
         {
             Member = member;
             Snapshot = snapshot;
-            File = Member.File;
+            if (member != null)
+            {
+                File = Member.File;
+            }
             LineNumber = lineNumber;
             Position = position;
             CurrentNamespace = currentNs;

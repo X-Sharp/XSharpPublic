@@ -217,23 +217,14 @@ namespace XSharp.LanguageService
             if (file != null)
             {
                 member = file.FindMemberAtRow(iLine);
-                switch (member.Kind)
+                if (member.Kind.IsClassMember(file.Project.ParseOptions.Dialect))
                 {
-                    case Kind.Method:
-                    case Kind.Access:
-                    case Kind.Assign:
-                    case Kind.Property:
-                    case Kind.Event:
-                    case Kind.Field:
-                    case Kind.Constructor:
-                    case Kind.Destructor:
-                    case Kind.Operator:
-                        if (!member.Modifiers.HasFlag(Modifiers.Static))
-                        {
-                            list.Add(XSettings.FormatKeyword("SELF"));
-                        }
-                        break;
+                    if (!member.Modifiers.HasFlag(Modifiers.Static))
+                    {
+                        list.Add(XSettings.FormatKeyword("SELF"));
+                    }
                 }
+            
                 var buffer = _editorAdaptersFactoryService.GetDataBuffer(pBuffer);
                 Dictionary<string, IXVariableSymbol> locals = null;
                 if (member != null)

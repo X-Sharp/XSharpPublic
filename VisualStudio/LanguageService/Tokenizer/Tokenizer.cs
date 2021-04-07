@@ -224,11 +224,12 @@ namespace XSharp.LanguageService
                 // only add open tokens to the list after the trigger point
                 if (token.StartIndex >= location.Position )
                 {
+                    // Generic types. 
                     if (token.Type == XSharpLexer.LT
                         && (state.HasFlag(CompletionState.Types) || state.HasFlag(CompletionState.Interfaces)))
                     {
                         var start = line.IndexOf(token);
-                        for (int i = 0; i < line.Count; i++)
+                        for (int i = start; i < line.Count; i++)
                         {
                             var element = (XSharpToken) line[i];
                             tokenList.Add(element);

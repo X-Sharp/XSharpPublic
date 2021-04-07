@@ -150,8 +150,8 @@ namespace XSharp.Project
             switch (cmd.CommandID.ID)
             {
                 case IdWebsite:
-                    //System.Diagnostics.Process.Start("https://www.xsharp.info");
-                    ((XSharpProjectPackage)package).OpenInBrowser("https://www.xsharp.info");
+                    //System.Diagnostics.Process.Start("https://www.xsharp.eu");
+                    ((XSharpProjectPackage)package).OpenInBrowser("https://www.xsharp.eu`");
                     break;
                 case IdOnlineHelp:
                     string REG_KEY = @"HKEY_LOCAL_MACHINE\" + XSharp.Constants.RegistryKey;

@@ -34,7 +34,7 @@ namespace XSharp.LanguageService
             if (_configuration.Properties.Count > 0)
             {
                 if (_configuration.IndentStyle.HasValue)
-                    _settings.TabsAsSpaces = _configuration.IndentStyle.Value == EditorConfig.Core.IndentStyle.Space;
+                    _settings.TabsAsSpaces = _configuration.IndentStyle.Value == IndentStyle.Space;
                 if (_configuration.TabWidth.HasValue)
                     _settings.TabSize = _configuration.TabWidth.Value;
                 if (_configuration.IndentSize != null)
@@ -51,8 +51,8 @@ namespace XSharp.LanguageService
 
                 if (_configuration.Properties.ContainsKey(KEYWORDCASE))
                 {
-                    var kwcase = _configuration.Properties[KEYWORDCASE].ToLower();
-                    switch (kwcase)
+                    var temp = _configuration.Properties[KEYWORDCASE].ToLower();
+                    switch (temp)
                     {
                         case UPPER:
                             _settings.KeywordCase = KeywordCase.Upper;
@@ -71,18 +71,18 @@ namespace XSharp.LanguageService
                 }
                 if (_configuration.Properties.ContainsKey(IDENTIFIERCASE))
                 {
-                    var icase = _configuration.Properties[IDENTIFIERCASE].ToLower();
-                    _settings.IdentifierCase = icase == TRUE;
+                    var temp = _configuration.Properties[IDENTIFIERCASE].ToLower();
+                    _settings.IdentifierCase = temp == TRUE;
                 }
                 if (_configuration.Properties.ContainsKey(ALIGNDOCASE))
                 {
-                    var icase = _configuration.Properties[ALIGNDOCASE].ToLower();
-                    _settings.IdentifierCase = icase == TRUE;
+                    var temp = _configuration.Properties[ALIGNDOCASE].ToLower();
+                    _settings.IdentifierCase = temp == TRUE;
                 }
                 if (_configuration.Properties.ContainsKey(ALIGNMETHOD))
                 {
-                    var icase = _configuration.Properties[ALIGNMETHOD].ToLower();
-                    _settings.IdentifierCase = icase == TRUE;
+                    var temp = _configuration.Properties[ALIGNMETHOD].ToLower();
+                    _settings.IdentifierCase = temp == TRUE;
                 }
             }
             _buffer.Properties.AddProperty(typeof(SourceCodeEditorSettings), _settings);

@@ -1089,10 +1089,10 @@
             Performs a bitwise AND operation on two or more values of <b>Numeric</b>, <b>Varbinary</b>, or <b>Blob</b> type and returns the result.
             There is a numeric and a binary version of the syntax.
         </summary>
-        <param name="BinaryExpression1">
+        <param name="Arg1">
             Specifies Varbinary or Blob values to perform the bitwise AND operation.
         </param>
-        <param name="BinaryExpression2">
+        <param name="Arg2">
             Specifies Varbinary or Blob values to perform the bitwise AND operation.
         </param>
         <returns>
@@ -1150,21 +1150,21 @@
             There is a numeric and a binary version of the syntax.
             If the specified expression is not an integer, it is converted to an integer before performing the operation.
         </summary>
-        <param name="nNumericExpression1">
+        <param name="Arg1">
             Specifies the <b>Numeric</b> value to clear the bit in. If the expression is not an integer, it is converted to an integer before setting the bit.
         </param>
-        <param name="nNumericExpression2">
+        <param name="Arg1">
             Specifies the bit position in nExpression1 to clear. nExpression2 can range from 0 to 31 with 0 located as the bit to the farthest right.
         </param>
-        <param name="BinaryExpression">
+        <param name="BinString">
             Specifies a <b>Varbinary</b> or <b>Blob</b> expression.
         </param>
-        <param name="nStartBit">
+        <param name="StartBit">
             Specifies a starting zero-based number of the first bit to perform the operation as nStartBit and the number of bits to perform the operation as nBitCount.<br/>
             If you do not specify nStartBit and nBitCount, the operation applies to all bits in the expression.
             If you specify nStartBit only, the operation applies to nStartBit only.
         </param>
-        <param name="nBitCount">
+        <param name="BitCount">
             Specifies a starting zero-based number of the first bit to perform the operation as nStartBit and the number of bits to perform the operation as nBitCount.<br/>
             If you do not specify nStartBit and nBitCount, the operation applies to all bits in the expression.
             If you specify nStartBit only, the operation applies to nStartBit only.
@@ -1185,10 +1185,10 @@
             Moves bits in a numeric value to the left by the specified number of positions and returns the resulting value.
             If the specified expressions are not integers, they are converted to integers before performing the operation.
         </summary>
-        <param name="nExpression1">
+        <param name="Arg">
             Specifies the numeric value in which to move bits to the left.
         </param>
-        <param name="nExpression2">
+        <param name="Bit">
             Specifies the number of bit positions to move to the left.
         </param>
         <returns>
@@ -1211,19 +1211,22 @@
             There is a numeric and a binary version of the syntax.
             If the specified expression is not an integer, it is converted to an integer before performing the operation.
         </summary>
+        <param name="Arg1">
+            Specifies a <b>Numeric</b> or a <b>Varbinary</b> or <b>Blob</b> value to perform the bitwise NOT operation.
+        </param>
         <param name="nNumericExpression">
             Specifies a <b>Numeric</b> value to perform the bitwise NOT operation.
         </param>
-        <param name="BinaryExpression">
+        <param name="BinString">
             Specifies a <b>Varbinary</b> or <b>Blob</b> value to perform the bitwise NOT operation.
         </param>
-        <param name="nStartBit">
+        <param name="StartBit">
             Specifies nStartBit as the starting zero-based number of the first bit to perform the operation
             and nBitCount as the number of bits to perform the operation.<br/>
             If you do not specify nStartBit and nBitCount, the operation applies to all bits in the expression.
             If you specify nStartBit only, the operation applies to nStartBit only.
         </param>
-        <param name="nBitCount">
+        <param name="BitCount">
             Specifies nStartBit as the starting zero-based number of the first bit to perform the operation and nBitCount as the number of bits to perform the operation.<br/>
             If you do not specify nStartBit and nBitCount, the operation applies to all bits in the expression. If you specify nStartBit only,
             the operation applies to nStartBit only.
@@ -1244,10 +1247,10 @@
             Perform a bitwise inclusive OR operation on two or more values of <b>Numeric</b>, <b>Varbinary</b>, or <b>Blob</b> type and returns the result.
             There is a numeric and a binary version of the syntax.
         </summary>
-        <param name="BinaryExpression1">
-            Specifies Varbinary or Blob values to perform the bitwise AND operation.
+        <param name="Arg1">
+            Specifies Varbinary or Blob value to perform the bitwise AND operation.
         </param>
-        <param name="BinaryExpression2">
+        <param name="Arg2">
             Specifies Varbinary or Blob values to perform the bitwise AND operation.
         </param>
         <returns>
@@ -1300,10 +1303,10 @@
             Moves bits in a numeric value to the right by the specified number of positions and returns the resulting value.
             If the specified expressions are not integers, they are converted to integers before performing the operation.
         </summary>
-        <param name="nExpression1">
+        <param name="Arg">
             Specifies the numeric value in which to move bits to the right.
         </param>
-        <param name="nExpression2">
+        <param name="Bits">
             Specifies the number of bit positions to move to the right.
         </param>
         <returns>
@@ -1326,21 +1329,24 @@
             There is a numeric and a binary version of the syntax.<br/>
             If the specified expression is not an integer, it is converted to an integer before setting the bit.
         </summary>
-        <param name="nNumericExpression1">
+        <param name="Arg1">
+            Specifies a <b>Numeric</b> or a <b>Varbinary</b> value to set the bit.
+        </param>
+        <param name="Num">
             Specifies a <b>Numeric</b> value to set the bit.
         </param>
-        <param name="nNumericExpression2">
+        <param name="Bit">
             Specifies the position of the bit in nExpression1 to set to 1. nExpression2 can range from 0 to 31 with 0 as the bit farthest to the right.
         </param>
-        <param name="BinaryExpression">
+        <param name="BinString">
             Specifies a <b>Varbinary</b> or <b>Blob</b> expression.
         </param>
-        <param name="nStartBit">
+        <param name="StartBit">
             Specifies a starting zero-based number of the first bit to perform the operation as nStartBit and the number of bits to perform the operation as nBitCount.<br/>
             If you do not specify nStartBit and nBitCount, the operation applies to all bits in the expression.
             If you specify nStartBit only, the operation applies to nStartBit only.
         </param>
-        <param name="nBitCount">
+        <param name="BitCount">
             Specifies a starting zero-based number of the first bit to perform the operation as nStartBit and the number of bits to perform the operation as nBitCount.<br/>
             If you do not specify nStartBit and nBitCount, the operation applies to all bits in the expression.
             If you specify nStartBit only, the operation applies to nStartBit only.
@@ -1362,18 +1368,18 @@
             There is a numeric and a binary version of the syntax.
             If the specified expression is not an integer, it is converted to an integer before performing the operation.
         </summary>
-        <param name="nNumericExpression1">
+        <param name="Arg">
             Specifies the <b>Numeric</b> value to check for the specified bit.
         </param>
-        <param name="nNumericExpression2">
+        <param name="Bit">
             Specifies the bit position in nExpression1 to check. nExpression2 can range from 0 to 31 with 0 as the bit farthest to the right.
         </param>
-        <param name="BinaryExpression">
+        <param name="BinString">
             Specifies a <b>Varbinary</b> or <b>Blob</b> expression to check for the specified bit.
         </param>
-        <param name="nBitNumber">
-            Specifies a zero-based bit in qExpression.
-            If nBitNumber is out of range of qExpression, X# generates an error.
+        <param name="BitNumber">
+            Specifies a zero-based bit in BinString.
+            If nBitNumber is out of range of BinString, X# generates an error.
         </param>
         <returns>
             Logical. <b>BitTest( ) </b>returns True (.T.) if the specified bit is set to 1; otherwise, it returns False (.F.).
@@ -1400,10 +1406,10 @@
             Perform a bitwise exclusive OR operation on two or more values of <b>Numeric</b>, <b>Varbinary</b>, or <b>Blob</b> type and returns the result.
             There is a numeric and a binary version of the syntax.
         </summary>
-        <param name="BinaryExpression1">
+        <param name="Arg1">
             Specifies Varbinary or Blob values to perform the bitwise AND operation.
         </param>
-        <param name="BinaryExpression2">
+        <param name="Arg2">
             Specifies Varbinary or Blob values to perform the bitwise AND operation.
         </param>
         <returns>

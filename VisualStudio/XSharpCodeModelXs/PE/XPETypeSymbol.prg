@@ -208,7 +208,7 @@ BEGIN NAMESPACE XSharpModel
                      VAR ifname := @@interface:InterfaceType:FullName
                      // cecil returns System.Collections.Generic.IList`1<T> for the FullName
                      var LtPos := ifname:IndexOf(c'<')
-                     IF  LtPos > 0 && ifname:Contains(c'`')
+                     IF  LtPos > 0 .AND. ifname:Contains(c'`')
                           ifname := ifname:Substring(0, LtPos)
                      ENDIF
                      SELF:_signature:AddInterface(ifname)

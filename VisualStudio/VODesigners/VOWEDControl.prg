@@ -151,7 +151,7 @@ CLASS VOWEDControl INHERIT Panel
 	RETURN
 
    ACCESS IsGridEnabled AS LOGIC
-      RETURN oWed != NULL && oWed:IsGridEnabled
+      RETURN oWed != NULL .AND. oWed:IsGridEnabled
 
 	ASSIGN ReadOnly(_lReadOnly AS LOGIC)
         IF SELF:oEditor != NULL

@@ -1654,7 +1654,7 @@ RETURN
 	RETURN
 	
 	ACCESS IsGridEnabled AS LOGIC
-	   RETURN oWindow != NULL && oOptions:lShowGrid
+	   RETURN oWindow != NULL .AND. oOptions:lShowGrid
 	   
 	ACCESS ViewMode AS ViewMode
 		LOCAL oProp AS DesignProperty

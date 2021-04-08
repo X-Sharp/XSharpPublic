@@ -57,7 +57,7 @@ BEGIN NAMESPACE XSharpModel
             IF (! SELF:HasCode)
                 RETURN NULL
             ENDIF
-            IF (SELF:TypeList == NULL || SELF:TypeList:Count == 0)
+            IF (SELF:TypeList == NULL .OR. SELF:TypeList:Count == 0)
                 RETURN NULL
             ENDIF
             BEGIN LOCK SELF

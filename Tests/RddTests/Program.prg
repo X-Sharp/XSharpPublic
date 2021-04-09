@@ -12,8 +12,11 @@ USING System.Collections.Generic
 [STAThread];      
 FUNCTION Start() AS VOID
     TRY
+         OrdDescAndOrdScope()
+         //OrdScopeBof()
+         //OrderKeyCountAndSkipBack()
         //DumpWg1()
-         testUse()
+        //testUse()
         //testWg1()
         //TestCorruptCdx()
         //ReadVfpTableWithInfo()
@@ -216,6 +219,222 @@ USING System.Threading
 
 GLOBAL gcPath := "c:\test\"
 
+FUNCTION OrdDescAndOrdScope() AS VOID 
+LOCAL cDBF, cPfad, cIndex   AS STRING 
+LOCAL aFields, aValues AS ARRAY 
+LOCAL i AS DWORD  
+
+
+    RddSetDefault ( "DBFCDX" ) 
+    
+    cPfad := "D:\test\" 
+ 
+	cDBF := cPfad + "Foo"
+	cIndex := cPfad + "Foox" 
+	
+	FErase ( cIndex + IndexExt() )
+		
+	aFields := { { "LAST" , "C" , 20 , 0 } 	} 
+	
+	aValues := { "g6" , "o2", "g2" , "g1" , "g3" , "g5" , "B1" , "b2" , "p", "q" , "r" , "s" }	
+	
+	// ------------
+	
+	DbCreate( cDBF , AFields)
+	DbUseArea( ,,cDBF )		
+
+	FOR i := 1 UPTO ALen ( aValues )
+		DbAppend() 
+		FieldPut ( 1 , aValues [ i ] )
+	NEXT
+	
+	DbCreateOrder ( "ORDER1" , cIndex , "upper(LAST)" , { || Upper ( _FIELD->LAST) } )
+	DbCloseArea()
+	
+	// --------------
+	
+	DbUseArea( ,,cDBF )
+	DbSetIndex ( cIndex )
+	DbSetOrder ( 1 ) 
+	
+	OrdDescend ( , , TRUE )  // switch to descend view
+
+	OrdScope(TOPSCOPE, "B")     // Note: must be "R" !
+	OrdScope(BOTTOMSCOPE, "R")  // Note: must be "B" !
+	
+	? "OrdKeyCount()" , OrdKeyCount()
+	?     
+	
+	// -------------	
+	
+	DbGoTop()            
+	? Bof() , Eof()  // both return .f. !
+
+
+    DO WHILE ! Eof()
+    	? FieldGet ( 1 ) 
+    	DbSkip ( 1 )
+    	
+    ENDDO 	
+           
+   
+    DbGoTop()       
+    ? Bof() , Eof() // both return .f. !
+    
+    DbGoBottom()       
+    ? Bof() , Eof() // both return .f. !
+
+
+	DbCloseArea() 
+	
+	RETURN 	
+FUNCTION OrdScopeBof() AS VOID 
+LOCAL cDBF, cPfad, cIndex   AS STRING 
+LOCAL aFields, aValues AS ARRAY 
+LOCAL i AS DWORD  
+
+    RddSetDefault ( "DBFCDX" ) 
+    
+    cPfad := "D:\test\" 
+ 
+	cDBF := cPfad + "Foo"
+	cIndex := cPfad + "Foox" 
+	
+	FErase ( cIndex + IndexExt() )
+		
+	aFields := { { "LAST" , "C" , 20 , 0 } 	} 
+	
+	aValues := { "g6" , "o2", "g2" , "g1" , "g3" , "g5" , "B1" , "b2" , "p", "q" , "r" , "s" }	
+	
+	// ------------
+	
+	DbCreate( cDBF , AFields)
+	DbUseArea( ,,cDBF )		
+
+	FOR i := 1 UPTO ALen ( aValues )
+		DbAppend() 
+		FieldPut ( 1 , aValues [ i ] )
+	NEXT
+	
+	DbCreateOrder ( "ORDER1" , cIndex , "upper(LAST)" , { || Upper ( _FIELD->LAST) } )
+	DbCloseArea()
+	
+	// --------------
+	
+	DbUseArea( ,,cDBF )
+	DbSetIndex ( cIndex )
+	DbSetOrder ( 1 ) 
+
+	OrdScope(TOPSCOPE, "X")     // "A"
+	OrdScope(BOTTOMSCOPE, "X")  // "A"
+	
+	? "OrdKeyCount()" , OrdKeyCount()
+	?     
+	
+	// -------------	
+	
+	DbGoTop()            
+	? Bof() , Eof() // .f. and .t.
+
+
+    DO WHILE ! Eof()
+    	? FieldGet ( 1 ) 
+    	DbSkip ( 1 )
+    	
+    ENDDO 	
+           
+   
+    DbGoTop()       
+    ? Bof() , Eof()   // .f. and .t.
+    
+    DbGoBottom()       
+    ? Bof() , Eof()   // .f. and .t.  
+        
+	DbCloseArea() 
+	
+	RETURN 		
+
+FUNCTION OrderKeyCountAndSkipBack() AS VOID
+LOCAL cDBF, cPfad, cIndex   AS STRING 
+LOCAL aFields, aValues AS ARRAY 
+LOCAL i  AS DWORD  
+
+
+	RddSetDefault ( "DBFCDX" ) 
+    
+
+	cPfad := "D:\test\" 
+ 
+	cDBF := cPfad + "Foo"
+	cIndex := cPfad + "Foox" 
+	
+	FErase ( cIndex + IndexExt() )
+		
+	aFields := { { "LAST" , "C" , 20 , 0 } 	} 
+	
+	aValues := { "g6" , "o2", "g2" , "g1" , "g3" , "g5" , "B1" , "b2" , "p", "q" , "r" , "s" }	
+	
+	// ------------
+	
+	DbCreate( cDBF , AFields)
+	DbUseArea( ,,cDBF )		
+
+	FOR i := 1 UPTO ALen ( aValues )
+		DbAppend() 
+		FieldPut ( 1 , aValues [ i ] )
+	NEXT
+	
+	DbCreateOrder ( "ORDER1" , cIndex , "upper(LAST)" , { || Upper ( _FIELD->LAST) } )
+	DbCloseArea()
+	
+	// --------------
+	
+	DbUseArea( ,,cDBF )
+	DbSetIndex ( cIndex )
+	DbSetOrder ( 1 )
+	
+	
+   
+	DbSeek ( "G" ) 
+	? "Skip to eof" 
+	? "-----------"
+	
+	DO WHILE ! Eof()            
+			
+	  	? FieldGet ( 1 ) 
+    	
+  		DbSkip ( 1 ) 
+  		
+ 		DbOrderInfo ( DBOI_POSITION )
+ 		DbOrderInfo ( DBOI_KEYCOUNT )
+ 		
+	ENDDO 
+	
+	?
+	
+	DbSeek ( "G" )
+	
+	? "Skip to bof" 
+	? "-----------"
+		 
+
+	DO WHILE ! Bof()            
+
+	  	? FieldGet ( 1 ) 
+    	
+  		DbSkip ( -1 )
+  		
+  		? "Bof() before DBOI_KEYCOUNT" , Bof() 
+// 		DbOrderInfo ( DBOI_POSITION )
+ 		DbOrderInfo ( DBOI_KEYCOUNT )
+  		? "Bof() after DBOI_KEYCOUNT" , Bof()
+        WAIT   		 
+        
+	ENDDO 
+    
+	DbCloseArea() 
+	
+	RETURN 		
 
 FUNCTION testUse() AS INT
 LOCAL cFilename AS STRING

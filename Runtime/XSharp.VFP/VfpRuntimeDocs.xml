@@ -2883,6 +2883,19 @@
       </code>
     </example>
   </tag>
+    <bagcount>
+        <summary>
+            Returns the number of open .cdx files.
+        </summary>
+        <param name="uArea">
+            Specifies the work area of the table for which BAGCOUNT( ) returns the number of open .cdx files.
+            <br/>Or<br/>
+            Specifies the alias of the table for which BAGCOUNT( ) returns the number of open .cdx files.
+        </param>
+        <returns>
+            Numeric
+        </returns>
+    </bagcount>
   <tagcount>
     <summary>
       Returns the number of .cdx compound index file tags and open .idx single-entry index files.

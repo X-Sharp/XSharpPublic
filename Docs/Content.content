@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Topics>
-  <Topic id="75f9037d-2930-47ac-b247-0344736fbd6a" visible="True" noFile="true" isExpanded="true" apiParentMode="InsertBefore" title="Classes By Category">
-    <Topic id="cat-Application_Classes" visible="True" isExpanded="true" title="Application Classes">
+  <Topic id="75f9037d-2930-47ac-b247-0344736fbd6a" visible="True" noFile="true" apiParentMode="InsertBefore" title="Classes By Category">
+    <Topic id="cat-Application_Classes" visible="True" title="Application Classes">
       <Topic id="cat-State_Classes" visible="True" title="Settings Classes" />
       <Topic id="cat-Support_Classes" visible="True" title="Support Classes" />
       <Topic id="cat-Macro_Classes" visible="True" title="Macro Classes" />
@@ -24,7 +24,7 @@
       <Topic id="cat-RDD_Classes" visible="True" title="RDD Classes" />
     </Topic>
     <Topic id="cat-Internet_Classes" visible="True" title="Internet Classes" />
-    <Topic id="4cf5f628-5b1f-4d69-98c7-512d4e0cd9e0" visible="True" noFile="true" isSelected="true" title="VO UI Classes">
+    <Topic id="4cf5f628-5b1f-4d69-98c7-512d4e0cd9e0" visible="True" noFile="true" title="VO UI Classes">
       <Topic id="cat-Control_Classes" visible="True" isExpanded="true" title="Control Classes">
         <Topic id="cat-Button_Classes" visible="True" title="Button Classes" />
         <Topic id="cat-Draw_Classes" visible="True" title="Draw Classes" />
@@ -45,7 +45,7 @@
     <Topic id="cat-VFP_Classes" visible="True" title="VFP classes" />
     <Topic id="cat-XPP_Classes" visible="True" title="XPP Classes" />
   </Topic>
-  <Topic id="6c99f5a5-8245-4b4f-b31e-70eb0e84db1e" visible="True" noFile="true" title="Functions By Category">
+  <Topic id="6c99f5a5-8245-4b4f-b31e-70eb0e84db1e" visible="True" noFile="true" isExpanded="true" title="Functions By Category">
     <Topic id="60810de0-2ceb-4ade-9e38-d6501cf7c216" visible="True" noFile="true" title="Data Types">
       <Topic id="cat-Array_Functions" visible="True" title="Array Functions">
         <HelpKeywords>
@@ -211,6 +211,11 @@
       <Topic id="cat-Memvar_Functions" visible="True" title="Memvar Functions">
         <HelpKeywords>
           <HelpKeyword index="K" term="Memvar Functions" />
+        </HelpKeywords>
+      </Topic>
+      <Topic id="cat-Metadata_Functions" visible="True" isSelected="true" title="Metadata Functions">
+        <HelpKeywords>
+          <HelpKeyword index="K" term="Metadata Functions" />
         </HelpKeywords>
       </Topic>
       <Topic id="cat-Network_Functions" visible="True" title="Network Functions">

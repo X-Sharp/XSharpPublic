@@ -11,25 +11,27 @@
 </row></tableHeader>
 <row><entry><para>XSharp.Core</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.B64EncFile(System.String)</codeEntityReference></para></entry>
-<entry><para></para></entry></row>
+<entry><para>This function is not implemented yet</para></entry></row>
 <row><entry><para>XSharp.Core</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.B64EncString(System.String)</codeEntityReference></para></entry>
-<entry><para></para></entry></row>
+<entry><para>This function is not implemented yet</para></entry></row>
 <row><entry><para>XSharp.Core</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.DecodeBase64(System.String,System.IntPtr)</codeEntityReference></para></entry>
-<entry><para></para></entry></row>
+<entry><para>
+      Decode a file from an e-mail transfer.
+    </para></entry></row>
 <row><entry><para>XSharp.Core</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.QPEncString(System.String)</codeEntityReference></para></entry>
 <entry><para></para></entry></row>
 <row><entry><para>XSharp.Core</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.UUDecodeLine(System.String,System.IntPtr)</codeEntityReference></para></entry>
-<entry><para></para></entry></row>
+<entry><para>This function is not implemented yet</para></entry></row>
 <row><entry><para>XSharp.Core</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.UUEncFile(System.String)</codeEntityReference></para></entry>
-<entry><para></para></entry></row>
+<entry><para>This function is not implemented yet</para></entry></row>
 <row><entry><para>XSharp.Core</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.UUEncLine(System.String)</codeEntityReference></para></entry>
-<entry><para></para></entry></row>
+<entry><para>This function is not implemented yet</para></entry></row>
 </table>
 </content>
      </section>

@@ -11,10 +11,12 @@
 </row></tableHeader>
 <row><entry><para>XSharp</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.FoxCollations</codeEntityReference></para></entry>
-<entry><para></para></entry></row>
+<entry><para>List of possible index collations for VFP DBF files. For each of these collations there is a weight table in the XSharp.VFP assembly.</para></entry></row>
 <row><entry><para>XSharp.VFP</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.VFP.Abstract</codeEntityReference></para></entry>
-<entry><para></para></entry></row>
+<entry><para>
+            The Abstract class.
+            </para></entry></row>
 <row><entry><para>XSharp.VFP</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.VFP.AssertDialog</codeEntityReference></para></entry>
 <entry><para></para></entry></row>
@@ -29,7 +31,9 @@
 <entry><para></para></entry></row>
 <row><entry><para>XSharp.VFP</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.VFP.Empty</codeEntityReference></para></entry>
-<entry><para></para></entry></row>
+<entry><para>
+            The FoxPro Empty class.
+            </para></entry></row>
 <row><entry><para>XSharp.VFP</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.VFP.PropertyNotFoundException</codeEntityReference></para></entry>
 <entry><para></para></entry></row>

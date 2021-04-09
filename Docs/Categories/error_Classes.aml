@@ -11,31 +11,31 @@
 </row></tableHeader>
 <row><entry><para>XSharp</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.Error</codeEntityReference></para></entry>
-<entry><para></para></entry></row>
+<entry><para>XSharp Runtime base Error class</para></entry></row>
 <row><entry><para>XSharp</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.ErrorDialog</codeEntityReference></para></entry>
 <entry><para></para></entry></row>
 <row><entry><para>XSharp</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.Gencode</codeEntityReference></para></entry>
-<entry><para></para></entry></row>
+<entry><para>Error code Enum that matches the Visual Objecs and Vulcan Generic Error Codes</para></entry></row>
 <row><entry><para>XSharp</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.Severity</codeEntityReference></para></entry>
-<entry><para></para></entry></row>
+<entry><para>Error code Enum that matches the Visual Objecs and Vulcan Error Severity codesFDesc</para></entry></row>
 <row><entry><para>XSharp</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.Subcodes</codeEntityReference></para></entry>
-<entry><para></para></entry></row>
+<entry><para>Error code Enum that matches the Visual Objecs and Vulcan Error Sub Codes</para></entry></row>
 <row><entry><para>XSharp</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.VFPErrors</codeEntityReference></para></entry>
 <entry><para></para></entry></row>
 <row><entry><para>XSharp.Internal</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.Internal.WrappedException</codeEntityReference></para></entry>
-<entry><para></para></entry></row>
+<entry><para>Helper class for the BREAK statement</para></entry></row>
 <row><entry><para>XSharp.RDD</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.RDD.ERDD</codeEntityReference></para></entry>
-<entry><para></para></entry></row>
+<entry><para>Common RDD Error numbers</para></entry></row>
 <row><entry><para>XSharp.RDD</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.RDD.RddError</codeEntityReference></para></entry>
-<entry><para></para></entry></row>
+<entry><para>Error subclass used by the RDD system.</para></entry></row>
 <row><entry><para>XSharp.VFP</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.VFP.PropertyNotFoundException</codeEntityReference></para></entry>
 <entry><para></para></entry></row>

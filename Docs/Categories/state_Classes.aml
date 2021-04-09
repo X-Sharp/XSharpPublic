@@ -11,10 +11,12 @@
 </row></tableHeader>
 <row><entry><para>XSharp</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.RuntimeState</codeEntityReference></para></entry>
-<entry><para></para></entry></row>
+<entry><para>
+            Container Class that holds the XSharp Runtime state
+            </para></entry></row>
 <row><entry><para>XSharp</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.Set</codeEntityReference></para></entry>
-<entry><para></para></entry></row>
+<entry><para>Values that match the Visual Objects SET_* defines </para></entry></row>
 </table>
 </content>
      </section>

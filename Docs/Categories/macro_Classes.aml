@@ -11,13 +11,19 @@
 </row></tableHeader>
 <row><entry><para>XSharp</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.IMacroCompiler</codeEntityReference></para></entry>
-<entry><para></para></entry></row>
+<entry><para>
+            This interface defines the Macro compiler subsystem
+            </para></entry></row>
 <row><entry><para>XSharp</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.IMacroCompiler2</codeEntityReference></para></entry>
-<entry><para></para></entry></row>
+<entry><para>
+            This interface extends the Macro compiler and adds a method that is called to decide between ambigous methods or constructors
+            </para></entry></row>
 <row><entry><para>XSharp</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.MacroCompilerResolveAmbiguousMatch</codeEntityReference></para></entry>
-<entry><para></para></entry></row>
+<entry><para>
+            This delegate is used to decide between 2 ambigous methods or constructors
+            </para></entry></row>
 </table>
 </content>
      </section>

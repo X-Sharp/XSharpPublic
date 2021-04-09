@@ -11,16 +11,16 @@
 </row></tableHeader>
 <row><entry><para>XSharp</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.NamedArg</codeEntityReference></para></entry>
-<entry><para></para></entry></row>
+<entry><para>VO Compatible type to allow name/value pairs for Ole Automation parameters</para></entry></row>
 <row><entry><para>XSharp</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.OleAutoObject</codeEntityReference></para></entry>
-<entry><para></para></entry></row>
+<entry><para>VO Compatible OLE Automation class</para></entry></row>
 <row><entry><para>XSharp</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.OleAutoObjectFromFile</codeEntityReference></para></entry>
-<entry><para></para></entry></row>
+<entry><para>VO Compatible class to create an OLEAutObject from a file on disk.</para></entry></row>
 <row><entry><para>XSharp</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.OleDateTime</codeEntityReference></para></entry>
-<entry><para></para></entry></row>
+<entry><para>VO Compatible class to store DateTime values in OLE Automation</para></entry></row>
 </table>
 </content>
      </section>

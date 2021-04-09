@@ -2,9 +2,11 @@ USING System.Reflection
 USING System.Collections.Generic
 USING System.Linq
 USING System.Text
+USING System.XML
 GLOBAL gaFiles AS STRING[]
 GLOBAL gsPath AS STRING
 GLOBAL gsCatPath AS STRING
+GLOBAL documents AS Dictionary<STRING, XmlDocument>
 FUNCTION Start AS VOID   
     gaFiles := <STRING>{"XSharp.Core.DLL", "XSharp.RT.DLL","XSharp.VO.DLL", ;
         "XSharp.Data.DLL","XSharp.VFP.DLL","XSharp.RDD.DLL","XSharp.XPP.DLL",   ;
@@ -13,13 +15,14 @@ FUNCTION Start AS VOID
         "XSharp.RT.Debugger.DLL", "XSharp.VOSystemClasses.DLL", ;
         "XSharp.VOConsoleClasses.DLL","XSharp.VOSQLClasses.DLL","XSharp.VORDDClasses.DLL"}
     gsPath  := "c:\XSharp\DevRt\Binaries\Documentation\"    
-    gsCatPath := "c:\XSharp\DevRt\Docs\Categories\"        
+    gsCatPath := "c:\XSharp\DevRt\Docs\Categories\"
+    documents := Dictionary<STRING, XmlDocument>{StringComparer.OrdinalIgnoreCase}
     TRY
     //CreateClassList() 
     //CreateClassSectionFiles()
-    //WriteClassTopics()
+    WriteClassTopics()
     //CreateFunctionList()
-    CreateFunctionSectionFiles()  
+    //CreateFunctionSectionFiles()  
     WriteFunctionTopics()
     CATCH e AS Exception
         ? e:ToString()
@@ -74,14 +77,15 @@ FUNCTION WriteClassTopics() AS VOID
                     EXIT
                 ENDIF
             NEXT                             
-            IF match                     
+            IF match                                                       
+                VAR sig := "T:"+info:NameSpace+"."+ info:Name   
+                VAR xml  := gsPath+info:assembly:replace(".DLL",".XML")
+                VAR desc := ReadDescription(xml, sig, "c:\Program Files (x86)\XSharp\Assemblies\")                        
                 sb:AppendLine("<row><entry><para>"+info:NameSpace+"</para></entry>")
                 sb:Append("<entry><para><codeEntityReference qualifyHint=""false"" autoUpgrade=""true"">")
-                sb:Append("T:")                                               
-                sb:Append(info:NameSpace+".")
-                sb:Append(info:Name)
+                sb:Append(sig)                                               
                 sb:AppendLine("</codeEntityReference></para></entry>")
-                sb:AppendLine("<entry><para>"+info:Description+"</para></entry></row>")
+                sb:AppendLine("<entry><para>"+desc+"</para></entry></row>")
             ENDIF
         NEXT
         sb:AppendLine("</table>")
@@ -128,9 +132,10 @@ FUNCTION WriteFunctionTopics() AS VOID
         sb:AppendLine("<row><entry><para>Assembly</para></entry>")
         sb:AppendLine("<entry><para>Function</para></entry>")
         sb:AppendLine("<entry><para>Description</para></entry>")
-        sb:AppendLine("</row></tableHeader>")
+        sb:AppendLine("</row></tableHeader>")     
+        // Sort the functions in a temp array
         FOREACH VAR item IN aInfo  
-            VAR info := item:Value
+            LOCAL info := item:Value   AS FunctionInfo
             VAR match := FALSE
             FOREACH VAR keyword IN info:Categories
                 IF String.Compare(keyword, cat, TRUE) == 0
@@ -139,16 +144,17 @@ FUNCTION WriteFunctionTopics() AS VOID
                 ENDIF
             NEXT                             
             IF match                     
-                VAR assembly := info:assembly:replace(".DLL","")
+                VAR assembly := info:assembly:replace(".DLL","")    
+                VAR xml      := gsPath+info:assembly:replace(".DLL",".XML")
+                VAR sig := info:Signature 
+                sig := "M:"+Assembly+".Functions."+info:Name+sig    
+                VAR desc := ReadDescription(xml, sig,"c:\Program Files (x86)\XSharp\Assemblies\")                        
+                
                 sb:AppendLine("<row><entry><para>"+assembly+"</para></entry>")
                 sb:Append("<entry><para><codeEntityReference qualifyHint=""false"" autoUpgrade=""true"">")
-                sb:Append("M:")                                               
-                sb:Append(Assembly)
-                sb:Append(".Functions.")
-                sb:Append(info:Name)
-                sb:Append(info:Signature)
+                sb:Append(sig)                                               
                 sb:AppendLine("</codeEntityReference></para></entry>")
-                sb:AppendLine("<entry><para>"+info:Description+"</para></entry></row>")
+                sb:AppendLine("<entry><para>"+desc+"</para></entry></row>")
             ENDIF
         NEXT
         sb:AppendLine("</table>")
@@ -157,7 +163,33 @@ FUNCTION WriteFunctionTopics() AS VOID
     NEXT
     
     RETURN
-                  
+
+FUNCTION ReadDescription(cXmlFile AS STRING, cSig AS STRING, cAltPath AS STRING) AS STRING
+    LOCAL doc AS XmlDocument
+    IF System.IO.File.Exists(cXmlFile)
+        IF documents:ContainsKey(cXmlFile)
+            doc := documents[cXmlFile]
+        ELSE
+            doc      := XmlDocument{}
+            doc:Load(cXmlFile)    
+            documents:Add(cXmlFile, doc)
+        ENDIF
+        VAR node := doc:SelectSingleNode("doc/members/member[@name='"+cSig+"']/summary")
+        IF (node != NULL)
+//            FOREACH  child  AS XmlNode IN  node.ChildNodes
+//            IF (child.Name == "summary")
+//            RETURN child.InnerText
+//            ENDIF
+//            NEXT
+            RETURN node.InnerText        
+        ENDIF
+    ENDIF      
+    IF ! string.IsNullOrEmpty(cAltPath)
+        cXmlFile := cAltPath+System.IO.Path.GetFileName(cXmlFile)
+        RETURN ReadDescription(cXmlFile, cSig,"")
+    ENDIF
+    RETURN ""
+                      
 
 FUNCTION CreateFunctionSectionFiles AS VOID
     VAR sTemplate := gsCatPath+"templateFunctions.aml"
@@ -439,7 +471,7 @@ CLASS FunctionInfo
     PROPERTY Name AS STRING AUTO
     PROPERTY Description AS STRING AUTO   := ""
     PROPERTY Categories AS STRING[] AUTO  := STRING[]{0}
-    PROPERTY Key AS STRING GET Assembly:ToLower():PadRight(25) +":"+Name:ToLower()
+    PROPERTY Key AS STRING GET Name:ToLower():PadRight(25) +":"+Assembly:ToLower()
     PROPERTY Overloads AS MemberInfo[] AUTO
     PROPERTY Signature AS STRING 
         GET                                     

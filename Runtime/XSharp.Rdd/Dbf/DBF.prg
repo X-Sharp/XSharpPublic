@@ -176,15 +176,13 @@ METHOD GoTo(nRec AS LONG) AS LOGIC
 				SELF:_RecCount := SELF:_calculateRecCount()
 			ENDIF
             LOCAL nCount := SELF:_RecCount AS LONG
+            // Normal positioning, VO resets FOUND to FALSE after a recprd movement
+            SELF:_Found := FALSE
+      	    SELF:_BufferValid := FALSE
 			IF  nRec <= nCount  .AND.  nRec > 0 
-                // Normal positioning
-                // VO does not set _Found to TRUE for a succesfull Goto. It does set _Found to false for a failed Goto
-                //? SELF:CurrentThreadId, "Set Recno to ", Nrec
 				SELF:_RecNo := nRec
 				SELF:_SetEOF(FALSE)
                 SELF:_SetBOF(FALSE)
-                //SELF:_Found :=TRUE    
-				SELF:_BufferValid := FALSE
 				SELF:_isValid := TRUE
 			ELSEIF nRec < 0 .AND. nCount > 0
                 // skip to BOF. Move to record 1. 
@@ -192,8 +190,6 @@ METHOD GoTo(nRec AS LONG) AS LOGIC
                 //? SELF:CurrentThreadId, "Set Recno to ", 1, "nRec", nRec, "nCount", nCount
 				SELF:_SetEOF(FALSE)
                 SELF:_SetBOF(TRUE)
-				SELF:_Found :=FALSE
-				SELF:_BufferValid := FALSE
 				SELF:_isValid := FALSE
 			ELSE
                 // File empty, or move after last record
@@ -201,8 +197,6 @@ METHOD GoTo(nRec AS LONG) AS LOGIC
 				SELF:_RecNo := nCount + 1
 				SELF:_SetEOF(TRUE)
                 SELF:_SetBOF(nCount == 0)
-				SELF:_Found := FALSE
-				SELF:_BufferValid := FALSE
 				SELF:_isValid := FALSE
             ENDIF
             IF SELF:_Relations:Count != 0

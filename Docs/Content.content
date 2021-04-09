@@ -1,8 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Topics>
-  <Topic id="75f9037d-2930-47ac-b247-0344736fbd6a" visible="True" noFile="true" apiParentMode="InsertBefore" title="Classes By Category">
-    <Topic id="cat-Application_Classes" visible="True" title="Application Classes">
-      <Topic id="cat-State_Classes" visible="True" title="Settings Classes" />
+  <Topic id="75f9037d-2930-47ac-b247-0344736fbd6a" visible="True" noFile="true" isExpanded="true" apiParentMode="InsertBefore" title="Classes By Category">
+    <Topic id="cat-Application_Classes" visible="True" isExpanded="true" title="Application Classes">
+      <Topic id="cat-State_Classes" visible="True" isSelected="true" title="Settings Classes" />
       <Topic id="cat-Support_Classes" visible="True" title="Support Classes" />
       <Topic id="cat-Macro_Classes" visible="True" title="Macro Classes" />
       <Topic id="cat-Attributes_Classes" visible="True" title="Attributes Classes" />
@@ -18,14 +18,15 @@
       </Topic>
     </Topic>
     <Topic id="cat-Data_Classes" visible="True" title="Data Classes">
-      <Topic id="cat-DBC_Classes" visible="True" title="DBC Classes" />
-      <Topic id="cat-ADS_Classes" visible="True" title="ADS Classes" />
-      <Topic id="cat-SQL_Classes" visible="True" title="SQL Classes" />
       <Topic id="cat-RDD_Classes" visible="True" title="RDD Classes" />
+      <Topic id="cat-ADS_Classes" visible="True" title="ADS Classes" />
+      <Topic id="cat-DBC_Classes" visible="True" title="DBC Classes" />
+      <Topic id="cat-SQL_Classes" visible="True" title="SQL Classes" />
     </Topic>
     <Topic id="cat-Internet_Classes" visible="True" title="Internet Classes" />
-    <Topic id="4cf5f628-5b1f-4d69-98c7-512d4e0cd9e0" visible="True" noFile="true" title="VO UI Classes">
-      <Topic id="cat-Control_Classes" visible="True" isExpanded="true" title="Control Classes">
+    <Topic id="cat-VFP_Classes" visible="True" title="VFP classes" />
+    <Topic id="4cf5f628-5b1f-4d69-98c7-512d4e0cd9e0" visible="True" noFile="true" isExpanded="true" title="VO UI Classes">
+      <Topic id="cat-Control_Classes" visible="True" title="Control Classes">
         <Topic id="cat-Button_Classes" visible="True" title="Button Classes" />
         <Topic id="cat-Draw_Classes" visible="True" title="Draw Classes" />
         <Topic id="cat-Image_Classes" visible="True" title="Image Classes" />
@@ -42,11 +43,10 @@
         <Topic id="cat-Printer_Classes" visible="True" title="Printer Classes" />
       </Topic>
     </Topic>
-    <Topic id="cat-VFP_Classes" visible="True" title="VFP classes" />
     <Topic id="cat-XPP_Classes" visible="True" title="XPP Classes" />
   </Topic>
-  <Topic id="6c99f5a5-8245-4b4f-b31e-70eb0e84db1e" visible="True" noFile="true" isExpanded="true" title="Functions By Category">
-    <Topic id="60810de0-2ceb-4ade-9e38-d6501cf7c216" visible="True" noFile="true" title="Data Types">
+  <Topic id="6c99f5a5-8245-4b4f-b31e-70eb0e84db1e" visible="True" noFile="true" title="Functions By Category">
+    <Topic id="60810de0-2ceb-4ade-9e38-d6501cf7c216" visible="True" noFile="true" isExpanded="true" title="Data Types">
       <Topic id="cat-Array_Functions" visible="True" title="Array Functions">
         <HelpKeywords>
           <HelpKeyword index="K" term="Array Functions" />
@@ -97,6 +97,11 @@
           <HelpKeyword index="K" term="String Functions" />
         </HelpKeywords>
       </Topic>
+      <Topic id="cat-Symbol_Functions" visible="True" title="Symbol Functions">
+        <HelpKeywords>
+          <HelpKeyword index="K" term="Symbol Functions" />
+        </HelpKeywords>
+      </Topic>
       <Topic id="cat-Time_Functions" visible="True" title="Time Functions">
         <HelpKeywords>
           <HelpKeyword index="K" term="Time Functions" />
@@ -108,7 +113,7 @@
         </HelpKeywords>
       </Topic>
     </Topic>
-    <Topic id="b33097a4-8751-44a7-886a-a5954a8bd1b8" visible="True" noFile="true" title="DBF and SQL">
+    <Topic id="b33097a4-8751-44a7-886a-a5954a8bd1b8" visible="True" noFile="true" isExpanded="true" title="DBF and SQL">
       <Topic id="cat-ADS_Functions" visible="True" title="ADS Functions">
         <HelpKeywords>
           <HelpKeyword index="K" term="ADS Functions" />
@@ -160,7 +165,7 @@
         </HelpKeywords>
       </Topic>
     </Topic>
-    <Topic id="5afa3667-6e1c-47cf-99b5-d2ab9dbf291c" visible="True" noFile="true" title="OS and File System">
+    <Topic id="5afa3667-6e1c-47cf-99b5-d2ab9dbf291c" visible="True" noFile="true" isExpanded="true" title="OS and File System">
       <Topic id="cat-Disk_Functions" visible="True" title="Disk Functions">
         <HelpKeywords>
           <HelpKeyword index="K" term="Disk Functions" />
@@ -169,6 +174,16 @@
       <Topic id="cat-File_Functions" visible="True" title="File Functions">
         <HelpKeywords>
           <HelpKeyword index="K" term="File Functions" />
+        </HelpKeywords>
+      </Topic>
+      <Topic id="cat-Printing_Functions" visible="True" title="Printing Functions">
+        <HelpKeywords>
+          <HelpKeyword index="K" term="Printing Functions" />
+        </HelpKeywords>
+      </Topic>
+      <Topic id="cat-Registry_Functions" visible="True" title="Registry Functions">
+        <HelpKeywords>
+          <HelpKeyword index="K" term="Registry Functions" />
         </HelpKeywords>
       </Topic>
     </Topic>
@@ -213,7 +228,7 @@
           <HelpKeyword index="K" term="Memvar Functions" />
         </HelpKeywords>
       </Topic>
-      <Topic id="cat-Metadata_Functions" visible="True" isSelected="true" title="Metadata Functions">
+      <Topic id="cat-Metadata_Functions" visible="True" title="Metadata Functions">
         <HelpKeywords>
           <HelpKeyword index="K" term="Metadata Functions" />
         </HelpKeywords>
@@ -223,19 +238,9 @@
           <HelpKeyword index="K" term="Network Functions" />
         </HelpKeywords>
       </Topic>
-      <Topic id="cat-Printing_Functions" visible="True" title="Printing Functions">
-        <HelpKeywords>
-          <HelpKeyword index="K" term="Printing Functions" />
-        </HelpKeywords>
-      </Topic>
       <Topic id="cat-Programming_Functions" visible="True" title="Programming Functions">
         <HelpKeywords>
           <HelpKeyword index="K" term="Programming Functions" />
-        </HelpKeywords>
-      </Topic>
-      <Topic id="cat-Registry_Functions" visible="True" title="Registry Functions">
-        <HelpKeywords>
-          <HelpKeyword index="K" term="Registry Functions" />
         </HelpKeywords>
       </Topic>
       <Topic id="cat-Settings_Functions" visible="True" title="Settings Functions">

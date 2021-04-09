@@ -1,0 +1,232 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<doc>
+    <members></members>
+    <Console>
+        <summary>
+            Encapsulate a Win32 console application.
+        </summary>
+        <remarks>
+            A noticeable difference between the implementation of the two libraries can be seen when starting an application from the command line.  A Terminal Lite application will get a new window allocated, while a Console Classes application runs in the same window in which it was started.  Depending on the command line setting, a Console Classes application can also run full screen, while a Terminal Lite application cannot.  Also, using the Console Classes does not require an additional runtime DLL to be distributed with your application.
+            <note type="tip">The application type has to be set to Console in the Application Options dialog box in order to run the application within the Win32 console.  Otherwise, a separate console window is created.  You can also use the Console class to create a separate console window in a regular Windows application, e.g., to output some debug information.</note>
+        </remarks>
+    </Console>
+    <Console.ctor>
+        <summary>
+            Instantiate a new Console object.
+        </summary>
+        <param name="lNew">A logical value forcing the allocation of a new console window, if set to TRUE.  The default is FALSE.</param>
+        <remarks>
+            The Init() method allocates a new console window.  By default, or if the <paramref name="lNew" /> parameter is set to FALSE, X# first tries to use an already open console window, e.g., if the application was started from the command line.  If this fails, or if <paramref name="lNew" /> was set to TRUE, Console:Init() allocates and opens a new console window.
+        </remarks>
+        <example>
+            This code snippet creates and clear a new console window:
+            <code language="X#">
+                FUNCTION Start()
+                LOCAL oCon AS Console
+                oCon := Console{}
+                oCon:Clear()
+            </code>
+        </example>
+    </Console.ctor>
+    <Console.Clear>
+        <summary>
+            Clear the console window.
+        </summary>
+        <example>
+            This code snippet creates and clear a new console window:
+            <code language="X#">
+                FUNCTION Start()
+                LOCAL oCon AS Console
+                oCon := Console{}
+                oCon:Clear()
+            </code>
+        </example>
+    </Console.Clear>
+    <Console.CursorPos>
+        <summary>
+            The current cursor position as a ConsoleCoord object.
+        </summary>
+        <value>The current cursor position as a ConsoleCoord object.</value>
+    </Console.CursorPos>
+    <Console.CursorSize>
+        <summary>
+            An integer specifying the current cursor size.
+        </summary>
+        <value>An integer specifying the current cursor size.</value>
+    </Console.CursorSize>
+    <Console.CursorVisible>
+        <summary>
+            A logic controlling the cursor's visibility.
+        </summary>
+        <value>A logic controlling the cursor's visibility.</value>
+    </Console.CursorVisible>
+    <Console.Destroy>
+        <summary>
+            Provide a method to de-instantiate a.
+        </summary>
+        <remarks>
+            This method can be used when a Console object is no longer needed.  Console:Destroy() de-instantiates the Console object, and allows you to close and free any resources that were opened or created by the object without waiting for the garbage collector.
+        </remarks>
+        <returns>
+            NIL
+        </returns>
+    </Console.Destroy>
+    <Console.Read>
+        <summary>
+            Use this to read the console input buffer.
+        </summary>
+        <returns>
+            A string containing the input characters.
+        </returns>
+        <remarks>
+            The Console:Read() method reads up to 256 characters of console input buffer.
+        </remarks>
+        <example>
+            The following lines wait for, read, and echo console input.
+            <code language="X#">
+                FUNCTION Start(p)
+                LOCAL oCon AS Console
+                LOCAL sInput AS STRING
+                oCon := Console{}
+                oCon:Clear()
+                oCon:Write("Enter text: ")
+                sInput := oCon:Read()
+                oCon:Write("You entered : " + sInput)
+            </code>
+        </example>
+    </Console.Read>
+    <Console.Size>
+        <summary>
+            The size of the console as a ConsoleCoord object.
+        </summary>
+        <value>The size of the console as a ConsoleCoord object.</value>
+    </Console.Size>
+    <Console.TextAttribute>
+        <summary>
+            A word specifying the current text attributes.
+        </summary>
+        <value>A word specifying the current text attributes.</value>
+        <remarks>
+            <para>Any combination of the following constants can be used using _Or():</para>
+            <list type="table">
+                <item>
+                    <term>FOREGROUND_BLUE</term>
+                </item>
+                <item>
+                    <term>FOREGROUND_GREEN</term>
+                </item>
+                <item>
+                    <term>FOREGROUND_RED</term>
+                </item>
+                <item>
+                    <term>FOREGROUND_INTENSITY</term>
+                </item>
+                <item>
+                    <term>BACKGROUND_BLUE</term>
+                </item>
+                <item>
+                    <term>BACKGROUND_GREEN</term>
+                </item>
+                <item>
+                    <term>BACKGROUND_RED</term>
+                </item>
+                <item>
+                    <term>BACKGROUND_INTENSITY</term>
+                </item>
+            </list>
+        </remarks>
+    </Console.TextAttribute>
+    <Console.Title>
+        <summary>
+            A string specifying the console application's caption.
+        </summary>
+        <value>A string specifying the console application's caption.</value>
+    </Console.Title>
+    <Console.Wait>
+        <summary>
+            Waits for a key press or mouse click on the console window.
+        </summary>
+        <returns>
+            A character representation of the key pressed or mouse button clicked. In general this return value should not be used.
+        </returns>
+        <remarks>
+            This method waits for a key press or mouse click on the console.
+        </remarks>
+        <example>
+            The following lines display the current date and then wait for a keypress
+            <code language="X#">
+                FUNCTION Start(p)
+                LOCAL oCon AS Console
+                LOCAL sInput AS STRING
+                oCon := Console{}
+                oCon:Clear()
+                oCon:Write("The date: " + DTOC(TODAY())
+                oCon:WriteLine("Press any key to continue")
+                sInput := oCon:Wait()
+            </code>
+        </example>
+    </Console.Wait>
+    <Console.Write>
+        <summary>
+            Write a string to the console window.
+        </summary>
+        <param name="sMsg">The string to be written to the console.</param>
+        <remarks>
+            This method writes a string to the console.  The string is written at the current cursor position.
+        </remarks>
+        <example>
+            The following lines wait for, read, and echo console input.
+            <code language="X#">
+                FUNCTION Start(p)
+                LOCAL oCon AS Console
+                LOCAL sInput AS STRING
+                oCon := Console{}
+                oCon:Clear()
+                oCon:Write("Enter text: ")
+                sInput := oCon:Read()
+                oCon:Write("You entered : " + sInput)
+            </code>
+        </example>
+    </Console.Write>
+    <Console.WriteError>
+        <summary>
+            Write an error message string to the StdErr handle.
+        </summary>
+        <param name="sMsg">The string to be written to the StdErr handle.</param>
+    </Console.WriteError>
+    <Console.WriteLine>
+        <summary>
+            Write a string to the console window and start a new line.
+        </summary>
+        <param name="sMsg">The string to be written to the console.</param>
+    </Console.WriteLine>
+    <ConsoleCoord>
+        <summary>
+            A helper class encapsulating a console window's coordinates.
+        </summary>
+        <remarks>
+            The ConsoleCoord class encapsulates x and y values used for Console:Size and Console:CursorPos properties.
+        </remarks>
+    </ConsoleCoord>
+    <ConsoleCoord.X>
+        <summary>
+            X-axis position or width of object
+        </summary>
+    </ConsoleCoord.X>
+    <ConsoleCoord.Y>
+        <summary>
+            Y-axis position or height of object
+        </summary>
+    </ConsoleCoord.Y>
+
+    <ConsoleCoord.ctor>
+        <summary>
+            Instantiate a ConsoleCoord object.
+        </summary>
+        <param name="nX">An integer value specifying the x-axis position or width.</param>
+        <param name="nY">An integer value specifying the y-axis position or height.</param>
+        <remarks>
+            ConsoleCoord:Init() instantiates a new ConsoleCoord object, which can be used for the Console:Size and Console:CursorPos properties.
+        </remarks>
+    </ConsoleCoord.ctor>
+</doc>

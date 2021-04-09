@@ -29,15 +29,15 @@ FUNCTION BitClear (Arg1 AS USUAL) AS BINARY
 END FUNC
 
 /// <include file="VFPDocs.xml" path="Runtimefunctions/bitclear/*" />
-FUNCTION BitClear (Arg1 AS USUAL, Arg2 AS USUAL) AS USUAL
-    IF ! IsNumeric(Arg2)
-        THROW Error.ArgumentError(__FUNCTION__, nameof(Arg2),TYPE_ERROR, 2, {Arg2})
+FUNCTION BitClear (Arg1 AS USUAL, Bit AS USUAL) AS USUAL
+    IF ! IsNumeric(Bit)
+        THROW Error.ArgumentError(__FUNCTION__, nameof(Bit),TYPE_ERROR, 2, {Bit})
     ENDIF
     IF IsBinary(Arg1)
-        VAR binary := (BINARY) Arg1
-        RETURN IIF(binary.Length == 0, 0h, BitClear(binary, (INT)Arg2, 1))
+        VAR binValue := (BINARY) Arg1
+        RETURN IIF(binValue.Length == 0, 0h, BitClear(binValue, (INT)Bit, 1))
     ELSEIF IsNumeric(Arg1)
-        RETURN BitClear((INT)Arg1, (INT)Arg2)
+        RETURN BitClear((INT)Arg1, (INT)Bit)
     ELSE
         THROW Error.ArgumentError(__FUNCTION__, nameof(Arg1),TYPE_ERROR, 1, {Arg1})         
     ENDIF
@@ -274,13 +274,13 @@ FUNCTION BitSet (BinString AS BINARY, StartBit AS INT, BitCount AS INT) AS BINAR
 END FUNC
 
 /// <include file="VFPDocs.xml" path="Runtimefunctions/bittest/*" />
-FUNCTION BitTest (Arg1 AS USUAL, Arg2 AS USUAL) AS LOGIC
-    IF IsBinary(Arg1) 
-      RETURN BitTest((BINARY)Arg1, (INT)Arg2)
-    ELSEIF IsLong(Arg1)
-        RETURN BitTest((INT)Arg1, (INT)Arg2)
+FUNCTION BitTest (Arg AS USUAL, Bit AS USUAL) AS LOGIC
+    IF IsBinary(Arg) 
+      RETURN BitTest((BINARY)Arg, (INT)Bit)
+    ELSEIF IsLong(Arg)
+        RETURN BitTest((INT)Arg, (INT)Bit)
     ELSE
-         THROW Error.ArgumentError(__FUNCTION__, nameof(Arg1),TYPE_ERROR, 1, {Arg1})
+         THROW Error.ArgumentError(__FUNCTION__, nameof(Arg),TYPE_ERROR, 1, {Arg})
     ENDIF
     
 END FUNC

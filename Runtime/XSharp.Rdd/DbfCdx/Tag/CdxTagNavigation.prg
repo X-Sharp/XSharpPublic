@@ -552,10 +552,21 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         PRIVATE METHOD _isBeforeBottomScope() AS LOGIC
             LOCAL isOk AS LOGIC
             isOk := SELF:_oRdd:Found
-            IF !isOk 
-                IF SELF:HasBottomScope
-                    IF SELF:__ScopeCompare(SELF:_currentvalue:Key, BottomScopeNo) <= 0 
+            IF !SELF:Descending
+                IF !isOk 
+                    IF SELF:HasBottomScope
+                        IF SELF:__ScopeCompare(SELF:_currentvalue:Key, BottomScopeNo) <= 0 
+                            isOk := TRUE
+                        ENDIF
+                    ELSE
                         isOk := TRUE
+                    ENDIF
+               ENDIF
+            ELSE
+               isOk := FALSE
+               IF SELF:HasBottomScope
+                    IF SELF:__ScopeCompare(SELF:_currentvalue:Key, TopScopeNo) <= 0 
+                            isOk := TRUE
                     ENDIF
                 ELSE
                     isOk := TRUE

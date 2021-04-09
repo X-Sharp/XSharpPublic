@@ -46,7 +46,7 @@
                 That also means that you can't use file handles for functions such as FRead() and FWrite() that were not
                 created in the X# runtime.<br/>
                 If you want to access the underlying FileStream, then you should call the
-                function <see cref="M:XSharp.Core.Functions.FGetStream(System.IntPtr)">FGetStream() </see>
+                function <see cref="O:XSharp.Core.Functions.FGetStream">FGetStream() </see>
             </note>
         </remarks>
     </File>
@@ -98,17 +98,17 @@
         <remarks>This define has the same value as a member of the Subcodes enum. You can use either the define or the enum value in your code.</remarks>
     </RDDError>
     <Directory>
-        <seealso cref="M:XSharp.RT.Functions.Directory(System.String,XSharp.__Usual)">Directory Function</seealso>
+        <seealso cref="O:XSharp.RT.Functions.Directory">Directory Function</seealso>
         <remarks>
-            Compared to Clipper and Visual Objects the return value of Directory() has changed.
-            Each subarray returned from Directory() now contains some extra  values, such as creation date and
+            Compared to Clipper and Visual Objects the return value of Directory() has changed: <br/>
+            each subarray returned from Directory() now contains some extra  values, such as creation date and
             last access date. The normal Date and Time elements represent the last written date and time.
         </remarks>
     </Directory>
     <Set>
         <summary>Set() define</summary>
         <seealso cref='T:XSharp.Set'>Set Enum</seealso>
-        <seealso cref='M:XSharp.RT.Functions.Set(XSharp.__Usual,XSharp.__Usual)' >Set() function</seealso>
+        <seealso cref='O:XSharp.RT.Functions.Set' >Set() function</seealso>
         <remarks>
             This define has the same value as a member of the Set enum. You can use either the define or the enum value in your code.
             If you are coming from XHarbour or Xbase++ please don't use SET.CH. The values in the Set enum may be different:
@@ -137,9 +137,9 @@
         <summary>
             Scope value for <c>DbScope()</c>, <c>DbSetScope()</c> and <c>DbClearScope()</c>.
         </summary>
-        <seealso cref='M:XSharp.RT.Functions.DbScope(XSharp.__Usual)' >DbScope()</seealso>
-        <seealso cref='M:XSharp.RT.Functions.DbSetScope(System.Int32,XSharp.__Usual)' >DbSetScope()</seealso>
-        <seealso cref='M:XSharp.RT.Functions.DbClearScope(XSharp.__Usual)' >DbClearScope()</seealso>
+        <seealso cref='O:XSharp.RT.Functions.DbScope' >DbScope()</seealso>
+        <seealso cref='O:XSharp.RT.Functions.DbSetScope' >DbSetScope()</seealso>
+        <seealso cref='O:XSharp.RT.Functions.DbClearScope' >DbClearScope()</seealso>
     </ScopeInfo>
     <LastError>
         <span>

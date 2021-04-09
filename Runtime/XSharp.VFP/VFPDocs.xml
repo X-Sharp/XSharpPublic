@@ -1151,9 +1151,12 @@
             If the specified expression is not an integer, it is converted to an integer before performing the operation.
         </summary>
         <param name="Arg1">
+            Specifies the <b>Numeric</b> value or <b>Varbinary</b> or <b>Blob</b> expression to clear the bit in. If the expression is not an integer, it is converted to an integer before setting the bit.
+    </param>
+        <param name="Num">
             Specifies the <b>Numeric</b> value to clear the bit in. If the expression is not an integer, it is converted to an integer before setting the bit.
         </param>
-        <param name="Arg1">
+        <param name="Bit">
             Specifies the bit position in nExpression1 to clear. nExpression2 can range from 0 to 31 with 0 located as the bit to the farthest right.
         </param>
         <param name="BinString">

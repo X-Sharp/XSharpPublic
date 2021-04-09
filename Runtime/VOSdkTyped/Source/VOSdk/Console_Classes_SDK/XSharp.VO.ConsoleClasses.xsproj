@@ -7,7 +7,7 @@
     <ProjectGuid>0EE10CED-B863-4B5E-8AC2-443B2CC6EB7A</ProjectGuid>
     <AssemblyName>XSharp.VOConsoleClasses</AssemblyName>
     <Name>XSharp.VO.ConsoleClasses</Name>
-    <OutputName>XSharpConsoleClasses</OutputName>
+    <OutputName>XSharp.VOConsoleClasses</OutputName>
     <XSharpProjectversion>2.6.0.0</XSharpProjectversion>
     <Includepaths>$(Solutiondir)Common</Includepaths>
     <Nostandarddefs>false</Nostandarddefs>
@@ -34,6 +34,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Documentation|AnyCPU'">
+  <DocumentationFile>XSharp.VOConsoleClasses.xml</DocumentationFile>
   </PropertyGroup>
   <Import Project="$(XSharpMsBuildDir)\XSharp.targets" />
   <ItemGroup>

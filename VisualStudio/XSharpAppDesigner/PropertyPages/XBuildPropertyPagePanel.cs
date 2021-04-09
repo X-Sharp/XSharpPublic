@@ -108,7 +108,7 @@ namespace XSharp.Project
             this.toolTip1.SetToolTip(this.chkRegisterForComInterop, descRegisterForComInterop);
 
             this.chkXMLDocumentationFile.Text = captDocumentationFile;
-            this.txtXMLDocumentationFile.Tag = XSharpProjectFileConstants.DocFile;
+            this.txtXMLDocumentationFile.Tag = XSharpProjectFileConstants.DocumentationFile;
             this.toolTip1.SetToolTip(chkXMLDocumentationFile, descDocumentationFile);
             this.toolTip1.SetToolTip(txtXMLDocumentationFile, descDocumentationFileName);
 

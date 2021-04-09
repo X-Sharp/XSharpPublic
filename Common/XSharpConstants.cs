@@ -139,7 +139,7 @@ namespace XSharp
         public const string DevEnvDir = "DevEnvDir";
         public const string Dialect = "Dialect";
         public const string DisabledWarnings = "DisabledWarnings";
-        public const string DocFile = "DocFile";
+        public const string DocumentationFile = "DocumentationFile";
         public const string EnforceSelf = "EnforceSelf";
         public const string Fox1 = "Fox1";
         public const string Fox2 = "Fox2";

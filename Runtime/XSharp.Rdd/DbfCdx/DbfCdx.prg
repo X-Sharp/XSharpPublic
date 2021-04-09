@@ -156,6 +156,7 @@ BEGIN NAMESPACE XSharp.RDD
                 CASE DBOI_ORDERCOUNT
                     info:Result := SELF:_indexList:Count
                 CASE DBOI_POSITION
+                    VAR oState := SELF:_GetState()        
                     IF workOrder == NULL
                         info:Result := SELF:RecNo
                     ELSE
@@ -164,8 +165,10 @@ BEGIN NAMESPACE XSharp.RDD
                             info:Result := result
                         ENDIF
                     ENDIF
+                    SELF:_SetState(oState)
                 CASE DBOI_KEYCOUNT
                     result := 0
+                    VAR oState := SELF:_GetState()
                     IF workOrder != NULL
                         info:Result := 0
                         isOk := workOrder:_CountRecords(REF result)
@@ -175,6 +178,7 @@ BEGIN NAMESPACE XSharp.RDD
                     IF isOk
                         info:Result := result
                     ENDIF
+                    SELF:_SetState(oState)
                 CASE DBOI_NUMBER
                     info:Result := SELF:_indexList:OrderPos(workOrder)
                 CASE DBOI_BAGEXT
@@ -337,15 +341,18 @@ BEGIN NAMESPACE XSharp.RDD
                 CASE DBOI_USER + 42
                 CASE DBOI_DUMP
                     // Dump Cdx to Txt file
+                    VAR oState := SELF:_GetState()
                     IF workOrder != NULL
                         workOrder:_dump()
                     ENDIF
-                    
+                    SELF:_SetState(oState)
                 CASE DBOI_VALIDATE
                     // Validate integrity of the current Order
+                     VAR oState := SELF:_GetState()
                     IF workOrder != NULL
                         info:Result := workOrder:_validate()
                     ENDIF
+                    SELF:_SetState(oState)
                 OTHERWISE
                     SUPER:OrderInfo(nOrdinal, info)
                 END SWITCH
@@ -607,7 +614,21 @@ BEGIN NAMESPACE XSharp.RDD
                 RETURN SELF:_indexList:Flush() .AND. isOk
             END LOCK
             
-        #ENDREGION
+        #endregion
+
+        INTERNAL METHOD _GetState() AS CdxState
+            RETURN CdxState{} {EoF := SELF:EoF, BoF := SELF:BoF, RecNo := SELF:RecNo}
+
+        INTERNAL METHOD _SetState(oState AS CdxState) AS VOID
+            SELF:__Goto(oState:RecNo)
+            SELF:_SetEOF(oState:EoF)
+            SELF:_SetBOF(oState:BoF)
+
+        INTERNAL CLASS CdxState
+            PROPERTY EoF AS LOGIC AUTO
+            PROPERTY BoF AS LOGIC AUTO
+            PROPERTY RecNo AS LONG AUTO
+        END CLASS
     END CLASS    
     
 END NAMESPACE

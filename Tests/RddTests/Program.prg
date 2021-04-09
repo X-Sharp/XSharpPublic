@@ -12,7 +12,9 @@ USING System.Collections.Generic
 [STAThread];      
 FUNCTION Start() AS VOID
     TRY
-         OrdDescAndOrdScope()
+         FoxTags()
+         //SeekSkipAndFoundFlag()
+         //OrdDescAndOrdScope()
          //OrdScopeBof()
          //OrderKeyCountAndSkipBack()
         //DumpWg1()
@@ -218,6 +220,186 @@ USING System.Windows.Forms
 USING System.Threading
 
 GLOBAL gcPath := "c:\test\"
+
+
+FUNCTION FoxTags( ) AS VOID 
+LOCAL cPath, cDBF, cCDX AS STRING 
+
+    ? RddSetDefault() // "DBFVFP"
+    ?
+    
+	cPath = "d:\test\"
+	
+	cDBF = "small.dbf" 
+	cCDX = "small1x.cdx" 
+	
+	
+	DbUseArea ( TRUE, , cPath + cDBF )  // auto opens small.cdx  
+	
+	DbSetIndex ( cPath + cCDX )  // open small1x.cdx
+	  
+	DbSetOrder ( 5 )
+	
+	? "Total No. of Tags" , DbOrderInfo(DBOI_ORDERCOUNT )  // 6    ok 
+	?  
+	? "No. of SMALL Tags" ,  DbOrderInfo(DBOI_ORDERCOUNT , "SMALL" ) , "must show 3" // 6 instead of 3  , VO shows correctly 3
+	? "TagCount() SMALL" , TagCount ( "SMALL" ) , "must show 3" // 6   instead of 3
+	? 
+	? "No. of SMALL1X Tags" , DbOrderInfo(DBOI_ORDERCOUNT , "SMALL1X" ) , "must show 3" // 6 instead of 3  , VO shows correctly 3
+	? "TagCount() SMALL1X" , TagCount ( "SMALL1X" ) , "must show 3" // 6   instead of 3 
+	? 
+	?
+    ? Cdx(1)
+	? Cdx(2)
+	FOR VAR i = 1 TO TagCount() 
+		 ? Cdx (i) , TAG_FIX( i ) , TagNo ( Tag ( , i) ,Cdx(i) )  
+	NEXT
+    ? 
+    
+    // note: above, the active order was set to 5 . That´s "ORDER2" of the small1x.cdx  
+    
+	? "O" , Order("small",1)	// ok, "d:\test\small1x.cdx"
+	? "O" , Order("small" )		// wrong  "d:\test\small1x.cdx"
+	? "O" , Order( 1 )			// wrong  "d:\test\small1x.cdx"                                       
+	? "O" , Order ()			// wrong  "d:\test\small1x.cdx"
+	?	
+	? "F" , Order_Fix("small",1)	// ok, "d:\test\small1x.cdx"
+	? "F" , Order_Fix("small" )		// ok, "ORDER2" 
+	? "F" , Order_Fix( 1 ) 			// ok, "ORDER2"                                        
+	? "F" , Order_Fix ()    		// ok, "ORDER2" 
+	? 
+	
+    DbSetOrder(0)
+    
+	// ok, shows empty strings only
+	
+	? "O" , Order("small",1) 
+	? "O" , Order("small" ) 
+	? "O" , Order( 1 )                                        
+	? "O" , Order ()
+	?
+	? "F" , Order_Fix("small",1) 
+	? "F" , Order_Fix("small" ) 
+	? "F" , Order_Fix( 1 )                                        
+	? "F" , Order_Fix ()    	   
+    
+    DbCloseArea()
+      
+RETURN
+
+FUNCTION TAG_FIX ( CDXFileName, nTagNumber, uArea ) AS STRING CLIPPER
+    
+	// a param check is needed, something like ...
+	
+	IF PCount() = 1 
+		IF IsNumeric ( CDXFileName )  
+			nTagNumber = CdxFileName
+			CdxFileName = NIL 			
+		ENDIF 
+	ENDIF 
+			
+	RETURN Tag ( CDXFileName , nTagNumber , uArea ) 
+	
+FUNCTION Order_Fix ( uArea, nPath) AS STRING 
+	
+	IF PCount() == 0 
+		RETURN DbOrderInfo(DBOI_NAME, , 0) // Tag ( , 0) 
+		
+	ELSEIF PCount() == 1 
+		RETURN (uArea)->DbOrderInfo(DBOI_NAME, , 0)  //nTag ( , 0) 
+		
+	ELSEIF PCount() == 2 
+		IF IsNumeric ( nPath ) 
+		   RETURN (uArea)-> DbOrderInfo(DBOI_BAGNAME) 
+		ENDIF 
+		
+	ENDIF 
+	
+	RETURN ""	
+
+FUNCTION SeekSkipAndFoundFlag() AS VOID 
+LOCAL cDBF, cPfad, cIndex   AS STRING 
+LOCAL aFields, aValues AS ARRAY 
+LOCAL i  AS DWORD  
+
+
+	RddSetDefault ( "DBFCDX" ) 
+    
+
+	cPfad := "D:\test\" 
+ 
+	cDBF := cPfad + "Foo"
+	cIndex := cPfad + "Foox" 
+	
+	FErase ( cIndex + IndexExt() )
+		
+	aFields := { { "LAST" , "C" , 20 , 0 } 	} 
+	
+	aValues := { "g6" , "o2", "g2" , "g1" , "g3" , "g5" , "B1" , "b2" , "p", "q" , "r" , "s" }	
+	
+	// ------------
+	
+	DbCreate( cDBF , AFields)
+	DbUseArea( ,,cDBF )		
+
+	FOR i := 1 UPTO ALen ( aValues )
+		DbAppend() 
+		FieldPut ( 1 , aValues [ i ] )
+	NEXT
+	
+	DbCreateOrder ( "ORDER1" , cIndex , "upper(LAST)" , { || Upper ( _FIELD->LAST) } )
+	DbCloseArea()
+	
+	// --------------
+	
+	DbUseArea( ,,cDBF )
+	DbSetIndex ( cIndex )
+	DbSetOrder ( 1 )
+	
+	
+   
+	DbSeek ( "G" ) 
+	? "Skip to eof" 
+	? "-----------"
+	
+	DO WHILE ! Eof()            
+			
+	  	? FieldGet ( 1 ) , "Found: " , Found() 
+    	
+  		DbSkip ( 1 ) 
+  		
+ 		
+	ENDDO 
+	
+	?
+	
+	DbSeek ( "G" )
+	
+	? "Skip to bof" 
+	? "-----------"
+		 
+	
+	DO WHILE ! Bof()            
+
+	  	? FieldGet ( 1 ) , "Found: " , Found() 
+    	
+  		DbSkip ( -1 ) 
+        
+	ENDDO 
+	
+	?
+	
+	DbGoTop() 
+	? "Go Top Found" , Found() 
+	
+	DbGoBottom() 
+	? "Go bottom Found" , Found() 
+
+		
+    
+	DbCloseArea() 
+	
+	RETURN 	
 
 FUNCTION OrdDescAndOrdScope() AS VOID 
 LOCAL cDBF, cPfad, cIndex   AS STRING 

@@ -112,7 +112,7 @@ FUNCTION Order( uArea, nPath) AS STRING CLIPPER
     IF IsNumeric(nPath)
         RETURN _DoInArea(uArea, { => (String) DbOrderInfo(DBOI_FULLPATH, 0) } , "",__FUNCTION__,1)
     ENDIF
-    RETURN _DoInArea(uArea, { => (String) DbOrderInfo(DBOI_INDEXNAME, 0) } , "",__FUNCTION__,1)
+    RETURN _DoInArea(uArea, { => (STRING) DbOrderInfo(DBOI_NAME, 0) } , "",__FUNCTION__,1)
     
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/relation/*" />
@@ -127,7 +127,13 @@ FUNCTION Tag( CDXFileName, nTagNumber, uArea) AS STRING CLIPPER
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/tagcount/*" />
 FUNCTION TagCount( CDXFileName , uArea) AS LONG CLIPPER
     RETURN _DoInArea(uArea, { => (LONG) DbOrderInfo(DBOI_ORDERCOUNT, CDXFileName) } , 0,__FUNCTION__,2)
-   
+
+
+/// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/bagcount/*" />
+FUNCTION BagCount( uArea) AS LONG CLIPPER
+    RETURN _DoInArea(uArea, { => (LONG) DbOrderInfo(DBOI_BAGCOUNT) } , 0,__FUNCTION__,1)
+
+
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/tagno/*" />
 FUNCTION TagNo( IndexName , CDXFileName , uArea ) AS LONG CLIPPER

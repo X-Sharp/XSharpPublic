@@ -17,6 +17,9 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         PRIVATE _bags AS List<CdxOrderBag>
         
         INTERNAL PROPERTY CurrentOrder AS CdxTag AUTO
+        INTERNAL PROPERTY BagCount AS LONG GET _bags:Count
+        
+            
         INTERNAL PROPERTY First AS CdxOrderBag GET IIF(_bags:Count > 0, _bags[0], NULL)
         INTERNAL CONSTRUCTOR(oRdd AS DBFCDX)
             _oRdd := oRdd
@@ -310,5 +313,10 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             ENDIF
             RETURN 0
             
+         INTERNAL METHOD BagName(nBagPos AS LONG) AS STRING
+            IF nBagPos > 0 .AND. nBagPos <= _bags:Count
+               RETURN _bags[nBagPos-1]:FullPath
+            ENDIF
+            RETURN ""
     END CLASS
 END NAMESPACE

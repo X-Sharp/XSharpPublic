@@ -136,9 +136,12 @@ BEGIN NAMESPACE XSharp.RDD
             OVERRIDE METHOD OrderInfo(nOrdinal AS DWORD , info AS DbOrderInfo ) AS OBJECT
                 LOCAL result AS LONG
                 LOCAL isOk := FALSE AS LOGIC
-                
+                LOCAL oBag := NULL AS CdxOrderBag
                 result := 0
                 SELF:_indexList:FindOrder(info, OUT VAR workOrder)
+                IF ! String.IsNullOrEmpty(info:BagName)
+                     oBag := SELF:_indexList:FindOrderBag(info:BagName)
+                ENDIF
 
                 IF workOrder == NULL .AND. info:IsEmpty
                     workOrder := SELF:CurrentOrder
@@ -154,7 +157,11 @@ BEGIN NAMESPACE XSharp.RDD
                         info:Result := workOrder:Expression
                     ENDIF
                 CASE DBOI_ORDERCOUNT
-                    info:Result := SELF:_indexList:Count
+                    IF oBag == NULL        
+                        info:Result := SELF:_indexList:Count
+                    ELSE
+                        info:Result := oBag:Tags:Count    
+                    ENDIF
                 CASE DBOI_POSITION
                     VAR oState := SELF:_GetState()        
                     IF workOrder == NULL
@@ -190,13 +197,18 @@ BEGIN NAMESPACE XSharp.RDD
                     ELSE
                         info:Result := ""
                     ENDIF
+                CASE DBOI_BAGCOUNT
+                    info:Result := SELF:_indexList:BagCount
                 CASE DBOI_BAGNAME
                     //CASE DBOI_INDEXNAME // alias
-                    IF workOrder != NULL
-                        info:Result := workOrder:FileName
+                    IF info:Order IS LONG VAR nOrder
+                        info:Result := SELF:_indexList:BagName(nOrder)                        
+                    ELSEIF workOrder != NULL
+                            info:Result := workOrder:FileName
                     ELSE
                         info:Result := ""
                     ENDIF
+                        
                 CASE DBOI_NAME
                     IF workOrder != NULL
                         info:Result := workOrder:_orderName

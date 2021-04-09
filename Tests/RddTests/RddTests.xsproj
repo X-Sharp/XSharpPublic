@@ -41,7 +41,7 @@
     <ApplicationIcon />
     <VulcanCompatibleResources>False</VulcanCompatibleResources>
     <TargetFrameworkProfile />
-    <XSharpProjectversion>2.6.0.0</XSharpProjectversion>
+    <XSharpProjectversion>2.8.0.9</XSharpProjectversion>
     <Includepaths />
     <Nostandarddefs>false</Nostandarddefs>
     <NamedArgs>False</NamedArgs>

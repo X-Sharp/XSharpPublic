@@ -11,19 +11,19 @@
 </row></tableHeader>
 <row><entry><para>XSharp.VFP</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.APrinters(XSharp.__Usual,XSharp.__Usual)</codeEntityReference></para></entry>
-<entry><para></para></entry></row>
+<entry><para>-- todo --</para></entry></row>
 <row><entry><para>XSharp.VFP</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.GetPrinter</codeEntityReference></para></entry>
-<entry><para></para></entry></row>
+<entry><para>-- todo --</para></entry></row>
 <row><entry><para>XSharp.VFP</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.PCol</codeEntityReference></para></entry>
-<entry><para></para></entry></row>
+<entry><para>-- todo --</para></entry></row>
 <row><entry><para>XSharp.VFP</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.PRow</codeEntityReference></para></entry>
-<entry><para></para></entry></row>
+<entry><para>-- todo --</para></entry></row>
 <row><entry><para>XSharp.VFP</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.PrtInfo(XSharp.__Usual,XSharp.__Usual)</codeEntityReference></para></entry>
-<entry><para></para></entry></row>
+<entry><para>-- todo --</para></entry></row>
 </table>
 </content>
      </section>

@@ -11,10 +11,14 @@
 </row></tableHeader>
 <row><entry><para>XSharp.Core</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.NetErr</codeEntityReference></para></entry>
-<entry><para></para></entry></row>
+<entry><para>
+      Detect a concurrency conflict.
+    </para></entry></row>
 <row><entry><para>XSharp.Core</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.NetName</codeEntityReference></para></entry>
-<entry><para></para></entry></row>
+<entry><para>
+      Identify the current workstation.
+    </para></entry></row>
 </table>
 </content>
      </section>

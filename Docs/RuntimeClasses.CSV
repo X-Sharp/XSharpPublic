@@ -415,6 +415,7 @@ XSharp.Core.DLL,XSharp.RDD,IDbRow,Support,
 XSharp.Core.DLL,XSharp.RDD,IMemo,Support,
 XSharp.Core.DLL,XSharp.RDD,IOrder,Support,
 XSharp.Core.DLL,XSharp.RDD,IRdd,Support,
+XSharp.RDD.DLL,XSharp.RDD,LockTimer
 XSharp.RDD.DLL,XSharp.RDD,OsCodepage,RDD,
 XSharp.Core.DLL,XSharp.RDD,RddError,Error,
 XSharp.Core.DLL,XSharp.RDD,RegisteredRDD,RDD,

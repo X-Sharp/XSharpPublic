@@ -11,34 +11,36 @@
 </row></tableHeader>
 <row><entry><para>XSharp.VFP</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.GetColor(XSharp.__Usual)</codeEntityReference></para></entry>
-<entry><para></para></entry></row>
+<entry><para>-- todo --</para></entry></row>
 <row><entry><para>XSharp.VFP</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.GetDir(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference></para></entry>
-<entry><para></para></entry></row>
+<entry><para>-- todo --</para></entry></row>
 <row><entry><para>XSharp.VFP</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.GetFont(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference></para></entry>
-<entry><para></para></entry></row>
+<entry><para>-- todo --</para></entry></row>
 <row><entry><para>XSharp.VFP</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.GetPict(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference></para></entry>
-<entry><para></para></entry></row>
+<entry><para>-- todo --</para></entry></row>
 <row><entry><para>XSharp.VFP</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.GetPrinter</codeEntityReference></para></entry>
-<entry><para></para></entry></row>
+<entry><para>-- todo --</para></entry></row>
 <row><entry><para>XSharp.VFP</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.InputBox(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference></para></entry>
-<entry><para></para></entry></row>
+<entry><para>-- todo --</para></entry></row>
 <row><entry><para>XSharp.VFP</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.LoadPicture(XSharp.__Usual)</codeEntityReference></para></entry>
-<entry><para></para></entry></row>
+<entry><para>-- todo --</para></entry></row>
 <row><entry><para>XSharp.VFP</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.MessageBox(XSharp.__Usual,System.Int32,System.String,System.Int32)</codeEntityReference></para></entry>
-<entry><para></para></entry></row>
+<entry><para>
+      Displays a user-defined dialog box.
+    </para></entry></row>
 <row><entry><para>XSharp.VFP</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.PutFile(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference></para></entry>
-<entry><para></para></entry></row>
+<entry><para>-- todo --</para></entry></row>
 <row><entry><para>XSharp.VFP</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.SavePicture(XSharp.__Usual,XSharp.__Usual)</codeEntityReference></para></entry>
-<entry><para></para></entry></row>
+<entry><para>-- todo --</para></entry></row>
 </table>
 </content>
      </section>

@@ -11,10 +11,12 @@
 </row></tableHeader>
 <row><entry><para>XSharp</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.CollationMode</codeEntityReference></para></entry>
-<entry><para></para></entry></row>
+<entry><para>This enum specifies the collation mode used to create and update index strings.</para></entry></row>
 <row><entry><para>XSharp</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.Collations</codeEntityReference></para></entry>
-<entry><para></para></entry></row>
+<entry><para>
+              A strongly-typed resource class, for looking up localized strings, etc.
+            </para></entry></row>
 </table>
 </content>
      </section>

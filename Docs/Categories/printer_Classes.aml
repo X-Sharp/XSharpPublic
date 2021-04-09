@@ -11,10 +11,14 @@
 </row></tableHeader>
 <row><entry><para>VO</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.Printer</codeEntityReference></para></entry>
-<entry><para></para></entry></row>
+<entry><para>
+        Create an object that represents a single print job.
+      </para></entry></row>
 <row><entry><para>VO</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.PrintingDevice</codeEntityReference></para></entry>
-<entry><para></para></entry></row>
+<entry><para>
+        Create an object that allows you to set up the printing device for an application.  It also allows you to invoke the standard dialog box to configure a default printer and change values, such as changing the page orientation or paper source.
+      </para></entry></row>
 </table>
 </content>
      </section>

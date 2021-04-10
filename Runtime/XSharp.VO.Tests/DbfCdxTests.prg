@@ -4245,6 +4245,176 @@ RETURN
 			DbCloseArea()
 
 
+        [Fact, Trait("Category", "DBF")];
+		METHOD OrdScope_BoF_EoF_test() AS VOID
+			// https://github.com/X-Sharp/XSharpPublic/issues/578
+			LOCAL cDbf AS STRING
+			RddSetDefault("DBFCDX")
+			cDbf := GetTempFileName()
+			DbfTests.CreateDatabase(cDbf , { { "LAST" , "C" , 20 , 0 } 	} , { "g6" , "o2", "g2" , "g1" , "g3" , "g5" , "B1" , "b2" , "p", "q" , "r" , "s" } )
+			DbCreateOrder( "ORDER1" , cDbf , "upper(LAST)" , { || Upper ( _Field->LAST) } )
+			DbCloseArea()
+
+			DbUseArea( ,,cDBF )
+			DbSetOrder ( 1 ) 
+		
+			OrdScope(TOPSCOPE, "X")     // "A"
+			OrdScope(BOTTOMSCOPE, "X")  // "A"
+			
+			Assert.Equal(0, (INT)OrdKeyCount())
+			
+			DbGoTop()
+			Assert.True(Bof())
+			Assert.True(Eof())
+			Assert.Equal(13, (INT)RecNo())
+		    
+		    DbGoBottom()       
+			Assert.True(Bof())
+			Assert.True(Eof())
+		        
+			DbCloseArea() 
+		
+        [Fact, Trait("Category", "DBF")];
+		METHOD OrdScope_OrdDescend_BoF_EoF_test() AS VOID
+			// https://github.com/X-Sharp/XSharpPublic/issues/579
+			LOCAL cDbf AS STRING
+			RddSetDefault("DBFCDX")
+			cDbf := GetTempFileName()
+			DbfTests.CreateDatabase(cDbf , { { "LAST" , "C" , 20 , 0 } 	} , { "g6" , "o2", "g2" , "g1" , "g3" , "g5" , "B1" , "b2" , "p", "q" , "r" , "s" } )
+			DbCreateOrder( "ORDER1" , cDbf , "upper(LAST)" , { || Upper ( _Field->LAST) } )
+			DbCloseArea()
+
+			DbUseArea( ,,cDBF )
+			DbSetOrder ( 1 ) 
+		
+			OrdDescend ( , , TRUE )  // switch to descend view
+			OrdScope(TOPSCOPE, "B")     // Note: must be "R" !
+			OrdScope(BOTTOMSCOPE, "R")  // Note: must be "B" !
+
+			
+			DbGoTop()
+			Assert.True(Bof())
+			Assert.True(Eof())
+			Assert.Equal(13, (INT)RecNo())
+		    
+		    DbGoBottom()       
+			Assert.True(Bof())
+			Assert.True(Eof())
+
+			Assert.Equal(0, (INT)OrdKeyCount())
+			Assert.True(Bof())
+			Assert.True(Eof())
+
+			Assert.Equal(0, (INT)OrdKeyNo())
+			Assert.True(Bof())
+			Assert.True(Eof())
+		        
+			DbCloseArea() 
+		
+        [Fact, Trait("Category", "DBF")];
+		METHOD OrdKeyCount_OrdKeyNo_BoF_EoF_test() AS VOID
+			// https://github.com/X-Sharp/XSharpPublic/issues/583
+			LOCAL cDbf AS STRING
+			RddSetDefault("DBFCDX")
+			cDbf := GetTempFileName()
+			DbfTests.CreateDatabase(cDbf , { { "LAST" , "C" , 20 , 0 } 	} , { "g6" , "o2", "g2" , "g1" , "g3" , "g5" , "B1" , "b2" , "p", "q" , "r" , "s" } )
+			DbCreateOrder( "ORDER1" , cDbf , "upper(LAST)" , { || Upper ( _Field->LAST) } )
+			DbCloseArea()
+
+			DbUseArea( ,,cDBF )
+			DbSetOrder ( 1 ) 
+
+			DbSeek ( "G" ) 
+			FOR LOCAL i := 1 AS INT UPTO 9
+				DbSkip()
+				Assert.False(Eof())
+			NEXT
+			DbSkip()
+			Assert.True(Eof())
+			Assert.Equal(0 ,  (INT)DbOrderInfo( DBOI_POSITION ) )
+			Assert.True(Eof())
+			Assert.Equal(12 , (INT)DbOrderInfo( DBOI_KEYCOUNT ) )
+			Assert.True(Eof())
+
+
+			DbSeek ( "G" ) 
+			FOR LOCAL i := 1 AS INT UPTO 2
+				DbSkip(-1)
+				Assert.False(Bof())
+			NEXT
+			DbSkip(-1)
+			Assert.True(Bof())
+			Assert.Equal(1 ,  (INT)DbOrderInfo( DBOI_POSITION ) )
+			Assert.True(Bof())
+			Assert.Equal(12 , (INT)DbOrderInfo( DBOI_KEYCOUNT ) )
+			Assert.True(Bof())
+		        
+			DbCloseArea() 
+		
+
+        [Fact, Trait("Category", "DBF")];
+		METHOD DbOrderInfo_DBOI_POSITION_test() AS VOID
+			LOCAL cDbf AS STRING
+			RddSetDefault("DBFCDX")
+			cDbf := GetTempFileName()
+			DbfTests.CreateDatabase(cDbf , { { "LAST" , "C" , 20 , 0 } 	} , { "a" , "b", "c" } )
+			DbCreateOrder( "ORDER1" , cDbf , "upper(LAST)" , { || Upper ( _Field->LAST) } )
+			DbCloseArea()
+
+			DbUseArea( TRUE,,cDBF )
+
+			DbGoTop()
+			Assert.False(Eof())
+			Assert.Equal(1 ,  (INT)DbOrderInfo( DBOI_POSITION ) )
+
+			DbSkip()
+			Assert.False(Eof())
+			Assert.Equal(2 ,  (INT)DbOrderInfo( DBOI_POSITION ) )
+
+			DbSkip()
+			Assert.False(Eof())
+			Assert.Equal(3 ,  (INT)DbOrderInfo( DBOI_POSITION ) )
+
+			DbSkip()
+			Assert.True(Eof())
+			Assert.Equal(0 , (INT)DbOrderInfo( DBOI_POSITION ) )
+		        
+			DbCloseArea() 
+		
+
+        [Fact, Trait("Category", "DBF")];
+		METHOD Found_test() AS VOID
+			// https://github.com/X-Sharp/XSharpPublic/issues/582
+			LOCAL cDbf AS STRING
+			RddSetDefault("DBFCDX")
+			cDbf := GetTempFileName()
+			DbfTests.CreateDatabase(cDbf , { { "LAST" , "C" , 20 , 0 } 	} , { "a" , "b", "c" } )
+			DbCreateOrder( "ORDER1" , cDbf , "upper(LAST)" , { || Upper ( _Field->LAST) } )
+			DbCloseArea()
+
+			DbUseArea( TRUE,,cDBF )
+
+			DbSeek ( "B" )
+			Assert.True( Found() )
+
+			DbSeek ( "D" )
+			Assert.False( Found() )
+		
+			DbSeek ( "B" )
+			DbSkip() 
+			Assert.False( Found() )
+		
+			DbSeek ( "B" )
+			DbSkip(-1) 
+			Assert.False( Found() )
+		
+			DbSeek ( "B" )
+			DbGoTop() 
+			Assert.False( Found() )
+        
+			DbCloseArea() 
+		
+
 		STATIC PRIVATE METHOD GetTempFileName() AS STRING
            STATIC nCounter AS LONG
             ++nCounter

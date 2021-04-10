@@ -4354,6 +4354,7 @@ RETURN
 
         [Fact, Trait("Category", "DBF")];
 		METHOD DbOrderInfo_DBOI_POSITION_test() AS VOID
+			// https://github.com/X-Sharp/XSharpPublic/issues/593
 			LOCAL cDbf AS STRING
 			RddSetDefault("DBFCDX")
 			cDbf := GetTempFileName()
@@ -4411,6 +4412,27 @@ RETURN
 			DbSeek ( "B" )
 			DbGoTop() 
 			Assert.False( Found() )
+        
+			DbCloseArea() 
+		
+        [Fact, Trait("Category", "DBF")];
+		METHOD Found_OpenFpt() AS VOID
+			// https://github.com/X-Sharp/XSharpPublic/issues/577
+			LOCAL cDbf AS STRING
+			RddSetDefault("DBFCDX")
+			cDbf := GetTempFileName()
+			DbfTests.CreateDatabase(cDbf , {{"MEMOFLD","M",10,0}} )
+			FOR LOCAL n := 1 AS INT UPTO 10
+				DbAppend()
+			NEXT
+			DbCloseArea()
+
+			DbUseArea( TRUE,,cDBF )
+
+			FOR LOCAL n := 1 AS INT UPTO 200
+				Assert.True( DbUseArea(TRUE,"DBFCDX",cDbf,"alias" + AsString(n),TRUE) )
+				Assert.True( DbCloseArea() )
+			NEXT
         
 			DbCloseArea() 
 		

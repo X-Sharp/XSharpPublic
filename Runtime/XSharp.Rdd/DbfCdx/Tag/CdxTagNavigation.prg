@@ -93,6 +93,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                     result := SELF:_ScopeSeek(DbOrder_Info.DBOI_SCOPETOP)
                     IF !SELF:_oRdd:Found
                         SELF:_oRdd:_SetBOF(TRUE)
+                        SELF:_oRdd:_SetEOF(TRUE)
                         SELF:_scopeEmpty := TRUE
                     ENDIF
                 ELSE
@@ -540,16 +541,18 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 seekInfo:Value      := obj
                 seekInfo:SoftSeek   := TRUE
                 result              := SELF:_Seek(seekInfo, obj)
-                SELF:_oRdd:Found    := SELF:_isBeforeBottomScope()
+                SELF:_oRdd:Found    := SELF:_isInScope()
                 IF !SELF:_oRdd:Found
                     SELF:_oRdd:GoTo(0)
-                    self:_scopeEmpty := TRUE
+                     SELF:_oRdd:_SetBOF(TRUE)
+                     SELF:_oRdd:_SetEOF(TRUE)
+                    SELF:_scopeEmpty := TRUE
                 ENDIF
             ENDIF
             RETURN result
             
             
-        PRIVATE METHOD _isBeforeBottomScope() AS LOGIC
+        PRIVATE METHOD _isInScope() AS LOGIC
             LOCAL isOk AS LOGIC
             isOk := SELF:_oRdd:Found
             IF !SELF:Descending
@@ -561,6 +564,13 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                     ELSE
                         isOk := TRUE
                     ENDIF
+                    IF isOk .AND. SELF:HasTopScope
+                        IF SELF:__ScopeCompare(SELF:_currentvalue:Key, TopScopeNo) >= 0 
+                            isOk := TRUE
+                        ELSE
+                            isOk := FALSE    
+                        ENDIF
+                    ENDIF
                ENDIF
             ELSE
                isOk := FALSE
@@ -570,6 +580,13 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                     ENDIF
                 ELSE
                     isOk := TRUE
+                ENDIF
+                IF isOk .AND. SELF:HasTopScope
+                    IF SELF:__ScopeCompare(SELF:_currentvalue:Key, TopScopeNo) <= 0 
+                        isOk := TRUE
+                    ELSE
+                        isOk := FALSE    
+                    ENDIF
                 ENDIF
             ENDIF
             RETURN isOk

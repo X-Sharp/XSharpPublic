@@ -2543,6 +2543,16 @@
   <data name="ERRORDIALOG_CLOSE" xml:space="preserve">
     <value>Schließen</value>
   </data>
+  <data name="ERRORDIALOG_ABORT" xml:space="preserve">
+    <value>&amp;Abbrechen</value>
+  </data>
+  <data name="ERRORDIALOG_RETRY" xml:space="preserve">
+    <value>&amp;Wiederholen</value>
+  </data>
+  <data name="ERRORDIALOG_IGNORE" xml:space="preserve">
+    <value>&amp;Ignorieren</value>
+  </data>
+  
   <data name="ERRORDIALOG_COPY" xml:space="preserve">
     <value>&amp;In die Zwischenablage kopieren</value>
   </data>

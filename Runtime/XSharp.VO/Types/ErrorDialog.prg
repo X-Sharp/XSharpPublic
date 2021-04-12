@@ -35,7 +35,7 @@ CLASS XSharp.ErrorDialog INHERIT System.Windows.Forms.Form
         
         SELF:ControlBox := FALSE
         SELF:lAbortRetryIgnoreMode := TRUE
-        SELF:Text := iif(oError:Severity == ES_WARNING, "WARNING", "ERROR")
+        SELF:Text := IIF(oError:Severity == ES_WARNING, "WARNING", "ERROR")
 
         LOCAL y := SELF:CloseButton:Top AS INT
         LOCAL w := SELF:CloseButton:Width AS INT
@@ -62,9 +62,9 @@ CLASS XSharp.ErrorDialog INHERIT System.Windows.Forms.Form
         SELF:Text               := __CavoStr(XSharp.VOErrors.ERRORDIALOG_TITLE)
         SELF:CloseButton:Text   := __CavoStr(XSharp.VOErrors.ERRORDIALOG_CLOSE)
         SELF:CopyButton:Text    := __CavoStr(XSharp.VOErrors.ERRORDIALOG_COPY)
-        SELF:AbortButton:Text   := "Abort"
-        SELF:RetryButton:Text   := "Retry"
-        SELF:IgnoreButton:Text  := "Ignore"
+        SELF:AbortButton:Text   := __CavoStr(XSharp.VOErrors.ERRORDIALOG_ABORT)
+        SELF:RetryButton:Text   := __CavoStr(XSharp.VOErrors.ERRORDIALOG_RETRY)
+        SELF:IgnoreButton:Text  := __CavoStr(XSharp.VOErrors.ERRORDIALOG_IGNORE)
 
     PRIVATE METHOD InitializeComponent() AS VOID
         SELF:ErrorText := System.Windows.Forms.TextBox{}
@@ -168,7 +168,7 @@ CLASS XSharp.ErrorDialog INHERIT System.Windows.Forms.Form
         SELF:PerformLayout()
 
     PROTECTED VIRTUAL METHOD OnClosing( e AS System.ComponentModel.CancelEventArgs ) AS VOID
-       IF SELF:lAbortRetryIgnoreMode .and. SELF:DialogResult == DialogResult.Cancel // Alt+F4
+       IF SELF:lAbortRetryIgnoreMode .AND. SELF:DialogResult == DialogResult.Cancel // Alt+F4
            e:Cancel := TRUE
        ENDIF
        RETURN

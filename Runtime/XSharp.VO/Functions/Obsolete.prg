@@ -735,11 +735,6 @@ FUNCTION CompString() AS INT
 FUNCTION SBTODB(c AS STRING) AS STRING
 	RETURN String.Empty   
 
-/// <exclude/>
-[ObsoleteAttribute( "'SysObject()' is not supported", TRUE )] ;
-FUNCTION SysObject(o) AS OBJECT CLIPPER
-   RETURN NIL
-
 
 /// <exclude/>
 [Obsolete];

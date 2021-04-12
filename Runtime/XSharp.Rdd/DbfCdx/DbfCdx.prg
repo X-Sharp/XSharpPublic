@@ -552,6 +552,7 @@ BEGIN NAMESPACE XSharp.RDD
                     if (! result)
                         SELF:_SetEOF(TRUE)
                         SELF:_SetBOF(TRUE)
+                        result := TRUE
                     ELSE
                         SELF:_CheckEofBof()
                     ENDIF

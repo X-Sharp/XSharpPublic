@@ -53,6 +53,7 @@ BEGIN NAMESPACE XSharp.RDD
                             ENDIF
                         ENDIF
                     ENDDO
+                    SELF:_lockCount := 1
                 ELSE
                     SELF:_lockCount += 1
                 ENDIF
@@ -66,7 +67,7 @@ BEGIN NAMESPACE XSharp.RDD
             IF updated 
                SELF:_hotHeader := TRUE
             ENDIF
-            IF SELF:_lockCount == 1
+            IF SELF:_lockCount <= 1
                 IF SELF:_hotHeader
                     SELF:WriteHeader()
                 ENDIF

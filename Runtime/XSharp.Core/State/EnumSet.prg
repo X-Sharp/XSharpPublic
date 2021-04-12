@@ -27,7 +27,7 @@ BEGIN NAMESPACE XSharp
         /// <summary>Specifies a path for file searches.</summary>
         MEMBER Path        := 6			// STRING
         /// <summary>Specifies the default drive and directory.</summary>
-        MEMBER Default	   := 7			// STRING
+        MEMBER @@Default   := 7			// STRING
         /// <summary>Specifies whether Visual FoxPro opens table files for exclusive or shared use on a network.</summary>
         MEMBER Exclusive   := 8			// LOGIC
         /// <summary>Determines where the record pointer is positioned after FIND or SEEK unsuccessfully searches for a record.</summary>
@@ -141,7 +141,9 @@ BEGIN NAMESPACE XSharp
         MEMBER DateFormatNet := 72		// String
         /// <summary>The empty representation of the current date format.</summary>
         MEMBER DateFormatEmpty := 73    // String
-        // 74 - 75 unused
+        /// <summary>SysObject value</summary>
+        MEMBER SysObject := 74
+        // 75 unused
         /// <summary>The last method called with a late bound send operator that was not found in the object that was used.</summary>
         MEMBER NoMethod		:= 76	// STRING
         // 77 unused 

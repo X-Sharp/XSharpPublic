@@ -4427,7 +4427,7 @@ RETURN
 			NEXT
 			DbCloseArea()
 
-			DbUseArea( TRUE,,cDBF )
+			DbUseArea( TRUE,,cDBF,,TRUE )
 
 			FOR LOCAL n := 1 AS INT UPTO 200
 				Assert.True( DbUseArea(TRUE,"DBFCDX",cDbf,"alias" + AsString(n),TRUE) )

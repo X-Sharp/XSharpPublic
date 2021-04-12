@@ -574,7 +574,10 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             LOCAL recno AS LONG
             LOCAL count AS LONG
             LOCAL isLocked := FALSE AS LOGIC
-            
+            IF SELF:RDD:EoF
+               record := 0
+               RETURN TRUE
+            ENDIF
             SELF:_oRdd:GoCold()
             oldRec := SELF:_RecNo
             TRY

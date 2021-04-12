@@ -487,11 +487,13 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             LOCAL last AS LONG
             LOCAL count AS LONG
             LOCAL isLocked := FALSE AS LOGIC
+            LOCAL saveEmpty := SELF:_scopeEmpty AS LOGIC
             isOk := TRUE
             SELF:_bag:Flush()
             SELF:_oRdd:GoCold()
             oldRec := SELF:_RecNo
             TRY
+                SELF:_scopeEmpty := FALSE
                 IF SELF:Shared
                     isLocked := SELF:Slock()
                     IF !isLocked
@@ -565,6 +567,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 IF SELF:Shared .AND. isLocked
                     isOk := SELF:UnLock()
                 ENDIF
+                SELF:_scopeEmpty := saveEmpty  
             END TRY
             RETURN isOk
 

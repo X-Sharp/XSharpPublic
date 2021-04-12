@@ -715,7 +715,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             VAR topStack      := SELF:CurrentStack
             // How many Items in that page ?
             nodeCount := page:NumKeys
-            Debug.Assert(page is CdxLeafPage .or. nodeCount > 0)
+            Debug.Assert(page IS CdxLeafPage .OR. nodeCount > 0,"Branchpage with 0 keys found")
             IF (nodeCount == 0)
                 SELF:PushPage(page, 0)
                 RETURN   0

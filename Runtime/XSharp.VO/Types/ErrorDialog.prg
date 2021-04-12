@@ -4,6 +4,9 @@
 // See License.txt in the project root for license information.
 //
 
+USING System.Windows.Forms
+USING System.Drawing
+
 FUNCTION ErrorDialog( e AS Exception ) AS INT
    RETURN (INT) XSharp.ErrorDialog{ e }:ShowDialog()
 
@@ -15,6 +18,32 @@ CLASS XSharp.ErrorDialog INHERIT System.Windows.Forms.Form
     EXPORT INSTANCE ErrorText AS System.Windows.Forms.TextBox
     EXPORT INSTANCE CloseButton AS System.Windows.Forms.Button
     EXPORT INSTANCE CopyButton AS System.Windows.Forms.Button
+    EXPORT INSTANCE AbortButton AS System.Windows.Forms.Button
+    EXPORT INSTANCE RetryButton AS System.Windows.Forms.Button
+    EXPORT INSTANCE IgnoreButton AS System.Windows.Forms.Button
+
+    PRIVATE lAbortRetryIgnoreMode := FALSE AS LOGIC
+
+    CONSTRUCTOR( oError AS XSharp.Error )
+        SELF( oError:ToString() )
+
+        SELF:CloseButton:Hide()
+        SELF:AbortButton:Show()
+        SELF:RetryButton:Show()
+        SELF:IgnoreButton:Show()
+        SELF:RetryButton:Enabled := oError:CanRetry
+        
+        SELF:ControlBox := FALSE
+        SELF:lAbortRetryIgnoreMode := TRUE
+        SELF:Text := iif(oError:Severity == ES_WARNING, "WARNING", "ERROR")
+
+        LOCAL y := SELF:CloseButton:Top AS INT
+        LOCAL w := SELF:CloseButton:Width AS INT
+        SELF:AbortButton:Location  := Point{SELF:Width / 2 - (w * 2 + 30) , y}
+        SELF:RetryButton:Location  := Point{SELF:Width / 2 - (w + 10) , y}
+        SELF:IgnoreButton:Location := Point{SELF:Width / 2 + 10 , y}
+        SELF:CopyButton:Location   := Point{SELF:Width / 2 + w + 30 , y}
+      RETURN
 
     CONSTRUCTOR( e AS Exception )
         SELF(e:ToString())
@@ -29,15 +58,21 @@ CLASS XSharp.ErrorDialog INHERIT System.Windows.Forms.Form
       ErrorText:Select( 0, 0 )
       RETURN
 
-    PRIVATE METHOD SetLanguageStrings() as VOID
+    PRIVATE METHOD SetLanguageStrings() AS VOID
         SELF:Text               := __CavoStr(XSharp.VOErrors.ERRORDIALOG_TITLE)
         SELF:CloseButton:Text   := __CavoStr(XSharp.VOErrors.ERRORDIALOG_CLOSE)
         SELF:CopyButton:Text    := __CavoStr(XSharp.VOErrors.ERRORDIALOG_COPY)
+        SELF:AbortButton:Text   := "Abort"
+        SELF:RetryButton:Text   := "Retry"
+        SELF:IgnoreButton:Text  := "Ignore"
 
     PRIVATE METHOD InitializeComponent() AS VOID
         SELF:ErrorText := System.Windows.Forms.TextBox{}
         SELF:CloseButton := System.Windows.Forms.Button{}
         SELF:CopyButton := System.Windows.Forms.Button{}
+        SELF:AbortButton := System.Windows.Forms.Button{}
+        SELF:RetryButton := System.Windows.Forms.Button{}
+        SELF:IgnoreButton := System.Windows.Forms.Button{}
         SELF:SuspendLayout()
         //
         // ErrorText
@@ -80,11 +115,50 @@ CLASS XSharp.ErrorDialog INHERIT System.Windows.Forms.Form
         SELF:CopyButton:UseVisualStyleBackColor := TRUE
         SELF:CopyButton:Click += System.EventHandler{ SELF, @CopyButton_Click() }
         //
+        // AbortButton
+        //
+        SELF:AbortButton:Anchor := System.Windows.Forms.AnchorStyles.Bottom
+        SELF:AbortButton:Location := System.Drawing.Point{510, 297}
+        SELF:AbortButton:Name := "AbortButton"
+        SELF:AbortButton:Size := System.Drawing.Size{122, 23}
+        SELF:AbortButton:TabIndex := 2
+        SELF:AbortButton:Text := "&Abort"
+        SELF:AbortButton:UseVisualStyleBackColor := TRUE
+        SELF:AbortButton:Visible := FALSE
+        SELF:AbortButton:DialogResult := DialogResult.Abort
+        //
+        // RetryButton
+        //
+        SELF:RetryButton:Anchor := System.Windows.Forms.AnchorStyles.Bottom
+        SELF:RetryButton:Location := System.Drawing.Point{510, 297}
+        SELF:RetryButton:Name := "RetryButton"
+        SELF:RetryButton:Size := System.Drawing.Size{122, 23}
+        SELF:RetryButton:TabIndex := 2
+        SELF:RetryButton:Text := "&Retry"
+        SELF:RetryButton:UseVisualStyleBackColor := TRUE
+        SELF:RetryButton:Visible := FALSE
+        SELF:RetryButton:DialogResult := DialogResult.Retry
+        //
+        // IgnoreButton
+        //
+        SELF:IgnoreButton:Anchor := System.Windows.Forms.AnchorStyles.Bottom
+        SELF:IgnoreButton:Location := System.Drawing.Point{510, 297}
+        SELF:IgnoreButton:Name := "IgnoreButton"
+        SELF:IgnoreButton:Size := System.Drawing.Size{122, 23}
+        SELF:IgnoreButton:TabIndex := 2
+        SELF:IgnoreButton:Text := "&Ignore"
+        SELF:IgnoreButton:UseVisualStyleBackColor := TRUE
+        SELF:IgnoreButton:Visible := FALSE
+        SELF:IgnoreButton:DialogResult := DialogResult.Ignore
+        //
         // ErrorDialog
         //
         SELF:AutoScaleDimensions := System.Drawing.SizeF{((Single) 6), ((Single) 13)}
         SELF:AutoScaleMode := System.Windows.Forms.AutoScaleMode.Font
         SELF:ClientSize := System.Drawing.Size{807, 332}
+        SELF:Controls:Add(SELF:AbortButton)
+        SELF:Controls:Add(SELF:RetryButton)
+        SELF:Controls:Add(SELF:IgnoreButton)
         SELF:Controls:Add(SELF:CopyButton)
         SELF:Controls:Add(SELF:CloseButton)
         SELF:Controls:Add(SELF:ErrorText)
@@ -93,6 +167,11 @@ CLASS XSharp.ErrorDialog INHERIT System.Windows.Forms.Form
         SELF:ResumeLayout(FALSE)
         SELF:PerformLayout()
 
+    PROTECTED VIRTUAL METHOD OnClosing( e AS System.ComponentModel.CancelEventArgs ) AS VOID
+       IF SELF:lAbortRetryIgnoreMode .and. SELF:DialogResult == DialogResult.Cancel // Alt+F4
+           e:Cancel := TRUE
+       ENDIF
+       RETURN
     PRIVATE METHOD CopyButton_Click( sender AS OBJECT, e AS System.EventArgs ) AS VOID
        System.Windows.Forms.Clipboard.SetDataObject( ErrorText:Text, TRUE )
        RETURN

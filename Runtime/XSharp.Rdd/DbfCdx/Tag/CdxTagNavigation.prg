@@ -565,7 +565,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             ELSE
                isOk := FALSE
                IF SELF:HasBottomScope
-                    IF SELF:__ScopeCompare(SELF:_currentvalue:Key, TopScopeNo) <= 0 
+                    IF SELF:__ScopeCompare(SELF:_currentvalue:Key, BottomScopeNo) >= 0 
                             isOk := TRUE
                     ENDIF
                 ELSE

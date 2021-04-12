@@ -4416,8 +4416,8 @@ RETURN
 			DbCloseArea() 
 		
         [Fact, Trait("Category", "DBF")];
-		METHOD Found_OpenFpt() AS VOID
-			// https://github.com/X-Sharp/XSharpPublic/issues/577
+		METHOD FPT_OpenShared() AS VOID
+			// https://github.com/X-Sharp/XSharpPublic/issues/592
 			LOCAL cDbf AS STRING
 			RddSetDefault("DBFCDX")
 			cDbf := GetTempFileName()

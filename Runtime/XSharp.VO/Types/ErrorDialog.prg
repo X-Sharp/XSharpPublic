@@ -7,6 +7,26 @@
 USING System.Windows.Forms
 USING System.Drawing
 
+PROCEDURE InitializeErrorDialogHandler() _INIT1
+   ShowErrorDialog_Handler := ErrorDialog
+
+INTERNAL DEFINE IDABORT         := 3
+INTERNAL DEFINE IDRETRY         := 4
+INTERNAL DEFINE IDIGNORE        := 5
+FUNCTION ErrorDialog( e AS Error ) AS INT
+   LOCAL eResult AS DialogResult
+   LOCAL nResult AS INT
+   eResult := XSharp.ErrorDialog{ e }:ShowDialog()
+   SWITCH eResult
+   CASE DialogResult.Ignore
+       nResult := IDIGNORE
+   CASE DialogResult.Retry
+       nResult := IDRETRY
+   OTHERWISE
+       nResult := IDABORT
+   END SWITCH
+   RETURN nResult
+
 FUNCTION ErrorDialog( e AS Exception ) AS INT
    RETURN (INT) XSharp.ErrorDialog{ e }:ShowDialog()
 

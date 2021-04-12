@@ -4,6 +4,9 @@
 // See License.txt in the project root for license information.
 //
 
+DELEGATE ShowErrorDialog_Delegate(oError AS Error) AS INT
+GLOBAL ShowErrorDialog_Handler AS ShowErrorDialog_Delegate
+
 PROCEDURE ErrorSys _INIT1
    ErrorBlock( {|oError| DefError(oError)} )
    SetErrorLog( TRUE )
@@ -102,7 +105,11 @@ INTERNAL FUNCTION DefError(oErr AS OBJECT) AS OBJECT PASCAL
 			FClose(hf)
 		ENDIF
 	ENDIF
-    dwChoice := MessageBoxW(IntPtr.Zero, cMessage, cTitle, MB_ABORTRETRYIGNORE)
+	IF ShowErrorDialog_Handler != NULL
+		dwChoice := ShowErrorDialog_Handler(oError)
+	ELSE
+		dwChoice := MessageBoxW(IntPtr.Zero, cMessage, cTitle, MB_ABORTRETRYIGNORE)
+	ENDIF
 
 	DO CASE
 	CASE dwChoice = IDIGNORE

@@ -872,7 +872,7 @@ INTERNAL STRUCTURE ArraySortComparer<T, U>  IMPLEMENTS System.Collections.Generi
         RETURN
         
     METHOD Compare( x AS T, y AS T ) AS INT
-        IF Object.ReferenceEquals(x, y )  
+        IF Object.Equals(x, y)
             RETURN 0
         ENDIF
         LOCAL u AS LOGIC

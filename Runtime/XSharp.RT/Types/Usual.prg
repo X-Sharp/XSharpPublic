@@ -2941,6 +2941,7 @@ BEGIN NAMESPACE XSharp
             #endregion
 
         #region Error METHOD
+        [HIDDEN];
         INTERNAL PROPERTY ValType AS STRING
             [NODEBUG];
             GET
@@ -3108,6 +3109,7 @@ BEGIN NAMESPACE XSharp
 		/// <returns>The element stored at the indicated location in the collection.</returns>
         /// <remarks>When the contents of the USUAL is not an array or does not support indexed access then a runtime error is generated.</remarks>
 
+        [HIDDEN];
         INTERNAL PROPERTY IsIndexed AS LOGIC
             [NODEBUG];
             GET

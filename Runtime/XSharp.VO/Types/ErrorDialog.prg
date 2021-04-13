@@ -44,30 +44,32 @@ CLASS XSharp.ErrorDialog INHERIT System.Windows.Forms.Form
 
     PRIVATE lAbortRetryIgnoreMode := FALSE AS LOGIC
 
-    CONSTRUCTOR( oError AS XSharp.Error )
-        SELF( oError:ToString() )
-
-        SELF:CloseButton:Hide()
-        SELF:AbortButton:Show()
-        SELF:RetryButton:Show()
-        SELF:IgnoreButton:Show()
-        SELF:RetryButton:Enabled := oError:CanRetry
+    CONSTRUCTOR( e AS Exception) 
+        SELF( e:ToString() )
+        IF e IS Error VAR oError
+            SELF:CloseButton:Hide()
+            SELF:AbortButton:Show()
+            SELF:RetryButton:Show()
+            SELF:IgnoreButton:Show()
+            SELF:RetryButton:Enabled := oError:CanRetry
         
-        SELF:ControlBox := FALSE
-        SELF:lAbortRetryIgnoreMode := TRUE
-        SELF:Text := IIF(oError:Severity == ES_WARNING, "WARNING", "ERROR")
+            SELF:ControlBox := FALSE
+            SELF:lAbortRetryIgnoreMode := TRUE
+            SELF:Text := IIF(oError:Severity == ES_WARNING, "WARNING", "ERROR")
 
-        LOCAL y := SELF:CloseButton:Top AS INT
-        LOCAL w := SELF:CloseButton:Width AS INT
-        SELF:AbortButton:Location  := Point{SELF:Width / 2 - (w * 2 + 30) , y}
-        SELF:RetryButton:Location  := Point{SELF:Width / 2 - (w + 10) , y}
-        SELF:IgnoreButton:Location := Point{SELF:Width / 2 + 10 , y}
-        SELF:CopyButton:Location   := Point{SELF:Width / 2 + w + 30 , y}
+            LOCAL y := SELF:CloseButton:Top AS INT
+            LOCAL w := SELF:CloseButton:Width AS INT
+            SELF:AbortButton:Location  := Point{SELF:Width / 2 - (w * 2 + 30) , y}
+            SELF:RetryButton:Location  := Point{SELF:Width / 2 - (w + 10) , y}
+            SELF:IgnoreButton:Location := Point{SELF:Width / 2 + 10 , y}
+            SELF:CopyButton:Location   := Point{SELF:Width / 2 + w + 30 , y}
+      ENDIF
+      VAR threadState := System.Threading.Thread.CurrentThread:GetApartmentState()
+      IF threadState != System.Threading.ApartmentState.STA
+         SELF:CopyButton:Enabled := FALSE
+      ENDIF
       RETURN
 
-    CONSTRUCTOR( e AS Exception )
-        SELF(e:ToString())
-      RETURN
 
     CONSTRUCTOR( txt AS STRING )
       SUPER()

@@ -9,7 +9,7 @@
 FUNCTION SysObject(oSys) AS OBJECT CLIPPER
    LOCAL oValue AS OBJECT
    IF PCount() == 1
-      XSharp.RuntimeState.SetValue(Set.SysObject, oSys)
+      XSharp.RuntimeState.SetValue(Set.SysObject, (OBJECT) oSys)
       oValue := oSys
    ELSE
       oValue := XSharp.RuntimeState.GetValue<OBJECT>(Set.SysObject)

@@ -520,20 +520,26 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                         SELF:_oRdd:_SetEOF(FALSE)
                         SELF:_oRdd:_SetBOF(FALSE)
                         isOk := SELF:GoTop()
-                        recno := SELF:_RecNo
-                        last := SELF:_oRdd:RecCount + 1
-                        count := 0
-                        LOCAL previous AS LONG
-                        previous := recno
-                        DO WHILE recno != 0 .AND. recno < last
-                            count++
-                            recno := SELF:_ScopeSkip(1)
-                            IF recno == previous
-                                EXIT
-                            ENDIF
+                        SELF:Descending := lWasDescending
+                        IF !SELF:_isInScope()
+                           records := 0
+                        ELSE
+                            SELF:Descending := FALSE
+                            recno := SELF:_RecNo
+                            last := SELF:_oRdd:RecCount + 1
+                            count := 0
+                            LOCAL previous AS LONG
                             previous := recno
-                        ENDDO
-                        records := count
+                            DO WHILE recno != 0 .AND. recno < last
+                                count++
+                                recno := SELF:_ScopeSkip(1)
+                                IF recno == previous
+                                    EXIT
+                                ENDIF
+                                previous := recno
+                            ENDDO
+                            records := count
+                        ENDIF
                         SELF:Descending := lWasDescending
                     ELSE
                          records := 0

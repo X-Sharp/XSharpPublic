@@ -26,7 +26,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             ? DateTime.Now, "Create", createInfo:Order, "# of records", SELF:_oRdd:RecCount
             #endif
             IF String.IsNullOrEmpty(createInfo:BagName)
-                SELF:_oRdd:_dbfError(  Subcodes.EDB_CREATEINDEX, Gencode.EG_ARG,"OrdCreate", "Missing Orderbag Name")
+                SELF:ThrowException(  Subcodes.EDB_CREATEINDEX, Gencode.EG_ARG,"OrdCreate", "Missing Orderbag Name")
                 RETURN FALSE
             ENDIF
             isOk := SELF:_oRdd:GoCold()
@@ -59,7 +59,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 
             IF !isOk .OR. SELF:_keySize == 0
                 SELF:Close()
-                SELF:_oRdd:_dbfError(  Subcodes.EDB_CREATEINDEX, Gencode.EG_ARG,"OrdCreate", "Missing Order Name")
+                SELF:ThrowException(  Subcodes.EDB_CREATEINDEX, Gencode.EG_ARG,"OrdCreate", "Missing Order Name")
                 RETURN FALSE
             ENDIF
             // now verify if the order already exists in the bag and when so, then delete it from the orderbag
@@ -110,7 +110,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             LOCAL ic AS CdxSortCompare
             IF ! SELF:_HeaderCreate()
                 SELF:Close()
-                SELF:_oRdd:_dbfError(Gencode.EG_CREATE,  Subcodes.ERDD_WRITE,"OrdCreate", "Could not write Header ")
+                SELF:ThrowException(Subcodes.ERDD_WRITE,Gencode.EG_CREATE,  "OrdCreate", "Could not write Header ")
                 RETURN FALSE
             ENDIF
             #ifdef SHOWTIMES
@@ -354,7 +354,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 isOk := FALSE
             END TRY
             IF error
-                SELF:_oRdd:_dbfError( Subcodes.ERDD_KEY_EVAL,Gencode.EG_DATATYPE, SELF:FileName)
+                SELF:ThrowException( Subcodes.ERDD_KEY_EVAL,Gencode.EG_DATATYPE, SELF:FileName)
             ENDIF
             RETURN isOk
             

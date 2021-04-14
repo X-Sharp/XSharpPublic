@@ -14,6 +14,19 @@ USING System.Reflection.Emit
 USING System.Runtime.InteropServices
 USING STATIC XSharp.Conversions
 #include "CdxDebug.xh"
+#pragma warnings (170, off)
+
+#define USEATTRIB
+#ifdef USEATTRIB
+#XTRANSLATE \[HIDDEN\] => \[DebuggerBrowsable(DebuggerBrowsableState.Never)\]
+#XTRANSLATE \[INLINE\] => \[MethodImpl(MethodImplOptions.AggressiveInlining)\]
+#XTRANSLATE \[NODEBUG\] => \[DebuggerStepThroughAttribute\]
+#else
+#XTRANSLATE \[HIDDEN\] => 
+#XTRANSLATE [\INLINE\] => 
+#XTRANSLATE \[NODEBUG\] =>
+#endif
+
 BEGIN NAMESPACE XSharp.RDD.CDX
 
  	/// <summary>
@@ -30,17 +43,15 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         INTERNAL VIRTUAL PROPERTY PageType AS CdxPageType GET CdxPageType.Undefined SET
 
 
-        INTERNAL PROPERTY Dumped AS LOGIC GET _dumped SET _dumped := value
-        INTERNAL PROPERTY IsHot  AS LOGIC GET _hot SET _hot := value
-        INTERNAL PROPERTY Tag    AS CdxTag GET _tag SET SELF:_setTag(value)
+        INTERNAL PROPERTY Dumped AS LOGIC  GET _dumped SET _dumped := VALUE
+        INTERNAL PROPERTY IsHot  AS LOGIC  GET _hot SET _hot := VALUE
+        INTERNAL PROPERTY Tag    AS CdxTag GET _tag SET SELF:_setTag(VALUE)
         INTERNAL PROPERTY Buffer AS BYTE[] GET _buffer
-        INTERNAL PROPERTY PageNo AS Int32 GET _nPage SET _nPage := VALUE
+        INTERNAL PROPERTY PageNo AS Int32  GET _nPage SET _nPage := VALUE
         INTERNAL PROPERTY Bag    AS CdxOrderBag GET _bag
         // For debugging
         INTERNAL PROPERTY PageNoX AS STRING GET _nPage:ToString("X8")
 
-        INTERNAL wValue as __WordStruct
-        INTERNAL liValue AS __LongStruct
         INTERNAL VIRTUAL METHOD _setTag(newTag AS CdxTag) AS VOID
             _tag := newTag
 
@@ -97,34 +108,37 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         #endregion
         #region Helper Methods to read/write numbers are strings out of the buffer
         
-			[MethodImpl(MethodImplOptions.AggressiveInlining)];        
+			[INLINE];        
 			PROTECTED INTERNAL METHOD _GetByte(nOffset AS INT) AS BYTE
 				RETURN Buffer[ nOffset]
 
-            [MethodImpl(MethodImplOptions.AggressiveInlining)];        
+            [INLINE];        
 			PROTECTED INTERNAL METHOD _SetByte(nOffset AS INT, bValue AS BYTE) AS VOID
 				Buffer[ nOffset] := bValue
                 _hot := TRUE
 
-            [MethodImpl(MethodImplOptions.AggressiveInlining)];        
+            [INLINE];        
 			PROTECTED INTERNAL METHOD _GetWord(nOffSet AS INT) AS WORD
                 BEGIN UNCHECKED
+                    LOCAL wValue AS __WordStruct
                     wValue:b1 := Buffer[nOffSet]
                     wValue:b2 := Buffer[nOffSet+1]
                     RETURN wValue:wordValue
                 END UNCHECKED
 
-           [MethodImpl(MethodImplOptions.AggressiveInlining)];        
+           [INLINE];        
 			PROTECTED INTERNAL METHOD _GetShort(nOffSet AS INT) AS SHORT
                 BEGIN UNCHECKED
+                    LOCAL wValue AS __WordStruct
     	            wValue:b1 := Buffer[nOffSet]
                     wValue:b2 := Buffer[nOffSet+1]
                     RETURN wValue:shortValue
                 END UNCHECKED
 				
-			[MethodImpl(MethodImplOptions.AggressiveInlining)];        
+			[INLINE];        
 			PROTECTED INTERNAL METHOD _SetWord(nOffSet AS INT, _wValue AS WORD) AS VOID
                 BEGIN UNCHECKED
+                    LOCAL wValue AS __WordStruct
                     wValue:wordValue := _wValue
 	                Buffer[nOffSet]   := wValue:b1
                     Buffer[nOffSet+1] := wValue:b2
@@ -132,8 +146,9 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 END UNCHECKED
                 RETURN
 
-			[MethodImpl(MethodImplOptions.AggressiveInlining)];        
+			[INLINE];        
 			PROTECTED INTERNAL METHOD _SetShort(nOffSet AS INT, siValue AS SHORT) AS VOID
+                LOCAL wValue AS __WordStruct
                 wValue:shortValue := siValue
 	            Buffer[nOffSet]   := wValue:b1
                 Buffer[nOffSet+1] := wValue:b2
@@ -141,24 +156,27 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 RETURN 
 
 				
-			[MethodImpl(MethodImplOptions.AggressiveInlining)];        
+			[INLINE];        
 			PROTECTED INTERNAL METHOD _GetDWord(nOffSet AS INT) AS DWORD
+                LOCAL liValue AS __LongStruct
 	            liValue:b1 := Buffer[nOffSet]
                 liValue:b2 := Buffer[nOffSet+1]
                 liValue:b3 := Buffer[nOffSet+2]
                 liValue:b4 := Buffer[nOffSet+3]
                 RETURN liValue:dwordValue
 
-			[MethodImpl(MethodImplOptions.AggressiveInlining)];        
+			[INLINE];        
 			PROTECTED INTERNAL METHOD _GetDWordLE(nOffSet AS INT) AS DWORD
+                LOCAL liValue AS __LongStruct
 	            liValue:b4 := Buffer[nOffSet]
                 liValue:b3 := Buffer[nOffSet+1]
                 liValue:b2 := Buffer[nOffSet+2]
                 liValue:b1 := Buffer[nOffSet+3]
                 RETURN liValue:dwordValue
 				
-			[MethodImpl(MethodImplOptions.AggressiveInlining)];        
+			[INLINE];        
 			PROTECTED INTERNAL METHOD _SetDWord(nOffSet AS INT, dwValue AS DWORD) AS VOID
+                LOCAL liValue AS __LongStruct
                 liValue:dwordValue := dwValue
 	            Buffer[nOffSet]   :=  liValue:b1  
                 Buffer[nOffSet+1] :=  liValue:b2  
@@ -166,8 +184,9 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 Buffer[nOffSet+3] :=  liValue:b4  
 				_hot := TRUE
 
-			[MethodImpl(MethodImplOptions.AggressiveInlining)];        
+			[INLINE];        
 			PROTECTED INTERNAL METHOD _SetDWordLE(nOffSet AS INT, dwValue AS DWORD) AS VOID
+                LOCAL liValue AS __LongStruct
                 liValue:dwordValue := dwValue
 	            Buffer[nOffSet]   :=  liValue:b4  
                 Buffer[nOffSet+1] :=  liValue:b3  
@@ -175,16 +194,18 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 Buffer[nOffSet+3] :=  liValue:b1  
 				_hot := TRUE
                 
-			[MethodImpl(MethodImplOptions.AggressiveInlining)];        
+			[INLINE];        
 			PROTECTED INTERNAL METHOD _GetLong(nOffSet AS INT) AS Int32
+                LOCAL liValue AS __LongStruct
 	            liValue:b1 := Buffer[nOffSet]
                 liValue:b2 := Buffer[nOffSet+1]
                 liValue:b3 := Buffer[nOffSet+2]
                 liValue:b4 := Buffer[nOffSet+3]
                 RETURN liValue:longValue
 
-			[MethodImpl(MethodImplOptions.AggressiveInlining)];        
+			[INLINE];        
 			PROTECTED INTERNAL METHOD _GetLongLE(nOffSet AS INT) AS Int32
+                LOCAL liValue AS __LongStruct
 	            liValue:b4 := Buffer[nOffSet]
                 liValue:b3 := Buffer[nOffSet+1]
                 liValue:b2 := Buffer[nOffSet+2]
@@ -192,8 +213,9 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 RETURN liValue:longValue
 			
 				
-			[MethodImpl(MethodImplOptions.AggressiveInlining)];        
+			[INLINE];        
 			PROTECTED INTERNAL METHOD _SetLong(nOffSet AS INT, longValue AS Int32) AS VOID
+                LOCAL liValue AS __LongStruct
                 liValue:longValue := longValue
 	            Buffer[nOffSet]   :=  liValue:b1  
                 Buffer[nOffSet+1] :=  liValue:b2  
@@ -201,8 +223,9 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 Buffer[nOffSet+3] :=  liValue:b4  
 				_hot := TRUE
 
-			[MethodImpl(MethodImplOptions.AggressiveInlining)];        
+			[INLINE];        
 			PROTECTED INTERNAL METHOD _SetLongLE(nOffSet AS INT, longValue AS Int32) AS VOID
+                LOCAL liValue AS __LongStruct
                 liValue:longValue := longValue
 	            Buffer[nOffSet]   :=  liValue:b4 
                 Buffer[nOffSet+1] :=  liValue:b3  
@@ -211,7 +234,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 				_hot := TRUE
 
 
-			[MethodImpl(MethodImplOptions.AggressiveInlining)];        
+			[INLINE];        
 			INTERNAL METHOD _GetString( nOffSet AS INT, count AS INT) AS STRING
 				LOCAL str := _bag:Encoding:GetString( _buffer,nOffSet, count ) AS STRING
 				IF str == NULL 
@@ -221,7 +244,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 				ENDIF
 				RETURN str
 
-			[MethodImpl(MethodImplOptions.AggressiveInlining)];        
+			[INLINE];        
             INTERNAL METHOD _GetBytes( nOffSet AS INT, count AS INT) AS BYTE[]
                 LOCAL result AS BYTE[]
                 result := BYTE[]{count}
@@ -229,7 +252,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 RETURN result
 
 
-			[MethodImpl(MethodImplOptions.AggressiveInlining)];        
+			[INLINE];        
 			INTERNAL  METHOD _SetString(nOffSet AS INT, nSize AS INT, sValue AS STRING) AS VOID
 				// Be sure to fill the Buffer with 0
 				MemSet( _buffer, nOffSet, nSize , 0)

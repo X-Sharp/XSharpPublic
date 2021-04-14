@@ -165,7 +165,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 IF SELF:_oRdd IS DBFVFP 
                     SELF:_Collation := VfpCollation{SELF:_Header:VFPCollation,SELF:_oRdd:Header:CodePage:ToCodePage()}
                 ELSE
-                    SELF:_oRdd:_dbfError( Subcodes.ERDD_CORRUPT, Gencode.EG_CORRUPTION, "CdxTag.Open","Indexes with collation must be opened with the DBFVFP driver")
+                    SELF:ThrowException( Subcodes.ERDD_CORRUPT, Gencode.EG_CORRUPTION, "CdxTag.Open","Indexes with collation must be opened with the DBFVFP driver")
                 ENDIF
             ENDIF
             SELF:_oRdd:__Goto(0)
@@ -188,6 +188,10 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             page:ClearRecordsAndKeys()
             page:KeyLength      := SELF:KeyLength
             page:SetRecordBits(numRecs)
+            RETURN
+
+        INTERNAL METHOD SetSyntaxError(ex AS Exception) AS VOID
+            SELF:_oRdd:_dbfError(ex, Subcodes.EDB_EXPRESSION,Gencode.EG_SYNTAX,  "DBFCDX.EvaluateExpressions", FALSE) 
             RETURN
 
         INTERNAL METHOD EvaluateExpressions() AS LOGIC
@@ -269,8 +273,8 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                     IF SELF:_Collation != NULL
                         SELF:_keySize := SELF:Header:KeySize
                     ELSE
-                        var ex := Exception{"Expression length in index does not match calculated expression length"}
-                        SELF:_oRdd:_dbfError(ex, Subcodes.EDB_EXPRESSION,Gencode.EG_SYNTAX,  "DBFCDX.EvaluateExpressions", FALSE) 
+                        VAR ex := Exception{"Expression length in index does not match calculated expression length"}
+                        SELF:SetSyntaxError(ex)
                     ENDIF
                 ENDIF
             ENDIF
@@ -284,7 +288,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                     SELF:_ForCodeBlock := SELF:_oRdd:Compile(SELF:_ForExpr)
                 CATCH ex AS Exception
                     IF RuntimeState.LastRddError == NULL
-                        SELF:_oRdd:_dbfError( ex, Subcodes.EDB_EXPRESSION, Gencode.EG_SYNTAX,"DBFCDX.EvaluateExpressions", FALSE)
+                        SELF:SetSyntaxError(ex)
                     ENDIF
                     SELF:_Valid := FALSE
                     RETURN FALSE
@@ -296,7 +300,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                     evalOk     := SELF:_oRdd:_getUsualType(oValue) == __UsualType.Logic
                 CATCH ex AS Exception
                     IF RuntimeState.LastRddError == NULL
-                        SELF:_oRdd:_dbfError( ex, Subcodes.EDB_EXPRESSION, Gencode.EG_SYNTAX,"DBFCDX.EvaluateExpressions", FALSE)
+                        SELF:SetSyntaxError(ex)
                     ENDIF
                     SELF:_Valid := FALSE
                     evalOk := FALSE
@@ -819,7 +823,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 LOCAL uiRealLen := 0 AS LONG
                 result := SELF:_ToString(oKeyValue, SELF:_keySize,  byteArray,  REF uiRealLen)
             CATCH ex AS Exception
-                SELF:_oRdd:_dbfError(ex, Subcodes.EDB_EXPRESSION,Gencode.EG_SYNTAX,  "DBFCDX._GetExpressionValue", FALSE) 
+                SELF:SetSyntaxError(ex)
                 result := FALSE
             END TRY
             RETURN result

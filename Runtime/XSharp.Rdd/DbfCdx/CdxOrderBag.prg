@@ -216,7 +216,6 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             _tagList := CdxTagList{SELF,  _root:RootPage, buffer, _root:KeySize}
             _tagList:InitBlank(NULL)
             SELF:Write(_tagList)
-            // we now have a 
             RETURN TRUE
 
         METHOD _FindTagByName(cName AS STRING) AS CdxTag

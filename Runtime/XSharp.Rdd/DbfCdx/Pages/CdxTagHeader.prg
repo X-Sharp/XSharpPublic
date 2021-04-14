@@ -66,7 +66,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             oSb := StringBuilder{}
             oSb:AppendLine(sIntro)
             oSb:AppendLine("Tag       : "+SELF:TagName)
-            oSb:AppendLine("Page      : 0x"+SELF:PageNo:ToString("X"))
+            oSb:AppendLine("Page      : 0x"+SELF:PageNoX)
             oSb:AppendLine("Key       : "+SELF:KeyExpression)
             oSb:AppendLine("For       : "+SELF:ForExpression)
             oSb:AppendLine("Root      : 0x"+SELF:RootPage:ToString("X"))

@@ -98,13 +98,13 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 
                 LOCAL action := SELF:Add(tag:Header:PageNo, bytes) AS CdxAction
                 IF action:Type == CdxActionType.ExpandRecnos
-                    VAR leaves := SELF:GetLeaves()
+                    VAR leaves := SELF:GetKeys()
                     LOCAL stream    AS Stream
                     LOCAL fileSize  AS LONG
                     stream   := FGetStream(_bag:_hFile)
                     fileSize := (LONG) stream:Length
                     SELF:SetRecordBits(fileSize)
-                    SELF:SetLeaves(leaves, 0, leaves:Count)
+                    SELF:SetKeys(leaves, 0, leaves:Count)
                     action := SELF:Add(tag:Header:PageNo, bytes)
                     Debug.Assert(action:IsOk)
                 ENDIF

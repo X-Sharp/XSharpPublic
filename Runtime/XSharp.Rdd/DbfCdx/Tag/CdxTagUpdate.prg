@@ -139,24 +139,6 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             RETURN action
 #ifdef DEBUG
         PRIVATE METHOD ValidateAllLevels() AS LOGIC
-#ifdef  BALANCE
-            VAR aStack  := Stack <IList<CdxTreePage>>{}
-
-            VAR oPage := SELF:GetPage(SELF:_rootPage)
-            DO WHILE oPage != NULL
-                VAR pages  := oPage:CurrentLevel
-                aStack:Push(pages)
-                var children := oPage:GetChildren()
-                if children:Count == 0
-                    EXIT
-                ENDIF
-                oPage := SELF:GetPage(children:First())
-            ENDDO
-            // The stack now contains the pages for the CDX
-            IF aStack:Count > 2
-                NOP
-            ENDIF
-#endif
             RETURN TRUE
 #endif
         PRIVATE METHOD DeletePage(action AS CdxAction) AS CdxAction
@@ -477,7 +459,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             #endif
             VAR lWasRoot := oOldRoot:IsRoot
             // Adjust new sibling
-            //DebOut32("Make sure root page keeps same number "+ oOldRoot:PageNo:ToString("X")+ " Swap with "+ oNewRoot:PageNo:ToString("X"))
+            //DebOut32("Make sure root page keeps same number "+ oOldRoot:PageNoX+ " Swap with "+ oNewRoot:PageNoX)
             oNewSibling:LeftPtr := 0
             oNewSibling:Write()
             // swap page numbers for both pages
@@ -708,13 +690,13 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             
         PRIVATE METHOD ExpandRecnos(action AS CdxAction) AS CdxAction
             VAR oPageL   := SELF:CurrentLeaf
-            VAR leaves   := oPageL:GetLeaves()
+            VAR leaves   := oPageL:GetKeys()
             LOCAL result AS CdxAction
             // Only allocate page when we think that it does not fit.
             // To be safe we assume expanding takes 1 byte per key + we want the new key to fit as well
             IF oPageL:Freespace > (oPageL:DataBytes + SELF:KeyLength + leaves:Count +1)
                 SELF:SetLeafProperties(oPageL)
-                oPageL:SetLeaves(leaves, 0, leaves:Count)
+                oPageL:SetKeys(leaves, 0, leaves:Count)
                 result := oPageL:Insert(action:Pos, action:Recno, action:Key)
                 RETURN result
             ENDIF
@@ -722,12 +704,12 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             VAR oPageR   := SELF:NewLeafPage()
             oPageL:AddRightSibling(oPageR)
             SELF:SetLeafProperties(oPageL)
-            result := oPageL:SetLeaves(leaves, 0, nHalf)
+            result := oPageL:SetKeys(leaves, 0, nHalf)
             IF ! result:IsOk
                 result := SELF:DoAction(result)
             ENDIF
             SELF:SetLeafProperties(oPageR)
-            result := oPageR:SetLeaves(leaves, nHalf, leaves:Count - nHalf)
+            result := oPageR:SetKeys(leaves, nHalf, leaves:Count - nHalf)
             IF ! result:IsOk
                 result := SELF:DoAction(result)
             ENDIF
@@ -824,7 +806,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                             IF !SELF:Unique .AND. !SELF:_Conditional .AND. !SELF:Custom
                                 // do not throw an error but ignore the fact that the record was missing
                                 //SELF:_oRdd:_dbfError( Subcodes.ERDD_KEY_NOT_FOUND, Gencode.EG_DATATYPE,SELF:fileName)
-                                NOP
+                                _DebOut32("DBFCDX Key for record "+recordNo:ToString()+" was not found. This is being ignored")
                             ENDIF
                         ENDIF
                     ENDIF
@@ -849,6 +831,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                             Debug.Assert(page IS CdxLeafPage)
                             SELF:DoAction(CdxAction.InsertKey(page, pos, SELF:_newvalue:Recno, SELF:_newvalue:Key))
                         ELSE
+                           _DebOut32("DBFCDX Could not find the location to insert new key for record "+recordNo:ToString())
                             RETURN FALSE
                         ENDIF
                     ENDIF

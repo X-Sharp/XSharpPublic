@@ -147,9 +147,12 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 #endif
             RETURN SUPER:Write()
 
-#ifdef TESTCDX
+
         ABSTRACT METHOD Validate AS VOID
-#endif
+        ABSTRACT METHOD ValidateKeys() AS LOGIC
+        ABSTRACT METHOD ValidateLevel() AS LOGIC
+        ABSTRACT METHOD ValidateSiblings() AS LOGIC 
+            
         INTERNAL METHOD SetRoot() AS VOID
             SELF:PageType |= CdxPageType.Root
             RETURN
@@ -186,7 +189,6 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             ENDIF
             RETURN  
         INTERNAL ABSTRACT METHOD FindKey(key AS BYTE[], recno AS LONG, length AS LONG) AS WORD
-#ifdef TESTCDX
         METHOD Debug(o PARAMS  OBJECT[] ) AS VOID
            LOCAL count := o:Length AS INT
            LOCAL x                 AS INT
@@ -195,14 +197,13 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             sb := StringBuilder{}
            cProc := ProcName(1):ToLower():PadRight(30)
            sb:Append(cProc+" ")
-           sb:Append(SELF:PageNo:ToString("X8"))
+           sb:Append(SELF:PageNoX)
            sb:Append(" ")
            FOR x := 0 UPTO count-1
               sb:Append( o[x]:ToString())
               sb:Append( " ")
             NEXT
-           System.Diagnostics.Debug.WriteLine(sb:ToString())
+           _DebOut32(sb:ToString())
            RETURN
-#endif            
 	END CLASS
 END NAMESPACE 

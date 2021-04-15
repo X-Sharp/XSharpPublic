@@ -3,7 +3,9 @@
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
-
+// Functions provided by Antonio Lopes
+// make sure this is compiled early bound !
+#pragma options ("lb", off)
 #translate BETWEEN(<n1>, <n2>, <n3>)  => (<n1> >= <n2> .and. <n1> <= <n3>)
 #define RANGE_ERROR "Value must be between 0 and 31"
 #define TYPE_ERROR  "Value must be LONG or BINARY"
@@ -39,7 +41,7 @@ FUNCTION BitClear (Arg1 AS USUAL, Bit AS USUAL) AS USUAL
     ELSEIF IsNumeric(Arg1)
         RETURN BitClear((INT)Arg1, (INT)Bit)
     ELSE
-        THROW Error.ArgumentError(__FUNCTION__, nameof(Arg1),TYPE_ERROR, 1, {Arg1})         
+        THROW Error.ArgumentError(__FUNCTION__, nameof(Arg1),TYPE_ERROR, 1, {Arg1})
     ENDIF
 
 END FUNC
@@ -83,7 +85,7 @@ FUNCTION BitClear (BinString AS BINARY, StartBit AS INT, BitCount AS INT) AS BIN
     LOCAL BitCounter AS INT
 
     FOR BitCounter := 1 TO BitCount
-        
+
         ByteIndex := BitIndex / 8 + 1
         IF BETWEEN(ByteIndex, 1, Result.Length)
             Result[ByteIndex] := _AND(Result[ByteIndex], _NOT(1 << BitIndex % 8))
@@ -105,7 +107,7 @@ FUNCTION BitLShift (Arg AS INT, Bits AS INT) AS INT
     ELSE
         THROW Error.ArgumentError(__FUNCTION__, nameof(Bits),RANGE_ERROR, 2,{Bits})
     ENDIF
-    
+
 END FUNC
 /// <include file="VFPDocs.xml" path="Runtimefunctions/bitlshift/*" />
 FUNCTION BitLShift (Arg AS USUAL, Bits AS USUAL) AS INT
@@ -115,13 +117,13 @@ END FUNC
 
 
 /// <include file="VFPDocs.xml" path="Runtimefunctions/bitnot/*" />
-FUNCTION BitNot (Arg1 AS USUAL) AS USUAL 
-    IF IsBinary(Arg1) 
+FUNCTION BitNot (Arg1 AS USUAL) AS USUAL
+    IF IsBinary(Arg1)
         RETURN BitNot((BINARY)Arg1)
     ELSEIF IsNumeric(Arg1)
         RETURN BitNot((INT)Arg1)
     ELSE
-        THROW Error.ArgumentError(__FUNCTION__, nameof(Arg1),TYPE_ERROR, 1, {Arg1})         
+        THROW Error.ArgumentError(__FUNCTION__, nameof(Arg1),TYPE_ERROR, 1, {Arg1})
     ENDIF
 END FUNC
 
@@ -143,7 +145,7 @@ FUNCTION BitNot (BinString AS BINARY, StartBit AS INT, BitCount := 1 AS INT) AS 
     LOCAL BitCounter AS INT
 
     FOR BitCounter := 1 TO BitCount
-        
+
         ByteIndex := BitIndex / 8 + 1
         IF BETWEEN(ByteIndex, 1, Result.Length)
             Result[ByteIndex] := _XOR(Result[ByteIndex], 1 << BitIndex % 8)
@@ -200,7 +202,7 @@ INTERNAL FUNCTION BitRShift (Arg AS INT, Bits AS INT) AS INT
     ELSE
         THROW Error.ArgumentError(__FUNCTION__, nameof(Bits),RANGE_ERROR, 2,{Bits})
     ENDIF
-    
+
 END FUNC
 
 
@@ -212,7 +214,7 @@ END FUNC
 /// <include file="VFPDocs.xml" path="Runtimefunctions/bitset/*" />
 FUNCTION BitSet (Arg1 AS USUAL, Bit AS USUAL) AS USUAL
 
-    IF IsBinary(Arg1) 
+    IF IsBinary(Arg1)
         RETURN BitSet((BINARY)Arg1, (INT)Bit, 1)
     ELSE
         RETURN BitSet((INT)Arg1, (INT)Bit)
@@ -258,7 +260,7 @@ FUNCTION BitSet (BinString AS BINARY, StartBit AS INT, BitCount AS INT) AS BINAR
     LOCAL BitCounter AS INT
 
     FOR BitCounter := 1 TO BitCount
-        
+
         ByteIndex := BitIndex / 8 + 1
         IF BETWEEN(ByteIndex, 1, Result.Length)
             Result[ByteIndex] := _OR(Result[ByteIndex], 1 << BitIndex % 8)
@@ -275,14 +277,14 @@ END FUNC
 
 /// <include file="VFPDocs.xml" path="Runtimefunctions/bittest/*" />
 FUNCTION BitTest (Arg AS USUAL, Bit AS USUAL) AS LOGIC
-    IF IsBinary(Arg) 
+    IF IsBinary(Arg)
       RETURN BitTest((BINARY)Arg, (INT)Bit)
     ELSEIF IsLong(Arg)
         RETURN BitTest((INT)Arg, (INT)Bit)
     ELSE
          THROW Error.ArgumentError(__FUNCTION__, nameof(Arg),TYPE_ERROR, 1, {Arg})
     ENDIF
-    
+
 END FUNC
 
 /// <include file="VFPDocs.xml" path="Runtimefunctions/bittest/*" />
@@ -293,14 +295,14 @@ FUNCTION BitTest (Arg AS INT, Bit AS INT) AS LOGIC
     ELSE
         THROW Error.ArgumentError(__FUNCTION__, nameof(Bit),RANGE_ERROR,2,{Bit})
     ENDIF
-    
+
 END FUNC
 
 /// <include file="VFPDocs.xml" path="Runtimefunctions/bittest/*" />
 FUNCTION BitTest (BinString AS BINARY, BitNumber AS INT) AS LOGIC
-    
+
     LOCAL Buff := BinString AS BYTE[]
-    
+
     IF BETWEEN(BitNumber, 0, Buff.Length * 8 - 1)
         RETURN _AND(Buff[BitNumber / 8 + 1], 1 << BitNumber % 8) != 0
     ELSE
@@ -331,20 +333,20 @@ STATIC METHOD _BITANDORX (LogicalOp AS BitOperation, Arg1 AS USUAL, Arg2 PARAMS 
     IF IsBinary(Arg1)
         VAR Args = BINARY[]{Arg2.Length}
         LOCAL ArgIndex AS INT
-        
+
         FOR ArgIndex := 1 TO Args.Length
             Args[ArgIndex] := (BINARY)Arg2[ArgIndex]
         NEXT
-        
+
         RETURN _BITANDORX(LogicalOp, (BINARY)Arg1, Args)
     ELSEIF IsLong(Arg1)
         VAR Args = INT[]{Arg2.Length}
         LOCAL ArgIndex AS INT
-        
+
         FOR ArgIndex := 1 TO Args.Length
             Args[ArgIndex] := (INT)Arg2[ArgIndex]
         NEXT
-        
+
         RETURN _BITANDORX(LogicalOp, (INT)Arg1, Args)
     ELSE
        THROW Error.ArgumentError(__FUNCTION__, nameof(Arg1),TYPE_ERROR,1, {Arg1})
@@ -406,7 +408,7 @@ STATIC METHOD _BITANDORX (LogicalOp AS BitOperation, Arg1 AS BINARY, Arg2 PARAMS
             END
 
     ENDFOR
-        
+
     RETURN (BINARY)Result
 
 END METHOD
@@ -417,5 +419,5 @@ INTERNAL ENUM BitOperation
    MEMBER And
    MEMBER Or
    MEMBER Xor
-END ENUM   
+END ENUM
 

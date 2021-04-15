@@ -366,7 +366,6 @@
              <code language="X#">
                 Close Databases
                 Clear
-                Set TALK OFF
                 Open Database (HOME(2) + "data\testdata")
                 Use employee  &amp;&amp; Open Employee table
                 ? ALines(aMyArray, employee.notes)            &amp;&amp; Displays 1
@@ -650,7 +649,7 @@
                 Clear  &amp;&amp; clear the current output window
                 Display MEMORY LIKE gaPrinters &amp;&amp; show the contents of the array
                 ELSE
-                WAIT WINDOW 'No printers found.'
+                WAIT 'No printers found.'
                 ENDIF
             </code>
         </example>
@@ -1505,12 +1504,11 @@
         <summary>
             Returns the current mode of the CAPS Lock key or sets the CAPS Lock key mode on or off.
         </summary>
-        <param name="lExpression">
+        <param name="lSetOn">
             Include to turn the CAPS Lock key on or off. Capslock(.T.) turns CAPS Lock on and Capslock(.F.) turns CAPS Lock off.
-            A logical value is returned corresponding to the CAPS Lock setting before Capslock(.T.) or Capslock(.F.) is issued.
         </param>
         <returns>
-            Logical
+            A logical value is returned corresponding to the CAPS Lock setting before Capslock(.T.) or Capslock(.F.) is issued.
         </returns>
         <remarks>
             Issuing Capslock( ) with no argument returns true (.T.) if CAPS Lock is on, or false (.F.) if CAPS Lock is off.
@@ -1523,9 +1521,9 @@
                 Capslock(glOldLock)  &amp;&amp; Return to original setting
                 *** or, toggle CapsLock to the opposite value and back ***
                 Capslock(!Capslock( ))
-                WAIT WINDOW
+                WAIT 
                 Capslock(!Capslock( ))
-                WAIT WINDOW
+                WAIT 
                 Capslock(glOldLock)  &amp;&amp; Return to original setting
             </code>
         </example>
@@ -1678,7 +1676,7 @@
                 IF LEN(ALLTRIM(cCurClassLib))=0
                 cCurClassLib="None"
                 ENDIF
-                WAIT WINDOW "Current class library is: " + cCurClassLib + CHR(13);
+                WAIT "Current class library is: " + cCurClassLib + CHR(13);
                 + "Press any key to continue..."
                 frmMyForm = CreateObject("FormGrandChild")
                 * Create an array
@@ -3747,7 +3745,7 @@
                 = DbSetProp("customer.cust_id", "Field", "Comment", ;
                 "Property has been set by DbSetProp.")  &amp;&amp; New field comments
                 cRESULTS = DbGetProp("customer.cust_id", "Field", "Comment")
-                WAIT WINDOW "Cust_id field comments: "+ cRESULTS  &amp;&amp; Display comments
+                WAIT "Cust_id field comments: "+ cRESULTS  &amp;&amp; Display comments
             </code>
         </example>
     </dbsetprop>
@@ -4958,7 +4956,7 @@
              <code language="X#">
                 Clear
                 cPrinter = GETPRINTER( )
-                WAIT WINDOW IIF(EMPTY(cPrinter), 'No printer chosen', cPrinter)
+                WAIT IIF(EMPTY(cPrinter), 'No printer chosen', cPrinter)
             </code>
         </example>
     </getprinter>
@@ -5242,12 +5240,11 @@
         <summary>
             Returns the current insert mode, or sets the insert mode on or off.
         </summary>
-        <param name="lExpression">
+        <param name="lSetOn">
             Turns the insert mode on or off. InsMode(.T.) turns the insert mode on and InsMode(.F.) turns it off.
-            A logical value corresponding to the insert mode setting before InsMode(.T.) or InsMode(.F.) was issued is returned.
         </param>
         <returns>
-            Logical
+            A logical value corresponding to the insert mode setting before InsMode(.T.) or InsMode(.F.) was issued is returned.
         </returns>
         <remarks>
             If you omit the optional argument and the insert mode is on (characters are inserted before the cursor),
@@ -5256,7 +5253,6 @@
         </remarks>
         <example>
              <code language="X#">
-                Set TALK On
                 =InsMode(.T.)  &amp;&amp; Set insert mode on
                 ? InsMode( )
                 = InsMode(!InsMode( ))  &amp;&amp; Toggle insert mode to opposite state
@@ -5432,7 +5428,7 @@
                 IF IsExclusive( )
                 REIndex  &amp;&amp; Can only be done if table opened exclusively
                 ELSE
-                Wait Window 'The table has to be exclusively opened'
+                WAIT 'The table has to be exclusively opened'
                 ENDIF
                 Set Exclusive &amp;cExclusive
             </code>
@@ -5609,7 +5605,7 @@
                 *** Bug_Proc error handler ***
                 PROCEDURE bug_proc
                 PARAMETERS gnBadLine
-                Wait Window 'Error occurred at line: ' + ALLTRIM(STR(gnBadLine))
+                WAIT 'Error occurred at line: ' + ALLTRIM(STR(gnBadLine))
                 RETURN
             </code>
         </example>
@@ -6029,7 +6025,7 @@
                 .PICTUREVAL = m.goIPic &amp;&amp; "IPicture"-Interface
                 ENDWITH
                 HIDE WINDOWS ALL
-                WAIT WINDOW "Press any key..."
+                WAIT "Press any key..."
                 _SCREEN.RemoveObject("oPic1")
                 _SCREEN.RemoveObject("oPic2")
                 STORE NULL TO goPic, goIPic
@@ -6455,13 +6451,13 @@
         <summary>
             Returns the current mode of the Num Lock key or sets the mode of the Num Lock key on or off.
         </summary>
-        <param name="lExpression">
-            Turns the Num Lock key on or off. If lExpression is true (.T.), the Num Lock key is turned on; if lExpression is false (.F.),
-            the Num Lock key is turned off. NumLock( ) returns a logical value corresponding to the Num Lock key setting before NumLock(.T.)
-            or NumLock(.F.) is issued.
+        <param name="lSetOn">
+            Turns the Num Lock key on or off. If lSetOn is true (.T.), the Num Lock key is turned on; if lSetOn is false (.F.),
+            the Num Lock key is turned off. 
         </param>
         <returns>
-            Logical
+            NumLock( ) returns a logical value corresponding to the Num Lock key setting before NumLock(.T.)
+            or NumLock(.F.) is issued.
         </returns>
         <remarks>
             NumLock( ) returns true (.T.) if the Num Lock key is on (pressing a key on the numeric keypad returns a number), or false (.F.)
@@ -6470,11 +6466,11 @@
         <example>
              <code language="X#">
                 gcOldLock = NumLock( )  &amp;&amp; Save original setting
-                WAIT WINDOW 'Press a key to turn Num Lock on'
+                WAIT 'Press a key to turn Num Lock on'
                 = NumLock(.T.)  &amp;&amp; Turn Num Lock on
-                WAIT WINDOW 'Press a key to turn Num Lock off'
+                WAIT 'Press a key to turn Num Lock off'
                 = NumLock(!NumLock( ))  &amp;&amp; Toggle Num Lock to the opposite value
-                WAIT WINDOW 'Press a key to restore original Num Lock setting'
+                WAIT 'Press a key to restore original Num Lock setting'
                 = NumLock(gcOldLock)     &amp;&amp; Return to original setting
             </code>
         </example>

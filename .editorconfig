@@ -42,6 +42,6 @@ indent_size = 2
 trim_trailing_whitespace = false
 
 [*.prg]
-indent_style=space
+indent_style = space
 keyword_case = upper
 identifier_case = false

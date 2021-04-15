@@ -165,6 +165,46 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			EnforceType(u, STRING)
 			
 			Assert.True(EmptyUsual(STRING) == "")
+
+#pragma options ("lb", ON)
+        [Fact, Trait("Category", "EmptyUsual")];
+		METHOD SysObject_Test() AS VOID
+			LOCAL o AS OBJECT
+			o := SysObjectTestClass{}
+			
+			SysObject(o)
+			
+			Assert.Equal("test", (STRING) SysObject(o):Something )
+			SysObject(o):Something := "abc"
+			Assert.Equal(TRUE, (LOGIC)SysObject(o):SomeMethod())
+			
+			Assert.Equal("abc", (STRING) o:Something )
+			Assert.Equal(TRUE, (LOGIC)SysObject():SomeMethod())
+			
+			Assert.Equal("abc", (STRING) SysObject():Something )
+
+
+			LOCAL u AS USUAL
+			u := SysObjectTestClass{}
+			
+			SysObject(o)
+			
+			Assert.Equal("test", (STRING) SysObject(u):Something )
+			SysObject(u):Something := "abc"
+			Assert.Equal(TRUE, (LOGIC)SysObject(u):SomeMethod())
+			
+			Assert.Equal("abc", (STRING) u:Something )
+			Assert.Equal(TRUE, (LOGIC)SysObject():SomeMethod())
+			
+			Assert.Equal("abc", (STRING) SysObject():Something )
+#pragma options ("lb", OFF)
+		
+	END CLASS
+	
+	CLASS SysObjectTestClass
+		EXPORT Something := "test"
+		METHOD SomeMethod()
+		RETURN TRUE
 	END CLASS
 
 END NAMESPACE

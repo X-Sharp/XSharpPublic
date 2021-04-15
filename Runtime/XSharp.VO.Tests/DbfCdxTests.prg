@@ -3157,6 +3157,8 @@ RETURN
 			Assert.Equal(3, (INT) OrdKeyCount() ) // 	3, ok
 			
 			DbCloseAll()
+
+			SetDeleted ( FALSE ) 
 		RETURN	
 
 
@@ -4238,7 +4240,7 @@ RETURN
 			cDbf := GetTempFileName()
 			DbfTests.CreateDatabase(cDbf , { { "TESTFLD" , "C" , 10 , 0 } } )
 			DbUseArea(TRUE, "DBFCDX", cDbf, , FALSE)
-			LOCAL uInfo AS USUAL
+			LOCAL uInfo := NIL AS USUAL
 			VoDbInfo(DBI_DBFILTER, REF uInfo)
 			Assert.False( IsNil(uInfo) )
 			Assert.True( uInfo == "" )
@@ -4310,6 +4312,36 @@ RETURN
 			Assert.True(Eof())
 		        
 			DbCloseArea() 
+
+			
+            SetDeleted(TRUE)
+			DbUseArea( ,,cDBF )
+			DbSetOrder ( 1 ) 
+		
+			OrdDescend ( , , TRUE )  // switch to descend view
+			OrdScope(TOPSCOPE, "B")     // Note: must be "R" !
+			OrdScope(BOTTOMSCOPE, "R")  // Note: must be "B" !
+
+			
+			DbGoTop()
+			Assert.True(Bof())
+			Assert.True(Eof())
+			Assert.Equal(13, (INT)RecNo())
+		    
+		    DbGoBottom()       
+			Assert.True(Bof())
+			Assert.True(Eof())
+
+			Assert.Equal(0, (INT)OrdKeyCount())
+			Assert.True(Bof())
+			Assert.True(Eof())
+
+			Assert.Equal(0, (INT)OrdKeyNo())
+			Assert.True(Bof())
+			Assert.True(Eof())
+		        
+			DbCloseArea() 
+            SetDeleted(FALSE)
 		
         [Fact, Trait("Category", "DBF")];
 		METHOD OrdKeyCount_OrdKeyNo_BoF_EoF_test() AS VOID
@@ -4350,6 +4382,39 @@ RETURN
 			Assert.True(Bof())
 		        
 			DbCloseArea() 
+		
+
+			SetDeleted(TRUE)
+			DbUseArea( ,,cDBF )
+			DbSetOrder ( 1 ) 
+
+			DbSeek ( "G" ) 
+			FOR LOCAL i := 1 AS INT UPTO 9
+				DbSkip()
+				Assert.False(Eof())
+			NEXT
+			DbSkip()
+			Assert.True(Eof())
+			Assert.Equal(0 ,  (INT)DbOrderInfo( DBOI_POSITION ) )
+			Assert.True(Eof())
+			Assert.Equal(12 , (INT)DbOrderInfo( DBOI_KEYCOUNT ) )
+			Assert.True(Eof())
+
+
+			DbSeek ( "G" ) 
+			FOR LOCAL i := 1 AS INT UPTO 2
+				DbSkip(-1)
+				Assert.False(Bof())
+			NEXT
+			DbSkip(-1)
+			Assert.True(Bof())
+			Assert.Equal(1 ,  (INT)DbOrderInfo( DBOI_POSITION ) )
+			Assert.True(Bof())
+			Assert.Equal(12 , (INT)DbOrderInfo( DBOI_KEYCOUNT ) )
+			Assert.True(Bof())
+		        
+			DbCloseArea() 
+			SetDeleted(FALSE)
 		
 
         [Fact, Trait("Category", "DBF")];
@@ -4414,6 +4479,45 @@ RETURN
 			Assert.False( Found() )
         
 			DbCloseArea() 
+
+
+        [Fact, Trait("Category", "DBF")];
+		METHOD OrdKeyCount_SetDeleted() AS VOID
+			// https://github.com/X-Sharp/XSharpPublic/issues/599
+			LOCAL cDbf AS STRING
+			RddSetDefault("DBFCDX")
+			cDbf := GetTempFileName()
+
+			DbfTests.CreateDatabase(cDbf , { { "LAST" , "C" , 20 , 0 } 	} , { "g6" , "o2", "g2" , "g1" , "g3" , "g5" , "B1" , "b2" , "p", "q" , "r" , "s" } )
+
+			DbGoto(5)
+			DbDelete()
+			DbGoto(8)
+			DbDelete()
+			DbGoto(9)
+			DbDelete()
+			
+			DbCreateOrder( "ORDER1" , cDbf , "upper(LAST)" , { || Upper ( _Field->LAST) } )
+			DbCloseArea()
+
+			DbUseArea( TRUE,,cDBF )
+			DbSetOrder ( 1 ) 
+			
+			OrdScope(TOPSCOPE, "A")    // "A"  "A"  
+			OrdScope(BOTTOMSCOPE, "S") // "Z"  "S"  
+
+			DbGoTop()
+			Assert.Equal( 12, (INT)RecCount() )
+
+			SetDeleted ( TRUE )	
+			Assert.Equal( 12, (INT)OrdKeyCount() )
+			
+			SetDeleted ( FALSE )  
+			Assert.Equal( 12, (INT)OrdKeyCount() )
+		
+			DbCloseArea() 
+			SetDeleted( FALSE )
+
 		
         [Fact, Trait("Category", "DBF")];
 		METHOD FPT_OpenShared() AS VOID

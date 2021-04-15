@@ -1,6 +1,7 @@
 ﻿//
 // Start.prg
 //
+
 //#include "dbcmds.vh"
 USING XSharp.RDD
 USING System.IO
@@ -8,13 +9,12 @@ USING System.Threading
 USING System.Reflection
 USING System.Collections.Generic
 
-
 [STAThread];      
 FUNCTION Start() AS VOID
     TRY
-         FoxTags()
+         //FoxTags()
          //SeekSkipAndFoundFlag()
-         //OrdDescAndOrdScope()
+         OrdDescAndOrdScope()
          //OrdScopeBof()
          //OrderKeyCountAndSkipBack()
         //DumpWg1()
@@ -405,7 +405,7 @@ FUNCTION OrdDescAndOrdScope() AS VOID
 LOCAL cDBF, cPfad, cIndex   AS STRING 
 LOCAL aFields, aValues AS ARRAY 
 LOCAL i AS DWORD  
-
+SetDeleted(FALSE)
 
     RddSetDefault ( "DBFCDX" ) 
     

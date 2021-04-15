@@ -25,8 +25,8 @@ FUNCTION Start() AS VOID
 	DIMENSION aDim2[3,4]
 	aDim2[1,1] := 11 // runtime exception
 	aDim2[3,4] := 34
-	xAssert(aDim1[1,1] == 11)
-	xAssert(aDim1[3,4] == 34)
+	xAssert(aDim2[1,1] == 11)
+	xAssert(aDim2[3,4] == 34)
 RETURN
 
 

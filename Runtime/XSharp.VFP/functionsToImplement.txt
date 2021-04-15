@@ -49,7 +49,6 @@ ACLASS( )
 ADATABASES( )
 ADBOBJECTS( )
 ADDBS( )  
-ADDPROPERTY( )          // implemented
 AELEMENT( ) 
 AGETFILEVERSION( )
 ALINES( )
@@ -57,30 +56,18 @@ AMEMBERS( )
 ANETRESOURCES( )
 APRINTERS( )
 ASESSIONS( )
-ASQLHANDLES( )	// implemented
 ASTACKINFO( )
 ASUBSCRIPT( )
 AT_C( )
 ATAGINFO( )
 AUSED( )
 BINTOC( )
-BITAND( )
-BITCLEAR( )
-BITLSHIFT( )
-BITNOT( )
-BITOR( )
-BITSET( )
-BITTEST( )
-BITXOR( )
 CANDIDATE( )
-CAPSLOCK( )
 CAST( )
-CDX( )              // needs testing
 CEILING( )
 COMPOBJ( )
 COMPILE()
 CPCONVERT( )
-CPDBF( )            // needs testing
 CREATEOBJECTEX( )
 CREATEOFFLINE( )
 CTOBIN( )
@@ -98,7 +85,6 @@ DEFAULTEXT( )
 DESCENDING( )
 DIFFERENCE( )
 DisplayPath( )
-DMY( )              // implemented
 DODEFAULT( )
 DRIVETYPE( )
 DROPOFFLINE( )
@@ -106,10 +92,8 @@ EVL( )
 EXECSCRIPT( )
 FIELD( )            // needs testing, no caption yet (needs DBC support)
 FILETOSTR( )
-FILTER( )           // needs testing
 FLDLIST( )
 FONTMETRIC( )
-FOR( )              // needs testing
 FORCEEXT( )
 FORCEPATH( )
 FULLPATH( )
@@ -126,27 +110,18 @@ GETOBJECT( )
 GETPICT( )
 GETPRINTER( )
 GETRESULTSET( )
-GETWORDCOUNT( ) // implemented
-GETWORDNUM( ) // implemented
 GETCURSORADAPTER( )
-GOMONTH(            // implemented
 ID( )
-IDXCOLLATE( )       // needs testing
 IMESTATUS( )
 INDBC( )
 INDEXSEEK( )
 INPUTBOX( )
-INSMODE( )
 ISBLANK( )
 ISEXCLUSIVE( )
-ISFLOCKED( )        // needs testing
 ISMEMOFETCHED( )
 ISNULL( )
 ISPEN( )
-ISREADONLY( )       // needs testing
-ISRLOCKED( )        // needs testing
 ISTRANSACTABLE( )
-KEY( )              // needs testing
 KEYMATCH( )
 LINENO( )
 LOADPICTURE( )
@@ -154,16 +129,10 @@ LOCFILE( )
 LOCK( )
 LOOKUP( )
 MAKETRANSACTABLE( )
-MDX( )              // needs testing
-MDY( )              // implemented    
-MESSAGEBOX( )	    // implemented
-NDX( )              // needs testing
 NEWOBJECT( )
 NORMALIZE( )
-NUMLOCK( )
 NVL( )
 OLDVAL( )
-ORDER( )           // needs testing
 PAYMENT( )
 PCOL( )
 PRIMARY( )
@@ -172,12 +141,8 @@ PROW( )
 PRTINFO( )
 PUTFILE( )
 PV( )
-QUARTER( )              // implemented
 RAISEEVENT( )
-RATC( )                 // implemented
 REFRESH( )
-RELATION( )             // needs testing
-REMOVEPROPERTY( )       // implemented
 REQUERY( )
 RGBSCHEME( )
 SAVEPICTURE( )
@@ -185,20 +150,7 @@ SCHEME( )
 SEEK( )
 SETFLDSTATE( )
 SETRESULTSET( )
-SQLCANCEL( )	    // implemented
-SQLCOLUMNS( )	    // implemented
-SQLCOMMIT( )	    // implemented
-SQLCONNECT( )	    // implemented
-SQLDISCONNECT( )	// implemented
-SQLEXEC( )	        // implemented
-SQLGETPROP( )	    // implemented
 SQLIDLEDISCONNECT( )
-SQLMORERESULTS( )	// implemented
-SQLPREPARE( )	    // implemented
-SQLROLLBACK( )	    // implemented
-SQLSETPROP( )	    // implemented
-SQLSTRINGCONNECT( )	// implemented
-SQLTABLES( )	    // implemented
 STRCONV( )
 STREXTRACT( )
 STRTOFILE( )
@@ -206,16 +158,10 @@ SYS( )
 SYSMETRIC( )
 TABLEREVERT( )
 TABLEUPDATE( )
-TAG( )              // needs testing
-TAGCOUNT( )         // needs testing
-TAGNO( )            // needs testing
-TARGET( )           // needs testing
 TEXTMERGE( )
 TTOC( )
 TXNLEVEL( )
 TXTWIDTH( )
-UNIQUE( )           // needs testing
 VARTYPE( )
-WEEK( )             // implemented
 XMLTOCURSOR( )
 XMLUPDATEGRAM( )

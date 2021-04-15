@@ -1,0 +1,4 @@
+﻿Several functions and classes in this file were contributed by our supporters.
+
+Karl-Heinz Rauscher (Germany)
+António Lopes (Portugal)

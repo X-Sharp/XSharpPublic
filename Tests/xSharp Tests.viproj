@@ -91558,7 +91558,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   Optimize=0
 ENDApplication = R767 - Another ICE for an IIF expression.
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = 09F25645-7429-41B4-8D41-DFD5B355DD87
 ; ************** APPLICATION C765 - Problem with accessing elements in multi dim arrays in VFP dialect *************
 Application = C765 - Problem with accessing elements in multi dim arrays in VFP dialect
 IDEVersion = 1.06
@@ -91632,7 +91632,7 @@ FOX2=1
 XPP1=0
 LateBound=0
 Unsafe=0
-Undeclared=0
+Undeclared=1
 UseNativeVersion=0
 MemVar=1
 IgnoreStdDefs=0

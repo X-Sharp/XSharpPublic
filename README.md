@@ -54,8 +54,7 @@ Additional notes:
   This will make sure that the SDK of the right version is found.
   If this somehow fails, then you can set an environment variable SET COREHOST_TRACE=1. This will show where dotnet.exe is looking for the sdk.
     
-To open the current projects in Visual Studio you need to install .Net Core 2.1.500 (this is also the version in global.json) from:
-https://dotnet.microsoft.com/download/dotnet-core/2.1  
+To open the current projects in Visual Studio you need to install .Net 5.0.102 (this is also the version in global.json in the XSharp and Roslyn folders)
 
 
 Results of automated builds:

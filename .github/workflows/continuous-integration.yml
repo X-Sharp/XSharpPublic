@@ -7,6 +7,10 @@ on:
   pull_request:
       types: [opened, assigned, synchronize, edited]
   workflow_dispatch:
+env:
+  DOTNET_NOLOGO: true
+  DOTNET_CLI_TELEMETRY_OPTOUT: true  
+
 jobs:
   job1:
     name: BuildXSharpCompiler

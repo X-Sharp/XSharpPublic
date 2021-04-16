@@ -880,7 +880,6 @@ namespace XSharpDocs
             string CurrencyReplace = "Currency";
             string PszReplace = "Psz";
             string FloatReplace = "Float";
-            string FoxArrayReplace = "FoxArray";
             Dictionary<string, string> replacements = new Dictionary<string, string>();
             replacements.Add(ArrayBase, ArrayBaseReplace);
             replacements.Add(Array, ArrayReplace);

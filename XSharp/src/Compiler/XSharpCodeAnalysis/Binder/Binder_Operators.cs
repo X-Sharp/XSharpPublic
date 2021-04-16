@@ -605,7 +605,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                                         Conversion.ImplicitNumeric,
                                         false,
                                         false,
-                                        conversionGroupOpt: default, 
+                                        conversionGroupOpt: null,
                                         constantValueOpt: right.ConstantValue,
                                         type: leftType) { WasCompilerGenerated = true };
                                 }

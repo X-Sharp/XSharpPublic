@@ -46,10 +46,14 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
         }
         public SyntaxTriviaList GetLeadingTrivia(CSharpSyntaxNode parent, CompilationUnitSyntax cu)
         {
-            if (cu != null && cu.XTokens != null)
+            if (parent is MethodDeclarationSyntax mdecl && mdecl.Identifier.Text.Contains("$"))
+            {
+                return default;
+            }
+            if (cu != null)
             {
                 var options = ((CSharpParseOptions)cu.SyntaxTree.Options);
-                if (cu.HasDocComments ||options.TargetDLL != XSharpTargetDLL.Other)
+                if (cu.HasDocComments || options.TargetDLL != XSharpTargetDLL.Other)
                 {
                     XSharpToken start = this.Start as XSharpToken;
                     // we have stored the XML comments of an entity in the first token of the ContextNode
@@ -57,6 +61,26 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                     {
                         return ParseTrivia(start.XmlComments);
                     }
+                }
+                if (parent is PropertyDeclarationSyntax propdecl)
+                {
+                    var acc = propdecl.AccessorList;
+                    for (int i = 0; i < acc.Accessors.Count; i++)
+                    {
+                        var accessor = acc.Accessors[i];
+                        var node = accessor.XNode as XSharpParserRuleContext;
+                        if (node != null && node.Start is XSharpToken xtoken && xtoken.HasXmlComments)
+                        {
+                            return ParseTrivia(xtoken.XmlComments);
+                        }
+                    }
+                }
+            }
+            if (parent is FieldDeclarationSyntax fdecl)
+            {
+                if (fdecl.XNode is XSharpParser.VodefineContext)
+                {
+                    return ParseTrivia("/// <exclude />");
                 }
             }
             return default;

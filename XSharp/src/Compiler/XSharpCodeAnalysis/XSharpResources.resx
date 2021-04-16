@@ -6837,7 +6837,7 @@ To remove the warning, you can use /reference instead (set the Embed Interop Typ
     <value>function pointers</value>
   </data>
   <data name="IDS_AddressOfMethodGroup" xml:space="preserve">
-    <value>&amp;method</value>
+    <value>@method</value>
   </data>
   <data name="ERR_InvalidFunctionPointerCallingConvention" xml:space="preserve">
     <value>'{0}' is not a valid calling convention specifier for a function pointer.</value>
@@ -7035,16 +7035,16 @@ To remove the warning, you can use /reference instead (set the Embed Interop Typ
     <value>Cannot create a function pointer for '{0}' because it is not a static method</value>
   </data>
   <data name="ERR_AddressOfMethodGroupInExpressionTree" xml:space="preserve">
-    <value>'&amp;' on methods cannot be used in expression trees</value>
+    <value>'@' on methods cannot be used in expression trees</value>
   </data>
   <data name="ERR_WrongFuncPtrCallingConvention" xml:space="preserve">
     <value>Calling convention of '{0}' is not compatible with '{1}'.</value>
   </data>
   <data name="ERR_MissingAddressOf" xml:space="preserve">
-    <value>Cannot convert method to function pointer (Are you missing a '&amp;'?)</value>
+    <value>Cannot convert method to function pointer (Are you missing a '@'?)</value>
   </data>
   <data name="ERR_CannotUseReducedExtensionMethodInAddressOf" xml:space="preserve">
-    <value>Cannot use an extension method with a receiver as the target of a '&amp;' operator.</value>
+    <value>Cannot use an extension method with a receiver as the target of a '@' operator.</value>
   </data>
   <data name="ERR_CannotUseFunctionPointerAsFixedLocal" xml:space="preserve">
     <value>The type of a local declared in a fixed statement cannot be a function pointer type.</value>
@@ -7068,10 +7068,10 @@ To remove the warning, you can use /reference instead (set the Embed Interop Typ
     <value>Cannot use '{0}' as a calling convention modifier.</value>
   </data>
   <data name="ERR_CannotConvertAddressOfToDelegate" xml:space="preserve">
-    <value>Cannot convert &amp;method '{0}' to delegate type '{0}'.</value>
+    <value>Cannot convert @method '{0}' to delegate type '{0}'.</value>
   </data>
   <data name="ERR_AddressOfToNonFunctionPointer" xml:space="preserve">
-    <value>Cannot convert &amp;method '{0}' to non-function pointer type '{1}'.</value>
+    <value>Cannot convert @method '{0}' to non-function pointer type '{1}'.</value>
   </data>
   <data name="ERR_CannotSpecifyManagedWithUnmanagedSpecifiers" xml:space="preserve">
     <value>'managed' calling convention cannot be combined with unmanaged calling convention specifiers.</value>
@@ -7634,11 +7634,9 @@ To remove the warning, you can use /reference instead (set the Embed Interop Typ
   <data name="ERR_MethodSignatureChanged" xml:space="preserve">
     <value>'{0}': The method signature was changed in the method '{1}'. You will have to update the parameter types and/or return type in the method of the subclass too.</value>
   </data>
-  
   <data name="ERR_FoxDimensionDeclaration" xml:space="preserve">
     <value>FoxPro DIMENSION statement or LOCAL ARRAY statement supports 1 or 2 dimensions, not more.</value>
   </data>
-
  <data name="ERR_FoxDimensionNeedsMemvars" xml:space="preserve">
     <value>FoxPro Array support requires the /memvar compiler option.</value>
   </data>
